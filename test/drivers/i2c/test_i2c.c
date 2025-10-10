@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Texas Instruments Incorporated
+ * Copyright (C) 2021-2025 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,6 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*  \file   test_i2c.c
+ *
+ *
+ *   \brief  I2C Driver Unit Test File
+ */
+
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
@@ -47,6 +53,10 @@
 #include <drivers/pinmux.h>
 #include <drivers/i2c/v0/lld/i2c_lld.h>
 #include <kernel/dpl/AddrTranslateP.h>
+#include <drivers/hw_include/hw_types.h>
+#include <kernel/dpl/ClockP.h>
+#include <kernel/dpl/SystemP.h>
+#include <kernel/dpl/TaskP.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -67,13 +77,41 @@
 #define INVALID_MEM_PARAMS    (2U)
 #define TX   (1U)
 #define RX   (0U)
-
-
-extern I2C_Config gI2cConfig[];
+#define TEST_I2C_FUZZ_ITERATIONS       5
+#define TEST_I2C_CB_QUEUE_TEST_DEPTH   (5U)
+#if defined ENABLE_MT_TESTS
+#define TEST_I2C_WRITE_THREADS      2
+#define TEST_I2C_CB_MT_BYTES        8
+#define TEST_I2C_WRITE_ITER         1
+#if defined STACK_C7_CORE
+#define TEST_I2C_MT_TASK_STACK_SIZE   (1024 * 40)
+#else
+#define TEST_I2C_MT_TASK_STACK_SIZE   (6 * 1024)
+#endif
+#endif
+#define TEST_I2C_TMP100_TEMP_SHIFT        (4)
+#define TEST_I2C_TMP100_SIGN_EXTEND_MASK  (0xF000)
+#define TEST_I2C_TMP100_TEMP_DIV          (16)
+#define TEST_I2C_TMP100_TEMP_FRAC_SCALE   (625)
+#define TEST_I2C_TMP100_SIGN_BIT          (0x80)
+#define TEST_I2C_TMP100_SIGN_BIT_POS      (8)
+#define TEST_I2C_PERF_TEST_DATA_COUNT   (1U)
+/* Payload sizes (data bytes excluding EEPROM address bytes) */
+#define TEST_I2C_64B_SIZE    (64U)
+#define TEST_I2C_128B_SIZE   (128U)
+#define TEST_I2C_256B_SIZE   (256U)
+#define TEST_I2C_PERF_NUM_SIZES 3
 
 /* ========================================================================== */
 /*                         Structures and Enums                               */
 /* ========================================================================== */
+
+/**
+ * \brief  Structure for I2C probe test settings.
+ *
+ * Holds parameters for configuring and tracking I2C bus probe operations,
+ * including the I2C instance to probe and the number of actual device addresses found.
+ */
 
 typedef struct I2C_ProbeSettings_s {
 
@@ -81,6 +119,15 @@ typedef struct I2C_ProbeSettings_s {
     uint8_t numActualAddresses;
 
 } I2C_ProbeSettings;
+
+/**
+ * \brief  Structure containing parameters for I2C test cases.
+ *
+ * This structure holds configuration and runtime parameters used for
+ * executing various I2C driver test scenarios, including memory address,
+ * device address, number of bytes to transfer, frequency settings, and
+ * interrupt enable flags.
+ */
 
 typedef struct I2C_TestParams_s {
 
@@ -93,6 +140,31 @@ typedef struct I2C_TestParams_s {
     bool intrEnable;
 
 } I2C_TestParams;
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+extern I2C_Config gI2cConfig[];
+SemaphoreP_Object gTestI2cCallbackDoneSemObj;
+uint8_t gI2cTxBuffer[APP_I2C_BUFSIZE];
+uint8_t gI2cRxBuffer[APP_I2C_BUFSIZE];
+#if defined ENABLE_MT_TESTS
+uint8_t TestI2c_Task1Stack[TEST_I2C_WRITE_THREADS][TEST_I2C_MT_TASK_STACK_SIZE];
+uint8_t TestI2c_Task2Stack[TEST_I2C_WRITE_THREADS][TEST_I2C_MT_TASK_STACK_SIZE];
+TaskP_Object TestI2c_TaskObjs[TEST_I2C_WRITE_THREADS];
+static SemaphoreP_Object TestI2c_TestSem;
+TaskP_Object TestI2c_TaskObjsEepromTemp[2];
+static I2C_Handle TestI2c_SharedHandle = NULL;
+#endif
+static volatile uint32_t TestI2c_CbQueuePos;
+static uint8_t TestI2c_CbQueueOrder[TEST_I2C_CB_QUEUE_TEST_DEPTH];
+#if (defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62X)) && defined(ENABLE_TARGET_EXTERNAL_LOOPBACK)
+static SemaphoreP_Object TestI2c_TargetSem;
+static uint8_t TestI2c_controllerTxBuf[8];
+static uint8_t TestI2c_controllerRxBuf[8];
+static uint8_t TestI2c_targetRxBuf[8];
+static uint8_t TestI2c_targetTxBuf[8];
+#endif
 
 /* ========================================================================== */
 /*                 Internal Function Declarations                             */
@@ -122,15 +194,42 @@ static int32_t test_i2c_write_read_mem_error_checks(void* args, uint8_t testCase
 static void test_i2c_set_test_params(I2C_TestParams *testParams, int8_t setting_id);
 static void test_i2c_callback(I2C_Handle i2cHnd, I2C_Transaction * msg, int32_t transferStatus);
 static int32_t test_i2c_nack_error_check(void* args);
-
-/* ========================================================================== */
-/*                            Global Variables                                */
-/* ========================================================================== */
-
-SemaphoreP_Object gTestI2cCallbackDoneSemObj;
-
-uint8_t gI2cTxBuffer[APP_I2C_BUFSIZE];
-uint8_t gI2cRxBuffer[APP_I2C_BUFSIZE];
+static void Test_I2c_EepromReadWithoutAddressWrite(void* args);
+void Test_I2c_SclStuckRecoverBusWithSystestFault(void* args);
+void Test_I2c_SdaStuckRecoverBusWithSystestFault(void* args);
+static void Test_I2c_EepromPageOverflow(void *args);
+static void Test_I2c_PerfWriteReadDiffFreq(void* args);
+static void Test_I2c_OpenCloseFuzzRand(void *args);
+#if defined ENABLE_MT_TESTS
+#if defined(SOC_AM62DX)
+static void Test_I2c_MultithreadSharedEepromTemp(void *args);
+#endif
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62X)
+static void Test_I2c_MultithreadWriteTestSharedOpenCb(void* args);
+static void Test_I2cMultithreadWriteTestSharedOpen(void* args);
+static void Test_I2c_MultithreadWriteTest(void* args);
+static void Test_I2c_CallbackMultithreadWriteTest(void* args);
+static void Test_I2c_MultithreadEepromAndTemp(void *args);
+#endif
+#endif
+#if (defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62X)) && defined(ENABLE_TARGET_EXTERNAL_LOOPBACK)
+static void Test_I2c_TargetModeWriteSeq(void* args);
+static void Test_I2c_TargetModeCombinedWriteRead(void *args);
+static void Test_I2c_TargetModehostControllerRead(void *args);
+static void Test_I2c_Target_XrdyOverrun(void *args);
+static void Test_I2c_Target_RrdyUnderrun(void *args);
+static void Test_I2c_Target_MultiplehostControllerReads(void *args);
+static void Test_I2c_TargetModehostControllerRead10bit(void *args);
+static void Test_I2c_TargetModehostControllerReadHs(void *args);
+static void Test_I2c_Mem_PrimeTransferTargetModeViaTransfer(void *args);
+#endif
+static void Test_I2c_TargetModePollingNegative(void *args);
+static void Test_I2c_OpenWithoutDriverLock(void *args);
+static void Test_I2c_OpenNullObject(void *args);
+static void Test_I2c_TransferTimeoutBlockingMode(void *args);
+static void Test_I2c_RecoverbusNullObject(void *args);
+static void Test_I2c_MemPrimeTransferInvalidDir(void *args);
+void Test_I2c_CallbackQueueDepth(void* args);
 
 /* ========================================================================== */
 /*                            Global Functions                                */
@@ -139,7 +238,7 @@ uint8_t gI2cRxBuffer[APP_I2C_BUFSIZE];
 uint8_t Board_i2cGetEepromDeviceAddr();
 uint16_t Board_i2cGetEepromMemAddr();
 uint8_t Board_i2cGetEepromAddrSize();
-
+uint8_t Board_getSocTemperatureSensorAddr(void);
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -147,6 +246,7 @@ uint8_t Board_i2cGetEepromAddrSize();
 
 void test_main(void *args)
 {
+
     I2C_TestParams      testParams;
     I2C_ProbeSettings   probeSettings;
     uint8_t             i;
@@ -155,7 +255,6 @@ void test_main(void *args)
 
     test_i2c_set_test_params(&testParams, 0);
     RUN_TEST(test_i2c_write_read, 1311, (void*)&testParams);
-
     test_i2c_set_test_params(&testParams, 1);
     RUN_TEST(test_i2c_write_read, 1312, (void*)&testParams);
 
@@ -180,12 +279,53 @@ void test_main(void *args)
     RUN_TEST(test_i2c_write_read, 1320, (void*)&testParams);
     /* Error Nack test */
     RUN_TEST(test_i2c_error_nack, 12793, (void*)&testParams);
-
     /* Hw Intr mode I2C_lld_mem_writeIntr*/
     test_i2c_set_test_params(&testParams, 0);
     RUN_TEST(test_i2c_write_read, 6248, (void*)&testParams);
+    test_i2c_set_test_params(&testParams, 0);
+    RUN_TEST(Test_I2c_EepromReadWithoutAddressWrite, 0, NULL);
+    test_i2c_set_test_params(&testParams, 0);
+    RUN_TEST(Test_I2c_EepromPageOverflow, 8318,(void*)&testParams);
+    test_i2c_set_test_params(&testParams, 0);
+    RUN_TEST(Test_I2c_PerfWriteReadDiffFreq, 8319, (void*)&testParams);
+    RUN_TEST(Test_I2c_OpenCloseFuzzRand, 8322, (void*)&testParams);
 
+    #if defined ENABLE_MT_TESTS
+    #if defined(SOC_AM62DX)
+    RUN_TEST(Test_I2c_MultithreadSharedEepromTemp, 8338, (void*)&testParams);
+    #endif
+    #if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62X)
+    RUN_TEST(Test_I2c_MultithreadWriteTestSharedOpenCb, 8586, (void*)&testParams);
+    RUN_TEST(Test_I2cMultithreadWriteTestSharedOpen, 8587, (void*)&testParams);
+    RUN_TEST(Test_I2c_MultithreadWriteTest, 8324,(void*)&testParams);
+    RUN_TEST(Test_I2c_CallbackMultithreadWriteTest, 8325,(void*)&testParams);
+    RUN_TEST(Test_I2c_MultithreadEepromAndTemp,8326,(void*)&testParams);
+    #endif
+    #endif
+    #if (defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62X)) && defined(ENABLE_TARGET_EXTERNAL_LOOPBACK)
+    test_i2c_set_test_params(&testParams, 0);
+    RUN_TEST(Test_I2c_TargetModeWriteSeq, 8328, (void*)&testParams);
+    RUN_TEST(Test_I2c_TargetModeCombinedWriteRead,8330,(void*)&testParams);
+    RUN_TEST(Test_I2c_TargetModehostControllerRead,8331,(void*)&testParams);
+    RUN_TEST(Test_I2c_Target_RrdyUnderrun, 8332, (void*)&testParams);
+    RUN_TEST(Test_I2c_Target_MultiplehostControllerReads, 8333, (void*)&testParams);
+    RUN_TEST(Test_I2c_TargetModehostControllerRead10bit, 8335, (void*)&testParams);
+    RUN_TEST(Test_I2c_TargetModehostControllerReadHs, 8336, (void*)&testParams);
+    RUN_TEST(Test_I2c_Mem_PrimeTransferTargetModeViaTransfer, 8621, (void*)&testParams);
+    /* Below target mode test cases are get stcuk in driver  */
+    /* RUN_TEST(Test_I2c_Target_XrdyOverrun, 8622, (void*)&testParams);  fail */
+    #endif
+    RUN_TEST(Test_I2c_TransferTimeoutBlockingMode, 8623, (void*)&testParams);
+    RUN_TEST(Test_I2c_SclStuckRecoverBusWithSystestFault, 8334, NULL);
+    RUN_TEST(Test_I2c_OpenNullObject, 8624, NULL);
+    RUN_TEST(Test_I2c_RecoverbusNullObject, 8625, NULL);
     RUN_TEST(test_i2c_dynamic_coverage, 6605, NULL);
+    RUN_TEST(Test_I2c_MemPrimeTransferInvalidDir, 8626, NULL);
+    RUN_TEST(Test_I2c_TargetModePollingNegative, 8627, NULL);
+    RUN_TEST(Test_I2c_OpenWithoutDriverLock, 8628, NULL);
+    /* Below test cases are get stcuk in driver  */
+    /* RUN_TEST(Test_I2c_SdaStuckRecoverBusWithSystestFault, 8630 ,NULL); */
+    /* RUN_TEST(Test_I2c_CallbackQueueDepth, 8631, NULL); */
 
     I2C_deinit();
 
@@ -209,8 +349,12 @@ void tearDown(void)
  * Testcases
  */
 
-/*
- * Test to write bytes to the EEPROM and read it back
+/**
+ * \brief  Writes bytes to the EEPROM and reads them back.
+ *
+ * This test case writes a sequence of bytes to the EEPROM and then reads them back
+ * to verify correct I2C operation. It supports polling and interrupt modes, and
+ * can set the bus frequency as part of the test.
  */
 static void test_i2c_write_read(void* args)
 {
@@ -317,8 +461,12 @@ static void test_i2c_write_read(void* args)
     return;
 }
 
-/*
- * Test to see if probe returns same addresses as known from schematic
+/**
+ * \brief  Test I2C probe against schematic addresses.
+ *
+ * This test verifies that the I2C probe function returns device addresses
+ * that match those specified in the hardware schematic. It ensures correct
+ * detection and communication with expected I2C devices on the bus.
  */
 static void test_i2c_probe(void* args)
 {
@@ -347,6 +495,13 @@ static void test_i2c_probe(void* args)
     return;
 }
 
+/**
+ * \brief  Test function for I2C callback mode.
+ *
+ * This test demonstrates the usage of I2C in callback mode.
+ * It initializes the I2C parameters and performs operations as required
+ * for testing the callback mechanism.
+ */
 static void test_i2c_callback_mode(void* args)
 {
     I2C_Params      i2cParams;
@@ -418,6 +573,13 @@ static void test_i2c_callback_mode(void* args)
     return;
 }
 
+/**
+ * \brief  Test I2C callback mode operation.
+ *
+ * This test verifies the I2C driver's callback mode by performing a write and read
+ * operation to the EEPROM using callback-based transfers. It checks that the callback
+ * is invoked and the data is correctly transferred.
+ */
 static void test_i2c_timeout(void* args)
 {
     I2C_Handle          i2cHandle;
@@ -446,6 +608,12 @@ static void test_i2c_timeout(void* args)
     I2C_close(i2cHandle);
 }
 
+/**
+ * \brief  Test repeated open and close of I2C driver.
+ *
+ * This test repeatedly opens and closes the I2C driver to verify that resources
+ * are properly allocated and released, and that no errors occur during repeated operations.
+ */
 static void test_i2c_open_close(void* args)
 {
     I2C_Handle          i2cHandle;
@@ -474,6 +642,12 @@ static void test_i2c_open_close(void* args)
     }
 }
 
+/**
+ * \brief  Test error handling for NACK responses.
+ *
+ * This test sends transactions to a non-existent device address to verify that
+ * the driver correctly detects and reports NACK errors.
+ */
 static void test_i2c_error_nack(void* args)
 {
     I2C_Handle          i2cHandle;
@@ -754,7 +928,7 @@ static int32_t test_i2c_handle_errors(void)
     I2C_Transaction i2cTransaction;
     I2C_Object *object = NULL;
     int32_t status = SystemP_SUCCESS;
-
+    I2C_Transaction_init(&i2cTransaction);
     I2C_close(gI2cHandle[CONFIG_I2C0]);
 
     I2C_Params_init(&i2cParams);
@@ -763,13 +937,10 @@ static int32_t test_i2c_handle_errors(void)
     {
         return SystemP_FAILURE;
     }
-
     i2cHandle = gI2cHandle[CONFIG_I2C0];
     object = (I2C_Object*)i2cHandle->object;
     object->i2cLldHandle->currentMsg = NULL;
-
     I2C_close(gI2cHandle[CONFIG_I2C0]);
-
     I2C_Params_init(&i2cParams);
     i2cHandle = I2C_open(CONFIG_I2C0, &i2cParams);
 
@@ -781,14 +952,12 @@ static int32_t test_i2c_handle_errors(void)
     /* Null parameter passed to the I2C_Params_init
        to increase the dynamic coverage as negative testcase*/
     I2C_Params_init(NULL);
-
     i2cHandle->object->headPtr = (I2C_Transaction *)(&i2cTransaction);
     I2C_close(i2cHandle);
     i2cHandle->object->headPtr = NULL;
 
     status=I2C_transfer(NULL, &i2cTransaction);
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
-
     i2cTransaction.writeCount = 0;
     i2cTransaction.readCount = 0;
     i2cTransaction.memTxnEnable = 0;
@@ -796,7 +965,6 @@ static int32_t test_i2c_handle_errors(void)
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
 
     I2C_probe(NULL, 0);
-
     I2C_setBusFrequency(NULL, I2C_100KHZ);
 
     i2cHandle->object->i2cLldHandle->state = I2C_STS_ERR_BUS_BUSY;
@@ -808,7 +976,6 @@ static int32_t test_i2c_handle_errors(void)
     gI2cConfig[0].object->isOpen = false;
     I2C_getHandle(0);
     gI2cConfig[0].object->isOpen = true;
-
     /* Saving the I2C config object */
     object = gI2cConfig[0].object;
     gI2cConfig[0].object = NULL;
@@ -820,14 +987,12 @@ static int32_t test_i2c_handle_errors(void)
 
     I2C_Params_init(&i2cParams);
     i2cHandle = I2C_open(CONFIG_I2C0, &i2cParams);
-
     if (i2cHandle == NULL)
     {
         return SystemP_FAILURE;
     }
 
     i2cHandle->object->i2cLldHandle = NULL;
-
     i2cTransaction.memTxnEnable = true;
     status=I2C_transfer(i2cHandle, &i2cTransaction);
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
@@ -1368,7 +1533,7 @@ static int32_t test_i2c_write_read_mem_error_checks(void* args, uint8_t testCase
         i2cTransaction.targetAddress = testParams->deviceAddress;
 
         memTransaction.memAddr = (uint32_t)testParams->memAddress;
-        memTransaction.memAddrSize = 8; //Incorrect mem address size
+        memTransaction.memAddrSize = 8; /*Incorrect mem address size*/
         memTransaction.buffer = gI2cTxBuffer;
         memTransaction.size = (uint32_t)testParams->numBytes;
         memTransaction.memDataDir = I2C_MEM_TXN_DIR_TX;
@@ -1519,6 +1684,1235 @@ static int32_t test_i2c_nack_error_check(void* args)
     I2C_close(i2cHandle);
     return transaction1.status;
 }
+
+/**
+ * \brief Test SCL stuck low recovery using SYSTEST fault injection.
+ *
+ * Test Category: Fault Injection
+ *
+ * This test simulates the SCL line being stuck low using the SYSTEST register and verifies
+ * that the I2C_recoverBus API can recover the bus for various bit rates and restores normal operation.
+ *
+ * \param args Unused.
+ */
+void Test_I2c_SclStuckRecoverBusWithSystestFault(void* args)
+{
+    I2C_Params i2cParams;
+    I2C_Handle handle;
+    uint32_t regVal, f, i;
+    int32_t status;
+    uint32_t i2cDelay = I2C_DELAY_SMALL;;
+    I2C_Transaction Test_i2cTransaction;
+
+    for (i = 0; i < 10; i++)
+    {
+        gI2cTxBuffer[i + Board_i2cGetEepromAddrSize()] = (uint8_t)i;
+    }
+
+    /* Setup: open I2C instance */
+    I2C_Transaction_init(&Test_i2cTransaction);
+    Test_i2cTransaction.writeBuf = gI2cTxBuffer;
+    Test_i2cTransaction.writeCount = 2;
+    Test_i2cTransaction.readBuf = NULL;
+    Test_i2cTransaction.readCount = 0;
+    Test_i2cTransaction.targetAddress = Board_i2cGetEepromDeviceAddr();
+    Test_i2cTransaction.timeout = SystemP_WAIT_FOREVER;
+
+    /* Supported frequencies to test */
+    const uint32_t freqList[] = { I2C_100KHZ, I2C_400KHZ};
+    const char* Test_I2c_FreqNames[] = { "100kHz", "400kHz"};
+    const int32_t Test_I2c_FreqCount = sizeof(freqList)/sizeof(freqList[0]);
+
+    for (f = 0; f < Test_I2c_FreqCount; ++f)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C0]);
+        gI2cHandle[CONFIG_I2C0] = NULL;
+        I2C_Params_init(&i2cParams);
+        handle = I2C_open(CONFIG_I2C0, &i2cParams);
+        TEST_ASSERT_NOT_NULL(handle);
+
+        handle = I2C_getHandle(CONFIG_I2C0);
+        TEST_ASSERT_NOT_NULL(handle);
+        uint32_t baseAddr = handle->hwAttrs->baseAddr;
+
+        handle->object->i2cLldHandle->bitRate = freqList[f];
+        DebugP_log("Testing SCL stuck recovery at %s...\n", Test_I2c_FreqNames[f]);
+
+        /* Enable test mode and simulate SCL stuck low */
+        regVal = HW_RD_REG32(baseAddr + CSL_I2C_SYSTEST);
+        regVal |= (1 << CSL_I2C_SYSTEST_ST_EN_SHIFT);       /* ST_EN = 1 */
+        regVal |= (0x3 << CSL_I2C_SYSTEST_TMODE_SHIFT);     /* TMODE = 0b11 */
+        regVal &= ~(1 << CSL_I2C_SYSTEST_SCL_O_SHIFT);       /* SCL_O = 0 (drive low) */
+        HW_WR_REG32(baseAddr + CSL_I2C_SYSTEST, regVal);
+        ClockP_usleep(10);         /* Let the line settle */
+
+        /* Confirm SCL is stuck low */
+        regVal = HW_RD_REG32(baseAddr + CSL_I2C_SYSTEST);
+        bool sclStuck = ((regVal >> 3) & 0x1) == 0;  /* SCL_I == 0 */
+        TEST_ASSERT_TRUE_MESSAGE(sclStuck, "SCL line is not stuck as expected");
+
+        /*  Try recovery */
+        status = I2C_recoverBus(handle, i2cDelay);
+        TEST_ASSERT_EQUAL_INT_MESSAGE(SystemP_SUCCESS, status, "I2C_recoverBus() failed");
+
+        status = I2C_transfer(handle, &Test_i2cTransaction);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+        /* Close */
+        I2C_close(handle);
+    }
+}
+
+/**
+ * \brief Test SDA stuck low recovery using SYSTEST fault injection.
+ *
+ * Test Category: Fault Injection
+ *
+ * This test simulates the SDA line being stuck low using the SYSTEST register and verifies
+ * that the I2C_recoverBus API can recover the bus.
+ *
+ * \param args Unused.
+ */
+void Test_I2c_SdaStuckRecoverBusWithSystestFault(void *args)
+{
+    I2C_Params params;
+    I2C_Handle handle;
+    int32_t status, i;
+    uint32_t orig, val;
+    I2C_Transaction Test_i2cTransaction;
+
+    for (i = 0; i < 10; i++)
+    {
+        gI2cTxBuffer[i + Board_i2cGetEepromAddrSize()] = (uint8_t)i;
+    }
+
+    /* Setup: open I2C instance */
+    I2C_Params_init(&params);
+    params.bitRate = I2C_400KHZ;
+    I2C_Transaction_init(&Test_i2cTransaction);
+    Test_i2cTransaction.writeBuf = gI2cTxBuffer;
+    Test_i2cTransaction.writeCount = 2;
+    Test_i2cTransaction.readBuf = NULL;
+    Test_i2cTransaction.readCount = 0;
+    Test_i2cTransaction.targetAddress = Board_i2cGetEepromDeviceAddr();
+    Test_i2cTransaction.timeout = SystemP_WAIT_FOREVER;
+
+    I2C_close(gI2cHandle[CONFIG_I2C0]);
+    handle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    handle = I2C_getHandle(CONFIG_I2C0);
+    TEST_ASSERT_NOT_NULL(handle);
+    uint32_t baseAddr = handle->hwAttrs->baseAddr;
+
+    /* Save original SYSTEST */
+    orig = HW_RD_REG32(baseAddr + CSL_I2C_SYSTEST);
+
+    /* Enable SYSTEST mode, TMODE = 3 (loopback), force SDA low */
+    val = orig;
+    val |= CSL_I2C_SYSTEST_ST_EN_MASK;                   /* enable systest */
+    val &= ~CSL_I2C_SYSTEST_TMODE_MASK;
+    val |= (3U << CSL_I2C_SYSTEST_TMODE_SHIFT);          /* TMODE=3 */
+    val |= CSL_I2C_SYSTEST_SCL_O_MASK;                   /* drive SCL high */
+    val &= ~CSL_I2C_SYSTEST_SDA_O_MASK;                  /* drive SDA low */
+    HW_WR_REG32(baseAddr + CSL_I2C_SYSTEST, val);
+
+    ClockP_usleep(50);
+
+    /* Confirm SDA_I really stuck low */
+    uint32_t sysReg = HW_RD_REG32(baseAddr + CSL_I2C_SYSTEST);
+    TEST_ASSERT_EQUAL_UINT32(0, sysReg & CSL_I2C_SYSTEST_SDA_I_MASK);
+
+    /* Call recoverBus (should detect SDA stuck and try recovery) */
+    status = I2C_recoverBus(handle, I2C_DELAY_SMALL);
+    DebugP_log("recoverBus status=%d, SYSTEST=0x%08X\n", status, sysReg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = I2C_transfer(handle, &Test_i2cTransaction);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    I2C_close(handle);
+}
+
+/**
+ * \brief Test EEPROM read without prior address write (negative test).
+ *
+ * Test Category: Negative Test Case
+ *
+ * This test attempts to read from EEPROM without first writing the address, expecting failure.
+ *
+ * \param args Unused.
+ */
+static void Test_I2c_EepromReadWithoutAddressWrite(void* args)
+{
+   I2C_Handle handle;
+   I2C_Params params;
+   I2C_Transaction transaction;
+   uint8_t rxBuf[2];
+   int32_t status;
+   I2C_Transaction_init(&transaction);
+   I2C_close(gI2cHandle[CONFIG_I2C0]);
+   I2C_Params_init(&params);
+   handle = I2C_open(CONFIG_I2C0, &params);
+   TEST_ASSERT_NOT_NULL(handle);
+
+   transaction.writeCount = 0;
+   transaction.readCount  = 2;
+   transaction.targetAddress = Board_i2cGetEepromMemAddr();
+   transaction.readBuf = rxBuf;
+
+   status = I2C_transfer(handle, &transaction);
+   TEST_ASSERT_EQUAL(status, SystemP_FAILURE);
+   I2C_close(handle);
+}
+
+static void Test_I2c_EepromPageOverflow(void* args)
+{
+    int32_t status, i;
+    I2C_Handle handle;
+    I2C_Params params;
+    I2C_Transaction i2cTransaction;
+
+    uint32_t overflowSize = 160; /* pageSize to test wrap */
+     I2C_TestParams *testParams = (I2C_TestParams*)args;
+    /* Fill write buffer: Addr bytes + overflow data */
+    for (i = 0; i < overflowSize; i++)
+    {
+        gI2cTxBuffer[i + Board_i2cGetEepromAddrSize()] = 0xA5;
+    }
+
+    if(Board_i2cGetEepromAddrSize() == 1U)
+    {
+        gI2cTxBuffer[0] = (uint8_t)(testParams->memAddress);
+    }
+    else
+    {
+        gI2cTxBuffer[0] = (uint8_t)(testParams->memAddress >> 8);
+        gI2cTxBuffer[1] = (uint8_t)(testParams->memAddress & 0xFF);
+    }
+    I2C_close(gI2cHandle[CONFIG_I2C0]);
+    I2C_Params_init(&params);
+    handle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    /* EEPROM Write (160 bytes) */
+    I2C_Transaction_init(&i2cTransaction);
+    i2cTransaction.writeBuf   = gI2cTxBuffer;
+    i2cTransaction.writeCount = Board_i2cGetEepromAddrSize() + overflowSize;
+    i2cTransaction.targetAddress = testParams->deviceAddress;
+
+    ClockP_usleep(5000);  /* wait before write */
+    status = I2C_transfer(handle, &i2cTransaction);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Wait for EEPROM write */
+    ClockP_usleep(10000);
+
+    /* Read back first page (128 bytes) */
+    uint8_t addrBuf[2];
+    if (Board_i2cGetEepromAddrSize() == 1)
+    {
+        addrBuf[0] = (uint8_t)testParams->memAddress;
+    }
+    else
+    {
+        addrBuf[0] = (uint8_t)(testParams->memAddress >> 8);
+        addrBuf[1] = (uint8_t)(testParams->memAddress & 0xFF);
+    }
+
+    memset(gI2cRxBuffer, 0, 128);
+    I2C_Transaction_init(&i2cTransaction);
+    i2cTransaction.writeBuf   = addrBuf;
+    i2cTransaction.writeCount = Board_i2cGetEepromAddrSize();
+    i2cTransaction.readBuf    = gI2cRxBuffer;
+    i2cTransaction.readCount  = 128;
+    i2cTransaction.targetAddress = testParams->deviceAddress;
+
+    status = I2C_transfer(handle, &i2cTransaction);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    DebugP_log("EEPROM Overflow Test: Expected = 0x%02X, Actual = 0x%02X\n", gI2cTxBuffer[Board_i2cGetEepromAddrSize() + 128], gI2cRxBuffer[0]);
+    /* Now validate wrap: data[0] = txBuffer[AddrSize + 128] */
+    TEST_ASSERT_EQUAL_HEX8(gI2cTxBuffer[Board_i2cGetEepromAddrSize() + 128], gI2cRxBuffer[0]);
+}
+
+/**
+ * \brief Performance test for I2C write and read at 100 kHz and 400 kHz in polling and interrupt modes.
+ *
+ * Test Category: Performance / Functionality
+ *
+ * This test measures the write and read throughput of the I2C driver at 100 kHz and 400 kHz
+ * by timing multiple transfers in both polling (blocking) and interrupt (callback) modes.
+ * It reports average transfer times and throughput (MiB/s) for each mode and frequency.
+ *
+ * \param args Pointer to I2C_TestParams structure.
+ */
+static void Test_I2c_PerfWriteReadDiffFreq(void* args)
+{
+    I2C_TestParams *testParams = (I2C_TestParams *)args;
+    const uint32_t addrBytes   = Board_i2cGetEepromAddrSize();
+    const int32_t Test_I2c_FreqCount = 2;
+    int32_t mode, f, i, status, sz;
+    const int32_t Test_I2c_FreqEnums[]  = { I2C_100KHZ, I2C_400KHZ };
+    const char *Test_I2c_FreqNames[] = { "100 kHz", "400 kHz" };
+    const uint32_t dataSizes[TEST_I2C_PERF_NUM_SIZES] = { TEST_I2C_64B_SIZE, TEST_I2C_128B_SIZE, TEST_I2C_256B_SIZE };
+    SemaphoreP_Object sem;
+
+    DebugP_log("\nI2C Performance Numbers Print Start\r\n\n");
+    DebugP_log("Mode        | Freq        | Data Size (B) | Write MiB/s | Write Time (us) | Read MiB/s | Read Time (us)\r\n");
+    DebugP_log("------------|-------------|---------------|-------------|-----------------|------------|---------------\r\n");
+
+    for (mode = 0; mode < 2; mode++)
+    {
+        bool useCallback = (mode == 1);
+        const char *modeName = useCallback ? "INTERRUPT" : "POLLING";
+        for (f = 0; f < Test_I2c_FreqCount; f++)
+        {
+            if (gI2cHandle[CONFIG_I2C0] != NULL)
+            {
+                I2C_close(gI2cHandle[CONFIG_I2C0]);
+                gI2cHandle[CONFIG_I2C0] = NULL;
+            }
+            I2C_HwAttrs *hw = (I2C_HwAttrs*)gI2cConfig[CONFIG_I2C0].hwAttrs;
+            hw->enableIntr = useCallback ? TRUE : FALSE;
+            I2C_Params params;
+            I2C_Params_init(&params);
+            params.transferMode = useCallback ? I2C_MODE_CALLBACK : I2C_MODE_BLOCKING;
+            if(useCallback)
+            {
+                params.transferCallbackFxn = test_i2c_callback;
+            }
+            gI2cHandle[CONFIG_I2C0] = I2C_open(CONFIG_I2C0, &params);
+            TEST_ASSERT_NOT_NULL(gI2cHandle[CONFIG_I2C0]);
+            I2C_setBusFrequency(gI2cHandle[CONFIG_I2C0], Test_I2c_FreqEnums[f]);
+            for (sz = 0; sz < TEST_I2C_PERF_NUM_SIZES; sz++)
+            {
+                uint32_t payload = dataSizes[sz];
+                for (i=0;i<payload;i++)
+                {
+                    gI2cTxBuffer[addrBytes + i] = (uint8_t)i;
+                    gI2cRxBuffer[i] = 0;
+                }
+                if (addrBytes == 1U)
+                    gI2cTxBuffer[0] = (uint8_t)testParams->memAddress;
+                else
+                {
+                    gI2cTxBuffer[0] = (uint8_t)(testParams->memAddress >> 8);
+                    gI2cTxBuffer[1] = (uint8_t)(testParams->memAddress & 0xFF);
+                }
+                /* Warm-up write */
+                I2C_Transaction Test_i2cTransaction;
+                I2C_Transaction_init(&Test_i2cTransaction);
+                Test_i2cTransaction.targetAddress = testParams->deviceAddress;
+                Test_i2cTransaction.writeBuf      = gI2cTxBuffer;
+                Test_i2cTransaction.writeCount    = addrBytes + payload;
+                Test_i2cTransaction.readCount     = 0;
+                if(useCallback)
+                {
+                    SemaphoreP_constructBinary(&sem, 0);
+                    Test_i2cTransaction.arg=&sem;
+                }
+                TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, I2C_transfer(gI2cHandle[CONFIG_I2C0], &Test_i2cTransaction));
+                if(useCallback)
+                {
+                    SemaphoreP_pend(&sem, SystemP_WAIT_FOREVER);
+                    SemaphoreP_destruct(&sem);
+                }
+                ClockP_usleep(10000);
+                /* Timed write */
+                I2C_Transaction_init(&Test_i2cTransaction);
+                Test_i2cTransaction.targetAddress = testParams->deviceAddress;
+                Test_i2cTransaction.writeBuf      = gI2cTxBuffer;
+                Test_i2cTransaction.writeCount    = addrBytes + payload;
+                Test_i2cTransaction.readCount     = 0;
+                if(useCallback)
+                {
+                    SemaphoreP_constructBinary(&sem, 0);
+                    Test_i2cTransaction.arg=&sem;
+                }
+                uint64_t t0 = ClockP_getTimeUsec();
+                status = I2C_transfer(gI2cHandle[CONFIG_I2C0], &Test_i2cTransaction);
+                TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+                if(useCallback)
+                {
+                    SemaphoreP_pend(&sem, SystemP_WAIT_FOREVER);
+                    SemaphoreP_destruct(&sem);
+                }
+                uint64_t t1 = ClockP_getTimeUsec();
+                TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+                uint64_t writeTime = t1 - t0;
+                ClockP_usleep(10000);
+                /* Ready poll before read */
+                I2C_Transaction_init(&Test_i2cTransaction);
+                Test_i2cTransaction.targetAddress = testParams->deviceAddress;
+                Test_i2cTransaction.writeBuf      = gI2cTxBuffer;
+                Test_i2cTransaction.writeCount    = addrBytes;
+                Test_i2cTransaction.readBuf       = gI2cRxBuffer;
+                Test_i2cTransaction.readCount     = 1;
+                if(useCallback)
+                {
+                    SemaphoreP_constructBinary(&sem, 0);
+                    Test_i2cTransaction.arg=&sem;
+                }
+                do {
+                    status = I2C_transfer(gI2cHandle[CONFIG_I2C0], &Test_i2cTransaction);
+                    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+                    if(useCallback && status==SystemP_SUCCESS)
+                    {
+                        SemaphoreP_pend(&sem, SystemP_WAIT_FOREVER);
+                        SemaphoreP_destruct(&sem);
+                    }
+                    if(status == SystemP_SUCCESS)
+                    {
+                        break;
+                    }
+                } while (1);
+                ClockP_usleep(4000);
+                /* Timed read */
+                I2C_Transaction_init(&Test_i2cTransaction);
+                Test_i2cTransaction.targetAddress = testParams->deviceAddress;
+                Test_i2cTransaction.writeBuf      = gI2cTxBuffer;
+                Test_i2cTransaction.writeCount    = addrBytes;
+                Test_i2cTransaction.readBuf       = gI2cRxBuffer;
+                Test_i2cTransaction.readCount     = payload;
+                if(useCallback)
+                {
+                    SemaphoreP_constructBinary(&sem, 0);
+                    Test_i2cTransaction.arg=&sem;
+                }
+                t0 = ClockP_getTimeUsec();
+                status = I2C_transfer(gI2cHandle[CONFIG_I2C0], &Test_i2cTransaction);
+                TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+                if(useCallback)
+                {
+                    SemaphoreP_pend(&sem, SystemP_WAIT_FOREVER);
+                    SemaphoreP_destruct(&sem);
+                }
+                t1 = ClockP_getTimeUsec();
+                uint64_t readTime = t1 - t0;
+                double writeMiBps = (writeTime == 0) ? 0.0 : ((double)payload / (1024.0 * 1024.0)) / ((double)writeTime / 1e6);
+                double readMiBps  = (readTime == 0) ? 0.0 : ((double)payload / (1024.0 * 1024.0)) / ((double)readTime / 1e6);
+                DebugP_log("%-12s| %-11s| %-13u| %10.3f      | %10llu        | %10.3f   | %10llu\r\n",
+                    modeName, Test_I2c_FreqNames[f], payload, writeMiBps, (unsigned long long)writeTime, readMiBps, (unsigned long long)readTime);
+            }
+            I2C_close(gI2cHandle[CONFIG_I2C0]);
+            gI2cHandle[CONFIG_I2C0] = NULL;
+        }
+    }
+    DebugP_log("\nI2C Performance Numbers Print End \r\n\n");
+}
+
+#if defined ENABLE_MT_TESTS
+#if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62X)
+/**
+ * \brief Worker thread for multi-threaded I2C write test.
+ *
+ * Test Category: Multi-thread / Robustness
+ *
+ * This function is executed by each thread in the multi-threaded I2C write test.
+ * It writes a unique data pattern to EEPROM in a loop to validate driver thread safety.
+ *
+ * \param arg Thread ID (as void pointer).
+ */
+static void i2c_write_worker(void *arg)
+{
+    int32_t threadId = (int32_t)(int32_t)arg, i, iter;
+    uint32_t baseAddr = (uint32_t)threadId * (TEST_I2C_WRITE_ITER + 8);
+    const uint32_t addrSize = Board_i2cGetEepromAddrSize();
+    uint8_t txBuf[2 + TEST_I2C_WRITE_ITER];
+    I2C_Transaction Test_i2cTransaction;
+    int32_t status;
+
+    for (iter = 0; iter < TEST_I2C_WRITE_ITER; iter++)
+    {
+        uint32_t memAddr = baseAddr + iter * TEST_I2C_WRITE_ITER;
+
+        /* Prepare payload */
+        for (i = 0; i < TEST_I2C_WRITE_ITER; i++)
+        {
+            txBuf[addrSize + i] = (uint8_t)(0xB0 + threadId + i);
+        }
+
+        /* Prepare address bytes */
+        if (addrSize == 1U)
+        {
+            txBuf[0] = (uint8_t)(memAddr & 0xFFU);
+        }
+        else
+        {
+            txBuf[0] = (uint8_t)((memAddr >> 8) & 0xFFU);
+            txBuf[1] = (uint8_t)(memAddr & 0xFFU);
+        }
+
+        /* Blocking write */
+        I2C_Transaction_init(&Test_i2cTransaction);
+        Test_i2cTransaction.targetAddress = Board_i2cGetEepromDeviceAddr();
+        Test_i2cTransaction.writeBuf = txBuf;
+        Test_i2cTransaction.writeCount = addrSize + TEST_I2C_WRITE_ITER;
+        Test_i2cTransaction.readBuf = NULL;
+        Test_i2cTransaction.readCount = 0;
+
+        DebugP_log("WRITE[%d] iter %d: calling I2C_transfer(addr=0x%04X, len=%u)\r\n",
+                   threadId, (int32_t)iter, (unsigned)memAddr, Test_i2cTransaction.writeCount);
+
+        status = I2C_transfer(gI2cHandle[CONFIG_I2C0], &Test_i2cTransaction);
+        if (status != SystemP_SUCCESS)
+        {
+            DebugP_log("WRITE[%d] iter %d: FAILED status=%d\r\n", threadId, (int32_t)iter, status);
+        }
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    }
+    /* Signal main thread that this worker is done */
+    SemaphoreP_post(&TestI2c_TestSem);
+    TaskP_exit();
+}
+
+/**
+ * \brief Multi-threaded I2C write test (blocking mode).
+ *
+ * Test Category: Multi-thread / Robustness
+ *
+ * Spawns multiple threads, each writing to EEPROM concurrently using blocking I2C transfers.
+ * Verifies thread safety and correct operation under concurrent access.
+ *
+ * \param args Unused.
+ */
+static void Test_I2c_MultithreadWriteTest(void *args)
+{
+    TaskP_Params taskParams;
+    int32_t threadLoop, i;
+    /* Counting semaphore for signaling all threads completed */
+    SemaphoreP_constructCounting(&TestI2c_TestSem, 0, TEST_I2C_WRITE_THREADS);
+
+    I2C_Params params;
+    I2C_Params_init(&params);
+    params.transferMode = I2C_MODE_BLOCKING;
+
+    /* Open I2C once */
+    if (gI2cHandle[CONFIG_I2C0] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C0]);
+        gI2cHandle[CONFIG_I2C0] = NULL;
+    }
+    gI2cHandle[CONFIG_I2C0] = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(gI2cHandle[CONFIG_I2C0]);
+    DebugP_log("WRITE test: I2C_open succeeded (blocking mode)\r\n");
+
+    /* Spawn worker threads */
+    for (threadLoop = 0; threadLoop < TEST_I2C_WRITE_THREADS; threadLoop++)
+    {
+        TaskP_Params_init(&taskParams);
+        taskParams.priority = 3U;
+        taskParams.stackSize = TEST_I2C_MT_TASK_STACK_SIZE;
+        taskParams.stack = TestI2c_Task1Stack[threadLoop];
+        taskParams.taskMain = &i2c_write_worker;
+        taskParams.name = "I2CWrite";
+
+        TaskP_construct(&TestI2c_TaskObjs[threadLoop], &taskParams);
+    }
+
+    /* Wait for all threads to complete */
+    for (i = 0; i < TEST_I2C_WRITE_THREADS; i++)
+    {
+        int32_t status = SemaphoreP_pend(&TestI2c_TestSem, SystemP_WAIT_FOREVER);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    }
+
+    /* Cleanup tasks and I2C handle */
+    for (threadLoop = 0; threadLoop < TEST_I2C_WRITE_THREADS; threadLoop++)
+    {
+        TaskP_destruct(&TestI2c_TaskObjs[threadLoop]);
+    }
+
+    I2C_close(gI2cHandle[CONFIG_I2C0]);
+    gI2cHandle[CONFIG_I2C0] = NULL;
+    SemaphoreP_destruct(&TestI2c_TestSem);
+}
+
+/**
+ * \brief Worker thread for multi-threaded I2C write test (callback mode).
+ *
+ * Test Category: Multi-thread / Robustness
+ *
+ * Each thread performs non-blocking I2C writes to EEPROM and waits for completion via callback.
+ * Validates driver thread safety and callback operation under concurrency.
+ *
+ * \param arg Thread ID (as void pointer).
+ */
+static void i2c_cb_thread(void *arg)
+{
+    int32_t threadId = (int32_t)(int32_t)arg;
+    uint32_t i, iter;
+    const uint32_t addrSize = Board_i2cGetEepromAddrSize();
+    uint8_t txBuf[2 + TEST_I2C_CB_MT_BYTES]; /* up to 2-byte mem addr */
+    I2C_Transaction Test_i2cTransaction;
+    int32_t status;
+    uint32_t baseAddr = (uint32_t)threadId * (TEST_I2C_CB_MT_BYTES + 8);
+    SemaphoreP_Object SemObj;
+    for (iter = 0; iter < TEST_I2C_WRITE_ITER; ++iter)
+    {
+        uint32_t memAddr = baseAddr + iter * TEST_I2C_CB_MT_BYTES;
+
+        for (i = 0; i < TEST_I2C_CB_MT_BYTES; ++i)
+        {
+            txBuf[addrSize + i] = (uint8_t)(0xD0 + threadId + i);
+        }
+
+        if (addrSize == 1U)
+        {
+            txBuf[0] = (uint8_t)(memAddr & 0xFFU);
+        }
+        else
+        {
+            txBuf[0] = (uint8_t)((memAddr >> 8) & 0xFFU);
+            txBuf[1] = (uint8_t)(memAddr & 0xFFU);
+        }
+
+        /* Construct binary semaphore for this transaction */
+        SemaphoreP_constructBinary(&SemObj, 0);
+
+        I2C_Transaction_init(&Test_i2cTransaction);
+        Test_i2cTransaction.targetAddress = Board_i2cGetEepromDeviceAddr();
+        Test_i2cTransaction.writeBuf = txBuf;
+        Test_i2cTransaction.writeCount = addrSize + TEST_I2C_CB_MT_BYTES;
+        Test_i2cTransaction.readBuf = NULL;
+        Test_i2cTransaction.readCount = 0;
+        Test_i2cTransaction.arg = (void *)&SemObj; /* callback will post this */
+
+        DebugP_log("CB_MT[%d] iter %d: enqueue write (len=%u)\r\n",
+                   threadId, (int32_t)iter, (unsigned)Test_i2cTransaction.writeCount);
+
+        status = I2C_transfer(gI2cHandle[CONFIG_I2C0], &Test_i2cTransaction);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+        if (status != SystemP_SUCCESS)
+        {
+            DebugP_log("CB_MT[%d]: I2C_transfer enqueue failed status=%d\r\n", threadId, status);
+        }
+        else
+        {
+            status = SemaphoreP_pend(&SemObj, SystemP_WAIT_FOREVER);
+            if (status != SystemP_SUCCESS)
+            {
+                DebugP_log("CB_MT[%d]: SemaphoreP_pend failed status=%d\r\n", threadId, status);
+            }
+        }
+
+        SemaphoreP_destruct(&SemObj);
+        ClockP_usleep(1000);
+    }
+
+    /* Signal completion to main thread using counting semaphore */
+    SemaphoreP_post(&TestI2c_TestSem);
+    TaskP_exit();
+}
+
+/**
+ * \brief Multi-threaded I2C write test (callback mode).
+ *
+ * Test Category: Multi-thread / Robustness
+ *
+ * Spawns multiple threads, each performing non-blocking I2C writes to EEPROM with callback.
+ * Verifies thread safety and correct callback operation under concurrent access.
+ *
+ * \param args Unused.
+ */
+static void Test_I2c_CallbackMultithreadWriteTest(void *args)
+{
+    TaskP_Params taskParams;
+    int32_t threadLoop, i;
+    /* Counting semaphore to wait for all threads */
+    SemaphoreP_constructCounting(&TestI2c_TestSem, 0, TEST_I2C_WRITE_THREADS);
+
+    I2C_Params params;
+    I2C_Params_init(&params);
+    params.transferMode = I2C_MODE_CALLBACK;
+    params.transferCallbackFxn = &test_i2c_callback;
+    gI2cHandle[CONFIG_I2C0] = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(gI2cHandle[CONFIG_I2C0]);
+
+    for (threadLoop = 0; threadLoop < TEST_I2C_WRITE_THREADS; threadLoop++)
+    {
+        TaskP_Params_init(&taskParams);
+        taskParams.priority = 3U;
+        taskParams.stackSize = TEST_I2C_MT_TASK_STACK_SIZE;
+        taskParams.stack = TestI2c_Task1Stack[threadLoop];
+        taskParams.taskMain = i2c_cb_thread;
+        taskParams.name = "CBThread";
+
+        TaskP_construct(&TestI2c_TaskObjs[threadLoop], &taskParams);
+    }
+
+    /* Wait for all threads to complete */
+    for (i = 0; i < TEST_I2C_WRITE_THREADS; i++)
+    {
+        int32_t status = SemaphoreP_pend(&TestI2c_TestSem, SystemP_WAIT_FOREVER);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    }
+
+    for (threadLoop = 0; threadLoop < TEST_I2C_WRITE_THREADS; threadLoop++)
+    {
+        TaskP_destruct(&TestI2c_TaskObjs[threadLoop]);
+    }
+
+    I2C_close(gI2cHandle[CONFIG_I2C0]);
+    SemaphoreP_destruct(&TestI2c_TestSem);
+}
+
+/* EEPROM Task wrapper */
+static void Test_I2c_eepromTask(void *arg)
+{
+    I2C_Handle i2cHandle;
+    I2C_Params params;
+    I2C_Transaction Test_i2cTransaction;
+    uint8_t txBuf[3];
+    int32_t status;
+
+    I2C_Params_init(&params);
+    if (gI2cHandle[CONFIG_I2C0] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C0]);
+        gI2cHandle[CONFIG_I2C0] = NULL;
+    }
+    i2cHandle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(i2cHandle);
+
+    txBuf[0] = 0x00; txBuf[1] = 0x10; txBuf[2] = 0xAB;
+    I2C_Transaction_init(&Test_i2cTransaction);
+    Test_i2cTransaction.writeBuf = txBuf;
+    Test_i2cTransaction.writeCount = 3;
+    Test_i2cTransaction.readBuf = NULL;
+    Test_i2cTransaction.readCount = 0;
+    Test_i2cTransaction.targetAddress = Board_i2cGetEepromDeviceAddr();
+
+    status = I2C_transfer(i2cHandle, &Test_i2cTransaction);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    I2C_close(i2cHandle);
+    SemaphoreP_post(&TestI2c_TestSem);
+    TaskP_exit();
+}
+
+static void Test_I2c_tempTask(void *arg)
+{
+    I2C_Handle i2cHandle;
+    I2C_Params i2cParams;
+    I2C_Transaction Test_i2cTransaction;
+    uint8_t txBuffer[1];
+    uint8_t rxBuffer[2];
+    int16_t temperature;
+    int32_t status;
+
+    I2C_close(gI2cHandle[CONFIG_I2C2]);
+    I2C_Params_init(&i2cParams);
+    if (gI2cHandle[CONFIG_I2C2] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C2]);
+        gI2cHandle[CONFIG_I2C2] = NULL;
+    }
+    i2cHandle = I2C_open(CONFIG_I2C2, &i2cParams);
+    TEST_ASSERT_NOT_NULL(i2cHandle);
+    /* Probe TMP100 */
+    status = I2C_probe(i2cHandle, Board_getSocTemperatureSensorAddr());
+    DebugP_log("TMP100 Probe = %d\r\n", status);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Read temperature register */
+    txBuffer[0] = 0x00;
+    I2C_Transaction_init(&Test_i2cTransaction);
+    Test_i2cTransaction.writeBuf     = txBuffer;
+    Test_i2cTransaction.writeCount   = 1;
+    Test_i2cTransaction.readBuf      = rxBuffer;
+    Test_i2cTransaction.readCount    = 2;
+    Test_i2cTransaction.targetAddress = Board_getSocTemperatureSensorAddr();
+
+    status = I2C_transfer(i2cHandle, &Test_i2cTransaction);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    if (status == SystemP_SUCCESS)
+    {
+        /* Create 16 bit temperature */
+        temperature = ((uint16_t)rxBuffer[0] << TEST_I2C_TMP100_SIGN_BIT_POS) | rxBuffer[1];
+        /*
+        * 4 LSBs of temperature are 0 according to datasheet
+        * since temperature is stored in 12 bits. Therefore,
+        * right shift by 4 places
+        */
+        temperature >>= TEST_I2C_TMP100_TEMP_SHIFT;
+        /*
+        * If the 12th bit of temperature is set '1' (equivalent to 8th bit of the first byte read),
+        * then we have a 2's complement negative value which needs to be sign extended
+        */
+        if (rxBuffer[0] & TEST_I2C_TMP100_SIGN_BIT)
+        {
+            temperature |= TEST_I2C_TMP100_SIGN_EXTEND_MASK;
+        }
+        /* Of the 12 bits of temperature, 4 LSBs are for decimal point according to datasheet so divide by 16 */
+        DebugP_log("[I2C2][TMP100] Temperature = %d.%d °C\r\n",
+                   temperature / TEST_I2C_TMP100_TEMP_DIV,
+                   (temperature % TEST_I2C_TMP100_TEMP_DIV) * TEST_I2C_TMP100_TEMP_FRAC_SCALE);
+    }
+
+    I2C_close(i2cHandle);
+    SemaphoreP_post(&TestI2c_TestSem);
+    TaskP_exit();
+}
+
+/**
+ * \brief Multi-threaded test: concurrent EEPROM write and temperature sensor read.
+ *
+ * Test Category: Multi-thread / Robustness
+ *
+ * Spawns two threads: one writes to EEPROM (I2C0), the other reads from a temperature sensor (I2C2).
+ * Verifies correct operation and thread safety when different I2C peripherals are accessed concurrently.
+ *
+ * \param args Unused.
+ */
+static void Test_I2c_MultithreadEepromAndTemp(void *args)
+{
+    TaskP_Params taskEeprom, taskTemp ;
+    int32_t i, status;
+
+    /* Construct counting semaphore for 2 threads */
+    status = SemaphoreP_constructCounting(&TestI2c_TestSem, 0, 2);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+
+    /* EEPROM task */
+    TaskP_Params_init(&taskEeprom);
+    taskEeprom.priority       = 3U;
+    taskEeprom.stack          = TestI2c_Task1Stack[0];
+    taskEeprom.stackSize      = TEST_I2C_MT_TASK_STACK_SIZE;
+    taskEeprom.name           = "mtEeprom";
+    taskEeprom.taskMain       = &Test_I2c_eepromTask;
+    status = TaskP_construct(&TestI2c_TaskObjsEepromTemp[0], &taskEeprom);
+    TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
+
+    TaskP_Params_init(&taskTemp);
+    taskTemp.priority       = 3U;
+    taskTemp.stack          = TestI2c_Task2Stack[0];
+    taskTemp.stackSize      = TEST_I2C_MT_TASK_STACK_SIZE;
+    taskTemp.name           = "Test_I2c_tempTask";
+    taskTemp.taskMain       = &Test_I2c_tempTask;
+    status = TaskP_construct(&TestI2c_TaskObjsEepromTemp[1], &taskTemp);
+    TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
+    /* Wait for both threads to complete */
+    for (i = 0; i < 2; i++)
+    {
+        int32_t status = SemaphoreP_pend(&TestI2c_TestSem, SystemP_WAIT_FOREVER);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    }
+
+    /* Cleanup */
+    TaskP_destruct(&TestI2c_TaskObjsEepromTemp[0]);
+    TaskP_destruct(&TestI2c_TaskObjsEepromTemp[1]);
+    SemaphoreP_destruct(&TestI2c_TestSem);
+}
+
+/**
+ * \brief Worker thread for multi-threaded I2C write test with shared I2C handle (blocking mode).
+ *
+ * Test Category: Multi-thread / Robustness
+ *
+ * Each thread writes a unique data pattern to EEPROM using a shared I2C handle (opened once in main).
+ * Validates thread safety and correct operation when sharing the I2C instance.
+ *
+ * \param arg Thread ID (as void pointer).
+ */
+static void i2c_write_worker_shared(void *arg)
+{
+    int32_t threadId = (int32_t)(int32_t)arg;
+    const uint32_t addrSize = Board_i2cGetEepromAddrSize();
+    uint8_t txBuf[2 + TEST_I2C_WRITE_ITER];
+    I2C_Transaction Test_i2cTransaction;
+    int32_t status;
+    uint32_t iter, i;
+    uint32_t baseAddr = (uint32_t)threadId * (TEST_I2C_WRITE_ITER + 8);
+
+    for (iter = 0; iter < TEST_I2C_WRITE_ITER; iter++)
+    {
+        uint32_t memAddr = baseAddr + iter * TEST_I2C_WRITE_ITER;
+
+        for (i = 0; i < TEST_I2C_WRITE_ITER; i++)
+        {
+            txBuf[addrSize + i] = (uint8_t)(0xC0 + threadId + i);
+        }
+
+        if (addrSize == 1U)
+        {
+            txBuf[0] = (uint8_t)(memAddr & 0xFFU);
+        }
+        else
+        {
+            txBuf[0] = (uint8_t)((memAddr >> 8) & 0xFFU);
+            txBuf[1] = (uint8_t)(memAddr & 0xFFU);
+        }
+
+        I2C_Transaction_init(&Test_i2cTransaction);
+        Test_i2cTransaction.targetAddress = Board_i2cGetEepromDeviceAddr();
+        Test_i2cTransaction.writeBuf = txBuf;
+        Test_i2cTransaction.writeCount = addrSize + TEST_I2C_WRITE_ITER;
+        Test_i2cTransaction.readBuf = NULL;
+        Test_i2cTransaction.readCount = 0;
+
+        status = I2C_transfer(TestI2c_SharedHandle, &Test_i2cTransaction);
+        status = Test_i2cTransaction.status;
+        if (status != SystemP_SUCCESS)
+        {
+            DebugP_log("SHARED_WRITE[%d] iter %d: FAILED status=%d\r\n", threadId, (int32_t)iter, status);
+        }
+    }
+
+    /* Signal completion */
+    SemaphoreP_post(&TestI2c_TestSem);
+    TaskP_exit();
+}
+
+/**
+ * \brief Multi-threaded I2C write test with shared I2C handle (blocking mode).
+ *
+ * Test Category: Multi-thread / Robustness
+ *
+ * Spawns multiple threads, each writing to EEPROM concurrently using a single shared I2C handle.
+ * Verifies thread safety and correct operation under concurrent access with shared instance.
+ *
+ * \param args Unused.
+ */
+static void Test_I2cMultithreadWriteTestSharedOpen(void* args)
+{
+    I2C_Params params;
+    TaskP_Params taskParams;
+    int i, status;
+    /* Construct counting semaphore for thread completion */
+    status = SemaphoreP_constructCounting(&TestI2c_TestSem, 0, TEST_I2C_WRITE_THREADS);
+    TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
+    /* Open I2C handle once */
+    I2C_Params_init(&params);
+    params.transferMode = I2C_MODE_BLOCKING;
+    if (TestI2c_SharedHandle != NULL)
+    {
+        I2C_close(TestI2c_SharedHandle);
+        TestI2c_SharedHandle = NULL;
+    }
+    TestI2c_SharedHandle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(TestI2c_SharedHandle);
+
+    /* Spawn worker threads */
+    for (i = 0; i < TEST_I2C_WRITE_THREADS; i++)
+    {
+        TaskP_Params_init(&taskParams);
+        taskParams.priority = 3;
+        taskParams.stackSize = TEST_I2C_MT_TASK_STACK_SIZE;
+        taskParams.stack     = TestI2c_Task1Stack[i];
+        taskParams.args = (void *)(int32_t)i;
+        taskParams.name = "I2C_Write_Worker";
+        taskParams.taskMain = i2c_write_worker_shared;
+
+        int32_t status = TaskP_construct(&TestI2c_TaskObjs[i], &taskParams);
+        TEST_ASSERT_EQUAL_INT32(status,SystemP_SUCCESS);
+    }
+
+    /* Wait for all threads to complete */
+    for (i = 0; i < TEST_I2C_WRITE_THREADS; i++)
+    {
+        int32_t status = SemaphoreP_pend(&TestI2c_TestSem, SystemP_WAIT_FOREVER);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    }
+
+    /* Cleanup */
+    for (i = 0; i < TEST_I2C_WRITE_THREADS; i++)
+    {
+        TaskP_destruct(&TestI2c_TaskObjs[i]);
+    }
+    SemaphoreP_destruct(&TestI2c_TestSem);
+    I2C_close(TestI2c_SharedHandle);
+}
+
+/**
+ * \brief Worker thread for multi-threaded I2C write test with shared I2C handle (callback mode).
+ *
+ * Test Category: Multi-thread / Robustness
+ *
+ * Each thread performs non-blocking I2C writes to EEPROM using a shared I2C handle (opened once in main).
+ * Validates thread safety and callback operation under concurrency with shared instance.
+ *
+ * \param arg Thread ID (as void pointer).
+ */
+static void Test_I2cWriteSharedCallBack(void *arg)
+{
+    int32_t threadId = (int32_t)(int32_t)arg;
+    const uint32_t addrSize = Board_i2cGetEepromAddrSize();
+    uint8_t txBuf[2 + TEST_I2C_WRITE_ITER];
+    I2C_Transaction Test_i2cTransaction;
+    int32_t status;
+    uint32_t iter, i;
+    uint32_t baseAddr = (uint32_t)threadId * (TEST_I2C_WRITE_ITER + 8);
+    SemaphoreP_Object SemObj;
+    for (iter = 0; iter < TEST_I2C_WRITE_ITER; iter++)
+    {
+        uint32_t memAddr = baseAddr + iter * TEST_I2C_WRITE_ITER;
+
+        for (i = 0; i < TEST_I2C_WRITE_ITER; i++)
+        {
+            txBuf[addrSize + i] = (uint8_t)(0xE0 + threadId + i);
+        }
+
+        if (addrSize == 1U)
+        {
+            txBuf[0] = (uint8_t)(memAddr & 0xFFU);
+        } else
+        {
+            txBuf[0] = (uint8_t)((memAddr >> 8) & 0xFFU);
+            txBuf[1] = (uint8_t)(memAddr & 0xFFU);
+        }
+
+        I2C_Transaction_init(&Test_i2cTransaction);
+        Test_i2cTransaction.targetAddress = Board_i2cGetEepromDeviceAddr();
+        Test_i2cTransaction.writeBuf = txBuf;
+        Test_i2cTransaction.writeCount = addrSize + TEST_I2C_WRITE_ITER;
+        Test_i2cTransaction.readBuf = NULL;
+        Test_i2cTransaction.readCount = 0;
+
+        SemaphoreP_constructBinary(&SemObj, 0);
+        Test_i2cTransaction.arg = (void *)&SemObj;
+
+        DebugP_log("CB_SHARED_WRITE[%d] iter %d: I2C_transfer(addr=0x%04X, len=%u)\r\n",
+                   threadId, (int32_t)iter, (unsigned)memAddr, Test_i2cTransaction.writeCount);
+
+        status = I2C_transfer(TestI2c_SharedHandle, &Test_i2cTransaction);
+        TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+        if (status != SystemP_SUCCESS)
+        {
+            DebugP_log("CB_SHARED_WRITE[%d] iter %d: enqueue FAILED status=%d\r\n", threadId, (int32_t)iter, status);
+        }
+        else
+        {
+            /* Wait for callback to signal completion */
+            status = SemaphoreP_pend(&SemObj, SystemP_WAIT_FOREVER);
+            if (status != SystemP_SUCCESS)
+            {
+                DebugP_log("CB_SHARED_WRITE[%d] iter %d: SemaphoreP_pend failed status=%d\r\n", threadId, (int32_t)iter, status);
+            }
+        }
+        SemaphoreP_destruct(&SemObj);
+    }
+    SemaphoreP_post(&TestI2c_TestSem);
+    TaskP_exit();
+}
+
+/**
+ * \brief Multi-threaded I2C write test with shared I2C handle (callback mode).
+ *
+ * Test Category: Multi-thread / Robustness
+ *
+ * Spawns multiple threads, each performing non-blocking I2C writes to EEPROM using a single shared I2C handle.
+ * Verifies thread safety and correct callback operation under concurrent access with shared instance.
+ *
+ * \param args Unused.
+ */
+static void Test_I2c_MultithreadWriteTestSharedOpenCb(void *args)
+{
+    I2C_Params params;
+    TaskP_Params taskParams;
+    int32_t status;
+    uint32_t i;
+
+    /* Construct counting semaphore */
+    status = SemaphoreP_constructCounting(&TestI2c_TestSem, 0, TEST_I2C_WRITE_THREADS);
+    TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
+
+    /* Open shared I2C handle (callback mode) */
+    I2C_Params_init(&params);
+    params.transferMode = I2C_MODE_CALLBACK;
+    params.transferCallbackFxn = &test_i2c_callback;
+
+    if (TestI2c_SharedHandle != NULL)
+    {
+        I2C_close(TestI2c_SharedHandle);
+    }
+    TestI2c_SharedHandle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(TestI2c_SharedHandle);
+
+    DebugP_log("Starting I2C multithread shared write (callback mode)\r\n");
+
+    /* Create worker tasks */
+    for (i = 0; i < TEST_I2C_WRITE_THREADS; i++)
+    {
+        TaskP_Params_init(&taskParams);
+        taskParams.priority  = 3U;
+        taskParams.stack     = TestI2c_Task1Stack[i];
+        taskParams.stackSize = TEST_I2C_MT_TASK_STACK_SIZE;
+        taskParams.args      = (void *)(int32_t)i;
+        taskParams.taskMain  = &Test_I2cWriteSharedCallBack;
+        taskParams.name      = "I2C_CB_Thread";
+
+        status = TaskP_construct(&TestI2c_TaskObjs[i], &taskParams);
+        TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
+    }
+
+    /* Wait for all threads to finish */
+    for (i = 0; i < TEST_I2C_WRITE_THREADS; i++)
+    {
+        SemaphoreP_pend(&TestI2c_TestSem, SystemP_WAIT_FOREVER);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    }
+
+    DebugP_log("All I2C callback threads completed.\r\n");
+
+    /* Cleanup */
+    for (i = 0; i < TEST_I2C_WRITE_THREADS; i++)
+    {
+        TaskP_destruct(&TestI2c_TaskObjs[i]);
+    }
+
+    I2C_close(TestI2c_SharedHandle);
+    TestI2c_SharedHandle = NULL;
+    SemaphoreP_destruct(&TestI2c_TestSem);
+}
+#endif
+#if defined(SOC_AM62DX)
+static void Test_I2cmultiThreadEeprom_sharedHnadle(void *arg)
+{
+    uint8_t txBuf[8], rxBuf[8];
+    I2C_Transaction Test_i2cTransaction;
+    int32_t status;
+
+    /* Prepare data */
+    txBuf[0] = 0x00;
+    txBuf[1] = 0x10;
+    txBuf[2] = 0xAB;
+    memset(rxBuf, 0, sizeof(rxBuf));
+
+    /* Write */
+    I2C_Transaction_init(&Test_i2cTransaction);
+    Test_i2cTransaction.writeBuf = txBuf;
+    Test_i2cTransaction.writeCount = 3;
+    Test_i2cTransaction.readBuf = NULL;
+    Test_i2cTransaction.readCount = 0;
+    Test_i2cTransaction.targetAddress = Board_i2cGetEepromDeviceAddr();
+
+    status = I2C_transfer(TestI2c_SharedHandle, &Test_i2cTransaction);
+    if (status != SystemP_SUCCESS)
+    {
+        DebugP_log("mtEeprom: I2C_write failed: %d\n", status);
+    }
+    TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
+    /* Allow EEPROM write cycle to finish */
+    ClockP_usleep(5000);
+
+    /* Signal completion to test harness */
+    SemaphoreP_post(&TestI2c_TestSem);
+    TaskP_exit();
+}
+
+static void Test_I2cmultiThreadTempSharedHandle(void *arg)
+{
+    I2C_Transaction Test_i2cTransaction;
+    uint8_t txBuffer[1];
+    uint8_t rxBuffer[2];
+    int16_t temperature;
+    int32_t status;
+
+    /* Probe TMP100 */
+    status = I2C_probe(TestI2c_SharedHandle, Board_getSocTemperatureSensorAddr());
+    DebugP_log("TMP100 Probe = %d\r\n", status);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Read temperature register */
+    txBuffer[0] = 0x00;
+    I2C_Transaction_init(&Test_i2cTransaction);
+    Test_i2cTransaction.writeBuf     = txBuffer;
+    Test_i2cTransaction.writeCount   = 1;
+    Test_i2cTransaction.readBuf      = rxBuffer;
+    Test_i2cTransaction.readCount    = 2;
+    Test_i2cTransaction.targetAddress = Board_getSocTemperatureSensorAddr();
+
+    status = I2C_transfer(TestI2c_SharedHandle, &Test_i2cTransaction);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    if (status == SystemP_SUCCESS)
+    {
+        /* Create 16 bit temperature */
+        temperature = ((uint16_t)rxBuffer[0] << TEST_I2C_TMP100_SIGN_BIT_POS) | rxBuffer[1];
+        /*
+        * 4 LSBs of temperature are 0 according to datasheet
+        * since temperature is stored in 12 bits. Therefore,
+        * right shift by 4 places
+        */
+        temperature >>= TEST_I2C_TMP100_TEMP_SHIFT;
+        /*
+        * If the 12th bit of temperature is set '1' (equivalent to 8th bit of the first byte read),
+        * then we have a 2's complement negative value which needs to be sign extended
+        */
+        if (rxBuffer[0] & TEST_I2C_TMP100_SIGN_BIT)
+        {
+            temperature |= TEST_I2C_TMP100_SIGN_EXTEND_MASK;
+        }
+        /* Of the 12 bits of temperature, 4 LSBs are for decimal point according to datasheet so divide by 16 */
+        DebugP_log("[I2C2][TMP100] Temperature = %d.%d °C\r\n",
+                   temperature / TEST_I2C_TMP100_TEMP_DIV,
+                   (temperature % TEST_I2C_TMP100_TEMP_DIV) * TEST_I2C_TMP100_TEMP_FRAC_SCALE);
+    }
+    TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
+    SemaphoreP_post(&TestI2c_TestSem);
+    TaskP_exit();
+}
+
+/**
+ * \brief Multi-threaded test: shared I2C handle with EEPROM and temperature sensor access.
+ *
+ * Test Category: Multi-thread / Robustness
+ *
+ * Spawns two threads: one accesses EEPROM, the other accesses a temperature sensor, both using
+ * the same shared I2C handle. Verifies correct operation and thread safety when multiple
+ * peripherals are accessed concurrently via a single I2C instance.
+ *
+ * \param args Unused.
+ */
+static void Test_I2c_MultithreadSharedEepromTemp(void *args)
+{
+
+    int32_t loopVar, status;
+    TaskP_Params taskEeprom, taskTemp;
+    status =  SemaphoreP_constructCounting(&TestI2c_TestSem, 0, 2);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+    I2C_Params params;
+    I2C_Params_init(&params);
+    params.transferMode = I2C_MODE_BLOCKING;
+    if (TestI2c_SharedHandle != NULL)
+    {
+        I2C_close(TestI2c_SharedHandle);
+        TestI2c_SharedHandle = NULL;
+    }
+    TestI2c_SharedHandle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(TestI2c_SharedHandle);
+
+    TaskP_Params_init(&taskEeprom);
+    taskEeprom.priority       = 3U;
+    taskEeprom.stack          = TestI2c_Task1Stack[0];
+    taskEeprom.stackSize      = TEST_I2C_MT_TASK_STACK_SIZE;
+    taskEeprom.name           = "mtEeprom";
+    taskEeprom.taskMain       = &Test_I2cmultiThreadEeprom_sharedHnadle;
+
+    status = TaskP_construct(&TestI2c_TaskObjsEepromTemp[0], &taskEeprom);
+    TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
+
+    TaskP_Params_init(&taskTemp);
+    taskTemp.priority       = 3U;
+    taskTemp.stack          = TestI2c_Task2Stack[0];
+    taskTemp.stackSize      = TEST_I2C_MT_TASK_STACK_SIZE;
+    taskTemp.name           = "taskTemp";
+    taskTemp.taskMain       = &Test_I2cmultiThreadTempSharedHandle;
+
+    status = TaskP_construct(&TestI2c_TaskObjsEepromTemp[1], &taskTemp);
+    TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
+
+    for(loopVar = 0; loopVar < 2; loopVar++)
+    {
+        status = SemaphoreP_pend(&TestI2c_TestSem, SystemP_WAIT_FOREVER);
+        TEST_ASSERT_EQUAL_INT32(status, SystemP_SUCCESS);
+    }
+
+    TaskP_destruct(&TestI2c_TaskObjsEepromTemp[0]);
+    TaskP_destruct(&TestI2c_TaskObjsEepromTemp[1]);
+    SemaphoreP_destruct(&TestI2c_TestSem);
+    I2C_close(TestI2c_SharedHandle);
+}
+#endif
+#endif
 
 static void test_i2c_dynamic_coverage(void* args)
 {
@@ -1686,4 +3080,1111 @@ static void test_i2c_dynamic_coverage(void* args)
 
     retVal = test_i2c_handle_errors();
     TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
+
+}
+
+/**
+ * \brief Fuzz test for opening and closing I2C driver with random parameters.
+ *
+ * Test Category: Negative test case
+ *
+ * This function performs a fuzz test on the I2C driver by randomly opening and closing
+ * I2C instances. It is intended to validate the robustness of the driver against
+ * unexpected or invalid input scenarios.
+ *
+ * \param args Pointer to arguments for the fuzz test, typically containing random seed or configuration.
+ */
+void Test_I2c_OpenCloseFuzzRand(void *args)
+{
+    I2C_Params i2cParams;
+    I2C_Handle handle;
+    int32_t i;
+    DebugP_log("Starting I2C fuzz test (open/close + NULL cases)\r\n");
+
+    for (i = 0; i < TEST_I2C_FUZZ_ITERATIONS; i++)
+    {
+        I2C_Params_init(&i2cParams);
+
+        i2cParams.transferMode = (rand() % 2 == 0) ? I2C_MODE_BLOCKING : I2C_MODE_CALLBACK;
+        i2cParams.bitRate = (rand() % 2 == 0) ? I2C_100KHZ : I2C_400KHZ;
+
+        handle = I2C_open(CONFIG_I2C0, &i2cParams);
+        TEST_ASSERT_NOT_NULL(handle);
+        DebugP_log(" Open succeeded. Closing handle...\r\n");
+        I2C_close(handle);
+        DebugP_log(" Close succeeded.\r\n");
+    }
+}
+
+ #if (defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62X)) && defined(ENABLE_TARGET_EXTERNAL_LOOPBACK)
+ static void test_i2c_targetCallback(I2C_Handle handle,I2C_Transaction *msg,int32_t transferStatus)
+{
+
+    if (msg && msg->arg != NULL)
+    {
+        SemaphoreP_post((SemaphoreP_Object*)msg->arg);
+    }
+}
+
+/**
+ * \brief Executes a sequence of write operations in I2C target mode for testing purposes.
+ *
+ * Test Category: Functionality
+ *
+ * This function is designed to test the I2C peripheral operating in target mode.
+ * It performs a series of write transactions, simulating data reception from an I2C controller.
+ * The function may validate received data, handle protocol events, and ensure correct target mode behavior.
+ *
+ * \param args Pointer to arguments or configuration data required for the test sequence.
+ */
+static void Test_I2c_TargetModeWriteSeq(void* args)
+{
+    I2C_Params params;
+    I2C_Handle targetHandle, hostControllerHandle;
+    I2C_Transaction txnTarget, txnhostController;
+    int32_t status, i;
+
+    SemaphoreP_constructBinary(&TestI2c_TargetSem, 0);
+    /* Setup Target mode */
+    I2C_Params_init(&params);
+    params.transferMode = I2C_MODE_CALLBACK;
+    params.transferCallbackFxn = &test_i2c_targetCallback;
+    if (gI2cHandle[CONFIG_I2C1] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C1]);
+        gI2cHandle[CONFIG_I2C1] = NULL;
+    }
+    targetHandle = I2C_open(CONFIG_I2C1, &params);
+    DebugP_assert(targetHandle != NULL);
+
+    I2C_Transaction_init(&txnTarget);
+    txnTarget.controllerMode = false;
+    txnTarget.readBuf    = TestI2c_targetRxBuf;       /* receive buffer */
+    txnTarget.readCount  = sizeof(TestI2c_targetRxBuf);
+    txnTarget.writeBuf   = NULL;              /* not writing to controller */
+    txnTarget.writeCount = 0;
+    txnTarget.arg        = &TestI2c_TargetSem;
+
+    status = I2C_transfer(targetHandle, &txnTarget);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Setup controller */
+    I2C_Params_init(&params);
+    if (gI2cHandle[CONFIG_I2C0] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C0]);
+        gI2cHandle[CONFIG_I2C0] = NULL;
+    }
+    hostControllerHandle = I2C_open(CONFIG_I2C0, &params);
+    DebugP_assert(hostControllerHandle != NULL);
+
+    for (i = 0; i < sizeof(TestI2c_controllerTxBuf); i++)
+    {
+        TestI2c_controllerTxBuf[i] = (uint8_t)(i + 0x10);  /* Example pattern */
+    }
+
+    /* controller write */
+    I2C_Transaction_init(&txnhostController);
+    txnhostController.writeBuf   = TestI2c_controllerTxBuf;
+    txnhostController.writeCount = sizeof(TestI2c_controllerTxBuf);
+    txnhostController.readBuf    = NULL;
+    txnhostController.readCount  = 0;
+    txnhostController.targetAddress = 0x10;
+
+    status = I2C_transfer(hostControllerHandle, &txnhostController);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = SemaphoreP_pend(&TestI2c_TargetSem, 1000);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    SemaphoreP_destruct(&TestI2c_TargetSem);
+    DebugP_log("Target received first byte = 0x%02X\r\n", TestI2c_targetRxBuf[0]);
+
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(TestI2c_controllerTxBuf, TestI2c_targetRxBuf, sizeof(TestI2c_controllerTxBuf));
+    I2C_close(hostControllerHandle);
+    I2C_close(targetHandle);
+}
+
+/**
+ * \brief Executes a combined write-read operation in I2C target mode for testing purposes.
+ *
+ * Test Category: Functionality
+ *
+ * This function performs a sequence where data is first written to the I2C target,
+ * followed by a read operation. It is used to validate the correct behavior of the
+ * I2C driver in target mode when handling combined transactions.
+ *
+ * \param args Pointer to arguments required for the test, typically including configuration
+ *             and data buffers for the write and read operations.
+ */
+static void Test_I2c_TargetModeCombinedWriteRead(void *args)
+{
+    I2C_Params params;
+    I2C_Handle targetHandle, hostControllerHandle;
+    I2C_Transaction txnTarget, txnhostController;
+    SemaphoreP_Object sem;
+    int32_t status;
+
+    /* Binary semaphore for callback sync */
+    SemaphoreP_constructBinary(&sem, 0);
+
+    /* -------- Target setup -------- */
+    I2C_Params_init(&params);
+    params.transferMode = I2C_MODE_CALLBACK;
+    params.transferCallbackFxn = &test_i2c_targetCallback;
+
+    if (gI2cHandle[CONFIG_I2C1] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C1]);
+        gI2cHandle[CONFIG_I2C1] = NULL;
+    }
+    targetHandle = I2C_open(CONFIG_I2C1, &params);
+    TEST_ASSERT_NOT_NULL(targetHandle);
+
+    /* Prepare target transaction */
+    I2C_Transaction_init(&txnTarget);
+    txnTarget.controllerMode = false;
+    txnTarget.readBuf = TestI2c_targetRxBuf;      /* Receive buffer */
+    txnTarget.readCount = sizeof(TestI2c_targetRxBuf);
+    txnTarget.writeBuf = TestI2c_targetTxBuf;     /* Data to send back on repeated start */
+    txnTarget.writeCount = 2;             /* controller will read back 2 bytes */
+    txnTarget.arg = &sem;
+
+    TestI2c_targetTxBuf[0] = 0xDE;
+    TestI2c_targetTxBuf[1] = 0xAD;
+
+    status = I2C_transfer(targetHandle, &txnTarget);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* -------- controller (controller) setup -------- */
+    I2C_Params_init(&params);
+    if (gI2cHandle[CONFIG_I2C0] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C0]);
+        gI2cHandle[CONFIG_I2C0] = NULL;
+    }
+    hostControllerHandle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(hostControllerHandle);
+
+    /* Combined transaction: write + repeated start + read */
+    TestI2c_controllerTxBuf[0] = 0xBB;
+    I2C_Transaction_init(&txnhostController);
+    txnhostController.writeBuf   = TestI2c_controllerTxBuf;   /* First write 1 byte */
+    txnhostController.writeCount = 1;
+    txnhostController.readBuf    = TestI2c_controllerRxBuf;   /* Then read 2 bytes */
+    txnhostController.readCount  = 2;
+    txnhostController.targetAddress = 0x10;
+
+    status = I2C_transfer(hostControllerHandle, &txnhostController);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = SemaphoreP_pend(&sem, 1000);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    DebugP_log("Target received first byte = 0x%02X\r\n", TestI2c_targetRxBuf[0]);
+    DebugP_log("controller received bytes: 0x%02X 0x%02X\r\n",
+               TestI2c_controllerRxBuf[0], TestI2c_controllerRxBuf[1]);
+
+    TEST_ASSERT_EQUAL_HEX8(TestI2c_controllerTxBuf[0], TestI2c_targetRxBuf[0]);   /* Target saw BB */
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(TestI2c_targetTxBuf, TestI2c_controllerRxBuf, 2); /* controller saw DE AD */
+    I2C_close(hostControllerHandle);
+    I2C_close(targetHandle);
+    SemaphoreP_destruct(&sem);
+}
+
+/**
+ * \brief Executes an I2C target mode test where the controller reads data from the target.
+ *
+ * Test Category: Functionality
+ *
+ * This function performs a test scenario in which the I2C peripheral operates in target mode,
+ * and a controller device initiates a read operation to receive data from the target. The function
+ * is intended to validate the correct behavior of the I2C driver in target mode during controller read transactions.
+ *
+ * \param args Pointer to arguments required for the test execution.
+ */
+static void Test_I2c_TargetModehostControllerRead(void *args)
+{
+    I2C_Params params;
+    I2C_Handle targetHandle, hostControllerHandle;
+    I2C_Transaction txnTarget, txnhostController;
+    SemaphoreP_Object sem;
+    int32_t status;
+
+    SemaphoreP_constructBinary(&sem, 0);
+    if (gI2cHandle[CONFIG_I2C1] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C1]);
+        gI2cHandle[CONFIG_I2C1] = NULL;
+    }
+    /* Target setup with TX buffer */
+    I2C_Params_init(&params);
+    params.transferMode = I2C_MODE_CALLBACK;
+    params.transferCallbackFxn = &test_i2c_targetCallback;
+    targetHandle = I2C_open(CONFIG_I2C1, &params);
+    TEST_ASSERT_NOT_NULL(targetHandle);
+
+    TestI2c_targetTxBuf[0] = 0xDE;
+    TestI2c_targetTxBuf[1] = 0xAD;
+
+    I2C_Transaction_init(&txnTarget);
+    txnTarget.controllerMode = false;
+    txnTarget.writeBuf   = TestI2c_targetTxBuf;   /* data to send to controller */
+    txnTarget.writeCount = 2;
+    txnTarget.readBuf    = NULL;
+    txnTarget.readCount  = 0;
+    txnTarget.arg        = &sem;
+
+    status = I2C_transfer(targetHandle, &txnTarget);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* controller setup to read */
+    I2C_Params_init(&params);
+    if (gI2cHandle[CONFIG_I2C0] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C0]);
+        gI2cHandle[CONFIG_I2C0] = NULL;
+    }
+    hostControllerHandle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(hostControllerHandle);
+
+    I2C_Transaction_init(&txnhostController);
+    txnhostController.writeBuf   = NULL;
+    txnhostController.writeCount = 0;
+    txnhostController.readBuf    = TestI2c_controllerRxBuf;
+    txnhostController.readCount  = 2;
+    txnhostController.targetAddress = 0x10;
+
+    status = I2C_transfer(hostControllerHandle, &txnhostController);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = SemaphoreP_pend(&sem, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Validate controller received */
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(TestI2c_targetTxBuf, TestI2c_controllerRxBuf, 2);
+    I2C_close(hostControllerHandle);
+    I2C_close(targetHandle);
+    SemaphoreP_destruct(&sem);
+}
+
+/**
+ * \brief Test I2C target XRDY overrun condition.
+ *
+ * Test Category: Negative Test Case
+ *
+ * This function tests the behavior when the controller requests more bytes than the target can provide.
+ *
+ * \param args Pointer to arguments for the test.
+ */
+static void Test_I2c_Target_XrdyOverrun(void *args)
+{
+    I2C_Params params;
+    I2C_Handle targetHandle, hostControllerHandle;
+    I2C_Transaction txnTarget, txnhostController;
+    SemaphoreP_Object sem;
+    int32_t status;
+
+    SemaphoreP_constructBinary(&sem, 0);
+
+    /* Setup Target */
+    I2C_Params_init(&params);
+    params.transferMode = I2C_MODE_CALLBACK;
+    params.transferCallbackFxn = &test_i2c_targetCallback;
+    if (gI2cHandle[CONFIG_I2C1] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C1]);
+        gI2cHandle[CONFIG_I2C1] = NULL;
+    }
+    targetHandle = I2C_open(CONFIG_I2C1, &params);
+    TEST_ASSERT_NOT_NULL(targetHandle);
+
+    /* Prepare Target transaction: only 1 byte available */
+    I2C_Transaction_init(&txnTarget);
+    txnTarget.controllerMode = false;
+    txnTarget.readBuf = NULL;
+    txnTarget.readCount = 0;
+    txnTarget.writeBuf = TestI2c_targetTxBuf;
+    txnTarget.writeCount = 1;   /* only 1 byte available */
+    txnTarget.arg = &sem;
+    TestI2c_targetTxBuf[0] = 0xDE;
+
+    status = I2C_transfer(targetHandle, &txnTarget);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Setup controller (controller) */
+    I2C_Params_init(&params);
+
+    if (gI2cHandle[CONFIG_I2C0] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C0]);
+        gI2cHandle[CONFIG_I2C0] = NULL;
+    }
+    hostControllerHandle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(hostControllerHandle);
+
+    /* controller requests MORE bytes than target has */
+    I2C_Transaction_init(&txnhostController);
+    txnhostController.writeBuf = NULL;
+    txnhostController.writeCount = 0;
+    txnhostController.readBuf = TestI2c_controllerRxBuf;
+    txnhostController.readCount = 4;          /* request 2 bytes */
+    txnhostController.targetAddress = 0x10;
+
+    status = I2C_transfer(hostControllerHandle, &txnhostController);
+
+    /* Wait for callback */
+    status = SemaphoreP_pend(&sem, 100); /* 100 ms timeout */
+    if (status != SystemP_SUCCESS)
+    {
+        DebugP_log("XRDY overrun: No callback (expected for underrun)\n");
+        /* Do not fail the test */
+    }
+    else
+    {
+        TEST_ASSERT_EQUAL_UINT8(0xDE, TestI2c_controllerRxBuf[0]);
+	}
+
+    I2C_close(hostControllerHandle);
+    I2C_close(targetHandle);
+    SemaphoreP_destruct(&sem);
+}
+
+/**
+ * \brief Test I2C target RRDY underrun condition.
+ *
+ * Test Category: Negative Test Case
+ *
+ * This function tests the behavior when the controller writes more bytes than the target can receive.
+ *
+ * \param args Pointer to arguments for the test.
+ */
+static void Test_I2c_Target_RrdyUnderrun(void *args)
+{
+    I2C_Params params;
+    I2C_Handle targetHandle, hostControllerHandle;
+    I2C_Transaction txnTarget, txnhostController;
+    SemaphoreP_Object sem;
+    int32_t status, i;
+
+    SemaphoreP_constructBinary(&sem, 0);
+
+    /* Setup Target  */
+    I2C_Params_init(&params);
+    params.transferMode = I2C_MODE_CALLBACK;
+    params.transferCallbackFxn = &test_i2c_targetCallback;
+    if (gI2cHandle[CONFIG_I2C1] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C1]);
+        gI2cHandle[CONFIG_I2C1] = NULL;
+    }
+    targetHandle = I2C_open(CONFIG_I2C1, &params);
+    TEST_ASSERT_NOT_NULL(targetHandle);
+
+    /* Prepare Target transaction: only 1 byte buffer for RX */
+    I2C_Transaction_init(&txnTarget);
+    txnTarget.controllerMode = false;
+    txnTarget.readBuf = TestI2c_targetRxBuf;
+    txnTarget.readCount = 1;   /* Only 1 byte can be received */
+    txnTarget.writeBuf = NULL;
+    txnTarget.writeCount = 0;
+    txnTarget.arg = &sem;
+
+    status = I2C_transfer(targetHandle, &txnTarget);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Setup controller (controller) */
+    I2C_Params_init(&params);
+    if (gI2cHandle[CONFIG_I2C0] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C0]);
+        gI2cHandle[CONFIG_I2C0] = NULL;
+    }
+    hostControllerHandle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(hostControllerHandle);
+
+    /* controller writes MORE bytes than target can receive */
+    I2C_Transaction_init(&txnhostController);
+    txnhostController.writeBuf = TestI2c_controllerTxBuf;
+    txnhostController.writeCount = 4;  /* Send 4 bytes, but target only has space for 1 */
+    txnhostController.readBuf = NULL;
+    txnhostController.readCount = 0;
+    txnhostController.targetAddress = 0x10;
+    for (i = 0; i < 4; i++) TestI2c_controllerTxBuf[i] = 0xA0 + i;
+
+    status = I2C_transfer(hostControllerHandle, &txnhostController);
+    /* Wait for callback */
+    status = SemaphoreP_pend(&sem, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Only the first byte should be received by the target */
+    TEST_ASSERT_EQUAL_UINT8(TestI2c_controllerTxBuf[0], TestI2c_targetRxBuf[0]);
+
+    I2C_close(hostControllerHandle);
+    I2C_close(targetHandle);
+
+    SemaphoreP_destruct(&sem);
+}
+
+/**
+ * \brief Test I2C target with multiple controller reads in sequence.
+ *
+ * Test Category: Functionality
+ *
+ * This function validates that the target can handle multiple sequential controller read operations.
+ *
+ * \param args Pointer to arguments for the test.
+ */
+static void Test_I2c_Target_MultiplehostControllerReads(void *args)
+{
+    I2C_Params params;
+    I2C_Handle targetHandle, hostControllerHandle;
+    I2C_Transaction txnTarget, txnhostController;
+    SemaphoreP_Object sem;
+    int32_t status, cycle,i;
+    const int32_t num_cycles = 5;
+    const int32_t bytesPerCycle = 4;
+
+    SemaphoreP_constructBinary(&sem, 0);
+
+    /* Target setup */
+    I2C_Params_init(&params);
+    params.transferMode = I2C_MODE_CALLBACK;
+    params.transferCallbackFxn = &test_i2c_targetCallback;
+    if (gI2cHandle[CONFIG_I2C1] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C1]);
+        gI2cHandle[CONFIG_I2C1] = NULL;
+    }
+    targetHandle = I2C_open(CONFIG_I2C1, &params);
+    TEST_ASSERT_NOT_NULL(targetHandle);
+
+    /* controller setup */
+    I2C_Params_init(&params);
+    if (gI2cHandle[CONFIG_I2C0] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C0]);
+        gI2cHandle[CONFIG_I2C0] = NULL;
+    }
+    hostControllerHandle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(hostControllerHandle);
+
+    for (cycle = 0; cycle < num_cycles; cycle++)
+    {
+        /* Prepare target data for this cycle */
+        for (i = 0; i < bytesPerCycle; i++)
+        {
+            TestI2c_targetTxBuf[i] = 0x30 + cycle * 10 + i;
+        }
+        I2C_Transaction_init(&txnTarget);
+        txnTarget.controllerMode = false;
+        txnTarget.readBuf = NULL;
+        txnTarget.readCount = 0;
+        txnTarget.writeBuf = TestI2c_targetTxBuf;
+        txnTarget.writeCount = bytesPerCycle;
+        txnTarget.arg = &sem;
+
+        status = I2C_transfer(targetHandle, &txnTarget);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+        /* controller reads bytesPerCycle bytes */
+        I2C_Transaction_init(&txnhostController);
+        txnhostController.writeBuf = NULL;
+        txnhostController.writeCount = 0;
+        txnhostController.readBuf = TestI2c_controllerRxBuf;
+        txnhostController.readCount = bytesPerCycle;
+        txnhostController.targetAddress = 0x10;
+
+        status = I2C_transfer(hostControllerHandle, &txnhostController);
+
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+        /* Wait for target callback */
+        status = SemaphoreP_pend(&sem, SystemP_WAIT_FOREVER);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+        /* Validate controller received correct data */
+        TEST_ASSERT_EQUAL_UINT8_ARRAY(TestI2c_targetTxBuf, TestI2c_controllerRxBuf, bytesPerCycle);
+
+        DebugP_log("Cycle %d: controller received:", cycle);
+        for (i = 0; i < bytesPerCycle; i++)
+            DebugP_log(" 0x%02X", TestI2c_controllerRxBuf[i]);
+                DebugP_log("\n");
+    }
+    I2C_close(hostControllerHandle);
+    I2C_close(targetHandle);
+    SemaphoreP_destruct(&sem);
+}
+
+/**
+ * \brief Target mode with 10-bit addressing.
+ *
+ * Test Category: Functionality
+ *
+ * This test validates target mode operation with 10-bit addressing.
+ *
+ * \param args Pointer to arguments for the test.
+ */
+static void Test_I2c_TargetModehostControllerRead10bit(void *args)
+{
+    I2C_Params params;
+    I2C_Handle targetHandle, hostControllerHandle;
+    I2C_Transaction txnTarget, txnhostController;
+    SemaphoreP_Object sem;
+    int32_t status;
+    uint8_t TestI2c_targetTxBuf[2] = {0xDE, 0xAD};
+    uint8_t TestI2c_controllerRxBuf[2] = {0};
+
+    SemaphoreP_constructBinary(&sem, 0);
+    if (gI2cHandle[CONFIG_I2C0] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C0]);
+        gI2cHandle[CONFIG_I2C0] = NULL;
+    }
+    /* Target setup (10-bit address) */
+    I2C_Params_init(&params);
+    params.transferMode = I2C_MODE_CALLBACK;
+    params.transferCallbackFxn = &test_i2c_targetCallback;
+    targetHandle = I2C_open(CONFIG_I2C1, &params);
+    TEST_ASSERT_NOT_NULL(targetHandle);
+
+    I2C_Transaction_init(&txnTarget);
+    txnTarget.controllerMode = false;
+    txnTarget.writeBuf = TestI2c_targetTxBuf;
+    txnTarget.writeCount = 2;
+    txnTarget.readBuf = NULL;
+    txnTarget.readCount = 0;
+    txnTarget.expandSA = true; /* 10-bit addressing */
+    txnTarget.arg = &sem;
+
+    status = I2C_transfer(targetHandle, &txnTarget);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* controller setup (10-bit address) */
+    if (gI2cHandle[CONFIG_I2C1] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C1]);
+        gI2cHandle[CONFIG_I2C1] = NULL;
+    }
+    I2C_Params_init(&params);
+    hostControllerHandle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(hostControllerHandle);
+
+    I2C_Transaction_init(&txnhostController);
+    txnhostController.writeBuf = NULL;
+    txnhostController.writeCount = 0;
+    txnhostController.readBuf = TestI2c_controllerRxBuf;
+    txnhostController.readCount = 2;
+    txnhostController.targetAddress = 0x10;
+    txnhostController.expandSA = true; /* 10-bit addressing */
+
+    status = I2C_transfer(hostControllerHandle, &txnhostController);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = SemaphoreP_pend(&sem, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(TestI2c_targetTxBuf, TestI2c_controllerRxBuf, 2);
+
+    I2C_close(hostControllerHandle);
+    I2C_close(targetHandle);
+
+    SemaphoreP_destruct(&sem);
+}
+
+/**
+ * \brief Target mode with High-Speed (HS) mode.
+ *
+ * Test Category: Functionality
+ *
+ * This test validates target mode operation in High-Speed (HS) mode.
+ *
+ * \param args Pointer to arguments for the test.
+ */
+static void Test_I2c_TargetModehostControllerReadHs(void *args)
+{
+    I2C_Params params;
+    I2C_Handle targetHandle, hostControllerHandle;
+    I2C_Transaction txnTarget, txnhostController;
+    SemaphoreP_Object sem;
+    int32_t status;
+    uint8_t TestI2c_targetTxBuf[4] = {0xB1, 0xB2, 0xB3, 0xB4};
+    uint8_t TestI2c_controllerRxBuf[4] = {0};
+
+    SemaphoreP_constructBinary(&sem, 0);
+    if (gI2cHandle[CONFIG_I2C0] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C0]);
+        gI2cHandle[CONFIG_I2C0] = NULL;
+    }
+
+    /* Target setup */
+    I2C_Params_init(&params);
+    params.transferMode = I2C_MODE_CALLBACK;
+    params.transferCallbackFxn = &test_i2c_targetCallback;
+    params.bitRate = I2C_1P0MHZ;
+    targetHandle = I2C_open(CONFIG_I2C1, &params);
+    TEST_ASSERT_NOT_NULL(targetHandle);
+
+    I2C_Transaction_init(&txnTarget);
+    txnTarget.controllerMode = false;
+    txnTarget.writeBuf = TestI2c_targetTxBuf;
+    txnTarget.writeCount = sizeof(TestI2c_targetTxBuf);
+    txnTarget.readBuf = NULL;
+    txnTarget.readCount = 0;
+    txnTarget.arg = &sem;
+
+    status = I2C_transfer(targetHandle, &txnTarget);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* controller setup (HS mode) */
+    I2C_Params_init(&params);
+    params.bitRate = I2C_1P0MHZ;
+    if (gI2cHandle[CONFIG_I2C1] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C1]);
+        gI2cHandle[CONFIG_I2C1] = NULL;
+    }
+    hostControllerHandle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(hostControllerHandle);
+
+    I2C_Transaction_init(&txnhostController);
+    txnhostController.writeBuf = NULL;
+    txnhostController.writeCount = 0;
+    txnhostController.readBuf = TestI2c_controllerRxBuf;
+    txnhostController.readCount = sizeof(TestI2c_controllerRxBuf);
+    txnhostController.targetAddress = 0x10;
+
+    status = I2C_transfer(hostControllerHandle, &txnhostController);
+    I2C_close(hostControllerHandle);
+    I2C_close(targetHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = SemaphoreP_pend(&sem, 1000);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(TestI2c_targetTxBuf, TestI2c_controllerRxBuf, sizeof(TestI2c_targetTxBuf));
+
+
+    SemaphoreP_destruct(&sem);
+}
+
+
+/**
+ * \brief Test I2C mem_primeTransfer in target mode via transfer API.
+ *
+ * Test Category: Negative Test Case
+ *
+ * This function tests that mem_primeTransfer returns failure when called in target mode.
+ *
+ * \param args Pointer to arguments for the test.
+ */
+static void Test_I2c_Mem_PrimeTransferTargetModeViaTransfer(void *args)
+{
+    I2C_Params params;
+    I2C_Handle handle;
+    I2C_Transaction Test_i2cTransaction;
+    int32_t status;
+
+    /* Open I2C normally */
+    I2C_Params_init(&params);
+    I2C_close(gI2cHandle[CONFIG_I2C1]);
+    gI2cHandle[CONFIG_I2C1] = NULL;
+    handle = I2C_open(CONFIG_I2C1, &params);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    /* Prepare a transaction in target mode (controllerMode = false) with memTxnEnable = true */
+    I2C_Transaction_init(&Test_i2cTransaction);
+    Test_i2cTransaction.controllerMode = false;
+    Test_i2cTransaction.memTxnEnable = true;
+    Test_i2cTransaction.memTransaction = NULL;
+
+    /* Call I2C_transfer, which will call I2C_mem_primeTransfer internally */
+    status = I2C_transfer(handle, &Test_i2cTransaction);
+    /* Should return SystemP_FAILURE for target mode + memTxnEnable */
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    I2C_close(handle);
+}
+#endif
+
+/**
+ * \brief Test I2C target mode in polling (negative test).
+ *
+ * Test Category: Negative Test Case
+ *
+ * This function tests that target mode is not supported in polling mode and expects failure.
+ *
+ * \param args Pointer to arguments for the test.
+ */
+static void Test_I2c_TargetModePollingNegative(void *args)
+{
+    I2C_Params params;
+    I2C_Handle targetHandle;
+    I2C_Transaction Test_i2cTransaction;
+    I2C_HwAttrs         *hwAttrs = NULL;
+    int32_t status;
+
+    /* Open target in polling mode */
+    I2C_Params_init(&params);
+    I2C_close(gI2cHandle[CONFIG_I2C0]);
+    gI2cHandle[CONFIG_I2C0] = NULL;
+
+    hwAttrs = (I2C_HwAttrs *) (gI2cConfig[CONFIG_I2C0]).hwAttrs;
+    hwAttrs->enableIntr = FALSE;
+
+    params.transferMode = I2C_MODE_BLOCKING; /* Polling mode */
+    targetHandle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(targetHandle);
+
+    /* Prepare a target-mode transaction (controllerMode = false) */
+    I2C_Transaction_init(&Test_i2cTransaction);
+    Test_i2cTransaction.controllerMode = false;
+    Test_i2cTransaction.writeBuf = NULL;
+    Test_i2cTransaction.writeCount = 1;
+    Test_i2cTransaction.readBuf = NULL;
+    Test_i2cTransaction.readCount = 1;
+    Test_i2cTransaction.timeout = 1000;
+
+    /* Try to start a target-mode transfer in polling mode */
+     status = I2C_transfer(targetHandle, &Test_i2cTransaction);
+    /* Expect failure: polling mode not supported for target mode */
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+    I2C_close(targetHandle);
+}
+
+/**
+ * \brief Test I2C open without driver lock.
+ *
+ * Test Category: Negative Test Case
+ *
+ * This function tests opening the I2C driver when the internal lock is NULL.
+ *
+ * \param args Pointer to arguments for the test.
+ */
+static void Test_I2c_OpenWithoutDriverLock(void *args)
+{
+    (void)args;
+    I2C_Handle handle;
+
+    /* If already open (from Drivers_open), close first */
+    handle = I2C_getHandle(CONFIG_I2C0);
+    if(handle != NULL)
+    {
+        I2C_close(handle);
+    }
+
+    /* De-initialize driver: sets gI2cDrvObj.lock = NULL internally */
+    I2C_deinit();
+
+    I2C_Params params;
+    I2C_Params_init(&params); /* Safe even when lock is NULL */
+
+    /* Attempt open without lock -> expect NULL */
+    handle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NULL(handle);
+
+    /* Restore driver for subsequent tests */
+    I2C_init();
+
+    /* Now open should succeed */
+    handle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    if(handle != NULL)
+    {
+        I2C_close(handle);
+    }
+}
+
+/**
+ * \brief Test I2C open with null object pointer.
+ *
+ * Test Category: Negative Test Case
+ *
+ * This function tests opening the I2C driver when the object pointer is NULL.
+ *
+ * \param args Pointer to arguments for the test.
+ */
+static void Test_I2c_OpenNullObject(void *args)
+{
+    I2C_Params params;
+    I2C_Handle handle;
+    I2C_Object *savedObject = NULL;
+    uint32_t idx = CONFIG_I2C0;
+
+    /* Save original pointers */
+    savedObject = gI2cConfig[idx].object;
+
+    /* Case 1: object is NULL */
+    gI2cConfig[idx].object = NULL;
+    I2C_Params_init(&params);
+    handle = I2C_open(idx, &params);
+    TEST_ASSERT_NULL(handle);
+
+    /* Restore */
+    gI2cConfig[idx].object = savedObject;
+    handle = I2C_open(idx, &params);
+    TEST_ASSERT_NOT_NULL(handle);
+    I2C_close(handle);
+}
+
+/**
+ * \brief Negative test: blocking-mode transfer to a non-existent I2C address with a very short timeout.
+ *
+ * A 1‑tick timeout is configured and a 1‑byte read is attempted at address 0x7F
+ * (chosen to be unmapped). The driver returns I2C_STS_ERR_NO_ACK immediately
+ * (NACK), not a timeout, so the test validates NACK handling rather than an
+ * actual elapsed timeout condition.
+ *
+ * Test intent:
+ *  - Open I2C in blocking mode.
+ *  - Issue a read (writeCount=0, readCount=1) to an invalid target.
+ *  - Confirm the transaction status is I2C_STS_ERR_NO_ACK.
+ *
+ * \param args Unused.
+ */
+static void Test_I2c_TransferTimeoutBlockingMode(void *args)
+{
+    I2C_Params params;
+    I2C_Handle handle;
+    I2C_Transaction Test_i2cTransaction;
+    int32_t status = 0;
+
+    /* Open I2C in blocking mode, interrupts enabled (default) */
+    I2C_Params_init(&params);
+    if (gI2cHandle[CONFIG_I2C0] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C0]);
+        gI2cHandle[CONFIG_I2C0] = NULL;
+    }
+    params.transferMode = I2C_MODE_BLOCKING;
+    handle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    /* Prepare a transaction to a non-existent address with a very short timeout */
+    I2C_Transaction_init(&Test_i2cTransaction);
+    Test_i2cTransaction.writeBuf = NULL;
+    Test_i2cTransaction.writeCount = 0;
+    Test_i2cTransaction.readBuf = NULL;
+    Test_i2cTransaction.readCount = 1;
+    Test_i2cTransaction.targetAddress = 0x7F;
+    Test_i2cTransaction.timeout = 1;
+
+    status = I2C_transfer(handle, &Test_i2cTransaction);
+    status = Test_i2cTransaction.status;
+    /* Should return SystemP_TIMEOUT due to timeout */
+    TEST_ASSERT_EQUAL_INT32(I2C_STS_ERR_NO_ACK, status);
+
+    I2C_close(handle);
+}
+
+/**
+ * \brief Test I2C recoverBus with null object pointer.
+ *
+ * Test Category: Negative Test Case
+ *
+ * This function tests the recoverBus API when the object pointer is NULL.
+ *
+ * \param args Pointer to arguments for the test.
+ */
+static void Test_I2c_RecoverbusNullObject(void *args)
+{
+    I2C_Params params;
+    I2C_Handle handle;
+    I2C_Object *savedObject = NULL;
+    int32_t status;
+   /* Open I2C in blocking mode, interrupts enabled (default) */
+    I2C_Params_init(&params);
+    I2C_close(gI2cHandle[CONFIG_I2C0]);
+    gI2cHandle[CONFIG_I2C0] = NULL;
+
+    /* Open I2C normally */
+    I2C_Params_init(&params);
+    handle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    /* Save and set object pointer to NULL */
+    savedObject = handle->object;
+    handle->object = NULL;
+
+    /* Call I2C_recoverBus and expect SystemP_FAILURE */
+    status = I2C_recoverBus(handle, I2C_DELAY_SMALL);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Restore object pointer */
+    handle->object = savedObject;
+    I2C_close(handle);
+}
+
+/**
+ * \brief Executes I2C driver test cases.
+ *
+ * Test Category: Coverage
+ *
+ * This function runs a series of tests to validate the functionality and reliability
+ * of the I2C driver within the MCU Plus SDK. It should be called with the necessary
+ * arguments to configure and execute the tests.
+ *
+ * \param args Pointer to the arguments structure containing test configuration parameters.
+ */
+static void Test_I2c_MemPrimeTransferInvalidDir(void *args)
+{
+    I2C_Params params;
+    I2C_Handle handle;
+    I2C_Transaction Test_i2cTransaction;
+    I2C_Mem_Transaction memTxn;
+    int32_t status;
+    I2C_HwAttrs *hwAttrs;
+    hwAttrs = (I2C_HwAttrs *) (gI2cConfig[CONFIG_I2C0]).hwAttrs;
+    hwAttrs->enableIntr = FALSE;
+
+    I2C_Params_init(&params);
+    params.transferMode = I2C_MODE_BLOCKING;
+    I2C_close(gI2cHandle[CONFIG_I2C0]);
+    handle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    I2C_Memory_Transaction_init(&memTxn);
+    memTxn.memAddr = 0x10;
+    memTxn.memAddrSize = 1;
+    memTxn.buffer = NULL;
+    memTxn.size = 0;
+    memTxn.memDataDir = 0xFF;
+
+    I2C_Transaction_init(&Test_i2cTransaction);
+    Test_i2cTransaction.controllerMode = true;
+    Test_i2cTransaction.memTxnEnable = true;
+    Test_i2cTransaction.memTransaction = &memTxn;
+    Test_i2cTransaction.targetAddress = 0x50;
+    Test_i2cTransaction.timeout = 1000;
+
+    status = I2C_transfer(handle, &Test_i2cTransaction);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    I2C_close(handle);
+    hwAttrs->enableIntr = TRUE;
+
+    I2C_Params_init(&params);
+    params.transferMode = I2C_MODE_CALLBACK;
+    I2C_close(gI2cHandle[CONFIG_I2C0]);
+    params.transferCallbackFxn = NULL;
+    handle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    I2C_Memory_Transaction_init(&memTxn);
+    memTxn.memAddr = 0x10;
+    memTxn.memAddrSize = 1;
+    memTxn.buffer = NULL;
+    memTxn.size = 0;
+    memTxn.memDataDir = 0xFF;
+
+    I2C_Transaction_init(&Test_i2cTransaction);
+    Test_i2cTransaction.controllerMode = true;
+    Test_i2cTransaction.memTxnEnable = true;
+    Test_i2cTransaction.memTransaction = &memTxn;
+    Test_i2cTransaction.targetAddress = 0x50;
+    Test_i2cTransaction.timeout = 1000;
+
+    status = I2C_transfer(handle, &Test_i2cTransaction);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    I2C_close(handle);
+}
+
+/**
+ * \brief Callback function for I2C queue depth test.
+ *
+ * This function is invoked upon completion of an I2C transaction during queue depth testing.
+ * It provides the I2C handle, the transaction message, and the transfer status.
+ *
+ * \param i2cHnd         Handle to the I2C instance.
+ * \param msg            Pointer to the I2C transaction structure.
+ * \param transferStatus Status of the completed transfer.
+ */
+ void test_i2c_queue_callback(I2C_Handle i2cHnd, I2C_Transaction * msg, int32_t transferStatus)
+{
+    if(msg != NULL)
+    {
+        uint32_t idx = (uint32_t)(int32_t)msg->arg;
+        if(TestI2c_CbQueuePos < TEST_I2C_CB_QUEUE_TEST_DEPTH)
+        {
+            TestI2c_CbQueueOrder[TestI2c_CbQueuePos++] = (uint8_t)idx;
+        }
+    }
+    SemaphoreP_post(&gTestI2cCallbackDoneSemObj);
+}
+
+/**
+ * \brief Test case to verify the callback queue depth functionality of the I2C driver.
+ *
+ * This test checks whether the I2C driver's callback mechanism can handle multiple queued
+ * transactions without losing callbacks or causing unexpected behavior. It is intended to
+ * ensure that the driver's internal queue for callbacks operates correctly under stress.
+ *
+ * \param args  Pointer to optional test parameters (unused in this test).
+ */
+void Test_I2c_CallbackQueueDepth(void* args)
+{
+    I2C_Params params;
+    I2C_Handle handle;
+    uint8_t addrSize;
+    uint8_t i;
+    I2C_Transaction transactions[TEST_I2C_CB_QUEUE_TEST_DEPTH];
+    uint8_t writeBuf[TEST_I2C_CB_QUEUE_TEST_DEPTH][2];
+    uint8_t readBuf[TEST_I2C_CB_QUEUE_TEST_DEPTH];
+
+    TestI2c_CbQueuePos = 0;
+    for(i=0;i<TEST_I2C_CB_QUEUE_TEST_DEPTH;i++)
+    {
+        TestI2c_CbQueueOrder[i] = 0xFFU;
+    }
+
+    I2C_close(gI2cHandle[CONFIG_I2C0]);
+    SemaphoreP_constructBinary(&gTestI2cCallbackDoneSemObj, 0);
+
+    I2C_Params_init(&params);
+    params.transferMode = I2C_MODE_CALLBACK;
+    params.transferCallbackFxn = &test_i2c_queue_callback;
+    handle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    addrSize = Board_i2cGetEepromAddrSize();
+    TEST_ASSERT_TRUE((addrSize==1U) || (addrSize==2U));
+
+    for(i=0;i<TEST_I2C_CB_QUEUE_TEST_DEPTH;i++)
+    {
+        I2C_Transaction_init(&transactions[i]);
+        uint16_t baseAddr = (uint16_t)(Board_i2cGetEepromMemAddr() + i);
+        if(addrSize==1U)
+        {
+            writeBuf[i][0] = (uint8_t)(baseAddr & 0xFFU);
+        }
+        else
+        {
+            writeBuf[i][0] = (uint8_t)(baseAddr >> 8);
+            writeBuf[i][1] = (uint8_t)(baseAddr & 0xFFU);
+        }
+        transactions[i].writeBuf   = writeBuf[i];
+        transactions[i].writeCount = addrSize;
+        transactions[i].readBuf    = &readBuf[i];
+        transactions[i].readCount  = 1U;
+        transactions[i].targetAddress = Board_i2cGetEepromDeviceAddr();
+        transactions[i].arg = (void*)(int32_t)i;
+        int32_t status = I2C_transfer(handle, &transactions[i]);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    }
+
+     DebugP_log("Before semaphore\r\n");
+    for(i = 0; i < TEST_I2C_CB_QUEUE_TEST_DEPTH; i++)
+    {
+        SemaphoreP_pend(&gTestI2cCallbackDoneSemObj, 1000);
+        DebugP_log("semaphore complete\r\n");
+    }
+
+    TEST_ASSERT_EQUAL_UINT32(TEST_I2C_CB_QUEUE_TEST_DEPTH, TestI2c_CbQueuePos);
+    for(i = 0; i < TEST_I2C_CB_QUEUE_TEST_DEPTH; i++)
+    {
+        TEST_ASSERT_EQUAL_UINT8(i, TestI2c_CbQueueOrder[i]);
+    }
+
+    I2C_close(handle);
+    SemaphoreP_destruct(&gTestI2cCallbackDoneSemObj);
 }

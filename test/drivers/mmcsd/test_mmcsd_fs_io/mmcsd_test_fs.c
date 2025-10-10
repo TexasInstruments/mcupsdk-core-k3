@@ -469,7 +469,7 @@ void Test_Mmcsd_ConcurrentFatSdTransfer(void *args)
     taskParams1.taskMain       = &fatThread1;
 
     status = TaskP_construct(&TestMMCSD_FatThread1TaskObj, &taskParams1);
-    DebugP_assert(SystemP_SUCCESS == status);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     TaskP_Params_init(&taskParams2);
     taskParams2.priority       = 3U;
@@ -480,7 +480,7 @@ void Test_Mmcsd_ConcurrentFatSdTransfer(void *args)
     taskParams2.taskMain       = &fatThread2;
 
     status = TaskP_construct(&TestMMCSD_FatThread2TaskObj, &taskParams2);
-    DebugP_assert(SystemP_SUCCESS == status);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     for(loopVar = 0; loopVar < 2; loopVar++)
     {
@@ -572,7 +572,7 @@ void Test_Mmcsd_ConcurrentFatEmmcTransfer(void *args)
     taskParams1.taskMain       = &fatThread1;
 
     status = TaskP_construct(&TestMMCSD_FatThread1TaskObj, &taskParams1);
-    DebugP_assert(SystemP_SUCCESS == status);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     TaskP_Params_init(&taskParams2);
     taskParams2.priority       = 3U;
@@ -583,7 +583,7 @@ void Test_Mmcsd_ConcurrentFatEmmcTransfer(void *args)
     taskParams2.taskMain       = &fatThread2;
 
     status = TaskP_construct(&TestMMCSD_FatThread2TaskObj, &taskParams2);
-    DebugP_assert(SystemP_SUCCESS == status);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     for(loopVar = 0; loopVar < 2; loopVar++)
     {
@@ -708,7 +708,7 @@ void Test_Mmcsd_testConcurrentFatEmmcSdTransfer(void *args)
     taskParams1.taskMain       = &fatThread1;
 
     status = TaskP_construct(&TestMMCSD_FatThread1TaskObj, &taskParams1);
-    DebugP_assert(SystemP_SUCCESS == status);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     TaskP_Params_init(&taskParams2);
     taskParams2.priority       = 3U;
@@ -719,7 +719,7 @@ void Test_Mmcsd_testConcurrentFatEmmcSdTransfer(void *args)
     taskParams2.taskMain       = &fatThread2;
 
     status = TaskP_construct(&TestMMCSD_FatThread2TaskObj, &taskParams2);
-    DebugP_assert(SystemP_SUCCESS == status);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     for(loopVar = 0; loopVar < 2; loopVar++)
     {

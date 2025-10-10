@@ -70,6 +70,12 @@ The main software components in the block diagram are described below
     <td>\ref SAFETY_CHECKERS_PAGE
     <td>Safety Checkers Libaray
 </tr> -->
+<tr><td colspan="3" bgcolor=#F0F0F0>**Signal Processing**</td></tr>
+<tr>
+    <td>Signal Processing
+    <td>\ref SIGNAL_PROCESSING_PAGE
+    <td>Supports real-time signal processing operations for embedded and high-performance applications.
+</tr>
 </tr>
 <tr><td colspan="3" bgcolor=#F0F0F0>**Examples**</td></tr>
 <tr>

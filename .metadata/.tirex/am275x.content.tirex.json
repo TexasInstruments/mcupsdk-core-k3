@@ -8555,6 +8555,38 @@
             "example"
         ],
         "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "This example verifies MCASP stereo playback CPU is C75SS0-0 running FREERTOS.",
+        "name": "mcasp_calcratio",
+        "location": "../../examples/signal_processing/calcratio/am275x-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "signal_processing",
+            "calcratio",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
             "example.general"
         ],
         "description": "biquad cascade signal chain CPU is C75SS0-0 running FREERTOS.",

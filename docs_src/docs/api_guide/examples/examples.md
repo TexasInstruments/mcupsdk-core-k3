@@ -91,6 +91,7 @@ This page lists all the examples and demos supported in this SDK.
 -# \subpage EXAMPLES_DRIVERS_SBL
 -# \subpage EXAMPLES_SDL
 -# \subpage EXAMPLES_SECURITY
+-# \subpage EXAMPLES_SIGNAL_PROCESSING
 -# \subpage EXAMPLES_NETWORKING
 \endcond
 

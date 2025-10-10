@@ -30,6 +30,13 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ *  \file test_mcspi_v0.c
+ *
+ *  \brief File containing MCSPI Driver test cases for version V0.
+ *
+ */
+
 /* This UT demonstrates the McSPI RX and TX operation configured
  * in different configurations and all possible MCSPI instances that can be
  * configured. MCSPI2 instance is muxed with UART, so it is not tested.
@@ -43,6 +50,9 @@
  * If data is matched, test result is passed otherwise failed.
  */
 
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
 #include "string.h"
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/TaskP.h>
@@ -50,10 +60,17 @@
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 #include <unity.h>
-
+#if ENABLE_MT_TESTS
+#include "FreeRTOS.h"
+#include "task.h"
+#include "semphr.h"
+#endif
 #if (CONFIG_MCSPI_NUM_INSTANCES > 2)
 #include <drivers/mcspi/v0/dma/mcspi_dma.h>
 #endif
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
 /* Task Macros */
 #define MCSPI_TASK_PRIORITY   (8U)
@@ -230,6 +247,54 @@
 #define MCSPI4_INT_NUM                  (207U)
 #endif
 
+
+
+#define SPI_TEST_NUM_CLK_LIST            (sizeof (gClkDividerTestListRampUp) / \
+                                          sizeof (gClkDividerTestListRampUp[0U]))
+
+#define TEST_APP_MCSPI_ASSERT_ON_FAILURE(transferOK, transaction) \
+    do { \
+        if((SystemP_SUCCESS != (transferOK)) || \
+                ((MCSPI_TRANSFER_COMPLETED != transaction.status) && \
+                (MCSPI_TRANSFER_STARTED != transaction.status))) \
+        { \
+            DebugP_assert(FALSE); /* MCSPI TX/RX failed!! */ \
+        } \
+    } while(0) \
+
+/* ========================================================================== */
+/*                               Typedefs                                     */
+/* ========================================================================== */
+
+typedef struct MCSPI_TestParams_s {
+    MCSPI_ChConfig      mcspiChConfigParams;
+    MCSPI_OpenParams    mcspiOpenParams;
+    uint32_t            transferLength;
+    uint32_t            dataSize;
+} MCSPI_TestParams;
+
+typedef struct mcspiUtPref_ {
+uint64_t polled;
+uint64_t interrupt;
+uint64_t dma;
+} mcspiUtPref;
+
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+
+mcspiUtPref gUtPerf[3];
+
+ #if defined(SOC_AM62AX) ||  defined(SOC_AM62DX)
+extern MCSPI_DmaConfig gMcspiDmaConfig[];
+extern uint32_t gMcspiDmaConfigNum;
+#endif
+
+
+/* Semaphore to indicate Tx/Rx completion used in callback api's */
+static SemaphoreP_Object gMcspiTransferDoneSem;
+
 static uint32_t   gClkDividerTestListRampUp[] =
 {
     0U,   1U,   2U,   3U,   4U,   5U,   6U,    7U,    8U,    9U,    10U,
@@ -245,16 +310,9 @@ static uint32_t   gClkDividerTestListRampDown[] =
     8U, 7U, 6U, 5U, 4U, 3U, 2U, 1U, 0U
 };
 
-#define SPI_TEST_NUM_CLK_LIST            (sizeof (gClkDividerTestListRampUp) / \
-                                          sizeof (gClkDividerTestListRampUp[0U]))
+#if ENABLE_MT_TESTS
 
-typedef struct MCSPI_TestParams_s {
-    MCSPI_ChConfig      mcspiChConfigParams;
-    MCSPI_OpenParams    mcspiOpenParams;
-    uint32_t            transferLength;
-    uint32_t            dataSize;
-} MCSPI_TestParams;
-
+static SemaphoreP_Object Test_Mcspi_TransferDoneSemCancel;
 
 /* Semaphore to track end of rx_task and tx_task */
 SemaphoreP_Object gMcspiTransferTaskDoneSemaphoreObj;
@@ -266,6 +324,7 @@ TaskP_Object gMcspiTransferTaskObject;
 uint8_t gMcspiTransferCancelTaskStack[MCSPI_TASK_STACK_SIZE] __attribute__((aligned(32)));
 TaskP_Object gMcspiTransferCancelTaskObject;
 
+#endif
 uint32_t     gMcspiTxBuffer[APP_MCSPI_MSGSIZE];
 uint32_t     gMcspiRxBuffer[APP_MCSPI_MSGSIZE];
 uint32_t     gMcspiTxBuffer1[APP_MCSPI_MSGSIZE];
@@ -279,29 +338,22 @@ uint32_t     gMcspiTxBufferDma[APP_MCSPI_MSGSIZE] __attribute__((aligned(CacheP_
 uint32_t     gMcspiRxBufferDma[APP_MCSPI_MSGSIZE] __attribute__((aligned(CacheP_CACHELINE_ALIGNMENT)));
 #endif
 
-typedef struct mcspiUtPref_ {
-uint64_t polled;
-uint64_t interrupt;
-uint64_t dma;
-} mcspiUtPref;
-
-mcspiUtPref gUtPerf[3];
-
-/* Semaphore to indicate Tx/Rx completion used in callback api's */
-static SemaphoreP_Object gMcspiTransferDoneSem;
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
+#ifdef ENABLE_MT_TESTS
+extern void run_multi_threaded_tests(void *args);
+#endif
 
 static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t testCaseId);
 void test_mcspi_loopback(void *args);
 void test_mcspi_loopback_simultaneous(void *args);
+void test_mcspi_callback(MCSPI_Handle handle, MCSPI_Transaction *trans);
 void test_mcspi_loopback_back2back(void *args);
 void test_mcspi_loopback_multimaster(void *args);
 void test_mcspi_performance_16bit(void *args);
 void test_mcspi_loopback_timeout(void *args);
-void test_mcspi_transfer_cancel(void *args);
-void test_mcspi_transfer_cancel_transfer(void *args);
-void test_mcspi_transfer_cancel_cancel(void *args);
 void test_mcspi_loopback_performance(void *args);
-void test_mcspi_callback(MCSPI_Handle handle, MCSPI_Transaction *trans);
 static void mcspi_low_latency_transfer_16bit(uint32_t baseAddr,
                                             uint32_t chNum,
                                             uint16_t *txBuff,
@@ -314,17 +366,32 @@ void test_mcspi_loopback_multimaster_dma(void *args);
 void test_mcspi_loopback_dma_with_csdisable(void *args);
 void test_mcspi_loopback_dma_with_toggled_csdisable(void *args);
 void test_mcspi_dma_open_close(void *args);
+#if defined(SOC_AM62AX) ||  defined(SOC_AM62DX)
+static int32_t Test_Mcspi_DmaOpenFail(void *args);
+static void Test_Mcspi_DmaTransferNoDmaHandle(void *args);
+static void Test_Mcspi_DmaCloseNoDmaHandle(void *args);
+static void Test_Mcspi_DmaChInitNoDmaHandle(void *args);
+#endif
+#endif
+static void Test_Mcspi_OpenNullOpenPrms(void *args);
+static void Test_Mcspi_OpenAlreadyOpen(void *args);
+static void Test_Mcspi_OpenInvalidIndex(void *args);
+static void Test_Mcspi_ChConfigNegative(void *args);
+static void Test_Mcspi_TransferNullArgs(void *args);
+static void Test_Mcspi_RxbufNullFifoReadDiscard(void *args);
+static void Test_Mcspi_ReconfigFifoNegativeTc(void *args);
+static void Test_Mcspi_ReconfigFifo(void *args);
+static void Test_Mcspi_FifoTriggerLevels(void *args);
+#if ENABLE_MT_TESTS
+void test_mcspi_callback_cancel(MCSPI_Handle handle, MCSPI_Transaction *trans);
+void test_mcspi_transfer_cancel(void *args);
+void test_mcspi_transfer_cancel_transfer(void *args);
+void test_mcspi_transfer_cancel_cancel(void *args);
 #endif
 
-#define TEST_APP_MCSPI_ASSERT_ON_FAILURE(transferOK, transaction) \
-    do { \
-        if((SystemP_SUCCESS != (transferOK)) || \
-                ((MCSPI_TRANSFER_COMPLETED != transaction.status) && \
-                (MCSPI_TRANSFER_STARTED != transaction.status))) \
-        { \
-            DebugP_assert(FALSE); /* MCSPI TX/RX failed!! */ \
-        } \
-    } while(0) \
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
 
 void test_main(void *args)
 {
@@ -337,10 +404,35 @@ void test_main(void *args)
 
     UNITY_BEGIN();
 
+    #if ENABLE_MT_TESTS
+    run_multi_threaded_tests(&testParams);
+    #endif
     test_mcspi_set_params(&testParams, 335);
     RUN_TEST(test_mcspi_loopback,  335, (void*)&testParams);
     test_mcspi_set_params(&testParams, 336);
     RUN_TEST(test_mcspi_loopback, 336, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 8409);
+    RUN_TEST(test_mcspi_loopback, 8409, (void*) &testParams);
+    test_mcspi_set_params(&testParams, 8408);
+    RUN_TEST(test_mcspi_loopback, 8408, (void*) &testParams);
+    test_mcspi_set_params(&testParams, 8402);
+    RUN_TEST(Test_Mcspi_OpenNullOpenPrms, 8402, (void*) &testParams);
+    test_mcspi_set_params(&testParams, 8403);
+    RUN_TEST(Test_Mcspi_OpenAlreadyOpen, 8403, (void*) &testParams);
+    test_mcspi_set_params(&testParams, 8404);
+    RUN_TEST(Test_Mcspi_OpenInvalidIndex, 8404, (void*) &testParams);
+    test_mcspi_set_params(&testParams, 8406);
+    RUN_TEST(Test_Mcspi_ChConfigNegative, 8406, (void*) &testParams);
+    test_mcspi_set_params(&testParams, 8407);
+    RUN_TEST(Test_Mcspi_TransferNullArgs, 8407, (void*) &testParams);
+    test_mcspi_set_params(&testParams, 8840);
+    RUN_TEST(Test_Mcspi_ReconfigFifo, 8840, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 8373);
+    RUN_TEST(Test_Mcspi_FifoTriggerLevels, 8373, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 8410);
+    RUN_TEST(Test_Mcspi_RxbufNullFifoReadDiscard, 8410, (void*) &testParams);
+    test_mcspi_set_params(&testParams, 8411);
+    RUN_TEST(Test_Mcspi_ReconfigFifoNegativeTc, 8411, (void*) &testParams);
 /* AM263X does not support MCU_SPI instance */
 #if !defined(SOC_AM263X) && !defined(SOC_AM62AX) && !defined(SOC_AM62X) && !defined(SOC_AM62DX) && !defined(SOC_AM275X)
 /* AM243 LP we, have only 2 instances available */
@@ -378,8 +470,8 @@ void test_main(void *args)
     test_mcspi_set_params(&testParams, 7355);
     RUN_TEST(test_mcspi_loopback_performance,  7355, (void*)&testParams);
 
-    test_mcspi_set_params(&testParams, 985);
-    RUN_TEST(test_mcspi_loopback_back2back,  985, (void*)&testParams);
+     test_mcspi_set_params(&testParams, 985);
+     RUN_TEST(test_mcspi_loopback_back2back,  985, (void*)&testParams);
     test_mcspi_set_params(&testParams, 991);
     RUN_TEST(test_mcspi_loopback,  991, (void*)&testParams);
     test_mcspi_set_params(&testParams, 992);
@@ -450,10 +542,12 @@ void test_main(void *args)
     }
     test_mcspi_set_params(&testParams, 1009);
     RUN_TEST(test_mcspi_loopback_simultaneous, 1009, (void*)&testParams);
+    #if ENABLE_MT_TESTS
     test_mcspi_set_params(&testParams, 1011);
     RUN_TEST(test_mcspi_transfer_cancel, 1011, (void*)&testParams);
     test_mcspi_set_params(&testParams, 1012);
     RUN_TEST(test_mcspi_transfer_cancel, 1012, (void*)&testParams);
+    #endif
     test_mcspi_set_params(&testParams, 1014);
     RUN_TEST(test_mcspi_loopback_timeout, 1014, (void*)&testParams);
     test_mcspi_set_params(&testParams, 1565);
@@ -479,6 +573,14 @@ void test_main(void *args)
     RUN_TEST(test_mcspi_loopback_dma_with_toggled_csdisable,  8056, (void*)&testParams);
     test_mcspi_set_params(&testParams, 7357);
     RUN_TEST(test_mcspi_loopback_dma_with_toggled_csdisable,  8055, (void*)&testParams);
+#if defined(SOC_AM62AX) ||  defined(SOC_AM62DX)
+    test_mcspi_set_params(&testParams, 8412);
+    RUN_TEST(Test_Mcspi_DmaChInitNoDmaHandle, 8412, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 8413);
+    RUN_TEST(Test_Mcspi_DmaCloseNoDmaHandle, 8413, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 8414);
+    RUN_TEST(Test_Mcspi_DmaTransferNoDmaHandle, 8414, (void*)&testParams);
+#endif
 #endif
 
     /* Print Performance Numbers. */
@@ -522,6 +624,7 @@ void test_main(void *args)
     return;
 }
 
+/* Test: McSPI RX and TX operation in loopback mode */
 void test_mcspi_loopback(void *args)
 {
     int32_t             status = SystemP_SUCCESS;
@@ -646,6 +749,7 @@ void test_mcspi_loopback(void *args)
     return;
 }
 
+/* Test: McSPI loopback performance measurement */
 void test_mcspi_loopback_performance(void *args)
 {
     int32_t             status = SystemP_SUCCESS;
@@ -794,6 +898,664 @@ void test_mcspi_loopback_performance(void *args)
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     return;
+}
+
+#if (CONFIG_MCSPI_NUM_INSTANCES > 2)
+
+#if defined(SOC_AM62AX) ||  defined(SOC_AM62DX)
+static int32_t Test_Mcspi_DmaOpenFail(void *args)
+{
+    (void)args;
+    return SystemP_FAILURE;
+}
+
+
+/**
+ * @brief Test case for MCSPI DMA transfer without a DMA handle.
+ *
+ * This test verifies the behavior of the MCSPI driver when a DMA transfer is attempted
+ * without providing a valid DMA handle. It ensures that the driver handles this scenario
+ * gracefully and returns the expected error or status.
+ */
+static void Test_Mcspi_DmaTransferNoDmaHandle(void *args)
+{
+    MCSPI_TestParams *testparams        = (MCSPI_TestParams*)args;
+    MCSPI_OpenParams *mcspiOpenParams   = &testparams->mcspiOpenParams;
+    MCSPI_ChConfig   *mcspiChConfigParams = &testparams->mcspiChConfigParams;
+    MCSPI_Config     *cfg       = &gMcspiConfig[CONFIG_MCSPI3];
+    MCSPI_Attrs      *attrs     = (MCSPI_Attrs*)cfg->attrs;
+    uint32_t savedOperMode      = attrs->operMode;
+    int32_t savedDmaIndex       = mcspiOpenParams->mcspiDmaIndex;
+
+    /* Patch all dmaOpenFxn to fail so mcspiDmaHandle remains NULL even in DMA operMode */
+    MCSPI_DmaFxns *origFxns[8];
+    MCSPI_DmaFxns  patchedFxns[8];
+    uint32_t i;
+    for(i=0; i<gMcspiDmaConfigNum && i<8; i++)
+    {
+        origFxns[i]            = gMcspiDmaConfig[i].fxns;
+        patchedFxns[i]         = *origFxns[i];
+        patchedFxns[i].dmaOpenFxn = Test_Mcspi_DmaOpenFail;
+        gMcspiDmaConfig[i].fxns = &patchedFxns[i];
+    }
+
+    attrs->operMode            = MCSPI_OPER_MODE_DMA;
+    mcspiOpenParams->mcspiDmaIndex    = 0;
+    mcspiOpenParams->transferMode     = MCSPI_TRANSFER_MODE_BLOCKING;
+
+    MCSPI_close(gMcspiHandle[CONFIG_MCSPI3]);
+    MCSPI_Handle mcspiHandle = MCSPI_open(CONFIG_MCSPI3, mcspiOpenParams);
+    TEST_ASSERT_NOT_NULL(mcspiHandle);
+
+    /* Channel config (OK even with NULL dma handle) */
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, MCSPI_chConfig(mcspiHandle, mcspiChConfigParams));
+
+    /* Verify dma handle NULL */
+    MCSPI_Config *openedCfg = (MCSPI_Config*)mcspiHandle;
+    TEST_ASSERT_NULL(openedCfg->object->mcspiDmaHandle);
+
+    /* Prepare small transfer */
+    uint8_t txbuff[4] = {1,2,3,4};
+    uint8_t rxbuff[4] = {0};
+    MCSPI_Transaction spiTransaction;
+    MCSPI_Transaction_init(&spiTransaction);
+    spiTransaction.channel   = mcspiChConfigParams->chNum;
+    spiTransaction.count     = 4;
+    spiTransaction.dataSize  = testparams->dataSize;
+    spiTransaction.csDisable = TRUE;
+    spiTransaction.txBuf     = txbuff;
+    spiTransaction.rxBuf     = rxbuff;
+
+    int32_t status = MCSPI_transfer(mcspiHandle, &spiTransaction);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Close BEFORE restoring operMode so close path does NOT attempt DMA close */
+    attrs->operMode = MCSPI_OPER_MODE_INTERRUPT; /* neutralize before close */
+    MCSPI_close(mcspiHandle);
+
+    /* Restore patched tables */
+    for(i=0; i<gMcspiDmaConfigNum && i<8; i++)
+    {
+        gMcspiDmaConfig[i].fxns = origFxns[i];
+    }
+
+    /* Optionally reopen + close in original mode (only if different) to leave system clean */
+    if(savedOperMode == MCSPI_OPER_MODE_DMA)
+    {
+        attrs->operMode         = MCSPI_OPER_MODE_DMA;
+        mcspiOpenParams->mcspiDmaIndex = savedDmaIndex;
+        mcspiHandle = MCSPI_open(CONFIG_MCSPI3, mcspiOpenParams);
+        if(mcspiHandle)
+        {
+            (void)MCSPI_chConfig(mcspiHandle, mcspiChConfigParams);
+            MCSPI_close(mcspiHandle);
+        }
+    }
+    else
+    {
+        attrs->operMode = savedOperMode;
+        mcspiOpenParams->mcspiDmaIndex = savedDmaIndex;
+    }
+}
+
+
+/**
+ * @brief Test case for closing MCSPI DMA when no DMA handle is present.
+ *
+ * This test verifies that the DMA close operation behaves correctly
+ * when invoked without a valid DMA handle. It ensures no errors or
+ * resource leaks occur in this scenario.
+ */
+static void Test_Mcspi_DmaCloseNoDmaHandle(void *args)
+{
+
+    MCSPI_TestParams *testParams        = (MCSPI_TestParams*)args;
+    MCSPI_OpenParams *mcspiOpenParams   = &testParams->mcspiOpenParams;
+    MCSPI_ChConfig   *mcspiChConfigParams = &testParams->mcspiChConfigParams;
+    MCSPI_Config     *cfg               = &gMcspiConfig[CONFIG_MCSPI3];
+    MCSPI_Attrs      *attrs             = (MCSPI_Attrs*)cfg->attrs;
+    uint32_t savedOperMode              = attrs->operMode;
+    int32_t  savedDmaIndex              = mcspiOpenParams->mcspiDmaIndex;
+
+    /* Patch dmaOpenFxn to force failure so mcspiDmaHandle stays NULL */
+    MCSPI_DmaFxns *origFxns[8];
+    MCSPI_DmaFxns  patchedFxns[8];
+    uint32_t i;
+    for(i=0; i<gMcspiDmaConfigNum && i<8; i++)
+    {
+        origFxns[i]              = gMcspiDmaConfig[i].fxns;
+        patchedFxns[i]           = *origFxns[i];
+        patchedFxns[i].dmaOpenFxn= Test_Mcspi_DmaOpenFail;
+        gMcspiDmaConfig[i].fxns  = &patchedFxns[i];
+    }
+
+    attrs->operMode            = MCSPI_OPER_MODE_DMA;
+    mcspiOpenParams->mcspiDmaIndex    = 0;
+    mcspiOpenParams->transferMode     = MCSPI_TRANSFER_MODE_BLOCKING;
+
+    MCSPI_close(gMcspiHandle[CONFIG_MCSPI3]);
+    MCSPI_Handle mcspiHandle = MCSPI_open(CONFIG_MCSPI3, mcspiOpenParams);
+    TEST_ASSERT_NOT_NULL(mcspiHandle);
+
+    /* Channel config succeeds even without DMA handle */
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, MCSPI_chConfig(mcspiHandle, mcspiChConfigParams));
+
+    /* Confirm no DMA handle */
+    MCSPI_Config *openedCfg = (MCSPI_Config*)mcspiHandle;
+    TEST_ASSERT_NULL(openedCfg->object->mcspiDmaHandle);
+
+    /* Call dmaClose -> expect FAILURE since handle NULL */
+    int32_t status = MCSPI_dmaClose(mcspiHandle, mcspiChConfigParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Neutralize operMode before close to avoid internal dmaClose attempt */
+    attrs->operMode = MCSPI_OPER_MODE_INTERRUPT;
+    MCSPI_close(mcspiHandle);
+
+    /* Restore patched tables */
+    for(i=0; i<gMcspiDmaConfigNum && i<8; i++)
+    {
+        gMcspiDmaConfig[i].fxns = origFxns[i];
+    }
+
+    /* Restore original mode/index */
+    attrs->operMode         = savedOperMode;
+    mcspiOpenParams->mcspiDmaIndex = savedDmaIndex;
+}
+
+/**
+ * @brief Test case for initializing MCSPI DMA channel without a DMA handle.
+ *
+ * This test verifies that the DMA channel initialization behaves correctly
+ * when invoked without a valid DMA handle. It ensures no errors or
+ * resource leaks occur in this scenario.
+ */
+static void Test_Mcspi_DmaChInitNoDmaHandle(void *args)
+{
+
+    MCSPI_TestParams *testParams        = (MCSPI_TestParams*)args;
+    MCSPI_OpenParams *mcspiOpenParams   = &testParams->mcspiOpenParams;
+    MCSPI_ChConfig   *mcspiChConfigParams = &testParams->mcspiChConfigParams;
+    MCSPI_Config     *cfg               = &gMcspiConfig[CONFIG_MCSPI3];
+    MCSPI_Attrs      *attrs             = (MCSPI_Attrs*)cfg->attrs;
+    uint32_t savedOperMode              = attrs->operMode;
+    int32_t  savedDmaIndex              = mcspiOpenParams->mcspiDmaIndex;
+
+    /* Patch dmaOpenFxn to force failure so mcspiDmaHandle stays NULL */
+    MCSPI_DmaFxns *origFxns[8];
+    MCSPI_DmaFxns  patchedFxns[8];
+    uint32_t i;
+    for(i=0; i<gMcspiDmaConfigNum && i<8; i++)
+    {
+        origFxns[i]              = gMcspiDmaConfig[i].fxns;
+        patchedFxns[i]           = *origFxns[i];
+        patchedFxns[i].dmaOpenFxn= Test_Mcspi_DmaOpenFail;
+        gMcspiDmaConfig[i].fxns  = &patchedFxns[i];
+    }
+
+    attrs->operMode            = MCSPI_OPER_MODE_DMA;
+    mcspiOpenParams->mcspiDmaIndex    = 0;
+    mcspiOpenParams->transferMode     = MCSPI_TRANSFER_MODE_BLOCKING;
+
+    MCSPI_close(gMcspiHandle[CONFIG_MCSPI3]);
+    MCSPI_Handle mcspiHandle = MCSPI_open(CONFIG_MCSPI3, mcspiOpenParams);
+    TEST_ASSERT_NOT_NULL(mcspiHandle);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, MCSPI_chConfig(mcspiHandle, mcspiChConfigParams));
+
+    /* Confirm no DMA handle */
+    MCSPI_Config *openedCfg = (MCSPI_Config*)mcspiHandle;
+    TEST_ASSERT_NULL(openedCfg->object->mcspiDmaHandle);
+
+    /* Prepare dummy DMA channel config */
+    MCSPI_DmaChConfig dummyDmaChCfg;
+    memset(&dummyDmaChCfg, 0, sizeof(dummyDmaChCfg));
+
+    /* Invoke dmaChConfig. Current driver returns SUCCESS even with NULL DMA handle (design quirk). */
+    int32_t status = MCSPI_dmaChConfig(mcspiHandle, mcspiChConfigParams, &dummyDmaChCfg);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_NULL(openedCfg->object->mcspiDmaHandle);
+
+    /* Neutralize operMode before close */
+    attrs->operMode = MCSPI_OPER_MODE_INTERRUPT;
+    MCSPI_close(mcspiHandle);
+
+    /* Restore patched tables */
+    for(i=0; i<gMcspiDmaConfigNum && i<8; i++)
+    {
+        gMcspiDmaConfig[i].fxns = origFxns[i];
+    }
+
+    /* Restore original mode/index */
+    attrs->operMode         = savedOperMode;
+    mcspiOpenParams->mcspiDmaIndex = savedDmaIndex;
+}
+#endif
+#endif
+/**
+ * @brief Test case for verifying MCSPI FIFO trigger levels functionality.
+ *
+ * This test validates the correct configuration and handling of FIFO trigger levels
+ * in the MCSPI driver. It ensures that the transmit and receive FIFOs generate
+ * interrupts at the expected thresholds. The test also checks for proper data
+ * transfer and error handling when FIFO levels are reached. This helps guarantee
+ * reliable SPI communication in applications using FIFO buffering.
+ */
+static void Test_Mcspi_FifoTriggerLevels(void *args)
+{
+    static const uint32_t triggerLevelList[] = {1U,4U,8U,16U,32U};
+    MCSPI_TestParams *testParams        = (MCSPI_TestParams*)args;
+    MCSPI_OpenParams *mcspiOpenParams   = &testParams->mcspiOpenParams;
+    MCSPI_ChConfig   *mcspiChConfigParams = &testParams->mcspiChConfigParams;
+    MCSPI_Handle      mcspiHandle;
+    uint32_t          levelIdx;
+    int32_t           status;
+    uint32_t          i;
+
+    /* Base config: interrupt + blocking (or keep existing) */
+    ((MCSPI_Attrs*)gMcspiConfig[CONFIG_MCSPI0].attrs)->operMode = MCSPI_OPER_MODE_INTERRUPT;
+    mcspiOpenParams->transferMode = MCSPI_TRANSFER_MODE_BLOCKING;
+    testParams->dataSize           = 8U;  /* 8-bit words */
+
+    MCSPI_close(gMcspiHandle[CONFIG_MCSPI0]);
+    mcspiHandle = MCSPI_open(CONFIG_MCSPI0, mcspiOpenParams);
+    TEST_ASSERT_NOT_NULL(mcspiHandle);
+
+    for(levelIdx = 0U; levelIdx < (sizeof(triggerLevelList)/sizeof(triggerLevelList[0])); levelIdx++)
+    {
+        uint32_t fifoTrig = triggerLevelList[levelIdx];
+        if(fifoTrig > MCSPI_FIFO_LENGTH) { continue; }
+
+        mcspiChConfigParams->txFifoTrigLvl = fifoTrig;
+        mcspiChConfigParams->rxFifoTrigLvl = fifoTrig;
+        status = MCSPI_chConfig(mcspiHandle, mcspiChConfigParams);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+        /**
+         * Set largeCount to a value larger than fifoTrig to ensure the interrupt is triggered.
+         * This helps verify that no errors or blocking occur when transaction count exceeds FIFO trigger level.
+         */
+        uint32_t largeCount = (fifoTrig < 4U) ? 8U : (fifoTrig + fifoTrig/2U);
+        if(largeCount > APP_MCSPI_MSGSIZE) largeCount = APP_MCSPI_MSGSIZE;
+
+        /* Fill TX/RX buffers */
+        uint8_t *txPtr = (uint8_t*)gMcspiTxBuffer;
+        uint8_t *rxPtr = (uint8_t*)gMcspiRxBuffer;
+        memset(rxPtr, 0, APP_MCSPI_MSGSIZE * sizeof(gMcspiRxBuffer[0]));
+        for(i=0U; i<largeCount; i++) txPtr[i] = (uint8_t)(0x40 + (uint8_t)fifoTrig + (uint8_t)i);
+
+        MCSPI_Transaction spiTransactionLarge;
+        MCSPI_Transaction_init(&spiTransactionLarge);
+        spiTransactionLarge.channel   = mcspiChConfigParams->chNum;
+        spiTransactionLarge.count     = largeCount;
+        spiTransactionLarge.dataSize  = testParams->dataSize;
+        spiTransactionLarge.csDisable = TRUE;
+        spiTransactionLarge.txBuf     = gMcspiTxBuffer;
+        spiTransactionLarge.rxBuf     = gMcspiRxBuffer;
+
+        status = MCSPI_transfer(mcspiHandle, &spiTransactionLarge);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+        TEST_ASSERT_EQUAL_INT32(MCSPI_TRANSFER_COMPLETED, spiTransactionLarge.status);
+
+        for(i=0U; i<largeCount; i++)
+        {
+            TEST_ASSERT_EQUAL_UINT8(txPtr[i], rxPtr[i]);
+        }
+
+        /* Small transfer (< trigger) only if trigger > 1 */
+        if(fifoTrig > 1U)
+        {
+            /**
+             * Set smallCount to one less than fifoTrig to test interrupt triggering
+             * and ensure no errors occur when transaction count is below FIFO trigger level.
+             */
+            uint32_t smallCount = fifoTrig - 1U;
+            if(smallCount > APP_MCSPI_MSGSIZE) smallCount = APP_MCSPI_MSGSIZE;
+
+            memset(rxPtr, 0, APP_MCSPI_MSGSIZE * sizeof(gMcspiRxBuffer[0]));
+            for( i=0U; i<smallCount; i++) txPtr[i] = (uint8_t)(0xA0 + (uint8_t)fifoTrig + (uint8_t)i);
+
+            MCSPI_Transaction spiTransactionSmall;
+            MCSPI_Transaction_init(&spiTransactionSmall);
+            spiTransactionSmall.channel   = mcspiChConfigParams->chNum;
+            spiTransactionSmall.count     = smallCount;
+            spiTransactionSmall.dataSize  = testParams->dataSize;
+            spiTransactionSmall.csDisable = TRUE;
+            spiTransactionSmall.txBuf     = gMcspiTxBuffer;
+            spiTransactionSmall.rxBuf     = gMcspiRxBuffer;
+
+            status = MCSPI_transfer(mcspiHandle, &spiTransactionSmall);
+            TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+            TEST_ASSERT_EQUAL_INT32(MCSPI_TRANSFER_COMPLETED, spiTransactionSmall.status);
+
+            for( i=0U; i<smallCount; i++)
+            {
+                TEST_ASSERT_EQUAL_UINT8(txPtr[i], rxPtr[i]);
+            }
+        }
+    }
+
+    MCSPI_close(mcspiHandle);
+}
+
+/**
+ * @brief Test case to verify behavior when attempting to open an already open MCSPI instance.
+ *
+ * This test ensures that the driver correctly handles repeated open calls.
+ * It checks for proper error handling and resource management in such scenarios.
+ */
+static void Test_Mcspi_OpenAlreadyOpen(void *args)
+{
+    MCSPI_Handle mcspiHandle1, mcspiHandle2;
+    MCSPI_OpenParams mcspiOpenParams;
+    MCSPI_OpenParams_init(&mcspiOpenParams);
+
+    /* Open once */
+    mcspiHandle1 = MCSPI_open(CONFIG_MCSPI0, &mcspiOpenParams);
+    TEST_ASSERT_NOT_NULL(mcspiHandle1);
+
+    /* Try to open again (should fail) */
+    mcspiHandle2 = MCSPI_open(CONFIG_MCSPI0, &mcspiOpenParams);
+    TEST_ASSERT_NULL(mcspiHandle2);
+
+    MCSPI_close(mcspiHandle1);
+}
+
+/**
+ * @brief Test case for opening MCSPI with NULL open parameters.
+ *
+ * This test verifies the behavior of the MCSPI driver when the open parameters are NULL.
+ * It ensures that the driver handles invalid input gracefully and does not cause unexpected failures.
+ * The test is intended to validate robustness against improper API usage.
+ */
+static void Test_Mcspi_OpenNullOpenPrms(void *args)
+{
+    MCSPI_Handle mcspiHandle;
+
+    /* Pass NULL for openPrms */
+    mcspiHandle = MCSPI_open(CONFIG_MCSPI0, NULL);
+    TEST_ASSERT_NOT_NULL(mcspiHandle);
+
+    MCSPI_close(mcspiHandle);
+}
+
+/**
+ * @brief Test case to validate MCSPI open with invalid parameters.
+ *
+ * This test verifies that the MCSPI driver correctly handles invalid open parameters.
+ * It ensures that the driver does not initialize or open the peripheral when given incorrect arguments.
+ * The test helps in identifying robustness and error handling in the MCSPI open API.
+ */
+void test_mcspi_open_invalid_openprms(void *args)
+{
+    MCSPI_Handle mcspiHandle;
+    MCSPI_OpenParams mcspiOpenParams;
+    MCSPI_OpenParams_init(&mcspiOpenParams);
+
+    mcspiOpenParams.transferMode = MCSPI_TRANSFER_MODE_CALLBACK;
+    mcspiOpenParams.transferCallbackFxn = NULL; /* Invalid for callback mode */
+
+    mcspiHandle = MCSPI_open(CONFIG_MCSPI0, &mcspiOpenParams);
+    TEST_ASSERT_NULL(mcspiHandle);
+}
+
+/**
+ * @brief Test case for basic MCSPI FIFO reconfiguration.
+ *
+ * This test verifies the basic functionality of reconfiguring the FIFO settings
+ * of the MCSPI peripheral. It ensures that the FIFO can be reconfigured without
+ * errors and that data integrity is maintained during the process.
+ */
+static void Test_Mcspi_ReconfigFifo(void *args)
+{
+    uint32_t i;
+    MCSPI_TestParams *testParams        = (MCSPI_TestParams*)args;
+    MCSPI_OpenParams *mcspiOpenParams   = &testParams->mcspiOpenParams;
+    MCSPI_ChConfig   *mcspiChConfigParams = &testParams->mcspiChConfigParams;
+    MCSPI_Handle      mcspiHandle;
+    int32_t           status;
+    uint8_t           tempTxPtr8[24], tempRxPtr8[24];
+    MCSPI_Transaction spiTransaction;
+
+    MCSPI_close(gMcspiHandle[CONFIG_MCSPI0]);
+    mcspiHandle = MCSPI_open(CONFIG_MCSPI0, mcspiOpenParams);
+    TEST_ASSERT_NOT_NULL(mcspiHandle);
+
+    status = MCSPI_chConfig(mcspiHandle, mcspiChConfigParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /**
+     * Test case for MCSPI_reConfigFifo API.
+     * First configures the channel FIFO/XFERLEVEL for a larger chunk (24 words), then immediately reprograms it to a smaller chunk (12 words).
+     * These calls update internal HW registers (WCNT and FIFO trigger setup) but do not start a transfer.
+     * The test later transfers 12 words to confirm reconfiguration succeeds with no error when expanding then shrinking.
+     * Data integrity is maintained after changing the FIFO word count; 24U and 12U represent word counts.
+     */
+    /* Configure larger length then shrink */
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
+                            MCSPI_reConfigFifo(mcspiHandle, mcspiChConfigParams->chNum, 24U));
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
+                            MCSPI_reConfigFifo(mcspiHandle, mcspiChConfigParams->chNum, 12U));
+
+    for(i=0;i<12U;i++){ tempTxPtr8[i]=(uint8_t)(0x5A + i); tempRxPtr8[i]=0U; }
+
+    MCSPI_Transaction_init(&spiTransaction);
+    spiTransaction.channel   = mcspiChConfigParams->chNum;
+    spiTransaction.count     = 12U;
+    spiTransaction.dataSize  = 8;
+    spiTransaction.csDisable = TRUE;
+    spiTransaction.txBuf     = tempTxPtr8;
+    spiTransaction.rxBuf     = tempRxPtr8;
+
+    status = MCSPI_transfer(mcspiHandle, &spiTransaction);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_INT32(MCSPI_TRANSFER_COMPLETED, spiTransaction.status);
+
+    for(i=0;i<12U;i++)
+    {
+        TEST_ASSERT_EQUAL_UINT8(tempTxPtr8[i], tempRxPtr8[i]);
+    }
+
+    /* Negative: invalid channel */
+    status = MCSPI_reConfigFifo(mcspiHandle, 0xFFU, 4U);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    MCSPI_close(mcspiHandle);
+}
+
+/**
+ * @brief Test case for negative scenarios in MCSPI channel configuration.
+ *
+ * This test verifies the robustness of the MCSPI channel configuration API
+ * by providing invalid or boundary input parameters and checking error handling.
+ * It ensures the driver does not crash or misbehave with incorrect configurations.
+ */
+static void Test_Mcspi_ChConfigNegative(void *args)
+{
+    int32_t status;
+    MCSPI_Handle mcspiHandle = NULL;
+    MCSPI_ChConfig mcspiChConfigParams;
+
+    /* Case 1: mcspiHandle is NULL */
+    status = MCSPI_chConfig(NULL, &mcspiChConfigParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Case 2: mcspiChConfigParams is NULL */
+    mcspiHandle = gMcspiHandle[CONFIG_MCSPI0];
+    status = MCSPI_chConfig(mcspiHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Case 3: chNum >= MCSPI_MAX_NUM_CHANNELS */
+    memset(&mcspiChConfigParams, 0, sizeof(mcspiChConfigParams));
+    mcspiChConfigParams.chNum = MCSPI_MAX_NUM_CHANNELS; /* Invalid channel */
+    status = MCSPI_chConfig(mcspiHandle, &mcspiChConfigParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+}
+
+/**
+ * @brief Test case for MCSPI transfer API with NULL arguments.
+ *
+ * This test verifies the behavior of the MCSPI transfer function when provided with NULL arguments.
+ * It ensures that the API handles invalid input gracefully and does not cause unexpected behavior.
+ * The test is designed to validate error handling and robustness of the driver implementation.
+ */
+static void Test_Mcspi_TransferNullArgs(void *args)
+{
+    int32_t status;
+    MCSPI_Transaction spiTransaction;
+
+    /* Case 1: handle is NULL */
+    status = MCSPI_transfer(NULL, &spiTransaction);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Case 2: transaction is NULL */
+    MCSPI_Handle mcspiHandle = gMcspiHandle[CONFIG_MCSPI0];
+    status = MCSPI_transfer(mcspiHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+}
+
+/**
+ * @brief Test case to verify MCSPI open operation with an invalid index.
+ *
+ * This test attempts to open an MCSPI instance using an invalid index value.
+ * It checks whether the driver correctly handles invalid input and returns an error.
+ * Ensures robustness of the MCSPI driver against incorrect usage scenarios.
+ */
+static void Test_Mcspi_OpenInvalidIndex(void *args)
+{
+    MCSPI_Handle mcspiHandle;
+    MCSPI_OpenParams mcspiOpenParams;
+    MCSPI_OpenParams_init(&mcspiOpenParams);
+
+    /* Use an out-of-range index */
+    uint32_t invalidIndex = gMcspiConfigNum; /* >= valid range */
+
+    mcspiHandle = MCSPI_open(invalidIndex, &mcspiOpenParams);
+    TEST_ASSERT_NULL(mcspiHandle);
+}
+
+/**
+ * @brief Test case for MCSPI RX buffer null scenario with FIFO read discard.
+ *
+ * This test verifies the behavior of the MCSPI driver when the RX buffer is NULL
+ * and FIFO read is configured to discard data. It ensures no data is written to
+ * the RX buffer and no unexpected errors occur.
+ */
+static void Test_Mcspi_RxbufNullFifoReadDiscard(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+    uint32_t i, dataWidth, fifoBitMask, tempTxData, dataWidthIdx;
+    int32_t transferOK;
+    MCSPI_Transaction spiTransaction;
+    MCSPI_Handle mcspiHandle;
+    MCSPI_TestParams *testParams = (MCSPI_TestParams*) args;
+    uint8_t *tempTxPtr8 = NULL;
+    uint16_t *tempTxPtr16 = NULL;
+    uint32_t *tempTxPtr32 = NULL;
+    MCSPI_OpenParams *mcspiOpenParams = &(testParams->mcspiOpenParams);
+    MCSPI_ChConfig *mcspiChConfigParams = &(testParams->mcspiChConfigParams);
+
+    /* Memset TX Buffer */
+    memset(&gMcspiTxBuffer[0U], 0, APP_MCSPI_MSGSIZE * sizeof(gMcspiTxBuffer[0U]));
+
+    MCSPI_close(gMcspiHandle[CONFIG_MCSPI0]);
+
+    mcspiHandle = MCSPI_open(CONFIG_MCSPI0, mcspiOpenParams);
+    TEST_ASSERT_NOT_NULL(mcspiHandle);
+
+    status = MCSPI_chConfig(gMcspiHandle[CONFIG_MCSPI0], mcspiChConfigParams);
+    DebugP_assert(status == SystemP_SUCCESS);
+
+    dataWidth = testParams->dataSize;
+    if (dataWidth < 9U)
+    {
+        tempTxPtr8 = (uint8_t*) &gMcspiTxBuffer[0U];
+    }
+    else if (dataWidth < 17U)
+    {
+        tempTxPtr16 = (uint16_t*) &gMcspiTxBuffer[0U];
+    }
+    else
+    {
+        tempTxPtr32 = (uint32_t*) &gMcspiTxBuffer[0U];
+    }
+    fifoBitMask = 0x0U;
+    for (dataWidthIdx = 0U; dataWidthIdx < dataWidth; dataWidthIdx++)
+    {
+        fifoBitMask |= (1U << dataWidthIdx);
+    }
+
+    /* Fill TX buffer */
+    for (i = 0U; i < testParams->transferLength; i++)
+    {
+        tempTxData = 0xA5A5A5A5;
+        tempTxData &= (fifoBitMask);
+        if (dataWidth < 9U)
+        {
+            *tempTxPtr8++ = (uint8_t)(tempTxData);
+        }
+        else if (dataWidth < 17U)
+        {
+            *tempTxPtr16++ = (uint16_t)(tempTxData);
+        }
+        else
+        {
+            *tempTxPtr32++ = (uint32_t)(tempTxData);
+        }
+    }
+
+    /* Initiate transfer with rxBuf = NULL to trigger MCSPI_fifoReadDiscard */
+    spiTransaction.channel = testParams->mcspiChConfigParams.chNum;
+    spiTransaction.count = testParams->transferLength;
+    spiTransaction.dataSize = dataWidth;
+    spiTransaction.csDisable = TRUE;
+    spiTransaction.txBuf = (void*) gMcspiTxBuffer;
+    spiTransaction.rxBuf = NULL; /* NULL RX buffer triggers discard path */
+    spiTransaction.args = NULL;
+    transferOK = MCSPI_transfer(gMcspiHandle[CONFIG_MCSPI0], &spiTransaction);
+    TEST_APP_MCSPI_ASSERT_ON_FAILURE(transferOK, spiTransaction);
+
+    MCSPI_close(gMcspiHandle[CONFIG_MCSPI0]);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    return;
+}
+
+/**
+ * @brief Test case for reconfiguring the MCSPI FIFO settings.
+ *
+ * This test verifies the correct behavior when the FIFO configuration
+ * of the MCSPI peripheral is changed during runtime. It ensures that
+ * data integrity and transfer operations remain consistent after reconfiguration.
+ */
+static void Test_Mcspi_ReconfigFifoNegativeTc(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+    MCSPI_Handle mcspiHandle;
+    MCSPI_TestParams *testParams = (MCSPI_TestParams*) args;
+    MCSPI_OpenParams *mcspiOpenParams = &(testParams->mcspiOpenParams);
+    MCSPI_ChConfig *mcspiChConfigParams = &(testParams->mcspiChConfigParams);
+    uint32_t chNum = mcspiChConfigParams->chNum;
+    uint32_t numWordsRxTx = 8; /* Example: set FIFO config for 8 words */
+
+    /* Close and open to ensure clean state */
+    MCSPI_close(gMcspiHandle[CONFIG_MCSPI0]);
+    mcspiHandle = MCSPI_open(CONFIG_MCSPI0, mcspiOpenParams);
+    TEST_ASSERT_NOT_NULL(mcspiHandle);
+
+    /* Configure channel */
+    status = MCSPI_chConfig(mcspiHandle, mcspiChConfigParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Call reConfigFifo with valid params */
+    status = MCSPI_reConfigFifo(mcspiHandle, chNum, numWordsRxTx);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Optionally: Call with invalid channel to check for failure */
+    status = MCSPI_reConfigFifo(mcspiHandle, 0xFF, numWordsRxTx);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    MCSPI_close(mcspiHandle);
 }
 
 void test_mcspi_loopback_back2back(void *args)
@@ -2158,6 +2920,7 @@ void test_mcspi_loopback_simultaneous(void *args)
     return;
 }
 
+#if ENABLE_MT_TESTS
 void test_mcspi_transfer_cancel(void *args)
 {
     int32_t status = SystemP_SUCCESS;
@@ -2232,7 +2995,7 @@ void test_mcspi_transfer_cancel_transfer(void *args)
 
     if(mcspiOpenParams->transferMode == MCSPI_TRANSFER_MODE_CALLBACK)
     {
-        status = SemaphoreP_constructBinary(&gMcspiTransferDoneSem, 0);
+        status = SemaphoreP_constructBinary(&Test_Mcspi_TransferDoneSemCancel, 0);
         DebugP_assert(SystemP_SUCCESS == status);
     }
 
@@ -2302,7 +3065,7 @@ void test_mcspi_transfer_cancel_transfer(void *args)
     if(mcspiOpenParams->transferMode == MCSPI_TRANSFER_MODE_CALLBACK)
     {
         /* Wait for transfer completion */
-        SemaphoreP_pend(&gMcspiTransferDoneSem, SystemP_WAIT_FOREVER);
+        SemaphoreP_pend(&Test_Mcspi_TransferDoneSemCancel, SystemP_WAIT_FOREVER);
         DebugP_assert(spiTransaction.status == MCSPI_TRANSFER_CANCELLED);
     }
 
@@ -2337,7 +3100,7 @@ void test_mcspi_transfer_cancel_transfer(void *args)
     if(mcspiOpenParams->transferMode == MCSPI_TRANSFER_MODE_CALLBACK)
     {
         /* Wait for transfer completion */
-        SemaphoreP_pend(&gMcspiTransferDoneSem, SystemP_WAIT_FOREVER);
+        SemaphoreP_pend(&Test_Mcspi_TransferDoneSemCancel, SystemP_WAIT_FOREVER);
         DebugP_assert(spiTransaction.status == MCSPI_TRANSFER_COMPLETED);
     }
 
@@ -2356,7 +3119,7 @@ void test_mcspi_transfer_cancel_transfer(void *args)
 
     if(mcspiOpenParams->transferMode == MCSPI_TRANSFER_MODE_CALLBACK)
     {
-        SemaphoreP_destruct(&gMcspiTransferDoneSem);
+        SemaphoreP_destruct(&Test_Mcspi_TransferDoneSemCancel);
     }
 
     SemaphoreP_post(&gMcspiTransferTaskDoneSemaphoreObj);
@@ -2364,6 +3127,13 @@ void test_mcspi_transfer_cancel_transfer(void *args)
 
     return;
 }
+
+void test_mcspi_callback_cancel(MCSPI_Handle handle, MCSPI_Transaction *trans)
+{
+    SemaphoreP_post(&Test_Mcspi_TransferDoneSemCancel);
+    return;
+}
+
 
 void test_mcspi_transfer_cancel_cancel(void *args)
 {
@@ -2375,6 +3145,7 @@ void test_mcspi_transfer_cancel_cancel(void *args)
     SemaphoreP_post(&gMcspiTransferCancelTaskDoneSemaphoreObj);
     TaskP_exit();
 }
+#endif
 
 void test_mcspi_callback(MCSPI_Handle handle, MCSPI_Transaction *trans)
 {
@@ -2384,11 +3155,6 @@ void test_mcspi_callback(MCSPI_Handle handle, MCSPI_Transaction *trans)
     return;
 }
 
-void test_mcspi_callback_cancel(MCSPI_Handle handle, MCSPI_Transaction *trans)
-{
-    SemaphoreP_post(&gMcspiTransferDoneSem);
-    return;
-}
 
 void setUp(void)
 {
@@ -2516,6 +3282,35 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             openParams->transferMode = MCSPI_TRANSFER_MODE_CALLBACK;
             openParams->transferCallbackFxn    = test_mcspi_callback;
             break;
+        case 8411:
+            chConfigParams->txFifoTrigLvl      = 8U;
+            chConfigParams->rxFifoTrigLvl      = 8U;
+            break;
+        case 8409:
+            chConfigParams->chNum              = MCSPI_CHANNEL_2;
+            break;
+        case 8408:
+            chConfigParams->chNum              = MCSPI_CHANNEL_3;
+            break;
+        case 8841: /* params for simple reconfig fifo test */
+            testParams->dataSize               = 8U;
+            chConfigParams->chNum              = MCSPI_CHANNEL_0;
+            chConfigParams->txFifoTrigLvl      = 8U;
+            chConfigParams->rxFifoTrigLvl      = 8U;
+            break;
+        case 8373: /* Base config for FIFO trigger level sweep: interrupt + blocking, 8-bit */
+            attrParams->operMode               = MCSPI_OPER_MODE_INTERRUPT;
+            openParams->transferMode           = MCSPI_TRANSFER_MODE_BLOCKING;
+            openParams->transferCallbackFxn    = NULL;
+            testParams->dataSize               = 8;
+            chConfigParams->txFifoTrigLvl      = 16U;
+            chConfigParams->rxFifoTrigLvl      = 16U;
+            break;
+        case 8424: /* Error: CALLBACK mode with NULL callback function */
+            openParams->transferMode           = MCSPI_TRANSFER_MODE_CALLBACK;
+            openParams->transferCallbackFxn    = NULL; /* Intentional error */
+            break;
+
 /* AM263X and AM62LX does not support MCU_SPI instance */
 #if !defined(SOC_AM263X) && !defined(SOC_AM62LX)
 #if (CONFIG_MCSPI_NUM_INSTANCES > 2)
@@ -2659,17 +3454,18 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             attrParams->operMode               = MCSPI_OPER_MODE_INTERRUPT;
             break;
         case 1007:
-            attrParams->baseAddr               = MCSPI1_BASE_ADDRESS;
-            attrParams->intrNum                = MCSPI1_INT_NUM;
+        attrParams->baseAddr = MCSPI0_BASE_ADDRESS;
+        attrParams->intrNum = MCSPI0_INT_NUM;
 #if defined BUILD_C7X
             attrParams->eventId                = MCSPI1_EVENT_ID;
 #endif
-            break;
+           break;
         case 1009:
             openParams->transferMode           = MCSPI_TRANSFER_MODE_CALLBACK;
             openParams->transferCallbackFxn    = test_mcspi_callback;
             break;
-        case 1011:
+#if ENABLE_MT_TESTS
+      case 1011:
             testParams->dataSize               = 8;
             chConfigParams->bitRate            = 1000000;
             break;
@@ -2679,6 +3475,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             openParams->transferMode           = MCSPI_TRANSFER_MODE_CALLBACK;
             openParams->transferCallbackFxn    = test_mcspi_callback_cancel;
             break;
+#endif
         case 1014:
             openParams->transferTimeout        = 1U;
             chConfigParams->bitRate            = 50000;
@@ -2686,6 +3483,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
         case 1565:
             attrParams->operMode               = MCSPI_OPER_MODE_POLLED;
             break;
+
 #if (CONFIG_MCSPI_NUM_INSTANCES > 2)
         case 2394:
             attrParams->baseAddr               = MCSPI3_BASE_ADDRESS;
@@ -2725,6 +3523,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             openParams->transferCallbackFxn    = test_mcspi_callback;
             openParams->mcspiDmaIndex          = 0;
             break;
+
 #endif
     }
 

@@ -4,12 +4,30 @@
 
     let stackSize = 0x20000;
     let heapSize =  0x20000;
+    let useDdrBuffer = false;
 
     /* if no options given use defaults */
     if(options && options.stackSize)
         stackSize = options.stackSize;
     if(options && options.heapSize)
         heapSize = options.heapSize;
+    if(options && options.useDdrBuffer)
+        useDdrBuffer = options.useDdrBuffer;
+
+    if(useDdrBuffer == true) {
+        codeDataAddrDdrUdma = 0xA0800000;
+        codeDataSizeDdrUdma = 0x08000000;
+        codeDataAddrOcram = 0x70000000;
+        codeDataSizeOcram = 0x00010000;
+        if(options && options.codeDataAddrDdrUdma)
+            codeDataAddrDdrUdma = options.codeDataAddrDdrUdma;
+        if(options && options.codeDataSizeDdrUdma)
+            codeDataSizeDdrUdma = options.codeDataSizeDdrUdma;
+        if(options && options.codeDataAddrOcram)
+            codeDataAddrOcram = options.codeDataAddrOcram;
+        if(options && options.codeDataSizeOcram)
+            codeDataSizeOcram = options.codeDataSizeOcram;
+    }
 %%}
 --ram_model
 -heap  0x`heapSize.toString(16).toUpperCase()`
@@ -36,6 +54,10 @@ MEMORY
     C7X_VECS_D:    org = C7X_VECTOR_BASE,     len = 0x4000       /*  16KB DDR */
     C7X_CIO_MEM:   org = C7X_DDR_SPACE_BASE,  len = 0x1000       /*  4KB DDR */
     C7X_DDR_SPACE: org = C7X_DDR_SPACE_BASE+0x1000, len = 0x00BF0000-0x1000  /*  11.9MB - 4KB DDR  */
+    % if(useDdrBuffer) {
+    DDR_UDMA : ORIGIN = 0x`(codeDataAddrDdrUdma).toString(16).toUpperCase()`, LENGTH = 0x`(codeDataSizeDdrUdma).toString(16).toUpperCase()`
+    OCRAM    : ORIGIN = 0x`(codeDataAddrOcram).toString(16).toUpperCase()`, LENGTH = 0x`(codeDataSizeOcram).toString(16).toUpperCase()`
+    % }
     % if(args.project.isLinuxInSystem === true){
     /* For resource table */
     DDR_IPC_RESOURCE_TABLE_LINUX:      org = C7X_RESOURCE_TABLE_BASE, len = 0x400    /*  1024B DDR */
@@ -102,5 +124,11 @@ SECTIONS
     % if(args.project.ipcVringRTOS === true){
     /* this is used only when IPC RPMessage is enabled */
     .bss.ipc_vring_mem   (NOLOAD) : {} > DDR_IPC_VRING_RTOS
+    % }
+    % if(useDdrBuffer) {
+    .udma_buffer_ddr (NOLOAD) : { *(.udma_buffer_ddr) } > DDR_UDMA
+    .udma_buffer_msmc (NOLOAD) : { *(.udma_buffer_msmc)} > DDR_UDMA
+    .udma_buffer_ospi (NOLOAD) : { *(.udma_buffer_ospi)} > DDR_UDMA
+    .udma_buffer_internal (NOLOAD) : { *(.udma_buffer_internal)} > DDR_UDMA
     % }
 }

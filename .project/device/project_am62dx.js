@@ -256,6 +256,7 @@ const example_file_list = [
     "test/drivers/sciclient/sciclient_dynamic_analysis/.project/project.js",
     "test/drivers/sciclient/sciclient_get_version/.project/project.js",
 	"test/drivers/uart/.project/project.js",
+    "test/drivers/udma/.project/project.js",
 	"test/drivers/mcspi/mcspi/.project/project.js",
     "test/kernel/dpl/.project/project.js",
 	"test/kernel/freertos/.project/project.js",

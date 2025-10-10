@@ -27,6 +27,7 @@
     let addrBase = 0;
     let addrBaseDdr = 0;
     let addrBaseFlash = 0;
+    let useDdrBuffer = false;
     /* Temp change till we support DDR - alloc all memory to single core
      * as we don't plan to run code coverage for system project */
 
@@ -50,6 +51,8 @@
         abortStackSize = options.abortStackSize;
     if(options && options.undefinedStackSize)
         undefinedStackSize = options.undefinedStackSize;
+    if(options && options.useDdrBuffer)
+        useDdrBuffer = options.useDdrBuffer;
 
 
     codeDataSize = 0x80000;
@@ -85,6 +88,21 @@
         codeDataAddrFlash = options.codeDataAddrFlash;
     if(options && options.codeDataSizeFlash)
         codeDataSizeFlash = options.codeDataSizeFlash;
+
+    if(useDdrBuffer == true) {
+        codeDataAddrDdrUdma = 0x88000000;
+        codeDataSizeDdrUdma = 0x08000000;
+        codeDataAddrOcram = 0x70000000;
+        codeDataSizeOcram = 0x00010000;
+	    if(options && options.codeDataAddrDdrUdma)
+	        codeDataAddrDdrUdma = options.codeDataAddrDdrUdma;
+	    if(options && options.codeDataSizeDdrUdma)
+	        codeDataSizeDdrUdma = options.codeDataSizeDdrUdma;
+        if(options && options.codeDataAddrOcram)
+	        codeDataAddrOcram = options.codeDataAddrOcram;
+	    if(options && options.codeDataSizeOcram)
+	        codeDataSizeOcram = options.codeDataSizeOcram;
+    }
 %%}
 
 /* This is the stack that is used by code running within main()
@@ -239,6 +257,16 @@ SECTIONS
     /* global scratch buffer region */
     .globalScratchBuffer (NOLOAD) : {} > DDR2
     % }
+    % if(useDdrBuffer) {
+    GROUP {
+        .udma_buffer_ddr (NOLOAD) : { *(.udma_buffer_ddr) }
+        .udma_buffer_msmc (NOLOAD) : { *(.udma_buffer_msmc) }
+        .udma_buffer_ospi (NOLOAD) : { *(.udma_buffer_ospi) }
+    } > DDR_UDMA
+    GROUP {
+        .udma_buffer_internal (NOLOAD) : { *(.udma_buffer_internal) }
+    } > OCRAM
+    % }
 }
 
 MEMORY
@@ -248,6 +276,10 @@ MEMORY
     R5F_TCMB  : ORIGIN = 0x41010000 , LENGTH = 0x00008000
 
     MSRAM     : ORIGIN = 0x`codeDataAddr.toString(16).toUpperCase()` , LENGTH = 0x`codeDataSize.toString(16).toUpperCase()`
+    % if(useDdrBuffer) {
+    DDR_UDMA : ORIGIN = 0x`(codeDataAddrDdrUdma).toString(16).toUpperCase()`, LENGTH = 0x`(codeDataSizeDdrUdma).toString(16).toUpperCase()`
+    OCRAM    : ORIGIN = 0x`(codeDataAddrOcram).toString(16).toUpperCase()`, LENGTH = 0x`(codeDataSizeOcram).toString(16).toUpperCase()`
+    % }
 
     % if(args.project.isLinuxInSystem === true){
     DDR_IPC_RESOURCE_TABLE_LINUX     : ORIGIN = 0x9B900000 LENGTH = 0x400      /* For resource table   */

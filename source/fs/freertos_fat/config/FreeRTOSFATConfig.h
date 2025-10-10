@@ -35,7 +35,7 @@ extern "C"
 
 #define ffconfigBYTE_ORDER                   (pdFREERTOS_LITTLE_ENDIAN)
 #define ffconfigHAS_CWD                      (0U) /* Use only absolute paths */
-#define ffconfigCWD_THREAD_LOCAL_INDEX       (4U)
+#define ffconfigCWD_THREAD_LOCAL_INDEX       (0U)
 #define ffconfigLFN_SUPPORT                  (1U)
 #define ffconfigINCLUDE_SHORT_NAME           (1U)
 #define ffconfigSHORTNAME_CASE               (0U)

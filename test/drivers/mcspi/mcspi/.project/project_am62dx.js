@@ -9,6 +9,14 @@ const files = {
     ],
 };
 
+const files_rtos = {
+    common: [
+        "test_mcspi.c",
+        "test_mcspi_multi_thread.c",
+        "main.c",
+    ],
+};
+
 /* Relative to where the makefile will be generated
  * Typically at <example_folder>/<BOARD>/<core_os_combo>/<compiler>
  */
@@ -19,6 +27,11 @@ const filedirs = {
     ],
 };
 
+const cflags_free_rtos = {
+    common: [
+        "-DENABLE_MT_TESTS",
+    ],
+};
 const libdirs_nortos = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
@@ -234,9 +247,9 @@ const templates_freertos_c75 =
 const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62dx-evm", os: "freertos"},
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos"},
-    //{ device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62dx-evm", os: "freertos"},
-    // { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62dx-evm", os: "nortos"},
-    // { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "nortos"},
+    { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62dx-evm", os: "freertos"},
+    { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62dx-evm", os: "nortos"},
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "nortos"},
 ];
 
 function getComponentProperty() {
@@ -264,10 +277,12 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_r5f;
         if(buildOption.os.match(/freertos*/) )
         {
+            build_property.files = files_rtos;
             build_property.includes = includes_freertos_r5f;
             build_property.libdirs = libdirs_freertos;
             build_property.libs = libs_freertos_r5f;
             build_property.templates = templates_freertos_mcu_r5f;
+            build_property.cflags =  cflags_free_rtos;
         }
         else
         {
@@ -281,10 +296,12 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_a53;
         if(buildOption.os.match(/freertos*/) )
         {
+            build_property.files = files_rtos;
             build_property.includes = includes_freertos_a53;
             build_property.libdirs = libdirs_freertos;
             build_property.libs = libs_freertos_a53;
             build_property.templates = templates_freertos_a53;
+            build_property.cflags =  cflags_free_rtos;
         }
         else
         {
@@ -295,11 +312,13 @@ function getComponentBuildProperty(buildOption) {
         }
     }
     else if(buildOption.cpu.match(/c75*/)) {
+        build_property.files = files_rtos;
         build_property.defines = defines_c75;
         build_property.includes = includes_freertos_c75;
         build_property.libdirs = libdirs_freertos_c75;
         build_property.libs = libs_freertos_c75;
         build_property.templates = templates_freertos_c75;
+        build_property.cflags =  cflags_free_rtos;
     }
 
     return build_property;

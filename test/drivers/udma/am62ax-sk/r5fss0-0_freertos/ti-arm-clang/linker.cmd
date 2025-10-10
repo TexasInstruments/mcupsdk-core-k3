@@ -1,44 +1,3 @@
-%%{
-    let options = args.options;
-    let globalScratchBuf = "false";
-
-    let vringBaseAddr = 0xA0400000;
-    let vringSize = 0x300000;
-
-    let useDdrBuffer = false;
-    if(options && options.globalScratchBuf)
-    globalScratchBuf = options.globalScratchBuf;
-
-    let globalScratchBufSize = 0x2000000;
-    if(options && options.globalScratchBufSize)
-        globalScratchBufSize = options.globalScratchBufSize
-
-    if(options && options.vringSize)
-        vringSize = options.vringSize;
-
-    if(options && options.vringBaseAddr)
-        vringBaseAddr = options.vringBaseAddr;
-
-    if(options && options.useDdrBuffer)
-        useDdrBuffer = options.useDdrBuffer;
-
-    let globalScratchBufSizeInMB = globalScratchBufSize / (1024 * 1024)
-
-    if(useDdrBuffer == true) {
-        codeDataAddrDdrUdma = 0x90000000;
-        codeDataSizeDdrUdma = 0x08000000;
-        codeDataAddrOcram = 0x70000000;
-        codeDataSizeOcram = 0x00010000;
-	    if(options && options.codeDataAddrDdrUdma)
-	        codeDataAddrDdrUdma = options.codeDataAddrDdrUdma;
-	    if(options && options.codeDataSizeDdrUdma)
-	        codeDataSizeDdrUdma = options.codeDataSizeDdrUdma;
-        if(options && options.codeDataAddrOcram)
-	        codeDataAddrOcram = options.codeDataAddrOcram;
-	    if(options && options.codeDataSizeOcram)
-	        codeDataSizeOcram = options.codeDataSizeOcram;
-    }
-%%}
 --retain="*(.irqStack)";
 --retain="*(.fiqStack)";
 --retain="*(.abortStack)";
@@ -70,15 +29,15 @@
  * - But then the mode is switched to SVC mode and SVC stack is used for all user ISR callbacks
  * - Hence in FreeRTOS, IRQ stack size is less and SVC stack size is more
  */
-__IRQ_STACK_SIZE = 0x`(args.options.irqStackSize).toString(16).toUpperCase()`;
+__IRQ_STACK_SIZE = 0x1000;
 /* This is the size of stack when R5 is in IRQ mode
  * - In both NORTOS and FreeRTOS nesting is disabled for FIQ
  */
-__FIQ_STACK_SIZE = 0x0`(args.options.fiqStackSize).toString(16).toUpperCase()`;
-__SVC_STACK_SIZE = 0x0`(args.options.svcStackSize).toString(16).toUpperCase()`; /* This is the size of stack when R5 is in SVC mode */
-__ABORT_STACK_SIZE = 0x0`(args.options.abortStackSize).toString(16).toUpperCase()`;  /* This is the size of stack when R5 is in ABORT mode */
-__UNDEFINED_STACK_SIZE = 0x0`(args.options.undefinedStackSize).toString(16).toUpperCase()`;  /* This is the size of stack when R5 is in UNDEF mode */
-__DM_STUB_STACK_SIZE = 0x0`(args.options.dmStubstacksize).toString(16).toUpperCase()`; /* DM stub stack size */
+__FIQ_STACK_SIZE = 0x0100;
+__SVC_STACK_SIZE = 0x0100; /* This is the size of stack when R5 is in SVC mode */
+__ABORT_STACK_SIZE = 0x0100;  /* This is the size of stack when R5 is in ABORT mode */
+__UNDEFINED_STACK_SIZE = 0x0100;  /* This is the size of stack when R5 is in UNDEF mode */
+__DM_STUB_STACK_SIZE = 0x0400; /* DM stub stack size */
 
 SECTIONS
 {
@@ -96,23 +55,6 @@ SECTIONS
         .text:abort: palign(8) /* this helps in loading symbols when using XIP mode */
     } load = R5F_TCMB, run = R5F_TCMA
 
-    % if(args.project.ipcVringRTOS === true){
-    /* this is used only when IPC RPMessage is enabled, else this is not used */
-    .bss.ipc_vring_mem   (NOLOAD) : {} > DDR_IPC_VRING_RTOS
-    % }
-    % if(args.project.isLinuxInSystem === true){
-    GROUP {
-        /* This is the resource table used by linux to know where the IPC "VRINGs" are located */
-        .resource_table: {} palign(1024)
-    } > DDR_IPC_RESOURCE_TABLE_LINUX
-    /* This IPC log can be viewed via ROV in CCS and when linux is enabled, this log can also be viewed via linux debugfs */
-    .bss.debug_mem_trace_buf    : {} palign(128)    > DDR_IPC_TRACE_LINUX
-
-    % }
-    % if(args.project.isLogSHM === true){
-    /* this is used when Debug log's to shared memory is enabled, else this is not used */
-    .bss.log_shared_mem  (NOLOAD) : {} > DDR_LOG_SHM_MEM
-    % }
     .lpm_data (NOLOAD)      : {} align(4)       > DDR_LPM_DATA
     .text                   : {} palign(8)      > DDR
     .const                  : {} palign(8)      > DDR
@@ -132,12 +74,6 @@ SECTIONS
         RUN_END(__BSS_END)
     } > DDR
 
-    % if(args.isInstrumentation) {
-    GROUP {
-        __llvm_prf_cnts
-        __llvm_prf_bits
-    } > DDR
-    % }
     GROUP{
 
         .dm_stub_text : {
@@ -207,11 +143,6 @@ SECTIONS
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
     } > DDR
 
-    % if(globalScratchBuf == "true") {
-    /* global scratch buffer region */
-    .globalScratchBuffer (NOLOAD) : {} > DDR2
-    % }
-    % if(useDdrBuffer) {
     GROUP {
         .udma_buffer_ddr (NOLOAD) : { *(.udma_buffer_ddr) }
         .udma_buffer_msmc (NOLOAD) : { *(.udma_buffer_msmc) }
@@ -221,7 +152,6 @@ SECTIONS
     GROUP {
         .udma_buffer_internal (NOLOAD) : { *(.udma_buffer_internal) }
     } > OCRAM
-    % }
 }
 
 
@@ -239,29 +169,7 @@ MEMORY
     DDR_LPM_DATA    (RWIX)      : ORIGIN = 0x9CA00000 LENGTH = 0x000A0000
     /* DDR for DM R5F code/data [ size 27 MiB + 384 KB ] */
     DDR                         : ORIGIN = 0x9CAA0000 LENGTH = 0x1B60000
-    % if(args.project.isLinuxInSystem === true){
-    DDR_IPC_RESOURCE_TABLE_LINUX: ORIGIN = 0x9C900000 LENGTH = 0x400    /* For resource table   */
-    DDR_IPC_TRACE_LINUX         : ORIGIN = 0x9C900400 LENGTH = 0xFFC00  /* IPC trace buffer     */
-    %}
 
-    % if(useDdrBuffer) {
-    DDR_UDMA : ORIGIN = 0x`(codeDataAddrDdrUdma).toString(16).toUpperCase()`, LENGTH = 0x`(codeDataSizeDdrUdma).toString(16).toUpperCase()`
-    OCRAM    : ORIGIN = 0x`(codeDataAddrOcram).toString(16).toUpperCase()`, LENGTH = 0x`(codeDataSizeOcram).toString(16).toUpperCase()`
-    % }
-    % if(args.project.ipcVringRTOS === true){
-     /*
-     3MB from address 0XA0000000 is used by RTOS IPC on Vision apps.
-     As the C7x binary is taken from vision apps, C7x will be writing to this memory.
-     So, for MCU+SDK we are using memory which is not used by Vision apps RTOS IPC.
-     */
-    DDR_IPC_VRING_RTOS          : ORIGIN = 0x`vringBaseAddr.toString(16).toUpperCase()` LENGTH = 0x`vringSize.toString(16).toUpperCase()`   /* IPC VRING for RTOS/NoRTOS */
-    %}
-    % if(args.project.isLogSHM === true){
-    DDR_LOG_SHM_MEM             : ORIGIN = 0xA1000000 LENGTH = 0x40000    /* Shared memory log */
-    %}
-    % if(globalScratchBuf == "true") {
-
-    /* global scratch buffer region in DDR (`globalScratchBufSizeInMB` MB) */
-    DDR2           (RWIX)      : ORIGIN = 0xA8000000 LENGTH = 0x0`(globalScratchBufSize).toString(16).toUpperCase()`
-    % }
+    DDR_UDMA : ORIGIN = 0x90000000, LENGTH = 0x8000000
+    OCRAM    : ORIGIN = 0x70000000, LENGTH = 0x10000
 }

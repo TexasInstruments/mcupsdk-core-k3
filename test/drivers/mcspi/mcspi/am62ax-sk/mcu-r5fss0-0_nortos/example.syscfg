@@ -30,11 +30,10 @@ const mpu_armv76 = mpu_armv7.addInstance();
  */
 mcspi1.$name                 = "CONFIG_MCSPI0";
 mcspi1.mode                  = "MULTI_MASTER";
+mcspi1.MCU_SPI.$assign       = "MCU_SPI0";
 mcspi1.mcspiChannel[0].$name = "CONFIG_MCSPI_CH0";
 
 mcspi2.$name                 = "CONFIG_MCSPI1";
-mcspi2.mode                  = "MULTI_MASTER";
-mcspi2.inputSelect           = "0";
 mcspi2.MCU_SPI.$assign       = "MCU_SPI1";
 mcspi2.mcspiChannel[0].$name = "CONFIG_MCSPI_CH1";
 
@@ -92,7 +91,6 @@ mpu_armv76.size     = 31;
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-mcspi1.MCU_SPI.$suggestSolution                 = "MCU_SPI0";
 mcspi1.MCU_SPI.CLK.$suggestSolution             = "MCU_SPI0_CLK";
 mcspi1.MCU_SPI.D0.$suggestSolution              = "MCU_SPI0_D0";
 mcspi1.MCU_SPI.D1.$suggestSolution              = "MCU_SPI0_D1";

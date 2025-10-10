@@ -40,7 +40,6 @@ endif
 
 FILES_common := \
 	test_mcspi.c \
-	test_mcspi_multi_thread.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -57,9 +56,6 @@ FILES_PATH_common = \
 
 INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source \
-	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
-	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53 \
-	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/a53 \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
 	-Igenerated \
 
@@ -82,7 +78,6 @@ CFLAGS_common := \
 	-Wno-unused-but-set-variable \
 	-fdata-sections \
 	-ffunction-sections \
-	-DENABLE_MT_TESTS \
 
 CFLAGS_debug := \
 	-D_DEBUG_=1 \
@@ -94,14 +89,16 @@ LNK_FILES_common = \
 	linker.cmd \
 
 LIBS_PATH_common = \
-	-L${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
+	-L${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
 	-L${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	-L${MCU_PLUS_SDK_PATH}/source/board/lib \
 	-L${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	-L$(CGT_GCC_AARCH64_PATH)/lib \
 
 LIBS_common = \
-	-l:freertos.am62ax.a53.gcc-aarch64.${ConfigName}.lib \
+	-l:nortos.am62ax.a53.gcc-aarch64.${ConfigName}.lib \
 	-l:drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib \
+	-l:board.am62ax.a53.gcc-aarch64.${ConfigName}.lib \
 	-l:unity.am62ax.a53.gcc-aarch64.${ConfigName}.lib \
 
 LFLAGS_common = \
@@ -116,13 +113,15 @@ LFLAGS_common = \
 
 
 LIBS_NAME = \
-	freertos.am62ax.a53.gcc-aarch64.${ConfigName}.lib \
+	nortos.am62ax.a53.gcc-aarch64.${ConfigName}.lib \
 	drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib \
+	board.am62ax.a53.gcc-aarch64.${ConfigName}.lib \
 	unity.am62ax.a53.gcc-aarch64.${ConfigName}.lib \
 
 LIBS_PATH_NAME = \
-	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
+	${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	$(CGT_GCC_AARCH64_PATH)/lib \
 
@@ -149,11 +148,11 @@ vpath %.lib $(LIBS_PATH_NAME)
 vpath %.a $(LIBS_PATH_NAME)
 
 $(OBJDIR)/%.obj %.obj: %.c
-	@echo  Compiling: am62ax:a53ss0-0:freertos:gcc-aarch64 $(OUTNAME): $<
+	@echo  Compiling: am62ax:a53ss0-0:nortos:gcc-aarch64 $(OUTNAME): $<
 	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -MT $@ -o $(OBJDIR)/$@ $<
 
 $(OBJDIR)/%.obj %.obj: %.S
-	@echo  Compiling: am62ax:a53ss0-0:freertos:gcc-aarch64 $(LIBNAME): $<
+	@echo  Compiling: am62ax:a53ss0-0:nortos:gcc-aarch64 $(LIBNAME): $<
 	$(CC) -c -x assembler-with-cpp $(CFLAGS) $(INCLUDES) $(DEFINES) -o $(OBJDIR)$@ $<
 
 all: $(TARGETS)
@@ -167,13 +166,13 @@ SYSCFG_GEN_FILES+=generated/ti_board_open_close.c generated/ti_board_open_close.
 
 $(OUTNAME): syscfg $(SYSCFG_GEN_FILES) $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 	@echo  .
-	@echo  Linking: am62ax:a53ss0-0:freertos:gcc-aarch64 $@ ...
+	@echo  Linking: am62ax:a53ss0-0:nortos:gcc-aarch64 $@ ...
 	$(LNK) $(LIBS_PATH) -Wl,-Map=$(OUTNAME:%.out=%.map) -o $@ -Wl,--start-group $(LFLAGS) $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) -Wl,--end-group -Wl,-T,$(LNK_FILES)
-	@echo  Linking: am62ax:a53ss0-0:freertos:gcc-aarch64 $@ Done !!!
+	@echo  Linking: am62ax:a53ss0-0:nortos:gcc-aarch64 $@ Done !!!
 	@echo  .
 
 clean:
-	@echo  Cleaning: am62ax:a53ss0-0:freertos:gcc-aarch64 $(OUTNAME) ...
+	@echo  Cleaning: am62ax:a53ss0-0:nortos:gcc-aarch64 $(OUTNAME) ...
 	$(RMDIR) $(OBJDIR)
 	$(RM) $(OUTNAME)
 	$(RM) $(BOOTIMAGE_NAME)
@@ -186,7 +185,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62ax:a53ss0-0:freertos:gcc-aarch64 test_mcspi ...
+	@echo  Scrubing: am62ax:a53ss0-0:nortos:gcc-aarch64 test_mcspi ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
@@ -265,7 +264,7 @@ MULTI_CORE_IMAGE_PARAMS_XIP = \
 	$(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
 
 $(BOOTIMAGE_NAME): $(OUTNAME)
-	@echo  Boot image: am62ax:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$@ ...
+	@echo  Boot image: am62ax:a53ss0-0:nortos:gcc-aarch64 $(BOOTIMAGE_PATH)/$@ ...
 ifneq ($(OS),Windows_NT)
 	$(CHMOD) a+x $(XIPGEN_CMD)
 endif
@@ -282,9 +281,9 @@ endif
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
-	@echo  Boot image: am62ax:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$@ Done !!!
+	@echo  Boot image: am62ax:a53ss0-0:nortos:gcc-aarch64 $(BOOTIMAGE_PATH)/$@ Done !!!
 	@echo  .
-	@echo  Boot image: am62ax:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
+	@echo  Boot image: am62ax:a53ss0-0:nortos:gcc-aarch64 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
 	@echo  .
 
 $(BOOTIMAGE_NAME_HS): $(BOOTIMAGE_NAME)
@@ -304,7 +303,7 @@ else
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_NAME)-enc
 endif
-	@echo  Boot image: am62ax:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
+	@echo  Boot image: am62ax:a53ss0-0:nortos:gcc-aarch64 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
 	@echo  .
 endif
 -include $(addprefix $(OBJDIR)/, $(DEPS))

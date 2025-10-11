@@ -202,7 +202,7 @@ const example_file_list = [
     "test/drivers/gpio/.project/project.js",
     "test/drivers/gtc/.project/project.js",
     "test/drivers/pinmux_coverage/.project/project.js",
-    "test/drivers/mmcsd/test_mmcsd_file_io/.project/project.js",
+    "test/drivers/mmcsd/test_mmcsd_raw_io/.project/project.js",
     "test/drivers/rtc/.project/project.js",
     "test/drivers/sciclient/sciclient_get_version/.project/project.js",
     "test/drivers/sciclient/sciclient_dynamic_analysis/.project/project.js",

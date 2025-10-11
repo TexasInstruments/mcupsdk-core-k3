@@ -190,7 +190,7 @@ const example_file_list = [
     "test/drivers/mcasp/mcasp_start_stop_test/.project/project.js",
     "test/drivers/mcasp/mcasp_multiinst_loopback/.project/project.js",
     "test/drivers/mcspi/mcspi/.project/project.js",
-    "test/drivers/mmcsd/test_mmcsd_file_io/.project/project.js",
+    "test/drivers/mmcsd/test_mmcsd_raw_io/.project/project.js",
     "test/drivers/ospi/.project/project.js",
     "test/drivers/pinmux_coverage/.project/project.js",
     "test/drivers/soc_coverage/.project/project.js",

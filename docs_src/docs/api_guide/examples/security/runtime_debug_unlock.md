@@ -9,15 +9,19 @@ This example demonstrates how to do runtime JTAG port unlock. If the JTAG is unl
 
 Refer \htmllink{https://downloads.ti.com/tisci/esd/latest/2_tisci_msgs/security/runtime_debug.html,TISCI documentation} for more details about the API.
 
-\note Only hosts allowed in security board configuration can send jtag unlock message via TISCI. Before running the example change the "jtag_unlock_hosts" parameter
+\note Only hosts allowed in security board configuration can send jtag unlock message via TISCI. Before running the example change the "allow_jtag_unlock", "allow_wildcard_unlock" and "jtag_unlock_hosts" parameters
 in the "source/drivers/sciclient/sciclient_default_boardcfg/@VAR_SOC_NAME_LOWER/sciclient_defaultBoardcfg_security.c" as follows,
 \cond SOC_AM62AX
 \code
+        .allow_jtag_unlock = 0x5A,
+        .allow_wildcard_unlock = 0x5A,
         .jtag_unlock_hosts = {TISCI_HOST_ID_A53_0, 0, 0, 0},
 \endcode
 \endcond
 \cond SOC_AM62PX
 \code
+        .allow_jtag_unlock = 0x5A,
+        .allow_wildcard_unlock = 0x5A,
         .jtag_unlock_hosts = {TISCI_HOST_ID_WKUP_0_R5_0, 0, 0, 0},
 \endcode
 \endcond

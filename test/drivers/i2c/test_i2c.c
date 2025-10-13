@@ -292,6 +292,7 @@ void test_main(void *args)
     RUN_TEST(test_i2c_error_nack, 6849, (void*)&testParams);
     /* Hw Intr mode I2C_lld_mem_writeIntr*/
     test_i2c_set_test_params(&testParams, 0);
+
     RUN_TEST(test_i2c_write_read, 6248, (void*)&testParams);
     test_i2c_set_test_params(&testParams, 0);
     RUN_TEST(TestI2c_eepromReadWithoutAddressWrite, 8883, NULL);
@@ -346,6 +347,12 @@ void test_main(void *args)
     /* RUN_TEST(TestI2c_callbackQueueDepth, 8631, NULL); */
     RUN_TEST(TestI2c_sdaStuckRecoverBusWithSystestFault, 8630 ,NULL);
     RUN_TEST(TestI2c_memPrimeTransferInvalidDir, 8626, NULL);
+
+#if defined(SOC_J722S)
+    RUN_TEST(test_i2c_write_read, 18763, (void*)&testParams);
+
+    RUN_TEST(test_i2c_dynamic_coverage, 18762, NULL);
+#endif
 
     I2C_deinit();
 

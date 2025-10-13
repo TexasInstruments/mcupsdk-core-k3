@@ -56,6 +56,17 @@ typedef struct {
 
 } Flash_NorOspiObject;
 
+typedef struct {
+    /* Fallback frequency in case of communication failure */
+    uint32_t fallBackFreq;
+    /* Baud rate divisor for DDR (Double Data Rate) mode */
+    uint32_t ddrBaudRateDiv;
+    /* Baud rate divisor for SDR (Single Data Rate) mode */
+    uint32_t sdrBaudRateDiv;
+    /* Protocol configuration for 1S (single) mode */
+    FlashCfg_ProtoEnConfig protoCfg1s;
+}Flash_NorOspiFallBackCfg;
+
 /* Flash specific externs */
 extern Flash_Fxns gFlashNorOspiFxns;
 

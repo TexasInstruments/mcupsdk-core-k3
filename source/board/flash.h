@@ -363,6 +363,7 @@ struct Flash_Config_s
     Flash_Fxns                 *fxns;           /**< Flash device implementation functions */
     Flash_DevConfig            *devConfig;      /**< Flash device specific config, like command ID for read, erase, etc */
     void                       *object;         /**< Flash driver object, used to maintain driver implementation state */
+    void                       *fallBackCfg;    /**< Flash fallback configs, used to configure flash in  */
     SemaphoreP_Object          lockSem;         /**< Semaphore to protect the flash layer calls per instance. */
 
 };

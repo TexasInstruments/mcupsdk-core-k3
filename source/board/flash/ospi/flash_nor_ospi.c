@@ -42,7 +42,7 @@
 /* ========================================================================== */
 
 #define FLASH_OSPI_JEDEC_ID_SIZE_MAX (8U)
-#define FLASH_OSPI_TRY_TUNING        (2U)
+#define FLASH_OSPI_TRY_TUNING        (3U)
 
 /* ========================================================================== */
 /*                          Function Declarations                             */
@@ -59,6 +59,7 @@ int32_t Flash_quirkSpansionUNHYSADisable(Flash_Config *config);
 static int32_t Flash_norOspiEnablePhyPipeline(Flash_Config *config);
 static int32_t Flash_norOspiDisablePhyPipeline(Flash_Config *config);
 static int32_t Flash_norOspiPhyTune(Flash_Config *config);
+static int32_t Flash_norOspiFallback(Flash_Config *config);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -498,7 +499,7 @@ static int32_t Flash_setOeBit(Flash_Config *config, uint8_t oeType)
 
             if((sr2 & bitPos) != 0)
             {
-                /* QE is already set */
+                /* OE is already set */
             }
             else
             {
@@ -893,6 +894,7 @@ static int32_t Flash_norOspiRead(Flash_Config *config, uint32_t offset, uint8_t 
                     else
                     {
                         obj->phyEnable = FALSE;
+                        status = Flash_norOspiFallback(config);
                     }
                 }
                 else
@@ -901,11 +903,14 @@ static int32_t Flash_norOspiRead(Flash_Config *config, uint32_t offset, uint8_t 
                 }
             }
 
-            status = OSPI_readDirect(obj->ospiHandle, &transaction);
-
-            if(obj->phyEnable == TRUE)
+            if(status == SystemP_SUCCESS)
             {
-                OSPI_disablePhy(obj->ospiHandle);
+                status = OSPI_readDirect(obj->ospiHandle, &transaction);
+
+                if(obj->phyEnable)
+                {
+                    OSPI_disablePhy(obj->ospiHandle);
+                }
             }
         }
         else
@@ -1425,11 +1430,72 @@ static int32_t Flash_norOspiPhyTune(Flash_Config *config)
             DebugP_logError("%s : PHY enabling failed!!! Continuing without PHY...\r\n", __func__);
             obj->phyEnable = FALSE;
             OSPI_setPhyEnableSuccess(obj->ospiHandle, FALSE);
+
+            /* If tuning fails, operate in lower frequency */
+            status = Flash_norOspiFallback(config);
         }
     }
     else
     {
         obj->phyEnable = FALSE;
+    }
+
+    return status;
+}
+
+static int32_t Flash_norOspiFallback(Flash_Config *config)
+{
+    int32_t status = SystemP_SUCCESS;
+    Flash_DevConfig *devCfg = config->devConfig;
+    Flash_NorOspiObject *obj = (Flash_NorOspiObject *)(config->object);
+    Flash_NorOspiFallBackCfg *fCfg = (Flash_NorOspiFallBackCfg*)(config->fallBackCfg);
+    uint32_t tryReset = FLASH_OSPI_TRY_TUNING;
+    uint32_t phyTuningOffset = Flash_getPhyTuningOffset(config);
+
+    /* Set OSPI frequency to 200Mhz */
+    status = OSPI_setFrequency(obj->ospiHandle, (uint64_t)fCfg->fallBackFreq);
+
+    /* Fall back to 8d8d8d mode at 25MHz */
+    if(status == SystemP_SUCCESS)
+    {
+        /* Calculate OSPI delays for 200MHz */
+        OSPI_setDelays(obj->ospiHandle, fCfg->fallBackFreq);
+
+        OSPI_setBaudRateDiv(obj->ospiHandle, fCfg->ddrBaudRateDiv);
+
+        /* Set Mode Clocks and Dummy Clocks in Controller and Flash Memory */
+        status = Flash_norOspiSetModeDummy(config, obj->ospiHandle);
+
+        /* Set RD Capture Delay by reading manufacture ID and device ID */
+        status += Flash_norOspiSetRdDataCaptureDelay(config);
+        status += OSPI_phyReadAttackVector(obj->ospiHandle, phyTuningOffset);
+
+        /**
+         *  If flash fails to operate in 8d8d8d mode at 25MHz fall back to 1s1s1s
+         *  mode at 50MHz
+         */
+        if(status == SystemP_FAILURE)
+        {
+
+            /* Reset the flash */
+            do{
+                status = Flash_norOspiReset(config);
+                tryReset--;
+            }while((tryReset > 0U) && (status != SystemP_SUCCESS));
+
+            if(status == SystemP_SUCCESS)
+            {
+                /* Set the protocol to 1s1s1s */
+                devCfg->protocolCfg = fCfg->protoCfg1s;
+                OSPI_setBaudRateDiv(obj->ospiHandle, fCfg->sdrBaudRateDiv);
+                OSPI_set1sProtocol(obj->ospiHandle);
+
+                status = Flash_norOspiSetAddressBytes(config, obj->ospiHandle);
+                /* Set Mode Clocks and Dummy Clocks in Controller and Flash Memory */
+                status += Flash_norOspiSetModeDummy(config, obj->ospiHandle);
+                status += OSPI_phyReadAttackVector(obj->ospiHandle, phyTuningOffset);
+            }
+        }
     }
 
     return status;

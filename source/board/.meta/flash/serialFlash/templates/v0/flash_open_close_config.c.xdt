@@ -14,6 +14,34 @@ Flash_NorOspiObject gFlashObject_`config.fname` =
 {
     .rdDummyValPhyMode = FLASH_NOR_UPDATE_RD_DUMMY_VALUE,
 };
+
+Flash_NorOspiFallBackCfg gFlashFallBackCfg_`config.fname` =
+{
+    .fallBackFreq   = 200000000U,
+    .ddrBaudRateDiv    = 8U,
+    .sdrBaudRateDiv    = 4U,
+    .protoCfg1s = {
+        .protocol = FLASH_CFG_PROTO_1S_1S_1S,
+        .isDtr = FALSE,
+        .cmdRd = 0x03,
+        .cmdWr = 0x02,
+        .modeClksCmd = 0,
+        .modeClksRd = 0,
+        .dummyClksCmd = 0,
+        .dummyClksRd = 0,
+        .enableType = 0xFF,
+        .enableSeq = 0xFF,
+        .dummyCfg = {
+            .isAddrReg = FALSE,
+            .cmdRegRd = 0x00,
+            .cmdRegWr = 0x00,
+            .cfgReg = 0x00,
+            .shift = 0,
+            .mask = 0x00,
+            .cfgRegBitP = 0,
+        },
+    },
+};
 % } if (config.flashType == "SERIAL_NAND") {
 #define FLASH_NAND_NUM_OF_BLOCK  `Math.round(config.flashSize/config.flashBlockSize)`
 

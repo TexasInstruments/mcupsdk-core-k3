@@ -436,6 +436,10 @@ typedef struct
     /**< Peripheral base address */
     uint32_t                dataBaseAddr;
     /**< Base address of the OSPI flash */
+    uint32_t                moduleId;
+    /**< OSPI Module Id */
+    uint32_t                clkId;
+    /**< OSPI Clock Id */
     uint32_t                inputClkFreq;
     /**< Module input clock frequency */
 
@@ -1347,6 +1351,67 @@ uint32_t OSPI_isOtpValidateEnable(OSPI_Handle handle);
  * \return SystemP_SUCCESS on success, #SystemP_FAILURE otherwise
  */
 int32_t OSPI_phyValidateTuningPoint(OSPI_Handle handle, uint32_t flashOffset);
+
+/**
+ *  \brief Sets the operating frequency for the OSPI peripheral
+ *
+ *  This function configures the OSPI controller to operate at the specified
+ *  frequency based on the input clock frequency provided.
+ *
+ *  \param  handle       OSPI driver handle
+ *  \param  inputClkFreq Input clock frequency in Hz
+ *
+ *  \return SystemP_SUCCESS on success, error code on failure
+ */
+int32_t OSPI_setFrequency(OSPI_Handle handle, uint64_t inputClkFreq);
+
+/**
+ *  \brief Sets timing delays for the OSPI interface based on input clock frequency
+ *
+ *  This function configures the appropriate timing delays for the OSPI interface
+ *  to ensure reliable communication with external memory devices. The delays are
+ *  calculated based on the provided input clock frequency.
+ *
+ *  \param handle        OSPI handle to the peripheral instance
+ *  \param inputClkFreq  Input clock frequency in Hz
+ *
+ */
+void OSPI_setDelays(OSPI_Handle handle, uint32_t inputClkFreq);
+
+/**
+ *  \brief Sets the baud rate divider for OSPI communication
+ *
+ *  This function configures the baud rate divider to control the OSPI clock frequency.
+ *  The actual OSPI clock frequency is determined by dividing the input clock frequency
+ *  by the specified baud rate divider.
+ *
+ *  \param handle       OSPI handle
+ *  \param baudRateDiv  Baud rate divider value
+ */
+void OSPI_setBaudRateDiv(OSPI_Handle handle, uint32_t baudRateDiv);
+
+/**
+ *  \brief  This function resets DDR bit in INSTR_RD register for RD commands
+ *
+ *  \pre    OSPI controller has been opened using #OSPI_open()
+ *
+ *  \param  handle  An #OSPI_Handle returned from an #OSPI_open()
+ *
+ *  \return #SystemP_SUCCESS if SDR successfully enabled, else error on failure
+ */
+int32_t OSPI_disableDdrRdCmds(OSPI_Handle handle);
+
+/**
+ *  \brief Resets the OSPI controller to operate in 1S-1S-1S mode
+ *
+ *  This function reverts the OSPI controller configuration from advanced modes
+ *  (such as 8D-8D-8D DDR mode) back to the basic single-lane mode (1S-1S-1S).
+ *  It unsets all registers that were configured for high-performance modes,
+ *  allowing the controller to operate in the standard SPI mode.
+ *
+ *  \param handle  OSPI driver handle
+ */
+void OSPI_set1sProtocol(OSPI_Handle handle);
 
 /** @} */
 

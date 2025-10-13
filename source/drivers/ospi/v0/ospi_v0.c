@@ -44,6 +44,7 @@
 /* This is needed for memset/memcpy */
 #include <string.h>
 #include <drivers/ospi.h>
+#include <drivers/soc.h>
 #include <kernel/dpl/SemaphoreP.h>
 #include <kernel/dpl/HwiP.h>
 #include <kernel/dpl/CacheP.h>
@@ -56,7 +57,7 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define OSPI_DIV_ROUND_UP(n, d)     (((n) + (d) - 1) / (d))
+#define OSPI_DIV_ROUND_UP(n, d)     (((n) + (d) - 1U) / (d))
 
 /** \brief    OSPI DMA related macros */
 #define OSPI_DMA_COPY_SRC_ALIGNMENT   (32U)
@@ -536,6 +537,28 @@ int32_t OSPI_enableDdrRdCmds(OSPI_Handle handle)
         CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG,
                    OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DDR_EN_FLD,
                    1);
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+
+    return status;
+}
+
+int32_t OSPI_disableDdrRdCmds(OSPI_Handle handle)
+{
+    int32_t status = SystemP_SUCCESS;
+
+    if(handle != NULL)
+    {
+        const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+        const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+
+        /* Enable DDR EN commands */
+        CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG,
+                   OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DDR_EN_FLD,
+                   0);
     }
     else
     {
@@ -1235,7 +1258,11 @@ int32_t OSPI_readDirect(OSPI_Handle handle, OSPI_Transaction *trans)
         /* Do DMA copy for 32B-aligned bytes */
         uint32_t unalignedBytes = (remainingBytes % OSPI_DMA_COPY_SIZE_ALIGNMENT);
 
-        if(attrs->phyEnable == TRUE)
+        /* Enable PHY mode */
+        uint32_t phyEnable = CSL_REG32_FEXT(&pReg->CONFIG_REG,
+                                            OSPI_FLASH_CFG_CONFIG_REG_PHY_MODE_ENABLE_FLD);
+
+        if(phyEnable == TRUE)
         {
             /* Enable PHY pipeline */
             CSL_REG32_FINS(&pReg->CONFIG_REG,
@@ -1245,7 +1272,7 @@ int32_t OSPI_readDirect(OSPI_Handle handle, OSPI_Transaction *trans)
 
         OSPI_dmaCopy(obj->ospiDmaHandle, tempDst, tempSrc, remainingBytes - unalignedBytes);
 
-        if(attrs->phyEnable == TRUE)
+        if(phyEnable == TRUE)
         {
             /* Disable PHY pipeline */
             CSL_REG32_FINS(&pReg->CONFIG_REG,
@@ -1264,7 +1291,10 @@ int32_t OSPI_readDirect(OSPI_Handle handle, OSPI_Transaction *trans)
     else
     {
         #if defined(__C7504__) || defined(__C7524__)
-        if(attrs->phyEnable == 1U)
+        /* Enable PHY mode */
+        uint32_t phyEnable = CSL_REG32_FEXT(&pReg->CONFIG_REG,
+                                            OSPI_FLASH_CFG_CONFIG_REG_PHY_MODE_ENABLE_FLD);
+        if(phyEnable == 1U)
         {
             /* Enable PHY pipeline */
             CSL_REG32_FINS(&pReg->CONFIG_REG,
@@ -1275,7 +1305,7 @@ int32_t OSPI_readDirect(OSPI_Handle handle, OSPI_Transaction *trans)
         Utils_memcpyWord(pSrc, pDst, trans->count);
 
         #if defined(__C7504__) || defined(__C7524__)
-        if(attrs->phyEnable == 1U)
+        if(phyEnable == 1U)
         {
             /* Disable PHY pipeline */
             CSL_REG32_FINS(&pReg->CONFIG_REG,
@@ -1637,7 +1667,6 @@ static int32_t OSPI_programInstance(OSPI_Config *config)
     const OSPI_Attrs *attrs = config->attrs;
     OSPI_Object *obj = config->object;
     const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)attrs->baseAddr;
-    uint32_t tsclk, cssot, csset, csdads, csda;
 
     /*
      * If user has opted to skip OSPI tuning and PHY has been configured properly, then
@@ -1705,38 +1734,10 @@ static int32_t OSPI_programInstance(OSPI_Config *config)
         CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG,
                    OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_BYPASS_FLD,
                    1);
-        /* Delay Setup */
-        tsclk = OSPI_DIV_ROUND_UP(attrs->inputClkFreq, OSPI_MAX_OPERATING_FREQUENCY);
-        cssot = OSPI_calculateTicksForns(attrs->inputClkFreq, CSL_OSPI_DEV_DELAY_CSSOT_NS);
 
-        if(cssot < tsclk)
-        {
-            cssot = tsclk;
-        }
+        OSPI_setDelays(handle, attrs->inputClkFreq);
 
-        csset = OSPI_calculateTicksForns(attrs->inputClkFreq, CSL_OSPI_DEV_DELAY_CSEOT_NS);
-        csdads = OSPI_calculateTicksForns(attrs->inputClkFreq, CSL_OSPI_DEV_DELAY_CSDADS_NS);
-        csda = OSPI_calculateTicksForns(attrs->inputClkFreq, CSL_OSPI_DEV_DELAY_CSDA_NS);
-
-        uint32_t devDelay = ((cssot << CSL_OSPI_FLASH_CFG_DEV_DELAY_REG_D_INIT_FLD_SHIFT)  | \
-                      (csset << CSL_OSPI_FLASH_CFG_DEV_DELAY_REG_D_AFTER_FLD_SHIFT) | \
-                      (csdads << CSL_OSPI_FLASH_CFG_DEV_DELAY_REG_D_BTWN_FLD_SHIFT)  | \
-                      (csda << CSL_OSPI_FLASH_CFG_DEV_DELAY_REG_D_NSS_FLD_SHIFT));
-        CSL_REG32_WR(&pReg->DEV_DELAY_REG, devDelay);
-
-        if(attrs->baudRateDiv)
-        {
-            CSL_REG32_FINS(&pReg->CONFIG_REG,
-                   OSPI_FLASH_CFG_CONFIG_REG_MSTR_BAUD_DIV_FLD,
-                   CSL_OSPI_BAUD_RATE_DIVISOR(attrs->baudRateDiv));
-        }
-        else
-        {
-
-            CSL_REG32_FINS(&pReg->CONFIG_REG,
-                   OSPI_FLASH_CFG_CONFIG_REG_MSTR_BAUD_DIV_FLD,
-                   CSL_OSPI_BAUD_RATE_DIVISOR_DEFAULT);
-        }
+        OSPI_setBaudRateDiv(handle, attrs->baudRateDiv);
 
         /* Disable PHY pipeline mode */
         CSL_REG32_FINS(&pReg->CONFIG_REG,
@@ -2253,6 +2254,82 @@ uint32_t OSPI_isOtpValidateEnable(OSPI_Handle handle)
         const OSPI_Attrs* attrs = ((OSPI_Config *)handle)->attrs;
         retVal = attrs->validateOtp;
     }
-    
+
     return retVal;
+}
+
+int32_t OSPI_setFrequency(OSPI_Handle handle, uint64_t inputClkFreq)
+{
+    int32_t status = SystemP_SUCCESS;
+    const OSPI_Attrs* attrs = ((OSPI_Config *)handle)->attrs;
+    status = SOC_moduleSetClockFrequency(attrs->moduleId, attrs->clkId, inputClkFreq);
+    return status;
+}
+
+void OSPI_setDelays(OSPI_Handle handle, uint32_t inputClkFreq)
+{
+
+    if(handle != NULL)
+    {
+        const OSPI_Attrs* attrs = ((OSPI_Config *)handle)->attrs;
+        const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)attrs->baseAddr;
+        uint32_t tsclk, cssot, csset, csdads, csda;
+
+        /* Delay Setup */
+        tsclk = OSPI_DIV_ROUND_UP(inputClkFreq, OSPI_MAX_OPERATING_FREQUENCY);
+        cssot = OSPI_calculateTicksForns(inputClkFreq, CSL_OSPI_DEV_DELAY_CSSOT_NS);
+
+        if(cssot < tsclk)
+        {
+            cssot = tsclk;
+        }
+
+        csset = OSPI_calculateTicksForns(inputClkFreq, CSL_OSPI_DEV_DELAY_CSEOT_NS);
+        csdads = OSPI_calculateTicksForns(inputClkFreq, CSL_OSPI_DEV_DELAY_CSDADS_NS);
+        csda = OSPI_calculateTicksForns(inputClkFreq, CSL_OSPI_DEV_DELAY_CSDA_NS);
+
+        uint32_t devDelay = ((cssot << CSL_OSPI_FLASH_CFG_DEV_DELAY_REG_D_INIT_FLD_SHIFT)  | \
+                      (csset << CSL_OSPI_FLASH_CFG_DEV_DELAY_REG_D_AFTER_FLD_SHIFT) | \
+                      (csdads << CSL_OSPI_FLASH_CFG_DEV_DELAY_REG_D_BTWN_FLD_SHIFT)  | \
+                      (csda << CSL_OSPI_FLASH_CFG_DEV_DELAY_REG_D_NSS_FLD_SHIFT));
+        CSL_REG32_WR(&pReg->DEV_DELAY_REG, devDelay);
+    }
+
+}
+
+void OSPI_setBaudRateDiv(OSPI_Handle handle, uint32_t baudRateDiv)
+{
+    if(handle != NULL)
+    {
+        const OSPI_Attrs* attrs = ((OSPI_Config *)handle)->attrs;
+        const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)attrs->baseAddr;
+
+        if(baudRateDiv != 0U)
+        {
+            CSL_REG32_FINS(&pReg->CONFIG_REG,
+                   OSPI_FLASH_CFG_CONFIG_REG_MSTR_BAUD_DIV_FLD,
+                   CSL_OSPI_BAUD_RATE_DIVISOR(baudRateDiv));
+        }
+        else
+        {
+            CSL_REG32_FINS(&pReg->CONFIG_REG,
+                   OSPI_FLASH_CFG_CONFIG_REG_MSTR_BAUD_DIV_FLD,
+                   CSL_OSPI_BAUD_RATE_DIVISOR_DEFAULT);
+        }
+    }
+
+}
+
+void OSPI_set1sProtocol(OSPI_Handle handle)
+{
+    if(handle != NULL)
+    {
+        OSPI_enableSDR(handle);
+        OSPI_disableDdrRdCmds(handle);
+        OSPI_clearDualOpCodeMode(handle);
+        OSPI_setRdDataCaptureDelay(handle, 0, FALSE);
+        /* Set initial protocol to be 1s1s1s */
+        OSPI_setProtocol(handle, OSPI_FLASH_PROTOCOL(1,1,1,0));
+        OSPI_setXferOpCodes(handle, 0x03, 0x02);
+    }
 }

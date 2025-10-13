@@ -40,6 +40,8 @@ static OSPI_Attrs gOspiAttrs[CONFIG_OSPI_NUM_INSTANCES] =
     {
         .baseAddr             = `config.baseAddr`,
         .dataBaseAddr         = `config.dataBaseAddr`,
+        .moduleId             = `config.clockFrequencies[0].moduleId`,
+        .clkId                = `config.clockFrequencies[0].clkId`,
         .inputClkFreq         = `config.inputClkFreq`U,
         .intrNum              = `config.intrNum`U,
         .intrEnable           = `config.intrEnable.toString(10).toUpperCase()`,

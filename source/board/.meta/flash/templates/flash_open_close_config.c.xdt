@@ -42,6 +42,12 @@ Flash_Config gFlashConfig[CONFIG_FLASH_NUM_INSTANCES] =
         % }
         .devConfig = &gFlashDevCfg_`configserial.fname`,
         .object = (void *)&gFlashObject_`configserial.fname`,
+        % if (configserial.flashType == "SERIAL_NOR") {
+        .fallBackCfg = (void *)&gFlashFallBackCfg_`configserial.fname`,
+        % } if (configserial.flashType == "SERIAL_NAND") {
+        .fallBackCfg = NULL,
+        % }
+
     },
     % } else if(config.flashTopology == "parallelFlash"){
     {

@@ -47,6 +47,9 @@ const driverVer = {
     "ospi": {
         version: "v0",
     },
+    "qos": {
+        version: "v0",
+    },
     "rtc": {
         version: "v0",
     },
@@ -73,6 +76,7 @@ const topModules_wkup = [
     "/drivers/ipc/ipc",
     "/drivers/mmcsd/mmcsd",
     "/drivers/ospi/ospi",
+    "/drivers/qos/qos",
     "/drivers/uart/uart",
     "/drivers/udma/udma",
 ];

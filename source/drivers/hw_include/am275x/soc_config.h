@@ -66,6 +66,7 @@ extern "C"
 #define IP_VERSION_AASRC_V0
 
 /* Driver versions */
+#define DRV_VERSION_AASRC_V0
 #define DRV_VERSION_ADC_V0
 #define DRV_VERSION_ECAP_V0
 #define DRV_VERSION_EPWM_V0
@@ -79,13 +80,13 @@ extern "C"
 #define DRV_VERSION_MCSPI_V0
 #define DRV_VERSION_MMCSD_V1
 #define DRV_VERSION_OSPI_V0
+#define DRV_VERSION_QOS_V0
 #define DRV_VERSION_RTC_V0
 #define DRV_VERSION_SERIAL_FLASH_V0 /* OSPI NOR/NAND */
 #define DRV_VERSION_SPINLOCK_V0
 #define DRV_VERSION_UART_V0
 #define DRV_VERSION_UDMA_V0
 #define DRV_VERSION_WATCHDOG_V1
-#define DRV_VERSION_AASRC_V0
 
 /* Driver DMA integration */
 #define DMA_VERSION_MCSPI_UDMA

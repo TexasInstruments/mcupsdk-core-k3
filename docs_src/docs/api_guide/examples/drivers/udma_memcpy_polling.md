@@ -108,7 +108,8 @@ and compares the source and destination buffers for any data mismatch.
 
  Parameter      | Value
  ---------------|-----------
- CPU + OS       | r5fss0-0 freertos
+ CPU + OS       | wkup-r5fss0-0 freertos
+ ^              | r5fss0-0 freertos
  ^              | c75ss0-0 freertos
  Toolchain      | ti-arm-clang
  ^              | ti-c7000

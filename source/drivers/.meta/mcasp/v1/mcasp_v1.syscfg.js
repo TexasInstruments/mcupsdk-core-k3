@@ -645,6 +645,8 @@ Then MCASP_Open can be called from application after clock configurations are do
                             ui.NumTxSlots.hidden = false;
                             ui.txDataDelay.hidden = false;
                             ui.txDataOrder.hidden = false;
+                            ui.txPaddingMode.hidden = false;
+                            ui.txPaddingBit.hidden = false;
                             ui.txDataRotation.hidden = false;
                             ui.txFsWidth.hidden = false;
                             ui.txFsPolarity.hidden = false;
@@ -669,6 +671,8 @@ Then MCASP_Open can be called from application after clock configurations are do
                             ui.NumTxSlots.hidden = true;
                             ui.txDataDelay.hidden = true;
                             ui.txDataOrder.hidden = true;
+                            ui.txPaddingMode.hidden = true;
+                            ui.txPaddingBit.hidden = true;
                             ui.txDataRotation.hidden =true;
                             ui.txFsWidth.hidden = true;
                             ui.txFsPolarity.hidden = true;
@@ -707,6 +711,10 @@ Then MCASP_Open can be called from application after clock configurations are do
                             ui.txDataDelay.readOnly = true;
                             inst.txDataOrder = 1;
                             ui.txDataOrder.readOnly = true;
+                            inst.txPaddingMode = 0;
+                            ui.txPaddingMode.readOnly = true;
+                            inst.txPaddingBit = 1;
+                            ui.txPaddingBit.hidden = true;
                             inst.txDataRotation = 0;
                             ui.txDataRotation.readOnly = true;
                             inst.txFsWidth = 1;
@@ -720,6 +728,7 @@ Then MCASP_Open can be called from application after clock configurations are do
                             ui.NumTxSlots.readOnly = false;
                             ui.txDataDelay.readOnly = false;
                             ui.txDataOrder.readOnly = false;
+                            ui.txPaddingMode.readOnly = false;
                             ui.txDataRotation.readOnly = false;
                             ui.txFsWidth.readOnly = false;
                             ui.txFsPolarity.readOnly = false;
@@ -760,6 +769,34 @@ Then MCASP_Open can be called from application after clock configurations are do
                         { name: 1, displayName: "MSB First"},
                     ],
                     description: "Configure McASP to send MSB first or LSB first",
+                },
+                {
+                    name: "txPaddingMode",
+                    displayName: "Transmit Slot Extra Bits Padding",
+                    default: 0,
+                    readOnly: false,
+                    options: [
+                        { name: 0, displayName: "Pad extra bits with 0"},
+                        { name: 1, displayName: "Pad extra bits with 1"},
+                        { name: 2, displayName: "Pad extra bits with existing bit"},
+                    ],
+                    description: "Configure McASP to pad extra bits not belonging to the word defined by Data Bitmask",
+                    onChange: function (inst, ui) {
+                        if(inst.txPaddingMode == 2) {
+                            ui.txPaddingBit.hidden = false;
+                        }
+                        else {
+                            ui.txPaddingBit.hidden = true;
+                        }
+                    },
+                },
+                {
+                    name: "txPaddingBit",
+                    displayName: "Transmit Slot bit to be used for padding",
+                    default: 1,
+                    hidden: true,
+                    displayFormat: "dec",
+                    description: "Configure McASP to use the bit position in the slot to be used for padding",
                 },
                 {
                     name: "txDataRotation",
@@ -1156,6 +1193,8 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                             ui.NumRxSlots.hidden = false;
                             ui.rxDataDelay.hidden = false;
                             ui.rxDataOrder.hidden = false;
+                            ui.rxPaddingMode.hidden = false;
+                            ui.rxPaddingBit.hidden = false;
                             ui.rxDataRotation.hidden = false;
                             ui.rxFsWidth.hidden = false;
                             ui.rxFsPolarity.hidden = false;
@@ -1180,6 +1219,8 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                             ui.NumRxSlots.hidden = true;
                             ui.rxDataDelay.hidden = true;
                             ui.rxDataOrder.hidden = true;
+                            ui.rxPaddingMode.hidden = true;
+                            ui.rxPaddingBit.hidden = true;
                             ui.rxDataRotation.hidden = true;
                             ui.rxFsWidth.hidden = true;
                             ui.rxFsPolarity.hidden = true;
@@ -1218,6 +1259,10 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                             ui.rxDataDelay.readOnly = true;
                             inst.rxDataOrder = 1;
                             ui.rxDataOrder.readOnly = true;
+                            inst.rxPaddingMode = 0;
+                            ui.rxPaddingMode.readOnly = true;
+                            inst.rxPaddingBit = 1;
+                            ui.rxPaddingBit.hidden = true;
                             inst.rxDataRotation = 0;
                             ui.rxDataRotation.readOnly = true;
                             inst.rxFsWidth = 1;
@@ -1231,6 +1276,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                             ui.NumRxSlots.readOnly = false;
                             ui.rxDataDelay.readOnly = false;
                             ui.rxDataOrder.readOnly = false;
+                            ui.rxPaddingMode.readOnly = false;
                             ui.rxDataRotation.readOnly = false;
                             ui.rxFsWidth.readOnly = false;
                             ui.rxFsPolarity.readOnly = false;
@@ -1271,6 +1317,34 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                         { name: 1, displayName: "MSB First"},
                     ],
                     description: "Configure McASP to send MSB first or LSB first",
+                },
+                {
+                    name: "rxPaddingMode",
+                    displayName: "Receive Slot Extra Bits Padding",
+                    default: 0,
+                    readOnly: false,
+                    options: [
+                        { name: 0, displayName: "Pad extra bits with 0"},
+                        { name: 1, displayName: "Pad extra bits with 1"},
+                        { name: 2, displayName: "Pad extra bits with existing bit"},
+                    ],
+                    description: "Configure McASP to pad extra bits not belonging to the word defined by Data Bitmask",
+                    onChange: function (inst, ui) {
+                        if(inst.rxPaddingMode == 2) {
+                            ui.rxPaddingBit.hidden = false;
+                        }
+                        else {
+                            ui.rxPaddingBit.hidden = true;
+                        }
+                    },
+                },
+                {
+                    name: "rxPaddingBit",
+                    displayName: "Receive Slot bit to be used for padding",
+                    default: 1,
+                    hidden: true,
+                    displayFormat: "dec",
+                    description: "Configure McASP to use the bit position in the slot to be used for padding",
                 },
                 {
                     name: "rxDataRotation",
@@ -1715,6 +1789,8 @@ function validate(inst, report) {
 
     common.validate.checkNumberRange(inst, report, "NumTxSlots", 2, 32, "dec");
     common.validate.checkNumberRange(inst, report, "NumRxSlots", 2, 32, "dec");
+    common.validate.checkNumberRange(inst, report, "txPaddingBit", 0, 31, "dec");
+    common.validate.checkNumberRange(inst, report, "rxPaddingBit", 0, 31, "dec");
     common.validate.checkNumberRange(inst, report, "txActiveSlotMask", 0, (1 << inst.NumTxSlots)-1, "dec");
     common.validate.checkNumberRange(inst, report, "rxActiveSlotMask", 0, (1 << inst.NumRxSlots)-1, "dec");
     common.validate.checkNumberRange(inst, report, "txAfifoNumEvt", 0, 64, "dec");

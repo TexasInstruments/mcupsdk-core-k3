@@ -123,7 +123,7 @@ static MCASP_Attrs gMcaspAttrs[CONFIG_MCASP_NUM_INSTANCES] =
                 % {
                     % let rxFmt = 0;
                     % rxFmt |= ((config.transferMode != "DMA") ? 8 : 0);
-                    % rxFmt |= ((instance.rxDataDelay << 16) | (instance.rxDataOrder << 15) | (((instance.RxSlotSize/2) -1) << 4) | (instance.rxDataRotation));
+                    % rxFmt |= ((instance.rxDataDelay << 16) | (instance.rxDataOrder << 15) | (instance.rxPaddingMode << 13) | ((instance.rxPaddingBit) << 8) | (((instance.RxSlotSize/2) -1) << 4) | (instance.rxDataRotation));
                 (uint32_t)0x`(rxFmt).toString(16).toUpperCase()`U, /* MCASP_RXFMT */
                 % }
                 % {
@@ -167,7 +167,7 @@ static MCASP_Attrs gMcaspAttrs[CONFIG_MCASP_NUM_INSTANCES] =
                 % {
                     % let txFmt = 0;
                     % txFmt |= ((config.transferMode != "DMA") ? 8 : 0);
-                    % txFmt |= ((instance.txDataDelay << 16) | (instance.txDataOrder << 15) | (((instance.TxSlotSize/2) -1) << 4) | (instance.txDataRotation));
+                    % txFmt |= ((instance.txDataDelay << 16) | (instance.txDataOrder << 15) | (instance.txPaddingMode << 13) | ((instance.txPaddingBit) << 8) | (((instance.TxSlotSize/2) -1) << 4) | (instance.txDataRotation));
                 (uint32_t)0x`(txFmt).toString(16).toUpperCase()`U, /* MCASP_TXFMT */
                 % }
                 % {

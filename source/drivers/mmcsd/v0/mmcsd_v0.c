@@ -960,8 +960,11 @@ static int32_t MMCSD_initSD(MMCSD_Handle handle)
                        0);
 
         /* Wait for card detect */
-        while(!MMCSD_halIsCardInserted(attrs->ctrlBaseAddr));
+        status = MMCSD_halIsCardInserted(attrs->ctrlBaseAddr);
+    }
 
+    if(SystemP_SUCCESS == status)
+    {
         /* Switch on Bus Power */
         status = MMCSD_halBusPower(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_POWER_CONTROL_SD_BUS_POWER_VAL_PWR_ON);
     }

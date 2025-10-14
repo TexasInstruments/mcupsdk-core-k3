@@ -82,6 +82,8 @@
 #define TEST_FVID2_GT_TRACE_MASK                                (GT_TRACECLASS_MASK | GT_TraceState_Enable)
 #define TEST_FVID2_MAX_NODES                                    (10)
 #define TEST_FVID2_MAX_EDGES                                    (10)
+#define TEST_FVID2_DRVID                                        (0U)
+#define TEST_FVID2_DRVID_INST_0                                 (0U)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -109,6 +111,22 @@ typedef struct
     /**< Flag indicating whether the object is used or not. */
 } Fdm_Channel;
 
+typedef struct
+{
+    const char         *versionString;
+    /**< FVID2 drivers version number as string. */
+    uint32_t            versionNumber;
+    /**< FVID2 drivers version number as string. */
+    Fdm_Driver          fdmDriverObjects[FVID2_CFG_FDM_NUM_DRV_OBJS];
+    /**< FDM Driver objects. */
+    Fdm_Channel         fdmChannelObjects[FVID2_CFG_FDM_NUM_CH_OBJS];
+    /**< FDM Channel objects. */
+    SemaphoreP_Object   lockSem;
+    /**< Semaphore to protect function calls and other memory allocation. */
+    SemaphoreP_Object   printSem;
+    /**< Semaphore to protect print buffer. */
+} Fdm_Object;
+
 /* Test Cases */
 void TestDss_fvid2DynamicCoverage(void *args);
 
@@ -126,6 +144,9 @@ static int32_t TestDss_fvid2ProcessRequest(Fvid2_Handle  handle, Fvid2_FrameList
 
 static Fvid2Utils_Node gNode,gNode1,gNode2,gNode3,gNode4;
 static Fvid2UtilsLinkListObj gllobj;
+#if defined(SOC_J722S)
+static Fdm_Object     gFdmObj = {0};
+#endif
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -136,10 +157,16 @@ void test_main(void *args)
 
     UNITY_BEGIN();
 
+#if defined(SOC_AM62AX)
     RUN_TEST(TestDss_fvid2DynamicCoverage, 7183, NULL);
-
+#endif
+    
+#if defined(SOC_J722S)
+    RUN_TEST(TestDss_fvid2DynamicCoverage, 18764, NULL);
+#endif
+    
     UNITY_END();
-
+    
     return;
 }
 
@@ -188,6 +215,26 @@ static void TestDss_fvid2ReInitNodes(void)
     gNode4.prev = &gNode3;
 }
 
+#if defined(SOC_J722S)
+/* Dummy create function */
+static Fdrv_Handle TestCreateFxn(uint32_t drvId, uint32_t instanceId, void *createArgs, void *createStatusArgs, const Fvid2_DrvCbParams *fdmCbParams)
+{
+    return (Fdrv_Handle)1;
+}
+
+/* Dummy delete function */
+static int32_t TestDeleteFxn(Fdrv_Handle handle, void *deleteArgs)
+{
+    return 0;
+}
+
+/* Dummy control function */
+static int32_t TestControlFxn(Fdrv_Handle handle, uint32_t cmd, void *cmdArgs, void *cmdStatusArgs)
+{
+    return 0;
+}
+#endif
+
 static void TestDss_fvid2drvMgrDynCoverage(void)
 {
     int32_t retVal = FVID2_SOK;
@@ -200,6 +247,9 @@ static void TestDss_fvid2drvMgrDynCoverage(void)
     Fvid2_DrvOps drvOpsInstance;
     Fdm_Driver drvInstance;
     Fdm_Channel channelInstance;
+    #if defined(SOC_J722S)
+    Fvid2_CbParams dummyParams;
+    #endif
 
     Fvid2_FrameList inFrameList = {0};
     Fvid2_FrameList outFrameList = {0};
@@ -371,6 +421,52 @@ static void TestDss_fvid2drvMgrDynCoverage(void)
     /* Fvid2_unRegisterDriver function call with a NULL parameter */
     retVal = Fvid2_unRegisterDriver(NULL);
     TEST_ASSERT_EQUAL_INT32(FVID2_EFAIL, retVal);
+    
+    #if defined(SOC_J722S)
+    /* Initializing test structures */
+    memset(&channelInstance, 0, sizeof(channelInstance));
+    memset(&drvInstance, 0, sizeof(drvInstance));
+    
+    /* Registering FVID2 driver  */
+    retVal = Fvid2_registerDriver(&drvOpsInstance);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    
+    /* Re-Registering FVID2 driver  */
+    retVal = Fvid2_registerDriver(&drvOpsInstance);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EDRIVER_INUSE, retVal);
+    
+    /* Passing a Valid parameters to Fvid2_create */
+    drvOpsInstance.createFxn =  TestCreateFxn;
+    drvOpsInstance.drvId = TEST_FVID2_DRVID_INST_0;
+    gFdmObj.fdmDriverObjects[0].isUsed = TRUE;
+    gFdmObj.fdmDriverObjects[0].drvOps = &drvOpsInstance;  
+    handle = Fvid2_create(TEST_FVID2_DRVID,TEST_FVID2_DRVID_INST_0,NULL,NULL,&dummyParams);
+    TEST_ASSERT_NOT_NULL(handle);
+    retVal = Fvid2_delete(handle,NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+   
+    /* Passing a valid handle to Fvid2_control */
+    handle = &channelInstance;
+    channelInstance.drv = &drvInstance;
+    drvInstance.drvOps = &drvOpsInstance;
+    drvOpsInstance.controlFxn = TestControlFxn;
+    retVal = Fvid2_control(handle,0,NULL,NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    
+    /* Passing a valid handle to Fvid2_delete */
+    channelInstance.isUsed = TRUE;
+    drvOpsInstance.deleteFxn = TestDeleteFxn;
+    retVal = Fvid2_delete(handle,NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    
+    /* Fvid2_unRegisterDriver function call with a valid parameter */
+    retVal = Fvid2_unRegisterDriver(&drvOpsInstance);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    
+    /* Fvid2_deInit function call with a NULL parameter */
+    retVal = Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    #endif
 }
 
 static void TestDss_fvid2UtilsDynCoverage(void)
@@ -796,6 +892,27 @@ static void TestDss_fvid2UtilsDynCoverage(void)
     gllobj.headNode = &gNode3;
     gllobj.tailNode=&gNode2;
     Fvid2Utils_queueBack(&gllobj,doubleNodePtr,&data);
+    
+    #if defined(SOC_J722S)
+    /* Fvid2Utils_destructLinkList function call with a NULL parameter */
+    Fvid2Utils_destructLinkList(NULL);
+    
+    /* Fvid2Utils_destructQ function call with a NULL parameter */
+    Fvid2Utils_destructQ(NULL);
+    
+    /* Fvid2Utils_queue function call with a NULL parameter */
+    Fvid2Utils_queue(&gllobj,doubleNodePtr,&data);
+    
+    /* Fvid2Utils_dequeue function call with a NULL parameter */
+    Fvid2Utils_dequeue(NULL);
+        
+    /* Fvid2Utils_dequeue function call with a valid handle */
+    gNode3.next=NULL;
+    gNode3.prev=NULL;
+    gllobj.headNode = &gNode3;
+    Fvid2Utils_dequeue(&gllobj);
+    
+    #endif
 }
 
 static void TestDss_fvid2GraphDynCoverage(void)

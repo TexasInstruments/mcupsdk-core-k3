@@ -3,6 +3,9 @@ let pinmux = system.getScript("/drivers/pinmux/pinmux");
 let soc = system.getScript(`/drivers/mcasp/soc/mcasp_${common.getSocName()}`);
 let clocking = system.getScript("/drivers/mcasp/v1/mcasp_clocking/mcasp_clocking.js");
 
+const EXTERNAL_CLOCK = 0;
+const INTERNAL_CLOCK = 1;
+
 function getConfigArr() {
     return soc.getConfigArr();
 }
@@ -44,7 +47,7 @@ function pinmuxRequirements(inst) {
 
     }
 
-    if (inst.txHclkSource == 0 || inst.rxHclkSource  == 0)
+    if (inst.txHclkSource == EXTERNAL_CLOCK || inst.rxHclkSource  == EXTERNAL_CLOCK)
     {
         systemResources = soc.getPinmuxReq(inst.txHclkSourceMux, inst.rxHclkSourceMux);
     }
@@ -69,6 +72,466 @@ function getPeripheralPinNames(inst) {
     pins = pins.concat(extPins);
 
     return pins;
+}
+
+function calculateOptimalDividersTx(inst) {
+    /* HCLKXDIV range: 1 to 4096
+       CLKXDIV range: 1 to 32 */
+
+    let AUXCLK = clocking.getMcaspAuxClkFreq(inst);
+
+    let targetACLKX = inst.fsx*1000*inst.NumTxSlots*inst.TxSlotSize;
+
+    let bestHCLKXDIV = 1;
+    let bestCLKXDIV = 1;
+    let closestACLKX = AUXCLK;
+    let minDiff = Math.abs(AUXCLK - targetACLKX);
+
+    /* The theoretical total division needed */
+    const theoreticalDivider = AUXCLK / targetACLKX;
+
+    /* For each possible HCLKXDIV value (2-4096) */
+    /* Iteration start from 2 for legacy reason */
+    for (let hclkxdiv = 2; hclkxdiv <= 4096; hclkxdiv++) {
+        /* Calculate the ideal HCLKXDIV value for this CLKXDIV */
+        const idealCLKXDIV = theoreticalDivider / hclkxdiv;
+
+        /* Check the two closest integer values for HCLKXDIV */
+        const candidates = [
+            Math.floor(idealCLKXDIV),
+            Math.ceil(idealCLKXDIV)
+        ];
+
+        for (const clkxdiv of candidates) {
+            /* Ensure CLKXDIV is within valid range */
+            if (clkxdiv < 1 || clkxdiv > 32) continue;
+
+            /* Calculate the resulting frequency */
+            const resultFreq = AUXCLK / (clkxdiv * hclkxdiv);
+            const diff = Math.abs(resultFreq - targetACLKX);
+
+            /* If this combination gives a closer frequency, update our best values */
+            if (diff < minDiff) {
+                minDiff = diff;
+                bestHCLKXDIV = hclkxdiv;
+                bestCLKXDIV = clkxdiv;
+                closestACLKX = resultFreq;
+            }
+        }
+    }
+
+    /* Check if HCLKXDIV = 1 is the best */
+    const resultFreq = AUXCLK / (bestCLKXDIV*1);
+    const diff = Math.abs(resultFreq - targetACLKX);
+    if(diff < minDiff) {
+        minDiff = diff;
+        bestHCLKXDIV = 1;
+        bestCLKXDIV = bestCLKXDIV;
+        closestACLKX = resultFreq;
+    }
+
+    /* Above calculated dividers will be applicable if HCLK, BCLK, FSYNC is internal */
+    if((inst.txHclkSource == INTERNAL_CLOCK) &&
+       (inst.txAclkSource == INTERNAL_CLOCK))
+    {
+        inst.txHclkDiv = bestHCLKXDIV;
+        inst.txClkDiv = bestCLKXDIV;
+        return {
+            HCLKXDIV: bestHCLKXDIV,
+            CLKXDIV: bestCLKXDIV,
+            calculatedACLKX: closestACLKX,
+            error: minDiff,
+            errorPercentage: (minDiff / targetACLKX) * 100
+        };
+    }
+
+    /* (External HCLK) & (FSYNC, BCLK internal) */
+    if((inst.txHclkSource == EXTERNAL_CLOCK) &&
+       (inst.txAclkSource == INTERNAL_CLOCK))
+    {
+        inst.txHclkExpected = targetACLKX*bestCLKXDIV;
+        inst.txHclkDiv = 1;
+        inst.txClkDiv = bestCLKXDIV;
+        return {
+            HCLKXDIV: 1,
+            CLKXDIV: bestCLKXDIV,
+            calculatedACLKX: targetACLKX,
+            error: 0,
+            errorPercentage: 0
+        };
+    }
+
+    /* External BCLK */
+    if(inst.txAclkSource == EXTERNAL_CLOCK)
+    {
+        inst.txHclkDiv = bestHCLKXDIV;
+        inst.txClkDiv = 1;
+        return {
+            HCLKXDIV: bestHCLKXDIV,
+            CLKXDIV: 1,
+            calculatedACLKX: targetACLKX,
+            error: 0,
+            errorPercentage: 0
+        };
+    }
+    else
+    {
+        inst.txHclkDiv = bestHCLKXDIV;
+        inst.txClkDiv = bestCLKXDIV;
+        let hclkFreq = 0;
+        let bclkFreq = 0;
+
+        let error = 0;
+
+        if(inst.txHclkSource == INTERNAL_CLOCK)
+        {
+            hclkFreq = clocking.getMcaspAuxClkFreq(inst)/bestHCLKXDIV;
+            bclkFreq = hclkFreq/bestCLKXDIV;
+            error = Math.abs(bclkFreq - targetACLKX);
+            errorPercentage = (error / targetACLKX) * 100;
+        }
+        else
+        {
+            bestHCLKXDIV = 1;
+            inst.txHclkDiv = bestHCLKXDIV;
+            bclkFreq = targetACLKX;
+        }
+        return {
+            HCLKXDIV: bestHCLKXDIV,
+            CLKXDIV: bestCLKXDIV,
+            calculatedACLKX: bclkFreq,
+            error: error,
+            errorPercentage: errorPercentage
+        };
+    }
+}
+
+function calculateOptimalDividersRx(inst) {
+    /* HCLKRDIV range: 1 to 4096
+       CLKRDIV range: 1 to 32 */
+    let AUXCLK = clocking.getMcaspAuxClkFreq(inst);
+
+    let targetACLKR = inst.fsr*1000*inst.NumRxSlots*inst.RxSlotSize;
+
+    let bestHCLKRDIV = 1;
+    let bestCLKRDIV = 1;
+    let closestACLKR = AUXCLK;
+    let minDiff = Math.abs(AUXCLK - targetACLKR);
+
+    /* The theoretical total division needed */
+    const theoreticalDivider = AUXCLK / targetACLKR;
+
+    /* For each possible HCLKRDIV value (2-4096) */
+    /* Iteration start from 2 for legacy reason */
+    for (let hclkrdiv = 2; hclkrdiv <= 4096; hclkrdiv++) {
+        /* Calculate the ideal HCLKRDIV value for this CLKRDIV */
+        const idealCLKRDIV = theoreticalDivider / hclkrdiv;
+
+        /* Check the two closest integer values for HCLKRDIV */
+        const candidates = [
+            Math.floor(idealCLKRDIV),
+            Math.ceil(idealCLKRDIV)
+        ];
+
+        for (const clkrdiv of candidates) {
+            /* Ensure CLKRDIV is within valid range */
+            if (clkrdiv < 1 || clkrdiv > 32) continue;
+
+            /* Calculate the resulting frequency */
+            const resultFreq = AUXCLK / (clkrdiv * hclkrdiv);
+            const diff = Math.abs(resultFreq - targetACLKR);
+
+            /* If this combination gives a closer frequency, update our best values */
+            if (diff < minDiff) {
+                minDiff = diff;
+                bestHCLKRDIV = hclkrdiv;
+                bestCLKRDIV = clkrdiv;
+                closestACLKR = resultFreq;
+            }
+        }
+    }
+
+    /* Check if HCLKRDIV = 1 is the best */
+    const resultFreq = AUXCLK / (bestCLKRDIV*1);
+    const diff = Math.abs(resultFreq - targetACLKR);
+    if(diff < minDiff) {
+        minDiff = diff;
+        bestHCLKRDIV = 1;
+        bestCLKRDIV = bestCLKRDIV;
+        closestACLKR = resultFreq;
+    }
+
+    /* Above calculated dividers will be applicable if HCLK, BCLK, FSYNC is internal */
+    if((inst.rxHclkSource == INTERNAL_CLOCK) &&
+       (inst.rxAclkSource == INTERNAL_CLOCK))
+    {
+        inst.rxHclkDiv = bestHCLKRDIV;
+        inst.rxClkDiv = bestCLKRDIV;
+        return {
+            HCLKRDIV: bestHCLKRDIV,
+            CLKRDIV: bestCLKRDIV,
+            calculatedACLKR: closestACLKR,
+            error: minDiff,
+            errorPercentage: (minDiff / targetACLKR) * 100
+        };
+    }
+
+    /* (External HCLK) & (FSYNC, BCLK internal) */
+    if((inst.rxHclkSource == EXTERNAL_CLOCK) &&
+       (inst.rxAclkSource == INTERNAL_CLOCK))
+    {
+        inst.rxHclkExpected = targetACLKR*bestCLKRDIV;
+        inst.rxHclkDiv = 1;
+        inst.rxClkDiv = bestCLKRDIV;
+        return {
+            HCLKRDIV: 1,
+            CLKRDIV: bestCLKRDIV,
+            calculatedACLKR: targetACLKR,
+            error: 0,
+            errorPercentage: 0
+        };
+    }
+
+    /* External BCLK */
+    if(inst.rxAclkSource == EXTERNAL_CLOCK)
+    {
+        inst.rxHclkDiv = bestHCLKRDIV;
+        inst.rxClkDiv = 1;
+        return {
+            HCLKRDIV: bestHCLKRDIV,
+            CLKRDIV: 1,
+            calculatedACLKR: targetACLKR,
+            error: 0,
+            errorPercentage: 0
+        };
+    }
+    else
+    {
+        inst.rxHclkDiv = bestHCLKRDIV;
+        inst.rxClkDiv = bestCLKRDIV;
+        let hclkFreq = 0;
+        let bclkFreq = 0;
+
+        let error = 0;
+
+        if(inst.rxHclkSource == INTERNAL_CLOCK)
+        {
+            hclkFreq = clocking.getMcaspAuxClkFreq(inst)/bestHCLKRDIV;
+            bclkFreq = hclkFreq/bestCLKRDIV;
+            error = Math.abs(bclkFreq - targetACLKR);
+            errorPercentage = (error / targetACLKR) * 100;
+        }
+        else
+        {
+            bestHCLKRDIV = 1;
+            inst.rxHclkDiv = bestHCLKRDIV;
+            bclkFreq = targetACLKR;
+        }
+        return {
+            HCLKRDIV: bestHCLKRDIV,
+            CLKRDIV: bestCLKRDIV,
+            calculatedACLKR: bclkFreq,
+            error: error,
+            errorPercentage: errorPercentage
+        };
+    }
+}
+
+function applyTxClk(inst, ui)
+{
+    let targetFs = inst.fsx*1000;
+    let targetBclk = targetFs*inst.NumTxSlots*inst.TxSlotSize;
+    let auxClkFreq = clocking.getMcaspAuxClkFreq(inst);
+
+    /* If internal HCLK */
+    if(inst.txHclkSource == INTERNAL_CLOCK)
+    {
+        /* Calculate HCLK value from AUXCLK */
+        inst.txHclkCalculated = auxClkFreq/inst.txHclkDiv;
+
+        /* If BLCK is external */
+        if(inst.txAclkSource == EXTERNAL_CLOCK)
+        {
+            inst.txBclkExpected = targetBclk;
+        }
+        else
+        {
+            /* Internal BCLK */
+            inst.txBclkCalculated = inst.txHclkCalculated/inst.txClkDiv;
+        }
+
+        /* If FSYNC is external */
+        if(inst.txFsSource == EXTERNAL_CLOCK)
+        {
+            inst.txFsyncExpected = targetFs;
+        }
+        else
+        {
+            /* Internal FSYNC */
+            inst.txFsyncCalculated = inst.txHclkCalculated/(inst.txClkDiv*inst.NumTxSlots*inst.TxSlotSize);
+        }
+    }
+    else
+    {
+        /* If external HCLK */
+        inst.txHclkExpected = targetBclk*inst.txClkDiv;
+
+        /* If BLCK is external */
+        if(inst.txAclkSource == EXTERNAL_CLOCK)
+        {
+            inst.txBclkExpected = inst.fsx*1000*inst.NumTxSlots*inst.TxSlotSize;
+        }
+        else
+        {
+            /* Internal BCLK */
+            inst.txBclkCalculated = inst.txHclkExpected/inst.txClkDiv;
+        }
+
+        /* If FSYNC is external */
+        if(inst.txFsSource == EXTERNAL_CLOCK)
+        {
+            inst.txFsyncExpected = targetFs;
+        }
+        else
+        {
+            /* Internal FSYNC */
+            inst.txFsyncCalculated = inst.txHclkExpected/(inst.txClkDiv*inst.NumTxSlots*inst.TxSlotSize);
+        }
+    }
+
+    /* Alert to update Rx Clock if in SYNC mode */
+    if(inst.clkSyncMode == "SYNC")
+    {
+        inst.rxClkApplyAlert = true;
+    }
+}
+
+function applyRxClk(inst, ui)
+{
+    if(inst.clkSyncMode == "SYNC")
+    {
+        applyTxClk(inst, ui);
+
+        /* Internal TX HCLK source */
+        if(inst.txHclkSource == INTERNAL_CLOCK)
+        {
+            inst.rxHclkSource = INTERNAL_CLOCK;
+            inst.rxHclkCalculated = inst.txHclkCalculated;
+        }
+        else
+        {
+            inst.rxHclkSource = EXTERNAL_CLOCK;
+            inst.rxHclkExpected = inst.txHclkExpected;
+        }
+
+        /* Internal TX BCLK source */
+        if(inst.txAclkSource == INTERNAL_CLOCK)
+        {
+            inst.rxAclkSource = INTERNAL_CLOCK;
+            inst.rxBclkCalculated = inst.txBclkCalculated;
+        }
+        else
+        {
+            inst.rxAclkSource = EXTERNAL_CLOCK;
+            inst.rxBclkExpected = inst.txBclkExpected;
+        }
+
+        /* Internal TX FSYNC source */
+        if(inst.txFsSource == INTERNAL_CLOCK)
+        {
+            inst.rxFsSource = INTERNAL_CLOCK;
+            inst.rxFsyncCalculated = inst.txFsyncCalculated;
+        }
+        else
+        {
+            inst.rxFsSource = EXTERNAL_CLOCK;
+            inst.rxFsyncExpected = inst.txFsyncExpected;
+        }
+
+        return;
+    }
+
+    let targetFs = inst.fsr*1000;
+    let targetBclk = targetFs*inst.NumRxSlots*inst.RxSlotSize;
+    let auxClkFreq = clocking.getMcaspAuxClkFreq(inst);
+
+    /* If internal HCLK */
+    if(inst.rxHclkSource == INTERNAL_CLOCK)
+    {
+        /* Calculate HCLK value from AUXCLK */
+        inst.rxHclkCalculated = auxClkFreq/inst.rxHclkDiv;
+
+        /* If BLCK is external */
+        if(inst.rxAclkSource == EXTERNAL_CLOCK)
+        {
+            inst.rxBclkExpected = targetBclk;
+        }
+        else
+        {
+            /* Internal BCLK */
+            inst.rxBclkCalculated = inst.rxHclkCalculated/inst.rxClkDiv;
+        }
+
+        /* If FSYNC is external */
+        if(inst.rxFsSource == EXTERNAL_CLOCK)
+        {
+            inst.rxFsyncExpected = targetFs;
+        }
+        else
+        {
+            /* Internal FSYNC */
+            inst.rxFsyncCalculated = inst.rxHclkCalculated/(inst.rxClkDiv*inst.NumRxSlots*inst.RxSlotSize);
+        }
+    }
+    else
+    {
+        /* If external HCLK */
+        inst.rxHclkExpected = targetBclk*inst.rxClkDiv;
+
+        /* If BLCK is external */
+        if(inst.rxAclkSource == EXTERNAL_CLOCK)
+        {
+            inst.rxBclkExpected = inst.fsr*1000*inst.NumRxSlots*inst.RxSlotSize;
+        }
+        else
+        {
+            /* Internal BCLK */
+            inst.rxBclkCalculated = inst.rxHclkExpected/inst.rxClkDiv;
+        }
+
+        /* If FSYNC is external */
+        if(inst.rxFsSource == EXTERNAL_CLOCK)
+        {
+            inst.rxFsyncExpected = targetFs;
+        }
+        else
+        {
+            /* Internal FSYNC */
+            inst.rxFsyncCalculated = inst.rxHclkExpected/(inst.rxClkDiv*inst.NumRxSlots*inst.RxSlotSize);
+        }
+    }
+
+}
+
+function recalculateTx(inst, ui) {
+    let clkCfg = calculateOptimalDividersTx(inst);
+    inst.txHclkDiv = clkCfg.HCLKXDIV;
+    inst.txClkDiv = clkCfg.CLKXDIV;
+}
+
+function recalculateRx(inst, ui) {
+
+    if(inst.clkSyncMode == "SYNC")
+    {
+        let txClkCfg = calculateOptimalDividersTx(inst);
+        inst.rxHclkDiv = txClkCfg.HCLKXDIV;
+        inst.rxClkDiv = txClkCfg.CLKXDIV;
+
+        return;
+    }
+    let clkCfg = calculateOptimalDividersRx(inst);
+    inst.rxHclkDiv = clkCfg.HCLKRDIV;
+    inst.rxClkDiv = clkCfg.CLKRDIV;
 }
 
 let mcasp_module_name = "/drivers/mcasp/mcasp";
@@ -194,7 +657,6 @@ Then MCASP_Open can be called from application after clock configurations are do
                             ui.txAclkSource.hidden = false;
                             ui.txHclkSource.hidden = false;
                             ui.afsx.hidden = false;
-                            ui.masterClkx.hidden = false;
                             ui.txCallbackFxn.hidden = false;
                             ui.txAfifoEnable.hidden = false;
                             ui.txAfifoNumEvt.hidden = false;
@@ -219,7 +681,6 @@ Then MCASP_Open can be called from application after clock configurations are do
                             ui.txAclkSource.hidden = true;
                             ui.txHclkSource.hidden = true;
                             ui.afsx.hidden = true;
-                            ui.masterClkx.hidden = true;
                             ui.txCallbackFxn.hidden = true;
                             ui.txAfifoEnable.hidden = true;
                             ui.txAfifoNumEvt.hidden = true;
@@ -273,6 +734,9 @@ Then MCASP_Open can be called from application after clock configurations are do
                     readOnly: true,
                     displayFormat: "dec",
                     description: "Configure number of slots in TDM mode",
+                    onChange: function (inst, ui) {
+                        inst.txClkApplyAlert = true;
+                    }
                 },
                 {
                     name: "txDataDelay",
@@ -394,6 +858,9 @@ Then MCASP_Open can be called from application after clock configurations are do
                         { name: 32, displayName: "32"},
                     ],
                     description: "Number of bits in a slot",
+                    onChange: function (inst, ui) {
+                        inst.txClkApplyAlert = true;
+                    }
                 },
                 {
                     name: "txDataMask",
@@ -500,30 +967,39 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                             default: 48,
                             hidden: true,
                             displayFormat: "dec",
+                            onChange: function (inst, ui) {
+                                inst.txClkApplyAlert = true;
+                            }
                         },
                         {
                             name: "txFsSource",
                             displayName: "Transmit Frame Sync Source",
-                            default: 1,
+                            default: INTERNAL_CLOCK,
                             options: [
-                                { name: 0, displayName: "Externally Generated"},
-                                { name: 1, displayName: "Internally Generated"},
+                                { name: EXTERNAL_CLOCK, displayName: "Externally Generated"},
+                                { name: INTERNAL_CLOCK, displayName: "Internally Generated"},
                             ],
                             description: "Transmit Frame Sync Source",
+                            onChange: function (inst, ui) {
+                                inst.txClkApplyAlert = true;
+                            }
                         },
                         {
                             name: "txAclkSource",
                             displayName: "Transmit Bit Clock Source",
-                            default: 1,
+                            default: INTERNAL_CLOCK,
                             options: [
-                                { name: 0, displayName: "Externally Generated"},
-                                { name: 1, displayName: "Internally Generated"},
+                                { name: EXTERNAL_CLOCK, displayName: "Externally Generated"},
+                                { name: INTERNAL_CLOCK, displayName: "Internally Generated"},
                             ],
                             description: "Transmit Bit Clock Source",
+                            onChange: function (inst, ui) {
+                                inst.txClkApplyAlert = true;
+                            }
                         },
                         {
                             name: "masterClkx",
-                            displayName: "Transmit Master Clock Rate",
+                            displayName: "Transmit Master Clock Rate | Deprecated configurable",
                             default: 512,
                             displayFormat: "dec",
                             options: [
@@ -533,25 +1009,29 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                                 { name: 1024, displayName: "1024 times Fs"},
                                 { name: 0   , displayName: "Any"},
                             ],
-                            description: "Transmit Master Clock Rate",
+                            description: "Transmit Master Clock Rate | Deprecated configurable",
+                            longDescription: "This configurable is deprecated in the current version,\
+                                            but maintained as a hiiden configurable for leagacy reason.",
+                            hidden: true,
                         },
                         {
                             name: "txHclkSource",
                             displayName: "Transmit High Clock Source",
-                            default: 1,
+                            default: INTERNAL_CLOCK,
                             options: [
-                                { name: 0, displayName: "Externally Generated"},
-                                { name: 1, displayName: "Internally Generated"},
+                                { name: EXTERNAL_CLOCK, displayName: "Externally Generated"},
+                                { name: INTERNAL_CLOCK, displayName: "Internally Generated"},
                             ],
                             description: "Transmit High Clock Source",
                             onChange: function (inst, ui) {
-                                if(inst.txHclkSource == 0) {
+                                if(inst.txHclkSource == EXTERNAL_CLOCK) {
                                     ui.txHclkSourceMux.hidden = false;
                                     inst.txHclkSourceMux = 16;
                                 }
                                 else {
                                     ui.txHclkSourceMux.hidden = true;
                                 }
+                                inst.txClkApplyAlert = true;
                             },
                         },
                         {
@@ -560,7 +1040,109 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                             default: 16,
                             hidden: true,
                             options: soc.getExtTxHclkSrc(),
+                            onChange: function (inst, ui) {
+                                inst.txClkApplyAlert = true;
+                            }
                         },
+                        {
+                            name: "txCalcOptimalDiv",
+                            displayName: "Calculate Optimal Dividers",
+                            buttonText: "Re-Calculate",
+                            hidden: false,
+                            longDescription: "Pressing this button would help in recalculating the optimal dividers for TX clocks \
+                            to achieve the closest achievable frequency to the expected. Press the `Apply Tx Clock Changes` \
+                            to viewing the frequencies Calculated/Expected.",
+                            onComplete: (inst, _ui, result) => {
+                                recalculateTx(inst, _ui);
+                                return;
+                            },
+                        },
+                        {
+                            name: "txHclkDiv",
+                            displayName: "TX HCLK Divider",
+                            longDescription: `![](../source/drivers/.meta/mcasp/v1/mcasp_hclkdiv.png)`,
+                            default: 2,
+                            onChange: function (inst, ui) {
+                                inst.txClkApplyAlert = true;
+                            }
+                        },
+                        {
+                            name: "txClkDiv",
+                            displayName: "TX CLK Divider",
+                            longDescription: `![](../source/drivers/.meta/mcasp/v1/mcasp_aclkdiv.png)`,
+                            default: 8,
+                            onChange: function (inst, ui) {
+                                inst.txClkApplyAlert = true;
+                            }
+                        },
+                        {
+                            name: "txHclkExpected",
+                            displayName: "TX HCLK Expected",
+                            default: 0,
+                            hidden: true,
+                            onChange: function (inst, ui) {
+                                inst.txClkApplyAlert = true;
+                            }
+                        },
+                        {
+                            name: "txHclkCalculated",
+                            displayName: "TX HCLK Calculated",
+                            default: soc.mcasp_input_clk_freq/(2),
+                            hidden: true,
+                        },
+
+                        {
+                            name: "txBclkExpected",
+                            displayName: "TX BCLK Expected",
+                            default: 0,
+                            hidden: true,
+                            onChange: function (inst, ui) {
+                                inst.txClkApplyAlert = true;
+                            }
+                        },
+                        {
+                            name: "txBclkCalculated",
+                            displayName: "TX BCLK Calculated",
+                            default: soc.mcasp_input_clk_freq/(2*8),
+                            hidden: true,
+                        },
+
+                        {
+                            name: "txFsyncExpected",
+                            displayName: "TX Fsync Expected",
+                            default: 0,
+                            hidden: true,
+                            onChange: function (inst, ui) {
+                                inst.txClkApplyAlert = true;
+                            }
+                        },
+                        {
+                            name: "txFsyncCalculated",
+                            displayName: "TX Fsync Calculated",
+                            default: soc.mcasp_input_clk_freq/(2*8*32*2),
+                            hidden: true,
+                        },
+                        {
+                            name: "txApplyChanges",
+                            displayName: "Apply Tx Clock Changes",
+                            buttonText: "Apply",
+                            hidden: false,
+                            longDescription: "Pressing this button would recalculate the TX Frame Sync, Bit Clock, High Clock Freq \
+                                                  based on the configrations selected.",
+
+                            onComplete: (inst, _ui, result) => {
+                                applyTxClk(inst, _ui);
+                                inst.txClkApplyAlert = false;
+                                return;
+                            },
+                        },
+                        {
+                            name: "txClkApplyAlert",
+                            displayName: "Tx Clock Apply Alert",
+                            default: true,
+                            hidden: true,
+                        },
+
                     ]
                 },
             ],
@@ -594,7 +1176,6 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                             ui.rxAclkSource.hidden = false;
                             ui.rxHclkSource.hidden = false;
                             ui.afsr.hidden = false;
-                            ui.masterClkr.hidden = false;
                             ui.rxCallbackFxn.hidden = false;
                             ui.rxAfifoEnable.hidden = false;
                             ui.rxAfifoNumEvt.hidden = false;
@@ -619,7 +1200,6 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                             ui.rxAclkSource.hidden = true;
                             ui.rxHclkSource.hidden = true;
                             ui.afsr.hidden = true;
-                            ui.masterClkr.hidden = true;
                             ui.rxCallbackFxn.hidden = true;
                             ui.rxAfifoEnable.hidden = true;
                             ui.rxAfifoNumEvt.hidden = true;
@@ -673,6 +1253,9 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                     readOnly: true,
                     displayFormat: "dec",
                     description: "Configure number of slots in TDM mode",
+                    onChange: function (inst, ui) {
+                        inst.rxClkApplyAlert = true;
+                    }
                 },
                 {
                     name: "rxDataDelay",
@@ -794,6 +1377,9 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                         { name: 32, displayName: "32"},
                     ],
                     description: "Number of bits in a slot",
+                    onChange: function (inst, ui) {
+                        inst.rxClkApplyAlert = true;
+                    }
                 },
                 {
                     name: "rxDataMask",
@@ -901,30 +1487,39 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                                 default: 48,
                                 hidden: true,
                                 displayFormat: "dec",
+                                onChange: function (inst, ui) {
+                                    inst.rxClkApplyAlert = true;
+                                }
                             },
                             {
                                 name: "rxFsSource",
                                 displayName: "Receive Frame Sync Source",
-                                default: 1,
+                                default: INTERNAL_CLOCK,
                                 options: [
-                                    { name: 0, displayName: "Externally Generated"},
-                                    { name: 1, displayName: "Internally Generated"},
+                                    { name: EXTERNAL_CLOCK, displayName: "Externally Generated"},
+                                    { name: INTERNAL_CLOCK, displayName: "Internally Generated"},
                                 ],
                                 description: "Receive Frame Sync Source",
+                                onChange: function (inst, ui) {
+                                    inst.rxClkApplyAlert = true;
+                                }
                             },
                             {
                                 name: "rxAclkSource",
                                 displayName: "Receive Bit Clock Source",
-                                default: 1,
+                                default: INTERNAL_CLOCK,
                                 options: [
-                                    { name: 0, displayName: "Externally Generated"},
-                                    { name: 1, displayName: "Internally Generated"},
+                                    { name: EXTERNAL_CLOCK, displayName: "Externally Generated"},
+                                    { name: INTERNAL_CLOCK, displayName: "Internally Generated"},
                                 ],
                                 description: "Receive Bit Clock Source",
+                                onChange: function (inst, ui) {
+                                    inst.rxClkApplyAlert = true;
+                                }
                             },
                             {
                                 name: "masterClkr",
-                                displayName: "Receive Master Clock Rate",
+                                displayName: "Receive Master Clock Rate | Deprecated configurable",
                                 default: 512,
                                 displayFormat: "dec",
                                 options: [
@@ -934,25 +1529,29 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                                     { name: 1024, displayName: "1024 times Fs"},
                                     { name: 0   , displayName: "Any"},
                                 ],
-                                description: "Receive Master Clock Rate",
+                                description: "Receive Master Clock Rate | Deprecated configurable",
+                                longDescription: "This configurable is deprecated in the current version,\
+                                            but maintained as a hiiden configurable for leagacy reason.",
+                                hidden: true,
                             },
                             {
                                 name: "rxHclkSource",
                                 displayName: "Receive High Clock Source",
-                                default: 1,
+                                default: INTERNAL_CLOCK,
                                 options: [
-                                    { name: 0, displayName: "Externally Generated"},
-                                    { name: 1, displayName: "Internally Generated"},
+                                    { name: EXTERNAL_CLOCK, displayName: "Externally Generated"},
+                                    { name: INTERNAL_CLOCK, displayName: "Internally Generated"},
                                 ],
                                 description: "Receive High Clock Source",
                                 onChange: function (inst, ui) {
-                                    if(inst.rxHclkSource == 0) {
+                                    if(inst.rxHclkSource == EXTERNAL_CLOCK) {
                                         ui.rxHclkSourceMux.hidden = false;
                                         inst.rxHclkSourceMux = 16;
                                     }
                                     else {
                                         ui.rxHclkSourceMux.hidden = true;
                                     }
+                                    inst.rxClkApplyAlert = true;
                                 },
                             },
                             {
@@ -961,6 +1560,106 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                                 default: 16,
                                 hidden: true,
                                 options: soc.getExtRxHclkSrc(),
+                                onChange: function (inst, ui) {
+                                    inst.rxClkApplyAlert = true;
+                                }
+                            },
+                            {
+                                name: "rxCalcOptimalDiv",
+                                displayName: "Calculate Optimal Dividers",
+                                buttonText: "Re-Calculate",
+                                longDescription: "Pressing this button would help in recalculating the optimal dividers for RX clocks \
+                                                  to achieve the closest achievable frequency to the expected. Press the `Apply Rx Clock Changes` \
+                                                  to viewing the frequencies Calculated/Expected.",
+                                hidden: false,
+
+                                onComplete: (inst, _ui, result) => {
+                                    recalculateRx(inst, _ui);
+                                    return;
+                                },
+                            },
+                            {
+                                name: "rxHclkDiv",
+                                displayName: "RX HCLK Divider",
+                                longDescription: `![](../source/drivers/.meta/mcasp/v1/mcasp_hclkdiv.png)`,
+                                default: 2,
+                                onChange: function (inst, ui) {
+                                    inst.rxClkApplyAlert = true;
+                                }
+                            },
+                            {
+                                name: "rxClkDiv",
+                                displayName: "RX CLK Divider",
+                                longDescription: `![](../source/drivers/.meta/mcasp/v1/mcasp_aclkdiv.png)`,
+                                default: 8,
+                                onChange: function (inst, ui) {
+                                    inst.rxClkApplyAlert = true;
+                                }
+                            },
+                            {
+                                name: "rxHclkExpected",
+                                displayName: "RX HCLK Expected",
+                                default: 0,
+                                hidden: true,
+                                onChange: function (inst, ui) {
+                                    inst.rxClkApplyAlert = true;
+                                }
+                            },
+                            {
+                                name: "rxHclkCalculated",
+                                displayName: "RX HCLK Calculated",
+                                default: soc.mcasp_input_clk_freq/(2),
+                                hidden: true,
+                            },
+                            {
+                                name: "rxBclkExpected",
+                                displayName: "RX BCLK Expected",
+                                default: 0,
+                                hidden: true,
+                                onChange: function (inst, ui) {
+                                    inst.rxClkApplyAlert = true;
+                                }
+                            },
+                            {
+                                name: "rxBclkCalculated",
+                                displayName: "RX BCLK Calculated",
+                                default: soc.mcasp_input_clk_freq/(2*8),
+                                hidden: true,
+                            },
+                            {
+                                name: "rxFsyncExpected",
+                                displayName: "RX Fsync Expected",
+                                default: 0,
+                                hidden: true,
+                                onChange: function (inst, ui) {
+                                    inst.rxClkApplyAlert = true;
+                                }
+                            },
+                            {
+                                name: "rxFsyncCalculated",
+                                displayName: "RX Fsync Calculated",
+                                default: soc.mcasp_input_clk_freq/(2*8*32*2),
+                                hidden: true,
+                            },
+                            {
+                                name: "rxApplyChanges",
+                                displayName: "Apply Rx Clock Changes",
+                                buttonText: "Apply",
+                                hidden: false,
+                                longDescription: "Pressing this button would recalculate the RX Frame Sync, Bit Clock, High Clock Freq \
+                                                  based on the configrations selected.",
+
+                                onComplete: (inst, _ui, result) => {
+                                    applyRxClk(inst, _ui);
+                                    inst.rxClkApplyAlert = false;
+                                    return;
+                                },
+                            },
+                            {
+                                name: "rxClkApplyAlert",
+                                displayName: "Rx Clock Apply Alert",
+                                default: true,
+                                hidden: true,
                             },
                         ]
                 },
@@ -1008,12 +1707,6 @@ function addModuleInstances(instance) {
  *  ======== validate ========
  */
 function validate(inst, report) {
-    if(inst.masterClkx != 0)
-    {
-        if (inst.NumTxSlots * inst.TxSlotSize > inst.masterClkx) {
-            report.logError(`masterClkx not supported. Master Clk Multiplier should greater than Slot width * num slots`, inst,  "masterClkx");
-        }
-    }
     if(inst.clkSyncMode == "SYNC") {
         if ((inst.NumTxSlots * inst.TxSlotSize) != (inst.NumRxSlots * inst.RxSlotSize)) {
             report.logError(`The total number of bits per frame must be the same in SYNC mode (XSSZ*XMOD = RSSZ*RMOD)`, inst,  "clkSyncMode");
@@ -1026,12 +1719,12 @@ function validate(inst, report) {
         }
     }
 
-    if (inst.txHclkSource == 0 && inst.txHclkSourceMux == 16)
+    if (inst.txHclkSource == EXTERNAL_CLOCK && inst.txHclkSourceMux == 16)
     {
         report.logError(`Choose a valid external clock source`, inst, "txHclkSourceMux")
     }
 
-    if (inst.rxHclkSource == 0 && inst.rxHclkSourceMux == 16)
+    if (inst.rxHclkSource == EXTERNAL_CLOCK && inst.rxHclkSourceMux == 16)
     {
         report.logError(`Choose a valid external clock source`, inst, "rxHclkSourceMux")
     }
@@ -1090,225 +1783,104 @@ function validate(inst, report) {
             }
         }
     }
+
+    /* Alert to press Tx Freq apply Button */
+    if(inst.txClkApplyAlert == true)
+    {
+        report.logWarning(`Please press Tx Freq Apply Button`, inst, "txApplyChanges");
+    }
+
+    /* Alert to press Rx Freq apply Button */
+    if(inst.rxClkApplyAlert == true)
+    {
+        report.logWarning(`Please press Rx Freq Apply Button`, inst, "rxApplyChanges");
+    }
 }
 
 function validatePinmux(inst, report)
 {
-    let instConfig = getInstanceConfig(inst);
-    let aclkr_ext = inst.NumRxSlots * inst.RxSlotSize * inst.fsr * 1000;
-    let aclkx_ext = inst.NumTxSlots * inst.TxSlotSize * inst.fsx * 1000;
-    let ahclkr = 0, ahclkx = 0, aclkr = 0, aclkx = 0;
-    let ahclkr_ext = 0;
-    let ahclkx_ext = 0;
-
-    if(inst.masterClkr != 0)
+    if(inst.txClkApplyAlert == true)
     {
-        /* AHCLK is Multiple of frame sync */
-        ahclkr_ext = inst.masterClkr * inst.fsr * 1000;
+        report.logWarning(`Press "Apply TX Clock changes" button for new Freq`, inst, "txHclkSource");
+        report.logWarning(`Press "Apply TX Clock changes" button for new Freq`, inst, "txAclkSource");
+        report.logWarning(`Press "Apply TX Clock changes" button for new Freq`, inst, "afsx");
     }
     else
     {
-        /* Custom AHCLK Config */
-        if (inst.rxHclkSource == 0)
+        if(inst.txHclkSource == EXTERNAL_CLOCK)
         {
-            /* External clock config - AHCLK is expected to be exact ACLK */
-            ahclkr_ext = aclkr_ext;
+            /* External HCLK */
+            report.logInfo(`Expected AHCLK: ${inst.txHclkExpected} Hz`, inst, "txHclkSource");
         }
         else
         {
-            /* Internal clock config - AHCLK is fixed to input frequency skipping AHCLK divider */
-            ahclkr_ext = clocking.getMcaspAuxClkFreq(inst);
+            /* Internal HCLK */
+            report.logInfo(`Calculated AHCLK: ${inst.txHclkCalculated} Hz`, inst, "txHclkSource");
+        }
+
+        if(inst.txAclkSource == EXTERNAL_CLOCK)
+        {
+            /* External BCLK */
+            report.logInfo(`Expected BCLK: ${inst.txBclkExpected} Hz`, inst, "txAclkSource");
+        }
+        else
+        {
+            /* Internal BCLK */
+            report.logInfo(`Calculated BCLK: ${inst.txBclkCalculated} Hz`, inst, "txAclkSource");
+        }
+
+        if(inst.txFsSource == EXTERNAL_CLOCK)
+        {
+            /* External FSYNC */
+            report.logInfo(`Expected FSX: ${inst.afsx} KHz`, inst, "afsx");
+        }
+        else
+        {
+            /* Internal FSYNC */
+            report.logInfo(`Calculated FSX: ${inst.txFsyncCalculated} KHz`, inst, "afsx");
         }
     }
 
-    if(inst.masterClkx != 0)
+    if(inst.rxClkApplyAlert == true)
     {
-        /* AHCLK is Multiple of frame sync */
-        ahclkx_ext = inst.masterClkx * inst.fsx * 1000;
+        report.logWarning(`Press "Apply RX Clock changes" button for new Freq`, inst, "rxHclkSource");
+        report.logWarning(`Press "Apply RX Clock changes" button for new Freq`, inst, "rxAclkSource");
+        report.logWarning(`Press "Apply RX Clock changes" button for new Freq`, inst, "afsr");
     }
     else
     {
-        /* Custom AHCLK Config */
-        if (inst.txHclkSource == 0)
+        if(inst.rxHclkSource == EXTERNAL_CLOCK)
         {
-            /* External clock config - AHCLK is expected to be exact ACLK */
-            ahclkx_ext = aclkx_ext;
+            /* External HCLK */
+            report.logInfo(`Expected AHCLK: ${inst.rxHclkExpected} Hz`, inst, "rxHclkSource");
         }
         else
         {
-            /* Internal clock config - AHCLK is fixed to input frequency skipping AHCLK divider */
-            ahclkx_ext = clocking.getMcaspAuxClkFreq(inst);
+            /* Internal HCLK */
+            report.logInfo(`Calculated AHCLK: ${inst.rxHclkCalculated} Hz`, inst, "rxHclkSource");
         }
-    }
 
-    /* Receive Clock Config */
-    if (inst.rxHclkSource == 0)
-    {
-        /* External Clock Source */
-        ahclkr = ahclkr_ext;
-        report.logInfo(`Expected AHCLKR: ${ahclkr} Hz`, inst, "rxHclkSource");
-    }
-    else
-    {
-        /* Internal Clock Source */
-        if ((ahclkr_ext > clocking.getMcaspAuxClkFreq(inst)))
+        if(inst.rxAclkSource == EXTERNAL_CLOCK)
         {
-            report.logError(`AHCLKR outside scope`, inst,  "masterClkr");
+            /* External BCLK */
+            report.logInfo(`Expected BCLK: ${inst.rxBclkExpected} Hz`, inst, "rxAclkSource");
         }
         else
         {
-            ahclkr = clocking.getMcaspAuxClkFreq(inst) / Math.round(clocking.getMcaspAuxClkFreq(inst) / ahclkr_ext);
-            report.logInfo(`Calculated AHCLKR: ${ahclkr} Hz`, inst, "rxHclkSource");
+            /* Internal BCLK */
+            report.logInfo(`Calculated BCLK: ${inst.rxBclkCalculated} Hz`, inst, "rxAclkSource");
         }
-    }
 
-    if (inst.rxAclkSource == 0)
-    {
-        aclkr = aclkr_ext;
-        report.logInfo(`Expected ACLKR: ${aclkr} Hz`, inst, "rxAclkSource");
-    }
-    else
-    {
-        if (inst.rxHclkSource != 0)
+        if(inst.txFsSource == EXTERNAL_CLOCK)
         {
-            /* Internal AHCLK */
-            if(inst.masterClkr != 0)
-            {
-                aclkr = ahclkr / Math.round(ahclkr/(inst.NumRxSlots * inst.RxSlotSize * inst.fsr * 1000));
-            }
-            else
-            {
-                let divProd = clocking.getMcaspAuxClkFreq(inst) / aclkr_ext;
-                let divProdUp = Math.ceil(divProd);
-                let divProdDown = Math.floor(divProd);
-                let hclkDivUp = 1;
-                let aclkDivUp = divProdUp;
-                let hclkDivDown = 1;
-                let aclkDivDown = divProdDown;
-                let errUp = Math.abs(((clocking.getMcaspAuxClkFreq(inst) / (hclkDivUp * aclkDivUp))) - aclkr_ext);
-                let errDown = Math.abs(((clocking.getMcaspAuxClkFreq(inst) / (hclkDivDown * aclkDivDown))) - aclkr_ext);
-                if (errUp < errDown)
-                {
-                    aclkr = clocking.getMcaspAuxClkFreq(inst) / (hclkDivUp * aclkDivUp);
-                }
-                else
-                {
-                    aclkr = clocking.getMcaspAuxClkFreq(inst) / (hclkDivDown * aclkDivDown);
-                }
-            }
+            /* External FSYNC */
+            report.logInfo(`Expected FSR: ${inst.afsr} KHz`, inst, "afsr");
         }
         else
         {
-            /* External AHCLK */
-            if(inst.masterClkr != 0)
-            {
-                aclkr = ahclkr / Math.round(ahclkr/(inst.NumRxSlots * inst.RxSlotSize * inst.fsr * 1000));
-            }
-            else
-            {
-                aclkr = aclkr_ext;
-            }
+            /* Internal FSYNC */
+            report.logInfo(`Calculated FSR : ${inst.rxFsyncCalculated} KHz`, inst, "afsr");
         }
-        report.logInfo(`Calculated ACLKR: ${aclkr} Hz`, inst, "rxAclkSource");
-    }
-
-    if(inst.masterClkr != 0)
-    {
-        if ((inst.rxAclkSource == 1) && ((ahclkr % aclkr) != 0))
-        {
-            report.logError(`AHCLKR is not multiple of ACLKR`, inst,  "masterClkr");
-        }
-    }
-
-    let afsr_int = aclkr / (inst.NumRxSlots * inst.RxSlotSize * 1000);
-    if (inst.rxFsSource == 1)
-    {
-        report.logInfo(`Calculated FSR: ${afsr_int} KHz`, inst, "afsr");
-    }
-
-    /* Transmit Clock Config */
-    if (inst.txHclkSource == 0)
-    {
-        /* External Clock Source */
-        ahclkx = ahclkx_ext;
-        report.logInfo(`Expected AHCLKX: ${ahclkx} Hz`, inst, "txHclkSource");
-    }
-    else
-    {
-        /* Internal Clock Source */
-        if ((ahclkx_ext > clocking.getMcaspAuxClkFreq(inst)))
-        {
-            report.logError(`AHCLKX outside scope`, inst,  "masterClkx");
-        }
-        else
-        {
-            ahclkx = clocking.getMcaspAuxClkFreq(inst) / Math.round(clocking.getMcaspAuxClkFreq(inst) / ahclkx_ext);
-            report.logInfo(`Calculated AHCLKX: ${ahclkx} Hz`, inst, "txHclkSource");
-        }
-    }
-
-    if (inst.txAclkSource == 0)
-    {
-        aclkx = aclkx_ext;
-        report.logInfo(`Expected ACLKX: ${aclkx} Hz`, inst, "txAclkSource");
-    }
-    else
-    {
-        if (inst.txHclkSource != 0)
-        {
-            /* Internal AHCLK */
-            if(inst.masterClkx != 0)
-            {
-                aclkx = ahclkx / Math.round(ahclkx/(inst.NumTxSlots * inst.TxSlotSize * inst.fsx * 1000));
-            }
-            else
-            {
-                let divProd = clocking.getMcaspAuxClkFreq(inst) / aclkx_ext;
-                let divProdUp = Math.ceil(divProd);
-                let divProdDown = Math.floor(divProd);
-                let hclkDivUp = 1;
-                let aclkDivUp = divProdUp;
-                let hclkDivDown = 1;
-                let aclkDivDown = divProdDown;
-                let errUp = Math.abs(((clocking.getMcaspAuxClkFreq(inst) / (hclkDivUp * aclkDivUp))) - aclkx_ext);
-                let errDown = Math.abs(((clocking.getMcaspAuxClkFreq(inst) / (hclkDivDown * aclkDivDown))) - aclkx_ext);
-                if (errUp < errDown)
-                {
-                    aclkx = clocking.getMcaspAuxClkFreq(inst) / (hclkDivUp * aclkDivUp);
-                }
-                else
-                {
-                    aclkx = clocking.getMcaspAuxClkFreq(inst) / (hclkDivDown * aclkDivDown);
-                }
-            }
-        }
-        else
-        {
-            /* External AHCLK */
-            if(inst.masterClkx != 0)
-            {
-                aclkx = ahclkx / Math.round(ahclkx/(inst.NumTxSlots * inst.TxSlotSize * inst.fsx * 1000));
-            }
-            else
-            {
-                aclkx = aclkx_ext;
-            }
-        }
-        report.logInfo(`Calculated ACLKX: ${aclkx} Hz`, inst, "txAclkSource");
-    }
-
-    if(inst.masterClkx != 0)
-    {
-        if ((inst.txAclkSource == 1) && ((ahclkx % aclkx) != 0))
-        {
-            report.logError(`AHCLKX is not multiple of ACLKX`, inst,  "masterClkx");
-        }
-    }
-
-    let afsx_int = aclkx / (inst.NumTxSlots * inst.TxSlotSize * 1000);
-    if (inst.txFsSource == 1)
-    {
-        report.logInfo(`Calculated FSX: ${afsx_int} KHz`, inst, "afsx");
     }
 
     if(inst.externRxLoopjob == true)

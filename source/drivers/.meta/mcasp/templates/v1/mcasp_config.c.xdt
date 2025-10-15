@@ -137,76 +137,14 @@ static MCASP_Attrs gMcaspAttrs[CONFIG_MCASP_NUM_INSTANCES] =
                 (uint32_t)0x`((config.transferMode == "DMA")?1:0)`U, /* MCASP_REVTCTL */
                 {
 %{
-% let bitClkrHz = instance.NumRxSlots * instance.RxSlotSize * instance.fsr * 1000;
-% let masterClkrHz = instance.masterClkr * instance.fsr * 1000;
 % let hiClkr = 0;
 % let aclkr = 0;
 
-% if (instance.rxHclkSource != 0)
-% {
-    % /* Internal AHCLK */
-    % if(instance.masterClkr != 0)
-    % {
-        % hiClkr = Math.round(clocking.getMcaspAuxClkFreq(instance) / masterClkrHz) - 1;
-        % aclkr = Math.round(masterClkrHz/bitClkrHz) - 1;
-    % }
-    % else
-    % {
-        % /* HCLK Div is set to 1, and ACLK Div is adjusted to least error case */
-        % let divProd = clocking.getMcaspAuxClkFreq(instance) / bitClkrHz;
-        % let divProdUp = Math.ceil(divProd);
-        % let divProdDown = Math.floor(divProd);
-        % let hclkDivUp = 1;
-        % let aclkDivUp = divProdUp;
-        % let hclkDivDown = 1;
-        % let aclkDivDown = divProdDown;
-        % let errUp = Math.abs(((clocking.getMcaspAuxClkFreq(instance) / (hclkDivUp * aclkDivUp))) - bitClkrHz);
-        % let errDown = Math.abs(((clocking.getMcaspAuxClkFreq(instance) / (hclkDivDown * aclkDivDown))) - bitClkrHz);
-        % if (errUp < errDown)
-        % {
-            % hiClkr = 0;
-            % aclkr = aclkDivUp-1;
-        % }
-        % else
-        % {
-            % hiClkr  = 0;
-            % aclkr = aclkDivDown-1;
-        % }
-    % }
-% }
-% else
-% {
-    % /* External AHCLK */
-    % if(instance.masterClkr != 0)
-    % {
-        % hiClkr = Math.round(clocking.getMcaspAuxClkFreq(instance) / masterClkrHz) - 1;
-        % aclkr = Math.round(masterClkrHz/bitClkrHz) - 1;
-    % }
-    % else
-    % {
-        % /* Expecting External AHCLK to be exactly same as ACLK*/
-        % hiClkr = 0;
-        % aclkr = 0;
-    % }
-% }
-
-% if (instance.rxAclkSource == 0)
-% {
-%      aclkr = (instance.rxAclkSource << 5);
-% }
-% else
-% {
-%      aclkr |= (instance.rxAclkSource << 5);
-% }
+% hiClkr = (instance.rxHclkDiv-1);
+% hiClkr |= (instance.rxHclkSource << 15);
+% aclkr = (instance.rxClkDiv-1);
+% aclkr |= (instance.rxAclkSource << 5);
 % aclkr |= (instance.rxBitClkPolarity << 7);
-% if (instance.rxHclkSource == 0)
-% {
-%      hiClkr = (instance.rxHclkSource << 15);
-% }
-% else
-% {
-%      hiClkr |= (instance.rxHclkSource << 15);
-% }
                     (uint32_t)0x`(aclkr).toString(16).toUpperCase()`U, /* MCASP_ACLKRCTL */
                     (uint32_t)0x`(hiClkr).toString(16).toUpperCase()`U, /* MCASP_AHCLKRCTL */
 %}
@@ -243,76 +181,14 @@ static MCASP_Attrs gMcaspAttrs[CONFIG_MCASP_NUM_INSTANCES] =
                 (uint32_t)0x`((config.transferMode == "DMA")?1:0)`U, /* MCASP_XEVTCTL */
                 {
 %{
-% let bitClkxHz = instance.NumTxSlots * instance.TxSlotSize * instance.fsx * 1000;
-% let masterClkxHz = instance.masterClkx * instance.fsx * 1000;
 % let hiClkx = 0;
 % let aclkx = 0;
 
-% if (instance.txHclkSource != 0)
-% {
-    % /* Internal AHCLK */
-    % if(instance.masterClkx != 0)
-    % {
-        % hiClkx = Math.round(clocking.getMcaspAuxClkFreq(instance) / masterClkxHz) - 1;
-        % aclkx = Math.round(masterClkxHz/bitClkxHz) - 1;
-    % }
-    % else
-    % {
-        % /* HCLK Div is set to 1, and ACLK Div is adjusted to least error case */
-        % let divProd = clocking.getMcaspAuxClkFreq(instance) / bitClkxHz;
-        % let divProdUp = Math.ceil(divProd);
-        % let divProdDown = Math.floor(divProd);
-        % let hclkDivUp = 1;
-        % let aclkDivUp = divProdUp;
-        % let hclkDivDown = 1;
-        % let aclkDivDown = divProdDown;
-        % let errUp = Math.abs(((clocking.getMcaspAuxClkFreq(instance) / (hclkDivUp * aclkDivUp))) - bitClkxHz);
-        % let errDown = Math.abs(((clocking.getMcaspAuxClkFreq(instance) / (hclkDivDown * aclkDivDown))) - bitClkxHz);
-        % if (errUp < errDown)
-        % {
-            % hiClkx = 0;
-            % aclkx = aclkDivUp-1;
-        % }
-        % else
-        % {
-            % hiClkx  = 0;
-            % aclkx = aclkDivDown-1;
-        % }
-    % }
-% }
-% else
-% {
-    % /* External AHCLK */
-    % if(instance.masterClkx != 0)
-    % {
-        % hiClkx = Math.round(clocking.getMcaspAuxClkFreq(instance) / masterClkxHz) - 1;
-        % aclkx = Math.round(masterClkxHz/bitClkxHz) - 1;
-    % }
-    % else
-    % {
-        % /* Expecting External AHCLK to be exactly same as ACLK*/
-        % hiClkx = 0;
-        % aclkx = 0;
-    % }
-% }
-
-% if (instance.txAclkSource == 0)
-% {
-%      aclkx = (instance.txAclkSource << 5);
-% }
-% else
-% {
-%      aclkx |= (instance.txAclkSource << 5);
-% }
+% hiClkx = (instance.txHclkDiv-1);
+% hiClkx |= (instance.txHclkSource << 15);
+% aclkx = (instance.txClkDiv-1);
+% aclkx |= (instance.txAclkSource << 5);
 % aclkx |= (instance.txBitClkPolarity << 7);
-% if (instance.txHclkSource == 0)
-% {
-%      hiClkx = (instance.txHclkSource << 15);
-% }
-% else
-% {
-%      hiClkx |= (instance.txHclkSource << 15);
-% }
 % aclkx |= (((instance.clkSyncMode == "SYNC")?0:1) << 6);
                     (uint32_t)0x`(aclkx).toString(16).toUpperCase()`U, /* MCASP_ACLKXCTL */
                     (uint32_t)0x`(hiClkx).toString(16).toUpperCase()`U, /* MCASP_AHCLKXCTL */

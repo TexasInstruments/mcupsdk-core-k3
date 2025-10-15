@@ -150,7 +150,7 @@ const mcspi_config_c7x = [
             },
             {
                 txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI0_CH2_TX",
-                rxCh    : "UDMA_PDMA_CH_MAIN0_MCSPI1_CH2_RX",
+                rxCh    : "UDMA_PDMA_CH_MAIN0_MCSPI0_CH2_RX",
             },
             {
                 txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI0_CH3_TX",

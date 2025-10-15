@@ -20,7 +20,7 @@ const mcspi_config_a53 = [
             },
             {
                 txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI0_CH2_TX",
-                rxCh    : "UDMA_PDMA_CH_MAIN0_MCSPI1_CH2_RX",
+                rxCh    : "UDMA_PDMA_CH_MAIN0_MCSPI0_CH2_RX",
             },
             {
                 txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI0_CH3_TX",
@@ -112,7 +112,7 @@ const mcspi_config_r5fss = [
             },
             {
                 txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI0_CH2_TX",
-                rxCh    : "UDMA_PDMA_CH_MAIN0_MCSPI1_CH2_RX",
+                rxCh    : "UDMA_PDMA_CH_MAIN0_MCSPI0_CH2_RX",
             },
             {
                 txCh    : "UDMA_PDMA_CH_MAIN0_MCSPI0_CH3_TX",

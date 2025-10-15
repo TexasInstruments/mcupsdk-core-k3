@@ -49,7 +49,7 @@
  *
  * Secure Proxy indices for AM62X device
  *
- * Data version: 240823_113849
+ * Data version: 250903_173617
  *
  */
 #ifndef AM62X_TISCI_SEC_PROXY_H

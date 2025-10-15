@@ -4819,6 +4819,131 @@
                     ]
                 }
             }
+        },
+        "0x04": {
+            "action_domain_name": "Low Power Mode",
+            "action_modifiers": [
+                {
+                    "mask": "0x40",
+                    "modifier_long": "Action failed",
+                    "modifier_short": "FAIL"
+                }
+            ],
+            "actions": {
+                "0x30": {
+                    "action_long": "Low power mode sequence for K3 Lite Devices",
+                    "action_short": "PM_LPM_SEQ",
+                    "msg_data": [
+                        {
+                            "fmt": "%X",
+                            "higher_bit": 21,
+                            "lower_bit": 8,
+                            "name": "Sequence number",
+                            "sub_msg" : {
+                                "0x01":{
+                                    "msg": "Saved secure manager context"
+                                },
+                                "0x02":{
+                                    "msg": "Received prepare sleep message"
+                                },
+                                "0x03":{
+                                    "msg": "Saved TIFS PLL during LPM suspend"
+                                },
+                                "0x04":{
+                                    "msg": "Saved the firewall Configuration"
+                                },
+                                "0x05":{
+                                    "msg": "Encrypted and saved minimal context in DDR"
+                                },
+                                "0x06":{
+                                    "msg": "Configured the magic word in MMR"
+                                },
+                                "0x07":{
+                                    "msg": "LPM wakeup event received"
+                                },
+                                "0x08":{
+                                    "msg": "A53 core has entered WFI"
+                                },
+                                "0x9":{
+                                    "msg": "Saved A53's PLL"
+                                },
+                                "0x0A":{
+                                    "msg": "Stopped the TIFS clock"
+                                },
+                                "0x0B":{
+                                    "msg": "Disabled the WKUP PLL, so TIFS operates at bypass frequency"
+                                },
+                                "0x0C":{
+                                    "msg": "A53 Core has been turned off"
+                                },
+                                "0x0D":{
+                                    "msg": "Disabled first set of main LPSC"
+                                },
+                                "0x0E":{
+                                    "msg": "Turned off first set of main Power Domains"
+                                },
+                                "0x0F":{
+                                    "msg": "Disabled second set of main LPSC"
+                                },
+                                "0x10":{
+                                    "msg": "Turned off second set of main Power Domains"
+                                },
+                                "0x11":{
+                                    "msg": "Powered off TIFS Oscillator"
+                                },
+                                "0x12":{
+                                    "msg": "Powered on TIFS Oscillator"
+                                },
+                                "0x13":{
+                                    "msg": "Restored TIFS PLL to operate at boot frequency"
+                                },
+                                "0x14":{
+                                    "msg": "Turned on the Isolation LPSC"
+                                },
+                                "0x15":{
+                                    "msg": "Turned on second set of main Power Domains"
+                                },
+                                "0x16":{
+                                    "msg": "Enabled second set of main LPSC"
+                                },
+                                "0x17":{
+                                    "msg": "Restored A53's PLL"
+                                },
+                                "0x18":{
+                                    "msg": "Turned on first set of main Power Domains"
+                                },
+                                "0x19":{
+                                    "msg": "Enabled first set of main LPSC"
+                                },
+                                "0x1A":{
+                                    "msg": "Resumed TIFS clock"
+                                },
+                                "0x1B":{
+                                    "msg": "Cleared the magic word"
+                                },
+                                "0x1C":{
+                                    "msg": "A53 Core has been turned on"
+                                },
+                                "0x1D":{
+                                    "msg": "Failed to trigger low power mode entry as the mode value is invalid"
+                                },
+                                "0x1E":{
+                                    "msg": "TIFS core has exited WFI"
+                                },
+                                "0x1F":{
+                                    "msg": "Received Enter sleep message"
+                                },
+                                "0x20":{
+                                    "msg": "Reinitialized the crypto module"
+                                },
+                                "0x22":{
+                                    "msg": "Latch clearing sequence failed"
+                                }          
+                            }
+                        }
+                    ]
+                }
+            }
         }
     }
 }

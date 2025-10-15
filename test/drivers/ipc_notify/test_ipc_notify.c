@@ -175,6 +175,10 @@ uint32_t gRemoteCoreId[] = {
 };
 #endif
 
+#if defined(SOC_J722S)
+static void test_notifyDeInitialization(void *args);
+#endif
+
 /* semaphore's used to indicate a core has recevied all ACK messages exchanges from each core in Any to Any test */
 SemaphoreP_Object gAckDoneSem[CSL_CORE_ID_MAX];
 
@@ -629,6 +633,19 @@ void test_notifyInitUnusedCore(void* args)
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
 
 }
+
+/*
+ * In this test
+ * - Calling the test_notifyDeInitialization to deinitialize the ipc notify
+ * - Read, clear and disable the mail box
+ */
+#if defined(SOC_J722S)
+static void test_notifyDeInitialization(void *args)
+{
+    IpcNotify_deInit();
+}
+#endif
+
 /* This code executes on all remote core, i.e not on main core */
 void test_ipc_remote_core_start()
 {
@@ -773,6 +790,7 @@ void test_ipc_main_core_start()
     RUN_TEST(test_notifyErrorChecks, 0, (void*)CSL_CORE_ID_MAIN_R5FSS0_0);
     RUN_TEST(test_notifyErrorChecks, 0, (void*)CSL_CORE_ID_C75SS0_0);
     RUN_TEST(test_notifyErrorChecks, 0, (void*)CSL_CORE_ID_C75SS1_0);
+    RUN_TEST(test_notifyDeInitialization, 18766, NULL);
     #endif
 
     DebugP_log("\n[TEST IPC NOTIFY] Performance Numbers Print Start\r\n\n");
@@ -811,3 +829,4 @@ void setUp(void)
 void tearDown(void)
 {
 }
+

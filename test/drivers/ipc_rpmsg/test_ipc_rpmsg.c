@@ -41,6 +41,9 @@
 #include <task.h>
 #include <unity.h>
 #include "ti_drivers_open_close.h"
+#if defined(SOC_J722S)
+#include <drivers/ipc_rpmsg/ipc_rpmsg_priv.h>
+#endif
 
 /* number of iterations of message exchange to do, this is only used by some tests */
 uint32_t gMsgEchoCount = 10000;
@@ -271,6 +274,9 @@ ipcPerfObj_t gIpcPerfObj[MAX_IPC_RPMSG_PERF_CNT] = {0};
 uint32_t     gIpcPerfCnt = 0;
 
 void test_rpmsgRxNotifyHandler(RPMessage_Object *obj, void *arg);
+#if defined(SOC_J722S)
+static void test_rpmsgValidParams(void *args);
+#endif
 
 /* handle announcement messages and store in a global, these are checked later on */
 void test_rpmsgControlEndPtCallback(void *arg,
@@ -1172,6 +1178,43 @@ void test_rpmsgErrorChecks(void *args)
 }
 #endif
 
+/*
+ * In this test
+ * - This test_rpmsgValidParams is to validate RPMessage by passing the valid parameters to
+ *   the function and executing the neccessary conditions for statement and branch coverage
+ * - Passing invalid parameters to fail the message core end point
+ */
+#if defined(SOC_J722S)
+static void test_rpmsgValidParams(void *args)
+{
+    int data = 0U;
+    void* ptrdata = &data;
+    RPMessage_Core *coreObj = &gIpcRpmsgCtrl.coreObj[0];
+    RPMessage_Vring *vringObj = &coreObj->vringTxObj;
+
+    /* Passing valid parameters with vringObj->lastAvailIdx and vringObj->avail->idx by
+    setting zero to get the added buffer */
+    vringObj->lastAvailIdx = 0U;
+    vringObj->avail->idx = 0U;
+    RPMessage_vringGetEmptyTxBuf(0U, NULL, 0U);
+
+    /* Passing valid parameters with vringObj->lastAvailIdx and vringObj->avail->idx by
+    setting zero to make isNewEmptyBuf to zero */
+    RPMessage_vringCheckEmptyTxBuf(0U);
+
+    /* Passing the NULL parameter with coreObj->freeQ by setting zero
+    to make coreObj->freeQAllocPending to one*/
+    coreObj->freeQ = (RPMessage_Queue){0U};
+    RPMessage_allocEndPtMsg(0U);
+
+    /* Passing valid parameters to satisfy the if condition and to execute the RPMessage_vringGet */
+    RPMessage_send(ptrdata, 512U, 2U, 0U, 0U, 0U);
+
+    /* Passing invalid parameters to fail the message core end point  */
+    RPMessage_send(ptrdata, 512U, CSL_CORE_ID_MAX, 0U, 0U, 0U);
+}
+#endif
+
 /* This code executes on remote core, i.e not on main core */
 void test_ipc_remote_core_start()
 {
@@ -1361,6 +1404,13 @@ void test_ipc_main_core_start()
     RUN_TEST(test_rpmsgRecvErrorChecks, 5671, &testArgs);
     #endif
 
+    #if defined(SOC_J722S)
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    testArgs.msgSize = 128;
+    testArgs.echoMsgCount = 1;
+    RUN_TEST(test_rpmsgRecvErrorChecks, 18761, &testArgs);
+    #endif
+
     #if !defined(SOC_AM62AX) && !defined(SOC_AM62DX) && !defined(SOC_AM62X) && !defined(SOC_AM62PX) && !defined(SOC_AM275X) && !defined(SOC_J722S)
     /* back to back message send and handler mode rx tests */
     testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_1;
@@ -1490,6 +1540,13 @@ void test_ipc_main_core_start()
     RUN_TEST(test_rpmsgSendErrorChecks, 5649, &testArgs);
     #endif
 
+    #if defined(SOC_J722S)
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    testArgs.msgSize = INVALID_MSG_SIZE;
+    testArgs.echoMsgCount = 512;
+    RUN_TEST(test_rpmsgSendErrorChecks, 18760, &testArgs);
+    #endif
+
     #if !defined(SOC_AM62X) && !defined(SOC_AM62PX) && !defined(SOC_J722S)
     /* error condition checks */
     RUN_TEST(test_rpmsgErrorChecks, 2456, NULL);
@@ -1532,6 +1589,7 @@ void test_ipc_main_core_start()
     RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
     testArgs.msgSize = 112;
     RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
+    RUN_TEST(test_rpmsgValidParams, 18765, NULL);
     #endif
 
     /* Print performance numbers. */

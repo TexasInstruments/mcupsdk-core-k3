@@ -71,7 +71,7 @@ extern "C"
 
 #define PBIST_MAX_TIMEOUT_VALUE           (100000000u)
 
-#define MPU_NUM_AUX_DEVICES               	7
+#define MPU_NUM_AUX_DEVICES               	6
 
 #define MAIN_NUM_AUX_DEVICES             	12
 

@@ -258,7 +258,6 @@ void App_bootMultipleCoreSD()
 
     App_driversClose();
     Board_deinit();
-    System_deinit();
 }
 
 void sbl_sd_main(void * args)

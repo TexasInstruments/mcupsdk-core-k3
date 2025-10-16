@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -282,7 +282,6 @@ static int32_t OspiDma_udmaCopy(void* ospiDmaArgs, void* dst, void* src, uint32_
     icnt[2] = (uint16_t)1U;
     icnt[3] = (uint16_t)1U;
 
-#if defined (SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62PX)
     uint16_t dummy_icnt[4] = { 32U, 1U, 1U, 1U };
 
     /*
@@ -293,8 +292,8 @@ static int32_t OspiDma_udmaCopy(void* ospiDmaArgs, void* dst, void* src, uint32_
     */
 
     udmaStatus = OspiDma_udmaUpdateSubmitTR(ospiDmaArgs, dst, src, dummy_icnt);
-#endif
-    udmaStatus = OspiDma_udmaUpdateSubmitTR(ospiDmaArgs, dst, src, icnt);
+
+    udmaStatus += OspiDma_udmaUpdateSubmitTR(ospiDmaArgs, dst, src, icnt);
 
     if(rmainder != 0U)
     {
@@ -304,7 +303,7 @@ static int32_t OspiDma_udmaCopy(void* ospiDmaArgs, void* dst, void* src, uint32_
         icnt[2] = (uint16_t)1U;
         icnt[3] = (uint16_t)1U;
 
-        udmaStatus = OspiDma_udmaUpdateSubmitTR(ospiDmaArgs, ((uint8_t *)dst+(length-rmainder)), ((uint8_t *)src+(length-rmainder)), icnt);
+        udmaStatus += OspiDma_udmaUpdateSubmitTR(ospiDmaArgs, ((uint8_t *)dst+(length-rmainder)), ((uint8_t *)src+(length-rmainder)), icnt);
     }
 
     if(udmaStatus == UDMA_SOK)

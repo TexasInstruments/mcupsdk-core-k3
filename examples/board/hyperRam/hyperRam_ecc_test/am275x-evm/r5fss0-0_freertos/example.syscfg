@@ -69,7 +69,6 @@ mpu_armv73.$name    = "TCMB";
 mpu_armv74.size        = 22;
 mpu_armv74.baseAddr    = 0x72000000;
 mpu_armv74.$name       = "MSRAM_BANK0_TO_BANK3";
-mpu_armv74.attributes  = "CUSTOM";
 mpu_armv74.tex         = 5;
 mpu_armv74.isCacheable = false;
 

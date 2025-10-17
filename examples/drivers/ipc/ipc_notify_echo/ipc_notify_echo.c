@@ -189,9 +189,6 @@ uint32_t gRemoteCoreId[] = {
 /* semaphore's used to indicate a main core has finished all message exchanges */
 SemaphoreP_Object gMainDoneSem[CSL_CORE_ID_MAX];
 
-/* semaphore's used to indicate a main core has finished all message exchanges */
-SemaphoreP_Object gMainDoneSem[CSL_CORE_ID_MAX];
-
 /* semaphore used to indicate a remote core has finished all message xchange */
 SemaphoreP_Object gRemoteDoneSem;
 

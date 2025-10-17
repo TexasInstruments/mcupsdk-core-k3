@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.22.0+3893"}
+ * @versions {"tool":"1.24.0+4150"}
  */
 
 /**
@@ -72,8 +72,17 @@ mcasp1.rxBitClkPolarity                        = 0;
 mcasp1.txLoopjobBufLength                      = 2048;
 mcasp1.rxLoopjobBufLength                      = 2048;
 mcasp1.txLoopjobBufExtern                      = "uint8_t gMcaspAudioBufferTx[][]";
+mcasp1.txHclkExpected                          = 24576000;
+mcasp1.txHclkDiv                               = 1;
+mcasp1.txClkDiv                                = 2;
+mcasp1.txBclkCalculated                        = 12288000;
+mcasp1.txClkApplyAlert                         = false;
+mcasp1.rxHclkExpected                          = 24576000;
+mcasp1.rxHclkDiv                               = 1;
+mcasp1.rxClkDiv                                = 2;
+mcasp1.rxBclkCalculated                        = 12288000;
+mcasp1.rxClkApplyAlert                         = false;
 mcasp1.MCASP.$assignAllowConflicts             = "MCASP1";
-mcasp1.CLOCKING.$assign                        = "CLOCKING";
 mcasp1.mcaspSer.create(2);
 mcasp1.mcaspSer[0].$name                       = "CONFIG_MCASP_SER1";
 mcasp1.mcaspSer[0].dataDir                     = "Receive";
@@ -81,6 +90,7 @@ mcasp1.mcaspSer[0].MCASP.$assignAllowConflicts = "MCASP1";
 mcasp1.mcaspSer[1].$name                       = "CONFIG_MCASP_SER0";
 mcasp1.mcaspSer[1].serNum                      = 1;
 mcasp1.mcaspSer[1].MCASP.$assignAllowConflicts = "MCASP1";
+mcasp1.CLOCKING.$assign                        = "CLOCKING";
 scripting.suppress("Resource conflict,MCASP1 is also in use by @@@.+?@@@, @@@.+?@@@", mcasp1.MCASP, "$assign");
 scripting.suppress("Resource conflict,MCASP1 is also in use by @@@.+?@@@, @@@.+?@@@", mcasp1.mcaspSer[0].MCASP, "$assign");
 scripting.suppress("Resource conflict,MCASP1 is also in use by @@@.+?@@@, @@@.+?@@@", mcasp1.mcaspSer[1].MCASP, "$assign");
@@ -172,7 +182,7 @@ mcasp1.MCASP.AFSX.$suggestSolution                 = "MCASP1_AFSX";
 mcasp1.MCASP.ACLKX.$suggestSolution                = "MCASP1_ACLKX";
 mcasp1.MCASP.AFSR.$suggestSolution                 = "MCASP0_AXR15";
 mcasp1.MCASP.ACLKR.$suggestSolution                = "MCASP0_AXR14";
-mcasp1.CLOCKING.AUDIO_EXT_REFCLK2.$suggestSolution = "GPIO1_72";
 mcasp1.mcaspSer[0].MCASP.AXR0.$suggestSolution     = "MCASP1_AXR0";
 mcasp1.mcaspSer[1].MCASP.AXR1.$suggestSolution     = "MCASP1_AXR1";
+mcasp1.CLOCKING.AUDIO_EXT_REFCLK2.$suggestSolution = "GPIO1_72";
 debug_log.uartLog.UART.RXD.$suggestSolution        = "MCASP0_AXR6";

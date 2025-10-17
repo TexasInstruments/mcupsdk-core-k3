@@ -55,6 +55,8 @@ mcasp1.externRxLoopjob                         = true;
 mcasp1.rxLoopjobBufExtern                      = "uint8_t gMcaspRxBuffer[]";
 mcasp1.rxLoopjobBuf                            = "gMcaspRxBuffer";
 mcasp1.rxLoopjobBufLength                      = 1920000;
+mcasp1.txClkApplyAlert                         = false;
+mcasp1.rxClkApplyAlert                         = false;
 mcasp1.MCASP.$assignAllowConflicts             = "MCASP2";
 mcasp1.mcaspSer.create(2);
 mcasp1.mcaspSer[0].$name                       = "CONFIG_MCASP_SER0";

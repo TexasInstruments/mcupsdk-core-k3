@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62SIP" --part "Default" --package "AMK" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM625SIP" --package "FCBGA (AMK)" --variant "AM625SIP-L" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.22.0+3893"}
+ * @versions {"tool":"1.24.0+4150"}
  */
 
 /**
@@ -31,6 +31,8 @@ mcasp1.rxActiveSlotMask                        = 0x3;
 mcasp1.rxCallbackFxn                           = "mcasp_loopback_rxcb";
 mcasp1.txLoopjobBufLength                      = 1280;
 mcasp1.rxLoopjobBufLength                      = 1280;
+mcasp1.txClkApplyAlert                         = false;
+mcasp1.rxClkApplyAlert                         = false;
 mcasp1.MCASP.$assignAllowConflicts             = "MCASP0";
 mcasp1.SYSTEM.$assignAllowConflicts            = "SYSTEM0";
 mcasp1.mcaspSer.create(2);
@@ -56,6 +58,8 @@ mcasp2.txLoopjobBuf                            = "gTxLoopjobBuf1";
 mcasp2.rxLoopjobBuf                            = "gRxLoopjobBuf1";
 mcasp2.txLoopjobBufLength                      = 1280;
 mcasp2.rxLoopjobBufLength                      = 1280;
+mcasp2.txClkApplyAlert                         = false;
+mcasp2.rxClkApplyAlert                         = false;
 mcasp2.MCASP.$assignAllowConflicts             = "MCASP1";
 mcasp2.SYSTEM.$assignAllowConflicts            = "SYSTEM0";
 mcasp2.mcaspSer.create(2);
@@ -81,6 +85,8 @@ mcasp3.rxCallbackFxn                           = "mcasp_loopback_rxcb";
 mcasp3.rxLoopjobBuf                            = "gRxLoopjobBuf2";
 mcasp3.txLoopjobBufLength                      = 1280;
 mcasp3.rxLoopjobBufLength                      = 1280;
+mcasp3.txClkApplyAlert                         = false;
+mcasp3.rxClkApplyAlert                         = false;
 mcasp3.MCASP.$assignAllowConflicts             = "MCASP2";
 mcasp3.SYSTEM.$assignAllowConflicts            = "SYSTEM0";
 mcasp3.mcaspSer.create(2);

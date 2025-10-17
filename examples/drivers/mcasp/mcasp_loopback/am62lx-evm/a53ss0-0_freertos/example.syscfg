@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62Lx" --part "AM62L32-G-ANB" --package "ANB" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM62L" --package "FCBGA (ANB)" --variant "AM62L32-G" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.23.0+3981"}
+ * @versions {"tool":"1.24.0+4150"}
  */
 
 /**
@@ -29,6 +29,8 @@ mcasp1.rxActiveSlotMask                        = 0x3;
 mcasp1.rxCallbackFxn                           = "mcasp_loopback_rxcb";
 mcasp1.txLoopjobBufLength                      = 1280;
 mcasp1.rxLoopjobBufLength                      = 1280;
+mcasp1.txClkApplyAlert                         = false;
+mcasp1.rxClkApplyAlert                         = false;
 mcasp1.MCASP.$assignAllowConflicts             = "MCASP0";
 mcasp1.mcaspSer.create(2);
 mcasp1.mcaspSer[0].$name                       = "CONFIG_MCASP_SER0";

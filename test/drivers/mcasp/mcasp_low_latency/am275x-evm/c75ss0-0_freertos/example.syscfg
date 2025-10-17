@@ -53,6 +53,8 @@ mcasp1.txAfifoEnable                           = false;
 mcasp1.rxAfifoEnable                           = false;
 mcasp1.txLoopjobBufLength                      = 16;
 mcasp1.rxLoopjobBufLength                      = 16;
+mcasp1.txClkApplyAlert                         = false;
+mcasp1.rxClkApplyAlert                         = false;
 mcasp1.MCASP.$assignAllowConflicts             = "MCASP4";
 mcasp1.mcaspSer.create(2);
 mcasp1.mcaspSer[0].$name                       = "CONFIG_MCASP_SER0";

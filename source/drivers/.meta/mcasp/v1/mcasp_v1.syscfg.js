@@ -121,12 +121,12 @@ function calculateOptimalDividersTx(inst) {
     }
 
     /* Check if HCLKXDIV = 1 is the best */
-    const resultFreq = AUXCLK / (bestCLKXDIV*1);
+    const resultFreq = AUXCLK / (1*1);
     const diff = Math.abs(resultFreq - targetACLKX);
     if(diff < minDiff) {
         minDiff = diff;
         bestHCLKXDIV = 1;
-        bestCLKXDIV = bestCLKXDIV;
+        bestCLKXDIV = 1;
         closestACLKX = resultFreq;
     }
 
@@ -252,12 +252,12 @@ function calculateOptimalDividersRx(inst) {
     }
 
     /* Check if HCLKRDIV = 1 is the best */
-    const resultFreq = AUXCLK / (bestCLKRDIV*1);
+    const resultFreq = AUXCLK / (1*1);
     const diff = Math.abs(resultFreq - targetACLKR);
     if(diff < minDiff) {
         minDiff = diff;
         bestHCLKRDIV = 1;
-        bestCLKRDIV = bestCLKRDIV;
+        bestCLKRDIV = 1;
         closestACLKR = resultFreq;
     }
 
@@ -933,14 +933,6 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                     collapsed: true,
                     config: [
                         {
-                            name: "txAuxClk",
-                            displayName: "McASP AUXCLK Rate",
-                            default: soc.mcasp_input_clk_freq,
-                            readOnly: true,
-                            displayFormat: "dec",
-                            description: "MCASP AUX clock frequency",
-                        },
-                        {
                             name: "afsx",
                             displayName: "Transmit Frame Sync Rate",
                             default: 48,
@@ -1453,14 +1445,6 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                         collapsed: true,
                         config: [
                             {
-                                name: "rxAuxClk",
-                                displayName: "McASP AUXCLK Rate",
-                                default: soc.mcasp_input_clk_freq,
-                                readOnly: true,
-                                displayFormat: "dec",
-                                description: "McASP AUX clock frequency",
-                            },
-                            {
                                 name: "afsr",
                                 displayName: "Receive Frame Sync Rate",
                                 default: 48,
@@ -1810,23 +1794,23 @@ function validatePinmux(inst, report)
         if(inst.txHclkSource == EXTERNAL_CLOCK)
         {
             /* External HCLK */
-            report.logInfo(`Expected AHCLK: ${inst.txHclkExpected} Hz`, inst, "txHclkSource");
+            report.logInfo(`Expected AHCLK: ${Math.round(inst.txHclkExpected*1000)/1000} Hz`, inst, "txHclkSource");
         }
         else
         {
             /* Internal HCLK */
-            report.logInfo(`Calculated AHCLK: ${inst.txHclkCalculated} Hz`, inst, "txHclkSource");
+            report.logInfo(`Calculated AHCLK: ${Math.round(inst.txHclkCalculated*1000)/1000} Hz`, inst, "txHclkSource");
         }
 
         if(inst.txAclkSource == EXTERNAL_CLOCK)
         {
             /* External BCLK */
-            report.logInfo(`Expected BCLK: ${inst.txBclkExpected} Hz`, inst, "txAclkSource");
+            report.logInfo(`Expected BCLK: ${Math.round(inst.txBclkExpected*1000)/1000} Hz`, inst, "txAclkSource");
         }
         else
         {
             /* Internal BCLK */
-            report.logInfo(`Calculated BCLK: ${inst.txBclkCalculated} Hz`, inst, "txAclkSource");
+            report.logInfo(`Calculated BCLK: ${Math.round(inst.txBclkCalculated*1000)/1000} Hz`, inst, "txAclkSource");
         }
 
         if(inst.txFsSource == EXTERNAL_CLOCK)
@@ -1836,8 +1820,9 @@ function validatePinmux(inst, report)
         }
         else
         {
+            let fsyncKHz = Math.round(inst.txFsyncCalculated*1000)/1000000;
             /* Internal FSYNC */
-            report.logInfo(`Calculated FSX: ${inst.txFsyncCalculated} KHz`, inst, "afsx");
+            report.logInfo(`Calculated FSX: ${fsyncKHz} KHz`, inst, "afsx");
         }
     }
 
@@ -1852,23 +1837,23 @@ function validatePinmux(inst, report)
         if(inst.rxHclkSource == EXTERNAL_CLOCK)
         {
             /* External HCLK */
-            report.logInfo(`Expected AHCLK: ${inst.rxHclkExpected} Hz`, inst, "rxHclkSource");
+            report.logInfo(`Expected AHCLK: ${Math.round(inst.rxHclkExpected*1000)/1000} Hz`, inst, "rxHclkSource");
         }
         else
         {
             /* Internal HCLK */
-            report.logInfo(`Calculated AHCLK: ${inst.rxHclkCalculated} Hz`, inst, "rxHclkSource");
+            report.logInfo(`Calculated AHCLK: ${Math.round(inst.rxHclkCalculated*1000)/1000} Hz`, inst, "rxHclkSource");
         }
 
         if(inst.rxAclkSource == EXTERNAL_CLOCK)
         {
             /* External BCLK */
-            report.logInfo(`Expected BCLK: ${inst.rxBclkExpected} Hz`, inst, "rxAclkSource");
+            report.logInfo(`Expected BCLK: ${Math.round(inst.rxBclkExpected*1000)/1000} Hz`, inst, "rxAclkSource");
         }
         else
         {
             /* Internal BCLK */
-            report.logInfo(`Calculated BCLK: ${inst.rxBclkCalculated} Hz`, inst, "rxAclkSource");
+            report.logInfo(`Calculated BCLK: ${Math.round(inst.rxBclkCalculated*1000)/1000} Hz`, inst, "rxAclkSource");
         }
 
         if(inst.txFsSource == EXTERNAL_CLOCK)
@@ -1878,8 +1863,9 @@ function validatePinmux(inst, report)
         }
         else
         {
+            let fsyncKHz = Math.round(inst.rxFsyncCalculated*1000)/1000000;
             /* Internal FSYNC */
-            report.logInfo(`Calculated FSR : ${inst.rxFsyncCalculated} KHz`, inst, "afsr");
+            report.logInfo(`Calculated FSR : ${fsyncKHz} KHz`, inst, "afsr");
         }
     }
 

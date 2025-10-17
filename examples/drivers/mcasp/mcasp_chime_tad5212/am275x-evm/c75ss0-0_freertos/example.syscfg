@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.23.0+4000"}
+ * @versions {"tool":"1.24.0+4150"}
  */
 
 /**
@@ -49,6 +49,8 @@ mcasp1.txLoopjobBufLength                      = 384000;
 mcasp1.externTxLoopjob                         = true;
 mcasp1.txLoopjobBufExtern                      = "uint8_t audio_sample[]";
 mcasp1.txLoopjobBuf                            = "audio_sample";
+mcasp1.txClkApplyAlert                         = false;
+mcasp1.rxClkApplyAlert                         = false;
 mcasp1.CLOCKING.$assignAllowConflicts          = "CLOCKING";
 mcasp1.mcaspSer.create(1);
 mcasp1.mcaspSer[0].$name                       = "CONFIG_MCASP_SER0";

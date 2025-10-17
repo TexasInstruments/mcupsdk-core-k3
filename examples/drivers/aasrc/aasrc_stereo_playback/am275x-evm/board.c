@@ -67,8 +67,6 @@ Adc_RegCfg gPcm6240RegInst0[] =
     {0x02, 0x09},
     /* High impedance for unused cycles */
     {0x07, 0x21},
-    /* 1 BCLK delay between FSYNC and data */
-    {0x08, 0x01},
     /* CH1 at slot 0 */
     {0x0B, 0x00},
     /* CH2 at slot 1 */
@@ -96,7 +94,7 @@ Adc_RegCfg gPcm6240RegInst1[] =
     /* Disable sleep */
     {0x02, 0x09},
     /* High impedance for unused cycles */
-    {0x07, 0x21},
+    {0x07, 0x31},
     /* Input channel disable */
     {0x74, 0x00},
 };
@@ -109,49 +107,22 @@ Dac_RegCfg gTad5212Reg[] =
     {0x02, 0x01},
     /* I2S, 32b mode */
     {0x1A, 0x60},
-    /* 1b delay between FSYNC and data */
-    //{0x26, 0x01},
     /* CH1 - Input from DAC, Mono single ended output at OUT1P */
     {0x64, 0x28},
     /* CH1 - Headphone with 4ohm impedence, 0dB gain */
-    {0x65, 0x60},
+    {0x65, 0x20},
     /* CH1 - 0dB gain */
     {0x67, 0xC9},
     /* CH2 - Input from DAC, Mono single ended output at OUT2P */
     {0x6B, 0x28},
     /* CH2 - Headphone with 4ohm impedence, 0dB gain */
-    {0x6C, 0x60},
+    {0x6C, 0x20},
     /* CH2 - 0dB gain */
     {0x6E, 0xC9},
     /* PASI channel2 input is right slot0 */
     {0x29, 0x30},
     /* Enable output CH1 CH2 */
     {0x76, 0x0C},
-    /* Page select 1 */
-    {0x00, 0x01},
-    {0x0a, 0x10},
-    {0x1a, 0x40},
-    {0x24, 0x06},
-    {0x2d, 0x05},
-    {0x2f, 0x07},
-    {0x30, 0x07},
-    {0x47, 0x00},
-    {0x48, 0x00},
-    {0x4a, 0xb0},
-    {0x53, 0x80},
-    /* Page Select 3 */
-    {0x00, 0x03},
-    {0x38, 0x24},
-    {0x39, 0x28},
-    {0x3a, 0x26},
-    {0x3b, 0x20},
-    {0x3c, 0x00},
-    {0x3d, 0x00},
-    {0x3e, 0x09},
-    {0x48, 0x01},
-    {0x49, 0x01},
-    /* Page Select 0 */
-    {0x00, 0x00},
     {0x78, 0x40},
 
 };

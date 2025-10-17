@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.23.0+4000"}
+ * @versions {"tool":"1.24.0+4150"}
  */
 
 /**
@@ -67,7 +67,6 @@ mcasp1.rxLoopjobBufLength                      = 2048;
 mcasp1.RxSlotSize                              = 24;
 mcasp1.rxDataMask                              = 0xFFFFFF;
 mcasp1.TxSlotSize                              = 24;
-mcasp1.txDataMask                              = 0xFFFFFF00;
 mcasp1.txLoopjobBufLength                      = 4096;
 mcasp1.afsx                                    = 96;
 mcasp1.TxMode                                  = "TDM";
@@ -75,6 +74,8 @@ mcasp1.txDataDelay                             = 0;
 mcasp1.txDataRotation                          = 6;
 mcasp1.masterClkx                              = 0;
 mcasp1.masterClkr                              = 0;
+mcasp1.txDataMask                              = 0xFFFFFF;
+mcasp1.rxDataDelay                             = 0;
 mcasp1.MCASP.$assignAllowConflicts             = "MCASP1";
 mcasp1.CLOCKING.$assign                        = "CLOCKING";
 mcasp1.mcaspSer.create(2);

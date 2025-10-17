@@ -89,9 +89,16 @@ const Udma_RmInitPrms gUdmaRmDefCfg_Main =
         0U,                                         /* numRxHcCh */
         0U,                                         /* startRxCh */
         0U,                                         /* numRxCh */
+#if defined (SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
 #if (UDMA_NUM_UTC_INSTANCE > 0)
         {0U, 0U},                                   /* startUtcCh[] */
         {32U, 64U},                                   /* numUtcCh[] */
+#endif
+#else
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+        {0U, 0U, 0U},                                   /* startUtcCh[] */
+        {32U, 64U, 0U},                                   /* numUtcCh[] */
+#endif
 #endif
 
         {0U, 0U, 0U, 0U},
@@ -138,7 +145,7 @@ int32_t UdmaRmInitPrms_init(uint32_t instId, Udma_RmInitPrms *rmInitPrms)
     {
         retVal = UDMA_EBADARGS;
     }
- 
+
     if((UDMA_SOK == retVal) && (NULL_PTR == rmInitPrms))
     {
         retVal = UDMA_EBADARGS;

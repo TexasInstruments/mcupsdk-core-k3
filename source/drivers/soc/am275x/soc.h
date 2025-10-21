@@ -231,11 +231,6 @@ void SOC_triggerMcuLpmWakeup(void);
 void SOC_generateSwWarmResetMainDomain(void);
 
 /**
- * \brief Generate SW POR Reset Main Domain
- */
-void SOC_generateSwPORResetMainDomain(void);
-
-/**
  * \brief Get the reset reason source for Main Domain
  *
  * \return Reset Reason Source Main Domain

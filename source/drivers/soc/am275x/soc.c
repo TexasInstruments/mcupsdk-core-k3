@@ -497,28 +497,6 @@ void SOC_generateSwWarmResetMainDomain(void)
 #endif
 }
 
-void SOC_generateSwPORResetMainDomain(void)
-{
-    /* Reset Ctrl belongs to partition 6 of the CTRL MMR */
-    uint32_t     rstPartition = 6U;
-
-    /* Unlock CONTROL MMR registers */
-    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, rstPartition);
-
-    /* MCU domain reset */
-    CSL_REG32_FINS(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL,
-                   WKUP_CTRL_MMR_CFG0_RST_CTRL_SW_MAIN_POR,
-                    0x6U);
-
-    /* Lock CONTROL MMR registers */
-    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MAIN, rstPartition);
-
-    /* execute wfi */
-#if defined(__ARM_ARCH_7R__)
-    __asm__ __volatile__ ("wfi"   "\n\t": : : "memory");
-#endif
-}
-
 uint32_t SOC_getWarmResetCauseMainDomain(void)
 {
     uint32_t     resetCause = 0U;

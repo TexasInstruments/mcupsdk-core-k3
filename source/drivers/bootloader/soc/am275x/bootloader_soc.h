@@ -338,4 +338,12 @@ uint8_t Bootloader_socGetNumMcuCores(void);
 */
 uint8_t Bootloader_socGetNumDspCores(void);
 
+/**
+ * \brief Clear IO isolation if LPM exit is detected. As the wake pad number
+ *  gets cleared after removing isolation, it is saved in MMR for later use
+ *
+ * \return SystemP_SUCCESS on success, else failure
+ */
+int32_t Bootloader_socClrIOIsolationOnLPMExit(void);
+
 #endif /* BOOTLOADER_SOC_AM275X_H_ */

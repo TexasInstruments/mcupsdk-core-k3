@@ -33,6 +33,19 @@ c75ss1-0    | app_dsp0_1
 
 The file can be copied to the SD card by connecting it to the host PC using a card reader. Make sure that the images are named without any file extension. If the card is new, make sure that it is formatted with FAT32/16.
 
+SBL reads the CANUART_WAKE_STAT1 MMR in wakeup control MMR to detect partial IO (or IO retention) mode exit. If exit is detected, then SBL will save the wake reason, that is the pad number that triggered the wakeup in BACKUP MMR0 of wakeup control MMR and clear isolation from the pins. Then, it continues the boot.
+
+The pad number read from BACKUP MMR0 can be interpreted as follows
+
+Pad Number | Interpretation
+-----------|---------------
+255        | Partial I/O resume but no pad is detected
+5 - 16     | Partial I/O resume with valid pad detected
+1          | Partial I/O resume with early wakeup event detected
+0          | Normal boot
+
+\note Please refer device datasheet to map the pad number to pin that caused the wakeup.
+
 If a multicore appimage file is found at the location, the SBL reads the file metadata into a buffer, parses it, and identifies the program segments for each core applicable. These program segments are then read from respective offset as per the metadata and loads it to corresponding load address. Each core is then initialized, entry points are set and the core is released from reset.
 
 Since the image is loaded segment wise directly from SD card to load addresses it eliminates the usage of large intermediate scratch buffer to hold the complete image. For more on bootflow/bootloaders, please refer \ref BOOTFLOW_GUIDE

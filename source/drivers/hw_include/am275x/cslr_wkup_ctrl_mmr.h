@@ -30,7 +30,7 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *  Name        : cslr_wkup_ctrl_mmr.h
- *  VPVERSION   : 3.0.365 - 2024.01.05.15.15.16
+ *  VPVERSION   : 3.0.368 - 2024.04.23.13.05.09
  *  VPREV       : 2.23.4
 */
 #ifndef CSLR_WKUP_CTRL_MMR_H_
@@ -61,47 +61,39 @@ extern "C"
 
 typedef struct {
     volatile uint32_t PID;                       /* PID register */
-    volatile uint32_t MMR_CFG0;
-    volatile uint32_t MMR_CFG1;
+    volatile uint8_t  Resv_8[4];
+    volatile uint32_t MMR_CFG1;                  /* Configuration Register 1 */
     volatile uint8_t  Resv_20[8];
-    volatile uint32_t JTAGID;
-    volatile uint32_t JTAG_USER_ID;
-    volatile uint8_t  Resv_32[4];
-    volatile uint32_t DIE_ID0;
-    volatile uint32_t DIE_ID1;
-    volatile uint32_t DIE_ID2;
-    volatile uint32_t DIE_ID3;
-    volatile uint32_t MAIN_DEVSTAT;
-    volatile uint32_t MAIN_BOOTCFG;
+    volatile uint32_t JTAGID;                    /* JTAG / DEVICE ID Register */
+    volatile uint32_t JTAG_USER_ID;              /* JTAG User Code ID Register */
+    volatile uint8_t  Resv_48[20];
+    volatile uint32_t MAIN_DEVSTAT;              /* MAIN Domain Device Status Register */
+    volatile uint32_t MAIN_BOOTCFG;              /* MAIN Domain Boot Configuration Register */
     volatile uint8_t  Resv_68[12];
-    volatile uint32_t BOOT_PROGRESS;
-    volatile uint8_t  Resv_76[4];
-    volatile uint32_t PLL_INIT;
-    volatile uint8_t  Resv_96[16];
-    volatile uint32_t DEVICE_FEATURE0;
-    volatile uint32_t DEVICE_FEATURE1;
-    volatile uint32_t DEVICE_FEATURE2;
-    volatile uint32_t DEVICE_FEATURE3;
+    volatile uint32_t BOOT_PROGRESS;             /* ROM Boot Progress Register */
+    volatile uint8_t  Resv_96[24];
+    volatile uint32_t DEVICE_FEATURE0;           /* Device Feature Register 0 */
+    volatile uint32_t DEVICE_FEATURE1;           /* Device Feature Register 1 */
+    volatile uint32_t DEVICE_FEATURE2;           /* Device Feature Register 2 */
+    volatile uint32_t DEVICE_FEATURE3;           /* Device Feature Register 3 */
     volatile uint8_t  Resv_116[4];
-    volatile uint32_t DEVICE_FEATURE5;
-    volatile uint32_t DEVICE_FEATURE6;
+    volatile uint32_t DEVICE_FEATURE5;           /* Device Feature Register 5 */
+    volatile uint32_t DEVICE_FEATURE6;           /* Device Feature Register 6 */
     volatile uint8_t  Resv_512[388];
-    volatile uint32_t MAC_ID0;
-    volatile uint32_t MAC_ID1;
+    volatile uint32_t MAC_ID0;                   /* MAC Address Lo Register */
+    volatile uint32_t MAC_ID1;                   /* MAC Address Hi Register */
     volatile uint8_t  Resv_544[24];
-    volatile uint32_t USB_DEVICE_ID0;
+    volatile uint32_t USB_DEVICE_ID0;            /* USB Device ID Register0 */
     volatile uint8_t  Resv_560[12];
-    volatile uint32_t GP_SW0;
-    volatile uint32_t GP_SW1;
-    volatile uint32_t GP_SW2;
-    volatile uint32_t GP_SW3;
+    volatile uint32_t GP_SW0;                    /* General Purpose Software Fuse Value 0 */
+    volatile uint32_t GP_SW1;                    /* General Purpose Software Fuse Value 1 */
+    volatile uint32_t GP_SW2;                    /* General Purpose Software Fuse Value 2 */
+    volatile uint32_t GP_SW3;                    /* General Purpose Software Fuse Value 3 */
     volatile uint8_t  Resv_624[48];
-    volatile uint32_t CBA_ERR_STAT;
+    volatile uint32_t CBA_ERR_STAT;              /* Bus Error Status Register */
     volatile uint8_t  Resv_640[12];
-    volatile uint32_t ACCESS_ERR_STAT;
-    volatile uint8_t  Resv_768[124];
-    volatile uint32_t SPARE_FUSE0;
-    volatile uint8_t  Resv_4104[3332];
+    volatile uint32_t ACCESS_ERR_STAT;           /* Access Error Status Register */
+    volatile uint8_t  Resv_4104[3460];
     volatile uint32_t LOCK0_KICK0;               /*  - KICK0 component */
     volatile uint32_t LOCK0_KICK1;               /*  - KICK1 component */
     volatile uint32_t INTR_RAW_STATUS;           /* Interrupt Raw Status/Set Register */
@@ -123,47 +115,39 @@ typedef struct {
     volatile uint32_t CLAIMREG_P0_R6_READONLY;   /* Claim bits for Partition 0 */
     volatile uint8_t  Resv_8192[3812];
     volatile uint32_t PID_PROXY;                 /* PID register */
-    volatile uint32_t MMR_CFG0_PROXY;
-    volatile uint32_t MMR_CFG1_PROXY;
+    volatile uint8_t  Resv_8200[4];
+    volatile uint32_t MMR_CFG1_PROXY;            /* Configuration Register 1 */
     volatile uint8_t  Resv_8212[8];
-    volatile uint32_t JTAGID_PROXY;
-    volatile uint32_t JTAG_USER_ID_PROXY;
-    volatile uint8_t  Resv_8224[4];
-    volatile uint32_t DIE_ID0_PROXY;
-    volatile uint32_t DIE_ID1_PROXY;
-    volatile uint32_t DIE_ID2_PROXY;
-    volatile uint32_t DIE_ID3_PROXY;
-    volatile uint32_t MAIN_DEVSTAT_PROXY;
-    volatile uint32_t MAIN_BOOTCFG_PROXY;
+    volatile uint32_t JTAGID_PROXY;              /* JTAG / DEVICE ID Register */
+    volatile uint32_t JTAG_USER_ID_PROXY;        /* JTAG User Code ID Register */
+    volatile uint8_t  Resv_8240[20];
+    volatile uint32_t MAIN_DEVSTAT_PROXY;        /* MAIN Domain Device Status Register */
+    volatile uint32_t MAIN_BOOTCFG_PROXY;        /* MAIN Domain Boot Configuration Register */
     volatile uint8_t  Resv_8260[12];
-    volatile uint32_t BOOT_PROGRESS_PROXY;
-    volatile uint8_t  Resv_8268[4];
-    volatile uint32_t PLL_INIT_PROXY;
-    volatile uint8_t  Resv_8288[16];
-    volatile uint32_t DEVICE_FEATURE0_PROXY;
-    volatile uint32_t DEVICE_FEATURE1_PROXY;
-    volatile uint32_t DEVICE_FEATURE2_PROXY;
-    volatile uint32_t DEVICE_FEATURE3_PROXY;
+    volatile uint32_t BOOT_PROGRESS_PROXY;       /* ROM Boot Progress Register */
+    volatile uint8_t  Resv_8288[24];
+    volatile uint32_t DEVICE_FEATURE0_PROXY;     /* Device Feature Register 0 */
+    volatile uint32_t DEVICE_FEATURE1_PROXY;     /* Device Feature Register 1 */
+    volatile uint32_t DEVICE_FEATURE2_PROXY;     /* Device Feature Register 2 */
+    volatile uint32_t DEVICE_FEATURE3_PROXY;     /* Device Feature Register 3 */
     volatile uint8_t  Resv_8308[4];
-    volatile uint32_t DEVICE_FEATURE5_PROXY;
-    volatile uint32_t DEVICE_FEATURE6_PROXY;
+    volatile uint32_t DEVICE_FEATURE5_PROXY;     /* Device Feature Register 5 */
+    volatile uint32_t DEVICE_FEATURE6_PROXY;     /* Device Feature Register 6 */
     volatile uint8_t  Resv_8704[388];
-    volatile uint32_t MAC_ID0_PROXY;
-    volatile uint32_t MAC_ID1_PROXY;
+    volatile uint32_t MAC_ID0_PROXY;             /* MAC Address Lo Register */
+    volatile uint32_t MAC_ID1_PROXY;             /* MAC Address Hi Register */
     volatile uint8_t  Resv_8736[24];
-    volatile uint32_t USB_DEVICE_ID0_PROXY;
+    volatile uint32_t USB_DEVICE_ID0_PROXY;      /* USB Device ID Register0 */
     volatile uint8_t  Resv_8752[12];
-    volatile uint32_t GP_SW0_PROXY;
-    volatile uint32_t GP_SW1_PROXY;
-    volatile uint32_t GP_SW2_PROXY;
-    volatile uint32_t GP_SW3_PROXY;
+    volatile uint32_t GP_SW0_PROXY;              /* General Purpose Software Fuse Value 0 */
+    volatile uint32_t GP_SW1_PROXY;              /* General Purpose Software Fuse Value 1 */
+    volatile uint32_t GP_SW2_PROXY;              /* General Purpose Software Fuse Value 2 */
+    volatile uint32_t GP_SW3_PROXY;              /* General Purpose Software Fuse Value 3 */
     volatile uint8_t  Resv_8816[48];
-    volatile uint32_t CBA_ERR_STAT_PROXY;
+    volatile uint32_t CBA_ERR_STAT_PROXY;        /* Bus Error Status Register */
     volatile uint8_t  Resv_8832[12];
-    volatile uint32_t ACCESS_ERR_STAT_PROXY;
-    volatile uint8_t  Resv_8960[124];
-    volatile uint32_t SPARE_FUSE0_PROXY;
-    volatile uint8_t  Resv_12296[3332];
+    volatile uint32_t ACCESS_ERR_STAT_PROXY;     /* Access Error Status Register */
+    volatile uint8_t  Resv_12296[3460];
     volatile uint32_t LOCK0_KICK0_PROXY;         /*  - KICK0 component */
     volatile uint32_t LOCK0_KICK1_PROXY;         /*  - KICK1 component */
     volatile uint32_t INTR_RAW_STATUS_PROXY;     /* Interrupt Raw Status/Set Register */
@@ -184,24 +168,14 @@ typedef struct {
     volatile uint32_t CLAIMREG_P0_R5;            /* Claim bits for Partition 0 */
     volatile uint32_t CLAIMREG_P0_R6;            /* Claim bits for Partition 0 */
     volatile uint8_t  Resv_16392[3820];
-    volatile uint32_t USB0_PHY_CTRL;
+    volatile uint32_t USB0_PHY_CTRL;             /* USB0 Phy Control Register */
     volatile uint8_t  Resv_16820[424];
-    volatile uint32_t SDIO0_CTRL;
+    volatile uint32_t SDIO0_CTRL;                /* SDIO0 Control Register */
     volatile uint8_t  Resv_16900[76];
-    volatile uint32_t WKUP_TIMER1_CTRL;
+    volatile uint32_t WKUP_TIMER1_CTRL;          /* TIMER1 Control Register */
     volatile uint8_t  Resv_17120[216];
-    volatile uint32_t WKUP_I2C0_CTRL;
-    volatile uint8_t  Resv_17408[284];
-    volatile uint32_t SPARE_CTRL0;
-    volatile uint32_t SPARE_CTRL1;
-    volatile uint8_t  Resv_17472[56];
-    volatile uint32_t SPARE_STAT0;
-    volatile uint32_t SPARE_STAT1;
-    volatile uint8_t  Resv_17536[56];
-    volatile uint32_t SPARE_TRIM0;
-    volatile uint8_t  Resv_17936[396];
-    volatile uint32_t TOG_STAT;
-    volatile uint8_t  Resv_20488[2548];
+    volatile uint32_t WKUP_I2C0_CTRL;            /* I2C0 Control Register */
+    volatile uint8_t  Resv_20488[3364];
     volatile uint32_t LOCK1_KICK0;               /*  - KICK0 component */
     volatile uint32_t LOCK1_KICK1;               /*  - KICK1 component */
     volatile uint8_t  Resv_20736[240];
@@ -219,24 +193,14 @@ typedef struct {
     volatile uint32_t CLAIMREG_P1_R11_READONLY;   /* Claim bits for Partition 1 */
     volatile uint32_t CLAIMREG_P1_R12_READONLY;   /* Claim bits for Partition 1 */
     volatile uint8_t  Resv_24584[3796];
-    volatile uint32_t USB0_PHY_CTRL_PROXY;
+    volatile uint32_t USB0_PHY_CTRL_PROXY;       /* USB0 Phy Control Register */
     volatile uint8_t  Resv_25012[424];
-    volatile uint32_t SDIO0_CTRL_PROXY;
+    volatile uint32_t SDIO0_CTRL_PROXY;          /* SDIO0 Control Register */
     volatile uint8_t  Resv_25092[76];
-    volatile uint32_t WKUP_TIMER1_CTRL_PROXY;
+    volatile uint32_t WKUP_TIMER1_CTRL_PROXY;    /* TIMER1 Control Register */
     volatile uint8_t  Resv_25312[216];
-    volatile uint32_t WKUP_I2C0_CTRL_PROXY;
-    volatile uint8_t  Resv_25600[284];
-    volatile uint32_t SPARE_CTRL0_PROXY;
-    volatile uint32_t SPARE_CTRL1_PROXY;
-    volatile uint8_t  Resv_25664[56];
-    volatile uint32_t SPARE_STAT0_PROXY;
-    volatile uint32_t SPARE_STAT1_PROXY;
-    volatile uint8_t  Resv_25728[56];
-    volatile uint32_t SPARE_TRIM0_PROXY;
-    volatile uint8_t  Resv_26128[396];
-    volatile uint32_t TOG_STAT_PROXY;
-    volatile uint8_t  Resv_28680[2548];
+    volatile uint32_t WKUP_I2C0_CTRL_PROXY;      /* I2C0 Control Register */
+    volatile uint8_t  Resv_28680[3364];
     volatile uint32_t LOCK1_KICK0_PROXY;         /*  - KICK0 component */
     volatile uint32_t LOCK1_KICK1_PROXY;         /*  - KICK1 component */
     volatile uint8_t  Resv_28928[240];
@@ -254,24 +218,24 @@ typedef struct {
     volatile uint32_t CLAIMREG_P1_R11;           /* Claim bits for Partition 1 */
     volatile uint32_t CLAIMREG_P1_R12;           /* Claim bits for Partition 1 */
     volatile uint8_t  Resv_32784[3804];
-    volatile uint32_t WKUP_CLKSEL;
+    volatile uint32_t WKUP_CLKSEL;               /* Wakeup Domain Clock Select Register */
     volatile uint8_t  Resv_32800[12];
-    volatile uint32_t CLKOUT_CTRL;
+    volatile uint32_t CLKOUT_CTRL;               /* CLKOUT Control Register */
     volatile uint8_t  Resv_32816[12];
-    volatile uint32_t WKUP_GTC_CLKSEL;
+    volatile uint32_t WKUP_GTC_CLKSEL;           /* GTC Clock Select Register */
     volatile uint8_t  Resv_32828[8];
-    volatile uint32_t EFUSE_CLKSEL;
+    volatile uint32_t EFUSE_CLKSEL;              /* Main eFuse Controller Clock Select Register */
     volatile uint8_t  Resv_33168[336];
-    volatile uint32_t USB0_CLKSEL;
+    volatile uint32_t USB0_CLKSEL;               /* USB0 Clock Select Register */
     volatile uint8_t  Resv_33200[28];
-    volatile uint32_t WKUP_TIMER0_CLKSEL;
-    volatile uint32_t WKUP_TIMER1_CLKSEL;
+    volatile uint32_t WKUP_TIMER0_CLKSEL;        /* Timer0 Clock Select Register */
+    volatile uint32_t WKUP_TIMER1_CLKSEL;        /* Timer1 Clock Select Register */
     volatile uint8_t  Resv_33600[392];
-    volatile uint32_t WKUP_WWD0_CTRL;
+    volatile uint32_t WKUP_WWD0_CTRL;            /* WWD0 Control Register */
     volatile uint8_t  Resv_33664[60];
-    volatile uint32_t WKUP_WWD0_CLKSEL;
+    volatile uint32_t WKUP_WWD0_CLKSEL;          /* WWD0 Clock Select Register */
     volatile uint8_t  Resv_34304[636];
-    volatile uint32_t WKUP_RTC_CLKSEL;
+    volatile uint32_t WKUP_RTC_CLKSEL;           /* Real Time Clock Source Clock Selection Register */
     volatile uint8_t  Resv_36872[2564];
     volatile uint32_t LOCK2_KICK0;               /*  - KICK0 component */
     volatile uint32_t LOCK2_KICK1;               /*  - KICK1 component */
@@ -290,24 +254,24 @@ typedef struct {
     volatile uint32_t CLAIMREG_P2_R11_READONLY;   /* Claim bits for Partition 2 */
     volatile uint32_t CLAIMREG_P2_R12_READONLY;   /* Claim bits for Partition 2 */
     volatile uint8_t  Resv_40976[3804];
-    volatile uint32_t WKUP_CLKSEL_PROXY;
+    volatile uint32_t WKUP_CLKSEL_PROXY;         /* Wakeup Domain Clock Select Register */
     volatile uint8_t  Resv_40992[12];
-    volatile uint32_t CLKOUT_CTRL_PROXY;
+    volatile uint32_t CLKOUT_CTRL_PROXY;         /* CLKOUT Control Register */
     volatile uint8_t  Resv_41008[12];
-    volatile uint32_t WKUP_GTC_CLKSEL_PROXY;
+    volatile uint32_t WKUP_GTC_CLKSEL_PROXY;     /* GTC Clock Select Register */
     volatile uint8_t  Resv_41020[8];
-    volatile uint32_t EFUSE_CLKSEL_PROXY;
+    volatile uint32_t EFUSE_CLKSEL_PROXY;        /* Main eFuse Controller Clock Select Register */
     volatile uint8_t  Resv_41360[336];
-    volatile uint32_t USB0_CLKSEL_PROXY;
+    volatile uint32_t USB0_CLKSEL_PROXY;         /* USB0 Clock Select Register */
     volatile uint8_t  Resv_41392[28];
-    volatile uint32_t WKUP_TIMER0_CLKSEL_PROXY;
-    volatile uint32_t WKUP_TIMER1_CLKSEL_PROXY;
+    volatile uint32_t WKUP_TIMER0_CLKSEL_PROXY;   /* Timer0 Clock Select Register */
+    volatile uint32_t WKUP_TIMER1_CLKSEL_PROXY;   /* Timer1 Clock Select Register */
     volatile uint8_t  Resv_41792[392];
-    volatile uint32_t WKUP_WWD0_CTRL_PROXY;
+    volatile uint32_t WKUP_WWD0_CTRL_PROXY;      /* WWD0 Control Register */
     volatile uint8_t  Resv_41856[60];
-    volatile uint32_t WKUP_WWD0_CLKSEL_PROXY;
+    volatile uint32_t WKUP_WWD0_CLKSEL_PROXY;    /* WWD0 Clock Select Register */
     volatile uint8_t  Resv_42496[636];
-    volatile uint32_t WKUP_RTC_CLKSEL_PROXY;
+    volatile uint32_t WKUP_RTC_CLKSEL_PROXY;     /* Real Time Clock Source Clock Selection Register */
     volatile uint8_t  Resv_45064[2564];
     volatile uint32_t LOCK2_KICK0_PROXY;         /*  - KICK0 component */
     volatile uint32_t LOCK2_KICK1_PROXY;         /*  - KICK1 component */
@@ -326,36 +290,14 @@ typedef struct {
     volatile uint32_t CLAIMREG_P2_R11;           /* Claim bits for Partition 2 */
     volatile uint32_t CLAIMREG_P2_R12;           /* Claim bits for Partition 2 */
     volatile uint8_t  Resv_49856[4492];
-    volatile uint32_t POST_STAT;
-    volatile uint32_t POST_CFG;
-    volatile uint8_t  Resv_49920[56];
-    volatile uint32_t FUSE_CRC_CTRL;
-    volatile uint32_t CHAIN1_CRC_FUSE;
-    volatile uint32_t CHAIN2_CRC_FUSE;
-    volatile uint32_t CHAIN3_CRC_FUSE;
-    volatile uint32_t CHAIN4_CRC_FUSE;
-    volatile uint32_t CHAIN5_CRC_FUSE;
-    volatile uint32_t CHAIN6_CRC_FUSE;
-    volatile uint32_t CHAIN7_CRC_FUSE;
-    volatile uint32_t FUSE_CRC_STAT;
-    volatile uint32_t CHAIN1_CRC_CALC;
-    volatile uint32_t CHAIN2_CRC_CALC;
-    volatile uint32_t CHAIN3_CRC_CALC;
-    volatile uint32_t CHAIN4_CRC_CALC;
-    volatile uint32_t CHAIN5_CRC_CALC;
-    volatile uint32_t CHAIN6_CRC_CALC;
-    volatile uint32_t CHAIN7_CRC_CALC;
-    volatile uint32_t FUSE_CTRL_STAT;
-    volatile uint8_t  Resv_50020[32];
-    volatile uint32_t CHAIN1_CRC_CALC_RO;
-    volatile uint32_t CHAIN2_CRC_CALC_RO;
-    volatile uint32_t CHAIN3_CRC_CALC_RO;
-    volatile uint32_t CHAIN4_CRC_CALC_RO;
-    volatile uint32_t CHAIN5_CRC_CALC_RO;
-    volatile uint32_t CHAIN6_CRC_CALC_RO;
-    volatile uint32_t CHAIN7_CRC_CALC_RO;
-    volatile uint8_t  Resv_50176[128];
-    volatile uint32_t PBIST_EN;
+    volatile uint32_t POST_STAT;                 /* Power-On Self Test Status Register */
+    volatile uint32_t POST_CFG;                  /* Power-On Self Test Configuration Register */
+    volatile uint8_t  Resv_49952[88];
+    volatile uint32_t FUSE_CRC_STAT;             /* MAIN eFuse CRC Status Register */
+    volatile uint8_t  Resv_49984[28];
+    volatile uint32_t FUSE_CTRL_STAT;            /* MAIN eFuse Controller Status MMR Register */
+    volatile uint8_t  Resv_50176[188];
+    volatile uint32_t PBIST_EN;                  /* PBIST Enable Register */
     volatile uint8_t  Resv_53256[3076];
     volatile uint32_t LOCK3_KICK0;               /*  - KICK0 component */
     volatile uint32_t LOCK3_KICK1;               /*  - KICK1 component */
@@ -370,36 +312,14 @@ typedef struct {
     volatile uint32_t CLAIMREG_P3_R7_READONLY;   /* Claim bits for Partition 3 */
     volatile uint32_t CLAIMREG_P3_R8_READONLY;   /* Claim bits for Partition 3 */
     volatile uint8_t  Resv_58048[4508];
-    volatile uint32_t POST_STAT_PROXY;
-    volatile uint32_t POST_CFG_PROXY;
-    volatile uint8_t  Resv_58112[56];
-    volatile uint32_t FUSE_CRC_CTRL_PROXY;
-    volatile uint32_t CHAIN1_CRC_FUSE_PROXY;
-    volatile uint32_t CHAIN2_CRC_FUSE_PROXY;
-    volatile uint32_t CHAIN3_CRC_FUSE_PROXY;
-    volatile uint32_t CHAIN4_CRC_FUSE_PROXY;
-    volatile uint32_t CHAIN5_CRC_FUSE_PROXY;
-    volatile uint32_t CHAIN6_CRC_FUSE_PROXY;
-    volatile uint32_t CHAIN7_CRC_FUSE_PROXY;
-    volatile uint32_t FUSE_CRC_STAT_PROXY;
-    volatile uint32_t CHAIN1_CRC_CALC_PROXY;
-    volatile uint32_t CHAIN2_CRC_CALC_PROXY;
-    volatile uint32_t CHAIN3_CRC_CALC_PROXY;
-    volatile uint32_t CHAIN4_CRC_CALC_PROXY;
-    volatile uint32_t CHAIN5_CRC_CALC_PROXY;
-    volatile uint32_t CHAIN6_CRC_CALC_PROXY;
-    volatile uint32_t CHAIN7_CRC_CALC_PROXY;
-    volatile uint32_t FUSE_CTRL_STAT_PROXY;
-    volatile uint8_t  Resv_58212[32];
-    volatile uint32_t CHAIN1_CRC_CALC_RO_PROXY;
-    volatile uint32_t CHAIN2_CRC_CALC_RO_PROXY;
-    volatile uint32_t CHAIN3_CRC_CALC_RO_PROXY;
-    volatile uint32_t CHAIN4_CRC_CALC_RO_PROXY;
-    volatile uint32_t CHAIN5_CRC_CALC_RO_PROXY;
-    volatile uint32_t CHAIN6_CRC_CALC_RO_PROXY;
-    volatile uint32_t CHAIN7_CRC_CALC_RO_PROXY;
-    volatile uint8_t  Resv_58368[128];
-    volatile uint32_t PBIST_EN_PROXY;
+    volatile uint32_t POST_STAT_PROXY;           /* Power-On Self Test Status Register */
+    volatile uint32_t POST_CFG_PROXY;            /* Power-On Self Test Configuration Register */
+    volatile uint8_t  Resv_58144[88];
+    volatile uint32_t FUSE_CRC_STAT_PROXY;       /* MAIN eFuse CRC Status Register */
+    volatile uint8_t  Resv_58176[28];
+    volatile uint32_t FUSE_CTRL_STAT_PROXY;      /* MAIN eFuse Controller Status MMR Register */
+    volatile uint8_t  Resv_58368[188];
+    volatile uint32_t PBIST_EN_PROXY;            /* PBIST Enable Register */
     volatile uint8_t  Resv_61448[3076];
     volatile uint32_t LOCK3_KICK0_PROXY;         /*  - KICK0 component */
     volatile uint32_t LOCK3_KICK1_PROXY;         /*  - KICK1 component */
@@ -413,141 +333,7 @@ typedef struct {
     volatile uint32_t CLAIMREG_P3_R6;            /* Claim bits for Partition 3 */
     volatile uint32_t CLAIMREG_P3_R7;            /* Claim bits for Partition 3 */
     volatile uint32_t CLAIMREG_P3_R8;            /* Claim bits for Partition 3 */
-    volatile uint8_t  Resv_65536[3804];
-    volatile uint32_t DV_REG0;
-    volatile uint32_t DV_REG1;
-    volatile uint32_t DV_REG2;
-    volatile uint32_t DV_REG3;
-    volatile uint32_t DV_REG4;
-    volatile uint32_t DV_REG5;
-    volatile uint32_t DV_REG6;
-    volatile uint32_t DV_REG7;
-    volatile uint32_t DV_REG8;
-    volatile uint32_t DV_REG9;
-    volatile uint32_t DV_REG10;
-    volatile uint32_t DV_REG11;
-    volatile uint32_t DV_REG12;
-    volatile uint32_t DV_REG13;
-    volatile uint32_t DV_REG14;
-    volatile uint32_t DV_REG15;
-    volatile uint32_t DV_REG16;
-    volatile uint32_t DV_REG17;
-    volatile uint32_t DV_REG18;
-    volatile uint32_t DV_REG19;
-    volatile uint32_t DV_REG20;
-    volatile uint32_t DV_REG21;
-    volatile uint32_t DV_REG22;
-    volatile uint32_t DV_REG23;
-    volatile uint32_t DV_REG24;
-    volatile uint32_t DV_REG25;
-    volatile uint32_t DV_REG26;
-    volatile uint32_t DV_REG27;
-    volatile uint32_t DV_REG28;
-    volatile uint32_t DV_REG29;
-    volatile uint32_t DV_REG30;
-    volatile uint32_t DV_REG31;
-    volatile uint32_t DV_REG32;
-    volatile uint32_t DV_REG33;
-    volatile uint32_t DV_REG34;
-    volatile uint32_t DV_REG35;
-    volatile uint32_t DV_REG36;
-    volatile uint32_t DV_REG37;
-    volatile uint32_t DV_REG38;
-    volatile uint32_t DV_REG39;
-    volatile uint32_t DV_REG40;
-    volatile uint32_t DV_REG41;
-    volatile uint32_t DV_REG42;
-    volatile uint32_t DV_REG43;
-    volatile uint32_t DV_REG44;
-    volatile uint32_t DV_REG45;
-    volatile uint32_t DV_REG46;
-    volatile uint32_t DV_REG47;
-    volatile uint32_t DV_REG48;
-    volatile uint32_t DV_REG49;
-    volatile uint32_t DV_REG50;
-    volatile uint32_t DV_REG51;
-    volatile uint32_t DV_REG52;
-    volatile uint32_t DV_REG53;
-    volatile uint32_t DV_REG54;
-    volatile uint32_t DV_REG55;
-    volatile uint32_t DV_REG56;
-    volatile uint32_t DV_REG57;
-    volatile uint32_t DV_REG58;
-    volatile uint32_t DV_REG59;
-    volatile uint32_t DV_REG60;
-    volatile uint32_t DV_REG61;
-    volatile uint32_t DV_REG62;
-    volatile uint32_t DV_REG63;
-    volatile uint8_t  Resv_66048[256];
-    volatile uint32_t DV_REG0_SET;
-    volatile uint32_t DV_REG1_SET;
-    volatile uint32_t DV_REG2_SET;
-    volatile uint32_t DV_REG3_SET;
-    volatile uint32_t DV_REG4_SET;
-    volatile uint32_t DV_REG5_SET;
-    volatile uint32_t DV_REG6_SET;
-    volatile uint32_t DV_REG7_SET;
-    volatile uint32_t DV_REG8_SET;
-    volatile uint32_t DV_REG9_SET;
-    volatile uint32_t DV_REG10_SET;
-    volatile uint32_t DV_REG11_SET;
-    volatile uint32_t DV_REG12_SET;
-    volatile uint32_t DV_REG13_SET;
-    volatile uint32_t DV_REG14_SET;
-    volatile uint32_t DV_REG15_SET;
-    volatile uint32_t DV_REG16_SET;
-    volatile uint32_t DV_REG17_SET;
-    volatile uint32_t DV_REG18_SET;
-    volatile uint32_t DV_REG19_SET;
-    volatile uint32_t DV_REG20_SET;
-    volatile uint32_t DV_REG21_SET;
-    volatile uint32_t DV_REG22_SET;
-    volatile uint32_t DV_REG23_SET;
-    volatile uint32_t DV_REG24_SET;
-    volatile uint32_t DV_REG25_SET;
-    volatile uint32_t DV_REG26_SET;
-    volatile uint32_t DV_REG27_SET;
-    volatile uint32_t DV_REG28_SET;
-    volatile uint32_t DV_REG29_SET;
-    volatile uint32_t DV_REG30_SET;
-    volatile uint32_t DV_REG31_SET;
-    volatile uint8_t  Resv_66304[128];
-    volatile uint32_t DV_REG0_CLR;
-    volatile uint32_t DV_REG1_CLR;
-    volatile uint32_t DV_REG2_CLR;
-    volatile uint32_t DV_REG3_CLR;
-    volatile uint32_t DV_REG4_CLR;
-    volatile uint32_t DV_REG5_CLR;
-    volatile uint32_t DV_REG6_CLR;
-    volatile uint32_t DV_REG7_CLR;
-    volatile uint32_t DV_REG8_CLR;
-    volatile uint32_t DV_REG9_CLR;
-    volatile uint32_t DV_REG10_CLR;
-    volatile uint32_t DV_REG11_CLR;
-    volatile uint32_t DV_REG12_CLR;
-    volatile uint32_t DV_REG13_CLR;
-    volatile uint32_t DV_REG14_CLR;
-    volatile uint32_t DV_REG15_CLR;
-    volatile uint32_t DV_REG16_CLR;
-    volatile uint32_t DV_REG17_CLR;
-    volatile uint32_t DV_REG18_CLR;
-    volatile uint32_t DV_REG19_CLR;
-    volatile uint32_t DV_REG20_CLR;
-    volatile uint32_t DV_REG21_CLR;
-    volatile uint32_t DV_REG22_CLR;
-    volatile uint32_t DV_REG23_CLR;
-    volatile uint32_t DV_REG24_CLR;
-    volatile uint32_t DV_REG25_CLR;
-    volatile uint32_t DV_REG26_CLR;
-    volatile uint32_t DV_REG27_CLR;
-    volatile uint32_t DV_REG28_CLR;
-    volatile uint32_t DV_REG29_CLR;
-    volatile uint32_t DV_REG30_CLR;
-    volatile uint32_t DV_REG31_CLR;
-    volatile uint8_t  Resv_66560[128];
-    volatile uint32_t LED_PID;
-    volatile uint32_t LED_PIDCTRL;
-    volatile uint8_t  Resv_69640[3072];
+    volatile uint8_t  Resv_69640[7908];
     volatile uint32_t LOCK4_KICK0;               /*  - KICK0 component */
     volatile uint32_t LOCK4_KICK1;               /*  - KICK1 component */
     volatile uint8_t  Resv_69888[240];
@@ -560,141 +346,7 @@ typedef struct {
     volatile uint32_t CLAIMREG_P4_R6_READONLY;   /* Claim bits for Partition 4 */
     volatile uint32_t CLAIMREG_P4_R7_READONLY;   /* Claim bits for Partition 4 */
     volatile uint32_t CLAIMREG_P4_R8_READONLY;   /* Claim bits for Partition 4 */
-    volatile uint8_t  Resv_73728[3804];
-    volatile uint32_t DV_REG0_PROXY;
-    volatile uint32_t DV_REG1_PROXY;
-    volatile uint32_t DV_REG2_PROXY;
-    volatile uint32_t DV_REG3_PROXY;
-    volatile uint32_t DV_REG4_PROXY;
-    volatile uint32_t DV_REG5_PROXY;
-    volatile uint32_t DV_REG6_PROXY;
-    volatile uint32_t DV_REG7_PROXY;
-    volatile uint32_t DV_REG8_PROXY;
-    volatile uint32_t DV_REG9_PROXY;
-    volatile uint32_t DV_REG10_PROXY;
-    volatile uint32_t DV_REG11_PROXY;
-    volatile uint32_t DV_REG12_PROXY;
-    volatile uint32_t DV_REG13_PROXY;
-    volatile uint32_t DV_REG14_PROXY;
-    volatile uint32_t DV_REG15_PROXY;
-    volatile uint32_t DV_REG16_PROXY;
-    volatile uint32_t DV_REG17_PROXY;
-    volatile uint32_t DV_REG18_PROXY;
-    volatile uint32_t DV_REG19_PROXY;
-    volatile uint32_t DV_REG20_PROXY;
-    volatile uint32_t DV_REG21_PROXY;
-    volatile uint32_t DV_REG22_PROXY;
-    volatile uint32_t DV_REG23_PROXY;
-    volatile uint32_t DV_REG24_PROXY;
-    volatile uint32_t DV_REG25_PROXY;
-    volatile uint32_t DV_REG26_PROXY;
-    volatile uint32_t DV_REG27_PROXY;
-    volatile uint32_t DV_REG28_PROXY;
-    volatile uint32_t DV_REG29_PROXY;
-    volatile uint32_t DV_REG30_PROXY;
-    volatile uint32_t DV_REG31_PROXY;
-    volatile uint32_t DV_REG32_PROXY;
-    volatile uint32_t DV_REG33_PROXY;
-    volatile uint32_t DV_REG34_PROXY;
-    volatile uint32_t DV_REG35_PROXY;
-    volatile uint32_t DV_REG36_PROXY;
-    volatile uint32_t DV_REG37_PROXY;
-    volatile uint32_t DV_REG38_PROXY;
-    volatile uint32_t DV_REG39_PROXY;
-    volatile uint32_t DV_REG40_PROXY;
-    volatile uint32_t DV_REG41_PROXY;
-    volatile uint32_t DV_REG42_PROXY;
-    volatile uint32_t DV_REG43_PROXY;
-    volatile uint32_t DV_REG44_PROXY;
-    volatile uint32_t DV_REG45_PROXY;
-    volatile uint32_t DV_REG46_PROXY;
-    volatile uint32_t DV_REG47_PROXY;
-    volatile uint32_t DV_REG48_PROXY;
-    volatile uint32_t DV_REG49_PROXY;
-    volatile uint32_t DV_REG50_PROXY;
-    volatile uint32_t DV_REG51_PROXY;
-    volatile uint32_t DV_REG52_PROXY;
-    volatile uint32_t DV_REG53_PROXY;
-    volatile uint32_t DV_REG54_PROXY;
-    volatile uint32_t DV_REG55_PROXY;
-    volatile uint32_t DV_REG56_PROXY;
-    volatile uint32_t DV_REG57_PROXY;
-    volatile uint32_t DV_REG58_PROXY;
-    volatile uint32_t DV_REG59_PROXY;
-    volatile uint32_t DV_REG60_PROXY;
-    volatile uint32_t DV_REG61_PROXY;
-    volatile uint32_t DV_REG62_PROXY;
-    volatile uint32_t DV_REG63_PROXY;
-    volatile uint8_t  Resv_74240[256];
-    volatile uint32_t DV_REG0_SET_PROXY;
-    volatile uint32_t DV_REG1_SET_PROXY;
-    volatile uint32_t DV_REG2_SET_PROXY;
-    volatile uint32_t DV_REG3_SET_PROXY;
-    volatile uint32_t DV_REG4_SET_PROXY;
-    volatile uint32_t DV_REG5_SET_PROXY;
-    volatile uint32_t DV_REG6_SET_PROXY;
-    volatile uint32_t DV_REG7_SET_PROXY;
-    volatile uint32_t DV_REG8_SET_PROXY;
-    volatile uint32_t DV_REG9_SET_PROXY;
-    volatile uint32_t DV_REG10_SET_PROXY;
-    volatile uint32_t DV_REG11_SET_PROXY;
-    volatile uint32_t DV_REG12_SET_PROXY;
-    volatile uint32_t DV_REG13_SET_PROXY;
-    volatile uint32_t DV_REG14_SET_PROXY;
-    volatile uint32_t DV_REG15_SET_PROXY;
-    volatile uint32_t DV_REG16_SET_PROXY;
-    volatile uint32_t DV_REG17_SET_PROXY;
-    volatile uint32_t DV_REG18_SET_PROXY;
-    volatile uint32_t DV_REG19_SET_PROXY;
-    volatile uint32_t DV_REG20_SET_PROXY;
-    volatile uint32_t DV_REG21_SET_PROXY;
-    volatile uint32_t DV_REG22_SET_PROXY;
-    volatile uint32_t DV_REG23_SET_PROXY;
-    volatile uint32_t DV_REG24_SET_PROXY;
-    volatile uint32_t DV_REG25_SET_PROXY;
-    volatile uint32_t DV_REG26_SET_PROXY;
-    volatile uint32_t DV_REG27_SET_PROXY;
-    volatile uint32_t DV_REG28_SET_PROXY;
-    volatile uint32_t DV_REG29_SET_PROXY;
-    volatile uint32_t DV_REG30_SET_PROXY;
-    volatile uint32_t DV_REG31_SET_PROXY;
-    volatile uint8_t  Resv_74496[128];
-    volatile uint32_t DV_REG0_CLR_PROXY;
-    volatile uint32_t DV_REG1_CLR_PROXY;
-    volatile uint32_t DV_REG2_CLR_PROXY;
-    volatile uint32_t DV_REG3_CLR_PROXY;
-    volatile uint32_t DV_REG4_CLR_PROXY;
-    volatile uint32_t DV_REG5_CLR_PROXY;
-    volatile uint32_t DV_REG6_CLR_PROXY;
-    volatile uint32_t DV_REG7_CLR_PROXY;
-    volatile uint32_t DV_REG8_CLR_PROXY;
-    volatile uint32_t DV_REG9_CLR_PROXY;
-    volatile uint32_t DV_REG10_CLR_PROXY;
-    volatile uint32_t DV_REG11_CLR_PROXY;
-    volatile uint32_t DV_REG12_CLR_PROXY;
-    volatile uint32_t DV_REG13_CLR_PROXY;
-    volatile uint32_t DV_REG14_CLR_PROXY;
-    volatile uint32_t DV_REG15_CLR_PROXY;
-    volatile uint32_t DV_REG16_CLR_PROXY;
-    volatile uint32_t DV_REG17_CLR_PROXY;
-    volatile uint32_t DV_REG18_CLR_PROXY;
-    volatile uint32_t DV_REG19_CLR_PROXY;
-    volatile uint32_t DV_REG20_CLR_PROXY;
-    volatile uint32_t DV_REG21_CLR_PROXY;
-    volatile uint32_t DV_REG22_CLR_PROXY;
-    volatile uint32_t DV_REG23_CLR_PROXY;
-    volatile uint32_t DV_REG24_CLR_PROXY;
-    volatile uint32_t DV_REG25_CLR_PROXY;
-    volatile uint32_t DV_REG26_CLR_PROXY;
-    volatile uint32_t DV_REG27_CLR_PROXY;
-    volatile uint32_t DV_REG28_CLR_PROXY;
-    volatile uint32_t DV_REG29_CLR_PROXY;
-    volatile uint32_t DV_REG30_CLR_PROXY;
-    volatile uint32_t DV_REG31_CLR_PROXY;
-    volatile uint8_t  Resv_74752[128];
-    volatile uint32_t LED_PID_PROXY;
-    volatile uint32_t LED_PIDCTRL_PROXY;
-    volatile uint8_t  Resv_77832[3072];
+    volatile uint8_t  Resv_77832[7908];
     volatile uint32_t LOCK4_KICK0_PROXY;         /*  - KICK0 component */
     volatile uint32_t LOCK4_KICK1_PROXY;         /*  - KICK1 component */
     volatile uint8_t  Resv_78080[240];
@@ -707,71 +359,66 @@ typedef struct {
     volatile uint32_t CLAIMREG_P4_R6;            /* Claim bits for Partition 4 */
     volatile uint32_t CLAIMREG_P4_R7;            /* Claim bits for Partition 4 */
     volatile uint32_t CLAIMREG_P4_R8;            /* Claim bits for Partition 4 */
-    volatile uint8_t  Resv_98368[20252];
-    volatile uint32_t FW_CTRL_OUT0;
-    volatile uint32_t FW_CTRL_OUT0_SET;
-    volatile uint32_t FW_CTRL_OUT0_CLR;
-    volatile uint32_t FW_STS_IN0;
-    volatile uint32_t FW_CTRL_OUT1;
-    volatile uint32_t FW_CTRL_OUT1_SET;
-    volatile uint32_t FW_CTRL_OUT1_CLR;
-    volatile uint32_t FW_STS_IN1;
-    volatile uint8_t  Resv_98432[32];
-    volatile uint32_t PMCTRL_SYS;
-    volatile uint32_t PMCTRL_IO_0;
-    volatile uint32_t PMCTRL_IO_1;
-    volatile uint32_t PMCTRL_DDR;
-    volatile uint32_t PMCTRL_MOSC;
-    volatile uint32_t PMCTRL_DM;
-    volatile uint32_t PM_MISC_STATUS;
-    volatile uint32_t PMCTRL_IO_GLB;
-    volatile uint32_t PM_PERMISSION;
+    volatile uint8_t  Resv_98432[20316];
+    volatile uint32_t PMCTRL_SYS;                /* Power Management System Control Register */
+    volatile uint32_t PMCTRL_IO_0;               /* Power Management IO Control Register 0 */
+    volatile uint32_t PMCTRL_IO_1;               /* Power Management IO Control Register 1 */
+    volatile uint8_t  Resv_98448[4];
+    volatile uint32_t PMCTRL_MOSC;               /* Power Management Main Oscillator Control Register */
+    volatile uint8_t  Resv_98456[4];
+    volatile uint32_t PM_MISC_STATUS;            /* Power Management Misc Status Register */
+    volatile uint32_t PMCTRL_IO_GLB;             /* Power Management IO Control Global Control Register */
+    volatile uint32_t PM_PERMISSION;             /* Power Management Permission Register */
     volatile uint8_t  Resv_98656[188];
-    volatile uint32_t DEEPSLEEP_CTRL;
+    volatile uint32_t DEEPSLEEP_CTRL;            /* Deep Sleep Control Register */
     volatile uint8_t  Resv_98672[12];
-    volatile uint32_t RST_CTRL;
-    volatile uint32_t RST_STAT;
-    volatile uint32_t RST_SRC;
-    volatile uint32_t RST_MAGIC_WORD;
-    volatile uint32_t WKUP0_EN;
+    volatile uint32_t RST_CTRL;                  /* Reset Control Register */
+    volatile uint32_t RST_STAT;                  /* Reset Status Register */
+    volatile uint32_t RST_SRC;                   /* Reset Source Register */
+    volatile uint32_t RST_MAGIC_WORD;            /* Magic Word  Register */
+    volatile uint32_t WKUP0_EN;                  /* Wakeup Enable 0 Register */
     volatile uint8_t  Resv_98944[252];
-    volatile uint32_t CLKGATE_CTRL0;
-    volatile uint32_t CLKGATE_CTRL1;
+    volatile uint32_t CLKGATE_CTRL0;             /* Automatic Clock Gating Control Register0 */
+    volatile uint32_t CLKGATE_CTRL1;             /* Automatic Clock Gating Control Register1 */
     volatile uint8_t  Resv_99072[120];
-    volatile uint32_t CANUART_WAKE_CTRL;
+    volatile uint32_t CANUART_WAKE_CTRL;         /* CANUART IO Domain Daisy-Chain Wakeup Control Register */
     volatile uint8_t  Resv_99080[4];
-    volatile uint32_t CANUART_WAKE_STAT0;
-    volatile uint32_t CANUART_WAKE_STAT1;
-    volatile uint32_t CANUART_WAKE_OFF_MODE;
+    volatile uint32_t CANUART_WAKE_STAT0;        /* CANUART IO Domain Daisy-Chain Wakeup Status Register 0 */
+    volatile uint32_t CANUART_WAKE_STAT1;        /* CANUART IO Domain Daisy-Chain Wakeup Status Register 1 */
+    volatile uint32_t CANUART_WAKE_OFF_MODE;     /* CANUART IO Domain OFF Mode Magic Word  Register */
     volatile uint8_t  Resv_99096[4];
-    volatile uint32_t CANUART_WAKE_OFF_MODE_STAT;
+    volatile uint32_t CANUART_WAKE_OFF_MODE_STAT;   /* CANUART IO Domain OFF Mode Magic Word  Register */
     volatile uint8_t  Resv_99104[4];
-    volatile uint32_t CANUART_WAKE_RESUME_KEY[4];
+    volatile uint32_t CANUART_WAKE_RESUME_KEY[4];   /* CAN_UART IO Domain Resume Key Value Register */
     volatile uint8_t  Resv_99136[16];
-    volatile uint32_t CANUART_WAKE_RESUME_KEY_STAT[4];
-    volatile uint8_t  Resv_99200[48];
-    volatile uint32_t RET_RAM_STAT;
+    volatile uint32_t CANUART_WAKE_RESUME_KEY_STAT[4];   /* CAN_UART IO Domain Resume Key Value Register */
+    volatile uint8_t  Resv_99168[16];
+    volatile uint32_t WAKE_EVT_MON_CTRL;         /* Wakeup Event Monitoring Control Register */
+    volatile uint32_t INTRN_POR_DUR;             /* Internal POR Duration Register */
+    volatile uint32_t IMMED_WAKE_TIMEOUT;        /* Immediate Wakeup Timeout Register */
+    volatile uint8_t  Resv_99200[20];
+    volatile uint32_t RET_RAM_STAT;              /* Retention RAM Status Register */
     volatile uint8_t  Resv_99328[124];
-    volatile uint32_t WFI_STATUS;
+    volatile uint32_t WFI_STATUS;                /* Core WFI Status Register */
     volatile uint8_t  Resv_99344[12];
-    volatile uint32_t SLEEP_STATUS;
+    volatile uint32_t SLEEP_STATUS;              /* Deep Sleep Entry/Exit Status Register */
     volatile uint8_t  Resv_99352[4];
-    volatile uint32_t DS_MAGIC_WORD;
+    volatile uint32_t DS_MAGIC_WORD;             /* Deep Sleep Magic Word Register */
     volatile uint8_t  Resv_99360[4];
-    volatile uint32_t DS_MAIN;
+    volatile uint32_t DS_MAIN;                   /* Deep Sleep Main Power on Reset / Power Domain Off  Register */
     volatile uint8_t  Resv_99392[28];
-    volatile uint32_t DS_DM_RESET;
+    volatile uint32_t DS_DM_RESET;               /* Deep Sleep Device Manager Reset Mask Register */
     volatile uint8_t  Resv_99424[28];
-    volatile uint32_t DS_USB0_RESET;
+    volatile uint32_t DS_USB0_RESET;             /* Deep Sleep USB0 Reset Mask Register */
     volatile uint8_t  Resv_99456[28];
-    volatile uint32_t DM_CLKSTOP_EN;
+    volatile uint32_t DM_CLKSTOP_EN;             /* Deep Sleep Clockstop Activate Override Register */
     volatile uint8_t  Resv_99472[12];
-    volatile uint32_t DM_CLKSTOP_ACK;
+    volatile uint32_t DM_CLKSTOP_ACK;            /* Deep Sleep Clockstop Ack Register */
     volatile uint8_t  Resv_99488[12];
-    volatile uint32_t DM_GRP_CLKSTOP_REQ;
-    volatile uint32_t DM_GRP_CLKSTOP_ACK;
+    volatile uint32_t DM_GRP_CLKSTOP_REQ;        /* Deep Sleep Group Clockstop Req Register */
+    volatile uint32_t DM_GRP_CLKSTOP_ACK;        /* Deep Sleep Group Clockstop Ack Register */
     volatile uint8_t  Resv_99584[88];
-    volatile uint32_t DEVICE_TYPE;
+    volatile uint32_t DEVICE_TYPE;               /* Device Type/Subtype Register */
     volatile uint8_t  Resv_102408[2820];
     volatile uint32_t LOCK6_KICK0;               /*  - KICK0 component */
     volatile uint32_t LOCK6_KICK1;               /*  - KICK1 component */
@@ -787,71 +434,66 @@ typedef struct {
     volatile uint32_t CLAIMREG_P6_R8_READONLY;   /* Claim bits for Partition 6 */
     volatile uint32_t CLAIMREG_P6_R9_READONLY;   /* Claim bits for Partition 6 */
     volatile uint32_t CLAIMREG_P6_R10_READONLY;   /* Claim bits for Partition 6 */
-    volatile uint8_t  Resv_106560[3860];
-    volatile uint32_t FW_CTRL_OUT0_PROXY;
-    volatile uint32_t FW_CTRL_OUT0_SET_PROXY;
-    volatile uint32_t FW_CTRL_OUT0_CLR_PROXY;
-    volatile uint32_t FW_STS_IN0_PROXY;
-    volatile uint32_t FW_CTRL_OUT1_PROXY;
-    volatile uint32_t FW_CTRL_OUT1_SET_PROXY;
-    volatile uint32_t FW_CTRL_OUT1_CLR_PROXY;
-    volatile uint32_t FW_STS_IN1_PROXY;
-    volatile uint8_t  Resv_106624[32];
-    volatile uint32_t PMCTRL_SYS_PROXY;
-    volatile uint32_t PMCTRL_IO_0_PROXY;
-    volatile uint32_t PMCTRL_IO_1_PROXY;
-    volatile uint32_t PMCTRL_DDR_PROXY;
-    volatile uint32_t PMCTRL_MOSC_PROXY;
-    volatile uint32_t PMCTRL_DM_PROXY;
-    volatile uint32_t PM_MISC_STATUS_PROXY;
-    volatile uint32_t PMCTRL_IO_GLB_PROXY;
-    volatile uint32_t PM_PERMISSION_PROXY;
+    volatile uint8_t  Resv_106624[3924];
+    volatile uint32_t PMCTRL_SYS_PROXY;          /* Power Management System Control Register */
+    volatile uint32_t PMCTRL_IO_0_PROXY;         /* Power Management IO Control Register 0 */
+    volatile uint32_t PMCTRL_IO_1_PROXY;         /* Power Management IO Control Register 1 */
+    volatile uint8_t  Resv_106640[4];
+    volatile uint32_t PMCTRL_MOSC_PROXY;         /* Power Management Main Oscillator Control Register */
+    volatile uint8_t  Resv_106648[4];
+    volatile uint32_t PM_MISC_STATUS_PROXY;      /* Power Management Misc Status Register */
+    volatile uint32_t PMCTRL_IO_GLB_PROXY;       /* Power Management IO Control Global Control Register */
+    volatile uint32_t PM_PERMISSION_PROXY;       /* Power Management Permission Register */
     volatile uint8_t  Resv_106848[188];
-    volatile uint32_t DEEPSLEEP_CTRL_PROXY;
+    volatile uint32_t DEEPSLEEP_CTRL_PROXY;      /* Deep Sleep Control Register */
     volatile uint8_t  Resv_106864[12];
-    volatile uint32_t RST_CTRL_PROXY;
-    volatile uint32_t RST_STAT_PROXY;
-    volatile uint32_t RST_SRC_PROXY;
-    volatile uint32_t RST_MAGIC_WORD_PROXY;
-    volatile uint32_t WKUP0_EN_PROXY;
+    volatile uint32_t RST_CTRL_PROXY;            /* Reset Control Register */
+    volatile uint32_t RST_STAT_PROXY;            /* Reset Status Register */
+    volatile uint32_t RST_SRC_PROXY;             /* Reset Source Register */
+    volatile uint32_t RST_MAGIC_WORD_PROXY;      /* Magic Word  Register */
+    volatile uint32_t WKUP0_EN_PROXY;            /* Wakeup Enable 0 Register */
     volatile uint8_t  Resv_107136[252];
-    volatile uint32_t CLKGATE_CTRL0_PROXY;
-    volatile uint32_t CLKGATE_CTRL1_PROXY;
+    volatile uint32_t CLKGATE_CTRL0_PROXY;       /* Automatic Clock Gating Control Register0 */
+    volatile uint32_t CLKGATE_CTRL1_PROXY;       /* Automatic Clock Gating Control Register1 */
     volatile uint8_t  Resv_107264[120];
-    volatile uint32_t CANUART_WAKE_CTRL_PROXY;
+    volatile uint32_t CANUART_WAKE_CTRL_PROXY;   /* CANUART IO Domain Daisy-Chain Wakeup Control Register */
     volatile uint8_t  Resv_107272[4];
-    volatile uint32_t CANUART_WAKE_STAT0_PROXY;
-    volatile uint32_t CANUART_WAKE_STAT1_PROXY;
-    volatile uint32_t CANUART_WAKE_OFF_MODE_PROXY;
+    volatile uint32_t CANUART_WAKE_STAT0_PROXY;   /* CANUART IO Domain Daisy-Chain Wakeup Status Register 0 */
+    volatile uint32_t CANUART_WAKE_STAT1_PROXY;   /* CANUART IO Domain Daisy-Chain Wakeup Status Register 1 */
+    volatile uint32_t CANUART_WAKE_OFF_MODE_PROXY;   /* CANUART IO Domain OFF Mode Magic Word  Register */
     volatile uint8_t  Resv_107288[4];
-    volatile uint32_t CANUART_WAKE_OFF_MODE_STAT_PROXY;
+    volatile uint32_t CANUART_WAKE_OFF_MODE_STAT_PROXY;   /* CANUART IO Domain OFF Mode Magic Word  Register */
     volatile uint8_t  Resv_107296[4];
-    volatile uint32_t CANUART_WAKE_RESUME_KEY_PROXY[4];
+    volatile uint32_t CANUART_WAKE_RESUME_KEY_PROXY[4];   /* CAN_UART IO Domain Resume Key Value Register */
     volatile uint8_t  Resv_107328[16];
-    volatile uint32_t CANUART_WAKE_RESUME_KEY_STAT_PROXY[4];
-    volatile uint8_t  Resv_107392[48];
-    volatile uint32_t RET_RAM_STAT_PROXY;
+    volatile uint32_t CANUART_WAKE_RESUME_KEY_STAT_PROXY[4];   /* CAN_UART IO Domain Resume Key Value Register */
+    volatile uint8_t  Resv_107360[16];
+    volatile uint32_t WAKE_EVT_MON_CTRL_PROXY;   /* Wakeup Event Monitoring Control Register */
+    volatile uint32_t INTRN_POR_DUR_PROXY;       /* Internal POR Duration Register */
+    volatile uint32_t IMMED_WAKE_TIMEOUT_PROXY;   /* Immediate Wakeup Timeout Register */
+    volatile uint8_t  Resv_107392[20];
+    volatile uint32_t RET_RAM_STAT_PROXY;        /* Retention RAM Status Register */
     volatile uint8_t  Resv_107520[124];
-    volatile uint32_t WFI_STATUS_PROXY;
+    volatile uint32_t WFI_STATUS_PROXY;          /* Core WFI Status Register */
     volatile uint8_t  Resv_107536[12];
-    volatile uint32_t SLEEP_STATUS_PROXY;
+    volatile uint32_t SLEEP_STATUS_PROXY;        /* Deep Sleep Entry/Exit Status Register */
     volatile uint8_t  Resv_107544[4];
-    volatile uint32_t DS_MAGIC_WORD_PROXY;
+    volatile uint32_t DS_MAGIC_WORD_PROXY;       /* Deep Sleep Magic Word Register */
     volatile uint8_t  Resv_107552[4];
-    volatile uint32_t DS_MAIN_PROXY;
+    volatile uint32_t DS_MAIN_PROXY;             /* Deep Sleep Main Power on Reset / Power Domain Off  Register */
     volatile uint8_t  Resv_107584[28];
-    volatile uint32_t DS_DM_RESET_PROXY;
+    volatile uint32_t DS_DM_RESET_PROXY;         /* Deep Sleep Device Manager Reset Mask Register */
     volatile uint8_t  Resv_107616[28];
-    volatile uint32_t DS_USB0_RESET_PROXY;
+    volatile uint32_t DS_USB0_RESET_PROXY;       /* Deep Sleep USB0 Reset Mask Register */
     volatile uint8_t  Resv_107648[28];
-    volatile uint32_t DM_CLKSTOP_EN_PROXY;
+    volatile uint32_t DM_CLKSTOP_EN_PROXY;       /* Deep Sleep Clockstop Activate Override Register */
     volatile uint8_t  Resv_107664[12];
-    volatile uint32_t DM_CLKSTOP_ACK_PROXY;
+    volatile uint32_t DM_CLKSTOP_ACK_PROXY;      /* Deep Sleep Clockstop Ack Register */
     volatile uint8_t  Resv_107680[12];
-    volatile uint32_t DM_GRP_CLKSTOP_REQ_PROXY;
-    volatile uint32_t DM_GRP_CLKSTOP_ACK_PROXY;
+    volatile uint32_t DM_GRP_CLKSTOP_REQ_PROXY;   /* Deep Sleep Group Clockstop Req Register */
+    volatile uint32_t DM_GRP_CLKSTOP_ACK_PROXY;   /* Deep Sleep Group Clockstop Ack Register */
     volatile uint8_t  Resv_107776[88];
-    volatile uint32_t DEVICE_TYPE_PROXY;
+    volatile uint32_t DEVICE_TYPE_PROXY;         /* Device Type/Subtype Register */
     volatile uint8_t  Resv_110600[2820];
     volatile uint32_t LOCK6_KICK0_PROXY;         /*  - KICK0 component */
     volatile uint32_t LOCK6_KICK1_PROXY;         /*  - KICK1 component */
@@ -868,7 +510,7 @@ typedef struct {
     volatile uint32_t CLAIMREG_P6_R9;            /* Claim bits for Partition 6 */
     volatile uint32_t CLAIMREG_P6_R10;           /* Claim bits for Partition 6 */
     volatile uint8_t  Resv_114944[4052];
-    volatile uint32_t BACKUP_REG[24];
+    volatile uint32_t BACKUP_REG[24];            /* Deep Sleep Backup Register 0 */
     volatile uint8_t  Resv_118792[3752];
     volatile uint32_t LOCK7_KICK0;               /*  - KICK0 component */
     volatile uint32_t LOCK7_KICK1;               /*  - KICK1 component */
@@ -877,7 +519,7 @@ typedef struct {
     volatile uint32_t CLAIMREG_P7_R1_READONLY;   /* Claim bits for Partition 7 */
     volatile uint32_t CLAIMREG_P7_R2_READONLY;   /* Claim bits for Partition 7 */
     volatile uint8_t  Resv_123136[4084];
-    volatile uint32_t BACKUP_REG_PROXY[24];
+    volatile uint32_t BACKUP_REG_PROXY[24];      /* Deep Sleep Backup Register 0 */
     volatile uint8_t  Resv_126984[3752];
     volatile uint32_t LOCK7_KICK0_PROXY;         /*  - KICK0 component */
     volatile uint32_t LOCK7_KICK1_PROXY;         /*  - KICK1 component */
@@ -893,18 +535,12 @@ typedef struct {
 **************************************************************************/
 
 #define CSL_WKUP_CTRL_MMR_CFG0_PID                                       (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_MMR_CFG0                                  (0x00000004U)
 #define CSL_WKUP_CTRL_MMR_CFG0_MMR_CFG1                                  (0x00000008U)
 #define CSL_WKUP_CTRL_MMR_CFG0_JTAGID                                    (0x00000014U)
 #define CSL_WKUP_CTRL_MMR_CFG0_JTAG_USER_ID                              (0x00000018U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID0                                   (0x00000020U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID1                                   (0x00000024U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID2                                   (0x00000028U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID3                                   (0x0000002CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_MAIN_DEVSTAT                              (0x00000030U)
 #define CSL_WKUP_CTRL_MMR_CFG0_MAIN_BOOTCFG                              (0x00000034U)
 #define CSL_WKUP_CTRL_MMR_CFG0_BOOT_PROGRESS                             (0x00000044U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PLL_INIT                                  (0x0000004CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE0                           (0x00000060U)
 #define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE1                           (0x00000064U)
 #define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE2                           (0x00000068U)
@@ -920,7 +556,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_GP_SW3                                    (0x0000023CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_CBA_ERR_STAT                              (0x00000270U)
 #define CSL_WKUP_CTRL_MMR_CFG0_ACCESS_ERR_STAT                           (0x00000280U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_FUSE0                               (0x00000300U)
 #define CSL_WKUP_CTRL_MMR_CFG0_LOCK0_KICK0                               (0x00001008U)
 #define CSL_WKUP_CTRL_MMR_CFG0_LOCK0_KICK1                               (0x0000100CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_INTR_RAW_STATUS                           (0x00001010U)
@@ -940,18 +575,12 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P0_R5_READONLY                   (0x00001114U)
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P0_R6_READONLY                   (0x00001118U)
 #define CSL_WKUP_CTRL_MMR_CFG0_PID_PROXY                                 (0x00002000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_MMR_CFG0_PROXY                            (0x00002004U)
 #define CSL_WKUP_CTRL_MMR_CFG0_MMR_CFG1_PROXY                            (0x00002008U)
 #define CSL_WKUP_CTRL_MMR_CFG0_JTAGID_PROXY                              (0x00002014U)
 #define CSL_WKUP_CTRL_MMR_CFG0_JTAG_USER_ID_PROXY                        (0x00002018U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID0_PROXY                             (0x00002020U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID1_PROXY                             (0x00002024U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID2_PROXY                             (0x00002028U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID3_PROXY                             (0x0000202CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_MAIN_DEVSTAT_PROXY                        (0x00002030U)
 #define CSL_WKUP_CTRL_MMR_CFG0_MAIN_BOOTCFG_PROXY                        (0x00002034U)
 #define CSL_WKUP_CTRL_MMR_CFG0_BOOT_PROGRESS_PROXY                       (0x00002044U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PLL_INIT_PROXY                            (0x0000204CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE0_PROXY                     (0x00002060U)
 #define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE1_PROXY                     (0x00002064U)
 #define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE2_PROXY                     (0x00002068U)
@@ -967,7 +596,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_GP_SW3_PROXY                              (0x0000223CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_CBA_ERR_STAT_PROXY                        (0x00002270U)
 #define CSL_WKUP_CTRL_MMR_CFG0_ACCESS_ERR_STAT_PROXY                     (0x00002280U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_FUSE0_PROXY                         (0x00002300U)
 #define CSL_WKUP_CTRL_MMR_CFG0_LOCK0_KICK0_PROXY                         (0x00003008U)
 #define CSL_WKUP_CTRL_MMR_CFG0_LOCK0_KICK1_PROXY                         (0x0000300CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_INTR_RAW_STATUS_PROXY                     (0x00003010U)
@@ -990,12 +618,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_SDIO0_CTRL                                (0x000041B4U)
 #define CSL_WKUP_CTRL_MMR_CFG0_WKUP_TIMER1_CTRL                          (0x00004204U)
 #define CSL_WKUP_CTRL_MMR_CFG0_WKUP_I2C0_CTRL                            (0x000042E0U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_CTRL0                               (0x00004400U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_CTRL1                               (0x00004404U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_STAT0                               (0x00004440U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_STAT1                               (0x00004444U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_TRIM0                               (0x00004480U)
-#define CSL_WKUP_CTRL_MMR_CFG0_TOG_STAT                                  (0x00004610U)
 #define CSL_WKUP_CTRL_MMR_CFG0_LOCK1_KICK0                               (0x00005008U)
 #define CSL_WKUP_CTRL_MMR_CFG0_LOCK1_KICK1                               (0x0000500CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P1_R0_READONLY                   (0x00005100U)
@@ -1015,12 +637,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_SDIO0_CTRL_PROXY                          (0x000061B4U)
 #define CSL_WKUP_CTRL_MMR_CFG0_WKUP_TIMER1_CTRL_PROXY                    (0x00006204U)
 #define CSL_WKUP_CTRL_MMR_CFG0_WKUP_I2C0_CTRL_PROXY                      (0x000062E0U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_CTRL0_PROXY                         (0x00006400U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_CTRL1_PROXY                         (0x00006404U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_STAT0_PROXY                         (0x00006440U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_STAT1_PROXY                         (0x00006444U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_TRIM0_PROXY                         (0x00006480U)
-#define CSL_WKUP_CTRL_MMR_CFG0_TOG_STAT_PROXY                            (0x00006610U)
 #define CSL_WKUP_CTRL_MMR_CFG0_LOCK1_KICK0_PROXY                         (0x00007008U)
 #define CSL_WKUP_CTRL_MMR_CFG0_LOCK1_KICK1_PROXY                         (0x0000700CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P1_R0                            (0x00007100U)
@@ -1088,30 +704,8 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P2_R12                           (0x0000B130U)
 #define CSL_WKUP_CTRL_MMR_CFG0_POST_STAT                                 (0x0000C2C0U)
 #define CSL_WKUP_CTRL_MMR_CFG0_POST_CFG                                  (0x0000C2C4U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL                             (0x0000C300U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_FUSE                           (0x0000C304U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_FUSE                           (0x0000C308U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_FUSE                           (0x0000C30CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_FUSE                           (0x0000C310U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_FUSE                           (0x0000C314U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_FUSE                           (0x0000C318U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_FUSE                           (0x0000C31CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_STAT                             (0x0000C320U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_CALC                           (0x0000C324U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_CALC                           (0x0000C328U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_CALC                           (0x0000C32CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_CALC                           (0x0000C330U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_CALC                           (0x0000C334U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_CALC                           (0x0000C338U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_CALC                           (0x0000C33CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CTRL_STAT                            (0x0000C340U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_CALC_RO                        (0x0000C364U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_CALC_RO                        (0x0000C368U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_CALC_RO                        (0x0000C36CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_CALC_RO                        (0x0000C370U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_CALC_RO                        (0x0000C374U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_CALC_RO                        (0x0000C378U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_CALC_RO                        (0x0000C37CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN                                  (0x0000C400U)
 #define CSL_WKUP_CTRL_MMR_CFG0_LOCK3_KICK0                               (0x0000D008U)
 #define CSL_WKUP_CTRL_MMR_CFG0_LOCK3_KICK1                               (0x0000D00CU)
@@ -1126,30 +720,8 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P3_R8_READONLY                   (0x0000D120U)
 #define CSL_WKUP_CTRL_MMR_CFG0_POST_STAT_PROXY                           (0x0000E2C0U)
 #define CSL_WKUP_CTRL_MMR_CFG0_POST_CFG_PROXY                            (0x0000E2C4U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY                       (0x0000E300U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_FUSE_PROXY                     (0x0000E304U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_FUSE_PROXY                     (0x0000E308U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_FUSE_PROXY                     (0x0000E30CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_FUSE_PROXY                     (0x0000E310U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_FUSE_PROXY                     (0x0000E314U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_FUSE_PROXY                     (0x0000E318U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_FUSE_PROXY                     (0x0000E31CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_STAT_PROXY                       (0x0000E320U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_CALC_PROXY                     (0x0000E324U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_CALC_PROXY                     (0x0000E328U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_CALC_PROXY                     (0x0000E32CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_CALC_PROXY                     (0x0000E330U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_CALC_PROXY                     (0x0000E334U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_CALC_PROXY                     (0x0000E338U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_CALC_PROXY                     (0x0000E33CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CTRL_STAT_PROXY                      (0x0000E340U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_CALC_RO_PROXY                  (0x0000E364U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_CALC_RO_PROXY                  (0x0000E368U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_CALC_RO_PROXY                  (0x0000E36CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_CALC_RO_PROXY                  (0x0000E370U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_CALC_RO_PROXY                  (0x0000E374U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_CALC_RO_PROXY                  (0x0000E378U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_CALC_RO_PROXY                  (0x0000E37CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_PROXY                            (0x0000E400U)
 #define CSL_WKUP_CTRL_MMR_CFG0_LOCK3_KICK0_PROXY                         (0x0000F008U)
 #define CSL_WKUP_CTRL_MMR_CFG0_LOCK3_KICK1_PROXY                         (0x0000F00CU)
@@ -1162,136 +734,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P3_R6                            (0x0000F118U)
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P3_R7                            (0x0000F11CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P3_R8                            (0x0000F120U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0                                   (0x00010000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1                                   (0x00010004U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2                                   (0x00010008U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3                                   (0x0001000CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4                                   (0x00010010U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5                                   (0x00010014U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6                                   (0x00010018U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7                                   (0x0001001CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8                                   (0x00010020U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9                                   (0x00010024U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10                                  (0x00010028U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11                                  (0x0001002CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12                                  (0x00010030U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13                                  (0x00010034U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14                                  (0x00010038U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15                                  (0x0001003CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16                                  (0x00010040U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17                                  (0x00010044U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18                                  (0x00010048U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19                                  (0x0001004CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20                                  (0x00010050U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21                                  (0x00010054U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22                                  (0x00010058U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23                                  (0x0001005CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24                                  (0x00010060U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25                                  (0x00010064U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26                                  (0x00010068U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27                                  (0x0001006CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28                                  (0x00010070U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29                                  (0x00010074U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30                                  (0x00010078U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31                                  (0x0001007CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG32                                  (0x00010080U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG33                                  (0x00010084U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG34                                  (0x00010088U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG35                                  (0x0001008CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG36                                  (0x00010090U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG37                                  (0x00010094U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG38                                  (0x00010098U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG39                                  (0x0001009CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG40                                  (0x000100A0U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG41                                  (0x000100A4U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG42                                  (0x000100A8U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG43                                  (0x000100ACU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG44                                  (0x000100B0U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG45                                  (0x000100B4U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG46                                  (0x000100B8U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG47                                  (0x000100BCU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG48                                  (0x000100C0U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG49                                  (0x000100C4U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG50                                  (0x000100C8U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG51                                  (0x000100CCU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG52                                  (0x000100D0U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG53                                  (0x000100D4U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG54                                  (0x000100D8U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG55                                  (0x000100DCU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG56                                  (0x000100E0U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG57                                  (0x000100E4U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG58                                  (0x000100E8U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG59                                  (0x000100ECU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG60                                  (0x000100F0U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG61                                  (0x000100F4U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG62                                  (0x000100F8U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG63                                  (0x000100FCU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_SET                               (0x00010200U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_SET                               (0x00010204U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_SET                               (0x00010208U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_SET                               (0x0001020CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_SET                               (0x00010210U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_SET                               (0x00010214U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_SET                               (0x00010218U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_SET                               (0x0001021CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_SET                               (0x00010220U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_SET                               (0x00010224U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_SET                              (0x00010228U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_SET                              (0x0001022CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_SET                              (0x00010230U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_SET                              (0x00010234U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_SET                              (0x00010238U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_SET                              (0x0001023CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_SET                              (0x00010240U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_SET                              (0x00010244U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_SET                              (0x00010248U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_SET                              (0x0001024CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_SET                              (0x00010250U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_SET                              (0x00010254U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_SET                              (0x00010258U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_SET                              (0x0001025CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_SET                              (0x00010260U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_SET                              (0x00010264U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_SET                              (0x00010268U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_SET                              (0x0001026CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_SET                              (0x00010270U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_SET                              (0x00010274U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_SET                              (0x00010278U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_SET                              (0x0001027CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_CLR                               (0x00010300U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_CLR                               (0x00010304U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_CLR                               (0x00010308U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_CLR                               (0x0001030CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_CLR                               (0x00010310U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_CLR                               (0x00010314U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_CLR                               (0x00010318U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_CLR                               (0x0001031CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_CLR                               (0x00010320U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_CLR                               (0x00010324U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_CLR                              (0x00010328U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_CLR                              (0x0001032CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_CLR                              (0x00010330U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_CLR                              (0x00010334U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_CLR                              (0x00010338U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_CLR                              (0x0001033CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_CLR                              (0x00010340U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_CLR                              (0x00010344U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_CLR                              (0x00010348U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_CLR                              (0x0001034CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_CLR                              (0x00010350U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_CLR                              (0x00010354U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_CLR                              (0x00010358U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_CLR                              (0x0001035CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_CLR                              (0x00010360U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_CLR                              (0x00010364U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_CLR                              (0x00010368U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_CLR                              (0x0001036CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_CLR                              (0x00010370U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_CLR                              (0x00010374U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_CLR                              (0x00010378U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_CLR                              (0x0001037CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_LED_PID                                   (0x00010400U)
-#define CSL_WKUP_CTRL_MMR_CFG0_LED_PIDCTRL                               (0x00010404U)
 #define CSL_WKUP_CTRL_MMR_CFG0_LOCK4_KICK0                               (0x00011008U)
 #define CSL_WKUP_CTRL_MMR_CFG0_LOCK4_KICK1                               (0x0001100CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P4_R0_READONLY                   (0x00011100U)
@@ -1303,136 +745,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P4_R6_READONLY                   (0x00011118U)
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P4_R7_READONLY                   (0x0001111CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P4_R8_READONLY                   (0x00011120U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_PROXY                             (0x00012000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_PROXY                             (0x00012004U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_PROXY                             (0x00012008U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_PROXY                             (0x0001200CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_PROXY                             (0x00012010U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_PROXY                             (0x00012014U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_PROXY                             (0x00012018U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_PROXY                             (0x0001201CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_PROXY                             (0x00012020U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_PROXY                             (0x00012024U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_PROXY                            (0x00012028U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_PROXY                            (0x0001202CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_PROXY                            (0x00012030U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_PROXY                            (0x00012034U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_PROXY                            (0x00012038U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_PROXY                            (0x0001203CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_PROXY                            (0x00012040U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_PROXY                            (0x00012044U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_PROXY                            (0x00012048U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_PROXY                            (0x0001204CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_PROXY                            (0x00012050U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_PROXY                            (0x00012054U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_PROXY                            (0x00012058U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_PROXY                            (0x0001205CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_PROXY                            (0x00012060U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_PROXY                            (0x00012064U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_PROXY                            (0x00012068U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_PROXY                            (0x0001206CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_PROXY                            (0x00012070U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_PROXY                            (0x00012074U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_PROXY                            (0x00012078U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_PROXY                            (0x0001207CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG32_PROXY                            (0x00012080U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG33_PROXY                            (0x00012084U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG34_PROXY                            (0x00012088U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG35_PROXY                            (0x0001208CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG36_PROXY                            (0x00012090U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG37_PROXY                            (0x00012094U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG38_PROXY                            (0x00012098U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG39_PROXY                            (0x0001209CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG40_PROXY                            (0x000120A0U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG41_PROXY                            (0x000120A4U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG42_PROXY                            (0x000120A8U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG43_PROXY                            (0x000120ACU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG44_PROXY                            (0x000120B0U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG45_PROXY                            (0x000120B4U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG46_PROXY                            (0x000120B8U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG47_PROXY                            (0x000120BCU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG48_PROXY                            (0x000120C0U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG49_PROXY                            (0x000120C4U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG50_PROXY                            (0x000120C8U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG51_PROXY                            (0x000120CCU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG52_PROXY                            (0x000120D0U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG53_PROXY                            (0x000120D4U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG54_PROXY                            (0x000120D8U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG55_PROXY                            (0x000120DCU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG56_PROXY                            (0x000120E0U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG57_PROXY                            (0x000120E4U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG58_PROXY                            (0x000120E8U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG59_PROXY                            (0x000120ECU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG60_PROXY                            (0x000120F0U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG61_PROXY                            (0x000120F4U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG62_PROXY                            (0x000120F8U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG63_PROXY                            (0x000120FCU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_SET_PROXY                         (0x00012200U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_SET_PROXY                         (0x00012204U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_SET_PROXY                         (0x00012208U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_SET_PROXY                         (0x0001220CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_SET_PROXY                         (0x00012210U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_SET_PROXY                         (0x00012214U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_SET_PROXY                         (0x00012218U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_SET_PROXY                         (0x0001221CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_SET_PROXY                         (0x00012220U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_SET_PROXY                         (0x00012224U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_SET_PROXY                        (0x00012228U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_SET_PROXY                        (0x0001222CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_SET_PROXY                        (0x00012230U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_SET_PROXY                        (0x00012234U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_SET_PROXY                        (0x00012238U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_SET_PROXY                        (0x0001223CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_SET_PROXY                        (0x00012240U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_SET_PROXY                        (0x00012244U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_SET_PROXY                        (0x00012248U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_SET_PROXY                        (0x0001224CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_SET_PROXY                        (0x00012250U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_SET_PROXY                        (0x00012254U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_SET_PROXY                        (0x00012258U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_SET_PROXY                        (0x0001225CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_SET_PROXY                        (0x00012260U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_SET_PROXY                        (0x00012264U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_SET_PROXY                        (0x00012268U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_SET_PROXY                        (0x0001226CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_SET_PROXY                        (0x00012270U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_SET_PROXY                        (0x00012274U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_SET_PROXY                        (0x00012278U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_SET_PROXY                        (0x0001227CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_CLR_PROXY                         (0x00012300U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_CLR_PROXY                         (0x00012304U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_CLR_PROXY                         (0x00012308U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_CLR_PROXY                         (0x0001230CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_CLR_PROXY                         (0x00012310U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_CLR_PROXY                         (0x00012314U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_CLR_PROXY                         (0x00012318U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_CLR_PROXY                         (0x0001231CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_CLR_PROXY                         (0x00012320U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_CLR_PROXY                         (0x00012324U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_CLR_PROXY                        (0x00012328U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_CLR_PROXY                        (0x0001232CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_CLR_PROXY                        (0x00012330U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_CLR_PROXY                        (0x00012334U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_CLR_PROXY                        (0x00012338U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_CLR_PROXY                        (0x0001233CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_CLR_PROXY                        (0x00012340U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_CLR_PROXY                        (0x00012344U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_CLR_PROXY                        (0x00012348U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_CLR_PROXY                        (0x0001234CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_CLR_PROXY                        (0x00012350U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_CLR_PROXY                        (0x00012354U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_CLR_PROXY                        (0x00012358U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_CLR_PROXY                        (0x0001235CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_CLR_PROXY                        (0x00012360U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_CLR_PROXY                        (0x00012364U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_CLR_PROXY                        (0x00012368U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_CLR_PROXY                        (0x0001236CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_CLR_PROXY                        (0x00012370U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_CLR_PROXY                        (0x00012374U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_CLR_PROXY                        (0x00012378U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_CLR_PROXY                        (0x0001237CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_LED_PID_PROXY                             (0x00012400U)
-#define CSL_WKUP_CTRL_MMR_CFG0_LED_PIDCTRL_PROXY                         (0x00012404U)
 #define CSL_WKUP_CTRL_MMR_CFG0_LOCK4_KICK0_PROXY                         (0x00013008U)
 #define CSL_WKUP_CTRL_MMR_CFG0_LOCK4_KICK1_PROXY                         (0x0001300CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P4_R0                            (0x00013100U)
@@ -1444,20 +756,10 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P4_R6                            (0x00013118U)
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P4_R7                            (0x0001311CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P4_R8                            (0x00013120U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0                              (0x00018040U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_SET                          (0x00018044U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_CLR                          (0x00018048U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_STS_IN0                                (0x0001804CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1                              (0x00018050U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_SET                          (0x00018054U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_CLR                          (0x00018058U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_STS_IN1                                (0x0001805CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_SYS                                (0x00018080U)
 #define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_IO_0                               (0x00018084U)
 #define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_IO_1                               (0x00018088U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR                                (0x0001808CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_MOSC                               (0x00018090U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DM                                 (0x00018094U)
 #define CSL_WKUP_CTRL_MMR_CFG0_PM_MISC_STATUS                            (0x00018098U)
 #define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_IO_GLB                             (0x0001809CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_PM_PERMISSION                             (0x000180A0U)
@@ -1476,6 +778,9 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_CANUART_WAKE_OFF_MODE_STAT                (0x00018318U)
 #define CSL_WKUP_CTRL_MMR_CFG0_CANUART_WAKE_RESUME_KEY(CANUART_WAKE_RESUME_KEY) (0x00018320U+((CANUART_WAKE_RESUME_KEY)*0x4U))
 #define CSL_WKUP_CTRL_MMR_CFG0_CANUART_WAKE_RESUME_KEY_STAT(CANUART_WAKE_RESUME_KEY_STAT) (0x00018340U+((CANUART_WAKE_RESUME_KEY_STAT)*0x4U))
+#define CSL_WKUP_CTRL_MMR_CFG0_WAKE_EVT_MON_CTRL                         (0x00018360U)
+#define CSL_WKUP_CTRL_MMR_CFG0_INTRN_POR_DUR                             (0x00018364U)
+#define CSL_WKUP_CTRL_MMR_CFG0_IMMED_WAKE_TIMEOUT                        (0x00018368U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RET_RAM_STAT                              (0x00018380U)
 #define CSL_WKUP_CTRL_MMR_CFG0_WFI_STATUS                                (0x00018400U)
 #define CSL_WKUP_CTRL_MMR_CFG0_SLEEP_STATUS                              (0x00018410U)
@@ -1501,20 +806,10 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P6_R8_READONLY                   (0x00019120U)
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P6_R9_READONLY                   (0x00019124U)
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P6_R10_READONLY                  (0x00019128U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_PROXY                        (0x0001A040U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_SET_PROXY                    (0x0001A044U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_CLR_PROXY                    (0x0001A048U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_STS_IN0_PROXY                          (0x0001A04CU)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_PROXY                        (0x0001A050U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_SET_PROXY                    (0x0001A054U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_CLR_PROXY                    (0x0001A058U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_STS_IN1_PROXY                          (0x0001A05CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_SYS_PROXY                          (0x0001A080U)
 #define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_IO_0_PROXY                         (0x0001A084U)
 #define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_IO_1_PROXY                         (0x0001A088U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_PROXY                          (0x0001A08CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_MOSC_PROXY                         (0x0001A090U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DM_PROXY                           (0x0001A094U)
 #define CSL_WKUP_CTRL_MMR_CFG0_PM_MISC_STATUS_PROXY                      (0x0001A098U)
 #define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_IO_GLB_PROXY                       (0x0001A09CU)
 #define CSL_WKUP_CTRL_MMR_CFG0_PM_PERMISSION_PROXY                       (0x0001A0A0U)
@@ -1533,6 +828,9 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_CANUART_WAKE_OFF_MODE_STAT_PROXY          (0x0001A318U)
 #define CSL_WKUP_CTRL_MMR_CFG0_CANUART_WAKE_RESUME_KEY_PROXY(CANUART_WAKE_RESUME_KEY_PROXY) (0x0001A320U+((CANUART_WAKE_RESUME_KEY_PROXY)*0x4U))
 #define CSL_WKUP_CTRL_MMR_CFG0_CANUART_WAKE_RESUME_KEY_STAT_PROXY(CANUART_WAKE_RESUME_KEY_STAT_PROXY) (0x0001A340U+((CANUART_WAKE_RESUME_KEY_STAT_PROXY)*0x4U))
+#define CSL_WKUP_CTRL_MMR_CFG0_WAKE_EVT_MON_CTRL_PROXY                   (0x0001A360U)
+#define CSL_WKUP_CTRL_MMR_CFG0_INTRN_POR_DUR_PROXY                       (0x0001A364U)
+#define CSL_WKUP_CTRL_MMR_CFG0_IMMED_WAKE_TIMEOUT_PROXY                  (0x0001A368U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RET_RAM_STAT_PROXY                        (0x0001A380U)
 #define CSL_WKUP_CTRL_MMR_CFG0_WFI_STATUS_PROXY                          (0x0001A400U)
 #define CSL_WKUP_CTRL_MMR_CFG0_SLEEP_STATUS_PROXY                        (0x0001A410U)
@@ -1599,17 +897,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_PID_PID_MSB16_MAX                         (0x0000FFFFU)
 
 
-/* MMR_CFG0 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_MMR_CFG0_SPEC_REV_MASK                    (0x0000FFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_MMR_CFG0_SPEC_REV_SHIFT                   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_MMR_CFG0_SPEC_REV_MAX                     (0x0000FFFFU)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_MMR_CFG0_CFG_REV_MASK                     (0xFFFF0000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_MMR_CFG0_CFG_REV_SHIFT                    (0x00000010U)
-#define CSL_WKUP_CTRL_MMR_CFG0_MMR_CFG0_CFG_REV_MAX                      (0x0000FFFFU)
-
-
 /* MMR_CFG1 */
 
 #define CSL_WKUP_CTRL_MMR_CFG0_MMR_CFG1_PARTITIONS_MASK                  (0x000000FFU)
@@ -1647,34 +934,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_JTAG_USER_ID_USERCODE_MAX                 (0xFFFFFFFFU)
 
 
-/* DIE_ID0 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID0_DIEID_MASK                        (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID0_DIEID_SHIFT                       (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID0_DIEID_MAX                         (0xFFFFFFFFU)
-
-
-/* DIE_ID1 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID1_DIEID_MASK                        (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID1_DIEID_SHIFT                       (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID1_DIEID_MAX                         (0xFFFFFFFFU)
-
-
-/* DIE_ID2 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID2_DIEID_MASK                        (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID2_DIEID_SHIFT                       (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID2_DIEID_MAX                         (0xFFFFFFFFU)
-
-
-/* DIE_ID3 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID3_DIEID_MASK                        (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID3_DIEID_SHIFT                       (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID3_DIEID_MAX                         (0xFFFFFFFFU)
-
-
 /* MAIN_DEVSTAT */
 
 #define CSL_WKUP_CTRL_MMR_CFG0_MAIN_DEVSTAT_BOOTMODE_MASK                (0x0000FFFFU)
@@ -1694,13 +953,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_BOOT_PROGRESS_PROGRESS_MASK               (0xFFFFFFFFU)
 #define CSL_WKUP_CTRL_MMR_CFG0_BOOT_PROGRESS_PROGRESS_SHIFT              (0x00000000U)
 #define CSL_WKUP_CTRL_MMR_CFG0_BOOT_PROGRESS_PROGRESS_MAX                (0xFFFFFFFFU)
-
-
-/* PLL_INIT */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_PLL_INIT_FRACF_CALIBRATION_STATUS_MASK    (0x0000000FU)
-#define CSL_WKUP_CTRL_MMR_CFG0_PLL_INIT_FRACF_CALIBRATION_STATUS_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PLL_INIT_FRACF_CALIBRATION_STATUS_MAX     (0x0000000FU)
 
 
 /* DEVICE_FEATURE0 */
@@ -1762,13 +1014,13 @@ typedef struct {
 
 /* DEVICE_FEATURE3 */
 
-#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_MMA_PRESENT_MASK          (0x00000001U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_MMA_PRESENT_SHIFT         (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_MMA_PRESENT_MAX           (0x00000001U)
+#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_MMA0_PRESENT_MASK         (0x00000001U)
+#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_MMA0_PRESENT_SHIFT        (0x00000000U)
+#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_MMA0_PRESENT_MAX          (0x00000001U)
 
-#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_MMA_PRESENT_1_MASK        (0x00000002U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_MMA_PRESENT_1_SHIFT       (0x00000001U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_MMA_PRESENT_1_MAX         (0x00000001U)
+#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_MMA1_PRESENT_MASK         (0x00000002U)
+#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_MMA1_PRESENT_SHIFT        (0x00000001U)
+#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_MMA1_PRESENT_MAX          (0x00000001U)
 
 
 /* DEVICE_FEATURE5 */
@@ -1934,13 +1186,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_ACCESS_ERR_STAT_ACCESS_ERR_IN9_MASK       (0x00000200U)
 #define CSL_WKUP_CTRL_MMR_CFG0_ACCESS_ERR_STAT_ACCESS_ERR_IN9_SHIFT      (0x00000009U)
 #define CSL_WKUP_CTRL_MMR_CFG0_ACCESS_ERR_STAT_ACCESS_ERR_IN9_MAX        (0x00000001U)
-
-
-/* SPARE_FUSE0 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_FUSE0_FUSE_VAL_MASK                 (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_FUSE0_FUSE_VAL_SHIFT                (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_FUSE0_FUSE_VAL_MAX                  (0xFFFFFFFFU)
 
 
 /* LOCK0_KICK0 */
@@ -2152,17 +1397,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_PID_PROXY_PID_MSB16_PROXY_MAX             (0x0000FFFFU)
 
 
-/* MMR_CFG0_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_MMR_CFG0_PROXY_MMR_CFG0_SPEC_REV_PROXY_MASK (0x0000FFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_MMR_CFG0_PROXY_MMR_CFG0_SPEC_REV_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_MMR_CFG0_PROXY_MMR_CFG0_SPEC_REV_PROXY_MAX (0x0000FFFFU)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_MMR_CFG0_PROXY_MMR_CFG0_CFG_REV_PROXY_MASK (0xFFFF0000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_MMR_CFG0_PROXY_MMR_CFG0_CFG_REV_PROXY_SHIFT (0x00000010U)
-#define CSL_WKUP_CTRL_MMR_CFG0_MMR_CFG0_PROXY_MMR_CFG0_CFG_REV_PROXY_MAX (0x0000FFFFU)
-
-
 /* MMR_CFG1_PROXY */
 
 #define CSL_WKUP_CTRL_MMR_CFG0_MMR_CFG1_PROXY_MMR_CFG1_PARTITIONS_PROXY_MASK (0x000000FFU)
@@ -2200,34 +1434,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_JTAG_USER_ID_PROXY_JTAG_USER_ID_USERCODE_PROXY_MAX (0xFFFFFFFFU)
 
 
-/* DIE_ID0_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID0_PROXY_DIE_ID0_DIEID_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID0_PROXY_DIE_ID0_DIEID_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID0_PROXY_DIE_ID0_DIEID_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DIE_ID1_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID1_PROXY_DIE_ID1_DIEID_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID1_PROXY_DIE_ID1_DIEID_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID1_PROXY_DIE_ID1_DIEID_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DIE_ID2_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID2_PROXY_DIE_ID2_DIEID_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID2_PROXY_DIE_ID2_DIEID_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID2_PROXY_DIE_ID2_DIEID_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DIE_ID3_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID3_PROXY_DIE_ID3_DIEID_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID3_PROXY_DIE_ID3_DIEID_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DIE_ID3_PROXY_DIE_ID3_DIEID_PROXY_MAX     (0xFFFFFFFFU)
-
-
 /* MAIN_DEVSTAT_PROXY */
 
 #define CSL_WKUP_CTRL_MMR_CFG0_MAIN_DEVSTAT_PROXY_MAIN_DEVSTAT_BOOTMODE_PROXY_MASK (0x0000FFFFU)
@@ -2247,13 +1453,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_BOOT_PROGRESS_PROXY_BOOT_PROGRESS_PROGRESS_PROXY_MASK (0xFFFFFFFFU)
 #define CSL_WKUP_CTRL_MMR_CFG0_BOOT_PROGRESS_PROXY_BOOT_PROGRESS_PROGRESS_PROXY_SHIFT (0x00000000U)
 #define CSL_WKUP_CTRL_MMR_CFG0_BOOT_PROGRESS_PROXY_BOOT_PROGRESS_PROGRESS_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* PLL_INIT_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_PLL_INIT_PROXY_PLL_INIT_FRACF_CALIBRATION_STATUS_PROXY_MASK (0x0000000FU)
-#define CSL_WKUP_CTRL_MMR_CFG0_PLL_INIT_PROXY_PLL_INIT_FRACF_CALIBRATION_STATUS_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PLL_INIT_PROXY_PLL_INIT_FRACF_CALIBRATION_STATUS_PROXY_MAX (0x0000000FU)
 
 
 /* DEVICE_FEATURE0_PROXY */
@@ -2315,13 +1514,13 @@ typedef struct {
 
 /* DEVICE_FEATURE3_PROXY */
 
-#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_PROXY_DEVICE_FEATURE3_MMA_PRESENT_PROXY_MASK (0x00000001U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_PROXY_DEVICE_FEATURE3_MMA_PRESENT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_PROXY_DEVICE_FEATURE3_MMA_PRESENT_PROXY_MAX (0x00000001U)
+#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_PROXY_DEVICE_FEATURE3_MMA0_PRESENT_PROXY_MASK (0x00000001U)
+#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_PROXY_DEVICE_FEATURE3_MMA0_PRESENT_PROXY_SHIFT (0x00000000U)
+#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_PROXY_DEVICE_FEATURE3_MMA0_PRESENT_PROXY_MAX (0x00000001U)
 
-#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_PROXY_DEVICE_FEATURE3_MMA_PRESENT_1_PROXY_MASK (0x00000002U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_PROXY_DEVICE_FEATURE3_MMA_PRESENT_1_PROXY_SHIFT (0x00000001U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_PROXY_DEVICE_FEATURE3_MMA_PRESENT_1_PROXY_MAX (0x00000001U)
+#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_PROXY_DEVICE_FEATURE3_MMA1_PRESENT_PROXY_MASK (0x00000002U)
+#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_PROXY_DEVICE_FEATURE3_MMA1_PRESENT_PROXY_SHIFT (0x00000001U)
+#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_FEATURE3_PROXY_DEVICE_FEATURE3_MMA1_PRESENT_PROXY_MAX (0x00000001U)
 
 
 /* DEVICE_FEATURE5_PROXY */
@@ -2487,13 +1686,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_ACCESS_ERR_STAT_PROXY_ACCESS_ERR_STAT_ACCESS_ERR_IN9_PROXY_MASK (0x00000200U)
 #define CSL_WKUP_CTRL_MMR_CFG0_ACCESS_ERR_STAT_PROXY_ACCESS_ERR_STAT_ACCESS_ERR_IN9_PROXY_SHIFT (0x00000009U)
 #define CSL_WKUP_CTRL_MMR_CFG0_ACCESS_ERR_STAT_PROXY_ACCESS_ERR_STAT_ACCESS_ERR_IN9_PROXY_MAX (0x00000001U)
-
-
-/* SPARE_FUSE0_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_FUSE0_PROXY_SPARE_FUSE0_FUSE_VAL_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_FUSE0_PROXY_SPARE_FUSE0_FUSE_VAL_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_FUSE0_PROXY_SPARE_FUSE0_FUSE_VAL_PROXY_MAX (0xFFFFFFFFU)
 
 
 /* LOCK0_KICK0_PROXY */
@@ -2714,52 +1906,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_WKUP_I2C0_CTRL_HS_MCS_EN_MAX              (0x00000001U)
 
 
-/* SPARE_CTRL0 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_CTRL0_SPARE_OUT_MASK                (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_CTRL0_SPARE_OUT_SHIFT               (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_CTRL0_SPARE_OUT_MAX                 (0xFFFFFFFFU)
-
-
-/* SPARE_CTRL1 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_CTRL1_SPARE_OUT_MASK                (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_CTRL1_SPARE_OUT_SHIFT               (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_CTRL1_SPARE_OUT_MAX                 (0xFFFFFFFFU)
-
-
-/* SPARE_STAT0 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_STAT0_SPARE_IN_MASK                 (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_STAT0_SPARE_IN_SHIFT                (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_STAT0_SPARE_IN_MAX                  (0xFFFFFFFFU)
-
-
-/* SPARE_STAT1 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_STAT1_SPARE_IN_MASK                 (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_STAT1_SPARE_IN_SHIFT                (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_STAT1_SPARE_IN_MAX                  (0xFFFFFFFFU)
-
-
-/* SPARE_TRIM0 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_TRIM0_TRIM_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_TRIM0_TRIM_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_TRIM0_TRIM_MAX                      (0xFFFFFFFFU)
-
-
-/* TOG_STAT */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_TOG_STAT_MST_TOG_STAT_MASK                (0x00000003U)
-#define CSL_WKUP_CTRL_MMR_CFG0_TOG_STAT_MST_TOG_STAT_SHIFT               (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_TOG_STAT_MST_TOG_STAT_MAX                 (0x00000003U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_TOG_STAT_SLV_TOG_STAT_MASK                (0x00008000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_TOG_STAT_SLV_TOG_STAT_SHIFT               (0x0000000FU)
-#define CSL_WKUP_CTRL_MMR_CFG0_TOG_STAT_SLV_TOG_STAT_MAX                 (0x00000001U)
-
-
 /* LOCK1_KICK0 */
 
 #define CSL_WKUP_CTRL_MMR_CFG0_LOCK1_KICK0_LOCK1_KICK0_MASK              (0xFFFFFFFFU)
@@ -2895,52 +2041,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_WKUP_I2C0_CTRL_PROXY_WKUP_I2C0_CTRL_HS_MCS_EN_PROXY_MASK (0x00000001U)
 #define CSL_WKUP_CTRL_MMR_CFG0_WKUP_I2C0_CTRL_PROXY_WKUP_I2C0_CTRL_HS_MCS_EN_PROXY_SHIFT (0x00000000U)
 #define CSL_WKUP_CTRL_MMR_CFG0_WKUP_I2C0_CTRL_PROXY_WKUP_I2C0_CTRL_HS_MCS_EN_PROXY_MAX (0x00000001U)
-
-
-/* SPARE_CTRL0_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_CTRL0_PROXY_SPARE_CTRL0_SPARE_OUT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_CTRL0_PROXY_SPARE_CTRL0_SPARE_OUT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_CTRL0_PROXY_SPARE_CTRL0_SPARE_OUT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* SPARE_CTRL1_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_CTRL1_PROXY_SPARE_CTRL1_SPARE_OUT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_CTRL1_PROXY_SPARE_CTRL1_SPARE_OUT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_CTRL1_PROXY_SPARE_CTRL1_SPARE_OUT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* SPARE_STAT0_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_STAT0_PROXY_SPARE_STAT0_SPARE_IN_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_STAT0_PROXY_SPARE_STAT0_SPARE_IN_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_STAT0_PROXY_SPARE_STAT0_SPARE_IN_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* SPARE_STAT1_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_STAT1_PROXY_SPARE_STAT1_SPARE_IN_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_STAT1_PROXY_SPARE_STAT1_SPARE_IN_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_STAT1_PROXY_SPARE_STAT1_SPARE_IN_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* SPARE_TRIM0_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_TRIM0_PROXY_SPARE_TRIM0_TRIM_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_TRIM0_PROXY_SPARE_TRIM0_TRIM_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SPARE_TRIM0_PROXY_SPARE_TRIM0_TRIM_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* TOG_STAT_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_TOG_STAT_PROXY_TOG_STAT_MST_TOG_STAT_PROXY_MASK (0x00000003U)
-#define CSL_WKUP_CTRL_MMR_CFG0_TOG_STAT_PROXY_TOG_STAT_MST_TOG_STAT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_TOG_STAT_PROXY_TOG_STAT_MST_TOG_STAT_PROXY_MAX (0x00000003U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_TOG_STAT_PROXY_TOG_STAT_SLV_TOG_STAT_PROXY_MASK (0x00008000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_TOG_STAT_PROXY_TOG_STAT_SLV_TOG_STAT_PROXY_SHIFT (0x0000000FU)
-#define CSL_WKUP_CTRL_MMR_CFG0_TOG_STAT_PROXY_TOG_STAT_SLV_TOG_STAT_PROXY_MAX (0x00000001U)
 
 
 /* LOCK1_KICK0_PROXY */
@@ -3460,86 +2560,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_POST_CFG_FAST_POST_EN_MAX                 (0x00000001U)
 
 
-/* FUSE_CRC_CTRL */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_1_MASK               (0x00000002U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_1_SHIFT              (0x00000001U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_1_MAX                (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_2_MASK               (0x00000004U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_2_SHIFT              (0x00000002U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_2_MAX                (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_3_MASK               (0x00000008U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_3_SHIFT              (0x00000003U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_3_MAX                (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_4_MASK               (0x00000010U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_4_SHIFT              (0x00000004U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_4_MAX                (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_5_MASK               (0x00000020U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_5_SHIFT              (0x00000005U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_5_MAX                (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_6_MASK               (0x00000040U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_6_SHIFT              (0x00000006U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_6_MAX                (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_7_MASK               (0x00000080U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_7_SHIFT              (0x00000007U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_CRC_EN_7_MAX                (0x00000001U)
-
-
-/* CHAIN1_CRC_FUSE */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_FUSE_CRC_MASK                  (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_FUSE_CRC_SHIFT                 (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_FUSE_CRC_MAX                   (0xFFFFFFFFU)
-
-
-/* CHAIN2_CRC_FUSE */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_FUSE_CRC_MASK                  (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_FUSE_CRC_SHIFT                 (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_FUSE_CRC_MAX                   (0xFFFFFFFFU)
-
-
-/* CHAIN3_CRC_FUSE */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_FUSE_CRC_MASK                  (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_FUSE_CRC_SHIFT                 (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_FUSE_CRC_MAX                   (0xFFFFFFFFU)
-
-
-/* CHAIN4_CRC_FUSE */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_FUSE_CRC_MASK                  (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_FUSE_CRC_SHIFT                 (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_FUSE_CRC_MAX                   (0xFFFFFFFFU)
-
-
-/* CHAIN5_CRC_FUSE */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_FUSE_CRC_MASK                  (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_FUSE_CRC_SHIFT                 (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_FUSE_CRC_MAX                   (0xFFFFFFFFU)
-
-
-/* CHAIN6_CRC_FUSE */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_FUSE_CRC_MASK                  (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_FUSE_CRC_SHIFT                 (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_FUSE_CRC_MAX                   (0xFFFFFFFFU)
-
-
-/* CHAIN7_CRC_FUSE */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_FUSE_CRC_MASK                  (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_FUSE_CRC_SHIFT                 (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_FUSE_CRC_MAX                   (0xFFFFFFFFU)
-
-
 /* FUSE_CRC_STAT */
 
 #define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_STAT_CRC_ERR_1_MASK              (0x00000002U)
@@ -3569,55 +2589,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_STAT_CRC_ERR_7_MASK              (0x00000080U)
 #define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_STAT_CRC_ERR_7_SHIFT             (0x00000007U)
 #define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_STAT_CRC_ERR_7_MAX               (0x00000001U)
-
-
-/* CHAIN1_CRC_CALC */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_CALC_CRC_MASK                  (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_CALC_CRC_SHIFT                 (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_CALC_CRC_MAX                   (0xFFFFFFFFU)
-
-
-/* CHAIN2_CRC_CALC */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_CALC_CRC_MASK                  (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_CALC_CRC_SHIFT                 (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_CALC_CRC_MAX                   (0xFFFFFFFFU)
-
-
-/* CHAIN3_CRC_CALC */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_CALC_CRC_MASK                  (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_CALC_CRC_SHIFT                 (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_CALC_CRC_MAX                   (0xFFFFFFFFU)
-
-
-/* CHAIN4_CRC_CALC */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_CALC_CRC_MASK                  (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_CALC_CRC_SHIFT                 (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_CALC_CRC_MAX                   (0xFFFFFFFFU)
-
-
-/* CHAIN5_CRC_CALC */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_CALC_CRC_MASK                  (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_CALC_CRC_SHIFT                 (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_CALC_CRC_MAX                   (0xFFFFFFFFU)
-
-
-/* CHAIN6_CRC_CALC */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_CALC_CRC_MASK                  (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_CALC_CRC_SHIFT                 (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_CALC_CRC_MAX                   (0xFFFFFFFFU)
-
-
-/* CHAIN7_CRC_CALC */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_CALC_CRC_MASK                  (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_CALC_CRC_SHIFT                 (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_CALC_CRC_MAX                   (0xFFFFFFFFU)
 
 
 /* FUSE_CTRL_STAT */
@@ -3655,55 +2626,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CTRL_STAT_AUTOLOAD_ERR_7_MAX         (0x00000001U)
 
 
-/* CHAIN1_CRC_CALC_RO */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_CALC_RO_CRC_MASK               (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_CALC_RO_CRC_SHIFT              (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_CALC_RO_CRC_MAX                (0xFFFFFFFFU)
-
-
-/* CHAIN2_CRC_CALC_RO */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_CALC_RO_CRC_MASK               (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_CALC_RO_CRC_SHIFT              (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_CALC_RO_CRC_MAX                (0xFFFFFFFFU)
-
-
-/* CHAIN3_CRC_CALC_RO */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_CALC_RO_CRC_MASK               (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_CALC_RO_CRC_SHIFT              (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_CALC_RO_CRC_MAX                (0xFFFFFFFFU)
-
-
-/* CHAIN4_CRC_CALC_RO */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_CALC_RO_CRC_MASK               (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_CALC_RO_CRC_SHIFT              (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_CALC_RO_CRC_MAX                (0xFFFFFFFFU)
-
-
-/* CHAIN5_CRC_CALC_RO */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_CALC_RO_CRC_MASK               (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_CALC_RO_CRC_SHIFT              (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_CALC_RO_CRC_MAX                (0xFFFFFFFFU)
-
-
-/* CHAIN6_CRC_CALC_RO */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_CALC_RO_CRC_MASK               (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_CALC_RO_CRC_SHIFT              (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_CALC_RO_CRC_MAX                (0xFFFFFFFFU)
-
-
-/* CHAIN7_CRC_CALC_RO */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_CALC_RO_CRC_MASK               (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_CALC_RO_CRC_SHIFT              (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_CALC_RO_CRC_MAX                (0xFFFFFFFFU)
-
-
 /* PBIST_EN */
 
 #define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_EMMC0_MASK                       (0x00000001U)
@@ -3721,6 +2643,14 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_AASRC1_MASK                      (0x00020000U)
 #define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_AASRC1_SHIFT                     (0x00000011U)
 #define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_AASRC1_MAX                       (0x00000001U)
+
+#define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_MAIN_R5SS0_MASK                  (0x00100000U)
+#define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_MAIN_R5SS0_SHIFT                 (0x00000014U)
+#define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_MAIN_R5SS0_MAX                   (0x00000001U)
+
+#define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_MAIN_R5SS1_MASK                  (0x00200000U)
+#define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_MAIN_R5SS1_SHIFT                 (0x00000015U)
+#define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_MAIN_R5SS1_MAX                   (0x00000001U)
 
 
 /* LOCK3_KICK0 */
@@ -3846,86 +2776,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_POST_CFG_PROXY_POST_CFG_FAST_POST_EN_PROXY_MAX (0x00000001U)
 
 
-/* FUSE_CRC_CTRL_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_1_PROXY_MASK (0x00000002U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_1_PROXY_SHIFT (0x00000001U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_1_PROXY_MAX (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_2_PROXY_MASK (0x00000004U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_2_PROXY_SHIFT (0x00000002U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_2_PROXY_MAX (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_3_PROXY_MASK (0x00000008U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_3_PROXY_SHIFT (0x00000003U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_3_PROXY_MAX (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_4_PROXY_MASK (0x00000010U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_4_PROXY_SHIFT (0x00000004U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_4_PROXY_MAX (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_5_PROXY_MASK (0x00000020U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_5_PROXY_SHIFT (0x00000005U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_5_PROXY_MAX (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_6_PROXY_MASK (0x00000040U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_6_PROXY_SHIFT (0x00000006U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_6_PROXY_MAX (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_7_PROXY_MASK (0x00000080U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_7_PROXY_SHIFT (0x00000007U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_CTRL_PROXY_FUSE_CRC_CTRL_CRC_EN_7_PROXY_MAX (0x00000001U)
-
-
-/* CHAIN1_CRC_FUSE_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_FUSE_PROXY_CHAIN1_CRC_FUSE_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_FUSE_PROXY_CHAIN1_CRC_FUSE_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_FUSE_PROXY_CHAIN1_CRC_FUSE_CRC_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* CHAIN2_CRC_FUSE_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_FUSE_PROXY_CHAIN2_CRC_FUSE_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_FUSE_PROXY_CHAIN2_CRC_FUSE_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_FUSE_PROXY_CHAIN2_CRC_FUSE_CRC_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* CHAIN3_CRC_FUSE_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_FUSE_PROXY_CHAIN3_CRC_FUSE_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_FUSE_PROXY_CHAIN3_CRC_FUSE_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_FUSE_PROXY_CHAIN3_CRC_FUSE_CRC_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* CHAIN4_CRC_FUSE_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_FUSE_PROXY_CHAIN4_CRC_FUSE_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_FUSE_PROXY_CHAIN4_CRC_FUSE_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_FUSE_PROXY_CHAIN4_CRC_FUSE_CRC_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* CHAIN5_CRC_FUSE_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_FUSE_PROXY_CHAIN5_CRC_FUSE_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_FUSE_PROXY_CHAIN5_CRC_FUSE_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_FUSE_PROXY_CHAIN5_CRC_FUSE_CRC_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* CHAIN6_CRC_FUSE_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_FUSE_PROXY_CHAIN6_CRC_FUSE_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_FUSE_PROXY_CHAIN6_CRC_FUSE_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_FUSE_PROXY_CHAIN6_CRC_FUSE_CRC_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* CHAIN7_CRC_FUSE_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_FUSE_PROXY_CHAIN7_CRC_FUSE_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_FUSE_PROXY_CHAIN7_CRC_FUSE_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_FUSE_PROXY_CHAIN7_CRC_FUSE_CRC_PROXY_MAX (0xFFFFFFFFU)
-
-
 /* FUSE_CRC_STAT_PROXY */
 
 #define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_STAT_PROXY_FUSE_CRC_STAT_CRC_ERR_1_PROXY_MASK (0x00000002U)
@@ -3955,55 +2805,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_STAT_PROXY_FUSE_CRC_STAT_CRC_ERR_7_PROXY_MASK (0x00000080U)
 #define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_STAT_PROXY_FUSE_CRC_STAT_CRC_ERR_7_PROXY_SHIFT (0x00000007U)
 #define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CRC_STAT_PROXY_FUSE_CRC_STAT_CRC_ERR_7_PROXY_MAX (0x00000001U)
-
-
-/* CHAIN1_CRC_CALC_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_CALC_PROXY_CHAIN1_CRC_CALC_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_CALC_PROXY_CHAIN1_CRC_CALC_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_CALC_PROXY_CHAIN1_CRC_CALC_CRC_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* CHAIN2_CRC_CALC_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_CALC_PROXY_CHAIN2_CRC_CALC_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_CALC_PROXY_CHAIN2_CRC_CALC_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_CALC_PROXY_CHAIN2_CRC_CALC_CRC_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* CHAIN3_CRC_CALC_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_CALC_PROXY_CHAIN3_CRC_CALC_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_CALC_PROXY_CHAIN3_CRC_CALC_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_CALC_PROXY_CHAIN3_CRC_CALC_CRC_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* CHAIN4_CRC_CALC_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_CALC_PROXY_CHAIN4_CRC_CALC_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_CALC_PROXY_CHAIN4_CRC_CALC_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_CALC_PROXY_CHAIN4_CRC_CALC_CRC_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* CHAIN5_CRC_CALC_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_CALC_PROXY_CHAIN5_CRC_CALC_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_CALC_PROXY_CHAIN5_CRC_CALC_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_CALC_PROXY_CHAIN5_CRC_CALC_CRC_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* CHAIN6_CRC_CALC_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_CALC_PROXY_CHAIN6_CRC_CALC_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_CALC_PROXY_CHAIN6_CRC_CALC_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_CALC_PROXY_CHAIN6_CRC_CALC_CRC_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* CHAIN7_CRC_CALC_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_CALC_PROXY_CHAIN7_CRC_CALC_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_CALC_PROXY_CHAIN7_CRC_CALC_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_CALC_PROXY_CHAIN7_CRC_CALC_CRC_PROXY_MAX (0xFFFFFFFFU)
 
 
 /* FUSE_CTRL_STAT_PROXY */
@@ -4041,55 +2842,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_FUSE_CTRL_STAT_PROXY_FUSE_CTRL_STAT_AUTOLOAD_ERR_7_PROXY_MAX (0x00000001U)
 
 
-/* CHAIN1_CRC_CALC_RO_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_CALC_RO_PROXY_CHAIN1_CRC_CALC_RO_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_CALC_RO_PROXY_CHAIN1_CRC_CALC_RO_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN1_CRC_CALC_RO_PROXY_CHAIN1_CRC_CALC_RO_CRC_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* CHAIN2_CRC_CALC_RO_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_CALC_RO_PROXY_CHAIN2_CRC_CALC_RO_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_CALC_RO_PROXY_CHAIN2_CRC_CALC_RO_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN2_CRC_CALC_RO_PROXY_CHAIN2_CRC_CALC_RO_CRC_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* CHAIN3_CRC_CALC_RO_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_CALC_RO_PROXY_CHAIN3_CRC_CALC_RO_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_CALC_RO_PROXY_CHAIN3_CRC_CALC_RO_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN3_CRC_CALC_RO_PROXY_CHAIN3_CRC_CALC_RO_CRC_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* CHAIN4_CRC_CALC_RO_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_CALC_RO_PROXY_CHAIN4_CRC_CALC_RO_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_CALC_RO_PROXY_CHAIN4_CRC_CALC_RO_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN4_CRC_CALC_RO_PROXY_CHAIN4_CRC_CALC_RO_CRC_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* CHAIN5_CRC_CALC_RO_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_CALC_RO_PROXY_CHAIN5_CRC_CALC_RO_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_CALC_RO_PROXY_CHAIN5_CRC_CALC_RO_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN5_CRC_CALC_RO_PROXY_CHAIN5_CRC_CALC_RO_CRC_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* CHAIN6_CRC_CALC_RO_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_CALC_RO_PROXY_CHAIN6_CRC_CALC_RO_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_CALC_RO_PROXY_CHAIN6_CRC_CALC_RO_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN6_CRC_CALC_RO_PROXY_CHAIN6_CRC_CALC_RO_CRC_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* CHAIN7_CRC_CALC_RO_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_CALC_RO_PROXY_CHAIN7_CRC_CALC_RO_CRC_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_CALC_RO_PROXY_CHAIN7_CRC_CALC_RO_CRC_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_CHAIN7_CRC_CALC_RO_PROXY_CHAIN7_CRC_CALC_RO_CRC_PROXY_MAX (0xFFFFFFFFU)
-
-
 /* PBIST_EN_PROXY */
 
 #define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_PROXY_PBIST_EN_EMMC0_PROXY_MASK  (0x00000001U)
@@ -4107,6 +2859,14 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_PROXY_PBIST_EN_AASRC1_PROXY_MASK (0x00020000U)
 #define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_PROXY_PBIST_EN_AASRC1_PROXY_SHIFT (0x00000011U)
 #define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_PROXY_PBIST_EN_AASRC1_PROXY_MAX  (0x00000001U)
+
+#define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_PROXY_PBIST_EN_MAIN_R5SS0_PROXY_MASK (0x00100000U)
+#define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_PROXY_PBIST_EN_MAIN_R5SS0_PROXY_SHIFT (0x00000014U)
+#define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_PROXY_PBIST_EN_MAIN_R5SS0_PROXY_MAX (0x00000001U)
+
+#define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_PROXY_PBIST_EN_MAIN_R5SS1_PROXY_MASK (0x00200000U)
+#define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_PROXY_PBIST_EN_MAIN_R5SS1_PROXY_SHIFT (0x00000015U)
+#define CSL_WKUP_CTRL_MMR_CFG0_PBIST_EN_PROXY_PBIST_EN_MAIN_R5SS1_PROXY_MAX (0x00000001U)
 
 
 /* LOCK3_KICK0_PROXY */
@@ -4186,916 +2946,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P3_R8_CLAIMREG_P3_R8_MAX         (0xFFFFFFFFU)
 
 
-/* DV_REG0 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_BIT_MASK                          (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_BIT_SHIFT                         (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_BIT_MAX                           (0xFFFFFFFFU)
-
-
-/* DV_REG1 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_BIT_MASK                          (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_BIT_SHIFT                         (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_BIT_MAX                           (0xFFFFFFFFU)
-
-
-/* DV_REG2 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_BIT_MASK                          (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_BIT_SHIFT                         (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_BIT_MAX                           (0xFFFFFFFFU)
-
-
-/* DV_REG3 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_BIT_MASK                          (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_BIT_SHIFT                         (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_BIT_MAX                           (0xFFFFFFFFU)
-
-
-/* DV_REG4 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_BIT_MASK                          (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_BIT_SHIFT                         (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_BIT_MAX                           (0xFFFFFFFFU)
-
-
-/* DV_REG5 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_BIT_MASK                          (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_BIT_SHIFT                         (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_BIT_MAX                           (0xFFFFFFFFU)
-
-
-/* DV_REG6 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_BIT_MASK                          (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_BIT_SHIFT                         (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_BIT_MAX                           (0xFFFFFFFFU)
-
-
-/* DV_REG7 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_BIT_MASK                          (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_BIT_SHIFT                         (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_BIT_MAX                           (0xFFFFFFFFU)
-
-
-/* DV_REG8 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_BIT_MASK                          (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_BIT_SHIFT                         (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_BIT_MAX                           (0xFFFFFFFFU)
-
-
-/* DV_REG9 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_BIT_MASK                          (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_BIT_SHIFT                         (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_BIT_MAX                           (0xFFFFFFFFU)
-
-
-/* DV_REG10 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG11 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG12 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG13 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG14 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG15 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG16 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG17 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG18 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG19 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG20 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG21 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG22 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG23 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG24 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG25 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG26 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG27 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG28 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG29 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG30 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG31 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG32 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG32_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG32_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG32_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG33 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG33_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG33_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG33_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG34 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG34_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG34_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG34_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG35 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG35_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG35_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG35_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG36 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG36_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG36_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG36_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG37 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG37_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG37_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG37_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG38 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG38_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG38_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG38_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG39 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG39_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG39_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG39_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG40 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG40_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG40_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG40_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG41 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG41_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG41_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG41_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG42 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG42_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG42_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG42_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG43 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG43_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG43_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG43_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG44 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG44_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG44_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG44_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG45 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG45_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG45_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG45_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG46 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG46_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG46_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG46_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG47 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG47_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG47_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG47_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG48 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG48_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG48_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG48_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG49 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG49_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG49_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG49_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG50 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG50_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG50_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG50_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG51 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG51_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG51_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG51_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG52 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG52_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG52_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG52_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG53 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG53_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG53_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG53_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG54 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG54_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG54_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG54_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG55 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG55_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG55_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG55_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG56 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG56_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG56_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG56_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG57 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG57_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG57_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG57_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG58 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG58_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG58_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG58_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG59 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG59_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG59_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG59_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG60 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG60_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG60_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG60_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG61 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG61_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG61_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG61_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG62 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG62_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG62_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG62_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG63 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG63_BIT_MASK                         (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG63_BIT_SHIFT                        (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG63_BIT_MAX                          (0xFFFFFFFFU)
-
-
-/* DV_REG0_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_SET_BIT_MASK                      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_SET_BIT_SHIFT                     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_SET_BIT_MAX                       (0xFFFFFFFFU)
-
-
-/* DV_REG1_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_SET_BIT_MASK                      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_SET_BIT_SHIFT                     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_SET_BIT_MAX                       (0xFFFFFFFFU)
-
-
-/* DV_REG2_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_SET_BIT_MASK                      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_SET_BIT_SHIFT                     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_SET_BIT_MAX                       (0xFFFFFFFFU)
-
-
-/* DV_REG3_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_SET_BIT_MASK                      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_SET_BIT_SHIFT                     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_SET_BIT_MAX                       (0xFFFFFFFFU)
-
-
-/* DV_REG4_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_SET_BIT_MASK                      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_SET_BIT_SHIFT                     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_SET_BIT_MAX                       (0xFFFFFFFFU)
-
-
-/* DV_REG5_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_SET_BIT_MASK                      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_SET_BIT_SHIFT                     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_SET_BIT_MAX                       (0xFFFFFFFFU)
-
-
-/* DV_REG6_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_SET_BIT_MASK                      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_SET_BIT_SHIFT                     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_SET_BIT_MAX                       (0xFFFFFFFFU)
-
-
-/* DV_REG7_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_SET_BIT_MASK                      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_SET_BIT_SHIFT                     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_SET_BIT_MAX                       (0xFFFFFFFFU)
-
-
-/* DV_REG8_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_SET_BIT_MASK                      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_SET_BIT_SHIFT                     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_SET_BIT_MAX                       (0xFFFFFFFFU)
-
-
-/* DV_REG9_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_SET_BIT_MASK                      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_SET_BIT_SHIFT                     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_SET_BIT_MAX                       (0xFFFFFFFFU)
-
-
-/* DV_REG10_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG11_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG12_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG13_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG14_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG15_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG16_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG17_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG18_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG19_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG20_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG21_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG22_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG23_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG24_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG25_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG26_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG27_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG28_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG29_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG30_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG31_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_SET_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_SET_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_SET_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG0_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_CLR_BIT_MASK                      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_CLR_BIT_SHIFT                     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_CLR_BIT_MAX                       (0xFFFFFFFFU)
-
-
-/* DV_REG1_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_CLR_BIT_MASK                      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_CLR_BIT_SHIFT                     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_CLR_BIT_MAX                       (0xFFFFFFFFU)
-
-
-/* DV_REG2_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_CLR_BIT_MASK                      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_CLR_BIT_SHIFT                     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_CLR_BIT_MAX                       (0xFFFFFFFFU)
-
-
-/* DV_REG3_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_CLR_BIT_MASK                      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_CLR_BIT_SHIFT                     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_CLR_BIT_MAX                       (0xFFFFFFFFU)
-
-
-/* DV_REG4_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_CLR_BIT_MASK                      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_CLR_BIT_SHIFT                     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_CLR_BIT_MAX                       (0xFFFFFFFFU)
-
-
-/* DV_REG5_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_CLR_BIT_MASK                      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_CLR_BIT_SHIFT                     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_CLR_BIT_MAX                       (0xFFFFFFFFU)
-
-
-/* DV_REG6_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_CLR_BIT_MASK                      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_CLR_BIT_SHIFT                     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_CLR_BIT_MAX                       (0xFFFFFFFFU)
-
-
-/* DV_REG7_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_CLR_BIT_MASK                      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_CLR_BIT_SHIFT                     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_CLR_BIT_MAX                       (0xFFFFFFFFU)
-
-
-/* DV_REG8_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_CLR_BIT_MASK                      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_CLR_BIT_SHIFT                     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_CLR_BIT_MAX                       (0xFFFFFFFFU)
-
-
-/* DV_REG9_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_CLR_BIT_MASK                      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_CLR_BIT_SHIFT                     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_CLR_BIT_MAX                       (0xFFFFFFFFU)
-
-
-/* DV_REG10_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG11_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG12_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG13_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG14_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG15_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG16_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG17_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG18_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG19_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG20_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG21_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG22_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG23_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG24_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG25_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG26_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG27_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG28_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG29_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG30_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* DV_REG31_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_CLR_BIT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_CLR_BIT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_CLR_BIT_MAX                      (0xFFFFFFFFU)
-
-
-/* LED_PID */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_LED_PID_PID_MASK                          (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_LED_PID_PID_SHIFT                         (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_LED_PID_PID_MAX                           (0xFFFFFFFFU)
-
-
-/* LED_PIDCTRL */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_LED_PIDCTRL_PID_SEL_MASK                  (0x00000001U)
-#define CSL_WKUP_CTRL_MMR_CFG0_LED_PIDCTRL_PID_SEL_SHIFT                 (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_LED_PIDCTRL_PID_SEL_MAX                   (0x00000001U)
-
-
 /* LOCK4_KICK0 */
 
 #define CSL_WKUP_CTRL_MMR_CFG0_LOCK4_KICK0_LOCK4_KICK0_MASK              (0xFFFFFFFFU)
@@ -5173,916 +3023,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P4_R8_READONLY_CLAIMREG_P4_R8_READONLY_MAX (0xFFFFFFFFU)
 
 
-/* DV_REG0_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_PROXY_DV_REG0_BIT_PROXY_MASK      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_PROXY_DV_REG0_BIT_PROXY_SHIFT     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_PROXY_DV_REG0_BIT_PROXY_MAX       (0xFFFFFFFFU)
-
-
-/* DV_REG1_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_PROXY_DV_REG1_BIT_PROXY_MASK      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_PROXY_DV_REG1_BIT_PROXY_SHIFT     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_PROXY_DV_REG1_BIT_PROXY_MAX       (0xFFFFFFFFU)
-
-
-/* DV_REG2_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_PROXY_DV_REG2_BIT_PROXY_MASK      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_PROXY_DV_REG2_BIT_PROXY_SHIFT     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_PROXY_DV_REG2_BIT_PROXY_MAX       (0xFFFFFFFFU)
-
-
-/* DV_REG3_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_PROXY_DV_REG3_BIT_PROXY_MASK      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_PROXY_DV_REG3_BIT_PROXY_SHIFT     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_PROXY_DV_REG3_BIT_PROXY_MAX       (0xFFFFFFFFU)
-
-
-/* DV_REG4_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_PROXY_DV_REG4_BIT_PROXY_MASK      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_PROXY_DV_REG4_BIT_PROXY_SHIFT     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_PROXY_DV_REG4_BIT_PROXY_MAX       (0xFFFFFFFFU)
-
-
-/* DV_REG5_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_PROXY_DV_REG5_BIT_PROXY_MASK      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_PROXY_DV_REG5_BIT_PROXY_SHIFT     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_PROXY_DV_REG5_BIT_PROXY_MAX       (0xFFFFFFFFU)
-
-
-/* DV_REG6_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_PROXY_DV_REG6_BIT_PROXY_MASK      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_PROXY_DV_REG6_BIT_PROXY_SHIFT     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_PROXY_DV_REG6_BIT_PROXY_MAX       (0xFFFFFFFFU)
-
-
-/* DV_REG7_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_PROXY_DV_REG7_BIT_PROXY_MASK      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_PROXY_DV_REG7_BIT_PROXY_SHIFT     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_PROXY_DV_REG7_BIT_PROXY_MAX       (0xFFFFFFFFU)
-
-
-/* DV_REG8_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_PROXY_DV_REG8_BIT_PROXY_MASK      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_PROXY_DV_REG8_BIT_PROXY_SHIFT     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_PROXY_DV_REG8_BIT_PROXY_MAX       (0xFFFFFFFFU)
-
-
-/* DV_REG9_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_PROXY_DV_REG9_BIT_PROXY_MASK      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_PROXY_DV_REG9_BIT_PROXY_SHIFT     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_PROXY_DV_REG9_BIT_PROXY_MAX       (0xFFFFFFFFU)
-
-
-/* DV_REG10_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_PROXY_DV_REG10_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_PROXY_DV_REG10_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_PROXY_DV_REG10_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG11_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_PROXY_DV_REG11_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_PROXY_DV_REG11_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_PROXY_DV_REG11_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG12_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_PROXY_DV_REG12_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_PROXY_DV_REG12_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_PROXY_DV_REG12_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG13_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_PROXY_DV_REG13_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_PROXY_DV_REG13_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_PROXY_DV_REG13_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG14_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_PROXY_DV_REG14_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_PROXY_DV_REG14_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_PROXY_DV_REG14_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG15_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_PROXY_DV_REG15_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_PROXY_DV_REG15_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_PROXY_DV_REG15_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG16_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_PROXY_DV_REG16_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_PROXY_DV_REG16_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_PROXY_DV_REG16_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG17_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_PROXY_DV_REG17_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_PROXY_DV_REG17_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_PROXY_DV_REG17_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG18_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_PROXY_DV_REG18_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_PROXY_DV_REG18_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_PROXY_DV_REG18_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG19_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_PROXY_DV_REG19_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_PROXY_DV_REG19_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_PROXY_DV_REG19_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG20_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_PROXY_DV_REG20_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_PROXY_DV_REG20_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_PROXY_DV_REG20_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG21_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_PROXY_DV_REG21_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_PROXY_DV_REG21_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_PROXY_DV_REG21_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG22_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_PROXY_DV_REG22_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_PROXY_DV_REG22_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_PROXY_DV_REG22_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG23_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_PROXY_DV_REG23_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_PROXY_DV_REG23_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_PROXY_DV_REG23_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG24_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_PROXY_DV_REG24_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_PROXY_DV_REG24_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_PROXY_DV_REG24_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG25_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_PROXY_DV_REG25_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_PROXY_DV_REG25_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_PROXY_DV_REG25_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG26_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_PROXY_DV_REG26_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_PROXY_DV_REG26_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_PROXY_DV_REG26_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG27_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_PROXY_DV_REG27_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_PROXY_DV_REG27_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_PROXY_DV_REG27_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG28_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_PROXY_DV_REG28_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_PROXY_DV_REG28_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_PROXY_DV_REG28_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG29_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_PROXY_DV_REG29_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_PROXY_DV_REG29_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_PROXY_DV_REG29_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG30_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_PROXY_DV_REG30_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_PROXY_DV_REG30_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_PROXY_DV_REG30_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG31_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_PROXY_DV_REG31_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_PROXY_DV_REG31_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_PROXY_DV_REG31_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG32_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG32_PROXY_DV_REG32_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG32_PROXY_DV_REG32_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG32_PROXY_DV_REG32_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG33_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG33_PROXY_DV_REG33_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG33_PROXY_DV_REG33_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG33_PROXY_DV_REG33_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG34_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG34_PROXY_DV_REG34_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG34_PROXY_DV_REG34_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG34_PROXY_DV_REG34_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG35_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG35_PROXY_DV_REG35_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG35_PROXY_DV_REG35_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG35_PROXY_DV_REG35_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG36_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG36_PROXY_DV_REG36_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG36_PROXY_DV_REG36_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG36_PROXY_DV_REG36_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG37_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG37_PROXY_DV_REG37_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG37_PROXY_DV_REG37_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG37_PROXY_DV_REG37_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG38_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG38_PROXY_DV_REG38_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG38_PROXY_DV_REG38_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG38_PROXY_DV_REG38_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG39_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG39_PROXY_DV_REG39_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG39_PROXY_DV_REG39_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG39_PROXY_DV_REG39_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG40_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG40_PROXY_DV_REG40_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG40_PROXY_DV_REG40_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG40_PROXY_DV_REG40_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG41_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG41_PROXY_DV_REG41_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG41_PROXY_DV_REG41_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG41_PROXY_DV_REG41_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG42_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG42_PROXY_DV_REG42_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG42_PROXY_DV_REG42_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG42_PROXY_DV_REG42_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG43_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG43_PROXY_DV_REG43_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG43_PROXY_DV_REG43_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG43_PROXY_DV_REG43_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG44_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG44_PROXY_DV_REG44_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG44_PROXY_DV_REG44_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG44_PROXY_DV_REG44_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG45_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG45_PROXY_DV_REG45_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG45_PROXY_DV_REG45_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG45_PROXY_DV_REG45_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG46_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG46_PROXY_DV_REG46_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG46_PROXY_DV_REG46_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG46_PROXY_DV_REG46_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG47_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG47_PROXY_DV_REG47_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG47_PROXY_DV_REG47_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG47_PROXY_DV_REG47_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG48_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG48_PROXY_DV_REG48_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG48_PROXY_DV_REG48_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG48_PROXY_DV_REG48_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG49_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG49_PROXY_DV_REG49_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG49_PROXY_DV_REG49_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG49_PROXY_DV_REG49_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG50_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG50_PROXY_DV_REG50_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG50_PROXY_DV_REG50_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG50_PROXY_DV_REG50_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG51_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG51_PROXY_DV_REG51_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG51_PROXY_DV_REG51_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG51_PROXY_DV_REG51_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG52_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG52_PROXY_DV_REG52_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG52_PROXY_DV_REG52_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG52_PROXY_DV_REG52_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG53_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG53_PROXY_DV_REG53_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG53_PROXY_DV_REG53_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG53_PROXY_DV_REG53_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG54_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG54_PROXY_DV_REG54_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG54_PROXY_DV_REG54_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG54_PROXY_DV_REG54_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG55_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG55_PROXY_DV_REG55_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG55_PROXY_DV_REG55_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG55_PROXY_DV_REG55_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG56_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG56_PROXY_DV_REG56_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG56_PROXY_DV_REG56_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG56_PROXY_DV_REG56_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG57_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG57_PROXY_DV_REG57_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG57_PROXY_DV_REG57_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG57_PROXY_DV_REG57_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG58_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG58_PROXY_DV_REG58_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG58_PROXY_DV_REG58_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG58_PROXY_DV_REG58_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG59_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG59_PROXY_DV_REG59_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG59_PROXY_DV_REG59_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG59_PROXY_DV_REG59_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG60_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG60_PROXY_DV_REG60_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG60_PROXY_DV_REG60_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG60_PROXY_DV_REG60_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG61_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG61_PROXY_DV_REG61_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG61_PROXY_DV_REG61_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG61_PROXY_DV_REG61_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG62_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG62_PROXY_DV_REG62_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG62_PROXY_DV_REG62_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG62_PROXY_DV_REG62_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG63_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG63_PROXY_DV_REG63_BIT_PROXY_MASK    (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG63_PROXY_DV_REG63_BIT_PROXY_SHIFT   (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG63_PROXY_DV_REG63_BIT_PROXY_MAX     (0xFFFFFFFFU)
-
-
-/* DV_REG0_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_SET_PROXY_DV_REG0_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_SET_PROXY_DV_REG0_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_SET_PROXY_DV_REG0_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG1_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_SET_PROXY_DV_REG1_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_SET_PROXY_DV_REG1_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_SET_PROXY_DV_REG1_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG2_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_SET_PROXY_DV_REG2_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_SET_PROXY_DV_REG2_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_SET_PROXY_DV_REG2_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG3_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_SET_PROXY_DV_REG3_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_SET_PROXY_DV_REG3_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_SET_PROXY_DV_REG3_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG4_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_SET_PROXY_DV_REG4_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_SET_PROXY_DV_REG4_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_SET_PROXY_DV_REG4_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG5_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_SET_PROXY_DV_REG5_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_SET_PROXY_DV_REG5_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_SET_PROXY_DV_REG5_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG6_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_SET_PROXY_DV_REG6_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_SET_PROXY_DV_REG6_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_SET_PROXY_DV_REG6_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG7_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_SET_PROXY_DV_REG7_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_SET_PROXY_DV_REG7_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_SET_PROXY_DV_REG7_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG8_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_SET_PROXY_DV_REG8_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_SET_PROXY_DV_REG8_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_SET_PROXY_DV_REG8_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG9_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_SET_PROXY_DV_REG9_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_SET_PROXY_DV_REG9_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_SET_PROXY_DV_REG9_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG10_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_SET_PROXY_DV_REG10_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_SET_PROXY_DV_REG10_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_SET_PROXY_DV_REG10_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG11_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_SET_PROXY_DV_REG11_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_SET_PROXY_DV_REG11_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_SET_PROXY_DV_REG11_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG12_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_SET_PROXY_DV_REG12_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_SET_PROXY_DV_REG12_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_SET_PROXY_DV_REG12_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG13_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_SET_PROXY_DV_REG13_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_SET_PROXY_DV_REG13_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_SET_PROXY_DV_REG13_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG14_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_SET_PROXY_DV_REG14_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_SET_PROXY_DV_REG14_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_SET_PROXY_DV_REG14_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG15_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_SET_PROXY_DV_REG15_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_SET_PROXY_DV_REG15_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_SET_PROXY_DV_REG15_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG16_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_SET_PROXY_DV_REG16_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_SET_PROXY_DV_REG16_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_SET_PROXY_DV_REG16_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG17_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_SET_PROXY_DV_REG17_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_SET_PROXY_DV_REG17_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_SET_PROXY_DV_REG17_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG18_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_SET_PROXY_DV_REG18_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_SET_PROXY_DV_REG18_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_SET_PROXY_DV_REG18_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG19_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_SET_PROXY_DV_REG19_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_SET_PROXY_DV_REG19_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_SET_PROXY_DV_REG19_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG20_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_SET_PROXY_DV_REG20_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_SET_PROXY_DV_REG20_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_SET_PROXY_DV_REG20_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG21_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_SET_PROXY_DV_REG21_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_SET_PROXY_DV_REG21_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_SET_PROXY_DV_REG21_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG22_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_SET_PROXY_DV_REG22_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_SET_PROXY_DV_REG22_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_SET_PROXY_DV_REG22_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG23_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_SET_PROXY_DV_REG23_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_SET_PROXY_DV_REG23_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_SET_PROXY_DV_REG23_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG24_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_SET_PROXY_DV_REG24_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_SET_PROXY_DV_REG24_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_SET_PROXY_DV_REG24_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG25_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_SET_PROXY_DV_REG25_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_SET_PROXY_DV_REG25_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_SET_PROXY_DV_REG25_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG26_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_SET_PROXY_DV_REG26_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_SET_PROXY_DV_REG26_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_SET_PROXY_DV_REG26_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG27_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_SET_PROXY_DV_REG27_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_SET_PROXY_DV_REG27_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_SET_PROXY_DV_REG27_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG28_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_SET_PROXY_DV_REG28_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_SET_PROXY_DV_REG28_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_SET_PROXY_DV_REG28_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG29_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_SET_PROXY_DV_REG29_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_SET_PROXY_DV_REG29_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_SET_PROXY_DV_REG29_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG30_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_SET_PROXY_DV_REG30_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_SET_PROXY_DV_REG30_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_SET_PROXY_DV_REG30_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG31_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_SET_PROXY_DV_REG31_SET_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_SET_PROXY_DV_REG31_SET_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_SET_PROXY_DV_REG31_SET_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG0_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_CLR_PROXY_DV_REG0_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_CLR_PROXY_DV_REG0_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG0_CLR_PROXY_DV_REG0_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG1_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_CLR_PROXY_DV_REG1_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_CLR_PROXY_DV_REG1_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG1_CLR_PROXY_DV_REG1_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG2_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_CLR_PROXY_DV_REG2_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_CLR_PROXY_DV_REG2_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG2_CLR_PROXY_DV_REG2_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG3_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_CLR_PROXY_DV_REG3_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_CLR_PROXY_DV_REG3_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG3_CLR_PROXY_DV_REG3_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG4_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_CLR_PROXY_DV_REG4_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_CLR_PROXY_DV_REG4_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG4_CLR_PROXY_DV_REG4_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG5_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_CLR_PROXY_DV_REG5_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_CLR_PROXY_DV_REG5_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG5_CLR_PROXY_DV_REG5_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG6_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_CLR_PROXY_DV_REG6_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_CLR_PROXY_DV_REG6_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG6_CLR_PROXY_DV_REG6_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG7_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_CLR_PROXY_DV_REG7_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_CLR_PROXY_DV_REG7_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG7_CLR_PROXY_DV_REG7_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG8_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_CLR_PROXY_DV_REG8_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_CLR_PROXY_DV_REG8_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG8_CLR_PROXY_DV_REG8_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG9_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_CLR_PROXY_DV_REG9_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_CLR_PROXY_DV_REG9_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG9_CLR_PROXY_DV_REG9_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG10_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_CLR_PROXY_DV_REG10_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_CLR_PROXY_DV_REG10_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG10_CLR_PROXY_DV_REG10_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG11_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_CLR_PROXY_DV_REG11_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_CLR_PROXY_DV_REG11_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG11_CLR_PROXY_DV_REG11_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG12_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_CLR_PROXY_DV_REG12_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_CLR_PROXY_DV_REG12_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG12_CLR_PROXY_DV_REG12_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG13_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_CLR_PROXY_DV_REG13_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_CLR_PROXY_DV_REG13_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG13_CLR_PROXY_DV_REG13_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG14_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_CLR_PROXY_DV_REG14_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_CLR_PROXY_DV_REG14_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG14_CLR_PROXY_DV_REG14_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG15_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_CLR_PROXY_DV_REG15_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_CLR_PROXY_DV_REG15_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG15_CLR_PROXY_DV_REG15_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG16_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_CLR_PROXY_DV_REG16_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_CLR_PROXY_DV_REG16_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG16_CLR_PROXY_DV_REG16_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG17_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_CLR_PROXY_DV_REG17_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_CLR_PROXY_DV_REG17_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG17_CLR_PROXY_DV_REG17_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG18_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_CLR_PROXY_DV_REG18_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_CLR_PROXY_DV_REG18_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG18_CLR_PROXY_DV_REG18_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG19_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_CLR_PROXY_DV_REG19_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_CLR_PROXY_DV_REG19_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG19_CLR_PROXY_DV_REG19_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG20_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_CLR_PROXY_DV_REG20_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_CLR_PROXY_DV_REG20_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG20_CLR_PROXY_DV_REG20_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG21_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_CLR_PROXY_DV_REG21_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_CLR_PROXY_DV_REG21_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG21_CLR_PROXY_DV_REG21_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG22_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_CLR_PROXY_DV_REG22_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_CLR_PROXY_DV_REG22_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG22_CLR_PROXY_DV_REG22_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG23_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_CLR_PROXY_DV_REG23_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_CLR_PROXY_DV_REG23_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG23_CLR_PROXY_DV_REG23_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG24_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_CLR_PROXY_DV_REG24_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_CLR_PROXY_DV_REG24_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG24_CLR_PROXY_DV_REG24_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG25_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_CLR_PROXY_DV_REG25_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_CLR_PROXY_DV_REG25_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG25_CLR_PROXY_DV_REG25_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG26_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_CLR_PROXY_DV_REG26_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_CLR_PROXY_DV_REG26_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG26_CLR_PROXY_DV_REG26_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG27_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_CLR_PROXY_DV_REG27_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_CLR_PROXY_DV_REG27_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG27_CLR_PROXY_DV_REG27_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG28_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_CLR_PROXY_DV_REG28_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_CLR_PROXY_DV_REG28_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG28_CLR_PROXY_DV_REG28_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG29_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_CLR_PROXY_DV_REG29_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_CLR_PROXY_DV_REG29_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG29_CLR_PROXY_DV_REG29_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG30_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_CLR_PROXY_DV_REG30_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_CLR_PROXY_DV_REG30_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG30_CLR_PROXY_DV_REG30_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* DV_REG31_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_CLR_PROXY_DV_REG31_CLR_BIT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_CLR_PROXY_DV_REG31_CLR_BIT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DV_REG31_CLR_PROXY_DV_REG31_CLR_BIT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* LED_PID_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_LED_PID_PROXY_LED_PID_PID_PROXY_MASK      (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_LED_PID_PROXY_LED_PID_PID_PROXY_SHIFT     (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_LED_PID_PROXY_LED_PID_PID_PROXY_MAX       (0xFFFFFFFFU)
-
-
-/* LED_PIDCTRL_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_LED_PIDCTRL_PROXY_LED_PIDCTRL_PID_SEL_PROXY_MASK (0x00000001U)
-#define CSL_WKUP_CTRL_MMR_CFG0_LED_PIDCTRL_PROXY_LED_PIDCTRL_PID_SEL_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_LED_PIDCTRL_PROXY_LED_PIDCTRL_PID_SEL_PROXY_MAX (0x00000001U)
-
-
 /* LOCK4_KICK0_PROXY */
 
 #define CSL_WKUP_CTRL_MMR_CFG0_LOCK4_KICK0_PROXY_LOCK4_KICK0_PROXY_MASK  (0xFFFFFFFFU)
@@ -6158,62 +3098,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P4_R8_CLAIMREG_P4_R8_MASK        (0xFFFFFFFFU)
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P4_R8_CLAIMREG_P4_R8_SHIFT       (0x00000000U)
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P4_R8_CLAIMREG_P4_R8_MAX         (0xFFFFFFFFU)
-
-
-/* FW_CTRL_OUT0 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_FW_CTRL_OUT0_MASK            (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_FW_CTRL_OUT0_SHIFT           (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_FW_CTRL_OUT0_MAX             (0xFFFFFFFFU)
-
-
-/* FW_CTRL_OUT0_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_SET_FW_CTRL_OUT0_MASK        (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_SET_FW_CTRL_OUT0_SHIFT       (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_SET_FW_CTRL_OUT0_MAX         (0xFFFFFFFFU)
-
-
-/* FW_CTRL_OUT0_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_CLR_FW_CTRL_OUT0_MASK        (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_CLR_FW_CTRL_OUT0_SHIFT       (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_CLR_FW_CTRL_OUT0_MAX         (0xFFFFFFFFU)
-
-
-/* FW_STS_IN0 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_STS_IN0_EVENT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_STS_IN0_EVENT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_STS_IN0_EVENT_MAX                      (0xFFFFFFFFU)
-
-
-/* FW_CTRL_OUT1 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_FW_CTRL_OUT1_MASK            (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_FW_CTRL_OUT1_SHIFT           (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_FW_CTRL_OUT1_MAX             (0xFFFFFFFFU)
-
-
-/* FW_CTRL_OUT1_SET */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_SET_FW_CTRL_OUT1_MASK        (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_SET_FW_CTRL_OUT1_SHIFT       (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_SET_FW_CTRL_OUT1_MAX         (0xFFFFFFFFU)
-
-
-/* FW_CTRL_OUT1_CLR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_CLR_FW_CTRL_OUT1_MASK        (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_CLR_FW_CTRL_OUT1_SHIFT       (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_CLR_FW_CTRL_OUT1_MAX         (0xFFFFFFFFU)
-
-
-/* FW_STS_IN1 */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_STS_IN1_EVENT_MASK                     (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_STS_IN1_EVENT_SHIFT                    (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_STS_IN1_EVENT_MAX                      (0xFFFFFFFFU)
 
 
 /* PMCTRL_SYS */
@@ -6325,29 +3209,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_IO_1_RESERVED4_MAX                 (0x0000003FU)
 
 
-/* PMCTRL_DDR */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_DDR_0_IO_RET_MASK              (0x00000001U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_DDR_0_IO_RET_SHIFT             (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_DDR_0_IO_RET_MAX               (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_DDR_0_RST_OVRD_MASK            (0x00000002U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_DDR_0_RST_OVRD_SHIFT           (0x00000001U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_DDR_0_RST_OVRD_MAX             (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_DDR_1_IO_RET_MASK              (0x00000004U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_DDR_1_IO_RET_SHIFT             (0x00000002U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_DDR_1_IO_RET_MAX               (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_DDR_1_RST_OVRD_MASK            (0x00000008U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_DDR_1_RST_OVRD_SHIFT           (0x00000003U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_DDR_1_RST_OVRD_MAX             (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_PM_DDR_SPARE_MASK              (0x000000F0U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_PM_DDR_SPARE_SHIFT             (0x00000004U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_PM_DDR_SPARE_MAX               (0x0000000FU)
-
-
 /* PMCTRL_MOSC */
 
 #define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_MOSC_SETUP_TIME_MASK               (0x000FFFFFU)
@@ -6357,17 +3218,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_MOSC_OSC_CG_ON_WFI_MASK            (0x80000000U)
 #define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_MOSC_OSC_CG_ON_WFI_SHIFT           (0x0000001FU)
 #define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_MOSC_OSC_CG_ON_WFI_MAX             (0x00000001U)
-
-
-/* PMCTRL_DM */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DM_DM_MEM_DS_EN_MASK               (0x00000001U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DM_DM_MEM_DS_EN_SHIFT              (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DM_DM_MEM_DS_EN_MAX                (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DM_DM_MEM_RET_OFF_MASK             (0x00000002U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DM_DM_MEM_RET_OFF_SHIFT            (0x00000001U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DM_DM_MEM_RET_OFF_MAX              (0x00000001U)
 
 
 /* PM_MISC_STATUS */
@@ -6412,14 +3262,6 @@ typedef struct {
 
 /* RST_CTRL */
 
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL_SW_MAIN_WARMRST_MASK             (0x0000000FU)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL_SW_MAIN_WARMRST_SHIFT            (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL_SW_MAIN_WARMRST_MAX              (0x0000000FU)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL_SW_MAIN_POR_MASK                 (0x000000F0U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL_SW_MAIN_POR_SHIFT                (0x00000004U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL_SW_MAIN_POR_MAX                  (0x0000000FU)
-
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL_SMS_COLD_RESET_EN_Z_MASK         (0x00010000U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL_SMS_COLD_RESET_EN_Z_SHIFT        (0x00000010U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL_SMS_COLD_RESET_EN_Z_MAX          (0x00000001U)
@@ -6446,13 +3288,13 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_MCU_RESET_PIN_SHIFT               (0x00000000U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_MCU_RESET_PIN_MAX                 (0x00000001U)
 
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_MAIN_RESET_REQ_MASK               (0x00000004U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_MAIN_RESET_REQ_SHIFT              (0x00000002U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_MAIN_RESET_REQ_MAX                (0x00000001U)
-
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_THERMAL_RST_MASK                  (0x00000010U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_THERMAL_RST_SHIFT                 (0x00000004U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_THERMAL_RST_MAX                   (0x00000001U)
+
+#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_IPOR_WAKE_MASK                    (0x00000040U)
+#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_IPOR_WAKE_SHIFT                   (0x00000006U)
+#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_IPOR_WAKE_MAX                     (0x00000001U)
 
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_DEBUG_RST_MASK                    (0x00000100U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_DEBUG_RST_SHIFT                   (0x00000008U)
@@ -6470,25 +3312,9 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_SW_MCU_WARMRST_SHIFT              (0x00000010U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_SW_MCU_WARMRST_MAX                (0x00000001U)
 
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_SW_MAIN_WARMRST_FROM_MCU_MASK     (0x00100000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_SW_MAIN_WARMRST_FROM_MCU_SHIFT    (0x00000014U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_SW_MAIN_WARMRST_FROM_MCU_MAX      (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_SW_MAIN_WARMRST_FROM_MAIN_MASK    (0x00200000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_SW_MAIN_WARMRST_FROM_MAIN_SHIFT   (0x00000015U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_SW_MAIN_WARMRST_FROM_MAIN_MAX     (0x00000001U)
-
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_DM_WDT_RST_MASK                   (0x00400000U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_DM_WDT_RST_SHIFT                  (0x00000016U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_DM_WDT_RST_MAX                    (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_SW_MAIN_POR_FROM_MCU_MASK         (0x01000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_SW_MAIN_POR_FROM_MCU_SHIFT        (0x00000018U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_SW_MAIN_POR_FROM_MCU_MAX          (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_SW_MAIN_POR_FROM_MAIN_MASK        (0x02000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_SW_MAIN_POR_FROM_MAIN_SHIFT       (0x00000019U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_SW_MAIN_POR_FROM_MAIN_MAX         (0x00000001U)
 
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_MAIN_ESM_ERROR_MASK               (0x40000000U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_MAIN_ESM_ERROR_SHIFT              (0x0000001EU)
@@ -6704,6 +3530,35 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_CANUART_WAKE_RESUME_KEY_STAT_KEYVAL_MAX   (0xFFFFFFFFU)
 
 
+/* WAKE_EVT_MON_CTRL */
+
+#define CSL_WKUP_CTRL_MMR_CFG0_WAKE_EVT_MON_CTRL_EN_WAKE_EVT_MON_MASK    (0x00000001U)
+#define CSL_WKUP_CTRL_MMR_CFG0_WAKE_EVT_MON_CTRL_EN_WAKE_EVT_MON_SHIFT   (0x00000000U)
+#define CSL_WKUP_CTRL_MMR_CFG0_WAKE_EVT_MON_CTRL_EN_WAKE_EVT_MON_MAX     (0x00000001U)
+
+#define CSL_WKUP_CTRL_MMR_CFG0_WAKE_EVT_MON_CTRL_CLR_WAKE_EVT_MASK       (0x00010000U)
+#define CSL_WKUP_CTRL_MMR_CFG0_WAKE_EVT_MON_CTRL_CLR_WAKE_EVT_SHIFT      (0x00000010U)
+#define CSL_WKUP_CTRL_MMR_CFG0_WAKE_EVT_MON_CTRL_CLR_WAKE_EVT_MAX        (0x00000001U)
+
+#define CSL_WKUP_CTRL_MMR_CFG0_WAKE_EVT_MON_CTRL_WAKE_TIMEOUT_DIS_MASK   (0x80000000U)
+#define CSL_WKUP_CTRL_MMR_CFG0_WAKE_EVT_MON_CTRL_WAKE_TIMEOUT_DIS_SHIFT  (0x0000001FU)
+#define CSL_WKUP_CTRL_MMR_CFG0_WAKE_EVT_MON_CTRL_WAKE_TIMEOUT_DIS_MAX    (0x00000001U)
+
+
+/* INTRN_POR_DUR */
+
+#define CSL_WKUP_CTRL_MMR_CFG0_INTRN_POR_DUR_IPOR_LEN_MASK               (0x000000FFU)
+#define CSL_WKUP_CTRL_MMR_CFG0_INTRN_POR_DUR_IPOR_LEN_SHIFT              (0x00000000U)
+#define CSL_WKUP_CTRL_MMR_CFG0_INTRN_POR_DUR_IPOR_LEN_MAX                (0x000000FFU)
+
+
+/* IMMED_WAKE_TIMEOUT */
+
+#define CSL_WKUP_CTRL_MMR_CFG0_IMMED_WAKE_TIMEOUT_TIMEOUT_LENGTH_MASK    (0x0000FFFFU)
+#define CSL_WKUP_CTRL_MMR_CFG0_IMMED_WAKE_TIMEOUT_TIMEOUT_LENGTH_SHIFT   (0x00000000U)
+#define CSL_WKUP_CTRL_MMR_CFG0_IMMED_WAKE_TIMEOUT_TIMEOUT_LENGTH_MAX     (0x0000FFFFU)
+
+
 /* RET_RAM_STAT */
 
 #define CSL_WKUP_CTRL_MMR_CFG0_RET_RAM_STAT_BUSY_MASK                    (0x00000001U)
@@ -6713,10 +3568,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_RET_RAM_STAT_ISOLATED_MASK                (0x00000100U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RET_RAM_STAT_ISOLATED_SHIFT               (0x00000008U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RET_RAM_STAT_ISOLATED_MAX                 (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_RET_RAM_STAT_STATE_MASK                   (0x00038000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RET_RAM_STAT_STATE_SHIFT                  (0x0000000FU)
-#define CSL_WKUP_CTRL_MMR_CFG0_RET_RAM_STAT_STATE_MAX                    (0x00000007U)
 
 
 /* WFI_STATUS */
@@ -6751,10 +3602,6 @@ typedef struct {
 
 
 /* SLEEP_STATUS */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_SLEEP_STATUS_HFSOC0_GOOD_MASK             (0x00000001U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SLEEP_STATUS_HFSOC0_GOOD_SHIFT            (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SLEEP_STATUS_HFSOC0_GOOD_MAX              (0x00000001U)
 
 #define CSL_WKUP_CTRL_MMR_CFG0_SLEEP_STATUS_MAIN_RESETSTATZ_MASK         (0x00000100U)
 #define CSL_WKUP_CTRL_MMR_CFG0_SLEEP_STATUS_MAIN_RESETSTATZ_SHIFT        (0x00000008U)
@@ -6851,10 +3698,6 @@ typedef struct {
 
 /* DEVICE_TYPE */
 
-#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_TYPE_SMS_HS_SUBTYPE_MASK           (0x0000000FU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_TYPE_SMS_HS_SUBTYPE_SHIFT          (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_TYPE_SMS_HS_SUBTYPE_MAX            (0x0000000FU)
-
 #define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_TYPE_SMS_DEV_TYPE_MASK             (0x000000F0U)
 #define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_TYPE_SMS_DEV_TYPE_SHIFT            (0x00000004U)
 #define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_TYPE_SMS_DEV_TYPE_MAX              (0x0000000FU)
@@ -6949,62 +3792,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P6_R10_READONLY_CLAIMREG_P6_R10_READONLY_MASK (0xFFFFFFFFU)
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P6_R10_READONLY_CLAIMREG_P6_R10_READONLY_SHIFT (0x00000000U)
 #define CSL_WKUP_CTRL_MMR_CFG0_CLAIMREG_P6_R10_READONLY_CLAIMREG_P6_R10_READONLY_MAX (0xFFFFFFFFU)
-
-
-/* FW_CTRL_OUT0_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_PROXY_FW_CTRL_OUT0_FW_CTRL_OUT0_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_PROXY_FW_CTRL_OUT0_FW_CTRL_OUT0_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_PROXY_FW_CTRL_OUT0_FW_CTRL_OUT0_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* FW_CTRL_OUT0_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_SET_PROXY_FW_CTRL_OUT0_SET_FW_CTRL_OUT0_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_SET_PROXY_FW_CTRL_OUT0_SET_FW_CTRL_OUT0_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_SET_PROXY_FW_CTRL_OUT0_SET_FW_CTRL_OUT0_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* FW_CTRL_OUT0_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_CLR_PROXY_FW_CTRL_OUT0_CLR_FW_CTRL_OUT0_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_CLR_PROXY_FW_CTRL_OUT0_CLR_FW_CTRL_OUT0_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT0_CLR_PROXY_FW_CTRL_OUT0_CLR_FW_CTRL_OUT0_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* FW_STS_IN0_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_STS_IN0_PROXY_FW_STS_IN0_EVENT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_STS_IN0_PROXY_FW_STS_IN0_EVENT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_STS_IN0_PROXY_FW_STS_IN0_EVENT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* FW_CTRL_OUT1_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_PROXY_FW_CTRL_OUT1_FW_CTRL_OUT1_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_PROXY_FW_CTRL_OUT1_FW_CTRL_OUT1_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_PROXY_FW_CTRL_OUT1_FW_CTRL_OUT1_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* FW_CTRL_OUT1_SET_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_SET_PROXY_FW_CTRL_OUT1_SET_FW_CTRL_OUT1_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_SET_PROXY_FW_CTRL_OUT1_SET_FW_CTRL_OUT1_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_SET_PROXY_FW_CTRL_OUT1_SET_FW_CTRL_OUT1_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* FW_CTRL_OUT1_CLR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_CLR_PROXY_FW_CTRL_OUT1_CLR_FW_CTRL_OUT1_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_CLR_PROXY_FW_CTRL_OUT1_CLR_FW_CTRL_OUT1_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_CTRL_OUT1_CLR_PROXY_FW_CTRL_OUT1_CLR_FW_CTRL_OUT1_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* FW_STS_IN1_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_STS_IN1_PROXY_FW_STS_IN1_EVENT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_STS_IN1_PROXY_FW_STS_IN1_EVENT_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_FW_STS_IN1_PROXY_FW_STS_IN1_EVENT_PROXY_MAX (0xFFFFFFFFU)
 
 
 /* PMCTRL_SYS_PROXY */
@@ -7116,29 +3903,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_IO_1_PROXY_PMCTRL_IO_1_RESERVED4_PROXY_MAX (0x0000003FU)
 
 
-/* PMCTRL_DDR_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_PROXY_PMCTRL_DDR_DDR_0_IO_RET_PROXY_MASK (0x00000001U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_PROXY_PMCTRL_DDR_DDR_0_IO_RET_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_PROXY_PMCTRL_DDR_DDR_0_IO_RET_PROXY_MAX (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_PROXY_PMCTRL_DDR_DDR_0_RST_OVRD_PROXY_MASK (0x00000002U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_PROXY_PMCTRL_DDR_DDR_0_RST_OVRD_PROXY_SHIFT (0x00000001U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_PROXY_PMCTRL_DDR_DDR_0_RST_OVRD_PROXY_MAX (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_PROXY_PMCTRL_DDR_DDR_1_IO_RET_PROXY_MASK (0x00000004U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_PROXY_PMCTRL_DDR_DDR_1_IO_RET_PROXY_SHIFT (0x00000002U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_PROXY_PMCTRL_DDR_DDR_1_IO_RET_PROXY_MAX (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_PROXY_PMCTRL_DDR_DDR_1_RST_OVRD_PROXY_MASK (0x00000008U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_PROXY_PMCTRL_DDR_DDR_1_RST_OVRD_PROXY_SHIFT (0x00000003U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_PROXY_PMCTRL_DDR_DDR_1_RST_OVRD_PROXY_MAX (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_PROXY_PMCTRL_DDR_PM_DDR_SPARE_PROXY_MASK (0x000000F0U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_PROXY_PMCTRL_DDR_PM_DDR_SPARE_PROXY_SHIFT (0x00000004U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DDR_PROXY_PMCTRL_DDR_PM_DDR_SPARE_PROXY_MAX (0x0000000FU)
-
-
 /* PMCTRL_MOSC_PROXY */
 
 #define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_MOSC_PROXY_PMCTRL_MOSC_SETUP_TIME_PROXY_MASK (0x000FFFFFU)
@@ -7148,17 +3912,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_MOSC_PROXY_PMCTRL_MOSC_OSC_CG_ON_WFI_PROXY_MASK (0x80000000U)
 #define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_MOSC_PROXY_PMCTRL_MOSC_OSC_CG_ON_WFI_PROXY_SHIFT (0x0000001FU)
 #define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_MOSC_PROXY_PMCTRL_MOSC_OSC_CG_ON_WFI_PROXY_MAX (0x00000001U)
-
-
-/* PMCTRL_DM_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DM_PROXY_PMCTRL_DM_DM_MEM_DS_EN_PROXY_MASK (0x00000001U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DM_PROXY_PMCTRL_DM_DM_MEM_DS_EN_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DM_PROXY_PMCTRL_DM_DM_MEM_DS_EN_PROXY_MAX (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DM_PROXY_PMCTRL_DM_DM_MEM_RET_OFF_PROXY_MASK (0x00000002U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DM_PROXY_PMCTRL_DM_DM_MEM_RET_OFF_PROXY_SHIFT (0x00000001U)
-#define CSL_WKUP_CTRL_MMR_CFG0_PMCTRL_DM_PROXY_PMCTRL_DM_DM_MEM_RET_OFF_PROXY_MAX (0x00000001U)
 
 
 /* PM_MISC_STATUS_PROXY */
@@ -7203,14 +3956,6 @@ typedef struct {
 
 /* RST_CTRL_PROXY */
 
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL_PROXY_RST_CTRL_SW_MAIN_WARMRST_PROXY_MASK (0x0000000FU)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL_PROXY_RST_CTRL_SW_MAIN_WARMRST_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL_PROXY_RST_CTRL_SW_MAIN_WARMRST_PROXY_MAX (0x0000000FU)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL_PROXY_RST_CTRL_SW_MAIN_POR_PROXY_MASK (0x000000F0U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL_PROXY_RST_CTRL_SW_MAIN_POR_PROXY_SHIFT (0x00000004U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL_PROXY_RST_CTRL_SW_MAIN_POR_PROXY_MAX (0x0000000FU)
-
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL_PROXY_RST_CTRL_SMS_COLD_RESET_EN_Z_PROXY_MASK (0x00010000U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL_PROXY_RST_CTRL_SMS_COLD_RESET_EN_Z_PROXY_SHIFT (0x00000010U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL_PROXY_RST_CTRL_SMS_COLD_RESET_EN_Z_PROXY_MAX (0x00000001U)
@@ -7237,13 +3982,13 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_MCU_RESET_PIN_PROXY_SHIFT (0x00000000U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_MCU_RESET_PIN_PROXY_MAX (0x00000001U)
 
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_MAIN_RESET_REQ_PROXY_MASK (0x00000004U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_MAIN_RESET_REQ_PROXY_SHIFT (0x00000002U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_MAIN_RESET_REQ_PROXY_MAX (0x00000001U)
-
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_THERMAL_RST_PROXY_MASK (0x00000010U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_THERMAL_RST_PROXY_SHIFT (0x00000004U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_THERMAL_RST_PROXY_MAX (0x00000001U)
+
+#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_IPOR_WAKE_PROXY_MASK (0x00000040U)
+#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_IPOR_WAKE_PROXY_SHIFT (0x00000006U)
+#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_IPOR_WAKE_PROXY_MAX (0x00000001U)
 
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_DEBUG_RST_PROXY_MASK (0x00000100U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_DEBUG_RST_PROXY_SHIFT (0x00000008U)
@@ -7261,25 +4006,9 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_SW_MCU_WARMRST_PROXY_SHIFT (0x00000010U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_SW_MCU_WARMRST_PROXY_MAX (0x00000001U)
 
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_SW_MAIN_WARMRST_FROM_MCU_PROXY_MASK (0x00100000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_SW_MAIN_WARMRST_FROM_MCU_PROXY_SHIFT (0x00000014U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_SW_MAIN_WARMRST_FROM_MCU_PROXY_MAX (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_SW_MAIN_WARMRST_FROM_MAIN_PROXY_MASK (0x00200000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_SW_MAIN_WARMRST_FROM_MAIN_PROXY_SHIFT (0x00000015U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_SW_MAIN_WARMRST_FROM_MAIN_PROXY_MAX (0x00000001U)
-
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_DM_WDT_RST_PROXY_MASK (0x00400000U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_DM_WDT_RST_PROXY_SHIFT (0x00000016U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_DM_WDT_RST_PROXY_MAX (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_SW_MAIN_POR_FROM_MCU_PROXY_MASK (0x01000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_SW_MAIN_POR_FROM_MCU_PROXY_SHIFT (0x00000018U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_SW_MAIN_POR_FROM_MCU_PROXY_MAX (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_SW_MAIN_POR_FROM_MAIN_PROXY_MASK (0x02000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_SW_MAIN_POR_FROM_MAIN_PROXY_SHIFT (0x00000019U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_SW_MAIN_POR_FROM_MAIN_PROXY_MAX (0x00000001U)
 
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_MAIN_ESM_ERROR_PROXY_MASK (0x40000000U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RST_SRC_PROXY_RST_SRC_MAIN_ESM_ERROR_PROXY_SHIFT (0x0000001EU)
@@ -7495,6 +4224,35 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_CANUART_WAKE_RESUME_KEY_STAT_PROXY_KEYVAL_PROXY_MAX (0xFFFFFFFFU)
 
 
+/* WAKE_EVT_MON_CTRL_PROXY */
+
+#define CSL_WKUP_CTRL_MMR_CFG0_WAKE_EVT_MON_CTRL_PROXY_WAKE_EVT_MON_CTRL_EN_WAKE_EVT_MON_PROXY_MASK (0x00000001U)
+#define CSL_WKUP_CTRL_MMR_CFG0_WAKE_EVT_MON_CTRL_PROXY_WAKE_EVT_MON_CTRL_EN_WAKE_EVT_MON_PROXY_SHIFT (0x00000000U)
+#define CSL_WKUP_CTRL_MMR_CFG0_WAKE_EVT_MON_CTRL_PROXY_WAKE_EVT_MON_CTRL_EN_WAKE_EVT_MON_PROXY_MAX (0x00000001U)
+
+#define CSL_WKUP_CTRL_MMR_CFG0_WAKE_EVT_MON_CTRL_PROXY_WAKE_EVT_MON_CTRL_CLR_WAKE_EVT_PROXY_MASK (0x00010000U)
+#define CSL_WKUP_CTRL_MMR_CFG0_WAKE_EVT_MON_CTRL_PROXY_WAKE_EVT_MON_CTRL_CLR_WAKE_EVT_PROXY_SHIFT (0x00000010U)
+#define CSL_WKUP_CTRL_MMR_CFG0_WAKE_EVT_MON_CTRL_PROXY_WAKE_EVT_MON_CTRL_CLR_WAKE_EVT_PROXY_MAX (0x00000001U)
+
+#define CSL_WKUP_CTRL_MMR_CFG0_WAKE_EVT_MON_CTRL_PROXY_WAKE_EVT_MON_CTRL_WAKE_TIMEOUT_DIS_PROXY_MASK (0x80000000U)
+#define CSL_WKUP_CTRL_MMR_CFG0_WAKE_EVT_MON_CTRL_PROXY_WAKE_EVT_MON_CTRL_WAKE_TIMEOUT_DIS_PROXY_SHIFT (0x0000001FU)
+#define CSL_WKUP_CTRL_MMR_CFG0_WAKE_EVT_MON_CTRL_PROXY_WAKE_EVT_MON_CTRL_WAKE_TIMEOUT_DIS_PROXY_MAX (0x00000001U)
+
+
+/* INTRN_POR_DUR_PROXY */
+
+#define CSL_WKUP_CTRL_MMR_CFG0_INTRN_POR_DUR_PROXY_INTRN_POR_DUR_IPOR_LEN_PROXY_MASK (0x000000FFU)
+#define CSL_WKUP_CTRL_MMR_CFG0_INTRN_POR_DUR_PROXY_INTRN_POR_DUR_IPOR_LEN_PROXY_SHIFT (0x00000000U)
+#define CSL_WKUP_CTRL_MMR_CFG0_INTRN_POR_DUR_PROXY_INTRN_POR_DUR_IPOR_LEN_PROXY_MAX (0x000000FFU)
+
+
+/* IMMED_WAKE_TIMEOUT_PROXY */
+
+#define CSL_WKUP_CTRL_MMR_CFG0_IMMED_WAKE_TIMEOUT_PROXY_IMMED_WAKE_TIMEOUT_TIMEOUT_LENGTH_PROXY_MASK (0x0000FFFFU)
+#define CSL_WKUP_CTRL_MMR_CFG0_IMMED_WAKE_TIMEOUT_PROXY_IMMED_WAKE_TIMEOUT_TIMEOUT_LENGTH_PROXY_SHIFT (0x00000000U)
+#define CSL_WKUP_CTRL_MMR_CFG0_IMMED_WAKE_TIMEOUT_PROXY_IMMED_WAKE_TIMEOUT_TIMEOUT_LENGTH_PROXY_MAX (0x0000FFFFU)
+
+
 /* RET_RAM_STAT_PROXY */
 
 #define CSL_WKUP_CTRL_MMR_CFG0_RET_RAM_STAT_PROXY_RET_RAM_STAT_BUSY_PROXY_MASK (0x00000001U)
@@ -7504,10 +4262,6 @@ typedef struct {
 #define CSL_WKUP_CTRL_MMR_CFG0_RET_RAM_STAT_PROXY_RET_RAM_STAT_ISOLATED_PROXY_MASK (0x00000100U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RET_RAM_STAT_PROXY_RET_RAM_STAT_ISOLATED_PROXY_SHIFT (0x00000008U)
 #define CSL_WKUP_CTRL_MMR_CFG0_RET_RAM_STAT_PROXY_RET_RAM_STAT_ISOLATED_PROXY_MAX (0x00000001U)
-
-#define CSL_WKUP_CTRL_MMR_CFG0_RET_RAM_STAT_PROXY_RET_RAM_STAT_STATE_PROXY_MASK (0x00038000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_RET_RAM_STAT_PROXY_RET_RAM_STAT_STATE_PROXY_SHIFT (0x0000000FU)
-#define CSL_WKUP_CTRL_MMR_CFG0_RET_RAM_STAT_PROXY_RET_RAM_STAT_STATE_PROXY_MAX (0x00000007U)
 
 
 /* WFI_STATUS_PROXY */
@@ -7542,10 +4296,6 @@ typedef struct {
 
 
 /* SLEEP_STATUS_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_SLEEP_STATUS_PROXY_SLEEP_STATUS_HFSOC0_GOOD_PROXY_MASK (0x00000001U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SLEEP_STATUS_PROXY_SLEEP_STATUS_HFSOC0_GOOD_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_SLEEP_STATUS_PROXY_SLEEP_STATUS_HFSOC0_GOOD_PROXY_MAX (0x00000001U)
 
 #define CSL_WKUP_CTRL_MMR_CFG0_SLEEP_STATUS_PROXY_SLEEP_STATUS_MAIN_RESETSTATZ_PROXY_MASK (0x00000100U)
 #define CSL_WKUP_CTRL_MMR_CFG0_SLEEP_STATUS_PROXY_SLEEP_STATUS_MAIN_RESETSTATZ_PROXY_SHIFT (0x00000008U)
@@ -7641,10 +4391,6 @@ typedef struct {
 
 
 /* DEVICE_TYPE_PROXY */
-
-#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_TYPE_PROXY_DEVICE_TYPE_SMS_HS_SUBTYPE_PROXY_MASK (0x0000000FU)
-#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_TYPE_PROXY_DEVICE_TYPE_SMS_HS_SUBTYPE_PROXY_SHIFT (0x00000000U)
-#define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_TYPE_PROXY_DEVICE_TYPE_SMS_HS_SUBTYPE_PROXY_MAX (0x0000000FU)
 
 #define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_TYPE_PROXY_DEVICE_TYPE_SMS_DEV_TYPE_PROXY_MASK (0x000000F0U)
 #define CSL_WKUP_CTRL_MMR_CFG0_DEVICE_TYPE_PROXY_DEVICE_TYPE_SMS_DEV_TYPE_PROXY_SHIFT (0x00000004U)

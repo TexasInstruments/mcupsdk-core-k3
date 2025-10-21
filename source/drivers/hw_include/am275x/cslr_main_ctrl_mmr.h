@@ -30,7 +30,7 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *  Name        : cslr_main_ctrl_mmr.h
- *  VPVERSION   : 3.0.365 - 2024.01.05.15.15.16
+ *  VPVERSION   : 3.0.368 - 2024.04.23.13.05.09
  *  VPREV       : 2.23.4
 */
 #ifndef CSLR_MAIN_CTRL_MMR_H_
@@ -61,25 +61,23 @@ extern "C"
 
 typedef struct {
     volatile uint32_t PID;                       /* PID register */
-    volatile uint32_t MMR_CFG0;
-    volatile uint32_t MMR_CFG1;
+    volatile uint8_t  Resv_8[4];
+    volatile uint32_t MMR_CFG1;                  /* Configuration register 1 */
     volatile uint8_t  Resv_256[244];
-    volatile uint32_t IPC_SET[2];
+    volatile uint32_t IPC_SET[2];                /* IPC Generation Register 0 */
     volatile uint8_t  Resv_320[56];
-    volatile uint32_t IPC_SET16;
-    volatile uint32_t IPC_SET17;
-    volatile uint32_t IPC_SET18;
-    volatile uint32_t IPC_SET19;
+    volatile uint32_t IPC_SET16;                 /* IPC Generation Register 16 */
+    volatile uint32_t IPC_SET17;                 /* IPC Generation Register 17 */
+    volatile uint32_t IPC_SET18;                 /* IPC Generation Register 18 */
+    volatile uint32_t IPC_SET19;                 /* IPC Generation Register 19 */
     volatile uint8_t  Resv_384[48];
-    volatile uint32_t IPC_CLR[2];
+    volatile uint32_t IPC_CLR[2];                /* IPC Acknowledge Register0 */
     volatile uint8_t  Resv_448[56];
-    volatile uint32_t IPC_CLR16;
-    volatile uint32_t IPC_CLR17;
-    volatile uint32_t IPC_CLR18;
-    volatile uint32_t IPC_CLR19;
-    volatile uint8_t  Resv_768[304];
-    volatile uint32_t SPARE_FUSE0;
-    volatile uint8_t  Resv_4104[3332];
+    volatile uint32_t IPC_CLR16;                 /* IPC Acknowledge Register 16 */
+    volatile uint32_t IPC_CLR17;                 /* IPC Acknowledge Register 17 */
+    volatile uint32_t IPC_CLR18;                 /* IPC Acknowledge Register 18 */
+    volatile uint32_t IPC_CLR19;                 /* IPC Acknowledge Register 19 */
+    volatile uint8_t  Resv_4104[3640];
     volatile uint32_t LOCK0_KICK0;               /*  - KICK0 component */
     volatile uint32_t LOCK0_KICK1;               /*  - KICK1 component */
     volatile uint32_t INTR_RAW_STATUS;           /* Interrupt Raw Status/Set Register */
@@ -101,25 +99,23 @@ typedef struct {
     volatile uint32_t CLAIMREG_P0_R6_READONLY;   /* Claim bits for Partition 0 */
     volatile uint8_t  Resv_8192[3812];
     volatile uint32_t PID_PROXY;                 /* PID register */
-    volatile uint32_t MMR_CFG0_PROXY;
-    volatile uint32_t MMR_CFG1_PROXY;
+    volatile uint8_t  Resv_8200[4];
+    volatile uint32_t MMR_CFG1_PROXY;            /* Configuration register 1 */
     volatile uint8_t  Resv_8448[244];
-    volatile uint32_t IPC_SET_PROXY[2];
+    volatile uint32_t IPC_SET_PROXY[2];          /* IPC Generation Register 0 */
     volatile uint8_t  Resv_8512[56];
-    volatile uint32_t IPC_SET16_PROXY;
-    volatile uint32_t IPC_SET17_PROXY;
-    volatile uint32_t IPC_SET18_PROXY;
-    volatile uint32_t IPC_SET19_PROXY;
+    volatile uint32_t IPC_SET16_PROXY;           /* IPC Generation Register 16 */
+    volatile uint32_t IPC_SET17_PROXY;           /* IPC Generation Register 17 */
+    volatile uint32_t IPC_SET18_PROXY;           /* IPC Generation Register 18 */
+    volatile uint32_t IPC_SET19_PROXY;           /* IPC Generation Register 19 */
     volatile uint8_t  Resv_8576[48];
-    volatile uint32_t IPC_CLR_PROXY[2];
+    volatile uint32_t IPC_CLR_PROXY[2];          /* IPC Acknowledge Register0 */
     volatile uint8_t  Resv_8640[56];
-    volatile uint32_t IPC_CLR16_PROXY;
-    volatile uint32_t IPC_CLR17_PROXY;
-    volatile uint32_t IPC_CLR18_PROXY;
-    volatile uint32_t IPC_CLR19_PROXY;
-    volatile uint8_t  Resv_8960[304];
-    volatile uint32_t SPARE_FUSE0_PROXY;
-    volatile uint8_t  Resv_12296[3332];
+    volatile uint32_t IPC_CLR16_PROXY;           /* IPC Acknowledge Register 16 */
+    volatile uint32_t IPC_CLR17_PROXY;           /* IPC Acknowledge Register 17 */
+    volatile uint32_t IPC_CLR18_PROXY;           /* IPC Acknowledge Register 18 */
+    volatile uint32_t IPC_CLR19_PROXY;           /* IPC Acknowledge Register 19 */
+    volatile uint8_t  Resv_12296[3640];
     volatile uint32_t LOCK0_KICK0_PROXY;         /*  - KICK0 component */
     volatile uint32_t LOCK0_KICK1_PROXY;         /*  - KICK1 component */
     volatile uint32_t INTR_RAW_STATUS_PROXY;     /* Interrupt Raw Status/Set Register */
@@ -140,76 +136,65 @@ typedef struct {
     volatile uint32_t CLAIMREG_P0_R5;            /* Claim bits for Partition 0 */
     volatile uint32_t CLAIMREG_P0_R6;            /* Claim bits for Partition 0 */
     volatile uint8_t  Resv_16452[3880];
-    volatile uint32_t ENET1_CTRL;
-    volatile uint32_t ENET2_CTRL;
+    volatile uint32_t ENET1_CTRL;                /* Ethernet1 Control Register */
+    volatile uint32_t ENET2_CTRL;                /* Ethernet2 Control Register */
     volatile uint8_t  Resv_16688[228];
-    volatile uint32_t EPWM_TB_CLKEN;
-    volatile uint8_t  Resv_16700[8];
-    volatile uint32_t EPWM_ERR_STAT;
-    volatile uint32_t EPWM0_CTRL;
-    volatile uint32_t EPWM1_CTRL;
-    volatile uint32_t EPWM2_CTRL;
+    volatile uint32_t EPWM_TB_CLKEN;             /* EPWM Time Base Clock Enable Register */
+    volatile uint8_t  Resv_16704[12];
+    volatile uint32_t EPWM0_CTRL;                /* PWM0 Control Register */
+    volatile uint32_t EPWM1_CTRL;                /* PWM1 Control Register */
+    volatile uint32_t EPWM2_CTRL;                /* PWM2 Control Register */
     volatile uint8_t  Resv_16896[180];
-    volatile uint32_t TIMER0_CTRL;
-    volatile uint32_t TIMER1_CTRL;
-    volatile uint32_t TIMER2_CTRL;
-    volatile uint32_t TIMER3_CTRL;
-    volatile uint32_t TIMER4_CTRL;
-    volatile uint32_t TIMER5_CTRL;
-    volatile uint32_t TIMER6_CTRL;
-    volatile uint32_t TIMER7_CTRL;
-    volatile uint32_t TIMER8_CTRL;
-    volatile uint32_t TIMER9_CTRL;
-    volatile uint32_t TIMER10_CTRL;
-    volatile uint32_t TIMER11_CTRL;
-    volatile uint32_t TIMER12_CTRL;
-    volatile uint32_t TIMER13_CTRL;
-    volatile uint32_t TIMER14_CTRL;
-    volatile uint32_t TIMER15_CTRL;
+    volatile uint32_t TIMER0_CTRL;               /* TIMER0 Control Register */
+    volatile uint32_t TIMER1_CTRL;               /* TIMER1 Control Register */
+    volatile uint32_t TIMER2_CTRL;               /* TIMER2 Control Register */
+    volatile uint32_t TIMER3_CTRL;               /* TIMER3 Control Register */
+    volatile uint32_t TIMER4_CTRL;               /* TIMER4 Control Register */
+    volatile uint32_t TIMER5_CTRL;               /* TIMER5 Control Register */
+    volatile uint32_t TIMER6_CTRL;               /* TIMER6 Control Register */
+    volatile uint32_t TIMER7_CTRL;               /* TIMER7 Control Register */
+    volatile uint32_t TIMER8_CTRL;               /* TIMER8 Control Register */
+    volatile uint32_t TIMER9_CTRL;               /* TIMER9 Control Register */
+    volatile uint32_t TIMER10_CTRL;              /* TIMER10 Control Register */
+    volatile uint32_t TIMER11_CTRL;              /* TIMER11 Control Register */
+    volatile uint32_t TIMER12_CTRL;              /* TIMER12 Control Register */
+    volatile uint32_t TIMER13_CTRL;              /* TIMER13 Control Register */
+    volatile uint32_t TIMER14_CTRL;              /* TIMER14 Control Register */
+    volatile uint32_t TIMER15_CTRL;              /* TIMER15 Control Register */
     volatile uint8_t  Resv_17024[64];
-    volatile uint32_t TIMERIO0_CTRL;
-    volatile uint32_t TIMERIO1_CTRL;
-    volatile uint32_t TIMERIO2_CTRL;
-    volatile uint32_t TIMERIO3_CTRL;
-    volatile uint32_t TIMERIO4_CTRL;
-    volatile uint32_t TIMERIO5_CTRL;
-    volatile uint32_t TIMERIO6_CTRL;
-    volatile uint32_t TIMERIO7_CTRL;
+    volatile uint32_t TIMERIO0_CTRL;             /* TIMERIO0 Control Register */
+    volatile uint32_t TIMERIO1_CTRL;             /* TIMERIO1 Control Register */
+    volatile uint32_t TIMERIO2_CTRL;             /* TIMERIO2 Control Register */
+    volatile uint32_t TIMERIO3_CTRL;             /* TIMERIO3 Control Register */
+    volatile uint32_t TIMERIO4_CTRL;             /* TIMERIO4 Control Register */
+    volatile uint32_t TIMERIO5_CTRL;             /* TIMERIO5 Control Register */
+    volatile uint32_t TIMERIO6_CTRL;             /* TIMERIO6 Control Register */
+    volatile uint32_t TIMERIO7_CTRL;             /* TIMERIO7 Control Register */
     volatile uint8_t  Resv_17152[96];
-    volatile uint32_t C7XV_CTRL0;
+    volatile uint32_t C7XV_CTRL0;                /* C7XV Control Register 0 */
     volatile uint8_t  Resv_17160[4];
-    volatile uint32_t C7XV_CTRL1;
-    volatile uint8_t  Resv_17408[244];
-    volatile uint32_t SPARE_CTRL0;
-    volatile uint32_t SPARE_CTRL1;
-    volatile uint8_t  Resv_17472[56];
-    volatile uint32_t SPARE_STAT0;
-    volatile uint32_t SPARE_STAT1;
-    volatile uint8_t  Resv_17536[56];
-    volatile uint32_t SPARE_TRIM0;
-    volatile uint8_t  Resv_17600[60];
-    volatile uint32_t EMMC0_STAT;
+    volatile uint32_t C7XV_CTRL1;                /* C7XV Control Register 1 */
+    volatile uint8_t  Resv_17600[436];
+    volatile uint32_t EMMC0_STAT;                /* Status of EMMC0 Module */
     volatile uint8_t  Resv_17616[12];
-    volatile uint32_t ADC0_CTRL;
+    volatile uint32_t ADC0_CTRL;                 /* ADC0 Control Register */
     volatile uint8_t  Resv_17632[12];
-    volatile uint32_t ADC0_TRIM;
+    volatile uint32_t ADC0_TRIM;                 /* ADC0 Trim Register */
     volatile uint8_t  Resv_17648[12];
-    volatile uint32_t ADC0_CAL;
+    volatile uint32_t ADC0_CAL;                  /* ADC0 Calibration Register */
     volatile uint8_t  Resv_18176[524];
-    volatile uint32_t FSS0_CTRL0;
-    volatile uint32_t FSS0_CTRL1;
+    volatile uint32_t FSS0_CTRL0;                /* Flash Subsystem 0 Control Register */
+    volatile uint32_t FSS0_CTRL1;                /* Flash Subsystem 0 Control Register */
     volatile uint8_t  Resv_18192[8];
-    volatile uint32_t FSS1_CTRL0;
-    volatile uint8_t  Resv_18240[44];
-    volatile uint32_t SOC_INT_STAT0;
-    volatile uint8_t  Resv_18256[12];
-    volatile uint32_t DCC_STAT;
+    volatile uint32_t FSS1_CTRL0;                /* Flash Subsystem 1 Control Register */
+    volatile uint8_t  Resv_18256[60];
+    volatile uint32_t DCC_STAT;                  /* DCC Status Register */
     volatile uint8_t  Resv_18272[12];
-    volatile uint32_t R5SS0_CORE0_RL2_CTRL;
-    volatile uint32_t R5SS0_CORE1_RL2_CTRL;
+    volatile uint32_t R5SS0_CORE0_RL2_CTRL;      /* R5 Cluster 0 Core0 RL2 Cache Control Register */
+    volatile uint32_t R5SS0_CORE1_RL2_CTRL;      /* R5 Cluster 0 Core0 RL2 Cache Control Register */
     volatile uint8_t  Resv_18288[8];
-    volatile uint32_t R5SS1_CORE0_RL2_CTRL;
-    volatile uint32_t R5SS1_CORE1_RL2_CTRL;
+    volatile uint32_t R5SS1_CORE0_RL2_CTRL;      /* R5 Cluster 1 Core0 RL2 Cache Control Register */
+    volatile uint32_t R5SS1_CORE1_RL2_CTRL;      /* R5 Cluster 1 Core0 RL2 Cache Control Register */
     volatile uint8_t  Resv_20488[2192];
     volatile uint32_t LOCK1_KICK0;               /*  - KICK0 component */
     volatile uint32_t LOCK1_KICK1;               /*  - KICK1 component */
@@ -230,76 +215,65 @@ typedef struct {
     volatile uint32_t CLAIMREG_P1_R13_READONLY;   /* Claim bits for Partition 1 */
     volatile uint32_t CLAIMREG_P1_R14_READONLY;   /* Claim bits for Partition 1 */
     volatile uint8_t  Resv_24644[3848];
-    volatile uint32_t ENET1_CTRL_PROXY;
-    volatile uint32_t ENET2_CTRL_PROXY;
+    volatile uint32_t ENET1_CTRL_PROXY;          /* Ethernet1 Control Register */
+    volatile uint32_t ENET2_CTRL_PROXY;          /* Ethernet2 Control Register */
     volatile uint8_t  Resv_24880[228];
-    volatile uint32_t EPWM_TB_CLKEN_PROXY;
-    volatile uint8_t  Resv_24892[8];
-    volatile uint32_t EPWM_ERR_STAT_PROXY;
-    volatile uint32_t EPWM0_CTRL_PROXY;
-    volatile uint32_t EPWM1_CTRL_PROXY;
-    volatile uint32_t EPWM2_CTRL_PROXY;
+    volatile uint32_t EPWM_TB_CLKEN_PROXY;       /* EPWM Time Base Clock Enable Register */
+    volatile uint8_t  Resv_24896[12];
+    volatile uint32_t EPWM0_CTRL_PROXY;          /* PWM0 Control Register */
+    volatile uint32_t EPWM1_CTRL_PROXY;          /* PWM1 Control Register */
+    volatile uint32_t EPWM2_CTRL_PROXY;          /* PWM2 Control Register */
     volatile uint8_t  Resv_25088[180];
-    volatile uint32_t TIMER0_CTRL_PROXY;
-    volatile uint32_t TIMER1_CTRL_PROXY;
-    volatile uint32_t TIMER2_CTRL_PROXY;
-    volatile uint32_t TIMER3_CTRL_PROXY;
-    volatile uint32_t TIMER4_CTRL_PROXY;
-    volatile uint32_t TIMER5_CTRL_PROXY;
-    volatile uint32_t TIMER6_CTRL_PROXY;
-    volatile uint32_t TIMER7_CTRL_PROXY;
-    volatile uint32_t TIMER8_CTRL_PROXY;
-    volatile uint32_t TIMER9_CTRL_PROXY;
-    volatile uint32_t TIMER10_CTRL_PROXY;
-    volatile uint32_t TIMER11_CTRL_PROXY;
-    volatile uint32_t TIMER12_CTRL_PROXY;
-    volatile uint32_t TIMER13_CTRL_PROXY;
-    volatile uint32_t TIMER14_CTRL_PROXY;
-    volatile uint32_t TIMER15_CTRL_PROXY;
+    volatile uint32_t TIMER0_CTRL_PROXY;         /* TIMER0 Control Register */
+    volatile uint32_t TIMER1_CTRL_PROXY;         /* TIMER1 Control Register */
+    volatile uint32_t TIMER2_CTRL_PROXY;         /* TIMER2 Control Register */
+    volatile uint32_t TIMER3_CTRL_PROXY;         /* TIMER3 Control Register */
+    volatile uint32_t TIMER4_CTRL_PROXY;         /* TIMER4 Control Register */
+    volatile uint32_t TIMER5_CTRL_PROXY;         /* TIMER5 Control Register */
+    volatile uint32_t TIMER6_CTRL_PROXY;         /* TIMER6 Control Register */
+    volatile uint32_t TIMER7_CTRL_PROXY;         /* TIMER7 Control Register */
+    volatile uint32_t TIMER8_CTRL_PROXY;         /* TIMER8 Control Register */
+    volatile uint32_t TIMER9_CTRL_PROXY;         /* TIMER9 Control Register */
+    volatile uint32_t TIMER10_CTRL_PROXY;        /* TIMER10 Control Register */
+    volatile uint32_t TIMER11_CTRL_PROXY;        /* TIMER11 Control Register */
+    volatile uint32_t TIMER12_CTRL_PROXY;        /* TIMER12 Control Register */
+    volatile uint32_t TIMER13_CTRL_PROXY;        /* TIMER13 Control Register */
+    volatile uint32_t TIMER14_CTRL_PROXY;        /* TIMER14 Control Register */
+    volatile uint32_t TIMER15_CTRL_PROXY;        /* TIMER15 Control Register */
     volatile uint8_t  Resv_25216[64];
-    volatile uint32_t TIMERIO0_CTRL_PROXY;
-    volatile uint32_t TIMERIO1_CTRL_PROXY;
-    volatile uint32_t TIMERIO2_CTRL_PROXY;
-    volatile uint32_t TIMERIO3_CTRL_PROXY;
-    volatile uint32_t TIMERIO4_CTRL_PROXY;
-    volatile uint32_t TIMERIO5_CTRL_PROXY;
-    volatile uint32_t TIMERIO6_CTRL_PROXY;
-    volatile uint32_t TIMERIO7_CTRL_PROXY;
+    volatile uint32_t TIMERIO0_CTRL_PROXY;       /* TIMERIO0 Control Register */
+    volatile uint32_t TIMERIO1_CTRL_PROXY;       /* TIMERIO1 Control Register */
+    volatile uint32_t TIMERIO2_CTRL_PROXY;       /* TIMERIO2 Control Register */
+    volatile uint32_t TIMERIO3_CTRL_PROXY;       /* TIMERIO3 Control Register */
+    volatile uint32_t TIMERIO4_CTRL_PROXY;       /* TIMERIO4 Control Register */
+    volatile uint32_t TIMERIO5_CTRL_PROXY;       /* TIMERIO5 Control Register */
+    volatile uint32_t TIMERIO6_CTRL_PROXY;       /* TIMERIO6 Control Register */
+    volatile uint32_t TIMERIO7_CTRL_PROXY;       /* TIMERIO7 Control Register */
     volatile uint8_t  Resv_25344[96];
-    volatile uint32_t C7XV_CTRL0_PROXY;
+    volatile uint32_t C7XV_CTRL0_PROXY;          /* C7XV Control Register 0 */
     volatile uint8_t  Resv_25352[4];
-    volatile uint32_t C7XV_CTRL1_PROXY;
-    volatile uint8_t  Resv_25600[244];
-    volatile uint32_t SPARE_CTRL0_PROXY;
-    volatile uint32_t SPARE_CTRL1_PROXY;
-    volatile uint8_t  Resv_25664[56];
-    volatile uint32_t SPARE_STAT0_PROXY;
-    volatile uint32_t SPARE_STAT1_PROXY;
-    volatile uint8_t  Resv_25728[56];
-    volatile uint32_t SPARE_TRIM0_PROXY;
-    volatile uint8_t  Resv_25792[60];
-    volatile uint32_t EMMC0_STAT_PROXY;
+    volatile uint32_t C7XV_CTRL1_PROXY;          /* C7XV Control Register 1 */
+    volatile uint8_t  Resv_25792[436];
+    volatile uint32_t EMMC0_STAT_PROXY;          /* Status of EMMC0 Module */
     volatile uint8_t  Resv_25808[12];
-    volatile uint32_t ADC0_CTRL_PROXY;
+    volatile uint32_t ADC0_CTRL_PROXY;           /* ADC0 Control Register */
     volatile uint8_t  Resv_25824[12];
-    volatile uint32_t ADC0_TRIM_PROXY;
+    volatile uint32_t ADC0_TRIM_PROXY;           /* ADC0 Trim Register */
     volatile uint8_t  Resv_25840[12];
-    volatile uint32_t ADC0_CAL_PROXY;
+    volatile uint32_t ADC0_CAL_PROXY;            /* ADC0 Calibration Register */
     volatile uint8_t  Resv_26368[524];
-    volatile uint32_t FSS0_CTRL0_PROXY;
-    volatile uint32_t FSS0_CTRL1_PROXY;
+    volatile uint32_t FSS0_CTRL0_PROXY;          /* Flash Subsystem 0 Control Register */
+    volatile uint32_t FSS0_CTRL1_PROXY;          /* Flash Subsystem 0 Control Register */
     volatile uint8_t  Resv_26384[8];
-    volatile uint32_t FSS1_CTRL0_PROXY;
-    volatile uint8_t  Resv_26432[44];
-    volatile uint32_t SOC_INT_STAT0_PROXY;
-    volatile uint8_t  Resv_26448[12];
-    volatile uint32_t DCC_STAT_PROXY;
+    volatile uint32_t FSS1_CTRL0_PROXY;          /* Flash Subsystem 1 Control Register */
+    volatile uint8_t  Resv_26448[60];
+    volatile uint32_t DCC_STAT_PROXY;            /* DCC Status Register */
     volatile uint8_t  Resv_26464[12];
-    volatile uint32_t R5SS0_CORE0_RL2_CTRL_PROXY;
-    volatile uint32_t R5SS0_CORE1_RL2_CTRL_PROXY;
+    volatile uint32_t R5SS0_CORE0_RL2_CTRL_PROXY;   /* R5 Cluster 0 Core0 RL2 Cache Control Register */
+    volatile uint32_t R5SS0_CORE1_RL2_CTRL_PROXY;   /* R5 Cluster 0 Core0 RL2 Cache Control Register */
     volatile uint8_t  Resv_26480[8];
-    volatile uint32_t R5SS1_CORE0_RL2_CTRL_PROXY;
-    volatile uint32_t R5SS1_CORE1_RL2_CTRL_PROXY;
+    volatile uint32_t R5SS1_CORE0_RL2_CTRL_PROXY;   /* R5 Cluster 1 Core0 RL2 Cache Control Register */
+    volatile uint32_t R5SS1_CORE1_RL2_CTRL_PROXY;   /* R5 Cluster 1 Core0 RL2 Cache Control Register */
     volatile uint8_t  Resv_28680[2192];
     volatile uint32_t LOCK1_KICK0_PROXY;         /*  - KICK0 component */
     volatile uint32_t LOCK1_KICK1_PROXY;         /*  - KICK1 component */
@@ -320,133 +294,133 @@ typedef struct {
     volatile uint32_t CLAIMREG_P1_R13;           /* Claim bits for Partition 1 */
     volatile uint32_t CLAIMREG_P1_R14;           /* Claim bits for Partition 1 */
     volatile uint8_t  Resv_32768[3780];
-    volatile uint32_t OBSCLK0_CTRL;
+    volatile uint32_t OBSCLK0_CTRL;              /* Observe Clock 0 Output Control Register */
     volatile uint8_t  Resv_32784[12];
-    volatile uint32_t CLKOUT_CTRL;
+    volatile uint32_t CLKOUT_CTRL;               /* CLKOUT Control Register */
     volatile uint8_t  Resv_32864[76];
-    volatile uint32_t MAIN_PLL0_CLKSEL;
-    volatile uint32_t MAIN_PLL1_CLKSEL;
-    volatile uint32_t MAIN_PLL2_CLKSEL;
+    volatile uint32_t MAIN_PLL0_CLKSEL;          /* MAIN PLL0 Source Clock Select Register */
+    volatile uint32_t MAIN_PLL1_CLKSEL;          /* MAIN PLL1 Source Clock Select Register */
+    volatile uint32_t MAIN_PLL2_CLKSEL;          /* MAIN PLL2 Source Clock Select Register */
     volatile uint8_t  Resv_32880[4];
-    volatile uint32_t MAIN_PLL4_CLKSEL;
+    volatile uint32_t MAIN_PLL4_CLKSEL;          /* MAIN PLL4 Source Clock Select Register */
     volatile uint8_t  Resv_32892[8];
-    volatile uint32_t MAIN_PLL7_CLKSEL;
+    volatile uint32_t MAIN_PLL7_CLKSEL;          /* MAIN PLL7 Source Clock Select Register */
     volatile uint8_t  Resv_32920[24];
-    volatile uint32_t MAIN_PLL14_CLKSEL;
+    volatile uint32_t MAIN_PLL14_CLKSEL;         /* MAIN PLL14 Source Clock Select Register */
     volatile uint8_t  Resv_33088[164];
-    volatile uint32_t CPSW_CLKSEL;
+    volatile uint32_t CPSW_CLKSEL;               /* CPSW Clock Select Register */
     volatile uint8_t  Resv_33120[28];
-    volatile uint32_t EMMC0_CLKSEL;
+    volatile uint32_t EMMC0_CLKSEL;              /* eMMC0  Clock Select Register */
     volatile uint8_t  Resv_33200[76];
-    volatile uint32_t TIMER0_CLKSEL;
-    volatile uint32_t TIMER1_CLKSEL;
-    volatile uint32_t TIMER2_CLKSEL;
-    volatile uint32_t TIMER3_CLKSEL;
-    volatile uint32_t TIMER4_CLKSEL;
-    volatile uint32_t TIMER5_CLKSEL;
-    volatile uint32_t TIMER6_CLKSEL;
-    volatile uint32_t TIMER7_CLKSEL;
-    volatile uint32_t TIMER8_CLKSEL;
-    volatile uint32_t TIMER9_CLKSEL;
-    volatile uint32_t TIMER10_CLKSEL;
-    volatile uint32_t TIMER11_CLKSEL;
-    volatile uint32_t TIMER12_CLKSEL;
-    volatile uint32_t TIMER13_CLKSEL;
-    volatile uint32_t TIMER14_CLKSEL;
-    volatile uint32_t TIMER15_CLKSEL;
+    volatile uint32_t TIMER0_CLKSEL;             /* Timer0 Clock Select Register */
+    volatile uint32_t TIMER1_CLKSEL;             /* Timer1 Clock Select Register */
+    volatile uint32_t TIMER2_CLKSEL;             /* Timer2 Clock Select Register */
+    volatile uint32_t TIMER3_CLKSEL;             /* Timer3 Clock Select Register */
+    volatile uint32_t TIMER4_CLKSEL;             /* Timer4 Clock Select Register */
+    volatile uint32_t TIMER5_CLKSEL;             /* Timer5 Clock Select Register */
+    volatile uint32_t TIMER6_CLKSEL;             /* Timer6 Clock Select Register */
+    volatile uint32_t TIMER7_CLKSEL;             /* Timer7 Clock Select Register */
+    volatile uint32_t TIMER8_CLKSEL;             /* Timer8 Clock Select Register */
+    volatile uint32_t TIMER9_CLKSEL;             /* Timer9 Clock Select Register */
+    volatile uint32_t TIMER10_CLKSEL;            /* Timer10 Clock Select Register */
+    volatile uint32_t TIMER11_CLKSEL;            /* Timer11 Clock Select Register */
+    volatile uint32_t TIMER12_CLKSEL;            /* Timer12 Clock Select Register */
+    volatile uint32_t TIMER13_CLKSEL;            /* Timer13 Clock Select Register */
+    volatile uint32_t TIMER14_CLKSEL;            /* Timer14 Clock Select Register */
+    volatile uint32_t TIMER15_CLKSEL;            /* Timer15 Clock Select Register */
     volatile uint8_t  Resv_33280[16];
-    volatile uint32_t SPI0_CLKSEL;
-    volatile uint32_t SPI1_CLKSEL;
-    volatile uint32_t SPI2_CLKSEL;
-    volatile uint32_t SPI3_CLKSEL;
-    volatile uint32_t SPI4_CLKSEL;
+    volatile uint32_t SPI0_CLKSEL;               /* SPI0 Clock Select Register */
+    volatile uint32_t SPI1_CLKSEL;               /* SPI1 Clock Select Register */
+    volatile uint32_t SPI2_CLKSEL;               /* SPI2 Clock Select Register */
+    volatile uint32_t SPI3_CLKSEL;               /* SPI3 Clock Select Register */
+    volatile uint32_t SPI4_CLKSEL;               /* SPI4 Clock Select Register */
     volatile uint8_t  Resv_33344[44];
-    volatile uint32_t USART0_CLK_CTRL;
-    volatile uint32_t USART1_CLK_CTRL;
-    volatile uint32_t USART2_CLK_CTRL;
-    volatile uint32_t USART3_CLK_CTRL;
-    volatile uint32_t USART4_CLK_CTRL;
-    volatile uint32_t USART5_CLK_CTRL;
-    volatile uint32_t USART6_CLK_CTRL;
+    volatile uint32_t USART0_CLK_CTRL;           /* USART0 Functional Clock Control */
+    volatile uint32_t USART1_CLK_CTRL;           /* USART1 Functional Clock Control */
+    volatile uint32_t USART2_CLK_CTRL;           /* USART2 Functional Clock Control */
+    volatile uint32_t USART3_CLK_CTRL;           /* USART3 Functional Clock Control */
+    volatile uint32_t USART4_CLK_CTRL;           /* USART4 Functional Clock Control */
+    volatile uint32_t USART5_CLK_CTRL;           /* USART5 Functional Clock Control */
+    volatile uint32_t USART6_CLK_CTRL;           /* USART6 Functional Clock Control */
     volatile uint8_t  Resv_33408[36];
-    volatile uint32_t USART0_CLKSEL;
-    volatile uint32_t USART1_CLKSEL;
-    volatile uint32_t USART2_CLKSEL;
-    volatile uint32_t USART3_CLKSEL;
-    volatile uint32_t USART4_CLKSEL;
-    volatile uint32_t USART5_CLKSEL;
-    volatile uint32_t USART6_CLKSEL;
+    volatile uint32_t USART0_CLKSEL;             /* USART0 Functional Clock Control */
+    volatile uint32_t USART1_CLKSEL;             /* USART1 Functional Clock Control */
+    volatile uint32_t USART2_CLKSEL;             /* USART2 Functional Clock Control */
+    volatile uint32_t USART3_CLKSEL;             /* USART3 Functional Clock Control */
+    volatile uint32_t USART4_CLKSEL;             /* USART4 Functional Clock Control */
+    volatile uint32_t USART5_CLKSEL;             /* USART5 Functional Clock Control */
+    volatile uint32_t USART6_CLKSEL;             /* USART6 Functional Clock Control */
     volatile uint8_t  Resv_33456[20];
-    volatile uint32_t ATL_CLKSEL;
+    volatile uint32_t ATL_CLKSEL;                /* ATL Functional Clock Selects */
     volatile uint8_t  Resv_33472[12];
-    volatile uint32_t ATL_BWS0_SEL;
-    volatile uint32_t ATL_BWS1_SEL;
-    volatile uint32_t ATL_BWS2_SEL;
-    volatile uint32_t ATL_BWS3_SEL;
-    volatile uint32_t ATL_AWS0_SEL;
-    volatile uint32_t ATL_AWS1_SEL;
-    volatile uint32_t ATL_AWS2_SEL;
-    volatile uint32_t ATL_AWS3_SEL;
-    volatile uint32_t AUDIO_REFCLK0_CTRL;
-    volatile uint32_t AUDIO_REFCLK1_CTRL;
-    volatile uint32_t AUDIO_REFCLK2_CTRL;
+    volatile uint32_t ATL_BWS0_SEL;              /* ATL BWS0 Select Register */
+    volatile uint32_t ATL_BWS1_SEL;              /* ATL BWS1 Select Register */
+    volatile uint32_t ATL_BWS2_SEL;              /* ATL BWS2 Select Register */
+    volatile uint32_t ATL_BWS3_SEL;              /* ATL BWS3 Select Register */
+    volatile uint32_t ATL_AWS0_SEL;              /* ATL AWS0 Select Register */
+    volatile uint32_t ATL_AWS1_SEL;              /* ATL AWS1 Select Register */
+    volatile uint32_t ATL_AWS2_SEL;              /* ATL AWS2 Select Register */
+    volatile uint32_t ATL_AWS3_SEL;              /* ATL AWS3 Select Register */
+    volatile uint32_t AUDIO_REFCLK0_CTRL;        /* Audio External Reference Clock Control Register */
+    volatile uint32_t AUDIO_REFCLK1_CTRL;        /* Audio External Reference Clock Control Register */
+    volatile uint32_t AUDIO_REFCLK2_CTRL;        /* Audio External Reference Clock Control Register */
     volatile uint8_t  Resv_33520[4];
-    volatile uint32_t ASRC_SYNC_DIV_CTRL;
+    volatile uint32_t ASRC_SYNC_DIV_CTRL;        /* ASRC Transmit/Receive Sync Clock Divider Control */
     volatile uint8_t  Resv_33584[60];
-    volatile uint32_t MCASP0_CLKSEL;
-    volatile uint32_t MCASP1_CLKSEL;
-    volatile uint32_t MCASP2_CLKSEL;
-    volatile uint32_t MCASP3_CLKSEL;
-    volatile uint32_t MCASP4_CLKSEL;
+    volatile uint32_t MCASP0_CLKSEL;             /* McASP0 Clock Select Register */
+    volatile uint32_t MCASP1_CLKSEL;             /* McASP1 Clock Select Register */
+    volatile uint32_t MCASP2_CLKSEL;             /* McASP2 Clock Select Register */
+    volatile uint32_t MCASP3_CLKSEL;             /* McASP3 Clock Select Register */
+    volatile uint32_t MCASP4_CLKSEL;             /* McASP4 Clock Select Register */
     volatile uint8_t  Resv_33616[12];
-    volatile uint32_t MCASP0_AHCLKSEL;
-    volatile uint32_t MCASP1_AHCLKSEL;
-    volatile uint32_t MCASP2_AHCLKSEL;
-    volatile uint32_t MCASP3_AHCLKSEL;
-    volatile uint32_t MCASP4_AHCLKSEL;
+    volatile uint32_t MCASP0_AHCLKSEL;           /* McASP0 AHClock Select Register */
+    volatile uint32_t MCASP1_AHCLKSEL;           /* McASP1 AHClock Select Register */
+    volatile uint32_t MCASP2_AHCLKSEL;           /* McASP2 AHClock Select Register */
+    volatile uint32_t MCASP3_AHCLKSEL;           /* McASP3 AHClock Select Register */
+    volatile uint32_t MCASP4_AHCLKSEL;           /* McASP4 AHClock Select Register */
     volatile uint8_t  Resv_33664[28];
-    volatile uint32_t WWD0_CLKSEL;
-    volatile uint32_t WWD1_CLKSEL;
-    volatile uint32_t WWD2_CLKSEL;
-    volatile uint32_t WWD3_CLKSEL;
-    volatile uint32_t WWD4_CLKSEL;
-    volatile uint32_t WWD5_CLKSEL;
+    volatile uint32_t WWD0_CLKSEL;               /* WWD0 Clock Select Register */
+    volatile uint32_t WWD1_CLKSEL;               /* WWD1 Clock Select Register */
+    volatile uint32_t WWD2_CLKSEL;               /* WWD2 Clock Select Register */
+    volatile uint32_t WWD3_CLKSEL;               /* WWD3 Clock Select Register */
+    volatile uint32_t WWD4_CLKSEL;               /* WWD4 Clock Select Register */
+    volatile uint32_t WWD5_CLKSEL;               /* WWD5 Clock Select Register */
     volatile uint8_t  Resv_33760[72];
-    volatile uint32_t MCASP0_GF_CLK_SEL;
-    volatile uint32_t MCASP1_GF_CLK_SEL;
-    volatile uint32_t MCASP2_GF_CLK_SEL;
-    volatile uint32_t MCASP3_GF_CLK_SEL;
-    volatile uint32_t MCASP4_GF_CLK_SEL;
+    volatile uint32_t MCASP0_GF_CLK_SEL;         /* McASP Glitchfree Clock Select Register */
+    volatile uint32_t MCASP1_GF_CLK_SEL;         /* McASP Glitchfree Clock Select Register */
+    volatile uint32_t MCASP2_GF_CLK_SEL;         /* McASP Glitchfree Clock Select Register */
+    volatile uint32_t MCASP3_GF_CLK_SEL;         /* McASP Glitchfree Clock Select Register */
+    volatile uint32_t MCASP4_GF_CLK_SEL;         /* McASP Glitchfree Clock Select Register */
     volatile uint8_t  Resv_33920[140];
-    volatile uint32_t MCAN0_CLKSEL;
-    volatile uint32_t MCAN1_CLKSEL;
-    volatile uint32_t MCAN2_CLKSEL;
-    volatile uint32_t MCAN3_CLKSEL;
-    volatile uint32_t MCAN4_CLKSEL;
+    volatile uint32_t MCAN0_CLKSEL;              /* MCAN0 Clock Select Register */
+    volatile uint32_t MCAN1_CLKSEL;              /* MCAN1 Clock Select Register */
+    volatile uint32_t MCAN2_CLKSEL;              /* MCAN2 Clock Select Register */
+    volatile uint32_t MCAN3_CLKSEL;              /* MCAN3 Clock Select Register */
+    volatile uint32_t MCAN4_CLKSEL;              /* MCAN4 Clock Select Register */
     volatile uint8_t  Resv_33984[44];
-    volatile uint32_t ASRC0_RXSYNC0_SEL;
-    volatile uint32_t ASRC0_RXSYNC1_SEL;
-    volatile uint32_t ASRC0_RXSYNC2_SEL;
-    volatile uint32_t ASRC0_RXSYNC3_SEL;
-    volatile uint32_t ASRC1_RXSYNC0_SEL;
-    volatile uint32_t ASRC1_RXSYNC1_SEL;
-    volatile uint32_t ASRC1_RXSYNC2_SEL;
-    volatile uint32_t ASRC1_RXSYNC3_SEL;
-    volatile uint32_t ASRC0_TXSYNC0_SEL;
-    volatile uint32_t ASRC0_TXSYNC1_SEL;
-    volatile uint32_t ASRC0_TXSYNC2_SEL;
-    volatile uint32_t ASRC0_TXSYNC3_SEL;
-    volatile uint32_t ASRC1_TXSYNC0_SEL;
-    volatile uint32_t ASRC1_TXSYNC1_SEL;
-    volatile uint32_t ASRC1_TXSYNC2_SEL;
-    volatile uint32_t ASRC1_TXSYNC3_SEL;
-    volatile uint32_t OSPI0_CLKSEL;
-    volatile uint32_t OSPI1_CLKSEL;
+    volatile uint32_t ASRC0_RXSYNC0_SEL;         /* ASRC 0  Receive Frame Sync Select Register */
+    volatile uint32_t ASRC0_RXSYNC1_SEL;         /* ASRC 0  Receive Frame Sync Select Register */
+    volatile uint32_t ASRC0_RXSYNC2_SEL;         /* ASRC 0  Receive Frame Sync Select Register */
+    volatile uint32_t ASRC0_RXSYNC3_SEL;         /* ASRC 0  Receive Frame Sync Select Register */
+    volatile uint32_t ASRC1_RXSYNC0_SEL;         /* ASRC 1  Receive Frame Sync Select Register */
+    volatile uint32_t ASRC1_RXSYNC1_SEL;         /* ASRC 1  Receive Frame Sync Select Register */
+    volatile uint32_t ASRC1_RXSYNC2_SEL;         /* ASRC 1  Receive Frame Sync Select Register */
+    volatile uint32_t ASRC1_RXSYNC3_SEL;         /* ASRC 1  Receive Frame Sync Select Register */
+    volatile uint32_t ASRC0_TXSYNC0_SEL;         /* ASRC 0 Transmit Frame Sync Select Register */
+    volatile uint32_t ASRC0_TXSYNC1_SEL;         /* ASRC 0 Transmit Frame Sync Select Register */
+    volatile uint32_t ASRC0_TXSYNC2_SEL;         /* ASRC 0 Transmit Frame Sync Select Register */
+    volatile uint32_t ASRC0_TXSYNC3_SEL;         /* ASRC 0 Transmit Frame Sync Select Register */
+    volatile uint32_t ASRC1_TXSYNC0_SEL;         /* ASRC 1 Transmit Frame Sync Select Register */
+    volatile uint32_t ASRC1_TXSYNC1_SEL;         /* ASRC 1 Transmit Frame Sync Select Register */
+    volatile uint32_t ASRC1_TXSYNC2_SEL;         /* ASRC 1 Transmit Frame Sync Select Register */
+    volatile uint32_t ASRC1_TXSYNC3_SEL;         /* ASRC 1 Transmit Frame Sync Select Register */
+    volatile uint32_t OSPI0_CLKSEL;              /* OSPI Clock Select Register */
+    volatile uint32_t OSPI1_CLKSEL;              /* OSPI Clock Select Register */
     volatile uint8_t  Resv_34064[8];
-    volatile uint32_t ADC0_CLKSEL;
+    volatile uint32_t ADC0_CLKSEL;               /* ADC0 Clock Select Register */
     volatile uint8_t  Resv_34176[108];
-    volatile uint32_t R5SS0_CLKSEL;
-    volatile uint32_t R5SS1_CLKSEL;
+    volatile uint32_t R5SS0_CLKSEL;              /* R5 Subsystem Clock Control */
+    volatile uint32_t R5SS1_CLKSEL;              /* R5 Subsystem Clock Control */
     volatile uint8_t  Resv_36872[2688];
     volatile uint32_t LOCK2_KICK0;               /*  - KICK0 component */
     volatile uint32_t LOCK2_KICK1;               /*  - KICK1 component */
@@ -464,133 +438,133 @@ typedef struct {
     volatile uint32_t CLAIMREG_P2_R10_READONLY;   /* Claim bits for Partition 2 */
     volatile uint32_t CLAIMREG_P2_R11_READONLY;   /* Claim bits for Partition 2 */
     volatile uint8_t  Resv_40960[3792];
-    volatile uint32_t OBSCLK0_CTRL_PROXY;
+    volatile uint32_t OBSCLK0_CTRL_PROXY;        /* Observe Clock 0 Output Control Register */
     volatile uint8_t  Resv_40976[12];
-    volatile uint32_t CLKOUT_CTRL_PROXY;
+    volatile uint32_t CLKOUT_CTRL_PROXY;         /* CLKOUT Control Register */
     volatile uint8_t  Resv_41056[76];
-    volatile uint32_t MAIN_PLL0_CLKSEL_PROXY;
-    volatile uint32_t MAIN_PLL1_CLKSEL_PROXY;
-    volatile uint32_t MAIN_PLL2_CLKSEL_PROXY;
+    volatile uint32_t MAIN_PLL0_CLKSEL_PROXY;    /* MAIN PLL0 Source Clock Select Register */
+    volatile uint32_t MAIN_PLL1_CLKSEL_PROXY;    /* MAIN PLL1 Source Clock Select Register */
+    volatile uint32_t MAIN_PLL2_CLKSEL_PROXY;    /* MAIN PLL2 Source Clock Select Register */
     volatile uint8_t  Resv_41072[4];
-    volatile uint32_t MAIN_PLL4_CLKSEL_PROXY;
+    volatile uint32_t MAIN_PLL4_CLKSEL_PROXY;    /* MAIN PLL4 Source Clock Select Register */
     volatile uint8_t  Resv_41084[8];
-    volatile uint32_t MAIN_PLL7_CLKSEL_PROXY;
+    volatile uint32_t MAIN_PLL7_CLKSEL_PROXY;    /* MAIN PLL7 Source Clock Select Register */
     volatile uint8_t  Resv_41112[24];
-    volatile uint32_t MAIN_PLL14_CLKSEL_PROXY;
+    volatile uint32_t MAIN_PLL14_CLKSEL_PROXY;   /* MAIN PLL14 Source Clock Select Register */
     volatile uint8_t  Resv_41280[164];
-    volatile uint32_t CPSW_CLKSEL_PROXY;
+    volatile uint32_t CPSW_CLKSEL_PROXY;         /* CPSW Clock Select Register */
     volatile uint8_t  Resv_41312[28];
-    volatile uint32_t EMMC0_CLKSEL_PROXY;
+    volatile uint32_t EMMC0_CLKSEL_PROXY;        /* eMMC0  Clock Select Register */
     volatile uint8_t  Resv_41392[76];
-    volatile uint32_t TIMER0_CLKSEL_PROXY;
-    volatile uint32_t TIMER1_CLKSEL_PROXY;
-    volatile uint32_t TIMER2_CLKSEL_PROXY;
-    volatile uint32_t TIMER3_CLKSEL_PROXY;
-    volatile uint32_t TIMER4_CLKSEL_PROXY;
-    volatile uint32_t TIMER5_CLKSEL_PROXY;
-    volatile uint32_t TIMER6_CLKSEL_PROXY;
-    volatile uint32_t TIMER7_CLKSEL_PROXY;
-    volatile uint32_t TIMER8_CLKSEL_PROXY;
-    volatile uint32_t TIMER9_CLKSEL_PROXY;
-    volatile uint32_t TIMER10_CLKSEL_PROXY;
-    volatile uint32_t TIMER11_CLKSEL_PROXY;
-    volatile uint32_t TIMER12_CLKSEL_PROXY;
-    volatile uint32_t TIMER13_CLKSEL_PROXY;
-    volatile uint32_t TIMER14_CLKSEL_PROXY;
-    volatile uint32_t TIMER15_CLKSEL_PROXY;
+    volatile uint32_t TIMER0_CLKSEL_PROXY;       /* Timer0 Clock Select Register */
+    volatile uint32_t TIMER1_CLKSEL_PROXY;       /* Timer1 Clock Select Register */
+    volatile uint32_t TIMER2_CLKSEL_PROXY;       /* Timer2 Clock Select Register */
+    volatile uint32_t TIMER3_CLKSEL_PROXY;       /* Timer3 Clock Select Register */
+    volatile uint32_t TIMER4_CLKSEL_PROXY;       /* Timer4 Clock Select Register */
+    volatile uint32_t TIMER5_CLKSEL_PROXY;       /* Timer5 Clock Select Register */
+    volatile uint32_t TIMER6_CLKSEL_PROXY;       /* Timer6 Clock Select Register */
+    volatile uint32_t TIMER7_CLKSEL_PROXY;       /* Timer7 Clock Select Register */
+    volatile uint32_t TIMER8_CLKSEL_PROXY;       /* Timer8 Clock Select Register */
+    volatile uint32_t TIMER9_CLKSEL_PROXY;       /* Timer9 Clock Select Register */
+    volatile uint32_t TIMER10_CLKSEL_PROXY;      /* Timer10 Clock Select Register */
+    volatile uint32_t TIMER11_CLKSEL_PROXY;      /* Timer11 Clock Select Register */
+    volatile uint32_t TIMER12_CLKSEL_PROXY;      /* Timer12 Clock Select Register */
+    volatile uint32_t TIMER13_CLKSEL_PROXY;      /* Timer13 Clock Select Register */
+    volatile uint32_t TIMER14_CLKSEL_PROXY;      /* Timer14 Clock Select Register */
+    volatile uint32_t TIMER15_CLKSEL_PROXY;      /* Timer15 Clock Select Register */
     volatile uint8_t  Resv_41472[16];
-    volatile uint32_t SPI0_CLKSEL_PROXY;
-    volatile uint32_t SPI1_CLKSEL_PROXY;
-    volatile uint32_t SPI2_CLKSEL_PROXY;
-    volatile uint32_t SPI3_CLKSEL_PROXY;
-    volatile uint32_t SPI4_CLKSEL_PROXY;
+    volatile uint32_t SPI0_CLKSEL_PROXY;         /* SPI0 Clock Select Register */
+    volatile uint32_t SPI1_CLKSEL_PROXY;         /* SPI1 Clock Select Register */
+    volatile uint32_t SPI2_CLKSEL_PROXY;         /* SPI2 Clock Select Register */
+    volatile uint32_t SPI3_CLKSEL_PROXY;         /* SPI3 Clock Select Register */
+    volatile uint32_t SPI4_CLKSEL_PROXY;         /* SPI4 Clock Select Register */
     volatile uint8_t  Resv_41536[44];
-    volatile uint32_t USART0_CLK_CTRL_PROXY;
-    volatile uint32_t USART1_CLK_CTRL_PROXY;
-    volatile uint32_t USART2_CLK_CTRL_PROXY;
-    volatile uint32_t USART3_CLK_CTRL_PROXY;
-    volatile uint32_t USART4_CLK_CTRL_PROXY;
-    volatile uint32_t USART5_CLK_CTRL_PROXY;
-    volatile uint32_t USART6_CLK_CTRL_PROXY;
+    volatile uint32_t USART0_CLK_CTRL_PROXY;     /* USART0 Functional Clock Control */
+    volatile uint32_t USART1_CLK_CTRL_PROXY;     /* USART1 Functional Clock Control */
+    volatile uint32_t USART2_CLK_CTRL_PROXY;     /* USART2 Functional Clock Control */
+    volatile uint32_t USART3_CLK_CTRL_PROXY;     /* USART3 Functional Clock Control */
+    volatile uint32_t USART4_CLK_CTRL_PROXY;     /* USART4 Functional Clock Control */
+    volatile uint32_t USART5_CLK_CTRL_PROXY;     /* USART5 Functional Clock Control */
+    volatile uint32_t USART6_CLK_CTRL_PROXY;     /* USART6 Functional Clock Control */
     volatile uint8_t  Resv_41600[36];
-    volatile uint32_t USART0_CLKSEL_PROXY;
-    volatile uint32_t USART1_CLKSEL_PROXY;
-    volatile uint32_t USART2_CLKSEL_PROXY;
-    volatile uint32_t USART3_CLKSEL_PROXY;
-    volatile uint32_t USART4_CLKSEL_PROXY;
-    volatile uint32_t USART5_CLKSEL_PROXY;
-    volatile uint32_t USART6_CLKSEL_PROXY;
+    volatile uint32_t USART0_CLKSEL_PROXY;       /* USART0 Functional Clock Control */
+    volatile uint32_t USART1_CLKSEL_PROXY;       /* USART1 Functional Clock Control */
+    volatile uint32_t USART2_CLKSEL_PROXY;       /* USART2 Functional Clock Control */
+    volatile uint32_t USART3_CLKSEL_PROXY;       /* USART3 Functional Clock Control */
+    volatile uint32_t USART4_CLKSEL_PROXY;       /* USART4 Functional Clock Control */
+    volatile uint32_t USART5_CLKSEL_PROXY;       /* USART5 Functional Clock Control */
+    volatile uint32_t USART6_CLKSEL_PROXY;       /* USART6 Functional Clock Control */
     volatile uint8_t  Resv_41648[20];
-    volatile uint32_t ATL_CLKSEL_PROXY;
+    volatile uint32_t ATL_CLKSEL_PROXY;          /* ATL Functional Clock Selects */
     volatile uint8_t  Resv_41664[12];
-    volatile uint32_t ATL_BWS0_SEL_PROXY;
-    volatile uint32_t ATL_BWS1_SEL_PROXY;
-    volatile uint32_t ATL_BWS2_SEL_PROXY;
-    volatile uint32_t ATL_BWS3_SEL_PROXY;
-    volatile uint32_t ATL_AWS0_SEL_PROXY;
-    volatile uint32_t ATL_AWS1_SEL_PROXY;
-    volatile uint32_t ATL_AWS2_SEL_PROXY;
-    volatile uint32_t ATL_AWS3_SEL_PROXY;
-    volatile uint32_t AUDIO_REFCLK0_CTRL_PROXY;
-    volatile uint32_t AUDIO_REFCLK1_CTRL_PROXY;
-    volatile uint32_t AUDIO_REFCLK2_CTRL_PROXY;
+    volatile uint32_t ATL_BWS0_SEL_PROXY;        /* ATL BWS0 Select Register */
+    volatile uint32_t ATL_BWS1_SEL_PROXY;        /* ATL BWS1 Select Register */
+    volatile uint32_t ATL_BWS2_SEL_PROXY;        /* ATL BWS2 Select Register */
+    volatile uint32_t ATL_BWS3_SEL_PROXY;        /* ATL BWS3 Select Register */
+    volatile uint32_t ATL_AWS0_SEL_PROXY;        /* ATL AWS0 Select Register */
+    volatile uint32_t ATL_AWS1_SEL_PROXY;        /* ATL AWS1 Select Register */
+    volatile uint32_t ATL_AWS2_SEL_PROXY;        /* ATL AWS2 Select Register */
+    volatile uint32_t ATL_AWS3_SEL_PROXY;        /* ATL AWS3 Select Register */
+    volatile uint32_t AUDIO_REFCLK0_CTRL_PROXY;   /* Audio External Reference Clock Control Register */
+    volatile uint32_t AUDIO_REFCLK1_CTRL_PROXY;   /* Audio External Reference Clock Control Register */
+    volatile uint32_t AUDIO_REFCLK2_CTRL_PROXY;   /* Audio External Reference Clock Control Register */
     volatile uint8_t  Resv_41712[4];
-    volatile uint32_t ASRC_SYNC_DIV_CTRL_PROXY;
+    volatile uint32_t ASRC_SYNC_DIV_CTRL_PROXY;   /* ASRC Transmit/Receive Sync Clock Divider Control */
     volatile uint8_t  Resv_41776[60];
-    volatile uint32_t MCASP0_CLKSEL_PROXY;
-    volatile uint32_t MCASP1_CLKSEL_PROXY;
-    volatile uint32_t MCASP2_CLKSEL_PROXY;
-    volatile uint32_t MCASP3_CLKSEL_PROXY;
-    volatile uint32_t MCASP4_CLKSEL_PROXY;
+    volatile uint32_t MCASP0_CLKSEL_PROXY;       /* McASP0 Clock Select Register */
+    volatile uint32_t MCASP1_CLKSEL_PROXY;       /* McASP1 Clock Select Register */
+    volatile uint32_t MCASP2_CLKSEL_PROXY;       /* McASP2 Clock Select Register */
+    volatile uint32_t MCASP3_CLKSEL_PROXY;       /* McASP3 Clock Select Register */
+    volatile uint32_t MCASP4_CLKSEL_PROXY;       /* McASP4 Clock Select Register */
     volatile uint8_t  Resv_41808[12];
-    volatile uint32_t MCASP0_AHCLKSEL_PROXY;
-    volatile uint32_t MCASP1_AHCLKSEL_PROXY;
-    volatile uint32_t MCASP2_AHCLKSEL_PROXY;
-    volatile uint32_t MCASP3_AHCLKSEL_PROXY;
-    volatile uint32_t MCASP4_AHCLKSEL_PROXY;
+    volatile uint32_t MCASP0_AHCLKSEL_PROXY;     /* McASP0 AHClock Select Register */
+    volatile uint32_t MCASP1_AHCLKSEL_PROXY;     /* McASP1 AHClock Select Register */
+    volatile uint32_t MCASP2_AHCLKSEL_PROXY;     /* McASP2 AHClock Select Register */
+    volatile uint32_t MCASP3_AHCLKSEL_PROXY;     /* McASP3 AHClock Select Register */
+    volatile uint32_t MCASP4_AHCLKSEL_PROXY;     /* McASP4 AHClock Select Register */
     volatile uint8_t  Resv_41856[28];
-    volatile uint32_t WWD0_CLKSEL_PROXY;
-    volatile uint32_t WWD1_CLKSEL_PROXY;
-    volatile uint32_t WWD2_CLKSEL_PROXY;
-    volatile uint32_t WWD3_CLKSEL_PROXY;
-    volatile uint32_t WWD4_CLKSEL_PROXY;
-    volatile uint32_t WWD5_CLKSEL_PROXY;
+    volatile uint32_t WWD0_CLKSEL_PROXY;         /* WWD0 Clock Select Register */
+    volatile uint32_t WWD1_CLKSEL_PROXY;         /* WWD1 Clock Select Register */
+    volatile uint32_t WWD2_CLKSEL_PROXY;         /* WWD2 Clock Select Register */
+    volatile uint32_t WWD3_CLKSEL_PROXY;         /* WWD3 Clock Select Register */
+    volatile uint32_t WWD4_CLKSEL_PROXY;         /* WWD4 Clock Select Register */
+    volatile uint32_t WWD5_CLKSEL_PROXY;         /* WWD5 Clock Select Register */
     volatile uint8_t  Resv_41952[72];
-    volatile uint32_t MCASP0_GF_CLK_SEL_PROXY;
-    volatile uint32_t MCASP1_GF_CLK_SEL_PROXY;
-    volatile uint32_t MCASP2_GF_CLK_SEL_PROXY;
-    volatile uint32_t MCASP3_GF_CLK_SEL_PROXY;
-    volatile uint32_t MCASP4_GF_CLK_SEL_PROXY;
+    volatile uint32_t MCASP0_GF_CLK_SEL_PROXY;   /* McASP Glitchfree Clock Select Register */
+    volatile uint32_t MCASP1_GF_CLK_SEL_PROXY;   /* McASP Glitchfree Clock Select Register */
+    volatile uint32_t MCASP2_GF_CLK_SEL_PROXY;   /* McASP Glitchfree Clock Select Register */
+    volatile uint32_t MCASP3_GF_CLK_SEL_PROXY;   /* McASP Glitchfree Clock Select Register */
+    volatile uint32_t MCASP4_GF_CLK_SEL_PROXY;   /* McASP Glitchfree Clock Select Register */
     volatile uint8_t  Resv_42112[140];
-    volatile uint32_t MCAN0_CLKSEL_PROXY;
-    volatile uint32_t MCAN1_CLKSEL_PROXY;
-    volatile uint32_t MCAN2_CLKSEL_PROXY;
-    volatile uint32_t MCAN3_CLKSEL_PROXY;
-    volatile uint32_t MCAN4_CLKSEL_PROXY;
+    volatile uint32_t MCAN0_CLKSEL_PROXY;        /* MCAN0 Clock Select Register */
+    volatile uint32_t MCAN1_CLKSEL_PROXY;        /* MCAN1 Clock Select Register */
+    volatile uint32_t MCAN2_CLKSEL_PROXY;        /* MCAN2 Clock Select Register */
+    volatile uint32_t MCAN3_CLKSEL_PROXY;        /* MCAN3 Clock Select Register */
+    volatile uint32_t MCAN4_CLKSEL_PROXY;        /* MCAN4 Clock Select Register */
     volatile uint8_t  Resv_42176[44];
-    volatile uint32_t ASRC0_RXSYNC0_SEL_PROXY;
-    volatile uint32_t ASRC0_RXSYNC1_SEL_PROXY;
-    volatile uint32_t ASRC0_RXSYNC2_SEL_PROXY;
-    volatile uint32_t ASRC0_RXSYNC3_SEL_PROXY;
-    volatile uint32_t ASRC1_RXSYNC0_SEL_PROXY;
-    volatile uint32_t ASRC1_RXSYNC1_SEL_PROXY;
-    volatile uint32_t ASRC1_RXSYNC2_SEL_PROXY;
-    volatile uint32_t ASRC1_RXSYNC3_SEL_PROXY;
-    volatile uint32_t ASRC0_TXSYNC0_SEL_PROXY;
-    volatile uint32_t ASRC0_TXSYNC1_SEL_PROXY;
-    volatile uint32_t ASRC0_TXSYNC2_SEL_PROXY;
-    volatile uint32_t ASRC0_TXSYNC3_SEL_PROXY;
-    volatile uint32_t ASRC1_TXSYNC0_SEL_PROXY;
-    volatile uint32_t ASRC1_TXSYNC1_SEL_PROXY;
-    volatile uint32_t ASRC1_TXSYNC2_SEL_PROXY;
-    volatile uint32_t ASRC1_TXSYNC3_SEL_PROXY;
-    volatile uint32_t OSPI0_CLKSEL_PROXY;
-    volatile uint32_t OSPI1_CLKSEL_PROXY;
+    volatile uint32_t ASRC0_RXSYNC0_SEL_PROXY;   /* ASRC 0  Receive Frame Sync Select Register */
+    volatile uint32_t ASRC0_RXSYNC1_SEL_PROXY;   /* ASRC 0  Receive Frame Sync Select Register */
+    volatile uint32_t ASRC0_RXSYNC2_SEL_PROXY;   /* ASRC 0  Receive Frame Sync Select Register */
+    volatile uint32_t ASRC0_RXSYNC3_SEL_PROXY;   /* ASRC 0  Receive Frame Sync Select Register */
+    volatile uint32_t ASRC1_RXSYNC0_SEL_PROXY;   /* ASRC 1  Receive Frame Sync Select Register */
+    volatile uint32_t ASRC1_RXSYNC1_SEL_PROXY;   /* ASRC 1  Receive Frame Sync Select Register */
+    volatile uint32_t ASRC1_RXSYNC2_SEL_PROXY;   /* ASRC 1  Receive Frame Sync Select Register */
+    volatile uint32_t ASRC1_RXSYNC3_SEL_PROXY;   /* ASRC 1  Receive Frame Sync Select Register */
+    volatile uint32_t ASRC0_TXSYNC0_SEL_PROXY;   /* ASRC 0 Transmit Frame Sync Select Register */
+    volatile uint32_t ASRC0_TXSYNC1_SEL_PROXY;   /* ASRC 0 Transmit Frame Sync Select Register */
+    volatile uint32_t ASRC0_TXSYNC2_SEL_PROXY;   /* ASRC 0 Transmit Frame Sync Select Register */
+    volatile uint32_t ASRC0_TXSYNC3_SEL_PROXY;   /* ASRC 0 Transmit Frame Sync Select Register */
+    volatile uint32_t ASRC1_TXSYNC0_SEL_PROXY;   /* ASRC 1 Transmit Frame Sync Select Register */
+    volatile uint32_t ASRC1_TXSYNC1_SEL_PROXY;   /* ASRC 1 Transmit Frame Sync Select Register */
+    volatile uint32_t ASRC1_TXSYNC2_SEL_PROXY;   /* ASRC 1 Transmit Frame Sync Select Register */
+    volatile uint32_t ASRC1_TXSYNC3_SEL_PROXY;   /* ASRC 1 Transmit Frame Sync Select Register */
+    volatile uint32_t OSPI0_CLKSEL_PROXY;        /* OSPI Clock Select Register */
+    volatile uint32_t OSPI1_CLKSEL_PROXY;        /* OSPI Clock Select Register */
     volatile uint8_t  Resv_42256[8];
-    volatile uint32_t ADC0_CLKSEL_PROXY;
+    volatile uint32_t ADC0_CLKSEL_PROXY;         /* ADC0 Clock Select Register */
     volatile uint8_t  Resv_42368[108];
-    volatile uint32_t R5SS0_CLKSEL_PROXY;
-    volatile uint32_t R5SS1_CLKSEL_PROXY;
+    volatile uint32_t R5SS0_CLKSEL_PROXY;        /* R5 Subsystem Clock Control */
+    volatile uint32_t R5SS1_CLKSEL_PROXY;        /* R5 Subsystem Clock Control */
     volatile uint8_t  Resv_45064[2688];
     volatile uint32_t LOCK2_KICK0_PROXY;         /*  - KICK0 component */
     volatile uint32_t LOCK2_KICK1_PROXY;         /*  - KICK1 component */
@@ -608,26 +582,26 @@ typedef struct {
     volatile uint32_t CLAIMREG_P2_R10;           /* Claim bits for Partition 2 */
     volatile uint32_t CLAIMREG_P2_R11;           /* Claim bits for Partition 2 */
     volatile uint8_t  Resv_49152[3792];
-    volatile uint32_t R5SS0_LBIST_CTRL;
-    volatile uint32_t R5SS0_LBIST_PATCOUNT;
-    volatile uint32_t R5SS0_LBIST_SEED0;
-    volatile uint32_t R5SS0_LBIST_SEED1;
-    volatile uint32_t R5SS0_LBIST_SPARE0;
-    volatile uint32_t R5SS0_LBIST_SPARE1;
-    volatile uint32_t R5SS0_LBIST_STAT;
-    volatile uint32_t R5SS0_LBIST_MISR;
-    volatile uint32_t R5SS1_LBIST_CTRL;
-    volatile uint32_t R5SS1_LBIST_PATCOUNT;
-    volatile uint32_t R5SS1_LBIST_SEED0;
-    volatile uint32_t R5SS1_LBIST_SEED1;
-    volatile uint32_t R5SS1_LBIST_SPARE0;
-    volatile uint32_t R5SS1_LBIST_SPARE1;
-    volatile uint32_t R5SS1_LBIST_STAT;
-    volatile uint32_t R5SS1_LBIST_MISR;
+    volatile uint32_t R5SS0_LBIST_CTRL;          /* R5 Cluster0 Logic BIST Control Register */
+    volatile uint32_t R5SS0_LBIST_PATCOUNT;      /* R5 Cluster0r Logic BIST Pattern Count Register */
+    volatile uint32_t R5SS0_LBIST_SEED0;         /* R5 Cluster0Logic BIST Seed0 Register */
+    volatile uint32_t R5SS0_LBIST_SEED1;         /* R5 Cluster0Logic BIST Seed1 Register */
+    volatile uint32_t R5SS0_LBIST_SPARE0;        /* R5 Cluster0 Logic BIST Spare0 Register */
+    volatile uint32_t R5SS0_LBIST_SPARE1;        /* R5 Cluster0 Logic BIST Spare1 Register */
+    volatile uint32_t R5SS0_LBIST_STAT;          /* R5 Cluster0Logic BIST Status Register */
+    volatile uint32_t R5SS0_LBIST_MISR;          /* R5 Cluster0 Logic BIST MISR Register */
+    volatile uint32_t R5SS1_LBIST_CTRL;          /* R5 Cluster1 Logic BIST Control Register */
+    volatile uint32_t R5SS1_LBIST_PATCOUNT;      /* R5 Cluster1r Logic BIST Pattern Count Register */
+    volatile uint32_t R5SS1_LBIST_SEED0;         /* R5 Cluster1Logic BIST Seed0 Register */
+    volatile uint32_t R5SS1_LBIST_SEED1;         /* R5 Cluster1Logic BIST Seed1 Register */
+    volatile uint32_t R5SS1_LBIST_SPARE0;        /* R5 Cluster1 Logic BIST Spare0 Register */
+    volatile uint32_t R5SS1_LBIST_SPARE1;        /* R5 Cluster1 Logic BIST Spare1 Register */
+    volatile uint32_t R5SS1_LBIST_STAT;          /* R5 Cluster1Logic BIST Status Register */
+    volatile uint32_t R5SS1_LBIST_MISR;          /* R5 Cluster1 Logic BIST MISR Register */
     volatile uint8_t  Resv_49792[576];
-    volatile uint32_t R5SS0_LBIST_SIG;
+    volatile uint32_t R5SS0_LBIST_SIG;           /* MCU Cluster0 Logic BIST MISR Signature Register */
     volatile uint8_t  Resv_49824[28];
-    volatile uint32_t R5SS1_LBIST_SIG;
+    volatile uint32_t R5SS1_LBIST_SIG;           /* MCU Cluster0 Logic BIST MISR Signature Register */
     volatile uint8_t  Resv_53256[3428];
     volatile uint32_t LOCK3_KICK0;               /*  - KICK0 component */
     volatile uint32_t LOCK3_KICK1;               /*  - KICK1 component */
@@ -639,26 +613,26 @@ typedef struct {
     volatile uint32_t CLAIMREG_P3_R4_READONLY;   /* Claim bits for Partition 3 */
     volatile uint32_t CLAIMREG_P3_R5_READONLY;   /* Claim bits for Partition 3 */
     volatile uint8_t  Resv_57344[3816];
-    volatile uint32_t R5SS0_LBIST_CTRL_PROXY;
-    volatile uint32_t R5SS0_LBIST_PATCOUNT_PROXY;
-    volatile uint32_t R5SS0_LBIST_SEED0_PROXY;
-    volatile uint32_t R5SS0_LBIST_SEED1_PROXY;
-    volatile uint32_t R5SS0_LBIST_SPARE0_PROXY;
-    volatile uint32_t R5SS0_LBIST_SPARE1_PROXY;
-    volatile uint32_t R5SS0_LBIST_STAT_PROXY;
-    volatile uint32_t R5SS0_LBIST_MISR_PROXY;
-    volatile uint32_t R5SS1_LBIST_CTRL_PROXY;
-    volatile uint32_t R5SS1_LBIST_PATCOUNT_PROXY;
-    volatile uint32_t R5SS1_LBIST_SEED0_PROXY;
-    volatile uint32_t R5SS1_LBIST_SEED1_PROXY;
-    volatile uint32_t R5SS1_LBIST_SPARE0_PROXY;
-    volatile uint32_t R5SS1_LBIST_SPARE1_PROXY;
-    volatile uint32_t R5SS1_LBIST_STAT_PROXY;
-    volatile uint32_t R5SS1_LBIST_MISR_PROXY;
+    volatile uint32_t R5SS0_LBIST_CTRL_PROXY;    /* R5 Cluster0 Logic BIST Control Register */
+    volatile uint32_t R5SS0_LBIST_PATCOUNT_PROXY;   /* R5 Cluster0r Logic BIST Pattern Count Register */
+    volatile uint32_t R5SS0_LBIST_SEED0_PROXY;   /* R5 Cluster0Logic BIST Seed0 Register */
+    volatile uint32_t R5SS0_LBIST_SEED1_PROXY;   /* R5 Cluster0Logic BIST Seed1 Register */
+    volatile uint32_t R5SS0_LBIST_SPARE0_PROXY;   /* R5 Cluster0 Logic BIST Spare0 Register */
+    volatile uint32_t R5SS0_LBIST_SPARE1_PROXY;   /* R5 Cluster0 Logic BIST Spare1 Register */
+    volatile uint32_t R5SS0_LBIST_STAT_PROXY;    /* R5 Cluster0Logic BIST Status Register */
+    volatile uint32_t R5SS0_LBIST_MISR_PROXY;    /* R5 Cluster0 Logic BIST MISR Register */
+    volatile uint32_t R5SS1_LBIST_CTRL_PROXY;    /* R5 Cluster1 Logic BIST Control Register */
+    volatile uint32_t R5SS1_LBIST_PATCOUNT_PROXY;   /* R5 Cluster1r Logic BIST Pattern Count Register */
+    volatile uint32_t R5SS1_LBIST_SEED0_PROXY;   /* R5 Cluster1Logic BIST Seed0 Register */
+    volatile uint32_t R5SS1_LBIST_SEED1_PROXY;   /* R5 Cluster1Logic BIST Seed1 Register */
+    volatile uint32_t R5SS1_LBIST_SPARE0_PROXY;   /* R5 Cluster1 Logic BIST Spare0 Register */
+    volatile uint32_t R5SS1_LBIST_SPARE1_PROXY;   /* R5 Cluster1 Logic BIST Spare1 Register */
+    volatile uint32_t R5SS1_LBIST_STAT_PROXY;    /* R5 Cluster1Logic BIST Status Register */
+    volatile uint32_t R5SS1_LBIST_MISR_PROXY;    /* R5 Cluster1 Logic BIST MISR Register */
     volatile uint8_t  Resv_57984[576];
-    volatile uint32_t R5SS0_LBIST_SIG_PROXY;
+    volatile uint32_t R5SS0_LBIST_SIG_PROXY;     /* MCU Cluster0 Logic BIST MISR Signature Register */
     volatile uint8_t  Resv_58016[28];
-    volatile uint32_t R5SS1_LBIST_SIG_PROXY;
+    volatile uint32_t R5SS1_LBIST_SIG_PROXY;     /* MCU Cluster0 Logic BIST MISR Signature Register */
     volatile uint8_t  Resv_61448[3428];
     volatile uint32_t LOCK3_KICK0_PROXY;         /*  - KICK0 component */
     volatile uint32_t LOCK3_KICK1_PROXY;         /*  - KICK1 component */
@@ -669,11 +643,7 @@ typedef struct {
     volatile uint32_t CLAIMREG_P3_R3;            /* Claim bits for Partition 3 */
     volatile uint32_t CLAIMREG_P3_R4;            /* Claim bits for Partition 3 */
     volatile uint32_t CLAIMREG_P3_R5;            /* Claim bits for Partition 3 */
-    volatile uint8_t  Resv_66816[5096];
-    volatile uint32_t MAIN_PLL_TEST_CLKSEL;
-    volatile uint8_t  Resv_67328[508];
-    volatile uint32_t ADC0_TEST[2];
-    volatile uint8_t  Resv_69640[2304];
+    volatile uint8_t  Resv_69640[7920];
     volatile uint32_t LOCK4_KICK0;               /*  - KICK0 component */
     volatile uint32_t LOCK4_KICK1;               /*  - KICK1 component */
     volatile uint8_t  Resv_69888[240];
@@ -692,11 +662,7 @@ typedef struct {
     volatile uint32_t CLAIMREG_P4_R12_READONLY;   /* Claim bits for Partition 4 */
     volatile uint32_t CLAIMREG_P4_R13_READONLY;   /* Claim bits for Partition 4 */
     volatile uint32_t CLAIMREG_P4_R14_READONLY;   /* Claim bits for Partition 4 */
-    volatile uint8_t  Resv_75008[5060];
-    volatile uint32_t MAIN_PLL_TEST_CLKSEL_PROXY;
-    volatile uint8_t  Resv_75520[508];
-    volatile uint32_t ADC0_TEST_PROXY[2];
-    volatile uint8_t  Resv_77832[2304];
+    volatile uint8_t  Resv_77832[7884];
     volatile uint32_t LOCK4_KICK0_PROXY;         /*  - KICK0 component */
     volatile uint32_t LOCK4_KICK1_PROXY;         /*  - KICK1 component */
     volatile uint8_t  Resv_78080[240];
@@ -715,9 +681,7 @@ typedef struct {
     volatile uint32_t CLAIMREG_P4_R12;           /* Claim bits for Partition 4 */
     volatile uint32_t CLAIMREG_P4_R13;           /* Claim bits for Partition 4 */
     volatile uint32_t CLAIMREG_P4_R14;           /* Claim bits for Partition 4 */
-    volatile uint8_t  Resv_99344[21204];
-    volatile uint32_t SLEEP_STATUS;
-    volatile uint8_t  Resv_102408[3060];
+    volatile uint8_t  Resv_102408[24268];
     volatile uint32_t LOCK6_KICK0;               /*  - KICK0 component */
     volatile uint32_t LOCK6_KICK1;               /*  - KICK1 component */
     volatile uint8_t  Resv_102656[240];
@@ -730,9 +694,7 @@ typedef struct {
     volatile uint32_t CLAIMREG_P6_R6_READONLY;   /* Claim bits for Partition 6 */
     volatile uint32_t CLAIMREG_P6_R7_READONLY;   /* Claim bits for Partition 6 */
     volatile uint32_t CLAIMREG_P6_R8_READONLY;   /* Claim bits for Partition 6 */
-    volatile uint8_t  Resv_107536[4844];
-    volatile uint32_t SLEEP_STATUS_PROXY;
-    volatile uint8_t  Resv_110600[3060];
+    volatile uint8_t  Resv_110600[7908];
     volatile uint32_t LOCK6_KICK0_PROXY;         /*  - KICK0 component */
     volatile uint32_t LOCK6_KICK1_PROXY;         /*  - KICK1 component */
     volatile uint8_t  Resv_110848[240];
@@ -753,7 +715,6 @@ typedef struct {
 **************************************************************************/
 
 #define CSL_MAIN_CTRL_MMR_CFG0_PID                                       (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MMR_CFG0                                  (0x00000004U)
 #define CSL_MAIN_CTRL_MMR_CFG0_MMR_CFG1                                  (0x00000008U)
 #define CSL_MAIN_CTRL_MMR_CFG0_IPC_SET(IPC_SET)                          (0x00000100U+((IPC_SET)*0x4U))
 #define CSL_MAIN_CTRL_MMR_CFG0_IPC_SET16                                 (0x00000140U)
@@ -765,7 +726,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_IPC_CLR17                                 (0x000001C4U)
 #define CSL_MAIN_CTRL_MMR_CFG0_IPC_CLR18                                 (0x000001C8U)
 #define CSL_MAIN_CTRL_MMR_CFG0_IPC_CLR19                                 (0x000001CCU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_FUSE0                               (0x00000300U)
 #define CSL_MAIN_CTRL_MMR_CFG0_LOCK0_KICK0                               (0x00001008U)
 #define CSL_MAIN_CTRL_MMR_CFG0_LOCK0_KICK1                               (0x0000100CU)
 #define CSL_MAIN_CTRL_MMR_CFG0_INTR_RAW_STATUS                           (0x00001010U)
@@ -785,7 +745,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P0_R5_READONLY                   (0x00001114U)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P0_R6_READONLY                   (0x00001118U)
 #define CSL_MAIN_CTRL_MMR_CFG0_PID_PROXY                                 (0x00002000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MMR_CFG0_PROXY                            (0x00002004U)
 #define CSL_MAIN_CTRL_MMR_CFG0_MMR_CFG1_PROXY                            (0x00002008U)
 #define CSL_MAIN_CTRL_MMR_CFG0_IPC_SET_PROXY(IPC_SET_PROXY)              (0x00002100U+((IPC_SET_PROXY)*0x4U))
 #define CSL_MAIN_CTRL_MMR_CFG0_IPC_SET16_PROXY                           (0x00002140U)
@@ -797,7 +756,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_IPC_CLR17_PROXY                           (0x000021C4U)
 #define CSL_MAIN_CTRL_MMR_CFG0_IPC_CLR18_PROXY                           (0x000021C8U)
 #define CSL_MAIN_CTRL_MMR_CFG0_IPC_CLR19_PROXY                           (0x000021CCU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_FUSE0_PROXY                         (0x00002300U)
 #define CSL_MAIN_CTRL_MMR_CFG0_LOCK0_KICK0_PROXY                         (0x00003008U)
 #define CSL_MAIN_CTRL_MMR_CFG0_LOCK0_KICK1_PROXY                         (0x0000300CU)
 #define CSL_MAIN_CTRL_MMR_CFG0_INTR_RAW_STATUS_PROXY                     (0x00003010U)
@@ -819,7 +777,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_ENET1_CTRL                                (0x00004044U)
 #define CSL_MAIN_CTRL_MMR_CFG0_ENET2_CTRL                                (0x00004048U)
 #define CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN                             (0x00004130U)
-#define CSL_MAIN_CTRL_MMR_CFG0_EPWM_ERR_STAT                             (0x0000413CU)
 #define CSL_MAIN_CTRL_MMR_CFG0_EPWM0_CTRL                                (0x00004140U)
 #define CSL_MAIN_CTRL_MMR_CFG0_EPWM1_CTRL                                (0x00004144U)
 #define CSL_MAIN_CTRL_MMR_CFG0_EPWM2_CTRL                                (0x00004148U)
@@ -849,11 +806,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_TIMERIO7_CTRL                             (0x0000429CU)
 #define CSL_MAIN_CTRL_MMR_CFG0_C7XV_CTRL0                                (0x00004300U)
 #define CSL_MAIN_CTRL_MMR_CFG0_C7XV_CTRL1                                (0x00004308U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_CTRL0                               (0x00004400U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_CTRL1                               (0x00004404U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_STAT0                               (0x00004440U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_STAT1                               (0x00004444U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_TRIM0                               (0x00004480U)
 #define CSL_MAIN_CTRL_MMR_CFG0_EMMC0_STAT                                (0x000044C0U)
 #define CSL_MAIN_CTRL_MMR_CFG0_ADC0_CTRL                                 (0x000044D0U)
 #define CSL_MAIN_CTRL_MMR_CFG0_ADC0_TRIM                                 (0x000044E0U)
@@ -861,7 +813,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_FSS0_CTRL0                                (0x00004700U)
 #define CSL_MAIN_CTRL_MMR_CFG0_FSS0_CTRL1                                (0x00004704U)
 #define CSL_MAIN_CTRL_MMR_CFG0_FSS1_CTRL0                                (0x00004710U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0                             (0x00004740U)
 #define CSL_MAIN_CTRL_MMR_CFG0_DCC_STAT                                  (0x00004750U)
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE0_RL2_CTRL                      (0x00004760U)
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE1_RL2_CTRL                      (0x00004764U)
@@ -887,7 +838,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_ENET1_CTRL_PROXY                          (0x00006044U)
 #define CSL_MAIN_CTRL_MMR_CFG0_ENET2_CTRL_PROXY                          (0x00006048U)
 #define CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN_PROXY                       (0x00006130U)
-#define CSL_MAIN_CTRL_MMR_CFG0_EPWM_ERR_STAT_PROXY                       (0x0000613CU)
 #define CSL_MAIN_CTRL_MMR_CFG0_EPWM0_CTRL_PROXY                          (0x00006140U)
 #define CSL_MAIN_CTRL_MMR_CFG0_EPWM1_CTRL_PROXY                          (0x00006144U)
 #define CSL_MAIN_CTRL_MMR_CFG0_EPWM2_CTRL_PROXY                          (0x00006148U)
@@ -917,11 +867,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_TIMERIO7_CTRL_PROXY                       (0x0000629CU)
 #define CSL_MAIN_CTRL_MMR_CFG0_C7XV_CTRL0_PROXY                          (0x00006300U)
 #define CSL_MAIN_CTRL_MMR_CFG0_C7XV_CTRL1_PROXY                          (0x00006308U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_CTRL0_PROXY                         (0x00006400U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_CTRL1_PROXY                         (0x00006404U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_STAT0_PROXY                         (0x00006440U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_STAT1_PROXY                         (0x00006444U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_TRIM0_PROXY                         (0x00006480U)
 #define CSL_MAIN_CTRL_MMR_CFG0_EMMC0_STAT_PROXY                          (0x000064C0U)
 #define CSL_MAIN_CTRL_MMR_CFG0_ADC0_CTRL_PROXY                           (0x000064D0U)
 #define CSL_MAIN_CTRL_MMR_CFG0_ADC0_TRIM_PROXY                           (0x000064E0U)
@@ -929,7 +874,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_FSS0_CTRL0_PROXY                          (0x00006700U)
 #define CSL_MAIN_CTRL_MMR_CFG0_FSS0_CTRL1_PROXY                          (0x00006704U)
 #define CSL_MAIN_CTRL_MMR_CFG0_FSS1_CTRL0_PROXY                          (0x00006710U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY                       (0x00006740U)
 #define CSL_MAIN_CTRL_MMR_CFG0_DCC_STAT_PROXY                            (0x00006750U)
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE0_RL2_CTRL_PROXY                (0x00006760U)
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE1_RL2_CTRL_PROXY                (0x00006764U)
@@ -1242,8 +1186,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P3_R3                            (0x0000F10CU)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P3_R4                            (0x0000F110U)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P3_R5                            (0x0000F114U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL                      (0x00010500U)
-#define CSL_MAIN_CTRL_MMR_CFG0_ADC0_TEST(ADC0_TEST)                      (0x00010700U+((ADC0_TEST)*0x4U))
 #define CSL_MAIN_CTRL_MMR_CFG0_LOCK4_KICK0                               (0x00011008U)
 #define CSL_MAIN_CTRL_MMR_CFG0_LOCK4_KICK1                               (0x0001100CU)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P4_R0_READONLY                   (0x00011100U)
@@ -1261,8 +1203,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P4_R12_READONLY                  (0x00011130U)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P4_R13_READONLY                  (0x00011134U)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P4_R14_READONLY                  (0x00011138U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY                (0x00012500U)
-#define CSL_MAIN_CTRL_MMR_CFG0_ADC0_TEST_PROXY(ADC0_TEST_PROXY)          (0x00012700U+((ADC0_TEST_PROXY)*0x4U))
 #define CSL_MAIN_CTRL_MMR_CFG0_LOCK4_KICK0_PROXY                         (0x00013008U)
 #define CSL_MAIN_CTRL_MMR_CFG0_LOCK4_KICK1_PROXY                         (0x0001300CU)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P4_R0                            (0x00013100U)
@@ -1280,7 +1220,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P4_R12                           (0x00013130U)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P4_R13                           (0x00013134U)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P4_R14                           (0x00013138U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SLEEP_STATUS                              (0x00018410U)
 #define CSL_MAIN_CTRL_MMR_CFG0_LOCK6_KICK0                               (0x00019008U)
 #define CSL_MAIN_CTRL_MMR_CFG0_LOCK6_KICK1                               (0x0001900CU)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P6_R0_READONLY                   (0x00019100U)
@@ -1292,7 +1231,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P6_R6_READONLY                   (0x00019118U)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P6_R7_READONLY                   (0x0001911CU)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P6_R8_READONLY                   (0x00019120U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SLEEP_STATUS_PROXY                        (0x0001A410U)
 #define CSL_MAIN_CTRL_MMR_CFG0_LOCK6_KICK0_PROXY                         (0x0001B008U)
 #define CSL_MAIN_CTRL_MMR_CFG0_LOCK6_KICK1_PROXY                         (0x0001B00CU)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P6_R0                            (0x0001B100U)
@@ -1331,17 +1269,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_PID_PID_MSB16_MASK                        (0xFFFF0000U)
 #define CSL_MAIN_CTRL_MMR_CFG0_PID_PID_MSB16_SHIFT                       (0x00000010U)
 #define CSL_MAIN_CTRL_MMR_CFG0_PID_PID_MSB16_MAX                         (0x0000FFFFU)
-
-
-/* MMR_CFG0 */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_MMR_CFG0_SPEC_REV_MASK                    (0x0000FFFFU)
-#define CSL_MAIN_CTRL_MMR_CFG0_MMR_CFG0_SPEC_REV_SHIFT                   (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MMR_CFG0_SPEC_REV_MAX                     (0x0000FFFFU)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_MMR_CFG0_CFG_REV_MASK                     (0xFFFF0000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MMR_CFG0_CFG_REV_SHIFT                    (0x00000010U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MMR_CFG0_CFG_REV_MAX                      (0x0000FFFFU)
 
 
 /* MMR_CFG1 */
@@ -1463,13 +1390,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_IPC_CLR19_IPC_SRC_CLR_MASK                (0xFFFFFFF0U)
 #define CSL_MAIN_CTRL_MMR_CFG0_IPC_CLR19_IPC_SRC_CLR_SHIFT               (0x00000004U)
 #define CSL_MAIN_CTRL_MMR_CFG0_IPC_CLR19_IPC_SRC_CLR_MAX                 (0x0FFFFFFFU)
-
-
-/* SPARE_FUSE0 */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_FUSE0_FUSE_VAL_MASK                 (0xFFFFFFFFU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_FUSE0_FUSE_VAL_SHIFT                (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_FUSE0_FUSE_VAL_MAX                  (0xFFFFFFFFU)
 
 
 /* LOCK0_KICK0 */
@@ -1681,17 +1601,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_PID_PROXY_PID_MSB16_PROXY_MAX             (0x0000FFFFU)
 
 
-/* MMR_CFG0_PROXY */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_MMR_CFG0_PROXY_MMR_CFG0_SPEC_REV_PROXY_MASK (0x0000FFFFU)
-#define CSL_MAIN_CTRL_MMR_CFG0_MMR_CFG0_PROXY_MMR_CFG0_SPEC_REV_PROXY_SHIFT (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MMR_CFG0_PROXY_MMR_CFG0_SPEC_REV_PROXY_MAX (0x0000FFFFU)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_MMR_CFG0_PROXY_MMR_CFG0_CFG_REV_PROXY_MASK (0xFFFF0000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MMR_CFG0_PROXY_MMR_CFG0_CFG_REV_PROXY_SHIFT (0x00000010U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MMR_CFG0_PROXY_MMR_CFG0_CFG_REV_PROXY_MAX (0x0000FFFFU)
-
-
 /* MMR_CFG1_PROXY */
 
 #define CSL_MAIN_CTRL_MMR_CFG0_MMR_CFG1_PROXY_MMR_CFG1_PARTITIONS_PROXY_MASK (0x000000FFU)
@@ -1811,13 +1720,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_IPC_CLR19_PROXY_IPC_CLR19_IPC_SRC_CLR_PROXY_MASK (0xFFFFFFF0U)
 #define CSL_MAIN_CTRL_MMR_CFG0_IPC_CLR19_PROXY_IPC_CLR19_IPC_SRC_CLR_PROXY_SHIFT (0x00000004U)
 #define CSL_MAIN_CTRL_MMR_CFG0_IPC_CLR19_PROXY_IPC_CLR19_IPC_SRC_CLR_PROXY_MAX (0x0FFFFFFFU)
-
-
-/* SPARE_FUSE0_PROXY */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_FUSE0_PROXY_SPARE_FUSE0_FUSE_VAL_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_FUSE0_PROXY_SPARE_FUSE0_FUSE_VAL_PROXY_SHIFT (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_FUSE0_PROXY_SPARE_FUSE0_FUSE_VAL_PROXY_MAX (0xFFFFFFFFU)
 
 
 /* LOCK0_KICK0_PROXY */
@@ -2041,21 +1943,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN_EPWM2_TB_CLKEN_MASK         (0x00000004U)
 #define CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN_EPWM2_TB_CLKEN_SHIFT        (0x00000002U)
 #define CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN_EPWM2_TB_CLKEN_MAX          (0x00000001U)
-
-
-/* EPWM_ERR_STAT */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_EPWM_ERR_STAT_EPWM0_TZ_ERR_MASK           (0x00000001U)
-#define CSL_MAIN_CTRL_MMR_CFG0_EPWM_ERR_STAT_EPWM0_TZ_ERR_SHIFT          (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_EPWM_ERR_STAT_EPWM0_TZ_ERR_MAX            (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_EPWM_ERR_STAT_EPWM1_TZ_ERR_MASK           (0x00000002U)
-#define CSL_MAIN_CTRL_MMR_CFG0_EPWM_ERR_STAT_EPWM1_TZ_ERR_SHIFT          (0x00000001U)
-#define CSL_MAIN_CTRL_MMR_CFG0_EPWM_ERR_STAT_EPWM1_TZ_ERR_MAX            (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_EPWM_ERR_STAT_EPWM2_TZ_ERR_MASK           (0x00000004U)
-#define CSL_MAIN_CTRL_MMR_CFG0_EPWM_ERR_STAT_EPWM2_TZ_ERR_SHIFT          (0x00000002U)
-#define CSL_MAIN_CTRL_MMR_CFG0_EPWM_ERR_STAT_EPWM2_TZ_ERR_MAX            (0x00000001U)
 
 
 /* EPWM0_CTRL */
@@ -2417,41 +2304,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_C7XV_CTRL1_ORD15_MAX                      (0x00000001U)
 
 
-/* SPARE_CTRL0 */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_CTRL0_SPARE_OUT_MASK                (0xFFFFFFFFU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_CTRL0_SPARE_OUT_SHIFT               (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_CTRL0_SPARE_OUT_MAX                 (0xFFFFFFFFU)
-
-
-/* SPARE_CTRL1 */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_CTRL1_SPARE_OUT_MASK                (0xFFFFFFFFU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_CTRL1_SPARE_OUT_SHIFT               (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_CTRL1_SPARE_OUT_MAX                 (0xFFFFFFFFU)
-
-
-/* SPARE_STAT0 */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_STAT0_SPARE_IN_MASK                 (0xFFFFFFFFU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_STAT0_SPARE_IN_SHIFT                (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_STAT0_SPARE_IN_MAX                  (0xFFFFFFFFU)
-
-
-/* SPARE_STAT1 */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_STAT1_SPARE_IN_MASK                 (0xFFFFFFFFU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_STAT1_SPARE_IN_SHIFT                (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_STAT1_SPARE_IN_MAX                  (0xFFFFFFFFU)
-
-
-/* SPARE_TRIM0 */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_TRIM0_TRIM_MASK                     (0xFFFFFFFFU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_TRIM0_TRIM_SHIFT                    (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_TRIM0_TRIM_MAX                      (0xFFFFFFFFU)
-
-
 /* EMMC0_STAT */
 
 #define CSL_MAIN_CTRL_MMR_CFG0_EMMC0_STAT_SIG1P8_EN_MASK                 (0x00000001U)
@@ -2471,10 +2323,6 @@ typedef struct {
 
 
 /* ADC0_TRIM */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_ADC0_TRIM_ENABLE_CAL_MASK                 (0x0000001FU)
-#define CSL_MAIN_CTRL_MMR_CFG0_ADC0_TRIM_ENABLE_CAL_SHIFT                (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_ADC0_TRIM_ENABLE_CAL_MAX                  (0x0000001FU)
 
 #define CSL_MAIN_CTRL_MMR_CFG0_ADC0_TRIM_ACTIVATE_CALB_MASK              (0x000003E0U)
 #define CSL_MAIN_CTRL_MMR_CFG0_ADC0_TRIM_ACTIVATE_CALB_SHIFT             (0x00000005U)
@@ -2540,145 +2388,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_FSS1_CTRL0_S0_BOOT_SIZE_SHIFT             (0x00000008U)
 #define CSL_MAIN_CTRL_MMR_CFG0_FSS1_CTRL0_S0_BOOT_SIZE_MAX               (0x00000001U)
 
-#define CSL_MAIN_CTRL_MMR_CFG0_FSS1_CTRL0_S1_BOOT_SEG_MASK               (0x003F0000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_FSS1_CTRL0_S1_BOOT_SEG_SHIFT              (0x00000010U)
-#define CSL_MAIN_CTRL_MMR_CFG0_FSS1_CTRL0_S1_BOOT_SEG_MAX                (0x0000003FU)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_FSS1_CTRL0_S1_BOOT_SIZE_MASK              (0x01000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_FSS1_CTRL0_S1_BOOT_SIZE_SHIFT             (0x00000018U)
-#define CSL_MAIN_CTRL_MMR_CFG0_FSS1_CTRL0_S1_BOOT_SIZE_MAX               (0x00000001U)
-
-
-/* SOC_INT_STAT0 */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT0_MASK                  (0x00000001U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT0_SHIFT                 (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT0_MAX                   (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT1_MASK                  (0x00000002U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT1_SHIFT                 (0x00000001U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT1_MAX                   (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT2_MASK                  (0x00000004U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT2_SHIFT                 (0x00000002U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT2_MAX                   (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT3_MASK                  (0x00000008U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT3_SHIFT                 (0x00000003U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT3_MAX                   (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT4_MASK                  (0x00000010U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT4_SHIFT                 (0x00000004U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT4_MAX                   (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT5_MASK                  (0x00000020U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT5_SHIFT                 (0x00000005U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT5_MAX                   (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT6_MASK                  (0x00000040U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT6_SHIFT                 (0x00000006U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT6_MAX                   (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT7_MASK                  (0x00000080U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT7_SHIFT                 (0x00000007U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT7_MAX                   (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT8_MASK                  (0x00000100U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT8_SHIFT                 (0x00000008U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT8_MAX                   (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT9_MASK                  (0x00000200U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT9_SHIFT                 (0x00000009U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT9_MAX                   (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT10_MASK                 (0x00000400U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT10_SHIFT                (0x0000000AU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT10_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT11_MASK                 (0x00000800U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT11_SHIFT                (0x0000000BU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT11_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT12_MASK                 (0x00001000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT12_SHIFT                (0x0000000CU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT12_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT13_MASK                 (0x00002000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT13_SHIFT                (0x0000000DU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT13_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT14_MASK                 (0x00004000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT14_SHIFT                (0x0000000EU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT14_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT15_MASK                 (0x00008000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT15_SHIFT                (0x0000000FU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT15_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT16_MASK                 (0x00010000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT16_SHIFT                (0x00000010U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT16_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT17_MASK                 (0x00020000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT17_SHIFT                (0x00000011U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT17_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT18_MASK                 (0x00040000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT18_SHIFT                (0x00000012U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT18_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT19_MASK                 (0x00080000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT19_SHIFT                (0x00000013U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT19_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT20_MASK                 (0x00100000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT20_SHIFT                (0x00000014U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT20_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT21_MASK                 (0x00200000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT21_SHIFT                (0x00000015U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT21_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT22_MASK                 (0x00400000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT22_SHIFT                (0x00000016U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT22_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT23_MASK                 (0x00800000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT23_SHIFT                (0x00000017U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT23_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT24_MASK                 (0x01000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT24_SHIFT                (0x00000018U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT24_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT25_MASK                 (0x02000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT25_SHIFT                (0x00000019U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT25_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT26_MASK                 (0x04000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT26_SHIFT                (0x0000001AU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT26_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT27_MASK                 (0x08000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT27_SHIFT                (0x0000001BU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT27_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT28_MASK                 (0x10000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT28_SHIFT                (0x0000001CU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT28_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT29_MASK                 (0x20000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT29_SHIFT                (0x0000001DU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT29_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT30_MASK                 (0x40000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT30_SHIFT                (0x0000001EU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT30_MAX                  (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT31_MASK                 (0x80000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT31_SHIFT                (0x0000001FU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_STAT31_MAX                  (0x00000001U)
-
 
 /* DCC_STAT */
 
@@ -2729,20 +2438,12 @@ typedef struct {
 
 /* R5SS0_CORE0_RL2_CTRL */
 
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE0_RL2_CTRL_BYPASS_EN_MASK       (0x00000001U)
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE0_RL2_CTRL_BYPASS_EN_SHIFT      (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE0_RL2_CTRL_BYPASS_EN_MAX        (0x00000001U)
-
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE0_RL2_CTRL_RTXIP_SEL_MASK       (0x00000300U)
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE0_RL2_CTRL_RTXIP_SEL_SHIFT      (0x00000008U)
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE0_RL2_CTRL_RTXIP_SEL_MAX        (0x00000003U)
 
 
 /* R5SS0_CORE1_RL2_CTRL */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE1_RL2_CTRL_BYPASS_EN_MASK       (0x00000001U)
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE1_RL2_CTRL_BYPASS_EN_SHIFT      (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE1_RL2_CTRL_BYPASS_EN_MAX        (0x00000001U)
 
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE1_RL2_CTRL_RTXIP_SEL_MASK       (0x00000300U)
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE1_RL2_CTRL_RTXIP_SEL_SHIFT      (0x00000008U)
@@ -2751,20 +2452,12 @@ typedef struct {
 
 /* R5SS1_CORE0_RL2_CTRL */
 
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE0_RL2_CTRL_BYPASS_EN_MASK       (0x00000001U)
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE0_RL2_CTRL_BYPASS_EN_SHIFT      (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE0_RL2_CTRL_BYPASS_EN_MAX        (0x00000001U)
-
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE0_RL2_CTRL_RTXIP_SEL_MASK       (0x00000300U)
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE0_RL2_CTRL_RTXIP_SEL_SHIFT      (0x00000008U)
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE0_RL2_CTRL_RTXIP_SEL_MAX        (0x00000003U)
 
 
 /* R5SS1_CORE1_RL2_CTRL */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE1_RL2_CTRL_BYPASS_EN_MASK       (0x00000001U)
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE1_RL2_CTRL_BYPASS_EN_SHIFT      (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE1_RL2_CTRL_BYPASS_EN_MAX        (0x00000001U)
 
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE1_RL2_CTRL_RTXIP_SEL_MASK       (0x00000300U)
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE1_RL2_CTRL_RTXIP_SEL_SHIFT      (0x00000008U)
@@ -2925,21 +2618,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN_PROXY_EPWM_TB_CLKEN_EPWM2_TB_CLKEN_PROXY_MASK (0x00000004U)
 #define CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN_PROXY_EPWM_TB_CLKEN_EPWM2_TB_CLKEN_PROXY_SHIFT (0x00000002U)
 #define CSL_MAIN_CTRL_MMR_CFG0_EPWM_TB_CLKEN_PROXY_EPWM_TB_CLKEN_EPWM2_TB_CLKEN_PROXY_MAX (0x00000001U)
-
-
-/* EPWM_ERR_STAT_PROXY */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_EPWM_ERR_STAT_PROXY_EPWM_ERR_STAT_EPWM0_TZ_ERR_PROXY_MASK (0x00000001U)
-#define CSL_MAIN_CTRL_MMR_CFG0_EPWM_ERR_STAT_PROXY_EPWM_ERR_STAT_EPWM0_TZ_ERR_PROXY_SHIFT (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_EPWM_ERR_STAT_PROXY_EPWM_ERR_STAT_EPWM0_TZ_ERR_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_EPWM_ERR_STAT_PROXY_EPWM_ERR_STAT_EPWM1_TZ_ERR_PROXY_MASK (0x00000002U)
-#define CSL_MAIN_CTRL_MMR_CFG0_EPWM_ERR_STAT_PROXY_EPWM_ERR_STAT_EPWM1_TZ_ERR_PROXY_SHIFT (0x00000001U)
-#define CSL_MAIN_CTRL_MMR_CFG0_EPWM_ERR_STAT_PROXY_EPWM_ERR_STAT_EPWM1_TZ_ERR_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_EPWM_ERR_STAT_PROXY_EPWM_ERR_STAT_EPWM2_TZ_ERR_PROXY_MASK (0x00000004U)
-#define CSL_MAIN_CTRL_MMR_CFG0_EPWM_ERR_STAT_PROXY_EPWM_ERR_STAT_EPWM2_TZ_ERR_PROXY_SHIFT (0x00000002U)
-#define CSL_MAIN_CTRL_MMR_CFG0_EPWM_ERR_STAT_PROXY_EPWM_ERR_STAT_EPWM2_TZ_ERR_PROXY_MAX (0x00000001U)
 
 
 /* EPWM0_CTRL_PROXY */
@@ -3301,41 +2979,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_C7XV_CTRL1_PROXY_C7XV_CTRL1_ORD15_PROXY_MAX (0x00000001U)
 
 
-/* SPARE_CTRL0_PROXY */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_CTRL0_PROXY_SPARE_CTRL0_SPARE_OUT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_CTRL0_PROXY_SPARE_CTRL0_SPARE_OUT_PROXY_SHIFT (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_CTRL0_PROXY_SPARE_CTRL0_SPARE_OUT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* SPARE_CTRL1_PROXY */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_CTRL1_PROXY_SPARE_CTRL1_SPARE_OUT_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_CTRL1_PROXY_SPARE_CTRL1_SPARE_OUT_PROXY_SHIFT (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_CTRL1_PROXY_SPARE_CTRL1_SPARE_OUT_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* SPARE_STAT0_PROXY */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_STAT0_PROXY_SPARE_STAT0_SPARE_IN_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_STAT0_PROXY_SPARE_STAT0_SPARE_IN_PROXY_SHIFT (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_STAT0_PROXY_SPARE_STAT0_SPARE_IN_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* SPARE_STAT1_PROXY */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_STAT1_PROXY_SPARE_STAT1_SPARE_IN_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_STAT1_PROXY_SPARE_STAT1_SPARE_IN_PROXY_SHIFT (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_STAT1_PROXY_SPARE_STAT1_SPARE_IN_PROXY_MAX (0xFFFFFFFFU)
-
-
-/* SPARE_TRIM0_PROXY */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_TRIM0_PROXY_SPARE_TRIM0_TRIM_PROXY_MASK (0xFFFFFFFFU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_TRIM0_PROXY_SPARE_TRIM0_TRIM_PROXY_SHIFT (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SPARE_TRIM0_PROXY_SPARE_TRIM0_TRIM_PROXY_MAX (0xFFFFFFFFU)
-
-
 /* EMMC0_STAT_PROXY */
 
 #define CSL_MAIN_CTRL_MMR_CFG0_EMMC0_STAT_PROXY_EMMC0_STAT_SIG1P8_EN_PROXY_MASK (0x00000001U)
@@ -3355,10 +2998,6 @@ typedef struct {
 
 
 /* ADC0_TRIM_PROXY */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_ADC0_TRIM_PROXY_ADC0_TRIM_ENABLE_CAL_PROXY_MASK (0x0000001FU)
-#define CSL_MAIN_CTRL_MMR_CFG0_ADC0_TRIM_PROXY_ADC0_TRIM_ENABLE_CAL_PROXY_SHIFT (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_ADC0_TRIM_PROXY_ADC0_TRIM_ENABLE_CAL_PROXY_MAX (0x0000001FU)
 
 #define CSL_MAIN_CTRL_MMR_CFG0_ADC0_TRIM_PROXY_ADC0_TRIM_ACTIVATE_CALB_PROXY_MASK (0x000003E0U)
 #define CSL_MAIN_CTRL_MMR_CFG0_ADC0_TRIM_PROXY_ADC0_TRIM_ACTIVATE_CALB_PROXY_SHIFT (0x00000005U)
@@ -3424,145 +3063,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_FSS1_CTRL0_PROXY_FSS1_CTRL0_S0_BOOT_SIZE_PROXY_SHIFT (0x00000008U)
 #define CSL_MAIN_CTRL_MMR_CFG0_FSS1_CTRL0_PROXY_FSS1_CTRL0_S0_BOOT_SIZE_PROXY_MAX (0x00000001U)
 
-#define CSL_MAIN_CTRL_MMR_CFG0_FSS1_CTRL0_PROXY_FSS1_CTRL0_S1_BOOT_SEG_PROXY_MASK (0x003F0000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_FSS1_CTRL0_PROXY_FSS1_CTRL0_S1_BOOT_SEG_PROXY_SHIFT (0x00000010U)
-#define CSL_MAIN_CTRL_MMR_CFG0_FSS1_CTRL0_PROXY_FSS1_CTRL0_S1_BOOT_SEG_PROXY_MAX (0x0000003FU)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_FSS1_CTRL0_PROXY_FSS1_CTRL0_S1_BOOT_SIZE_PROXY_MASK (0x01000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_FSS1_CTRL0_PROXY_FSS1_CTRL0_S1_BOOT_SIZE_PROXY_SHIFT (0x00000018U)
-#define CSL_MAIN_CTRL_MMR_CFG0_FSS1_CTRL0_PROXY_FSS1_CTRL0_S1_BOOT_SIZE_PROXY_MAX (0x00000001U)
-
-
-/* SOC_INT_STAT0_PROXY */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT0_PROXY_MASK (0x00000001U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT0_PROXY_SHIFT (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT0_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT1_PROXY_MASK (0x00000002U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT1_PROXY_SHIFT (0x00000001U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT1_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT2_PROXY_MASK (0x00000004U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT2_PROXY_SHIFT (0x00000002U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT2_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT3_PROXY_MASK (0x00000008U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT3_PROXY_SHIFT (0x00000003U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT3_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT4_PROXY_MASK (0x00000010U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT4_PROXY_SHIFT (0x00000004U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT4_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT5_PROXY_MASK (0x00000020U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT5_PROXY_SHIFT (0x00000005U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT5_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT6_PROXY_MASK (0x00000040U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT6_PROXY_SHIFT (0x00000006U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT6_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT7_PROXY_MASK (0x00000080U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT7_PROXY_SHIFT (0x00000007U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT7_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT8_PROXY_MASK (0x00000100U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT8_PROXY_SHIFT (0x00000008U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT8_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT9_PROXY_MASK (0x00000200U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT9_PROXY_SHIFT (0x00000009U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT9_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT10_PROXY_MASK (0x00000400U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT10_PROXY_SHIFT (0x0000000AU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT10_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT11_PROXY_MASK (0x00000800U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT11_PROXY_SHIFT (0x0000000BU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT11_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT12_PROXY_MASK (0x00001000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT12_PROXY_SHIFT (0x0000000CU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT12_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT13_PROXY_MASK (0x00002000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT13_PROXY_SHIFT (0x0000000DU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT13_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT14_PROXY_MASK (0x00004000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT14_PROXY_SHIFT (0x0000000EU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT14_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT15_PROXY_MASK (0x00008000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT15_PROXY_SHIFT (0x0000000FU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT15_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT16_PROXY_MASK (0x00010000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT16_PROXY_SHIFT (0x00000010U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT16_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT17_PROXY_MASK (0x00020000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT17_PROXY_SHIFT (0x00000011U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT17_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT18_PROXY_MASK (0x00040000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT18_PROXY_SHIFT (0x00000012U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT18_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT19_PROXY_MASK (0x00080000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT19_PROXY_SHIFT (0x00000013U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT19_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT20_PROXY_MASK (0x00100000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT20_PROXY_SHIFT (0x00000014U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT20_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT21_PROXY_MASK (0x00200000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT21_PROXY_SHIFT (0x00000015U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT21_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT22_PROXY_MASK (0x00400000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT22_PROXY_SHIFT (0x00000016U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT22_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT23_PROXY_MASK (0x00800000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT23_PROXY_SHIFT (0x00000017U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT23_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT24_PROXY_MASK (0x01000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT24_PROXY_SHIFT (0x00000018U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT24_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT25_PROXY_MASK (0x02000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT25_PROXY_SHIFT (0x00000019U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT25_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT26_PROXY_MASK (0x04000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT26_PROXY_SHIFT (0x0000001AU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT26_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT27_PROXY_MASK (0x08000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT27_PROXY_SHIFT (0x0000001BU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT27_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT28_PROXY_MASK (0x10000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT28_PROXY_SHIFT (0x0000001CU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT28_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT29_PROXY_MASK (0x20000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT29_PROXY_SHIFT (0x0000001DU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT29_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT30_PROXY_MASK (0x40000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT30_PROXY_SHIFT (0x0000001EU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT30_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT31_PROXY_MASK (0x80000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT31_PROXY_SHIFT (0x0000001FU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SOC_INT_STAT0_PROXY_SOC_INT_STAT0_STAT31_PROXY_MAX (0x00000001U)
-
 
 /* DCC_STAT_PROXY */
 
@@ -3613,20 +3113,12 @@ typedef struct {
 
 /* R5SS0_CORE0_RL2_CTRL_PROXY */
 
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE0_RL2_CTRL_PROXY_R5SS0_CORE0_RL2_CTRL_BYPASS_EN_PROXY_MASK (0x00000001U)
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE0_RL2_CTRL_PROXY_R5SS0_CORE0_RL2_CTRL_BYPASS_EN_PROXY_SHIFT (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE0_RL2_CTRL_PROXY_R5SS0_CORE0_RL2_CTRL_BYPASS_EN_PROXY_MAX (0x00000001U)
-
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE0_RL2_CTRL_PROXY_R5SS0_CORE0_RL2_CTRL_RTXIP_SEL_PROXY_MASK (0x00000300U)
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE0_RL2_CTRL_PROXY_R5SS0_CORE0_RL2_CTRL_RTXIP_SEL_PROXY_SHIFT (0x00000008U)
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE0_RL2_CTRL_PROXY_R5SS0_CORE0_RL2_CTRL_RTXIP_SEL_PROXY_MAX (0x00000003U)
 
 
 /* R5SS0_CORE1_RL2_CTRL_PROXY */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE1_RL2_CTRL_PROXY_R5SS0_CORE1_RL2_CTRL_BYPASS_EN_PROXY_MASK (0x00000001U)
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE1_RL2_CTRL_PROXY_R5SS0_CORE1_RL2_CTRL_BYPASS_EN_PROXY_SHIFT (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE1_RL2_CTRL_PROXY_R5SS0_CORE1_RL2_CTRL_BYPASS_EN_PROXY_MAX (0x00000001U)
 
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE1_RL2_CTRL_PROXY_R5SS0_CORE1_RL2_CTRL_RTXIP_SEL_PROXY_MASK (0x00000300U)
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS0_CORE1_RL2_CTRL_PROXY_R5SS0_CORE1_RL2_CTRL_RTXIP_SEL_PROXY_SHIFT (0x00000008U)
@@ -3635,20 +3127,12 @@ typedef struct {
 
 /* R5SS1_CORE0_RL2_CTRL_PROXY */
 
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE0_RL2_CTRL_PROXY_R5SS1_CORE0_RL2_CTRL_BYPASS_EN_PROXY_MASK (0x00000001U)
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE0_RL2_CTRL_PROXY_R5SS1_CORE0_RL2_CTRL_BYPASS_EN_PROXY_SHIFT (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE0_RL2_CTRL_PROXY_R5SS1_CORE0_RL2_CTRL_BYPASS_EN_PROXY_MAX (0x00000001U)
-
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE0_RL2_CTRL_PROXY_R5SS1_CORE0_RL2_CTRL_RTXIP_SEL_PROXY_MASK (0x00000300U)
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE0_RL2_CTRL_PROXY_R5SS1_CORE0_RL2_CTRL_RTXIP_SEL_PROXY_SHIFT (0x00000008U)
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE0_RL2_CTRL_PROXY_R5SS1_CORE0_RL2_CTRL_RTXIP_SEL_PROXY_MAX (0x00000003U)
 
 
 /* R5SS1_CORE1_RL2_CTRL_PROXY */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE1_RL2_CTRL_PROXY_R5SS1_CORE1_RL2_CTRL_BYPASS_EN_PROXY_MASK (0x00000001U)
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE1_RL2_CTRL_PROXY_R5SS1_CORE1_RL2_CTRL_BYPASS_EN_PROXY_SHIFT (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE1_RL2_CTRL_PROXY_R5SS1_CORE1_RL2_CTRL_BYPASS_EN_PROXY_MAX (0x00000001U)
 
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE1_RL2_CTRL_PROXY_R5SS1_CORE1_RL2_CTRL_RTXIP_SEL_PROXY_MASK (0x00000300U)
 #define CSL_MAIN_CTRL_MMR_CFG0_R5SS1_CORE1_RL2_CTRL_PROXY_R5SS1_CORE1_RL2_CTRL_RTXIP_SEL_PROXY_SHIFT (0x00000008U)
@@ -3798,10 +3282,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_CLKOUT_CTRL_CLK_SEL_MASK                  (0x00000001U)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLKOUT_CTRL_CLK_SEL_SHIFT                 (0x00000000U)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLKOUT_CTRL_CLK_SEL_MAX                   (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_CLKOUT_CTRL_CLK_EN_MASK                   (0x00000010U)
-#define CSL_MAIN_CTRL_MMR_CFG0_CLKOUT_CTRL_CLK_EN_SHIFT                  (0x00000004U)
-#define CSL_MAIN_CTRL_MMR_CFG0_CLKOUT_CTRL_CLK_EN_MAX                    (0x00000001U)
 
 
 /* MAIN_PLL0_CLKSEL */
@@ -4795,10 +4275,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_CLKOUT_CTRL_PROXY_CLKOUT_CTRL_CLK_SEL_PROXY_MASK (0x00000001U)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLKOUT_CTRL_PROXY_CLKOUT_CTRL_CLK_SEL_PROXY_SHIFT (0x00000000U)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLKOUT_CTRL_PROXY_CLKOUT_CTRL_CLK_SEL_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_CLKOUT_CTRL_PROXY_CLKOUT_CTRL_CLK_EN_PROXY_MASK (0x00000010U)
-#define CSL_MAIN_CTRL_MMR_CFG0_CLKOUT_CTRL_PROXY_CLKOUT_CTRL_CLK_EN_PROXY_SHIFT (0x00000004U)
-#define CSL_MAIN_CTRL_MMR_CFG0_CLKOUT_CTRL_PROXY_CLKOUT_CTRL_CLK_EN_PROXY_MAX (0x00000001U)
 
 
 /* MAIN_PLL0_CLKSEL_PROXY */
@@ -6340,44 +5816,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P3_R5_CLAIMREG_P3_R5_MAX         (0xFFFFFFFFU)
 
 
-/* MAIN_PLL_TEST_CLKSEL */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL0_MASK    (0x00000001U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL0_SHIFT   (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL0_MAX     (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL1_MASK    (0x00000002U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL1_SHIFT   (0x00000001U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL1_MAX     (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL2_MASK    (0x00000004U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL2_SHIFT   (0x00000002U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL2_MAX     (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL4_MASK    (0x00000010U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL4_SHIFT   (0x00000004U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL4_MAX     (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL7_MASK    (0x00000080U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL7_SHIFT   (0x00000007U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL7_MAX     (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL14_MASK   (0x00004000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL14_SHIFT  (0x0000000EU)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL14_MAX    (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL15_MASK   (0x00008000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL15_SHIFT  (0x0000000FU)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL15_MAX    (0x00000001U)
-
-
-/* ADC0_TEST */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_ADC0_TEST_TEST_MASK                       (0xFFFFFFFFU)
-#define CSL_MAIN_CTRL_MMR_CFG0_ADC0_TEST_TEST_SHIFT                      (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_ADC0_TEST_TEST_MAX                        (0xFFFFFFFFU)
-
-
 /* LOCK4_KICK0 */
 
 #define CSL_MAIN_CTRL_MMR_CFG0_LOCK4_KICK0_LOCK4_KICK0_MASK              (0xFFFFFFFFU)
@@ -6495,44 +5933,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P4_R14_READONLY_CLAIMREG_P4_R14_READONLY_MASK (0xFFFFFFFFU)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P4_R14_READONLY_CLAIMREG_P4_R14_READONLY_SHIFT (0x00000000U)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P4_R14_READONLY_CLAIMREG_P4_R14_READONLY_MAX (0xFFFFFFFFU)
-
-
-/* MAIN_PLL_TEST_CLKSEL_PROXY */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL0_PROXY_MASK (0x00000001U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL0_PROXY_SHIFT (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL0_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL1_PROXY_MASK (0x00000002U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL1_PROXY_SHIFT (0x00000001U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL1_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL2_PROXY_MASK (0x00000004U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL2_PROXY_SHIFT (0x00000002U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL2_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL4_PROXY_MASK (0x00000010U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL4_PROXY_SHIFT (0x00000004U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL4_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL7_PROXY_MASK (0x00000080U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL7_PROXY_SHIFT (0x00000007U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL7_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL14_PROXY_MASK (0x00004000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL14_PROXY_SHIFT (0x0000000EU)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL14_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL15_PROXY_MASK (0x00008000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL15_PROXY_SHIFT (0x0000000FU)
-#define CSL_MAIN_CTRL_MMR_CFG0_MAIN_PLL_TEST_CLKSEL_PROXY_MAIN_PLL_TEST_CLKSEL_CLK_SEL_PLL15_PROXY_MAX (0x00000001U)
-
-
-/* ADC0_TEST_PROXY */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_ADC0_TEST_PROXY_TEST_PROXY_MASK           (0xFFFFFFFFU)
-#define CSL_MAIN_CTRL_MMR_CFG0_ADC0_TEST_PROXY_TEST_PROXY_SHIFT          (0x00000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_ADC0_TEST_PROXY_TEST_PROXY_MAX            (0xFFFFFFFFU)
 
 
 /* LOCK4_KICK0_PROXY */
@@ -6654,17 +6054,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P4_R14_CLAIMREG_P4_R14_MAX       (0xFFFFFFFFU)
 
 
-/* SLEEP_STATUS */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SLEEP_STATUS_WKUP_RDY_MASK                (0x00000010U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SLEEP_STATUS_WKUP_RDY_SHIFT               (0x00000004U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SLEEP_STATUS_WKUP_RDY_MAX                 (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SLEEP_STATUS_EXITED_SLEEP_MASK            (0x80000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SLEEP_STATUS_EXITED_SLEEP_SHIFT           (0x0000001FU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SLEEP_STATUS_EXITED_SLEEP_MAX             (0x00000001U)
-
-
 /* LOCK6_KICK0 */
 
 #define CSL_MAIN_CTRL_MMR_CFG0_LOCK6_KICK0_LOCK6_KICK0_MASK              (0xFFFFFFFFU)
@@ -6740,17 +6129,6 @@ typedef struct {
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P6_R8_READONLY_CLAIMREG_P6_R8_READONLY_MASK (0xFFFFFFFFU)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P6_R8_READONLY_CLAIMREG_P6_R8_READONLY_SHIFT (0x00000000U)
 #define CSL_MAIN_CTRL_MMR_CFG0_CLAIMREG_P6_R8_READONLY_CLAIMREG_P6_R8_READONLY_MAX (0xFFFFFFFFU)
-
-
-/* SLEEP_STATUS_PROXY */
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SLEEP_STATUS_PROXY_SLEEP_STATUS_WKUP_RDY_PROXY_MASK (0x00000010U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SLEEP_STATUS_PROXY_SLEEP_STATUS_WKUP_RDY_PROXY_SHIFT (0x00000004U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SLEEP_STATUS_PROXY_SLEEP_STATUS_WKUP_RDY_PROXY_MAX (0x00000001U)
-
-#define CSL_MAIN_CTRL_MMR_CFG0_SLEEP_STATUS_PROXY_SLEEP_STATUS_EXITED_SLEEP_PROXY_MASK (0x80000000U)
-#define CSL_MAIN_CTRL_MMR_CFG0_SLEEP_STATUS_PROXY_SLEEP_STATUS_EXITED_SLEEP_PROXY_SHIFT (0x0000001FU)
-#define CSL_MAIN_CTRL_MMR_CFG0_SLEEP_STATUS_PROXY_SLEEP_STATUS_EXITED_SLEEP_PROXY_MAX (0x00000001U)
 
 
 /* LOCK6_KICK0_PROXY */

@@ -485,7 +485,7 @@ void SOC_generateSwWarmResetMainDomain(void)
 
     /* MAIN domain reset */
     CSL_REG32_FINS(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_RST_CTRL,
-                    WKUP_CTRL_MMR_CFG0_RST_CTRL_SW_MAIN_WARMRST,
+                    MCU_CTRL_MMR_CFG0_RST_CTRL_SW_MCU_WARMRST,
                     0x6U);
 
     /* Lock CONTROL MMR registers */

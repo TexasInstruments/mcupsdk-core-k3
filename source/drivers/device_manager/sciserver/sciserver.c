@@ -643,6 +643,11 @@ static int32_t Sciserver_UserProcessMsg(uint32_t *msg_recv,
             reqMsgSize = sizeof(struct tisci_msg_lpm_abort_req);
             respMsgSize = sizeof(struct tisci_msg_lpm_abort_resp);
             break;
+#elif defined(CONFIG_LPM_MIN)
+        case TISCI_MSG_PREPARE_SLEEP:
+            reqMsgSize = sizeof(struct tisci_msg_prepare_sleep_req);
+            respMsgSize = sizeof(struct tisci_msg_prepare_sleep_resp);
+            break;
 #endif
         default:
             /* Forward the full message size */

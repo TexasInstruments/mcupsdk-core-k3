@@ -463,6 +463,21 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                 hdr = (struct tisci_header *) &message;
                 pRespPrm->flags = hdr->flags;
                 break;
+#elif defined(CONFIG_LPM_MIN)
+            case TISCI_MSG_PREPARE_SLEEP:
+                /* Copy the message for local processing */
+                memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+
+                /* Processing prepare sleep message locally */
+                ret = Sciclient_ProcessPmMessage(pReqPrm->flags,message);
+                if (pRespPrm->pRespPayload != NULL)
+                {
+                    memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
+                }
+
+                hdr = (struct tisci_header *) &message;
+                pRespPrm->flags = hdr->flags;
+                break;
 #endif
             case TISCI_MSG_QUERY_FW_CAPS:
                 memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
@@ -794,6 +809,9 @@ int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags, void *tx_msg)
             ret = dm_lpm_get_next_host_state((uint32_t*)tx_msg); break;
         case TISCI_MSG_LPM_ABORT:
             ret = dm_lpm_abort((uint32_t*)tx_msg); break;
+#elif defined(CONFIG_LPM_MIN)
+        case TISCI_MSG_PREPARE_SLEEP             :
+            ret = dm_prepare_sleep_handler((uint32_t*)tx_msg); break;
 #endif
         default:
             ret = CSL_EFAIL; msg_inval = 1U;

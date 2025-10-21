@@ -192,6 +192,10 @@ const example_file_list = [
     "examples/sdl/vtm/vtm_uc/.project/project_am275x.js",
     // TISP Examples
     "examples/tisp/fft2d_dsp_offload/fft2d_rtos_dsp_offload/.project/project.js",
+    "examples/tisp/sigchain_dsp_rt/sigchain_biquad_cascade/.project/project.js",
+    "examples/tisp/sigchain_dsp_rt/sigchain_router_8ch_12ch/.project/project.js",
+    "examples/tisp/sigchain_dsp_rt/sigchain_eq_gain_mute/.project/project.js",
+    "examples/tisp/sigchain_dsp_rt/sigchain_8ch_to_12ch_audio_chain/.project/project.js",
     /* SDL Tests */
     "test/sdl/dcc/dcc_func_test/.project/project_am275x.js",
     "test/sdl/dcc/dcc_unit_test/.project/project_am275x.js",
@@ -202,7 +206,7 @@ const example_file_list = [
     "test/sdl/lbist/.project/project.js",
     "test/sdl/mcrc/mcrcAutomodeTest/.project/project.js",
     "test/sdl/mcrc/mcrcFuncTest/.project/project.js",
-  	"test/sdl/mcrc/mcrcSemimodeTest/.project/project.js",
+    "test/sdl/mcrc/mcrcSemimodeTest/.project/project.js",
     "test/sdl/mcrc/mcrcUt/.project/project.js",
     "test/sdl/pbist/ip_pbist_test/.project/project_am275x.js",
     "test/sdl/pbist/sdl_pbist_test/.project/project_am275x.js",

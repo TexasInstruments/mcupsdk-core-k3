@@ -8440,6 +8440,270 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "biquad cascade signal chain CPU is C75SS0-0 running FREERTOS.",
+        "name": "sigchain_biquad_cascade",
+        "location": "../../examples/tisp/sigchain_dsp_rt/sigchain_biquad_cascade/am275x-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "tisp",
+            "sigchain_dsp_rt",
+            "sigchain_biquad_cascade",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "biquad cascade signal chain CPU is R5FSS0-0 running FREERTOS.",
+        "name": "sigchain_biquad_cascade",
+        "location": "../../examples/tisp/sigchain_dsp_rt/sigchain_biquad_cascade/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "tisp",
+            "sigchain_dsp_rt",
+            "sigchain_biquad_cascade",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "router 8ch to 12ch signal chain CPU is C75SS0-0 running FREERTOS.",
+        "name": "sigchain_router_8ch_12ch",
+        "location": "../../examples/tisp/sigchain_dsp_rt/sigchain_router_8ch_12ch/am275x-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "tisp",
+            "sigchain_dsp_rt",
+            "sigchain_router_8ch_12ch",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "router 8ch to 12ch signal chain CPU is R5FSS0-0 running FREERTOS.",
+        "name": "sigchain_router_8ch_12ch",
+        "location": "../../examples/tisp/sigchain_dsp_rt/sigchain_router_8ch_12ch/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "tisp",
+            "sigchain_dsp_rt",
+            "sigchain_router_8ch_12ch",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "Audio signal chain CPU is C75SS0-0 running FREERTOS.",
+        "name": "sigchain_eq_gain_mute",
+        "location": "../../examples/tisp/sigchain_dsp_rt/sigchain_eq_gain_mute/am275x-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "tisp",
+            "sigchain_dsp_rt",
+            "sigchain_eq_gain_mute",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "Audio signal chain CPU is R5FSS0-0 running FREERTOS.",
+        "name": "sigchain_eq_gain_mute",
+        "location": "../../examples/tisp/sigchain_dsp_rt/sigchain_eq_gain_mute/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "tisp",
+            "sigchain_dsp_rt",
+            "sigchain_eq_gain_mute",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "Audio signal chain CPU is C75SS0-0 running FREERTOS.",
+        "name": "sigchain_8ch_to_12ch_audio_chain",
+        "location": "../../examples/tisp/sigchain_dsp_rt/sigchain_8ch_to_12ch_audio_chain/am275x-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "tisp",
+            "sigchain_dsp_rt",
+            "sigchain_8ch_to_12ch_audio_chain",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "Audio signal chain CPU is R5FSS0-0 running FREERTOS.",
+        "name": "sigchain_8ch_to_12ch_audio_chain",
+        "location": "../../examples/tisp/sigchain_dsp_rt/sigchain_8ch_to_12ch_audio_chain/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "tisp",
+            "sigchain_dsp_rt",
+            "sigchain_8ch_to_12ch_audio_chain",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A IPC Notify echo example System project.",
         "name": "ipc_notify_echo",
         "location": "../../examples/drivers/ipc/ipc_notify_echo/am275x-evm/system_freertos/system.projectspec",
@@ -8543,6 +8807,126 @@
             "tisp",
             "fft2d_dsp_offload",
             "fft2d_rtos_dsp_offload",
+            "system_freertos_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "biquad cascade signal chain System project.",
+        "name": "sigchain_biquad_cascade",
+        "location": "../../examples/tisp/sigchain_dsp_rt/sigchain_biquad_cascade/am275x-evm/system_freertos_nortos/system.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "subCategories": [
+            "tisp",
+            "sigchain_dsp_rt",
+            "sigchain_biquad_cascade",
+            "system_freertos_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "router 8ch to 12ch signal chain System project.",
+        "name": "sigchain_router_8ch_12ch",
+        "location": "../../examples/tisp/sigchain_dsp_rt/sigchain_router_8ch_12ch/am275x-evm/system_freertos_nortos/system.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "subCategories": [
+            "tisp",
+            "sigchain_dsp_rt",
+            "sigchain_router_8ch_12ch",
+            "system_freertos_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "Audio signal chain System project.",
+        "name": "sigchain_eq_gain_mute",
+        "location": "../../examples/tisp/sigchain_dsp_rt/sigchain_eq_gain_mute/am275x-evm/system_freertos_nortos/system.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "subCategories": [
+            "tisp",
+            "sigchain_dsp_rt",
+            "sigchain_eq_gain_mute",
+            "system_freertos_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "Audio signal chain System project.",
+        "name": "sigchain_8ch_to_12ch_audio_chain",
+        "location": "../../examples/tisp/sigchain_dsp_rt/sigchain_8ch_to_12ch_audio_chain/am275x-evm/system_freertos_nortos/system.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "subCategories": [
+            "tisp",
+            "sigchain_dsp_rt",
+            "sigchain_8ch_to_12ch_audio_chain",
             "system_freertos_nortos"
         ],
         "mainCategories": [

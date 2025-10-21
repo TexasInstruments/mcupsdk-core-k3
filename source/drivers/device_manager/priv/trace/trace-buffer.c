@@ -78,9 +78,9 @@ static uint8_t *logbuf_pos;
 
 int32_t trace_print_buffer_string(const uint8_t *str)
 {
-    int32_t i = 0, ret = CSL_PASS;
+    int32_t i = 0U, ret = CSL_PASS;
 
-    for (i = 0; i < TRACE_PRINT_MAX_LENGTH; i++) {
+    for (i = 0U; i < TRACE_PRINT_MAX_LENGTH; i++) {
         if (str[i] != 0U) {
             ret = trace_print_buffer(str[i]);
         }

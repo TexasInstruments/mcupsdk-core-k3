@@ -178,6 +178,7 @@ extern Sciclient_ReqPrm_t reqParam2;
 extern Sciclient_RespPrm_t respParam2;
 extern const Sciserver_hwiData uhd1[];
 extern const Sciserver_taskData utdTest1[];
+extern const Sciserver_taskData utdTest3[2];
 
 /* ========================================================================== */
 /*                                 Macros                                     */

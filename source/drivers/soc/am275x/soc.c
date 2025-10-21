@@ -629,13 +629,6 @@ void SOC_setFSSCtrlFlashBootSize(void)
                        MAIN_CTRL_MMR_CFG0_FSS1_CTRL0_S0_BOOT_SIZE, 1U);
     }
 
-    if(CSL_REG32_FEXT(baseAddr + CSL_MAIN_CTRL_MMR_CFG0_FSS1_CTRL0, \
-                      MAIN_CTRL_MMR_CFG0_FSS1_CTRL0_S1_BOOT_SIZE) != 1U)
-    {
-        CSL_REG32_FINS(baseAddr + CSL_MAIN_CTRL_MMR_CFG0_FSS1_CTRL0, \
-                       MAIN_CTRL_MMR_CFG0_FSS1_CTRL0_S1_BOOT_SIZE, 1U);
-    }
-
     SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MAIN, 1U);
 }
 

@@ -100,6 +100,49 @@ Start McASP Transfer Example
 Stop McASP Transfer Example
 \snippet Mcasp_sample.c stop_transfer_loopback
 
+## SysConfig migration guide 11.01 to 11.02
+
+\note This section highlights key features that have changed or got added from 11.01 to 11.02 SDK
+### AUX clock selection
+
+- This version of SDK (11.02) gives the configurability to choose between different sources of AUXCLK
+
+\imageStyle{docs_src/docs/api_guide/images/mcasp/mcasp_auxclk_sel.png,width:60%}
+\image html docs_src/docs/api_guide/images/mcasp/mcasp_auxclk_sel.png "MCASP AUX Clock selection"
+
+- The specific option for AUXCLK will vary from device to device. View long description in Syscfg view
+  for more details on the AUXCLK options to select from.
+
+- The frequency for the configurable AUX clock options can be choosen at a global level as this will be applicable
+  across all instances of MCASP.
+
+\imageStyle{docs_src/docs/api_guide/images/mcasp/mcasp_auxclk_freq.png,width:40%}
+\image html docs_src/docs/api_guide/images/mcasp/mcasp_auxclk_freq.png "MCASP AUX Clock Frequency Configuration"
+
+- Some option in the AUX clock selections might expect the aux clock to be supplied externally to the SoC.
+  Refer the TRM of the specific device to check if the clock is supplied externally or generated interally.
+
+- When using an internally generated auxiliary clock source, not all frequency values are achievable due to hardware limitations.
+  If the user-specified frequency cannot be generated, the system will throw a runtime error.
+
+### Clock Divider Configurability
+
+- This version of SDK (11.02) gives configurability of the High Clock Divider (HCLK Divider), and the BCLK divider.
+
+\imageStyle{docs_src/docs/api_guide/images/mcasp/mcasp_clkdiv.png,width:40%}
+\image html docs_src/docs/api_guide/images/mcasp/mcasp_clkdiv.png "MCASP Clock Divider Configuration"
+
+- The "Re-Calculate" button can be used to calculate the divider values that would result in the closest FSYNC value required.
+
+- The "Apply" button needs to be pressed to view the frequencies for any change in the Sysconfig GUI that
+  have resulted in a change of frequencies.
+
+- Press the "Apply" button to update the frequency information displayed in the Syscfg GUI for all configuration parameters that affect frequency settings.
+
+- User have to ensure all the frequencies that is displayed is as expected in the system after pressing "Apply".
+
+- User can adjust the Divider values and press the "Apply" button to achieve any specific clock frequencies.
+
 
 ## API
 

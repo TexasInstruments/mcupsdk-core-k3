@@ -802,7 +802,6 @@ static void Sciclient_sendMessage(uint32_t        thread,
                                   uint32_t        payloadSize)
 {
     uint32_t        i   = 0U;
-    const uint8_t *msg = pSecHeader;
     uint32_t numWords   = 0U;
     uint32_t test = 0U;
     uint32_t offset = 0U;
@@ -814,19 +813,18 @@ static void Sciclient_sendMessage(uint32_t        thread,
         for (i = 0U; i < gSecHeaderSizeWords; i++)
         {
             /*Change this when unaligned access is supported*/
-            (void) memcpy((void *)&test, (const void *)&msg[offset], 4);
+            (void) memcpy((void *)&test, (const void *)&pSecHeader[offset], 4);
             CSL_REG32_WR(threadAddr, test);
             offset += 4U;
             threadAddr+=sizeof(uint32_t);
         }
     }
     /* Write header */
-    msg = pHeader;
     offset = 0U;
     for (i = 0U; i < SCICLIENT_HEADER_SIZE_IN_WORDS; i++)
     {
         /*Change this when unaligned access is supported*/
-        (void) memcpy((void *)&test, (const void *)&msg[offset], 4);
+        (void) memcpy((void *)&test, (const void *)&pHeader[offset], 4);
         CSL_REG32_WR(threadAddr, test);
         offset += 4U;
         threadAddr+=sizeof(uint32_t);
@@ -835,12 +833,11 @@ static void Sciclient_sendMessage(uint32_t        thread,
     if (payloadSize > 0U)
     {
         numWords   = (payloadSize+3U)/4U;
-        msg = pPayload;
         offset = 0U;
         for (; i < (SCICLIENT_HEADER_SIZE_IN_WORDS + numWords); i++)
         {
             /*Change this when unaligned access is supported*/
-            (void) memcpy((void *)&test, (const void *)&msg[offset], 4);
+            (void) memcpy((void *)&test, (const void *)&pPayload[offset], 4);
             CSL_REG32_WR(threadAddr, test);
             offset += 4U;
             threadAddr+=sizeof(uint32_t);

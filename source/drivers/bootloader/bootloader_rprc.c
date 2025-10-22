@@ -237,12 +237,22 @@ int32_t Bootloader_rprcImageLoad(Bootloader_Handle handle, Bootloader_CpuInfo *c
     Bootloader_Config memConfig = {0U};
     Bootloader_MemArgs memArgs = {0U};
 
-    if(config)
+    if((config) && (config->args))
     {
-        if((config->bootMedia != BOOTLOADER_MEDIA_MEM) && (Bootloader_socIsAuthRequired() == (uint32_t)1U))
+        if(Bootloader_socIsAuthRequired() == (uint32_t)1U)
         {
             Bootloader_getMemBootloaderConfig(&memConfig, &memArgs);
-            ((Bootloader_MemArgs*)memConfig.args)->appImageBaseAddr = (uint32_t)config->scratchMemPtr;
+
+            /* Initialize the appimage base address according to the boot media */
+            if(config->bootMedia != BOOTLOADER_MEDIA_MEM)
+            {
+                ((Bootloader_MemArgs*)memConfig.args)->appImageBaseAddr = (uint32_t)config->scratchMemPtr;
+            }
+            else
+            {
+                ((Bootloader_MemArgs*)memConfig.args)->appImageBaseAddr = ((Bootloader_MemArgs*)(config->args))->appImageBaseAddr;
+            }
+
             memConfig.fxns->imgSeekFxn(0U, memConfig.args);
         }
         else
@@ -500,12 +510,21 @@ int32_t Bootloader_parseMultiCoreAppImage(Bootloader_Handle handle, Bootloader_B
                 Bootloader_Config memConfig = {0U};
                 Bootloader_MemArgs memArgs = {0U};
 
-                if(config)
+                if((config) && (config->args))
                 {
-                    if((config->bootMedia != BOOTLOADER_MEDIA_MEM) && (Bootloader_socIsAuthRequired() == (uint32_t)1U))
+                    if(Bootloader_socIsAuthRequired() == (uint32_t)1U)
                     {
                         Bootloader_getMemBootloaderConfig(&memConfig, &memArgs);
-                        ((Bootloader_MemArgs*)memConfig.args)->appImageBaseAddr = (uint32_t)config->scratchMemPtr;
+
+                        /* Initialize the appimage base address according to the boot media */
+                        if(config->bootMedia != BOOTLOADER_MEDIA_MEM)
+                        {
+                            ((Bootloader_MemArgs*)memConfig.args)->appImageBaseAddr = (uint32_t)config->scratchMemPtr;
+                        }
+                        else
+                        {
+                            ((Bootloader_MemArgs*)memConfig.args)->appImageBaseAddr = ((Bootloader_MemArgs*)(config->args))->appImageBaseAddr;
+                        }
 
                         config->coresPresentMap = 0;
                         memConfig.fxns->imgSeekFxn(0U, memConfig.args);
@@ -607,12 +626,21 @@ int32_t Bootloader_rprcImageParseEntryPoint(Bootloader_Handle handle, Bootloader
     Bootloader_Config memConfig = {0U};
     Bootloader_MemArgs memArgs = {0U};
 
-    if(config)
+    if((config) && (config->args))
     {
-        if((config->bootMedia != BOOTLOADER_MEDIA_MEM) && (Bootloader_socIsAuthRequired() == (uint32_t)1U))
+        if(Bootloader_socIsAuthRequired() == (uint32_t)1U)
         {
             Bootloader_getMemBootloaderConfig(&memConfig, &memArgs);
-            ((Bootloader_MemArgs*)memConfig.args)->appImageBaseAddr = (uint32_t)config->scratchMemPtr;
+
+            /* Initialize the appimage base address according to the boot media */
+            if(config->bootMedia != BOOTLOADER_MEDIA_MEM)
+            {
+                ((Bootloader_MemArgs*)memConfig.args)->appImageBaseAddr = (uint32_t)config->scratchMemPtr;
+            }
+            else
+            {
+                ((Bootloader_MemArgs*)memConfig.args)->appImageBaseAddr = ((Bootloader_MemArgs*)(config->args))->appImageBaseAddr;
+            }
         }
         else
         {

@@ -3086,7 +3086,7 @@ static void MMCSD_phyGetOtapDelay(uint32_t *outputTapDelaySel, uint32_t *outputT
             *inputTapDelaySel = 1U;
             *inputTapDelayVal = 0U;
             break;
-        case MMCSD_PHY_MODE_DDR50:
+        case MMCSD_PHY_MODE_HSDDR50:
             *outputTapDelaySel = 1U;
             *outputTapDelayVal = 6U;
             *inputTapDelaySel = 1U;

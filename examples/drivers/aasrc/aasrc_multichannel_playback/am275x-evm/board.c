@@ -285,7 +285,7 @@ Clockgen_RegCfg gCdce6214Reg[] = {
     /* Slew rate Control */
     {0x4F, 0x0208},
     /* Disable CMOS output on OUT0 */
-    {0x4E, 0x0000},
+    {0x4E, 0x1000},
     /* Channel 4 LVDS common-mode trim decrement */
     {0x4D, 0x0000},
     /* Channel 4 differential buffer current bias */
@@ -309,15 +309,15 @@ Clockgen_RegCfg gCdce6214Reg[] = {
     /* Integer Divider Division Value of Channel OUT3 */
     {0x43, 0x0006},
     /* Channel 2 differential buffer current bias trim */
-    {0x42, 0x0006},
+    {0x42, 0x0000},
     /* Channel 2 LVDS common-mode trim decrement */
-    {0x41, 0x0808},
+    {0x41, 0x0008},
     /* Reserved */
     {0x40, 0xA181},
     /* Disable CH2 Output Sync */
-    {0x3F, 0x1000},
+    {0x3F, 0x2000},
     /* CH2 Divider */
-    {0x3E, 0x0014},
+    {0x3E, 0x0006},
     /* Reserved */
     {0x3D, 0x0000},
     /* Channel 1 differential buffer current bias trim */
@@ -329,7 +329,7 @@ Clockgen_RegCfg gCdce6214Reg[] = {
     /* Disable CH1 Output Sync */
     {0x39, 0x1000},
     /* CH1 Divider */
-    {0x38, 0x0014},
+    {0x38, 0x0020},
     /* PLL Loop filter 3rd Order Pole Cap - 1.2 pF and Res to 0 kOhm */
     {0x37, 0x001E},
     /* Reserved */
@@ -341,13 +341,13 @@ Clockgen_RegCfg gCdce6214Reg[] = {
     /* Dual PFD Type */
     {0x33, 0x40C0},
     /* PLL Lock detect time to 8.9 ns */
-    {0x32, 0x07C0},
+    {0x32, 0x01C0},
     /* Configure PLL Loop filter zero capacitor */
     {0x31, 0x0013},
     /* Configure PLL Loop filter resistor and capacitor */
-    {0x30, 0x23C7},
+    {0x30, 0x1A14},
     /* Configure down current of PLL_CP */
-    {0x2F, 0x03A8},
+    {0x2F, 0x0A00},
     /* Reserved */
     {0x2E, 0x0000},
     {0x2D, 0x4F80},
@@ -374,12 +374,12 @@ Clockgen_RegCfg gCdce6214Reg[] = {
     /* LSB of sigma delta numerator */
     {0x1F, 0x0000},
     /* PLL-N Divider */
-    {0x1E, 0x0032},
+    {0x1E, 0x0030},
     /* Reserved */
     {0x1D, 0x0000},
     {0x1C, 0x0000},
     /* Sigma Delta Modulator in Integer Mode */
-    {0x1B, 0x0004},
+    {0x1B, 0x0005},
     /* Reserved */
     {0x1A, 0x0000},
     /* Clock Mux */
@@ -412,7 +412,7 @@ Clockgen_RegCfg gCdce6214Reg[] = {
     /* Reserved */
     {0x08, 0x0000},
     /* NVM CRC Error Status */
-    {0x07, 0x0C0D},
+    {0x07, 0x0000},
     /* Reserved */
     {0x06, 0x0000},
     /* Configure Prescalar */

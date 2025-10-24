@@ -227,6 +227,7 @@ I2C_Handle I2C_open(uint32_t idx, const I2C_Params *params)
     else
     {
         status = SystemP_FAILURE;
+        handle = NULL;
     }
 
     if(SystemP_SUCCESS == status)

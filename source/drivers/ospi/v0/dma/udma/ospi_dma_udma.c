@@ -263,7 +263,7 @@ static int32_t OspiDma_udmaCopy(void* ospiDmaArgs, void* dst, void* src, uint32_
     int32_t status = SystemP_SUCCESS;
     int32_t udmaStatus = UDMA_SOK;
     uint32_t quotient = 0U;
-    uint32_t rmainder = 0U;
+    uint32_t remainder = 0U;
     uint16_t icnt[4] = { 0U, 0U, 0U, 0U };
 
     if (length < OSPI_DMA_UDMA_MAX_L0_XFER_SIZE)
@@ -275,7 +275,7 @@ static int32_t OspiDma_udmaCopy(void* ospiDmaArgs, void* dst, void* src, uint32_
     {
         icnt[0] = (uint16_t)OSPI_DMA_UDMA_XFER_SIZE;
         quotient = length / OSPI_DMA_UDMA_XFER_SIZE;
-        rmainder = length % OSPI_DMA_UDMA_XFER_SIZE;
+        remainder = length % OSPI_DMA_UDMA_XFER_SIZE;
         icnt[1] = (uint16_t)(quotient);
     }
 
@@ -295,15 +295,15 @@ static int32_t OspiDma_udmaCopy(void* ospiDmaArgs, void* dst, void* src, uint32_
 
     udmaStatus += OspiDma_udmaUpdateSubmitTR(ospiDmaArgs, dst, src, icnt);
 
-    if(rmainder != 0U)
+    if(remainder != 0U)
     {
         /* residual data */
-        icnt[0] = (uint16_t)rmainder;
+        icnt[0] = (uint16_t)remainder;
         icnt[1] = (uint16_t)1U;
         icnt[2] = (uint16_t)1U;
         icnt[3] = (uint16_t)1U;
 
-        udmaStatus += OspiDma_udmaUpdateSubmitTR(ospiDmaArgs, ((uint8_t *)dst+(length-rmainder)), ((uint8_t *)src+(length-rmainder)), icnt);
+        udmaStatus += OspiDma_udmaUpdateSubmitTR(ospiDmaArgs, ((uint8_t *)dst+(length-remainder)), ((uint8_t *)src+(length-remainder)), icnt);
     }
 
     if(udmaStatus == UDMA_SOK)

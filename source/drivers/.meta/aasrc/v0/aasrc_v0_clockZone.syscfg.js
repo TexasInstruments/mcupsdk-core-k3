@@ -1,6 +1,7 @@
 
 let common = system.getScript("/common");
 let module = system.modules['/drivers/aasrc/aasrc'];
+let soc = system.getScript(`/drivers/aasrc/soc/aasrc_${common.getSocName()}`);
 
 let aasrc_clockZone_module_name = "/drivers/aasrc/v0/aasrc_v0_clockZone";
 
@@ -45,68 +46,14 @@ let aasrc_clockZone_module = {
             name: "extClkSrc",
             displayName: "External Clock Source",
             default: "MAIN_PLL4_HSDIV3_CLKOUT",
-            options: [
-                {
-                    name: "McASP0_AFSR",
-                },
-                {
-                    name: "McASP1_AFSR",
-                },
-                {
-                    name: "McASP2_AFSR",
-                },
-                {
-                    name: "McASP3_AFSR",
-                },
-                {
-                    name: "McASP4_AFSR",
-                },
-                {
-                    name: "McASP0_AFSX",
-                },
-                {
-                    name: "McASP1_AFSX",
-                },
-                {
-                    name: "McASP2_AFSX",
-                },
-                {
-                    name: "McASP3_AFSX",
-                },
-                {
-                    name: "McASP4_AFSX",
-                },
-                {
-                    name: "AUDIO_EXT_REFCLK0_Pin",
-                },
-                {
-                    name: "AUDIO_EXT_REFCLK1_Pin",
-                },
-                {
-                    name: "AUDIO_EXT_REFCLK2_Pin",
-                },
-                {
-                    name: "ADC0_CLK",
-                },
-                {
-                    name: "MLB_IO_CLK",
-                },
-                {
-                    name: "MAIN_PLL4_HSDIV3_CLKOUT",
-                },
-                {
-                    name: "MCU_EXT_REFCLK0_Pin",
-                },
-                {
-                    name: "EXT_REFCLK1_Pin",
-                },
-                {
-                    name: "CPSW_CPTS_GENF0",
-                },
-                {
-                    name: "CPSW_CPTS_GENF1",
-                },
-            ],
+            options: function(inst) {
+                let parentInstance = inst.$ownedBy;
+                if (parentInstance && parentInstance.aasrcReceiveClockZone && parentInstance.aasrcReceiveClockZone.indexOf(inst) >= 0) {
+                    return soc.rxExtClkSrcOptions;
+                } else if (parentInstance && parentInstance.aasrcTransmitClockZone && parentInstance.aasrcTransmitClockZone.indexOf(inst) >= 0) {
+                    return soc.txExtClkSrcOptions;
+                }
+            },
             description: "External clock source to be routed to the clock zone",
         },
         {

@@ -193,6 +193,49 @@ const aasrc_config_r5fss = [
     },
 ];
 
+/* External Clock Source Options for Rx */
+const rxExtClkSrcOptions = [
+    { name: "McASP0_AFSR" },
+    { name: "McASP1_AFSR" },
+    { name: "McASP2_AFSR" },
+    { name: "McASP3_AFSR" },
+    { name: "McASP4_AFSR" },
+    { name: "McASP0_AFSX" },
+    { name: "McASP1_AFSX" },
+    { name: "McASP2_AFSX" },
+    { name: "McASP3_AFSX" },
+    { name: "McASP4_AFSX" },
+    { name: "AUDIO_EXT_REFCLK0_Pin" },
+    { name: "AUDIO_EXT_REFCLK1_Pin" },
+    { name: "AUDIO_EXT_REFCLK2_Pin" },
+    { name: "ADC0_CLK" },
+    { name: "MLB_IO_CLK" },
+    { name: "MAIN_PLL4_HSDIV3_CLKOUT" },
+    { name: "MCU_EXT_REFCLK0_Pin" },
+    { name: "EXT_REFCLK1_Pin" },
+    { name: "CPSW_CPTS_GENF0" },
+    { name: "CPSW_CPTS_GENF1" },
+];
+
+/* External Clock Source Options for Tx */
+const txExtClkSrcOptions = [
+    { name: "McASP0_AFSX" },
+    { name: "McASP1_AFSX" },
+    { name: "McASP2_AFSX" },
+    { name: "McASP3_AFSX" },
+    { name: "McASP4_AFSX" },
+    { name: "AUDIO_EXT_REFCLK0_Pin" },
+    { name: "AUDIO_EXT_REFCLK1_Pin" },
+    { name: "AUDIO_EXT_REFCLK2_Pin" },
+    { name: "ADC0_CLK" },
+    { name: "MLB_IO_CLK" },
+    { name: "MAIN_PLL4_HSDIV3_CLKOUT" },
+    { name: "MCU_EXT_REFCLK0_Pin" },
+    { name: "EXT_REFCLK1_Pin" },
+    { name: "CPSW_CPTS_GENF0" },
+    { name: "CPSW_CPTS_GENF1" },
+];
+
 function getMaxChannels(inst) {
     return 8;   /* max number of channels per AASRC */
 }
@@ -260,4 +303,6 @@ exports = {
     getMaxClockzone,
     isFrequencyDefined,
     getDeEmphasisValue,
+    rxExtClkSrcOptions,
+    txExtClkSrcOptions,
 };

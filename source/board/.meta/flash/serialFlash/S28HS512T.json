@@ -36,8 +36,8 @@
             "cmdWr": "0x12",
             "modeClksCmd": 0,
             "modeClksRd": 0,
-            "dummyClksCmd": 4,
-            "dummyClksRd": 21,
+            "dummyClksCmd": 3,
+            "dummyClksRd": 20,
             "enableType": "0",
             "enableSeq": "0x00",
             "dummyCfg": {

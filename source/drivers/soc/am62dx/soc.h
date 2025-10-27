@@ -112,6 +112,16 @@ extern "C"
 #define SOC_BOOTMODE_EMMC       (0xCB)
 
 /**
+ * \brief Switch value for OSPI primary boot mode
+ */
+#define SOC_PRIMARY_BOOTMODE_OSPI       (0xE)
+
+/**
+ * \brief Switch value for EMMC primary boot mode
+ */
+#define SOC_PRIMARY_BOOTMODE_EMMC       (0x9)
+
+/**
  * \brief Enable clock to specified module
  *
  * \param moduleId [in] see \ref tisci_devices for list of device ID's
@@ -235,6 +245,13 @@ void SOC_setDevStat(uint32_t bootMode);
  * \return Boot mode
  */
 uint32_t SOC_getDevStat(void);
+
+/**
+ * \brief Get primary boot mode by reading devstat register
+ *
+ * \return Primary boot mode
+ */
+uint32_t SOC_getPrimaryBootMode(void);
 
 /**
  * \brief Generates the MCU IPC interrupt to DM R5 to wakeup the main domain from MCU only LPM mode.
@@ -363,7 +380,7 @@ void SOC_setFSSCtrlFlashBootSize(void);
  * \brief Get Physical Address from virtual address.
  *
  * \param virtAddr [IN] : Virtual Address(Alias)
- * 
+ *
  * \return Physical Address
  */
 uint64_t Soc_getPhyAddr(uint64_t virtAddr);

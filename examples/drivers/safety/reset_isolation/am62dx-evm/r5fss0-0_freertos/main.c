@@ -88,16 +88,16 @@ void main_thread(void *args)
 
 void check_bootMode(void *args)
 {
-    uint32_t bootMode = SOC_getDevStat();
+    uint32_t bootMode = SOC_getPrimaryBootMode();
     void (*sbl_stage2_main)(void*) = NULL;
 
     switch(bootMode)
     {
-        case SOC_BOOTMODE_OSPI:
+        case SOC_PRIMARY_BOOTMODE_OSPI:
             sbl_stage2_main = sbl_ospi_stage2_main;
             break;
 
-        case SOC_BOOTMODE_EMMC:
+        case SOC_PRIMARY_BOOTMODE_EMMC:
             sbl_stage2_main = sbl_emmc_stage2_main;
             break;
 

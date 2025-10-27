@@ -34,6 +34,7 @@
 #include <drivers/pinmux.h>
 #include <kernel/dpl/AddrTranslateP.h>
 #include <drivers/hw_include/cslr_soc.h>
+#include <drivers/hw_include/cslr.h>
 #include <kernel/dpl/CpuIdP.h>
 #include <string.h>
 
@@ -50,6 +51,12 @@
 
 /* PSC (Power Sleep Controller) Domain enable */
 #define PSC_MODSTATE_ENABLE         (0x3U)
+
+/* MAIN_DEVSTAT */
+
+#define CSL_WKUP_CTRL_MMR_CFG0_MAIN_DEVSTAT_PRIMARY_BOOTMODE_MASK                 (0x00000078U)
+#define CSL_WKUP_CTRL_MMR_CFG0_MAIN_DEVSTAT_PRIMARY_BOOTMODE_SHIFT                (0x00000003U)
+#define CSL_WKUP_CTRL_MMR_CFG0_MAIN_DEVSTAT_PRIMARY_BOOTMODE_MAX                  (0x00000078U)
 
 int32_t SOC_moduleClockEnable(uint32_t moduleId, uint32_t enable)
 {
@@ -598,12 +605,25 @@ void SOC_setDevStat(uint32_t bootMode)
 
 uint32_t SOC_getDevStat(void)
 {
-    uint32_t bootMode=0U;
+    uint32_t bootMode = 0U;
 
     /* Get bootmode by reading devstat register */
-    bootMode=CSL_REG32_RD(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_MAIN_DEVSTAT);
+    bootMode = CSL_REG32_RD(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_MAIN_DEVSTAT);
 
     return bootMode;
+}
+
+uint32_t SOC_getPrimaryBootMode(void)
+{
+    uint32_t bootMode = 0U;
+    uint32_t primaryBootMode = 0U;
+
+    bootMode = SOC_getDevStat();
+
+    primaryBootMode = (bootMode & CSL_WKUP_CTRL_MMR_CFG0_MAIN_DEVSTAT_PRIMARY_BOOTMODE_MASK)\
+                        >> CSL_WKUP_CTRL_MMR_CFG0_MAIN_DEVSTAT_PRIMARY_BOOTMODE_SHIFT;
+
+    return primaryBootMode;
 }
 
 void SOC_generateSwWarmResetMainDomain(void)

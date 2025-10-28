@@ -36,7 +36,7 @@ Stage 2 bootloader is needed only for OSPI or eMMC boot and not required for UAR
 
 Refer main.c of ' Hello World ' r5fss0-0 example application to see the similar implementation.
 
- - Read the DEVSTAT register using 'SOC_getDevStat()' to get the bootmode and make the ' void (*sbl_stage2_main) (void *) ' function pointer point to required bootmedia function.
+ - Read the DEVSTAT register using 'SOC_getPrimaryBootMode()' to get the primary bootmode and make the ' void (*sbl_stage2_main) (void *) ' function pointer point to required bootmedia function.
 
     \imageStyle{check_bootmode.png,width:50%}
     \image html check_bootmode.png "Read DEVSTAT and assign function pointer"

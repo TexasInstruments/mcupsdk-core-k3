@@ -94,8 +94,14 @@ function getIPCCoreID(ipcCoreName)
         case "a53ss0_0":
             return 2;
         case "c75ss0_0":
-            return 3;
+            return 7;
     }
+}
+
+function getMaxCpus()
+{
+    /* Max Cpu's = (Max core id + 1), as core id starts from 0  */
+    return 8;
 }
 
 function getMaxVringSize()
@@ -116,5 +122,6 @@ exports = {
     getSysCfgCoreName,
     getMaxVringSize,
     getImplementationVersion,
-    getIPCCoreID
+    getIPCCoreID,
+    getMaxCpus
 };

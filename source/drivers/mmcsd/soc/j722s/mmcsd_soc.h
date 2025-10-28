@@ -30,26 +30,25 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MMCSD_SOC_H_
-#define MMCSD_SOC_H_
+/**
+ *  \file mmcsd_soc.h
+ *
+ *  \brief MMCSD Driver J722S SOC file containing the operating mode support
+ *         APIs.
+ *
+ */
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+#ifndef MMCSD_SOC_J722S_H_
+#define MMCSD_SOC_J722S_H_
 
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
 
-#include <drivers/hw_include/soc_config.h>
+#include <stdbool.h>
 
-#if defined (SOC_AM62PX)
-#include <drivers/mmcsd/soc/am62px/mmcsd_soc.h>
-#endif
-
-#if defined (SOC_J722S)
-#include <drivers/mmcsd/soc/j722s/mmcsd_soc.h>
+#ifdef __cplusplus
+extern "C" {
 #endif
 
 /* ========================================================================== */
@@ -59,19 +58,20 @@ extern "C"
 /* None */
 
 /* ========================================================================== */
-/*                         Structure Declarations                             */
-/* ========================================================================== */
-
-/* None */
-
-/* ========================================================================== */
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
-/* None */
+/**
+ *  \brief This API returns if HS400 mode is supported
+ *
+ *  \param  None
+ *
+ *  \return True or False
+ */
+bool MMCSD_socIsHS400Supported(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif
+#endif /* #ifndef MMCSD_SOC_J722S_H_ */

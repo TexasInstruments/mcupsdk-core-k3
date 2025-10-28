@@ -30,27 +30,20 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MMCSD_SOC_H_
-#define MMCSD_SOC_H_
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+/**
+ *  \file mmcsd_soc.c
+ *
+ *  \brief File containing the operating mode support APIs.
+ *
+ */
 
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
 
-#include <drivers/hw_include/soc_config.h>
-
-#if defined (SOC_AM62PX)
-#include <drivers/mmcsd/soc/am62px/mmcsd_soc.h>
-#endif
-
-#if defined (SOC_J722S)
+#include <stdbool.h>
+#include <drivers/soc.h>
 #include <drivers/mmcsd/soc/j722s/mmcsd_soc.h>
-#endif
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -70,8 +63,19 @@ extern "C"
 
 /* None */
 
-#ifdef __cplusplus
-}
-#endif
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
 
-#endif
+/* None */
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
+
+bool MMCSD_socIsHS400Supported(void)
+{
+    bool result = TRUE;
+
+    return result;
+}

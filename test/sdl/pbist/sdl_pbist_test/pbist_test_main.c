@@ -68,6 +68,10 @@
 /*                 Internal Function Declarations                             */
 /* ========================================================================== */
 
+#if defined (CODE_COVERAGE)
+    extern void __llvm_profile_write_file(void);
+#endif
+
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -212,7 +216,9 @@ int32_t test_main(void)
     {
         DebugP_log("\r\nBoard Init failed. Exiting the app.\r\n");
     }
-
+    #if defined (CODE_COVERAGE)
+    __llvm_profile_write_file();
+    #endif
     return (0);
 }
 

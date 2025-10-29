@@ -68,6 +68,7 @@
 
 #define PBIST_PSC_BASE_ADDR             ((uint32_t)0x400A00)
 
+#if !defined (SOC_J722S)
 /* The following macros give the PSC register addresses of a few devices */
 #if defined (SOC_AM62PX)
 #define PBIST_A53_0_ADDR                (PBIST_PSC_BASE_ADDR + 4*CSL_MAIN_LPSC_MAIN_MPU_CLST0_CORE0)
@@ -96,15 +97,68 @@
 #define PBIST_PSC_PTCMD_TIMEOUT         (1000000U)
 #define PBIST_PSC_PTSTAT_ADDR           (0x400128)
 
+/*
+ * The following macros define the instance to be used for interrupt-based
+ * PBIST testing and also the corresponding interrupt numbers to be used
+ */
+#if defined (SOC_AM275X)
+#define PBIST_INTERRUPT_INST            (SDL_PBIST_INST_MAIN_IP)
+#else
+#define PBIST_INTERRUPT_INST            (SDL_PBIST_INST_MAIN)
+#endif
+
+#if defined (AM62PX) || defined (SOC_AM275X)
+#define PBIST_INTERRUPT_NUMBER          (113u)
+#else
+#define PBIST_INTERRUPT_NUMBER          (114u)
+#endif
+#endif
+
 /* ========================================================================== */
 /*                 Internal Function Declarations                             */
 /* ========================================================================== */
+
+#if !defined (SOC_J722S)
+static void PBIST_SBL_API_Test(SDL_PBIST_inst instance);
+#endif
+
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
+
+#if !defined (SOC_J722S)
+/* This is to test the SBL APIs*/
+static void PBIST_SBL_API_Test(SDL_PBIST_inst instance)
+{
+    int32_t status;
+    status = Sciclient_pmSetModuleState(PBIST_TestHandleArray[instance].tisciPBISTDeviceId,
+                                            TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
+                                            TISCI_MSG_FLAG_AOP,
+                                            SystemP_WAIT_FOREVER);
+    if (status == SDL_PASS)
+    {
+        /*
+        * The following APIs are meant to be used with SBL and not in this
+        * context. Hence, they may return fails or other non-pass values
+        * here, which is expected. Since we are testing them here for
+        * coverage purposes, the return values are being discarded.
+        */
+
+        SDL_SBL_PBIST_selfTest(instance);
+
+        SDL_SBL_PBIST_checkDone(instance);
+
+        SDL_SBL_PBIST_checkResult(instance);
+    }
+    else
+    {
+        DebugP_log("\r\n Issue in powering on PBIST device for SBL test. \r\n");
+    }
+}
+#endif
 
 /*
  * Certain IPs are left in a transition state after performing PBIST
@@ -944,7 +998,16 @@ int32_t PBIST_funcTest(void)
     }
     else
     {
-        /* Run the test for diagnostics first */
+        /* PBIST DPL interrupt is not supported in M4F core */
+#if !defined (M4F_CORE) && !defined(SOC_J722S)
+        SDL_PBIST_getInstInfo(PBIST_INTERRUPT_INST)->interruptNumber = PBIST_INTERRUPT_NUMBER;
+#endif
+        /* First run the SBL API test */
+#if !defined (SOC_J722S)
+        PBIST_SBL_API_Test(APP_PBIST_SBL_TEST_INST);
+#endif
+
+        /* Run the test for diagnostics */
         for (i = 0; i < PBIST_NUM_INSTANCE; i++)
         {
             /* Run test on selected instance */

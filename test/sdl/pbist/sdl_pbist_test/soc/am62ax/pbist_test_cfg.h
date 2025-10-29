@@ -93,6 +93,7 @@ extern "C"
 
 #define APP_PBIST_TEST_NEG_INST          (PBIST_INSTANCE_MPU)
 #define APP_PCONFIG_TEST_INSTANCE        (PBIST_INSTANCE_MPU)
+#define APP_PBIST_SBL_TEST_INST          (PBIST_INSTANCE_MPU)
 extern PBIST_TestHandle_t PBIST_TestHandleArray[PBIST_MAX_INSTANCE+1];
 
 #ifdef __cplusplus

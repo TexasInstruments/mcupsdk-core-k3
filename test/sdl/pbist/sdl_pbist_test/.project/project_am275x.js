@@ -120,7 +120,7 @@ const templates_nortos_main_r5f =
 		output: "linker.cmd",
 	},
 	{
-		input: ".project/templates/am275x/nortos/main_nortos.c.xdt", 
+		input: ".project/templates/am275x/nortos/main_nortos.c.xdt",
 		output: "../main.c",
 		options: {
 			entryFunction: "test_main",
@@ -160,6 +160,7 @@ function getComponentProperty() {
     property.isInternal = true;
     property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;
+    property.isSDL = true;
 
     return property;
 }
@@ -172,8 +173,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.libdirs = libdirs_nortos;
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
-    
-    
+
     if(buildOption.cpu.match(/r5fss0-0*/))
     {
         build_property.defines = r5_0_macro;
@@ -182,7 +182,7 @@ function getComponentBuildProperty(buildOption) {
     {
         build_property.defines = r5_1_macro;
     }
-    
+
     if(buildOption.os.match(/freertos*/) )
     {
         build_property.includes = includes_freertos_r5f;

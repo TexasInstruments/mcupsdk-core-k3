@@ -99,6 +99,7 @@ extern "C"
 
 #define APP_PBIST_TEST_NEG_INST          (PBIST_INST_MAIN_IP)
 #define APP_PCONFIG_TEST_INSTANCE        (PBIST_INST_MAIN_IP)
+#define APP_PBIST_SBL_TEST_INST          (PBIST_INST_MAIN_IP)
 
 extern PBIST_TestHandle_t PBIST_TestHandleArray[PBIST_MAX_INSTANCE+1];
 

@@ -1444,6 +1444,7 @@ int32_t OSPI_writeDirect(OSPI_Handle handle, OSPI_Transaction *trans)
 {
     int32_t status = SystemP_SUCCESS;
     const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+    OSPI_Object *obj = ((OSPI_Config *)handle)->object;
 
     /* Enable DAC Mode */
     OSPI_enableDacMode(handle);
@@ -1451,38 +1452,84 @@ int32_t OSPI_writeDirect(OSPI_Handle handle, OSPI_Transaction *trans)
     /* Disable PHY pipeline mode */
     OSPI_disablePhyPipeline(handle);
 
-    uint32_t offset;
-    uint8_t *src, *dst;
-    uint32_t wrWord;
-    uint8_t wrByte;
-    uint32_t size, remainingSize;
-    int i = 0;
-    {
-        offset = trans->addrOffset;
-        dst = (uint8_t *)(attrs->dataBaseAddr + offset);
-        src = trans->buf;
-        remainingSize = trans->count & 3U;
-        size = trans->count - remainingSize;
+    uint8_t *pSrc;
+    uint8_t *pDst;
+    uint32_t addrOffset;
 
-        for(i = 0; i < size; i+=4)
+    addrOffset = trans->addrOffset;
+    pSrc = (uint8_t *) trans->buf;
+
+    pDst = (uint8_t *)(attrs->dataBaseAddr + addrOffset);
+
+    /* DMA Copy fails when copying to to certain memory regions. So in this case we switch to normal memcpy
+       for copying even if dmaEnable is true. Also do DMA copy only if size > 1KB*/
+    uint32_t isDmaCopy = (attrs->dmaEnable == TRUE) &&
+                         (OSPI_isDmaRestrictedRegion(handle, (uint32_t)pDst) == FALSE) &&
+                         (trans->count > trans->dmaCopyLowerLimit);
+
+    if(isDmaCopy == 1U)
+    {
+        uint8_t *tempSrc = pSrc;
+        uint8_t *tempDst = pDst;
+        uint32_t remainingBytes = trans->count;
+
+        /* Check for 32B alignment of source address */
+        if(((uint32_t)pSrc % OSPI_DMA_COPY_SRC_ALIGNMENT) != 0U)
         {
-            wrWord = CSL_REG32_RD(src + i);
-            CSL_REG32_WR(dst + i, wrWord);
+            uint32_t initResidualBytes = OSPI_DMA_COPY_SRC_ALIGNMENT - (((uint32_t)pSrc) % OSPI_DMA_COPY_SRC_ALIGNMENT);
+
+            /* Do CPU copy for the initial residual bytes */
+            Utils_memcpyWord(pSrc, pDst, initResidualBytes);
+            CacheP_wb((void*)(pDst), initResidualBytes, CacheP_TYPE_ALLD);
+
+            tempDst = (uint8_t *)((uint32_t)pDst + initResidualBytes);
+            tempSrc = (uint8_t *)((uint32_t)pSrc + initResidualBytes);
+            remainingBytes -= initResidualBytes;
+        }
+
+        /* Do DMA copy for 32B-aligned bytes */
+        uint32_t unalignedBytes = (remainingBytes % OSPI_DMA_COPY_SIZE_ALIGNMENT);
+        CacheP_wb((void*)(tempSrc), remainingBytes - unalignedBytes, CacheP_TYPE_ALLD);
+
+        OSPI_dmaCopy(obj->ospiDmaHandle, tempDst, tempSrc, remainingBytes - unalignedBytes);
+
+        /* Do a CPU copy of unaligned bytes if any */
+        if(unalignedBytes > 0U)
+        {
+            tempDst += (remainingBytes - unalignedBytes);
+            tempSrc += (remainingBytes - unalignedBytes);
+            Utils_memcpyWord(tempSrc, tempDst, unalignedBytes);
+            CacheP_wb((void*)(tempDst), unalignedBytes, CacheP_TYPE_ALLD);
+        }
+    }
+    else
+    {
+        uint32_t i = 0;
+        uint32_t remainingSize = trans->count & 3U;
+        uint32_t size = trans->count - remainingSize;
+        uint32_t wrWord;
+        uint8_t wrByte;
+
+        for(i = 0U; i < size; i += 4U)
+        {
+            wrWord = CSL_REG32_RD(pSrc + i);
+            CSL_REG32_WR(pDst + i, wrWord);
             OSPI_waitIdle(handle, 1000u);
         }
 
         for(i = 0; i < remainingSize; i++)
         {
-            wrByte = CSL_REG8_RD(src + size + i);
-            CSL_REG8_WR(dst + size + i, wrByte);
+            wrByte = CSL_REG8_RD(pSrc + size + i);
+            CSL_REG8_WR(pDst + size + i, wrByte);
             OSPI_waitIdle(handle, 1000u);
         }
-    }
 
-    CacheP_wbInv((void*)(attrs->dataBaseAddr + offset), trans->count, CacheP_TYPE_ALL);
+        CacheP_wbInv((void*)(attrs->dataBaseAddr + addrOffset), trans->count, CacheP_TYPE_ALL);
+    }
 
     return status;
 }
+
 int32_t OSPI_writeIndirect(OSPI_Handle handle, OSPI_Transaction *trans)
 {
     int32_t status = SystemP_SUCCESS;

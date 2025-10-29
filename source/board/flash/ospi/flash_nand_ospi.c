@@ -92,7 +92,7 @@ static int32_t Flash_nandOspiSetRdDataCaptureDelay(Flash_Config *config)
     int32_t status = SystemP_SUCCESS;
     Flash_NandOspiObject *obj = (Flash_NandOspiObject *)(config->object);
     uint32_t maxReadDataCapDelay = 0, minReadDataCapDelay = 0;
-    
+
     /* Set RD Capture Delay by reading ID */
     uint32_t origBaudRateDiv = 15U;
     uint32_t readDataCapDelay = origBaudRateDiv;
@@ -541,17 +541,19 @@ static int32_t Flash_nandOspiWrite(Flash_Config *config, uint32_t offset, uint8_
     int32_t status = SystemP_SUCCESS;
     Flash_Attrs *attrs = NULL;
     Flash_DevConfig *devCfg = NULL;
+    Flash_NandOspiObject *obj = NULL;
 
     if(config != NULL)
     {
         attrs = config->attrs;
         devCfg = config->devConfig;
+        obj = (Flash_NandOspiObject *)(config->object);
     }
     else
     {
         status = SystemP_FAILURE;
     }
-    
+
     if(attrs != NULL)
     {
         /* Validate address input */
@@ -611,6 +613,11 @@ static int32_t Flash_nandOspiWrite(Flash_Config *config, uint32_t offset, uint8_
 
                 if(status == SystemP_SUCCESS)
                 {
+                    if(obj->phyEnable == 1U)
+                    {
+                        OSPI_enablePhy(obj->ospiHandle);
+                    }
+
                     /* Send Page Program command */
                     if((len - actual) < (pageSize))
                     {
@@ -625,7 +632,13 @@ static int32_t Flash_nandOspiWrite(Flash_Config *config, uint32_t offset, uint8_
                     transaction.addrOffset = colmAddr;
                     transaction.buf = (void *)(buf + actual);
                     transaction.count = chunkLen;
+
                     status = Flash_NandOspiWriteDirect(config, &transaction);
+
+                    if(obj->phyEnable == 1U)
+                    {
+                        OSPI_disablePhy(obj->ospiHandle);
+                    }
                 }
 
                 if(status == SystemP_SUCCESS)

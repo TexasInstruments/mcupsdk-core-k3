@@ -56,6 +56,8 @@ const example_file_list = [
     "examples/benchmarks/hyperRam_xip_benchmark/.project/project.js",
     "examples/benchmarks/xip_benchmark/.project/project.js",
     "examples/board/eeprom/eeprom_read_write/.project/project.js",
+    "examples/board/hyperRam/hyperRam_ecc_esm_test/.project/project_am275x_wkupr5.js",
+    "examples/board/hyperRam/hyperRam_ecc_esm_test/.project/project_am275x.js",
     "examples/board/hyperRam/hyperRam_ecc_test/.project/project_am275x_wkupr5.js",
     "examples/board/hyperRam/hyperRam_ecc_test/.project/project.js",
     "examples/board/hyperRam/hyperRam_perf/.project/project_am275x_wkupr5.js",

@@ -2566,17 +2566,6 @@ static int32_t Udma_chAllocResource(Udma_ChHandleInt chHandle)
                 /* Free queue ring number is same as UDMAP channel number */
                 if(NULL_PTR != chHandle->chPrms.fqRingPrms.ringMem)
                 {
-                    /*
-                    if((chHandle->chType & UDMA_CH_FLAG_UTC) == UDMA_CH_FLAG_UTC)
-                    {
-                        ringNum = (uint16_t)(chHandle->extChNum + drvHandle->extChOffset);
-                    }
-                    else
-                    {
-                        retVal = UDMA_EALLOC;
-                        Udma_printf(drvHandle, "[UDMA] RM Alloc Ext Ch failed!!!\n");
-                    }*/
-
                     chHandle->fqRing = &chHandle->fqRingObj;
                 }
             #if (UDMA_NUM_UTC_INSTANCE > 0)
@@ -2895,11 +2884,6 @@ static void Udma_chEnableLocal(Udma_ChHandleInt chHandle)
         {
             DebugP_assert(chHandle->pBcdmaBcRtRegs != NULL_PTR);
             DebugP_assert(chHandle->txChNum != UDMA_DMA_CH_INVALID);
-
-            /* PEER8 Reg param missing in CSL_bcdma_bcrtRegs_chan, So what to do here?*/
-            //regVal = CSL_REG32_RD(&chHandle->pBcdmaBcRtRegs->PEER8);
-            //CSL_FINS(regVal, PSILCFG_REG_RT_ENABLE_ENABLE, (uint32_t) 1U);
-            //CSL_REG32_WR(&chHandle->pBcdmaBcRtRegs->PEER8, regVal);
 
             (void) CSL_bcdmaSetTxRT(&drvHandle->bcdmaRegs, chHandle->txChNum , &bcdmaRtEnable);
         }
@@ -4238,9 +4222,7 @@ int32_t Udma_chReset(Udma_ChHandle chHandle)
                     retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_GET_STATS,
                                             CSL_BCDMA_CHAN_TYPE_BLOCK_COPY, chHandleInt->txChNum,
                                             &chStat);
-
-                    // chStat.txPayloadByteCnt = 0;
-                    // chStat.txStartedByteCnt = 0;
+                                            
                     if(retVal == UDMA_SOK)
                     {
                     	retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_DEC_STATS,

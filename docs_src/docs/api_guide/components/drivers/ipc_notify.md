@@ -40,6 +40,8 @@ to transport the message values.
 
 - IPC Notify cannot be used to talk to clients running Linux OS
 
+- Ability to generate interrupt when the underlying IPC HW/SW FIFO is free to send messages (i.e. only FIFO status polling mode is supported)
+
 ## Important Usage Guidelines
 
 - To balance low latency performance vs flexiblility to end user, below contraints are introduced in the API

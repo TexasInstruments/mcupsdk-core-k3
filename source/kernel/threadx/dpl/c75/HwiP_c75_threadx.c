@@ -703,9 +703,11 @@ void Hwi_dispatchC(int intNum)
     Hwi_disable();
 
     /* Do we need to switch context? */
-    if(_tx_thread_execute_ptr != NULL) {
-      if(_tx_thread_execute_ptr != _tx_thread_current_ptr) {
-          _tx_thread_switch_from_isr();
+    if(_tx_thread_preempt_disable == 0u) {
+      if(_tx_thread_execute_ptr != NULL) {
+        if(_tx_thread_execute_ptr != _tx_thread_current_ptr) {
+            _tx_thread_switch_from_isr();
+        }
       }
     }
 }

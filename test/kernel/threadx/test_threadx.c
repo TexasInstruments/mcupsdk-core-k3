@@ -82,10 +82,18 @@
 #define PING_INT_PRIORITY   (3u)
 #define PONG_INT_PRIORITY   (4u)
 
+#if defined(__C7504__)
+#define PING_TASK_SIZE (1024*32u)
+#else
 #define PING_TASK_SIZE (1024*4u)
+#endif
 uint8_t gPingTaskStack[PING_TASK_SIZE] __attribute__((aligned(32)));
 
+#if defined(__C7504__)
+#define PONG_TASK_SIZE (1024*32u)
+#else
 #define PONG_TASK_SIZE (1024*4u)
+#endif
 uint8_t gPongTaskStack[PONG_TASK_SIZE] __attribute__((aligned(32)));
 
 
@@ -222,6 +230,7 @@ void test_isrEnableWithCriticalSection (void *args)
     hwiParams.intNum = HIGH_PRI_INT_NUM;
     hwiParams.callback = high_pri_isr;
     hwiParams.priority = HIGH_INT_PRI;
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     HwiP_construct(&gHighPriHwiObj, &hwiParams);
 
     /* Configure low priority interrupt, disabled during threadx critical section */
@@ -229,6 +238,7 @@ void test_isrEnableWithCriticalSection (void *args)
     hwiParams.intNum = LOW_PRI_INT_NUM;
     hwiParams.callback = low_pri_isr;
     hwiParams.priority = LOW_INT_PRI;
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     HwiP_construct(&gLowPriHwiObj, &hwiParams);
 
     DebugP_log("Entering critical section.\r\n");
@@ -368,6 +378,7 @@ void test_taskToIsrUsingEventGroups(void *args)
     hwiParams.intNum = PING_INT_NUM;
     hwiParams.callback = ping_isr_5;
     hwiParams.priority = PING_INT_PRIORITY;
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     HwiP_construct(&gPingHwiObj, &hwiParams);
 
     count = NUM_TASK_SWITCHES;
@@ -420,6 +431,7 @@ void test_taskToIsrUsingSemaphoreAndNoTaskSwitch(void *args)
     hwiParams.intNum = PING_INT_NUM;
     hwiParams.callback = ping_isr_1;
     hwiParams.priority = PING_INT_PRIORITY;
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     HwiP_construct(&gPingHwiObj, &hwiParams);
 
     count = NUM_TASK_SWITCHES;
@@ -453,6 +465,7 @@ void test_taskToIsrUsingSemaphoreAndWithTaskSwitch(void *args)
     hwiParams.intNum = PING_INT_NUM;
     hwiParams.callback = ping_isr_2;
     hwiParams.priority = PING_INT_PRIORITY;
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     HwiP_construct(&gPingHwiObj, &hwiParams);
 
     count = NUM_TASK_SWITCHES;
@@ -517,6 +530,7 @@ void test_taskToIsrWithFloatOperations(void *args)
     hwiParams.intNum = PING_INT_NUM;
     hwiParams.callback = ping_isr_6;
     hwiParams.priority = PING_INT_PRIORITY;
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     HwiP_construct(&gPingHwiObj, &hwiParams);
 
 
@@ -559,6 +573,7 @@ void test_taskToFiqIsrWithFloatOperations(void *args)
     hwiParams.callback = ping_isr_6;
     hwiParams.isFIQ = 1;
     hwiParams.priority = PING_INT_PRIORITY;
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     HwiP_construct(&gPingHwiObj, &hwiParams);
 
 
@@ -826,6 +841,7 @@ void pong_main(ULONG args)
         hwiParams.intNum = PONG_INT_NUM;
         hwiParams.callback = pong_isr_2;
         hwiParams.priority = PONG_INT_PRIORITY;
+        hwiParams.eventId = HWIP_INVALID_EVENT_ID;
         HwiP_construct(&gPongHwiObj, &hwiParams);
 
         count = NUM_TASK_SWITCHES;

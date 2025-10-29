@@ -38,14 +38,14 @@ extern void _fx_ram_driver(FX_MEDIA *);
 
 FX_MEDIA gMedia[FILEX_NUM_INSTANCES];
 % if (nor_instances.length > 0) {
-static LX_NOR_FLASH gNor[FILEX_NOR_NUM_INSTANCES];
+LX_NOR_FLASH gNor[FILEX_NOR_NUM_INSTANCES];
 % }
 % if (nand_instances.length > 0) {
-static LX_NAND_FLASH gNand[FILEX_NAND_NUM_INSTANCES];
+LX_NAND_FLASH gNand[FILEX_NAND_NUM_INSTANCES];
 % }
-static unsigned char gMediaMem[FILEX_NUM_INSTANCES][16u * 1024];
+unsigned char gMediaMem[FILEX_NUM_INSTANCES][16u * 1024];
 % for (let k = 0; k < ramdisk_instances.length; k++) {
-static unsigned gRamDisk`k`_mem[`ramdisk_instances[k].ramdisk_size`];
+unsigned gRamDisk`k`_mem[`ramdisk_instances[k].ramdisk_size`];
 % }
 
 
@@ -60,7 +60,8 @@ static unsigned gRamDisk`k`_mem[`ramdisk_instances[k].ramdisk_size`];
 
     % for (let k = 0; k < nand_instances.length; k++) {
     %   let serial_flash_driver = nand_instances[k].peripheralDriver.serialFlashDriver;
-static UCHAR g`serial_flash_driver.fname`Mem[MEM_SIZE_GET(`serial_flash_driver.flashSize / serial_flash_driver.flashBlockSize`, `serial_flash_driver.flashPageSize`, `serial_flash_driver.flashSpareAreaSize`)]__attribute__((aligned(128)));
+UCHAR g`serial_flash_driver.fname`Mem[MEM_SIZE_GET(`serial_flash_driver.flashSize / serial_flash_driver.flashBlockSize`, `serial_flash_driver.flashPageSize`, `serial_flash_driver.flashSpareAreaSize`)]__attribute__((aligned(128)));
+size_t g`serial_flash_driver.fname`MemSize = MEM_SIZE_GET(`serial_flash_driver.flashSize / serial_flash_driver.flashBlockSize`, `serial_flash_driver.flashPageSize`, `serial_flash_driver.flashSpareAreaSize`);
     % }
 % }
 
@@ -150,7 +151,7 @@ int32_t EclipseThreadx_FilexOpen(void)
 
             % nor_ctr++;
             % } else {
-        const UINT spare_map[][2] = `serial_driver_inst.flashSpareAreaMap`; 
+        static const UINT spare_map[][2] = `serial_driver_inst.flashSpareAreaMap`; 
 
         /* Create a LevelX NAND driver instance and attach it to a flash configuration. */
         status = lx_nand_driver_create(&gNand[`nand_ctr`], `filex_inst.peripheralDriver.$name`, `filex_inst.fs_offset`, `filex_inst.fs_size`, spare_map, sizeof(spare_map) / sizeof(spare_map[0]));

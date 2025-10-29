@@ -61,11 +61,18 @@
 #define PING_TASK_PRI  (2u)
 #define PONG_TASK_PRI  (3u)
 
-/* Stacks of 32KiB are required to support the C7x. Applications targeting the A53 and R5 can reduce their stack size. */
-#define PING_TASK_SIZE (32768u)
+#if defined(__C7504__)
+#define PING_TASK_SIZE (1024*32u)
+#else
+#define PING_TASK_SIZE (1024*4u)
+#endif
 uint8_t gPingTaskStack[PING_TASK_SIZE] __attribute__((aligned(32)));
 
-#define PONG_TASK_SIZE (32768u)
+#if defined(__C7504__)
+#define PONG_TASK_SIZE (1024*32u)
+#else
+#define PONG_TASK_SIZE (1024*4u)
+#endif
 uint8_t gPongTaskStack[PONG_TASK_SIZE] __attribute__((aligned(32)));
 
 TX_THREAD gPingThread;

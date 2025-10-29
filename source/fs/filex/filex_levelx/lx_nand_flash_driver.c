@@ -266,11 +266,16 @@ static UINT lx_nand_driver_pages_read(LX_NAND_FLASH *nand_flash, ULONG block, UL
         ret = Flash_readPage(p_nand_driver->flash_handle, first_page_num + i, 0u, &gt_page_buf[0], p_attrs->pageSize + p_attrs->spareAreaSize);
         if (ret != SystemP_SUCCESS) {
             (void)tx_mutex_put(&g_nand_driver_data.page_buf_mutex);
+            DebugP_logError("Flash_readPage() failed with %u.\n", ret);
             return (LX_ERROR);
         }
 
-        memcpy(main_buffer + i * p_attrs->pageSize, &gt_page_buf[0], p_attrs->pageSize);
-        memcpy(spare_buffer + i * p_attrs->spareAreaSize, &gt_page_buf[0] + p_attrs->pageSize, p_attrs->spareAreaSize);
+        if (main_buffer) {
+            memcpy(main_buffer + i * p_attrs->pageSize, &gt_page_buf[0], p_attrs->pageSize);
+        }
+        if (spare_buffer) {
+            memcpy(spare_buffer + i * p_attrs->spareAreaSize, &gt_page_buf[0] + p_attrs->pageSize, p_attrs->spareAreaSize);
+        }
     }
 
     res = tx_mutex_put(&g_nand_driver_data.page_buf_mutex);
@@ -318,12 +323,17 @@ static UINT lx_nand_driver_pages_write(LX_NAND_FLASH *nand_flash, ULONG block, U
 
     for (ULONG i = 0u; i < pages; i++) {
 
-        memcpy(&gt_page_buf[0], main_buffer + i * p_attrs->pageSize, p_attrs->pageSize);
-        memcpy(&gt_page_buf[0] + p_attrs->pageSize, spare_buffer + i * p_attrs->spareAreaSize, p_attrs->spareAreaSize);
+        if (main_buffer) {
+            memcpy(&gt_page_buf[0], main_buffer + i * p_attrs->pageSize, p_attrs->pageSize);
+        }
+        if (spare_buffer) {
+            memcpy(&gt_page_buf[0] + p_attrs->pageSize, spare_buffer + i * p_attrs->spareAreaSize, p_attrs->spareAreaSize);
+        }
 
         ret = Flash_writePage(p_nand_driver->flash_handle, start_page + i, &gt_page_buf[0], p_attrs->pageSize + p_attrs->spareAreaSize);
         if (ret != SystemP_SUCCESS) {
             (void)tx_mutex_put(&g_nand_driver_data.page_buf_mutex);
+            DebugP_logError("Flash_writePage() failed with %u.\n", ret);
             return (LX_ERROR);
         }
     }
@@ -341,20 +351,17 @@ static UINT lx_nand_driver_pages_copy(LX_NAND_FLASH *nand_flash, ULONG source_bl
 {
     lx_nand_driver_t *p_nand_driver;
     Flash_Attrs *p_attrs;
-    ULONG block_offset;
     UINT status = LX_SUCCESS;
 
     p_nand_driver = lx_nand_driver_get(nand_flash);
     p_attrs = p_nand_driver->p_attrs;
 
-    block_offset = p_nand_driver->offset / p_attrs->blockSize;
-
     for (UINT i = 0u; i < pages; i++) {
 
-        status = lx_nand_driver_pages_read(nand_flash, block_offset + source_block, source_page + i, data_buffer, data_buffer + p_attrs->pageSize, 1);
+        status = lx_nand_driver_pages_read(nand_flash, source_block, source_page + i, data_buffer, data_buffer + p_attrs->pageSize, 1);
         if (status != LX_SUCCESS) return (status);
 
-        status = lx_nand_driver_pages_write(nand_flash, block_offset + destination_block, destination_page + i, data_buffer, data_buffer + p_attrs->pageSize, 1);
+        status = lx_nand_driver_pages_write(nand_flash, destination_block, destination_page + i, data_buffer, data_buffer + p_attrs->pageSize, 1);
         if (status != LX_SUCCESS) return (status);
     }
 
@@ -376,7 +383,10 @@ static UINT lx_nand_driver_block_erase(LX_NAND_FLASH *nand_flash, ULONG block, U
 
     block_offset = p_nand_driver->offset / p_attrs->blockSize;
     ret = Flash_eraseBlk(p_nand_driver->flash_handle, block_offset + block);
-    if (ret != SystemP_SUCCESS) return (LX_ERROR);
+    if (ret != SystemP_SUCCESS) {
+        DebugP_logError("Flash_eraseBlk() failed with %u.\n", ret);
+        return (LX_ERROR);
+    }
 
     return (LX_SUCCESS);
 }
@@ -408,12 +418,14 @@ static UINT lx_nand_driver_block_erased_verify(LX_NAND_FLASH *nand_flash, ULONG 
         ret = Flash_readPage(p_nand_driver->flash_handle, first_page_num + i, 0u, &gt_page_buf[0], p_attrs->pageSize + p_attrs->spareAreaSize);
         if (ret != SystemP_SUCCESS) {
             (void)tx_mutex_put(&g_nand_driver_data.page_buf_mutex);
+            DebugP_logError("Flash_readPage() failed with %u.\n", ret);
             return (LX_ERROR);
         }
 
         for (size_t k = 0u; k < (p_attrs->pageSize + p_attrs->spareAreaSize) / 4u; k++) {
             if (((uint32_t *)gt_page_buf)[k] != 0xFFFFFFFF) {
                 (void)tx_mutex_put(&g_nand_driver_data.page_buf_mutex);
+                DebugP_logError("lx_nand_driver_block_erased_verify() verification failed.\n");
                 return (LX_ERROR);
             }
         }
@@ -451,12 +463,14 @@ static UINT lx_nand_driver_page_erased_verify(LX_NAND_FLASH *nand_flash, ULONG b
     ret = Flash_readPage(p_nand_driver->flash_handle, page_num, 0u, &gt_page_buf[0], p_attrs->pageSize + p_attrs->spareAreaSize);
     if (ret != SystemP_SUCCESS) {
         (void)tx_mutex_put(&g_nand_driver_data.page_buf_mutex);
+        DebugP_logError("Flash_readPage() failed with %u.\n", ret);
         return (LX_ERROR);
     }
 
     for (size_t k = 0u; k < (p_attrs->pageSize + p_attrs->spareAreaSize) / 4u; k++) {
         if (((uint32_t *)gt_page_buf)[k] != 0xFFFFFFFF) {
             (void)tx_mutex_put(&g_nand_driver_data.page_buf_mutex);
+            DebugP_logError("lx_nand_driver_page_erased_verify() verification failed.\n");
             return (LX_ERROR);
         }
     }
@@ -492,6 +506,7 @@ static UINT lx_nand_driver_block_status_get(LX_NAND_FLASH *nand_flash, ULONG blo
     ret = Flash_readPage(p_nand_driver->flash_handle, page_num, p_attrs->pageSize, (uint8_t *)&gt_page_buf[0], 1u);
     if (ret != SystemP_SUCCESS) {
         (void)tx_mutex_put(&g_nand_driver_data.page_buf_mutex);
+        DebugP_logError("Flash_readPage() failed with %u.\n", ret);
         return (LX_ERROR);
     }
 
@@ -532,6 +547,7 @@ static UINT lx_nand_driver_block_status_set(LX_NAND_FLASH *nand_flash, ULONG blo
     ret = Flash_writePage(p_nand_driver->flash_handle, page_num, &gt_page_buf[0], p_attrs->pageSize + p_attrs->spareAreaSize);
     if (ret != SystemP_SUCCESS) {
         (void)tx_mutex_put(&g_nand_driver_data.page_buf_mutex);
+        DebugP_logError("Flash_writePage() failed with %u.\n", ret);
         return (LX_ERROR);
     }
 

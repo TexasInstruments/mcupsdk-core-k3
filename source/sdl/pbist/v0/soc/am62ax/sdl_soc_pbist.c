@@ -197,7 +197,7 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
         .doneFlag               = PBIST_NOT_DONE
     },
 
-        /* VPAC Instance VPAC0_PBIST */
+    /* VPAC Instance VPAC0_PBIST */
 	{
         .PBISTRegsHiAddress  = 0u,
         .pPBISTRegs          = (SDL_pbistRegs *)SDL_VPAC0_MEM_BASE,
@@ -242,7 +242,7 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
         .doneFlag               = PBIST_NOT_DONE
     },
 
-		/* MAIN Instance PBIST0 */
+	/* MAIN Instance PBIST0 */
 	{
         .PBISTRegsHiAddress  = 0u,
         .pPBISTRegs          = (SDL_pbistRegs *)SDL_PBIST0_BASE,

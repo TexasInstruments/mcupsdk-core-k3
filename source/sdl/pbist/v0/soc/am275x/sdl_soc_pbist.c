@@ -54,7 +54,7 @@
 
 static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
 {
-        /* Main Pulsar 0 */
+    /* Main Pulsar 0 */
 	{
         .PBISTRegsHiAddress  = 0u,
         .pPBISTRegs          = (SDL_pbistRegs *)SDL_PBIST1_BASE,
@@ -99,7 +99,7 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
         .doneFlag               = PBIST_NOT_DONE
     },
 
-        /* Main Pulsar 1 */
+    /* Main Pulsar 1 */
 	{
         .PBISTRegsHiAddress  = 0u,
         .pPBISTRegs          = (SDL_pbistRegs *) SDL_PBIST2_BASE,
@@ -145,7 +145,7 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
         .doneFlag               = PBIST_NOT_DONE
     },
 
-        /* C7X0 */
+    /* C7X0 */
 	{
         .PBISTRegsHiAddress  = 0u,
         .pPBISTRegs          = (SDL_pbistRegs *)SDL_C7X256V0_PBIST_BASE,
@@ -190,7 +190,7 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
         .doneFlag               = PBIST_NOT_DONE
     },
 
-		/* C7X1 */
+	/* C7X1 */
 	{
         .PBISTRegsHiAddress  = 0u,
         .pPBISTRegs          = (SDL_pbistRegs *)SDL_C7X256V1_PBIST_BASE,
@@ -321,9 +321,9 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
         },
 
         .interruptNumber        = SDL_PBIST_INTERRUPT_INVALID,
-        .esmInst                = SDL_ESM_INST_MAIN_ESM0,      
-        .esmEventNumber         = SDLR_ESM0_ESM_PLS_EVENT0_PBIST0_DFT_PBIST_CPU_0,     
-        .doneFlag               = PBIST_NOT_DONE        
+        .esmInst                = SDL_ESM_INST_MAIN_ESM0,
+        .esmEventNumber         = SDLR_ESM0_ESM_PLS_EVENT0_PBIST0_DFT_PBIST_CPU_0,
+        .doneFlag               = PBIST_NOT_DONE
     },
 
 };

@@ -147,7 +147,7 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
         .doneFlag               = PBIST_NOT_DONE
     },
 
-        /* MAIN Instance PBIST1 */
+    /* MAIN Instance PBIST1 */
 	{
         .PBISTRegsHiAddress  = 0u,
         .pPBISTRegs          = (SDL_pbistRegs *)SDL_PBIST1_BASE,
@@ -192,8 +192,7 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
         .doneFlag               = PBIST_NOT_DONE
     },
 
-
-        /*Instance WKUP_PBIST1 */
+    /*Instance WKUP_PBIST1 */
 	{
         .PBISTRegsHiAddress  = 0u,
         .pPBISTRegs          = (SDL_pbistRegs *)SDL_WKUP_PBIST1_BASE,
@@ -239,7 +238,7 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
         .doneFlag               = PBIST_NOT_DONE
     },
 
-        /*Instance GPU0 */
+    /*Instance GPU0 */
 	{
         .PBISTRegsHiAddress  = 0u,
         .pPBISTRegs          = (SDL_pbistRegs *)SDL_GPU0_MEM_BASE,
@@ -284,7 +283,7 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
         .doneFlag               = PBIST_NOT_DONE
     },
 
-		/* MAIN Instance PBIST0 */
+	/* MAIN Instance PBIST0 */
 	{
         .PBISTRegsHiAddress  = 0u,
         .pPBISTRegs          = (SDL_pbistRegs *)SDL_PBIST0_BASE,

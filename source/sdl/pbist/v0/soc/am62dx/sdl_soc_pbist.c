@@ -151,7 +151,7 @@ static SDL_pbistInstInfo SDL_PBIST_InstInfoArray[SDL_PBIST_NUM_INSTANCES] =
         .doneFlag               = PBIST_NOT_DONE
     },
 
-		/* MAIN Instance PBIST0 */
+	/* MAIN Instance PBIST0 */
 	{
         .PBISTRegsHiAddress  = 0u,
         .pPBISTRegs          = (SDL_pbistRegs *)SDL_PBIST0_BASE,

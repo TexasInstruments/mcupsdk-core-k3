@@ -41,7 +41,7 @@
 
 #define MAIN_TASK_PRI  (4)
 
-#define MAIN_TASK_STACK_SIZE (65536U)
+#define MAIN_TASK_STACK_SIZE (32768U)
 
 uint8_t main_thread_stack[MAIN_TASK_STACK_SIZE] __attribute__((aligned(32)));
 

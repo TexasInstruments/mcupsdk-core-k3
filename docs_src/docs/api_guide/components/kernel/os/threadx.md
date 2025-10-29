@@ -14,7 +14,28 @@ ThreadX is scalable based on its underlying architecture. Because ThreadX servic
 - \ref EXAMPLES_KERNEL_THREADX_HELLO_WORLD
 - \ref EXAMPLES_KERNEL_THREADX_TASK_SWITCH
 
-For the full ThreadX API reference, please refer to the below table.
+For the full ThreadX API reference, please refer to the link at the end of this document.
+
+MCU+ SDK supports Threadx with the listed features on below CPUS. At this time only the AM62ax is supported.
+- ARM R5F
+- ARM MCU_R5F
+- ARM A53 (single core and SMP on quad cores)
+- TI C75
+
+## Supported Features
+
+- ThreadX Kernel and SMP kernel on supported processors
+    - All synchronization objects (Semaphores, mutexes, events etc...)
+    - Preemptive scheduling
+    - Round Robin scheduling (A53 and R5 only)
+    - Memory pools
+    - Run-time performance metrics
+    - Run-time tracing with TraceX
+    - Timers and delays
+- FPU register saving and restoring on context switch.
+- FPU register saving and restoring in ISRs
+- Nested interrupts (R5 and A53 only)
+    
 
 ## ThreadX usage guidelines
 

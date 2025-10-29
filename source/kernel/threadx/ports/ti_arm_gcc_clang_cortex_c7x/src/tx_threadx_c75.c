@@ -44,6 +44,10 @@ VOID _tx_initialize_low_level(VOID)
     Hwi_switchFromBootStack();
 }
 
+void Task_enter(void)
+{
+    Hwi_enable();
+}
 
 VOID _tx_thread_stack_build(TX_THREAD *thread_ptr, VOID (*function_ptr)(VOID))
 {
@@ -53,7 +57,7 @@ VOID _tx_thread_stack_build(TX_THREAD *thread_ptr, VOID (*function_ptr)(VOID))
                                         thread_ptr->tx_thread_stack_start,
                                         function_ptr,
                                         NULL,
-                                        function_ptr,
+                                        Task_enter,
                                         1u);
 
     thread_ptr->tx_thread_stack_ptr = sp_ptr;

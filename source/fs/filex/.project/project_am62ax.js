@@ -316,7 +316,8 @@ const includes_a53 = {
 const defines = {
     common : [
         "LX_NAND_ENABLE_CONTROL_BLOCK_FOR_DRIVER_INTERFACE=1",
-        "LX_NOR_ENABLE_CONTROL_BLOCK_FOR_DRIVER_INTERFACE=1"
+        "LX_NOR_ENABLE_CONTROL_BLOCK_FOR_DRIVER_INTERFACE=1",
+        "FX_ENABLE_FAULT_TOLERANT=1"
     ]
 };
 

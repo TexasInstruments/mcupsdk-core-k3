@@ -44,6 +44,10 @@
 #define FLASH_OSPI_JEDEC_ID_SIZE_MAX (8U)
 #define FLASH_OSPI_TRY_TUNING        (3U)
 
+/* Power-on detection signatures for Spansion flash Safeboot errors */
+#define FLASH_OSPI_SAFEBOOT_MICRO_CONTROLLER_INIT_FAILURE_VALUE (0x61U)
+#define FLASH_OSPI_SAFEBOOT_CONFIG_CORRUPTION_VALUE             (0x41U)
+
 /* ========================================================================== */
 /*                          Function Declarations                             */
 /* ========================================================================== */
@@ -55,6 +59,7 @@ static int32_t Flash_norOspiWrite(Flash_Config *config, uint32_t offset, uint8_t
 static int32_t Flash_norOspiOpen(Flash_Config *config, Flash_Params *params);
 static void Flash_norOspiClose(Flash_Config *config);
 static int32_t Flash_norOspiReset(Flash_Config *config);
+int32_t Flash_quirkSpansionSafebootDetection(Flash_Config *config);
 int32_t Flash_quirkSpansionUNHYSADisable(Flash_Config *config);
 static int32_t Flash_norOspiEnablePhyPipeline(Flash_Config *config);
 static int32_t Flash_norOspiDisablePhyPipeline(Flash_Config *config);
@@ -146,7 +151,7 @@ static int32_t Flash_norOspiWaitReady(Flash_Config *config, uint32_t timeOut)
     uint8_t cmd = devCfg->cmdRdsr;
     uint8_t bitMask = devCfg->srWip;
     uint8_t numBytesToRead = 1;
-    uint8_t dummyBits = 0;
+    uint8_t dummyBits = OSPI_CMD_INVALID_DUMMY;
 
     /* Do RDSR based on xspi WIP status */
     if((devCfg->xspiWipRdCmd != 0x00) && (obj->currentProtocol == FLASH_CFG_PROTO_8D_8D_8D))
@@ -1220,6 +1225,16 @@ static int32_t Flash_norOspiOpen(Flash_Config *config, Flash_Params *params)
         status = SystemP_FAILURE;
     }
 
+    if((SystemP_SUCCESS == status) && (params->bootQuirksFxn != NULL))
+    {
+        status = params->bootQuirksFxn(config);
+    }
+
+    if(SystemP_SUCCESS == status)
+    {
+        status = Flash_norOspiReset(config);
+    }
+
     if(SystemP_SUCCESS == status)
     {
         /* Set device size and addressing bytes */
@@ -1321,6 +1336,118 @@ static void Flash_norOspiClose(Flash_Config *config)
     /* OSPI Driver will be closed outside flash */
 
     return;
+}
+
+int32_t Flash_quirkSpansionSafebootDetection(Flash_Config *config)
+{
+    int32_t status = SystemP_SUCCESS;
+    const uint32_t str1v = 0x800000;
+    const uint32_t cfr2n = 0x03;
+    const uint32_t cfr3n = 0x04;
+    const uint32_t cfr4n = 0x05;
+    const uint8_t safeBootDummy = 2;
+    const uint8_t safeBootAddrBytes = 4;
+    const uint8_t defaultAddrBytes = 3;
+    const uint8_t defaultDummy = 0;
+    uint8_t sr1 = 0xff;
+    Flash_NorOspiObject *obj = NULL;
+    Flash_DevConfig *devCfg = NULL;
+
+    if((config == NULL) || (config->object == NULL) || (config->devConfig == NULL))
+    {
+        DebugP_logError("Required configuration is NULL\r\n");
+        status = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == status)
+    {
+        obj = (Flash_NorOspiObject *)(config->object);
+        devCfg = config->devConfig;
+
+        /* Set current protocol as 1s1s1s */
+        obj->currentProtocol = FLASH_CFG_PROTO_1S_1S_1S;
+
+        /* configure to default values */
+        OSPI_setCmdDummyCycles(obj->ospiHandle, defaultDummy);
+        obj->numAddrBytes = defaultAddrBytes;
+
+        /* Read status register 1 (STR1V) with default configuration */
+        status = Flash_norOspiRegRead(config, 0x65, str1v, &sr1);
+    }
+
+    if((SystemP_SUCCESS == status) && (0x00U != sr1))
+    {
+        /* SafeBoot happens with 2 dummy cycles for volatile reads and 4 byte addressing mode */
+        OSPI_setCmdDummyCycles(obj->ospiHandle, safeBootDummy);
+        obj->numAddrBytes = safeBootAddrBytes;
+
+        /* Read status register 1 (STR1V) with safeboot configuration */
+        status = Flash_norOspiRegRead(config, 0x65, str1v, &sr1);
+
+        if(SystemP_SUCCESS == status)
+        {
+            switch(sr1)
+            {
+            case FLASH_OSPI_SAFEBOOT_MICRO_CONTROLLER_INIT_FAILURE_VALUE:
+                /* Requires hardware reset */
+                status = SystemP_FAILURE;
+                break;
+            case FLASH_OSPI_SAFEBOOT_CONFIG_CORRUPTION_VALUE:
+                /* Clear Program and Erase Failure Flags (CLPEF_0_0) */
+                status = Flash_norOspiCmdWrite(config, 0x30, OSPI_CMD_INVALID_ADDR, 0, NULL, 0);
+                if(SystemP_SUCCESS != status)
+                {
+                    break;
+                }
+
+                /* Restore CFR2N from 0x88 to 0x08 - This changes the addressing mode to 3 byte */
+                status = Flash_norOspiRegWrite(config, 0x71, cfr2n, 0x08);
+                Flash_norOspiWaitReady(config, devCfg->flashBusyTimeout);
+                if(SystemP_SUCCESS != status)
+                {
+                    break;
+                }
+                obj->numAddrBytes = defaultAddrBytes;
+
+                /* Restore CFR3N from 0xC0 to 0x00 - This restores the cmd dummy cycles to 0 */
+                status = Flash_norOspiRegWrite(config, 0x71, cfr3n, 0x00);
+                Flash_norOspiWaitReady(config, devCfg->flashBusyTimeout);
+                if (SystemP_SUCCESS != status)
+                {
+                    break;
+                }
+                OSPI_setCmdDummyCycles(obj->ospiHandle, defaultDummy);
+
+                /* Restore CFR4N from 0x00 to 0xA8 (factory default) */
+                status = Flash_norOspiRegWrite(config, 0x71, cfr4n, 0xA8);
+                Flash_norOspiWaitReady(config, config->devConfig->flashBusyTimeout);
+                if (SystemP_SUCCESS != status)
+                {
+                    break;
+                }
+
+                /* CFR1x and CFR5x will be restored to the factory default upon reset */
+                break;
+            default:
+                status = SystemP_FAILURE;
+                break;
+            }
+        }
+    }
+
+    if(SystemP_SUCCESS != status)
+    {
+        DebugP_logError("Failed to complete flash recovery\r\n");
+    }
+
+    if (NULL != obj)
+    {
+        /* Restore original values if failed */
+        OSPI_setCmdDummyCycles(obj->ospiHandle, defaultDummy);
+        obj->numAddrBytes = defaultAddrBytes;
+    }
+
+    return status;
 }
 
 int32_t Flash_quirkSpansionUNHYSADisable(Flash_Config *config)

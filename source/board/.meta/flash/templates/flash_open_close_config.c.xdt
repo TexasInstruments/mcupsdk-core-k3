@@ -80,6 +80,11 @@ Flash_Params gFlashParams[CONFIG_FLASH_NUM_INSTANCES] =
         % } else {
         .quirksFxn = NULL,
         % }
+        % if (configserial.bootQuirks != "") {
+        .bootQuirksFxn = `configserial.bootQuirks`,
+        % } else {
+        .bootQuirksFxn = NULL,
+        % }
         .custProtoFxn = `configserial.customProtoFxn`,
     },
     % } else if(config.flashTopology == "parallelFlash") {

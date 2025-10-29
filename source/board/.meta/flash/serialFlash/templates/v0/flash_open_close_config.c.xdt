@@ -277,6 +277,9 @@ Flash_DevConfig gFlashDevCfg_`config.fname` =
 % if (config.quirks != "") {
 extern int32_t `config.quirks`(Flash_Config *config);
 % }
+% if (config.bootQuirks != "") {
+extern int32_t `config.bootQuirks`(Flash_Config *config);
+% }
 % if (config.customProtoFxn != "NULL") {
 extern int32_t `config.customProtoFxn`(Flash_Config *config);
 % }

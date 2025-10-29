@@ -123,6 +123,32 @@ Board_open()
         -> Flash_*Open()
             -> myQuirksFxn(Flash_Config *cfg)
 ~~~
+
+`
+let bootQuirksDescription = `
+Certain flashes would require detection and recovery after corruption or any other >
+So this is a hook to add such quirks, the function mentioned here would be the firs>
+
+The function signature would be
+~~~
+int32_t myBootQuirksFxn(Flash_Config *cfg)
+{
+    int32_t status = SystemP_SUCCESS;
+
+    /* Your code for handling boot initialization goes here */
+
+    return status;
+}
+~~~
+
+You can define this function in your application's source. It will be invoked in th>
+~~~
+Board_open()
+    -> Flash_open()
+        -> Flash_*Open()
+            -> myBootQuirksFxn(Flash_Config *cfg)
+~~~
+
 `
 function getDriver(drvName) {
     return system.getScript(`/drivers/${drvName}/${drvName}`);
@@ -508,7 +534,15 @@ let serialflash_module = {
             description: "Function to handle any vendor specific quirks of the flash",
             longDescription: quirksDescription,
             default: "NULL",
-        }
+        },
+        /* Boot Quirks */
+        {
+            name: "bootQuirks",
+            displayName: "Boot Quirks Function",
+            description: "Function to handle any vendor specific quirks of the flash during boot",
+            longDescription: bootQuirksDescription,
+            default: "Flash_quirkSpansionSafebootDetection",
+        },
     ],
 
     validate: validate,

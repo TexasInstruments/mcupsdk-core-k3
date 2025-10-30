@@ -136,6 +136,17 @@ uint32_t SelfReset_deviceManagerReset(void)
         .config_flags_1_set   = SELF_RESET_SET_CONFIG_FLAGS, // set_config_flags,
         .config_flags_1_clear = SELF_RESET_CLEAR_CONFIGD_FLAGS //clr_config_flags;
     };
+
+    /* ATCM/BTCM toggle mechanism */
+
+    /* If the BTCM is mapped to zero, remap the BTCM to higher address and ATCM to zero.
+     * When the core reboots it executes from the binary loaded to ATCM.
+     */
+    if ((proc_get_status_resp.config_flags_1 & TISCI_MSG_VAL_PROC_BOOT_CFG_FLAG_R5_TCM_RSTBASE) == 0x0U) {
+        proc_set_config_req.config_flags_1_clear &= ~TISCI_MSG_VAL_PROC_BOOT_CFG_FLAG_R5_TCM_RSTBASE;
+        proc_set_config_req.config_flags_1_set |= TISCI_MSG_VAL_PROC_BOOT_CFG_FLAG_R5_TCM_RSTBASE;
+    }
+
 	struct tisci_msg_proc_set_config_resp proc_set_config_resp = { 0 };
 
     sproxy_send_msg_r5_to_tifs_fw(&proc_set_config_req , sizeof(proc_set_config_req));

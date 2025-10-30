@@ -42,24 +42,30 @@
 /*                           Function Declarations                            */
 /* ========================================================================== */
 
-void Test_Mmcsd_EmmcRawIo(void *args);
-void Test_Mmcsd_EmmcEnableDisableBootPartition(void *args);
-void Test_Mmcsd_EmmcTuningConfig(void *args);
-void Test_Mmcsd_EmmcMultiblockRawIo(void *args);
-void Test_Mmcsd_OpenInvalidInstance(void *args);
-void Test_Mmcsd_SdRawIo(void *args);
-void Test_Mmcsd_ValidateClkFreq(void *args);
-void Test_Mmcsd_EmmcMultipleBusWidths(void *args);
-void Test_Mmcsd_SdMultipleBusWidths(void *args);
-void Test_Mmcsd_SdTuningConfig(void *args);
-void Test_Mmcsd_EmmcMultiplePhyconfig(void *args);
-void Test_Mmcsd_DmaModes(void *args);
-void Test_Mmcsd_IntrModes(void *args);
-void Test_Mmcsd_GetBlockCountValidate(void *args);
-void Test_Mmcsd_OpenOpenFail(void *args);
-void Test_Mmcsd_ReadArgumentValidate(void *args);
-void Test_Mmcsd_WriteArgumentValidate(void *args);
-void Test_Mmcsd_MultipleOpenClose(void *args);
+void TestMmcsd_emmcRawIo(void *args);
+void TestMmcsd_emmcEnableDisableBootPartition(void *args);
+void TestMmcsd_emmcTuningConfig(void *args);
+void TestMmcsd_emmcMultiblockRawIo(void *args);
+void TestMmcsd_openInvalidInstance(void *args);
+void TestMmcsd_sdRawIo(void *args);
+void TestMmcsd_validateClkFreq(void *args);
+void TestMmcsd_emmcMultipleBusWidths(void *args);
+void TestMmcsd_sdMultipleBusWidths(void *args);
+void TestMmcsd_sdTuningConfig(void *args);
+void TestMmcsd_emmcMultiplePhyconfig(void *args);
+void TestMmcsd_dmaModes(void *args);
+void TestMmcsd_intrModes(void *args);
+void TestMmcsd_getBlockCountValidate(void *args);
+void TestMmcsd_openOpenFail(void *args);
+void TestMmcsd_readArgumentValidate(void *args);
+void TestMmcsd_writeArgumentValidate(void *args);
+void TestMmcsd_multipleOpenClose(void *args);
+void TestMmcsd_emmcWriteReadBootPartition(void *args);
+void TestMmcsd_emmcWriteReadBootPartitionFail(void *args);
+void TestMmcsd_unalignedBuffersRawIo(void *args);
+void TestMmcsd_emmcSpeedSwitch(void *args);
+void TestMmcsd_crcRecovery(void *args);
+
 
 #endif /* MMCSD_TEST_RAW_H */
 

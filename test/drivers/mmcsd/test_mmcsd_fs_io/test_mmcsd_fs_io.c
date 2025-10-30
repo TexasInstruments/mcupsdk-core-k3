@@ -85,20 +85,16 @@ void test_main(void *args)
     Drivers_mmcsdClose();
     UNITY_BEGIN();
 
-    RUN_TEST(Test_Mmcsd_EmmcFileIo, 6630, NULL);
-    RUN_TEST(Test_Mmcsd_EmmcNestedDirectories,  8317, NULL);
+    RUN_TEST(TestMmcsd_emmcFileIo, 6630, NULL);
+    RUN_TEST(TestMmcsd_emmcNestedDirectories,  8317, NULL);
 #if defined(ENABLE_MT_TESTS)
-    /* This is a same instance multi threading test case which hangs
-     *RUN_TEST(Test_Mmcsd_ConcurrentFatEmmcTransfer,  8341, NULL);
-     */
-    /* This is a same instance multi threading test case which hangs
-     *RUN_TEST(Test_Mmcsd_ConcurrentFatSdTransfer,  8340, NULL);
-     */
-    RUN_TEST(Test_Mmcsd_testConcurrentFatEmmcSdTransfer,  8323, NULL);
-    RUN_TEST(Test_Mmcsd_SdFileIo,  1944, NULL);
-    RUN_TEST(Test_Mmcsd_SdNestedDirectories,  8329, NULL);
+    RUN_TEST(TestMmcsd_concurrentFatEmmcTransfer,  8341, NULL);
+    RUN_TEST(TestMmcsd_concurrentFatSdTransfer,  8340, NULL);
+    RUN_TEST(TestMmcsd_testConcurrentFatEmmcSdTransfer,  8323, NULL);
+    RUN_TEST(TestMmcsd_sdFileIo,  1944, NULL);
+    RUN_TEST(TestMmcsd_sdNestedDirectories,  8329, NULL);
 #if !defined (SOC_AM275X) && !defined (C7_CORE)
-    RUN_TEST(Test_Mmcsd_LargeSdFileIo,  8342, NULL);
+    RUN_TEST(TestMmcsd_largeSdFileIo,  8342, NULL);
 #endif
 #endif
 

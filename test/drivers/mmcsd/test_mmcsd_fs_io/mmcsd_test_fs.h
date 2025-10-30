@@ -42,14 +42,14 @@
 /*                           Function Declarations                            */
 /* ========================================================================== */
 
-void Test_Mmcsd_EmmcNestedDirectories(void *args);
-void Test_Mmcsd_EmmcFileIo(void *args);
-void Test_Mmcsd_SdFileIo (void *args);
-void Test_Mmcsd_SdNestedDirectories(void *args);
-void Test_Mmcsd_ConcurrentFatSdTransfer(void *args);
-void Test_Mmcsd_ConcurrentFatEmmcTransfer(void *args);
-void Test_Mmcsd_testConcurrentFatEmmcSdTransfer(void *args);
-void Test_Mmcsd_LargeSdFileIo(void *args);
+void TestMmcsd_emmcNestedDirectories(void *args);
+void TestMmcsd_emmcFileIo(void *args);
+void TestMmcsd_sdFileIo (void *args);
+void TestMmcsd_sdNestedDirectories(void *args);
+void TestMmcsd_concurrentFatSdTransfer(void *args);
+void TestMmcsd_concurrentFatEmmcTransfer(void *args);
+void TestMmcsd_testConcurrentFatEmmcSdTransfer(void *args);
+void TestMmcsd_largeSdFileIo(void *args);
 
 #endif /* MMCSD_TEST_FILE_H */
 

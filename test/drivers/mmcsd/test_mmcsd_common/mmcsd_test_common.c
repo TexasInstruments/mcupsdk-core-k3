@@ -51,61 +51,67 @@
 /* Buffers for FS tests */
 #if defined (ENABLE_FS_TESTS)
 #if !defined (SOC_AM275X) && !defined(C7_CORE)
-uint8_t TestMMCSD_Wbuf[TEST_MMCSD_FAT_BLOCK_SIZE * TEST_MMCSD_BLOCK_COUNT]
+uint8_t TestMMCSD_wBuf[TEST_MMCSD_FAT_BLOCK_SIZE * TEST_MMCSD_BLOCK_COUNT]
     __attribute__((aligned(128U), section(".globalScratchBuffer")));
-uint8_t TestMMCSD_Rbuf[TEST_MMCSD_FAT_BLOCK_SIZE * TEST_MMCSD_BLOCK_COUNT]
+uint8_t TestMMCSD_rBuf[TEST_MMCSD_FAT_BLOCK_SIZE * TEST_MMCSD_BLOCK_COUNT]
     __attribute__((aligned(128U), section(".globalScratchBuffer")));
 
-uint8_t TestMMCSD_Wbuf40M[TEST_MMCSD_40MB_SIZE]
+uint8_t TestMMCSD_wBuf40M[TEST_MMCSD_40MB_SIZE]
     __attribute__((aligned(128U), section(".globalScratchBuffer")));
-uint8_t TestMMCSD_Rbuf40M[TEST_MMCSD_40MB_SIZE]
+uint8_t TestMMCSD_rBuf40M[TEST_MMCSD_40MB_SIZE]
     __attribute__((aligned(128U), section(".globalScratchBuffer")));
 
 /* Threads for multithreading test cases */
-uint8_t TestMMCSD_Task1Wbuf[TEST_MMCSD_SIZE_64K]
+uint8_t TestMMCSD_task1Wbuf[TEST_MMCSD_SIZE_64K]
     __attribute__((aligned(128U), section(".globalScratchBuffer")));
-uint8_t TestMMCSD_Task1Rbuf[TEST_MMCSD_SIZE_64K]
+uint8_t TestMMCSD_task1Rbuf[TEST_MMCSD_SIZE_64K]
     __attribute__((aligned(128U), section(".globalScratchBuffer")));
 
-uint8_t TestMMCSD_Task2Wbuf[TEST_MMCSD_SIZE_64K]
+uint8_t TestMMCSD_task2Wbuf[TEST_MMCSD_SIZE_64K]
     __attribute__((aligned(128U), section(".globalScratchBuffer")));
-uint8_t TestMMCSD_Task2Rbuf[TEST_MMCSD_SIZE_64K]
+uint8_t TestMMCSD_task2Rbuf[TEST_MMCSD_SIZE_64K]
     __attribute__((aligned(128U), section(".globalScratchBuffer")));
 #else
-uint8_t TestMMCSD_Wbuf[TEST_MMCSD_FAT_BLOCK_SIZE * TEST_MMCSD_BLOCK_COUNT]
+uint8_t TestMMCSD_wBuf[TEST_MMCSD_FAT_BLOCK_SIZE * TEST_MMCSD_BLOCK_COUNT]
     __attribute__((aligned(128U)));
-uint8_t TestMMCSD_Rbuf[TEST_MMCSD_FAT_BLOCK_SIZE * TEST_MMCSD_BLOCK_COUNT]
+uint8_t TestMMCSD_rBuf[TEST_MMCSD_FAT_BLOCK_SIZE * TEST_MMCSD_BLOCK_COUNT]
     __attribute__((aligned(128U)));
 
 /* Threads for multithreading test cases */
-uint8_t TestMMCSD_Task1Wbuf[TEST_MMCSD_SIZE_64K]
+uint8_t TestMMCSD_task1Wbuf[TEST_MMCSD_SIZE_64K]
     __attribute__((aligned(128U)));
-uint8_t TestMMCSD_Task1Rbuf[TEST_MMCSD_SIZE_64K]
+uint8_t TestMMCSD_task1Rbuf[TEST_MMCSD_SIZE_64K]
     __attribute__((aligned(128U)));
 
-uint8_t TestMMCSD_Task2Wbuf[TEST_MMCSD_SIZE_64K]
+uint8_t TestMMCSD_task2Wbuf[TEST_MMCSD_SIZE_64K]
     __attribute__((aligned(128U)));
-uint8_t TestMMCSD_Task2Rbuf[TEST_MMCSD_SIZE_64K]
+uint8_t TestMMCSD_task2Rbuf[TEST_MMCSD_SIZE_64K]
     __attribute__((aligned(128U)));
 #endif
 #endif
 
 /* Buffers for RAW test */
 #if defined (ENABLE_RAW_TESTS)
+
+/* Unaligned buffers for DMA test */
+uint8_t TestMMCSD_unalignedTxBuf[TEST_MMCSD_1MB_SIZE + 8]
+    __attribute__((aligned(128U)));
+uint8_t TestMMCSD_unalignedRxBuf[TEST_MMCSD_1MB_SIZE];
+
 #if !defined (SOC_AM275X) && !defined (C7_CORE) && !defined (SOC_J722S)
-uint8_t TestMMCSD_TxBuf[TEST_MMCSD_DATA_SIZE]
+uint8_t TestMMCSD_txBuf[TEST_MMCSD_DATA_SIZE]
     __attribute__((aligned(128U), section(".globalScratchBuffer")));
-uint8_t TestMMCSD_RxBuf[TEST_MMCSD_DATA_SIZE]
+uint8_t TestMMCSD_rxBuf[TEST_MMCSD_DATA_SIZE]
     __attribute__((aligned(128U), section(".globalScratchBuffer")));
 #else
-uint8_t TestMMCSD_TxBuf[TEST_MMCSD_DATA_SIZE]
+uint8_t TestMMCSD_txBuf[TEST_MMCSD_DATA_SIZE]
     __attribute__((aligned(128U)));
-uint8_t TestMMCSD_RxBuf[TEST_MMCSD_DATA_SIZE]
+uint8_t TestMMCSD_rxBuf[TEST_MMCSD_DATA_SIZE]
     __attribute__((aligned(128U)));
 #endif
 #endif
 
-uint32_t TestMMCSD_Modes[] =
+uint32_t TestMMCSD_modes[] =
 {
     MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS_SDR,
     MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_MMC_HS_DDR,
@@ -115,18 +121,35 @@ uint32_t TestMMCSD_Modes[] =
 #endif
 };
 
-uint32_t TestMMCSD_SdModes[] =
+uint32_t TestMMCSD_sdModes[] =
 {
     MMCSD_SUPPORT_MMC_DS | MMCSD_SUPPORT_SD_HS,
 };
 
-const uint32_t TestMMCSD_ModesCount = sizeof(TestMMCSD_Modes) / sizeof(TestMMCSD_Modes[0]);
-const uint32_t TestMMCSD_SdModesCount = sizeof(TestMMCSD_SdModes) / sizeof(TestMMCSD_SdModes[0]);
+const uint32_t TestMMCSD_modesCount = sizeof(TestMMCSD_modes) / sizeof(TestMMCSD_modes[0]);
+const uint32_t TestMMCSD_sdModesCount = sizeof(TestMMCSD_sdModes) / sizeof(TestMMCSD_sdModes[0]);
 
 #if defined (ENABLE_RAW_TESTS)
 /* ========================================================================== */
 /*                           Function Definitions                             */
 /* ========================================================================== */
+
+/**
+ * \brief Fuction to fill unaligned buffers for test cases
+ *
+ * \param None.
+ *
+ * \return None.
+ */
+void TestMmcsd_fillUnalignedBuffers(uint8_t *txPtr)
+{
+    uint32_t i = 0;
+    for (i = 0U; i < TEST_MMCSD_1MB_SIZE; i++)
+    {
+        txPtr[i] = i % 256;
+        TestMMCSD_unalignedRxBuf[i] = 0U;
+    }
+}
 
 /**
  * \brief Fuction to fill buffers for test cases
@@ -135,13 +158,13 @@ const uint32_t TestMMCSD_SdModesCount = sizeof(TestMMCSD_SdModes) / sizeof(TestM
  *
  * \return None.
  */
-void Test_Mmcsd_FillBuffers(void)
+void TestMmcsd_fillBuffers(void)
 {
     uint32_t i = 0;
     for (i = 0U; i < TEST_MMCSD_DATA_SIZE; i++)
     {
-        TestMMCSD_TxBuf[i] = i % 256;
-        TestMMCSD_RxBuf[i] = 0U;
+        TestMMCSD_txBuf[i] = i % 256;
+        TestMMCSD_rxBuf[i] = 0U;
     }
 }
 #endif

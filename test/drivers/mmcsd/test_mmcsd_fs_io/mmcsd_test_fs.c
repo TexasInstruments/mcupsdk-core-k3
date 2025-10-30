@@ -45,31 +45,31 @@
 /*                             Global Variables                               */
 /* ========================================================================== */
 
-static Test_MmcModeSettings TestMMCSD_ModeParams;
+static Test_MmcModeSettings TestMMCSD_modeParams;
 
 #if defined(ENABLE_MT_TESTS)
 static SemaphoreP_Object TestMMCSD_sem;
 #if !defined (SOC_AM275X)  && !defined (C7_CORE)
-static uint8_t TestMMCSD_FatTask1Stack[1024] __attribute__ ((aligned(32)));
-static uint8_t TestMMCSD_FatTask2Stack[1024] __attribute__ ((aligned(32)));
+static uint8_t TestMMCSD_fatTask1Stack[1024] __attribute__ ((aligned(32)));
+static uint8_t TestMMCSD_fatTask2Stack[1024] __attribute__ ((aligned(32)));
 #else
-static uint8_t TestMMCSD_FatTask1Stack[20 * 1024] __attribute__ ((aligned(32)));
-static uint8_t TestMMCSD_FatTask2Stack[20 * 1024] __attribute__ ((aligned(32)));
+static uint8_t TestMMCSD_fatTask1Stack[20 * 1024] __attribute__ ((aligned(32)));
+static uint8_t TestMMCSD_fatTask2Stack[20 * 1024] __attribute__ ((aligned(32)));
 #endif
-static TaskP_Object TestMMCSD_FatThread1TaskObj;
-static TaskP_Object TestMMCSD_FatThread2TaskObj;
+static TaskP_Object TestMMCSD_fatThread1TaskObj;
+static TaskP_Object TestMMCSD_fatThread2TaskObj;
 #endif
 
 /* ========================================================================== */
 /*                           Function Declarations                            */
 /* ========================================================================== */
 
-static void Test_Mmcsd_InitWrBuffer();
+static void TestMmcsd_initWrBuffer();
 #if !defined (SOC_AM275X)  && !defined (C7_CORE)
-static void Test_Mmcsd_Init40MWrBuffer(uint8_t startNum);
+static void TestMmcsd_init40MWrBuffer(uint8_t startNum);
 #endif
-static void Test_Mmcsd_GetModeSettings(uint32_t type);
-static int32_t Test_Mmcsd_FileIo(char *fileName, char* fileData);
+static void TestMmcsd_getModeSettings(uint32_t type);
+static int32_t TestMmcsd_fileIo(char *fileName, char* fileData);
 
 /* ========================================================================== */
 /*                           Function Definitions                             */
@@ -90,7 +90,7 @@ static int32_t Test_Mmcsd_FileIo(char *fileName, char* fileData);
  * The test checks partition detection, creation, formatting,
  * and mounting using `FF_MMCSDCreateAndFormatPartition()` and
  * `FF_MMCSDMountPartition()`. It then performs read/write
- * validation using the `Test_Mmcsd_FileIo()` helper function.
+ * validation using the `TestMmcsd_fileIo()` helper function.
  *
  * The test confirms correct driver operation across modes,
  * verifying DMA, PHY, and filesystem consistency. It ensures
@@ -102,7 +102,7 @@ static int32_t Test_Mmcsd_FileIo(char *fileName, char* fileData);
  *
  * \return None.
  */
-void Test_Mmcsd_EmmcFileIo(void *args)
+void TestMmcsd_emmcFileIo(void *args)
 {
     int32_t retVal = SystemP_SUCCESS;
     uint32_t loopVar = 0;
@@ -110,17 +110,17 @@ void Test_Mmcsd_EmmcFileIo(void *args)
 
     DebugP_log ("Starting MMC EMMC file IO test \r\n");
 
-    for (loopVar = 0; loopVar < TestMMCSD_ModesCount; loopVar++)
+    for (loopVar = 0; loopVar < TestMMCSD_modesCount; loopVar++)
     {
-        gMmcsdAttrs[CONFIG_MMCSD_EMMC].supportedModes = TestMMCSD_Modes[loopVar];
+        gMmcsdAttrs[CONFIG_MMCSD_EMMC].supportedModes = TestMMCSD_modes[loopVar];
 
         DebugP_log ("EMMC file IO test : Configuration \r\n");
-        Test_Mmcsd_GetModeSettings(CONFIG_MMCSD_EMMC);
-        DebugP_log("Card type: %s\r\n",TestMMCSD_ModeParams.cardType);
-        DebugP_log("Bus Width: %d\r\n",TestMMCSD_ModeParams.busWidth);
-        DebugP_log("Operating mode: %s\r\n",TestMMCSD_ModeParams.mode);
+        TestMmcsd_getModeSettings(CONFIG_MMCSD_EMMC);
+        DebugP_log("Card type: %s\r\n",TestMMCSD_modeParams.cardType);
+        DebugP_log("Bus Width: %d\r\n",TestMMCSD_modeParams.busWidth);
+        DebugP_log("Operating mode: %s\r\n",TestMMCSD_modeParams.mode);
 
-        if(TestMMCSD_ModeParams.phyEnable)
+        if(TestMMCSD_modeParams.phyEnable)
         {
             DebugP_log("HARD PHY condition: enabled\r\n");
         }
@@ -129,7 +129,7 @@ void Test_Mmcsd_EmmcFileIo(void *args)
             DebugP_log("SOFT PHY condition: enabled\r\n");
         }
 
-        if(TestMMCSD_ModeParams.dmaEnable)
+        if(TestMMCSD_modeParams.dmaEnable)
         {
             DebugP_log("DMA condition: enabled\r\n");
         }
@@ -178,7 +178,7 @@ void Test_Mmcsd_EmmcFileIo(void *args)
         char *fileName = (char*)"/emmc0/test.dat";
         char *fileData = (char*)"THIS IS A TEST FILE TO TEST SD CARD FILE IO\n";
 
-        retVal = Test_Mmcsd_FileIo(fileName, fileData);
+        retVal = TestMmcsd_fileIo(fileName, fileData);
 
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
         Drivers_mmcsdClose();
@@ -207,7 +207,7 @@ void Test_Mmcsd_EmmcFileIo(void *args)
  *
  * \return None.
  */
-void Test_Mmcsd_EmmcNestedDirectories(void *args)
+void TestMmcsd_emmcNestedDirectories(void *args)
 {
     int32_t retVal = SystemP_SUCCESS;
     char fileName[15] = {0};
@@ -273,8 +273,8 @@ void Test_Mmcsd_EmmcNestedDirectories(void *args)
         testFile = ff_fopen(filePath, "w+");
         TEST_ASSERT_NOT_NULL(testFile);
 
-        memset(TestMMCSD_Wbuf, fillByte[f], (blockSize * TEST_MMCSD_BLOCK_COUNT));
-        ff_fwrite(TestMMCSD_Wbuf, (blockSize * TEST_MMCSD_BLOCK_COUNT), 1, testFile);
+        memset(TestMMCSD_wBuf, fillByte[f], (blockSize * TEST_MMCSD_BLOCK_COUNT));
+        ff_fwrite(TestMMCSD_wBuf, (blockSize * TEST_MMCSD_BLOCK_COUNT), 1, testFile);
 
         ff_fclose(testFile);
 
@@ -293,10 +293,10 @@ void Test_Mmcsd_EmmcNestedDirectories(void *args)
 
         testFile = ff_fopen(filePath, "r");
         TEST_ASSERT_NOT_NULL(testFile);
-        ff_fread(TestMMCSD_Rbuf, (blockSize * TEST_MMCSD_BLOCK_COUNT), 1, testFile);
+        ff_fread(TestMMCSD_rBuf, (blockSize * TEST_MMCSD_BLOCK_COUNT), 1, testFile);
 
-        memset(TestMMCSD_Wbuf, fillByte[f], (blockSize * TEST_MMCSD_BLOCK_COUNT));
-        TEST_ASSERT_EQUAL_MEMORY(TestMMCSD_Wbuf, TestMMCSD_Rbuf, (blockSize * TEST_MMCSD_BLOCK_COUNT));
+        memset(TestMMCSD_wBuf, fillByte[f], (blockSize * TEST_MMCSD_BLOCK_COUNT));
+        TEST_ASSERT_EQUAL_MEMORY(TestMMCSD_wBuf, TestMMCSD_rBuf, (blockSize * TEST_MMCSD_BLOCK_COUNT));
 
         ff_fclose(testFile);
         memset(filePath, 0, strlen(filePath));
@@ -333,12 +333,12 @@ static void fatThread1(void *pvParameters)
 
     for(i = 0; i < 10; i++)
     {
-        memset(TestMMCSD_Task1Rbuf, 0, TEST_MMCSD_SIZE_64K);
+        memset(TestMMCSD_task1Rbuf, 0, TEST_MMCSD_SIZE_64K);
 
         testFile = ff_fopen(fileName, "w+");
         TEST_ASSERT_NOT_NULL(testFile);
 
-        bytesWritten = ff_fwrite(TestMMCSD_Task1Wbuf, 1, TEST_MMCSD_SIZE_64K,  testFile);
+        bytesWritten = ff_fwrite(TestMMCSD_task1Wbuf, 1, TEST_MMCSD_SIZE_64K,  testFile);
         TEST_ASSERT_EQUAL(bytesWritten, TEST_MMCSD_SIZE_64K);
 
         ff_fclose(testFile);
@@ -347,10 +347,10 @@ static void fatThread1(void *pvParameters)
         testFile = ff_fopen(fileName, "r");
         TEST_ASSERT_NOT_NULL(testFile);
 
-        bytesRead = ff_fread(TestMMCSD_Task1Rbuf, 1, TEST_MMCSD_SIZE_64K, testFile);
+        bytesRead = ff_fread(TestMMCSD_task1Rbuf, 1, TEST_MMCSD_SIZE_64K, testFile);
         TEST_ASSERT_EQUAL(bytesRead, TEST_MMCSD_SIZE_64K);
 
-        TEST_ASSERT_EQUAL_MEMORY(TestMMCSD_Task1Rbuf, TestMMCSD_Task1Wbuf, TEST_MMCSD_SIZE_64K);
+        TEST_ASSERT_EQUAL_MEMORY(TestMMCSD_task1Rbuf, TestMMCSD_task1Wbuf, TEST_MMCSD_SIZE_64K);
 
         ff_fclose(testFile);
     }
@@ -367,12 +367,12 @@ static void fatThread2(void *pvParameters)
 
     for(i = 0; i < 10; i++)
     {
-        memset(TestMMCSD_Task2Rbuf, 0, TEST_MMCSD_SIZE_64K);
+        memset(TestMMCSD_task2Rbuf, 0, TEST_MMCSD_SIZE_64K);
 
         testFile = ff_fopen(fileName, "w+");
         TEST_ASSERT_NOT_NULL(testFile);
 
-        bytesWritten = ff_fwrite(TestMMCSD_Task2Wbuf, 1,  TEST_MMCSD_SIZE_64K, testFile);
+        bytesWritten = ff_fwrite(TestMMCSD_task2Wbuf, 1,  TEST_MMCSD_SIZE_64K, testFile);
         TEST_ASSERT_EQUAL(bytesWritten, TEST_MMCSD_SIZE_64K);
 
         ff_fclose(testFile);
@@ -381,10 +381,10 @@ static void fatThread2(void *pvParameters)
         testFile = ff_fopen(fileName, "r");
         TEST_ASSERT_NOT_NULL(testFile);
 
-        bytesRead = ff_fread(TestMMCSD_Task2Rbuf, 1, TEST_MMCSD_SIZE_64K, testFile);
+        bytesRead = ff_fread(TestMMCSD_task2Rbuf, 1, TEST_MMCSD_SIZE_64K, testFile);
         TEST_ASSERT_EQUAL(bytesRead, TEST_MMCSD_SIZE_64K);
 
-        TEST_ASSERT_EQUAL_MEMORY(TestMMCSD_Task2Rbuf, TestMMCSD_Task2Wbuf, TEST_MMCSD_SIZE_64K);
+        TEST_ASSERT_EQUAL_MEMORY(TestMMCSD_task2Rbuf, TestMMCSD_task2Wbuf, TEST_MMCSD_SIZE_64K);
 
         ff_fclose(testFile);
     }
@@ -413,7 +413,7 @@ static void fatThread2(void *pvParameters)
  *
  * \return None.
  */
-void Test_Mmcsd_ConcurrentFatSdTransfer(void *args)
+void TestMmcsd_concurrentFatSdTransfer(void *args)
 {
     int32_t status;
     uint32_t blockSize;
@@ -423,7 +423,7 @@ void Test_Mmcsd_ConcurrentFatSdTransfer(void *args)
     int32_t loopVar;
     TaskP_Params taskParams1, taskParams2;
 
-    Test_Mmcsd_InitWrBuffer();
+    TestMmcsd_initWrBuffer();
 
     DebugP_log ("Starting MMCSD SD multithreaded test case\r\n");
     Drivers_mmcsdOpen();
@@ -462,24 +462,24 @@ void Test_Mmcsd_ConcurrentFatSdTransfer(void *args)
 
     TaskP_Params_init(&taskParams1);
     taskParams1.priority       = 3U;
-    taskParams1.stack          = TestMMCSD_FatTask1Stack;
-    taskParams1.stackSize      = sizeof(TestMMCSD_FatTask1Stack);
+    taskParams1.stack          = TestMMCSD_fatTask1Stack;
+    taskParams1.stackSize      = sizeof(TestMMCSD_fatTask1Stack);
     taskParams1.args           = (void*)"/sd0/test1.txt";
     taskParams1.name           = "FatSdThread1";
     taskParams1.taskMain       = &fatThread1;
 
-    status = TaskP_construct(&TestMMCSD_FatThread1TaskObj, &taskParams1);
+    status = TaskP_construct(&TestMMCSD_fatThread1TaskObj, &taskParams1);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     TaskP_Params_init(&taskParams2);
     taskParams2.priority       = 3U;
-    taskParams2.stack          = TestMMCSD_FatTask2Stack;
-    taskParams2.stackSize      = sizeof(TestMMCSD_FatTask2Stack);
+    taskParams2.stack          = TestMMCSD_fatTask2Stack;
+    taskParams2.stackSize      = sizeof(TestMMCSD_fatTask2Stack);
     taskParams2.args           = (void*)"/sd0/test2.txt";
     taskParams2.name           = "FatSdThread2";
     taskParams2.taskMain       = &fatThread2;
 
-    status = TaskP_construct(&TestMMCSD_FatThread2TaskObj, &taskParams2);
+    status = TaskP_construct(&TestMMCSD_fatThread2TaskObj, &taskParams2);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     for(loopVar = 0; loopVar < 2; loopVar++)
@@ -489,8 +489,8 @@ void Test_Mmcsd_ConcurrentFatSdTransfer(void *args)
     }
 
     SemaphoreP_destruct(&TestMMCSD_sem);
-    TaskP_destruct(&TestMMCSD_FatThread1TaskObj);
-    TaskP_destruct(&TestMMCSD_FatThread2TaskObj);
+    TaskP_destruct(&TestMMCSD_fatThread1TaskObj);
+    TaskP_destruct(&TestMMCSD_fatThread2TaskObj);
     Drivers_mmcsdClose();
 }
 
@@ -516,7 +516,7 @@ void Test_Mmcsd_ConcurrentFatSdTransfer(void *args)
  *
  * \return None.
  */
-void Test_Mmcsd_ConcurrentFatEmmcTransfer(void *args)
+void TestMmcsd_concurrentFatEmmcTransfer(void *args)
 {
     int32_t status;
     uint32_t blockSize;
@@ -526,7 +526,7 @@ void Test_Mmcsd_ConcurrentFatEmmcTransfer(void *args)
     int32_t loopVar;
     TaskP_Params taskParams1, taskParams2;
 
-    Test_Mmcsd_InitWrBuffer();
+    TestMmcsd_initWrBuffer();
 
     DebugP_log ("Starting MMCSD EMMC multithreaded test case\r\n");
     Drivers_mmcsdOpen();
@@ -565,24 +565,24 @@ void Test_Mmcsd_ConcurrentFatEmmcTransfer(void *args)
 
     TaskP_Params_init(&taskParams1);
     taskParams1.priority       = 3U;
-    taskParams1.stack          = TestMMCSD_FatTask1Stack;
-    taskParams1.stackSize      = sizeof(TestMMCSD_FatTask1Stack);
+    taskParams1.stack          = TestMMCSD_fatTask1Stack;
+    taskParams1.stackSize      = sizeof(TestMMCSD_fatTask1Stack);
     taskParams1.args           = (void*)"/emmc0/test1.txt";
     taskParams1.name           = "FatEmmcThread1";
     taskParams1.taskMain       = &fatThread1;
 
-    status = TaskP_construct(&TestMMCSD_FatThread1TaskObj, &taskParams1);
+    status = TaskP_construct(&TestMMCSD_fatThread1TaskObj, &taskParams1);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     TaskP_Params_init(&taskParams2);
     taskParams2.priority       = 3U;
-    taskParams2.stack          = TestMMCSD_FatTask2Stack;
-    taskParams2.stackSize      = sizeof(TestMMCSD_FatTask2Stack);
+    taskParams2.stack          = TestMMCSD_fatTask2Stack;
+    taskParams2.stackSize      = sizeof(TestMMCSD_fatTask2Stack);
     taskParams2.args           = (void*)"/emmc0/test2.txt";
     taskParams2.name           = "FatEmmcThread2";
     taskParams2.taskMain       = &fatThread2;
 
-    status = TaskP_construct(&TestMMCSD_FatThread2TaskObj, &taskParams2);
+    status = TaskP_construct(&TestMMCSD_fatThread2TaskObj, &taskParams2);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     for(loopVar = 0; loopVar < 2; loopVar++)
@@ -591,8 +591,8 @@ void Test_Mmcsd_ConcurrentFatEmmcTransfer(void *args)
         TEST_ASSERT_EQUAL_INT32(retVal, SystemP_SUCCESS);
     }
     SemaphoreP_destruct(&TestMMCSD_sem);
-    TaskP_destruct(&TestMMCSD_FatThread1TaskObj);
-    TaskP_destruct(&TestMMCSD_FatThread2TaskObj);
+    TaskP_destruct(&TestMMCSD_fatThread1TaskObj);
+    TaskP_destruct(&TestMMCSD_fatThread2TaskObj);
     Drivers_mmcsdClose();
 }
 
@@ -621,7 +621,7 @@ void Test_Mmcsd_ConcurrentFatEmmcTransfer(void *args)
  *
  * \return None.
  */
-void Test_Mmcsd_testConcurrentFatEmmcSdTransfer(void *args)
+void TestMmcsd_testConcurrentFatEmmcSdTransfer(void *args)
 {
     int32_t status;
     uint32_t sdBlockSize;
@@ -633,7 +633,7 @@ void Test_Mmcsd_testConcurrentFatEmmcSdTransfer(void *args)
     int32_t loopVar;
     TaskP_Params taskParams1, taskParams2;
 
-    Test_Mmcsd_InitWrBuffer();
+    TestMmcsd_initWrBuffer();
 
     DebugP_log ("Starting MMCSD combined  multithreaded test case\r\n");
     Drivers_mmcsdOpen();
@@ -701,24 +701,24 @@ void Test_Mmcsd_testConcurrentFatEmmcSdTransfer(void *args)
 
     TaskP_Params_init(&taskParams1);
     taskParams1.priority       = 3U;
-    taskParams1.stack          = TestMMCSD_FatTask1Stack;
-    taskParams1.stackSize      = sizeof(TestMMCSD_FatTask1Stack);
+    taskParams1.stack          = TestMMCSD_fatTask1Stack;
+    taskParams1.stackSize      = sizeof(TestMMCSD_fatTask1Stack);
     taskParams1.args           = (void*)"/sd0/test1.txt";
     taskParams1.name           = "FatSdThread1";
     taskParams1.taskMain       = &fatThread1;
 
-    status = TaskP_construct(&TestMMCSD_FatThread1TaskObj, &taskParams1);
+    status = TaskP_construct(&TestMMCSD_fatThread1TaskObj, &taskParams1);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     TaskP_Params_init(&taskParams2);
     taskParams2.priority       = 3U;
-    taskParams2.stack          = TestMMCSD_FatTask2Stack;
-    taskParams2.stackSize      = sizeof(TestMMCSD_FatTask2Stack);
+    taskParams2.stack          = TestMMCSD_fatTask2Stack;
+    taskParams2.stackSize      = sizeof(TestMMCSD_fatTask2Stack);
     taskParams2.args           = (void*)"/emmc0/test2.txt";
     taskParams2.name           = "FatEmmcThread2";
     taskParams2.taskMain       = &fatThread2;
 
-    status = TaskP_construct(&TestMMCSD_FatThread2TaskObj, &taskParams2);
+    status = TaskP_construct(&TestMMCSD_fatThread2TaskObj, &taskParams2);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     for(loopVar = 0; loopVar < 2; loopVar++)
@@ -727,8 +727,8 @@ void Test_Mmcsd_testConcurrentFatEmmcSdTransfer(void *args)
         TEST_ASSERT_EQUAL_INT32(retVal, SystemP_SUCCESS);
     }
     SemaphoreP_destruct(&TestMMCSD_sem);
-    TaskP_destruct(&TestMMCSD_FatThread1TaskObj);
-    TaskP_destruct(&TestMMCSD_FatThread2TaskObj);
+    TaskP_destruct(&TestMMCSD_fatThread1TaskObj);
+    TaskP_destruct(&TestMMCSD_fatThread2TaskObj);
     Drivers_mmcsdClose();
 }
 #endif
@@ -755,7 +755,7 @@ void Test_Mmcsd_testConcurrentFatEmmcSdTransfer(void *args)
  *
  * \return None.
  */
-void Test_Mmcsd_SdNestedDirectories(void *args)
+void TestMmcsd_sdNestedDirectories(void *args)
 {
     int32_t retVal = SystemP_SUCCESS;
     char fileName[15] = {0};
@@ -822,8 +822,8 @@ void Test_Mmcsd_SdNestedDirectories(void *args)
         testFile = ff_fopen(filePath, "w+");
         TEST_ASSERT_NOT_NULL(testFile);
 
-        memset(TestMMCSD_Wbuf, fillByte[f], (blockSize * TEST_MMCSD_BLOCK_COUNT));
-        ff_fwrite(TestMMCSD_Wbuf, (blockSize * TEST_MMCSD_BLOCK_COUNT), 1, testFile);
+        memset(TestMMCSD_wBuf, fillByte[f], (blockSize * TEST_MMCSD_BLOCK_COUNT));
+        ff_fwrite(TestMMCSD_wBuf, (blockSize * TEST_MMCSD_BLOCK_COUNT), 1, testFile);
 
         ff_fclose(testFile);
 
@@ -843,10 +843,10 @@ void Test_Mmcsd_SdNestedDirectories(void *args)
 
         testFile = ff_fopen(filePath, "r");
         TEST_ASSERT_NOT_NULL(testFile);
-        ff_fread(TestMMCSD_Rbuf, (blockSize * TEST_MMCSD_BLOCK_COUNT), 1, testFile);
+        ff_fread(TestMMCSD_rBuf, (blockSize * TEST_MMCSD_BLOCK_COUNT), 1, testFile);
 
-        memset(TestMMCSD_Wbuf, fillByte[f], (blockSize * TEST_MMCSD_BLOCK_COUNT));
-        TEST_ASSERT_EQUAL_MEMORY(TestMMCSD_Wbuf, TestMMCSD_Rbuf, (blockSize * TEST_MMCSD_BLOCK_COUNT));
+        memset(TestMMCSD_wBuf, fillByte[f], (blockSize * TEST_MMCSD_BLOCK_COUNT));
+        TEST_ASSERT_EQUAL_MEMORY(TestMMCSD_wBuf, TestMMCSD_rBuf, (blockSize * TEST_MMCSD_BLOCK_COUNT));
 
         ff_fclose(testFile);
         memset(filePath, 0, strlen(filePath));
@@ -885,7 +885,7 @@ void Test_Mmcsd_SdNestedDirectories(void *args)
  *
  * The test creates and formats a partition if missing, mounts
  * it at "/sd0", and runs read/write checks via
- * `Test_Mmcsd_FileIo()`. It confirms data integrity and
+ * `TestMmcsd_fileIo()`. It confirms data integrity and
  * driver stability across configurations (DMA/PHY/mode).
  *
  * \param args Pointer to test-specific configuration or
@@ -893,7 +893,7 @@ void Test_Mmcsd_SdNestedDirectories(void *args)
  *
  * \return None.
  */
-void Test_Mmcsd_SdFileIo(void *args)
+void TestMmcsd_sdFileIo(void *args)
 {
     int32_t retVal = SystemP_SUCCESS;
     uint32_t loopVar = 0;
@@ -901,17 +901,17 @@ void Test_Mmcsd_SdFileIo(void *args)
 
     DebugP_log ("Starting MMC SD file IO test \r\n");
 
-    for (loopVar = 0; loopVar < TestMMCSD_SdModesCount; loopVar++)
+    for (loopVar = 0; loopVar < TestMMCSD_sdModesCount; loopVar++)
     {
-        gMmcsdAttrs[CONFIG_MMCSD_SD].supportedModes = TestMMCSD_SdModes[loopVar];
+        gMmcsdAttrs[CONFIG_MMCSD_SD].supportedModes = TestMMCSD_sdModes[loopVar];
 
         DebugP_log ("SD file IO test : Configuration \r\n");
-        Test_Mmcsd_GetModeSettings(CONFIG_MMCSD_SD);
-        DebugP_log("Card type: %s\r\n",TestMMCSD_ModeParams.cardType);
-        DebugP_log("Bus Width: %d\r\n",TestMMCSD_ModeParams.busWidth);
-        DebugP_log("Operating mode: %s\r\n",TestMMCSD_ModeParams.mode);
+        TestMmcsd_getModeSettings(CONFIG_MMCSD_SD);
+        DebugP_log("Card type: %s\r\n",TestMMCSD_modeParams.cardType);
+        DebugP_log("Bus Width: %d\r\n",TestMMCSD_modeParams.busWidth);
+        DebugP_log("Operating mode: %s\r\n",TestMMCSD_modeParams.mode);
 
-        if (TestMMCSD_ModeParams.phyEnable)
+        if (TestMMCSD_modeParams.phyEnable)
         {
             DebugP_log("HARD PHY condition: enabled\r\n");
         }
@@ -920,7 +920,7 @@ void Test_Mmcsd_SdFileIo(void *args)
             DebugP_log("SOFT PHY condition: enabled\r\n");
         }
 
-        if (TestMMCSD_ModeParams.dmaEnable)
+        if (TestMMCSD_modeParams.dmaEnable)
         {
             DebugP_log("DMA condition: enabled\r\n");
         }
@@ -965,7 +965,7 @@ void Test_Mmcsd_SdFileIo(void *args)
         char *fileName = (char*)"/sd0/test.dat";
         char *fileData = (char*)"THIS IS A TEST FILE TO TEST SD CARD FILE IO\n";
 
-        retVal = Test_Mmcsd_FileIo(fileName, fileData);
+        retVal = TestMmcsd_fileIo(fileName, fileData);
 
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
         Drivers_mmcsdClose();
@@ -996,7 +996,7 @@ void Test_Mmcsd_SdFileIo(void *args)
  *
  * \return None.
  */
-void Test_Mmcsd_LargeSdFileIo(void *args)
+void TestMmcsd_largeSdFileIo(void *args)
 {
     int32_t retVal = SystemP_SUCCESS;
     uint32_t loopVar = 0;
@@ -1005,14 +1005,14 @@ void Test_Mmcsd_LargeSdFileIo(void *args)
     FF_Error_t errVal;
 
     DebugP_log ("Starting MMCSD large file IO test \r\n");
-    gMmcsdAttrs[CONFIG_MMCSD_SD].supportedModes = TestMMCSD_SdModes[0];
+    gMmcsdAttrs[CONFIG_MMCSD_SD].supportedModes = TestMMCSD_sdModes[0];
 
-    Test_Mmcsd_GetModeSettings(CONFIG_MMCSD_SD);
-    DebugP_log("Card type: %s\r\n",TestMMCSD_ModeParams.cardType);
-    DebugP_log("Bus Width: %d\r\n",TestMMCSD_ModeParams.busWidth);
-    DebugP_log("Operating mode: %s\r\n",TestMMCSD_ModeParams.mode);
+    TestMmcsd_getModeSettings(CONFIG_MMCSD_SD);
+    DebugP_log("Card type: %s\r\n",TestMMCSD_modeParams.cardType);
+    DebugP_log("Bus Width: %d\r\n",TestMMCSD_modeParams.busWidth);
+    DebugP_log("Operating mode: %s\r\n",TestMMCSD_modeParams.mode);
 
-    if (TestMMCSD_ModeParams.phyEnable)
+    if (TestMMCSD_modeParams.phyEnable)
     {
         DebugP_log("HARD PHY condition: enabled\r\n");
     }
@@ -1021,7 +1021,7 @@ void Test_Mmcsd_LargeSdFileIo(void *args)
         DebugP_log("SOFT PHY condition: enabled\r\n");
     }
 
-    if (TestMMCSD_ModeParams.dmaEnable)
+    if (TestMMCSD_modeParams.dmaEnable)
     {
         DebugP_log("DMA condition: enabled\r\n");
     }
@@ -1068,13 +1068,13 @@ void Test_Mmcsd_LargeSdFileIo(void *args)
     {
         char fileName[64];
         snprintf(fileName, sizeof(fileName), "/sd0/test%d.txt", loopVar);
-        Test_Mmcsd_Init40MWrBuffer(loopVar);
+        TestMmcsd_init40MWrBuffer(loopVar);
 
         /* Create file */
         testFp = ff_fopen(fileName, "w+");
         TEST_ASSERT_NOT_NULL(testFp);
 
-        ff_fwrite(TestMMCSD_Wbuf40M, TEST_MMCSD_40MB_SIZE, 1, testFp);
+        ff_fwrite(TestMMCSD_wBuf40M, TEST_MMCSD_40MB_SIZE, 1, testFp);
 
         /* Close file */
         ff_fclose(testFp);
@@ -1086,15 +1086,15 @@ void Test_Mmcsd_LargeSdFileIo(void *args)
 
         char fileName[64];
         snprintf(fileName, sizeof(fileName), "/sd0/test%d.txt", loopVar);
-        Test_Mmcsd_Init40MWrBuffer(loopVar);
-        memset(TestMMCSD_Rbuf40M, 0, sizeof(TestMMCSD_Rbuf40M));
+        TestMmcsd_init40MWrBuffer(loopVar);
+        memset(TestMMCSD_rBuf40M, 0, sizeof(TestMMCSD_rBuf40M));
 
         /* Re-open now for reading */
         testFp = ff_fopen(fileName, "r");
         TEST_ASSERT_NOT_NULL(testFp);
 
-        ff_fread(TestMMCSD_Rbuf40M, 1, TEST_MMCSD_40MB_SIZE, testFp);
-        TEST_ASSERT_EQUAL_MEMORY(TestMMCSD_Rbuf40M, TestMMCSD_Wbuf40M, TEST_MMCSD_40MB_SIZE);
+        ff_fread(TestMMCSD_rBuf40M, 1, TEST_MMCSD_40MB_SIZE, testFp);
+        TEST_ASSERT_EQUAL_MEMORY(TestMMCSD_rBuf40M, TestMMCSD_wBuf40M, TEST_MMCSD_40MB_SIZE);
 
         /* Close file */
         ff_fclose(testFp);
@@ -1110,99 +1110,99 @@ void Test_Mmcsd_LargeSdFileIo(void *args)
 /* ========================================================================== */
 
 /* Initializes the write buffers for multithreaded FAT tests. */
-static void Test_Mmcsd_InitWrBuffer()
+static void TestMmcsd_initWrBuffer()
 {
     uint32_t i;
     for (i = 0; i < TEST_MMCSD_SIZE_64K; i++)
     {
-        TestMMCSD_Task1Wbuf[i] = (i % 256);
-        TestMMCSD_Task2Wbuf[i] = ((i + 1) % 256);
+        TestMMCSD_task1Wbuf[i] = (i % 256);
+        TestMMCSD_task2Wbuf[i] = ((i + 1) % 256);
     }
 }
 
 #if !defined (SOC_AM275X)  && !defined (C7_CORE)
 /* Initializes a 1MB write buffer with a starting value. */
-static void Test_Mmcsd_Init40MWrBuffer(uint8_t startNum)
+static void TestMmcsd_init40MWrBuffer(uint8_t startNum)
 {
     for (uint32_t i = 0; i < TEST_MMCSD_SIZE_40M; i++)
     {
-        TestMMCSD_Wbuf40M[i] = ((startNum + i) % 256);
+        TestMMCSD_wBuf40M[i] = ((startNum + i) % 256);
     }
 }
 #endif
 
-/* Populates TestMMCSD_ModeParams with current card and mode settings. */
-static void Test_Mmcsd_GetModeSettings(uint32_t type)
+/* Populates TestMMCSD_modeParams with current card and mode settings. */
+static void TestMmcsd_getModeSettings(uint32_t type)
 {
-    TestMMCSD_ModeParams.busWidth = gMmcsdAttrs[type].busWidth;
+    TestMMCSD_modeParams.busWidth = gMmcsdAttrs[type].busWidth;
 
     /* Entend this for more flashNames when required*/
     if(gMmcsdAttrs[type].cardType == MMCSD_CARD_TYPE_EMMC)
     {
-        TestMMCSD_ModeParams.cardType = "EMMC";
+        TestMMCSD_modeParams.cardType = "EMMC";
         if(gMmcsdAttrs[type].supportedModes & MMCSD_SUPPORT_MMC_HS_SDR)
         {
-            TestMMCSD_ModeParams.mode = "SDR";
+            TestMMCSD_modeParams.mode = "SDR";
         }
         else if(gMmcsdAttrs[type].supportedModes & MMCSD_SUPPORT_MMC_HS_DDR)
         {
-            TestMMCSD_ModeParams.mode = "DDR";
+            TestMMCSD_modeParams.mode = "DDR";
         }
         else if(gMmcsdAttrs[type].supportedModes & MMCSD_SUPPORT_MMC_HS200)
         {
-            TestMMCSD_ModeParams.mode = "HS200";
+            TestMMCSD_modeParams.mode = "HS200";
         }
         else if(gMmcsdAttrs[type].supportedModes & MMCSD_SUPPORT_MMC_HS400)
         {
-            TestMMCSD_ModeParams.mode = "HS400";
+            TestMMCSD_modeParams.mode = "HS400";
         }
     }
     else if(gMmcsdAttrs[type].cardType == MMCSD_CARD_TYPE_SD)
     {
-        TestMMCSD_ModeParams.cardType = "SD";
+        TestMMCSD_modeParams.cardType = "SD";
         if(gMmcsdAttrs[type].supportedModes & MMCSD_SUPPORT_SD_SDR50)
         {
-            TestMMCSD_ModeParams.mode = "SDR";
+            TestMMCSD_modeParams.mode = "SDR";
         }
         else if(gMmcsdAttrs[type].supportedModes & MMCSD_SUPPORT_SD_DDR50)
         {
-            TestMMCSD_ModeParams.mode = "DDR";
+            TestMMCSD_modeParams.mode = "DDR";
         }
         else if(gMmcsdAttrs[type].supportedModes & MMCSD_SUPPORT_SD_SDR104)
         {
-            TestMMCSD_ModeParams.mode = "SDR104";
+            TestMMCSD_modeParams.mode = "SDR104";
         }
         else if((gMmcsdAttrs[type].supportedModes & MMCSD_SUPPORT_SD_HS))
         {
-            TestMMCSD_ModeParams.mode = "HS";
+            TestMMCSD_modeParams.mode = "HS";
         }
     }
     else if(gMmcsdAttrs[type].cardType == MMCSD_CARD_TYPE_NO_DEVICE)
     {
-        TestMMCSD_ModeParams.cardType = "NO DEVICE";
+        TestMMCSD_modeParams.cardType = "NO DEVICE";
     }
 
     if(gMmcsdAttrs[type].phyType == MMCSD_PHY_TYPE_HW_PHY)
     {
-        TestMMCSD_ModeParams.phyEnable = TRUE;
+        TestMMCSD_modeParams.phyEnable = TRUE;
     }
     else
     {
-        TestMMCSD_ModeParams.phyEnable = FALSE;
+        TestMMCSD_modeParams.phyEnable = FALSE;
     }
 
     if(gMmcsdAttrs[CONFIG_MMCSD_EMMC].enableDma)
     {
-        TestMMCSD_ModeParams.dmaEnable = TRUE;
+        TestMMCSD_modeParams.dmaEnable = TRUE;
     }
     else
     {
-        TestMMCSD_ModeParams.dmaEnable = FALSE;
+        TestMMCSD_modeParams.dmaEnable = FALSE;
     }
 }
 
 /* Function to do file transfer */
-static int32_t Test_Mmcsd_FileIo(char *fileName, char* fileData)
+static int32_t TestMmcsd_fileIo(char *fileName, char* fileData)
 {
     int32_t retVal = SystemP_SUCCESS;
     uint32_t i;

@@ -112,41 +112,45 @@
 /* ========================================================================== */
 
 #if defined (ENABLE_FS_TESTS)
-extern uint8_t TestMMCSD_Wbuf[TEST_MMCSD_FAT_BLOCK_SIZE * TEST_MMCSD_BLOCK_COUNT];
-extern uint8_t TestMMCSD_Rbuf[TEST_MMCSD_FAT_BLOCK_SIZE * TEST_MMCSD_BLOCK_COUNT];
+extern uint8_t TestMMCSD_wBuf[TEST_MMCSD_FAT_BLOCK_SIZE * TEST_MMCSD_BLOCK_COUNT];
+extern uint8_t TestMMCSD_rBuf[TEST_MMCSD_FAT_BLOCK_SIZE * TEST_MMCSD_BLOCK_COUNT];
 
 /* Buffers for multithreading test cases */
-extern uint8_t TestMMCSD_Task1Wbuf[TEST_MMCSD_SIZE_64K];
-extern uint8_t TestMMCSD_Task1Rbuf[TEST_MMCSD_SIZE_64K];
-extern uint8_t TestMMCSD_Task2Wbuf[TEST_MMCSD_SIZE_64K];
-extern uint8_t TestMMCSD_Task2Rbuf[TEST_MMCSD_SIZE_64K];
+extern uint8_t TestMMCSD_task1Wbuf[TEST_MMCSD_SIZE_64K];
+extern uint8_t TestMMCSD_task1Rbuf[TEST_MMCSD_SIZE_64K];
+extern uint8_t TestMMCSD_task2Wbuf[TEST_MMCSD_SIZE_64K];
+extern uint8_t TestMMCSD_task2Rbuf[TEST_MMCSD_SIZE_64K];
 
 /* Buffers for large file transfer */
 #if !defined (SOC_AM275X) &&  !defined (C7_CORE)
-extern uint8_t TestMMCSD_Wbuf40M[TEST_MMCSD_40MB_SIZE];
-extern uint8_t TestMMCSD_Rbuf40M[TEST_MMCSD_40MB_SIZE];
+extern uint8_t TestMMCSD_wBuf40M[TEST_MMCSD_40MB_SIZE];
+extern uint8_t TestMMCSD_rBuf40M[TEST_MMCSD_40MB_SIZE];
 #endif
 #endif
 
 #if defined (ENABLE_RAW_TESTS)
-extern uint8_t TestMMCSD_TxBuf[TEST_MMCSD_DATA_SIZE];
-extern uint8_t TestMMCSD_RxBuf[TEST_MMCSD_DATA_SIZE];
+extern uint8_t TestMMCSD_txBuf[TEST_MMCSD_DATA_SIZE];
+extern uint8_t TestMMCSD_rxBuf[TEST_MMCSD_DATA_SIZE];
+
+extern uint8_t TestMMCSD_unalignedTxBuf[TEST_MMCSD_1MB_SIZE + 8];
+extern uint8_t TestMMCSD_unalignedRxBuf[TEST_MMCSD_1MB_SIZE];
 #endif
 
 extern MMCSD_Attrs gMmcsdAttrs[CONFIG_MMCSD_NUM_INSTANCES];
 extern MMCSD_Handle gMmcsdHandle[];
 
-extern uint32_t TestMMCSD_Modes[];
-extern const uint32_t TestMMCSD_ModesCount;
-extern uint32_t TestMMCSD_SdModes[];
-extern const uint32_t TestMMCSD_SdModesCount;
+extern uint32_t TestMMCSD_modes[];
+extern const uint32_t TestMMCSD_modesCount;
+extern uint32_t TestMMCSD_sdModes[];
+extern const uint32_t TestMMCSD_sdModesCount;
 
 #if defined (ENABLE_RAW_TESTS)
 /* ========================================================================== */
 /*                 Internal Function Declarations                             */
 /* ========================================================================== */
 
-void Test_Mmcsd_FillBuffers(void);
+void TestMmcsd_fillUnalignedBuffers(uint8_t *txPtr);
+void TestMmcsd_fillBuffers(void);
 #endif
 
 /* ========================================================================== */

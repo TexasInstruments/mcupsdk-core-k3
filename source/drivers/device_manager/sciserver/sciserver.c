@@ -564,6 +564,16 @@ static int32_t Sciserver_UserProcessMsg(uint32_t *msg_recv,
             reqMsgSize = sizeof(struct tisci_msg_get_freq_req);
             respMsgSize = sizeof(struct tisci_msg_get_freq_resp);
             break;
+#ifdef CONFIG_PM_CLK_SSC
+        case TISCI_MSG_SET_CLOCK_SSC:
+            reqMsgSize = sizeof(struct tisci_msg_set_clock_ssc_req);
+            respMsgSize = sizeof(struct tisci_msg_set_clock_ssc_resp);
+            break;
+        case TISCI_MSG_GET_CLOCK_SSC:
+            reqMsgSize = sizeof(struct tisci_msg_get_clock_ssc_req);
+            respMsgSize = sizeof(struct tisci_msg_get_clock_ssc_resp);
+            break;
+#endif
         case TISCI_MSG_SET_DEVICE:
             reqMsgSize = sizeof(struct tisci_msg_set_device_req);
             respMsgSize = sizeof(struct tisci_msg_set_device_resp);

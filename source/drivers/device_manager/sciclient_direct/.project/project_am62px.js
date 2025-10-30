@@ -53,6 +53,7 @@ const defines_r5f = {
         "CONFIG_CLOCK",
         "CONFIG_CLK_PLL_16FFT",
         "CONFIG_CLK_PLL_16FFT_FRACF_CALIBRATION",
+        "CONFIG_PM_CLK_SSC",
         "CONFIG_DM_BUILD",
         "CONFIG_RM",
         "CONFIG_RM_IRQ",

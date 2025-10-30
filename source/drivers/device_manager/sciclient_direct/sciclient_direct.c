@@ -271,6 +271,10 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
             case TISCI_MSG_SET_CLOCK_PARENT:
             case TISCI_MSG_GET_CLOCK_PARENT:
             case TISCI_MSG_GET_NUM_CLOCK_PARENTS:
+#ifdef CONFIG_PM_CLK_SSC
+            case TISCI_MSG_SET_CLOCK_SSC:
+            case TISCI_MSG_GET_CLOCK_SSC:
+#endif
             case TISCI_MSG_SET_FREQ:
             case TISCI_MSG_QUERY_FREQ:
             case TISCI_MSG_GET_FREQ:
@@ -703,6 +707,12 @@ int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags, void *tx_msg)
             ret = get_clock_parent_handler((uint32_t*)tx_msg); break;
         case TISCI_MSG_GET_NUM_CLOCK_PARENTS   :
             ret = get_num_clock_parents_handler((uint32_t*)tx_msg); break;
+#ifdef CONFIG_PM_CLK_SSC
+        case TISCI_MSG_SET_CLOCK_SSC           :
+            ret = set_ssc_handler((uint32_t*)tx_msg); break;
+        case TISCI_MSG_GET_CLOCK_SSC           :
+            ret = get_ssc_handler((uint32_t*)tx_msg); break;
+#endif
         case TISCI_MSG_SET_FREQ                :
             ret = set_freq_handler((uint32_t*)tx_msg); break;
         case TISCI_MSG_QUERY_FREQ              :

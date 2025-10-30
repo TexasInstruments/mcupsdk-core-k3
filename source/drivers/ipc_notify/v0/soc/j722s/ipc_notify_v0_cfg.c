@@ -463,7 +463,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_mcu_r5fss0_0[IPC_NOTIFY_INTE
         .eventId = 0U,   /* not used */
         .numCores = 1U,  /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = { /* core ID's tied to this interrupt line */
-            CSL_CORE_ID_WKUP_R5FSS0_0
+            CSL_CORE_ID_WKUP_R5FSS0_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     },
     {
@@ -471,7 +471,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_mcu_r5fss0_0[IPC_NOTIFY_INTE
         .eventId = 0U,   /* not used */
         .numCores = 1U,  /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = { /* core ID's tied to this interrupt line */
-            CSL_CORE_ID_A53SS0_0
+            CSL_CORE_ID_A53SS0_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     },
     {
@@ -480,7 +480,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_mcu_r5fss0_0[IPC_NOTIFY_INTE
         .numCores = 2U,  /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = { /* core ID's tied to this interrupt line */
             CSL_CORE_ID_MAIN_R5FSS0_0,
-            CSL_CORE_ID_C75SS0_0
+            CSL_CORE_ID_C75SS0_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     },
     {
@@ -488,7 +488,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_mcu_r5fss0_0[IPC_NOTIFY_INTE
         .eventId = 0U,   /* not used */
         .numCores = 1U,  /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = { /* core ID's tied to this interrupt line */
-            CSL_CORE_ID_C75SS1_0
+            CSL_CORE_ID_C75SS1_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     }
 };
@@ -503,7 +503,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_wkup_r5fss0_0[IPC_NOTIFY_INT
         .numCores = 2U,   /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = {   /* core ID's tied to this interrupt line */
             CSL_CORE_ID_A53SS0_0,
-            CSL_CORE_ID_MCU_R5FSS0_0
+            CSL_CORE_ID_MCU_R5FSS0_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     },
     {
@@ -512,7 +512,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_wkup_r5fss0_0[IPC_NOTIFY_INT
         .numCores = 2U,   /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = {   /* core ID's tied to this interrupt line */
             CSL_CORE_ID_MAIN_R5FSS0_0,
-            CSL_CORE_ID_C75SS0_0
+            CSL_CORE_ID_C75SS0_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     },
     {
@@ -520,7 +520,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_wkup_r5fss0_0[IPC_NOTIFY_INT
         .eventId = 0U,    /* not used */
         .numCores = 1U,   /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = {   /* core ID's tied to this interrupt line */
-            CSL_CORE_ID_C75SS1_0
+            CSL_CORE_ID_C75SS1_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     }
 };
@@ -534,7 +534,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_main_r5fss0_0[IPC_NOTIFY_INT
         .eventId = 0U,    /* not used */
         .numCores = 1U,   /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = {   /* core ID's tied to this interrupt line */
-            CSL_CORE_ID_A53SS0_0
+            CSL_CORE_ID_A53SS0_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     },
     {
@@ -542,7 +542,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_main_r5fss0_0[IPC_NOTIFY_INT
         .eventId = 0U,    /* not used */
         .numCores = 1U,   /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = {   /* core ID's tied to this interrupt line */
-            CSL_CORE_ID_WKUP_R5FSS0_0
+            CSL_CORE_ID_WKUP_R5FSS0_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     },
     {
@@ -551,7 +551,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_main_r5fss0_0[IPC_NOTIFY_INT
         .numCores = 2U,   /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = {   /* core ID's tied to this interrupt line */
             CSL_CORE_ID_MCU_R5FSS0_0,
-            CSL_CORE_ID_C75SS0_0
+            CSL_CORE_ID_C75SS0_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     },
     {
@@ -559,7 +559,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_main_r5fss0_0[IPC_NOTIFY_INT
         .eventId = 0U,    /* not used */
         .numCores = 1U,   /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = {   /* core ID's tied to this interrupt line */
-            CSL_CORE_ID_C75SS1_0
+            CSL_CORE_ID_C75SS1_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     }
 };
@@ -574,7 +574,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_c75ss0_0[IPC_NOTIFY_INTERRUP
         .eventId = (CLEC0_SOC_INT_START + CSLR_C7X256V0_CLEC_SOC_EVENTS_IN_MAILBOX0_MAILBOX_CLUSTER_2_MAILBOX_CLUSTER_PEND_1), /* CSL int num + CLEC SOC offset */
         .numCores = 1U,   /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = {   /* core ID's tied to this interrupt line */
-            CSL_CORE_ID_A53SS0_0
+            CSL_CORE_ID_A53SS0_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     },
     {
@@ -582,7 +582,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_c75ss0_0[IPC_NOTIFY_INTERRUP
         .eventId = (CLEC0_SOC_INT_START + CSLR_C7X256V0_CLEC_SOC_EVENTS_IN_MAILBOX0_MAILBOX_CLUSTER_4_MAILBOX_CLUSTER_PEND_1), /* CSL int num + CLEC SOC offset */
         .numCores = 1U,   /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = {   /* core ID's tied to this interrupt line */
-            CSL_CORE_ID_WKUP_R5FSS0_0
+            CSL_CORE_ID_WKUP_R5FSS0_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     },
     {
@@ -590,7 +590,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_c75ss0_0[IPC_NOTIFY_INTERRUP
         .eventId = (CLEC0_SOC_INT_START + CSLR_C7X256V0_CLEC_SOC_EVENTS_IN_MAILBOX0_MAILBOX_CLUSTER_5_MAILBOX_CLUSTER_PEND_1), /* CSL int num + CLEC SOC offset */
         .numCores = 1U,   /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = {   /* core ID's tied to this interrupt line */
-            CSL_CORE_ID_C75SS1_0
+            CSL_CORE_ID_C75SS1_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     },
     {
@@ -599,7 +599,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_c75ss0_0[IPC_NOTIFY_INTERRUP
         .numCores = 2U,   /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = {   /* core ID's tied to this interrupt line */
             CSL_CORE_ID_MCU_R5FSS0_0,
-            CSL_CORE_ID_MAIN_R5FSS0_0
+            CSL_CORE_ID_MAIN_R5FSS0_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     }
 };
@@ -614,7 +614,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_c75ss1_0[IPC_NOTIFY_INTERRUP
         .eventId = (CLEC1_SOC_INT_START + CSLR_C7X256V1_CLEC_SOC_EVENTS_IN_MAILBOX0_MAILBOX_CLUSTER_3_MAILBOX_CLUSTER_PEND_2), /* CSL int num + CLEC SOC offset */
         .numCores = 1,   /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = {   /* core ID's tied to this interrupt line */
-            CSL_CORE_ID_A53SS0_0
+            CSL_CORE_ID_A53SS0_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     },
     {
@@ -623,7 +623,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_c75ss1_0[IPC_NOTIFY_INTERRUP
         .numCores = 2U,   /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = {   /* core ID's tied to this interrupt line */
             CSL_CORE_ID_WKUP_R5FSS0_0,
-            CSL_CORE_ID_C75SS0_0
+            CSL_CORE_ID_C75SS0_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     },
     {
@@ -632,7 +632,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_c75ss1_0[IPC_NOTIFY_INTERRUP
         .numCores = 2U,   /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = {   /* core ID's tied to this interrupt line */
             CSL_CORE_ID_MCU_R5FSS0_0,
-            CSL_CORE_ID_MAIN_R5FSS0_0
+            CSL_CORE_ID_MAIN_R5FSS0_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     }
 };
@@ -646,7 +646,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_a53ss0_0[IPC_NOTIFY_INTERRUP
         .eventId = 0U,    /* not used */
         .numCores = 1U,   /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = {   /* core ID's tied to this interrupt line */
-            CSL_CORE_ID_WKUP_R5FSS0_0
+            CSL_CORE_ID_WKUP_R5FSS0_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     },
     {
@@ -654,7 +654,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_a53ss0_0[IPC_NOTIFY_INTERRUP
         .eventId = 0U,    /* not used */
         .numCores = 1U,   /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = {   /* core ID's tied to this interrupt line */
-            CSL_CORE_ID_MCU_R5FSS0_0
+            CSL_CORE_ID_MCU_R5FSS0_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     },
     {
@@ -662,7 +662,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_a53ss0_0[IPC_NOTIFY_INTERRUP
         .eventId = 0U,    /* not used */
         .numCores = 1U,   /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = {   /* core ID's tied to this interrupt line */
-            CSL_CORE_ID_C75SS0_0
+            CSL_CORE_ID_C75SS0_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     },
     {
@@ -671,7 +671,7 @@ IpcNotify_InterruptConfig gIpcNotifyInterruptConfig_a53ss0_0[IPC_NOTIFY_INTERRUP
         .numCores = 2U,   /* number of cores that send messages which tied to this interrupt line */
         .coreIdList = {   /* core ID's tied to this interrupt line */
             CSL_CORE_ID_MAIN_R5FSS0_0,
-            CSL_CORE_ID_C75SS1_0
+            CSL_CORE_ID_C75SS1_0, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID, CSL_CORE_ID_INVALID
         },
     },
 };

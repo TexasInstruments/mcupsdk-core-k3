@@ -286,12 +286,12 @@ Fast Tuning Window          |          0.65  ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|-------------------|----------------------|----------------------
-      1          |        DAC        |        No         |        2.32          |       4.35
-      5          |        DAC        |        No         |        2.32          |       4.33
-      10         |        DAC        |        No         |        2.31          |       4.32
-      1          |        DAC        |        Yes        |        2.32          |       30.94
-      5          |        DAC        |        Yes        |        2.32          |       30.95
-      10         |        DAC        |        Yes        |        2.31          |       30.95
+      1          |        DAC        |        No         |        2.25          |       4.35
+      5          |        DAC        |        No         |        2.25          |       4.33
+      10         |        DAC        |        No         |        2.25          |       4.32
+      1          |        DAC        |        Yes        |        8.79          |       30.94
+      5          |        DAC        |        Yes        |        8.85          |       30.95
+      10         |        DAC        |        Yes        |        8.84          |       30.95
 
  - Flash frequency: 50Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
@@ -299,12 +299,12 @@ Fast Tuning Window          |          0.65  ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
 -----------------|-------------------|-------------------|-----------------------|----------------------
-      1          |        DAC        |        No         |        1.56           |       5.56
-      5          |        DAC        |        No         |        1.55           |       5.56
-      10         |        DAC        |        No         |        1.55           |       5.56
-      1          |        DAC        |        Yes        |        1.56           |       5.76
-      5          |        DAC        |        Yes        |        1.55           |       5.76
-      10         |        DAC        |        Yes        |        1.55           |       5.76
+      1          |        DAC        |        No         |        1.53           |       5.56
+      5          |        DAC        |        No         |        1.53           |       5.56
+      10         |        DAC        |        No         |        1.53           |       5.56
+      1          |        DAC        |        Yes        |        3.88           |       5.76
+      5          |        DAC        |        Yes        |        3.88           |       5.76
+      10         |        DAC        |        Yes        |        3.88           |       5.76
 
  - Flash frequency: 50Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
@@ -312,12 +312,12 @@ Fast Tuning Window          |          0.65  ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
 -----------------|-------------------|-------------------|-----------------------|----------------------
-      1          |        DAC        |        No         |        2.32           |       3.56
-      5          |        DAC        |        No         |        2.32           |       3.56
-      10         |        DAC        |        No         |        2.31           |       3.56
-      1          |        DAC        |        Yes        |        2.32           |       30.05
-      5          |        DAC        |        Yes        |        2.32           |       30.05
-      10         |        DAC        |        Yes        |        2.31           |       30.05
+      1          |        DAC        |        No         |        2.25           |       3.56
+      5          |        DAC        |        No         |        2.25           |       3.56
+      10         |        DAC        |        No         |        2.25           |       3.56
+      1          |        DAC        |        Yes        |        8.75           |       30.05
+      5          |        DAC        |        Yes        |        8.75           |       30.05
+      10         |        DAC        |        Yes        |        8.85           |       30.05
 
  - Flash frequency: 133Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
@@ -325,12 +325,12 @@ Fast Tuning Window          |          0.65  ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
 -----------------|-------------------|-------------------|-----------------------|----------------------
-      1          |        DAC        |        No         |        1.99           |       5.27
-      5          |        DAC        |        No         |        1.98           |       5.28
-      10         |        DAC        |        No         |        1.98           |       5.27
-      1          |        DAC        |        Yes        |        1.99           |       45.10
-      5          |        DAC        |        Yes        |        1.98           |       45.09
-      10         |        DAC        |        Yes        |        1.98           |       45.10
+      1          |        DAC        |        No         |        2.26           |       5.27
+      5          |        DAC        |        No         |        2.25           |       5.28
+      10         |        DAC        |        No         |        2.25           |       5.27
+      1          |        DAC        |        Yes        |        9.77           |       45.10
+      5          |        DAC        |        Yes        |        9.76           |       45.09
+      10         |        DAC        |        Yes        |        9.90           |       45.10
 
  - Flash frequency: 166Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
@@ -338,12 +338,12 @@ Fast Tuning Window          |          0.65  ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|-------------------|----------------------|----------------------
-      1          |        DAC        |        No         |        2.32          |       5.77
-      5          |        DAC        |        No         |        2.31          |       5.77
-      10         |        DAC        |        No         |        2.31          |       5.77
-      1          |        DAC        |        Yes        |        2.31          |       49.65
-      5          |        DAC        |        Yes        |        2.31          |       49.66
-      10         |        DAC        |        Yes        |        2.31          |       49.65
+      1          |        DAC        |        No         |        2.26          |       5.77
+      5          |        DAC        |        No         |        2.25          |       5.77
+      10         |        DAC        |        No         |        2.25          |       5.77
+      1          |        DAC        |        Yes        |        9.98          |       49.65
+      5          |        DAC        |        Yes        |        9.97          |       49.66
+      10         |        DAC        |        Yes        |        10.11         |       49.65
 
 **mcu-r5f0-0:**
 
@@ -358,12 +358,12 @@ Fast Tuning Window          |          0.75  ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|-------------------|----------------------|----------------------
-      1          |        DAC        |        No         |        2.01          |       4.08
-      5          |        DAC        |        No         |        2.00          |       4.08
-      10         |        DAC        |        No         |        2.00          |       4.08
-      1          |        DAC        |        Yes        |        2.01          |       29.92
-      5          |        DAC        |        Yes        |        2.00          |       29.93
-      10         |        DAC        |        Yes        |        2.00          |       29.93
+      1          |        DAC        |        No         |        1.96          |       4.08
+      5          |        DAC        |        No         |        1.96          |       4.08
+      10         |        DAC        |        No         |        1.96          |       4.08
+      1          |        DAC        |        Yes        |        8.54          |       29.92
+      5          |        DAC        |        Yes        |        8.62          |       29.93
+      10         |        DAC        |        Yes        |        8.68          |       29.93
 
  - Flash frequency: 50Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
@@ -371,12 +371,12 @@ Fast Tuning Window          |          0.75  ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
 -----------------|-------------------|-------------------|-----------------------|----------------------
-      1          |        DAC        |        No         |        1.46           |       5.36
-      5          |        DAC        |        No         |        1.46           |       5.35
-      10         |        DAC        |        No         |        1.45           |       5.36
-      1          |        DAC        |        Yes        |        1.46           |       5.76
-      5          |        DAC        |        Yes        |        1.46           |       5.76
-      10         |        DAC        |        Yes        |        1.45           |       5.76
+      1          |        DAC        |        No         |        1.43           |       5.36
+      5          |        DAC        |        No         |        1.43           |       5.35
+      10         |        DAC        |        No         |        1.43           |       5.36
+      1          |        DAC        |        Yes        |        3.84           |       5.76
+      5          |        DAC        |        Yes        |        3.85           |       5.76
+      10         |        DAC        |        Yes        |        3.86           |       5.76
 
  - Flash frequency: 50Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
@@ -384,12 +384,12 @@ Fast Tuning Window          |          0.75  ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
 -----------------|-------------------|-------------------|-----------------------|----------------------
-      1          |        DAC        |        No         |        2.01           |       3.39
-      5          |        DAC        |        No         |        2.00           |       3.39
-      10         |        DAC        |        No         |        2.00           |       3.39
-      1          |        DAC        |        Yes        |        2.01           |       30.25
-      5          |        DAC        |        Yes        |        2.00           |       30.25
-      10         |        DAC        |        Yes        |        2.00           |       30.25
+      1          |        DAC        |        No         |        1.95           |       3.39
+      5          |        DAC        |        No         |        1.95           |       3.39
+      10         |        DAC        |        No         |        1.95           |       3.39
+      1          |        DAC        |        Yes        |        8.53           |       30.25
+      5          |        DAC        |        Yes        |        8.57           |       30.25
+      10         |        DAC        |        Yes        |        8.67           |       30.25
 
  - Flash frequency: 133Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
@@ -397,12 +397,12 @@ Fast Tuning Window          |          0.75  ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
 -----------------|-------------------|-------------------|----------------------
-      1          |        DAC        |        No         |        1.73           |       4.93
-      5          |        DAC        |        No         |        1.72           |       4.93
-      10         |        DAC        |        No         |        1.72           |       4.93
-      1          |        DAC        |        Yes        |        1.73           |       45.59
-      5          |        DAC        |        Yes        |        1.72           |       45.59
-      10         |        DAC        |        Yes        |        1.72           |       45.60
+      1          |        DAC        |        No         |        1.96           |       4.93
+      5          |        DAC        |        No         |        1.95           |       4.93
+      10         |        DAC        |        No         |        1.95           |       4.93
+      1          |        DAC        |        Yes        |        9.48           |       45.59
+      5          |        DAC        |        Yes        |        9.51           |       45.59
+      10         |        DAC        |        Yes        |        9.65           |       45.60
 
  - Flash frequency: 166Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_8S_8S
@@ -410,12 +410,12 @@ Fast Tuning Window          |          0.75  ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|-------------------|----------------------|----------------------
-      1          |        DAC        |        No         |        2.01          |       5.39
-      5          |        DAC        |        No         |        2.00          |       5.39
-      10         |        DAC        |        No         |        2.00          |       5.39
-      1          |        DAC        |        Yes        |        2.01          |       49.08
-      5          |        DAC        |        Yes        |        2.00          |       49.08
-      10         |        DAC        |        Yes        |        2.00          |       49.08
+      1          |        DAC        |        No         |        1.96          |       5.39
+      5          |        DAC        |        No         |        1.95          |       5.39
+      10         |        DAC        |        No         |        1.95          |       5.39
+      1          |        DAC        |        Yes        |        9.48          |       49.08
+      5          |        DAC        |        Yes        |        9.51          |       49.08
+      10         |        DAC        |        Yes        |        9.65          |       49.08
 
  ### GPIO latency
 GPIO latency is measured by connecting 2 GPIOs externaly and configuring one GPIO as input and the other as output. Then 1 is written to GPIO output and

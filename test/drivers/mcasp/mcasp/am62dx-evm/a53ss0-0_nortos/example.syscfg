@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62Dx" --part "AM62D24-G" --package "ANF" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM62D-Q1" --package "FCBGA (ANF)" --variant "AM62D24-G" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.24.1+4189"}
+ * @versions {"tool":"1.24.0+4150"}
  */
 
 /**
@@ -31,6 +31,8 @@ mcasp1.txLoopjobBufLength                      = 1280;
 mcasp1.rxLoopjobBufLength                      = 1280;
 mcasp1.txCallbackFxn                           = "mcasp_txcb";
 mcasp1.rxCallbackFxn                           = "mcasp_rxcb";
+mcasp1.txClkApplyAlert                         = false;
+mcasp1.rxClkApplyAlert                         = false;
 mcasp1.MCASP.$assignAllowConflicts             = "MCASP0";
 mcasp1.SYSTEM.$assignAllowConflicts            = "SYSTEM0";
 mcasp1.mcaspSer.create(2);
@@ -60,6 +62,14 @@ mcasp2.rxLoopjobBuf                            = "gRxLoopjobBuf1";
 mcasp2.rxCallbackFxn                           = "mcasp_rxcb";
 mcasp2.rxHclkSource                            = 0;
 mcasp2.rxHclkSourceMux                         = 1;
+mcasp2.txHclkExpected                          = 24576000;
+mcasp2.txBclkCalculated                        = 3072000;
+mcasp2.txFsyncCalculated                       = 48000;
+mcasp2.txClkApplyAlert                         = false;
+mcasp2.rxHclkExpected                          = 24576000;
+mcasp2.rxBclkCalculated                        = 3072000;
+mcasp2.rxFsyncCalculated                       = 48000;
+mcasp2.rxClkApplyAlert                         = false;
 mcasp2.MCASP.$assignAllowConflicts             = "MCASP1";
 mcasp2.mcaspSer.create(2);
 mcasp2.mcaspSer[0].$name                       = "CONFIG_MCASP_SER2";
@@ -91,6 +101,14 @@ mcasp3.rxHclkSource                            = 0;
 mcasp3.rxHclkSourceMux                         = 1;
 mcasp3.txLoopjobBuf                            = "gTxLoopjobBuf2";
 mcasp3.rxLoopjobBuf                            = "gRxLoopjobBuf2";
+mcasp3.txHclkExpected                          = 24576000;
+mcasp3.txBclkCalculated                        = 3072000;
+mcasp3.txFsyncCalculated                       = 48000;
+mcasp3.txClkApplyAlert                         = false;
+mcasp3.rxHclkExpected                          = 24576000;
+mcasp3.rxBclkCalculated                        = 3072000;
+mcasp3.rxFsyncCalculated                       = 48000;
+mcasp3.rxClkApplyAlert                         = false;
 mcasp3.MCASP.$assignAllowConflicts             = "MCASP2";
 mcasp3.mcaspSer.create(2);
 mcasp3.mcaspSer[0].$name                       = "CONFIG_MCASP_SER4";

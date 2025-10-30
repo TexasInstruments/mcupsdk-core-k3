@@ -85,25 +85,25 @@ void test_main(void *args)
     Drivers_mmcsdClose();
     UNITY_BEGIN();
 
-    RUN_TEST(Test_Mmcsd_EmmcRawIo, 2069, NULL);
+    RUN_TEST(Test_Mmcsd_EmmcRawIo, 3017, NULL);
     RUN_TEST(Test_Mmcsd_EmmcEnableDisableBootPartition, 8308, NULL);
-    RUN_TEST(Test_Mmcsd_EmmcTuningConfig, 8339, NULL);
+    RUN_TEST(Test_Mmcsd_EmmcTuningConfig, 8312, NULL);
     RUN_TEST(Test_Mmcsd_EmmcMultiblockRawIo, 8306, NULL);
     RUN_TEST(Test_Mmcsd_OpenInvalidInstance, 8309, NULL);
 #if !defined (SOC_AM275X) && !defined (SOC_J722S)
     RUN_TEST(Test_Mmcsd_SdRawIo, 1942, NULL);
     RUN_TEST(Test_Mmcsd_SdTuningConfig, 8313, NULL);
-    RUN_TEST(Test_Mmcsd_EmmcMultiplePhyconfig, 2086, NULL);
-    RUN_TEST(Test_Mmcsd_GetBlockCountValidate, 2086, NULL);
-    RUN_TEST(Test_Mmcsd_MultipleOpenClose, 2086, NULL);
+    RUN_TEST(Test_Mmcsd_EmmcMultiplePhyconfig, 8339, NULL);
+    RUN_TEST(Test_Mmcsd_GetBlockCountValidate, 8580, NULL);
+    RUN_TEST(Test_Mmcsd_MultipleOpenClose, 8579, NULL);
 #if !defined (C7_CORE)
     RUN_TEST(Test_Mmcsd_ValidateClkFreq, 8310, NULL);
 #endif
     /* This test fails and hangs when we pass NULL buffer to read
-    RUN_TEST(Test_Mmcsd_ReadArgumentValidate, 2086, NULL);
+    RUN_TEST(Test_Mmcsd_ReadArgumentValidate, 8582, NULL);
     */
     /* This test fails and hangs when we pass NULL buffer to write
-    RUN_TEST(Test_Mmcsd_WriteArgumentValidate, 2086, NULL);
+    RUN_TEST(Test_Mmcsd_WriteArgumentValidate, 8583, NULL);
     */
     /* This test hangs when DMA is disabled
     RUN_TEST(Test_Mmcsd_DmaModes, 8315, NULL);
@@ -112,10 +112,10 @@ void test_main(void *args)
     RUN_TEST(Test_Mmmcsd_SdMultipleBusWidths, 8311, NULL);
     */
     /* This test hangs when bus width is 1 and 4
-    RUN_TEST(Test_Mmmcsd_EmmcMultipleBusWidths, 8311, NULL);
+    RUN_TEST(Test_Mmmcsd_EmmcMultipleBusWidths, 8581, NULL);
     */
     /* This test hangs on execution
-    RUN_TEST(Test_Mmcsd_OpenOpenFail, 2082, NULL);
+    RUN_TEST(Test_Mmcsd_OpenOpenFail, 8584, NULL);
     */
 #endif
     UNITY_END();

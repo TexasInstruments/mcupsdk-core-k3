@@ -95,10 +95,10 @@ void test_main(void *args)
      *RUN_TEST(Test_Mmcsd_ConcurrentFatSdTransfer,  8340, NULL);
      */
     RUN_TEST(Test_Mmcsd_testConcurrentFatEmmcSdTransfer,  8323, NULL);
-    RUN_TEST(Test_Mmcsd_SdFileIo,  8342, NULL);
+    RUN_TEST(Test_Mmcsd_SdFileIo,  1944, NULL);
     RUN_TEST(Test_Mmcsd_SdNestedDirectories,  8329, NULL);
 #if !defined (SOC_AM275X) && !defined (C7_CORE)
-    RUN_TEST(Test_Mmcsd_LargeSdFileIo,  1948, NULL);
+    RUN_TEST(Test_Mmcsd_LargeSdFileIo,  8342, NULL);
 #endif
 #endif
 

@@ -452,6 +452,69 @@ int32_t Sciclient_pmGetModuleClkFreq(uint32_t  moduleId,
                                      uint32_t  clockId,
                                      uint64_t *freqHz,
                                      uint32_t  timeout);
+
+/**
+ *  \brief    Message to set the spread spectrum clocking parameters.
+ *  This allows configuration of spread spectrum clocking for a specific module clock.
+ *  Spread spectrum clocking can help reduce electromagnetic interference (EMI) by
+ *  distributing the energy of a clock signal over a wider frequency band.
+ *
+ *  \n<b>Message</b>:    #TISCI_MSG_SET_CLOCK_SSC
+ *  \n<b>Request</b>:    #tisci_msg_set_clock_ssc_req
+ *  \n<b>Response</b>:   #tisci_msg_set_clock_ssc_resp
+ *
+ *  \param  moduleId        Module for which the SSC should be set.
+ *                          Refer \ref Sciclient_PmDeviceIds.
+ *  \param  clockId         Clock Id for the module.
+ *                          Refer \ref Sciclient_PmModuleClockIds.
+ *  \param  modFreqHz      Modulation frequency in Hz.
+ *  \param  modDepth       Modulation depth.
+ *  \param  spreadType     Type of spreading.
+ *  \param  enable          Flag to enable (1) or disable (0) SSC.
+ *  \param  additionalFlag  Additional flags for the request.
+ *  \param  timeout         Gives a sense of how long to wait for the operation.
+ *                          Refer \ref SystemP_Timeout.
+ *  \return SystemP_SUCCESS on success, else failure
+ */
+int32_t Sciclient_pmSetModuleClkSSC(uint32_t moduleId,
+                                   uint32_t clockId,
+                                   uint32_t modFreqHz,
+                                   uint32_t modDepth,
+                                   uint8_t spreadType,
+                                   uint8_t enable,
+                                   uint32_t additionalFlag,
+                                   uint32_t timeout);
+
+/**
+ *  \brief    Message to get the spread spectrum clocking parameters.
+ *  This retrieves the current configuration of spread spectrum clocking for a specific
+ *  module clock. Spread spectrum clocking can help reduce electromagnetic interference
+ *  (EMI) by distributing the energy of a clock signal over a wider frequency band.
+ *
+ *  \n<b>Message</b>:    #TISCI_MSG_GET_CLOCK_SSC
+ *  \n<b>Request</b>:    #tisci_msg_get_clock_ssc_req
+ *  \n<b>Response</b>:   #tisci_msg_get_clock_ssc_resp
+ *
+ *  \param  moduleId        Module for which to get the SSC parameters.
+ *                          Refer \ref Sciclient_PmDeviceIds.
+ *  \param  clockId         Clock Id for the module.
+ *                          Refer \ref Sciclient_PmModuleClockIds.
+ *  \param  modFreqHz      Pointer to store the modulation frequency in Hz.
+ *  \param  modDepth       Pointer to store the modulation depth.
+ *  \param  spreadType     Pointer to store the spread type.
+ *  \param  enable          Pointer to store the enable state.
+ *  \param  timeout         Gives a sense of how long to wait for the operation.
+ *                          Refer \ref SystemP_Timeout.
+ *  \return SystemP_SUCCESS on success, else failure
+ */
+int32_t Sciclient_pmGetModuleClkSSC(uint32_t  moduleId,
+                                   uint32_t  clockId,
+                                   uint32_t *modFreqHz,
+                                   uint32_t *modDepth,
+                                   uint8_t *spreadType,
+                                   uint8_t  *enable,
+                                   uint32_t  timeout);
+
 /**
  *  \brief   Objective: Trigger a SoC level reset
  *  Usage: Used to trigger a system level reset.

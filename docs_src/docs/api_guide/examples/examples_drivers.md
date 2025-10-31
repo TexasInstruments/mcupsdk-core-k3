@@ -331,6 +331,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_GPIO_LED_BLINK
 -# HYPERRAM
    -# \subpage EXAMPLES_DRIVERS_HYPER_RAM_ECC_TEST
+   -# \subpage EXAMPLES_DRIVERS_HYPER_RAM_ECC_ESM_TEST
    -# \subpage EXAMPLES_DRIVERS_HYPER_RAM_READ_WRITE
 -# I2C
    -# \subpage EXAMPLES_DRIVERS_I2C_LED_BLINK

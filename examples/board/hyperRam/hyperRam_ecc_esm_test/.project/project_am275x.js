@@ -96,7 +96,7 @@ const libs_freertos_r5f = {
 
 const syscfgfile = "../example.syscfg"
 
-const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_hyperRam_READ_WRITE";
+const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_HYPER_RAM_ECC_ESM_TEST";
 
 const templates_freertos_wkup =
 [

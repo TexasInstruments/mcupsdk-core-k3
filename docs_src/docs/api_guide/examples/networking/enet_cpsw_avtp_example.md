@@ -59,7 +59,7 @@ Not support in this device
  CPU + OS       | mcu-r5fss0-0_freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
- Example folder | source/networking/enet/core/examples/tsn/aafpcmlistener_app, aafpcmtalker_app, dolbyec3talker_app, dolbyec3listener_app
+ Example folder | source/networking/enet/core/examples/tsn/aafpcmlistener_app, aafpcmtalker_app
 
 \endcond
 # Prerequisites

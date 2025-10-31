@@ -87,8 +87,8 @@ Refer \ref ENET_CPSW_TSN_YANG_CONFIG_PARAMS section
  ------------------|----------|-----------
  aafpcmlistener_app   | `<${SDK_INSTALL_PATH}>/source/networking/enet/core/examples/tsn/aafpcmlistener_app`               | AVTP AAF PCM Listener Example Application
  aafpcmtalker_app     | `<${SDK_INSTALL_PATH}>/source/networking/enet/core/examples/tsn/aafpcmtalker_app`                 | AVTP AAF PCM Talker Example Application
- dolbyec3talker_app   | `<${SDK_INSTALL_PATH}>/source/networking/enet/core/examples/tsn/dolbyec3talker_app`               | AVTP Dolby EC3 format Listener Example Application
- dolbyec3listener_app     | `<${SDK_INSTALL_PATH}>/source/networking/enet/core/examples/tsn/dolbyec3listener_app`                 | AVTP Dolby EC3 format Talker Example Application
+ aes3_aaflistener_app   | `<${SDK_INSTALL_PATH}>/source/networking/enet/core/examples/tsn/aes3_aaf/aes3_aaflistener_app/`               | AVTP AES3 format Listener Example Application
+ aes3_aaftalker_app     | `<${SDK_INSTALL_PATH}>/source/networking/enet/core/examples/tsn/aes3_aaf/aes3_aaftalker_app/`                 | AVTP AES3 format Talker Example Application
 
 ### Configuration parameters
 Refer to `<${SDK_INSTALL_PATH}>/source/networking/enet/core/examples/tsn/avtp_init.c`, the avtp talker/listener can only be actived with following definitions in project files.

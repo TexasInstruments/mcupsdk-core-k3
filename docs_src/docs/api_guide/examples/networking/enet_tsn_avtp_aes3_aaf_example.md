@@ -1,4 +1,4 @@
-# Enet TSN AVTP Dolby Example {#EXAMPLES_DOLBYEC3_TALKER_APP}
+# Enet TSN AVTP AES3 AAF Example {#EXAMPLES_ENET_CPSW_TSN_AES3_AAF_APP}
 
 # Introduction
 
@@ -6,13 +6,13 @@
 \note This example supports the AM62D-EVM-PROC180E2. To test with the AM62D-EVM-PROC180E1, change the phy addresses in TI BOARD DRIVERS -> ETHPHY -> CONFIG_ENET_ETHPHY(x) -> phy Address to 15 and 3.
 \endcond
 
-This Ethernet TSN example demonstrates Dolby EC3 AVB listener instance. Here, the listerner waits for talker to send the audio stream, when the audio stream is received, it is decoded into SMPTE337 frames and copied into the memory shared with Remote Core(C7x core). The Remote Core periodically reads from the shared memory and copies into its local memory for further processing.
+This Ethernet TSN example demonstrates transmission of non-PCM Audio Data data using Dolby EC3&trade; Format Data using AES3 AAF AVB listener instance. Here, the listerner waits for talker to send the audio stream, when the audio stream is received, it is decoded into SMPTE337 frames and copied into the memory shared with Remote Core(C7x core). The Remote Core periodically reads from the shared memory and copies into its local memory for further processing.
 
-The below image shows the program flow for the Dolby EC3 listener application.
+The below image shows the program flow for the AES3 AAF listener application.
 \imageStyle{dolbyec3_listener.png,width:90%}
 \image html dolbyec3_listener.png
 
-The `get_frame337()` call returns a pointer to the SMPTE337 Frame which is copied to shared memory. The C7x can read from this shared memory to get frames in SMPTE337 format which contains Dolby EC3 frames.
+The `get_frame337()` call returns a pointer to the SMPTE337 Frame which is copied to shared memory. The C7x can read from this shared memory to get frames in SMPTE337 format which contains Dolby EC3&trade; frames.
 
 # Supported Combinations
 
@@ -30,7 +30,7 @@ Not Supported for AM263X Device
  CPU + OS       | mcu-r5fss0-0_freertos, c75ss0-0_freertos
  Toolchain      | ti-arm-clang
  Board          | @VAR_BOARD_NAME_LOWER
- Example folder | source/networking/enet/core/examples/tsn/dolbyec3listener_app
+ Example folder | source/networking/enet/core/examples/tsn/aes3_aaf_app/aes3_aaftalker_app, aes3_aaflistener_app
 \endcond
 
 # Steps to Run the Example
@@ -38,7 +38,7 @@ Not Supported for AM263X Device
 ## Prerequisites
 - EVM Board
 - CAT6 Ethernet cable
-- Dolby EC3 Talker device.
+- AES3 AAF Talker device.
 
 ## Build the example
 
@@ -59,7 +59,7 @@ Not Supported for AM263X Device
 - Load both mcu-r5 and c7x binaries to the evm and click on run.
 - Start AVB Talker if not started already.
 - You will see logs in the UART terminal as shown in the next section.
-- The print `INF:avtp:[RX] frame337 wlen=6144 bits` confirms the reception of Dolby EC3 payload in SMPTE337 Format.
+- The print `INF:avtp:[RX] frame337 wlen=6144 bits` confirms the reception of Dolby EC3&trade; payload in SMPTE337 Format.
 
 ## Sample output
 

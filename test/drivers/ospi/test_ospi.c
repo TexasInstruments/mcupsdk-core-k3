@@ -907,8 +907,8 @@ static void test_ospi_gdevcfg_set_flash_protocol(uint32_t givenflashProtocol)
 	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.isDtr = TRUE;
 	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.cmdRd = 0xEE;
 	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.cmdWr = 0x12;
-	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyClksCmd = 4;
-	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyClksRd = 21;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyClksCmd = 3;
+	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyClksRd = 20;
                 gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.enableType = 0;
 	            gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.enableSeq = 0x00;
                 gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.protoCfg.isAddrReg = TRUE;
@@ -1044,12 +1044,6 @@ static void test_ospi_read_write_25Mhz(OSPI_Attrs *attrs, uint32_t offset, Flash
     int32_t status = SystemP_SUCCESS;
     TestData_SizesAttr testDataCurObj;
 
-    if( modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NOR)
-    {
-        devConfig->protocolCfg.dummyClksCmd = 3;
-        devConfig->protocolCfg.dummyClksRd = 20;
-    }
-
     attrs->phyEnable = FALSE;
     attrs->baudRateDiv = 8U;
     attrs->dmaEnable = FALSE;
@@ -1099,12 +1093,6 @@ static void test_ospi_read_write_25Mhz(OSPI_Attrs *attrs, uint32_t offset, Flash
     DebugP_log("      10         |        DAC        |        Yes        |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
 #endif
     DebugP_log("\r\n\n");
-
-    if( modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NOR)
-    {
-        devConfig->protocolCfg.dummyClksCmd = 4;
-        devConfig->protocolCfg.dummyClksRd = 21;
-    }
 
     attrs->phyEnable = TRUE;
     attrs->baudRateDiv = 4U;
@@ -1350,9 +1338,6 @@ static void test_ospi_read_write_indirect_25Mhz(OSPI_Attrs *attrs, uint32_t offs
     int32_t status = SystemP_SUCCESS;
     TestData_SizesAttr testDataCurObj;
 
-    devConfig->protocolCfg.dummyClksCmd = 3;
-    devConfig->protocolCfg.dummyClksRd = 20;
-
     attrs->phyEnable = FALSE;
     attrs->baudRateDiv = 8U;
     attrs->dmaEnable = FALSE;
@@ -1385,9 +1370,6 @@ static void test_ospi_read_write_indirect_25Mhz(OSPI_Attrs *attrs, uint32_t offs
     test_ospi_read_write(&testDataCurObj, offset, TEST_OSPI_10MB_SIZE);
     DebugP_log("      10         |       INDAC       |        No         |        %0.2f          |       %0.2f\n\r", testDataCurObj.writeSpeed, testDataCurObj.readSpeed);
     #endif
-
-    devConfig->protocolCfg.dummyClksCmd = 4;
-    devConfig->protocolCfg.dummyClksRd = 21;
 
     attrs->phyEnable = TRUE;
     attrs->baudRateDiv = 4U;

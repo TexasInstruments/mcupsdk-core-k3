@@ -117,10 +117,10 @@ Flash_DevConfig gFlashDevCfg_`config.fname` =
         .cmdChipErase = `config.cmdChipErase`,
     },
     .idCfg = {
-        .cmd = 0x9F, /* Constant */
-        .numBytes = 3,
-        .dummy4 = 0,
-        .dummy8 = 0,
+        .cmd = `config.cmdRdId`,
+        .numBytes = `config.idNumBytes`,
+        .dummy4 = `config.dummyId4`,
+        .dummy8 = `config.dummyId8`,
     },
     .protocolCfg = {
         .protocol = FLASH_CFG_PROTO_`config.protocol.toUpperCase()`,
@@ -192,10 +192,10 @@ Flash_DevConfig gFlashDevCfg_`config.fname` =
         .cmdBlockErase = `config.cmdBlockErase`,
     },
     .idCfg = {
-        .cmd = 0x9F, /* Constant */
-        .numBytes = 3,
-        .dummy4 = 0,
-        .dummy8 = 0,
+        .cmd = `config.cmdRdId`,
+        .numBytes = `config.idNumBytes`,
+        .dummy4 = `config.dummyId4`,
+        .dummy8 = `config.dummyId8`,
     },
     .protocolCfg = {
         .protocol = FLASH_CFG_PROTO_`config.protocol.toUpperCase()`,

@@ -646,7 +646,6 @@ Then MCASP_Open can be called from application after clock configurations are do
                             ui.txDataDelay.hidden = false;
                             ui.txDataOrder.hidden = false;
                             ui.txPaddingMode.hidden = false;
-                            ui.txPaddingBit.hidden = false;
                             ui.txDataRotation.hidden = false;
                             ui.txFsWidth.hidden = false;
                             ui.txFsPolarity.hidden = false;
@@ -712,7 +711,6 @@ Then MCASP_Open can be called from application after clock configurations are do
                             inst.txDataOrder = 1;
                             ui.txDataOrder.readOnly = true;
                             inst.txPaddingMode = 0;
-                            ui.txPaddingMode.readOnly = true;
                             inst.txPaddingBit = 1;
                             ui.txPaddingBit.hidden = true;
                             inst.txDataRotation = 0;
@@ -728,7 +726,6 @@ Then MCASP_Open can be called from application after clock configurations are do
                             ui.NumTxSlots.readOnly = false;
                             ui.txDataDelay.readOnly = false;
                             ui.txDataOrder.readOnly = false;
-                            ui.txPaddingMode.readOnly = false;
                             ui.txDataRotation.readOnly = false;
                             ui.txFsWidth.readOnly = false;
                             ui.txFsPolarity.readOnly = false;
@@ -774,7 +771,7 @@ Then MCASP_Open can be called from application after clock configurations are do
                     name: "txPaddingMode",
                     displayName: "Transmit Slot Extra Bits Padding",
                     default: 0,
-                    readOnly: false,
+                    hidden: false,
                     options: [
                         { name: 0, displayName: "Pad extra bits with 0"},
                         { name: 1, displayName: "Pad extra bits with 1"},
@@ -792,7 +789,7 @@ Then MCASP_Open can be called from application after clock configurations are do
                 },
                 {
                     name: "txPaddingBit",
-                    displayName: "Transmit Slot bit to be used for padding",
+                    displayName: "Transmit Slot Bit Used For Padding",
                     default: 1,
                     hidden: true,
                     displayFormat: "dec",
@@ -1194,7 +1191,6 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                             ui.rxDataDelay.hidden = false;
                             ui.rxDataOrder.hidden = false;
                             ui.rxPaddingMode.hidden = false;
-                            ui.rxPaddingBit.hidden = false;
                             ui.rxDataRotation.hidden = false;
                             ui.rxFsWidth.hidden = false;
                             ui.rxFsPolarity.hidden = false;
@@ -1260,7 +1256,6 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                             inst.rxDataOrder = 1;
                             ui.rxDataOrder.readOnly = true;
                             inst.rxPaddingMode = 0;
-                            ui.rxPaddingMode.readOnly = true;
                             inst.rxPaddingBit = 1;
                             ui.rxPaddingBit.hidden = true;
                             inst.rxDataRotation = 0;
@@ -1276,7 +1271,6 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                             ui.NumRxSlots.readOnly = false;
                             ui.rxDataDelay.readOnly = false;
                             ui.rxDataOrder.readOnly = false;
-                            ui.rxPaddingMode.readOnly = false;
                             ui.rxDataRotation.readOnly = false;
                             ui.rxFsWidth.readOnly = false;
                             ui.rxFsPolarity.readOnly = false;
@@ -1322,7 +1316,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                     name: "rxPaddingMode",
                     displayName: "Receive Slot Extra Bits Padding",
                     default: 0,
-                    readOnly: false,
+                    hidden: false,
                     options: [
                         { name: 0, displayName: "Pad extra bits with 0"},
                         { name: 1, displayName: "Pad extra bits with 1"},
@@ -1340,7 +1334,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                 },
                 {
                     name: "rxPaddingBit",
-                    displayName: "Receive Slot bit to be used for padding",
+                    displayName: "Receive Slot Bit Used For Padding",
                     default: 1,
                     hidden: true,
                     displayFormat: "dec",

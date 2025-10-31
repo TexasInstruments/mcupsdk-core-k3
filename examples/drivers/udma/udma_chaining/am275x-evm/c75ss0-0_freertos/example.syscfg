@@ -63,35 +63,36 @@ mmu_armv85.vAddr = 0x7C400000;
 mmu_armv85.pAddr = 0x7C400000;
 mmu_armv85.size  = 0x300000;
 
-mmu_armv86.$name     = "CCS_DEBUG_LOG_MEM";
-mmu_armv86.size      = 0x1000;
-mmu_armv86.attribute = "MAIR4";
-mmu_armv86.pAddr     = 0x8027F000;
-mmu_armv86.vAddr     = 0x8027F000;
+mmu_armv86.$name     = "L2SRAM";
+mmu_armv86.vAddr     = 0x7E000000;
+mmu_armv86.pAddr     = 0x7E000000;
+mmu_armv86.attribute = "MAIR7";
+mmu_armv86.size      = 0x200000;
 
-mmu_armv87.$name     = "L2SRAM";
-mmu_armv87.vAddr     = 0x7E000000;
-mmu_armv87.pAddr     = 0x7E000000;
+mmu_armv87.$name     = "L2SRAM_AUX";
+mmu_armv87.vAddr     = 0x7E200000;
+mmu_armv87.pAddr     = 0x7E200000;
+mmu_armv87.size      = 0x40000;
 mmu_armv87.attribute = "MAIR7";
-mmu_armv87.size      = 0x200000;
 
-mmu_armv88.$name     = "L2SRAM_AUX";
-mmu_armv88.vAddr     = 0x7E200000;
-mmu_armv88.pAddr     = 0x7E200000;
-mmu_armv88.size      = 0x40000;
 mmu_armv88.attribute = "MAIR7";
+mmu_armv88.$name     = "MSRAM_BANK0_TO_BANK3";
+mmu_armv88.vAddr     = 0x80000000;
+mmu_armv88.pAddr     = 0x80000000;
+mmu_armv88.size      = 0x400000;
 
+mmu_armv89.$name     = "MSRAM_BANK4_TO_BANK5";
+mmu_armv89.size      = 0x200000;
 mmu_armv89.attribute = "MAIR7";
-mmu_armv89.$name     = "MSRAM_BANK0_TO_BANK3";
-mmu_armv89.vAddr     = 0x80000000;
-mmu_armv89.pAddr     = 0x80000000;
-mmu_armv89.size      = 0x400000;
+mmu_armv89.vAddr     = 0x80400000;
+mmu_armv89.pAddr     = 0x80400000;
 
-mmu_armv810.$name     = "MSRAM_BANK4_TO_BANK5";
-mmu_armv810.size      = 0x200000;
-mmu_armv810.attribute = "MAIR7";
-mmu_armv810.vAddr     = 0x80400000;
-mmu_armv810.pAddr     = 0x80400000;
+mmu_armv810.size      = 0x1000;
+mmu_armv810.attribute = "MAIR4";
+mmu_armv810.pAddr     = 0x8027F000;
+mmu_armv810.vAddr     = 0x8027F000;
+mmu_armv810.$name     = "CCS_DEBUG_LOG_MEM";
+
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future

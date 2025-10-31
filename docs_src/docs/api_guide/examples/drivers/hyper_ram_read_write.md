@@ -37,5 +37,31 @@ The example writes known data to a particular offset in the HyperRam and then re
 # Sample Output
 
 \code
+================================================================
+HyperRam read write test started with ECC!!
+================================================================
+Writing to the hyperRam Started with CPU...
+CPU : Achieved Write throughput is 76.06 MB/s
+Reading from the hyperRam Started with CPU...
+CPU : Achieved Read throughput is 64.12 MB/s
+================================================================
+Writing to the hyperRam Started with BCDMA...
+DMA : Achieved Write throughput is 108.99 MB/s
+Reading from the hyperRam Started with BCDMA...
+DMA : Achieved Read throughput is 136.77 MB/s
+================================================================
+
+HyperRam read write test started without ECC!!
+================================================================
+Writing to the hyperRam Started with CPU...
+CPU : Achieved Write throughput is 92.04 MB/s
+Reading from the hyperRam Started with CPU...
+CPU : Achieved Read throughput is 70.41 MB/s
+================================================================
+Writing to the hyperRam Started with BCDMA...
+DMA : Achieved Write throughput is 144.68 MB/s
+Reading from the hyperRam Started with BCDMA...
+DMA : Achieved Read throughput is 144.46 MB/s
+================================================================
 All tests have passed!!
 \endcode

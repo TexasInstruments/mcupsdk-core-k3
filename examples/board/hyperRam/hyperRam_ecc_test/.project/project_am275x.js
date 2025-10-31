@@ -81,7 +81,7 @@ const libs_freertos_r5f = {
 
 const syscfgfile = "../example.syscfg"
 
-// const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_hyperRam_READ_WRITE";
+const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_HYPER_RAM_ECC_TEST";
 
 const templates_freertos_wkup =
 [
@@ -165,7 +165,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.filedirs = filedirs;
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
-    // build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
+    build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
 
     if(buildOption.cpu.match(/wkup-r5f*/)) {
         build_property.includes = includes_freertos_r5f;

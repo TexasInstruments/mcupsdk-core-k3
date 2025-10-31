@@ -714,13 +714,10 @@ int32_t HYPERBUS_configureECC(HYPERBUS_Handle handle)
 
     const HYPERBUS_ECCRegions *eccRegion = attrs->eccRegion;
 
-    if(attrs->ECCintrEnable != 0U)
-    {
-        CSL_REG32_WR_RAW((uint32_t *)((uintptr_t)(fssHandle->fsas_base) + HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_CLR_OFFSET),\
-                                        HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_CLR_VALUE);
-        CSL_REG32_WR_RAW((uint32_t *)((uintptr_t)(fssHandle->fsas_base) + HYPERBUS_FSS_FSAS_GENREGS_IRQ_STATUS_OFFSET),\
-                                        HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_CLR_VALUE);
-    }
+    CSL_REG32_WR_RAW((uint32_t *)((uintptr_t)(fssHandle->fsas_base) + HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_CLR_OFFSET),\
+                                    HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_CLR_VALUE);
+    CSL_REG32_WR_RAW((uint32_t *)((uintptr_t)(fssHandle->fsas_base) + HYPERBUS_FSS_FSAS_GENREGS_IRQ_STATUS_OFFSET),\
+                                    HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_CLR_VALUE);
 
     if (eccRegion != NULL)
     {
@@ -767,18 +764,18 @@ int32_t HYPERBUS_configureECC(HYPERBUS_Handle handle)
 
         if (status == SystemP_SUCCESS)
         {
+            /*
+            * Enable the ECC interrupts in the FSS_FSAS module
+            * This allows the hardware to generate interrupts for events like:
+            * - Single bit errors (which can be corrected)
+            * - Double bit errors (which cannot be corrected)
+            * - Write non-alignment errors
+            */
+            CSL_REG32_WR_RAW((uint32_t *)((uintptr_t)(fssHandle->fsas_base) + HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_SET_OFFSET),\
+                                            HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_SET_VALUE);
+
             if(attrs->ECCintrEnable != 0U)
             {
-                /*
-                * Enable the ECC interrupts in the FSS_FSAS module
-                * This allows the hardware to generate interrupts for events like:
-                * - Single bit errors (which can be corrected)
-                * - Double bit errors (which cannot be corrected)
-                * - Write non-alignment errors
-                */
-                CSL_REG32_WR_RAW((uint32_t *)((uintptr_t)(fssHandle->fsas_base) + HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_SET_OFFSET),\
-                                                HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_SET_VALUE);
-
                 /* Register the interrupt handler */
                 HwiP_Params hwiParams;
                 HwiP_Object hwiObj;

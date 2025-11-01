@@ -261,6 +261,24 @@ uint8_t gTuningPattern8Bit[] __attribute__((aligned(128U))) = {
     0xff, 0x77, 0x77, 0xff, 0x77, 0xbb, 0xdd, 0xee
 };
 
+#ifdef ENABLE_MMCSD_FAULT_INJECTION
+
+/* Stub handler in test file to handle fault injection */
+void TestMmcsd_faultInjectStubHandler(uint32_t numArgs, ...);
+
+/* Function to indicate if a data transfer is in progress */
+void TestMmcsd_dataFaultInjectInProgress(uint32_t xferStatus);
+
+/* Function to get data transfer progress */
+int32_t TestMmcsd_isdataFaultInjectInProgress();
+
+/* Function to set status of a command transfer */
+void TestMmcsd_cmdFaultInjectInProgress(uint32_t xferStatus);
+
+/* Function to get command transfer progress */
+int32_t TestMmcsd_iscmdFaultInjectInProgress();
+#endif
+
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -575,7 +593,13 @@ int32_t MMCSD_read(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32_
 
                     if(status == SystemP_SUCCESS)
                     {
+#ifdef ENABLE_MMCSD_FAULT_INJECTION
+                        TestMmcsd_dataFaultInjectInProgress((uint32_t)TRUE);
                         status = MMCSD_transfer(handle, &trans);
+                        TestMmcsd_dataFaultInjectInProgress((uint32_t)FALSE);
+#else
+                        status = MMCSD_transfer(handle, &trans);
+#endif
                     }
 
                     if(status == SystemP_SUCCESS)
@@ -635,7 +659,13 @@ int32_t MMCSD_read(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32_
                     trans.dataBuf = (void *)buf;
                     trans.cmd = cmd;
                     trans.retries = MMCSD_TRANS_RETRIES;
+#ifdef ENABLE_MMCSD_FAULT_INJECTION
+                    TestMmcsd_dataFaultInjectInProgress((uint32_t)TRUE);
                     status = MMCSD_transfer(handle, &trans);
+                    TestMmcsd_dataFaultInjectInProgress((uint32_t)FALSE);
+#else
+                    status = MMCSD_transfer(handle, &trans);
+#endif
                 }
 
                 if((SystemP_SUCCESS == status) && (numBlks > 1U))
@@ -852,9 +882,14 @@ int32_t MMCSD_enableBootPartition(MMCSD_Handle handle, uint32_t partitionNum)
             uint8_t bootPartition = ((bootAck << 6U) | (partitionNum << 3) | partitionNum);
             uint8_t bootBusWidth = 0x02;
             uint32_t arg = (uint32_t)((bootPartition << 8) | (0xB3 << 16) | (0x03 << 24));
-
+#ifdef ENABLE_MMCSD_FAULT_INJECTION
+            TestMmcsd_cmdFaultInjectInProgress((uint32_t)TRUE);
+            status = MMCSD_sendSwitchCmd(handle, arg);
+            TestMmcsd_cmdFaultInjectInProgress((uint32_t)FALSE);
+#else
             /* Configure the ECSD register using CMD6 */
             status = MMCSD_sendSwitchCmd(handle, arg);
+#endif
 
             if(status == SystemP_SUCCESS)
             {
@@ -2612,6 +2647,13 @@ static void MMCSD_cmdStatusPollingFxn(MMCSD_Handle handle)
     uint16_t normalIntrStatus = MMCSD_halNormalIntrStatusGet(attrs->ctrlBaseAddr, MMCSD_INTERRUPT_ALL_NORMAL);
     uint16_t errorIntrStatus = MMCSD_halErrorIntrStatusGet(attrs->ctrlBaseAddr, MMCSD_INTERRUPT_ALL_ERROR);
 
+#ifdef ENABLE_MMCSD_FAULT_INJECTION
+    if(TestMmcsd_iscmdFaultInjectInProgress() == ((uint32_t)TRUE))
+    {
+        TestMmcsd_faultInjectStubHandler(2, &normalIntrStatus, &errorIntrStatus);
+    }
+#endif
+
     /* Check for command completion */
     if(normalIntrStatus & CSL_MMC_CTLCFG_NORMAL_INTR_STS_CMD_COMPLETE_MASK)
     {
@@ -2716,6 +2758,13 @@ static void MMCSD_xferStatusPollingFxn(MMCSD_Handle handle)
 
     uint16_t normalIntrStatus = MMCSD_halNormalIntrStatusGet(attrs->ctrlBaseAddr, MMCSD_INTERRUPT_ALL_NORMAL);
     uint16_t errorIntrStatus = MMCSD_halErrorIntrStatusGet(attrs->ctrlBaseAddr, MMCSD_INTERRUPT_ALL_ERROR);
+
+#ifdef ENABLE_MMCSD_FAULT_INJECTION
+    if(TestMmcsd_isdataFaultInjectInProgress() == ((uint32_t)TRUE))
+    {
+        TestMmcsd_faultInjectStubHandler(2, &normalIntrStatus, &errorIntrStatus);
+    }
+#endif
 
     /* Read data received from media */
     if(normalIntrStatus & CSL_MMC_CTLCFG_NORMAL_INTR_STS_BUF_RD_READY_MASK)

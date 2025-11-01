@@ -46,6 +46,7 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62ax freertos-smp-schedule-highest-priority_a53-smp.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62ax freertos-smp-suspend-scheduler_a53-smp.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62ax freertos-smp-task-delete_a53-smp.gcc-aarch64
+	@echo  $(MAKE) -s -f makefile.am62ax drivers-mmcsd-inject-fault_a53.gcc-aarch64 drivers-mmcsd-inject-fault_dm-r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62ax doxy_samples_r5f.ti-arm-clang
 	@echo  .
 	@echo  Library clean targets,
@@ -62,6 +63,7 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62ax freertos-smp-schedule-highest-priority_a53-smp.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62ax freertos-smp-suspend-scheduler_a53-smp.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62ax freertos-smp-task-delete_a53-smp.gcc-aarch64_clean
+	@echo  $(MAKE) -s -f makefile.am62ax drivers-mmcsd-inject-fault_a53.gcc-aarch64_clean drivers-mmcsd-inject-fault_dm-r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62ax doxy_samples_r5f.ti-arm-clang_clean
 	@echo  .
 	@echo  Example build targets,
@@ -136,6 +138,10 @@ help:
 	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_raw_io/am62ax-sk/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_raw_io/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_raw_io/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_fault_inject/am62ax-sk/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_fault_inject/am62ax-sk/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_fault_inject/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_fault_inject/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
@@ -219,10 +225,11 @@ BUILD_COMBO_freertos-smp-schedule-equal-priority = freertos-smp-schedule-equal-p
 BUILD_COMBO_freertos-smp-schedule-highest-priority = freertos-smp-schedule-highest-priority_a53-smp.gcc-aarch64
 BUILD_COMBO_freertos-smp-suspend-scheduler = freertos-smp-suspend-scheduler_a53-smp.gcc-aarch64
 BUILD_COMBO_freertos-smp-task-delete = freertos-smp-task-delete_a53-smp.gcc-aarch64
+BUILD_COMBO_drivers-mmcsd-inject-fault = drivers-mmcsd-inject-fault_a53.gcc-aarch64 drivers-mmcsd-inject-fault_dm-r5f.ti-arm-clang
 BUILD_COMBO_doxy_samples = doxy_samples_r5f.ti-arm-clang
 
 # Combine all Components
-BUILD_COMBO_ALL = $(BUILD_COMBO_unity) $(BUILD_COMBO_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_freertos-smp-disable-preemption) $(BUILD_COMBO_freertos-smp-interrupt-wait-critical) $(BUILD_COMBO_freertos-smp-multiple-tasks-running) $(BUILD_COMBO_freertos-smp-only-one-task-enter-critical) $(BUILD_COMBO_freertos-smp-only-one-task-enter-suspendall) $(BUILD_COMBO_freertos-smp-schedule-affinity) $(BUILD_COMBO_freertos-smp-schedule-equal-priority) $(BUILD_COMBO_freertos-smp-schedule-highest-priority) $(BUILD_COMBO_freertos-smp-suspend-scheduler) $(BUILD_COMBO_freertos-smp-task-delete) $(BUILD_COMBO_doxy_samples)
+BUILD_COMBO_ALL = $(BUILD_COMBO_unity) $(BUILD_COMBO_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_freertos-smp-disable-preemption) $(BUILD_COMBO_freertos-smp-interrupt-wait-critical) $(BUILD_COMBO_freertos-smp-multiple-tasks-running) $(BUILD_COMBO_freertos-smp-only-one-task-enter-critical) $(BUILD_COMBO_freertos-smp-only-one-task-enter-suspendall) $(BUILD_COMBO_freertos-smp-schedule-affinity) $(BUILD_COMBO_freertos-smp-schedule-equal-priority) $(BUILD_COMBO_freertos-smp-schedule-highest-priority) $(BUILD_COMBO_freertos-smp-suspend-scheduler) $(BUILD_COMBO_freertos-smp-task-delete) $(BUILD_COMBO_drivers-mmcsd-inject-fault) $(BUILD_COMBO_doxy_samples)
 
 # Combine all External Components
 BUILD_COMBO_EXTERNAL_ALL =
@@ -277,6 +284,9 @@ $(BUILD_COMBO_freertos-smp-suspend-scheduler):
 $(BUILD_COMBO_freertos-smp-task-delete):
 	$(MAKE) -C kernel/smp_tests/task_delete/configs -f makefile.am62ax.$(subst freertos-smp-task-delete_,,$@) all
 
+$(BUILD_COMBO_drivers-mmcsd-inject-fault):
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/configs -f makefile.am62ax.$(subst drivers-mmcsd-inject-fault_,,$@) all
+
 $(BUILD_COMBO_doxy_samples):
 	$(MAKE) -C ../docs_src/docs/api_guide/doxy_samples -f makefile.am62ax.$(subst doxy_samples_,,$@) all
 
@@ -294,10 +304,11 @@ BUILD_COMBO_CLEAN_freertos-smp-schedule-equal-priority = freertos-smp-schedule-e
 BUILD_COMBO_CLEAN_freertos-smp-schedule-highest-priority = freertos-smp-schedule-highest-priority_a53-smp.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_freertos-smp-suspend-scheduler = freertos-smp-suspend-scheduler_a53-smp.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_freertos-smp-task-delete = freertos-smp-task-delete_a53-smp.gcc-aarch64_clean
+BUILD_COMBO_CLEAN_drivers-mmcsd-inject-fault = drivers-mmcsd-inject-fault_a53.gcc-aarch64_clean drivers-mmcsd-inject-fault_dm-r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_doxy_samples = doxy_samples_r5f.ti-arm-clang_clean
 
 # Combine all Components Clean
-BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_unity) $(BUILD_COMBO_CLEAN_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_CLEAN_freertos-smp-disable-preemption) $(BUILD_COMBO_CLEAN_freertos-smp-interrupt-wait-critical) $(BUILD_COMBO_CLEAN_freertos-smp-multiple-tasks-running) $(BUILD_COMBO_CLEAN_freertos-smp-only-one-task-enter-critical) $(BUILD_COMBO_CLEAN_freertos-smp-only-one-task-enter-suspendall) $(BUILD_COMBO_CLEAN_freertos-smp-schedule-affinity) $(BUILD_COMBO_CLEAN_freertos-smp-schedule-equal-priority) $(BUILD_COMBO_CLEAN_freertos-smp-schedule-highest-priority) $(BUILD_COMBO_CLEAN_freertos-smp-suspend-scheduler) $(BUILD_COMBO_CLEAN_freertos-smp-task-delete) $(BUILD_COMBO_CLEAN_doxy_samples)
+BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_unity) $(BUILD_COMBO_CLEAN_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_CLEAN_freertos-smp-disable-preemption) $(BUILD_COMBO_CLEAN_freertos-smp-interrupt-wait-critical) $(BUILD_COMBO_CLEAN_freertos-smp-multiple-tasks-running) $(BUILD_COMBO_CLEAN_freertos-smp-only-one-task-enter-critical) $(BUILD_COMBO_CLEAN_freertos-smp-only-one-task-enter-suspendall) $(BUILD_COMBO_CLEAN_freertos-smp-schedule-affinity) $(BUILD_COMBO_CLEAN_freertos-smp-schedule-equal-priority) $(BUILD_COMBO_CLEAN_freertos-smp-schedule-highest-priority) $(BUILD_COMBO_CLEAN_freertos-smp-suspend-scheduler) $(BUILD_COMBO_CLEAN_freertos-smp-task-delete) $(BUILD_COMBO_CLEAN_drivers-mmcsd-inject-fault) $(BUILD_COMBO_CLEAN_doxy_samples)
 
 # Combine all External Components Clean
 BUILD_COMBO_EXTERNAL_CLEAN_ALL =
@@ -347,6 +358,9 @@ $(BUILD_COMBO_CLEAN_freertos-smp-suspend-scheduler):
 $(BUILD_COMBO_CLEAN_freertos-smp-task-delete):
 	$(MAKE) -C kernel/smp_tests/task_delete/configs -f makefile.am62ax.$(subst freertos-smp-task-delete_,,$(subst _clean,,$@)) clean
 
+$(BUILD_COMBO_CLEAN_drivers-mmcsd-inject-fault):
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/configs -f makefile.am62ax.$(subst drivers-mmcsd-inject-fault_,,$(subst _clean,,$@)) clean
+
 $(BUILD_COMBO_CLEAN_doxy_samples):
 	$(MAKE) -C ../docs_src/docs/api_guide/doxy_samples -f makefile.am62ax.$(subst doxy_samples_,,$(subst _clean,,$@)) clean
 
@@ -364,10 +378,11 @@ BUILD_COMBO_SCRUB_freertos-smp-schedule-equal-priority = freertos-smp-schedule-e
 BUILD_COMBO_SCRUB_freertos-smp-schedule-highest-priority = freertos-smp-schedule-highest-priority_a53-smp.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_freertos-smp-suspend-scheduler = freertos-smp-suspend-scheduler_a53-smp.gcc-aarch64_scrub_scrub
 BUILD_COMBO_SCRUB_freertos-smp-task-delete = freertos-smp-task-delete_a53-smp.gcc-aarch64_scrub_scrub
+BUILD_COMBO_SCRUB_drivers-mmcsd-inject-fault = drivers-mmcsd-inject-fault_a53.gcc-aarch64_scrub drivers-mmcsd-inject-fault_dm-r5f.ti-arm-clang_scrub_scrub
 BUILD_COMBO_SCRUB_doxy_samples = doxy_samples_r5f.ti-arm-clang_scrub_scrub
 
 # Combine all Components Scrub Targets
-BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_unity) $(BUILD_COMBO_SCRUB_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_SCRUB_freertos-smp-disable-preemption) $(BUILD_COMBO_SCRUB_freertos-smp-interrupt-wait-critical) $(BUILD_COMBO_SCRUB_freertos-smp-multiple-tasks-running) $(BUILD_COMBO_SCRUB_freertos-smp-only-one-task-enter-critical) $(BUILD_COMBO_SCRUB_freertos-smp-only-one-task-enter-suspendall) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-affinity) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-equal-priority) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-highest-priority) $(BUILD_COMBO_SCRUB_freertos-smp-suspend-scheduler) $(BUILD_COMBO_SCRUB_freertos-smp-task-delete) $(BUILD_COMBO_SCRUB_doxy_samples)
+BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_unity) $(BUILD_COMBO_SCRUB_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_SCRUB_freertos-smp-disable-preemption) $(BUILD_COMBO_SCRUB_freertos-smp-interrupt-wait-critical) $(BUILD_COMBO_SCRUB_freertos-smp-multiple-tasks-running) $(BUILD_COMBO_SCRUB_freertos-smp-only-one-task-enter-critical) $(BUILD_COMBO_SCRUB_freertos-smp-only-one-task-enter-suspendall) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-affinity) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-equal-priority) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-highest-priority) $(BUILD_COMBO_SCRUB_freertos-smp-suspend-scheduler) $(BUILD_COMBO_SCRUB_freertos-smp-task-delete) $(BUILD_COMBO_SCRUB_drivers-mmcsd-inject-fault) $(BUILD_COMBO_SCRUB_doxy_samples)
 
 # Combine all External Components Scrub Targets
 BUILD_COMBO_EXTERNAL_SCRUB_ALL =
@@ -416,6 +431,9 @@ $(BUILD_COMBO_SCRUB_freertos-smp-suspend-scheduler):
 
 $(BUILD_COMBO_SCRUB_freertos-smp-task-delete):
 	$(MAKE) -C kernel/smp_tests/task_delete/configs -f makefile.am62ax.$(subst freertos-smp-task-delete_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_drivers-mmcsd-inject-fault):
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/configs -f makefile.am62ax.$(subst drivers-mmcsd-inject-fault_,,$(subst _scrub,,$@)) scrub
 
 $(BUILD_COMBO_SCRUB_doxy_samples):
 	$(MAKE) -C ../docs_src/docs/api_guide/doxy_samples -f makefile.am62ax.$(subst doxy_samples_,,$(subst _scrub,,$@)) scrub
@@ -490,6 +508,10 @@ BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_raw_io_am62ax-sk_r5fss0-0_freertos_ti-arm-
 BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_raw_io_am62ax-sk_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_raw_io_am62ax-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_raw_io_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_fault_inject_am62ax-sk_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_fault_inject_am62ax-sk_r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_fault_inject_am62ax-sk_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_fault_inject_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62ax-sk_a53ss0-0_nortos_gcc-aarch64
@@ -775,6 +797,18 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_mmcsd_raw_io_am62ax-sk_a53ss0-0_nortos_gcc-aarch64:
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile all
 
+ test_mmcsd_fault_inject_am62ax-sk_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_mmcsd_fault_inject_am62ax-sk_r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ test_mmcsd_fault_inject_am62ax-sk_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ test_mmcsd_fault_inject_am62ax-sk_a53ss0-0_nortos_gcc-aarch64:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile all
+
  test_dpl_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C kernel/dpl/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
@@ -1040,6 +1074,10 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_raw_io_am62ax-sk_r5fss0-0_freertos_t
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_raw_io_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_raw_io_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_raw_io_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_fault_inject_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_fault_inject_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_fault_inject_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_fault_inject_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
@@ -1325,6 +1363,18 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_mmcsd_raw_io_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
 
+ test_mmcsd_fault_inject_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_mmcsd_fault_inject_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ test_mmcsd_fault_inject_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ test_mmcsd_fault_inject_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
+
  test_dpl_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C kernel/dpl/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
@@ -1590,6 +1640,10 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_raw_io_am62ax-sk_r5fss0-0_freertos_t
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_raw_io_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_raw_io_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_raw_io_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_fault_inject_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_fault_inject_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_fault_inject_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_fault_inject_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub
@@ -1874,6 +1928,18 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_mmcsd_raw_io_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub:
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
+
+ test_mmcsd_fault_inject_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_mmcsd_fault_inject_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_mmcsd_fault_inject_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ test_mmcsd_fault_inject_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
 
  test_dpl_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C kernel/dpl/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub

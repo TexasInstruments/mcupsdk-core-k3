@@ -731,12 +731,12 @@ void TestMmcsd_sdMultipleBusWidths(void *args)
         /* Supported  bus widths are 1, 4 */
         if(loopVar == 0)
         {
-            gMmcsdAttrs[CONFIG_MMCSD_EMMC].busWidth = 1;
+            gMmcsdAttrs[CONFIG_MMCSD_SD].busWidth = 1;
             DebugP_log("Starting transfer with bus width: %d\r\n", 1);
         }
         else
         {
-            gMmcsdAttrs[CONFIG_MMCSD_EMMC].busWidth = 4;
+            gMmcsdAttrs[CONFIG_MMCSD_SD].busWidth = 4;
             DebugP_log("Starting transfer with bus width: %d\r\n", 4);
         }
         /* Using a fixed support mode */

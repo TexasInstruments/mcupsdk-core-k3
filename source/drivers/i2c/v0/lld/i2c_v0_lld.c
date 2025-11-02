@@ -186,6 +186,7 @@
 
 #define I2C_MAX_CONSECUTIVE_ISRS            ((uint32_t) 1U)
 
+#define I2C_SYSTEST_INVALID_VALUE           ((uint32_t) 0xFFFFFFFFU)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -1336,6 +1337,39 @@ int32_t I2C_lld_recoverBus(I2CLLD_Handle handle, uint32_t i2cDelay)
     return retVal;
 }
 
+int32_t I2C_lld_setSysTest(I2CLLD_Handle handle, uint32_t sysTestVal)
+{
+    int32_t             retVal = I2C_STS_SUCCESS;
+    I2CLLD_Object       *object = NULL;
+
+    if(handle != NULL)
+    {
+        /* Get the pointer to the object */
+        object = (I2CLLD_Object*)handle;
+        I2CControllerSetSysTest(object->baseAddr,sysTestVal);
+    }
+    else
+    {
+        retVal = I2C_STS_ERR_INVALID_PARAM;
+    }
+
+    return retVal;
+}
+
+uint32_t I2C_lld_getSysTest(I2CLLD_Handle handle)
+{
+    uint32_t sysTestVal = I2C_SYSTEST_INVALID_VALUE;
+    I2CLLD_Object       *object = NULL;
+
+    if(handle != NULL)
+    {
+        /* Get the pointer to the object */
+        object = (I2CLLD_Object*)handle;
+        sysTestVal = I2CControllerGetSysTest(object->baseAddr);
+    }
+
+    return sysTestVal;
+}
 
 /* ========================================================================== */
 /*                     API ISR Function Definitions                           */

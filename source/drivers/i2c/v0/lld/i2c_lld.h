@@ -674,6 +674,24 @@ int32_t I2C_lld_setBusFrequency(I2CLLD_Handle handle, uint32_t busFrequency);
  */
 int32_t     I2C_lld_recoverBus(I2CLLD_Handle handle, uint32_t i2cDelay);
 
+/**
+ *  \brief Function to set the SYSTEST register
+ *
+ *  \param handle         [IN] handle to the I2C
+ *  \param sysTestVal     [IN] value to be written to the SYSTEST register
+ *
+ *  \return \ref I2C_StatusCode
+ */
+int32_t I2C_lld_setSysTest(I2CLLD_Handle handle, uint32_t sysTestVal);
+
+/**
+ *  \brief Function to read the SYSTEST register
+ *
+ *  \param handle         [IN] handle to the I2C
+ *
+ */
+uint32_t I2C_lld_getSysTest(I2CLLD_Handle handle);
+
 /* ========================================================================== */
 /*                        ISR Function Declarations                           */
 /* ========================================================================== */

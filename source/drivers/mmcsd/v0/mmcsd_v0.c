@@ -2427,11 +2427,11 @@ static int32_t MMCSD_retune(MMCSD_Handle handle)
 
     if(mode == MMCSD_SUPPORT_MMC_HS400)
     {
-        /* Switch from HS400 mode to HS200 mode and
-         * then from HS200 mode to HS400 mode.
+        /* Switch from HS400 mode to HSSDR50 mode and
+         * then from HSSDR50 mode to HS400 mode.
          */
 
-        phyMode = MMCSD_PHY_MODE_HS;
+        phyMode = MMCSD_PHY_MODE_HSSDR50;
         clkFreq = MMCSD_REFERENCE_CLOCK_52M;
         phyClkFreq = clkFreq;
         MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, phyClkFreq, phyDriverType, tunedItap);

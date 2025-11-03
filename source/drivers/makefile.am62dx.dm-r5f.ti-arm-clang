@@ -53,7 +53,8 @@ FILES_common := \
     lpddr4_ctl_regs_rw_masks.c \
     lpddr4_obj_if.c \
     mmcsd_priv.c \
-    mmcsd_v1.c \
+    mmcsd_v0.c \
+    mmcsd_soc.c \
     ospi_dma.c \
     ospi_dma_udma.c \
     ospi_nor_flash.c \
@@ -110,7 +111,9 @@ FILES_PATH_common = \
     i2c/v0/lld \
     i2c/v0/soc/am62dx \
     mmcsd \
-    mmcsd/v1 \
+    mmcsd/v0 \
+    mmcsd/soc \
+    mmcsd/soc/am62dx \
     ospi \
     ospi/v0 \
     ospi/v0/dma \

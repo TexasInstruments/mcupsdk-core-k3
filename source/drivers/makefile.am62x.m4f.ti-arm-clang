@@ -81,7 +81,9 @@ FILES_PATH_common = \
     ddr \
     ddr/v0/soc/am62x \
     mmcsd \
-    mmcsd/v1 \
+    mmcsd/v0 \
+    mmcsd/soc \
+    mmcsd/soc/am62x \
     ospi \
     ospi/v0 \
     ospi/v0/dma \

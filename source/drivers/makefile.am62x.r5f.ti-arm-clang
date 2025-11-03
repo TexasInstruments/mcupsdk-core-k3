@@ -49,8 +49,9 @@ FILES_common := \
     ddr.c \
     ddr_soc.c \
     ddr_perf.c \
-    mmcsd_v1.c \
+    mmcsd_v0.c \
     mmcsd_priv.c \
+    mmcsd_soc.c \
     ospi_v0.c \
     ospi_dma.c \
     ospi_dma_udma.c \
@@ -125,7 +126,9 @@ FILES_PATH_common = \
     ddr \
     ddr/v0/soc/am62x \
     mmcsd \
-    mmcsd/v1 \
+    mmcsd/v0 \
+    mmcsd/soc \
+    mmcsd/soc/am62x \
     ospi \
     ospi/v0 \
     ospi/v0/dma \

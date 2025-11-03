@@ -820,6 +820,14 @@ void OSPI_setProtocol(OSPI_Handle handle, uint32_t protocol)
                     OSPI_enableDdrRdCmds(handle);
                 }
             }
+            else
+            {
+                if(protocol == OSPI_FLASH_PROTOCOL(8,8,8,0))
+                {
+                    OSPI_enableSDR(handle);
+                    OSPI_setDualOpCodeMode(handle);
+                }
+            }
 
             /* Update book-keeping variable in OSPI object */
             obj->protocol = protocol;

@@ -156,14 +156,17 @@ static int32_t Flash_norOspiWaitReady(Flash_Config *config, uint32_t timeOut)
     uint8_t dummyBits = OSPI_CMD_INVALID_DUMMY;
 
     /* Do RDSR based on xspi WIP status */
-    if((devCfg->xspiWipRdCmd != 0x00) && (obj->currentProtocol == FLASH_CFG_PROTO_8D_8D_8D))
+    if((devCfg->xspiWipRdCmd != 0x00U) && ((obj->currentProtocol == FLASH_CFG_PROTO_8D_8D_8D) || (obj->currentProtocol == FLASH_CFG_PROTO_8S_8S_8S)))
     {
         /* Check XSPI WIP configuration */
         cmd = devCfg->xspiWipRdCmd;
         cmdAddr = devCfg->xspiWipReg;
         numAddrBytes = obj->numAddrBytes;
         bitMask = devCfg->xspiWipBit;
-        numBytesToRead = 2; /* Can't read odd bytes in Octal DDR mode */
+        if(obj->currentProtocol == FLASH_CFG_PROTO_8D_8D_8D)
+        {
+            numBytesToRead = 2; /* Can't read odd bytes in Octal DDR mode */
+        }
         dummyBits = devCfg->protocolCfg.dummyClksCmd;
     }
 
@@ -197,11 +200,15 @@ static int32_t Flash_norOspiRegRead(Flash_Config *config, uint8_t cmd, uint32_t 
     uint8_t numBytes = 1;
     uint8_t dummyBits = OSPI_CMD_INVALID_DUMMY;
 
-    if(obj->currentProtocol == FLASH_CFG_PROTO_8D_8D_8D)
+    if((obj->currentProtocol == FLASH_CFG_PROTO_8D_8D_8D) || (obj->currentProtocol == FLASH_CFG_PROTO_8S_8S_8S))
     {
-        numBytes = 2; /* Octal DDR can't read odd number of bytes */
         dummyBits = config->devConfig->protocolCfg.dummyClksCmd;
+        if(obj->currentProtocol == FLASH_CFG_PROTO_8D_8D_8D)
+        {
+            numBytes = 2; /* Octal DDR can't read odd number of bytes */
+        }
     }
+
     status = Flash_norOspiCmdRead(config, cmd, addr, obj->numAddrBytes, dummyBits, reg, numBytes);
 
     *data = reg[0];
@@ -673,23 +680,22 @@ static int32_t Flash_set888mode(Flash_Config *config, uint8_t seq)
         status = Flash_norOspiRegRead(config, octCfg->cmdRegRd, octCfg->cfgReg, &reg);
         if(SystemP_SUCCESS == status)
         {
-            /* Octal DDR is special. Check if it is already enabled */
-            if((((reg >> octCfg->shift) & 0x01) == 1) && (((reg >> dCfg->shift) & 0x01) == 1))
+            /* Clear the config bits in the register  */
+            reg &= ~(uint8_t)(octCfg->mask | dCfg->mask);
+            /* Bitwise OR the bit pattern for setting the dummyCycle selected */
+            reg |= (octCfg->cfgRegBitP << octCfg->shift);
+            if(pCfg->isDtr == TRUE)
             {
-                /* Already 8D */
+                /* Set the SDR/DDR bit for 8D-8D-8D */
+                reg |= (dCfg->cfgRegBitP << dCfg->shift);
             }
             else
             {
-                /* Clear the config bits in the register  */
-                reg &= ~(uint8_t)(octCfg->mask | dCfg->mask);
-                /* Bitwise OR the bit pattern for setting the dummyCycle selected */
-                reg |= (octCfg->cfgRegBitP << octCfg->shift);
-                if(pCfg->protocol == FLASH_CFG_PROTO_8D_8D_8D)
-                {
-                    reg |= (dCfg->cfgRegBitP << dCfg->shift);
-                }
-                status += Flash_norOspiRegWrite(config, octCfg->cmdRegWr, octCfg->cfgReg, reg);
+                /* Clear the SDR/DDR bit for 8S-8S-8S */
+                reg &= ~(dCfg->cfgRegBitP << dCfg->shift);
             }
+
+            status = Flash_norOspiRegWrite(config, octCfg->cmdRegWr, octCfg->cfgReg, reg);
         }
         OSPI_setProtocol((OSPI_Handle)(obj->ospiHandle), gFlashToSpiProtocolMap[pCfg->protocol]);
     }
@@ -698,10 +704,7 @@ static int32_t Flash_set888mode(Flash_Config *config, uint8_t seq)
         Flash_norOspiSetRegCfg(config, octCfg);
         Flash_norOspiWaitReady(config, devCfg->flashBusyTimeout);
         Flash_norOspiSetRegCfg(config, dCfg);
-        if(pCfg->protocol == FLASH_CFG_PROTO_8D_8D_8D)
-        {
-            obj->currentProtocol = pCfg->protocol;
-        }
+        obj->currentProtocol = pCfg->protocol;
         Flash_norOspiWaitReady(config, devCfg->flashBusyTimeout);
     }
 
@@ -816,13 +819,17 @@ static int32_t Flash_norOspiReadId(Flash_Config *config)
     uint32_t idNumBytes = 3;
     uint32_t numAddrBytes = 0;
 
-    if(obj->currentProtocol == FLASH_CFG_PROTO_8D_8D_8D)
+    if(obj->currentProtocol == FLASH_CFG_PROTO_8D_8D_8D || obj->currentProtocol == FLASH_CFG_PROTO_8S_8S_8S)
     {
         dummyBits = pCfg->dummyClksCmd;
         cmdAddr = 0U;
         /* Update the number of address bytes based on protocol config at differrent frequency modes */
         numAddrBytes = obj->numAddrBytes;
-        idNumBytes = 4; /* Can't read odd bytes in octal DDR */
+
+        if(obj->currentProtocol == FLASH_CFG_PROTO_8D_8D_8D)
+        {
+            idNumBytes = 4; /* Can't read odd bytes in octal DDR */
+        }
     }
     else
     {
@@ -884,7 +891,8 @@ static int32_t Flash_norOspiRead(Flash_Config *config, uint32_t offset, uint8_t 
         {
             if(obj->phyEnable == TRUE)
             {
-                if(OSPI_isOtpValidateEnable(obj->ospiHandle))
+                /* only validate if DQS tuning (DDR) is done */
+                if(OSPI_isOtpValidateEnable(obj->ospiHandle) && (TRUE == config->devConfig->protocolCfg.isDtr))
                 {
                     phyTuningOffset = Flash_getPhyTuningOffset(config);
                     phyStatus = OSPI_phyValidateTuningPoint(obj->ospiHandle, phyTuningOffset);
@@ -1692,7 +1700,14 @@ static int32_t Flash_norOspiPhyTune(Flash_Config *config)
         {
             do
             {
-                status = OSPI_phyTuneDDR(obj->ospiHandle, phyTuningOffset);
+                if(TRUE == config->devConfig->protocolCfg.isDtr)
+                {
+                    status = OSPI_phyTuneDDR(obj->ospiHandle, phyTuningOffset);
+                }
+                else
+                {
+                    status = OSPI_phyTuneSDR(obj->ospiHandle, phyTuningOffset);
+                }
                 tryTuning--;
             }while((tryTuning > 0U) && (status != SystemP_SUCCESS));
         }
@@ -1732,13 +1747,20 @@ static int32_t Flash_norOspiFallback(Flash_Config *config)
     /* Set OSPI frequency to 200Mhz */
     status = OSPI_setFrequency(obj->ospiHandle, (uint64_t)fCfg->fallBackFreq);
 
-    /* Fall back to 8d8d8d mode at 25MHz */
+    /* Fall back to 8d8d8d mode at 25MHz or 8s8s8s mode at 50MHz */
     if(status == SystemP_SUCCESS)
     {
         /* Calculate OSPI delays for 200MHz */
         OSPI_setDelays(obj->ospiHandle, fCfg->fallBackFreq);
 
-        OSPI_setBaudRateDiv(obj->ospiHandle, fCfg->ddrBaudRateDiv);
+        if(TRUE == config->devConfig->protocolCfg.isDtr)
+        {
+            OSPI_setBaudRateDiv(obj->ospiHandle, fCfg->ddrBaudRateDiv);
+        }
+        else
+        {
+            OSPI_setBaudRateDiv(obj->ospiHandle, fCfg->sdrBaudRateDiv);
+        }
 
         /* Set Mode Clocks and Dummy Clocks in Controller and Flash Memory */
         status = Flash_norOspiSetModeDummy(config, obj->ospiHandle);

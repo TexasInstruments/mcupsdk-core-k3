@@ -29,7 +29,44 @@
         "p118": null,
         "p444s": null,
         "p444d": null,
-        "p888s": null,
+        "p888s": {
+            "isDtr": false,
+            "cmdRd": "0xEC",
+            "cmdWr": "0x12",
+            "modeClksCmd": 0,
+            "modeClksRd": 0,
+            "dummyClksCmd": 3,
+            "dummyClksRd": 20,
+            "enableType": "0",
+            "enableSeq": "0x00",
+            "dummyCfg": {
+                "isAddrReg": true,
+                "cmdRegRd": "0x65",
+                "cmdRegWr": "0x71",
+                "cfgReg": "0x00800003",
+                "shift": 0,
+                "mask": "0x0F",
+                "bitP": 8
+            },
+            "protoCfg": {
+                "isAddrReg": true,
+                "cmdRegRd": "0x65",
+                "cmdRegWr": "0x71",
+                "cfgReg": "0x00800006",
+                "shift": 0,
+                "mask": "0x01",
+                "bitP": 1
+            },
+            "strDtrCfg": {
+                "isAddrReg": true,
+                "cmdRegRd": "0x65",
+                "cmdRegWr": "0x71",
+                "cfgReg": "0x00800006",
+                "shift": 1,
+                "mask": "0x02",
+                "bitP": 1
+            }
+        },
         "p888d": {
             "isDtr": true,
             "cmdRd": "0xEE",

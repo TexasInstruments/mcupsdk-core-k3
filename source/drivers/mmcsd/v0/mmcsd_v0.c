@@ -169,7 +169,6 @@ static int32_t MMCSD_transfer(MMCSD_Handle handle, MMCSD_Transaction *trans);
 static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *trans);
 static int32_t MMCSD_isReadyForTransfer(MMCSD_Handle handle);
 static int32_t MMCSD_sendStopCmd(MMCSD_Handle handle);
-static int32_t MMCSD_sendCmd23(MMCSD_Handle handle, uint32_t numBlks);
 static int32_t MMCSD_sendCmd21(MMCSD_Handle handle);
 static int32_t MMCSD_setupADMA2(MMCSD_Handle handle, MMCSD_ADMA2Descriptor *desc, uint64_t bufAddr, uint32_t dataSize);
 static int32_t MMCSD_sendSwitchCmd(MMCSD_Handle handle, uint32_t arg);
@@ -189,10 +188,12 @@ static int32_t MMCSD_retune(MMCSD_Handle handle);
 /* PHY related functions */
 static int32_t MMCSD_phyInit(uint32_t ssBaseAddr, uint32_t phyType);
 static inline void MMCSD_phyDisableDLL(uint32_t ssBaseAddr);
-static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_t phyClkFreq, uint32_t driverImpedance, uint8_t tunedItap);
+static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyType, uint32_t phyMode, uint32_t phyClkFreq, uint32_t driverImpedance, uint8_t tunedItap);
 static int32_t MMCSD_phyTuneManual(MMCSD_Handle handle, uint8_t *tunedItap, uint8_t tuningCount);
 static int32_t MMCSD_phyTuneManualEMMC(MMCSD_Handle handle, uint8_t *tunedItap);
 static int32_t MMCSD_phyTuneAuto(MMCSD_Handle handle);
+static int32_t MMCSD_calculateItapHwPhy(MMCSD_TuningPassOrFailWindow *failWindow, uint8_t numFails, uint8_t *tunedItap);
+static int32_t MMCSD_calculateItapSwPhy(MMCSD_TuningPassOrFailWindow *failWindow, uint8_t numFails, uint8_t *tunedItap);
 
 /* CSL like functions */
 static inline int32_t MMCSD_halPollCmdInhibit(MMCSD_Handle handle, uint64_t timeoutMilliSec);
@@ -442,7 +443,7 @@ void MMCSD_close(MMCSD_Handle handle)
 
                 status |= MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, MMCSD_REFERENCE_CLOCK_52M, 0U);
 
-                status |= MMCSD_phyConfigure(attrs->ssBaseAddr, MMCSD_PHY_MODE_HSSDR50, MMCSD_REFERENCE_CLOCK_52M, 0U, 0U);
+                status |= MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, MMCSD_PHY_MODE_HSSDR50, MMCSD_REFERENCE_CLOCK_52M, 0U, 0U);
             }
 
             /* Switching to Legacy SDR mode */
@@ -451,7 +452,7 @@ void MMCSD_close(MMCSD_Handle handle)
 
             status |= MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, 400000, 0U);
 
-            status |= MMCSD_phyConfigure(attrs->ssBaseAddr, MMCSD_PHY_MODE_SDR25, 400000, 0U, 0U);
+            status |= MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, MMCSD_PHY_MODE_SDR25, 400000, 0U, 0U);
 
             /* Set bus width to 1 bit mode */
             switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16U) | (((0U << MMCSD_ECSD_BUS_WIDTH_ES_SHIFT) | MMCSD_ECSD_BUS_WIDTH_1BIT) << 8U);
@@ -524,10 +525,10 @@ int32_t MMCSD_read(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32_
         uint32_t addr = 0U;
         uint32_t cmd = 0U;
         uint32_t blockSize = MMCSD_getBlockSize(handle);
-        if(((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS200_200MHZ_1P8V) &&
+        if((obj->emmcData != NULL) && (((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS200_200MHZ_1P8V) &&
            (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS200)) ||
            ((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS400_200MHZ_1P8V) &&
-           (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS400)))
+           (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS400))))
         {
             obj->xferHighSpeedEn = 1;
         }
@@ -592,7 +593,7 @@ int32_t MMCSD_read(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32_
                         addr = addr + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX * blockSize;
                     }
                     trans.arg = addr;
-                    trans.dataBuf = trans.dataBuf + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX * blockSize;
+                    trans.dataBuf = (void *)((uint32_t)trans.dataBuf + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX * blockSize);
                 }
                 if((status == SystemP_SUCCESS) && (currNumBlks > 0U))
                 {
@@ -664,10 +665,10 @@ int32_t MMCSD_write(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32
         uint32_t addr = 0U;
         uint32_t cmd = 0U;
         uint32_t blockSize = MMCSD_getBlockSize(handle);
-        if(((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS200_200MHZ_1P8V) &&
+        if((obj->emmcData != NULL) && (((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS200_200MHZ_1P8V) &&
            (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS200)) ||
            (((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS400_200MHZ_1P8V) != 0U) &&
-           (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS400)))
+           (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS400))))
         {
             obj->xferHighSpeedEn = 1;
         }
@@ -732,7 +733,7 @@ int32_t MMCSD_write(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32
                         addr = addr + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX * blockSize;
                     }
                     trans.arg = addr;
-                    trans.dataBuf = trans.dataBuf + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX * blockSize;
+                    trans.dataBuf = (void *)((uint32_t)trans.dataBuf + CSL_MMC_CTLCFG_BLOCK_COUNT_XFER_BLK_CNT_MAX * blockSize);
                 }
                 if((status == SystemP_SUCCESS) && (currNumBlks > 0U))
                 {
@@ -1188,6 +1189,14 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
             MMC_SSCFG_CTL_CFG_2_REG_SLOTTYPE,
             CSL_MMC_CTLCFG_CAPABILITIES_SLOT_TYPE_VAL_EMBEDDED);
 
+        if(attrs->phyType == MMCSD_PHY_TYPE_SW_PHY)
+        {
+            /* Enable IOMUX : 0 for MMCSD, 1 for GPIO */
+            CSL_REG32_FINS(&pSSReg->PHY_CTRL_1_REG,
+                MMC_SSCFG_PHY_CTRL_1_REG_IOMUX_ENABLE,
+                0);
+        }
+
         /* Wait for card detect */
         status = MMCSD_halIsCardInserted(attrs->ctrlBaseAddr);
     }
@@ -1209,7 +1218,7 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
 
     if(SystemP_SUCCESS == status)
     {
-        status = MMCSD_phyConfigure(attrs->ssBaseAddr, MMCSD_PHY_MODE_SDR25, 400000, 0U, 0U);
+        status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, MMCSD_PHY_MODE_SDR25, 400000, 0U, 0U);
     }
 
     /* Controller initialization done, moving to card init */
@@ -2177,20 +2186,6 @@ static int32_t MMCSD_sendStopCmd(MMCSD_Handle handle)
     return status;
 }
 
-static int32_t MMCSD_sendCmd23(MMCSD_Handle handle, uint32_t numBlks)
-{
-    int32_t status = SystemP_SUCCESS;
-    MMCSD_Transaction trans;
-
-    MMCSD_initTransaction(&trans);
-    trans.cmd = MMCSD_MMC_CMD(23);
-    trans.arg = numBlks;
-    trans.retries = MMCSD_TRANS_RETRIES;
-    status = MMCSD_transfer(handle, &trans);
-
-    return status;
-}
-
 static void MMCSD_initTransaction(MMCSD_Transaction *trans)
 {
     if(trans != NULL)
@@ -2293,7 +2288,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
     {
 
         /* Enable DLL */
-        MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, phyClkFreq, phyDriverType, tunedItap);
+        MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, phyClkFreq, phyDriverType, tunedItap);
 
         /* Tune the PHY */
         if(attrs->tuningType == MMCSD_PHY_TUNING_TYPE_AUTO)
@@ -2332,7 +2327,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
 
         status = MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, MMCSD_REFERENCE_CLOCK_52M, 0U);
 
-        MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, MMCSD_REFERENCE_CLOCK_52M, phyDriverType, tunedItap);
+        MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, MMCSD_REFERENCE_CLOCK_52M, phyDriverType, tunedItap);
 
         if(SystemP_SUCCESS == status)
         {
@@ -2360,7 +2355,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
             /* Set O/P clock to 200 MHz. HC may set it to a value <= 200 MHz */
             status = MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, MMCSD_REFERENCE_CLOCK_200M, 0U);
 
-            MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, MMCSD_REFERENCE_CLOCK_200M, phyDriverType, tunedItap);
+            MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, MMCSD_REFERENCE_CLOCK_200M, phyDriverType, tunedItap);
         }
     }
 
@@ -2434,7 +2429,7 @@ static int32_t MMCSD_retune(MMCSD_Handle handle)
         phyMode = MMCSD_PHY_MODE_HSSDR50;
         clkFreq = MMCSD_REFERENCE_CLOCK_52M;
         phyClkFreq = clkFreq;
-        MMCSD_phyConfigure(attrs->ssBaseAddr, phyMode, phyClkFreq, phyDriverType, tunedItap);
+        MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, phyClkFreq, phyDriverType, tunedItap);
 
         hsTimingVal = MMCSD_ECSD_HS_TIMING_HIGH_SPEED;
         switchArg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | (hsTimingVal << 8U);
@@ -3112,12 +3107,12 @@ static void MMCSD_phyGetOtapDelay(uint32_t *outputTapDelaySel, uint32_t *outputT
 
 }
 
-static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_t phyClkFreq, uint32_t driverImpedance, uint8_t tunedItap)
+static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyType, uint32_t phyMode, uint32_t phyClkFreq, uint32_t driverImpedance, uint8_t tunedItap)
 {
     int32_t status = SystemP_SUCCESS;
     const CSL_mmc_sscfgRegs *ssReg = (const CSL_mmc_sscfgRegs *)ssBaseAddr;
 
-    uint32_t freqSel = 0U, strobeSel = 0U;
+    uint32_t strobeSel = 0U;
     uint32_t outputTapDelaySel = 0U, outputTapDelayVal = 0U;
     uint32_t inputTapDelaySel = 0U, inputTapDelayVal = 0U;
 
@@ -3128,12 +3123,18 @@ static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_
         strobeSel = MMCSD_STRBSEL_MMC_HS400;
     }
 
-    CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_STRBSEL, strobeSel);
+    if(phyType == MMCSD_PHY_TYPE_HW_PHY)
+    {
+        CSL_REG32_FINS(&ssReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_STRBSEL, strobeSel);
 
-    /* Enable internal pull-up */
-    CSL_REG32_FINS(&ssReg->PHY_CTRL_3_REG, MMC_SSCFG_PHY_CTRL_3_REG_REN_STRB, 1U);
+        /* Enable internal pull-up */
+        CSL_REG32_FINS(&ssReg->PHY_CTRL_3_REG, MMC_SSCFG_PHY_CTRL_3_REG_REN_STRB, 1U);
+    }
 
+#if defined (IP_VERSION_MMCSD_V0)
     /* Configure freqSel */
+    uint32_t freqSel = 0U;
+
     if((phyClkFreq > (170U*1000000U)) && (phyClkFreq <= (200U*1000000U)))
     {
         freqSel = 0U;
@@ -3171,42 +3172,47 @@ static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_
         /* Default 50 MHz */
         freqSel = 4U;
     }
+#endif
 
-    if((phyMode == MMCSD_PHY_MODE_HSDDR50 || phyMode == MMCSD_PHY_MODE_HS200 || phyMode == MMCSD_PHY_MODE_HS400) && phyClkFreq >= 50*1000000)
+    if(phyType == MMCSD_PHY_TYPE_HW_PHY)
     {
-        CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_SELDLYTXCLK, 0U);
-        CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_SELDLYRXCLK, 0U);
-
-        /* Set FRQSEL */
-        CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_FRQSEL, freqSel);
-
-        /* Set DLL TRIM ICP */
-        CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_DLL_TRM_ICP, 8U);
-
-        /* Set driver impedance */
-        CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_DR_TY, driverImpedance);
-
-        /* Enable DLL */
-        CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_ENDLL, 1U);
-
-        /* Wait for DLL READY bit */
-        while((CSL_REG32_FEXT(&ssReg->PHY_STAT_1_REG,
-             MMC_SSCFG_PHY_STAT_1_REG_DLLRDY) != TRUE) && (timeout > 0U))
+        if((phyMode == MMCSD_PHY_MODE_HSDDR50 || phyMode == MMCSD_PHY_MODE_HS200 || phyMode == MMCSD_PHY_MODE_HS400) && phyClkFreq >= 50*1000000)
         {
-            timeout--;
-        }
-        if(timeout == 0U)
-        {
-            status = SystemP_FAILURE;
-        }
-    }
-    else
-    {
-        /* Disable PHY DLL */
-        CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_ENDLL, 0U);
+            CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_SELDLYTXCLK, 0U);
+            CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_SELDLYRXCLK, 0U);
 
-        CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_SELDLYTXCLK, 1U);
-        CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_SELDLYRXCLK, 1U);
+#if defined (IP_VERSION_MMCSD_V0)
+            /* Set FRQSEL */
+            CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_FRQSEL, freqSel);
+#endif
+            /* Set DLL TRIM ICP */
+            CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_DLL_TRM_ICP, 8U);
+
+            /* Set driver impedance */
+            CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_DR_TY, driverImpedance);
+
+            /* Enable DLL */
+            CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_ENDLL, 1U);
+
+            /* Wait for DLL READY bit */
+            while((CSL_REG32_FEXT(&ssReg->PHY_STAT_1_REG,
+                 MMC_SSCFG_PHY_STAT_1_REG_DLLRDY) != TRUE) && (timeout > 0U))
+            {
+                timeout--;
+            }
+            if(timeout == 0U)
+            {
+                status = SystemP_FAILURE;
+            }
+        }
+        else
+        {
+            /* Disable PHY DLL */
+            CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_ENDLL, 0U);
+
+            CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_SELDLYTXCLK, 1U);
+            CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_SELDLYRXCLK, 1U);
+        }
     }
 
     if(SystemP_SUCCESS == status)
@@ -3233,57 +3239,103 @@ static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyMode, uint32_
     return status;
 }
 
-static int32_t MMCSD_calculateItap(MMCSD_TuningPassOrFailWindow *failWindow, uint8_t numFails, uint8_t *tunedItap)
+static int32_t MMCSD_calculateItapHwPhy(MMCSD_TuningPassOrFailWindow *failWindow, uint8_t numFails, uint8_t *tunedItap)
 {
     int32_t status = SystemP_SUCCESS;
     MMCSD_TuningPassOrFailWindow passWindow = {0U, 0U, 0U};
     uint8_t firstFailStart = 0U, lastFailEnd = 0U, startFail = 0U, endFail = 0U, passLength = 0U, prevFailEnd = 0xFFU, count;
 
-    if(!numFails)
+    if((numFails == 0U) || (failWindow == NULL))
     {
         status = SystemP_FAILURE;
-        return status;
     }
 
-    if(failWindow->length == MMCSD_ITAPDLY_LENGTH)
+    if((status == SystemP_SUCCESS) && (failWindow->length == MMCSD_ITAPDLY_LENGTH))
     {
         status = SystemP_FAILURE;
-        return status;
     }
 
-    firstFailStart = failWindow->start;
-    lastFailEnd = failWindow[numFails - 1].end;
-
-    for(count=0U; count < numFails; count++)
+    if(status == SystemP_SUCCESS)
     {
-        startFail = failWindow[count].start;
-        endFail = failWindow[count].end;
-        if(prevFailEnd == 0xFFU)
+        firstFailStart = failWindow->start;
+        lastFailEnd = failWindow[numFails - 1].end;
+
+        for(count=0U; count < numFails; count++)
         {
-            passLength = startFail;
+            startFail = failWindow[count].start;
+            endFail = failWindow[count].end;
+            if(prevFailEnd == 0xFFU)
+            {
+                passLength = startFail;
+            }
+            else
+            {
+                passLength = startFail - (uint8_t)(prevFailEnd + 1U);
+            }
+
+            if(passLength > passWindow.length)
+            {
+                passWindow.start = (uint8_t)(prevFailEnd + 1U);
+                passWindow.length = passLength;
+            }
+            prevFailEnd = endFail;
         }
-        else
-        {
-            passLength = startFail - (uint8_t)(prevFailEnd + 1U);
-        }
+
+        passLength =  MMCSD_ITAPDLY_LAST_INDEX - lastFailEnd + firstFailStart;
 
         if(passLength > passWindow.length)
         {
             passWindow.start = (uint8_t)(prevFailEnd + 1U);
             passWindow.length = passLength;
         }
-        prevFailEnd = endFail;
+
+        *tunedItap = (passWindow.start + (passWindow.length >> 1)) % MMCSD_ITAPDLY_LENGTH;
     }
 
-    passLength =  MMCSD_ITAPDLY_LAST_INDEX - lastFailEnd + firstFailStart;
+    return status;
+}
 
-    if(passLength > passWindow.length)
+static int32_t MMCSD_calculateItapSwPhy(MMCSD_TuningPassOrFailWindow *failWindow, uint8_t numFails, uint8_t *tunedItap)
+{
+    int32_t status = SystemP_SUCCESS;
+    MMCSD_TuningPassOrFailWindow passWindow = {0U, 0U, 0U};
+    uint8_t startFail = 0U, endFail = 0U, passLength = 0U, prevFailEnd = 0xFFU, count;
+
+    if((numFails == 0U) || (failWindow == NULL))
     {
-        passWindow.start = (uint8_t)(prevFailEnd + 1U);
-        passWindow.length = passLength;
+        status = SystemP_FAILURE;
     }
 
-    *tunedItap = (passWindow.start + (passWindow.length >> 1)) % MMCSD_ITAPDLY_LENGTH;
+    if((status == SystemP_SUCCESS) && (failWindow->length == MMCSD_ITAPDLY_LENGTH))
+    {
+        status = SystemP_FAILURE;
+    }
+
+    if(status == SystemP_SUCCESS)
+    {
+        for(count=0U; count < numFails; count++)
+        {
+            startFail = failWindow[count].start;
+            endFail = failWindow[count].end;
+            if(prevFailEnd == 0xFFU)
+            {
+                passLength = startFail;
+            }
+            else
+            {
+                passLength = startFail - (uint8_t)(prevFailEnd + 1U);
+            }
+
+            if(passLength > passWindow.length)
+            {
+                passWindow.start = (uint8_t)(prevFailEnd + 1U);
+                passWindow.length = passLength;
+            }
+            prevFailEnd = endFail;
+        }
+
+        *tunedItap = passWindow.start + (passWindow.length >> 1);
+    }
 
     return status;
 }
@@ -3359,15 +3411,40 @@ static int32_t MMCSD_phyTuneManualEMMC(MMCSD_Handle handle, uint8_t *tunedItap)
             failIndex++;
         }
 
+        if(failIndex >= MMCSD_ITAPDLY_LENGTH)
+        {
+            status = SystemP_FAILURE;
+            break;
+        }
+
         prevPass = currPass;
     }
 
-    if(failWindow[failIndex].length != 0U)
+    if((status == SystemP_SUCCESS) && (failWindow[failIndex].length != 0U))
     {
         failIndex++;
     }
 
-    status = MMCSD_calculateItap(failWindow, failIndex, tunedItap);
+    if(failIndex >= MMCSD_ITAPDLY_LENGTH)
+    {
+        status = SystemP_FAILURE;
+    }
+
+    if(status == SystemP_SUCCESS)
+    {
+        if(attrs->phyType == MMCSD_PHY_TYPE_HW_PHY)
+        {
+            status = MMCSD_calculateItapHwPhy(failWindow, failIndex, tunedItap);
+        }
+        else if(attrs->phyType == MMCSD_PHY_TYPE_SW_PHY)
+        {
+            status = MMCSD_calculateItapSwPhy(failWindow, failIndex, tunedItap);
+        }
+        else
+        {
+            status = SystemP_FAILURE;
+        }
+    }
 
     return status;
 }

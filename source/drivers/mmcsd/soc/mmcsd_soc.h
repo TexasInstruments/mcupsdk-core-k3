@@ -30,6 +30,13 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ *  \file mmcsd_soc.h
+ *
+ *  \brief MMCSD Driver SOC file containing SOC specific APIs.
+ *
+ */
+
 #ifndef MMCSD_SOC_H_
 #define MMCSD_SOC_H_
 
@@ -43,14 +50,6 @@ extern "C"
 /* ========================================================================== */
 
 #include <drivers/hw_include/soc_config.h>
-
-#if defined (SOC_AM62PX)
-#include <drivers/mmcsd/soc/am62px/mmcsd_soc.h>
-#endif
-
-#if defined (SOC_J722S)
-#include <drivers/mmcsd/soc/j722s/mmcsd_soc.h>
-#endif
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -68,7 +67,28 @@ extern "C"
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
-/* None */
+/**
+ *  \brief This API returns if HS400 mode is supported
+ *
+ *  \param  None
+ *
+ *  \return True or False
+ */
+bool MMCSD_socIsHS400Supported(void);
+
+/**
+ *  \brief This API gives the correct Tap values for a particular phyMode.
+ *
+ *  \param  outputTapDelaySel [OUT] Pointer to Output Tap Delay Select Value.
+ *  \param  outputTapDelayVal [OUT] Pointer to Output Tap Delay Value.
+ *  \param  inputTapDelaySel [OUT] Pointer to Input Tap Delay Select Value.
+ *  \param  inputTapDelayVal [OUT] Pointer to Input Tap Delay Value.
+ *  \param  phyMode [IN] The Operating PHY Mode whose tap values are needed.
+ *  \param  tunedItap [IN] The calculated tuned ITAP to be set for certain phyModes.
+ *
+ */
+void MMCSD_phyGetTapValues(uint32_t *outputTapDelaySel, uint32_t *outputTapDelayVal,
+    uint32_t *inputTapDelaySel, uint32_t *inputTapDelayVal, uint32_t phyMode, uint8_t tunedItap);
 
 #ifdef __cplusplus
 }

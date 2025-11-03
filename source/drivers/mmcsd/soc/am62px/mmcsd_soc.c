@@ -43,7 +43,8 @@
 
 #include <stdbool.h>
 #include <drivers/soc.h>
-#include <drivers/mmcsd/soc/am62px/mmcsd_soc.h>
+#include <drivers/mmcsd.h>
+#include <drivers/mmcsd/soc/mmcsd_soc.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -86,3 +87,64 @@ bool MMCSD_socIsHS400Supported(void)
 
     return result;
 }
+
+void MMCSD_phyGetTapValues(uint32_t *outputTapDelaySel, uint32_t *outputTapDelayVal,
+    uint32_t *inputTapDelaySel, uint32_t *inputTapDelayVal, uint32_t phyMode, uint8_t tunedItap)
+{
+    switch(phyMode) {
+        case MMCSD_PHY_MODE_SDR25:
+            *outputTapDelaySel = 1U;
+            *outputTapDelayVal = 1U;
+            *inputTapDelaySel = 1U;
+            *inputTapDelayVal = 16U;
+            break;
+        case MMCSD_PHY_MODE_SDR50:
+            *outputTapDelaySel = 1U;
+            *outputTapDelayVal = 8U;
+            *inputTapDelaySel = 0U;
+            *inputTapDelayVal = 0U;
+            break;
+        case MMCSD_PHY_MODE_HSSDR50:
+            *outputTapDelaySel = 1U;
+            *outputTapDelayVal = 1U;
+            *inputTapDelaySel = 1U;
+            *inputTapDelayVal = 10U;
+            break;
+        case MMCSD_PHY_MODE_HS200:
+            *outputTapDelaySel = 1U;
+            *outputTapDelayVal = 8U;
+            *inputTapDelaySel = 1U;
+            *inputTapDelayVal = tunedItap;
+            break;
+        case MMCSD_PHY_MODE_SDR104:
+            *outputTapDelaySel = 1U;
+            *outputTapDelayVal = 8U;
+            *inputTapDelaySel = 1U;
+            *inputTapDelayVal = 0U;
+            break;
+        case MMCSD_PHY_MODE_HSDDR50:
+            *outputTapDelaySel = 1U;
+            *outputTapDelayVal = 6U;
+            *inputTapDelaySel = 1U;
+            *inputTapDelayVal = 3U;
+            break;
+        case MMCSD_PHY_MODE_HS400:
+            *outputTapDelaySel = 1U;
+            /* Output tap delay value for 0.85V Core Voltage */
+            *outputTapDelayVal = MMCSD_OTAPDLYSEL_MMC_HS400_0_85V;
+            *inputTapDelaySel = 1U;
+            *inputTapDelayVal = tunedItap;
+            break;
+        case MMCSD_PHY_MODE_DS:
+        case MMCSD_PHY_MODE_HS:
+            *outputTapDelaySel = 0U;
+            *outputTapDelayVal = 0U;
+            *inputTapDelaySel = 0U;
+            *inputTapDelayVal = 0U;
+            break;
+        default:
+            break;
+    }
+
+}
+

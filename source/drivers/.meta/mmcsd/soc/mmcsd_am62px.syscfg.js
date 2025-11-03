@@ -44,6 +44,8 @@ const operating_modes_sd = [
 ];
 
 const operating_modes_emmc = [
+    { name : "SDR50", displayName : "SDR50"},
+    { name : "DDR50", displayName : "DDR50"},
     { name : "HS200", displayName : "HS200"},
     { name : "HS400", displayName : "HS400"},
 ];

@@ -110,7 +110,9 @@ FILES_PATH_common = \
     mcspi/v0/dma \
     mcspi/v0/dma/udma \
     mmcsd \
-    mmcsd/v1 \
+    mmcsd/v0 \
+    mmcsd/soc \
+    mmcsd/soc/am62ax \
     ospi \
     ospi/v0 \
     ospi/v0/dma \

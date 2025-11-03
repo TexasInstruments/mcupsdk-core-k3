@@ -65,8 +65,9 @@ FILES_common := \
     mcspi_v0.c \
     mcspi_dma.c \
     mcspi_dma_udma.c \
-    mmcsd_v1.c \
+    mmcsd_v0.c \
     mmcsd_priv.c \
+    mmcsd_soc.c \
     ospi_v0.c \
     ospi_dma.c \
     ospi_dma_udma.c \
@@ -132,7 +133,9 @@ FILES_PATH_common = \
     mcspi/v0/dma \
     mcspi/v0/dma/udma \
     mmcsd \
-    mmcsd/v1 \
+    mmcsd/v0 \
+    mmcsd/soc \
+    mmcsd/soc/am62ax \
     ospi \
     ospi/v0 \
     ospi/v0/dma \

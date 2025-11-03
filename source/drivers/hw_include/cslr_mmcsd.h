@@ -41,11 +41,11 @@ extern "C"
 #include <drivers/hw_include/soc_config.h>
 
 #if defined (IP_VERSION_MMCSD_V0)
-#include <drivers/mmcsd/v0/cslr_mmcsd.h>
+#include <drivers/mmcsd/hw_include/v0/cslr_mmcsd.h>
 #endif
 
 #if defined (IP_VERSION_MMCSD_V1)
-#include <drivers/mmcsd/v1/cslr_mmcsd.h>
+#include <drivers/mmcsd/hw_include/v1/cslr_mmcsd.h>
 #endif
 
 #ifdef __cplusplus

@@ -44,10 +44,6 @@ extern "C"
 #include <drivers/mmcsd/v0/mmcsd.h>
 #endif
 
-#if defined (DRV_VERSION_MMCSD_V1)
-#include <drivers/mmcsd/v1/mmcsd.h>
-#endif
-
 #include <drivers/mmcsd/soc/mmcsd_soc.h>
 
 #ifdef __cplusplus

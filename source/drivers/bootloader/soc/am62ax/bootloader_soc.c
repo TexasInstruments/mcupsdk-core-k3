@@ -982,63 +982,154 @@ void __attribute__((__noreturn__)) Bootloader_socSelfCPUjump()
     selfcoreEntry();
 }
 
-int32_t Bootloader_socCpuResetReleaseSelf()
+/* Wait for interrupt */
+static inline void Bootloader_wfi(void)
+{
+    __asm__ __volatile__ ("wfi" "\n\t": : : "memory");
+}
+
+/**
+ * \brief Perform self-reset of the boot processor
+ *
+ * This function initiates a self-reset sequence for the R5FSS0_0 processor.
+ * It is used when the bootloader needs to reset itself and continue execution
+ * from a new boot vector address configured in BTCM.
+ *
+ * The function performs the following sequence:
+ * 1. Request processor control
+ * 2. Get current processor status
+ * 3. Configure processor with new boot vector and TCM settings
+ * 4. Send wait status, assert reset, and deassert reset (without waiting for responses)
+ * 5. Release processor control
+ * 6. Enter WFI to allow reset to complete
+ *
+ * \return SystemP_SUCCESS on successful configuration, SystemP_FAILURE otherwise
+ */
+int32_t Bootloader_socCpuResetReleaseSelf(void)
 {
     int32_t status = SystemP_SUCCESS;
-    uint32_t sciclientCpuProcIdCore0, sciclientCpuDevIdCore0;
+    uint32_t sciclientCpuProcIdCore0;
 
     sciclientCpuProcIdCore0 = Bootloader_socGetSciclientCpuProcId(CSL_CORE_ID_R5FSS0_0);
-    sciclientCpuDevIdCore0 = Bootloader_socGetSciclientCpuDevId(CSL_CORE_ID_R5FSS0_0);
 
-    /*
-     *   SYSFW will block until a WFI is issued, thus allowing the following commands
-     *   to be queued so this cluster may be reset by SYSFW (queue length is defined in
-     *   "source/drivers/sciclient/include/tisci/{soc}/tisci_sec_proxy.h". If these commands
-     *   were to be issued and executed prior to WFI, the cluster would enter reset and
-     *   bootloader would not be able to tell SYSFW to take itself out of reset.
-     */
-    status = Sciclient_procBootWaitProcessorState(sciclientCpuProcIdCore0,
-                    1, 1, 0, 3, 0, 0, 0, SystemP_WAIT_FOREVER);
-    if(status != SystemP_SUCCESS)
+    /* Request processor control */
+    status = Sciclient_procBootRequestProcessor((uint8_t)sciclientCpuProcIdCore0, SystemP_WAIT_FOREVER);
+    if (status == SystemP_SUCCESS)
     {
-        DebugP_logError("CPU boot wait command failed for %s\r\n", Bootloader_socGetCoreName(CSL_CORE_ID_R5FSS0_0));
-    }
+        /* Get current processor status */
+        struct tisci_msg_proc_get_status_resp proc_get_status_resp = { 0 };
 
-    if(status==SystemP_SUCCESS)
-    {
-
-        /* after this point you cannot single step in CCS */
-        if(status==SystemP_SUCCESS)
+        status = Sciclient_procBootGetProcessorState(sciclientCpuProcIdCore0, &proc_get_status_resp, SystemP_WAIT_FOREVER);
+        if (status == SystemP_SUCCESS)
         {
-            status = Sciclient_pmSetModuleRst_flags(sciclientCpuDevIdCore0, 1, 0, SystemP_WAIT_FOREVER);
+            if ((proc_get_status_resp.hdr.type != TISCI_MSG_PROC_GET_STATUS) ||
+                ((proc_get_status_resp.hdr.flags & TISCI_MSG_FLAG_ACK) != TISCI_MSG_FLAG_ACK))
+            {
+                DebugP_logError("CPU get status failed for %s\r\n", Bootloader_socGetCoreName(CSL_CORE_ID_R5FSS0_0));
+                status = SystemP_FAILURE;
+            }
         }
-
-        /* release the CPUs */
-        if(status==SystemP_SUCCESS)
+        else
         {
-            status = Sciclient_procBootReleaseProcessor(sciclientCpuProcIdCore0, 0, SystemP_WAIT_FOREVER);
-        }
-        /* release the reset for the CPUs */
-        if(status==SystemP_SUCCESS)
-        {
-            status = Sciclient_pmSetModuleRst_flags(sciclientCpuDevIdCore0, 0, 0, SystemP_WAIT_FOREVER);
-        }
-        if(status==SystemP_SUCCESS)
-        {
-            /* disable interrupts if enabled */
-            HwiP_disable();
-
-            /* flush all caches */
-            CacheP_wbInvAll(CacheP_TYPE_ALL);
-
-            /* execute wfi, now SYSFW will execute the above commands and reset core0 and core 1 */
-            __asm__ __volatile__ ("wfi" "\n\t": : : "memory");
-        }
-        if(status != SystemP_SUCCESS)
-        {
-            DebugP_logError("CPU reset sequence failed for %s\r\n", Bootloader_socGetCoreName(CSL_CORE_ID_R5FSS0_0));
+            DebugP_logError("CPU get state request failed for %s\r\n", Bootloader_socGetCoreName(CSL_CORE_ID_R5FSS0_0));
         }
     }
+    else
+    {
+        DebugP_logError("CPU request failed for %s\r\n", Bootloader_socGetCoreName(CSL_CORE_ID_R5FSS0_0));
+    }
+
+    if (status == SystemP_SUCCESS)
+    {
+        /* Configure processor with new boot vector and TCM settings */
+        struct tisci_msg_proc_set_config_req proc_set_config_req = {
+            .hdr = {
+                .type = TISCI_MSG_PROC_SET_CONFIG,
+                .seq = 0x22,
+                .flags = TISCI_MSG_FLAG_AOP,
+                .host = WKUP_R5_HOST_ID
+            },
+            .processor_id = sciclientCpuProcIdCore0,
+            .bootvector_lo = SELF_RESET_BOOT_ADDRESS_LOW,
+            .config_flags_1_set = TISCI_MSG_VAL_PROC_BOOT_CFG_FLAG_R5_ATCM_EN |
+                                  TISCI_MSG_VAL_PROC_BOOT_CFG_FLAG_R5_BTCM_EN |
+                                  TISCI_MSG_VAL_PROC_BOOT_CFG_FLAG_R5_MEM_INIT_DIS,
+            .config_flags_1_clear = TISCI_MSG_VAL_PROC_BOOT_CFG_FLAG_R5_TCM_RSTBASE
+        };
+
+        status = Sciclient_procBootSetProcessorCfg(&proc_set_config_req, SystemP_WAIT_FOREVER);
+        if (status != SystemP_SUCCESS)
+        {
+            DebugP_logError("CPU set config failed for %s\r\n", Bootloader_socGetCoreName(CSL_CORE_ID_R5FSS0_0));
+        }
+    }
+
+    if (status == SystemP_SUCCESS)
+    {
+        /*
+         * sproxy_send_msg_r5_to_tifs_fw is used instead of a wrapper function as the latter waits for a response for messages forwarded to TIFS.
+         * Here we do not want to wait for a response to ensure the reset sequence fits within the timeout window of the Sciclient_procBootWaitProcessorState
+         * No wait for response in this section
+         */
+
+        /* 1. Send TISCI_MSG_PROC_WAIT_STATUS but DO NOT wait for a response */
+        struct tisci_msg_proc_status_wait_req proc_status_wait_req = {
+            .hdr = {
+                .type = TISCI_MSG_PROC_WAIT_STATUS,
+                .seq = 0x44,
+                .flags = 0,
+                .host = WKUP_R5_HOST_ID
+            },
+            .processor_id = sciclientCpuProcIdCore0,
+            .num_wait_iterations = 255,
+            .num_match_iterations = 1,
+            .delay_per_iteration_us = 1,
+            .status_flags_1_set_any_wait = (TISCI_MSG_VAL_PROC_BOOT_STATUS_FLAG_R5_WFE | TISCI_MSG_VAL_PROC_BOOT_STATUS_FLAG_R5_WFI)
+        };
+        sproxy_send_msg_r5_to_tifs_fw(&proc_status_wait_req , sizeof(proc_status_wait_req));
+
+        /* 2. Send TISCI message to assert R5 local reset but DO NOT wait for a response */
+        struct tisci_msg_proc_set_control_req proc_set_assert_req = {
+            .hdr = {
+                .type = TISCI_MSG_PROC_SET_CONTROL,
+                .seq = 0x55,
+                .flags = 0,
+                .host = WKUP_R5_HOST_ID
+            },
+            .processor_id = sciclientCpuProcIdCore0,
+            .control_flags_1_set = TISCI_MSG_VAL_PROC_BOOT_CTRL_FLAG_R5_RESET
+        };
+        sproxy_send_msg_r5_to_tifs_fw(&proc_set_assert_req , sizeof(proc_set_assert_req));
+
+        /* 3. Send TISCI message to de-assert R5 local reset but DO NOT wait for a response */
+        struct tisci_msg_proc_set_control_req  proc_set_deassert_req = {
+            .hdr = {
+                .type = TISCI_MSG_PROC_SET_CONTROL,
+                .seq = 0x66,
+                .flags = 0,
+                .host = WKUP_R5_HOST_ID
+            },
+            .processor_id = sciclientCpuProcIdCore0,
+            .control_flags_1_clear = TISCI_MSG_VAL_PROC_BOOT_CTRL_FLAG_R5_RESET,
+        };
+        sproxy_send_msg_r5_to_tifs_fw(&proc_set_deassert_req , sizeof(proc_set_deassert_req));
+
+        /* Release processor control */
+        struct tisci_msg_proc_release_req proc_release_req = {
+            .hdr = {
+                .type = TISCI_MSG_PROC_RELEASE,
+                .seq = 0,
+                .flags = 0,
+                .host = WKUP_R5_HOST_ID
+            },
+            .processor_id = sciclientCpuProcIdCore0
+        };
+        sproxy_send_msg_r5_to_tifs_fw(&proc_release_req , sizeof(proc_release_req));
+
+        /* Enter WFI to allow reset sequence to complete */
+        Bootloader_wfi();
+    }
+
     return status;
 }
 

@@ -36,6 +36,16 @@
 #include <drivers/hw_include/cslr_soc.h>
 #include <drivers/udma.h>
 
+#include <drivers/sciclient/include/tisci/am62ax/tisci_hosts.h>
+
+/* Self reset config */
+
+extern  int32_t sproxy_send_msg_r5_to_tifs_fw(void *msg, size_t len);
+
+/** \brief Host ID requesting self reset of WKUP R5FSS0 Core0 */
+#define WKUP_R5_HOST_ID              TISCI_HOST_ID_MAIN_0_R5_1
+#define SELF_RESET_BOOT_ADDRESS_LOW  CSL_WKUP_R5FSS0_CORE0_BTCM_BASE
+
 #define FREERTOS_SMP_RPRC_CORE_ID           (100U)
 #define FREERTOS_SMP_NO_OF_CORES            (4U)
 #define FREERTOS_SMP_BOOT_CORE              (CSL_CORE_ID_A53SS0_0)

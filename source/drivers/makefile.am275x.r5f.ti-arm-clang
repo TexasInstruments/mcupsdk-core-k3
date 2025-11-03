@@ -49,8 +49,9 @@ FILES_common := \
     mcasp_dma.c \
     mcasp_soc.c \
     mcan.c \
-    mmcsd_v1.c \
+    mmcsd_v0.c \
     mmcsd_priv.c \
+    mmcsd_soc.c \
     mcspi_v0.c \
     mcspi_dma.c \
     mcspi_dma_udma.c \
@@ -122,7 +123,9 @@ FILES_PATH_common = \
     mcspi/v0/dma \
     mcspi/v0/dma/udma \
     mmcsd \
-    mmcsd/v1 \
+    mmcsd/v0 \
+    mmcsd/soc \
+    mmcsd/soc/am275x \
     optiflash/v0/flc \
     optiflash/v0/rl2 \
     ospi \

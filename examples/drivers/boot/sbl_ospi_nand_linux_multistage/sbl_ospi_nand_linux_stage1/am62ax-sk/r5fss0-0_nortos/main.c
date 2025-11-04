@@ -335,7 +335,7 @@ int main()
     Board_driversClose();
     Drivers_close();
 
-    Bootloader_JumpSelfCpu();
+    Bootloader_socCpuResetReleaseSelf();
 
     Board_deinit();
     System_deinit();

@@ -89,6 +89,7 @@ function getComponentProperty() {
     property.isBootLoaderStage2 = true;
     property.buildOptionCombos = buildOptionCombos;
     property.isFileBuf = true;
+    property.noSelfResetMultistage = true;
 
     return property;
 }

@@ -54,7 +54,10 @@ SECTIONS
 MEMORY
 {
     DDR2         : ORIGIN = 0xB0340000 , LENGTH = 0x200000
-
+    BTCM_VECS    : ORIGIN = 0x41010000 , LENGTH = 0x40
+    BTCM         : ORIGIN = 0x41010040 , LENGTH = 0x8000 - 0x40
+    ATCM_VECS    : ORIGIN = 0x0 , LENGTH = 0x40
+    ATCM         : ORIGIN = 0x40 , LENGTH = 0x8000 - 0x40
     /* This section is used by the SBL to temporarily load the appimage for authentication */
     APPIMAGE  : ORIGIN = 0x84000000 , LENGTH = 0x2000000
 }

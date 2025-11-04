@@ -37,7 +37,6 @@
 #include "ti_board_open_close.h"
 #include <drivers/device_manager/sciclient.h>
 #include <drivers/bootloader.h>
-#include <kernel/dpl/CacheP.h>
 
 
 /* This start address and length depends upon the linker memory for second stage SBL.
@@ -47,8 +46,6 @@
 
 #define BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_START       0xB0340000
 #define BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_LENGTH      0x200000
-
-CacheP_Config gCacheConfig = {};
 
 /* This buffer needs to be defined for eMMC boot in case of HS device for
    image authentication

@@ -209,7 +209,7 @@ int main()
         DebugP_log("DM image not loaded\r\n");
     }
 
-    Bootloader_JumpSelfCpu();
+    Bootloader_socCpuResetReleaseSelf();
 
     Drivers_close();
     Board_deinit();

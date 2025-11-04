@@ -474,10 +474,14 @@ void Bootloader_socInitR5FAtcmBtcm(uint32_t cpuId)
         }
         #endif
         pAddr = (volatile uint32_t *)addr;
-        for(i=0; i< sizeof(gSOC_r5fVectors)/sizeof(uint32_t); i++)
+        if(pAddr != NULL)
         {
-            pAddr[i] = gSOC_r5fVectors[i];
+            for(i=0; i< sizeof(gSOC_r5fVectors)/sizeof(uint32_t); i++)
+            {
+                pAddr[i] = gSOC_r5fVectors[i];
+            }
         }
+
     }
     Bootloader_socGetR5fBtcmAddrAndSize(cpuId, &addr, &size);
     #ifdef BOOTLOADER_SOC_BTCM_FILL

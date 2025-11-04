@@ -225,7 +225,7 @@ int main()
     MMCSD_deinit();
     Dpl_deinit();
 
-    Bootloader_JumpSelfCpu();
+    Bootloader_socCpuResetReleaseSelf();
 
     Drivers_close();
     Board_deinit();

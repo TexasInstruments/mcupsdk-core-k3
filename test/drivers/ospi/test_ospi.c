@@ -254,22 +254,22 @@ void test_main(void *args)
 
     UNITY_BEGIN();
 
-    RUN_TEST(test_ospi_read_write_1s1s1s_config, 0, NULL);
+    RUN_TEST(test_ospi_read_write_1s1s1s_config, 3175, NULL);
     Drivers_ospiClose();
     Drivers_ospiOpen();
-    RUN_TEST(test_ospi_phy_tuning, 0, NULL);
+    RUN_TEST(test_ospi_phy_tuning, 3176, NULL);
     Drivers_ospiClose();
     Drivers_ospiOpen();
-    RUN_TEST(test_ospi_read_write_max_config, 0, NULL);
+    RUN_TEST(test_ospi_read_write_max_config, 3174, NULL);
     Drivers_ospiClose();
     Drivers_ospiOpen();
-    RUN_TEST(test_ospi_read_perf, 0, NULL);
+    RUN_TEST(test_ospi_read_perf, 8724, NULL);
     Drivers_ospiClose();
     Drivers_ospiOpen();
     RUN_TEST(test_ospi_skip_phy_tuning_perf, 3825, NULL);
     Drivers_ospiClose();
     Drivers_ospiOpen();
-    RUN_TEST(test_ospi_unaligned_read_write, 0, NULL);
+    RUN_TEST(test_ospi_unaligned_read_write, 6893, NULL);
     Drivers_ospiClose();
 #if !defined (SOC_AM62LX)
     Drivers_ospiOpen();

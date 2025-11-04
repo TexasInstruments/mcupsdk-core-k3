@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62Ax" --part "Default" --package "AMB" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM62A7-Q1" --package "FCBGA (AMB)" --variant "AM62A74-M" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.24.0+4150"}
+ * @versions {"tool":"1.24.1+4189"}
  */
 
 /**
@@ -133,6 +133,7 @@ mcasp2.bcDmaDriver = udma1;
 mcasp3.bcDmaDriver = udma1;
 
 debug_log.enableUartLog        = true;
+debug_log.enableLogZoneError   = false;
 debug_log.uartLog.$name        = "CONFIG_UART_CONSOLE";
 debug_log.uartLog.UART.$assign = "USART0";
 

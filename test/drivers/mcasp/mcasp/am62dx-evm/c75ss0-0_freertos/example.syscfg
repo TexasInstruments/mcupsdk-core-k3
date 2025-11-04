@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62Dx" --part "AM62D24-G" --package "ANF" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM62D-Q1" --package "FCBGA (ANF)" --variant "AM62D24-G" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.24.0+4150"}
+ * @versions {"tool":"1.24.1+4189"}
  */
 
 /**
@@ -141,6 +141,7 @@ mcasp2.bcDmaDriver = udma1;
 mcasp3.bcDmaDriver = udma1;
 
 debug_log.enableUartLog                   = true;
+debug_log.enableLogZoneError              = false;
 debug_log.uartLog.$name                   = "CONFIG_UART0";
 debug_log.uartLog.useMcuDomainPeripherals = true;
 debug_log.uartLog.intrEnable              = "DISABLE";

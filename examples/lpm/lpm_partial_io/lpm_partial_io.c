@@ -42,6 +42,7 @@
 #include "ti_board_open_close.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include <kernel/dpl/CacheP.h>
 
 /*
  * Example: Partial IO / IO Retention Low Power Mode Entry from MCU R5 Core
@@ -49,6 +50,7 @@
  * R5 core
  * Key Features:
  * - Enables MCU MCAN / MCU UART IO activity as wakeup source.
+ * - Showcases the capability of RAM to retain its contents in low power mode.
  * - Waits to receive a character on UART.
  * - If the character received is "P", then it requests device manager core to initiate low power mode entry.
  */
@@ -62,6 +64,7 @@
 #define LPM_APP_WKUP_PAD_INVALID_VAL        0xFFU
 #define LPM_APP_EARLY_WKUP_DETECTED         0x1U
 #define LPM_APP_NORMAL_BOOT                 0x0U
+#define LPM_APP_RETENTION_RAM_MAGIC_WORD    0x456789ABU
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -121,9 +124,23 @@ void LPMApp_partialIOMain(void *args)
 {
     int32_t status;
 
+#ifdef SOC_AM275X
+    volatile uint32_t *pRetRAM = (volatile uint32_t*)CSL_WKUP_PSRAM2KX32E0_RAM_BASE;
+#endif
+
     if (LpmApp_getWakeReason() == true)
     {
         DebugP_log("[LPM Partial IO APP] Woken up from Partial IO...\r\n");
+#ifdef SOC_AM275X
+        if (pRetRAM[0] == LPM_APP_RETENTION_RAM_MAGIC_WORD)
+        {
+            DebugP_log("[LPM Partial IO APP] Retention RAM Contents Retained...\r\n");
+        }
+        else
+        {
+            DebugP_log("[LPM Partial IO APP] Retention RAM Contents Lost...\r\n");
+        }
+#endif
     }
     else
     {
@@ -153,6 +170,13 @@ void LPMApp_partialIOMain(void *args)
 
         if(gLpmRxByte == 'P')
         {
+#ifdef SOC_AM275X
+            /* Note: This RAM can be used to store any values needed by the application as
+             * it retains context during partial I/O mode.
+             */
+            pRetRAM[0] = LPM_APP_RETENTION_RAM_MAGIC_WORD;
+            CacheP_wbInvAll(CacheP_TYPE_ALL);
+#endif
 
             DebugP_log("[LPM PARTIAL IO APP] Entering partial I/O\r\n");
 

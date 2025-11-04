@@ -4,18 +4,19 @@
 
 # Introduction
 
-This example demonstrates the capability of SoC to enter IO Retention (also called partial IO) low power mode and then wakeup on detecting activity on MCAN pins.
+This example demonstrates the capability of SoC to enter IO Retention (also called partial IO) low power mode, save context in RAM and then wakeup on detecting activity on MCAN pins.
 
 \cond SOC_AM275X
 - This example provides support to trigger partial IO / IO Retention low power mode entry on pressing "P" on the application console
 - This example provides support to wakeup the SoC using pin activity on MCAN pins
+- This example also showcases the capability of 8K RAM that retains its contents during low power mode
 \endcond
 
-The application configures the MCAN IOs to trigger wakeup. It then waits on UART to receive some character. On receiving "P" character on UART, it sends request to device manager to enter into partial IO / IO Retention low power mode.
+The application configures the MCAN IOs to trigger wakeup. It then waits on UART to receive some character. On receiving "P" character on UART, it first writes a word in the retention RAM (some random magic word) and then sends request to device manager to enter into partial IO / IO Retention low power mode.
 In IO Retention low power mode, CAN message receive is used as an event to wake the SoC from low power mode. This is tested using communication from PCAN-USB (from PEAK Systems : IPEH-004022).
 
 During resume, the SBL will take the required actions to bring the SoC back to pre suspend state.
-The application will be reloaded and hence will be ready to trigger partial IO entry again.
+The application will be reloaded. It will check the retention RAM word to verify if the retention worked and magic word is still present. After this, it will be ready to trigger partial IO entry again.
 
 # Supported Combinations
 
@@ -45,7 +46,7 @@ The application will be reloaded and hence will be ready to trigger partial IO e
 
 - Some LEDs on the board will turn off indicating that the SoC has entered low power mode.
 
-- To resume the application, send data on the MCAN pins using PCAN-View. The LEDs will be turned back on and application logs will appear.
+- To resume the application, send data on the MCAN pins using PCAN-View. The LEDs will be turned back on and the application resume logs will appear.
 
 - **When using CCS projects to build**, import the CCS project for the required combination
   and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).
@@ -71,5 +72,6 @@ Shown below is a sample output when the application resumes,
 \code
 [LPM PARTIAL IO APP] Resume detected from pad6...
 [LPM Partial IO APP] Woken up from Partial IO...
+[LPM Partial IO APP] Retention RAM Contents Retained...
 [LPM PARTIAL IO APP] Press 'P' to enter partial I/O
 \endcode

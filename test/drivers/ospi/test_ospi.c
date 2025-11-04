@@ -134,11 +134,9 @@ static int32_t test_ospi_read_write_test_in_mb(TestData_SizesAttr* testDataCurOb
 static void test_ospi_gdevcfg_set_flash_protocol(uint32_t givenflashProtocol);
 static void set_test_flash_type(void);
 static void test_ospi_unaligned_read_write(void *args);
-#if !defined(SOC_AM62LX)
 static void test_ospi_read_write(TestData_SizesAttr* testDataCurObj, uint32_t flashOffset, uint32_t dataSize);
 static void test_ospi_read_write_different_frequencies(void *args);
 static void test_ospi_read_write_indirect_different_frequencies(void *args);
-#endif
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -271,14 +269,12 @@ void test_main(void *args)
     Drivers_ospiOpen();
     RUN_TEST(test_ospi_unaligned_read_write, 6893, NULL);
     Drivers_ospiClose();
-#if !defined (SOC_AM62LX)
     Drivers_ospiOpen();
     RUN_TEST(test_ospi_read_write_different_frequencies, 7105, NULL);
     Drivers_ospiClose();
     Drivers_ospiOpen();
     RUN_TEST(test_ospi_read_write_indirect_different_frequencies, 8012, NULL);
     Drivers_ospiClose();
-#endif
 
     UNITY_END();
 
@@ -993,7 +989,6 @@ static int32_t test_ospi_read_write_test_in_mb(TestData_SizesAttr* testDataCurOb
     return retVal;
 }
 
-#if !defined (SOC_AM62LX)
 static void test_ospi_read_write(TestData_SizesAttr* testDataCurObj, uint32_t flashOffset, uint32_t dataSize)
 {
     int32_t retVal = SystemP_SUCCESS;
@@ -1510,4 +1505,3 @@ static void test_ospi_read_write_indirect_different_frequencies(void *args)
         config->attrs = tempAttrs;
     }
 }
-#endif

@@ -50,6 +50,7 @@
 #include <kernel/dpl/TaskP.h>
 #include <kernel/dpl/SemaphoreP.h>
 #include <drivers/hw_include/cslr_mcasp.h>
+#include <drivers/pinmux.h>
 
 /* ========================================================================== */
 /*                           Macro Defines                                    */
@@ -64,6 +65,73 @@
 #define TEST_MCASP_APP_TASK_PRIORITY     (2U)
 #define TEST_MCASP_DMA_MODE              (1U)
 #define TEST_MCASP_INTERRUPT_MODE        (2U)
+#define TEST_MCASP_USE_EXTERNAL_CLK      (1U)
+#define TEST_MCASP_USE_INTERNAL_CLK      (0U)
+
+
+/* ========================================================================== */
+/*                           Typedefs & enum                                  */
+/* ========================================================================== */
+
+typedef enum
+{
+    TEST_MCASP_DEFAULT        = 0,
+    TEST_MCASP_RIGHT_ROTATION = 1,
+    TEST_MCASP_FRAME_SYNC_BIT = 2,
+    TEST_MCASP_SERIAL_BITSTREAM = 3,
+    TEST_MCASP_FRAME_SYNC_WIDTH = 4,
+    TEST_MCASP_CLOCK_POLARITY = 5
+} Test_Mcasp_ConfigId;
+
+typedef enum
+{
+    TEST_MCASP_RIGHT_ROTATION_0 = 0,
+    TEST_MCASP_RIGHT_ROTATION_4 = 1,
+    TEST_MCASP_RIGHT_ROTATION_8 = 2,
+    TEST_MCASP_RIGHT_ROTATION_12 = 3,
+    TEST_MCASP_RIGHT_ROTATION_16 = 4,
+    TEST_MCASP_RIGHT_ROTATION_20 = 5,
+    TEST_MCASP_RIGHT_ROTATION_24 = 6,
+    TEST_MCASP_RIGHT_ROTATION_28 = 7
+} Test_Mcasp_RightRotation;
+
+typedef enum
+{
+    TEST_MCASP_FRAME_SYNC_BIT_0 = 0,
+    TEST_MCASP_FRAME_SYNC_BIT_1 = 1,
+    TEST_MCASP_FRAME_SYNC_BIT_2 = 2
+} Test_Mcasp_FrameSyncBit;
+
+typedef enum
+{
+    TEST_MCASP_SERIAL_BITSTREAM_LSB = 0,
+    TEST_MCASP_SERIAL_BITSTREAM_MSB = 1
+} Test_Mcasp_SerialBitstream;
+
+typedef enum
+{
+    TEST_MCASP_FRAME_SYNC_WIDTH_BIT = 0,
+    TEST_MCASP_FRAME_SYNC_WIDTH_WORD = 1
+} Test_Mcasp_FrameSyncWidth;
+
+typedef enum
+{
+    TEST_MCASP_CLOCK_POLARITY_RISING = 0,
+    TEST_MCASP_CLOCK_POLARITY_FALLING = 1
+} Test_Mcasp_ClockPolarity;
+
+typedef struct
+{
+    int32_t mode;
+    int32_t paramType;
+    int32_t paramValue;
+
+} Test_Mcasp_Config;
+
+Test_Mcasp_Config cfg = {
+    .paramType = TEST_MCASP_DEFAULT,
+    .paramValue = TEST_MCASP_DEFAULT
+};
 
 /* ========================================================================== */
 /*                           Global Variables                                 */
@@ -77,27 +145,24 @@ extern MCASP_Config gMcaspConfig[];
 
 static uint8_t TestMcasp_TxBuffer[TEST_MCASP_APP_MSG_COUNT][TEST_MCASP_APP_MSGSIZE]__attribute__((aligned(256)));
 static uint8_t TestMcasp_RxBuffer[TEST_MCASP_APP_MSG_COUNT][TEST_MCASP_APP_MSGSIZE]__attribute__((aligned(256)));
+static uint8_t TestMcasp_TxBufferMt[TEST_MCASP_NUM_INSTANCES][TEST_MCASP_APP_MSG_COUNT][TEST_MCASP_APP_MSGSIZE]__attribute__((aligned(256)));
+static uint8_t TestMcasp_RxBufferMt[TEST_MCASP_NUM_INSTANCES][TEST_MCASP_APP_MSG_COUNT][TEST_MCASP_APP_MSGSIZE]__attribute__((aligned(256)));
 
 volatile uint32_t TestMcasp_CntRx = 0;
 volatile uint32_t TestMcasp_CntTx = 0;
+volatile uint32_t TestMcasp_CntRxMt[TEST_MCASP_NUM_INSTANCES] = {0};
+volatile uint32_t TestMcasp_CntTxMt[TEST_MCASP_NUM_INSTANCES] = {0};
 
 MCASP_Transaction TestMcasp_TxnTx[TEST_MCASP_APP_MSG_COUNT] = {0};
 MCASP_Transaction TestMcasp_TxnRx[TEST_MCASP_APP_MSG_COUNT] = {0};
+MCASP_Transaction TestMcasp_TxnTxMt[TEST_MCASP_NUM_INSTANCES][TEST_MCASP_APP_MSG_COUNT] = {0};
+MCASP_Transaction TestMcasp_TxnRxMt[TEST_MCASP_NUM_INSTANCES][TEST_MCASP_APP_MSG_COUNT] = {0};
 
 #ifdef ENABLE_MT_TESTS
 static uint8_t TestMcasp_TxTaskStack[TEST_MCASP_APP_TASK_STACK_SIZE]__attribute__((aligned(32)));
 static uint8_t TestMcasp_RxTaskStack[TEST_MCASP_APP_TASK_STACK_SIZE]__attribute__((aligned(32)));
 static uint8_t TestMcasp_TaskStack[TEST_MCASP_NUM_INSTANCES][TEST_MCASP_APP_TASK_STACK_SIZE]__attribute__((aligned(32)));
-
-static uint8_t TestMcasp_TxBufferMt[TEST_MCASP_NUM_INSTANCES][TEST_MCASP_APP_MSG_COUNT][TEST_MCASP_APP_MSGSIZE]__attribute__((aligned(256)));
-static uint8_t TestMcasp_RxBufferMt[TEST_MCASP_NUM_INSTANCES][TEST_MCASP_APP_MSG_COUNT][TEST_MCASP_APP_MSGSIZE]__attribute__((aligned(256)));
-
-volatile uint32_t TestMcasp_CntRxMt[TEST_MCASP_NUM_INSTANCES] = {0};
-volatile uint32_t TestMcasp_CntTxMt[TEST_MCASP_NUM_INSTANCES] = {0};
 volatile int32_t TestMcasp_ThreadResult[TEST_MCASP_NUM_INSTANCES] = { SystemP_SUCCESS };
-
-MCASP_Transaction TestMcasp_TxnTxMt[TEST_MCASP_NUM_INSTANCES][TEST_MCASP_APP_MSG_COUNT] = {0};
-MCASP_Transaction TestMcasp_TxnRxMt[TEST_MCASP_NUM_INSTANCES][TEST_MCASP_APP_MSG_COUNT] = {0};
 
 static SemaphoreP_Object TestMcasp_MultiSem[TEST_MCASP_NUM_INSTANCES];
 static TaskP_Object TestMcasp_TaskObj[TEST_MCASP_NUM_INSTANCES];
@@ -118,8 +183,24 @@ static void Test_Mcasp_DmaIcntsNegative(void *args);
 static void Test_Mcasp_NegativeNullBuffer(void *args);
 static void Test_Mcasp_NegativeBufferWithdraw(void *args);
 static void Test_Mcasp_NegativeMultipleOpen(void *args);
-static void Test_Mcasp_SelectConfig(int32_t mode, void *args);
+static void Test_Mcasp_SelectConfig(int32_t mode, Test_Mcasp_Config *cfg, void *openParams);
 static void Test_Mcasp_LoopbackTxncount(void *args);
+static void Test_Mcasp_RestartAfterStop(void *args);
+static void Test_Mcasp_LoopjobRecovery(void *args);
+static void Test_Mcasp_MultiInstanceLoopback(void *args);
+static void Test_Mcasp_SelectClockSource(uint32_t instance, int useExternal);
+static void Test_Mcasp_ConfigTxRightRotate(void *args);
+static void Test_Mcasp_ValidateFrameSyncBitDelay(void *args);
+static void Test_Mcasp_ConfigFrameSyncWidth(void *args);
+static void Test_Mcasp_ConfigSerialBitstream(void *args);
+static void Test_Mcasp_ConfigClockPolarity(void *args);
+static void Test_Mcasp_NullLoopjob(void *args);
+void Test_Mcasp_CallbackNull(void *args);
+#ifdef SOC_AM62AX
+static void Test_Mcasp_ExternalLoopback(void *args);
+#endif
+static int32_t Test_Mcasp_LoopbackTxRightRotate(void *args);
+static int32_t Test_Mcasp_ValidateConfigLoopback(void *args);
 
 #ifdef ENABLE_MT_TESTS
 static void Test_Mcasp_MultiThreadCreate(void *args);
@@ -141,9 +222,9 @@ void test_main(void *args)
     #ifdef ENABLE_MT_TESTS
     RUN_TEST(Test_Mcasp_MultiThreadCreate, 8451,NULL);
     #endif
-    Test_Mcasp_SelectConfig(TEST_MCASP_INTERRUPT_MODE,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    Test_Mcasp_SelectConfig(TEST_MCASP_INTERRUPT_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(Test_Mcasp_LoopbackTransfer, 8343, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
-    Test_Mcasp_SelectConfig(TEST_MCASP_DMA_MODE,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    Test_Mcasp_SelectConfig(TEST_MCASP_DMA_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(Test_Mcasp_LoopbackTransfer, 8344, (void*)&gMcaspOpenParams[CONFIG_MCASP1]);
     RUN_TEST(Test_Mcasp_LoopbackTransfer, 8345, (void*)&gMcaspOpenParams[CONFIG_MCASP2]);
     #ifdef ENABLE_MT_TESTS
@@ -154,6 +235,25 @@ void test_main(void *args)
     RUN_TEST(Test_Mcasp_NegativeNullBuffer, 8349, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(Test_Mcasp_DmaIcntsNegative, 8350, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(Test_Mcasp_LoopbackTxncount, 8453, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    Test_Mcasp_SelectConfig(TEST_MCASP_INTERRUPT_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(Test_Mcasp_LoopjobRecovery, 8729, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    Test_Mcasp_SelectConfig(TEST_MCASP_DMA_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(Test_Mcasp_RestartAfterStop, 8730, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(Test_Mcasp_ConfigTxRightRotate, 8731, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(Test_Mcasp_ValidateFrameSyncBitDelay, 8732, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(Test_Mcasp_ConfigFrameSyncWidth, 8733, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(Test_Mcasp_ConfigSerialBitstream, 8734, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(Test_Mcasp_ConfigClockPolarity, 8735, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(Test_Mcasp_NullLoopjob, 8736, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+#ifdef SOC_AM62AX
+    RUN_TEST(Test_Mcasp_ExternalLoopback, 8737, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+#endif
+    /* RUN_TEST(Test_Mcasp_CallbackNull, 8738, (void*)&gMcaspOpenParams[CONFIG_MCASP0]); */ /* raised a bug for this hanging issue */
+    Test_Mcasp_SelectClockSource(CONFIG_MCASP0, TEST_MCASP_USE_EXTERNAL_CLK);
+    Test_Mcasp_SelectClockSource(CONFIG_MCASP1, TEST_MCASP_USE_EXTERNAL_CLK);
+    RUN_TEST(Test_Mcasp_MultiInstanceLoopback, 8739, NULL);
+    Test_Mcasp_SelectClockSource(CONFIG_MCASP0, TEST_MCASP_USE_INTERNAL_CLK);
+
     UNITY_END();
     return;
 }
@@ -231,9 +331,9 @@ static void Test_Mcasp_LoopbackTransfer(void *args)
 
 
     status = MCASP_startTransferRx(McaspHandle);
-    DebugP_assert(status == SystemP_SUCCESS);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     status = MCASP_startTransferTx(McaspHandle);
-    DebugP_assert(status == SystemP_SUCCESS);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     while ((TestMcasp_CntRx < TEST_MCASP_APP_TEST_COUNT ) ||
            (TestMcasp_CntTx < TEST_MCASP_APP_TEST_COUNT ))
     {
@@ -276,12 +376,13 @@ static void Test_Mcasp_LoopbackTransfer(void *args)
         }
     }
 
-    /* Final Unity assert */
-    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "MCASP loopback transfer data mismatch");
     CacheP_wb(gTxLoopjobBuf0, 256, CacheP_TYPE_ALL);
     CacheP_wb(gRxLoopjobBuf0, 256, CacheP_TYPE_ALL);
     MCASP_close(McaspHandle);
     McaspHandle = NULL;
+
+    /* Final Unity assert */
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "MCASP loopback transfer data mismatch");
     return;
 }
 
@@ -347,7 +448,7 @@ static void Test_Mcasp_LoopbackTransferMultithread(void *args)
     taskPrms.args = openParams;
     taskPrms.taskMain = Test_Mcasp_RxTask;
     status = TaskP_construct(&TestMcasp_RxTaskObj, &taskPrms);
-    DebugP_assert(status == SystemP_SUCCESS);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
     TaskP_Params_init(&taskPrms);
     taskPrms.name = "MCASP TX Task";
@@ -357,7 +458,8 @@ static void Test_Mcasp_LoopbackTransferMultithread(void *args)
     taskPrms.args = openParams;
     taskPrms.taskMain = Test_Mcasp_TxTask;
     status = TaskP_construct(&TestMcasp_TxTaskObj, &taskPrms);
-    DebugP_assert(status == SystemP_SUCCESS);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
 
     /* Wait for both tasks to signal completion */
     (void)SemaphoreP_pend(&TestMcasp_SemRxDone, SystemP_WAIT_FOREVER);
@@ -407,7 +509,6 @@ static void Test_Mcasp_LoopbackTransferMultithread(void *args)
         }
     }
 
-    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "MCASP multithread loopback data mismatch");
     /* Cleanup */
     TaskP_destruct(&TestMcasp_TxTaskObj);
     TaskP_destruct(&TestMcasp_RxTaskObj);
@@ -416,6 +517,7 @@ static void Test_Mcasp_LoopbackTransferMultithread(void *args)
     TestMcasp_SemTxDonePtr = NULL;
     TestMcasp_SemRxDonePtr = NULL;
     MCASP_close(McaspHandle);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "MCASP multithread loopback data mismatch");
     return;
 }
 
@@ -439,7 +541,7 @@ static void Test_Mcasp_TxTask(void *args)
     }
     /* Start TX after RX started (assumed) */
     int32_t status = MCASP_startTransferTx(McaspHandle);
-    DebugP_assert(status == SystemP_SUCCESS);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     /* Task waits until semaphore is posted by callback, then exits */
     (void)SemaphoreP_pend(&TestMcasp_SemTxDone, SystemP_WAIT_FOREVER);
     SemaphoreP_post(&TestMcasp_SemTxDone); /* Allow main test to also pend */
@@ -464,7 +566,7 @@ static void Test_Mcasp_RxTask(void *args)
         MCASP_submitRx(McaspHandle,  &TestMcasp_TxnRx[i]);
     }
     int32_t status = MCASP_startTransferRx(McaspHandle);
-    DebugP_assert(status == SystemP_SUCCESS);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     (void)SemaphoreP_pend(&TestMcasp_SemRxDone, SystemP_WAIT_FOREVER);
     SemaphoreP_post(&TestMcasp_SemRxDone); /* Allow main test to also pend */
     TaskP_exit();
@@ -635,7 +737,7 @@ static void Test_Mcasp_DmaIcntsNegative(void *args)
  * based on the specified transfer mode (DMA or interrupt mode).
  * Test case category: utility support function
  */
-void Test_Mcasp_SelectConfig(int mode, void *args)
+void Test_Mcasp_SelectConfig(int32_t mode, Test_Mcasp_Config *cfg, void *args)
 {
     MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
     MCASP_Attrs *attrs = (MCASP_Attrs *)gMcaspConfig[CONFIG_MCASP0].attrs;
@@ -668,6 +770,111 @@ void Test_Mcasp_SelectConfig(int mode, void *args)
             break;
     }
 
+    if (cfg->paramType == TEST_MCASP_RIGHT_ROTATION) /* Transmit Right-rotation Value */
+    {
+        switch(cfg->paramValue) {
+            case TEST_MCASP_RIGHT_ROTATION_0: /* Right-rotation by 0 */
+                attrs->hwCfg.tx.fmt = (attrs->hwCfg.rx.fmt & ~0xF) | (((attrs->hwCfg.tx.fmt & 0xF) + (0 & 0xF)) & 0xF);
+                break;
+            case TEST_MCASP_RIGHT_ROTATION_4: /* Right-rotation by 4 */
+                attrs->hwCfg.tx.fmt = (attrs->hwCfg.tx.fmt & ~0xF) | (((attrs->hwCfg.tx.fmt & 0xF) + (1 & 0xF)) & 0xF);
+                break;
+            case TEST_MCASP_RIGHT_ROTATION_8: /* Right-rotation by 8 */
+                attrs->hwCfg.tx.fmt = (attrs->hwCfg.rx.fmt & ~0xF) | (((attrs->hwCfg.tx.fmt & 0xF) + (2 & 0xF)) & 0xF);
+                break;
+            case TEST_MCASP_RIGHT_ROTATION_12: /* Right-rotation by 12 */
+                attrs->hwCfg.tx.fmt = (attrs->hwCfg.tx.fmt & ~0xF) | (((attrs->hwCfg.tx.fmt & 0xF) + (3 & 0xF)) & 0xF);
+                break;
+            case TEST_MCASP_RIGHT_ROTATION_16: /* Right-rotation by 16 */
+                attrs->hwCfg.tx.fmt = (attrs->hwCfg.tx.fmt & ~0xF) | (((attrs->hwCfg.tx.fmt & 0xF) + (4 & 0xF)) & 0xF);
+                break;
+            case TEST_MCASP_RIGHT_ROTATION_20: /* Right-rotation by 20 */
+                attrs->hwCfg.tx.fmt = (attrs->hwCfg.tx.fmt & ~0xF) | (((attrs->hwCfg.tx.fmt & 0xF) + (5 & 0xF)) & 0xF);
+                break;
+            case TEST_MCASP_RIGHT_ROTATION_24: /* Right-rotation by 24 */
+                attrs->hwCfg.tx.fmt = (attrs->hwCfg.tx.fmt & ~0xF) | (((attrs->hwCfg.tx.fmt & 0xF) + (6 & 0xF)) & 0xF);
+                break;
+            case TEST_MCASP_RIGHT_ROTATION_28: /* Right-rotation by 28 */
+                attrs->hwCfg.tx.fmt = (attrs->hwCfg.tx.fmt & ~0xF) | (((attrs->hwCfg.tx.fmt & 0xF) + (7 & 0xF)) & 0xF);
+                break;
+            default:
+                break;
+        }
+    }
+    else if (cfg->paramType == TEST_MCASP_FRAME_SYNC_BIT) /* Frame Sync Bit */
+    {
+        switch(cfg->paramValue) {
+            case TEST_MCASP_FRAME_SYNC_BIT_0:
+                attrs->hwCfg.rx.fmt = (attrs->hwCfg.rx.fmt & ~(0x3U << 16)) | (0U << 16);
+                attrs->hwCfg.tx.fmt = (attrs->hwCfg.tx.fmt & ~(0x3U << 16)) | (0U << 16);
+                break;
+            case TEST_MCASP_FRAME_SYNC_BIT_1:
+                attrs->hwCfg.rx.fmt = (attrs->hwCfg.rx.fmt & ~(0x3U << 16)) | (1U << 16);
+                attrs->hwCfg.tx.fmt = (attrs->hwCfg.tx.fmt & ~(0x3U << 16)) | (1U << 16);
+                break;
+            case TEST_MCASP_FRAME_SYNC_BIT_2:
+                attrs->hwCfg.rx.fmt = (attrs->hwCfg.rx.fmt & ~(0x3U << 16)) | (2U << 16);
+                attrs->hwCfg.tx.fmt = (attrs->hwCfg.tx.fmt & ~(0x3U << 16)) | (2U << 16);
+                break;
+            default:
+                break;
+        }
+    }
+    else if (cfg->paramType == TEST_MCASP_SERIAL_BITSTREAM) /* Transmit Serial Bitstream Order */
+    {
+        switch(cfg->paramValue) {
+            case TEST_MCASP_SERIAL_BITSTREAM_LSB: /* LSB */
+                attrs->hwCfg.rx.fmt &= ~(1U << 15);
+                attrs->hwCfg.tx.fmt &= ~(1U << 15);
+                break;
+            case TEST_MCASP_SERIAL_BITSTREAM_MSB: /* MSB */
+                attrs->hwCfg.rx.fmt |= (1U << 15);
+                attrs->hwCfg.tx.fmt |= (1U << 15);
+                break;
+            default:
+                break;
+        }
+
+    }
+    else if (cfg->paramType == TEST_MCASP_FRAME_SYNC_WIDTH) /* frame sync width */
+    {
+
+        switch (cfg->paramValue)
+        {
+            case TEST_MCASP_FRAME_SYNC_WIDTH_BIT:
+                attrs->hwCfg.rx.frSyncCtl &= ~(1U << 4);
+                attrs->hwCfg.tx.frSyncCtl &= ~(1U << 4);
+                break;
+            case TEST_MCASP_FRAME_SYNC_WIDTH_WORD:
+                attrs->hwCfg.rx.frSyncCtl |= (1U << 4);
+                attrs->hwCfg.tx.frSyncCtl |= (1U << 4);
+                break;
+            default:
+                /* No change */
+                break;
+        }
+    }
+    else if (cfg->paramType == TEST_MCASP_CLOCK_POLARITY)
+    {
+        switch (cfg->paramValue)
+        {
+            case TEST_MCASP_CLOCK_POLARITY_RISING: /* Polarity 0: clear bit 0 */
+                attrs->hwCfg.rx.frSyncCtl &= ~(1U << 0);
+                attrs->hwCfg.tx.frSyncCtl &= ~(1U << 0);
+                break;
+            case TEST_MCASP_CLOCK_POLARITY_FALLING: /* Polarity 1: set bit 0 */
+                attrs->hwCfg.rx.frSyncCtl |= (1U << 0);
+                attrs->hwCfg.tx.frSyncCtl |= (1U << 0);
+                break;
+            default:
+                /* No change */
+                break;
+        }
+    }
+    else
+    {
+        /* nothing to do */
+    }
 }
 
 /**
@@ -707,9 +914,9 @@ static void Test_Mcasp_NegativeNullBuffer(void *args)
 
     /* Start transfers (should not move any data) */
     status = MCASP_startTransferTx(handle);
-    DebugP_assert(status == SystemP_SUCCESS);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     status = MCASP_startTransferRx(handle);
-    DebugP_assert(status == SystemP_SUCCESS);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
     /* Wait briefly to allow any (unexpected) activity */
     ClockP_usleep(100000);
@@ -750,9 +957,9 @@ static void Test_Mcasp_NegativeBufferWithdraw(void *args)
 
     /* Start and stop transfers to confirm no impact */
     status = MCASP_startTransferTx(handle);
-    DebugP_assert(status == SystemP_SUCCESS);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     status = MCASP_startTransferRx(handle);
-    DebugP_assert(status == SystemP_SUCCESS);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     ClockP_usleep(100000);
     MCASP_stopTransferTx(handle);
     MCASP_stopTransferRx(handle);
@@ -894,11 +1101,9 @@ static void Test_Mcasp_LoopbackTxncount(void *args)
         }
     }
 
-    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "TxnCount loopback data mismatch");
     MCASP_close(h);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "TxnCount loopback data mismatch");
 }
-
-#ifdef ENABLE_MT_TESTS
 
 /**
  * \brief  MCASP transmit callback used in multi-instance multithreaded tests.
@@ -934,6 +1139,7 @@ void Test_Mcasp_RxcbMt(MCASP_Handle handle, MCASP_Transaction *transaction)
     }
 }
 
+#ifdef ENABLE_MT_TESTS
 /**
  * \brief  Thread function for individual MCASP instance in multithreaded test.
  *
@@ -1127,5 +1333,1109 @@ static void Test_Mcasp_MultiThreadCreate(void *args)
     }
 
     TEST_ASSERT_TRUE(1);
+}
+#endif
+
+/**
+ * \brief  Test MCASP restart after stopTransfer.
+ *
+ * This test starts a transfer in DMA mode, stops it, then restarts without driver close and verifies correct operation.
+ * Test case category: functionality test case
+ */
+static void Test_Mcasp_RestartAfterStop(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+    uint32_t i, j = 0;
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+    uint32_t instanceId = (uint32_t)(openParams - &gMcaspOpenParams[0]);
+    MCASP_Handle handle;
+    MCASP_close(gMcaspHandle[instanceId]);
+    gMcaspHandle[instanceId] = NULL;
+
+    /* Open MCASP instance */
+    handle = MCASP_open(instanceId, openParams);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    /* First transfer */
+    TestMcasp_CntRx = 0;
+    TestMcasp_CntTx = 0;
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        for (j = 0U; j < TEST_MCASP_APP_MSGSIZE; j++)
+        {
+            TestMcasp_TxBuffer[i][j] = (uint8_t)(j % 256);
+            TestMcasp_RxBuffer[i][j] = 0U;
+        }
+    }
+    CacheP_wb(TestMcasp_TxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+    CacheP_wb(TestMcasp_RxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_TxnRx[i].buf = (void*)&TestMcasp_RxBuffer[i][0];
+        TestMcasp_TxnRx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_TxnRx[i].timeout = 0xFFFFFFU;
+        MCASP_submitRx(handle, &TestMcasp_TxnRx[i]);
+    }
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_TxnTx[i].buf = (void*)&TestMcasp_TxBuffer[i][0];
+        TestMcasp_TxnTx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_TxnTx[i].timeout = 0xFFFFFFU;
+        MCASP_submitTx(handle, &TestMcasp_TxnTx[i]);
+    }
+
+    status = MCASP_startTransferRx(handle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = MCASP_startTransferTx(handle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    while ((TestMcasp_CntRx < TEST_MCASP_APP_TEST_COUNT) || (TestMcasp_CntTx < TEST_MCASP_APP_TEST_COUNT))
+    {
+        /*wait for completion*/
+    }
+
+    MCASP_stopTransferRx(handle);
+    MCASP_stopTransferTx(handle);
+
+    /* Second transfer (restart) */
+    TestMcasp_CntRx = 0;
+    TestMcasp_CntTx = 0;
+
+    /* Change pattern for second transfer */
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        for (j = 0U; j < TEST_MCASP_APP_MSGSIZE; j++)
+        {
+            TestMcasp_TxBuffer[i][j] = (uint8_t)((j + 0x55) & 0xFF);
+            TestMcasp_RxBuffer[i][j] = 0U;
+        }
+    }
+    CacheP_wb(TestMcasp_TxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+    CacheP_wb(TestMcasp_RxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_TxnRx[i].buf = (void*)&TestMcasp_RxBuffer[i][0];
+        TestMcasp_TxnRx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_TxnRx[i].timeout = 0xFFFFFFU;
+        MCASP_submitRx(handle, &TestMcasp_TxnRx[i]);
+    }
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_TxnTx[i].buf = (void*)&TestMcasp_TxBuffer[i][0];
+        TestMcasp_TxnTx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_TxnTx[i].timeout = 0xFFFFFFU;
+        MCASP_submitTx(handle, &TestMcasp_TxnTx[i]);
+    }
+
+    status = MCASP_startTransferRx(handle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = MCASP_startTransferTx(handle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    while ((TestMcasp_CntRx < TEST_MCASP_APP_TEST_COUNT) || (TestMcasp_CntTx < TEST_MCASP_APP_TEST_COUNT))
+    {
+        /*wait for completion*/
+    }
+
+    MCASP_stopTransferRx(handle);
+    MCASP_stopTransferTx(handle);
+
+    if (openParams->transferMode == MCASP_TRANSFER_MODE_DMA)
+    {
+        CacheP_inv(TestMcasp_RxBuffer, TEST_MCASP_APP_MSGSIZE * TEST_MCASP_APP_MSG_COUNT, CacheP_TYPE_ALL);
+    }
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        for (j = 0U; j < TEST_MCASP_APP_MSGSIZE; j++)
+        {
+            if (TestMcasp_TxBuffer[i][j] != TestMcasp_RxBuffer[i][j])
+            {
+                status = SystemP_FAILURE;
+            }
+        }
+    }
+    MCASP_close(handle);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "MCASP restart after stopTransfer data mismatch");
+}
+
+/**
+ * \brief  Test MCASP loopjob recovery.
+ *
+ * This test verifies that the MCASP driver can switch from loopjob-only operation
+ * to normal data transfer when real buffers are submitted after transfer start.
+ * It starts transfers with only loopjob buffers, checks that no real data is moved,
+ * then submits real buffers and checks for correct data transfer.
+ */
+static void Test_Mcasp_LoopjobRecovery(void *args)
+{
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+    int32_t status = SystemP_SUCCESS;
+    uint32_t i, j;
+    MCASP_close(gMcaspHandle[CONFIG_MCASP0]);
+    gMcaspHandle[CONFIG_MCASP0] = NULL;
+    MCASP_Handle h = MCASP_open(CONFIG_MCASP0, openParams);
+    TEST_ASSERT_NOT_NULL(h);
+
+    /* Fill TX with pattern, RX with zero */
+    for (i = 0; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        for (j = 0; j < TEST_MCASP_APP_MSGSIZE; j++)
+        {
+            TestMcasp_TxBuffer[i][j] = (uint8_t)(j & 0xFF);
+            TestMcasp_RxBuffer[i][j] = 0U;
+        }
+    }
+    CacheP_wb(TestMcasp_TxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+    CacheP_wb(TestMcasp_RxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+
+    TestMcasp_CntRx = 0;
+    TestMcasp_CntTx = 0;
+
+    /* Set loopjob buffers (already set in openParams typically) */
+    for (i = 0; i < 256; i++)
+    {
+        gTxLoopjobBuf0[i] = 0xA5;
+        gRxLoopjobBuf0[i] = 0;
+    }
+    CacheP_wb(gTxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+    CacheP_wb(gRxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+
+    /* Start transfers WITHOUT submitting any real buffer (only loopjob active) */
+    status = MCASP_startTransferRx(h);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = MCASP_startTransferTx(h);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Wait briefly to ensure loopjob is running */
+    ClockP_usleep(100000);
+
+    /* No real data should be transferred yet */
+    TEST_ASSERT_EQUAL_UINT32(0, TestMcasp_CntRx);
+    TEST_ASSERT_EQUAL_UINT32(0, TestMcasp_CntTx);
+
+    /* Now submit multiple real RX and TX buffers */
+    for (i = 0; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_TxnRx[i].buf = (void*)&TestMcasp_RxBuffer[i][0];
+        TestMcasp_TxnRx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_TxnRx[i].timeout = 0xFFFFFFU;
+        MCASP_submitRx(h, &TestMcasp_TxnRx[i]);
+    }
+    for (i = 0; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_TxnTx[i].buf = (void*)&TestMcasp_TxBuffer[i][0];
+        TestMcasp_TxnTx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_TxnTx[i].timeout = 0xFFFFFFU;
+        MCASP_submitTx(h, &TestMcasp_TxnTx[i]);
+    }
+
+    /* Wait for completion of real data transfer */
+    while ((TestMcasp_CntRx < TEST_MCASP_APP_TEST_COUNT) ||
+           (TestMcasp_CntTx < TEST_MCASP_APP_TEST_COUNT))
+    {
+        /* wait for completion */
+    }
+
+    /* Withdraw any remaining buffers */
+    MCASP_Transaction *transaction;
+    do
+    {
+        transaction = MCASP_withdrawRx(h);
+    } while (transaction != NULL);
+    do
+    {
+        transaction = MCASP_withdrawTx(h);
+    } while (transaction != NULL);
+
+
+    MCASP_stopTransferRx(h);
+    MCASP_stopTransferTx(h);
+
+    if(openParams->transferMode == MCASP_TRANSFER_MODE_DMA)
+    {
+        CacheP_inv(TestMcasp_RxBuffer, TEST_MCASP_APP_MSGSIZE * TEST_MCASP_APP_MSG_COUNT, CacheP_TYPE_ALL);
+    }
+
+    /* Compare data */
+    if(status == SystemP_SUCCESS)
+    {
+        for(i = 0; i < TEST_MCASP_APP_MSG_COUNT; i++)
+        {
+            for(j = 0; j < TEST_MCASP_APP_MSGSIZE; j++)
+            {
+                if(TestMcasp_TxBuffer[i][j] != TestMcasp_RxBuffer[i][j])
+                {
+                    status = SystemP_FAILURE;
+                }
+            }
+        }
+    }
+
+    MCASP_close(h);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "MCASP loopjob recovery data mismatch");
+
+}
+
+/**
+ * \brief  Configure MCASP clock source (internal or external).
+ *
+ * This utility function sets the MCASP instance's RX and TX clock source
+ * to either internal or external, and configures the pinmux as needed.
+ * It updates the hardware attributes for clock direction.
+ */
+static void Test_Mcasp_SelectClockSource(uint32_t instance, int32_t useExternal)
+{
+    MCASP_Attrs *attrs = (MCASP_Attrs *)gMcaspConfig[instance].attrs;
+
+    /* RX clock config */
+    if (useExternal == TEST_MCASP_USE_EXTERNAL_CLK)
+    {
+        /* Set HCLK as external */
+        attrs->hwCfg.gbl.pdir = (uint32_t)0xB4000001;
+        attrs->hwCfg.rx.clk.hiClk = (uint32_t)0x0U;
+        attrs->hwCfg.rx.clk.isHClkExt = (uint32_t)0x1;
+        attrs->hwCfg.rx.clk.hClkExt = (uint32_t)1;
+
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+        static Pinmux_PerCfg_t extClkPinEnable[] =
+        {
+            { PIN_EXT_REFCLK1, (PIN_MODE(5) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE) },
+            { PINMUX_END, 0U }
+        };
+        Pinmux_config(extClkPinEnable, PINMUX_DOMAIN_ID_MAIN);
+#endif
+    }
+    else
+    {
+        /* Set HCLK as internal */
+        attrs->hwCfg.gbl.pdir = (uint32_t)0xBC000001;
+        attrs->hwCfg.rx.clk.hiClk = (uint32_t)0x8001U;
+        attrs->hwCfg.rx.clk.isHClkExt = (uint32_t)0x0;
+        attrs->hwCfg.rx.clk.hClkExt = (uint32_t)0;
+
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+        static Pinmux_PerCfg_t extClkPinDisable[] =
+        {
+            { PIN_EXT_REFCLK1, (PIN_MODE(5) | PIN_PULL_DISABLE) },
+            { PINMUX_END, 0U }
+        };
+        Pinmux_config(extClkPinDisable, PINMUX_DOMAIN_ID_MAIN);
+#endif
+    }
+
+    /* TX clock config */
+    if (useExternal == TEST_MCASP_USE_EXTERNAL_CLK)
+    {
+        attrs->hwCfg.gbl.pdir = (uint32_t)0xB4000001;
+        attrs->hwCfg.tx.clk.hiClk = (uint32_t)0x0U;
+        attrs->hwCfg.tx.clk.isHClkExt = (uint32_t)0x1;
+        attrs->hwCfg.tx.clk.hClkExt = (uint32_t)1;
+    }
+    else
+    {
+        attrs->hwCfg.gbl.pdir = (uint32_t)0xBC000001;
+        attrs->hwCfg.tx.clk.hiClk = (uint32_t)0x8001U;
+        attrs->hwCfg.tx.clk.isHClkExt = (uint32_t)0x0;
+        attrs->hwCfg.tx.clk.hClkExt = (uint32_t)0;
+    }
+}
+
+/**
+ * \brief  MCASP multi-instance loopback test.
+ *
+ * This test verifies loopback functionality for all MCASP instances in the SoC
+ * when ran in same external clock.
+ * It initializes buffers, submits transactions, and checks data integrity after transfer.
+ * Test case category: functionality test case
+ */
+static void Test_Mcasp_MultiInstanceLoopback(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+    uint32_t i, j, k;
+    MCASP_Handle mcaspHandle;
+    uint32_t mismatch = 0;
+    uint32_t numInstances = 2U;
+    uint32_t msgCount = TEST_MCASP_APP_MSG_COUNT;
+    uint32_t msgSize = TEST_MCASP_APP_MSGSIZE;
+    uint32_t testCount = TEST_MCASP_APP_MSG_COUNT;
+
+    for (i = 0; i < numInstances; i++)
+    {
+        uint32_t bufStartOffset = 64 * i;
+        for (j = 0; j < msgCount; j++)
+        {
+            for (k = 0; k < msgSize; k++)
+            {
+                TestMcasp_TxBufferMt[i][j][k] = (bufStartOffset + k) % 256;
+                TestMcasp_RxBufferMt[i][j][k] = 0U;
+            }
+        }
+        TestMcasp_CntTxMt[i] = 0;
+        TestMcasp_CntRxMt[i] = 0;
+    }
+
+    CacheP_wb(TestMcasp_TxBufferMt, sizeof(TestMcasp_TxBufferMt), CacheP_TYPE_ALLD);
+    CacheP_wb(TestMcasp_RxBufferMt, sizeof(TestMcasp_RxBufferMt), CacheP_TYPE_ALLD);
+
+    for (i = 0; i < numInstances; i++)
+    {
+        if (gMcaspHandle[i] != NULL)
+        {
+            MCASP_close(gMcaspHandle[i]);
+            gMcaspHandle[i] = NULL;
+        }
+
+        gMcaspOpenParams[i].txCallbackFxn = Test_Mcasp_TxcbMt;
+        gMcaspOpenParams[i].rxCallbackFxn = Test_Mcasp_RxcbMt;
+        gMcaspHandle[i] = MCASP_open(i, &gMcaspOpenParams[i]);
+        TEST_ASSERT_NOT_NULL_MESSAGE(gMcaspHandle[0], "MCASP_open failed in multi-instance loopback");
+        mcaspHandle = gMcaspHandle[i];
+
+        for (j = 0; j < msgCount; j++)
+        {
+            TestMcasp_TxnTxMt[i][j].buf = (void*)&TestMcasp_TxBufferMt[i][j][0];
+            TestMcasp_TxnTxMt[i][j].count = msgSize/4;
+            TestMcasp_TxnTxMt[i][j].timeout = 0xFFFFFF;
+            TestMcasp_TxnTxMt[i][j].args = (void*)&TestMcasp_CntTxMt[i];
+            MCASP_submitTx(mcaspHandle, &TestMcasp_TxnTxMt[i][j]);
+        }
+        for (j = 0; j < msgCount; j++)
+        {
+            TestMcasp_TxnRxMt[i][j].buf = (void*)&TestMcasp_RxBufferMt[i][j][0];
+            TestMcasp_TxnRxMt[i][j].count = msgSize/4;
+            TestMcasp_TxnRxMt[i][j].timeout = 0xFFFFFF;
+            TestMcasp_TxnRxMt[i][j].args = (void*)&TestMcasp_CntRxMt[i];
+            MCASP_submitRx(mcaspHandle, &TestMcasp_TxnRxMt[i][j]);
+        }
+
+        status = MCASP_startTransferRx(mcaspHandle);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+        status = MCASP_startTransferTx(mcaspHandle);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    }
+
+    uint32_t transferComplete = 0;
+    while (!transferComplete)
+    {
+        transferComplete = 1;
+        for (i = 0; i < numInstances; i++)
+        {
+            if ((TestMcasp_CntRxMt[i] < testCount) || (TestMcasp_CntTxMt[i] < testCount))
+            {
+                transferComplete = 0;
+            }
+        }
+    }
+    CacheP_inv(TestMcasp_RxBufferMt, sizeof(TestMcasp_RxBufferMt), CacheP_TYPE_ALLD);
+
+    mismatch = 0;
+    for (i = 0; i < numInstances; i++)
+    {
+        for (j = 0; j < msgCount; j++)
+        {
+            for (k = 0; k < msgSize; k++)
+            {
+                if (TestMcasp_TxBufferMt[i][j][k] != TestMcasp_RxBufferMt[i][j][k])
+                {
+                    mismatch++;
+                }
+            }
+        }
+    }
+
+    for (i = 0; i < numInstances; i++)
+    {
+        MCASP_Handle h = gMcaspHandle[i];
+        if (h != NULL)
+        {
+            /* Withdraw any remaining queued transactions */
+            MCASP_Transaction *txn;
+            do
+            {
+                txn = MCASP_withdrawRx(h);
+            } while (txn != NULL);
+            do
+            {
+                txn = MCASP_withdrawTx(h);
+            } while (txn != NULL);
+
+            /* Stop transfers for this instance */
+            MCASP_stopTransferRx(h);
+            MCASP_stopTransferTx(h);
+
+            MCASP_close(h);
+            gMcaspHandle[i] = NULL;
+        }
+    }
+
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(0, mismatch, "Multi-instance loopback data mismatch");
+}
+
+/**
+ * \brief  Test MCASP transmit right-rotation configuration.
+ *
+ * This test iterates through all supported right-rotation values for MCASP transmit,
+ * configures the hardware accordingly, performs a loopback transfer for each value,
+ * and verifies that the received data matches the expected right-rotated transmit data.
+ * It ensures correct operation of the right-rotation feature across all settings.
+ * Test case category: functionality test case
+ */
+void Test_Mcasp_ConfigTxRightRotate(void *args)
+{
+    int32_t failCount = 0;
+    int32_t rot;
+    for (rot = 0; rot < 8; rot++)
+    {
+        cfg.paramType = TEST_MCASP_RIGHT_ROTATION;
+        cfg.paramValue = rot;
+        Test_Mcasp_SelectConfig(TEST_MCASP_DMA_MODE, &cfg, args);
+        int32_t status = SystemP_SUCCESS;
+
+        status = Test_Mcasp_LoopbackTxRightRotate(args);
+        if (status != SystemP_SUCCESS)
+        {
+            failCount++;
+        }
+    }
+    /* reset configuration */
+    cfg.paramType = TEST_MCASP_RIGHT_ROTATION;
+    cfg.paramValue = TEST_MCASP_RIGHT_ROTATION_0;
+    Test_Mcasp_SelectConfig(TEST_MCASP_DMA_MODE, &cfg, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(0, failCount, "One or more MCASP Tx right-rotate loopback tests failed");
+}
+
+/**
+ * \brief  Loopback test for MCASP transmit right-rotation.
+ *
+ * This test configures the MCASP transmit right-rotation value,
+ * performs a loopback transfer, and compares the received data
+ * against the expected right-rotated transmit data.
+ * Test case category: functionality test case
+ */
+static int32_t Test_Mcasp_LoopbackTxRightRotate(void *args)
+{
+    uint32_t status = SystemP_SUCCESS;
+    uint32_t i, j = 0;
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+
+    /* Prepare buffers */
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        for (j = 0U; j < TEST_MCASP_APP_MSGSIZE; j++)
+        {
+            TestMcasp_TxBuffer[i][j] = j % 256;
+            TestMcasp_RxBuffer[i][j] = 0U;
+        }
+    }
+    CacheP_wb(TestMcasp_TxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+    CacheP_wb(TestMcasp_RxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+
+    for (i = 0; i < TEST_MCASP_APP_MSGSIZE; i++)
+    {
+        gTxLoopjobBuf0[i] = 0xa5;
+        gRxLoopjobBuf0[i] = 0;
+    }
+    CacheP_wb(gTxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+    CacheP_wb(gRxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+
+    /* Open MCASP instance */
+    MCASP_close(gMcaspHandle[CONFIG_MCASP0]);
+    gMcaspHandle[CONFIG_MCASP0] = NULL;
+    McaspHandle = MCASP_open(CONFIG_MCASP0, openParams);
+
+    TestMcasp_CntRx = 0;
+    TestMcasp_CntTx = 0;
+
+    /* Submit RX and TX transactions */
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_TxnRx[i].buf = (void*)&TestMcasp_RxBuffer[i][0];
+        TestMcasp_TxnRx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_TxnRx[i].timeout = 0xFFFFFF;
+        MCASP_submitRx(McaspHandle, &TestMcasp_TxnRx[i]);
+    }
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_TxnTx[i].buf = (void*)&TestMcasp_TxBuffer[i][0];
+        TestMcasp_TxnTx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_TxnTx[i].timeout = 0xFFFFFF;
+        MCASP_submitTx(McaspHandle, &TestMcasp_TxnTx[i]);
+    }
+
+    status = MCASP_startTransferRx(McaspHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = MCASP_startTransferTx(McaspHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    while ((TestMcasp_CntRx < TEST_MCASP_APP_TEST_COUNT) ||
+           (TestMcasp_CntTx < TEST_MCASP_APP_TEST_COUNT))
+    {
+        /* wait for transfer completion */
+    }
+
+    MCASP_stopTransferRx(McaspHandle);
+    MCASP_stopTransferTx(McaspHandle);
+
+    /* Withdraw buffers */
+    if (SystemP_SUCCESS == status)
+    {
+        MCASP_Transaction *transaction;
+        do
+        {
+            transaction = MCASP_withdrawRx(McaspHandle);
+        } while (transaction != NULL);
+        do
+        {
+            transaction = MCASP_withdrawTx(McaspHandle);
+        } while (transaction != NULL);
+    }
+
+    /* Invalidate RX buffer for DMA mode */
+    if (openParams->transferMode == MCASP_TRANSFER_MODE_DMA)
+    {
+        CacheP_inv(TestMcasp_RxBuffer, TEST_MCASP_APP_MSGSIZE * TEST_MCASP_APP_MSG_COUNT, CacheP_TYPE_ALL);
+    }
+
+    /* Data comparison with right-rotation logic */
+    if (SystemP_SUCCESS == status)
+    {
+        int params = ((MCASP_Attrs *)gMcaspConfig[CONFIG_MCASP0].attrs)->hwCfg.tx.fmt & 0xF;
+        uint32_t rot_bits = params * 4;
+        for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+        {
+            for (j = 0U; j < TEST_MCASP_APP_MSGSIZE; j += 4)
+            {
+                uint32_t tx_word = ((uint32_t)TestMcasp_TxBuffer[i][j]) |
+                                   ((uint32_t)TestMcasp_TxBuffer[i][j+1] << 8) |
+                                   ((uint32_t)TestMcasp_TxBuffer[i][j+2] << 16) |
+                                   ((uint32_t)TestMcasp_TxBuffer[i][j+3] << 24);
+                uint32_t rx_word = ((uint32_t)TestMcasp_RxBuffer[i][j]) |
+                                   ((uint32_t)TestMcasp_RxBuffer[i][j+1] << 8) |
+                                   ((uint32_t)TestMcasp_RxBuffer[i][j+2] << 16) |
+                                   ((uint32_t)TestMcasp_RxBuffer[i][j+3] << 24);
+                uint32_t expected = (tx_word >> rot_bits) | (tx_word << (32 - rot_bits));
+                expected &= 0xFFFFFFFF;
+                if (rx_word != expected)
+                {
+                    status = SystemP_FAILURE;
+                }
+            }
+        }
+    }
+
+    CacheP_wb(gTxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+    CacheP_wb(gRxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+    MCASP_close(McaspHandle);
+    McaspHandle = NULL;
+    return status;
+
+}
+
+/**
+ * \brief  Test MCASP transmit frame sync bit delay configuration.
+ *
+ * This test iterates through supported frame sync bit delay values for MCASP transmit,
+ * configures the hardware accordingly, performs a loopback transfer for each value,
+ * and verifies that the received data matches the expected transmit data.
+ * It ensures correct operation of the frame sync bit delay feature across all settings.
+ * Test case category: functionality test case
+ */
+static void Test_Mcasp_ValidateFrameSyncBitDelay(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+    int32_t delay;
+    for (delay = 0; delay < 2; delay++)
+    {
+       cfg.paramType = TEST_MCASP_FRAME_SYNC_BIT;
+       cfg.paramValue = delay;
+       Test_Mcasp_SelectConfig(TEST_MCASP_DMA_MODE,&cfg, args);
+
+        status = SystemP_SUCCESS;
+        status = Test_Mcasp_ValidateConfigLoopback(args);
+
+    }
+    cfg.paramType = TEST_MCASP_FRAME_SYNC_BIT;
+    cfg.paramValue = TEST_MCASP_FRAME_SYNC_BIT_0;
+    Test_Mcasp_SelectConfig(TEST_MCASP_DMA_MODE, &cfg, args); /* resetting the parameter */
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "MCASP Tx Frame Sync Bit Delay loopback data mismatch");
+}
+
+/**
+ * \brief  MCASP loopback test for current configuration.
+ *
+ * This function performs a loopback transfer using the current MCASP configuration,
+ * then compares the transmitted and received data for integrity.
+ * It is used as a common validation routine for various MCASP configuration tests.
+ * Test case category: functionality test case
+ */
+static int32_t Test_Mcasp_ValidateConfigLoopback(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+    uint32_t i, j;
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+    uint32_t instanceId = (uint32_t)(openParams - &gMcaspOpenParams[0]);
+
+    MCASP_close(gMcaspHandle[instanceId]);
+    gMcaspHandle[instanceId] = NULL;
+
+    openParams->txLoopjobBuf = gTxLoopjobBuf0;
+    openParams->rxLoopjobBuf = gRxLoopjobBuf0;
+
+    MCASP_Handle handle = MCASP_open(instanceId, openParams);
+
+    TestMcasp_CntRx = 0;
+    TestMcasp_CntTx = 0;
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        for (j = 0U; j < TEST_MCASP_APP_MSGSIZE; j++)
+        {
+            TestMcasp_TxBuffer[i][j] = j % 256;
+            TestMcasp_RxBuffer[i][j] = 0U;
+        }
+    }
+
+    CacheP_wb(TestMcasp_TxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+    CacheP_wb(TestMcasp_RxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+
+    for (i = 0; i < TEST_MCASP_APP_MSGSIZE; i++)
+    {
+        gTxLoopjobBuf0[i] = 0xa5;
+        gRxLoopjobBuf0[i] = 0;
+    }
+
+    CacheP_wb(gTxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+    CacheP_wb(gRxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_TxnRx[i].buf = (void*) &TestMcasp_RxBuffer[i][0];
+        TestMcasp_TxnRx[i].count = TEST_MCASP_APP_MSGSIZE / 4;
+        TestMcasp_TxnRx[i].timeout = 0xFFFFFF;
+        MCASP_submitRx(handle, &TestMcasp_TxnRx[i]);
+    }
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_TxnTx[i].buf = (void*) &TestMcasp_TxBuffer[i][0];
+        TestMcasp_TxnTx[i].count = TEST_MCASP_APP_MSGSIZE / 4;
+        TestMcasp_TxnTx[i].timeout = 0xFFFFFF;
+        MCASP_submitTx(handle, &TestMcasp_TxnTx[i]);
+    }
+
+    status = MCASP_startTransferRx(handle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = MCASP_startTransferTx(handle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    while ((TestMcasp_CntRx < TEST_MCASP_APP_TEST_COUNT) ||
+          (TestMcasp_CntTx < TEST_MCASP_APP_TEST_COUNT))
+    {
+        /* wait for transfer completion */
+    }
+
+    MCASP_stopTransferRx(handle);
+    MCASP_stopTransferTx(handle);
+
+    /* Withdraw transactions to flush DMA/QM lists */
+    if (status == SystemP_SUCCESS)
+    {
+        MCASP_Transaction *txn;
+        do
+        {
+            txn = MCASP_withdrawRx(handle);
+        } while (txn != NULL);
+        do
+        {
+            txn = MCASP_withdrawTx(handle);
+        } while (txn != NULL);
+    }
+
+    /* Invalidate RX buffer cache if DMA mode */
+    if (openParams->transferMode == MCASP_TRANSFER_MODE_DMA)
+    {
+        CacheP_inv(TestMcasp_RxBuffer,
+                   TEST_MCASP_APP_MSGSIZE * TEST_MCASP_APP_MSG_COUNT,
+                   CacheP_TYPE_ALL);
+    }
+
+    /* Compare data */
+    if (SystemP_SUCCESS == status)
+    {
+        for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+        {
+            for (j = 0U; j < TEST_MCASP_APP_MSGSIZE; j++)
+            {
+                if (TestMcasp_TxBuffer[i][j] != TestMcasp_RxBuffer[i][j])
+                {
+                    status = SystemP_FAILURE;
+                }
+            }
+        }
+    }
+
+    CacheP_wb(gTxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+    CacheP_wb(gRxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+    MCASP_close(handle);
+
+    return status;
+}
+
+/**
+ * \brief  Test MCASP transmit frame sync width configuration.
+ *
+ * This test iterates through supported frame sync width values for MCASP transmit,
+ * configures the hardware accordingly, performs a loopback transfer for each value,
+ * and verifies that the received data matches the expected transmit data.
+ * It ensures correct operation of the frame sync width feature across all settings.
+ * Test case category: functionality test case
+ */
+static void Test_Mcasp_ConfigFrameSyncWidth(void *args)
+{
+    int32_t failCount = 0;
+    int32_t status;
+    int32_t width;
+
+    for (width = 0; width <= 1; width++)
+    {
+        cfg.paramType = TEST_MCASP_FRAME_SYNC_WIDTH;
+        cfg.paramValue = width;
+        Test_Mcasp_SelectConfig(TEST_MCASP_DMA_MODE, &cfg, args);
+        status = Test_Mcasp_ValidateConfigLoopback(args);
+
+        if (status != SystemP_SUCCESS)
+        {
+            failCount++;
+        }
+    }
+    cfg.paramType = TEST_MCASP_FRAME_SYNC_WIDTH;
+    cfg.paramValue = TEST_MCASP_FRAME_SYNC_WIDTH_WORD;
+    Test_Mcasp_SelectConfig(TEST_MCASP_DMA_MODE, &cfg, args); /* reset config */
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(0, failCount, "One or more MCASP Tx Frame Sync Width loopback tests failed");
+
+}
+
+/**
+ * \brief  Test MCASP transmit serial bitstream order configuration.
+ *
+ * This test iterates through supported serial bitstream order values (LSB/MSB) for MCASP,
+ * configures the hardware accordingly, performs a loopback transfer for each value,
+ * and verifies that the received data matches the expected transmit data.
+ * It ensures correct operation of the serial bitstream order feature across all settings.
+ * Test case category: functionality test case
+ */
+static void Test_Mcasp_ConfigSerialBitstream(void *args)
+{
+    int32_t failCount = 0;
+    int32_t status;
+    int32_t order;
+
+    for (order = 0; order <= 1; order++)
+    {
+        cfg.paramType = TEST_MCASP_SERIAL_BITSTREAM;
+        cfg.paramValue = order;
+        Test_Mcasp_SelectConfig(TEST_MCASP_DMA_MODE, &cfg, args);
+        status = Test_Mcasp_ValidateConfigLoopback(args);
+
+        if (status != SystemP_SUCCESS)
+        {
+            failCount++;
+        }
+    }
+    cfg.paramType = TEST_MCASP_SERIAL_BITSTREAM;
+    cfg.paramValue = TEST_MCASP_SERIAL_BITSTREAM_MSB;
+    Test_Mcasp_SelectConfig(TEST_MCASP_DMA_MODE, &cfg, args);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(0, failCount, "One or more MCASP Tx Serial Bitstream Order loopback tests failed");
+}
+
+/**
+ * \brief  Test MCASP transmit clock polarity configuration.
+ *
+ * This test iterates through supported clock polarity values for MCASP transmit,
+ * configures the hardware accordingly, performs a loopback transfer for each value,
+ * and verifies that the received data matches the expected transmit data.
+ * It ensures correct operation of the clock polarity feature across all settings.
+ * Test case category: functionality test case
+ */
+static void Test_Mcasp_ConfigClockPolarity(void *args)
+{
+    int32_t failCount = 0;
+    int32_t status;
+    int32_t polarity;
+
+    for (polarity = 0; polarity <= 1; polarity++)
+    {
+        cfg.paramType = TEST_MCASP_CLOCK_POLARITY;
+        cfg.paramValue = polarity;
+        Test_Mcasp_SelectConfig(TEST_MCASP_DMA_MODE, &cfg, args);
+        status = Test_Mcasp_ValidateConfigLoopback(args);
+
+        if (status != SystemP_SUCCESS)
+        {
+            failCount++;
+        }
+    }
+    cfg.paramType = TEST_MCASP_CLOCK_POLARITY;
+    cfg.paramValue = TEST_MCASP_CLOCK_POLARITY_FALLING;
+    Test_Mcasp_SelectConfig(TEST_MCASP_DMA_MODE, &cfg, args); /* reset config */
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(0, failCount, "One or more MCASP Tx Clock Polarity loopback tests failed");
+}
+
+/**
+ * \brief  Test MCASP with NULL loopjob buffers.
+ *
+ * This test verifies how the driver handles if loopjob is disabled.
+ * Test category : Negative test case
+ */
+static void Test_Mcasp_NullLoopjob(void *args)
+{
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+    MCASP_Handle h;
+    int32_t status = SystemP_SUCCESS;
+    uint32_t i, j = 0;
+
+    /* Open MCASP in DMA mode */
+    MCASP_close(gMcaspHandle[CONFIG_MCASP0]);
+    gMcaspHandle[CONFIG_MCASP0] = NULL;
+
+    openParams->txLoopjobEnable = FALSE;
+    openParams->rxLoopjobEnable = FALSE;
+    openParams->rxLoopjobBuf = NULL;
+    openParams->txLoopjobBuf = NULL;
+
+    h = MCASP_open(CONFIG_MCASP0, openParams);
+    TEST_ASSERT_NOT_NULL(h);
+
+    /* Fill TX buffer with pattern, clear RX buffer */
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        for (j = 0U; j < TEST_MCASP_APP_MSGSIZE; j++)
+        {
+            TestMcasp_TxBuffer[i][j] = (uint8_t)(j & 0xFF);
+            TestMcasp_RxBuffer[i][j] = 0U;
+        }
+    }
+    CacheP_wb(TestMcasp_TxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+    CacheP_wb(TestMcasp_RxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+
+    TestMcasp_CntRx = 0;
+    TestMcasp_CntTx = 0;
+
+    /* Start transfer with only loopjob buffers (no user buffer submitted) */
+    status = MCASP_startTransferRx(h);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = MCASP_startTransferTx(h);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_TxnRx[i].buf = (void*)&TestMcasp_RxBuffer[i][0];
+        TestMcasp_TxnRx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_TxnRx[i].timeout = 0xFFFFFFU;
+        status = MCASP_submitRx(h, &TestMcasp_TxnRx[i]);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    }
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_TxnTx[i].buf = (void*)&TestMcasp_TxBuffer[i][0];
+        TestMcasp_TxnTx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_TxnTx[i].timeout = 0xFFFFFFU;
+        status = MCASP_submitTx(h, &TestMcasp_TxnTx[i]);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    }
+
+    /* Wait for a short time to let MCASP run with loopjob */
+    ClockP_usleep(1000000);
+
+    /* Wait for completion */
+    while ((TestMcasp_CntRx < TEST_MCASP_APP_TEST_COUNT) || (TestMcasp_CntTx < TEST_MCASP_APP_TEST_COUNT)) { }
+
+    MCASP_stopTransferRx(h);
+    MCASP_stopTransferTx(h);
+
+    /* Withdraw any remaining buffers */
+    MCASP_Transaction *transaction;
+    do
+    {
+        transaction = MCASP_withdrawRx(h);
+    } while (transaction != NULL);
+    do
+    {
+        transaction = MCASP_withdrawTx(h);
+    } while (transaction != NULL);
+
+    /* Invalidate RX buffer for DMA */
+    if (openParams->transferMode == MCASP_TRANSFER_MODE_DMA)
+    {
+        CacheP_inv(TestMcasp_RxBuffer, TEST_MCASP_APP_MSGSIZE * TEST_MCASP_APP_MSG_COUNT, CacheP_TYPE_ALL);
+    }
+
+    /* Compare data */
+    if(status == SystemP_SUCCESS)
+    {
+        for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+        {
+            for(j = 0U; j < TEST_MCASP_APP_MSGSIZE; j++)
+            {
+                if(TestMcasp_TxBuffer[i][j] != TestMcasp_RxBuffer[i][j])
+                {
+                    status = SystemP_FAILURE;
+                }
+            }
+        }
+    }
+
+    MCASP_close(h);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "MCASP loopjob recovery data mismatch");
+}
+
+/**
+ * \brief  Test MCASP driver behavior with NULL callback functions.
+ *
+ * This test verifies that the MCASP driver operates correctly when the TX and/or RX
+ * callback function pointers are set to NULL. It ensures that the driver does not crash
+ * or misbehave if callbacks are not provided, and that data transfer and integrity are maintained.
+ * Test case category: negative test case
+ */
+void Test_Mcasp_CallbackNull(void *args)
+{
+    int32_t             status = SystemP_SUCCESS;
+    uint32_t            i=0, j=0;
+    MCASP_OpenParams *openparams = (MCASP_OpenParams*)args;
+    /* Compute instance index from pointer arithmetic */
+    uint32_t instanceId = (uint32_t)(openparams - &gMcaspOpenParams[0]);
+    MCASP_close(gMcaspHandle[instanceId]);
+    gMcaspHandle[instanceId] = NULL;
+
+    openparams->txCallbackFxn = NULL;
+    openparams->rxCallbackFxn = NULL;
+
+    McaspHandle = MCASP_open(instanceId, openparams);
+
+    TestMcasp_CntRx = 0;
+    TestMcasp_CntTx = 0;
+    /* Memfill buffers */
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        for(j = 0U; j < TEST_MCASP_APP_MSGSIZE; j++)
+        {
+            TestMcasp_TxBuffer[i][j] = j % 256;
+            TestMcasp_RxBuffer[i][j] = 0U;
+        }
+    }
+
+    CacheP_wb(TestMcasp_TxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+    CacheP_wb(TestMcasp_RxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+
+    for (i = 0; i < 256; i++)
+    {
+        gTxLoopjobBuf0[i] = 0xa5;
+        gRxLoopjobBuf0[i] = 0;
+    }
+
+    CacheP_wb(gTxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+    CacheP_wb(gRxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_TxnRx[i].buf = (void*) &TestMcasp_RxBuffer[i][0];
+        TestMcasp_TxnRx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_TxnRx[i].timeout = 0xFFFFFF;
+        MCASP_submitRx(McaspHandle,  &TestMcasp_TxnRx[i]);
+    }
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_TxnTx[i].buf = (void*) &TestMcasp_TxBuffer[i][0];
+        TestMcasp_TxnTx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_TxnTx[i].timeout = 0xFFFFFF;
+        MCASP_submitTx(McaspHandle, &TestMcasp_TxnTx[i]);
+    }
+
+
+    status = MCASP_startTransferRx(McaspHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = MCASP_startTransferTx(McaspHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    while ((TestMcasp_CntRx < TEST_MCASP_APP_TEST_COUNT ) ||
+           (TestMcasp_CntTx < TEST_MCASP_APP_TEST_COUNT ))
+    {
+        /* wait for transfer completion. */
+    }
+
+    MCASP_stopTransferRx(McaspHandle);
+    MCASP_stopTransferTx(McaspHandle);
+
+    /* withdraw the buffers submitted to driver. */
+    if(SystemP_SUCCESS == status)
+    {
+        MCASP_Transaction *transaction;
+        do
+        {
+            transaction = MCASP_withdrawRx(McaspHandle);
+        }while (transaction != NULL);
+        do
+        {
+            transaction = MCASP_withdrawTx(McaspHandle);
+        }while (transaction != NULL);
+    }
+
+    /* Invalidate RX buffer only for DMA mode */
+    if (openparams->transferMode == MCASP_TRANSFER_MODE_DMA)
+    {
+        CacheP_inv(TestMcasp_RxBuffer, TEST_MCASP_APP_MSGSIZE * TEST_MCASP_APP_MSG_COUNT, CacheP_TYPE_ALL);
+    }
+
+    if(SystemP_SUCCESS == status)
+    {
+        /* Compare data */
+        for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+        {
+            for(j = 0U; j < TEST_MCASP_APP_MSGSIZE; j++)
+            {
+                if(TestMcasp_TxBuffer[i][j] != TestMcasp_RxBuffer[i][j])
+                {
+                    status = SystemP_FAILURE;
+                }
+            }
+        }
+    }
+
+    CacheP_wb(gTxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+    CacheP_wb(gRxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+    openparams->txCallbackFxn = mcasp_txcb;
+    openparams->rxCallbackFxn = mcasp_rxcb;
+    MCASP_close(McaspHandle);
+    McaspHandle = NULL;
+
+    /* Final Unity assert */
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "MCASP loopback transfer data mismatch");
+    return;
+}
+#ifdef SOC_AM62AX
+/**
+ * \brief  Test MCASP external loopback.
+ *
+ * This test verifies MCASP data integrity when using external loopback mode.
+ * It disables internal digital loopback, performs a loopback transfer with the
+ * expectation that the MCASP TX and RX pins are externally connected, and checks
+ * that the received data matches the transmitted data.
+ * Test case category: functionality test case
+ */
+static void Test_Mcasp_ExternalLoopback(void *args)
+{
+    int32_t status;
+    MCASP_Attrs *attrs = (MCASP_Attrs *)gMcaspConfig[CONFIG_MCASP0].attrs;
+
+    attrs->hwCfg.gbl.dlbCtl = (uint32_t)0x0; /* internal loopback disable*/
+    status = Test_Mcasp_ValidateConfigLoopback(args);
+     attrs->hwCfg.gbl.dlbCtl = (uint32_t)0x7; /* internal loopback enable*/
+
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "MCASP external loopback data mismatch");
 }
 #endif

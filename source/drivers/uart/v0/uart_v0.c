@@ -200,6 +200,10 @@ static uint32_t UART_spaceAvail(uint32_t baseAddr);
 static uint32_t UART_getRxError(uint32_t baseAddr);
 static uint32_t UART_regConfigModeEnable(uint32_t baseAddr, uint32_t modeFlag);
 static void UART_i2310WA(uint32_t baseAddr);
+
+#ifdef ENABLE_UART_FAULT_INJECTION
+void TestUart_faultInjectStubHandler(uint32_t *xsferStatus);
+#endif
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -1857,6 +1861,11 @@ static void UART_masterIsr(void *arg)
 
             if ((intType & UART_INTID_RX_THRES_REACH) == UART_INTID_RX_THRES_REACH)
             {
+
+#ifdef ENABLE_UART_FAULT_INJECTION
+            TestUart_faultInjectStubHandler(&intType);
+#endif
+
                 if ((intType & UART_INTID_RX_LINE_STAT_ERROR) ==
                     UART_INTID_RX_LINE_STAT_ERROR)
                 {
@@ -1865,16 +1874,33 @@ static void UART_masterIsr(void *arg)
                 }
                 else
                 {
+
+#ifdef ENABLE_UART_FAULT_INJECTION
+                    TestUart_faultInjectStubHandler(&intType);
+#endif
                     if ((intType & UART_INTID_CHAR_TIMEOUT) == UART_INTID_CHAR_TIMEOUT)
                     {
                         /* Disable Interrupt first, to avoid further RX timeout */
                         UART_intrDisable(attrs->baseAddr, UART_INTR_RHR_CTI | UART_INTR_LINE_STAT);
 
+#ifdef ENABLE_UART_FAULT_INJECTION
+                        /* Simulate the condition where i2310 WA is needed */
+                        uint8_t status = UART_checkCharsAvailInFifo(attrs->baseAddr);
+                        /* Force the status to FALSE to simulate errata condition */
+                        status = FALSE;
+                        /* Check if there is any character in the RX FIFO */
+                        if (FALSE == status)
+                        {
+                            /* Work around for errata i2310 */
+                            UART_i2310WA(attrs->baseAddr);
+                        }
+#else
                         /* Work around for errata i2310 */
                         if (FALSE == UART_checkCharsAvailInFifo(attrs->baseAddr))
                         {
                             UART_i2310WA(attrs->baseAddr);
                         }
+#endif
 
                         /* RX timeout, log the RX timeout errors */
                         object->rxTimeoutCnt++;
@@ -2319,6 +2345,10 @@ static inline void UART_procLineStatusErr(UART_Config *config)
 
     lineStatus = UART_readLineStatus(attrs->baseAddr);
 
+#ifdef ENABLE_UART_FAULT_INJECTION
+    TestUart_faultInjectStubHandler(&lineStatus);
+#endif
+
     if (((lineStatus & UART_FIFO_PE_FE_BI_DETECTED) == UART_FIFO_PE_FE_BI_DETECTED)
             || ((lineStatus & UART_OVERRUN_ERROR) == UART_OVERRUN_ERROR))
     {
@@ -2348,6 +2378,10 @@ static inline void UART_procLineStatusErr(UART_Config *config)
                        UART_LSR_RX_FIFO_E_MASK);
         }
         while ((lineStatus != 0U) && (iteration != 0U));
+
+#ifdef ENABLE_UART_FAULT_INJECTION
+        TestUart_faultInjectStubHandler(&lineStatus);
+#endif
 
         UART_intrDisable(attrs->baseAddr, UART_INTR_RHR_CTI | UART_INTR_LINE_STAT);
 

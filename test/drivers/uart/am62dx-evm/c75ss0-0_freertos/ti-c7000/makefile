@@ -38,8 +38,9 @@ ifeq ($(DEVICE_TYPE), HS)
 endif
 
 FILES_common := \
-	test_uart.c \
 	main.c \
+	test_uart.c \
+	test_uart_mt.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
 	ti_board_config.c \
@@ -64,6 +65,8 @@ INCLUDES_common := \
 
 DEFINES_common := \
 	-DSOC_AM62DX \
+	-DCONFIG_UART_MULTI_INSTANCE_TEST_ENABLE \
+	-DCPU_C7X \
 
 CFLAGS_common := \
 	-mv7504 \
@@ -99,6 +102,7 @@ LNK_FILES_common = \
 LIBS_PATH_common = \
 	-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	-i${MCU_PLUS_SDK_PATH}/source/board/lib \
 	-i${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	-i${CG_TOOL_ROOT}/lib \
 
@@ -127,6 +131,7 @@ LIBS_NAME = \
 LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	${CG_TOOL_ROOT}/lib \
 

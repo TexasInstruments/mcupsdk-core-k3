@@ -1,8 +1,9 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62Dx" --package "ANF" --part "AM62D24-G" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.20.999+143"}
+ * @cliArgs --device "AM62Dx" --part "AM62D24-G" --package "ANF" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @v2CliArgs --device "AM62D-Q1" --package "FCBGA (ANF)" --variant "AM62D24-G" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.24.2+4234"}
  */
 
 /**
@@ -10,6 +11,13 @@
  */
 const uart        = scripting.addModule("/drivers/uart/uart", {}, false);
 const uart2       = uart.addInstance();
+const uart3       = uart.addInstance();
+const uart4       = uart.addInstance();
+const uart5       = uart.addInstance();
+const uart6       = uart.addInstance();
+const uart7       = uart.addInstance();
+const uart8       = uart.addInstance();
+const uart9       = uart.addInstance();
 const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
 const mmu_armv8   = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
 const mmu_armv81  = mmu_armv8.addInstance();
@@ -26,11 +34,35 @@ const mmu_armv810 = mmu_armv8.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-uart2.$name = "CONFIG_UART0";
+uart2.$name        = "CONFIG_UART1";
+uart2.UART.$assign = "USART0";
+
+uart3.$name        = "CONFIG_UART2";
+uart3.UART.$assign = "USART1";
+
+uart4.$name        = "CONFIG_UART3";
+uart4.UART.$assign = "USART2";
+
+uart5.$name        = "CONFIG_UART4";
+uart5.UART.$assign = "USART3";
+
+uart6.$name        = "CONFIG_UART5";
+uart6.UART.$assign = "USART4";
+
+uart7.$name        = "CONFIG_UART6";
+uart7.UART.$assign = "USART5";
+
+uart8.$name        = "CONFIG_UART7";
+uart8.UART.$assign = "USART6";
+
+uart9.$name                      = "CONFIG_UART8";
+uart9.useWakeupDomainPeripherals = true;
+uart9.WKUP_UART.$assign          = "WKUP_USART0";
 
 debug_log.enableUartLog                   = true;
+debug_log.enableCssLog                    = false;
+debug_log.uartLog.$name                   = "CONFIG_UART0";
 debug_log.uartLog.useMcuDomainPeripherals = true;
-debug_log.uartLog.$name                   = "CONFIG_UART1";
 debug_log.uartLog.MCU_UART.$assign        = "MCU_USART0";
 
 mmu_armv81.size  = 0x20000000;
@@ -90,8 +122,21 @@ mmu_armv810.attribute = "MAIR4";
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-uart2.UART.$suggestSolution                     = "USART0";
 uart2.UART.RXD.$suggestSolution                 = "UART0_RXD";
 uart2.UART.TXD.$suggestSolution                 = "UART0_TXD";
+uart3.UART.RXD.$suggestSolution                 = "I2C1_SCL";
+uart3.UART.TXD.$suggestSolution                 = "I2C1_SDA";
+uart4.UART.RXD.$suggestSolution                 = "GPIO0_45";
+uart4.UART.TXD.$suggestSolution                 = "GPIO0_46";
+uart5.UART.RXD.$suggestSolution                 = "GPIO0_47";
+uart5.UART.TXD.$suggestSolution                 = "GPIO0_48";
+uart6.UART.RXD.$suggestSolution                 = "GPIO0_49";
+uart6.UART.TXD.$suggestSolution                 = "GPIO0_50";
+uart7.UART.RXD.$suggestSolution                 = "GPIO0_51";
+uart7.UART.TXD.$suggestSolution                 = "GPIO0_52";
+uart8.UART.RXD.$suggestSolution                 = "GPIO0_53";
+uart8.UART.TXD.$suggestSolution                 = "GPIO0_54";
+uart9.WKUP_UART.RXD.$suggestSolution            = "WKUP_UART0_RXD";
+uart9.WKUP_UART.TXD.$suggestSolution            = "WKUP_UART0_TXD";
 debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "MCU_UART0_RXD";
 debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "MCU_UART0_TXD";

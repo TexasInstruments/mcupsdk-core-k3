@@ -38,8 +38,9 @@ ifeq ($(DEVICE_TYPE), HS)
 endif
 
 FILES_common := \
-	test_uart.c \
 	main.c \
+	test_uart.c \
+	test_uart_mt.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
 	ti_board_config.c \
@@ -65,6 +66,8 @@ INCLUDES_common := \
 DEFINES_common := \
 	-DSOC_AM62DX \
 	-DENABLE_SCICLIENT_DIRECT \
+	-DCONFIG_UART_MULTI_INSTANCE_TEST_ENABLE \
+	-DCPU_R5F0 \
 
 CFLAGS_common := \
 	-mcpu=cortex-r5 \

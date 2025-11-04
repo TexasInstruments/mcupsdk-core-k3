@@ -57,11 +57,13 @@ INCLUDES_common := \
 	-I${CG_TOOL_ROOT}/include/c \
 	-I${MCU_PLUS_SDK_PATH}/source \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/nortos \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/dpl \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
 	-Igenerated \
 
 DEFINES_common := \
 	-DSOC_AM62DX \
+	-DCPU_MCU_R5F0 \
 
 CFLAGS_common := \
 	-mcpu=cortex-r5 \

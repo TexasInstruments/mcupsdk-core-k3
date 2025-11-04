@@ -1,0 +1,97 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "r5fss0-1" --product "MCU_PLUS_SDK@07.03.01"
+ * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "r5fss0-1" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.24.2+4234"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const uart       = scripting.addModule("/drivers/uart/uart", {}, false);
+const uart2      = uart.addInstance();
+const uart3      = uart.addInstance();
+const uart4      = uart.addInstance();
+const uart5      = uart.addInstance();
+const uart6      = uart.addInstance();
+const uart7      = uart.addInstance();
+const uart8      = uart.addInstance();
+const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
+const mpu_armv7  = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
+const mpu_armv71 = mpu_armv7.addInstance();
+const mpu_armv72 = mpu_armv7.addInstance();
+const mpu_armv73 = mpu_armv7.addInstance();
+const mpu_armv74 = mpu_armv7.addInstance();
+const mpu_armv75 = mpu_armv7.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+uart2.$name        = "CONFIG_UART1";
+uart2.UART.$assign = "UART1";
+
+uart3.$name        = "CONFIG_UART2";
+uart3.UART.$assign = "UART2";
+
+uart4.$name        = "CONFIG_UART3";
+uart4.UART.$assign = "UART3";
+
+uart5.$name        = "CONFIG_UART4";
+uart5.UART.$assign = "UART4";
+
+uart6.$name        = "CONFIG_UART5";
+uart6.UART.$assign = "UART5";
+
+uart7.$name        = "CONFIG_UART6";
+uart7.UART.$assign = "UART6";
+
+uart8.$name                      = "CONFIG_UART7";
+uart8.useWakeupDomainPeripherals = true;
+uart8.WKUP_UART.$assign          = "WKUP_UART";
+
+debug_log.enableUartLog        = true;
+debug_log.uartLog.$name        = "CONFIG_UART0";
+debug_log.uartLog.UART.$assign = "UART0";
+
+mpu_armv71.size         = 31;
+mpu_armv71.attributes   = "Device";
+mpu_armv71.allowExecute = false;
+mpu_armv71.$name        = "REGISTERS";
+
+mpu_armv72.size  = 15;
+mpu_armv72.$name = "TCMA";
+
+mpu_armv73.baseAddr = 0x41010000;
+mpu_armv73.size     = 15;
+mpu_armv73.$name    = "TCMB";
+
+mpu_armv74.size     = 22;
+mpu_armv74.baseAddr = 0x72000000;
+mpu_armv74.$name    = "MSRAM_BANK0_TO_BANK3";
+
+mpu_armv75.baseAddr = 0x72400000;
+mpu_armv75.size     = 21;
+mpu_armv75.$name    = "MSRAM_BANK4_TO_BANK5";
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+uart2.UART.RXD.$suggestSolution             = "I2C1_SCL";
+uart2.UART.TXD.$suggestSolution             = "I2C1_SDA";
+uart3.UART.RXD.$suggestSolution             = "MCASP0_AXR6";
+uart3.UART.TXD.$suggestSolution             = "MCASP0_AXR7";
+uart4.UART.RXD.$suggestSolution             = "MCASP0_AXR8";
+uart4.UART.TXD.$suggestSolution             = "GPIO1_47";
+uart5.UART.RXD.$suggestSolution             = "MCASP0_AXR10";
+uart5.UART.TXD.$suggestSolution             = "MCASP0_AXR11";
+uart6.UART.RXD.$suggestSolution             = "MCAN0_TX";
+uart6.UART.TXD.$suggestSolution             = "MCAN0_RX";
+uart7.UART.RXD.$suggestSolution             = "GPIO1_48";
+uart7.UART.TXD.$suggestSolution             = "GPIO1_49";
+uart8.WKUP_UART.RXD.$suggestSolution        = "WKUP_UART0_RXD";
+uart8.WKUP_UART.TXD.$suggestSolution        = "WKUP_UART0_TXD";
+debug_log.uartLog.UART.RXD.$suggestSolution = "MCASP4_AXR0";
+debug_log.uartLog.UART.TXD.$suggestSolution = "MLB0_MLBCLK";

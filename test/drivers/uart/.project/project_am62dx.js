@@ -9,6 +9,14 @@ const files = {
     ],
 };
 
+const files_freertos = {
+    common: [
+        "main.c",
+        "test_uart.c",
+        "test_uart_mt.c",
+    ],
+};
+
 /* Relative to where the makefile will be generated
  * Typically at <example_folder>/<BOARD>/<core_os_combo>/<compiler>
  */
@@ -32,6 +40,7 @@ const libdirs_freertos = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
         "${MCU_PLUS_SDK_PATH}/test/unity/lib",
     ],
 };
@@ -79,6 +88,7 @@ const includes_freertos_a53 = {
 const includes_nortos = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/dpl",
         "${MCU_PLUS_SDK_PATH}/test/unity/",
     ],
 };
@@ -120,6 +130,14 @@ const libs_freertos_dm_r5f = {
     ],
 };
 
+const libs_nortos_r5f = {
+    common: [
+        "nortos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib",
+        "unity.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
 const libs_freertos_a53 = {
     common: [
         "freertos.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
@@ -152,8 +170,56 @@ const defines_dm_r5f = {
     common:[
         "SOC_AM62DX",
         "ENABLE_SCICLIENT_DIRECT",
+        "CONFIG_UART_MULTI_INSTANCE_TEST_ENABLE",
+        "CPU_R5F0",
     ]
 }
+
+const defines_nortos_dm_r5f = {
+    common:[
+        "SOC_AM62DX",
+        "ENABLE_SCICLIENT_DIRECT",
+        "CPU_R5F0",
+    ]
+}
+
+const defines_freertos_mcu_r5f = {
+    common:[
+        "SOC_AM62DX",
+        "CONFIG_UART_MULTI_INSTANCE_TEST_ENABLE",
+        "CPU_MCU_R5F0",
+    ]
+};
+
+const defines_nortos_mcu_r5f = {
+    common: [
+        "SOC_AM62DX",
+        "CPU_MCU_R5F0",
+    ],
+};
+
+const defines_freertos_a53 = {
+    common:[
+        "SOC_AM62DX",
+        "CONFIG_UART_MULTI_INSTANCE_TEST_ENABLE",
+        "CPU_A53",
+    ]
+};
+
+const defines_nortos_a53 = {
+    common: [
+        "SOC_AM62DX",
+        "CPU_A53",
+    ],
+};
+
+const defines_freertos_c75 = {
+    common: [
+        "SOC_AM62DX",
+        "CONFIG_UART_MULTI_INSTANCE_TEST_ENABLE",
+        "CPU_C7X",
+    ],
+};
 
 const syscfgfile = "../example.syscfg"
 
@@ -243,6 +309,31 @@ const templates_freertos_dm_r5f =
     }
 ];
 
+const templates_nortos_dm_r5f =
+[
+    {
+        input: ".project/templates/am62dx/common/linker_dm_r5f.cmd.xdt",
+        output: "linker.cmd",
+        options: {
+			heapSize: 0x8000,
+			stackSize: 0x4000,
+			irqStackSize: 0x1000,
+			svcStackSize: 0x0100,
+			fiqStackSize: 0x0100,
+			abortStackSize: 0x0100,
+			undefinedStackSize: 0x0100,
+			dmStubstacksize: 0x0400,
+		},
+    },
+    {
+        input: ".project/templates/am62dx/nortos/main_nortos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "test_main",
+        },
+    }
+];
+
 const templates_freertos_a53 =
 [
     {
@@ -258,6 +349,26 @@ const templates_freertos_a53 =
     }
 ];
 
+const libdirs_prebuild_nortos = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
+    ],
+};
+
+const libs_prebuild_nortos = {
+    common: [
+        "rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+    ]
+};
 
 const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos"},
@@ -265,6 +376,7 @@ const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62dx-evm", os: "nortos"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62dx-evm", os: "freertos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos"},
+    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "nortos"},
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62dx-evm", os: "freertos"},
 ];
 
@@ -304,48 +416,69 @@ function getComponentBuildProperty(buildOption) {
     if(buildOption.cpu.match(/mcu-r5f*/)) {
         if(buildOption.os.match(/freertos*/) )
         {
-            build_property.includes = includes_freertos_r5f;
+            build_property.files = files_freertos;
             build_property.libdirs = libdirs_freertos;
+            build_property.includes = includes_freertos_r5f;
             build_property.libs = libs_freertos_mcu_r5f;
             build_property.templates = templates_freertos_r5f;
-            build_property.defines = defines_common;
+            build_property.defines = defines_freertos_mcu_r5f;
         }
         else
         {
-            build_property.includes = includes_nortos;
             build_property.libdirs = libdirs_nortos;
+            build_property.includes = includes_nortos;
             build_property.libs = libs_nortos_mcu_r5f;
             build_property.templates = templates_nortos_r5f;
+            build_property.defines = defines_nortos_mcu_r5f;
         }
     }
     else if(buildOption.cpu.match(/a53*/)) {
         if(buildOption.os.match(/freertos*/) )
         {
-            build_property.includes = includes_freertos_a53;
+            build_property.files = files_freertos;
             build_property.libdirs = libdirs_freertos;
+            build_property.includes = includes_freertos_a53;
             build_property.libs = libs_freertos_a53;
             build_property.templates = templates_freertos_a53;
+            build_property.defines = defines_freertos_a53;
         }
         else
         {
-            build_property.includes = includes_nortos;
             build_property.libdirs = libdirs_nortos;
+            build_property.includes = includes_nortos;
             build_property.libs = libs_nortos_a53;
             build_property.templates = templates_nortos_a53;
+            build_property.defines = defines_nortos_a53;
         }
     }
     else if(buildOption.cpu.match(/c75*/)) {
-        build_property.includes = includes_freertos_c75;
+        build_property.files = files_freertos;
         build_property.libdirs = libdirs_freertos;
+        build_property.includes = includes_freertos_c75;
         build_property.libs = libs_freertos_c75;
         build_property.templates = templates_freertos_c75;
+        build_property.defines = defines_freertos_c75;
     }
     else if(buildOption.cpu.match(/r5f*/)) {
-        build_property.includes = includes_freertos_r5f;
-        build_property.libdirs = libdirs_freertos_dm_r5f;
-        build_property.libs = libs_freertos_dm_r5f;
-        build_property.templates = templates_freertos_dm_r5f;
-        build_property.defines = defines_dm_r5f;
+        if(buildOption.os.match(/freertos*/) )
+        {
+            build_property.files = files_freertos;
+            build_property.libdirs = libdirs_freertos_dm_r5f;
+            build_property.includes = includes_freertos_r5f;
+            build_property.libs = libs_freertos_dm_r5f;
+            build_property.templates = templates_freertos_dm_r5f;
+            build_property.defines = defines_dm_r5f;
+        }
+        else
+        {
+            build_property.libdirs = libdirs_nortos;
+            build_property.includes = includes_nortos;
+            build_property.libs = libs_nortos_r5f;
+            build_property.templates = templates_nortos_dm_r5f;
+            build_property.libdirsprebuild = libdirs_prebuild_nortos;
+            build_property.libsprebuild = libs_prebuild_nortos;
+            build_property.defines = defines_nortos_dm_r5f;
+        }
     }
 
 

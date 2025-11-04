@@ -36,6 +36,7 @@ endif
 
 FILES_common := \
 	test_uart.c \
+	test_uart_mt.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -72,6 +73,9 @@ CFLAGS_common := \
 	-g \
 	-Wno-gnu-variable-sized-type-not-at-end \
 	-Wno-unused-function \
+	-DSOC_AM275X \
+	-DCPU_R5F0_0 \
+	-DCONFIG_UART_MULTI_INSTANCE_TEST_ENABLE \
 
 CFLAGS_cpp_common := \
 	-Wno-c99-designator \
@@ -95,14 +99,20 @@ LNK_FILES_common = \
 	linker.cmd \
 
 LIBS_PATH_common = \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/board/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
 	-lfreertos.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldrivers.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lboard.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lunity.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
 	-llibsysbm.a \
@@ -117,6 +127,7 @@ LFLAGS_common = \
 LIBS_NAME = \
 	freertos.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
 	drivers.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
+	board.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
 	unity.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
 	libsysbm.a \
@@ -124,8 +135,13 @@ LIBS_NAME = \
 LIBS_PREBUILD_NAME = \
 
 LIBS_PATH_NAME = \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	${CG_TOOL_ROOT}/lib \
 

@@ -38,8 +38,9 @@ ifeq ($(DEVICE_TYPE), HS)
 endif
 
 FILES_common := \
-	test_uart.c \
 	main.c \
+	test_uart.c \
+	test_uart_mt.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
 	ti_board_config.c \
@@ -60,6 +61,7 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/r5f \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
+	-I${MCU_PLUS_SDK_PATH}/source/board/lib \
 	-Igenerated \
 
 DEFINES_common := \
@@ -75,6 +77,9 @@ CFLAGS_common := \
 	-g \
 	-Wno-gnu-variable-sized-type-not-at-end \
 	-Wno-unused-function \
+	-DCONFIG_UART_MULTI_INSTANCE_TEST_ENABLE \
+	-DCPU_MCU_R5F0 \
+	-DSOC_AM62AX \
 
 CFLAGS_cpp_common := \
 	-Wno-c99-designator \
@@ -100,6 +105,7 @@ LNK_FILES_common = \
 LIBS_PATH_common = \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/board/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
@@ -107,6 +113,7 @@ LIBS_common = \
 	-lfreertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldrivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lunity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lboard.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
 	-llibsysbm.a \
 
@@ -121,12 +128,14 @@ LIBS_NAME = \
 	freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	drivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
 	libsysbm.a \
 
 LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	${CG_TOOL_ROOT}/lib \
 

@@ -39,8 +39,8 @@ ifeq ($(DEVICE_TYPE), HS)
 endif
 
 FILES_common := \
-	test_uart.c \
 	main.c \
+	test_uart.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
 	ti_board_config.c \
@@ -78,6 +78,8 @@ CFLAGS_common := \
 	-Wno-unused-but-set-variable \
 	-fdata-sections \
 	-ffunction-sections \
+	-DCPU_A53 \
+	-DSOC_AM62AX \
 
 CFLAGS_debug := \
 	-D_DEBUG_=1 \

@@ -1,8 +1,9 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62Ax" --package "AMB" --part "Default" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.15.0+2826"}
+ * @cliArgs --device "AM62Ax" --part "Default" --package "AMB" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @v2CliArgs --device "AM62A7-Q1" --package "FCBGA (AMB)" --variant "AM62A74-M" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.24.2+4234"}
  */
 
 /**
@@ -10,6 +11,15 @@
  */
 const uart       = scripting.addModule("/drivers/uart/uart", {}, false);
 const uart1      = uart.addInstance();
+const uart2      = uart.addInstance();
+const uart3      = uart.addInstance();
+const uart4      = uart.addInstance();
+const uart5      = uart.addInstance();
+const uart6      = uart.addInstance();
+const uart7      = uart.addInstance();
+const uart8      = uart.addInstance();
+const udma       = scripting.addModule("/drivers/udma/udma", {}, false);
+const udma1      = udma.addInstance();
 const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
 const mmu_armv8  = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
 const mmu_armv81 = mmu_armv8.addInstance();
@@ -20,28 +30,78 @@ const mmu_armv82 = mmu_armv8.addInstance();
  */
 uart1.$name                   = "CONFIG_UART0";
 uart1.useMcuDomainPeripherals = true;
+uart1.MCU_UART.$assign        = "MCU_USART0";
 
-debug_log.enableCssLog  = false;
-debug_log.enableUartLog = true;
-debug_log.uartLog.$name = "CONFIG_UART1";
+uart2.$name        = "CONFIG_UART2";
+uart2.intrEnable   = "DMA";
+uart2.UART.$assign = "USART1";
+
+uart3.$name        = "CONFIG_UART3";
+uart3.intrEnable   = "DMA";
+uart3.UART.$assign = "USART2";
+
+uart4.$name        = "CONFIG_UART4";
+uart4.intrEnable   = "DMA";
+uart4.UART.$assign = "USART3";
+
+uart5.$name        = "CONFIG_UART5";
+uart5.intrEnable   = "DMA";
+uart5.UART.$assign = "USART4";
+
+uart6.$name        = "CONFIG_UART6";
+uart6.intrEnable   = "DMA";
+uart6.UART.$assign = "USART5";
+
+uart7.$name        = "CONFIG_UART7";
+uart7.intrEnable   = "DMA";
+uart7.UART.$assign = "USART6";
+
+uart8.$name                      = "CONFIG_UART8";
+uart8.useWakeupDomainPeripherals = true;
+uart8.WKUP_UART.$assign          = "WKUP_USART0";
+
+udma1.$name      = "CONFIG_UDMA0";
+uart2.udmaDriver = udma1;
+udma1.instance   = "PKTDMA_0";
+uart3.udmaDriver = udma1;
+uart4.udmaDriver = udma1;
+uart5.udmaDriver = udma1;
+uart6.udmaDriver = udma1;
+uart7.udmaDriver = udma1;
+
+debug_log.enableUartLog        = true;
+debug_log.uartLog.$name        = "CONFIG_UART1";
+debug_log.uartLog.UART.$assign = "USART0";
 
 mmu_armv81.size  = 0x80000000;
-mmu_armv81.$name = "REGISTER_REGION";
+mmu_armv81.$name = "SOC_MEM_REGION";
 
-mmu_armv82.size      = 0x80000000;
 mmu_armv82.vAddr     = 0x80000000;
 mmu_armv82.pAddr     = 0x80000000;
+mmu_armv82.size      = 0x80000000;
 mmu_armv82.attribute = "MAIR7";
-mmu_armv82.$name     = "DDR";
+mmu_armv82.$name     = "DDR_REGION";
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-uart1.MCU_UART.$suggestSolution             = "MCU_USART0";
-uart1.MCU_UART.RXD.$suggestSolution         = "ball.D8";
-uart1.MCU_UART.TXD.$suggestSolution         = "ball.F8";
-debug_log.uartLog.UART.$suggestSolution     = "USART0";
-debug_log.uartLog.UART.RXD.$suggestSolution = "ball.E14";
-debug_log.uartLog.UART.TXD.$suggestSolution = "ball.D15";
+uart1.MCU_UART.RXD.$suggestSolution         = "MCU_UART0_RXD";
+uart1.MCU_UART.TXD.$suggestSolution         = "MCU_UART0_TXD";
+uart2.UART.RXD.$suggestSolution             = "I2C1_SCL";
+uart2.UART.TXD.$suggestSolution             = "I2C1_SDA";
+uart3.UART.RXD.$suggestSolution             = "GPMC0_AD8";
+uart3.UART.TXD.$suggestSolution             = "GPMC0_AD9";
+uart4.UART.RXD.$suggestSolution             = "GPMC0_AD10";
+uart4.UART.TXD.$suggestSolution             = "GPMC0_AD11";
+uart5.UART.RXD.$suggestSolution             = "GPMC0_AD12";
+uart5.UART.TXD.$suggestSolution             = "GPMC0_AD13";
+uart6.UART.RXD.$suggestSolution             = "GPMC0_AD14";
+uart6.UART.TXD.$suggestSolution             = "GPMC0_AD15";
+uart7.UART.RXD.$suggestSolution             = "GPMC0_WAIT1";
+uart7.UART.TXD.$suggestSolution             = "GPMC0_WPn";
+uart8.WKUP_UART.RXD.$suggestSolution        = "WKUP_UART0_RXD";
+uart8.WKUP_UART.TXD.$suggestSolution        = "WKUP_UART0_TXD";
+debug_log.uartLog.UART.RXD.$suggestSolution = "UART0_RXD";
+debug_log.uartLog.UART.TXD.$suggestSolution = "UART0_TXD";

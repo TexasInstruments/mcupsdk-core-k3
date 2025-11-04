@@ -45,10 +45,18 @@
             -Wno-gnu-variable-sized-type-not-at-end
             -Wno-unused-function
             -DSOC_AM275X
+            -DCPU_R5F0_0
+            -DCONFIG_UART_MULTI_INSTANCE_TEST_ENABLE
+            -DSOC_AM275X
         "
         linkerBuildOptions="
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib
             -i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib
             -i${MCU_PLUS_SDK_PATH}/source/drivers/lib
+            -i${MCU_PLUS_SDK_PATH}/source/board/lib
             -i${MCU_PLUS_SDK_PATH}/test/unity/lib
             -i${CG_TOOL_ROOT}/lib
             -m=test_uart.${ConfigName}.map
@@ -74,6 +82,7 @@
             linkerBuildOptions="
                 -lfreertos.am275x.r5f.ti-arm-clang.debug.lib
                 -ldrivers.am275x.r5f.ti-arm-clang.debug.lib
+                -lboard.am275x.r5f.ti-arm-clang.debug.lib
                 -lunity.am275x.r5f.ti-arm-clang.debug.lib
                 -llibc.a
                 -llibsysbm.a
@@ -86,6 +95,7 @@
             linkerBuildOptions="
                 -lfreertos.am275x.r5f.ti-arm-clang.release.lib
                 -ldrivers.am275x.r5f.ti-arm-clang.release.lib
+                -lboard.am275x.r5f.ti-arm-clang.release.lib
                 -lunity.am275x.r5f.ti-arm-clang.release.lib
                 -llibc.a
                 -llibsysbm.a
@@ -93,6 +103,8 @@
         ></configuration>
         <pathVariable name="MCU_PLUS_SDK_PATH" path="${COM_TI_MCU_PLUS_SDK_AMXXX_INSTALL_DIR}" scope="project" />
         <file path="../../../test_uart.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../test_uart_mt.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
         <file path="../main.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>

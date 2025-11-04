@@ -48,6 +48,7 @@ const component_file_list = [
     "test/kernel/smp_tests/task_delete/configs/.project/project.js",
     "test/drivers/i2c/test_i2c_fault_inject/configs/.project/project_am62dx.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
+    "test/drivers/uart/test_uart_fault_inject/configs/.project/project.js",
 ];
 
 // List of components where makefile is not generated.
@@ -307,6 +308,7 @@ const example_file_list = [
     "test/drivers/sciclient/sciclient_get_version/.project/project.js",
     "test/drivers/sciclient/sciclient_interrupt_mode/.project/project.js",
 	"test/drivers/uart/.project/project.js",
+    "test/drivers/uart/test_uart_fault_inject/.project/project.js",
     "test/drivers/udma/.project/project.js",
     "test/drivers/udma/test_udma_fault_inject/.project/project.js",
 	"test/drivers/mcspi/mcspi/.project/project.js",

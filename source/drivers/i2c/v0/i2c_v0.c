@@ -747,16 +747,26 @@ static int32_t I2C_primeTransfer(   I2C_Handle handle,
 #if !defined(I2C_TARGET_MODE_DISABLE)
     else
     {
-        i2cLldHandle->i2cTargetTransaction.writeBuf = (uint8_t*)transaction->writeBuf;
-        i2cLldHandle->i2cTargetTransaction.writeCount = (uint32_t)transaction->writeCount;
+        if (hwAttrs->enableIntr)
+        {
+            i2cLldHandle->i2cTargetTransaction.writeBuf = (uint8_t*)transaction->writeBuf;
+            i2cLldHandle->i2cTargetTransaction.writeCount = (uint32_t)transaction->writeCount;
 
-        i2cLldHandle->i2cTargetTransaction.readBuf = (uint8_t*)transaction->readBuf;
-        i2cLldHandle->i2cTargetTransaction.readCount = (uint32_t)transaction->readCount;
+            i2cLldHandle->i2cTargetTransaction.readBuf = (uint8_t*)transaction->readBuf;
+            i2cLldHandle->i2cTargetTransaction.readCount = (uint32_t)transaction->readCount;
 
-        i2cLldHandle->i2cTargetTransaction.timeout = transaction->timeout;
-        i2cLldHandle->i2cTargetTransaction.expandSA = transaction->expandSA;
+            i2cLldHandle->i2cTargetTransaction.timeout = transaction->timeout;
+            i2cLldHandle->i2cTargetTransaction.expandSA = transaction->expandSA;
 
-        status = I2C_lld_targetTransferIntr(i2cLldHandle, &(i2cLldHandle->i2cTargetTransaction));
+            status = I2C_lld_targetTransferIntr(i2cLldHandle, &(i2cLldHandle->i2cTargetTransaction));
+        }
+        else
+        {
+            /* Polling mode is not supported in target Mode */
+            status = SystemP_FAILURE;
+            object->currentTransaction->status = status;
+        }
+
     }
 #endif
 
@@ -855,6 +865,7 @@ static int32_t I2C_mem_primeTransfer(   I2C_Handle handle,
     /* Target Mode */
     else
     {
+        /* Polling mode is not supported in target Mode */
         object->currentTransaction->status = SystemP_FAILURE;
         status = I2C_STS_ERR;
     }

@@ -171,10 +171,10 @@ Download and install PSDK Linux on **${HOME}/ti** directory corresponding to the
 
 **Option2: Download and install dependencies manually:**
 
-1. Download and install Code Composer Studio v20.2.0 from [here](https://www.ti.com/tool/download/CCSTUDIO "Code Composer Studio")
+1. Download and install Code Composer Studio v20.3.1 from [here](https://www.ti.com/tool/download/CCSTUDIO "Code Composer Studio")
    - Install at default folder, $HOMEC/ti
 
-2. Download and install SysConfig 1.24.0 from [here](https://www.ti.com/tool/download/SYSCONFIG "SYSCONFIG")
+2. Download and install SysConfig 1.24.2 from [here](https://www.ti.com/tool/download/SYSCONFIG "SYSCONFIG")
    - Install at default folder, $HOMEC/ti
 
 3. Download and install ARM-CGT-CLANG 4.0.1 from [here](https://www.ti.com/tool/download/ARM-CGT-CLANG "ARM-CGT-CLANG")

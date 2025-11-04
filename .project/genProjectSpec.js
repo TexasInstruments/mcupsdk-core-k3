@@ -189,11 +189,11 @@ const utils = {
     },
 
     getSysCfgVersionProjectSpec: () => {
-        return "1.24.0";
+        return "1.24.2";
     },
 
     getCCSVersionProjectSpec: () => {
-        return "2020";
+        return "2031";
     },
 
     getTiClangVersionProjectSpec: () => {

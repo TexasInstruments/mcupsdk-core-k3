@@ -45,7 +45,7 @@ const driverVer = {
         version: "v0",
     },
     "mmcsd": {
-        version: "v1",
+        version: "v0",
     },
     "ddr": {
         version: "v0",

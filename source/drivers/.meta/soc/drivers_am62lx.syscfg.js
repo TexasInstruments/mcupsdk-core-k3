@@ -39,7 +39,7 @@ const driverVer = {
         version: "v0",
     },
     "mmcsd": {
-        version: "v1",
+        version: "v0",
     },
     "ospi": {
         version: "v0",

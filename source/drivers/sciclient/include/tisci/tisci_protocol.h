@@ -149,6 +149,8 @@ struct tisci_sec_header {
 #define TISCI_MSG_SET_CLOCK_PARENT              (0x0102U)
 #define TISCI_MSG_GET_CLOCK_PARENT              (0x0103U)
 #define TISCI_MSG_GET_NUM_CLOCK_PARENTS         (0x0104U)
+#define TISCI_MSG_SET_CLOCK_SSC                 (0x010aU)
+#define TISCI_MSG_GET_CLOCK_SSC                 (0x010bU)
 #define TISCI_MSG_SET_FREQ                      (0x010cU)
 #define TISCI_MSG_QUERY_FREQ                    (0x010dU)
 #define TISCI_MSG_GET_FREQ                      (0x010eU)
@@ -402,8 +404,8 @@ struct tisci_sec_header {
  */
 #define TISCI_MSG_MCELF_PROC_AUTH_BOOT_FINISH        (0xC124U)
 
-/** Message to R/W MSMC timeout gasket configuration registers */
-#define TISCI_MSG_CONFIGURE_MSMC_GASKET        (0xC125U)
+/** Message to R/W to compute cluster configuration registers */
+#define TISCI_MSG_CONFIGURE_CC_REGISTER        (0xC125U)
 
 /* RM IDs */
 

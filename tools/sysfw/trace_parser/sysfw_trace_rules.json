@@ -4492,6 +4492,30 @@
                        }
                     ]
                 },
+                "0x19": {
+                    "action_long": "Clock SSC has been Enabled",
+                    "action_short": "CLOCK_ENABLE_SSC",
+                    "msg_data": [
+                        {
+                            "fmt": "%d",
+                            "higher_bit": 21,
+                            "lower_bit": 0,
+                            "name": "Clock ID"
+                        }
+                    ]
+                },
+                "0x1A": {
+                    "action_long": "Clock SSC has been Disabled",
+                    "action_short": "CLOCK_DISABLE_SSC",
+                    "msg_data": [
+                        {
+                            "fmt": "%d",
+                            "higher_bit": 21,
+                            "lower_bit": 0,
+                            "name": "Clock ID"
+                        }
+                    ]
+                },
                 "0x20": {
                     "action_long": "Power Management Initialization",
                     "action_short": "PM_INIT",

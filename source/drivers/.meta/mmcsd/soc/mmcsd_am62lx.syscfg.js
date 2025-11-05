@@ -10,6 +10,7 @@ const mmcsd_config_a53ss = [
 		inputClkFreq      : mmcsd_input_clk_freq,
 		intrNum           : 271,
 		busWidth          : "MMCSD_BUS_WIDTH_8BIT",
+        phyType           : "MMCSD_PHY_TYPE_SW_PHY",
 		tuningType        : "MMCSD_PHY_TUNING_TYPE_AUTO", /* Make this configurable later */
 		clockIds          : [ "AM62LX_DEV_MMCSD0" ],
 		clockFrequencies  : [
@@ -27,6 +28,7 @@ const mmcsd_config_a53ss = [
 		inputClkFreq      : mmcsd_input_clk_freq,
 		intrNum           : 269,
 		busWidth          : "MMCSD_BUS_WIDTH_4BIT",
+        phyType           : "MMCSD_PHY_TYPE_SW_PHY",
 		tuningType        : "MMCSD_PHY_TUNING_TYPE_AUTO", /* Make this configurable later */
 		clockIds          : [ "AM62LX_DEV_MMCSD1" ],
 		clockFrequencies  : [

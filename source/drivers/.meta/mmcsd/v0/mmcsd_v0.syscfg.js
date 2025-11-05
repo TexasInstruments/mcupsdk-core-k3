@@ -225,12 +225,10 @@ function getConfigurables()
             onChange: function (inst, ui) {
                 if(inst.moduleSelect == "MMC0") {
                     inst.cardType = "EMMC";
-                    inst.phyType = "HW_PHY";
                     ui.modeSelectEMMC.hidden = false;
                     ui.modeSelectSD.hidden = true;
                 } else {
                     inst.cardType = "SD";
-                    inst.phyType = "SW_PHY";
                     ui.modeSelectSD.hidden = false;
                     ui.modeSelectEMMC.hidden = true;
                 }
@@ -283,18 +281,6 @@ function getConfigurables()
             default: true,
             hidden: true,
         },
-        {
-            name: "phyType",
-            displayName: "PHY Type",
-            longDescription: "Select the PHY buffers type associated with the selected MMCSD module. The PHY buffers are fixed in the hardware so the option is not configurable. It must be set to HW_PHY for MMC0 and SW_PHY for MMC1.",
-            options: [
-                { name: "HW_PHY" },
-                { name: "SW_PHY" },
-                { name: "NO_PHY" },
-            ],
-            default: "HW_PHY",
-            hidden: false,
-        },
     )
 
     if(common.isDMWithBootSupported())
@@ -315,12 +301,10 @@ function getConfigurables()
                 onChange: function (inst, ui) {
                     if(inst.moduleSelect == "MMC") {
                         inst.cardType = "EMMC";
-                        inst.phyType = "HW_PHY";
                         ui.modeSelectEMMC.hidden = false;
                         ui.modeSelectSD.hidden = true;
                     } else {
                         inst.cardType = "SD";
-                        inst.phyType = "SW_PHY";
                         ui.modeSelectSD.hidden = false;
                         ui.modeSelectEMMC.hidden = true;
                     }

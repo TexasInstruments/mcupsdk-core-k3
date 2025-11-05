@@ -52,6 +52,8 @@
 /*                                Macros                                      */
 /* ========================================================================== */
 
+#define MTOG_VALID_INST     1U
+
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -68,6 +70,8 @@ static int32_t MTOG_errNegativeTest(uint32_t instanceIndex)
 {
     int32_t retVal, testResult = 0;
     SDL_MTOG_Regs *regs;
+    SDL_MTOG_Regs *validRegs;
+    uint32_t validAddr=0x0u;
 	uint32_t baseAddr;
     regs  = (SDL_MTOG_Regs *)SDL_MTOG_getBaseaddr(instanceIndex, &baseAddr);
     SDL_MTOG_config config;
@@ -105,14 +109,16 @@ static int32_t MTOG_errNegativeTest(uint32_t instanceIndex)
     }
     if (testResult == SDL_PASS)
     {
-        SDL_MTOG_start(instanceIndex);
-        retVal = SDL_MTOG_setTimeoutVal(regs, SDL_MTOG_VAL_2M);
+        SDL_MTOG_getBaseaddr(MTOG_VALID_INST, &validAddr);
+        validRegs = (SDL_MTOG_Regs *)(validAddr);
+        SDL_MTOG_start(MTOG_VALID_INST);
+        retVal = SDL_MTOG_setTimeoutVal(validRegs, SDL_MTOG_VAL_2M);
         if (retVal == SDL_PASS)
         {
             DebugP_log("\r\n  SDL_MTOG_setTimeoutVal error test failed on line no: %d \r\n", __LINE__);
             testResult = -1;
         }
-        SDL_MTOG_stop(instanceIndex);
+        SDL_MTOG_stop(MTOG_VALID_INST);
     }
     if (testResult == SDL_PASS)
     {

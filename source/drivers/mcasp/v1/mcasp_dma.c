@@ -982,13 +982,20 @@ void MCASP_disableDmaTx(MCASP_Config *config)
     int32_t status = SystemP_SUCCESS;
     MCASP_Object *obj = NULL;
     Udma_ChHandle txChHandle = NULL;
+    uint8_t chanEnStatus;
 
     if(NULL != config)
     {
         obj = config->object;
         txChHandle = obj->dmaChCfg->txChHandle;
 
-        status = Udma_chReset(txChHandle);
+        status = Udma_chGetChanEnStatus(txChHandle, &chanEnStatus);
+        DebugP_assert(UDMA_SOK == status);
+        if(chanEnStatus == 1U)
+        {
+            /* Disable Channel */
+            status = Udma_chDisable(txChHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT);
+        }
 
         while(TRUE)
         {
@@ -999,6 +1006,12 @@ void MCASP_disableDmaTx(MCASP_Config *config)
             {
                 break;
             }
+        }
+
+        /* Reset the tx channel if channel teardown fails */
+        if(SystemP_SUCCESS != status)
+        {
+            status = Udma_chReset(txChHandle);
         }
 
         /* Set lastPlayed index as MCASP_TX_DMA_RING_ELEM_CNT-1. (So on playing first TRPD will be updated to 0) */

@@ -48,7 +48,7 @@
  * This example demonstrates how to trigger entry to partial IO or IO retention low power mode on the MCU
  * R5 core
  * Key Features:
- * - Enables MCU MCAN IO activity as wakeup source.
+ * - Enables MCU MCAN / MCU UART IO activity as wakeup source.
  * - Waits to receive a character on UART.
  * - If the character received is "P", then it requests device manager core to initiate low power mode entry.
  */
@@ -71,6 +71,7 @@ UART_Transaction gLpmTrans;
 SemaphoreP_Object gLpmPartialIO;
 uint8_t gLpmRxByte;
 
+#ifdef SOC_AM275X
 static Pinmux_PerCfg_t gPinMuxWakeupEnableCfg[] = {
 
                              /* MCAN0_RX -> MCU_GPIO0_6 (B4) */
@@ -86,6 +87,24 @@ static Pinmux_PerCfg_t gPinMuxWakeupEnableCfg[] = {
 
     {PINMUX_END, 0U}
 };
+#elif defined(SOC_AM62DX)
+static Pinmux_PerCfg_t gPinMuxWakeupEnableCfg[] = {
+
+    /* MCU_USART0 pin config */
+            /* MCU_UART0_RXD -> MCU_UART0_RXD (D8) */
+    {
+        PIN_MCU_UART0_RXD,
+        ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE | PIN_WAKEUP_ENABLE )
+    },
+            /* MCU_UART0_TXD -> MCU_UART0_TXD (F8) */
+    {
+        PIN_MCU_UART0_TXD,
+        ( PIN_MODE(0) | PIN_PULL_DISABLE )
+    },
+
+    {PINMUX_END, 0U}
+};
+#endif
 
 /* ========================================================================== */
 /*                          Function Declarations                             */

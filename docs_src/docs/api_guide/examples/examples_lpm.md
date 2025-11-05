@@ -21,3 +21,12 @@ activity on MCAN pins.
 -# MCAN
    -# \subpage EXAMPLES_LPM_IO_RETENTION_MCAN_WAKEUP
 \endcond
+
+\cond  SOC_AM62DX
+
+This page lists the example on how to enter IO Retention / Partial
+IO low power mode on console key press and then wakeup on pin
+activity on MCU UART pins.
+-# MCU UART
+   -# \subpage EXAMPLES_LPM_IO_RETENTION_UART_WAKEUP
+\endcond

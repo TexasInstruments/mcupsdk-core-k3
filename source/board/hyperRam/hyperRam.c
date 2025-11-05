@@ -50,6 +50,7 @@
 #include <drivers/utils/utils.h>
 #include <kernel/dpl/CacheP.h>
 #include <kernel/dpl/ClockP.h>
+#include <kernel/dpl/HwiP.h>
 #include <kernel/dpl/SemaphoreP.h>
 /* This is needed for memset/memcpy */
 #include <string.h>
@@ -370,6 +371,7 @@ static void HyperRam_getDeviceID(HYPERRAM_Handle handle, uint32_t baseAddress)
     uint16_t CR1 = 0U;
     uint16_t ID0 = 0U;
     uint16_t ID1 = 0U;
+    uintptr_t key;
 
     if(hyperBusAttrs->enableEccFlag == TRUE)
     {
@@ -380,6 +382,12 @@ static void HyperRam_getDeviceID(HYPERRAM_Handle handle, uint32_t baseAddress)
 
     /* Set target to Register Space */
     CSL_REG32_FINS(&hyperBusCoreRegs->MCR[chipSelect], HYPERBUS_CORE_MCR_CRT, HYPERBUS_MCR_CR_SPACE);
+
+    /* Disable Interurpts */
+    key = HwiP_disable();
+
+    CacheP_disable(CacheP_TYPE_ALL);
+    Utils_dataAndInstructionBarrier();
 
     CSL_REG16_WR_RAW((uint16_t *)(baseAddress + HYPERRAM_CR0_OFFSET), attrs->CR0);
 
@@ -394,6 +402,12 @@ static void HyperRam_getDeviceID(HYPERRAM_Handle handle, uint32_t baseAddress)
 
     ID1 = CSL_REG16_RD_RAW((uint16_t *)(baseAddress + HYPERRAM_ID1_OFFSET));
     DebugP_assert(ID1 == attrs->ID1);
+
+    CacheP_enable(CacheP_TYPE_ALL);
+    Utils_dataAndInstructionBarrier();
+
+    /* Re-enable interrupts */
+    HwiP_restore(key);
 
     /* Set target to Memory Space */
     CSL_REG32_FINS(&hyperBusCoreRegs->MCR[chipSelect], HYPERBUS_CORE_MCR_CRT, HYPERBUS_MCR_MEM_SPACE);

@@ -19231,40 +19231,6 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "This example verifies the Pok CPU is R5FSS0-0 running FREERTOS.",
-        "name": "pok_app",
-        "location": "../../examples/sdl/pok/pok_mcu/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
-        "devtools": [
-            "SK-AM62B",
-            "SK-AM62B-P1"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "ticlang"
-        ],
-        "subCategories": [
-            "sdl",
-            "pok",
-            "pok_mcu",
-            "r5fss0-0_freertos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.general"
-        ],
         "description": "This example performes ROM CHECKSUM CPU is R5FSS0-0 running FREERTOS.",
         "name": "rom_checksum_example",
         "location": "../../examples/sdl/rom_checksum/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",

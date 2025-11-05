@@ -1304,14 +1304,18 @@ int32_t I2C_lld_recoverBus(I2CLLD_Handle handle, uint32_t i2cDelay)
 
             for (i = 0; i < 9U; i++)
             {
-                sysTest = (I2C_SYSTEST_SCL_O_SCLOH << I2C_SYSTEST_SCL_O_SHIFT);
+                sysTest |= ((uint32_t)I2C_SYSTEST_SCL_O_SCLOH << (uint32_t)I2C_SYSTEST_SCL_O_SHIFT);
                 I2CControllerSetSysTest(object->baseAddr, sysTest);
                 object->Clock_uSleep(i2cDelay);
 
-                sysTest = (I2C_SYSTEST_SCL_O_SCLOL << I2C_SYSTEST_SCL_O_SHIFT);
+                sysTest &= ~((uint32_t)I2C_SYSTEST_SCL_O_SCLOH << (uint32_t)I2C_SYSTEST_SCL_O_SHIFT);
                 I2CControllerSetSysTest(object->baseAddr, sysTest);
                 object->Clock_uSleep(i2cDelay);
             }
+
+            sysTest |= ((uint32_t)I2C_SYSTEST_SCL_O_SCLOH << (uint32_t)I2C_SYSTEST_SCL_O_SHIFT);
+            sysTest |= ((uint32_t)I2C_SYSTEST_SDA_O_SDAOH << (uint32_t)I2C_SYSTEST_SDA_O_SHIFT);
+            I2CControllerSetSysTest(object->baseAddr, sysTest);
 
             /* Switch back to functional mode */
             sysTest = (I2C_SYSTEST_ST_EN_DISABLE << I2C_SYSTEST_ST_EN_SHIFT);

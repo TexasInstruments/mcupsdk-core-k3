@@ -699,7 +699,6 @@ int32_t HYPERBUS_configureECC(HYPERBUS_Handle handle)
              * - startAddr is 0xFFFF0000U (special disabled value from config template used as default value)
              */
             if ((gHyperBusEccRegion[i].size != 0U) &&
-                (gHyperBusEccRegion[i].startAddr > 0U) &&
                 (gHyperBusEccRegion[i].startAddr != 0xFFFF0000U))
             {
                 /* Return failure if size and startAddr are exceeding the device size */

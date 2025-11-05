@@ -56,7 +56,7 @@
 	SDL_ESM_Inst gInstances_name[] = {SDL_ESM_INST_WKUP_ESM0};
 #endif
 #if defined (R5F_CORE)
-       SDL_ESM_Inst gInstances_name[] = {SDL_ESM_INST_MAIN_ESM0};
+    SDL_ESM_Inst gInstances_name[] = {SDL_ESM_INST_MAIN_ESM0};
 #endif
 static pSDL_DPL_HwipHandle SDL_ESM_HiHwiPHandle;
 static pSDL_DPL_HwipHandle SDL_ESM_LoHwiPHandle;
@@ -603,25 +603,29 @@ int32_t SDL_ESM_registerECCCallback(SDL_ESM_Inst esmInstType,uint32_t eventBitma
  */
  int32_t SDL_ESM_init(SDL_ESM_Inst instance, const SDL_ESM_config *pConfig, SDL_ESM_applicationCallback applicationCallback, void *appArg)
  {
-     int32_t retval;
-     if (applicationCallback == NULL)
-     {
+    int32_t retval;
+    if (applicationCallback == NULL)
+    {
         retval = SDL_EBADARGS;
-     }
-     else
+    }
+    else
     {
         retval = ESM_init(instance,pConfig,applicationCallback,appArg);
-     }
+    }
 
     if (retval == SDL_PASS)
     {
-
-        /**
-         * ESM_init validates the instance before reaching Esmhandlerinit
-	     */
-        retval = Esmhandlerinit(instance);
+        uint32_t instances_name_size = sizeof(gInstances_name)/sizeof(SDL_ESM_Inst);
+        for (uint32_t i = 0; i < instances_name_size; i++)
+        {
+            if (gInstances_name[i] == instance)
+            {
+                retval = Esmhandlerinit(instance);
+                break;
+            }
+        }
     }
-     return retval;
+    return retval;
  }
 
 /**

@@ -723,7 +723,7 @@ int32_t SDL_ESM_runNegativeTests(void)
         if (SDL_ESM_setMode(0U, ESM_OPERATION_MODE_ERROR_FORCE) != SDL_EBADARGS)
         {
             testStatus = SDL_APP_TEST_FAILED;
-            DebugP_log("sdlEsm_apiTest: failure on line no. %d \r\n", __LINE__);
+            DebugP_log("sdlEsm_negTest: failure on line no. %d \r\n", __LINE__);
         }
     }
 

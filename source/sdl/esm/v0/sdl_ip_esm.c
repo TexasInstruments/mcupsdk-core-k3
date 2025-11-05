@@ -950,9 +950,7 @@ int32_t SDL_ESM_reset(uint32_t baseAddr)
     int32_t  retVal = SDL_EBADARGS;
     if (baseAddr != ((uint32_t) (0u)))
     {
-        HW_WR_FIELD32(baseAddr +SDL_ESM_SFT_RST,
-                      SDL_ESM_SFT_RST_KEY,
-                      ESM_SFT_RST_KEY_RESET_VAL);
+        HW_WR_REG32(baseAddr+SDL_ESM_SFT_RST, ESM_SFT_RST_KEY_RESET_VAL);
         retVal = SDL_PASS;
     }
     return retVal;

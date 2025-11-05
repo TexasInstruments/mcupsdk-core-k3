@@ -1495,6 +1495,9 @@ int32_t SDL_ESM_runPositiveTests(void)
         pConfig_test.esmErrorConfig.bitNumber = 6;
         pConfig_test.esmErrorConfig.groupNumber = 1;
 
+        /* First, reset the WKUP ESM instance so we don't have any pending interrupts */
+        retValue = SDL_ESM_reset(SDL_WKUP_ESM0_CFG_BASE);
+
         retValue = SDL_ESM_init(test_instance,&pConfig,SDL_ESM_applicationCallbackFunction,&apparg);
 
         if(retValue != SDL_PASS)
@@ -1517,7 +1520,7 @@ int32_t SDL_ESM_runPositiveTests(void)
         /* Test case: PROC_SDL-2013 */
         if (SDTF_runESMInjectHigh_MAIN() != SDL_PASS)
         {
-            DebugP_log("SDLEsm_negTest: failure on line no. %d \r\n", __LINE__);
+            DebugP_log("SDLEsm_PosTest: failure on line no. %d \r\n", __LINE__);
             testStatus = SDL_APP_TEST_FAILED;
         }
     }
@@ -1705,15 +1708,26 @@ static int32_t SDTF_runESMInjectInstance(SDL_ESM_Inst esmType,
     {
         DebugP_log("\r\n ESM inject test for Esm instance %d Done", esmType);
     }
-    SDL_ESM_clrNError(esmType);
+    uint32_t   esmInstBaseAddr;
+    if (retVal == 0)
+    {
+        SDL_ESM_getBaseAddr(esmType, &esmInstBaseAddr);
+        result = SDL_ESM_clearIntrStatus(esmInstBaseAddr, groupNumber*32+bitNumber);
+        if (result != SDL_PASS)
+        {
+            DebugP_log("\r\n ESM clear interrupt test for Esm instance %d failed", esmType);
+            retVal = -1;
+        }
+    }
     return retVal;
 }
 
 int32_t SDTF_runESMInjectHigh_MAIN(void)
 {
     int32_t retVal = 0;
+    /* First, reset the MAIN ESM instance so we don't have any pending interrupts */
+    retVal = SDL_ESM_reset(SDL_ESM0_CFG_BASE);
     esm_init_appcb(SDL_ESM_INST_MAIN_ESM0);
     retVal = SDTF_runESMInjectInstance(SDL_ESM_INST_MAIN_ESM0, 3, 0);
-    SDL_ESM_clrNError(SDL_ESM_INST_MAIN_ESM0);
     return retVal;
 }

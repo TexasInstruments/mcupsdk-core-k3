@@ -36,7 +36,6 @@
 #include "ti_board_open_close.h"
 #include "ti_board_config.h"
 #include <drivers/bootloader.h>
-#include <kernel/dpl/CacheP.h>
 
 
 
@@ -48,7 +47,6 @@
 #define BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_START       0xA0340000
 #define BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_LENGTH      0x200000
 
-CacheP_Config gCacheConfig = {};
 
 /* This buffer needs to be defined for GPMC nand boot in case of HS device for image authentication.
  * The size of the buffer should be large enough to accomodate the appimage.

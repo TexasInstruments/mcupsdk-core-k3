@@ -38,8 +38,6 @@
 #include <drivers/bootloader.h>
 #include <drivers/pinmux.h>
 #include <drivers/gtc.h>
-#include <kernel/dpl/CacheP.h>
-
 
 /* This start address and length depends upon the linker memory for second stage SBL.
    It is necessary to change the below start address and length if in case the linker
@@ -48,8 +46,6 @@
 
 #define BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_START       0xA0340000
 #define BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_LENGTH      0x200000
-
-CacheP_Config gCacheConfig = {};
 
 /* This buffer needs to be defined for OSPI nand boot in case of HS device for
    image authentication

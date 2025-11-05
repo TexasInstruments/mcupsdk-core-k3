@@ -341,7 +341,7 @@ int main()
     /* Call DPL deinit to close the tick timer and disable interrupts before jumping to Stage2*/
     Dpl_deinit();
 
-    Bootloader_JumpSelfCpu();
+    Bootloader_socCpuResetReleaseSelf();
 
     Board_driversClose();
     Drivers_close();

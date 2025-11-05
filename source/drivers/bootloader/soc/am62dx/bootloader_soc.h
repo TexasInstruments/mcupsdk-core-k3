@@ -303,4 +303,12 @@ uint32_t Bootloader_socIsMCUResetIsoEnabled();
  *
  */
 void Bootloader_socCpuPowerOff(uint32_t cpuId);
+
+/**
+ * \brief Clear IO isolation if LPM exit is detected. As the wake pad number
+ *  gets cleared after removing isolation, it is saved in MMR for later use
+ *
+ * \return SystemP_SUCCESS on success, else failure
+ */
+int32_t Bootloader_socClrIOIsolationOnLPMExit(void);
 #endif /* BOOTLOADER_SOC_AM64X_H_ */

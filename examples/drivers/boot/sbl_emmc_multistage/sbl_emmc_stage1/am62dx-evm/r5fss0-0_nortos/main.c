@@ -116,6 +116,9 @@ int main()
 
     Bootloader_profileReset();
 
+    status = Bootloader_socClrIOIsolationOnLPMExit();
+    DebugP_assertNoLog(status == SystemP_SUCCESS);
+
     Bootloader_socWaitForFWBoot();
     status = Bootloader_socOpenFirewalls();
 

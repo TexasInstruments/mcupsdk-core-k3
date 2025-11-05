@@ -217,6 +217,9 @@ int main()
     uint8_t noOfFiles = 0;
     Bootloader_profileReset();
 
+    status = Bootloader_socClrIOIsolationOnLPMExit();
+    DebugP_assertNoLog(status == SystemP_SUCCESS);
+
     Bootloader_socWaitForFWBoot();
     status = Bootloader_socOpenFirewalls();
 

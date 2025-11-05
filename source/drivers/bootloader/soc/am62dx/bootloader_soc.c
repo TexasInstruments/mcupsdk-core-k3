@@ -51,6 +51,29 @@
 #define BOOTLOADER_SYS_STATUS_DEV_TYPE_TEST    (0x05U)
 #define BOOTLOADER_SYS_STATUS_DEV_SUBTYPE_FS   (0x00000A00U)
 
+/* WKUP CTRL MMR partition in which registers required to remove isolation are present */
+#define BOOTLOADER_WKUP_CTRL_MMR_PARTITION_6                       (6U)
+#define BOOTLOADER_WKUP_CTRL_MMR_PARTITION_7                       (7U)
+
+/* MCU PADCONFIG5-PADCONFIG16 can act as a wakeup source */
+#define BOOTLOADER_MCU_PADCFG_IORET_WKUP_PAD_NUM_OFFSET            (5U)
+#define BOOTLOADER_MCU_PADCFG_PMUX_OFFSET                          (0x4000U)
+#define BOOTLOADER_MCU_PADCFG_IORET_WKUP_SRC_START_ADDR            (CSL_WKUP_PADCFG_CTRL0_CFG0_BASE + BOOTLOADER_MCU_PADCFG_PMUX_OFFSET + (BOOTLOADER_MCU_PADCFG_IORET_WKUP_PAD_NUM_OFFSET * 4U))
+#define BOOTLOADER_MCU_PADCFG_IORET_WKUP_SRC_PAD_COUNT             (12U)
+
+/* PADCFG bit that gets set when wakeup event is detected */
+#define BOOTLOADER_PADCFG_WKUP_EVT_MASK                            (0x40000000U)
+
+/* Magic word used to set or remove IO retention from CANUART pins */
+#define BOOTLOADER_CANUART_IO_MAGIC_WORD                           (0x2AAAAAAAU)
+
+/* Max timeout value to clear CANUART IOs isolation */
+#define BOOTLOADER_CANUART_STAT_MAX_TIMEOUT_VALUE                  (10000U)
+
+/* Backup register 0 offset */
+#define BOOTLOADER_BACKUP_REG_0_OFFSET                              (0U)
+#define BOOTLOADER_BACKUP_REG_INVALID_PIN                           (0xFFU)
+
 Bootloader_resMemSections gResMemSection =
 {
     .numSections    = 1,
@@ -312,6 +335,11 @@ static int32_t Bootloader_socOpenFirewallRegion(uint16_t fwl, uint16_t region, u
     status = Sciclient_firewallSetRegion(&fwl_set_req, &fwl_set_resp, SystemP_TIMEOUT);
 
     return status;
+}
+
+static bool Bootloader_socDetectLPMExit(void)
+{
+    return (CSL_REG32_RD(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_CANUART_WAKE_STAT1) & CSL_WKUP_CTRL_MMR_CFG0_CANUART_WAKE_STAT1_CANUART_IO_MODE_MASK);
 }
 
 uint32_t Bootloader_socRprcToCslCoreId(uint32_t rprcCoreId)
@@ -1236,4 +1264,82 @@ void Bootloader_socCpuPowerOff(uint32_t cpuId)
             break;
     }
 
+}
+
+int32_t Bootloader_socClrIOIsolationOnLPMExit(void)
+{
+    uint32_t i = 0U;
+    volatile uint32_t reg = 0U;
+    uint32_t timeoutCount = 0U;
+    int32_t status = SystemP_FAILURE;
+    uint32_t padNum = 0U;
+
+    if (Bootloader_socDetectLPMExit() == true)
+    {
+        SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, BOOTLOADER_WKUP_CTRL_MMR_PARTITION_6);
+        SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP, BOOTLOADER_WKUP_CTRL_MMR_PARTITION_7);
+
+        /* PAD based IO Retention wakeup */
+        for (i = 0U; i < BOOTLOADER_MCU_PADCFG_IORET_WKUP_SRC_PAD_COUNT; i++)
+        {
+            if (((CSL_REG32_RD(BOOTLOADER_MCU_PADCFG_IORET_WKUP_SRC_START_ADDR + (i * 4U))) & BOOTLOADER_PADCFG_WKUP_EVT_MASK) == BOOTLOADER_PADCFG_WKUP_EVT_MASK)
+            {
+                padNum = i + BOOTLOADER_MCU_PADCFG_IORET_WKUP_PAD_NUM_OFFSET;
+                break;
+            }
+        }
+
+        /* If no PAD has wakeup status set, update the value to indicate failure */
+        if (padNum == 0U)
+        {
+            padNum = BOOTLOADER_BACKUP_REG_INVALID_PIN;
+        }
+
+        /* Log the wakeup reason in MMR */
+        CSL_REG32_WR(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_BACKUP_REG(BOOTLOADER_BACKUP_REG_0_OFFSET), padNum);
+
+        /* Program magic word */
+        reg = CSL_FMK(WKUP_CTRL_MMR_CFG0_CANUART_WAKE_CTRL_MW, BOOTLOADER_CANUART_IO_MAGIC_WORD);
+        CSL_REG32_WR(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_CANUART_WAKE_CTRL, reg);
+
+        /* Dummy read to ensure sequence ordering */
+        CSL_REG32_RD(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_CANUART_WAKE_CTRL);
+
+        /* Set load enable bit. */
+        reg |= CSL_FMK(WKUP_CTRL_MMR_CFG0_CANUART_WAKE_CTRL_MW_LOAD_EN, 1U);
+        CSL_REG32_WR(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_CANUART_WAKE_CTRL, reg);
+
+        /* Dummy read to ensure sequence ordering */
+        CSL_REG32_RD(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_CANUART_WAKE_CTRL);
+
+        /* Clear load enable bit. */
+        reg &= ~CSL_FMK(WKUP_CTRL_MMR_CFG0_CANUART_WAKE_CTRL_MW_LOAD_EN, 1U);
+        CSL_REG32_WR(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_CANUART_WAKE_CTRL, reg);
+
+        /* Dummy read to ensure sequence ordering */
+        CSL_REG32_RD(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_CANUART_WAKE_CTRL);
+
+        /* Wait for the de-isolation to be completed */
+        while(timeoutCount < BOOTLOADER_CANUART_STAT_MAX_TIMEOUT_VALUE)
+        {
+            if(((CSL_REG32_RD(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_CANUART_WAKE_STAT1)) & CSL_WKUP_CTRL_MMR_CFG0_CANUART_WAKE_STAT1_CANUART_IO_MODE_MASK) == 0U)
+            {
+                    status = SystemP_SUCCESS;
+                    break;
+            }
+            timeoutCount++;
+        }
+
+        /* Reset magic word and load enable */
+        CSL_REG32_WR(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_CANUART_WAKE_CTRL, 0U);
+
+        SOC_controlModuleLockMMR(SOC_DOMAIN_ID_WKUP, BOOTLOADER_WKUP_CTRL_MMR_PARTITION_6);
+        SOC_controlModuleLockMMR(SOC_DOMAIN_ID_WKUP, BOOTLOADER_WKUP_CTRL_MMR_PARTITION_7);
+    }
+    else
+    {
+        status = SystemP_SUCCESS;
+    }
+
+    return status;
 }

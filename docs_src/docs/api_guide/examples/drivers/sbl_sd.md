@@ -4,9 +4,23 @@
 
 # Introduction
 
-\if SOC_AM62AX || SOC_AM62DX
+\if (SOC_AM62AX || SOC_AM62DX)
 
 This bootloader does SOC initializations and attempts to boot MCU R5 image by the name "app", DM R5 image by the name "dm", A53 image by the name "app_a53" and C7x image by the name "app_dsp" present in the first FAT partition found in the connected SD card. The file can be copied to the SD card by connecting it to the host PC using a card reader. Make sure that the images are named without any file extension. If the card is new, make sure that it is formatted with FAT32/16.
+\cond SOC_AM62DX
+ SBL reads the CANUART_WAKE_STAT1 MMR in wakeup control MMR to detect partial IO (or IO retention) mode exit. If exit is detected, then SBL will save the wake reason, that is the pad number that triggered the wakeup in BACKUP MMR0 of wakeup control MMR and clear isolation from the pins. Then, it continues the boot.
+
+ The pad number read from BACKUP MMR0 can be interpreted as follows
+
+ Pad Number | Interpretation
+ -----------|---------------
+ 255        | Partial I/O resume but no pad is detected
+ 5 - 16     | Partial I/O resume with valid pad detected
+ 0          | Normal boot
+
+\note Please refer device datasheet to map the pad number to pin that caused the wakeup.
+
+\endcond
 
 If the appimage files are found at the location, the SBL reads the files into a buffer, parses it. Each core is then initialized, RPRC image is loaded, entry points are set and the core is released from reset. For more on bootflow/bootloaders, please refer \ref BOOTFLOW_GUIDE
 
@@ -129,7 +143,7 @@ Since this is a bootloader, the example will be run every time you boot an appli
 \ref DRIVERS_BOOTLOADER_PAGE
 
 # Sample Output
-\if SOC_AM62AX || SOC_AM62DX
+\if (SOC_AM62AX || SOC_AM62DX)
 \code
 [BOOTLOADER_PROFILE] Boot Media       : SD Card
 [BOOTLOADER_PROFILE] Boot Image Size  : 198 KB

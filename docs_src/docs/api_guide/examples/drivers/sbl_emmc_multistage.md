@@ -14,6 +14,20 @@ This is a bootloader example, which shows an example of booting  RTOS/NORTOS app
 
 The booting is done in 2 stages(2 bootloader applications).
  - The stage1 of the bootloader runs from the HSM RAM. It boots MCU R5 with RTOS/NORTOS application and initializes the DDR. Then it loads the stage2 of the bootloader to DDR and starts running it.
+\cond SOC_AM62DX
+ In this stage, SBL reads the CANUART_WAKE_STAT1 MMR in wakeup control MMR to detect partial IO (or IO retention) mode exit. If exit is detected, then SBL will save the wake reason, that is the pad number that triggered the wakeup in BACKUP MMR0 of wakeup control MMR and clear isolation from the pins. Then, it continues the boot.
+
+ The pad number read from BACKUP MMR0 can be interpreted as follows
+
+ Pad Number | Interpretation
+ -----------|---------------
+ 255        | Partial I/O resume but no pad is detected
+ 5 - 16     | Partial I/O resume with valid pad detected
+ 0          | Normal boot
+
+ \note Please refer device datasheet to map the pad number to pin that caused the wakeup.
+
+\endcond
 
  - The stage2 of the bootloader boots RTOS/NORTOS on A53, C75 and then self loads DM firmware on the DM R5.
 

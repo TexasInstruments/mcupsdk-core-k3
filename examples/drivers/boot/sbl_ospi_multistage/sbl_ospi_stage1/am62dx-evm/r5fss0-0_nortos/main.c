@@ -173,6 +173,9 @@ int main()
 
     Bootloader_profileReset();
 
+    status = Bootloader_socClrIOIsolationOnLPMExit();
+    DebugP_assertNoLog(status == SystemP_SUCCESS);
+
     Bootloader_socWaitForFWBoot();
     status = Bootloader_socOpenFirewalls();
 
@@ -240,7 +243,6 @@ int main()
             status = App_waitForMcuPbist();
             Bootloader_profileAddProfilePoint("App_waitForMcuPbist");
         }
-        
         Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootHandleDM));
         Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_FLASH, OSPI_getInputClk(gOspiHandle[CONFIG_OSPI_SBL]));
 

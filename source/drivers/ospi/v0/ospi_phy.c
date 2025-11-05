@@ -980,11 +980,18 @@ int32_t OSPI_phyTuneDDR(OSPI_Handle handle, uint32_t flashOffset)
     /* Use the normal algorithm */
     status = OSPI_phyFindOTP4(handle, flashOffset, &phyOps, phyOps.phyParams->radius, &otp);
 
-    /* Configure phy for the optimal tuning point */
-    OSPI_phySetRdDelayTxRxDLL(handle, &otp);
+    if(status == SystemP_SUCCESS)
+    {
+        /* Configure phy for the optimal tuning point */
+        OSPI_phySetRdDelayTxRxDLL(handle, &otp);
 
-    /* Update the phyRdDelay book-keeping. This is needed when we enable PHY later */
-    obj->phyRdDataCapDelay = otp.rdDelay;
+        /* Update the phyRdDelay book-keeping. This is needed when we enable PHY later */
+        obj->phyRdDataCapDelay = otp.rdDelay;
+    }
+    else
+    {
+        obj->phyRdDataCapDelay = 0xFFU;
+    }
 
     /* Disable PHY */
     OSPI_disablePhy(handle);
@@ -1021,11 +1028,19 @@ int32_t OSPI_phyTuneSDR(OSPI_Handle handle, uint32_t flashOffset)
 
     VTM_reset();
 
-    /* Configure phy for the optimal tuning point */
-    OSPI_phySetRdDelayTxRxDLL(handle, &otp);
+    if(status == SystemP_SUCCESS)
+    {
+        /* Configure phy for the optimal tuning point */
+        OSPI_phySetRdDelayTxRxDLL(handle, &otp);
 
-    /* Update the phyRdDelay book-keeping. This is needed when we enable PHY later */
-    obj->phyRdDataCapDelay = otp.rdDelay;
+        /* Update the phyRdDelay book-keeping. This is needed when we enable PHY later */
+        obj->phyRdDataCapDelay = otp.rdDelay;
+    }
+    else
+    {
+        /* Set phyRdDelay to 255 in case of error */
+        obj->phyRdDataCapDelay = 0xFFU;
+    }
 
     /* Disable PHY Mode*/
     OSPI_disablePhy(handle);

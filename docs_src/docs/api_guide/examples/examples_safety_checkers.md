@@ -4,12 +4,14 @@ The high-level design of the Safety checker implementation for the TIFS, RM and 
 
 This page lists all the examples used to demonstrate the usage of productized SC library APIs.
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 -# RM Safety Checkers
   -# \subpage EXAMPLES_RM_CHECKERS_APP
 -# PM Safety Checkers
   -# \subpage EXAMPLES_PM_CHECKERS_APP
   -# \subpage EXAMPLES_PM_CHECKERS_WARM_RESET
+\endcond
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 -# TIFS Safety Checkers
   -# \subpage EXAMPLES_SAFETY_CHECKERS_TIFS
 -# Safety Checkers App

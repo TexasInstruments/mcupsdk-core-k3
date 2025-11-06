@@ -169,28 +169,28 @@ function getConfigurables()
         },
         {
             name: "ownTargetAddr1",
-            displayName: "Own Target Address 1 (0x00 - 0x7F)",
+            displayName: "Own Target Address 1 (0x00 - 0x3FF)",
             default: 0x1C,
             hidden: true,
             displayFormat: "hex"
         },
         {
             name: "ownTargetAddr2",
-            displayName: "Own Target Address 2 (0x00 - 0x7F)",
+            displayName: "Own Target Address 2 (0x00 - 0x3FF)",
             default: 0x1C,
             hidden: true,
             displayFormat: "hex"
         },
         {
             name: "ownTargetAddr3",
-            displayName: "Own Target Address 3 (0x00 - 0x7F)",
+            displayName: "Own Target Address 3 (0x00 - 0x3FF)",
             default: 0x1C,
             hidden: true,
             displayFormat: "hex"
         },
         {
             name: "ownTargetAddr4",
-            displayName: "Own Target Address 4 (0x00 - 0x7F)",
+            displayName: "Own Target Address 4 (0x00 - 0x3FF)",
             default: 0x1C,
             hidden: true,
             displayFormat: "hex"
@@ -280,10 +280,10 @@ if(common.isMcuDomainSupported())
 }
 
 function validate(instance, report) {
-    common.validate.checkNumberRange(instance, report, "ownTargetAddr1", 0x0, 0x7F, "hex");
-    common.validate.checkNumberRange(instance, report, "ownTargetAddr2", 0x0, 0x7F, "hex");
-    common.validate.checkNumberRange(instance, report, "ownTargetAddr3", 0x0, 0x7F, "hex");
-    common.validate.checkNumberRange(instance, report, "ownTargetAddr4", 0x0, 0x7F, "hex");
+    common.validate.checkNumberRange(instance, report, "ownTargetAddr1", 0x0, 0x3FF, "hex");
+    common.validate.checkNumberRange(instance, report, "ownTargetAddr2", 0x0, 0x3FF, "hex");
+    common.validate.checkNumberRange(instance, report, "ownTargetAddr3", 0x0, 0x3FF, "hex");
+    common.validate.checkNumberRange(instance, report, "ownTargetAddr4", 0x0, 0x3FF, "hex");
     common.validate.checkNumberRange(instance, report, "intrPriority", 0, hwi.getHwiMaxPriority(), "dec");
     common.validate.checkValidCName(instance, report, "transferCallbackFxn");
     if((instance.transferMode == "CALLBACK") &&

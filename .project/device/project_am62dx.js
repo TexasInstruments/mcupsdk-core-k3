@@ -297,6 +297,7 @@ const example_file_list = [
     "source/safety_checkers/examples/pm_checkers_app/.project/project.js",
     "source/safety_checkers/examples/pm_checkers_warm_reset/.project/project.js",
     "source/safety_checkers/examples/rm_checkers_app/.project/project.js",
+    "test/drivers/i2c/test_i2c_system/.project/project.js"
 ];
 
 function getProjectSpecCpu(cpu) {

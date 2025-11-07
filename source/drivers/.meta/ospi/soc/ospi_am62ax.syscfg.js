@@ -9,7 +9,7 @@ const ospi_config_r5fss = [
         dataBaseAddr        : "CSL_FSS0_DAT_REG1_BASE",
         inputClkFreq        : ospi_input_clk_freq,
         dacEnable           : false,
-        baudRateDiv         : 4,
+        baudRateDiv         : 8,
         intrNum             : 171,
         phaseDelayElement   : 3,
         clockIds            : [ "TISCI_DEV_FSS0", "TISCI_DEV_FSS0_FSAS_0", "TISCI_DEV_FSS0_OSPI_0" ],

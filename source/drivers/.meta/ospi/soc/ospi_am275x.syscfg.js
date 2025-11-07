@@ -9,7 +9,7 @@ const ospi_config_r5fss = [
         dataBaseAddr        : "CSL_FSS0_DAT_REG1_BASE",
         inputClkFreq        : ospi_input_clk_freq,
         dacEnable           : false,
-        baudRateDiv         : 4,
+        baudRateDiv         : 8,
         intrNum             : 178,
         phaseDelayElement   : 3,
         clockIds            : [ "TISCI_DEV_FSS0"],
@@ -27,7 +27,7 @@ const ospi_config_r5fss = [
         dataBaseAddr        : "CSL_FSS1_DAT_REG1_BASE",
         inputClkFreq        : ospi_input_clk_freq,
         dacEnable           : false,
-        baudRateDiv         : 4,
+        baudRateDiv         : 8,
         intrNum             : 0, //interrupt is not routed
         phaseDelayElement   : 3,
         clockIds            : [ "TISCI_DEV_FSS1", "TISCI_DEV_FSS1_FSAS_0", "TISCI_DEV_FSS1_OSPI_1" ],
@@ -48,7 +48,7 @@ const ospi_config_c7x = [
         dataBaseAddr        : "CSL_FSS0_DAT_REG1_BASE",
         inputClkFreq        : ospi_input_clk_freq,
         dacEnable           : false,
-        baudRateDiv         : 4,
+        baudRateDiv         : 8,
         eventId             : 146 + 256,
         intrNum             : 13,
         phaseDelayElement   : 3,
@@ -67,7 +67,7 @@ const ospi_config_c7x = [
         dataBaseAddr        : "CSL_FSS1_DAT_REG1_BASE",
         inputClkFreq        : ospi_input_clk_freq,
         dacEnable           : false,
-        baudRateDiv         : 7,
+        baudRateDiv         : 8,
         eventId             : 0 + 256, //interrupt is not routed
         intrNum             : 0,      //interrupt is not routed
         phaseDelayElement   : 3,

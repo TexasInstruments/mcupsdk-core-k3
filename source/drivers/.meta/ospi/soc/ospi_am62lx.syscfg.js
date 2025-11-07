@@ -9,7 +9,7 @@ const ospi_config_a53ss = [
         dataBaseAddr        : "CSL_FSS0_DAT_REG1_BASE",
         inputClkFreq        : ospi_input_clk_freq,
         dacEnable           : false,
-        baudRateDiv         : 4,
+        baudRateDiv         : 8,
         intrNum             : 272,
         phaseDelayElement   : 3,
         clockIds            : [ "AM62LX_DEV_FSS0"],

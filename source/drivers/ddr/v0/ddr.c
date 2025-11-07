@@ -142,7 +142,6 @@ static DDR_ECCRegion gDDRECCRegion[3] =
 /* ========================================================================== */
 
 extern void DDR_socEnableVttRegulator(void);
-extern void DDR_ResetDDR_PLL(void);
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -709,7 +708,6 @@ int32_t DDR_init(DDR_Params *prm)
     int32_t status = SystemP_SUCCESS;
 
     DDR_socEnableVttRegulator();
-    DDR_ResetDDR_PLL();
 
     /* power and clock to DDR and EMIF is done form outside using SysConfig */
 

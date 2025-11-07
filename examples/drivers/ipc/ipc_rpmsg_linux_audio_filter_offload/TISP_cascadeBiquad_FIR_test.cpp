@@ -157,7 +157,7 @@ void *CascadeBiquadFIR::create_graph(int16_t* pIn)
         std::make_unique<TISP::FFTLIB::RFFT1dBatched<float>>(pFIROut, pFFT_temp, pOutFFT, BLOCK_SIZE, NUM_CHANNELS, 1);
 
     auto k6 =
-        std::make_unique<TISP::FFTLIB::IFFTR1dBatched<float>>(pOutFFT, pIFFT_temp, pOutIFFT, BLOCK_SIZE, NUM_CHANNELS);
+      std::make_unique<TISP::FFTLIB::IFFTR1dBatched<float>>(pOutFFT, pIFFT_temp, pOutIFFT, BLOCK_SIZE, NUM_CHANNELS,1);
 
     auto k7 = std::make_unique<TISP::DSPLIB::MatTrans<float>>(pOutIFFT, pMatTransOut1, BLOCK_SIZE, NUM_CHANNELS,
                                                              BLOCK_SIZE * sizeof(float), NUM_CHANNELS * sizeof(float));

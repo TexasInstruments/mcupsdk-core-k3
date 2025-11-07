@@ -138,6 +138,7 @@ LIBS_PATH_common = \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/tisp/lib/Release \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Release \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/fftlib/lib/Release \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/audiolib/lib/Release \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/networking/enet/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/networking/lwip/lib \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
@@ -183,6 +184,7 @@ LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/tisp/lib/Release \
 	${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Release \
 	${MCU_PLUS_SDK_PATH}/source/fftlib/lib/Release \
+	${MCU_PLUS_SDK_PATH}/source/audiolib/lib/Release \
 	${MCU_PLUS_SDK_PATH}/source/networking/enet/lib \
 	${MCU_PLUS_SDK_PATH}/source/networking/lwip/lib \
 	${CG_TOOL_ROOT}/lib \

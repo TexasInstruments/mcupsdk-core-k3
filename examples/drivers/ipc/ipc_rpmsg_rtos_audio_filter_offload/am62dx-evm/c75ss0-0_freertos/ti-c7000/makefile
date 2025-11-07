@@ -70,6 +70,7 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/c75x \
 	-I${MCU_PLUS_SDK_PATH}/source/fftlib/src/ \
 	-I${MCU_PLUS_SDK_PATH}/source/dsplib/src/ \
+	-I${MCU_PLUS_SDK_PATH}/source/audiolib/src/ \
 	-I${MCU_PLUS_SDK_PATH}/source/tisp/includes \
 	-I${MCU_PLUS_SDK_PATH}/source/tisp/test/common/ \
 	-I${MCU_PLUS_SDK_PATH}/examples/drivers/ipc/ipc_rpmsg_rtos_audio/remote/tisp \
@@ -124,6 +125,7 @@ LIBS_PATH_common = \
 	-i${MCU_PLUS_SDK_PATH}/source/board/lib \
 	-i${MCU_PLUS_SDK_PATH}/source/tisp/lib/Release \
 	-i${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Release \
+	-i${MCU_PLUS_SDK_PATH}/source/audiolib/lib/Release \
 	-i${MCU_PLUS_SDK_PATH}/source/fftlib/lib/Release \
 	-i${MCU_PLUS_SDK_PATH}/source/networking/enet/lib \
 	-i${MCU_PLUS_SDK_PATH}/source/networking/lwip/lib \
@@ -135,7 +137,9 @@ LIBS_common = \
 	-lTISP_C7504.lib \
 	-lTISP_test_common_C7504.lib \
 	-lDSPLIB_C7504.lib \
+	-lAUDIOLIB_C7504.lib \
 	-lDSPLIB_common_C7504.lib \
+	-lAUDIOLIB_common_C7504.lib \
 	-lFFTLIB_C7504.lib \
 	-lFFTLIB_common_C7504.lib \
 	-llibc.a \
@@ -155,7 +159,9 @@ LIBS_NAME = \
 	TISP_C7504.lib \
 	TISP_test_common_C7504.lib \
 	DSPLIB_C7504.lib \
+	AUDIOLIB_C7504.lib \
 	DSPLIB_common_C7504.lib \
+	AUDIOLIB_common_C7504.lib \
 	FFTLIB_C7504.lib \
 	FFTLIB_common_C7504.lib \
 	libc.a \
@@ -167,6 +173,7 @@ LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	${MCU_PLUS_SDK_PATH}/source/tisp/lib/Release \
 	${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Release \
+	${MCU_PLUS_SDK_PATH}/source/audiolib/lib/Release \
 	${MCU_PLUS_SDK_PATH}/source/fftlib/lib/Release \
 	${MCU_PLUS_SDK_PATH}/source/networking/enet/lib \
 	${MCU_PLUS_SDK_PATH}/source/networking/lwip/lib \

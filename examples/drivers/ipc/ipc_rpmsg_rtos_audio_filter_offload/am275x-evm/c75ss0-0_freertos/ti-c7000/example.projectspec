@@ -35,6 +35,7 @@
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am275x/c75x
             -I${MCU_PLUS_SDK_PATH}/source/fftlib/src/
+            -I${MCU_PLUS_SDK_PATH}/source/audiolib/src/
             -I${MCU_PLUS_SDK_PATH}/source/dsplib/src/
             -I${MCU_PLUS_SDK_PATH}/source/tisp/includes
             -I${MCU_PLUS_SDK_PATH}/source/tisp/test/common/
@@ -73,6 +74,7 @@
             -i${MCU_PLUS_SDK_PATH}/source/tisp/lib/Release
             -i${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Release
             -i${MCU_PLUS_SDK_PATH}/source/fftlib/lib/Release
+            -i${MCU_PLUS_SDK_PATH}/source/audiolib/lib/Release
             -i${MCU_PLUS_SDK_PATH}/source/networking/enet/lib
             -i${MCU_PLUS_SDK_PATH}/source/networking/lwip/lib
             -i${CG_TOOL_ROOT}/lib
@@ -107,7 +109,9 @@
                 -lTISP_C7524.lib
                 -lTISP_test_common_C7524.lib
                 -lDSPLIB_C7524.lib
+                -lAUDIOLIB_C7524.lib
                 -lDSPLIB_common_C7524.lib
+                -lAUDIOLIB_common_C7524.lib
                 -lFFTLIB_C7524.lib
                 -lFFTLIB_common_C7524.lib
                 -llibc.a
@@ -125,7 +129,9 @@
                 -lTISP_C7524.lib
                 -lTISP_test_common_C7524.lib
                 -lDSPLIB_C7524.lib
+                -lAUDIOLIB_C7524.lib
                 -lDSPLIB_common_C7524.lib
+                -lAUDIOLIB_common_C7524.lib
                 -lFFTLIB_C7524.lib
                 -lFFTLIB_common_C7524.lib
                 -llibc.a

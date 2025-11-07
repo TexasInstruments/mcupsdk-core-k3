@@ -2572,6 +2572,21 @@ static int32_t MMCSD_cmdStatusPollingFxnTimeout(MMCSD_Handle handle, uint64_t ti
 {
     int32_t status = SystemP_SUCCESS;
     MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
+
+#if defined(__C7504__) || defined(__C7524__)
+    uint32_t timeout = 0xFFFFU;
+
+    while(((obj->cmdComp == FALSE) && (obj->cmdError == FALSE)) && (timeout > 0U))
+    {
+        MMCSD_cmdStatusPollingFxn(handle);
+        timeout--;
+    }
+
+    if(timeout == 0U)
+    {
+        status = SystemP_FAILURE;
+    }
+#else
     uint64_t curTime = ClockP_getTimeUsec();
 
     while((obj->cmdComp == FALSE) && (obj->cmdError == FALSE))
@@ -2584,6 +2599,7 @@ static int32_t MMCSD_cmdStatusPollingFxnTimeout(MMCSD_Handle handle, uint64_t ti
             break;
         }
     }
+#endif
 
     return status;
 }
@@ -2638,6 +2654,26 @@ static int32_t MMCSD_xferStatusPollingFxnTimeout(MMCSD_Handle handle, uint64_t t
     if(handle != NULL)
     {
         MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
+#if defined(__C7504__) || defined(__C7524__)
+        uint32_t timeout = 0xFFFFU;
+
+        while(((obj->cmdError == FALSE) &&
+            (obj->xferComp == FALSE) &&
+            (obj->xferTimeout == FALSE) &&
+            (obj->dataCRCError == FALSE) &&
+            (obj->dataEBError == FALSE) &&
+            (obj->dataTimeoutError == FALSE) &&
+            (obj->admaError == FALSE)) && (timeout > 0U))
+        {
+            MMCSD_xferStatusPollingFxn(handle);
+            timeout--;
+        }
+
+        if(timeout == 0U)
+        {
+            status = SystemP_FAILURE;
+        }
+#else
         uint64_t curTime = ClockP_getTimeUsec();
 
         while((obj->cmdError == FALSE) &&
@@ -2656,6 +2692,7 @@ static int32_t MMCSD_xferStatusPollingFxnTimeout(MMCSD_Handle handle, uint64_t t
                 break;
             }
         }
+#endif
     }
     else
     {
@@ -2798,6 +2835,21 @@ static int32_t MMCSD_xferStatusPollingFxnCMD19Timeout(MMCSD_Handle handle, uint6
 {
     int32_t status = SystemP_SUCCESS;
     MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
+#if defined(__C7504__) || defined(__C7524__)
+    uint32_t timeout = 0xFFFFU;
+
+    while(((obj->xferComp == FALSE) && (obj->xferTimeout == FALSE)) &&
+          (timeout > 0U))
+    {
+        MMCSD_xferStatusPollingFxnCMD19(handle);
+        timeout--;
+    }
+
+    if(timeout == 0U)
+    {
+        status = SystemP_FAILURE;
+    }
+#else
     uint64_t curTime = ClockP_getTimeUsec();
 
     while((obj->xferComp == FALSE) && (obj->xferTimeout == FALSE))
@@ -2810,6 +2862,7 @@ static int32_t MMCSD_xferStatusPollingFxnCMD19Timeout(MMCSD_Handle handle, uint6
             break;
         }
     }
+#endif
 
     return status;
 }
@@ -3451,6 +3504,20 @@ static inline int32_t MMCSD_halPollCmdInhibit(MMCSD_Handle handle, uint64_t time
     const MMCSD_Attrs *attrs = ((MMCSD_Config *)handle)->attrs;
     const CSL_mmc_ctlcfgRegs *pReg = (const CSL_mmc_ctlcfgRegs *)(attrs->ctrlBaseAddr);
 
+#if defined(__C7504__) || defined(__C7524__)
+    uint32_t timeout = 0xFFFFU;
+
+    while((CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_INHIBIT_CMD) != 0U) &&
+          (timeout > 0U))
+    {
+        timeout--;
+    }
+
+    if(timeout == 0U)
+    {
+        status = SystemP_FAILURE;
+    }
+#else
     uint64_t curTime = ClockP_getTimeUsec();
     while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_INHIBIT_CMD) != 0U)
     {
@@ -3460,6 +3527,7 @@ static inline int32_t MMCSD_halPollCmdInhibit(MMCSD_Handle handle, uint64_t time
             break;
         }
     };
+#endif
 
     return status;
 }
@@ -3470,6 +3538,20 @@ static inline int32_t MMCSD_halPollDatInhibit(MMCSD_Handle handle, uint64_t time
     const MMCSD_Attrs *attrs = ((MMCSD_Config *)handle)->attrs;
     const CSL_mmc_ctlcfgRegs *pReg = (const CSL_mmc_ctlcfgRegs *)(attrs->ctrlBaseAddr);
 
+#if defined(__C7504__) || defined(__C7524__)
+    uint32_t timeout = 0xFFFFU;
+
+    while((CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_INHIBIT_DAT) != 0U) &&
+          (timeout > 0U))
+    {
+        timeout--;
+    }
+
+    if(timeout == 0U)
+    {
+        status = SystemP_FAILURE;
+    }
+#else
     uint64_t curTime = ClockP_getTimeUsec();
     while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_INHIBIT_DAT) != 0U)
     {
@@ -3479,6 +3561,7 @@ static inline int32_t MMCSD_halPollDatInhibit(MMCSD_Handle handle, uint64_t time
             break;
         }
     };
+#endif
 
     return status;
 }
@@ -3489,6 +3572,20 @@ static inline int32_t MMCSD_halPollDat0Line(MMCSD_Handle handle, uint64_t timeou
     const MMCSD_Attrs *attrs = ((MMCSD_Config *)handle)->attrs;
     const CSL_mmc_ctlcfgRegs *pReg = (const CSL_mmc_ctlcfgRegs *)(attrs->ctrlBaseAddr);
 
+#if defined(__C7504__) || defined(__C7524__)
+    uint32_t timeout = 0xFFFFU;
+
+    while((CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_SDIF_DAT0IN) != 1U) &&
+          (timeout > 0U))
+    {
+        timeout--;
+    }
+
+    if(timeout == 0U)
+    {
+        status = SystemP_FAILURE;
+    }
+#else
     uint64_t curTime = ClockP_getTimeUsec();
     while(CSL_REG32_FEXT(&pReg->PRESENTSTATE, MMC_CTLCFG_PRESENTSTATE_SDIF_DAT0IN) != 1U)
     {
@@ -3498,6 +3595,7 @@ static inline int32_t MMCSD_halPollDat0Line(MMCSD_Handle handle, uint64_t timeou
             break;
         }
     };
+#endif
 
     return status;
 }

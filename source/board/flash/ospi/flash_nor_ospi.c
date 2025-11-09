@@ -1496,32 +1496,133 @@ int32_t Flash_quirkSpansionSafebootDetection(Flash_Config *config)
     return status;
 }
 
-int32_t Flash_quirkSpansionUNHYSADisable(Flash_Config *config)
+int32_t Flash_quirkSpansionConfigureLayout(Flash_Config *config)
 {
     int32_t status = SystemP_SUCCESS;
-    uint8_t regData = 0x00;
-    uint32_t write = 0;
+    uint8_t cfg3RegData = 0x00;
+    uint8_t cfg1RegData = 0x00;
+    uint8_t tempCfg3RegData = 0x00;
+    uint8_t tempCfg1RegData = 0x00;
+    Flash_DevConfig *devCfg = config->devConfig;
+    Flash_NorOspiHybridLayoutCfg *layoutCfg = (Flash_NorOspiHybridLayoutCfg *)(config->layoutCfg);
 
-    /* Hybrid Sector Disable */
-    status = Flash_norOspiRegRead(config, 0x65, 0x00800004, &regData);
+    /**
+     *  Read Configuration Register 1 (CR1) using vendor-specific command 0x65
+     *  Address 0x00800002 points to CR1, which contains settings for hybrid memory
+     *  layout configurations.
+     */
+    status = Flash_norOspiRegRead(config, 0x65, 0x00800002, &cfg1RegData);
 
-    if(status == SystemP_SUCCESS)
+    /**
+     *  Read Configuration Register 3 (CR3) using vendor-specific command 0x65
+     *  Address 0x00800004 points to CR3, which contains settings for uniform memory
+     *  layout.
+     */
+    status += Flash_norOspiRegRead(config, 0x65, 0x00800004, &cfg3RegData);
+
+    tempCfg1RegData = cfg1RegData;
+    tempCfg3RegData = cfg3RegData;
+
+    if((layoutCfg != NULL) && (status == SystemP_SUCCESS))
     {
-        if((regData & ((uint8_t)(1 << 3))) == 0)
+        switch (layoutCfg->isHybridLayout)
         {
-            /* Set UNHYSA bit */
-            regData |= (1 << 3);
-            write = 1U;
-        }
-        else
-        {
-            /* No action */
-        }
-    }
+            case 0U: /* Uniform layout (0U) */
+            {
+                /* For uniform layout, check if bit 3 in cfg3RegData is not set and set it if needed */
+                if((tempCfg3RegData & ((uint8_t)(1U << 3))) == 0U)
+                {
+                    /* Set UNHYSA bit */
+                    tempCfg3RegData |= (1U << 3);
+                }
 
-    if(write)
-    {
-        status = Flash_norOspiRegWrite(config, 0x71, 0x04, regData);
+                /* Check if bit 2 or bit 6 is set in regData */
+                if(((tempCfg1RegData & (1U << 2)) != 0U) || ((tempCfg1RegData & (1U << 6)) != 0U))
+                {
+                    /* Clear bits 2 and 6 */
+                    tempCfg1RegData &= ~((1U << 2) | (1U << 6));
+                }
+
+                break;
+            }
+
+            case 1U: /* Hybrid layout */
+            {
+                /* For hybrid layout, check if bit 3 in cfg3RegData is set and clear it if needed */
+                if((tempCfg3RegData & (1U << 3)) != 0U)
+                {
+                    /* Clear UNHYSA bit to enable hybrid sector architecture */
+                    tempCfg3RegData &= ~(1U << 3);
+                }
+
+                switch (layoutCfg->hybridLayoutType)
+                {
+                    case 0U: /* Type 0 */
+                    {
+                        /* For hybrid layout, check if bit 2 or bit 6 in cfg1RegData is set and clear it if needed */
+                        if(((tempCfg1RegData & (1U << 2)) != 0U) || ((tempCfg1RegData & (1U << 6)) != 0U))
+                        {
+                            /* Clear bit 2 to enable hybrid sector architecture */
+                            tempCfg1RegData &= ~(1U << 2);
+                            tempCfg1RegData &= ~(1U << 6);
+                        }
+
+                        break;
+                    }
+
+                    case 1U: /* Hybrid layout type 1 */
+                    {
+                        /*
+                         * For hybrid layout, check if bit 2 is not set and set it if needed
+                         * For hybrid layout, check if bit 6 is set and clear it if needed
+                         */
+                        if (((tempCfg1RegData & (1U << 2)) == 0U) || ((tempCfg1RegData & (1U << 6)) != 0U))
+                        {
+                            tempCfg1RegData |= (1U << 2);  /* Set bit 2 */
+                            tempCfg1RegData &= ~(1U << 6);  /* Clear bit 6 */
+                        }
+
+                        break;
+                    }
+
+                    case 2U: /* Hybrid layout type 2 */
+                    {
+                        /*
+                         * For hybrid layout, check if bit 6 is not set and set it if needed
+                         * For hybrid layout, check if bit 2 is set and clear it if needed
+                         */
+                        if (((tempCfg1RegData & (1U << 6)) == 0U) || ((tempCfg1RegData & (1U << 2)) != 0U))
+                        {
+                            tempCfg1RegData |= (1U << 6);  /* Set bit 6 */
+                            tempCfg1RegData &= ~(1U << 2);  /* Clear bit 2 */
+                        }
+
+                        break;
+                    }
+
+                    default:
+                        /* No action for other hybrid layout types */
+                        break;
+                }
+
+                break;
+            }
+
+            default:
+                break;
+        }
+
+        if(tempCfg1RegData != cfg1RegData)
+        {
+            status += Flash_norOspiRegWrite(config, 0x71, 0x02, tempCfg1RegData);
+            Flash_norOspiWaitReady(config, devCfg->flashBusyTimeout);
+        }
+
+        if(tempCfg3RegData != cfg3RegData)
+        {
+            status += Flash_norOspiRegWrite(config, 0x71, 0x04, tempCfg3RegData);
+            Flash_norOspiWaitReady(config, devCfg->flashBusyTimeout);
+        }
     }
 
     return status;

@@ -67,9 +67,20 @@ typedef struct {
     FlashCfg_ProtoEnConfig protoCfg1s;
 }Flash_NorOspiFallBackCfg;
 
+typedef struct {
+    /* Flag indicating whether the flash has a hybrid memory layout */
+    uint32_t isHybridLayout;
+    /*
+     * Type of hybrid layout when isHybridLayout is true
+     * Bottom Hybrid Layout = 0U
+     * Top Hybrid Layout = 1U
+     * Split Hybrid Layout = 2U
+     */
+    uint32_t hybridLayoutType;
+}Flash_NorOspiHybridLayoutCfg;
+
 /* Flash specific externs */
 extern Flash_Fxns gFlashNorOspiFxns;
-
 
 #ifdef __cplusplus
 }

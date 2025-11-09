@@ -42,6 +42,14 @@ Flash_NorOspiFallBackCfg gFlashFallBackCfg_`config.fname` =
         },
     },
 };
+
+% if (config.fname == "S28HS512T") {
+Flash_NorOspiHybridLayoutCfg gFlashHybridLayoutCfg_`config.fname` =
+{
+    .isHybridLayout = 0U,
+    .hybridLayoutType = 0U,
+};
+% }
 % } if (config.flashType == "SERIAL_NAND") {
 #define FLASH_NAND_NUM_OF_BLOCK  `Math.round(config.flashSize/config.flashBlockSize)`
 

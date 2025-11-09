@@ -44,14 +44,18 @@ Flash_Config gFlashConfig[CONFIG_FLASH_NUM_INSTANCES] =
         .object = (void *)&gFlashObject_`configserial.fname`,
         % if (configserial.flashType == "SERIAL_NOR") {
         .fallBackCfg = (void *)&gFlashFallBackCfg_`configserial.fname`,
+        % if (configserial.fname == "S28HS512T") {
+        .layoutCfg = (void *)&gFlashHybridLayoutCfg_`configserial.fname`,
+        % } else {
+        .layoutCfg = NULL,
+        % }
         % } if (configserial.flashType == "SERIAL_NAND") {
         .fallBackCfg = NULL,
+        .layoutCfg = NULL,
         % }
-
     },
     % } else if(config.flashTopology == "parallelFlash"){
     {
-
         % let instanceparallel = parallelmodule.$instances[0];
         % let configparallel = parallelmodule.getInstanceConfig(instanceparallel);
         .attrs = &gFlashAttrs_`configparallel.fname`,
@@ -60,6 +64,8 @@ Flash_Config gFlashConfig[CONFIG_FLASH_NUM_INSTANCES] =
         % }
         .devConfig = &gFlashDevCfg_`configparallel.fname`,
         .object = (void *)&gFlashObject_`configparallel.fname`,
+        .fallBackCfg = NULL,
+        .layoutCfg = NULL,
     },
     % }
 % }

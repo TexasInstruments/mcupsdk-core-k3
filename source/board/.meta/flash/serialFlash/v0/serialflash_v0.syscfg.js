@@ -539,7 +539,7 @@ function getConfigurables()
 
                     inst.cmdRdsr = serialNorDefaultCfg.cmdRdsr;
                     inst.xspiWipRdCmd = serialNorDefaultCfg.xspiWipRdCmd;
-                    inst.quirks = "Flash_quirkSpansionUNHYSADisable";
+                    inst.quirks = "Flash_quirkSpansionConfigureLayout";
                     inst.bootQuirks = "Flash_quirkSpansionSafebootDetection";
                     inst.xspiWipReg = serialNorDefaultCfg.xspiWipReg;
                     inst.cmdWrsr = serialNorDefaultCfg.cmdWrsr;
@@ -1494,7 +1494,7 @@ function getConfigurables()
             displayName: "Quirks Function",
             description: "Function to handle any vendor specific quirks of the flash",
             longDescription: quirksDescription,
-            default: "Flash_quirkSpansionUNHYSADisable",
+            default: "Flash_quirkSpansionConfigureLayout",
         },
         /* Boot Quirks */
         {

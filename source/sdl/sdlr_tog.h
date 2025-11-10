@@ -45,7 +45,7 @@
 #ifndef SDLR_TOG_TOP_H_
 #define SDLR_TOG_TOP_H_
 
-#include "sdlr.h"
+#include <sdl/include/sdlr.h>
 
 #include <sdl/include/soc_config.h>
 

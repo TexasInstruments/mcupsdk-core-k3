@@ -35,7 +35,7 @@
 #ifndef SDLR_SOC_BASEADDRESS_H_
 #define SDLR_SOC_BASEADDRESS_H_
 
-#include "sdlr.h"
+#include <sdl/include/sdlr.h>
 #include "tistdtypes.h"
 #ifdef __cplusplus
 extern "C"

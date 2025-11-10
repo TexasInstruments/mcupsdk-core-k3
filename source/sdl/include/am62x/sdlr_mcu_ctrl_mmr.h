@@ -38,7 +38,7 @@
 extern "C"
 {
 #endif
-#include  "sdlr.h"
+#include  <sdl/include/sdlr.h>
 #include <stdint.h>
 
 /**************************************************************************

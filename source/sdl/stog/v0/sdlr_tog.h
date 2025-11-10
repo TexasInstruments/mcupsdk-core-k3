@@ -39,7 +39,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <sdl/sdlr.h>
+#include <sdl/include/sdlr.h>
 #include <sdl/include/sdl_types.h>
 #include "sdl_ip_tog.h"
 #include "sdl_tog.h"

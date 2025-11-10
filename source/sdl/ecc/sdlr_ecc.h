@@ -34,7 +34,7 @@
 #ifndef SDLR_ECC_TOP_H_
 #define SDLR_ECC_TOP_H_
 
-#include <sdl/sdlr.h>
+#include <sdl/include/sdlr.h>
 #include <stdint.h>
 #include <sdl/include/soc_config.h>
 

@@ -35,7 +35,7 @@
 #ifndef SDL_VCL_SOC_TOG_H_
 #define SDL_VCL_SOC_TOG_H_
 
-#include <sdl/sdlr.h>
+#include <sdl/include/sdlr.h>
 #include <sdl/include/am62x/sdlr_soc_baseaddress.h>
 
 #ifdef __cplusplus

@@ -219,9 +219,9 @@ void HwiP_restore(uintptr_t oldIntState);
  * To get the exact CPU mode of the executing CPU, use the low level CPU specific system
  * calls/registers.
  *
- * \note In case of ARM R5F, this only checks if caller is inside IRQ or not.
- *       This means when HwiP_inISR returns 1, CPU is in IRQ mode
- *       and when HwiP_inISR return 0, CPU could be in system mode or FIQ or abort mode and so on
+ * \note In case of ARM R5F, this only checks if caller is not inside inside system mode or not.
+ *       This means when HwiP_inISR returns 1, CPU is in IRQ mode or FIQ or abort mode.
+ *       And when HwiP_inISR return 0, CPU is not in system mode.
  *
  * \return 0 not in interrupt mode, 1 in interrupt mode
  */

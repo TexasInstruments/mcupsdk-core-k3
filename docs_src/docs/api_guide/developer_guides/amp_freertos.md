@@ -97,7 +97,7 @@ gpio_input_interrupt example can be loaded and run using CCS as explained above.
 WAKEUP_UART and MCU_UART respectively. Users can use any gpio pin on any a53 core for interrupt functionality.
 \attention
 A GPIO bank interrupt can be routed to only one core at a time. For example, if a gpio interrupt is routed to the A53_0 core, the same cannot be routed to other cores (A53_1/A53_2/A53_3).
-In the case of AMP, currently, all cores are using the same SPI_MAIN_GPIOMUX_INTROUTER and GPIO mux introuter output number. Users can change this and can use different gpiomux interrupt router for each a53 core by making the following changes in the board_gpio.c.xdt file.
+In the case of AMP, currently, all cores are using the same SPI_MAIN_GPIOMUX_INTROUTER and GPIO mux introuter output number. Users can change this and can use different gpiomux interrupt router for each a53 core by making the following changes in the board.c file.
 \code
 % if(args.project.cpu == "a53ss0-1"){
 #define BOARD_BUTTON_GPIO_INTR_NUM      (CSLR_GICSS0_COMMON_0_SPI_MAIN_GPIOMUX_INTROUTER0_OUTP_1)

@@ -147,7 +147,7 @@ A GPIO bank interrupt can be routed to only one core at a time. For example if a
 \cond SOC_AM62X
 \attention
 A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to A53_0 core, the same cannot be routed to other cores (A53_1/A53_2/A53_3/R5F).
-In the case of AMP, currenly all cores are using the same SPI_MAIN_GPIOMUX_INTROUTER and GPIO mux introuter output number. User can change this and can be used different gpiomux interrupt router for each a53 core by making following changes in the board_gpio.c.xdt file
+In the case of AMP, currenly all cores are using the same SPI_MAIN_GPIOMUX_INTROUTER and GPIO mux introuter output number. User can change this and can be used different gpiomux interrupt router for each a53 core by making following changes in the board.c file
 \code
 % if(args.project.cpu == "a53ss0-1"){
 #define BOARD_BUTTON_GPIO_INTR_NUM      (CSLR_GICSS0_COMMON_0_SPI_MAIN_GPIOMUX_INTROUTER0_OUTP_1)
@@ -168,7 +168,7 @@ Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin
 \endcond
 \cond SOC_AM62LX
 A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to A53_0 core, the same cannot be routed to A53_1 core.
-In the case of AMP, currenly both the cores are using pins of different GPIO banks, so that GPIO interrupt can trigger on both the cores. User can change this and can be used different GPIO banks for each a53 core by making changes in the board_gpio.c.xdt file.
+In the case of AMP, currenly both the cores are using pins of different GPIO banks, so that GPIO interrupt can trigger on both the cores. User can change this and can be used different GPIO banks for each a53 core by making changes in the board.c file.
 
 \endcond
 # Supported Combinations {#EXAMPLES_DRIVERS_GPIO_INPUT_INTERRUPT_COMBOS}

@@ -128,11 +128,11 @@ void _DebugP_assert(int32_t expression, const char *file, const char *function, 
             file, function, line,
             expressionString
             );
-
-        (void) HwiP_disable();
+        
         while(assert_loop != 0U)
         {
             /* loop forver */
+            ClockP_usleep(5000U);
         }
     }
 }

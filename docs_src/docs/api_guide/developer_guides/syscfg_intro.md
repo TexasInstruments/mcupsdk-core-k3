@@ -10,6 +10,8 @@
       your specific SOC and SDK version that is installed.
       However the instructions and steps mentioned remain the same, unless mentioned otherwise.
 
+\note SysConfig core tool follows TI baseline quality development process. This means that there are no automotive or functional safety claims that can be made on code that is generated using SysConfig. The expectation is that it is the customer’s responsibility to perform standard qualification on generated code according to requirements of a particular standard. 
+
 ## Introduction
 
 All the SDK examples can be configured using a GUI tool called SysConfig. Users can choose and configure various modules using this tool. The SysConfig tool will generate the boilerplate code for initializing these modules. Each example will have an example.syscfg file to which the configuration will be saved to. When creating an example for the first time, this can be an empty file.

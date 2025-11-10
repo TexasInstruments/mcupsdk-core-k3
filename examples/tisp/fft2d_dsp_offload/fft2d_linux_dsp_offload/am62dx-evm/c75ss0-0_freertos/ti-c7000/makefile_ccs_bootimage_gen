@@ -98,7 +98,7 @@ endif
 endif
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(PROFILE)/fft2d_linux_dsp_offload_example.c75ss0-0.strip.out
-	$(STRIP) -o=$(PROFILE)/fft2d_linux_dsp_offload_example.c75ss0-0.strip.out $(OUTFILE)
+	$(STRIP) -p -o=$(PROFILE)/fft2d_linux_dsp_offload_example.c75ss0-0.strip.out $(OUTFILE)
 	@echo  Boot image: am62dx:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_NAME) Done !!!
 	@echo  .
 ifeq ($(DEVICE_TYPE),HS)

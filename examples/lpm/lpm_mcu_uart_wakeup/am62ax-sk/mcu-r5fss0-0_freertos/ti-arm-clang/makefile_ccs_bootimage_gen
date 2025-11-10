@@ -98,7 +98,7 @@ endif
 endif
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(PROFILE)/lpm_mcu_uart_wakeup.mcu-r5f0_0.strip.out
-	$(STRIP) -o=$(PROFILE)/lpm_mcu_uart_wakeup.mcu-r5f0_0.strip.out $(OUTFILE)
+	$(STRIP) -p -o=$(PROFILE)/lpm_mcu_uart_wakeup.mcu-r5f0_0.strip.out $(OUTFILE)
 	@echo  Boot image: am62ax:mcu-r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_NAME) Done !!!
 	@echo  .
 ifeq ($(DEVICE_TYPE),HS)

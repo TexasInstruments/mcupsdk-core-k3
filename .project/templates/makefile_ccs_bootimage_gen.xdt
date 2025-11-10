@@ -646,10 +646,10 @@ endif
 % if ((args.project.isLinuxFwGen) && (!args.project.cpu.match(/a53*/))) {
 % if((args.project.linuxAppName == undefined)) {
 	$(RM) $(PROFILE)/`args.project.name`.`args.linuxFwName`.strip.out
-	$(STRIP) -o=$(PROFILE)/`args.project.name`.`args.linuxFwName`.strip.out $(OUTFILE)
+	$(STRIP) -p -o=$(PROFILE)/`args.project.name`.`args.linuxFwName`.strip.out $(OUTFILE)
 % } else {
 	$(RM) $(PROFILE)/`args.project.linuxAppName`.`args.linuxFwName`.strip.out
-	$(STRIP) -o=$(PROFILE)/`args.project.linuxAppName`.`args.linuxFwName`.strip.out $(OUTFILE)
+	$(STRIP) -p -o=$(PROFILE)/`args.project.linuxAppName`.`args.linuxFwName`.strip.out $(OUTFILE)
 % }
 % }
 	@echo  Boot image: `args.project.device`:`args.project.cpu`:`args.project.os`:`args.project.cgt` $(BOOTIMAGE_NAME) Done !!!

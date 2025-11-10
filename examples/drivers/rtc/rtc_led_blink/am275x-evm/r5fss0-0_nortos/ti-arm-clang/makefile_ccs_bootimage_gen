@@ -86,7 +86,7 @@ else
 endif
 endif
 	$(RM) $(PROFILE)/rtc_led_blink..strip.out
-	$(STRIP) -o=$(PROFILE)/rtc_led_blink..strip.out $(OUTFILE)
+	$(STRIP) -p -o=$(PROFILE)/rtc_led_blink..strip.out $(OUTFILE)
 	@echo  Boot image: am275x:r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_NAME) Done !!!
 	@echo  .
 ifeq ($(DEVICE_TYPE),HS)

@@ -187,6 +187,7 @@
 #define I2C_MAX_CONSECUTIVE_ISRS            ((uint32_t) 1U)
 
 #define I2C_SYSTEST_INVALID_VALUE           ((uint32_t) 0xFFFFFFFFU)
+#define I2C_DUMMY_BYTE                      ((uint32_t) 0xFFU)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -1809,20 +1810,36 @@ void I2C_lld_targetIsr(void *args)
             }
             else
             {
-                /* Write count zero; write Completed */
-                /* Clear all interrupts */
-                I2CTargetIntClearEx(object->baseAddr, I2C_INT_ALL);
-                /* Disable STOP condition interrupt */
-                I2CTargetIntDisableEx(object->baseAddr, I2C_INT_ALL);
-                /* Update Read buffer and count */
-                object->readBufIdx = (uint8_t*)(object->currentTargetTransaction->readBuf);
-                object->readCountIdx = (uint32_t)(object->currentTargetTransaction->readCount);
-                /* Post Semaphore to unblock transfer fxn */
-                object->targetTransferCompleteCallback( (void*)object,
-                                                object->currentTargetTransaction,
-                                                I2C_STS_ERR);
-                /* No other transactions need to occur */
-                object->currentTargetTransaction = NULL;
+                /* Write count is zero */
+                if((rawStat & I2C_INT_TRANSMIT_UNDER_FLOW) != 0U)
+                {
+                    /* Write dummy byte */
+                    I2CControllerDataPut(object->baseAddr, I2C_DUMMY_BYTE);
+
+                    object->intStatusErr |= I2C_INT_TRANSMIT_UNDER_FLOW;
+
+                    /* Clear the interrupts */
+                    I2CTargetIntClearEx(object->baseAddr, I2C_INT_TRANSMIT_UNDER_FLOW);
+                    I2CTargetIntClearEx(object->baseAddr, I2C_INT_TRANSMIT_READY);
+
+                }
+                else
+                {
+                    /* Write count zero; write Completed */
+                    /* Clear all interrupts */
+                    I2CTargetIntClearEx(object->baseAddr, I2C_INT_ALL);
+                    /* Disable STOP condition interrupt */
+                    I2CTargetIntDisableEx(object->baseAddr, I2C_INT_ALL);
+                    /* Update Read buffer and count */
+                    object->readBufIdx = (uint8_t*)(object->currentTargetTransaction->readBuf);
+                    object->readCountIdx = (uint32_t)(object->currentTargetTransaction->readCount);
+                    /* Post Semaphore to unblock transfer fxn */
+                    object->targetTransferCompleteCallback( (void*)object,
+                                                    object->currentTargetTransaction,
+                                                    I2C_STS_ERR);
+                    /* No other transactions need to occur */
+                    object->currentTargetTransaction = NULL;
+                }
             }
         }
         else
@@ -1837,20 +1854,35 @@ void I2C_lld_targetIsr(void *args)
             }
             else
             {
-                /* Clear all interrupts */
-                I2CTargetIntClearEx(object->baseAddr, I2C_INT_ALL);
-                /* Disable STOP condition interrupt */
-                I2CTargetIntDisableEx(object->baseAddr, I2C_INT_ALL);
-                /* Update Read buffer and count */
-                object->readBufIdx = (uint8_t*)(object->currentTargetTransaction->readBuf);
-                object->readCountIdx = (uint32_t)object->currentTargetTransaction->readCount;
-                /* Post Semaphore to unblock transfer fxn */
-                object->targetTransferCompleteCallback( (void*)object,
-                                                object->currentTargetTransaction,
-                                                I2C_STS_ERR);
-                /* No other transactions need to occur */
-                object->currentTargetTransaction = NULL;
+                /* Write count is zero */
+                if((rawStat & I2C_INT_TRANSMIT_UNDER_FLOW) != 0U)
+                {
+                    /* Write dummy byte */
+                    I2CControllerDataPut(object->baseAddr, I2C_DUMMY_BYTE);
 
+                    object->intStatusErr |= I2C_INT_TRANSMIT_UNDER_FLOW;
+
+                    /* Clear the interrupts */
+                    I2CTargetIntClearEx(object->baseAddr, I2C_INT_TRANSMIT_UNDER_FLOW);
+                    I2CTargetIntClearEx(object->baseAddr, I2C_INT_TRANSMIT_READY);
+
+                }
+                else
+                {
+                    /* Clear all interrupts */
+                    I2CTargetIntClearEx(object->baseAddr, I2C_INT_ALL);
+                    /* Disable STOP condition interrupt */
+                    I2CTargetIntDisableEx(object->baseAddr, I2C_INT_ALL);
+                    /* Update Read buffer and count */
+                    object->readBufIdx = (uint8_t*)(object->currentTargetTransaction->readBuf);
+                    object->readCountIdx = (uint32_t)object->currentTargetTransaction->readCount;
+                    /* Post Semaphore to unblock transfer fxn */
+                    object->targetTransferCompleteCallback( (void*)object,
+                                                    object->currentTargetTransaction,
+                                                    I2C_STS_ERR);
+                    /* No other transactions need to occur */
+                    object->currentTargetTransaction = NULL;
+                }
             }
         }
     }

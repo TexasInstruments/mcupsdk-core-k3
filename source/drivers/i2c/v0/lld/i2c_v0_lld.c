@@ -1004,6 +1004,7 @@ int32_t I2C_lld_targetTransferIntr( I2CLLD_Handle handle,
     I2CLLD_Object           *object = NULL;
     uint32_t                xsa;
     uint32_t                regVal = 0U;
+    uint32_t                i;
 
     if ((handle != NULL) && (txn != NULL))
     {
@@ -1059,10 +1060,13 @@ int32_t I2C_lld_targetTransferIntr( I2CLLD_Handle handle,
             xsa = I2C_CFG_7BIT_OWN_ADDR_0;
         }
 
-        /* In target mode, set the I2C own address */
-        I2COwnAddressSet(   object->baseAddr,
-                            object->ownTargetAddr[0],
-                            I2C_OWN_ADDR_0);
+        for(i=0U; i<I2C_MAX_NUM_OWN_TARGET_ADDR; i++)
+        {
+            /* In target mode, set the I2C own address */
+            I2COwnAddressSet(   object->baseAddr,
+                                object->ownTargetAddr[i],
+                                i);
+        }
 
         /* Configure data buffer length to 0 as the actual number of bytes to
            transmit/receive is dependant on external controller. */

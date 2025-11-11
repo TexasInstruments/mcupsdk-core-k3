@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.21.0+3721"}
+ * @versions {"tool":"1.24.2+4234"}
  */
 
 /**
@@ -100,6 +100,7 @@ mmu_armv812.attribute = "MAIR4";
 
 timer1.$name         = "CONFIG_TIMER0";
 timer1.timerCallback = "test_timerIsr";
+timer1.usecPerTick   = 10;
 timer1.TIMER.$assign = "TIMER6";
 
 /**

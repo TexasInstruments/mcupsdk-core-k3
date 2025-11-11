@@ -358,7 +358,7 @@ uint32_t SOC_getWarmResetCauseMainDomain(void)
     uint32_t     resetCause = 0U;
 
     /* Read the Reset Cause Register bits */
-    resetCause = CSL_REG32_RD(CSL_WKUP_CTRL_MMR0_ID_MMRS_BASE + CSL_WKUP_CTRL_MMR_CFG5_RST_SRC);
+    resetCause = CSL_REG32_RD(CSL_WKUP_CTRL_MMR0_DEVICE_MANAGEMENT_BASE  + CSL_WKUP_CTRL_MMR_CFG5_RST_SRC);
 
     return resetCause;
 }

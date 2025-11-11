@@ -540,7 +540,7 @@ int32_t I2C_transfer(I2C_Handle handle,
                 if ( retVal != SystemP_SUCCESS)
                 {
                     /* Transaction timed out or had some error in semaphore pend */
-                    retVal = SystemP_TIMEOUT;
+                    transaction->status = I2C_STS_ERR_TIMEOUT;
                     (void)I2C_recoverBus(handle, I2C_DELAY_SMALL);
                 }
             }
@@ -548,7 +548,7 @@ int32_t I2C_transfer(I2C_Handle handle,
             /* Polling mode Case */
             if (!(hwAttrs->enableIntr))
             {
-                transaction->status = retVal;
+                retVal = transaction->status;
 
                 if(retVal == I2C_STS_SUCCESS)
                 {
@@ -821,14 +821,22 @@ static int32_t I2C_mem_primeTransfer(   I2C_Handle handle,
                 if(object->currentTransaction->memTransaction->memDataDir ==
                                                             I2C_MEM_TXN_DIR_TX)
                 {
-                status = I2C_lld_mem_writeIntr(i2cLldHandle,
-                                                        &mem_extendedParams);
+                    status = I2C_lld_mem_writeIntr(i2cLldHandle,
+                                                            &mem_extendedParams);
+                    if(status != I2C_STS_SUCCESS)
+                    {
+                        object->currentTransaction->status = status;
+                    }
                 }
                 else if(object->currentTransaction->memTransaction->memDataDir ==
                                                             I2C_MEM_TXN_DIR_RX)
                 {
-                status = I2C_lld_mem_readIntr(i2cLldHandle,
-                                                        &mem_extendedParams);
+                    status = I2C_lld_mem_readIntr(i2cLldHandle,
+                                                            &mem_extendedParams);
+                    if(status != I2C_STS_SUCCESS)
+                    {
+                        object->currentTransaction->status = status;
+                    }
                 }
                 else
                 {

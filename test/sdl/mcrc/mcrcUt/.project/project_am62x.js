@@ -24,6 +24,13 @@ const filedirs = {
     ],
 };
 
+const m4_macro = {
+    common: [
+        "M4F_CORE",
+    ],
+
+};
+
 const libdirs_nortos = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
@@ -112,10 +119,6 @@ const syscfgfile = "../example.syscfg"
 const templates_nortos_m4f =
 [
     {
-        input: ".project/templates/am62x/common/linker_m4f.cmd.xdt",
-        output: "linker.cmd",
-    },
-    {
         input: ".project/templates/am62x/nortos/main_nortos.c.xdt",
         output: "../main.c",
         options: {
@@ -178,6 +181,7 @@ function getComponentBuildProperty(buildOption) {
 
 
     if(buildOption.cpu.match(/m4f*/)) {
+        build_property.defines = m4_macro;
         build_property.libs = libs_m4f;
         build_property.templates = templates_nortos_m4f;
         build_property.includes = includes_nortos;

@@ -44,6 +44,7 @@
 #include "mcrc_main.h"
 #include <stdio.h>
 #include <kernel/dpl/DebugP.h>
+#include <kernel/dpl/ClockP.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -78,6 +79,18 @@
 #define MCRC_APP_CRC_PATTERN_CNT   ((uint32_t)(MCRC_APP_USER_DATA_SIZE / MCRC_APP_CRC_PATTERN_SIZE))
 #define MCRC_APP_CRC_SECT_CNT      (1U)
 
+#define MCRC_256KB_BYTES    (uint32_t)(1024 * 256)
+#define MCRC_128KB_BYTES    (uint32_t)(1024 * 128)
+#define MCRC_1KB_BYTES      (uint32_t)(1024 * 1)
+
+/* Pre calculated CRC values for profiling datasets */
+#define MCRC_256KB_HI       (0xA51F5565)
+#define MCRC_256KB_LO       (0xECA7D261)
+#define MCRC_128KB_HI       (0x4EB4CABB)
+#define MCRC_128KB_LO       (0x432911AF)
+#define MCRC_1KB_HI         (0x958B7A02)
+#define MCRC_1KB_LO         (0x1871EC9A)
+
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -90,6 +103,7 @@ uint32_t            testCase = 0;
  * UDMA Memories
  */
 static uint8_t gMCRCSrcBuffer[MCRC_APP_USER_DATA_SIZE] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+static uint32_t profMCRCSrcBuffer[MCRC_256KB_BYTES/4] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
 
 static uint8_t gTxRingMem[UDMA_APP_RING_MEM_SIZE] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
 
@@ -147,6 +161,28 @@ static SemaphoreP_Object gUdmaAppDoneSem;
         },
 };
 
+static SDL_MCRC_ConfigParams_t profParams =
+{
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_J722S) || defined (SOC_AM62DX)
+    MCU_MCRC64_0,
+#endif
+
+#if defined(SOC_AM275X)
+    MCRC64_0,
+#endif
+    (uint32_t) SDL_MCRC_CHANNEL_1,
+    (uint32_t) SDL_MCRC_OPERATION_MODE_SEMICPU,
+    4U,
+    0,
+    MCRC_APP_CRC_SECT_CNT,
+    MCRC_DEF_WATCHDOG_PRELOAD,
+    MCRC_DEF_BLOCK_PRELOAD,
+    0x00000000,
+    0x00000000,
+    0,
+    (uint32_t) &profMCRCSrcBuffer[0],
+};
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -155,6 +191,9 @@ static SemaphoreP_Object gUdmaAppDoneSem;
 /* ========================================================================== */
 /*                          Function Declarations                             */
 /* ========================================================================== */
+
+static int32_t mcrcSemiProfile(SDL_MCRC_ConfigParams_t mcrcParams, Udma_ChHandle chHandle, SDL_MCRC_Signature_t *crc,
+                               uint64_t trpdMemPhy, SDL_MCRC_SignatureRegAddr_t psaSignRegAddr, uint64_t *profTime);
 
 static int32_t mcrcSemiCPU_mode(Udma_ChHandle chHandle,
                                      SDL_MCRC_ConfigParams_t *params, uint32_t testCase);
@@ -177,6 +216,74 @@ static void mcrcSemiCPU_udmaTrpdInit(Udma_ChHandle chHandle,
 /*                          Function Definitions                              */
 /* ========================================================================== */
 
+static int32_t mcrcSemiProfile(SDL_MCRC_ConfigParams_t mcrcParams, Udma_ChHandle chHandle, SDL_MCRC_Signature_t *crc,
+                               uint64_t trpdMemPhy, SDL_MCRC_SignatureRegAddr_t psaSignRegAddr, uint64_t *profTime)
+{
+    uint64_t profStartTime, profEndTime;
+    uint32_t patternCnt = mcrcParams.dataSize / mcrcParams.mcrcPatternSize;
+    uint32_t sectCnt = profParams.mcrcSectorCount;
+    SDL_MCRC_InstType instance = profParams.instance;
+    SDL_MCRC_Channel_t mcrcChannel = profParams.mcrcChannelNumber;
+    uint32_t intrMask = 0x1U;
+    int32_t retVal = SDL_PASS;
+    uint16_t timeout = 0xFFFF;
+    uint32_t intrStatus;
+
+    /* Reset the CRC channel*/
+    SDL_MCRC_channelReset(instance, mcrcChannel);
+    SDL_MCRC_config(instance, mcrcChannel, patternCnt, sectCnt, mcrcParams.mcrcMode);
+
+    retVal = SDL_MCRC_enableIntr(instance, mcrcChannel,intrMask);
+    retVal = SDL_MCRC_config(instance, mcrcChannel, patternCnt, sectCnt, mcrcParams.mcrcMode);
+
+    retVal = Udma_chEnable(chHandle);
+    /* Update TR packet descriptor */
+    mcrcSemiCPU_udmaTrpdInit(chHandle,(uint8_t *)trpdMemPhy,
+                             (void *) mcrcParams.sourceMemory,
+                             (void *)(uintptr_t) psaSignRegAddr.regL,
+                             mcrcParams.dataSize,
+                             mcrcParams.mcrcPatternSize);
+    profStartTime = ClockP_getTimeUsec();
+    retVal = Udma_ringQueueRaw(Udma_chGetFqRingHandle(chHandle),trpdMemPhy);
+    if(SDL_PASS != retVal)
+    {
+        DebugP_log(" [Error] Channel queue failed during profiling test!!\r\n");
+    }
+    retVal = SemaphoreP_pend(&gUdmaAppDoneSem, SystemP_WAIT_FOREVER);
+
+    if(SDL_PASS != retVal)
+    {
+        DebugP_log(" [Error] No descriptor after callback during profiling test!!\r\n");
+        retVal = SDL_EFAIL;
+    }
+    intrStatus=0u;
+    while (intrStatus == 0x0U && timeout>0)
+    {
+        /* complete is set. */
+        SDL_MCRC_getIntrStatus(instance, mcrcChannel, &intrStatus);
+        timeout--;
+    }
+    profEndTime = ClockP_getTimeUsec();
+    if (timeout == 0)
+    {
+        DebugP_log(" [Error] MCRC timed out during profiling test!!\r\n");
+        retVal = SDL_EFAIL;
+        /* To set profTime to 0 because of the failure */
+        profEndTime = profStartTime;
+    }
+    else
+    {
+        /*
+         * Return value is discarded because the only fail condition is bad
+         * args, which is not possible at this stage due to previous checks
+         */
+        SDL_MCRC_getPSASectorSig(instance, mcrcChannel, crc);
+        DebugP_log(" Calculated CRC value is 0x%08x%08x\r\n", crc->regH, crc->regL);
+    }
+    *profTime = profEndTime - profStartTime;
+    return retVal;
+}
+
 int32_t mcrcSemiCPU_main(void)
 {
     int32_t                     retVal = SDL_PASS;
@@ -198,26 +305,26 @@ int32_t mcrcSemiCPU_main(void)
     Udma_ChRxPrms               rxPrms;
     Udma_EventHandle            eventHandle;
     Udma_EventPrms              eventPrms;
-    uint64_t                    trpdMemPhy;
+    uint64_t                    trpdMemPhy, profTime;
 
-    DebugP_log("\r\r\n\r\r\nMCRC Semi_CPU mode : starting\r\r\n\r\r\n");
+    DebugP_log("\r\r\nMCRC Semi_CPU mode : starting\r\r\n");
     testStatus = SemaphoreP_constructBinary(&gUdmaAppDoneSem, 0);
     DebugP_assert(SystemP_SUCCESS == testStatus);
 
     if(SDL_PASS == retVal)
     {
-      /* Init channel parameters */
-      chType = UDMA_CH_TYPE_TR_BLK_COPY;
-      UdmaChPrms_init(&chPrms, chType);
-      chPrms.fqRingPrms.ringMem   = &gTxRingMem[0U];
-      chPrms.cqRingPrms.ringMem   = &gTxCompRingMem[0U];
-      chPrms.tdCqRingPrms.ringMem = &gTxTdCompRingMem[0U];
-      chPrms.fqRingPrms.ringMemSize   = UDMA_APP_RING_MEM_SIZE;
-      chPrms.cqRingPrms.ringMemSize   = UDMA_APP_RING_MEM_SIZE;
-      chPrms.tdCqRingPrms.ringMemSize = UDMA_APP_RING_MEM_SIZE;
-      chPrms.fqRingPrms.elemCnt   = UDMA_APP_RING_ENTRIES;
-      chPrms.cqRingPrms.elemCnt   = UDMA_APP_RING_ENTRIES;
-      chPrms.tdCqRingPrms.elemCnt = UDMA_APP_RING_ENTRIES;
+        /* Init channel parameters */
+        chType = UDMA_CH_TYPE_TR_BLK_COPY;
+        UdmaChPrms_init(&chPrms, chType);
+        chPrms.fqRingPrms.ringMem   = &gTxRingMem[0U];
+        chPrms.cqRingPrms.ringMem   = &gTxCompRingMem[0U];
+        chPrms.tdCqRingPrms.ringMem = &gTxTdCompRingMem[0U];
+        chPrms.fqRingPrms.ringMemSize   = UDMA_APP_RING_MEM_SIZE;
+        chPrms.cqRingPrms.ringMemSize   = UDMA_APP_RING_MEM_SIZE;
+        chPrms.tdCqRingPrms.ringMemSize = UDMA_APP_RING_MEM_SIZE;
+        chPrms.fqRingPrms.elemCnt   = UDMA_APP_RING_ENTRIES;
+        chPrms.cqRingPrms.elemCnt   = UDMA_APP_RING_ENTRIES;
+        chPrms.tdCqRingPrms.elemCnt = UDMA_APP_RING_ENTRIES;
     }
 
     /* Open channel for block copy */
@@ -265,9 +372,119 @@ int32_t mcrcSemiCPU_main(void)
         }
     }
 
+    /* First, perform profiling tests for 3 data size values */
+    DebugP_log("MCRC Profiling Tests: \r\n\r\n");
+    for (loopCnt = 0U; loopCnt < MCRC_256KB_BYTES/profParams.mcrcPatternSize; loopCnt++)
+    {
+        profMCRCSrcBuffer[loopCnt] = (uint32_t) loopCnt;
+    }
+
+    CacheP_wb((void *)profMCRCSrcBuffer, MCRC_256KB_BYTES, CacheP_TYPE_ALL);
+    instance = profParams.instance;
+    mcrcChannel = profParams.mcrcChannelNumber;
+    trpdMemPhy = (uint64_t) Udma_defaultVirtToPhyFxn(tprdMem, 0U, NULL);
+    SDL_MCRC_getPSASigRegAddr(instance, mcrcChannel, &psaSignRegAddr);
+    /* Initialize and Configure MCRC channel */
+    retVal = SDL_MCRC_init(profParams.instance,
+                           profParams.mcrcChannelNumber,
+                           profParams.mcrcWatchdogPreload,
+                           profParams.mcrcBlockPreload);
+    if(SDL_PASS != retVal)
+    {
+        DebugP_log("[Error] mcrcSemiCPU channel intialization failed!!\r\n");
+    }
+
+    /* For 256KB data size */
+    if (retVal == SDL_PASS)
+    {
+        DebugP_log("Profiling for 256KB dataset\r\n");
+        profParams.dataSize = MCRC_256KB_BYTES;
+        retVal = mcrcSemiProfile(profParams, chHandle, &psaSignRegVal, trpdMemPhy, psaSignRegAddr, &profTime);
+        if (retVal == SDL_PASS)
+        {
+            if (psaSignRegVal.regH != MCRC_256KB_HI || psaSignRegVal.regL != MCRC_256KB_LO)
+            {
+                DebugP_log(" Error: MCRC value does not match for 256KB \r\n");
+                retVal = SDL_EFAIL;
+            }
+            else
+            {
+                DebugP_log(" Calculated and Expected CRC values match for 256KB \r\n");
+            }
+        }
+        if (retVal == SDL_PASS)
+        {
+            DebugP_log(" MCRC Profiling result: 256KB ~ %dus \r\n", profTime);
+        }
+        else
+        {
+            DebugP_log(" Error in MCRC Profiling run for 256KB \r\n");
+        }
+        DebugP_log("\r\n");
+    }
+
+    /* For 128KB data size */
+    if (retVal == SDL_PASS)
+    {
+        DebugP_log("Profiling for 128KB dataset\r\n");
+        profParams.dataSize = MCRC_128KB_BYTES;
+        retVal = mcrcSemiProfile(profParams, chHandle, &psaSignRegVal, trpdMemPhy, psaSignRegAddr, &profTime);
+        if (retVal == SDL_PASS)
+        {
+            if (psaSignRegVal.regH != MCRC_128KB_HI || psaSignRegVal.regL != MCRC_128KB_LO)
+            {
+                DebugP_log(" Error: MCRC value does not match for 128KB \r\n");
+                retVal = SDL_EFAIL;
+            }
+            else
+            {
+                DebugP_log(" Calculated and Expected CRC values match for 128KB \r\n");
+            }
+        }
+        if (retVal == SDL_PASS)
+        {
+            DebugP_log(" MCRC Profiling result: 128KB ~ %dus \r\n", profTime);
+        }
+        else
+        {
+            DebugP_log(" Error in MCRC Profiling run for 128KB \r\n");
+        }
+        DebugP_log("\r\n");
+    }
+
+    /* For 1KB data size */
+    if (retVal == SDL_PASS)
+    {
+        DebugP_log("Profiling for 1KB dataset\r\n");
+        profParams.dataSize = MCRC_1KB_BYTES;
+        retVal = mcrcSemiProfile(profParams, chHandle, &psaSignRegVal, trpdMemPhy, psaSignRegAddr, &profTime);
+        if (retVal == SDL_PASS)
+        {
+            if (psaSignRegVal.regH != MCRC_1KB_HI || psaSignRegVal.regL != MCRC_1KB_LO)
+            {
+                DebugP_log(" Error: MCRC value does not match for 1KB \r\n");
+                retVal = SDL_EFAIL;
+            }
+            else
+            {
+                DebugP_log(" Calculated and Expected CRC values match for 1KB \r\n");
+            }
+        }
+        if (retVal == SDL_PASS)
+        {
+            DebugP_log(" MCRC Profiling result: 1KB ~ %dus \r\n", profTime);
+        }
+        else
+        {
+            DebugP_log(" Error in MCRC Profiling run for 1KB \r\n");
+        }
+        DebugP_log("\r\n");
+    }
+
+    /* Continue with regular MCRC Semimode testcases */
     for(testCase=0;testCase<MCRC_USECASES;testCase++)
     {
-        DebugP_log("\r\nMCRC SEMI CPU mode on Channel %d: Transfer Test Started...\r\n", testCase+1);
+        DebugP_log("MCRC SEMI CPU mode on Channel %d: Transfer Test Started...\r\n", testCase+1);
 
         for (loopCnt = 0U; loopCnt < MCRC_APP_USER_DATA_SIZE; loopCnt++)
         {

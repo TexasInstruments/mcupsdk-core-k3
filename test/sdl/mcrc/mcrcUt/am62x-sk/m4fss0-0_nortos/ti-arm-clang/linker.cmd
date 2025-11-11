@@ -20,15 +20,15 @@ SECTIONS
 {
     /* This has the M4F entry point and vector table, this MUST be at 0x0 */
     .vectors:{} palign(8) > M4F_VECS
-    .text:   {} palign(8) > M4F_IRAM     /* This is where code resides */
+    .text:   {} palign(8) > M4F_DRAM     /* This is where code resides */
 
-    .bss:    {} palign(8) > M4F_DRAM     /* This is where uninitialized globals go */
+    .bss:    {} palign(8) > M4F_IRAM     /* This is where uninitialized globals go */
     RUN_START(__BSS_START)
     RUN_END(__BSS_END)
 
-    .data:   {} palign(8) > M4F_DRAM     /* This is where initialized globals and static go */
+    .data:   {} palign(8) > M4F_IRAM     /* This is where initialized globals and static go */
     .rodata: {} palign(8) > M4F_DRAM     /* This is where const's go */
-    .sysmem: {} palign(8) > M4F_IRAM     /* This is where the malloc heap goes */
+    .sysmem: {} palign(8) > M4F_DRAM     /* This is where the malloc heap goes */
     .stack:  {} palign(8) > M4F_IRAM     /* This is where the main() stack goes */
 
     /* Sections needed for C++ projects */

@@ -1,14 +1,5 @@
 /**
- * @file  sdl_ip_vtm.c
- *
- * @brief
- *  C implementation file for the VTM module SDL-FL.
- *
- *  Contains the different control command and status query functions definitions
- *
- *  \par
- *  ============================================================================
- *  @n   Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-25 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -38,37 +29,70 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ * \file  sdl_ip_vtm.c
+ *
+ * \brief
+ *  C implementation file for the VTM module SDL-FL.
+ *
+ *  Contains the different control command and status query functions definitions
+ *
+ * \par
+ *  ============================================================================
 */
+
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
 
 #include <stdint.h>
 #include "sdl_ip_vtm.h"
 #include <sdl/include/sdl_types.h>
-/*=============================================================================
- *   functions
- *===========================================================================*/
-/*=============================================================================
- *   macros
- *===========================================================================*/
+#include <kernel/dpl/ClockP.h>
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
 #define SDL_VTM_VALUES_ARE_UNINITIALIZED    (-1)
 /* Delay for Reg Reads */
 #define SDL_VTM_DOUT_REG_READ_DELAY         (100)
+/* Delay (in us) after Reg Writes */
+#define SDL_VTM_REG_WRITE_DELAY             (uint64_t)(10)
 
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
 
-/*=============================================================================
- *  global variables
- *===========================================================================*/
+/* None */
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+static SDL_VTM_adc_code SDL_VTM_abs(SDL_VTM_adc_code val);
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+
 /* Uninitialized number of temperature sensors, will be initialized later */
 int32_t gNumTempSensors        = SDL_VTM_VALUES_ARE_UNINITIALIZED;
 /* Uninitialized number of core voltage domain, will be initialized later */
 int32_t gNumCoreVoltageDomains = SDL_VTM_VALUES_ARE_UNINITIALIZED;
 
-/*=============================================================================
- *  Internal functions
- *===========================================================================*/
+/* ========================================================================== */
+/*                            External Variables                              */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
+
 /**
  * Design: PROC_SDL-1313,PROC_SDL-1314
  */
-static SDL_VTM_adc_code SDL_VTM_abs(SDL_VTM_adc_code val);
 static SDL_VTM_adc_code SDL_VTM_abs(SDL_VTM_adc_code val)
 {
     SDL_VTM_adc_code sdlResult;
@@ -82,10 +106,6 @@ static SDL_VTM_adc_code SDL_VTM_abs(SDL_VTM_adc_code val)
     }
     return (sdlResult);
 }
-
-/*=============================================================================
- *  SDL IP functions
- *===========================================================================*/
 
  /**
  * Design: PROC_SDL-1316,PROC_SDL-1315
@@ -339,21 +359,26 @@ int32_t SDL_VTM_tsSetCtrl (const SDL_VTM_cfg2Regs          *p_cfg2,
         if ((valid_map & SDL_VTM_TS_CTRL_MAXT_OUTG_ALERT_VALID) !=0u)
         {
             SDL_REG32_FINS(&p_sensor->CTRL, VTM_CFG2_TMPSENS_CTRL_MAXT_OUTRG_EN, maxt_outrg_alert_en);
+            /* Have some delay after Register write */
+            ClockP_usleep(SDL_VTM_REG_WRITE_DELAY);
         }
 
         if ((valid_map & SDL_VTM_TS_CTRL_RESET_CTRL_VALID) !=0u)
         {
             SDL_REG32_FINS(&p_sensor->CTRL, VTM_CFG2_TMPSENS_CTRL_CLRZ, tsReset);
+            ClockP_usleep(SDL_VTM_REG_WRITE_DELAY);
         }
 
         if ((valid_map & SDL_VTM_TS_CTRL_SOC_VALID) !=0u)
         {
             SDL_REG32_FINS(&p_sensor->CTRL, VTM_CFG2_TMPSENS_CTRL_SOC, adc_trigger);
+            ClockP_usleep(SDL_VTM_REG_WRITE_DELAY);
         }
 
         if ((valid_map & SDL_VTM_TS_CTRL_MODE_VALID) !=0u)
         {
             SDL_REG32_FINS(&p_sensor->CTRL, VTM_CFG2_TMPSENS_CTRL_CONT, mode);
+            ClockP_usleep(SDL_VTM_REG_WRITE_DELAY);
         }
     }
     return (sdlResult);
@@ -602,36 +627,40 @@ int32_t SDL_VTM_tsSetGlobalCfg (const SDL_VTM_cfg2Regs       *p_cfg2,
         if ((valid_map & SDL_VTM_TSGLOBAL_CLK_SEL_VALID) !=0u)
         {
             SDL_REG32_FINS(&p_cfg2->CLK_CTRL, VTM_CFG2_CLK_CTRL_TSENS_CLK_SEL, \
-                p_tsGlobal_cfg->clkSel);
+                           p_tsGlobal_cfg->clkSel);
         }
         if ((valid_map & SDL_VTM_TSGLOBAL_CLK_DIV_VALID) !=0u)
         {
             SDL_REG32_FINS(&p_cfg2->CLK_CTRL, VTM_CFG2_CLK_CTRL_TSENS_CLK_DIV, \
-                p_tsGlobal_cfg->clkDiv);
+                           p_tsGlobal_cfg->clkDiv);
         }
 
         if ((valid_map & SDL_VTM_TSGLOBAL_ANY_MAXT_OUTRG_ALERT_EN_VALID) !=0u)
         {
             SDL_REG32_FINS(&p_cfg2->MISC_CTRL, VTM_CFG2_MISC_CTRL_ANY_MAXT_OUTRG_ALERT_EN, \
-                p_tsGlobal_cfg->any_maxt_outrg_alert_en);
+                           p_tsGlobal_cfg->any_maxt_outrg_alert_en);
+            /* Have some delay after Register write */
+            ClockP_usleep(SDL_VTM_REG_WRITE_DELAY);
         }
 
         if ((valid_map & SDL_VTM_TSGLOBAL_MAXT_OUTRG_ALERT_THR_VALID) !=0u)
         {
             SDL_REG32_FINS(&p_cfg2->MISC_CTRL2, VTM_CFG2_MISC_CTRL2_MAXT_OUTRG_ALERT_THR, \
-                p_tsGlobal_cfg->maxt_outrg_alert_thr);
+                           p_tsGlobal_cfg->maxt_outrg_alert_thr);
+            ClockP_usleep(SDL_VTM_REG_WRITE_DELAY);
         }
 
         if ((valid_map & SDL_VTM_TSGLOBAL_MAXT_OUTRG_ALERT_THR0_VALID) !=0u)
         {
             SDL_REG32_FINS(&p_cfg2->MISC_CTRL2, VTM_CFG2_MISC_CTRL2_MAXT_OUTRG_ALERT_THR0, \
-                p_tsGlobal_cfg->maxt_outrg_alert_thr0);
+                           p_tsGlobal_cfg->maxt_outrg_alert_thr0);
+            ClockP_usleep(SDL_VTM_REG_WRITE_DELAY);
         }
 
         if ((valid_map & SDL_VTM_TSGLOBAL_SAMPLES_PER_CNT_VALID) !=0u)
         {
             SDL_REG32_FINS(&p_cfg2->SAMPLE_CTRL, VTM_CFG2_SAMPLE_CTRL_SAMPLE_PER_CNT, \
-                p_tsGlobal_cfg->samplesPerCnt);
+                           p_tsGlobal_cfg->samplesPerCnt);
         }
     }
 

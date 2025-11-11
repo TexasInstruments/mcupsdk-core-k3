@@ -1,13 +1,43 @@
 /**
- * @file  sdl_vtm_pvt_sensor.c
+ *  (C) Copyright 2023-25, Texas Instruments, Inc.
  *
- * @brief
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions
+ *  are met:
+ *
+ *    Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ *    Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the
+ *    distribution.
+ *
+ *    Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * \file  sdl_vtm_pvt_sensor.c
+ *
+ * \brief
  *  C implementation of the workaround computed temperature array.
  *
  *  Contains the look up table and control command and status query
  *  function definitions
  *
- * @details
+ * \details
  * The VTM Temperature Monitors (TEMPSENSORs) are trimmed during production
  * with resulting values stored in software readable registers.
  *
@@ -44,37 +74,12 @@
  *
  *  \par
  *  ============================================================================
- *  @n   (C) Copyright 2023-25, Texas Instruments, Inc.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *    Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- *
- *    Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the
- *    distribution.
- *
- *    Neither the name of Texas Instruments Incorporated nor the names of
- *    its contributors may be used to endorse or promote products derived
- *    from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
- *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS int32_tERRUPTION) HOWEVER CAUSED AND ON ANY
- *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
 */
+
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include <string.h>
 #include <stdbool.h>
 #include <sdl/include/soc_config.h>
@@ -82,20 +87,43 @@
 #include "sdl_pvt_sensor_lut.h"
 #include <sdl/include/sdl_types.h>
 #include <stdint.h>
+#include <kernel/dpl/ClockP.h>
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
+/* Delay (in us) after Reg Writes */
+#define SDL_VTM_REG_WRITE_DELAY             (uint64_t)(10)
+
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+static void SDL_vtmPrepLookupTable(void);
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
 
 extern int32_t gNumTempSensors;
 extern int32_t gNumCoreVoltageDomains;
 
-/* Global variables */
 int32_t              gSDL_pvt_poly_work_around[SDL_VTM_NUM_OF_SENSOR_WA_COMP][SDL_VTM_NUM_OF_ADC_CODES];
 int32_t              gSDL_vtm_pvt_error[SDL_VTM_NUM_EFUSE_REGS];
-
 
 /* lut_computation done */
 bool gSDL_vtm_lut_done[SDL_VTM_NUM_OF_SENSOR_WA_COMP] = {(bool)false};
 
-/* Internal functions */
-static void SDL_vtmPrepLookupTable(void);
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
 
 static void SDL_vtmPrepLookupTable(void)
 {
@@ -235,7 +263,6 @@ int32_t SDL_VTM_tsSetMaxTOutRgAlertThr( const SDL_VTM_cfg2Regs  *p_cfg2,
                                        int32_t                 low_temp_in_milli_degree_celsius)
 {
     int32_t                 retVal = SDL_EBADARGS;
-    volatile                int32_t i;
     SDL_VTM_adc_code        adc_code_h, adc_code_l;
     uint32_t                value;
     SDL_VTM_Ctrlcfg         ts_ctrl_cfg;
@@ -261,36 +288,33 @@ int32_t SDL_VTM_tsSetMaxTOutRgAlertThr( const SDL_VTM_cfg2Regs  *p_cfg2,
          */
 
         /* Step 1 */
-         ts_ctrl_cfg.valid_map = SDL_VTM_TS_CTRL_MAXT_OUTG_ALERT_VALID | \
-                                 SDL_VTM_TS_CTRL_RESET_CTRL_VALID      | \
-                                 SDL_VTM_TS_CTRL_SOC_VALID             | \
-                                 SDL_VTM_TS_CTRL_MODE_VALID;
-         value =  0u;
-         SDL_REG32_FINS(&value, VTM_CFG2_MISC_CTRL2_MAXT_OUTRG_ALERT_THR0, adc_code_l);
-         SDL_REG32_FINS(&value, VTM_CFG2_MISC_CTRL2_MAXT_OUTRG_ALERT_THR, adc_code_h);
-         SDL_REG32_WR(&p_cfg2->MISC_CTRL2,value);
+        ts_ctrl_cfg.valid_map = SDL_VTM_TS_CTRL_MAXT_OUTG_ALERT_VALID | \
+                                SDL_VTM_TS_CTRL_RESET_CTRL_VALID      | \
+                                SDL_VTM_TS_CTRL_SOC_VALID             | \
+                                SDL_VTM_TS_CTRL_MODE_VALID;
+        value =  0u;
+        SDL_REG32_FINS(&value, VTM_CFG2_MISC_CTRL2_MAXT_OUTRG_ALERT_THR0, adc_code_l);
+        SDL_REG32_FINS(&value, VTM_CFG2_MISC_CTRL2_MAXT_OUTRG_ALERT_THR, adc_code_h);
+        SDL_REG32_WR(&p_cfg2->MISC_CTRL2,value);
+        /* Have some delay after Register write */
+        ClockP_usleep(SDL_VTM_REG_WRITE_DELAY);
 
-         /* Step 2 */
-         ts_ctrl_cfg.valid_map = SDL_VTM_TS_CTRL_MAXT_OUTG_ALERT_VALID;
-         ts_ctrl_cfg.maxt_outrg_alert_en = SDL_VTM_TS_CTRL_MAXT_OUTRG_GEN_ALERT;
+        /* Step 2 */
+        ts_ctrl_cfg.valid_map = SDL_VTM_TS_CTRL_MAXT_OUTG_ALERT_VALID;
+        ts_ctrl_cfg.maxt_outrg_alert_en = SDL_VTM_TS_CTRL_MAXT_OUTRG_GEN_ALERT;
 
-         retVal = SDL_VTM_tsSetCtrl (p_cfg2,
-                         instance,
-                         &ts_ctrl_cfg);
+        retVal = SDL_VTM_tsSetCtrl (p_cfg2,
+                                    instance,
+                                    &ts_ctrl_cfg);
 
-         if (retVal == SDL_PASS)
-         {
-            /* have some delay before write */
-            for (i = 0; i < SDL_VTM_REG_READ_DELAY;)
-            {
-                i = i + 1;
-            }
-
+        if (retVal == SDL_PASS)
+        {
             /* Step 3 */
             SDL_REG32_FINS(&p_cfg2->MISC_CTRL, \
                            VTM_CFG2_MISC_CTRL_ANY_MAXT_OUTRG_ALERT_EN, \
                            SDL_VTM_TSGLOBAL_ANY_MAXT_OUTRG_ALERT_ENABLE);
-         }
+            ClockP_usleep(SDL_VTM_REG_WRITE_DELAY);
+        }
     }
     else
     {
@@ -304,15 +328,14 @@ int32_t SDL_VTM_tsSetMaxTOutRgAlertThr( const SDL_VTM_cfg2Regs  *p_cfg2,
 int32_t SDL_VTM_tsSetMaxTOutRgAlertThrDisable(const SDL_VTM_cfg2Regs *p_cfg2, SDL_VTM_InstTs instance)
 {
     int32_t retVal = SDL_EBADARGS;
-    volatile int32_t i;
     SDL_VTM_Ctrlcfg ts_ctrl_cfg;
 
     if (p_cfg2 != NULL_PTR)
     {
         /*
          * Disable maximum temperature out of range alert and thresholds
-         * Step 1: WKUP_VTM_TMPSENS_CTRL_j unset the MAXT_OUTRG_EN  bit
-         * Step 2: WKUP_VTM_MISC_CTRL unset the ANYMAXT_OUTRG_ALERT_EN  bit
+         * Step 1: WKUP_VTM_TMPSENS_CTRL_j unset the MAXT_OUTRG_EN bit
+         * Step 2: WKUP_VTM_MISC_CTRL unset the ANYMAXT_OUTRG_ALERT_EN bit
          */
 
         /* Step 1 */
@@ -324,16 +347,12 @@ int32_t SDL_VTM_tsSetMaxTOutRgAlertThrDisable(const SDL_VTM_cfg2Regs *p_cfg2, SD
 
         if (retVal == SDL_PASS)
         {
-            /* have some delay before write */
-            for (i = 0; i < SDL_VTM_REG_READ_DELAY;)
-            {
-                i = i + 1;
-            }
-
             /* Step 2 */
             SDL_REG32_FINS(&p_cfg2->MISC_CTRL,                          \
                            VTM_CFG2_MISC_CTRL_ANY_MAXT_OUTRG_ALERT_EN,  \
                            SDL_VTM_TSGLOBAL_ANY_MAXT_OUTRG_ALERT_DISABLE);
+            /* Have some delay after Register write */
+            ClockP_usleep(SDL_VTM_REG_WRITE_DELAY);
         }
     }
     else

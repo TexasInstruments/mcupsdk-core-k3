@@ -1,14 +1,5 @@
 /**
- * @file  sdl_pvt_sensor_lut.h
- *
- * @brief
- *  C array file for the VTM look up table SDL-FL.
- *
- *  Contains the look up table definitions
- *
- *  \par
- *  ============================================================================
- *  @n   (C) Copyright 2023, Texas Instruments, Inc.
+ *  (C) Copyright 2023, Texas Instruments, Inc.
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -33,11 +24,20 @@
  *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
  *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- *  DATA, OR PROFITS; OR BUSINESS int32_tERRUPTION) HOWEVER CAUSED AND ON ANY
+ *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
  *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ * \file  sdl_pvt_sensor_lut.h
+ *
+ * \brief
+ *  C array file for the VTM look up table SDL-FL.
+ *
+ *  Contains the look up table definitions
+ *
+ *  \par
+ *  ============================================================================
 */
 
 #ifndef SDL_VTM_PVT_SENSOR_LUT_H
@@ -278,4 +278,4 @@ extern const int32_t gSDL_pvt_poly[SDL_VTM_NUM_OF_ADC_CODES];
 
 
 /* Nothing past this point */
- 
+

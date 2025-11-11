@@ -1,14 +1,5 @@
 /**
- * @file  sdl_vtm.c
- *
- * @brief
- *  C implementation file for the VTM module SDL-FL.
- *
- *  Contains the different control command and status query functions definitions
- *
- *  \par
- *  ============================================================================
- *  @n   (C) Copyright 2023-25, Texas Instruments, Inc.
+ *  (C) Copyright 2023-25, Texas Instruments, Inc.
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -38,28 +29,56 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
+ * \file  sdl_vtm.c
+ *
+ * \brief
+ *  C implementation file for the VTM module SDL-FL.
+ *
+ *  Contains the different control command and status query functions definitions
+ *
+ * \par
+ *  ============================================================================
 */
+
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
 
 #include <stdint.h>
 #include <sdl/sdl_vtm.h>
 #include <sdl/include/sdl_types.h>
+#include <kernel/dpl/ClockP.h>
 
-/*=============================================================================
- *  internal macros
- *===========================================================================*/
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
 #define SDL_VTM_VALUES_ARE_UNINITIALIZED    (-1)
 /* Delay for Reg Reads */
 #define SDL_VTM_DOUT_REG_READ_DELAY         (100)
 
-/*=============================================================================
- *  global variables
- *===========================================================================*/
+/* ========================================================================== */
+/*                         Structure Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+
 extern int32_t gNumTempSensors;
 extern int32_t gNumCoreVoltageDomains;
 
-/*=============================================================================
- *  Internal functions
- *===========================================================================*/
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
 
  /**
  * Design: PROC_SDL-1164,PROC_SDL-1298,PROC_SDL-1299
@@ -83,15 +102,15 @@ int32_t SDL_VTM_initVd(SDL_VTM_InstVd instance, const SDL_VTM_configVd *pConfig)
 
     int32_t                    sdlResult = SDL_PASS;
 
-        /* Argument check for VD, temperature sensor */
+    /* Argument check for VD, temperature sensor */
     if (gNumCoreVoltageDomains == SDL_VTM_VALUES_ARE_UNINITIALIZED)
     {
         SDL_VTM_getSensorVDCount(p_cfg1);
     }
 
     /* argument checks */
-    if( (pConfig   == NULL_PTR)        ||
-        ((int32_t)instance  >= gNumCoreVoltageDomains))
+    if((pConfig   == NULL_PTR)        ||
+       ((int32_t)instance  >= gNumCoreVoltageDomains))
     {
         sdlResult = SDL_EBADARGS;
     }
@@ -368,69 +387,69 @@ int32_t SDL_VTM_intrCntrl(SDL_VTM_InstVd instance, SDL_VTM_intrCtrl intrCtrl)
         if ((intrCtrl & SDL_VTM_VD_LT_THR0_INTR_RAW_SET) == SDL_VTM_VD_LT_THR0_INTR_RAW_SET)
         {
             SDL_REG32_FINS(&p_cfg1->LT_TH0_INT_RAW_STAT_SET,     \
-               VTM_CFG1_LT_TH0_INT_RAW_STAT_SET_INT_VD, vd);
+                           VTM_CFG1_LT_TH0_INT_RAW_STAT_SET_INT_VD, vd);
         }
         if ((intrCtrl & SDL_VTM_VD_GT_THR1_INTR_RAW_SET) == SDL_VTM_VD_GT_THR1_INTR_RAW_SET)
         {
             SDL_REG32_FINS(&p_cfg1->GT_TH1_INT_RAW_STAT_SET,     \
-               VTM_CFG1_GT_TH1_INT_RAW_STAT_SET_INT_VD, vd);
+                           VTM_CFG1_GT_TH1_INT_RAW_STAT_SET_INT_VD, vd);
         }
 
         if ((intrCtrl & SDL_VTM_VD_GT_THR2_INTR_RAW_SET) == SDL_VTM_VD_GT_THR2_INTR_RAW_SET)
         {
             SDL_REG32_FINS(&p_cfg1->GT_TH2_INT_RAW_STAT_SET,     \
-               VTM_CFG1_GT_TH2_INT_RAW_STAT_SET_INT_VD, vd);
+                           VTM_CFG1_GT_TH2_INT_RAW_STAT_SET_INT_VD, vd);
         }
 
         if ((intrCtrl & SDL_VTM_VD_LT_THR0_INTR_RAW_CLR) == SDL_VTM_VD_LT_THR0_INTR_RAW_CLR)
         {
             SDL_REG32_FINS(&p_cfg1->LT_TH0_INT_EN_STAT_CLR,     \
-               VTM_CFG1_LT_TH0_INT_EN_STAT_CLR_INT_VD, vd);
+                           VTM_CFG1_LT_TH0_INT_EN_STAT_CLR_INT_VD, vd);
         }
         if ((intrCtrl & SDL_VTM_VD_GT_THR1_INTR_RAW_CLR) == SDL_VTM_VD_GT_THR1_INTR_RAW_CLR)
         {
             SDL_REG32_FINS(&p_cfg1->GT_TH1_INT_EN_STAT_CLR,     \
-               VTM_CFG1_GT_TH1_INT_EN_STAT_CLR_INT_VD, vd);
+                           VTM_CFG1_GT_TH1_INT_EN_STAT_CLR_INT_VD, vd);
         }
 
         if ((intrCtrl & SDL_VTM_VD_GT_THR2_INTR_RAW_CLR) == SDL_VTM_VD_GT_THR2_INTR_RAW_CLR)
         {
             SDL_REG32_FINS(&p_cfg1->GT_TH2_INT_EN_STAT_CLR,     \
-               VTM_CFG1_GT_TH2_INT_EN_STAT_CLR_INT_VD, vd);
+                           VTM_CFG1_GT_TH2_INT_EN_STAT_CLR_INT_VD, vd);
         }
 
         if ((intrCtrl & SDL_VTM_VD_LT_THR0_INTR_EN_SET) == SDL_VTM_VD_LT_THR0_INTR_EN_SET)
         {
             SDL_REG32_FINS(&p_cfg1->LT_TH0_INT_EN_SET,     \
-               VTM_CFG1_LT_TH0_INT_EN_SET_INT_VD, vd);
+                           VTM_CFG1_LT_TH0_INT_EN_SET_INT_VD, vd);
         }
         if ((intrCtrl & SDL_VTM_VD_GT_THR1_INTR_EN_SET) == SDL_VTM_VD_GT_THR1_INTR_EN_SET)
         {
             SDL_REG32_FINS(&p_cfg1->GT_TH1_INT_EN_SET,     \
-               VTM_CFG1_GT_TH1_INT_EN_SET_INT_VD, vd);
+                           VTM_CFG1_GT_TH1_INT_EN_SET_INT_VD, vd);
         }
 
         if ((intrCtrl & SDL_VTM_VD_GT_THR2_INTR_EN_SET) == SDL_VTM_VD_GT_THR2_INTR_EN_SET)
         {
             SDL_REG32_FINS(&p_cfg1->GT_TH2_INT_EN_SET,     \
-               VTM_CFG1_GT_TH2_INT_EN_SET_INT_VD, vd);
+                           VTM_CFG1_GT_TH2_INT_EN_SET_INT_VD, vd);
         }
 
         if ((intrCtrl & SDL_VTM_VD_LT_THR0_INTR_EN_CLR) == SDL_VTM_VD_LT_THR0_INTR_EN_CLR)
         {
             SDL_REG32_FINS(&p_cfg1->LT_TH0_INT_EN_CLR,     \
-               VTM_CFG1_LT_TH0_INT_EN_CLR_INT_VD, vd);
+                           VTM_CFG1_LT_TH0_INT_EN_CLR_INT_VD, vd);
         }
         if ((intrCtrl & SDL_VTM_VD_GT_THR1_INTR_EN_CLR) == SDL_VTM_VD_GT_THR1_INTR_EN_CLR)
         {
             SDL_REG32_FINS(&p_cfg1->GT_TH1_INT_EN_CLR,     \
-               VTM_CFG1_GT_TH1_INT_EN_CLR_INT_VD, vd);
+                           VTM_CFG1_GT_TH1_INT_EN_CLR_INT_VD, vd);
         }
 
         if ((intrCtrl & SDL_VTM_VD_GT_THR2_INTR_EN_CLR) == SDL_VTM_VD_GT_THR2_INTR_EN_CLR)
         {
             SDL_REG32_FINS(&p_cfg1->GT_TH2_INT_EN_CLR,     \
-               VTM_CFG1_GT_TH2_INT_EN_CLR_INT_VD, vd);
+                           VTM_CFG1_GT_TH2_INT_EN_CLR_INT_VD, vd);
         }
     }
     return (sdlResult);

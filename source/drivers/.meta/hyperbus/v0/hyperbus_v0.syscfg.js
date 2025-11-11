@@ -403,13 +403,13 @@ the rest 8/9th is available for system use.
         {
             name: "latency",
             displayName: "Initial Latency",
-            description: "Initial latency for read/write access, only applicable for HyperRAM",
-            default: 0x1,
+            description: "Latency cycles for read/write access, only applicable for HyperRAM",
+            default: 0x6,
             options: [
-                { name: 0x0000 },
-                { name: 0x0001 },
-                { name: 0x1110 },
-                { name: 0x1111 },
+                { name: 0x3 },
+                { name: 0x4 },
+                { name: 0x5 },
+                { name: 0x6 },
             ],
         },
         {

@@ -149,6 +149,7 @@ static void HYPERBUS_fssInstanceSelect(HYPERBUS_Handle handle, HYPERBUS_fssHandl
 static int32_t HYPERBUS_configureFss(HYPERBUS_Handle handle, HYPERBUS_fssHandle * fssHandle);
 static void HYPERBUS_enableHyperBus(HYPERBUS_fssHandle * fssHandle, uint16_t val);
 static int32_t HYPERBUS_waitForMdllStabilization(HYPERBUS_Handle handle);
+static uint32_t HYPERBUS_getLatencyCode(uint32_t latencyCycles);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -350,6 +351,51 @@ static int32_t HYPERBUS_waitForMdllStabilization(HYPERBUS_Handle handle)
     }
 
     return status;
+}
+
+/**
+ *  \brief  Convert latency cycles to 4-bit LTCY field value for HyperRAM
+ *
+ *  This function converts a latency value in clock cycles to the appropriate
+ *  4-bit value for the LTCY field in the Memory Timing Register (MTR).
+ *  Only applicable for HyperRAM devices.
+ *
+ *  \param  latencyCycles   Latency value in clock cycles
+ *
+ *  \return 4-bit LTCY field value (0-15)
+ *          - 0x0 (0000b) for 5 clock latency
+ *          - 0x1 (0001b) for 6 clock latency
+ *          - 0x2 (0010b) is reserved
+ *          - 0xD (1101b) is reserved
+ *          - 0xE (1110b) for 3 clock latency
+ *          - 0xF (1111b) for 4 clock latency
+ *          - Returns 0x1 for unsupported values
+ */
+static uint32_t HYPERBUS_getLatencyCode(uint32_t latencyCycles)
+{
+    uint32_t latencyCode = 0U;
+
+    switch (latencyCycles)
+    {
+        case 3U:
+            latencyCode = 0xEU;  /* 1110b for 3 clock latency */
+            break;
+        case 4U:
+            latencyCode = 0xFU;  /* 1111b for 4 clock latency */
+            break;
+        case 5U:
+            latencyCode = 0x0U;  /* 0000b for 5 clock latency */
+            break;
+        case 6U:
+            latencyCode = 0x1U;  /* 0001b for 6 clock latency */
+            break;
+        default:
+            /* Invalid latency, default to 6 clock cycles (code 1) */
+            latencyCode = 0x1U;
+            break;
+    }
+
+    return latencyCode;
 }
 
 HYPERBUS_Handle HYPERBUS_open(uint32_t index)
@@ -581,7 +627,7 @@ static int32_t HYPERBUS_setDeviceCfg(HYPERBUS_Handle handle)
         memTiming.writeCSSetup = attrs->writeCSSetup;
         memTiming.readCSHold   = attrs->readCSHold;
         memTiming.writeCSHold  = attrs->writeCSHold;
-        memTiming.latency      = attrs->latency;
+        memTiming.latency      = HYPERBUS_getLatencyCode(attrs->latency);
 
         retval = HYPERBUS_makeMemTiming(handle, &memTiming);
 

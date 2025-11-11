@@ -67,6 +67,8 @@
 #include "ti_drivers_config.h"
 #if defined SOC_AM62X
 #include <drivers/soc/am62x/soc.h>
+#elif defined SOC_AM275X
+#include <drivers/soc/am275x/soc.h>
 #endif
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"

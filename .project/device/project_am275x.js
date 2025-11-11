@@ -53,6 +53,7 @@ const example_file_list = [
     "examples/drivers/boot/sbl_uart/.project/project.js",
     "examples/drivers/boot/sbl_jtag_uniflash/.project/project_am275x_wkupr5.js",
     /* Examples */
+    "examples/benchmarks/dhrystone_benchmark/.project/project_am275x.js",
     "examples/benchmarks/hyperRam_xip_benchmark/.project/project.js",
     "examples/benchmarks/xip_benchmark/.project/project.js",
     "examples/board/eeprom/eeprom_read_write/.project/project.js",

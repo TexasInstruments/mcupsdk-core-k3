@@ -11,6 +11,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_sd_am275x-evm_wkup-r5fss0-0_fre
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_uart_uniflash_am275x-evm_wkup-r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_uart_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_jtag_uniflash_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dhrystone_benchmarking_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += hyperRam_xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += hyperRam_xip_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build
@@ -273,6 +274,9 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
 
  sbl_jtag_uniflash_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/boot/sbl_jtag_uniflash/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ dhrystone_benchmarking_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build:
+	$(MAKE) -C examples/benchmarks/dhrystone_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
  hyperRam_xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/benchmarks/hyperRam_xip_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
@@ -981,6 +985,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_sd_am275x-evm_wkup-r5fss0-0_fre
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_uart_uniflash_am275x-evm_wkup-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_uart_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_jtag_uniflash_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dhrystone_benchmarking_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += hyperRam_xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += hyperRam_xip_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
@@ -1243,6 +1248,9 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
 
  sbl_jtag_uniflash_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/boot/sbl_jtag_uniflash/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ dhrystone_benchmarking_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/benchmarks/dhrystone_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
  hyperRam_xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/benchmarks/hyperRam_xip_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
@@ -1951,6 +1959,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_sd_am275x-evm_wkup-r5fss0-0_fr
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_uart_uniflash_am275x-evm_wkup-r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_uart_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_jtag_uniflash_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dhrystone_benchmarking_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += hyperRam_xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += hyperRam_xip_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export
@@ -2213,6 +2222,9 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
  sbl_jtag_uniflash_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/boot/sbl_jtag_uniflash/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ dhrystone_benchmarking_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export:
+	$(MAKE) -C examples/benchmarks/dhrystone_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
  hyperRam_xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/benchmarks/hyperRam_xip_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
@@ -2937,6 +2949,7 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_uniflash/am275x-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_jtag_uniflash/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/benchmarks/dhrystone_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/benchmarks/hyperRam_xip_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/benchmarks/hyperRam_xip_benchmark/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/benchmarks/xip_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]

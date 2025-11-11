@@ -9969,9 +9969,9 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Ethfw Server Example. CPU is R5FSS0-0 running FREERTOS.",
-        "name": "ethfw_server",
-        "location": "../../source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/am62dx-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "description": "A Ethfw Server Audio Source Example. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "ethfw_server_audio_source",
+        "location": "../../source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_source/am62dx-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
         "devtools": [
             "AUDIO-AM62D-EVM"
         ],
@@ -9989,7 +9989,122 @@
             "apps",
             "app_remoteswitchcfg_server",
             "sitara",
+            "avb_audio_source",
             "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Ethfw Server Audio Source Example. CPU is C75SS0-0 running FREERTOS.",
+        "name": "ethfw_server_audio_source",
+        "location": "../../source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_source/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AUDIO-AM62D-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "networking",
+            "ethfw",
+            "apps",
+            "app_remoteswitchcfg_server",
+            "sitara",
+            "avb_audio_source",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Ethfw Server Audio Sink Example. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "ethfw_server_audio_sink",
+        "location": "../../source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_sink/am62dx-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM62D-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "networking",
+            "ethfw",
+            "apps",
+            "app_remoteswitchcfg_server",
+            "sitara",
+            "avb_audio_sink",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Ethfw Server Audio Sink Example. CPU is C75SS0-0 running FREERTOS.",
+        "name": "ethfw_server_audio_sink",
+        "location": "../../source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_sink/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AUDIO-AM62D-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "networking",
+            "ethfw",
+            "apps",
+            "app_remoteswitchcfg_server",
+            "sitara",
+            "avb_audio_sink",
+            "c75ss0-0_freertos"
         ],
         "mainCategories": [
             [

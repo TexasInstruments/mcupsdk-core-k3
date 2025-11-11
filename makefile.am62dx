@@ -394,7 +394,10 @@ help:
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_sink_with_crf/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/avtptalker_crflistener/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/avtplistener_crftalker/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_source/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_source/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_sink/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_sink/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/dcc/dcc_modes/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/ecc/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -1172,7 +1175,10 @@ BUILD_COMBO_EXAMPLE_ALL += audio_sink_am62dx-evm-dp83867/am62dx-evm_mcu-r5fss0-0
 BUILD_COMBO_EXAMPLE_ALL += crf_multistream_audio_sink_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += avtptalker_crflistener_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
-BUILD_COMBO_EXAMPLE_ALL += ethfw_server_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += ethfw_server_audio_source_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += ethfw_server_audio_source_am62dx-evm_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += ethfw_server_audio_sink_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += ethfw_server_audio_sink_am62dx-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += ethfw_client_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += ecc_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
@@ -2096,8 +2102,17 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/avtplistener_crftalker/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
- ethfw_server_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
-	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+ ethfw_server_audio_source_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_source/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ ethfw_server_audio_source_am62dx-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_source/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
+
+ ethfw_server_audio_sink_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_sink/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ ethfw_server_audio_sink_am62dx-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_sink/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
 
  ethfw_client_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
@@ -2515,7 +2530,10 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += audio_sink_am62dx-evm-dp83867/am62dx-evm_mcu-r5
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += crf_multistream_audio_sink_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += avtptalker_crflistener_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += ethfw_server_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ethfw_server_audio_source_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ethfw_server_audio_source_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ethfw_server_audio_sink_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ethfw_server_audio_sink_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ethfw_client_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ecc_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
@@ -3439,8 +3457,17 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/avtplistener_crftalker/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
- ethfw_server_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+ ethfw_server_audio_source_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_source/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ ethfw_server_audio_source_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_source/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
+ ethfw_server_audio_sink_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_sink/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ ethfw_server_audio_sink_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_sink/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
 
  ethfw_client_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
@@ -3858,7 +3885,10 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += audio_sink_am62dx-evm-dp83867/am62dx-evm_mcu-r5
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += crf_multistream_audio_sink_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += avtptalker_crflistener_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += ethfw_server_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ethfw_server_audio_source_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ethfw_server_audio_source_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ethfw_server_audio_sink_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ethfw_server_audio_sink_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ethfw_client_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += dcc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ecc_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
@@ -4782,8 +4812,17 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  avtp_listener_crf_talker_am62dx-evm-dp83tg721/am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/avtplistener_crftalker/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
- ethfw_server_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
-	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+ ethfw_server_audio_source_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_source/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ ethfw_server_audio_source_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_source/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
+ ethfw_server_audio_sink_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_sink/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ ethfw_server_audio_sink_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/avb_audio_sink/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
 
  ethfw_client_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub

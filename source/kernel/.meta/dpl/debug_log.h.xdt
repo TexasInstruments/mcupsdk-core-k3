@@ -1,1 +1,13 @@
+%%{
+    let socName = system.getScript("/common").getSocName();
+    let cpuName = system.getScript('/common').getSelfSysCfgCoreName();
+%%}
+
 #include <kernel/dpl/DebugP.h>
+% if((socName.match(/am62x/) && cpuName.match(/r5/)) ||
+%    (socName.match(/am62ax/) && cpuName.match(/^r5/))||
+%    (socName.match(/am62dx/) && cpuName.match(/^r5/))||
+%    (socName.match(/am62px/) && cpuName.match(/wkup-r5/)) ||
+%    (socName.match(/am275x/) && cpuName.match(/wkup-r5/))){
+#include <drivers/device_manager/priv/trace/trace_internal.h>
+% }

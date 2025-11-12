@@ -1,5 +1,7 @@
 %%{
     let module = system.modules['/kernel/dpl/debug_log'];
+    let socName = system.getScript("/common").getSocName();
+    let cpuName = system.getScript('/common').getSelfSysCfgCoreName();
     let instance = module.$static;
     let ipc_module = system.modules['/drivers/ipc/ipc'];
     let ipc_instance = undefined;
@@ -12,16 +14,64 @@
 void putchar_(char character)
 {
 % if(instance.enableCssLog) {
+% if((socName.match(/am62x/) && cpuName.match(/r5/)) ||
+%    (socName.match(/am62ax/) && cpuName.match(/^r5/))||
+%    (socName.match(/am62dx/) && cpuName.match(/^r5/))||
+%    (socName.match(/am62px/) && cpuName.match(/wkup-r5/)) ||
+%    (socName.match(/am275x/) && cpuName.match(/wkup-r5/))){
+    /*
+     * Check if USER trace source and ITM destination are enabled
+     * in the board configuration for DM core
+     */
+    if (DM_isUserITMTraceEnabled() != 0U)
+    {
+        /* Output to CCS console */
+        putchar(character);
+    }
+% } else {
     /* Output to CCS console */
     putchar(character);
 % }
+% }
 % if( (ipc_instance && ipc_instance.enableLinuxIpc === true) || instance.enableMemLog) {
+% if((socName.match(/am62x/) && cpuName.match(/r5/)) ||
+%    (socName.match(/am62ax/) && cpuName.match(/^r5/))||
+%    (socName.match(/am62dx/) && cpuName.match(/^r5/))||
+%    (socName.match(/am62px/) && cpuName.match(/wkup-r5/)) ||
+%    (socName.match(/am275x/) && cpuName.match(/wkup-r5/))){
+    /*
+     * Check if USER trace source and MEM destination are enabled
+     * in the board configuration for DM core
+     */
+    if (DM_isUserMEMTraceEnabled() != 0U)
+    {
+        /* Output to memory trace buffer */
+        DebugP_memLogWriterPutChar(character);
+    }
+% } else {
     /* Output to memory trace buffer */
     DebugP_memLogWriterPutChar(character);
 % }
+% }
 % if(instance.enableUartLog) {
+% if((socName.match(/am62x/) && cpuName.match(/r5/)) ||
+%    (socName.match(/am62ax/) && cpuName.match(/^r5/))||
+%    (socName.match(/am62dx/) && cpuName.match(/^r5/))||
+%    (socName.match(/am62px/) && cpuName.match(/wkup-r5/)) ||
+%    (socName.match(/am275x/) && cpuName.match(/wkup-r5/))){
+    /*
+     * Check if USER trace source and UART destination are enabled
+     * in the board configuration for DM core
+     */
+    if (DM_isUserUARTTraceEnabled() != 0U)
+    {
+        /* Output to UART console */
+        DebugP_uartLogWriterPutChar(character);
+    }
+% } else {
     /* Output to UART console */
     DebugP_uartLogWriterPutChar(character);
+% }
 % }
 % if(instance.enableSharedMemLog && instance.enableSharedMemLogReader) {
     /* Shared memory reader is enabled on this core, in this case, logs go straight to

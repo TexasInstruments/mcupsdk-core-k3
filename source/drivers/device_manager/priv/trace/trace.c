@@ -45,7 +45,6 @@
 #include <drivers/device_manager/sciclient.h>
 #include <lib/trace.h>
 #include <lib/itoa.h>
-#include <lib/trace.h>
 #include <trace_internal.h>
 #include <types/sbool.h>
 #include <drivers/hw_include/csl_types.h>
@@ -80,7 +79,8 @@ struct trace_local_cfg {
 /** By default, enable all of trace. */
 static struct trace_local_cfg cfg = {
     .src_enables    = (TISCI_BOARDCFG_TRACE_SRC_PM | TISCI_BOARDCFG_TRACE_SRC_RM |
-               TISCI_BOARDCFG_TRACE_SRC_SEC | TISCI_BOARDCFG_TRACE_SRC_BASE),
+               TISCI_BOARDCFG_TRACE_SRC_SEC | TISCI_BOARDCFG_TRACE_SRC_BASE |
+               TISCI_BOARDCFG_TRACE_SRC_USER),
     .dst_enables    = (TISCI_BOARDCFG_TRACE_DST_UART0 | TISCI_BOARDCFG_TRACE_DST_ITM |
                TISCI_BOARDCFG_TRACE_DST_MEM),
 };
@@ -230,4 +230,22 @@ void trace_reconfigure(uint16_t src_enables, uint16_t dst_enables)
 {
     cfg.src_enables = src_enables;
     cfg.dst_enables = dst_enables;
+}
+
+uint8_t DM_isUserUARTTraceEnabled(void)
+{
+    return (((cfg.dst_enables & TISCI_BOARDCFG_TRACE_DST_UART0) != 0U) &&
+            ((cfg.src_enables & TISCI_BOARDCFG_TRACE_SRC_USER) != 0U));
+}
+
+uint8_t DM_isUserMEMTraceEnabled(void)
+{
+    return (((cfg.dst_enables & TISCI_BOARDCFG_TRACE_DST_MEM) != 0U) &&
+            ((cfg.src_enables & TISCI_BOARDCFG_TRACE_SRC_USER) != 0U));
+}
+
+uint8_t DM_isUserITMTraceEnabled(void)
+{
+    return (((cfg.dst_enables & TISCI_BOARDCFG_TRACE_DST_ITM) != 0U) &&
+            ((cfg.src_enables & TISCI_BOARDCFG_TRACE_SRC_USER) != 0U));
 }

@@ -136,5 +136,8 @@ static inline int32_t trace_init(void)
 	return CSL_PASS;
 }
 #endif
+uint8_t DM_isUserUARTTraceEnabled(void);
+uint8_t DM_isUserMEMTraceEnabled(void);
+uint8_t DM_isUserITMTraceEnabled(void);
 
 #endif /* TRACE_INTERNAL_H */

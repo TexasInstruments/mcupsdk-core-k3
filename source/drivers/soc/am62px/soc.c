@@ -1002,7 +1002,7 @@ void SOC_setFSSCtrlFlashBootSize(void)
                        MAIN_CTRL_MMR_CFG0_FSS_CTRL_S0_BOOT_SIZE, 1U);
     }
 
-    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MAIN, 1U);
+    /* Not locking the partition back as Linux expects it to be unlocked */
 }
 
 uint64_t Soc_getPhyAddr(uint64_t virtAddr)

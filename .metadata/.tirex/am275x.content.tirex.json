@@ -334,6 +334,38 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
+        "description": "Memory Latency Benchmark using PMU driver for AM275X CPU is R5FSS0-0 running NORTOS.",
+        "name": "memory_latency_benchmark",
+        "location": "../../examples/benchmarks/memory_latency_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "benchmarks",
+            "memory_latency_benchmark",
+            "r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
         "description": "A \"xip benchmark\" example. This example shows configuration and usage of CPU and baremetal/RTOS kernel for MPU, cache, interrupts, heaps, semaphores, timers and cycle counters. CPU is R5FSS0-0 running NORTOS.",
         "name": "xip_benchmark",
         "location": "../../examples/benchmarks/xip_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang/example.projectspec",

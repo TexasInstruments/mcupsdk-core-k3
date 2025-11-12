@@ -2518,9 +2518,19 @@ static int32_t I2C_lld_primeTransferPoll(I2CLLD_Handle handle)
                 /* Loop Until Write is complete or timeout happens or some error happens */
                 while ((object->writeCountIdx != 0U) && (status == I2C_STS_SUCCESS))
                 {
-                    /* Wait for transmit ready or error or timeout */
-                    while(  (
+                    /* Wait for transmit ready or timeout */
+                    while(
                             (I2CControllerIntRawStatusEx(object->baseAddr,  I2C_INT_TRANSMIT_READY) == 0U) &&
+                            (status == I2C_STS_SUCCESS))
+                    {
+                        if (((object->Clock_getTicks()) - (object->startTicks)) >
+                            (object->Clock_usecToTicks((uint64_t)(object->currentMsg->timeout))))
+                        {
+                            status = I2C_STS_ERR_TIMEOUT;
+                        }
+                    }
+                    /* Wait for error or timeout */
+                    while(  (
                             (I2CControllerIntRawStatusEx(object->baseAddr, (I2C_INT_ARBITRATION_LOST    |
                                                                             I2C_INT_NO_ACK              |
                                                                             I2C_INT_ACCESS_ERROR        |
@@ -2597,14 +2607,14 @@ static int32_t I2C_lld_primeTransferPoll(I2CLLD_Handle handle)
                     }
                     /* Store error in error status */
                     object->intStatusErr = errStat;
-                }
+                      }
                 else
                 {
                     /* No Code */
                 }
 
                 if (object->readCountIdx == 0U)
-                {
+          {
                     /* There is nothing to read as part of this transaction */
                     /* Generate stop when there is no read followed by write */
                     I2CControllerStop(object->baseAddr);

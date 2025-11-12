@@ -134,8 +134,8 @@ __attribute__((aligned(128))) =
                               TISCI_BOARDCFG_TRACE_SRC_USER |
                               TISCI_BOARDCFG_TRACE_SRC_SUPR)
         #else
-        .trace_dst_enables = 0,
-        .trace_src_enables = 0,
+        .trace_dst_enables = TISCI_BOARDCFG_TRACE_DST_UART0,
+        .trace_src_enables = TISCI_BOARDCFG_TRACE_SRC_USER,
         #endif
     }
 };

@@ -28,6 +28,15 @@ The Dhrystone benchmark program contains 52 assignments, 33 control statements a
  Example folder | examples/benchmarks/dhrystone_benchmark
 \endcond
 
+\cond SOC_AM275X
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/benchmarks/dhrystone_benchmark
+\endcond
+
 # Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination
@@ -81,6 +90,29 @@ BENCHMARK Using clock 1250000000
 - Dhrystones per Second:                     6281246.0
 
 Normalized MIPS/MHz:                         2.8600
+BENCHMARK END
+
+ All tests have passed.
+\endcode
+\endcond
+
+\cond SOC_AM275X
+\code
+
+ BENCHMARK START - DHRYSTONE
+
+Dhrystone Benchmark, Version 2.1 (Language: C)
+
+- BEGIN cycle count:                         7
+- END Cycle count:                           153441801
+- USER cycle count:                          153441794
+
+BENCHMARK Using clock 1000000000
+- Usertime in sec:                           0.153442
+- Microseconds for one run through Dhrystone:   0.3
+- Dhrystones per Second:                     3258564.8
+
+Normalized MIPS/MHz:                         1.8546
 BENCHMARK END
 
  All tests have passed.

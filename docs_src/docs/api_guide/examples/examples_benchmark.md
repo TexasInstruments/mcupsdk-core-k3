@@ -9,6 +9,7 @@ This page lists all the examples related to benchmarks of SOC and board peripher
 \endcond
 
 \cond  SOC_AM275X
+   -# \subpage EXAMPLES_DHRYSTONE
    -# \subpage EXAMPLES_BENCHMARKS_XIP_BENCHMARK
    -# \subpage EXAMPLES_BENCHMARKS_HYPERRAM_XIP_BENCHMARK
 \endcond

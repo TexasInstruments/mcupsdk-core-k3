@@ -15,6 +15,36 @@ function getInstanceConfig(moduleInstance) {
     };
 };
 
+let dmaDescription = `
+BCDMA (Block Copy DMA)
+
+BCDMA for memory-to-memory and peripheral-to-memory transfers.
+
+Commonly used for large data copies such as DDR <=> DDR, DDR <=> MSRAM, MSRAM <=> MSRAM, or OSPI/GPMC <=> MSRAM/DDR.
+
+Supports 2D, 3D, and 4D transfer descriptors for complex data movement patterns.
+
+Recommended for bulk data copy, scatter-gather, or block move operations.
+
+PKTDMA (Packet DMA)
+
+High-performance DMA optimized for packet-based data movement.
+
+Typically used in networking, CPSW Ethernet, and peripheral-to-memory transfers (e.g. UART, SPI, ADC etc.).
+
+Not suitable for plain memory copy use cases, use BCDMA instead.
+`
+
+let virtToPhyFxnDescription = `
+Converts virtual (CPU) addresses to physical (DMA) addresses before DMA submission.
+Required when DMA hardware accesses memory through MMU/MPU remapped or shared regions.
+Default function assumes 1:1 mapping between CPU and DMA address spaces.
+`
+
+let phyToVirtFxnDescription = `
+Performs the reverse translation, converting physical DMA addresses back to virtual CPU addresses.
+Also assumes 1:1 mapping by default.
+`
 let udma_module = {
     displayName: "UDMA",
     templates: {
@@ -37,6 +67,7 @@ let udma_module = {
     },
     maxInstances: getConfigArr().length,
     defaultInstanceName: "CONFIG_UDMA",
+    longDescription: dmaDescription,
     config: [
         common.ui.makeInstanceConfig(getConfigArr()),
         {
@@ -50,12 +81,14 @@ let udma_module = {
                 displayName: "Virtual to Physical Callback",
                 default: "Udma_defaultVirtToPhyFxn",
                 description: "If non default function is used, user should define this in the application to avoid linker error",
+                longDescription: virtToPhyFxnDescription,
         },
         {
                 name: "phyToVirtFxn",
                 displayName: "Physical to Virtual Callback",
                 default: "Udma_defaultPhyToVirtFxn",
                 description: "If non default function is used, user should define this in the application to avoid linker error",
+                longDescription: phyToVirtFxnDescription,
         },
         {
                 name: "parentName",

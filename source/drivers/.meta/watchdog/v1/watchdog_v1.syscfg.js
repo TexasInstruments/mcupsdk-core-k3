@@ -35,6 +35,33 @@ function validate(instance, report) {
 }
 
 let watchdog_module_name = "/drivers/watchdog/watchdog";
+let wdtResetModeDescription = `
+On AM6x and AM243x devices, the Watchdog Timer (WDT) cannot automatically reset the SoC when it expires. To enable a SoC reset, the ESM (Error Signaling Module) must be configured to handle the watchdog timeout event. The MCU+SDK WDT example demonstrates interrupt mode only, which is intended for verification and not for real system recovery.
+
+Important Note:
+
+If the SoC enters an exception state and the watchdog expires, the WDT interrupt may not trigger, defeating its purpose.
+To ensure reliability, always use the WDT in combination with ESM reset routing.
+
+Typical WDT -> SoC Reset Flow :
+
+RTI Timeout -> ESM Event -> CTRL_MMR Register -> SoC Reset
+
+Steps to Enable WDT-based SoC Reset
+
+1. Configure the watchdog expiration time.
+2. Initialize the ESM module.
+3. Route the WDT expiration event to the ESM output, and configure its interrupt priority as High.
+4. Use the CTRL_MMR register to control whether SoC reset is triggered by the ESM event.
+5. Refer to SDL examples in the SDK for detailed implementation.
+`
+let wdtWindowSizeDescription = `
+A windowed watchdog requires servicing within a specific time window (as a percentage of the total timeout).
+
+On Sitara devices (AM243x & AM6x), supported window sizes are: 3.125%, 6.25%, 12.5%, 25%, 50%, and 100%.
+
+Any other window sizes are not valid and the window size will be configured to 3.125% by default.
+`
 
 let watchdog_module = {
     displayName: "WDT",
@@ -78,6 +105,7 @@ let watchdog_module = {
                 },
             ],
             description: "Reaction to select on WDT expiry, currently supporting only to trigger warm reset",
+            longDescription: wdtResetModeDescription,
         },
         {
             name: "windowSize",
@@ -110,6 +138,7 @@ let watchdog_module = {
                 },
             ],
             description: "WDT Window size",
+            longDescription: wdtWindowSizeDescription,
         },
         {
             name: "expirationTime",

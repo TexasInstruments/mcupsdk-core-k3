@@ -1,8 +1,10 @@
-# Developing applications on  Device Manager/Wake-up R5 core{#DEVELOP_AND_DEBUG_DMR5}
+# Developing applications on Device Manager/Wake-up R5 core{#DEVELOP_AND_DEBUG_DMR5}
 
 [TOC]
 
-\attention It is recommended to use the TIFS version provided with the release for ensuring compatibility between TIFS and device manager. Using the TIFS from different @VAR_SDK_NAME release is not recomended and may cause TIFS/ DM functionality to break.
+\attention It is recommended to use the TIFS version provided with the release for ensuring compatibility between TIFS and device manager. Using the TIFS from different @VAR_SDK_NAME release is not recommended and may cause TIFS/ DM functionality to break.
+
+\attention **DM R5 Logging Behavior**: By default, DM R5 application logs (from Sciserver, Sciclient Direct, and IPC) will only appear on **WKUP UART**. See \ref DM_R5_LOGGING_CHANGE for details on the default configuration and how to modify trace settings.
 
 ## Introduction
 
@@ -26,8 +28,31 @@ It should be flashed and booted through SBL.
 - DM firmware needs to be multi-threading/rtos application as it creates multiple threads during initialization.
 - DM firmware as part of initialization via self_reset library swaps TCM configuration to have ATCM at 0x41010000 and BTCM at 0x0.
 
+## DM R5 Logging Configuration{#DM_R5_LOGGING_CHANGE}
+
+DM R5 application logging (including Sciserver, Sciclient Direct, and IPC logs) is controlled through SYSFW board configuration trace settings.
+
+**Default Configuration:**
+
+- `trace_dst_enables = TISCI_BOARDCFG_TRACE_DST_UART0` (UART destination enabled)
+- `trace_src_enables = TISCI_BOARDCFG_TRACE_SRC_USER` (USER source enabled)
+- **DM R5 application logs will only appear on WKUP UART by default**
+- TIFS logs and DM PM/RM logs remain disabled
+- This provides basic debugging capability without overwhelming UART traffic from verbose PM/RM or TIFS logs
+
+**Benefits of Board Configuration Control:**
+
+- **Flexibility**: Modify log settings by changing board configuration without rebuilding DM firmware (firmware loads configuration at runtime)
+- **Fine-grained control**: Independent control of each trace source (PM, RM, SEC, BASE, USER, SUPR) for selective component logging
+- **Multi-destination support**: Route logs to multiple destinations simultaneously (e.g., UART + MEM)
+- **Consistency**: All logging control centralized in board configuration files
+
+Refer to the \ref SYSFW_TRACE_ENABLE section in the SYSFW Tools documentation to modify the default logging mechanism.
+
 \cond SOC_AM62DX
+
 ## Develop an application on Wake-up R5 core
+
 DM firmware required to be run on Wake-up R5 core to run the images which is being loaded to other cores during SBL Stage 2 Bootloader. This requires parsing and loading the images to respective cores during SBL Stage 2 Bootloader on R5 Core and then jumping to DM firmware on R5 Core. To avoid this delay, DM is being run as an additional thread in stage 2 bootloader and thus any core doesn't need to wait for parsing and loading of other cores and DM firmware to run.
 
 So any applications to be run on DM-R5 core requires a thread to start the SCI server, stage 2 bootloader thread and an actual application to be run on DM-R5 core. Since stage 2 bootloader is being run as an additional thread, the application will get specific to bootmedia from which the application is being run. To avoid this and make the application support all boot medias, we can read the DEVSTAT register which gives details about the selected bootmedia and thus we can redirect the stage 2 bootloader thread to corresponding bootmedia specific APIs.
@@ -80,33 +105,17 @@ Follow the below steps to debug any application developed for DM R5.
 
  - Continue with the debugging process as usual.
 
-\cond SOC_AM62X
-## Disabling the WKUP_UART access from DM Firmware
+### Disabling WKUP_UART access for DM Logging
 
-The DM firmware uses WKUP_UART for printing the logs. There may be usecases where the WKUP_UART to be used from other cores.
-Follow the steps below remove the access of WKUP UART for DM firmware log
+To completely disable WKUP_UART access for DM logging (e.g., to use WKUP_UART from other cores), set both trace destination and source to 0 in the board configuration.
 
-  - The default DM firmware used is generated from ipc_rpmsg_echo_linux example. Run the following command from mcu_plus_sdk installation directory to open the syscfg for this project.
-    - For Linux
+In `source/drivers/sciclient/sciclient_default_boardcfg/{SOC}/sciclient_defaultBoardcfg.c`, edit the `.debug_cfg` section:
 
-           make -C examples/drivers/ipc/ipc_rpmsg_echo_linux/{board}/r5fss0-0_freertos/ti-arm-clang syscfg-gui
+\code{.c}
+.trace_dst_enables = 0,
+.trace_src_enables = 0,
+\endcode
 
-    - For Windows
+Then rebuild and reflash the board configuration as explained in \ref BOARCFG_GEN section.
 
-           gmake -C examples/drivers/ipc/ipc_rpmsg_echo_linux/{board}/r5fss0-0_freertos/ti-arm-clang syscfg-gui
-    - Here {board} can be am62x-sk or am62x-sk-lp
-
-  - Go to 'Debug Log' and uncheck 'Enable UART Log'
-
-
-\imageStyle{disable_wkup_uart_00.png,width:50%}
-\image html disable_wkup_uart_00.png "Disable WKUP_UART"
-
-  - Comment out the following lines from file 'examples/drivers/ipc/ipc_rpmsg_echo_linux/{board}/r5fss0-0_freertos/main.c'
-
-
-\imageStyle{disable_wkup_uart_01.png,width:16%}
-\image html disable_wkup_uart_01.png "Comment UART access"
-
-  - Now build ipc_rpmsg_echo_linux example. The generated DM firmware does not access the WKUP_UART.
-\endcond
+For more configuration examples and details, refer to \ref SYSFW_TRACE_ENABLE.

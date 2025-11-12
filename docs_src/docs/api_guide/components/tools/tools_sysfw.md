@@ -47,13 +47,14 @@ This section describes the various tools used in conjunction with System Control
 
 ## SYSFW Board Config Generation {#BOARCFG_GEN}
 
-SYSFW Board Config is a SOC specific configuration data regarding the various system attributes controlled by the SYSFW. These include resources, power and clock, security etc. This configuration is sent to SYSFW during boot time. The default configuration is stored in `source/drivers/sciclient/sciclient_defaultBoardCfg/{SOC}/`
+SYSFW Board Config is a SOC specific configuration data regarding the various system attributes controlled by the SYSFW. These include resources, power and clock, security etc. This configuration is sent to SYSFW during boot time. The default configuration is stored in `source/drivers/sciclient/sciclient_default_boardcfg/{SOC}/`
 
-- Resource Management BoardCfg - sciclient_defaultBoardCfg_rm.c
-- Power Management BoardCfg - sciclient_defaultBoardCfg_pm.c
-- Security BoardCfg - sciclient_defaultBoardCfg_security.c
+- Resource Management BoardCfg - sciclient_defaultBoardcfg_rm.c
+- Power Management BoardCfg - sciclient_defaultBoardcfg_pm.c
+- Security BoardCfg - sciclient_defaultBoardcfg_security.c
+- Default Boardcfg - sciclient_defaultBoardcfg.c
 
-- For sending it to SYSFW, these files are converted to hex arrays. We use the bin2c.py python script to do this. This is done internally in the boardcfg makefile. If we change the boardcfg in the above mentioned files, run the following command to generate the hex array header files
+For sending it to SYSFW, these files are converted to hex arrays. We use the bin2c.py python script to do this. This is done internally in the boardcfg makefile. If we change the boardcfg in the above mentioned files, run the following command to generate the hex array header files
 
 \cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX
 \code
@@ -124,19 +125,112 @@ make -s -C examples/drivers/sciclient/sciclient_set_boardcfg/@VAR_SOC_NAME/r5fss
 \endcond
 \endcond
 
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX || SOC_AM275X
 
-### SYSFW Trace Enable {#SYSFW_TRACE_ENABLE}
-To enable the SYSFW trace, change the `#undef SYSFW_TRACE_ENABLE` to `#define SYSFW_TRACE_ENABLE` on `source/drivers/device_manager/sciclient.h`. Then rebuild the boardcfg as explained in the above section.
+### TIFS and DM Trace Enable {#SYSFW_TRACE_ENABLE}
 
-
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
-The DM firmware log shall be available at the wakeup UART (/dev/ttyUSB2). Connect to the UART through minicom to see the logs.
-
-The TIFS logs shall be available at the UART1 (/dev/ttyUSB1). Alternatively it can be obtained from the TIFS memory address as per the \htmllink{http://downloads.ti.com/tisci/esd/latest/4_trace/trace.html#trace-memory-buffer-location, system firmware documentation}
 \endcond
 
+\cond SOC_AM64X || SOC_AM243X || SOC_J722S
+
+### SYSFW Trace Enable {#SYSFW_TRACE_ENABLE}
+
+\endcond
+
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX || SOC_AM275X
+The TIFS and DM logging system uses board configuration to control where logs are sent (trace destinations) and what components generate logs (trace sources).
+
+**Default Configuration:**
+
+- `trace_dst_enables = TISCI_BOARDCFG_TRACE_DST_UART0` (UART destination enabled)
+- `trace_src_enables = TISCI_BOARDCFG_TRACE_SRC_USER` (USER source enabled)
+- With these defaults, DM R5 application logs (from Sciserver, Sciclient Direct, and IPC) will only appear on WKUP UART
+- TIFS logs and DM PM/RM logs remain disabled by default
+
+To enable **all** TIFS and DM traces, change the `#undef SYSFW_TRACE_ENABLE` to `#define SYSFW_TRACE_ENABLE` in `source/drivers/device_manager/sciclient.h`. Then rebuild the boardcfg as explained in the \ref BOARCFG_GEN section. This enables **all** the following trace sources and destinations -
+
+- **Trace Destinations** (`trace_dst_enables`): Controls where logs are output
+  - `TISCI_BOARDCFG_TRACE_DST_UART0` - WKUP UART output
+  - `TISCI_BOARDCFG_TRACE_DST_MEM` - Memory buffer
+  - `TISCI_BOARDCFG_TRACE_DST_ITM` - CCS Console
+
+- **Trace Sources** (`trace_src_enables`): Controls which components generate logs
+  - `TISCI_BOARDCFG_TRACE_SRC_PM` - Power Management traces
+  - `TISCI_BOARDCFG_TRACE_SRC_RM` - Resource Management traces
+  - `TISCI_BOARDCFG_TRACE_SRC_SEC` - Security traces
+  - `TISCI_BOARDCFG_TRACE_SRC_BASE` - Baseport traces
+  - `TISCI_BOARDCFG_TRACE_SRC_USER` - User-level traces (DM R5 application)
+  - `TISCI_BOARDCFG_TRACE_SRC_SUPR` - Supervisor-level traces
+\endcond
+
+\cond SOC_AM64X || SOC_AM243X
+To enable the SYSFW trace, change the `#undef SYSFW_TRACE_ENABLE` to `#define SYSFW_TRACE_ENABLE` on `source/drivers/device_manager/sciclient.h`. Then rebuild the boardcfg as explained in the above section.
+\endcond
+
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX || SOC_AM275X
+
+To **selectively** enable specific traces instead of all, follow these steps:
+
+1. **Locate board configuration file**:
+   - Path: `source/drivers/sciclient/sciclient_default_boardcfg/{SOC}/sciclient_defaultBoardcfg.c`
+   - Edit the `.debug_cfg` section in the `tisci_boardcfg` structure
+
+2. **Configure trace settings** based on your needs:
+
+   In the `#else` block (when `SYSFW_TRACE_ENABLE` is not defined), replace the default values with your desired configuration:
+
+   **Example 1: Enable DM PM/RM logs and DM application logs to both UART and memory**
+   \code{.c}
+   .trace_dst_enables = TISCI_BOARDCFG_TRACE_DST_UART0 |
+                        TISCI_BOARDCFG_TRACE_DST_MEM,
+   .trace_src_enables = TISCI_BOARDCFG_TRACE_SRC_PM |
+                        TISCI_BOARDCFG_TRACE_SRC_RM |
+                        TISCI_BOARDCFG_TRACE_SRC_USER,
+   \endcode
+
+   **Example 2: Enable TIFS security logs to UART**
+   \code{.c}
+   .trace_dst_enables = TISCI_BOARDCFG_TRACE_DST_UART0,
+   .trace_src_enables = TISCI_BOARDCFG_TRACE_SRC_SEC |
+                        TISCI_BOARDCFG_TRACE_SRC_BASE,
+   \endcode
+
+   **Example 3: Disable all logs**
+   \code{.c}
+   .trace_dst_enables = 0,
+   .trace_src_enables = 0,
+   \endcode
+
+3. **Rebuild and reflash board configuration**:
+   - Follow the instructions in \ref BOARCFG_GEN section to regenerate boardcfg
+   - Reflash the SBL with the updated board configuration
+   - The DM firmware will automatically load the new configuration at runtime (no DM firmware rebuild needed - only SBL reflash required)
+
+#### Viewing Trace Output
+
+Depending on the destination flags enabled, logs can be viewed from different locations:
+
+**UART Destination** (`TISCI_BOARDCFG_TRACE_DST_UART0`):
+
+- **DM logs**: Available at **WKUP UART** (`/dev/ttyUSB2` on Linux)
+- **TIFS logs**: Available at **UART1** (`/dev/ttyUSB1` on Linux)
+- **Terminal settings**: 115200 baud, 8N1 (8 data bits, no parity, 1 stop bit)
+- **Recommended tool**: minicom, putty, or any serial terminal
+
+**Memory Destination** (`TISCI_BOARDCFG_TRACE_DST_MEM`):
+
+- Logs stored in a memory buffer
+- Memory buffer location: See \htmllink{http://downloads.ti.com/tisci/esd/latest/4_trace/trace.html#trace-memory-buffer-location, TIFS memory buffer documentation}
+
+**ITM Destination** (`TISCI_BOARDCFG_TRACE_DST_ITM`):
+
+- Logs appear in CCS Console when debugging with Code Composer Studio
+
+\note Multiple destinations can be enabled simultaneously. For example, enabling both UART0 and MEM allows viewing logs in real-time on UART while also storing them in memory for later analysis.
+\endcond
 
 ### SYSFW Trace Parser {#SYSFW_TRACE_PARSER}
+
 After taking the TIFS logs as in above section, it can be parsed using the sysfw_trace_parser.py script. This will
 decode the hex trace values and gives readable text file as output. Using this, the user can interpret the log and debug.
 

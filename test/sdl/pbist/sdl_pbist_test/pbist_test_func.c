@@ -1004,7 +1004,7 @@ int32_t PBIST_funcTest(void)
 #endif
         /* First run the SBL API test */
 #if !defined (SOC_J722S)
-        PBIST_SBL_API_Test(APP_PBIST_SBL_TEST_INST);
+        PBIST_SBL_API_Test(PBIST_TestHandleArray[APP_PBIST_SBL_TEST_INST].pbistInst);
 #endif
 
         /* Run the test for diagnostics */

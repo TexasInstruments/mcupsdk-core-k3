@@ -143,7 +143,7 @@ const templates_freertos_r5f =
             heapSize: 0x10000,
             stackSize: 0x8000,
             irqStackSize: 0x1000,
-            svcStackSize: 0x0100,
+            svcStackSize: 0x0300,
             fiqStackSize: 0x0100,
             abortStackSize: 0x0100,
             undefinedStackSize: 0x0100,

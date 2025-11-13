@@ -122,6 +122,9 @@ volatile uint32_t esmOutputResult[USE_CASES] = {TEST_CASE_STATUS_NOT_RUN,
 
 volatile uint8_t currTestCase = START_USE_CASE;
 
+/* Flag to indicate callback triggered */
+volatile bool VTM_intrDone = false;
+
 /* Initialization structure for MAIN ESM instance */
 #if defined (SOC_AM62X)
 #if defined (R5F_CORE)
@@ -234,16 +237,10 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInstType,
 
     deactivateTrigger(esmInstType, esmIntType, intSrc);
 
-    /* Print information to screen */
-    DebugP_log("\r\n  ESM Call back function called : instType 0x%x, intType 0x%x, " \
-                "grpChannel 0x%x, index 0x%x, intSrc 0x%x \r\n",
-                esmInstType, esmIntType, grpChannel, index, intSrc);
-    DebugP_log("  Take action \r\n");
-
-    DebugP_log("  ESM instance #%d, ESM interrupt type = %s\r\n",
-                esmInstType, printEsmIntType(esmIntType));
-
     esmOutputResult[currTestCase]= TEST_CASE_STATUS_COMPLETED_SUCCESS;
+    /* Update flag to indicate callback was triggered */
+    VTM_intrDone = true;
+
     return SDL_PASS;
 }
 
@@ -354,9 +351,7 @@ static int32_t deactivateTrigger(SDL_ESM_Inst esmInstType,
             {
                 if (thresholdsReset == 0)
                 {
-                    /* Simulate thresholds as if temperature continues to increase
-                     * toward gt_Thr2 */
-                    vtm_setThresholdsForCriticalTrigger();
+                    /* Don't do anything as we want to simulate further increase of temperature */
 
                     thresholdsReset = 1;
                 }

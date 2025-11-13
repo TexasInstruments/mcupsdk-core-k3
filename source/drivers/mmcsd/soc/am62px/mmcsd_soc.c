@@ -93,8 +93,8 @@ void MMCSD_phyGetTapValues(uint32_t *outputTapDelaySel, uint32_t *outputTapDelay
 {
     switch(phyMode) {
         case MMCSD_PHY_MODE_SDR25:
-            *outputTapDelaySel = 1U;
-            *outputTapDelayVal = 1U;
+            *outputTapDelaySel = 0U;
+            *outputTapDelayVal = 0U;
             *inputTapDelaySel = 1U;
             *inputTapDelayVal = 16U;
             break;
@@ -105,8 +105,8 @@ void MMCSD_phyGetTapValues(uint32_t *outputTapDelaySel, uint32_t *outputTapDelay
             *inputTapDelayVal = 0U;
             break;
         case MMCSD_PHY_MODE_HSSDR50:
-            *outputTapDelaySel = 1U;
-            *outputTapDelayVal = 1U;
+            *outputTapDelaySel = 0U;
+            *outputTapDelayVal = 0U;
             *inputTapDelaySel = 1U;
             *inputTapDelayVal = 10U;
             break;

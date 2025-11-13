@@ -504,6 +504,7 @@ void MMCSD_close(MMCSD_Handle handle)
             MMCSD_initTransaction(&trans);
             trans.cmd   = MMCSD_MMC_CMD(0);
             trans.arg   = 0U;
+            trans.retries = MMCSD_TRANS_RETRIES;
             status |= MMCSD_transfer(handle, &trans);
 
             ClockP_usleep(5000);
@@ -1284,6 +1285,7 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
         MMCSD_initTransaction(&trans);
         trans.cmd   = MMCSD_MMC_CMD(0);
         trans.arg   = 0U;
+        trans.retries = MMCSD_TRANS_RETRIES;
         status = MMCSD_transfer(handle, &trans);
     }
 
@@ -1545,6 +1547,7 @@ static int32_t MMCSD_transfer(MMCSD_Handle handle, MMCSD_Transaction *trans)
 {
     int32_t status = SystemP_SUCCESS;
     uint32_t isRetuneNeeded = FALSE;
+    uint64_t timeoutMilliSec = MMCSD_TRANSFER_DEFAULT_TIMEOUT_MS;
 
     if(handle != NULL)
     {
@@ -1617,6 +1620,21 @@ static int32_t MMCSD_transfer(MMCSD_Handle handle, MMCSD_Transaction *trans)
         if((numRetries == 0U) || (trans->status == MMCSD_TRANS_IRRECOVERABLE))
         {
             status = SystemP_FAILURE;
+        }
+
+        /* For R1b responses, need to poll on the DAT0 to go low */
+        if((trans->cmd & 0x0FU) == MMCSD_CMD_RESP_TYPE_L48_B)
+        {
+            if(status == SystemP_SUCCESS)
+            {
+                /* Wait for DAT0 to go low */
+                status = MMCSD_halPollDat0Line(handle, timeoutMilliSec);
+            }
+
+            if(status == SystemP_SUCCESS)
+            {
+                status = MMCSD_isReadyForTransfer(handle);
+            }
         }
     }
     else

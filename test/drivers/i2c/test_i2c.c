@@ -287,7 +287,7 @@ void test_main(void *args)
     test_i2c_set_test_params(&testParams, 5);
     RUN_TEST(test_i2c_write_read, 1320, (void*)&testParams);
     /* Error Nack test */
-    RUN_TEST(test_i2c_error_nack, 12793, (void*)&testParams);
+    RUN_TEST(test_i2c_error_nack, 6849, (void*)&testParams);
     /* Hw Intr mode I2C_lld_mem_writeIntr*/
     test_i2c_set_test_params(&testParams, 0);
     RUN_TEST(test_i2c_write_read, 6248, (void*)&testParams);
@@ -3667,7 +3667,7 @@ static void TestI2c_targetModehostControllerRead10bit(void *args)
     uint8_t TestI2c_controllerRxBuf[2] = {0};
 
     SemaphoreP_constructBinary(&sem, 0);
-    targetHandle = I2C_getHandle(CONFIG_I2C0);
+    targetHandle = I2C_getHandle(CONFIG_I2C1);
     if(targetHandle)
     {
         I2C_close(targetHandle);

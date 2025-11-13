@@ -211,11 +211,6 @@ const templates_freertos_wkup =
 const templates_nortos_wkup =
 [
     {
-      input: ".project/templates/am275x/common/linker_wkup-r5f_nortos.cmd.xdt",
-      output: "linker.cmd",
-    },
-
-    {
         input: ".project/templates/am275x/nortos/main_nortos.c.xdt",
         output: "../main.c",
         options: {
@@ -354,7 +349,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_nortos_r5f;
 	    build_property.cflags = cflags_r5f_nortos;
             build_property.templates = templates_nortos_r5f;
-		
+
 	}
     }
     else if(buildOption.cpu.match(/c75*/)) {

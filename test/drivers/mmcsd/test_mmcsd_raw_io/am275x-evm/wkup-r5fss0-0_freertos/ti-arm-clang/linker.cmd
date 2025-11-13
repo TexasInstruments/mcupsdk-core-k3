@@ -118,9 +118,9 @@ MEMORY
     R5F_TCMB       (RWIX)      : ORIGIN = 0x41010040 LENGTH = 0x00007FC0
 
     WKUP_R5_MSRAM_VEC (RWIX)     : ORIGIN = 0x72000000      LENGTH = 0x40 // for vectors
-    WKUP_R5_MSRAM (RWIX)         : ORIGIN = 0x72000000+0x40 LENGTH = 0x00080000-0x40 // 512 KB for wakeup core
+    WKUP_R5_MSRAM (RWIX)         : ORIGIN = 0x72000000+0x40 LENGTH = 0x000A0000-0x40 // 640 KB for wakeup core
 
-    R50_0_OCRAM   (RWIX)         : ORIGIN = 0x72080000 LENGTH = 0x00100000 // 1 MB for r5fss0-0 core
+    R50_0_OCRAM   (RWIX)         : ORIGIN = 0x720A0000 LENGTH = 0x000E0000 // 896 KB for r5fss0-0 core
     R50_1_OCRAM   (RWIX)         : ORIGIN = 0x72180000 LENGTH = 0x00080000 // 512 KB for r5fss0-1 core
     R51_0_OCRAM   (RWIX)         : ORIGIN = 0x72280000 LENGTH = 0x00080000 // 512 KB for r5fss1-0 core
     R51_1_OCRAM   (RWIX)         : ORIGIN = 0x72300000 LENGTH = 0x00080000 // 512 KB for r5fss1-1 core

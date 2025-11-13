@@ -9737,6 +9737,45 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Audio Source Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "audio_source",
+        "location": "../../source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_source/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM62D-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "networking",
+            "enet",
+            "core",
+            "examples",
+            "tsn",
+            "avb_autoamplifier_demo",
+            "audio_source",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Crf Multistream Audio Source Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
         "name": "crf_multistream_audio_source",
         "location": "../../source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_source_with_crf/am62dx-evm-dp83tg721/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
@@ -9759,6 +9798,45 @@
             "tsn",
             "avb_autoamplifier_demo",
             "audio_source_with_crf",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Audio Sink Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "audio_sink",
+        "location": "../../source/networking/enet/core/examples/tsn/avb_autoamplifier_demo/audio_sink/am62dx-evm-dp83867/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM62D-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "networking",
+            "enet",
+            "core",
+            "examples",
+            "tsn",
+            "avb_autoamplifier_demo",
+            "audio_sink",
             "mcu-r5fss0-0_freertos"
         ],
         "mainCategories": [

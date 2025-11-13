@@ -441,6 +441,13 @@ void MMCSD_close(MMCSD_Handle handle)
 
         MMCSD_Transaction trans;
 
+        /* Mark isRetuneValid as zero as the current
+         * operating mode may not be the mode selected by
+         * the user due to close sequence downgrading into
+         * lower speed modes, and may not be HS200/HS400.
+         */
+        obj->isRetuneValid = 0U;
+
         if(obj->cardType == MMCSD_CARD_TYPE_EMMC)
         {
             uint32_t mode = MMCSD_getModeEmmc(handle);
@@ -1522,6 +1529,13 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
     if(status == SystemP_SUCCESS)
     {
         obj->transferSpeed = MMCSD_getXferSpeedFromModeEmmc(mode);
+
+        /* Mark isRetuneValid as one as the current
+         * operating mode is the mode selected by
+         * the user due to init sequence execution completion,
+         * and retune will be valid if it's HS200/HS400.
+         */
+        obj->isRetuneValid = 1U;
     }
 
     return status;
@@ -2511,47 +2525,72 @@ static int32_t MMCSD_retune(MMCSD_Handle handle)
     uint32_t phyMode = MMCSD_PHY_MODE_DS;
     uint32_t switchArg = 0U;
     uint8_t tunedItap = 0U;
+    MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
     const MMCSD_Attrs *attrs = ((MMCSD_Config *)handle)->attrs;
+    const CSL_mmc_ctlcfgRegs *pReg = (const CSL_mmc_ctlcfgRegs *)attrs->ctrlBaseAddr;
     uint32_t mode = MMCSD_getModeEmmc(handle);
 
-    if(mode == MMCSD_SUPPORT_MMC_HS400)
+    /* Do not perform retuning if called from init/close sequence
+     * as the controller may not have switched to the correct
+     * operating mode by this time. isRetuneValid has been handled
+     * accordingly in open/close sequence.
+     */
+    if((obj != NULL) && (obj->isRetuneValid == 1U))
     {
-        /* Switch from HS400 mode to HSSDR50 mode and
-         * then from HSSDR50 mode to HS400 mode.
-         */
-
-        phyMode = MMCSD_PHY_MODE_HSSDR50;
-        clkFreq = MMCSD_REFERENCE_CLOCK_52M;
-        phyClkFreq = clkFreq;
-        MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, phyClkFreq, phyDriverType, tunedItap);
-
-        hsTimingVal = MMCSD_ECSD_HS_TIMING_HIGH_SPEED;
-        switchArg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | (hsTimingVal << 8U);
-        status = MMCSD_sendSwitchCmd(handle, switchArg);
-
-        if(status == SystemP_SUCCESS)
+        if(mode == MMCSD_SUPPORT_MMC_HS400)
         {
-            /* Disable PHY DLL */
-            MMCSD_phyDisableDLL(attrs->ssBaseAddr);
+            /* Switch from HS400 mode to HSSDR50 mode and
+             * then from HSSDR50 mode to HS400 mode.
+             */
 
-            status = MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, clkFreq, 0U);
-        }
+            phyMode = MMCSD_PHY_MODE_HSSDR50;
+            clkFreq = MMCSD_REFERENCE_CLOCK_52M;
+            phyClkFreq = clkFreq;
 
-        if(status == SystemP_SUCCESS)
-        {
             /* Set bus width to 0x02 to select 8-bit bus mode */
-            switchArg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16U) | ((MMCSD_ECSD_BUS_WIDTH_8BIT) << 8U);
+            switchArg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16U) | (((0U << MMCSD_ECSD_BUS_WIDTH_ES_SHIFT) | MMCSD_ECSD_BUS_WIDTH_8BIT) << 8U);
             status = MMCSD_sendSwitchCmd(handle, switchArg);
-        }
 
-        if(status == SystemP_SUCCESS)
-        {
-            status = MMCSD_switchEmmcMode(handle, MMCSD_SUPPORT_MMC_HS400);
+            if(status == SystemP_SUCCESS)
+            {
+                hsTimingVal = MMCSD_ECSD_HS_TIMING_HIGH_SPEED;
+                switchArg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | ((((obj->emmcData->driveStrength) << 4U) | hsTimingVal) << 8U);
+
+                status = MMCSD_sendSwitchCmd(handle, switchArg);
+            }
+
+            if(status == SystemP_SUCCESS)
+            {
+                /* Set HIGH SPEED ENA to zero to operate in Half cycle timing */
+                CSL_REG16_FINS(&pReg->HOST_CONTROL2, MMC_CTLCFG_HOST_CONTROL1_HIGH_SPEED_ENA, 0U);
+
+                obj->uhsmode = MMCSD_UHS_MODE_SDR50;
+                status = MMCSD_halSetUHSMode(attrs->ctrlBaseAddr, MMCSD_UHS_MODE_SDR50);
+
+            }
+
+            if(status == SystemP_SUCCESS)
+            {
+                /* Disable PHY DLL */
+                MMCSD_phyDisableDLL(attrs->ssBaseAddr);
+
+                status = MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, clkFreq, 0U);
+            }
+
+            if(status == SystemP_SUCCESS)
+            {
+                status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, phyClkFreq, phyDriverType, tunedItap);
+            }
+
+            if(status == SystemP_SUCCESS)
+            {
+                status = MMCSD_switchEmmcMode(handle, MMCSD_SUPPORT_MMC_HS400);
+            }
         }
-    }
-    else if(mode == MMCSD_SUPPORT_MMC_HS200)
-    {
-        status = MMCSD_switchEmmcMode(handle, MMCSD_SUPPORT_MMC_HS200);
+        else if(mode == MMCSD_SUPPORT_MMC_HS200)
+        {
+            status = MMCSD_switchEmmcMode(handle, MMCSD_SUPPORT_MMC_HS200);
+        }
     }
 
     return status;

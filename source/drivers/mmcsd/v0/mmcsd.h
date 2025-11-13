@@ -543,6 +543,9 @@ typedef struct
     uint32_t uhsmode;
     /**< Flag to indicate hs mode */
 
+    uint32_t isRetuneValid;
+    /**< Flag to indicate if retune is valid */
+
     SemaphoreP_Object       cmdMutex;
     /**< Command Mutex */
 

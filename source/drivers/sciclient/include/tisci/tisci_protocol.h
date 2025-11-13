@@ -186,6 +186,8 @@ struct tisci_sec_header {
 /** Message to decrypt an lpm data blob */
 #define TISCI_MSG_LPM_DECRYPT                   (0x0310U)
 #define TISCI_MSG_LPM_ABORT                     (0x0311U)
+#define TISCI_MSG_GET_SUSPEND_INITIATOR         (0x0312U)
+#define TISCI_MSG_LPM_SAVE_ADDR                 (0x0313U)
 
 #define TISCI_MSG_FIRMWARE_LOAD                 (0x8105U)
 #define MSG_FIRMWARE_LOAD_RESULT                (0x8805U)

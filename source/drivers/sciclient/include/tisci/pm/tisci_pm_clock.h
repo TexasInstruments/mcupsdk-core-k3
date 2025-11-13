@@ -84,10 +84,10 @@ extern "C"
 #define TISCI_MSG_VALUE_CLOCK_HW_STATE_READY        1
 
 /** Indicate that the spread spectrum clocking as down spread */
-#define TISCI_MSG_VALUE_CLOCK_SSC_SPREAD_DOWN       3
+#define TISCI_MSG_VALUE_CLOCK_SSC_SPREAD_DOWN       3U
 
 /** Indicate that the spread spectrum clocking as center spread */
-#define TISCI_MSG_VALUE_CLOCK_SSC_SPREAD_CENTER     1
+#define TISCI_MSG_VALUE_CLOCK_SSC_SPREAD_CENTER     1U
 
 /**
  * Allow this clock's frequency to be changed while it is running

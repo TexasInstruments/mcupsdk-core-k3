@@ -447,7 +447,7 @@ void MMCSD_close(MMCSD_Handle handle)
             if((mode == MMCSD_SUPPORT_MMC_HS400) || (mode == MMCSD_SUPPORT_MMC_HS_DDR))
             {
                 /* Set bus width to 0x02 to switch to SDR mode */
-                switchArg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16U) | ((MMCSD_ECSD_BUS_WIDTH_8BIT) << 8U);
+                switchArg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16U) | (((0U << MMCSD_ECSD_BUS_WIDTH_ES_SHIFT) | MMCSD_ECSD_BUS_WIDTH_8BIT) << 8U);
                 status |= MMCSD_sendSwitchCmd(handle, switchArg);
             }
 
@@ -465,7 +465,8 @@ void MMCSD_close(MMCSD_Handle handle)
             }
 
             /* Switching to Legacy SDR mode */
-            switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | ((((obj->emmcData->driveStrength) << 4U) | 0U) << 8U);
+            hsTimingVal = MMCSD_ECSD_HS_TIMING_BACKWARD_COMPATIBLE;
+            switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | ((((obj->emmcData->driveStrength) << 4U) | hsTimingVal) << 8U);
             status |= MMCSD_sendSwitchCmd(handle, switchArg);
 
             status |= MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, 400000, 0U);
@@ -2353,7 +2354,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
         phyMode = MMCSD_PHY_MODE_HSSDR50;
 
         hsTimingVal = MMCSD_ECSD_HS_TIMING_HIGH_SPEED;
-        switchArg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | (((es << 4U) | hsTimingVal) << 8U);
+        switchArg   = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | ((((obj->emmcData->driveStrength) << 4U) | hsTimingVal) << 8U);
 
         status = MMCSD_sendSwitchCmd(handle, switchArg);
 
@@ -2375,7 +2376,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
             if(status == SystemP_SUCCESS)
             {
                 /* Change HS timing to set HS400 */
-                switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | (((es << 4U) | MMCSD_ECSD_HS_TIMING_HS400) << 8U);
+                switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | ((((obj->emmcData->driveStrength) << 4U) | MMCSD_ECSD_HS_TIMING_HS400) << 8U);
                 status = MMCSD_sendSwitchCmd(handle, switchArg);
             }
 

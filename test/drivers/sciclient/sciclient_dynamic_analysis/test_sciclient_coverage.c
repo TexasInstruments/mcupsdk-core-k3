@@ -1629,6 +1629,15 @@ int8_t test_sciclient_pm(void)
     uint32_t reqFlag     = TISCI_MSG_FLAG_AOP;
     uint32_t moduleId    = TISCI_DEV_TIMER0;
     uint32_t deviceState = TISCI_MSG_FLAG_DEVICE_WAKE_ENABLED;
+    uint32_t moduleId1   = TISCI_DEV_DSS0;
+    uint32_t modfreq_hz = 100000;
+    uint32_t mod_depth = 10;
+    uint8_t spread_type = 3;
+    uint8_t enable = 1;
+    uint32_t respModfreq_hz;
+    uint32_t respMod_depth;
+    uint8_t respSpread_type;
+    uint8_t respEnable;
 
     retVal = Sciclient_pmSetModuleState(moduleId, deviceState, reqFlag, 0xFFFFFFFFU);
     if(retVal != SystemP_SUCCESS)
@@ -1905,6 +1914,102 @@ int8_t test_sciclient_pm(void)
 
     retVal = Sciclient_pmSetModuleRst_flags(moduleId, 1U, 0, 0xFFFFFFFFU);
     if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_pmSetModuleClkSSC(moduleId1, TISCI_DEV_DSS0_DPI_1_IN_CLK, modfreq_hz, mod_depth, spread_type, enable, reqFlag, SystemP_WAIT_FOREVER);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_pmGetModuleClkSSC(moduleId1, TISCI_DEV_DSS0_DPI_1_IN_CLK, &respModfreq_hz, &respMod_depth, &respSpread_type, &respEnable, SystemP_WAIT_FOREVER);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_pmSetModuleClkSSC(moduleId1, TISCI_DEV_DSS0_DPI_1_IN_CLK, 0, 0, 0, 0, reqFlag, SystemP_WAIT_FOREVER);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_pmGetModuleClkSSC(moduleId1, TISCI_DEV_DSS0_DPI_1_IN_CLK, &respModfreq_hz, &respMod_depth, &respSpread_type, &respEnable, SystemP_WAIT_FOREVER);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    /* Negative tests for SSC - invalid moduleId */
+    retVal = Sciclient_pmSetModuleClkSSC(0xFF, TISCI_DEV_DSS0_DPI_1_IN_CLK, modfreq_hz, mod_depth, spread_type, enable, reqFlag, SystemP_WAIT_FOREVER);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_pmGetModuleClkSSC(0xFF, TISCI_DEV_DSS0_DPI_1_IN_CLK, &respModfreq_hz, &respMod_depth, &respSpread_type, &respEnable, SystemP_WAIT_FOREVER);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    /* Negative tests for SSC - invalid clockId */
+    retVal = Sciclient_pmSetModuleClkSSC(moduleId1, 256U, modfreq_hz, mod_depth, spread_type, enable, reqFlag, SystemP_WAIT_FOREVER);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_pmGetModuleClkSSC(moduleId1, 256U, &respModfreq_hz, &respMod_depth, &respSpread_type, &respEnable, SystemP_WAIT_FOREVER);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    /* Negative tests for SSC - invalid spread_type (valid values are 1 or 3) */
+    retVal = Sciclient_pmSetModuleClkSSC(moduleId1, TISCI_DEV_DSS0_DPI_1_IN_CLK, modfreq_hz, mod_depth, 0x5, enable, reqFlag, SystemP_WAIT_FOREVER);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    /* Negative tests for SSC - invalid timeout (0 timeout) */
+    retVal = Sciclient_pmSetModuleClkSSC(moduleId1, TISCI_DEV_DSS0_DPI_1_IN_CLK, modfreq_hz, mod_depth, spread_type, enable, reqFlag, 0x0);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_pmGetModuleClkSSC(moduleId1, TISCI_DEV_DSS0_DPI_1_IN_CLK, &respModfreq_hz, &respMod_depth, &respSpread_type, &respEnable, 0x0);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    /* Negative test for SSC - valid device/clock that doesn't support SSC (UART peripheral clock) */
+    retVal = Sciclient_pmSetModuleClkSSC(TISCI_DEV_UART0, TISCI_DEV_UART0_FCLK_CLK, modfreq_hz, mod_depth, spread_type, enable, reqFlag, SystemP_WAIT_FOREVER);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_pmGetModuleClkSSC(TISCI_DEV_UART0, TISCI_DEV_UART0_FCLK_CLK, &respModfreq_hz, &respMod_depth, &respSpread_type, &respEnable, SystemP_WAIT_FOREVER);
+    if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;

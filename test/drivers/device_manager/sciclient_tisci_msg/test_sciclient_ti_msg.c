@@ -41,7 +41,7 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define TEST_SCICLIENT_APP_TISCI_MSG_COUNT 66U
+#define TEST_SCICLIENT_APP_TISCI_MSG_COUNT 68U
 
 /* ========================================================================== */
 /*                           Global Variables                                 */
@@ -57,6 +57,8 @@ const int32_t gTestMessageType[TEST_SCICLIENT_APP_TISCI_MSG_COUNT] =
     TISCI_MSG_SET_CLOCK_PARENT,
     TISCI_MSG_GET_CLOCK_PARENT,
     TISCI_MSG_GET_NUM_CLOCK_PARENTS,
+    TISCI_MSG_SET_CLOCK_SSC,
+    TISCI_MSG_GET_CLOCK_SSC,
     TISCI_MSG_SET_FREQ,
     TISCI_MSG_QUERY_FREQ,
     TISCI_MSG_GET_FREQ,

@@ -435,6 +435,7 @@ void MMCSD_close(MMCSD_Handle handle)
         int32_t status = SystemP_SUCCESS;
         MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
         MMCSD_Attrs const *attrs = ((MMCSD_Config *)handle)->attrs;
+        const CSL_mmc_ctlcfgRegs *pReg = (const CSL_mmc_ctlcfgRegs *)attrs->ctrlBaseAddr;
         uint32_t switchArg = 0U;
         uint32_t hsTimingVal = 0U;
 
@@ -457,6 +458,12 @@ void MMCSD_close(MMCSD_Handle handle)
                 switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | ((((obj->emmcData->driveStrength) << 4U) | hsTimingVal) << 8U);
                 status |= MMCSD_sendSwitchCmd(handle, switchArg);
 
+                /* Disable High Speed Ena to operate in HSSDR50 */
+                CSL_REG16_FINS(&pReg->HOST_CONTROL2, MMC_CTLCFG_HOST_CONTROL1_HIGH_SPEED_ENA, 0U);
+
+                obj->uhsmode = MMCSD_UHS_MODE_SDR50;
+                status |= MMCSD_halSetUHSMode(attrs->ctrlBaseAddr, obj->uhsmode);
+
                 MMCSD_phyDisableDLL(attrs->ssBaseAddr);
 
                 status |= MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, MMCSD_REFERENCE_CLOCK_52M, 0U);
@@ -468,6 +475,12 @@ void MMCSD_close(MMCSD_Handle handle)
             hsTimingVal = MMCSD_ECSD_HS_TIMING_BACKWARD_COMPATIBLE;
             switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_HS_TIMING_INDEX << 16U) | ((((obj->emmcData->driveStrength) << 4U) | hsTimingVal) << 8U);
             status |= MMCSD_sendSwitchCmd(handle, switchArg);
+
+            /* Disable High Speed Ena to operate in Legacy SDR */
+            CSL_REG16_FINS(&pReg->HOST_CONTROL2, MMC_CTLCFG_HOST_CONTROL1_HIGH_SPEED_ENA, 0U);
+
+            obj->uhsmode = MMCSD_UHS_MODE_SDR25;
+            status |= MMCSD_halSetUHSMode(attrs->ctrlBaseAddr, obj->uhsmode);
 
             status |= MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, 400000, 0U);
 

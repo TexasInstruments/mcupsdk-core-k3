@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2018
+ *  Copyright (c) 2018-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -41,7 +41,7 @@
 /*                             Include Files                                  */
 /* ========================================================================== */
 
-#include <udma_test.h>
+#include "udma_test.h"
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -246,7 +246,7 @@ int32_t udmaTestRingMemPtrTc(UdmaTestTaskObj *taskObj)
     Udma_RingHandle     ringHandle = &ringObj;
     void               *ringMem = NULL;
     Udma_RmInitPrms    *rmInitPrms;
-    char *instanceIdStr[] = {"MAIN", "MCU", "BCDMA", "PKTDMA"};
+    char *instanceIdStr[] = {"MAIN", "MCU", "BCDMA", "PKTDMA", "BCDMA(CSI)"};
     char *ringModeString[] = {"RING", "MESSAGE"};
 
     GT_1trace(taskObj->traceMask, GT_INFO1,
@@ -445,7 +445,7 @@ static int32_t udmaTestRingProxyTestLoop(UdmaTestTaskObj *taskObj)
     Udma_RingHandle     ringHandle = &ringObj;
     void               *ringMem = NULL;
     uint64_t            ringData;
-    char *instanceIdStr[] = {"MAIN", "MCU", "BCDMA", "PKTDMA"};
+    char *instanceIdStr[] = {"MAIN", "MCU", "BCDMA", "PKTDMA", "BCDMA(CSI)"};
     char *ringModeString[] = {"RING", "MESSAGE"};
 
     ringMemSize = elemCnt * sizeof (uint64_t);
@@ -582,7 +582,7 @@ static int32_t udmaTestRingFlushTestLoop(UdmaTestTaskObj *taskObj)
     void               *ringMem = NULL;
     uint64_t            ringData;
     Udma_RmInitPrms    *rmInitPrms;
-    char *instanceIdStr[] = {"MAIN", "MCU", "BCDMA", "PKTDMA"};
+    char *instanceIdStr[] = {"MAIN", "MCU", "BCDMA", "PKTDMA", "BCDMA(CSI)"};
     char *ringModeString[] = {"RING", "MESSAGE"};
 
     ringMemSize = elemCnt * sizeof (uint64_t);
@@ -736,7 +736,7 @@ static int32_t udmaTestRingEventTestLoop(UdmaTestTaskObj *taskObj)
     Udma_RingHandle     ringHandle = &ringObj;
     void               *ringMem = NULL;
     uint64_t            ringData;
-    char *instanceIdStr[] = {"MAIN", "MCU", "BCDMA", "PKTDMA"};
+    char *instanceIdStr[] = {"MAIN", "MCU", "BCDMA", "PKTDMA", "BCDMA(CSI)"};
     char *ringModeString[] = {"RING", "MESSAGE"};
     Udma_EventPrms      eventPrms;
     SemaphoreP_Object   transferDoneSem;
@@ -954,7 +954,7 @@ static int32_t udmaTestRingParamCheckTestLoop(UdmaTestTaskObj *taskObj)
     Udma_RingHandle     ringHandle = &ringObj;
     void               *ringMem = NULL;
     Udma_RmInitPrms    *rmInitPrms;
-    char *instanceIdStr[] = {"MAIN", "MCU", "BCDMA", "PKTDMA"};
+    char *instanceIdStr[] = {"MAIN", "MCU", "BCDMA", "PKTDMA", "BCDMA(CSI)"};
     char *ringModeString[] = {"RING", "MESSAGE"};
 
     ringMemSize = elemCnt * sizeof (uint64_t);
@@ -1148,7 +1148,7 @@ static int32_t udmaTestRingAttachTestLoop(UdmaTestTaskObj *taskObj)
     void               *ringMem = NULL;
     uint64_t            ringData;
     Udma_RmInitPrms    *rmInitPrms;
-    char *instanceIdStr[]    = {"MAIN", "MCU", "BCDMA", "PKTDMA"};
+    char *instanceIdStr[]    = {"MAIN", "MCU", "BCDMA", "PKTDMA", "BCDMA(CSI)"};
     char *mappedRingGrpStr[] = { "CPSW TX", "SAUL TX", "ICSSG0 TX", "ICSSG1_TX",
                                  "CPSW RX", "SAUL RX", "ICSSG0 RX", "ICSSG1_RX"};
     char *ringModeString[]   = {"RING", "MESSAGE"};
@@ -1377,7 +1377,7 @@ static int32_t udmaTestRingResetTestLoop(UdmaTestTaskObj *taskObj)
     void               *ringMem = NULL;
     uint64_t            ringData;
     Udma_RmInitPrms    *rmInitPrms;
-    char *instanceIdStr[] = {"MAIN", "MCU", "BCDMA", "PKTDMA"};
+    char *instanceIdStr[] = {"MAIN", "MCU", "BCDMA", "PKTDMA", "BCDMA(CSI)"};
     char *ringModeString[] = {"RING", "MESSAGE"};
 
     ringMemSize = elemCnt * sizeof (uint64_t);
@@ -1563,7 +1563,7 @@ static int32_t udmaTestRingPrimeTestLoop(UdmaTestTaskObj *taskObj)
     Udma_RingHandle     ringHandle = &ringObj;
     void               *ringMem = NULL;
     uint64_t            ringData;
-    char *instanceIdStr[] = {"MAIN", "MCU", "BCDMA", "PKTDMA"};
+    char *instanceIdStr[] = {"MAIN", "MCU", "BCDMA", "PKTDMA", "BCDMA(CSI)"};
     char *ringModeString[] = {"RING", "MESSAGE"};
 
     ringMemSize = elemCnt * sizeof (uint64_t);

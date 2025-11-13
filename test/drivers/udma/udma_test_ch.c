@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2019-20
+ *  Copyright (c) 2019-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -41,8 +41,8 @@
 /*                             Include Files                                  */
 /* ========================================================================== */
 
-#include <udma_test.h>
-#include <udma_testconfig.h>
+#include "udma_test.h"
+#include "udma_testconfig.h"
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -231,8 +231,14 @@ static int32_t udmaTestChPktdmaChApiTestLoop(UdmaTestTaskObj *taskObj)
     uint32_t            chGrpIdx;
     void               *ringMem = NULL;
     Udma_RmInitPrms    *rmInitPrms;
+#if !defined(SOC_J722S)
     char *pktdmaChGrpStr[] = { "Unmapped TX", "CPSW TX", "SAUL TX", "ICSSG_0 TX", "ICSSG_1_TX",
                                "Unmapped RX", "CPSW RX", "SAUL RX", "ICSSG_0 RX", "ICSSG_1_RX"};
+/* Removed ICSSG for PKTDMA since it is not supported by j722s */
+#else
+    char *pktdmaChGrpStr[] = { "Unmapped TX", "CPSW TX", "SAUL TX",
+                               "Unmapped RX", "CPSW RX", "SAUL RX"};
+#endif
     const UdmaTestPktdmaChPrm  *pktdmaChPrms = NULL;
     Udma_DrvObjectInt  *drvObj;
 
@@ -253,7 +259,7 @@ static int32_t udmaTestChPktdmaChApiTestLoop(UdmaTestTaskObj *taskObj)
         GT_1trace(taskObj->traceMask, GT_INFO1,
                   " Testing for PKTDMA %s Channel Group  ...\r\n",
                   pktdmaChGrpStr[chGrpIdx]);
-
+#if !defined(SOC_J722S)
         if(((UDMA_TEST_PKTDMA_CH_PRMID_UNMAPPED_TX == chGrpIdx) && (0U == rmInitPrms->numTxCh)) ||
            ((UDMA_TEST_PKTDMA_CH_PRMID_CPSW_TX == chGrpIdx) && (0U == rmInitPrms->numMappedTxCh[UDMA_MAPPED_TX_GROUP_CPSW])) ||
            ((UDMA_TEST_PKTDMA_CH_PRMID_SAUL_TX == chGrpIdx) && (0U == rmInitPrms->numMappedTxCh[UDMA_MAPPED_TX_GROUP_SAUL])) ||
@@ -264,6 +270,15 @@ static int32_t udmaTestChPktdmaChApiTestLoop(UdmaTestTaskObj *taskObj)
            ((UDMA_TEST_PKTDMA_CH_PRMID_SAUL_RX == chGrpIdx) && (0U == rmInitPrms->numMappedRxCh[UDMA_MAPPED_RX_GROUP_SAUL - UDMA_NUM_MAPPED_TX_GROUP])) ||
            ((UDMA_TEST_PKTDMA_CH_PRMID_ICSSG_0_RX == chGrpIdx) && (0U == rmInitPrms->numMappedRxCh[UDMA_MAPPED_RX_GROUP_ICSSG_0 - UDMA_NUM_MAPPED_TX_GROUP])) ||
            ((UDMA_TEST_PKTDMA_CH_PRMID_ICSSG_1_RX == chGrpIdx) && (0U == rmInitPrms->numMappedRxCh[UDMA_MAPPED_RX_GROUP_ICSSG_1 - UDMA_NUM_MAPPED_TX_GROUP])))
+/* Removed ICSSG params for PKTDMA since it is not supported by j722s */
+#else
+        if(((UDMA_TEST_PKTDMA_CH_PRMID_UNMAPPED_TX == chGrpIdx) && (0U == rmInitPrms->numTxCh)) ||
+           ((UDMA_TEST_PKTDMA_CH_PRMID_CPSW_TX == chGrpIdx) && (0U == rmInitPrms->numMappedTxCh[UDMA_MAPPED_TX_GROUP_CPSW])) ||
+           ((UDMA_TEST_PKTDMA_CH_PRMID_SAUL_TX == chGrpIdx) && (0U == rmInitPrms->numMappedTxCh[UDMA_MAPPED_TX_GROUP_SAUL])) ||
+           ((UDMA_TEST_PKTDMA_CH_PRMID_UNMAPPED_RX == chGrpIdx) && (0U == rmInitPrms->numRxCh)) ||
+           ((UDMA_TEST_PKTDMA_CH_PRMID_CPSW_RX == chGrpIdx) && (0U == rmInitPrms->numMappedRxCh[UDMA_MAPPED_RX_GROUP_CPSW - UDMA_NUM_MAPPED_TX_GROUP])) ||
+           ((UDMA_TEST_PKTDMA_CH_PRMID_SAUL_RX == chGrpIdx) && (0U == rmInitPrms->numMappedRxCh[UDMA_MAPPED_RX_GROUP_SAUL - UDMA_NUM_MAPPED_TX_GROUP])))
+#endif
         {
             GT_1trace(taskObj->traceMask, GT_INFO1,
                       " Skipping the Test for PKTDMA %s Channel Group, since no channels are reserved!!\r\n",

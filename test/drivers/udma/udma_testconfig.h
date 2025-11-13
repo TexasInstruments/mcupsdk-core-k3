@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2018
+ *  Copyright (c) 2018-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -43,7 +43,7 @@
 /*                             Include Files                                  */
 /* ========================================================================== */
 
-#include <udma_test.h>
+#include "udma_test.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -359,6 +359,8 @@ static const UdmaTestPktdmaChPrm gUdmaTestPktdmaChPrm[] =
         .mappedChGrp    = UDMA_MAPPED_TX_GROUP_SAUL,
         .peerChNum      = UDMA_TEST_PKTDMA_SAUL_TX_PEER_CH,
     },
+/* Removed ICSSG params for PKTDMA since it is not supported by j722s */
+#if !defined(SOC_J722S)
     {
         .pktdmachPrmId  = UDMA_TEST_PKTDMA_CH_PRMID_ICSSG_0_TX,
         .chType         = UDMA_CH_TYPE_TX_MAPPED,
@@ -371,6 +373,7 @@ static const UdmaTestPktdmaChPrm gUdmaTestPktdmaChPrm[] =
         .mappedChGrp    = UDMA_MAPPED_TX_GROUP_ICSSG_1,
         .peerChNum      = UDMA_TEST_PKTDMA_ICSSG_1_TX_PEER_CH,
     },
+#endif
     {
         .pktdmachPrmId  = UDMA_TEST_PKTDMA_CH_PRMID_UNMAPPED_RX,
         .chType         = UDMA_CH_TYPE_RX,
@@ -389,6 +392,8 @@ static const UdmaTestPktdmaChPrm gUdmaTestPktdmaChPrm[] =
         .mappedChGrp    = UDMA_MAPPED_RX_GROUP_SAUL,
         .peerChNum      = UDMA_TEST_PKTDMA_SAUL_RX_PEER_CH,
     },
+/* Removed ICSSG params for PKTDMA since it is not supported by j722s */
+#if !defined(SOC_J722S)
     {
         .pktdmachPrmId  = UDMA_TEST_PKTDMA_CH_PRMID_ICSSG_0_RX,
         .chType         = UDMA_CH_TYPE_RX_MAPPED,
@@ -401,6 +406,7 @@ static const UdmaTestPktdmaChPrm gUdmaTestPktdmaChPrm[] =
         .mappedChGrp    = UDMA_MAPPED_RX_GROUP_ICSSG_1,
         .peerChNum      = UDMA_TEST_PKTDMA_ICSSG_1_RX_PEER_CH,
     },
+#endif
 };
 #define UDMA_TEST_NUM_PKTDMA_CH_PRM          (sizeof(gUdmaTestPktdmaChPrm) / \
                                               sizeof(gUdmaTestPktdmaChPrm[0U]))

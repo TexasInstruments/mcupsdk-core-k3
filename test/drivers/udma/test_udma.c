@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Texas Instruments Incorporated
+ * Copyright (C) 2021-2025 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -42,6 +42,9 @@
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/ClockP.h>
 #include <kernel/dpl/AddrTranslateP.h>
+#include "udma_test.h"
+#include "udma_testcases.h"
+#include "udma_testconfig.h"
 #include "ti_drivers_config.h"
 
 /* ========================================================================== */
@@ -53,6 +56,9 @@
 /* ========================================================================== */
 /*                         Structures and Enums                               */
 /* ========================================================================== */
+
+/* UDMA UT object. */
+UdmaTestObj gUdmaTestUtObj;
 
 /** \brief UDMA test params */
 typedef struct Test_UdmaMemcpyPrms
@@ -105,6 +111,8 @@ void tearDown(void)
 static void test_udma_memcpy(void *args)
 {
     DebugP_log("\ntest_udma_memcpy started...\r\n");
+
+    udmaTestParser();
 
     DebugP_log("test_udma_memcpy end!!!\r\n");
 

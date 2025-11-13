@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2020
+ *  Copyright (c) 2020-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -110,7 +110,7 @@ GT_trace0(uint32_t      maskType,
             {
                 DebugP_log("%s @ Line %d: ", fileName, lineNum);
             }
-            DebugP_log((const char *) infoString);
+            DebugP_log(( char *) infoString);
         }
     }
 }
@@ -148,7 +148,7 @@ GT_trace1(uint32_t      maskType,
             {
                 DebugP_log("%s @ Line %d: ", fileName, lineNum);
             }
-            DebugP_log((const char *) infoString, param0);
+            DebugP_log(( char *) infoString, param0);
         }
     }
 }
@@ -188,7 +188,7 @@ GT_trace2(uint32_t      maskType,
             {
                 DebugP_log("%s @ Line %d: ", fileName, lineNum);
             }
-            DebugP_log((const char *) infoString, param0, param1);
+            DebugP_log(( char *) infoString, param0, param1);
         }
     }
 }
@@ -230,7 +230,7 @@ GT_trace3(uint32_t      maskType,
             {
                 DebugP_log("%s @ Line %d: ", fileName, lineNum);
             }
-            DebugP_log((const char *) infoString, param0, param1, param2);
+            DebugP_log(( char *) infoString, param0, param1, param2);
         }
     }
 }
@@ -275,7 +275,7 @@ GT_trace4(uint32_t      maskType,
                 DebugP_log("%s @ Line %d: ", fileName, lineNum);
             }
             DebugP_log(
-                (const char *) infoString, param0, param1, param2, param3);
+                ( char *) infoString, param0, param1, param2, param3);
         }
     }
 }
@@ -322,7 +322,7 @@ GT_trace5(uint32_t      maskType,
                 DebugP_log("%s @ Line %d: ", fileName, lineNum);
             }
             DebugP_log(
-                (const char *) infoString,
+                ( char *) infoString,
                 param0, param1, param2, param3, param4);
         }
     }
@@ -372,7 +372,7 @@ GT_trace6(uint32_t      maskType,
                 DebugP_log("%s @ Line %d: ", fileName, lineNum);
             }
             DebugP_log(
-                (const char *) infoString,
+                ( char *) infoString,
                 param0, param1, param2, param3, param4, param5);
         }
     }
@@ -424,7 +424,7 @@ GT_trace7(uint32_t      maskType,
                 DebugP_log("%s @ Line %d: ", fileName, lineNum);
             }
             DebugP_log(
-                (const char *) infoString,
+                ( char *) infoString,
                 param0, param1, param2, param3, param4, param5, param6);
         }
     }

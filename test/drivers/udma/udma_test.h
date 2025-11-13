@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2018
+ *  Copyright (c) 2018-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -50,15 +50,15 @@
 #include <string.h>
 
 #include <drivers/udma.h>
+
+#include <kernel/dpl/SemaphoreP.h>
+#include <kernel/dpl/TaskP.h>
+#include <kernel/dpl/DebugP.h>
 #if defined (DRV_VERSION_UDMA_V0)
 #include <drivers/udma/v0/udma_priv.h>
 #elif defined (DRV_VERSION_UDMA_V1)
 #include <drivers/udma/v1/udma_priv.h>
 #endif
-
-#include <kernel/dpl/SemaphoreP.h>
-#include <kernel/dpl/TaskP.h>
-#include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/CacheP.h>
 
 #include "utils_mem.h"
@@ -293,13 +293,19 @@ typedef enum
     UDMA_TEST_PKTDMA_CH_PRMID_UNMAPPED_TX,
     UDMA_TEST_PKTDMA_CH_PRMID_CPSW_TX,
     UDMA_TEST_PKTDMA_CH_PRMID_SAUL_TX,
+/* Removed ICSSG params for PKTDMA since it is not supported by j722s */
+#if !defined(SOC_J722S)
     UDMA_TEST_PKTDMA_CH_PRMID_ICSSG_0_TX,
     UDMA_TEST_PKTDMA_CH_PRMID_ICSSG_1_TX,
+#endif
     UDMA_TEST_PKTDMA_CH_PRMID_UNMAPPED_RX,
     UDMA_TEST_PKTDMA_CH_PRMID_CPSW_RX,
     UDMA_TEST_PKTDMA_CH_PRMID_SAUL_RX,
+/* Removed ICSSG params for PKTDMA since it is not supported by j722s */
+#if !defined(SOC_J722S)
     UDMA_TEST_PKTDMA_CH_PRMID_ICSSG_0_RX,
     UDMA_TEST_PKTDMA_CH_PRMID_ICSSG_1_RX,
+#endif
 } UdmaTestPktdmaChPrmId;
 
 /* ========================================================================== */
@@ -604,7 +610,7 @@ struct UdmaTestObj_t
  * Parser functions
  */
 int32_t udmaTestParser(void);
-void udmaDrvPrint(const char *str);
+void udmaDrvPrint(char *str);
 
 /*
  * UDMA block copy test case functions

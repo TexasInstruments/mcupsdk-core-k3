@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2019
+ *  Copyright (c) 2019-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -41,7 +41,7 @@
 /*                             Include Files                                  */
 /* ========================================================================== */
 
-#include <udma_test.h>
+#include "udma_test.h"
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */

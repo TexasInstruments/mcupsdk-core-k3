@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2018
+ *  Copyright (c) 2018-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -610,6 +610,8 @@ static void udmaTestTask(void *arg0, void *arg1)
     /* Test complete. Signal it */
     SemaphoreP_post(&testObj->taskCompleteSem);
 #endif
+
+    TaskP_destruct(&taskObj->taskHandle);
 
     return;
 }
@@ -1312,7 +1314,7 @@ static uint32_t udmaTestGetTestId(UdmaTestObj *testObj, uint32_t tcType)
     return (testId);
 }
 
-void udmaDrvPrint(const char *str)
+void udmaDrvPrint(char *str)
 {
     DebugP_log(str);
 

@@ -60,6 +60,7 @@
             -i${MCU_PLUS_SDK_PATH}/source/tisp/lib/Release
             -i${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Release
             -i${MCU_PLUS_SDK_PATH}/source/fftlib/lib/Release
+            -i${MCU_PLUS_SDK_PATH}/source/audiolib/lib/Release
             -i${MCU_PLUS_SDK_PATH}/source/tisp/lib/Debug
             -i${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Debug
             -i${MCU_PLUS_SDK_PATH}/source/fftlib/lib/Debug

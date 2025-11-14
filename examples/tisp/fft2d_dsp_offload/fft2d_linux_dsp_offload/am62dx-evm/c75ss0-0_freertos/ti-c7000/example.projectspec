@@ -36,6 +36,7 @@
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/c75x
             -I${MCU_PLUS_SDK_PATH}/source/fftlib/src/
             -I${MCU_PLUS_SDK_PATH}/source/dsplib/src/
+            -I${MCU_PLUS_SDK_PATH}/source/audiolib/src/
             -I${MCU_PLUS_SDK_PATH}/source/tisp/includes
             -I${MCU_PLUS_SDK_PATH}/source/tisp/test/common/
             -I${MCU_PLUS_SDK_PATH}/examples/tisp/fft2d_dsp_offload
@@ -70,6 +71,7 @@
             -i${MCU_PLUS_SDK_PATH}/source/tisp/lib/Release
             -i${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Release
             -i${MCU_PLUS_SDK_PATH}/source/fftlib/lib/Release
+            -i${MCU_PLUS_SDK_PATH}/source/audiolib/lib/Release
             -i${MCU_PLUS_SDK_PATH}/source/tisp/lib/Debug
             -i${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Debug
             -i${MCU_PLUS_SDK_PATH}/source/fftlib/lib/Debug
@@ -108,6 +110,8 @@
                 -lTISP_test_common_C7504.lib
                 -lDSPLIB_C7504.lib
                 -lDSPLIB_common_C7504.lib
+                -lAUDIOLIB_C7504.lib
+                -lAUDIOLIB_common_C7504.lib
                 -lFFTLIB_C7504.lib
                 -lFFTLIB_common_C7504.lib
                 -ludma.am62dx.c75x.ti-c7000.debug.lib
@@ -128,6 +132,8 @@
                 -lTISP_test_common_C7504.lib
                 -lDSPLIB_C7504.lib
                 -lDSPLIB_common_C7504.lib
+                -lAUDIOLIB_C7504.lib
+                -lAUDIOLIB_common_C7504.lib
                 -lFFTLIB_C7504.lib
                 -lFFTLIB_common_C7504.lib
                 -ludma.am62dx.c75x.ti-c7000.release.lib

@@ -109,6 +109,7 @@ LIBS_PATH_common = \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/tisp/lib/Release \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Release \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/fftlib/lib/Release \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/audiolib/lib/Release \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/tisp/lib/Debug \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Debug \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/fftlib/lib/Debug \
@@ -150,6 +151,7 @@ LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/tisp/lib/Release \
 	${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Release \
 	${MCU_PLUS_SDK_PATH}/source/fftlib/lib/Release \
+	${MCU_PLUS_SDK_PATH}/source/audiolib/lib/Release \
 	${MCU_PLUS_SDK_PATH}/source/tisp/lib/Debug \
 	${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Debug \
 	${MCU_PLUS_SDK_PATH}/source/fftlib/lib/Debug \

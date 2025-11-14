@@ -55,6 +55,7 @@ const files_r5f = {
         "rtc.c",
         "rtc_soc.c",
         "sciclient.c",
+        "sciclient_lpm.c",
         "sciclient_pm.c",
         "sciclient_rm.c",
         "sciclient_rm_irq.c",

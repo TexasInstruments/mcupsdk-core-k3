@@ -56,6 +56,7 @@ DEFINES_common := \
     -DBUILD_MCU \
     -DCONFIG_GET_FW_CAPS \
     -DCONFIG_PM \
+    -DCONFIG_LPM_MIN \
     -DCONFIG_PSC \
     -DCONFIG_CLOCK \
     -DCONFIG_CLK_PLL_16FFT \

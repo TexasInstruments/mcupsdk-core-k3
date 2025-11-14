@@ -205,6 +205,40 @@ int32_t Sciclient_lpmGetNextSysMode(uint32_t timeout,
 int32_t Sciclient_lpmGetNextHostState(uint32_t timeout,
                                       uint8_t *hostState);
 
+/**
+ *  \brief    Message to get the wake up information for last entered low power mode.
+ *
+ *  \n<b>Message</b>:    #TISCI_MSG_LPM_WAKE_REASON
+ *  \n<b>Request</b>:    #tisci_msg_lpm_wake_reason_req
+ *  \n<b>Response</b>:   #tisci_msg_lpm_wake_reason_resp
+ *
+ *  \param  wakeSource       Source that triggered wakeup from low power mode.
+ *  \param  wakeTimestamp    Time taken to wakeup from low power mode.
+ *  \param  wakePin          Pin that triggered wakeup from low power mode.
+ *  \param  mode             Last entered low power mode.
+ *  \param  timeout          Gives a sense of how long to wait for the
+ *                           operation. Refer
+ *                           \ref SystemP_Timeout.
+ *  \return SystemP_SUCCESS on success, else failure
+ */
+int32_t Sciclient_lpmGetWakeReason(uint32_t *wakeSource, uint64_t *wakeTimestamp, uint8_t *wakePin, uint8_t *mode, uint32_t timeout);
+
+/**
+ *  \brief    Message to send the prepare sleep.
+ *
+ *  \n<b>Message</b>:    #TISCI_MSG_PREPARE_SLEEP
+ *  \n<b>Request</b>:    #tisci_msg_prepare_sleep_req
+ *  \n<b>Response</b>:   #tisci_msg_prepare_sleep_resp
+ *
+ *  \param  mode             Low power mode to enter.
+ *                           Refer @ref gLPMSysModes.
+ *  \param  timeout          Gives a sense of how long to wait for the
+ *                           operation. Refer
+ *                           \ref SystemP_Timeout.
+ *  \return SystemP_SUCCESS on success, else failure
+ */
+int32_t Sciclient_lpmSendPrepareSleepMessage(uint8_t mode, uint32_t timeout);
+
 #ifdef __cplusplus
 }
 #endif

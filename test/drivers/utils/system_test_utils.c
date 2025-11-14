@@ -120,6 +120,7 @@ volatile uint32_t waitForUserTrigger = 0u;
 /* ========================================================================== */
 /*                 Internal Function Declarations                             */
 /* ========================================================================== */
+
 static void TestUtils_resultMsgHandler(uint16_t remoteCoreId, uint16_t localClientId, uint32_t msgValue, void *args);
 static void TestUtils_caseIdMsgHandler(uint16_t remoteCoreId, uint16_t localClientId, uint32_t msgValue, void *args);
 static int32_t TestUtils_testCase(int32_t testCaseId, void* args);

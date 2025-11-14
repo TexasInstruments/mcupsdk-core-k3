@@ -230,6 +230,7 @@ const example_file_list = [
     "test/drivers/mmcsd/test_mmcsd_fault_inject/.project/project.js",
     "test/drivers/use_cases/audio/audio_player/.project/project.js",
     "test/drivers/udma/.project/project.js",
+    "test/drivers/mmcsd/test_mmcsd_system/.project/project.js",
     "test/kernel/dpl/.project/project.js",
     "test/kernel/freertos/.project/project.js",
     "test/kernel/freertos_smp/.project/project.js",

@@ -195,6 +195,12 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += enet_lwip_cpsw_am275x-evm-dp83867/a
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += enet_lwip_cpsw_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += aafpcmlistener_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += aafpcmtalker_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += autoamp_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += central_compute_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += central_compute_audio_app_am275x-evm-dp83867/am275x-evm_c75ss0-0_freertos_ti-c7000_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += autoamp_ring_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += central_ring_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += central_ring_audio_app_am275x-evm-dp83867/am275x-evm_c75ss0-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += aes3_aaflistener_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += aes3_aaflistener_app_am275x-evm-dp83867/am275x-evm_c75ss0-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += aes3_aaftalker_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
@@ -816,6 +822,24 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  aafpcmtalker_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcmtalker_app/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
+ autoamp_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcm_audio_demo/auto_amplifier/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ central_compute_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcm_audio_demo/central_compute/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ central_compute_audio_app_am275x-evm-dp83867/am275x-evm_c75ss0-0_freertos_ti-c7000_build:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcm_audio_demo/central_compute/am275x-evm-dp83867/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec all
+
+ autoamp_ring_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcm_audio_etherring_demo/auto_amplifier/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ central_ring_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcm_audio_etherring_demo/central_compute/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ central_ring_audio_app_am275x-evm-dp83867/am275x-evm_c75ss0-0_freertos_ti-c7000_build:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcm_audio_etherring_demo/central_compute/am275x-evm-dp83867/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec all
+
  aes3_aaflistener_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/aes3_aaf/aes3_aaflistener_app/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
@@ -1125,6 +1149,12 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += enet_lwip_cpsw_am275x-evm-dp83867/a
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += enet_lwip_cpsw_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += aafpcmlistener_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += aafpcmtalker_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += autoamp_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += central_compute_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += central_compute_audio_app_am275x-evm-dp83867/am275x-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += autoamp_ring_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += central_ring_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += central_ring_audio_app_am275x-evm-dp83867/am275x-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += aes3_aaflistener_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += aes3_aaflistener_app_am275x-evm-dp83867/am275x-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += aes3_aaftalker_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
@@ -1746,6 +1776,24 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  aafpcmtalker_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcmtalker_app/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
+ autoamp_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcm_audio_demo/auto_amplifier/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ central_compute_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcm_audio_demo/central_compute/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ central_compute_audio_app_am275x-evm-dp83867/am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcm_audio_demo/central_compute/am275x-evm-dp83867/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec clean
+
+ autoamp_ring_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcm_audio_etherring_demo/auto_amplifier/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ central_ring_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcm_audio_etherring_demo/central_compute/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ central_ring_audio_app_am275x-evm-dp83867/am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcm_audio_etherring_demo/central_compute/am275x-evm-dp83867/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec clean
+
  aes3_aaflistener_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/aes3_aaf/aes3_aaflistener_app/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
@@ -2055,6 +2103,12 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += enet_lwip_cpsw_am275x-evm-dp83867/
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += enet_lwip_cpsw_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += aafpcmlistener_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += aafpcmtalker_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += autoamp_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += central_compute_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += central_compute_audio_app_am275x-evm-dp83867/am275x-evm_c75ss0-0_freertos_ti-c7000_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += autoamp_ring_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += central_ring_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += central_ring_audio_app_am275x-evm-dp83867/am275x-evm_c75ss0-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += aes3_aaflistener_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += aes3_aaflistener_app_am275x-evm-dp83867/am275x-evm_c75ss0-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += aes3_aaftalker_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
@@ -2676,6 +2730,24 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  aafpcmtalker_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcmtalker_app/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
+ autoamp_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcm_audio_demo/auto_amplifier/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ central_compute_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcm_audio_demo/central_compute/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ central_compute_audio_app_am275x-evm-dp83867/am275x-evm_c75ss0-0_freertos_ti-c7000_export:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcm_audio_demo/central_compute/am275x-evm-dp83867/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec export
+
+ autoamp_ring_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcm_audio_etherring_demo/auto_amplifier/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ central_ring_audio_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcm_audio_etherring_demo/central_compute/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ central_ring_audio_app_am275x-evm-dp83867/am275x-evm_c75ss0-0_freertos_ti-c7000_export:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/aafpcm_audio_etherring_demo/central_compute/am275x-evm-dp83867/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec export
+
  aes3_aaflistener_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/aes3_aaf/aes3_aaflistener_app/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
@@ -3001,6 +3073,12 @@ help:
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/lwip/enet_lwip_cpsw/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/aafpcmlistener_app/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/aafpcmtalker_app/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/aafpcm_audio_demo/auto_amplifier/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/aafpcm_audio_demo/central_compute/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/aafpcm_audio_demo/central_compute/am275x-evm-dp83867/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/aafpcm_audio_etherring_demo/auto_amplifier/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/aafpcm_audio_etherring_demo/central_compute/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/aafpcm_audio_etherring_demo/central_compute/am275x-evm-dp83867/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/aes3_aaf/aes3_aaflistener_app/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/aes3_aaf/aes3_aaflistener_app/am275x-evm-dp83867/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/aes3_aaf/aes3_aaftalker_app/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]

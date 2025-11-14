@@ -11,6 +11,13 @@ const files = {
     ],
 };
 
+const files_smp = {
+    common: [
+        "test_mmcsd_fs_smp.c",
+        "main.c",
+    ],
+};
+
 const defines_dm_r5 = {
     common: [
         "ENABLE_SCICLIENT_DIRECT",
@@ -64,6 +71,22 @@ const includes_freertos_a53 = {
 	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config/",
 	"../../../../test_mmcsd_common/",
         "${MCU_PLUS_SDK_PATH}/test/unity",
+    ],
+};
+
+const includes_a53_smp = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable_smp/GCC/ARM_CA53",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/a53-smp",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include/private",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include/portable",
+        "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/FreeRTOS-FAT/include/",
+        "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable/",
+        "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config/",
+        "${MCU_PLUS_SDK_PATH}/test/unity/",
     ],
 };
 
@@ -168,6 +191,15 @@ const libs_freertos_a53 = {
     ],
 };
 
+const libs_freertos_a53_smp = {
+    common: [
+        "freertos.am62ax.a53-smp.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "board.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+	"freertos_fat.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "unity.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+    ],
+};
 const libs_nortos_a53 = {
     common: [
         "nortos.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
@@ -182,6 +214,13 @@ const cflags_a53_freertos = {
     common: [
         "-Wno-unused-function",
 	"-DENABLE_MT_TESTS",
+	"-DENABLE_FS_TESTS",
+    ]
+}
+
+const cflags_a53_freertos_smp = {
+    common: [
+        "-Wno-unused-function",
 	"-DENABLE_FS_TESTS",
     ]
 }
@@ -219,6 +258,14 @@ const defines_dm_r5f = {
         "ENABLE_SCICLIENT_DIRECT",
     ]
 }
+
+const defines_a53_smp = {
+    common: [
+        "OS_FREERTOS",
+        "SMP_FREERTOS",
+        "SMP_QUADCORE_FREERTOS",
+    ],
+};
 
 const syscfgfile = "../example.syscfg"
 
@@ -314,11 +361,27 @@ const templates_nortos_a53 =
     },
 ];
 
+const templates_a53_smp =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_a53_smp.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/freertos/main_freertos_smp.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "test_main",
+        },
+    },
+];
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62ax-sk", os: "freertos"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62ax-sk", os: "nortos"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "freertos-smp"},
 ];
 
 function getComponentProperty() {
@@ -363,7 +426,17 @@ function getComponentBuildProperty(buildOption) {
 	}
     }
     else if(buildOption.cpu.match(/a53*/)){
-        if(buildOption.os.match(/freertos*/) )
+        if(buildOption.os.match(/freertos-smp*/))
+        {
+            build_property.files = files_smp;
+            build_property.includes = includes_a53_smp;
+            build_property.libdirs = libdirs_freertos_a53;
+            build_property.libs = libs_freertos_a53_smp;
+            build_property.templates = templates_a53_smp;
+            build_property.defines = defines_a53_smp;
+            build_property.cflags = cflags_a53_freertos_smp;
+        }
+        else if(buildOption.os.match(/freertos*/) )
         {
             build_property.includes = includes_freertos_a53;
             build_property.libdirs = libdirs_freertos_a53;

@@ -36,6 +36,7 @@
 
 #include <board/flash.h>
 #include <board/flash/ospi/flash_nor_ospi.h>
+#include <kernel/dpl/ClockP.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -59,6 +60,7 @@ static int32_t Flash_norOspiWrite(Flash_Config *config, uint32_t offset, uint8_t
 static int32_t Flash_norOspiOpen(Flash_Config *config, Flash_Params *params);
 static void Flash_norOspiClose(Flash_Config *config);
 static int32_t Flash_norOspiReset(Flash_Config *config);
+int32_t Flash_quirkEarlyFixup(Flash_Config *config);
 int32_t Flash_quirkSpansionSafebootDetection(Flash_Config *config);
 int32_t Flash_quirkSpansionUNHYSADisable(Flash_Config *config);
 static int32_t Flash_norOspiEnablePhyPipeline(Flash_Config *config);
@@ -1163,8 +1165,6 @@ static int32_t Flash_norOspiReset(Flash_Config *config)
         }
     }
 
-    Flash_norOspiWaitReady(config, devCfg->flashBusyTimeout);
-
     return status;
 }
 
@@ -1225,14 +1225,19 @@ static int32_t Flash_norOspiOpen(Flash_Config *config, Flash_Params *params)
         status = SystemP_FAILURE;
     }
 
+    if(SystemP_SUCCESS == status)
+    {
+        /* In some cases ROM might hand us the flash device in 8D-8D-8D mode.
+         * In such a case, it is best to reset the flash early on to switch
+         * back to 1S-1S-1S mode.
+         */
+        status = Flash_quirkEarlyFixup(config);
+    }
+
+
     if((SystemP_SUCCESS == status) && (params->bootQuirksFxn != NULL))
     {
         status = params->bootQuirksFxn(config);
-    }
-
-    if(SystemP_SUCCESS == status)
-    {
-        status = Flash_norOspiReset(config);
     }
 
     if(SystemP_SUCCESS == status)
@@ -1330,12 +1335,44 @@ static void Flash_norOspiClose(Flash_Config *config)
      *  Flash config registers again.
      */
     (void)Flash_norOspiReset(config);
+    (void)Flash_norOspiWaitReady(config, config->devConfig->flashBusyTimeout);
 
     obj->ospiHandle = NULL;
 
     /* OSPI Driver will be closed outside flash */
 
     return;
+}
+
+int32_t Flash_quirkEarlyFixup(Flash_Config *config)
+{
+    int32_t status = SystemP_SUCCESS;
+    Flash_NorOspiObject *obj = NULL;
+
+    if((config == NULL) || (config->object == NULL))
+    {
+        DebugP_logError("Required configuration is NULL\r\n");
+        status = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == status)
+    {
+        obj = (Flash_NorOspiObject *)(config->object);
+
+        OSPI_setProtocol(obj->ospiHandle, OSPI_FLASH_PROTOCOL(8,8,8,1));
+        OSPI_enableDDR(obj->ospiHandle);
+        OSPI_setDualOpCodeMode(obj->ospiHandle);
+
+        status = Flash_norOspiReset(config);
+        /* Spansion flash devices take upto 90us to reset, sleep for 200us to be safe */
+        ClockP_usleep(200);
+
+        OSPI_enableSDR(obj->ospiHandle);
+        OSPI_clearDualOpCodeMode(obj->ospiHandle);
+        OSPI_setProtocol(obj->ospiHandle, OSPI_FLASH_PROTOCOL(1,1,1,0));
+    }
+
+    return status;
 }
 
 int32_t Flash_quirkSpansionSafebootDetection(Flash_Config *config)
@@ -1352,6 +1389,7 @@ int32_t Flash_quirkSpansionSafebootDetection(Flash_Config *config)
     uint8_t sr1 = 0xff;
     Flash_NorOspiObject *obj = NULL;
     Flash_DevConfig *devCfg = NULL;
+    int8_t recoveryDone = FALSE;
 
     if((config == NULL) || (config->object == NULL) || (config->devConfig == NULL))
     {
@@ -1426,6 +1464,8 @@ int32_t Flash_quirkSpansionSafebootDetection(Flash_Config *config)
                     break;
                 }
 
+                recoveryDone = TRUE;
+
                 /* CFR1x and CFR5x will be restored to the factory default upon reset */
                 break;
             default:
@@ -1433,18 +1473,24 @@ int32_t Flash_quirkSpansionSafebootDetection(Flash_Config *config)
                 break;
             }
         }
+
+        /* Restore original values */
+        OSPI_setCmdDummyCycles(obj->ospiHandle, defaultDummy);
+        obj->numAddrBytes = defaultAddrBytes;
+
+        if(TRUE == recoveryDone)
+        {
+            status = Flash_norOspiReset(config);
+            if(SystemP_SUCCESS == status)
+            {
+                Flash_norOspiWaitReady(config, config->devConfig->flashBusyTimeout);
+            }
+        }
     }
 
     if(SystemP_SUCCESS != status)
     {
         DebugP_logError("Failed to complete flash recovery\r\n");
-    }
-
-    if (NULL != obj)
-    {
-        /* Restore original values if failed */
-        OSPI_setCmdDummyCycles(obj->ospiHandle, defaultDummy);
-        obj->numAddrBytes = defaultAddrBytes;
     }
 
     return status;

@@ -83,7 +83,7 @@
  *   RTOS/Baremetal appimage (MCU R5 cores) flash at offset 0x100000 of flash
  */
 
-void flashFixUpOspiBoot(OSPI_Handle oHandle, Flash_Handle fHandle);
+/* None */
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -242,8 +242,6 @@ int main()
 
     App_driversOpen();
 
-    flashFixUpOspiBoot(gOspiHandle[CONFIG_OSPI_SBL], gFlashHandle[CONFIG_FLASH_SBL]);
-
     status = Board_driversOpen();
     DebugP_assert(status == SystemP_SUCCESS);
 
@@ -340,23 +338,4 @@ int main()
     Drivers_close();
 
     return 0;
-}
-
-void flashFixUpOspiBoot(OSPI_Handle oHandle, Flash_Handle fHandle)
-{
-    /*
-     *  In Fast XSPI mode, reintialization is not required unless
-     *  user configures it or PHY configuration failed
-     */
-    if(SystemP_SUCCESS != OSPI_skipTuning(oHandle))
-    {
-        OSPI_setProtocol(oHandle, OSPI_FLASH_PROTOCOL(8,8,8,1));
-        OSPI_enableDDR(oHandle);
-        OSPI_setDualOpCodeMode(oHandle);
-        Flash_reset(fHandle);
-        OSPI_enableSDR(oHandle);
-        OSPI_clearDualOpCodeMode(oHandle);
-        OSPI_setProtocol(oHandle, OSPI_FLASH_PROTOCOL(1,1,1,0));
-    }
-
 }

@@ -60,8 +60,6 @@
  */
 #define SDL_BIST_MAX_TIMEOUT_VALUE       (10000000u)
 
-void flashFixUpOspiBoot(OSPI_Handle oHandle, Flash_Handle fHandle);
-
 /* This buffer needs to be defined for OSPI NOR boot in case of HS device for
    image authentication
    The size of the buffer should be large enough to accomodate the appimage */
@@ -195,8 +193,6 @@ int main()
     App_driversOpen();
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
 
-    flashFixUpOspiBoot(gOspiHandle[CONFIG_OSPI_SBL], gFlashHandle[CONFIG_FLASH_SBL]);
-
     status = Board_driversOpen();
     DebugP_assert(status == SystemP_SUCCESS);
     Bootloader_profileAddProfilePoint("Board_driversOpen");
@@ -282,13 +278,4 @@ int main()
     System_deinit();
 
     return 0;
-}
-
-void flashFixUpOspiBoot(OSPI_Handle oHandle, Flash_Handle fHandle)
-{
-    OSPI_setProtocol(oHandle, OSPI_FLASH_PROTOCOL(1,1,8,0));
-    OSPI_enableSDR(oHandle);
-    OSPI_clearDualOpCodeMode(oHandle);
-    Flash_reset(fHandle);
-    OSPI_setProtocol(oHandle, OSPI_FLASH_PROTOCOL(1,1,1,0));
 }

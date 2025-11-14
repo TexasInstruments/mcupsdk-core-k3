@@ -51,7 +51,6 @@
     Linux appimage (for A53) flash at offset 0xC00000 of flash
 */
 
-void flashFixUpOspiBoot(OSPI_Handle oHandle, Flash_Handle fHandle);
 
 /* This buffer needs to be defined for OSPI nand boot in case of HS device for
    image authentication
@@ -142,8 +141,6 @@ int main()
     App_driversOpen();
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
 
-    flashFixUpOspiBoot(gOspiHandle[CONFIG_OSPI_SBL], gFlashHandle[CONFIG_FLASH_SBL]);
-
     status = Board_driversOpen();
     DebugP_assert(status == SystemP_SUCCESS);
     Bootloader_profileAddProfilePoint("Board_driversOpen");
@@ -217,23 +214,4 @@ int main()
     System_deinit();
 
     return 0;
-}
-
-void flashFixUpOspiBoot(OSPI_Handle oHandle, Flash_Handle fHandle)
-{
-    /*
-     *  In Fast XSPI mode, reintialization is not required unless
-     *  user configures it or PHY configuration failed
-     */
-    if(SystemP_SUCCESS != OSPI_skipTuning(oHandle))
-    {
-        OSPI_setProtocol(oHandle, OSPI_FLASH_PROTOCOL(8,8,8,1));
-        OSPI_enableDDR(oHandle);
-        OSPI_setDualOpCodeMode(oHandle);
-        Flash_reset(fHandle);
-        OSPI_enableSDR(oHandle);
-        OSPI_clearDualOpCodeMode(oHandle);
-        OSPI_setProtocol(oHandle, OSPI_FLASH_PROTOCOL(1,1,1,0));
-    }
-
 }

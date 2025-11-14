@@ -59,7 +59,6 @@
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
-static void flashFixUpOspiBoot(OSPI_Handle oHandle, Flash_Handle fHandle);
 int32_t App_loadImages(Bootloader_LoadImageParams *bootLoadParams);
 int32_t App_runCpus(Bootloader_LoadImageParams *bootLoadParams);
 
@@ -141,8 +140,6 @@ void App_bootMultipleCoreFlash()
 
     App_driversOpen();
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
-
-    flashFixUpOspiBoot(gOspiHandle[CONFIG_OSPI_SBL], gFlashHandle[CONFIG_FLASH_SBL]);
 
     status = App_boardDriversOpen();
     DebugP_assertNoLog(status == SystemP_SUCCESS);
@@ -234,11 +231,3 @@ void sbl_ospi_main(void * args)
     vTaskDelete(NULL);
 }
 
-static void flashFixUpOspiBoot(OSPI_Handle oHandle, Flash_Handle fHandle)
-{
-    OSPI_setProtocol(oHandle, OSPI_FLASH_PROTOCOL(1U, 1U, 8U, 0U));
-    OSPI_enableSDR(oHandle);
-    OSPI_clearDualOpCodeMode(oHandle);
-    Flash_reset(fHandle);
-    OSPI_setProtocol(oHandle, OSPI_FLASH_PROTOCOL(1U, 1U, 1U, 0U));
-}

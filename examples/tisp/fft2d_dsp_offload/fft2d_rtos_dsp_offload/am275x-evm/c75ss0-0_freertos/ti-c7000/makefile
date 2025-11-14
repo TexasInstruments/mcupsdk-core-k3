@@ -143,8 +143,8 @@ LIBS_common = \
 	-lFFTLIB_C7524.lib \
 	-lFFTLIB_common_C7524.lib \
 	-lFFTLIB_test_common_C7524.lib \
-	-lAUDIOLIB_C7504.lib \
-	-lAUDIOLIB_common_C7504.lib \
+	-lAUDIOLIB_C7524.lib \
+	-lAUDIOLIB_common_C7524.lib \
 	-ludma.am275x.c75x.ti-c7000.${ConfigName}.lib \
 	-ldmautils.am275x.c75x.ti-c7000.${ConfigName}.lib \
 	-llibc.a \
@@ -169,8 +169,8 @@ LIBS_NAME = \
 	FFTLIB_C7524.lib \
 	FFTLIB_common_C7524.lib \
 	FFTLIB_test_common_C7524.lib \
-	AUDIOLIB_C7504.lib \
-	AUDIOLIB_common_C7504.lib \
+	AUDIOLIB_C7524.lib \
+	AUDIOLIB_common_C7524.lib \
 	udma.am275x.c75x.ti-c7000.${ConfigName}.lib \
 	dmautils.am275x.c75x.ti-c7000.${ConfigName}.lib \
 	libc.a \

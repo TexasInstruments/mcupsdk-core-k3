@@ -118,8 +118,8 @@
                 -lFFTLIB_C7524.lib
                 -lFFTLIB_common_C7524.lib
                 -lFFTLIB_test_common_C7524.lib
-                -lAUDIOLIB_C7504.lib
-                -lAUDIOLIB_common_C7504.lib
+                -lAUDIOLIB_C7524.lib
+                -lAUDIOLIB_common_C7524.lib
                 -ludma.am275x.c75x.ti-c7000.debug.lib
                 -ldmautils.am275x.c75x.ti-c7000.debug.lib
                 -llibc.a
@@ -142,8 +142,8 @@
                 -lFFTLIB_C7524.lib
                 -lFFTLIB_common_C7524.lib
                 -lFFTLIB_test_common_C7524.lib
-                -lAUDIOLIB_C7504.lib
-                -lAUDIOLIB_common_C7504.lib
+                -lAUDIOLIB_C7524.lib
+                -lAUDIOLIB_common_C7524.lib
                 -ludma.am275x.c75x.ti-c7000.release.lib
                 -ldmautils.am275x.c75x.ti-c7000.release.lib
                 -llibc.a

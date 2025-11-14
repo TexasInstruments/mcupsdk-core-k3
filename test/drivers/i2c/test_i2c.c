@@ -161,7 +161,6 @@ uint8_t TestI2c_task2Stack[TEST_I2C_WRITE_THREADS][TEST_I2C_MT_TASK_STACK_SIZE];
 TaskP_Object TestI2c_TaskObjs[TEST_I2C_WRITE_THREADS];
 static SemaphoreP_Object TestI2c_testSem;
 TaskP_Object TestI2c_taskObjsEepromTemp[2];
-static I2C_Handle TestI2c_SharedHandle = NULL;
 #endif
 static volatile uint32_t TestI2c_CbQueuePos;
 static uint8_t TestI2c_CbQueueOrder[TEST_I2C_CB_QUEUE_TEST_DEPTH];
@@ -248,7 +247,7 @@ static void TestI2c_pollingNackWrite(void *args);
 static void TestI2c_pollingNackRead(void *args);
 void TestI2c_controllerRxOverrun(void *args);
 void TestI2c_controllerAccessError(void *args);
-
+void TestI2c_sclStuckRecoverBusWithSystestFaultDefaultAnd1MHz(void* args);
 /* ========================================================================== */
 /*                            Global Functions                                */
 /* ========================================================================== */
@@ -335,7 +334,6 @@ void test_main(void *args)
     RUN_TEST(TestI2c_targetModeMultiOwnAddr, 8701, NULL);
     RUN_TEST(TestI2c_targetXrdyOverrun, 8622, (void*)&testParams);
     #endif
-    RUN_TEST(TestI2c_transferTimeoutBlockingMode, 8623, (void*)&testParams);
     RUN_TEST(TestI2c_sclStuckRecoverBusWithSystestFault, 8334, NULL);
     RUN_TEST(TestI2c_openNullObject, 8624, NULL);
     RUN_TEST(TestI2c_recoverbusNullObject, 8625, NULL);
@@ -353,7 +351,9 @@ void test_main(void *args)
     /* Below test cases are get stcuk in driver  */
     /* RUN_TEST(TestI2c_callbackQueueDepth, 8631, NULL); */
     RUN_TEST(TestI2c_sdaStuckRecoverBusWithSystestFault, 8630 ,NULL);
+    RUN_TEST(TestI2c_sclStuckRecoverBusWithSystestFaultDefaultAnd1MHz, 9012, NULL);
     RUN_TEST(TestI2c_memPrimeTransferInvalidDir, 8626, NULL);
+    RUN_TEST(TestI2c_transferTimeoutBlockingMode, 8623, (void*)&testParams);
 
 #if defined(SOC_J722S)
     RUN_TEST(test_i2c_write_read, 18763, (void*)&testParams);
@@ -1742,6 +1742,8 @@ void TestI2c_sclStuckRecoverBusWithSystestFault(void* args)
     I2C_Handle handle;
     uint32_t regVal, f, i;
     int32_t status;
+    I2C_Object *object = NULL;
+    I2CLLD_Handle i2cLldHandle;
     uint32_t i2cDelay = I2C_DELAY_SMALL;;
     I2C_Transaction testI2cTransaction;
 
@@ -1771,28 +1773,28 @@ void TestI2c_sclStuckRecoverBusWithSystestFault(void* args)
         {
             I2C_close(handle);
         }
-        gI2cHandle[CONFIG_I2C0] = NULL;
         I2C_Params_init(&i2cParams);
         handle = I2C_open(CONFIG_I2C0, &i2cParams);
         TEST_ASSERT_NOT_NULL(handle);
 
         handle = I2C_getHandle(CONFIG_I2C0);
         TEST_ASSERT_NOT_NULL(handle);
-        uint32_t baseAddr = handle->hwAttrs->baseAddr;
+        object = (I2C_Object*)handle->object;
+        i2cLldHandle = object->i2cLldHandle;
 
         handle->object->i2cLldHandle->bitRate = freqList[f];
         DebugP_log("Testing SCL stuck recovery at %s...\n", Test_I2c_FreqNames[f]);
 
         /* Enable test mode and simulate SCL stuck low */
-        regVal = HW_RD_REG32(baseAddr + CSL_I2C_SYSTEST);
+        regVal = I2C_lld_getSysTest(i2cLldHandle);
         regVal |= (1 << CSL_I2C_SYSTEST_ST_EN_SHIFT);       /* ST_EN = 1 */
         regVal |= (0x3 << CSL_I2C_SYSTEST_TMODE_SHIFT);     /* TMODE = 0b11 */
         regVal &= ~(1 << CSL_I2C_SYSTEST_SCL_O_SHIFT);       /* SCL_O = 0 (drive low) */
-        HW_WR_REG32(baseAddr + CSL_I2C_SYSTEST, regVal);
+        I2C_lld_setSysTest(i2cLldHandle, regVal);
         ClockP_usleep(10);         /* Let the line settle */
 
         /* Confirm SCL is stuck low */
-        regVal = HW_RD_REG32(baseAddr + CSL_I2C_SYSTEST);
+        regVal = I2C_lld_getSysTest(i2cLldHandle);
         bool sclStuck = ((regVal >> 3) & 0x1) == 0;  /* SCL_I == 0 */
         TEST_ASSERT_TRUE_MESSAGE(sclStuck, "SCL line is not stuck as expected");
 
@@ -1822,6 +1824,8 @@ void TestI2c_sdaStuckRecoverBusWithSystestFault(void *args)
 {
     I2C_Params params;
     I2C_Handle handle;
+    I2C_Object *object = NULL;
+    I2CLLD_Handle i2cLldHandle;
     int32_t status, i;
     uint32_t orig, val;
     I2C_Transaction testI2cTransaction;
@@ -1852,10 +1856,10 @@ void TestI2c_sdaStuckRecoverBusWithSystestFault(void *args)
 
     handle = I2C_getHandle(CONFIG_I2C0);
     TEST_ASSERT_NOT_NULL(handle);
-    uint32_t baseAddr = handle->hwAttrs->baseAddr;
-
+    object = (I2C_Object*)handle->object;
+    i2cLldHandle = object->i2cLldHandle;
     /* Save original SYSTEST */
-    orig = HW_RD_REG32(baseAddr + CSL_I2C_SYSTEST);
+    orig = I2C_lld_getSysTest(i2cLldHandle);
 
     /* Enable SYSTEST mode, TMODE = 3 (loopback), force SDA low */
     val = orig;
@@ -1864,12 +1868,12 @@ void TestI2c_sdaStuckRecoverBusWithSystestFault(void *args)
     val |= (3U << CSL_I2C_SYSTEST_TMODE_SHIFT);          /* TMODE=3 */
     val |= CSL_I2C_SYSTEST_SCL_O_MASK;                   /* drive SCL high */
     val &= ~CSL_I2C_SYSTEST_SDA_O_MASK;                  /* drive SDA low */
-    HW_WR_REG32(baseAddr + CSL_I2C_SYSTEST, val);
+    I2C_lld_setSysTest(i2cLldHandle, val);
 
     ClockP_usleep(50);
 
     /* Confirm SDA_I really stuck low */
-    uint32_t sysReg = HW_RD_REG32(baseAddr + CSL_I2C_SYSTEST);
+    uint32_t sysReg = I2C_lld_getSysTest(i2cLldHandle);
     TEST_ASSERT_EQUAL_UINT32(0, sysReg & CSL_I2C_SYSTEST_SDA_I_MASK);
 
     /* Call recoverBus (should detect SDA stuck and try recovery) */
@@ -2026,7 +2030,6 @@ static void TestI2c_perfWriteReadDiffFreq(void* args)
             if (gI2cHandle[CONFIG_I2C0] != NULL)
             {
                 I2C_close(gI2cHandle[CONFIG_I2C0]);
-                gI2cHandle[CONFIG_I2C0] = NULL;
             }
             I2C_HwAttrs *hw = (I2C_HwAttrs*)gI2cConfig[CONFIG_I2C0].hwAttrs;
             hw->enableIntr = useCallback ? TRUE : FALSE;
@@ -2151,7 +2154,6 @@ static void TestI2c_perfWriteReadDiffFreq(void* args)
                     modeName, Test_I2c_FreqNames[f], payload, writeMiBps, (unsigned long long)writeTime, readMiBps, (unsigned long long)readTime);
             }
             I2C_close(gI2cHandle[CONFIG_I2C0]);
-            gI2cHandle[CONFIG_I2C0] = NULL;
         }
     }
     DebugP_log("\nI2C Performance Numbers Print End \r\n\n");
@@ -2514,7 +2516,6 @@ static void TestI2c_tempTask(void *arg)
     if (gI2cHandle[CONFIG_I2C2] != NULL)
     {
         I2C_close(gI2cHandle[CONFIG_I2C2]);
-        gI2cHandle[CONFIG_I2C2] = NULL;
     }
     i2cHandle = I2C_open(CONFIG_I2C2, &i2cParams);
     TEST_ASSERT_NOT_NULL(i2cHandle);
@@ -2733,7 +2734,9 @@ static void TestI2c_multithreadReadTestSharedOpen(void* args)
  */
 static void TestI2c_writeReadSharedCallBack(void *arg)
 {
-    int32_t threadId = (int32_t)(int32_t)arg;
+    TestI2cThreadArgs *threadArgs = (TestI2cThreadArgs *)arg;
+    int32_t threadId = threadArgs->threadId;
+    I2C_Handle handle = threadArgs->handle;
     const uint32_t addrSize = Board_i2cGetEepromAddrSize();
     uint8_t txBuf[2 + TEST_I2C_WRITE_ITER];              /* address + payload */
     uint8_t rxBuf[TEST_I2C_WRITE_ITER];               /* read-back payload */
@@ -2778,7 +2781,7 @@ static void TestI2c_writeReadSharedCallBack(void *arg)
         DebugP_log("CB_SHARED_WRITE[%d] iter %d: WRITE memAddr=0x%04X len=%u\r\n",
                    threadId, (int32_t)iter, (unsigned)memAddr, testI2cTransaction.writeCount);
 
-        status = I2C_transfer(TestI2c_SharedHandle, &testI2cTransaction);
+        status = I2C_transfer(handle, &testI2cTransaction);
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
         SemaphoreP_pend(&sem, SystemP_WAIT_FOREVER);
         SemaphoreP_destruct(&sem);
@@ -2799,7 +2802,7 @@ static void TestI2c_writeReadSharedCallBack(void *arg)
         DebugP_log("CB_SHARED_WRITE[%d] iter %d: READBACK memAddr=0x%04X len=%u\r\n",
                    threadId, (int32_t)iter, (unsigned)memAddr, testI2cTransaction.readCount);
 
-        status = I2C_transfer(TestI2c_SharedHandle, &testI2cTransaction);
+        status = I2C_transfer(handle, &testI2cTransaction);
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
         SemaphoreP_pend(&sem, SystemP_WAIT_FOREVER);
         SemaphoreP_destruct(&sem);
@@ -2829,6 +2832,8 @@ static void TestI2c_multithreadWriteTestSharedOpenCb(void *args)
     TaskP_Params taskParams;
     int32_t status;
     uint32_t i;
+    I2C_Handle sharedHandle = NULL;
+    TestI2cThreadArgs threadArgs[TEST_I2C_WRITE_THREADS];
 
     /* Construct counting semaphore */
     status = SemaphoreP_constructCounting(&TestI2c_testSem, 0, TEST_I2C_WRITE_THREADS);
@@ -2839,23 +2844,22 @@ static void TestI2c_multithreadWriteTestSharedOpenCb(void *args)
     params.transferMode = I2C_MODE_CALLBACK;
     params.transferCallbackFxn = &test_i2c_callback;
 
-    if (TestI2c_SharedHandle != NULL)
-    {
-        I2C_close(TestI2c_SharedHandle);
-    }
-    TestI2c_SharedHandle = I2C_open(CONFIG_I2C0, &params);
-    TEST_ASSERT_NOT_NULL(TestI2c_SharedHandle);
+    sharedHandle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(sharedHandle);
 
     DebugP_log("Starting I2C multithread shared write (callback mode)\r\n");
 
     /* Create worker tasks */
     for (i = 0; i < TEST_I2C_WRITE_THREADS; i++)
     {
+        threadArgs[i].threadId = i;
+        threadArgs[i].handle = sharedHandle;
+
         TaskP_Params_init(&taskParams);
         taskParams.priority  = 3U;
         taskParams.stack     = TestI2c_task1Stack[i];
         taskParams.stackSize = TEST_I2C_MT_TASK_STACK_SIZE;
-        taskParams.args      = (void *)(int32_t)i;
+        taskParams.args      = &threadArgs[i];
         taskParams.taskMain  = &TestI2c_writeReadSharedCallBack;
         taskParams.name      = "TestI2c_writeReadSharedCallBack";
 
@@ -2878,8 +2882,7 @@ static void TestI2c_multithreadWriteTestSharedOpenCb(void *args)
         TaskP_destruct(&TestI2c_TaskObjs[i]);
     }
 
-    I2C_close(TestI2c_SharedHandle);
-    TestI2c_SharedHandle = NULL;
+    I2C_close(sharedHandle);
     SemaphoreP_destruct(&TestI2c_testSem);
 }
 #endif
@@ -2899,6 +2902,8 @@ static void TestI2c_multithreadWriteTestSharedOpenCb(void *args)
  */
 static void TestI2c_multiThreadEepromsharedHnadle(void *arg)
 {
+    TestI2cThreadArgs *threadArgs = (TestI2cThreadArgs *)arg;
+    I2C_Handle handle = threadArgs->handle;
     uint8_t txBuf[8], rxBuf[8];
     I2C_Transaction testI2cTransaction;
     int32_t status;
@@ -2917,7 +2922,7 @@ static void TestI2c_multiThreadEepromsharedHnadle(void *arg)
     testI2cTransaction.readCount = 0;
     testI2cTransaction.targetAddress = Board_i2cGetEepromDeviceAddr();
 
-    status = I2C_transfer(TestI2c_SharedHandle, &testI2cTransaction);
+    status = I2C_transfer(handle, &testI2cTransaction);
     if (status != SystemP_SUCCESS)
     {
         DebugP_log("mtEeprom: I2C_write failed: %d\n", status);
@@ -2935,7 +2940,7 @@ static void TestI2c_multiThreadEepromsharedHnadle(void *arg)
     testI2cTransaction.readCount = 1;
     testI2cTransaction.targetAddress = Board_i2cGetEepromDeviceAddr();
 
-    status = I2C_transfer(TestI2c_SharedHandle, &testI2cTransaction);
+    status = I2C_transfer(handle, &testI2cTransaction);
     if (status != SystemP_SUCCESS)
     {
         DebugP_log("mtEeprom: I2C_read failed: %d\n", status);
@@ -2962,6 +2967,8 @@ static void TestI2c_multiThreadEepromsharedHnadle(void *arg)
  */
 static void TestI2c_multiThreadTempSharedHandle(void *arg)
 {
+    TestI2cThreadArgs *threadArgs = (TestI2cThreadArgs *)arg;
+    I2C_Handle handle = threadArgs->handle;
     I2C_Transaction testI2cTransaction;
     uint8_t txBuffer[1];
     uint8_t rxBuffer[2];
@@ -2969,7 +2976,7 @@ static void TestI2c_multiThreadTempSharedHandle(void *arg)
     int32_t status;
 
     /* Probe TMP100 */
-    status = I2C_probe(TestI2c_SharedHandle, Board_getSocTemperatureSensorAddr());
+    status = I2C_probe(handle, Board_getSocTemperatureSensorAddr());
     DebugP_log("TMP100 Probe = %d\r\n", status);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -2982,7 +2989,7 @@ static void TestI2c_multiThreadTempSharedHandle(void *arg)
     testI2cTransaction.readCount    = 2;
     testI2cTransaction.targetAddress = Board_getSocTemperatureSensorAddr();
 
-    status = I2C_transfer(TestI2c_SharedHandle, &testI2cTransaction);
+    status = I2C_transfer(handle, &testI2cTransaction);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     if (status == SystemP_SUCCESS)
     {
@@ -3025,21 +3032,25 @@ static void TestI2c_multiThreadTempSharedHandle(void *arg)
  */
 static void TestI2c_multithreadSharedEepromTemp(void *args)
 {
-
     int32_t loopVar, status;
     TaskP_Params taskEeprom, taskTemp;
+    I2C_Params params;
+    I2C_Handle sharedHandle = NULL;
+    TestI2cThreadArgs threadArgs[2];
+
     status =  SemaphoreP_constructCounting(&TestI2c_testSem, 0, 2);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-    I2C_Params params;
+
     I2C_Params_init(&params);
     params.transferMode = I2C_MODE_BLOCKING;
-    if (TestI2c_SharedHandle != NULL)
-    {
-        I2C_close(TestI2c_SharedHandle);
-        TestI2c_SharedHandle = NULL;
-    }
-    TestI2c_SharedHandle = I2C_open(CONFIG_I2C0, &params);
-    TEST_ASSERT_NOT_NULL(TestI2c_SharedHandle);
+    sharedHandle = I2C_open(CONFIG_I2C0, &params);
+    TEST_ASSERT_NOT_NULL(sharedHandle);
+
+    // Prepare thread arguments with local handle
+    threadArgs[0].threadId = 0;
+    threadArgs[0].handle = sharedHandle;
+    threadArgs[1].threadId = 1;
+    threadArgs[1].handle = sharedHandle;
 
     TaskP_Params_init(&taskEeprom);
     taskEeprom.priority       = 3U;
@@ -3047,6 +3058,7 @@ static void TestI2c_multithreadSharedEepromTemp(void *args)
     taskEeprom.stackSize      = TEST_I2C_MT_TASK_STACK_SIZE;
     taskEeprom.name           = "mtEeprom";
     taskEeprom.taskMain       = &TestI2c_multiThreadEepromsharedHnadle;
+    taskEeprom.args           = &threadArgs[0];
 
     status = TaskP_construct(&TestI2c_taskObjsEepromTemp[0], &taskEeprom);
     TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
@@ -3057,6 +3069,7 @@ static void TestI2c_multithreadSharedEepromTemp(void *args)
     taskTemp.stackSize      = TEST_I2C_MT_TASK_STACK_SIZE;
     taskTemp.name           = "taskTemp";
     taskTemp.taskMain       = &TestI2c_multiThreadTempSharedHandle;
+    taskTemp.args           = &threadArgs[1];
 
     status = TaskP_construct(&TestI2c_taskObjsEepromTemp[1], &taskTemp);
     TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
@@ -3066,11 +3079,10 @@ static void TestI2c_multithreadSharedEepromTemp(void *args)
         status = SemaphoreP_pend(&TestI2c_testSem, SystemP_WAIT_FOREVER);
         TEST_ASSERT_EQUAL_INT32(status, SystemP_SUCCESS);
     }
-
+    I2C_close(sharedHandle);
     TaskP_destruct(&TestI2c_taskObjsEepromTemp[0]);
     TaskP_destruct(&TestI2c_taskObjsEepromTemp[1]);
     SemaphoreP_destruct(&TestI2c_testSem);
-    I2C_close(TestI2c_SharedHandle);
 }
 #endif
 #endif
@@ -3950,7 +3962,6 @@ static void TestI2c_MemPrimeTransferTargetModeViaTransfer(void *args)
     {
         I2C_close(handle);
     }
-    gI2cHandle[CONFIG_I2C1] = NULL;
     handle = I2C_open(CONFIG_I2C1, &params);
     TEST_ASSERT_NOT_NULL(handle);
 
@@ -4191,7 +4202,6 @@ static void TestI2c_targetModePollingNegative(void *args)
     {
         I2C_close(targetHandle);
     }
-    gI2cHandle[CONFIG_I2C0] = NULL;
 
     hwAttrs = (I2C_HwAttrs *) (gI2cConfig[CONFIG_I2C0]).hwAttrs;
     hwAttrs->enableIntr = FALSE;
@@ -4395,7 +4405,6 @@ static void TestI2c_recoverbusNullObject(void *args)
     {
         I2C_close(handle);
     }
-    gI2cHandle[CONFIG_I2C0] = NULL;
 
     /* Open I2C normally */
     I2C_Params_init(&params);
@@ -5025,4 +5034,93 @@ void TestI2c_controllerAccessError(void *args)
     TEST_ASSERT_EQUAL_INT32(I2C_STS_ERR_ACCESS_ERROR, Test_I2cErrorStat);
     I2C_close(handle);
     SemaphoreP_destruct(&gTestI2cCallbackDoneSemObj);
+}
+
+/**
+ * \brief Test SCL stuck low recovery using SYSTEST fault injection at default/invalid and 1MHz bitrates.
+ *
+ * This test sets the I2C LLD bitRate to an invalid value (to trigger default bitrate logic)
+ * and to 1MHz, simulates the SCL line being stuck low using the SYSTEST register, and verifies
+ * that the I2C_recoverBus API can recover the bus and normal operation is restored.
+ *
+ * The test iterates over two bitrates: default/invalid (0xFF) and 1MHz (I2C_1P0MHZ).
+ * For each, it:
+ *   - Forces SCL low via SYSTEST.
+ *   - Verifies SCL is stuck.
+ *   - Calls I2C_recoverBus and expects success.
+ *   - Performs a transfer to confirm bus operation.
+ *
+ * \param args Unused.
+ */
+void TestI2c_sclStuckRecoverBusWithSystestFaultDefaultAnd1MHz(void* args)
+{
+    I2C_Params i2cParams;
+    I2C_Handle handle;
+    uint32_t regVal, i;
+    int32_t status, f;
+    I2C_Object *object = NULL;
+    I2CLLD_Handle i2cLldHandle;
+    uint32_t i2cDelay = I2C_DELAY_SMALL;
+    I2C_Transaction Test_i2cTransaction;
+
+    for (i = 0; i < 10; i++)
+    {
+        gI2cTxBuffer[i + Board_i2cGetEepromAddrSize()] = (uint8_t)i;
+    }
+
+    /* Setup: open I2C instance */
+    I2C_Transaction_init(&Test_i2cTransaction);
+    Test_i2cTransaction.writeBuf = gI2cTxBuffer;
+    Test_i2cTransaction.writeCount = 2;
+    Test_i2cTransaction.readBuf = NULL;
+    Test_i2cTransaction.readCount = 0;
+    Test_i2cTransaction.targetAddress = Board_i2cGetEepromDeviceAddr();
+    Test_i2cTransaction.timeout = SystemP_WAIT_FOREVER;
+
+    const uint32_t freqList[] = { 0xFF, I2C_1P0MHZ};
+    const char* freqNames[] = { "default/invalid", "1MHz"};
+    const int32_t freqCount = sizeof(freqList)/sizeof(freqList[0]);
+
+    for (f = 0; f < freqCount; ++f)
+    {
+        handle = I2C_getHandle(CONFIG_I2C0);
+        if(handle)
+        {
+            I2C_close(handle);
+        }
+        I2C_Params_init(&i2cParams);
+        handle = I2C_open(CONFIG_I2C0, &i2cParams);
+        TEST_ASSERT_NOT_NULL(handle);
+
+        handle = I2C_getHandle(CONFIG_I2C0);
+        TEST_ASSERT_NOT_NULL(handle);
+        object = (I2C_Object*)handle->object;
+        i2cLldHandle = object->i2cLldHandle;
+
+        handle->object->i2cLldHandle->bitRate = freqList[f];
+        DebugP_log("Testing SCL stuck recovery at %s...\n", freqNames[f]);
+
+        /* Enable test mode and simulate SCL stuck low */
+        regVal = I2C_lld_getSysTest(i2cLldHandle);
+        regVal |= (1 << CSL_I2C_SYSTEST_ST_EN_SHIFT);       /* ST_EN = 1 */
+        regVal |= (0x3 << CSL_I2C_SYSTEST_TMODE_SHIFT);     /* TMODE = 0b11 */
+        regVal &= ~(1 << CSL_I2C_SYSTEST_SCL_O_SHIFT);      /* SCL_O = 0 (drive low) */
+        I2C_lld_setSysTest(i2cLldHandle, regVal);
+        ClockP_usleep(10);         /* Let the line settle */
+
+        /* Confirm SCL is stuck low */
+        regVal = I2C_lld_getSysTest(i2cLldHandle);
+        bool sclStuck = ((regVal >> 3) & 0x1) == 0;  /* SCL_I == 0 */
+        TEST_ASSERT_TRUE_MESSAGE(sclStuck, "SCL line is not stuck as expected");
+
+        /*  Try recovery */
+        status = I2C_recoverBus(handle, i2cDelay);
+        TEST_ASSERT_EQUAL_INT_MESSAGE(SystemP_SUCCESS, status, "I2C_recoverBus() failed");
+
+        status = I2C_transfer(handle, &Test_i2cTransaction);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+        /* Close */
+        I2C_close(handle);
+    }
 }

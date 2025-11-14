@@ -126,7 +126,7 @@ const int32_t gTestMessageType[TEST_SCICLIENT_APP_TISCI_MSG_COUNT] =
 void sciclient_testMessageType(void *args)
 {
     int32_t         retVal = SystemP_SUCCESS;
-    int32_t msgType = 0;
+    int32_t msgCnt = 0;
     struct tisci_msg_sys_reset_req resetRequest;
     resetRequest.domain = 1;
     const Sciclient_ReqPrm_t resetReqPrm =
@@ -145,13 +145,13 @@ void sciclient_testMessageType(void *args)
         sizeof (resetResponse)
     };
 
-    for(msgType = 0; msgType <= TEST_SCICLIENT_APP_TISCI_MSG_COUNT; msgType++)
+    for(msgCnt = 0; msgCnt <= TEST_SCICLIENT_APP_TISCI_MSG_COUNT; msgCnt++)
     {
         /* Check for the SYSFW version by sending a request */
         struct tisci_msg_version_req verRequest;
         const Sciclient_ReqPrm_t      verReqPrm =
         {
-            gTestMessageType[msgType],
+            gTestMessageType[msgCnt],
             TISCI_MSG_FLAG_AOP,
             (uint8_t *) &verRequest,
             sizeof(verRequest),
@@ -166,9 +166,9 @@ void sciclient_testMessageType(void *args)
             sizeof (verResponse)
         };
         retVal = Sciclient_service(&verReqPrm, &verRespPrm);
-        DebugP_log("\r\n msgType = %d retVal= %d and respPrm.flags = %d",msgType, retVal, verRespPrm.flags);
+        DebugP_log("\r\n msgType = %#06x retVal= %d and respPrm.flags = %d", gTestMessageType[msgCnt], retVal, verRespPrm.flags);
     }
 
     retVal = Sciclient_service(&resetReqPrm, &resetRespPrm);
-    DebugP_log("\r\n msgType = %d retVal= %d and respPrm.flags = %d",msgType, retVal, resetRespPrm.flags);
+    DebugP_log("\r\n msgType = %#06x retVal= %d and respPrm.flags = %d", gTestMessageType[msgCnt], retVal, resetRespPrm.flags);
 }

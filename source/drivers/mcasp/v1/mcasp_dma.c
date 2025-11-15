@@ -71,6 +71,10 @@
 
 #define MCASP_ICNT2_MAX                                 (65535U)
 
+#define MCASP_DMA_BUS_ORDER_ID                          (8U)
+#define MCASP_DMA_BUS_PRIORITY                          (2U)
+#define MCASP_DMA_BUS_QOS                               (2U)
+
 /* ========================================================================== */
 /*                          Function Declarations                             */
 /* ========================================================================== */
@@ -138,6 +142,12 @@ int32_t MCASP_openDma(MCASP_Config *config, MCASP_DmaChConfig *dmaChCfg)
 
             /* Configure TX channel */
             UdmaChTxPrms_init(&txPrms, chanType);
+
+            /* Set bus order and priority */
+            txPrms.busOrderId = MCASP_DMA_BUS_ORDER_ID;
+            txPrms.busPriority = MCASP_DMA_BUS_PRIORITY;
+            txPrms.busQos = MCASP_DMA_BUS_QOS;
+
             status = Udma_chConfigTx(txChHandle, &txPrms);
             DebugP_assert(UDMA_SOK == status);
 
@@ -193,6 +203,11 @@ int32_t MCASP_openDma(MCASP_Config *config, MCASP_DmaChConfig *dmaChCfg)
             /* Set TX FIFO depth */
             txPrms.fifoDepth = MCASP_BCDMA_TX_CH_DEPTH;
 
+            /* Set bus order and priority */
+            txPrms.busOrderId = MCASP_DMA_BUS_ORDER_ID;
+            txPrms.busPriority = MCASP_DMA_BUS_PRIORITY;
+            txPrms.busQos = MCASP_DMA_BUS_QOS;
+
             status = Udma_chConfigTx(txChHandle, &txPrms);
             DebugP_assert(SystemP_SUCCESS == status);
 
@@ -239,6 +254,11 @@ int32_t MCASP_openDma(MCASP_Config *config, MCASP_DmaChConfig *dmaChCfg)
 
             UdmaChRxPrms_init(&rxPrms, chType);
             rxPrms.configDefaultFlow = FALSE;
+
+            /* Set bus order and priority */
+            rxPrms.busOrderId = MCASP_DMA_BUS_ORDER_ID;
+            rxPrms.busPriority = MCASP_DMA_BUS_PRIORITY;
+            rxPrms.busQos = MCASP_DMA_BUS_QOS;
 
             status = Udma_chConfigRx(rxChHandle, &rxPrms);
             DebugP_assert(SystemP_SUCCESS == status);

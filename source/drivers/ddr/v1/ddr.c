@@ -89,6 +89,10 @@
 
 #define DDR_ECC_REGION_START_RESET_VAL  0xFFFF0000U
 
+/* Default priority map values */
+#define DDR_SS_DEF_LPT_PRIMAP           0x01234567U
+#define DDR_SS_DEF_HPT_PRIMAP           0x01234567U
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -692,6 +696,11 @@ int32_t DDR_init(DDR_Params *prm)
 
     /* Configure DDRSS_ECC_CTRL_REG register. Disable ECC. */
     HW_WR_REG32((DDR_SS_CFG_BASE + 0x120), 0x00);
+
+    /* Set priority mapping of VBUSM to DDRSS priorties */
+    HW_WR_REG32((DDR_SS_CFG_BASE + CSL_EMIF_SSCFG_V2A_LPT_DEF_PRI_MAP_REG), DDR_SS_DEF_LPT_PRIMAP);
+    HW_WR_REG32((DDR_SS_CFG_BASE + CSL_EMIF_SSCFG_V2A_HPT_DEF_PRI_MAP_REG), DDR_SS_DEF_HPT_PRIMAP);
+
     status = DDR_probe();
     if(status == SystemP_SUCCESS)
     {

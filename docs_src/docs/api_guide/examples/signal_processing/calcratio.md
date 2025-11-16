@@ -33,6 +33,17 @@ Every 0.5 s a timer tick triggers the capture of:
 
 \endcond
 
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | c75ss0-0 freertos
+ Toolchain      | ti-c7000
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/signal_processing/calcratio
+
+\endcond
+
 
 # Steps to Run the Example
 
@@ -51,6 +62,24 @@ Every 0.5 s a timer tick triggers the capture of:
 Shown below is a sample output from the script when the application is run,
 
 \cond SOC_AM275X
+
+\code
+Calcratio + DMA Couter playback example started.
+ActualRatio for 32000Hz to 48000Hz = 1.500000
+ActualRatio for 32000Hz to 48000Hz = 1.500492
+ActualRatio for 32000Hz to 48000Hz = 1.500246
+ActualRatio for 32000Hz to 48000Hz = 1.500328
+ActualRatio for 32000Hz to 48000Hz = 1.500246
+ActualRatio for 32000Hz to 48000Hz = 1.500295
+ActualRatio for 32000Hz to 48000Hz = 1.500246
+ActualRatio for 32000Hz to 48000Hz = 1.500281
+ActualRatio for 32000Hz to 48000Hz = 1.500246
+...
+\endcode
+
+\endcond
+
+\cond SOC_AM62DX
 
 \code
 Calcratio + DMA Couter playback example started.

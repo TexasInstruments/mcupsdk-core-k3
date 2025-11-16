@@ -17,6 +17,7 @@ const component_file_list = [
     "source/sdl/sdl_sbl/.project/project.js",
     "source/security/.project/project.js",
     "source/safety_checkers/.project/project.js",
+    "source/signal_processing/.project/project.js",
     "source/networking/enet/.project/project_cpsw.js",
     "source/networking/enet/.project/project_cpsw_lwipif_freertos.js",
     "source/networking/enet/.project/project_cpsw_lwipif_nortos.js",
@@ -214,6 +215,8 @@ const example_file_list = [
     "examples/security/crypto/sa3ul_rng/.project/project.js",
     "examples/security/crypto/sa3ul_sha/.project/project.js",
     "examples/security/tisci_msg/.project/project.js",
+    /* Signnal Processing Examples */
+    "examples/signal_processing/calcratio/.project/project.js",
     "examples/tisp/fft2d_dsp_offload/fft2d_rtos_dsp_offload/.project/project.js",
     "examples/tisp/fft2d_dsp_offload/fft2d_linux_dsp_offload/.project/project.js",
     "examples/tisp/sigchain_dsp_rt/sigchain_biquad_cascade/.project/project.js",

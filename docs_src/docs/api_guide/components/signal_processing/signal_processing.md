@@ -12,3 +12,7 @@ It consists of below sub-modules
 \cond SOC_AM275X
 - \subpage SW_CALCRATIO_PAGE
 \endcond
+
+\cond SOC_AM62DX
+- \subpage SW_CALCRATIO_PAGE
+\endcond

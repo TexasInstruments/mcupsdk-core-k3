@@ -6,3 +6,8 @@ This page lists all the examples related to usage of Signal Processing applicati
 -# CALCRATIO
    -# \subpage EXAMPLES_DRIVERS_CALCRATIO_MEASUREMENT
 \endcond
+
+\cond SOC_AM62DX
+-# CALCRATIO
+   -# \subpage EXAMPLES_DRIVERS_CALCRATIO_MEASUREMENT
+\endcond

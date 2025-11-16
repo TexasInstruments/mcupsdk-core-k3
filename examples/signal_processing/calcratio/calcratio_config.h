@@ -39,8 +39,14 @@
  * \param[in] OUTPUT_FRAME_SYNC_CLOCK – exact output sample-rate(fs) (Hz)
  *
  */
+#if defined (SOC_AM275X)
+#define INPUT_FRAME_SYNC_CLOCK               (32000) /* Internal clock (Hz)*/
+#define OUTPUT_FRAME_SYNC_CLOCK              (48000) /* External clock (Hz)*/
+#endif
 
-#define INPUT_FRAME_SYNC_CLOCK               (32000) /* Internal clock*/
-#define OUTPUT_FRAME_SYNC_CLOCK              (48000) /* External clock*/
+#if defined (SOC_AM62DX)
+#define INPUT_FRAME_SYNC_CLOCK               (31250) /* Internal clock (Hz)*/
+#define OUTPUT_FRAME_SYNC_CLOCK              (48000) /* External clock (Hz)*/
+#endif
 
 /* User editable parameters end  */

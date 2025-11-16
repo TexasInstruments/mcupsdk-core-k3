@@ -11345,6 +11345,38 @@
             "example"
         ],
         "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "This example verifies SWASRC Mulichannel playback CPU is C75SS0-0 running FREERTOS.",
+        "name": "swasrc_multichannel_playback",
+        "location": "../../examples/signal_processing/swasrc_multichannel_playback/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AUDIO-AM62D-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "signal_processing",
+            "swasrc_multichannel_playback",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
             "example.general"
         ],
         "description": "A 2D FFT DSP offload example CPU is C75SS0-0 running FREERTOS.",

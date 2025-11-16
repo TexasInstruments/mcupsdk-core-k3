@@ -21,17 +21,17 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=mcasp_calcratio.$(PROFILE).out
+OUTNAME:=swasrc_multichannel_playback.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=mcasp_calcratio.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=mcasp_calcratio.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=mcasp_calcratio.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=mcasp_calcratio.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=mcasp_calcratio.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=mcasp_calcratio.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=mcasp_calcratio.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=mcasp_calcratio.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=swasrc_multichannel_playback.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=swasrc_multichannel_playback.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=swasrc_multichannel_playback.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=swasrc_multichannel_playback.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=swasrc_multichannel_playback.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=swasrc_multichannel_playback.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=swasrc_multichannel_playback.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=swasrc_multichannel_playback.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -39,7 +39,7 @@ endif
 
 FILES_common := \
 	board.c \
-	calcratio_config.c \
+	swasrc_multichannel_playback.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -61,6 +61,11 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/c75x \
+	-I${MCU_PLUS_SDK_PATH}/source/audiolib/src \
+	-I${MCU_PLUS_SDK_PATH}/source/dsplib/src \
+	-I${MCU_PLUS_SDK_PATH}/source/audiolib/src/AUDIOLIB_asrc \
+	-I${MCU_PLUS_SDK_PATH}/source/audiolib/common \
+	-I${MCU_PLUS_SDK_PATH}/source/signal_processing/calcratio/src \
 	-Igenerated \
 
 DEFINES_common := \
@@ -103,6 +108,8 @@ LIBS_PATH_common = \
 	-i${MCU_PLUS_SDK_PATH}/source/board/lib \
 	-i${MCU_PLUS_SDK_PATH}/source/drivers/udma/lib \
 	-i${MCU_PLUS_SDK_PATH}/source/signal_processing/lib \
+	-i${MCU_PLUS_SDK_PATH}/source/audiolib/lib/Release \
+	-i${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Release \
 	-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
@@ -111,6 +118,10 @@ LIBS_common = \
 	-ludma.am62dx.c75x.ti-c7000.${ConfigName}.lib \
 	-lboard.am62dx.c75x.ti-c7000.${ConfigName}.lib \
 	-lsignal_processing.am62dx.c75x.ti-c7000.${ConfigName}.lib \
+	-lAUDIOLIB_C7504.lib \
+	-lAUDIOLIB_common_C7504.lib \
+	-lDSPLIB_C7504.lib \
+	-lDSPLIB_common_C7504.lib \
 	-llibc.a \
 
 LFLAGS_common = \
@@ -129,6 +140,10 @@ LIBS_NAME = \
 	udma.am62dx.c75x.ti-c7000.${ConfigName}.lib \
 	board.am62dx.c75x.ti-c7000.${ConfigName}.lib \
 	signal_processing.am62dx.c75x.ti-c7000.${ConfigName}.lib \
+	AUDIOLIB_C7504.lib \
+	AUDIOLIB_common_C7504.lib \
+	DSPLIB_C7504.lib \
+	DSPLIB_common_C7504.lib \
 	libc.a \
 
 LIBS_PATH_NAME = \
@@ -137,6 +152,8 @@ LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/udma/lib \
 	${MCU_PLUS_SDK_PATH}/source/signal_processing/lib \
+	${MCU_PLUS_SDK_PATH}/source/audiolib/lib/Release \
+	${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Release \
 	${CG_TOOL_ROOT}/lib \
 
 FILES := $(FILES_common) $(FILES_$(PROFILE))
@@ -199,7 +216,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62dx:c75ss0-0:freertos:ti-c7000 mcasp_calcratio ...
+	@echo  Scrubing: am62dx:c75ss0-0:freertos:ti-c7000 swasrc_multichannel_playback ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

@@ -335,6 +335,7 @@ help:
 	@echo  $(MAKE) -s -C examples/sdl/vtm/vtm_reset/am275x-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/vtm/vtm_uc/am275x-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/signal_processing/calcratio/am275x-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/signal_processing/swasrc_multichannel_playback/am275x-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  .
 	@echo  System Example build targets,
 	@echo  =============================
@@ -631,34 +632,8 @@ BUILD_COMBO_SCRUB_tsn_gptp-freertos = tsn_gptp-freertos_r5f.ti-arm-clang_scrub
 BUILD_COMBO_SCRUB_tsn_uniconf-freertos = tsn_uniconf-freertos_r5f.ti-arm-clang_scrub
 BUILD_COMBO_SCRUB_tsn_unibase-freertos = tsn_unibase-freertos_r5f.ti-arm-clang_scrub
 BUILD_COMBO_SCRUB_sdl = sdl_r5f.ti-arm-clang_scrub
+BUILD_COMBO_SCRUB_signal_processing = signal_processing_c75x.ti-c7000_scrub
 BUILD_COMBO_SCRUB_rm_pm_hal = rm_pm_hal_wkup-r5f.ti-arm-clang_scrub
-BUILD_COMBO_SCRUB_board = board_r5f.ti-arm-clang_scrub board_c75x.ti-c7000_scrub_scrub
-BUILD_COMBO_SCRUB_cmsis = cmsis_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_drivers = drivers_r5f.ti-arm-clang_scrub drivers_wkup-r5f.ti-arm-clang_scrub drivers_c75x.ti-c7000_scrub_scrub
-BUILD_COMBO_SCRUB_udma = udma_c75x.ti-c7000_scrub_scrub
-BUILD_COMBO_SCRUB_sciclient_direct = sciclient_direct_wkup-r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_sciclient_direct_sbl = sciclient_direct_sbl_wkup-r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_sciserver = sciserver_wkup-r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_self_reset = self_reset_wkup-r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_dmautils = dmautils_c75x.ti-c7000_scrub_scrub
-BUILD_COMBO_SCRUB_dhrystone_benchmark = dhrystone_benchmark_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_freertos_fat = freertos_fat_r5f.ti-arm-clang_scrub freertos_fat_c75.ti-c7000_scrub_scrub
-BUILD_COMBO_SCRUB_nortos = nortos_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_freertos = freertos_r5f.ti-arm-clang_scrub freertos_c75x.ti-c7000_scrub_scrub
-BUILD_COMBO_SCRUB_enet-cpsw = enet-cpsw_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_lwipif-cpsw-freertos = lwipif-cpsw-freertos_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_lwipif-cpsw-nortos = lwipif-cpsw-nortos_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_lwip-contrib-freertos = lwip-contrib-freertos_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_lwip-contrib-nortos = lwip-contrib-nortos_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_lwip-freertos = lwip-freertos_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_lwip-nortos = lwip-nortos_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_tsn_combase-freertos = tsn_combase-freertos_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_tsn_gptp-freertos = tsn_gptp-freertos_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_tsn_uniconf-freertos = tsn_uniconf-freertos_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_tsn_unibase-freertos = tsn_unibase-freertos_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_sdl = sdl_r5f.ti-arm-clang_scrub_scrub
-BUILD_COMBO_SCRUB_signal_processing = signal_processing_c75x.ti-c7000_scrub_scrub
-BUILD_COMBO_SCRUB_rm_pm_hal = rm_pm_hal_wkup-r5f.ti-arm-clang_scrub_scrub
 
 # Combine all Components Scrub Targets
 BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_board) $(BUILD_COMBO_SCRUB_cmsis) $(BUILD_COMBO_SCRUB_drivers) $(BUILD_COMBO_SCRUB_udma) $(BUILD_COMBO_SCRUB_sciclient_direct) $(BUILD_COMBO_SCRUB_sciclient_direct_sbl) $(BUILD_COMBO_SCRUB_sciserver) $(BUILD_COMBO_SCRUB_self_reset) $(BUILD_COMBO_SCRUB_dmautils) $(BUILD_COMBO_SCRUB_dhrystone_benchmark) $(BUILD_COMBO_SCRUB_freertos_fat) $(BUILD_COMBO_SCRUB_nortos) $(BUILD_COMBO_SCRUB_freertos) $(BUILD_COMBO_SCRUB_enet-cpsw) $(BUILD_COMBO_SCRUB_lwipif-cpsw-freertos) $(BUILD_COMBO_SCRUB_lwipif-cpsw-nortos) $(BUILD_COMBO_SCRUB_lwip-contrib-freertos) $(BUILD_COMBO_SCRUB_lwip-contrib-nortos) $(BUILD_COMBO_SCRUB_lwip-freertos) $(BUILD_COMBO_SCRUB_lwip-nortos) $(BUILD_COMBO_SCRUB_tsn_combase-freertos) $(BUILD_COMBO_SCRUB_tsn_gptp-freertos) $(BUILD_COMBO_SCRUB_tsn_uniconf-freertos) $(BUILD_COMBO_SCRUB_tsn_unibase-freertos) $(BUILD_COMBO_SCRUB_sdl) $(BUILD_COMBO_SCRUB_signal_processing) $(BUILD_COMBO_SCRUB_rm_pm_hal)
@@ -977,6 +952,7 @@ BUILD_COMBO_EXAMPLE_ALL += rti_app_uc4_am275x-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += vtm_reset_example_am275x-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += vtm_example_am275x-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += mcasp_calcratio_am275x-evm_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += swasrc_multichannel_playback_am275x-evm_c75ss0-0_freertos_ti-c7000
 # Various System Example Targets
 BUILD_COMBO_EXAMPLE_ALL += ipc_notify_echo_am275x-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos
@@ -1718,6 +1694,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  mcasp_calcratio_am275x-evm_c75ss0-0_freertos_ti-c7000:
 	$(MAKE) -C examples/signal_processing/calcratio/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
 
+ swasrc_multichannel_playback_am275x-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C examples/signal_processing/swasrc_multichannel_playback/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
+
  ipc_notify_echo_am275x-evm_system_freertos:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am275x-evm/system_freertos -f makefile all
 
@@ -1963,6 +1942,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += rti_app_uc4_am275x-evm_r5fss0-0_nortos_ti-arm-c
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += vtm_reset_example_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += vtm_example_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_calcratio_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += swasrc_multichannel_playback_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
 # Various System Example Clean Targets
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_notify_echo_am275x-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos_clean
@@ -2704,6 +2684,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  mcasp_calcratio_am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C examples/signal_processing/calcratio/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
 
+ swasrc_multichannel_playback_am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C examples/signal_processing/swasrc_multichannel_playback/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
  ipc_notify_echo_am275x-evm_system_freertos_clean:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am275x-evm/system_freertos -f makefile clean
 
@@ -2949,6 +2932,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += rti_app_uc4_am275x-evm_r5fss0-0_nortos_ti-arm-c
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += vtm_reset_example_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += vtm_example_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_calcratio_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += swasrc_multichannel_playback_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub
 # Various System Example Scrub Targets
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_notify_echo_am275x-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos_scrub
@@ -3689,6 +3673,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  mcasp_calcratio_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub:
 	$(MAKE) -C examples/signal_processing/calcratio/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
+ swasrc_multichannel_playback_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C examples/signal_processing/swasrc_multichannel_playback/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
 
  ipc_notify_echo_am275x-evm_system_freertos_scrub:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am275x-evm/system_freertos -f makefile scrub

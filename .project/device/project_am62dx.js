@@ -217,6 +217,7 @@ const example_file_list = [
     "examples/security/tisci_msg/.project/project.js",
     /* Signnal Processing Examples */
     "examples/signal_processing/calcratio/.project/project.js",
+    "examples/signal_processing/swasrc_multichannel_playback/.project/project.js",
     "examples/tisp/fft2d_dsp_offload/fft2d_rtos_dsp_offload/.project/project.js",
     "examples/tisp/fft2d_dsp_offload/fft2d_linux_dsp_offload/.project/project.js",
     "examples/tisp/sigchain_dsp_rt/sigchain_biquad_cascade/.project/project.js",

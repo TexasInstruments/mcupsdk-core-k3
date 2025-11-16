@@ -199,6 +199,7 @@ const example_file_list = [
     "examples/tisp/sigchain_dsp_rt/sigchain_8ch_to_12ch_audio_chain/.project/project.js",
     /* Signnal Processing Examples */
     "examples/signal_processing/calcratio/.project/project.js",
+    "examples/signal_processing/swasrc_multichannel_playback/.project/project.js",
     /* SDL Tests */
     "test/sdl/dcc/dcc_func_test/.project/project_am275x.js",
     "test/sdl/dcc/dcc_unit_test/.project/project_am275x.js",

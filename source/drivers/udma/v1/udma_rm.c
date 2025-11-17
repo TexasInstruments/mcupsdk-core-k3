@@ -72,7 +72,7 @@
 /*                          Function Definitions                              */
 /* ========================================================================== */
 
-int32_t UdmaRmInitPrms_init(uint32_t instId, Udma_DrvHandleInt   drvHandle)
+int32_t UdmaRmInitPrms_init(uint32_t instId, Udma_DrvHandleInt drvHandle)
 {
     Udma_RmInitPrms                              *rmInitPrms;
     CSL_BcdmaCfg                                 *pBcCfg;
@@ -80,8 +80,14 @@ int32_t UdmaRmInitPrms_init(uint32_t instId, Udma_DrvHandleInt   drvHandle)
     int32_t                                      retVal = UDMA_SOK;
 
     rmInitPrms = &drvHandle->rmInitPrms;
+    
     /* Error check */
-    if(NULL == rmInitPrms)
+    if(Udma_isValidInstance(instId) == FALSE)
+    {
+        retVal = UDMA_EBADARGS;
+    }
+ 
+    if((UDMA_SOK == retVal) && (NULL_PTR == rmInitPrms))
     {
         retVal = UDMA_EBADARGS;
     }

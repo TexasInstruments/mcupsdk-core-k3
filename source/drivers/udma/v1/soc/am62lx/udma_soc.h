@@ -409,6 +409,14 @@ extern "C" {
  */
 uint32_t Udma_isCacheCoherent(void);
 
+/**
+ *  \brief Returns TRUE if the given UDMA Instance ID is valid for this
+ *         SoC
+ *
+ *  \return TRUE/TRUE
+ */
+uint8_t Udma_isValidInstance(uint32_t instId);
+
 /* ========================================================================== */
 /*                       Static Function Definitions                          */
 /* ========================================================================== */

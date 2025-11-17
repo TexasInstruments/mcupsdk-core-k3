@@ -301,3 +301,14 @@ uint32_t Udma_getChAttr(uint32_t peerChNum, Udma_ChAttributes *chAttribute, uint
     }
     return retVal; 
 }
+
+uint8_t Udma_isValidInstance(uint32_t instId)
+{
+    uint8_t result = FALSE;
+    if((UDMA_INST_ID_BCDMA_0 == instId) || (UDMA_INST_ID_PKTDMA_0 == instId))
+    {
+        result = TRUE;
+    }
+
+    return result;
+}

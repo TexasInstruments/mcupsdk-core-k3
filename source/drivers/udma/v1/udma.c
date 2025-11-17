@@ -98,16 +98,18 @@ int32_t Udma_init(Udma_DrvHandle drvHandle, const Udma_InitPrms *initPrms)
         
         if(initPrms->enableUtc != TRUE)
         {
-            UdmaRmInitPrms_init(initPrms->instId, drvHandleInt);
+            retVal = UdmaRmInitPrms_init(initPrms->instId, drvHandleInt);
         }
 
-        SemaphoreP_constructMutex(&drvHandleInt->rmLockObj);
-        drvHandleInt->rmLock = &drvHandleInt->rmLockObj;
+        if(UDMA_SOK == retVal)
+        {
+            SemaphoreP_constructMutex(&drvHandleInt->rmLockObj);
+            drvHandleInt->rmLock = &drvHandleInt->rmLockObj;
 
-        Udma_rmInit(drvHandleInt); 
+            Udma_rmInit(drvHandleInt); 
 
-        drvHandleInt->drvInitDone = UDMA_INIT_DONE;
-
+            drvHandleInt->drvInitDone = UDMA_INIT_DONE;
+        }
     }
 
     return (retVal);

@@ -134,7 +134,12 @@ int32_t UdmaRmInitPrms_init(uint32_t instId, Udma_RmInitPrms *rmInitPrms)
     uint32_t                                     resIdx;
 
     /* Error check */
-    if(NULL_PTR == rmInitPrms)
+    if(Udma_isValidInstance(instId) == FALSE)
+    {
+        retVal = UDMA_EBADARGS;
+    }
+ 
+    if((UDMA_SOK == retVal) && (NULL_PTR == rmInitPrms))
     {
         retVal = UDMA_EBADARGS;
     }

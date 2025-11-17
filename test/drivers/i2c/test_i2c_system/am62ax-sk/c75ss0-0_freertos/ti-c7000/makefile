@@ -122,6 +122,7 @@ LFLAGS_common = \
 	--ram_model \
 	--warn_sections \
 	-x \
+	--mapfile_contents=sym_defs \
 
 
 LIBS_NAME = \

@@ -39,6 +39,7 @@ endif
 
 FILES_common := \
 	test_ospi.c \
+	test_ospi_multithread.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -64,6 +65,7 @@ INCLUDES_common := \
 
 DEFINES_common := \
 	-DSOC_AM62AX \
+	-DSOC_AM62AX \
 	-DENABLE_SCICLIENT_DIRECT \
 
 CFLAGS_common := \
@@ -76,6 +78,8 @@ CFLAGS_common := \
 	-g \
 	-Wno-gnu-variable-sized-type-not-at-end \
 	-Wno-unused-function \
+	-DOSPI_FREERTOS_ONLY_TEST \
+	-DCORE_R5F \
 
 CFLAGS_cpp_common := \
 	-Wno-c99-designator \

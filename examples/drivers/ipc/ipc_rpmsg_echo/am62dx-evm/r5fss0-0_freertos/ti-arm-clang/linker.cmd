@@ -59,6 +59,7 @@ SECTIONS
     .bss.ipc_vring_mem   (NOLOAD) : {} > DDR_IPC_VRING_RTOS
     /* this is used when Debug log's to shared memory is enabled, else this is not used */
     .bss.log_shared_mem  (NOLOAD) : {} > DDR_LOG_SHM_MEM
+    .lpm_data (NOLOAD)      : {} align(4)       > DDR_LPM_DATA
     .text                   : {} palign(8)      > DDR
     .const                  : {} palign(8)      > DDR
     .rodata                 : {} palign(8)      > DDR
@@ -160,9 +161,10 @@ MEMORY
     WKUP_SRAM_TRACE_BUFF (RWIX) : ORIGIN = 0x41880000 LENGTH = 0x0000800
 
     HSM_RAM                     : ORIGIN = 0x43C00000 LENGTH = 0x3FF00
-
-    /* DDR for DM R5F code/data [ size 28 MiB + 32 KB ] */
-    DDR                         : ORIGIN = 0x9CA00000 LENGTH = 0x1C08000
+    /* DDR for DM LPM data [ size 640.00 KB ] */
+    DDR_LPM_DATA    (RWIX)      : ORIGIN = 0x9CA00000 LENGTH = 0x000A0000
+    /* DDR for DM R5F code/data [ size 27 MiB + 416 KB ] */
+    DDR                         : ORIGIN = 0x9CAA0000 LENGTH = 0x1B68000
 
      /*
      3MB from address 0XA0000000 is used by RTOS IPC on Vision apps.

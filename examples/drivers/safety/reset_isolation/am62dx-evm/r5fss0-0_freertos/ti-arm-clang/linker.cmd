@@ -55,6 +55,7 @@ SECTIONS
         .text:abort: palign(8) /* this helps in loading symbols when using XIP mode */
     } load = R5F_TCMB, run = R5F_TCMA
 
+    .lpm_data (NOLOAD)      : {} align(4)       > DDR_LPM_DATA
     .text                   : {} palign(8)      > DDR
     .const                  : {} palign(8)      > DDR
     .rodata                 : {} palign(8)      > DDR
@@ -156,9 +157,10 @@ MEMORY
     WKUP_SRAM_TRACE_BUFF (RWIX) : ORIGIN = 0x41880000 LENGTH = 0x0000800
 
     HSM_RAM                     : ORIGIN = 0x43C00000 LENGTH = 0x3FF00
-
-    /* DDR for DM R5F code/data [ size 28 MiB + 32 KB ] */
-    DDR                         : ORIGIN = 0x9CA00000 LENGTH = 0x1C08000
+    /* DDR for DM LPM data [ size 640.00 KB ] */
+    DDR_LPM_DATA    (RWIX)      : ORIGIN = 0x9CA00000 LENGTH = 0x000A0000
+    /* DDR for DM R5F code/data [ size 27 MiB + 416 KB ] */
+    DDR                         : ORIGIN = 0x9CAA0000 LENGTH = 0x1B68000
 
     /* This section is used by the SBL to temporarily load the appimage for authentication */
     APPIMAGE  : ORIGIN = 0x84000000 , LENGTH = 0x1900000

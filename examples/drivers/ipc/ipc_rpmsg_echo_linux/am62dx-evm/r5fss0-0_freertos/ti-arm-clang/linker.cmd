@@ -64,6 +64,7 @@ SECTIONS
     /* This IPC log can be viewed via ROV in CCS and when linux is enabled, this log can also be viewed via linux debugfs */
     .bss.debug_mem_trace_buf    : {} palign(128)    > DDR_IPC_TRACE_LINUX
 
+    .lpm_data (NOLOAD)      : {} align(4)       > DDR_LPM_DATA
     .text                   : {} palign(8)      > DDR
     .const                  : {} palign(8)      > DDR
     .rodata                 : {} palign(8)      > DDR
@@ -164,9 +165,10 @@ MEMORY
     WKUP_SRAM_TRACE_BUFF (RWIX) : ORIGIN = 0x41880000 LENGTH = 0x0000800
 
     HSM_RAM                     : ORIGIN = 0x43C00000 LENGTH = 0x3FF00
-
-    /* DDR for DM R5F code/data [ size 28 MiB + 32 KB ] */
-    DDR                         : ORIGIN = 0x9CA00000 LENGTH = 0x1C08000
+    /* DDR for DM LPM data [ size 640.00 KB ] */
+    DDR_LPM_DATA    (RWIX)      : ORIGIN = 0x9CA00000 LENGTH = 0x000A0000
+    /* DDR for DM R5F code/data [ size 27 MiB + 416 KB ] */
+    DDR                         : ORIGIN = 0x9CAA0000 LENGTH = 0x1B68000
     DDR_IPC_RESOURCE_TABLE_LINUX: ORIGIN = 0x9C900000 LENGTH = 0x400    /* For resource table   */
     DDR_IPC_TRACE_LINUX         : ORIGIN = 0x9C900400 LENGTH = 0xFFC00  /* IPC trace buffer     */
 

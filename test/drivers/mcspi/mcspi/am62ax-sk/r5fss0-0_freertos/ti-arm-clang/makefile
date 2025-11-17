@@ -65,7 +65,7 @@ INCLUDES_common := \
 
 DEFINES_common := \
 	-DSOC_AM62AX \
-	-DR5F_CORE \
+	-DDM_R5F_CORE \
 	-DENABLE_SCICLIENT_DIRECT \
 
 CFLAGS_common := \

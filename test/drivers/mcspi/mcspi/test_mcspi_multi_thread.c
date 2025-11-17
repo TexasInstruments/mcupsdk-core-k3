@@ -31,23 +31,11 @@
  */
 
 /**
- *  \file test_mcspi_v0.c
+ *  \file test_mcspi_multi_thread.c
  *
- *  \brief File containing MCSPI Driver test cases for version V0.
+ *  \brief File containing MCSPI Driver test cases for multi-threaded
+ *         usecases.
  *
- */
-
-/* This UT demonstrates the McSPI RX and TX operation configured
- * in different configurations and all possible MCSPI instances that can be
- * configured. MCSPI2 instance is muxed with UART, so it is not tested.
- * In case of AM243 LP we, have only 3 instances available.
- *
- * This example sends a known data in the TX mode of length APP_MCSPI_MSGSIZE
- * and then receives the same in RX mode. Internal pad level loopback mode
- * is enabled to receive data.
- *
- * When transfer is completed, TX and RX buffer data are compared.
- * If data is matched, test result is passed otherwise failed.
  */
 
 /* ========================================================================== */
@@ -72,7 +60,7 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-
+/* Base address and interrupt number abstraction for various SoCs */
 #if defined(SOC_AM263X)
 
 #define MCSPI0_BASE_ADDRESS             (CSL_MCSPI0_U_BASE)
@@ -104,17 +92,31 @@
 #endif
 
 #ifdef A53_CORE
-#define MCSPI0_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
+#define MCSPI0_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)
 #define MCSPI1_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
-#define MCSPI2_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)
+#define MCSPI2_BASE_ADDRESS             (CSL_MCU_MCSPI1_CFG_BASE)
 #define MCSPI3_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
-#define MCSPI4_BASE_ADDRESS             (CSL_MCU_MCSPI1_CFG_BASE)
+#define MCSPI4_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
 
-#define MCSPI0_INT_NUM                  (204U)
+#define MCSPI0_INT_NUM                  (208U)
 #define MCSPI1_INT_NUM                  (205U)
-#define MCSPI2_INT_NUM                  (208U)
+#define MCSPI2_INT_NUM                  (209U)
 #define MCSPI3_INT_NUM                  (206U)
 #define MCSPI4_INT_NUM                  (209U)
+#endif
+
+#ifdef DM_R5F_CORE
+#define MCSPI0_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)
+#define MCSPI1_BASE_ADDRESS             (CSL_MCU_MCSPI1_CFG_BASE)
+#define MCSPI2_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
+#define MCSPI3_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
+#define MCSPI4_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
+
+#define MCSPI0_INT_NUM                  (207U)
+#define MCSPI1_INT_NUM                  (208U)
+#define MCSPI2_INT_NUM                  (204U)
+#define MCSPI3_INT_NUM                  (205U)
+#define MCSPI4_INT_NUM                  (206U)
 #endif
 
 #elif defined(SOC_AM62DX)
@@ -248,16 +250,17 @@
 #define MCSPI_TASK_PRIORITY   (8U)
 #define MCSPI_TASK_STACK_SIZE (32U * 1024U)
 
+/* Macro to define the number of threads in multi instance and single instance modes */
+#define TEST_MCSPI_MT_THREADS                    (2U)
 
-/* Number of Word count */
-#define APP_MCSPI_MSGSIZE                   (100U)
-#define APP_MCSPI_TXONLYMSGSIZE             (5U)
-#define APP_MCSPI_TRANSFER_LOOPCOUNT        (5U)
-#define APP_MCSPI_PERF_LOOP_ITER_CNT        (1000U)
+/* Macro to define the number of max threads to test multi instance  */
+#define TEST_MCSPI_MT_MULTI_CHANNEL_THREADS      (4U)
 
-#define TEST_MCSPI_MT_THREADS      (2U)
-#define TEST_MCSPI_MT_BYTES        (32U)
+/* Macro that defines the number of bytes involved in a single transaction */
+#define TEST_MCSPI_MT_BYTES                     (32U)
 
+/* Macro to define the timeout used by the slave function to return failure */
+#define MCSPI_SLAVE_TIMEOUT_MS   (3000U)
 
 /* ========================================================================== */
 /*                               Typedefs                                     */
@@ -277,28 +280,33 @@ typedef struct MCSPI_TestParams_s {
 /*                            Global Variables                                */
 /* ========================================================================== */
 
+/* Semaphore for marking completion of each thread */
 static SemaphoreP_Object gMtSiCountSemCmp;
 
-static TaskP_Object         TestMcspi_MtThreadTaskObj[TEST_MCSPI_MT_THREADS];
-static uint8_t              TestMcspi_MtThreadTaskStack[TEST_MCSPI_MT_THREADS][MCSPI_TASK_STACK_SIZE];
+/* Thread related objects */
+static TaskP_Object         TestMcspi_MtThreadTaskObj[TEST_MCSPI_MT_MULTI_CHANNEL_THREADS];
+static uint8_t              TestMcspi_MtThreadTaskStack[TEST_MCSPI_MT_MULTI_CHANNEL_THREADS][MCSPI_TASK_STACK_SIZE];
 
-static uint32_t TestMcspi_MtThreadResults[TEST_MCSPI_MT_THREADS];
+/* Variable to hold the result of each thread */
+static uint32_t TestMcspi_MtThreadResults[TEST_MCSPI_MT_MULTI_CHANNEL_THREADS];
+
+/* Buffers for TX and RX data. This buffer is specifically to be used by DMA test cases */
+uint8_t  gMcspiTxBuffer[TEST_MCSPI_MT_BYTES] __attribute__((aligned(CacheP_CACHELINE_ALIGNMENT)));
+uint8_t  gMcspiRxBuffer[TEST_MCSPI_MT_BYTES] __attribute__((aligned(CacheP_CACHELINE_ALIGNMENT)));
 
 /* ========================================================================== */
 /*                     Internal Function Declaration                          */
 /* ========================================================================== */
-static void Test_Mcspi_MultithreadCallback(MCSPI_Handle handle, MCSPI_Transaction *trans);
-static void Test_Mcspi_MultithreadSingleInstanceBlockingWorker(void *arg);
-static void Test_Mcspi_MultithreadSingleInstanceBlocking(void *args);
-/* static void Test_Mcspi_MultithreadSingleInstanceCallbackWorker(void *arg); */
-/* static void Test_Mcspi_MultithreadSingleInstanceCallback(void *args); */
-static void Test_Mcspi_MultithreadMultiInstanceBlockingWorker(void *arg);
-static void Test_Mcspi_MultithreadMultiInstanceBlocking(void *args);
-static void Test_Mcspi_MultithreadMultiInstanceCallbackWorker(void *arg);
-static void Test_Mcspi_MultithreadMultiInstanceCallback(void *args);
+static void TestMcspi_multithreadCallback(MCSPI_Handle handle, MCSPI_Transaction *trans);
+static void TestMcspi_multithreadSingleInstanceBlockingWorker(void *arg);
+static void TestMcspi_multithreadSingleInstanceBlocking(void *args);
+static void TestMcspi_multithreadMultiInstanceBlockingWorker(void *arg);
+static void TestMcspi_multithreadMultiInstanceBlocking(void *args);
+static void TestMcspi_multithreadMultiInstanceCallback(void *args);
+static void TestMcspi_multithreadMultiInstanceCallbackWorker(void *arg);
+static void TestMcspi_setParamsIns(MCSPI_TestParams *testParams, uint32_t tcId);
+static void TestMcspi_setParamsIns1(MCSPI_TestParams *testParams, uint32_t tcId);
 
-static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId);
-static void test_mcspi_set_params_ins1(MCSPI_TestParams *testParams, uint32_t tcId);
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -307,25 +315,75 @@ void run_multi_threaded_tests(void *args)
 {
     MCSPI_TestParams  testParams;
 
-    test_mcspi_set_params(&testParams, 8784);
-    /* Test case will hang because of the driver fail to queue the multi thread*/
-    /* RUN_TEST(Test_Mcspi_MultithreadSingleInstanceCallback, 8784, (void*) &testParams); */
-    test_mcspi_set_params(&testParams, 8785);
-    RUN_TEST(Test_Mcspi_MultithreadSingleInstanceBlocking, 8785, (void*) &testParams);
-    test_mcspi_set_params(&testParams, 8421);
-    RUN_TEST(Test_Mcspi_MultithreadMultiInstanceBlocking, 8421, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 8422);
-    RUN_TEST(Test_Mcspi_MultithreadMultiInstanceCallback, 8422, (void*)&testParams);
+    TestMcspi_setParamsIns(&testParams, 8785);
+    RUN_TEST(TestMcspi_multithreadSingleInstanceBlocking, 8785, (void*) &testParams);
+    TestMcspi_setParamsIns(&testParams, 8421);
+    RUN_TEST(TestMcspi_multithreadMultiInstanceBlocking, 8421, (void*)&testParams);
+    TestMcspi_setParamsIns(&testParams, 8422);
+    RUN_TEST(TestMcspi_multithreadMultiInstanceCallback, 8422, (void*)&testParams);
 
     return;
 }
 
+#ifdef SMP_FREERTOS
+void test_main(void *args)
+{
+    MCSPI_TestParams  testParams;
+
+    UNITY_BEGIN();
+
+    TestMcspi_setParamsIns(&testParams, 8785);
+    RUN_TEST(TestMcspi_multithreadSingleInstanceBlocking, 9090, (void*) &testParams);
+    #if defined(SOC_AM62AX)
+    /* NOTE: On AM62DX, getting data mismatch at 2nd position; all other data matches. */
+    /* Only the 2nd position is overwritten, causing mismatch and hanging other test cases. */
+    TestMcspi_setParamsIns(&testParams, 8421);
+    RUN_TEST(TestMcspi_multithreadMultiInstanceBlocking, 9091, (void*)&testParams);
+    TestMcspi_setParamsIns(&testParams, 8422);
+    RUN_TEST(TestMcspi_multithreadMultiInstanceCallback, 9092, (void*)&testParams);
+    #endif
+    UNITY_END();
+
+}
+
+/**
+ * @brief Unity test setup hook.
+ *
+ * Called before each Unity test. Left empty because tests perform their own
+ * per-test setup and teardown.
+ */
+void setUp(void)
+{
+}
+
+/**
+ * @brief Unity test teardown hook.
+ *
+ * Called after each Unity test. Left empty because tests perform their own
+ * per-test cleanup.
+ */
+void tearDown(void)
+{
+}
+
+#endif
 
 /* ========================================================================== */
 /*                     Internal Function Definitions                          */
 /* ========================================================================== */
 
-static void Test_Mcspi_MultithreadCallback(MCSPI_Handle handle, MCSPI_Transaction *trans)
+/**
+ * @brief MCSPI transfer completion callback.
+ *
+ * This function is used as the driver callback for asynchronous MCSPI transfers.
+ * If the transaction provided an argument pointer that points to a DPL semaphore,
+ * the semaphore is posted to signal transfer completion to the waiting task.
+ *
+ * @param handle MCSPI driver handle (unused)
+ * @param trans  Pointer to the completed transaction; trans->args may be a
+ *               SemaphoreP_Object* that will be posted.
+ */
+static void TestMcspi_multithreadCallback(MCSPI_Handle handle, MCSPI_Transaction *trans)
 {
     if(trans && trans->args)
     {
@@ -334,15 +392,16 @@ static void Test_Mcspi_MultithreadCallback(MCSPI_Handle handle, MCSPI_Transactio
 }
 
 /**
- * @brief Worker function for MCSPI multi-threaded blocking test case.
+ * @brief Worker: single-instance blocking-mode multithread test.
  *
- * This function executes the blocking operations for the MCSPI driver
- * in a multi-threaded test scenario. It is used to validate correct
- * behavior of the driver under concurrent access conditions.
+ * Each worker prepares a unique transmit pattern, issues a blocking transfer to
+ * the shared MCSPI instance and validates that the received data matches the
+ * transmitted pattern. The result is stored in a shared results array and a
+ * counting semaphore is posted to indicate completion.
  *
- * @param arg Pointer to arguments required by the worker function.
+ * @param arg  Worker index (cast from uintptr_t) used to derive the pattern.
  */
-static void Test_Mcspi_MultithreadSingleInstanceBlockingWorker(void *arg)
+static void TestMcspi_multithreadSingleInstanceBlockingWorker(void *arg)
 {
     uint32_t i;
     uint32_t idx = (uint32_t)(uintptr_t)arg;
@@ -359,13 +418,18 @@ static void Test_Mcspi_MultithreadSingleInstanceBlockingWorker(void *arg)
     }
 
     MCSPI_Transaction_init(&spiTransaction);
-    spiTransaction.channel   = gMcspiConfig[CONFIG_MCSPI0].object->chObj[0].chCfg.chNum;
+    spiTransaction.channel   = 0;
     spiTransaction.dataSize  = 8;
     spiTransaction.count     = TEST_MCSPI_MT_BYTES;
     spiTransaction.csDisable = TRUE;
     spiTransaction.txBuf     = tempTxPtr8;
     spiTransaction.rxBuf     = tempRxPtr8;
     spiTransaction.args      = NULL;
+
+    if (idx == CONFIG_MCSPI0)
+    {
+        spiTransaction.channel = 1;
+    }
 
     status = MCSPI_transfer(gMcspiHandle[CONFIG_MCSPI0], &spiTransaction);
 
@@ -396,14 +460,15 @@ static void Test_Mcspi_MultithreadSingleInstanceBlockingWorker(void *arg)
 }
 
 /**
- * @brief Test case for blocking multi-threaded MCSPI operation using DPL.
+ * @brief Test harness: single-instance, blocking-mode multithread case.
  *
- * This test validates the correct behavior of the MCSPI driver in a blocking mode
- * when accessed from multiple threads. It ensures thread safety and data integrity
- * during concurrent SPI transactions. The test leverages DPL primitives for synchronization.
+ * Sets up the shared MCSPI instance according to provided parameters, spawns
+ * multiple worker tasks that simultaneously call the blocking transfer API, and
+ * waits for them to finish. Verifies expected pass/fail behavior across workers.
+ *
+ * @param args  Pointer to MCSPI_TestParams containing open/chconfig settings.
  */
-
-static void Test_Mcspi_MultithreadSingleInstanceBlocking(void *args)
+static void TestMcspi_multithreadSingleInstanceBlocking(void *args)
 {
     uint32_t i;
     int32_t status;
@@ -423,7 +488,7 @@ static void Test_Mcspi_MultithreadSingleInstanceBlocking(void *args)
     status = MCSPI_chConfig(
                  gMcspiHandle[CONFIG_MCSPI0],
                  mcspiChConfigParams);
-    DebugP_assert(status == SystemP_SUCCESS);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
     SemaphoreP_constructCounting(&gMtSiCountSemCmp, 0, TEST_MCSPI_MT_THREADS));
@@ -437,9 +502,10 @@ static void Test_Mcspi_MultithreadSingleInstanceBlocking(void *args)
         taskParams.stack     = TestMcspi_MtThreadTaskStack[i];
         taskParams.priority  = MCSPI_TASK_PRIORITY+i;
         taskParams.args      = (void*)(uintptr_t)i;
-        taskParams.taskMain  = Test_Mcspi_MultithreadSingleInstanceBlockingWorker;
+        taskParams.taskMain  = TestMcspi_multithreadSingleInstanceBlockingWorker;
+        taskParams.coreAffinity = 1 << i;
         status = TaskP_construct(&TestMcspi_MtThreadTaskObj[i], &taskParams);
-        DebugP_assert(status == SystemP_SUCCESS);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     }
 
     /* Wait for exactly one callback post per transfer */
@@ -461,146 +527,17 @@ static void Test_Mcspi_MultithreadSingleInstanceBlocking(void *args)
 
     MCSPI_close(gMcspiHandle[CONFIG_MCSPI0]);
 }
-#if 0
-/**
- * @brief Worker function for single instance MCSPI test case.
- *
- * This function executes the test logic for a single instance of the MCSPI peripheral.
- * It is designed to be run as a thread or task, receiving its configuration via the 'arg' parameter.
- * The test validates correct operation and data transfer for the selected MCSPI instance.
- * Results and status are reported for further analysis in the test framework.
- */
-static void Test_Mcspi_MultithreadSingleInstanceCallbackWorker(void *arg)
-{
-    uint32_t i;
-    uint32_t idx = (uint32_t)(uintptr_t)arg;
-    SemaphoreP_Object transferDoneMutex;
-    int32_t             status = SystemP_SUCCESS;
-    uint8_t           tempTxPtr8[TEST_MCSPI_MT_BYTES];
-    uint8_t           tempRxPtr8[TEST_MCSPI_MT_BYTES];
-    MCSPI_Transaction spiTransaction;
-
-    status = SemaphoreP_constructBinary(&transferDoneMutex, 0);
-    DebugP_assert(SystemP_SUCCESS == status);
-
-    /* Prepare pattern */
-    for(i=0;i<TEST_MCSPI_MT_BYTES;i++)
-    {
-        tempTxPtr8[i] = (uint8_t)(idx ^ i);
-        tempRxPtr8[i] = 0;
-    }
-
-    /* Init transaction */
-    MCSPI_Transaction_init(&spiTransaction);
-    spiTransaction.channel   = gMcspiConfig[CONFIG_MCSPI0].object->chObj[0].chCfg.chNum;
-    spiTransaction.dataSize  = 8;
-    spiTransaction.count     = TEST_MCSPI_MT_BYTES;
-    spiTransaction.csDisable = TRUE;
-    spiTransaction.txBuf     = &tempTxPtr8;
-    spiTransaction.rxBuf     = &tempRxPtr8;
-    spiTransaction.args      = &transferDoneMutex;
-
-    status = MCSPI_transfer(gMcspiHandle[CONFIG_MCSPI0], &spiTransaction);
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
-
-    /* Wait for transfer completion */
-    SemaphoreP_pend(&transferDoneMutex, SystemP_WAIT_FOREVER);
-
-    /* Simple data check */
-    uint8_t *tempTxPtr, *tempRxPtr;
-    tempTxPtr = (uint8_t *) tempTxPtr8;
-    tempRxPtr = (uint8_t *) tempRxPtr8;
-    for(i = 0U; i < TEST_MCSPI_MT_BYTES; i++)
-    {
-        if(*tempTxPtr++ != *tempRxPtr++)
-        {
-            status = SystemP_FAILURE;   /* Data mismatch */
-            DebugP_log("Data Mismatch at offset %d (instance %u)\r\n", i, idx);
-            break;
-        }
-    }
-
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
-
-    SemaphoreP_post(&gMtSiCountSemCmp);
-
-    SemaphoreP_destruct(&transferDoneMutex);
-
-    TaskP_exit();
-}
 
 /**
- * @brief Test case for multithreaded access to a single MCSPI instance.
+ * @brief Worker: multi-instance blocking-mode test.
  *
- * This test verifies the behavior of the MCSPI driver when accessed by multiple threads
- * sharing the same instance. It checks for data integrity, thread safety, and proper
- * synchronization mechanisms within the driver under concurrent operations.
- */
-static void Test_Mcspi_MultithreadSingleInstanceCallback(void *args)
-{
-    uint32_t i;
-    int32_t status;
-    TaskP_Params  taskParams;
-    MCSPI_TestParams   *testParams = (MCSPI_TestParams *)args;
-    MCSPI_OpenParams   *mcspiOpenParams = &(testParams->mcspiOpenParams);
-    MCSPI_ChConfig     *mcspiChConfigParams = &(testParams->mcspiChConfigParams);
-
-    /* Close previous */
-    if(gMcspiHandle[CONFIG_MCSPI0]) { MCSPI_close(gMcspiHandle[CONFIG_MCSPI0]); gMcspiHandle[CONFIG_MCSPI0]=NULL; }
-
-    gMcspiHandle[CONFIG_MCSPI0] = MCSPI_open(CONFIG_MCSPI0, mcspiOpenParams);
-    TEST_ASSERT_NOT_NULL(gMcspiHandle[CONFIG_MCSPI0]);
-
-    status = MCSPI_chConfig(
-                 gMcspiHandle[CONFIG_MCSPI0],
-                 mcspiChConfigParams);
-    DebugP_assert(status == SystemP_SUCCESS);
-
-    /* Counting semaphore */
-    status = SemaphoreP_constructCounting(&gMtSiCountSemCmp, 0, TEST_MCSPI_MT_THREADS);
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
-
-    /* Construct semaphores and spawn tasks */
-    for(i=0;i<TEST_MCSPI_MT_THREADS;i++)
-    {
-        TaskP_Params_init(&taskParams);
-        taskParams.name      = "MCSPI_MT_SI";
-        taskParams.stackSize = MCSPI_TASK_STACK_SIZE;
-        taskParams.stack     = TestMcspi_MtThreadTaskStack[i];
-        taskParams.priority  = MCSPI_TASK_PRIORITY;
-        taskParams.args      = (void*)(uintptr_t)i;
-        taskParams.taskMain  = Test_Mcspi_MultithreadSingleInstanceCallbackWorker;
-        status = TaskP_construct(&TestMcspi_MtThreadTaskObj[i], &taskParams);
-        DebugP_assert(status == SystemP_SUCCESS);
-    }
-
-    /* Wait for all threads to complete */
-    for (i = 0; i < TEST_MCSPI_MT_THREADS; i++)
-    {
-        status = SemaphoreP_pend(&gMtSiCountSemCmp, SystemP_WAIT_FOREVER);
-        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
-    }
-
-    /* Cleanup */
-    SemaphoreP_destruct(&gMtSiCountSemCmp);
-
-    for(i=0;i<TEST_MCSPI_MT_THREADS;i++)
-    {
-        TaskP_destruct(&TestMcspi_MtThreadTaskObj[i]);
-    }
-
-    MCSPI_close(gMcspiHandle[CONFIG_MCSPI0]);
-
-}
-#endif
-/**
- * @brief Worker function for simple shared MCSPI test case.
+ * Each worker selects its MCSPI handle based on the passed index, prepares
+ * a transmit pattern, issues a blocking transfer and verifies the received
+ * data. Posts a counting semaphore to signal completion.
  *
- * This function executes the shared mode SPI operations for the test.
- * It is used to validate basic data transfer and synchronization in shared mode.
+ * @param arg  Worker index (cast from uintptr_t).
  */
-
-static void Test_Mcspi_MultithreadMultiInstanceBlockingWorker(void *arg)
+static void TestMcspi_multithreadMultiInstanceBlockingWorker(void *arg)
 {
     uint32_t i;
     uint32_t idx = (uint32_t)(uintptr_t)arg;
@@ -610,18 +547,7 @@ static void Test_Mcspi_MultithreadMultiInstanceBlockingWorker(void *arg)
     MCSPI_Handle      mcspiHandle;
     int32_t status = SystemP_SUCCESS;
 
-    switch (idx)
-    {
-        case 0:
-            mcspiHandle = gMcspiHandle[CONFIG_MCSPI0];
-            break;
-        case 1:
-            mcspiHandle = gMcspiHandle[CONFIG_MCSPI1];
-            break;
-        default:
-            mcspiHandle = gMcspiHandle[CONFIG_MCSPI0];
-            break;
-    }
+    mcspiHandle = gMcspiHandle[idx];
 
     /* Fill pattern */
     for(i=0;i<TEST_MCSPI_MT_BYTES;i++)
@@ -639,7 +565,17 @@ static void Test_Mcspi_MultithreadMultiInstanceBlockingWorker(void *arg)
     spiTransaction.rxBuf     = tempRxPtr8;
     spiTransaction.args      = NULL;
 
-    DebugP_assert(MCSPI_transfer(mcspiHandle, &spiTransaction) == SystemP_SUCCESS);
+    if (idx == CONFIG_MCSPI0)
+    {
+        /* This function is used for both Instance 0 and Instance 1.
+        * For Instance 0, chip-select is configured as CS1 in SysConfig due to external pinout,
+        * so channel = 1; for other instances, channel defaults to 0.
+        */
+        spiTransaction.channel = 1;
+    }
+
+    status = MCSPI_transfer(mcspiHandle, &spiTransaction);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
     /* Verify */
     uint8_t *tempTxPtr, *tempRxPtr;
@@ -662,14 +598,16 @@ static void Test_Mcspi_MultithreadMultiInstanceBlockingWorker(void *arg)
 }
 
 /**
- * @brief Test case for multi-threaded shared MCSPI loopback functionality.
+ * @brief Test harness: multi-instance blocking-mode case.
  *
- * This test verifies the correct operation of the MCSPI driver in a shared mode
- * when accessed from multiple threads. It ensures thread safety and data integrity
- * during concurrent SPI transactions in loopback configuration. The test leverages
- * DPL primitives for synchronization.
+ * Opens multiple MCSPI instances (per configuration), spawns worker tasks that
+ * each use a different instance, and waits for all to complete using a counting
+ * semaphore. Ensures correct operation when multiple instances are used in
+ * parallel.
+ *
+ * @param args Pointer to MCSPI_TestParams with instance-specific settings.
  */
-static void Test_Mcspi_MultithreadMultiInstanceBlocking(void *args)
+static void TestMcspi_multithreadMultiInstanceBlocking(void *args)
 {
     uint32_t i;
     int32_t status;
@@ -683,8 +621,8 @@ static void Test_Mcspi_MultithreadMultiInstanceBlocking(void *args)
     {
         switch (i)
         {
-            case 1:
-                test_mcspi_set_params_ins1(testParams, testParams->testcaseId);
+            case CONFIG_MCSPI1:
+                TestMcspi_setParamsIns1(testParams, testParams->testcaseId);
                 break;
             default:
                 break;
@@ -703,7 +641,7 @@ static void Test_Mcspi_MultithreadMultiInstanceBlocking(void *args)
         TEST_ASSERT_NOT_NULL(gMcspiHandle[i]);
 
         status = MCSPI_chConfig(gMcspiHandle[i], mcspiChConfigParams);
-        DebugP_assert(status == SystemP_SUCCESS);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
         TaskP_Params_init(&taskParams);
         taskParams.name      = "MCSPI_MT_MI_BLOCKING_REUSE";
@@ -711,9 +649,10 @@ static void Test_Mcspi_MultithreadMultiInstanceBlocking(void *args)
         taskParams.stack     = TestMcspi_MtThreadTaskStack[i];
         taskParams.priority  = MCSPI_TASK_PRIORITY;
         taskParams.args      = (void*)(uintptr_t)i;
-        taskParams.taskMain  = Test_Mcspi_MultithreadMultiInstanceBlockingWorker;
+        taskParams.taskMain  = TestMcspi_multithreadMultiInstanceBlockingWorker;
+        taskParams.coreAffinity = 1 << i;
         status = TaskP_construct(&TestMcspi_MtThreadTaskObj[i], &taskParams);
-        DebugP_assert(status == SystemP_SUCCESS);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     }
 
     /* Wait for exactly one callback post per transfer */
@@ -723,8 +662,10 @@ static void Test_Mcspi_MultithreadMultiInstanceBlocking(void *args)
             SemaphoreP_pend(&gMtSiCountSemCmp, SystemP_WAIT_FOREVER));
     }
 
-    SemaphoreP_destruct(&gMtSiCountSemCmp);
     /* Cleanup */
+
+    SemaphoreP_destruct(&gMtSiCountSemCmp);
+
     for(i=0;i<TEST_MCSPI_MT_THREADS;i++)
     {
         TaskP_destruct(&TestMcspi_MtThreadTaskObj[i]);
@@ -735,13 +676,15 @@ static void Test_Mcspi_MultithreadMultiInstanceBlocking(void *args)
 }
 
 /**
- * @brief Test case for multi-instance reuse of MCSPI worker.
+ * @brief Worker: multi-instance callback-mode test.
  *
- * This function validates the ability to reuse multiple MCSPI instances
- * within a worker thread context. It ensures correct initialization,
- * operation, and cleanup of reused instances.
+ * Selects the MCSPI handle for this worker, constructs per-worker buffers and
+ * a semaphore, issues an asynchronous transfer and waits for its completion
+ * via the semaphore. Verifies data integrity and signals completion.
+ *
+ * @param arg Worker index (cast from uintptr_t).
  */
-static void Test_Mcspi_MultithreadMultiInstanceCallbackWorker(void *arg)
+static void TestMcspi_multithreadMultiInstanceCallbackWorker(void *arg)
 {
     uint32_t i;
     uint32_t idx = (uint32_t)(uintptr_t)arg;
@@ -752,21 +695,10 @@ static void Test_Mcspi_MultithreadMultiInstanceCallbackWorker(void *arg)
     SemaphoreP_Object transferDoneMutex;
     int32_t status;
 
-    switch (idx)
-    {
-        case 0:
-            mcspiHandle = gMcspiHandle[CONFIG_MCSPI0];
-            break;
-        case 1:
-            mcspiHandle = gMcspiHandle[CONFIG_MCSPI1];
-            break;
-        default:
-            mcspiHandle = gMcspiHandle[CONFIG_MCSPI0];
-            break;
-    }
+    mcspiHandle = gMcspiHandle[idx];
 
     status = SemaphoreP_constructBinary(&transferDoneMutex, 0);
-    DebugP_assert(SystemP_SUCCESS == status);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
     /* Fill pattern */
     for(i=0;i<TEST_MCSPI_MT_BYTES;i++)
@@ -784,7 +716,13 @@ static void Test_Mcspi_MultithreadMultiInstanceCallbackWorker(void *arg)
     spiTransaction.rxBuf     = tempRxPtr8;
     spiTransaction.args      = &transferDoneMutex;
 
-    DebugP_assert(MCSPI_transfer(mcspiHandle, &spiTransaction) == SystemP_SUCCESS);
+    if (idx == CONFIG_MCSPI0)
+    {
+        spiTransaction.channel = 1;
+    }
+
+    status = MCSPI_transfer(mcspiHandle, &spiTransaction);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
     /* Wait for transfer completion */
     SemaphoreP_pend(&transferDoneMutex, SystemP_WAIT_FOREVER);
@@ -813,13 +751,15 @@ static void Test_Mcspi_MultithreadMultiInstanceCallbackWorker(void *arg)
 }
 
 /**
- * @brief Test case for multi-threaded, multi-instance MCSPI callback functionality.
+ * @brief Test harness: multi-instance, callback-mode case.
  *
- * This test verifies the correct operation of the MCSPI driver when accessed from multiple threads,
- * each using a separate instance. It ensures that callbacks are triggered as expected for each instance.
- * The test helps validate thread safety and proper event handling in concurrent scenarios.
+ * Configures multiple MCSPI instances in callback mode, spawns a worker per
+ * instance which performs an asynchronous transfer, and waits for all callbacks
+ * to occur using a counting semaphore.
+ *
+ * @param args Pointer to MCSPI_TestParams with instance-specific settings.
  */
-static void Test_Mcspi_MultithreadMultiInstanceCallback(void *args)
+static void TestMcspi_multithreadMultiInstanceCallback(void *args)
 {
     uint32_t i;
     int32_t status;
@@ -833,8 +773,8 @@ static void Test_Mcspi_MultithreadMultiInstanceCallback(void *args)
     {
         switch (i)
         {
-            case 1:
-                test_mcspi_set_params_ins1(testParams, testParams->testcaseId);
+            case CONFIG_MCSPI1:
+                TestMcspi_setParamsIns1(testParams, testParams->testcaseId);
                 break;
             default:
                 break;
@@ -844,7 +784,7 @@ static void Test_Mcspi_MultithreadMultiInstanceCallback(void *args)
         MCSPI_ChConfig     *mcspiChConfigParams = &(testParams->mcspiChConfigParams);
 
         mcspiOpenParams->transferMode           = MCSPI_TRANSFER_MODE_CALLBACK;
-        mcspiOpenParams->transferCallbackFxn    = Test_Mcspi_MultithreadCallback;
+        mcspiOpenParams->transferCallbackFxn    = TestMcspi_multithreadCallback;
 
         if(gMcspiHandle[i])
         {
@@ -856,7 +796,7 @@ static void Test_Mcspi_MultithreadMultiInstanceCallback(void *args)
         TEST_ASSERT_NOT_NULL(gMcspiHandle[i]);
 
         status = MCSPI_chConfig(gMcspiHandle[i], mcspiChConfigParams);
-        DebugP_assert(status == SystemP_SUCCESS);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
         TaskP_Params_init(&taskParams);
         taskParams.name      = "MCSPI_MT_MI_CB_REUSE";
@@ -864,9 +804,10 @@ static void Test_Mcspi_MultithreadMultiInstanceCallback(void *args)
         taskParams.stack     = TestMcspi_MtThreadTaskStack[i];
         taskParams.priority  = MCSPI_TASK_PRIORITY;
         taskParams.args      = (void*)(uintptr_t)i;
-        taskParams.taskMain  = Test_Mcspi_MultithreadMultiInstanceCallbackWorker;
+        taskParams.taskMain  = TestMcspi_multithreadMultiInstanceCallbackWorker;
+        taskParams.coreAffinity = 1 << i;
         status = TaskP_construct(&TestMcspi_MtThreadTaskObj[i], &taskParams);
-        DebugP_assert(status == SystemP_SUCCESS);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     }
 
     /* Wait for exactly one callback post per transfer */
@@ -876,8 +817,9 @@ static void Test_Mcspi_MultithreadMultiInstanceCallback(void *args)
             SemaphoreP_pend(&gMtSiCountSemCmp, SystemP_WAIT_FOREVER));
     }
 
-    SemaphoreP_destruct(&gMtSiCountSemCmp);
     /* Cleanup */
+    SemaphoreP_destruct(&gMtSiCountSemCmp);
+
     for(i=0;i<TEST_MCSPI_MT_THREADS;i++)
     {
         TaskP_destruct(&TestMcspi_MtThreadTaskObj[i]);
@@ -889,15 +831,17 @@ static void Test_Mcspi_MultithreadMultiInstanceCallback(void *args)
 }
 
 /**
- * @brief Sets the parameters for the MCSPI test instance 0.
+ * @brief Populate default MCSPI parameters for the primary instance.
  *
- * This function configures the test parameters for the specified test case ID.
- * It is used to set the parameters for instance 0 of the MCSPI test.
+ * Fills in attr/open/channel configuration fields with sane defaults and then
+ * applies test-case-specific adjustments based on tcId (e.g. callback mode,
+ * DMA enable, data size changes, input select). This is used to prepare the
+ * MCSPI_TestParams passed to test harnesses.
  *
- * @param testParams Pointer to the MCSPI_TestParams structure to be configured.
- * @param tcId Test case ID for which the parameters are to be set.
+ * @param testParams Pointer to structure to fill
+ * @param tcId       Test case identifier that selects specialized options
  */
-static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
+static void TestMcspi_setParamsIns(MCSPI_TestParams *testParams, uint32_t tcId)
 {
     MCSPI_Config     *config = &gMcspiConfig[CONFIG_MCSPI0];
     MCSPI_Attrs      *attrParams = (MCSPI_Attrs *)config->attrs;
@@ -922,7 +866,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
     openParams->mcspiDmaIndex          = -1;
 
     /* Default Channel Config Parameters */
-    chConfigParams->chNum              = MCSPI_CHANNEL_0;
+    chConfigParams->chNum              = MCSPI_CHANNEL_1;
     chConfigParams->frameFormat        = MCSPI_FF_POL0_PHA0;
     chConfigParams->bitRate            = 50000000;
     chConfigParams->csPolarity         = MCSPI_CS_POL_LOW;
@@ -941,11 +885,6 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
     testParams->testcaseId             = tcId;
     switch (tcId)
     {
-       case 8784:
-            openParams->transferMode           = MCSPI_TRANSFER_MODE_CALLBACK;
-            openParams->transferCallbackFxn    = Test_Mcspi_MultithreadCallback;
-            testParams->dataSize               = 8;
-            break;
 
        case 8785:
             testParams->dataSize               = 8;
@@ -957,7 +896,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
 
         case 8422:
             openParams->transferMode           = MCSPI_TRANSFER_MODE_CALLBACK;
-            openParams->transferCallbackFxn    = Test_Mcspi_MultithreadCallback;
+            openParams->transferCallbackFxn    = TestMcspi_multithreadCallback;
             testParams->dataSize               = 8;
             break;
     }
@@ -966,17 +905,12 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
 }
 
 /**
- * @brief Configures MCSPI instance 1 parameters for testing.
+ * @brief Populate MCSPI parameters for instance CONFIG_MCSPI1.
  *
- * This function sets up the test parameters for MCSPI instance 1.
- * It customizes the configuration based on the provided test case ID.
- * The parameters are updated in the supplied MCSPI_TestParams structure.
- * Use this function to prepare instance 1 for multi-threaded test scenarios.
- *
- * @param testParams Pointer to the MCSPI_TestParams structure to be configured.
- * @param tcId       Test case ID used to select specific configuration.
+ * Similar to TestMcspi_setParamsIns but tailored to instance 1's base address
+ * and defaults. Adjusts behavior for specific test ids as needed.
  */
-static void test_mcspi_set_params_ins1(MCSPI_TestParams *testParams, uint32_t tcId)
+static void TestMcspi_setParamsIns1(MCSPI_TestParams *testParams, uint32_t tcId)
 {
     MCSPI_Config     *config = &gMcspiConfig[CONFIG_MCSPI1];
     MCSPI_Attrs      *attrParams = (MCSPI_Attrs *)config->attrs;
@@ -1025,10 +959,10 @@ static void test_mcspi_set_params_ins1(MCSPI_TestParams *testParams, uint32_t tc
 
         case 8422:
             openParams->transferMode           = MCSPI_TRANSFER_MODE_CALLBACK;
-            openParams->transferCallbackFxn    = Test_Mcspi_MultithreadCallback;
+            openParams->transferCallbackFxn    = TestMcspi_multithreadCallback;
             testParams->dataSize               = 8;
             break;
     }
-
     return;
 }
+

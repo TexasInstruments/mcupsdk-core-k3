@@ -5,8 +5,7 @@ let device = "am62px";
 const files = {
     common: [
         "mmcsd_test_common.c",
-        "mmcsd_test_raw.c",
-        "test_mmcsd_raw_io.c",
+        "test_mmcsd_fault_injection.c",
         "main.c",
     ],
 };
@@ -55,7 +54,7 @@ const libdirs_freertos_wkup_r5 = {
 	    "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "../../../configs/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
         "${MCU_PLUS_SDK_PATH}/test/unity/lib",
     ],
@@ -69,7 +68,7 @@ const libdirs_nortos_wkup_r5 = {
 	    "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "../../../configs/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
         "${MCU_PLUS_SDK_PATH}/test/unity/lib",
     ],
@@ -83,7 +82,7 @@ const libs_freertos_wkup_r5f = {
 	    "dm_stub.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
         "self_reset.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
         "freertos.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
-        "drivers.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers-mmcsd-inject-fault.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
         "board.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
         "unity.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
@@ -97,7 +96,7 @@ const libs_nortos_wkup_r5f = {
 	    "dm_stub.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
         "self_reset.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
         "nortos.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
-        "drivers.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers-mmcsd-inject-fault.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
         "board.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
         "unity.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
@@ -199,7 +198,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "test_mmcsd_raw_io";
+    property.name = "test_mmcsd_fault_inject";
     property.isInternal = true;
     property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;
@@ -218,7 +217,7 @@ function getComponentBuildProperty(buildOption) {
     if(buildOption.cpu.match(/wkup-r5f*/)) {
 	    if(buildOption.os.match(/freertos*/))
 	    {
-        	build_property.includes = includes_freertos_r5f;
+            build_property.includes = includes_freertos_r5f;
         	build_property.libdirs = libdirs_freertos_wkup_r5;
         	build_property.libs = libs_freertos_wkup_r5f;
         	build_property.templates = templates_freertos_wkup_r5f;

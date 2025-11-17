@@ -4,7 +4,7 @@ let device = "am275x";
 
 const files = {
     common: [
-	"mmcsd_test_common.c",
+	    "mmcsd_test_common.c",
         "mmcsd_test_raw.c",
         "test_mmcsd_raw_io.c",
         "main.c",
@@ -25,7 +25,7 @@ const filedirs = {
         "..",       /* core_os_combo base */
         "../..",    /* Board base */
         "../../..", /* Example base */
-	"../../../../test_mmcsd_common/", /* Common files */
+	    "../../../../test_mmcsd_common/", /* Common files */
     ],
 };
 
@@ -34,14 +34,14 @@ const includes_freertos_r5f = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am275x/r5f",
-	"../../../../test_mmcsd_common/", /* Common files */
+	    "../../../../test_mmcsd_common/", /* Common files */
         "${MCU_PLUS_SDK_PATH}/test/unity",
     ],
 };
 
 const includes_nortos_r5f = {
     common: [
-	"../../../../test_mmcsd_common/", /* Common files */
+	    "../../../../test_mmcsd_common/", /* Common files */
         "${MCU_PLUS_SDK_PATH}/test/unity/",
     ],
 };
@@ -139,8 +139,8 @@ const includes_freertos_c75 = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am275x/c75x",
-	"../../../../test_mmcsd_common/", /* Common files */
-	"${MCU_PLUS_SDK_PATH}/test/unity",
+	    "../../../../test_mmcsd_common/", /* Common files */
+	    "${MCU_PLUS_SDK_PATH}/test/unity",
     ],
 };
 
@@ -148,8 +148,8 @@ const libs_freertos_c75 = {
     common: [
         "freertos.am275x.c75x.ti-c7000.${ConfigName}.lib",
         "drivers.am275x.c75x.ti-c7000.${ConfigName}.lib",
-	"board.am275x.c75x.ti-c7000.${ConfigName}.lib",
-	"unity.am275x.c75x.ti-c7000.${ConfigName}.lib",
+	    "board.am275x.c75x.ti-c7000.${ConfigName}.lib",
+	    "unity.am275x.c75x.ti-c7000.${ConfigName}.lib",
     ],
 };
 
@@ -315,23 +315,23 @@ function getComponentBuildProperty(buildOption) {
     build_property.syscfgfile = syscfgfile;
 
     if(buildOption.cpu.match(/wkup-r5f*/)) {
-	if(buildOption.os.match(/freertos*/) ){
+	    if(buildOption.os.match(/freertos*/) ){
         	build_property.includes = includes_freertos_r5f;
         	build_property.libdirs = libdirs_freertos_r5;
        	 	build_property.libs = libs_freertos_wkup_r5f;
         	build_property.templates = templates_freertos_wkup;
-		build_property.cflags = cflags_wkup_r5_freertos;
+		    build_property.cflags = cflags_wkup_r5_freertos;
         	build_property.defines = defines_wkup_r5f;
-	}
-	else
-	{
+	    }
+	    else
+	    {
         	build_property.includes = includes_nortos_r5f;
         	build_property.libdirs = libdirs_nortos_r5;
        	 	build_property.libs = libs_nortos_wkup_r5f;
         	build_property.templates = templates_nortos_wkup;
-		build_property.cflags = cflags_wkup_r5_nortos;
+		    build_property.cflags = cflags_wkup_r5_nortos;
         	build_property.defines = defines_wkup_r5f;
-	}
+	    }
     }
     else if(buildOption.cpu.match(/r5f*/)) {
         if(buildOption.os.match(/freertos*/) )
@@ -339,25 +339,25 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes_freertos_r5f;
             build_property.libdirs = libdirs_freertos;
             build_property.libs = libs_freertos_r5f;
-	    build_property.cflags = cflags_r5f_freertos;
+	        build_property.cflags = cflags_r5f_freertos;
             build_property.templates = templates_freertos_r5f;
         }
-	else
-	{
+	    else
+	    {
             build_property.includes = includes_nortos_r5f;
             build_property.libdirs = libdirs_nortos;
             build_property.libs = libs_nortos_r5f;
-	    build_property.cflags = cflags_r5f_nortos;
+	        build_property.cflags = cflags_r5f_nortos;
             build_property.templates = templates_nortos_r5f;
 
-	}
+	    }
     }
     else if(buildOption.cpu.match(/c75*/)) {
         if(buildOption.os.match(/freertos*/)) {
             build_property.includes = includes_freertos_c75;
             build_property.libdirs = libdirs_freertos;
             build_property.libs = libs_freertos_c75;
-	    build_property.cflags = cflags_c75_freertos;
+	        build_property.cflags = cflags_c75_freertos;
             build_property.templates = templates_freertos_c75;
         }
     }

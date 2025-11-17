@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-25 Texas Instruments Incorporated
+ * Copyright (C) 2021-26 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -87,16 +87,16 @@ void test_main(void *args)
 
     RUN_TEST(TestMmcsd_emmcRawIo, 3017, NULL);
     RUN_TEST(TestMmcsd_emmcEnableDisableBootPartition, 8308, NULL);
+    RUN_TEST(TestMmcsd_sdEnableDisableBootPartition, 9031, NULL);
+    RUN_TEST(TestMmcsd_emmcEnableDisableBootPartitionFail, 9032, NULL);
     RUN_TEST(TestMmcsd_emmcTuningConfig, 8312, NULL);
     RUN_TEST(TestMmcsd_emmcMultiblockRawIo, 8306, NULL);
     RUN_TEST(TestMmcsd_openInvalidInstance, 8309, NULL);
 #if !defined (SOC_AM275X) && !defined (SOC_J722S)
+    RUN_TEST(TestMmcsd_sdSingleBlockTransfer, 9034, NULL);
     RUN_TEST(TestMmcsd_sdRawIo, 1942, NULL);
     RUN_TEST(TestMmcsd_sdTuningConfig, 8313, NULL);
-    /* This test is disabled as Phy Config is a HW feature
-     * and should not be configurable.
     RUN_TEST(TestMmcsd_emmcMultiplePhyconfig, 8339, NULL);
-    */
     RUN_TEST(TestMmcsd_getBlockCountValidate, 8580, NULL);
     RUN_TEST(TestMmcsd_multipleOpenClose, 8579, NULL);
     RUN_TEST(TestMmcsd_validateClkFreq, 8310, NULL);
@@ -114,14 +114,14 @@ void test_main(void *args)
     /* This test fails for bus width is 1 and 4
     RUN_TEST(TestMmcsd_emmcMultipleBusWidths, 8581, NULL);
     */
-    RUN_TEST(TestMmcsd_openOpenFail, 8584, NULL);
-    RUN_TEST(TestMmcsd_emmcSpeedSwitch, 8689, NULL);
     /* This test fails for unaligned buffer R/W
     RUN_TEST(TestMmcsd_unalignedBuffersRawIo, 8690, NULL);
     */
+    RUN_TEST(TestMmcsd_openOpenFail, 8584, NULL);
+    RUN_TEST(TestMmcsd_emmcSpeedSwitch, 8689, NULL);
 #if !defined (C7_CORE)
     RUN_TEST(TestMmcsd_emmcWriteReadBootPartition, 8691, NULL);
-    RUN_TEST(TestMmcsd_emmcWriteReadBootPartitionFail, 8691, NULL);
+    RUN_TEST(TestMmcsd_emmcWriteReadBootPartitionFail, 9036, NULL);
 #endif
     RUN_TEST(TestMmcsd_crcRecovery, 8692, NULL);
 #endif

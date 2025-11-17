@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -66,6 +66,8 @@ uint32_t TestMMCSD_sdModes[] =
 /*                           Function declarations                            */
 /* ========================================================================== */
 
+static uint32_t TestMmcsd_isFormatNeeded(uint32_t partitionSize, 
+                                                    uint32_t freeSize);
 static int32_t TestMmcsd_fileIo(char *fileName, char* fileData);
 
 /* ========================================================================== */
@@ -91,6 +93,7 @@ static int32_t TestMmcsd_fileIo(char *fileName, char* fileData);
 int32_t TestMmcsd_sd(void *args)
 {
     int32_t retVal = SystemP_SUCCESS;
+    uint32_t formatNeeded;
 
     gMmcsdAttrs[CONFIG_MMCSD_SD].supportedModes = TestMMCSD_sdModes[0];
 
@@ -98,10 +101,12 @@ int32_t TestMmcsd_sd(void *args)
     FF_Disk_t *pDisk = &gFFDisks[FF_PARTITION_SD0];
     FF_MMCSD_PartitionDetails partitionDetails;
     FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
+    formatNeeded = TestMmcsd_isFormatNeeded(partitionDetails.partitionSize,
+                                    partitionDetails.partitionFreeSize);
 
-    if (partitionDetails.sectorCount == 0U)
+    if (partitionDetails.sectorCount == 0U || (formatNeeded))
     {
-    	/* No partition found, create a `TEST_MMCSD_FAT_PARTITION_SIZE` partition */
+        /* No partition found, create a `TEST_MMCSD_FAT_PARTITION_SIZE` partition */
         uint32_t blockSize = MMCSD_getBlockSize(gMmcsdHandle[CONFIG_MMCSD_SD]);
         uint32_t partSectorCount = TEST_MMCSD_FAT_PARTITION_SIZE / blockSize;
 
@@ -116,18 +121,37 @@ int32_t TestMmcsd_sd(void *args)
         {
         	return SystemP_FAILURE;
         }
-     }
-     char *fileName = (char*)"/sd0/test.dat";
-     char *fileData = (char*)"THIS IS A TEST FILE TO TEST SD CARD FILE IO\n";
+    }
+    char *fileName = (char*)"/sd0/test.dat";
+    char *fileData = (char*)"THIS IS A TEST FILE TO TEST SD CARD FILE IO\n";
 
-     retVal = TestMmcsd_fileIo(fileName, fileData);
+    retVal = TestMmcsd_fileIo(fileName, fileData);
 
-      if(SystemP_SUCCESS != retVal)
-      {
-		return  SystemP_FAILURE;
-      }
+    if(SystemP_SUCCESS != retVal)
+    {
+        return  SystemP_FAILURE;
+    }
 
-      return SystemP_SUCCESS;
+    return SystemP_SUCCESS;
+}
+
+/* Checks if the existing partition needs to be formatted */
+static uint32_t TestMmcsd_isFormatNeeded(uint32_t partitionSize, uint32_t freeSize)
+{
+    uint32_t retVal;
+
+    /* If the free size is greater than original size or if there is
+     * low space left in the FAT partition then a format is needed
+     */
+    if((freeSize > partitionSize) || ((partitionSize - freeSize) < 4 ))
+    {
+        retVal = 1;
+    }
+    else
+    {
+        retVal = 0;
+    }
+    return retVal;
 }
 
 /* Function to do file operation to the SD card */

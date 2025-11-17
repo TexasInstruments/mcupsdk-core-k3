@@ -4,7 +4,7 @@ let device = "am62dx";
 
 const files = {
     common: [
-	"mmcsd_test_common.c",
+	    "mmcsd_test_common.c",
         "mmcsd_test_raw.c",
         "test_mmcsd_raw_io.c",
         "main.c",	
@@ -25,7 +25,7 @@ const filedirs = {
         "..",       /* core_os_combo base */
         "../..",    /* Board base */
         "../../..", /* Example base */
-	"../../../../test_mmcsd_common/", /* Common files */
+	    "../../../../test_mmcsd_common/", /* Common files */
     ],
 };
 
@@ -34,7 +34,7 @@ const includes_freertos_r5f = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/r5f",
-	"../../../../test_mmcsd_common/", /* Common files */
+	    "../../../../test_mmcsd_common/", /* Common files */
         "${MCU_PLUS_SDK_PATH}/test/unity",
     ],
 };
@@ -44,7 +44,7 @@ const includes_freertos_a53 = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/a53",
-	"../../../../test_mmcsd_common/", /* Common files */
+	    "../../../../test_mmcsd_common/", /* Common files */
         "${MCU_PLUS_SDK_PATH}/test/unity",
     ],
 };
@@ -52,8 +52,8 @@ const includes_freertos_a53 = {
 const includes = {
     common: [
         "${MCU_PLUS_SDK_PATH}/test/unity/",
-	"../../../../test_mmcsd_common/", /* Common files */
-	"../../../",
+	    "../../../../test_mmcsd_common/", /* Common files */
+	    "../../../",
     ],
 };
 
@@ -155,7 +155,7 @@ const includes_freertos_c75 = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/c75x",
-	"../../../../test_mmcsd_common/", /* Common files */
+	    "../../../../test_mmcsd_common/", /* Common files */
         "${MCU_PLUS_SDK_PATH}/test/unity",
     ],
 };
@@ -376,24 +376,24 @@ function getComponentBuildProperty(buildOption) {
     build_property.syscfgfile = syscfgfile;
 
     if(buildOption.cpu.match(/r5f*/)) {
-	if(buildOption.os.match(/freertos*/))
-	{
+	    if(buildOption.os.match(/freertos*/))
+	    {
         	build_property.includes = includes_freertos_r5f;
         	build_property.libdirs = libdirs_freertos_r5;
         	build_property.libs = libs_freertos_dm_r5f;
         	build_property.templates = templates_freertos_r5f;
-                build_property.cflags = cflags_dm_r5f_freertos;
+            build_property.cflags = cflags_dm_r5f_freertos;
         	build_property.defines = defines_dm_r5f;
-	}
-	else
-	{
-		build_property.includes = includes;
+	    }
+	    else
+	    {
+		    build_property.includes = includes;
            	build_property.libdirs = libdirs_nortos_r5;
            	build_property.libs = libs_nortos_dm_r5f;
            	build_property.templates = templates_nortos_r5f;
-                build_property.cflags = cflags_dm_r5f_nortos;
+            build_property.cflags = cflags_dm_r5f_nortos;
            	build_property.defines = defines_dm_r5f;
-	}
+	    }
     }
     else if(buildOption.cpu.match(/a53*/)){
         if(buildOption.os.match(/freertos*/) )

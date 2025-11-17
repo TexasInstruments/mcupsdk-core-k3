@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2025 Texas Instruments Incorporated
+ * Copyright (C) 2021-2026 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -96,7 +96,8 @@ uint8_t TestMMCSD_task2Rbuf[TEST_MMCSD_SIZE_64K]
 /* Unaligned buffers for DMA test */
 uint8_t TestMMCSD_unalignedTxBuf[TEST_MMCSD_1MB_SIZE + 8]
     __attribute__((aligned(128U)));
-uint8_t TestMMCSD_unalignedRxBuf[TEST_MMCSD_1MB_SIZE];
+uint8_t TestMMCSD_unalignedRxBuf[TEST_MMCSD_1MB_SIZE + 8]
+    __attribute__((aligned(128U)));
 
 #if !defined (SOC_AM275X) && !defined (C7_CORE) && !defined (SOC_J722S)
 uint8_t TestMMCSD_txBuf[TEST_MMCSD_DATA_SIZE]

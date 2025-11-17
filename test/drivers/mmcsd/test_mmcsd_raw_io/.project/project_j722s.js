@@ -25,7 +25,7 @@ const filedirs = {
         "..",       /* core_os_combo base */
         "../..",    /* Board base */
         "../../..", /* Example base */
-	"../../../../test_mmcsd_common/", /* Common files */
+	    "../../../../test_mmcsd_common/", /* Common files */
     ],
 };
 
@@ -96,14 +96,14 @@ const includes_freertos_r5f = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/j722s/r5f",
-	"../../../../test_mmcsd_common/",
+	    "../../../../test_mmcsd_common/",
         "${MCU_PLUS_SDK_PATH}/test/unity/",
     ],
 };
 
 const includes_nortos = {
     common: [
-	"../../../../test_mmcsd_common/",
+	    "../../../../test_mmcsd_common/",
         "${MCU_PLUS_SDK_PATH}/test/unity/",
     ],
 };
@@ -373,7 +373,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos_wkup_r5f;
             build_property.libs = libs_freertos_wkup_r5f;
             build_property.templates = templates_freertos_wkup_r5f;
-	    build_property.cflags = cflags_common;
+	        build_property.cflags = cflags_common;
             build_property.defines = defines_wkup_r5;
         }
         else
@@ -381,7 +381,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes_nortos;
             build_property.libs = libs_nortos_wkup_r5f;
             build_property.templates = templates_freertos_wkup_r5f;
-	    build_property.cflags = cflags_common;
+	        build_property.cflags = cflags_common;
             build_property.libdirs = libdirs_wkup_nortos;
         }
     }
@@ -391,7 +391,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes_freertos_r5f;
             build_property.libdirs = libdirs_freertos_main_r5f;
             build_property.libs = libs_freertos_main_r5f;
-	    build_property.cflags = cflags_common;
+	        build_property.cflags = cflags_common;
             build_property.templates = templates_freertos_main_r5f;
         }
         else
@@ -399,7 +399,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes_nortos;
             build_property.libs = libs_nortos_main_r5f;
             build_property.templates = templates_nortos_main_r5f;
-	    build_property.cflags = cflags_common;
+	        build_property.cflags = cflags_common;
             build_property.libdirs = libdirs_main_nortos;
         }
     }
@@ -409,7 +409,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes_freertos_r5f;
             build_property.libdirs = libdirs_freertos_mcu_r5f;
             build_property.libs = libs_freertos_mcu_r5f;
-	    build_property.cflags = cflags_common;
+	        build_property.cflags = cflags_common;
             build_property.templates = templates_freertos_mcu_r5f;
         }
         else
@@ -417,7 +417,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes_nortos;
             build_property.libs = libs_nortos_mcu_r5f;
             build_property.templates = templates_nortos_mcu_r5f;
-	    build_property.cflags = cflags_common;
+	        build_property.cflags = cflags_common;
             build_property.libdirs = libdirs_mcu_nortos;
         }
     }

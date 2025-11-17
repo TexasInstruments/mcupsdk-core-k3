@@ -12,11 +12,11 @@
  *   uses this stack.
  * - After vTaskStartScheduler() each task created in FreeRTOS has its own stack
  */
---stack_size=0x8000
+--stack_size=0x4000
 /* This is the heap size for malloc() API in NORTOS and FreeRTOS
  * This is also the heap used by pvPortMalloc in FreeRTOS
  */
---heap_size=0x10000
+--heap_size=0x8000
 --entry_point=_self_reset_start
 
 /* This is the size of stack when R5 is in IRQ mode
@@ -55,15 +55,6 @@ SECTIONS
         .text:abort: palign(8) /* this helps in loading symbols when using XIP mode */
     } load = R5F_TCMB, run = R5F_TCMA
 
-    GROUP {
-        /* This is the resource table used by linux to know where the IPC "VRINGs" are located */
-        .resource_table: {} palign(1024)
-    } > DDR_IPC_RESOURCE_TABLE_LINUX
-    /* This IPC log can be viewed via ROV in CCS and when linux is enabled, this log can also be viewed via linux debugfs */
-    .bss.debug_mem_trace_buf    : {} palign(128)    > DDR_IPC_TRACE_LINUX
-
-    /* this is used when Debug log's to shared memory is enabled, else this is not used */
-    .bss.log_shared_mem  (NOLOAD) : {} > DDR_LOG_SHM_MEM
     .lpm_data (NOLOAD)      : {} align(4)       > DDR_LPM_DATA
     .text                   : {} palign(8)      > DDR
     .const                  : {} palign(8)      > DDR
@@ -154,6 +145,8 @@ SECTIONS
         .init_array: {} palign(8)   /* Contains function pointers called before main */
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
     } > DDR
+    /* global scratch buffer region */
+    .globalScratchBuffer (NOLOAD) : {} > DDR2
 
 }
 
@@ -167,15 +160,13 @@ MEMORY
 
     WKUP_SRAM_TRACE_BUFF (RWIX) : ORIGIN = 0x41880000 LENGTH = 0x0000800
 
-    HSM_RAM                     : ORIGIN = 0x43C00000 LENGTH = 0x3FF00
     /* DDR for DM LPM data [ size 640.00 KB ] */
     DDR_LPM_DATA    (RWIX)      : ORIGIN = 0x9CA00000 LENGTH = 0x000A0000
     /* DDR for DM RM/PM HAL trace buffer [ size 20 KB ] */
     DDR_DM_RMPM_TRACE (RWIX)    : ORIGIN = 0x9CAA0000 LENGTH = 0x00005000
-    /* DDR for DM R5F code/data [ size 27 MiB + 364 KB ] */
-    DDR                         : ORIGIN = 0x9CAA5000 LENGTH = 0x1B5B000
-    DDR_IPC_RESOURCE_TABLE_LINUX: ORIGIN = 0x9C900000 LENGTH = 0x400    /* For resource table   */
-    DDR_IPC_TRACE_LINUX         : ORIGIN = 0x9C900400 LENGTH = 0xFFC00  /* IPC trace buffer     */
+    /* DDR for DM R5F code/data [ size 27 MiB + 396 KB ] */
+    DDR                         : ORIGIN = 0x9CAA5000 LENGTH = 0x1B63000
 
-    DDR_LOG_SHM_MEM             : ORIGIN = 0xA1000000 LENGTH = 0x40000    /* Shared memory log */
+    /* global scratch buffer region in DDR (128 MB) */
+    DDR2           (RWIX)      : ORIGIN = 0xA0000000 LENGTH = 0x08000000
 }

@@ -278,6 +278,24 @@ void TestMmcsd_cmdFaultInjectInProgress(uint32_t xferStatus);
 
 /* Function to get command transfer progress */
 int32_t TestMmcsd_iscmdFaultInjectInProgress();
+
+/* Function to set the status of warm reset fault injection */
+void TestMmcsd_warmRstFaultInjectInProgress(uint32_t xferStatus);
+
+/* Function to get command transfer progress */
+int32_t TestMmcsd_isWarmRstFaultInjectInProgress();
+
+/* Function to create dsr fault injection */
+void TestMmcsd_dsrFaultInjectInProgress(uint32_t xferStatus);
+
+/* Function to get dsr fault injection status */
+int32_t TestMmcsd_isDsrFaultInjectInProgress();
+
+/* Function to create tuning fault injection */
+void TestMmcsd_tuningFaultInjectInProgress(uint32_t xferStatus);
+
+/* Function to get tuning fault injection status */
+int32_t TestMmcsd_isTuningFaultInjectInProgress();
 #endif
 
 /* ========================================================================== */
@@ -1425,13 +1443,23 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
      * the information about the DSR register usage. The default value of the DSR
      * register is 0x404.
      */
+#ifdef ENABLE_MMCSD_FAULT_INJECTION
+    TestMmcsd_dsrFaultInjectInProgress((uint32_t)TRUE);
+    TestMmcsd_faultInjectStubHandler(1, &obj->emmcData->impDsr);
+    TestMmcsd_dsrFaultInjectInProgress((uint32_t)FALSE);
+#endif
+
     if((SystemP_SUCCESS == status) && (obj->emmcData->impDsr))
     {
         MMCSD_initTransaction(&trans);
         trans.cmd = MMCSD_MMC_CMD(4);
         trans.arg = (obj->emmcData->dsr & 0xffff) << 16U;
         trans.retries = MMCSD_TRANS_RETRIES;
+#if !defined ENABLE_MMCSD_FAULT_INJECTION
         status = MMCSD_transfer(handle, &trans);
+#else
+        status = SystemP_SUCCESS;
+#endif
     }
 
     if(status == SystemP_SUCCESS)
@@ -1467,12 +1495,24 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
     {
         /* Get Generic Switch Command Timeout value */
         obj->switchCmdTimeout = (obj->tempDataBuf[MMCSD_GENERIC_CMD6_TIME_INDEX]) * 10;
-
+#ifdef ENABLE_MMCSD_FAULT_INJECTION
+        volatile uint16_t retVal = 0;
+        TestMmcsd_warmRstFaultInjectInProgress((uint32_t)TRUE);
+        TestMmcsd_faultInjectStubHandler(1, &retVal);
+        TestMmcsd_warmRstFaultInjectInProgress((uint32_t)FALSE);
+        if(retVal == 1)
+        {
+           obj->tempDataBuf[MMCSD_ECSD_RST_N_INDEX] = MMCSD_ECSD_RST_N_TEMPORARILY_DISABLE;
+        }
+#endif
         if(obj->tempDataBuf[MMCSD_ECSD_RST_N_INDEX] == MMCSD_ECSD_RST_N_TEMPORARILY_DISABLE)
         {
             switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_RST_N_INDEX << 16) | ((MMCSD_ECSD_RST_N_PERMANENTLY_ENABLE) << 8);
+#if !defined ENABLE_MMCSD_FAULT_INJECTION
             status = MMCSD_sendSwitchCmd(handle, switchArg);
-
+#else   
+            status = SystemP_SUCCESS;
+#endif
             if(SystemP_SUCCESS == status)
             {
                 /* Read ECSD register as data block */
@@ -1484,7 +1524,11 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
                 trans.blockSize = 512U;
                 trans.dataBuf = obj->tempDataBuf;
                 trans.retries = MMCSD_TRANS_RETRIES;
+#if !defined ENABLE_MMCSD_FAULT_INJECTION
                 status = MMCSD_transfer(handle, &trans);
+#else
+                obj->tempDataBuf[MMCSD_ECSD_RST_N_INDEX] = MMCSD_ECSD_RST_N_PERMANENTLY_ENABLE;
+#endif
 
                 if(obj->tempDataBuf[MMCSD_ECSD_RST_N_INDEX] != MMCSD_ECSD_RST_N_PERMANENTLY_ENABLE)
                 {
@@ -3674,6 +3718,12 @@ static int32_t MMCSD_phyTuneAuto(MMCSD_Handle handle)
             break;
         }
     }
+
+#ifdef ENABLE_MMCSD_FAULT_INJECTION
+    TestMmcsd_tuningFaultInjectInProgress((uint32_t)TRUE);
+    TestMmcsd_faultInjectStubHandler(1, (uint16_t *)&tuningSuccess);
+    TestMmcsd_tuningFaultInjectInProgress((uint32_t)FALSE);
+#endif
 
     if(tuningSuccess != TRUE)
     {

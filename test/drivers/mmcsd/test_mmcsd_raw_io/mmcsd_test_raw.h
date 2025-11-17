@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2025 Texas Instruments Incorporated
+ * Copyright (C) 2021-2026 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -65,6 +65,9 @@ void TestMmcsd_emmcWriteReadBootPartitionFail(void *args);
 void TestMmcsd_unalignedBuffersRawIo(void *args);
 void TestMmcsd_emmcSpeedSwitch(void *args);
 void TestMmcsd_crcRecovery(void *args);
+void TestMmcsd_sdEnableDisableBootPartition(void *args);
+void TestMmcsd_emmcEnableDisableBootPartitionFail(void *args);
+void TestMmcsd_sdSingleBlockTransfer(void *args);
 
 
 #endif /* MMCSD_TEST_RAW_H */

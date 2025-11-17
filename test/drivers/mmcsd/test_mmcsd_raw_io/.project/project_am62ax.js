@@ -43,7 +43,7 @@ const includes_nortos_r5f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/test/unity/",
         "../../../../test_mmcsd_common/", /* Common files */
-	"../../../",
+	    "../../../",
     ],
 };
 
@@ -61,7 +61,7 @@ const includes_nortos_a53 = {
     common: [
         "${MCU_PLUS_SDK_PATH}/test/unity/",
         "../../../../test_mmcsd_common/", /* Common files */
-	"../../../",
+	    "../../../",
     ],
 };
 
@@ -107,7 +107,7 @@ const libdirs_nortos_a53 = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
-	"${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+	    "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
         "${MCU_PLUS_SDK_PATH}/test/unity/lib",
     ],
 };
@@ -160,28 +160,28 @@ const libs_nortos_a53 = {
 const cflags_a53_freertos = {
     common: [
         "-Wno-unused-function",
-	"-DENABLE_RAW_TESTS",
+	    "-DENABLE_RAW_TESTS",
     ]
 }
 
 const cflags_a53_nortos = {
     common: [
         "-Wno-unused-function",
-	"-DENABLE_RAW_TESTS",
+	    "-DENABLE_RAW_TESTS",
     ]
 }
 
 const cflags_dm_r5f_freertos = {
     common: [
         "-Wno-unused-function",
-	"-DENABLE_RAW_TESTS",
+	    "-DENABLE_RAW_TESTS",
     ]
 }
 
 const cflags_dm_r5f_nortos = {
     common: [
         "-Wno-unused-function",
-	"-DENABLE_RAW_TESTS",
+	    "-DENABLE_RAW_TESTS",
     ]
 }
 
@@ -320,24 +320,24 @@ function getComponentBuildProperty(buildOption) {
     build_property.syscfgfile = syscfgfile;
 
     if(buildOption.cpu.match(/r5f*/)) {
-	if(buildOption.os.match(/freertos*/) )
-	{
-           build_property.includes = includes_freertos_r5f;
-           build_property.libdirs = libdirs_freertos_r5;
-           build_property.libs = libs_freertos_dm_r5f;
-           build_property.templates = templates_freertos_r5f;
-           build_property.defines = defines_dm_r5f;
-           build_property.cflags = cflags_dm_r5f_freertos;
-	}
-	else
-	{
-	   build_property.includes = includes_nortos_r5f;
-	   build_property.libdirs = libdirs_nortos_r5;
-	   build_property.libs = libs_nortos_dm_r5f;
-	   build_property.templates = templates_nortos_r5f;
-	   build_property.defines = defines_dm_r5f;
-           build_property.cflags = cflags_dm_r5f_nortos;
-	}
+	    if(buildOption.os.match(/freertos*/) )
+	    {
+            build_property.includes = includes_freertos_r5f;
+            build_property.libdirs = libdirs_freertos_r5;
+            build_property.libs = libs_freertos_dm_r5f;
+            build_property.templates = templates_freertos_r5f;
+            build_property.defines = defines_dm_r5f;
+            build_property.cflags = cflags_dm_r5f_freertos;
+	    }
+	    else
+	    {
+	        build_property.includes = includes_nortos_r5f;
+	        build_property.libdirs = libdirs_nortos_r5;
+	        build_property.libs = libs_nortos_dm_r5f;
+	        build_property.templates = templates_nortos_r5f;
+	        build_property.defines = defines_dm_r5f;
+            build_property.cflags = cflags_dm_r5f_nortos;
+	    }
     }
     else if(buildOption.cpu.match(/a53*/)){
         if(buildOption.os.match(/freertos*/) )

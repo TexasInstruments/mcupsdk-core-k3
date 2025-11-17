@@ -19,7 +19,7 @@ const filedirs = {
         "..",       /* core_os_combo base */
         "../..",    /* Board base */
         "../../..", /* Example base */
-	"../../../../test_mmcsd_common/", /* Common files */
+	    "../../../../test_mmcsd_common/", /* Common files */
     ],
 };
 
@@ -28,14 +28,14 @@ const includes_freertos_a53 = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62lx/a53",
-	"../../../../test_mmcsd_common/", /* Common files */
+	    "../../../../test_mmcsd_common/", /* Common files */
         "${MCU_PLUS_SDK_PATH}/test/unity",
     ],
 };
 
 const includes = {
     common: [
-	"../../../../test_mmcsd_common/", /* Common files */
+	    "../../../../test_mmcsd_common/", /* Common files */
         "${MCU_PLUS_SDK_PATH}/test/unity/",
     ],
 };
@@ -79,7 +79,7 @@ const libs_nortos_a53 = {
 const cflags_a53 = {
     common: [
         "-Wno-unused-function",
-	"-DENABLE_RAW_TESTS",
+	    "-DENABLE_RAW_TESTS",
     ]
 }
 const lnkfiles = {

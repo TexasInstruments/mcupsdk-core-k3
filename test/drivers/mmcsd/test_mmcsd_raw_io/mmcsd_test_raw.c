@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-25 Texas Instruments Incorporated
+ * Copyright (C) 2021-26 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -75,7 +75,8 @@ MMCSD_Params lMmcsdParams[] =
 static void TestMmcsd_getModeSettings(uint32_t type);
 static int32_t TestMmcsd_rawIo(MMCSD_Handle handle, uint32_t instType);
 #if !defined (SOC_AM275X) && !defined (SOC_J722S)
-static uint8_t *TestMmcsd_getUnalignedAddr();
+static uint8_t *TestMmcsd_getUnalignedTxAddr();
+static uint8_t *TestMmcsd_getUnalignedRxAddr();
 #endif
 static int32_t TestMmcsd_multiBlockRawIo(MMCSD_Handle handle, uint32_t instType);
 
@@ -172,6 +173,96 @@ void TestMmcsd_emmcEnableDisableBootPartition(void *args)
 }
 
 /**
+ * \brief Tests enabling and disabling of eMMC boot partition
+ * using MMCSD driver APIs for invalid partition number.
+ *
+ * Test Category: Functionality
+ *
+ * This function verifies that the MMCSD driver correctly
+ * fails while enabling invalid boot partition. It opens the
+ * eMMC instance with custom initialization parameters and
+ * executes both `MMCSD_enableBootPartition'.
+ *
+ * The test ensures that the boot partition access commands are
+ * handled successfully by the driver. It also
+ * validates successful driver initialization and closure.
+ *
+ * \param args Pointer to test-specific configuration or
+ * runtime parameters (unused in this function).
+ *
+ * \return None.
+ */
+void TestMmcsd_emmcEnableDisableBootPartitionFail(void *args)
+{
+    int32_t retVal = SystemP_SUCCESS;
+    DebugP_log("Starting EMMC boot partition enable disable test case\r\n");
+
+    /* Open EMMC instance */
+    MMCSD_Params test_params;
+    MMCSD_Params_init(&test_params);
+
+    test_params.deviceData = &TestMMCSD_emmcData0;
+    test_params.dataBuf    = &TestMMCSD_dataBuf0[0];
+
+    MMCSD_Handle handle =  MMCSD_open(0, &test_params);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    /* Enable the boot partition */
+    retVal = MMCSD_enableBootPartition(handle, 5);
+    TEST_ASSERT_EQUAL(retVal, SystemP_FAILURE);
+
+    MMCSD_close(handle);
+}
+
+/**
+ * \brief Tests enabling and disabling of SD boot partition
+ * using MMCSD driver APIs.
+ *
+ * Test Category: Functionality
+ *
+ * This function verifies that the MMCSD driver correctly
+ * enables and disables the SD boot partition. It opens the
+ * eMMC instance with custom initialization parameters and
+ * executes both `MMCSD_enableBootPartition()` and
+ * `MMCSD_disableBootPartition()` to confirm proper behavior.
+ *
+ * The test ensures that the boot partition access commands are
+ * handled successfully by the driver and that no errors occur
+ * during mode switching or partition reconfiguration. It also
+ * validates successful driver initialization and closure.
+ *
+ * \param args Pointer to test-specific configuration or
+ * runtime parameters (unused in this function).
+ *
+ * \return None.
+ */
+void TestMmcsd_sdEnableDisableBootPartition(void *args)
+{
+    int32_t retVal = SystemP_SUCCESS;
+    DebugP_log("Starting SD boot partition enable disable test case\r\n");
+
+    /* Open EMMC instance */
+    MMCSD_Params test_params;
+    MMCSD_Params_init(&test_params);
+
+    test_params.deviceData = &TestMMCSD_sdData0;
+    test_params.dataBuf    = &TestMMCSD_dataBuf0[0];
+
+    MMCSD_Handle handle =  MMCSD_open(1, &test_params);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    /* Enable the boot partition */
+    retVal = MMCSD_enableBootPartition(handle, 1);
+    TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
+
+    /* Disable the boot partition */
+    retVal = MMCSD_disableBootPartition(handle);
+    TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
+
+    MMCSD_close(handle);
+}
+
+/**
  * \brief Executes multi-block raw I/O transfers on eMMC to
  * validate MMCSD driver handling of continuous operations.
  *
@@ -253,6 +344,50 @@ void TestMmcsd_sdRawIo(void *args)
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
         Drivers_mmcsdClose();
     }
+}
+
+/**
+ * \brief Tests to write and read single block of data.
+ *
+ * Test Category: Functionality
+ *
+ * This function verifies that the MMCSD driver correctly
+ * writes and reads back single block of data
+ * It also validates successful driver initialization 
+ * write, read and closure.
+ *
+ * \param args Pointer to test-specific configuration or
+ * runtime parameters (unused in this function).
+ *
+ * \return None.
+ */
+void TestMmcsd_sdSingleBlockTransfer(void *args)
+{
+    int32_t retVal = SystemP_SUCCESS;
+    uint32_t blockSize;
+    uint32_t numBlocksPerIter;
+    DebugP_log("Starting SD card card single block write and read");
+
+    /*Write data to the boot partition */
+    TestMmcsd_fillBuffers();
+
+    gMmcsdAttrs[CONFIG_MMCSD_SD].supportedModes = TestMMCSD_sdModes[0];
+    Drivers_mmcsdOpen();
+    MMCSD_Handle handle = gMmcsdHandle[CONFIG_MMCSD_SD];
+    TEST_ASSERT_NOT_NULL(handle);
+    blockSize = MMCSD_getBlockSize(handle);
+    numBlocksPerIter = 1;
+
+    retVal = MMCSD_write(handle, TestMMCSD_txBuf, 0x0,  numBlocksPerIter);
+    TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
+
+    memset(TestMMCSD_rxBuf, 0, blockSize);
+
+    retVal = MMCSD_read(handle, TestMMCSD_rxBuf, 0x0,  numBlocksPerIter);
+    TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
+
+    TEST_ASSERT_EQUAL_MEMORY(TestMMCSD_txBuf, TestMMCSD_rxBuf, blockSize);
+    Drivers_mmcsdClose();
 }
 
 /**
@@ -510,7 +645,8 @@ void TestMmcsd_unalignedBuffersRawIo(void *args)
     uint32_t numBlocksPerIter = 0U;
     int32_t loopVar;
 
-    uint8_t *unalignedTxBufPtr = TestMmcsd_getUnalignedAddr(); 
+    uint8_t *unalignedTxBufPtr = TestMmcsd_getUnalignedTxAddr();
+    uint8_t *unalignedRxBufPtr = TestMmcsd_getUnalignedRxAddr(); 
 
     /* This close is required as the above test case fails */
     Drivers_mmcsdClose();
@@ -546,10 +682,10 @@ void TestMmcsd_unalignedBuffersRawIo(void *args)
         retVal = MMCSD_write(handle, unalignedTxBufPtr, TEST_MMCSD_EMMC_START_BLK, numBlocksPerIter);
         TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
 
-        memset(TestMMCSD_unalignedRxBuf, 0, TEST_MMCSD_1MB_SIZE);
-        retVal = MMCSD_read(handle, TestMMCSD_unalignedRxBuf, TEST_MMCSD_EMMC_START_BLK, numBlocksPerIter);
+        memset(unalignedRxBufPtr, 0, TEST_MMCSD_1MB_SIZE);
+        retVal = MMCSD_read(handle, unalignedRxBufPtr, TEST_MMCSD_EMMC_START_BLK, numBlocksPerIter);
         TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
-        TEST_ASSERT_EQUAL_MEMORY(TestMMCSD_unalignedTxBuf, TestMMCSD_unalignedRxBuf, TEST_MMCSD_1MB_SIZE);
+        TEST_ASSERT_EQUAL_MEMORY(unalignedTxBufPtr, unalignedRxBufPtr, TEST_MMCSD_1MB_SIZE);
         Drivers_mmcsdClose();
     } 
     gMmcsdAttrs[CONFIG_MMCSD_EMMC].enableDma = 1;
@@ -776,42 +912,39 @@ void TestMmcsd_sdMultipleBusWidths(void *args)
 void TestMmcsd_emmcMultiplePhyconfig(void *args)
 {
     int32_t retVal = SystemP_SUCCESS;
-    int32_t loopVar;
+
     /* Use HS200 mode */
     gMmcsdAttrs[CONFIG_MMCSD_EMMC].supportedModes = TestMMCSD_modes[2];
+    MMCSD_Handle handle;
 
     DebugP_log("Starting EMMC  PHY switching test case\r\n");
 #if defined (SOC_AM62PX)
     /* HW PHY is only supported in AM62PX */
     DebugP_log("Starting transfer with  HW PHY\r\n");
     Drivers_mmcsdOpen();
-    MMCSD_Handle handle = gMmcsdHandle[CONFIG_MMCSD_EMMC];
+    handle = gMmcsdHandle[CONFIG_MMCSD_EMMC];
+
+    retVal = TestMmcsd_rawIo(handle, CONFIG_MMCSD_EMMC);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    Drivers_mmcsdClose();
+#else
+    DebugP_log("Starting transfer with  SW PHY\r\n");
+    gMmcsdAttrs[CONFIG_MMCSD_EMMC].phyType = 1;
+
+    Drivers_mmcsdOpen();
+    handle = gMmcsdHandle[CONFIG_MMCSD_EMMC];
 
     retVal = TestMmcsd_rawIo(handle, CONFIG_MMCSD_EMMC);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
     Drivers_mmcsdClose();
 #endif
-    for (loopVar = 1; loopVar <= 2; loopVar++)
-    {
-        if(loopVar == 1)
-        {
-            DebugP_log("Starting transfer with  SW PHY\r\n");
-        }
-        else
-        {
-            DebugP_log("Starting transfer with  NO PHY\r\n");
-        }
-        gMmcsdAttrs[CONFIG_MMCSD_EMMC].phyType = loopVar;
 
-        Drivers_mmcsdOpen();
-        MMCSD_Handle handle = gMmcsdHandle[CONFIG_MMCSD_EMMC];
-
-        retVal = TestMmcsd_rawIo(handle, CONFIG_MMCSD_EMMC);
-        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
-        Drivers_mmcsdClose();
-    }
     /* Revert back to normal phy type after testing */
+#if defined (SOC_AM62PX)
+    gMmcsdAttrs[CONFIG_MMCSD_EMMC].phyType = 0;
+#else
     gMmcsdAttrs[CONFIG_MMCSD_EMMC].phyType = 1;
+#endif
     Drivers_mmcsdOpen();
     Drivers_mmcsdClose();
 }
@@ -966,19 +1099,30 @@ void TestMmcsd_multipleOpenClose(void *args)
     for(loopVar = 0; loopVar < TestMMCSD_sdModesCount; loopVar++)
     {
         gMmcsdAttrs[CONFIG_MMCSD_SD].supportedModes = TestMMCSD_sdModes[loopVar];
-    	MMCSD_Handle handle = MMCSD_open(0, &lMmcsdParams[0]);
-    	TEST_ASSERT_NOT_NULL(handle);
-    	MMCSD_close(handle);
+        MMCSD_Handle handle = MMCSD_open(1, &lMmcsdParams[1]);
+        TEST_ASSERT_NOT_NULL(handle);
+        MMCSD_close(handle);
     }
     
     for(loopVar = 0; loopVar < TestMMCSD_modesCount; loopVar++)
     {
-    	/* Do the same for EMMC as well */
+        /* Do the same for EMMC as well */
         gMmcsdAttrs[CONFIG_MMCSD_EMMC].supportedModes = TestMMCSD_modes[loopVar];
-    	MMCSD_Handle handle2 = MMCSD_open(1, &lMmcsdParams[1]);
-    	TEST_ASSERT_NOT_NULL(handle2);
-    	MMCSD_close(handle2);
+        MMCSD_Handle handle = MMCSD_open(0, &lMmcsdParams[0]);
+        TEST_ASSERT_NOT_NULL(handle);
+        MMCSD_close(handle);
     }
+
+    /*Set the card type as no device */
+    gMmcsdAttrs[CONFIG_MMCSD_SD].cardType = MMCSD_CARD_TYPE_NO_DEVICE;
+    for(loopVar = 0; loopVar < TestMMCSD_sdModesCount; loopVar++)
+    {
+        gMmcsdAttrs[CONFIG_MMCSD_SD].supportedModes = TestMMCSD_sdModes[loopVar];
+        MMCSD_Handle handle = MMCSD_open(1, &lMmcsdParams[1]);
+        TEST_ASSERT_NOT_NULL(handle);
+        MMCSD_close(handle);
+    }
+    gMmcsdAttrs[CONFIG_MMCSD_SD].cardType = MMCSD_CARD_TYPE_SD;
 }
 
 /**
@@ -1284,6 +1428,32 @@ void TestMmcsd_getBlockCountValidate(void *args)
     gMmcsdAttrs[CONFIG_MMCSD_EMMC].enableDma = 1U;
 
     TEST_ASSERT_EQUAL(blockCount1, blockCount2);
+#if !defined (SOC_AM275X) && !defined (SOC_J722S)
+    gMmcsdAttrs[CONFIG_MMCSD_SD].supportedModes = TestMMCSD_sdModes[0];
+    Drivers_mmcsdOpen();
+    handle = gMmcsdHandle[CONFIG_MMCSD_SD];
+    uint32_t isHCSupported = MMCSD_isHC(handle);
+    Drivers_mmcsdClose();
+    if(isHCSupported == 1)
+    {
+        /*Check block count for SD card as well */
+        gMmcsdAttrs[CONFIG_MMCSD_SD].supportedModes = TestMMCSD_sdModes[0];
+        gMmcsdAttrs[CONFIG_MMCSD_SD].enableDma = 1;
+        Drivers_mmcsdOpen();
+        handle = gMmcsdHandle[CONFIG_MMCSD_SD];
+        blockCount1 = MMCSD_getBlockCount(handle);
+        Drivers_mmcsdClose();
+    
+        gMmcsdAttrs[CONFIG_MMCSD_SD].enableDma = 0;
+        Drivers_mmcsdOpen();
+        handle = gMmcsdHandle[CONFIG_MMCSD_SD];
+        blockCount2 = MMCSD_getBlockCount(handle);
+        Drivers_mmcsdClose();
+
+        gMmcsdAttrs[CONFIG_MMCSD_SD].enableDma = 1;
+        TEST_ASSERT_EQUAL(blockCount1, blockCount2);
+    }
+#endif
 }
 
 /**
@@ -1478,7 +1648,7 @@ static int32_t TestMmcsd_rawIo(MMCSD_Handle handle, uint32_t instType)
     for (testCount = 0; testCount < TEST_MMCSD_PERF_TEST_DATA_COUNT; testCount++)
     {
         numBlocksPerIter = (float)testSizes[testCount] / blockSize;
-        testDataObj[testCount].dataSize = testSizes[testCount] / TEST_MMCSD_1MB_SIZE;
+        testDataObj[testCount].dataSize = (float)((float)testSizes[testCount] / (float)TEST_MMCSD_1MB_SIZE);
 
         testDataObj[testCount].writeSpeed = ClockP_getTimeUsec();
         retVal = MMCSD_write(handle, TestMMCSD_txBuf, TEST_MMCSD_EMMC_START_BLK, numBlocksPerIter);
@@ -1539,8 +1709,9 @@ static int32_t TestMmcsd_rawIo(MMCSD_Handle handle, uint32_t instType)
 }
 
 #if !defined (SOC_AM275X) && !defined (SOC_J722S)
-/* Function to make address unaligned */
-static uint8_t *TestMmcsd_getUnalignedAddr()
+
+/* Function to make Tx address unaligned */
+static uint8_t *TestMmcsd_getUnalignedTxAddr()
 {
     int32_t shift = 1;
     if((((uintptr_t)TestMMCSD_unalignedTxBuf + shift) % 4) == 0)
@@ -1548,6 +1719,17 @@ static uint8_t *TestMmcsd_getUnalignedAddr()
         shift++;
     } 
     return TestMMCSD_unalignedTxBuf + shift;
+}
+
+/* Function to make Rx address unaligned */
+static uint8_t *TestMmcsd_getUnalignedRxAddr()
+{
+    int32_t shift = 1;
+    if((((uintptr_t)TestMMCSD_unalignedRxBuf + shift) % 4) == 0)
+    {
+        shift++;
+    } 
+    return TestMMCSD_unalignedRxBuf + shift;
 }
 #endif
 

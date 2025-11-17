@@ -32,7 +32,7 @@ const filedirs = {
         "..",       /* core_os_combo base */
         "../..",    /* Board base */
         "../../..", /* Example base */
-	"../../../../test_mmcsd_common/", /* Common files */
+	    "../../../../test_mmcsd_common/", /* Common files */
     ],
 };
 
@@ -41,10 +41,10 @@ const includes_freertos_r5f = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/r5f",
-	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/FreeRTOS-FAT/include/",
-	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable/",
-	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config/",
-	"../../../../test_mmcsd_common/",
+	    "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/FreeRTOS-FAT/include/",
+	    "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable/",
+	    "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config/",
+	    "../../../../test_mmcsd_common/",
         "${MCU_PLUS_SDK_PATH}/test/unity",
     ],
 };
@@ -55,7 +55,7 @@ const includes_nortos_r5f = {
 	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable",
 	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable/nortos",
 	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config",
-        "${MCU_PLUS_SDK_PATH}/test/unity/",
+    "${MCU_PLUS_SDK_PATH}/test/unity/",
 	"../../../../test_mmcsd_common/",
 	"../../../",
     ],
@@ -66,10 +66,10 @@ const includes_freertos_a53 = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/a53",
-	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/FreeRTOS-FAT/include/",
-	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable/",
-	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config/",
-	"../../../../test_mmcsd_common/",
+	    "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/FreeRTOS-FAT/include/",
+	    "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable/",
+	    "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config/",
+	    "../../../../test_mmcsd_common/",
         "${MCU_PLUS_SDK_PATH}/test/unity",
     ],
 };
@@ -93,11 +93,11 @@ const includes_a53_smp = {
 const includes_nortos_a53 = {
     common: [
         "${MCU_PLUS_SDK_PATH}/test/unity/",
-	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/FreeRTOS-FAT/include",
-	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable",
-	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable/nortos",
-	"../../../../test_mmcsd_common/",
-	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config",
+	    "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/FreeRTOS-FAT/include",
+	    "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable",
+	    "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable/nortos",
+	    "../../../../test_mmcsd_common/",
+	    "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config",
     ],
 };
 
@@ -124,7 +124,7 @@ const libdirs_nortos_r5 = {
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
-	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib",
+	    "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
         "${MCU_PLUS_SDK_PATH}/test/unity/lib",
@@ -135,7 +135,7 @@ const libdirs_freertos_a53 = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
-	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib",
+	    "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
         "${MCU_PLUS_SDK_PATH}/test/unity/lib",
     ],
@@ -146,9 +146,9 @@ const libdirs_nortos_a53 = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
-	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib",
-	"${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
-	"${MCU_PLUS_SDK_PATH}/test/unity/lib",
+	    "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib",
+	    "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+	    "${MCU_PLUS_SDK_PATH}/test/unity/lib",
     ],
 };
 
@@ -163,7 +163,7 @@ const libs_freertos_dm_r5f = {
         "board.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "unity.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-	"freertos_fat.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+	    "freertos_fat.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
@@ -178,7 +178,7 @@ const libs_nortos_dm_r5f = {
         "board.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "unity.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
         "dm_stub.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-	"freertos_fat.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+	    "freertos_fat.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 const libs_freertos_a53 = {
@@ -186,7 +186,7 @@ const libs_freertos_a53 = {
         "freertos.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
         "drivers.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
         "board.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
-	"freertos_fat.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
+	    "freertos_fat.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
         "unity.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
@@ -197,7 +197,7 @@ const libs_nortos_a53 = {
         "drivers.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
         "board.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
         "unity.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
-	"freertos_fat.am62dx.a53.gcc-aarch64.${ConfigName}.lib"
+	    "freertos_fat.am62dx.a53.gcc-aarch64.${ConfigName}.lib"
     ],
 };
 
@@ -206,7 +206,7 @@ const libs_freertos_a53_smp = {
         "freertos.am62dx.a53-smp.gcc-aarch64.${ConfigName}.lib",
         "drivers.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
         "board.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
-	"freertos_fat.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
+	    "freertos_fat.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
         "unity.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
@@ -216,10 +216,10 @@ const includes_freertos_c75 = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/c75x",
-	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/FreeRTOS-FAT/include/",
-	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable/",
-	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config/",
-	"../../../../test_mmcsd_common/",
+	    "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/FreeRTOS-FAT/include/",
+	    "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable/",
+	    "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config/",
+	    "../../../../test_mmcsd_common/",
         "${MCU_PLUS_SDK_PATH}/test/unity",
     ],
 };
@@ -227,10 +227,10 @@ const includes_freertos_c75 = {
 const libdirs_freertos_c75 = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
-	"${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib",
+	    "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
-	"../../../../test_mmcsd_common/",
+	    "../../../../test_mmcsd_common/",
         "${MCU_PLUS_SDK_PATH}/test/unity/lib",
     ],
 };
@@ -239,7 +239,7 @@ const libs_freertos_c75 = {
     common: [
         "drivers.am62dx.c75x.ti-c7000.${ConfigName}.lib",
         "freertos.am62dx.c75x.ti-c7000.${ConfigName}.lib",
-	"freertos_fat.am62dx.c75.ti-c7000.${ConfigName}.lib",
+	    "freertos_fat.am62dx.c75.ti-c7000.${ConfigName}.lib",
         "board.am62dx.c75x.ti-c7000.${ConfigName}.lib",
         "unity.am62dx.c75x.ti-c7000.${ConfigName}.lib",
     ],
@@ -248,43 +248,43 @@ const libs_freertos_c75 = {
 const cflags_a53_freertos = {
     common: [
         "-Wno-unused-function",
-	"-DENABLE_MT_TESTS",
-	"-DENABLE_FS_TESTS",
+	    "-DENABLE_MT_TESTS",
+	    "-DENABLE_FS_TESTS",
     ]
 }
 
 const cflags_a53_freertos_smp = {
     common: [
         "-Wno-unused-function",
-	"-DENABLE_FS_TESTS",
+	    "-DENABLE_FS_TESTS",
     ]
 }
 
 const cflags_r5f_freertos = {
     common: [
-	"-DENABLE_MT_TESTS",
-	"-DENABLE_FS_TESTS",
+	    "-DENABLE_MT_TESTS",
+	    "-DENABLE_FS_TESTS",
     ]
 }
 
 const cflags_c75_freertos = {
     common: [
-	"-DENABLE_MT_TESTS",
-	"-DENABLE_FS_TESTS",
+	    "-DENABLE_MT_TESTS",
+	    "-DENABLE_FS_TESTS",
     ]
 }
 
 const cflags_r5f_nortos = {
     common: [
         "-Wno-unused-function",
-	"-DENABLE_FS_TESTS",
+	    "-DENABLE_FS_TESTS",
     ]
 }
 
 const cflags_a53_nortos = {
     common: [
         "-Wno-unused-function",
-	"-DENABLE_FS_TESTS",
+	    "-DENABLE_FS_TESTS",
     ]
 }
 
@@ -313,7 +313,7 @@ const defines_a53_smp = {
 const defines_c7 = {
     common:[
         "C7_CORE",
-	"SOC_AM62DX",
+	    "SOC_AM62DX",
     ]
 }
 
@@ -481,24 +481,24 @@ function getComponentBuildProperty(buildOption) {
     build_property.syscfgfile = syscfgfile;
 
     if(buildOption.cpu.match(/r5f*/)) {
-	if(buildOption.os.match(/freertos*/) )
-	{
+	    if(buildOption.os.match(/freertos*/) )
+	    {
            build_property.includes = includes_freertos_r5f;
            build_property.libdirs = libdirs_freertos_r5;
            build_property.libs = libs_freertos_dm_r5f;
            build_property.templates = templates_freertos_r5f;
            build_property.defines = defines_dm_r5f;
            build_property.cflags = cflags_r5f_freertos;
-	}
-	else
-	{
-	   build_property.includes = includes_nortos_r5f;
-	   build_property.libdirs = libdirs_nortos_r5;
-	   build_property.libs = libs_nortos_dm_r5f;
-	   build_property.templates = templates_nortos_r5f;
-	   build_property.defines = defines_dm_r5f;
+	    }
+	    else
+	    {
+	        build_property.includes = includes_nortos_r5f;
+	        build_property.libdirs = libdirs_nortos_r5;
+	        build_property.libs = libs_nortos_dm_r5f;
+	        build_property.templates = templates_nortos_r5f;
+	        build_property.defines = defines_dm_r5f;
            build_property.cflags = cflags_r5f_nortos;
-	}
+	    }
     }
     else if(buildOption.cpu.match(/a53*/)){
         if(buildOption.os.match(/freertos-smp*/))

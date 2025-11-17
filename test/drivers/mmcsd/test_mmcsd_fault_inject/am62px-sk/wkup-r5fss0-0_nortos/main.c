@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2021-2026 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,35 +30,36 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- *  \file test_mmcsd_sd.h
- *
- *  \brief This file contains all the structures, macros, enums,
- *  function declarations used by the MMCSD sd test cases
- *
- */
-
-#ifndef TEST_MMCSD_SD_H_
-#define TEST_MMCSD_SD_H_
-
-/* ========================================================================== */
-/*                             Include Files                                  */
-/* ========================================================================== */
-
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
-#include <inttypes.h>
+#include <stdlib.h>
 #include "ti_drivers_config.h"
+#include "ti_board_config.h"
+#include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+void test_main(void *args);
 
-int32_t TestMmcsd_sd(void *args);
+int main()
+{
+    System_init();
+    Board_init();
 
-#ifdef __cplusplus
+    int32_t status = SystemP_SUCCESS;
+
+    /* Open drivers */
+    Drivers_open();
+    /* Open flash and board drivers */
+    status = Board_driversOpen();
+    DebugP_assert(status==SystemP_SUCCESS);
+
+    test_main(NULL);
+
+    /* Close board and flash drivers */
+    Board_driversClose();
+    /* Close drivers */
+    Drivers_close();
+
+    Board_deinit();
+    System_deinit();
+
+    return 0;
 }
-#endif
-
-#endif /* #ifndef TEST_MMCSD_SD_H_ */

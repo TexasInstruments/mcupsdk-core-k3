@@ -25,7 +25,7 @@ const filedirs = {
         "..",       /* core_os_combo base */
         "../..",    /* Board base */
         "../../..", /* Example base */
-	"../../../../test_mmcsd_common/", /* Common files */
+	    "../../../../test_mmcsd_common/", /* Common files */
     ],
 };
 
@@ -76,14 +76,14 @@ const includes_freertos_r5f = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/r5f",
-	"../../../../test_mmcsd_common/", /* Common files */
+	    "../../../../test_mmcsd_common/", /* Common files */
         "${MCU_PLUS_SDK_PATH}/test/unity/",
     ],
 };
 
 const includes_nortos_r5f = {
     common: [
-	"../../../../test_mmcsd_common/", /* Common files */
+	    "../../../../test_mmcsd_common/", /* Common files */
         "${MCU_PLUS_SDK_PATH}/test/unity/",
     ],
 };
@@ -93,14 +93,14 @@ const includes_freertos_a53 = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53",
-	"../../../../test_mmcsd_common/", /* Common files */
+	    "../../../../test_mmcsd_common/", /* Common files */
         "${MCU_PLUS_SDK_PATH}/test/unity",
     ],
 };
 
 const includes_nortos_a53 = {
     common: [
-	"../../../../test_mmcsd_common/", /* Common files */
+	    "../../../../test_mmcsd_common/", /* Common files */
         "${MCU_PLUS_SDK_PATH}/test/unity",
     ],
 };
@@ -149,7 +149,7 @@ const libs_nortos_a53 = {
 
 const cflags_a53 = {
     common: [
-	"-DENABLE_RAW_TESTS",
+	    "-DENABLE_RAW_TESTS",
         "-Wno-unused-function",
     ]
 }
@@ -296,15 +296,15 @@ function getComponentBuildProperty(buildOption) {
     build_property.files = files;
 
     if(buildOption.cpu.match(/r5f*/)) {
-	if(buildOption.os.match(/freertos*/)) {
-        	build_property.includes = includes_freertos_r5f;
+	    if(buildOption.os.match(/freertos*/)) {
+            build_property.includes = includes_freertos_r5f;
         	build_property.libs = libs_freertos_dm_r5f;
         	build_property.libdirs = libdirs_freertos_dm_r5f;
         	build_property.templates = templates_dm_r5f_freertos;
         	build_property.defines = defines_dm_r5;
         	build_property.cflags = cflags_dm_r5f;
-	}
-	else {
+	    }
+	    else {
 		
         	build_property.includes = includes_nortos_r5f;
         	build_property.libs = libs_freertos_dm_r5f;
@@ -312,24 +312,23 @@ function getComponentBuildProperty(buildOption) {
         	build_property.templates = templates_dm_r5f_nortos;
         	build_property.defines = defines_dm_r5;
         	build_property.cflags = cflags_dm_r5f;
-	}
+	    }
     }
-
     else if(buildOption.cpu.match(/a53*/)) {
-	if(buildOption.os.match(/freertos*/)) {
+	    if(buildOption.os.match(/freertos*/)) {
         	build_property.includes = includes_freertos_a53;
         	build_property.libdirs = libdirs_freertos_a53;
        	 	build_property.libs = libs_freertos_a53;
         	build_property.templates = templates_freertos_a53;
         	build_property.cflags = cflags_a53;
-	}
-	else {
+	    }
+	    else {
         	build_property.includes = includes_nortos_a53;
         	build_property.libdirs = libdirs_nortos_a53;
        	 	build_property.libs = libs_nortos_a53;
         	build_property.templates = templates_nortos_a53;
         	build_property.cflags = cflags_a53;
-	}
+	    }
     }
 
     return build_property;

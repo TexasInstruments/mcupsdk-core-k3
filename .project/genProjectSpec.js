@@ -47,6 +47,9 @@ const utils = {
     getProjectSpecDevice: (device) => {
         return require(`./device/project_${device}`).getProjectSpecDevice(device);
     },
+    getSdkOpn: (device) => {
+        return require(`./device/project_${device}`).getSdkOpn();
+    },
     getProjectSpecCpu: (device, cpu) => {
         return require(`./device/project_${device}`).getProjectSpecCpu(cpu);
     },

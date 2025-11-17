@@ -5,14 +5,15 @@
         deviceName = "AM62x"
     deviceName = deviceName.toUpperCase();
     sysCfgVersion = args.utils.getSysCfgVersionProjectSpec();
+    sdkOpnName = args.utils.getSdkOpn(args.device)
 %%}
 {
 % if(isDevelopmentMode) {
     "name": "MCU_PLUS_SDK",
     "displayName": "MCU+ SDK",
 % } else {
-    % if ((args.device == "am275x") || (args.device == "am62lx")) {
-    "name": "`deviceName`_FREERTOS_SDK",
+    "name": "`sdkOpnName`",
+    % if ((args.device == "am275x") || (args.device == "am62dx") || (args.device == "am62lx")) {
     "displayName": "FreeRTOS SDK for `deviceName`",
     % } else {
     "name": "MCU_PLUS_SDK_`deviceName`",

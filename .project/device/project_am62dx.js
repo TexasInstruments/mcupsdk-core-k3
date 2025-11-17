@@ -364,11 +364,15 @@ function getLinuxFwName(cpu) {
 }
 
 function getProductNameProjectSpec() {
-    return "MCU_PLUS_SDK_AM62DX";
+    return "AM62D_FREERTOS_SDK";
 }
 
 function getTirexId() {
-    return "MCU-PLUS-SDK-AM62D";
+    return "AM62D-FREERTOS-SDK";
+}
+
+function getSdkOpn() {
+    return "AM62D-FREERTOS-SDK";
 }
 
 function getFlashAddr() {
@@ -390,5 +394,6 @@ module.exports = {
     getLinuxFwName,
     getProductNameProjectSpec,
     getTirexId,
+    getSdkOpn,
     getFlashAddr,
 };

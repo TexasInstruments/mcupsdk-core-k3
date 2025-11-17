@@ -295,6 +295,9 @@ function getTirexId() {
     return "AM275-FREERTOS-SDK";
 }
 
+function getSdkOpn() {
+    return "MCU-PLUS-SDK-AM62X";
+}
 function getFlashAddr() {
     return 0x60000000;
 }
@@ -314,5 +317,6 @@ module.exports = {
     getLinuxFwName,
     getProductNameProjectSpec,
     getTirexId,
+    getSdkOpn,
     getFlashAddr,
 };

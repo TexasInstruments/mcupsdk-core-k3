@@ -25,13 +25,20 @@
         }
         else if(args.device == "am62lx")
         {
-            sdkName="FreeRTOS SDK"
             coreList="ARM A53"
         }
         else if(args.device == "am275x")
         {
-            sdkName="FreeRTOS SDK"
             coreList="ARM R5F, TI C7X"
+        }
+
+        if((args.device == "am62x") || (args.device == "am62ax") || (args.device == "am62px") || (args.device == "am62x") || (args.device == "j722s"))
+        {
+            sdkName="MCU+ SDK"
+        }
+        else 
+        {
+            sdkName="FreeRTOS SDK"
         }
     }
 %%}

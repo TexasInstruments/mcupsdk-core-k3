@@ -235,6 +235,10 @@ function getTirexId() {
     return "MCU-PLUS-SDK-J722S";
 }
 
+function getSdkOpn() {
+    return "MCU-PLUS-SDK-J722S";
+}
+
 function getFlashAddr() {
     return 0x60000000;
 }
@@ -255,4 +259,5 @@ module.exports = {
     getProductNameProjectSpec,
     getTirexId,
     getFlashAddr,
+    getSdkOpn
 };

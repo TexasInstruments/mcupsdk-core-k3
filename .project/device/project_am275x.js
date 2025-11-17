@@ -296,7 +296,7 @@ function getTirexId() {
 }
 
 function getSdkOpn() {
-    return "MCU-PLUS-SDK-AM62X";
+    return "AM275-FREERTOS-SDK";
 }
 function getFlashAddr() {
     return 0x60000000;

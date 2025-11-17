@@ -32,7 +32,7 @@
             coreList="ARM R5F, TI C7X"
         }
 
-        if((args.device == "am62x") || (args.device == "am62ax") || (args.device == "am62px") || (args.device == "am62x") || (args.device == "j722s"))
+        if((args.device == "am62x") || (args.device == "am62ax") || (args.device == "am62px") || (args.device == "j722s"))
         {
             sdkName="MCU+ SDK"
         }

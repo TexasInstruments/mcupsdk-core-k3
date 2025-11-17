@@ -60,6 +60,7 @@ const cgt_common = {
             "--ram_model",
             "--warn_sections",
             "-x",
+            "--mapfile_contents=sym_defs",
         ],
     },
     libdirs: {

@@ -1,0 +1,634 @@
+"use strict";
+/*
+ * Copyright (c) 2025, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+
+Object.defineProperty(exports, "__esModule", { value: true });
+class Heap {
+}
+class Hwi {
+}
+class TaskModule {
+}
+class TaskInstance {
+}
+class QueueInstance {
+}
+class SystemStack{
+}
+class TimerInstance {
+}
+class FreeRTOS {
+    constructor(ctx) {
+        this.ctx = ctx;
+        this.viewMap = [
+            { name: 'Heap Overview', fxn: this.getHeap.bind(this), structName: Heap },
+            { name: 'HW Interrupts', fxn: this.getHwiInstances.bind(this), structName: Hwi },
+            { name: 'Semaphores, Mutex and Queue Instances', fxn: this.getQueueInstances.bind(this), structName: QueueInstance },
+            { name: 'Stack Overview', fxn: this.getSystemStack.bind(this), structName: SystemStack },
+            { name: 'Task Instances', fxn: this.getTaskInstances.bind(this), structName: TaskInstance },
+            { name: 'Task Overview', fxn: this.getTaskModule.bind(this), structName: TaskModule },
+            { name: 'Timers Overview', fxn: this.getTimers.bind(this), structName: TimerInstance },
+        ];
+        this.Program = this.ctx.getProgram();
+    }
+
+    async getHeap(){
+        let table = new Array();
+
+        let heapInfo = new Heap();
+        heapInfo.Type = "System";
+
+        let a53 = await this.isA53();
+        let c7x = await this.isC7x();
+        let r5f = await this.isR5F();
+
+        if (a53) {
+            heapInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__heap_start__")).toString(16);
+            heapInfo.Size = await this.Program.lookupSymbolValue("__TI_HEAP_SIZE");
+        }
+        else if (r5f) {
+            heapInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("_sys_memory")).toString(16);
+            heapInfo.Size = await this.Program.lookupSymbolValue("__SYSMEM_SIZE");
+        }
+        else if (c7x) {
+            heapInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("_sys_memory")).toString(16);
+            heapInfo.Size = await this.Program.lookupSymbolValue("__TI_SYSMEM_SIZE");
+        }
+
+        heapInfo.Description = "Heap used by malloc() and pvPortMalloc()";
+
+        table.push(heapInfo);
+        table.sort(compareType);
+        return (table);
+    }
+
+    async getHwiInstances() {
+        let table = new Array();
+
+        let a53 = await this.isA53();
+        let c7x = await this.isC7x();
+        let r5f = await this.isR5F();
+
+        if(r5f || a53){
+            let hwiCtrl = await this.Program.fetchVariable("gHwiCtrl");
+
+            for (let i = 0; i < hwiCtrl.isr.length; i++) {
+                if (hwiCtrl.isr[i] != 0) {
+                    let hwi = new Hwi();
+
+                    hwi.InterruptNum = i;
+                    hwi.IsrAddress = hwiCtrl.isr[i];
+                    hwi.IsrArgs = hwiCtrl.isrArgs[i];
+
+                    table.push(hwi);
+                }
+            }
+        }
+
+        if(c7x){
+            let hwiCtrl = await this.Program.fetchVariable("Hwi_Module_state");
+
+            for (let i = 0; i < hwiCtrl.dispatchTable.length; i++) {
+                if (hwiCtrl.dispatchTable[i] != 0) {
+                    let hwi = new Hwi();
+
+                    let hwiObjAddr = hwiCtrl.dispatchTable[i];
+                    let hwiObj = await this.Program.fetchFromAddr(hwiObjAddr, "Hwi_Object");
+
+                    hwi.InterruptNum = i;
+                    hwi.IsrAddress = hwiObj.fxn;
+                    hwi.IsrArgs = hwiObj.args;
+
+                    table.push(hwi);
+                }
+            }
+        }
+
+        return table;
+    }
+
+    async getTaskModule() {
+        let view = [];
+
+        let taskInfo = new TaskModule();
+
+        let readyList = await this.Program.fetchVariable('pxReadyTasksLists');
+        taskInfo.NumPriorities = readyList.length;
+        taskInfo.NumTasks = await this.Program.fetchVariable('uxCurrentNumberOfTasks');
+        taskInfo.TopReadyPriority = await this.Program.fetchVariable("uxTopReadyPriority");
+        taskInfo.NumOverflows = await this.Program.fetchVariable("xNumOfOverflows");
+        taskInfo.SchedulerStarted = Boolean(await this.Program.fetchVariable("xSchedulerRunning"));
+        taskInfo.State = await this.Program.fetchVariable("uxSchedulerSuspended") ? "Suspended" : "Running";
+
+        view.push(taskInfo);
+        return (view);
+    }
+
+    async getTaskInstances() {
+        const table = [];
+        const readyList = await this.Program.fetchVariable('pxReadyTasksLists');
+
+        for (let i = 0; i < readyList.length; i++) {
+            await this.fillInTaskInstance(table, readyList[i], 'Ready');
+        }
+
+        const delay1List = await this.Program.fetchVariable('xDelayedTaskList1');
+        await this.fillInTaskInstance(table, delay1List, 'Blocked');
+        const delay2List = await this.Program.fetchVariable('xDelayedTaskList2');
+        await this.fillInTaskInstance(table, delay2List, 'Blocked');
+
+        try {
+            const suspendedList = await this.Program.fetchVariable('xSuspendedTaskList');
+            await this.fillInTaskInstance(table, suspendedList, 'Suspended');
+        }
+        catch (e) {
+
+        }
+        try {
+            const terminatedList = await this.Program.fetchVariable('xTasksWaitingTermination');
+            await this.fillInTaskInstance(table, terminatedList, 'Terminated');
+        }
+        catch (e) {
+
+        }
+
+        table.sort(compareAddress);
+        return (table);
+    }
+
+    async getSystemStack() {
+        let table = new Array();
+
+        let a53 = await this.isA53();
+        let c7x = await this.isC7x();
+        let r5f = await this.isR5F();
+        let freertos = await this.isFREERTOS();
+
+        if (r5f) {
+            let stackInfo = new SystemStack();
+
+            stackInfo.Type = "IRQ";
+            stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__IRQ_STACK_END")).toString(16)
+            stackInfo.Size = await this.Program.lookupSymbolValue("__IRQ_STACK_SIZE");
+            if (freertos)
+                stackInfo.Description = "Stack used by IRQ for initial IRQ handling before switching to SVC stack";
+
+            table.push(stackInfo);
+
+            stackInfo = new SystemStack()
+
+            stackInfo.Type = "FIQ";
+            stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__FIQ_STACK_END")).toString(16)
+            stackInfo.Size = await this.Program.lookupSymbolValue("__FIQ_STACK_SIZE");
+
+            table.push(stackInfo);
+
+            stackInfo = new SystemStack();
+
+            stackInfo.Type = "SVC";
+            stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__SVC_STACK_END")).toString(16)
+            stackInfo.Size = await this.Program.lookupSymbolValue("__SVC_STACK_SIZE");
+            if (freertos)
+                stackInfo.Description = "Stack used by SVC handler and also by IRQ handler after initial IRQ handling. User ISR runs within this stack context";
+
+            table.push(stackInfo);
+
+            stackInfo = new SystemStack()
+
+            stackInfo.Type = "ABORT";
+            stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__ABORT_STACK_END")).toString(16)
+            stackInfo.Size = await this.Program.lookupSymbolValue("__ABORT_STACK_SIZE");
+
+            table.push(stackInfo);
+
+            stackInfo = new SystemStack()
+
+            stackInfo.Type = "UNDEFINED";
+            stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__UNDEFINED_STACK_END")).toString(16)
+            stackInfo.Size = await this.Program.lookupSymbolValue("__UNDEFINED_STACK_SIZE");
+
+            table.push(stackInfo);
+
+            stackInfo = new SystemStack()
+
+            stackInfo.Type = "STACK";
+            stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__STACK_END")).toString(16)
+            stackInfo.Size = await this.Program.lookupSymbolValue("__STACK_SIZE");
+            if (freertos)
+                stackInfo.Description = "Stack used by program until FreeRTOS schedular is started in main()";
+            else
+                stackInfo.Description = "Stack used by non ISR context";
+
+            table.push(stackInfo);
+        }
+        else if (a53) {
+            let stackInfo = new SystemStack();
+
+            stackInfo.Type = "EL1 STACK";
+            stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__TI_STACK_BASE")).toString(16)
+            stackInfo.Size = await this.Program.lookupSymbolValue("__TI_STACK_SIZE");
+            if (freertos)
+                stackInfo.Description = "Stack used by program until FreeRTOS schedular is started in main() and later stack used by ISR context";
+            else
+                stackInfo.Description = "Stack used by non ISR and ISR context";
+
+            table.push(stackInfo);
+        }
+        else if (c7x) {
+            let stackInfo = new SystemStack();
+
+            stackInfo.Type = "STACK";
+            stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__TI_STACK_END")).toString(16)
+            stackInfo.Size = await this.Program.lookupSymbolValue("__TI_STACK_SIZE");
+            if (freertos)
+                stackInfo.Description = "Stack used by program until FreeRTOS schedular is started in main() and later stack used by ISR context";
+            else
+                stackInfo.Description = "Stack used by non ISR and ISR context";
+
+            table.push(stackInfo);
+        }
+        return (table);
+    }
+
+    async fillInTaskInstance(table, list, state)
+    {
+        let ptrSize = 4;
+        let a53 = await this.isA53();
+        let c7x = await this.isC7x();
+
+        if(a53 || c7x)
+        {
+            ptrSize = 8;
+        }
+
+        let tcbBase = list.xListEnd.pxNext - ptrSize;
+        const currentTask = await this.Program.fetchVariable('pxCurrentTCB');
+
+        for (let i = 0; i < list.uxNumberOfItems; i++) {
+            const task = await this.Program.fetchFromAddr(tcbBase, 'TCB_t');
+            const taskInfo = new TaskInstance();
+            taskInfo.Address = '0x' + tcbBase.toString(16);
+
+            let name = '';
+            for (let j = 0; j < 12; j++) {
+                if (task.pcTaskName[j] == 0)
+                    break;
+                name = name + String.fromCharCode(task.pcTaskName[j]);
+            }
+
+            taskInfo.TaskName = name;
+            taskInfo.Priority = task.uxPriority;
+            taskInfo.BasePriority = task.uxBasePriority;
+
+            if (tcbBase == currentTask) {
+                taskInfo.State = 'Running';
+            }
+            else {
+                taskInfo.State = state;
+            }
+
+            taskInfo.StackBase = task.pxStack;
+            taskInfo.CurrentTaskSP = task.pxTopOfStack;
+
+            let stackData = await this.Program.fetchArray('8u', task.pxStack, 4);
+            let index = task.pxStack;
+            /* Find the first non-0xa5 */
+            while ((stackData[0] == 0xa5) &&
+                (stackData[1] == 0xa5) &&
+                (stackData[2] == 0xa5) &&
+                (stackData[3] == 0xa5)) {
+                index += 4;
+                stackData = await this.Program.fetchArray('8u', index, 4);
+            }
+            index -= 8 * 4;
+            if ((taskInfo.StackBase >= index) ||
+                (taskInfo.StackBase >= taskInfo.CurrentTaskSP)) {
+                taskInfo.UnusedStackSize = 'Stack Overflow';
+            }
+            else {
+                index -= 4;
+                taskInfo.UnusedStackSize = index - taskInfo.StackBase;
+            }
+
+            if (typeof taskInfo.StackBase === 'number') {
+                taskInfo.StackBase = '0x' + taskInfo.StackBase.toString(16);
+            }
+            if (typeof taskInfo.CurrentTaskSP === 'number') {
+                taskInfo.CurrentTaskSP = '0x' + taskInfo.CurrentTaskSP.toString(16);
+            }
+
+            table.push(taskInfo);
+            tcbBase = task.xStateListItem.pxNext - ptrSize;
+        }
+    }
+
+    async getTimers() {
+        const table = [];
+        let errVal = 0;
+
+        try{
+            const activeList1 = await this.Program.fetchVariable("xActiveTimerList1");
+            await this.fillInTimerInstance(table, activeList1);
+        }
+        catch(e){
+            errVal++;
+        }
+        try{
+            const activeList2 = await this.Program.fetchVariable("xActiveTimerList2");
+            await this.fillInTimerInstance(table, activeList2);
+        }
+        catch(e){
+            errVal++;
+        }
+
+        if(errVal == 2){
+            let message = new TimerInstance();
+            message.Address = "No active timers, or configUSE_TIMERS is set to 0";
+            table.push(message);
+            return (table);
+        }
+
+        table.sort(compareHandle);
+        return table;
+    }
+
+    async fillInTimerInstance(table, list) {
+        if(list.uxNumberOfItems > 0)
+        {
+            let listItem = await this.Program.fetchFromAddr(list.xListEnd.pxNext, "ListItem_t");
+            for (let i = 0; i < list.uxNumberOfItems; i++)
+            {
+                let timer = await this.Program.fetchFromAddr(listItem.pvOwner, "Timer_t");
+                let timerInfo = new TimerInstance();
+
+                timerInfo.Handle = '0x' + listItem.pvOwner.toString(16);
+                timerInfo.Name = await this.helperReadStringFromAddr(timer.pcTimerName, 16);
+                timerInfo.PeriodInTicks = timer.xTimerPeriodInTicks;
+                timerInfo.AutoReload = "No";
+                timerInfo.Active = "No";
+                timerInfo.StaticallyAloc = "No";
+
+                if( timer.ucStatus & 0x1 )
+                    timerInfo.Active = "Yes";
+                if( timer.ucStatus & 0x2 )
+                    timerInfo.StaticallyAloc = "Yes";
+                if( timer.ucStatus & 0x4 )
+                    timerInfo.AutoReload = "Yes";
+
+                timerInfo.CallbackAddress = (timer.pxCallbackFunction != 0) ? '0x' + timer.pxCallbackFunction.toString(16) : "-" ;
+                timerInfo.TimerID = timer.pvTimerID;
+
+                table.push(timerInfo);
+
+                if( i < (list.uxNumberOfItems-1))
+                {
+                    /* Traverse the list */
+                    listItem = await this.Program.fetchFromAddr(listItem.pxNext, "ListItem_t");
+                }
+            }
+        }
+    }
+
+    async isR5F() {
+        try {
+            let status = false;
+            const symbolValue = await this.Program.lookupSymbolValue("__IRQ_STACK_END");
+            if (symbolValue >= 0) {
+                status = true;
+            }
+            else {
+                status = false;
+            }
+            return status;
+        }
+        catch (e) {
+            return false;
+        }
+    }
+    async isA53() {
+        try {
+            let status = false;
+            const symbolValue = await this.Program.lookupSymbolValue("__data_start__");
+            if (symbolValue >= 0) {
+                status = true;
+            }
+            else {
+                status = false;
+            }
+            return status;
+        }
+        catch (e) {
+            return false;
+        }
+    }
+
+    async isC7x() {
+        try {
+            let status = false;
+            const symbolValue = await this.Program.lookupSymbolValue("gMmu_tableArray_NS");
+            if (symbolValue > 0) {
+                status = true;
+            }
+            else {
+                status = false;
+            }
+            return status;
+        }
+        catch (e) {
+            return false;
+        }
+    }
+
+    async isFREERTOS() {
+        try {
+            let status = false;
+            const symbolValue = await this.Program.lookupSymbolValue("pxCurrentTCB");
+            if (symbolValue > 0) {
+                status = true;
+            }
+            else {
+                status = false;
+            }
+            return status;
+        }
+        catch (e) {
+            return false;
+        }
+    }
+    async helperReadStringFromAddr(ptr, maxLen){
+        let name = "";
+        let arr = await this.Program.fetchFromAddr(ptr, "char", maxLen);
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i] == 0) break;
+            name += String.fromCharCode(arr[i]);
+        }
+        return name;
+    }
+
+    async helperGetListOfAddressesInListObj(listObj){
+        let currentItem = await this.Program.fetchFromAddr(listObj.xListEnd.pxNext, "ListItem_t");
+        let list = [];
+
+        for (let i = 0; i < listObj.uxNumberOfItems; i++) {
+            let address = currentItem.pvOwner;
+            list.push(address);
+
+            /* Traverse the list */
+            currentItem = await this.Program.fetchFromAddr(currentItem.pxNext, "ListItem_t");
+        }
+
+        return list;
+    }
+    async getQueueInstances() {
+        try {
+            const table = [];
+
+            let xQueueRegistry = await this.Program.fetchVariable("xQueueRegistry");
+            if (!xQueueRegistry) {
+                throw new Error("xQueueRegistry is undefined or null");
+            }
+
+            for (let i = 0; i < xQueueRegistry.length; i++) {
+                if (xQueueRegistry[i].pcQueueName != 0 && xQueueRegistry[i].xHandle != 0) {
+                    let xHandle = await this.Program.fetchFromAddr(xQueueRegistry[i].xHandle, "xQUEUE_ROV");
+                    if (!xHandle) {
+                        throw new Error("xHandle is undefined or null");
+                    }
+
+                    let queue = new QueueInstance();
+                    queue.Type = await this.getQueueType(xHandle.ucQueueType);
+                    queue.Name = await this.helperReadStringFromAddr(xQueueRegistry[i].pcQueueName, 16)
+                    queue.Handle = "0x" + Number(xQueueRegistry[i].xHandle).toString(16);
+                    queue.CurCount = xHandle.uxMessagesWaiting;
+                    queue.MaxCount = xHandle.uxLength;
+                    queue.QueueElemSize = xHandle.uxItemSize;
+                    queue.TasksWaitingToRecv = xHandle.xTasksWaitingToReceive.uxNumberOfItems;
+                    queue.TasksWaitingToSend = xHandle.xTasksWaitingToSend.uxNumberOfItems;
+
+                    if (queue.TasksWaitingToRecv > 0) {
+                        let task = await this.getTaskTcbFromQueueList(xHandle.xTasksWaitingToReceive);
+
+                        if (!task) {
+                            throw new Error("task is undefined or null");
+                        }
+
+                        queue.TopWaitingToRecvTaskHandle = task.tcbBase;
+                        queue.TopWaitingToRecvTaskName = this.getString(task.tcb.pcTaskName);
+                    }
+
+                    if (queue.TasksWaitingToSend > 0) {
+                        let task = await this.getTaskTcbFromQueueList(xHandle.xTasksWaitingToSend);
+
+                        if (!task) {
+                            throw new Error("task is undefined or null");
+                        }
+
+                        queue.TopWaitingToSendTaskHandle = task.tcbBase;
+                        queue.TopWaitingToSendTaskName = this.getString(task.tcb.pcTaskName);
+                    }
+
+                    if ((queue.Type == "Mutex" || queue.Type == "Mutex (Recursive)") && xHandle.xSemaphore.xMutexHolder != 0) {
+                        let tcb = await this.Program.fetchFromAddr(xHandle.xSemaphore.xMutexHolder, "TCB_t");
+
+                        if (!tcb) {
+                            throw new Error("tcb is undefined or null");
+                        }
+
+                        queue.MutexHolderTaskHandle = "0x" + Number(xHandle.xSemaphore.xMutexHolder).toString(16);
+                        queue.MutexHolderTaskName = this.getString(tcb.pcTaskName);
+                        queue.RecursiveMutexCallCount = xHandle.xSemaphore.uxRecursiveCallCount;
+                    }
+
+                    table.push(queue);
+                }
+            }
+
+            table.sort(compareType);
+            return table;
+        } catch (error) {
+            return [];
+        }
+    }
+
+    async getQueueType(ucQueueType){
+        switch (ucQueueType) {
+            default:
+            case 0:
+                return "Queue";
+            case 1:
+                return "Mutex";
+            case 2:
+                return "Semaphore (Counting)";
+            case 3:
+                return "Semaphore (Binary)";
+            case 4:
+                return "Mutex (Recursive)";
+        }
+    }
+
+    async getTaskTcbFromQueueList(list) {
+        let listItem = await this.Program.fetchFromAddr(list.xListEnd.pxNext, "ListItem_t");
+        let tcb = await this.Program.fetchFromAddr(listItem.pvOwner, "TCB_t");
+        return { tcb: tcb, tcbBase: listItem.pvOwner};
+    }
+
+    async getString(charPtr)
+    {
+        let name = "";
+        for (let j = 0; j < 12; j++) {
+            if (charPtr[j] == 0) break;
+            name = name + String.fromCharCode(charPtr[j]);
+        }
+        return name;
+    }
+
+    getModuleName() {
+        return 'FreeRTOS';
+    }
+
+}
+
+/* Helper functions */
+function compareAddress(a, b) {
+    return +(a.Address ?? 0) - +(b.Address ?? 0);
+}
+
+function compareHandle(a, b) {
+    return +(a.Handle ?? 0) - +(b.Handle ?? 0);
+}
+
+function compareType(a, b) {
+    return +(a.Type ?? 0) - +(b.Type ?? 0);
+}
+
+exports.classCtor = FreeRTOS;

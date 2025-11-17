@@ -27,6 +27,7 @@ const defines_r5f = {
     common: [
         "SOC_AM62AX",
         "MCU_PLUS_SDK",
+        "CONFIG_LPM_DM",
     ],
 };
 

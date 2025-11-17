@@ -41,13 +41,13 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define TEST_SCICLIENT_APP_TISCI_MSG_COUNT 66U
+#define TEST_SCICLIENT_APP_TISCI_MSG_COUNT (sizeof(gTestMessageType) / sizeof(gTestMessageType[0]))
 
 /* ========================================================================== */
 /*                           Global Variables                                 */
 /* ========================================================================== */
 
-const int32_t gTestMessageType[TEST_SCICLIENT_APP_TISCI_MSG_COUNT] =
+const int32_t gTestMessageType[] =
 {
     TISCI_MSG_VERSION,
     TISCI_MSG_DM_VERSION,
@@ -143,7 +143,7 @@ void sciclient_testMessageType(void *args)
         sizeof (resetResponse)
     };
 
-    for(msgCnt = 0; msgCnt <= TEST_SCICLIENT_APP_TISCI_MSG_COUNT; msgCnt++)
+    for(msgCnt = 0; msgCnt < TEST_SCICLIENT_APP_TISCI_MSG_COUNT; msgCnt++)
     {
         /* Check for the SYSFW version by sending a request */
         struct tisci_msg_version_req verRequest;
@@ -168,5 +168,5 @@ void sciclient_testMessageType(void *args)
     }
 
     retVal = Sciclient_service(&resetReqPrm, &resetRespPrm);
-    DebugP_log("\r\n msgType = %#06x retVal= %d and respPrm.flags = %d", gTestMessageType[msgCnt], retVal, resetRespPrm.flags);
+    DebugP_log("\r\n msgType = %#06x retVal= %d and respPrm.flags = %d", resetReqPrm.messageType, retVal, resetRespPrm.flags);
 }

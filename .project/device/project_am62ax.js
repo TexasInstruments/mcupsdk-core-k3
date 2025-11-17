@@ -228,6 +228,8 @@ const example_file_list = [
     "test/drivers/uart/.project/project.js",
     "test/drivers/udma_coverage/.project/project.js",
     "test/drivers/mcspi/mcspi/.project/project.js",
+    "test/drivers/mcspi/mcspi_master_slave/.project/project.js",
+    "test/drivers/mcspi/mcspi_master_slave_dma/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_fs_io/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_raw_io/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_fault_inject/.project/project.js",

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -29,20 +29,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /*
- *  The application demonstrates MCSPI slave operation by receiving
- *  a known data from the master and then sending the same
- *  and finally compare the results.Ipc sync is used for syncronization
- *  between the cores.
- *  Please connect pins as described below on AM64X/AM243X EVM.
- *  All the pins are available at SAFETY CONNECTOR J1 near power supply.
- *  MCU SPI1 pins are muxed with GPIO.
- *  MCU_SPI0_CS0(Pin 6)   ------------->   MCU_SPI1_CS0(Pin 7)
- *  MCU_SPI0_CLK(Pin 16)  ------------->   MCU_SPI1_CLK(Pin 9)
- *  MCU_SPI0_D0(Pin 4)    ------------->   MCU_SPI1_D1(Pin 12)
- *  MCU_SPI0_D1(Pin 2)    ------------->   MCU_SPI1_D0(Pin 5)
+ *  The application demonstrates MCSPI Master operation by sending
+ *  a known data from the master and then receiving the same from slave
+ *  and finally compare the results.
+ *  Please connect pins as described below on AM62AX-SK EVM.
+ *
+ *  MCU SPI0 CS1 = J8-8   ------------->   EXP SPI0 CS0 = J3-24
+ *  MCU SPI0 CLK= J8-18  ------------->   EXP SPI0 CLK= J3-23
+ *  MCU SPI0 D0 = J8-6    ------------->   EXP SPI0 D0 = J3-19
+ *  MCU SPI0 D1= J8-4    ------------->   EXP SPI0 D1 = J3-21
  */
+
+ /**
+ *  \file test_mcspi_slave.c
+ *
+ *  \brief This file contains implementation of system test cases for
+ *         mcspi slave
+ *
+ */
+
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
 
 #include "string.h"
 #include <kernel/dpl/DebugP.h>
@@ -50,6 +59,11 @@
 #include "ti_drivers_config.h"
 #include "ti_drivers_open_close.h"
 #include <unity.h>
+#include "system_test_utils.h"
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
 #define APP_MCSPI_MSGSIZE       (128U)
 #define APP_PERF_LOOP_ITER_CNT  (10U)
@@ -63,12 +77,36 @@
         } \
     } while(0) \
 
+#define SPI_TEST_NUM_CLK_LIST            (sizeof (gClkDividerTestListRampUp) / \
+                                          sizeof (gClkDividerTestListRampUp[0U]))
+
+
 typedef struct MCSPI_TestParams_s {
     MCSPI_ChConfig      mcspiChConfigParams;
     MCSPI_OpenParams    mcspiOpenParams;
     uint32_t            testcaseId;
     uint32_t            dataSize;
 } MCSPI_SlaveTestParams;
+
+/* ========================================================================== */
+/*                 Internal Function Declarations                             */
+/* ========================================================================== */
+static uint32_t TestMcspi_slaveTransfer(void *args);
+static int32_t TestMcspi_slaveMain(uint32_t size);
+static void TestMcspi_callBack(MCSPI_Handle handle, MCSPI_Transaction *trans);
+static void TestMcspi_setSlaveParams(MCSPI_SlaveTestParams *testParams, uint32_t tcId);
+static uint32_t TestMcspi_slaveTransferTc(void *args);
+static int32_t TestMcspi_slaveTransferPerformance(void *args);
+static int32_t TestMcspi_slaveTransfer_8_16_32Bit(void *args);
+
+/* ========================================================================== */
+/*                       Function Declarations                                */
+/* ========================================================================== */
+extern uint32_t get_master_core_id(void);
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
 
 static uint32_t   gClkDividerTestListRampUp[] =
 {
@@ -85,9 +123,6 @@ static uint32_t   gClkDividerTestListRampDown[] =
     8U, 7U, 6U, 5U, 4U, 3U, 2U, 1U
 };
 
-#define SPI_TEST_NUM_CLK_LIST            (sizeof (gClkDividerTestListRampUp) / \
-                                          sizeof (gClkDividerTestListRampUp[0U]))
-
 uint8_t gMcspiTxBuffer[APP_MCSPI_MSGSIZE];
 uint8_t gMcspiRxBuffer[APP_MCSPI_MSGSIZE];
 uint32_t gMcspiMasterTxBuffer[APP_MCSPI_MSGSIZE];
@@ -95,138 +130,128 @@ uint32_t gMcspiMasterRxBuffer[APP_MCSPI_MSGSIZE];
 /* Semaphore to indicate Tx/Rx completion used in callback api's */
 static SemaphoreP_Object gMcspiTransferDoneSem;
 
-static int32_t mcspi_slave_transfer(uint32_t size);
-void mcspi_slave_main(void *args);
-void test_mcspi_callback(MCSPI_Handle handle, MCSPI_Transaction *trans);
-static void test_mcspi_set_slave_params(MCSPI_SlaveTestParams *testParams, uint32_t tcId);
-static void test_mcspi_slave_transfer(void *args);
-static void test_mcspi_slave_transfer_performance(void *args);
-static void test_mcspi_slave_transfer_8_16_32bit(void *args);
+/* ========================================================================== */
+/*                            Function Definitions                            */
+/* ========================================================================== */
 
-void test_mcspi_slave_main(void *args)
+int32_t TestMcspi_slaveTest1(void *args)
 {
-    MCSPI_SlaveTestParams  testParams;
+    MCSPI_SlaveTestParams   SlavetestParams;
+    uint32_t test_case_id = *((int32_t *)args);
+    int32_t status = SystemP_FAILURE;
+
+    TestMcspi_setSlaveParams(&SlavetestParams, test_case_id );
+    status = TestMcspi_slaveTransfer((void*)&SlavetestParams);
+
+    return status;
+}
+
+int32_t TestMcspi_slaveTest2(void *args)
+{
+    MCSPI_SlaveTestParams   SlavetestParams;
+    uint32_t test_case_id = *((int32_t *)args);
+    int32_t status = SystemP_FAILURE;
+
+    TestMcspi_setSlaveParams(&SlavetestParams, test_case_id );
+    status = TestMcspi_slaveTransferTc((void*)&SlavetestParams);
+
+    return status;
+}
+
+int32_t TestMcspi_slaveTest3(void *args)
+{
+    MCSPI_SlaveTestParams   SlavetestParams;
+    uint32_t test_case_id = *((int32_t *)args);
     uint32_t          clkList;
     MCSPI_ChConfig   *chConfigParams;
     MCSPI_Config     *config;
     MCSPI_Attrs      *attrParams;
+    int32_t status = SystemP_FAILURE;
+    int32_t statusAll = SystemP_SUCCESS;
 
-    Drivers_open();
-
-    UNITY_BEGIN();
-
-    test_mcspi_set_slave_params(&testParams, 260);
-    RUN_TEST(mcspi_slave_main,  260, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 943);
-    RUN_TEST(test_mcspi_slave_transfer,  943, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 944);
-    RUN_TEST(test_mcspi_slave_transfer,  944, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 945);
-    RUN_TEST(test_mcspi_slave_transfer,  945, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 946);
-    RUN_TEST(test_mcspi_slave_transfer,  946, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 947);
-    RUN_TEST(test_mcspi_slave_transfer,  947, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 948);
-    RUN_TEST(test_mcspi_slave_transfer,  948, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 949);
-    RUN_TEST(test_mcspi_slave_transfer,  949, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 950);
-    RUN_TEST(test_mcspi_slave_transfer,  950, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 951);
-    RUN_TEST(test_mcspi_slave_transfer,  951, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 952);
-    RUN_TEST(test_mcspi_slave_transfer,  952, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 953);
-    RUN_TEST(test_mcspi_slave_transfer,  953, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 954);
-    RUN_TEST(test_mcspi_slave_transfer,  954, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 955);
-    /* Change clock divider as per test list */
-    chConfigParams = &(testParams.mcspiChConfigParams);
+    TestMcspi_setSlaveParams(&SlavetestParams, test_case_id );
+    chConfigParams = &(SlavetestParams.mcspiChConfigParams);
     config = &gMcspiConfig[CONFIG_MCSPI0];
     attrParams = (MCSPI_Attrs *)config->attrs;
     for (clkList = 0U; clkList < SPI_TEST_NUM_CLK_LIST; clkList++)
     {
         chConfigParams->bitRate = (attrParams->inputClkFreq / (gClkDividerTestListRampUp[clkList] + 1));
-        RUN_TEST(test_mcspi_slave_transfer,  955, (void*)&testParams);
-    }
-    test_mcspi_set_slave_params(&testParams, 956);
-    chConfigParams = &(testParams.mcspiChConfigParams);
-    config = &gMcspiConfig[CONFIG_MCSPI0];
-    attrParams = (MCSPI_Attrs *)config->attrs;
-    for (clkList = 0U; clkList < SPI_TEST_NUM_CLK_LIST; clkList++)
-    {
-        chConfigParams->bitRate = (attrParams->inputClkFreq / (gClkDividerTestListRampDown[clkList] + 1));
-        RUN_TEST(test_mcspi_slave_transfer,  956, (void*)&testParams);
-    }
-    test_mcspi_set_slave_params(&testParams, 957);
-    RUN_TEST(test_mcspi_slave_transfer,  957, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 958);
-    RUN_TEST(test_mcspi_slave_transfer,  958, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 959);
-    RUN_TEST(test_mcspi_slave_transfer,  959, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 960);
-    RUN_TEST(test_mcspi_slave_transfer,  960, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 961);
-    RUN_TEST(test_mcspi_slave_transfer,  961, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 962);
-    RUN_TEST(test_mcspi_slave_transfer,  962, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 963);
-    RUN_TEST(test_mcspi_slave_transfer,  963, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 964);
-    RUN_TEST(test_mcspi_slave_transfer,  964, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 965);
-    RUN_TEST(test_mcspi_slave_transfer,  965, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 966);
-    RUN_TEST(test_mcspi_slave_transfer,  966, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 967);
-    RUN_TEST(test_mcspi_slave_transfer,  967, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 968);
-    /* Change clock divider as per test list */
-    chConfigParams = &(testParams.mcspiChConfigParams);
-    config = &gMcspiConfig[CONFIG_MCSPI0];
-    attrParams = (MCSPI_Attrs *)config->attrs;
-    for (clkList = 0U; clkList < SPI_TEST_NUM_CLK_LIST; clkList++)
-    {
-        chConfigParams->bitRate = (attrParams->inputClkFreq / (gClkDividerTestListRampUp[clkList] + 1));
-        RUN_TEST(test_mcspi_slave_transfer,  968, (void*)&testParams);
-    }
-    test_mcspi_set_slave_params(&testParams, 969);
-    chConfigParams = &(testParams.mcspiChConfigParams);
-    config = &gMcspiConfig[CONFIG_MCSPI0];
-    attrParams = (MCSPI_Attrs *)config->attrs;
-    for (clkList = 0U; clkList < SPI_TEST_NUM_CLK_LIST; clkList++)
-    {
-        chConfigParams->bitRate = (attrParams->inputClkFreq / (gClkDividerTestListRampDown[clkList] + 1));
-        RUN_TEST(test_mcspi_slave_transfer,  969, (void*)&testParams);
-    }
-    test_mcspi_set_slave_params(&testParams, 976);
-    RUN_TEST(test_mcspi_slave_transfer_performance,  976, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 1013);
-    RUN_TEST(test_mcspi_slave_transfer,  1013, (void*)&testParams);
-    test_mcspi_set_slave_params(&testParams, 2302);
-    RUN_TEST(test_mcspi_slave_transfer_8_16_32bit,  2302, (void*)&testParams);
+        status = TestMcspi_slaveTransferTc((void*)&SlavetestParams);
 
-    UNITY_END();
+        if (status != SystemP_SUCCESS)
+        {
+            statusAll = SystemP_FAILURE;
+            DebugP_log("[MCSPI Slave] test %d failed for clkList: %d!!\r\n", test_case_id, clkList);
+        }
+    }
 
-    /* We dont close drivers to let the UART driver remain open and flush any pending messages to console
-     * and also closing mcspi driver in master */
-
-    /* Drivers_close(); */
-
-    return;
+    return statusAll;
 }
 
-void mcspi_slave_main(void *args)
+int32_t TestMcspi_slaveTest4(void *args)
+{
+    MCSPI_SlaveTestParams   SlavetestParams;
+    uint32_t test_case_id = *((int32_t *)args);
+    uint32_t          clkList;
+    MCSPI_ChConfig   *chConfigParams;
+    MCSPI_Config     *config;
+    MCSPI_Attrs      *attrParams;
+    int32_t status = SystemP_FAILURE;
+    int32_t statusAll = SystemP_SUCCESS;
+
+    TestMcspi_setSlaveParams(&SlavetestParams, test_case_id );
+    chConfigParams = &(SlavetestParams.mcspiChConfigParams);
+    config = &gMcspiConfig[CONFIG_MCSPI0];
+    attrParams = (MCSPI_Attrs *)config->attrs;
+    for (clkList = 0U; clkList < SPI_TEST_NUM_CLK_LIST; clkList++)
+    {
+        chConfigParams->bitRate = (attrParams->inputClkFreq / (gClkDividerTestListRampDown[clkList] + 1));
+        status = TestMcspi_slaveTransferTc((void*)&SlavetestParams);
+
+        if (status != SystemP_SUCCESS)
+        {
+            statusAll = SystemP_FAILURE;
+        }
+    }
+
+    return statusAll;
+}
+
+int32_t TestMcspi_slaveTest5(void *args)
+{
+    MCSPI_SlaveTestParams   SlavetestParams;
+    uint32_t test_case_id = *((int32_t *)args);
+    int32_t status = SystemP_FAILURE;
+
+    TestMcspi_setSlaveParams(&SlavetestParams, test_case_id );
+    status = TestMcspi_slaveTransferPerformance((void*)&SlavetestParams);
+
+    return status;
+}
+
+int32_t TestMcspi_slaveTest6(void *args)
+{
+    MCSPI_SlaveTestParams   SlavetestParams;
+    uint32_t test_case_id = *((int32_t *)args);
+    int32_t status = SystemP_FAILURE;
+
+    TestMcspi_setSlaveParams(&SlavetestParams, test_case_id );
+    status = TestMcspi_slaveTransfer_8_16_32Bit((void*)&SlavetestParams);
+
+    return status;
+}
+
+/* ========================================================================== */
+/*                      Internal Function Definitions                         */
+/* ========================================================================== */
+
+static uint32_t TestMcspi_slaveTransfer(void *args)
 {
     int32_t             status = SystemP_SUCCESS, statusAll = SystemP_SUCCESS;
     uint32_t            size;
 
-    DebugP_log("[MCSPI Slave] example started ...\r\n");
-
     size = APP_MCSPI_MSGSIZE/4;
-    status = mcspi_slave_transfer(size);
+    status = TestMcspi_slaveMain(size);
     if (status != SystemP_SUCCESS)
     {
         statusAll = status;
@@ -234,7 +259,7 @@ void mcspi_slave_main(void *args)
     }
 
     size = APP_MCSPI_MSGSIZE/2;
-    status = mcspi_slave_transfer(size);
+    status = TestMcspi_slaveMain(size);
     if (status != SystemP_SUCCESS)
     {
         statusAll = status;
@@ -242,28 +267,25 @@ void mcspi_slave_main(void *args)
     }
 
     size = APP_MCSPI_MSGSIZE;
-    status = mcspi_slave_transfer(size);
+    status = TestMcspi_slaveMain(size);
     if (status != SystemP_SUCCESS)
     {
         statusAll = status;
         DebugP_log("[MCSPI Slave] test failed for size: %d!!\r\n", size);
     }
 
-    /* wait for mcspi slave to be ready */
-    IpcNotify_syncAll(SystemP_WAIT_FOREVER);
-
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, statusAll);
-
+   return statusAll;
 }
 
-static int32_t mcspi_slave_transfer(uint32_t size)
+static int32_t TestMcspi_slaveMain(uint32_t size)
 {
     int32_t             status = SystemP_SUCCESS;
     uint32_t            i;
     int32_t             transferOK;
     MCSPI_Transaction   spiTransaction;
+    uint32_t masterId;
 
-    DebugP_log("[MCSPI Slave] transfer test with size:%d ...\r\n", size);
+    masterId = get_master_core_id();
 
     /* Memfill buffers */
     for(i = 0U; i < size; i++)
@@ -272,8 +294,7 @@ static int32_t mcspi_slave_transfer(uint32_t size)
         gMcspiRxBuffer[i] = 0U;
     }
 
-    /* indicate mcspi master that slave is ready */
-    IpcNotify_syncAll(SystemP_WAIT_FOREVER);
+    TestUtils_syncRemoteCore(masterId, SystemP_WAIT_FOREVER);
 
     /* Initiate transfer */
     spiTransaction.channel  = gConfigMcspi0ChCfg[0].chNum;
@@ -300,7 +321,7 @@ static int32_t mcspi_slave_transfer(uint32_t size)
     return status;
 }
 
-static void test_mcspi_slave_transfer(void *args)
+static uint32_t TestMcspi_slaveTransferTc(void *args)
 {
     int32_t             status = SystemP_SUCCESS;
     uint32_t            i, dataWidth, fifoBitMask, tempTxData, dataWidthIdx;
@@ -314,6 +335,9 @@ static void test_mcspi_slave_transfer(void *args)
     uint32_t           *tempRxPtr32 = NULL, *tempTxPtr32 = NULL;
     MCSPI_OpenParams   *mcspiOpenParams = &(testParams->mcspiOpenParams);
     MCSPI_ChConfig     *mcspiChConfigParams = &(testParams->mcspiChConfigParams);
+    uint32_t masterId;
+
+    masterId = get_master_core_id();
 
     /* Memset Buffers */
     memset(&gMcspiMasterTxBuffer[0U], 0, APP_MCSPI_MSGSIZE * sizeof(uint32_t));
@@ -322,7 +346,7 @@ static void test_mcspi_slave_transfer(void *args)
     MCSPI_close(gMcspiHandle[CONFIG_MCSPI0]);
 
     mcspiHandle = MCSPI_open(CONFIG_MCSPI0, mcspiOpenParams);
-    TEST_ASSERT_NOT_NULL(mcspiHandle);
+    DebugP_assert(mcspiHandle != NULL);
 
     status = MCSPI_chConfig(
                  gMcspiHandle[CONFIG_MCSPI0],
@@ -385,7 +409,7 @@ static void test_mcspi_slave_transfer(void *args)
     }
 
     /* wait for mcspi slave to be ready */
-    IpcNotify_syncAll(SystemP_WAIT_FOREVER);
+    TestUtils_syncRemoteCore(masterId, SystemP_WAIT_FOREVER);
 
     /* Initiate transfer */
     spiTransaction.channel   = testParams->mcspiChConfigParams.chNum;
@@ -409,8 +433,8 @@ static void test_mcspi_slave_transfer(void *args)
     /* This parameter value should be same as master */
     uint32_t defaultTxData = 0xCCU;
     /* For a default TX data test, we need to match with defaultTxData.
-       From master it always sends defaultTxData */
-    if(testParams->testcaseId == 1013U)
+    From master it always sends defaultTxData */
+    if(testParams->testcaseId == 8680U)
     {
         tempRxPtr = (uint8_t *) &gMcspiMasterRxBuffer[0U];
         for(i = 0U; i < (APP_MCSPI_MSGSIZE * 4); i++)
@@ -421,17 +445,18 @@ static void test_mcspi_slave_transfer(void *args)
                 DebugP_log("Data Mismatch at offset %d\r\n", i);
                 break;
             }
-        }
+       }
     }
-    else if((testParams->testcaseId == 954U) || (testParams->testcaseId == 967U))
+    else if((testParams->testcaseId == 8662U) || (testParams->testcaseId == 8676U))
     {
         tempTxPtr = (uint8_t *) &gMcspiMasterTxBuffer[0U];
         tempRxPtr = (uint8_t *) &gMcspiMasterRxBuffer[0U];
         for(i = 0U; i < (APP_MCSPI_MSGSIZE * 4); i++)
         {
-            if ((*tempTxPtr++ != *tempRxPtr++) && (mcspiChConfigParams->startBitEnable == FALSE))
+            /* In this test case, Slave is in Transmit mode only */
+            if ((0 != *tempRxPtr++) && (mcspiChConfigParams->startBitEnable == FALSE))
             {
-                status = SystemP_SUCCESS;   /* Data mismatch */
+                status = SystemP_FAILURE;   /* Data mismatch */
                 break;
             }
         }
@@ -456,19 +481,15 @@ static void test_mcspi_slave_transfer(void *args)
         SemaphoreP_destruct(&gMcspiTransferDoneSem);
     }
 
-    /* wait for mcspi slave to be ready */
-    IpcNotify_syncAll(SystemP_WAIT_FOREVER);
+    MCSPI_close(mcspiHandle);
 
-    MCSPI_close(gMcspiHandle[CONFIG_MCSPI0]);
-
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
-
-    return;
+    return status;
 }
 
-static void test_mcspi_slave_transfer_8_16_32bit(void *args)
+static int32_t TestMcspi_slaveTransfer_8_16_32Bit(void *args)
 {
     int32_t             status = SystemP_SUCCESS;
+    int32_t             statusAll = SystemP_SUCCESS;
     uint32_t            i, dataWidth, fifoBitMask, tempTxData, dataWidthIdx;
     uint32_t            bufWidthShift;
     int32_t             transferOK;
@@ -481,6 +502,9 @@ static void test_mcspi_slave_transfer_8_16_32bit(void *args)
     MCSPI_OpenParams   *mcspiOpenParams = &(testParams->mcspiOpenParams);
     MCSPI_ChConfig     *mcspiChConfigParams = &(testParams->mcspiChConfigParams);
     uint8_t *tempTxPtr, *tempRxPtr;
+    uint32_t masterId;
+
+    masterId = get_master_core_id();
 
     /* Memset Buffers */
     memset(&gMcspiMasterTxBuffer[0U], 0, APP_MCSPI_MSGSIZE * sizeof(uint32_t));
@@ -489,7 +513,7 @@ static void test_mcspi_slave_transfer_8_16_32bit(void *args)
     MCSPI_close(gMcspiHandle[CONFIG_MCSPI0]);
 
     mcspiHandle = MCSPI_open(CONFIG_MCSPI0, mcspiOpenParams);
-    TEST_ASSERT_NOT_NULL(mcspiHandle);
+    DebugP_assert(mcspiHandle != NULL);
 
     status = MCSPI_chConfig(
                  gMcspiHandle[CONFIG_MCSPI0],
@@ -525,7 +549,7 @@ static void test_mcspi_slave_transfer_8_16_32bit(void *args)
     }
 
     /* wait for mcspi slave to be ready */
-    IpcNotify_syncAll(SystemP_WAIT_FOREVER);
+    TestUtils_syncRemoteCore(masterId, SystemP_WAIT_FOREVER);
 
     /* Initiate transfer */
     spiTransaction.channel   = testParams->mcspiChConfigParams.chNum;
@@ -548,29 +572,30 @@ static void test_mcspi_slave_transfer_8_16_32bit(void *args)
     /* This parameter value should be same as master */
     uint32_t defaultTxData = 0xCCU;
     /* For a default TX data test, we need to match with defaultTxData.
-       From master it always sends defaultTxData */
-    if(testParams->testcaseId == 1013U)
+    From master it always sends defaultTxData */
+    if(testParams->testcaseId == 8680U)
     {
         tempRxPtr = (uint8_t *) &gMcspiMasterRxBuffer[0U];
         for(i = 0U; i < (APP_MCSPI_MSGSIZE * 4); i++)
         {
             if ((defaultTxData != *tempRxPtr++) && (mcspiChConfigParams->startBitEnable == FALSE))
             {
-                status = SystemP_FAILURE;   /* Data mismatch */
+                statusAll = SystemP_FAILURE;   /* Data mismatch */
                 DebugP_log("Data Mismatch at offset %d\r\n", i);
                 break;
             }
-        }
+       }
     }
-    else if((testParams->testcaseId == 954U) || (testParams->testcaseId == 967U))
+    else if((testParams->testcaseId == 8662U) || (testParams->testcaseId == 8676U))
     {
         tempTxPtr = (uint8_t *) &gMcspiMasterTxBuffer[0U];
         tempRxPtr = (uint8_t *) &gMcspiMasterRxBuffer[0U];
         for(i = 0U; i < (APP_MCSPI_MSGSIZE * 4); i++)
         {
-            if ((*tempTxPtr++ != *tempRxPtr++) && (mcspiChConfigParams->startBitEnable == FALSE))
+            /* In this test case, Slave is in Transmit mode only */
+            if ((0 != *tempRxPtr++) && (mcspiChConfigParams->startBitEnable == FALSE))
             {
-                status = SystemP_SUCCESS;   /* Data mismatch */
+                statusAll = SystemP_FAILURE;   /* Data mismatch */
                 break;
             }
         }
@@ -583,7 +608,7 @@ static void test_mcspi_slave_transfer_8_16_32bit(void *args)
         {
             if ((*tempTxPtr++ != *tempRxPtr++) && (mcspiChConfigParams->startBitEnable == FALSE))
             {
-                status = SystemP_FAILURE;   /* Data mismatch */
+                statusAll = SystemP_FAILURE;   /* Data mismatch */
                 DebugP_log("Data Mismatch at offset %d\r\n", i);
                 break;
             }
@@ -635,29 +660,30 @@ static void test_mcspi_slave_transfer_8_16_32bit(void *args)
     /* Compare data */
     /* This parameter value should be same as master */
     /* For a default TX data test, we need to match with defaultTxData.
-       From master it always sends defaultTxData */
-    if(testParams->testcaseId == 1013U)
+    From master it always sends defaultTxData */
+    if(testParams->testcaseId == 8680U)
     {
         tempRxPtr = (uint8_t *) &gMcspiMasterRxBuffer[0U];
         for(i = 0U; i < (APP_MCSPI_MSGSIZE * 4); i++)
         {
             if ((defaultTxData != *tempRxPtr++) && (mcspiChConfigParams->startBitEnable == FALSE))
             {
-                status = SystemP_FAILURE;   /* Data mismatch */
+                statusAll = SystemP_FAILURE;   /* Data mismatch */
                 DebugP_log("Data Mismatch at offset %d\r\n", i);
                 break;
             }
-        }
+       }
     }
-    else if((testParams->testcaseId == 954U) || (testParams->testcaseId == 967U))
+    else if((testParams->testcaseId == 8662U) || (testParams->testcaseId == 8676U))
     {
         tempTxPtr = (uint8_t *) &gMcspiMasterTxBuffer[0U];
         tempRxPtr = (uint8_t *) &gMcspiMasterRxBuffer[0U];
         for(i = 0U; i < (APP_MCSPI_MSGSIZE * 4); i++)
         {
-            if ((*tempTxPtr++ != *tempRxPtr++) && (mcspiChConfigParams->startBitEnable == FALSE))
+            /* In this test case, Slave is in Transmit mode only */
+            if ((0 != *tempRxPtr++) && (mcspiChConfigParams->startBitEnable == FALSE))
             {
-                status = SystemP_SUCCESS;   /* Data mismatch */
+                statusAll = SystemP_FAILURE;   /* Data mismatch */
                 break;
             }
         }
@@ -670,7 +696,7 @@ static void test_mcspi_slave_transfer_8_16_32bit(void *args)
         {
             if ((*tempTxPtr++ != *tempRxPtr++) && (mcspiChConfigParams->startBitEnable == FALSE))
             {
-                status = SystemP_FAILURE;   /* Data mismatch */
+                statusAll = SystemP_FAILURE;   /* Data mismatch */
                 DebugP_log("Data Mismatch at offset %d\r\n", i);
                 break;
             }
@@ -726,7 +752,7 @@ static void test_mcspi_slave_transfer_8_16_32bit(void *args)
     {
         if ((*tempTxPtr++ != *tempRxPtr++) && (mcspiChConfigParams->startBitEnable == FALSE))
         {
-            status = SystemP_FAILURE;   /* Data mismatch */
+            statusAll = SystemP_FAILURE;   /* Data mismatch */
             DebugP_log("Data Mismatch at offset %d\r\n", i);
             break;
         }
@@ -737,19 +763,15 @@ static void test_mcspi_slave_transfer_8_16_32bit(void *args)
         SemaphoreP_destruct(&gMcspiTransferDoneSem);
     }
 
-    /* wait for mcspi slave to be ready */
-    IpcNotify_syncAll(SystemP_WAIT_FOREVER);
+    MCSPI_close(mcspiHandle);
 
-    MCSPI_close(gMcspiHandle[CONFIG_MCSPI0]);
-
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
-
-    return;
+    return statusAll;
 }
 
-static void test_mcspi_slave_transfer_performance(void *args)
+static int32_t TestMcspi_slaveTransferPerformance(void *args)
 {
     int32_t             status = SystemP_SUCCESS;
+    int32_t             statusAll = SystemP_SUCCESS;
     uint32_t            i,j, dataWidth, fifoBitMask, tempTxData, dataWidthIdx;
     uint32_t            bufWidthShift;
     int32_t             transferOK;
@@ -761,6 +783,9 @@ static void test_mcspi_slave_transfer_performance(void *args)
     uint32_t           *tempRxPtr32 = NULL, *tempTxPtr32 = NULL;
     MCSPI_OpenParams   *mcspiOpenParams = &(testParams->mcspiOpenParams);
     MCSPI_ChConfig     *mcspiChConfigParams = &(testParams->mcspiChConfigParams);
+    uint32_t masterId;
+
+    masterId = get_master_core_id();
 
     for(j = 0U; j < APP_PERF_LOOP_ITER_CNT; j++)
     {
@@ -771,7 +796,7 @@ static void test_mcspi_slave_transfer_performance(void *args)
         MCSPI_close(gMcspiHandle[CONFIG_MCSPI0]);
 
         mcspiHandle = MCSPI_open(CONFIG_MCSPI0, mcspiOpenParams);
-        TEST_ASSERT_NOT_NULL(mcspiHandle);
+        DebugP_assert(mcspiHandle != NULL);
 
         status = MCSPI_chConfig(
                      gMcspiHandle[CONFIG_MCSPI0],
@@ -834,7 +859,7 @@ static void test_mcspi_slave_transfer_performance(void *args)
         }
 
         /* wait for mcspi slave to be ready */
-        IpcNotify_syncAll(SystemP_WAIT_FOREVER);
+        TestUtils_syncRemoteCore(masterId, SystemP_WAIT_FOREVER);
 
         /* Initiate transfer */
         spiTransaction.channel  = testParams->mcspiChConfigParams.chNum;
@@ -858,29 +883,30 @@ static void test_mcspi_slave_transfer_performance(void *args)
         /* This parameter value should be same as master */
         uint32_t defaultTxData = 0xCCU;
         /* For a default TX data test, we need to match with defaultTxData.
-           From master it always sends defaultTxData */
-        if(testParams->testcaseId == 1013U)
+        From master it always sends defaultTxData */
+        if(testParams->testcaseId == 8680U)
         {
             tempRxPtr = (uint8_t *) &gMcspiMasterRxBuffer[0U];
             for(i = 0U; i < (APP_MCSPI_MSGSIZE * 4); i++)
             {
                 if ((defaultTxData != *tempRxPtr++) && (mcspiChConfigParams->startBitEnable == FALSE))
                 {
-                    status = SystemP_FAILURE;   /* Data mismatch */
+                    statusAll = SystemP_FAILURE;   /* Data mismatch */
                     DebugP_log("Data Mismatch at offset %d\r\n", i);
                     break;
                 }
-            }
         }
-        else if((testParams->testcaseId == 954U) || (testParams->testcaseId == 967U))
+        }
+        else if((testParams->testcaseId == 8662U) || (testParams->testcaseId == 8676U))
         {
             tempTxPtr = (uint8_t *) &gMcspiMasterTxBuffer[0U];
             tempRxPtr = (uint8_t *) &gMcspiMasterRxBuffer[0U];
             for(i = 0U; i < (APP_MCSPI_MSGSIZE * 4); i++)
             {
-                if ((*tempTxPtr++ != *tempRxPtr++) && (mcspiChConfigParams->startBitEnable == FALSE))
+                /* In this test case, Slave is in Transmit mode only */
+                if ((0 != *tempRxPtr++) && (mcspiChConfigParams->startBitEnable == FALSE))
                 {
-                    status = SystemP_SUCCESS;   /* Data mismatch */
+                    statusAll = SystemP_FAILURE;   /* Data mismatch */
                     break;
                 }
             }
@@ -893,7 +919,7 @@ static void test_mcspi_slave_transfer_performance(void *args)
             {
                 if ((*tempTxPtr++ != *tempRxPtr++) && (mcspiChConfigParams->startBitEnable == FALSE))
                 {
-                    status = SystemP_FAILURE;   /* Data mismatch */
+                    statusAll = SystemP_FAILURE;   /* Data mismatch */
                     DebugP_log("Data Mismatch at offset %d\r\n", i);
                     break;
                 }
@@ -905,17 +931,12 @@ static void test_mcspi_slave_transfer_performance(void *args)
         SemaphoreP_destruct(&gMcspiTransferDoneSem);
     }
 
-    /* wait for mcspi slave to be ready */
-    IpcNotify_syncAll(SystemP_WAIT_FOREVER);
+    MCSPI_close(mcspiHandle);
 
-    MCSPI_close(gMcspiHandle[CONFIG_MCSPI0]);
-
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
-
-    return;
+    return statusAll;
 }
 
-void test_mcspi_callback(MCSPI_Handle handle, MCSPI_Transaction *trans)
+static void TestMcspi_callBack(MCSPI_Handle handle, MCSPI_Transaction *trans)
 {
     DebugP_assertNoLog(MCSPI_TRANSFER_COMPLETED == trans->status);
     SemaphoreP_post(&gMcspiTransferDoneSem);
@@ -923,20 +944,13 @@ void test_mcspi_callback(MCSPI_Handle handle, MCSPI_Transaction *trans)
     return;
 }
 
-void setUp(void)
-{
-}
-
-void tearDown(void)
-{
-}
-
-static void test_mcspi_set_slave_params(MCSPI_SlaveTestParams *testParams, uint32_t tcId)
+static void TestMcspi_setSlaveParams(MCSPI_SlaveTestParams *testParams, uint32_t tcId)
 {
     MCSPI_Config     *config = &gMcspiConfig[CONFIG_MCSPI0];
     MCSPI_Attrs      *attrParams = (MCSPI_Attrs *)config->attrs;
     MCSPI_OpenParams *openParams = &(testParams->mcspiOpenParams);
     MCSPI_ChConfig   *chConfigParams = &(testParams->mcspiChConfigParams);
+    testParams->testcaseId             = 0U;
 
     /* Default Attribute Parameters */
     attrParams->inputClkFreq       = 50000000U;
@@ -960,139 +974,141 @@ static void test_mcspi_set_slave_params(MCSPI_SlaveTestParams *testParams, uint3
     testParams->dataSize               = 8;
     chConfigParams->trMode             = MCSPI_TR_MODE_TX_RX;
     chConfigParams->inputSelect        = MCSPI_IS_D1;
-    chConfigParams->dpe0               = MCSPI_DPE_DISABLE;
+    chConfigParams->dpe0               = MCSPI_DPE_ENABLE;
     chConfigParams->dpe1               = MCSPI_DPE_DISABLE;
     chConfigParams->slvCsSelect        = MCSPI_SLV_CS_SELECT_0;
     chConfigParams->startBitEnable     = FALSE;
     chConfigParams->startBitPolarity   = MCSPI_SB_POL_LOW;
     chConfigParams->csIdleTime         = MCSPI_TCS0_0_CLK;
     chConfigParams->defaultTxData      = 0x0U;
+    chConfigParams->txFifoTrigLvl      = 16U;
+    chConfigParams->rxFifoTrigLvl      = 16U;
+
     switch (tcId)
     {
-        case 943:
+        case 8651:
         attrParams->operMode           = MCSPI_OPER_MODE_POLLED;
         testParams->dataSize           = 32;
         chConfigParams->trMode         = MCSPI_TR_MODE_RX_ONLY;
         break;
-        case 944:
+        case 8652:
         attrParams->operMode           = MCSPI_OPER_MODE_POLLED;
         testParams->dataSize           = 16;
         chConfigParams->trMode         = MCSPI_TR_MODE_RX_ONLY;
         break;
-        case 945:
+        case 8653:
         attrParams->operMode           = MCSPI_OPER_MODE_POLLED;
         testParams->dataSize           = 8;
         chConfigParams->trMode         = MCSPI_TR_MODE_RX_ONLY;
         break;
-        case 946:
+        case 8654:
         attrParams->operMode           = MCSPI_OPER_MODE_POLLED;
         testParams->dataSize           = 32;
         chConfigParams->trMode         = MCSPI_TR_MODE_RX_ONLY;
         chConfigParams->frameFormat    = MCSPI_FF_POL0_PHA1;
         break;
-        case 947:
+        case 8655:
         attrParams->operMode           = MCSPI_OPER_MODE_POLLED;
         testParams->dataSize           = 32;
         chConfigParams->trMode         = MCSPI_TR_MODE_RX_ONLY;
         chConfigParams->frameFormat    = MCSPI_FF_POL1_PHA0;
         break;
-        case 948:
+        case 8656:
         attrParams->operMode           = MCSPI_OPER_MODE_POLLED;
         testParams->dataSize           = 32;
         chConfigParams->trMode         = MCSPI_TR_MODE_RX_ONLY;
         chConfigParams->frameFormat    = MCSPI_FF_POL1_PHA1;
         break;
-        case 949:
+        case 8657:
         attrParams->operMode           = MCSPI_OPER_MODE_POLLED;
         testParams->dataSize           = 32;
         chConfigParams->trMode         = MCSPI_TR_MODE_RX_ONLY;
         attrParams->pinMode            = MCSPI_PINMODE_3PIN;
         break;
-        case 950:
+        case 8658:
         attrParams->operMode           = MCSPI_OPER_MODE_POLLED;
         testParams->dataSize           = 32;
         chConfigParams->trMode         = MCSPI_TR_MODE_RX_ONLY;
         attrParams->initDelay          = MCSPI_INITDLY_32;
         break;
-        case 951:
+        case 8659:
         attrParams->operMode           = MCSPI_OPER_MODE_POLLED;
         testParams->dataSize           = 32;
         chConfigParams->trMode         = MCSPI_TR_MODE_RX_ONLY;
-        chConfigParams->csPolarity     = MCSPI_CS_POL_HIGH;
         break;
-        case 952:
+        case 8660:
         attrParams->operMode               = MCSPI_OPER_MODE_POLLED;
         testParams->dataSize               = 32;
         chConfigParams->trMode             = MCSPI_TR_MODE_RX_ONLY;
         chConfigParams->startBitEnable     = TRUE;
         chConfigParams->startBitPolarity   = MCSPI_SB_POL_HIGH;
         break;
-        case 953:
+        case 8661:
         attrParams->operMode               = MCSPI_OPER_MODE_POLLED;
         testParams->dataSize               = 32;
         chConfigParams->trMode             = MCSPI_TR_MODE_RX_ONLY;
         chConfigParams->csIdleTime         = MCSPI_TCS0_1_CLK;
         break;
-        case 954:
+        case 8662:
         attrParams->operMode               = MCSPI_OPER_MODE_POLLED;
         testParams->dataSize               = 8;
         chConfigParams->trMode             = MCSPI_TR_MODE_TX_ONLY;
         chConfigParams->dpe0               = MCSPI_DPE_ENABLE;
-        testParams->testcaseId             = 954U;
+        testParams->testcaseId             = 8662U;
         break;
-        case 955:
-        case 956:
+        case 8663:
+        case 8664:
         attrParams->operMode               = MCSPI_OPER_MODE_POLLED;
         testParams->dataSize               = 32;
         chConfigParams->trMode             = MCSPI_TR_MODE_RX_ONLY;
         break;
-        case 957:
+        case 8665:
         attrParams->operMode               = MCSPI_OPER_MODE_INTERRUPT;
         testParams->dataSize               = 32;
         chConfigParams->trMode             = MCSPI_TR_MODE_RX_ONLY;
         break;
-        case 958:
+        case 8666:
         attrParams->operMode               = MCSPI_OPER_MODE_INTERRUPT;
         testParams->dataSize               = 15;
         chConfigParams->trMode             = MCSPI_TR_MODE_RX_ONLY;
         break;
-        case 959:
+        case 8667:
         attrParams->operMode               = MCSPI_OPER_MODE_INTERRUPT;
         testParams->dataSize               = 6;
         chConfigParams->trMode             = MCSPI_TR_MODE_RX_ONLY;
         break;
-        case 960:
+        case 8668:
         attrParams->operMode           = MCSPI_OPER_MODE_INTERRUPT;
         testParams->dataSize           = 32;
         chConfigParams->trMode         = MCSPI_TR_MODE_RX_ONLY;
         attrParams->pinMode            = MCSPI_PINMODE_3PIN;
         break;
-        case 961:
+        case 8669:
         attrParams->operMode           = MCSPI_OPER_MODE_INTERRUPT;
         testParams->dataSize           = 32;
         chConfigParams->trMode         = MCSPI_TR_MODE_RX_ONLY;
         attrParams->initDelay          = MCSPI_INITDLY_4;
         break;
-        case 962:
+        case 8670:
         attrParams->operMode           = MCSPI_OPER_MODE_INTERRUPT;
         testParams->dataSize           = 32;
         chConfigParams->trMode         = MCSPI_TR_MODE_RX_ONLY;
         chConfigParams->csPolarity     = MCSPI_CS_POL_LOW;
         break;
-        case 963:
+        case 8671:
         attrParams->operMode               = MCSPI_OPER_MODE_INTERRUPT;
         testParams->dataSize               = 32;
         chConfigParams->trMode             = MCSPI_TR_MODE_RX_ONLY;
         chConfigParams->startBitEnable     = TRUE;
         chConfigParams->startBitPolarity   = MCSPI_SB_POL_LOW;
         break;
-        case 964:
+        case 8673:
         attrParams->operMode               = MCSPI_OPER_MODE_INTERRUPT;
         testParams->dataSize               = 32;
         chConfigParams->trMode             = MCSPI_TR_MODE_RX_ONLY;
         chConfigParams->csIdleTime         = MCSPI_TCS0_2_CLK;
         break;
-        case 965:
+        case 8674:
         attrParams->operMode               = MCSPI_OPER_MODE_INTERRUPT;
         testParams->dataSize               = 32;
         chConfigParams->trMode             = MCSPI_TR_MODE_RX_ONLY;
@@ -1100,44 +1116,46 @@ static void test_mcspi_set_slave_params(MCSPI_SlaveTestParams *testParams, uint3
         chConfigParams->dpe0               = MCSPI_DPE_DISABLE;
         chConfigParams->dpe1               = MCSPI_DPE_DISABLE;
         break;
-        case 966:
+        case 8675:
         attrParams->operMode               = MCSPI_OPER_MODE_INTERRUPT;
         testParams->dataSize               = 32;
         chConfigParams->trMode             = MCSPI_TR_MODE_RX_ONLY;
         openParams->transferMode           = MCSPI_TRANSFER_MODE_CALLBACK;
-        openParams->transferCallbackFxn    = test_mcspi_callback;
+        openParams->transferCallbackFxn    = TestMcspi_callBack;
         break;
-        case 967:
+        case 8676:
         attrParams->operMode               = MCSPI_OPER_MODE_INTERRUPT;
         testParams->dataSize               = 8;
         chConfigParams->trMode             = MCSPI_TR_MODE_TX_ONLY;
-        testParams->testcaseId             = 967U;
+        testParams->testcaseId             = 8676U;
         chConfigParams->dpe0               = MCSPI_DPE_ENABLE;
         break;
-        case 968:
+        case 8677:
         attrParams->operMode               = MCSPI_OPER_MODE_INTERRUPT;
         testParams->dataSize               = 8;
         chConfigParams->trMode             = MCSPI_TR_MODE_RX_ONLY;
         break;
-        case 969:
+        case 8678:
         attrParams->operMode               = MCSPI_OPER_MODE_INTERRUPT;
         testParams->dataSize               = 16;
         chConfigParams->trMode             = MCSPI_TR_MODE_RX_ONLY;
         openParams->transferMode           = MCSPI_TRANSFER_MODE_CALLBACK;
-        openParams->transferCallbackFxn    = test_mcspi_callback;
+        openParams->transferCallbackFxn    = TestMcspi_callBack;
         break;
-        case 976:
+        case 8679:
         attrParams->operMode               = MCSPI_OPER_MODE_INTERRUPT;
         testParams->dataSize               = 8;
         chConfigParams->trMode             = MCSPI_TR_MODE_RX_ONLY;
         chConfigParams->bitRate            = 25000000;
         break;
-        case 1013:
+        case 8680:
         chConfigParams->defaultTxData      = 0xCCU;
-        testParams->testcaseId             = 1013U;
+        testParams->testcaseId             = 8680U;
         break;
-        case 2302:
-        testParams->testcaseId             = 2302U;
+        case 8681:
+        testParams->testcaseId             = 8681U;
+        break;
+
     }
 
     return;

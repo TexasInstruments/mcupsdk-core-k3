@@ -127,6 +127,8 @@ const lnkfiles = {
 const defines_mcu = {
     common:[
         "SOC_AM62DX",
+        "ENABLE_MCU_ONLY_LPM",
+        "REMOTE_CORE",
     ]
 }
 
@@ -140,6 +142,7 @@ const defines_dm_r5f = {
 const defines_c75 = {
     common:[
         "SOC_AM62DX",
+        "REMOTE_CORE",
     ]
 };
 

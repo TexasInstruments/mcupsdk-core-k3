@@ -45,6 +45,8 @@
             -Wno-gnu-variable-sized-type-not-at-end
             -Wno-unused-function
             -DSOC_AM62DX
+            -DENABLE_MCU_ONLY_LPM
+            -DREMOTE_CORE
         "
         linkerBuildOptions="
             -i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib

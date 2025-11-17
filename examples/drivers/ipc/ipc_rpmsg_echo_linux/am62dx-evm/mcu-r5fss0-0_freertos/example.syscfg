@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62Dx" --part "AM62D24-G" --package "ANF" --context "mcu-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM62D-Q1" --package "FCBGA (ANF)" --variant "AM62D24-G" --context "mcu-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.23.0+4000"}
+ * @versions {"tool":"1.24.2+4234"}
  */
 
 /**
@@ -45,8 +45,12 @@ addr_translate3.localAddr  = 0xA0000000;
 addr_translate3.systemAddr = 0xA0000000;
 addr_translate3.size       = 24;
 
-debug_log.enableCssLog = false;
-debug_log.uartTrace    = true;
+debug_log.enableCssLog            = false;
+debug_log.uartTrace               = true;
+debug_log.enableUartLog           = true;
+debug_log.uartLog.$name           = "CONFIG_UART0";
+debug_log.uartLog.readMode        = "CALLBACK";
+debug_log.uartLog.readCallbackFxn = "uart_echo_read_callback";
 
 mpu_armv71.$name        = "CONFIG_MPU_REGION0";
 mpu_armv71.size         = 31;
@@ -83,3 +87,12 @@ mpu_armv78.$name      = "CONFIG_MPU_REGION7";
 mpu_armv78.baseAddr   = 0x9C000000;
 mpu_armv78.size       = 25;
 mpu_armv78.attributes = "NonCached";
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+debug_log.uartLog.MCU_UART.$suggestSolution     = "MCU_USART0";
+debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "MCU_UART0_RXD";
+debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "MCU_UART0_TXD";

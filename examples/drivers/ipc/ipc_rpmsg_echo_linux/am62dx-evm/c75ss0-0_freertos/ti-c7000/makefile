@@ -64,6 +64,7 @@ INCLUDES_common := \
 
 DEFINES_common := \
 	-DSOC_AM62DX \
+	-DREMOTE_CORE \
 
 CFLAGS_common := \
 	-mv7504 \

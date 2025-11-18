@@ -214,6 +214,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += avtptalker_crflistener_am275x-evm-d
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += avtp_listener_crf_talker_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += crflistener_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += crftalker_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += crflistener_tg721_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += crftalker_tg721_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gptp_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += gptp_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dcc_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build
@@ -881,6 +883,12 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  crftalker_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/crftalker_app/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
+ crflistener_tg721_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/enet_multistream_mcr/crflistener/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
+ crftalker_tg721_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/enet_multistream_mcr/crftalker/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
  gptp_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/gptp_cpsw_app/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
@@ -1176,6 +1184,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += avtptalker_crflistener_am275x-evm-d
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += avtp_listener_crf_talker_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += crflistener_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += crftalker_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += crflistener_tg721_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += crftalker_tg721_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gptp_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += gptp_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dcc_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
@@ -1843,6 +1853,12 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  crftalker_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/crftalker_app/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
+ crflistener_tg721_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/enet_multistream_mcr/crflistener/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
+ crftalker_tg721_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/enet_multistream_mcr/crftalker/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
  gptp_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/gptp_cpsw_app/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
@@ -2138,6 +2154,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += avtptalker_crflistener_am275x-evm-
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += avtp_listener_crf_talker_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += crflistener_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += crftalker_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += crflistener_tg721_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += crftalker_tg721_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gptp_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += gptp_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dcc_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export
@@ -2805,6 +2823,12 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  crftalker_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/crftalker_app/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
+ crflistener_tg721_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/enet_multistream_mcr/crflistener/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
+ crftalker_tg721_app_am275x-evm-dp83tg721/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C source/networking/enet/core/examples/tsn/enet_multistream_mcr/crftalker/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
  gptp_app_am275x-evm-dp83867/am275x-evm_r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C source/networking/enet/core/examples/tsn/gptp_cpsw_app/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
@@ -3116,6 +3140,8 @@ help:
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/avtplistener_crftalker/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/crflistener_app/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/crftalker_app/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/enet_multistream_mcr/crflistener/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/enet_multistream_mcr/crftalker/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/gptp_cpsw_app/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C source/networking/enet/core/examples/tsn/gptp_cpsw_app/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/dcc/dcc_modes/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]

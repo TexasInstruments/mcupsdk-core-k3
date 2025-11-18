@@ -166,6 +166,8 @@ const example_file_list = [
     "source/networking/enet/core/examples/tsn/avtplistener_crftalker/.project/project.js",
     "source/networking/enet/core/examples/tsn/crflistener_app/.project/project.js",
     "source/networking/enet/core/examples/tsn/crftalker_app/.project/project.js",
+    "source/networking/enet/core/examples/tsn/enet_multistream_mcr/crflistener/.project/project.js",
+    "source/networking/enet/core/examples/tsn/enet_multistream_mcr/crftalker/.project/project.js",
     "source/networking/enet/core/examples/tsn/gptp_cpsw_app/.project/project.js",
     "source/networking/enet/core/test/clock_sync_demo/.project/project_am275x.js",
     /* SDL Examples */

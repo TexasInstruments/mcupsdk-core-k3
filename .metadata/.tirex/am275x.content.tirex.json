@@ -7500,6 +7500,84 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Crflistener Tg721 App Example. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "crflistener_tg721_app",
+        "location": "../../source/networking/enet/core/examples/tsn/enet_multistream_mcr/crflistener/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "networking",
+            "enet",
+            "core",
+            "examples",
+            "tsn",
+            "enet_multistream_mcr",
+            "crflistener",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Crftalker Tg721 App Example. CPU is R5FSS0-0 running FREERTOS.",
+        "name": "crftalker_tg721_app",
+        "location": "../../source/networking/enet/core/examples/tsn/enet_multistream_mcr/crftalker/am275x-evm-dp83tg721/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "networking",
+            "enet",
+            "core",
+            "examples",
+            "tsn",
+            "enet_multistream_mcr",
+            "crftalker",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Gptp App Example. CPU is R5FSS0-0 running FREERTOS.",
         "name": "gptp_app",
         "location": "../../source/networking/enet/core/examples/tsn/gptp_cpsw_app/am275x-evm-dp83867/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",

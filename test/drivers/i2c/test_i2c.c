@@ -323,15 +323,13 @@ void test_main(void *args)
     RUN_TEST(TestI2c_MemPrimeTransferTargetModeViaTransfer, 8621, (void*)&testParams);
     RUN_TEST(TestI2c_targetMode10bit7bit, 8700, NULL);
     RUN_TEST(TestI2c_targetModeMultiOwnAddr, 8701, NULL);
-    /* Below target mode test cases are get stcuk in driver  */
-    /* RUN_TEST(TestI2c_targetXrdyOverrun, 8622, (void*)&testParams);  fail */
+    RUN_TEST(TestI2c_targetXrdyOverrun, 8622, (void*)&testParams);
     #endif
     RUN_TEST(TestI2c_transferTimeoutBlockingMode, 8623, (void*)&testParams);
     RUN_TEST(TestI2c_sclStuckRecoverBusWithSystestFault, 8334, NULL);
     RUN_TEST(TestI2c_openNullObject, 8624, NULL);
     RUN_TEST(TestI2c_recoverbusNullObject, 8625, NULL);
     RUN_TEST(test_i2c_dynamic_coverage, 6605, NULL);
-    RUN_TEST(TestI2c_memPrimeTransferInvalidDir, 8626, NULL);
     RUN_TEST(TestI2c_targetModePollingNegative, 8627, NULL);
     RUN_TEST(TestI2c_openWithoutDriverLock, 8628, NULL);
     RUN_TEST(TestI2c_fifoMgmtTxRxModes, 8702,NULL);
@@ -341,8 +339,9 @@ void test_main(void *args)
     RUN_TEST(TestI2c_controllerAccessError, 8720, NULL);
     RUN_TEST(TestI2c_controllerRxOverrun, 8721, NULL);
     /* Below test cases are get stcuk in driver  */
-    /* RUN_TEST(TestI2c_sdaStuckRecoverBusWithSystestFault, 8630 ,NULL); */
     /* RUN_TEST(TestI2c_callbackQueueDepth, 8631, NULL); */
+    RUN_TEST(TestI2c_sdaStuckRecoverBusWithSystestFault, 8630 ,NULL);
+    RUN_TEST(TestI2c_memPrimeTransferInvalidDir, 8626, NULL);
 
     I2C_deinit();
 
@@ -943,6 +942,7 @@ static int32_t test_i2c_handle_errors(void)
     I2C_Handle i2cHandle;
     I2C_Params i2cParams;
     I2C_Transaction i2cTransaction;
+    I2CLLD_Handle i2cLldHandle;
     I2C_Object *object = NULL;
     int32_t status = SystemP_SUCCESS;
     I2C_Transaction_init(&i2cTransaction);
@@ -960,7 +960,6 @@ static int32_t test_i2c_handle_errors(void)
     I2C_close(gI2cHandle[CONFIG_I2C0]);
     I2C_Params_init(&i2cParams);
     i2cHandle = I2C_open(CONFIG_I2C0, &i2cParams);
-
     if (i2cHandle == NULL)
     {
         return SystemP_FAILURE;
@@ -988,19 +987,24 @@ static int32_t test_i2c_handle_errors(void)
     I2C_setBusFrequency(i2cHandle, I2C_100KHZ);
     i2cHandle->object->i2cLldHandle->state = I2C_STATE_IDLE;
 
-    I2C_getHandle(CONFIG_I2C_NUM_INSTANCES+1);
+    i2cHandle = I2C_getHandle(CONFIG_I2C_NUM_INSTANCES+1);
+    TEST_ASSERT_NULL(i2cHandle);
 
     gI2cConfig[0].object->isOpen = false;
-    I2C_getHandle(0);
+    i2cHandle = I2C_getHandle(0);
+    TEST_ASSERT_NULL(i2cHandle);
+
     gI2cConfig[0].object->isOpen = true;
     /* Saving the I2C config object */
     object = gI2cConfig[0].object;
     gI2cConfig[0].object = NULL;
-    I2C_getHandle(0);
+    i2cHandle = I2C_getHandle(0);
+    TEST_ASSERT_NULL(i2cHandle);
+
     /* Storing back the object contents back to the I2C global config object */
     gI2cConfig[0].object = object;
 
-    I2C_close(gI2cHandle[CONFIG_I2C0]);
+    gI2cConfig[0].object->isOpen = false;
 
     I2C_Params_init(&i2cParams);
     i2cHandle = I2C_open(CONFIG_I2C0, &i2cParams);
@@ -1008,13 +1012,15 @@ static int32_t test_i2c_handle_errors(void)
     {
         return SystemP_FAILURE;
     }
-
+    i2cLldHandle = i2cHandle->object->i2cLldHandle;
     i2cHandle->object->i2cLldHandle = NULL;
     i2cTransaction.memTxnEnable = true;
     status=I2C_transfer(i2cHandle, &i2cTransaction);
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
 
-    I2C_close(CONFIG_I2C0);
+    i2cHandle->object->i2cLldHandle = i2cLldHandle;
+
+    I2C_close(i2cHandle);
     return SystemP_SUCCESS;
 }
 

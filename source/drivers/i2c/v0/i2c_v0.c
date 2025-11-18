@@ -840,6 +840,7 @@ static int32_t I2C_mem_primeTransfer(   I2C_Handle handle,
                 }
                 else
                 {
+                object->currentTransaction->status = SystemP_FAILURE;
                 status = I2C_STS_ERR_INVALID_PARAM;
                 }
             }
@@ -851,21 +852,25 @@ static int32_t I2C_mem_primeTransfer(   I2C_Handle handle,
                 {
                 status = I2C_lld_mem_write(i2cLldHandle, &mem_extendedParams,
                                            object->currentTransaction->timeout);
+                object->currentTransaction->status = status;
                 }
                 else if(object->currentTransaction->memTransaction->memDataDir ==
                                                             I2C_MEM_TXN_DIR_RX)
                 {
                 status = I2C_lld_mem_read(i2cLldHandle, &mem_extendedParams,
                                           object->currentTransaction->timeout);
+                object->currentTransaction->status = status;
                 }
                 else
                 {
+                object->currentTransaction->status = SystemP_FAILURE;
                 status = I2C_STS_ERR_INVALID_PARAM;
                 }
             }
         }
         else
         {
+            object->currentTransaction->status = SystemP_FAILURE;
             status = I2C_STS_ERR_INVALID_PARAM;
         }
     }

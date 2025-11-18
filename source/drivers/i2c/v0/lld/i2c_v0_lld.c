@@ -2574,6 +2574,19 @@ static int32_t I2C_lld_primeTransferPoll(I2CLLD_Handle handle)
                     status = I2C_waitForPin(    object,
                                                 I2C_INT_ADRR_READY_ACESS,
                                                 &(object->currentMsg->timeout));
+                    /* Get raw interrupt status */
+                    errStat = I2CControllerIntRawStatusEx(object->baseAddr, I2C_INT_ARBITRATION_LOST    | \
+                                                                            I2C_INT_NO_ACK              | \
+                                                                            I2C_INT_ACCESS_ERROR);
+
+                    /* if we get an error or timeout happens, break out of loop */
+                    if ((errStat != 0U) || (status != I2C_STS_SUCCESS))
+                    {
+                        if(errStat != 0U)
+                        {
+                            fatalError = 1U;
+                        }
+                    }
                 }
 
                 if(fatalError == 1U)

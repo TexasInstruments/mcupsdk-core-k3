@@ -146,7 +146,7 @@ typedef struct
 {
     int32_t threadId;
     I2C_Handle handle;
-} TestI2cThreadArgs;
+} I2C_TestThreadArgs;
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -2619,11 +2619,11 @@ static void TestI2c_multithreadEepromAndTemp(void *args)
  *
  * Reads temperature from a sensor using a shared I2C handle.
  *
- * \param arg Pointer to TestI2cThreadArgs structure.
+ * \param arg Pointer to I2C_TestThreadArgs structure.
  */
 static void TestI2c_tempTaskSharedHandle(void *arg)
 {
-    TestI2cThreadArgs *threadArgs = (TestI2cThreadArgs *)arg;
+    I2C_TestThreadArgs *threadArgs = (I2C_TestThreadArgs *)arg;
     I2C_Handle i2cHandle = threadArgs->handle;
     I2C_Transaction testI2cTransaction;
     uint8_t txBuffer[1];
@@ -2680,7 +2680,7 @@ static void TestI2c_multithreadReadTestSharedOpen(void* args)
     int i, status;
     I2C_Params params;
     I2C_Handle handle;
-    TestI2cThreadArgs threadArgs[TEST_I2C_WRITE_THREADS];
+    I2C_TestThreadArgs threadArgs[TEST_I2C_WRITE_THREADS];
     /* Construct counting semaphore for thread completion */
     status = SemaphoreP_constructCounting(&TestI2c_testSem, 0, TEST_I2C_WRITE_THREADS);
     TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
@@ -2734,7 +2734,7 @@ static void TestI2c_multithreadReadTestSharedOpen(void* args)
  */
 static void TestI2c_writeReadSharedCallBack(void *arg)
 {
-    TestI2cThreadArgs *threadArgs = (TestI2cThreadArgs *)arg;
+    I2C_TestThreadArgs *threadArgs = (I2C_TestThreadArgs *)arg;
     int32_t threadId = threadArgs->threadId;
     I2C_Handle handle = threadArgs->handle;
     const uint32_t addrSize = Board_i2cGetEepromAddrSize();
@@ -2833,7 +2833,7 @@ static void TestI2c_multithreadWriteTestSharedOpenCb(void *args)
     int32_t status;
     uint32_t i;
     I2C_Handle sharedHandle = NULL;
-    TestI2cThreadArgs threadArgs[TEST_I2C_WRITE_THREADS];
+    I2C_TestThreadArgs threadArgs[TEST_I2C_WRITE_THREADS];
 
     /* Construct counting semaphore */
     status = SemaphoreP_constructCounting(&TestI2c_testSem, 0, TEST_I2C_WRITE_THREADS);
@@ -2900,9 +2900,9 @@ static void TestI2c_multithreadWriteTestSharedOpenCb(void *args)
  *
  * \return None. The thread exits via TaskP_exit().
  */
-static void TestI2c_multiThreadEepromsharedHnadle(void *arg)
+static void TestI2c_multiThreadEepromsharedHandle(void *arg)
 {
-    TestI2cThreadArgs *threadArgs = (TestI2cThreadArgs *)arg;
+    I2C_TestThreadArgs *threadArgs = (I2C_TestThreadArgs *)arg;
     I2C_Handle handle = threadArgs->handle;
     uint8_t txBuf[8], rxBuf[8];
     I2C_Transaction testI2cTransaction;
@@ -2967,7 +2967,7 @@ static void TestI2c_multiThreadEepromsharedHnadle(void *arg)
  */
 static void TestI2c_multiThreadTempSharedHandle(void *arg)
 {
-    TestI2cThreadArgs *threadArgs = (TestI2cThreadArgs *)arg;
+    I2C_TestThreadArgs *threadArgs = (I2C_TestThreadArgs *)arg;
     I2C_Handle handle = threadArgs->handle;
     I2C_Transaction testI2cTransaction;
     uint8_t txBuffer[1];
@@ -3036,7 +3036,7 @@ static void TestI2c_multithreadSharedEepromTemp(void *args)
     TaskP_Params taskEeprom, taskTemp;
     I2C_Params params;
     I2C_Handle sharedHandle = NULL;
-    TestI2cThreadArgs threadArgs[2];
+    I2C_TestThreadArgs threadArgs[2];
 
     status =  SemaphoreP_constructCounting(&TestI2c_testSem, 0, 2);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
@@ -3057,7 +3057,7 @@ static void TestI2c_multithreadSharedEepromTemp(void *args)
     taskEeprom.stack          = TestI2c_task1Stack[0];
     taskEeprom.stackSize      = TEST_I2C_MT_TASK_STACK_SIZE;
     taskEeprom.name           = "mtEeprom";
-    taskEeprom.taskMain       = &TestI2c_multiThreadEepromsharedHnadle;
+    taskEeprom.taskMain       = &TestI2c_multiThreadEepromsharedHandle;
     taskEeprom.args           = &threadArgs[0];
 
     status = TaskP_construct(&TestI2c_taskObjsEepromTemp[0], &taskEeprom);

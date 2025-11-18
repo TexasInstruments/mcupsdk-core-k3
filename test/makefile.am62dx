@@ -47,6 +47,7 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62dx freertos-smp-suspend-scheduler_a53-smp.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62dx drivers-mmcsd-inject-fault_a53.gcc-aarch64 drivers-mmcsd-inject-fault_dm-r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62dx freertos-smp-task-delete_a53-smp.gcc-aarch64
+	@echo  $(MAKE) -s -f makefile.am62dx drivers-i2c-inject-fault_a53.gcc-aarch64 drivers-i2c-inject-fault_dm-r5f.ti-arm-clang drivers-i2c-inject-fault_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62dx doxy_samples_r5f.ti-arm-clang
 	@echo  .
 	@echo  Library clean targets,
@@ -64,6 +65,7 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62dx freertos-smp-suspend-scheduler_a53-smp.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62dx drivers-mmcsd-inject-fault_a53.gcc-aarch64_clean drivers-mmcsd-inject-fault_dm-r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62dx freertos-smp-task-delete_a53-smp.gcc-aarch64_clean
+	@echo  $(MAKE) -s -f makefile.am62dx drivers-i2c-inject-fault_a53.gcc-aarch64_clean drivers-i2c-inject-fault_dm-r5f.ti-arm-clang_clean drivers-i2c-inject-fault_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62dx doxy_samples_r5f.ti-arm-clang_clean
 	@echo  .
 	@echo  Example build targets,
@@ -106,6 +108,16 @@ help:
 	@echo  $(MAKE) -s -C drivers/i2c/am62dx-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/i2c/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/i2c/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/i2c/test_i2c_system/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/i2c/test_i2c_system/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/i2c/test_i2c_system/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/i2c/test_i2c_system/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_auxclk_sel/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_multiinst_loopback/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_multiinst_loopback/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
@@ -226,10 +238,6 @@ help:
 	@echo  $(MAKE) -s -C security/crypto/test_sa3ul_aes/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C security/crypto/test_sa3ul_rng/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C security/crypto/test_sa3ul_sha/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C drivers/i2c/test_i2c_system/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C drivers/i2c/test_i2c_system/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C drivers/i2c/test_i2c_system/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C drivers/i2c/test_i2c_system/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  .
 	@echo  System Example build targets,
 	@echo  =============================
@@ -256,10 +264,11 @@ BUILD_COMBO_freertos-smp-schedule-highest-priority = freertos-smp-schedule-highe
 BUILD_COMBO_freertos-smp-suspend-scheduler = freertos-smp-suspend-scheduler_a53-smp.gcc-aarch64
 BUILD_COMBO_drivers-mmcsd-inject-fault = drivers-mmcsd-inject-fault_a53.gcc-aarch64 drivers-mmcsd-inject-fault_dm-r5f.ti-arm-clang
 BUILD_COMBO_freertos-smp-task-delete = freertos-smp-task-delete_a53-smp.gcc-aarch64
+BUILD_COMBO_drivers-i2c-inject-fault = drivers-i2c-inject-fault_a53.gcc-aarch64 drivers-i2c-inject-fault_dm-r5f.ti-arm-clang drivers-i2c-inject-fault_r5f.ti-arm-clang
 BUILD_COMBO_doxy_samples = doxy_samples_r5f.ti-arm-clang
 
 # Combine all Components
-BUILD_COMBO_ALL = $(BUILD_COMBO_unity) $(BUILD_COMBO_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_freertos-smp-disable-preemption) $(BUILD_COMBO_freertos-smp-interrupt-wait-critical) $(BUILD_COMBO_freertos-smp-multiple-tasks-running) $(BUILD_COMBO_freertos-smp-only-one-task-enter-critical) $(BUILD_COMBO_freertos-smp-only-one-task-enter-suspendall) $(BUILD_COMBO_freertos-smp-schedule-affinity) $(BUILD_COMBO_freertos-smp-schedule-equal-priority) $(BUILD_COMBO_freertos-smp-schedule-highest-priority) $(BUILD_COMBO_freertos-smp-suspend-scheduler) $(BUILD_COMBO_drivers-mmcsd-inject-fault) $(BUILD_COMBO_freertos-smp-task-delete) $(BUILD_COMBO_doxy_samples)
+BUILD_COMBO_ALL = $(BUILD_COMBO_unity) $(BUILD_COMBO_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_freertos-smp-disable-preemption) $(BUILD_COMBO_freertos-smp-interrupt-wait-critical) $(BUILD_COMBO_freertos-smp-multiple-tasks-running) $(BUILD_COMBO_freertos-smp-only-one-task-enter-critical) $(BUILD_COMBO_freertos-smp-only-one-task-enter-suspendall) $(BUILD_COMBO_freertos-smp-schedule-affinity) $(BUILD_COMBO_freertos-smp-schedule-equal-priority) $(BUILD_COMBO_freertos-smp-schedule-highest-priority) $(BUILD_COMBO_freertos-smp-suspend-scheduler) $(BUILD_COMBO_drivers-mmcsd-inject-fault) $(BUILD_COMBO_freertos-smp-task-delete) $(BUILD_COMBO_drivers-i2c-inject-fault) $(BUILD_COMBO_doxy_samples)
 
 # Combine all External Components
 BUILD_COMBO_EXTERNAL_ALL =
@@ -317,6 +326,9 @@ $(BUILD_COMBO_drivers-mmcsd-inject-fault):
 $(BUILD_COMBO_freertos-smp-task-delete):
 	$(MAKE) -C kernel/smp_tests/task_delete/configs -f makefile.am62dx.$(subst freertos-smp-task-delete_,,$@) all
 
+$(BUILD_COMBO_drivers-i2c-inject-fault):
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/configs -f makefile.am62dx.$(subst drivers-i2c-inject-fault_,,$@) all
+
 $(BUILD_COMBO_doxy_samples):
 	$(MAKE) -C ../docs_src/docs/api_guide/doxy_samples -f makefile.am62dx.$(subst doxy_samples_,,$@) all
 
@@ -335,10 +347,11 @@ BUILD_COMBO_CLEAN_freertos-smp-schedule-highest-priority = freertos-smp-schedule
 BUILD_COMBO_CLEAN_freertos-smp-suspend-scheduler = freertos-smp-suspend-scheduler_a53-smp.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_drivers-mmcsd-inject-fault = drivers-mmcsd-inject-fault_a53.gcc-aarch64_clean drivers-mmcsd-inject-fault_dm-r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_freertos-smp-task-delete = freertos-smp-task-delete_a53-smp.gcc-aarch64_clean
+BUILD_COMBO_CLEAN_drivers-i2c-inject-fault = drivers-i2c-inject-fault_a53.gcc-aarch64_clean drivers-i2c-inject-fault_dm-r5f.ti-arm-clang_clean drivers-i2c-inject-fault_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_doxy_samples = doxy_samples_r5f.ti-arm-clang_clean
 
 # Combine all Components Clean
-BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_unity) $(BUILD_COMBO_CLEAN_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_CLEAN_freertos-smp-disable-preemption) $(BUILD_COMBO_CLEAN_freertos-smp-interrupt-wait-critical) $(BUILD_COMBO_CLEAN_freertos-smp-multiple-tasks-running) $(BUILD_COMBO_CLEAN_freertos-smp-only-one-task-enter-critical) $(BUILD_COMBO_CLEAN_freertos-smp-only-one-task-enter-suspendall) $(BUILD_COMBO_CLEAN_freertos-smp-schedule-affinity) $(BUILD_COMBO_CLEAN_freertos-smp-schedule-equal-priority) $(BUILD_COMBO_CLEAN_freertos-smp-schedule-highest-priority) $(BUILD_COMBO_CLEAN_freertos-smp-suspend-scheduler) $(BUILD_COMBO_CLEAN_drivers-mmcsd-inject-fault) $(BUILD_COMBO_CLEAN_freertos-smp-task-delete) $(BUILD_COMBO_CLEAN_doxy_samples)
+BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_unity) $(BUILD_COMBO_CLEAN_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_CLEAN_freertos-smp-disable-preemption) $(BUILD_COMBO_CLEAN_freertos-smp-interrupt-wait-critical) $(BUILD_COMBO_CLEAN_freertos-smp-multiple-tasks-running) $(BUILD_COMBO_CLEAN_freertos-smp-only-one-task-enter-critical) $(BUILD_COMBO_CLEAN_freertos-smp-only-one-task-enter-suspendall) $(BUILD_COMBO_CLEAN_freertos-smp-schedule-affinity) $(BUILD_COMBO_CLEAN_freertos-smp-schedule-equal-priority) $(BUILD_COMBO_CLEAN_freertos-smp-schedule-highest-priority) $(BUILD_COMBO_CLEAN_freertos-smp-suspend-scheduler) $(BUILD_COMBO_CLEAN_drivers-mmcsd-inject-fault) $(BUILD_COMBO_CLEAN_freertos-smp-task-delete) $(BUILD_COMBO_CLEAN_drivers-i2c-inject-fault) $(BUILD_COMBO_CLEAN_doxy_samples)
 
 # Combine all External Components Clean
 BUILD_COMBO_EXTERNAL_CLEAN_ALL =
@@ -391,6 +404,9 @@ $(BUILD_COMBO_CLEAN_drivers-mmcsd-inject-fault):
 $(BUILD_COMBO_CLEAN_freertos-smp-task-delete):
 	$(MAKE) -C kernel/smp_tests/task_delete/configs -f makefile.am62dx.$(subst freertos-smp-task-delete_,,$(subst _clean,,$@)) clean
 
+$(BUILD_COMBO_CLEAN_drivers-i2c-inject-fault):
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/configs -f makefile.am62dx.$(subst drivers-i2c-inject-fault_,,$(subst _clean,,$@)) clean
+
 $(BUILD_COMBO_CLEAN_doxy_samples):
 	$(MAKE) -C ../docs_src/docs/api_guide/doxy_samples -f makefile.am62dx.$(subst doxy_samples_,,$(subst _clean,,$@)) clean
 
@@ -409,10 +425,11 @@ BUILD_COMBO_SCRUB_freertos-smp-schedule-highest-priority = freertos-smp-schedule
 BUILD_COMBO_SCRUB_freertos-smp-suspend-scheduler = freertos-smp-suspend-scheduler_a53-smp.gcc-aarch64_scrub
 BUILD_COMBO_SCRUB_drivers-mmcsd-inject-fault = drivers-mmcsd-inject-fault_a53.gcc-aarch64_scrub drivers-mmcsd-inject-fault_dm-r5f.ti-arm-clang_scrub
 BUILD_COMBO_SCRUB_freertos-smp-task-delete = freertos-smp-task-delete_a53-smp.gcc-aarch64_scrub
+BUILD_COMBO_SCRUB_drivers-i2c-inject-fault = drivers-i2c-inject-fault_a53.gcc-aarch64_scrub drivers-i2c-inject-fault_dm-r5f.ti-arm-clang_scrub drivers-i2c-inject-fault_r5f.ti-arm-clang_scrub
 BUILD_COMBO_SCRUB_doxy_samples = doxy_samples_r5f.ti-arm-clang_scrub
 
 # Combine all Components Scrub Targets
-BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_unity) $(BUILD_COMBO_SCRUB_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_SCRUB_freertos-smp-disable-preemption) $(BUILD_COMBO_SCRUB_freertos-smp-interrupt-wait-critical) $(BUILD_COMBO_SCRUB_freertos-smp-multiple-tasks-running) $(BUILD_COMBO_SCRUB_freertos-smp-only-one-task-enter-critical) $(BUILD_COMBO_SCRUB_freertos-smp-only-one-task-enter-suspendall) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-affinity) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-equal-priority) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-highest-priority) $(BUILD_COMBO_SCRUB_freertos-smp-suspend-scheduler) $(BUILD_COMBO_SCRUB_drivers-mmcsd-inject-fault) $(BUILD_COMBO_SCRUB_freertos-smp-task-delete) $(BUILD_COMBO_SCRUB_doxy_samples)
+BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_unity) $(BUILD_COMBO_SCRUB_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_SCRUB_freertos-smp-disable-preemption) $(BUILD_COMBO_SCRUB_freertos-smp-interrupt-wait-critical) $(BUILD_COMBO_SCRUB_freertos-smp-multiple-tasks-running) $(BUILD_COMBO_SCRUB_freertos-smp-only-one-task-enter-critical) $(BUILD_COMBO_SCRUB_freertos-smp-only-one-task-enter-suspendall) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-affinity) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-equal-priority) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-highest-priority) $(BUILD_COMBO_SCRUB_freertos-smp-suspend-scheduler) $(BUILD_COMBO_SCRUB_drivers-mmcsd-inject-fault) $(BUILD_COMBO_SCRUB_freertos-smp-task-delete) $(BUILD_COMBO_SCRUB_drivers-i2c-inject-fault) $(BUILD_COMBO_SCRUB_doxy_samples)
 
 # Combine all External Components Scrub Targets
 BUILD_COMBO_EXTERNAL_SCRUB_ALL =
@@ -465,6 +482,9 @@ $(BUILD_COMBO_SCRUB_drivers-mmcsd-inject-fault):
 $(BUILD_COMBO_SCRUB_freertos-smp-task-delete):
 	$(MAKE) -C kernel/smp_tests/task_delete/configs -f makefile.am62dx.$(subst freertos-smp-task-delete_,,$(subst _scrub,,$@)) scrub
 
+$(BUILD_COMBO_SCRUB_drivers-i2c-inject-fault):
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/configs -f makefile.am62dx.$(subst drivers-i2c-inject-fault_,,$(subst _scrub,,$@)) scrub
+
 $(BUILD_COMBO_SCRUB_doxy_samples):
 	$(MAKE) -C ../docs_src/docs/api_guide/doxy_samples -f makefile.am62dx.$(subst doxy_samples_,,$(subst _scrub,,$@)) scrub
 
@@ -506,6 +526,16 @@ BUILD_COMBO_EXAMPLE_ALL += test_i2c_am62dx-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += test_i2c_am62dx-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_i2c_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_i2c_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_i2c_system_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_i2c_system_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_i2c_system_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_i2c_system_am62dx-evm_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += test_i2c_fault_inject_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_i2c_fault_inject_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_i2c_fault_inject_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_i2c_fault_inject_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_i2c_fault_inject_am62dx-evm_r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_i2c_fault_inject_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += mcasp_auxclk_sel_am62dx-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += mcasp_loopback_multiinst_am62dx-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += mcasp_loopback_multiinst_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
@@ -626,10 +656,6 @@ BUILD_COMBO_EXAMPLE_ALL += vtm_test_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-cl
 BUILD_COMBO_EXAMPLE_ALL += test_sa3ul_aes_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_sa3ul_rng_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_sa3ul_sha_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
-BUILD_COMBO_EXAMPLE_ALL += test_i2c_system_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
-BUILD_COMBO_EXAMPLE_ALL += test_i2c_system_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
-BUILD_COMBO_EXAMPLE_ALL += test_i2c_system_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
-BUILD_COMBO_EXAMPLE_ALL += test_i2c_system_am62dx-evm_c75ss0-0_freertos_ti-c7000
 # Various System Example Targets
 BUILD_COMBO_EXAMPLE_ALL += avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app
 BUILD_COMBO_EXAMPLE_ALL += avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app
@@ -760,6 +786,36 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  test_i2c_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64:
 	$(MAKE) -C drivers/i2c/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile all
+
+ test_i2c_system_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_i2c_system_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_i2c_system_am62dx-evm_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ test_i2c_system_am62dx-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
+
+ test_i2c_fault_inject_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ test_i2c_fault_inject_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_i2c_fault_inject_am62dx-evm_a53ss0-0_nortos_gcc-aarch64:
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile all
+
+ test_i2c_fault_inject_am62dx-evm_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ test_i2c_fault_inject_am62dx-evm_r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ test_i2c_fault_inject_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
 
  mcasp_auxclk_sel_am62dx-evm_c75ss0-0_freertos_ti-c7000:
 	$(MAKE) -C drivers/mcasp/mcasp_auxclk_sel/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
@@ -1121,18 +1177,6 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_sa3ul_sha_am62dx-evm_a53ss0-0_nortos_gcc-aarch64:
 	$(MAKE) -C security/crypto/test_sa3ul_sha/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile all
 
- test_i2c_system_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
-	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
-
- test_i2c_system_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
-	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
-
- test_i2c_system_am62dx-evm_a53ss0-0_freertos_gcc-aarch64:
-	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
-
- test_i2c_system_am62dx-evm_c75ss0-0_freertos_ti-c7000:
-	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
-
  avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app:
 	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_listener/am62dx-evm-dp83867/am62dx-evm/system_avblistener_app -f makefile all
 
@@ -1192,6 +1236,16 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_am62dx-evm_c75ss0-0_freertos_ti-c7000_
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_system_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_system_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_system_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_system_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_fault_inject_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_fault_inject_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_fault_inject_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_fault_inject_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_fault_inject_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_fault_inject_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_auxclk_sel_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_loopback_multiinst_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_loopback_multiinst_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
@@ -1312,10 +1366,6 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += vtm_test_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sa3ul_aes_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sa3ul_rng_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sa3ul_sha_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_system_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_system_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_system_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_i2c_system_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
 # Various System Example Clean Targets
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app_clean
@@ -1446,6 +1496,36 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  test_i2c_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean:
 	$(MAKE) -C drivers/i2c/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile clean
+
+ test_i2c_system_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_i2c_system_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_i2c_system_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ test_i2c_system_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
+ test_i2c_fault_inject_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ test_i2c_fault_inject_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_i2c_fault_inject_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
+
+ test_i2c_fault_inject_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ test_i2c_fault_inject_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ test_i2c_fault_inject_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
  mcasp_auxclk_sel_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C drivers/mcasp/mcasp_auxclk_sel/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
@@ -1807,18 +1887,6 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_sa3ul_sha_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C security/crypto/test_sa3ul_sha/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
 
- test_i2c_system_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
-
- test_i2c_system_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-
- test_i2c_system_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
-	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
-
- test_i2c_system_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
-	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
-
  avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app_clean:
 	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_listener/am62dx-evm-dp83867/am62dx-evm/system_avblistener_app -f makefile clean
 
@@ -1878,6 +1946,16 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_am62dx-evm_c75ss0-0_freertos_ti-c7000_
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_system_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_system_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_system_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_system_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_fault_inject_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_fault_inject_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_fault_inject_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_fault_inject_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_fault_inject_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_fault_inject_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_auxclk_sel_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_loopback_multiinst_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_loopback_multiinst_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
@@ -1998,10 +2076,6 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += vtm_test_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sa3ul_aes_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sa3ul_rng_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sa3ul_sha_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_system_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_system_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_system_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_i2c_system_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
 # Various System Example Scrub Targets
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app_scrub
@@ -2132,6 +2206,36 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_i2c_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub:
 	$(MAKE) -C drivers/i2c/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile scrub
+
+ test_i2c_system_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_i2c_system_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_i2c_system_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ test_i2c_system_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
+ test_i2c_fault_inject_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_i2c_fault_inject_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_i2c_fault_inject_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
+
+ test_i2c_fault_inject_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ test_i2c_fault_inject_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_i2c_fault_inject_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  mcasp_auxclk_sel_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub:
 	$(MAKE) -C drivers/mcasp/mcasp_auxclk_sel/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
@@ -2492,18 +2596,6 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_sa3ul_sha_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub:
 	$(MAKE) -C security/crypto/test_sa3ul_sha/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
-
- test_i2c_system_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
-	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-
- test_i2c_system_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
-	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-
- test_i2c_system_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
-	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
-
- test_i2c_system_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub:
-	$(MAKE) -C drivers/i2c/test_i2c_system/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
 
  avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app_scrub:
 	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_listener/am62dx-evm-dp83867/am62dx-evm/system_avblistener_app -f makefile scrub

@@ -275,7 +275,9 @@ static int32_t I2C_lld_transferInit(I2CLLD_Handle handle,
 
 static int32_t I2C_lld_resetCtrl(I2CLLD_Handle handle);
 static int32_t I2C_lld_ctrlInit(I2CLLD_Handle handle);
-
+#ifdef ENABLE_I2C_FAULT_INJECTION
+void TestI2c_faultInjectStubHandler(uint32_t *xsferStatus);
+#endif
 /* ========================================================================== */
 /*                       API Function Definitions                             */
 /* ========================================================================== */
@@ -2347,7 +2349,9 @@ static int32_t I2C_lld_primeTransferPoll(I2CLLD_Handle handle)
                     errStat = I2CControllerIntRawStatusEx(object->baseAddr, I2C_INT_ARBITRATION_LOST    | \
                                                                             I2C_INT_NO_ACK              | \
                                                                             I2C_INT_ACCESS_ERROR);
-
+                    #ifdef ENABLE_I2C_FAULT_INJECTION
+                        TestI2c_faultInjectStubHandler(&errStat);
+                    #endif
                     /* if we get an error or timeout happens, break out of loop */
                     if ((errStat != 0U) || (status != I2C_STS_SUCCESS))
                     {
@@ -2517,7 +2521,9 @@ static int32_t I2C_lld_primeTransferPoll(I2CLLD_Handle handle)
                     errStat = I2CControllerIntRawStatusEx(object->baseAddr, I2C_INT_ARBITRATION_LOST    |
                                                                             I2C_INT_NO_ACK              |
                                                                             I2C_INT_ACCESS_ERROR);
-
+                    #ifdef ENABLE_I2C_FAULT_INJECTION
+                        TestI2c_faultInjectStubHandler(&errStat);
+                    #endif
                     /* if we get an error or timeout happens, break out of loop */
                     if ((errStat != 0U) || (status != I2C_STS_SUCCESS))
                     {

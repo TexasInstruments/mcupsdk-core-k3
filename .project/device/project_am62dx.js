@@ -45,6 +45,7 @@ const component_file_list = [
     "test/kernel/smp_tests/suspend_scheduler/configs/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_fault_inject/configs/.project/project.js",
     "test/kernel/smp_tests/task_delete/configs/.project/project.js",
+    "test/drivers/i2c/test_i2c_fault_inject/configs/.project/project_am62dx.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
 ];
 
@@ -238,6 +239,8 @@ const example_file_list = [
     "test/drivers/gpio/.project/project.js",
     "test/drivers/gtc/.project/project.js",
     "test/drivers/i2c/.project/project.js",
+    "test/drivers/i2c/test_i2c_system/.project/project.js",
+    "test/drivers/i2c/test_i2c_fault_inject/.project/project.js",
 	"test/drivers/ipc_notify/.project/project.js",
     "test/drivers/ipc_notify_benchmark/.project/project.js",
     "test/drivers/ipc_notify_benchmark_l2ram/.project/project.js",
@@ -307,7 +310,6 @@ const example_file_list = [
     "source/safety_checkers/examples/pm_checkers_app/.project/project.js",
     "source/safety_checkers/examples/pm_checkers_warm_reset/.project/project.js",
     "source/safety_checkers/examples/rm_checkers_app/.project/project.js",
-    "test/drivers/i2c/test_i2c_system/.project/project.js"
 ];
 
 function getProjectSpecCpu(cpu) {

@@ -177,6 +177,7 @@ const example_file_list = [
     "test/drivers/boot/sbl_uart_custom_boardconfig/.project/project.js",
     "test/drivers/device_manager/sciclient_direct/.project/project.js",
     "test/drivers/device_manager/sciclient_tisci_msg/.project/project.js",
+    "test/drivers/device_manager/dm_trace_config/.project/project.js",
     "test/drivers/epwm/.project/project.js",
     "test/drivers/ecap/.project/project.js",
     "test/drivers/eqep/.project/project.js",

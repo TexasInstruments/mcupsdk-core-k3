@@ -48,34 +48,30 @@
 #include <drivers/i2c.h>
 #include <drivers/uart.h>
 #include <kernel/dpl/SemaphoreP.h>
-#include "FreeRTOS.h"
-#include "task.h"
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 #include "unity.h"
+#include <kernel/dpl/SystemP.h>
+#include <kernel/dpl/TaskP.h>
 
 /* ========================================================================== */
 /*                             Macros & Defines                               */
 /* ========================================================================== */
+
 #define EEPROM_MEM_ADDRESS          (0x0400U)
 #define EEPROM_ADDR_SIZE            (2U)
 #define TEST_I2C_SMP_EEPROM_ITERS          1
 #define TEST_I2C_SMP_TEMP_ITERS          1
 #define TEST_I2C_SMP_TASKS 2
-#if ( configNUMBER_OF_CORES < 2 )
-    #error This test is for FreeRTOS SMP and therefore, requires at least 2 cores.
-#endif /* if configNUMBER_OF_CORES != 2 */
-
-#if ( configMAX_PRIORITIES <= ( configNUMBER_OF_CORES + 2 ) )
-    #error configMAX_PRIORITIES must be larger than ( configNUMBER_OF_CORES + 2 ) to avoid scheduling idle tasks unexpectedly.
-#endif /* if ( configMAX_PRIORITIES <= ( configNUMBER_OF_CORES + 2 ) ) */
-
 
 /* ========================================================================== */
 /*                             Global Variables                               */
 /* ========================================================================== */
 
-static volatile BaseType_t xAllTasksCreated = pdFALSE;
+static TaskP_Object TestI2c_TaskObj1;
+static TaskP_Object TestI2c_TaskObj2;
+static uint8_t TestI2c_Task1Stack[6 * 1024];
+static uint8_t TestI2c_Task2Stack[6 * 1024];
 static SemaphoreP_Object Test_I2cSem;
 #ifdef SOC_AM62DX
 static I2C_Handle sharedI2cHandle = NULL;
@@ -83,6 +79,7 @@ static I2C_Handle sharedI2cHandle = NULL;
 /* ========================================================================== */
 /*                        Internal Function Declarations                      */
 /* ========================================================================== */
+
 uint8_t Board_getSocTemperatureSensorAddr(void);
 uint8_t Board_i2cGetEepromDeviceAddr();
 #ifdef SOC_AM62AX
@@ -112,9 +109,6 @@ void tearDown(void);
  */
 static void Test_I2c_smpEepromTask(void *arg)
 {
-    (void)arg;
-    while(xAllTasksCreated == pdFALSE) { }
-
     I2C_Params params;
     I2C_Handle handle;
     I2C_Transaction txn;
@@ -167,7 +161,6 @@ static void Test_I2c_smpEepromTask(void *arg)
 
     I2C_close(handle);
     SemaphoreP_post(&Test_I2cSem);
-    vTaskDelete(NULL);
 }
 
 /**
@@ -180,9 +173,6 @@ static void Test_I2c_smpEepromTask(void *arg)
  */
 static void Test_I2C_smpTempTask(void *arg)
 {
-    (void)arg;
-    while(xAllTasksCreated == pdFALSE) { }
-
     I2C_Params params;
     I2C_Handle handle;
     I2C_Transaction txn;
@@ -219,7 +209,6 @@ static void Test_I2C_smpTempTask(void *arg)
 
     I2C_close(handle);
     SemaphoreP_post(&Test_I2cSem);
-    vTaskDelete(NULL);
 }
 
 /**
@@ -232,34 +221,33 @@ static void Test_I2C_smpTempTask(void *arg)
  */
 void Test_I2C_smpMultiInstance(void *args)
 {
-    (void)args;
-    BaseType_t cr1, cr2;
-    xAllTasksCreated = pdFALSE;
     int32_t status, loopVar;
+    TaskP_Params taskParams1, taskParams2;
 
     status =  SemaphoreP_constructCounting(&Test_I2cSem, 0, 2);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
-    cr1 = xTaskCreateAffinitySet(Test_I2c_smpEepromTask,
-                             "I2C_EE",
-                             configMINIMAL_STACK_SIZE + 512U,
-                             NULL,
-                             configMAX_PRIORITIES - 3,
-                             (1 << 0),           /* Core 0 affinity mask */
-                             NULL);  /* Task handle pointer */
+    TaskP_Params_init(&taskParams1);
+    taskParams1.priority       = 3U;
+    taskParams1.stack          = TestI2c_Task1Stack;
+    taskParams1.stackSize      = sizeof(TestI2c_Task1Stack);
+    taskParams1.name           = "Test_I2c_smpEepromTask";
+    taskParams1.taskMain       = &Test_I2c_smpEepromTask;
+    taskParams1.coreAffinity   = ( 1U << 0);
 
-    TEST_ASSERT_EQUAL_MESSAGE(pdPASS, cr1, "I2C EEPROM task create failed");
-    cr2 = xTaskCreateAffinitySet(Test_I2C_smpTempTask,
-                             "I2C_TEMP",
-                             configMINIMAL_STACK_SIZE + 512U,
-                             NULL,
-                             configMAX_PRIORITIES - 3,
-                             (1 << 1),           /* Core 1 affinity mask */
-                             NULL);  /* Task handle pointer */
+    status = TaskP_construct(&TestI2c_TaskObj1, &taskParams1);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
-    TEST_ASSERT_EQUAL_MESSAGE(pdPASS, cr2, "I2C Temp task create failed");
+    TaskP_Params_init(&taskParams2);
+    taskParams2.priority       = 3U;
+    taskParams2.stack          = TestI2c_Task2Stack;
+    taskParams2.stackSize      = sizeof(TestI2c_Task2Stack);
+    taskParams2.name           = "Test_I2C_smpTempTask";
+    taskParams2.taskMain       = &Test_I2C_smpTempTask;
+    taskParams2.coreAffinity   = ( 1U <<  1);
 
-    xAllTasksCreated = pdTRUE;
+    status = TaskP_construct(&TestI2c_TaskObj2, &taskParams2);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     for(loopVar = 0; loopVar < 2; loopVar++)
     {
@@ -267,6 +255,8 @@ void Test_I2C_smpMultiInstance(void *args)
         TEST_ASSERT_EQUAL_INT32(status, SystemP_SUCCESS);
     }
     SemaphoreP_destruct(&Test_I2cSem);
+    TaskP_destruct(&TestI2c_TaskObj1);
+    TaskP_destruct(&TestI2c_TaskObj2);
 }
 #endif
 
@@ -328,7 +318,6 @@ static void Test_I2c_smpEepromWorker(void *arg)
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
     SemaphoreP_post(&Test_I2cSem);
-    vTaskDelete(NULL);
 }
 
 /**
@@ -371,7 +360,6 @@ static void Test_I2c_smpTempWorker(void *arg)
         (int)(uintptr_t)arg, (int)tempC, (int)((tempC - (int)tempC) * 10000), ok);
 
     SemaphoreP_post(&Test_I2cSem);
-    vTaskDelete(NULL);
 }
 
 /**
@@ -384,41 +372,40 @@ static void Test_I2c_smpTempWorker(void *arg)
  */
 void Test_I2CSMPSharedInstance(void *args)
 {
-    (void)args;
-    BaseType_t cr1, cr2;
     /* Open shared I2C handle */
     I2C_Params params;
-    xAllTasksCreated = pdFALSE;
     I2C_Params_init(&params);
     I2C_close(gI2cHandle[CONFIG_I2C0]);
     sharedI2cHandle = NULL;
     sharedI2cHandle = I2C_open(CONFIG_I2C0, &params);
     TEST_ASSERT_NOT_NULL(sharedI2cHandle);
     int32_t status, loopVar;
+    TaskP_Params taskParams1, taskParams2;
 
     status =  SemaphoreP_constructCounting(&Test_I2cSem, 0, 2);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
-    /* Create one EEPROM worker on core 0, one TEMP worker on core 1 */
-    cr1 = xTaskCreateAffinitySet(Test_I2c_smpEepromWorker,
-                                 "SMP_EE",
-                                 configMINIMAL_STACK_SIZE + 512U,
-                                 (void *)0,
-                                 configMAX_PRIORITIES - 3,
-                                 (1 << 0),
-                                 NULL);
-    TEST_ASSERT_EQUAL_MESSAGE(pdPASS, cr1, "SMP EEPROM worker create failed");
+    TaskP_Params_init(&taskParams1);
+    taskParams1.priority       = 3U;
+    taskParams1.stack          = TestI2c_Task1Stack;
+    taskParams1.stackSize      = sizeof(TestI2c_Task1Stack);
+    taskParams1.name           = "Test_I2c_smpEepromWorker";
+    taskParams1.taskMain       = &Test_I2c_smpEepromWorker;
+    taskParams1.coreAffinity   = ( 1U << 0);
 
-    cr2 = xTaskCreateAffinitySet(Test_I2c_smpTempWorker,
-                                 "SMP_TEMP",
-                                 configMINIMAL_STACK_SIZE + 512U,
-                                 (void *)1,
-                                 configMAX_PRIORITIES - 3,
-                                 (1 << 1),
-                                 NULL);
-    TEST_ASSERT_EQUAL_MESSAGE(pdPASS, cr2, "SMP TEMP worker create failed");
+    status = TaskP_construct(&TestI2c_TaskObj1, &taskParams1);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
-    xAllTasksCreated = pdTRUE;
+    TaskP_Params_init(&taskParams2);
+    taskParams2.priority       = 3U;
+    taskParams2.stack          = TestI2c_Task2Stack;
+    taskParams2.stackSize      = sizeof(TestI2c_Task2Stack);
+    taskParams2.name           = "Test_I2c_smpTempWorker";
+    taskParams2.taskMain       = &Test_I2c_smpTempWorker;
+    taskParams2.coreAffinity   = ( 1U <<  1);
+
+    status = TaskP_construct(&TestI2c_TaskObj2, &taskParams2);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     for(loopVar = 0; loopVar < 2; loopVar++)
     {
@@ -427,6 +414,8 @@ void Test_I2CSMPSharedInstance(void *args)
     }
     I2C_close(sharedI2cHandle);
     SemaphoreP_destruct(&Test_I2cSem);
+    TaskP_destruct(&TestI2c_TaskObj1);
+    TaskP_destruct(&TestI2c_TaskObj2);
 }
 #endif
 

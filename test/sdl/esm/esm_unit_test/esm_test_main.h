@@ -65,16 +65,21 @@ typedef struct sdlEsmTest_s
     int32_t    testStatus;            /* Test Status */
 } sdlEsmTest_t;
 
-extern volatile uint32_t g_callbackInvokedInInterrupt;
+extern volatile uint32_t ESM_callbackInvokedInInterrupt;
+extern volatile uint32_t ESM_callbackInst;
+extern volatile uint32_t ESM_callbackInterruptNum;
 
 /*===========================================================================*/
 /*                         Macros                                            */
 /*===========================================================================*/
+
 #define SDL_APP_TEST_NOT_RUN        (-(int32_t) (2))
 #define SDL_APP_TEST_FAILED         (-(int32_t) (1))
 #define SDL_APP_TEST_PASS           ( (int32_t) (0))
 #define SDL_ESM_INSTANCE_INVLD      (246u)
-#define ESM_INTR_GRP_NUM                  (32U)
+#define ESM_INTR_GRP_NUM            (32U)
+#define SDL_ESM_MAX_TIMEOUT_VALUE   (1000000000u)
+
 /*===========================================================================*/
 /*                         Internal function declarations                    */
 /*===========================================================================*/

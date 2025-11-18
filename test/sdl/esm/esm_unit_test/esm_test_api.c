@@ -41,7 +41,6 @@
 #define DISP_APP_ARGB32 (3U)
 
 #include "esm_test_main.h"
-#include "esm_test_main.h"
 #include <sdl/sdl_esm.h>
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/ClockP.h>
@@ -332,9 +331,44 @@ SDL_ESM_config ESM_esmInitConfig_MAIN_appcallback =
 #endif
 };
 
-volatile uint32_t g_callbackInvokedInInterrupt = 0;
+volatile uint32_t ESM_callbackInvokedInInterrupt = 0;
+volatile uint32_t ESM_callbackInst = 3;
+volatile uint32_t ESM_callbackInterruptNum = 0xFFFFFFFF;
 
 int32_t SDTF_runESMInjectHigh_MAIN(void);
+
+int32_t SDL_ESM_callbackStatus()
+{
+    int32_t retValue = SDL_PASS;
+    volatile uint32_t timeOutCnt = 0;
+    DebugP_log("\r\nWaiting for ESM Interrupt...");
+    do
+    {
+        timeOutCnt += 1;
+        if (timeOutCnt > SDL_ESM_MAX_TIMEOUT_VALUE)
+        {
+            retValue = SDL_EFAIL;
+            break;
+        }
+    } while (ESM_callbackInvokedInInterrupt == 0);
+
+    if (ESM_callbackInvokedInInterrupt == 1)
+    {
+        /* It should be noted that for special interrupts, the instance number provided from callback may not be accurate */
+        if (ESM_callbackInst == 1)
+        {
+            DebugP_log("\r\n ESM Callback for interrupt number %u triggered from WKUP ESM!\r\n", ESM_callbackInterruptNum);
+        }
+        else
+        {
+            DebugP_log("\r\n ESM Callback for interrupt number %u triggered from MAIN ESM!\r\n", ESM_callbackInterruptNum);
+        }
+        ESM_callbackInvokedInInterrupt = 0;
+        ESM_callbackInst = 3;
+        ESM_callbackInterruptNum = 0xFFFFFFFF;
+    }
+    return retValue;
+}
 
 int32_t SDR_ESM_errorInsert(const SDL_ESM_Inst esmInstType,
                             const SDL_ESM_ErrorConfig_t *esmErrorConfig)
@@ -358,42 +392,33 @@ int32_t SDR_ESM_errorInsert(const SDL_ESM_Inst esmInstType,
     return result;
 }
 
-int32_t SDL_ESM_triggerCfgIntr(uint32_t group)
+int32_t SDL_ESM_triggerCfgIntr(SDL_ESM_Inst esm_instance,uint32_t group)
 {
     int32_t retVal = SDL_PASS;
-    uint32_t esm_base_addr;
-#if defined(SOC_AM64X)
-#if defined (M4F_CORE)
-    esm_base_addr = (uint32_t) AddrTranslateP_getLocalAddr(SDL_MCU_ESM0_CFG_BASE);
-#endif
-#endif
-#if defined(SOC_AM62X)
-#if defined (M4F_CORE)
-    esm_base_addr = (uint32_t) AddrTranslateP_getLocalAddr(SDL_WKUP_ESM0_CFG_BASE);
-#endif
-#endif
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
-#if defined (R5F_CORE)
-    esm_base_addr = (uint32_t) AddrTranslateP_getLocalAddr(SDL_ESM0_CFG_BASE);
-#endif
-#endif
-#if defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined (SOC_AM62DX) || defined(SOC_AM275X) || defined (SOC_J722S)
-#if defined (R5F_CORE)
-    esm_base_addr = (uint32_t) AddrTranslateP_getLocalAddr(SDL_WKUP_ESM0_CFG_BASE);
-#endif
-#endif
-    retVal = SDL_ESM_setCfgIntrStatusRAW (esm_base_addr, group);
+    uint32_t esm_base_addr = 0;
 
+    if(esm_instance == SDL_ESM_INST_MAIN_ESM0)
+    {
+        SDL_ESM_getBaseAddr(SDL_ESM_INST_MAIN_ESM0,&esm_base_addr);
+    }
+    else if(esm_instance == SDL_ESM_INST_WKUP_ESM0)
+    {
+        SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0,&esm_base_addr);
+    }
+    else
+    {
+        DebugP_log("Invalid instance for Cfg Interrupt");
+        retVal = SDL_EBADARGS;
+    }
+    if (retVal == SDL_PASS)
+    {
+        retVal = SDL_ESM_setCfgIntrStatusRAW (esm_base_addr, group);
+    }
     return retVal;
 }
 
 int32_t SDL_ESM_runPositiveTests(void)
 {
-#if defined(SOC_AM64X)
-    SDL_ESM_Inst instance = SDL_ESM_INST_MCU_ESM0;
-    SDL_ESM_Inst startInstance = SDL_ESM_INST_MCU_ESM0;
-    SDL_ESM_Inst endInstance = SDL_ESM_INST_MAIN_ESM0;
-#endif
 
 #if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62DX) || defined(SOC_AM275X) || defined(SOC_J722S)
     SDL_ESM_Inst instance = SDL_ESM_INST_WKUP_ESM0;
@@ -1321,7 +1346,7 @@ int32_t SDL_ESM_runPositiveTests(void)
 
     /**
      * Test case for running SDL_ESM_checkSpecialEvent on
-     * SDLR_ESM0_ESM_LVL_EVENT_WKUP_ESM0_ESM_INT_LOW_LVL_0
+     * SDLR_WKUP_ESM0_ESM_LVL_EVENT_ESM0_ESM_INT_LOW_LVL_0
      * (interrupt 2 with group 0 and bit 2) with selfTest
      */
     if (testStatus == SDL_APP_TEST_PASS)
@@ -1359,9 +1384,10 @@ int32_t SDL_ESM_runPositiveTests(void)
 
     /**
      * Test case for running SDL_ESM_checkSpecialEvent on
-     * SDLR_ESM0_ESM_LVL_EVENT_WKUP_ESM0_ESM_INT_LOW_LVL_0
+     * SDLR_WKUP_ESM0_ESM_LVL_EVENT_ESM0_ESM_INT_LOW_LVL_0
      * (interrupt 2 with group 0 and bit 2)
      */
+#if defined (SOC_AM62PX) || defined (SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM275X) || (defined (SOC_AM62X) && defined (M4F_CORE))
     if (testStatus == SDL_APP_TEST_PASS)
     {
         int32_t retValue;
@@ -1387,6 +1413,7 @@ int32_t SDL_ESM_runPositiveTests(void)
         }
 
         retValue = SDR_ESM_errorInsert (test_instance,&pConfig_test.esmErrorConfig);
+        retValue = SDL_ESM_callbackStatus();
 
         if(retValue != SDL_PASS)
         {
@@ -1395,18 +1422,18 @@ int32_t SDL_ESM_runPositiveTests(void)
         }
 
     }
+#endif
 
     /**
-     * Test case for running SDL_ESM_checkSpecialEvent on
-     * SDLR_ESM0_ESM_LVL_EVENT_WKUP_ESM0_ESM_INT_CFG_LVL_0
-     * (interrupt 0 with group 0 and bit 0)
+     * ESM instance setup for config tests - config
+     * interrupts are enabled in both instances
      */
+#if defined (SOC_AM62PX) || defined (SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
     if (testStatus == SDL_APP_TEST_PASS)
     {
         int32_t retValue;
         SDL_ESM_Inst test_instance = SDL_ESM_INST_WKUP_ESM0;
         SDL_ESM_config pConfig;
-        SDL_ESM_config pConfig_test;
 
         /* Enable interrupt for ESM instance */
         pConfig.enableBitmap[0] = 0x00000001;
@@ -1414,25 +1441,50 @@ int32_t SDL_ESM_runPositiveTests(void)
         pConfig.priorityBitmap[0] = 0x00000001;
         /* Enable error pin */
         pConfig.errorpinBitmap[0] = 0x00000001;
-        pConfig_test.esmErrorConfig.bitNumber = 0;
-        pConfig_test.esmErrorConfig.groupNumber = 0;
 
         retValue = SDL_ESM_init(test_instance,&pConfig,SDL_ESM_applicationCallbackFunction,&apparg);
-
         if(retValue != SDL_PASS)
         {
             DebugP_log("SDLEsm_PosTest: failure on line no. %d \r\n", __LINE__);
             testStatus = SDL_APP_TEST_FAILED;
         }
 
-        retValue = SDL_ESM_triggerCfgIntr(pConfig_test.esmErrorConfig.groupNumber);
+        test_instance = SDL_ESM_INST_MAIN_ESM0;
+
+        /* Enable interrupt for ESM instance */
+        pConfig.enableBitmap[1] = 0x00000020;
+        /* Set high priority */
+        pConfig.priorityBitmap[1] = 0x00000020;
+        /* Enable error pin */
+        pConfig.errorpinBitmap[1] = 0x00000020;
+
+        retValue = SDL_ESM_init(test_instance,&pConfig,SDL_ESM_applicationCallbackFunction,&apparg);
+        if(retValue != SDL_PASS)
+        {
+            DebugP_log("SDLEsm_PosTest: failure on line no. %d \r\n", __LINE__);
+            testStatus = SDL_APP_TEST_FAILED;
+        }
+    }
+
+    /**
+     * Test case for running SDL_ESM_checkSpecialEvent on
+     * SDLR_WKUP_ESM0_ESM_LVL_EVENT_ESM0_ESM_INT_CFG_LVL_0
+     * (interrupt 0 with group 0 and bit 0)
+     */
+    if (testStatus == SDL_APP_TEST_PASS)
+    {
+        int32_t retValue;
+        SDL_ESM_config pConfig_main_test;
+        pConfig_main_test.esmErrorConfig.groupNumber = 1;
+
+        retValue = SDL_ESM_triggerCfgIntr(SDL_ESM_INST_MAIN_ESM0,pConfig_main_test.esmErrorConfig.groupNumber);
+        retValue = SDL_ESM_callbackStatus ();
 
         if(retValue != SDL_PASS)
         {
             DebugP_log("SDLEsm_PosTest: failure on line no. %d \r\n", __LINE__);
             testStatus = SDL_APP_TEST_FAILED;
         }
-
     }
 
     /**
@@ -1443,42 +1495,26 @@ int32_t SDL_ESM_runPositiveTests(void)
     if (testStatus == SDL_APP_TEST_PASS)
     {
         int32_t retValue;
-        SDL_ESM_Inst test_instance = SDL_ESM_INST_MAIN_ESM0;
-        SDL_ESM_config pConfig;
-        SDL_ESM_config pConfig_test;
+        SDL_ESM_config pConfig_wkup_test;
+        pConfig_wkup_test.esmErrorConfig.groupNumber = 1;
 
-        /* Enable interrupt for ESM instance */
-        pConfig.enableBitmap[1] = 0x00000020;
-        /* Set high priority */
-        pConfig.priorityBitmap[1] = 0x00000020;
-        /* Enable error pin */
-        pConfig.errorpinBitmap[1] = 0x00000020;
-        pConfig_test.esmErrorConfig.bitNumber = 5;
-        pConfig_test.esmErrorConfig.groupNumber = 1;
-
-        retValue = SDL_ESM_init(test_instance,&pConfig,SDL_ESM_applicationCallbackFunction,&apparg);
+        retValue = SDL_ESM_triggerCfgIntr(SDL_ESM_INST_WKUP_ESM0,pConfig_wkup_test.esmErrorConfig.groupNumber);
+        retValue = SDL_ESM_callbackStatus();
 
         if(retValue != SDL_PASS)
         {
             DebugP_log("SDLEsm_PosTest: failure on line no. %d \r\n", __LINE__);
             testStatus = SDL_APP_TEST_FAILED;
         }
-
-        retValue = SDL_ESM_triggerCfgIntr(pConfig_test.esmErrorConfig.groupNumber);
-
-        if(retValue != SDL_PASS)
-        {
-            DebugP_log("SDLEsm_PosTest: failure on line no. %d \r\n", __LINE__);
-            testStatus = SDL_APP_TEST_FAILED;
-        }
-
     }
+#endif
 
     /**
      * Test case for running SDL_ESM_checkSpecialEvent on
      * SDLR_ESM0_ESM_LVL_EVENT_WKUP_ESM0_ESM_INT_HI_LVL_0
      * (interrupt 38 with group 1 and bit 6)
      */
+#if defined (R5F_CORE)
     if (testStatus == SDL_APP_TEST_PASS)
     {
         int32_t retValue;
@@ -1507,6 +1543,7 @@ int32_t SDL_ESM_runPositiveTests(void)
         }
 
         retValue = SDR_ESM_errorInsert (test_instance,&pConfig_test.esmErrorConfig);
+        retValue = SDL_ESM_callbackStatus();
 
         if(retValue != SDL_PASS)
         {
@@ -1515,14 +1552,17 @@ int32_t SDL_ESM_runPositiveTests(void)
         }
 
     }
+#endif
     if (testStatus == SDL_APP_TEST_PASS)
     {
         /* Test case: PROC_SDL-2013 */
+    #if defined (R5F_CORE)
         if (SDTF_runESMInjectHigh_MAIN() != SDL_PASS)
         {
             DebugP_log("SDLEsm_PosTest: failure on line no. %d \r\n", __LINE__);
             testStatus = SDL_APP_TEST_FAILED;
         }
+    #endif
     }
 
     /**
@@ -1530,6 +1570,7 @@ int32_t SDL_ESM_runPositiveTests(void)
      * SDLR_WKUP_ESM0_ESM_LVL_EVENT_ESM0_ESM_INT_HI_LVL_0
      * (interrupt 1 with group 0 and bit 1)
      */
+#if defined (SOC_AM62PX) || defined (SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
     if (testStatus == SDL_APP_TEST_PASS)
     {
         int32_t retValue;
@@ -1645,7 +1686,8 @@ int32_t SDL_ESM_runPositiveTests(void)
             testStatus = SDL_APP_TEST_FAILED;
         }
 
-        retValue = SDR_ESM_errorInsert (test_instance_wkup,&pConfig_test.esmErrorConfig);
+        retValue = SDR_ESM_errorInsert(test_instance_wkup,&pConfig_test.esmErrorConfig);
+        retValue = SDL_ESM_callbackStatus();
 
         if(retValue != SDL_PASS)
         {
@@ -1653,6 +1695,7 @@ int32_t SDL_ESM_runPositiveTests(void)
             testStatus = SDL_APP_TEST_FAILED;
         }
     }
+#endif
 
     return (testStatus);
 }
@@ -1688,25 +1731,25 @@ static int32_t SDTF_runESMInjectInstance(SDL_ESM_Inst esmType,
 {
     SDL_ErrType_t result;
     int32_t retVal = 0;
-
     SDL_ESM_ErrorConfig_t esmErrorConfig;
 
     esmErrorConfig.groupNumber = groupNumber;
     esmErrorConfig.bitNumber = bitNumber;
 
-    DebugP_log("\r\n ESM inject: test starting for Esm instance %d", esmType);
+    DebugP_log("\r\n ESM inject: test starting for Esm instance %d \r\n", esmType);
 
     /* Run esm test 2*/
     result = SDL_ESM_errorInsert(esmType, &esmErrorConfig);
+    result = SDL_ESM_callbackStatus();
 
     if (result != SDL_PASS)
     {
-        DebugP_log("\r\n ESM inject test for Esm instance %d failed", esmType);
+        DebugP_log("\r\n ESM inject test for Esm instance %d failed\r\n", esmType);
         retVal = -1;
     }
     else
     {
-        DebugP_log("\r\n ESM inject test for Esm instance %d Done", esmType);
+        DebugP_log("\r\n ESM inject test for Esm instance %d Done\r\n", esmType);
     }
     uint32_t   esmInstBaseAddr;
     if (retVal == 0)

@@ -89,8 +89,9 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
                                             void *arg)
 {
     int32_t retVal = SDL_PASS;
-    g_callbackInvokedInInterrupt = 1;
-
+    ESM_callbackInvokedInInterrupt = 1;
+    ESM_callbackInst = esmInst;
+    ESM_callbackInterruptNum = intSrc;
     /* Any additional customer specific actions can be added here */
 
     return retVal;

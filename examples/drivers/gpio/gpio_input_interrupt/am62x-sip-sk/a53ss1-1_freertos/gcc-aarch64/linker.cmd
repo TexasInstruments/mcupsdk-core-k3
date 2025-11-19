@@ -39,6 +39,7 @@ ENTRY(_c_int00)
 MEMORY {
 
 	DDR : ORIGIN =  0x88100000, LENGTH = 0x2000000
+    LOG_SHM_MEM : ORIGIN = 0x8D000000, LENGTH = 0x40000
     AMP_SHM : ORIGIN = 0x99000000, LENGTH = 0x4000
 }
 
@@ -61,6 +62,8 @@ SECTIONS {
 
     /* General purpose user shared memory, used in some examples */
     .bss.user_shared_mem (NOLOAD) : { KEEP(*(.bss.user_shared_mem)) } > DDR
+    /* this is used when Debug log's to shared memory is enabled, else this is not used */
+    .bss.log_shared_mem  (NOLOAD) : { KEEP(*(.bss.log_shared_mem)) } > LOG_SHM_MEM
 
     .bss.amp_shared_mem  (NOLOAD) : { KEEP(*(.bss.amp_shared_mem))} > AMP_SHM
     .bss : {

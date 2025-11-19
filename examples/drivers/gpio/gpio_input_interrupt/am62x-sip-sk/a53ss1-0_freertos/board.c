@@ -39,17 +39,17 @@
 /*
  * Board info
  */
-#define BOARD_BUTTON_GPIO_INTR_NUM      (CSLR_GICSS0_COMMON_0_SPI_MAIN_GPIOMUX_INTROUTER0_OUTP_0)
-#define BOARD_BUTTON_GPIO_SWITCH_NUM    ("GPIO0_14")
+#define BOARD_BUTTON_GPIO_INTR_NUM      (CSLR_GICSS0_COMMON_0_SPI_MAIN_GPIOMUX_INTROUTER0_OUTP_2)
+#define BOARD_BUTTON_GPIO_SWITCH_NUM    ("GPIO1_22")
 
 /** \brief bank interrupt source index base */
-#define SRC_IDX_BASE_GPIO_BANK  (CSLR_MAIN_GPIOMUX_INTROUTER0_IN_GPIO0_GPIO_BANK_0)
+#define SRC_IDX_BASE_GPIO_BANK  (CSLR_MAIN_GPIOMUX_INTROUTER0_IN_GPIO1_GPIO_22)
 
 /* This is based on TISCI device config and core */
 #define GPIO_MUX_INTROUTER_ID          (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0)
 
 /* GPIO mux introuter output number */
-#define GPIOMUX_INTROUTER_OUTP (0U)
+#define GPIOMUX_INTROUTER_OUTP (2U)
 
 static void Sciclient_gpioIrqSet(void);
 static void Sciclient_gpioIrqRelease(void);

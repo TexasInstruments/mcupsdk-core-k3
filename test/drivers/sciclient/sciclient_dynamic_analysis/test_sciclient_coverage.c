@@ -2154,5 +2154,12 @@ int8_t test_sciclient_lpm(void)
         failCount++;
     }
 
+    retVal = Sciclient_lpmSendPrepareSleepMessage(0, 0xFFFFFFFFU);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
     return failCount;
 }

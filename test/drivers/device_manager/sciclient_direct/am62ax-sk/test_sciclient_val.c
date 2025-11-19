@@ -330,52 +330,6 @@ Sciclient_RespPrm_t writeOTPRowRespParam =
     .respPayloadSize = (uint32_t) sizeof (writeOTPRowResp),
 };
 
-struct tisci_msg_prepare_sleep_resp prepSleepFailResp1;
-struct tisci_msg_prepare_sleep_req prepSleepFailCfg1 =
-{
-    .mode = 0,
-    .ctx_lo = 0x700000,
-};
-
-Sciclient_RespPrm_t prepSleepFailRespParam1 =
-{
-    .flags = 0,
-    .pRespPayload = (uint8_t *) &prepSleepFailResp1,
-    .respPayloadSize = (uint32_t) sizeof (prepSleepFailResp1),
-};
-
-Sciclient_ReqPrm_t prepSleepFailReqParam1 =
-{
-    .messageType = 0x300,
-    .flags = 2,
-    .pReqPayload = (const uint8_t *) &prepSleepFailCfg1,
-    .reqPayloadSize = (uint32_t) sizeof (prepSleepFailCfg1),
-    .timeout = -1,
-};
-
-struct tisci_msg_prepare_sleep_resp prepSleepFailResp2;
-struct tisci_msg_prepare_sleep_req prepSleepFailCfg2 =
-{
-    .mode = 3,
-    .ctx_lo = 0x700000,
-};
-
-Sciclient_RespPrm_t prepSleepFailRespParam2 =
-{
-    .flags = 0,
-    .pRespPayload = (uint8_t *) &prepSleepFailResp2,
-    .respPayloadSize = (uint32_t) sizeof (prepSleepFailResp2),
-};
-
-Sciclient_ReqPrm_t prepSleepFailReqParam2 =
-{
-    .messageType = 0x300,
-    .flags = 2,
-    .pReqPayload = (const uint8_t *) &prepSleepFailCfg2,
-    .reqPayloadSize = (uint32_t) sizeof (prepSleepFailCfg2),
-    .timeout = 0,
-};
-
 struct tisci_msg_prepare_sleep_resp prepSleepPassResp1;
 struct tisci_msg_prepare_sleep_req prepSleepPassCfg1 =
 {

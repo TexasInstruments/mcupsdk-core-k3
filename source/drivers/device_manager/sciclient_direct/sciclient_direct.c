@@ -376,10 +376,6 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                     hdr = (struct tisci_header *) &message;
                     pRespPrm->flags = hdr->flags;
                 }
-                else
-                {
-                    ret = CSL_EFAIL;
-                }
                 break;
 
 #ifdef CONFIG_LPM_DM    /* Low power mode handling */
@@ -387,11 +383,10 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                 /* Update the context save address if required */
                 ret = lpm_UpdateCtxtAddr((uint32_t *)pReqPrm->pReqPayload);
 
-                /* Sending to TIFS for further processing */
-                *fwdStatus = SCISERVER_FORWARD_MSG;
-
                 if (ret == CSL_PASS)
                 {
+                    /* Sending to TIFS for further processing */
+                    *fwdStatus = SCISERVER_FORWARD_MSG;
                     ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);
                 }
 
@@ -413,8 +408,19 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                 }
                 else
                 {
-                    /* local processing of prepare sleep failed, send NACK to power master */
-                    ret = CSL_EFAIL;
+                    /* In case of failure, update the ACK flag in response payload (if valid) */
+                    if (pRespPrm->pRespPayload != NULL)
+                    {
+                        hdr = (struct tisci_header *) pRespPrm->pRespPayload;
+                        hdr->flags &= (~TISCI_MSG_FLAG_ACK);
+                    }
+
+                    /* For failure, the response ACK flag will be cleared
+                     * If AOP flag is set, this needs to be cleared to indicate NACK
+                     * If AOP flag is not set, this needs to be cleared as the response is not required
+                     */
+                    pRespPrm->flags &= (~TISCI_MSG_FLAG_ACK);
+                    ret = CSL_PASS;
                 }
                 break;
             case TISCI_MSG_LPM_ABORT:
@@ -437,11 +443,6 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
 
                     hdr = (struct tisci_header *) &message;
                     pRespPrm->flags = hdr->flags;
-                }
-                else
-                {
-                    /* local processing of message failed, send NACK to power master */
-                    ret = CSL_EFAIL;
                 }
                 break;
             case TISCI_MSG_ENTER_SLEEP:
@@ -482,7 +483,7 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
             case TISCI_MSG_QUERY_FW_CAPS:
                 memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
                 /* Processing enter sleep message locally */
-                ret = Sciclient_query_fw_caps_handler(pReqPrm->flags,message);
+                Sciclient_query_fw_caps_handler(pReqPrm->flags,message);
                 if (pRespPrm->pRespPayload != NULL)
                 {
                     memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
@@ -649,7 +650,7 @@ static int32_t Sciclient_pmSetCpuResetMsgProxy(uint32_t *msg_recv, uint8_t procI
     }
     return ret;
 }
-int32_t Sciclient_query_fw_caps_handler(const uint32_t reqFlags __attribute__((unused)), void *tx_msg)
+void Sciclient_query_fw_caps_handler(const uint32_t reqFlags __attribute__((unused)), void *tx_msg)
 {
     int32_t ret = CSL_PASS;
     uint32_t flags = ((struct tisci_header *) tx_msg)->flags;
@@ -663,8 +664,6 @@ int32_t Sciclient_query_fw_caps_handler(const uint32_t reqFlags __attribute__((u
             Sciclient_TisciMsgSetNakResp((struct tisci_header *) tx_msg);
         }
     }
-
-    return ret;
 }
 
 static int32_t Sciclient_processDMVersionMessage(void *tx_msg)

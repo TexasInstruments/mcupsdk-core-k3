@@ -1,8 +1,9 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62x" --package "AMC" --part "Default" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.20.0+3587"}
+ * @cliArgs --device "AM62x" --part "Default" --package "AMC" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @v2CliArgs --device "AM625-Q1" --package "FCBGA (AMC)" --variant "AM6254-G" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.24.2+4234"}
  */
 
 /**
@@ -16,6 +17,7 @@ const mmu_armv81 = mmu_armv8.addInstance();
 const mmu_armv82 = mmu_armv8.addInstance();
 const mmu_armv83 = mmu_armv8.addInstance();
 const mmu_armv84 = mmu_armv8.addInstance();
+const mmu_armv85 = mmu_armv8.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -26,9 +28,11 @@ gpio1.GPIO.$assign         = "GPIO0";
 gpio1.GPIO.gpioPin.pu_pd   = "pu";
 gpio1.GPIO.gpioPin.$assign = "OSPI0_CSn3";
 
-debug_log.enableUartLog        = true;
-debug_log.uartLog.$name        = "CONFIG_UART_CONSOLE";
-debug_log.uartLog.UART.$assign = "USART0";
+debug_log.enableUartLog            = true;
+debug_log.uartTrace                = true;
+debug_log.enableSharedMemLogReader = true;
+debug_log.uartLog.$name            = "CONFIG_UART_CONSOLE";
+debug_log.uartLog.UART.$assign     = "USART0";
 
 mmu_armv81.size  = 0x80000000;
 mmu_armv81.$name = "REGISTER_REGION";
@@ -39,18 +43,24 @@ mmu_armv82.size      = 0x2000000;
 mmu_armv82.vAddr     = 0x80080000;
 mmu_armv82.pAddr     = 0x80080000;
 
-mmu_armv83.$name     = "AMP_SHM";
-mmu_armv83.vAddr     = 0x99000000;
-mmu_armv83.pAddr     = 0x99000000;
-mmu_armv83.size      = 0x4000;
-mmu_armv83.attribute = "MAIR7";
+mmu_armv83.$name     = "LOG_SHM_MEM";
+mmu_armv83.vAddr     = 0xA1000000;
+mmu_armv83.pAddr     = 0xA1000000;
+mmu_armv83.size      = 0x40000;
+mmu_armv83.attribute = "MAIR4";
 
-mmu_armv84.$name             = "ATF_REGION";
-mmu_armv84.vAddr             = 0x80000000;
-mmu_armv84.pAddr             = 0x80000000;
-mmu_armv84.size              = 0x80000;
-mmu_armv84.accessPermissions = "Privilege RO, User None";
-mmu_armv84.shareable         = "Non Shareable";
+mmu_armv84.$name     = "AMP_SHM";
+mmu_armv84.vAddr     = 0x99000000;
+mmu_armv84.pAddr     = 0x99000000;
+mmu_armv84.size      = 0x4000;
+mmu_armv84.attribute = "MAIR7";
+
+mmu_armv85.$name             = "ATF_REGION";
+mmu_armv85.vAddr             = 0x80000000;
+mmu_armv85.pAddr             = 0x80000000;
+mmu_armv85.size              = 0x80000;
+mmu_armv85.accessPermissions = "Privilege RO, User None";
+mmu_armv85.shareable         = "Non Shareable";
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future

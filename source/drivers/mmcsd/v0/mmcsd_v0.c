@@ -1261,8 +1261,11 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
     if(SystemP_SUCCESS == status)
     {
         /* Initialize the PHY */
-        MMCSD_phyInit(attrs->ssBaseAddr, attrs->phyType);
+        status = MMCSD_phyInit(attrs->ssBaseAddr, attrs->phyType);
+    }
 
+    if(SystemP_SUCCESS == status)
+    {
         /* Switch on Bus Power */
         status = MMCSD_halBusPower(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_POWER_CONTROL_SD_BUS_POWER_VAL_PWR_ON);
     }
@@ -1344,7 +1347,8 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
         status = MMCSD_transfer(handle, &trans);
         if(SystemP_SUCCESS == status)
         {
-            while(((trans.response[0] >> 31)==0) && (retry != 0))
+            while((SystemP_SUCCESS == status) &&
+            (((trans.response[0] >> 31)==0U) && (retry != 0U)))
             {
                 status = MMCSD_transfer(handle, &trans);
                 retry--;
@@ -1373,8 +1377,11 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
 
     if(SystemP_SUCCESS == status)
     {
-        MMCSD_parseCIDEmmc(obj->emmcData, trans.response);
+        status = MMCSD_parseCIDEmmc(obj->emmcData, trans.response);
+    }
 
+    if(SystemP_SUCCESS == status)
+    {
         /* Get RCA */
         MMCSD_initTransaction(&trans);
         obj->emmcData->rca = 2U;
@@ -1397,10 +1404,10 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
     if(SystemP_SUCCESS == status)
     {
         /* Simplify */
-        MMCSD_parseCSDEmmc(obj->emmcData, trans.response);
+        status = MMCSD_parseCSDEmmc(obj->emmcData, trans.response);
 
         /* Check for spec version */
-        if(obj->emmcData->specVersion != 0x04U)
+        if((SystemP_SUCCESS == status) && (obj->emmcData->specVersion != 0x04U))
         {
             status = SystemP_FAILURE;
         }
@@ -1412,7 +1419,7 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
      * the information about the DSR register usage. The default value of the DSR
      * register is 0x404.
      */
-    if(SystemP_SUCCESS == status && obj->emmcData->impDsr)
+    if((SystemP_SUCCESS == status) && (obj->emmcData->impDsr))
     {
         MMCSD_initTransaction(&trans);
         trans.cmd = MMCSD_MMC_CMD(4);
@@ -1447,8 +1454,11 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
 
     if(status == SystemP_SUCCESS)
     {
-        MMCSD_parseECSDEmmc(obj->emmcData, obj->tempDataBuf);
+        status = MMCSD_parseECSDEmmc(obj->emmcData, obj->tempDataBuf);
+    }
 
+    if(status == SystemP_SUCCESS)
+    {
         /* Get Generic Switch Command Timeout value */
         obj->switchCmdTimeout = (obj->tempDataBuf[MMCSD_GENERIC_CMD6_TIME_INDEX]) * 10;
 
@@ -1513,31 +1523,35 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
 
     if(SystemP_SUCCESS == status)
     {
-        MMCSD_halSetBusWidth(attrs->ctrlBaseAddr, controllerBusWidth);
+        status = MMCSD_halSetBusWidth(attrs->ctrlBaseAddr, controllerBusWidth);
     }
 
-    /* Find the highest mode supported by device and the controller */
-    uint32_t mode = MMCSD_getModeEmmc(handle);
-    if(mode == 0U)
+    if(SystemP_SUCCESS == status)
     {
-        status = SystemP_FAILURE;
-    }
+        /* Find the highest mode supported by device and the controller */
+        uint32_t mode = MMCSD_getModeEmmc(handle);
 
-    if(status == SystemP_SUCCESS)
-    {
-        status = MMCSD_switchEmmcMode(handle, mode);
-    }
+        if(mode == 0U)
+        {
+            status = SystemP_FAILURE;
+        }
 
-    if(status == SystemP_SUCCESS)
-    {
-        obj->transferSpeed = MMCSD_getXferSpeedFromModeEmmc(mode);
+        if(status == SystemP_SUCCESS)
+        {
+            status = MMCSD_switchEmmcMode(handle, mode);
+        }
 
-        /* Mark isRetuneValid as one as the current
-         * operating mode is the mode selected by
-         * the user due to init sequence execution completion,
-         * and retune will be valid if it's HS200/HS400.
-         */
-        obj->isRetuneValid = 1U;
+        if(status == SystemP_SUCCESS)
+        {
+            obj->transferSpeed = MMCSD_getXferSpeedFromModeEmmc(mode);
+
+            /* Mark isRetuneValid as one as the current
+            * operating mode is the mode selected by
+            * the user due to init sequence execution completion,
+            * and retune will be valid if it's HS200/HS400.
+            */
+            obj->isRetuneValid = 1U;
+        }
     }
 
     return status;
@@ -2318,7 +2332,6 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
         }
         else
         {
-            /* HSSDR50 operates in Half cycle timing, UHS should be zero */
             ddrMode = FALSE;
             uhsMode = MMCSD_UHS_MODE_SDR50;
             phyMode = MMCSD_PHY_MODE_HSSDR50;
@@ -4049,7 +4062,7 @@ static int32_t MMCSD_halSetUHSMode(uint32_t ctrlBaseAddr, uint32_t uhsMode)
     }
     else
     {
-        /* Set all 3 bits of UHS mode as the controller is operating in half cycle timing */
+        /* Unset all 3 bits of UHS mode as the controller is operating in half cycle timing */
         CSL_REG16_FINS(&pReg->HOST_CONTROL2, MMC_CTLCFG_HOST_CONTROL2_UHS_MODE_SELECT, 0U);
     }
 

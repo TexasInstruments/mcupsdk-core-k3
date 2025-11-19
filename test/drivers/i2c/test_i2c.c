@@ -956,7 +956,7 @@ static int32_t test_i2c_handle_errors(void)
     }
     i2cHandle = gI2cHandle[CONFIG_I2C0];
     object = (I2C_Object*)i2cHandle->object;
-    object->i2cLldHandle->currentMsg = NULL;
+
     I2C_close(gI2cHandle[CONFIG_I2C0]);
     I2C_Params_init(&i2cParams);
     i2cHandle = I2C_open(CONFIG_I2C0, &i2cParams);

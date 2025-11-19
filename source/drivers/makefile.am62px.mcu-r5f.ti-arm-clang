@@ -36,6 +36,9 @@ FILES_common := \
     mcspi_v0.c \
     mcspi_dma.c \
     mcspi_dma_udma.c \
+    mmcsd_v0.c \
+    mmcsd_priv.c \
+    mmcsd_soc.c \
     pinmux.c \
     pmu.c \
     rtc.c \
@@ -96,6 +99,10 @@ FILES_PATH_common = \
     mcspi/v0 \
     mcspi/v0/dma \
     mcspi/v0/dma/udma \
+    mmcsd \
+    mmcsd/v0 \
+    mmcsd/soc \
+    mmcsd/soc/am62px \
     pinmux/am62px \
     pmu \
     rtc \

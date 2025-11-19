@@ -47,6 +47,8 @@
         abortStackSize = options.abortStackSize;
     if(options && options.undefinedStackSize)
         undefinedStackSize = options.undefinedStackSize;
+    if(options && options.useDdr)
+        useDdr = options.useDdr;
 
 
     codeDataSize = 0x80000;

@@ -131,6 +131,11 @@ const lnkfiles = {
         "linker.cmd",
     ]
 };
+const defines_a53_amp = {
+    common: [
+        "AMP_FREERTOS_A53",
+    ],
+};
 
 const syscfgfile = "../example.syscfg"
 
@@ -309,12 +314,6 @@ const templates_freertos_a53ss11 =
     }
 ];
 
-const defines_a53_amp = {
-    common: [
-        "AMP_FREERTOS_A53",
-    ],
-};
-
 const buildOptionCombos = [
     { device: "am62x", cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos"},
     { device: "am62x", cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "nortos"},
@@ -391,6 +390,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_a53;
         build_property.libdirs = libdirs_freertos_a53;
         build_property.defines = defines_a53_amp;
+        build_property.isLogSHM = true;
         build_property.isAmpSHM = true;
         if(buildOption.cpu.match(/a53ss0-0/))
         {

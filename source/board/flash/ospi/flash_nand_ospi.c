@@ -1,5 +1,5 @@
 /*
- *  Copyright(C) 2023 Texas Instruments Incorporated
+ *  Copyright(C) 2023-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -153,7 +153,7 @@ static int32_t Flash_nandOspiOpen(Flash_Config *config, Flash_Params *params)
     if(SystemP_SUCCESS == status)
     {
         /* Set device size and addressing bytes */
-        OSPI_setDeviceSize(obj->ospiHandle, attrs->pageSize, attrs->blockSize);
+        OSPI_setDeviceSize(obj->ospiHandle, attrs->flashSize, attrs->pageSize, attrs->blockSize);
 
         /* Set command opcode extension type */
         OSPI_setCmdExtType(obj->ospiHandle, config->devConfig->cmdExtType);

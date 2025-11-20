@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -544,6 +544,8 @@ typedef struct
     OSPI_Transaction *currTrans;
     /**< Pointer to current transaction struct */
     void* ospiDmaHandle;
+    /**< Size of the device connected to the OSPI controller */
+    uint32_t deviceSize;
 } OSPI_Object;
 
 typedef struct
@@ -868,11 +870,12 @@ void OSPI_setNumAddrBytes(OSPI_Handle handle, uint32_t numAddrBytes);
  *  \pre    OSPI controller has been opened using #OSPI_open()
  *
  *  \param  handle           An #OSPI_Handle returned from an #OSPI_open()
+ *  \param  deviceSize       Size of the connected device in bytes
  *  \param  pageSize         Page size of the flash in bytes
  *  \param  blkSize          Block size of the flash in bytes
  *
  */
-void OSPI_setDeviceSize(OSPI_Handle handle, uint32_t pageSize, uint32_t blkSize);
+void OSPI_setDeviceSize(OSPI_Handle handle, uint32_t deviceSize, uint32_t pageSize, uint32_t blkSize);
 
 /**
  *  \brief  This function sets appropriate dummy cycles to be used while sending STIG commands to flash

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -631,13 +631,15 @@ void OSPI_setNumAddrBytes(OSPI_Handle handle, uint32_t numAddrBytes)
     }
 }
 
-void OSPI_setDeviceSize(OSPI_Handle handle, uint32_t pageSize, uint32_t blkSize)
+void OSPI_setDeviceSize(OSPI_Handle handle, uint32_t deviceSize, uint32_t pageSize, uint32_t blkSize)
 {
     if(handle != NULL)
     {
         const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
         const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+        OSPI_Object *obj = ((OSPI_Config *)handle)->object;
 
+        obj->deviceSize = deviceSize;
         CSL_REG32_FINS(&pReg->DEV_SIZE_CONFIG_REG, OSPI_FLASH_CFG_DEV_SIZE_CONFIG_REG_BYTES_PER_DEVICE_PAGE_FLD, pageSize);
         CSL_REG32_FINS(&pReg->DEV_SIZE_CONFIG_REG, OSPI_FLASH_CFG_DEV_SIZE_CONFIG_REG_BYTES_PER_SUBSECTOR_FLD, OSPI_utilLog2(blkSize));
     }
@@ -938,11 +940,12 @@ int32_t OSPI_enableDacMode(OSPI_Handle handle)
     {
         const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
         const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+        OSPI_Object *obj = ((OSPI_Config *)handle)->object;
 
         CSL_REG32_FINS(&pReg->CONFIG_REG,
                        OSPI_FLASH_CFG_CONFIG_REG_ENB_DIR_ACC_CTLR_FLD,
                        1);
-        CSL_REG32_WR(&pReg->IND_AHB_ADDR_TRIGGER_REG, 0x04000000);
+        CSL_REG32_WR(&pReg->IND_AHB_ADDR_TRIGGER_REG, obj->deviceSize);
     }
     else
     {
@@ -1226,7 +1229,7 @@ int32_t OSPI_readDirect(OSPI_Handle handle, OSPI_Transaction *trans)
     CSL_REG32_FINS(&pReg->CONFIG_REG,
                    OSPI_FLASH_CFG_CONFIG_REG_ENB_DIR_ACC_CTLR_FLD,
                    1);
-    CSL_REG32_WR(&pReg->IND_AHB_ADDR_TRIGGER_REG, 0x04000000);
+    CSL_REG32_WR(&pReg->IND_AHB_ADDR_TRIGGER_REG, obj->deviceSize);
 
     pSrc = (uint8_t *)(attrs->dataBaseAddr + addrOffset);
 

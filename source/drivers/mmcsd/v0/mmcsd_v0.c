@@ -360,6 +360,7 @@ MMCSD_Handle MMCSD_open(uint32_t index, const MMCSD_Params *openParams)
         if((uint32_t)TRUE == obj->isOpen)
         {
             /* Handle already opened */
+            SemaphoreP_post(&gMmcsdDrvObj.lockObj);
             status = SystemP_FAILURE;
         }
     }
@@ -406,22 +407,22 @@ MMCSD_Handle MMCSD_open(uint32_t index, const MMCSD_Params *openParams)
             /* Nothing to be initialized */
             status = SystemP_SUCCESS;
         }
-    }
 
-    if(SystemP_SUCCESS == status)
-    {
-        obj->isOpen = 1;
-        handle = (MMCSD_Handle) config;
-    }
-
-    SemaphoreP_post(&gMmcsdDrvObj.lockObj);
-
-    /* Free up resources in case of error */
-    if(SystemP_SUCCESS != status)
-    {
-        if(NULL != config)
+        if(SystemP_SUCCESS == status)
         {
-            MMCSD_close((MMCSD_Handle) config);
+            obj->isOpen = 1;
+            handle = (MMCSD_Handle) config;
+        }
+
+        SemaphoreP_post(&gMmcsdDrvObj.lockObj);
+
+        /* Free up resources in case of error */
+        if(SystemP_SUCCESS != status)
+        {
+            if(NULL != config)
+            {
+                MMCSD_close((MMCSD_Handle) config);
+            }
         }
     }
 
@@ -440,6 +441,10 @@ void MMCSD_close(MMCSD_Handle handle)
         uint32_t hsTimingVal = 0U;
 
         MMCSD_Transaction trans;
+
+        /* Protect this region from a concurrent MMCSD_open and MMCSD_close */
+        DebugP_assert(gMmcsdDrvObj.openLock != NULL_PTR);
+        (void)SemaphoreP_pend(&gMmcsdDrvObj.lockObj, SystemP_WAIT_FOREVER);
 
         /* Mark isRetuneValid as zero as the current
          * operating mode may not be the mode selected by

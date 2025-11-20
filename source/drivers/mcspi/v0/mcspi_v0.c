@@ -836,6 +836,7 @@ static uint32_t MCSPI_continueTxRx(const MCSPI_Object *obj,
     uint32_t        baseAddr, chNum, txEmptyMask, rxFullMask;
     uint32_t        retVal = MCSPI_TRANSFER_STARTED;
     volatile uint32_t        irqStatus, chStat;
+    volatile uint32_t timeout = MCSPI_MAX_TIMEOUT_VALUE; /* Timeout for 1 sec*/
 
     baseAddr = obj->baseAddr;
     chNum = chObj->chCfg.chNum;
@@ -882,9 +883,15 @@ static uint32_t MCSPI_continueTxRx(const MCSPI_Object *obj,
             {
                 if (transaction->count == chObj->curTxWords)
                 {
-                    do{
+                    do
+                    {
                         /* Wait for end of transfer. */
                         chStat = CSL_REG32_RD(baseAddr + MCSPI_CHSTAT(chNum));
+                        timeout -= 1U;
+                        if (timeout == 0U) 
+                        {
+                            break;
+                        }
                     }while ((chStat & CSL_MCSPI_CH0STAT_EOT_MASK) == 0U);
 
                     /* read the last data if any from Rx FIFO. */
@@ -911,9 +918,15 @@ static uint32_t MCSPI_continueTxRx(const MCSPI_Object *obj,
             {
                 if (transaction->count == chObj->curRxWords)
                 {
-                    do{
+                    do
+                    {
                         /* Wait for end of transfer. */
                         chStat = CSL_REG32_RD(baseAddr + MCSPI_CHSTAT(chNum));
+                        timeout -= 1U;
+                        if (timeout == 0U) 
+                        {
+                            break;
+                        }
                     }while ((chStat & CSL_MCSPI_CH0STAT_EOT_MASK) == 0U);
                     /* Clear all interrupts. */
                     MCSPI_intrStatusClear(chObj, baseAddr, chObj->intrMask);
@@ -1167,6 +1180,8 @@ static uint32_t MCSPI_continueSlaveTxRx(MCSPI_Object *obj,
     uint32_t            baseAddr, chNum, chStat;
     uint32_t            retVal = MCSPI_TRANSFER_STARTED;
     volatile uint32_t   irqStatus;
+    volatile uint32_t timeout = MCSPI_MAX_TIMEOUT_VALUE; /* Timeout for 1 sec*/
+    volatile uint32_t fifotimeout = MCSPI_MAX_TIMEOUT_VALUE; /* Timeout for 1 sec*/
 
     baseAddr = obj->baseAddr;
     chNum = chObj->chCfg.chNum;
@@ -1215,13 +1230,25 @@ static uint32_t MCSPI_continueSlaveTxRx(MCSPI_Object *obj,
                     /* Check if transfer is completed for current transaction. */
                     if (transaction->count == chObj->curTxWords)
                     {
-                        do{
+                        do
+                        {
                             /* Wait for TX FIFO Empty. */
                             chStat = CSL_REG32_RD(baseAddr + MCSPI_CHSTAT(chNum));
+                            fifotimeout -= 1U;
+                            if (fifotimeout == 0U) 
+                            {
+                                break;
+                            }
                         }while ((chStat & CSL_MCSPI_CH0STAT_TXFFE_MASK) == 0U);
-                        do{
+                        do
+                        {
                             /* Wait for end of transfer. */
                             chStat = CSL_REG32_RD(baseAddr + MCSPI_CHSTAT(chNum));
+                            timeout -= 1U;
+                            if (timeout == 0U) 
+                            {
+                                break;
+                            }
                         }while ((chStat & CSL_MCSPI_CH0STAT_EOT_MASK) == 0U);
                         retVal = MCSPI_TRANSFER_COMPLETED;
                     }

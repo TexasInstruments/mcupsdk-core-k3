@@ -632,6 +632,8 @@ static void MCSPI_udmaIsrTx(Udma_EventHandle eventHandle,
     uint32_t            chNum, effByteCnt, peerData;
     Udma_ChHandle       txChHandle;
     const MCSPI_Attrs  *attrs;
+    volatile uint32_t   chStat;
+    volatile uint32_t timeout = MCSPI_MAX_TIMEOUT_VALUE; /* Timeout for 1 sec*/
 
     /* Check parameters */
     if(NULL != args)
@@ -680,6 +682,16 @@ static void MCSPI_udmaIsrTx(Udma_EventHandle eventHandle,
                 effByteCnt = (pHpd->descInfo & CSL_UDMAP_CPPI5_PD_DESCINFO_PKTLEN_MASK) >> CSL_UDMAP_CPPI5_PD_DESCINFO_PKTLEN_SHIFT;
                 obj->currTransaction->count = (effByteCnt >> chObj->bufWidthShift);
 
+                do
+                {
+                    /* Wait for end of transfer. */
+                    chStat = CSL_REG32_RD(obj->baseAddr + MCSPI_CHSTAT(chNum));
+                    timeout -= 1U;
+                    if (timeout == 0U) 
+                    {
+                        break;
+                    }
+                }while ((chStat & CSL_MCSPI_CH0STAT_EOT_MASK) == 0U);
                 /* Stop MCSPI Channel */
                 MCSPI_udmaStop(obj, attrs, chObj, chNum);
                 /* Update the driver internal status. */
@@ -724,6 +736,8 @@ static void MCSPI_udmaIsrRx(Udma_EventHandle eventHandle,
     Udma_ChHandle       txChHandle;
     #endif
     const MCSPI_Attrs  *attrs;
+    volatile uint32_t   chStat;
+    volatile uint32_t timeout = MCSPI_MAX_TIMEOUT_VALUE; /* Timeout for 1 sec*/
 
     /* Check parameters */
     if(NULL != args)
@@ -775,6 +789,17 @@ static void MCSPI_udmaIsrRx(Udma_EventHandle eventHandle,
                 /* Get Byte count received */
                 effByteCnt = (pHpd->descInfo & CSL_UDMAP_CPPI5_PD_DESCINFO_PKTLEN_MASK) >> CSL_UDMAP_CPPI5_PD_DESCINFO_PKTLEN_SHIFT;
                 obj->currTransaction->count = (effByteCnt >> chObj->bufWidthShift);
+
+                do
+                {
+                    /* Wait for end of transfer. */
+                    chStat = CSL_REG32_RD(obj->baseAddr + MCSPI_CHSTAT(chNum));
+                    timeout -= 1U;
+                    if (timeout == 0U) 
+                    {
+                        break;
+                    }
+                }while ((chStat & CSL_MCSPI_CH0STAT_EOT_MASK) == 0U);
 
                 /* Stop MCSPI Channel */
                 MCSPI_udmaStop(obj, attrs, chObj, chNum);

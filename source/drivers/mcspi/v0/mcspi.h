@@ -78,6 +78,8 @@ extern "C" {
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
+#define MCSPI_MAX_TIMEOUT_VALUE       (1000000000U)
+
 /** \brief A handle that is returned from a #MCSPI_open() call */
 typedef void *MCSPI_Handle;
 

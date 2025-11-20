@@ -557,7 +557,7 @@ int32_t MMCSD_read(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32_
 {
     int32_t status = SystemP_SUCCESS;
 
-    if(handle != NULL)
+    if((handle != NULL) && (buf != NULL))
     {
         MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
         MMCSD_Attrs const *attrs = ((MMCSD_Config *)handle)->attrs;
@@ -709,7 +709,7 @@ int32_t MMCSD_write(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32
 {
     int32_t status = SystemP_SUCCESS;
 
-    if(handle != NULL)
+    if((handle != NULL) && (buf != NULL))
     {
         MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
         MMCSD_Attrs const *attrs = ((MMCSD_Config *)handle)->attrs;

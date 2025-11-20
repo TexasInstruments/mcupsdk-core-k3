@@ -6,6 +6,13 @@
 
 This bootloader does SOC initializations and attempts to boot a multicore appimage received over UART via XMODEM. The image file is sent using a python script (See \ref UART_BOOTLOADER_PYTHON_SCRIPT). Once image is received, the SBL then parses it, splits it into RPRCs for each core applicable. Each core is then initialized, RPRC image is loaded, entry points are set and the core is released from reset. For more on bootflow/bootloaders, please refer \ref BOOTFLOW_GUIDE
 
+\note This example is loaded with UART bootmode. A53 SPL loaded by this example will pick this up and boot up in UART bootmode. This can be changed by calling SOC_setDevStat() in main.c
+
+\note
+Once the A53 SPL begins execution in UART bootmode(C is printed), the U-Boot image can be sent over UART0(/dev/ttyUSBx for Linux and COMx for Windows).
+The U-boot image is located at tools/boot/linuxAppimageGen/board.
+Send the U-boot image using xmodem over UART0. If SD Card is present, U-boot will load the linux filesystem from SD Card.
+
 # Supported Combinations
 
 \cond SOC_AM62X

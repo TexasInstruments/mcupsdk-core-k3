@@ -24,14 +24,15 @@ const mpu_armv74  = mpu_armv7.addInstance();
 const mpu_armv75  = mpu_armv7.addInstance();
 const mpu_armv76  = mpu_armv7.addInstance();
 const mpu_armv77  = mpu_armv7.addInstance();
+const mpu_armv78  = mpu_armv7.addInstance();
+const mpu_armv79  = mpu_armv7.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
  */
-hyperRam1.$name                       = "CONFIG_HYPERRAM0";
-hyperRam1.addedByBootloader           = true;
-hyperRam1.peripheralDriver.$name      = "CONFIG_HYPERBUS0";
-hyperRam1.peripheralDriver.deviceSize = 0x4000000;
+hyperRam1.$name                  = "CONFIG_HYPERRAM0";
+hyperRam1.addedByBootloader      = true;
+hyperRam1.peripheralDriver.$name = "CONFIG_HYPERBUS0";
 
 bootloader1.$name     = "CONFIG_BOOTLOADER0";
 bootloader1.bootMedia = "MEM";
@@ -76,8 +77,20 @@ mpu_armv76.allowExecute = false;
 mpu_armv77.baseAddr   = 0x68000000;
 mpu_armv77.size       = 26;
 mpu_armv77.attributes = "CUSTOM";
+mpu_armv77.tex        = 0;
 mpu_armv77.$name      = "HYPERRAM_REGION";
-mpu_armv77.tex        = 5;
+
+mpu_armv78.$name        = "HYPERRAM_CR0_CR1";
+mpu_armv78.size         = 5;
+mpu_armv78.attributes   = "Device";
+mpu_armv78.allowExecute = false;
+mpu_armv78.baseAddr     = 0x68001000;
+
+mpu_armv79.size         = 5;
+mpu_armv79.attributes   = "Device";
+mpu_armv79.allowExecute = false;
+mpu_armv79.$name        = "HYPERRAM_ID0_ID1";
+mpu_armv79.baseAddr     = 0x68000000;
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future

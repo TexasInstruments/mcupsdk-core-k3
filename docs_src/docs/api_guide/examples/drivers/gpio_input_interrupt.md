@@ -7,14 +7,30 @@
 This example configures a GPIO pin in input mode and configures it to generate interrupt on rising edge.
 The application waits for 5 key presses, prints the number of times the keys are pressed and exits.
 \cond SOC_AM62X
-SK-AM62 or SK-AM62-LP-SK-EVM does not contain any push button connected to MCU GPIOs.
+\note SK-AM62 or SK-AM62-LP-SK-EVM does not contain any push button connected to MCU GPIOs.
+
+# M4F
 M4F example using MCU_GPIO0_15 pin in the MCU_HEADER(J9) for generating GPIO interrupt.
 Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin 10 of J9) to ground (Pin 27 of J9) in the SK-AM62 or SK-AM62-LP.
 
-A53 example is using GPIO0_14 pin in the User Expansion Connector(J3) for generating GPIO interrupt.
+# A53
+A53 Core 0_0 example is using GPIO0_14 pin in the User Expansion Connector(J3) for generating GPIO interrupt.
 Key presses can be done by connecting followed by disconnecting GPIO0_14(Pin 22 of J3) to ground (Pin 6 of J3) in the @VAR_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER.
 
+In case of AMP, the following pins in the the User Expansion Connector(J3) are used for generating GPIO interrupt:
+
+Core     | Pin
+---------|-----------
+Core 0_0 | GPIO0_14 (Pin 22)
+Core 0_1 | GPIO0_38 (Pin 16)
+Core 1_0 | GPIO1_22 (Pin 15)
+Core 1_1 | GPIO1_10 (Pin 33)
+Key presses can be done by connecting followed by disconnecting the above pins to ground (Pin 6 of J3) in the @VAR_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER, @VAR_SK_LP_BOARD_NAME_LOWER.
+
 Please note that number of key presses will be higher than actual as we are manualy connecting the ground using jumpers.
+
+\note
+In AMP, Core 0_0 performs initialisation and printing logs for other cores. Load and run Core 0_0 before other cores.
 
 \attention
 A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to Linux A53 core, the same cannot be routed to other cores (M4/R5).
@@ -143,21 +159,6 @@ Then rebuild the boardconfig and SBL using the steps mentioned in \ref BOARCFG_G
 
 \attention
 A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to A53 core, the same cannot be routed to other cores (C75/R5).
-\endcond
-\cond SOC_AM62X
-\attention
-A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to A53_0 core, the same cannot be routed to other cores (A53_1/A53_2/A53_3/R5F).
-In the case of AMP, currenly all cores are using the same SPI_MAIN_GPIOMUX_INTROUTER and GPIO mux introuter output number. User can change this and can be used different gpiomux interrupt router for each a53 core by making following changes in the board.c file
-\code
-% if(args.project.cpu == "a53ss0-1"){
-#define BOARD_BUTTON_GPIO_INTR_NUM      (CSLR_GICSS0_COMMON_0_SPI_MAIN_GPIOMUX_INTROUTER0_OUTP_1)
-#define BOARD_BUTTON_GPIO_SWITCH_NUM    ("GPIO0_14")
-%}
-% else if(args.project.cpu == "a53ss0-1"){
-#define GPIOMUX_INTROUTER_OUTP (1U)
-%}
-\endcode
-In this way different SPI_MAIN_GPIOMUX_INTROUTER and GPIO mux introuter output number can be assigned to other a53 cores
 \endcond
 \cond SOC_AM62PX
 @VAR_BOARD_NAME does not contain any push button connected to MCU GPIOs. This example is using MCU_GPIO0_15 pin in the MCU_HEADER(J11) for generating GPIO interrupt.
@@ -429,23 +430,62 @@ All tests have passed!!
 \endcode
 \endcond
 \cond SOC_AM62X
-\attention Output from the a53ss0-0, a53ss0-1, a53ss1-0 and a53ss1-1 cores are printed to UART0(/dev/ttyUSB0), UART1(/dev/ttyUSB1)
-WAKEUP_UART(/dev/ttyUSB2) and MCU_UART(/dev/ttyUSB3)respectively
+\attention Output from the a53ss0-0, a53ss0-1, a53ss1-0 and a53ss1-1 cores are printed to UART0(/dev/ttyUSB0).
 
-Shown below is a sample output from a53ss1-0 when the application is run, similar logs can be seen from other a53 cores in their respective
-uart console
+Shown below is a sample output from all the cores when the application is run.
 \code
 GPIO Input Interrupt Test Started ...
 GPIO Interrupt Configured for Rising Edge ...
 Connect the GPIO0_14 pin on EVM to ground and release to trigger GPIO interrupt ...
 Key is pressed 0 times
+[a530-1]     0.000227s : GPIO Input Interrupt Test Started ...
+[a530-1]     0.000240s : GPIO Interrupt Configured for Rising Edge ...
+[a530-1]     0.000246s : Connect the GPIO0_38 pin on EVM to ground and release to trigger GPIO interrupt ...
+[a530-1]     0.000252s : Key is pressed 0 times
+[a531-0]     0.000362s : GPIO Input Interrupt Test Started ...
+[a531-0]     0.000376s : GPIO Interrupt Configured for Rising Edge ...
+[a531-0]     0.000383s : Connect the GPIO1_22 pin on EVM to ground and release to trigger GPIO interrupt ...
+[a531-0]     0.000388s : Key is pressed 0 times
+[a531-1]     0.000453s : GPIO Input Interrupt Test Started ...
+[a531-1]     0.000466s : GPIO Interrupt Configured for Rising Edge ...
+[a531-1]     0.000473s : Connect the GPIO1_10 pin on EVM to ground and release to trigger GPIO interrupt ...
+[a531-1]     0.000478s : Key is pressed 0 times
+[a530-1]     1.000003s : Key is pressed 0 times
+[a531-0]     1.000003s : Key is pressed 0 times
+[a531-1]    18.000001s : Key is pressed 0 times
 Key is pressed 0 times
+[a530-1]    19.000001s : Key is pressed 0 times
+[a531-0]    19.000001s : Key is pressed 0 times
+[a531-1]    19.000001s : Key is pressed 0 times
 Key is pressed 0 times
+[a530-1]    20.000001s : Key is pressed 0 times
+[a531-0]    20.000001s : Key is pressed 0 times
+[a531-1]    20.000001s : Key is pressed 0 times
 Key is pressed 0 times
+[a530-1]    21.000001s : Key is pressed 0 times
+[a531-0]    21.000001s : Key is pressed 0 times
+[a531-1]    21.000001s : Key is pressed 0 times
 Key is pressed 0 times
-Key is pressed 25 times
-GPIO Input Interrupt Test Passed on a53_core2 !!
-All tests have passed on a53_core2 !!
+[a530-1]    22.000001s : Key is pressed 0 times
+[a531-0]    22.000001s : Key is pressed 0 times
+[a531-1]    22.000001s : Key is pressed 0 times
+Key is pressed 38 times
+GPIO Input Interrupt Test Passed on a53_core0 !!
+All tests have passed on a53_core0 !!
+[a530-1]    23.000001s : Key is pressed 0 times
+[a531-1]    28.000001s : Key is pressed 0 times
+[a530-1]    29.000001s : Key is pressed 28 times
+[a530-1]    29.000006s : GPIO Input Interrupt Test Passed on a53_core1 !!
+[a530-1]    29.000009s : All tests have passed on a53_core1 !!
+[a531-0]    29.000001s : Key is pressed 0 times
+[a531-1]    29.000001s : Key is pressed 0 times
+[a531-0]    30.000001s : Key is pressed 80 times
+[a531-0]    30.000006s : GPIO Input Interrupt Test Passed on a53_core2 !!
+[a531-0]    30.000009s : All tests have passed on a53_core2 !!
+[a531-1]    30.000001s : Key is pressed 0 times
+[a531-1]    45.000001s : Key is pressed 42 times
+[a531-1]    45.000006s : GPIO Input Interrupt Test Passed on a53_core3 !!
+[a531-1]    45.000009s : All tests have passed on a53_core3 !!
 \endcode
 \endcond
 \cond SOC_AM62LX

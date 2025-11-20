@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "wkup-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "wkup-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.24.0+4150"}
+ * @versions {"tool":"1.24.2+4234"}
  */
 
 /**
@@ -37,9 +37,10 @@ const mpu_armv78  = mpu_armv7.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-hyperRam1.$name                  = "CONFIG_HYPERRAM0";
-hyperRam1.addedByBootloader      = true;
-hyperRam1.peripheralDriver.$name = "CONFIG_HYPERBUS0";
+hyperRam1.$name                       = "CONFIG_HYPERRAM0";
+hyperRam1.addedByBootloader           = true;
+hyperRam1.peripheralDriver.$name      = "CONFIG_HYPERBUS0";
+hyperRam1.peripheralDriver.deviceSize = 0x4000000;
 
 bootloader1.appImageOffset = "0x400000";
 bootloader1.$name          = "CONFIG_BOOTLOADER_R50_0";
@@ -128,8 +129,8 @@ mpu_armv75.baseAddr = 0x72000000;
 mpu_armv76.$name      = "HYPERRAM";
 mpu_armv76.baseAddr   = 0x68000000;
 mpu_armv76.attributes = "CUSTOM";
-mpu_armv76.tex        = 0;
 mpu_armv76.size       = 26;
+mpu_armv76.tex        = 5;
 
 mpu_armv77.$name        = "HYPERRAM_CR0_CR1";
 mpu_armv77.size         = 5;

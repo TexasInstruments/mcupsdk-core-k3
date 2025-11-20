@@ -58,48 +58,6 @@ extern Bootloader_MemArgs gBootloader0Args;
 extern Bootloader_MemArgs gBootloader1Args;
 extern Bootloader_MemArgs gBootloader2Args;
 
-/* Workaround to initialize MMC SD Pinmux (Later will be done in SPL) */
-static Pinmux_PerCfg_t gPinMuxMMCSDCfg[] = {
-            /* MMC1 pin config */
-    /* MMC1_CLK -> MMC1_CLK (B22) */
-    {
-        PIN_MMC1_CLK,
-        ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )
-    },
-    /* MMC1_CMD -> MMC1_CMD (A21) */
-    {
-        PIN_MMC1_CMD,
-        ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )
-    },
-    /* MMC1_DAT0 -> MMC1_DAT0 (A22) */
-    {
-        PIN_MMC1_DAT0,
-        ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )
-    },
-    /* MMC1_DAT1 -> MMC1_DAT1 (B21) */
-    {
-        PIN_MMC1_DAT1,
-        ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )
-    },
-    /* MMC1_DAT2 -> MMC1_DAT2 (C21) */
-    {
-        PIN_MMC1_DAT2,
-        ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )
-    },
-    /* MMC1_DAT3 -> MMC1_DAT3 (D22) */
-    {
-        PIN_MMC1_DAT3,
-        ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )
-    },
-    /* MMC1_SDCD -> MMC1_SDCD (D17) */
-    {
-        PIN_MMC1_SDCD,
-        ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )
-    },
-
-    {PINMUX_END, PINMUX_END}
-};
-
 /* call this API to stop the booting process and spin, do that you can connect
  * debugger, load symbols and then make the 'loop' variable as 0 to continue execution
  * with debugger connected.
@@ -274,14 +232,11 @@ int main()
                 ClockP_sleep(BOOTLOADER_UART_CPU_RUN_WAIT_SECONDS);
             }
 
-            /* Initialize GTC by enabling using Syscfg */
-
-            /* Change the dev stat register to SD card bootmode so that SPL loads uBoot and linux kernel from SD card */
-	        SOC_setDevStat(SOC_BOOTMODE_MMCSD);
-
-            /* Enable pinmux for MMCSD (Workaround as MMC SD pinmux is not initialized in A53 SPL) */
-            Pinmux_config(gPinMuxMMCSDCfg, PINMUX_DOMAIN_ID_MAIN);
-
+            /*
+             * This example is loaded with UART bootmode.
+             * By default A53 SPL picks up UART bootmode.
+             * Call SOC_setDevStat() here to change bootmode if needed.
+             */
             /* Unlock all the control MMRs. Linux/U-boot expects all the MMRs to be unlocked */
             SOC_unlockAllMMR();
 

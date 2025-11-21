@@ -237,6 +237,12 @@ const defines_dm_r5f = {
     ]
 }
 
+const defines_c75 = {
+    common:[
+        "C75_CORE",
+    ]
+};
+
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "TEST_CASE_MCASP";
@@ -389,6 +395,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_c75;
             build_property.templates = templates_freertos_c75;
             build_property.cflags = cflags_freertos_c75;
+            build_property.defines = defines_c75;
         }
     }
 
@@ -403,10 +410,10 @@ function getComponentBuildProperty(buildOption) {
         }
         else if(buildOption.os.match(/nortos*/)) {
             build_property.includes = includes_nortos_dm_r5f;
-	    build_property.libdirs = libdirs_nortos_dm_r5f;
-	    build_property.libs = libs_nortos_dm_r5f;
-	    build_property.templates = templates_nortos_dm_r5f;
-	    build_property.defines = defines_dm_r5f;
+            build_property.libdirs = libdirs_nortos_dm_r5f;
+            build_property.libs = libs_nortos_dm_r5f;
+            build_property.templates = templates_nortos_dm_r5f;
+            build_property.defines = defines_dm_r5f;
         }
     }
 

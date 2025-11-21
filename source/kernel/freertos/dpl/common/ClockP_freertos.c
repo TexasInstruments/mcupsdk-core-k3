@@ -235,21 +235,32 @@ void ClockP_sleep(uint32_t sec)
 
 void ClockP_usleep(uint64_t usec)
 {
-    uint64_t curTime, endTime;
-    uint32_t ticksToSleep;
-
-    curTime = ClockP_getTimeUsec();
-    endTime = curTime + usec;
-
-    if (usec >= gClockCtrl.usecPerTick) {
-        ticksToSleep = (uint32_t)usec / gClockCtrl.usecPerTick;
+    /* Handle larger delays using tick-based sleep */
+    if (usec >= gClockCtrl.usecPerTick)
+    {
+        uint32_t ticksToSleep = (uint32_t)usec / gClockCtrl.usecPerTick;
         ClockP_sleepTicks(ticksToSleep);
     }
     else
     {
-        curTime = ClockP_getTimeUsec();
-        while (curTime < endTime) {
+        /* For short delays, use busy-wait loop */
+        uint64_t startTime = ClockP_getTimeUsec();
+        uint64_t curTime = 0U, elapsedTime = 0U;
+
+        while (elapsedTime < usec)
+        {
             curTime = ClockP_getTimeUsec();
+
+            /* Calculate elapsed time, handling potential wrap-around */
+            if (curTime >= startTime)
+            {
+                elapsedTime = curTime - startTime;
+            }
+            else
+            {
+                /* Handle wrap-around case using usecPerTick as the wrap value */
+                elapsedTime = (gClockCtrl.usecPerTick - startTime) + curTime;
+            }
         }
     }
 }

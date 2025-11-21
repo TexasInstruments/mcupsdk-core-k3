@@ -527,7 +527,7 @@ static int32_t Bootloader_uniflashFlashOrVerifyMcelfXipFile(uint32_t flashIndex,
 	{
 		ELFUP_ELFPH pht[20];
 		ELFUP_Handle elfuph;
-		int32_t status = SystemP_FAILURE;
+		int32_t status = SystemP_SUCCESS;
 
 		memset(pht, 0xff, sizeof(pht));
 

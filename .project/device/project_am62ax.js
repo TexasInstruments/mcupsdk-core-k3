@@ -54,6 +54,7 @@ const component_file_list_common = [
     "test/drivers/mmcsd/test_mmcsd_fault_inject/configs/.project/project.js",
     "test/drivers/mcspi/test_mcspi_fault_inject/configs/.project/project.js",
     "test/drivers/i2c/test_i2c_fault_inject/configs/.project/project_am62ax.js",
+    "test/drivers/mcasp/test_mcasp_fault_injection/configs/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
 ];
 
@@ -220,6 +221,7 @@ const example_file_list = [
     "test/drivers/mcasp/mcasp_multiinst_loopback/.project/project.js",
     "test/drivers/mcasp/mcasp_start_stop_test/.project/project.js",
     "test/drivers/mcasp/mcasp/.project/project.js",
+    "test/drivers/mcasp/test_mcasp_fault_injection/.project/project.js",
     "test/drivers/mcasp/test_mcasp_system/.project/project.js",
     "test/drivers/pinmux_coverage/.project/project.js",
     "test/drivers/rtc/.project/project.js",

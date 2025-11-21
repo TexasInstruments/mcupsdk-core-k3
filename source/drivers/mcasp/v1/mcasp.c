@@ -93,6 +93,11 @@ static int32_t MCASP_bitSetGblCtl(const MCASP_Handle handle, uint32_t bitMask);
 static int32_t MCASP_validateTransaction (MCASP_Handle handle, MCASP_Transaction *txn, uint8_t isTx);
 static int32_t MCASP_getBufferOffset(MCASP_TransferObj *xfrObj, uint8_t serIdx, uint32_t* pOffset);
 
+#ifdef ENABLE_MCASP_FAULT_INJECTION
+void Test_Mcasp_FaultInjectStubHandler(uint32_t side, uint32_t *statusReg);
+#endif
+
+
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -1196,6 +1201,12 @@ static void MCASP_tx_isr(void *args)
 
     /* Check if there is a transmitter buffer empty event */
     regVal = CSL_REG32_RD(&pReg->XSTAT);
+
+#ifdef ENABLE_MCASP_FAULT_INJECTION
+    /* Inject fault by calling the stub handler */
+    Test_Mcasp_FaultInjectStubHandler(0, &regVal); /* 0 = TX side */
+#endif
+
     if ((CSL_MCASP_XSTAT_XDATA_MASK == (regVal & CSL_MCASP_XSTAT_XDATA_MASK)))
     {
         /* Check if CPU transfer is through the DATA port */
@@ -1306,6 +1317,12 @@ static void MCASP_rx_isr(void *args)
 
     /* Check if there is a receiver buffer full event */
     regVal = CSL_REG32_RD(&pReg->RSTAT);
+
+#ifdef ENABLE_MCASP_FAULT_INJECTION
+    /* Inject fault by calling the stub handler */
+    Test_Mcasp_FaultInjectStubHandler(1, &regVal); /* 1 = RX side */
+#endif
+
     if ((CSL_MCASP_RSTAT_RDATA_MASK == (regVal & CSL_MCASP_RSTAT_RDATA_MASK)))
     {
         /* Check if CPU transfer is through the DATA port */

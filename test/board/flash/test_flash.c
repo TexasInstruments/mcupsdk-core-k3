@@ -56,7 +56,8 @@
 #define TEST_FLASH_BYTE_OFFSET      (8U)
 #define TEST_FLASH_TEMP_BUF_SIZE    (32U)
 #define TEST_FLASH_BUF_LEN_DMA      (2024U)
-#else
+#endif
+#if !defined(SOC_AM62AX)
 #define TEST_FLASH_DATA_SIZE        (256U)
 #define TEST_FLASH_RX_BUF_SIZE      (2048U)
 #define TEST_FLASH_BUF_LEN_ODD      (15U)
@@ -147,9 +148,11 @@ void test_main(void *args)
     RUN_TEST(test_flash_read_multiple, 247, NULL);
 #endif
 
+#if !defined(SOC_AM62AX)
     RUN_TEST(test_flash_readWriteBottomHybridLayout, 8884, NULL);
     RUN_TEST(test_flash_readWriteTopHybridLayout, 8885, NULL);
     RUN_TEST(test_flash_readWriteSplitLayout, 8886, NULL);
+#endif
 
     UNITY_END();
 

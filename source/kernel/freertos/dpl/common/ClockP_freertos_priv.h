@@ -50,7 +50,7 @@ extern "C"
 
 typedef struct ClockP_Control_
 {
-    uint64_t ticks;
+    volatile uint64_t ticks;
     uint32_t usecPerTick;
     HwiP_Object timerHwiObj;
     uint32_t timerBaseAddr;

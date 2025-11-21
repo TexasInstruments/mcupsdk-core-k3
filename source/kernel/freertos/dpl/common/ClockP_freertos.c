@@ -271,9 +271,9 @@ void ClockP_usleep(uint64_t usec)
 uint64_t ClockP_getTimeUsec(void)
 {
     uint64_t ts = 0U;
-    uint32_t timerCount;
-    uint64_t ticks1;
-    uint64_t ticks2;
+    volatile uint32_t timerCount;
+    volatile uint64_t ticks1;
+    volatile uint64_t ticks2;
 
     do {
         ticks1 = gClockCtrl.ticks;

@@ -8,13 +8,12 @@
 
 # Introduction
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62DX
 
 This is a bootloader example, which shows an example of booting  RTOS/NORTOS applications on R5,M4 and A53 cores from eMMC.
 
 The booting is done in 2 stages(2 bootloader applications).
  - The stage1 of the bootloader runs from the HSM RAM. It boots MCU R5 with RTOS/NORTOS application and initializes the DDR. Then it loads the stage2 of the bootloader to DDR and starts running it.
-\cond SOC_AM62DX
  In this stage, SBL reads the CANUART_WAKE_STAT1 MMR in wakeup control MMR to detect partial IO (or IO retention) mode exit. If exit is detected, then SBL will save the wake reason, that is the pad number that triggered the wakeup in BACKUP MMR0 of wakeup control MMR and clear isolation from the pins. Then, it continues the boot.
 
  The pad number read from BACKUP MMR0 can be interpreted as follows
@@ -27,9 +26,30 @@ The booting is done in 2 stages(2 bootloader applications).
 
  \note Please refer device datasheet to map the pad number to pin that caused the wakeup.
 
+ - The stage2 of the bootloader boots RTOS/NORTOS on A53, C75 and then self loads DM firmware on the DM R5.
+
+The SBL uses 6 appimages
+- tiboot3.bin with **SBL stage1, TIFS, BoardConfig**
+- Appimage for **SBL stage2**
+- Appimage for **MCU R5**
+- Appimage for **HSM M4**
+- DM firmware appimage for **DM R5**
+- Appimage for **A53**
+- Appimage for **C75**
 \endcond
 
- - The stage2 of the bootloader boots RTOS/NORTOS on A53, C75 and then self loads DM firmware on the DM R5.
+\cond SOC_AM62AX
+
+This is a bootloader example, which shows an example of booting  RTOS/NORTOS applications on R5,M4 and A53 cores from eMMC.
+
+The booting is done in 2 stages(2 bootloader applications).
+ - The stage1 of the bootloader runs from the HSM RAM. It boots MCU M4 with RTOS/NORTOS application and initializes the DDR.
+ - The stage2 of the bootloader is then loaded to the BTCM and DDR. The boot vectors are loaded at BTCM.
+ - The core is then reset to boot from BTCM.
+ - ATCM is enabled to load images in the next stage.
+
+ - The stage2 of the bootloader boots Linux on A53 and then self loads DM firmware on the DM R5.
+ - DM R5 image is loaded with some sections in the ATCM and the rest in DDR by stage 2 of the bootloader.
 
 The SBL uses 6 appimages
 - tiboot3.bin with **SBL stage1, TIFS, BoardConfig**
@@ -46,9 +66,13 @@ The SBL uses 6 appimages
 This is a bootloader example, which shows an example of booting  RTOS/NORTOS applications on R5,M4 and A53 cores from eMMC.
 
 The booting is done in 2 stages(2 bootloader applications).
- - The stage1 of the bootloader runs from the HSM RAM. It boots MCU M4 with RTOS/NORTOS application and initializes the DDR. Then it loads the stage2 of the bootloader to DDR and starts running it.
+ - The stage1 of the bootloader runs from the HSM RAM. It boots MCU M4 with RTOS/NORTOS application and initializes the DDR.
+ - The stage2 of the bootloader is then loaded to the BTCM and DDR. The boot vectors are loaded at BTCM.
+ - The core is then reset to boot from BTCM.
+ - ATCM is enabled to load images in the next stage.
 
- - The stage2 of the bootloader boots RTOS/NORTOS application on A53 and then self loads DM firmware on the DM R5.
+ - The stage2 of the bootloader boots Linux on A53 and then self loads DM firmware on the DM R5.
+ - DM R5 image is loaded with some sections in the ATCM and the rest in DDR by stage 2 of the bootloader.
 
 The SBL uses following appimages
 - tiboot3.bin with **SBL stage1, TIFS, BoardConfig**

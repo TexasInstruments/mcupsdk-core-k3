@@ -11,9 +11,13 @@
 This is a bootloader example, which shows an example of booting  RTOS/NORTOS applications on DM R5, MCU M4 and A53 cores.
 
 The booting is done in 2 stages(2 bootloader applications).
- - The stage1 of the bootloader runs from the HSM RAM. It boots MCU M4 with RTOS/NORTOS application and initializes the DDR. Then it loads the stage2 of the bootloader to DDR and starts running it
+ - The stage1 of the bootloader runs from the HSM RAM. It boots MCU M4 with RTOS/NORTOS application and initializes the DDR.
+ - The stage2 of the bootloader is then loaded to the BTCM and DDR. The boot vectors are loaded at BTCM.
+ - The core is then reset to boot from BTCM.
+ - ATCM is enabled to load images in the next stage.
 
- - The stage2 of the bootloader boots RTOS/NORTOS on A53 and then self loads DM firmware on the DM R5.
+ - The stage2 of the bootloader boots Linux on A53 and then self loads DM firmware on the DM R5.
+ - DM R5 image is loaded with some sections in the ATCM and the rest in DDR by stage 2 of the bootloader.
 
 The SBL uses 6 appimages
 - tiboot3.bin with **SBL stage1, TIFS, BoardConfig**

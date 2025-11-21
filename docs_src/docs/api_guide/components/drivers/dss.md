@@ -37,8 +37,10 @@ formats for video pipeline input.
 - Support for colorbar test pattern generation from OVR1 and OVR2.
 - Alpha blending support: embedded pixel alpha (ARGB and RGBA), global pixel,
 combination of global pixel and pixel alpha.
+\cond SOC_AM62PX
 - Support for display sharing with HLOS with VIDL pipeline, OVR1 and VP1 in
 control of MCU and zorder configuration controlled by MCU.
+\endcond
 
 **Safety Features:**
 

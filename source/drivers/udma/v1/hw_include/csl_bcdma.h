@@ -382,20 +382,6 @@ typedef struct
     uint8_t                 hiVal;             /**< [IN]  Tag[7:0] high byte value (used if hiSel == 1) */
 } CSL_BcdmaRouteTag;
 
-/** \brief Module revision information
- *
- *  This structure contains information describing the module revision.
- *
- */
-typedef struct
-{
-    uint32_t                modId;              /**< [OUT]  Module ID */
-    uint32_t                revRtl;             /**< [OUT]  RTL revision */
-    uint32_t                revMajor;           /**< [OUT]  Major revision */
-    uint32_t                custom;             /**< [OUT]  Custom revision */
-    uint32_t                revMinor;           /**< [OUT]  Minor revision */
-} CSL_BcdmaRevision;
-
 typedef struct
 {
     uint32_t                pauseOnError;         /**< [IN] When set, pause channel on error */
@@ -473,19 +459,6 @@ typedef struct
     uint32_t                rxUltraHighCapacityChanCnt; /**< [udmap_only] [OUT] Rx external UTC channel count (populated by the #CSL_bcdmaGetCfg function) */
 } CSL_BcdmaCfg;
 
-/** \brief BCDMA receive flow id firewall status
- *
- *  This structure contains status information collected whenever the receive
- *  flow ID firewall detects a flow ID that is out of range for an incoming
- *  packet.
- *
- */
-typedef struct
-{
-    uint32_t    flowId;                         /**< [OUT] The flow ID that was received on the trapped packet */
-    uint32_t    chnIdx;                         /**< [OUT] The channel index on which the trapped packet was received */
-} CSL_BcdmaRxFlowIdFirewallStatus;
-
 /** \brief Channel teardown options
  *
  *  This structure contains channel teardown options.
@@ -561,32 +534,6 @@ typedef struct
  *  \addtogroup CSL_BCDMA_FUNCTION
  *  @{
  */
-
-/**
- *  \brief Return revision of the BCDMA module
- *
- *  This function returns the contents of the BCDMA revision register.
- *  Consult the BCDMA module documentation for a description of the
- *  contents of the revision register.
- *
- *  \param pCfg             [IN]    Pointer to the BCDMA configuration structure
- *
- *  \return The 32-bit revision register is returned.
- */
-extern uint32_t CSL_bcdmaGetRevision( const CSL_BcdmaCfg *pCfg );
-
-/**
- *  \brief Return revision information of the BCDMA module
- *
- *  This function returns revision information for the BCDMA module.
- *
- *  \param pCfg             [IN]    Pointer to the BCDMA configuration structure
- *  \param pRev             [OUT]   Pointer to a #CSL_BcdmaRevision structure where the revision information is returned
- *
- *  \return CSL_PASS  = Function executed successfully
- *          CSL_EFAIL = Function execution failed
- */
-extern int32_t CSL_bcdmaGetRevisionInfo( const CSL_BcdmaCfg *pCfg, CSL_BcdmaRevision *pRev );
 
 /**
  *  \brief Initialize contents of a BCDMA configuration structure
@@ -696,36 +643,6 @@ extern void CSL_bcdmaInitChanCfg( CSL_BcdmaChanCfg *pChanCfg );
 extern int32_t CSL_bcdmaChanOp( CSL_BcdmaCfg *pCfg, CSL_BcdmaChanOp chanOp, CSL_BcdmaChanType chanType, uint32_t chanIdx, void *pOpData );
 
 /**
- *  \brief Set performance control parmeters
- *
- *  This function is used to set performance control paramaters available
- *  in the BCDMA module.
- *
- *  \param pCfg                 [IN]    Pointer to the BCDMA configuration structure
- *  \param rxRetryTimeoutCnt    [IN]    This parameter specifies the minimum
- *      amount of time (in clock cycles) that an Rx channel will be required
- *      to wait when it encounters a buffer starvation condition and the Rx
- *      error handling bit is set to 1
- *
- *  \return None
- */
-extern void CSL_bcdmaSetPerfCtrl( CSL_BcdmaCfg *pCfg, uint32_t rxRetryTimeoutCnt );
-
-/**
- *  \brief [udmap_only] Set UTC control parmeters
- *
- *  This function is used to set UTC control paramaters available
- *  in the BCDMA module.
- *
- *  \param pCfg                 [IN]    Pointer to the BCDMA configuration structure
- *  \param startingThreadNum    [IN]    This parameter specifies the starting
- *      PSI-L thread number for the external UTC
- *
- *  \return None
- */
-extern void CSL_bcdmaSetUtcCtrl( CSL_BcdmaCfg *pCfg, uint32_t startingThreadNum );
-
-/**
  *  \brief Configure a TX/RX channel
  *
  *  This function initializes a transmit channel with values specified in the
@@ -739,38 +656,6 @@ extern void CSL_bcdmaSetUtcCtrl( CSL_BcdmaCfg *pCfg, uint32_t startingThreadNum 
  *          CSL_EFAIL = Function execution failed
  */
 extern int32_t CSL_bcdmaChanCfg( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, CSL_BcdmaChanType chanType, const CSL_BcdmaChanCfg *pChanCfg );
-
-/**
- *  \brief [udmap_only] Configure an RX channel TR event
- *
- *  \param pCfg             [IN]    Pointer to the BCDMA configuration structure
- *  \param chanIdx          [IN]    Index of the receive channel to initialize
- *  \param trEventNum       [IN]    Specifies a global event number to generate
- *                                  anytime the required event generation
- *                                  criteria specified in a TR are met
- *                                  Set to CSL_BCDMA_NO_EVENT for no event
- *                                  generation.
- *
- *  \return CSL_PASS  = Function executed successfully
- *          CSL_EFAIL = Function execution failed
- */
-extern int32_t CSL_bcdmaRxChanSetTrEvent( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, uint32_t trEventNum );
-
-/**
- *  \brief [udmap_only] Configure an TX channel TR event
- *
- *  \param pCfg             [IN]    Pointer to the BCDMA configuration structure
- *  \param chanIdx          [IN]    Index of the transmit channel to initialize
- *  \param trEventNum       [IN]    Specifies a global event number to generate
- *                                  anytime the required event generation
- *                                  criteria specified in a TR are met
- *                                  Set to CSL_BCDMA_NO_EVENT for no event
- *                                  generation.
- *
- *  \return CSL_PASS  = Function executed successfully
- *          CSL_EFAIL = Function execution failed
- */
-extern int32_t CSL_bcdmaTxChanSetTrEvent( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, uint32_t trEventNum );
 
 /**
  *  \brief Get a TX channel's real-time register values
@@ -878,32 +763,6 @@ extern int32_t CSL_bcdmaPauseChan( CSL_BcdmaCfg *pCfg, uint32_t chanIdx );
 extern int32_t CSL_bcdmaUnpauseChan( CSL_BcdmaCfg *pCfg, uint32_t chanIdx );
 
 /**
- *  \brief Send a trigger event to a TX channel
- *
- *  This function causes a trigger event to be sent to the specified transmit
- *  channel.
- *
- *  \param pCfg             [IN]    Pointer to the BCDMA configuration structure
- *  \param chanIdx          [IN]    Index of the transmit channel
- *
- *  \return CSL_PASS  = Function executed successfully
- *          CSL_EFAIL = Function execution failed
- */
-extern int32_t CSL_bcdmaTriggerTxChan( CSL_BcdmaCfg *pCfg, uint32_t chanIdx );
-
-/**
- *  \brief Clear error indication in a transmit channel.
- *
- *  This function clears the error indication in the specified transmit channel.
- *
- *  \param pCfg     [IN]    Pointer to the BCDMA configuration structure
- *  \param chanIdx  [IN]    The index of the transmit channel
- *
- *  \return None
- */
-extern void CSL_bcdmaClearTxChanError( CSL_BcdmaCfg *pCfg, uint32_t chanIdx );
-
-/**
  *  \brief Enable a receive channel.
  *
  *  This function enables the receive channel specified by 'chanIdx'.
@@ -915,19 +774,6 @@ extern void CSL_bcdmaClearTxChanError( CSL_BcdmaCfg *pCfg, uint32_t chanIdx );
  *          CSL_EFAIL = Function execution failed
  */
 extern int32_t CSL_bcdmaEnableRxChan( CSL_BcdmaCfg *pCfg, uint32_t chanIdx );
-
-/**
- *  \brief Disable a receive channel.
- *
- *  This function disables the receive channel specified by 'chanIdx'.
- *
- *  \param pCfg     [IN]    Pointer to the BCDMA configuration structure
- *  \param chanIdx  [IN]    The index of the receive channel
- *
- *  \return CSL_PASS  = Function executed successfully
- *          CSL_EFAIL = Function execution failed
- */
-extern int32_t CSL_bcdmaDisableRxChan( CSL_BcdmaCfg *pCfg, uint32_t chanIdx );
 
 /**
  *  \brief Teardown a receive channel.
@@ -948,70 +794,6 @@ extern int32_t CSL_bcdmaDisableRxChan( CSL_BcdmaCfg *pCfg, uint32_t chanIdx );
  *          CSL_EFAIL = Function execution failed (channel is disabled)
  */
 extern int32_t CSL_bcdmaTeardownChan( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, bool bForce, bool bWait );
-
-/**
- *  \brief Send a trigger event to an RX channel
- *
- *  This function causes a trigger event to be sent to the specified receive
- *  channel.
- *
- *  \param pCfg             [IN]    Pointer to the BCDMA configuration structure
- *  \param chanIdx          [IN]    Index of the receive channel
- *
- *  \return CSL_PASS  = Function executed successfully
- *          CSL_EFAIL = Function execution failed
- */
-extern int32_t CSL_bcdmaTriggerRxChan( CSL_BcdmaCfg *pCfg, uint32_t chanIdx );
-
-/**
- *  \brief Clear error indication in a receive channel.
- *
- *  This function clears the error indication in the specified receive channel.
- *
- *  \param pCfg     [IN]    Pointer to the BCDMA configuration structure
- *  \param chanIdx  [IN]    The index of the receive channel
- *
- *  \return None
- */
-extern void CSL_bcdmaClearRxChanError( CSL_BcdmaCfg *pCfg, uint32_t chanIdx );
-
-/**
- *  \brief [udmap_only] Configure the receive flow ID range firewall
- *
- *  This function is used to configure the receive flow ID range firewall.
- *
- *  \param pCfg             [IN]    Pointer to the BCDMA configuration structure
- *  \param outEvtNum        [IN]    Output event number to use when the receive
- *                                  flow ID range firewall detects an error
- *
- *  \return None
- */
-extern void CSL_bcdmaCfgRxFlowIdFirewall( CSL_BcdmaCfg *pCfg, uint32_t outEvtNum );
-
-/**
- *  \brief [udmap_only] Get receive flow ID range firewall status information
- *
- *  This function returns information from the receive flow ID range firewall.
- *
- *  If the receive flow ID firewall has detected an out of range flow ID,
- *  the function returns true and the fields within the
- *  #CSL_BcdmaRxFlowIdFirewallStatus structure contain error details. The
- *  function will automatically reset the receive flow ID firewall to capture
- *  the next error.
- *
- *  If the receive flow ID firewall has not detected an out of range flow ID,
- *  the function returns false and the fields within the
- *  #CSL_BcdmaRxFlowIdFirewallStatus structure are not updated.
- *
- *  \param pCfg                 [IN]    Pointer to the BCDMA configuration structure
- *  \param pRxFlowIdFwStatus    [IN]    Pointer to a #CSL_BcdmaRxFlowIdFirewallStatus
- *                                      structure containing error details (valid
- *                                      only when true is returned)
- *
- *  \return true if the receive flow ID range firewall has detected an out of range
- *          flow ID, false if no error was detected
- */
-extern bool CSL_bcdmaGetRxFlowIdFirewallStatus( CSL_BcdmaCfg *pCfg, CSL_BcdmaRxFlowIdFirewallStatus *pRxFlowIdFwStatus );
 
 /**
  *  \brief Get channel statistics
@@ -1887,19 +1669,6 @@ extern int32_t CSL_bcdmaIsPairComp(CSL_BcdmaCfg *pCfg, uint32_t chNum);
 extern int32_t CSL_bcdmaEnableChan( CSL_BcdmaCfg *pCfg, uint32_t chanIdx );
 
 /**
- *  \brief Disable the TX/RX channel using CTL register
- *
- *
- *  \param pCfg          [IN] Pointer to the BCDMA configuration structure
- * 
- *  \param chanIdx         [IN] Channel number
- *
- *  \return \ref Udma_ErrorCodes
- */
-
-extern int32_t CSL_bcdmaDisableChan( CSL_BcdmaCfg *pCfg, uint32_t chanIdx );
-
-/**
  *  \brief Trigger the TX/RX channel usng SWTRIG register
  *
  *
@@ -1939,6 +1708,19 @@ extern int32_t CSL_bcdmaChanSetBurstSize( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, 
  */
 
 extern void CSL_bcdmaClearChanError( CSL_BcdmaCfg *pCfg, uint32_t chanIdx );
+
+/**
+ *  \brief Disable the TX/RX channel using CTL register
+ *
+ *
+ *  \param pCfg          [IN] Pointer to the BCDMA configuration structure
+ * 
+ *  \param chanIdx         [IN] Channel number
+ *
+ *  \return \ref Udma_ErrorCodes
+ */
+
+extern int32_t CSL_bcdmaDisableChan( CSL_BcdmaCfg *pCfg, uint32_t chanIdx );
 
 /* @} */
 

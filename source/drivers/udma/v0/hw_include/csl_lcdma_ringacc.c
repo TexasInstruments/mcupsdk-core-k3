@@ -47,15 +47,9 @@
 #endif
 
 static bool bIsPhysBaseOk( const CSL_LcdmaRingaccRingCfg *pRing );
-static void *CSL_lcdma_ringaccGetRingRdElementAddr( const CSL_LcdmaRingaccRingCfg *pRing );
-static void *CSL_lcdma_ringaccGetRingWrElementAddr( const CSL_LcdmaRingaccRingCfg *pRing );
 static void CSL_lcdma_ringaccGetNewElCnt( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing );
-static bool CSL_lcdma_ringaccIsRingEmpty( const CSL_LcdmaRingaccRingCfg *pRing );
-static bool CSL_lcdma_ringaccIsRingFull( const CSL_LcdmaRingaccRingCfg *pRing );
-static void *CSL_lcdma_ringaccGetRingDataPtr( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing );
 static int32_t CSL_lcdma_ringaccPush64MultiAccess( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint64_t *pVals, uint32_t numValues, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps );
 static int32_t CSL_lcdma_ringaccPop64MultiAccess( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint64_t *pVals, uint32_t numValues, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps );
-static int32_t CSL_lcdma_ringaccPeek64Access( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint64_t *pVal, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps );
 
 static inline void CSL_archMemoryFence(void);
 static inline void CSL_archMemoryFence(void)
@@ -89,52 +83,9 @@ static bool bIsPhysBaseOk( const CSL_LcdmaRingaccRingCfg *pRing )
     return bRetVal;
 }
 
-static void *CSL_lcdma_ringaccGetRingRdElementAddr( const CSL_LcdmaRingaccRingCfg *pRing )
-{
-    return (void *)(((uintptr_t)pRing->rdIdx * pRing->elSz) + (uintptr_t)pRing->virtBase);
-}
-
-static void *CSL_lcdma_ringaccGetRingWrElementAddr( const CSL_LcdmaRingaccRingCfg *pRing )
-{
-    return (void *)(((uintptr_t)pRing->wrIdx * pRing->elSz) + (uintptr_t)pRing->virtBase);
-}
-
 static void CSL_lcdma_ringaccGetNewElCnt( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing )
 {
     pRing->rdOcc = CSL_lcdma_ringaccGetReverseRingOcc( pCfg, pRing->ringNum, pRing->mode );
-}
-
-static bool CSL_lcdma_ringaccIsRingEmpty( const CSL_LcdmaRingaccRingCfg *pRing )
-{
-    bool bEmpty = (pRing->rdOcc == 0U) ? (bool)true : (bool)false;
-    return bEmpty;
-}
-
-static bool CSL_lcdma_ringaccIsRingFull( const CSL_LcdmaRingaccRingCfg *pRing )
-{
-    bool bFull = (pRing->wrOcc == pRing->elCnt) ? (bool)true : (bool)false;
-    return bFull;
-}
-
-/*=============================================================================
- *  This function returns a pointer to the specified ring element only if
- *  the element contains data. If the ring element is empty, NULL is returned.
- *===========================================================================*/
-static void *CSL_lcdma_ringaccGetRingDataPtr( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing )
-{
-    void *ptr = NULL;
-
-    /* If this ring appears empty, then update the occupancy */
-    if( CSL_lcdma_ringaccIsRingEmpty( pRing ) == (bool)true )
-    {
-        CSL_lcdma_ringaccGetNewElCnt( pCfg, pRing );
-    }
-    /* Return pointer if not empty */
-    if( CSL_lcdma_ringaccIsRingEmpty( pRing ) == (bool)false )
-    {
-        ptr = (void *)CSL_lcdma_ringaccGetRingRdElementAddr( pRing );
-    }
-    return ptr;
 }
 
 static int32_t CSL_lcdma_ringaccPush64MultiAccess( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint64_t *pVals, uint32_t numValues, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps )
@@ -248,46 +199,6 @@ static int32_t CSL_lcdma_ringaccPop64MultiAccess( CSL_LcdmaRingaccCfg *pCfg, CSL
     return retVal;
 }
 
-static int32_t CSL_lcdma_ringaccPeek64Access( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint64_t *pVal, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps )
-{
-    int32_t retVal = 0;
-
-    if( pRing->elSz < sizeof(uint64_t) )
-    {
-        retVal = -2;        /* Requested access size is greater than ring element size */
-    }
-    else
-    {
-        void *pRingEntry;
-
-        pRingEntry = (void *)CSL_lcdma_ringaccGetRingDataPtr( pCfg, pRing );
-        if( pRingEntry != NULL )
-        {
-            /*-----------------------------------------------------------------
-             * Perform the specified memory operation only if the ring's
-             * physical base address's asel value == 0 (not cache coherent)
-             *---------------------------------------------------------------*/
-            if( (pfMemOps != NULL) && (pRing->asel == (uint32_t)0U) )
-            {
-                (*pfMemOps)((void *)pRingEntry, sizeof(uint64_t), CSL_LCDMA_RINGACC_MEM_OPS_TYPE_RD);
-            }
-            *pVal = *(uint64_t *)pRingEntry;
-        }
-        else
-        {
-            *pVal = 0;
-            retVal = -1;    /* Ring is empty */
-        }
-    }
-    return retVal;
-}
-
-uint32_t CSL_lcdma_ringaccGetRevision( const CSL_LcdmaRingaccCfg *pCfg )
-{
-    UNUSED_PARAM(pCfg);
-    return( 0U );
-}
-
 void CSL_lcdma_ringaccInitCfg( CSL_LcdmaRingaccCfg *pCfg )
 {
     memset( (void *)pCfg, 0, sizeof(CSL_LcdmaRingaccCfg) );
@@ -354,96 +265,6 @@ int32_t CSL_lcdma_ringaccInitRing( CSL_LcdmaRingaccCfg *pCfg,
     return retVal;
 }
 
-int32_t CSL_lcdma_ringaccSetEvent( CSL_LcdmaRingaccCfg *pCfg,
-                             uint32_t ringNum,
-                             uint32_t evtNum )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(ringNum);
-    UNUSED_PARAM(evtNum);
-    return -1;
-}
-
-uint32_t CSL_lcdma_ringaccGetRingNum( const CSL_LcdmaRingaccRingCfg *pRing )
-{
-    return pRing->ringNum;
-}
-
-void CSL_lcdma_ringaccSetRingOrderId( CSL_LcdmaRingaccCfg *pCfg, const CSL_LcdmaRingaccRingCfg *pRing, uint32_t orderId )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(pRing);
-    UNUSED_PARAM(orderId);
-    return;
-}
-
-void CSL_lcdma_ringaccCfgRingCred( CSL_LcdmaRingaccCfg *pCfg, const CSL_LcdmaRingaccRingCfg *pRing, bool bEnable, bool bLock )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(pRing);
-    UNUSED_PARAM(bEnable);
-    UNUSED_PARAM(bLock);
-    return;
-}
-
-void CSL_lcdma_ringaccResetRing( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing )
-{
-    uint32_t regVal;
-
-    /* To reset a ring, write to the ring's BA_LO, BA_HI, or SIZE register */
-    regVal = CSL_REG32_RD( &pCfg->pRingCfgRegs->RING[pRing->ringNum].SIZE );
-    CSL_REG32_WR( &pCfg->pRingCfgRegs->RING[pRing->ringNum].SIZE, regVal );
-    /* Initialize state fields */
-    CSL_lcdma_ringaccInitRingObj( pRing->ringNum, pRing );
-}
-
-void *CSL_lcdma_ringaccGetForwardRingPtr( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing )
-{
-    void *ptr = NULL;
-
-    if( CSL_lcdma_ringaccIsRingFull( pRing ) == (bool)true )
-    {
-        CSL_lcdma_ringaccGetNewElCnt( pCfg, pRing );
-    }
-    /* Return pointer if not full */
-    if( CSL_lcdma_ringaccIsRingFull( pRing ) == (bool)false )
-    {
-        ptr = (void *)CSL_lcdma_ringaccGetRingWrElementAddr(pRing);
-    }
-    return ptr;
-}
-
-void *CSL_lcdma_ringaccGetReverseRingPtr( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing )
-{
-    void *ptr = NULL;
-
-    /* If this ring appears empty, then update the occupancy */
-    if( CSL_lcdma_ringaccIsRingEmpty( pRing ) == (bool)true )
-    {
-        CSL_lcdma_ringaccGetNewElCnt( pCfg, pRing );
-    }
-    /* Return pointer if not empty */
-    if( CSL_lcdma_ringaccIsRingEmpty( pRing ) == (bool)false )
-    {
-        ptr = (void *)CSL_lcdma_ringaccGetRingRdElementAddr(pRing);
-    }
-    return ptr;
-}
-
-uint32_t CSL_lcdma_ringaccGetForwardRingIdx( const CSL_LcdmaRingaccCfg *pCfg, uint32_t ringNum )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(ringNum);
-    return 0U;
-}
-
-uint32_t CSL_lcdma_ringaccGetReverseRingIdx( const CSL_LcdmaRingaccCfg *pCfg, uint32_t ringNum )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(ringNum);
-    return 0U;
-}
-
 uint32_t CSL_lcdma_ringaccGetForwardRingOcc( const CSL_LcdmaRingaccCfg *pCfg, uint32_t ringNum, CSL_LcdmaRingaccRingMode mode )
 {
     UNUSED_PARAM(mode);
@@ -462,166 +283,12 @@ uint32_t CSL_lcdma_ringaccGetReverseRingOcc( const CSL_LcdmaRingaccCfg *pCfg, ui
     return retVal;
 }
 
-int32_t CSL_lcdma_ringaccSetTraceEnable( CSL_LcdmaRingaccCfg *pCfg, bool bEnable )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(bEnable);
-    return -1;
-}
-
-int32_t CSL_lcdma_ringaccEnableTrace( CSL_LcdmaRingaccCfg *pCfg )
-{
-    UNUSED_PARAM(pCfg);
-    return -1;
-}
-
-int32_t CSL_lcdma_ringaccDisableTrace( CSL_LcdmaRingaccCfg *pCfg )
-{
-    UNUSED_PARAM(pCfg);
-    return -1;
-}
-
-int32_t CSL_lcdma_ringaccCfgTrace( CSL_LcdmaRingaccCfg *pCfg, bool bTraceAll, bool bIncMsgData, uint32_t ringNum )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(bTraceAll);
-    UNUSED_PARAM(bIncMsgData);
-    UNUSED_PARAM(ringNum);
-    return -1;
-}
-
-int32_t CSL_lcdma_ringaccCfgRingMonitor( CSL_LcdmaRingaccCfg *pCfg,
-                            uint32_t monNum,
-                            CSL_LcdmaRingAccMonitorType monType,
-                            uint32_t ringNum,
-                            uint32_t eventNum,
-                            CSL_LcdmaRingAccMonitorDataSrc dataSrc,
-                            uint32_t data0Val,
-                            uint32_t data1Val )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(monNum);
-    UNUSED_PARAM(monType);
-    UNUSED_PARAM(ringNum);
-    UNUSED_PARAM(eventNum);
-    UNUSED_PARAM(dataSrc);
-    UNUSED_PARAM(data0Val);
-    UNUSED_PARAM(data1Val);
-    return -1;
-}
-
-int32_t CSL_lcdma_ringaccReadRingMonitor( const CSL_LcdmaRingaccCfg *pCfg, uint32_t monNum, uint32_t *pData0, uint32_t *pData1 )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(monNum);
-    UNUSED_PARAM(pData0);
-    UNUSED_PARAM(pData1);
-    return -1;
-}
-
-int32_t CSL_lcdma_ringaccPush32( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint32_t val, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps)
-{
-    int32_t retVal = 0;
-    uint32_t *pRingEntry;
-
-    pRingEntry = (uint32_t *)CSL_lcdma_ringaccGetForwardRingPtr( pCfg,  pRing );
-    if( pRingEntry != NULL )
-    {
-        *pRingEntry = val;
-        CSL_archMemoryFence();
-        /*-----------------------------------------------------------------
-         * Perform the specified memory operation only if the ring's
-         * physical base address's asel value == 0 (not cache coherent)
-         *---------------------------------------------------------------*/
-        if( (pfMemOps != NULL) && (pRing->asel == (uint32_t)0U) )
-        {
-            (*pfMemOps)((void *)pRingEntry, sizeof(uint32_t), CSL_LCDMA_RINGACC_MEM_OPS_TYPE_WR);
-        }
-        CSL_lcdma_ringaccCommitToForwardRing( pCfg, pRing, 1 );
-    }
-    else
-    {
-        retVal = -1;    /* Ring is full */
-    }
-    return retVal;
-}
-
-int32_t CSL_lcdma_ringaccPop32( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint32_t *pVal, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps )
-{
-    int32_t retVal = 0;
-    uint32_t *pRingEntry;
-
-    pRingEntry = (uint32_t *)CSL_lcdma_ringaccGetReverseRingPtr( pCfg, pRing );
-    if( pRingEntry != NULL )
-    {
-        /*-----------------------------------------------------------------
-         * Perform the specified memory operation only if the ring's
-         * physical base address's asel value == 0 (not cache coherent)
-         *---------------------------------------------------------------*/
-        if( (pfMemOps != NULL) && (pRing->asel == (uint32_t)0U) )
-        {
-            (*pfMemOps)((void *)pRingEntry, sizeof(uint32_t), CSL_LCDMA_RINGACC_MEM_OPS_TYPE_RD);
-        }
-        *pVal = *pRingEntry;
-        CSL_lcdma_ringaccAckReverseRing( pCfg, pRing, 1 );
-    }
-    else
-    {
-        *pVal = 0;
-        retVal = -1;    /* Ring is empty */
-    }
-    return retVal;
-}
-
-int32_t CSL_lcdma_ringaccHwPop32( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint32_t *pVal, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(pRing);
-    UNUSED_PARAM(pVal);
-    UNUSED_PARAM(pfMemOps);
-    return 0;
-}
-
-int32_t CSL_lcdma_ringaccPeek32( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint32_t *pVal, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps )
-{
-    int32_t retVal = 0;
-    uint32_t *pRingEntry;
-
-    pRingEntry = (uint32_t *)CSL_lcdma_ringaccGetRingDataPtr( pCfg, pRing );
-    if( pRingEntry != NULL )
-    {
-        /*-----------------------------------------------------------------
-         * Perform the specified memory operation only if the ring's
-         * physical base address's asel value == 0 (not cache coherent)
-         *---------------------------------------------------------------*/
-        if( (pfMemOps != NULL) && (pRing->asel == (uint32_t)0U) )
-        {
-            (*pfMemOps)((void *)pRingEntry, sizeof(uint32_t), CSL_LCDMA_RINGACC_MEM_OPS_TYPE_RD);
-        }
-        *pVal = *pRingEntry;
-    }
-    else
-    {
-        *pVal = 0;
-        retVal = -1;    /* Ring is empty */
-    }
-    return retVal;
-}
-
 int32_t CSL_lcdma_ringaccPush64( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint64_t val, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps )
 {
     uint64_t valArray[1U] = {val};
     int32_t retVal;
 
     retVal = CSL_lcdma_ringaccPush64MultiAccess( pCfg, pRing, valArray, (uint32_t)1U, pfMemOps );
-    return retVal;
-}
-
-int32_t CSL_lcdma_ringaccPush64Multi( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint64_t *pVals, uint32_t numValues, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps )
-{
-    int32_t retVal;
-
-    retVal = CSL_lcdma_ringaccPush64MultiAccess( pCfg, pRing, pVals, numValues, pfMemOps );
     return retVal;
 }
 
@@ -633,170 +300,10 @@ int32_t CSL_lcdma_ringaccPop64( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingC
     return retVal;
 }
 
-int32_t CSL_lcdma_ringaccPop64Multi( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint64_t *pVals, uint32_t numValues, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps )
-{
-    int32_t retVal;
-
-    retVal = CSL_lcdma_ringaccPop64MultiAccess( pCfg, pRing, pVals, numValues, pfMemOps );
-    return retVal;
-}
-
-int32_t CSL_lcdma_ringaccHwPop64( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint64_t *pVal, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(pRing);
-    UNUSED_PARAM(pVal);
-    UNUSED_PARAM(pfMemOps);
-    return 0;
-}
-
-int32_t CSL_lcdma_ringaccPeek64( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint64_t *pVal, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps )
-{
-    int32_t retVal;
-
-    retVal = CSL_lcdma_ringaccPeek64Access( pCfg, pRing, pVal, pfMemOps );
-    return retVal;
-}
-
-int32_t CSL_lcdma_ringaccWrData( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint8_t *pData, uint32_t numBytes, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps )
-{
-    int32_t retVal = 0;
-    uint32_t numBytes_local = numBytes;
-    uint8_t *pData_local = pData;
-
-    if( numBytes_local <= pRing->elSz )
-    {
-        uint8_t *pRingEntry;
-
-        pRingEntry = (uint8_t *)CSL_lcdma_ringaccGetForwardRingPtr( pCfg,  pRing );
-        if( pRingEntry != NULL )
-        {
-            uint8_t *pRingEntrySave = pRingEntry;
-
-            while( numBytes_local != 0U )
-            {
-                numBytes_local--;
-                *pRingEntry = *pData_local;
-                pRingEntry++;
-                pData_local++;
-
-            }
-            CSL_archMemoryFence();
-            /*-----------------------------------------------------------------
-             * Perform the specified memory operation only if the ring's
-             * physical base address's asel value == 0 (not cache coherent)
-             *---------------------------------------------------------------*/
-            if( (pfMemOps != NULL) && (pRing->asel == (uint32_t)0U) )
-            {
-                (*pfMemOps)((void *)pRingEntrySave, numBytes, CSL_LCDMA_RINGACC_MEM_OPS_TYPE_WR);
-            }
-            CSL_lcdma_ringaccCommitToForwardRing( pCfg, pRing, 1 );
-        }
-        else
-        {
-            retVal = -1;    /* Ring is full */
-        }
-    }
-    else
-    {
-        retVal = -2;    /* Requested access size is greater than ring element size */
-    }
-    return retVal;
-}
-
-int32_t CSL_lcdma_ringaccRdData( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint8_t *pData, uint32_t numBytes, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps )
-{
-    int32_t retVal = 0;
-    uint32_t numBytes_local = numBytes;
-    uint8_t *pData_local = pData;
-
-    if( numBytes_local <= pRing->elSz )
-    {
-        uint8_t *pRingEntry;
-
-        pRingEntry = (uint8_t *)CSL_lcdma_ringaccGetReverseRingPtr( pCfg,  pRing );
-        if( pRingEntry != NULL )
-        {
-            /*-----------------------------------------------------------------
-             * Perform the specified memory operation only if the ring's
-             * physical base address's asel value == 0 (not cache coherent)
-             *---------------------------------------------------------------*/
-            if( (pfMemOps != NULL) && (pRing->asel == (uint32_t)0U) )
-            {
-                (*pfMemOps)((void *)pRingEntry, numBytes_local, CSL_LCDMA_RINGACC_MEM_OPS_TYPE_RD);
-            }
-            while( numBytes_local != 0U )
-            {
-                numBytes_local--;
-                *pData_local = *pRingEntry;
-                pData_local++;
-                pRingEntry++;
-            }
-            CSL_lcdma_ringaccAckReverseRing( pCfg, pRing, 1 );
-        }
-        else
-        {
-            retVal = -1;    /* Ring is empty */
-        }
-    }
-    else
-    {
-        retVal = -2;    /* Requested access size is greater than ring element size */
-    }
-    return retVal;
-}
-
-int32_t CSL_lcdma_ringaccPeekData( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint8_t *pData, uint32_t numBytes, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps )
-{
-    UNUSED_PARAM(pCfg);
-    int32_t retVal = 0;
-    uint32_t numBytes_local = numBytes;
-    uint8_t *pData_local = pData;
-
-    if( numBytes_local <= pRing->elSz )
-    {
-        uint8_t *pRingEntry;
-
-        pRingEntry = (uint8_t *)CSL_lcdma_ringaccGetRingRdElementAddr(pRing);
-        if (pRingEntry != NULL )
-        {
-            /*-----------------------------------------------------------------
-             * Perform the specified memory operation only if the ring's
-             * physical base address's asel value == 0 (not cache coherent)
-             *---------------------------------------------------------------*/
-            if( (pfMemOps != NULL) && (pRing->asel == (uint32_t)0U) )
-            {
-                (*pfMemOps)((void *)pRingEntry, numBytes_local, CSL_LCDMA_RINGACC_MEM_OPS_TYPE_RD);
-            }
-            while( numBytes_local != 0U )
-            {
-                numBytes_local--;
-                *pData_local = *pRingEntry;
-                pData_local++;
-                pRingEntry++;
-            }
-        }
-    }
-    else
-    {
-        retVal = -2;    /* Requested access size is greater than ring element size */
-    }
-    return retVal;
-}
-
 uint64_t CSL_lcdma_ringaccClrAselInAddr( uint64_t addr )
 {
     uint64_t retAddr = addr;
     retAddr &= ~(((uint64_t)CSL_LCDMA_RINGACC_RING_CFG_RING_BA_HI_ASEL_MASK) << 32U);
-    return retAddr;
-}
-
-uint64_t CSL_lcdma_ringaccSetAselInAddr( uint64_t addr, CSL_LcdmaRingAccAselEndpoint asel )
-{
-    uint64_t retAddr;
-
-    retAddr = CSL_lcdma_ringaccClrAselInAddr( addr );
-    retAddr |= (((uint64_t)CSL_FMK( LCDMA_RINGACC_RING_CFG_RING_BA_HI_ASEL, (uint64_t)asel )) << 32U);
     return retAddr;
 }
 
@@ -811,13 +318,6 @@ bool CSL_lcdma_ringaccIsTeardownComplete( const CSL_LcdmaRingaccCfg *pCfg, uint3
     }
 #endif
     return bRetVal;
-}
-
-void CSL_lcdma_ringaccAckTeardown( const CSL_LcdmaRingaccCfg *pCfg, uint32_t ringNum )
-{
-#ifdef CSL_LCDMA_RINGACC_RINGRT_RING_RDB_ACK_MASK
-    CSL_REG32_WR( &pCfg->pRingRtRegs->RING[ringNum].RDB, CSL_FMK( LCDMA_RINGACC_RINGRT_RING_RDB_ACK, (uint32_t)1U ) );
-#endif
 }
 
 int32_t CSL_lcdma_ringaccDequeue( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint64_t *pVal )

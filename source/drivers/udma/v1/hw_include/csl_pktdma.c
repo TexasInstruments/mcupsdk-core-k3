@@ -223,24 +223,6 @@ static int32_t CSL_pktdmaTriggerChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL
 /*=============================================================================
  *  PKTDMA API functions
  *===========================================================================*/
-uint32_t CSL_pktdmaGetRevision( const CSL_PktdmaCfg *pCfg )
-{
-    return CSL_REG32_RD( &pCfg->pGenCfgv2Regs->REVISION );
-}
-
-int32_t CSL_pktdmaGetRevisionInfo( const CSL_PktdmaCfg *pCfg, CSL_PktdmaRevision *pRev )
-{
-    uint32_t val;
-
-    val = CSL_REG32_RD( &pCfg->pGenCfgv2Regs->REVISION );
-    pRev->modId     = CSL_FEXT( val, PKTDMA_GCFG_V2_REVISION_MODID );
-    pRev->revRtl    = CSL_FEXT( val, PKTDMA_GCFG_V2_REVISION_REVRTL );
-    pRev->revMajor  = CSL_FEXT( val, PKTDMA_GCFG_V2_REVISION_REVMAJ );
-    pRev->custom    = CSL_FEXT( val, PKTDMA_GCFG_V2_REVISION_CUSTOM );
-    pRev->revMinor  = CSL_FEXT( val, PKTDMA_GCFG_V2_REVISION_REVMIN );
-
-    return CSL_PASS;
-}
 
 void CSL_pktdmaInitCfg( CSL_PktdmaCfg *pCfg )
 {
@@ -445,30 +427,6 @@ int32_t CSL_pktdmaTriggerChannel( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, uint32_
 void CSL_pktdmaClearChanErr( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, uint32_t chanType )
 {
     CSL_pktdmaClearChanError( pCfg, chanIdx, chanType );
-}
-
-void CSL_pktdmaCfgRxFlowIdFirewall( CSL_PktdmaCfg *pCfg, uint32_t outEvtNum )
-{
-}
-
-bool CSL_pktdmaGetRxFlowIdFirewallStatus( CSL_PktdmaCfg *pCfg, CSL_PktdmaRxFlowIdFirewallStatus *pRxFlowIdFwStatus )
-{
-    bool bRetVal = (bool)false;
-#ifdef CSL_PKTDMA_GCFG_RFLOWFWSTAT_PEND_MASK
-    uint32_t regVal;
-
-    regVal = CSL_REG32_RD( &pCfg->pGenCfgRegs->RFLOWFWSTAT );
-    if( CSL_FEXT( regVal, PKTDMA_GCFG_RFLOWFWSTAT_PEND ) != (uint32_t)0U )
-    {
-        pRxFlowIdFwStatus->flowId = CSL_FEXT( regVal, PKTDMA_GCFG_RFLOWFWSTAT_FLOWID );
-        pRxFlowIdFwStatus->chnIdx = CSL_FEXT( regVal, PKTDMA_GCFG_RFLOWFWSTAT_CHANNEL );
-        /* Clear pending bit to ready flow id firewall to capture next error */
-        CSL_FINS( regVal, PKTDMA_GCFG_RFLOWFWSTAT_PEND, (uint32_t)0U );
-        CSL_REG32_WR( &pCfg->pGenCfgRegs->RFLOWFWSTAT, regVal );
-        bRetVal = (bool)true;
-    }
-#endif
-    return bRetVal;
 }
 
 void CSL_pktdmaGetChanStats( const CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanDir chanDir, CSL_PktdmaChanStats *pChanStats )

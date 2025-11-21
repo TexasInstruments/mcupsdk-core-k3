@@ -168,21 +168,12 @@ static void test_udma_csl_coverage(void *args)
    CSL_BcdmaRemotePeerOpts pPeerOpts;
    CSL_BcdmaChanBurstSize burstSize;
    CSL_BcdmaTeardownOpts pTdOpts;
-   CSL_bcdma_gcfgRegs pGenCfgRegs;
-   CSL_BcdmaRxFlowIdFirewallStatus pRxFlowIdFwStatus;
-   CSL_PktdmaRxFlowCfg pFlowk;
-   CSL_BcdmaRxFlowCfg pFlow;
-   CSL_BcdmaRevision pRev;
    CSL_BcdmaRT pRT;
    CSL_PktdmaRT pRTk;
    CSL_IntaggrCfg pCfgI;
    CSL_LcdmaRingaccCfg pCfg2;
    CSL_LcdmaRingaccRingCfg pRing;
-   CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps=NULL;
    CSL_PktdmaCfg pCfgk;
-   CSL_PktdmaTxChanCfg pTxChanCfgk;
-   CSL_PktdmaRxChanCfg pRxChanCfgk;
-   CSL_PktdmaRevision pRevk;
    int32_t retValue = 0U;
    uint32_t value2=0;
 
@@ -190,7 +181,6 @@ static void test_udma_csl_coverage(void *args)
    CSL_bcdmaInitCfg(&pCfg);
    pCfg.bcChanCnt=1;
    pCfg.splitTxChanCnt=2;
-   CSL_bcdmaInitTxChanCfg(&pTxChanCfg);
    retValue = CSL_bcdmaTxChanCfg(&pCfg,2,&pTxChanCfg);
    TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
 
@@ -199,7 +189,6 @@ static void test_udma_csl_coverage(void *args)
    pCfg.bcChanCnt=1;
    pCfg.splitTxChanCnt=1;
    pCfg.splitRxChanCnt=1;
-   CSL_bcdmaInitRxChanCfg(&pRxChanCfg);
    retValue = CSL_bcdmaRxChanCfg(&pCfg,2,&pRxChanCfg);
    TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
 
@@ -241,13 +230,11 @@ static void test_udma_csl_coverage(void *args)
    /* passing the valid parameters to  configure the control registers for channel (CSL_BCDMA_CHAN_TYPE_BLOCK_COPY) */
    CSL_bcdmaInitCfg(&pCfg);
    pCfg.bcChanCnt=2;
-   CSL_bcdmaInitTxChanCfg(&pTxChanCfg);
    retValue = CSL_bcdmaChanOp(&pCfg,CSL_BCDMA_CHAN_OP_CONFIG,CSL_BCDMA_CHAN_TYPE_BLOCK_COPY,1,(void *)&pTxChanCfg);
    TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
 
    CSL_bcdmaInitCfg(&pCfg);
    pCfg.bcChanCnt=2;
-   CSL_bcdmaInitTxChanCfg(&pTxChanCfg);
    pTxChanCfg.busPriority=8U;
    retValue = CSL_bcdmaChanOp(&pCfg,CSL_BCDMA_CHAN_OP_CONFIG,CSL_BCDMA_CHAN_TYPE_BLOCK_COPY,1,(void *)&pTxChanCfg);
    TEST_ASSERT_EQUAL_INT32(CSL_EINVALID_PARAMS, retValue);
@@ -255,13 +242,11 @@ static void test_udma_csl_coverage(void *args)
    /* passing the valid parameters to  configure the control registers for channel (CSL_BCDMA_CHAN_TYPE_SPLIT_TX) */
    CSL_bcdmaInitCfg(&pCfg);
    pCfg.splitTxChanCnt=2;
-   CSL_bcdmaInitTxChanCfg(&pTxChanCfg);
    retValue = CSL_bcdmaChanOp(&pCfg,CSL_BCDMA_CHAN_OP_CONFIG,CSL_BCDMA_CHAN_TYPE_SPLIT_TX,1,(void *)&pTxChanCfg);
    TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
 
    CSL_bcdmaInitCfg(&pCfg);
    pCfg.splitTxChanCnt=2;
-   CSL_bcdmaInitTxChanCfg(&pTxChanCfg);
    pTxChanCfg.busPriority=8U;
    retValue = CSL_bcdmaChanOp(&pCfg,CSL_BCDMA_CHAN_OP_CONFIG,CSL_BCDMA_CHAN_TYPE_SPLIT_TX,1,(void *)&pTxChanCfg);
    TEST_ASSERT_EQUAL_INT32(CSL_EINVALID_PARAMS, retValue);
@@ -269,13 +254,11 @@ static void test_udma_csl_coverage(void *args)
    /* passing the valid parameters to  configure the control registers for channel (CSL_BCDMA_CHAN_TYPE_SPLIT_RX) */
    CSL_bcdmaInitCfg(&pCfg);
    pCfg.splitRxChanCnt=2;
-   CSL_bcdmaInitTxChanCfg(&pTxChanCfg);
    retValue = CSL_bcdmaChanOp(&pCfg,CSL_BCDMA_CHAN_OP_CONFIG,CSL_BCDMA_CHAN_TYPE_SPLIT_RX,1,(void *)&pTxChanCfg);
    TEST_ASSERT_EQUAL_INT32(CSL_EINVALID_PARAMS, retValue);
 
    CSL_bcdmaInitCfg(&pCfg);
    pCfg.splitRxChanCnt=2;
-   CSL_bcdmaInitTxChanCfg(&pTxChanCfg);
    pTxChanCfg.busPriority=8U;
    retValue = CSL_bcdmaChanOp(&pCfg,CSL_BCDMA_CHAN_OP_CONFIG,CSL_BCDMA_CHAN_TYPE_SPLIT_RX,1,(void *)&pTxChanCfg);
     TEST_ASSERT_EQUAL_INT32(CSL_EINVALID_PARAMS, retValue);
@@ -283,7 +266,6 @@ static void test_udma_csl_coverage(void *args)
    /* passing the valid parameters to  configure the control registers for channel (CSL_BCDMA_CHAN_TYPE_REF_PKT_RING) */
    CSL_bcdmaInitCfg(&pCfg);
    pCfg.splitTxChanCnt=2;
-   CSL_bcdmaInitTxChanCfg(&pTxChanCfg);
    retValue = CSL_bcdmaChanOp(&pCfg,CSL_BCDMA_CHAN_OP_CONFIG,CSL_BCDMA_CHAN_TYPE_REF_PKT_RING,1,(void *)&pTxChanCfg);
    TEST_ASSERT_EQUAL_INT32(CSL_EBADARGS, retValue);
 
@@ -606,22 +588,6 @@ static void test_udma_csl_coverage(void *args)
    retValue = CSL_bcdmaChanOp(&pCfg,CSL_BCDMA_CHAN_OP_SET_RT,CSL_BCDMA_CHAN_TYPE_SPLIT_RX,1,(void *)&pRT);\
    TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
 
-   /* returning revision of the BCDMA module */
-   CSL_bcdmaInitCfg(&pCfg);
-   pCfg.pGenCfgRegs=&pGenCfgRegs;
-   retValue = CSL_bcdmaGetRevision(&pCfg);
-   TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
-
-  /* Passing NULL paremetres to return content of revision information for the BCDMA module */
-   retValue = CSL_bcdmaGetRevisionInfo(NULL,NULL);
-   TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
-
-   /* Passing valid paremetres to return content of revision information for the BCDMA module */
-   CSL_bcdmaInitCfg(&pCfg);
-   pCfg.pGenCfgRegs=&pGenCfgRegs;
-   retValue = CSL_bcdmaGetRevisionInfo(&pCfg,&pRev);
-   TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
-
    /* passing valid parameters to returns the real-time register values for receive channel */
    CSL_bcdmaInitCfg(&pCfg);
    retValue = CSL_bcdmaGetRxRT(&pCfg,1,&pRT);
@@ -640,11 +606,6 @@ static void test_udma_csl_coverage(void *args)
    /* passing valid parameters to disables the transmit channel */
    CSL_bcdmaInitCfg(&pCfg);
    retValue = CSL_bcdmaDisableTxChan(&pCfg,1);
-   TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
-
-   /* passing valid parameters to disables the Receive channel */
-   CSL_bcdmaInitCfg(&pCfg);
-   retValue = CSL_bcdmaDisableRxChan(&pCfg,1);
    TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
 
    /* tears down the transmit channel */
@@ -681,16 +642,6 @@ static void test_udma_csl_coverage(void *args)
    retValue = CSL_bcdmaUnpauseRxChan(&pCfg,1);
    TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
 
-   /* passing valid parameters to trigger event to transmit channel */
-   CSL_bcdmaInitCfg(&pCfg);
-   retValue = CSL_bcdmaTriggerTxChan(&pCfg,1);
-   TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
-
-   /* passing valid parameters to trigger event to receive channel */
-   CSL_bcdmaInitCfg(&pCfg);
-   retValue = CSL_bcdmaTriggerRxChan(&pCfg,1);
-   TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
-
    /* passing valid parameters to Get channel statistics */
    CSL_bcdmaInitCfg(&pCfg);
    CSL_bcdmaGetChanStats(&pCfg,1,1,&pChanStats);
@@ -702,77 +653,6 @@ static void test_udma_csl_coverage(void *args)
    /* passing valid parameters to Read a channel peer register when popdata is NULL */
    CSL_bcdmaInitCfg(&pCfg);
    CSL_bcdmaGetChanPeerReg(&pCfg,1,1,1,NULL);
-
-   /* passing valid parameters to Configure TX channel burst size */
-   CSL_bcdmaInitCfg(&pCfg);
-   retValue = CSL_bcdmaTxChanSetBurstSize(&pCfg,1,CSL_BCDMA_CHAN_BURST_SIZE_32_BYTES);
-   TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
-
-   /* passing valid parameters to Configure RX channel burst size */
-   CSL_bcdmaInitCfg(&pCfg);
-   retValue = CSL_bcdmaRxChanSetBurstSize(&pCfg,1,CSL_BCDMA_CHAN_BURST_SIZE_32_BYTES);
-   TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
-
-   /* passing valid parameters to Clear error indication in a transmit channel */
-   CSL_bcdmaInitCfg(&pCfg);
-   CSL_bcdmaClearTxChanError(&pCfg,1);
-
-   /* passing valid parameters to Clear error indication in a receive channel */
-   CSL_bcdmaInitCfg(&pCfg);
-   CSL_bcdmaClearRxChanError(&pCfg,1);
-
-   /* passing valid parameters to Initialize a CSL_BcdmaRxFlowCfg structure */
-   CSL_bcdmaInitCfg(&pCfg);
-   CSL_bcdmaRxFlowCfg(&pCfg,0U,&pFlow);
-   CSL_bcdmaInitRxFlowCfg(&pFlow);
-
-   /*Setting performance control parmeters */
-   CSL_bcdmaInitCfg(&pCfg);
-   CSL_bcdmaSetPerfCtrl(&pCfg,0U);
-
-   /* Setting UTC control parmeters */
-   CSL_bcdmaInitCfg(&pCfg);
-   CSL_bcdmaSetUtcCtrl(&pCfg,0U);
-
-   /* Configuring an RX channel TR event */
-   CSL_bcdmaInitCfg(&pCfg);
-   retValue = CSL_bcdmaRxChanSetTrEvent(&pCfg,1,CSL_BCDMA_NO_EVENT);
-   TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
-
-   /* Configuring an TX channel TR event */
-   CSL_bcdmaInitCfg(&pCfg);
-   retValue = CSL_bcdmaTxChanSetTrEvent(&pCfg,1,CSL_BCDMA_NO_EVENT);
-   TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
-
-   /* Configuring the receive flow ID range firewall */
-   CSL_bcdmaInitCfg(&pCfg);
-   CSL_bcdmaCfgRxFlowIdFirewall(&pCfg,0U);
-
-   /* returns information from the receive flow ID range firewall */
-   CSL_bcdmaInitCfg(&pCfg);
-   CSL_bcdmaCfgRxFlowIdFirewall(&pCfg,0U);
-   retValue = CSL_bcdmaGetRxFlowIdFirewallStatus(&pCfg,&pRxFlowIdFwStatus);
-   TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
-
-   /* enabling a directional data flow for a TX channel */
-   CSL_bcdmaInitCfg(&pCfg);
-   pCfg.bcChanCnt=1;
-   pCfg.splitTxChanCnt=1;
-   pCfg.splitRxChanCnt=1;
-   pCfg.pTxChanRtRegs->CHAN[1].PEER0=1;
-   pPeerOpts.regIdx=10U;
-   retValue = CSL_bcdmaEnableLink(&pCfg,1,CSL_BCDMA_CHAN_DIR_TX);
-   TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
-
-   /* enabling a directional data flow for a RX channel */
-   CSL_bcdmaInitCfg(&pCfg);
-   pCfg.bcChanCnt=1;
-   pCfg.splitTxChanCnt=1;
-   pCfg.splitRxChanCnt=1;
-   pCfg.pTxChanRtRegs->CHAN[1].PEER0=1;
-   pPeerOpts.regIdx=10U;
-   retValue = CSL_bcdmaEnableLink(&pCfg,1,CSL_BCDMA_CHAN_DIR_RX);
-   TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
 
    /* passing valid parameters clear block copy channel errors  */
    CSL_bcdmaInitCfg(&pCfg);
@@ -810,17 +690,6 @@ static void test_udma_csl_coverage(void *args)
    retValue = CSL_bcdmaGetChanPeerReg(&pCfg,1,1,1,(void *)&pPeerOpts);
    TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
 
-   /* mapping a global event to a counter when globalevent count is zero */
-   pCfgI.pGcntCfgRegs=NULL;
-   pCfgI.globalEventCnt=0U;
-   retValue = CSL_intaggrMapEventRxCntEvent(&pCfgI,0U,0U);
-   TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
-
-   /* passing parameters to Map a global event to a status bit number */
-   pCfgI.virtIntrCnt = 0U;
-   retValue = CSL_intaggrMapEventIntr(&pCfgI,1U,0U);
-   TEST_ASSERT_EQUAL_INT32(CSL_EBADARGS, retValue);
-
    /* mapping a local event to the global event */
    pCfgI.pL2gRegs=NULL;
    pCfgI.localEventCnt=0U;
@@ -835,32 +704,6 @@ static void test_udma_csl_coverage(void *args)
    retValue = CSL_intaggrMapEventToLocalEvent(&pCfgI,1U,1U,1U);
    TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
 
-   /* Reading the receive count for the global event */
-   pCfgI.pGcntCfgRegs = NULL;
-   pCfgI.globalEventCnt = 0U;
-   retValue = CSL_intaggrRdEventRxCnt(&pCfgI,1U,0U);
-   TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
-
-   /* writing the receive count for the global event */
-   pCfgI.pGcntCfgRegs = NULL;
-   pCfgI.globalEventCnt = 0U;
-   retValue = CSL_intaggrWrEventRxCnt(&pCfgI,1U,0U);
-   TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
-
-   /* Multicasting an incoming global event to two outgoing events */
-   pCfgI.pMcastRegs=NULL;
-   pCfgI.mcastEventCnt=0U;
-   retValue = CSL_intaggrEnableEventMulticast(&pCfgI,1U,0U,0U);
-   TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
-
-   /* Mapping an unmapped event to an outgoing global event when parameters are NULL */
-   retValue = CSL_intaggrMapUnmappedEventToEvent(NULL,0 ,0);
-   TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
-
-   /* Setting the raw pending status of an interrupt when parameters are NULL */
-   retValue = CSL_intaggrSetIntrPending(NULL,0);
-   TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
-
    /* Determining if a status interrupt is pending when parameters are NULL*/
    CSL_intaggrIsIntrPending(NULL,0,0);
 
@@ -868,248 +711,9 @@ static void test_udma_csl_coverage(void *args)
    retValue = CSL_intaggrClrIntr(NULL,0);
    TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
 
-   /* passing NULL to Return revision of the INTAGGR module */
-   retValue = CSL_intaggrGetRevision(NULL);
-
-   /* Pushing  a 32-bit value to a ring */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.wrOcc = 1;
-   pRing.elCnt = 1;
-   pRing.asel =0U;
-   pfMemOps = myMemOps;
-   CSL_lcdma_ringaccPush32(&pCfg2,&pRing,1,pfMemOps);
-
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.wrOcc = 1;
-   pRing.elCnt = 2;
-   pRing.wrIdx=1U;
-   pRing.asel =0U;
-   pRing.elSz=1;
-   pRing.virtBase=(void *)&value2;
-   pfMemOps = myMemOps;
-   CSL_lcdma_ringaccPush32(&pCfg2,&pRing,1,pfMemOps);
-
-   /* pop a 32-bit value to a ring */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.rdOcc = 0U;
-   pfMemOps = myMemOps;
-   CSL_lcdma_ringaccPop32(&pCfg2,&pRing,NULL,pfMemOps);
-
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.rdOcc = 1U;
-   pRing.asel=0U;
-   pRing.rdIdx=1;
-   pRing.elSz=1;
-   pfMemOps = myMemOps;
-   pRing.virtBase=(void *)&value2;
-   CSL_lcdma_ringaccPop32(&pCfg2,&pRing,NULL,pfMemOps);
-
-   /* peek a 32-bit value to a ring */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.rdOcc = 0U;
-   pfMemOps = myMemOps;
-   CSL_lcdma_ringaccPeek32(&pCfg2,&pRing,NULL,pfMemOps);
-
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.rdOcc = 1U;
-   pRing.asel=0U;
-   pRing.rdIdx=1;
-   pRing.elSz=1;
-   pRing.virtBase=(void *)&value2;
-   pfMemOps = myMemOps;
-   CSL_lcdma_ringaccPeek32(&pCfg2,&pRing,NULL,pfMemOps);
-
-   /* Pushing multiple 64-bit values to a ring */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.elSz=1U;
-   pfMemOps = myMemOps;
-   CSL_lcdma_ringaccPush64Multi(&pCfg2,&pRing,NULL,2U,pfMemOps);
-
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.elSz=9;
-   pfMemOps = myMemOps;
-   CSL_lcdma_ringaccPush64Multi(&pCfg2,&pRing,NULL,0U,pfMemOps);
-
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.elSz=9;
-   pRing.elCnt=3;
-   pRing.wrOcc=1;
-   pfMemOps = myMemOps;
-   CSL_lcdma_ringaccPush64Multi(&pCfg2,&pRing,NULL,1U,pfMemOps);
-
-   /* Peek at a 64-bit value from a ring */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.elSz=1;
-   pfMemOps = myMemOps;
-   CSL_lcdma_ringaccPeek64(&pCfg2,&pRing,NULL,pfMemOps);
-
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.elSz=12;
-   pRing.rdOcc = 0U;
-   pfMemOps = myMemOps;
-   CSL_lcdma_ringaccPeek64(&pCfg2,&pRing,NULL,pfMemOps);
-
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.elSz=12;
-   pRing.rdOcc = 8U;
-   pRing.asel=0U;
-   pRing.rdIdx=1;
-   pRing.virtBase=(void *)&value2;
-   pfMemOps = myMemOps;
-   CSL_lcdma_ringaccPeek64(&pCfg2,&pRing,NULL,pfMemOps);
-
-   /* setting the ring event for the RingNum */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccSetEvent(&pCfg2,1,1);
-
-   /* Getting the ring number associated with a ring */
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   CSL_lcdma_ringaccGetRingNum(&pRing);
-
-   /* Specifying the orderid value for a ring */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   CSL_lcdma_ringaccSetRingOrderId(&pCfg2,&pRing,1);
-
-   /* Configure the  credentials for a ring */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   CSL_lcdma_ringaccCfgRingCred(&pCfg2,&pRing,true,true);
-
-   /* Resetting  a ring */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   CSL_lcdma_ringaccResetRing(&pCfg2,&pRing);
-
-   /* passing valid parameters to get the current forward ring index */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccGetForwardRingIdx(&pCfg2,1);
-
-   /* passing valid parameters to return the current reverse ring index */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccGetReverseRingIdx(&pCfg2,1);
-
    /* passing valid parameters to return the forward occupancy for the specified ring */
    CSL_lcdma_ringaccInitCfg(&pCfg2);
    CSL_lcdma_ringaccGetForwardRingOcc(&pCfg2,1,CSL_LCDMA_RINGACC_RING_MODE_INVALID);
-
-   /* Enabling trace support */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccSetTraceEnable(&pCfg2,true);
-
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccEnableTrace(&pCfg2);
-
-   /* disabling trace support */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccDisableTrace(&pCfg2);
-
-   /* passing valid parameters to Configure trace support */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccCfgTrace(&pCfg2,true,true,1);
-
-   /* passing valid parameters to Configure a ring monitor */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccCfgRingMonitor(&pCfg2,1,CSL_LCDMA_RINGACC_MONITOR_TYPE_INVALID,1,1,CSL_LCDMA_RINGACC_MONITOR_DATA_SRC_INVALID,1,1);
-
-   /* passing valid parameters to Read a ring monitor */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccReadRingMonitor(&pCfg2,1,NULL,NULL);
-
-   /* pop of a 32-bit value from the head of a ring */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   CSL_lcdma_ringaccHwPop32(&pCfg2,&pRing,NULL,NULL);
-
-   /* pop of a 64-bit value from the head of a ring */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   CSL_lcdma_ringaccHwPop64(&pCfg2,&pRing,NULL,NULL);
-
-   /*  Writing data into a ring */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.wrOcc = 1;
-   pRing.elCnt = 1;
-   pRing.elSz=2;
-   pfMemOps = myMemOps;
-   CSL_lcdma_ringaccWrData(&pCfg2,&pRing,NULL,1,pfMemOps);
-
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.wrOcc = 1;
-   pRing.wrIdx=1U;
-   pRing.elCnt = 2;
-   pRing.asel =0U;
-   pRing.elSz=2;
-   pfMemOps = myMemOps;
-   pRing.virtBase=(void *)&value2;
-   CSL_lcdma_ringaccWrData(&pCfg2,&pRing,NULL,1,pfMemOps);
-
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.elSz=2;
-   pfMemOps = myMemOps;
-   CSL_lcdma_ringaccWrData(&pCfg2,&pRing,NULL,5,pfMemOps);
-
-   /* reading data into a ring */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.rdOcc = 0U;
-   pRing.elSz=2;
-   pfMemOps = myMemOps;
-   CSL_lcdma_ringaccRdData(&pCfg2,&pRing,NULL,1,pfMemOps);
-
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.rdOcc = 2U;
-   pRing.elSz=2;
-   pRing.asel =0U;
-   pRing.rdIdx=1;
-   pfMemOps = myMemOps;
-   pRing.virtBase=(void *)&value2;
-   CSL_lcdma_ringaccRdData(&pCfg2,&pRing,NULL,1,pfMemOps);
-
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.elSz=2;
-   pfMemOps = myMemOps;
-   CSL_lcdma_ringaccRdData(&pCfg2,&pRing,NULL,5,pfMemOps);
-
-   /* Peek at data from a ring */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.virtBase=(void *)&value2;
-   pRing.rdIdx=1;
-   pRing.elSz=1;
-   pRing.asel =0U;
-   pfMemOps = myMemOps;
-   CSL_lcdma_ringaccPeekData(&pCfg2,&pRing,NULL,1,pfMemOps);
-
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.elSz=1;
-   pfMemOps = myMemOps;
-   CSL_lcdma_ringaccPeekData(&pCfg2,&pRing,NULL,3,pfMemOps);
-
-   /* Setting the asel field in an address */
-   CSL_lcdma_ringaccSetAselInAddr(0,10U);
-
-   /*  passing valid parameters to Acknowledge teardown completion of a ring */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccAckTeardown(&pCfg2,1);
 
    /* Dequeue a value pushed to a ring in FIFO order */
    CSL_lcdma_ringaccInitCfg(&pCfg2);
@@ -1130,27 +734,6 @@ static void test_udma_csl_coverage(void *args)
    pRing.wrOcc=0U;
    CSL_lcdma_ringaccDequeue(&pCfg2,&pRing,NULL);
 
-   /* poping multiple 64-bit values from a ring */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.elSz=1;
-   pfMemOps = myMemOps;
-   CSL_lcdma_ringaccPop64Multi(&pCfg2,&pRing,NULL,1U,pfMemOps);
-
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.elSz=9;
-   pRing.rdOcc = 0U;
-   pfMemOps = myMemOps;
-   CSL_lcdma_ringaccPop64Multi(&pCfg2,&pRing,NULL,1U,pfMemOps);
-
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccInitRingCfg(&pRing);
-   pRing.elSz=9;
-   pRing.rdOcc = 2U;
-   pfMemOps = myMemOps;
-   CSL_lcdma_ringaccPop64Multi(&pCfg2,&pRing,NULL,1U,pfMemOps);
-
    /* Initialize a ring with defaul values */
    CSL_lcdma_ringaccInitCfg(&pCfg2);
    CSL_lcdma_ringaccInitRingCfg(&pRing);
@@ -1160,84 +743,42 @@ static void test_udma_csl_coverage(void *args)
    pRing.physBase=8UL;
    CSL_lcdma_ringaccInitRing(&pCfg2,1,&pRing);
 
-   /* passing valid parameters for revision of the RingAcc module */
-   CSL_lcdma_ringaccInitCfg(&pCfg2);
-   CSL_lcdma_ringaccGetRevision(&pCfg2);
-
    /* passing valid parameters to teardown ring */
    CSL_lcdma_ringaccIsTeardownComplete(&pCfg2,1);
-
-   /* Enable a  data flow for a paired link when PKTDMA configuration is NULL */
-   retValue = CSL_pktdmaEnableLink(NULL,1U,2U);
-   TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
-
-   /* Enable a  data flow for a TX channel */
-   CSL_pktdmaInitCfg(&pCfgk);
-   pCfgk.txChanCnt=3U;
-   retValue = CSL_pktdmaEnableLink(&pCfgk,2U,CSL_PKTDMA_CHAN_DIR_TX);
-   TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
-
-   /* Enable a  data flow for a RX channel */
-   CSL_pktdmaInitCfg(&pCfgk);
-   pCfgk.rxChanCnt=3U;
-   retValue = CSL_pktdmaEnableLink(&pCfgk,2U,CSL_PKTDMA_CHAN_DIR_RX);
-   TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
 
    /* passing NULL values to read the value from a peer register */
    retValue = CSL_pktdmaGetChanPeerReg(NULL,1,2U,1,NULL);
    TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
 
    /* read the value from a peer register for the TX channel */
-   CSL_pktdmaInitCfg(&pCfgk);
    pCfgk.txChanCnt=3U;
    retValue = CSL_pktdmaGetChanPeerReg(&pCfgk,1U,CSL_PKTDMA_CHAN_DIR_TX,20U,&value2);
    TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
 
-   /* Configure the receive flow ID range firewall */
-   CSL_pktdmaInitCfg(&pCfgk);
-   CSL_pktdmaCfgRxFlowIdFirewall(&pCfgk,1);
-
-   /* clears the error indication in the receive channel */
-   CSL_pktdmaInitCfg(&pCfgk);
-   CSL_pktdmaClearRxChanError(&pCfgk,1);
-
-   /* clears the error indication in the transmit channel */
-   CSL_pktdmaInitCfg(&pCfgk);
-   CSL_pktdmaClearTxChanError(&pCfgk,1);
-
-   /* Sending a trigger event to an RX channel */
-   CSL_pktdmaInitCfg(&pCfgk);
-   CSL_pktdmaTriggerRxChan(&pCfgk,1);
-
-   /* Sending a trigger event to an TX channel */
-   CSL_pktdmaInitCfg(&pCfgk);
-   CSL_pktdmaTriggerTxChan(&pCfgk,1);
-
    /* passing valid parameters to Un-pause a receive channel */
-   CSL_pktdmaInitCfg(&pCfgk);
    pCfgk.rxChanCnt=3U;
    retValue = CSL_pktdmaUnpauseRxChan(&pCfgk,1);
    TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
 
    /* passing valid parameters to pause a receive channel */
-   CSL_pktdmaInitCfg(&pCfgk);
+
    pCfgk.rxChanCnt=3U;
    retValue = CSL_pktdmaPauseRxChan(&pCfgk,1);
    TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
 
    /* passing valid parameters to Un-pause a transmit channel */
-   CSL_pktdmaInitCfg(&pCfgk);
+
    pCfgk.txChanCnt=3U;
    retValue = CSL_pktdmaUnpauseTxChan(&pCfgk,1);
    TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
 
    /* passing valid parameters to pause a transmit channel */
-   CSL_pktdmaInitCfg(&pCfgk);
+
    pCfgk.txChanCnt=3U;
    retValue = CSL_pktdmaPauseTxChan(&pCfgk,1);
    TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
 
-   CSL_pktdmaInitCfg(&pCfgk);
+
    pCfgk.txChanCnt=1U;
    retValue = CSL_pktdmaPauseTxChan(&pCfgk,3U);
    TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
@@ -1247,13 +788,13 @@ static void test_udma_csl_coverage(void *args)
    TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
 
    /* passing valid parameters to tears down the receive channel */
-   CSL_pktdmaInitCfg(&pCfgk);
+
    pCfgk.rxChanCnt=3U;
    retValue = CSL_pktdmaTeardownRxChan(&pCfgk,1,true,true);
    TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
 
    /* passing valid parameters to Teardown a transmit channel */
-   CSL_pktdmaInitCfg(&pCfgk);
+
    pCfgk.txChanCnt=3U;
    retValue = CSL_pktdmaTeardownTxChan(&pCfgk,1,true,true);
    TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
@@ -1263,95 +804,26 @@ static void test_udma_csl_coverage(void *args)
    TEST_ASSERT_EQUAL_INT32(CSL_EFAIL, retValue);
 
    /* passing valid parameters  to Disable a receive channel */
-   CSL_pktdmaInitCfg(&pCfgk);
+
    pCfgk.rxChanCnt=3U;
    retValue = CSL_pktdmaDisableRxChan(&pCfgk,1);
    TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
 
-   /* Enabling  a receive channel */
-   CSL_pktdmaInitCfg(&pCfgk);
-   pCfgk.rxChanCnt=3U;
-   retValue = CSL_pktdmaEnableRxChan(&pCfgk,1);
-   TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
-
-   /* Disabling a transmit channel */
-   CSL_pktdmaInitCfg(&pCfgk);
-   pCfgk.txChanCnt=3U;
-   retValue = CSL_pktdmaDisableTxChan(&pCfgk,1);
-   TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
-
-   /* Enabling  a transmit channel */
-   CSL_pktdmaInitCfg(&pCfgk);
-   pCfgk.txChanCnt=3U;
-   retValue = CSL_pktdmaEnableTxChan(&pCfgk,1);
-   TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
-
    /* writing a value to a peer register for the TX channel */
-   CSL_pktdmaInitCfg(&pCfgk);
+
    pCfgk.txChanCnt=2U;
    retValue = CSL_pktdmaSetChanPeerReg(&pCfgk,1U,CSL_PKTDMA_CHAN_DIR_TX,10U,&value2);
    TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
 
    /* read the value from a peer register for the TX channel */
-   CSL_pktdmaInitCfg(&pCfgk);
+
    pCfgk.rxChanCnt=2U;
    retValue = CSL_pktdmaGetChanPeerReg(&pCfgk,1U,CSL_PKTDMA_CHAN_DIR_RX,10U,&value2);
    TEST_ASSERT_EQUAL_INT32(CSL_PASS, retValue);
 
-   /* Configuring a TX channel */
-   CSL_pktdmaInitCfg(&pCfgk);
-   CSL_pktdmaInitTxChanCfg(&pTxChanCfgk);
-   pCfgk.txChanCnt=2U;
-   CSL_pktdmaTxChanCfg(&pCfgk,1U,&pTxChanCfgk);
-
-   CSL_pktdmaInitCfg(&pCfgk);
-   CSL_pktdmaInitTxChanCfg(&pTxChanCfgk);
-   pCfgk.txChanCnt=2U;
-   pTxChanCfgk.bNoTeardownCompletePkt=true;
-   CSL_pktdmaTxChanCfg(&pCfgk,1U,&pTxChanCfgk);
-
-   /* passing NULL to Configure a TX channel */
-   CSL_pktdmaTxChanCfg(NULL,1,NULL);
-
-   /* Configuring a RX channel */
-   CSL_pktdmaInitCfg(&pCfgk);
-   CSL_pktdmaInitRxChanCfg(&pRxChanCfgk);
-   pCfgk.rxChanCnt=2U;
-   CSL_pktdmaRxChanCfg(&pCfgk,1U,&pRxChanCfgk);
-
-   /* passing NULL to Configure a RX channel */
-   CSL_pktdmaRxChanCfg(NULL,1,NULL);
-
-   /* Configuring a RX flow */
-   CSL_pktdmaInitCfg(&pCfgk);
-   pCfgk.rxFlowCnt=2U;
-   CSL_pktdmaInitRxFlowCfg(&pFlowk);
-   CSL_pktdmaRxFlowCfg(&pCfgk,1U,&pFlowk);
-
-   /* passing NULL to Configure a RX flow */
-   CSL_pktdmaRxFlowCfg(NULL,1U,NULL);
-
    /* getting PKTDMA configuration information */
-   CSL_pktdmaInitCfg(&pCfgk);
+
    CSL_pktdmaGetCfg(&pCfgk);
-
-   /* passing valid parameters to Set performance control parmeters */
-   CSL_pktdmaSetPerfCtrl(&pCfgk,5);
-
-   /* passing valid parameters to Set performance control parmeters */
-   CSL_pktdmaSetUtcCtrl(&pCfgk,1);
-
-   /* Configuring an RX channel TR event */
-   CSL_pktdmaRxChanSetTrEvent(&pCfgk,1,1);
-
-   /* Configuring an TX channel TR event */
-   CSL_pktdmaTxChanSetTrEvent(&pCfgk,1,1);
-
-   /* Configuring RX channel burst size */
-   CSL_pktdmaRxChanSetBurstSize(&pCfgk,1,2U);
-
-   /* Configuring RX channel burst size */
-   CSL_pktdmaTxChanSetBurstSize(&pCfgk,1,2U);
 
    /* Getting an RX channel's real-time register values */
    CSL_pktdmaGetRxRT(&pCfgk,1,&pRTk);
@@ -1376,15 +848,6 @@ static void test_udma_csl_coverage(void *args)
 
    /* decrement statistics for a receive channel */
    CSL_pktdmaDecChanStats(&pCfgk,1,CSL_PKTDMA_CHAN_DIR_RX,&pChanStatsk);
-
-   /* reading revision information  */
-   CSL_pktdmaGetRevisionInfo(&pCfgk,&pRevk);
-
-   /* passing valid PKDMA configuration to Return revision of the PKTDMA module */
-   CSL_pktdmaGetRevision(&pCfgk);
-
-   /* Reading information from the receive flow ID range firewall */
-   CSL_pktdmaGetRxFlowIdFirewallStatus(&pCfgk,NULL);
 }
 
 void test_udma(void)

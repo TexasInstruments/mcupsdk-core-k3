@@ -63,8 +63,6 @@ static bool CSL_pktdmaIsValidChanIdx( const CSL_PktdmaCfg *pCfg, uint32_t chanId
 static int32_t CSL_pktdmaSetChanEnable( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanDir chanDir, bool bEnable );
 static int32_t CSL_pktdmaTeardownChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanDir chanDir, bool bForce, bool bWait );
 static int32_t CSL_pktdmaPauseChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanDir chanDir, uint32_t pauseVal );
-static int32_t CSL_pktdmaTriggerChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanDir chanDir );
-static void CSL_pktdmaClearChanError( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanDir chanDir );
 static int32_t CSL_pktdmaAccessChanPeerReg( const CSL_PktdmaCfg *pCfg, uint32_t chanIdx, uint32_t regIdx, uint32_t *pVal, CSL_PktdmaChanDir chanDir, bool bRdAccess );
 
 static bool CSL_pktdmaIsChanEnabled( const CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanDir chanDir )
@@ -201,26 +199,6 @@ static int32_t CSL_pktdmaPauseChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_P
    return retVal;
 }
 
-static int32_t CSL_pktdmaTriggerChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanDir chanDir )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(chanIdx);
-    UNUSED_PARAM(chanDir);
-    return CSL_EUNSUPPORTED_CMD;
-}
-
-static void CSL_pktdmaClearChanError( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanDir chanDir )
-{
-    if( chanDir == CSL_PKTDMA_CHAN_DIR_TX )
-    {
-        CSL_REG32_FINS(&pCfg->pTxChanRtRegs->CHAN[chanIdx].CTL, PKTDMA_TXCRT_CHAN_CTL_ERROR, 0U);
-    }
-    else
-    {
-        CSL_REG32_FINS(&pCfg->pRxChanRtRegs->CHAN[chanIdx].CTL, PKTDMA_RXCRT_CHAN_CTL_ERROR, 0U);
-    }
-}
-
 static int32_t CSL_pktdmaAccessChanPeerReg( const CSL_PktdmaCfg *pCfg, uint32_t chanIdx, uint32_t regIdx, uint32_t *pVal, CSL_PktdmaChanDir chanDir, bool bRdAccess )
 {
     int32_t retVal = CSL_PASS;
@@ -264,33 +242,6 @@ static int32_t CSL_pktdmaAccessChanPeerReg( const CSL_PktdmaCfg *pCfg, uint32_t 
 /*=============================================================================
  *  PKTDMA API functions
  *===========================================================================*/
-uint32_t CSL_pktdmaGetRevision( const CSL_PktdmaCfg *pCfg )
-{
-    return CSL_REG32_RD( &pCfg->pGenCfgRegs->REVISION );
-}
-
-int32_t CSL_pktdmaGetRevisionInfo( const CSL_PktdmaCfg *pCfg, CSL_PktdmaRevision *pRev )
-{
-    uint32_t val;
-
-    val = CSL_REG32_RD( &pCfg->pGenCfgRegs->REVISION );
-
-    pRev->modId     = CSL_FEXT( val, PKTDMA_GCFG_REVISION_MODID );
-    pRev->revRtl    = CSL_FEXT( val, PKTDMA_GCFG_REVISION_REVRTL );
-    pRev->revMajor  = CSL_FEXT( val, PKTDMA_GCFG_REVISION_REVMAJ );
-    pRev->custom    = CSL_FEXT( val, PKTDMA_GCFG_REVISION_CUSTOM );
-    pRev->revMinor  = CSL_FEXT( val, PKTDMA_GCFG_REVISION_REVMIN );
-
-    return CSL_PASS;
-}
-
-void CSL_pktdmaInitCfg( CSL_PktdmaCfg *pCfg )
-{
-    if( pCfg != NULL )
-    {
-        memset( (void *)pCfg, 0, sizeof(CSL_PktdmaCfg) );
-    }
-}
 
 void CSL_pktdmaGetCfg( CSL_PktdmaCfg *pCfg )
 {
@@ -309,194 +260,6 @@ void CSL_pktdmaGetCfg( CSL_PktdmaCfg *pCfg )
         pCfg->txHighCapacityChanCnt = CSL_FEXT( regVal, PKTDMA_GCFG_CAP3_HCHAN_CNT );
         pCfg->txUltraHighCapacityChanCnt = CSL_FEXT( regVal, PKTDMA_GCFG_CAP3_UCHAN_CNT );
     }
-}
-
-void CSL_pktdmaInitTxChanCfg( CSL_PktdmaTxChanCfg *pTxChanCfg )
-{
-    if( pTxChanCfg != NULL )
-    {
-        /*-------------------------------------------------------------------------
-         *  Start by initializing all structure members to 0
-         *-----------------------------------------------------------------------*/
-        memset( (void *)pTxChanCfg, 0, sizeof(CSL_PktdmaTxChanCfg) );
-        /*-------------------------------------------------------------------------
-         *  Now initialize non-zero structure members
-         *-----------------------------------------------------------------------*/
-        pTxChanCfg->chanType        = CSL_PKTDMA_CHAN_TYPE_NORMAL;
-        pTxChanCfg->fetchWordSize   = CSL_PKTDMA_FETCH_WORD_SIZE_16;
-        pTxChanCfg->trEventNum      = CSL_PKTDMA_NO_EVENT;
-        pTxChanCfg->errEventNum     = CSL_PKTDMA_NO_EVENT;
-    }
-}
-
-void CSL_pktdmaInitRxChanCfg( CSL_PktdmaRxChanCfg *pRxChanCfg )
-{
-    if( pRxChanCfg != NULL )
-    {
-        /*-------------------------------------------------------------------------
-         *  Start by initializing all structure members to 0
-         *-----------------------------------------------------------------------*/
-        memset( (void *)pRxChanCfg, 0, sizeof(CSL_PktdmaRxChanCfg) );
-        /*-------------------------------------------------------------------------
-         *  Now initialize non-zero structure members
-         *-----------------------------------------------------------------------*/
-        pRxChanCfg->chanType            = CSL_PKTDMA_CHAN_TYPE_NORMAL;
-        pRxChanCfg->fetchWordSize       = CSL_PKTDMA_FETCH_WORD_SIZE_16;
-        pRxChanCfg->trEventNum          = CSL_PKTDMA_NO_EVENT;
-        pRxChanCfg->errEventNum         = CSL_PKTDMA_NO_EVENT;
-        pRxChanCfg->flowIdFwRangeCnt    = 0x00004000U;
-    }
-}
-
-void CSL_pktdmaInitRxFlowCfg( CSL_PktdmaRxFlowCfg *pFlow )
-{
-    if( pFlow != NULL )
-    {
-        /*-------------------------------------------------------------------------
-         *  Start by initializing all structure members to 0
-         *-----------------------------------------------------------------------*/
-        memset( (void *)pFlow, 0, sizeof(CSL_PktdmaRxFlowCfg) );
-    }
-}
-
-void CSL_pktdmaSetPerfCtrl( CSL_PktdmaCfg *pCfg, uint32_t rxRetryTimeoutCnt )
-{
-    uint32_t regVal;
-
-    regVal = CSL_FMK( PKTDMA_GCFG_PERF_CTRL_TIMEOUT_CNT, rxRetryTimeoutCnt );
-    CSL_REG32_WR( &pCfg->pGenCfgRegs->PERF_CTRL, regVal );
-}
-
-void CSL_pktdmaSetUtcCtrl( CSL_PktdmaCfg *pCfg, uint32_t startingThreadNum )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(startingThreadNum);
-}
-
-int32_t CSL_pktdmaRxFlowCfg(CSL_PktdmaCfg *pCfg, uint32_t flow, const CSL_PktdmaRxFlowCfg *pFlow )
-{
-    int32_t retVal;
-
-    if( (pCfg == NULL) || (pFlow == NULL) || (flow >= pCfg->rxFlowCnt) )
-    {
-        retVal = CSL_EFAIL;
-    }
-    else
-    {
-        CSL_REG32_WR(&pCfg->pRxFlowCfgRegs->FLOW[flow].RFA,
-                        CSL_FMK(PKTDMA_RXFCFG_FLOW_RFA_EINFO,       pFlow->einfoPresent)  |
-                        CSL_FMK(PKTDMA_RXFCFG_FLOW_RFA_PSINFO,      pFlow->psInfoPresent) |
-                        CSL_FMK(PKTDMA_RXFCFG_FLOW_RFA_EHANDLING,   pFlow->errorHandling) |
-                        CSL_FMK(PKTDMA_RXFCFG_FLOW_RFA_SOP_OFF,     pFlow->sopOffset) );
-        retVal = CSL_PASS;
-    }
-    return retVal;
-}
-
-int32_t CSL_pktdmaRxChanSetTrEvent( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, uint32_t trEventNum )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(chanIdx);
-    UNUSED_PARAM(trEventNum);
-    return CSL_EUNSUPPORTED_CMD;
-}
-
-int32_t CSL_pktdmaRxChanSetBurstSize( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanBurstSize burstSize )
-{
-    int32_t retVal = CSL_EFAIL;
-
-    if( (burstSize >= CSL_PKTDMA_CHAN_BURST_SIZE_64_BYTES) && (burstSize <= CSL_PKTDMA_CHAN_BURST_SIZE_256_BYTES) )
-    {
-        CSL_REG32_FINS( &pCfg->pRxChanCfgRegs->CHAN[chanIdx].RCFG, PKTDMA_RXCCFG_CHAN_RCFG_BURST_SIZE, burstSize );
-        retVal = CSL_PASS;
-    }
-    return retVal;
-}
-
-int32_t CSL_pktdmaRxChanCfg( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, const CSL_PktdmaRxChanCfg *pRxChanCfg )
-{
-    int32_t retVal;
-
-    if( (pCfg == NULL) || (pRxChanCfg == NULL) || (chanIdx >= pCfg->rxChanCnt) )
-    {
-        retVal = CSL_EFAIL;
-    }
-    else
-    {
-        uint32_t regVal;
-
-        regVal = CSL_REG32_RD( &pCfg->pRxChanCfgRegs->CHAN[chanIdx].RCFG );
-        CSL_FINS( regVal, PKTDMA_RXCCFG_CHAN_RCFG_PAUSE_ON_ERR,  pRxChanCfg->pauseOnError );
-        CSL_FINS( regVal, PKTDMA_RXCCFG_CHAN_RCFG_CHAN_TYPE,     pRxChanCfg->chanType );
-        CSL_REG32_WR( &pCfg->pRxChanCfgRegs->CHAN[chanIdx].RCFG, regVal );
-
-        CSL_REG32_WR(&pCfg->pRxChanCfgRegs->CHAN[chanIdx].RPRI_CTRL,
-                CSL_FMK(PKTDMA_RXCCFG_CHAN_RPRI_CTRL_PRIORITY,   pRxChanCfg->busPriority) |
-                CSL_FMK(PKTDMA_RXCCFG_CHAN_RPRI_CTRL_ORDERID,    pRxChanCfg->busOrderId ) );
-
-        CSL_REG32_WR(&pCfg->pRxChanCfgRegs->CHAN[chanIdx].THREAD,
-                CSL_FMK( PKTDMA_RXCCFG_CHAN_THREAD_ID, pRxChanCfg->rxThread ) );
-
-        CSL_REG32_WR(&pCfg->pRxChanCfgRegs->CHAN[chanIdx].RST_SCHED,
-                      CSL_FMK(PKTDMA_RXCCFG_CHAN_RST_SCHED_PRIORITY, pRxChanCfg->dmaPriority) );
-        retVal = CSL_PASS;
-    }
-    return retVal;
-}
-
-int32_t CSL_pktdmaTxChanSetTrEvent( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, uint32_t trEventNum )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(chanIdx);
-    UNUSED_PARAM(trEventNum);
-    return CSL_EUNSUPPORTED_CMD;
-}
-
-int32_t CSL_pktdmaTxChanSetBurstSize( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanBurstSize burstSize )
-{
-    int32_t retVal = CSL_EFAIL;
-
-    if( (burstSize >= CSL_PKTDMA_CHAN_BURST_SIZE_64_BYTES) && (burstSize <= CSL_PKTDMA_CHAN_BURST_SIZE_256_BYTES) )
-    {
-        CSL_REG32_FINS( &pCfg->pTxChanCfgRegs->CHAN[chanIdx].TCFG, PKTDMA_TXCCFG_CHAN_TCFG_BURST_SIZE, burstSize );
-        retVal = CSL_PASS;
-    }
-    return retVal;
-}
-
-int32_t CSL_pktdmaTxChanCfg( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, const CSL_PktdmaTxChanCfg *pTxChanCfg )
-{
-    int32_t retVal;
-
-    if( (pCfg == NULL) || (pTxChanCfg == NULL) || (chanIdx >= pCfg->txChanCnt) )
-    {
-        retVal = CSL_EFAIL;
-    }
-    else
-    {
-        uint32_t regVal;
-
-        regVal = CSL_REG32_RD( &pCfg->pTxChanCfgRegs->CHAN[chanIdx].TCFG );
-        CSL_FINS( regVal, PKTDMA_TXCCFG_CHAN_TCFG_PAUSE_ON_ERR,    pTxChanCfg->pauseOnError );
-        CSL_FINS( regVal, PKTDMA_TXCCFG_CHAN_TCFG_FILT_EINFO,      pTxChanCfg->filterEinfo );
-        CSL_FINS( regVal, PKTDMA_TXCCFG_CHAN_TCFG_FILT_PSWORDS,    pTxChanCfg->filterPsWords );
-        CSL_FINS( regVal, PKTDMA_TXCCFG_CHAN_TCFG_NOTDPKT,         ((pTxChanCfg->bNoTeardownCompletePkt) ? (uint32_t)1U : (uint32_t)0U) );
-        CSL_FINS( regVal, PKTDMA_TXCCFG_CHAN_TCFG_CHAN_TYPE,       pTxChanCfg->chanType );
-        CSL_FINS( regVal, PKTDMA_TXCCFG_CHAN_TCFG_TDTYPE,          pTxChanCfg->tdType );
-        CSL_REG32_WR( &pCfg->pTxChanCfgRegs->CHAN[chanIdx].TCFG, regVal );
-
-        CSL_REG32_WR(&pCfg->pTxChanCfgRegs->CHAN[chanIdx].TPRI_CTRL,
-                        CSL_FMK(PKTDMA_TXCCFG_CHAN_TPRI_CTRL_PRIORITY, pTxChanCfg->busPriority) |
-                        CSL_FMK(PKTDMA_TXCCFG_CHAN_TPRI_CTRL_ORDERID,  pTxChanCfg->busOrderId ) );
-
-        CSL_REG32_WR(&pCfg->pTxChanCfgRegs->CHAN[chanIdx].TST_SCHED,
-                      CSL_FMK(PKTDMA_TXCCFG_CHAN_TST_SCHED_PRIORITY, pTxChanCfg->dmaPriority) );
-
-        CSL_REG32_WR(&pCfg->pTxChanCfgRegs->CHAN[chanIdx].THREAD,
-                CSL_FMK( PKTDMA_TXCCFG_CHAN_THREAD_ID, pTxChanCfg->txThread ) );
-        retVal = CSL_PASS;
-    }
-    return retVal;
 }
 
 int32_t CSL_pktdmaGetRxRT( const CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaRT *pRT )
@@ -549,16 +312,6 @@ int32_t CSL_pktdmaSetTxRT( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, const CSL_Pktd
     return CSL_PASS;
 }
 
-int32_t CSL_pktdmaEnableTxChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx )
-{
-    return CSL_pktdmaSetChanEnable( pCfg, chanIdx, CSL_PKTDMA_CHAN_DIR_TX, (bool)true );
-}
-
-int32_t CSL_pktdmaDisableTxChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx )
-{
-    return CSL_pktdmaSetChanEnable( pCfg, chanIdx, CSL_PKTDMA_CHAN_DIR_TX, (bool)false );
-}
-
 int32_t CSL_pktdmaTeardownTxChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, bool bForce, bool bWait )
 {
     return CSL_pktdmaTeardownChan( pCfg, chanIdx, CSL_PKTDMA_CHAN_DIR_TX, bForce, bWait );
@@ -572,21 +325,6 @@ int32_t CSL_pktdmaPauseTxChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx )
 int32_t CSL_pktdmaUnpauseTxChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx )
 {
     return CSL_pktdmaPauseChan( pCfg, chanIdx, CSL_PKTDMA_CHAN_DIR_TX, CSL_PKTDMA_UNPAUSE_CHAN );
-}
-
-int32_t CSL_pktdmaTriggerTxChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx )
-{
-    return CSL_pktdmaTriggerChan( pCfg, chanIdx, CSL_PKTDMA_CHAN_DIR_TX );
-}
-
-void CSL_pktdmaClearTxChanError( CSL_PktdmaCfg *pCfg, uint32_t chanIdx )
-{
-    CSL_pktdmaClearChanError( pCfg, chanIdx, CSL_PKTDMA_CHAN_DIR_TX );
-}
-
-int32_t CSL_pktdmaEnableRxChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx )
-{
-    return CSL_pktdmaSetChanEnable( pCfg, chanIdx, CSL_PKTDMA_CHAN_DIR_RX, (bool)true );
 }
 
 int32_t CSL_pktdmaDisableRxChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx )
@@ -607,42 +345,6 @@ int32_t CSL_pktdmaPauseRxChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx )
 int32_t CSL_pktdmaUnpauseRxChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx )
 {
     return CSL_pktdmaPauseChan( pCfg, chanIdx, CSL_PKTDMA_CHAN_DIR_RX, CSL_PKTDMA_UNPAUSE_CHAN );
-}
-
-int32_t CSL_pktdmaTriggerRxChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx )
-{
-    return CSL_pktdmaTriggerChan( pCfg, chanIdx, CSL_PKTDMA_CHAN_DIR_RX );
-}
-
-void CSL_pktdmaClearRxChanError( CSL_PktdmaCfg *pCfg, uint32_t chanIdx )
-{
-    CSL_pktdmaClearChanError( pCfg, chanIdx, CSL_PKTDMA_CHAN_DIR_RX );
-}
-
-void CSL_pktdmaCfgRxFlowIdFirewall( CSL_PktdmaCfg *pCfg, uint32_t outEvtNum )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(outEvtNum);
-}
-
-bool CSL_pktdmaGetRxFlowIdFirewallStatus( CSL_PktdmaCfg *pCfg, CSL_PktdmaRxFlowIdFirewallStatus *pRxFlowIdFwStatus )
-{
-    bool bRetVal = (bool)false;
-#ifdef CSL_PKTDMA_GCFG_RFLOWFWSTAT_PEND_MASK
-    uint32_t regVal;
-
-    regVal = CSL_REG32_RD( &pCfg->pGenCfgRegs->RFLOWFWSTAT );
-    if( CSL_FEXT( regVal, PKTDMA_GCFG_RFLOWFWSTAT_PEND ) != (uint32_t)0U )
-    {
-        pRxFlowIdFwStatus->flowId = CSL_FEXT( regVal, PKTDMA_GCFG_RFLOWFWSTAT_FLOWID );
-        pRxFlowIdFwStatus->chnIdx = CSL_FEXT( regVal, PKTDMA_GCFG_RFLOWFWSTAT_CHANNEL );
-        /* Clear pending bit to ready flow id firewall to capture next error */
-        CSL_FINS( regVal, PKTDMA_GCFG_RFLOWFWSTAT_PEND, (uint32_t)0U );
-        CSL_REG32_WR( &pCfg->pGenCfgRegs->RFLOWFWSTAT, regVal );
-        bRetVal = (bool)true;
-    }
-#endif
-    return bRetVal;
 }
 
 void CSL_pktdmaGetChanStats( const CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanDir chanDir, CSL_PktdmaChanStats *pChanStats )
@@ -689,40 +391,7 @@ int32_t CSL_pktdmaSetChanPeerReg( const CSL_PktdmaCfg *pCfg, uint32_t chanIdx, C
 {
     return CSL_pktdmaAccessChanPeerReg( pCfg, chanIdx, regIdx, pVal, chanDir, (bool)false );
 }
-
-int32_t CSL_pktdmaEnableLink( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanDir chanDir )
+int32_t CSL_pktdmaDisableTxChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx )
 {
-    int32_t  retVal = CSL_PASS;
-
-    if( (pCfg == NULL) || (CSL_pktdmaIsValidChanIdx( pCfg, chanIdx, chanDir) == (bool)false) )
-    {
-        retVal = CSL_EFAIL;
-    }
-    else
-    {
-        uint32_t peerEnableRegVal;
-
-        peerEnableRegVal = (uint32_t)1U << 31;
-        if( chanDir == CSL_PKTDMA_CHAN_DIR_TX )
-        {
-            /* a. Set PKTDMA peer real-time enable by calling the CSL_pktdmaSetChanPeerReg() function */
-            retVal = CSL_pktdmaSetChanPeerReg( pCfg, chanIdx, chanDir, CSL_PKTDMA_CHAN_PEER_REG_OFFSET_ENABLE, &peerEnableRegVal );
-            if( retVal == CSL_PASS )
-            {
-                /* b. Enable the PKTDMA tx channel by calling the CSL_pktdmaEnableTxChan() function */
-                retVal = CSL_pktdmaEnableTxChan( pCfg, chanIdx );
-            }
-        }
-        else
-        {
-            /* a. Enable the PKTDMA rx channel by calling the CSL_pktdmaEnableRxChan() function */
-            retVal = CSL_pktdmaEnableRxChan( pCfg, chanIdx );
-            if( retVal == CSL_PASS )
-            {
-                /* b. Set PKTDMA peer real-time enable by calling the CSL_pktdmaSetChanPeerReg() function */
-                retVal = CSL_pktdmaSetChanPeerReg( pCfg, chanIdx, chanDir, CSL_PKTDMA_CHAN_PEER_REG_OFFSET_ENABLE, &peerEnableRegVal );
-            }
-        }
-    }
-    return retVal;
+    return CSL_pktdmaSetChanEnable( pCfg, chanIdx, CSL_PKTDMA_CHAN_DIR_TX, (bool)false );
 }

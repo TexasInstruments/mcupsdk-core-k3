@@ -501,36 +501,6 @@ int32_t CSL_bcdmaChanOp( CSL_BcdmaCfg *pCfg, CSL_BcdmaChanOp chanOp, CSL_BcdmaCh
     return retVal;
 }
 
-uint32_t CSL_bcdmaGetRevision( const CSL_BcdmaCfg *pCfg )
-{
-    uint32_t retVal = 0U;
-    if( (pCfg != NULL) && (pCfg->pGenCfgv2Regs != NULL) )
-    {
-       retVal = CSL_REG32_RD( &pCfg->pGenCfgv2Regs->REVISION );
-    }
-    return retVal;
-}
-
-int32_t CSL_bcdmaGetRevisionInfo( const CSL_BcdmaCfg *pCfg, CSL_BcdmaRevision *pRev )
-{
-    int32_t retVal = CSL_PASS;
-    if( (pCfg == NULL) || (pCfg->pGenCfgv2Regs == NULL) || (pRev == NULL) )
-    {
-        retVal = CSL_EFAIL;
-    }
-    else
-    {
-        uint32_t val;
-        val = CSL_REG32_RD( &pCfg->pGenCfgv2Regs->REVISION );
-        pRev->modId     = CSL_FEXT( val, BCDMA_GCFG_V2_REVISION_MODID );
-        pRev->revRtl    = CSL_FEXT( val, BCDMA_GCFG_V2_REVISION_REVRTL );
-        pRev->revMajor  = CSL_FEXT( val, BCDMA_GCFG_V2_REVISION_REVMAJ );
-        pRev->custom    = CSL_FEXT( val, BCDMA_GCFG_V2_REVISION_CUSTOM );
-        pRev->revMinor  = CSL_FEXT( val, BCDMA_GCFG_V2_REVISION_REVMIN );
-    }
-    return retVal;
-}
-
 void CSL_bcdmaInitCfg( CSL_BcdmaCfg *pCfg )
 {
     if( pCfg != NULL )
@@ -762,36 +732,6 @@ void CSL_bcdmaClearChanError( CSL_BcdmaCfg *pCfg, uint32_t chanIdx )
 {
     CSL_BcdmaChanType chanType = 0u;
     CSL_bcdmaDoChanOp( pCfg, CSL_BCDMA_CHAN_OP_CLEAR_ERROR, chanIdx, chanType, NULL );
-}
-
-void CSL_bcdmaSetPerfCtrl( CSL_BcdmaCfg *pCfg, uint32_t rxRetryTimeoutCnt )
-{
-    uint32_t regVal;
-    regVal = CSL_FMK( BCDMA_GCFG_V2_PERF_CTRL_TIMEOUT_CNT, rxRetryTimeoutCnt );
-    CSL_REG32_WR( &pCfg->pGenCfgv2Regs->PERF_CTRL, regVal );
-}
-
-void CSL_bcdmaSetUtcCtrl( CSL_BcdmaCfg *pCfg, uint32_t startingThreadNum )
-{
-}
-
-int32_t CSL_bcdmaRxChanSetTrEvent( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, uint32_t trEventNum )
-{
-    return CSL_EFAIL;
-}
-
-int32_t CSL_bcdmaTxChanSetTrEvent( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, uint32_t trEventNum )
-{
-    return CSL_EFAIL;
-}
-
-void CSL_bcdmaCfgRxFlowIdFirewall( CSL_BcdmaCfg *pCfg, uint32_t outEvtNum )
-{
-}
-
-bool CSL_bcdmaGetRxFlowIdFirewallStatus( CSL_BcdmaCfg *pCfg, CSL_BcdmaRxFlowIdFirewallStatus *pRxFlowIdFwStatus )
-{
-    return (bool)false;
 }
 
 int32_t CSL_bcdmaSetLocalTrig(CSL_BcdmaCfg *pCfg, uint32_t trigType, uint32_t chNum, uint32_t trigIndex, uint32_t trigger)

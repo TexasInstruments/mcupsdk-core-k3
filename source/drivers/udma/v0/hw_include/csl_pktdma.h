@@ -57,7 +57,7 @@
  *  operation of this CSL-FL:
  *
  *    1. Allocate a PKTDMA configuration structure (#CSL_PktdmaCfg)
- *    2. (Optional) Call #CSL_pktdmaInitCfg to initialize the PKTDMA
+ *    2. (Optional) initialize the PKTDMA
  *       configuration structure to all zeros
  *    3. Initialize the register structure pointer elements of the PKTDMA
  *       configuration structure
@@ -272,101 +272,6 @@ typedef uint32_t CSL_PktdmaChanSchedPri;
  *  @{
  */
 
-
-/** \brief Routing tag information
- *
- *  [udmap_only]This structure contains information describing a routing tag.
- *
- */
-typedef struct
-{
-    uint32_t                loSel;             /**< [IN]  Specifies how the low tag value is determined. See \ref CSL_PktdmaTagSelect */
-    uint8_t                 loVal;             /**< [IN]  Tag[7:0] low byte value (used if loSel == 1) */
-    uint32_t                hiSel;             /**< [IN]  Specifies how the high tag value is determined. See \ref CSL_PktdmaTagSelect */
-    uint8_t                 hiVal;             /**< [IN]  Tag[7:0] high byte value (used if hiSel == 1) */
-} CSL_PktdmaRouteTag;
-
-/** \brief Module revision information
- *
- *  This structure contains information describing the module revision.
- *
- */
-typedef struct
-{
-    uint32_t                modId;              /**< [OUT]  Module ID */
-    uint32_t                revRtl;             /**< [OUT]  RTL revision */
-    uint32_t                revMajor;           /**< [OUT]  Major revision */
-    uint32_t                custom;             /**< [OUT]  Custom revision */
-    uint32_t                revMinor;           /**< [OUT]  Minor revision */
-} CSL_PktdmaRevision;
-
-/** \brief Receive flow configuration information
- *
- *  This structure contains information describing a receive flow.
- *
- */
-typedef struct
-{
-    uint32_t            einfoPresent;   /**< [IN]  Set to 1 if extended packet info is present in the descriptor */
-    uint32_t            psInfoPresent;  /**< [IN]  Set to 1 if protocol-specific info is present in the descriptor */
-    uint32_t            errorHandling;  /**< [IN]  Determines how starvation errors are handled. 0=drop packet, 1=retry */
-    uint32_t            sopOffset;      /**< [IN]  Start of rx packet data (byte offset from the start of the SOP buffer) */
-    uint32_t            secure;         /**< [udmap_only][IN]  Secure attribute to be used when receiving packets on this flowid */
-    uint32_t            priv;           /**< [udmap_only][IN]  Privilege attribute to be used when receiving packets on this flowid */
-    uint32_t            privid;         /**< [udmap_only][IN]  Privilege ID attribute to be used when receiving packets on this flowid */
-} CSL_PktdmaRxFlowCfg;
-
-/** \brief Transmit channel configuration information
- *
- *  This structure contains configuration information for a transmit channel.
- *
- */
-typedef struct
-{
-    uint32_t                pauseOnError;         /**< [IN] When set, pause channel on error */
-    uint32_t                filterEinfo;          /**< [IN] When set, filter out extended info */
-    uint32_t                filterPsWords;        /**< [IN] When set, filter out protocl specific words */
-    CSL_PktdmaAddrType      addrType;             /**< [udmap_only][IN] Address type for this channel */
-    CSL_PktdmaChanType      chanType;             /**< [IN] Channel type */
-    uint32_t                fetchWordSize;        /**< [udmap_only][IN] Descriptor/TR Size in 32-bit words */
-    uint32_t                trEventNum;           /**< [udmap_only][IN] Specifies a global event number to generate anytime the required event generation criteria specified in a TR are met (set to CSL_PKTDMA_NO_EVENT for no event generation) */
-    uint32_t                errEventNum;          /**< [udmap_only][IN] Specifies a global event number to generate anytime an error is encountered on the channel (set to CSL_PKTDMA_NO_EVENT for no event generation) */
-    uint32_t                busPriority;          /**< [IN] 3-bit priority value (0=highest, 7=lowest) */
-    uint32_t                busQos;               /**< [udmap_only][IN] 3-bit qos value (0=highest, 7=lowest) */
-    uint32_t                busOrderId;           /**< [IN] 4-bit orderid value */
-    CSL_PktdmaChanSchedPri  dmaPriority;          /**< [IN] This field selects which scheduling bin the channel will be placed in for bandwidth allocation of the Tx DMA units */
-    uint32_t                txCredit;             /**< [udmap_only][IN] TX credit for external channels */
-    uint32_t                txTrCQ;               /**< [udmap_only][IN] TX TR Completion Queue */
-    uint32_t                txThread;             /**< [IN] TX mapped destination thread */
-    bool                    bNoTeardownCompletePkt; /**< [IN] Specifies whether or not the channel should suppress sending the single data phase teardown packet when teardown is complete. 0 = TD packet is sent, 1 = Suppress sending TD packet */
-    uint32_t                tdType;               /**< [IN] Specifies whether or not the channel should immediately return a teardown completion response to the default completion queue or wait until a status message is returned from the remote PSI-L paired peripheral. 0 = return immediately once all traffic is complete in PKTDMA, 1 = wait until remote peer sends back a completion message. Valid in pktdma version 2.0.0 and later. */
-} CSL_PktdmaTxChanCfg;
-
-/** \brief Receive channel configuration information
- *
- *  This structure contains configuration information for a receive channel.
- *
- */
-typedef struct
-{
-    uint32_t                pauseOnError;         /**< [IN] When set, pause channel on error */
-    CSL_PktdmaAddrType      addrType;             /**< [udmap_only][IN] Address type for this channel */
-    CSL_PktdmaChanType      chanType;             /**< [IN] Channel type */
-    uint32_t                fetchWordSize;        /**< [udmap_only][IN] Descriptor/TR Size in 32-bit words */
-    uint32_t                trEventNum;           /**< [udmap_only][IN] Specifies a global event number to generate anytime the required event generation criteria specified in a TR are met (set to CSL_PKTDMA_NO_EVENT for no event generation) */
-    uint32_t                errEventNum;          /**< [udmap_only][IN] Specifies a global event number to generate anytime an error is encountered on the channel (set to CSL_PKTDMA_NO_EVENT for no event generation) */
-    uint32_t                busPriority;          /**< [IN] 3-bit priority value (0=highest, 7=lowest) */
-    uint32_t                busQos;               /**< [udmap_only][IN] 3-bit qos value (0=highest, 7=lowest) */
-    uint32_t                busOrderId;           /**< [IN] 4-bit orderid value */
-    uint32_t                rxTrCQ;               /**< [udmap_only][IN] RX TR Completion Queue */
-    uint32_t                rxThread;             /**< [IN] Rx channel destination ThreadID mapping */
-    uint32_t                flowIdFwRangeStart;   /**< [udmap_only][IN] Starting flow ID value for firewall check */
-    uint32_t                flowIdFwRangeCnt;     /**< [udmap_only][IN] Number of valid flow ID's starting from flowIdFwRangeStart for firewall check */
-    bool                    bIgnoreShortPkts;     /**< [udmap_only][IN] This field controls whether or not short packets will be treated as exceptions (false) or ignored (true) for the channel. This field is only used when the channel is in split UTC mode.*/
-    bool                    bIgnoreLongPkts;      /**< [udmap_only][IN] This field controls whether or not long packets will be treated as exceptions (false) or ignored (true) for the channel. This field is only used when the channel is in split UTC mode.*/
-    CSL_PktdmaChanSchedPri  dmaPriority;          /**< [IN] This field selects which scheduling bin the channel will be placed in for bandwidth allocation of the Rx DMA units */
-} CSL_PktdmaRxChanCfg;
-
 /** \brief Channel runtime configuration information
  *
  *  This structure contains runtime configuration information for a channel.
@@ -404,19 +309,6 @@ typedef struct
     uint32_t                txUltraHighCapacityChanCnt; /**< [OUT] Tx external UTC channel count (populated by the #CSL_pktdmaGetCfg function) */
 } CSL_PktdmaCfg;
 
-/** \brief [udmap_only] PKTDMA receive flow id firewall status
- *
- *  This structure contains status information collected whenever the receive
- *  flow ID firewall detects a flow ID that is out of range for an incoming
- *  packet.
- *
- */
-typedef struct
-{
-    uint32_t    flowId;                         /**< [OUT] The flow ID that was received on the trapped packet */
-    uint32_t    chnIdx;                         /**< [OUT] The channel index on which the trapped packet was received */
-} CSL_PktdmaRxFlowIdFirewallStatus;
-
 /** \brief Transmit / receive channel statistics
  *
  *  This structure contains statistics for transmit and receive channels.
@@ -438,50 +330,6 @@ typedef struct
  */
 
 /**
- *  \brief Return revision of the PKTDMA module
- *
- *  This function returns the contents of the PKTDMA revision register.
- *  Consult the PKTDMA module documentation for a description of the
- *  contents of the revision register.
- *
- *  \param pCfg             [IN]    Pointer to the PKTDMA configuration structure
- *
- *  \return The 32-bit revision register is returned.
- */
-extern uint32_t CSL_pktdmaGetRevision( const CSL_PktdmaCfg *pCfg );
-
-/**
- *  \brief Return revision information of the PKTDMA module
- *
- *  This function returns revision information for the PKTDMA module.
- *
- *  \param pCfg             [IN]    Pointer to the PKTDMA configuration structure
- *  \param pRev             [OUT]   Pointer to a #CSL_PktdmaRevision structure where the revision information is returned
- *
- *  \return CSL_PASS  = Function executed successfully
- *          CSL_EFAIL = Function execution failed
- */
-extern int32_t CSL_pktdmaGetRevisionInfo( const CSL_PktdmaCfg *pCfg, CSL_PktdmaRevision *pRev );
-
-/**
- *  \brief Initialize contents of a PKTDMA configuration structure
- *
- *  This function initializes the contents of the specified PKTDMA configuration
- *  structure.
- *
- *  All elements of the #CSL_PktdmaCfg structure are initialized to zero.
- *
- *  This function should not be called after calling CSL_pktdmaGetCfg as the
- *  PKTDMA module configuration stored in the PKTDMA configuration structure
- *  will be overwritten with zeros.
- *
- *  \param pCfg             [IN]    Pointer to the PKTDMA configuration structure
- *
- *  \return None
- */
-extern void CSL_pktdmaInitCfg( CSL_PktdmaCfg *pCfg );
-
-/**
  *  \brief Return PKTDMA configuration information
  *
  *  This function returns configuration and capability information for the
@@ -493,208 +341,6 @@ extern void CSL_pktdmaInitCfg( CSL_PktdmaCfg *pCfg );
  *  \return None
  */
 extern void CSL_pktdmaGetCfg( CSL_PktdmaCfg *pCfg );
-
-/**
- *  \brief Initialize a #CSL_PktdmaTxChanCfg structure
- *
- *  This function initializes the specified #CSL_PktdmaTxChanCfg structure to
- *  known, safe values. Software then only needs to configure elements
- *  that are different than their initialized values prior to calling the
- *  #CSL_pktdmaTxChanCfg function.
- *
- *  All elements of the #CSL_PktdmaTxChanCfg structure are initialized to zero
- *  except for the following:
- *
- *      chanType        = CSL_PKTDMA_CHAN_TYPE_NORMAL;
- *      fetchWordSize   = CSL_PKTDMA_FETCH_WORD_SIZE_16;
- *      trEventNum      = CSL_PKTDMA_NO_EVENT;
- *      errEventNum     = CSL_PKTDMA_NO_EVENT;
- *
- *  \param pTxChanCfg   [OUT]   Pointer to a #CSL_PktdmaTxChanCfg structure
- *
- *  \return None
- */
-extern void CSL_pktdmaInitTxChanCfg( CSL_PktdmaTxChanCfg *pTxChanCfg );
-
-/**
- *  \brief Initialize a #CSL_PktdmaRxChanCfg structure
- *
- *  This function initializes the specified #CSL_PktdmaRxChanCfg structure to
- *  known, safe values. Software then only needs to configure elements
- *  that are different than their initialized values prior to calling the
- *  #CSL_pktdmaRxChanCfg function.
- *
- *  All elements of the #CSL_PktdmaRxChanCfg structure are initialized to zero
- *  except for the following:
- *
- *      chanType            = CSL_PKTDMA_CHAN_TYPE_NORMAL;
- *      fetchWordSize       = CSL_PKTDMA_FETCH_WORD_SIZE_16;
- *      trEventNum          = CSL_PKTDMA_NO_EVENT;
- *      errEventNum         = CSL_PKTDMA_NO_EVENT;
- *      flowIdFwRangeCnt    = CSL_PKTDMA_RXCCFG_CHAN_RFLOW_RNG_FLOWID_CNT_RESETVAL;
- *
- *  \param pRxChanCfg   [OUT]   Pointer to a #CSL_PktdmaRxChanCfg structure
- *
- *  \return None
- */
-extern void CSL_pktdmaInitRxChanCfg( CSL_PktdmaRxChanCfg *pRxChanCfg );
-
-/**
- *  \brief Initialize a CSL_PktdmaRxFlowCfg structure
- *
- *  This function initializes the specified CSL_PktdmaRxFlowCfg structure to
- *  known, safe values. Software then only needs to configure elements
- *  that are different than their initialized values prior to calling the
- *  CSL_pktdmaRxFlowCfg function.
- *
- *  All elements of the CSL_PktdmaRxFlowCfg structure are initialized to zero.
- *
- *  \param pFlow        [OUT]   Pointer to a #CSL_PktdmaRxFlowCfg structure
- *
- *  \return None
- */
-extern void CSL_pktdmaInitRxFlowCfg( CSL_PktdmaRxFlowCfg *pFlow );
-
-/**
- *  \brief Set performance control parmeters
- *
- *  This function is used to set performance control paramaters available
- *  in the PKTDMA module.
- *
- *  \param pCfg                 [IN]    Pointer to the PKTDMA configuration structure
- *  \param rxRetryTimeoutCnt    [IN]    This parameter specifies the minimum
- *      amount of time (in clock cycles) that an Rx channel will be required
- *      to wait when it encounters a buffer starvation condition and the Rx
- *      error handling bit is set to 1
- *
- *  \return None
- */
-extern void CSL_pktdmaSetPerfCtrl( CSL_PktdmaCfg *pCfg, uint32_t rxRetryTimeoutCnt );
-
-/**
- *  \brief [udmap_only] Set UTC control parmeters
- *
- *  This function is used to set UTC control paramaters available
- *  in the PKTDMA module.
- *
- *  \param pCfg                 [IN]    Pointer to the PKTDMA configuration structure
- *  \param startingThreadNum    [IN]    This parameter specifies the starting
- *      PSI-L thread number for the external UTC
- *
- *  \return None
- */
-extern void CSL_pktdmaSetUtcCtrl( CSL_PktdmaCfg *pCfg, uint32_t startingThreadNum );
-
-/**
- *  \brief Configure an RX flow
- *
- *  This function initializes a receive flow with values specified in the
- *  #CSL_PktdmaRxFlowCfg structure.
- *
- *  \param pCfg             [IN]    Pointer to the PKTDMA configuration structure
- *  \param flow             [IN]    Index of the receive flow to initialize
- *  \param pFlow            [IN]    Pointer to a #CSL_PktdmaRxFlowCfg structure containing initialization values
- *
- *  \return CSL_PASS  = Function executed successfully
- *          CSL_EFAIL = Function execution failed
- */
-extern int32_t CSL_pktdmaRxFlowCfg( CSL_PktdmaCfg *pCfg, uint32_t flow, const CSL_PktdmaRxFlowCfg *pFlow );
-
-/**
- *  \brief Configure an RX channel
- *
- *  This function initializes a receive channel with values specified in the
- *  #CSL_PktdmaRxChanCfg structure.
- *
- *  \param pCfg             [IN]    Pointer to the PKTDMA configuration structure
- *  \param chanIdx          [IN]    Index of the receive channel to initialize
- *  \param pRxChanCfg       [IN]    Pointer to a #CSL_PktdmaRxChanCfg structure containing initialization values
- *
- *  \return CSL_PASS  = Function executed successfully
- *          CSL_EFAIL = Function execution failed
- */
-extern int32_t CSL_pktdmaRxChanCfg( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, const CSL_PktdmaRxChanCfg *pRxChanCfg );
-
-/**
- *  \brief Configure a TX channel
- *
- *  This function initializes a transmit channel with values specified in the
- *  #CSL_PktdmaTxChanCfg structure.
- *
- *  \param pCfg             [IN]    Pointer to the PKTDMA configuration structure
- *  \param chanIdx          [IN]    Index of the transmit channel to initialize
- *  \param pTxChanCfg       [IN]    Pointer to a #CSL_PktdmaTxChanCfg structure containing initialization values
- *
- *  \return CSL_PASS  = Function executed successfully
- *          CSL_EFAIL = Function execution failed
- */
-extern int32_t CSL_pktdmaTxChanCfg( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, const CSL_PktdmaTxChanCfg *pTxChanCfg );
-
-/**
- *  \brief [udmap_only] Configure an RX channel TR event
- *
- *  \param pCfg             [IN]    Pointer to the PKTDMA configuration structure
- *  \param chanIdx          [IN]    Index of the receive channel to initialize
- *  \param trEventNum       [IN]    Specifies a global event number to generate
- *                                  anytime the required event generation
- *                                  criteria specified in a TR are met
- *                                  Set to CSL_PKTDMA_NO_EVENT for no event
- *                                  generation.
- *
- *  \return CSL_EUNSUPPORTED_CMD = Function is not supported
- */
-extern int32_t CSL_pktdmaRxChanSetTrEvent( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, uint32_t trEventNum );
-
-/**
- *  \brief [udmap_only]Configure an TX channel TR event
- *
- *  \param pCfg             [IN]    Pointer to the PKTDMA configuration structure
- *  \param chanIdx          [IN]    Index of the transmit channel to initialize
- *  \param trEventNum       [IN]    Specifies a global event number to generate
- *                                  anytime the required event generation
- *                                  criteria specified in a TR are met
- *                                  Set to CSL_PKTDMA_NO_EVENT for no event
- *                                  generation.
- *
- *  \return CSL_EUNSUPPORTED_CMD = Function is not supported
- */
-extern int32_t CSL_pktdmaTxChanSetTrEvent( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, uint32_t trEventNum );
-
-/**
- *  \brief Configure RX channel burst size
- *
- *  This function enables configuration of the nominal burst size and alignment
- *  for data transfers on the specified RX channel. The default burst size
- *  is 64 bytes (a value of CSL_PKTDMA_CHAN_BURST_SIZE_64_BYTES).
- *
- *  \param pCfg             [IN]    Pointer to the PKTDMA configuration structure
- *  \param chanIdx          [IN]    Index of the receive channel to initialize
- *  \param burstSize        [IN]    Burst size value. See \ref CSL_PktdmaChanBurstSize
- *                                  for a list of valid burst size values.
- *
- *  \return CSL_PASS  = Function executed successfully
- *          CSL_EFAIL = Function execution failed (burstSize is invalid or this
- *                      function is not available in the version of PKTDMA being used)
- */
-extern int32_t CSL_pktdmaRxChanSetBurstSize( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanBurstSize burstSize );
-
-/**
- *  \brief Configure TX channel burst size
- *
- *  This function enables configuration of the nominal burst size and alignment
- *  for data transfers on the specified TX channel. The default burst size
- *  is 64 bytes (a value of CSL_PKTDMA_CHAN_BURST_SIZE_64_BYTES).
- *
- *  \param pCfg             [IN]    Pointer to the PKTDMA configuration structure
- *  \param chanIdx          [IN]    Index of the transmit channel to initialize
- *  \param burstSize        [IN]    Burst size value. See \ref CSL_PktdmaChanBurstSize
- *                                  for a list of valid burst size values.
- *
- *  \return CSL_PASS  = Function executed successfully
- *          CSL_EFAIL = Function execution failed (burstSize is invalid or this
- *                      function is not available in the version of PKTDMA being used)
- */
-extern int32_t CSL_pktdmaTxChanSetBurstSize( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanBurstSize burstSize );
 
 /**
  *  \brief Get an RX channel's real-time register values
@@ -765,19 +411,6 @@ extern int32_t CSL_pktdmaSetRxRT( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, const C
 extern int32_t CSL_pktdmaSetTxRT( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, const CSL_PktdmaRT *pRT );
 
 /**
- *  \brief Enable a transmit channel.
- *
- *  This function enables the transmit channel specified by 'chanIdx'.
- *
- *  \param pCfg     [IN]    Pointer to the PKTDMA configuration structure
- *  \param chanIdx  [IN]    The index of the transmit channel
- *
- *  \return CSL_PASS  = Function executed successfully
- *          CSL_EFAIL = Function execution failed
- */
-extern int32_t CSL_pktdmaEnableTxChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx );
-
-/**
  *  \brief Disable a transmit channel.
  *
  *  This function disables the transmit channel specified by 'chanIdx'.
@@ -840,47 +473,6 @@ extern int32_t CSL_pktdmaPauseTxChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx );
 extern int32_t CSL_pktdmaUnpauseTxChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx );
 
 /**
- *  \brief [udmap_only] Send a trigger event to a TX channel
- *
- *  This function causes a trigger event to be sent to the specified transmit
- *  channel.
- *
- *  \param pCfg             [IN]    Pointer to the PKTDMA configuration structure
- *  \param chanIdx          [IN]    Index of the transmit channel
- *
- *  \return CSL_EUNSUPPORTED_CMD = Function is not supported
- */
-extern int32_t CSL_pktdmaTriggerTxChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx );
-
-/**
- *  \brief Clear error indication in a transmit channel.
- *
- *  This function clears the error indication in the specified transmit channel.
- *
- *  Note that no parameter error checking is performed by this function
- *  for performance reasons.
- *
- *  \param pCfg     [IN]    Pointer to the PKTDMA configuration structure
- *  \param chanIdx  [IN]    The index of the transmit channel
- *
- *  \return None
- */
-extern void CSL_pktdmaClearTxChanError( CSL_PktdmaCfg *pCfg, uint32_t chanIdx );
-
-/**
- *  \brief Enable a receive channel.
- *
- *  This function enables the receive channel specified by 'chanIdx'.
- *
- *  \param pCfg     [IN]    Pointer to the PKTDMA configuration structure
- *  \param chanIdx  [IN]    The index of the receive channel
- *
- *  \return CSL_PASS  = Function executed successfully
- *          CSL_EFAIL = Function execution failed
- */
-extern int32_t CSL_pktdmaEnableRxChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx );
-
-/**
  *  \brief Disable a receive channel.
  *
  *  This function disables the receive channel specified by 'chanIdx'.
@@ -941,75 +533,6 @@ extern int32_t CSL_pktdmaPauseRxChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx );
  *          CSL_EFAIL = Function execution failed (channel is disabled)
  */
 extern int32_t CSL_pktdmaUnpauseRxChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx );
-
-/**
- *  \brief [udmap_only] Send a trigger event to an RX channel
- *
- *  This function causes a trigger event to be sent to the specified receive
- *  channel.
- *
- *  \param pCfg             [IN]    Pointer to the PKTDMA configuration structure
- *  \param chanIdx          [IN]    Index of the receive channel
- *
- *  \return CSL_EUNSUPPORTED_CMD = Function is not supported
- */
-extern int32_t CSL_pktdmaTriggerRxChan( CSL_PktdmaCfg *pCfg, uint32_t chanIdx );
-
-/**
- *  \brief Clear error indication in a receive channel.
- *
- *  This function clears the error indication in the specified receive channel.
- *
- *  Note that no parameter error checking is performed by this function
- *  for performance reasons.
- *
- *  \param pCfg     [IN]    Pointer to the PKTDMA configuration structure
- *  \param chanIdx  [IN]    The index of the receive channel
- *
- *  \return None
- */
-extern void CSL_pktdmaClearRxChanError( CSL_PktdmaCfg *pCfg, uint32_t chanIdx );
-
-/**
- *  \brief Configure the receive flow ID range firewall
- *
- *  This function is used to configure the receive flow ID range firewall.
- *
- *  Note: This function is provided for backwards compatibility with the udmap
- *  CSL-FL.
- *
- *  \param pCfg             [IN]    Pointer to the PKTDMA configuration structure
- *  \param outEvtNum        [IN]    Output event number to use when the receive
- *                                  flow ID range firewall detects an error
- *
- *  \return None
- */
-extern void CSL_pktdmaCfgRxFlowIdFirewall( CSL_PktdmaCfg *pCfg, uint32_t outEvtNum );
-
-/**
- *  \brief Get receive flow ID range firewall status information
- *
- *  This function returns information from the receive flow ID range firewall.
- *
- *  If the receive flow ID firewall has detected an out of range flow ID,
- *  the function returns true and the fields within the
- *  #CSL_PktdmaRxFlowIdFirewallStatus structure contain error details. The
- *  function will automatically reset the receive flow ID firewall to capture
- *  the next error.
- *
- *  If the receive flow ID firewall has not detected an out of range flow ID,
- *  the function returns false and the fields within the
- *  #CSL_PktdmaRxFlowIdFirewallStatus structure are not updated.
- *
- *  \param pCfg                 [IN]    Pointer to the PKTDMA configuration structure
- *  \param pRxFlowIdFwStatus    [IN]    Pointer to a #CSL_PktdmaRxFlowIdFirewallStatus
- *                                      structure containing error details (valid
- *                                      only when true is returned)
- *
- *  \return true if the receive flow ID range firewall has detected an out of range
- *          flow ID, false if no error was detected
- */
-extern bool CSL_pktdmaGetRxFlowIdFirewallStatus( CSL_PktdmaCfg *pCfg, CSL_PktdmaRxFlowIdFirewallStatus *pRxFlowIdFwStatus );
 
 /**
  *  \brief Get channel statistics
@@ -1080,21 +603,6 @@ extern int32_t CSL_pktdmaGetChanPeerReg( const CSL_PktdmaCfg *pCfg, uint32_t cha
  *          CSL_EFAIL = Function execution failed (regIdx is out of range)
  */
 extern int32_t CSL_pktdmaSetChanPeerReg( const CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanDir chanDir, uint32_t regIdx, uint32_t *pVal );
-
-/**
- *  \brief Enable a directional data flow for a paired link
- *
- *  This function is used to enable a directional data flow for a given PKTDMA channel between
- *  PKTDMA and a paired PSIL peer.
- *
- *  \param pCfg             [IN]    Pointer to the PKTDMA configuration structure
- *  \param chanIdx          [IN]    Index of the PKTDMA channel (TX or RX)
- *  \param chanDir          [IN]    Channel direction (TX or RX, see \ref CSL_PktdmaChanDir)
- *
- *  \return CSL_PASS  = Function executed successfully
- *          CSL_EFAIL = Function execution failed (chanIdx is invalid)
- */
-extern int32_t CSL_pktdmaEnableLink( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, CSL_PktdmaChanDir chanDir );
 
 /* @} */
 

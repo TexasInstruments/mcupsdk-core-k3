@@ -791,39 +791,6 @@ int32_t CSL_bcdmaChanOp( CSL_BcdmaCfg *pCfg, CSL_BcdmaChanOp chanOp, CSL_BcdmaCh
     return retVal;
 }
 
-uint32_t CSL_bcdmaGetRevision( const CSL_BcdmaCfg *pCfg )
-{
-    uint32_t retVal = 0U;
-
-    if( (pCfg != NULL) && (pCfg->pGenCfgRegs != NULL) )
-    {
-       retVal = CSL_REG32_RD( &pCfg->pGenCfgRegs->REVISION );
-    }
-    return retVal;
-}
-
-int32_t CSL_bcdmaGetRevisionInfo( const CSL_BcdmaCfg *pCfg, CSL_BcdmaRevision *pRev )
-{
-    int32_t retVal = CSL_PASS;
-
-    if( (pCfg == NULL) || (pCfg->pGenCfgRegs == NULL) || (pRev == NULL) )
-    {
-        retVal = CSL_EFAIL;
-    }
-    else
-    {
-        uint32_t val;
-
-        val = CSL_REG32_RD( &pCfg->pGenCfgRegs->REVISION );
-        pRev->modId     = CSL_FEXT( val, BCDMA_GCFG_REVISION_MODID );
-        pRev->revRtl    = CSL_FEXT( val, BCDMA_GCFG_REVISION_REVRTL );
-        pRev->revMajor  = CSL_FEXT( val, BCDMA_GCFG_REVISION_REVMAJ );
-        pRev->custom    = CSL_FEXT( val, BCDMA_GCFG_REVISION_CUSTOM );
-        pRev->revMinor  = CSL_FEXT( val, BCDMA_GCFG_REVISION_REVMIN );
-    }
-    return retVal;
-}
-
 void CSL_bcdmaInitCfg( CSL_BcdmaCfg *pCfg )
 {
     if( pCfg != NULL )
@@ -858,36 +825,6 @@ void CSL_bcdmaGetCfg( CSL_BcdmaCfg *pCfg )
         pCfg->txHighCapacityChanCnt         = (uint32_t)0U;
         pCfg->txUltraHighCapacityChanCnt    = (uint32_t)0U;
     }
-}
-
-void CSL_bcdmaInitTxChanCfg( CSL_BcdmaTxChanCfg *pTxChanCfg )
-{
-    /*-------------------------------------------------------------------------
-     *  Start by initializing all structure members to 0
-     *-----------------------------------------------------------------------*/
-    memset( (void *)pTxChanCfg, 0, sizeof(CSL_BcdmaTxChanCfg) );
-    /*-------------------------------------------------------------------------
-     *  Now initialize non-zero structure members
-     *-----------------------------------------------------------------------*/
-    pTxChanCfg->chanType        = CSL_BCDMA_CHAN_TYPE_REF_PKT_RING;
-    pTxChanCfg->fetchWordSize   = CSL_BCDMA_FETCH_WORD_SIZE_16;
-    pTxChanCfg->trEventNum      = CSL_BCDMA_NO_EVENT;
-    pTxChanCfg->errEventNum     = CSL_BCDMA_NO_EVENT;
-}
-
-void CSL_bcdmaInitRxChanCfg( CSL_BcdmaRxChanCfg *pRxChanCfg )
-{
-    /*-------------------------------------------------------------------------
-     *  Start by initializing all structure members to 0
-     *-----------------------------------------------------------------------*/
-    memset( (void *)pRxChanCfg, 0, sizeof(CSL_BcdmaRxChanCfg) );
-    /*-------------------------------------------------------------------------
-     *  Now initialize non-zero structure members
-     *-----------------------------------------------------------------------*/
-    pRxChanCfg->chanType            = CSL_BCDMA_CHAN_TYPE_REF_PKT_RING;
-    pRxChanCfg->fetchWordSize       = CSL_BCDMA_FETCH_WORD_SIZE_16;
-    pRxChanCfg->trEventNum          = CSL_BCDMA_NO_EVENT;
-    pRxChanCfg->errEventNum         = CSL_BCDMA_NO_EVENT;
 }
 
 int32_t CSL_bcdmaTxChanCfg( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, const CSL_BcdmaTxChanCfg *pTxChanCfg )
@@ -989,17 +926,6 @@ int32_t CSL_bcdmaDisableTxChan( CSL_BcdmaCfg *pCfg, uint32_t chanIdx )
     return retVal;
 }
 
-int32_t CSL_bcdmaDisableRxChan( CSL_BcdmaCfg *pCfg, uint32_t chanIdx )
-{
-    int32_t retVal;
-    retVal = CSL_bcdmaDoChanOp( pCfg, CSL_BCDMA_CHAN_OP_DISABLE, chanIdx, NULL );
-    if( retVal != CSL_PASS )
-    {
-        retVal = CSL_EFAIL;     /* API returns CSL_EFAIL on failure for backwards compatibility with udmap API */
-    }
-    return retVal;
-}
-
 int32_t CSL_bcdmaTeardownTxChan( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, bool bForce, bool bWait )
 {
     int32_t retVal;
@@ -1074,28 +1000,6 @@ int32_t CSL_bcdmaUnpauseRxChan( CSL_BcdmaCfg *pCfg, uint32_t chanIdx )
     return retVal;
 }
 
-int32_t CSL_bcdmaTriggerTxChan( CSL_BcdmaCfg *pCfg, uint32_t chanIdx )
-{
-    int32_t retVal;
-    retVal = CSL_bcdmaDoChanOp( pCfg, CSL_BCDMA_CHAN_OP_TRIGGER, chanIdx, NULL );
-    if( retVal != CSL_PASS )
-    {
-        retVal = CSL_EFAIL;     /* API returns CSL_EFAIL on failure for backwards compatibility with udmap API */
-    }
-    return retVal;
-}
-
-int32_t CSL_bcdmaTriggerRxChan( CSL_BcdmaCfg *pCfg, uint32_t chanIdx )
-{
-    int32_t retVal;
-    retVal = CSL_bcdmaDoChanOp( pCfg, CSL_BCDMA_CHAN_OP_TRIGGER, chanIdx, NULL );
-    if( retVal != CSL_PASS )
-    {
-        retVal = CSL_EFAIL;     /* API returns CSL_EFAIL on failure for backwards compatibility with udmap API */
-    }
-    return retVal;
-}
-
 void CSL_bcdmaGetChanStats( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, CSL_BcdmaChanDir chanDir, CSL_BcdmaChanStats *pChanStats )
 {
     UNUSED_PARAM(chanDir);
@@ -1140,132 +1044,6 @@ int32_t CSL_bcdmaSetChanPeerReg( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, CSL_Bcdma
     if( retVal != CSL_PASS )
     {
         retVal = CSL_EFAIL;     /* API returns CSL_EFAIL on failure for backwards compatibility with udmap API */
-    }
-    return retVal;
-}
-
-int32_t CSL_bcdmaTxChanSetBurstSize( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, CSL_BcdmaChanBurstSize burstSize )
-{
-    int32_t retVal;
-    CSL_BcdmaChanBurstSize parm = burstSize;
-    retVal = CSL_bcdmaDoChanOp( pCfg, CSL_BCDMA_CHAN_OP_SET_BURST_SIZE, chanIdx, (void *)&parm );
-    if( retVal != CSL_PASS )
-    {
-        retVal = CSL_EFAIL;     /* API returns CSL_EFAIL on failure for backwards compatibility with udmap API */
-    }
-    return retVal;
-}
-
-int32_t CSL_bcdmaRxChanSetBurstSize( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, CSL_BcdmaChanBurstSize burstSize )
-{
-    int32_t retVal;
-    CSL_BcdmaChanBurstSize parm = burstSize;
-    retVal = CSL_bcdmaDoChanOp( pCfg, CSL_BCDMA_CHAN_OP_SET_BURST_SIZE, chanIdx, (void *)&parm );
-    if( retVal != CSL_PASS )
-    {
-        retVal = CSL_EFAIL;     /* API returns CSL_EFAIL on failure for backwards compatibility with udmap API */
-    }
-    return retVal;
-}
-
-void CSL_bcdmaClearTxChanError( CSL_BcdmaCfg *pCfg, uint32_t chanIdx )
-{
-    CSL_bcdmaDoChanOp( pCfg, CSL_BCDMA_CHAN_OP_CLEAR_ERROR, chanIdx, NULL );
-}
-
-void CSL_bcdmaClearRxChanError( CSL_BcdmaCfg *pCfg, uint32_t chanIdx )
-{
-    CSL_bcdmaDoChanOp( pCfg, CSL_BCDMA_CHAN_OP_CLEAR_ERROR, chanIdx, NULL );
-}
-
-void CSL_bcdmaInitRxFlowCfg( CSL_BcdmaRxFlowCfg *pFlow )
-{
-    if( pFlow != NULL )
-    {
-        memset( (void *)pFlow, 0, sizeof(CSL_BcdmaRxFlowCfg) );
-    }
-}
-
-void CSL_bcdmaSetPerfCtrl( CSL_BcdmaCfg *pCfg, uint32_t rxRetryTimeoutCnt )
-{
-    uint32_t regVal;
-
-    regVal = CSL_FMK( BCDMA_GCFG_PERF_CTRL_TIMEOUT_CNT, rxRetryTimeoutCnt );
-    CSL_REG32_WR( &pCfg->pGenCfgRegs->PERF_CTRL, regVal );
-}
-
-void CSL_bcdmaSetUtcCtrl( CSL_BcdmaCfg *pCfg, uint32_t startingThreadNum )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(startingThreadNum);
-}
-
-int32_t CSL_bcdmaRxFlowCfg(CSL_BcdmaCfg *pCfg, uint32_t flow, const CSL_BcdmaRxFlowCfg *pFlow )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(flow);
-    UNUSED_PARAM(pFlow);
-    return CSL_EFAIL;
-}
-
-int32_t CSL_bcdmaRxChanSetTrEvent( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, uint32_t trEventNum )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(chanIdx);
-    UNUSED_PARAM(trEventNum);
-    return CSL_EFAIL;
-}
-
-int32_t CSL_bcdmaTxChanSetTrEvent( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, uint32_t trEventNum )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(chanIdx);
-    UNUSED_PARAM(trEventNum);
-    return CSL_EFAIL;
-}
-
-void CSL_bcdmaCfgRxFlowIdFirewall( CSL_BcdmaCfg *pCfg, uint32_t outEvtNum )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(outEvtNum);
-}
-
-bool CSL_bcdmaGetRxFlowIdFirewallStatus( CSL_BcdmaCfg *pCfg, CSL_BcdmaRxFlowIdFirewallStatus *pRxFlowIdFwStatus )
-{
-    UNUSED_PARAM(pCfg);
-    UNUSED_PARAM(pRxFlowIdFwStatus);
-    return (bool)false;
-}
-
-int32_t CSL_bcdmaEnableLink( CSL_BcdmaCfg *pCfg, uint32_t chanIdx, CSL_BcdmaChanDir chanDir )
-{
-    int32_t retVal = CSL_EFAIL;
-    uint32_t peerEnableRegVal;
-
-    peerEnableRegVal = (uint32_t)1U << 31;
-    if( chanDir == CSL_BCDMA_CHAN_DIR_TX )
-    {
-        /* a. Set BCDMA peer real-time enable by calling the CSL_bcdmaSetChanPeerReg() function */
-        if( CSL_bcdmaSetChanPeerReg( pCfg, chanIdx, chanDir, CSL_BCDMA_CHAN_PEER_REG_OFFSET_ENABLE, &peerEnableRegVal ) == 0 )
-        {
-            /* b. Enable the BCDMA tx channel by calling the CSL_bcdmaEnableTxChan() function */
-            if( CSL_bcdmaEnableTxChan( pCfg, chanIdx ) == 0 )
-            {
-                retVal = 0;
-            }
-        }
-    }
-    if( chanDir == CSL_BCDMA_CHAN_DIR_RX )
-    {
-        /* a. Enable the BCDMA rx channel by calling the CSL_bcdmaEnableRxChan() function */
-        if( CSL_bcdmaEnableRxChan( pCfg, chanIdx ) == 0 )
-        {
-            /* b. Set BCDMA peer real-time enable by calling the CSL_bcdmaSetChanPeerReg() function */
-            if( CSL_bcdmaSetChanPeerReg( pCfg, chanIdx, chanDir, CSL_BCDMA_CHAN_PEER_REG_OFFSET_ENABLE, &peerEnableRegVal ) == 0 )
-            {
-                retVal = 0;
-            }
-        }
     }
     return retVal;
 }

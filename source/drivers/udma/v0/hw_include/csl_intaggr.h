@@ -191,37 +191,6 @@ typedef struct
 extern void CSL_intaggrGetCfg( CSL_IntaggrCfg *pCfg );
 
 /**
- *  \brief Return revision of the INTAGGR module
- *
- *  This function returns the contents of the INTAGGR revision register.
- *  Consult the INTAGGR module documentation for a description of the
- *  contents of the revision register.
- *
- *  \param pCfg             [IN]    Pointer to the #CSL_IntaggrCfg structure
- *
- *  \return The 32-bit revision register is returned.
- */
-extern uint32_t CSL_intaggrGetRevision( const CSL_IntaggrCfg *pCfg );
-
-/**
- *  \brief Map a global event to a status bit number
- *
- *  This function is used to map a global event to a bit within the
- *  STATUS register.
- *
- *  Note: The #CSL_intaggrGetCfg function must be called prior to calling this
- *  function.
- *
- *  \param pCfg             [IN]    Pointer to the #CSL_IntaggrCfg structure
- *  \param globalEventIdx   [IN]    Global event index (0..srcEventCnt-1)
- *  \param statusBitNum     [IN]    Status bit # (0..(virtIntrCnt*64)-1)
- *
- *  \return CSL_PASS = success
- *          CSL_EBADARGS = Invalid globalEventIdx or statusBitNum parameter
- */
-extern int32_t CSL_intaggrMapEventIntr( CSL_IntaggrCfg *pCfg, uint32_t globalEventIdx, uint32_t statusBitNum );
-
-/**
  *  \brief Map a local event to a global event
  *
  *  This function is used to map the specified local event to the specified
@@ -250,138 +219,6 @@ extern int32_t CSL_intaggrMapEventIntr( CSL_IntaggrCfg *pCfg, uint32_t globalEve
  */
 extern int32_t CSL_intaggrMapEventToLocalEvent( CSL_IntaggrCfg *pCfg, uint32_t globalEventIdx, uint32_t localEventIdx, CSL_IntaggrEventDetectMode localEventDetectMode );
 
-
-/**
- *  \brief Map a global event to a counter up/down event
- *
- *  This function is used to map a global event to a counter up/down
- *  event.
- *
- *  When the count transitions from zero to a non-zero value(an up event)
- *  or transitions from a non-zero value to zero (a down event), the event
- *  is sent out of the INTAGGR using the specified global event index.
- *
- *  The globalEventOutIdx can also specify an interrupt status bit where the
- *  statusBitNum can range from 0 to (virtIntrCnt*64)-1 and determines the
- *  status register number and bit number in the status register as follows:
- *
- *    status register #        = statusBitNum / 64 (valid range: 0..virtIntrCnt-1)
- *    bit # in status register = statusBitNum % 64 (valid range: 0..63)
- *
- *  To specify an interrupt status bit in globalEventOutIdx, set it to the value
- *  of statusBitNum described above, along with bit 31 as an intr mode flag.
- *
- *  \param pCfg                 [IN]  Pointer to the #CSL_IntaggrCfg structure
- *  \param globalEventIdx       [IN]  Global event index (0..globalEventCnt-1)
- *  \param globalEventOutIdx    [IN]  The global event output index (0..65535)
- *
- *  \return CSL_PASS = success
- *          CSL_EFAIL = INTAGGR does not support this feature
- *          CSL_EBADARGS = Invalid globalEventIdx parameter
- */
-extern int32_t CSL_intaggrMapEventRxCntEvent( CSL_IntaggrCfg *pCfg, uint32_t globalEventIdx, uint32_t globalEventOutIdx );
-
-/**
- *  \brief Read the receive count for the specified global event
- *
- *  This function is used to read the count of how many times the event message
- *  associated with the specified global event has been received.
- *
- *  Note: The #CSL_intaggrGetCfg function must be called prior to calling
- *  this function.
- *
- *  \param pCfg             [IN]  Pointer to the #CSL_IntaggrCfg structure
- *  \param globalEventIdx   [IN]  Global event index (0..globalEventCnt-1)
- *  \param pCnt             [OUT] Pointer to the returned count
- *
- *  \return CSL_PASS = success
- *          CSL_EFAIL = INTAGGR does not support this feature
- *          CSL_EBADARGS = Invalid globalEventIdx parameter
- */
-extern int32_t CSL_intaggrRdEventRxCnt( const CSL_IntaggrCfg *pCfg, uint32_t globalEventIdx, uint32_t *pCnt );
-
-/**
- *  \brief Write a value into the counter for the specified global event
- *
- *  This function is used to write a value into the counter for the specified
- *  global event. This operation is typically used to acknowledge that the host
- *  processor has previously read the event counter by writing the value read
- *  back to the event's counter.
- *
- *  Note: The #CSL_intaggrGetCfg function must be called prior to calling
- *  this function.
- *
- *  \param pCfg             [IN]  Pointer to the #CSL_IntaggrCfg structure
- *  \param globalEventIdx   [IN]  Global event index (0..globalEventCnt-1)
- *  \param cnt              [IN]  The value to be written
- *
- *  \return CSL_PASS = success
- *          CSL_EFAIL = INTAGGR does not support this feature
- *          CSL_EBADARGS = Invalid globalEventIdx parameter
- */
-extern int32_t CSL_intaggrWrEventRxCnt( CSL_IntaggrCfg *pCfg, uint32_t globalEventIdx, uint32_t cnt );
-
-/**
- *  \brief Multicast an incoming global event to two outgoing events
- *
- *  This function is used to map two outgoing global event indexes to the
- *  specified incoming global event. Then, whenever this incoming global
- *  event is received, it will be multicast and output to the two specified
- *  global events.
- *
- *  The globalEventOutIdx0/1 can also specify an interrupt status bit where the
- *  statusBitNum can range from 0 to (virtIntrCnt*64)-1 and determines the
- *  status register number and bit number in the status register as follows:
- *
- *    status register #        = statusBitNum / 64 (valid range: 0..virtIntrCnt-1)
- *    bit # in status register = statusBitNum % 64 (valid range: 0..63)
- *
- *  To specify an interrupt status bit in globalEventOutIdx0/1, set it to the value
- *  of statusBitNum described above, along with bit 31 as an intr mode flag.
- *
- *  Note: The #CSL_intaggrGetCfg function must be called prior to calling
- *  this function.
- *
- *  \param pCfg                [IN]  Pointer to the #CSL_IntaggrCfg structure
- *  \param globalEventIdx      [IN]  Global event index (0..mcastEventCnt-1)
- *  \param globalEventOutIdx0  [IN]  Index of the 1st outgoing global event
- *  \param globalEventOutIdx1  [IN]  Index of the 2nd outgoing global event
- *
- *  \return CSL_PASS = success
- *          CSL_EFAIL = INTAGGR does not support this feature
- *          CSL_EBADARGS = Invalid globalEventIdx parameter
- */
-extern int32_t CSL_intaggrEnableEventMulticast( CSL_IntaggrCfg *pCfg, uint32_t globalEventIdx, uint32_t globalEventOutIdx0, uint32_t globalEventOutIdx1 );
-
-/**
- *  \brief Map an unmapped event to an outgoing global event
- *
- *  This function is used to map an unmapped ingress event to an outgoing
- *  global event.
- *
- *  The globalEventOutIdx can also specify an interrupt status bit where the
- *  statusBitNum can range from 0 to (virtIntrCnt*64)-1 and determines the
- *  status register number and bit number in the status register as follows:
- *
- *    status register #        = statusBitNum / 64 (valid range: 0..virtIntrCnt-1)
- *    bit # in status register = statusBitNum % 64 (valid range: 0..63)
- *
- *  To specify an interrupt status bit in globalEventOutIdx, set it to the value
- *  of statusBitNum described above, along with bit 31 as an intr mode flag.
- *
- *  Note: The #CSL_intaggrGetCfg function must be called prior to calling this
- *  function.
- *
- *  \param pCfg                [IN]  Pointer to the #CSL_IntaggrCfg structure
- *  \param unmappedEventIdx    [IN]  Unmapped ingress event index (0..unmapEventCnt-1)
- *  \param globalEventOutIdx   [IN]  Outgoing global event index
- *
- *  \return CSL_PASS = success
- *          CSL_EFAIL = INTAGGR does not support this feature
- *          CSL_EBADARGS = Invalid unmappedEventIdx parameter
- */
-extern int32_t CSL_intaggrMapUnmappedEventToEvent( CSL_IntaggrCfg *pCfg, uint32_t unmappedEventIdx, uint32_t globalEventOutIdx );
-
 /**
  *  \brief Enable or disable a status interrupt
  *
@@ -400,23 +237,6 @@ extern int32_t CSL_intaggrMapUnmappedEventToEvent( CSL_IntaggrCfg *pCfg, uint32_
  *          CSL_EBADARGS = Invalid statusBitNum parameter
  */
 extern int32_t CSL_intaggrSetIntrEnable( CSL_IntaggrCfg *pCfg, uint32_t statusBitNum, bool bEnable );
-
-/**
- *  \brief Set the raw pending status of an interrupt
- *
- *  This function is used to set the raw pending status of the interrupt
- *  corresponding to the specified statusBitNum.
- *
- *  Note: The #CSL_intaggrGetCfg function must be called prior to calling this
- *  function.
- *
- *  \param pCfg             [IN]    Pointer to the #CSL_IntaggrCfg structure
- *  \param statusBitNum     [IN]    Status bit # (0..(virtIntrCnt*64)-1)
- *
- *  \return CSL_PASS = success
- *          CSL_EBADARGS = Invalid statusBitNum parameter
- */
-extern int32_t CSL_intaggrSetIntrPending( CSL_IntaggrCfg *pCfg, uint32_t statusBitNum );
 
 /**
  *  \brief Determine if a status interrupt is pending

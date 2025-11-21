@@ -298,20 +298,6 @@ typedef struct {
 extern void CSL_lcdma_ringaccInitCfg( CSL_LcdmaRingaccCfg *pCfg );
 
 /**
- *  \brief [ringacc_only] Return revision of the RingAcc module.
- *
- *  This function returns the contents of the RingAcc revision register.
- *  Consult the RingAcc module documentation for a description of the
- *  contents of the revision register.
- *
- *  \param pCfg         [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                              containing the ring accelerator configuration
- *
- *  \return The 32-bit revision register is returned.
- */
-extern uint32_t CSL_lcdma_ringaccGetRevision( const CSL_LcdmaRingaccCfg *pCfg );
-
-/**
  *  \brief Initialize a #CSL_LcdmaRingaccRingCfg structure
  *
  *  This function initializes the specified #CSL_LcdmaRingaccRingCfg structure to
@@ -374,126 +360,6 @@ extern int32_t CSL_lcdma_ringaccInitRing( CSL_LcdmaRingaccCfg *pCfg,
                             CSL_LcdmaRingaccRingCfg *pRing );
 
 /**
- *  \brief [ringacc_only] Set the ring event
- *
- *  This function is used to set the ring event based on RingNum.
- *
- *  \param pCfg         [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                              containing the ring accelerator configuration
- *  \param ringNum      [IN]    The number of the ring (0-1023) to be initialized
- *  \param evtNum       [IN]    Event number for the ring
- *
- *  \return 0 if successful, or -1 if an invalid argument is detected
- */
-extern int32_t CSL_lcdma_ringaccSetEvent( CSL_LcdmaRingaccCfg *pCfg,
-                                    uint32_t ringNum,
-                                    uint32_t evtNum );
-
-/**
- *  \brief Get the ring number associated with a ring
- *
- *  This function is used to get the ring number associated with the specified
- *  ring.
- *
- *  \param pRing        [IN]    Pointer to a #CSL_LcdmaRingaccRingCfg structure containing
- *                              the ring configuration
- *
- *  \return Ring number
- */
-extern uint32_t CSL_lcdma_ringaccGetRingNum( const CSL_LcdmaRingaccRingCfg *pRing );
-
-/**
- *  \brief [ringacc_only] Specify the orderid value for a ring
- *
- *  This function is used to specify the orderid value for a ring's
- *  destination transactions. If orderId == CSL_LCDMA_RINGACC_ORDERID_BYPASS, then
- *  the orderid from the source transaction is used.
- *
- *  \param pCfg         [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                              containing the ring accelerator configuration
- *  \param pRing        [IN]    Pointer to a #CSL_LcdmaRingaccRingCfg structure containing
- *                              the ring configuration
- *  \param orderId      [IN]    The orderId value, or CSL_LCDMA_RINGACC_ORDERID_BYPASS
- *                              to use the orderid from the source transaction
- *
- *  \return None
- *
- */
-extern void CSL_lcdma_ringaccSetRingOrderId( CSL_LcdmaRingaccCfg *pCfg, const CSL_LcdmaRingaccRingCfg *pRing, uint32_t orderId );
-
-/**
- *  \brief [ringacc_only] Configure the security credentials for a ring
- *
- *  This function is used to configure the security credentials for a ring.
- *
- *  \param pCfg         [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                              containing the ring accelerator configuration
- *  \param pRing        [IN]    Pointer to a #CSL_LcdmaRingaccRingCfg structure containing
- *                              the ring configuration
- *  \param bEnable      [IN]    true = Region is enabled, false = disabled
- *  \param bLock        [IN]    true = Region is locked (region values cannot
- *                              be changed), false = region is not locked
- *
- *  \return None
- *
- */
-extern void CSL_lcdma_ringaccCfgRingCred( CSL_LcdmaRingaccCfg *pCfg, const CSL_LcdmaRingaccRingCfg *pRing, bool bEnable, bool bLock );
-
-/**
- *  \brief Reset a ring.
- *
- *  This function is used to reset a ring to a known, initial state. The
- *  following operations are performed when a ring is reset:
- •    - Reset the internal pointer to the ring base address
- •    - Set the number of entries in both the forward and reverse rings
- *    (FOCC and ROCC) to zero
- •    - Clear the teardown acknowledge bit
- *
- *  \param pCfg         [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                              containing the ring accelerator configuration
- *  \param pRing        [IN]    Pointer to a #CSL_LcdmaRingaccRingCfg structure containing
- *                              the ring configuration
- *
- *  \return None
- */
-extern void CSL_lcdma_ringaccResetRing( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing );
-
-/**
- *  \brief Get pointer to next free forward ring element.
- *
- *  This function is used to get a pointer to the next free element of a
- *  forward ring. This pointer can then be used to write data into the ring.
- *
- *  \param pCfg         [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                              containing the ring accelerator configuration
- *  \param pRing        [IN]    Pointer to a #CSL_LcdmaRingaccRingCfg structure containing
- *                              the ring configuration
- *
- *  \return NULL if the ring is full, otherwise a void pointer to the next
- *          free forward ring element
- */
-extern void *CSL_lcdma_ringaccGetForwardRingPtr( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing );
-
-/**
- *  \brief Get pointer to next available reverse ring element.
- *
- *  This function is used to get a pointer to the next available reverse
- *  element of a ring. This pointer can then be used to read data from the ring.
- *
- *  After the data has been read from the ring, call the #CSL_lcdma_ringaccAckReverseRing
- *  to acknowledge and return the element(s) that have been read.
- *
- *  \param pCfg         [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                              containing the ring accelerator configuration
- *  \param pRing        [IN]    Pointer to a #CSL_LcdmaRingaccRingCfg structure containing
- *                              the ring configuration
- *
- *  \return NULL if the ring is empty, otherwise a void pointer to the next
- *          available reverse ring element
- */
-extern void *CSL_lcdma_ringaccGetReverseRingPtr( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing );
-
-/**
  *  \brief Write to the ring foward doorbell.
  *
  *  This function writes 'count' to the forward doorbell register of the
@@ -544,47 +410,6 @@ static inline void CSL_lcdma_ringaccSetReverseDoorbell( CSL_LcdmaRingaccCfg *pCf
     CSL_REG32_WR( &pCfg->pRingRtRegs->RING[ringNum].RDB, CSL_FMK(LCDMA_RINGACC_RINGRT_RING_RDB_CNT, (uint32_t)cnt) );
 }
 
-
-/**
- *  \brief Commit elements written to a ring.
- *
- *  This function is used to commit (execute) elements that have been written
- *  to a ring.
- *
- *  \param pCfg         [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                              containing the ring accelerator configuration
- *  \param pRing        [IN]    Pointer to a #CSL_LcdmaRingaccRingCfg structure containing
- *                              the ring configuration
- *  \param cnt          [IN]    The number of elements written since the last
- *                              call to #CSL_lcdma_ringaccCommitToForwardRing, or NULL
- *                              to commit all outstanding entries.
- *
- *  \return None
- */
-static inline void CSL_lcdma_ringaccCommitToForwardRing( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, int32_t cnt );
-
-static inline void CSL_lcdma_ringaccCommitToForwardRing( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, int32_t cnt )
-{
-    int32_t cntLocal = cnt;
-    /*-------------------------------------------------------------------------
-     * Init thisDbRingCnt to the largest positive value that can be written to
-     * the forward doorbell field (a two's compliment value).
-     *-----------------------------------------------------------------------*/
-    int32_t thisDbRingCnt = (int32_t)((((uint32_t)CSL_LCDMA_RINGACC_RINGRT_RING_FDB_CNT_MAX + 1U) >> 1) - 1U);
-
-    while( cntLocal > 0 )
-    {
-        if( cntLocal <= thisDbRingCnt )
-        {
-            thisDbRingCnt = cntLocal;
-        }
-        CSL_lcdma_ringaccSetForwardDoorbell( pCfg, pRing->ringNum, pRing->mode, thisDbRingCnt );
-        cntLocal -= thisDbRingCnt;
-    }
-    pRing->wrOcc += (uint32_t)cnt;
-    pRing->wrIdx = (pRing->wrIdx + (uint32_t)cnt) % pRing->elCnt;
-}
-
 /**
  *  \brief Acknowledge elements read from a ring.
  *
@@ -629,38 +454,44 @@ static inline void CSL_lcdma_ringaccAckReverseRing( CSL_LcdmaRingaccCfg *pCfg, C
 }
 
 /**
- *  \brief [ringacc_only] Get the current forward ring index.
+ *  \brief Commit elements written to a ring.
  *
- *  This function returns the current forward index for the specified
- *  ring.
- *
- *  Normally, an application does not need to call this function.
+ *  This function is used to commit (execute) elements that have been written
+ *  to a ring.
  *
  *  \param pCfg         [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
  *                              containing the ring accelerator configuration
- *  \param ringNum      [IN]    The ring number (0-1023)
+ *  \param pRing        [IN]    Pointer to a #CSL_LcdmaRingaccRingCfg structure containing
+ *                              the ring configuration
+ *  \param cnt          [IN]    The number of elements written since the last
+ *                              call to #CSL_lcdma_ringaccCommitToForwardRing, or NULL
+ *                              to commit all outstanding entries.
  *
- *  \return The current forward ring index is returned.
- *          0 is returned if ringNum is out of range.
+ *  \return None
  */
-extern uint32_t CSL_lcdma_ringaccGetForwardRingIdx( const CSL_LcdmaRingaccCfg *pCfg, uint32_t ringNum );
+static inline void CSL_lcdma_ringaccCommitToForwardRing( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, int32_t cnt );
 
-/**
- *  \brief [ringacc_only] Get the current reverse ring index.
- *
- *  This function returns the current reverse index for the specified
- *  ring.
- *
- *  Normally, an application does not need to call this function.
- *
- *  \param pCfg         [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                              containing the ring accelerator configuration
- *  \param ringNum      [IN]    The ring number (0-1023)
- *
- *  \return The current reverse ring index is returned.
- *          0 is returned if ringNum is out of range.
- */
-extern uint32_t CSL_lcdma_ringaccGetReverseRingIdx( const CSL_LcdmaRingaccCfg *pCfg, uint32_t ringNum );
+static inline void CSL_lcdma_ringaccCommitToForwardRing( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, int32_t cnt )
+{
+    int32_t cntLocal = cnt;
+    /*-------------------------------------------------------------------------
+     * Init thisDbRingCnt to the largest positive value that can be written to
+     * the forward doorbell field (a two's compliment value).
+     *-----------------------------------------------------------------------*/
+    int32_t thisDbRingCnt = (int32_t)((((uint32_t)CSL_LCDMA_RINGACC_RINGRT_RING_FDB_CNT_MAX + 1U) >> 1) - 1U);
+
+    while( cntLocal > 0 )
+    {
+        if( cntLocal <= thisDbRingCnt )
+        {
+            thisDbRingCnt = cntLocal;
+        }
+        CSL_lcdma_ringaccSetForwardDoorbell( pCfg, pRing->ringNum, pRing->mode, thisDbRingCnt );
+        cntLocal -= thisDbRingCnt;
+    }
+    pRing->wrOcc += (uint32_t)cnt;
+    pRing->wrIdx = (pRing->wrIdx + (uint32_t)cnt) % pRing->elCnt;
+}
 
 /**
  *  \brief Get the forward occupancy of a ring.
@@ -703,221 +534,6 @@ extern uint32_t CSL_lcdma_ringaccGetForwardRingOcc( const CSL_LcdmaRingaccCfg *p
 extern uint32_t CSL_lcdma_ringaccGetReverseRingOcc( const CSL_LcdmaRingaccCfg *pCfg, uint32_t ringNum, CSL_LcdmaRingaccRingMode mode );
 
 /**
- *  \brief [ringacc_only] Configure trace support
- *
- *  This function configures trace support. Tracing is automatically disabled
- *  before the specified trace configuration is written.
-
- *  When tracing is enabled (see the #CSL_lcdma_ringaccSetTraceEnable function) a
- *  trace output of all push, pop, and peek operations are output so that the
- *  traffic can be viewed at a later time.
- *
- *  \param pCfg         [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                              containing the ring accelerator configuration
- *  \param bTraceAll    [IN]    If true, operations to every ring are traced.
- *                              If false, only the ring specified by ringNum
- *                              is traced.
- *  \param bIncMsgData  [IN]    If true, message data is included in the trace
- *                              output.
- *  \param ringNum      [IN]    Specifies the ring whose operations are to be
- *                              traced. This parameter is ignored when
- *                              bTraceAll is true.
- *
- *  \return     0  = success
- *              -1 = trace support is not available or ringNum is out of range
- */
-extern int32_t CSL_lcdma_ringaccCfgTrace( CSL_LcdmaRingaccCfg *pCfg, bool bTraceAll, bool bIncMsgData, uint32_t ringNum );
-
-/**
- *  \brief Enable or disable trace support
- *
- *  This function enables or disables trace support. Be sure and configure
- *  trace support using the #CSL_lcdma_ringaccCfgTrace function before enabling it.
- *
- *  \param pCfg         [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                              containing the ring accelerator configuration
- *  \param bEnable      [IN]    If true, trace support is enabled. If false,
- *                              it is disabled.
- *
- *  \return     0  = success
- *              -1 = trace support is not available
- */
-extern int32_t CSL_lcdma_ringaccSetTraceEnable( CSL_LcdmaRingaccCfg *pCfg, bool bEnable );
-
-/**
- *  \brief [ringacc_only] Enable trace support
- *
- *  This function enables trace support. Be sure and configure tarce support
- *  using the #CSL_lcdma_ringaccCfgTrace function before enabling it.
- *
- *  \param pCfg         [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                              containing the ring accelerator configuration
- *
- *  \return     0  = success
- *              -1 = trace support is not available
- */
-extern int32_t CSL_lcdma_ringaccEnableTrace( CSL_LcdmaRingaccCfg *pCfg );
-
-/**
- *  \brief [ringacc_only] Disable trace support
- *
- *  This function disables trace support.
- *
- *  \param pCfg         [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                              containing the ring accelerator configuration
- *
- *  \return     0  = success
- *              -1 = trace support is not available
- */
-extern int32_t CSL_lcdma_ringaccDisableTrace( CSL_LcdmaRingaccCfg *pCfg );
-
-/**
- *  \brief [ringacc_only] Configure a ring monitor.
- *
- *  This function is used to configure a ring monitor.
- *
- *  \param pCfg         [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                              containing the ring accelerator configuration
- *  \param monNum       [IN]    The number of the monitor to configure
- *  \param monType      [IN]    The type of ring monitor. See
- *      \ref CSL_LcdmaRingAccMonitorType for the available monitor types.
- *  \param ringNum      [IN]    The number of the ring to monitor
- *  \param eventNum     [IN]    The number of the event to produce if the
- *      monitor thresholds are exceeded (used only for the
- *      CSL_LCDMA_RINGACC_MONITOR_TYPE_THRESHOLD or
- *      CSL_LCDMA_RINGACC_MONITOR_TYPE_STARVATION monitor types). A value of
- *      CSL_LCDMA_RINGACC_MONITOR_INTR_DISABLE disables interrupts for this monitor.
- *  \param dataSrc      [IN]    The type of data this monitor is tracking. See
- *      \ref CSL_LcdmaRingAccMonitorDataSrc for available data sources. This is only
- *      used for CSL_LCDMA_RINGACC_MONITOR_TYPE_THRESHOLD and
- *      CSL_LCDMA_RINGACC_MONITOR_TYPE_WATERMARK monitor types.
- *  \param data0Val     [IN]    This value contains the low threshold value
- *      for the CSL_LCDMA_RINGACC_MONITOR_TYPE_THRESHOLD or
- *      CSL_LCDMA_RINGACC_MONITOR_TYPE_STARVATION monitor types. It is not used for
- *      the other monitor types.
- *  \param data1Val     [IN]    This value contains the high threshold value
- *      for the CSL_LCDMA_RINGACC_MONITOR_TYPE_THRESHOLD or
- *      CSL_LCDMA_RINGACC_MONITOR_TYPE_STARVATION monitor types. It is not used for
- *      the other monitor types.
- *
- *  \return      0 = success
- *              -1 = Monitor functionality is not supported or an argument is
- *                   out of range
- */
-extern int32_t CSL_lcdma_ringaccCfgRingMonitor( CSL_LcdmaRingaccCfg *pCfg,
-                            uint32_t monNum,
-                            CSL_LcdmaRingAccMonitorType monType,
-                            uint32_t ringNum,
-                            uint32_t eventNum,
-                            CSL_LcdmaRingAccMonitorDataSrc dataSrc,
-                            uint32_t data0Val,
-                            uint32_t data1Val );
-
-/**
- *  \brief [ringacc_only] Read a ring monitor.
- *
- *  This function is used to read data from an active ring monitor.
- *
- *  \param pCfg         [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                              containing the ring accelerator configuration
- *  \param monNum       [IN]    The number of the monitor to read
- *  \param pData0       [OUT]   A pointer to where the following value (dependingon the type of monitor) is written:
- *      o CSL_LCDMA_RINGACC_MONITOR_TYPE_STATS:      count of the number of writes to the queue
- *      o CSL_LCDMA_RINGACC_MONITOR_TYPE_THRESHOLD:  low threshold value
- *      o CSL_LCDMA_RINGACC_MONITOR_TYPE_WATERMARK:  low watermark value
- *      o CSL_LCDMA_RINGACC_MONITOR_TYPE_STARVATION: number of starvation events (a read to an empty queue)
- *  \param pData1       [OUT]   A pointer to where the following value (depending on the type of monitor) is written:
- *      o CSL_LCDMA_RINGACC_MONITOR_TYPE_STATS:      count of the number of reads from the queue
- *      o CSL_LCDMA_RINGACC_MONITOR_TYPE_THRESHOLD:  high threshold value
- *      o CSL_LCDMA_RINGACC_MONITOR_TYPE_WATERMARK:  high watermark value
- *      o CSL_LCDMA_RINGACC_MONITOR_TYPE_STARVATION: not used
- *
- *  \return      0 = success
- *              -1 = Monitor functionality is not supported, monNum is out of
- *                   range, or specified monitor is disabled
- */
-extern int32_t CSL_lcdma_ringaccReadRingMonitor( const CSL_LcdmaRingaccCfg *pCfg, uint32_t monNum, uint32_t *pData0, uint32_t *pData1 );
-
-/**
- *  \brief Push a 32-bit value to a ring
- *
- *  This function is used to push a 32-bit value to a ring.
- *
- *  \param pCfg             [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                                  containing the ring accelerator configuration
- *  \param pRing            [IN]    Pointer to a #CSL_LcdmaRingaccRingCfg structure
- *                                  containing the ring configuration
- *  \param val              [IN]    32-bit value to write to the ring
- *  \param pfMemOps         [IN]    Pointer to a memory ops call-back
- *                                  function (or NULL if not needed)
- *
- *  \return  0 = success
- *          -1 = ring is full
- */
-extern int32_t CSL_lcdma_ringaccPush32( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint32_t val, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps );
-
-/**
- *  \brief Pop a 32-bit value from a ring
- *
- *  This function is used to pop a 32-bit value from a ring.
- *
- *  \param pCfg             [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                                  containing the ring accelerator configuration
- *  \param pRing            [IN]    Pointer to a #CSL_LcdmaRingaccRingCfg structure
- *                                  containing the ring configuration
- *  \param pVal             [OUT]   Pointer where the popped value is returned
- *  \param pfMemOps         [IN]    Pointer to a memory ops call-back
- *                                  function (or NULL if not needed)
- *
- *  \return  0 = success
- *          -1 = ring is empty
- */
-extern int32_t CSL_lcdma_ringaccPop32( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint32_t *pVal, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps );
-
-/**
- *  \brief [ringacc_only] Mimic a hardware pop of a 32-bit value from the head of a ring
- *
- *  This function is used to mimic a hardware pop operation from a ring. It
- *  can be called by software to pop values from a ring that is configured
- *  in Ring Mode, where software is the normal producer (pushing to the ring
- *  via the CSL_lcdma_ringaccPush32 function) and hardware is the normal consumer
- *  (popping from the ring), such as a TX free queue ring.
- *
- *  The ring must be configured with a 4-byte element size. A 4-byte
- *  value is popped from the ring head and returned.
- *
- *  \param pCfg             [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                                  containing the ring accelerator configuration
- *  \param pRing            [IN]    Pointer to a #CSL_LcdmaRingaccRingCfg structure
- *                                  containing the ring configuration
- *  \param pVal             [OUT]   Pointer where the popped value is returned
- *  \param pfMemOps         [IN]    Pointer to a memory ops call-back
- *                                  function (or NULL if not needed)
- *
- *  \return  0 = success
- *          -1 = ring is empty
- */
-extern int32_t CSL_lcdma_ringaccHwPop32( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint32_t *pVal, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps );
-
-/**
- *  \brief Peek at a 32-bit value from a ring
- *
- *  This function is used to peek at a 32-bit value from a ring.
- *
- *  \param pCfg             [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                                  containing the ring accelerator configuration
- *  \param pRing            [IN]    Pointer to a #CSL_LcdmaRingaccRingCfg structure
- *                                  containing the ring configuration
- *  \param pVal             [OUT]   Pointer where the peeked value is returned
- *  \param pfMemOps         [IN]    Pointer to a memory ops call-back
- *                                  function (or NULL if not needed)
- *
- *  \return  0 = success
- *          -1 = ring is empty
- */
-extern int32_t CSL_lcdma_ringaccPeek32( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint32_t *pVal, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps );
-
-/**
  *  \brief Push a 64-bit value to a ring
  *
  *  This function is used to push a 64-bit value to a ring.
@@ -935,28 +551,6 @@ extern int32_t CSL_lcdma_ringaccPeek32( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRing
  *          -2 = requested access size (8 bytes) is greater than ring element size
  */
 extern int32_t CSL_lcdma_ringaccPush64( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint64_t val, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps );
-
-/**
- *  \brief Push multiple 64-bit values to a ring
- *
- *  This function is used to push multiple 64-bit values to a ring.
- *
- *  \param pCfg             [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                                  containing the ring accelerator configuration
- *  \param pRing            [IN]    Pointer to a #CSL_LcdmaRingaccRingCfg structure
- *                                  containing the ring configuration
- *  \param pVals            [IN]    Pointer to an array of 64-bit values to write to the ring.
- *                                  This array should be at least numValues in size.
- *  \param numValues        [IN]    Number of 64-bit values to write to the ring
- *  \param pfMemOps         [IN]    Pointer to a memory ops call-back
- *                                  function (or NULL if not needed)
- *
- *  \return >0 = actual number of values written (ring was full before all values could be written)
- *           0 = success (all values written successfully)
- *          -1 = ring is full (no values written)
- *          -2 = requested access size (8 bytes) is greater than ring element size
- */
-extern int32_t CSL_lcdma_ringaccPush64Multi( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint64_t *pVals, uint32_t numValues, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps );
 
 /**
  *  \brief Pop a 64-bit value from a ring
@@ -978,136 +572,6 @@ extern int32_t CSL_lcdma_ringaccPush64Multi( CSL_LcdmaRingaccCfg *pCfg, CSL_Lcdm
 extern int32_t CSL_lcdma_ringaccPop64( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint64_t *pVal, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps );
 
 /**
- *  \brief Pop multiple 64-bit values from a ring
- *
- *  This function is used to pop multiple 64-bit values from a ring.
- *
- *  \param pCfg             [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                                  containing the ring accelerator configuration
- *  \param pRing            [IN]    Pointer to a #CSL_LcdmaRingaccRingCfg structure
- *                                  containing the ring configuration
- *  \param pVals            [OUT]   Pointer to an array of 64-bit values to write to the ring.
- *                                  This array should be at least numValues in size (or the size of the ring if numValues==0).
- *  \param numValues        [IN]    Number of 64-bit values to read from the ring. If 0, then
- *                                  all elements available in the ring are read.
- *  \param pfMemOps         [IN]    Pointer to a memory ops call-back
- *                                  function (or NULL if not needed)
- *
- *  \return >0 = actual number of values read (numValues==0 or ring was empty before all values could be read)
- *           0 = success (all requested values (numValues) read successfully)
- *          -1 = ring is empty (no values read)
- *          -2 = requested access size (8 bytes) is greater than ring element size
- */
-extern int32_t CSL_lcdma_ringaccPop64Multi( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint64_t *pVals, uint32_t numValues, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps );
-
-/**
- *  \brief [ringacc_only] Mimic a hardware pop of a 64-bit value from the head of a ring
- *
- *  This function is used to mimic a hardware pop operation from a ring. It
- *  can be called by software to pop values from a ring that is configured
- *  in Ring Mode, where software is the normal producer (pushing to the ring
- *  via the CSL_lcdma_ringaccPush64 function) and hardware is the normal consumer
- *  (popping from the ring), such as a TX free queue ring.
- *
- *  The ring must be configured with an 8-byte element size. An 8-byte
- *  value is popped from the ring head and returned.
- *
- *  \param pCfg             [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                                  containing the ring accelerator configuration
- *  \param pRing            [IN]    Pointer to a #CSL_LcdmaRingaccRingCfg structure
- *                                  containing the ring configuration
- *  \param pVal             [OUT]   Pointer where the popped value is returned
- *  \param pfMemOps         [IN]    Pointer to a memory ops call-back
- *                                  function (or NULL if not needed)
- *
- *  \return  0 = success
- *          -1 = ring is empty
- *          -2 = requested access size (8 bytes) is greater than ring element size
- */
-extern int32_t CSL_lcdma_ringaccHwPop64( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint64_t *pVal, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps );
-
-/**
- *  \brief Peek at a 64-bit value from a ring
- *
- *  This function is used to peek at a 64-bit value from a ring.
- *
- *  \param pCfg             [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                                  containing the ring accelerator configuration
- *  \param pRing            [IN]    Pointer to a #CSL_LcdmaRingaccRingCfg structure
- *                                  containing the ring configuration
- *  \param pVal             [OUT]   Pointer where the peeked value is returned
- *  \param pfMemOps         [IN]    Pointer to a memory ops call-back
- *                                  function (or NULL if not needed)
- *
- *  \return  0 = success
- *          -1 = ring is empty
- *          -2 = requested access size (8 bytes) is greater than ring element size
- */
-extern int32_t CSL_lcdma_ringaccPeek64( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint64_t *pVal, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps );
-
-/**
- *  \brief Write data into a ring
- *
- *  This function is used to write data into a ring.
- *
- *  Note that software can only write to a given ring, or read from a given
- *  ring - it cannot write and read to/from a given ring.
- *
- *  \param pCfg             [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                                  containing the ring accelerator configuration
- *  \param pRing            [IN]    Pointer to a #CSL_LcdmaRingaccRingCfg structure
- *                                  containing the ring configuration
- *  \param pData            [IN]    Pointer to the data to write
- *  \param numBytes         [IN]    The number of bytes to write
- *  \param pfMemOps         [IN]    Pointer to a memory fence call-back
- *                                  function (or NULL if not needed).
- *
- *  \return  0 = success
- *          -1 = ring is full
- *          -2 = requested access size is greater than ring element size
- */
-extern int32_t CSL_lcdma_ringaccWrData( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint8_t *pData, uint32_t numBytes, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps );
-
-/**
- *  \brief Read data from a ring
- *
- *  This function is used to read data from a ring.
- *
- *  \param pCfg             [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                                  containing the ring accelerator configuration
- *  \param pRing            [IN]    Pointer to a #CSL_LcdmaRingaccRingCfg structure
- *                                  containing the ring configuration
- *  \param pData            [IN]    Pointer to where read data is returned
- *  \param numBytes         [IN]    The number of bytes to read
- *  \param pfMemOps         [IN]    Pointer to a memory ops call-back
- *                                  function (or NULL if not needed)
- *
- *  \return  0 = success
- *          -1 = ring is empty
- *          -2 = requested access size is greater than ring element size
- */
-extern int32_t CSL_lcdma_ringaccRdData( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint8_t *pData, uint32_t numBytes, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps );
-
-/**
- *  \brief Peek at data from a ring
- *
- *  This function is used to peek at data from a ring.
- *
- *  \param pCfg             [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                                  containing the ring accelerator configuration
- *  \param pRing            [IN]    Pointer to a #CSL_LcdmaRingaccRingCfg structure
- *                                  containing the ring configuration
- *  \param pData            [IN]    Pointer to where read data is returned
- *  \param numBytes         [IN]    The number of bytes to peek
- *  \param pfMemOps         [IN]    Pointer to a memory ops call-back
- *                                  function (or NULL if not needed)
- *
- *  \return  0 = success
- *          -2 = requested access size is greater than ring element size
- */
-extern int32_t CSL_lcdma_ringaccPeekData( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRingaccRingCfg *pRing, uint8_t *pData, uint32_t numBytes, CSL_lcdma_ringaccMemOpsFxnPtr pfMemOps );
-
-/**
  *  \brief Clear the asel field in an address
  *
  *  This function is used to clear the asel value in the specified address.
@@ -1117,18 +581,6 @@ extern int32_t CSL_lcdma_ringaccPeekData( CSL_LcdmaRingaccCfg *pCfg, CSL_LcdmaRi
  *  \return  The address with the asel field cleared is returned
  */
 extern uint64_t CSL_lcdma_ringaccClrAselInAddr( uint64_t addr );
-
-/**
- *  \brief Set the asel field in an address
- *
- *  This function is used to set the specified asel value in the specified address.
- *
- *  \param addr             [IN]    The address
- *  \param asel             [IN]    Address select (asel) endpoint value. See #CSL_LcdmaRingAccAselEndpoint.
- *
- *  \return  The address including the asel value is returned
- */
-extern uint64_t CSL_lcdma_ringaccSetAselInAddr( uint64_t addr, CSL_LcdmaRingAccAselEndpoint asel );
 
 /**
  *  \brief Return teardown completion status of a ring
@@ -1145,21 +597,6 @@ extern uint64_t CSL_lcdma_ringaccSetAselInAddr( uint64_t addr, CSL_LcdmaRingAccA
  *           1 = true (teardown is complete)
  */
 extern bool CSL_lcdma_ringaccIsTeardownComplete( const CSL_LcdmaRingaccCfg *pCfg, uint32_t ringNum );
-
-/**
- *  \brief Acknowledge teardown completion of a ring
- *
- *  This function acknowledges the teardown completion of the specified ring.
- *  It does this by writing a '1' to the ring's tdown_ack field to acknowledge
- *  (and clear) the ring's corresponding tdown_complete bit.
- *
- *  \param pCfg         [IN]    Pointer to a #CSL_LcdmaRingaccCfg structure
- *                              containing the ring accelerator configuration
- *  \param ringNum      [IN]    The ring number
- *
- *  \return  None
- */
-extern void CSL_lcdma_ringaccAckTeardown( const CSL_LcdmaRingaccCfg *pCfg, uint32_t ringNum );
 
 /**
  *  \brief Dequeue a value pushed to a ring in FIFO order

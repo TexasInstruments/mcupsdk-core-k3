@@ -285,20 +285,6 @@ typedef struct
     uint8_t                 hiVal;             /**< [IN]  Tag[7:0] high byte value (used if hiSel == 1) */
 } CSL_PktdmaRouteTag;
 
-/** \brief Module revision information
- *
- *  This structure contains information describing the module revision.
- *
- */
-typedef struct
-{
-    uint32_t                modId;              /**< [OUT]  Module ID */
-    uint32_t                revRtl;             /**< [OUT]  RTL revision */
-    uint32_t                revMajor;           /**< [OUT]  Major revision */
-    uint32_t                custom;             /**< [OUT]  Custom revision */
-    uint32_t                revMinor;           /**< [OUT]  Minor revision */
-} CSL_PktdmaRevision;
-
  /** \brief Channel configuration information
   *
   *  This structure contains configuration information for a channel.
@@ -429,32 +415,6 @@ typedef struct
  */
 
 /**
- *  \brief Return revision of the PKTDMA module
- *
- *  This function returns the contents of the PKTDMA revision register.
- *  Consult the PKTDMA module documentation for a description of the
- *  contents of the revision register.
- *
- *  \param pCfg             [IN]    Pointer to the PKTDMA configuration structure
- *
- *  \return The 32-bit revision register is returned.
- */
-extern uint32_t CSL_pktdmaGetRevision( const CSL_PktdmaCfg *pCfg );
-
-/**
- *  \brief Return revision information of the PKTDMA module
- *
- *  This function returns revision information for the PKTDMA module.
- *
- *  \param pCfg             [IN]    Pointer to the PKTDMA configuration structure
- *  \param pRev             [OUT]   Pointer to a #CSL_PktdmaRevision structure where the revision information is returned
- *
- *  \return CSL_PASS  = Function executed successfully
- *          CSL_EFAIL = Function execution failed
- */
-extern int32_t CSL_pktdmaGetRevisionInfo( const CSL_PktdmaCfg *pCfg, CSL_PktdmaRevision *pRev );
-
-/**
  *  \brief Initialize contents of a PKTDMA configuration structure
  *
  *  This function initializes the contents of the specified PKTDMA configuration
@@ -471,52 +431,6 @@ extern int32_t CSL_pktdmaGetRevisionInfo( const CSL_PktdmaCfg *pCfg, CSL_PktdmaR
  *  \return None
  */
 extern void CSL_pktdmaInitCfg( CSL_PktdmaCfg *pCfg );
-
-/**
- *  \brief Initialize a #CSL_PktdmaChanCfg structure
- *
- *  This function initializes the specified #CSL_PktdmaChanCfg structure to
- *  known, safe values. Software then only needs to configure elements
- *  that are different than their initialized values prior to calling the
- *  #CSL_pktdmaTxChanCfg function.
- *
- *  All elements of the #CSL_PktdmaChanCfg structure are initialized to zero
- *  except for the following:
- *
- *      chanType        = CSL_PKTDMA_CHAN_TYPE_NORMAL;
- *      fetchWordSize   = CSL_PKTDMA_FETCH_WORD_SIZE_16;
- *      trEventNum      = CSL_PKTDMA_NO_EVENT;
- *      errEventNum     = CSL_PKTDMA_NO_EVENT;
- *
- *  \param pTxChanCfg   [OUT]   Pointer to a #CSL_PktdmaChanCfg structure
- *
- *  \return None
- */
-extern void CSL_pktdmaInitTxChanCfg( CSL_PktdmaChanCfg *pTxChanCfg );
-
-/**
- *  \brief Initialize a #CSL_PktdmaChanCfg structure
- *
- *  This function initializes the specified #CSL_PktdmaChanCfg structure to
- *  known, safe values. Software then only needs to configure elements
- *  that are different than their initialized values prior to calling the
- *  #CSL_pktdmaRxChanCfg function.
- *
- *  All elements of the #CSL_PktdmaChanCfg structure are initialized to zero
- *  except for the following:
- *
- *      chanType            = CSL_PKTDMA_CHAN_TYPE_NORMAL;
- *      fetchWordSize       = CSL_PKTDMA_FETCH_WORD_SIZE_16;
- *      trEventNum          = CSL_PKTDMA_NO_EVENT;
- *      errEventNum         = CSL_PKTDMA_NO_EVENT;
- *      flowIdFwRangeCnt    = CSL_PKTDMA_RXCCFG_CHAN_RFLOW_RNG_FLOWID_CNT_RESETVAL;
- *
- *  \param pRxChanCfg   [OUT]   Pointer to a #CSL_PktdmaChanCfg structure
- *
- *  \return None
- */
-extern void CSL_pktdmaInitRxChanCfg( CSL_PktdmaChanCfg *pRxChanCfg );
-
 
 /**
  *  \brief Set performance control parmeters
@@ -717,47 +631,6 @@ extern int32_t CSL_pktdmaTriggerChannel( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, 
  *  \return None
  */
 extern void CSL_pktdmaClearChanErr( CSL_PktdmaCfg *pCfg, uint32_t chanIdx, uint32_t chanType );
-
-/**
- *  \brief Configure the receive flow ID range firewall
- *
- *  This function is used to configure the receive flow ID range firewall.
- *
- *  Note: This function is provided for backwards compatibility with the udmap
- *  CSL-FL.
- *
- *  \param pCfg             [IN]    Pointer to the PKTDMA configuration structure
- *  \param outEvtNum        [IN]    Output event number to use when the receive
- *                                  flow ID range firewall detects an error
- *
- *  \return None
- */
-extern void CSL_pktdmaCfgRxFlowIdFirewall( CSL_PktdmaCfg *pCfg, uint32_t outEvtNum );
-
-/**
- *  \brief Get receive flow ID range firewall status information
- *
- *  This function returns information from the receive flow ID range firewall.
- *
- *  If the receive flow ID firewall has detected an out of range flow ID,
- *  the function returns true and the fields within the
- *  #CSL_PktdmaRxFlowIdFirewallStatus structure contain error details. The
- *  function will automatically reset the receive flow ID firewall to capture
- *  the next error.
- *
- *  If the receive flow ID firewall has not detected an out of range flow ID,
- *  the function returns false and the fields within the
- *  #CSL_PktdmaRxFlowIdFirewallStatus structure are not updated.
- *
- *  \param pCfg                 [IN]    Pointer to the PKTDMA configuration structure
- *  \param pRxFlowIdFwStatus    [IN]    Pointer to a #CSL_PktdmaRxFlowIdFirewallStatus
- *                                      structure containing error details (valid
- *                                      only when true is returned)
- *
- *  \return true if the receive flow ID range firewall has detected an out of range
- *          flow ID, false if no error was detected
- */
-extern bool CSL_pktdmaGetRxFlowIdFirewallStatus( CSL_PktdmaCfg *pCfg, CSL_PktdmaRxFlowIdFirewallStatus *pRxFlowIdFwStatus );
 
 /**
  *  \brief Decrement channel statistics

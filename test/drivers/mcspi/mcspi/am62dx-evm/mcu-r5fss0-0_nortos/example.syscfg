@@ -1,8 +1,9 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62Dx" --package "ANF" --part "AM62D22-G" --context "mcu-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.19.0+3426"}
+ * @cliArgs --device "AM62Dx" --part "AM62D22-G" --package "ANF" --context "mcu-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @v2CliArgs --device "AM62D-Q1" --package "FCBGA (ANF)" --variant "AM62D22-G" --context "mcu-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.24.2+4234"}
  */
 
 /**
@@ -13,6 +14,7 @@ const mcspi1     = mcspi.addInstance();
 const mcspi2     = mcspi.addInstance();
 const mcspi3     = mcspi.addInstance();
 const mcspi4     = mcspi.addInstance();
+const mcspi5     = mcspi.addInstance();
 const udma       = scripting.addModule("/drivers/udma/udma", {}, false);
 const udma1      = udma.addInstance();
 const clock      = scripting.addModule("/kernel/dpl/clock");
@@ -30,10 +32,13 @@ const mpu_armv76 = mpu_armv7.addInstance();
  */
 mcspi1.$name                 = "CONFIG_MCSPI0";
 mcspi1.mode                  = "MULTI_MASTER";
+mcspi1.inputSelect           = "0";
 mcspi1.MCU_SPI.$assign       = "MCU_SPI0";
 mcspi1.mcspiChannel[0].$name = "CONFIG_MCSPI_CH0";
 
 mcspi2.$name                 = "CONFIG_MCSPI1";
+mcspi2.inputSelect           = "0";
+mcspi2.mode                  = "MULTI_MASTER";
 mcspi2.MCU_SPI.$assign       = "MCU_SPI1";
 mcspi2.mcspiChannel[0].$name = "CONFIG_MCSPI_CH1";
 
@@ -41,13 +46,22 @@ mcspi3.useMcuDomainPeripherals = false;
 mcspi3.mode                    = "MULTI_MASTER";
 mcspi3.intrEnable              = "DMA";
 mcspi3.$name                   = "CONFIG_MCSPI3";
+mcspi3.inputSelect             = "0";
 mcspi3.SPI.$assign             = "SPI1";
 mcspi3.mcspiChannel[0].$name   = "CONFIG_MCSPI_CH2";
 
 mcspi4.$name                   = "CONFIG_MCSPI4";
 mcspi4.useMcuDomainPeripherals = false;
+mcspi4.inputSelect             = "0";
 mcspi4.mcspiChannel[0].$name   = "CONFIG_MCSPI_CH3";
-mcspi4.SPI.$assign             = "SPI2";
+mcspi4.SPI.$assign             = "SPI0";
+
+mcspi5.$name                   = "CONFIG_MCSPI2";
+mcspi5.useMcuDomainPeripherals = false;
+mcspi5.inputSelect             = "0";
+mcspi5.mode                    = "MULTI_MASTER";
+mcspi5.SPI.$assign             = "SPI2";
+mcspi5.mcspiChannel[0].$name   = "CONFIG_MCSPI_CH4";
 
 udma1.$name       = "CONFIG_UDMA0";
 mcspi3.udmaDriver = udma1;
@@ -103,10 +117,14 @@ mcspi3.SPI.CLK.$suggestSolution                 = "MMC0_DAT2";
 mcspi3.SPI.D0.$suggestSolution                  = "MMC0_DAT7";
 mcspi3.SPI.D1.$suggestSolution                  = "MMC0_DAT6";
 mcspi3.mcspiChannel[0].CSn.$suggestSolution     = "MMC0_DAT3";
-mcspi4.mcspiChannel[0].CSn.$suggestSolution     = "MMC0_DAT1";
-mcspi4.SPI.CLK.$suggestSolution                 = "MMC0_DAT0";
-mcspi4.SPI.D0.$suggestSolution                  = "MMC0_DAT5";
-mcspi4.SPI.D1.$suggestSolution                  = "MMC0_DAT4";
+mcspi4.mcspiChannel[0].CSn.$suggestSolution     = "SPI0_CS0";
+mcspi4.SPI.CLK.$suggestSolution                 = "SPI0_CLK";
+mcspi4.SPI.D0.$suggestSolution                  = "SPI0_D0";
+mcspi4.SPI.D1.$suggestSolution                  = "SPI0_D1";
+mcspi5.SPI.CLK.$suggestSolution                 = "MMC0_DAT0";
+mcspi5.SPI.D0.$suggestSolution                  = "MMC0_DAT5";
+mcspi5.SPI.D1.$suggestSolution                  = "MMC0_DAT4";
+mcspi5.mcspiChannel[0].CSn.$suggestSolution     = "MMC0_DAT1";
 debug_log.uartLog.MCU_UART.$suggestSolution     = "MCU_USART0";
 debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "MCU_UART0_RXD";
 debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "MCU_UART0_TXD";

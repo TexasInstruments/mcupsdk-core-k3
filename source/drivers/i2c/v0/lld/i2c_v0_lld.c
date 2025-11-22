@@ -1747,7 +1747,7 @@ void I2C_lld_targetIsr(void *args)
     if ((rawStat & I2C_INT_ADRR_TARGET) != 0U)
     {
         /* AAS(Address recognized as target) interrupt happened */
-        if (object->state == I2C_STATE_IDLE)
+        if (object->state == I2C_STATE_BUSY)
         {
             /* This is the first transfer initiation from controller */
             /* Update the state to transfer started */

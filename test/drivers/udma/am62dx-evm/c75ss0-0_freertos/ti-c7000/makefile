@@ -53,6 +53,7 @@ FILES_common := \
 	utils_prf_baremetal.c \
 	utils_trace.c \
 	udma_test_soc.c \
+	udma_test_dru.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
 	ti_board_config.c \
@@ -83,6 +84,9 @@ INCLUDES_common := \
 DEFINES_common := \
 	-DENABLE_MT_TESTS \
 	-DSTACK_C7_CORE \
+	-DENABLE_DRU_TESTS \
+	-DMCU_PLUS_SDK \
+	-DDMA_UTILS_STANDALONE \
 	-DSOC_AM62DX \
 
 CFLAGS_common := \
@@ -121,6 +125,7 @@ LIBS_PATH_common = \
 	-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	-i${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	-i${MCU_PLUS_SDK_PATH}/source/drivers/udma/lib \
+	-i${MCU_PLUS_SDK_PATH}/source/drivers/dmautils/lib \
 	-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
@@ -128,6 +133,7 @@ LIBS_common = \
 	-ldrivers.am62dx.c75x.ti-c7000.${ConfigName}.lib \
 	-ludma.am62dx.c75x.ti-c7000.${ConfigName}.lib \
 	-lunity.am62dx.c75x.ti-c7000.${ConfigName}.lib \
+	-ldmautils.am62dx.c75x.ti-c7000.${ConfigName}.lib \
 	-llibc.a \
 
 LFLAGS_common = \
@@ -145,6 +151,7 @@ LIBS_NAME = \
 	drivers.am62dx.c75x.ti-c7000.${ConfigName}.lib \
 	udma.am62dx.c75x.ti-c7000.${ConfigName}.lib \
 	unity.am62dx.c75x.ti-c7000.${ConfigName}.lib \
+	dmautils.am62dx.c75x.ti-c7000.${ConfigName}.lib \
 	libc.a \
 
 LIBS_PATH_NAME = \
@@ -152,6 +159,7 @@ LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/udma/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/dmautils/lib \
 	${CG_TOOL_ROOT}/lib \
 
 FILES := $(FILES_common) $(FILES_$(PROFILE))

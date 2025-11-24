@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 Texas Instruments Incorporated
+ * Copyright (C) 2025-2026 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -506,6 +506,17 @@ static void TestUdma_mappedRxPreferredChannelAllocation(void *args);
 static void TestUdma_mappedRxAnyChannelAllocation(void *args);
 #endif
 #endif /* For cores that have mapped CPSW resources reserved */
+#if defined (ENABLE_DRU_TESTS)
+extern void TestUdma_appdmautilsClecInitDru(void);
+extern void TestUdma_druOwnerUDMAC(void *args);
+extern void TestUdma_dmautilsDruDirectPolling(void *args);
+extern void TestUdma_dmautilsDruDirectInterrupt(void *args);
+extern void TestUdma_dmautilsDruDirect2D(void *args);
+extern void TestUdma_dmautilsDruDirect3D(void *args);
+extern void TestUdma_dmautilsAutoIncCompression(void *args);
+extern void TestUdma_dmautilsDruDirectCircular(void *args);
+extern void TestUdma_dmautilsDruDirectPauseResume(void *args);
+#endif
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -874,6 +885,18 @@ void test_udma_main(void *args)
     RUN_TEST(TestUdma_chSetChainingRxTxMultithreadIntr, 9250, NULL);
     RUN_TEST(TestUdma_ringOverflowMultithread, 9251, NULL);
     RUN_TEST(TestUdma_multithreadOpenCloseRaceTest, 9252, NULL);
+#endif
+#if defined (ENABLE_DRU_TESTS)
+    Udma_deinit(&gUdmaDrvObj[CONFIG_UDMA0]);
+    TestUdma_appdmautilsClecInitDru();
+    RUN_TEST(TestUdma_dmautilsDruDirectPolling, 8277, NULL);
+    RUN_TEST(TestUdma_dmautilsDruDirect2D, 9405, NULL);
+    RUN_TEST(TestUdma_dmautilsDruDirect3D, 9406, NULL);
+    RUN_TEST(TestUdma_dmautilsAutoIncCompression, 9407, NULL);
+    RUN_TEST(TestUdma_dmautilsDruDirectCircular, 9408, NULL);
+    RUN_TEST(TestUdma_dmautilsDruDirectPauseResume, 9409, NULL);
+    RUN_TEST(TestUdma_dmautilsDruDirectInterrupt, 8294, NULL);
+    RUN_TEST(TestUdma_druOwnerUDMAC, 8602, NULL);
 #endif
 
     UNITY_END();

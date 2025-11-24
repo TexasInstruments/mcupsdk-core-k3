@@ -29,6 +29,13 @@ const files_smp = {
     ],
 };
 
+/* c75-only sources */
+const files_c75 = {
+    common: [
+        "udma_test_dru.c",
+    ],
+};
+
 /* Relative to where the makefile will be generated
  * Typically at <example_folder>/<BOARD>/<core_os_combo>/<compiler>
  */
@@ -141,6 +148,7 @@ const libdirs_freertos_c75 = {
 		"${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/test/unity/lib",
 		"${MCU_PLUS_SDK_PATH}/source/drivers/udma/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/dmautils/lib",
 	],
 };
 
@@ -232,6 +240,7 @@ const libs_freertos_c75 = {
         "drivers.am62ax.c75x.ti-c7000.${ConfigName}.lib",
         "udma.am62ax.c75x.ti-c7000.${ConfigName}.lib",
         "unity.am62ax.c75x.ti-c7000.${ConfigName}.lib",
+        "dmautils.am62ax.c75x.ti-c7000.${ConfigName}.lib",
     ],
 };
 
@@ -319,7 +328,11 @@ const defines_mcu_r5_nortos = {
 const defines_c75_freertos = {
     common:[
         "ENABLE_MT_TESTS",
-        "STACK_C7_CORE"
+        "STACK_C7_CORE",
+        "ENABLE_DRU_TESTS",
+        "MCU_PLUS_SDK",
+        "DMA_UTILS_STANDALONE",
+        "SOC_AM62A"
     ]
 }
 
@@ -696,6 +709,13 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_freertos_c75;
         build_property.libs = libs_freertos_c75;
         build_property.templates = templates_freertos_c75;
+        /* c75-only: append DRU test to common list */
+        {
+            let mergedFiles = {};
+            Object.keys(files).forEach(k => { mergedFiles[k] = files[k].slice(); });
+            mergedFiles.common = mergedFiles.common.concat(files_c75.common);
+            build_property.files = mergedFiles;
+        }
     }
 
     return build_property;

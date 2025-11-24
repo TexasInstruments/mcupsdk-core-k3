@@ -15,6 +15,8 @@ const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
 const mmu_armv8  = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
 const mmu_armv81 = mmu_armv8.addInstance();
 const mmu_armv82 = mmu_armv8.addInstance();
+const mmu_armv85 = mmu_armv8.addInstance();
+const mmu_armv86 = mmu_armv8.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -45,3 +47,14 @@ mmu_armv82.attribute = "MAIR7";
 debug_log.uartLog.MCU_UART.$suggestSolution     = "MCU_USART0";
 debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "MCU_UART0_RXD";
 debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "MCU_UART0_TXD";
+mmu_armv85.$name = "CLEC";
+mmu_armv85.vAddr = 0x7C200000;
+mmu_armv85.pAddr = 0x7C200000;
+mmu_armv85.size  = 0x100000;
+mmu_armv85.attribute = "MAIR4";
+
+mmu_armv86.$name     = "DRU";
+mmu_armv86.vAddr     = 0x7C400000;
+mmu_armv86.pAddr     = 0x7C400000;
+mmu_armv86.size      = 0x100000;
+mmu_armv86.attribute = "MAIR4";

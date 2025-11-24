@@ -896,12 +896,14 @@ static int32_t Flash_norOspiRead(Flash_Config *config, uint32_t offset, uint8_t 
 
                     if(phyStatus == SystemP_SUCCESS)
                     {
-                        OSPI_enablePhy(obj->ospiHandle);
+                        if(obj->phyEnable == (uint8_t)TRUE)
+                        {
+                            OSPI_enablePhy(obj->ospiHandle);
+                        }
                     }
                     else
                     {
-                        obj->phyEnable = FALSE;
-                        status = Flash_norOspiFallback(config);
+                        status = SystemP_FAILURE;
                     }
                 }
                 else

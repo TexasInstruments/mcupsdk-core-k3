@@ -2347,17 +2347,22 @@ static int32_t Udma_chAllocResource(Udma_ChHandleInt chHandle)
     /* Allocate UDMAP channel */
     if((chHandle->chType & UDMA_CH_FLAG_BLK_COPY) == UDMA_CH_FLAG_BLK_COPY)
     {
+#if (UDMA_SOC_BC_HC_CHAN_SUPPORTED > 0)
         if((chHandle->chType & UDMA_CH_FLAG_HC) == UDMA_CH_FLAG_HC)
         {
             chHandle->txChNum =
                 Udma_rmAllocBlkCopyHcCh(chHandle->chPrms.chNum, drvHandle);
         }
-        else if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
+        else
+#endif
+#if (UDMA_SOC_BC_UHC_CHAN_SUPPORTED  > 0)
+        if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
         {
             chHandle->txChNum =
                 Udma_rmAllocBlkCopyUhcCh(chHandle->chPrms.chNum, drvHandle);
         }
         else
+#endif
         {
             chHandle->txChNum =
                 Udma_rmAllocBlkCopyCh(chHandle->chPrms.chNum, drvHandle);
@@ -2423,24 +2428,30 @@ static int32_t Udma_chAllocResource(Udma_ChHandleInt chHandle)
         /* Allocate UDMAP for PDMA channels */
         if((chHandle->chType & UDMA_CH_FLAG_TX) == UDMA_CH_FLAG_TX)
         {
+#if (UDMA_NUM_MAPPED_TX_GROUP > 0)
+            if((chHandle->chType & UDMA_CH_FLAG_MAPPED) == UDMA_CH_FLAG_MAPPED)
+            {
+                chHandle->txChNum =
+                    Udma_rmAllocMappedTxCh(chHandle->chPrms.chNum, drvHandle, chHandle->chPrms.mappedChGrp);
+            }
+            else
+#endif
+#if (UDMA_SOC_PKT_HC_CHAN_SUPPORTED > 0)
             if((chHandle->chType & UDMA_CH_FLAG_HC) == UDMA_CH_FLAG_HC)
             {
                 chHandle->txChNum =
                     Udma_rmAllocTxHcCh(chHandle->chPrms.chNum, drvHandle);
             }
-#if (UDMA_NUM_MAPPED_TX_GROUP > 0)
-            else if((chHandle->chType & UDMA_CH_FLAG_MAPPED) == UDMA_CH_FLAG_MAPPED)
-            {
-                chHandle->txChNum =
-                    Udma_rmAllocMappedTxCh(chHandle->chPrms.chNum, drvHandle, chHandle->chPrms.mappedChGrp);
-            }
+            else
 #endif
-            else if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
+#if (UDMA_SOC_PKT_UHC_CHAN_SUPPORTED > 0)
+            if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
             {
                 chHandle->txChNum =
                     Udma_rmAllocTxUhcCh(chHandle->chPrms.chNum, drvHandle);
             }
             else
+#endif
             {
                 chHandle->txChNum =
                     Udma_rmAllocTxCh(chHandle->chPrms.chNum, drvHandle);
@@ -2453,26 +2464,32 @@ static int32_t Udma_chAllocResource(Udma_ChHandleInt chHandle)
         }
         else
         {
-            if((chHandle->chType & UDMA_CH_FLAG_HC) == UDMA_CH_FLAG_HC)
-            {
-                chHandle->rxChNum =
-                    Udma_rmAllocRxHcCh(chHandle->chPrms.chNum, drvHandle);
-            }
 #if (UDMA_NUM_MAPPED_RX_GROUP > 0)
-            else if((chHandle->chType & UDMA_CH_FLAG_MAPPED) == UDMA_CH_FLAG_MAPPED)
+            if((chHandle->chType & UDMA_CH_FLAG_MAPPED) == UDMA_CH_FLAG_MAPPED)
             {
                 /* For RX, Subtract the #UDMA_NUM_MAPPED_TX_GROUP from mappedChGrp, because the group id for TX and RX are continous */
                 DebugP_assert(chHandle->chPrms.mappedChGrp >= UDMA_NUM_MAPPED_TX_GROUP);
                 chHandle->rxChNum =
                     Udma_rmAllocMappedRxCh(chHandle->chPrms.chNum, drvHandle, chHandle->chPrms.mappedChGrp - UDMA_NUM_MAPPED_TX_GROUP);
             }
+            else
 #endif
-            else if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
+#if (UDMA_SOC_PKT_HC_CHAN_SUPPORTED > 0)
+            if((chHandle->chType & UDMA_CH_FLAG_HC) == UDMA_CH_FLAG_HC)
+            {
+                chHandle->rxChNum =
+                    Udma_rmAllocRxHcCh(chHandle->chPrms.chNum, drvHandle);
+            }
+            else
+#endif
+#if (UDMA_SOC_PKT_UHC_CHAN_SUPPORTED > 0)
+            if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
             {
                 chHandle->rxChNum =
                     Udma_rmAllocRxUhcCh(chHandle->chPrms.chNum, drvHandle);
             }
             else
+#endif
             {
                 chHandle->rxChNum =
                     Udma_rmAllocRxCh(chHandle->chPrms.chNum, drvHandle);

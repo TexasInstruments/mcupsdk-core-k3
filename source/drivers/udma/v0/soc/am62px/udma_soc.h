@@ -112,6 +112,18 @@ extern "C" {
 /** \brief Flag to indicate the SOC needs ring reset workaround */
 #define UDMA_SOC_CFG_APPLY_RING_WORKAROUND       (0U)
 
+/** \brief Flag to indicate Block-Copy DMA High Capacity Channel Support Enabled*/
+#define UDMA_SOC_BC_HC_CHAN_SUPPORTED            (1U)
+
+/** \brief Flag to indicate Block-Copy DMA Ultra-High Capacity Channel Support Enabled*/
+#define UDMA_SOC_BC_UHC_CHAN_SUPPORTED           (0U)
+
+/** \brief Flag to indicate Packet DMA High Capacity Channel Support Enabled*/
+#define UDMA_SOC_PKT_HC_CHAN_SUPPORTED           (0U)
+
+/** \brief Flag to indicate Packet DMA Ultra-High Capacity Channel Support Enabled*/
+#define UDMA_SOC_PKT_UHC_CHAN_SUPPORTED          (0U)
+
 /** @} */
 
  /**

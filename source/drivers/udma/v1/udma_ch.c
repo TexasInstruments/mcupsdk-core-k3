@@ -1385,17 +1385,22 @@ static int32_t Udma_chAllocResource(Udma_ChHandleInt chHandle)
     /* Allocate UDMAP channel */
     if((chHandle->chType & UDMA_CH_FLAG_BLK_COPY) == UDMA_CH_FLAG_BLK_COPY)
     {
+#if (UDMA_SOC_BC_HC_CHAN_SUPPORTED > 0)
         if((chHandle->chType & UDMA_CH_FLAG_HC) == UDMA_CH_FLAG_HC)
         {
             chHandle->txChNum =
                 Udma_rmAllocBlkCopyHcCh(chHandle->chPrms.chNum, drvHandle);
         }
-        else if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
+        else
+#endif
+#if (UDMA_SOC_BC_UHC_CHAN_SUPPORTED  > 0)
+        if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
         {
             chHandle->txChNum =
                 Udma_rmAllocBlkCopyUhcCh(chHandle->chPrms.chNum, drvHandle);
         }
         else
+#endif
         {
             chHandle->txChNum =
                 Udma_rmAllocBlkCopyCh(chHandle->chPrms.chNum, drvHandle);
@@ -1433,17 +1438,22 @@ static int32_t Udma_chAllocResource(Udma_ChHandleInt chHandle)
         /* Allocate UDMAP for PDMA channels */
         if((chHandle->chType & UDMA_CH_FLAG_TX) == UDMA_CH_FLAG_TX)
         {
+#if (UDMA_SOC_PKT_HC_CHAN_SUPPORTED > 0)
             if((chHandle->chType & UDMA_CH_FLAG_HC) == UDMA_CH_FLAG_HC)
             {
                 chHandle->txChNum =
                     Udma_rmAllocTxHcCh(chHandle->chPrms.chNum, drvHandle);
             }
-            else if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
+            else
+#endif
+#if (UDMA_SOC_PKT_UHC_CHAN_SUPPORTED > 0)
+            if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
             {
                 chHandle->txChNum =
                     Udma_rmAllocTxUhcCh(chHandle->chPrms.chNum, drvHandle);
             }
             else
+#endif
             {
                 (void) Udma_getChAttr(chHandle->chPrms.peerChNum, &chHandle->chAttr, chHandle->chPrms.chNum);
                 chHandle->txChNum =
@@ -1457,17 +1467,22 @@ static int32_t Udma_chAllocResource(Udma_ChHandleInt chHandle)
         }
         else
         {
+#if (UDMA_SOC_PKT_HC_CHAN_SUPPORTED > 0)
             if((chHandle->chType & UDMA_CH_FLAG_HC) == UDMA_CH_FLAG_HC)
             {
                 chHandle->rxChNum =
                     Udma_rmAllocRxHcCh(chHandle->chPrms.chNum, drvHandle);
             }
-            else if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
+            else
+#endif
+#if (UDMA_SOC_PKT_UHC_CHAN_SUPPORTED > 0)
+            if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
             {
                 chHandle->rxChNum =
                     Udma_rmAllocRxUhcCh(chHandle->chPrms.chNum, drvHandle);
             }
             else
+#endif
             {
                 (void) Udma_getChAttr(chHandle->chPrms.peerChNum, &chHandle->chAttr, chHandle->chPrms.chNum);
                 chHandle->rxChNum =

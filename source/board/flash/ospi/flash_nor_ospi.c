@@ -1757,6 +1757,9 @@ static int32_t Flash_norOspiFallback(Flash_Config *config)
                 tryReset--;
             }while((tryReset > 0U) && (status != SystemP_SUCCESS));
 
+            /* Spansion flash devices take upto 90us to reset, sleep for 200us to be safe */
+            ClockP_usleep(200);
+
             if(status == SystemP_SUCCESS)
             {
                 /* Set the protocol to 1s1s1s */

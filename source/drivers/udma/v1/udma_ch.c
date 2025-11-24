@@ -1393,7 +1393,7 @@ static int32_t Udma_chAllocResource(Udma_ChHandleInt chHandle)
         }
         else
 #endif
-#if (UDMA_SOC_BC_UHC_CHAN_SUPPORTED  > 0)
+#if (UDMA_SOC_BC_UHC_CHAN_SUPPORTED > 0)
         if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
         {
             chHandle->txChNum =
@@ -1631,16 +1631,21 @@ static int32_t Udma_chFreeResource(Udma_ChHandleInt chHandle)
     {
         if(UDMA_DMA_CH_INVALID != chHandle->txChNum)
         {
+#if (UDMA_SOC_BC_HC_CHAN_SUPPORTED > 0)
             /* TX channel free */
             if((chHandle->chType & UDMA_CH_FLAG_HC) == UDMA_CH_FLAG_HC)
             {
                 Udma_rmFreeBlkCopyHcCh(chHandle->txChNum, drvHandle);
             }
-            else if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
+            else
+#endif
+#if (UDMA_SOC_BC_UHC_CHAN_SUPPORTED  > 0)
+            if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
             {
                 Udma_rmFreeBlkCopyUhcCh(chHandle->txChNum, drvHandle);
             }
             else
+#endif
             {
                 Udma_rmFreeBlkCopyCh(chHandle->txChNum, drvHandle);
             }
@@ -1652,16 +1657,21 @@ static int32_t Udma_chFreeResource(Udma_ChHandleInt chHandle)
     {
         if(UDMA_DMA_CH_INVALID != chHandle->txChNum)
         {
+#if (UDMA_SOC_PKT_HC_CHAN_SUPPORTED > 0)
             /* TX channel free */
             if((chHandle->chType & UDMA_CH_FLAG_HC) == UDMA_CH_FLAG_HC)
             {
                 Udma_rmFreeTxHcCh(chHandle->txChNum, drvHandle);
             }
-            else if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
+            else
+#endif
+#if (UDMA_SOC_PKT_UHC_CHAN_SUPPORTED > 0)
+            if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
             {
                 Udma_rmFreeTxUhcCh(chHandle->txChNum, drvHandle);
             }
             else
+#endif
             {
                 Udma_rmFreeCh(chHandle->txChNum, drvHandle);
             }
@@ -1669,16 +1679,21 @@ static int32_t Udma_chFreeResource(Udma_ChHandleInt chHandle)
         }
         if(UDMA_DMA_CH_INVALID != chHandle->rxChNum)
         {
+#if (UDMA_SOC_PKT_HC_CHAN_SUPPORTED > 0)
             /* RX channel free */
             if((chHandle->chType & UDMA_CH_FLAG_HC) == UDMA_CH_FLAG_HC)
             {
                 Udma_rmFreeRxHcCh(chHandle->rxChNum, drvHandle);
             }
-            else if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
+            else
+#endif
+#if (UDMA_SOC_PKT_UHC_CHAN_SUPPORTED > 0)
+            if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
             {
                 Udma_rmFreeRxUhcCh(chHandle->rxChNum, drvHandle);
             }
             else
+#endif
             {
                 Udma_rmFreeCh(chHandle->rxChNum, drvHandle);
             }

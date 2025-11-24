@@ -2661,16 +2661,21 @@ static int32_t Udma_chFreeResource(Udma_ChHandleInt chHandle)
     {
         if(UDMA_DMA_CH_INVALID != chHandle->txChNum)
         {
+#if (UDMA_SOC_BC_HC_CHAN_SUPPORTED > 0)
             /* TX channel free */
             if((chHandle->chType & UDMA_CH_FLAG_HC) == UDMA_CH_FLAG_HC)
             {
                 Udma_rmFreeBlkCopyHcCh(chHandle->txChNum, drvHandle);
             }
-            else if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
+            else
+#endif
+#if (UDMA_SOC_BC_UHC_CHAN_SUPPORTED > 0)
+            if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
             {
                 Udma_rmFreeBlkCopyUhcCh(chHandle->txChNum, drvHandle);
             }
             else
+#endif
             {
                 Udma_rmFreeBlkCopyCh(chHandle->txChNum, drvHandle);
             }
@@ -2682,22 +2687,28 @@ static int32_t Udma_chFreeResource(Udma_ChHandleInt chHandle)
     {
         if(UDMA_DMA_CH_INVALID != chHandle->txChNum)
         {
+#if (UDMA_NUM_MAPPED_TX_GROUP > 0)
+            if((chHandle->chType & UDMA_CH_FLAG_MAPPED) == UDMA_CH_FLAG_MAPPED)
+            {
+                Udma_rmFreeMappedTxCh(chHandle->txChNum, drvHandle, chHandle->chPrms.mappedChGrp);
+            }
+            else
+#endif
+#if (UDMA_SOC_PKT_HC_CHAN_SUPPORTED > 0)
             /* TX channel free */
             if((chHandle->chType & UDMA_CH_FLAG_HC) == UDMA_CH_FLAG_HC)
             {
                 Udma_rmFreeTxHcCh(chHandle->txChNum, drvHandle);
             }
-#if (UDMA_NUM_MAPPED_TX_GROUP > 0)
-            else if((chHandle->chType & UDMA_CH_FLAG_MAPPED) == UDMA_CH_FLAG_MAPPED)
-            {
-                Udma_rmFreeMappedTxCh(chHandle->txChNum, drvHandle, chHandle->chPrms.mappedChGrp);
-            }
+            else
 #endif
-            else if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
+#if (UDMA_SOC_PKT_UHC_CHAN_SUPPORTED > 0)
+            if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
             {
                 Udma_rmFreeTxUhcCh(chHandle->txChNum, drvHandle);
             }
             else
+#endif
             {
                 Udma_rmFreeTxCh(chHandle->txChNum, drvHandle);
             }
@@ -2705,23 +2716,29 @@ static int32_t Udma_chFreeResource(Udma_ChHandleInt chHandle)
         }
         if(UDMA_DMA_CH_INVALID != chHandle->rxChNum)
         {
+#if (UDMA_NUM_MAPPED_RX_GROUP > 0)
+            if((chHandle->chType & UDMA_CH_FLAG_MAPPED) == UDMA_CH_FLAG_MAPPED)
+            {
+                DebugP_assert(chHandle->chPrms.mappedChGrp >= UDMA_NUM_MAPPED_TX_GROUP);
+                Udma_rmFreeMappedRxCh(chHandle->rxChNum, drvHandle, chHandle->chPrms.mappedChGrp - UDMA_NUM_MAPPED_TX_GROUP);
+            }
+            else
+#endif
+#if (UDMA_SOC_PKT_HC_CHAN_SUPPORTED > 0)
             /* RX channel free */
             if((chHandle->chType & UDMA_CH_FLAG_HC) == UDMA_CH_FLAG_HC)
             {
                 Udma_rmFreeRxHcCh(chHandle->rxChNum, drvHandle);
             }
-#if (UDMA_NUM_MAPPED_RX_GROUP > 0)
-            else if((chHandle->chType & UDMA_CH_FLAG_MAPPED) == UDMA_CH_FLAG_MAPPED)
-            {
-                DebugP_assert(chHandle->chPrms.mappedChGrp >= UDMA_NUM_MAPPED_TX_GROUP);
-                Udma_rmFreeMappedRxCh(chHandle->rxChNum, drvHandle, chHandle->chPrms.mappedChGrp - UDMA_NUM_MAPPED_TX_GROUP);
-            }
+            else
 #endif
-            else if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
+#if (UDMA_SOC_PKT_UHC_CHAN_SUPPORTED > 0)
+            if((chHandle->chType & UDMA_CH_FLAG_UHC) == UDMA_CH_FLAG_UHC)
             {
                 Udma_rmFreeRxUhcCh(chHandle->rxChNum, drvHandle);
             }
             else
+#endif
             {
                 Udma_rmFreeRxCh(chHandle->rxChNum, drvHandle);
             }

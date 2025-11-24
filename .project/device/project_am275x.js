@@ -26,6 +26,7 @@ const component_file_list = [
     "source/networking/tsn/.project/project_tsn_uniconf.js",
     "source/networking/tsn/.project/project_tsn_unibase.js",
     "source/sdl/.project/project.js",
+    "source/sdl/sdl_sbl/.project/project.js",
     "source/signal_processing/.project/project.js",
     "test/unity/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",

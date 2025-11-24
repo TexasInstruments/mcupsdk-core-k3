@@ -1,13 +1,22 @@
-function getSdlMcuLbistInstance()
+function getSdlLbistInstances()
 {
-    return "LBIST_MAIN_M4F";
+    return ["LBIST_MAIN_M4F"];
 }
-function getSdlMcuPbistInstance()
+function getSdlPbistInstances()
 {
-    return "SDL_PBIST_INST_MCU";
+    return [
+        "SDL_PBIST_INST_MCU",
+    ]
 }
-
+function getSdlPbistAuxDevices()
+{
+    return [
+        [
+        ],
+    ]
+}
 exports = {
-    getSdlMcuLbistInstance,
-    getSdlMcuPbistInstance,
+    getSdlLbistInstances,
+    getSdlPbistInstances,
+    getSdlPbistAuxDevices,
 };

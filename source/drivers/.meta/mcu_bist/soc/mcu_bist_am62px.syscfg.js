@@ -1,13 +1,23 @@
-function getSdlMcuLbistInstance()
+function getSdlLbistInstances()
 {
-    return "LBIST_MCU_R5F";
+    return ["LBIST_MCU_R5F"];
 }
-function getSdlMcuPbistInstance()
+function getSdlPbistInstances()
 {
-    return "SDL_PBIST_INST_MCU";
+    return [
+        "SDL_PBIST_INST_MCU",
+    ]
 }
-
+function getSdlPbistAuxDevices()
+{
+    return [
+        [
+            "TISCI_DEV_MCU_PBIST0",
+        ],
+    ]
+}
 exports = {
-    getSdlMcuLbistInstance,
-    getSdlMcuPbistInstance,
+    getSdlLbistInstances,
+    getSdlPbistInstances,
+    getSdlPbistAuxDevices,
 };

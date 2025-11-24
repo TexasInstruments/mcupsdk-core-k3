@@ -72,21 +72,28 @@
 
 /* The following macros give the PSC register addresses of a few devices */
 #if defined (SOC_AM275X)
+#define PBIST_USB_PDSHIFT               (1)
 #define PBIST_USB0_ADDR                 (PBIST_PSC_BASE_ADDR + 4*CSL_MAIN_LPSC_MAIN_USB0)
 #endif
 
 #if defined (SOC_AM62X)
+#define PBIST_USB_PDSHIFT               (1)
 #define PBIST_USB0_ADDR                 (PBIST_PSC_BASE_ADDR + 4*CSL_MAIN_LPSC_USB_0)
 #define PBIST_USB1_ADDR                 (PBIST_PSC_BASE_ADDR + 4*CSL_MAIN_LPSC_USB_1)
+#define PBIST_A53_0_PDSHIFT             (16)
 #define PBIST_A53_0_ADDR                (PBIST_PSC_BASE_ADDR + 4*CSL_MAIN_LPSC_A53_0)
+#define PBIST_A53_1_PDSHIFT             (32)
 #define PBIST_A53_1_ADDR                (PBIST_PSC_BASE_ADDR + 4*CSL_MAIN_LPSC_A53_1)
+#define PBIST_A53_2_PDSHIFT             (64)
 #define PBIST_A53_2_ADDR                (PBIST_PSC_BASE_ADDR + 4*CSL_MAIN_LPSC_A53_2)
+#define PBIST_A53_3_PDSHIFT             (128)
 #define PBIST_A53_3_ADDR                (PBIST_PSC_BASE_ADDR + 4*CSL_MAIN_LPSC_A53_3)
 #endif
 
 /* The following macros will be used in modifying PSC register values */
 #define PBIST_PSC_NEXT_MASK             (0x0000003F)
 #define PBIST_PSC_FORCE_OFF             (0x80000001)
+#define PBIST_PSC_FORCE_ON              (0x80000003)
 #define PBIST_PSC_PTCMD_ADDR            (0x400120)
 #define PBIST_PSC_PTCMD_TIMEOUT         (1000000U)
 #define PBIST_PSC_PTSTAT_ADDR           (0x400128)
@@ -114,7 +121,7 @@ void PBIST_eventHandler( uint32_t instanceId );
  * used to perform this task for the affected IPs after PBIST test.
  */
 #if !defined(SOC_J722S)
-int32_t PBIST_PSCForceOff(uint32_t pscAddr)
+int32_t PBIST_PSCForceBit(uint32_t pscAddr, uint32_t pdShift, bool powerOn)
 {
     int32_t pscTimeout = PBIST_PSC_PTCMD_TIMEOUT;
     uint32_t pscRdValue;
@@ -124,21 +131,32 @@ int32_t PBIST_PSCForceOff(uint32_t pscAddr)
     pscRdValue = HW_RD_REG32(pscAddr);
     /* Delete bits corresponding to state */
     pscRdValue &= ~PBIST_PSC_NEXT_MASK;
-    /* Bits to be set for SyncRst state and Force bit */
-    pscRdValue |= PBIST_PSC_FORCE_OFF;
+
+    /* Bits to be set for SyncRst or On state and Force bit */
+    if (powerOn == true)
+    {
+        pscRdValue |= PBIST_PSC_FORCE_ON;
+    }
+    else
+    {
+        pscRdValue |= PBIST_PSC_FORCE_OFF;
+    }
+
     /* Write back to the PSC register */
-    HW_WR_REG32(pscAddr,pscRdValue);
-    /* Write 1 to PSC_PTCMD to cause state change */
-    HW_WR_REG32(PBIST_PSC_PTCMD_ADDR,0x1);
+    HW_WR_REG32(pscAddr, pscRdValue);
+    /* Write shift value to PSC_PTCMD to cause state change */
+    HW_WR_REG32(PBIST_PSC_PTCMD_ADDR, pdShift);
+    asm("dsb");
+    asm("isb");
 
     /* Wait until state transition is completed */
-    while(((HW_RD_REG32(PBIST_PSC_PTSTAT_ADDR) & 0x1) != 0) && (pscTimeout>0))
+    while (((HW_RD_REG32(PBIST_PSC_PTSTAT_ADDR) & pdShift) != 0) && (pscTimeout > 0))
     {
         pscTimeout--;
     }
 
     /* If the transition wait timed out */
-    if((HW_RD_REG32(PBIST_PSC_PTSTAT_ADDR) & 0x1) != 0)
+    if ((HW_RD_REG32(PBIST_PSC_PTSTAT_ADDR) & pdShift) != 0)
     {
         result = SDL_EFAIL;
     }
@@ -1030,7 +1048,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         /* This is the address of the PSC register corresponding to the USB IP */
         pscAddr = PBIST_USB0_ADDR;
 
-        status = PBIST_PSCForceOff(pscAddr);
+        status = PBIST_PSCForceBit(pscAddr, PBIST_USB_PDSHIFT, 0);
         if (status != SDL_PASS)
         {
             DebugP_log("   USB0: Force bit power-off failed\r\n");
@@ -1047,7 +1065,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
     if (testResult==0 && usbSkip)
     {
         pscAddr = PBIST_USB1_ADDR;
-        status = PBIST_PSCForceOff(pscAddr);
+        status = PBIST_PSCForceBit(pscAddr, PBIST_USB_PDSHIFT, 0);
         if (status != SDL_PASS)
         {
             DebugP_log("   USB1: Force bit power-off failed\r\n");
@@ -1064,7 +1082,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
     if (testResult==0 && a53Skip)
     {
         pscAddr = PBIST_A53_0_ADDR;
-        status = PBIST_PSCForceOff(pscAddr);
+        status = PBIST_PSCForceBit(pscAddr, PBIST_A53_0_PDSHIFT ,0);
         if (status != SDL_PASS)
         {
             DebugP_log("   A53-0: Force bit power-off failed\r\n");
@@ -1072,7 +1090,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         }
 
         pscAddr = PBIST_A53_1_ADDR;
-        status = PBIST_PSCForceOff(pscAddr);
+        status = PBIST_PSCForceBit(pscAddr, PBIST_A53_1_PDSHIFT, 0);
         if (status != SDL_PASS)
         {
             DebugP_log("   A53-1: Force bit power-off failed\r\n");
@@ -1080,7 +1098,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         }
 
         pscAddr = PBIST_A53_2_ADDR;
-        status = PBIST_PSCForceOff(pscAddr);
+        status = PBIST_PSCForceBit(pscAddr, PBIST_A53_2_PDSHIFT, 0);
         if (status != SDL_PASS)
         {
             DebugP_log("   A53-2: Force bit power-off failed\r\n");
@@ -1088,7 +1106,7 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         }
 
         pscAddr = PBIST_A53_3_ADDR;
-        status = PBIST_PSCForceOff(pscAddr);
+        status = PBIST_PSCForceBit(pscAddr, PBIST_A53_3_PDSHIFT, 0);
         if (status != SDL_PASS)
         {
             DebugP_log("   A53-3: Force bit power-off failed\r\n");

@@ -251,8 +251,7 @@ typedef struct {
 } I2CLLD_Message;
 
 /**
- *  \brief Data structure used with #I2C_lld_write(), #I2C_lld_writeIntr(),
- *  #I2C_lld_read(), #I2C_lld_readIntr()
+ *  \brief Data structure used with I2C_Memory_ExtendedParams
  */
 typedef struct {
 
@@ -497,60 +496,6 @@ int32_t I2C_lld_Transaction_init(I2CLLD_Transaction *transaction);
  *  \return \ref I2C_StatusCode
  */
 int32_t I2C_lld_Message_init(I2CLLD_Message *msg);
-
-/**
- *  \brief API to initiate the write transaction in polled mode
- *
- *  \param handle               [IN] Handle to the I2C instance used
- *  \param extendedParams       [IN] Pointer to structure containing transfer
- *                                   parameters
- *  \param timeout              [IN] Timeout for read operation in
- *                                   Micro Seconds \ref I2cTimeoutValues
- *
- *  \return \ref I2C_StatusCode
- */
-int32_t I2C_lld_write(I2CLLD_Handle handle,
-                      I2C_ExtendedParams *extendedParams,
-                      uint32_t timeout);
-
-/**
- *  \brief API to initiate the write transaction in Interrupt mode
- *
- *  \param handle               [IN] Handle to the I2C instance used
- *  \param extendedParams       [IN] Pointer to structure containing
- *                                   transfer parameters
- *
- *  \return \ref I2C_StatusCode
- */
-int32_t I2C_lld_writeIntr(I2CLLD_Handle handle,
-                          I2C_ExtendedParams *extendedParams);
-
-/**
- *  \brief API to initiate the read transaction in polled mode
- *
- *  \param handle               [IN] Handle to the I2C instance used
- *  \param extendedParams       [IN] Pointer to structure containing transfer
- *                                   parameters
- *  \param timeout              [IN] Timeout for read operation in
- *                                   Micro Seconds \ref I2cTimeoutValues
- *
- *  \return \ref I2C_StatusCode
- */
-int32_t I2C_lld_read(I2CLLD_Handle handle,
-                     I2C_ExtendedParams *extendedParams,
-                     uint32_t timeout);
-
-/**
- *  \brief API to initiate the read transaction in Interrupt mode
- *
- *  \param handle               [IN] Handle to the I2C instance used
- *  \param extendedParams       [IN] Pointer to structure containing
- *                                   transfer parameters
- *
- *  \return \ref I2C_StatusCode
- */
-int32_t I2C_lld_readIntr(I2CLLD_Handle handle,
-                         I2C_ExtendedParams *extendedParams);
 
 /**
  *  \brief Function to initiate a transfer from I2C in interrupt mode

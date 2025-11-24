@@ -243,6 +243,19 @@ Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 
 ### OSPI NOR Flash Performance  {#OSPI_DATA_SHEET}
 
+ - PHY condition: enabled
+ - Flash type: SERIAL NOR
+ - Flash protocol: FLASH_CFG_PROTO_8S_8S_8S
+ - Temperature: 51.40
+
+Non-DQS Tuning Algorithm    |    Tuning Time (ms)
+----------------------------|------------------------
+Default Tuning Window       |          1.51  ms
+Fast Tuning Window          |          0.55  ms
+
+ - Flash type: SERIAL NOR
+ - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
+
 DQS Tuning Algorithm        |    Tuning Time (ms)
 ----------------------------|------------------------
 Default Tuning Window       |          9.65 ms
@@ -275,6 +288,32 @@ Fast Tuning Window          |          6.43 ms
       5          |        DAC        |        Yes        |        0.40           |       6.23
       10         |        DAC        |        Yes        |        0.40           |       6.23
 
+ - Flash frequency: 50Mhz
+ - Flash protocol: FLASH_CFG_PROTO_8S_8S_8S
+ - Phy Condition: disabled
+
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
+-----------------|-------------------|-------------------|-----------------------|----------------------
+      1          |        DAC        |        No         |        0.42           |       4.09
+      5          |        DAC        |        No         |        0.42           |       4.09
+      10         |        DAC        |        No         |        0.42           |       4.09
+      1          |        DAC        |        Yes        |        0.42           |       48.73
+      5          |        DAC        |        Yes        |        0.42           |       48.76
+      10         |        DAC        |        Yes        |        0.42           |       48.76
+
+ - Flash frequency: 133Mhz
+ - Flash protocol: FLASH_CFG_PROTO_8S_8S_8S
+ - Phy Condition: enabled
+
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
+-----------------|-------------------|-------------------|-----------------------|----------------------
+      1          |        DAC        |        No         |        0.41           |       5.97
+      5          |        DAC        |        No         |        0.42           |       5.97
+      10         |        DAC        |        No         |        0.41           |       5.97
+      1          |        DAC        |        Yes        |        0.41           |       124.57
+      5          |        DAC        |        Yes        |        0.42           |       124.82
+      10         |        DAC        |        Yes        |        0.41           |       124.85
+
  - Flash frequency: 133Mhz
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
  - Phy Condition: enabled
@@ -287,6 +326,19 @@ Fast Tuning Window          |          6.43 ms
       1          |        DAC        |        Yes        |        0.41           |       233.80
       5          |        DAC        |        Yes        |        0.42           |       234.65
       10         |        DAC        |        Yes        |        0.42           |       234.76
+
+ - Flash frequency: 166Mhz
+ - Flash protocol: FLASH_CFG_PROTO_8S_8S_8S
+ - Phy Condition: enabled
+
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
+-----------------|-------------------|-------------------|-----------------------|----------------------
+      1          |        DAC        |        No         |        0.41           |       6.72
+      5          |        DAC        |        No         |        0.42           |       6.72
+      10         |        DAC        |        No         |        0.42           |       6.72
+      1          |        DAC        |        Yes        |        0.42           |       153.20
+      5          |        DAC        |        Yes        |        0.42           |       153.58
+      10         |        DAC        |        Yes        |        0.42           |       153.62
 
  - Flash frequency: 166Mhz
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
@@ -320,6 +372,16 @@ Fast Tuning Window          |          6.43 ms
       1          |       INDAC       |        No         |        0.39          |       6.25
       5          |       INDAC       |        No         |        0.40          |       6.25
       10         |       INDAC       |        No         |        0.40          |       6.25
+
+- Flash frequency: 50Mhz
+- Flash protocol: FLASH_CFG_PROTO_8S_8S_8S
+- Phy Condition: disabled
+
+ Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
+-----------------|-------------------|-------------------|-----------------------|----------------------
+      1          |       INDAC       |        No         |        0.45           |       13.93
+      5          |       INDAC       |        No         |        0.46           |       13.93
+      10         |       INDAC       |        No         |        0.46           |       13.93
 
  ### GPIO latency
 GPIO latency is measured by connecting 2 GPIOs externaly and configuring one GPIO as input and the other as output. Then 1 is written to GPIO output and

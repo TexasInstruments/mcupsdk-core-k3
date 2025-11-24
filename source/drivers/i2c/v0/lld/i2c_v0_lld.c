@@ -1624,7 +1624,7 @@ void I2C_lld_targetIsr(void *args)
                 if((rawStat & I2C_INT_TRANSMIT_UNDER_FLOW) != 0U)
                 {
                     /* Write dummy byte */
-                    I2CControllerDataPut(object->baseAddr, I2C_DUMMY_BYTE);
+                    I2CControllerDataPut(object->baseAddr, (uint8_t) I2C_DUMMY_BYTE);
 
                     object->intStatusErr |= I2C_INT_TRANSMIT_UNDER_FLOW;
 
@@ -1668,7 +1668,7 @@ void I2C_lld_targetIsr(void *args)
                 if((rawStat & I2C_INT_TRANSMIT_UNDER_FLOW) != 0U)
                 {
                     /* Write dummy byte */
-                    I2CControllerDataPut(object->baseAddr, I2C_DUMMY_BYTE);
+                    I2CControllerDataPut(object->baseAddr, (uint8_t) I2C_DUMMY_BYTE);
 
                     object->intStatusErr |= I2C_INT_TRANSMIT_UNDER_FLOW;
 

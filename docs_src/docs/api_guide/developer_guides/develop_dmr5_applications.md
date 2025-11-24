@@ -4,8 +4,6 @@
 
 \attention It is recommended to use the TIFS version provided with the release for ensuring compatibility between TIFS and device manager. Using the TIFS from different @VAR_SDK_NAME release is not recommended and may cause TIFS/ DM functionality to break.
 
-\attention **DM R5 Logging Behavior**: By default, DM R5 application logs (from Sciserver, Sciclient Direct, and IPC) will only appear on **WKUP UART**. See \ref DM_R5_LOGGING_CHANGE for details on the default configuration and how to modify trace settings.
-
 ## Introduction
 
 \attention DeepSleep low power mode (LPM) is not supported if the DM R5 is used for a general purpose application. This is because when the SoC goes to any LPM, the context of peripherals used by DM R5 will be lost. To use DM R5 for a general purpose application, disable LPM support. Refer \ref DISABLE_LPM to know how to disable LPM.
@@ -34,9 +32,9 @@ DM R5 application logging (including Sciserver, Sciclient Direct, and IPC logs) 
 
 **Default Configuration:**
 
-- `trace_dst_enables = TISCI_BOARDCFG_TRACE_DST_UART0` (UART destination enabled)
+- `trace_dst_enables = TISCI_BOARDCFG_TRACE_DST_UART0 | TISCI_BOARDCFG_TRACE_DST_ITM | TISCI_BOARDCFG_TRACE_DST_MEM` (UART, CCS Console, and Memory destinations enabled)
 - `trace_src_enables = TISCI_BOARDCFG_TRACE_SRC_USER` (USER source enabled)
-- **DM R5 application logs will only appear on WKUP UART by default**
+- **DM R5 application logs will appear on all destinations, i.e WKUP UART, CCS Console, and memory buffer by default**
 - TIFS logs and DM PM/RM logs remain disabled
 - This provides basic debugging capability without overwhelming UART traffic from verbose PM/RM or TIFS logs
 

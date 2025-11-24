@@ -142,14 +142,14 @@ The TIFS and DM logging system uses board configuration to control where logs ar
 
 **Default Configuration:**
 
-- `trace_dst_enables = TISCI_BOARDCFG_TRACE_DST_UART0` (UART destination enabled)
+- `trace_dst_enables = TISCI_BOARDCFG_TRACE_DST_UART0 | TISCI_BOARDCFG_TRACE_DST_ITM | TISCI_BOARDCFG_TRACE_DST_MEM` (UART, CCS Console, and Memory destinations enabled)
 - `trace_src_enables = TISCI_BOARDCFG_TRACE_SRC_USER` (USER source enabled)
-- With these defaults, DM R5 application logs (from Sciserver, Sciclient Direct, and IPC) will only appear on WKUP UART
+- With these defaults, DM R5 application logs (from Sciserver, Sciclient Direct, and IPC) will appear on **all** destinations, i.e WKUP UART, CCS Console, and memory buffer
 - TIFS logs and DM PM/RM logs remain disabled by default
 
 To enable **all** TIFS and DM traces, change the `#undef SYSFW_TRACE_ENABLE` to `#define SYSFW_TRACE_ENABLE` in `source/drivers/device_manager/sciclient.h`. Then rebuild the boardcfg as explained in the \ref BOARCFG_GEN section. This enables **all** the following trace sources and destinations -
 
-- **Trace Destinations** (`trace_dst_enables`): Controls where logs are output
+- **Trace Destinations** (`trace_dst_enables`): Controls where logs are output. (**All enabled by default**)
   - `TISCI_BOARDCFG_TRACE_DST_UART0` - WKUP UART output
   - `TISCI_BOARDCFG_TRACE_DST_MEM` - Memory buffer
   - `TISCI_BOARDCFG_TRACE_DST_ITM` - CCS Console
@@ -226,7 +226,6 @@ Depending on the destination flags enabled, logs can be viewed from different lo
 
 - Logs appear in CCS Console when debugging with Code Composer Studio
 
-\note Multiple destinations can be enabled simultaneously. For example, enabling both UART0 and MEM allows viewing logs in real-time on UART while also storing them in memory for later analysis.
 \endcond
 
 ### SYSFW Trace Parser {#SYSFW_TRACE_PARSER}

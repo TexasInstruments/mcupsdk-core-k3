@@ -63,7 +63,7 @@ void resetReqIsr(void *args)
 
     if (status == SystemP_SUCCESS)
     {
-#if defined(SOX_AM62X)
+#if defined(SOC_AM62X)
         /* Disable LPSC MCU2Main */
         status = SOC_getPSCState(SOC_PSC_DOMAIN_ID_MCU, CSL_WKUP_GP_CORE_CTL_MCU,
                 CSL_WKUP_LPSC_MCU2MAIN_ISO, &pscDomainState, &pscModuleStateMCU2Main);
@@ -73,7 +73,7 @@ void resetReqIsr(void *args)
             status = SOC_setPSCState(SOC_PSC_DOMAIN_ID_MCU, CSL_WKUP_GP_CORE_CTL_MCU, \
                             CSL_WKUP_LPSC_MCU2MAIN_ISO, SOC_PSC_DISABLE);
         }
-#elif defined (SOX_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+#elif defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
         /* Disable LPSC DM2MCU */
         status = SOC_getPSCState(SOC_PSC_DOMAIN_ID_MCU, CSL_WKUP_GP_CORE_CTL_MCU,
                 CSL_WKUP_LPSC_DM2MCU_ISO, &pscDomainState, &pscModuleStateMCU2Main);
@@ -108,12 +108,22 @@ void resetReqIsr(void *args)
                         CSL_WKUP_LPSC_MAIN2MCU_ISO, pscModuleStateMain2MCU);
     }
 
+
+#if defined (SOC_AM62X)
     /* Restore back previous state of LSPC MCU2Main */
-    if (((status == SystemP_SUCCESS)) && (pscModuleStateMCU2Main != SOC_PSC_DISABLE))
+    if ((status == SystemP_SUCCESS) && (pscModuleStateMCU2Main != SOC_PSC_DISABLE))
     {
         SOC_setPSCState(SOC_PSC_DOMAIN_ID_MCU, CSL_WKUP_GP_CORE_CTL_MCU, \
-                        CSL_WKUP_LPSC_MAIN2MCU_ISO, pscModuleStateMCU2Main);
+                        CSL_WKUP_LPSC_MCU2MAIN_ISO, pscModuleStateMCU2Main);
     }
+#elif defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX)
+    /* Restore back previous state of LSPC DM2MCU */
+    if ((status == SystemP_SUCCESS) && (pscModuleStateMCU2Main != SOC_PSC_DISABLE))
+    {
+        SOC_setPSCState(SOC_PSC_DOMAIN_ID_MCU, CSL_WKUP_GP_CORE_CTL_MCU, \
+                        CSL_WKUP_LPSC_DM2MCU_ISO, pscModuleStateMCU2Main);
+    }
+#endif
 }
 
 void reset_isolation_main (void * args)

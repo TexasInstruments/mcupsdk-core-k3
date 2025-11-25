@@ -1,4 +1,4 @@
-# Release Notes 11.01.00 {#RELEASE_NOTES_11_01_00_PAGE}
+# Release Notes 11.02.00 {#RELEASE_NOTES_11_02_00_PAGE}
 
 [TOC]
 
@@ -19,14 +19,9 @@ AM62Dx | MCU R5F, WKUP R5F, A53, C75 | @VAR_BOARD_NAME EVM (referred to as am62d
 
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
- SBL initiates LBSIT and PSBIST for MCU R5F core before booting MCU R5F now                    | SBL
- HS-SE boot support                                                                            | SBL
- Hello World CPP example added for A53 and C7x                                                 | examples
- DDR inline ECC suppot                                                                         | DDR
- Updated DDR configuration from DDR configuration tool v10.30                                  | DDR
- ECC Functional Test example for single bit errors is added                                    | SDL
+ TBD                                                                                           | TBD
 
-### Experimental Features {#EXPERIMENTAL_FEATURES_11_01_00}
+### Experimental Features {#EXPERIMENTAL_FEATURES}
 
 \attention Features listed below are early versions and should be considered as "experimental".
 \attention Users can evaluate the feature, however the feature is not fully tested at TI side.
@@ -35,17 +30,15 @@ Feature                                                                         
 
 Feature                                                             | Module
 --------------------------------------------------------------------|--------------------------
-FreeRTOS AMP support on A53.                                        | DPL, FreeRTOS
-A53 FreeRTOS AMP examples demonstrating usage of ethernet           | Networking
-AUDIOLIB                                                            | Moudles in AUDIOLIB
+TBD                                                                 | TBD
 
 ## Dependent Tools and Compiler Information
 \attention It is recommended to use the TIFS version provided with the release for ensuring compatibility between TIFS and device manager. Using the TIFS from different MCU+SDK release is not recomended and may cause TIFS/ DM functionality to break.
 
 Tools                   | Supported CPUs             | Version
 ------------------------|----------------------------|-----------------------
-Code Composer Studio    | MCU-R5F, C75               | 20.2.0
-SysConfig               | MCU-R5F, DM-R5F, C75       | 1.24.0, build 4150
+Code Composer Studio    | MCU-R5F, C75               | 20.3.1
+SysConfig               | MCU-R5F, DM-R5F, C75       | 1.24.2, build 4234
 TI ARM CLANG            | MCU-R5F, WKUP-R5F          | 4.0.1.LTS
 GCC AARCH64             | A53                        | 9.2-2019.12
 C7000-CGT               | C75                        | 5.0.0.LTS
@@ -344,52 +337,10 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <th> Applicable Releases
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12267, EXT_EP-12267}
-    <td> AM62D: MCRC Udma Init failure in semi cpu and auto mode configuration - MCRC semi cpu and auto mode examples fail at udma init step
-    <td> SDL
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/TBD, TBD}
+    <td> TBD
+    <td> TBD
     <td> 11.01.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12721, EXT_EP-12721}
-    <td> ECC TCM example cannot be built for AM62D
-    <td> SDL
-    <td> 11.01.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-98, EXT_SITMPUSW-98}
-    <td> Audio playback stops on applying breakpoint during CCS debugging
-    <td> McASP
-    <td> 11.00.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-101, EXT_SITMPUSW-101}
-    <td> Not able to import example projects in CCS v20
-    <td> Build
-    <td> 11.00.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-104, EXT_SITMPUSW-104}
-    <td> Missing $Board to build HSMAppImageGen in /mcu_plus_sdk/am62dx/imports.mak
-    <td> Build
-    <td> 11.00.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-105, EXT_SITMPUSW-105}
-    <td> MMCSD driver uses snprintf function from libc
-    <td> MMCSD
-    <td> 11.00.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-77, EXT_SITMPUSW-77}
-    <td> Modify Read capture delay logic for Tap Mode
-    <td> OSPI
-    <td> 11.00.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-106, EXT_SITMPUSW-106}
-    <td> OSPI Phy Tuning Data is not written correctly in Flash_norOspiOpen()
-    <td> OSPI
-    <td> 10.01.00
 </tr>
 </table>
 
@@ -405,123 +356,11 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <th> Workaround
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-108, EXT_SITMPUSW-108}
-    <td> freeRTOS/C7x - Task Size is very big
-    <td> FreeRTOS
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/TBD, TBD}
+    <td> TBD
+    <td> TBD
     <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-109, EXT_SITMPUSW-109}
-    <td> Wrong comments on HwiP_inISR() API
-    <td> DPL
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-78, EXT_SITMPUSW-78}
-    <td> MMCSD Sysconfig provides options to configure PHY type
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-84, EXT_SITMPUSW-84}
-    <td> MMCSD error recovery sequence isn't implemented correctly
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-110, EXT_SITMPUSW-110}
-    <td> eMMC Init Code Missing DLL Register Settings needed for Initial Legacy SDR Mode Phase
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-113, EXT_SITMPUSW-113}
-    <td> eMMC PHY I/O Calibration not getting executed during eMMC boot
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-114, EXT_SITMPUSW-114}
-    <td> MMCSD_enableBootPartition implements two mutually exclusive concepts as one function
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-123, EXT_SITMPUSW-123}
-    <td> MMCSD driver does not follow the SWITCH command sequence correctly
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-124, EXT_SITMPUSW-124}
-    <td> EXTCSD HS_TIMING register is set incorrectly at certain places in the driver
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-125, EXT_SITMPUSW-125}
-    <td> MMCSD driver uses infinite loop instead of timeout for checking fields of PRESENTSTATE register
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-126, EXT_SITMPUSW-126}
-    <td> Timing issues with MMCSD host controller driver
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-128, EXT_SITMPUSW-128}
-    <td> EMMC timiing parameters to be changed based on SOC and MMC instance
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-120, EXT_SITMPUSW-120}
-    <td> C7x task size/alignment should be 8KB (not 16KB)
-    <td> FreeRTOS
-    <td> 11.00.00
-    <td> Change the stack alignment
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-121, EXT_SITMPUSW-121}
-    <td> FORCE bit not book keeped properly for MCSPI DMA mode of operation
-    <td> MCSPI
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12276, EXT_EP-12276}
-    <td> ECC: Firewall related aggregators failures - ECC Aggregators SDL_SMS0_SMS_TIFS_ECC, SDL_SMS0_SMS_HSM_ECC, SDL_SA3_SS0_SA3SS_AM62A_DMSS_ECCAGGR and SDL_SA3_SS0_SA3SS_AM62A_SA_UL_ECC_AGGR fail because of firewall access issues faced by SDL
-    <td> SDL
-    <td> 10.01.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12283, EXT_EP-12283}
-    <td> ECC aggregators CPSW0, CSI RX are failing on AM62A and CPSW0 on AM62D.
-    <td> SDL
-    <td> 09.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12280, EXT_EP-12280}
-    <td> Running MCU LBIST on SBL causes JTAG connection issues to MCU R5F
-    <td> SDL
-    <td> 09.00.00
-    <td> No known workaround
+    <td> TBD
 </tr>
 </table>
 

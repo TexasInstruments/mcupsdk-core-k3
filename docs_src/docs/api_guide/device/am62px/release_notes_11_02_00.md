@@ -1,4 +1,4 @@
-# Release Notes 11.01.01 {#RELEASE_NOTES_11_01_01_PAGE}
+# Release Notes 11.02.00 {#RELEASE_NOTES_11_02_00_PAGE}
 
 [TOC]
 
@@ -17,11 +17,9 @@ AM62P  | MCU R5F, WKUP R5F           | @VAR_BOARD_NAME EVM (referred to as am62p
 
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
-ECDSA support on SBL                                                                           | SBL
-Optimizations on ethfw init time                                                               | EthFW
+TBD                                                                                            | TBD
 
-
-### Experimental Features {#_EXPERIMENTAL_FEATURES_11_01_01}
+### Experimental Features {#EXPERIMENTAL_FEATURES}
 
 \attention Features listed below are early versions and should be considered as "experimental".
 \attention Users can evaluate the feature, however the feature is not fully tested at TI side.
@@ -37,8 +35,8 @@ Ethernet traffic sharing accross multiple cores, called Ethernet Firmware       
 
 Tools/Components        | Supported CPUs           | Version
 ------------------------|--------------------------|-----------------------
-Code Composer Studio    | MCU-R5F, WKUP-R5F        | 20.2.0
-SysConfig               | MCU-R5F, WKUP-R5F        | 1.24.0, build 4150
+Code Composer Studio    | MCU-R5F, WKUP-R5F        | 20.3.1
+SysConfig               | MCU-R5F, WKUP-R5F        | 1.24.2, build 4234
 TI ARM CLANG            | MCU-R5F, WKUP-R5F        | 4.0.1.LTS
 GCC AARCH64             | A53                      | 9.2-2019.12
 FreeRTOS Kernel         | MCU-R5F, WKUP-R5F        | 11.1.0
@@ -263,6 +261,7 @@ MCASP driver
 
 ## Fixed Issues
 
+
 <table>
 <tr>
     <th> ID
@@ -271,82 +270,10 @@ MCASP driver
     <th> Applicable Releases
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-155, EXT_SITMPUSW-155}
-    <td> eMMC Driver Error Recovery Recursion can lead to System Crashes
-    <td> eMMC
-    <td> 11.00.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-153, EXT_SITMPUSW-153}
-    <td> eMMC Driver Error Interrupt Flags accessed in Wrong Register
-    <td> eMMC
-    <td> 09.01.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-110, EXT_SITMPUSW-110}
-    <td> eMMC Init Code Missing DLL Register Settings needed for Initial Legacy SDR Mode Phase
-    <td> eMMC
-    <td> 09.01.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-113, EXT_SITMPUSW-113}
-    <td> eMMC PHY I/O Calibration not getting executed during eMMC boot
-    <td> eMMC
-    <td> 09.01.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-125, EXT_SITMPUSW-125}
-    <td> MMCSD driver uses infinite loop instead of timeout for checking fields of PRESENTSTATE register
-    <td> eMMC
-    <td> 09.01.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-123, EXT_SITMPUSW-123}
-    <td> MMCSD driver does not follow the SWITCH command sequence correctly
-    <td> eMMC
-    <td> 09.01.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-84, EXT_SITMPUSW-84}
-    <td> MMCSD error recovery sequence isn't implemented correctly
-    <td> eMMC
-    <td> 10.01.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-156, EXT_SITMPUSW-156}
-    <td> Sciserver: gSecHeaderSizeWords variable is not thread safe
-    <td> SCI Server
-    <td> 09.01.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-157, EXT_SITMPUSW-157}
-    <td> gMemBootloaderConfig in the bootloader driver is not thread safe
-    <td> SBL
-    <td> 09.01.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-158, EXT_SITMPUSW-158}
-    <td> OSPI_flashExecCmd has a couple of checks where the code may get stuck
-    <td> OSPI
-    <td> 09.01.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-160, EXT_SITMPUSW-160}
-    <td> RSA PSS signing in the appimage signing script is broken
-    <td> Scripts
-    <td> 09.01.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-161, EXT_SITMPUSW-161}
-    <td> Possibility of different sequence id initialization in a multi thread environment
-    <td> DM
-    <td> 09.01.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-162, EXT_SITMPUSW-162}
-    <td> Sciclient, update the context ID check in sciclient ISR
-    <td> DM
-    <td> 09.01.00
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/TBD, TBD}
+    <td> TBD
+    <td> TBD
+    <td> 11.01.00
 </tr>
 </table>
 
@@ -362,137 +289,11 @@ MCASP driver
     <th> Workaround
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-85, EXT_SITMPUSW-1085}
-    <td> Flash_eraseSector and Flash_norOspiEraseSector does not erases the mentioned sector.
-    <td> Flash
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/TBD, TBD}
+    <td> TBD
+    <td> TBD
     <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-28, EXT_SITMPUSW-28}
-    <td> Outstanding mailbox messages prevent suspend
-    <td> IPC
-    <td> 08.03.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-109, EXT_SITMPUSW-109}
-    <td> Wrong comments on HwiP_inISR() API
-    <td> DPL
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-78, EXT_SITMPUSW-78}
-    <td> MMCSD Sysconfig provides options to configure PHY type
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-124, EXT_SITMPUSW-124}
-    <td> EXTCSD HS_TIMING register is set incorrectly at certain places in the driver
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-126, EXT_SITMPUSW-126}
-    <td> Timing issues with MMCSD host controller driver
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-127, EXT_SITMPUSW-127}
-    <td> Incorrect handling of the CAPABILITIES register in the eMMC initialization
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-128, EXT_SITMPUSW-128}
-    <td> EMMC timiing parameters to be changed based on SOC and MMC instance
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-137, EXT_SITMPUSW-137}
-    <td> Random CRC errors observed for eMMC HS400 mode on random reset test
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-138, EXT_SITMPUSW-138}
-    <td> MMCSD_read & MMCSD_write function are not designed simple & readable
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-139, EXT_SITMPUSW-139}
-    <td> Comment and Implementation does not match in the MMCSD_retune
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-117, EXT_SITMPUSW-117}
-    <td> Linux Kernel IPC Examples are broken
-    <td> IPC
-    <td> 11.00.00
-    <td> Change ti.ipc4.ping-pong to rpmsg-client-sample in the example
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-121, EXT_SITMPUSW-121}
-    <td> FORCE bit not book keeped properly for MCSPI DMA mode of operation
-    <td> MCSPI
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-135, EXT_SITMPUSW-135}
-    <td> RTC Test application failing intermittently
-    <td> RTC
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-159, EXT_SITMPUSW-159}
-    <td> SBL SD is broken on AM62P 11.1.1
-    <td> SD
-    <td> 11.01.01
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12277, EXT_EP-12277}
-    <td> AM62Px: ECC: SDL_MCAN1_MCANSS_MSGMEM_WRAP_ECC_AGGR aggregator is failing
-    <td> SDL
-    <td> 10.01.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12279, EXT_EP-12279}
-    <td> CSI RX ECC aggregators are failing on AM62P/AM62X
-    <td> SDL
-    <td> 09.01.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12280, EXT_EP-12280}
-    <td> Running MCU LBIST on SBL causes JTAG connection issues to MCU R5F - After running MCU LBIST, not able to connect to any core through JTAG on AM62px
-    <td> SDL
-    <td> 09.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12276, EXT_EP-12276}
-    <td> ECC: Firewall related aggregators failures - ECC Aggregators SDL_SA3_SS0_SA3SS_AM62A_DMSS_ECCAGGR, SDL_SA3_SS0_SA3SS_AM62A_SA_UL_ECC_AGGR fail because of firewall access issues faced by SDL
-    <td> SDL
-    <td> 10.01.00
-    <td> No known workaround
+    <td> TBD
 </tr>
 </table>
 

@@ -1,4 +1,4 @@
-# Release Notes 11.01.00 {#RELEASE_NOTES_11_01_00_PAGE}
+# Release Notes 11.02.00 {#RELEASE_NOTES_11_02_00_PAGE}
 
 [TOC]
 
@@ -22,11 +22,10 @@ AM62x  | M4F, R5F, A53   | SK-AM62 (referred as am62x-sk in code), SK-AM62-LP (r
 
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
-ECC Functional Test example for single bit errors is added                                     | SDL
-Updated DDR configuration from DDR configuration tool v10.30                                   | DDR
+TBD                                                                                            | TBD
 
 
-### Experimental Features {#EXPERIMENTAL_FEATURES_11_01_00}
+### Experimental Features {#EXPERIMENTAL_FEATURES}
 
 \attention Features listed below are early versions and should be considered as "experimental".
 \attention Users can evaluate the feature, however the feature is not fully tested at TI side.
@@ -35,13 +34,13 @@ Updated DDR configuration from DDR configuration tool v10.30                    
 
 Feature                                                             | Module
 --------------------------------------------------------------------|--------------------------
-FreeRTOS AMP support on A53.                                        | DPL, FreeRTOS
-A53 FreeRTOS AMP examples demonstrating usage of ethernet           | Networking
+FreeRTOS support on A53 (AMP, SMP)                                  | DPL, FreeRTOS
+All drivers and all examples on A53 (AMP, SMP)                      | Drivers
 
 ### FreeRTOS Support on A53
 Is                                                      | Is Not
 --------------------------------------------------------|--------------------------
-FreeRTOS AMP support on A53                             | GPU Support
+FreeRTOS support on A53                                 | GPU Support
 Drivers listed for A53 in "SOC Device Drivers" section  | Low power mode support
 Ethernet Networking                                     | CSI RX Driver
 -                                                       | WiFi, USB, BLE Drivers
@@ -53,8 +52,8 @@ Ethernet Networking                                     | CSI RX Driver
 
 Tools/Components        | Supported CPUs | Version
 ------------------------|----------------|-----------------------
-Code Composer Studio    | M4F, R5F, A53  | 20.2.0
-SysConfig               | M4F, R5F, A53  | 1.24.0, build 4150
+Code Composer Studio    | M4F, R5F, A53  | 20.3.1
+SysConfig               | M4F, R5F, A53  | 1.24.2, build 4234
 TI ARM CLANG            | M4F, R5F       | 4.0.1.LTS
 GCC AARCH64             | A53            | 9.2-2019.12
 FreeRTOS Kernel         | M4F, R5F, A53  | 11.1.0
@@ -325,6 +324,7 @@ ROM Checksum | R5F            | No
 
 ## Fixed Issues
 
+
 <table>
 <tr>
     <th> ID
@@ -333,33 +333,15 @@ ROM Checksum | R5F            | No
     <th> Applicable Releases
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-96, EXT_SITMPUSW-96}
-    <td> Coremark pro core test only has 1 iteration test for am62x
-    <td> Benchmark Examples
-    <td> 11.00.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-105, EXT_SITMPUSW-105}
-    <td> MMCSD driver uses snprintf function from libc
-    <td> MMCSD
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/TBD, TBD}
+    <td> TBD
+    <td> TBD
     <td> 11.01.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-77, EXT_SITMPUSW-77}
-    <td> Modify Read capture delay logic for Tap Mode
-    <td> OSPI
-    <td> 11.01.00
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-106, EXT_SITMPUSW-106}
-    <td> OSPI Phy Tuning Data is not written correctly in Flash_norOspiOpen()
-    <td> OSPI
-    <td> 10.01.00
 </tr>
 </table>
 
-
 ## Known Issues
+
 
 <table>
 <tr>
@@ -370,158 +352,11 @@ ROM Checksum | R5F            | No
     <th> Workaround
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-85, EXT_SITMPUSW-1085}
-    <td> Flash_eraseSector and Flash_norOspiEraseSector does not erases the mentioned sector.
-    <td> Flash
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/TBD, TBD}
+    <td> TBD
+    <td> TBD
     <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-28, EXT_SITMPUSW-28}
-    <td> Outstanding mailbox messages prevent suspend
-    <td> IPC
-    <td> 08.03.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-87, EXT_SITMPUSW-87}
-    <td> Sysconfig crashing when adding large number of GPIO pins
-    <td> GPIO
-    <td> 08.03.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-109, EXT_SITMPUSW-109}
-    <td> Wrong comments on HwiP_inISR() API
-    <td> DPL
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-78, EXT_SITMPUSW-78}
-    <td> MMCSD Sysconfig provides options to configure PHY type
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-84, EXT_SITMPUSW-84}
-    <td> MMCSD error recovery sequence isn't implemented correctly
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-110, EXT_SITMPUSW-110}
-    <td> eMMC Init Code Missing DLL Register Settings needed for Initial Legacy SDR Mode Phase
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-113, EXT_SITMPUSW-113}
-    <td> eMMC PHY I/O Calibration not getting executed during eMMC boot
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-114, EXT_SITMPUSW-114}
-    <td> MMCSD_enableBootPartition implements two mutually exclusive concepts as one function
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-123, EXT_SITMPUSW-123}
-    <td> MMCSD driver does not follow the SWITCH command sequence correctly
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-124, EXT_SITMPUSW-124}
-    <td> EXTCSD HS_TIMING register is set incorrectly at certain places in the driver
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-125, EXT_SITMPUSW-125}
-    <td> MMCSD driver uses infinite loop instead of timeout for checking fields of PRESENTSTATE register
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-126, EXT_SITMPUSW-126}
-    <td> Timing issues with MMCSD host controller driver
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-128, EXT_SITMPUSW-128}
-    <td> EMMC timiing parameters to be changed based on SOC and MMC instance
-    <td> MMCSD
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-117, EXT_SITMPUSW-117}
-    <td> Linux Kernel IPC Examples are broken
-    <td> IPC
-    <td> 11.00.00
-    <td> Change ti.ipc4.ping-pong to rpmsg-client-sample in the example
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-121, EXT_SITMPUSW-121}
-    <td> FORCE bit not book keeped properly for MCSPI DMA mode of operation
-    <td> MCSPI
-    <td> 11.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-133, EXT_SITMPUSW-133}
-    <td> Falcon Boot through SBL is not supported
-    <td> SBL
-    <td> 09.02.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-134, EXT_SITMPUSW-134}
-    <td> GPIO input interrupt example not working on A53 AMP
-    <td> GPIO
-    <td> 10.01.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12275, EXT_EP-12275}
-    <td> AM62x: ECC: SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR and SDL_DMASS0_DMSS_AM62_ECCAGGR aggregators are failing.
-    <td> SDL
-    <td> 10.01.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12276, EXT_EP-12276}
-    <td> ECC: Firewall related aggregator failures - ECC Aggregators SDL_SA3_SS0_SA3SS_AM62A_DMSS_ECCAGGR and SDL_SMS0_SMS_TIFS_ECC fail because of firewall access issues faced by SDL
-    <td> SDL
-    <td> 10.01.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12278, EXT_EP-12278}
-    <td> ECC Aggregator SMS0_SMS_HSM_ECC Aggr fails on AM62x.
-    <td> SDL
-    <td> 10.00.00
-    <td> No known workaround
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12279, EXT_EP-12279}
-    <td> CSI RX ECC aggregators are failing on AM62P/AM62X
-    <td> SDL
-    <td> 09.01.00
-    <td> No known workaround
+    <td> TBD
 </tr>
 </table>
 

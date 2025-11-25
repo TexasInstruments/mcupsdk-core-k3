@@ -87,7 +87,7 @@ void ClockP_init(void)
     timerHwiParams.intNum = gClockConfig.timerHwiIntNum;
     timerHwiParams.eventId = gClockConfig.eventId;
     timerHwiParams.callback = ClockP_timerTickIsr;
-    timerHwiParams.isPulse = 0;
+    timerHwiParams.isPulse = 1;
     HwiP_construct(&gClockCtrl.timerHwiObj, &timerHwiParams);
 
     /* start the tick timer */

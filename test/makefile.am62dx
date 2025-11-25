@@ -231,6 +231,7 @@ help:
 	@echo  $(MAKE) -s -C drivers/ipc_notify_benchmark/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ipc_notify_benchmark_l2ram/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ipc_rpmsg/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_system_load/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  .
 
 # Various Component Targets
@@ -620,6 +621,7 @@ BUILD_COMBO_EXAMPLE_ALL += test_ipc_notify_am62dx-evm_system_freertos_nortos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_notify_benchmark_am62dx-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_notify_benchmark_l2ram_am62dx-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_am62dx-evm_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += test_mcasp_system_load_am62dx-evm_system_freertos
 
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
 # Various Private Example Targets
@@ -1109,6 +1111,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_ipc_rpmsg_am62dx-evm_system_freertos:
 	$(MAKE) -C drivers/ipc_rpmsg/am62dx-evm/system_freertos -f makefile all
 
+ test_mcasp_system_load_am62dx-evm_system_freertos:
+	$(MAKE) -C drivers/mcasp/mcasp_system_load/am62dx-evm/system_freertos -f makefile all
+
 
 BUILD_COMBO_EXAMPLE_CLEAN_ALL =
 # Various Example Clean Targets
@@ -1270,6 +1275,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_notify_am62dx-evm_system_freertos_nort
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_notify_benchmark_am62dx-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_notify_benchmark_l2ram_am62dx-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_am62dx-evm_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcasp_system_load_am62dx-evm_system_freertos_clean
 
 BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL =
 # Various Private Example Targets
@@ -1759,6 +1765,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_ipc_rpmsg_am62dx-evm_system_freertos_clean:
 	$(MAKE) -C drivers/ipc_rpmsg/am62dx-evm/system_freertos -f makefile clean
 
+ test_mcasp_system_load_am62dx-evm_system_freertos_clean:
+	$(MAKE) -C drivers/mcasp/mcasp_system_load/am62dx-evm/system_freertos -f makefile clean
+
 
 BUILD_COMBO_EXAMPLE_SCRUB_ALL =
 # Various Example Scrub Targets
@@ -1920,6 +1929,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_notify_am62dx-evm_system_freertos_nort
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_notify_benchmark_am62dx-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_notify_benchmark_l2ram_am62dx-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_am62dx-evm_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcasp_system_load_am62dx-evm_system_freertos_scrub
 
 BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL =
 # Various Private Example Targets
@@ -2408,6 +2418,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_ipc_rpmsg_am62dx-evm_system_freertos_scrub:
 	$(MAKE) -C drivers/ipc_rpmsg/am62dx-evm/system_freertos -f makefile scrub
+
+ test_mcasp_system_load_am62dx-evm_system_freertos_scrub:
+	$(MAKE) -C drivers/mcasp/mcasp_system_load/am62dx-evm/system_freertos -f makefile scrub
 
 
 sbl: libs

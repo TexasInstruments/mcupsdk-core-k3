@@ -38,6 +38,7 @@
 #include <string.h>
 #include <inttypes.h>
 #include <unity.h>
+#include <board/flash.h>
 #include <drivers/ospi.h>
 #include <drivers/soc.h>
 #include <kernel/dpl/DebugP.h>
@@ -134,6 +135,9 @@ static int32_t test_ospi_read_write_test_in_mb(TestData_SizesAttr* testDataCurOb
 static void test_ospi_gdevcfg_set_flash_protocol(uint32_t givenflashProtocol);
 static void set_test_flash_type(void);
 static void test_ospi_unaligned_read_write(void *args);
+static void test_ospi_validateOtp(void* args);
+static void test_ospi_fallBack(void* args);
+static void test_ospi_fallBack_to_1s1s1s(void* args);
 static void test_ospi_read_write(TestData_SizesAttr* testDataCurObj, uint32_t flashOffset, uint32_t dataSize);
 static void test_ospi_read_write_different_frequencies(void *args);
 static void test_ospi_read_write_indirect_different_frequencies(void *args);
@@ -176,6 +180,21 @@ static OSPI_phyParams gTestDefaultParams =
     .minReadDelay        = 0,
     .maxReadDelay        = 4,
     .minPassSize         = 100,
+    .diagonalShift       = 10,
+    .maxDiagonalShift    = 70,
+    .numConsecutiveFail  = 5,
+    .numConsecutivePass  = 10,
+    .rdDelaySearchStep   = 16,
+};
+
+static OSPI_phyParams gTestFailParams =
+{
+    .radius              = 0,
+    .rxTxDllMin          = 0,
+    .rxTxDllMax          = 0,
+    .minReadDelay        = 0,
+    .maxReadDelay        = 0,
+    .minPassSize         = 0,
     .diagonalShift       = 10,
     .maxDiagonalShift    = 70,
     .numConsecutiveFail  = 5,
@@ -274,6 +293,15 @@ void test_main(void *args)
     Drivers_ospiClose();
     Drivers_ospiOpen();
     RUN_TEST(test_ospi_read_write_indirect_different_frequencies, 8012, NULL);
+    Drivers_ospiClose();
+    Drivers_ospiOpen();
+    RUN_TEST(test_ospi_validateOtp, 8493, NULL);
+    Drivers_ospiClose();
+    Drivers_ospiOpen();
+    RUN_TEST(test_ospi_fallBack, 8494, NULL);
+    Drivers_ospiClose();
+    Drivers_ospiOpen();
+    RUN_TEST(test_ospi_fallBack_to_1s1s1s, 9211, NULL);
     Drivers_ospiClose();
 
     UNITY_END();
@@ -1501,6 +1529,225 @@ static void test_ospi_read_write_indirect_different_frequencies(void *args)
         test_ospi_read_write_indirect_50Mhz(&attrs, offset, devConfig);
 
         *(uint32_t*)&gOspiConfig[CONFIG_OSPI0].attrs->readMode = OSPI_READ_MODE_DAC;
+
+        config->attrs = tempAttrs;
+    }
+}
+
+static void test_ospi_validateOtp(void* args)
+{
+    if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NOR)
+    {
+        int32_t retVal = SystemP_SUCCESS;
+        uint32_t blk, page, txChunkCnt;
+        uint32_t offset = TEST_OSPI_FLASH_OFFSET_BASE;
+
+        OSPI_Handle ospiHandle = OSPI_getHandle(CONFIG_OSPI0);
+        OSPI_Config *config = (OSPI_Config*)ospiHandle;
+        OSPI_Attrs attrs;
+        const CSL_ospi_flash_cfgRegs *pReg;
+
+        memcpy((void*)&attrs, config->attrs, sizeof(OSPI_Attrs));
+        pReg = (const CSL_ospi_flash_cfgRegs *)(attrs.baseAddr);
+
+        Drivers_ospiClose();
+
+        attrs.validateOtp = TRUE;
+        const OSPI_Attrs *tempAttrs = config->attrs;
+        config->attrs = &attrs;
+
+        Drivers_ospiOpen();
+        retVal = Board_driversOpen();
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+        /* Block erase at the test offset */
+        Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset, &blk, &page);
+        retVal = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+        for(txChunkCnt = 0; txChunkCnt < (TEST_OSPI_2KB_SIZE)/TEST_OSPI_DATA_SIZE; txChunkCnt++)
+        {
+            memcpy(gOspiTestTxBulkBuf + txChunkCnt*sizeof(gOspiTestTxBuf) , gOspiTestTxBuf , sizeof(gOspiTestTxBuf));
+        }
+
+        retVal += Flash_write(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestTxBulkBuf, TEST_OSPI_2KB_SIZE);
+
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+        retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestRxBuf, TEST_OSPI_2KB_SIZE);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+        TEST_ASSERT_EQUAL_MEMORY(gOspiTestRxBuf, gOspiTestTxBulkBuf, TEST_OSPI_2KB_SIZE);
+
+        /* Set the read delay */
+        CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG,
+                       OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_DELAY_FLD,
+                       0);
+
+        /* Set TX DLL delay */
+        CSL_REG32_FINS(&pReg->PHY_CONFIGURATION_REG,
+                       OSPI_FLASH_CFG_PHY_CONFIGURATION_REG_PHY_CONFIG_TX_DLL_DELAY_FLD,
+                       0);
+
+        retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestRxBuf, TEST_OSPI_2KB_SIZE);
+
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+        TEST_ASSERT_EQUAL_MEMORY(gOspiTestRxBuf, gOspiTestTxBulkBuf, TEST_OSPI_2KB_SIZE);
+
+        Board_driversClose();
+
+        config->attrs = tempAttrs;
+    }
+}
+
+static void test_ospi_fallBack(void* args)
+{
+    if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NOR)
+    {
+        int32_t retVal = SystemP_SUCCESS;
+        uint32_t blk, page, txChunkCnt;
+        uint32_t offset = TEST_OSPI_FLASH_OFFSET_BASE;
+
+        OSPI_Handle ospiHandle = OSPI_getHandle(CONFIG_OSPI0);
+        OSPI_Config *config = (OSPI_Config*)ospiHandle;
+        OSPI_Attrs attrs;
+        const CSL_ospi_flash_cfgRegs *pReg;
+
+        memcpy((void*)&attrs, config->attrs, sizeof(OSPI_Attrs));
+        pReg = (const CSL_ospi_flash_cfgRegs *)(attrs.baseAddr);
+
+        Drivers_ospiClose();
+
+        attrs.validateOtp = TRUE;
+        const OSPI_Attrs *tempAttrs = config->attrs;
+        config->attrs = &attrs;
+
+        Drivers_ospiOpen();
+        retVal = Board_driversOpen();
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+        /* Block erase at the test offset */
+        Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset, &blk, &page);
+        retVal = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+        for(txChunkCnt = 0; txChunkCnt < (TEST_OSPI_2KB_SIZE)/TEST_OSPI_DATA_SIZE; txChunkCnt++)
+        {
+            memcpy(gOspiTestTxBulkBuf + txChunkCnt*sizeof(gOspiTestTxBuf) , gOspiTestTxBuf , sizeof(gOspiTestTxBuf));
+        }
+
+        retVal += Flash_write(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestTxBulkBuf, TEST_OSPI_2KB_SIZE);
+
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+        retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestRxBuf, TEST_OSPI_2KB_SIZE);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+        TEST_ASSERT_EQUAL_MEMORY(gOspiTestRxBuf, gOspiTestTxBulkBuf, TEST_OSPI_2KB_SIZE);
+
+        /* Set the read delay */
+        CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG,
+                       OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_DELAY_FLD,
+                       0);
+
+        /* Set TX DLL delay */
+        CSL_REG32_FINS(&pReg->PHY_CONFIGURATION_REG,
+                       OSPI_FLASH_CFG_PHY_CONFIGURATION_REG_PHY_CONFIG_TX_DLL_DELAY_FLD,
+                       0);
+
+        memcpy((void *)&config->attrs->phyConfiguration.phyParams, \
+               (void *)&gTestFailParams, \
+               sizeof(gTestFailParams));
+
+        retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestRxBuf, TEST_OSPI_2KB_SIZE);
+
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+        TEST_ASSERT_EQUAL_MEMORY(gOspiTestRxBuf, gOspiTestTxBulkBuf, TEST_OSPI_2KB_SIZE);
+
+        memcpy((void *)&config->attrs->phyConfiguration.phyParams, \
+               (void *)&gTestDefaultParams, \
+               sizeof(gTestDefaultParams));
+
+        Board_driversClose();
+
+        config->attrs = tempAttrs;
+    }
+}
+
+static void test_ospi_fallBack_to_1s1s1s(void* args)
+{
+    if(modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NOR)
+    {
+        int32_t retVal = SystemP_SUCCESS;
+        uint32_t blk, page, txChunkCnt;
+        uint32_t offset = TEST_OSPI_FLASH_OFFSET_BASE;
+
+        OSPI_Handle ospiHandle = OSPI_getHandle(CONFIG_OSPI0);
+        OSPI_Config *config = (OSPI_Config*)ospiHandle;
+        OSPI_Attrs attrs;
+        const CSL_ospi_flash_cfgRegs *pReg;
+
+        memcpy((void*)&attrs, config->attrs, sizeof(OSPI_Attrs));
+        pReg = (const CSL_ospi_flash_cfgRegs *)(attrs.baseAddr);
+
+        Drivers_ospiClose();
+
+        attrs.validateOtp = TRUE;
+        const OSPI_Attrs *tempAttrs = config->attrs;
+        config->attrs = &attrs;
+
+        Drivers_ospiOpen();
+        retVal = Board_driversOpen();
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+        /* Block erase at the test offset */
+        Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset, &blk, &page);
+        retVal = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+        for(txChunkCnt = 0; txChunkCnt < (TEST_OSPI_2KB_SIZE)/TEST_OSPI_DATA_SIZE; txChunkCnt++)
+        {
+            memcpy(gOspiTestTxBulkBuf + txChunkCnt*sizeof(gOspiTestTxBuf) , gOspiTestTxBuf , sizeof(gOspiTestTxBuf));
+        }
+
+        retVal += Flash_write(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestTxBulkBuf, TEST_OSPI_2KB_SIZE);
+
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+        retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestRxBuf, TEST_OSPI_2KB_SIZE);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+        TEST_ASSERT_EQUAL_MEMORY(gOspiTestRxBuf, gOspiTestTxBulkBuf, TEST_OSPI_2KB_SIZE);
+
+        /* Set the read delay */
+        CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG,
+                       OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_DELAY_FLD,
+                       0);
+
+        /* Set TX DLL delay */
+        CSL_REG32_FINS(&pReg->PHY_CONFIGURATION_REG,
+                       OSPI_FLASH_CFG_PHY_CONFIGURATION_REG_PHY_CONFIG_TX_DLL_DELAY_FLD,
+                       0);
+
+        gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyClksCmd = 0;
+        memcpy((void *)&config->attrs->phyConfiguration.phyParams, \
+               (void *)&gTestFailParams, \
+               sizeof(gTestFailParams));
+
+        retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestRxBuf, TEST_OSPI_2KB_SIZE);
+
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+        TEST_ASSERT_EQUAL_MEMORY(gOspiTestRxBuf, gOspiTestTxBulkBuf, TEST_OSPI_2KB_SIZE);
+
+        memcpy((void *)&config->attrs->phyConfiguration.phyParams, \
+               (void *)&gTestDefaultParams, \
+               sizeof(gTestDefaultParams));
+        gFlashConfig[CONFIG_FLASH0].devConfig->protocolCfg.dummyClksCmd = 3;
+
+        Board_driversClose();
 
         config->attrs = tempAttrs;
     }

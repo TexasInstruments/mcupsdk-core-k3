@@ -1750,7 +1750,7 @@ static int32_t Flash_norOspiFallback(Flash_Config *config)
          *  If flash fails to operate in 8d8d8d mode at 25MHz fall back to 1s1s1s
          *  mode at 50MHz
          */
-        if(status == SystemP_FAILURE)
+        if(status != SystemP_SUCCESS)
         {
 
             /* Reset the flash */

@@ -136,6 +136,9 @@ static void PBIST_SBL_API_Test(SDL_PBIST_inst instance);
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
+
+static uint64_t PBIST_profilingTime = 0;
+
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -228,8 +231,8 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
     bool PBISTResult;
     SDL_PBIST_testType testType;
 
-    uint64_t startTime , testStartTime,  testEndTime, endTime;
-    uint64_t prepTime, diffTime, restoreTime;
+    uint64_t startTime, testStartTime, testEndTime, endTime;
+    uint64_t prepTime, diffTime, restoreTime, instanceTime;
     int i;
 #if !defined(SOC_J722S)
     uint32_t pscAddr;
@@ -276,8 +279,6 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
     }
 #endif
 
-    /* Get start time of test */
-    startTime = ClockP_getTimeUsec();
 #ifdef PBIST_POST_CORE_MAX
 
     if ((testResult == 0) &&
@@ -305,6 +306,9 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
         }
     }
 #endif  /* PBIST_POST_CORE_MAX */
+
+    /* Get start time of test */
+    startTime = ClockP_getTimeUsec();
 
     if ((testResult == 0) && (PBIST_TestHandleArray[instanceId].procRstNeeded))
     {
@@ -975,9 +979,15 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
     prepTime = testStartTime - startTime;
     diffTime = testEndTime - testStartTime;
     restoreTime = endTime - testEndTime;
+    instanceTime = prepTime + diffTime + restoreTime;
+    PBIST_profilingTime += instanceTime;
     DebugP_log("  Delta Cores prep time in micro secs %d \r\n", (uint32_t)prepTime );
     DebugP_log("  Delta PBIST execution time in micro secs %d \r\n", (uint32_t)diffTime );
     DebugP_log("  Delta Cores restore time in micro secs %d \r\n", (uint32_t)restoreTime );
+    if (testResult == 0)
+    {
+        DebugP_log("  Total PBIST time for %s in micro secs %u \r\n", PBIST_TestHandleArray[instanceId].testName, (uint32_t)instanceTime );
+    }
     DebugP_log(" PBIST complete %s, test index %d\r\n",
                 PBIST_TestHandleArray[instanceId].testName,
                 instanceId);
@@ -1014,6 +1024,7 @@ int32_t PBIST_funcTest(void)
 {
     int32_t    testResult = 0;
     int i;
+    uint64_t totalProfTime = 0;
 
     testResult = PBIST_commonInit();
 
@@ -1047,6 +1058,9 @@ int32_t PBIST_funcTest(void)
 
         if (testResult == 0)
         {
+            DebugP_log("\r\n Total time for PBIST negative tests in microseconds: %llu\r\n", PBIST_profilingTime);
+            totalProfTime += PBIST_profilingTime;
+            PBIST_profilingTime = 0;
             /* Then run the pbist test */
             for (i = 0; i < PBIST_NUM_INSTANCE; i++)
             {
@@ -1058,6 +1072,12 @@ int32_t PBIST_funcTest(void)
                 {
                     break;
                 }
+            }
+            if (testResult == 0)
+            {
+                totalProfTime += PBIST_profilingTime;
+                DebugP_log("\r\n Total time for PBIST positive tests in microseconds: %llu\r\n", PBIST_profilingTime);
+                DebugP_log("\r\n Total time for PBIST test runs in microseconds: %llu\r\n", totalProfTime);
             }
         }
     }

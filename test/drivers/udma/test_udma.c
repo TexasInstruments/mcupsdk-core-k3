@@ -486,6 +486,20 @@ extern void TestUdma_chStatsBcdmaInstForTxRx(void *args);
 extern void TestUdma_blkcopyReloadTransferIsr(void *args);
 extern void TestUdma_channelApiNegativeCases(void *args);
 extern void TestUdma_multiChannelPauseResumeTest(void *args);
+extern void TestUdma_initWithInvalidInstanceId(void *args);
+extern void TestUdma_deinitWithPendingResources(void *args);
+extern void TestUdma_deinitWithOpenChannels(void *args);
+extern void TestUdma_initWithSkipGlobalEventReg(void *args);
+extern void TestUdma_eventUnregisterWithPendingDescriptors(void *args);
+extern void TestUdma_sharedEventCallbackMismatch(void *args);
+extern void TestUdma_eventRegVintrBitsExhausted(void *args);
+extern void TestUdma_virtToPhyFxnNullCheck(void *args);
+extern void TestUdma_phyToVirtFxnNullCheck(void *args);
+extern void TestUdma_ringFlushRawEmptyRingReset(void *args);
+extern void TestUdma_rmInitPrmsNullCheck(void *args);
+extern void TestUdma_mappedChRangeCheck(void *args);
+extern void TestUdma_ringAllocFreeLifecycle(void *args);
+
 #ifdef ENABLE_MT_TESTS
 extern void TestUdma_chSetChainingRxTxMultithreadIntr(void *args);
 extern void TestUdma_ringOverflowMultithread(void *args);
@@ -517,6 +531,15 @@ extern void TestUdma_dmautilsAutoIncCompression(void *args);
 extern void TestUdma_dmautilsDruDirectCircular(void *args);
 extern void TestUdma_dmautilsDruDirectPauseResume(void *args);
 #endif
+extern void TestUdma_flowConfigInvalidIndex(void *args);
+extern void TestUdma_chCloseOesAllocNotDeallocated(void *args);
+extern void TestUdma_chOpenInvalidUtcId(void *args);
+extern void TestUdma_chConfigNullArgs(void *args);
+extern void TestUdma_chGetNumRxandUtc(void *args);
+extern void TestUdma_chGetTdCqRingHandle(void *args);
+extern void TestUdma_chSetChainingUnsupportedChannel(void *args);
+extern void TestUdma_getMappedChRingAttributesInvalidMappedTxCh(void *args);
+
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -898,6 +921,27 @@ void test_udma_main(void *args)
     RUN_TEST(TestUdma_dmautilsDruDirectInterrupt, 8294, NULL);
     RUN_TEST(TestUdma_druOwnerUDMAC, 8602, NULL);
 #endif
+    RUN_TEST(TestUdma_initWithInvalidInstanceId, 11048, NULL);
+    RUN_TEST(TestUdma_deinitWithPendingResources, 11049, NULL);
+    RUN_TEST(TestUdma_deinitWithOpenChannels, 11050, NULL);
+    RUN_TEST(TestUdma_initWithSkipGlobalEventReg, 11051, NULL);
+    RUN_TEST(TestUdma_eventUnregisterWithPendingDescriptors, 11052, NULL);
+    RUN_TEST(TestUdma_sharedEventCallbackMismatch, 11053, NULL);
+    RUN_TEST(TestUdma_eventRegVintrBitsExhausted, 11054, NULL);
+    RUN_TEST(TestUdma_virtToPhyFxnNullCheck, 11055, NULL);
+    RUN_TEST(TestUdma_phyToVirtFxnNullCheck, 11056, NULL);
+    RUN_TEST(TestUdma_ringFlushRawEmptyRingReset, 11057, NULL);
+    RUN_TEST(TestUdma_rmInitPrmsNullCheck, 11058, NULL);
+    RUN_TEST(TestUdma_mappedChRangeCheck, 11059, NULL);
+    RUN_TEST(TestUdma_ringAllocFreeLifecycle, 11060, NULL);
+    RUN_TEST(TestUdma_flowConfigInvalidIndex, 11061, NULL);
+    RUN_TEST(TestUdma_chCloseOesAllocNotDeallocated, 11062, NULL);
+    RUN_TEST(TestUdma_chOpenInvalidUtcId, 11063, NULL);
+    RUN_TEST(TestUdma_chConfigNullArgs, 11064, NULL);
+    RUN_TEST(TestUdma_chGetNumRxandUtc, 11065, NULL);
+    RUN_TEST(TestUdma_chGetTdCqRingHandle, 11066, NULL);
+    RUN_TEST(TestUdma_chSetChainingUnsupportedChannel, 11069, NULL);
+    RUN_TEST(TestUdma_getMappedChRingAttributesInvalidMappedTxCh, 11070, NULL);
 
     UNITY_END();
 }
@@ -7517,7 +7561,6 @@ static void TestUdma_mappedTxPreferredChannelAllocation(void *args)
     retVal = Udma_deinit(drvHandle);
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 }
-
 /**
  * \brief Mapped TX any available channel allocation test.
  *

@@ -573,6 +573,7 @@ void TestMmcsd_crcRecovery(void *args)
     int32_t retVal = SystemP_SUCCESS;
     uint32_t numBlocksPerIter = 0U;
     uint32_t blockSize;
+    uint32_t itapDlySel;
     const CSL_mmc_sscfgRegs *baseReg = (const CSL_mmc_sscfgRegs *)gMmcsdAttrs[CONFIG_MMCSD_EMMC].ssBaseAddr;
 
     gMmcsdAttrs[CONFIG_MMCSD_EMMC].supportedModes = TestMMCSD_modes[2];
@@ -593,8 +594,8 @@ void TestMmcsd_crcRecovery(void *args)
     retVal = MMCSD_write(handle, TestMMCSD_txBuf, TEST_MMCSD_EMMC_START_BLK,  numBlocksPerIter);
     TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
 
-    /* Read the curent itap value */
-    uint32_t itapDlySel = 
+    /* Read the curent itap  values */
+    itapDlySel = 
                (CSL_REG32_RD(&baseReg->PHY_CTRL_4_REG) & CSL_MMC_SSCFG_PHY_CTRL_4_REG_ITAPDLYSEL_MASK) 
                                                        >> CSL_MMC_SSCFG_PHY_CTRL_4_REG_ITAPDLYSEL_SHIFT;
 

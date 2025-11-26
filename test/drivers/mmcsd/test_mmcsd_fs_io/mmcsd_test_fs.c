@@ -70,6 +70,7 @@ static void TestMmcsd_init40MWrBuffer(uint8_t startNum);
 #endif
 static void TestMmcsd_getModeSettings(uint32_t type);
 static int32_t TestMmcsd_fileIo(char *fileName, char* fileData);
+static uint32_t TestMmcsd_isFormatNeeded(uint32_t partitionSize, uint32_t freeSize);
 
 /* ========================================================================== */
 /*                           Function Definitions                             */
@@ -105,6 +106,7 @@ static int32_t TestMmcsd_fileIo(char *fileName, char* fileData);
 void TestMmcsd_emmcFileIo(void *args)
 {
     int32_t retVal = SystemP_SUCCESS;
+    uint32_t formatNeeded = 0;
     uint32_t loopVar = 0;
     FF_Error_t errVal;
 
@@ -149,23 +151,25 @@ void TestMmcsd_emmcFileIo(void *args)
         DebugP_log("The sector count is %d\r\n", partitionDetails.sectorCount);
         DebugP_log("The partition size  is %d\r\n", partitionDetails.partitionSize);
         DebugP_log("The free space  is %d\r\n", partitionDetails.partitionFreeSize);
+        formatNeeded = TestMmcsd_isFormatNeeded(partitionDetails.partitionSize,
+                                                partitionDetails.partitionFreeSize);
 
-        if (partitionDetails.sectorCount == 0U)
+        if ((partitionDetails.sectorCount == 0U) || (formatNeeded))
         {
             /* No partition found, create a `TEST_MMCSD_FAT_PARTITION_SIZE` partition */
             uint32_t blockSize = MMCSD_getBlockSize(gMmcsdHandle[CONFIG_MMCSD_EMMC]);
             uint32_t partSectorCount = TEST_MMCSD_FAT_PARTITION_SIZE / blockSize;
 
             errVal = FF_MMCSDCreateAndFormatPartition(pDisk, partSectorCount);
-            TEST_ASSERT_EQUAL(pdPASS, errVal);
+            TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
             /* Now mount the partition */
             errVal = FF_MMCSDMountPartition(pDisk, "/emmc0");
-            TEST_ASSERT_EQUAL(pdPASS, errVal);
+            TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
             /* Finally check the partition again */
             errVal = FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
-            TEST_ASSERT_EQUAL(pdPASS, errVal);
+            TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
             if (partitionDetails.sectorCount == 0U)
             {
@@ -216,6 +220,7 @@ void TestMmcsd_emmcNestedDirectories(void *args)
     char filePath[100] = {0};
     uint8_t fillByte[TEST_MMCSD_FILE_COUNT] = {0};
     uint32_t f = 0, size = 0;
+    uint32_t formatNeeded = 0; 
     FF_FILE* testFile = NULL;
     uint32_t blockSize;
     FF_Error_t errVal;
@@ -232,20 +237,22 @@ void TestMmcsd_emmcNestedDirectories(void *args)
     FF_Disk_t *pDisk = &gFFDisks[FF_PARTITION_EMMC0];
 
     FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
+    formatNeeded = TestMmcsd_isFormatNeeded(partitionDetails.partitionSize,
+                                    partitionDetails.partitionFreeSize);
 
-    if (partitionDetails.sectorCount == 0U)
+    if ((partitionDetails.sectorCount == 0U) || (formatNeeded))
     {
         blockSize = MMCSD_getBlockSize(gMmcsdHandle[CONFIG_MMCSD_EMMC]);
         uint32_t partSectorCount = TEST_MMCSD_FAT_PARTITION_SIZE / blockSize;
 
         errVal = FF_MMCSDCreateAndFormatPartition(pDisk, partSectorCount);
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDMountPartition(pDisk, "/emmc0");
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         if (partitionDetails.sectorCount == 0U)
         {
@@ -421,6 +428,7 @@ void TestMmcsd_concurrentFatSdTransfer(void *args)
     FF_MMCSD_PartitionDetails partitionDetails;
     FF_Error_t errVal;
     int32_t loopVar;
+    uint32_t formatNeeded = 0;
     TaskP_Params taskParams1, taskParams2;
 
     TestMmcsd_initWrBuffer();
@@ -431,20 +439,22 @@ void TestMmcsd_concurrentFatSdTransfer(void *args)
     FF_Disk_t *pDisk = &gFFDisks[FF_PARTITION_SD0];
 
     FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
+    formatNeeded = TestMmcsd_isFormatNeeded(partitionDetails.partitionSize,
+                                    partitionDetails.partitionFreeSize);
 
-    if (partitionDetails.sectorCount == 0U)
+    if ((partitionDetails.sectorCount == 0U) || (formatNeeded))
     {
         blockSize = MMCSD_getBlockSize(gMmcsdHandle[CONFIG_MMCSD_SD]);
         uint32_t partSectorCount = TEST_MMCSD_FAT_PARTITION_SIZE / blockSize;
 
         errVal = FF_MMCSDCreateAndFormatPartition(pDisk, partSectorCount);
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDMountPartition(pDisk, "/sd0");
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         if (partitionDetails.sectorCount == 0U)
         {
@@ -524,6 +534,7 @@ void TestMmcsd_concurrentFatEmmcTransfer(void *args)
     FF_MMCSD_PartitionDetails partitionDetails;
     FF_Error_t errVal;
     int32_t loopVar;
+    uint32_t formatNeeded = 0;
     TaskP_Params taskParams1, taskParams2;
 
     TestMmcsd_initWrBuffer();
@@ -534,20 +545,22 @@ void TestMmcsd_concurrentFatEmmcTransfer(void *args)
     FF_Disk_t *pDisk = &gFFDisks[FF_PARTITION_EMMC0];
 
     FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
+    formatNeeded = TestMmcsd_isFormatNeeded(partitionDetails.partitionSize,
+                                            partitionDetails.partitionFreeSize);
 
-    if (partitionDetails.sectorCount == 0U)
+    if ((partitionDetails.sectorCount == 0U) || (formatNeeded))
     {
         blockSize = MMCSD_getBlockSize(gMmcsdHandle[CONFIG_MMCSD_EMMC]);
         uint32_t partSectorCount = TEST_MMCSD_FAT_PARTITION_SIZE / blockSize;
 
         errVal = FF_MMCSDCreateAndFormatPartition(pDisk, partSectorCount);
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDMountPartition(pDisk, "/emmc0");
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         if (partitionDetails.sectorCount == 0U)
         {
@@ -627,10 +640,11 @@ void TestMmcsd_testConcurrentFatEmmcSdTransfer(void *args)
     uint32_t sdBlockSize;
     uint32_t emmcBlockSize;
     int32_t retVal = SystemP_SUCCESS;
-    FF_MMCSD_PartitionDetails sd_partitionDetails;
-    FF_MMCSD_PartitionDetails emmc_partitionDetails;
+    FF_MMCSD_PartitionDetails sdPartitionDetails;
+    FF_MMCSD_PartitionDetails emmcPartitionDetails;
     FF_Error_t errVal;
     int32_t loopVar;
+    uint32_t formatNeeded = 0;
     TaskP_Params taskParams1, taskParams2;
 
     TestMmcsd_initWrBuffer();
@@ -640,23 +654,25 @@ void TestMmcsd_testConcurrentFatEmmcSdTransfer(void *args)
 
     /* For SD card */
     FF_Disk_t *pSdDisk = &gFFDisks[FF_PARTITION_SD0];
-    FF_MMCSDGetPartitionDetails(pSdDisk, &sd_partitionDetails);
+    FF_MMCSDGetPartitionDetails(pSdDisk, &sdPartitionDetails);
+    formatNeeded = TestMmcsd_isFormatNeeded(sdPartitionDetails.partitionSize,
+                                            sdPartitionDetails.partitionFreeSize);
 
-    if (sd_partitionDetails.sectorCount == 0U)
+    if ((sdPartitionDetails.sectorCount == 0U) || (formatNeeded))
     {
         sdBlockSize = MMCSD_getBlockSize(gMmcsdHandle[CONFIG_MMCSD_SD]);
         uint32_t partSectorCount = TEST_MMCSD_FAT_PARTITION_SIZE / sdBlockSize;
 
         errVal = FF_MMCSDCreateAndFormatPartition(pSdDisk, partSectorCount);
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDMountPartition(pSdDisk, "/sd0");
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
-        errVal = FF_MMCSDGetPartitionDetails(pSdDisk, &sd_partitionDetails);
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        errVal = FF_MMCSDGetPartitionDetails(pSdDisk, &sdPartitionDetails);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
-        if (sd_partitionDetails.sectorCount == 0U)
+        if (sdPartitionDetails.sectorCount == 0U)
         {
             retVal = SystemP_FAILURE;
         }
@@ -669,23 +685,25 @@ void TestMmcsd_testConcurrentFatEmmcSdTransfer(void *args)
 
     /* For EMMC */
     FF_Disk_t *pEmmcDisk = &gFFDisks[FF_PARTITION_EMMC0];
-    FF_MMCSDGetPartitionDetails(pEmmcDisk, &emmc_partitionDetails);
+    FF_MMCSDGetPartitionDetails(pEmmcDisk, &emmcPartitionDetails);
+    formatNeeded = TestMmcsd_isFormatNeeded(emmcPartitionDetails.partitionSize,
+                                        emmcPartitionDetails.partitionFreeSize);
 
-    if (emmc_partitionDetails.sectorCount == 0U)
+    if ((emmcPartitionDetails.sectorCount == 0U) || (formatNeeded))
     {
         emmcBlockSize = MMCSD_getBlockSize(gMmcsdHandle[CONFIG_MMCSD_EMMC]);
         uint32_t partSectorCount = TEST_MMCSD_FAT_PARTITION_SIZE / emmcBlockSize;
 
         errVal = FF_MMCSDCreateAndFormatPartition(pEmmcDisk, partSectorCount);
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDMountPartition(pEmmcDisk, "/emmc0");
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
-        errVal = FF_MMCSDGetPartitionDetails(pEmmcDisk, &emmc_partitionDetails);
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        errVal = FF_MMCSDGetPartitionDetails(pEmmcDisk, &emmcPartitionDetails);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
-        if (emmc_partitionDetails.sectorCount == 0U)
+        if (emmcPartitionDetails.sectorCount == 0U)
         {
             retVal = SystemP_FAILURE;
         }
@@ -764,6 +782,7 @@ void TestMmcsd_sdNestedDirectories(void *args)
     char filePath[100] = {0};
     uint8_t fillByte[TEST_MMCSD_FILE_COUNT] = {0};
     uint32_t f = 0, size = 0;
+    uint32_t formatNeeded = 0;
     FF_FILE* testFile = NULL;
     FF_Error_t errVal;
     uint32_t blockSize;
@@ -781,20 +800,22 @@ void TestMmcsd_sdNestedDirectories(void *args)
     FF_Disk_t *pDisk = &gFFDisks[FF_PARTITION_SD0];
 
     FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
+    formatNeeded = TestMmcsd_isFormatNeeded(partitionDetails.partitionSize,
+                                        partitionDetails.partitionFreeSize);
 
-    if (partitionDetails.sectorCount == 0U)
+    if ((partitionDetails.sectorCount == 0U) || (formatNeeded))
     {
         blockSize = MMCSD_getBlockSize(gMmcsdHandle[CONFIG_MMCSD_SD]);
         uint32_t partSectorCount = TEST_MMCSD_FAT_PARTITION_SIZE / blockSize;
 
         errVal = FF_MMCSDCreateAndFormatPartition(pDisk, partSectorCount);
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDMountPartition(pDisk, "/sd0");
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         if (partitionDetails.sectorCount == 0U)
         {
@@ -898,6 +919,7 @@ void TestMmcsd_sdFileIo(void *args)
     int32_t retVal = SystemP_SUCCESS;
     uint32_t loopVar = 0;
     FF_Error_t errVal;
+    uint32_t formatNeeded = 0;
 
     DebugP_log ("Starting MMC SD file IO test \r\n");
 
@@ -937,23 +959,25 @@ void TestMmcsd_sdFileIo(void *args)
         FF_MMCSD_PartitionDetails partitionDetails;
 
         FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
+        formatNeeded = TestMmcsd_isFormatNeeded(partitionDetails.partitionSize,
+                                                partitionDetails.partitionFreeSize);
 
-        if (partitionDetails.sectorCount == 0U)
+        if ((partitionDetails.sectorCount == 0U) || (formatNeeded))
         {
             /* No partition found, create a `TEST_MMCSD_FAT_PARTITION_SIZE` partition */
             uint32_t blockSize = MMCSD_getBlockSize(gMmcsdHandle[CONFIG_MMCSD_SD]);
             uint32_t partSectorCount = TEST_MMCSD_FAT_PARTITION_SIZE / blockSize;
 
             errVal = FF_MMCSDCreateAndFormatPartition(pDisk, partSectorCount);
-            TEST_ASSERT_EQUAL(pdPASS, errVal);
+            TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
             /* Now mount the partition */
             errVal = FF_MMCSDMountPartition(pDisk, "/sd0");
-            TEST_ASSERT_EQUAL(pdPASS, errVal);
+            TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
             /* Finally check the partition again */
             errVal = FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
-            TEST_ASSERT_EQUAL(pdPASS, errVal);
+            TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
             if (partitionDetails.sectorCount == 0U)
             {
@@ -1003,6 +1027,7 @@ void TestMmcsd_largeSdFileIo(void *args)
     uint32_t numIter = 3;
     FF_FILE *testFp;
     FF_Error_t errVal;
+    uint32_t formatNeeded = 0;
 
     DebugP_log ("Starting MMCSD large file IO test \r\n");
     gMmcsdAttrs[CONFIG_MMCSD_SD].supportedModes = TestMMCSD_sdModes[0];
@@ -1038,23 +1063,25 @@ void TestMmcsd_largeSdFileIo(void *args)
     FF_MMCSD_PartitionDetails partitionDetails;
 
     FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
+    formatNeeded = TestMmcsd_isFormatNeeded(partitionDetails.partitionSize,
+                                        partitionDetails.partitionFreeSize);
 
-    if (partitionDetails.sectorCount == 0U)
+    if ((partitionDetails.sectorCount == 0U) || (formatNeeded))
     {
         /* No partition found, create a `TEST_MMCSD_FAT_PARTITION_SIZE` partition */
         uint32_t blockSize = MMCSD_getBlockSize(gMmcsdHandle[CONFIG_MMCSD_SD]);
         uint32_t partSectorCount = TEST_MMCSD_FAT_PARTITION_SIZE / blockSize;
 
         errVal = FF_MMCSDCreateAndFormatPartition(pDisk, partSectorCount);
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         /* Now mount the partition */
         errVal = FF_MMCSDMountPartition(pDisk, "/sd0");
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         /* Finally check the partition again */
         errVal = FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         if (partitionDetails.sectorCount == 0U)
         {
@@ -1108,6 +1135,25 @@ void TestMmcsd_largeSdFileIo(void *args)
 /* ========================================================================== */
 /*                         Static  Function Definitions                       */
 /* ========================================================================== */
+
+/* Checks if the existing partition needs to be formatted */
+static uint32_t TestMmcsd_isFormatNeeded(uint32_t partitionSize, uint32_t freeSize)
+{
+    uint32_t retVal;
+    
+    /* If the free size is greater than original size or if there is
+     * low space left in the FAT partition then a format is needed
+     */
+    if((freeSize > partitionSize) || ((partitionSize - freeSize) < 4 ))
+    {
+        retVal = 1;
+    }
+    else
+    {
+        retVal = 0;
+    }
+    return retVal;
+}
 
 /* Initializes the write buffers for multithreaded FAT tests. */
 static void TestMmcsd_initWrBuffer()

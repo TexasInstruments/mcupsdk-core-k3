@@ -116,6 +116,9 @@ Amp_RegCfg gTas6754Reg_TAS0[] =
     {0x92, 0x7e},
     {0x94, 0xf3},
 
+    /* BCK Detection */
+    {0x1e, 0x74},
+
     /* Configure GPIO */
     {0x95, 0x00},
     {0x96, 0x00},
@@ -184,6 +187,9 @@ Amp_RegCfg gTas6754Reg_TAS1[] =
     {0x7c, 0x0f},
     {0x92, 0x7e},
     {0x94, 0xf3},
+
+    /* BCK Detection */
+    {0x1e, 0x74},
 
     /* Configure GPIO */
     {0x95, 0x00},

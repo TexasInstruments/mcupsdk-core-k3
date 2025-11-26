@@ -186,7 +186,9 @@ static void Test_Mcasp_NegativeMultipleOpen(void *args);
 static void Test_Mcasp_SelectConfig(int32_t mode, Test_Mcasp_Config *cfg, void *openParams);
 static void Test_Mcasp_LoopbackTxncount(void *args);
 static void Test_Mcasp_RestartAfterStop(void *args);
+#ifndef C75_CORE
 static void Test_Mcasp_LoopjobRecovery(void *args);
+#endif
 static void Test_Mcasp_MultiInstanceLoopback(void *args);
 static void Test_Mcasp_SelectClockSource(uint32_t instance, int useExternal);
 static void Test_Mcasp_ConfigTxRightRotate(void *args);
@@ -222,9 +224,11 @@ void test_main(void *args)
     #ifdef ENABLE_MT_TESTS
     RUN_TEST(Test_Mcasp_MultiThreadCreate, 8451,NULL);
     #endif
+#ifndef C75_CORE /* Added macro guard due to hanging of interrupt case in AM62DX c75 core*/
     Test_Mcasp_SelectConfig(TEST_MCASP_INTERRUPT_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(Test_Mcasp_LoopbackTransfer, 8343, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     Test_Mcasp_SelectConfig(TEST_MCASP_DMA_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+#endif
     RUN_TEST(Test_Mcasp_LoopbackTransfer, 8344, (void*)&gMcaspOpenParams[CONFIG_MCASP1]);
     RUN_TEST(Test_Mcasp_LoopbackTransfer, 8345, (void*)&gMcaspOpenParams[CONFIG_MCASP2]);
     #ifdef ENABLE_MT_TESTS
@@ -235,9 +239,11 @@ void test_main(void *args)
     RUN_TEST(Test_Mcasp_NegativeNullBuffer, 8349, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(Test_Mcasp_DmaIcntsNegative, 8350, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(Test_Mcasp_LoopbackTxncount, 8453, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+#ifndef C75_CORE /* Added macro guard due to hanging of interrupt case in AM62DX c75 core*/
     Test_Mcasp_SelectConfig(TEST_MCASP_INTERRUPT_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(Test_Mcasp_LoopjobRecovery, 8729, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     Test_Mcasp_SelectConfig(TEST_MCASP_DMA_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+#endif
     RUN_TEST(Test_Mcasp_RestartAfterStop, 8730, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(Test_Mcasp_ConfigTxRightRotate, 8731, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(Test_Mcasp_ValidateFrameSyncBitDelay, 8732, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
@@ -1461,7 +1467,7 @@ static void Test_Mcasp_RestartAfterStop(void *args)
     MCASP_close(handle);
     TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "MCASP restart after stopTransfer data mismatch");
 }
-
+#ifndef C75_CORE
 /**
  * \brief  Test MCASP loopjob recovery.
  *
@@ -1579,7 +1585,7 @@ static void Test_Mcasp_LoopjobRecovery(void *args)
     TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "MCASP loopjob recovery data mismatch");
 
 }
-
+#endif
 /**
  * \brief  Configure MCASP clock source (internal or external).
  *

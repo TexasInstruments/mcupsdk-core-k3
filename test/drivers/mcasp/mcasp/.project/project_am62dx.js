@@ -172,6 +172,13 @@ const defines_common = {
     ]
 };
 
+const defines_c75 = {
+    common:[
+        "SOC_AM62DX",
+        "C75_CORE",
+    ]
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000",    board: "am62dx-evm", os: "freertos"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62dx-evm", os: "freertos"},
@@ -199,7 +206,6 @@ function getComponentBuildProperty(buildOption) {
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
-    build_property.defines = defines_common;
 
     if(buildOption.cpu.match(/c75*/)) {
         if(buildOption.os.match(/freertos*/)) {
@@ -208,6 +214,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_c75;
             build_property.templates = templates_freertos_c75;
             build_property.cflags = cflags_freertos_c75;
+             build_property.defines = defines_c75;
         }
     }
 
@@ -219,6 +226,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_a53;
             build_property.templates = templates_freertos_a53;
             build_property.cflags = cflags_freertos_a53;
+             build_property.defines = defines_common;
         }
         else if(buildOption.os.match(/nortos*/) )
         {
@@ -226,6 +234,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_nortos_a53;
             build_property.libs = libs_nortos_a53;
             build_property.templates = templates_nortos_a53;
+             build_property.defines = defines_common;
         }
     }
 

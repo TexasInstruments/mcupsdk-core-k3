@@ -174,7 +174,6 @@ int32_t SDL_LBIST_waitForCompletion(SDL_LBIST_inst instance)
  * SDL handle functions to Initialize/Restore Auxiliary modules based on init flag
  */
 % }
-% if ((socName == "am62ax") || (socName == "am62dx")){
 % if (config.selectedInstances.includes("SDL_PBIST_INST_C7X")){
 
 int32_t SDL_PBIST_handleC7XAuxDevices(bool init)
@@ -229,7 +228,6 @@ int32_t SDL_PBIST_handleMPUAuxDevices(bool init)
     return testResult;
 }
 % }
-% }
 % if (config.selectedInstances.includes("SDL_PBIST_INST_VPAC")){
 
 int32_t SDL_PBIST_handleVPACAuxDevices(bool init)
@@ -279,7 +277,6 @@ uint32_t PBIST_`config.coreList[i]`AuxDevList[`config.coreList[i]`_NUM_AUX_DEVIC
 /* Array of SDL PBIST instance configurations */
 PBIST_TestHandle_t PBIST_TestHandleArray[PBIST_NUM_INSTANCE] =
 {
-% if((socName == "am62ax") || (socName == "am62dx")){
 % for (var i=0; i<config.selectedInstances.length; i++){
     {
         .pbistInst              = SDL_PBIST_INST_`config.coreList[i]`,
@@ -291,7 +288,6 @@ PBIST_TestHandle_t PBIST_TestHandleArray[PBIST_NUM_INSTANCE] =
         .auxHandleFunction      = SDL_PBIST_handle`config.coreList[i]`AuxDevices,
         % }
     },
-% }
 % }
 };
 % if (config.pscAddrs.length > 0){
@@ -449,7 +445,18 @@ int32_t SDL_PBIST_completeInstance(uint32_t instanceId)
             (PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i] == TISCI_DEV_USB0) ||
             (PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i] == TISCI_DEV_USB1) ||
             (PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i] >= TISCI_DEV_A53SS0_CORE_0 &&
-             PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i] <= TISCI_DEV_A53SS0_CORE_3) )
+             PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i] <= TISCI_DEV_A53SS0_CORE_3))
+        {
+            continue;
+        }
+% }
+% if ((socName == "am62px") || (socName == "am62x")){
+
+        /* Powering off of USB,A53 will be done by SDL PSC Function */
+        if ((PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i] == TISCI_DEV_USB0) ||
+            (PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i] == TISCI_DEV_USB1) ||
+            (PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i] >= TISCI_DEV_A53SS0_CORE_0 &&
+             PBIST_TestHandleArray[instanceId].auxDeviceIdsP[i] <= TISCI_DEV_A53SS0_CORE_3))
         {
             continue;
         }
@@ -466,7 +473,7 @@ int32_t SDL_PBIST_completeInstance(uint32_t instanceId)
 }
 
 /* SDL function for starting PBIST tests of all selected instances */
-int32_t SDL_PBIST_startAllTests(bool runNegTest)
+int32_t SDL_PBIST_startAllTests(bool runPosTest)
 {
     SDL_ErrType_t status;
 
@@ -483,8 +490,13 @@ int32_t SDL_PBIST_startAllTests(bool runNegTest)
             continue;
         }
 % }
+% if (socName == "am62x"){
 
-        status = SDL_PBIST_startInstance(i, runNegTest);
+        SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 4u);
+        SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 3u);
+% }
+
+        status = SDL_PBIST_startInstance(i, runPosTest);
         DebugP_assert(status == SDL_PASS);
 
     }

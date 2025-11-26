@@ -418,9 +418,10 @@ void test_main(void *args)
 
     UNITY_BEGIN();
 
-    #if ENABLE_MT_TESTS
+    #if defined(SOC_AM62AX) && defined (ENABLE_MT_TESTS)
     run_multi_threaded_tests(&testParams);
     #endif
+
     test_mcspi_set_params(&testParams, 335);
     RUN_TEST(test_mcspi_loopback,  335, (void*)&testParams);
     test_mcspi_set_params(&testParams, 336);

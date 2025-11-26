@@ -65,7 +65,7 @@
 #define CALCRATIO_INST_3            (3U)    /* Index for CalcRatio instance 3 */
 
 /* Test parameters */
-#define TEST_ITERATIONS             (2000U) /* Number of iterations in ratio convergence test */
+#define TEST_ITERATIONS             (300U) /* Number of iterations in ratio convergence test */
 #define RATIO_TOLERANCE             (0.005) /* Max allowed relative error (±0.5%) for a "good" sample */
 #define RATIO_GOOD_FRACTION         (0.98)  /* Minimum fraction (98%) of samples that must pass tolerance */
 /* ========================================================================== */

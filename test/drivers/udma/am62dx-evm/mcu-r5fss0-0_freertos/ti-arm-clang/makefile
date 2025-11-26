@@ -83,7 +83,7 @@ INCLUDES_common := \
 DEFINES_common := \
 	-DENABLE_MT_TESTS \
 	-DSOC_AM62DX \
-	-DCORE_MCU_R5F \
+	-DENABLE_MCU_R5_CORE \
 
 CFLAGS_common := \
 	-mcpu=cortex-r5 \

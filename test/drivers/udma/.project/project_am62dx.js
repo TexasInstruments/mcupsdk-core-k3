@@ -255,13 +255,6 @@ const lnkfiles = {
     ]
 };
 
-const defines_freertos = {
-    common:[
-        "ENABLE_MT_TESTS",
-        "SOC_AM62DX",
-    ]
-}
-
 const defines_c75_freertos = {
     common:[
         "ENABLE_MT_TESTS",
@@ -288,7 +281,7 @@ const defines_a53_nortos = {
 const defines_dm_r5f_nortos = {
     common:[
         "ENABLE_SCICLIENT_DIRECT",
-        "SOC_AM62DX",
+        "SOC_AM62DX"
     ]
 }
 
@@ -296,14 +289,14 @@ const defines_mcu_r5f_freertos = {
     common:[
         "ENABLE_MT_TESTS",
         "SOC_AM62DX",
-        "CORE_MCU_R5F",
+        "ENABLE_MCU_R5_CORE"
     ]
 }
 
 const defines_mcu_r5f_nortos = {
     common:[
         "SOC_AM62DX",
-        "CORE_MCU_R5F",
+        "ENABLE_MCU_R5_CORE"
     ]
 }
 
@@ -311,7 +304,7 @@ const defines_dm_r5f_freertos = {
     common:[
         "ENABLE_SCICLIENT_DIRECT",
         "SOC_AM62DX",
-        "ENABLE_MT_TESTS",
+        "ENABLE_MT_TESTS"
     ]
 }
 
@@ -329,7 +322,7 @@ const templates_freertos_dm_r5f =
         input: ".project/templates/am62dx/common/linker_dm_r5f.cmd.xdt",
         output: "linker.cmd",
         options: {
-            useDdrBuffer: true,
+            enableUdmaBuffers: true,
             heapSize: 16*1024,
             stackSize: 32*1024,
             irqStackSize: 0x1000,
@@ -360,7 +353,7 @@ const templates_freertos_mcu_r5f =
         input: ".project/templates/am62dx/common/linker_mcu-r5f.cmd.xdt",
         output: "linker.cmd",
         options: {
-            useDdrBuffer: true,
+            enableUdmaBuffers: true,
             heapSize: 16*1024,
             stackSize: 32*1024,
             irqStackSize: 0x1000,
@@ -392,7 +385,7 @@ const templates_nortos_mcu_r5f =
         input: ".project/templates/am62dx/common/linker_mcu-r5f.cmd.xdt",
         output: "linker.cmd",
         options: {
-            useDdrBuffer: true,
+            enableUdmaBuffers: true,
             heapSize: 16*1024,
             stackSize: 32*1024,
             irqStackSize: 0x1000,
@@ -424,7 +417,7 @@ const templates_nortos_dm_r5f =
         input: ".project/templates/am62dx/common/linker_dm_r5f.cmd.xdt",
         output: "linker.cmd",
         options: {
-            useDdrBuffer: true,
+            enableUdmaBuffers: true,
             stackSize: 32*1024,
             irqStackSize: 0x1000,
             svcStackSize: 0x0100,
@@ -456,7 +449,7 @@ const templates_nortos_a53 =
         input: ".project/templates/am62dx/common/linker_a53.cmd.xdt",
         output: "linker.cmd",
         options: {
-            useDdrBuffer: true,
+            enableUdmaBuffers: true,
             heapSize: 0x20000,
             stackSize: 0x10000,
             irqStackSize: 0x1000,
@@ -488,7 +481,7 @@ const templates_freertos_a53 =
         input: ".project/templates/am62dx/common/linker_a53.cmd.xdt",
         output: "linker.cmd",
         options: {
-            useDdrBuffer: true,
+            enableUdmaBuffers: true,
             heapSize: 0x20000,
             stackSize: 0x10000,
             irqStackSize: 0x1000,
@@ -520,7 +513,7 @@ const templates_freertos_c75 =
         input: ".project/templates/am62dx/common/linker_c75.cmd.xdt",
         output: "linker.cmd",
         options: {
-            useDdrBuffer: true,
+            enableUdmaBuffers: true,
             heapSize: 16*1024,
             stackSize: 32*1024,
             irqStackSize: 0x1000,

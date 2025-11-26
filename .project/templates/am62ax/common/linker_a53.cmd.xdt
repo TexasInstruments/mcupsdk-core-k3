@@ -38,7 +38,7 @@
 
 	let isSingleCore = true;
 	let useDdr = true;
-    let useDdrBuffer = false;
+    let enableUdmaBuffers = false;
 	let addrBaseDdr = 0x80000000;
 	let codeDataSizeDdr = 0x1000000;
 
@@ -47,8 +47,8 @@
 		stackSize = options.stackSize;
 	if(options && options.heapSize)
 		heapSize = options.heapSize;
-    if(options && options.useDdrBuffer)
-        useDdrBuffer = options.useDdrBuffer;
+    if(options && options.enableUdmaBuffers)
+        enableUdmaBuffers = options.enableUdmaBuffers;
 
 	if(isSingleCore == true) {
 		codeDataAddrDdr = addrBaseDdr;
@@ -63,7 +63,7 @@
 		}
 	}
 
-    if(useDdrBuffer == true) {
+    if(enableUdmaBuffers == true) {
         codeDataAddrDdrUdma = 0x88000000;
         codeDataSizeDdrUdma = 0x08000000;
         codeDataAddrOcram = 0x70000000;
@@ -114,7 +114,7 @@ MEMORY {
 	% }
 	% }
 
-    % if(useDdrBuffer) {
+    % if(enableUdmaBuffers) {
     DDR_UDMA : ORIGIN = 0x`(codeDataAddrDdrUdma).toString(16).toUpperCase()`, LENGTH = 0x`(codeDataSizeDdrUdma).toString(16).toUpperCase()`
     OCRAM    : ORIGIN = 0x`(codeDataAddrOcram).toString(16).toUpperCase()`, LENGTH = 0x`(codeDataSizeOcram).toString(16).toUpperCase()`
     % }
@@ -201,7 +201,7 @@ SECTIONS {
         *(*ENET_DMA_PKT_MEMPOOL)
      } > DDR_DMA
     % }
-    % if(useDdrBuffer) {
+    % if(enableUdmaBuffers) {
         .udma_buffer_ddr (NOLOAD) : { *(.udma_buffer_ddr) } > DDR_UDMA
         .udma_buffer_msmc (NOLOAD) : { *(.udma_buffer_msmc) } > DDR_UDMA
         .udma_buffer_internal (NOLOAD) : { *(.udma_buffer_internal) } > OCRAM

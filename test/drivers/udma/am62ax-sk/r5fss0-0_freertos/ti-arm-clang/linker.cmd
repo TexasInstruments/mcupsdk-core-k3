@@ -147,7 +147,7 @@ SECTIONS
     } > DDR
 
     GROUP {
-        .udma_buffer_ddr (NOLOAD) : { *(.udma_buffer_ddr) }
+        .udma_buffer_ddr  (NOLOAD) : { *(.udma_buffer_ddr) }
         .udma_buffer_msmc (NOLOAD) : { *(.udma_buffer_msmc) }
         .udma_buffer_ospi (NOLOAD) : { *(.udma_buffer_ospi) }
     } > DDR_UDMA

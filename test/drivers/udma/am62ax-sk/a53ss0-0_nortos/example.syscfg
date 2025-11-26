@@ -43,7 +43,7 @@ mmu_armv83.$name     = "OCRAM_MAP";
 mmu_armv83.vAddr     = 0x70000000;
 mmu_armv83.pAddr     = 0x70000000;
 mmu_armv83.size      = 0x00010000;
-mmu_armv83.attribute = "MAIR7"; // or an attribute matching non-cache or WB as required
+mmu_armv83.attribute = "MAIR7"; /* or an attribute matching non-cache or WB as required */
 
 /* Dedicated non-cached region for UDMA buffers to avoid cache coherency issues on A53 */
 const mmu_armv84 = mmu_armv8.addInstance();
@@ -51,6 +51,6 @@ mmu_armv84.$name     = "DDR_UDMA_NONCACHED";
 mmu_armv84.vAddr     = 0x88000000;
 mmu_armv84.pAddr     = 0x88000000;
 mmu_armv84.size      = 0x20000000; /* 512MB UDMA buffer window */
-mmu_armv84.attribute = "MAIR4"; /* Normal inner+outer non-cacheable */
+mmu_armv84.attribute = "MAIR7"; /* Normal inner+outer non-cacheable */
 mmu_armv84.accessPermissions = "Privilege RW, User RW";
 mmu_armv84.shareable = "Outer Shareable";

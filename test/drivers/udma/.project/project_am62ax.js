@@ -275,9 +275,16 @@ const defines_dm_r5f_freertos = {
     ]
 }
 
-const defines_freertos = {
+const defines_mcu_r5_freertos = {
     common:[
-        "ENABLE_MT_TESTS"
+        "ENABLE_MT_TESTS",
+        "ENABLE_MCU_R5_CORE"
+    ]
+}
+
+const defines_mcu_r5_nortos = {
+    common:[
+        "ENABLE_MCU_R5_CORE"
     ]
 }
 
@@ -315,7 +322,7 @@ const templates_freertos_dm_r5f =
         input: ".project/templates/am62ax/common/linker_dm_r5f.cmd.xdt",
         output: "linker.cmd",
         options: {
-            useDdrBuffer: true,
+            enableUdmaBuffers: true,
             heapSize: 16*1024,
             stackSize: 32*1024,
             irqStackSize: 0x1000,
@@ -346,7 +353,7 @@ const templates_freertos_mcu_r5f =
         input: ".project/templates/am62ax/common/linker_mcu-r5f.cmd.xdt",
         output: "linker.cmd",
         options: {
-            useDdrBuffer: true,
+            enableUdmaBuffers: true,
             heapSize: 16*1024,
             stackSize: 32*1024,
             irqStackSize: 0x1000,
@@ -378,7 +385,7 @@ const templates_nortos_mcu_r5f =
         input: ".project/templates/am62ax/common/linker_mcu-r5f.cmd.xdt",
         output: "linker.cmd",
         options: {
-            useDdrBuffer: true,
+            enableUdmaBuffers: true,
             heapSize: 16*1024,
             stackSize: 32*1024,
             irqStackSize: 0x1000,
@@ -410,7 +417,7 @@ const templates_nortos_dm_r5f =
         input: ".project/templates/am62ax/common/linker_dm_r5f.cmd.xdt",
         output: "linker.cmd",
         options: {
-            useDdrBuffer: true,
+            enableUdmaBuffers: true,
             stackSize: 32*1024,
             irqStackSize: 0x1000,
             svcStackSize: 0x0100,
@@ -442,7 +449,7 @@ const templates_nortos_a53 =
         input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
         output: "linker.cmd",
         options: {
-            useDdrBuffer: true,
+            enableUdmaBuffers: true,
             heapSize: 0x20000,
             stackSize: 0x10000,
             irqStackSize: 0x1000,
@@ -474,7 +481,7 @@ const templates_freertos_a53 =
         input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
         output: "linker.cmd",
         options: {
-            useDdrBuffer: true,
+            enableUdmaBuffers: true,
             heapSize: 0x20000,
             stackSize: 0x10000,
             irqStackSize: 0x1000,
@@ -506,7 +513,7 @@ const templates_freertos_c75 =
         input: ".project/templates/am62ax/common/linker_c75.cmd.xdt",
         output: "linker.cmd",
         options: {
-            useDdrBuffer: true,
+            enableUdmaBuffers: true,
             heapSize: 16*1024,
             stackSize: 32*1024,
             irqStackSize: 0x1000,
@@ -565,7 +572,7 @@ function getComponentBuildProperty(buildOption) {
 
     if(buildOption.cpu.match(/mcu-r5f*/)){
         if (buildOption.os.match(/freertos*/)) {
-            build_property.defines = defines_freertos
+            build_property.defines = defines_mcu_r5_freertos;
             build_property.includes = includes_freertos_r5f;
             build_property.libdirs = libdirs_freertos_mcu_r5;
             build_property.libs = libs_freertos_mcu_r5f;
@@ -573,6 +580,7 @@ function getComponentBuildProperty(buildOption) {
         }
         else {
             build_property.includes = includes;
+            build_property.defines = defines_mcu_r5_nortos;
             build_property.libdirsprebuild = libdirs_prebuild_nortos;
             build_property.libdirs = libdirs_nortos;
             build_property.libs = libs_nortos_mcu_r5f;

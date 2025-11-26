@@ -53,12 +53,12 @@ SECTIONS
     GROUP {
         .text:   {} palign(8)   /* This is where code resides */
         .rodata: {} palign(8)   /* This is where const's go */
-    } > MSRAM
+    } > DDR_UDMA
 
     /* This is rest of initialized data. This can be placed in DDR if DDR is available and needed */
     GROUP {
         .data:   {} palign(8)   /* This is where initialized globals and static go */
-    } > MSRAM
+    } > DDR_UDMA
 
     /* This is rest of uninitialized data. This can be placed in DDR if DDR is available and needed */
     GROUP {
@@ -67,7 +67,7 @@ SECTIONS
         RUN_END(__BSS_END)
         .sysmem: {} palign(8)   /* This is where the malloc heap goes */
         .stack:  {} palign(8)   /* This is where the main() stack goes */
-    } > MSRAM
+    } > DDR_UDMA
 
     /* This is where the stacks for different R5F modes go */
     GROUP {
@@ -96,7 +96,7 @@ SECTIONS
     } > MSRAM
 
     GROUP {
-        .udma_buffer_ddr (NOLOAD) : { *(.udma_buffer_ddr) }
+        .udma_buffer_ddr  (NOLOAD) : { *(.udma_buffer_ddr) }
         .udma_buffer_msmc (NOLOAD) : { *(.udma_buffer_msmc) }
         .udma_buffer_ospi (NOLOAD) : { *(.udma_buffer_ospi) }
     } > DDR_UDMA

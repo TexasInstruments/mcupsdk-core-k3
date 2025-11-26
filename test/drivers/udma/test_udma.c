@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2021-2025 Texas Instruments Incorporated
- * Copyright (C) 2021-2025 Texas Instruments Incorporated
+ * Copyright (C) 2025 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -44,9 +43,7 @@
 #include <kernel/dpl/ClockP.h>
 #include <kernel/dpl/AddrTranslateP.h>
 #include "udma_test.h"
-#if !defined(ENABLE_A53_CORE) && !defined(STACK_C7_CORE) /*guard for c75 and a53 cores*/
 #include "udma_testcases.h"
-#endif /*guard for c75 and a53 cores*/
 #include "ti_drivers_config.h"
 #include "ti_board_open_close.h"
 #include "ti_drivers_open_close.h"
@@ -166,6 +163,7 @@
 #define TEST_UDMA_RING_ELEMENT_SIZE                     (sizeof(uint64_t))
 #define TEST_UDMA_RING_MEM_SIZE                         (UDMA_CACHELINE_ALIGNMENT * TEST_UDMA_RING_ELEM_CNT)
 #define TEST_UDMA_MAX_EXHAUST_CH                        (512U)
+#define TEST_UDMA_RING_MEM_SIZE_SINGLE                  (UDMA_CACHELINE_ALIGNMENT * TEST_UDMA_RING_ELEM_SINGLE)
 
 /* --- Task / Thread ------------------------------------------------------- */
 #if defined ENABLE_MT_TESTS
@@ -178,10 +176,10 @@
 #endif /* ENABLE_MT_TESTS */
 
 /* --- Ring Memory Aliases for Chaining ----------------------------------- */
-#define TEST_UDMA_TRIG_FQ_RING_MEM                      (TestUdma_FqDualChannel[0])
-#define TEST_UDMA_TRIG_CQ_RING_MEM                      (TestUdma_CqDualChannel[0])
-#define TEST_UDMA_CHAIN_FQ_RING_MEM                     (TestUdma_FqDualChannel[1])
-#define TEST_UDMA_CHAIN_CQ_RING_MEM                     (TestUdma_CqDualChannel[1])
+#define TEST_UDMA_TRIG_FQ_RING_MEM                      (TestUdma_FqMultiChannel[0])
+#define TEST_UDMA_TRIG_CQ_RING_MEM                      (TestUdma_CqMultiChannel[0])
+#define TEST_UDMA_CHAIN_FQ_RING_MEM                     (TestUdma_FqMultiChannel[1])
+#define TEST_UDMA_CHAIN_CQ_RING_MEM                     (TestUdma_CqMultiChannel[1])
 
 /* --- Allocation & Clear Helpers ----------------------------------------- */
 #define TEST_UDMA_ARRAY_ELEM_COUNT(arr)                 ((uint32_t)(sizeof(arr)/sizeof((arr)[0])))
@@ -221,7 +219,8 @@ typedef enum
     TEST_UDMA_TR_FLAG_SET                               = TEST_UDMA_VALUE_ONE,
     TEST_UDMA_TR_ICNT_UNIT                              = TEST_UDMA_VALUE_ONE
 } TestUdmaConst;
-/* 64-bit assert compatibility layer: only activates if Unity lacks native 64-bit support. */
+/* 64-bit assert compatibility layer: activates only if Unity lacks
+ * native 64-bit support. */
 #if !defined(UNITY_SUPPORT_64) && !defined(TEST_ASSERT_EQUAL_PTR)
 #define TEST_ASSERT_EQUAL_PTR(expected, actual)                                       \
     do                                                                                \
@@ -253,7 +252,8 @@ typedef enum
             TEST_ASSERT_NOT_EQUAL(UDMA_SOK, retVal);                                  \
         }                                                                             \
     } while (0)
-/* Optional helper: treat 64-bit value as pointer for comparison where address semantics apply. */
+/* Optional helper: treat 64-bit value as pointer for comparison where
+ * address semantics apply. */
 #ifndef TEST_ASSERT_EQUAL_ADDR64
 #define TEST_ASSERT_EQUAL_ADDR64(expected, actual)                                    \
     TEST_ASSERT_EQUAL_PTR((void*)((uintptr_t)(expected)), (void*)((uintptr_t)(actual)))
@@ -271,12 +271,11 @@ typedef enum
 static Udma_EventObject TestUdma_EventObj;
 /* Event callback counters (global + local) */
 static volatile uint32_t TestUdma_EventCbCount      = TEST_UDMA_VALUE_ZERO;
-/* Binary semaphore used for single-transfer event based wait (non-multithread tests) */
+/* Binary semaphore used for single-transfer event based wait
+ * (non-multithread tests) */
 static SemaphoreP_Object TestUdma_EventSem;
-#if !defined(ENABLE_A53_CORE) && !defined(STACK_C7_CORE) /*guard for c75 and a53 cores*/
 /* UDMA unit test control object holding test context and configurations */
 static UdmaTestObj TestUdma_UtObj;
-#endif /*guard for c75 and a53 cores*/
 /* Reference to global UDMA driver instance objects defined elsewhere */
 extern Udma_DrvObject gUdmaDrvObj[CONFIG_UDMA_NUM_INSTANCES];
 #ifdef ENABLE_MT_TESTS
@@ -285,29 +284,22 @@ static SemaphoreP_Object TestUdma_MtCountingSem;
 #endif /* ENABLE_MT_TESTS */
 
 /* ---------------- Single-transfer / Basic Buffers ------------------------ */
-static uint8_t TestUdma_TrpdSingleDesc[TEST_UDMA_TRPD_SIZE] TEST_UDMA_BUF_ATTR;
-static uint8_t TestUdma_Src[TEST_UDMA_NUM_BYTES]             TEST_UDMA_BUF_ATTR;
-static uint8_t TestUdma_Dst[TEST_UDMA_NUM_BYTES]             TEST_UDMA_BUF_ATTR;
-static uint8_t TestUdma_FqRingMem[UDMA_CACHELINE_ALIGNMENT]  TEST_UDMA_BUF_ATTR;
-static uint8_t TestUdma_CqRingMem[UDMA_CACHELINE_ALIGNMENT]  TEST_UDMA_BUF_ATTR;
-
-/* ---------------- Dual Channel / Chaining Scenario Buffers -------------- */
-static uint8_t TestUdma_FqDualChannel[2][UDMA_CACHELINE_ALIGNMENT] TEST_UDMA_BUF_ATTR;
-static uint8_t TestUdma_CqDualChannel[2][UDMA_CACHELINE_ALIGNMENT] TEST_UDMA_BUF_ATTR;
-static uint8_t TestUdma_TrpdDualChannel[2][TEST_UDMA_TRPD_SIZE]    TEST_UDMA_BUF_ATTR;
-static uint8_t TestUdma_SrcBufDualChannel[2][TEST_UDMA_NUM_BYTES]  TEST_UDMA_BUF_ATTR;
-static uint8_t TestUdma_DstBufDualChannel[2][TEST_UDMA_NUM_BYTES]  TEST_UDMA_BUF_ATTR;
+uint8_t TestUdma_TrpdSingleDesc[TEST_UDMA_TRPD_SIZE]  TEST_UDMA_BUF_ATTR;
+uint8_t TestUdma_Src[TEST_UDMA_NUM_BYTES]             TEST_UDMA_BUF_ATTR;
+uint8_t TestUdma_Dst[TEST_UDMA_NUM_BYTES]             TEST_UDMA_BUF_ATTR;
+uint8_t TestUdma_FqRingMem[UDMA_CACHELINE_ALIGNMENT]  TEST_UDMA_BUF_ATTR;
+uint8_t TestUdma_CqRingMem[UDMA_CACHELINE_ALIGNMENT]  TEST_UDMA_BUF_ATTR;
 
 /* ---------------- Minimum Transfer Size Buffers ------------------------- */
 static uint8_t TestUdma_SrcMin[TEST_UDMA_MIN_TRANSFER_BYTES] TEST_UDMA_BUF_ATTR;
 static uint8_t TestUdma_DstMin[TEST_UDMA_MIN_TRANSFER_BYTES] TEST_UDMA_BUF_ATTR;
 
 /* ---------------- Multi-channel / Parallel Channel Buffers -------------- */
-static uint8_t TestUdma_FqMultiChannel[TEST_UDMA_MAX_CONCURRENT_BC_CH][UDMA_CACHELINE_ALIGNMENT]       TEST_UDMA_BUF_ATTR;
-static uint8_t TestUdma_CqMultiChannel[TEST_UDMA_MAX_CONCURRENT_BC_CH][UDMA_CACHELINE_ALIGNMENT]       TEST_UDMA_BUF_ATTR;
-static uint8_t TestUdma_TrpdMultiChannel[TEST_UDMA_MAX_CONCURRENT_BC_CH][TEST_UDMA_TRPD_SIZE]          TEST_UDMA_BUF_ATTR;
-static uint8_t TestUdma_SrcMultiChannel[TEST_UDMA_MAX_CONCURRENT_BC_CH][TEST_UDMA_SMALL_TRANSFER_BYTES] TEST_UDMA_BUF_ATTR;
-static uint8_t TestUdma_DstMultiChannel[TEST_UDMA_MAX_CONCURRENT_BC_CH][TEST_UDMA_SMALL_TRANSFER_BYTES] TEST_UDMA_BUF_ATTR;
+uint8_t TestUdma_FqMultiChannel[TEST_UDMA_MAX_CONCURRENT_BC_CH][UDMA_CACHELINE_ALIGNMENT]  TEST_UDMA_BUF_ATTR;
+uint8_t TestUdma_CqMultiChannel[TEST_UDMA_MAX_CONCURRENT_BC_CH][UDMA_CACHELINE_ALIGNMENT]  TEST_UDMA_BUF_ATTR;
+uint8_t TestUdma_TrpdMultiChannel[TEST_UDMA_MAX_CONCURRENT_BC_CH][TEST_UDMA_TRPD_SIZE]     TEST_UDMA_BUF_ATTR;
+uint8_t TestUdma_SrcMultiChannel[TEST_UDMA_MAX_CONCURRENT_BC_CH][TEST_UDMA_NUM_BYTES]      TEST_UDMA_BUF_ATTR;
+uint8_t TestUdma_DstMultiChannel[TEST_UDMA_MAX_CONCURRENT_BC_CH][TEST_UDMA_NUM_BYTES]      TEST_UDMA_BUF_ATTR;
 
 /* ---------------- Busy Status Negative Test Buffers --------------------- */
 static uint8_t TestUdma_SrcChBusyStatus[TEST_UDMA_MED_TRANSFER_BYTES] TEST_UDMA_BUF_ATTR;
@@ -343,7 +335,8 @@ static uint8_t TestUdma_BlkCopyCh2RingMem[UDMA_CACHELINE_ALIGNMENT] TEST_UDMA_BU
 /* ========================================================================== */
 
 #ifdef ENABLE_MT_TESTS
-/** \brief generic DMA task context holding result status, sync semaphore, task object, and its dedicated stack */
+/** \brief Generic DMA task context holding result status, sync semaphore,
+ * task object, and its dedicated stack */
 typedef struct {
     int32_t result;
     SemaphoreP_Object doneSem;
@@ -371,13 +364,15 @@ static int32_t TestUdma_initBuffer(uint8_t *srcBuffer, uint8_t *destBuf, uint32_
 static int32_t TestUdma_compareBuffer(uint8_t *srcBuffer, uint8_t *destBuf,
                                uint32_t length);
 static void TestUdma_eventCb(Udma_EventHandle eventHandle, uint32_t eventType, void *appData);
-#if !defined(ENABLE_A53_CORE) && !defined(STACK_C7_CORE) /*guard for c75 and a53 cores*/
 /* Test framework helpers */
 static UdmaTestParams *TestUdma_findTestCaseByFuncAndTcId(UdmaTestFxnPtr fxn,
                                                  uint32_t tcId);
-#endif /*guard for c75 and a53 cores*/
-/* Buffer clear helper: zero each buffer in provided list (no side effects beyond memory) */
-static void TestUdma_clearBufs(void **bufList, size_t *sizeList, uint32_t count);
+/* Buffer clear helper: zero each buffer in provided list
+ * (no side effects beyond memory) */
+void TestUdma_clearBufs(void **bufList, size_t *sizeList, uint32_t count);
+int32_t TestUdma_initDriver(UdmaTestObj *testObj, UdmaTestParams *testPrms);
+int32_t TestUdma_deinitDriver(UdmaTestObj *testObj, UdmaTestParams *testPrms);
+
 /* Test functions */
 extern int32_t udmaTestParser(void);
 extern void udmaTestInitTestObj(UdmaTestObj *testObj, UdmaTestParams *testPrms);
@@ -392,7 +387,6 @@ extern int32_t udmaTestInit(UdmaTestObj *testObj);
 /*                       Static Test Function Prototypes                      */
 /* ========================================================================== */
 
-#if !defined(ENABLE_A53_CORE) && !defined(STACK_C7_CORE) /*guard for c75 and a53 cores*/
 static void TestUdma_blkcpyTest(void *args);
 static void TestUdma_blkcpyPauseResumeTest(void *args);
 static void TestUdma_blkcpyChainingTest(void *args);
@@ -413,14 +407,12 @@ static void TestUdma_flowAttachMappedTest(void *args);
 static void TestUdma_trMakeTest(void *args);
 static void TestUdma_structSizeTest(void *args);
 static void TestUdma_chPktdmaParamCheckTest(void *args);
-static void TestUdma_chPktdmaChApiTest(void *args);
 static void TestUdma_blkcpyDdrToDdr1MBPerfTest(void *args);
 static void TestUdma_blkcpyCircularSrcOcramToDdrPerfTest(void *args);
 static void TestUdma_blkcpyDdrToCircularDestOcramPerfTest(void *args);
 static void TestUdma_blkcpyCircularOcramToOcramPerfTest(void *args);
 static void TestUdma_blkcpyPacingDdrToOcramCirc4MBTo4KBTest(void *args);
 static void TestUdma_flowAttachTest(void *args);
-#endif /*guard for c75 and a53 cores*/
 static void TestUdma_eventEnableDisable(void *args);
 static void TestUdma_resetDrvChObjects(Udma_DrvHandle drvHandle,
                                        Udma_ChHandle chHandle0,
@@ -481,11 +473,43 @@ static void TestUdma_allocFreeBlkcopyHcCh(void *args);
 #endif
 extern void TestUdma_chPeerDataTest(void *args);
 extern void TestUdma_chConfigPdmaTest(void *args);
+extern void TestUdma_pktdmaInsTxRxChDisable(void *args);
+extern void TestUdma_bcdmaInsTxChDisable(void *args);
+extern void TestUdma_pktdmaSwTriggerNegative(void *args);
+/* extern void TestUdma_blkcpySwGlobal1PollingTest(void *args); */
+/* extern void TestUdma_blkcpySwGlobal1InterruptTest(void *args); */
+extern void TestUdma_txPreferredChannelAllocationForBlkCpyInstance(void *args);
+extern void TestUdma_rxPreferredChannelAllocationForBlkCpyInstance(void *args);
+extern void TestUdma_blkcpySwGlobal0StatsDecAndVerify(void *args);
+extern void TestUdma_chStatsBcdmaInstForTxRx(void *args);
+/* extern void TestUdma_chResetTxRxForPktdmaAndBcdma(void *args); */
+extern void TestUdma_blkcopyReloadTransferIsr(void *args);
+extern void TestUdma_channelApiNegativeCases(void *args);
+extern void TestUdma_multiChannelPauseResumeTest(void *args);
+#ifdef ENABLE_MT_TESTS
+extern void TestUdma_chSetChainingRxTxMultithreadIntr(void *args);
+extern void TestUdma_ringOverflowMultithread(void *args);
+extern void TestUdma_multithreadOpenCloseRaceTest(void *args);
+#endif
+static void TestUdma_allocationHcUhcChannel(void *args);
+/* Mapped TX channel allocation tests run only on cores that have mapped CPSW resources reserved - a53 and mcu r5 cores*/
+#if(ENABLE_A53_CORE || ENABLE_MCU_R5_CORE)
+#if (UDMA_NUM_MAPPED_TX_GROUP > 0)
+static void TestUdma_mappedTxPreferredChannelAllocation(void *args);
+static void TestUdma_mappedTxAnyChannelAllocation(void *args);
+#endif
+#endif /* For cores that have mapped CPSW resources reserved */
+/* Mapped RX channel allocation tests run only on cores that have mapped CPSW resources reserved - a53 core*/
+#if(ENABLE_A53_CORE)
+#if (UDMA_NUM_MAPPED_RX_GROUP > 0)
+static void TestUdma_mappedRxPreferredChannelAllocation(void *args);
+static void TestUdma_mappedRxAnyChannelAllocation(void *args);
+#endif
+#endif /* For cores that have mapped CPSW resources reserved */
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
 
-#if !defined(ENABLE_A53_CORE) && !defined(STACK_C7_CORE) /*guard for c75 and a53 cores*/
 /* Helper function to find a test case by function pointer and test case ID */
 static UdmaTestParams *TestUdma_findTestCaseByFuncAndTcId(UdmaTestFxnPtr fxn, uint32_t tcId)
 {
@@ -499,13 +523,90 @@ static UdmaTestParams *TestUdma_findTestCaseByFuncAndTcId(UdmaTestFxnPtr fxn, ui
     }
     return NULL;
 }
-#endif /*guard for c75 and a53 cores*/
 
-/* Helper function to clear multiple buffers. This is a no-op if the buffer list is NULL.
- * This function iterates through the buffer list and clears each buffer to prevent any potential data leakage between test cases.
- *
- */
-static void TestUdma_clearBufs(void **bufList, size_t *sizeList, uint32_t count)
+int32_t TestUdma_initDriver(UdmaTestObj *testObj, UdmaTestParams *testPrms)
+{
+    int32_t         retVal = UDMA_SOK;
+    uint32_t        instId;
+    Udma_InitPrms   initPrms;
+    Udma_DrvHandle  drvHandle;
+
+    retVal = Utils_memInit();
+    TEST_ASSERT_EQUAL_UINT32_MESSAGE(UDMA_SOK, retVal, "Utils mem init failed!!\n");
+
+    /* Select instance ID from first channel of the test case */
+    instId = testPrms->instId[0];
+
+    /* Normalize each aliases to BCDMA_0, and PKTDMA_0 */
+    if (instId == UDMA_TEST_INST_ID_BCDMA_BC)
+    {
+        instId = UDMA_INST_ID_BCDMA_0;
+    }
+    else if (instId == UDMA_TEST_INST_ID_PKTDMA)
+    {
+        instId = UDMA_INST_ID_PKTDMA_0;
+    }
+    else
+    {
+        /* Nothing to do */
+    }
+
+    /* UDMA driver init Prms*/
+    drvHandle = &testObj->drvObj[instId];
+    UdmaInitPrms_init(instId, &initPrms);
+
+    /* skip global event register for test cases with PKTDMA instance*/
+    if (instId == UDMA_INST_ID_PKTDMA_0)
+    {
+        initPrms.skipGlobalEventReg = TRUE;
+    }
+
+    /* Driver init */
+    retVal += Udma_init(drvHandle, &initPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    return (retVal);
+}
+
+int32_t TestUdma_deinitDriver(UdmaTestObj *testObj, UdmaTestParams *testPrms)
+{
+    int32_t         retVal = UDMA_SOK;
+    uint32_t        instId;
+    Udma_DrvHandle  drvHandle;
+
+    /* Select instance ID from first channel of the test case */
+    instId = testPrms->instId[0];
+
+    /* Normalize each aliases to BCDMA_0, and PKTDMA_0 */
+    if (instId == UDMA_TEST_INST_ID_BCDMA_BC)
+    {
+        instId = UDMA_INST_ID_BCDMA_0;
+    }
+    else if (instId == UDMA_TEST_INST_ID_PKTDMA)
+    {
+        instId = UDMA_INST_ID_PKTDMA_0;
+    }
+    else
+    {
+        /* Nothing to do */
+    }
+
+    drvHandle = &testObj->drvObj[instId];
+
+    /* Driver deinit */
+    retVal += Udma_deinit(drvHandle);
+    TEST_ASSERT_EQUAL_UINT32_MESSAGE(UDMA_SOK, retVal, "UDMA deinit failed!!\n");
+
+    retVal = Utils_memDeInit();
+    TEST_ASSERT_EQUAL_UINT32_MESSAGE(UDMA_SOK, retVal, "Utils mem deinit failed!!\n");
+
+    return (retVal);
+}
+
+/* Helper to clear multiple buffers. No-op if buffer list is NULL.
+ * Iterates through each buffer and clears it to prevent potential data
+ * leakage between test cases. */
+void TestUdma_clearBufs(void **bufList, size_t *sizeList, uint32_t count)
 {
     int32_t index;
     for(index = 0U; index < count; index += 1)
@@ -514,8 +615,9 @@ static void TestUdma_clearBufs(void **bufList, size_t *sizeList, uint32_t count)
     }
 }
 
-/* Event callback helper: increments TestUdma_EventCbCount when a DMA completion event fires.
- * Parameters are unused in tests but retained for signature compliance with Udma_EventCallback type. */
+/* Event callback helper: increments TestUdma_EventCbCount when a DMA
+ * completion event fires. Parameters are unused in tests but retained for
+ * signature compliance with Udma_EventCallback type. */
 static void TestUdma_eventCb(Udma_EventHandle eventHandle, uint32_t eventType, void *appData)
 {
     (void)eventHandle;
@@ -663,7 +765,6 @@ static int32_t TestUdma_submitAndPollCompletion(Udma_ChHandle chHandle,
 void test_udma_main(void *args)
 {
     UNITY_BEGIN();
-#if !defined(ENABLE_A53_CORE) && !defined(STACK_C7_CORE) /*guard for c75 and a53 cores*/
     RUN_TEST(TestUdma_blkcpyTest, 8237, NULL);
     RUN_TEST(TestUdma_blkcpyPauseResumeTest, 8238, NULL);
     RUN_TEST(TestUdma_blkcpyChainingTest, 8239, NULL);
@@ -684,14 +785,12 @@ void test_udma_main(void *args)
     RUN_TEST(TestUdma_trMakeTest, 8278, NULL);
     RUN_TEST(TestUdma_structSizeTest, 8279, NULL);
     RUN_TEST(TestUdma_chPktdmaParamCheckTest, 8280, NULL);
-    RUN_TEST(TestUdma_chPktdmaChApiTest, 8281, NULL);
     RUN_TEST(TestUdma_blkcpyDdrToDdr1MBPerfTest, 8282, NULL);
     RUN_TEST(TestUdma_blkcpyCircularSrcOcramToDdrPerfTest, 8283, NULL);
     RUN_TEST(TestUdma_blkcpyDdrToCircularDestOcramPerfTest, 8284, NULL);
     RUN_TEST(TestUdma_blkcpyCircularOcramToOcramPerfTest, 8285, NULL);
     RUN_TEST(TestUdma_blkcpyPacingDdrToOcramCirc4MBTo4KBTest, 8286, NULL);
     RUN_TEST(TestUdma_flowAttachTest, 8287, NULL);
-#endif
 #ifdef ENABLE_MT_TESTS
     RUN_TEST(TestUdma_multiInstancePktdmaBcdma, 8618, NULL);
 #endif
@@ -743,6 +842,39 @@ void test_udma_main(void *args)
     RUN_TEST(TestUdma_multiDescriptorSubmission, 8776, NULL);
     RUN_TEST(TestUdma_chPeerDataTest, 8778, NULL);
     RUN_TEST(TestUdma_chConfigPdmaTest, 8777, NULL);
+    RUN_TEST(TestUdma_pktdmaInsTxRxChDisable, 8247, NULL);
+    RUN_TEST(TestUdma_bcdmaInsTxChDisable, 8766, NULL);
+    RUN_TEST(TestUdma_pktdmaSwTriggerNegative, 8603, NULL);
+    /* RUN_TEST(TestUdma_blkcpySwGlobal1PollingTest, 9143, NULL);  */
+    /* RUN_TEST(TestUdma_blkcpySwGlobal1InterruptTest, 9154, NULL); */
+    RUN_TEST(TestUdma_txPreferredChannelAllocationForBlkCpyInstance, 8616, NULL);
+    RUN_TEST(TestUdma_rxPreferredChannelAllocationForBlkCpyInstance, 9135, NULL);
+    RUN_TEST(TestUdma_blkcpySwGlobal0StatsDecAndVerify, 9137, NULL);
+    RUN_TEST(TestUdma_chStatsBcdmaInstForTxRx, 9138, NULL);
+    RUN_TEST(TestUdma_blkcopyReloadTransferIsr, 9140, NULL);
+    RUN_TEST(TestUdma_multiChannelPauseResumeTest, 9141, NULL);
+    RUN_TEST(TestUdma_channelApiNegativeCases, 9142, NULL);
+/* Mapped TX channel allocation tests run only on cores that have mapped CPSW resources reserved - a53 and mcu r5 cores*/
+#if(ENABLE_A53_CORE || ENABLE_MCU_R5_CORE)
+#if (UDMA_NUM_MAPPED_TX_GROUP > 0)
+    RUN_TEST(TestUdma_mappedTxPreferredChannelAllocation, 8303, NULL);
+    RUN_TEST(TestUdma_mappedTxAnyChannelAllocation, 9601, NULL);
+#endif
+#endif /* For cores that have mapped CPSW resources reserved */
+/* Mapped RX channel allocation tests run only on cores that have mapped CPSW resources reserved - a53 core*/
+#if(ENABLE_A53_CORE)
+#if (UDMA_NUM_MAPPED_RX_GROUP > 0)
+    RUN_TEST(TestUdma_mappedRxPreferredChannelAllocation, 8302, NULL);
+    RUN_TEST(TestUdma_mappedRxAnyChannelAllocation, 9603, NULL);
+#endif
+#endif /* For cores that have mapped CPSW resources reserved */
+    RUN_TEST(TestUdma_allocationHcUhcChannel, 8289, NULL);
+/*    RUN_TEST(TestUdma_chResetTxRxForPktdmaAndBcdma, 9139, NULL); */
+#ifdef ENABLE_MT_TESTS
+    RUN_TEST(TestUdma_chSetChainingRxTxMultithreadIntr, 9250, NULL);
+    RUN_TEST(TestUdma_ringOverflowMultithread, 9251, NULL);
+    RUN_TEST(TestUdma_multithreadOpenCloseRaceTest, 9252, NULL);
+#endif
 
     UNITY_END();
 }
@@ -768,19 +900,20 @@ void tearDown(void)
 /*                               Test cases                                   */
 /* ========================================================================== */
 
-#if !defined(ENABLE_A53_CORE) && !defined(STACK_C7_CORE) /*guard for c75 and a53 cores*/
 /**
  * \brief DDR to DDR block copy (polling mode).
  *
  * Test Category: Functional
  *
- * Validates a basic UDMA TR block copy transfer from DDR source to DDR destination
+ * Validates a basic UDMA TR block copy transfer from DDR source to DDR
+ * destination
  * using polling for completion (no interrupt/event). Driver and test object are
  * initialized, a single TR is submitted and completion is polled on the CQ ring.
  * Data buffers are compared for integrity after transfer.
  * \param args Pointer to test arguments (unused).
  * \return None.
- * \expectedOutput Transfer completes (UDMA_SOK), source and destination buffers match.
+ * \expectedOutput Transfer completes (UDMA_SOK); source and destination
+ * buffers match.
  */
 static void TestUdma_blkcpyTest(void *args)
 {
@@ -798,25 +931,21 @@ static void TestUdma_blkcpyTest(void *args)
     memset(TestUdma_Src, TEST_UDMA_BUF_CLEAR_PATTERN, sizeof(TestUdma_Src));
     memset(TestUdma_Dst, TEST_UDMA_BUF_CLEAR_PATTERN, sizeof(TestUdma_Dst));
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (Blockcpy DDR to DDR in polling mode) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestBlkcpyTc, 3467);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
@@ -831,7 +960,7 @@ static void TestUdma_blkcpyTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -839,11 +968,13 @@ static void TestUdma_blkcpyTest(void *args)
  *
  * Test Category: Functional
  *
- * Exercises Udma_chPause and Udma_chResume on a block copy channel. A TR is queued;
- * channel is paused to ensure no completion occurs, then resumed and completion verified.
+ * Exercises Udma_chPause and Udma_chResume on a block copy channel. A TR
+ * is queued; channel is paused to ensure no completion occurs, then resumed
+ * and completion verified.
  * \param args Pointer to test arguments (unused).
  * \return None.
- * \expectedOutput Transfer does not complete while paused; completes after resume and data matches.
+ * \expectedOutput Transfer does not complete while paused; completes after
+ * resume and data matches.
  */
 static void TestUdma_blkcpyPauseResumeTest(void *args)
 {
@@ -861,29 +992,26 @@ static void TestUdma_blkcpyPauseResumeTest(void *args)
     memset(TestUdma_Src, TEST_UDMA_BUF_CLEAR_PATTERN, sizeof(TestUdma_Src));
     memset(TestUdma_Dst, TEST_UDMA_BUF_CLEAR_PATTERN, sizeof(TestUdma_Dst));
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (Block Copy Pause Resume) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestBlkcpyPauseResumeTc, 3965);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
     testPrms->isRun = TRUE;
+
     /* Run the test */
     taskObj = &testObj->taskObj[0];
     DebugP_log("Running UDMA Block Copy Pause Resume Test (tcId=%d, name=%s)\r\n", testPrms->tcId, testPrms->tcName);
@@ -893,7 +1021,7 @@ static void TestUdma_blkcpyPauseResumeTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -901,11 +1029,13 @@ static void TestUdma_blkcpyPauseResumeTest(void *args)
  *
  * Test Category: Functional
  *
- * Validates that multiple TRs can be chained so that completion of one triggers the next
- * per configured event settings. Ensures ordered execution and final data integrity.
+ * Validates that multiple TRs can be chained so that completion of one
+ * triggers the next per configured event settings. Ensures ordered
+ * execution and final data integrity.
  * \param args Pointer to test arguments (unused).
  * \return None.
- * \expectedOutput All chained TRs complete successfully; buffers match expected pattern.
+ * \expectedOutput All chained TRs complete successfully; buffers match
+ * expected pattern.
  */
 static void TestUdma_blkcpyChainingTest(void *args)
 {
@@ -927,34 +1057,26 @@ static void TestUdma_blkcpyChainingTest(void *args)
     memset(TestUdma_TrigTrpd, TEST_UDMA_BUF_CLEAR_PATTERN, sizeof(TestUdma_TrigTrpd));
     memset(TestUdma_ChainTrpd, TEST_UDMA_BUF_CLEAR_PATTERN, sizeof(TestUdma_ChainTrpd));
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (Block Copy Chaining) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestBlkcpyChainingTc, 4841);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        retVal = udmaTestInit(testObj);
-        if (retVal != UDMA_SOK)
-        {
-            DebugP_log("UDMA driver/mem init failed\r\n");
-            return;
-        }
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
     testPrms->isRun = TRUE;
+
     /* Run the test */
     taskObj = &testObj->taskObj[0];
     DebugP_log("Running UDMA Block Copy Chaining Test (tcId=%d, name=%s)\r\n", testPrms->tcId, testPrms->tcName);
@@ -964,7 +1086,7 @@ static void TestUdma_blkcpyChainingTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -994,36 +1116,33 @@ static void TestUdma_blkcpyIntrTest(void *args)
     memset(TestUdma_Src, TEST_UDMA_BUF_CLEAR_PATTERN, sizeof(TestUdma_Src));
     memset(TestUdma_Dst, TEST_UDMA_BUF_CLEAR_PATTERN, sizeof(TestUdma_Dst));
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (Blockcpy DDR to DDR in interrupt mode) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestBlkcpyTc, 3473);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
     testPrms->isRun = TRUE;
+
     /* Run the test */
     taskObj = &testObj->taskObj[0];
     DebugP_log("Running UDMA Blockcpy Intr Test (tcId=%d, name=%s)\r\n", testPrms->tcId, testPrms->tcName);
     retVal = udmaTestBlkcpyTc(taskObj);
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -1031,8 +1150,8 @@ static void TestUdma_blkcpyIntrTest(void *args)
  *
  * Test Category: Functional
  *
- * Uses a software global0 trigger configuration and polls for completion. Verifies
- * trigger configuration does not break basic transfer semantics.
+ * Uses a software global0 trigger configuration and polls for completion.
+ * Verifies trigger configuration does not break basic transfer semantics.
  * \param args Pointer to test arguments (unused).
  * \return None.
  * \expectedOutput Transfer completes successfully; data matches expected pattern.
@@ -1051,29 +1170,26 @@ static void TestUdma_blkcpySwGlobal0PollingTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_Src), sizeof(TestUdma_Dst) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (Blockcpy DDR to DDR in SW global 0 trigger test in polling mode) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestBlkcpyTc, 3476);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
     testPrms->isRun = TRUE;
+
     /* Run the test */
     taskObj = &testObj->taskObj[0];
     DebugP_log("Running UDMA Blockcpy SwGlobal0 Polling Test (tcId=%d, name=%s)\r\n", testPrms->tcId, testPrms->tcName);
@@ -1083,7 +1199,7 @@ static void TestUdma_blkcpySwGlobal0PollingTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -1111,29 +1227,26 @@ static void TestUdma_blkcpySwGlobal0IntrTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_Src), sizeof(TestUdma_Dst) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (Blockcpy DDR to DDR in SW global 0 trigger test in interrupt mode) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestBlkcpyTc, 3477);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
     testPrms->isRun = TRUE;
+
     /* Run the test */
     taskObj = &testObj->taskObj[0];
     DebugP_log("Running UDMA Blockcpy SwGlobal0 Intr Test (tcId=%d, name=%s)\r\n", testPrms->tcId, testPrms->tcName);
@@ -1143,7 +1256,7 @@ static void TestUdma_blkcpySwGlobal0IntrTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -1171,29 +1284,26 @@ static void TestUdma_blkcpyCircularIcnt1EventTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_Src), sizeof(TestUdma_Dst) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (Blockcpy circular 1KB DDR to DDR 1KB ICNT1 TR event type) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestBlkcpyTc, 3480);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
     testPrms->isRun = TRUE;
+
     /* Run the test */
     taskObj = &testObj->taskObj[0];
     DebugP_log("Running UDMA Blockcpy Circular Icnt1 Event Test (tcId=%d, name=%s)\r\n", testPrms->tcId, testPrms->tcName);
@@ -1203,7 +1313,7 @@ static void TestUdma_blkcpyCircularIcnt1EventTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -1231,29 +1341,26 @@ static void TestUdma_blkcpyCircularIcnt2EventTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_Src), sizeof(TestUdma_Dst) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (Blockcpy circular 1KB DDR to DDR 1MB ICNT2 TR event type) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestBlkcpyTc, 3481);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
     testPrms->isRun = TRUE;
+
     /* Run the test */
     taskObj = &testObj->taskObj[0];
     DebugP_log("Running UDMA Blockcpy Circular Icnt2 Event Test (tcId=%d, name=%s)\r\n", testPrms->tcId, testPrms->tcName);
@@ -1263,7 +1370,7 @@ static void TestUdma_blkcpyCircularIcnt2EventTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -1291,25 +1398,21 @@ static void TestUdma_blkcpyCircularIcnt3EventTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_Src), sizeof(TestUdma_Dst) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (Blockcpy circular 1KB DDR to DDR 1MB ICNT3 TR event type) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestBlkcpyTc, 3482);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
@@ -1324,7 +1427,7 @@ static void TestUdma_blkcpyCircularIcnt3EventTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -1352,25 +1455,21 @@ static void TestUdma_ringFlushTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_RingMem), sizeof(TestUdma_TrpdMem), sizeof(TestUdma_SrcBuf), sizeof(TestUdma_DstBuf) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (Ring flush API testcase) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestRingFlushTc, 3508);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
@@ -1385,7 +1484,7 @@ static void TestUdma_ringFlushTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -1413,25 +1512,21 @@ static void TestUdma_ringParamCheckTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_RingMem), sizeof(TestUdma_TrpdMem), sizeof(TestUdma_SrcBuf), sizeof(TestUdma_DstBuf) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (Ring Param Check Test) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestRingParamCheckTc, 3511);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
@@ -1446,7 +1541,7 @@ static void TestUdma_ringParamCheckTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -1474,25 +1569,21 @@ static void TestUdma_ringUtilsMemSizeTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_RingMem), sizeof(TestUdma_TrpdMem), sizeof(TestUdma_SrcBuf), sizeof(TestUdma_DstBuf) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (Ring  Utils MemSize Test) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestRingUtilsMemSizeTc, 3512);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
@@ -1507,7 +1598,7 @@ static void TestUdma_ringUtilsMemSizeTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -1535,25 +1626,21 @@ static void TestUdma_ringMemPtrTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_RingMem), sizeof(TestUdma_TrpdMem), sizeof(TestUdma_SrcBuf), sizeof(TestUdma_DstBuf) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (Ring  Mem Ptr Test) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestRingMemPtrTc, 3682);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
@@ -1568,7 +1655,7 @@ static void TestUdma_ringMemPtrTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -1597,25 +1684,21 @@ static void TestUdma_ringAttachTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_RingMem), sizeof(TestUdma_TrpdMem), sizeof(TestUdma_SrcBuf), sizeof(TestUdma_DstBuf) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (Ring  Attach Test) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestRingAttachTc, 3726);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
@@ -1630,7 +1713,7 @@ static void TestUdma_ringAttachTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -1658,25 +1741,21 @@ static void TestUdma_ringResetTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_RingMem), sizeof(TestUdma_TrpdMem), sizeof(TestUdma_SrcBuf), sizeof(TestUdma_DstBuf) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (Ring  Reset Test) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestRingResetTc, 4644);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
@@ -1691,7 +1770,7 @@ static void TestUdma_ringResetTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -1719,25 +1798,21 @@ static void TestUdma_ringPrimeLcdmaTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_RingMem), sizeof(TestUdma_TrpdMem), sizeof(TestUdma_SrcBuf), sizeof(TestUdma_DstBuf) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (LCDMA Ring Prime Test) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestRingPrimeLcdmaTc, 8837);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
@@ -1752,7 +1827,7 @@ static void TestUdma_ringPrimeLcdmaTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -1780,25 +1855,21 @@ static void TestUdma_flowAttachMappedTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_RingMem), sizeof(TestUdma_TrpdMem) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (Mapped Flow attach and detach Test) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestFlowAttachMappedTc, 7034);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
@@ -1813,7 +1884,7 @@ static void TestUdma_flowAttachMappedTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -1841,25 +1912,21 @@ static void TestUdma_trMakeTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_TrpdSingleDesc) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (TR make utility testcase) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestTrMakeTc, 3515);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
@@ -1874,7 +1941,7 @@ static void TestUdma_trMakeTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -1895,25 +1962,21 @@ static void TestUdma_structSizeTest(void *args)
     UdmaTestParams *testPrms;
     UdmaTestTaskObj *taskObj;
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (UDMA structure size print testcase) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestStructSizeTc, 3733);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
@@ -1928,7 +1991,7 @@ static void TestUdma_structSizeTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -1956,25 +2019,21 @@ static void TestUdma_chPktdmaParamCheckTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_FqRingMem), sizeof(TestUdma_CqRingMem) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (PKTDMA Channel Paramter Check test) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestChPktdmaParamCheckTc, 6282);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
@@ -1989,68 +2048,7 @@ static void TestUdma_chPktdmaParamCheckTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
-}
-
-/**
- * \brief PKTDMA channel API functional test suite.
- *
- * Test Category: Functional
- *
- * Opens a PKTDMA channel and exercises primary API calls (open, config, enable,
- * disable, close) verifying successful transitions and statuses.
- * \param args Pointer to test arguments (unused).
- * \return None.
- * \expectedOutput All channel API calls return success and expected state transitions occur.
- */
-static void TestUdma_chPktdmaChApiTest(void *args)
-{
-    int32_t retVal;
-    UdmaTestObj    *testObj;
-    UdmaTestParams *testPrms;
-    UdmaTestTaskObj *taskObj;
-
-    /* --------------------------------------------
-     * Clear the global buffers used for this test
-     * -------------------------------------------- */
-    void *bufferList[] = { TestUdma_FqRingMem, TestUdma_CqRingMem };
-    size_t sizeList[] = { sizeof(TestUdma_FqRingMem), sizeof(TestUdma_CqRingMem) };
-    TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
-
-    /* Set default config and initialize driver/memory */
-    testObj = &TestUdma_UtObj;
-    udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
-
-    /* Get test case parameters (PKTDMA Channel API's test) */
-    testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestChPktdmaChApiTc, 6279);
-    if (testPrms == NULL)
-    {
-        DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
-        return;
-    }
-
-    /* Initialize test object with parameters */
-    udmaTestInitTestObj(testObj, testPrms);
-    testPrms->isRun = TRUE;
-
-    /* Run the test */
-    taskObj = &testObj->taskObj[0];
-    DebugP_log("Running UDMA Ch Pktdma ChApi Test (tcId=%d, name=%s)\r\n", testPrms->tcId, testPrms->tcName);
-
-    retVal = udmaTestChPktdmaChApiTc(taskObj);
-
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
-
-    /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -2078,25 +2076,21 @@ static void TestUdma_blkcpyDdrToDdr1MBPerfTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_Src), sizeof(TestUdma_Dst) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (Blockcpy DDR 1MB to DDR 1MB performance test) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestBlkcpyTc, 3485);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
@@ -2111,7 +2105,7 @@ static void TestUdma_blkcpyDdrToDdr1MBPerfTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
     ClockP_usleep(5000);
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -2139,25 +2133,21 @@ static void TestUdma_blkcpyCircularSrcOcramToDdrPerfTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_Src), sizeof(TestUdma_Dst) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (2D Blockcpy OCRAM circular 1KB to DDR 1MB performance test) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestBlkcpyTc, 3486);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
@@ -2173,7 +2163,7 @@ static void TestUdma_blkcpyCircularSrcOcramToDdrPerfTest(void *args)
     ClockP_usleep(5000);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -2201,25 +2191,21 @@ static void TestUdma_blkcpyDdrToCircularDestOcramPerfTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_Src), sizeof(TestUdma_Dst) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (2D Blockcpy DDR 1MB to OCRAM circular 1KB performance test) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestBlkcpyTc, 3487);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
@@ -2235,7 +2221,7 @@ static void TestUdma_blkcpyDdrToCircularDestOcramPerfTest(void *args)
     ClockP_usleep(5000);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -2263,25 +2249,21 @@ static void TestUdma_blkcpyCircularOcramToOcramPerfTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_Src), sizeof(TestUdma_Dst) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (2D Blockcpy OCRAM circular 1KB to OCRAM circular 1KB performance test) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestBlkcpyTc, 3488);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
@@ -2296,7 +2278,7 @@ static void TestUdma_blkcpyCircularOcramToOcramPerfTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -2324,25 +2306,21 @@ static void TestUdma_blkcpyPacingDdrToOcramCirc4MBTo4KBTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_Src), sizeof(TestUdma_Dst) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (2D Blockcpy DDR 4MB to OCRAM circular 4KB at 20ms pacing for 10 seconds) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestBlkcpyTc, 3498);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
@@ -2356,7 +2334,7 @@ static void TestUdma_blkcpyPacingDdrToOcramCirc4MBTo4KBTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
 /**
@@ -2384,25 +2362,21 @@ static void TestUdma_flowAttachTest(void *args)
     size_t sizeList[] = { sizeof(TestUdma_FqRingMem), sizeof(TestUdma_CqRingMem) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
-    /* Set default config and initialize driver/memory */
+    /* Set default config */
     testObj = &TestUdma_UtObj;
     udmaTestSetDefaultCfg(testObj);
-    retVal = udmaTestInit(testObj);
-
-    if (retVal != UDMA_SOK)
-    {
-        DebugP_log("UDMA driver/mem init failed\r\n");
-        return;
-    }
 
     /* Get test case parameters (Flow attach and detach Test) */
     testPrms = TestUdma_findTestCaseByFuncAndTcId(&udmaTestFlowAttachTc, 9100);
     if (testPrms == NULL)
     {
         DebugP_log("Test case not found!\r\n");
-        TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
         return;
     }
+
+    /* Initialize driver only for the specific instance */
+    retVal = TestUdma_initDriver(testObj, testPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Initialize test object with parameters */
     udmaTestInitTestObj(testObj, testPrms);
@@ -2417,9 +2391,8 @@ static void TestUdma_flowAttachTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
     /* Deinitialize driver/memory */
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, udmaTestDeinit(testObj));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
-#endif /*guard for c75 and a53 cores*/
 
 /**
  * \brief Event enable/disable functional test.
@@ -2450,7 +2423,7 @@ void TestUdma_eventEnableDisable(void *args)
     /* Open block copy channel */
     UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_TR_BLK_COPY);
     chPrms.fqRingPrms.ringMem = TestUdma_BlkCopyCh2RingMem;
-    chPrms.fqRingPrms.ringMemSize = UDMA_CACHELINE_ALIGNMENT;
+    chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
     chPrms.fqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
     retVal = Udma_chOpen(drvHandle, chHandle, UDMA_CH_TYPE_TR_BLK_COPY, &chPrms);
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
@@ -2593,7 +2566,7 @@ static void TestUdma_allocFreeBlkcopyHcCh(void *args)
 
     /* Set FQ ring memory similar to other tests (small ring - 1 element) */
     chPrms.fqRingPrms.ringMem = TestUdma_BlkCopyCh2RingMem;
-    chPrms.fqRingPrms.ringMemSize = UDMA_CACHELINE_ALIGNMENT;
+    chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
     chPrms.fqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
 
     retVal = Udma_chOpen(drvHandle, chHandle, UDMA_CH_TYPE_TR_BLK_COPY_HC, &chPrms);
@@ -2895,7 +2868,7 @@ static int32_t TestUdma_trpdInit(Udma_ChHandle chHandle,
  * for both buffers to ensure coherence before DMA submission. */
 static int32_t TestUdma_initBuffer(uint8_t *srcBuffer, uint8_t *destBuf, uint32_t length)
 {
-    int32_t index;
+    uint32_t index;
     if ((NULL == srcBuffer) || (NULL == destBuf) || (TEST_UDMA_VALUE_ZERO == length))
     {
         return UDMA_EBADARGS;
@@ -3227,12 +3200,13 @@ static void TestUdma_multipleRingsPerChannel(void *args)
     Udma_ChRxPrms rxPrms;
     Udma_RingHandle tdCqHandle;
 
-    uint8_t  *trpd1 = TestUdma_TrpdDualChannel[0];
-    uint8_t  *trpd2 = TestUdma_TrpdDualChannel[1];
-    uint8_t  *src1  = TestUdma_SrcBufDualChannel[0];
-    uint8_t  *dst1  = TestUdma_DstBufDualChannel[0];
-    uint8_t  *src2  = TestUdma_SrcBufDualChannel[1];
-    uint8_t  *dst2  = TestUdma_DstBufDualChannel[1];
+    /* Reuse MultiChannel buffers */
+    uint8_t  *trpd1 = TestUdma_TrpdMultiChannel[0];
+    uint8_t  *trpd2 = TestUdma_TrpdMultiChannel[1];
+    uint8_t  *src1  = TestUdma_SrcMultiChannel[0];
+    uint8_t  *dst1  = TestUdma_DstMultiChannel[0];
+    uint8_t  *src2  = TestUdma_SrcMultiChannel[1];
+    uint8_t  *dst2  = TestUdma_DstMultiChannel[1];
 
     uint64_t trpdPhys1, trpdPhys2;
     uint64_t cqDesc;
@@ -3242,8 +3216,8 @@ static void TestUdma_multipleRingsPerChannel(void *args)
 
     /* Clear all related buffers */
     void *bufferList[] = {
-        TestUdma_FqDualChannel[0],
-        TestUdma_CqDualChannel[0],
+        TestUdma_FqMultiChannel[0],
+        TestUdma_CqMultiChannel[0],
         TestUdma_TdCqRingMem,
         trpd1,
         trpd2,
@@ -3251,8 +3225,8 @@ static void TestUdma_multipleRingsPerChannel(void *args)
         src2, dst2
     };
     size_t sizeList[] = {
-        sizeof(TestUdma_FqDualChannel[0]),
-        sizeof(TestUdma_CqDualChannel[0]),
+        sizeof(TestUdma_FqMultiChannel[0]),
+        sizeof(TestUdma_CqMultiChannel[0]),
         sizeof(TestUdma_TdCqRingMem),
         TEST_UDMA_TRPD_SIZE,
         TEST_UDMA_TRPD_SIZE,
@@ -3270,12 +3244,12 @@ static void TestUdma_multipleRingsPerChannel(void *args)
 
     /* Channel open with FQ, CQ and TD CQ rings */
     UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_TR_BLK_COPY);
-    chPrms.fqRingPrms.ringMem     = TestUdma_FqDualChannel[0];
-    chPrms.fqRingPrms.ringMemSize = sizeof(TestUdma_FqDualChannel[0]);
+    chPrms.fqRingPrms.ringMem     = TestUdma_FqMultiChannel[0];
+    chPrms.fqRingPrms.ringMemSize = sizeof(TestUdma_FqMultiChannel[0]);
     chPrms.fqRingPrms.elemCnt     = 2U; /* allow two outstanding TRPDs */
 
-    chPrms.cqRingPrms.ringMem     = TestUdma_CqDualChannel[0];
-    chPrms.cqRingPrms.ringMemSize = sizeof(TestUdma_CqDualChannel[0]);
+    chPrms.cqRingPrms.ringMem     = TestUdma_CqMultiChannel[0];
+    chPrms.cqRingPrms.ringMemSize = sizeof(TestUdma_CqMultiChannel[0]);
     chPrms.cqRingPrms.elemCnt     = 2U; /* room for two completions */
 
     chPrms.tdCqRingPrms.ringMem     = TestUdma_TdCqRingMem;
@@ -3853,7 +3827,7 @@ static void TestUdma_chGetDefaultFlowHandlePktdma(void *args)
     /* Configure RX channel parameters */
     UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_RX);
     chPrms.chNum = TEST_UDMA_PKTDMA_RX_CH_NUM;
-    chPrms.peerChNum = UDMA_TEST_PKTDMA_UNMAPPED_RX_PEER_CH;
+    chPrms.peerChNum = UDMA_PDMA_CH_MAIN0_UART0_RX;
 
     retVal = Udma_chOpen(drvHandle, &chObj, UDMA_CH_TYPE_RX, &chPrms);
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
@@ -3931,7 +3905,7 @@ static void TestUdma_chResetPktdma(void *args)
     /* Configure RX channel parameters */
     UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_RX);
     chPrms.chNum = TEST_UDMA_PKTDMA_RX_CH_NUM;
-    chPrms.peerChNum = UDMA_TEST_PKTDMA_UNMAPPED_RX_PEER_CH;
+    chPrms.peerChNum = UDMA_PDMA_CH_MAIN0_UART0_RX;
 
     retVal = Udma_chOpen(drvHandle, &chObj, UDMA_CH_TYPE_RX, &chPrms);
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
@@ -4054,7 +4028,7 @@ static void TestUdma_utilsMapLocalToGlobalEvent(void *args)
     /* Open a block copy channel */
     UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_TR_BLK_COPY);
     chPrms.fqRingPrms.ringMem = TestUdma_FqRingMem;
-    chPrms.fqRingPrms.ringMemSize = UDMA_CACHELINE_ALIGNMENT;
+    chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
     chPrms.fqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
     retVal = Udma_chOpen(drvHandle, &chObj, UDMA_CH_TYPE_TR_BLK_COPY, &chPrms);
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
@@ -4566,7 +4540,7 @@ static void TestUdma_rmTranslateCoreIntrInputTest(void *args)
     /* Open a block copy channel */
     UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_TR_BLK_COPY);
     chPrms.fqRingPrms.ringMem = TestUdma_BlkCopyCh2RingMem;
-    chPrms.fqRingPrms.ringMemSize = UDMA_CACHELINE_ALIGNMENT;
+    chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
     chPrms.fqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
     retVal = Udma_chOpen(drvHandle, chHandle, UDMA_CH_TYPE_TR_BLK_COPY, &chPrms);
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
@@ -4626,7 +4600,7 @@ static void TestUdma_txPreferredChannelAllocation(void *args)
     /* Open the channel */
     UdmaChPrms_init(&chPrms, chType);
     chPrms.chNum = preferredChNum;  /* Set the preferred channel number */
-    chPrms.peerChNum = UDMA_TEST_PKTDMA_CPSW_TX_PEER_CH;
+    chPrms.peerChNum = UDMA_PDMA_CH_MAIN0_UART0_TX;
 
     retVal = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
@@ -4642,7 +4616,7 @@ static void TestUdma_txPreferredChannelAllocation(void *args)
     /* Close the channel */
     retVal = Udma_chClose(chHandle);
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
-    TEST_ASSERT_EQUAL_INT(UDMA_SOK, Udma_deinit(drvHandle));;
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, Udma_deinit(drvHandle));
 }
 
 /**
@@ -4731,7 +4705,7 @@ static void TestUdma_rxPreferredChannelAllocation(void *args)
     /* Open the channel */
     UdmaChPrms_init(&chPrms, chType);
     chPrms.chNum = preferredChNum;  /* Set the preferred channel number */
-    chPrms.peerChNum = UDMA_TEST_PKTDMA_CPSW_RX_PEER_CH;
+    chPrms.peerChNum = UDMA_PDMA_CH_MAIN0_UART0_RX;
 
     retVal = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
@@ -4775,7 +4749,7 @@ static void TestUdma_pktdmaInstanceThread(void *args)
     {
         UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_RX);
         chPrms.chNum = UDMA_DMA_CH_ANY;
-        chPrms.peerChNum = UDMA_TEST_PKTDMA_UNMAPPED_RX_PEER_CH;
+        chPrms.peerChNum = UDMA_PDMA_CH_MAIN0_UART0_RX;
         retVal = Udma_chOpen(pktDrv, chHandle, UDMA_CH_TYPE_RX, &chPrms);
         if (retVal == UDMA_SOK)
     {
@@ -4846,7 +4820,7 @@ static void TestUdma_bcdmaInstanceThread(void *args)
 
     UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_TR_BLK_COPY);
     chPrms.fqRingPrms.ringMem = TestUdma_BlkCopyCh2RingMem;
-    chPrms.fqRingPrms.ringMemSize = UDMA_CACHELINE_ALIGNMENT;
+    chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
     chPrms.fqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
 
     retVal = Udma_chOpen(drvHandle, chHandle, UDMA_CH_TYPE_TR_BLK_COPY, &chPrms);
@@ -5073,7 +5047,7 @@ static void TestUdma_chStatsBlkCpy(void *args)
     /* Open and configure a block-copy channel with a tiny FQ ring */
     UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_TR_BLK_COPY);
     chPrms.fqRingPrms.ringMem = TestUdma_BlkCopyCh2RingMem;
-    chPrms.fqRingPrms.ringMemSize = UDMA_CACHELINE_ALIGNMENT;
+    chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
     chPrms.fqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
 
     retVal = Udma_chOpen(drvHandle, chHandle, UDMA_CH_TYPE_TR_BLK_COPY, &chPrms);
@@ -5207,11 +5181,11 @@ static void TestUdma_chStatsRx(void *args)
     /* Prepare channel params (small FQ ring or NULL if not required) */
     UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_RX);
     chPrms.fqRingPrms.ringMem = TestUdma_FqRingMem;
-    chPrms.fqRingPrms.ringMemSize = UDMA_CACHELINE_ALIGNMENT;
+    chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
     chPrms.fqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
 
     /* Peer channel */
-    chPrms.peerChNum = UDMA_TEST_PKTDMA_UNMAPPED_RX_PEER_CH; /* adjust for your platform */
+    chPrms.peerChNum = UDMA_PDMA_CH_MAIN0_UART0_RX; /* adjust for your platform */
 
     /* Open RX channel */
     retVal = Udma_chOpen(drvHandle, chHandle, UDMA_CH_TYPE_RX, &chPrms);
@@ -5298,11 +5272,11 @@ static void TestUdma_chStatsTx(void *args)
     UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_TX);
     /* Provide a small FQ ring as some drivers expect an FQ on TX for TR submission */
     chPrms.fqRingPrms.ringMem = TestUdma_FqRingMem;
-    chPrms.fqRingPrms.ringMemSize = UDMA_CACHELINE_ALIGNMENT;
+    chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
     chPrms.fqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
 
     /* set chPrms.peerChNum appropriately */
-    chPrms.peerChNum = UDMA_TEST_PKTDMA_CPSW_TX_PEER_CH;
+    chPrms.peerChNum = UDMA_PDMA_CH_MAIN0_UART0_TX;
 
     /* Open TX channel */
     retVal = Udma_chOpen(drvHandle, chHandle, UDMA_CH_TYPE_TX, &chPrms);
@@ -5626,12 +5600,12 @@ static void TestUdma_multipleFlowsPktdma(void *args)
 
         UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_RX);
         chPrms.fqRingPrms.ringMem = TestUdma_FqRingMem;
-        chPrms.fqRingPrms.ringMemSize = UDMA_CACHELINE_ALIGNMENT;
+        chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
         chPrms.fqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
         chPrms.cqRingPrms.ringMem = TestUdma_CqRingMem;
-        chPrms.cqRingPrms.ringMemSize = UDMA_CACHELINE_ALIGNMENT;
+        chPrms.cqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
         chPrms.cqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
-        chPrms.peerChNum = (index == 0) ? UDMA_TEST_PKTDMA_CPSW_RX_PEER_CH : UDMA_TEST_PKTDMA_UNMAPPED_RX_PEER_CH;
+        chPrms.peerChNum = (index == 0) ? UDMA_PDMA_CH_MAIN0_UART0_RX : UDMA_TEST_PKTDMA_UNMAPPED_RX_PEER_CH;
 
         retVal = Udma_chOpen(drvPkt, rxCh[index], UDMA_CH_TYPE_RX, &chPrms);
         TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
@@ -5704,8 +5678,8 @@ static void TestUdma_doubleAllocateChannelRing(void *args)
     /* --------------------------------------------
      * Clear the global buffers used for this test
      * -------------------------------------------- */
-    void *bufferList[] = { TestUdma_FqRingMem, TestUdma_CqRingMem, TestUdma_FqDualChannel, TestUdma_CqDualChannel };
-    size_t sizeList[] = { sizeof(TestUdma_FqRingMem), sizeof(TestUdma_CqRingMem), sizeof(TestUdma_FqDualChannel), sizeof(TestUdma_CqDualChannel) };
+    void *bufferList[] = { TestUdma_FqRingMem, TestUdma_CqRingMem, TestUdma_FqMultiChannel, TestUdma_CqMultiChannel };
+    size_t sizeList[] = { sizeof(TestUdma_FqRingMem), sizeof(TestUdma_CqRingMem), sizeof(TestUdma_FqMultiChannel), sizeof(TestUdma_CqMultiChannel) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
     UdmaInitPrms_init(UDMA_INST_ID_PKTDMA_0, &udmaInitPrms);
@@ -5722,7 +5696,7 @@ static void TestUdma_doubleAllocateChannelRing(void *args)
     chPrms.cqRingPrms.ringMem = TestUdma_CqRingMem;
     chPrms.cqRingPrms.ringMemSize = sizeof(TestUdma_CqRingMem);
     chPrms.cqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
-    chPrms.peerChNum = UDMA_TEST_PKTDMA_CPSW_TX_PEER_CH;
+    chPrms.peerChNum = UDMA_PDMA_CH_MAIN0_UART0_TX;
     chPrms.chNum = drvHandleInt->rmInitPrms.startTxCh;
 
     /* open first channel */
@@ -5762,10 +5736,10 @@ static void TestUdma_doubleAllocateChannelRing(void *args)
     /* --------------------------------------------
      * Clear the global buffers used for this test
      * -------------------------------------------- */
-    bufferList[0] = TestUdma_FqDualChannel;
-    bufferList[1] = TestUdma_CqDualChannel;
-    sizeList[0] = sizeof(TestUdma_FqDualChannel);
-    sizeList[1] = sizeof(TestUdma_CqDualChannel);
+    bufferList[0] = TestUdma_FqMultiChannel;
+    bufferList[1] = TestUdma_CqMultiChannel;
+    sizeList[0] = sizeof(TestUdma_FqMultiChannel);
+    sizeList[1] = sizeof(TestUdma_CqMultiChannel);
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
     UdmaInitPrms_init(UDMA_INST_ID_PKTDMA_0, &udmaInitPrms);
@@ -5774,11 +5748,11 @@ static void TestUdma_doubleAllocateChannelRing(void *args)
 
     /* Prepare channel params that request FQ ring memory so chOpen will call Udma_ringAlloc */
     UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_RX);
-    chPrms.fqRingPrms.ringMem = TestUdma_FqDualChannel[0];
-    chPrms.fqRingPrms.ringMemSize = sizeof(TestUdma_FqDualChannel[0]);
+    chPrms.fqRingPrms.ringMem = TestUdma_FqMultiChannel[0];
+    chPrms.fqRingPrms.ringMemSize = sizeof(TestUdma_FqMultiChannel[0]);
     chPrms.fqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
     /* Choose a safe peer channel value used elsewhere in tests */
-    chPrms.peerChNum = UDMA_TEST_PKTDMA_CPSW_RX_PEER_CH;
+    chPrms.peerChNum = UDMA_PDMA_CH_MAIN0_UART0_RX;
 
     /* Open first RX channel (this will allocate fq ring internally) */
     retVal = Udma_chOpen(drvHandle, rxChPrimary, UDMA_CH_TYPE_RX, &chPrms);
@@ -5795,8 +5769,8 @@ static void TestUdma_doubleAllocateChannelRing(void *args)
     TEST_ASSERT_NOT_EQUAL(UDMA_RING_INVALID, ringNumPrimary);
 
     /* Open second RX channel requesting its own fq ring */
-    chPrms.fqRingPrms.ringMem     = TestUdma_FqDualChannel[1];
-    chPrms.fqRingPrms.ringMemSize = sizeof(TestUdma_FqDualChannel[1]);
+    chPrms.fqRingPrms.ringMem     = TestUdma_FqMultiChannel[1];
+    chPrms.fqRingPrms.ringMemSize = sizeof(TestUdma_FqMultiChannel[1]);
     chPrms.peerChNum              = UDMA_TEST_PKTDMA_UNMAPPED_RX_PEER_CH;
 
     retVal = Udma_chOpen(drvHandle, rxChSecondary, UDMA_CH_TYPE_RX, &chPrms);
@@ -5853,8 +5827,8 @@ static void TestUdma_multipleChannelsPktdma(void *args)
     /* --------------------------------------------
      * Clear the global buffers used for this test
      * -------------------------------------------- */
-    void *bufferList[] = { TestUdma_FqDualChannel, TestUdma_CqDualChannel, TestUdma_TrpdDualChannel, TestUdma_SrcBufDualChannel, TestUdma_DstBufDualChannel };
-    size_t sizeList[] = { sizeof(TestUdma_FqDualChannel), sizeof(TestUdma_CqDualChannel), sizeof(TestUdma_TrpdDualChannel), sizeof(TestUdma_SrcBufDualChannel), sizeof(TestUdma_DstBufDualChannel) };
+    void *bufferList[] = { TestUdma_FqMultiChannel, TestUdma_CqMultiChannel, TestUdma_TrpdMultiChannel, TestUdma_SrcMultiChannel, TestUdma_DstMultiChannel };
+    size_t sizeList[] = { sizeof(TestUdma_FqMultiChannel), sizeof(TestUdma_CqMultiChannel), sizeof(TestUdma_TrpdMultiChannel), sizeof(TestUdma_SrcMultiChannel), sizeof(TestUdma_DstMultiChannel) };
     TEST_UDMA_CLEAR_BUFS(bufferList, sizeList);
 
     /* ---------------------------
@@ -5868,14 +5842,14 @@ static void TestUdma_multipleChannelsPktdma(void *args)
     for (index = 0; index < 2; index += 1)
     {
         UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_TX);
-        chPrms.fqRingPrms.ringMem = TestUdma_FqDualChannel[index];
-        chPrms.fqRingPrms.ringMemSize = sizeof(TestUdma_FqDualChannel[index]);
+        chPrms.fqRingPrms.ringMem = TestUdma_FqMultiChannel[index];
+        chPrms.fqRingPrms.ringMemSize = sizeof(TestUdma_FqMultiChannel[index]);
         chPrms.fqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
-        chPrms.cqRingPrms.ringMem = TestUdma_CqDualChannel[index];
-        chPrms.cqRingPrms.ringMemSize = sizeof(TestUdma_CqDualChannel[index]);
+        chPrms.cqRingPrms.ringMem = TestUdma_CqMultiChannel[index];
+        chPrms.cqRingPrms.ringMemSize = sizeof(TestUdma_CqMultiChannel[index]);
         chPrms.cqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
         /* pick different peer numbers */
-        chPrms.peerChNum = (index == 0) ? UDMA_TEST_PKTDMA_CPSW_TX_PEER_CH : UDMA_TEST_PKTDMA_UNMAPPED_TX_PEER_CH;
+        chPrms.peerChNum = (index == 0) ? UDMA_PDMA_CH_MAIN0_UART0_TX : UDMA_TEST_PKTDMA_UNMAPPED_TX_PEER_CH;
 
         retVal = Udma_chOpen(drvPktdma, chPkt[index], UDMA_CH_TYPE_TX, &chPrms);
         TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
@@ -6126,7 +6100,7 @@ static void TestUdma_eventInvalidUnmappedUnregistered(void *args)
     /* Open block-copy channel */
     UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_TR_BLK_COPY);
     chPrms.fqRingPrms.ringMem      = TestUdma_BlkCopyCh2RingMem;
-    chPrms.fqRingPrms.ringMemSize  = UDMA_CACHELINE_ALIGNMENT;
+    chPrms.fqRingPrms.ringMemSize  = TEST_UDMA_RING_MEM_SIZE_SINGLE;
     chPrms.fqRingPrms.elemCnt      = TEST_UDMA_RING_ELEM_SINGLE;
 
     retVal = Udma_chOpen(drvHandle, chHandle, UDMA_CH_TYPE_TR_BLK_COPY, &chPrms);
@@ -6315,7 +6289,7 @@ static void TestUdma_nullRingMemOpen(void *args)
     chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE;
     chPrms.fqRingPrms.elemCnt     = TEST_UDMA_RING_ELEM_CNT;
     chPrms.cqRingPrms.ringMem     = TestUdma_BlkCopyCh2RingMem;
-    chPrms.cqRingPrms.ringMemSize = UDMA_CACHELINE_ALIGNMENT;
+    chPrms.cqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
     chPrms.cqRingPrms.elemCnt     = TEST_UDMA_RING_ELEM_SINGLE;
 
     retVal = Udma_chOpen(drvHandle, chHandle, UDMA_CH_TYPE_TR_BLK_COPY, &chPrms);
@@ -6337,7 +6311,7 @@ static void TestUdma_nullRingMemOpen(void *args)
     chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE;
     chPrms.fqRingPrms.elemCnt     = TEST_UDMA_RING_ELEM_CNT;
     chPrms.cqRingPrms.ringMem     = TestUdma_BlkCopyCh2RingMem;
-    chPrms.cqRingPrms.ringMemSize = UDMA_CACHELINE_ALIGNMENT;
+    chPrms.cqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
     chPrms.cqRingPrms.elemCnt     = TEST_UDMA_RING_ELEM_SINGLE;
 
     retVal = Udma_chOpen(drvHandle, chHandle, UDMA_CH_TYPE_TR_BLK_COPY, &chPrms);
@@ -6406,10 +6380,10 @@ static void TestUdma_addrTranslateAndDescriptorEchoTest(void *args)
     UdmaChTxPrms_init(&txPrms, UDMA_CH_TYPE_TR_BLK_COPY);
     UdmaChRxPrms_init(&rxPrms, UDMA_CH_TYPE_TR_BLK_COPY);
     chPrms.fqRingPrms.ringMem = TestUdma_FqRingMem;
-    chPrms.fqRingPrms.ringMemSize = UDMA_CACHELINE_ALIGNMENT;
+    chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
     chPrms.fqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
     chPrms.cqRingPrms.ringMem = TestUdma_CqRingMem;
-    chPrms.cqRingPrms.ringMemSize = UDMA_CACHELINE_ALIGNMENT;
+    chPrms.cqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
     chPrms.cqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
     retVal = Udma_chOpen(drvHandle, chHandle, UDMA_CH_TYPE_TR_BLK_COPY, &chPrms);
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
@@ -6781,10 +6755,10 @@ static void TestUdma_channelAllocExhaust(void *args)
         Udma_ChPrms chPrms;
         UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_TR_BLK_COPY);
         chPrms.fqRingPrms.ringMem     = TestUdma_ExhaustFqMem[index];
-        chPrms.fqRingPrms.ringMemSize = UDMA_CACHELINE_ALIGNMENT; /* one slice */
+        chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE; /* one slice */
         chPrms.fqRingPrms.elemCnt     = TEST_UDMA_RING_ELEM_SINGLE;
         chPrms.cqRingPrms.ringMem     = TestUdma_ExhaustCqMem[index];
-        chPrms.cqRingPrms.ringMemSize = UDMA_CACHELINE_ALIGNMENT;
+        chPrms.cqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
         chPrms.cqRingPrms.elemCnt     = TEST_UDMA_RING_ELEM_SINGLE;
         retVal = Udma_chOpen(drvHandle, &TestUdma_ExhaustChObjs[index], UDMA_CH_TYPE_TR_BLK_COPY, &chPrms);
         openStatus[index] = retVal;
@@ -7245,3 +7219,341 @@ static void TestUdma_multiDescriptorSubmission(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, Udma_chClose(chHandle));
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, Udma_deinit(drvHandle));
 }
+
+/**
+* \brief HC/UHC channel open coverage test (expect allocation failure).
+*
+* Test Category: Negative / Coverage
+*
+* Attempts to open HC/UHC variants for Block-Copy, TX, and RX when SoC flags
+* disable support. Verifies Udma_chOpen returns UDMA_EALLOC for each case.
+* This does not configure, enable, or submit transfers; it is purely for source coverage.
+*/
+static void TestUdma_allocationHcUhcChannel(void *args)
+{
+    (void)args;
+    Udma_InitPrms initPrms;
+    static Udma_DrvObject drvObj;
+    Udma_DrvHandle drvHandle = &drvObj;
+    Udma_ChObject chObj;
+    Udma_ChHandle chHandle = &chObj;
+    Udma_ChPrms chPrms;
+    int32_t retVal;
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, UdmaInitPrms_init(UDMA_INST_ID_BCDMA_0, &initPrms));
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, Udma_init(drvHandle, &initPrms));
+
+    /* Common tiny FQ ring to reach open path (even though alloc will fail) */
+    UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_TR_BLK_COPY_HC);
+    chPrms.chNum = UDMA_DMA_CH_ANY;
+    chPrms.fqRingPrms.ringMem = TestUdma_BlkCopyCh2RingMem;
+    chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
+    chPrms.fqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
+
+    /* 1) Block-Copy HC */
+    retVal = Udma_chOpen(drvHandle, chHandle, UDMA_CH_TYPE_TR_BLK_COPY_HC, &chPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_EALLOC, retVal);
+
+    /* 2) Block-Copy UHC */
+    UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_TR_BLK_COPY_UHC);
+    chPrms.chNum = UDMA_DMA_CH_ANY;
+    chPrms.fqRingPrms.ringMem = TestUdma_BlkCopyCh2RingMem;
+    chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
+    chPrms.fqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
+    retVal = Udma_chOpen(drvHandle, chHandle, UDMA_CH_TYPE_TR_BLK_COPY_UHC, &chPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_EALLOC, retVal);
+
+    /* 3) TX HC */
+    UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_TX_HC);
+    chPrms.chNum = UDMA_DMA_CH_ANY;
+    chPrms.fqRingPrms.ringMem = TestUdma_FqRingMem;
+    chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
+    chPrms.fqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
+    /* PSIL peer required for TX/RX types; use an unmapped test thread */
+    chPrms.peerChNum = UDMA_TEST_PKTDMA_UNMAPPED_TX_PEER_CH;
+    retVal = Udma_chOpen(drvHandle, chHandle, UDMA_CH_TYPE_TX_HC, &chPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_EALLOC, retVal);
+
+    /* 4) TX UHC */
+    UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_TX_UHC);
+    chPrms.chNum = UDMA_DMA_CH_ANY;
+    chPrms.fqRingPrms.ringMem = TestUdma_FqRingMem;
+    chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
+    chPrms.fqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
+    chPrms.peerChNum = UDMA_TEST_PKTDMA_UNMAPPED_TX_PEER_CH;
+    retVal = Udma_chOpen(drvHandle, chHandle, UDMA_CH_TYPE_TX_UHC, &chPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_EALLOC, retVal);
+
+    /* 5) RX HC */
+    UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_RX_HC);
+    chPrms.chNum = UDMA_DMA_CH_ANY;
+    chPrms.fqRingPrms.ringMem = TestUdma_FqRingMem;
+    chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
+    chPrms.fqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
+    chPrms.peerChNum = UDMA_TEST_PKTDMA_UNMAPPED_RX_PEER_CH;
+    retVal = Udma_chOpen(drvHandle, chHandle, UDMA_CH_TYPE_RX_HC, &chPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_EALLOC, retVal);
+
+    /* 6) RX UHC */
+    UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_RX_UHC);
+    chPrms.chNum = UDMA_DMA_CH_ANY;
+    chPrms.fqRingPrms.ringMem = TestUdma_FqRingMem;
+    chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
+    chPrms.fqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
+    chPrms.peerChNum = UDMA_TEST_PKTDMA_UNMAPPED_RX_PEER_CH;
+    retVal = Udma_chOpen(drvHandle, chHandle, UDMA_CH_TYPE_RX_UHC, &chPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_EALLOC, retVal);
+
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, Udma_deinit(drvHandle));
+}
+
+/* Mapped RX channel allocation tests run only on cores that have mapped CPSW resources reserved - a53 core*/
+#if(ENABLE_A53_CORE)
+#if (UDMA_NUM_MAPPED_RX_GROUP > 0)
+/**
+ * \brief Mapped RX preferred channel allocation test.
+ *
+ * Test Category: Functional
+ *
+ * Uses RM to select preferred mapped RX channel and validates successful open and
+ * teardown sequence.
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Channel opens at preferred RX number; enable/disable/close succeed.
+ */
+static void TestUdma_mappedRxPreferredChannelAllocation(void *args)
+{
+    static Udma_DrvObject pktdmaDrvObj;
+    Udma_DrvHandle drvHandle = &pktdmaDrvObj;
+    Udma_ChObject chObj;
+    Udma_ChHandle chHandle = &chObj;
+    Udma_ChPrms chPrms;
+    int32_t retVal;
+    Udma_InitPrms udmaInitPrms;
+    uint32_t chType = UDMA_CH_TYPE_RX_MAPPED;
+    Udma_DrvHandleInt   drvHandleInt;
+    uint32_t mappedChGrp, preferredChNum;
+
+    UdmaInitPrms_init(UDMA_INST_ID_PKTDMA_0, &udmaInitPrms);
+    retVal = Udma_init(drvHandle, &udmaInitPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    drvHandleInt = (Udma_DrvHandleInt) drvHandle;
+
+    /*Configure the driver for mapped RX channel allocation */
+    mappedChGrp = UDMA_MAPPED_RX_GROUP_CPSW;
+    preferredChNum = drvHandleInt->rmInitPrms.startMappedRxCh[mappedChGrp-UDMA_NUM_MAPPED_TX_GROUP];
+
+    /* Open the channel */
+    UdmaChPrms_init(&chPrms, chType);
+    chPrms.chNum = preferredChNum;  /* Set the preferred channel number */
+    chPrms.mappedChGrp = mappedChGrp;
+    chPrms.peerChNum = UDMA_TEST_PKTDMA_CPSW_RX_PEER_CH;
+
+    retVal = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Enable the channel */
+    retVal = Udma_chEnable(chHandle);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Disable the channel */
+    retVal = Udma_chDisable(chHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Close the channel */
+    retVal = Udma_chClose(chHandle);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Deinit driver */
+    retVal = Udma_deinit(drvHandle);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+}
+
+/**
+ * \brief Mapped RX any available channel allocation test.
+ *
+ * Test Category: Functional
+ *
+ * Uses RM to select any available mapped RX channel and validates successful open and
+ * teardown sequence.
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Channel opens at any available RX number; enable/disable/close succeed.
+ */
+static void TestUdma_mappedRxAnyChannelAllocation(void *args)
+{
+    static Udma_DrvObject pktdmaDrvObj;
+    Udma_DrvHandle drvHandle = &pktdmaDrvObj;
+    Udma_ChObject chObj;
+    Udma_ChHandle chHandle = &chObj;
+    Udma_ChPrms chPrms;
+    int32_t retVal;
+    Udma_InitPrms udmaInitPrms;
+    uint32_t chType = UDMA_CH_TYPE_RX_MAPPED;
+    uint32_t mappedChGrp, preferredChNum;
+
+    UdmaInitPrms_init(UDMA_INST_ID_PKTDMA_0, &udmaInitPrms);
+    retVal = Udma_init(drvHandle, &udmaInitPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /*Configure the driver for mapped RX channel allocation */
+    mappedChGrp = UDMA_MAPPED_RX_GROUP_CPSW;
+    preferredChNum = UDMA_DMA_CH_ANY;
+
+    /* Open the channel */
+    UdmaChPrms_init(&chPrms, chType);
+    chPrms.chNum = preferredChNum;
+    chPrms.mappedChGrp = mappedChGrp;
+    chPrms.peerChNum = UDMA_TEST_PKTDMA_CPSW_RX_PEER_CH;
+    chPrms.fqRingPrms.ringMem = TestUdma_FqRingMem;
+    chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
+    chPrms.fqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
+
+    retVal = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Enable the channel */
+    retVal = Udma_chEnable(chHandle);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Disable the channel */
+    retVal = Udma_chDisable(chHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Close the channel */
+    retVal = Udma_chClose(chHandle);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Deinit driver */
+    retVal = Udma_deinit(drvHandle);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+}
+
+#endif /* UDMA_NUM_MAPPED_RX_GROUP > 0*/
+#endif /* For cores that have mapped CPSW resources reserved for RX channel allocation*/
+
+/* Mapped TX channel allocation tests run only on cores that have mapped CPSW resources reserved - a53 and mcu r5 cores*/
+#if(ENABLE_A53_CORE || ENABLE_MCU_R5_CORE)
+#if (UDMA_NUM_MAPPED_TX_GROUP > 0)
+/**
+ * \brief Mapped TX preferred channel allocation test.
+ *
+ * Test Category: Functional
+ *
+ * Requests a specific mapped TX channel number (preferred) and validates open,
+ * enable, disable, and close sequence returns success.
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Channel allocated at preferred number; lifecycle APIs succeed.
+ */
+static void TestUdma_mappedTxPreferredChannelAllocation(void *args)
+{
+    static Udma_DrvObject pktdmaDrvObj;
+    Udma_DrvHandle drvHandle = &pktdmaDrvObj;
+    Udma_ChObject chObj;
+    Udma_ChHandle chHandle = &chObj;
+    Udma_ChPrms chPrms;
+    int32_t retVal;
+    uint32_t mappedChGrp, preferredChNum;
+    Udma_InitPrms udmaInitPrms;
+    uint32_t chType = UDMA_CH_TYPE_TX_MAPPED;
+    Udma_DrvHandleInt   drvHandleInt;
+
+    UdmaInitPrms_init(UDMA_INST_ID_PKTDMA_0, &udmaInitPrms);
+    retVal = Udma_init(drvHandle, &udmaInitPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    drvHandleInt = (Udma_DrvHandleInt) drvHandle;
+
+    /*Configure the driver for mapped TX channel allocation */
+    mappedChGrp = UDMA_MAPPED_TX_GROUP_CPSW;
+    preferredChNum = drvHandleInt->rmInitPrms.startMappedTxCh[mappedChGrp];
+
+    /* Open the channel */
+    UdmaChPrms_init(&chPrms, chType);
+    chPrms.chNum = preferredChNum;  /* Set the preferred channel number */
+    chPrms.mappedChGrp = mappedChGrp;
+    chPrms.peerChNum = UDMA_TEST_PKTDMA_CPSW_TX_PEER_CH;
+
+    retVal = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Enable the channel */
+    retVal = Udma_chEnable(chHandle);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Disable the channel */
+    retVal = Udma_chDisable(chHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Close the channel */
+    retVal = Udma_chClose(chHandle);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Deinit driver */
+    retVal = Udma_deinit(drvHandle);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+}
+
+/**
+ * \brief Mapped TX any available channel allocation test.
+ *
+ * Test Category: Functional
+ *
+ * Requests any available mapped TX channel number and validates open,
+ * enable, disable, and close sequence returns success.
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Channel allocated at any available number; lifecycle APIs succeed.
+ */
+static void TestUdma_mappedTxAnyChannelAllocation(void *args)
+{
+    static Udma_DrvObject pktdmaDrvObj;
+    Udma_DrvHandle drvHandle = &pktdmaDrvObj;
+    Udma_ChObject chObj;
+    Udma_ChHandle chHandle = &chObj;
+    Udma_ChPrms chPrms;
+    int32_t retVal;
+    uint32_t mappedChGrp, preferredChNum;
+    Udma_InitPrms udmaInitPrms;
+    uint32_t chType = UDMA_CH_TYPE_TX_MAPPED;
+
+    UdmaInitPrms_init(UDMA_INST_ID_PKTDMA_0, &udmaInitPrms);
+    retVal = Udma_init(drvHandle, &udmaInitPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /*Configure the driver for mapped TX channel allocation */
+    mappedChGrp = UDMA_MAPPED_TX_GROUP_CPSW;
+    preferredChNum = UDMA_DMA_CH_ANY;
+
+    /* Open the channel */
+    UdmaChPrms_init(&chPrms, chType);
+    chPrms.chNum = preferredChNum;
+    chPrms.mappedChGrp = mappedChGrp;
+    chPrms.peerChNum = UDMA_TEST_PKTDMA_CPSW_TX_PEER_CH;
+    chPrms.fqRingPrms.ringMem = TestUdma_FqRingMem;
+    chPrms.fqRingPrms.ringMemSize = TEST_UDMA_RING_MEM_SIZE_SINGLE;
+    chPrms.fqRingPrms.elemCnt = TEST_UDMA_RING_ELEM_SINGLE;
+
+    retVal = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Enable the channel */
+    retVal = Udma_chEnable(chHandle);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Disable the channel */
+    retVal = Udma_chDisable(chHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Close the channel */
+    retVal = Udma_chClose(chHandle);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Deinit driver */
+    retVal = Udma_deinit(drvHandle);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+}
+#endif /*UDMA_NUM_MAPPED_TX_GROUP > 0 */
+#endif /* For cores that have mapped CPSW resources reserved for TX channel allocation*/
+

@@ -105,7 +105,7 @@ static int32_t udmaTestFlowAttachMappedTestLoop(UdmaTestTaskObj *taskObj)
 {
     int32_t             retVal = UDMA_SOK;
 #if ((UDMA_NUM_MAPPED_TX_GROUP + UDMA_NUM_MAPPED_RX_GROUP) > 0)
-    uint32_t            instId, mappedFlowGrp;;
+    uint32_t            instId, mappedFlowGrp;
     uint32_t            flowCnt = 1U, mappepdFlowNum, flowCntTest;
     uint32_t            numMappedFlowGrp;
     uint32_t            mappedFlowAllocated = FALSE;
@@ -120,7 +120,7 @@ static int32_t udmaTestFlowAttachMappedTestLoop(UdmaTestTaskObj *taskObj)
 
     if(UDMA_SOK == retVal)
     {
-        instId = UDMA_TEST_INST_ID_FLOW;
+        instId = UDMA_TEST_INST_ID_PKTDMA;
         drvHandle = &taskObj->testObj->drvObj[instId];
         drvObj = (Udma_DrvObjectInt *) drvHandle;
 
@@ -283,7 +283,7 @@ static int32_t udmaTestFlowAttachTestLoop(UdmaTestTaskObj *taskObj)
     Udma_RmInitPrms     *rmInitPrms;
     Udma_DrvObjectInt  *drvObj;
 
-    instId = UDMA_TEST_INST_ID_FLOW;
+    instId = UDMA_TEST_INST_ID_PKTDMA;
     drvHandle = &taskObj->testObj->drvObj[instId];
     drvObj = (Udma_DrvObjectInt *) drvHandle;
     rmInitPrms = &drvObj->rmInitPrms;

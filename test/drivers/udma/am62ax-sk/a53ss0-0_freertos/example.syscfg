@@ -43,7 +43,7 @@ mmu_armv83.$name     = "OCRAM_MAP";
 mmu_armv83.vAddr     = 0x70000000;
 mmu_armv83.pAddr     = 0x70000000;
 mmu_armv83.size      = 0x00010000;
-mmu_armv83.attribute = "MAIR7"; // or an attribute matching non-cache or WB as required
+mmu_armv83.attribute = "MAIR7"; /* or an attribute matching non-cache or WB as required */
 
 /* Dedicated non-cached region for UDMA buffers to avoid cache coherency issues on A53 */
 const mmu_armv84 = mmu_armv8.addInstance();

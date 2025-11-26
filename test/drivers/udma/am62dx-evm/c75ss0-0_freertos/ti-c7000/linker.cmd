@@ -24,7 +24,7 @@ MEMORY
     C7X_VECS_D:    org = C7X_VECTOR_BASE,     len = 0x4000       /*  16KB DDR */
     C7X_CIO_MEM:   org = C7X_DDR_SPACE_BASE,  len = 0x1000       /*  4KB DDR */
     C7X_DDR_SPACE: org = C7X_DDR_SPACE_BASE+0x1000, len = 0x00BF0000-0x1000  /*  11.9MB - 4KB DDR  */
-    DDR_UDMA : ORIGIN = 0xA0800000, LENGTH = 0x8000000
+    DDR_UDMA : ORIGIN = C7X_DDR_SPACE_BASE + 0x00BF0000 , LENGTH = 0x8000000
     OCRAM    : ORIGIN = 0x70000000, LENGTH = 0x10000
 }
 
@@ -69,5 +69,5 @@ SECTIONS
     .udma_buffer_ddr (NOLOAD) : { *(.udma_buffer_ddr) } > DDR_UDMA
     .udma_buffer_msmc (NOLOAD) : { *(.udma_buffer_msmc)} > DDR_UDMA
     .udma_buffer_ospi (NOLOAD) : { *(.udma_buffer_ospi)} > DDR_UDMA
-    .udma_buffer_internal (NOLOAD) : { *(.udma_buffer_internal)} > DDR_UDMA
+    .udma_buffer_internal (NOLOAD) : { *(.udma_buffer_internal)} > OCRAM
 }

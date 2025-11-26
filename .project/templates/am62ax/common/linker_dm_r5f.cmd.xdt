@@ -5,7 +5,7 @@
     let vringBaseAddr = 0xA0400000;
     let vringSize = 0x300000;
 
-    let useDdrBuffer = false;
+    let enableUdmaBuffers = false;
     if(options && options.globalScratchBuf)
     globalScratchBuf = options.globalScratchBuf;
 
@@ -19,12 +19,12 @@
     if(options && options.vringBaseAddr)
         vringBaseAddr = options.vringBaseAddr;
 
-    if(options && options.useDdrBuffer)
-        useDdrBuffer = options.useDdrBuffer;
+    if(options && options.enableUdmaBuffers)
+        enableUdmaBuffers = options.enableUdmaBuffers;
 
     let globalScratchBufSizeInMB = globalScratchBufSize / (1024 * 1024)
 
-    if(useDdrBuffer == true) {
+    if(enableUdmaBuffers == true) {
         codeDataAddrDdrUdma = 0x90000000;
         codeDataSizeDdrUdma = 0x08000000;
         codeDataAddrOcram = 0x70000000;
@@ -214,9 +214,9 @@ SECTIONS
     /* global scratch buffer region */
     .globalScratchBuffer (NOLOAD) : {} > DDR2
     % }
-    % if(useDdrBuffer) {
+    % if(enableUdmaBuffers) {
     GROUP {
-        .udma_buffer_ddr (NOLOAD) : { *(.udma_buffer_ddr) }
+        .udma_buffer_ddr  (NOLOAD) : { *(.udma_buffer_ddr) }
         .udma_buffer_msmc (NOLOAD) : { *(.udma_buffer_msmc) }
         .udma_buffer_ospi (NOLOAD) : { *(.udma_buffer_ospi) }
     } > DDR_UDMA
@@ -249,7 +249,7 @@ MEMORY
     DDR_IPC_TRACE_LINUX         : ORIGIN = 0x9C900400 LENGTH = 0xFFC00  /* IPC trace buffer     */
     %}
 
-    % if(useDdrBuffer) {
+    % if(enableUdmaBuffers) {
     DDR_UDMA : ORIGIN = 0x`(codeDataAddrDdrUdma).toString(16).toUpperCase()`, LENGTH = 0x`(codeDataSizeDdrUdma).toString(16).toUpperCase()`
     OCRAM    : ORIGIN = 0x`(codeDataAddrOcram).toString(16).toUpperCase()`, LENGTH = 0x`(codeDataSizeOcram).toString(16).toUpperCase()`
     % }

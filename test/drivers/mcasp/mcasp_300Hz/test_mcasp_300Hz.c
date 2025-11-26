@@ -182,7 +182,7 @@ void mcasp_txcb(MCASP_Handle handle,
     static uint64_t timestamp = 0;
     uint64_t timePeriod = 0;
 
-    if(timestamp != 0)
+    if(timestamp != 0 && (gTxTxnCnt < APP_MCASP_TXN_CNT))
     {
         gTxTxnCnt++;
 
@@ -214,7 +214,7 @@ void mcasp_rxcb(MCASP_Handle handle,
     static uint64_t timestamp = 0;
     uint64_t timePeriod = 0;
 
-    if(timestamp != 0)
+    if(timestamp != 0 && (gRxTxnCnt < APP_MCASP_TXN_CNT))
     {
         gRxTxnCnt++;
 

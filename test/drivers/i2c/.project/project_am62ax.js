@@ -58,7 +58,7 @@ const cflags_free_rtos_mcu_r5_nortos = {
 const cflags_free_rtos_c7 = {
     common: [
         "-DENABLE_MT_TESTS",
-        "-DSTACK_C7_CORE",
+        "-DC7X_CORE",
     ],
 }
 const libdirs_prebuild_nortos = {

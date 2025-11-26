@@ -85,7 +85,7 @@ CFLAGS_common := \
 	-DBUILD_C7X \
 	-DBUILD_C7X_1 \
 	-DENABLE_MT_TESTS \
-	-DSTACK_C7_CORE \
+	-DC7X_CORE \
 
 CFLAGS_debug := \
 	-Dxdc_target_name__=C71 \

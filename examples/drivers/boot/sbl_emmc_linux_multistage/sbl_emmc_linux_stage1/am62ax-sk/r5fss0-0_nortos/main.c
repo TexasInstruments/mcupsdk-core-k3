@@ -164,7 +164,7 @@ int main()
     {
         /*
          * Wait for completion of Positive PBIST tests
-         * that are started in Sytem_init()
+         * that are started in System_init()
          */
         status = SDL_PBIST_completeAllTests();
         DebugP_assert(status == SDL_PASS);

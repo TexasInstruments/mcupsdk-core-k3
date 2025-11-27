@@ -4024,7 +4024,7 @@ static int32_t MMCSD_halSetBusFreq(uint32_t ctrlBaseAddr, uint32_t inClk, uint32
         {
             clkDiv = 1023U;
         }
-        while((inClk/clkDiv) > (2 * outClk))
+        while((clkDiv != 0U) && ((inClk/clkDiv) > (2 * outClk)))
         {
             if(clkDiv == 1023U)
             {

@@ -94,6 +94,8 @@ This page lists all the examples related to Ethernet Communication.
 -# \subpage EXAMPLES_ENET_CPSW_TSN_CRF_AUTOAMP_DEMO
 ### LLDP Example on FreeRTOS
 -# \subpage EXAMPLES_ENET_CPSW_LLDP
+### Ethernet Firmware
+-# \subpage ETHFW_SERVER_AND_CLIENT
 \endcond
 
 \cond SOC_AM62LX

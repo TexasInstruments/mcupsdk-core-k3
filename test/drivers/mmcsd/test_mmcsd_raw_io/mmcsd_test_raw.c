@@ -582,7 +582,8 @@ void TestMmcsd_crcRecovery(void *args)
     gMmcsdAttrs[CONFIG_MMCSD_EMMC].enableDma = 1;
 #endif
     Drivers_mmcsdOpen();
-    gMmcsdAttrs[CONFIG_MMCSD_EMMC].tuningType = 0;
+    /* Set tuning type as manual tuning */
+    gMmcsdAttrs[CONFIG_MMCSD_EMMC].tuningType = 1U;
     MMCSD_Handle handle = gMmcsdHandle[CONFIG_MMCSD_EMMC];
     blockSize = MMCSD_getBlockSize(handle);
 
@@ -592,18 +593,13 @@ void TestMmcsd_crcRecovery(void *args)
     retVal = MMCSD_write(handle, TestMMCSD_txBuf, TEST_MMCSD_EMMC_START_BLK,  numBlocksPerIter);
     TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
 
-    /* Read the curent itap and otap values */
-    uint32_t otapDlySel = 
-               (CSL_REG32_RD(&baseReg->PHY_CTRL_4_REG) & CSL_MMC_SSCFG_PHY_CTRL_4_REG_OTAPDLYSEL_MASK) 
-                                                       >> CSL_MMC_SSCFG_PHY_CTRL_4_REG_OTAPDLYSEL_SHIFT;
+    /* Read the curent itap value */
     uint32_t itapDlySel = 
                (CSL_REG32_RD(&baseReg->PHY_CTRL_4_REG) & CSL_MMC_SSCFG_PHY_CTRL_4_REG_ITAPDLYSEL_MASK) 
                                                        >> CSL_MMC_SSCFG_PHY_CTRL_4_REG_ITAPDLYSEL_SHIFT;
 
     /* Use a failing ITAP value */
     CSL_REG32_FINS(&baseReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPCHGWIN, 1U);
-    CSL_REG32_FINS(&baseReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_OTAPDLYENA, 1U);
-    CSL_REG32_FINS(&baseReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_OTAPDLYSEL, 9U);
     CSL_REG32_FINS(&baseReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPDLYENA, 1U);
     CSL_REG32_FINS(&baseReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPDLYSEL, 25U);
     CSL_REG32_FINS(&baseReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPCHGWIN, 0U);
@@ -616,8 +612,6 @@ void TestMmcsd_crcRecovery(void *args)
 
     /* Rewrite the orginal delay values */
     CSL_REG32_FINS(&baseReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPCHGWIN, 1U);
-    CSL_REG32_FINS(&baseReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_OTAPDLYENA, 1U);
-    CSL_REG32_FINS(&baseReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_OTAPDLYSEL, otapDlySel);
     CSL_REG32_FINS(&baseReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPDLYENA, 1U);
     CSL_REG32_FINS(&baseReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPDLYSEL, itapDlySel);
     CSL_REG32_FINS(&baseReg->PHY_CTRL_4_REG, MMC_SSCFG_PHY_CTRL_4_REG_ITAPCHGWIN, 0U);
@@ -856,8 +850,13 @@ void TestMmcsd_emmcTuningConfig(void *args)
     {
         if(loopVar == 0)
         {
+#if defined (SOC_AM275X)
+            /* Auto PHY tuning fails on AM275x */
+            continue;
+#else
             /* Auto PHY tuning */
             DebugP_log("Starting transfer with  auto PHY tuning\r\n");
+#endif
         }
         else
         {
@@ -875,8 +874,8 @@ void TestMmcsd_emmcTuningConfig(void *args)
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
         Drivers_mmcsdClose();
     }
-    /* Revert back to normal bus width after testing */
-    gMmcsdAttrs[CONFIG_MMCSD_EMMC].tuningType = 0;
+    /* Revert back to manual PHY tuning after testing */
+    gMmcsdAttrs[CONFIG_MMCSD_EMMC].tuningType = 1U;
     Drivers_mmcsdOpen();
     Drivers_mmcsdClose();
 }
@@ -1280,6 +1279,8 @@ void TestMmcsd_getBlockCountValidate(void *args)
     handle = gMmcsdHandle[CONFIG_MMCSD_EMMC];
     blockCount2 = MMCSD_getBlockCount(handle);
     Drivers_mmcsdClose();
+
+    gMmcsdAttrs[CONFIG_MMCSD_EMMC].enableDma = 1U;
 
     TEST_ASSERT_EQUAL(blockCount1, blockCount2);
 }

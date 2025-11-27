@@ -72,6 +72,7 @@
  *    from the RX pin to the TX pin.
  * 4. The time delay of the GPIO rising edge from PIN 2 to PIN 8 will indicate
  *    the MCASP audio latency.
+ * Note: Ensure J29 2-3 are connected for voltage selection
  */
 /******************************************************************************/
 
@@ -80,7 +81,7 @@
 /******************************************************************************/
 /*
  * To test MCASP audio latency:
- * 1. Connect PIN 29 of Audio expansion header 1 to MCASP RX serialiser PIN 29 of
+ * 1. Connect PIN 51 of Audio expansion header 1 to MCASP RX serialiser PIN 29 of
  *    Audio expansion header 1.
  * 2. The MCASP TX serialiser will be brought out at PIN 27 of audio expansion
  *    header 1.

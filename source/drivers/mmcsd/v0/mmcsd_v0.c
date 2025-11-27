@@ -1616,7 +1616,21 @@ static int32_t MMCSD_transfer(MMCSD_Handle handle, MMCSD_Transaction *trans)
             {
                 /* Success means data/cmd line reset happened, requiring retries */
                 numRetries--;
-                status = MMCSD_sendStopCmd(handle);
+
+                if(((trans->cmd >> 8U) == 18U) || ((trans->cmd >> 8U) == 25U))
+                {
+                    /* Stop command should return success in case of multi-block
+                       read and multi-block write commands.
+                    */
+                    status = MMCSD_sendStopCmd(handle);
+                }
+                else
+                {
+                    /* Ignore the status returned as there can be cases
+                       where no transfer is happening.
+                    */
+                    (void) MMCSD_sendStopCmd(handle);
+                }
 
                 if((SystemP_SUCCESS == status) && (isRetuneNeeded == TRUE))
                 {
@@ -2696,14 +2710,11 @@ static int32_t MMCSD_sendSwitchCmd(MMCSD_Handle handle, uint32_t arg)
             if((status == SystemP_SUCCESS) && (trans.status == MMCSD_TRANS_FAILURE))
             {
                 numRetries--;
-                status = MMCSD_sendStopCmd(handle);
 
-                if(status != SystemP_SUCCESS)
-                {
-                    /* Abort failed, need to power cycle */
-                    trans.status = MMCSD_TRANS_IRRECOVERABLE;
-                    break;
-                }
+                /* Ignore the return value as stop command can fail in case
+                   no transaction is in progress.
+                */
+                (void) MMCSD_sendStopCmd(handle);
             }
             else
             {
@@ -3154,13 +3165,7 @@ static int32_t MMCSD_sendCmd21(MMCSD_Handle handle)
         if((status == SystemP_SUCCESS) && (trans.status == MMCSD_TRANS_FAILURE))
         {
             /* Success means data/cmd line reset happened, requiring retries */
-            status = MMCSD_sendStopCmd(handle);
-
-            if(status != SystemP_SUCCESS)
-            {
-                /* Abort failed, need to power cycle */
-                trans.status = MMCSD_TRANS_IRRECOVERABLE;
-            }
+            (void) MMCSD_sendStopCmd(handle);
 
             /* CMD21 failied */
             status = SystemP_FAILURE;

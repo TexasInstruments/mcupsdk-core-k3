@@ -87,14 +87,14 @@ void MMCSD_phyGetTapValues(uint32_t *outputTapDelaySel, uint32_t *outputTapDelay
     switch(phyMode) {
         case MMCSD_PHY_MODE_SDR50:
         case MMCSD_PHY_MODE_HSSDR50:
-            *outputTapDelaySel = 1U;
-            *outputTapDelayVal = 8U;
-            *inputTapDelaySel = 0U;
-            *inputTapDelayVal = 0U;
+            *outputTapDelaySel = 0U;
+            *outputTapDelayVal = 0U;
+            *inputTapDelaySel = 1U;
+            *inputTapDelayVal = 10U;
             break;
         case MMCSD_PHY_MODE_HS200:
             *outputTapDelaySel = 1U;
-            *outputTapDelayVal = 6U;
+            *outputTapDelayVal = 8U;
             *inputTapDelaySel = 1U;
             *inputTapDelayVal = tunedItap;
             break;
@@ -104,19 +104,19 @@ void MMCSD_phyGetTapValues(uint32_t *outputTapDelaySel, uint32_t *outputTapDelay
             *inputTapDelaySel = 1U;
             *inputTapDelayVal = 7U;
             break;
-        case MMCSD_PHY_MODE_DDR50:
+        case MMCSD_PHY_MODE_HSDDR50:
             *outputTapDelaySel = 1U;
-            *outputTapDelayVal = 5U;
-            *inputTapDelaySel = 0U;
-            *inputTapDelayVal = 0U;
+            *outputTapDelayVal = 6U;
+            *inputTapDelaySel = 1U;
+            *inputTapDelayVal = 3U;
             break;
         case MMCSD_PHY_MODE_DS:
         case MMCSD_PHY_MODE_HS:
         case MMCSD_PHY_MODE_SDR25:
             *outputTapDelaySel = 0U;
             *outputTapDelayVal = 0U;
-            *inputTapDelaySel = 0U;
-            *inputTapDelayVal = 0U;
+            *inputTapDelaySel = 1U;
+            *inputTapDelayVal = 16U;
             break;
         default:
             break;

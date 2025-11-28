@@ -3441,6 +3441,8 @@ static int32_t Udma_chDisableTxChan(Udma_ChHandleInt chHandle, uint32_t timeout)
             bcdmaRtStatus.teardown = FALSE;
             bcdmaRtStatus.forcedTeardown = FALSE;
             CSL_FINS(peerRtEnable, PSILCFG_REG_RT_ENABLE_TDOWN, (uint32_t) 0U);
+            CSL_FINS(peerRtEnable, PSILCFG_REG_RT_ENABLE_FLUSH, (uint32_t) 0U);
+            CSL_FINS(peerRtEnable, PSILCFG_REG_RT_ENABLE_ENABLE, (uint32_t) 0U);
             /*Add offset to chNum, so that BCDMA can identify it as Tx Channel*/
             (void) CSL_bcdmaSetTxRT(&drvHandle->bcdmaRegs, chHandle->txChNum + drvHandle->txChOffset, &bcdmaRtStatus);
             (void) CSL_bcdmaSetChanPeerReg(
@@ -4246,7 +4248,7 @@ int32_t Udma_chReset(Udma_ChHandle chHandle)
                     retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_GET_STATS,
                                             CSL_BCDMA_CHAN_TYPE_BLOCK_COPY, chHandleInt->txChNum,
                                             &chStat);
-                                            
+
                     if(retVal == UDMA_SOK)
                     {
                     	retVal = CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_DEC_STATS,

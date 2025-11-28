@@ -255,7 +255,7 @@ static int32_t PBIST_errNegativeTest(void)
 
     if (testResult == 0)
     {
-        sdlRet = SDL_SBL_PBIST_selfTest(PBIST_INVALID_INST, SDL_PBIST_TEST);
+        sdlRet = SDL_SBL_PBIST_selfTest(PBIST_INVALID_INST);
         if (sdlRet == SDL_PASS)
         {
             DebugP_log("\r\n  SDL_SBL_PBIST_selfTest negative test failed \r\n");

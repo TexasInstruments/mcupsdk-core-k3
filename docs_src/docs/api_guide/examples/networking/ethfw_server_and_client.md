@@ -563,7 +563,7 @@ Add `-DENABLE_MAC_ONLY_PORTS` to `DEFINES_common` in the client app, server app 
     - Client app makefile in `<mcu_plus_sdk>/source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/<device>/<core_os_combo>/ti-arm-clang/`
     - Server app makefile in `<mcu_plus_sdk>/source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/<device>/<core_os_combo>/ti-arm-clang/`
     - Ethfw device specific library makefiles in `<mcu_plus_sdk>/source/networking/ethfw/`
-2. Increase number of MAC address allocated to MCU-R5 to 2 in structure below:
+2. Set `numMacAddress = 2` for MCU-R5 in the structure defined in `enet_cpsw_top.syscfg.js`:
  \imageStyle{ethfw_macOnly_script_change.png,width:95%}
  \image html ethfw_macOnly_script_change.png
 3. Make the following changes to the server app example.syscfg

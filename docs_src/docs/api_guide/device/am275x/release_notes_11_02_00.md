@@ -234,6 +234,12 @@ newer version listed on the table below.
     <td> <= 10.01.00
     <td> >= 11.00.00
 </tr>
+<tr>
+    <td> NETWORKING
+    <td> \ref enet_mcupsdk_update
+    <td> <= 11.01.00
+    <td> >= 11.02.00
+</tr>
 </table>
 
 ### Networking

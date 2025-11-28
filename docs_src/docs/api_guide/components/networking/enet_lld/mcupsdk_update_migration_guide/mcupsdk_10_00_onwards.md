@@ -1,6 +1,80 @@
 # Version Updates from earlier SDKs to Latest {#enet_mcupsdk_update}
 [TOC]
 
+## While upgrading from 11.01 or earlier to latest SDK
+### Change Set
+**Change-1**: Sysconfig generated file changes<br>
+**Change-2**: Enet Module interface removed
+
+#### Change-1 Description
+Enet-LLD sysconfig layer has been cleaned up to improve code readability by removing sysconfig API abstractions and statically initializing CPSW/ICSSG configurations and calling driver APIs directly.
+
+The following new files are generated from sysconfig. Example makefiles have been updated to include these files:
+
+| Generated File        | Description |
+|:----------------------|:------------|
+| ti_enet_dma_init.h    | Contains DMA structures and API definitions |
+| ti_enet_dma_init.c    | Contains DMA object initialization based on the DMA channel config settings in Sysconfig GUI |
+| ti_enet_init.c        | Contains global CPSW config and RM resource config initialization along with helper functions:<br>- Global RM resource config is populated from an array defined in device specific .js files<br>- Global CPSW config is populated from the Sysconfig GUI settings |
+
+The following APIs have been removed from syscfg generated files:
+
+| Removed API                    | Description                              |
+:--------------------------------| :----------------------------------------|
+EnetApp_enablePorts()            | Replaced by separate host/mac functions  |
+EnetApp_openDmaChannels()        | Inlined into main flow                   |
+EnetApp_openAllRxDmaChannels()   | Inlined into main flow                   |
+EnetApp_openAllTxDmaChannels()   | Inlined into main flow                   |
+EnetApp_doCpswOpen()             | No longer needed, replaced with direct call to Enet_open() |
+EnetAppUtils_initResourceConfig()| Replaced with static config              |
+
+The following APIs have been added in syscfg generated files:
+
+New API                          | Description                               |
+:--------------------------------| :---------------------------------------- |
+EnetApp_enableHostPort()         | Separate host port enable                 |
+EnetApp_enableMacPort()          | Separate MAC port enable                  |
+EnetApp_getPhyAliveStatus()      | Direct PHY status check                   |
+EnetApp_updateTxChInitCfg()      | Direct TX channel config update           |
+EnetApp_updateRxChInitCfg()      | Direct RX channel config update           |
+EnetApp_getCpswCfg()             | Returns static CPSW config pointer        |
+EnetApp_cpswInitMacAddr()        | Static MAC address init                   |
+getAleModeFlags(), getAlePortMask() | Template helper functions              |
+getIpNxtWhitelistCount(), getIpNxtWhitelistCount()| Template helper functions|
+
+#### Change-1 Impact
+- All networking examples now generate additional files that are included in makefiles - ti_enet_dma_init.c/h and ti_enet_init.c.
+- Enet driver initialization has been internally refactored to reduce abstraction. Users need to rebuild their projects to get the modified template changes.
+
+#### Change-2 Description
+Enet module abstraction layer has been removed to meet functional safety standards by replacing generic `EnetMod_Handle` with specific typed handles (e.g., `CpswAle_Handle`, `Mdio_Handle`), eliminating function pointers and void pointers.
+- The `void *arg` argument used in the function pointer of `EnetPhy_Mdio` structure has been changed to `Mdio_Obj*`
+- The `EnetMod_Obj enetMod` member in all module structures has been removed and its individual members have been expanded inline
+- Module APIs now use module-specific handles instead of the generic `EnetMod_Handle` as below:
+
+| Module  | Impacted APIs | Old parameters | New parameters |
+|:-------|:-------------|:----------------|:----------------|
+| CPSW ALE      | CpswAle_open, CpswAle_rejoin, CpswAle_ioctl, CpswAle_close,<br> CpswAle_saveCtxt, CpswAle_restoreCtxt  |``EnetMod_Handle hMod, ...``|`CpswAle_Handle hAle, ...`|
+| CPSW CPTS     | CpswCpts_open, CpswCpts_rejoin, CpswCpts_ioctl,<br> CpswCpts_close, CpswCpts_saveCtxt, CpswCpts_restoreCtxt |`EnetMod_Handle hMod, ...`|`CpswCpts_Handle hCpts, ...`|
+| CPSW HostPort | CpswHostPort_open, CpswHostPort_rejoin, CpswHostPort_ioctl,<br> CpswHostPort_close, CpswHostPort_saveCtxt, CpswHostPort_restoreCtxt|`EnetMod_Handle hMod, ...`|`CpswHostPort_Handle hPort, ...`|
+| CPSW MacPort  | CpswMacPort_open, CpswMacPort_rejoin, CpswMacPort_ioctl,<br> CpswMacPort_close, CpswMacPort_saveCtxt, CpswMacPort_restoreCtxt |`EnetMod_Handle hMod, ...`|`CpswMacPort_Handle hPort, ...`|
+| CPSW Stats    | CpswStats_open, CpswStats_rejoin, CpswStats_ioctl,<br> CpswStats_close, CpswStats_saveCtxt, CpswStats_restoreCtxt |`EnetMod_Handle hMod, ...`|`CpswStats_Handle hStats, ...`|
+| MDIO          | Mdio_open, Mdio_rejoin, Mdio_ioctl, Mdio_close, Mdio_saveCtxt, Mdio_restoreCtxt                    |`EnetMod_Handle hMod, ...`|`Mdio_Handle hMdio, ...`|
+| ICSSG Stats   | IcssgStats_open, IcssgStats_rejoin, IcssgStats_ioctl, IcssgStats_close                             |`EnetMod_Handle hMod, ...`|`IcssgStats_Handle hStats, ...`|
+| ICSSG TAS     | IcssgTas_open, IcssgTas_rejoin, IcssgTas_ioctl, IcssgTas_close                                     |`EnetMod_Handle hMod, ...`|`IcssgTas_Handle hTas, ...`|
+| ICSSG TimeSync| IcssgTimeSync_open, IcssgTimeSync_rejoin, IcssgTimeSync_ioctl, IcssgTimeSync_close                 |`EnetMod_Handle hMod, ...`|`IcssgTimeSync_Handle hTimeSync, ...`|
+| NullMod       | NullMod_open                                                                                       |`EnetMod_Handle hMod, ... , const void *cfg`|`NullMod_Handle hNull, ... , const NullMod_Cfg *nullModCfg`|
+| ^             | NullMod_rejoin, NullMod_ioctl, NullMod_close                                                       |`EnetMod_Handle hMod, ...`|`NullMod_Handle hNull, ...`|
+| EnetPhyMdioDflt| EnetPhyMdioDflt_isAlive, EnetPhyMdioDflt_isLinked, EnetPhyMdioDflt_readC22,<br> EnetPhyMdioDflt_writeC22, EnetPhyMdioDflt_readC45, EnetPhyMdioDflt_writeC45 |`..., void *args`|`..., Mdio_Obj *hMdio`|
+| EnetPhy        | EnetPhy_open                                                                                      |`..., void *mdioArgs`|`..., Mdio_Obj *mdioArgs`|
+
+#### Change-2 Impact
+
+1. All code using `EnetMod_Handle` has been replaced with module specific handle type (e.g., `CpswAle_Handle`, `Mdio_Handle`)
+2. All code using the `ENET_MOD()` macro has been removed
+3. All generic wrapper calls for module IOCTLs have been replaced with module-specific functions
+4. PHY code that passes `void*` pointers has been updated to use `Mdio_Obj*` instead
+
 ## While upgrading from 11.00 SDK to 11.01 SDK
 ### Change Set
 Change-1 : ENET UDMA API changes
@@ -68,7 +142,7 @@ This will need addition of the corresponding sysconfig tool changes to add the e
 ## While upgrading from 09.02 SDK or earlier
 ### Change-1 Description
 In MCU+ SDK version of 10.00, ENET(CPSW) and ENET(ICSS) component in Sysconfig GUI has been updated with fixes to correct MII/RMII mode for ICSSG and CPSW Resp..
-Additonally support added to release unused pins based on number of ports were enabled in CPSW.
+Additionally support added to release unused pins based on number of ports were enabled in CPSW.
 
 ### Change-1 Impact
 The above described change makes any older 'example.syscfg' generated using SDK version of 09.00 or earlier not compatible with SDK version 10.00 or later. This incompatibility is seen only when either ENET(CPSW) or ENET(ICSS) is added in your application/example.If neither of the components are added, you may ignore this change and there is no impact.
@@ -76,7 +150,7 @@ User will see the error in sysconfig gui tool when the old example.syscfg file i
 
 ### Change-1 Solution
 #### Option 1:
-If is possible to create a example.syscfg as per user configurations, please generate a new example.syscfg from any SDK example and change the configration as per your need. This is the safest option.
+If it is possible to create an example.syscfg as per user configurations, please generate a new example.syscfg from any SDK example and change the configration as per your need. This is the safest option.
 
 #### Option 2:
 Sometimes, it is not easy to get a new example.syscfg that matches the older example.syscfg. In those case, please follow the below steps

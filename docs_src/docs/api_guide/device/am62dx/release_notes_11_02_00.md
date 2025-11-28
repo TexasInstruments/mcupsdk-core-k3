@@ -28,9 +28,9 @@ Feature                                                                         
 \attention TI would not support these feature on public e2e.
 \attention Experimental features will be enabled with limited examples and SW modules.
 
-Feature                                                             | Module
---------------------------------------------------------------------|--------------------------
-TBD                                                                 | TBD
+Feature                                                                    | Module
+---------------------------------------------------------------------------|--------------------------
+Ethernet traffic sharing across multiple cores, called Ethernet Firmware   | Networking
 
 ## Dependent Tools and Compiler Information
 \attention It is recommended to use the TIFS version provided with the release for ensuring compatibility between TIFS and device manager. Using the TIFS from different MCU+SDK release is not recomended and may cause TIFS/ DM functionality to break.
@@ -395,7 +395,7 @@ newer version listed on the table below.
 Module       | Migration guide                              | Older version  | Newer version
 -------------|----------------------------------------------|----------------| -----------------
 Bootloader   |  \ref BOOTLOADER_MIGRATION_GUIDELINE  &zwj;  |   <= 10.01.00  | >= 11.00.00
-NETWORKING   |  \ref enet_mcupsdk_update       &zwj; |    11.00.00  | >= 11.01.00
+NETWORKING   |  \ref enet_mcupsdk_update       &zwj;        |   <= 11.01.00  | >= 11.02.00
 
 ### Networking
 

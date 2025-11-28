@@ -87,7 +87,7 @@ __attribute__((section(".ddrData"), aligned(128))) uint8_t ddrBuffer[DDR_SIZE];
 
 float *pInput = (float *)ddrBuffer;
 ipcMsgBuf_t iBuf;
-params_t gDspParams;
+__attribute__((aligned(128))) params_t gDspParams;
 /* RPMessage_Object MUST be global or static */
 RPMessage_Object gAckReplyMsgObject;
 

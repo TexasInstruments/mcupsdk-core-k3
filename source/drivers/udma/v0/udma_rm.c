@@ -1468,7 +1468,7 @@ void Udma_rmFreeEvent(uint32_t globalEvent, Udma_DrvHandleInt drvHandle)
     return;
 }
 
-uint32_t Udma_rmAllocVintr(Udma_DrvHandleInt drvHandle)
+uint32_t Udma_rmAllocVintr(uint32_t preferredVintNum, Udma_DrvHandleInt drvHandle)
 {
     uint32_t            i, offset, bitPos, bitMask;
     uint32_t            vintrNum = UDMA_EVENT_INVALID;
@@ -1476,17 +1476,39 @@ uint32_t Udma_rmAllocVintr(Udma_DrvHandleInt drvHandle)
 
     SemaphoreP_pend(&drvHandle->rmLockObj, SystemP_WAIT_FOREVER);
 
-    for(i = 0U; i < rmInitPrms->numVintr; i++)
+    if(UDMA_CORE_INTR_ANY == preferredVintNum)
     {
-        offset = i >> 5U;
-        DebugP_assert(offset < UDMA_RM_VINTR_ARR_SIZE);
-        bitPos = i - (offset << 5U);
-        bitMask = (uint32_t) 1U << bitPos;
-        if((drvHandle->vintrFlag[offset] & bitMask) == bitMask)
+        for(i = 0U; i < rmInitPrms->numVintr; i++)
         {
-            drvHandle->vintrFlag[offset] &= ~bitMask;
-            vintrNum = i + rmInitPrms->startVintr;  /* Add start offset */
-            break;
+            offset = i >> UDMA_RM_GET_OFFSET_SHIFT;
+            DebugP_assert(offset < UDMA_RM_VINTR_ARR_SIZE);
+            bitPos = i - (offset << UDMA_RM_GET_OFFSET_SHIFT);
+            bitMask = (uint32_t) 1U << bitPos;
+            if((drvHandle->vintrFlag[offset] & bitMask) == bitMask)
+            {
+                drvHandle->vintrFlag[offset] &= ~bitMask;
+                vintrNum = i + rmInitPrms->startVintr;  /* Add start offset */
+                break;
+            }
+        }
+    }
+    else
+    {
+        /* Allocate specific IR interrupt number if free */
+        /* Array bound check */
+        if((preferredVintNum >= rmInitPrms->startVintr) &&
+           (preferredVintNum < (rmInitPrms->startVintr + rmInitPrms->numVintr)))
+        {
+            i = preferredVintNum - rmInitPrms->startVintr;
+            offset = i >> UDMA_RM_GET_OFFSET_SHIFT;
+            DebugP_assert(offset < UDMA_RM_IR_INTR_ARR_SIZE);
+            bitPos = i - (offset << UDMA_RM_GET_OFFSET_SHIFT);
+            bitMask = (uint32_t) 1U << bitPos;
+            if((drvHandle->irIntrFlag[offset] & bitMask) == bitMask)
+            {
+                drvHandle->irIntrFlag[offset] &= ~bitMask;
+                vintrNum = preferredVintNum;
+            }
         }
     }
 

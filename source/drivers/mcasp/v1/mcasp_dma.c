@@ -490,6 +490,7 @@ static int32_t MCASP_primeTxTrpd(MCASP_Config *config)
                 pTr = UdmaUtils_getTrpdTr3Pointer((uint8_t *)obj->dmaChCfg->txTrpdMem, i);
 
                 pTr->flags = CSL_FMK(UDMAP_TR_FLAGS_TYPE, CSL_UDMAP_TR_FLAGS_TYPE_4D_DATA_MOVE);
+                pTr->flags |= CSL_FMK(UDMAP_TR_FLAGS_EOP, 1U);
 
                 pTr->addr = (uint64_t)Udma_virtToPhyFxn(obj->XmtObj.txnLoopjob.buf, drvHandle, txChHandle);
 
@@ -1014,7 +1015,7 @@ void MCASP_disableDmaTx(MCASP_Config *config)
         if(chanEnStatus == 1U)
         {
             /* Disable Channel */
-            status = Udma_chDisable(txChHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT);
+            status = Udma_chDisable(txChHandle, SystemP_WAIT_FOREVER);
         }
 
         while(TRUE)

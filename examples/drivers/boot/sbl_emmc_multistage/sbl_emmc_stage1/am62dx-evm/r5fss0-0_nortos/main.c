@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -147,31 +147,6 @@ int main()
 
     if(SystemP_SUCCESS == status)
     {
-        /*
-         * Wait for completion of Positive PBIST tests
-         * that are started in Sytem_init()
-         */
-        status = SDL_PBIST_completeAllTests();
-        DebugP_assert(status == SDL_PASS);
-        Bootloader_profileAddProfilePoint("PBIST Positive Tests");
-
-        /* Turn On PSC devices before initializing Negative tests */
-        status = SDL_PBIST_handlePSCdevices(true);
-        DebugP_assert(status == SDL_PASS);
-
-        /* Start Negative PBIST tests of all selected instances */
-        status = SDL_PBIST_startAllTests(false);
-        DebugP_assert(status == SDL_PASS);
-
-        /* Wait for completion of all Negative PBIST tests */
-        status = SDL_PBIST_completeAllTests();
-        DebugP_assert(status == SDL_PASS);
-        Bootloader_profileAddProfilePoint("PBIST Negative Tests");
-
-        /* Turn Off PSC devices after completion of Negative tests */
-        status = SDL_PBIST_handlePSCdevices(false);
-        DebugP_assert(status == SDL_PASS);
-
         Bootloader_openDma();
 
         Bootloader_BootImageInfo bootImageInfoDM;

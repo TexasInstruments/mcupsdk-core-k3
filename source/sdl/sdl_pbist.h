@@ -135,7 +135,6 @@ int32_t SDL_PBIST_selfTest(SDL_PBIST_inst instance, SDL_PBIST_testType testType,
  *  defined in the soc-specific header file.
  *
  *  \param instance         [IN]  PBIST instance
- *  \param testType         [IN]  PBIST test type to run.
  *
  *  \return The SDL error code for the API.
  *                                 If pResult is NULL: SDL_EBADARGS
@@ -143,7 +142,7 @@ int32_t SDL_PBIST_selfTest(SDL_PBIST_inst instance, SDL_PBIST_testType testType,
  *                                 If other error happened: SDL_EFAIL
  *                                 Success: SDL_PASS
  */
-int32_t SDL_SBL_PBIST_selfTest(SDL_PBIST_inst instance, SDL_PBIST_testType testType);
+int32_t SDL_SBL_PBIST_selfTest(SDL_PBIST_inst instance);
 
 /**
  *  \brief PBIST API to check if the test is complete.

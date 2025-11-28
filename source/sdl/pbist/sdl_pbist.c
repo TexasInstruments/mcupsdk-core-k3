@@ -277,7 +277,7 @@ int32_t SDL_PBIST_selfTest(SDL_PBIST_inst instance, SDL_PBIST_testType testType,
 /**
  * Design: PROC_SDL-6242
  */
-int32_t SDL_SBL_PBIST_selfTest(SDL_PBIST_inst instance, SDL_PBIST_testType testType)
+int32_t SDL_SBL_PBIST_selfTest(SDL_PBIST_inst instance)
 {
     int32_t ret;
     SDL_pbistRegs *pRegs;
@@ -294,7 +294,7 @@ int32_t SDL_SBL_PBIST_selfTest(SDL_PBIST_inst instance, SDL_PBIST_testType testT
     if (ret == SDL_PASS)
     {
         gmcuPbist=1u;
-        ret = SDL_PBIST_runTest(testType, pRegs, pInfo, 0u, &PBISTResult);
+        ret = SDL_PBIST_runTest(SDL_PBIST_TEST, pRegs, pInfo, 0u, &PBISTResult);
         gmcuPbist = 0u;
     }
 

@@ -16,30 +16,27 @@ function getInstanceConfig(instance) {
         {
             selectedInstances.push(pbistInstances[i]);
             auxDevices.push(soc.getSdlPbistAuxDevices()[i]);
-            if ((common.getSocName() == "am62ax") || (common.getSocName() == "am62dx"))
+            if  ((common.getSocName() == "am62ax") || (common.getSocName() == "am62dx"))
             {
-                if (pbistInstances[i] === "SDL_PBIST_INST_C7X")
+                if  (pbistInstances[i] === "SDL_PBIST_INST_C7X")
                 {
                     pscAddrs.push("PBIST_C7X_ADDR");
                     pscPds.push("CSL_MAIN_PD_C7X");
                     lpscIds.push("CSL_MAIN_LPSC_C7X_CORE");
                 }
-                if (soc.getSdlPbistAuxDevices()[i].includes('TISCI_DEV_USB0'))
+                if  (soc.getSdlPbistAuxDevices()[i].includes('TISCI_DEV_USB0'))
                 {
                     pscAddrs.push("PBIST_USB0_ADDR");
                     pscPds.push("CSL_MAIN_GP_CORE_CTL");
                     lpscIds.push("CSL_MAIN_LPSC_USB_0");
                 }
-                if (soc.getSdlPbistAuxDevices()[i].includes('TISCI_DEV_USB1'))
+                if  (soc.getSdlPbistAuxDevices()[i].includes('TISCI_DEV_USB1'))
                 {
                     pscAddrs.push("PBIST_USB1_ADDR");
                     pscPds.push("CSL_MAIN_GP_CORE_CTL");
                     lpscIds.push("CSL_MAIN_LPSC_USB_1");
                 }
-            }
-            if ((common.getSocName() == "am62ax") || (common.getSocName() == "am62dx") || (common.getSocName() == "am62x"))
-            {
-                if (soc.getSdlPbistAuxDevices()[i].includes('TISCI_DEV_COMPUTE_CLUSTER0'))
+                if  (soc.getSdlPbistAuxDevices()[i].includes('TISCI_DEV_COMPUTE_CLUSTER0'))
                 {
                     pscAddrs.push("PBIST_A53_0_CLUSTER_ADDR");
                     pscAddrs.push("PBIST_A53_0_ADDR");
@@ -56,27 +53,6 @@ function getInstanceConfig(instance) {
                     lpscIds.push("CSL_MAIN_LPSC_A53_1");
                     lpscIds.push("CSL_MAIN_LPSC_A53_2");
                     lpscIds.push("CSL_MAIN_LPSC_A53_3");
-                }
-            }
-            if (common.getSocName() == "am62px")
-            {
-                if (soc.getSdlPbistAuxDevices()[i].includes('TISCI_DEV_COMPUTE_CLUSTER0'))
-                {
-                    pscAddrs.push("PBIST_A53_0_CLUSTER_ADDR");
-                    pscAddrs.push("PBIST_A53_0_ADDR");
-                    pscAddrs.push("PBIST_A53_1_ADDR");
-                    pscAddrs.push("PBIST_A53_2_ADDR");
-                    pscAddrs.push("PBIST_A53_3_ADDR");
-                    pscPds.push("CSL_MAIN_PD_MPU_CLST0");
-                    pscPds.push("CSL_MAIN_PD_MPU_CLST0_CORE0");
-                    pscPds.push("CSL_MAIN_PD_MPU_CLST0_CORE1");
-                    pscPds.push("CSL_MAIN_PD_MPU_CLST0_CORE2");
-                    pscPds.push("CSL_MAIN_PD_MPU_CLST0_CORE3");
-                    lpscIds.push("CSL_MAIN_LPSC_MAIN_MPU_CLST0");
-                    lpscIds.push("CSL_MAIN_LPSC_MAIN_MPU_CLST0_CORE0");
-                    lpscIds.push("CSL_MAIN_LPSC_MAIN_MPU_CLST0_CORE1");
-                    lpscIds.push("CSL_MAIN_LPSC_MAIN_MPU_CLST0_CORE2");
-                    lpscIds.push("CSL_MAIN_LPSC_MAIN_MPU_CLST0_CORE3");
                 }
             }
         }

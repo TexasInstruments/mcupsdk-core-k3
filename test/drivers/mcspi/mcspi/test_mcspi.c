@@ -422,10 +422,10 @@ void test_main(void *args)
     run_multi_threaded_tests(&testParams);
     #endif
 
-    test_mcspi_set_params(&testParams, 335);
-    RUN_TEST(test_mcspi_loopback,  335, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 336);
-    RUN_TEST(test_mcspi_loopback, 336, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2894);
+    RUN_TEST(test_mcspi_loopback,  2894, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2895);
+    RUN_TEST(test_mcspi_loopback, 2895, (void*)&testParams);
     test_mcspi_set_params(&testParams, 8409);
     RUN_TEST(test_mcspi_loopback, 8409, (void*) &testParams);
     test_mcspi_set_params(&testParams, 8408);
@@ -459,37 +459,37 @@ void test_main(void *args)
 #endif
 #endif
 #if (CONFIG_MCSPI_NUM_INSTANCES > 2)
-    test_mcspi_set_params(&testParams, 972);
-    RUN_TEST(test_mcspi_loopback,  972, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 4003);
+    RUN_TEST(test_mcspi_loopback,  4003, (void*)&testParams);
 #endif
 #if !defined(SOC_AM64X) && !defined(SOC_AM243X) && !defined(SOC_AM263X)
-    test_mcspi_set_params(&testParams, 973);
-    RUN_TEST(test_mcspi_loopback,  973, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2901);
+    RUN_TEST(test_mcspi_loopback,  2901, (void*)&testParams);
 #endif
-    test_mcspi_set_params(&testParams, 974);
-    RUN_TEST(test_mcspi_loopback,  974, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2902);
+    RUN_TEST(test_mcspi_loopback,  2902, (void*)&testParams);
 #if (CONFIG_MCSPI_NUM_INSTANCES > 2)
-    test_mcspi_set_params(&testParams, 975);
-    RUN_TEST(test_mcspi_loopback,  975, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 4004);
+    RUN_TEST(test_mcspi_loopback,  4004, (void*)&testParams);
 #endif
-    test_mcspi_set_params(&testParams, 980);
-    RUN_TEST(test_mcspi_loopback_performance,  980, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 7351);
-    RUN_TEST(test_mcspi_loopback_performance,  7351, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 7352);
-    RUN_TEST(test_mcspi_loopback_performance,  7352, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 7353);
-    RUN_TEST(test_mcspi_loopback_performance,  7353, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 7354);
-    RUN_TEST(test_mcspi_loopback_performance,  7354, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 7355);
-    RUN_TEST(test_mcspi_loopback_performance,  7355, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2903);
+    RUN_TEST(test_mcspi_loopback_performance,  2903, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2904);
+    RUN_TEST(test_mcspi_loopback_performance,  2904, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2905);
+    RUN_TEST(test_mcspi_loopback_performance,  2905, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2906);
+    RUN_TEST(test_mcspi_loopback_performance,  2906, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2908);
+    RUN_TEST(test_mcspi_loopback_performance,  2908, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2910);
+    RUN_TEST(test_mcspi_loopback_performance,  2910, (void*)&testParams);
 
-     test_mcspi_set_params(&testParams, 985);
-     RUN_TEST(test_mcspi_loopback_back2back,  985, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 991);
-    RUN_TEST(test_mcspi_loopback,  991, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 992);
+     test_mcspi_set_params(&testParams, 2911);
+     RUN_TEST(test_mcspi_loopback_back2back,  2911, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2912);
+    RUN_TEST(test_mcspi_loopback,  2912, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2934);
     /* Change clock divider as per test list */
     chConfigParams = &(testParams.mcspiChConfigParams);
     config = &gMcspiConfig[CONFIG_MCSPI0];
@@ -497,45 +497,45 @@ void test_main(void *args)
     for (clkList = 0U; clkList < SPI_TEST_NUM_CLK_LIST; clkList++)
     {
         chConfigParams->bitRate = (attrParams->inputClkFreq / (gClkDividerTestListRampUp[clkList] + 1));
-        RUN_TEST(test_mcspi_loopback,  992, (void*)&testParams);
+        RUN_TEST(test_mcspi_loopback,  2934, (void*)&testParams);
     }
-    test_mcspi_set_params(&testParams, 993);
+    test_mcspi_set_params(&testParams, 2914);
     chConfigParams = &(testParams.mcspiChConfigParams);
     config = &gMcspiConfig[CONFIG_MCSPI0];
     attrParams = (MCSPI_Attrs *)config->attrs;
     for (clkList = 0U; clkList < SPI_TEST_NUM_CLK_LIST; clkList++)
     {
         chConfigParams->bitRate = (attrParams->inputClkFreq / (gClkDividerTestListRampDown[clkList] + 1));
-        RUN_TEST(test_mcspi_loopback,  993, (void*)&testParams);
+        RUN_TEST(test_mcspi_loopback,  2914, (void*)&testParams);
     }
-    test_mcspi_set_params(&testParams, 994);
-    RUN_TEST(test_mcspi_loopback,  994, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 995);
-    RUN_TEST(test_mcspi_loopback,  995, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 996);
-    RUN_TEST(test_mcspi_loopback,  996, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 997);
-    RUN_TEST(test_mcspi_loopback,  997, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 998);
-    RUN_TEST(test_mcspi_loopback,  998, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 999);
-    RUN_TEST(test_mcspi_loopback,  999, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 1000);
-    RUN_TEST(test_mcspi_loopback,  1000, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 1001);
-    RUN_TEST(test_mcspi_loopback,  1001, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 1002);
-    RUN_TEST(test_mcspi_loopback,  1002, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 1003);
-    RUN_TEST(test_mcspi_loopback,  1003, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 1004);
-    RUN_TEST(test_mcspi_loopback,  1004, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 1005);
-    RUN_TEST(test_mcspi_loopback,  1005, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 1006);
-    RUN_TEST(test_mcspi_loopback_multimaster,  1006, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2915);
+    RUN_TEST(test_mcspi_loopback,  2915, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2916);
+    RUN_TEST(test_mcspi_loopback,  2916, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2917);
+    RUN_TEST(test_mcspi_loopback,  2917, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2918);
+    RUN_TEST(test_mcspi_loopback,  2918, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2919);
+    RUN_TEST(test_mcspi_loopback,  2919, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2920);
+    RUN_TEST(test_mcspi_loopback,  2920, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2921);
+    RUN_TEST(test_mcspi_loopback,  2921, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2922);
+    RUN_TEST(test_mcspi_loopback,  2922, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2923);
+    RUN_TEST(test_mcspi_loopback,  2923, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2924);
+    RUN_TEST(test_mcspi_loopback,  2924, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2925);
+    RUN_TEST(test_mcspi_loopback,  2925, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2926);
+    RUN_TEST(test_mcspi_loopback,  2926, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2927);
+    RUN_TEST(test_mcspi_loopback_multimaster,  2927, (void*)&testParams);
 #if (CONFIG_MCSPI_NUM_INSTANCES > 2)
-    test_mcspi_set_params(&testParams, 1007);
+    test_mcspi_set_params(&testParams, 4025);
     /* Change clock divider as per test list */
     chConfigParams = &(testParams.mcspiChConfigParams);
     config = &gMcspiConfig[CONFIG_MCSPI0];
@@ -543,50 +543,50 @@ void test_main(void *args)
     for (clkList = 0U; clkList < SPI_TEST_NUM_CLK_LIST; clkList++)
     {
         chConfigParams->bitRate = (attrParams->inputClkFreq / (gClkDividerTestListRampUp[clkList] + 1));
-        RUN_TEST(test_mcspi_loopback,  1007, (void*)&testParams);
+        RUN_TEST(test_mcspi_loopback,  4025, (void*)&testParams);
     }
 #endif
-    test_mcspi_set_params(&testParams, 1008);
+    test_mcspi_set_params(&testParams, 2928);
     chConfigParams = &(testParams.mcspiChConfigParams);
     config = &gMcspiConfig[CONFIG_MCSPI0];
     attrParams = (MCSPI_Attrs *)config->attrs;
     for (clkList = 0U; clkList < SPI_TEST_NUM_CLK_LIST; clkList++)
     {
         chConfigParams->bitRate = (attrParams->inputClkFreq / (gClkDividerTestListRampDown[clkList] + 1));
-        RUN_TEST(test_mcspi_loopback,  1008, (void*)&testParams);
+        RUN_TEST(test_mcspi_loopback,  2928, (void*)&testParams);
     }
-    test_mcspi_set_params(&testParams, 1009);
-    RUN_TEST(test_mcspi_loopback_simultaneous, 1009, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2929);
+    RUN_TEST(test_mcspi_loopback_simultaneous, 2929, (void*)&testParams);
     #if ENABLE_MT_TESTS
-    test_mcspi_set_params(&testParams, 1011);
-    RUN_TEST(test_mcspi_transfer_cancel, 1011, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 1012);
-    RUN_TEST(test_mcspi_transfer_cancel, 1012, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2930);
+    RUN_TEST(test_mcspi_transfer_cancel, 2930, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2931);
+    RUN_TEST(test_mcspi_transfer_cancel, 2931, (void*)&testParams);
     #endif
-    test_mcspi_set_params(&testParams, 1014);
-    RUN_TEST(test_mcspi_loopback_timeout, 1014, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 1565);
-    RUN_TEST(test_mcspi_performance_16bit, 1565, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2932);
+    RUN_TEST(test_mcspi_loopback_timeout, 2932, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 2933);
+    RUN_TEST(test_mcspi_performance_16bit, 2933, (void*)&testParams);
 #if (CONFIG_MCSPI_NUM_INSTANCES > 2)
-    test_mcspi_set_params(&testParams, 2397);
-    RUN_TEST(test_mcspi_loopback_multimaster_dma,  2397, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 2394);
-    RUN_TEST(test_mcspi_loopback_dma,  2394, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 7356);
-    RUN_TEST(test_mcspi_loopback_dma,  7356, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 7357);
-    RUN_TEST(test_mcspi_loopback_dma,  7357, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 2394);
+    test_mcspi_set_params(&testParams, 4026);
+    RUN_TEST(test_mcspi_loopback_multimaster_dma,  4026, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 4027);
+    RUN_TEST(test_mcspi_loopback_dma,  4027, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 4028);
+    RUN_TEST(test_mcspi_loopback_dma,  4028, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 4029);
+    RUN_TEST(test_mcspi_loopback_dma,  4029, (void*)&testParams);
+    test_mcspi_set_params(&testParams, 4027);
     RUN_TEST(test_mcspi_loopback_dma_with_csdisable,  8057, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 7356);
+    test_mcspi_set_params(&testParams, 4028);
     RUN_TEST(test_mcspi_loopback_dma_with_csdisable,  8056, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 7357);
+    test_mcspi_set_params(&testParams, 4029);
     RUN_TEST(test_mcspi_loopback_dma_with_csdisable,  8055, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 2394);
+    test_mcspi_set_params(&testParams, 4027);
     RUN_TEST(test_mcspi_loopback_dma_with_toggled_csdisable,  8057, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 7356);
+    test_mcspi_set_params(&testParams, 4028);
     RUN_TEST(test_mcspi_loopback_dma_with_toggled_csdisable,  8056, (void*)&testParams);
-    test_mcspi_set_params(&testParams, 7357);
+    test_mcspi_set_params(&testParams, 4029);
     RUN_TEST(test_mcspi_loopback_dma_with_toggled_csdisable,  8055, (void*)&testParams);
 #if defined(SOC_AM62AX) ||  defined(SOC_AM62DX)
     test_mcspi_set_params(&testParams, 8412);
@@ -2756,7 +2756,7 @@ void test_mcspi_loopback_simultaneous(void *args)
 
     mcspiOpenParams->transferMode = MCSPI_TRANSFER_MODE_BLOCKING;
     /* Instance 1 Init params */
-    test_mcspi_set_params(&testParams1, 1009);
+    test_mcspi_set_params(&testParams1, 2929);
 #if (CONFIG_MCSPI_NUM_INSTANCES > 2U)
     attrParams->baseAddr           = MCSPI1_BASE_ADDRESS;
     attrParams->intrNum            = MCSPI1_INT_NUM;
@@ -3290,10 +3290,10 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
     chConfigParams->rxFifoTrigLvl      = 16U;
     switch (tcId)
     {
-        case 335:
+        case 2894:
             attrParams->operMode         = MCSPI_OPER_MODE_POLLED;
             break;
-        case 336:
+        case 2895:
             openParams->transferMode = MCSPI_TRANSFER_MODE_CALLBACK;
             openParams->transferCallbackFxn    = test_mcspi_callback;
             break;
@@ -3352,7 +3352,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
 #endif
 #endif
 #if !defined(SOC_AM62LX)
-        case 972:
+        case 4003:
             attrParams->baseAddr           = MCSPI4_BASE_ADDRESS;
             attrParams->operMode           = MCSPI_OPER_MODE_POLLED;
             #if defined(SOC_AM62X)
@@ -3362,7 +3362,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             #endif
             break;
 #endif
-        case 973:
+        case 2901:
             #if defined(SOC_AM62AX) ||  defined(SOC_AM62X) || defined(SOC_AM62DX) || defined(SOC_AM275X) || defined(SOC_J722S)
             attrParams->baseAddr           = MCSPI0_BASE_ADDRESS;
             attrParams->intrNum            = MCSPI0_INT_NUM;
@@ -3379,7 +3379,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             testParams->dataSize           = 16;
             #endif
             break;
-        case 974:
+        case 2902:
             attrParams->baseAddr           = MCSPI0_BASE_ADDRESS;
             attrParams->intrNum            = MCSPI0_INT_NUM;
 #if defined BUILD_C7X
@@ -3387,7 +3387,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
 #endif
             break;
 #if !defined(SOC_AM62LX)
-        case 975:
+        case 4004:
             attrParams->baseAddr           = MCSPI4_BASE_ADDRESS;
             attrParams->intrNum            = MCSPI4_INT_NUM;
             #if defined(SOC_AM62X)
@@ -3400,107 +3400,107 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             attrParams->eventId            = MCSPI4_EVENT_ID;
 #endif
             break;
-        case 980:
+        case 2903:
             testParams->dataSize           = 8;
             break;
-        case 7351:
+        case 2904:
             testParams->dataSize           = 16;
             break;
-        case 7352:
+        case 2905:
             testParams->dataSize           = 32;
             break;
-        case 7353:
+        case 2906:
             testParams->dataSize           = 8;
             attrParams->operMode = MCSPI_OPER_MODE_POLLED;
             break;
-        case 7354:
+        case 2908:
             testParams->dataSize           = 16;
             attrParams->operMode = MCSPI_OPER_MODE_POLLED;
             break;
-        case 7355:
+        case 2910:
             testParams->dataSize           = 32;
             attrParams->operMode = MCSPI_OPER_MODE_POLLED;
             break;
-        case 985:
+        case 2911:
             openParams->transferMode           = MCSPI_TRANSFER_MODE_CALLBACK;
             openParams->transferCallbackFxn    = test_mcspi_callback;
             chConfigParams->bitRate            = 12207;
             break;
-        case 991:
-        case 992:
-        case 993:
+        case 2912:
+        case 2934:
+        case 2914:
             attrParams->operMode = MCSPI_OPER_MODE_POLLED;
             break;
-        case 995:
+        case 2916:
             testParams->dataSize = 16;
             break;
-        case 996:
+        case 2917:
             testParams->dataSize = 8;
             break;
-        case 997:
+        case 2918:
             attrParams->pinMode = MCSPI_PINMODE_3PIN;
             break;
-        case 998:
+        case 2919:
             attrParams->initDelay = MCSPI_INITDLY_8;
             break;
-        case 999:
+        case 2920:
             chConfigParams->csPolarity = MCSPI_CS_POL_HIGH;
             break;
-        case 1000:
+        case 2921:
             chConfigParams->startBitEnable = TRUE;
             break;
-        case 1001:
+        case 2922:
             chConfigParams->csIdleTime = MCSPI_TCS0_3_CLK;
             break;
-        case 1002:
+        case 2923:
             chConfigParams->inputSelect = MCSPI_IS_D1;
             chConfigParams->dpe0        = MCSPI_DPE_DISABLE;
             chConfigParams->dpe1        = MCSPI_DPE_ENABLE;
             break;
-        case 1003:
+        case 2924:
             openParams->transferMode           = MCSPI_TRANSFER_MODE_CALLBACK;
             openParams->transferCallbackFxn    = test_mcspi_callback;
             break;
-        case 1005:
+        case 2926:
             openParams->transferMode           = MCSPI_TRANSFER_MODE_CALLBACK;
             openParams->transferCallbackFxn    = test_mcspi_callback;
             break;
-        case 1006:
+        case 2927:
             attrParams->operMode               = MCSPI_OPER_MODE_INTERRUPT;
             break;
-        case 1007:
+        case 4025:
         attrParams->baseAddr = MCSPI0_BASE_ADDRESS;
         attrParams->intrNum = MCSPI0_INT_NUM;
 #if defined BUILD_C7X
             attrParams->eventId                = MCSPI1_EVENT_ID;
 #endif
            break;
-        case 1009:
+        case 2929:
             openParams->transferMode           = MCSPI_TRANSFER_MODE_CALLBACK;
             openParams->transferCallbackFxn    = test_mcspi_callback;
             break;
 #if ENABLE_MT_TESTS
-      case 1011:
+      case 2930:
             testParams->dataSize               = 8;
             chConfigParams->bitRate            = 1000000;
             break;
-        case 1012:
+        case 2931:
             testParams->dataSize               = 16;
             chConfigParams->bitRate            = 1000000;
             openParams->transferMode           = MCSPI_TRANSFER_MODE_CALLBACK;
             openParams->transferCallbackFxn    = test_mcspi_callback_cancel;
             break;
 #endif
-        case 1014:
+        case 2932:
             openParams->transferTimeout        = 1U;
             chConfigParams->bitRate            = 50000;
             break;
-        case 1565:
+        case 2933:
             attrParams->operMode               = MCSPI_OPER_MODE_POLLED;
             break;
 
 #if (CONFIG_MCSPI_NUM_INSTANCES > 2)
-        case 2394:
+        case 4027:
             attrParams->baseAddr               = MCSPI3_BASE_ADDRESS;
             testParams->dataSize               = 8;
             attrParams->operMode               = MCSPI_OPER_MODE_DMA;
@@ -3508,7 +3508,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             openParams->transferCallbackFxn    = test_mcspi_callback;
             openParams->mcspiDmaIndex          = 0;
             break;
-        case 7356:
+        case 4028:
             attrParams->baseAddr               = MCSPI3_BASE_ADDRESS;
             testParams->dataSize               = 16;
             attrParams->operMode               = MCSPI_OPER_MODE_DMA;
@@ -3516,7 +3516,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             openParams->transferCallbackFxn    = test_mcspi_callback;
             openParams->mcspiDmaIndex          = 0;
             break;
-        case 7357:
+        case 4029:
             attrParams->baseAddr               = MCSPI3_BASE_ADDRESS;
             testParams->dataSize               = 32;
             attrParams->operMode               = MCSPI_OPER_MODE_DMA;
@@ -3524,7 +3524,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             openParams->transferCallbackFxn    = test_mcspi_callback;
             openParams->mcspiDmaIndex          = 0;
             break;
-        case 2397:
+        case 4026:
             attrParams->baseAddr               = MCSPI3_BASE_ADDRESS;
             testParams->dataSize               = 16;
             attrParams->operMode               = MCSPI_OPER_MODE_DMA;
@@ -3544,7 +3544,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
 
     bufWidthShift = MCSPI_getBufWidthShift(testParams->dataSize);
     /* If Count is less than FIFO trigger level */
-    if ((tcId == 971U) || (tcId == 991U))
+    if ((tcId == 971U) || (tcId == 2912U))
     {
         testParams->transferLength = (2U * (sizeof(gMcspiTxBuffer[0U]) / (1 << bufWidthShift)));
     }

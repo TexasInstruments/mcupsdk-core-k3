@@ -60,20 +60,6 @@ SECTIONS
     .bss.app(NOLOAD) : {} > APPIMAGE
 }
 
-/*
-NOTE: Below memory is reserved for DMSC usage
- - During Boot till security handoff is complete
-   0x701E0000 - 0x701FFFFF (128KB)
- - After "Security Handoff" is complete (i.e at run time)
-   0x701FC000 - 0x701FFFFF (16KB)
-
- Security handoff is complete when this message is sent to the DMSC,
-   TISCI_MSG_SEC_HANDOVER
-
- This should be sent once all cores are loaded and all application
- specific firewall calls are setup.
-*/
-
 MEMORY
 {
     BTCM_VECS    : ORIGIN = 0x41010000 , LENGTH = 0x40

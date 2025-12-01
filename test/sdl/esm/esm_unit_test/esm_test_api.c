@@ -100,7 +100,7 @@
 SDL_ESM_config ESM_esmInitConfig_MAIN_appcallback =
     {
         .esmErrorConfig = {1u, 8u}, /* Self test error config */
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62PX)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62DX)
         .enableBitmap = {
             0x00000000u,
             0xFFFFFFFBu,

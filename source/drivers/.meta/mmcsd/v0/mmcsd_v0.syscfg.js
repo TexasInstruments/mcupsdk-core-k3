@@ -179,7 +179,7 @@ function pinmuxRequirements(instance) {
     if(interfaceName == "MMC1")
     {
     	pinResource = pinmux.getPinRequirements(interfaceName, "CLK", "MMC1 CLK Pin");
-    	pinmux.setConfigurableDefault( pinResource, "rx", false );
+    	pinmux.setConfigurableDefault( pinResource, "rx", true );
         pinmux.setConfigurableDefault( pinResource, "pu_pd", "nopull" );
     	resources.push( pinResource);
 
@@ -195,14 +195,17 @@ function pinmuxRequirements(instance) {
 
     	pinResource = pinmux.getPinRequirements(interfaceName, "DAT1", "MMC1 DAT1 Pin");
     	pinmux.setConfigurableDefault( pinResource, "rx", true );
+        pinmux.setConfigurableDefault( pinResource, "pu_pd", "nopull" );
     	resources.push( pinResource);
 
     	pinResource = pinmux.getPinRequirements(interfaceName, "DAT2", "MMC1 DAT2 Pin");
     	pinmux.setConfigurableDefault( pinResource, "rx", true );
+        pinmux.setConfigurableDefault( pinResource, "pu_pd", "nopull" );
     	resources.push( pinResource);
 
     	pinResource = pinmux.getPinRequirements(interfaceName, "DAT3", "MMC1 DAT3 Pin");
     	pinmux.setConfigurableDefault( pinResource, "rx", true );
+        pinmux.setConfigurableDefault( pinResource, "pu_pd", "nopull" );
     	resources.push( pinResource);
 
     	pinResource = pinmux.getPinRequirements(interfaceName, "SDCD", "MMC1 SDCD Pin");
@@ -226,7 +229,7 @@ function getPeripheralPinNames(inst) {
     let phyType = configArr.find(config => config.name === "MMC0").phyType;
 
 	if(getInterfaceName(inst) == "MMC1") {
-		return ["CLK", "CMD", "DAT0", "DAT1", "DAT2", "DAT3"];
+		return ["CLK", "CMD", "DAT0", "DAT1", "DAT2", "DAT3", "SDCD"];
 	}
 
     if (phyType === "MMCSD_PHY_TYPE_SW_PHY")

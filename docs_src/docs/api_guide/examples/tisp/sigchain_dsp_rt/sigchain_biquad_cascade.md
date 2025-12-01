@@ -2,11 +2,13 @@
 
 [TOC]
 
+\warning **EXPERIMENTAL FEATURE DISCLAIMER:** TISP (Texas Instruments Signal Processing) library and associated examples are currently in experimental versions. These are provided for evaluation and development purposes only. Texas Instruments does not offer official support for TISP at this time. Use at your own discretion.
+
 # Introduction
 
-This example demonstrates a simple real-time parametric equalization signal processing chain using TISP (Texas Instruments Signal Processing) libraries running on the DSP Core (C75). The example showcases a 3-stage cascade biquad filter implementation for parametric EQ processing.
+This example demonstrates a simple real-time parametric equalization signal processing chain using TISP (Texas Instruments Signal Processing) library running on the DSP Core (C75). The example showcases a 3-stage cascade biquad filter implementation for parametric EQ processing.
 
-The signal chain applies parametric equalization to multi-channel audio data in real-time, using cascade biquad filters optimized for DSP execution.
+The signal chain applies parametric equalization to multi-channel audio data in real-time, using a cascade biquad filter, optimized for DSP execution.
 
 ## Example Workflow
 
@@ -30,7 +32,7 @@ The signal chain applies parametric equalization to multi-channel audio data in 
 
 The parametric EQ signal chain consists of 3 processing nodes executed sequentially:
 
-**Input (N-ch, int32) → TypeConv → Cascade Biquad (3-stage Parametric EQ) → TypeConv → Output (N-ch, int32)**
+\image html TISP_cascadeBiquad.svg "Signal chain" width=50%
 
 ### Processing Stages
 
@@ -41,23 +43,26 @@ The parametric EQ signal chain consists of 3 processing nodes executed sequentia
    - Each stage can implement different EQ characteristics (peak, notch, shelving, etc.)
    - Coefficients define the frequency response, Q factor, and gain for each stage
    - Processes all channels independently
+   - Frequency response is as shown below
+
+\image html TISP_pe_frequency.png "Frequency response of cascade biquad filter" width=1000px
+   
 
 3. **TypeConversion (float → int32):** Converts processed multi-channel output from float back to int32_t format.
 
 ### Key Features
 
 - **Real-time processing:** Optimized for low-latency audio processing on C75 DSP core
-- **Parametric EQ:** Professional-grade 3-stage parametric equalization
+- **Parametric EQ:** A 3-stage parametric equalization
 - **Multi-channel support:** Processes multiple audio channels simultaneously
-- **Configurable filters:** All filter coefficients can be adjusted dynamically
 - **Floating-point precision:** Uses floating-point processing for high-quality audio
 
 ### Filter Characteristics
 
 The example includes pre-configured 3-stage parametric EQ with:
-- **Stage 1:** Peak/notch filter for frequency shaping
-- **Stage 2:** Mid-frequency parametric control
-- **Stage 3:** Additional parametric band for fine tuning
+- **Stage 1:** Low-shelf filter
+- **Stage 2:** 1kHz notch filter
+- **Stage 3:** High-shelf filter
 
 # Supported Combinations
 
@@ -70,7 +75,7 @@ The example includes pre-configured 3-stage parametric EQ with:
  ^              | mcu-r5fss0-0 freertos
  Toolchain      | ti-arm-clang and ti-C7000-CGT
  Board          | @VAR_BOARD_NAME_LOWER
- Example folder | examples/tisp/sigchain_dsp_rt/sigchain_8ch_to_12ch_audio_chain
+ Example folder | examples/tisp/sigchain_dsp_rt/sigchain_biquad_cascade
 
 \endcond
 
@@ -82,7 +87,7 @@ The example includes pre-configured 3-stage parametric EQ with:
  ^              | r5fss0-0 freertos 
  Toolchain      | ti-arm-clang and ti-C7000-CGT
  Board          | @VAR_BOARD_NAME_LOWER
- Example folder | examples/tisp/sigchain_dsp_rt/sigchain_8ch_to_12ch_audio_chain
+ Example folder | examples/tisp/sigchain_dsp_rt/sigchain_biquad_cascade
 
 \endcond
 
@@ -97,16 +102,16 @@ The example includes pre-configured 3-stage parametric EQ with:
 
 1. **Load and run the application:**
    - Load and run the compiled binary on the DSP Core (C75).
+   - Load and run the compiled binary on the R5F0 Core.
    - The application will initialize the signal chain and begin processing audio frames.
 
 2. **Monitor the output:**
    - The example processes audio data in real-time through the 3-stage parametric EQ pipeline.
-   - Performance metrics including cycle count and DSP load are measured and reported.
 
 3. **Audio Flow:**
-   - Input: N channels of audio data (int32_t format)
+   - Input: Eight channels of audio data (int32_t format)
    - Processing: Real-time execution through 3-stage parametric EQ
-   - Output: N channels of equalized audio data (int32_t format)
+   - Output: Eight channels of equalized audio data (int32_t format)
 
 ## Configuration Parameters
 
@@ -120,8 +125,11 @@ The example includes configurable parameters:
 
 # Sample Output
 
-```
+Input is a chirp waveform from Audacity with the following parameters:
+- 200Hz to 10kHz with linear interpolation of frequency
+- Amplitude of 0.6
 
-```
 
+The output spectrum of the audio stream is as shown below, which was captured using Audacity.
+\image html TISP_cascadeBiquad.png "Output spectrum" width=50%
 

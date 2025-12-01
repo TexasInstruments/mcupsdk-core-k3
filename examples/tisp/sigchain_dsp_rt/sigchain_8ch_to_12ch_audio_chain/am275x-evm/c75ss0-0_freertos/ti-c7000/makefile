@@ -84,7 +84,6 @@ DEFINES_common := \
 	-DBUILD_C7X_1 \
 	-DBUILD_C7X \
 	-DSOC_AM275X \
-	-Dam275x_evm=am275x_evm \
 	-DDMA_UTILS_STANDALONE \
 
 CFLAGS_common := \

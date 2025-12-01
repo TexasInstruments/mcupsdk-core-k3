@@ -2,24 +2,30 @@
 
 [TOC]
 
+\warning **EXPERIMENTAL FEATURE DISCLAIMER:** TISP (Texas Instruments Signal Processing) library and associated examples are currently in experimental versions. These are provided for evaluation and development purposes only. Texas Instruments does not offer official support for TISP at this time. Use at your own discretion.
+
+
 # Introduction
 
-This example demonstrates a real-time audio signal processing chain using TISP (Texas Instruments Signal Processing) libraries running on the DSP Core (C75). The example showcases a typical audio processing pipeline that combines parametric equalization, per-channel gain control, and smooth muting capabilities.
+This example demonstrates a real-time audio signal processing chain using TISP (Texas Instruments Signal Processing) middleware library running on the DSP Core (C75). The example showcases a typical audio processing pipeline that combines parametric equalization, per-channel gain control, and smooth muting capabilities.
 
 The signal chain processes multi-channel audio data in real-time, applying equalization, gain adjustment, and mute control optimized for DSP execution.
+
+
 
 ## Example Workflow
 
 1. **Signal Chain Initialization:**
    - The `create_graph()` function initializes all processing nodes in the signal chain.
-   - Memory buffers are allocated for intermediate data storage.
+   - Memory buffers are statically allocated for intermediate data storage.
    - Filter coefficients, gain values, and mute parameters are configured.
 
 2. **Real-Time Processing:**
-   - Input audio data (8 channels, int32_t format) is received.
+   - Input audio data (8 channels, int32_t format) is received via McASP+UDMA and placed in L2SRAM of the C7x.
    - The `execute_graph()` function processes data through the entire signal chain.
    - Each processing node operates on the data sequentially.
-   - Output audio data (8 channels, int32_t format) is generated.
+   - Output audio data (8 channels, int32_t format) is generated and placed in L2SRAM of the C7x for UDMA+McASP transmission.
+   - Input and output are triple buffered for streaming data and processing the same in parallel.
 
 3. **Processing Pipeline:**
    - **Type Conversion:** Converts input from int32_t to float for DSP processing.
@@ -32,7 +38,7 @@ The signal chain processes multi-channel audio data in real-time, applying equal
 
 The audio processing signal chain consists of 5 processing nodes executed sequentially:
 
-**Input (8ch, int32) → TypeConv → Parametric EQ → Gain → Mute → TypeConv → Output (8ch, int32)**
+\image html TISP_pe_gain_mute.svg "Signal chain" width=75%
 
 ### Processing Stages
 
@@ -41,8 +47,11 @@ The audio processing signal chain consists of 5 processing nodes executed sequen
 2. **CascadeBiquad (Parametric EQ):** 3-stage cascade biquad filter implementing parametric equalization:
    - Uses Direct Form I (DF1) biquad implementation
    - Applies frequency-dependent gain adjustment
-   - Processes all 8 channels independently
-   - Pre-configured with 3 stages for comprehensive EQ control
+   - Processes all 8 channels independently with the same filter coefficients
+   - Sample rate: 48 kHz
+   - Figure below shows the frequency response of the parametric equalizer employed via casacade biquad.
+   \image html TISP_pe_frequency.png "Frequency response of cascade biquad filter" width=750px
+
 
 3. **GainNCh:** Applies per-channel gain control:
    - Independent gain for each of the 8 channels
@@ -63,8 +72,7 @@ The audio processing signal chain consists of 5 processing nodes executed sequen
 - **Real-time processing:** Optimized for low-latency audio processing on C75 DSP core
 - **Comprehensive signal chain:** Combines EQ, gain, and mute in a single pipeline
 - **Per-channel control:** Independent processing parameters for each audio channel
-- **Smooth muting:** Fade transitions prevent audible artifacts
-- **Professional audio quality:** Uses floating-point processing for high-precision audio
+
 
 # Supported Combinations
 
@@ -76,7 +84,7 @@ The audio processing signal chain consists of 5 processing nodes executed sequen
  ^              | mcu-r5fss0-0 freertos
  Toolchain      | ti-arm-clang and ti-C7000-CGT
  Board          | @VAR_BOARD_NAME_LOWER
- Example folder | examples/tisp/sigchain_dsp_rt/sigchain_8ch_to_12ch_audio_chain
+ Example folder | examples/tisp/sigchain_dsp_rt/sigchain_eq_gain_mute
 
 \endcond
 
@@ -88,7 +96,7 @@ The audio processing signal chain consists of 5 processing nodes executed sequen
  ^              | r5fss0-0 freertos 
  Toolchain      | ti-arm-clang and ti-C7000-CGT
  Board          | @VAR_BOARD_NAME_LOWER
- Example folder | examples/tisp/sigchain_dsp_rt/sigchain_8ch_to_12ch_audio_chain
+ Example folder | examples/tisp/sigchain_dsp_rt/sigchain_eq_gain_mute
 
 \endcond
 
@@ -109,7 +117,16 @@ The audio processing signal chain consists of 5 processing nodes executed sequen
 
 2. **Monitor the output:**
    - The example processes audio data in real-time through the 5-stage processing pipeline.
-   - Performance metrics including cycle count and DSP load are measured and reported.
+   - Input audio stream into stereo jacks J2 and/or J1
+     - J2 top:  channels 0 and 4
+	 - J2 bottom: channels 1 and 5
+	 - J1 top: channels 2 and 6
+	 - J1 bottom: channels 3 and 7
+   - Output audio stream monitored via stereo jacks J3 and/or J4
+     - J3 top:  channels 0 and 4
+	 - J3 bottom: channels 1 and 5
+	 - J4 top: channels 2 and 6
+	 - J4 bottom: channels 3 and 7
 
 3. **Audio Flow:**
    - Input: 8 channels of audio data (int32_t format)
@@ -143,7 +160,16 @@ The example includes configurable parameters for each processing stage:
 
 # Sample Output
 
-```
+Input is a chirp waveform from Audacity with the following parameters:
+- 200Hz to 10kHz with linear interpolation of frequency
+- Amplitude of 0.6
 
-```
+The output spectrum of the audio stream is as shown below, which was captured using Audacity.
+
+\image html TISP_pe_gain_mute.png "Output spectrum" width=50%
+
+
+Also, it can be noted that the output waveform's amplitude is diminished based on the gain value.
+
+\image html TISP_pe_gain_mute_wave.png "Output waverform" width=50%
 

@@ -2,15 +2,16 @@
 
 [TOC]
 
+\warning **EXPERIMENTAL FEATURE DISCLAIMER:** TISP (Texas Instruments Signal Processing) library and associated examples are currently in experimental versions. These are provided for evaluation and development purposes only. Texas Instruments does not offer official support for TISP at this time. Use at your own discretion.
+
 # Introduction
 
-This example demonstrates a real-time audio signal processing chain using TISP (Texas Instruments Signal Processing) libraries running on the DSP Core (C75). The example showcases an 8-channel to 12-channel audio processing pipeline that includes various audio effects such as gain control, filtering, equalization, delay, balance/fader, limiting, and muting capabilities.
+This example demonstrates a real-time audio signal processing chain using TISP (Texas Instruments Signal Processing) library running on the DSP Core (C75). The example showcases an 8-channel to 12-channel audio-processing pipeline that includes various audio effects such as gain control, filtering, equalization, delay, balance/fader, limiting, and muting capabilities.
 
-The signal chain processes audio data in real-time, converting 8 input audio channels to 12 output channels through a series of processing stages optimized for DSP execution.
+The signal chain processes audio data in real-time, converting 8 input audio channels to 12 output channels through a series of processing stages optimized for DSP execution. 
 
 ## Known Issues
-1. Non-zero delay leads to incorrect values.
-2. No output from EVM after running the signal chain continuously for 15 minutes.
+1. Non-zero delay leads to incorrect values (delay should be set to 0 for proper operation).
 
 ## Example Workflow
 
@@ -37,12 +38,16 @@ The signal chain processes audio data in real-time, converting 8 input audio cha
    - **Limiter:** Prevents clipping through dynamic range compression.
    - **Mute Control:** Enables smooth fade-in/fade-out muting.
    - **Type Conversion:** Converts output from float back to int32_t.
+   
+The frequency response of the parametric equalizer is as shown below.
+\image html TISP_pe_frequency.png "Frequency response of parametric filter (cascade biquad)" width=1000px
+   
 
 ## Signal Chain Details
 
 The audio processing signal chain consists of 11 processing nodes executed sequentially:
 
-**Input (8ch, int32) → TypeConv → Gain → HPF → Router → EQ → Delay → Balance/Fader → Trim → Limiter → Mute → TypeConv → Output (12ch, int32)**
+\image html TISP_8ch_to_12ch_audio_signal_chain.svg "Signal chain" width=90%
 
 ### Processing Stages
 
@@ -71,7 +76,7 @@ The audio processing signal chain consists of 11 processing nodes executed seque
 ### Key Features
 
 - **Real-time processing:** Optimized for low-latency audio processing on C75 DSP core
-- **Channel expansion:** Intelligent routing from 8 input channels to 12 output channels
+- **Channel expansion:** Routing from 8 input channels to 12 output channels
 - **Comprehensive audio processing:** Includes filtering, EQ, dynamics, spatial control, and level management
 - **Configurable parameters:** All processing parameters can be adjusted dynamically
 - **Professional audio quality:** Uses floating-point processing for high-precision audio
@@ -140,8 +145,13 @@ The example includes configurable parameters for each processing stage:
 - **Mute:** Per-channel mute state (default: all unmuted)
 
 # Sample Output
+Input is a chirp waveform from Audacity with the following parameters:
+- 200Hz to 10kHz with linear interpolation of frequency
+- Amplitude of 0.6
 
-```
+The output spectrum of the audio stream is as shown below, which was captured using Audacity.
 
-```
+\image html TISP_8ch_to_12ch_audio_chain.png "Output spectrum" width=1000px
 
+The output waveform captured via Audacity is as shown below for reference.
+\image html TISP_8ch_to_12ch_audio_chain_wave.png "Output waverform" width=1000px

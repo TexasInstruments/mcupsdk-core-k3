@@ -2,9 +2,11 @@
 
 [TOC]
 
+\warning **EXPERIMENTAL FEATURE DISCLAIMER:** TISP (Texas Instruments Signal Processing) library and associated examples are currently in experimental versions. These are provided for evaluation and development purposes only. Texas Instruments does not offer official support for TISP at this time. Use at your own discretion.
+
 # Introduction
 
-This example demonstrates a real-time audio signal processing chain using TISP (Texas Instruments Signal Processing) libraries running on the DSP Core (C75). The example showcases a comprehensive processing pipeline that combines multiple filtering stages, frequency domain processing using FFT/IFFT, and channel routing from 8 input channels to 12 output channels. Input and output sampling rate are set to 48kHz.
+This example demonstrates a real-time audio signal processing chain using TISP (Texas Instruments Signal Processing) library running on the DSP Core (C75). The example showcases a comprehensive processing pipeline that combines multiple filtering stages, frequency domain processing using FFT/IFFT, and channel routing from 8 input channels to 12 output channels. Input and output sampling rate are set to 48kHz.
 
 The signal chain processes audio data in real-time through cascade biquad filters, FIR filtering, FFT-based processing, and intelligent channel routing optimized for DSP execution.
 
@@ -34,9 +36,9 @@ The signal chain processes audio data in real-time through cascade biquad filter
 
 ## Signal Chain Details
 
-The advanced audio processing signal chain consists of 10 processing nodes executed sequentially:
+The audio processing signal chain consists of 10 processing nodes executed sequentially:
 
-**Input (8ch, int32) → TypeConv → Biquad0 → Biquad1 → MatTrans → FIR → RFFT → IFFTR → MatTrans → Router → TypeConv → Output (12ch, int32)**
+\image html TISP_router_8ch_to_12ch.svg "Signal Chain" width=100%
 
 ### Processing Stages
 
@@ -60,11 +62,11 @@ The advanced audio processing signal chain consists of 10 processing nodes execu
    - Implements linear phase filtering
    - Provides precise frequency response control
    - Processes all channels with the same filter coefficients
+   - Low-pass filter with cutoff frequency of 3kHz
 
 6. **RFFT (Real FFT):** 1D batched real FFT:
    - Transforms time-domain signals to frequency domain
    - Processes all channels in batched mode for efficiency
-   - Enables frequency domain analysis or modification
 
 7. **IFFTR (Inverse Real FFT):** 1D batched inverse real FFT:
    - Converts frequency-domain signals back to time domain
@@ -75,7 +77,7 @@ The advanced audio processing signal chain consists of 10 processing nodes execu
    - Converts from time-interleaved back to channel-interleaved format
    - Prepares data for channel routing
 
-9. **Router (8ch → 12ch):** Intelligent channel routing and expansion:
+9. **Router (8ch → 12ch):** Channel routing and expansion:
    - Routes 8 input channels to 12 output channels
    - Default mapping: channels 0-7 → outputs 0-7, channels 0-3 duplicated → outputs 8-11
    - Configurable routing matrix for flexible channel assignment
@@ -85,11 +87,9 @@ The advanced audio processing signal chain consists of 10 processing nodes execu
 ### Key Features
 
 - **Real-time processing:** Optimized for low-latency audio processing on C75 DSP core
-- **Advanced DSP techniques:** Combines time-domain and frequency-domain processing
 - **Comprehensive filtering:** Multiple cascade biquad stages plus FIR filtering
 - **FFT processing:** Enables frequency-domain manipulation capabilities
-- **Channel expansion:** Intelligent routing from 8 to 12 channels
-- **Professional audio quality:** Uses floating-point processing throughout
+- **Channel expansion:** Routing from 8 to 12 channels
 
 ### Filter Configurations
 
@@ -108,7 +108,7 @@ The example includes:
  ^              | mcu-r5fss0-0 freertos
  Toolchain      | ti-arm-clang and ti-C7000-CGT
  Board          | @VAR_BOARD_NAME_LOWER
- Example folder | examples/tisp/sigchain_dsp_rt/sigchain_8ch_to_12ch_audio_chain
+ Example folder | examples/tisp/sigchain_dsp_rt/sigchain_router_8ch_12ch
 
 \endcond
 
@@ -120,7 +120,7 @@ The example includes:
  ^              | r5fss0-0 freertos 
  Toolchain      | ti-arm-clang and ti-C7000-CGT
  Board          | @VAR_BOARD_NAME_LOWER
- Example folder | examples/tisp/sigchain_dsp_rt/sigchain_8ch_to_12ch_audio_chain
+ Example folder | examples/tisp/sigchain_dsp_rt/sigchain_router_8ch_12ch
 
 \endcond
 
@@ -140,12 +140,12 @@ The example includes:
    - The application will initialize the signal chain and begin processing audio frames.
 
 2. **Monitor the output:**
-   - The example processes audio data in real-time through the 10-stage processing pipeline.
-   - Performance metrics including cycle count and DSP load are measured and reported.
+   - The example processes audio data in real-time through the 10-stage processing pipeline and monitored via Audacity.
+
 
 3. **Audio Flow:**
    - Input: 8 channels of audio data (int32_t format)
-   - Processing: Real-time execution through comprehensive DSP pipeline
+   - Processing: Real-time execution through the DSP pipeline
    - Output: 12 channels of processed audio data (int32_t format)
 
 ## Configuration Parameters
@@ -162,7 +162,11 @@ The example includes configurable parameters for each processing stage:
 
 # Sample Output
 
-```
+Input is a chirp waveform from Audacity with the following parameters:
+- 200Hz to 10kHz with linear interpolation of frequency
+- Amplitude of 0.6
 
-```
+The output spectrum of the audio stream is as shown below, which was captured using Audacity.
+
+\image html TISP_router_8ch_12ch.png "Output Spectrum" width=1000px
 

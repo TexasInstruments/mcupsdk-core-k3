@@ -136,7 +136,6 @@ const defines_C7x = {
     "BUILD_C7X_1",
     "BUILD_C7X",
     "SOC_AM275X",
-    "am275x_evm=am275x_evm",
     "DMA_UTILS_STANDALONE"
   ]
 };

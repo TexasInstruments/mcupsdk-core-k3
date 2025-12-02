@@ -48,6 +48,7 @@
 #include <sdl/sdl_ecc.h>
 #include <sdl/ecc/sdl_ip_ecc.h>
 #include <sdl/ecc/V0/sdlr_ecc_ram.h>
+#include <sdl/ecc/V0/sdlr_edc_ctl.h>
 
 #if defined(SOC_AM62AX)
 #include <sdl/include/am62ax/sdlr_soc_baseaddress.h>
@@ -608,6 +609,68 @@ static int32_t ECC_funcAPITest(void)
     if (testStatus == SDL_APP_TEST_PASS)
     {
         if (SDL_ecc_aggrReadStaticRegs(pEccAggrRegs, &eccStaticRegs) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("sdlEccAggr_apiTest: failure on line no. %d \r\n", __LINE__);
+        }
+    }
+
+    /* SDL_ecc_aggrReadEDCInterconnectReg API test */
+    if (testStatus == SDL_APP_TEST_PASS)
+    {
+        SDL_ecc_aggrRegs *pEccEdcAggrRegs = ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_WKUP_VTM0_ECCAGGR_CFG_BASE));
+        uint32_t ramId = SDL_WKUP_VTM0_K3VTM_N16FFC_ECCAGGR_K3VTM_N16FFC_CFG_CBASS_CFG_SCR_SCR_EDC_CTRL_0_RAM_ID;
+        uint32_t regOffset = SDL_EDC_CTL_CONTROL;
+        uint32_t pRegVal;
+
+        if (SDL_ecc_aggrReadEDCInterconnectReg(pEccEdcAggrRegs, ramId, regOffset, &pRegVal) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("sdlEccAggr_apiTest: failure on line no. %d \r\n", __LINE__);
+        }
+    }
+
+    /* SDL_ecc_aggrWriteEDCInterconnectReg API test */
+    if (testStatus == SDL_APP_TEST_PASS)
+    {
+        SDL_ecc_aggrRegs *pEccEdcAggrRegs = ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_WKUP_VTM0_ECCAGGR_CFG_BASE));
+        uint32_t ramId = SDL_WKUP_VTM0_K3VTM_N16FFC_ECCAGGR_K3VTM_N16FFC_CFG_CBASS_CFG_SCR_SCR_EDC_CTRL_0_RAM_ID;
+        uint32_t regOffset = SDL_EDC_CTL_CONTROL;
+        uint32_t pRegVal = SDL_EDC_CTL_CONTROL_ECC_PATTERN_VAL_A;
+
+        if (SDL_ecc_aggrWriteEDCInterconnectReg(pEccEdcAggrRegs, ramId, regOffset, pRegVal) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("sdlEccAggr_apiTest: failure on line no. %d \r\n", __LINE__);
+        }
+    }
+
+    /* SDL_ecc_aggrVerifyConfigEDCInterconnect API test */
+    if (testStatus == SDL_APP_TEST_PASS)
+    {
+        SDL_ecc_aggrRegs *pEccEdcAggrRegs = ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_WKUP_VTM0_ECCAGGR_CFG_BASE));
+        uint32_t ramId = SDL_WKUP_VTM0_K3VTM_N16FFC_ECCAGGR_K3VTM_N16FFC_CFG_CBASS_CFG_SCR_SCR_EDC_CTRL_0_RAM_ID;
+
+        /* Set expected configuration fields by passing true*/
+        bool bEccCheck = true;
+
+        if (SDL_ecc_aggrVerifyConfigEDCInterconnect(pEccEdcAggrRegs, ramId, bEccCheck) != SDL_PASS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+            DebugP_log("sdlEccAggr_apiTest: failure on line no. %d \r\n", __LINE__);
+        }
+    }
+
+    /* SDL_ecc_aggrSetEDCInterconnectNIntrPending API test */
+    if (testStatus == SDL_APP_TEST_PASS)
+    {
+        SDL_ecc_aggrRegs *pEccEdcAggrRegs = ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_WKUP_VTM0_ECCAGGR_CFG_BASE));
+        uint32_t ramId = SDL_WKUP_VTM0_K3VTM_N16FFC_ECCAGGR_K3VTM_N16FFC_CFG_CBASS_CFG_SCR_SCR_EDC_CTRL_0_RAM_ID;
+        SDL_Ecc_AggrIntrSrc intrSrc = SDL_ECC_AGGR_INTR_SRC_SINGLE_BIT;
+        SDL_Ecc_AggrEDCErrorSubType subType = SDL_ECC_AGGR_ERROR_SUBTYPE_INJECT;
+        uint32_t numEvents = 3U;
+
+        if (SDL_ecc_aggrSetEDCInterconnectNIntrPending(pEccEdcAggrRegs, ramId, intrSrc, subType, numEvents) != SDL_PASS)
         {
             testStatus = SDL_APP_TEST_FAILED;
             DebugP_log("sdlEccAggr_apiTest: failure on line no. %d \r\n", __LINE__);

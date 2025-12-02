@@ -326,7 +326,7 @@ static SDL_ECC_InitConfig_t ECC_Test_MAINMSMCA0ECCInitConfig =
 #define SDL_ECC_ATCM_SINGLE_BIT_ERROR_EVENT (0x67u)
 
 /* Defines */
-#define MAX_R5F_MEM_SECTIONS   			    (5u)
+#define MAX_R5F_MEM_SECTIONS                (6u)
 #define MAX_MCAN0_MEM_SECTIONS              (1u)
 #define MAX_VTM0_MEM_SECTIONS               (1u)
 
@@ -424,6 +424,7 @@ static SDL_ECC_MemSubType ECC_Test_CoresubMemTypeList[MAX_R5F_MEM_SECTIONS] =
   SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_B0TCM0_BANK1_RAM_ID,
   SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_B1TCM0_BANK0_RAM_ID,
   SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_B1TCM0_BANK1_RAM_ID,
+  SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_SCRP_EDC_RAM_ID
 };
 
 static SDL_ECC_InitConfig_t ECC_Test_CoreECCInitConfig =
@@ -538,7 +539,7 @@ void ECC_Test_exceptionInit(void)
 #define SDL_ECC_ATCM_SINGLE_BIT_ERROR_EVENT (0x67u)
 
 /* Defines */
-#define MAX_R5F_MEM_SECTIONS   			    (5u)
+#define MAX_R5F_MEM_SECTIONS                (6u)
 #define MAX_MCAN0_MEM_SECTIONS              (1u)
 #define MAX_VTM0_MEM_SECTIONS               (1u)
 
@@ -636,6 +637,7 @@ static SDL_ECC_MemSubType ECC_Test_CoresubMemTypeList[MAX_R5F_MEM_SECTIONS] =
   SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_B0TCM0_BANK1_RAM_ID,
   SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_B1TCM0_BANK0_RAM_ID,
   SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_PULSAR_ULS_B1TCM0_BANK1_RAM_ID,
+  SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_SCRP_EDC_RAM_ID
 };
 
 static SDL_ECC_InitConfig_t ECC_Test_CoreECCInitConfig =
@@ -2903,7 +2905,7 @@ int32_t ECC_Test_runECC2BitVTM0selfTest(void)
     injectErrorConfig.chkGrp = 0x2;
     #else
     injectErrorConfig.flipBitMask = 0x101;
-    injectErrorConfig.chkGrp = 0x1;
+    injectErrorConfig.chkGrp = SDL_WKUP_VTM0_K3VTM_N16FFC_ECCAGGR_K3VTM_N16FFC_CFG_CBASS_CFG_SCR_SCR_EDC_CTRL_0_GROUP_44_ID;
     #endif
     subType = SDL_WKUP_VTM0_K3VTM_N16FFC_ECCAGGR_K3VTM_N16FFC_CFG_CBASS_CFG_SCR_SCR_EDC_CTRL_0_RAM_ID;
 
@@ -2924,6 +2926,43 @@ int32_t ECC_Test_runECC2BitVTM0selfTest(void)
 
     return retVal;
 }/* End of ECC_Test_runECC2BitVTM0selfTest() */
+
+/* SDL ECC function for covering WKUP ESM Callback */
+int32_t SDL_ECC_triggerWkupEsmCallback(void)
+{
+    SDL_ErrType_t result;
+    int32_t retVal=0;
+    uint32_t subType;
+    SDL_ECC_InjectErrorConfig_t injectErrorConfig;
+
+    DebugP_log("\r\nSDL_ECC_triggerWkupEsmCallback : starting\r\n");
+
+    memset(&injectErrorConfig, 0, sizeof(injectErrorConfig));
+
+    /* Note the address is relative to start of ram */
+    injectErrorConfig.pErrMem = (uint32_t *)(0u);
+    /* Execute Double bit error self test */
+    injectErrorConfig.flipBitMask = 0x3;
+    /* Interconnect RAM ID with EDC checker group */
+    injectErrorConfig.chkGrp = SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_SCRP_EDC_GROUP_2_ID;
+
+    subType = SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR_SCRP_EDC_RAM_ID;
+
+    result = SDL_ECC_injectError( SDL_MCU_R5FSS0_PULSAR_ULS_CPU0_ECC_AGGR,
+                                  subType,
+                                  SDL_INJECT_ECC_ERROR_FORCING_2BIT_ONCE,
+                                  &injectErrorConfig
+                                );
+
+    if (result != SDL_PASS ) {
+        DebugP_log("\r\n Error Injection failed in SDL_ECC_triggerWkupEsmCallback\r\n");
+        retVal = -1;
+    } else {
+        DebugP_log("\r\nError Injection succeeded in SDL_ECC_triggerWkupEsmCallback\r\n");
+    }
+
+    return retVal;
+}
 
 #endif
 
@@ -3762,14 +3801,14 @@ int32_t ECC_Test_runECC2BitVTM0selfTest(void)
     injectErrorConfig.pErrMem = (uint32_t *)(0u);
 
     injectErrorConfig.flipBitMask = 0x101;
-    injectErrorConfig.chkGrp = 0x2C;
+    injectErrorConfig.chkGrp = SDL_WKUP_VTM0_K3VTM_N16FFC_ECCAGGR_K3VTM_N16FFC_CFG_CBASS_CFG_SCR_SCR_EDC_CTRL_0_GROUP_44_ID;
     subType = SDL_WKUP_VTM0_K3VTM_N16FFC_ECCAGGR_K3VTM_N16FFC_CFG_CBASS_CFG_SCR_SCR_EDC_CTRL_0_RAM_ID;
 
     result = SDL_ECC_selfTest(SDL_WKUP_VTM0_K3VTM_N16FFC_ECCAGGR,
                               subType,
                               SDL_INJECT_ECC_ERROR_FORCING_2BIT_ONCE,
                               &injectErrorConfig,
-                              1000);
+                              5000);
 
     if (result != SDL_PASS ) {
         DebugP_log("\r\nVTM0 Double bit error self test: Subtype %d: fixed location once test failed\r\n",
@@ -3914,6 +3953,23 @@ static int32_t ECC_sdlFuncTest(void)
         }
     }
 
+    if (retVal == SDL_PASS) {
+        result = ECC_Test_runECC2BitVTM0selfTest();
+        if (result != SDL_PASS) {
+           retVal = -1;
+           DebugP_log("\r\nECC_Test_runECC2BitVTM0selfTest has failed...\r\n");
+        }
+    }
+
+    #if !defined(SOC_AM275X)
+    if (retVal == SDL_PASS) {
+        result = SDL_ECC_triggerWkupEsmCallback();
+        if (result != SDL_PASS) {
+           retVal = -1;
+           DebugP_log("\r\nSDL_ECC_triggerWkupEsmCallback has failed...\r\n");
+        }
+    }
+    #endif
 
 	if (retVal == SDL_PASS) {
         result = ECC_Test_runECC_ErrMemInjectTest();
@@ -3963,13 +4019,6 @@ static int32_t ECC_sdlFuncTest(void)
         }
     }
 
-	if (retVal == SDL_PASS) {
-        result = ECC_Test_runECC2BitVTM0selfTest();
-        if (result != SDL_PASS) {
-           retVal = -1;
-           DebugP_log("\r\nECC_Test_runECC2BitVTM0selfTest has failed...\r\n");
-        }
-    }
 	if (retVal == SDL_PASS) {
         result = ECC_Test_runECC1BitSelfTest();
         if (result != SDL_PASS) {

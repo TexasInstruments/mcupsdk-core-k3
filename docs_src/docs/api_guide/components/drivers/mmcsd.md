@@ -22,7 +22,9 @@ The MMCSD controller provides accessibility to external MMC/SD/SDIO devices usin
 
 \if SOC_AM62PX
 - MMC0 interface is compliant with the JEDEC eMMC electrical standard v5.1 (JESD84-B51) and it supports the
-following eMMC applications: HS200, HS400
+following eMMC applications: High Speed SDR, High Speed DDR, HS200, HS400.
+- The MMCSD driver for eMMC devices is compliant with the JEDEC standard (JESD84-B51). All the MMCSD commands
+  supported in the driver follow the JEDEC standard for eMMC devices.
 - MMC1/MMC2 interface is compliant with the SD Host Controller Standard Specification 4.10 and SD Physical
 Layer Specification v3.01 as well as SDIO Specification v3.00 and it supports the following SD Card
 applications: Default speed, High speed.

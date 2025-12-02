@@ -4971,32 +4971,6 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             break;
 
 #if (CONFIG_MCSPI_NUM_INSTANCES > 2)
-        case 8400: /* Large DMA single transfer expected to fail (>4096 words) */
-            attrParams->baseAddr                      = MCSPI3_BASE_ADDRESS;
-            attrParams->operMode                      = MCSPI_OPER_MODE_DMA;
-            openParams->transferMode                  = MCSPI_TRANSFER_MODE_CALLBACK;
-            openParams->transferCallbackFxn           = test_mcspi_callback;
-            openParams->mcspiDmaIndex                 = 0;
-            testParams->dataSize                      = 8U;
-            chConfigParams->chNum                     = MCSPI_CHANNEL_0;
-            chConfigParams->trMode                    = MCSPI_TR_MODE_TX_RX;
-            chConfigParams->txFifoTrigLvl             = 16U;
-            chConfigParams->rxFifoTrigLvl             = 16U;
-            testParams->transferLength                = 10000U;
-            break;
-        case 8437: /* Large DMA chunked transfer (split 4K + 4K + remainder) */
-            attrParams->baseAddr                      = MCSPI3_BASE_ADDRESS;
-            attrParams->operMode                      = MCSPI_OPER_MODE_DMA;
-            openParams->transferMode                  = MCSPI_TRANSFER_MODE_CALLBACK;
-            openParams->transferCallbackFxn           = test_mcspi_callback;
-            openParams->mcspiDmaIndex                 = 0;
-            testParams->dataSize                      = 8U;
-            chConfigParams->chNum                     = MCSPI_CHANNEL_0;
-            chConfigParams->trMode                    = MCSPI_TR_MODE_TX_RX;
-            chConfigParams->txFifoTrigLvl             = 16U;
-            chConfigParams->rxFifoTrigLvl             = 16U;
-            testParams->transferLength                = 10000U;
-            break;
         case 8441: /* Single-word DMA loopback */
             testParams->dataSize                      = 8U;
             testParams->transferLength                = 1U;

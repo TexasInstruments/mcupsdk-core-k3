@@ -52,6 +52,7 @@ const component_file_list_common = [
     "test/kernel/smp_tests/suspend_scheduler/configs/.project/project.js",
     "test/kernel/smp_tests/task_delete/configs/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_fault_inject/configs/.project/project.js",
+    "test/drivers/mcspi/test_mcspi_fault_inject/configs/.project/project.js",
     "test/drivers/i2c/test_i2c_fault_inject/configs/.project/project_am62ax.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
 ];
@@ -230,6 +231,7 @@ const example_file_list = [
     "test/drivers/mcspi/mcspi/.project/project.js",
     "test/drivers/mcspi/mcspi_master_slave/.project/project.js",
     "test/drivers/mcspi/mcspi_master_slave_dma/.project/project.js",
+    "test/drivers/mcspi/test_mcspi_fault_inject/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_fs_io/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_raw_io/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_fault_inject/.project/project.js",

@@ -166,6 +166,9 @@ static void MCSPI_stop(const MCSPI_Object *obj, const MCSPI_Attrs *attrs,
                        MCSPI_ChObject *chObj, uint32_t chNum);
 static void MCSPI_setChDataSize(uint32_t baseAddr, MCSPI_ChObject *chObj,
                                 uint32_t dataSize, uint32_t csDisable);
+ #ifdef ENABLE_MCSPI_FAULT_INJECTION
+void Test_Mcspi_FaultInjectStubHandler(uint32_t *xstat);
+#endif
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -888,7 +891,7 @@ static uint32_t MCSPI_continueTxRx(const MCSPI_Object *obj,
                         /* Wait for end of transfer. */
                         chStat = CSL_REG32_RD(baseAddr + MCSPI_CHSTAT(chNum));
                         timeout -= 1U;
-                        if (timeout == 0U) 
+                        if (timeout == 0U)
                         {
                             break;
                         }
@@ -923,7 +926,7 @@ static uint32_t MCSPI_continueTxRx(const MCSPI_Object *obj,
                         /* Wait for end of transfer. */
                         chStat = CSL_REG32_RD(baseAddr + MCSPI_CHSTAT(chNum));
                         timeout -= 1U;
-                        if (timeout == 0U) 
+                        if (timeout == 0U)
                         {
                             break;
                         }
@@ -1182,6 +1185,9 @@ static uint32_t MCSPI_continueSlaveTxRx(MCSPI_Object *obj,
     volatile uint32_t   irqStatus;
     volatile uint32_t timeout = MCSPI_MAX_TIMEOUT_VALUE; /* Timeout for 1 sec*/
     volatile uint32_t fifotimeout = MCSPI_MAX_TIMEOUT_VALUE; /* Timeout for 1 sec*/
+    #ifdef ENABLE_MCSPI_FAULT_INJECTION
+    uint32_t TestMcspi_faultInjection = 0;
+    #endif
 
     baseAddr = obj->baseAddr;
     chNum = chObj->chCfg.chNum;
@@ -1190,6 +1196,16 @@ static uint32_t MCSPI_continueSlaveTxRx(MCSPI_Object *obj,
 
     if ((irqStatus & chObj->intrMask) != 0U)
     {
+        #ifdef ENABLE_MCSPI_FAULT_INJECTION
+        Test_Mcspi_FaultInjectStubHandler(&TestMcspi_faultInjection);
+        if (TestMcspi_faultInjection == 1)
+        {
+            /* Simple delay loop for fault injection */
+            for (volatile uint32_t delay = 0; delay < 10000; delay++);
+            for (volatile uint32_t delay = 0; delay < 10000; delay++);
+            for (volatile uint32_t delay = 0; delay < 10000; delay++);
+        }
+        #endif
         /* Clear the interrupts being serviced. */
         CSL_REG32_WR(baseAddr + CSL_MCSPI_IRQSTATUS, (irqStatus & chObj->intrMask));
 
@@ -1235,7 +1251,7 @@ static uint32_t MCSPI_continueSlaveTxRx(MCSPI_Object *obj,
                             /* Wait for TX FIFO Empty. */
                             chStat = CSL_REG32_RD(baseAddr + MCSPI_CHSTAT(chNum));
                             fifotimeout -= 1U;
-                            if (fifotimeout == 0U) 
+                            if (fifotimeout == 0U)
                             {
                                 break;
                             }
@@ -1245,7 +1261,7 @@ static uint32_t MCSPI_continueSlaveTxRx(MCSPI_Object *obj,
                             /* Wait for end of transfer. */
                             chStat = CSL_REG32_RD(baseAddr + MCSPI_CHSTAT(chNum));
                             timeout -= 1U;
-                            if (timeout == 0U) 
+                            if (timeout == 0U)
                             {
                                 break;
                             }

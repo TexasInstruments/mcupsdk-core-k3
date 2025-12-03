@@ -106,7 +106,7 @@ extern "C" {
 #define ENET_CFG_REMOTE_CLIENT_CORES_MAX            (6U)
 
 /*! \brief Maximum number of MAC addresses allocated for Resource Manager */
-#define ENET_CFG_RM_MAC_ADDR_MAX                    (5U)
+#define ENET_CFG_RM_MAC_ADDR_MAX                    (6U)
 
 /* \brief CPSW Checksum Offload support */
 #define ENET_CFG_CPSW_CSUM_OFFLOAD_SUPPORT          (ENET_ON)

@@ -121,9 +121,9 @@ MAC Port 2: Configured in MAC-only mode, allowing direct traffic to the host por
 =======================================================
 EnetAppUtils_reduceCoreMacAllocation: Reduced Mac Address Allocation for CoreId:1 From 4 To 3
 Open MAC port 1
-EnetPhy_bindDriver:1873
+EnetPhy_bindDriver:1942
 Open MAC port 2
-EnetPhy_bindDriver:1873
+EnetPhy_bindDriver:1942
 PHY 0 is alive
 PHY 1 is alive
 ETHFW: Shared multicasts:
@@ -142,10 +142,12 @@ ETHFW: 1 VLAN entries added in ALE table
 ETHFW: PPS via GenF is not supported for this SoC
 
 ETHFW Version   : 0.05.00
-ETHFW Build Date: Jul  2, 2025
-ETHFW Build Time: 15:46:03
+ETHFW Build Date: Dec  3, 2025
+ETHFW Build Time: 11:20:04
 ETHFW Commit SHA:
 
+ETHFW: Virtual port configuration:
+ETHFW: CpswProxyServer: initialization completed (core: mcu2_0)
 unibase-1.1.4
 Starting lwIP, local interface IP is dhcp-enabled
 [LWIPIF_LWIP] NETIF INIT SUCCESS
@@ -158,25 +160,51 @@ ETHFW: Enable gPTP on MAC port 2 (tilld2)
 [LWIPIF_LWIP_IC] NETIF INIT SUCCESS
 [LWIPIF_LWIP] Enet has been started successfully
 Added interface 'br3', IP is 0.0.0.0
-ETHFW: Virtual port configuration:
-ETHFW: TimeSync PTP enabled
-ETHFW: CpswProxyServer: initialization completed (core: mcu2_0)
 ETHFW: ATTACH | C2S | core=0 endpt=36 virtPort=26
+ETHFW: TimeSync PTP enabled
 ETHFW: ATTACH | S2C | token=2600 rxMtu=1522 features=3
 ETHFW: ALLOC_TX | C2S | core=0 endpt=36 token=2600
 ETHFW: ALLOC_TX | S2C | txPsil=0xc603 status=0
 ETHFW: ALLOC_RX | C2S | core=0 endpt=36 token=2600
 ETHFW: ALLOC_RX | S2C | flow=20,5 rxPsil=0x4600 status=0
-GPTP_MEDIUM_ALLOC: fragsize=16 fragused/fragnum=865/944 (91)
-GPTP_SMALL_ALLOC: fragsize=4 fragused/fragnum=19/74 (25)
-SM_DATA_INST: fragsize=8 fragused/fragnum=2032ETHFW: ALLOC_MAC | C2S | core=0 endpt=36 token=2600
+ETHFW: ALLOC_MAC | C2S | core=0 endpt=36 token=2600
 ETHFW: ALLOC_MAC | S2C | macAddr=70:ff:76:1d:ec:e7 status=0
 ETHFW: REGISTER_MAC | C2S | core=0 endpt=36 token=2600 macAdd=70:ff:76:1d:ec:e7 flowIdx=20,5
 Cpsw_internalIoctl_handler_ENET_IOCTL_REGISTER_DSTMAC_RX_FLOW:432
 ETHFW: REGISTER_MAC | S2C | status=0
-Cpsw_handleLinkUp:1456
+tilld1: has mac: 70:FF:76:1D:EC:F2
+tilld2: has mac: 70:FF:76:1D:EC:F2
+cb_lld_task_create: Uniconf Task stack_size=16384
+cb_rawsock_open:combase-1.1.3
+Is=1 dmaRxChId=-1 nTxPkts=0 nRxPkts=0 pktSize=0
+cb_lld_task_create: gPTP Task stack_size=16384
+cbl_query_response:tilld1 link DOWN !!!!
+cbl_query_response:tilld2 limax_ports=2
+cb_rawsock_open:combase-1.1.3
+cb_rawsock_open:dmaTxChId=1 numRxChannels=1 dmaRxChId=2 nTxPkts=16 nRxPkts=16 pktSize=1536
+rxChId 2 has owner dmaRxSharedv:tilld2 open success
+gptpnet_init:supportRtNotice=0 tout_interval=125000000Ns
+gptpnet_init:Open lldtsync OK!
+IEEE1588-2019 performance monitoring disabled.
+current-log-gptp-cap-interval=3 initial-log-gptp-cap-interval=3
+pp_glb_init: use-mgt-log-gptp-cap-interval=0
+current-log-gptp-cap-interval=3 initial-log-gptp-cap-intervalerval=0
+current-log-gptp-cap-interval=3 initial-log-gptp-cap-interval=3
+static_domains_init: instance=0, di=0, pi=1, currentToutIntervalNs=125000000
+syncIntervalNs=1200000,gPtpCapableMessageInterval=0
+static_domains_init: instance=0, di=0, pi=2, currentToutIntervalNs=125000000
+syncIntervalNs=125000000, announceInterval=0,pdelayReqInterval=10enet_activate:tilld1 status=0, duplex=1, speed=0Mbps
+onenet_activate:tilld2 status=0, duplex=1, speed=0Mbps
+GPTP_MEDIUM_ALLOC: fragsize=16 fragused/fragnum=865/944 (91)
+INF:ub=19/74 (25)
+SM_DATA_INST: fragsize=8 fragused/fragnum=2032/2032 (100)
+domainIndex=0, GM changed old=00:00:00:00:00:00:00:00, new=70:FF:76:FF:FE:1D:EC:F2
+INF:gptpnIndex=0, gmstate=2
+Cpsw_handleLinkUp:1423
 MAC Port 1: link up
+cbl_query_response:tilld1: link UP, speed=1000, duplex=1 !!!! (138us since link change event)
 [0]Network Link UP Event
+index=1 speed=1000, duplex=full
 Added interface 'br3', IP is 10.24.72.242
 ETHFW: REGISTER_IPv4 | C2S | core=0 endpt=36 token=2600 ipAddr=10.24.69.84 macAdd=70:ff:76:1d:ec:e7
 ETHFW:
@@ -558,11 +586,10 @@ The default port configuration for AM62Dx is shown below:
 \cond SOC_AM62PX
 ## Enable MAC-only mode on MAC port 2
 
-1. Add MAC only port flag to makefiles
-Add `-DENABLE_MAC_ONLY_PORTS` to `DEFINES_common` in the client app, server app and ethfw library makefiles
-    - Client app makefile in `<mcu_plus_sdk>/source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/<device>/<core_os_combo>/ti-arm-clang/`
-    - Server app makefile in `<mcu_plus_sdk>/source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/<device>/<core_os_combo>/ti-arm-clang/`
-    - Ethfw device specific library makefiles in `<mcu_plus_sdk>/source/networking/ethfw/`
+1. Add `-DENABLE_MAC_ONLY_PORTS` flag to `DEFINES_common` in the client app, server app and ethfw library makefiles
+    - Client app makefile in `<SDK_INSTALL_PATH>/source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/<device>/<core_os_combo>/ti-arm-clang/makefile`
+    - Server app makefile in `<SDK_INSTALL_PATH>/source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/<device>/<core_os_combo>/ti-arm-clang/makefile`
+    - Ethfw device specific lib makefiles in `<SDK_INSTALL_PATH>/source/networking/ethfw/makefile.cpsw.<device>.<core>.ti-arm-clang`
 2. Set `numMacAddress = 2` for MCU-R5 in the structure defined in `enet_cpsw_top.syscfg.js`:
  \imageStyle{ethfw_macOnly_script_change.png,width:95%}
  \image html ethfw_macOnly_script_change.png
@@ -579,6 +606,7 @@ Add `-DENABLE_MAC_ONLY_PORTS` to `DEFINES_common` in the client app, server app 
     - Add an additional netif and increase the number of MAC addresses for the Rx DMA channel as below
 \imageStyle{ethfw_macOnly_netif_changes.png,width:65%}
 \image html ethfw_macOnly_netif_changes.png
+5. Rebuild the libraries first, then the apps before loading the binaries.
 \endcond
 # See Also
 

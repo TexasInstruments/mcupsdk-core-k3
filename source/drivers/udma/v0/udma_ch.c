@@ -3233,6 +3233,9 @@ static int32_t Udma_chDisableTxChan(Udma_ChHandleInt chHandle, uint32_t timeout)
             rtEnableRegOffset,
             &peerRtEnable);
         CSL_FINS(peerRtEnable, PSILCFG_REG_RT_ENABLE_FLUSH, (uint32_t) 1U);
+
+        retVal = Udma_chPause(chHandle);
+
         (void) CSL_bcdmaSetChanPeerReg(
             &drvHandle->bcdmaRegs,
             chHandle->txChNum + drvHandle->txChOffset,
@@ -3241,8 +3244,10 @@ static int32_t Udma_chDisableTxChan(Udma_ChHandleInt chHandle, uint32_t timeout)
             &peerRtEnable);
 
         /*Add offset to chNum, so that BCDMA can identify it as Tx Channel*/
-        retVal = CSL_bcdmaTeardownTxChan(
+        retVal += CSL_bcdmaTeardownTxChan(
                  &drvHandle->bcdmaRegs, chHandle->txChNum + drvHandle->txChOffset, (bool)false, (bool)false);
+
+        retVal += Udma_chResume(chHandle);
     }
     else if(UDMA_INST_TYPE_LCDMA_PKTDMA == drvHandle->instType)
     {

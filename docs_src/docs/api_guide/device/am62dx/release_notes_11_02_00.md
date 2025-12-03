@@ -20,6 +20,7 @@ AM62Dx | MCU R5F, WKUP R5F, A53, C75 | @VAR_BOARD_NAME EVM (referred to as am62d
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
  TBD                                                                                           | TBD
+ Example to demonstrate VTM triggered SoC reset is added                                       | SDL
 
 ### Experimental Features {#EXPERIMENTAL_FEATURES}
 
@@ -342,6 +343,24 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <td> TBD
     <td> 11.01.00
 </tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13056, EXT_EP-13056}
+    <td> VTM module sensor reset sequence modification for reliable functionality
+    <td> SDL
+    <td> 11.02.00 onwards
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13057, EXT_EP-13057}
+    <td> SDL DCC Seed Value Calculation Deviates from TRM Guidelines
+    <td> SDL
+    <td> 11.02.00 onwards
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13058, EXT_EP-13058}
+    <td> PBIST example and tests fail in UART Bootmode
+    <td> SDL
+    <td> 11.02.00 onwards
+</tr>
 </table>
 
 ## Known Issues
@@ -361,6 +380,27 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <td> TBD
     <td> 11.00.00
     <td> TBD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12276, EXT_EP-12276}
+    <td> ECC: Firewall related aggregators failures - ECC Aggregators SDL_SMS0_SMS_TIFS_ECC, SDL_SMS0_SMS_HSM_ECC, SDL_SA3_SS0_SA3SS_AM62A_DMSS_ECCAGGR and SDL_SA3_SS0_SA3SS_AM62A_SA_UL_ECC_AGGR fail because of firewall access issues faced by SDL
+    <td> SDL
+    <td> 10.01.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12283, EXT_EP-12283}
+    <td> ECC aggregators CPSW0, CSI RX are failing on AM62A and CPSW0 on AM62D.
+    <td> SDL
+    <td> 09.00.00
+    <td> No known workaround
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12280, EXT_EP-12280}
+    <td> Running MCU LBIST on SBL causes JTAG connection issues to MCU R5F
+    <td> SDL
+    <td> 09.00.00
+    <td> No known workaround
 </tr>
 </table>
 

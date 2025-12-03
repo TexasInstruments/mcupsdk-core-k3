@@ -82,7 +82,7 @@
 
 #endif /* SOC_AM62AX || SOC_AM62X */
 
-#if defined (SOC_AM62DX)
+#if defined (SOC_AM62DX) || defined (SOC_AM275X)
 
 typedef struct {
     uint8_t reg;
@@ -94,7 +94,7 @@ typedef struct {
     uint8_t val;
 } Dac_RegCfg;
 
-#endif /* SOC_AM62DX */
+#endif /* SOC_AM62DX || SOC_AM275X */
 
 /* ========================================================================== */
 /*                           Global Variables                                 */
@@ -187,6 +187,81 @@ Dac_RegCfg gTad5212Reg[] =
 
 #endif /* SOC_AM62DX */
 
+#if defined (SOC_AM275X)
+
+Adc_RegCfg gPcm6240RegInst0[] =
+{
+    /* Page select 0 */
+    {0x00, 0x00},
+    /* Reset */
+    {0x01, 0x01},
+    /* Page select 0 */
+    {0x00, 0x00},
+    /* Disable sleep */
+    {0x02, 0x09},
+    /* High impedance for unused cycles */
+    {0x07, 0x31},
+    /* CH1 at slot 0 */
+    {0x0B, 0x00},
+    /* CH2 at slot 1 */
+    {0x0C, 0x01},
+    /* Set micbias to 5v */
+    {0x3b, 0x70},
+    /* CH1 Microphone input */
+    {0x3c, 0x10},
+    /* CH2 Microphone input */
+    {0x41, 0x10},
+    /* Input channel enable */
+    {0x74, 0xC0},
+    /* Power up micbias and power up all ADC channels */
+    {0x75, 0xE0},
+};
+
+Adc_RegCfg gPcm6240RegInst1[] =
+{
+    /* Page select 0 */
+    {0x00, 0x00},
+    /* Reset */
+    {0x01, 0x01},
+    /* Page select 0 */
+    {0x00, 0x00},
+    /* Disable sleep */
+    {0x02, 0x09},
+    /* High impedance for unused cycles */
+    {0x07, 0x31},
+    /* Input channel disable */
+    {0x74, 0x00},
+};
+
+Dac_RegCfg gTad5212Reg[] =
+{
+    /* Page select 0 */
+    {0x00, 0x00},
+    /* Disable sleep */
+    {0x02, 0x01},
+    /* I2S, 32b mode */
+    {0x1A, 0x70},
+    /* CH1 - Input from DAC, Mono single ended output at OUT1P */
+    {0x64, 0x28},
+    /* CH1 - Line Out driver with 300ohm impedance, 0dB gain */
+    {0x65, 0x20},
+    /* CH1 - 0dB gain */
+    {0x67, 0xC9},
+    /* CH2 - Input from DAC, Mono single ended output at OUT2P */
+    {0x6B, 0x28},
+    /* CH2 - Line Out driver with 300ohm impedance, 0dB gain */
+    {0x6C, 0x20},
+    /* CH2 - 0dB gain */
+    {0x6E, 0xC9},
+    /* PASI channel2 input is right slot0 */
+    {0x29, 0x30},
+    /* Enable output CH1 CH2 */
+    {0x76, 0x0C},
+    {0x78, 0x40},
+};
+
+#endif /* SOC_AM275X */
+
 /* ========================================================================== */
 /*                        Static Function Declaration                         */
 /* ========================================================================== */
@@ -201,14 +276,15 @@ static void I2C_writeReg(I2C_Handle handle, uint8_t devAddr, uint8_t reg,
                                     uint8_t val);
 #endif /* SOC_AM62AX || SOC_AM62X */
 
-#if defined (SOC_AM62DX)
+#if defined (SOC_AM62DX) || defined (SOC_AM275X)
+
 /* Configure PCM6240 */
 static int32_t Board_adcConfig(I2C_Handle handle, uint8_t devAddr, uint32_t instNum);
 /* Configure TAD5212 */
 static int32_t Board_dacConfig(I2C_Handle handle, uint8_t devAddr);
 /* Cofigure codec */
 static int32_t Board_codecConfig(void);
-#endif /* SOC_AM62DX */
+#endif /* SOC_AM62DX || SOC_AM275X */
 
 void mcasp_start_stop_main(void *args)
 {
@@ -218,7 +294,8 @@ void mcasp_start_stop_main(void *args)
 
 #if defined (SOC_AM62AX) || defined (SOC_AM62X)
     mcasp_aic31_codec_config();
-#elif defined (SOC_AM62DX)
+#elif defined (SOC_AM62DX) || defined (SOC_AM275X)
+
     Board_codecConfig();
 #endif
 
@@ -476,7 +553,8 @@ void mcasp_rxcb(MCASP_Handle handle,
 }
 
 
-#if defined (SOC_AM62DX)
+#if defined (SOC_AM62DX) || defined (SOC_AM275X)
+
 
 static int32_t Board_codecConfig(void)
 {
@@ -593,4 +671,4 @@ static int32_t Board_adcConfig(I2C_Handle handle, uint8_t devAddr, uint32_t inst
     return status;
 }
 
-#endif /* SOC_AM62DX  */
+#endif /* SOC_AM62DX || SOC_AM275X */

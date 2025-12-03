@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.24.0+4150"}
+ * @versions {"tool":"1.24.2+4234"}
  */
 
 /**
@@ -25,48 +25,48 @@ const mmu_armv87  = mmu_armv8.addInstance();
 const mmu_armv88  = mmu_armv8.addInstance();
 const mmu_armv89  = mmu_armv8.addInstance();
 const mmu_armv810 = mmu_armv8.addInstance();
+const mmu_armv811 = mmu_armv8.addInstance();
+const mmu_armv812 = mmu_armv8.addInstance();
+const mmu_armv813 = mmu_armv8.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
  */
 i2c1.$name           = "CONFIG_I2C0";
+i2c1.I2C.$assign     = "I2C0";
 i2c1.I2C_child.$name = "drivers_i2c_v0_i2c_v0_template0";
 
 mcasp1.$name                                   = "CONFIG_MCASP0";
-mcasp1.enableLoopback                          = false;
 mcasp1.txDataMask                              = 0xFFFFFFFF;
 mcasp1.txActiveSlotMask                        = 0x3;
-mcasp1.txCallbackFxn                           = "mcasp_txcb";
-mcasp1.rxCallbackFxn                           = "mcasp_rxcb";
 mcasp1.rxDataMask                              = 0xFFFFFFFF;
 mcasp1.rxActiveSlotMask                        = 0x3;
-mcasp1.txFsSource                              = 0;
-mcasp1.txAclkSource                            = 0;
-mcasp1.rxFsSource                              = 0;
-mcasp1.rxAclkSource                            = 0;
+mcasp1.enableLoopback                          = false;
+mcasp1.clkSyncMode                             = "ASYNC";
+mcasp1.txCallbackFxn                           = "mcasp_txcb";
+mcasp1.rxCallbackFxn                           = "mcasp_rxcb";
+mcasp1.RxMode                                  = "TDM";
+mcasp1.rxFsWidth                               = 0;
+mcasp1.rxFsPolarity                            = 0;
+mcasp1.rxBitClkPolarity                        = 0;
+mcasp1.txLoopjobBufLength                      = 1920000;
+mcasp1.rxLoopjobBufLength                      = 1920000;
+mcasp1.txClkApplyAlert                         = false;
+mcasp1.rxClkApplyAlert                         = false;
 mcasp1.externTxLoopjob                         = true;
+mcasp1.externRxLoopjob                         = true;
 mcasp1.txLoopjobBufExtern                      = "uint8_t gMcaspRxBuffer[]";
 mcasp1.txLoopjobBuf                            = "gMcaspRxBuffer";
-mcasp1.txLoopjobBufLength                      = 1920000;
-mcasp1.externRxLoopjob                         = true;
-mcasp1.rxLoopjobBufExtern                      = "uint8_t gMcaspRxBuffer[]";
 mcasp1.rxLoopjobBuf                            = "gMcaspRxBuffer";
-mcasp1.rxLoopjobBufLength                      = 1920000;
-mcasp1.txBclkExpected                          = 3072000;
-mcasp1.txFsyncExpected                         = 48000;
-mcasp1.txClkApplyAlert                         = false;
-mcasp1.txClkDiv                                = 1;
-mcasp1.rxClkDiv                                = 1;
-mcasp1.rxBclkExpected                          = 3072000;
-mcasp1.rxFsyncExpected                         = 48000;
-mcasp1.rxClkApplyAlert                         = false;
+mcasp1.rxLoopjobBufExtern                      = "uint8_t gMcaspRxBuffer[]";
 mcasp1.MCASP.$assignAllowConflicts             = "MCASP1";
+mcasp1.CLOCKING.$assign                        = "CLOCKING";
 mcasp1.mcaspSer.create(2);
 mcasp1.mcaspSer[0].$name                       = "CONFIG_MCASP_SER0";
+mcasp1.mcaspSer[0].dataDir                     = "Receive";
 mcasp1.mcaspSer[0].MCASP.$assignAllowConflicts = "MCASP1";
-mcasp1.mcaspSer[1].$name                       = "CONFIG_MCASP_SER1";
-mcasp1.mcaspSer[1].serNum                      = 2;
-mcasp1.mcaspSer[1].dataDir                     = "Receive";
+mcasp1.mcaspSer[1].$name                       = "CONFIG_MCASP_SER4";
+mcasp1.mcaspSer[1].serNum                      = 1;
 mcasp1.mcaspSer[1].MCASP.$assignAllowConflicts = "MCASP1";
 scripting.suppress("Resource conflict,MCASP1 is also in use by @@@.+?@@@, @@@.+?@@@", mcasp1.MCASP, "$assign");
 scripting.suppress("Resource conflict,MCASP1 is also in use by @@@.+?@@@, @@@.+?@@@", mcasp1.mcaspSer[0].MCASP, "$assign");
@@ -77,22 +77,24 @@ const udma1        = udma.addInstance({}, false);
 udma1.$name        = "CONFIG_UDMA0";
 mcasp1.bcDmaDriver = udma1;
 
-debug_log.enableCssLog  = false;
-debug_log.enableUartLog = true;
-debug_log.uartLog.$name = "CONFIG_UART0";
+debug_log.enableUartLog            = true;
+debug_log.enableCssLog             = false;
+debug_log.uartLog.$name            = "CONFIG_UART0";
+debug_log.uartLog.UART.$assign     = "UART2";
+debug_log.uartLog.UART.TXD.$assign = "SPI1_CS1";
 
 mmu_armv81.size  = 0x20000000;
-mmu_armv81.$name = "REGISTER_REGION_0";
+mmu_armv81.$name = "REGISTER_REGION0";
 
 mmu_armv82.vAddr = 0x20000000;
 mmu_armv82.pAddr = 0x20000000;
 mmu_armv82.size  = 0x20000000;
-mmu_armv82.$name = "REGISTER_REGION_1";
+mmu_armv82.$name = "REGISTER_REGION1";
 
 mmu_armv83.vAddr = 0x40000000;
 mmu_armv83.pAddr = 0x40000000;
 mmu_armv83.size  = 0x20000000;
-mmu_armv83.$name = "REGISTER_REGION_2";
+mmu_armv83.$name = "REGISTER_REGION2";
 
 mmu_armv84.vAddr = 0x60000000;
 mmu_armv84.pAddr = 0x60000000;
@@ -107,47 +109,61 @@ mmu_armv85.size  = 0x100000;
 mmu_armv86.$name = "DRU";
 mmu_armv86.vAddr = 0x7C400000;
 mmu_armv86.pAddr = 0x7C400000;
-mmu_armv86.size  = 0x100000;
+mmu_armv86.size  = 0x300000;
 
-mmu_armv87.vAddr     = 0x80000000;
-mmu_armv87.pAddr     = 0x80000000;
-mmu_armv87.size      = 0x20000000;
-mmu_armv87.attribute = "MAIR7";
-mmu_armv87.$name     = "DDR_0";
+mmu_armv87.$name       = "MCASP";
+mmu_armv87.vAddr       = 0x2B10000;
+mmu_armv87.pAddr       = 0x2B10000;
+mmu_armv87.size        = 0x2000000;
+mmu_armv87.privExecute = false;
 
-mmu_armv88.vAddr     = 0xA0000000;
-mmu_armv88.pAddr     = 0xA0000000;
-mmu_armv88.size      = 0x20000000;
+mmu_armv88.$name     = "L2SRAM";
+mmu_armv88.vAddr     = 0x7E000000;
+mmu_armv88.pAddr     = 0x7E000000;
 mmu_armv88.attribute = "MAIR7";
-mmu_armv88.$name     = "DDR_1";
+mmu_armv88.size      = 0x200000;
 
-mmu_armv89.vAddr     = 0xAA000000;
-mmu_armv89.pAddr     = 0xAA000000;
-mmu_armv89.size      = 0x2000000;
-mmu_armv89.attribute = "MAIR4";
-mmu_armv89.$name     = "DDR_2";
+mmu_armv89.$name     = "L2SRAM_AUX";
+mmu_armv89.vAddr     = 0x7E200000;
+mmu_armv89.pAddr     = 0x7E200000;
+mmu_armv89.size      = 0x40000;
+mmu_armv89.attribute = "MAIR7";
 
-mmu_armv810.$name       = "MCASP";
-mmu_armv810.vAddr       = 0x2B10000;
-mmu_armv810.pAddr       = 0x2B10000;
-mmu_armv810.size        = 0x2000000;
-mmu_armv810.privExecute = false;
+mmu_armv810.$name     = "MSRAM_BANK0_TO_BANK3";
+mmu_armv810.vAddr     = 0x80000000;
+mmu_armv810.size      = 0x400000;
+mmu_armv810.attribute = "MAIR7";
+mmu_armv810.pAddr     = 0x72000000;
+
+mmu_armv811.$name     = "MSRAM_BANK4_TO_BANK5";
+mmu_armv811.size      = 0x200000;
+mmu_armv811.vAddr     = 0x80400000;
+mmu_armv811.attribute = "MAIR7";
+mmu_armv811.pAddr     = 0x72400000;
+
+mmu_armv812.$name     = "CCS_DEBUG_LOG_MEM";
+mmu_armv812.vAddr     = 0x8027F000;
+mmu_armv812.pAddr     = 0x8027F000;
+mmu_armv812.size      = 0x1000;
+mmu_armv812.attribute = "MAIR4";
+
+mmu_armv813.attribute = "MAIR7";
+mmu_armv813.size      = 0x240000;
+mmu_armv813.$name     = "L2SRAM1";
+mmu_armv813.vAddr     = 0x7F000000;
+mmu_armv813.pAddr     = 0x7F000000;
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-i2c1.I2C.$suggestSolution                      = "I2C1";
-i2c1.I2C.SCL.$suggestSolution                  = "I2C1_SCL";
-i2c1.I2C.SDA.$suggestSolution                  = "I2C1_SDA";
+i2c1.I2C.SCL.$suggestSolution                  = "I2C0_SCL";
+i2c1.I2C.SDA.$suggestSolution                  = "I2C0_SDA";
 mcasp1.MCASP.AFSX.$suggestSolution             = "MCASP1_AFSX";
 mcasp1.MCASP.ACLKX.$suggestSolution            = "MCASP1_ACLKX";
 mcasp1.MCASP.AFSR.$suggestSolution             = "MCASP0_AXR15";
 mcasp1.MCASP.ACLKR.$suggestSolution            = "MCASP0_AXR14";
-mcasp1.CLOCKING.$suggestSolution               = "CLOCKING";
 mcasp1.mcaspSer[0].MCASP.AXR0.$suggestSolution = "MCASP1_AXR0";
-mcasp1.mcaspSer[1].MCASP.AXR2.$suggestSolution = "MCASP1_AXR2";
-debug_log.uartLog.UART.$suggestSolution        = "UART0";
-debug_log.uartLog.UART.RXD.$suggestSolution    = "MCASP4_AXR0";
-debug_log.uartLog.UART.TXD.$suggestSolution    = "MLB0_MLBCLK";
+mcasp1.mcaspSer[1].MCASP.AXR1.$suggestSolution = "MCASP1_AXR1";
+debug_log.uartLog.UART.RXD.$suggestSolution    = "MCASP0_AXR6";

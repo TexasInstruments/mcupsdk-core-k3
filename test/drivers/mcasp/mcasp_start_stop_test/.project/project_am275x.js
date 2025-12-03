@@ -56,10 +56,6 @@ const syscfgfile = "../example.syscfg";
 const templates_freertos_c75 =
 [
     {
-        input: ".project/templates/am275x/common/linker_c75ss0.cmd.xdt",
-        output: "linker.cmd",
-    },
-    {
         input: ".project/templates/am275x/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {

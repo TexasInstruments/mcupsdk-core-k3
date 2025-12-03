@@ -24,12 +24,15 @@ ConfigName:=$(PROFILE)
 OUTNAME:=mcasp_start_stop.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=mcasp_start_stop.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=mcasp_start_stop.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=mcasp_start_stop.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=mcasp_start_stop.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=mcasp_start_stop.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=mcasp_start_stop.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME:=mcasp_start_stop.$(PROFILE).mcelf
+BOOTIMAGE_NAME_XIP:=mcasp_start_stop.$(PROFILE).mcelf_xip
+BOOTIMAGE_NAME_SIGNED:=mcasp_start_stop.$(PROFILE).mcelf.signed
+BOOTIMAGE_NAME_HS:=mcasp_start_stop.$(PROFILE).mcelf.hs
+BOOTIMAGE_NAME_HS_FS:=mcasp_start_stop.$(PROFILE).mcelf.hs_fs
+TARGETS := $(BOOTIMAGE_NAME)
+ifeq ($(DEVICE_TYPE), HS)
+   TARGETS += $(BOOTIMAGE_NAME_HS)
+endif
 
 FILES_common := \
 	mcasp_start_stop.c \
@@ -59,36 +62,32 @@ DEFINES_common := \
 	-DSOC_AM275X \
 
 CFLAGS_common := \
-	-mv7504 \
-	--abi=eabi \
+	-mv7524 \
 	-q \
 	-mo \
 	-pden \
 	-pds=238 \
 	-pds=880 \
 	-pds1110 \
-	--endian=little \
 	--disable_inlining \
 	-ea.se71 \
 	--emit_warnings_as_errors \
 	--diag_suppress=770 \
 	--diag_suppress=69 \
 	--diag_suppress=70 \
+	-DBUILD_C7X \
+	-DBUILD_C7X_1 \
 
 CFLAGS_debug := \
 	-Dxdc_target_name__=C71 \
 	-D_DEBUG_=1 \
 	--opt_level=0 \
 	--symdebug:dwarf \
-	-DBUILD_C7X_1 \
-	-DBUILD_C7X \
 
 CFLAGS_release := \
 	-Dxdc_target_name__=C71 \
 	--opt_level=3 \
 	--symdebug:none \
-	-DBUILD_C7X_1 \
-	-DBUILD_C7X \
 
 LNK_FILES_common = \
 	linker.cmd \
@@ -108,15 +107,12 @@ LIBS_common = \
 	-llibc.a \
 
 LFLAGS_common = \
-	--silicon_version=7504 \
 	-z \
 	--emit_warnings_as_errors \
 	--diag_suppress=10063 \
 	--ram_model \
 	--warn_sections \
-	-q \
 	-x \
-	 \
 
 
 LIBS_NAME = \
@@ -163,7 +159,7 @@ $(OBJDIR)/%.obj %.obj: %.S
 	@echo  Compiling: am275x:c75ss0-0:freertos:ti-c7000 $(LIBNAME): $<
 	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fa=$<
 
-all: $(BOOTIMAGE_NAME)
+all: $(TARGETS)
 
 SYSCFG_GEN_FILES=generated/ti_drivers_config.c generated/ti_drivers_config.h
 SYSCFG_GEN_FILES+=generated/ti_drivers_open_close.c generated/ti_drivers_open_close.h
@@ -186,8 +182,8 @@ clean:
 	$(RM) $(BOOTIMAGE_NAME)
 	$(RM) $(BOOTIMAGE_NAME_XIP)
 	$(RM) $(BOOTIMAGE_NAME_SIGNED)
-	$(RM) $(BOOTIMAGE_RPRC_NAME)
-	$(RM) $(BOOTIMAGE_RPRC_NAME_XIP)
+	$(RM) $(BOOTIMAGE_NAME_HS)
+	$(RM) $(BOOTIMAGE_NAME_HS_FS)
 	$(RMDIR) generated/
 
 scrub:
@@ -196,15 +192,13 @@ scrub:
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
 	$(RM) \*.map
-	$(RM) \*.appimage*
-	$(RM) \*.rprc*
+	$(RM) \*.mcelf*
 	$(RM) \*.tiimage*
 	$(RM) \*.bin
 else
 	$(RM) *.out
 	$(RM) *.map
-	$(RM) *.appimage*
-	$(RM) *.rprc*
+	$(RM) *.mcelf*
 	$(RM) *.tiimage*
 	$(RM) *.bin
 endif
@@ -240,6 +234,7 @@ else
 endif
 BOOTIMAGE_TEMP_OUT_FILE=temp_stdout_$(PROFILE).txt
 
+BOOTIMAGE_CERT_KEY=$(APP_SIGNING_KEY)
 
 BOOTIMAGE_CORE_ID_wkup-r5fss0-0 = 0
 BOOTIMAGE_CORE_ID_r5fss0-0      = 1
@@ -249,11 +244,11 @@ BOOTIMAGE_CORE_ID_r5fss1-1      = 4
 BOOTIMAGE_CORE_ID_c75ss0-0      = 5
 BOOTIMAGE_CORE_ID_c75ss1-0      = 6
 BOOTIMAGE_CORE_ID_hsm-m4fss0-0  = 7
-SBL_RUN_ADDRESS=0x43C00000
+SBL_RUN_ADDRESS=0x72000000
 SBL_DEV_ID=55
 
-MULTI_CORE_IMAGE_GEN = $(SYSCFG_NODE) $(MCU_PLUS_SDK_PATH)/tools/boot/multicoreImageGen/multicoreImageGen.js
-OUTRPRC_CMD = $(SYSCFG_NODE) $(MCU_PLUS_SDK_PATH)/tools/boot/out2rprc/elf2rprc.js
+MCELF_IMAGE_GEN = $(MCU_PLUS_SDK_PATH)/tools/boot/multicoreELFImageGen/genimage.py
+APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_gen.py
 
 ifeq ($(OS),Windows_NT)
   XIPGEN_CMD=$(MCU_PLUS_SDK_PATH)/tools/boot/xipGen/xipGen.exe
@@ -262,25 +257,44 @@ else
 endif
 
 MULTI_CORE_IMAGE_PARAMS = \
-	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_c75ss0-0) \
+    $(BOOTIMAGE_CORE_ID_c75ss0-0):$(OUTNAME) \
 
-MULTI_CORE_IMAGE_PARAMS_XIP = \
-	$(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_c75ss0-0) \
+MCELF_XIP_RANGE?=0x60100000:0x60200000 
 
 $(BOOTIMAGE_NAME): $(OUTNAME)
 	@echo  Boot image: am275x:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$@ ...
 ifneq ($(OS),Windows_NT)
 	$(CHMOD) a+x $(XIPGEN_CMD)
 endif
-	$(OUTRPRC_CMD) $(OUTNAME) >> $(BOOTIMAGE_TEMP_OUT_FILE)
-	$(COPY) $(BOOTIMAGE_RPRC_NAME) $(BOOTIMAGE_RPRC_NAME_TMP)
-	$(RM) $(BOOTIMAGE_RPRC_NAME)
-	$(XIPGEN_CMD) -i $(BOOTIMAGE_RPRC_NAME_TMP) -o $(BOOTIMAGE_RPRC_NAME) -x $(BOOTIMAGE_RPRC_NAME_XIP) --flash-start-addr 0x60000000 -v > $(BOOTIMAGE_TEMP_OUT_FILE)
-	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(BOOTIMAGE_NAME) $(MULTI_CORE_IMAGE_PARAMS) >> $(BOOTIMAGE_TEMP_OUT_FILE)
-	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(BOOTIMAGE_NAME_XIP) $(MULTI_CORE_IMAGE_PARAMS_XIP) >> $(BOOTIMAGE_TEMP_OUT_FILE)
-	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
-	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
+	$(PYTHON) $(MCELF_IMAGE_GEN) --core-img=$(MULTI_CORE_IMAGE_PARAMS) --output=$(BOOTIMAGE_NAME) --xip=$(MCELF_XIP_RANGE) --sw_version=$(SW_VERSION)
+# Sign the appimage for HS-FS using appimage signing script
+    #
+    #   Authentication type 0 with load address 0x84000000
+    #
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS) --keyversion $(VERSION)
 	@echo  Boot image: am275x:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$@ Done !!!
 	@echo  .
+	@echo  Boot image: am275x:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
+	@echo  .
 
+$(BOOTIMAGE_NAME_HS): $(BOOTIMAGE_NAME)
+ifeq ($(DEVICE_TYPE), HS)
+# Sign the appimage using appimage signing script
+ifeq ($(ENC_ENABLED),no)
+	@echo Boot image signing: Encryption is disabled.
+    #
+    #   Authentication type 0 with load address 0x84000000
+    #
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
+else
+	@echo Boot image signing: Encryption is enabled.
+    #
+    #   Authentication type 0 with load address 0x84000000
+    #
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
+	$(RM) $(BOOTIMAGE_NAME)-enc
+endif
+	@echo  Boot image: am275x:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
+	@echo  .
+endif
 -include $(addprefix $(OBJDIR)/, $(DEPS))

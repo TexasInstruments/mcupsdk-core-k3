@@ -76,7 +76,7 @@ A new linux devicetree blob (dtb) should be generated with this change and place
 The RM board config need to have an entry for the interrupt router for the core if the gpio interrupt is routed to the core through the interrupt router.
 \endcond
 
-\cond SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM62AX
 @VAR_BOARD_NAME does not contain any push button connected to MCU GPIOs.
 
 MCU-R5 example is using MCU_GPIO0_15 pin in the MCU_HEADER(J9) for generating GPIO interrupt.
@@ -132,21 +132,15 @@ A GPIO bank interrupt can be routed to only one core at a time. For example if a
 Examples are using SW5 push button for generating GPIO interrupt. For C75, the interrupt has to be routed thorugh MAIN_GPIOMUX_INTROUTER0 instance 15. But it is allocated to TISCI_HOST_ID_A53_2 in source/drivers/sciclient/sciclient_default_boardcfg/am62ax/sciclient_defaultBoardcfg_rm.c file as,
 \code
 {
-    .num_resource = 16,
+    .num_resource = 2,
     .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
-    .start_resource = 0,
-    .host_id = TISCI_HOST_ID_A53_2,
+    .start_resource = 34,
+    .host_id = TISCI_HOST_ID_MCU_0_R5_0,
 },
 \endcode
 
 So replace the above code with the following lines in source/drivers/sciclient/sciclient_default_boardcfg/am62ax/sciclient_defaultBoardcfg_rm.c file. This will allocate the 15th instance of MAIN_GPIOMUX_INTROUTER0 to c75 core.
 \code
-{
-    .num_resource = 15,
-    .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
-    .start_resource = 0,
-    .host_id = TISCI_HOST_ID_A53_2,
-},
 {
     .num_resource = 1,
     .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
@@ -155,7 +149,7 @@ So replace the above code with the following lines in source/drivers/sciclient/s
 },
 \endcode
 
-Then rebuild the boardconfig and SBL using the steps mentioned in \ref BOARCFG_GEN .
+Then rebuild the boardconfig and SBL using the steps mentioned in \ref BOARCFG_GEN . Flash the newly built SBL.
 
 \attention
 A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to A53 core, the same cannot be routed to other cores (C75/R5).

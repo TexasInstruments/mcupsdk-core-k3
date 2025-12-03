@@ -138,14 +138,19 @@ void test_main(void *args)
 
     UNITY_BEGIN();
 
+#ifdef SOC_AM62D
+    DebugP_log("Pin connection details for this eqep test:\r\n");
+    DebugP_log("  R17-A19\r\n");
+    DebugP_log("  K19-A20\r\n");
+    DebugP_log("  L18-B21\r\n");
+    DebugP_log("  L17-A21\r\n");
+    DebugP_log("Note that these pins are on the audio expansion connecter 1 and not the audio expansion card 1\r\n");
+    DebugP_log("Refer the SOC datasheet for pins and use an adapter for the AEC 1. Do not use the Audio Expansion Card\r\n");
+#else
     DebugP_log("Please refer EXAMPLES_DRIVERS_EQEP_CAPTURE example user \
-guide for the test setup details.\r\n");
-    /*  Pin connection details for this eqep test
-    *   R17-A19
-    *   K19-A20
-    *   L18-B21
-    *   L17-A21 */
-
+guide and test code comment for the test setup details.\r\n");
+#endif
+    
     /* Run tests */
     test_eqep_init_test_params(&testParams, 7264);
     RUN_TEST(eqep_capture_main, 7264, (void*)&testParams);

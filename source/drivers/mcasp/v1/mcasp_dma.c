@@ -594,7 +594,7 @@ void MCASP_closeDma(MCASP_Config *config, MCASP_DmaChConfig *dmaChCfg)
         if(chanEnStatus == 1U)
         {
             /* Disable Channel */
-            status = Udma_chDisable(txChHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT);
+            status = Udma_chDisable(txChHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT*10U);
         }
 
         while(TRUE)
@@ -1015,7 +1015,7 @@ void MCASP_disableDmaTx(MCASP_Config *config)
         if(chanEnStatus == 1U)
         {
             /* Disable Channel */
-            status = Udma_chDisable(txChHandle, SystemP_WAIT_FOREVER);
+            status = Udma_chDisable(txChHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT*10U);
         }
 
         while(TRUE)

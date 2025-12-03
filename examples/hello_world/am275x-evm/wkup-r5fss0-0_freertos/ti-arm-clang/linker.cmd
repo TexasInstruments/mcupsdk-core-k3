@@ -78,6 +78,9 @@ SECTIONS
         RUN_END(__BSS_END)
     } > WKUP_R5_MSRAM
 
+    /* DM RM/PM HAL trace buffer at fixed MSRAM location */
+    .dm_rmpm_trace_buf : (NOLOAD) {} > WKUP_DM_RMPM_TRACE
+
     /* USB or any other LLD buffer for benchmarking */
     .benchmark_buffer (NOLOAD) {} ALIGN (8) > WKUP_R5_MSRAM
 
@@ -117,8 +120,9 @@ MEMORY
     R5F_TCMB_VEC   (RWIX)      : ORIGIN = 0x41010000 LENGTH = 0x00000040
     R5F_TCMB       (RWIX)      : ORIGIN = 0x41010040 LENGTH = 0x00007FC0
 
-    WKUP_R5_MSRAM_VEC (RWIX)     : ORIGIN = 0x72000000      LENGTH = 0x40 // for vectors
-    WKUP_R5_MSRAM (RWIX)         : ORIGIN = 0x72000000+0x40 LENGTH = 0x00080000-0x40 // 512 KB for wakeup core
+    WKUP_R5_MSRAM_VEC (RWIX)     : ORIGIN = 0x72000000 LENGTH = 0x40       // for vectors
+    WKUP_R5_MSRAM (RWIX)         : ORIGIN = 0x72000040 LENGTH = 0x0007AFC0 // 492 KB for wakeup core
+    WKUP_DM_RMPM_TRACE (RWIX)    : ORIGIN = 0x7207B000 LENGTH = 0x00005000 // 20 KB for DM RM/PM HAL trace buffer
 
     R50_0_OCRAM   (RWIX)         : ORIGIN = 0x72080000 LENGTH = 0x00100000 // 1 MB for r5fss0-0 core
     R50_1_OCRAM   (RWIX)         : ORIGIN = 0x72180000 LENGTH = 0x00080000 // 512 KB for r5fss0-1 core

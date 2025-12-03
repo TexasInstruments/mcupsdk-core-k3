@@ -114,6 +114,9 @@ SECTIONS
     /* Trace buffer used during low power mode */
     .lpm_trace_buf : (NOLOAD) {} > WKUP_SRAM_TRACE_BUFF
 
+    /* DM RM/PM HAL trace buffer at fixed DDR location */
+    .dm_rmpm_trace_buf : (NOLOAD) {} > DDR_DM_RMPM_TRACE
+
     /* USB or any other LLD buffer for benchmarking */
     .benchmark_buffer (NOLOAD) {} ALIGN (8) > DDR
 
@@ -162,8 +165,10 @@ MEMORY
     HSM_RAM                     : ORIGIN = 0x43C00000 LENGTH = 0x3FF00
     /* DDR for DM LPM data [ size 640.00 KB ] */
     DDR_LPM_DATA    (RWIX)      : ORIGIN = 0x9CA00000 LENGTH = 0x000A0000
-    /* DDR for DM R5F code/data [ size 27 MiB + 416 KB ] */
-    DDR                         : ORIGIN = 0x9CAA0000 LENGTH = 0x1B68000
+    /* DDR for DM RM/PM HAL trace buffer [ size 20 KB ] */
+    DDR_DM_RMPM_TRACE (RWIX)    : ORIGIN = 0x9CAA0000 LENGTH = 0x00005000
+    /* DDR for DM R5F code/data [ size 27 MiB + 364 KB ] */
+    DDR                         : ORIGIN = 0x9CAA5000 LENGTH = 0x1B5B000
 
      /*
      3MB from address 0XA0000000 is used by RTOS IPC on Vision apps.

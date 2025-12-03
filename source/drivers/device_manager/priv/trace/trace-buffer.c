@@ -68,7 +68,7 @@
 /*                            Global Variables                                */
 /* ========================================================================== */
 
-uint8_t tracelog_rmpm[TRACE_LOG_BUF_SIZE];
+uint8_t tracelog_rmpm[TRACE_LOG_BUF_SIZE] __attribute__((section(".dm_rmpm_trace_buf"), aligned(4)));
 
 static uint8_t *logbuf_pos;
 

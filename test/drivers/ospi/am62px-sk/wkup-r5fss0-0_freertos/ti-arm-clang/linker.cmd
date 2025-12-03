@@ -110,6 +110,9 @@ SECTIONS
     /* Trace buffer used during low power mode */
     .lpm_trace_buf : (NOLOAD) {} > WKUP_SRAM_TRACE_BUFF
 
+    /* DM RM/PM HAL trace buffer at fixed DDR location */
+    .dm_rmpm_trace_buf : (NOLOAD) {} > DDR_DM_RMPM_TRACE
+
     /* USB or any other LLD buffer for benchmarking */
     .benchmark_buffer (NOLOAD) {} ALIGN (8) > DDR
 
@@ -159,8 +162,10 @@ MEMORY
 
     /* DDR for DM LPM data [ size 640.00 KB ] */
     DDR_LPM_DATA    (RWIX)      : ORIGIN = 0x9CA00000 LENGTH = 0x000A0000
-    /* DDR for DM R5F code/data [ size 27MiB + 416 KB ] */
-    DDR                         : ORIGIN = 0x9CAA0000 LENGTH = 0x1B68000
+    /* DDR for DM RM/PM HAL trace buffer [ size 20 KB ] */
+    DDR_DM_RMPM_TRACE (RWIX)    : ORIGIN = 0x9CAA0000 LENGTH = 0x00005000
+    /* DDR for DM R5F code/data [ size 27 MiB + 396 KB ] */
+    DDR                         : ORIGIN = 0x9CAA5000 LENGTH = 0x1B63000
 
     /* global scratch buffer region in DDR (32 MB) */
     DDR2           (RWIX)      : ORIGIN = 0xA0000000 LENGTH = 0x02000000

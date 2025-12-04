@@ -80,7 +80,7 @@ To build applications using this SDK, one needs below host PC machine
 \cond SOC_AM62AX || SOC_AM62DX || SOC_AM275X
 ### C7000-CGT Compiler Toolchain {#INSTALL_C7000_CGT}
 
-- Download C7000-CGT compiler toolchain @VAR_TI_C7000_CGT_VERSION from \htmllink{https://www.ti.com/tool/download/C7000-CGT, the link}
+- Download C7000-CGT compiler toolchain @VAR_TI_C7000_CGT_VERSION from \htmllink{https://www.ti.com/tool/download/C7000-CGT/@VAR_TI_C7000_CGT_VERSION, the link}
 - Install at below path,
   - Windows, C:/ti
   - Linux, ${HOME}/ti

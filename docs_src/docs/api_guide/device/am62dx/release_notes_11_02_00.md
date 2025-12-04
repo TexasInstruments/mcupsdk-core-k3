@@ -23,6 +23,10 @@ Feature                                                                         
  IPC Notify Echo Example supporting C7x core as well                                           | IPC
  Reset isolation support for MCU domain                                                        | SOC
  ROV support on C7x                                                                            | ROV
+ Support to enter low power mode is added                                                      | DM
+ Example to demonstrate Partial I/O low power mode support is added                            | LPM
+ Support to print DM application logs based on board config is added                           | DM
+ Spread spectrum is enabled for Display PLLs                                                   | DM
  Example to demonstrate VTM triggered SoC reset is added                                       | SDL
 
 ### Experimental Features {#EXPERIMENTAL_FEATURES}

@@ -248,7 +248,7 @@ Dac_RegCfg gTad5212RegInst3[] =
     /* TDM, 24b mode */
     {0x1A, 0x20},
     /* 1b delay between FSYNC and data */
-    {0x26, 0x10},
+    {0x26, 0x01},
     /* PASI CH1 is TDM slot 3 */
     {0x28, 0x23},
     /* PASI CH1 is TDM slot 7 */

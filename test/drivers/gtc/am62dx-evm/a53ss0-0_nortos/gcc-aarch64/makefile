@@ -79,6 +79,7 @@ CFLAGS_common := \
 	-Wno-unused-but-set-variable \
 	-fdata-sections \
 	-ffunction-sections \
+	-DSOC_AM62DX \
 
 CFLAGS_debug := \
 	-D_DEBUG_=1 \

@@ -45,6 +45,7 @@ MEMORY {
 	 * - make sure there is a MMU entry which maps below regions as non-cache
 	 */
     USER_SHM_MEM            : ORIGIN = 0x82000000, LENGTH = 0x80
+    LOG_SHM_MEM             : ORIGIN = 0xA1000000, LENGTH = 0x40000
 }
 
 SECTIONS {
@@ -64,6 +65,8 @@ SECTIONS {
 
     /* General purpose user shared memory, used in some examples */
     .bss.user_shared_mem (NOLOAD) : { KEEP(*(.bss.user_shared_mem)) } > USER_SHM_MEM
+    /* this is used when Debug log's to shared memory is enabled, else this is not used */
+    .bss.log_shared_mem  (NOLOAD) : { KEEP(*(.bss.log_shared_mem)) } > LOG_SHM_MEM
 
     .bss : {
         __bss_start__ = .;

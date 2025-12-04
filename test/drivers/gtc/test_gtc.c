@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,53 +30,55 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <inttypes.h>
-#include <unity.h>
-#include <drivers/gpio.h>
-#include <drivers/gtc.h>
-#include <drivers/soc.h>
-#include <kernel/dpl/DebugP.h>
-#include <kernel/dpl/ClockP.h>
-#include <kernel/dpl/AddrTranslateP.h>
-#include "ti_drivers_config.h"
-#include "ti_drivers_open_close.h"
-#include "ti_board_open_close.h"
+ /*===================================================================*/
+ /* 					Include Files 					              */
+ /*===================================================================*/
+
+#include "test_gtc.h"
+
+/*===================================================================*/
+/* 					         Global Variables			             */
+/*===================================================================*/
 
 
-/* ========================================================================== */
-/*                           Macros & Typedefs                                */
-/* ========================================================================== */
+/*===================================================================*/
+/* 					Function Declarations		                     */
+/*===================================================================*/
 
-/* None */
+/* Main function running the single threaded test case */
+static void TestGtc_stTestcase(void);
 
-/* ========================================================================== */
-/*                         Structures and Enums                               */
-/* ========================================================================== */
-
-/* ========================================================================== */
-/*                 Internal Function Declarations                             */
-/* ========================================================================== */
-
-/* Testcases */
+/* Testcase to verify GTC count functionality */
 static void test_gtc_count(void *args);
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+/* Testcase to verify long duration jitter */
+static void TestGtc_longDurationJitter(void *args);
+#endif
 
-/* ========================================================================== */
-/*                            Global Variables                                */
-/* ========================================================================== */
+/*===================================================================*/
+/* 					Function Definitions		                     */
+/*===================================================================*/
 
-/* None */
-
-/* ========================================================================== */
-/*                          Function Definitions                              */
-/* ========================================================================== */
-
+/**
+ * @brief Main GTC driver unit test entry point.
+ *
+ * Initializes the Unity test framework, runs all registered Global Timer Counter (GTC)
+ * API validation tests, and finalizes the Unity framework. This includes single-threaded
+ * tests for counter accuracy and long duration jitter, and optionally multithreaded tests
+ * if enabled. The function serves as the main dispatcher for GTC test execution.
+ *
+ * @param[in] args Optional user argument (unused in current implementation).
+ *
+ * @return void
+ */
 void test_main(void *args)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(test_gtc_count,  171, NULL);
+    TestGtc_stTestcase();
+#if defined(ENABLE_MT_TESTS)
+    TestGtc_mtTestcase();
+#endif
 
     UNITY_END();
 
@@ -88,16 +90,55 @@ void test_main(void *args)
  */
 void setUp(void)
 {
+    /*Nothing to setup*/
 }
 
 void tearDown(void)
 {
+    /*Nothing to tear down*/
 }
 
-/*
- * Testcases
+/**
+ * @brief Main single-threaded GTC test dispatcher.
+ *
+ * Runs all single-threaded Global Timer Counter (GTC) unit tests using the Unity framework.
+ * This includes tests for counter accuracy and long duration jitter. Each test is invoked
+ * with a unique test case ID and optional arguments. Results are reported through Unity.
+ *
+ * Test Steps:
+ * 1. Run the GTC counter accuracy test.
+ * 2. Run the long duration jitter test.
+ *
+ * @return void
  */
+static void TestGtc_stTestcase(void)
+{
+    RUN_TEST(test_gtc_count, 2096, NULL);
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+    RUN_TEST(TestGtc_longDurationJitter, 9400, NULL);
+#endif
+}
 
+/**
+ * @brief Single-threaded GTC counter accuracy test.
+ *
+ * Initializes the Global Timer Counter (GTC), retrieves the GTC clock frequency,
+ * samples the counter before and after a 1-second sleep, and verifies that the
+ * observed increment is within an acceptable tolerance of the expected value
+ * based on the clock rate.
+ *
+ * Test Steps:
+ * 1. Initialize the GTC module.
+ * 2. Retrieve the GTC clock frequency.
+ * 3. Record the initial 64-bit GTC counter value.
+ * 4. Sleep for 1 second.
+ * 5. Record the final 64-bit GTC counter value.
+ * 6. Verify that the difference is within tolerance of the expected increment (clkRate).
+ *
+ * @param[in] args Optional argument (unused).
+ *
+ * @return void
+ */
 static void test_gtc_count(void *args)
 {
     int32_t retVal = SystemP_SUCCESS;
@@ -118,7 +159,56 @@ static void test_gtc_count(void *args)
     ClockP_sleep(1);
     gtccount2 = GTC_getCount64();
 
-
     TEST_ASSERT_UINT32_WITHIN( 1000000, clkRate, gtccount2 - gtccount1);
-
 }
+
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+/**
+ * @brief Single-threaded GTC long duration jitter test.
+ *
+ * This test case measures the Global Timer Counter (GTC) value over a long duration
+ * (60 seconds) and verifies that the counter increments as expected based on the
+ * known clock rate. The test checks that the difference between the initial and final
+ * counter values is within an acceptable range of the expected increment, accounting
+ * for potential jitter.
+ *
+ * Test Steps:
+ * 1. Initialize the GTC module.
+ * 2. Retrieve the GTC clock frequency.
+ * 3. Record the initial GTC counter value.
+ * 4. Sleep for 60 seconds.
+ * 5. Record the final GTC counter value.
+ * 6. Verify that the difference between the final and initial counter values
+ *    is within an acceptable range of the expected increment based on the clock rate.
+ *
+ * @param[in] args Optional argument (unused).
+ *
+ * @return void
+ */
+static void TestGtc_longDurationJitter(void *args)
+{
+    int32_t retVal = SystemP_SUCCESS;
+    uint64_t gtcCount0 = 0;
+    uint64_t gtcCount1 = 0;
+    uint64_t clkRate = 0;
+
+    /* Init GTC module */
+    retVal = GTC_init();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Get GTC clock frequency */
+    retVal = SOC_moduleGetClockFrequency(TISCI_DEV_WKUP_GTC0, TISCI_DEV_WKUP_GTC0_GTC_CLK, &clkRate);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Record initial GTC counter value */
+    gtcCount0 = GTC_getCount64();
+    ClockP_sleep(60);
+    /* Record final GTC counter value */
+    gtcCount1 = GTC_getCount64();
+
+    /* Verify counter increment is within expected range */
+    TEST_ASSERT_UINT32_WITHIN(1000000, clkRate * 60, gtcCount1 - gtcCount0);
+}
+
+#endif
+

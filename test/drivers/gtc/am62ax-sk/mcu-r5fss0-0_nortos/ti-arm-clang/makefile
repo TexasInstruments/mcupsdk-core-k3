@@ -59,6 +59,7 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
 	-I${MCU_PLUS_SDK_PATH}/test/drivers/gtc/am62ax-sk \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/dpl \
 	-Igenerated \
 
 DEFINES_common := \
@@ -74,6 +75,7 @@ CFLAGS_common := \
 	-g \
 	-Wno-gnu-variable-sized-type-not-at-end \
 	-Wno-unused-function \
+	-DSOC_AM62AX \
 
 CFLAGS_cpp_common := \
 	-Wno-c99-designator \

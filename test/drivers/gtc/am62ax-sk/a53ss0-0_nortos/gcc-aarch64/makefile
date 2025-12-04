@@ -59,6 +59,7 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
 	-I${MCU_PLUS_SDK_PATH}/test/drivers/gtc/am62ax-sk \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/dpl \
 	-Igenerated \
 
 DEFINES_common := \
@@ -79,6 +80,7 @@ CFLAGS_common := \
 	-Wno-unused-but-set-variable \
 	-fdata-sections \
 	-ffunction-sections \
+	-DSOC_AM62AX \
 
 CFLAGS_debug := \
 	-D_DEBUG_=1 \

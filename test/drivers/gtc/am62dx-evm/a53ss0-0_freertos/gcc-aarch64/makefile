@@ -40,6 +40,7 @@ endif
 
 FILES_common := \
 	test_gtc.c \
+	test_gtc_multithread.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -81,6 +82,8 @@ CFLAGS_common := \
 	-Wno-unused-but-set-variable \
 	-fdata-sections \
 	-ffunction-sections \
+	-DENABLE_MT_TESTS \
+	-DSOC_AM62DX \
 
 CFLAGS_debug := \
 	-D_DEBUG_=1 \

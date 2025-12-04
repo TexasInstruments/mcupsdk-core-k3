@@ -74,6 +74,7 @@ CFLAGS_common := \
 	-g \
 	-Wno-gnu-variable-sized-type-not-at-end \
 	-Wno-unused-function \
+	-DSOC_AM62DX \
 
 CFLAGS_cpp_common := \
 	-Wno-c99-designator \

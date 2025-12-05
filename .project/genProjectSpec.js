@@ -109,6 +109,15 @@ const utils = {
                             filelist.push(filedir + '/' + file);
                             foundFile = true;
                         }
+                        if(filedir.includes('$(MCU_PLUS_SDK_PATH)')) {
+                            let checkPath = path.normalize(filedir + '/' + file);
+                            let checkPath1 = checkPath.replace('$(MCU_PLUS_SDK_PATH)', path.resolve(__dirname, '..'));
+                            if (fs.existsSync(checkPath1) == true) {
+                                let relPath = path.relative(projectabspath, checkPath1);
+                                filelist.push(relPath);
+                                foundFile = true;
+                            }
+                        }
                     }
                     if(foundFile == false) {
                         console.log(`ERROR : Couldn't find ${file} in given source directories for ${projectabspath} ...`)

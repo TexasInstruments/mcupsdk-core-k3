@@ -59,5 +59,5 @@ MEMORY
     ATCM_VECS    : ORIGIN = 0x0 , LENGTH = 0x40
     ATCM         : ORIGIN = 0x40 , LENGTH = 0x8000 - 0x40
     /* This section is used by the SBL to temporarily load the appimage for authentication */
-    APPIMAGE  : ORIGIN = 0x84000000 , LENGTH = 0x2000000
+    APPIMAGE  : ORIGIN = 0x84000000 , LENGTH = 0x4000000
 }

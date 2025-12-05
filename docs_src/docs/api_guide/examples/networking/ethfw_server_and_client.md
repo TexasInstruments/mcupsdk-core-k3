@@ -62,7 +62,7 @@ MAC Port 2: Configured in MAC-only mode, allowing direct traffic to the host por
 \cond SOC_AM62DX
  Client Env     | Supported Core + OS
  ---------------|-----------
- MCAL Client    | mcu-r5fss0-0_freertos
+ MCAL Client    | Not supported
  Linux Client   | Not supported
 \endcond
 

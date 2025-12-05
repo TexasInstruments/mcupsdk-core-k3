@@ -16,7 +16,7 @@ const filedirs = {
     common: [
         "..",       /* core_os_combo base */
         "../../..", /* Example base */
-        "../../../../am62px", /* sbl_emmc_linux_stage2.c base */
+        "../../../../../../../../examples/drivers/boot/common/soc/am62px", /* sbl_emmc_linux_stage2.c base */
     ],
 };
 

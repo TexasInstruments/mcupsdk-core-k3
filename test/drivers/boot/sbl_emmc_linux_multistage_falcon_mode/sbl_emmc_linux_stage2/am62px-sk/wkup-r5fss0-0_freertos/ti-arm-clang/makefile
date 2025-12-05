@@ -51,7 +51,7 @@ FILES_common := \
 FILES_PATH_common = \
 	.. \
 	../../.. \
-	../../../../am62px \
+	../../../../../../../../examples/drivers/boot/common/soc/am62px \
 	generated \
 
 INCLUDES_common := \

@@ -110,10 +110,8 @@ Ethernet driver (ENET)      | A53            | YES               | FreeRTOS    |
     <th> ID
     <th> Head Line
     <th> Module
-    <th> Applicable Releases
 </tr>
 <tr>
-    <td> None
     <td> None
     <td> None
     <td> None
@@ -128,11 +126,9 @@ Ethernet driver (ENET)      | A53            | YES               | FreeRTOS    |
     <th> ID
     <th> Head Line
     <th> Module
-    <th> Reported in release
     <th> Workaround
 </tr>
 <tr>
-    <td> None
     <td> None
     <td> None
     <td> None

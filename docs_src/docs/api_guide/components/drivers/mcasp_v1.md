@@ -100,7 +100,7 @@ Start McASP Transfer Example
 Stop McASP Transfer Example
 \snippet Mcasp_sample.c stop_transfer_loopback
 
-## SysConfig migration guide 11.01 to 11.02
+## SysConfig migration guide 11.01 to 11.02 {#MCASP_11_2_MIGRATION}
 
 \note This section highlights key features that have changed or got added from 11.01 to 11.02 SDK
 ### AUX clock selection

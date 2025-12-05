@@ -294,13 +294,11 @@ ROM Checksum |MCU-R5F         | No
     <th> ID
     <th> Head Line
     <th> Module
-    <th> Applicable Releases
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/TBD, TBD}
     <td> TBD
     <td> TBD
-    <td> 11.01.00
 </tr>
 </table>
 
@@ -312,14 +310,12 @@ ROM Checksum |MCU-R5F         | No
     <th> ID
     <th> Head Line
     <th> Module
-    <th> Reported in release
     <th> Workaround
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/TBD, TBD}
     <td> TBD
     <td> TBD
-    <td> 11.00.00
     <td> TBD
 </tr>
 </table>

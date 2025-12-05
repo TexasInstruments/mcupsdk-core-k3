@@ -53,6 +53,7 @@ This page lists all the examples related to Ethernet Communication.
 ### Time-Sensitive Networking (TSN) Examples on FreeRTOS
 -# \subpage EXAMPLES_ENET_AVB_AUDIO_ETHERRING_DEMO
 -# \subpage EXAMPLES_ENET_CPSW_AVB_AUDIO_DEMO
+-# \subpage EXAMPLES_ENET_AVB_MULTISTREAM_MCR
 -# \subpage EXAMPLES_ENET_CPSW_AVTP
 -# \subpage EXAMPLES_ENET_CPSW_TSN_AES3_AAF_APP
 -# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_TR

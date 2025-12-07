@@ -54,6 +54,13 @@ void Utils_memcpyWord(uint8_t *source, uint8_t *destination, uint32_t length)
         if(((uintptr_t)source % PTR_COPY_SRC_ALIGNMENT) != 0U)
         {
             uint32_t initResidualBytes = PTR_COPY_SRC_ALIGNMENT - (((uintptr_t)source) % PTR_COPY_SRC_ALIGNMENT);
+
+             /* Safety check to avoid copy more bytes than requested for alignment */
+            if(length < initResidualBytes)
+            {
+                initResidualBytes  = length;
+            }
+
             i = initResidualBytes;
 
             /* Do 8-bit pointer copy for initial unaligned bytes*/

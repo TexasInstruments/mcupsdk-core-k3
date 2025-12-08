@@ -125,6 +125,11 @@
  */
 #define HYPERBUS_ECC_MEM_BLOCK_SIZE                           (32U)
 
+/**
+ * @brief Invalid interrupt number
+ */
+#define HYPERBUS_INVALID_INTERRUPT_NUMBER                     (0xFFFFFFFFU)
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -317,7 +322,7 @@ static int32_t HYPERBUS_waitForMdllStabilization(HYPERBUS_Handle handle)
          * If it is the same we increment the stable count
          * If not, we reset the stable count
          */
-        if (((iteration > 0U) && (memcmp(current_data, previous_data, HYPERBUS_DATA_SIZE) == 0)) == (bool)(TRUE))
+        if ((iteration > 0U) && (memcmp(current_data, previous_data, HYPERBUS_DATA_SIZE) == 0))
         {
             stable_count++;
         }
@@ -711,6 +716,7 @@ int32_t HYPERBUS_configureECC(HYPERBUS_Handle handle)
     const HYPERBUS_Attrs *attrs = config->attrs;
     HYPERBUS_Object *obj = config->object;
     HYPERBUS_fssHandle *fssHandle = &obj->fssHandle;
+    uint8_t i = 0U;
 
     const HYPERBUS_ECCRegions *eccRegion = attrs->eccRegion;
 
@@ -735,7 +741,7 @@ int32_t HYPERBUS_configureECC(HYPERBUS_Handle handle)
         gHyperBusEccRegion[HYPERBUS_FSS_FSAS_ECC_REGION3].startAddr = eccRegion->eccRegionStart3;
         gHyperBusEccRegion[HYPERBUS_FSS_FSAS_ECC_REGION3].size = eccRegion->eccRegionSize3;
 
-        for (uint8_t i = 0U; i < HYPERBUS_FSS_FSAS_NUM_ECC_REGIONS; i++)
+        for ( i = 0U; i < HYPERBUS_FSS_FSAS_NUM_ECC_REGIONS; i++)
         {
             /* Skip ECC region if it's disabled:
              * - size is 0 (disabled)
@@ -774,7 +780,7 @@ int32_t HYPERBUS_configureECC(HYPERBUS_Handle handle)
             CSL_REG32_WR_RAW((uint32_t *)((uintptr_t)(fssHandle->fsas_base) + HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_SET_OFFSET),\
                                             HYPERBUS_FSS_FSAS_GENREGS_IRQ_ENABLE_SET_VALUE);
 
-            if(attrs->ECCintrEnable != 0U)
+            if((attrs->ECCintrEnable != 0U) && (attrs->ECCintrNum != HYPERBUS_INVALID_INTERRUPT_NUMBER))
             {
                 /* Register the interrupt handler */
                 HwiP_Params hwiParams;
@@ -810,10 +816,10 @@ int32_t HYPERBUS_setECCRegion (HYPERBUS_Handle handle, uint8_t region)
     if((fssHandle.fsas_base != (uintptr_t)NULL) && (region < HYPERBUS_FSS_FSAS_NUM_ECC_REGIONS))
     {
         CSL_REG32_WR_RAW((uint32_t *)((uintptr_t)(fssHandle.fsas_base) + HYPERBUS_FSS_FSAS_ECC_REGION_START_OFFSET +\
-                                        (region * HYPERBUS_FSS_FSAS_ECC_REGION_OFFSET_STEP)),\
+                                        (uint32_t)(region * HYPERBUS_FSS_FSAS_ECC_REGION_OFFSET_STEP)),\
                                         (gHyperBusEccRegion[region].startAddr >> HYPERBUS_FSS_FSAS_ECC_REGION_START_ADDR_SHIFT));
         CSL_REG32_WR_RAW((uint32_t *)((uintptr_t)(fssHandle.fsas_base) + HYPERBUS_FSS_FSAS_ECC_REGION_SIZE_OFFSET +\
-                                        (region * HYPERBUS_FSS_FSAS_ECC_REGION_OFFSET_STEP)),\
+                                        (uint32_t)(region * HYPERBUS_FSS_FSAS_ECC_REGION_OFFSET_STEP)),\
                                         (gHyperBusEccRegion[region].size >> HYPERBUS_FSS_FSAS_ECC_REGION_SIZE_SHIFT));
     }
     else

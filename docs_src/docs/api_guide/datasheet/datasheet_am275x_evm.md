@@ -320,7 +320,9 @@ Code/Data fully cached                  |    1564
 Code/Data not cached                    |    3771
 Code/Data not cached 1 of 10 iterations |    1789
 
-### HYPERRAM Performance
+### HYPERRAM Performance with cache enabled
+
+For R5 core:-
 
 ECC         | Transfer Mode  | Write speed(MiBps) | Read speed(MiBps)
 ------------|----------------|--------------------|-------------------
@@ -328,6 +330,15 @@ Disabled    |     CPU        |      80.57         |        68.63
 Disabled    |     BCDMA      |      144.04        |        143.82
 enabled     |     CPU        |      75.29         |        68.92
 enabled     |     BCDMA      |      108.63        |        136.20
+
+For c7x core:-
+
+ECC         | Transfer Mode  | Write speed(MiBps) | Read speed(MiBps)
+------------|----------------|--------------------|-------------------
+Disabled    |     CPU        |      145.11        |        72.39
+Disabled    |     BCDMA      |      143.82        |        143.82
+enabled     |     CPU        |      109.36        |        70.31
+enabled     |     BCDMA      |      108.63        |        136.01
 
 ### HYPERRAM XIP benchmark
 - Core :	R5F

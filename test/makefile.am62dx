@@ -274,6 +274,9 @@ help:
 	@echo  $(MAKE) -s -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_listener/am62dx-evm-dp83867/am62dx-evm/system_avblistener_app [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_talker/am62dx-evm-dp83867/am62dx-evm/system_avbtalker_app [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ipc_notify/am62dx-evm/system_freertos_nortos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ipc_notify_c7x/am62dx-evm/system_freertos_nortos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ipc_notify_a53/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ipc_notify_mcu_r5/am62dx-evm/system_freertos_nortos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ipc_notify_benchmark/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ipc_notify_benchmark_l2ram/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ipc_rpmsg/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
@@ -740,6 +743,9 @@ BUILD_COMBO_EXAMPLE_ALL += test_udma_system_am62dx-evm_c75ss0-0_freertos_ti-c700
 BUILD_COMBO_EXAMPLE_ALL += avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app
 BUILD_COMBO_EXAMPLE_ALL += avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_notify_am62dx-evm_system_freertos_nortos
+BUILD_COMBO_EXAMPLE_ALL += test_ipc_notify_c7x_am62dx-evm_system_freertos_nortos
+BUILD_COMBO_EXAMPLE_ALL += test_ipc_notify_a53_am62dx-evm_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += test_ipc_notify_mcu_r5_am62dx-evm_system_freertos_nortos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_notify_benchmark_am62dx-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_notify_benchmark_l2ram_am62dx-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_am62dx-evm_system_freertos
@@ -1344,6 +1350,15 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_ipc_notify_am62dx-evm_system_freertos_nortos:
 	$(MAKE) -C drivers/ipc_notify/am62dx-evm/system_freertos_nortos -f makefile all
 
+ test_ipc_notify_c7x_am62dx-evm_system_freertos_nortos:
+	$(MAKE) -C drivers/ipc_notify_c7x/am62dx-evm/system_freertos_nortos -f makefile all
+
+ test_ipc_notify_a53_am62dx-evm_system_freertos:
+	$(MAKE) -C drivers/ipc_notify_a53/am62dx-evm/system_freertos -f makefile all
+
+ test_ipc_notify_mcu_r5_am62dx-evm_system_freertos_nortos:
+	$(MAKE) -C drivers/ipc_notify_mcu_r5/am62dx-evm/system_freertos_nortos -f makefile all
+
  test_ipc_notify_benchmark_am62dx-evm_system_freertos:
 	$(MAKE) -C drivers/ipc_notify_benchmark/am62dx-evm/system_freertos -f makefile all
 
@@ -1554,6 +1569,9 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_udma_system_am62dx-evm_c75ss0-0_freertos_t
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_notify_am62dx-evm_system_freertos_nortos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_notify_c7x_am62dx-evm_system_freertos_nortos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_notify_a53_am62dx-evm_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_notify_mcu_r5_am62dx-evm_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_notify_benchmark_am62dx-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_notify_benchmark_l2ram_am62dx-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_am62dx-evm_system_freertos_clean
@@ -2158,6 +2176,15 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_ipc_notify_am62dx-evm_system_freertos_nortos_clean:
 	$(MAKE) -C drivers/ipc_notify/am62dx-evm/system_freertos_nortos -f makefile clean
 
+ test_ipc_notify_c7x_am62dx-evm_system_freertos_nortos_clean:
+	$(MAKE) -C drivers/ipc_notify_c7x/am62dx-evm/system_freertos_nortos -f makefile clean
+
+ test_ipc_notify_a53_am62dx-evm_system_freertos_clean:
+	$(MAKE) -C drivers/ipc_notify_a53/am62dx-evm/system_freertos -f makefile clean
+
+ test_ipc_notify_mcu_r5_am62dx-evm_system_freertos_nortos_clean:
+	$(MAKE) -C drivers/ipc_notify_mcu_r5/am62dx-evm/system_freertos_nortos -f makefile clean
+
  test_ipc_notify_benchmark_am62dx-evm_system_freertos_clean:
 	$(MAKE) -C drivers/ipc_notify_benchmark/am62dx-evm/system_freertos -f makefile clean
 
@@ -2368,6 +2395,9 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_udma_system_am62dx-evm_c75ss0-0_freertos_t
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_notify_am62dx-evm_system_freertos_nortos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_notify_c7x_am62dx-evm_system_freertos_nortos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_notify_a53_am62dx-evm_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_notify_mcu_r5_am62dx-evm_system_freertos_nortos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_notify_benchmark_am62dx-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_notify_benchmark_l2ram_am62dx-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_am62dx-evm_system_freertos_scrub
@@ -2971,6 +3001,15 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_ipc_notify_am62dx-evm_system_freertos_nortos_scrub:
 	$(MAKE) -C drivers/ipc_notify/am62dx-evm/system_freertos_nortos -f makefile scrub
+
+ test_ipc_notify_c7x_am62dx-evm_system_freertos_nortos_scrub:
+	$(MAKE) -C drivers/ipc_notify_c7x/am62dx-evm/system_freertos_nortos -f makefile scrub
+
+ test_ipc_notify_a53_am62dx-evm_system_freertos_scrub:
+	$(MAKE) -C drivers/ipc_notify_a53/am62dx-evm/system_freertos -f makefile scrub
+
+ test_ipc_notify_mcu_r5_am62dx-evm_system_freertos_nortos_scrub:
+	$(MAKE) -C drivers/ipc_notify_mcu_r5/am62dx-evm/system_freertos_nortos -f makefile scrub
 
  test_ipc_notify_benchmark_am62dx-evm_system_freertos_scrub:
 	$(MAKE) -C drivers/ipc_notify_benchmark/am62dx-evm/system_freertos -f makefile scrub

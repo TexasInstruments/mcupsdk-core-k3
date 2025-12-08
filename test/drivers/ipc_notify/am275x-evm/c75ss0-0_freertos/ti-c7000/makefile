@@ -36,6 +36,7 @@ endif
 
 FILES_common := \
 	test_ipc_notify.c \
+	test_ipcNotify_multithread.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -79,6 +80,7 @@ CFLAGS_common := \
 	--diag_suppress=70 \
 	-DBUILD_C7X \
 	-DBUILD_C7X_1 \
+	-DIPC_NOTIFY_MULTITHREAD_TEST \
 
 CFLAGS_debug := \
 	-Dxdc_target_name__=C71 \

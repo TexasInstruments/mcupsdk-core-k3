@@ -34,10 +34,12 @@ ipc.a53ss0_0           = "notify";
 ipc.r5fss0_0           = "notify";
 ipc.mcu_r5fss0_0       = "notify";
 
-debug_log.enableSharedMemLog = true;
-debug_log.enableUartLog      = true;
-debug_log.uartTrace          = true;
-debug_log.uartLog.$name      = "CONFIG_UART0";
+debug_log.enableSharedMemLog              = true;
+debug_log.enableUartLog                   = true;
+debug_log.uartTrace                       = true;
+debug_log.uartLog.$name                   = "CONFIG_UART0";
+debug_log.uartLog.useMcuDomainPeripherals = true;
+debug_log.uartLog.MCU_UART.$assign        = "MCU_USART0";
 
 mmu_armv81.$name = "CONFIG_MMU_REGION0";
 mmu_armv81.size  = 0x20000000;
@@ -114,6 +116,5 @@ mmu_armv813.attribute = "MAIR4";
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-debug_log.uartLog.UART.$suggestSolution     = "USART0";
-debug_log.uartLog.UART.RXD.$suggestSolution = "UART0_RXD";
-debug_log.uartLog.UART.TXD.$suggestSolution = "UART0_TXD";
+debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "MCU_UART0_RXD";
+debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "MCU_UART0_TXD";

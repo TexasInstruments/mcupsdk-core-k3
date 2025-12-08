@@ -1,0 +1,64 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.22.0+3893"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const ipc        = scripting.addModule("/drivers/ipc/ipc");
+const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
+const mpu_armv7  = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
+const mpu_armv71 = mpu_armv7.addInstance();
+const mpu_armv72 = mpu_armv7.addInstance();
+const mpu_armv73 = mpu_armv7.addInstance();
+const mpu_armv74 = mpu_armv7.addInstance();
+const mpu_armv75 = mpu_armv7.addInstance();
+const mpu_armv76 = mpu_armv7.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+ipc.r5fss0_1      = "notify";
+ipc.r5fss1_1      = "notify";
+ipc.c75ss1_0      = "notify";
+ipc.c75ss0_0      = "notify";
+ipc.r5fss1_0      = "notify";
+ipc.wkup_r5fss0_0 = "NONE";
+
+debug_log.enableUartLog            = true;
+debug_log.enableSharedMemLogReader = true;
+debug_log.uartLog.$name            = "CONFIG_UART0";
+debug_log.uartLog.intrEnable       = "DISABLE";
+debug_log.uartLog.UART.$assign     = "UART0";
+debug_log.uartLog.UART.RXD.$assign = "UART0_RXD";
+debug_log.uartLog.UART.TXD.$assign = "UART0_TXD";
+
+mpu_armv71.size         = 31;
+mpu_armv71.attributes   = "Device";
+mpu_armv71.allowExecute = false;
+mpu_armv71.$name        = "REGISTERS";
+
+mpu_armv72.size  = 15;
+mpu_armv72.$name = "TCMA";
+
+mpu_armv73.baseAddr = 0x41010000;
+mpu_armv73.size     = 15;
+mpu_armv73.$name    = "TCMB";
+
+mpu_armv74.$name    = "MSRAM_BANK0_TO_BANK3";
+mpu_armv74.baseAddr = 0x72000000;
+mpu_armv74.size     = 22;
+
+mpu_armv75.$name    = "MSRAM_BANK4_TO_BANK5";
+mpu_armv75.baseAddr = 0x72400000;
+mpu_armv75.size     = 21;
+
+mpu_armv76.$name        = "LOG_SHM_MEM";
+mpu_armv76.baseAddr     = 0x72380000;
+mpu_armv76.size         = 18;
+mpu_armv76.allowExecute = false;
+mpu_armv76.attributes   = "NonCached";

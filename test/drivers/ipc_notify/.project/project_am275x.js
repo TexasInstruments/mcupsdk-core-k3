@@ -5,6 +5,7 @@ let device = "am275x";
 const files = {
     common: [
         "test_ipc_notify.c",
+        "test_ipcNotify_multithread.c",
         "main.c",
     ],
 };
@@ -143,6 +144,12 @@ const defines_common = {
     ]
 };
 
+const cflags_free_rtos = {
+    common: [
+        "-DIPC_NOTIFY_MULTITHREAD_TEST",
+    ],
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am275x-evm", os: "freertos", isPartOfSystemProject: true},
     { device: device, cpu: "c75ss1-0", cgt: "ti-c7000", board: "am275x-evm", os: "freertos", isPartOfSystemProject: true},
@@ -192,6 +199,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.filedirs = filedirs;
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
+    build_property.cflags = cflags_free_rtos;
     if(buildOption.cpu.match(/r5fss*/)) {
         if(buildOption.os.match(/freertos*/) )
         {

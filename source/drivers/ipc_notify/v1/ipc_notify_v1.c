@@ -280,6 +280,11 @@ int32_t IpcNotify_init(const IpcNotify_Params *params)
     int32_t status = SystemP_SUCCESS;
     uint32_t mailboxBaseAddr;
 
+    if (params == NULL)
+    {
+        return SystemP_FAILURE;
+    }
+
     IpcNotify_getConfig(&gIpcNotifyCtrl.interruptConfig, &gIpcNotifyCtrl.interruptConfigNum);
 
     DebugP_assert(params->selfCoreId < CSL_CORE_ID_MAX);

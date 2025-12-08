@@ -238,6 +238,7 @@ const example_file_list = [
     "test/drivers/gtc/.project/project.js",
     "test/drivers/i2c/.project/project.js",
     "test/drivers/ipc_notify/.project/project.js",
+    "test/drivers/ipc_notify_c7x/.project/project.js",
     "test/drivers/ipc_notify_benchmark/.project/project.js",
     "test/drivers/ipc_rpmsg/.project/project.js",
     "test/drivers/mcasp/mcasp_300Hz/.project/project.js",

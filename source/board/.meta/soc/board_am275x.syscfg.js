@@ -30,6 +30,7 @@ const topModules_wkup_r5 = [
 
 const topModules_c75x = [
     "/board/flash/flash",
+    "/board/hyperRam/hyperRam",
     "/board/led/led",
 ];
 

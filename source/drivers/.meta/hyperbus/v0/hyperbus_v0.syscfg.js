@@ -251,7 +251,7 @@ function getConfigurables()
 			name: "deviceSize",
 			displayName: "Device Size",
             description: "Device Size in Bytes",
-            default: 0x0,
+            default: 0x04000000,
             displayFormat: "hex",
 		},
         {

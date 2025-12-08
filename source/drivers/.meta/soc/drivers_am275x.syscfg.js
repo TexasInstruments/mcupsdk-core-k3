@@ -108,6 +108,7 @@ const topModules_c75 = [
     "/drivers/epwm/epwm",
     "/drivers/gpio/gpio",
     "/drivers/gtc/gtc",
+    "/drivers/hyperbus/hyperbus",
     "/drivers/i2c/i2c",
     "/drivers/ipc/ipc",
     "/drivers/mcasp/mcasp",

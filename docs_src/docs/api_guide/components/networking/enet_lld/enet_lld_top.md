@@ -13,6 +13,9 @@
 \cond SOC_AM62DX || SOC_AM62PX || SOC_AM62X || SOC_AM275X || SOC_AM62LX
 - \subpage enetlld_performance
 \endcond
+\cond SOC_AM275X
+- \subpage EAVB_PERFORMANCE
+\endcond
 \cond SOC_AM263X || SOC_AM263PX || SOC_AM243X || SOC_AM64X || SOC_AM273X || SOC_AM62PX || SOC_AM62DX ||SOC_AM62Xm ||SOC_AM275X || SOC_AM62X
 - \subpage enet_tas_top
 \endcond

@@ -26,7 +26,7 @@ If the appimage files are found at the location, the SBL reads the files into a 
 
 \elseif SOC_AM62X
 
-This bootloader does SOC initializations and attempts to boot MCU M4 image by the name "app", DM R5 image by the name "dm", A53 image by the name "app_a53" present in the first FAT partition found in the connected SD card. The file can be copied to the SD card by connecting it to the host PC using a card reader. Make sure that the images are named without any file extension. If the card is new, make sure that it is formatted with FAT32/16.
+This bootloader does SOC initializations and attempts to boot MCU M4 image by the name "app", DM R5 image by the name "dm", A530-0 image by the name "app_a530_0" and A530-1 image by the name "app_a530_1" present in the first FAT partition found in the connected SD card. The file can be copied to the SD card by connecting it to the host PC using a card reader. Make sure that the images are named without any file extension. If the card is new, make sure that it is formatted with FAT32/16.
 
 If the appimage files are found at the location, the SBL reads the files into a buffer, parses it. Each core is then initialized, RPRC image is loaded, entry points are set and the core is released from reset. For more on bootflow/bootloaders, please refer \ref BOOTFLOW_GUIDE
 

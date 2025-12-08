@@ -50,6 +50,7 @@
 #include <drivers/hw_include/cslr.h>
 #include <drivers/mmcsd/mmcsd_priv.h>
 #include <drivers/mmcsd/soc/mmcsd_soc.h>
+#include <drivers/soc.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -2126,6 +2127,8 @@ static int32_t MMCSD_setupADMA2(MMCSD_Handle handle, MMCSD_ADMA2Descriptor *desc
     const CSL_mmc_ctlcfgRegs *pReg = NULL;
     uint32_t dmaParams = 0U;
     uint16_t regVal = 0U;
+    uint64_t phyDesc;
+    uint64_t phyBufAddr;
 
     if((desc == NULL) || (handle == NULL))
     {
@@ -2165,10 +2168,12 @@ static int32_t MMCSD_setupADMA2(MMCSD_Handle handle, MMCSD_ADMA2Descriptor *desc
         CSL_REG16_WR(&pReg->HOST_CONTROL2, regVal);
         }
 
+        phyBufAddr = Soc_getPhyAddr(bufAddr);
+
         /* Setup ADMA2 descriptor */
         desc->dmaParams = dmaParams;
-        desc->addrLo    = (uint64_t)bufAddr;
-        desc->addrHi    = ((uint64_t)bufAddr >> 32) & 0xFFFFU;
+        desc->addrLo    = (uint32_t)phyBufAddr;
+        desc->addrHi    = (phyBufAddr >> 32) & 0xFFFFU;
 
         /* Set 32 bit ADMA2 */
         CSL_REG8_FINS(&pReg->HOST_CONTROL1, MMC_CTLCFG_HOST_CONTROL1_DMA_SELECT, 2U);
@@ -2179,8 +2184,10 @@ static int32_t MMCSD_setupADMA2(MMCSD_Handle handle, MMCSD_ADMA2Descriptor *desc
             obj->xferHighSpeedEn = 0;
         }
 
+        phyDesc = Soc_getPhyAddr((uint64_t)desc);
+
         /* Write the descriptor address to ADMA2 Address register */
-        CSL_REG64_WR(&pReg->ADMA_SYS_ADDRESS, (uint64_t)desc);
+        CSL_REG64_WR(&pReg->ADMA_SYS_ADDRESS, phyDesc);
 
         CacheP_wbInv(desc, sizeof(MMCSD_ADMA2Descriptor), CacheP_TYPE_ALL);
     }

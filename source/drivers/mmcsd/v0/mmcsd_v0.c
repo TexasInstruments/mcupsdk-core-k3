@@ -2173,7 +2173,7 @@ static int32_t MMCSD_setupADMA2(MMCSD_Handle handle, MMCSD_ADMA2Descriptor *desc
         /* Setup ADMA2 descriptor */
         desc->dmaParams = dmaParams;
         desc->addrLo    = (uint32_t)phyBufAddr;
-        desc->addrHi    = (phyBufAddr >> 32) & 0xFFFFU;
+        desc->addrHi    = (phyBufAddr >> 32) & 0xFFFFFFFFU;
 
         /* Set 32 bit ADMA2 */
         CSL_REG8_FINS(&pReg->HOST_CONTROL1, MMC_CTLCFG_HOST_CONTROL1_DMA_SELECT, 2U);

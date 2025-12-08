@@ -870,3 +870,8 @@ void SOC_setFSSCtrlFlashBootSize(void)
 
     SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MAIN, 1U);
 }
+
+uint64_t Soc_getPhyAddr(uint64_t virtAddr)
+{
+    return virtAddr;
+}

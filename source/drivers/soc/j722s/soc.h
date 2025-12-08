@@ -331,6 +331,15 @@ int32_t SOC_setPSCState(uint32_t instNum, uint32_t domainNum, uint32_t moduleNum
  */
 void SOC_setFSSCtrlFlashBootSize(void);
 
+/**
+ * \brief Get Physical Address from virtual address.
+ *
+ * \param virtAddr [IN] : Virtual Address(Alias)
+ *
+ * \return Physical Address
+ */
+uint64_t Soc_getPhyAddr(uint64_t virtAddr);
+
 /** @} */
 
 /* ========================================================================== */

@@ -15,8 +15,8 @@ See also :\ref ENET_CPSW_AVTP
 
  Parameter      | Value
  ---------------|-----------
- CPU + OS       | r5fss0-0_freertos
- Toolchain      | ti-arm-clang
+ CPU + OS       | r5fss0-0_freertos, c75ss0-0_freertos
+ Toolchain      | ti-arm-clang, ti-c7000
  Board          | @VAR_BOARD_NAME_LOWER-dp83tg721, @VAR_BOARD_NAME_LOWER-dp83867
  Example folder | source/networking/enet/core/examples/tsn/aafpcm_audio_demo/central_compute, auto_amplifier
 

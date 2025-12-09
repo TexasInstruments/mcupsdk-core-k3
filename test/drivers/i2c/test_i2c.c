@@ -4220,7 +4220,7 @@ static void TestI2c_transferTimeoutBlockingMode(void *args)
     Test_i2cTransaction.writeCount = 0;
     Test_i2cTransaction.readBuf = NULL;
     Test_i2cTransaction.readCount = 1;
-    Test_i2cTransaction.targetAddress = 0x7F;
+    Test_i2cTransaction.targetAddress = NON_EXISTENT_DEVICE_ADDRESS;
     Test_i2cTransaction.timeout = 25;
 
     status = I2C_transfer(handle, &Test_i2cTransaction);

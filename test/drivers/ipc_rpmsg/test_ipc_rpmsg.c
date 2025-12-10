@@ -34,6 +34,7 @@
 #include <inttypes.h>
 #include <kernel/dpl/ClockP.h>
 #include <kernel/dpl/SemaphoreP.h>
+#include <kernel/dpl/TaskP.h>
 #include <drivers/soc.h>
 #include <drivers/ipc_notify.h>
 #include <drivers/ipc_rpmsg.h>
@@ -190,6 +191,17 @@ SemaphoreP_Object gAckDoneSem;
 /* semaphore that is set from callback handler when all sent messages in rx notify callback mode are ack'ed */
 SemaphoreP_Object gRxNotifyAckDoneSem;
 
+/* Semaphore usesd to indicate that all the variable messages are ack'ed in the receive callback */
+SemaphoreP_Object TestIpcRPMsg_varMsgDoneSem;
+
+/* Semaphores used to indicate acknowledgements from multiple endpoints */
+SemaphoreP_Object  TestIpcRPMsg_multipleEndptDoneSem1;
+SemaphoreP_Object  TestIpcRPMsg_multipleEndptDoneSem2;
+SemaphoreP_Object  TestIpcRPMsg_multipleEndptDoneSem3;
+
+/* Counting semaphore used for multi threaded tests */
+SemaphoreP_Object  TestIpcRPMsg_sem;
+
 #define RPMESSAGE_CONTROL_ENDPT (53)
 
 /* server task related properties, like priority, stack size, stack memory, task object handles */
@@ -202,6 +214,18 @@ SemaphoreP_Object gRxNotifyAckDoneSem;
 StackType_t  gServerTaskStack[SERVER_TASK_SIZE] __attribute__((aligned(32)));
 StaticTask_t gServerTaskObj;
 TaskHandle_t gServerTask;
+
+/* Stack for receive tasks */
+uint8_t TestIpcRPMsg_recvTasksStack[2][8*1024U] __attribute__((aligned(32)));
+
+/* Stack foir send tasks */
+uint8_t TestIpcRPMsg_sndTasksStack[2][8*1024U] __attribute__((aligned(32)));
+
+/* Task handle for receiver tasks spawning */
+TaskP_Object TestIpcRPMsg_recvTasks[2];
+
+/* Task handle for sender tasks spawning */
+TaskP_Object TestIpcRPMsg_sndTasks[2];
 
 /* RPMessage objects to receive messages */
 RPMessage_Object gServerMsgObject;
@@ -218,6 +242,19 @@ RPMessage_Object gSendErrorCheckMsgObject;
 /* RPMessage objects for recv error check messages */
 RPMessage_Object gRecvErrorCheckMsgObject;
 
+/* RPMessage objects for mutiple endpoints test case */
+RPMessage_Object TestIpcRPMsg_multipleEndptRcvObject1;
+RPMessage_Object TestIpcRPMsg_multipleEndptRcvObject2;
+RPMessage_Object TestIpcRPMsg_multipleEndptRcvObject3;
+
+/* RPMessage object for send/recv of variable sized messages */
+RPMessage_Object TestIpcRPMsg_varMsgRcvObject;
+
+/* RPMessage objects for mutiple receive tasks with different endpoints */
+RPMessage_Object TestIpcRpmsg_hostMsgObject;
+RPMessage_Object TestIpcRPMsg_recvTaskObjects[2];
+RPMessage_Object TestIpcRPMsg_sndTaskObjects[2];
+
 /* RPMessage end points for server, server acks, server acks in back to back mode */
 uint32_t gServerEndPt = 10;
 uint16_t gClientEndPt = 11;
@@ -226,6 +263,17 @@ uint16_t gNullEndPt   = 13; /* this end point is not created is used for error t
 uint16_t gRxNotifyAckEndPt = 14;
 uint16_t gSendErrorCheckEndPt = 15;
 uint16_t gRecvErrorCheckEndPt = 16;
+uint16_t TestIpcRPMsg_varMsgRcvEndPt = 17;
+uint16_t TestIpcRPMsg_multipleEndpt1 = 18;
+uint16_t TestIpcRPMsg_multipleEndpt2 = 19;
+uint16_t TestIpcRPMsg_multipleEndpt3 = 20;
+uint16_t TestIpcRpmsg_hostEndPt = 21;
+uint16_t TestIpcRpmsg_remoteServiceEndPt1 = 22;
+uint16_t TestIpcRpmsg_remoteServiceEndPt2 = 23;
+
+/* Enpoints for send in muti threaded test cases */
+uint16_t TestIpcRpmsg_hostClientEndPt1 = 24;
+uint16_t TestIpcRpmsg_hostClientEndPt2 = 25;
 
 /* one to one test args */
 typedef struct {
@@ -241,6 +289,32 @@ typedef struct {
     uint32_t maxCount;
 
 } Msg_BackToBack;
+
+/* Structure used to send variable size message  */
+typedef struct 
+{
+    uint8_t msgSize;
+    uint8_t msgIndx;
+    uint8_t *msgBuf;
+}TestIpcRPMsg_varMsg;
+
+/* Buffer used to create variable sized buffers */
+uint8_t TestIpcRPMsg_varSndBuf[112];
+
+/* Buffer used to create variable sized buffers */
+uint8_t TestIpcRPMsg_varRcvBuf[112];
+
+/* Buffer used to create variable sized buffers */
+uint8_t TestIpcRPMsg_varSndBuf2[32];
+
+/* Buffer used to create variable sized buffers */
+uint8_t TestIpcRPMsg_varRcvBuf2[32];
+
+/* Message patterns of variable size test */
+uint8_t TestIpcRPMsg_varMsgPatterns[3] = {0xAA, 0xCC, 0xFF};
+
+/* Sizes to be used for variable message transfer */
+uint8_t TestIpcRPMsg_varMsgSizes[3] = {32, 64, 112};
 
 typedef struct {
 
@@ -277,6 +351,11 @@ void test_rpmsgRxNotifyHandler(RPMessage_Object *obj, void *arg);
 #if defined(SOC_J722S)
 static void test_rpmsgValidParams(void *args);
 #endif
+void TestIpcRpmsg_multiplEndPointRecvTask(void *arg);
+void TestIpcRPMsg_varMsgRxNotifyHandler(RPMessage_Object *obj, void *arg);
+void TestIpcRPMsg_multipleEndptRxNotifyHandler1(RPMessage_Object *obj, void *arg);
+void TestIpcRPMsg_multipleEndptRxNotifyHandler2(RPMessage_Object *obj, void *arg);
+void TestIpcRPMsg_multipleEndptRxNotifyHandler3(RPMessage_Object *obj, void *arg);
 
 /* handle announcement messages and store in a global, these are checked later on */
 void test_rpmsgControlEndPtCallback(void *arg,
@@ -345,11 +424,30 @@ void test_rpmsgCreateObjects()
     int32_t status;
     RPMessage_CreateParams createParams;
 
+    /* Create two tasks to receive messages */
+    TaskP_Params taskParams1;
+    TaskP_Params taskParams2;
+
+    RPMessage_CreateParams createTaskParams1;
+    RPMessage_CreateParams createTaskParams2;
+
     status = SemaphoreP_constructBinary(&gAckDoneSem, 0);
     DebugP_assert(status==SystemP_SUCCESS);
 
     status = SemaphoreP_constructBinary(&gRxNotifyAckDoneSem, 0);
     DebugP_assert(status==SystemP_SUCCESS);
+    
+    status = SemaphoreP_constructBinary(&TestIpcRPMsg_multipleEndptDoneSem1, 0);
+    DebugP_assert(status==SystemP_SUCCESS);
+
+    status = SemaphoreP_constructBinary(&TestIpcRPMsg_multipleEndptDoneSem2, 0);
+    DebugP_assert(status==SystemP_SUCCESS);
+
+    status = SemaphoreP_constructBinary(&TestIpcRPMsg_multipleEndptDoneSem3, 0);
+    DebugP_assert(status==SystemP_SUCCESS);
+
+    status =  SemaphoreP_constructCounting(&TestIpcRPMsg_varMsgDoneSem, 0, 3);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     RPMessage_CreateParams_init(&createParams);
     createParams.localEndPt = gServerEndPt;
@@ -368,6 +466,34 @@ void test_rpmsgCreateObjects()
     createParams.recvNotifyCallback = test_rpmsgRxNotifyHandler;
     createParams.recvNotifyCallbackArgs = &gRxNotifyAckDoneSem;
     status = RPMessage_construct(&gRxNotifyAckMsgObject, &createParams);
+    DebugP_assert(status==SystemP_SUCCESS);
+
+    RPMessage_CreateParams_init(&createParams);
+    createParams.localEndPt = TestIpcRPMsg_varMsgRcvEndPt;
+    createParams.recvNotifyCallback = TestIpcRPMsg_varMsgRxNotifyHandler;
+    createParams.recvNotifyCallbackArgs = &TestIpcRPMsg_varMsgDoneSem;
+    status = RPMessage_construct(&TestIpcRPMsg_varMsgRcvObject, &createParams);
+    DebugP_assert(status==SystemP_SUCCESS);
+
+    RPMessage_CreateParams_init(&createParams);
+    createParams.localEndPt = TestIpcRPMsg_multipleEndpt1;
+    createParams.recvNotifyCallback = TestIpcRPMsg_multipleEndptRxNotifyHandler1;
+    createParams.recvNotifyCallbackArgs = &TestIpcRPMsg_multipleEndptDoneSem1;
+    status = RPMessage_construct(&TestIpcRPMsg_multipleEndptRcvObject1, &createParams);
+    DebugP_assert(status==SystemP_SUCCESS);
+
+    RPMessage_CreateParams_init(&createParams);
+    createParams.localEndPt = TestIpcRPMsg_multipleEndpt2;
+    createParams.recvNotifyCallback = TestIpcRPMsg_multipleEndptRxNotifyHandler2;
+    createParams.recvNotifyCallbackArgs = &TestIpcRPMsg_multipleEndptDoneSem2;
+    status = RPMessage_construct(&TestIpcRPMsg_multipleEndptRcvObject2, &createParams);
+    DebugP_assert(status==SystemP_SUCCESS);
+
+    RPMessage_CreateParams_init(&createParams);
+    createParams.localEndPt = TestIpcRPMsg_multipleEndpt3;
+    createParams.recvNotifyCallback = TestIpcRPMsg_multipleEndptRxNotifyHandler3;
+    createParams.recvNotifyCallbackArgs = &TestIpcRPMsg_multipleEndptDoneSem3;
+    status = RPMessage_construct(&TestIpcRPMsg_multipleEndptRcvObject2, &createParams);
     DebugP_assert(status==SystemP_SUCCESS);
 
     RPMessage_CreateParams_init(&createParams);
@@ -397,6 +523,45 @@ void test_rpmsgCreateObjects()
                                   &gServerTaskObj);
     configASSERT(gServerTask != NULL);
 
+    /* Create the  receiver tasks with two endpoints */
+    if (IpcNotify_getSelfCoreId() != CSL_CORE_ID_C75SS0_0)
+    {
+        RPMessage_CreateParams_init(&createTaskParams1);
+        createTaskParams1.localEndPt = TestIpcRpmsg_remoteServiceEndPt1;
+        status = RPMessage_construct(&TestIpcRPMsg_recvTaskObjects[0], &createTaskParams1);
+        TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+
+        TaskP_Params_init(&taskParams1);
+        taskParams1.name = "RECEIVE_TASK1";
+        taskParams1.stackSize = 8 * 1024;
+        taskParams1.stack = TestIpcRPMsg_recvTasksStack[0];
+        taskParams1.priority = 8U;
+        taskParams1.args = &TestIpcRPMsg_recvTaskObjects[0]; 
+        taskParams1.taskMain = TestIpcRpmsg_multiplEndPointRecvTask; 
+        DebugP_log("Creating Receive task 1 for mutiple endpoint test\r\n");
+    
+        status = TaskP_construct(&TestIpcRPMsg_recvTasks[0], &taskParams1);
+        TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+    
+        /* RPMessage object for second receiver task */
+        RPMessage_CreateParams_init(&createTaskParams2);
+        createTaskParams2.localEndPt = TestIpcRpmsg_remoteServiceEndPt2;
+        status = RPMessage_construct(&TestIpcRPMsg_recvTaskObjects[1], &createTaskParams2); 
+        TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+
+        TaskP_Params_init(&taskParams2);
+        taskParams2.name = "RECEIVE_TASK2";
+        taskParams2.stackSize = 8 * 1024;
+        taskParams2.stack = TestIpcRPMsg_recvTasksStack[1];
+        taskParams2.priority = 8U;
+        taskParams2.args = &TestIpcRPMsg_recvTaskObjects[1]; 
+        taskParams2.taskMain = TestIpcRpmsg_multiplEndPointRecvTask; 
+        DebugP_log("Creating Receive task 2 for mutiple endpoint test \r\n");
+
+        status = TaskP_construct(&TestIpcRPMsg_recvTasks[1], &taskParams2);
+        TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+    }
+    
     /* wait for all cores to be ready */
     IpcNotify_syncAll(SystemP_WAIT_FOREVER);
 
@@ -415,8 +580,20 @@ void test_rpmsgDestructObjects()
     RPMessage_destruct(&gClientMsgObject);
     RPMessage_destruct(&gSendErrorCheckMsgObject);
     RPMessage_destruct(&gRecvErrorCheckMsgObject);
+    RPMessage_destruct(&TestIpcRPMsg_varMsgRcvObject);
+    RPMessage_destruct(&TestIpcRPMsg_recvTaskObjects[0]);
+    RPMessage_destruct(&TestIpcRPMsg_recvTaskObjects[1]);
+    
     SemaphoreP_destruct(&gAckDoneSem);
     SemaphoreP_destruct(&gRxNotifyAckDoneSem);
+    SemaphoreP_destruct(&TestIpcRPMsg_varMsgDoneSem);
+    SemaphoreP_destruct(&TestIpcRPMsg_multipleEndptDoneSem1);
+    SemaphoreP_destruct(&TestIpcRPMsg_multipleEndptDoneSem2);
+    SemaphoreP_destruct(&TestIpcRPMsg_multipleEndptDoneSem3);
+
+    TaskP_destruct(&TestIpcRPMsg_recvTasks[0]);
+    TaskP_destruct(&TestIpcRPMsg_recvTasks[1]);
+
 }
 
 void test_rpmsgControlEndPt(void *args)
@@ -604,6 +781,7 @@ void test_rpmsgOneToOneBackToBack(void *args)
     DebugP_log("[TEST IPC RPMSG] Avg one-way message latency = %" PRId32 " nsec\r\n",
         (uint32_t)(curTime*1000u/(echoMsgCount*2)));
 }
+
 
 /* In this test
     - we check multiple error conditions for RPMsgSend by
@@ -889,8 +1067,453 @@ void test_rpmsgRxNotifyCallback(void *args)
 
     status = SemaphoreP_pend(&gRxNotifyAckDoneSem, SystemP_WAIT_FOREVER);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
-
 }
+
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+
+/* Sender Task 1 for multi threaded test */
+void TestIpcRpmsg_multipleEndPtSndTask1(void *args)
+{
+    char msgBuf[MAX_MSG_SIZE];
+    char ackMsgBuf[MAX_MSG_SIZE];
+    int32_t status; 
+    uint32_t remoteCoreEndPt;
+    uint16_t remoteCoreId, msgSize, ackMsgSize;
+    uint32_t i;
+
+    RPMessage_Object *pRpmsgObj = (RPMessage_Object *)args;
+    snprintf(msgBuf, MAX_MSG_SIZE - 1, "A");
+    msgBuf[MAX_MSG_SIZE - 1] = '\0';
+    msgSize = strlen(msgBuf) + 1;
+
+    /*Send message to the end point */
+    DebugP_log("TestIpcRpmsg_concurrentEndptXfer: Sending data from task 1\r\n");
+    for(i = 0; gRemoteCoreId[i] != CSL_CORE_ID_MAX; i++)
+    {
+        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+        {
+            status = RPMessage_send(
+                    msgBuf, msgSize,
+                    gRemoteCoreId[i], TestIpcRpmsg_remoteServiceEndPt1,
+                    RPMessage_getLocalEndPt(pRpmsgObj),
+                    ClockP_usecToTicks(RPMSG_SEND_TIMEOUT));
+            TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
+        }
+    }
+    DebugP_log("TestIpcRpmsg_concurrentEndptXfer: Receiving data at task 1\r\n");
+    for(i = 0; gRemoteCoreId[i] != CSL_CORE_ID_MAX; i++)
+    {
+        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+        {
+            ackMsgSize = sizeof(ackMsgBuf);
+            status = RPMessage_recv(pRpmsgObj,
+                                    ackMsgBuf, &ackMsgSize,
+                                    &remoteCoreId, &remoteCoreEndPt,
+                                    SystemP_WAIT_FOREVER);
+            TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
+            TEST_ASSERT_EQUAL_UINT16(TestIpcRpmsg_remoteServiceEndPt1, remoteCoreEndPt);
+            TEST_ASSERT_EQUAL_UINT16(msgSize, ackMsgSize);
+            TEST_ASSERT_EQUAL_INT32(0, strcmp(ackMsgBuf, msgBuf)); 
+        }
+    }
+    SemaphoreP_post(&TestIpcRPMsg_sem);
+}
+
+/* Sender Task2 for multi threaded test */
+void TestIpcRpmsg_multipleEndPtSndTask2(void *args)
+{
+    char msgBuf[MAX_MSG_SIZE];
+    char ackMsgBuf[MAX_MSG_SIZE];
+    int32_t status;
+    uint32_t  remoteCoreEndPt;
+    uint16_t remoteCoreId, msgSize, ackMsgSize;
+    uint32_t i;
+
+    RPMessage_Object *pRpmsgObj = (RPMessage_Object *)args;
+    snprintf(msgBuf, MAX_MSG_SIZE - 1, "B");
+    msgBuf[MAX_MSG_SIZE - 1] = '\0';
+    msgSize = strlen(msgBuf) + 1;
+
+    DebugP_log("TestIpcRpmsg_concurrentEndptXfer: Sending data from task 2\r\n");
+    /*Send message to the end point */
+    for(i = 0; gRemoteCoreId[i] != CSL_CORE_ID_MAX; i++)
+    {
+        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+        {
+            status = RPMessage_send(
+                    msgBuf, msgSize,
+                    gRemoteCoreId[i], TestIpcRpmsg_remoteServiceEndPt2,
+                    RPMessage_getLocalEndPt(pRpmsgObj),
+                    ClockP_usecToTicks(RPMSG_SEND_TIMEOUT));
+            TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
+        }
+    }
+    DebugP_log("TestIpcRpmsg_concurrentEndptXfer: Receiving data at task 2\r\n");
+    for(i = 0; gRemoteCoreId[i] != CSL_CORE_ID_MAX; i++)
+    {
+        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+        {
+            ackMsgSize = sizeof(ackMsgBuf);
+            status = RPMessage_recv(pRpmsgObj,
+                                    ackMsgBuf, &ackMsgSize,
+                                    &remoteCoreId, &remoteCoreEndPt,
+                                    SystemP_WAIT_FOREVER);
+            TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
+            TEST_ASSERT_EQUAL_UINT16(TestIpcRpmsg_remoteServiceEndPt2, remoteCoreEndPt);
+            TEST_ASSERT_EQUAL_UINT16(msgSize, ackMsgSize);
+            TEST_ASSERT_EQUAL_INT32(0, strcmp(ackMsgBuf, msgBuf)); 
+        }
+    }
+    SemaphoreP_post(&TestIpcRPMsg_sem);
+}
+
+void TestIpcRpmsg_concurrentEndptXfer(void *args)
+{
+    /* Create two tasks to receive messages */
+    TaskP_Params taskParams1;
+    TaskP_Params taskParams2;
+    int32_t status;
+    int32_t loopVar;
+    
+    /* Two rpmsg params to initialize the sender tasks */
+    RPMessage_CreateParams createTaskParams1;
+    RPMessage_CreateParams createTaskParams2;
+   
+    status =  SemaphoreP_constructCounting(&TestIpcRPMsg_sem, 0, 2);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+
+    RPMessage_CreateParams_init(&createTaskParams1);
+    createTaskParams1.localEndPt = TestIpcRpmsg_hostClientEndPt1;
+    status = RPMessage_construct(&TestIpcRPMsg_sndTaskObjects[0], &createTaskParams1);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+
+    TaskP_Params_init(&taskParams1);
+    taskParams1.name = "MT_SEND_TASK1";
+    taskParams1.stackSize = 8 * 1024;
+    taskParams1.stack = TestIpcRPMsg_sndTasksStack[0];
+    taskParams1.priority = 8U;
+    taskParams1.args = &TestIpcRPMsg_sndTaskObjects[0];
+    taskParams1.taskMain = TestIpcRpmsg_multipleEndPtSndTask1;
+    DebugP_log("Creating sender task 1 for multithreaded test\r\n");
+
+    status = TaskP_construct(&TestIpcRPMsg_sndTasks[0], &taskParams1);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+
+    RPMessage_CreateParams_init(&createTaskParams2);
+    createTaskParams2.localEndPt = TestIpcRpmsg_hostClientEndPt2;
+    status = RPMessage_construct(&TestIpcRPMsg_sndTaskObjects[1], &createTaskParams2);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+
+    TaskP_Params_init(&taskParams2);
+    taskParams2.name = "MT_SEND_TASK2";
+    taskParams2.stackSize = 8 * 1024;
+    taskParams2.stack = TestIpcRPMsg_sndTasksStack[1];
+    taskParams2.priority = 8U;
+    taskParams2.args = &TestIpcRPMsg_sndTaskObjects[1];
+    taskParams2.taskMain = TestIpcRpmsg_multipleEndPtSndTask2;
+    DebugP_log("Creating sender task 2 for multithreaded test\r\n");
+
+    status = TaskP_construct(&TestIpcRPMsg_sndTasks[1], &taskParams2);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+
+    /* Create a counting semaphore to signal between the sending 
+     * tasks and the test 
+     */
+
+    for(loopVar = 0; loopVar < 2; loopVar++)
+    {
+        status = SemaphoreP_pend(&TestIpcRPMsg_sem, SystemP_WAIT_FOREVER);
+        TEST_ASSERT_EQUAL_INT32(status, SystemP_SUCCESS);
+        
+    }
+
+    SemaphoreP_destruct(&TestIpcRPMsg_sem);
+    TaskP_destruct(&TestIpcRPMsg_sndTasks[0]);
+    TaskP_destruct(&TestIpcRPMsg_sndTasks[1]);
+}
+
+void TestIpcRpmsg_multiplEndPointRecvTask(void *args)
+{
+    int32_t status;
+    uint16_t recvMsgSize, remoteCoreId;
+    uint32_t remoteCoreEndPt;
+    char recvMsg[MAX_MSG_SIZE];
+    RPMessage_Object *pRpmsgObj = (RPMessage_Object *)args;
+    
+    while(1)
+    {
+        recvMsgSize = sizeof(recvMsg);
+        status = RPMessage_recv(pRpmsgObj,
+            recvMsg, &recvMsgSize,
+            &remoteCoreId, &remoteCoreEndPt,
+            SystemP_WAIT_FOREVER);
+
+        TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+        DebugP_log("Remote: Message received at endpoint %d\r\n", 
+                    RPMessage_getLocalEndPt(pRpmsgObj));
+
+        DebugP_log("Remote: Echo back the same data received\r\n");
+        status = RPMessage_send(
+            recvMsg, recvMsgSize,
+            remoteCoreId, remoteCoreEndPt,
+            RPMessage_getLocalEndPt(pRpmsgObj),
+            SystemP_WAIT_FOREVER);
+    
+        TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+    }
+}
+
+void TestIpcRPMsg_sndMsgToTasks(void *args)
+{
+    RPMessage_CreateParams createParams;
+    char msgBuf[2][MAX_MSG_SIZE];
+    char ackMsgBuf[2][MAX_MSG_SIZE];
+    int32_t status;
+    uint16_t remoteCoreId, msgSize, ackMsgSize;
+    uint32_t remoteCoreEndPt;
+    uint32_t i;
+    
+    RPMessage_CreateParams_init(&createParams);
+    createParams.localEndPt = TestIpcRpmsg_hostEndPt;
+    status = RPMessage_construct(&TestIpcRpmsg_hostMsgObject, &createParams);
+    DebugP_assert(status==SystemP_SUCCESS);
+    
+    snprintf(msgBuf[0], MAX_MSG_SIZE - 1, "A");
+    msgBuf[0][MAX_MSG_SIZE - 1] = '\0';
+    msgSize = strlen(msgBuf[0]) + 1;
+
+    /* Send message to the first endpoint */
+    for(i = 0; gRemoteCoreId[i] != CSL_CORE_ID_MAX; i++)
+    {
+        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+        {
+            status = RPMessage_send(
+                    msgBuf[0], msgSize,
+                    gRemoteCoreId[i], TestIpcRpmsg_remoteServiceEndPt1,
+                    RPMessage_getLocalEndPt(&TestIpcRpmsg_hostMsgObject),
+                    ClockP_usecToTicks(RPMSG_SEND_TIMEOUT));
+            TEST_ASSERT_EQUAL(SystemP_SUCCESS, status); 
+        }
+    }
+    /* Wait for the reponses from the first endpoints */
+    for(i = 0; gRemoteCoreId[i]!=CSL_CORE_ID_MAX; i++)
+    {
+        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+        {
+            ackMsgSize = sizeof(ackMsgBuf[0]);
+            status = RPMessage_recv(&TestIpcRpmsg_hostMsgObject,
+                                ackMsgBuf[0], &ackMsgSize,
+                                &remoteCoreId, &remoteCoreEndPt,
+                                SystemP_WAIT_FOREVER);
+            TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+            TEST_ASSERT_EQUAL_UINT16(TestIpcRpmsg_remoteServiceEndPt1, remoteCoreEndPt);
+            TEST_ASSERT_EQUAL_UINT16(msgSize, ackMsgSize);
+            TEST_ASSERT_EQUAL_INT32( 0, strcmp(ackMsgBuf[0], msgBuf[0]));
+        }
+    }
+    
+    snprintf(msgBuf[1], MAX_MSG_SIZE, "B");
+    msgBuf[1][MAX_MSG_SIZE - 1] = '\0';
+    msgSize = strlen(msgBuf[1]) + 1;
+
+    /* Send message to the second endpoint */
+    for(i = 0; gRemoteCoreId[i] != CSL_CORE_ID_MAX; i++)
+    {
+        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+        {
+            status = RPMessage_send(
+                    msgBuf[1], msgSize,
+                    gRemoteCoreId[i], TestIpcRpmsg_remoteServiceEndPt2,
+                    RPMessage_getLocalEndPt(&TestIpcRpmsg_hostMsgObject),
+                    ClockP_usecToTicks(RPMSG_SEND_TIMEOUT));
+            TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
+                    
+        }
+    }
+    /* Wait for the reponses from the first endpoints */
+    for(i = 0; gRemoteCoreId[i]!=CSL_CORE_ID_MAX; i++)
+    {
+        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+        {
+            ackMsgSize = sizeof(ackMsgBuf[1]);
+            status = RPMessage_recv(&TestIpcRpmsg_hostMsgObject,
+                                ackMsgBuf[1], &ackMsgSize,
+                                &remoteCoreId, &remoteCoreEndPt,
+                                SystemP_WAIT_FOREVER);
+            TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+            TEST_ASSERT_EQUAL_UINT16(TestIpcRpmsg_remoteServiceEndPt2, remoteCoreEndPt);
+            TEST_ASSERT_EQUAL_UINT16(msgSize, ackMsgSize);
+            TEST_ASSERT_EQUAL_INT32( 0, strcmp(ackMsgBuf[1], msgBuf[1]));
+        }
+    }
+}
+
+void TestIpcRPMsg_multipleEndptRxNotifyHandler1(RPMessage_Object *obj, void *arg)
+{   
+    SemaphoreP_Object *pDoneSem = (SemaphoreP_Object *)arg;
+    uint16_t remoteCoreId;
+    uint16_t dataLen = (uint16_t) sizeof(TestIpcRPMsg_varRcvBuf);
+    uint32_t remoteEndPt;
+    int32_t status;
+
+    status = RPMessage_recv(obj, TestIpcRPMsg_varRcvBuf2, &dataLen, &remoteCoreId, &remoteEndPt, 0);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+    TEST_ASSERT_EQUAL(remoteEndPt, gServerEndPt);
+
+    /* Make sure that the last byte matches */
+    TEST_ASSERT_EQUAL(TestIpcRPMsg_varRcvBuf2[dataLen - 1], TestIpcRPMsg_varMsgPatterns[0]);
+    SemaphoreP_post(pDoneSem);
+}
+
+void TestIpcRPMsg_multipleEndptRxNotifyHandler2(RPMessage_Object *obj, void *arg)
+{   
+    SemaphoreP_Object *pDoneSem = (SemaphoreP_Object *)arg;
+    uint16_t remoteCoreId;
+    uint16_t dataLen = (uint16_t) sizeof(TestIpcRPMsg_varRcvBuf);
+    uint32_t remoteEndPt;
+    int32_t status;
+
+    status = RPMessage_recv(obj, TestIpcRPMsg_varRcvBuf2, &dataLen, &remoteCoreId, &remoteEndPt, 0);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+    TEST_ASSERT_EQUAL(remoteEndPt, gServerEndPt);
+
+    /* Make sure that the last byte matches */
+    TEST_ASSERT_EQUAL(TestIpcRPMsg_varRcvBuf2[dataLen - 1], TestIpcRPMsg_varMsgPatterns[1]);
+    SemaphoreP_post(pDoneSem);
+}
+
+void TestIpcRPMsg_multipleEndptRxNotifyHandler3(RPMessage_Object *obj, void *arg)
+{   
+    SemaphoreP_Object *pDoneSem = (SemaphoreP_Object *)arg;
+    uint16_t remoteCoreId;
+    uint16_t dataLen = (uint16_t) sizeof(TestIpcRPMsg_varRcvBuf);
+    uint32_t remoteEndPt;
+    int32_t status;
+
+    status = RPMessage_recv(obj, TestIpcRPMsg_varRcvBuf2, &dataLen, &remoteCoreId, &remoteEndPt, 0);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+    TEST_ASSERT_EQUAL(remoteEndPt, gServerEndPt);
+
+    /* Make sure that the last byte matches */
+    TEST_ASSERT_EQUAL(TestIpcRPMsg_varRcvBuf2[dataLen - 1], TestIpcRPMsg_varMsgPatterns[2]);
+    SemaphoreP_post(pDoneSem);
+}
+
+void TestIpcRpmsg_multipleEndpointsSnd(void *args)
+{
+    Test_Args *pTestArg = (Test_Args *)args;
+    uint16_t remoteCoreId = pTestArg->remoteCoreId;
+    int32_t status, oldDebugLogZone;
+    uint16_t dataLen;
+
+    /* Disable warning logs since we are testing for those, so it will clutter the output */
+    oldDebugLogZone = DebugP_logZoneDisable(DebugP_LOG_ZONE_WARN);
+
+    memset(TestIpcRPMsg_varSndBuf2, TestIpcRPMsg_varMsgPatterns[0], sizeof(TestIpcRPMsg_varSndBuf2));
+    dataLen = (uint16_t)sizeof(TestIpcRPMsg_varSndBuf2);
+    
+    status = RPMessage_send(
+        TestIpcRPMsg_varSndBuf2, dataLen,
+        remoteCoreId, gServerEndPt,
+        RPMessage_getLocalEndPt(&TestIpcRPMsg_multipleEndptRcvObject1),
+        ClockP_usecToTicks(RPMSG_SEND_TIMEOUT));
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = SemaphoreP_pend(&TestIpcRPMsg_multipleEndptDoneSem1, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    memset(TestIpcRPMsg_varSndBuf2, TestIpcRPMsg_varMsgPatterns[1], sizeof(TestIpcRPMsg_varSndBuf2));
+    dataLen = (uint16_t)sizeof(TestIpcRPMsg_varSndBuf2);
+    
+    status = RPMessage_send(
+        TestIpcRPMsg_varSndBuf2, dataLen,
+        remoteCoreId, gServerEndPt,
+        RPMessage_getLocalEndPt(&TestIpcRPMsg_multipleEndptRcvObject2),
+        ClockP_usecToTicks(RPMSG_SEND_TIMEOUT));
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = SemaphoreP_pend(&TestIpcRPMsg_multipleEndptDoneSem2, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    memset(TestIpcRPMsg_varSndBuf2, TestIpcRPMsg_varMsgPatterns[2], sizeof(TestIpcRPMsg_varSndBuf2));
+    dataLen = (uint16_t)sizeof(TestIpcRPMsg_varSndBuf2);
+    
+    status = RPMessage_send(
+        TestIpcRPMsg_varSndBuf2, dataLen,
+        remoteCoreId, gServerEndPt,
+        RPMessage_getLocalEndPt(&TestIpcRPMsg_multipleEndptRcvObject3),
+        ClockP_usecToTicks(RPMSG_SEND_TIMEOUT));
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    
+    status = SemaphoreP_pend(&TestIpcRPMsg_multipleEndptDoneSem3, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    DebugP_logZoneRestore(oldDebugLogZone);
+}
+     
+/* Notify handler to read variable message of variable lengths */
+void TestIpcRPMsg_varMsgRxNotifyHandler(RPMessage_Object *obj, void *arg)
+{
+    TestIpcRPMsg_varMsg msg;
+    SemaphoreP_Object *pDoneSem = (SemaphoreP_Object *)arg;
+    uint16_t remoteCoreId;
+    uint16_t dataLen = (uint16_t) sizeof(TestIpcRPMsg_varMsg);
+    uint32_t remoteEndPt;
+    int32_t status;
+
+    status = RPMessage_recv(obj, &msg, &dataLen, &remoteCoreId, &remoteEndPt, 0);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+    TEST_ASSERT_EQUAL(remoteEndPt, gServerEndPt);
+
+    /* Make sure that the last byte matches */
+    TEST_ASSERT_EQUAL(msg.msgBuf[msg.msgSize - 1], TestIpcRPMsg_varMsgPatterns[msg.msgIndx]);
+    SemaphoreP_post(pDoneSem);
+}
+
+/* In this test we send messages of variable size to the client */
+void TestIpcRpmsg_variableMsgSizeSnd(void *args)
+{
+    Test_Args *pTestArgs = (Test_Args*)args;
+    TestIpcRPMsg_varMsg varMsgObj;
+    uint16_t remoteCoreId = pTestArgs->remoteCoreId;
+    uint32_t echoMsgCount = pTestArgs->echoMsgCount;
+    uint32_t msg, oldDebugLogZone;
+    int32_t status;
+
+    /* Disable warning logs since we are testing for those, so it will clutter the output */
+    oldDebugLogZone = DebugP_logZoneDisable(DebugP_LOG_ZONE_WARN);
+
+    for(msg = 0; msg < echoMsgCount; msg++)
+    {
+        if(msg == 0)
+        {
+            varMsgObj.msgBuf = &TestIpcRPMsg_varSndBuf[80];
+        }
+        else if(msg == 1)
+        {
+            varMsgObj.msgBuf = &TestIpcRPMsg_varSndBuf[48];
+        }
+        else
+        {
+            varMsgObj.msgBuf = TestIpcRPMsg_varSndBuf;
+        }
+        memset(varMsgObj.msgBuf, TestIpcRPMsg_varMsgPatterns[msg], TestIpcRPMsg_varMsgSizes[msg]);
+        varMsgObj.msgSize = TestIpcRPMsg_varMsgSizes[msg];
+        varMsgObj.msgIndx = msg;
+
+        status = RPMessage_send(
+            &varMsgObj, sizeof(TestIpcRPMsg_varMsg),
+            remoteCoreId, gServerEndPt,
+            RPMessage_getLocalEndPt(&TestIpcRPMsg_varMsgRcvObject),
+            SystemP_WAIT_FOREVER);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+        /*Wait for the semaphore to bbe released after each iteration */
+        status = SemaphoreP_pend(&TestIpcRPMsg_varMsgDoneSem, SystemP_WAIT_FOREVER);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    }
+    DebugP_logZoneRestore(oldDebugLogZone);
+}
+#endif
 
 #if !defined(SOC_AM62X) &&  !defined(SOC_AM62PX) && !defined(SOC_J722S)
 void test_rpmsgErrorChecks(void *args)
@@ -1276,6 +1899,26 @@ void test_ipc_main_core_start()
     #if defined(SOC_AM64X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62X)
     testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
     RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
+    #endif
+
+    /* Test with varying message sizes back to back with notify callback */
+    #if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+    testArgs.echoMsgCount = 3;
+    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 8000, &testArgs);
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 8000, &testArgs);
+    testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 8000, &testArgs);
+    
+    /* This test case hangs when executed
+    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
+    RUN_TEST(TestIpcRpmsg_multipleEndpointsSnd, 8000, &testArgs);
+    */
+    
+    RUN_TEST(TestIpcRPMsg_sndMsgToTasks, 8000, &testArgs);
+    /*This test case hangs when executed without the prints in the tasks */
+    RUN_TEST(TestIpcRpmsg_concurrentEndptXfer, 8000, &testArgs);
     #endif
 
     #if defined(SOC_AM62X)

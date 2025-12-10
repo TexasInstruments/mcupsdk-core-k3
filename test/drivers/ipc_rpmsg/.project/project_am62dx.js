@@ -243,7 +243,6 @@ function getComponentBuildProperty(buildOption) {
 
     build_property.files = files;
     build_property.filedirs = filedirs;
-    build_property.libdirs = libdirs_freertos;
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
 
@@ -251,6 +250,7 @@ function getComponentBuildProperty(buildOption) {
     {
         build_property.includes = includes_freertos_r5f;
         build_property.libs = libs_freertos_mcu_r5f;
+        build_property.libdirs = libdirs_freertos;
         build_property.templates = templates_freertos_mcu_r5f;
         build_property.defines = defines_common;
     }
@@ -266,18 +266,18 @@ function getComponentBuildProperty(buildOption) {
     {
         build_property.includes = includes_freertos_c75;
         build_property.libs = libs_freertos_c75;
+        build_property.libdirs = libdirs_freertos;
         build_property.templates = templates_freertos_c75;
         build_property.defines = defines_common;
     }
-    else if(buildOption.cpu.match(/a53*/)) {
+    else if(buildOption.cpu.match(/a53*/)) 
+    {
         build_property.includes = includes_freertos_a53;
         build_property.libs = libs_freertos_a53;
+        build_property.libdirs = libdirs_freertos;
         build_property.templates = templates_freertos_a53;
         build_property.defines = defines_common;
     }
-
-
-
     return build_property;
 }
 

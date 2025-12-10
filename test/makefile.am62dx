@@ -263,6 +263,10 @@ help:
 	@echo  $(MAKE) -s -C security/crypto/test_sa3ul_aes/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C security/crypto/test_sa3ul_rng/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C security/crypto/test_sa3ul_sha/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/udma/test_udma_system/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/udma/test_udma_system/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/udma/test_udma_system/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/udma/test_udma_system/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  .
 	@echo  System Example build targets,
 	@echo  =============================
@@ -726,6 +730,10 @@ BUILD_COMBO_EXAMPLE_ALL += vtm_test_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-cl
 BUILD_COMBO_EXAMPLE_ALL += test_sa3ul_aes_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_sa3ul_rng_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_sa3ul_sha_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_udma_system_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_udma_system_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_udma_system_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_udma_system_am62dx-evm_c75ss0-0_freertos_ti-c7000
 # Various System Example Targets
 BUILD_COMBO_EXAMPLE_ALL += avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app
 BUILD_COMBO_EXAMPLE_ALL += avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app
@@ -1310,6 +1318,18 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_sa3ul_sha_am62dx-evm_a53ss0-0_nortos_gcc-aarch64:
 	$(MAKE) -C security/crypto/test_sa3ul_sha/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile all
 
+ test_udma_system_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/udma/test_udma_system/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_udma_system_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/udma/test_udma_system/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_udma_system_am62dx-evm_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C drivers/udma/test_udma_system/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ test_udma_system_am62dx-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C drivers/udma/test_udma_system/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
+
  avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app:
 	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_listener/am62dx-evm-dp83867/am62dx-evm/system_avblistener_app -f makefile all
 
@@ -1520,6 +1540,10 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += vtm_test_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sa3ul_aes_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sa3ul_rng_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sa3ul_sha_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_udma_system_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_udma_system_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_udma_system_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_udma_system_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
 # Various System Example Clean Targets
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app_clean
@@ -2104,6 +2128,18 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_sa3ul_sha_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
 	$(MAKE) -C security/crypto/test_sa3ul_sha/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
 
+ test_udma_system_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/udma/test_udma_system/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_udma_system_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/udma/test_udma_system/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_udma_system_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/udma/test_udma_system/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ test_udma_system_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C drivers/udma/test_udma_system/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
  avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app_clean:
 	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_listener/am62dx-evm-dp83867/am62dx-evm/system_avblistener_app -f makefile clean
 
@@ -2314,6 +2350,10 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += vtm_test_app_am62dx-evm_mcu-r5fss0-0_nortos_ti-
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sa3ul_aes_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sa3ul_rng_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sa3ul_sha_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_udma_system_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_udma_system_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_udma_system_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_udma_system_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
 # Various System Example Scrub Targets
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app_scrub
@@ -2897,6 +2937,18 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_sa3ul_sha_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub:
 	$(MAKE) -C security/crypto/test_sa3ul_sha/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
+
+ test_udma_system_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/udma/test_udma_system/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_udma_system_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/udma/test_udma_system/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_udma_system_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/udma/test_udma_system/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ test_udma_system_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C drivers/udma/test_udma_system/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
 
  avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app_scrub:
 	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_listener/am62dx-evm-dp83867/am62dx-evm/system_avblistener_app -f makefile scrub

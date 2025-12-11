@@ -25,6 +25,7 @@ This section explains,
         "kernel/freertos/rov_theia/FreeRTOS_Theia.rov.js",
     ];
     @endcode
+- For C7x, to list static variables in the mapfile, add a new linker flag **--mapfile_contents=sym_defs** under **LFLAGS_common** in the existing project **makefile** and **example.projectspec**
 - Copy the **FreeRTOS_Theia.rov.js** file from {SDK_INSTALL_PATH}/source/kernel/freertos/rov_theia to {CCS_INSTALL_PATH}/ccs/ccs_base/yarov. **Rename the file to rov_freertos.js**
 - Import the desired project using *File -> Import Projects*
 - In the **Debug View**, right click on the newly created target configuration and select **Start Project-less Debug**
@@ -58,6 +59,7 @@ Some of the supported ROV views are listed below
     ];
     @endcode
 \endcond
+\note For C7x, to list static variables in the mapfile, add a new linker flag **--mapfile_contents=sym_defs** under **LFLAGS_common** in the existing project **makefile** and **example.projectspec**
 
 - Make sure you are able to load and run SDK examples using CCS projects (see Getting Started)
 

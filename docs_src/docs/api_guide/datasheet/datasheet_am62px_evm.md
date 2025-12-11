@@ -27,40 +27,83 @@ Data Placement          | HSM RAM (For SBL Stage1), DDR (SBL Stage2 and others)
 
 ### SBL OSPI NOR performance (HS-FS)
 
-- Software/Application used        : sbl_emmc_linux_multistage, ipc_rpmsg_echo_linux, linux and HSM App Images
+- Software/Application used        : sbl_ospi_linux_multistage, ipc_rpmsg_echo_linux, linux and HSM App Images
 - Cores booted by stage1 SBL       : wkup-r5f0-0
 - Cores booted by stage2 SBL       : hsm-m4f0-0 mcu-r5f0-0 a530-0
-- Size of images loaded by stage1  : 256 KB
-- Size of images loaded by stage2  : 886 KB
+- Size of images loaded by stage1  : 257 KB
+- Size of images loaded by stage2  : 1061 KB
 - Boot Media Clock                 : 166.667 MHz
 - Mode                             : PHY enabled, DMA enabled
 - Protocol                         : 8D-8D-8D
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   27.921
+SBL Stage1: System_init                 |   28.049
 SBL Stage1: App_waitForMcuPbist         |    0.002
 SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |    0.001
-SBL Stage1: SBL Drivers_open            |    0.151
-SBL Stage1: Board_driversOpen           |    0.009
-SBL Stage1: SBL Board_driversOpen       |    1.342
-SBL Stage1: App_loadSelfcoreImage       |    4.452
+SBL Stage1: Drivers_open                |    0.000
+SBL Stage1: SBL Drivers_open            |    0.153
+SBL Stage1: Board_driversOpen           |    0.000
+SBL Stage1: SBL Board_driversOpen       |    7.028
+SBL Stage1: App_loadSelfcoreImage       |    5.203
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   33.882
+SBL Stage1: Total time taken            |   40.439
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    1.992
-SBL Stage2: Board_init                  |    0.002
+SBL Stage2: System_init                 |    2.179
+SBL Stage2: Board_init                  |    0.003
 SBL Stage2: FreeRtosTask Create         |    0.260
-SBL Stage2: SBL Drivers_open            |    1.177
-SBL Stage2: SBL Board_driversOpen       |    0.222
-SBL Stage2: App_loadImages              |    3.828
-SBL Stage2: App_loadMCUImages           |    4.212
-SBL Stage2: App_loadLinuxImages         |   13.788
+SBL Stage2: SBL Drivers_open            |    0.993
+SBL Stage2: SBL Board_driversOpen       |    0.522
+SBL Stage2: App_loadImages              |    5.444
+SBL Stage2: App_loadMCUImages           |    5.963
+SBL Stage2: App_loadLinuxImages         |   14.506
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   25.484
+SBL Stage2: Total time taken            |   29.873
+
+- Here the CPU load or section copy takes place from the OSPI memory to DDR, this would be slower that mem to mem copy.
+
+- The time taken for Sciclient Get Version can be avoided if the version check is disabled
+
+- Out of the ~38 ms taken for System Init is mostly attributed to DDR initialization.
+
+### SBL OSPI NOR performance (HS)
+
+- Software/Application used        : sbl_ospi_linux_multistage, ipc_rpmsg_echo_linux, linux and HSM App Images
+- Cores booted by stage1 SBL       : wkup-r5f0-0
+- Cores booted by stage2 SBL       : hsm-m4f0-0 mcu-r5f0-0 a530-0
+- Size of images loaded by stage1  : 257 KB
+- Size of images loaded by stage2  : 1061 KB
+- Boot Media Clock                 : 166.667 MHz
+- Mode                             : PHY enabled, DMA enabled
+- Protocol                         : 8D-8D-8D
+
+SBL Stage1 boot time breakdown          |   Time (ms)
+----------------------------------------|--------------
+SBL Stage1: System_init                 |   28.190
+SBL Stage1: App_waitForMcuPbist         |    0.002
+SBL Stage1: Board_init                  |    0.000
+SBL Stage1: Drivers_open                |    0.000
+SBL Stage1: SBL Drivers_open            |    0.153
+SBL Stage1: Board_driversOpen           |    0.000
+SBL Stage1: SBL Board_driversOpen       |    6.930
+SBL Stage1: App_loadSelfcoreImage       |    5.210
+----------------------------------------|--------------
+SBL Stage1: Total time taken            |   40.489
+
+SBL Stage2 boot time breakdown          |   Time (ms)
+----------------------------------------|--------------
+SBL Stage2: System_init                 |    2.178
+SBL Stage2: Board_init                  |    0.004
+SBL Stage2: FreeRtosTask Create         |    0.259
+SBL Stage2: SBL Drivers_open            |    0.997
+SBL Stage2: SBL Board_driversOpen       |    0.519
+SBL Stage2: App_loadImages              |    5.457
+SBL Stage2: App_loadMCUImages           |    5.948
+SBL Stage2: App_loadLinuxImages         |   14.531
+----------------------------------------|--------------
+SBL Stage2: Total time taken            |   29.896
 
 - Here the CPU load or section copy takes place from the OSPI memory to DDR, this would be slower that mem to mem copy.
 
@@ -73,34 +116,74 @@ SBL Stage2: Total time taken            |   25.484
 - Software/Application used        : sbl_emmc_linux_multistage, ipc_rpmsg_echo_linux, linux and HSM App Images
 - Cores booted by stage1 SBL       : wkup-r5f0-0
 - Cores booted by stage2 SBL       : hsm-m4f0-0 mcu-r5f0-0 a530-0
-- Size of images loaded by stage1  : 231 KB
-- Size of images loaded by stage2  : 914 KB
+- Size of images loaded by stage1  : 230 KB
+- Size of images loaded by stage2  : 1116 KB
 - Boot Media Clock                 : 200.00 MHz
-- Mode                             : HS200
+- Mode                             : HS400
 
 SBL Stage1 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage1: System_init                 |   27.640
+SBL Stage1: System_init                 |   27.932
 SBL Stage1: Board_init                  |    0.000
 SBL Stage1: Drivers_open                |    0.000
-SBL Stage1: SBL Drivers_open            |   20.413
+SBL Stage1: SBL Drivers_open            |   21.534
 SBL Stage1: Board_driversOpen           |    0.000
-SBL Stage1: App_loadSelfcoreImage       |    8.989
+SBL Stage1: App_loadSelfcoreImage       |    8.870
 ----------------------------------------|--------------
-SBL Stage1: Total time taken            |   57.044
+SBL Stage1: Total time taken            |   58.338
 
 
 SBL Stage2 boot time breakdown          |   Time (ms)
 ----------------------------------------|--------------
-SBL Stage2: System_init                 |    1.991
+SBL Stage2: System_init                 |    2.010
 SBL Stage2: Board_init                  |    0.000
-SBL Stage2: FreeRtosTask Create         |    0.260
-SBL Stage2: SBL Drivers_open            |   22.870
-SBL Stage2: App_loadImages              |    5.514
-SBL Stage2: App_loadMCUImages           |    6.089
-SBL Stage2: App_loadLinuxImages         |   18.346
+SBL Stage2: FreeRtosTask Create         |    0.302
+SBL Stage2: SBL Drivers_open            |   24.225
+SBL Stage2: App_loadImages              |    5.757
+SBL Stage2: App_loadMCUImages           |    7.218
+SBL Stage2: App_loadLinuxImages         |   16.560
 ----------------------------------------|--------------
-SBL Stage2: Total time taken            |   55.073
+SBL Stage2: Total time taken            |   56.076
+
+- The emmc driver initialization is done as part of Drivers_open.
+
+- The time taken for Sciclient Get Version can be avoided if the version check is disabled
+
+- Out of the ~38 ms taken for System Init is mostly attributed to DDR initialization.
+
+### SBL EMMC performance (HS)
+
+- Software/Application used        : sbl_emmc_linux_multistage, ipc_rpmsg_echo_linux, linux and HSM App Images
+- Cores booted by stage1 SBL       : wkup-r5f0-0
+- Cores booted by stage2 SBL       : hsm-m4f0-0 mcu-r5f0-0 a530-0
+- Size of images loaded by stage1  : 230 KB
+- Size of images loaded by stage2  : 1116 KB
+- Boot Media Clock                 : 200.00 MHz
+- Mode                             : HS400
+
+SBL Stage1 boot time breakdown          |   Time (ms)
+----------------------------------------|--------------
+SBL Stage1: System_init                 |   27.828
+SBL Stage1: Board_init                  |    0.000
+SBL Stage1: Drivers_open                |    0.000
+SBL Stage1: SBL Drivers_open            |   21.508
+SBL Stage1: Board_driversOpen           |    0.000
+SBL Stage1: App_loadSelfcoreImage       |    8.904
+----------------------------------------|--------------
+SBL Stage1: Total time taken            |   58.242
+
+
+SBL Stage2 boot time breakdown          |   Time (ms)
+----------------------------------------|--------------
+SBL Stage2: System_init                 |    1.998
+SBL Stage2: Board_init                  |    0.000
+SBL Stage2: FreeRtosTask Create         |    0.302
+SBL Stage2: SBL Drivers_open            |   24.042
+SBL Stage2: App_loadImages              |    5.769
+SBL Stage2: App_loadMCUImages           |    7.244
+SBL Stage2: App_loadLinuxImages         |   16.576
+----------------------------------------|--------------
+SBL Stage2: Total time taken            |   55.934
 
 - The emmc driver initialization is done as part of Drivers_open.
 
@@ -128,32 +211,42 @@ wkup-r5f0-0 | mcu-r5f0-0  |  1.24
 
 Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Latency (us) | Message Count
 ------------|-------------|--------------|------------------------------|------------------|--------------
- wkup-r5f0-0|   mcu-r5f0-0|            32|                        14.758|                16|         1000
+ wkup-r5f0-0|   mcu-r5f0-0|            32|                        14.864|                16|         1000
  wkup-r5f0-0|   mcu-r5f0-0|            64|                        21.329|                22|         1000
- wkup-r5f0-0|   mcu-r5f0-0|           112|                        30.709|                32|         1000
+ wkup-r5f0-0|   mcu-r5f0-0|           112|                        30.945|                32|         1000
 
 
 ### EMMC Performance
 
 Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 -------|----------------|--------------------|-----------------
- HS200 | 1	            | 71.69	     	     | 158.83
- HS200 | 4	            | 108.75		     | 169.52
- HS200 | 6	            | 86.61		         | 152.17
- HS200 | 32	            | 100.89 		     | 166.79
- HS200 | 40	            | 97.13 		     | 167.42
- HS400 | 1	            | 41.95	     	     | 246.32
- HS400 | 4	            | 101.31		     | 268.21
- HS400 | 6	            | 102.44		     | 225.61
- HS400 | 32	            | 90.79 		     | 258.12
- HS400 | 40	            | 93.12 		     | 258.64
+ SDR50 | 1	            | 9.41	     	     | 45.00
+ SDR50 | 4	            | 28.41  		     | 45.55
+ SDR50 | 6	            | 41.63  		     | 45.58
+ SDR50 | 32	            | 39.39 		     | 45.08
+ SDR50 | 40	            | 38.74 		     | 44.32
+ DDR50 | 1	            | 10.58     	     | 82.26
+ DDR50 | 4	            | 41.90 		     | 83.64
+ DDR50 | 6	            | 70.90 		     | 79.32
+ DDR50 | 32	            | 63.52 		     | 82.96
+ DDR50 | 40	            | 65.58 		     | 83.17
+ HS200 | 1	            | 71.49	     	     | 162.24
+ HS200 | 4	            | 106.83		     | 169.39
+ HS200 | 6	            | 73.28		         | 151.96
+ HS200 | 32	            | 96.16 		     | 166.56
+ HS200 | 40	            | 93.07 		     | 167.41
+ HS400 | 1	            | 70.77	     	     | 243.80
+ HS400 | 4	            | 107.60		     | 266.76
+ HS400 | 6	            | 107.88		     | 222.71
+ HS400 | 32	            | 91.83 		     | 255.36
+ HS400 | 40	            | 95.79 		     | 258.51
 
 ### OSPI NOR Flash Performance
 
 DQS Tuning Algorithm        |    Tuning Time (ms)
 ----------------------------|------------------------
-Default Tuning Window       |          3.47 ms
-Fast Tuning Window          |          1.17 ms
+Default Tuning Window       |          9.65 ms
+Fast Tuning Window          |          6.43 ms
 
 
  - Flash frequency: 25Mhz
@@ -165,7 +258,7 @@ Fast Tuning Window          |          1.17 ms
       1          |        DAC        |        No         |        0.41          |       2.87
       5          |        DAC        |        No         |        0.42          |       2.87
       10         |        DAC        |        No         |        0.42          |       2.87
-      1          |        DAC        |        Yes        |        0.42          |       48.72
+      1          |        DAC        |        Yes        |        0.41          |       48.72
       5          |        DAC        |        Yes        |        0.42          |       48.76
       10         |        DAC        |        Yes        |        0.42          |       48.76
 
@@ -178,7 +271,7 @@ Fast Tuning Window          |          1.17 ms
       1          |        DAC        |        No         |        0.39           |       5.87
       5          |        DAC        |        No         |        0.40           |       5.87
       10         |        DAC        |        No         |        0.40           |       5.87
-      1          |        DAC        |        Yes        |        0.40           |       6.23
+      1          |        DAC        |        Yes        |        0.39           |       6.23
       5          |        DAC        |        Yes        |        0.40           |       6.23
       10         |        DAC        |        Yes        |        0.40           |       6.23
 
@@ -188,12 +281,12 @@ Fast Tuning Window          |          1.17 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
 -----------------|-------------------|-------------------|-----------------------|----------------------
-      1          |        DAC        |        No         |        0.42           |       6.39
+      1          |        DAC        |        No         |        0.41           |       6.38
       5          |        DAC        |        No         |        0.42           |       6.38
       10         |        DAC        |        No         |        0.42           |       6.38
-      1          |        DAC        |        Yes        |        0.42           |       233.67
-      5          |        DAC        |        Yes        |        0.42           |       234.62
-      10         |        DAC        |        Yes        |        0.42           |       234.74
+      1          |        DAC        |        Yes        |        0.41           |       233.80
+      5          |        DAC        |        Yes        |        0.42           |       234.65
+      10         |        DAC        |        Yes        |        0.42           |       234.76
 
  - Flash frequency: 166Mhz
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
@@ -204,9 +297,9 @@ Fast Tuning Window          |          1.17 ms
       1          |        DAC        |        No         |        0.42          |       7.04
       5          |        DAC        |        No         |        0.42          |       7.04
       10         |        DAC        |        No         |        0.42          |       7.04
-      1          |        DAC        |        Yes        |        0.42          |       283.36
-      5          |        DAC        |        Yes        |        0.42          |       284.72
-      10         |        DAC        |        Yes        |        0.42          |       284.89
+      1          |        DAC        |        Yes        |        0.41          |       283.56
+      5          |        DAC        |        Yes        |        0.42          |       284.77
+      10         |        DAC        |        Yes        |        0.42          |       284.92
 
  - Flash frequency: 25Mhz
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
@@ -214,7 +307,7 @@ Fast Tuning Window          |          1.17 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|-------------------|----------------------|----------------------
-      1          |       INDAC       |        No         |        0.42          |       13.91
+      1          |       INDAC       |        No         |        0.41          |       13.91
       5          |       INDAC       |        No         |        0.42          |       13.91
       10         |       INDAC       |        No         |        0.42          |       13.91
 
@@ -224,7 +317,7 @@ Fast Tuning Window          |          1.17 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|-------------------|----------------------|----------------------
-      1          |       INDAC       |        No         |        0.40          |       6.25
+      1          |       INDAC       |        No         |        0.39          |       6.25
       5          |       INDAC       |        No         |        0.40          |       6.25
       10         |       INDAC       |        No         |        0.40          |       6.25
 

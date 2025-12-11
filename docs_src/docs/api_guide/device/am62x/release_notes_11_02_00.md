@@ -24,6 +24,7 @@ Feature                                                                         
 -----------------------------------------------------------------------------------------------|-----------------------------------
 FreeRTOS SMP support on A53                                                                    | Kernel
 SBL EMMC Falcon boot support                                                                   | SBL
+Example to demonstrate VTM triggered SoC reset is added                                        | SDL
 
 
 ### Experimental Features {#EXPERIMENTAL_FEATURES}
@@ -485,7 +486,7 @@ ROM Checksum | R5F            | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-185, EXT_SITMPUSW-185}
-    <td> MMCSD : Read times out in HS200 mode after writing in SDR50 mode 
+    <td> MMCSD : Read times out in HS200 mode after writing in SDR50 mode
     <td> MMCSD
 </tr>
 <tr>
@@ -520,7 +521,7 @@ ROM Checksum | R5F            | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-230, EXT_SITMPUSW-230}
-    <td> MMCSD close fails after opening the same instance twice. 
+    <td> MMCSD close fails after opening the same instance twice.
     <td> MMCSD
 </tr>
 <tr>
@@ -540,7 +541,7 @@ ROM Checksum | R5F            | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-118, EXT_SITMPUSW-118}
-    <td> OSPI tuning algorithm finds points in noisy region on rare scenarios 
+    <td> OSPI tuning algorithm finds points in noisy region on rare scenarios
     <td> OSPI
 </tr>
 <tr>
@@ -633,6 +634,26 @@ ROM Checksum | R5F            | No
     <td> UDMA multiple channel open for the same channel and invalid instance not handling properly
     <td> UDMA
 </tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13056, EXT_EP-13056}
+    <td> VTM module sensor reset sequence modification for reliable functionality
+    <td> SDL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13057, EXT_EP-13057}
+    <td> SDL DCC Seed Value Calculation Deviates from TRM Guidelines
+    <td> SDL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13069, EXT_EP-13069}
+    <td> AM62x: POK Example and FT are failing in r5f-freertos
+    <td> SDL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13070, EXT_EP-13070}
+    <td> AM62x: VTM Example and FT are failing in r5f-freertos
+    <td> SDL
+</tr>
 </table>
 
 
@@ -692,8 +713,28 @@ ROM Checksum | R5F            | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-252, EXT_SITMPUSW-252}
-    <td> AM62X : Loading an A53 example is not working after the CPU Reset from the CCS 
+    <td> AM62X : Loading an A53 example is not working after the CPU Reset from the CCS
     <td> CCS
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12275, EXT_EP-12275}
+    <td> AM62x: ECC: SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR and SDL_DMASS0_DMSS_AM62_ECCAGGR aggregators are failing.
+    <td> SDL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12276, EXT_EP-12276}
+    <td> ECC: Firewall related aggregators failures - ECC Aggregators SDL_SMS0_SMS_TIFS_ECC, SDL_SMS0_SMS_HSM_ECC, SDL_SA3_SS0_SA3SS_AM62A_DMSS_ECCAGGR and SDL_SA3_SS0_SA3SS_AM62A_SA_UL_ECC_AGGR fail because of firewall access issues faced by SDL
+    <td> SDL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12278, EXT_EP-12278}
+    <td> ECC Aggregator SMS0_SMS_HSM_ECC Aggr fails on AM62x.
+    <td> SDL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12279, EXT_EP-12279}
+    <td> CSI RX ECC aggregators are failing on AM62P/AM62X
+    <td> SDL
 </tr>
 </table>
 

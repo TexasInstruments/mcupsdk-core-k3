@@ -41,6 +41,77 @@ The LBIST Module of the SDL supports execution of the software-initiated LBIST f
 - Call SDL_LBIST_checkResult( ) to know the if the MISR signatures are matching. This API should be called only after SDL_LBIST_checkDone( ) API returns LBIST_DONE.
 - Call SDL_LBIST_selfTest( ) to release the LBIST test mode.
 
+## Profiling Data
+\cond SOC_AM62X
+<table>
+  <tr>
+    <th>LBIST Instance</th>
+    <th>Test Time</th>
+  </tr>
+  <tr>
+    <td>M4F</td>
+    <td>7858 us</td>
+  </tr>
+</table>
+\note The above numbers were obtained in the r5fss0-0_freertos setting
+\endcond
+\cond SOC_AM62PX
+<table>
+  <tr>
+    <th>LBIST Instance</th>
+    <th>Test Time</th>
+  </tr>
+  <tr>
+    <td>MCU-R5F</td>
+    <td>7919 us</td>
+  </tr>
+</table>
+\note The above numbers were obtained in the wkup-r5fss0-0_freertos setting
+\endcond
+\cond SOC_AM62AX
+<table>
+  <tr>
+    <th>LBIST Instance</th>
+    <th>Test Time</th>
+  </tr>
+  <tr>
+    <td>R5F</td>
+    <td>7917 us</td>
+  </tr>
+</table>
+\note The above numbers were obtained in the r5fss0-0_freertos setting
+\endcond
+\cond SOC_AM62DX
+<table>
+  <tr>
+    <th>LBIST Instance</th>
+    <th>Test Time</th>
+  </tr>
+  <tr>
+    <td>R5F</td>
+    <td>7929 us</td>
+  </tr>
+</table>
+\note The above numbers were obtained in the r5fss0-0_freertos setting
+\endcond
+\cond SOC_AM275X
+<table>
+  <tr>
+    <th>LBIST Instance</th>
+    <th>Test Time</th>
+  </tr>
+  <tr>
+    <td>MAIN-R5F1-0</td>
+    <td>15696 us</td>
+  </tr>
+  <tr>
+    <td>MAIN-R5F0-0</td>
+    <td>15698 us</td>
+  </tr>
+</table>
+\note The above numbers were obtained in the r5fss0-0_nortos and r5fss1-0_nortos settings respectively
+\endcond
+
 ## Example Usage
 
 - None

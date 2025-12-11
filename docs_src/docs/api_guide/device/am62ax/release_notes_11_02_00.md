@@ -20,6 +20,7 @@ AM62Ax | MCU R5F, DM R5F, C75   | @VAR_BOARD_NAME EVM (referred to as am62ax-sk 
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
 SBL EMMC Falcon boot support                                                                   | SBL
+Example to demonstrate VTM triggered SoC reset is added                                        | SDL
 
 ### Unsupported Features
 
@@ -403,7 +404,7 @@ ROM Checksum |MCU-R5F         | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-208, EXT_SITMPUSW-208}
-    <td>  PDMA channels are not aligned properly with the different MCSPI instants 
+    <td>  PDMA channels are not aligned properly with the different MCSPI instants
     <td> MCSPI
 </tr>
 <tr>
@@ -468,7 +469,7 @@ ROM Checksum |MCU-R5F         | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-185, EXT_SITMPUSW-185}
-    <td> MMCSD : Read times out in HS200 mode after writing in SDR50 mode 
+    <td> MMCSD : Read times out in HS200 mode after writing in SDR50 mode
     <td> MMCSD
 </tr>
 <tr>
@@ -508,7 +509,7 @@ ROM Checksum |MCU-R5F         | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-230, EXT_SITMPUSW-230}
-    <td> MMCSD close fails after opening the same instance twice. 
+    <td> MMCSD close fails after opening the same instance twice.
     <td> MMCSD
 </tr>
 <tr>
@@ -606,6 +607,21 @@ ROM Checksum |MCU-R5F         | No
     <td> UDMA multiple channel open for the same channel and invalid instance not handling properly
     <td> UDMA
 </tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13056, EXT_EP-13056}
+    <td> VTM module sensor reset sequence modification for reliable functionality
+    <td> SDL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13057, EXT_EP-13057}
+    <td> SDL DCC Seed Value Calculation Deviates from TRM Guidelines
+    <td> SDL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13058, EXT_EP-13058}
+    <td> PBIST example and tests fail in UART Bootmode
+    <td> SDL
+</tr>
 </table>
 
 
@@ -676,6 +692,26 @@ ROM Checksum |MCU-R5F         | No
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-256, EXT_SITMPUSW-256}
     <td> Incorrect calculation of rowColEnd in the ext_otp_writeMmr
     <td> OTP
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12276, EXT_EP-12276}
+    <td> ECC: Firewall related aggregators failures - ECC Aggregators SDL_SMS0_SMS_TIFS_ECC, SDL_SMS0_SMS_HSM_ECC, SDL_SA3_SS0_SA3SS_AM62A_DMSS_ECCAGGR and SDL_SA3_SS0_SA3SS_AM62A_SA_UL_ECC_AGGR fail because of firewall access issues faced by SDL
+    <td> SDL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12280, EXT_EP-12280}
+    <td> Running MCU LBIST on SBL causes JTAG connection issues to MCU R5F
+    <td> SDL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12281, EXT_EP-12281}
+    <td> AM62A: ECC: ECC is failing for 2 Bit VTM selftest - ECC Unit test fails at the API call ECC_Test_runECC2BitVTM0selfTest()
+    <td> SDL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12283, EXT_EP-12283}
+    <td> ECC aggregators CPSW0, CSI RX are failing on AM62A and CPSW0 on AM62D.
+    <td> SDL
 </tr>
 </table>
 

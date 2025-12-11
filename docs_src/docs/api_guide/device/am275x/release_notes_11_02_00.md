@@ -20,6 +20,7 @@ Feature                                                                         
 HyperRAM ECC Support                                                                           | HyperRAM
 QoS Configuration support                                                                      | QoS
 Firewall Examples                                                                              | Security
+Example to demonstrate VTM triggered SoC reset is added                                        | SDL
 
 ## Dependent Tools and Compiler Information
 
@@ -268,7 +269,7 @@ ROM_CHECKSUM     |  R5F           | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-208, EXT_SITMPUSW-208}
-    <td>  PDMA channels are not aligned properly with the different MCSPI instants 
+    <td>  PDMA channels are not aligned properly with the different MCSPI instants
     <td> MCSPI
 </tr>
 <tr>
@@ -333,7 +334,7 @@ ROM_CHECKSUM     |  R5F           | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-185, EXT_SITMPUSW-185}
-    <td> MMCSD : Read times out in HS200 mode after writing in SDR50 mode 
+    <td> MMCSD : Read times out in HS200 mode after writing in SDR50 mode
     <td> MMCSD
 </tr>
 <tr>
@@ -373,7 +374,7 @@ ROM_CHECKSUM     |  R5F           | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-230, EXT_SITMPUSW-230}
-    <td> MMCSD close fails after opening the same instance twice. 
+    <td> MMCSD close fails after opening the same instance twice.
     <td> MMCSD
 </tr>
 <tr>
@@ -393,7 +394,7 @@ ROM_CHECKSUM     |  R5F           | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-118, EXT_SITMPUSW-118}
-    <td> OSPI tuning algorithm finds points in noisy region on rare scenarios 
+    <td> OSPI tuning algorithm finds points in noisy region on rare scenarios
     <td> OSPI
 </tr>
 <tr>
@@ -471,6 +472,21 @@ ROM_CHECKSUM     |  R5F           | No
     <td> UDMA multiple channel open for the same channel and invalid instance not handling properly
     <td> UDMA
 </tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13056, EXT_EP-13056}
+    <td> VTM module sensor reset sequence modification for reliable functionality
+    <td> SDL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13057, EXT_EP-13057}
+    <td> SDL DCC Seed Value Calculation Deviates from TRM Guidelines
+    <td> SDL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13058, EXT_EP-13058}
+    <td> PBIST example and tests fail in UART Bootmode
+    <td> SDL
+</tr>
 </table>
 
 
@@ -490,7 +506,7 @@ ROM_CHECKSUM     |  R5F           | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-120, EXT_SITMPUSW-120}
-    <td> AM62A/AM275x: C7x task size/alignment should be 8KB (not 16KB) 
+    <td> AM62A/AM275x: C7x task size/alignment should be 8KB (not 16KB)
     <td> C7X
 </tr>
 <tr>
@@ -522,6 +538,16 @@ ROM_CHECKSUM     |  R5F           | No
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-249, EXT_SITMPUSW-249}
     <td> 2 C7x cores ( c7x_0 and c7x_1 ) in AM275 are not able to run 2 different McASP instances
     <td> MCASP
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12276, EXT_EP-12276}
+    <td> ECC: Firewall related aggregators failures - ECC Aggregators SDL_SMS0_SMS_TIFS_ECC, SDL_SMS0_SMS_HSM_ECC, SDL_SA3_SS0_SA3SS_AM62A_DMSS_ECCAGGR and SDL_SA3_SS0_SA3SS_AM62A_SA_UL_ECC_AGGR fail because of firewall access issues faced by SDL
+    <td> SDL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12282, EXT_EP-12282}
+    <td> AM275x: ECC: Some of the aggregators are failing on AM275x - FSS1_OSPI, MCAN0_MSGMEM_WRAP, ADC12FCC0, R5FSS0_PULSAR, WKUP_AGGR0_DM, DMASS0 and WKUP_PSRAM are failing
+    <td> SDL
 </tr>
 </table>
 

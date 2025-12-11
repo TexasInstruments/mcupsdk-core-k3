@@ -33,6 +33,253 @@ The module supports below API's for the application
 
 - None
 
+## Profiling Data
+\cond SOC_AM62X
+<table>
+  <tr>
+    <th>MCRC Mode</th>
+    <th>Data Size</th>
+    <th>Profiling Time</th>
+  </tr>
+  <tr>
+    <td rowspan="3">AUTO</td>
+    <td>256 KB</td>
+    <td>2115 us</td>
+  </tr>
+  <tr>
+    <td>128 KB</td>
+    <td>1058 us</td>
+  </tr>
+  <tr>
+    <td>1 KB</td>
+    <td>18 us</td>
+  </tr>
+  <tr>
+    <td rowspan="3">Semi-CPU</td>
+    <td>256 KB</td>
+    <td>2117 us</td>
+  </tr>
+  <tr>
+    <td>128 KB</td>
+    <td>1061 us</td>
+  </tr>
+  <tr>
+    <td>1 KB</td>
+    <td>17 us</td>
+  </tr>
+  <tr>
+    <td rowspan="3">Full-CPU</td>
+    <td>256 KB</td>
+    <td>15015 us</td>
+  </tr>
+  <tr>
+    <td>128 KB</td>
+    <td>7484 us</td>
+  </tr>
+  <tr>
+    <td>1 KB</td>
+    <td>62 us</td>
+  </tr>
+</table>
+\note The above numbers were obtained in the r5fss0-0_freertos setting
+\endcond
+\cond SOC_AM62PX
+<table>
+  <tr>
+    <th>MCRC Mode</th>
+    <th>Data Size</th>
+    <th>Profiling Time</th>
+  </tr>
+  <tr>
+    <td rowspan="3">AUTO</td>
+    <td>256 KB</td>
+    <td>2104 us</td>
+  </tr>
+  <tr>
+    <td>128 KB</td>
+    <td>1054 us</td>
+  </tr>
+  <tr>
+    <td>1 KB</td>
+    <td>13 us</td>
+  </tr>
+  <tr>
+    <td rowspan="3">Semi-CPU</td>
+    <td>256 KB</td>
+    <td>2104 us</td>
+  </tr>
+  <tr>
+    <td>128 KB</td>
+    <td>1053 us</td>
+  </tr>
+  <tr>
+    <td>1 KB</td>
+    <td>13 us</td>
+  </tr>
+  <tr>
+    <td rowspan="3">Full-CPU</td>
+    <td>256 KB</td>
+    <td>1746 us</td>
+  </tr>
+  <tr>
+    <td>128 KB</td>
+    <td>883 us</td>
+  </tr>
+  <tr>
+    <td>1 KB</td>
+    <td>8 us</td>
+  </tr>
+</table>
+\note The above numbers were obtained in the mcu-r5fss0-0_nortos setting
+\endcond
+\cond SOC_AM62AX
+<table>
+  <tr>
+    <th>MCRC Mode</th>
+    <th>Data Size</th>
+    <th>Profiling Time</th>
+  </tr>
+  <tr>
+    <td rowspan="3">AUTO</td>
+    <td>256 KB</td>
+    <td>2117 us</td>
+  </tr>
+  <tr>
+    <td>128 KB</td>
+    <td>1069 us</td>
+  </tr>
+  <tr>
+    <td>1 KB</td>
+    <td>29 us</td>
+  </tr>
+  <tr>
+    <td rowspan="3">Semi-CPU</td>
+    <td>256 KB</td>
+    <td>2117 us</td>
+  </tr>
+  <tr>
+    <td>128 KB</td>
+    <td>1069 us</td>
+  </tr>
+  <tr>
+    <td>1 KB</td>
+    <td>27 us</td>
+  </tr>
+  <tr>
+    <td rowspan="3">Full-CPU</td>
+    <td>256 KB</td>
+    <td>1751 us</td>
+  </tr>
+  <tr>
+    <td>128 KB</td>
+    <td>894 us</td>
+  </tr>
+  <tr>
+    <td>1 KB</td>
+    <td>8 us</td>
+  </tr>
+</table>
+\note The above numbers were obtained in the mcu-r5fss0-0_nortos setting
+\endcond
+\cond SOC_AM62DX
+<table>
+  <tr>
+    <th>MCRC Mode</th>
+    <th>Data Size</th>
+    <th>Profiling Time</th>
+  </tr>
+  <tr>
+    <td rowspan="3">AUTO</td>
+    <td>256 KB</td>
+    <td>2118 us</td>
+  </tr>
+  <tr>
+    <td>128 KB</td>
+    <td>1069 us</td>
+  </tr>
+  <tr>
+    <td>1 KB</td>
+    <td>29 us</td>
+  </tr>
+  <tr>
+    <td rowspan="3">Semi-CPU</td>
+    <td>256 KB</td>
+    <td>2117 us</td>
+  </tr>
+  <tr>
+    <td>128 KB</td>
+    <td>1068 us</td>
+  </tr>
+  <tr>
+    <td>1 KB</td>
+    <td>28 us</td>
+  </tr>
+  <tr>
+    <td rowspan="3">Full-CPU</td>
+    <td>256 KB</td>
+    <td>1733 us</td>
+  </tr>
+  <tr>
+    <td>128 KB</td>
+    <td>876 us</td>
+  </tr>
+  <tr>
+    <td>1 KB</td>
+    <td>8 us</td>
+  </tr>
+</table>
+\note The above numbers were obtained in the mcu-r5fss0-0_nortos setting
+\endcond
+\cond SOC_AM275X
+<table>
+  <tr>
+    <th>MCRC Mode</th>
+    <th>Data Size</th>
+    <th>Profiling Time</th>
+  </tr>
+  <tr>
+    <td rowspan="3">AUTO</td>
+    <td>256 KB</td>
+    <td>2101 us</td>
+  </tr>
+  <tr>
+    <td>128 KB</td>
+    <td>1052 us</td>
+  </tr>
+  <tr>
+    <td>1 KB</td>
+    <td>12 us</td>
+  </tr>
+  <tr>
+    <td rowspan="3">Semi-CPU</td>
+    <td>256 KB</td>
+    <td>2101 us</td>
+  </tr>
+  <tr>
+    <td>128 KB</td>
+    <td>1052 us</td>
+  </tr>
+  <tr>
+    <td>1 KB</td>
+    <td>12 us</td>
+  </tr>
+  <tr>
+    <td rowspan="3">Full-CPU</td>
+    <td>256 KB</td>
+    <td>7884 us</td>
+  </tr>
+  <tr>
+    <td>128 KB</td>
+    <td>3948 us</td>
+  </tr>
+  <tr>
+    <td>1 KB</td>
+    <td>32 us</td>
+  </tr>
+</table>
+\note The above numbers were obtained in the r5fss0-0_nortos setting
+\endcond
+
 ## Example Usage
 
 The following shows an example of SDL MCRC API usage by the application for Full CPU mode.
@@ -45,21 +292,23 @@ Include the below file to access the APIs
 
 Initialize an MCRC instance and channel
 
-\cond SOC_AM64X
-SDL_MCRC_InstType instance = MCRC_MCU_NAVSS;
-\endcond
 
 \cond SOC_AM62X
-SDL_MCRC_InstType instance = MCU_MCRC64_0;
-\endcond
 \code{.c}
+SDL_MCRC_InstType instance = MCU_MCRC64_0;
+\endcode
+\endcond
 
 \cond SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
+\code{.c}
 SDL_MCRC_InstType instance = MCU_MCRC64_0;
+\endcode
 \endcond
 
 \cond SOC_AM275X
+\code{.c}
 SDL_MCRC_InstType instance = MCRC64_0;
+\endcode
 \endcond
 
 \code{.c}

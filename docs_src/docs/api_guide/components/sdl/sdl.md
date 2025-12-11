@@ -90,7 +90,7 @@ The full list of collateral included in CSP packages is provided below:
 
 ### Test Reports and Result
 - Static Analysis Report: This report provides summary of the Software quality metrics and the MISRA-C 2004 violations.
-- Dynamic Analysis Report: This report provides summary of the Structural Coverage metrics (Statement,Branch,MC/DC Coverage metrics).
+- Dynamic Analysis Report: This report provides summary of the Structural Coverage metrics (Statement, Branch Coverage metrics).
 - Test Report: This report provides detailed information about the results of the formal testing.
 - Traceability Report: This report provides the traceability matrix between different phases of software development.
 - Datasheet: This document provides profiling data (timing) of various APIs used in SDL and the memory footprints of SDL source files

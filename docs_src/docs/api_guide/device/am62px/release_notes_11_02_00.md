@@ -19,6 +19,7 @@ Feature                                                                         
 -----------------------------------------------------------------------------------------------|-----------------------------------
 SBL EMMC Falcon boot support                                                                   | SBL
 MMCSD Driver on MCU R5F                                                                        | MMCSD
+Example to demonstrate VTM triggered SoC reset is added                                        | SDL
 
 ### Experimental Features {#EXPERIMENTAL_FEATURES}
 
@@ -368,7 +369,7 @@ MCASP driver
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-208, EXT_SITMPUSW-208}
-    <td>  PDMA channels are not aligned properly with the different MCSPI instants 
+    <td>  PDMA channels are not aligned properly with the different MCSPI instants
     <td> MCSPI
 </tr>
 <tr>
@@ -448,7 +449,7 @@ MCASP driver
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-185, EXT_SITMPUSW-185}
-    <td> MMCSD : Read times out in HS200 mode after writing in SDR50 mode 
+    <td> MMCSD : Read times out in HS200 mode after writing in SDR50 mode
     <td> MMCSD
 </tr>
 <tr>
@@ -493,7 +494,7 @@ MCASP driver
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-230, EXT_SITMPUSW-230}
-    <td> MMCSD close fails after opening the same instance twice. 
+    <td> MMCSD close fails after opening the same instance twice.
     <td> MMCSD
 </tr>
 <tr>
@@ -513,7 +514,7 @@ MCASP driver
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-118, EXT_SITMPUSW-118}
-    <td> OSPI tuning algorithm finds points in noisy region on rare scenarios 
+    <td> OSPI tuning algorithm finds points in noisy region on rare scenarios
     <td> OSPI
 </tr>
 <tr>
@@ -606,6 +607,21 @@ MCASP driver
     <td> UDMA multiple channel open for the same channel and invalid instance not handling properly
     <td> UDMA
 </tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13056, EXT_EP-13056}
+    <td> VTM module sensor reset sequence modification for reliable functionality
+    <td> SDL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13057, EXT_EP-13057}
+    <td> SDL DCC Seed Value Calculation Deviates from TRM Guidelines
+    <td> SDL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13058, EXT_EP-13058}
+    <td> PBIST example and tests fail in UART Bootmode
+    <td> SDL
+</tr>
 </table>
 
 
@@ -677,6 +693,26 @@ MCASP driver
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-259, EXT_SITMPUSW-259}
     <td> eMMC retuning may be attempted during the initialization sequence
     <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12276, EXT_EP-12276}
+    <td> ECC: Firewall related aggregators failures - ECC Aggregators SDL_SMS0_SMS_TIFS_ECC, SDL_SMS0_SMS_HSM_ECC, SDL_SA3_SS0_SA3SS_AM62A_DMSS_ECCAGGR and SDL_SA3_SS0_SA3SS_AM62A_SA_UL_ECC_AGGR fail because of firewall access issues faced by SDL
+    <td> SDL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12277, EXT_EP-12277}
+    <td> AM62Px: ECC: SDL_MCAN1_MCANSS_MSGMEM_WRAP_ECC_AGGR aggregator is failing
+    <td> SDL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12279, EXT_EP-12279}
+    <td> CSI RX ECC aggregators are failing on AM62P/AM62X
+    <td> SDL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12280, EXT_EP-12280}
+    <td> Running MCU LBIST on SBL causes JTAG connection issues to MCU R5F
+    <td> SDL
 </tr>
 </table>
 

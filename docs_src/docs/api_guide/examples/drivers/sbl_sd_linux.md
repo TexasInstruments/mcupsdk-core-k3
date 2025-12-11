@@ -31,6 +31,9 @@ The bootloader does SOC initializations and parses the multicore appimage presen
 
 For booting Linux, SBL parses the Linux appimage present as linux_a53_image in boot partition of sd card, splits it into individual linux binaries (ATF, OPTEE, SPL). SBL loads the Linux binaries, entry point is set to the start address of ATF and A53 core is released from reset.
 
+\note
+The default appimages in the SDK are built with authentication type 0  and load address 0x84000000. The gAppimage section in the bootloader application also has to be linked to the same address (0x84000000). If gAppimage section address is changed or multiple gAppimage buffers are used in the bootloader application, please ensure application's makefile is also updated with the corresponding load address.
+
 # Supported Combinations {#EXAMPLES_DRIVERS_SBL_SD_LINUX_COMBOS}
 
 \cond SOC_AM62AX || SOC_AM62DX

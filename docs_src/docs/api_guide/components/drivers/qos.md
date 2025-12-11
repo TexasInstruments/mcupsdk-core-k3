@@ -57,7 +57,7 @@ To access the tool online, follow these steps:
 
 ### Accessing the tool locally
 
-The tool is available in the ${SDK_INSALL_PATH}/tools/sysfw/k3-resource-partitioning directory.
+The tool is available in the ${SDK_INSALL_PATH}/tools/sysfw/boardcfg/k3-resource-partitioning directory.
 
 To access the tool locally, follow these steps:
 

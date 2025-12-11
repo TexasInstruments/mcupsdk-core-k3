@@ -69,6 +69,9 @@ For booting Linux, SBL parses the Linux appimage present in eMMC boot partition,
 
 Refer \ref SBL_BOOTING_LINUX_EMMC for more details on the EMMC bootflow.
 
+\note
+The default appimages in the SDK are built with authentication type 0  and load address 0x84000000. The gAppimage section in the bootloader application also has to be linked to the same address (0x84000000). If gAppimage section address is changed or multiple gAppimage buffers are used in the bootloader application, please ensure application's makefile is also updated with the corresponding load address.
+
 # Falcon Boot
 \cond SOC_AM62AX || SOC_AM62X || SOC_AM62PX
 

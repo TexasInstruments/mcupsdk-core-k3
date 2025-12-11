@@ -65,6 +65,9 @@ The SBL uses 5 appimages
 
 Refer \ref SBL_BOOTING_LINUX_OSPI for more details on the OSPI boot loader.
 
+\note
+The default appimages in the SDK are built with authentication type 0  and load address 0x84000000. The gAppimage section in the bootloader application also has to be linked to the same address (0x84000000). If gAppimage section address is changed or multiple gAppimage buffers are used in the bootloader application, please ensure application's makefile is also updated with the corresponding load address.
+
 \cond SOC_AM62AX || SOC_AM62DX || SOC_AM62X || SOC_AM62PX
 In order to boot faster,
 - Linux appimage can be packaged with the Linux kernel and DTB in falcon mode (\ref LINUX_APPIMAGE_GEN_TOOL). Refer to Processor SDK Linux for more information on how to create a buildable Kernel and DTB

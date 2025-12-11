@@ -71,6 +71,12 @@ This bootloader does SOC initializations and attempts to boot a multicore appima
 If a multicore appimage file is found at the location, the SBL reads the file into a buffer, parses it, splits it into RPRCs for each core applicable. Each core is then initialized, RPRC image is loaded, entry points are set and the core is released from reset. For more on bootflow/bootloaders, please refer \ref BOOTFLOW_GUIDE
 
 \endif
+
+\cond !SOC_AM275X
+\note
+The default appimages in the SDK are built with authentication type 0  and load address 0x84000000. The gAppimage section in the bootloader application also has to be linked to the same address (0x84000000). If gAppimage section address is changed or multiple gAppimage buffers are used in the bootloader application, please ensure application's makefile is also updated with the corresponding load address.
+\endcond
+
 # Supported Combinations {#EXAMPLES_DRIVERS_SBL_SD_COMBOS}
 
 \cond SOC_AM64X

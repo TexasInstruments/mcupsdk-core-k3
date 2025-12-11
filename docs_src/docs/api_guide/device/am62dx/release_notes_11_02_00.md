@@ -37,6 +37,7 @@ Feature                                                                         
 Feature                                                                    | Module
 ---------------------------------------------------------------------------|--------------------------
 Ethernet traffic sharing across multiple cores, called Ethernet Firmware   | Networking
+C++ Support                                                                | NA
 
 ## Dependent Tools and Compiler Information
 \attention It is recommended to use the TIFS version provided with the release for ensuring compatibility between TIFS and device manager. Using the TIFS from different MCU+SDK release is not recomended and may cause TIFS/ DM functionality to break.
@@ -397,22 +398,22 @@ ROM_CHECKSUM     |MCU-R5F         | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-183, EXT_SITMPUSW-183}
-    <td> target mode with polling mode i2c_transfer
+    <td> I2c_transfer not returning correct status when transfer mode is set to polling
     <td> I2C
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-184, EXT_SITMPUSW-184}
-    <td> Bus not available after recovery
+    <td> I2C bus not available after recovery
     <td> I2C
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-194, EXT_SITMPUSW-194}
-    <td> NACK is not return i2c write - polling mode
+    <td> NACK is not returned to application when performing i2c write in polling mode    
     <td> I2C
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-191, EXT_SITMPUSW-191}
-    <td> I2C_transfer() return not handled properly while i2cLldHandle make to NULL
+    <td> I2C_transfer() return not handled properly while i2cLldHandle is NULL
     <td> I2C
 </tr>
 <tr>
@@ -437,7 +438,7 @@ ROM_CHECKSUM     |MCU-R5F         | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-211, EXT_SITMPUSW-211}
-    <td> MCASP: Test cases fail on continuous execution but pass when run individually
+    <td> DMA channel teardown sequence is not proper in MCASP_disableDmaTx
     <td> MCASP
 </tr>
 <tr>
@@ -458,6 +459,11 @@ ROM_CHECKSUM     |MCU-R5F         | No
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-208, EXT_SITMPUSW-208}
     <td>  PDMA channels are not aligned properly with the different MCSPI instants 
+    <td> MCSPI
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-121, EXT_SITMPUSW-121}
+    <td> FORCE bit not book keeped properly for MCSPI DMA mode of operation
     <td> MCSPI
 </tr>
 <tr>
@@ -607,7 +613,7 @@ ROM_CHECKSUM     |MCU-R5F         | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-187, EXT_SITMPUSW-187}
-    <td> OSPI DAC Mode Configuration
+    <td> OSPI DAC Mode Configuration hardcoded and not based on flashsize
     <td> OSPI
 </tr>
 <tr>
@@ -617,7 +623,7 @@ ROM_CHECKSUM     |MCU-R5F         | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-213, EXT_SITMPUSW-213}
-    <td> OSPI Phy Status Check Missing
+    <td> OSPI Phy Status Check Missing in tuning
     <td> OSPI
 </tr>
 <tr>
@@ -649,11 +655,6 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-205, EXT_SITMPUSW-205}
     <td> sbl_uart_uniflash_stage2 is not prebuilt
     <td> SBL
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-121, EXT_SITMPUSW-121}
-    <td> FORCE bit not book keeped properly for MCSPI DMA mode of operation
-    <td> Software
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-199, EXT_SITMPUSW-199}
@@ -718,7 +719,7 @@ ROM_CHECKSUM     |MCU-R5F         | No
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-220, EXT_SITMPUSW-220}
     <td> SBL_SD bootloaders report incorrect boot image size
-    <td> SD
+    <td> SBL
     <td> None
 </tr>
 <tr>
@@ -735,7 +736,7 @@ ROM_CHECKSUM     |MCU-R5F         | No
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-224, EXT_SITMPUSW-224}
-    <td> McASP not supported in interrupt only mode
+    <td> McASP not working on interrupt mode
     <td> McASP
     <td> Use DMA mode
 </tr>

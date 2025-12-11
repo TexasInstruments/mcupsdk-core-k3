@@ -13,13 +13,6 @@ SOC    | Supported CPUs | EVM                                                   
 -------|----------------|--------------------------------------------------------|-----------------------------------
 AM62L  | A53            | @VAR_BOARD_NAME EVM (referred to as am62lx-evm in code) | Windows 10 64b or Ubuntu 22.04 64b
 
-## Features Added in This Release
-
-Feature                                                                                        | Module
------------------------------------------------------------------------------------------------|-----------------------------------
-TBD                                                                                            | TBD
-
-
 ## Dependent Tools and Compiler Information
 
 Tools/Components        | Supported CPUs           | Version
@@ -107,14 +100,234 @@ Ethernet driver (ENET)      | A53            | YES               | FreeRTOS    |
 
 <table>
 <tr>
-    <th> ID
-    <th> Head Line
-    <th> Module
+   <th> ID
+   <th> Head Line
+   <th> Module
 </tr>
 <tr>
-    <td> None
-    <td> None
-    <td> None
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-242, EXT_SITMPUSW-242}
+    <td> AM62L: UDMA : Event notify callback not called with multiple Flows on a single DMA channel
+    <td> DMA
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-172, EXT_SITMPUSW-172}
+    <td> DebugP_assert: change so that it does not lock up the entire core
+    <td> DPL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-217, EXT_SITMPUSW-217}
+    <td> ClockP_usleep() getting into infinite loop due to timer wraparound
+    <td> DPL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-109, EXT_SITMPUSW-109}
+    <td> Wrong comments on HwiP_inISR() API
+    <td> Documentation
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-112, EXT_SITMPUSW-112}
+    <td> SysConfig does not generate correct FLASH section parameters.
+    <td> Flash
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-179, EXT_SITMPUSW-179}
+    <td> I2C Target Overrun Test Hangs Waiting for Callback
+    <td> I2C
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-183, EXT_SITMPUSW-183}
+    <td> I2c_transfer not returning correct status when transfer mode is set to polling
+    <td> I2C
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-191, EXT_SITMPUSW-191}
+    <td> I2C_transfer() return not handled properly while i2cLldHandle is NULL
+    <td> I2C
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-192, EXT_SITMPUSW-192}
+    <td> SysConfig does not support configuring both 10-bit own addresses for I2C target mode
+    <td> I2C
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-194, EXT_SITMPUSW-194}
+    <td> NACK is not returned to application when performing i2c write in polling mode
+    <td> I2C
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-232, EXT_SITMPUSW-232}
+    <td> I2C target mode with multiple own addresses transaction fails
+    <td> I2C
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-211, EXT_SITMPUSW-211}
+    <td> DMA channel teardown sequence is not proper in MCASP_disableDmaTx
+    <td> MCASP
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-188, EXT_SITMPUSW-188}
+    <td> [MCSPI]End of Channel Transfer status check is missing for DMA mode
+    <td> MCSPI
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-200, EXT_SITMPUSW-200}
+    <td> [MCSPI] Timeout mechanism missing to prevent Infinite loops in MCSPI driver
+    <td> MCSPI
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-208, EXT_SITMPUSW-208}
+    <td>  PDMA channels are not aligned properly with the different MCSPI instants 
+    <td> MCSPI
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-123, EXT_SITMPUSW-123}
+    <td> MMCSD driver does not follow the SWITCH command sequence correctly
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-124, EXT_SITMPUSW-124}
+    <td> EXTCSD HS_TIMING register is set incorrectly at certain places in the driver
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-125, EXT_SITMPUSW-125}
+    <td> MMCSD driver uses infinite loop instead of timeout for checking fields of PRESENTSTATE register
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-126, EXT_SITMPUSW-126}
+    <td> Timing issues with MMCSD host controller driver
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-127, EXT_SITMPUSW-127}
+    <td> Incorrect handling of the CAPABILITIES register in the eMMC initialization
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-153, EXT_SITMPUSW-153}
+    <td> eMMC Driver Error Interrupt Flags accessed in Wrong Register
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-153, EXT_SITMPUSW-153}
+    <td> eMMC Init Code ignores early failures and continues Execution
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-155, EXT_SITMPUSW-155}
+    <td> eMMC Driver Error Recovery Recursion can lead to System Crashes
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-171, EXT_SITMPUSW-171}
+    <td> MMCSD : Read fails when injecting Command time out  fault
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-176, EXT_SITMPUSW-176}
+    <td> MMCSD : Read fails when injecting Command Index  fault
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-185, EXT_SITMPUSW-185}
+    <td> MMCSD : Read times out in HS200 mode after writing in SDR50 mode 
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-186, EXT_SITMPUSW-186}
+    <td> MMCSD : Read fails when injecting Command CRC fault
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-195, EXT_SITMPUSW-195}
+    <td> MMCSD : Read fails when passing invalid argument.
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-204, EXT_SITMPUSW-204}
+    <td> MMCSD close() is not proper
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-209, EXT_SITMPUSW-209}
+    <td> Simultaneous FAT transfer fails for the same instance while being accessed from two different tasks.
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-212, EXT_SITMPUSW-212}
+    <td> MMCSD : Write fails when passing invalid argument.
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-215, EXT_SITMPUSW-215}
+    <td> MMCSD : Read fails when injecting Command End Bit  fault
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-230, EXT_SITMPUSW-230}
+    <td> MMCSD close fails after opening the same instance twice. 
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-78, EXT_SITMPUSW-78}
+    <td> MMCSD Sysconfig provides options to configure PHY type
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-84, EXT_SITMPUSW-84}
+    <td> MMCSD error recovery sequence isn't implemented correctly
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-207, EXT_SITMPUSW-207}
+    <td> Missing -p flag with strip command to reduce the size of *.out
+    <td> Makefiles
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-158, EXT_SITMPUSW-158}
+    <td> OSPI_flashExecCmd has a couple of checks where the code may get stuck
+    <td> OSPI
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-181, EXT_SITMPUSW-181}
+    <td> Configured dummy cycles in flash driver contradicts flash data sheet
+    <td> OSPI
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-190, EXT_SITMPUSW-190}
+    <td> OSPI_PhyTuneGrapher missing read delay value 4
+    <td> OSPI
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-213, EXT_SITMPUSW-213}
+    <td> OSPI Phy Status Check Missing
+    <td> OSPI
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-235, EXT_SITMPUSW-235}
+    <td> AM62L : wrong register is reading for the Reset status 
+    <td> SOC
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-121, EXT_SITMPUSW-121}
+    <td> FORCE bit not book keeped properly for MCSPI DMA mode of operation
+    <td> Software
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-226, EXT_SITMPUSW-226}
+    <td> Improve Sysconfig tool tips for all drivers
+    <td> SysConfig
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-174, EXT_SITMPUSW-174}
+    <td> UDMA: HC/UHC channel allocation fails due to RM config mismatch with CSL defines
+    <td> UDMA
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-214, EXT_SITMPUSW-214}
+    <td> UDMA multiple channel open for the same channel and invalid instance not handling properly
+    <td> UDMA
 </tr>
 </table>
 
@@ -123,15 +336,18 @@ Ethernet driver (ENET)      | A53            | YES               | FreeRTOS    |
 
 <table>
 <tr>
-    <th> ID
-    <th> Head Line
-    <th> Module
-    <th> Workaround
+   <th> ID
+   <th> Head Line
+   <th> Module
 </tr>
 <tr>
-    <td> None
-    <td> None
-    <td> None
-    <td> None
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-251, EXT_SITMPUSW-251}
+    <td> MCU+ SDK Example Projects using incorrect ARMv7 MPU Attributes for Peripheral Register Region
+    <td> Examples
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-251, EXT_SITMPUSW-251}
+    <td> AM62L: time: Application crashes due to time() function
+    <td> Timer
 </tr>
 </table>

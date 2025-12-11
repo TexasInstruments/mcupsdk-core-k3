@@ -120,8 +120,8 @@ NA                    | The feature or module is not applicable in the hardware
 |                                                   |                                                      | NOR                    | No              | No               |
 |                                                   |                                                      | etc.                   | No              | No               |
 |                                                   | Error Location Module (ELM)                          |                        | No              | No               |
-|                                                   | Multimedia Card Secure Digital (MMCSD) Interface     | SD Card                | No              | Yes              |
-|                                                   |                                                      | eMMC                   | No              | Yes              |
+|                                                   | Multimedia Card Secure Digital (MMCSD) Interface     | SD Card                | Yes             | Yes              |
+|                                                   |                                                      | eMMC                   | Yes             | Yes              |
 | Industrial & Control Interfaces                   | Controller Area Network (MCAN) - MAIN domain         | CAN                    | No              | Yes              |
 |                                                   |                                                      | CAN FD                 | No              | Yes              |
 |                                                   | Controller Area Network (MCAN) - MCU domain          | CAN                    | Yes             | No               |

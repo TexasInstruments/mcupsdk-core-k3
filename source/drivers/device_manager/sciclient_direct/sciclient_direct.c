@@ -466,6 +466,7 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                 break;
 #elif defined(CONFIG_LPM_MIN)
             case TISCI_MSG_PREPARE_SLEEP:
+            case TISCI_MSG_LPM_WAKE_REASON:
                 /* Copy the message for local processing */
                 memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
 
@@ -814,6 +815,8 @@ int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags, void *tx_msg)
 #elif defined(CONFIG_LPM_MIN)
         case TISCI_MSG_PREPARE_SLEEP             :
             ret = dm_prepare_sleep_handler((uint32_t*)tx_msg); break;
+        case TISCI_MSG_LPM_WAKE_REASON               :
+            ret = dm_lpm_wake_reason_handler((uint32_t*)tx_msg); break;
 #endif
         default:
             ret = CSL_EFAIL; msg_inval = 1U;

@@ -58,12 +58,7 @@
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
-#define LPM_APP_BACKUP_REG_0_OFFSET         0x0U
-#define LPM_APP_WKUP_PAD_NUM_START          0x5U
-#define LPM_APP_WKUP_PAD_NUM_END            0x16U
-#define LPM_APP_WKUP_PAD_INVALID_VAL        0xFFU
-#define LPM_APP_EARLY_WKUP_DETECTED         0x1U
-#define LPM_APP_NORMAL_BOOT                 0x0U
+
 #define LPM_APP_RETENTION_RAM_MAGIC_WORD    0x456789ABU
 
 /* ========================================================================== */
@@ -134,11 +129,11 @@ void LPMApp_partialIOMain(void *args)
 #ifdef SOC_AM275X
         if (pRetRAM[0] == LPM_APP_RETENTION_RAM_MAGIC_WORD)
         {
-            DebugP_log("[LPM Partial IO APP] Retention RAM Contents Retained...\r\n");
+            DebugP_log("[LPM Partial IO APP] Retention RAM Contents Retained\r\n");
         }
         else
         {
-            DebugP_log("[LPM Partial IO APP] Retention RAM Contents Lost...\r\n");
+            DebugP_log("[LPM Partial IO APP] Retention RAM Contents Lost\r\n");
         }
 #endif
     }
@@ -212,30 +207,33 @@ void LpmApp_readUARTCallback(UART_Handle handle, UART_Transaction *trans)
 
 static bool LpmApp_getWakeReason(void)
 {
-    uint32_t wakeupReason;
     bool isLPMExit = true;
+    uint32_t wakeSource;
+    uint64_t wakeTimestamp;
+    uint8_t wakePin;
+    uint8_t mode;
+    int32_t status;
 
     /* Get wake reason */
-    wakeupReason = CSL_REG32_RD(CSL_WKUP_CTRL_MMR0_CFG0_BASE + CSL_WKUP_CTRL_MMR_CFG0_BACKUP_REG(LPM_APP_BACKUP_REG_0_OFFSET));
+    status = Sciclient_lpmGetWakeReason(&wakeSource, &wakeTimestamp, &wakePin, &mode, SystemP_WAIT_FOREVER);
+    DebugP_assert(SystemP_SUCCESS == status);
 
     /* If this is partial I/O resume */
-    if (wakeupReason != LPM_APP_NORMAL_BOOT)
+    if (mode == TISCI_MSG_VALUE_SLEEP_MODE_PARTIAL_IO)
     {
     #ifdef SOC_AM275X
-        if (wakeupReason == LPM_APP_EARLY_WKUP_DETECTED)
+        if (wakeSource == TISCI_MSG_VALUE_LPM_WAKE_SOURCE_EARLY_WAKE_IPOR)
         {
-            DebugP_log("[LPM PARTIAL IO APP] Resume detected from early wake event...\r\n");
+            DebugP_log("[LPM PARTIAL IO APP] Resume detected: Internal POR asserted due to early wake event...\r\n");
         }
-        else if (wakeupReason >= LPM_APP_WKUP_PAD_NUM_START && wakeupReason <= LPM_APP_WKUP_PAD_NUM_END)
-    #else
-        if (wakeupReason >= LPM_APP_WKUP_PAD_NUM_START && wakeupReason <= LPM_APP_WKUP_PAD_NUM_END)
     #endif
-        {
-            DebugP_log("[LPM PARTIAL IO APP] Resume detected from pad%d...\r\n", wakeupReason);
-        }
-        else if (wakeupReason == LPM_APP_WKUP_PAD_INVALID_VAL)
+        if (wakePin == TISCI_MSG_VALUE_LPM_WAKE_PIN_INVALID)
         {
             DebugP_log("[LPM PARTIAL IO APP] Resume detected: No valid pad detected...\r\n");
+        }
+        else
+        {
+            DebugP_log("[LPM PARTIAL IO APP] Resume detected from pad_%d...\r\n", wakePin);
         }
     }
     else

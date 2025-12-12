@@ -21,6 +21,8 @@ Feature                                                                         
 -----------------------------------------------------------------------------------------------|-----------------------------------
 SBL EMMC Falcon boot support                                                                   | SBL
 Example to demonstrate VTM triggered SoC reset is added                                        | SDL
+ATCM/BTCM reset base toggle support for multistage bootloader                                  | DM
+Support to print DM application logs based on board config is added                            | DM
 
 ### Unsupported Features
 

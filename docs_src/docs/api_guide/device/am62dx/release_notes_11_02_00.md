@@ -24,8 +24,10 @@ Feature                                                                         
  Reset isolation support for MCU domain                                                        | SOC
  ROV support on C7x                                                                            | ROV
  Example to demonstrate Partial I/O low power mode support is added                            | LPM
- Support to print DM application logs based on board config is added                           | DM
  Example to demonstrate VTM triggered SoC reset is added                                       | SDL
+ Support to print DM application logs based on board config is added                           | DM
+ ATCM/BTCM reset base toggle support for multistage bootloader                                 | DM
+ Low power mode (LPM) support in firmware                                                      | DM
 
 ### Experimental Features {#EXPERIMENTAL_FEATURES}
 

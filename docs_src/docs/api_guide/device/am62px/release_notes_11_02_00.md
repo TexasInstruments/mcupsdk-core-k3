@@ -20,6 +20,9 @@ Feature                                                                         
 SBL EMMC Falcon boot support                                                                   | SBL
 MMCSD Driver on MCU R5F                                                                        | MMCSD
 Example to demonstrate VTM triggered SoC reset is added                                        | SDL
+ATCM/BTCM reset base toggle support for multistage bootloader                                  | DM
+Spread spectrum clocking (SSC) support for Display PLLs                                        | DM
+Support to print DM application logs based on board config is added                            | DM
 
 ### Experimental Features {#EXPERIMENTAL_FEATURES}
 

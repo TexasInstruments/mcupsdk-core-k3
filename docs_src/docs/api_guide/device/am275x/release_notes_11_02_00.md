@@ -21,6 +21,9 @@ HyperRAM ECC Support                                                            
 QoS Configuration support                                                                      | QoS
 Firewall Examples                                                                              | Security
 Example to demonstrate VTM triggered SoC reset is added                                        | SDL
+ATCM/BTCM reset base toggle support for multistage bootloader                                  | DM
+Minimal low power modes support (IO Retention)                                                 | DM
+Support to print DM application logs based on board config is added                            | DM
 
 ## Dependent Tools and Compiler Information
 

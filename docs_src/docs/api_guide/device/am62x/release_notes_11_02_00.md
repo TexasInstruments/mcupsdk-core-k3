@@ -25,6 +25,8 @@ Feature                                                                         
 FreeRTOS SMP support on A53                                                                    | Kernel
 SBL EMMC Falcon boot support                                                                   | SBL
 Example to demonstrate VTM triggered SoC reset is added                                        | SDL
+ATCM/BTCM reset base toggle support for multistage bootloader                                  | DM
+Support to print DM application logs based on board config is added                            | DM
 
 
 ### Experimental Features {#EXPERIMENTAL_FEATURES}

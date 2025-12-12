@@ -40,6 +40,7 @@ const defines_r5f = {
         "BUILD_DM_R5",
         "BUILD_MCU1_0",
         "BUILD_MCU",
+        "CONFIG_LPM_BOARDCFG_MANAGED",
         "CONFIG_OSAL_MINIMAL_QUEUES",
         "MAKEFILE_BUILD",
     ],

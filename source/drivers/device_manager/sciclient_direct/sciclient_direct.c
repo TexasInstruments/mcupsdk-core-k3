@@ -497,6 +497,23 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                 hdr = (struct tisci_header *) &message;
                 pRespPrm->flags = hdr->flags;
                 break;
+#elif defined(CONFIG_LPM_BOARDCFG_MANAGED)
+            case TISCI_MSG_ENTER_SLEEP:
+            case TISCI_MSG_LPM_WAKE_REASON:
+            case TISCI_MSG_LPM_GET_NEXT_SYS_MODE:
+                /* Copy the message for local processing */
+                memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+
+                /* Processing prepare sleep message locally */
+                ret = Sciclient_ProcessPmMessage(pReqPrm->flags,message);
+                if (pRespPrm->pRespPayload != NULL)
+                {
+                    memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
+                }
+
+                hdr = (struct tisci_header *) &message;
+                pRespPrm->flags = hdr->flags;
+                break;
 #endif
             case TISCI_MSG_QUERY_FW_CAPS:
                 memcpy((void *)message, (const void *)pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
@@ -680,6 +697,23 @@ void Sciclient_query_fw_caps_handler(const uint32_t reqFlags __attribute__((unus
 
     ret = query_fw_caps_handler((uint32_t*)tx_msg);
 
+#ifdef CONFIG_LPM_BOARDCFG_MANAGED
+    bool lpmBcfgValid = false;
+    struct tisci_query_fw_caps_resp *resp = (struct tisci_query_fw_caps_resp *)((uint32_t*)tx_msg);
+
+    /* If the lpm_config is not valid inside the pm-boardcfg,
+     * then remove the LPM_BOARDCFG_MANAGED capability as it is invalid now
+     */
+    if (ret == CSL_PASS)
+    {
+        lpmBcfgValid = is_lpm_boardcfg_valid();
+        if (lpmBcfgValid == false)
+        {
+            resp->fw_caps &= ~TISCI_MSG_FLAG_FW_CAP_LPM_BOARDCFG_MANAGED;
+        }
+    }
+#endif
+
     if ((flags & TISCI_MSG_FLAG_AOP) != 0UL) {
         if (ret == CSL_PASS) {
             Sciclient_TisciMsgSetAckResp((struct tisci_header *) tx_msg);
@@ -840,6 +874,13 @@ int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags, void *tx_msg)
             ret = lpm_prepare_sleep_handler((uint32_t*)tx_msg); break;
         case TISCI_MSG_LPM_WAKE_REASON               :
             ret = lpm_wake_reason_handler((uint32_t*)tx_msg); break;
+#elif defined(CONFIG_LPM_BOARDCFG_MANAGED)
+        case TISCI_MSG_ENTER_SLEEP               :
+            ret = lpm_enter_sleep_handler((uint32_t*)tx_msg); break;
+        case TISCI_MSG_LPM_WAKE_REASON               :
+            ret = lpm_wake_reason_handler((uint32_t*)tx_msg); break;
+        case TISCI_MSG_LPM_GET_NEXT_SYS_MODE         :
+            ret = lpm_get_next_sys_mode((uint32_t*)tx_msg); break;
 #endif
         default:
             ret = CSL_EFAIL; msg_inval = 1U;

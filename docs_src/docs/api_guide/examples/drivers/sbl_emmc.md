@@ -39,6 +39,11 @@ The SBL uses 4 appimages
  Toolchain      | ti-arm-clang
  Board          |  @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/boot/sbl_emmc
+
+\attention While using device variants, please remove the cores that are not present on the device from the **BOOTLOADER** section of the example Syscfg
+\imageStyle{sbl_emmc_syscfg_subparts.png,width:45%}
+\image html sbl_emmc_syscfg_subparts.png
+
 \endcond
 
 # Steps to Run the Example

@@ -37,8 +37,13 @@ The SBL uses 4 appimages
  ---------------|-----------
  CPU + OS       | wkup_r5fss0-0 freertos
  Toolchain      | ti-arm-clang
- Board          |  @VAR_BOARD_NAME_LOWER
+ Board          | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/boot/sbl_ospi
+
+\attention While using device variants, please remove the cores that are not present on the device from the **BOOTLOADER** section of the example Syscfg
+\imageStyle{sbl_ospi_syscfg_subparts.png,width:45%}
+\image html sbl_ospi_syscfg_subparts.png
+
 \endcond
 
 \cond SOC_J722S

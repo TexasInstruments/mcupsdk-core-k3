@@ -27,6 +27,10 @@ Example to demonstrate VTM triggered SoC reset is added                         
 ATCM/BTCM reset base toggle support for multistage bootloader                                  | DM
 Minimal low power modes support (IO Retention)                                                 | DM
 Support to print DM application logs based on board config is added                            | DM
+Example to demonstrate the Jack-Jack latency performance is added(\ref EXAMPLES_ENET_CPSW_AVB_AUDIO_DEMO)    | Ethernet AVB
+Sample Ethernet AVB Media Clock Recovery example using external clock generator(CDCE6214) is added                      | Ethernet AVB
+Sample Ethernet AVB Media Clock Recovery example using Automotive PHY with clock generator(DP83TG721) is added (\ref EXAMPLES_ENET_AVB_MULTISTREAM_MCR)      | Ethernet AVB
+Optimized Jack-Jack Latency performance benchmark is added in datasheet (\ref EAVB_PERFORMANCE)                 | Ethernet AVB
 
 ## Dependent Tools and Compiler Information
 

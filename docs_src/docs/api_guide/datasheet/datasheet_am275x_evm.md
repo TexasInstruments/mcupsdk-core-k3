@@ -351,6 +351,12 @@ Code/Data fully cached                  |    1564
 Code/Data not cached                    |    5386
 Code/Data not cached 1 of 10 iterations |    1950
 
+### Ethernet Performance
+For Ethernet performance Refer to the page \ref enetlld_performance
+
+### Ethernet AVB Performance
+For Ethernet AVB performance, refer to the page \ref EAVB_PERFORMANCE
+
 ### McASP (audio) Latency
  - McASP operating at 48KHz, I2C mode
  - RX to TX pin to pin latency is measured

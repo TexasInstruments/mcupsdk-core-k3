@@ -7,6 +7,8 @@
 \note The examples will show usage of SW modules and APIs on a specific CPU instance and OS combination. \n
       Unless explicitly noted otherwise, the SW modules would work in both FreeRTOS and no-RTOS environment.
 
+\attention MCU+SDK on A53 is provided as is for customers as a reference to implement/validate on their own SW Stack & OS. TI will not support these features on the E2E forum as these are not part of the MCU+SDK product. If these features need to be productized, TI can recommend third parties who can help. 
+
 ## Device and Validation Information
 
 
@@ -27,29 +29,6 @@ SBL EMMC Falcon boot support                                                    
 Example to demonstrate VTM triggered SoC reset is added                                        | SDL
 ATCM/BTCM reset base toggle support for multistage bootloader                                  | DM
 Support to print DM application logs based on board config is added                            | DM
-
-
-### Experimental Features {#EXPERIMENTAL_FEATURES}
-
-\attention Features listed below are early versions and should be considered as "experimental".
-\attention Users can evaluate the feature, however the feature is not fully tested at TI side.
-\attention TI would not support these feature on public e2e.
-\attention Experimental features will be enabled with limited examples and SW modules.
-
-Feature                                                             | Module
---------------------------------------------------------------------|--------------------------
-FreeRTOS support on A53 (AMP, SMP)                                  | DPL, FreeRTOS
-All drivers and all examples on A53 (AMP, SMP)                      | Drivers
-C++ support                                                         | NA
-
-### FreeRTOS Support on A53
-Is                                                      | Is Not
---------------------------------------------------------|--------------------------
-FreeRTOS support on A53                                 | GPU Support
-Drivers listed for A53 in "SOC Device Drivers" section  | Low power mode support
-Ethernet Networking                                     | CSI RX Driver
--                                                       | WiFi, USB, BLE Drivers
--                                                       | Safety on A53
 
 ## Dependent Tools and Compiler Information
 

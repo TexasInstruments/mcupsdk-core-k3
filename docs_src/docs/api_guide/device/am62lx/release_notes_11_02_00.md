@@ -7,6 +7,8 @@
 \note The examples will show usage of SW modules and APIs on a specific CPU instance and OS combination. \n
       Unless explicitly noted otherwise, the SW modules would work in both FreeRTOS and no-RTOS environment. \n
 
+\attention FreeRTOS SDK on A53 is provided as is for customers as a reference to implement/validate on their own SW Stack & OS. TI will not support these features on the E2E forum as these are not part of the FreeRTOS SDK product. If these features need to be productized, TI can recommend third parties who can help.
+
 ## Device and Validation Information
 
 SOC    | Supported CPUs | EVM                                                    | Host PC

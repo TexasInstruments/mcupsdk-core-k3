@@ -43,6 +43,9 @@
 
 #include <drivers/udma/v0/udma_priv.h>
 
+#ifdef ENABLE_UDMA_FAULT_INJECTION
+bool TestUdma_faultInjectForceTeardown(uint32_t disablePhase);
+#endif
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
@@ -3087,6 +3090,9 @@ static int32_t Udma_chDisableBlkCpyChan(Udma_ChHandleInt chHandle, uint32_t time
         {
           /* Do Nothing */
         }
+#ifdef ENABLE_UDMA_FAULT_INJECTION
+       end_loop = TestUdma_faultInjectForceTeardown(1);
+#endif
         if (end_loop)
         {
           break;

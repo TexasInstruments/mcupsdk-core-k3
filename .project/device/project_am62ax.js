@@ -55,6 +55,7 @@ const component_file_list_common = [
     "test/drivers/mcspi/test_mcspi_fault_inject/configs/.project/project.js",
     "test/drivers/i2c/test_i2c_fault_inject/configs/.project/project_am62ax.js",
     "test/drivers/mcasp/test_mcasp_fault_injection/configs/.project/project.js",
+    "test/drivers/udma/test_udma_fault_inject/configs/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
 ];
 
@@ -242,6 +243,7 @@ const example_file_list = [
     "test/drivers/use_cases/audio/audio_player/.project/project.js",
     "test/drivers/udma/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_system/.project/project.js",
+    "test/drivers/udma/test_udma_fault_inject/.project/project.js",
     "test/kernel/dpl/.project/project.js",
     "test/kernel/dpl/.project/project_safertos.js",
     "test/kernel/freertos/.project/project.js",

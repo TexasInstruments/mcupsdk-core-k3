@@ -188,7 +188,7 @@ Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  HS200 | 32.00	        | 97.27		         |  166.56
  HS200 | 40.00	        | 99.43		         |  167.40
 
-### OSPI Performance
+### OSPI Performance {#OSPI_DATA_SHEET}
 
 **a53 :**
 

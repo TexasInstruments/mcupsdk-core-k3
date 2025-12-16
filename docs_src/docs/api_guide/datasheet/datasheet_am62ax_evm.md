@@ -272,7 +272,7 @@ Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  HS200 | 32	            | 101.92	         | 184.68
  HS200 | 40	            | 98.33	             | 184.57
 
-### OSPI NAND Performance
+### OSPI NAND Performance {#OSPI_DATA_SHEET}
 **r5f0-0:**
 
 Non-DQS Tuning Algorithm    |    Tuning Time (ms)

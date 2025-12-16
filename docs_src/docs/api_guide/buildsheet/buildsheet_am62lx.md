@@ -22,8 +22,8 @@ NA                    | The feature or module is not applicable in the hardware
 | Initialization                                    | I2C Bootloader Operation                             |                        | No          |
 |                                                   | SPI Bootloader Operation                             |                        | No          |
 |                                                   | QSPI Bootloader Operation                            | NOR                    | No          |
-|                                                   |                                                      | NAND                   | SDK12.1     |
-|                                                   | OSPI Bootloader Operation                            | NOR                    | SDK12.0     |
+|                                                   |                                                      | NAND                   | No          |
+|                                                   | OSPI Bootloader Operation                            | NOR                    | No          |
 |                                                   |                                                      | NAND (1-bit mode)      | No          |
 |                                                   |                                                      | NAND (8-bit mode)      | No          |
 |                                                   | GPMC Bootloader Operation                            | NOR                    | No          |
@@ -31,12 +31,12 @@ NA                    | The feature or module is not applicable in the hardware
 |                                                   | Ethernet Bootloader Operation                        |                        | NA          |
 |                                                   | USB Bootloader Operation                             | Host                   | No          |
 |                                                   |                                                      | Device                 | No          |
-|                                                   | MMCSD Bootloader Operation                           | SD Card (no UHS)       | SDK12.0     |
-|                                                   |                                                      | eMMC                   | SDK12.0     |
-|                                                   | UART Bootloader Operation                            |                        | SDK12.0     |
-| Device Configuration                              |                                                      | VTM                    | SDK11.2     |
-| Power Management                                  | Deep Sleep Low Power Mode                            |                        | SDK12.1     |
-|                                                   | Deep Sleep LPM Wakeup Events                         | RTC Timer              | SDK12.1     |
+|                                                   | MMCSD Bootloader Operation                           | SD Card (no UHS)       | No          |
+|                                                   |                                                      | eMMC                   | No          |
+|                                                   | UART Bootloader Operation                            |                        | No          |
+| Device Configuration                              |                                                      | VTM                    | No          |
+| Power Management                                  | Deep Sleep Low Power Mode                            |                        | No          |
+|                                                   | Deep Sleep LPM Wakeup Events                         | RTC Timer              | No          |
 |                                                   |                                                      | GT Timers              | No          |
 |                                                   |                                                      | WKUP UART              | No          |
 |                                                   |                                                      | I2C                    | No          |
@@ -52,9 +52,9 @@ NA                    | The feature or module is not applicable in the hardware
 |                                                   | CPUIdle (DDR in Self-Refresh)                        |                        | No          |
 | Interprocessor Communication                      | Mailbox                                              |                        | No          |
 | Memory Controllers                                | DDR Subsystem (DDRSS)                                | DDR4                   | No          |
-|                                                   |                                                      | LPDDR4                 | SDK12.0     |
-|                                                   |                                                      | Inline ECC (1bit err)  | SDK12.0     |
-|                                                   |                                                      | Inline ECC (mbit err)  | SDK12.0     |
+|                                                   |                                                      | LPDDR4                 | No          |
+|                                                   |                                                      | Inline ECC (1bit err)  | No          |
+|                                                   |                                                      | Inline ECC (mbit err)  | No          |
 | Time Sync                                         | Time Sync Module (CPTS)                              |                        | No          |
 |                                                   | Timer Manager                                        |                        | No          |
 |                                                   | Time Sync and Compare Events                         |                        | No          |
@@ -83,20 +83,20 @@ NA                    | The feature or module is not applicable in the hardware
 |                                                   |                                                      | IrDA                   | No          |
 | High-speed Serial Interfaces                      | Gigabit Ethernet Switch (CPSW3G)                     | Switch                 | Yes         |
 |                                                   |                                                      | EndPoint               | Yes         |
-|                                                   |                                                      | TSN                    | SDK11.2     |
-|                                                   |                                                      | TSN - VLAN             | SDK11.2     |
+|                                                   |                                                      | TSN                    | No          |
+|                                                   |                                                      | TSN - VLAN             | No          |
 |                                                   | Universal Serial Bus Subsystem (USBSS)               | Host 3.1               | NA          |
 |                                                   |                                                      | Device 3.1             | NA          |
 |                                                   |                                                      | Host 2.0               | No          |
 |                                                   |                                                      | Device 2.0             | No          |
 | Memory Interfaces                                 | Flash Subsystem (FSS)                                |                        | No          |
 |                                                   | Quad Serial Peripheral Interface (QSPI)              | NOR                    | No          |
-|                                                   |                                                      | NAND                   | SDK12.0     |
+|                                                   |                                                      | NAND                   | No          |
 |                                                   | Octal Serial Peripheral Interface (OSPI)             | NOR                    | Yes         |
 |                                                   |                                                      | NAND                   | No          |
 |                                                   | Expanded Serial Peripheral Interface (xSPI)          |                        | No          |
 |                                                   | General-Purpose Memory Controller (GPMC)             | FPGA                   | No          |
-|                                                   |                                                      | NAND                   | SDK12.0     |
+|                                                   |                                                      | NAND                   | No          |
 |                                                   |                                                      | NOR                    | No          |
 |                                                   |                                                      | PSRAM                  | No          |
 |                                                   | Error Location Module (ELM)                          |                        | No          |
@@ -111,7 +111,7 @@ NA                    | The feature or module is not applicable in the hardware
 | Timer Modules                                     | Global Timebase Counter (GTC)                        |                        | Yes         |
 |                                                   | Windowed Watchdog Timer (WWDT) - MAIN domain         |                        | Yes         |
 |                                                   | Windowed Watchdog Timer (WWDT) - WKUP domain         |                        | NA          |
-|                                                   | Real-Time Clock (RTC)                                |                        | SDK12.0     |
+|                                                   | Real-Time Clock (RTC)                                |                        | No          |
 |                                                   | Timers - MAIN domain                                 | Timer                  | Yes         |
 |                                                   |                                                      | Capture                | No          |
 |                                                   |                                                      | Compare                | No          |
@@ -126,10 +126,10 @@ NA                    | The feature or module is not applicable in the hardware
 | Display Subsystem                                 | DISPLAY Parallel Interface (DPI)                     |                        | No          |
 | On-Die Temperature sensor                         |                                                      |                        | No          |
 | On-Chip Debug                                     |                                                      |                        | NA          |
-| Crypto Accelerator (DTHEv2)                       | Advanced Encryption Standard (AES)                   | AES-CBC                | SDK12.1     |
-|                                                   |                                                      | AES-ECB                | SDK12.1     |
-|                                                   | SHA/MD5 Crypto Hardware-Accelerated Module (SHA/MD5) | SHA-256                | SDK12.1     |
-|                                                   |                                                      | SHA-512                | SDK12.1     |
+| Crypto Accelerator (DTHEv2)                       | Advanced Encryption Standard (AES)                   | AES-CBC                | No          |
+|                                                   |                                                      | AES-ECB                | No          |
+|                                                   | SHA/MD5 Crypto Hardware-Accelerated Module (SHA/MD5) | SHA-256                | No          |
+|                                                   |                                                      | SHA-512                | No          |
 |                                                   | True Random Number Generator (TRNG)                  |                        | No          |
 | Board Specifics (AM62L EVM)                       | cc3351 M.2                                           | Wifi                   | No          |
 |                                                   | TPS65214                                             | PMIC                   | No          |

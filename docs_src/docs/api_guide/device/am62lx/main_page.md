@@ -1,6 +1,9 @@
 # Introduction {#mainpage}
 
 [TOC]
+
+\attention FreeRTOS SDK on A53 is provided as is for customers as a reference to implement/validate on their own SW Stack & OS. TI will not support these features on the E2E forum as these are not part of the FreeRTOS SDK product. If these features need to be productized, TI can recommend third parties who can help.
+
 Welcome to **@VAR_SDK_NAME for @VAR_SOC_NAME**. This SDK contains examples, libraries and tools to develop **RTOS and no-RTOS** based applications for **ARM A53** and related peripherals.
 
 ## Getting Started

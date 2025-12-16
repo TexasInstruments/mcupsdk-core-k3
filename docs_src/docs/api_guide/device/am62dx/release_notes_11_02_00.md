@@ -16,6 +16,7 @@ AM62Dx | MCU R5F, WKUP R5F, A53, C75 | @VAR_BOARD_NAME EVM (referred to as am62d
 \endcond
 
 ## Features Added in This Release
+\note Update of OSPI tuning algorithm on this SDK causes increase in tuning time. Refer \ref OSPI_DATA_SHEET
 
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
@@ -23,6 +24,7 @@ Feature                                                                         
  IPC Notify Echo Example supporting C7x core as well                                           | IPC
  Reset isolation support for MCU domain                                                        | SOC
  ROV support on C7x                                                                            | ROV
+ New OSPI tuning algorithm is added                                                            | OSPI
  Example to demonstrate Partial I/O low power mode support is added                            | LPM
  Example to demonstrate VTM triggered SoC reset is added                                       | SDL
  Support to print DM application logs based on board config is added                           | DM

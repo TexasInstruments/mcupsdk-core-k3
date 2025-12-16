@@ -15,6 +15,13 @@ SOC    | Supported CPUs | EVM                                                   
 -------|----------------|--------------------------------------------------------|-----------------------------------
 AM62L  | A53            | @VAR_BOARD_NAME EVM (referred to as am62lx-evm in code) | Windows 10 64b or Ubuntu 22.04 64b
 
+## Features Added in This Release
+\note Update of OSPI tuning algorithm on this SDK causes increase in tuning time. Refer \ref OSPI_DATA_SHEET
+
+Feature                                                                                        | Module
+-----------------------------------------------------------------------------------------------|-----------------------------------
+ New OSPI tuning algorithm is added                                                            | OSPI
+
 ## Dependent Tools and Compiler Information
 
 Tools/Components        | Supported CPUs           | Version

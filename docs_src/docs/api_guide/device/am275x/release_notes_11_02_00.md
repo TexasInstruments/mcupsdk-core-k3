@@ -15,11 +15,14 @@ AM275x | R5F, C75                    | @VAR_BOARD_NAME (referred to as am275x-ev
 
 ## Features Added in This Release
 
+\note Update of OSPI tuning algorithm on this SDK causes increase in tuning time. Refer \ref OSPI_DATA_SHEET
+
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
 HyperRAM ECC Support                                                                           | HyperRAM
 QoS Configuration support                                                                      | QoS
 Firewall Examples                                                                              | Security
+New OSPI tuning algorithm is added                                                             | OSPI
 Example to demonstrate VTM triggered SoC reset is added                                        | SDL
 ATCM/BTCM reset base toggle support for multistage bootloader                                  | DM
 Minimal low power modes support (IO Retention)                                                 | DM

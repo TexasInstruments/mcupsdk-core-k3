@@ -241,7 +241,7 @@ Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  HS400 | 32	            | 91.83 		     | 255.36
  HS400 | 40	            | 95.79 		     | 258.51
 
-### OSPI NOR Flash Performance
+### OSPI NOR Flash Performance  {#OSPI_DATA_SHEET}
 
 DQS Tuning Algorithm        |    Tuning Time (ms)
 ----------------------------|------------------------

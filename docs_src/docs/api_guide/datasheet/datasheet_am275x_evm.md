@@ -183,9 +183,15 @@ SDR50  | 	   1        |       26.20		 |      45.23
 DDR50  | 	   1        |       50.49		 |      82.64
 HS200  | 	   1        |       79.73		 |     157.23
 
-### OSPI NOR Flash Performance
+### OSPI NOR Flash Performance {#OSPI_DATA_SHEET}
 
 **wkup-r5f0-0:**
+
+DQS Tuning Algorithm        |    Tuning Time (ms)    
+----------------------------|------------------------
+Default Tuning Window       |          5.29 ms
+Fast Tuning Window          |          5.36 ms
+
  - Flash frequency: 25Mhz
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
  - Phy Condition: disabled

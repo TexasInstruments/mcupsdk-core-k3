@@ -15,10 +15,13 @@ AM62P  | MCU R5F, WKUP R5F           | @VAR_BOARD_NAME EVM (referred to as am62p
 
 ## Features Added in This Release
 
+\note Update of OSPI tuning algorithm on this SDK causes increase in tuning time. Refer \ref OSPI_DATA_SHEET
+
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
 SBL EMMC Falcon boot support                                                                   | SBL
 MMCSD Driver on MCU R5F                                                                        | MMCSD
+New OSPI tuning algorithm is added                                                             | OSPI
 Example to demonstrate VTM triggered SoC reset is added                                        | SDL
 ATCM/BTCM reset base toggle support for multistage bootloader                                  | DM
 Spread spectrum clocking (SSC) support for Display PLLs                                        | DM

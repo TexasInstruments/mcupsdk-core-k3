@@ -19,6 +19,7 @@ AM62x  | M4F, R5F, A53   | SK-AM62 (referred as am62x-sk in code), SK-AM62-LP (r
 
 ## Features Added in This Release
 
+\note Update of OSPI tuning algorithm on this SDK causes increase in tuning time. Refer \ref OSPI_DATA_SHEET
 
 \attention DeepSleep low power mode (LPM) is not supported if the DM R5 is used for a general purpose application. This is because when the SoC goes to any LPM, the context of peripherals used by DM R5 will be lost. To use DM R5 for a general purpose application, disable LPM support. Refer \ref DISABLE_LPM to know how to disable LPM.
 
@@ -26,6 +27,7 @@ Feature                                                                         
 -----------------------------------------------------------------------------------------------|-----------------------------------
 FreeRTOS SMP support on A53                                                                    | Kernel
 SBL EMMC Falcon boot support                                                                   | SBL
+New OSPI tuning algorithm is added                                                             | OSPI
 Example to demonstrate VTM triggered SoC reset is added                                        | SDL
 ATCM/BTCM reset base toggle support for multistage bootloader                                  | DM
 Support to print DM application logs based on board config is added                            | DM

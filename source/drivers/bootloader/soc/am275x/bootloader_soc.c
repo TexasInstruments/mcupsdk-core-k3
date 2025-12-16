@@ -106,8 +106,9 @@
 
 /* Backup register 0 offset */
 #define BOOTLOADER_BACKUP_REG_0_OFFSET                              (0U)
-#define BOOTLOADER_BACKUP_REG_EARLY_WAKE_EVENT                      (0x1U)
+#define BOOTLOADER_BACKUP_REG_EARLY_WAKE_EVENT                      (0x100U)
 #define BOOTLOADER_BACKUP_REG_INVALID_PIN                           (0xFFU)
+#define BOOTLOADER_BACKUP_REG_PIN_INFO_MASK                         (0xFFU)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -1635,23 +1636,21 @@ int32_t Bootloader_socClrIOIsolationOnLPMExit(void)
             CSL_REG32_WR(CSL_MCU_CTRL_MMR0_CFG0_BASE + CSL_MCU_CTRL_MMR_CFG0_RST_SRC, CSL_MCU_CTRL_MMR_CFG0_RST_SRC_IPOR_WAKE_MASK);
             padNum = BOOTLOADER_BACKUP_REG_EARLY_WAKE_EVENT;
         }
-        else
-        {
-            /* PAD based IO Retention wakeup */
-            for (i = 0U; i < BOOTLOADER_MCU_PADCFG_IORET_WKUP_SRC_PAD_COUNT; i++)
-            {
-                if (((CSL_REG32_RD(BOOTLOADER_MCU_PADCFG_IORET_WKUP_SRC_START_ADDR + (i * 4U))) & BOOTLOADER_PADCFG_WKUP_EVT_MASK) == BOOTLOADER_PADCFG_WKUP_EVT_MASK)
-                {
-                    padNum = i + BOOTLOADER_MCU_PADCFG_IORET_WKUP_PAD_NUM_OFFSET;
-                    break;
-                }
-            }
 
-            /* If no PAD has wakeup status set, update the value to indicate failure */
-            if (padNum == 0U)
+        /* PAD based IO Retention wakeup */
+        for (i = 0U; i < BOOTLOADER_MCU_PADCFG_IORET_WKUP_SRC_PAD_COUNT; i++)
+        {
+            if (((CSL_REG32_RD(BOOTLOADER_MCU_PADCFG_IORET_WKUP_SRC_START_ADDR + (i * 4U))) & BOOTLOADER_PADCFG_WKUP_EVT_MASK) == BOOTLOADER_PADCFG_WKUP_EVT_MASK)
             {
-                padNum = BOOTLOADER_BACKUP_REG_INVALID_PIN;
+                padNum |= i + BOOTLOADER_MCU_PADCFG_IORET_WKUP_PAD_NUM_OFFSET;
+                break;
             }
+        }
+
+        /* If no PAD has wakeup status set, update the value to indicate failure */
+        if ((padNum & BOOTLOADER_BACKUP_REG_PIN_INFO_MASK) == 0U)
+        {
+            padNum |= BOOTLOADER_BACKUP_REG_INVALID_PIN;
         }
 
         /* Log the wakeup reason in MMR */

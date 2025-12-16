@@ -411,21 +411,21 @@ int32_t AASRC_IsClockZoneRxSettled(AASRC_ChHandle chHandle, bool *isClkSettled)
     }
 
     if (AASRC_SOK == status)
+    {
+        regVal = CSL_REG32_FEXT(baseAddr + AASRC_INPUT_CLOCKZONE_CONTROL(clkZone),
+                                AASRC_CFG_INPUT_CLOCKZONE_CONTROL_0_SETTLE);
+        if (regVal > 1U)
         {
-            regVal = CSL_REG32_FEXT(baseAddr + AASRC_INPUT_CLOCKZONE_CONTROL(clkZone),
-                                    AASRC_CFG_INPUT_CLOCKZONE_CONTROL_0_SETTLE);
-            if (regVal > 1U)
-            {
-                *isClkSettled = false;
-                status = AASRC_EFAIL;
-            }
-            else if (regVal == 1U)
-            {
-                *isClkSettled = true;
-            }
-            else
-            {
-                *isClkSettled = false;
+            *isClkSettled = false;
+            status = AASRC_EFAIL;
+        }
+        else if (regVal == 1U)
+        {
+            *isClkSettled = true;
+        }
+        else
+        {
+            *isClkSettled = false;
         }
     }
 
@@ -547,58 +547,69 @@ int32_t AASRC_GetClkZoneRxFrequency(AASRC_ChHandle chHandle,float *clkFrequency)
 
     if (AASRC_SOK == status)
     {
-        timeout = 0U;
-        while( (CSL_TRUE != isClkSettled) && (timeout < 0xFFFFFFU) )
+        if(!clkZoneCfg->overrideClkSettle)
         {
-            isClkSettled = CSL_REG32_FEXT(baseAddr + AASRC_INPUT_CLOCKZONE_CONTROL(clkZone),
-                                                    AASRC_CFG_INPUT_CLOCKZONE_CONTROL_0_SETTLE);
-            timeout++;
-        }
-        if (isClkSettled == CSL_FALSE)
-        {
-            status = AASRC_EFAIL;
-        }
-    }
-    if (AASRC_SOK == status)
-    {
-        regValLo = CSL_REG32_RD(baseAddr + AASRC_INPUT_CLOCK_RECOVERY_LOOP_RATE_LO(clkZone));
-        regValHi = CSL_REG32_RD(baseAddr + AASRC_INPUT_CLOCK_RECOVERY_LOOP_RATE_HI(clkZone));
+            timeout = 0U;
+            while( (CSL_TRUE != isClkSettled) && (timeout < 0xFFFFFFU) )
+            {
+                isClkSettled = CSL_REG32_FEXT(baseAddr + AASRC_INPUT_CLOCKZONE_CONTROL(clkZone),
+                                                        AASRC_CFG_INPUT_CLOCKZONE_CONTROL_0_SETTLE);
+                timeout++;
+            }
+            if (isClkSettled == CSL_FALSE)
+            {
+                status = AASRC_EFAIL;
+            }
 
-        fracPart = (regValLo & CSL_AASRC_CFG_INPUT_CLOCK_RECOVERY_LOOP_RATE_LO_0_FRACTIONAL_STAMP_MASK);
-        intPart  = ((regValHi & CSL_AASRC_CFG_INPUT_CLOCK_RECOVERY_LOOP_RATE_HI_0_RATE_INT_HI_MASK) << 8) +
-                   ((regValLo & CSL_AASRC_CFG_INPUT_CLOCK_RECOVERY_LOOP_RATE_LO_0_RATE_INT_LO_MASK) >> \
-                     CSL_AASRC_CFG_INPUT_CLOCK_RECOVERY_LOOP_RATE_LO_0_RATE_INT_LO_SHIFT);
+            if (AASRC_SOK == status)
+            {
+                regValLo = CSL_REG32_RD(baseAddr + AASRC_INPUT_CLOCK_RECOVERY_LOOP_RATE_LO(clkZone));
+                regValHi = CSL_REG32_RD(baseAddr + AASRC_INPUT_CLOCK_RECOVERY_LOOP_RATE_HI(clkZone));
 
-        recoverLoopRate = (float)intPart + ((float)fracPart / ((float)100000000U));
+                fracPart = (regValLo & CSL_AASRC_CFG_INPUT_CLOCK_RECOVERY_LOOP_RATE_LO_0_FRACTIONAL_STAMP_MASK);
+                intPart  = ((regValHi & CSL_AASRC_CFG_INPUT_CLOCK_RECOVERY_LOOP_RATE_HI_0_RATE_INT_HI_MASK) << 8) +
+                        ((regValLo & CSL_AASRC_CFG_INPUT_CLOCK_RECOVERY_LOOP_RATE_LO_0_RATE_INT_LO_MASK) >> \
+                            CSL_AASRC_CFG_INPUT_CLOCK_RECOVERY_LOOP_RATE_LO_0_RATE_INT_LO_SHIFT);
 
-        if (attrs->instNum == AASRC0)
-        {
-            status = SOC_moduleGetClockFrequency(TISCI_DEV_AASRC0,
-                                                 TISCI_DEV_AASRC0_SYS_CLK,
-                                                 &sysClkRate);
-        }
-        else if (attrs->instNum == AASRC1)
-        {
-            status = SOC_moduleGetClockFrequency(TISCI_DEV_AASRC1,
-                                                 TISCI_DEV_AASRC1_SYS_CLK,
-                                                 &sysClkRate);
+                recoverLoopRate = (float)intPart + ((float)fracPart / ((float)100000000U));
+
+                if (attrs->instNum == AASRC0)
+                {
+                    status = SOC_moduleGetClockFrequency(TISCI_DEV_AASRC0,
+                                                        TISCI_DEV_AASRC0_SYS_CLK,
+                                                        &sysClkRate);
+                }
+                else if (attrs->instNum == AASRC1)
+                {
+                    status = SOC_moduleGetClockFrequency(TISCI_DEV_AASRC1,
+                                                        TISCI_DEV_AASRC1_SYS_CLK,
+                                                        &sysClkRate);
+                }
+                else
+                {
+                    /* Invalid Instance Number */
+                    status = AASRC_EINVALID_PARAMS;
+                }
+                DebugP_assertNoLog(status == SystemP_SUCCESS);
+
+                if(recoverLoopRate != 0.0)
+                {
+                    *clkFrequency = (float)sysClkRate / (recoverLoopRate * (float)1000U);
+                }
+                else
+                {
+                    status = AASRC_EFAIL;
+                }
+
+            }
         }
         else
         {
-            /* Invalid Instance Number */
-            status = AASRC_EINVALID_PARAMS;
+            /* When overrideClkSettle is enabled, Return maximum supported audio
+             * frequency as a safe upper bound for subsequent calculations. */
+            *clkFrequency = AASRC_AUDIO_CLK_FREQUENCY_MAX;
+            status = AASRC_SOK;
         }
-        DebugP_assertNoLog(status == SystemP_SUCCESS);
-
-        if(recoverLoopRate != 0.0)
-        {
-            *clkFrequency = (float)sysClkRate / (recoverLoopRate * (float)1000U);
-        }
-        else
-        {
-            status = AASRC_EFAIL;
-        }
-
     }
 
     return status;
@@ -655,58 +666,71 @@ int32_t AASRC_GetClkZoneTxFrequency(AASRC_ChHandle chHandle,float *clkFrequency)
 
     if (AASRC_SOK == status)
     {
-        timeout = 0U;
-        while( (CSL_TRUE != isClkSettled) && (timeout < 0xFFFFFFU) )
+        if(!clkZoneCfg->overrideClkSettle)
         {
-            isClkSettled = CSL_REG32_FEXT(baseAddr + AASRC_OUTPUT_CLOCKZONE_CONTROL(clkZone),
-                                                  AASRC_CFG_OUTPUT_CLOCKZONE_CONTROL_0_SETTLE);
-            timeout++;
-        }
-        if (isClkSettled == CSL_FALSE)
-        {
-            status = AASRC_EFAIL;
-        }
-    }
-    if (AASRC_SOK == status)
-    {
-        regValLo = CSL_REG32_RD(baseAddr + AASRC_OUTPUT_CLOCK_RECOVERY_LOOP_RATE_LO(clkZone));
-        regValHi = CSL_REG32_RD(baseAddr + AASRC_OUTPUT_CLOCK_RECOVERY_LOOP_RATE_HI(clkZone));
+            timeout = 0U;
+            while( (CSL_TRUE != isClkSettled) && (timeout < 0xFFFFFFU) )
+            {
+                isClkSettled = CSL_REG32_FEXT(baseAddr + AASRC_OUTPUT_CLOCKZONE_CONTROL(clkZone),
+                                                    AASRC_CFG_OUTPUT_CLOCKZONE_CONTROL_0_SETTLE);
+                timeout++;
+            }
+            if (isClkSettled == CSL_FALSE)
+            {
+                status = AASRC_EFAIL;
+            }
 
-        fracPart = (regValLo & CSL_AASRC_CFG_OUTPUT_CLOCK_RECOVERY_LOOP_RATE_LO_0_FRACTIONAL_STAMP_MASK);
-        intPart  = ((regValHi & CSL_AASRC_CFG_OUTPUT_CLOCK_RECOVERY_LOOP_RATE_HI_0_RATE_INT_HI_MASK) << 8) +
-                   ((regValLo & CSL_AASRC_CFG_OUTPUT_CLOCK_RECOVERY_LOOP_RATE_LO_0_RATE_INT_LO_MASK) >> \
-                     CSL_AASRC_CFG_OUTPUT_CLOCK_RECOVERY_LOOP_RATE_LO_0_RATE_INT_LO_SHIFT);
+            if (AASRC_SOK == status)
+            {
+                regValLo = CSL_REG32_RD(baseAddr + AASRC_OUTPUT_CLOCK_RECOVERY_LOOP_RATE_LO(clkZone));
+                regValHi = CSL_REG32_RD(baseAddr + AASRC_OUTPUT_CLOCK_RECOVERY_LOOP_RATE_HI(clkZone));
 
-        recoverLoopRate = (float)intPart + ((float)fracPart / ((float)100000000U));
+                fracPart = (regValLo & CSL_AASRC_CFG_OUTPUT_CLOCK_RECOVERY_LOOP_RATE_LO_0_FRACTIONAL_STAMP_MASK);
+                intPart  = ((regValHi & CSL_AASRC_CFG_OUTPUT_CLOCK_RECOVERY_LOOP_RATE_HI_0_RATE_INT_HI_MASK) << 8) +
+                        ((regValLo & CSL_AASRC_CFG_OUTPUT_CLOCK_RECOVERY_LOOP_RATE_LO_0_RATE_INT_LO_MASK) >> \
+                            CSL_AASRC_CFG_OUTPUT_CLOCK_RECOVERY_LOOP_RATE_LO_0_RATE_INT_LO_SHIFT);
 
-        if (attrs->instNum == AASRC0)
-        {
-            status = SOC_moduleGetClockFrequency(TISCI_DEV_AASRC0,
-                                                 TISCI_DEV_AASRC0_SYS_CLK,
-                                                 &sysClkRate);
-        }
-        else if (attrs->instNum == AASRC1)
-        {
-            status = SOC_moduleGetClockFrequency(TISCI_DEV_AASRC1,
-                                                 TISCI_DEV_AASRC1_SYS_CLK,
-                                                 &sysClkRate);
+                recoverLoopRate = (float)intPart + ((float)fracPart / ((float)100000000U));
+
+                if (attrs->instNum == AASRC0)
+                {
+                    status = SOC_moduleGetClockFrequency(TISCI_DEV_AASRC0,
+                                                        TISCI_DEV_AASRC0_SYS_CLK,
+                                                        &sysClkRate);
+                }
+                else if (attrs->instNum == AASRC1)
+                {
+                    status = SOC_moduleGetClockFrequency(TISCI_DEV_AASRC1,
+                                                        TISCI_DEV_AASRC1_SYS_CLK,
+                                                        &sysClkRate);
+                }
+                else
+                {
+                    /* Invalid Instance Number */
+                    status = AASRC_EINVALID_PARAMS;
+                }
+                DebugP_assertNoLog(status == SystemP_SUCCESS);
+
+                if(recoverLoopRate != 0.0)
+                {
+                    *clkFrequency = (float)sysClkRate / (recoverLoopRate * ((float)1000U));
+                }
+                else
+                {
+                    status = AASRC_EFAIL;
+                }
+            }
         }
         else
         {
-            /* Invalid Instance Number */
-            status = AASRC_EINVALID_PARAMS;
-        }
-        DebugP_assertNoLog(status == SystemP_SUCCESS);
-
-        if(recoverLoopRate != 0.0)
-        {
-            *clkFrequency = (float)sysClkRate / (recoverLoopRate * ((float)1000U));
-        }
-        else
-        {
-            status = AASRC_EFAIL;
+            /* When overrideClkSettle is enabled, clock settle is manually controlled and
+             * hardware clock recovery may not be active. Return maximum supported audio
+             * frequency (216 KHz) as a safe upper bound for subsequent calculations. */
+            *clkFrequency = AASRC_AUDIO_CLK_FREQUENCY_MAX;
+            status = AASRC_SOK;
         }
     }
+
 
     return status;
 }

@@ -54,6 +54,10 @@ static inline int32_t AASRC_validateChOpenConfig(uint32_t chType, uint32_t chCou
 static inline int32_t AASRC_validateChConfig(AASRC_ChObj *chObj);
 static inline uint32_t AASRC_setSRCControlReg(AASRC_ChCfg *chCfg);
 static inline int32_t AASRC_setSRCTransferModeConfig(AASRC_ChHandle chHandle);
+static int32_t AASRC_chValidateClockRatios(float clkRxFreq,
+                                            float clkTxFreq,
+                                            AASRC_ClockZoneConfig *inClkZoneCfg,
+                                            AASRC_ClockZoneConfig *outClkZoneCfg);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -701,10 +705,10 @@ int32_t AASRC_chEnable(AASRC_ChHandle chHandle)
     AASRC_Transaction *txn;
     uint32_t baseAddr;
     uint32_t chNum=0U;
-    AASRC_ClockZoneConfig *clkZoneCfg;
-    float clkRxFreq, clkTxFreq, clkRatio, srcFreq;
+    AASRC_ClockZoneConfig *inClkZoneCfg, *outClkZoneCfg;
+    float clkRxFreq, clkTxFreq;
     bool isClkSettled;
-    uint8_t clkZone;
+    uint8_t inClkZone, outClkZone;
 
     DebugP_assert(NULL_PTR != chHandle);
 
@@ -755,6 +759,24 @@ int32_t AASRC_chEnable(AASRC_ChHandle chHandle)
             {
                 /* Driver handle is not open */
                 status = AASRC_EFAIL;
+            }
+            else
+            {
+                /* Clock Config */
+                inClkZone = chObj->chCfg.inClkZone;
+                outClkZone = chObj->chCfg.outClkZone;
+
+                /* Validate clock zone indices are within bounds */
+                if ((inClkZone >= AASRC_INPUT_CLOCK_ZONE_COUNT) ||
+                    (outClkZone >= AASRC_OUTPUT_CLOCK_ZONE_COUNT))
+                {
+                    status = AASRC_EINVALID_PARAMS;
+                }
+                else
+                {
+                    inClkZoneCfg = &drvObj->rxClkZoneCfg[inClkZone];
+                    outClkZoneCfg = &drvObj->txClkZoneCfg[outClkZone];
+                }
             }
         }
         else
@@ -822,7 +844,7 @@ int32_t AASRC_chEnable(AASRC_ChHandle chHandle)
         chObj->rcvObj.xferCurrSampleCount = 0U;
     }
 
-    if (AASRC_SOK == status)
+    if ((AASRC_SOK == status) && (!inClkZoneCfg->overrideClkSettle))
     {
         isClkSettled = false;
         while (!isClkSettled)
@@ -840,7 +862,7 @@ int32_t AASRC_chEnable(AASRC_ChHandle chHandle)
         status = AASRC_GetClkZoneRxFrequency(chObj, &clkRxFreq);
     }
 
-    if (AASRC_SOK == status)
+    if ((AASRC_SOK == status) && (!outClkZoneCfg->overrideClkSettle))
     {
         isClkSettled = false;
         while (!isClkSettled)
@@ -858,57 +880,12 @@ int32_t AASRC_chEnable(AASRC_ChHandle chHandle)
         status = AASRC_GetClkZoneTxFrequency(chObj, &clkTxFreq);
     }
 
-    if (AASRC_SOK == status)
+    /* Validate clock frequencies and ratios only when override is not enabled */
+    if ((AASRC_SOK == status) && (!inClkZoneCfg->overrideClkSettle) && \
+        (!outClkZoneCfg->overrideClkSettle))
     {
-        if ( (0.0 == clkRxFreq) || (0.0 == clkTxFreq) )
-        {
-            status = AASRC_EFAIL;
-        }
-        else
-        {
-            if ( (clkRxFreq > (float)AASRC_AUDIO_CLK_FREQUENCY_MAX) || \
-                 (clkTxFreq > (float)AASRC_AUDIO_CLK_FREQUENCY_MAX) )
-            {
-                status = AASRC_EFAIL;
-            }
-        }
-    }
-
-    if (AASRC_SOK == status)
-    {
-        /* Valid Tx/Rx Frequency */
-        clkRatio = (clkTxFreq / clkRxFreq);
-
-        if ( (clkRatio > (float)AASRC_CLK_RATIO_MAX) || \
-             (clkRatio < (1.0 / ((float)AASRC_CLK_RATIO_MAX))) )
-        {
-            status = AASRC_EFAIL;
-        }
-        else
-        {
-            clkZone = chObj->chCfg.inClkZone;
-            clkZoneCfg = &drvObj->rxClkZoneCfg[clkZone];
-            if ( (clkZone <= AASRC_INPUT_CLOCK_ZONE_COUNT) && \
-                 (clkZoneCfg->isClkZoneDivEnable) )
-            {
-                srcFreq = ((((float)clkZoneCfg->clkZoneDiv) * clkRxFreq) / 1000.0);
-                if (srcFreq > (float)AASRC_CLK_SRC_MAX_FOR_DIVIDER)
-                {
-                    status = AASRC_EFAIL;
-                }
-            }
-            clkZone = chObj->chCfg.outClkZone;
-            clkZoneCfg = &drvObj->txClkZoneCfg[clkZone];
-            if ( (clkZone <= AASRC_OUTPUT_CLOCK_ZONE_COUNT) && \
-                 (clkZoneCfg->isClkZoneDivEnable) )
-            {
-                srcFreq = ((((float)clkZoneCfg->clkZoneDiv) * clkTxFreq) / 1000.0);
-                if (srcFreq > (float)AASRC_CLK_SRC_MAX_FOR_DIVIDER)
-                {
-                    status = AASRC_EFAIL;
-                }
-            }
-        }
+        status = AASRC_chValidateClockRatios(clkRxFreq, clkTxFreq,
+                                             inClkZoneCfg, outClkZoneCfg);
     }
 
     if (AASRC_SOK == status)
@@ -1636,6 +1613,62 @@ static inline int32_t AASRC_setSRCTransferModeConfig(AASRC_ChHandle chHandle)
 
             default:
                 break;
+        }
+    }
+
+    return status;
+}
+
+static int32_t AASRC_chValidateClockRatios(float clkRxFreq,
+                                           float clkTxFreq,
+                                           AASRC_ClockZoneConfig *inClkZoneCfg,
+                                           AASRC_ClockZoneConfig *outClkZoneCfg)
+{
+    int32_t status = AASRC_SOK;
+    float clkRatio, srcFreq;
+
+    /* Validate frequencies are non-zero */
+    if ((0.0 == clkRxFreq) || (0.0 == clkTxFreq))
+    {
+        status = AASRC_EFAIL;
+    }
+    /* Validate frequencies are within supported range */
+    else if ((clkRxFreq > (float)AASRC_AUDIO_CLK_FREQUENCY_MAX) ||
+             (clkTxFreq > (float)AASRC_AUDIO_CLK_FREQUENCY_MAX))
+    {
+        status = AASRC_EFAIL;
+    }
+    else
+    {
+        /* Validate clock ratio */
+        clkRatio = (clkTxFreq / clkRxFreq);
+
+        if ((clkRatio > (float)AASRC_CLK_RATIO_MAX) ||
+            (clkRatio < (1.0 / ((float)AASRC_CLK_RATIO_MAX))))
+        {
+            status = AASRC_EFAIL;
+        }
+        else
+        {
+            /* Validate input clock zone divider settings */
+            if (inClkZoneCfg->isClkZoneDivEnable)
+            {
+                srcFreq = ((((float)inClkZoneCfg->clkZoneDiv) * clkRxFreq) / 1000.0);
+                if (srcFreq > (float)AASRC_CLK_SRC_MAX_FOR_DIVIDER)
+                {
+                    status = AASRC_EFAIL;
+                }
+            }
+
+            /* Validate output clock zone divider settings */
+            if ((AASRC_SOK == status) && (outClkZoneCfg->isClkZoneDivEnable))
+            {
+                srcFreq = ((((float)outClkZoneCfg->clkZoneDiv) * clkTxFreq) / 1000.0);
+                if (srcFreq > (float)AASRC_CLK_SRC_MAX_FOR_DIVIDER)
+                {
+                    status = AASRC_EFAIL;
+                }
+            }
         }
     }
 

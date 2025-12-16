@@ -1,8 +1,9 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62Dx" --package "ANF" --part "AM62D24-G" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.20.999+143"}
+ * @cliArgs --device "AM62Dx" --part "AM62D24-G" --package "ANF" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @v2CliArgs --device "AM62D-Q1" --package "FCBGA (ANF)" --variant "AM62D24-G" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.24.2+4234"}
  */
 
 /**
@@ -11,6 +12,12 @@
 const gpio       = scripting.addModule("/drivers/gpio/gpio", {}, false);
 const gpio1      = gpio.addInstance();
 const gpio2      = gpio.addInstance();
+const gpio3      = gpio.addInstance();
+const gpio4      = gpio.addInstance();
+const gpio5      = gpio.addInstance();
+const gpio6      = gpio.addInstance();
+const gpio7      = gpio.addInstance();
+const gpio8      = gpio.addInstance();
 const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
 const mmu_armv8  = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
 const mmu_armv81 = mmu_armv8.addInstance();
@@ -29,6 +36,38 @@ gpio2.$name        = "GPIO_PUSH_BUTTON";
 gpio2.trigType     = "RISE_EDGE";
 gpio2.rx           = true;
 gpio2.GPIO.$assign = "UART0_RTSn";
+
+gpio3.$name        = "GPIO_I2C";
+gpio3.pinDir       = "OUTPUT";
+gpio3.trigType     = "FALL_EDGE";
+gpio3.rx           = true;
+gpio3.GPIO.$assign = "I2C0_SCL";
+
+gpio4.$name        = "GPIO_MCAN";
+gpio4.pinDir       = "OUTPUT";
+gpio4.trigType     = "BOTH_EDGE";
+gpio4.rx           = true;
+gpio4.GPIO.$assign = "MCAN0_RX";
+
+gpio5.$name        = "GPIO_OSPI_D1";
+gpio5.pinDir       = "OUTPUT";
+gpio5.trigType     = "RISE_EDGE";
+gpio5.GPIO.$assign = "OSPI0_D1";
+
+gpio6.$name        = "GPIO_OSPI_D2";
+gpio6.pinDir       = "OUTPUT";
+gpio6.trigType     = "FALL_EDGE";
+gpio6.GPIO.$assign = "OSPI0_D2";
+
+gpio7.$name        = "GPIO_INPUT";
+gpio7.trigType     = "RISE_EDGE";
+gpio7.rx           = true;
+gpio7.GPIO.$assign = "GPIO0_57";
+
+gpio8.$name        = "GPIO_OUTPUT";
+gpio8.pinDir       = "OUTPUT";
+gpio8.trigType     = "RISE_EDGE";
+gpio8.GPIO.$assign = "GPIO0_58";
 
 debug_log.enableUartLog        = true;
 debug_log.uartLog.$name        = "CONFIG_UART_CONSOLE";

@@ -1,0 +1,92 @@
+
+[ req ]
+distinguished_name     = req_distinguished_name
+x509_extensions        = v3_ca
+prompt                 = no
+
+dirstring_type = nobmp
+
+[ req_distinguished_name ]
+C                      = US
+ST                     = SC
+L                      = New York
+O                      = Texas Instruments., Inc.
+OU                     = DSP
+CN                     = Albert
+emailAddress           = Albert@gt.ti.com
+
+[ v3_ca ]
+basicConstraints = CA:true
+1.3.6.1.4.1.294.1.3 = ASN1:SEQUENCE:swrv
+1.3.6.1.4.1.294.1.9 = ASN1:SEQUENCE:ext_boot_info
+
+
+
+[ swrv ]
+swrv = INTEGER:1
+
+[ ext_boot_info ]
+extImgSize = INTEGER:1912991754
+numComp = INTEGER:5
+sbl = SEQUENCE:sbl
+fw = SEQUENCE:sysfw
+bd1 = SEQUENCE:sysfw_inner_cert
+bd2 = SEQUENCE:boardcfg
+bd3 = SEQUENCE:sbl data
+
+
+[ sbl ]
+
+compType = INTEGER:1
+bootCore = INTEGER:16
+compOpts = INTEGER:0
+destAddr = FORMAT:HEX,OCT:72000000
+compSize = INTEGER:1912827074
+shaType = OID:2.16.840.1.101.3.4.2.3
+shaValue = FORMAT:HEX,OCT:0560c3cd4997efcc600dfc7c69261d81cd7abfc5cab02fb734c94661e7f11a140756ec90111009add6e824ab47be9004c0aa2b050a1467463c38401c4a0467e2
+
+[ sysfw ]
+
+compType = INTEGER:2
+bootCore = INTEGER:0
+compOpts = INTEGER:0
+destAddr = FORMAT:HEX,OCT:00040000
+compSize = INTEGER:159744
+shaType = OID:2.16.840.1.101.3.4.2.3
+shaValue = FORMAT:HEX,OCT:17654f59b34d92e1b7ec76fab9dce31f0b7c847a5370769046904a94d366f31bce08724c47699ee52dccc4ae5a72e3941239130e35163d27d065f1c7a05ffbd1
+
+
+[ sysfw_inner_cert ]
+
+compType = INTEGER:3
+bootCore = INTEGER:0
+compOpts = INTEGER:0
+destAddr = FORMAT:HEX,OCT:00000000
+compSize = INTEGER:1684
+shaType = OID:2.16.840.1.101.3.4.2.3
+shaValue = FORMAT:HEX,OCT:6106458cfa44f4d3aa7f1fe51bcd37322e80aa082702bd317aa71b97c589153de6851ecb194ab51eb5e11840b0826ee8c1a57db1db312644528077cad3b51f29
+
+
+[ boardcfg ]
+
+compType = INTEGER:18
+bootCore = INTEGER:0
+compOpts = INTEGER:0
+destAddr = FORMAT:HEX,OCT:00067000
+compSize = INTEGER:1818
+shaType = OID:2.16.840.1.101.3.4.2.3
+shaValue = FORMAT:HEX,OCT:4a6cd01010d9c8ef9ef8be657459e8fb1e96d6b970bc160716c734fffcb4a78073653ee17d825c4d949cc2d1409733e31f494ec2684618b1191323400144c52c
+
+
+[ sbl data ]
+
+compType = INTEGER:17
+bootCore = INTEGER:16
+compOpts = INTEGER:0
+destAddr = FORMAT:HEX,OCT:720FC800
+compSize = INTEGER:1434
+shaType = OID:2.16.840.1.101.3.4.2.3
+shaValue = FORMAT:HEX,OCT:91d703d5716ba3d35e3a55b3992843c7cb3d611eb13289bc23efe3e70a841a26ee14b22cd5f9e419d9d8231d6e9a47b1eb3400383897807b0b13324218d0d809
+
+
+

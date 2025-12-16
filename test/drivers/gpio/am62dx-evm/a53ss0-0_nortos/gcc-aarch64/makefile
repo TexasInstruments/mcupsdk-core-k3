@@ -41,6 +41,7 @@ endif
 FILES_common := \
 	test_gpio.c \
 	main.c \
+	board.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
 	ti_board_config.c \
@@ -92,6 +93,7 @@ LNK_FILES_common = \
 LIBS_PATH_common = \
 	-L${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
 	-L${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	-L${MCU_PLUS_SDK_PATH}/source/board/lib \
 	-L${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	-L$(CGT_GCC_AARCH64_PATH)/lib \
 
@@ -119,6 +121,7 @@ LIBS_NAME = \
 LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	$(CGT_GCC_AARCH64_PATH)/lib \
 

@@ -39,6 +39,7 @@ endif
 
 FILES_common := \
 	test_gpio.c \
+	test_gpio_multi_thread.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -61,10 +62,10 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/r5f \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
-	-I${MCU_PLUS_SDK_PATH}/test/drivers/gpio/am62dx-evm \
 	-Igenerated \
 
 DEFINES_common := \
+	-DDM_R5F_CORE \
 	-DSOC_AM62DX \
 	-DENABLE_SCICLIENT_DIRECT \
 
@@ -78,6 +79,7 @@ CFLAGS_common := \
 	-g \
 	-Wno-gnu-variable-sized-type-not-at-end \
 	-Wno-unused-function \
+	-DENABLE_MT_TESTS \
 
 CFLAGS_cpp_common := \
 	-Wno-c99-designator \

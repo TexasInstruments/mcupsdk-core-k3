@@ -39,7 +39,9 @@ endif
 
 FILES_common := \
 	test_gpio.c \
+	test_gpio_multi_thread.c \
 	main.c \
+	board.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
 	ti_board_config.c \
@@ -61,10 +63,10 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/c75x \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
-	-I${MCU_PLUS_SDK_PATH}/test/drivers/gpio/am62dx-evm \
 	-Igenerated \
 
 DEFINES_common := \
+	-DC75_CORE \
 	-DSOC_AM62DX \
 
 CFLAGS_common := \
@@ -83,6 +85,7 @@ CFLAGS_common := \
 	--diag_suppress=70 \
 	-DBUILD_C7X \
 	-DBUILD_C7X_1 \
+	-DENABLE_MT_TESTS \
 
 CFLAGS_debug := \
 	-Dxdc_target_name__=C71 \

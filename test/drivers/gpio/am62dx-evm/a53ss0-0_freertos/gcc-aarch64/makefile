@@ -40,7 +40,9 @@ endif
 
 FILES_common := \
 	test_gpio.c \
+	test_gpio_multi_thread.c \
 	main.c \
+	board.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
 	ti_board_config.c \
@@ -61,7 +63,6 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53 \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/a53 \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
-	-I${MCU_PLUS_SDK_PATH}/test/drivers/gpio/am62dx-evm \
 	-Igenerated \
 
 DEFINES_common := \
@@ -82,6 +83,7 @@ CFLAGS_common := \
 	-Wno-unused-but-set-variable \
 	-fdata-sections \
 	-ffunction-sections \
+	-DENABLE_MT_TESTS \
 
 CFLAGS_debug := \
 	-D_DEBUG_=1 \

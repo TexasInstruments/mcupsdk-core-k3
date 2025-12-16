@@ -235,6 +235,7 @@ const example_file_list = [
     "test/board/eeprom/.project/project.js",
     "test/board/hyperRam/.project/project.js",
     "test/drivers/gpio/.project/project.js",
+    "test/drivers/gpio/.project/project_am275x_wkupr5.js",
     "test/drivers/gtc/.project/project.js",
     "test/drivers/gtc/.project/project_am275x_wkupr5.js",
     "test/drivers/i2c/.project/project.js",

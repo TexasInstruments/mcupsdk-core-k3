@@ -95,7 +95,7 @@ SBL Total Time Taken             |      55757
 
 For how to enable Fast XSPI boot refer \ref FAST_XSPI_BOOTMODE_GUIDE
  - GPIO toggle time from R5FSS0_0 (Measured from PORz)
-   - 47 ms
+   - 53 ms
 
  - Cores booted by SBL : r5fss0-0, r5fss0-1, r5fss1-0, r5fss1-1, c75ss0-0, c75ss1-0
  - R5FSS0-0 image size = ~ 1 MB and remaining cores by default ipc rpmsg images
@@ -187,7 +187,7 @@ HS200  | 	   1        |       79.73		 |     157.23
 
 **wkup-r5f0-0:**
 
-DQS Tuning Algorithm        |    Tuning Time (ms)    
+DQS Tuning Algorithm        |    Tuning Time (ms)
 ----------------------------|------------------------
 Default Tuning Window       |          5.29 ms
 Fast Tuning Window          |          5.36 ms

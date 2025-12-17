@@ -53,8 +53,6 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-/* Maximum number of bytes to cleanup at initialization */
-#define TRACE_LOG_MAX_NUM_CLEAN_BYTES   (100U)
 /* Log Buffer Size */
 #define TRACE_LOG_BUF_SIZE              (20U * 1024U)
 
@@ -96,17 +94,8 @@ int32_t trace_print_buffer_string(const uint8_t *str)
 
 static void trace_internal_print_buffer_init(void)
 {
-    uint8_t *pos;
-    uint32_t index;
-
+    memset(tracelog_rmpm, 0, TRACE_LOG_BUF_SIZE);
     logbuf_pos = &tracelog_rmpm[0];
-
-    pos = logbuf_pos;
-
-    for (index = 0U; index < TRACE_LOG_MAX_NUM_CLEAN_BYTES; index++) {
-        *pos = 0U;
-        pos++;
-    }
 }
 
 /**

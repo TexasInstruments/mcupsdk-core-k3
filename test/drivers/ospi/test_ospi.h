@@ -64,6 +64,7 @@
 /* ========================================================================== */
 
 #define TEST_OSPI_FLASH_OFFSET_BASE        (0x200000U)
+#define TEST_OSPI_FLASH_OFFSET_VERIFY      (0x400000U)
 #define TEST_OSPI_FLASH_PHY_TUNING_OFFSET  (0x300000U)
 #define TEST_OSPI_DATA_SIZE                (256U) /* has to be 256 B aligned */
 #define TEST_OSPI_DATA_REPEAT_COUNT        (8U)
@@ -86,6 +87,8 @@
 #define TEST_OSPI_MAX_CHUNK_SIZE           (TEST_OSPI_1KB_SIZE*16U)
 #define TEST_OSPI_MIN_CHUNK_SIZE           (16U)
 #define TEST_OSPI_TEST_FREQUENCY_50MHZ     (50000000U)
+#define TEST_OSPI_SDR_BAUD_RATE_DIV        (4U)   /* Baud rate divisor for SDR mode */
+#define TEST_OSPI_DDR_BAUD_RATE_DIV        (8U)   /* Baud rate divisor for DDR mode */
 
 #if defined (SOC_AM275X) || defined(SOC_J722S)
 #if defined(__C7504__) || defined(__C7524__)
@@ -114,7 +117,7 @@
 #error Increase the TEST_OSPI_MAX_TEST_SIZE.
 #endif
 
-#define TEST_OSPI_8S8S8S_SUPPORTED              (0U)
+#define TEST_OSPI_8S8S8S_SUPPORTED              (1U)
 
 #define TEST_DEVICE_SIZE    (128U * 1024U * 1024U)  /* 128 MB */
 #define TEST_PAGE_SIZE      (256U)                   /* 256 bytes */

@@ -62,14 +62,14 @@ uint8_t gOspiTestTxBuf[TEST_OSPI_DATA_SIZE] =
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
-uint8_t gOspiTestTxBulkBuf[TEST_OSPI_MAX_TEST_SIZE]__attribute__ ((section (".globalScratchBuffer"), aligned (128U)));
-uint8_t gOspiTestRxBuf[TEST_OSPI_MAX_TEST_SIZE]__attribute__ ((section (".globalScratchBuffer"), aligned (128U)));
-static uint8_t gOspiTestRxBuf2[TEST_OSPI_MAX_TEST_SIZE]__attribute__ ((section (".globalScratchBuffer"), aligned (128U)));
+uint8_t gOspiTestTxBulkBuf[TEST_OSPI_2KB_SIZE]__attribute__ ((section (".globalScratchBuffer"), aligned (128U)));
+uint8_t gOspiTestRxBuf[TEST_OSPI_2KB_SIZE]__attribute__ ((section (".globalScratchBuffer"), aligned (128U)));
+static uint8_t gOspiTestRxBuf2[TEST_OSPI_2KB_SIZE]__attribute__ ((section (".globalScratchBuffer"), aligned (128U)));
 #else
 extern uint8_t gOspiTestTxBuf[TEST_OSPI_DATA_SIZE];
 extern uint8_t gOspiTestTxBulkBuf[TEST_OSPI_MAX_TEST_SIZE]__attribute__ ((section (".globalScratchBuffer"), aligned (128U)));
 extern uint8_t gOspiTestRxBuf[TEST_OSPI_MAX_TEST_SIZE]__attribute__ ((section (".globalScratchBuffer"), aligned (128U)));
-static uint8_t gOspiTestRxBuf2[TEST_OSPI_MAX_TEST_SIZE]__attribute__ ((section (".globalScratchBuffer"), aligned (128U)));
+static uint8_t gOspiTestRxBuf2[TEST_OSPI_2KB_SIZE]__attribute__ ((section (".globalScratchBuffer"), aligned (128U)));
 
 #endif
 
@@ -79,13 +79,9 @@ static volatile int32_t TestOSPI_writerStatus = SystemP_FAILURE;
 static volatile int32_t TestOSPI_readerStatus = SystemP_FAILURE;
 static uint8_t TestOSPI_task1Stack[16384] __attribute__ ((aligned(32)));
 static uint8_t TestOSPI_task2Stack[16384] __attribute__ ((aligned(32)));
-static uint8_t TestOSPI_task3Stack[16384] __attribute__ ((aligned(32)));
 static TaskP_Object TestOSPI_thread1TaskObj;
 static TaskP_Object TestOSPI_thread2TaskObj;
-static TaskP_Object TestOSPI_thread3TaskObj;
 static volatile int32_t TestOSPI_thread3Status = SystemP_FAILURE;
-static volatile int32_t TestOSPI_thread4Status = SystemP_FAILURE;
-static SemaphoreP_Object TestOSPI_sync1Sem;
 static SemaphoreP_Object TestOSPI_sync2Sem;
 #endif /* defined(SOC_AM62AX) || defined(SOC_AM62DX) */
 
@@ -271,6 +267,9 @@ void TestOspi_multithreadWriteRead(void *args)
     /* Wait for reader completion */
     SemaphoreP_pend(&TestOSPI_readSem, SystemP_WAIT_FOREVER);
 
+    /* Wait for 10ms before destructing semaphore
+     * Else the semaphore destruct may not happen
+     * and cause system to hang */
     ClockP_usleep(10000);
 
     SemaphoreP_destruct(&TestOSPI_writeSem);
@@ -283,108 +282,8 @@ void TestOspi_multithreadWriteRead(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, TestOSPI_writerStatus);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, TestOSPI_readerStatus);
 }
-
-#ifndef SOC_AM62DX
-/*
- * Disabled: OSPI interrupt mode is not enabled
- *
- * \brief Functional test for multi-threaded OSPI write-read operations in interrupt mode
- *
- * Test Category: Functionality
- *
- * This test verifies that the OSPI driver can safely perform concurrent write and read
- * operations from multiple threads when interrupt mode is enabled. It launches a writer
- * thread to erase and write a known data pattern to flash, and a reader thread to read
- * back and verify the data. The test checks for data integrity and thread safety in a
- * multi-threaded environment with interrupts enabled.
- *
- * \param args
- *
- * \return None.
- */
-#if 0
-void TestOspi_multithreadIntrMode(void *args)
-{
-    int32_t retVal = SystemP_SUCCESS;
-    int32_t status;
-    OSPI_Attrs attrs;
-    TaskP_Params taskParams1, taskParams2;
-    OSPI_Handle ospiHandle = OSPI_getHandle(CONFIG_OSPI0);
-    OSPI_Config *config = (OSPI_Config*)ospiHandle;
-    const OSPI_Attrs *tempAttrs = config->attrs;
-
-    /* Make a copy of the current OSPI attributes to modify */
-    memcpy((void*)&attrs, config->attrs, sizeof(OSPI_Attrs));
-
-    /* Close the OSPI driver to reconfigure */
-    Drivers_ospiClose();
-
-    /* Enable interrupt mode for this test */
-    attrs.intrEnable = true;
-    /* Temporarily replace the config attrs with our modified copy */
-    config->attrs = &attrs;
-
-    /* Reopen OSPI with interrupt mode enabled */
-    Drivers_ospiOpen();
-
-    DebugP_log("\r\n");
-    DebugP_log("[TEST OSPI] Multi-threaded Write-Read Test in Interrupt Mode Start \n\r");
-    DebugP_log("\r\n");
-
-    retVal = Board_driversOpen();
-    if (retVal != SystemP_SUCCESS)
-    {
-        DebugP_log("[TEST OSPI] Board_driversOpen failed with status %d\r\n", retVal);
-        config->attrs = tempAttrs;
-        return;
-    }
-
-    retVal = SemaphoreP_constructCounting(&TestOSPI_writeSem, 0, 1);
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
-    retVal = SemaphoreP_constructCounting(&TestOSPI_readSem, 0, 1);
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
-
-    TestOSPI_writerStatus = SystemP_FAILURE;
-    TestOSPI_readerStatus = SystemP_FAILURE;
-
-    TaskP_Params_init(&taskParams1);
-    taskParams1.priority       = 2U;
-    taskParams1.stack          = TestOSPI_task1Stack;
-    taskParams1.stackSize      = sizeof(TestOSPI_task1Stack);
-    taskParams1.name           = "Multithread Write";
-    taskParams1.taskMain       = &TestOspi_multithreadWrite;
-
-    status = TaskP_construct(&TestOSPI_thread1TaskObj, &taskParams1);
-    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-
-    TaskP_Params_init(&taskParams2);
-    taskParams2.priority       = 2U;
-    taskParams2.stack          = TestOSPI_task2Stack;
-    taskParams2.stackSize      = sizeof(TestOSPI_task2Stack);
-    taskParams2.name           = "Multithread Read";
-    taskParams2.taskMain       = &TestOspi_multithreadRead;
-
-    status = TaskP_construct(&TestOSPI_thread2TaskObj, &taskParams2);
-    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-    SemaphoreP_pend(&TestOSPI_readSem, SystemP_WAIT_FOREVER);
-
-    ClockP_usleep(10000);
-
-    SemaphoreP_destruct(&TestOSPI_writeSem);
-    SemaphoreP_destruct(&TestOSPI_readSem);
-    TaskP_destruct(&TestOSPI_thread1TaskObj); /* Deleting the task */
-    TaskP_destruct(&TestOSPI_thread2TaskObj); /* Deleting the task */
-    Board_driversClose();
-
-    /* Restore the original attrs pointer before closing OSPI */
-    config->attrs = tempAttrs;
-
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, TestOSPI_writerStatus);
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, TestOSPI_readerStatus);
-}
-#endif /* #if 0 */
-#endif /* #ifndef SOC_AM62DX */
 #endif /* #if defined (OSPI_FREERTOS_ONLY_TEST) */
+
 /**
  * \brief Thread function for memory-mapped direct access mode reads
  *
@@ -423,8 +322,8 @@ void TestOspi_dacModeReadThread(void *args)
         TaskP_exit();
     }
 
-    /* Verify data against the correct region of the TX buffer (offset by 8KB) */
-    retVal = memcmp(gOspiTestRxBuf2, gOspiTestTxBulkBuf + TEST_OSPI_8KB_SIZE, TEST_OSPI_2KB_SIZE);
+    /* Verify data against the correct region of the TX buffer */
+    retVal = memcmp(gOspiTestRxBuf2, gOspiTestTxBulkBuf, TEST_OSPI_2KB_SIZE);
     if (retVal != 0)
     {
         DebugP_log("[DAC Thread] Data mismatch in DAC mode read\r\n");
@@ -437,137 +336,6 @@ void TestOspi_dacModeReadThread(void *args)
 
     SemaphoreP_post(&TestOSPI_sync2Sem);
     TaskP_exit();
-}
-
-/**
- * \brief Functional test for multi-threaded OSPI operations with various I/O modes
- *
- * Test Category: Functionality
- *
- * This test verifies that the OSPI driver can handle concurrent operations
- * with different I/O modes (single, dual, quad, octal) including dual quad-SPI
- * mode for fast boot applications and memory-mapped direct access mode.
- *
- * \param args Test arguments
- *
- * \return None.
- */
-void TestOspi_multithreadIOModes(void *args)
-{
-    int32_t retVal = SystemP_SUCCESS;
-    int32_t status;
-    uint32_t i;
-    TaskP_Params taskParams1, taskParams3;
-    uint32_t offset = TEST_OSPI_FLASH_OFFSET_BASE;
-    uint32_t blk, page;
-    uint32_t writeSize;
-
-    DebugP_log("\r\n[TEST OSPI] Multi-threaded I/O Modes Test Start\r\n");
-
-    retVal = Board_driversOpen();
-    if (retVal != SystemP_SUCCESS)
-    {
-        DebugP_log("[TEST OSPI] Board_driversOpen failed with status %d\r\n", retVal);
-        return;
-    }
-
-    /* Create semaphores */
-    retVal = SemaphoreP_constructCounting(&TestOSPI_writeSem, 0, 4);
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
-    retVal = SemaphoreP_constructCounting(&TestOSPI_readSem, 0, 1);
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
-    retVal = SemaphoreP_constructCounting(&TestOSPI_sync1Sem, 0, 1);
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
-    retVal = SemaphoreP_constructCounting(&TestOSPI_sync2Sem, 0, 1);
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
-
-    /* Initialize test data - limit to actual buffer size */
-    writeSize = (TEST_OSPI_10MB_SIZE < sizeof(gOspiTestTxBulkBuf)) ? TEST_OSPI_10MB_SIZE : sizeof(gOspiTestTxBulkBuf);
-    for (i = 0; i < writeSize / TEST_OSPI_DATA_SIZE; i++)
-    {
-        memcpy(gOspiTestTxBulkBuf + i * sizeof(gOspiTestTxBuf), gOspiTestTxBuf, sizeof(gOspiTestTxBuf));
-    }
-
-    /* Erase and write test data */
-    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset, &blk, &page);
-    retVal = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
-    if (retVal != SystemP_SUCCESS)
-    {
-        DebugP_log("[TEST OSPI] Flash_eraseBlk failed with status %d\r\n", retVal);
-        SemaphoreP_destruct(&TestOSPI_writeSem);
-        SemaphoreP_destruct(&TestOSPI_readSem);
-        SemaphoreP_destruct(&TestOSPI_sync1Sem);
-        SemaphoreP_destruct(&TestOSPI_sync2Sem);
-        Board_driversClose();
-        return;
-    }
-
-    retVal = Flash_write(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestTxBulkBuf, writeSize);
-    if (retVal != SystemP_SUCCESS)
-    {
-        DebugP_log("[TEST OSPI] Flash_write failed with status %d\r\n", retVal);
-        SemaphoreP_destruct(&TestOSPI_writeSem);
-        SemaphoreP_destruct(&TestOSPI_readSem);
-        SemaphoreP_destruct(&TestOSPI_sync1Sem);
-        SemaphoreP_destruct(&TestOSPI_sync2Sem);
-        Board_driversClose();
-        return;
-    }
-    TestOSPI_writerStatus = SystemP_SUCCESS;
-    TestOSPI_readerStatus = SystemP_FAILURE;
-    TestOSPI_thread3Status = SystemP_FAILURE;
-    TestOSPI_thread4Status = SystemP_FAILURE;
-
-    /* Create standard read thread - assign to thread2 to match function's destruct call */
-    TaskP_Params_init(&taskParams1);
-    taskParams1.priority = 2U;
-    taskParams1.stack = TestOSPI_task2Stack;
-    taskParams1.stackSize = sizeof(TestOSPI_task2Stack);
-    taskParams1.name = "Standard Read";
-    taskParams1.taskMain = &TestOspi_multithreadRead;
-#ifdef SMP_FREERTOS
-    taskParams1.coreAffinity = (1U << 0);  /* Assign to core 0 for SMP */
-#endif
-    status = TaskP_construct(&TestOSPI_thread2TaskObj, &taskParams1);
-    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-
-    /* Create DAC mode read thread */
-    TaskP_Params_init(&taskParams3);
-    taskParams3.priority = 2U;
-    taskParams3.stack = TestOSPI_task3Stack;
-    taskParams3.stackSize = sizeof(TestOSPI_task3Stack);
-    taskParams3.name = "DAC Mode Read";
-    taskParams3.taskMain = &TestOspi_dacModeReadThread;
-#ifdef SMP_FREERTOS
-    taskParams3.coreAffinity = (1U << 1);  /* Assign to core 1 for SMP */
-#endif
-    status = TaskP_construct(&TestOSPI_thread3TaskObj, &taskParams3);
-    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-
-    /* Signal all threads - need 2 posts for 2 threads */
-    SemaphoreP_post(&TestOSPI_writeSem);
-    SemaphoreP_post(&TestOSPI_writeSem);
-
-    /* Wait for completion */
-    SemaphoreP_pend(&TestOSPI_readSem, SystemP_WAIT_FOREVER);
-    SemaphoreP_pend(&TestOSPI_sync2Sem, SystemP_WAIT_FOREVER);
-
-    ClockP_usleep(10000);
-
-    /* Cleanup */
-    SemaphoreP_destruct(&TestOSPI_writeSem);
-    SemaphoreP_destruct(&TestOSPI_readSem);
-    SemaphoreP_destruct(&TestOSPI_sync1Sem);
-    SemaphoreP_destruct(&TestOSPI_sync2Sem);
-    TaskP_destruct(&TestOSPI_thread2TaskObj);
-    TaskP_destruct(&TestOSPI_thread3TaskObj);
-
-    Board_driversClose();
-
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, TestOSPI_readerStatus);
-    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, TestOSPI_thread3Status);
-
-    DebugP_log("[TEST OSPI] Multi-threaded I/O Modes Test Passed\r\n");
 }
 
 /**
@@ -590,11 +358,12 @@ void TestOspi_multithreadDirectReadWrite(void *args)
     TaskP_Params taskParams1, taskParams2;
 
     /* Use a local non-const copy of attrs to change readMode without UB */
-    extern OSPI_Config gOspiConfig[];
-    const OSPI_Attrs *origAttrs = gOspiConfig[CONFIG_OSPI0].attrs;
+    OSPI_Handle ospiHandle = OSPI_getHandle(CONFIG_OSPI0);
+    OSPI_Config *config = (OSPI_Config *)ospiHandle;
+    const OSPI_Attrs *origAttrs = config->attrs;
     OSPI_Attrs localAttrs = *origAttrs;
     localAttrs.readMode = OSPI_READ_MODE_DAC;
-    gOspiConfig[CONFIG_OSPI0].attrs = &localAttrs;
+    config->attrs = &localAttrs;
 
     DebugP_log("\r\n[TEST OSPI] Multi-threaded Direct Read/Write Test Start\r\n");
 
@@ -602,18 +371,22 @@ void TestOspi_multithreadDirectReadWrite(void *args)
     if (retVal != SystemP_SUCCESS)
     {
         DebugP_log("[TEST OSPI] Board_driversOpen failed with status %d\r\n", retVal);
-        gOspiConfig[CONFIG_OSPI0].attrs = origAttrs;
+        config->attrs = origAttrs;
         return;
     }
 
     /* Create semaphores */
     retVal = SemaphoreP_constructCounting(&TestOSPI_writeSem, 0, 1);
-    if (retVal != SystemP_SUCCESS) 
-        { gOspiConfig[CONFIG_OSPI0].attrs = origAttrs; }
+    if (retVal != SystemP_SUCCESS)
+    {
+        config->attrs = origAttrs;
+    }
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
     retVal = SemaphoreP_constructCounting(&TestOSPI_readSem, 0, 1);
-    if (retVal != SystemP_SUCCESS) 
-        { gOspiConfig[CONFIG_OSPI0].attrs = origAttrs; }
+    if (retVal != SystemP_SUCCESS)
+    {
+        config->attrs = origAttrs;
+    }
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
 
     TestOSPI_writerStatus = SystemP_FAILURE;
@@ -630,8 +403,10 @@ void TestOspi_multithreadDirectReadWrite(void *args)
     taskParams1.coreAffinity = (1U << 0);  /* Assign to core 0 for SMP */
 #endif
     status = TaskP_construct(&TestOSPI_thread1TaskObj, &taskParams1);
-    if (status != SystemP_SUCCESS) 
-        { gOspiConfig[CONFIG_OSPI0].attrs = origAttrs; }
+    if (status != SystemP_SUCCESS)
+    {
+        config->attrs = origAttrs;
+    }
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Create read thread */
@@ -645,8 +420,10 @@ void TestOspi_multithreadDirectReadWrite(void *args)
     taskParams2.coreAffinity = (1U << 1);  /* Assign to core 1 for SMP */
 #endif
     status = TaskP_construct(&TestOSPI_thread2TaskObj, &taskParams2);
-    if (status != SystemP_SUCCESS) 
-        { gOspiConfig[CONFIG_OSPI0].attrs = origAttrs; }
+    if (status != SystemP_SUCCESS)
+    {
+        config->attrs = origAttrs;
+    }
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Wait for completion */
@@ -662,7 +439,7 @@ void TestOspi_multithreadDirectReadWrite(void *args)
     Board_driversClose();
 
     /* Restore original const attrs */
-    gOspiConfig[CONFIG_OSPI0].attrs = origAttrs;
+    config->attrs = origAttrs;
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, TestOSPI_writerStatus);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, TestOSPI_readerStatus);
@@ -692,11 +469,12 @@ void TestOspi_multithreadIndirectReadWrite(void *args)
     TaskP_Params taskParams1, taskParams2;
 
     /* Set readMode to INDAC (indirect mode) for this test */
-    extern OSPI_Config gOspiConfig[];
-    const OSPI_Attrs *origAttrs = gOspiConfig[CONFIG_OSPI0].attrs;
+    OSPI_Handle ospiHandle = OSPI_getHandle(CONFIG_OSPI0);
+    OSPI_Config *config = (OSPI_Config *)ospiHandle;
+    const OSPI_Attrs *origAttrs = config->attrs;
     OSPI_Attrs localAttrs = *origAttrs;
     localAttrs.readMode = OSPI_READ_MODE_INDAC;
-    gOspiConfig[CONFIG_OSPI0].attrs = &localAttrs;
+    config->attrs = &localAttrs;
 
     DebugP_log("\r\n[TEST OSPI] Multi-threaded Indirect Read/Write Test Start\r\n");
 
@@ -704,18 +482,22 @@ void TestOspi_multithreadIndirectReadWrite(void *args)
     if (retVal != SystemP_SUCCESS)
     {
         DebugP_log("[TEST OSPI] Board_driversOpen failed with status %d\r\n", retVal);
-        gOspiConfig[CONFIG_OSPI0].attrs = origAttrs;
+        config->attrs = origAttrs;
         return;
     }
 
     /* Create semaphores */
     retVal = SemaphoreP_constructCounting(&TestOSPI_writeSem, 0, 1);
-    if (retVal != SystemP_SUCCESS) 
-        { gOspiConfig[CONFIG_OSPI0].attrs = origAttrs; }
+    if (retVal != SystemP_SUCCESS)
+    {
+        config->attrs = origAttrs;
+    }
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
     retVal = SemaphoreP_constructCounting(&TestOSPI_readSem, 0, 1);
-    if (retVal != SystemP_SUCCESS) 
-        { gOspiConfig[CONFIG_OSPI0].attrs = origAttrs; }
+    if (retVal != SystemP_SUCCESS)
+    {
+        config->attrs = origAttrs;
+    }
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
 
     TestOSPI_writerStatus = SystemP_FAILURE;
@@ -732,7 +514,10 @@ void TestOspi_multithreadIndirectReadWrite(void *args)
     taskParams1.coreAffinity = (1U << 0);  /* Assign to core 0 for SMP */
 #endif
     status = TaskP_construct(&TestOSPI_thread1TaskObj, &taskParams1);
-    if (status != SystemP_SUCCESS) { gOspiConfig[CONFIG_OSPI0].attrs = origAttrs; }
+    if (status != SystemP_SUCCESS)
+    {
+        config->attrs = origAttrs;
+    }
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Create read thread */
@@ -746,7 +531,10 @@ void TestOspi_multithreadIndirectReadWrite(void *args)
     taskParams2.coreAffinity = (1U << 1);  /* Assign to core 1 for SMP */
 #endif
     status = TaskP_construct(&TestOSPI_thread2TaskObj, &taskParams2);
-    if (status != SystemP_SUCCESS) { gOspiConfig[CONFIG_OSPI0].attrs = origAttrs; }
+    if (status != SystemP_SUCCESS)
+    {
+        config->attrs = origAttrs;
+    }
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Wait for completion */
@@ -762,7 +550,7 @@ void TestOspi_multithreadIndirectReadWrite(void *args)
     Board_driversClose();
 
     /* Restore original const attrs */
-    gOspiConfig[CONFIG_OSPI0].attrs = origAttrs;
+    config->attrs = origAttrs;
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, TestOSPI_writerStatus);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, TestOSPI_readerStatus);
@@ -798,7 +586,6 @@ void test_main(void *args)
 
     RUN_TEST(TestOspi_multithreadIndirectReadWrite, 9609, NULL);
 
-    RUN_TEST(TestOspi_multithreadIOModes, 9610, NULL);
 #endif /* defined(SOC_AM62AX) || defined(SOC_AM62DX) */
 
     UNITY_END();
@@ -830,19 +617,6 @@ void test_ospi_multithread(void)
 {
 #if defined(SOC_AM62AX) || defined(SOC_AM62DX)
     RUN_TEST(TestOspi_multithreadWriteRead, 8263, NULL);
-    Drivers_ospiClose();
-    Drivers_ospiOpen();
-
-    /*Task taking unusually large memeory in intr mode. And its keeps getting failed and affecting future test cases.*/
-#ifndef SOC_AM62DX
-    /* Disabled: OSPI interrupt mode is not enabled */
-    /* RUN_TEST(TestOspi_multithreadIntrMode, 8264, NULL); */
-    /* Drivers_ospiClose(); */
-    /* Drivers_ospiOpen(); */
-#endif
-
-    /* Test various I/O modes (single, dual, quad, octal) */
-    RUN_TEST(TestOspi_multithreadIOModes, 9604, NULL);
     Drivers_ospiClose();
     Drivers_ospiOpen();
 

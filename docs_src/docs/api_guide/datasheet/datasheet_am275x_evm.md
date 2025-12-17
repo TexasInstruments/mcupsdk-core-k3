@@ -372,3 +372,12 @@ For Ethernet AVB performance, refer to the page \ref EAVB_PERFORMANCE
  - McASP operating at 48KHz, I2C mode
  - RX to TX pin to pin latency is measured
  - Rx To Tx pin to pin latency ~126us
+
+### ARM R5F - Memory Access latency
+- [32-BIT READ] Self TCM Access Average Latency Per Byte: 0.796875 ns
+- [32-BIT READ] MSRAM Access Average Latency Per Byte: 9.234375 ns
+- [32-BIT READ] Non-Self TCM Access Average Latency Per Byte: 35.320312 ns
+
+- [64-BIT READ] Self TCM Access Average Latency Per Byte: 0.300781 ns
+- [64-BIT READ] MSRAM Access Read Average Latency Per Byte: 4.617188 ns
+- [64-BIT READ] Non-Self TCM Access Read Average Latency Per Byte: 17.660156 ns

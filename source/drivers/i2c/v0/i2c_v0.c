@@ -572,10 +572,12 @@ int32_t I2C_transfer(I2C_Handle handle,
                 }
                 else if(retVal == I2C_STS_ERR_TIMEOUT)
                 {
+                    object->headPtr = NULL;
                     retVal = SystemP_TIMEOUT;
                 }
                 else
                 {
+                    object->headPtr = NULL;
                     retVal = SystemP_FAILURE;
                 }
             }

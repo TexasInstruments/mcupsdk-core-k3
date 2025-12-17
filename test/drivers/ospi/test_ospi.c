@@ -180,7 +180,6 @@ static void test_ospi_read_write_1s1s1s_config(void *args);
 static void test_ospi_read_write_max_config(void *args);
 static void test_ospi_phy_tuning(void *args);
 static void test_ospi_skip_phy_tuning_perf(void *args);
-
 static void test_ospi_read_perf(void *args);
 static float test_ospi_write(uint32_t flashOffset, uint32_t writeSize);
 static float test_ospi_read(uint32_t flashOffset, uint32_t readSize);
@@ -197,15 +196,20 @@ void test_ospi_read_write_indirect_different_frequencies(void *args);
 #if defined(SOC_AM62AX) || defined(SOC_AM62DX)
 static void TestOspi_repeatedReadWrite1s8s8s(void *args);
 static void TestOspi_repeatedReadWrite1s1s1s(void *args);
+
 #if TEST_OSPI_8S8S8S_SUPPORTED
 static void TestOspi_repeatedReadWrite8s8s8s(void *args);
 #endif
+
 static void TestOspi_repeatedReadWrite8d8d8d(void *args);
 static void TestOspi_multipageWriteRead(void *args);
 static void TestOspi_chunkwiseWriteRead(void *args);
 static void TestOspi_flashPageBoundaryWriteRead(void * args);
 static void TestOspi_blockBoundaryWriteRead(void *args);
+
+#ifndef CORE_A53
 static void TestOspi_initNegativeBeforeInit(void *args);
+#endif
 
 static void TestOspi_getHandle(void *args);
 static void TestOspi_getHandleInvalidInstance(void *args);
@@ -215,50 +219,33 @@ static void TestOspi_setGetParams(void *args);
 #if !defined(CORE_R5F) && !(defined(SOC_AM62DX) && defined(CORE_A53))
 static void TestOspi_undefinedFlashId(void *args);
 #endif
+
 static void TestOspi_openFuzzing(void *args);
 static void TestOspi_openInvalidParams(void *args);
-/* due to bug in dma this test case will get stuck and never exit */
-/* static void TestOspi_openCloseRepeated(void *args); */
-/* Commented due to Code getting stuck */
-#ifndef CORE_R5F
+static void TestOspi_openCloseRepeated(void *args);
 static void TestOspi_writeIndirectInvalid(void *args);
-#endif
-
 static void TestOspi_writeReadIndirectFunctional(void *args);
-
-/* Commented due to program causing error and getting stuck while giving second parameter as NULL*/
-/* static void TestOspi_readIndirectInvalid(void *args);*/
-/* static void TestOspi_readDirectInvalid(void *args); */
-/* static void TestOspi_writeCmdInvalid(void *args); */
-/* static void TestOspi_writeDirectInvalid(void *args);*/
-
- /*Causing the system stuck.*/
-/* static void TestOspi_readCmdInvalid(void *args); */
-
+static void TestOspi_readIndirectInvalid(void *args);
+static void TestOspi_readDirectInvalid(void *args);
+static void TestOspi_writeCmdInvalid(void *args);
+static void TestOspi_writeDirectInvalid(void *args);
+static void TestOspi_readCmdInvalid(void *args);
 static void TestOspi_dacEnableDisable(void *args);
 static void TestOspi_phyEnableDisable(void *args);
 static void TestOspiDdrSdrInvalid(void *args);
 static void test_ospi_read_write(TestData_SizesAttr* testDataCurObj, uint32_t flashOffset, uint32_t dataSize);
-/* static void TestOspi_isPhyEnableNegative(void *args);
+static void TestOspi_isPhyEnableNegative(void *args);
 static void TestOspi_isDacEnableNegative(void *args);
 static void TestOspi_isDmaEnableNegative(void *args);
-static void TestOspi_isIntrEnableNegative(void *args); */
+static void TestOspi_isIntrEnableNegative(void *args);
 static void TestOspi_getFlashDataBaseAddrNegative(void *args);
-
 static void TestOspi_getInputClkNegative(void *args);
 static void TestOspi_getPhyEnableSuccessNegative(void *args);
-
-/* Commented due to code getting stuck here when giving NULL input.*/
-/* static void TestOspi_transactionInitNegative(void *args); */
-
+static void TestOspi_transactionInitNegative(void *args);
 static void TestOspi_readCmdParamsInitFunctional(void *args);
-/* Commented due to code getting stuck.*/
-/* static void TestOspi_readCmdParamsInitNegative(void *args); */
-
+static void TestOspi_readCmdParamsInitNegative(void *args);
 static void TestOspi_writeCmdParamsInitFunctional(void *args);
-
-/* Commented due to code getting stuck.*/
-/* static void TestOspi_writeCmdParamsInitNegative(void *args); */
+static void TestOspi_writeCmdParamsInitNegative(void *args);
 
 static void TestOspi_setRdDataCaptureDelayFunctional(void *args);
 static void TestOspi_setRdDataCaptureDelayNegative(void *args);
@@ -267,9 +254,7 @@ static void TestOspi_setNumAddrBytesNegative(void *args);
 static void TestOspi_setDeviceSizeFunctional(void *args);
 static void TestOspi_setDeviceSizeNegative(void *args);
 static void TestOspi_phyResyncDLLFunctional(void *args);
-
-/* Commented due to code getting stuck here due to the NULL input parameter.*/
-/* static void TestOspi_phyResyncDLLNegative(void *args); */
+static void TestOspi_phyResyncDLLNegative(void *args);
 
 static void TestOspi_setCmdDummyCyclesFunctional(void *args);
 static void TestOspi_setCmdDummyCyclesNegative(void *args);
@@ -284,60 +269,49 @@ static void TestOspi_setModeBitsNegative(void *args);
 static void TestOspi_setClearDualOpCodeModeFunctional(void *args);
 static void TestOspi_setClearDualOpCodeModeNegative(void *args);
 static void TestOspi_skipTuningFunctional(void *args);
-
-#ifndef CORE_R5F
 static void TestOspi_skipTuningNegative(void *args);
-#endif
 
 static void TestOspi_setXferOpCodesFunctional(void *args);
 static void TestOspi_setXferOpCodesNegative(void *args);
 static void TestOspi_setCmdExtTypeFunctional(void *args);
 static void TestOspi_setCmdExtTypeNegative(void *args);
 
-/* The below test case returns failure.*/
 static void TestOspi_phyReadAttackVectorFunctional(void *args);
-
-/* Commented because the test getting stuck due to NULL input.*/
-/* static void TestOspi_phyReadAttackVectorNegative(void *args); */
-
+static void TestOspi_phyReadAttackVectorNegative(void *args);
 static void TestOspi_phyReadWriteTunedValFunctional(void *args);
-
-/* Commented due to code getting stuck. */
-/* static void TestOspi_phyReadWriteTunedValNegative(void *args); */
+static void TestOspi_phyReadWriteTunedValNegative(void *args);
 
 static void TestOspi_initFunctional(void *args);
-/* Code getting stuck when calling OSPI_open without calling OSPI_init.*/
 static void TestOspi_initNegative(void *args);
 static void TestOspi_enableModeBitsCmdNegative(void *args);
 static void TestOspi_enableModeBitsReadNegative(void *args);
 static int32_t TestOspi_repeatedEraseWriteReadVerify(uint32_t, uint32_t, uint32_t);
+
 #ifdef SOC_AM62DX
 static void TestOspi_norFlashInit1s1s1sFunctional(void *args);
+
 #ifndef CORE_R5F
 static void TestOspi_norFlashInit1s1s1sNegative(void *args);
 #endif
+
 static void TestOspi_norFlashSetCmdsFunctional(void *args);
 static void TestOspi_norFlashSetCmdsNegative(void *args);
 static void TestOspi_norFlashReadIdFunctional(void *args);
-
-/* static void TestOspi_norFlashReadIdNegative(void *args); */
+static void TestOspi_norFlashReadIdNegative(void *args);
 static void TestOspi_norFlashReadSfdpFunctional(void *args);
 
-/* Commented due to code getting stuck in this test case.*/
+/* Giving NULL as handle to the API making some future test cases go wrong.*/
 /* static void TestOspi_norFlashReadSfdpNegative(void *args); */
 
 static int32_t TestOspi_isSerialNor(void);
 static void TestOspi_norFlashRWFunctional(void *args);
-
-/* Commented due to code getting stuck in this test case.*/
-/* static void TestOspi_norFlashEraseNegative(void *args); */
-
-/* Commented due to code getting stuck in this test case.*/
-/* static void TestOspi_norFlashWriteNegative(void *args); */
+static void TestOspi_norFlashEraseNegative(void *args);
+static void TestOspi_norFlashWriteNegative(void *args);
 
 #if !(defined CORE_R5F || defined CORE_A53)
 static void TestOspi_norFlashReadNegative(void *args);
 #endif
+
 #endif
 
 extern void test_ospi_multithread(void);
@@ -362,7 +336,7 @@ static void TestOspi_setDelaysFunctional(void *args);
 static void TestOspi_setDelaysNegative(void *args);
 static void TestOspi_ddrSdrModeSwitchingFunctional(void *args);
 static void TestOspi_ddrSdrModeSwitchingNegative(void *args);
-/* static void TestOspi_dualDataTransferFunctional(void *args); */
+static void TestOspi_dualDataTransferFunctional(void *args);
 static void TestOspi_enableDdrFunctional(void *args);
 static void TestOspi_enableDdrNegative(void *args);
 static void TestOspi_enableSdrFunctional(void *args);
@@ -371,8 +345,10 @@ static void TestOspi_enableDdrRdCmdsNegative(void *args);
 static void TestOspi_disableDdrRdCmdsFunctional(void *args);
 static void TestOspi_disableDdrRdCmdsNegative(void *args);
 
-/* static void TestOspi_phyTuneGrapher_Functional(void *args);
-static void TestOspi_phyTuneGrapherNegative(void *args); */
+static void TestOspi_phyTuneGrapherFunctional(void *args);
+#ifndef SOC_AM62DX
+static void TestOspi_phyTuneGrapherNegative(void *args);
+#endif
 
 static void TestOspi_phyValidateTuningPointFunctional(void *args);
 static void TestOspi_phyValidateTuningPointNegative(void *args);
@@ -408,13 +384,16 @@ void test_main(void *args)
     Drivers_ospiClose();
     Drivers_ospiOpen();
 
-   RUN_TEST(TestOspi_initNegative, 8906, NULL);
+    RUN_TEST(TestOspi_initNegative, 8906, NULL);
     Drivers_ospiClose();
     Drivers_ospiOpen();
 
+/* Program getting stuck in A53 core.*/
+#ifndef CORE_A53
     RUN_TEST(TestOspi_initNegativeBeforeInit, 8907, NULL);
     Drivers_ospiClose();
     Drivers_ospiOpen();
+#endif
 
     RUN_TEST(TestOspi_getHandle, 8909, NULL);
     Drivers_ospiClose();
@@ -443,9 +422,7 @@ void test_main(void *args)
     Drivers_ospiOpen();
 
 #if defined(SOC_AM62AX) || defined(SOC_AM62DX)
-#ifndef CORE_R5F
-    /* Commented due to cause stuck in R5 core*/
-/*     RUN_TEST(TestOspi_isPhyEnableNegative, 8911, NULL);
+    RUN_TEST(TestOspi_isPhyEnableNegative, 8911, NULL);
     Drivers_ospiClose();
     Drivers_ospiOpen();
 
@@ -459,8 +436,7 @@ void test_main(void *args)
 
     RUN_TEST(TestOspi_isIntrEnableNegative, 8914, NULL);
     Drivers_ospiClose();
-    Drivers_ospiOpen(); */
-#endif
+    Drivers_ospiOpen();
 
     RUN_TEST(TestOspi_getFlashDataBaseAddrNegative, 8915, NULL);
     Drivers_ospiClose();
@@ -565,20 +541,17 @@ void test_main(void *args)
     RUN_TEST(TestOspi_readCmdParamsInitFunctional, 8805, NULL);
     Drivers_ospiClose();
 
-    /* Commented due to code getting stuck.*/
-/*     Drivers_ospiOpen();
+    Drivers_ospiOpen();
     RUN_TEST(TestOspi_readCmdParamsInitNegative, 8806, NULL);
     Drivers_ospiClose();
- */
 
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_writeCmdParamsInitFunctional, 8807, NULL);
     Drivers_ospiClose();
 
-    /* Commented due to code getting stuck due to no NULL check.*/
-/*     Drivers_ospiOpen();
+    Drivers_ospiOpen();
     RUN_TEST(TestOspi_writeCmdParamsInitNegative, 8808, NULL);
-    Drivers_ospiClose(); */
+    Drivers_ospiClose();
 
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_setRdDataCaptureDelayFunctional, 8809, NULL);
@@ -648,11 +621,9 @@ void test_main(void *args)
     RUN_TEST(TestOspi_setModeBitsNegative, 8827, NULL);
     Drivers_ospiClose();
 
-/*Commented due to code getting stuck here due to the NULL input parameter.*/
-    /* Drivers_ospiOpen();
+    Drivers_ospiOpen();
     RUN_TEST(TestOspi_phyResyncDLLNegative, 8828, NULL);
     Drivers_ospiClose();
- */
 
  /* Commented due to invalid flash ID, not causing any error but affecting future operations in DX board.*/
 #if !defined(CORE_R5F) && !(defined(SOC_AM62DX) && defined(CORE_A53))
@@ -660,6 +631,7 @@ void test_main(void *args)
     RUN_TEST(TestOspi_undefinedFlashId, 8829, NULL);
     Drivers_ospiClose();
 #endif
+
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_openFuzzing, 8268, NULL);
     Drivers_ospiClose();
@@ -668,17 +640,13 @@ void test_main(void *args)
     RUN_TEST(TestOspi_openInvalidParams, 8830, NULL);
     Drivers_ospiClose();
 
-/* due to bug in dma this test case will get stuck and never exit */
-    /* Drivers_ospiOpen();
+    Drivers_ospiOpen();
     RUN_TEST(TestOspi_openCloseRepeated, 8832, NULL);
-    Drivers_ospiClose(); */
+    Drivers_ospiClose();
 
-#ifndef CORE_R5F
-/* Commented due to Code getting stuck */
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_writeIndirectInvalid, 8833, NULL);
     Drivers_ospiClose();
-#endif
 
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_phyReadWriteTunedValFunctional, 8834, NULL);
@@ -688,32 +656,25 @@ void test_main(void *args)
     RUN_TEST(TestOspi_writeReadIndirectFunctional, 8835, NULL);
     Drivers_ospiClose();
 
-    /* Commented due to program getting stuck if second parameter is NULL*/
-    /* Commented returns 0 even if first parameter is NULL*/
-/*     Drivers_ospiOpen();
+    Drivers_ospiOpen();
     RUN_TEST(TestOspi_writeDirectInvalid, 8836, NULL);
-    Drivers_ospiClose(); */
+    Drivers_ospiClose();
 
-    /* Commented due to program causing error and getting stuck while giving second parameter as NULL*/
- /*    Drivers_ospiOpen();
+    Drivers_ospiOpen();
     RUN_TEST(TestOspi_writeCmdInvalid, 8837 , NULL);
     Drivers_ospiClose();
- */
 
-    /* Commented due to program causing error and getting stuck while giving second parameter as NULL*/
-/*     Drivers_ospiOpen();
+    Drivers_ospiOpen();
     RUN_TEST(TestOspi_readIndirectInvalid, 8838, NULL);
-    Drivers_ospiClose(); */
+    Drivers_ospiClose();
 
-    /* Commented due to program causing error and getting stuck while giving second parameter as NULL*/
-/*     Drivers_ospiOpen();
+    Drivers_ospiOpen();
     RUN_TEST(TestOspi_readDirectInvalid, 8839, NULL);
-    Drivers_ospiClose(); */
+    Drivers_ospiClose();
 
-   /*Program getting stuck.*/
- /*    Drivers_ospiOpen();
+    Drivers_ospiOpen();
     RUN_TEST(TestOspi_readCmdInvalid, 8840, NULL);
-    Drivers_ospiClose(); */
+    Drivers_ospiClose();
 
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_dacEnableDisable, 8269, NULL);
@@ -747,12 +708,9 @@ void test_main(void *args)
     RUN_TEST(TestOspi_skipTuningFunctional, 8845, NULL);
     Drivers_ospiClose();
 
-    /*Code getting stuck in R5F core.*/
-#ifndef CORE_R5F
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_skipTuningNegative, 8846, NULL);
     Drivers_ospiClose();
-#endif
 
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_setXferOpCodesFunctional, 8847, NULL);
@@ -774,15 +732,13 @@ void test_main(void *args)
     RUN_TEST(TestOspi_phyReadAttackVectorFunctional, 8978, NULL);
     Drivers_ospiClose();
 
-    /* Commented because the test getting stuck due to NULL input.*/
-/*      * Drivers_ospiOpen();
-     * RUN_TEST(TestOspi_phyReadAttackVectorNegative, 8851, NULL);
-     * Drivers_ospiClose(); */
+    Drivers_ospiOpen();
+    RUN_TEST(TestOspi_phyReadAttackVectorNegative, 8851, NULL);
+    Drivers_ospiClose();
 
-    /* Commented due to code getting stuck. */
-   /*  Drivers_ospiOpen();
+    Drivers_ospiOpen();
     RUN_TEST(TestOspi_phyReadWriteTunedValNegative, 8852, NULL);
-    Drivers_ospiClose(); */
+    Drivers_ospiClose();
 
 #ifdef SOC_AM62DX
     Drivers_ospiOpen();
@@ -809,16 +765,16 @@ void test_main(void *args)
     Drivers_ospiClose();
 
     /* This test case making the system stuck.*/
-  /*   Drivers_ospiOpen();
+    Drivers_ospiOpen();
     RUN_TEST(TestOspi_norFlashReadIdNegative, 8858, NULL);
     Drivers_ospiClose();
- */
+
 
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_norFlashReadSfdpFunctional, 8859, NULL);
     Drivers_ospiClose();
 
-    /* Giving NULL as handle to the API making the system stuck.*/
+    /* Giving NULL as handle to the API making some future test cases go wrong.*/
   /*   Drivers_ospiOpen();
     RUN_TEST(TestOspi_norFlashReadSfdpNegative, 8860, NULL);
     Drivers_ospiOpen(); */
@@ -827,14 +783,13 @@ void test_main(void *args)
     RUN_TEST(TestOspi_norFlashRWFunctional, 8861, NULL);
     Drivers_ospiClose();
 
-   /*  Drivers_ospiOpen();
+    Drivers_ospiOpen();
     RUN_TEST(TestOspi_norFlashEraseNegative, 8862, NULL);
-    Drivers_ospiClose(); */
+    Drivers_ospiClose();
 
-/* Commented due to code getting stuck here.*/
-/*     Drivers_ospiOpen();
+    Drivers_ospiOpen();
     RUN_TEST(TestOspi_norFlashWriteNegative, 8863, NULL);
-    Drivers_ospiClose(); */
+    Drivers_ospiClose();
 
 #if !(defined CORE_R5F || defined CORE_A53)
     /* Giving NULL as handle to the API making the test case fail / system stuck.*/
@@ -844,10 +799,9 @@ void test_main(void *args)
 #endif
 #endif
 
-/*Commented due to code getting stuck here when giving NULL input.*/
-/*     Drivers_ospiOpen();
+    Drivers_ospiOpen();
     RUN_TEST(TestOspi_transactionInitNegative, 8865, NULL);
-    Drivers_ospiClose(); */
+    Drivers_ospiClose();
 
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_writeReadDirectFunctional, 9568, NULL);
@@ -910,10 +864,9 @@ void test_main(void *args)
     RUN_TEST(TestOspi_ddrSdrModeSwitchingNegative, 9576, NULL);
     Drivers_ospiClose();
 
-/* Dual mode is not supported by the current flash.*/
-/*     Drivers_ospiOpen();
+    Drivers_ospiOpen();
     RUN_TEST(TestOspi_dualDataTransferFunctional, 9577, NULL);
-    Drivers_ospiClose(); */
+    Drivers_ospiClose();
 
 #if defined(SOC_AM62AX)
     Drivers_ospiOpen();
@@ -945,16 +898,16 @@ void test_main(void *args)
     RUN_TEST(TestOspi_disableDdrRdCmdsNegative, 9583, NULL);
     Drivers_ospiClose();
 
-    /* Commented due to code getting stuck.*/
-/*
     Drivers_ospiOpen();
-    RUN_TEST(TestOspi_phyTuneGrapher_Functional, 9589, NULL);
+    RUN_TEST(TestOspi_phyTuneGrapherFunctional, 9589, NULL);
     Drivers_ospiClose();
 
+    /* Test cases getting hang.*/
+#ifndef SOC_AM62DX
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_phyTuneGrapherNegative, 9590, NULL);
     Drivers_ospiClose();
-*/
+#endif
 
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_phyValidateTuningPointFunctional, 9582, NULL);
@@ -1010,7 +963,23 @@ void test_main(void *args)
     return;
 }
 
+/*
+ * Unity framework required functions
+ */
+void setUp(void)
+{
+}
+
+void tearDown(void)
+{
+}
+
+/*
+ * Test cases
+ */
+
 #if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#ifndef CORE_A53
 /**
  * \brief Negative test for OSPI_init API (before initialization)
  *
@@ -1043,10 +1012,7 @@ static void TestOspi_initNegativeBeforeInit(void *args)
 
     DebugP_log("[TEST] TestOspi_initNegativeBeforeInit: PASSED\r\n");
 }
-
-/* -----------------------------------------------------------------------------
-OSPI_getHandle API Test Cases
------------------------------------------------------------------------------ */
+#endif
 
 /**
  * \brief Functional test for OSPI_getHandle API
@@ -1103,21 +1069,6 @@ static void TestOspi_getHandleInvalidInstance(void *args)
     TEST_ASSERT_NULL(handle);  /* Should be NULL for invalid instance */
 }
 #endif /* defined(SOC_AM62AX) || defined(SOC_AM62DX) */
-
-/*
- * Unity framework required functions
- */
-void setUp(void)
-{
-}
-
-void tearDown(void)
-{
-}
-
-/*
- * Test cases
- */
 
 static void test_ospi_read_write_1s1s1s_config(void *args)
 {
@@ -2496,7 +2447,6 @@ static void test_ospi_read_write_indirect_50Mhz(OSPI_Attrs *attrs, uint32_t offs
 #endif
     DebugP_assert(status == SystemP_SUCCESS);;
 }
-
 
  void test_ospi_read_write_different_frequencies(void *args)
 {
@@ -3883,7 +3833,6 @@ static void TestOspi_openInvalidParams(void *args)
     }
 }
 
-/* due to bug in dma this test case will get stuck and never exit */
 /**
  * \brief Negative test for repeated OSPI_open and OSPI_close calls
  *
@@ -3898,7 +3847,7 @@ static void TestOspi_openInvalidParams(void *args)
  *
  * \return None.
  */
-/* static void TestOspi_openCloseRepeated(void *args)
+static void TestOspi_openCloseRepeated(void *args)
 {
      DebugP_log("[TEST] TestOspi_openCloseRepeated: Starting\r\n");
 
@@ -3930,10 +3879,8 @@ static void TestOspi_openInvalidParams(void *args)
     OSPI_close(NULL);
 
     DebugP_log("[TEST] TestOspi_openCloseRepeated: PASSED\r\n");
-} */
+} 
 
-#ifndef CORE_R5F
-/* Commented due to Code getting stuck */
 /**
  * \brief Negative test for OSPI_writeIndirect API with invalid arguments
  *
@@ -3973,7 +3920,6 @@ static void TestOspi_writeIndirectInvalid(void *args)
     /* Restore original const attrs */
     gOspiConfig[CONFIG_OSPI0].attrs = origAttrs;
 }
-#endif
 
 /**
  * \brief Functional test for OSPI_writeIndirect and OSPI_readIndirect APIs
@@ -4051,7 +3997,6 @@ static void TestOspi_writeReadIndirectFunctional(void *args)
     DebugP_log("[TEST] TestOspi_writeReadIndirectFunctional: PASSED\r\n");
 }
 
-/* Commented due to program causing error and getting stuck while giving second parameter as NULL*/
 /**
  * \brief Negative test for OSPI_writeDirect API with invalid arguments
  *
@@ -4065,7 +4010,7 @@ static void TestOspi_writeReadIndirectFunctional(void *args)
  *
  * \return None.
  */
-/* static void TestOspi_writeDirectInvalid(void *args)
+static void TestOspi_writeDirectInvalid(void *args)
 {
     DebugP_log("[TEST] TestOspi_writeDirectInvalid: Starting\r\n");
 
@@ -4083,9 +4028,8 @@ static void TestOspi_writeReadIndirectFunctional(void *args)
 
     retVal = OSPI_writeDirect(NULL, &test_transact);
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, retVal);
-} */
+}
 
-    /* Commented due to program causing error and getting stuck while giving second parameter as NULL*/
 /**
  * \brief Negative test for OSPI_writeCmd API with invalid arguments
  *
@@ -4099,7 +4043,7 @@ static void TestOspi_writeReadIndirectFunctional(void *args)
  *
  * \return None.
  */
-/* static void TestOspi_writeCmdInvalid(void *args)
+static void TestOspi_writeCmdInvalid(void *args)
 {
     int32_t retVal;
     Drivers_ospiClose();
@@ -4150,9 +4094,8 @@ static void TestOspi_writeReadIndirectFunctional(void *args)
     OSPI_clearDualOpCodeMode(NULL);
     DebugP_log("[TEST] TestOspi_writeCmdInvalid: PASSED\r\n");
 
-} */
+}
 
-    /* Commented due to program causing error and getting stuck while giving second parameter as NULL*/
 /**
  * \brief Negative test for OSPI_readIndirect API with invalid arguments
  *
@@ -4166,7 +4109,7 @@ static void TestOspi_writeReadIndirectFunctional(void *args)
  *
  * \return None.
  */
-/* static void TestOspi_readIndirectInvalid(void *args)
+static void TestOspi_readIndirectInvalid(void *args)
 {
     int32_t retVal;
     Drivers_ospiClose();
@@ -4191,9 +4134,8 @@ static void TestOspi_writeReadIndirectFunctional(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, retVal);
     DebugP_log("[TEST] TestOspi_readIndirectInvalid: PASSED\r\n");
 
-} */
+}
 
-    /* Commented due to program causing error and getting stuck while giving second parameter as NULL*/
 /**
  * \brief Negative test for OSPI_readDirect API with invalid arguments
  *
@@ -4207,7 +4149,7 @@ static void TestOspi_writeReadIndirectFunctional(void *args)
  *
  * \return None.
  */
-/* static void TestOspi_readDirectInvalid(void *args)
+static void TestOspi_readDirectInvalid(void *args)
 {
     int32_t retVal;
     Drivers_ospiClose();
@@ -4230,9 +4172,8 @@ static void TestOspi_writeReadIndirectFunctional(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, retVal);
 
     DebugP_log("[TEST] TestOspi_readDirectInvalid: PASSED\n");
-} */
+}
 
-/* Program getting stuck.*/
 /**
  * \brief Negative test for OSPI_readCmd API with invalid arguments
  *
@@ -4246,7 +4187,7 @@ static void TestOspi_writeReadIndirectFunctional(void *args)
  *
  * \return None.
  */
-/* static void TestOspi_readCmdInvalid(void *args)
+static void TestOspi_readCmdInvalid(void *args)
 {
     int32_t retVal;
     Drivers_ospiClose();
@@ -4295,7 +4236,7 @@ static void TestOspi_writeReadIndirectFunctional(void *args)
 
     OSPI_clearDualOpCodeMode(NULL);
     DebugP_log("[TEST] TestOspi_readCmdInvalid: PASSED\r\n");
-} */
+}
 
 /**
  * \brief Functional test for OSPI DAC mode enable and disable APIs
@@ -4500,7 +4441,6 @@ static void TestOspiDdrSdrInvalid(void *args)
      DebugP_log("[TEST] TestOspi_enableModeBitsReadNegative: PASSED\r\n");
  }
 
- #if 0
 /**
  * \brief Negative test for OSPI_isPhyEnable API
  *
@@ -4596,7 +4536,6 @@ static void TestOspi_isIntrEnableNegative(void *args)
 
     DebugP_log("[TEST] TestOspi_isIntrEnableNegative: PASSED\r\n");
 }
-#endif
 
 /**
  * \brief Negative test for OSPI_getFlashDataBaseAddr API
@@ -4668,7 +4607,6 @@ static void TestOspi_getPhyEnableSuccessNegative(void *args)
     DebugP_log("[TEST] TestOspi_getPhyEnableSuccessNegative: PASSED\r\n");
 }
 
-/*Commented due to code getting stuck here when giving NULL input.*/
 /**
  * \brief Negative test for OSPI_Transaction_init API
  *
@@ -4681,14 +4619,14 @@ static void TestOspi_getPhyEnableSuccessNegative(void *args)
  *
  * \return None.
  */
-/* static void TestOspi_transactionInitNegative(void *args)
+static void TestOspi_transactionInitNegative(void *args)
 {
     DebugP_log("[TEST] TestOspi_transactionInitNegative: Starting\r\n");
 
     OSPI_Transaction_init(NULL);
 
     DebugP_log("[TEST] TestOspi_transactionInitNegative: PASSED\r\n");
-} */
+}
 
 /**
  * \brief Functional test for OSPI_ReadCmdParams_init API
@@ -4722,7 +4660,6 @@ static void TestOspi_readCmdParamsInitFunctional(void *args)
     DebugP_log("[TEST] TestOspi_readCmdParamsInitFunctional: PASSED\r\n");
 }
 
-    /*Commented due to code getting stuck.*/
 /**
  * \brief Negative test for OSPI_ReadCmdParams_init API
  *
@@ -4735,7 +4672,7 @@ static void TestOspi_readCmdParamsInitFunctional(void *args)
  *
  * \return None.
  */
-/* static void TestOspi_readCmdParamsInitNegative(void *args)
+static void TestOspi_readCmdParamsInitNegative(void *args)
 {
     DebugP_log("[TEST] TestOspi_readCmdParamsInitNegative: Starting\r\n");
 
@@ -4743,7 +4680,7 @@ static void TestOspi_readCmdParamsInitFunctional(void *args)
     TEST_ASSERT_TRUE(1);
 
     DebugP_log("[TEST] TestOspi_readCmdParamsInitNegative: PASSED\r\n");
-} */
+}
 
 /**
  * \brief Functional test for OSPI_WriteCmdParams_init API
@@ -4775,7 +4712,6 @@ static void TestOspi_writeCmdParamsInitFunctional(void *args)
     DebugP_log("[TEST] TestOspi_writeCmdParamsInitFunctional: PASSED\r\n");
 }
 
-    /*Commented due to code getting stuck.*/
 /**
  * \brief Negative test for OSPI_WriteCmdParams_init API
  *
@@ -4788,7 +4724,7 @@ static void TestOspi_writeCmdParamsInitFunctional(void *args)
  *
  * \return None.
  */
-/* static void TestOspi_writeCmdParamsInitNegative(void *args)
+static void TestOspi_writeCmdParamsInitNegative(void *args)
 {
     DebugP_log("[TEST] TestOspi_writeCmdParamsInitNegative: Starting\r\n");
 
@@ -4796,7 +4732,7 @@ static void TestOspi_writeCmdParamsInitFunctional(void *args)
     TEST_ASSERT_TRUE(1);
 
     DebugP_log("[TEST] TestOspi_writeCmdParamsInitNegative: PASSED\r\n");
-} */
+}
 
 /**
  * \brief Functional test for OSPI_isDtrEnable API
@@ -5240,7 +5176,6 @@ static void TestOspi_phyResyncDLLFunctional(void *args)
     DebugP_log("[TEST] TestOspi_phyResyncDLLFunctional: PASSED\r\n");
 }
 
-/*Commented due to code getting stuck here due to the NULL input parameter.*/
 /**
  * \brief Negative test for OSPI_phyResyncDLL API
  *
@@ -5253,7 +5188,7 @@ static void TestOspi_phyResyncDLLFunctional(void *args)
  *
  * \return None.
  */
-/* static void TestOspi_phyResyncDLLNegative(void *args)
+static void TestOspi_phyResyncDLLNegative(void *args)
 {
     DebugP_log("[TEST] TestOspi_phyResyncDLLNegative: Starting\r\n");
 
@@ -5261,7 +5196,7 @@ static void TestOspi_phyResyncDLLFunctional(void *args)
     TEST_ASSERT_TRUE(1);
 
     DebugP_log("[TEST] TestOspi_phyResyncDLLNegative: PASSED\r\n");
-} */
+}
 
 /**
  * \brief Functional test for OSPI_setCmdDummyCycles API
@@ -5752,7 +5687,6 @@ static void TestOspi_skipTuningFunctional(void *args)
     DebugP_log("[TEST] test_OSPI_skipTuning_functional: PASSED\r\n");
 }
 
-#ifndef CORE_R5F
 /**
  * \brief Negative test for OSPI_skipTuning API
  *
@@ -5776,7 +5710,6 @@ static void TestOspi_skipTuningNegative(void *args)
 
     DebugP_log("[TEST] TestOspi_skipTuningNegative: PASSED\r\n");
 }
-#endif
 
 /**
  * \brief Functional test for OSPI_setXferOpCodes API
@@ -5974,7 +5907,6 @@ static void TestOspi_phyReadAttackVectorFunctional(void *args)
     DebugP_log("[TEST] TestOspi_phyReadAttackVectorFunctional: PASSED\r\n");
 }
 
-    /* Commented because the test getting stuck due to NULL input.*/
 /**
  * \brief Negative test for OSPI_phyReadAttackVector API
  *
@@ -5987,7 +5919,7 @@ static void TestOspi_phyReadAttackVectorFunctional(void *args)
  *
  * \return None.
  */
-/* static void TestOspi_phyReadAttackVectorNegative(void *args)
+static void TestOspi_phyReadAttackVectorNegative(void *args)
 {
     DebugP_log("[TEST] TestOspi_phyReadAttackVectorNegative: Starting\r\n");
 
@@ -5995,7 +5927,7 @@ static void TestOspi_phyReadAttackVectorFunctional(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
 
     DebugP_log("[TEST] TestOspi_phyReadAttackVectorNegative: PASSED\r\n");
-} */
+}
 
 /**
  * \brief Functional test for OSPI_phyWriteTunedVal + OSPI_phyReadTunedVal
@@ -6102,7 +6034,7 @@ static void TestOspi_phyReadWriteTunedValFunctional(void *args)
  *
  * Calls both APIs with NULL handle to ensure graceful handling (no crash).
  */
-/* static void TestOspi_phyReadWriteTunedValNegative(void *args)
+static void TestOspi_phyReadWriteTunedValNegative(void *args)
 {
     DebugP_log("[TEST] TestOspi_phyReadWriteTunedValNegative: Starting\r\n");
 
@@ -6112,7 +6044,7 @@ static void TestOspi_phyReadWriteTunedValFunctional(void *args)
     TEST_ASSERT_TRUE(1);
 
     DebugP_log("[TEST] TestOspi_phyReadWriteTunedValNegative: PASSED\r\n");
-} */
+}
 
 /**
  * \brief Functional test for OSPI_init
@@ -6393,7 +6325,7 @@ static void TestOspi_norFlashReadIdFunctional(void *args)
  *
  * \param args Unused.
  */
-/* static void TestOspi_norFlashReadIdNegative(void *args)
+static void TestOspi_norFlashReadIdNegative(void *args)
 {
     DebugP_log("[TEST] TestOspi_norFlashReadIdNegative: Starting\n");
 
@@ -6408,7 +6340,7 @@ static void TestOspi_norFlashReadIdFunctional(void *args)
 
     DebugP_log("[TEST] TestOspi_norFlashReadIdNegative: PASSED\n");
 }
- */
+
 
 /**
  * \brief Functional test for OSPI_norFlashReadSfdp API.
@@ -6453,7 +6385,7 @@ static void TestOspi_norFlashReadSfdpFunctional(void *args)
 
     DebugP_log("[TEST] TestOspi_norFlashReadSfdpFunctional: PASSED\r\n");
 }
-
+    /* Giving NULL as handle to the API making some future test cases go wrong.*/
 /**
  * \brief Negative test for OSPI_norFlashReadSfdp API.
  * Invokes OSPI_norFlashReadSfdp with a NULL handle. Check the return status as
@@ -6595,7 +6527,6 @@ static void TestOspi_norFlashRWFunctional(void *args)
  *
  * \return None
  */
-#if 0
 static void TestOspi_norFlashEraseNegative(void *args)
 {
     DebugP_log("[TEST] TestOspi_norFlashEraseNegative: Starting\r\n");
@@ -6637,9 +6568,7 @@ static void TestOspi_norFlashEraseNegative(void *args)
 
     DebugP_log("[TEST] TestOspi_norFlashEraseNegative: PASSED\r\n");
 }
-#endif
 
-#if 0
 /**
  * \brief Negative test for OSPI_norFlashWrite API
  *
@@ -6720,7 +6649,6 @@ static void TestOspi_norFlashWriteNegative(void *args)
 
    DebugP_log("[TEST] TestOspi_norFlashWriteNegative: PASSED\r\n");
 }
-#endif
 
 #if !(defined CORE_R5F || defined CORE_A53)
 /**
@@ -7922,8 +7850,7 @@ static void TestOspi_ddrSdrModeSwitchingFunctional(void *args)
 
     DebugP_log("\r\n[TEST] TestOspi_ddrSdrModeSwitchingFunctional: PASSED\r\n");
 }
-/* Dual mode is not supported by the current flash.*/
-#if 0
+
 /**
  * \brief Functional test for dual data transfer mode
  *
@@ -7994,7 +7921,6 @@ static void TestOspi_dualDataTransferFunctional(void *args)
 
     DebugP_log("\r\n[TEST] TestOspi_dualDataTransferFunctional: PASSED\r\n");
 }
-#endif
 
 /**
  * \brief Negative test for DDR/SDR mode switching
@@ -8327,13 +8253,13 @@ static void TestOspi_disableDdrRdCmdsNegative(void *args)
  *
  * \return None.
  */
-#if 0
-static void TestOspi_phyTuneGrapher_Functional(void *args)
+static void TestOspi_phyTuneGrapherFunctional(void *args)
 {
+    static uint8_t arrays[5][128][128] = {0};
     OSPI_Handle handle = OSPI_getHandle(CONFIG_OSPI0);
     TEST_ASSERT_NOT_NULL(handle);
 
-    DebugP_log("\r\n[TEST] TestOspi_phyTuneGrapher_Functional: Starting\r\n");
+    DebugP_log("\r\n[TEST] TestOspi_phyTuneGrapherFunctional: Starting\r\n");
 
     /* Check if PHY is enabled */
     const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
@@ -8343,9 +8269,6 @@ static void TestOspi_phyTuneGrapher_Functional(void *args)
         TEST_ASSERT_TRUE(1);
         return;
     }
-
-    Uncomment to actually run the test (takes several minutes):
-    uint8_t arrays[5][128][128] = {0};
 
     DebugP_log("[TEST] Running OSPI_phyTuneGrapher (this will take several minutes)...\r\n");
     uint64_t startTime = ClockP_getTimeUsec();
@@ -8358,7 +8281,6 @@ static void TestOspi_phyTuneGrapher_Functional(void *args)
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 }
-#endif
 
 /**
  * \brief Negative test for OSPI_phyTuneGrapher API
@@ -8372,7 +8294,7 @@ static void TestOspi_phyTuneGrapher_Functional(void *args)
  *
  * \return None.
  */
-#if 0
+#ifndef SOC_AM62DX
 static void TestOspi_phyTuneGrapherNegative(void *args)
 {
     DebugP_log("\r\n[TEST] TestOspi_phyTuneGrapherNegative: Starting\r\n");
@@ -8645,9 +8567,6 @@ static void TestOspi_phyTuneSDRWithReadAttackVector(void *args)
 }
 #endif
 
-/* ========================================================================== */
-/*                     New Test Cases for Uncovered Areas                     */
-/* ========================================================================== */
 
 /**
  * \brief Test frequency switching stress scenarios

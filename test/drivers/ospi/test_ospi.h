@@ -49,15 +49,15 @@
 #include <drivers/ospi/v0/vtm.h>
 #include <drivers/soc.h>
 
-/* For NOR_SPI_SFDP_* and NorSpi_SfdpHeader */
-
-#include <board/flash/sfdp/nor_spi_sfdp.h>
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/ClockP.h>
 #include <kernel/dpl/TaskP.h>
 #include <kernel/dpl/CacheP.h>
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
+
+/* For NOR_SPI_SFDP_* and NorSpi_SfdpHeader */
+#include <board/flash/sfdp/nor_spi_sfdp.h>
 
 /* ========================================================================== */
 /*                           Macros Defines                                   */

@@ -40,6 +40,7 @@
 /*                            Global Variables                                */
 /* ========================================================================== */
 
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
 #ifdef SMP_FREERTOS
 /* Define buffers for SMP builds (test_ospi.c not linked in SMP) */
 uint8_t gOspiTestTxBuf[TEST_OSPI_DATA_SIZE] =
@@ -86,6 +87,7 @@ static volatile int32_t TestOSPI_thread3Status = SystemP_FAILURE;
 static volatile int32_t TestOSPI_thread4Status = SystemP_FAILURE;
 static SemaphoreP_Object TestOSPI_sync1Sem;
 static SemaphoreP_Object TestOSPI_sync2Sem;
+#endif /* defined(SOC_AM62AX) || defined(SOC_AM62DX) */
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -95,6 +97,7 @@ static SemaphoreP_Object TestOSPI_sync2Sem;
  * Test cases
  */
 
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
 #if defined (OSPI_FREERTOS_ONLY_TEST)
 /**
  * \brief Functional test for multi-threaded OSPI write operation
@@ -382,7 +385,6 @@ void TestOspi_multithreadIntrMode(void *args)
 #endif /* #if 0 */
 #endif /* #ifndef SOC_AM62DX */
 #endif /* #if defined (OSPI_FREERTOS_ONLY_TEST) */
-
 /**
  * \brief Thread function for memory-mapped direct access mode reads
  *
@@ -767,6 +769,7 @@ void TestOspi_multithreadIndirectReadWrite(void *args)
 
     DebugP_log("[TEST OSPI] Multi-threaded Indirect Read/Write Test Passed\r\n");
 }
+#endif /* defined(SOC_AM62AX) || defined(SOC_AM62DX) */
 
 /* ========================================================================== */
 /*                          Unified Test Main                                 */
@@ -788,6 +791,7 @@ void test_main(void *args)
 {
     UNITY_BEGIN();
 
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
     RUN_TEST(TestOspi_multithreadWriteRead, 9607, NULL);
 
     RUN_TEST(TestOspi_multithreadDirectReadWrite, 9608, NULL);
@@ -795,6 +799,7 @@ void test_main(void *args)
     RUN_TEST(TestOspi_multithreadIndirectReadWrite, 9609, NULL);
 
     RUN_TEST(TestOspi_multithreadIOModes, 9610, NULL);
+#endif /* defined(SOC_AM62AX) || defined(SOC_AM62DX) */
 
     UNITY_END();
 }
@@ -823,6 +828,7 @@ void tearDown(void)
 
 void test_ospi_multithread(void)
 {
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
     RUN_TEST(TestOspi_multithreadWriteRead, 8263, NULL);
     Drivers_ospiClose();
     Drivers_ospiOpen();
@@ -849,6 +855,7 @@ void test_ospi_multithread(void)
     RUN_TEST(TestOspi_multithreadIndirectReadWrite, 9606, NULL);
     Drivers_ospiClose();
     Drivers_ospiOpen();
+#endif /* defined(SOC_AM62AX) || defined(SOC_AM62DX) */
 
     return;
 }

@@ -39,6 +39,7 @@
 #include <drivers/hw_include/cslr_aasrc.h>
 #include <drivers/hw_include/cslr_aasrc_data_r0.h>
 #include <drivers/hw_include/cslr_aasrc_data_r1.h>
+#include <drivers/hw_include/tistdtypes.h>
 
 /* ========================================================================== */
 /*                             Macro Definitions                              */
@@ -416,16 +417,16 @@ int32_t AASRC_IsClockZoneRxSettled(AASRC_ChHandle chHandle, bool *isClkSettled)
                                 AASRC_CFG_INPUT_CLOCKZONE_CONTROL_0_SETTLE);
         if (regVal > 1U)
         {
-            *isClkSettled = false;
+            *isClkSettled = BFALSE;
             status = AASRC_EFAIL;
         }
         else if (regVal == 1U)
         {
-            *isClkSettled = true;
+            *isClkSettled = BTRUE;
         }
         else
         {
-            *isClkSettled = false;
+            *isClkSettled = BFALSE;
         }
     }
 
@@ -480,16 +481,16 @@ int32_t AASRC_IsClockZoneTxSettled(AASRC_ChHandle chHandle, bool *isClkSettled)
                                     AASRC_CFG_OUTPUT_CLOCKZONE_CONTROL_0_SETTLE);
             if (regVal > 1U)
             {
-                *isClkSettled = false;
+                *isClkSettled = BFALSE;
                 status = AASRC_EFAIL;
             }
             else if (regVal == 1U)
             {
-                *isClkSettled = true;
+                *isClkSettled = BTRUE;
             }
             else
             {
-                *isClkSettled = false;
+                *isClkSettled = BFALSE;
         }
     }
 
@@ -543,7 +544,7 @@ int32_t AASRC_GetClkZoneRxFrequency(AASRC_ChHandle chHandle,float *clkFrequency)
         status = AASRC_EFAIL;
     }
 
-    *clkFrequency = 0.0;
+    *clkFrequency = 0.0F;
 
     if (AASRC_SOK == status)
     {
@@ -590,9 +591,12 @@ int32_t AASRC_GetClkZoneRxFrequency(AASRC_ChHandle chHandle,float *clkFrequency)
                     /* Invalid Instance Number */
                     status = AASRC_EINVALID_PARAMS;
                 }
-                DebugP_assertNoLog(status == SystemP_SUCCESS);
+                if (status != SystemP_SUCCESS)
+                {
+                    status = AASRC_EFAIL;
+                }
 
-                if(recoverLoopRate != 0.0)
+                if(recoverLoopRate != 0.0F)
                 {
                     *clkFrequency = (float)sysClkRate / (recoverLoopRate * (float)1000U);
                 }
@@ -607,7 +611,7 @@ int32_t AASRC_GetClkZoneRxFrequency(AASRC_ChHandle chHandle,float *clkFrequency)
         {
             /* When overrideClkSettle is enabled, Return maximum supported audio
              * frequency as a safe upper bound for subsequent calculations. */
-            *clkFrequency = AASRC_AUDIO_CLK_FREQUENCY_MAX;
+            *clkFrequency = (float)AASRC_AUDIO_CLK_FREQUENCY_MAX;
             status = AASRC_SOK;
         }
     }
@@ -662,7 +666,7 @@ int32_t AASRC_GetClkZoneTxFrequency(AASRC_ChHandle chHandle,float *clkFrequency)
         status = AASRC_EFAIL;
     }
 
-    *clkFrequency = 0.0;
+    *clkFrequency = 0.0F;
 
     if (AASRC_SOK == status)
     {
@@ -709,9 +713,12 @@ int32_t AASRC_GetClkZoneTxFrequency(AASRC_ChHandle chHandle,float *clkFrequency)
                     /* Invalid Instance Number */
                     status = AASRC_EINVALID_PARAMS;
                 }
-                DebugP_assertNoLog(status == SystemP_SUCCESS);
+                if (status != SystemP_SUCCESS)
+                {
+                    status = AASRC_EFAIL;
+                }
 
-                if(recoverLoopRate != 0.0)
+                if(recoverLoopRate != 0.0F)
                 {
                     *clkFrequency = (float)sysClkRate / (recoverLoopRate * ((float)1000U));
                 }
@@ -726,7 +733,7 @@ int32_t AASRC_GetClkZoneTxFrequency(AASRC_ChHandle chHandle,float *clkFrequency)
             /* When overrideClkSettle is enabled, clock settle is manually controlled and
              * hardware clock recovery may not be active. Return maximum supported audio
              * frequency (216 KHz) as a safe upper bound for subsequent calculations. */
-            *clkFrequency = AASRC_AUDIO_CLK_FREQUENCY_MAX;
+            *clkFrequency = (float)AASRC_AUDIO_CLK_FREQUENCY_MAX;
             status = AASRC_SOK;
         }
     }

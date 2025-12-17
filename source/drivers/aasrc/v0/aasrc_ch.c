@@ -79,7 +79,7 @@ AASRC_ChHandle AASRC_chOpen(uint8_t chIdx, AASRC_Handle drvHandle)
 {
     int32_t status = AASRC_SOK;
 
-    AASRC_Config *drvCfg = (AASRC_Config *)drvHandle;
+    AASRC_Config *drvCfg = NULL;
     AASRC_Object *drvObj = NULL;
     const AASRC_Attrs *attrs = NULL;
     AASRC_ChObj *chObjInt = NULL;
@@ -100,7 +100,14 @@ AASRC_ChHandle AASRC_chOpen(uint8_t chIdx, AASRC_Handle drvHandle)
     uint32_t chType;
     uint32_t chCount;
 
-    DebugP_assert(NULL_PTR != drvHandle);
+    if (NULL_PTR == drvHandle)
+    {
+        status = AASRC_EBADARGS;
+    }
+    else
+    {
+        drvCfg = (AASRC_Config *)drvHandle;
+    }
 
     if (NULL == drvCfg)
     {
@@ -156,8 +163,14 @@ AASRC_ChHandle AASRC_chOpen(uint8_t chIdx, AASRC_Handle drvHandle)
     }
 
     /* Protect this region from a concurrent AASRC_chOpen */
-    DebugP_assert(NULL_PTR != gAasrcChLockObj.lock);
-    SemaphoreP_pend(&gAasrcChLockObj.lockObj, SystemP_WAIT_FOREVER);
+    if (NULL_PTR != gAasrcChLockObj.lock)
+    {
+        SemaphoreP_pend(&gAasrcChLockObj.lockObj, SystemP_WAIT_FOREVER);
+    }
+    else
+    {
+        status = AASRC_EFAIL;
+    }
 
     if (AASRC_SOK == status)
     {
@@ -471,19 +484,25 @@ int32_t AASRC_chConfigInit(AASRC_ChHandle chHandle)
     AASRC_Config *drvCfg = NULL;
     AASRC_Object *drvObj = NULL;
 
-    DebugP_assert(NULL_PTR != chHandle);
-
-    if ( (NULL == chObj) || (NULL == chObj->chState) )
+    if (NULL_PTR == chHandle)
     {
         status = AASRC_EBADARGS;
     }
-    else
+
+    if ( (AASRC_SOK == status) && (NULL == chObj) )
     {
-        if (!chObj->isOpen)
-        {
-            /* Channel handle is not open */
-            status = AASRC_EFAIL;
-        }
+        status = AASRC_EBADARGS;
+    }
+
+    if ( (AASRC_SOK == status) && (NULL == chObj->chState) )
+    {
+        status = AASRC_EBADARGS;
+    }
+
+    if ( (AASRC_SOK == status) && (!chObj->isOpen) )
+    {
+        /* Channel handle is not open */
+        status = AASRC_EFAIL;
     }
 
     if (AASRC_SOK == status)
@@ -560,19 +579,25 @@ int32_t AASRC_chConfig(AASRC_ChHandle chHandle)
     uint32_t chNum;
     uint8_t i;
 
-    DebugP_assert(NULL_PTR != chHandle);
-
-    if ( (NULL == chObj) || (NULL == chObj->chState) )
+    if (NULL_PTR == chHandle)
     {
         status = AASRC_EBADARGS;
     }
-    else
+
+    if ( (AASRC_SOK == status) && (NULL == chObj) )
     {
-        if (!chObj->isOpen)
-        {
-            /* Channel handle is not open */
-            status = AASRC_EFAIL;
-        }
+        status = AASRC_EBADARGS;
+    }
+
+    if ( (AASRC_SOK == status) && (NULL == chObj->chState) )
+    {
+        status = AASRC_EBADARGS;
+    }
+
+    if ( (AASRC_SOK == status) && (!chObj->isOpen) )
+    {
+        /* Channel handle is not open */
+        status = AASRC_EFAIL;
     }
 
     if (AASRC_SOK == status)
@@ -710,19 +735,25 @@ int32_t AASRC_chEnable(AASRC_ChHandle chHandle)
     bool isClkSettled;
     uint8_t inClkZone, outClkZone;
 
-    DebugP_assert(NULL_PTR != chHandle);
-
-    if ( (NULL == chObj) || (NULL == chObj->chState) )
+    if (NULL_PTR == chHandle)
     {
         status = AASRC_EBADARGS;
     }
-    else
+
+    if ( (AASRC_SOK == status) && (NULL == chObj) )
     {
-        if (!chObj->isOpen)
-        {
-            /* Channel handle is not open */
-            status = AASRC_EFAIL;
-        }
+        status = AASRC_EBADARGS;
+    }
+
+    if ( (AASRC_SOK == status) && (NULL == chObj->chState) )
+    {
+        status = AASRC_EBADARGS;
+    }
+
+    if ( (AASRC_SOK == status) && (!chObj->isOpen) )
+    {
+        /* Channel handle is not open */
+        status = AASRC_EFAIL;
     }
 
     if (AASRC_SOK == status)
@@ -937,19 +968,25 @@ int32_t AASRC_chDisable(AASRC_ChHandle chHandle)
     uint32_t  baseAddr;
     uint32_t chNum;
 
-    DebugP_assert(NULL_PTR != chHandle);
-
-    if ( (NULL == chObj) || (NULL == chObj->chState) )
+    if (NULL_PTR == chHandle)
     {
         status = AASRC_EBADARGS;
     }
-    else
+
+    if ( (AASRC_SOK == status) && (NULL == chObj) )
     {
-        if (!chObj->isOpen)
-        {
-            /* Channel handle is not open */
-            status = AASRC_EFAIL;
-        }
+        status = AASRC_EBADARGS;
+    }
+
+    if ( (AASRC_SOK == status) && (NULL == chObj->chState) )
+    {
+        status = AASRC_EBADARGS;
+    }
+
+    if ( (AASRC_SOK == status) && (!chObj->isOpen) )
+    {
+        /* Channel handle is not open */
+        status = AASRC_EFAIL;
     }
 
     if (AASRC_SOK == status)
@@ -1069,19 +1106,25 @@ int32_t AASRC_isChEnabled(AASRC_ChHandle chHandle, uint32_t *isEnabled)
     uint32_t chNum;
     *isEnabled = 0U;
 
-    DebugP_assert(NULL_PTR != chHandle);
-
-    if ( (NULL == chObj) || (NULL == chObj->chState) )
+    if (NULL_PTR == chHandle)
     {
         status = AASRC_EBADARGS;
     }
-    else
+
+    if ( (AASRC_SOK == status) && (NULL == chObj) )
     {
-        if (!chObj->isOpen)
-        {
-            /* Channel handle is not open */
-            status = AASRC_EFAIL;
-        }
+        status = AASRC_EBADARGS;
+    }
+
+    if ( (AASRC_SOK == status) && (NULL == chObj->chState) )
+    {
+        status = AASRC_EBADARGS;
+    }
+
+    if ( (AASRC_SOK == status) && (!chObj->isOpen) )
+    {
+        /* Channel handle is not open */
+        status = AASRC_EFAIL;
     }
 
     if (AASRC_SOK == status)
@@ -1170,19 +1213,25 @@ int32_t AASRC_chClose(AASRC_ChHandle chHandle)
     uint32_t instNum;
     uint8_t i;
 
-    DebugP_assert(NULL_PTR != chHandle);
-
-    if ( (NULL == chObj) || (NULL == chObj->chState) )
+    if (NULL_PTR == chHandle)
     {
         status = AASRC_EBADARGS;
     }
-    else
+
+    if ( (AASRC_SOK == status) && (NULL == chObj) )
     {
-        if (!chObj->isOpen)
-        {
-            /* Channel handle is not open */
-            status = AASRC_EFAIL;
-        }
+        status = AASRC_EBADARGS;
+    }
+
+    if ( (AASRC_SOK == status) && (NULL == chObj->chState) )
+    {
+        status = AASRC_EBADARGS;
+    }
+
+    if ( (AASRC_SOK == status) && (!chObj->isOpen) )
+    {
+        /* Channel handle is not open */
+        status = AASRC_EFAIL;
     }
 
     if (AASRC_SOK == status)
@@ -1228,8 +1277,14 @@ int32_t AASRC_chClose(AASRC_ChHandle chHandle)
     }
 
     /* Protect this region from a concurrent AASRC_chDisable */
-    DebugP_assert(NULL_PTR != gAasrcChLockObj.lock);
-    SemaphoreP_pend(&gAasrcChLockObj.lockObj, SystemP_WAIT_FOREVER);
+    if (NULL_PTR != gAasrcChLockObj.lock)
+    {
+        SemaphoreP_pend(&gAasrcChLockObj.lockObj, SystemP_WAIT_FOREVER);
+    }
+    else
+    {
+        status = AASRC_EFAIL;
+    }
 
     if (AASRC_SOK == status)
     {
@@ -1472,9 +1527,9 @@ static inline uint32_t AASRC_setSRCControlReg(AASRC_ChCfg *chCfg)
              CSL_FMK(AASRC_CFG_SRC_CONTROL_0_INPUT_WORD_LENGTH,
                      inWordLen)                                             |
              CSL_FMK(AASRC_CFG_SRC_CONTROL_0_OUTPUT_CLOCK_ZONE_SELECT,
-                     chCfg->outClkZone)                                     |
+                     (uint32_t)chCfg->outClkZone)                           |
              CSL_FMK(AASRC_CFG_SRC_CONTROL_0_INPUT_CLOCK_ZONE_SELECT,
-                     chCfg->inClkZone);
+                     (uint32_t)chCfg->inClkZone);
 
     return regVal;
 }
@@ -1491,19 +1546,20 @@ static inline int32_t AASRC_setSRCTransferModeConfig(AASRC_ChHandle chHandle)
     const CSL_aasrc_cfgRegs *pReg = NULL;
     uint32_t regVal = 0U;
 
-    DebugP_assert(NULL_PTR != chHandle);
-
-    if ( (NULL == chObj->chState) )
+    if (NULL_PTR == chHandle)
     {
         status = AASRC_EBADARGS;
     }
-    else
+
+    if ( (AASRC_SOK == status) && (NULL == chObj->chState) )
     {
-        if (!chObj->isOpen)
-        {
-            /* Channel handle is not open */
-            status = AASRC_EFAIL;
-        }
+        status = AASRC_EBADARGS;
+    }
+
+    if ( (AASRC_SOK == status) && (!chObj->isOpen) )
+    {
+        /* Channel handle is not open */
+        status = AASRC_EFAIL;
     }
 
     if (AASRC_SOK == status)
@@ -1628,7 +1684,7 @@ static int32_t AASRC_chValidateClockRatios(float clkRxFreq,
     float clkRatio, srcFreq;
 
     /* Validate frequencies are non-zero */
-    if ((0.0 == clkRxFreq) || (0.0 == clkTxFreq))
+    if ((0.0F == clkRxFreq) || (0.0F == clkTxFreq))
     {
         status = AASRC_EFAIL;
     }
@@ -1644,7 +1700,7 @@ static int32_t AASRC_chValidateClockRatios(float clkRxFreq,
         clkRatio = (clkTxFreq / clkRxFreq);
 
         if ((clkRatio > (float)AASRC_CLK_RATIO_MAX) ||
-            (clkRatio < (1.0 / ((float)AASRC_CLK_RATIO_MAX))))
+            (clkRatio < (1.0F / ((float)AASRC_CLK_RATIO_MAX))))
         {
             status = AASRC_EFAIL;
         }
@@ -1653,7 +1709,7 @@ static int32_t AASRC_chValidateClockRatios(float clkRxFreq,
             /* Validate input clock zone divider settings */
             if (inClkZoneCfg->isClkZoneDivEnable)
             {
-                srcFreq = ((((float)inClkZoneCfg->clkZoneDiv) * clkRxFreq) / 1000.0);
+                srcFreq = ((((float)inClkZoneCfg->clkZoneDiv) * clkRxFreq) / 1000.0F);
                 if (srcFreq > (float)AASRC_CLK_SRC_MAX_FOR_DIVIDER)
                 {
                     status = AASRC_EFAIL;
@@ -1663,7 +1719,7 @@ static int32_t AASRC_chValidateClockRatios(float clkRxFreq,
             /* Validate output clock zone divider settings */
             if ((AASRC_SOK == status) && (outClkZoneCfg->isClkZoneDivEnable))
             {
-                srcFreq = ((((float)outClkZoneCfg->clkZoneDiv) * clkTxFreq) / 1000.0);
+                srcFreq = ((((float)outClkZoneCfg->clkZoneDiv) * clkTxFreq) / 1000.0F);
                 if (srcFreq > (float)AASRC_CLK_SRC_MAX_FOR_DIVIDER)
                 {
                     status = AASRC_EFAIL;

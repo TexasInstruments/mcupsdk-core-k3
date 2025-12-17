@@ -45,7 +45,7 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-/* None */
+#define BOOTLOADER_APP_IMAGE_LOADED     (0x1U)
 
 /* ========================================================================== */
 /*                         Structures and Enums                               */
@@ -62,6 +62,9 @@
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
+
+uint8_t socCpuCores[CSL_CORE_ID_MAX] = {0};
+Bootloader_CpuInfo bootCpuInfo[CSL_CORE_ID_MAX];
 
 /*
  * This buffer needs to be defined for OSPI NOR boot in case of HS device for
@@ -86,7 +89,7 @@ void loop_forever()
         ;
 }
 
-int32_t App_loadSelfcoreImage(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
+int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
 {
     int32_t status = SystemP_FAILURE;
 
@@ -94,14 +97,87 @@ int32_t App_loadSelfcoreImage(Bootloader_Handle bootHandle, Bootloader_BootImage
     {
         status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
 
-        if(status == SystemP_SUCCESS)
+        if (!Bootloader_socIsMCUResetIsoEnabled())
+        {
+            if ((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_MCU_R5FSS0_0)))
+            {
+                bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_MCU_R5FSS0_0);
+                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
+                Bootloader_profileAddCore(CSL_CORE_ID_MCU_R5FSS0_0);
+                socCpuCores[CSL_CORE_ID_MCU_R5FSS0_0] = BOOTLOADER_APP_IMAGE_LOADED;
+                bootCpuInfo[CSL_CORE_ID_MCU_R5FSS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0];
+            }
+        }
+        if((status == SystemP_SUCCESS) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_WKUP_R5FSS0_0)))
         {
             bootImageInfo->cpuInfo[CSL_CORE_ID_WKUP_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_WKUP_R5FSS0_0);
             Bootloader_profileAddCore(CSL_CORE_ID_WKUP_R5FSS0_0);
             status = Bootloader_loadSelfCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_WKUP_R5FSS0_0]));
         }
+        if ((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_MAIN_R5FSS0_0)))
+        {
+            bootImageInfo->cpuInfo[CSL_CORE_ID_MAIN_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_MAIN_R5FSS0_0);
+            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_MAIN_R5FSS0_0]));
+            Bootloader_profileAddCore(CSL_CORE_ID_MAIN_R5FSS0_0);
+            socCpuCores[CSL_CORE_ID_MAIN_R5FSS0_0] = BOOTLOADER_APP_IMAGE_LOADED;
+            bootCpuInfo[CSL_CORE_ID_MAIN_R5FSS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_MAIN_R5FSS0_0];
+        }
+        if ((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_C75SS0_0)))
+        {
+            bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_C75SS0_0);
+            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0]));
+            Bootloader_profileAddCore(CSL_CORE_ID_C75SS0_0);
+            socCpuCores[CSL_CORE_ID_C75SS0_0] = BOOTLOADER_APP_IMAGE_LOADED;
+            bootCpuInfo[CSL_CORE_ID_C75SS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0];
+        }
+        if ((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_C75SS1_0)))
+        {
+            bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS1_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_C75SS1_0);
+            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS1_0]));
+            Bootloader_profileAddCore(CSL_CORE_ID_C75SS1_0);
+            socCpuCores[CSL_CORE_ID_C75SS1_0] = BOOTLOADER_APP_IMAGE_LOADED;
+            bootCpuInfo[CSL_CORE_ID_C75SS1_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS1_0];
+        }
+        if ((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_A53SS0_0)))
+        {
+            bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
+			status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+            Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
+            socCpuCores[CSL_CORE_ID_A53SS0_0] = BOOTLOADER_APP_IMAGE_LOADED;
+            bootCpuInfo[CSL_CORE_ID_A53SS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0];
+        }
+        if ((SystemP_SUCCESS == status) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_A53SS1_0)))
+        {
+            bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_0);
+            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_0]));
+            Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_0);
+            socCpuCores[CSL_CORE_ID_A53SS1_0] = BOOTLOADER_APP_IMAGE_LOADED;
+            bootCpuInfo[CSL_CORE_ID_A53SS1_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_0];
+        }
     }
 
+    return status;
+}
+
+int32_t App_runCpus(Bootloader_Handle bootHandle)
+{
+    int32_t status = SystemP_SUCCESS;
+    uint8_t cpuId;
+
+    for(cpuId = 0; cpuId < CSL_CORE_ID_MAX; cpuId++)
+    {
+        if(socCpuCores[cpuId] == BOOTLOADER_APP_IMAGE_LOADED)
+        {
+            /* Do not restart MCU_R5FSS0_0 when MCU reset isolation is enabled,
+             * as it is already running (boot core). Start all other CPUs normally.
+             */
+            if (((cpuId == CSL_CORE_ID_MCU_R5FSS0_0) && !Bootloader_socIsMCUResetIsoEnabled()) ||
+                (cpuId != CSL_CORE_ID_MCU_R5FSS0_0))
+                {
+                    status = Bootloader_runCpu(bootHandle, &bootCpuInfo[cpuId]);
+                }
+        }
+    }
     return status;
 }
 
@@ -146,8 +222,8 @@ int main()
             if(bootHandleDM != NULL)
             {
                 ((Bootloader_Config *)bootHandleDM)->scratchMemPtr = gAppImage;
-                status = App_loadSelfcoreImage(bootHandleDM, &bootImageInfoDM);
-                Bootloader_profileAddProfilePoint("App_loadSelfcoreImage");
+                status = App_loadImages(bootHandleDM, &bootImageInfoDM);
+                Bootloader_profileAddProfilePoint("App_loadImages");
             }
         }
 
@@ -161,6 +237,9 @@ int main()
             DebugP_log("Image loading done, switching to application ...\r\n");
             DebugP_log("Starting 2nd stage bootloader\r\n");
             UART_flushTxFifo(gUartHandle[CONFIG_UART_SBL]);
+
+            status = App_runCpus(bootHandleDM);
+            Bootloader_close(bootHandleDM);
         }
 
     }

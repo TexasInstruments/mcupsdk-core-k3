@@ -79,6 +79,9 @@ See also these additional pages for more details and examples about the boot flo
   - \ref EXAMPLES_DRIVERS_SBL_UART_LINUX
   - \ref EXAMPLES_DRIVERS_SBL_UART_UNIFLASH_MULTISTAGE
 \endcond
+\cond SOC_J722S
+  - \ref EXAMPLES_DRIVERS_SBL_OSPI_MULTISTAGE
+\endcond
 \cond SOC_AM64X
   - \ref EXAMPLES_DRIVERS_SBL_OSPI_LINUX
   - \ref EXAMPLES_DRIVERS_SBL_EMMC_LINUX
@@ -152,7 +155,7 @@ and booting
 \image html bootflow_post_build_steps_no_xip.png "Post build steps"
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX || SOC_J722S
 - For each CPU, the compiler+linker toolchain is used to create the application .out "ELF" file which can be loaded and run via CCS
 - The below "post build" steps are then used to convert the application .out into a "flash" friendly format
   - For each CPU, `out2rpc` is used to convert the ELF .out to a binary file containing only the loadable sections. This is called a RPRC file.
@@ -180,7 +183,7 @@ and booting
 
 ## Flashing the application for boot
 
-\cond !SOC_AM263X && !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX && !SOC_AM275X
+\cond !SOC_AM263X && !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX && !SOC_AM275X && !SOC_J722S
 - Once the application images (`.appimage` and `.appimage_xip`) are created one needs to copy or flash these
   to a supported boot media so that the application can start executing once the SOC is powered ON
 \endcond
@@ -189,7 +192,7 @@ and booting
   to a supported boot media so that the application can start executing once the SOC is powered ON
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX || SOC_J722S
 - Once the application image (`.appimage`) is created one needs to copy or flash these
   to a supported boot media so that the application can start executing once the SOC is powered ON
 \endcond
@@ -212,7 +215,7 @@ After a SBL and application image is flashed, shown below is the high level boot
 
 - As soon as the EVM is powered ON, the ROM bootloader or RBL starts running. The RBL is the primary bootloader.
 - Depending on which boot mode is selected on the EVM, the RBL will load the **secondary bootloader** or SBL from a boot media (OSPI flash, SD card or via UART).
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX || SOC_J722S
 - ROM also loads TIFS binary to TIFS Cortex M4, board configuration data to the predefined locations.
 \endcond
 - Rest of the booting is done by the SBL.
@@ -228,7 +231,7 @@ After a SBL and application image is flashed, shown below is the high level boot
 - In case of @VAR_SOC_NAME EVM, the SBL loads the SYSFW to the Cortex M3 and sends the board cfg to the SYSFW once M3 is booted.
 \endcond
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX || SOC_J722S
 - In case of @VAR_SOC_NAME EVM, the SBL loads the DM Firmware to DM R5F.
 \endcond
 
@@ -275,6 +278,12 @@ SBL looks for the **multicore elf** image (refer \ref TOOLS_BOOT for more on mul
 ## Secondary Bootloaders
 
 Depending on the boot media from which we load the application binary, we have multiple SBLs like `sbl_ospi`,`sbl_uart` etc. A bare minimum SBL called the `sbl_null` is also included which aids the users to load their applications via CCS.
+
+\cond SOC_J722S
+## SBL Boot Flow Diagram
+\imageStyle{bootflow/sbl_bootflow_j722s.png,width:50%}
+\image html bootflow/sbl_bootflow_j722s.png "SBL BOOTFLOW"
+\endcond
 
 ### SBL NULL
 
@@ -334,6 +343,22 @@ c75ss1-0    | app_dsp0_1
 - This location or offset is specified in the SysConfig of the `sbl_ospi` application. Currently this is 0x80000. In most cases you wouldn't need to change this.
 
 - To flash an application (or any file in fact) to a location in the OSPI flash memory, follow the steps mentioned in \ref BASIC_STEPS_TO_FLASH_FILES
+
+\endcond
+
+\cond SOC_J722S
+### SBL OSPI MULTISTAGE
+
+- The `sbl_ospi_multistage` is a secondary bootloader that works in two stages. Stage-1 reads and parses the multicore application image from a location in the OSPI flash and then moves on to core initialization, including booting Stage-2.
+
+- To boot an application using the `sbl_ospi_multistage`, the Stage-1 multicore application image needs to be flashed at a particular location in the OSPI flash memory.
+
+- This location or offset is specified in the SysConfig of the `sbl_ospi_multistage` (Stage-1) application. Currently this is 0x80000. In most cases you wouldn't need to change this.
+
+- Stage-2 is included as part of the multicore application image and is loaded and started by Stage-1 to boot the HSM core and any additional core binaries.
+
+- To flash an application (or any file in fact) to a location in the OSPI flash memory, follow the steps mentioned in
+\ref BASIC_STEPS_TO_FLASH_FILES
 
 \endcond
 
@@ -458,11 +483,21 @@ However the steps to convert the application `.out` into a bootable image are di
   - Only the region `0x43C00000` to `0x43C3C800` should be used by SBL code, data, stack etc
 
 \endcond
+
+\cond SOC_J722S
+- The SBL entry point needs to be different vs other applications. On @VAR_SOC_NAME after power-ON ROM boots the SBL and sets the entry point of SBL to R5FSS0-0. This is done by specifying a different entry point `-e_vectors_sbl` in the linker command file for the SBL application.
+- Other special factors for SBL application are listed below
+  - After entering `main()`, make sure to call `Bootloader_socLoadSysFw` to load the SYSFW to DMSC M3 and setup a "board config"
+  - The linker command file for SBL has to place vectors at address `0x43C40000` and this is the entry point for the SBL.
+  - Nothing should be placed in ATCM or BTCM
+  - Only the region `0x43C40000` to `0x43C7C800` should be used by SBL code, data, stack etc
+
+\endcond
 - After building, the SBL application `.out` file is first converted to a binary format `.bin` using the GCC `objcopy` tool.
   - This copies the loadable sections from the .out into a binary image stripping all symbol and section information.
   - If there are two loadable sections in the image which are not contiguous then `objcopy` fills the gaps with `0xFF`.
   - It is highly recommended to keep all loadable sections together within a SBL application.
-\cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX || SOC_AM275X
+\cond SOC_AM64X || SOC_AM243X || SOC_AM263X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX || SOC_AM275X || SOC_J722S
 - This `.bin` file is then signed using the \ref TOOLS_BOOT_SIGNING to create the final `.tiimage` bootable image.
    - A default key is used for this.
    - This is a ROM bootloader requirement and is needed even on a non-secure device.

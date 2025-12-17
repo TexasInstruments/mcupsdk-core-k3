@@ -49,8 +49,44 @@ The SBL uses 6 appimages
 - Appimage for **A53**
 \endcond
 
+\cond SOC_J722S
+
+This is a bootloader example, which shows an example of booting RTOS/NORTOS applications on WKUP R5F, MAIN R5F, C7x DSP, A53 and HSM cores.
+
+The booting is done in 2 stages (2 bootloader applications).
+
+- The stage1 of the bootloader runs on WKUP R5F from internal SRAM. It loads TIFS and BoardConfig, initializes clocks and DDR, and can boot application images on WKUP R5F, MAIN R5F, C7x DSP and A53 cores.
+
+- The stage2 of the bootloader is then loaded to the WKUP R5F ATCM/BTCM and DDR. The boot vectors are configured in ATCM/BTCM.
+
+- The core continues execution from ATCM/BTCM with DDR enabled.
+
+- The stage2 of the bootloader boots Linux on A53 (if used) and loads application images on MAIN R5F, C7x DSP and HSM cores.
+
+- Stage2 supports booting all non-self cores. Booting WKUP R5F from stage2 is not supported since stage2 executes on the WKUP R5F core.
+
+- Core images may have sections placed in ATCM/BTCM and remaining sections placed in DDR by stage2.
+
+The SBL uses multiple appimages
+- tiboot3.bin with **SBL stage1, TIFS, BoardConfig**
+- Appimage for **SBL stage2**
+- Appimage for **WKUP R5F**
+- Appimage for **MAIN R5F**
+- Appimage for **MCU R5F**
+- Appimage for **C7x DSP**
+- Appimage for **A53**
+
+\endcond
+
+\cond !SOC_J722S
 \note
 The default appimages in the SDK are built with authentication type 0  and load address 0x84000000. The gAppimage section in the bootloader application also has to be linked to the same address (0x84000000). If gAppimage section address is changed or multiple gAppimage buffers are used in the bootloader application, please ensure application's makefile is also updated with the corresponding load address.
+\endcond
+
+\cond SOC_J722S
+\note
+The default appimages in the SDK are built with authentication type 0  and load address 0xC2000000. The gAppimage section in the bootloader application also has to be linked to the same address (0xC2000000). If gAppimage section address is changed or multiple gAppimage buffers are used in the bootloader application, please ensure application's makefile is also updated with the corresponding load address.
+\endcond
 
 # Supported Combinations
 
@@ -60,6 +96,15 @@ The default appimages in the SDK are built with authentication type 0  and load 
  CPU + OS       | r5fss0-0 nortos
  Toolchain      | ti-arm-clang
  Board          |  @VAR_BOARD_NAME_LOWER, @VAR_SIP_SK_BOARD_NAME_LOWER
+ Example folder | examples/drivers/boot/sbl_ospi_multistage
+\endcond
+
+\cond SOC_J722S
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | wkup-r5fss0-0 nortos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/boot/sbl_ospi_multistage
 \endcond
 
@@ -106,6 +151,34 @@ Since this is a bootloader, the example will be run every time you boot an appli
         python uart_uniflash.py -p COM13 --cfg=${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/@VAR_BOARD_NAME_LOWER/default_sbl_ospi_hs_fs.cfg
 
 - If Linux PC is used, assuming SDK is installed at `${SDK_INSTALL_PATH}`
+
+        cd ${SDK_INSTALL_PATH}/tools/boot
+        python uart_uniflash.py -p /dev/ttyUSB0 --cfg=sbl_prebuilt/@VAR_BOARD_NAME_LOWER/default_sbl_ospi_hs_fs.cfg
+
+\endcond
+
+\cond SOC_J722S
+- This example is the SBL which needs to be flashed on the EVM flash, along with sample application images for MAIN R5F, C7x, A53 cores using the hello_world example.
+
+\note IPC RPMessage example is not used in this case since it requires WKUP R5F participation, which is not supported when booting from Stage2.
+
+\note For HS-SE device, use **default_sbl_ospi_hs.cfg** as the cfg file.
+\note For HS-FS device, use **default_sbl_ospi_hs_fs.cfg** as the cfg file.
+
+- There is a default flash config file as shown below which flashes this SBL and the hello_world application images:
+
+        ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/@VAR_BOARD_NAME_LOWER/default_sbl_ospi_hs_fs.cfg
+
+- Make sure the hello_world application for the required cores is built before running the flash script.
+
+- To flash to the EVM, refer to \ref GETTING_STARTED_FLASH. When providing the flash config file, point to the `default_sbl_ospi_hs_fs.cfg` shown above.
+
+- Example, assuming SDK is installed at `${SDK_INSTALL_PATH}` and this example and hello_world application are built using makefiles, and the RTOS Appimage is already created, in Windows:
+
+        cd ${SDK_INSTALL_PATH}
+        python uart_uniflash.py -p COM13 --cfg=${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/@VAR_BOARD_NAME_LOWER/default_sbl_ospi_hs_fs.cfg
+
+- If Linux PC is used, assuming SDK is installed at `${SDK_INSTALL_PATH}`:
 
         cd ${SDK_INSTALL_PATH}/tools/boot
         python uart_uniflash.py -p /dev/ttyUSB0 --cfg=sbl_prebuilt/@VAR_BOARD_NAME_LOWER/default_sbl_ospi_hs_fs.cfg
@@ -188,5 +261,46 @@ Starting RTOS/Baremetal applications
 [IPC RPMSG ECHO] Received and echoed 10 messages ... !!!
 All tests have passed!!
 
+\endcode
+\endcond
+
+\cond SOC_J722S
+\code
+
+INFO: Bootloader_loadSelfCpu:127: CPU wkup-r5f is initialized to 800000000 Hz !!!
+[BOOTLOADER_PROFILE] Boot Media       : FLASH
+[BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
+[BOOTLOADER_PROFILE] Boot Image Size  : 170 KB
+[BOOTLOADER_PROFILE] Cores present    :
+wkup-r5f0-0
+[BOOTLOADER PROFILE] System_init                      :      35452us
+[BOOTLOADER PROFILE] Board_init                       :          0us
+[BOOTLOADER PROFILE] Drivers_open                     :        146us
+[BOOTLOADER PROFILE] Board_driversOpen                :       9736us
+[BOOTLOADER PROFILE] App_loadSelfcoreImage            :      13054us
+[BOOTLOADER_PROFILE] SBL Total Time Taken             :      58391us
+
+Image loading done, switching to application ...
+Starting 2nd stage bootloader
+Sciserver Testapp Built On: Feb 18 2026 12:26:58
+Sciserver Version: v2023.11.0.0REL.MCUSDK.MM.NN.PP.bb
+RM_PM_HAL Version: vMM.NN.PP
+Starting Sciserver..... PASSED
+[BOOTLOADER_PROFILE] Boot Media       : FLASH
+[BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
+[BOOTLOADER_PROFILE] Boot Image Size  : 39 KB
+[BOOTLOADER_PROFILE] Cores present    :
+main-r5f0-0
+[BOOTLOADER PROFILE] System_init                      :       2657us
+[BOOTLOADER PROFILE] Board_init                       :          3us
+[BOOTLOADER PROFILE] FreeRTOS Task Created            :        258us
+[BOOTLOADER PROFILE] SBL Drivers_open                 :      25862us
+[BOOTLOADER PROFILE] SBL Board_driversOpen            :       9854us
+[BOOTLOADER PROFILE] App_loadImages                   :       4553us
+[BOOTLOADER_PROFILE] SBL Total Time Taken             :      43188us
+
+Image loading done, switching to application ...
+Starting RTOS/Baremetal applications
+Hello World!
 \endcode
 \endcond

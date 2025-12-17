@@ -59,8 +59,11 @@
 #define BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_START       0xC2000000
 #define BOOTLOADER_SECOND_STAGE_RESERVED_MEMORY_LENGTH      0x800000
 
-#define BOOTLOADER_APP_IMAGE_LOADED                         0x1U
-
+#define BOOTLOADER_APP_IMAGE_LOADED     (0x1U)
+#define BOOTLOADER_OSPI_ADDR            (0x60000000U)
+#define BOOTLOADER_OSPI_OFFSET_HSM      (0x80000U)
+#define BOOTLOADER_HSM_HEADER           (0x30)
+#define BOOTLOADER_HSM_IMG_NOT_FOUND    ((int32_t)(-2))
 /*
  * FreeRTOS Task Size and Priorities
  */
@@ -265,6 +268,101 @@ void App_driversClose()
     gUartHandle[CONFIG_UART_SBL] = NULL;
 }
 
+int32_t App_ospiCopyHsmImage(uint8_t** dstAddr, uint32_t srcOffsetAddr)
+{
+    int32_t retVal = CSL_PASS;
+
+    /* In case of OSPI NOR, Pointer to OSPI NOR can be directly passed to
+       Sciclient_procBootAuthAndStart() API */
+    /* Check if HSM binary is present or not */
+    uint8_t* ptr = (uint8_t *) *dstAddr;
+    if (*ptr != BOOTLOADER_HSM_HEADER)
+    {
+        retVal = BOOTLOADER_HSM_IMG_NOT_FOUND;
+    }
+    return retVal;
+}
+
+int32_t App_loadAndAuthHsmBinary(void)
+{
+    int32_t status = SystemP_SUCCESS;
+    /* Define sbl scratch memory as HSM address */
+    uint8_t *sblScratchMem = ((uint8_t *)(BOOTLOADER_OSPI_ADDR + BOOTLOADER_OSPI_OFFSET_HSM));
+    struct tisci_msg_proc_auth_boot_req authReq;
+    struct tisci_msg_proc_auth_boot_resp response = {0};
+    struct tisci_msg_proc_get_status_resp cpuStatus;
+    uint32_t hsmCoreProcId = SCICLIENT_PROC_ID_HSM_M4FSS0_CORE0;
+
+    status = App_ospiCopyHsmImage(&sblScratchMem, BOOTLOADER_OSPI_OFFSET_HSM);
+
+    if(status != SystemP_SUCCESS)
+    {
+        if (status == BOOTLOADER_HSM_IMG_NOT_FOUND)
+        {
+            DebugP_log("\n HSM Binary is not present.. \r\n");
+            DebugP_log("\n Continuing with normal boot.. \r\n");
+        }
+        else
+        {
+            DebugP_logError("\nFailed to copy hsm binary.. \r\n");
+        }
+    }
+    else
+    {
+        /* Get Processor state */
+        DebugP_log("Calling Sciclient_procBootGetProcessorState, ProcId 0x%x... \r\n", hsmCoreProcId);
+        status = Sciclient_procBootGetProcessorState(hsmCoreProcId, &cpuStatus, SCICLIENT_SERVICE_WAIT_FOREVER);
+        if (status != SystemP_SUCCESS)
+        {
+            DebugP_logError("Sciclient_procBootGetProcessorState...FAILED \r\n");
+        }
+
+        /* Request for processor */
+        DebugP_log("Calling Sciclient_procBootRequestProcessor, ProcId 0x%x... \r\n", hsmCoreProcId);
+        status = Sciclient_procBootRequestProcessor(hsmCoreProcId, SCICLIENT_SERVICE_WAIT_FOREVER);
+        if (status != SystemP_SUCCESS)
+        {
+            DebugP_logError("Sciclient_procBootRequestProcessor, ProcId 0x%x...FAILED \r\n", hsmCoreProcId);
+        }
+
+        /* Setting HALT for Processor */
+        DebugP_log("Setting HALT for ProcId 0x%x... \r\n", hsmCoreProcId);
+        status =  Sciclient_procBootSetSequenceCtrl(hsmCoreProcId, TISCI_MSG_VAL_PROC_BOOT_CTRL_FLAG_HSM_M4_RESET, 0, TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
+        if (status != SystemP_SUCCESS)
+        {
+            DebugP_logError("Sciclient_procBootSetSequenceCtrl...FAILED \r\n");
+        }
+
+        authReq.certificate_address_hi = 0;
+        authReq.certificate_address_lo = (uint32_t) sblScratchMem;
+        /* Request TIFS to authenticate and load the HSM image */
+        DebugP_log("Calling Sciclient_procBootAuthAndStart ... \r\n");
+        status = Sciclient_procBootAuthAndStart(&authReq, &response, SCICLIENT_SERVICE_WAIT_FOREVER);
+        if (status != SystemP_SUCCESS)
+        {
+            DebugP_logError("Sciclient_procBootAuthAndStart...FAILED \r\n");
+        }
+
+        /* Clearing HALT for Processor */
+        DebugP_log("Clearing HALT for ProcId 0x%x... \r\n", hsmCoreProcId);
+        status =  Sciclient_procBootSetSequenceCtrl(hsmCoreProcId, 0, TISCI_MSG_VAL_PROC_BOOT_CTRL_FLAG_HSM_M4_RESET, TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
+        if (status != SystemP_SUCCESS)
+        {
+            DebugP_logError("Sciclient_procBootSetSequenceCtrl...FAILED \r\n");
+        }
+
+        /* Release Processor */
+        DebugP_log("Calling Sciclient_procBootReleaseProcessor, ProcId 0x%x... \r\n", hsmCoreProcId);
+        status = Sciclient_procBootReleaseProcessor(hsmCoreProcId, TISCI_MSG_FLAG_AOP, SCICLIENT_SERVICE_WAIT_FOREVER);
+        if (status != SystemP_SUCCESS)
+        {
+            DebugP_logError("Sciclient_procBootReleaseProcessor, ProcId 0x%x...FAILED \r\n", hsmCoreProcId);
+        }
+    }
+
+    return status;
+}
+
 void sciserver_main_thread(void *args)
 {
     int32_t status = SystemP_SUCCESS;
@@ -318,6 +416,16 @@ void sbl_ospi_stage2_main_thread(void *args)
 
         if(SystemP_SUCCESS == status)
         {
+            DebugP_log("Booting HSM core ... \r\n");
+            status = App_loadAndAuthHsmBinary();
+            if(SystemP_SUCCESS == status)
+            {
+                DebugP_log("HSM Core booted successfully \r\n");
+            }
+            else
+            {
+                DebugP_log("Failed to boot HSM core !! \r\n");
+            }
             if(bootHandle != NULL)
             {
                 ((Bootloader_Config *)bootHandle)->scratchMemPtr = gAppImage;

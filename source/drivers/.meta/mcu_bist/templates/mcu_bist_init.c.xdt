@@ -28,7 +28,7 @@
     % }
     % if (instance.enableMcuPbist){
             /* Start MCU PBIST */
-            status = SDL_SBL_PBIST_selfTest(`soc.getSdlMcuPbistInstance()`);
+            status = SDL_SBL_PBIST_selfTest(`soc.getSdlMcuPbistInstance()`, SDL_PBIST_TEST);
     % }
             DebugP_assert(status == SDL_PASS);
         }

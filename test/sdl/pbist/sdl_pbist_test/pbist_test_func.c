@@ -161,7 +161,7 @@ static void PBIST_SBL_API_Test(SDL_PBIST_inst instance)
         * coverage purposes, the return values are being discarded.
         */
 
-        SDL_SBL_PBIST_selfTest(instance);
+        SDL_SBL_PBIST_selfTest(instance, SDL_PBIST_TEST);
 
         SDL_SBL_PBIST_checkDone(instance);
 

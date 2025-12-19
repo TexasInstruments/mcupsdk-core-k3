@@ -3,8 +3,10 @@
     let soc = system.getScript(`/drivers/mcu_bist/soc/mcu_bist_${common.getSocName()}`);
     let module = system.modules['/drivers/mcu_bist/mcu_bist'];
     let instance = module.$instances[0];
+    let config = module.getInstanceConfig(instance);
+    let socName = system.getScript("/common").getSocName();
 %%}
-% if (instance.enableMcuLbist){
+% if (instance.bist === "LBIST"){
 /*
  * LBIST
  */
@@ -12,8 +14,15 @@
 #include <sdl/include/sdl_types.h>
 #include <sdl/dpl/sdl_dpl.h>
 #include <sdl/sdl_lbist.h>
+
+/* Timeout for LBIST completion */
+#define SDL_BIST_MAX_TIMEOUT_VALUE                      (10000000u)
+#define SDL_NUM_HWIP_OBJECTS                            10
+
+/* SDL functions for completion of LBIST tests */
+int32_t SDL_LBIST_waitForCompletion(SDL_LBIST_inst instance);
 % }
-% if (instance.enableMcuPbist){
+% if (instance.bist === "PBIST"){
 /*
  * PBIST
  */
@@ -21,4 +30,63 @@
 #include <sdl/include/sdl_types.h>
 #include <sdl/dpl/sdl_dpl.h>
 #include <sdl/sdl_pbist.h>
+
+/* Timeout for PBIST completion */
+#define SDL_BIST_MAX_TIMEOUT_VALUE                      (10000000u)
+#define SDL_NUM_HWIP_OBJECTS                            10
+
+/* Number of PBIST Instances selected */
+#define PBIST_NUM_INSTANCE                              (`config.selectedInstances.length`U)
+
+/* Number of Auxiliary Devices of selected PBIST instances */
+% for (var i=0; i<config.auxDevices.length; i++){
+#define `config.coreList[i]`_NUM_AUX_DEVICES            `config.auxDevices[i].length`
+% }
+% if (config.selectedInstances.includes("SDL_PBIST_INST_MPU")){
+
+/* Used for BISOR override in SDL_PBIST_handleMPUAuxDevices */
+#define SDL_WKUP_CTRL_MMR_CFG0_A53SS_DFT_CTL            (0x00010600U)
+% }
+% if (config.selectedInstances.includes("SDL_PBIST_INST_C7X")){
+
+/* UMC SCRUBBER used in SDL_PBIST_handleC7XAuxDevices */
+#define SDL_C7XV_UMC_CFG_C7X256V_CORE0_EL2_SCRB_CFG         0x00000010
+% }
+% if (config.pscAddrs.length > 0){
+
+/* The following macros will be used in modifying PSC register values */
+#define PBIST_PSC_NEXT_MASK                             (0x0000003F)
+#define PBIST_PSC_FORCE_OFF                             (0x80000000)
+#define PBIST_PSC_FORCE_ON                              (0x80000003)
+#define PBIST_PSC_PTCMD_ADDR                            (0x400120)
+#define PBIST_PSC_PTCMD_TIMEOUT                         (1000000U)
+#define PBIST_PSC_PTSTAT_ADDR                           (0x400128)
+
+/* Addresses of PBIST PSC devices */
+#define PBIST_PSC_BASE_ADDR                             ((uint32_t)0x400A00)
+% for (var i=0; i<config.pscAddrs.length; i++){
+#define `config.pscAddrs[i]`                            (PBIST_PSC_BASE_ADDR + 4 * `config.lpscIds[i]`)
+% }
+#define PBIST_PSC_NUM_ADDR                              `config.pscPds.length`
+% }
+
+typedef int32_t (*PBIST_auxHandleFunctionPtr)(bool init);
+
+typedef struct PBIST_TestHandle_s
+{
+    SDL_PBIST_inst pbistInst;
+    uint32_t numAuxDevices;                             /* Number of Aux devices */
+    uint32_t *auxDeviceIds;                            /* Array of Aux device ids */
+    PBIST_auxHandleFunctionPtr auxHandleFunction;       /* Auxiliary handle function */
+} PBIST_TestHandle_t;
+
+/* SDL functions for initialization or completion of PBIST tests */
+
+int32_t SDL_PBIST_startAllTests(bool runNegTest);
+int32_t SDL_PBIST_completeAllTests(void);
+% if (config.pscAddrs.length > 0){
+
+/* SDL functions for handling PSC devices */
+int32_t SDL_PBIST_handlePSCdevices(bool powerOn);
+% }
 % }

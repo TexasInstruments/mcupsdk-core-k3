@@ -1,13 +1,19 @@
-function getSdlMcuLbistInstance()
+function getSdlLbistInstances()
 {
-    return "LBIST_MAIN_M4F";
+    return ["LBIST_MAIN_M4F"];
 }
-function getSdlMcuPbistInstance()
-{
-    return "SDL_PBIST_INST_MCU";
+const pbist_instance_config = [
+    {
+        instance        :   "SDL_PBIST_INST_MCU",
+        auxDevices      :   [],
+        pscConfig       :   []
+    },
+]
+function getSdlPbistInstanceConfig() {
+    return pbist_instance_config;
 }
 
 exports = {
-    getSdlMcuLbistInstance,
-    getSdlMcuPbistInstance,
+    getSdlLbistInstances,
+    getSdlPbistInstanceConfig,
 };

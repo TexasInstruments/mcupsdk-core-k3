@@ -1,54 +1,43 @@
-# Release Notes 11.02.00 {#RELEASE_NOTES_11_02_00_PAGE}
+# Release Notes 12.00.00 {#RELEASE_NOTES_12_00_00_PAGE}
 
 [TOC]
 
 \attention Also refer to individual module pages for more details on each feature, unsupported features, important usage guidelines.
 
 \note The examples will show usage of SW modules and APIs on a specific CPU instance and OS combination. \n
-      Unless explicitly noted otherwise, the SW modules would work in both FreeRTOS and no-RTOS environment. \n
+      Unless explicitly noted otherwise, the SW modules would work in both FreeRTOS and no-RTOS environment.
+
+\attention MCU+SDK on A53 is provided as is for customers as a reference to implement/validate on their own SW Stack & OS. TI will not support these features on the E2E forum as these are not part of the MCU+SDK product. If these features need to be productized, TI can recommend third parties who can help.
 
 ## Device and Validation Information
 
-SOC    | Supported CPUs              | EVM                                                    | Host PC
--------|-----------------------------|--------------------------------------------------------|-----------------------------------
-AM62P  | MCU R5F, WKUP R5F           | @VAR_BOARD_NAME EVM (referred to as am62px-sk in code) | Windows 10 64b or Ubuntu 22.04 64b
+
+SOC    | Supported CPUs  | EVM                                              | Host PC
+-------|-----------------|--------------------------------------------------|-----------------------------------
+AM62x  | M4F, R5F, A53   | SK-AM62 (referred as am62x-sk in code), SK-AM62-LP (referred as am62x-sk-lp in code), SK-AM62-SIP (referred as am62x-sip-sk in code) | Windows 10 64b or Ubuntu 22.04 64b
+
 
 ## Features Added in This Release
 
 \note Update of OSPI tuning algorithm on this SDK causes increase in tuning time. Refer \ref OSPI_DATA_SHEET
 
+\attention DeepSleep low power mode (LPM) is not supported if the DM R5 is used for a general purpose application. This is because when the SoC goes to any LPM, the context of peripherals used by DM R5 will be lost. To use DM R5 for a general purpose application, disable LPM support. Refer \ref DISABLE_LPM to know how to disable LPM.
+
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
-SBL EMMC Falcon boot support                                                                   | SBL
-MMCSD Driver on MCU R5F                                                                        | MMCSD
-New OSPI tuning algorithm is added                                                             | OSPI
-Example to demonstrate VTM triggered SoC reset is added                                        | SDL
-ATCM/BTCM reset base toggle support for multistage bootloader                                  | DM
-Spread spectrum clocking (SSC) support for Display PLLs                                        | DM
-Support to print DM application logs based on board config is added                            | DM
-
-### Experimental Features {#EXPERIMENTAL_FEATURES_11_02_00}
-
-\attention Features listed below are early versions and should be considered as "experimental".
-\attention Users can evaluate the feature, however the feature is not fully tested at TI side.
-\attention TI would not support these feature on public e2e.
-\attention Experimental features will be enabled with limited examples and SW modules.
-
-Feature                                                                             | Module
-------------------------------------------------------------------------------------|--------------------------
-Ethernet traffic sharing accross multiple cores, called Ethernet Firmware           | Networking
-C++ SUpport                                                                         | NA
+-                                                                                              | -
 
 ## Dependent Tools and Compiler Information
-\attention It is recommended to use the TIFS version provided with the release for ensuring compatibility between TIFS and device manager. Using the TIFS from different MCU+SDK release is not recommended and may cause TIFS/ DM functionality to break.
 
-Tools/Components        | Supported CPUs           | Version
-------------------------|--------------------------|-----------------------
-Code Composer Studio    | MCU-R5F, WKUP-R5F        | 20.3.1
-SysConfig               | MCU-R5F, WKUP-R5F        | 1.24.2, build 4234
-TI ARM CLANG            | MCU-R5F, WKUP-R5F        | 4.0.1.LTS
-GCC AARCH64             | A53                      | 9.2-2019.12
-FreeRTOS Kernel         | MCU-R5F, WKUP-R5F        | 11.1.0
+\attention It is recommended to use the TIFS version provided with the release for ensuring compatibility between TIFS and device manager. Using the TIFS from different MCU+SDK release is not recomended and may cause TIFS/ DM functionality to break.
+
+Tools/Components        | Supported CPUs | Version
+------------------------|----------------|-----------------------
+Code Composer Studio    | M4F, R5F, A53  | 20.3.1
+SysConfig               | M4F, R5F, A53  | 1.24.2, build 4234
+TI ARM CLANG            | M4F, R5F       | 4.0.1.LTS
+GCC AARCH64             | A53            | 9.2-2019.12
+FreeRTOS Kernel         | M4F, R5F, A53  | 11.1.0
 
 ## SDK Components
 
@@ -73,60 +62,44 @@ FreeRTOS Kernel         | MCU-R5F, WKUP-R5F        | 11.1.0
 
 ### OS Kernel
 
-OS              | Supported CPUs            | SysConfig Support
-----------------|---------------------------|-------------------
-FreeRTOS Kernel | MCU-R5F, WKUP-R5F         | NA
-FreeRTOS POSIX  | MCU-R5F                   | NA
-No RTOS         | MCU-R5F, WKUP-R5F         | NA
+OS              | Supported CPUs  | SysConfig Support
+----------------|-----------------|-------------------
+FreeRTOS Kernel | M4F, R5F, A53   | NA
+FreeRTOS POSIX  | M4F, A53        | NA
+No RTOS         | M4F, R5F, A53   | NA
 
 ### Driver Porting Layer (DPL)
 
-Module            | Supported CPUs            | SysConfig Support | OS support
-------------------|---------------------------|-------------------|------------------
-Address Translate | MCU-R5F, WKUP-R5F         | Yes               | FreeRTOS, NORTOS
-Cache             | MCU-R5F, WKUP-R5F         | Yes               | FreeRTOS, NORTOS
-Clock             | MCU-R5F, WKUP-R5F         | Yes               | FreeRTOS, NORTOS
-CycleCounter      | MCU-R5F, WKUP-R5F         | NA                | FreeRTOS, NORTOS
-Debug             | MCU-R5F, WKUP-R5F         | Yes               | FreeRTOS, NORTOS
-Heap              | MCU-R5F, WKUP-R5F         | NA                | FreeRTOS, NORTOS
-Hwi               | MCU-R5F, WKUP-R5F         | Yes               | FreeRTOS, NORTOS
-MPU               | MCU-R5F, WKUP-R5F         | Yes               | FreeRTOS, NORTOS
-Semaphore         | MCU-R5F, WKUP-R5F         | NA                | FreeRTOS, NORTOS
-Task              | MCU-R5F, WKUP-R5F         | NA                | FreeRTOS
-Timer             | MCU-R5F, WKUP-R5F         | Yes               | FreeRTOS, NORTOS
+Module            | Supported CPUs  | SysConfig Support | OS support
+------------------|-----------------|-------------------|------------------
+Address Translate | M4F, R5F        | Yes               | FreeRTOS, NORTOS
+Cache             | R5F, A53        | Yes               | FreeRTOS, NORTOS
+Clock             | M4F, R5F, A53   | Yes               | FreeRTOS, NORTOS
+CycleCounter      | M4F, R5F, A53   | NA                | FreeRTOS, NORTOS
+Debug             | M4F, R5F, A53   | Yes               | FreeRTOS, NORTOS
+Heap              | M4F, R5F, A53   | NA                | FreeRTOS, NORTOS
+Hwi               | M4F, R5F, A53   | Yes               | FreeRTOS, NORTOS
+MPU               | M4F, R5F, A53   | Yes               | FreeRTOS, NORTOS
+Semaphore         | M4F, R5F, A53   | NA                | FreeRTOS, NORTOS
+Task              | M4F, R5F, A53   | NA                | FreeRTOS
+Timer             | M4F, R5F, A53   | Yes               | FreeRTOS, NORTOS
 
 ### Secondary Bootloader (SBL)
 
 SBL Mode  | Supported CPUs | SysConfig Support | PHY Support | DMA Support | OS support
 ----------|----------------|-------------------|-------------|-------------|--------------------------------------------------------
-OSPI NOR  | WKUP-R5F       | Yes               | Yes         |   Yes       | NORTOS
-EMMC      | WKUP-R5F       | Yes               | NA          |   NA        | NORTOS
-UART      | WKUP-R5F       | Yes               | NA          |   No        | NORTOS
-
-### SDL
-
-SDL Module       | Supported CPUs | SysConfig Support
------------------|----------------|-------------------
-MCRC             |MCU-R5F         | No
-ESM              |MCU-R5F         | No
-VTM              |MCU-R5F         | No
-DCC              |MCU-R5F         | No
-ECC              |MCU-R5F         | No
-RTI              |MCU-R5F         | No
-POK              |MCU-R5F         | No
-STOG             |MCU-R5F         | No
-MTOG             |MCU-R5F         | No
-PBIST            |MCU-R5F         | No
-LBIST            |MCU-R5F         | No
-ROM_CHECKSUM     |MCU-R5F         | No
+OSPI NOR  | R5F            | Yes               | Yes         |   Yes       | NORTOS
+OSPI NAND | R5F            | Yes               | Yes         |   Yes       | NORTOS
+EMMC      | R5F            | Yes               | NA          |   NA        | NORTOS
+UART      | R5F            | Yes               | NA          |   No        | NORTOS
 
 ### Networking
 
 Module                      | Supported CPUs | SysConfig Support | OS Support  | Key features tested                                                                                                                                                                    | Key features not tested
 ----------------------------|----------------|-------------------|-------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------
-TSN                         | WKUP-R5F       | NO                | FreeRTOS    | gPTP IEEE 802.1 AS-2020 compliant gPTP stack, End Nodes and Bridge mode support, YANG data model configuration  | Multi-Clock Domain
-LwIP                        | WKUP-R5F       | YES               | FreeRTOS    | TCP/UDP IP networking stack with and without checksum offload enabled, TCP/UDP IP networking stack with server and client functionality, basic Socket APIs, netconn APIs and raw APIs, DHCP, ping, TCP iperf, scatter-gather, DSCP priority mapping, LwIP bridge, shared memory driver  | Other LwIP features
-Ethernet driver (ENET)      | WKUP-R5F       | YES               | FreeRTOS    | Ethernet as port using CPSW,  MAC loopback and PHY loopback, Layer 2 MAC, Packet Timestamping, CPSW Switch, Policer and Classifier, MDIO Manual Mode, CBS (IEEE 802.1Qav) on CPSW, IET (IEEE 802.1Qbu) on CPSW, Strapped PHY (Early Ethernet), cut through switch on CPSW  | RMII mode
+TSN                         | A53            | NO                | FreeRTOS    | gPTP IEEE 802.1 AS-2020 compliant gPTP stack, End Nodes and Bridge mode support, YANG data model configuration  | Multi-Clock Domain
+LwIP                        | A53            | YES               | FreeRTOS    | TCP/UDP IP networking stack with and without checksum offload enabled, TCP/UDP IP networking stack with server and client functionality, basic Socket APIs, netconn APIs and raw APIs, DHCP, ping, TCP iperf, scatter-gather, DSCP priority mapping, LwIP bridge, shared memory driver  | Other LwIP features
+Ethernet driver (ENET)      | A53            | YES               | FreeRTOS    | Ethernet as port using CPSW,  MAC loopback and PHY loopback, Layer 2 MAC, Packet Timestamping, CPSW Switch, Policer and Classifier, MDIO Manual Mode, CBS (IEEE 802.1Qav) on CPSW, IET (IEEE 802.1Qbu) on CPSW, Strapped PHY (Early Ethernet), cut through switch on CPSW  | RMII mode
 
 ### SOC Device Drivers
 
@@ -143,136 +116,192 @@ MCASP driver
     <tr>
         <td>DDR</td>
         <td>Main</td>
-        <td>WKUP-R5F</td>
-        <td>Yes</td>
-    </tr>
-    <tr>
-        <td>ECAP</td>
-        <td>Main</td>
-        <td>MCU-R5F</td>
-        <td>Yes</td>
-    </tr>
-    <tr>
-        <td>EPWM</td>
-        <td>Main</td>
-        <td>MCU-R5F, WKUP-R5F</td>
+        <td>R5F</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>DSS</td>
         <td>Main</td>
-        <td>WKUP-R5F</td>
+        <td>A53</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>ECAP</td>
+        <td>Main</td>
+        <td>A53</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>EPWM</td>
+        <td>Main</td>
+        <td>M4F, A53</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>EQEP</td>
+        <td>Main</td>
+        <td>A53</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td rowspan=2>GPIO</td>
         <td>MCU</td>
-        <td>MCU-R5F, WKUP-R5F</td>
+        <td>M4F, R5F</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>Main</td>
-        <td>MCU-R5F, WKUP-R5F</td>
+        <td>M4F, R5F, A53</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>GPMC</td>
+        <td>Main</td>
+        <td>R5F, A53</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td rowspan=3>I2C </td>
         <td>Main</td>
-        <td>MCU-R5F, WKUP-R5F</td>
+        <td>M4F, R5F, A53</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>MCU</td>
-        <td>MCU-R5F, WKUP-R5F</td>
+        <td>M4F, R5F</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>Wakeup</td>
-        <td>MCU-R5F, WKUP-R5F</td>
+        <td>M4F, R5F</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>IPC</td>
         <td>Main</td>
-        <td>MCU-R5F, WKUP-R5F</td>
+        <td>M4F, R5F, A53</td>
         <td>Yes</td>
     </tr>
     <tr>
-        <td>MCAN</td>
-        <td>MCU</td>
-        <td>MCU-R5F</td>
-        <td>Yes</td>
-    </tr>
-    <tr>
-        <td>MCASP</td>
+        <td rowspan=2>MCAN</td>
         <td>Main</td>
-        <td>WKUP-R5F</td>
+        <td>R5F, A53</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>MCU</td>
+        <td>M4F</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td rowspan=2>MCSPI</td>
         <td>Main</td>
-        <td>MCU-R5F, WKUP-R5F</td>
+        <td>M4F, R5F, A53</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>MCU</td>
-        <td>MCU-R5F, WKUP-R5F</td>
+        <td>M4F, R5F</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>MMCSD</td>
         <td>Main</td>
-        <td>WKUP-R5F, MCU-R5F</td>
+        <td>R5F, A53</td>
         <td>Yes</td>
     </tr>
     <tr>
+        <td>OSPI</td>
+        <td>Main</td>
+        <td>R5F, A53</td>
+        <td>Yes</td>
+    <tr>
         <td rowspan=3>Pinmux</td>
         <td>Main</td>
-        <td>MCU-R5F, WKUP-R5F</td>
+        <td>M4F, R5F, A53</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>MCU</td>
-        <td>MCU-R5F, WKUP-R5F</td>
+        <td>M4F, R5F</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>Wakeup</td>
-        <td>MCU-R5F, WKUP-R5F</td>
+        <td>M4F, R5F</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>RTC</td>
+        <td>Main</td>
+        <td>R5F, A53</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>SOC</td>
         <td>NA</td>
-        <td>MCU-R5F, WKUP-R5F</td>
+        <td>M4F, R5F, A53</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>SCIClient</td>
         <td>NA</td>
-        <td>MCU-R5F, WKUP-R5F</td>
+        <td>M4F, R5F, A53</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td rowspan=3>UART</td>
         <td>Main</td>
-        <td>MCU-R5F, WKUP-R5F</td>
+        <td>M4F, R5F, A53</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>MCU</td>
-        <td>MCU-R5F, WKUP-R5F</td>
+        <td>M4F, R5F</td>
         <td>Yes</td>
     </tr>
     <tr>
         <td>Wakeup</td>
-        <td>WKUP-R5F</td>
+        <td>R5F</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>UDMA</td>
+        <td>Main</td>
+        <td>R5F, A53</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>WDT</td>
+        <td>Main</td>
+        <td>A53</td>
         <td>Yes</td>
     </tr>
 </table>
 
+\note Refer \ref MAIN_DOMAIN_PERIPHERAL_FROM_MCU for accessing main/wakeup peripherals from MCU Domain.
+### Board Device Drivers
 
+Peripheral | Supported CPUs | SysConfig Support
+-----------|----------------|-------------------
+Flash      | R5F            | Yes
+
+### Software Diagnostic Library (SDL)
+
+SDL Module   | Supported CPUs | SysConfig Support
+-------------|----------------|-------------------
+ESM          | M4F, R5F       | No
+MCRC         | M4F, R5F       | No
+RTI          | M4F, R5F       | No
+DCC          | M4F, R5F       | No
+VTM          | M4F, R5F       | No
+STOG         | M4F, R5F       | No
+PBIST        | M4F, R5F       | No
+MTOG         | M4F            | No
+POK          | M4F, R5F       | No
+ECC          | M4F, R5F       | No
+LBIST        | M4F            | No
+ROM Checksum | R5F            | No
 
 ## Fixed Issues
 
@@ -284,14 +313,14 @@ MCASP driver
    <th> Module
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-177, EXT_SITMPUSW-177}
-    <td> Invalid comment in the linker command files
-    <td> Build
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-134, EXT_SITMPUSW-134}
+    <td> GPIO input interrupt example not working  on A53 AMP
+    <td> AMP
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-243, EXT_SITMPUSW-243}
-    <td> Debug unlock certificate generation script does not generate DER certificate blob
-    <td> Build
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-177, EXT_SITMPUSW-177}
+    <td> Invalid comment in the linker command files
+    <td> BUILD
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-269, EXT_SITMPUSW-269}
@@ -374,11 +403,6 @@ MCASP driver
     <td> MCSPI
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-208, EXT_SITMPUSW-208}
-    <td>  PDMA channels are not aligned properly with the different MCSPI instants
-    <td> MCSPI
-</tr>
-<tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-110, EXT_SITMPUSW-110}
     <td> eMMC Init Code Missing DLL Register Settings needed for Initial Legacy SDR Mode Phase
     <td> MMCSD
@@ -386,11 +410,6 @@ MCASP driver
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-113, EXT_SITMPUSW-113}
     <td> eMMC PHY I/O Calibration not getting executed during eMMC boot
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-115, EXT_SITMPUSW-115}
-    <td> SDR/DDR mode are not enabled in the Sysconfig for MMCSD
     <td> MMCSD
 </tr>
 <tr>
@@ -416,16 +435,6 @@ MCASP driver
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-127, EXT_SITMPUSW-127}
     <td> Incorrect handling of the CAPABILITIES register in the eMMC initialization
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-137, EXT_SITMPUSW-137}
-    <td> Random CRC errors observed for eMMC HS400 mode on random reset test
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-139, EXT_SITMPUSW-139}
-    <td> Comment and Implementation does not match in the MMCSD_retune
     <td> MMCSD
 </tr>
 <tr>
@@ -469,11 +478,6 @@ MCASP driver
     <td> MMCSD
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-203, EXT_SITMPUSW-203}
-    <td> eMMC PHY Tuning Status Result Ignored when switching to HS400 Mode
-    <td> MMCSD
-</tr>
-<tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-204, EXT_SITMPUSW-204}
     <td> MMCSD close() is not proper
     <td> MMCSD
@@ -491,11 +495,6 @@ MCASP driver
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-215, EXT_SITMPUSW-215}
     <td> MMCSD : Read fails when injecting Command End Bit  fault
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-225, EXT_SITMPUSW-225}
-    <td> HSDDR50 mode lead to data CRC errors with correct timing values.
     <td> MMCSD
 </tr>
 <tr>
@@ -549,8 +548,8 @@ MCASP driver
     <td> OSPI
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-227, EXT_SITMPUSW-227}
-    <td> AM62P: fss flash boot size is locking the MMRs
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-231, EXT_SITMPUSW-231}
+    <td> OSPI NAND Writes DAC enable
     <td> OSPI
 </tr>
 <tr>
@@ -564,13 +563,8 @@ MCASP driver
     <td> OSPI
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-157, EXT_SITMPUSW-157}
-    <td> gMemBootloaderConfig in the bootloader driver is not thread safe
-    <td> SBL
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-159, EXT_SITMPUSW-159}
-    <td> SBL SD is broken on AM62P
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-133, EXT_SITMPUSW-133}
+    <td> Falcon Boot through SBL is not supported
     <td> SBL
 </tr>
 <tr>
@@ -590,7 +584,12 @@ MCASP driver
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-205, EXT_SITMPUSW-205}
-    <td> """sbl_uart_uniflash_stage2"" is not prebuilt"
+    <td> sbl_uart_uniflash_stage2 is not prebuilt
+    <td> SBL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-122, EXT_SITMPUSW-122}
+    <td> HSM core does not boot
     <td> SBL
 </tr>
 <tr>
@@ -624,8 +623,13 @@ MCASP driver
     <td> SDL
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13058, EXT_EP-13058}
-    <td> PBIST example and tests fail in UART Bootmode
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13069, EXT_EP-13069}
+    <td> AM62x: POK Example and FT are failing in r5f-freertos
+    <td> SDL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13070, EXT_EP-13070}
+    <td> AM62x: VTM Example and FT are failing in r5f-freertos
     <td> SDL
 </tr>
 </table>
@@ -641,14 +645,19 @@ MCASP driver
    <th> Module
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-245, EXT_SITMPUSW-245}
-    <td> MCU+ SDK LPDDR4 Driver starts DDR Training/Leveling Sequence twice
-    <td> DDR
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-153, EXT_SITMPUSW-153}
+    <td> MCU+ SDK CCS Project Build Generates Invalid/Redundant Boot Image Files
+    <td> Build
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-251, EXT_SITMPUSW-251}
     <td> MCU+ SDK Example Projects using incorrect ARMv7 MPU Attributes for Peripheral Register Region
     <td> Examples
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-87, EXT_SITMPUSW-87}
+    <td> Sysconfig crashing when adding large number of GPIO pins
+    <td> GPIO
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-28, EXT_SITMPUSW-28}
@@ -676,29 +685,19 @@ MCASP driver
     <td> OTP
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-135, EXT_SITMPUSW-135}
-    <td> RTC Test application failing intermittently.
-    <td> RTC
-</tr>
-<tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-220, EXT_SITMPUSW-220}
     <td> SBL_SD bootloaders report incorrect boot image size
     <td> SBL
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-153, EXT_SITMPUSW-153}
-    <td> MCU+ SDK CCS Project Build Generates Invalid/Redundant Boot Image Files
-    <td> Build
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-252, EXT_SITMPUSW-252}
+    <td> AM62X : Loading an A53 example is not working after the CPU Reset from the CCS
+    <td> CCS
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-258, EXT_SITMPUSW-258}
-    <td> WKUP UART0 is not working in CallBack mode
-    <td> UART
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-259, EXT_SITMPUSW-259}
-    <td> eMMC retuning may be attempted during the initialization sequence
-    <td> MMCSD
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12275, EXT_EP-12275}
+    <td> AM62x: ECC: SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR and SDL_DMASS0_DMSS_AM62_ECCAGGR aggregators are failing.
+    <td> SDL
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12276, EXT_EP-12276}
@@ -706,18 +705,13 @@ MCASP driver
     <td> SDL
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12277, EXT_EP-12277}
-    <td> AM62Px: ECC: SDL_MCAN1_MCANSS_MSGMEM_WRAP_ECC_AGGR aggregator is failing
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12278, EXT_EP-12278}
+    <td> ECC Aggregator SMS0_SMS_HSM_ECC Aggr fails on AM62x.
     <td> SDL
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12279, EXT_EP-12279}
     <td> CSI RX ECC aggregators are failing on AM62P/AM62X
-    <td> SDL
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12280, EXT_EP-12280}
-    <td> Running MCU LBIST on SBL causes JTAG connection issues to MCU R5F
     <td> SDL
 </tr>
 </table>
@@ -738,13 +732,13 @@ MCASP driver
 </tr>
 <tr>
     <td> 2
-    <td> LPM is not supported with SBL boot flow. It is supported only with SPL boot flow.
+    <td> PHY mode not supported for OSPI NAND SBL on DDR mode. It is supported for SDR mode only
     <td> Bootloader
 </tr>
 <tr>
     <td> 3
-    <td> The EVM is limited to only one MAC address in the EEPROM, applications requiring multiple MAC addresses should enable and configure manual MAC address entry in Sysconfig.
-    <td> Networking
+    <td> LPM is not supported with SBL boot flow. It is supported only with SPL boot flow.
+    <td> Bootloader
 </tr>
 </table>
 
@@ -765,6 +759,7 @@ Module       | Migration guide                        | Older version  | Newer v
 Bootloader   |  \ref BOOTLOADER_MIGRATION_GUIDELINE  &zwj; |   <= 10.01.00  | >= 11.00.00
 NETWORKING   |  \ref enet_mcupsdk_update       &zwj;       |   <= 11.01.00  | >= 11.02.00
 OSPI         |  \ref OSPI_MIGRATION_GUIDE       &zwj;      |   <= 11.01.00  | >= 11.02.00
+
 
 ### Networking
 

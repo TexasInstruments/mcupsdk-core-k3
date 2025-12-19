@@ -61,7 +61,7 @@ FreeRTOS Kernel         | R5F, C75                 | 11.1.0
     </tr>
 </table>
 
-### Experimental Features {#EXPERIMENTAL_FEATURES}
+### Experimental Features {#EXPERIMENTAL_FEATURES_11_02_00}
 \attention Features listed below are early versions and should be considered as "experimental".
 \attention Users can evaluate the feature, however the feature is not fully tested at TI side.
 \attention TI would not support these feature on public e2e.

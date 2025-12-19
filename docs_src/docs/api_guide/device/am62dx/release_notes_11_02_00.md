@@ -31,7 +31,7 @@ Feature                                                                         
  ATCM/BTCM reset base toggle support for multistage bootloader                                 | DM
  Low power mode (LPM) support in firmware                                                      | DM
 
-### Experimental Features {#EXPERIMENTAL_FEATURES}
+### Experimental Features {#EXPERIMENTAL_FEATURES_11_02_00}
 
 \attention Features listed below are early versions and should be considered as "experimental".
 \attention Users can evaluate the feature, however the feature is not fully tested at TI side.

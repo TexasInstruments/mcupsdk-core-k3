@@ -18,7 +18,7 @@
             <br/>${SDK_INSTALL_PATH}/source/drivers/scp/firmware/am62lx/*bin
             </em>
         </td>
-        <td>Production</td>
+        <td>Reference</td>
         <td>BQ</td>
         <td>NA</td>
         <td>TI.com</td>
@@ -33,7 +33,7 @@
             <br/>${SDK_INSTALL_PATH}/source/networking/enet/core
             </em>
         </td>
-        <td>Production</td>
+        <td>Reference</td>
         <td>BQ</td>
         <td>NA</td>
         <td>TI.com</td>
@@ -120,7 +120,7 @@
             <br/>${SDK_INSTALL_PATH}/source/kernel/nortos/dpl
             </em>
         </td>
-        <td>Production</td>
+        <td>Reference</td>
         <td>BQ</td>
         <td>NA</td>
         <td>TI.com</td>
@@ -162,7 +162,7 @@
             <br/>${SDK_INSTALL_PATH}/source/networking/tsn
             </em>
         </td>
-        <td>Production</td>
+        <td>Reference</td>
         <td>BQ</td>
         <td>NA</td>
         <td>TI.com</td>

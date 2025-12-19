@@ -117,9 +117,13 @@ uint32_t gRemoteCoreId[] = {
 #endif
 
 #if defined (SOC_AM62AX) || defined (SOC_AM62DX)
-/* main core that checks the test pass/fail */
-#if defined(BUILD_C7X_AS_MASTER)
+
+#if defined(BUILD_MCU_R5F_AS_MASTER)
+uint32_t gMainCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+#elif defined(BUILD_C7X_AS_MASTER)
 uint32_t gMainCoreId = CSL_CORE_ID_C75SS0_0;
+#elif defined(BUILD_A53_AS_MASTER)
+uint32_t gMainCoreId = CSL_CORE_ID_A53SS0_0;
 #else
 uint32_t gMainCoreId = CSL_CORE_ID_R5FSS0_0;
 #endif
@@ -1868,6 +1872,14 @@ void test_ipc_main_core_start()
     DebugP_log("This test is build with c7x as master\n\r");
     #endif
 
+    #if defined(BUILD_MCU_R5F_AS_MASTER)
+    DebugP_log("This test is build with MCU R5F as master\n\r");
+    #endif
+
+    #if defined(BUILD_A53_AS_MASTER)
+    DebugP_log("This test is build with A53 as master\n\r");
+    #endif
+
     UNITY_BEGIN();
 
     /* These MUST be the first tests to run */
@@ -1897,28 +1909,69 @@ void test_ipc_main_core_start()
     #endif
 
     #if defined(SOC_AM64X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62X)
+#if !defined(BUILD_A53_AS_MASTER)
     testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
     RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
+#endif
     #endif
 
-    /* Test with varying message sizes back to back with notify callback */
     #if defined(SOC_AM62AX) || defined(SOC_AM62DX)
     testArgs.echoMsgCount = 3;
+#if defined(BUILD_MCU_R5F_AS_MASTER)
+
+    /* Variable Message send test with MCU R5F as master */
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0; 
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 9736, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 9737, &testArgs);
+
     testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 9738, &testArgs);
+#elif defined(BUILD_C7X_AS_MASTER)
+
+    /* Variable message send test with C7x as master */
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0; 
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 9733, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 9734, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 9735, &testArgs);
+#elif defined(BUILD_A53_AS_MASTER)
+
+    /* Variable message send test with A53 as master */
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0; 
     RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 8000, &testArgs);
+
     testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 8000, &testArgs);
+
     testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
     RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 8000, &testArgs);
+#else
+
+    /* Variable message send test with R5F as master */
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 9726, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 9727, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 9728, &testArgs);
+#endif
     
     /* This test case hangs when executed
     testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
-    RUN_TEST(TestIpcRpmsg_multipleEndpointsSnd, 8000, &testArgs);
+    RUN_TEST(TestIpcRpmsg_multipleEndpointsSnd, 9729, &testArgs);
     */
     
-    RUN_TEST(TestIpcRPMsg_sndMsgToTasks, 8000, &testArgs);
-    /*This test case hangs when executed without the prints in the tasks */
-    RUN_TEST(TestIpcRpmsg_concurrentEndptXfer, 8000, &testArgs);
+    RUN_TEST(TestIpcRPMsg_sndMsgToTasks, 9730, &testArgs);
+#if !defined(SOC_AM62DX)
+    RUN_TEST(TestIpcRpmsg_concurrentEndptXfer, 9731, &testArgs);
+#endif
     #endif
 
     #if defined(SOC_AM62X)
@@ -1929,17 +1982,6 @@ void test_ipc_main_core_start()
     #if defined(SOC_AM273X) || defined(SOC_AWR294X)
     testArgs.remoteCoreId = CSL_CORE_ID_C66SS0;
     RUN_TEST(test_rpmsgOneToOne, 300, &testArgs);
-    #endif
-
-    #if defined(SOC_AM62AX) || defined(SOC_AM62DX)
-    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
-    RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
-    #if defined(BUILD_C7X_AS_MASTER)
-    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
-    #else
-    testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
-    #endif
-    RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
     #endif
 
     /* performance test with varying payload size */
@@ -1970,6 +2012,9 @@ void test_ipc_main_core_start()
 
     #if defined(SOC_AM64X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62X)
     /* performance test with varying payload size */
+
+#if !defined(BUILD_A53_AS_MASTER)
+    /* These tests should only run A53 is not master */
     testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
     testArgs.msgSize = 32;
     RUN_TEST(test_rpmsgOneToOne, 2464, &testArgs);
@@ -1979,6 +2024,7 @@ void test_ipc_main_core_start()
     testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
     testArgs.msgSize = 112;
     RUN_TEST(test_rpmsgOneToOne, 2734, &testArgs);
+#endif
     #endif
 
     #if defined(SOC_AM62X)
@@ -1995,56 +2041,171 @@ void test_ipc_main_core_start()
     #endif
 
     #if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(BUILD_MCU_R5F_AS_MASTER)
+    
+    /* MCU R5F as master and R5F as remote */
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    testArgs.msgSize = 32;
+    RUN_TEST(test_rpmsgOneToOne, 9739, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    testArgs.msgSize = 64;
+    RUN_TEST(test_rpmsgOneToOne, 9740, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    testArgs.msgSize = 112;
+    RUN_TEST(test_rpmsgOneToOne, 9741, &testArgs);
+
+    /* MCU R5F as master and C7x as remote */
+    testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
+    testArgs.msgSize = 32;
+    RUN_TEST(test_rpmsgOneToOne, 9742, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
+    testArgs.msgSize = 64;
+    RUN_TEST(test_rpmsgOneToOne, 9743, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
+    testArgs.msgSize = 112;
+    RUN_TEST(test_rpmsgOneToOne, 9744, &testArgs);
+
+    /* MCU R5F as master and A53 as remote */
+    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
+    testArgs.msgSize = 32;
+    RUN_TEST(test_rpmsgOneToOne, 9745, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
+    testArgs.msgSize = 64;
+    RUN_TEST(test_rpmsgOneToOne, 9746, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
+    testArgs.msgSize = 112;
+    RUN_TEST(test_rpmsgOneToOne, 9747, &testArgs);
+#elif defined(BUILD_C7X_AS_MASTER)
+
+    /* C7x as master and R5F as remote */
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    testArgs.msgSize = 32;
+    RUN_TEST(test_rpmsgOneToOne, 9748, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    testArgs.msgSize = 64;
+    RUN_TEST(test_rpmsgOneToOne, 9749, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    testArgs.msgSize = 112;
+    RUN_TEST(test_rpmsgOneToOne, 9750, &testArgs);
+
+    /* C7x as master and MCU R5F as remote */
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    testArgs.msgSize = 32;
+    RUN_TEST(test_rpmsgOneToOne, 9751, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    testArgs.msgSize = 64;
+    RUN_TEST(test_rpmsgOneToOne, 9752, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    testArgs.msgSize = 112;
+    RUN_TEST(test_rpmsgOneToOne, 9753, &testArgs);
+
+    /* C7x as master and MCU A53 as remote */
+    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
+    testArgs.msgSize = 32;
+    RUN_TEST(test_rpmsgOneToOne, 9754, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
+    testArgs.msgSize = 64;
+    RUN_TEST(test_rpmsgOneToOne, 9755, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
+    testArgs.msgSize = 112;
+    RUN_TEST(test_rpmsgOneToOne, 9756, &testArgs);
+#elif defined(BUILD_A53_AS_MASTER)
+
+    /* A53 as master and R5F as remote */
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    testArgs.msgSize = 32;
+    RUN_TEST(test_rpmsgOneToOne, 8000, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    testArgs.msgSize = 64;
+    RUN_TEST(test_rpmsgOneToOne, 8000, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    testArgs.msgSize = 112;
+    RUN_TEST(test_rpmsgOneToOne, 8000, &testArgs);
+
+    /* A53 as master and MCU R5F as remote */
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    testArgs.msgSize = 32;
+    RUN_TEST(test_rpmsgOneToOne, 8000, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    testArgs.msgSize = 64;
+    RUN_TEST(test_rpmsgOneToOne, 8000, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    testArgs.msgSize = 112;
+    RUN_TEST(test_rpmsgOneToOne, 8000, &testArgs);
+
+    /* A53 as master and C75 as remote */
+    testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
+    testArgs.msgSize = 32;
+    RUN_TEST(test_rpmsgOneToOne, 8000, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
+    testArgs.msgSize = 64;
+    RUN_TEST(test_rpmsgOneToOne, 8000, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
+    testArgs.msgSize = 112;
+    RUN_TEST(test_rpmsgOneToOne, 8000, &testArgs);
+#else 
+
+    /* R5F as master and MCU R5F as remote */
     testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     testArgs.msgSize = 32;
     RUN_TEST(test_rpmsgOneToOne, 2713, &testArgs);
+
     testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     testArgs.msgSize = 64;
     RUN_TEST(test_rpmsgOneToOne, 2712, &testArgs);
+
     testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     testArgs.msgSize = 112;
     RUN_TEST(test_rpmsgOneToOne, 2711, &testArgs);
-#if defined(BUILD_C7X_AS_MASTER)
-    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
-#else
-    testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
 #endif
-    testArgs.msgSize = 32;
-    RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
-
-#if defined(BUILD_C7X_AS_MASTER)
-    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
-#else
-    testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
-#endif
-    testArgs.msgSize = 64;
-    RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
-#if defined(BUILD_C7X_AS_MASTER)
-    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
-#else
-    testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
-#endif
-    testArgs.msgSize = 112;
-    RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
     #endif
 
     #if defined(SOC_AM62PX)
     testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     testArgs.msgSize = 32;
     RUN_TEST(test_rpmsgOneToOne, 2713, &testArgs);
+
     testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     testArgs.msgSize = 64;
     RUN_TEST(test_rpmsgOneToOne, 2712, &testArgs);
+
     testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     testArgs.msgSize = 112;
     RUN_TEST(test_rpmsgOneToOne, 2711, &testArgs);
     #endif
 
     #if defined(SOC_AM62AX) || defined(SOC_AM62PX)
-    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     testArgs.msgSize = 128;
     testArgs.echoMsgCount = 1;
+#if defined(BUILD_MCU_R5F_AS_MASTER)
+    
+    /* Test error checks with MCU R5F as master */
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    RUN_TEST(test_rpmsgRecvErrorChecks, 8030, &testArgs);
+#else
+
+    /* Test error checks with R5F as master */
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     RUN_TEST(test_rpmsgRecvErrorChecks, 5671, &testArgs);
+#endif
     #endif
 
     #if defined(SOC_J722S)
@@ -2136,10 +2297,22 @@ void test_ipc_main_core_start()
     #endif
 
     #if defined(SOC_AM64X) || defined(SOC_AM62AX) || defined(SOC_AM62DX)
+
     /* back to back message send and handler mode rx tests */
-    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
     testArgs.msgSize = 4;
+#if defined(BUILD_A53_AS_MASTER)
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    RUN_TEST(test_rpmsgOneToOneBackToBack, 8000, &testArgs);
+#elif defined(BUILD_C7X_AS_MASTER)
+    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
+    RUN_TEST(test_rpmsgOneToOneBackToBack, 8000, &testArgs);
+#elif defined(BUILD_MCU_R5F_AS_MASTER)
+    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
+    RUN_TEST(test_rpmsgOneToOneBackToBack, 8000, &testArgs);
+#else
+    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
     RUN_TEST(test_rpmsgOneToOneBackToBack, 1874, &testArgs);
+#endif
     #endif
 
     #if defined(SOC_AM62AX) || defined(SOC_AM62DX)
@@ -2162,9 +2335,9 @@ void test_ipc_main_core_start()
 
     #if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX)
     /* rx notify callback tests */
-    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     testArgs.msgSize = 4;
     testArgs.echoMsgCount = 1;
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     RUN_TEST(test_rpmsgRxNotifyCallback, 2464, &testArgs);
     #endif
 
@@ -2177,10 +2350,15 @@ void test_ipc_main_core_start()
     #endif
 
     #if defined(SOC_AM62AX) || defined(SOC_AM62PX)
-    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     testArgs.msgSize = INVALID_MSG_SIZE;
     testArgs.echoMsgCount = 512;
+#if defined(BUILD_MCU_R5F_AS_MASTER)
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    RUN_TEST(test_rpmsgSendErrorChecks, 8000, &testArgs);
+#else
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     RUN_TEST(test_rpmsgSendErrorChecks, 5649, &testArgs);
+#endif
     #endif
 
     #if defined(SOC_J722S)
@@ -2191,8 +2369,11 @@ void test_ipc_main_core_start()
     #endif
 
     #if !defined(SOC_AM62X) && !defined(SOC_AM62PX) && !defined(SOC_J722S)
+
     /* error condition checks */
+#if !defined(BUILD_A53_AS_MASTER)
     RUN_TEST(test_rpmsgErrorChecks, 2456, NULL);
+#endif
     #endif
 
     #if defined(SOC_J722S)

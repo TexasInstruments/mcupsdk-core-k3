@@ -492,6 +492,22 @@ static void lpm_mcu_wait_for_uart()
 
     DebugP_memLogWriterPause();
 
+    /*
+     * Flush any stale data in RX FIFO before waiting for keypress.
+     * This ensures only fresh keypresses (after LPM suspend request) trigger wake,
+     * not any old data that was in the FIFO from before the suspend.
+     */
+    {
+        uint8_t staleData;
+        uint32_t baseAddr = UART_getBaseAddr(gUartHandle[CONFIG_UART0]);
+
+        /* Drain all bytes currently in RX FIFO */
+        while (UART_getChar(baseAddr, &staleData) != FALSE)
+        {
+            /* Discard stale byte */
+        }
+    }
+
     gNumBytesRead = 0u;
 
     /* Wait for any key to be pressed */

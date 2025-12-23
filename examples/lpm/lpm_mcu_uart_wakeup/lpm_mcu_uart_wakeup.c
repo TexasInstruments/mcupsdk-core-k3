@@ -47,7 +47,7 @@
 #include "task.h"
 
 /* This example shows message exchange between Linux and RTOS/NORTOS cores.
- * This example also demonstrates the capability of MCU UART input event to wake 
+ * This example also demonstrates the capability of MCU UART input event to wake
  * the entire SOC in MCU Only low power mode.
  *
  * The Linux core initiates IPC with other core's by sending it a message.
@@ -352,6 +352,22 @@ static void LpmApp_waitForUART(void)
     trans.count = 1U;
 
     DebugP_memLogWriterPause();
+
+    /*
+     * Flush any stale data in RX FIFO before waiting for keypress.
+     * This ensures only fresh keypresses (after LPM suspend request) trigger wake,
+     * not any old data that was in the FIFO from before the suspend.
+     */
+    {
+        uint8_t staleData;
+        uint32_t baseAddr = UART_getBaseAddr(gUartHandle[CONFIG_UART0]);
+
+        /* Drain all bytes currently in RX FIFO */
+        while (UART_getChar(baseAddr, &staleData) != FALSE)
+        {
+            /* Discard stale byte */
+        }
+    }
 
     gNumBytesRead = 0U;
 

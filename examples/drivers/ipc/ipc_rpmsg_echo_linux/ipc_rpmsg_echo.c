@@ -205,6 +205,24 @@ volatile uint8_t gRecvTaskExitCounter = 0;
 SemaphoreP_Object gLpmResumeSem;
 SemaphoreP_Object gLpmSuspendSem;
 
+/**
+ * \brief Wait For Interrupt - puts CPU into low power state until interrupt
+ *
+ * This inline function executes the ARM WFI instruction to put the CPU core
+ * into a low-power state. The CPU will remain in this state until an interrupt
+ * or exception occurs.
+ */
+static inline void IPCApp_putCPUInWFI(void)
+{
+#if (__ARM_ARCH_PROFILE == 'R') ||  (__ARM_ARCH_PROFILE == 'M')
+    /* For ARM R and M cores*/
+    __asm__ __volatile__ ("wfi"   "\n\t": : : "memory");
+#endif
+#if defined(BUILD_C7X)
+    asm("    IDLE");
+#endif
+}
+
 void ipc_recv_task_main(void *args)
 {
     int32_t status;
@@ -283,13 +301,8 @@ void ipc_recv_task_main(void *args)
             /* ACK the shutdown message */
             IpcNotify_sendMsg(gbShutdownRemotecoreID, IPC_NOTIFY_CLIENT_ID_RP_MBOX, IPC_NOTIFY_RP_MBOX_SHUTDOWN_ACK, 1u);
         }
-#if (__ARM_ARCH_PROFILE == 'R') ||  (__ARM_ARCH_PROFILE == 'M')
-        /* For ARM R and M cores*/
-        __asm__ __volatile__ ("wfi"   "\n\t": : : "memory");
-#endif
-#if defined(BUILD_C7X)
-        asm("    IDLE");
-#endif
+
+        IPCApp_putCPUInWFI();
     }
     vTaskDelete(NULL);
 }
@@ -516,6 +529,7 @@ static void lpm_mcu_wait_for_uart()
 
     while (gNumBytesRead == 0u && gbSuspended == 1u)
     {
+        IPCApp_putCPUInWFI();
     }
 
     if (gNumBytesRead != 0)

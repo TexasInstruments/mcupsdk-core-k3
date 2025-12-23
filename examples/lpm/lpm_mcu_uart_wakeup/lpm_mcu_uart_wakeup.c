@@ -173,6 +173,7 @@ static void LpmApp_waitForUART(void);
 void LpmApp_readUARTCallback(UART_Handle handle, UART_Transaction *trans);
 static void LpmApp_suspendTask(void *args);
 static void LpmApp_createSuspendTask(void);
+static inline void LpmApp_putCPUInWFI(void);
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -240,10 +241,8 @@ static void LpmApp_recvTaskMain(void *args)
             /* ACK the shutdown message */
             IpcNotify_sendMsg(gbShutdownRemotecoreID, IPC_NOTIFY_CLIENT_ID_RP_MBOX, IPC_NOTIFY_RP_MBOX_SHUTDOWN_ACK, 1U);
         }
-#if (__ARM_ARCH_PROFILE == 'R') ||  (__ARM_ARCH_PROFILE == 'M')
-        /* For ARM R and M cores*/
-        __asm__ __volatile__ ("wfi"   "\n\t": : : "memory");
-#endif
+
+        LpmApp_putCPUInWFI();
     }
     vTaskDelete(NULL);
 }
@@ -377,6 +376,7 @@ static void LpmApp_waitForUART(void)
 
     while (gNumBytesRead == 0U && gbSuspended == 1U)
     {
+        LpmApp_putCPUInWFI();
     }
 
     if (gNumBytesRead != 0U)
@@ -514,4 +514,22 @@ void LpmApp_wakeupMain(void *args)
 
     /* exit from this task, vTaskDelete() is called outside this function, so simply return */
 
+}
+
+/**
+ * \brief Wait For Interrupt - puts CPU into low power state until interrupt
+ *
+ * This inline function executes the ARM WFI instruction to put the CPU core
+ * into a low-power state. The CPU will remain in this state until an interrupt
+ * or exception occurs.
+ */
+static inline void LpmApp_putCPUInWFI(void)
+{
+#if (__ARM_ARCH_PROFILE == 'R') ||  (__ARM_ARCH_PROFILE == 'M')
+    /* For ARM R and M cores*/
+    __asm__ __volatile__ ("wfi"   "\n\t": : : "memory");
+#endif
+#if defined(BUILD_C7X)
+    asm("    IDLE");
+#endif
 }

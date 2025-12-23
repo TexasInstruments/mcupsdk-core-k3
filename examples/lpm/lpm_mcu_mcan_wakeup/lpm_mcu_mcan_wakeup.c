@@ -205,6 +205,7 @@ static void LpmApp_registerMCANIntr(void);
 static void LpmApp_mcuWaitForMCAN(void);
 static void LpmApp_mcanRxIntrService(void);
 static void LpmApp_triggerShutdown(void);
+static inline void LpmApp_putCPUInWFI(void);
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -272,13 +273,8 @@ void LpmApp_ipcRecvTaskMain(void *args)
             /* ACK the shutdown message */
             IpcNotify_sendMsg(gbShutdownRemotecoreID, IPC_NOTIFY_CLIENT_ID_RP_MBOX, IPC_NOTIFY_RP_MBOX_SHUTDOWN_ACK, 1U);
         }
-#if (__ARM_ARCH_PROFILE == 'R') ||  (__ARM_ARCH_PROFILE == 'M')
-        /* For ARM R and M cores*/
-        __asm__ __volatile__ ("wfi"   "\n\t": : : "memory");
-#endif
-#if defined(BUILD_C7X)
-        asm("    IDLE");
-#endif
+
+        LpmApp_putCPUInWFI();
     }
     vTaskDelete(NULL);
 }
@@ -685,7 +681,7 @@ static void LpmApp_mcuWaitForMCAN(void)
     /* Wait for MCAN event or other event */
     while (gMCANMsgRcvd == 0U && gbSuspended == 1U)
     {
-        /* do nothing */
+        LpmApp_putCPUInWFI();
     }
 
     if (gMCANMsgRcvd != 0U)
@@ -711,3 +707,22 @@ static void LpmApp_triggerShutdown(void)
     RPMessage_unblock(&gIpcRecvMsgObject[0]);
     RPMessage_unblock(&gIpcRecvMsgObject[1]);
 }
+
+/**
+ * \brief Wait For Interrupt - puts CPU into low power state until interrupt
+ *
+ * This inline function executes the ARM WFI instruction to put the CPU core
+ * into a low-power state. The CPU will remain in this state until an interrupt
+ * or exception occurs.
+ */
+static inline void LpmApp_putCPUInWFI(void)
+{
+#if (__ARM_ARCH_PROFILE == 'R') ||  (__ARM_ARCH_PROFILE == 'M')
+    /* For ARM R and M cores*/
+    __asm__ __volatile__ ("wfi"   "\n\t": : : "memory");
+#endif
+#if defined(BUILD_C7X)
+    asm("    IDLE");
+#endif
+}
+

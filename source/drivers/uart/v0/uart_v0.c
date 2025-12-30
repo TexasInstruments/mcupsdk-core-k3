@@ -1861,6 +1861,13 @@ static void UART_masterIsr(void *arg)
                     {
                         /* Disable Interrupt first, to avoid further RX timeout */
                         UART_intrDisable(attrs->baseAddr, UART_INTR_RHR_CTI | UART_INTR_LINE_STAT);
+
+                        /* Work around for errata i2310 */
+                        if (FALSE == UART_checkCharsAvailInFifo(attrs->baseAddr))
+                        {
+                            UART_i2310WA(attrs->baseAddr);
+                        }
+
                         /* RX timeout, log the RX timeout errors */
                         object->rxTimeoutCnt++;
                     }
@@ -1948,14 +1955,6 @@ static void UART_masterIsr(void *arg)
                 else
                 {
                     UART_intrDisable(attrs->baseAddr, UART_INTR_THR);
-                }
-            }
-            else if ((intType & UART_INTID_CHAR_TIMEOUT) == UART_INTID_CHAR_TIMEOUT)
-            {
-                /* Work around for errata i2310 */
-                if (FALSE == UART_checkCharsAvailInFifo(attrs->baseAddr))
-                {
-                    UART_i2310WA(attrs->baseAddr);
                 }
             }
             else

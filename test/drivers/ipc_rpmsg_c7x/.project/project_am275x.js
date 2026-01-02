@@ -16,6 +16,7 @@ const filedirs = {
     common: [
         "..",       /* core_os_combo base */
         "../../..", /* Example base */
+        "../../../../ipc_rpmsg",
     ],
 };
 
@@ -89,7 +90,7 @@ const templates_freertos_c75_0 =
         output: "../main.c",
         options: {
             entryFunction: "test_main",
-            stackSize: 16*1024,
+            stackSize: 64*1024,
         },
     }
 ];
@@ -101,16 +102,22 @@ const templates_freertos_c75_1 =
         output: "../main.c",
         options: {
             entryFunction: "test_main",
-            stackSize: 16*1024,
+            stackSize: 64*1024,
         },
     }
 ];
 
-const defines_common = {
+const defines_c7 = {
     common:[
-        "SOC_AM275X",
+        "BUILD_C7X_AS_MASTER",
     ]
-};
+}
+
+const defines_r5 = {
+    common:[
+        "BUILD_C7X_AS_MASTER",
+    ]
+}
 
 const buildOptionCombos = [
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am275x-evm", os: "freertos", isPartOfSystemProject: true},
@@ -123,7 +130,7 @@ const buildOptionCombos = [
 
 const systemProjects =[
     {
-        name: "test_ipc_rpmsg",
+        name: "test_ipc_rpmsg_c7x",
         tag: "freertos",
         skipProjectSpec: true,
         board: "am275x-evm",
@@ -143,7 +150,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "test_ipc_rpmsg";
+    property.name = "test_ipc_rpmsg_c7x";
     property.isInternal = true;
     property.skipProjectSpec = true;
     property.isLinuxInSystem = true;

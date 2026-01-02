@@ -154,6 +154,7 @@ uint32_t gRemoteCoreId[] = {
 uint32_t gMainCoreId = CSL_CORE_ID_R5FSS0_0;
 /* All cores that participate in the IPC */
 uint32_t gRemoteCoreId[] = {
+    CSL_CORE_ID_R5FSS0_0,
     CSL_CORE_ID_R5FSS0_1,
     CSL_CORE_ID_R5FSS1_0,
     CSL_CORE_ID_R5FSS1_1,
@@ -528,7 +529,7 @@ void test_rpmsgCreateObjects()
     configASSERT(gServerTask != NULL);
 
     /* Create the  receiver tasks with two endpoints */
-    if (IpcNotify_getSelfCoreId() != CSL_CORE_ID_C75SS0_0)
+    if ((IpcNotify_getSelfCoreId() != CSL_CORE_ID_C75SS0_0) && ((IpcNotify_getSelfCoreId() != CSL_CORE_ID_C75SS1_0)))
     {
         RPMessage_CreateParams_init(&createTaskParams1);
         createTaskParams1.localEndPt = TestIpcRpmsg_remoteServiceEndPt1;
@@ -1073,7 +1074,7 @@ void test_rpmsgRxNotifyCallback(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 }
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
 
 /* Sender Task 1 for multi threaded test */
 void TestIpcRpmsg_multipleEndPtSndTask1(void *args)
@@ -1094,7 +1095,8 @@ void TestIpcRpmsg_multipleEndPtSndTask1(void *args)
     DebugP_log("TestIpcRpmsg_concurrentEndptXfer: Sending data from task 1\r\n");
     for(i = 0; gRemoteCoreId[i] != CSL_CORE_ID_MAX; i++)
     {
-        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0) &&
+            (gRemoteCoreId[i] != CSL_CORE_ID_C75SS1_0))
         {
             status = RPMessage_send(
                     msgBuf, msgSize,
@@ -1107,7 +1109,8 @@ void TestIpcRpmsg_multipleEndPtSndTask1(void *args)
     DebugP_log("TestIpcRpmsg_concurrentEndptXfer: Receiving data at task 1\r\n");
     for(i = 0; gRemoteCoreId[i] != CSL_CORE_ID_MAX; i++)
     {
-        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0) &&
+            (gRemoteCoreId[i] != CSL_CORE_ID_C75SS1_0))
         {
             ackMsgSize = sizeof(ackMsgBuf);
             status = RPMessage_recv(pRpmsgObj,
@@ -1142,7 +1145,8 @@ void TestIpcRpmsg_multipleEndPtSndTask2(void *args)
     /*Send message to the end point */
     for(i = 0; gRemoteCoreId[i] != CSL_CORE_ID_MAX; i++)
     {
-        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0) &&
+            (gRemoteCoreId[i] != CSL_CORE_ID_C75SS1_0))
         {
             status = RPMessage_send(
                     msgBuf, msgSize,
@@ -1155,7 +1159,8 @@ void TestIpcRpmsg_multipleEndPtSndTask2(void *args)
     DebugP_log("TestIpcRpmsg_concurrentEndptXfer: Receiving data at task 2\r\n");
     for(i = 0; gRemoteCoreId[i] != CSL_CORE_ID_MAX; i++)
     {
-        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0) &&
+            (gRemoteCoreId[i] != CSL_CORE_ID_C75SS1_0))
         {
             ackMsgSize = sizeof(ackMsgBuf);
             status = RPMessage_recv(pRpmsgObj,
@@ -1289,7 +1294,8 @@ void TestIpcRPMsg_sndMsgToTasks(void *args)
     /* Send message to the first endpoint */
     for(i = 0; gRemoteCoreId[i] != CSL_CORE_ID_MAX; i++)
     {
-        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0) &&
+            (gRemoteCoreId[i] != CSL_CORE_ID_C75SS1_0))
         {
             status = RPMessage_send(
                     msgBuf[0], msgSize,
@@ -1302,7 +1308,8 @@ void TestIpcRPMsg_sndMsgToTasks(void *args)
     /* Wait for the reponses from the first endpoints */
     for(i = 0; gRemoteCoreId[i]!=CSL_CORE_ID_MAX; i++)
     {
-        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0) &&
+            (gRemoteCoreId[i] != CSL_CORE_ID_C75SS1_0))
         {
             ackMsgSize = sizeof(ackMsgBuf[0]);
             status = RPMessage_recv(&TestIpcRpmsg_hostMsgObject,
@@ -1323,7 +1330,8 @@ void TestIpcRPMsg_sndMsgToTasks(void *args)
     /* Send message to the second endpoint */
     for(i = 0; gRemoteCoreId[i] != CSL_CORE_ID_MAX; i++)
     {
-        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0) &&
+            (gRemoteCoreId[i] != CSL_CORE_ID_C75SS1_0))
         {
             status = RPMessage_send(
                     msgBuf[1], msgSize,
@@ -1337,7 +1345,8 @@ void TestIpcRPMsg_sndMsgToTasks(void *args)
     /* Wait for the reponses from the first endpoints */
     for(i = 0; gRemoteCoreId[i]!=CSL_CORE_ID_MAX; i++)
     {
-        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+        if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0) &&
+            (gRemoteCoreId[i] != CSL_CORE_ID_C75SS1_0))
         {
             ackMsgSize = sizeof(ackMsgBuf[1]);
             status = RPMessage_recv(&TestIpcRpmsg_hostMsgObject,
@@ -1915,8 +1924,11 @@ void test_ipc_main_core_start()
 #endif
     #endif
 
-    #if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
     testArgs.echoMsgCount = 3;
+#if !defined(SOC_AM275X)
+
+    /* Test cases for am62ax and am62dx */
 #if defined(BUILD_MCU_R5F_AS_MASTER)
 
     /* Variable Message send test with MCU R5F as master */
@@ -1963,15 +1975,60 @@ void test_ipc_main_core_start()
     RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 9728, &testArgs);
 #endif
     
+#else
+    
+    /* Test cases for AM275X */
+#if !defined(BUILD_C7X_AS_MASTER)
+
+    /* Test cases with R5FSS0_0 as master */
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_1;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 8000, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS1_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 8000, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS1_1;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 8000, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 8000, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_C75SS1_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 8000, &testArgs);
+#else
+
+    /* Test cases with C75SS0_0 as master */
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_1;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 8000, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS1_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 8000, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS1_1;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 8000, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 8000, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_C75SS1_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 8000, &testArgs);
+#endif
+#endif
+
+    /* The following test cases works in AM62AX but fails in AM62DX 
+     * and AM275X
+     */
+#if !defined(SOC_AM275X)
+    RUN_TEST(TestIpcRPMsg_sndMsgToTasks, 9730, &testArgs);
+#endif
+#if !defined(SOC_AM62DX) && !defined(SOC_AM275X)
+    RUN_TEST(TestIpcRpmsg_concurrentEndptXfer, 9731, &testArgs);
+#endif
+
     /* This test case hangs when executed
     testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
     RUN_TEST(TestIpcRpmsg_multipleEndpointsSnd, 9729, &testArgs);
     */
-    
-    RUN_TEST(TestIpcRPMsg_sndMsgToTasks, 9730, &testArgs);
-#if !defined(SOC_AM62DX)
-    RUN_TEST(TestIpcRpmsg_concurrentEndptXfer, 9731, &testArgs);
-#endif
     #endif
 
     #if defined(SOC_AM62X)

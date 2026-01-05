@@ -107,17 +107,12 @@ const templates_freertos_c75_1 =
     }
 ];
 
-const defines_c7 = {
+const defines_common = {
     common:[
+        "SOC_AM275X",
         "BUILD_C7X_AS_MASTER",
     ]
-}
-
-const defines_r5 = {
-    common:[
-        "BUILD_C7X_AS_MASTER",
-    ]
-}
+};
 
 const buildOptionCombos = [
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am275x-evm", os: "freertos", isPartOfSystemProject: true},
@@ -169,6 +164,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.filedirs = filedirs;
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
+    build_property.defines = defines_common;
     if(buildOption.cpu.match(/r5fss*/)) {
         if(buildOption.os.match(/freertos*/) )
         {

@@ -1337,7 +1337,8 @@ static void Flash_norOspiClose(Flash_Config *config)
      *  Flash config registers again.
      */
     (void)Flash_norOspiReset(config);
-    (void)Flash_norOspiWaitReady(config, config->devConfig->flashBusyTimeout);
+    /* Spansion flash devices take upto 90us to reset, sleep for 200us to be safe */
+    ClockP_usleep(200);
 
     obj->ospiHandle = NULL;
 

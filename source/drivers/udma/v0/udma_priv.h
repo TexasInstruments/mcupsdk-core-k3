@@ -969,7 +969,7 @@ void Udma_rmFreeFreeRing(uint16_t ringNum, Udma_DrvHandleInt drvHandle);
 /* Event RM APIs */
 uint32_t Udma_rmAllocEvent(Udma_DrvHandleInt drvHandle);
 void Udma_rmFreeEvent(uint32_t globalEvent, Udma_DrvHandleInt drvHandle);
-uint32_t Udma_rmAllocVintr(uint32_t preferredVintNum, Udma_DrvHandleInt drvHandle);
+uint32_t Udma_rmAllocVintr(Udma_DrvHandleInt drvHandle);
 void Udma_rmFreeVintr(uint32_t vintrNum, Udma_DrvHandleInt drvHandle);
 uint32_t Udma_rmAllocVintrBit(Udma_EventHandleInt eventHandle);
 void Udma_rmFreeVintrBit(uint32_t vintrBitNum,

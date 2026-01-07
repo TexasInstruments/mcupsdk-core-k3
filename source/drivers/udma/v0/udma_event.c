@@ -657,8 +657,7 @@ static int32_t Udma_eventAllocResource(Udma_DrvHandleInt drvHandle,
 {
     int32_t                 retVal = UDMA_SOK;
     uint32_t                vintrNum;
-    uint32_t                preferredVintNum = UDMA_EVENT_INVALID;
-    uint16_t                coreIntrNum;
+    uint32_t                preferredIrIntrNum;
     const Udma_EventPrms   *eventPrms;
     Udma_EventHandleInt     lastEvent;
     uintptr_t               cookie;
@@ -690,32 +689,7 @@ static int32_t Udma_eventAllocResource(Udma_DrvHandleInt drvHandle,
             ((UDMA_EVENT_MODE_SHARED == eventPrms->eventMode) &&
                 (NULL_PTR == eventPrms->masterEventHandle)))
         {
-            /**
-             * If preferredCoreIntrNum is not UDMA_CORE_INTR_ANY, i.e.,
-             * user wants interrupt at specified core interrupt line,
-             * query Sciclent to obtain VINT mapped to given core interrupt.
-            */
-            if(UDMA_CORE_INTR_ANY != eventPrms->preferredCoreIntrNum)
-            {
-                retVal = Sciclient_rmIrqTranslateIrqInput(drvHandle->devIdCore,
-                                                          (uint16_t)eventPrms->preferredCoreIntrNum,
-                                                          drvHandle->devIdIa,
-                                                          (uint16_t *) &preferredVintNum);
-            }
-            else
-            {
-                preferredVintNum = eventPrms->preferredCoreIntrNum;
-            }
-            /* Check if Sciclient_rmIrqTranslateIrqInput returned success before allocating VINT */
-            if(UDMA_SOK == retVal)
-            {
-                eventHandle->vintrNum = Udma_rmAllocVintr(preferredVintNum, drvHandle);
-            }
-            else
-            {
-                eventHandle->vintrNum = UDMA_EVENT_INVALID;
-            }
-            /* Check if VINT allocation is successful */
+            eventHandle->vintrNum = Udma_rmAllocVintr(drvHandle);
             if(UDMA_EVENT_INVALID == eventHandle->vintrNum)
             {
                 retVal = UDMA_EALLOC;
@@ -746,21 +720,23 @@ static int32_t Udma_eventAllocResource(Udma_DrvHandleInt drvHandle,
                 (NULL_PTR == eventPrms->masterEventHandle)) ||
             (UDMA_EVENT_TYPE_MASTER == eventPrms->eventType))
         {
-            if(UDMA_INTR_INVALID != eventHandle->vintrNum)
+            if(UDMA_CORE_INTR_ANY != eventPrms->preferredCoreIntrNum)
             {
-                retVal = Sciclient_rmIrqTranslateIaOutput(drvHandle->devIdIa,
-                                                    (uint16_t)eventHandle->vintrNum,
-                                                    drvHandle->devIdCore,
-                                                    &coreIntrNum);
-                if(UDMA_SOK == retVal)
+                preferredIrIntrNum = Udma_rmTranslateCoreIntrInput(drvHandle, eventPrms->preferredCoreIntrNum);
+            }
+            else
+            {
+                preferredIrIntrNum = eventPrms->preferredCoreIntrNum;
+            }
+            if(UDMA_INTR_INVALID != preferredIrIntrNum)
+            {
+                eventHandle->irIntrNum =
+                    Udma_rmAllocIrIntr(preferredIrIntrNum, drvHandle);
+                if(UDMA_INTR_INVALID != eventHandle->irIntrNum)
                 {
-                    eventHandle->coreIntrNum = (uint32_t)coreIntrNum;
-                }
-                else
-                {
-                    eventHandle->coreIntrNum = UDMA_INTR_INVALID;
-                }
+                    eventHandle->coreIntrNum = Udma_rmTranslateIrOutput(drvHandle, eventHandle->irIntrNum);
 
+                }
             }
             if(UDMA_INTR_INVALID == eventHandle->coreIntrNum)
             {

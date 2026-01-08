@@ -202,7 +202,7 @@ ifeq ($(SOC),$(filter $(SOC), am62lx))
 else
 	$(PYTHON) $(BLOB_GEN) --sw-rev 1 --devgrp 0 --bcfg $(BCFG) --bcfg-rm $(BCFG_RM) --bcfg-sec $(BCFG_SEC) --output-file $(BCFG_BLOB_FILE)
 endif
-ifeq ($(SOC),$(filter $(SOC), am62x am62ax am62dx am62px))
+ifeq ($(SOC),$(filter $(SOC), am62x am62ax am62dx am62px am275x))
 	$(PYTHON) $(BLOB_GEN) --sw-rev 1 --devgrp 0 --bcfg-rm $(BCFG_RM) --bcfg-pm $(BCFG_PM) --output-file $(BCFG_SBLDATA_BLOB_FILE)
 endif
 endif

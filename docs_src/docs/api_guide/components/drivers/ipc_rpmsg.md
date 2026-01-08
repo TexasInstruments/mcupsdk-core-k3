@@ -60,7 +60,7 @@ The recommended approach is to keep the number of buffers and message size withi
 
 ## Example Usage
 
-\cond !SOC_AM62X && !SOC_AM62AX || SOC_AM62DX && !SOC_AM62PX
+\cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62DX && !SOC_AM62PX
 Include the below files to access the APIs
 \snippet IpcRPMessage_sample.c include
 

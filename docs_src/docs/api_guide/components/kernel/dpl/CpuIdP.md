@@ -12,10 +12,8 @@ NA
 
 ## Important Usage Guidelines
 
-\cond !SOC_AM62X
 - Refer to ARMv7-R architecture manual for more details
 - API should be used in priviledge mode only.
-\endcond
 
 ## Example Usage
 

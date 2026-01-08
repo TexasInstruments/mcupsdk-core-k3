@@ -38,7 +38,7 @@ NA
 \cond !SOC_AM62AX && !SOC_AM62DX && !SOC_AM62LX
 - In M4F, the M4F internal SysTick timer is used.
 \endcond
-\cond !SOC_AM62X && !SOC_AM62LX
+\cond !SOC_AM62LX
 - In R5F, one of the many SOC level timer is used.
 \endcond
 

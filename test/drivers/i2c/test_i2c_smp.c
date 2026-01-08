@@ -161,6 +161,7 @@ static void Test_I2c_smpEepromTask(void *arg)
 
     I2C_close(handle);
     SemaphoreP_post(&Test_I2cSem);
+    TaskP_exit();
 }
 
 /**
@@ -209,6 +210,7 @@ static void Test_I2C_smpTempTask(void *arg)
 
     I2C_close(handle);
     SemaphoreP_post(&Test_I2cSem);
+    TaskP_exit();
 }
 
 /**

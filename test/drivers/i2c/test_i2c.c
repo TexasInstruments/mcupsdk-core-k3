@@ -193,7 +193,9 @@ static int32_t test_i2c_timeout_negative(void);
 static int32_t test_i2c_error_checks(void);
 static int32_t test_i2c_open_error(void);
 static int32_t test_i2c_recover_bus(void);
+#if !defined (SOC_AM275X)
 static int32_t test_i2c_baseaddress(uint32_t baseAddr);
+#endif
 static int32_t test_i2c_lld(void);
 static int32_t test_i2c_differentSpeeds(uint8_t freq, uint8_t testCase);
 static int32_t test_i2c_handle_errors(void);
@@ -209,7 +211,7 @@ static void TestI2c_eepromPageOverflow(void *args);
 static void TestI2c_perfWriteReadDiffFreq(void* args);
 static void TestI2c_openCloseFuzzRand(void *args);
 #if defined ENABLE_MT_TESTS
-#if defined(SOC_AM62DX)
+#if defined(SOC_AM62DX) || defined(SOC_AM275X)
 static void TestI2c_multithreadSharedEepromTemp(void *args);
 #endif
 #if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62X)
@@ -247,7 +249,9 @@ static void TestI2c_pollingNackWrite(void *args);
 static void TestI2c_pollingNackRead(void *args);
 void TestI2c_controllerRxOverrun(void *args);
 void TestI2c_controllerAccessError(void *args);
+#if !defined (SOC_AM275X)
 void TestI2c_sclStuckRecoverBusWithSystestFaultDefaultAnd1MHz(void* args);
+#endif
 /* ========================================================================== */
 /*                            Global Functions                                */
 /* ========================================================================== */
@@ -313,7 +317,7 @@ void test_main(void *args)
     RUN_TEST(TestI2c_openCloseFuzzRand, 8322, (void*)&testParams);
 
     #if defined ENABLE_MT_TESTS
-    #if defined(SOC_AM62DX)
+    #if defined(SOC_AM62DX) || defined(SOC_AM275X)
     RUN_TEST(TestI2c_multithreadSharedEepromTemp, 8338, (void*)&testParams);
     #endif
     #if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62X)
@@ -359,7 +363,9 @@ void test_main(void *args)
     /* Below test cases are get stcuk in driver  */
     /* RUN_TEST(TestI2c_callbackQueueDepth, 8631, NULL); */
     RUN_TEST(TestI2c_sdaStuckRecoverBusWithSystestFault, 8630 ,NULL);
+#if !defined (SOC_AM275X)
     RUN_TEST(TestI2c_sclStuckRecoverBusWithSystestFaultDefaultAnd1MHz, 9012, NULL);
+#endif
     RUN_TEST(TestI2c_memPrimeTransferInvalidDir, 8626, NULL);
     RUN_TEST(TestI2c_transferTimeoutBlockingMode, 8623, (void*)&testParams);
 
@@ -1277,6 +1283,7 @@ static int32_t test_i2c_recover_bus(void)
     return status;
 }
 
+#if !defined (SOC_AM275X)
 /* test case for validating base address */
 static int32_t test_i2c_baseaddress(uint32_t baseAddr)
 {
@@ -1290,6 +1297,7 @@ static int32_t test_i2c_baseaddress(uint32_t baseAddr)
 
     return SystemP_SUCCESS;
 }
+#endif
 
 static int32_t test_i2c_lld(void)
 {
@@ -2888,7 +2896,7 @@ static void TestI2c_multithreadWriteTestSharedOpenCb(void *args)
     SemaphoreP_destruct(&TestI2c_testSem);
 }
 #endif
-#if defined(SOC_AM62DX)
+#if defined(SOC_AM62DX) || defined(SOC_AM275X)
 /**
  * \brief Worker thread for multi-threaded EEPROM access using a shared I2C handle.
  *
@@ -3318,18 +3326,27 @@ static void TestI2c_targetModeWriteSeq(void* args)
     I2C_Handle targetHandle, hostControllerHandle;
     I2C_Transaction txnTarget, txnhostController;
     int32_t status, i;
+    uint32_t instance_target;
+    uint32_t instance_controller;
+#if defined(SOC_AM275X)
+    instance_target =CONFIG_I2C3;
+    instance_controller =CONFIG_I2C5;
+#else
+    instance_target =CONFIG_I2C1;
+    instance_controller =CONFIG_I2C0;
+#endif
 
     SemaphoreP_constructBinary(&TestI2c_TargetSem, 0);
     /* Setup Target mode */
     I2C_Params_init(&params);
     params.transferMode = I2C_MODE_CALLBACK;
     params.transferCallbackFxn = &test_i2c_targetCallback;
-    targetHandle = I2C_getHandle(CONFIG_I2C1);
+    targetHandle = I2C_getHandle(instance_target);
     if(targetHandle)
     {
         I2C_close(targetHandle);
     }
-    targetHandle = I2C_open(CONFIG_I2C1, &params);
+    targetHandle = I2C_open(instance_target, &params);
     DebugP_assert(targetHandle != NULL);
 
     I2C_Transaction_init(&txnTarget);
@@ -3345,12 +3362,12 @@ static void TestI2c_targetModeWriteSeq(void* args)
 
     /* Setup controller */
     I2C_Params_init(&params);
-    hostControllerHandle = I2C_getHandle(CONFIG_I2C0);
+    hostControllerHandle = I2C_getHandle(instance_controller);
     if(hostControllerHandle)
     {
         I2C_close(hostControllerHandle);
     }
-    hostControllerHandle = I2C_open(CONFIG_I2C0, &params);
+    hostControllerHandle = I2C_open(instance_controller, &params);
     DebugP_assert(hostControllerHandle != NULL);
 
     for (i = 0; i < sizeof(TestI2c_controllerTxBuf); i++)
@@ -3398,6 +3415,15 @@ static void TestI2c_targetModeCombinedWriteRead(void *args)
     I2C_Transaction txnTarget, txnhostController;
     SemaphoreP_Object sem;
     int32_t status;
+    uint32_t instance_target;
+    uint32_t instance_controller;
+#if defined(SOC_AM275X)
+    instance_target = CONFIG_I2C3;
+    instance_controller = CONFIG_I2C5;
+#else
+    instance_target = CONFIG_I2C1;
+    instance_controller = CONFIG_I2C0;
+#endif
 
     /* Binary semaphore for callback sync */
     SemaphoreP_constructBinary(&sem, 0);
@@ -3407,12 +3433,12 @@ static void TestI2c_targetModeCombinedWriteRead(void *args)
     params.transferMode = I2C_MODE_CALLBACK;
     params.transferCallbackFxn = &test_i2c_targetCallback;
 
-    targetHandle = I2C_getHandle(CONFIG_I2C1);
+    targetHandle = I2C_getHandle(instance_target);
     if(targetHandle)
     {
         I2C_close(targetHandle);
     }
-    targetHandle = I2C_open(CONFIG_I2C1, &params);
+    targetHandle = I2C_open(instance_target, &params);
     TEST_ASSERT_NOT_NULL(targetHandle);
 
     /* Prepare target transaction */
@@ -3432,12 +3458,12 @@ static void TestI2c_targetModeCombinedWriteRead(void *args)
 
     /* -------- controller (controller) setup -------- */
     I2C_Params_init(&params);
-    hostControllerHandle = I2C_getHandle(CONFIG_I2C0);
+    hostControllerHandle = I2C_getHandle(instance_controller);
     if(hostControllerHandle)
     {
         I2C_close(hostControllerHandle);
     }
-    hostControllerHandle = I2C_open(CONFIG_I2C0, &params);
+    hostControllerHandle = I2C_open(instance_controller, &params);
     TEST_ASSERT_NOT_NULL(hostControllerHandle);
 
     /* Combined transaction: write + repeated start + read */
@@ -3483,9 +3509,18 @@ static void TestI2c_targetModehostControllerRead(void *args)
     I2C_Transaction txnTarget, txnhostController;
     SemaphoreP_Object sem;
     int32_t status;
+    uint32_t instance_target;
+    uint32_t instance_controller;
+#if defined(SOC_AM275X)
+    instance_target = CONFIG_I2C3;
+    instance_controller = CONFIG_I2C5;
+#else
+    instance_target = CONFIG_I2C1;
+    instance_controller = CONFIG_I2C0;
+#endif
 
     SemaphoreP_constructBinary(&sem, 0);
-    targetHandle = I2C_getHandle(CONFIG_I2C1);
+    targetHandle = I2C_getHandle(instance_target);
     if(targetHandle)
     {
         I2C_close(targetHandle);
@@ -3494,7 +3529,7 @@ static void TestI2c_targetModehostControllerRead(void *args)
     I2C_Params_init(&params);
     params.transferMode = I2C_MODE_CALLBACK;
     params.transferCallbackFxn = &test_i2c_targetCallback;
-    targetHandle = I2C_open(CONFIG_I2C1, &params);
+    targetHandle = I2C_open(instance_target, &params);
     TEST_ASSERT_NOT_NULL(targetHandle);
 
     TestI2c_targetTxBuf[0] = 0xDE;
@@ -3513,12 +3548,12 @@ static void TestI2c_targetModehostControllerRead(void *args)
 
     /* controller setup to read */
     I2C_Params_init(&params);
-    hostControllerHandle = I2C_getHandle(CONFIG_I2C0);
+    hostControllerHandle = I2C_getHandle(instance_controller);
     if(hostControllerHandle)
     {
         I2C_close(hostControllerHandle);
     }
-    hostControllerHandle = I2C_open(CONFIG_I2C0, &params);
+    hostControllerHandle = I2C_open(instance_controller, &params);
     TEST_ASSERT_NOT_NULL(hostControllerHandle);
 
     I2C_Transaction_init(&txnhostController);
@@ -3557,6 +3592,15 @@ static void TestI2c_targetXrdyOverrun(void *args)
     I2C_Transaction txnTarget, txnhostController;
     SemaphoreP_Object sem;
     int32_t status;
+    uint32_t instance_target;
+    uint32_t instance_controller;
+#if defined(SOC_AM275X)
+    instance_target = CONFIG_I2C3;
+    instance_controller = CONFIG_I2C5;
+#else
+    instance_target = CONFIG_I2C1;
+    instance_controller = CONFIG_I2C0;
+#endif
 
     SemaphoreP_constructBinary(&sem, 0);
 
@@ -3564,12 +3608,12 @@ static void TestI2c_targetXrdyOverrun(void *args)
     I2C_Params_init(&params);
     params.transferMode = I2C_MODE_CALLBACK;
     params.transferCallbackFxn = &test_i2c_targetCallback;
-    targetHandle = I2C_getHandle(CONFIG_I2C1);
+    targetHandle = I2C_getHandle(instance_target);
     if(targetHandle)
     {
         I2C_close(targetHandle);
     }
-    targetHandle = I2C_open(CONFIG_I2C1, &params);
+    targetHandle = I2C_open(instance_target, &params);
     TEST_ASSERT_NOT_NULL(targetHandle);
 
     /* Prepare Target transaction: only 1 byte available */
@@ -3588,12 +3632,12 @@ static void TestI2c_targetXrdyOverrun(void *args)
     /* Setup controller (controller) */
     I2C_Params_init(&params);
 
-    hostControllerHandle = I2C_getHandle(CONFIG_I2C0);
+    hostControllerHandle = I2C_getHandle(instance_controller);
     if(hostControllerHandle)
     {
         I2C_close(hostControllerHandle);
     }
-    hostControllerHandle = I2C_open(CONFIG_I2C0, &params);
+    hostControllerHandle = I2C_open(instance_controller, &params);
     TEST_ASSERT_NOT_NULL(hostControllerHandle);
 
     /* controller requests MORE bytes than target has */
@@ -3639,6 +3683,15 @@ static void TestI2c_target_RrdyUnderrun(void *args)
     I2C_Transaction txnTarget, txnhostController;
     SemaphoreP_Object sem;
     int32_t status, i;
+    uint32_t instance_target;
+    uint32_t instance_controller;
+#if defined(SOC_AM275X)
+    instance_target = CONFIG_I2C3;
+    instance_controller = CONFIG_I2C5;
+#else
+    instance_target = CONFIG_I2C1;
+    instance_controller = CONFIG_I2C0;
+#endif
 
     SemaphoreP_constructBinary(&sem, 0);
 
@@ -3646,12 +3699,12 @@ static void TestI2c_target_RrdyUnderrun(void *args)
     I2C_Params_init(&params);
     params.transferMode = I2C_MODE_CALLBACK;
     params.transferCallbackFxn = &test_i2c_targetCallback;
-    targetHandle = I2C_getHandle(CONFIG_I2C1);
+    targetHandle = I2C_getHandle(instance_target);
     if(targetHandle)
     {
         I2C_close(targetHandle);
     }
-    targetHandle = I2C_open(CONFIG_I2C1, &params);
+    targetHandle = I2C_open(instance_target, &params);
     TEST_ASSERT_NOT_NULL(targetHandle);
 
     /* Prepare Target transaction: only 1 byte buffer for RX */
@@ -3668,12 +3721,12 @@ static void TestI2c_target_RrdyUnderrun(void *args)
 
     /* Setup controller (controller) */
     I2C_Params_init(&params);
-    hostControllerHandle = I2C_getHandle(CONFIG_I2C0);
+    hostControllerHandle = I2C_getHandle(instance_controller);
     if(hostControllerHandle)
     {
         I2C_close(hostControllerHandle);
     }
-    hostControllerHandle = I2C_open(CONFIG_I2C0, &params);
+    hostControllerHandle = I2C_open(instance_controller, &params);
     TEST_ASSERT_NOT_NULL(hostControllerHandle);
 
     /* controller writes MORE bytes than target can receive */
@@ -3717,6 +3770,15 @@ static void TestI2c_targetMultiplehostControllerReads(void *args)
     int32_t status, cycle,i;
     const int32_t num_cycles = 5;
     const int32_t bytesPerCycle = 4;
+    uint32_t instance_target;
+    uint32_t instance_controller;
+#if defined(SOC_AM275X)
+    instance_target = CONFIG_I2C3;
+    instance_controller = CONFIG_I2C5;
+#else
+    instance_target = CONFIG_I2C1;
+    instance_controller = CONFIG_I2C0;
+#endif
 
     SemaphoreP_constructBinary(&sem, 0);
 
@@ -3724,22 +3786,22 @@ static void TestI2c_targetMultiplehostControllerReads(void *args)
     I2C_Params_init(&params);
     params.transferMode = I2C_MODE_CALLBACK;
     params.transferCallbackFxn = &test_i2c_targetCallback;
-    targetHandle = I2C_getHandle(CONFIG_I2C1);
+    targetHandle = I2C_getHandle(instance_target);
     if(targetHandle)
     {
         I2C_close(targetHandle);
     }
-    targetHandle = I2C_open(CONFIG_I2C1, &params);
+    targetHandle = I2C_open(instance_target, &params);
     TEST_ASSERT_NOT_NULL(targetHandle);
 
     /* controller setup */
     I2C_Params_init(&params);
-    hostControllerHandle = I2C_getHandle(CONFIG_I2C0);
+    hostControllerHandle = I2C_getHandle(instance_controller);
     if(hostControllerHandle)
     {
         I2C_close(hostControllerHandle);
     }
-    hostControllerHandle = I2C_open(CONFIG_I2C0, &params);
+    hostControllerHandle = I2C_open(instance_controller, &params);
     TEST_ASSERT_NOT_NULL(hostControllerHandle);
 
     for (cycle = 0; cycle < num_cycles; cycle++)
@@ -3807,9 +3869,18 @@ static void TestI2c_targetModehostControllerRead10bit(void *args)
     int32_t status;
     uint8_t TestI2c_targetTxBuf[2] = {0xDE, 0xAD};
     uint8_t TestI2c_controllerRxBuf[2] = {0};
+    uint32_t instance_target;
+    uint32_t instance_controller;
+#if defined(SOC_AM275X)
+    instance_target = CONFIG_I2C3;
+    instance_controller = CONFIG_I2C5;
+#else
+    instance_target = CONFIG_I2C1;
+    instance_controller = CONFIG_I2C0;
+#endif
 
     SemaphoreP_constructBinary(&sem, 0);
-    targetHandle = I2C_getHandle(CONFIG_I2C1);
+    targetHandle = I2C_getHandle(instance_target);
     if(targetHandle)
     {
         I2C_close(targetHandle);
@@ -3818,7 +3889,7 @@ static void TestI2c_targetModehostControllerRead10bit(void *args)
     I2C_Params_init(&params);
     params.transferMode = I2C_MODE_CALLBACK;
     params.transferCallbackFxn = &test_i2c_targetCallback;
-    targetHandle = I2C_open(CONFIG_I2C1, &params);
+    targetHandle = I2C_open(instance_target, &params);
     TEST_ASSERT_NOT_NULL(targetHandle);
 
     I2C_Transaction_init(&txnTarget);
@@ -3834,13 +3905,13 @@ static void TestI2c_targetModehostControllerRead10bit(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
     /* controller setup (10-bit address) */
-    hostControllerHandle = I2C_getHandle(CONFIG_I2C0);
+    hostControllerHandle = I2C_getHandle(instance_controller);
     if(hostControllerHandle)
     {
         I2C_close(hostControllerHandle);
     }
     I2C_Params_init(&params);
-    hostControllerHandle = I2C_open(CONFIG_I2C0, &params);
+    hostControllerHandle = I2C_open(instance_controller, &params);
     TEST_ASSERT_NOT_NULL(hostControllerHandle);
 
     I2C_Transaction_init(&txnhostController);
@@ -3882,14 +3953,23 @@ static void TestI2c_targetModehostControllerReadHs(void *args)
     int32_t status;
     uint8_t TestI2c_targetTxBuf[4] = {0xB1, 0xB2, 0xB3, 0xB4};
     uint8_t TestI2c_controllerRxBuf[4] = {0};
+    uint32_t instance_target;
+    uint32_t instance_controller;
+#if defined(SOC_AM275X)
+    instance_target = CONFIG_I2C3;
+    instance_controller = CONFIG_I2C5;
+#else
+    instance_target = CONFIG_I2C1;
+    instance_controller = CONFIG_I2C0;
+#endif
 
     SemaphoreP_constructBinary(&sem, 0);
-    hostControllerHandle = I2C_getHandle(CONFIG_I2C0);
+    hostControllerHandle = I2C_getHandle(instance_controller);
     if(hostControllerHandle)
     {
         I2C_close(hostControllerHandle);
     }
-    targetHandle = I2C_getHandle(CONFIG_I2C1);
+    targetHandle = I2C_getHandle(instance_target);
     if(targetHandle)
     {
         I2C_close(targetHandle);
@@ -3899,7 +3979,7 @@ static void TestI2c_targetModehostControllerReadHs(void *args)
     params.transferMode = I2C_MODE_CALLBACK;
     params.transferCallbackFxn = &test_i2c_targetCallback;
     params.bitRate = I2C_1P0MHZ;
-    targetHandle = I2C_open(CONFIG_I2C1, &params);
+    targetHandle = I2C_open(instance_target, &params);
     TEST_ASSERT_NOT_NULL(targetHandle);
 
     I2C_Transaction_init(&txnTarget);
@@ -3916,7 +3996,7 @@ static void TestI2c_targetModehostControllerReadHs(void *args)
     /* controller setup (HS mode) */
     I2C_Params_init(&params);
     params.bitRate = I2C_1P0MHZ;
-    hostControllerHandle = I2C_open(CONFIG_I2C0, &params);
+    hostControllerHandle = I2C_open(instance_controller, &params);
     TEST_ASSERT_NOT_NULL(hostControllerHandle);
 
     I2C_Transaction_init(&txnhostController);
@@ -3956,15 +4036,21 @@ static void TestI2c_MemPrimeTransferTargetModeViaTransfer(void *args)
     I2C_Handle handle;
     I2C_Transaction testI2cTransaction;
     int32_t status;
+    uint32_t instance_target;
+#if defined(SOC_AM275X)
+    instance_target = CONFIG_I2C3;
+#else
+    instance_target = CONFIG_I2C1;
+#endif
 
     /* Open I2C normally */
     I2C_Params_init(&params);
-    handle = I2C_getHandle(CONFIG_I2C1);
+    handle = I2C_getHandle(instance_target);
     if(handle)
     {
         I2C_close(handle);
     }
-    handle = I2C_open(CONFIG_I2C1, &params);
+    handle = I2C_open(instance_target, &params);
     TEST_ASSERT_NOT_NULL(handle);
 
     /* Prepare a transaction in target mode (controllerMode = false) with memTxnEnable = true */
@@ -4009,6 +4095,15 @@ void TestI2c_targetMode10bit7bit(void *args)
     uint32_t i;
     uint32_t i2cPhase;
     const uint32_t i2cPayloadLen = 6U;
+    uint32_t instance_target;
+    uint32_t instance_controller;
+#if defined(SOC_AM275X)
+    instance_target = CONFIG_I2C3;
+    instance_controller = CONFIG_I2C5;
+#else
+    instance_target = CONFIG_I2C1;
+    instance_controller = CONFIG_I2C0;
+#endif
 
     for(i2cPhase = 0; i2cPhase < 2U; i2cPhase++)
     {
@@ -4016,20 +4111,20 @@ void TestI2c_targetMode10bit7bit(void *args)
         bool I2cis10bit = tenBitMode[i2cPhase];
 
         /* Close any previously open target/controller handles */
-        handle = I2C_getHandle(CONFIG_I2C1);
+        handle = I2C_getHandle(instance_target);
         if(handle)
         {
             I2C_close(handle);
         }
 
-        testI2cContrllerHndl = I2C_getHandle(CONFIG_I2C0);
+        testI2cContrllerHndl = I2C_getHandle(instance_controller);
         if(testI2cContrllerHndl)
         {
             I2C_close(testI2cContrllerHndl);
         }
 
         /* Runtime reconfigure own target address */
-        I2C_HwAttrs *TestI2c_hw = (I2C_HwAttrs*)gI2cConfig[CONFIG_I2C1].hwAttrs;
+        I2C_HwAttrs *TestI2c_hw = (I2C_HwAttrs*)gI2cConfig[instance_target].hwAttrs;
         TestI2c_hw->ownTargetAddr[0] = i2cOwnAddr;
 
         /* Construct semaphore for target completion */
@@ -4039,7 +4134,7 @@ void TestI2c_targetMode10bit7bit(void *args)
         I2C_Params_init(&i2cParams);
         i2cParams.transferMode = I2C_MODE_CALLBACK;
         i2cParams.transferCallbackFxn = &test_i2c_targetCallback;
-        handle = I2C_open(CONFIG_I2C1, &i2cParams);
+        handle = I2C_open(instance_target, &i2cParams);
         TEST_ASSERT_NOT_NULL(handle);
 
         /* Post a target receive (controller write) */
@@ -4057,7 +4152,7 @@ void TestI2c_targetMode10bit7bit(void *args)
 
         /* Open controller */
         I2C_Params_init(&i2cParams);
-        testI2cContrllerHndl = I2C_open(CONFIG_I2C0, &i2cParams);
+        testI2cContrllerHndl = I2C_open(instance_controller, &i2cParams);
         TEST_ASSERT_NOT_NULL(testI2cContrllerHndl);
 
         /* Prepare payload */
@@ -4110,10 +4205,19 @@ void TestI2c_targetModeMultiOwnAddr(void* args)
     SemaphoreP_Object sem;
     uint8_t ownAddrs[4] = { 0x10, 0x20, 0x30, 0x40 };
     uint8_t controllerTx[8], targetRx[8];
+    uint32_t instance_target;
+    uint32_t instance_controller;
+#if defined(SOC_AM275X)
+    instance_target = CONFIG_I2C3;
+    instance_controller = CONFIG_I2C5;
+#else
+    instance_target = CONFIG_I2C1;
+    instance_controller = CONFIG_I2C0;
+#endif
 
     SemaphoreP_constructBinary(&sem, 0);
 
-    I2C_HwAttrs *hwAttrs = (I2C_HwAttrs *)gI2cConfig[CONFIG_I2C1].hwAttrs;
+    I2C_HwAttrs *hwAttrs = (I2C_HwAttrs *)gI2cConfig[instance_target].hwAttrs;
     for (i = 0; i < 4; i++)
     {
         hwAttrs->ownTargetAddr[i] = ownAddrs[i];
@@ -4123,12 +4227,12 @@ void TestI2c_targetModeMultiOwnAddr(void* args)
     params.transferMode = I2C_MODE_CALLBACK;
     params.transferCallbackFxn = &test_i2c_targetCallback;
 
-    targetHandle = I2C_getHandle(CONFIG_I2C1);
+    targetHandle = I2C_getHandle(instance_target);
     if(targetHandle)
     {
         I2C_close(targetHandle);
     }
-    targetHandle = I2C_open(CONFIG_I2C1, &params);
+    targetHandle = I2C_open(instance_target, &params);
     TEST_ASSERT_NOT_NULL(targetHandle);
 
     for (addrIdx = 0; addrIdx < 1; addrIdx++)
@@ -4145,12 +4249,12 @@ void TestI2c_targetModeMultiOwnAddr(void* args)
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
         I2C_Params_init(&params);
-        controllerHandle = I2C_getHandle(CONFIG_I2C0);
+        controllerHandle = I2C_getHandle(instance_controller);
         if(controllerHandle)
         {
             I2C_close(controllerHandle);
         }
-        controllerHandle = I2C_open(CONFIG_I2C0, &params);
+        controllerHandle = I2C_open(instance_controller, &params);
         TEST_ASSERT_NOT_NULL(controllerHandle);
 
         for (i = 0; i < sizeof(controllerTx); i++)
@@ -5054,6 +5158,7 @@ void TestI2c_controllerAccessError(void *args)
  *
  * \param args Unused.
  */
+#if !defined (SOC_AM275X)
 void TestI2c_sclStuckRecoverBusWithSystestFaultDefaultAnd1MHz(void* args)
 {
     I2C_Params i2cParams;
@@ -5126,3 +5231,4 @@ void TestI2c_sclStuckRecoverBusWithSystestFaultDefaultAnd1MHz(void* args)
         I2C_close(handle);
     }
 }
+#endif

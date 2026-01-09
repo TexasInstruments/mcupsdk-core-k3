@@ -262,42 +262,45 @@ static uint32_t gReadBuf[OSPI_FLASH_ATTACK_VECTOR_SIZE/sizeof(uint32_t)] = { 0U 
 
 void OSPI_phyBasicConfig(OSPI_Handle handle)
 {
-    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-    const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
-
-    /* Configure DLL lock mode */
-    CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
-                   OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_LOCK_MODE_FLD,
-                   attrs->phyConfiguration.dllLockMode);
-
-    /* Select the number of delay element to be inserted between
-     * phase detect flip-flops.
-     */
-    CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
-                    OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_PHASE_DETECT_SELECTOR_FLD,
-                    OSPI_PHASE_DETECT_DLL_NUM_DELAY_ELEMENT(attrs->phaseDelayElement));
-
-    /* Configure PHY Control mode */
-    CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
-                    OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_BYPASS_MODE_FLD,
-                    attrs->phyConfiguration.phyControlMode);
-
-    if(attrs->phyConfiguration.phyControlMode != OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_MODE &&
-        attrs->phyConfiguration.phyControlMode != OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_BYPASS_MODE) /* default mode config */
+    if(handle != NULL)
     {
-        if(attrs->inputClkFreq  >= OSPI_PHY_TUNING_FREQ_RANGE)
-        {
-            /* Master operational mode for OSPI clock frequency of 166MHz */
-            CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
+        const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+        const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+
+        /* Configure DLL lock mode */
+        CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
+                       OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_LOCK_MODE_FLD,
+                       attrs->phyConfiguration.dllLockMode);
+
+        /* Select the number of delay element to be inserted between
+         * phase detect flip-flops.
+         */
+        CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
+                        OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_PHASE_DETECT_SELECTOR_FLD,
+                        OSPI_PHASE_DETECT_DLL_NUM_DELAY_ELEMENT(attrs->phaseDelayElement));
+
+        /* Configure PHY Control mode */
+        CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
                         OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_BYPASS_MODE_FLD,
-                        OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_MODE);
-        }
-        else
+                        attrs->phyConfiguration.phyControlMode);
+
+        if(attrs->phyConfiguration.phyControlMode != OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_MODE &&
+            attrs->phyConfiguration.phyControlMode != OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_BYPASS_MODE) /* default mode config */
         {
-            /* Bypass mode for OSPI clock frequencies less than 166MHz */
-            CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
-                        OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_BYPASS_MODE_FLD,
-                        OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_BYPASS_MODE);
+            if(attrs->inputClkFreq  >= OSPI_PHY_TUNING_FREQ_RANGE)
+            {
+                /* Master operational mode for OSPI clock frequency of 166MHz */
+                CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
+                            OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_BYPASS_MODE_FLD,
+                            OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_MODE);
+            }
+            else
+            {
+                /* Bypass mode for OSPI clock frequencies less than 166MHz */
+                CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
+                            OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_BYPASS_MODE_FLD,
+                            OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_BYPASS_MODE);
+            }
         }
     }
 
@@ -305,120 +308,134 @@ void OSPI_phyBasicConfig(OSPI_Handle handle)
 
 void OSPI_phyResyncDLL(OSPI_Handle handle)
 {
-    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-    const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
-    uint32_t idleFlag = 0;
-    uint64_t curTime;
-
-    /* Wait for Idle */
-    while (idleFlag == 0)
+    if(handle != NULL)
     {
-        idleFlag = CSL_REG32_FEXT(&pReg->CONFIG_REG,
-                                  OSPI_FLASH_CFG_CONFIG_REG_IDLE_FLD);
+        const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+        const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+        uint32_t idleFlag = 0;
+        uint64_t curTime;
+
+        /* Wait for Idle */
+        while (idleFlag == 0)
+        {
+            idleFlag = CSL_REG32_FEXT(&pReg->CONFIG_REG,
+                                      OSPI_FLASH_CFG_CONFIG_REG_IDLE_FLD);
+        }
+
+        /* Disable OSPI Controller */
+        CSL_REG32_FINS(&pReg->CONFIG_REG,
+                       OSPI_FLASH_CFG_CONFIG_REG_ENB_SPI_FLD,
+                       FALSE);
+
+        /* Clear the delay line resync bit */
+        CSL_REG32_FINS(&pReg->PHY_CONFIGURATION_REG,
+                       OSPI_FLASH_CFG_PHY_CONFIGURATION_REG_PHY_CONFIG_RESYNC_FLD,
+                       0U);
+
+        /* Reset DLL in master mode */
+        CSL_REG32_FINS(&pReg->PHY_CONFIGURATION_REG,
+                       OSPI_FLASH_CFG_PHY_CONFIGURATION_REG_PHY_CONFIG_RESET_FLD,
+                       0U);
+
+        /* Set Initial delay for the master DLL */
+        CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
+                       OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_INITIAL_DELAY_FLD,
+                       0x10U);
+
+        /* DLL out of reset */
+        CSL_REG32_FINS(&pReg->PHY_CONFIGURATION_REG,
+                       OSPI_FLASH_CFG_PHY_CONFIGURATION_REG_PHY_CONFIG_RESET_FLD,
+                       1U);
+
+        curTime = ClockP_getTimeUsec();
+        /* Wait DLL lock done */
+        while ((CSL_REG32_FEXT(&pReg->DLL_OBSERVABLE_LOWER_REG,
+               OSPI_FLASH_CFG_DLL_OBSERVABLE_LOWER_REG_DLL_OBSERVABLE_LOWER_DLL_LOCK_FLD) == 0U)
+               && ((ClockP_getTimeUsec() - curTime) <= OSPI_DLL_LOCK_TIMEOUT));
+
+        curTime = ClockP_getTimeUsec();
+        /* Wait DLL loopback lock done */
+        while ((CSL_REG32_FEXT(&pReg->DLL_OBSERVABLE_LOWER_REG,
+               OSPI_FLASH_CFG_DLL_OBSERVABLE_LOWER_REG_DLL_OBSERVABLE_LOWER_LOOPBACK_LOCK_FLD) == 0U)
+               && ((ClockP_getTimeUsec() - curTime) <= OSPI_DLL_LOCK_TIMEOUT));
+
+        /* Resync the Slave DLLs */
+        CSL_REG32_FINS(&pReg->PHY_CONFIGURATION_REG,
+                       OSPI_FLASH_CFG_PHY_CONFIGURATION_REG_PHY_CONFIG_RESYNC_FLD,
+                       1U);
+
+        /* Enable the controller */
+        CSL_REG32_FINS(&pReg->CONFIG_REG,
+                       OSPI_FLASH_CFG_CONFIG_REG_ENB_SPI_FLD,
+                       TRUE);
     }
-
-    /* Disable OSPI Controller */
-    CSL_REG32_FINS(&pReg->CONFIG_REG,
-                   OSPI_FLASH_CFG_CONFIG_REG_ENB_SPI_FLD,
-                   FALSE);
-
-    /* Clear the delay line resync bit */
-    CSL_REG32_FINS(&pReg->PHY_CONFIGURATION_REG,
-                   OSPI_FLASH_CFG_PHY_CONFIGURATION_REG_PHY_CONFIG_RESYNC_FLD,
-                   0U);
-
-    /* Reset DLL in master mode */
-    CSL_REG32_FINS(&pReg->PHY_CONFIGURATION_REG,
-                   OSPI_FLASH_CFG_PHY_CONFIGURATION_REG_PHY_CONFIG_RESET_FLD,
-                   0U);
-
-    /* Set Initial delay for the master DLL */
-    CSL_REG32_FINS(&pReg->PHY_MASTER_CONTROL_REG,
-                   OSPI_FLASH_CFG_PHY_MASTER_CONTROL_REG_PHY_MASTER_INITIAL_DELAY_FLD,
-                   0x10U);
-
-    /* DLL out of reset */
-    CSL_REG32_FINS(&pReg->PHY_CONFIGURATION_REG,
-                   OSPI_FLASH_CFG_PHY_CONFIGURATION_REG_PHY_CONFIG_RESET_FLD,
-                   1U);
-
-    curTime = ClockP_getTimeUsec();
-    /* Wait DLL lock done */
-    while ((CSL_REG32_FEXT(&pReg->DLL_OBSERVABLE_LOWER_REG,
-           OSPI_FLASH_CFG_DLL_OBSERVABLE_LOWER_REG_DLL_OBSERVABLE_LOWER_DLL_LOCK_FLD) == 0U)
-           && ((ClockP_getTimeUsec() - curTime) <= OSPI_DLL_LOCK_TIMEOUT));
-
-    curTime = ClockP_getTimeUsec();
-    /* Wait DLL loopback lock done */
-    while ((CSL_REG32_FEXT(&pReg->DLL_OBSERVABLE_LOWER_REG,
-           OSPI_FLASH_CFG_DLL_OBSERVABLE_LOWER_REG_DLL_OBSERVABLE_LOWER_LOOPBACK_LOCK_FLD) == 0U)
-           && ((ClockP_getTimeUsec() - curTime) <= OSPI_DLL_LOCK_TIMEOUT));
-
-    /* Resync the Slave DLLs */
-    CSL_REG32_FINS(&pReg->PHY_CONFIGURATION_REG,
-                   OSPI_FLASH_CFG_PHY_CONFIGURATION_REG_PHY_CONFIG_RESYNC_FLD,
-                   1U);
-
-    /* Enable the controller */
-    CSL_REG32_FINS(&pReg->CONFIG_REG,
-                   OSPI_FLASH_CFG_CONFIG_REG_ENB_SPI_FLD,
-                   TRUE);
 }
 
 void OSPI_phySetRdDelayTxRxDLL(OSPI_Handle handle, OSPI_PhyConfig *configPoint)
 {
-    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-    const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+    if(handle != NULL)
+    {
+        const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+        const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
 
-    uint32_t rdDelay = (uint32_t)configPoint->rdDelay;
-    uint32_t txDLL   = (uint32_t)configPoint->txDLL;
-    uint32_t rxDLL   = (uint32_t)configPoint->rxDLL;
+        uint32_t rdDelay = (uint32_t)configPoint->rdDelay;
+        uint32_t txDLL   = (uint32_t)configPoint->txDLL;
+        uint32_t rxDLL   = (uint32_t)configPoint->rxDLL;
 
-    /* Set the read delay */
-    CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG,
-                   OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_DELAY_FLD,
-                   rdDelay);
+        /* Set the read delay */
+        CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG,
+                       OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_DELAY_FLD,
+                       rdDelay);
 
-    /* Set the PHY rxDLL and txDLL */
+        /* Set the PHY rxDLL and txDLL */
 
-    uint32_t dtrEnable = CSL_REG32_FEXT(&pReg->CONFIG_REG,
-                         OSPI_FLASH_CFG_CONFIG_REG_ENABLE_DTR_PROTOCOL_FLD);
+        uint32_t dtrEnable = CSL_REG32_FEXT(&pReg->CONFIG_REG,
+                             OSPI_FLASH_CFG_CONFIG_REG_ENABLE_DTR_PROTOCOL_FLD);
 
-    /* If DTR is enabled, enable DQS */
-    CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG,
-                   OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_DQS_ENABLE_FLD,
-                   dtrEnable);
+        /* If DTR is enabled, enable DQS */
+        CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG,
+                       OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_DQS_ENABLE_FLD,
+                       dtrEnable);
 
-    /* Set TX DLL delay */
-    CSL_REG32_FINS(&pReg->PHY_CONFIGURATION_REG,
-                   OSPI_FLASH_CFG_PHY_CONFIGURATION_REG_PHY_CONFIG_TX_DLL_DELAY_FLD,
-                   txDLL);
-    /* Set RX DLL delay */
-    CSL_REG32_FINS(&pReg->PHY_CONFIGURATION_REG,
-                   OSPI_FLASH_CFG_PHY_CONFIGURATION_REG_PHY_CONFIG_RX_DLL_DELAY_FLD,
-                   rxDLL);
-    /* Re-sync DLL */
-    OSPI_phyResyncDLL(handle);
+        /* Set TX DLL delay */
+        CSL_REG32_FINS(&pReg->PHY_CONFIGURATION_REG,
+                       OSPI_FLASH_CFG_PHY_CONFIGURATION_REG_PHY_CONFIG_TX_DLL_DELAY_FLD,
+                       txDLL);
+        /* Set RX DLL delay */
+        CSL_REG32_FINS(&pReg->PHY_CONFIGURATION_REG,
+                       OSPI_FLASH_CFG_PHY_CONFIGURATION_REG_PHY_CONFIG_RX_DLL_DELAY_FLD,
+                       rxDLL);
+        /* Re-sync DLL */
+        OSPI_phyResyncDLL(handle);
+    }
 }
 
 int32_t OSPI_phyReadAttackVector(OSPI_Handle handle, uint32_t offset)
 {
     int32_t status = SystemP_SUCCESS;
-    uint32_t flashDataBaseAddr = OSPI_getFlashDataBaseAddr(handle);
-    volatile uint32_t *src = (volatile uint32_t *)(flashDataBaseAddr + offset);
-    volatile uint32_t *dst = (volatile uint32_t *)gReadBuf;
-    uint32_t *compBuf = (uint32_t *)gOspiFlashAttackVector;
-    uint32_t count = 0U;
-    OSPI_enableDacMode(handle);
 
-    for(count = 0U; count < OSPI_FLASH_ATTACK_VECTOR_SIZE/sizeof(uint32_t); count++)
+    if(handle != NULL)
     {
-        dst[count] = src[count];
-        if(dst[count] != compBuf[count])
+        uint32_t flashDataBaseAddr = OSPI_getFlashDataBaseAddr(handle);
+        volatile uint32_t *src = (volatile uint32_t *)(flashDataBaseAddr + offset);
+        volatile uint32_t *dst = (volatile uint32_t *)gReadBuf;
+        uint32_t *compBuf = (uint32_t *)gOspiFlashAttackVector;
+        uint32_t count = 0U;
+        OSPI_enableDacMode(handle);
+
+        for(count = 0U; count < OSPI_FLASH_ATTACK_VECTOR_SIZE/sizeof(uint32_t); count++)
         {
-            status  = SystemP_FAILURE;
-            break;
+            dst[count] = src[count];
+            if(dst[count] != compBuf[count])
+            {
+                status  = SystemP_FAILURE;
+                break;
+            }
         }
+    }
+    else
+    {
+        status = SystemP_FAILURE;
     }
 
     return status;
@@ -428,7 +445,7 @@ int32_t OSPI_phySetAndRead(void* handle, uint32_t offset, OSPI_PhyConfig* result
 {
     int32_t status = SystemP_FAILURE;
 
-    if(handle != NULL)
+    if((handle != NULL) && (result != NULL))
     {
         OSPI_phySetRdDelayTxRxDLL((OSPI_Handle)handle, result);
         status = OSPI_phyReadAttackVector((OSPI_Handle)handle, offset);
@@ -649,46 +666,54 @@ void OSPI_phyGetTuningData(uint32_t *tuningData, uint32_t *tuningDataSize)
 int32_t OSPI_phyTuneGrapher(OSPI_Handle handle, uint32_t flashOffset, uint8_t arrays[5][128][128])
 {
     int32_t status = SystemP_SUCCESS;
-    OSPI_PhyConfig searchPoint;
-    uint32_t rdDelay;
-    uint8_t rxDll, txDll;
 
-    OSPI_enablePhy(handle);
-    /* keep phy pipeline disabled */
-    OSPI_disablePhyPipeline(handle);
-
-    /* Perform the Basic PHY configuration for the OSPI controller */
-    OSPI_phyBasicConfig(handle);
-
-    for(rdDelay = OSPI_PHY_GRAPHER_INIT_RD_DELAY; rdDelay <= OSPI_PHY_GRAPHER_MAX_RD_DELAY; rdDelay++)
+    if((handle != NULL) && (arrays != NULL))
     {
-        for(txDll = 0; txDll < 128; txDll++)
+        OSPI_PhyConfig searchPoint;
+        uint32_t rdDelay;
+        uint8_t rxDll, txDll;
+
+        OSPI_enablePhy(handle);
+        /* keep phy pipeline disabled */
+        OSPI_disablePhyPipeline(handle);
+
+        /* Perform the Basic PHY configuration for the OSPI controller */
+        OSPI_phyBasicConfig(handle);
+
+        for(rdDelay = OSPI_PHY_GRAPHER_INIT_RD_DELAY; rdDelay <= OSPI_PHY_GRAPHER_MAX_RD_DELAY; rdDelay++)
         {
-            for(rxDll = 0; rxDll < 128; rxDll++)
+            for(txDll = 0; txDll < 128; txDll++)
             {
-                searchPoint.rdDelay = rdDelay;
-                searchPoint.rxDLL = rxDll;
-                searchPoint.txDLL = txDll;
-
-                OSPI_phySetRdDelayTxRxDLL(handle, &searchPoint);
-
-                status = OSPI_phyReadAttackVector(handle, flashOffset);
-                if(status == SystemP_SUCCESS)
+                for(rxDll = 0; rxDll < 128; rxDll++)
                 {
-                    arrays[rdDelay][txDll][rxDll] = 1;
-                }
-                else
-                {
-                    arrays[rdDelay][txDll][rxDll] = 0;
+                    searchPoint.rdDelay = rdDelay;
+                    searchPoint.rxDLL = rxDll;
+                    searchPoint.txDLL = txDll;
+
+                    OSPI_phySetRdDelayTxRxDLL(handle, &searchPoint);
+
+                    status = OSPI_phyReadAttackVector(handle, flashOffset);
+                    if(status == SystemP_SUCCESS)
+                    {
+                        arrays[rdDelay][txDll][rxDll] = 1;
+                    }
+                    else
+                    {
+                        arrays[rdDelay][txDll][rxDll] = 0;
+                    }
                 }
             }
         }
+
+        /* Disable PHY */
+        OSPI_disablePhy(handle);
+    }
+    else
+    {
+        status = SystemP_FAILURE;
     }
 
-    /* Disable PHY */
-    OSPI_disablePhy(handle);
-
-    return SystemP_SUCCESS;
+    return status;
 }
 
 int32_t OSPI_phyFindOTP2(OSPI_Handle handle, uint32_t flashOffset, OSPI_PhyConfig *otp)
@@ -961,40 +986,48 @@ int32_t OSPI_phyTuneDDR(OSPI_Handle handle, uint32_t flashOffset)
 {
 
     int32_t status = SystemP_SUCCESS;
-    OSPI_PhyConfig otp;
-    OSPI_phyOps phyOps;
 
-    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-    phyOps.ops = OSPI_phySetAndRead;
-    phyOps.phyParams = (OSPI_phyParams *)(&(attrs->phyConfiguration.phyParams));
-
-    OSPI_Object *obj = ((OSPI_Config *)handle)->object;
-
-    /* Enable PHY */
-    OSPI_enablePhy(handle);
-    /* keep phy pipeline disabled */
-    OSPI_disablePhyPipeline(handle);
-    /* Perform the Basic PHY configuration for the OSPI controller */
-    OSPI_phyBasicConfig(handle);
-
-    /* Use the normal algorithm */
-    status = OSPI_phyFindOTP4(handle, flashOffset, &phyOps, phyOps.phyParams->radius, &otp);
-
-    if(status == SystemP_SUCCESS)
+    if(handle != NULL)
     {
-        /* Configure phy for the optimal tuning point */
-        OSPI_phySetRdDelayTxRxDLL(handle, &otp);
+        OSPI_PhyConfig otp;
+        OSPI_phyOps phyOps;
 
-        /* Update the phyRdDelay book-keeping. This is needed when we enable PHY later */
-        obj->phyRdDataCapDelay = otp.rdDelay;
+        const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+        phyOps.ops = OSPI_phySetAndRead;
+        phyOps.phyParams = (OSPI_phyParams *)(&(attrs->phyConfiguration.phyParams));
+
+        OSPI_Object *obj = ((OSPI_Config *)handle)->object;
+
+        /* Enable PHY */
+        OSPI_enablePhy(handle);
+        /* keep phy pipeline disabled */
+        OSPI_disablePhyPipeline(handle);
+        /* Perform the Basic PHY configuration for the OSPI controller */
+        OSPI_phyBasicConfig(handle);
+
+        /* Use the normal algorithm */
+        status = OSPI_phyFindOTP4(handle, flashOffset, &phyOps, phyOps.phyParams->radius, &otp);
+
+        if(status == SystemP_SUCCESS)
+        {
+            /* Configure phy for the optimal tuning point */
+            OSPI_phySetRdDelayTxRxDLL(handle, &otp);
+
+            /* Update the phyRdDelay book-keeping. This is needed when we enable PHY later */
+            obj->phyRdDataCapDelay = otp.rdDelay;
+        }
+        else
+        {
+            obj->phyRdDataCapDelay = 0xFFU;
+        }
+
+        /* Disable PHY */
+        OSPI_disablePhy(handle);
     }
     else
     {
-        obj->phyRdDataCapDelay = 0xFFU;
+        status = SystemP_FAILURE;
     }
-
-    /* Disable PHY */
-    OSPI_disablePhy(handle);
 
     return status;
 }
@@ -1002,48 +1035,56 @@ int32_t OSPI_phyTuneDDR(OSPI_Handle handle, uint32_t flashOffset)
 int32_t OSPI_phyTuneSDR(OSPI_Handle handle, uint32_t flashOffset)
 {
     int32_t status = SystemP_SUCCESS;
-    OSPI_PhyConfig otp;
-    float temperature = 0;
 
-    OSPI_Object *obj = ((OSPI_Config *)handle)->object;
-    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-    const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
-
-    /* Dummy read to ensure VTM is stabilised. */
-    (void)VTM_getAverageTemperature(&temperature);
-
-    /* Set Internal loopback mode */
-    CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG, OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_BYPASS_FLD, TRUE);
-
-    /* Enable PHY Mode. */
-    OSPI_enablePhy(handle);
-
-    /* Disable PHY pipeline */
-    OSPI_disablePhyPipeline(handle);
-
-    OSPI_phyBasicConfig(handle);
-
-    /* Use the normal algorithm */
-    status = OSPI_phyFindOTP3(handle, flashOffset, &otp);
-
-    VTM_reset();
-
-    if(status == SystemP_SUCCESS)
+    if(handle != NULL)
     {
-        /* Configure phy for the optimal tuning point */
-        OSPI_phySetRdDelayTxRxDLL(handle, &otp);
+        OSPI_PhyConfig otp;
+        float temperature = 0;
 
-        /* Update the phyRdDelay book-keeping. This is needed when we enable PHY later */
-        obj->phyRdDataCapDelay = otp.rdDelay;
+        OSPI_Object *obj = ((OSPI_Config *)handle)->object;
+        const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+        const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+
+        /* Dummy read to ensure VTM is stabilised. */
+        (void)VTM_getAverageTemperature(&temperature);
+
+        /* Set Internal loopback mode */
+        CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG, OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_BYPASS_FLD, TRUE);
+
+        /* Enable PHY Mode. */
+        OSPI_enablePhy(handle);
+
+        /* Disable PHY pipeline */
+        OSPI_disablePhyPipeline(handle);
+
+        OSPI_phyBasicConfig(handle);
+
+        /* Use the normal algorithm */
+        status = OSPI_phyFindOTP3(handle, flashOffset, &otp);
+
+        VTM_reset();
+
+        if(status == SystemP_SUCCESS)
+        {
+            /* Configure phy for the optimal tuning point */
+            OSPI_phySetRdDelayTxRxDLL(handle, &otp);
+
+            /* Update the phyRdDelay book-keeping. This is needed when we enable PHY later */
+            obj->phyRdDataCapDelay = otp.rdDelay;
+        }
+        else
+        {
+            /* Set phyRdDelay to 255 in case of error */
+            obj->phyRdDataCapDelay = 0xFFU;
+        }
+
+        /* Disable PHY Mode*/
+        OSPI_disablePhy(handle);
     }
     else
     {
-        /* Set phyRdDelay to 255 in case of error */
-        obj->phyRdDataCapDelay = 0xFFU;
+        status = SystemP_FAILURE;
     }
-
-    /* Disable PHY Mode*/
-    OSPI_disablePhy(handle);
 
     return status;
 }

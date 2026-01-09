@@ -63,13 +63,20 @@ int32_t OSPI_norFlashCmdRead(OSPI_Handle handle, uint8_t cmd, uint8_t *rxBuf, ui
 {
     int32_t status = SystemP_SUCCESS;
 
-    OSPI_ReadCmdParams rdParams;
-    OSPI_ReadCmdParams_init(&rdParams);
-    rdParams.cmd       = cmd;
-    rdParams.rxDataBuf = rxBuf;
-    rdParams.rxDataLen = rxLen;
+    if((handle != NULL) && (rxBuf != NULL))
+    {
+        OSPI_ReadCmdParams rdParams;
+        OSPI_ReadCmdParams_init(&rdParams);
+        rdParams.cmd       = cmd;
+        rdParams.rxDataBuf = rxBuf;
+        rdParams.rxDataLen = rxLen;
 
-    status += OSPI_readCmd(handle, &rdParams);
+        status += OSPI_readCmd(handle, &rdParams);
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
 
     return status;
 }
@@ -78,13 +85,20 @@ int32_t OSPI_norFlashCmdWrite(OSPI_Handle handle, uint8_t cmd, uint32_t cmdAddr,
 {
     int32_t status = SystemP_SUCCESS;
 
-    OSPI_WriteCmdParams wrParams;
-    OSPI_WriteCmdParams_init(&wrParams);
-    wrParams.cmd        = cmd;
-    wrParams.cmdAddr    = cmdAddr;
-    wrParams.txDataBuf  = txBuf;
-    wrParams.txDataLen  = txLen;
-    status += OSPI_writeCmd(handle, &wrParams);
+    if(handle != NULL)
+    {
+        OSPI_WriteCmdParams wrParams;
+        OSPI_WriteCmdParams_init(&wrParams);
+        wrParams.cmd        = cmd;
+        wrParams.cmdAddr    = cmdAddr;
+        wrParams.txDataBuf  = txBuf;
+        wrParams.txDataLen  = txLen;
+        status += OSPI_writeCmd(handle, &wrParams);
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
 
     return status;
 }
@@ -108,68 +122,76 @@ void OSPI_norFlashSetCmds(uint8_t rdCmd, uint8_t wrCmd, uint8_t eraseCmd)
 int32_t OSPI_norFlashInit1s1s1s(OSPI_Handle handle)
 {
     int32_t status = SystemP_SUCCESS;
-    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-    const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
-    uint32_t regVal = 0U;
-    uint8_t cmd;
 
-    /* Reset the Flash */
-    cmd = OSPI_NOR_CMD_RSTEN;
-    OSPI_norFlashCmdWrite(handle, cmd, 0xFFFFFFFF, NULL, 0);
+    if(handle != NULL)
+    {
+        const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+        const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+        uint32_t regVal = 0U;
+        uint8_t cmd;
 
-    cmd = OSPI_NOR_CMD_RST;
-    OSPI_norFlashCmdWrite(handle, cmd, 0xFFFFFFFF, NULL, 0);
+        /* Reset the Flash */
+        cmd = OSPI_NOR_CMD_RSTEN;
+        OSPI_norFlashCmdWrite(handle, cmd, 0xFFFFFFFF, NULL, 0);
 
-    /* Wait for a while */
-    uint32_t waitMicro = 500U * 1000U;
-    ClockP_usleep(waitMicro);
+        cmd = OSPI_NOR_CMD_RST;
+        OSPI_norFlashCmdWrite(handle, cmd, 0xFFFFFFFF, NULL, 0);
 
-    /* Set lowest bus clock */
-    CSL_REG32_FINS(&pReg->CONFIG_REG,
-                   OSPI_FLASH_CFG_CONFIG_REG_MSTR_BAUD_DIV_FLD,
-                   0xF);
+        /* Wait for a while */
+        uint32_t waitMicro = 500U * 1000U;
+        ClockP_usleep(waitMicro);
 
-    /* SDR will be enabled in flash by default, set OSPI controller to 1S-1S-1S mode */
-    uint32_t xferLines = 0;
+        /* Set lowest bus clock */
+        CSL_REG32_FINS(&pReg->CONFIG_REG,
+                       OSPI_FLASH_CFG_CONFIG_REG_MSTR_BAUD_DIV_FLD,
+                       0xF);
 
-    /* Set number of address bytes as 3 to support legacy flash devices also
-        00 = 1 addr byte
-        01 = 2 addr byte
-        10 = 3 addr byte
-        11 = 4 addr byte
-    */
-    CSL_REG32_FINS(&pReg->DEV_SIZE_CONFIG_REG, OSPI_FLASH_CFG_DEV_SIZE_CONFIG_REG_NUM_ADDR_BYTES_FLD, 0x02);
+        /* SDR will be enabled in flash by default, set OSPI controller to 1S-1S-1S mode */
+        uint32_t xferLines = 0;
 
-    /* Set RD and WR Config register */
-    regVal = CSL_REG32_RD(&pReg->DEV_INSTR_RD_CONFIG_REG);
-    /* Configure the Device Read Instruction Configuration Register */
-    regVal &= ~(CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_INSTR_TYPE_FLD_MASK              | \
-                CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_RD_OPCODE_NON_XIP_FLD_MASK       | \
-                CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_ADDR_XFER_TYPE_STD_MODE_FLD_MASK | \
-                CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DATA_XFER_TYPE_EXT_MODE_FLD_MASK | \
-                CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DDR_EN_FLD_MASK                  | \
-                CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD_MASK);
-    regVal |= ((uint32_t)gNorRdCmd << CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_RD_OPCODE_NON_XIP_FLD_SHIFT)        | \
-              (xferLines << CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DATA_XFER_TYPE_EXT_MODE_FLD_SHIFT) | \
-              (xferLines << CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_ADDR_XFER_TYPE_STD_MODE_FLD_SHIFT) | \
-              (xferLines << CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_INSTR_TYPE_FLD_SHIFT)          | \
-              (0U << CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD_SHIFT);
-    CSL_REG32_WR(&pReg->DEV_INSTR_RD_CONFIG_REG, regVal);
+        /* Set number of address bytes as 3 to support legacy flash devices also
+            00 = 1 addr byte
+            01 = 2 addr byte
+            10 = 3 addr byte
+            11 = 4 addr byte
+        */
+        CSL_REG32_FINS(&pReg->DEV_SIZE_CONFIG_REG, OSPI_FLASH_CFG_DEV_SIZE_CONFIG_REG_NUM_ADDR_BYTES_FLD, 0x02);
 
-    regVal = CSL_REG32_RD(&pReg->DEV_INSTR_WR_CONFIG_REG);
+        /* Set RD and WR Config register */
+        regVal = CSL_REG32_RD(&pReg->DEV_INSTR_RD_CONFIG_REG);
+        /* Configure the Device Read Instruction Configuration Register */
+        regVal &= ~(CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_INSTR_TYPE_FLD_MASK              | \
+                    CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_RD_OPCODE_NON_XIP_FLD_MASK       | \
+                    CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_ADDR_XFER_TYPE_STD_MODE_FLD_MASK | \
+                    CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DATA_XFER_TYPE_EXT_MODE_FLD_MASK | \
+                    CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DDR_EN_FLD_MASK                  | \
+                    CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD_MASK);
+        regVal |= ((uint32_t)gNorRdCmd << CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_RD_OPCODE_NON_XIP_FLD_SHIFT)        | \
+                  (xferLines << CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DATA_XFER_TYPE_EXT_MODE_FLD_SHIFT) | \
+                  (xferLines << CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_ADDR_XFER_TYPE_STD_MODE_FLD_SHIFT) | \
+                  (xferLines << CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_INSTR_TYPE_FLD_SHIFT)          | \
+                  (0U << CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD_SHIFT);
+        CSL_REG32_WR(&pReg->DEV_INSTR_RD_CONFIG_REG, regVal);
 
-    /* Configure the Device Write Instruction Configuration Register */
-    regVal &= ~(CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_WR_OPCODE_FLD_MASK               | \
-                CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_DATA_XFER_TYPE_EXT_MODE_FLD_MASK | \
-                CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_ADDR_XFER_TYPE_STD_MODE_FLD_MASK | \
-                CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_DUMMY_WR_CLK_CYCLES_FLD_MASK);
-    regVal |= ((uint32_t)gNorWrCmd << CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_WR_OPCODE_FLD_SHIFT) | \
-              (xferLines << CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_ADDR_XFER_TYPE_STD_MODE_FLD_SHIFT) | \
-              (xferLines << CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_DATA_XFER_TYPE_EXT_MODE_FLD_SHIFT);
-    CSL_REG32_WR(&pReg->DEV_INSTR_WR_CONFIG_REG, regVal);
+        regVal = CSL_REG32_RD(&pReg->DEV_INSTR_WR_CONFIG_REG);
 
-    /* Set read capture delay */
-    status += OSPI_setRdDataCaptureDelay(handle, 0, FALSE);
+        /* Configure the Device Write Instruction Configuration Register */
+        regVal &= ~(CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_WR_OPCODE_FLD_MASK               | \
+                    CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_DATA_XFER_TYPE_EXT_MODE_FLD_MASK | \
+                    CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_ADDR_XFER_TYPE_STD_MODE_FLD_MASK | \
+                    CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_DUMMY_WR_CLK_CYCLES_FLD_MASK);
+        regVal |= ((uint32_t)gNorWrCmd << CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_WR_OPCODE_FLD_SHIFT) | \
+                  (xferLines << CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_ADDR_XFER_TYPE_STD_MODE_FLD_SHIFT) | \
+                  (xferLines << CSL_OSPI_FLASH_CFG_DEV_INSTR_WR_CONFIG_REG_DATA_XFER_TYPE_EXT_MODE_FLD_SHIFT);
+        CSL_REG32_WR(&pReg->DEV_INSTR_WR_CONFIG_REG, regVal);
+
+        /* Set read capture delay */
+        status += OSPI_setRdDataCaptureDelay(handle, 0, FALSE);
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
 
     return status;
 }
@@ -177,28 +199,36 @@ int32_t OSPI_norFlashInit1s1s1s(OSPI_Handle handle)
 int32_t OSPI_norFlashWaitReady(OSPI_Handle handle, uint32_t timeOut)
 {
     int32_t status = SystemP_SUCCESS;
-    uint8_t readStatus = 0U;
-    uint8_t cmd;
 
-    cmd = OSPI_NOR_CMD_RDSR;
-
-    status = OSPI_norFlashCmdRead(handle, cmd, &readStatus, 1);
-
-    while((status != SystemP_SUCCESS) || timeOut > 0)
+    if(handle != NULL)
     {
+        uint8_t readStatus = 0U;
+        uint8_t cmd;
+
+        cmd = OSPI_NOR_CMD_RDSR;
+
         status = OSPI_norFlashCmdRead(handle, cmd, &readStatus, 1);
 
-        if((status == SystemP_SUCCESS) && ((readStatus & OSPI_NOR_SR_WIP) == 0))
+        while((status != SystemP_SUCCESS) || timeOut > 0)
         {
-            break;
+            status = OSPI_norFlashCmdRead(handle, cmd, &readStatus, 1);
+
+            if((status == SystemP_SUCCESS) && ((readStatus & OSPI_NOR_SR_WIP) == 0))
+            {
+                break;
+            }
+
+            timeOut--;
         }
 
-        timeOut--;
-    }
-
-    if((readStatus & OSPI_NOR_SR_WIP)==0)
-    {
-        status = SystemP_SUCCESS;
+        if((readStatus & OSPI_NOR_SR_WIP)==0)
+        {
+            status = SystemP_SUCCESS;
+        }
+        else
+        {
+            status = SystemP_FAILURE;
+        }
     }
     else
     {
@@ -212,15 +242,22 @@ int32_t OSPI_norFlashReadId(OSPI_Handle handle, uint32_t *manufacturerId, uint32
 {
     int32_t status = SystemP_SUCCESS;
 
-    uint8_t cmd = OSPI_NOR_CMD_RDID;
-    uint8_t idCode[3] = { 0 };
-
-    status += OSPI_norFlashCmdRead(handle, cmd, idCode, 3);
-
-    if(status == SystemP_SUCCESS)
+    if((handle != NULL) && (manufacturerId != NULL) && (deviceId != NULL))
     {
-        *manufacturerId = (uint32_t)idCode[0];
-        *deviceId = ((uint32_t)idCode[1] << 8) | ((uint32_t)idCode[2]);
+        uint8_t cmd = OSPI_NOR_CMD_RDID;
+        uint8_t idCode[3] = { 0 };
+
+        status += OSPI_norFlashCmdRead(handle, cmd, idCode, 3);
+
+        if(status == SystemP_SUCCESS)
+        {
+            *manufacturerId = (uint32_t)idCode[0];
+            *deviceId = ((uint32_t)idCode[1] << 8) | ((uint32_t)idCode[2]);
+        }
+    }
+    else
+    {
+        status = SystemP_FAILURE;
     }
 
     return status;
@@ -230,11 +267,11 @@ int32_t OSPI_norFlashWrite(OSPI_Handle handle, uint32_t offset, uint8_t *buf, ui
 {
     int32_t status = SystemP_SUCCESS;
 
-    /* Check offset alignment */
-    if(0 != (offset % 256))
+    if((handle == NULL) || (buf == NULL) || (0 != (offset % 256)))
     {
         status = SystemP_FAILURE;
     }
+
     if(status == SystemP_SUCCESS)
     {
         uint32_t pageSize, chunkLen, actual;
@@ -286,6 +323,10 @@ int32_t OSPI_norFlashWrite(OSPI_Handle handle, uint32_t offset, uint8_t *buf, ui
             }
         }
     }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
 
     return status;
 }
@@ -293,23 +334,31 @@ int32_t OSPI_norFlashWrite(OSPI_Handle handle, uint32_t offset, uint8_t *buf, ui
 int32_t OSPI_norFlashRead(OSPI_Handle handle, uint32_t offset, uint8_t *buf, uint32_t len)
 {
     int32_t status = SystemP_SUCCESS;
-    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
 
-    OSPI_Transaction transaction;
-
-    OSPI_Transaction_init(&transaction);
-    transaction.addrOffset = offset;
-    transaction.buf = (void *)buf;
-    transaction.count = len;
-    transaction.dmaCopyLowerLimit = OSPI_NOR_DMA_COPY_LOWER_LIMIT;
-
-    if(attrs->readMode == OSPI_READ_MODE_DAC)
+    if((handle != NULL) && (buf != NULL))
     {
-        status = OSPI_readDirect(handle, &transaction);
+        const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+
+        OSPI_Transaction transaction;
+
+        OSPI_Transaction_init(&transaction);
+        transaction.addrOffset = offset;
+        transaction.buf = (void *)buf;
+        transaction.count = len;
+        transaction.dmaCopyLowerLimit = OSPI_NOR_DMA_COPY_LOWER_LIMIT;
+
+        if(attrs->readMode == OSPI_READ_MODE_DAC)
+        {
+            status = OSPI_readDirect(handle, &transaction);
+        }
+        else
+        {
+            status = OSPI_readIndirect(handle, &transaction);
+        }
     }
     else
     {
-        status = OSPI_readIndirect(handle, &transaction);
+        status = SystemP_FAILURE;
     }
 
     return status;
@@ -318,23 +367,31 @@ int32_t OSPI_norFlashRead(OSPI_Handle handle, uint32_t offset, uint8_t *buf, uin
 int32_t OSPI_norFlashReadSfdp(OSPI_Handle handle, uint32_t offset, uint8_t *buf, uint32_t len)
 {
     int32_t status = SystemP_SUCCESS;
-    const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-    const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
 
-    /* Save the current command and dummy cycles */
-    uint8_t cmd = CSL_REG32_FEXT(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_RD_OPCODE_NON_XIP_FLD);
-    uint8_t dummyClks = CSL_REG32_FEXT(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD);
+    if((handle != NULL) && (buf != NULL))
+    {
+        const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+        const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
 
-    /* Set read command and dummyClks for reading sfdp table */
-    CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_RD_OPCODE_NON_XIP_FLD, OSPI_NOR_CMD_RDSFDP);
-    CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD, OSPI_NOR_SFDP_DC);
+        /* Save the current command and dummy cycles */
+        uint8_t cmd = CSL_REG32_FEXT(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_RD_OPCODE_NON_XIP_FLD);
+        uint8_t dummyClks = CSL_REG32_FEXT(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD);
 
-    /* Perform SFDP read */
-    status = OSPI_norFlashRead(handle, offset, buf, len);
+        /* Set read command and dummyClks for reading sfdp table */
+        CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_RD_OPCODE_NON_XIP_FLD, OSPI_NOR_CMD_RDSFDP);
+        CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD, OSPI_NOR_SFDP_DC);
 
-    /* Set back to old read command and dummy clocks */
-    CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_RD_OPCODE_NON_XIP_FLD, cmd);
-    CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD, dummyClks);
+        /* Perform SFDP read */
+        status = OSPI_norFlashRead(handle, offset, buf, len);
+
+        /* Set back to old read command and dummy clocks */
+        CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_RD_OPCODE_NON_XIP_FLD, cmd);
+        CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD, dummyClks);
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
 
     return status;
 }
@@ -343,23 +400,30 @@ int32_t OSPI_norFlashErase(OSPI_Handle handle, uint32_t address)
 {
     int32_t status = SystemP_SUCCESS;
 
-    status = OSPI_norFlashWaitReady(handle, OSPI_NOR_WRR_WRITE_TIMEOUT);
+    if(handle != NULL)
+    {
+        status = OSPI_norFlashWaitReady(handle, OSPI_NOR_WRR_WRITE_TIMEOUT);
 
-    if(status == SystemP_SUCCESS)
-    {
-        status = OSPI_norFlashCmdWrite(handle, OSPI_NOR_CMD_WREN, 0xFFFFFFFF, NULL, 0);
+        if(status == SystemP_SUCCESS)
+        {
+            status = OSPI_norFlashCmdWrite(handle, OSPI_NOR_CMD_WREN, 0xFFFFFFFF, NULL, 0);
+        }
+        if(status == SystemP_SUCCESS)
+        {
+            status = OSPI_norFlashWaitReady(handle, OSPI_NOR_WRR_WRITE_TIMEOUT);
+        }
+        if(status == SystemP_SUCCESS)
+        {
+            status = OSPI_norFlashCmdWrite(handle, gNorErCmd, address, NULL, 0);
+        }
+        if(status == SystemP_SUCCESS)
+        {
+            status = OSPI_norFlashWaitReady(handle, OSPI_NOR_WRR_WRITE_TIMEOUT);
+        }
     }
-    if(status == SystemP_SUCCESS)
+    else
     {
-        status = OSPI_norFlashWaitReady(handle, OSPI_NOR_WRR_WRITE_TIMEOUT);
-    }
-    if(status == SystemP_SUCCESS)
-    {
-        status = OSPI_norFlashCmdWrite(handle, gNorErCmd, address, NULL, 0);
-    }
-    if(status == SystemP_SUCCESS)
-    {
-        status = OSPI_norFlashWaitReady(handle, OSPI_NOR_WRR_WRITE_TIMEOUT);
+        status = SystemP_FAILURE;
     }
 
     return status;

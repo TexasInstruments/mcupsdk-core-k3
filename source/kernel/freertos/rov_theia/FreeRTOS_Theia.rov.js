@@ -438,24 +438,41 @@ class FreeRTOS {
                     taskInfo.StackBase = task.pxStack;
                     taskInfo.CurrentTaskSP = task.pxTopOfStack;
 
-                    let stackData = await this.Program.fetchArray('8u', task.pxStack, 4);
-                    let index = task.pxStack;
-                    /* Find the first non-0xa5 */
-                    while ((stackData[0] == 0xa5) &&
-                        (stackData[1] == 0xa5) &&
-                        (stackData[2] == 0xa5) &&
-                        (stackData[3] == 0xa5)) {
-                        index += 4;
-                        stackData = await this.Program.fetchArray('8u', index, 4);
-                    }
-                    index -= 8 * 4;
-                    if ((taskInfo.StackBase >= index) ||
-                        (taskInfo.StackBase >= taskInfo.CurrentTaskSP)) {
+                    const stackPattern = 0xa5;
+                    const wordSize = 4;
+
+                    if (taskInfo.CurrentTaskSP <= taskInfo.StackBase) {
                         taskInfo.UnusedStackSize = 'Stack Overflow';
-                    }
-                    else {
-                        index -= 4;
-                        taskInfo.UnusedStackSize = index - taskInfo.StackBase;
+                    } else {
+                        try {
+                            /* Binary search from StackBase toward CurrentTaskSP to find pattern boundary */
+                            let low = taskInfo.StackBase;
+                            let high = taskInfo.CurrentTaskSP;
+
+                            while (low <= high) {
+                                let mid = Math.floor((low + high) / 2);
+
+                                try {
+                                    const word = await this.Program.fetchArray('8u', mid, wordSize);
+                                    const isPattern = (word[0] === stackPattern && word[1] === stackPattern &&
+                                        word[2] === stackPattern && word[3] === stackPattern);
+
+                                    if (isPattern) {
+                                        low = mid + wordSize;
+                                    } else {
+                                        high = mid - wordSize;
+                                    }
+                                } catch (e) {
+                                    high = mid - wordSize;
+                                }
+                            }
+
+                            const endOfUnusedArea = low;
+                            taskInfo.UnusedStackSize = endOfUnusedArea - taskInfo.StackBase;
+
+                        } catch (e) {
+
+                        }
                     }
 
                     if (typeof taskInfo.StackBase === 'number') {
@@ -471,7 +488,6 @@ class FreeRTOS {
                 catch (e) {
 
                 }
-
             }
         }
         catch (e) {
@@ -723,7 +739,7 @@ class FreeRTOS {
         }
     }
 
-    async getQueueType(ucQueueType){
+    getQueueType(ucQueueType){
         switch (ucQueueType) {
             default:
             case 0:
@@ -745,7 +761,7 @@ class FreeRTOS {
         return { tcb: tcb, tcbBase: listItem.pvOwner};
     }
 
-    async getString(charPtr)
+    getString(charPtr)
     {
         let name = "";
         for (let j = 0; j < 12; j++) {
@@ -758,7 +774,6 @@ class FreeRTOS {
     getModuleName() {
         return 'FreeRTOS';
     }
-
 }
 
 /* Helper functions */

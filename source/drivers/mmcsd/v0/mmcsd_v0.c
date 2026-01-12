@@ -480,7 +480,7 @@ void MMCSD_close(MMCSD_Handle handle)
 
                 status |= MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, MMCSD_REFERENCE_CLOCK_52M, 0U);
 
-                status |= MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, MMCSD_PHY_MODE_HSSDR50, MMCSD_REFERENCE_CLOCK_52M, 0U, 0U);
+                status |= MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, MMCSD_PHY_MODE_HSSDR50, MMCSD_REFERENCE_CLOCK_52M, attrs->phyDriverType, 0U);
             }
 
             /* Switching to Legacy SDR mode */
@@ -496,7 +496,7 @@ void MMCSD_close(MMCSD_Handle handle)
 
             status |= MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, 400000, 0U);
 
-            status |= MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, MMCSD_PHY_MODE_SDR25, 400000, 0U, 0U);
+            status |= MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, MMCSD_PHY_MODE_SDR25, 400000, attrs->phyDriverType, 0U);
 
             /* Set bus width to 1 bit mode */
             switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16U) | (((0U << MMCSD_ECSD_BUS_WIDTH_ES_SHIFT) | MMCSD_ECSD_BUS_WIDTH_1BIT) << 8U);
@@ -1278,7 +1278,7 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
 
     if(SystemP_SUCCESS == status)
     {
-        status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, MMCSD_PHY_MODE_SDR25, 400000, 0U, 0U);
+        status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, MMCSD_PHY_MODE_SDR25, 400000, attrs->phyDriverType, 0U);
     }
 
     /* Controller initialization done, moving to card init */
@@ -2263,7 +2263,6 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
     uint32_t hsTimingVal = 0U;
     uint32_t phyClkFreq = 26000000, clkFreq = 26000000;
     uint32_t uhsMode = MMCSD_UHS_MODE_SDR12;
-    uint32_t phyDriverType = 0;
     uint32_t phyMode = MMCSD_PHY_MODE_SDR25;
     uint32_t tuningRequired = FALSE;
     uint32_t switchArg = 0U;
@@ -2367,7 +2366,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
     if(SystemP_SUCCESS == status)
     {
         /* Enable DLL */
-        status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, phyClkFreq, phyDriverType, tunedItap);
+        status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, phyClkFreq, attrs->phyDriverType, tunedItap);
 
         /* Tune the PHY */
         if(attrs->tuningType == MMCSD_PHY_TUNING_TYPE_AUTO)
@@ -2420,7 +2419,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
 
         if(status == SystemP_SUCCESS)
         {
-            status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, MMCSD_REFERENCE_CLOCK_52M, phyDriverType, tunedItap);
+            status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, MMCSD_REFERENCE_CLOCK_52M, attrs->phyDriverType, tunedItap);
         }
 
         if(SystemP_SUCCESS == status)
@@ -2457,7 +2456,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
 
             if(status == SystemP_SUCCESS)
             {
-                status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, MMCSD_REFERENCE_CLOCK_200M, phyDriverType, tunedItap);
+                status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, MMCSD_REFERENCE_CLOCK_200M, attrs->phyDriverType, tunedItap);
             }
 
         }
@@ -2517,7 +2516,6 @@ static int32_t MMCSD_retune(MMCSD_Handle handle)
     int32_t status = SystemP_SUCCESS;
     uint32_t hsTimingVal = 0U;
     uint32_t phyClkFreq = 26000000, clkFreq = 26000000;
-    uint32_t phyDriverType = 0;
     uint32_t phyMode = MMCSD_PHY_MODE_DS;
     uint32_t switchArg = 0U;
     uint8_t tunedItap = 0U;
@@ -2575,7 +2573,7 @@ static int32_t MMCSD_retune(MMCSD_Handle handle)
 
             if(status == SystemP_SUCCESS)
             {
-                status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, phyClkFreq, phyDriverType, tunedItap);
+                status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, phyClkFreq, attrs->phyDriverType, tunedItap);
             }
 
             if(status == SystemP_SUCCESS)

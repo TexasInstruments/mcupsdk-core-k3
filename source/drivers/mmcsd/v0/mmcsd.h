@@ -174,6 +174,16 @@ extern "C" {
 #define MMCSD_PHY_TUNING_TYPE_MANUAL          (1U)
 
 /*
+* \brief Macros that can be used for selecting PHY driver type for eMMCPHY
+* buffer type
+*/
+#define MMCSD_PHY_DRIVER_TYPE_0               (0U)
+#define MMCSD_PHY_DRIVER_TYPE_1               (1U)
+#define MMCSD_PHY_DRIVER_TYPE_2               (2U)
+#define MMCSD_PHY_DRIVER_TYPE_3               (3U)
+#define MMCSD_PHY_DRIVER_TYPE_4               (4U)
+
+/*
 * \brief Macros that can be used for selecting PHY modes
 */
 #define MMCSD_PHY_MODE_HS400                  (1U)
@@ -407,6 +417,9 @@ typedef struct
 
     uint32_t phyType;
     /**< HW or SW PHY */
+
+    uint32_t phyDriverType;
+    /**< Driver type for source impedance of eMMCPHY buffer type */
 
     uint32_t tuningType;
     /**< Manual SW tuning or auto HW tuning for SDR104/HS200/HS400 modes */

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-24 Texas Instruments Incorporated
+ *  Copyright (C) 2021-26 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -145,7 +145,6 @@ int32_t MMCSD_parseECSDEmmc(MMCSD_EmmcDeviceData *data, uint8_t ecsdData[512])
 
     if((data != NULL) && (ecsdData != NULL))
     {
-        data->driveStrength = (uint8_t)(ecsdData[185] >> 4);
         data->blockCount = (((uint32_t)(ecsdData[215])) << 24) +
                            (((uint32_t)(ecsdData[214])) << 16) +
                            (((uint32_t)(ecsdData[213])) << 8) +

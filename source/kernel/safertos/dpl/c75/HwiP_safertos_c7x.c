@@ -61,8 +61,6 @@
 #define NULL_PTR ((void *)0x0)
 #endif
 
-#define  HWIP_USE_DEFAULT_PRIORITY           (~((uint8_t)0))
-
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -71,10 +69,6 @@ typedef struct HwiP_safertos_s {
     bool              used;
     HwiC7x_Struct     hwi;
 } HwiP_safertos;
-
-typedef struct HwiP_Struct_s {
-    uint32_t intNum;
-} HwiP_Struct;
 
 /* ========================================================================== */
 /*                          Function Declarations                             */
@@ -250,117 +244,15 @@ void HwiP_restore(uintptr_t key)
     return;
 }
 
-void HwiP_post(uint32_t intrNum)
+uint32_t HwiP_inISR(void)
 {
+    uint32_t stat = 0U;
 
-    __set_indexed(__EFSET, 0, 1L << intrNum);
-
-    return;
-
-    /* Please note that in future,for targets which do not support Hwi_Post,
-       add #ifdefs appropriately to return osal_UNSUPPORTED */
-}
-
-uint32_t HwiP_disableInt(uint32_t intNum)
-{
-    unsigned long mask = 1L << intNum;
-
-    /* Hwi_disableIER() returns old EER */
-    return ((Hwi_disableIER(mask) & mask) != 0L);
-}
-
-void HwiP_enableInt(uint32_t intNum)
-{
-    unsigned long mask = 1L << intNum;
-
-    Hwi_enableIER(mask);
-
-    return;
-}
-
-void HwiP_restoreInt(uint32_t intNum, uint32_t key)
-{
-    if (key) {
-        HwiP_enableInt(intNum);
-    }
-    else {
-        HwiP_disableInt(intNum);
-    }
-}
-
-void HwiP_clearInt(uint32_t intNum)
-{
-    __set_indexed(__EFCLR, 0, 1L << intNum);
-}
-
-int32_t HwiP_setArgs(HwiP_Object *handle, void *args)
-{
-    HwiP_Struct *obj = (HwiP_Struct *)handle;
-
-    DebugP_assertNoLog( obj->intNum < DPL_SAFERTOS_C7X_CONFIGNUM_HWI );
-
-    Hwi_Module_state.dispatchTable[obj->intNum]->arg = (uintptr_t)args;
-
-    return SystemP_SUCCESS;
-}
-
-void HwiP_Params_init(HwiP_Params *params)
-{
-    params->intNum = 0;
-    params->callback = NULL;
-    params->args = NULL;
-    params->eventId = 0;
-    params->priority = HWIP_USE_DEFAULT_PRIORITY;
-    params->isFIQ = 0;
-    params->isPulse = 1;
-}
-
-int32_t HwiP_configClec(uint16_t eventId, uint32_t intNum, uint8_t isPulse)
-{
-    int32_t status = SystemP_SUCCESS;
-
-    if(eventId == HWIP_INVALID_EVENT_ID)
+    if (xPortInIsrContext() != 0)
     {
-        return status;
+        stat =  1U;
     }
-    else
-    {
-        CSL_ClecEventConfig   cfgClec;
-        CSL_CLEC_EVTRegs     *clecBaseAddr;
-        uint32_t clusterId;
-
-        clusterId=CSL_clecGetC7xClusterId();
-
-        if (clusterId == CSL_C75_CPU_CLUSTER_NUM_C75_1)
-        {
-            clecBaseAddr = (CSL_CLEC_EVTRegs*)CSL_C7X256V0_CLEC_BASE;
-        }
-        else if (clusterId == CSL_C75_CPU_CLUSTER_NUM_C75_2)
-        {
-            clecBaseAddr = (CSL_CLEC_EVTRegs*)CSL_C7X256V1_CLEC_BASE;
-        }
-        else
-        {
-            status = SystemP_FAILURE;
-        }
-
-        if (SystemP_SUCCESS == status)
-        {
-            /* Configure CLEC */
-            cfgClec.secureClaimEnable = FALSE;
-            cfgClec.evtSendEnable     = TRUE;
-            cfgClec.rtMap             = CSL_CLEC_RTMAP_CPU_ALL;
-            cfgClec.extEvtNum         = 0;
-            cfgClec.c7xEvtNum         = intNum;
-            CSL_clecClearEvent(clecBaseAddr, eventId);
-            CSL_clecConfigEventLevel(clecBaseAddr, eventId, !(isPulse)); /* configure interrupt as pulse/level */
-            status = CSL_clecConfigEvent(clecBaseAddr, eventId, &cfgClec);
-        }
-
-    }
-
-    return status;
-
+    return stat;
 }
 
 /* Dispatch handler for TI MCU+ style interrupts. */

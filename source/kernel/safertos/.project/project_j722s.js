@@ -170,6 +170,7 @@ const files_c75x = {
 const includes_c75x = {
     common: [
         "../nortos/dpl/c75",
+        "../nortos/dpl/c75/soc/j722s",
         "dpl/c75",
         "c75/api/230_C7x",
         "c75/api/NoWrapper",

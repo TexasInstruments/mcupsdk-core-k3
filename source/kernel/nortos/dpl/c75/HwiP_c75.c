@@ -42,12 +42,16 @@
 
 #include <drivers/hw_include/csl_types.h>
 #include "HwiP_c75.h"
+#include <drivers/hw_include/cslr_soc.h>
+#include <kernel/nortos/dpl/c75/csl_clec.h>
+#include <c75_clec_base_address.h>
 
 /* Object__sizingError */
 typedef char Hwi_Object__sizingError[(sizeof(Hwi_Object) > sizeof(HwiC7x_Struct)) ? -1 : 1];
 
 extern void Hwi_dispatchAlways(void);
 extern void Hwi_switchAndRunFunc(void (*func)());
+static CSL_CLEC_EVTRegs* Hwip_getClecBaseAddr(void);
 
 
 extern char Hwi_vectorsBase[];
@@ -58,6 +62,9 @@ extern  char _stack[0x10001];
  * nesting levels (1 per priority level).
  */
 #define HWI_ECSP_SIZE (0x10000)
+
+#define  HWIP_USE_DEFAULT_PRIORITY   (~((uint8_t)0))
+#define DPL_C7X_CONFIGNUM_HWI      (64U)
 
 #if Hwi_bootToNonSecure__D
 extern void Hwi_switchToNS();
@@ -629,6 +636,138 @@ void HwiP_init(void)
     return;
 }
 
+void HwiP_enable(void)
+{
+    return;
+}
+
+int32_t HwiP_setArgs(HwiP_Object *handle, void *args)
+{
+    HwiP_Struct *obj = (HwiP_Struct *)handle;
+    int32_t exp;
+
+    if (obj->intNum < DPL_C7X_CONFIGNUM_HWI)
+    {
+        exp=1;
+    }
+    else
+    {
+        exp=0;
+    }
+    DebugP_assertNoLog(exp);
+
+    Hwi_Module_state.dispatchTable[obj->intNum]->arg = (unsigned int)args;
+
+    return SystemP_SUCCESS;
+}
+
+void HwiP_Params_init(HwiP_Params *params)
+{
+    params->intNum = 0;
+    params->callback = NULL;
+    params->args = NULL;
+    params->eventId = 0;
+    params->priority = (uint8_t)HWIP_USE_DEFAULT_PRIORITY;
+    params->isFIQ = 0;
+    params->isPulse = 1;
+}
+
+int32_t HwiP_configClec(uint16_t eventId, uint32_t intNum, uint8_t isPulse)
+{
+    int32_t status = SystemP_SUCCESS;
+    uint32_t level;
+
+    if(eventId != HWIP_INVALID_EVENT_ID)
+    {
+        CSL_ClecEventConfig   cfgClec;
+#if (CSL_C7X256V_CLEC_MAIN_CNT == 1U)
+        CSL_CLEC_EVTRegs     *clecBaseAddr = (CSL_CLEC_EVTRegs*)CSL_C7X256V0_CLEC_BASE;
+#elif (CSL_C7X256V_CLEC_MAIN_CNT > 1U)
+        CSL_CLEC_EVTRegs     *clecBaseAddr = Hwip_getClecBaseAddr();
+        if (clecBaseAddr == (CSL_CLEC_EVTRegs*) NULL)
+        {
+            status = SystemP_FAILURE;
+        }
+        if (SystemP_SUCCESS == status)
+        {
+#endif
+            /* Configure CLEC */
+            cfgClec.secureClaimEnable = FALSE;
+            cfgClec.evtSendEnable     = TRUE;
+            cfgClec.rtMap             = CSL_CLEC_RTMAP_CPU_ALL;
+            cfgClec.extEvtNum         = 0;
+            cfgClec.c7xEvtNum         = intNum;
+            CSL_clecClearEvent(clecBaseAddr, eventId);
+            if (isPulse==1U)
+            {
+                level=0U;
+            }
+            else
+            {
+                level=1U;
+            }
+            CSL_clecConfigEventLevel(clecBaseAddr, eventId, level); /* configure interrupt as pulse/level */
+            status = CSL_clecConfigEvent(clecBaseAddr, eventId, &cfgClec);
+#if (CSL_C7X256V_CLEC_MAIN_CNT > 1U)
+        }
+#endif
+    }
+
+    return status;
+}
+
+/* The C7x CLEC should be initialized to allow config/re config.
+ * This function configures all inputs to given level.
+ */
+void HwiP_configClecAccessCtrl(void)
+{
+    CSL_ClecEventConfig cfgClec;
+    CSL_CLEC_EVTRegs   *clecBaseAddr = Hwip_getClecBaseAddr();
+    uint32_t            i, maxInputs = 511U;
+
+    cfgClec.secureClaimEnable = FALSE;
+    cfgClec.evtSendEnable     = FALSE;
+    cfgClec.rtMap             = CSL_CLEC_RTMAP_DISABLE;
+    cfgClec.extEvtNum         = 0U;
+    cfgClec.c7xEvtNum         = 0U;
+    for(i = 1U; i < maxInputs; i++)
+    {
+        CSL_clecConfigEvent(clecBaseAddr, i, &cfgClec);
+    }
+}
+
+/*
+ * Returns the C7x clec base address for the current C7x cluster
+*/
+static CSL_CLEC_EVTRegs* Hwip_getClecBaseAddr(void)
+{
+    CSL_CLEC_EVTRegs     *clecBaseAddr = (CSL_CLEC_EVTRegs*) NULL;
+
+#if (CSL_C7X256V_CLEC_MAIN_CNT == 1U)
+    clecBaseAddr = (CSL_CLEC_EVTRegs*)CSL_C75_CPU_CLUSTER_C75_1_BASE_ADDR;
+#elif (CSL_C7X256V_CLEC_MAIN_CNT == 2U)
+    uint32_t clusterId;
+
+    clusterId=CSL_clecGetC7xClusterId();
+
+    if (clusterId == CSL_C75_CPU_CLUSTER_NUM_C75_1)
+    {
+        clecBaseAddr = (CSL_CLEC_EVTRegs*)CSL_C75_CPU_CLUSTER_C75_1_BASE_ADDR;
+    }
+    else if (clusterId == CSL_C75_CPU_CLUSTER_NUM_C75_2)
+    {
+        clecBaseAddr = (CSL_CLEC_EVTRegs*)CSL_C75_CPU_CLUSTER_C75_2_BASE_ADDR;
+    }
+    else
+    {
+        clecBaseAddr = (CSL_CLEC_EVTRegs*) NULL;
+    }
+#else
+#error "Invalid CLEC Count"
+#endif
+    return clecBaseAddr;
+}
+
 /* bootToNonSecure */
 #pragma DATA_SECTION(Hwi_bootToNonSecure, ".const:Hwi_bootToNonSecure");
 const bool Hwi_bootToNonSecure = 1;
@@ -640,12 +779,6 @@ const bool Hwi_enableException = 1;
 /* dispatcherIrpTrackingSupport */
 #pragma DATA_SECTION(Hwi_dispatcherIrpTrackingSupport, ".const:Hwi_dispatcherIrpTrackingSupport");
 const bool Hwi_dispatcherIrpTrackingSupport = 1;
-
-/* --> soft_reset */
-extern void* soft_reset;
-
-/* --> secure_soft_reset */
-extern void* secure_soft_reset;
 
 /* Object__PARAMS__C */
 #pragma DATA_SECTION(Hwi_Object__PARAMS__C, ".const:Hwi_Object__PARAMS__C");
@@ -805,12 +938,3 @@ struct Hwi_Module_State Hwi_Module_state = {
         0,  /* [63] */
     },  /* dispatchTable */
 };
-
-/* vectorTableBase__C */
-#pragma DATA_SECTION(Hwi_vectorTableBase, ".const:Hwi_vectorTableBase");
-const void * Hwi_vectorTableBase = ((const void *)((void*)&soft_reset));
-
-/* vectorTableBase_SS__C */
-#pragma DATA_SECTION(Hwi_vectorTableBase_SS, ".const:Hwi_vectorTableBase_SS");
-const void * Hwi_vectorTableBase_SS = ((const void *)((void*)&secure_soft_reset));
-

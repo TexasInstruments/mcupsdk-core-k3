@@ -148,6 +148,10 @@ struct Hwi_Params {
     unsigned long restoreMask;
 };
 
+typedef struct HwiP_Struct_s {
+    uint32_t intNum;
+} HwiP_Struct;
+
 /*
  * ======== FUNCTION DECLARATIONS ========
  */

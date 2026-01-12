@@ -82,6 +82,7 @@ INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include \
     -I${MCU_PLUS_SDK_PATH}/source \
     -I../nortos/dpl/c75 \
+    -I../nortos/dpl/c75/soc/j722s \
     -Idpl/c75 \
     -Ic75/api/230_C7x \
     -Ic75/api/NoWrapper \

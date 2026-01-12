@@ -312,7 +312,9 @@ void TaskP_loadGet(TaskP_Object *obj, TaskP_Load *taskLoad)
 /* This is required for runtime load calculation, which SafeRTOS does not support. */
 uint32_t TaskP_loadGetTotalCpuLoad()
 {
-    /* Not implemented in SafeRTOS */
+    uint32_t cpuLoad = 0;
+
+    return cpuLoad;
 }
 
 /* This is required for runtime load calculation, which SafeRTOS does not support. */
@@ -342,4 +344,10 @@ void vApplicationErrorHook( portTaskHandleType xHandleOfTaskWithError,
 
     /* Will only get here if an internal kernel error occurs. */
     DebugP_assert(pdFALSE);
+}
+
+void TaskP_endScheduler()
+{
+    extern void vTaskSuspendScheduler(void);
+    vTaskSuspendScheduler();
 }

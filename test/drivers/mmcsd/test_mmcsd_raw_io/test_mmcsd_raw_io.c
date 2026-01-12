@@ -102,9 +102,7 @@ void test_main(void *args)
     RUN_TEST(TestMmcsd_validateClkFreq, 8310, NULL);
     RUN_TEST(TestMmcsd_readArgumentValidate, 8582, NULL);
     RUN_TEST(TestMmcsd_writeArgumentValidate, 8583, NULL);
-    /* This test fails in no DMA mode
     RUN_TEST(TestMmcsd_dmaModes, 8315, NULL);
-    */
     /* This test fails causing next test cases to fail
     RUN_TEST(TestMmcsd_intrModes, 8881, NULL);
     */

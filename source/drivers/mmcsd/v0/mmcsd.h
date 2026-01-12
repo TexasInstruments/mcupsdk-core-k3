@@ -559,6 +559,12 @@ typedef struct
     uint32_t isRetuneValid;
     /**< Flag to indicate if retune is valid */
 
+    SemaphoreP_Object       readMutex;
+    /**< Transfer Mutex */
+
+    SemaphoreP_Object       writeMutex;
+    /**< Transfer Mutex */
+
     SemaphoreP_Object       cmdMutex;
     /**< Command Mutex */
 

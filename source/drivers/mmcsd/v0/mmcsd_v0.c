@@ -387,6 +387,8 @@ MMCSD_Handle MMCSD_open(uint32_t index, const MMCSD_Params *openParams)
         /* Create semaphores for transfer completion */
         status += SemaphoreP_constructMutex(&obj->cmdMutex);
         status += SemaphoreP_constructMutex(&obj->xferMutex);
+        status += SemaphoreP_constructMutex(&obj->readMutex);
+        status += SemaphoreP_constructMutex(&obj->writeMutex);
         status += SemaphoreP_constructBinary(&obj->cmdCompleteSemObj, 0);
         status += SemaphoreP_constructBinary(&obj->dataCopyCompleteSemObj, 0);
         status += SemaphoreP_constructBinary(&obj->xferCompleteSemObj, 0);
@@ -528,6 +530,8 @@ void MMCSD_close(MMCSD_Handle handle)
 
         SemaphoreP_destruct(&obj->cmdMutex);
         SemaphoreP_destruct(&obj->xferMutex);
+        SemaphoreP_destruct(&obj->readMutex);
+        SemaphoreP_destruct(&obj->writeMutex);
         SemaphoreP_destruct(&obj->cmdCompleteSemObj);
         SemaphoreP_destruct(&obj->dataCopyCompleteSemObj);
         SemaphoreP_destruct(&obj->xferCompleteSemObj);
@@ -568,6 +572,7 @@ int32_t MMCSD_read(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32_
         MMCSD_Transaction trans;
         uint32_t addr = 0U;
         uint32_t cmd = 0U;
+        SemaphoreP_pend(&(obj->readMutex), SystemP_WAIT_FOREVER);
         uint32_t blockSize = MMCSD_getBlockSize(handle);
         if((obj->emmcData != NULL) && (((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS200_200MHZ_1P8V) &&
            (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS200)) ||
@@ -700,6 +705,7 @@ int32_t MMCSD_read(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32_
                 }
             }
         }
+        SemaphoreP_post(&obj->readMutex);
     }
     else
     {
@@ -720,6 +726,7 @@ int32_t MMCSD_write(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32
         MMCSD_Transaction trans;
         uint32_t addr = 0U;
         uint32_t cmd = 0U;
+        SemaphoreP_pend(&(obj->writeMutex), SystemP_WAIT_FOREVER);
         uint32_t blockSize = MMCSD_getBlockSize(handle);
         if((obj->emmcData != NULL) && (((obj->emmcData->supportedModes & MMCSD_EMMC_ECSD_DEVICE_TYPE_HS200_200MHZ_1P8V) &&
            (attrs->supportedModes & MMCSD_SUPPORT_MMC_HS200)) ||
@@ -841,6 +848,7 @@ int32_t MMCSD_write(MMCSD_Handle handle, uint8_t *buf, uint32_t startBlk, uint32
                 }
             }
         }
+        SemaphoreP_post(&obj->writeMutex);
     }
     else
     {

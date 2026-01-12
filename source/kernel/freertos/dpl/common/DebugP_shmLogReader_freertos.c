@@ -34,8 +34,12 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-#define DEBUG_SHM_LOG_READER_TASK_PRI  (1) /* lowest priority */ 
+#define DEBUG_SHM_LOG_READER_TASK_PRI  (1) /* lowest priority */
+#if defined(__C7504__) || defined(__C7524__)
+#define DEBUG_SHM_LOG_READER_TASK_STACK_SIZE (8U*1024U)
+#else
 #define DEBUG_SHM_LOG_READER_TASK_STACK_SIZE (4U*1024U/sizeof(configSTACK_DEPTH_TYPE))
+#endif
 static StackType_t  gDebugShmLogReaderTaskStack[DEBUG_SHM_LOG_READER_TASK_STACK_SIZE] __attribute__((aligned(32)));
 static StaticTask_t gDebugShmLogReaderTaskObj;
 static TaskHandle_t gDebugShmLogReaderTask;
@@ -46,7 +50,7 @@ void DebugP_shmLogReaderTaskMain(void *args);
 void DebugP_shmLogReaderTaskCreate(void)
 {
 	/* This task is created at highest priority, it should create more tasks and then delete itself */
-    gDebugShmLogReaderTask = xTaskCreateStatic( 
+    gDebugShmLogReaderTask = xTaskCreateStatic(
                                     DebugP_shmLogReaderTaskMain,   /* Pointer to the function that implements the task. */
                                     "debug_shm_log_reader",        /* Text name for the task.  This is to facilitate debugging only. */
                                     DEBUG_SHM_LOG_READER_TASK_STACK_SIZE, /* Stack depth in units of StackType_t typically uint32_t on 32b CPUs */

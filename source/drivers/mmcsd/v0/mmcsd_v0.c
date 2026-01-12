@@ -121,6 +121,9 @@
 #define MMCSD_ECSD_STROBE_SUPPORT_ENHANCED_DIS    (0U)
 #define MMCSD_ECSD_STROBE_SUPPORT_ENHANCED_EN     (1U)
 
+#define MMCSD_ECSD_PARTITION_CONFIG_INDEX         (179U)
+#define MMCSD_ECSD_BOOT_BUS_CONDITIONS_INDEX      (177U)
+
 #define MMCSD_ECSD_ACCESS_MODE                    (0x03U)
 
 #define MMCSD_REFERENCE_CLOCK_200M                (200U*1000000U)
@@ -170,6 +173,7 @@ static int32_t MMCSD_sendStopCmd(MMCSD_Handle handle);
 static int32_t MMCSD_sendCmd21(MMCSD_Handle handle);
 static int32_t MMCSD_setupADMA2(MMCSD_Handle handle, MMCSD_ADMA2Descriptor *desc, uint64_t bufAddr, uint32_t dataSize);
 static int32_t MMCSD_sendSwitchCmd(MMCSD_Handle handle, uint32_t arg);
+static int32_t MMCSD_readECSDEmmc(MMCSD_Handle handle);
 static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode);
 static uint32_t MMCSD_getModeEmmc(MMCSD_Handle handle);
 static uint32_t MMCSD_getXferSpeedFromModeEmmc(uint32_t mode);
@@ -893,39 +897,106 @@ int32_t MMCSD_enableBootPartition(MMCSD_Handle handle, uint32_t partitionNum)
 {
     int32_t status = SystemP_SUCCESS;
 
+    /* Enable boot partition in the ECSD register */
+    status = MMCSD_setEcsdBootPartitionEnable(handle, partitionNum);
+
+    if(status == SystemP_SUCCESS)
+    {
+        /* Enable access to the given partition */
+        status = MMCSD_enablePartitionAccess(handle, partitionNum);
+    }
+
+    return status;
+}
+
+int32_t MMCSD_setEcsdBootPartitionEnable(MMCSD_Handle handle, uint32_t partitionNum)
+{
+    int32_t status = SystemP_SUCCESS;
+
     MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
 
     if(obj->cardType == MMCSD_CARD_TYPE_EMMC)
     {
-        /* Enable boot partition */
-        if((partitionNum == 1) || (partitionNum == 2))
+        /* Read ECSD register as data block */
+        status = MMCSD_readECSDEmmc(handle);
+
+        if(status == SystemP_SUCCESS)
         {
-            uint8_t bootAck = 1U; /* ROM Needs boot ack */
-            uint8_t bootPartition = ((bootAck << 6U) | (partitionNum << 3) | partitionNum);
-            uint8_t bootBusWidth = 0x02;
-            uint32_t arg = (uint32_t)((bootPartition << 8) | (0xB3 << 16) | (0x03 << 24));
-#ifdef ENABLE_MMCSD_FAULT_INJECTION
-            TestMmcsd_cmdFaultInjectInProgress((uint32_t)TRUE);
-            status = MMCSD_sendSwitchCmd(handle, arg);
-            TestMmcsd_cmdFaultInjectInProgress((uint32_t)FALSE);
-#else
-            /* Configure the ECSD register using CMD6 */
-            status = MMCSD_sendSwitchCmd(handle, arg);
-#endif
+            /* Get the current partition config value */
+            uint8_t partitionConfig = obj->tempDataBuf[MMCSD_ECSD_PARTITION_CONFIG_INDEX];
 
-            if(status == SystemP_SUCCESS)
+            /* Enable boot partition */
+            if((partitionNum == 1U) || (partitionNum == 2U))
             {
-                /* Set bus width now */
-                arg = (uint32_t)((bootBusWidth << 8) | (0xB1 << 16) | (0x03 << 24));
+                uint8_t bootAck = 1U; /* ROM Needs boot ack */
+                /* Modify the bit[6:3] of PARTITION_CONFIG register */
+                uint8_t bootPartition = ((partitionConfig & 0x07U) | ((bootAck << 6U) | ((uint8_t)partitionNum << 3U)));
+                uint8_t bootBusWidth = 0x02;
 
+                uint32_t arg = (uint32_t)((MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_PARTITION_CONFIG_INDEX << 16U) | (bootPartition << 8U));
+
+#ifdef ENABLE_MMCSD_FAULT_INJECTION
+                TestMmcsd_cmdFaultInjectInProgress((uint32_t)TRUE);
                 status = MMCSD_sendSwitchCmd(handle, arg);
+                TestMmcsd_cmdFaultInjectInProgress((uint32_t)FALSE);
+#else
+                /* Configure the ECSD register using CMD6 */
+                status = MMCSD_sendSwitchCmd(handle, arg);
+#endif
+                if(status == SystemP_SUCCESS)
+                {
+                    /* Set bus width now */
+                    arg = (uint32_t)((MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BOOT_BUS_CONDITIONS_INDEX << 16U) | (bootBusWidth << 8U));
+
+                    status = MMCSD_sendSwitchCmd(handle, arg);
+                }
+            }
+            else
+            {
+                status = SystemP_FAILURE;
             }
         }
-        else
-        {
-            status = SystemP_FAILURE;
-        }
+    }
+    else
+    {
+        /* Do nothing */
+    }
 
+    return status;
+}
+
+int32_t MMCSD_enablePartitionAccess(MMCSD_Handle handle, uint32_t partitionNum)
+{
+    int32_t status = SystemP_SUCCESS;
+
+    MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
+
+    if(obj->cardType == MMCSD_CARD_TYPE_EMMC)
+    {
+        /* Read ECSD register as data block */
+        status = MMCSD_readECSDEmmc(handle);
+
+        if(status == SystemP_SUCCESS)
+        {
+            /* Get the current partition config value */
+            uint8_t partitionConfig = obj->tempDataBuf[MMCSD_ECSD_PARTITION_CONFIG_INDEX];
+
+            /* Enable access to the partition */
+            if(partitionNum <= 2U)
+            {
+                /* Modify the bit[2:0] of PARTITION_CONFIG register */
+                uint8_t partitionAccess = ((partitionConfig & 0xF8U) | (partitionNum));
+
+                uint32_t arg = (uint32_t)((MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_PARTITION_CONFIG_INDEX << 16U) | (partitionAccess << 8U));
+
+                /* Configure the ECSD register using CMD6 */
+                status = MMCSD_sendSwitchCmd(handle, arg);
+            }
+            else
+            {
+                status = SystemP_FAILURE;
+            }
+        }
     }
     else
     {
@@ -945,8 +1016,7 @@ int32_t MMCSD_disableBootPartition(MMCSD_Handle handle)
     {
         /* Disable boot partition */
         uint8_t bootPartition = 0U;
-        uint32_t arg = (uint32_t)((bootPartition << 8) | (0xB3 << 16) | (0x03 << 24));
-
+        uint32_t arg = (uint32_t)((MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_PARTITION_CONFIG_INDEX << 16U) | (bootPartition << 8U));
         /* Configure the ECSD register using CMD6 */
         status = MMCSD_sendSwitchCmd(handle, arg);
     }
@@ -1451,15 +1521,7 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
     if(status == SystemP_SUCCESS)
     {
         /* Read ECSD register as data block */
-        MMCSD_initTransaction(&trans);
-        trans.cmd = MMCSD_MMC_CMD(8);
-        trans.dir = MMCSD_CMD_XFER_TYPE_READ;
-        trans.arg = (obj->emmcData->rca << 16U);
-        trans.blockCount = 1U;
-        trans.blockSize = 512U;
-        trans.dataBuf = obj->tempDataBuf;
-        trans.retries = MMCSD_TRANS_RETRIES;
-        status = MMCSD_transfer(handle, &trans);
+        status = MMCSD_readECSDEmmc(handle);
     }
 
     if(status == SystemP_SUCCESS)
@@ -1490,21 +1552,9 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
             if(SystemP_SUCCESS == status)
             {
                 /* Read ECSD register as data block */
-                MMCSD_initTransaction(&trans);
-                trans.cmd = MMCSD_MMC_CMD(8);
-                trans.dir = MMCSD_CMD_XFER_TYPE_READ;
-                trans.arg = (obj->emmcData->rca << 16U);
-                trans.blockCount = 1U;
-                trans.blockSize = 512U;
-                trans.dataBuf = obj->tempDataBuf;
-                trans.retries = MMCSD_TRANS_RETRIES;
-#if !defined ENABLE_MMCSD_FAULT_INJECTION
-                status = MMCSD_transfer(handle, &trans);
-#else
-                obj->tempDataBuf[MMCSD_ECSD_RST_N_INDEX] = MMCSD_ECSD_RST_N_PERMANENTLY_ENABLE;
-#endif
+                status = MMCSD_readECSDEmmc(handle);
 
-                if(obj->tempDataBuf[MMCSD_ECSD_RST_N_INDEX] != MMCSD_ECSD_RST_N_PERMANENTLY_ENABLE)
+                if((status == SystemP_SUCCESS) && (obj->tempDataBuf[MMCSD_ECSD_RST_N_INDEX] != MMCSD_ECSD_RST_N_PERMANENTLY_ENABLE))
                 {
                     DebugP_logWarn("Unable to set RST_n_FUNC in ECSD due to timeout. \r\n");
                 }
@@ -2682,6 +2732,26 @@ static int32_t MMCSD_sendSwitchCmd(MMCSD_Handle handle, uint32_t arg)
 
     return status;
 
+}
+
+static int32_t MMCSD_readECSDEmmc(MMCSD_Handle handle)
+{
+    int32_t status = SystemP_SUCCESS;
+    MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
+    MMCSD_Transaction trans;
+
+    /* Send CMD 8 to read the ECSD data */
+    MMCSD_initTransaction(&trans);
+    trans.cmd = MMCSD_MMC_CMD(8);
+    trans.dir = MMCSD_CMD_XFER_TYPE_READ;
+    trans.arg = (obj->emmcData->rca << 16U);
+    trans.blockCount = 1U;
+    trans.blockSize = 512U;
+    trans.dataBuf = obj->tempDataBuf;
+    trans.retries = MMCSD_TRANS_RETRIES;
+    status = MMCSD_transfer(handle, &trans);
+
+    return status;
 }
 
 static int32_t MMCSD_cmdStatusPollingFxnTimeout(MMCSD_Handle handle, uint64_t timeoutMilliSec)

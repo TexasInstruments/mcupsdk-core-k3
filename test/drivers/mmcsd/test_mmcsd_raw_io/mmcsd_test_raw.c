@@ -458,12 +458,12 @@ void TestMmcsd_emmcMultipleBusWidths(void *args)
  *
  * This function verifies that the MMCSD driver correctly
  * enables and disables the eMMC boot partition and writes to them
- * It opens the eMMC instance with custom initialization parameters 
- * and executes both `MMCSD_enableBootPartition()`to enable and 
- * boot partitions and write to it. The test ensures that the boot 
- * partition access commands are handled successfully by the driver 
- * and that no errors occur during mode switching or partition 
- * reconfiguration. It also validates successful driver initialization 
+ * It opens the eMMC instance with custom initialization parameters
+ * and executes both `MMCSD_enableBootPartition()`to enable and
+ * boot partitions and write to it. The test ensures that the boot
+ * partition access commands are handled successfully by the driver
+ * and that no errors occur during mode switching or partition
+ * reconfiguration. It also validates successful driver initialization
  * write, read and closure.
  *
  * \param args Pointer to test-specific configuration or
@@ -493,7 +493,7 @@ void TestMmcsd_emmcWriteReadBootPartition(void *args)
     numBlocksPerIter = TEST_MMCSD_6MB_SIZE / blockSize;
 
     /* Enable the boot0 partition */
-    retVal = MMCSD_enableBootPartition(handle, 1);
+    retVal = MMCSD_enablePartitionAccess(handle, 1);
     TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
 
     retVal = MMCSD_write(handle, TestMMCSD_txBuf, 0x0,  numBlocksPerIter);
@@ -506,12 +506,12 @@ void TestMmcsd_emmcWriteReadBootPartition(void *args)
 
     TEST_ASSERT_EQUAL_MEMORY(TestMMCSD_txBuf, TestMMCSD_rxBuf, TEST_MMCSD_6MB_SIZE);
 
-    /* Disable the boot partition */
+    /* Disable the partition access */
     retVal = MMCSD_disableBootPartition(handle);
     TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
 
     /* Enable the boot1 partition */
-    retVal = MMCSD_enableBootPartition(handle, 2);
+    retVal = MMCSD_enablePartitionAccess(handle, 2);
     TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
 
     retVal = MMCSD_write(handle, TestMMCSD_txBuf, 0x0,  numBlocksPerIter);
@@ -524,7 +524,7 @@ void TestMmcsd_emmcWriteReadBootPartition(void *args)
 
     TEST_ASSERT_EQUAL_MEMORY(TestMMCSD_txBuf, TestMMCSD_rxBuf, TEST_MMCSD_6MB_SIZE);
 
-    /* Disable the boot partition */
+    /* Disable the partition access */
     retVal = MMCSD_disableBootPartition(handle);
     TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
 
@@ -549,11 +549,11 @@ void TestMmcsd_emmcWriteReadBootPartition(void *args)
  * This function verifies that the MMCSD driver correctly
  * enables and disables the eMMC boot partition and fails on writing
  * more than 32MB to boot partition and succeeeds for UDA partition
- * and executes both `MMCSD_enableBootPartition()`to enable and 
- * boot partitions and write to it. The test ensures that the boot 
- * partition access commands are handled successfully by the driver 
- * and that no errors occur during mode switching or partition 
- * reconfiguration. It also validates successful driver initialization 
+ * and executes both `MMCSD_enableBootPartition()`to enable and
+ * boot partitions and write to it. The test ensures that the boot
+ * partition access commands are handled successfully by the driver
+ * and that no errors occur during mode switching or partition
+ * reconfiguration. It also validates successful driver initialization
  * write, read and closure.
  *
  * \param args Pointer to test-specific configuration or
@@ -583,7 +583,7 @@ void TestMmcsd_emmcWriteReadBootPartitionFail(void *args)
     numBlocksPerIter = TEST_MMCSD_DATA_SIZE / blockSize;
 
     /* Enable the boot0 partition */
-    retVal = MMCSD_enableBootPartition(handle, 1);
+    retVal = MMCSD_enablePartitionAccess(handle, 1);
     TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
 
     retVal = MMCSD_write(handle, TestMMCSD_txBuf, 0x0,  numBlocksPerIter);
@@ -592,12 +592,12 @@ void TestMmcsd_emmcWriteReadBootPartitionFail(void *args)
     retVal = MMCSD_read(handle, TestMMCSD_rxBuf, 0x0,  numBlocksPerIter);
     TEST_ASSERT_EQUAL(SystemP_FAILURE, retVal);
 
-    /* Disable the boot partition */
+    /* Disable the partition Access */
     retVal = MMCSD_disableBootPartition(handle);
     TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
 
     /* Enable the boot1 partition */
-    retVal = MMCSD_enableBootPartition(handle, 2);
+    retVal = MMCSD_enablePartitionAccess(handle, 2);
     TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
 
     retVal = MMCSD_write(handle, TestMMCSD_txBuf, 0x0,  numBlocksPerIter);
@@ -606,7 +606,7 @@ void TestMmcsd_emmcWriteReadBootPartitionFail(void *args)
     retVal = MMCSD_read(handle, TestMMCSD_rxBuf, 0x0,  numBlocksPerIter);
     TEST_ASSERT_EQUAL(retVal, SystemP_FAILURE);
 
-    /* Disable the boot partition */
+    /* Disable the partition Access */
     retVal = MMCSD_disableBootPartition(handle);
     TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
 
@@ -647,7 +647,7 @@ void TestMmcsd_unalignedBuffersRawIo(void *args)
 
     uint8_t *unalignedTxBufPtr = TestMmcsd_getUnalignedTxAddr();
     uint8_t *unalignedRxBufPtr = TestMmcsd_getUnalignedRxAddr(); 
-
+    
     /* This close is required as the above test case fails */
     Drivers_mmcsdClose();
 
@@ -658,9 +658,9 @@ void TestMmcsd_unalignedBuffersRawIo(void *args)
     Drivers_mmcsdClose();
 
     numBlocksPerIter = TEST_MMCSD_1MB_SIZE / blockSize;
-      
+
     DebugP_log("Starting the EMMC unaligned buffer transfer\r\n");
-       
+
     TestMmcsd_fillUnalignedBuffers(unalignedTxBufPtr);
 
     for(loopVar = 0; loopVar < 2; loopVar++)
@@ -671,7 +671,7 @@ void TestMmcsd_unalignedBuffersRawIo(void *args)
             DebugP_log("Starting the transfer with DMA disabled\r\n");
         }
         else
-        {       
+        {
             gMmcsdAttrs[CONFIG_MMCSD_EMMC].enableDma = 1;
             DebugP_log("Starting the transfer with DMA enabled\r\n");
         }
@@ -687,7 +687,7 @@ void TestMmcsd_unalignedBuffersRawIo(void *args)
         TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
         TEST_ASSERT_EQUAL_MEMORY(unalignedTxBufPtr, unalignedRxBufPtr, TEST_MMCSD_1MB_SIZE);
         Drivers_mmcsdClose();
-    } 
+    }
     gMmcsdAttrs[CONFIG_MMCSD_EMMC].enableDma = 1;
 }
 
@@ -731,8 +731,8 @@ void TestMmcsd_crcRecovery(void *args)
     TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
 
     /* Read the curent itap  values */
-    itapDlySel = 
-               (CSL_REG32_RD(&baseReg->PHY_CTRL_4_REG) & CSL_MMC_SSCFG_PHY_CTRL_4_REG_ITAPDLYSEL_MASK) 
+    itapDlySel =
+               (CSL_REG32_RD(&baseReg->PHY_CTRL_4_REG) & CSL_MMC_SSCFG_PHY_CTRL_4_REG_ITAPDLYSEL_MASK)
                                                        >> CSL_MMC_SSCFG_PHY_CTRL_4_REG_ITAPDLYSEL_SHIFT;
 
     /* Use a failing ITAP value */
@@ -834,7 +834,7 @@ void TestMmcsd_emmcSpeedSwitch(void *args)
  * This function verifies that the MMCSD driver correctly
  * supports different SD card bus width configurations. It
  * iterates through all supported bus widths (1-bit, 4-bit,
- * and performs raw I/O transfers using the `TestMmcsd_rawIo()' 
+ * and performs raw I/O transfers using the `TestMmcsd_rawIo()'
  * helper function.
  *
  * The test ensures correct driver handling of bus width
@@ -1083,7 +1083,7 @@ void TestMmcsd_sdTuningConfig(void *args)
  *
  * Test Category: Functionality
  *
- * This function verifies that the MMCSD driver does not have 
+ * This function verifies that the MMCSD driver does not have
  * any issues in opening and closing in different modes.
  *
  * \param args Pointer to test-specific configuration or
@@ -1094,8 +1094,8 @@ void TestMmcsd_sdTuningConfig(void *args)
 void TestMmcsd_multipleOpenClose(void *args)
 {
     int loopVar;
-   
-    /* Open and Close for different SD modes */ 
+
+    /* Open and Close for different SD modes */
     for(loopVar = 0; loopVar < TestMMCSD_sdModesCount; loopVar++)
     {
         gMmcsdAttrs[CONFIG_MMCSD_SD].supportedModes = TestMMCSD_sdModes[loopVar];
@@ -1103,7 +1103,7 @@ void TestMmcsd_multipleOpenClose(void *args)
         TEST_ASSERT_NOT_NULL(handle);
         MMCSD_close(handle);
     }
-    
+
     for(loopVar = 0; loopVar < TestMMCSD_modesCount; loopVar++)
     {
         /* Do the same for EMMC as well */
@@ -1156,10 +1156,10 @@ void TestMmcsd_validateClkFreq(void *args)
     uint16_t lowVal, highVal, cc;
     uint32_t expectHz = 0U;
     uint32_t tol;
-    const CSL_mmc_ctlcfgRegs *pCtrl = 
+    const CSL_mmc_ctlcfgRegs *pCtrl =
 			(const CSL_mmc_ctlcfgRegs *)gMmcsdAttrs[CONFIG_MMCSD_EMMC].ctrlBaseAddr;
     uint32_t modesToTest [] = {
-	MMCSD_SUPPORT_MMC_DS, 
+	MMCSD_SUPPORT_MMC_DS,
 	MMCSD_SUPPORT_MMC_HS_SDR,
 	MMCSD_SUPPORT_MMC_HS_DDR,
 	MMCSD_SUPPORT_MMC_HS200,
@@ -1172,7 +1172,7 @@ void TestMmcsd_validateClkFreq(void *args)
     testModCount = 5;
 #endif
     DebugP_log("Starting EMMC frequency vaidation test\r\n");
-    
+
     for(loopVar = 0; loopVar < testModCount; loopVar++)
     {
     	gMmcsdAttrs[CONFIG_MMCSD_EMMC].supportedModes = modesToTest[loopVar];
@@ -1192,27 +1192,27 @@ void TestMmcsd_validateClkFreq(void *args)
         clockDiv = (uint32_t)((uint32_t)lowVal | (uint32_t)((uint32_t)highVal << 8));
         outputClk = (clockDiv == 0U) ? inputClk : (inputClk / (2U * clockDiv));
 
-        if(modesToTest[loopVar] == MMCSD_SUPPORT_MMC_DS)        
-        {        
+        if(modesToTest[loopVar] == MMCSD_SUPPORT_MMC_DS)
+        {
 	    expectHz = 26000000U;
-        }        
-        else if(modesToTest[loopVar] == MMCSD_SUPPORT_MMC_HS_SDR)  
-        {        
+        }
+        else if(modesToTest[loopVar] == MMCSD_SUPPORT_MMC_HS_SDR)
+        {
 	    expectHz = 52000000U;
-        }        
-        else if(modesToTest[loopVar] == MMCSD_SUPPORT_MMC_HS_DDR)  
-        {        
+        }
+        else if(modesToTest[loopVar] == MMCSD_SUPPORT_MMC_HS_DDR)
+        {
             expectHz = 52000000U;
-        }        
-        else if (modesToTest[loopVar] == MMCSD_SUPPORT_MMC_HS200)   
-        {        
+        }
+        else if (modesToTest[loopVar] == MMCSD_SUPPORT_MMC_HS200)
+        {
             expectHz = 200000000U;
-        }        
+        }
 #if defined (SOC_AM62PX) || defined (SOC_J722S)
-        else if (modesToTest[loopVar] == MMCSD_SUPPORT_MMC_HS400)   
-        {        
+        else if (modesToTest[loopVar] == MMCSD_SUPPORT_MMC_HS400)
+        {
            expectHz = 200000000U;
-        }        
+        }
 #endif
         TEST_ASSERT_TRUE_MESSAGE(expectHz > 0U, "Unknown expected frequency for mode");
 
@@ -1230,7 +1230,7 @@ void TestMmcsd_validateClkFreq(void *args)
  * Test Category: Functionality
  *
  * This function verifies that the MMCSD driver correctly
- * handles data transfers  with and without — executing 
+ * handles data transfers  with and without — executing
  * raw I/O transfers using the `TestMmcsd_rawIo()` helper function.
  *
  * After all iterations, the default DMA configuration is restored.
@@ -1278,11 +1278,11 @@ void TestMmcsd_dmaModes(void *args)
  *
  * This function verifies that the MMCSD driver correctly
  * handles data transfers with and with out interrupt
- * It cycles through two modes — executing raw I/O transfers 
+ * It cycles through two modes — executing raw I/O transfers
  * using the `TestMmcsd_rawIo()` helper function.
  *
- * The test validates driver stability, transfer integrity, 
- * and cleanup while operating in HS200 mode. After all 
+ * The test validates driver stability, transfer integrity,
+ * and cleanup while operating in HS200 mode. After all
  * iterations, the default interrupt configuration is restored.
  *
  * \param args Pointer to test-specific configuration or
@@ -1395,8 +1395,8 @@ void TestMmcsd_openOpenFail(void *args)
  * Test Category: Functionality
  *
  * This function verifies that the MMCSD driver correctly
- * reports the total block count of the connected eMMC. 
- * It first fetches the valueof  block count with DMA enabled 
+ * reports the total block count of the connected eMMC.
+ * It first fetches the valueof  block count with DMA enabled
  * and then DMA disabled. It opens the eMMC instance in HS200 mode
  * and queries the block count using `MMCSD_getBlockCount()`. The
  * values obtained with and without DMA should match.
@@ -1408,7 +1408,7 @@ void TestMmcsd_openOpenFail(void *args)
  */
 void TestMmcsd_getBlockCountValidate(void *args)
 {
-    uint32_t blockCount1, blockCount2;  
+    uint32_t blockCount1, blockCount2;
 
     /* Get the block count with dma enabled */
     gMmcsdAttrs[CONFIG_MMCSD_EMMC].supportedModes = TestMMCSD_modes[1];
@@ -1417,7 +1417,7 @@ void TestMmcsd_getBlockCountValidate(void *args)
     MMCSD_Handle handle = gMmcsdHandle[CONFIG_MMCSD_EMMC];
     blockCount1 = MMCSD_getBlockCount(handle);
     Drivers_mmcsdClose();
-    
+
     /* Get the block count with dma enabled */
     gMmcsdAttrs[CONFIG_MMCSD_EMMC].supportedModes = TestMMCSD_modes[2];
     gMmcsdAttrs[CONFIG_MMCSD_EMMC].enableDma = 0;
@@ -1718,7 +1718,7 @@ static uint8_t *TestMmcsd_getUnalignedTxAddr()
     if((((uintptr_t)TestMMCSD_unalignedTxBuf + shift) % 4) == 0)
     {
         shift++;
-    } 
+    }
     return TestMMCSD_unalignedTxBuf + shift;
 }
 

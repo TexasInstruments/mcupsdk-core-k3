@@ -657,7 +657,7 @@ static int32_t Bootloader_uniflashFlashFileMMCSDRaw(uint32_t mmcsdIndex, uint8_t
     }
     else
     {
-        status = MMCSD_enableBootPartition(handle, 1);
+        status = MMCSD_enableBootPartition(handle, MMCSD_BOOT_PARTITION_BOOT0);
     }
 
     if(status != SystemP_SUCCESS)
@@ -684,7 +684,7 @@ static int32_t Bootloader_uniflashFlashVerifyFileMMCSDRaw(uint32_t mmcsdIndex, u
 	}
     else
     {
-        status = MMCSD_enableBootPartition(handle, 1);
+        status = MMCSD_enablePartitionAccess(handle, MMCSD_HW_PARTITION_BOOT0);
     }
 
     if(status != SystemP_SUCCESS)

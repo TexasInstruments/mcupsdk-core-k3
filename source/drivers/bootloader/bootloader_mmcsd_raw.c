@@ -72,7 +72,7 @@ static int32_t MMCSDRaw_imgRead(void *dst, uint32_t len, void *args)
 
     if(status == SystemP_SUCCESS)
     {
-        status = MMCSD_enableBootPartition(handle, 1);
+        status = MMCSD_enablePartitionAccess(handle, MMCSD_HW_PARTITION_BOOT0);
 
         if(status != SystemP_SUCCESS)
         {

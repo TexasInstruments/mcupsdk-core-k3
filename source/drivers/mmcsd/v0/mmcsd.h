@@ -99,12 +99,27 @@ extern "C" {
 #define MMCSD_TRANSPEED_DDR50           (0x3BU)
 #define MMCSD_TRANSPEED_HS200           (0x2BU)
 #define MMCSD_TRANSPEED_HS400           (0x4BU)
+
 /*
 * \brief Macros that can be used for selecting the bus voltage
 */
 #define MMCSD_BUS_VOLT_1_8V    (0x5U) /* Embedded */
 #define MMCSD_BUS_VOLT_3_0V    (0x6U) /* Typical */
 #define MMCSD_BUS_VOLT_3_3V    (0x7U) /* Flattop */
+
+/*
+* \brief Macros that can be used to select the boot partition for EMMC.
+*/
+#define MMCSD_BOOT_PARTITION_BOOT0     (0x1U)
+#define MMCSD_BOOT_PARTITION_BOOT1     (0x2U)
+
+/*
+* \brief Macros that can be used to select the partition for enabling access in 
+* the EMMC.
+*/
+#define MMCSD_HW_PARTITION_UDA     (0x0U)
+#define MMCSD_HW_PARTITION_BOOT0   (0x1U)
+#define MMCSD_HW_PARTITION_BOOT1   (0x2U)
 
 /*
 * \brief Macros that can be used for selecting command types
@@ -727,7 +742,10 @@ uint32_t MMCSD_getBlockCount(MMCSD_Handle handle);
 uint32_t MMCSD_isHC(MMCSD_Handle handle);
 
 /**
- *  \brief  This function enables the boot partition if the connected media is eMMC
+ *  \brief  This function enables the boot partition and gives access to the partition
+ *          if the connected media is eMMC. This function essentially calls
+ *          MMCSD_setEcsdBootPartitionEnable and MMCSD_enablePartitionAccess and
+ *          is there to keep backward compatibility.
  *
  *  \pre    MMCSD controller has been opened using #MMCSD_open()
  *
@@ -740,6 +758,37 @@ uint32_t MMCSD_isHC(MMCSD_Handle handle);
  *  \sa     #MMCSD_open()
  */
 int32_t MMCSD_enableBootPartition(MMCSD_Handle handle, uint32_t partitionNum);
+
+/**
+ *  \brief  This function enables the boot partition in the ECSD if the connected 
+ *          media is eMMC
+ *
+ *  \pre    MMCSD controller has been opened using #MMCSD_open()
+ *
+ *  \param  handle         #MMCSD_Handle returned from #MMCSD_open()
+ *  \param  partitionNum   Boot partition to be enabled in the ECSD.
+ *
+ *  \return #SystemP_SUCCESS on successful read; else error on failure
+ *
+ *  \sa     #MMCSD_init()
+ *  \sa     #MMCSD_open()
+ */
+int32_t MMCSD_setEcsdBootPartitionEnable(MMCSD_Handle handle, uint32_t partitionNum);
+
+/**
+ *  \brief  This function gives access to the partition if the connected media is eMMC
+ *
+ *  \pre    MMCSD controller has been opened using #MMCSD_open()
+ *
+ *  \param  handle         #MMCSD_Handle returned from #MMCSD_open()
+ *  \param  partitionNum   Partition to be given access to.
+ *
+ *  \return #SystemP_SUCCESS on successful operation; else error on failure
+ *
+ *  \sa     #MMCSD_init()
+ *  \sa     #MMCSD_open()
+ */
+int32_t MMCSD_enablePartitionAccess(MMCSD_Handle handle, uint32_t partitionNum);
 
 /**
  *  \brief  This function disables the boot partition if the connected media is eMMC

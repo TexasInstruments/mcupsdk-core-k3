@@ -67,12 +67,14 @@ portTaskHandleType gPongTaskHandle, gPingTaskHandle;
  * buffer need only be large enough to hold the queue structure itself. */
 portInt8Type gPingSemBuf[ safertosapiQUEUE_OVERHEAD_BYTES ] __attribute__( ( aligned ( safertosapiWORD_ALIGNMENT ) ) ) = { 0 };
 portInt8Type gPongSemBuf[ safertosapiQUEUE_OVERHEAD_BYTES ] __attribute__( ( aligned ( safertosapiWORD_ALIGNMENT ) ) ) = { 0 };
+portInt8Type gPongTaskBuf[ safertosapiQUEUE_OVERHEAD_BYTES ] __attribute__( ( aligned ( safertosapiWORD_ALIGNMENT ) ) ) = { 0 };
 HwiP_Object gPingHwiObj;
 HwiP_Object gPongHwiObj;
 
 /* Semaphore Parameters. */
 static xSemaphoreHandle gPingSem = NULL;
 static xSemaphoreHandle gPongSem = NULL;
+static xSemaphoreHandle gPongTaskTermination = NULL;
 
 
 static void ping_isr(void *arg)
@@ -131,6 +133,7 @@ void ping_main(void *args)
             HwiP_post(PING_INT_NUM);
             xSemaphoreTake( gPingSem, safertosapiMAX_DELAY); /* wait for ISR to signal */
         }
+        xSemaphoreGive( gPongTaskTermination );
         curTime = ClockP_getTimeUsec() - curTime;
 
         HwiP_destruct(&gPingHwiObj);
@@ -182,9 +185,10 @@ void pong_main(void *args)
         count = NUM_TASK_SWITCHES;
         while(count--)
         {
-            HwiP_post(PONG_INT_NUM);
             xSemaphoreTake( gPongSem, safertosapiMAX_DELAY); /* wait for ISR to signal */
+            HwiP_post(PONG_INT_NUM);
         }
+        xSemaphoreTake( gPongTaskTermination, safertosapiMAX_DELAY);
         HwiP_destruct(&gPongHwiObj);
     }
     /* One MUST not return out of a SafeRTOS task instead one MUST call xTaskDelete */
@@ -214,6 +218,16 @@ void task_switch_main(void *args)
     else
     {
         xStatus = xSemaphoreTake( gPongSem, safertosapiMAX_DELAY );
+    }
+    DebugP_assert(xStatus != pdFAIL);
+    xSemaphoreCreateBinary( gPongTaskBuf, &gPongTaskTermination );
+    if( gPongTaskTermination == NULL )
+    {
+        xStatus = pdFAIL;
+    }
+    else
+    {
+        xStatus = xSemaphoreTake( gPongTaskTermination, safertosapiMAX_DELAY );
     }
     DebugP_assert(xStatus != pdFAIL);
 

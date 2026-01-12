@@ -53,6 +53,22 @@ const operating_modes_emmc = [
     { name : "HS200", displayName : "HS200"},
 ];
 
+const drive_strength_controller = [
+    { name : "DRIVER_TYPE_0", displayName : "Driver type 0 (50 ohms)"},
+    { name : "DRIVER_TYPE_1", displayName : "Driver type 1 (33 ohms)"},
+    { name : "DRIVER_TYPE_2", displayName : "Driver type 2 (66 ohms)"},
+    { name : "DRIVER_TYPE_3", displayName : "Driver type 3 (100 ohms)"},
+    { name : "DRIVER_TYPE_4", displayName : "Driver type 4 (40 ohms)"},
+];
+
+const drive_strength_emmc = [
+    { name : "DRIVER_TYPE_0", displayName : "Driver type 0 (50 ohms)"},
+    { name : "DRIVER_TYPE_1", displayName : "Driver type 1 (33 ohms)"},
+    { name : "DRIVER_TYPE_2", displayName : "Driver type 2 (66 ohms)"},
+    { name : "DRIVER_TYPE_3", displayName : "Driver type 3 (100 ohms)"},
+    { name : "DRIVER_TYPE_4", displayName : "Driver type 4 (40 ohms)"},
+];
+
 function getOperatingModesSD() {
     return operating_modes_sd;
 }
@@ -61,12 +77,28 @@ function getOperatingModesEMMC() {
     return operating_modes_emmc;
 }
 
+function getDriveStrengthController() {
+    return drive_strength_controller;
+}
+
+function getDriveStrengthEMMC() {
+    return drive_strength_emmc;
+}
+
 function getDefaultOperatingModeEMMC() {
     return { name : "HS200", displayName : "HS200"};
 }
 
 function getDefaultOperatingModeSD() {
     return { name : "HS", displayName : "HS"};
+}
+
+function getDefaultDriveStrengthController() {
+    return { name : "DRIVER_TYPE_0", displayName : "Driver type 0 (50 ohms)"};
+}
+
+function getDefaultDriveStrengthEMMC() {
+    return { name : "DRIVER_TYPE_0", displayName : "Driver type 0 (50 ohms)"};
 }
 
 function getDefaultConfig() {
@@ -98,6 +130,10 @@ exports = {
 	getConfigArr,
     getOperatingModesSD,
     getOperatingModesEMMC,
+    getDriveStrengthController,
+    getDriveStrengthEMMC,
     getDefaultOperatingModeEMMC,
     getDefaultOperatingModeSD,
+    getDefaultDriveStrengthController,
+    getDefaultDriveStrengthEMMC,
 };

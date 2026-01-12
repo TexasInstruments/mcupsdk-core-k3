@@ -19,6 +19,7 @@ MMCSD_Attrs gMmcsdAttrs[CONFIG_MMCSD_NUM_INSTANCES] =
         .inputClkFreq         = `config.inputClkFreq`U,
         .enableDma            = `config.dmaEnable.toString(10).toUpperCase()`,
         .phyType              = `config.phyType`,
+        .phyDriverType        = MMCSD_PHY_`config.ControllerdriveStrength`,
         .cardType             = MMCSD_CARD_TYPE_`config.cardType`,
         .busWidth             = `config.busWidth`,
         .supportedModes       = `operatingMode`,

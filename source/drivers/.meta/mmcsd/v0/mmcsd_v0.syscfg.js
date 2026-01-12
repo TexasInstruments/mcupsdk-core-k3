@@ -359,10 +359,14 @@ function getConfigurables()
                     inst.cardType = "EMMC";
                     ui.modeSelectEMMC.hidden = false;
                     ui.modeSelectSD.hidden = true;
+                    ui.ControllerdriveStrength.hidden = false;
+                    ui.EMMCdriveStrength.hidden = false;
                 } else {
                     inst.cardType = "SD";
                     ui.modeSelectSD.hidden = false;
                     ui.modeSelectEMMC.hidden = true;
+                    ui.ControllerdriveStrength.hidden = true;
+                    ui.EMMCdriveStrength.hidden = true;
                 }
             },
         },
@@ -387,6 +391,22 @@ function getConfigurables()
             displayName: "Input Clock Frequency (Hz)",
             description: "Set the input clock frequency based on the selected speed mode.",
             default: soc.getDefaultConfig().inputClkFreq,
+        },
+        {
+            name: "EMMCdriveStrength",
+            displayName: "EMMC Drive Strength",
+            description: "Set the drive strength of the EMMC device.",
+            default: soc.getDefaultDriveStrengthEMMC().name,
+            options: soc.getDriveStrengthEMMC(),
+            hidden: false,
+        },
+        {
+            name: "ControllerdriveStrength",
+            displayName: "EMMC Controller Drive Strength",
+            description: "Set the drive strength of the host controller.",
+            default: soc.getDefaultDriveStrengthController().name,
+            options: soc.getDriveStrengthController(),
+            hidden: false,
         },
         {
             name: "cardType",

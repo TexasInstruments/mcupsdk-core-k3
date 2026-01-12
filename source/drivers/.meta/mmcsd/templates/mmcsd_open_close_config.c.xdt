@@ -12,7 +12,10 @@
     % let instance = module.$instances[i];
     % let config = module.getInstanceConfig(instance);
         %if(config.cardType == "EMMC") {
-MMCSD_EmmcDeviceData gEmmcData`i`;
+MMCSD_EmmcDeviceData gEmmcData`i` =
+{
+    .driveStrength = MMCSD_PHY_`config.EMMCdriveStrength`,
+};
         %}
         %else if(config.cardType == "SD") {
 MMCSD_SdDeviceData gSdData`i`;

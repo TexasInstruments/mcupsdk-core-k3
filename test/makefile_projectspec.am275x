@@ -9,6 +9,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_300Hz_am275x-evm_c75ss0-0_fre
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_auxclk_sel_am275x-evm_c75ss0-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_low_latency_am275x-evm_c75ss0-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_loopback_multiinst_am275x-evm_c75ss0-0_freertos_ti-c7000_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_loopback_multiinst_am275x-evm_c75ss1-0_freertos_ti-c7000_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_loopback_multiinst_am275x-evm_c75ss0-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_start_stop_am275x-evm_c75ss0-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += test_ospi_am275x-evm_c75ss0-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += test_fileio_am275x-evm_c75ss0-0_freertos_ti-c7000_build
@@ -35,6 +37,12 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
 	$(MAKE) -C drivers/mcasp/mcasp_low_latency/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec all
 
  mcasp_loopback_multiinst_am275x-evm_c75ss0-0_freertos_ti-c7000_build:
+	$(MAKE) -C drivers/mcasp/mcasp_multicore/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec all
+
+ mcasp_loopback_multiinst_am275x-evm_c75ss1-0_freertos_ti-c7000_build:
+	$(MAKE) -C drivers/mcasp/mcasp_multicore/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec all
+
+ mcasp_loopback_multiinst_am275x-evm_c75ss0-0_freertos_ti-c7000_build:
 	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec all
 
  mcasp_start_stop_am275x-evm_c75ss0-0_freertos_ti-c7000_build:
@@ -54,6 +62,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += clock_sync_app_am275x-evm_r5fss0-0_
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_300Hz_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_auxclk_sel_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_low_latency_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_loopback_multiinst_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_loopback_multiinst_am275x-evm_c75ss1-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_loopback_multiinst_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_start_stop_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += test_ospi_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
@@ -81,6 +91,12 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
 	$(MAKE) -C drivers/mcasp/mcasp_low_latency/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec clean
 
  mcasp_loopback_multiinst_am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C drivers/mcasp/mcasp_multicore/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec clean
+
+ mcasp_loopback_multiinst_am275x-evm_c75ss1-0_freertos_ti-c7000_clean:
+	$(MAKE) -C drivers/mcasp/mcasp_multicore/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec clean
+
+ mcasp_loopback_multiinst_am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec clean
 
  mcasp_start_stop_am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
@@ -100,6 +116,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += clock_sync_app_am275x-evm_r5fss0-0
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_300Hz_am275x-evm_c75ss0-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_auxclk_sel_am275x-evm_c75ss0-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_low_latency_am275x-evm_c75ss0-0_freertos_ti-c7000_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_loopback_multiinst_am275x-evm_c75ss0-0_freertos_ti-c7000_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_loopback_multiinst_am275x-evm_c75ss1-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_loopback_multiinst_am275x-evm_c75ss0-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_start_stop_am275x-evm_c75ss0-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += test_ospi_am275x-evm_c75ss0-0_freertos_ti-c7000_export
@@ -125,6 +143,12 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
  mcasp_low_latency_am275x-evm_c75ss0-0_freertos_ti-c7000_export:
 	$(MAKE) -C drivers/mcasp/mcasp_low_latency/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec export
+
+ mcasp_loopback_multiinst_am275x-evm_c75ss0-0_freertos_ti-c7000_export:
+	$(MAKE) -C drivers/mcasp/mcasp_multicore/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec export
+
+ mcasp_loopback_multiinst_am275x-evm_c75ss1-0_freertos_ti-c7000_export:
+	$(MAKE) -C drivers/mcasp/mcasp_multicore/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec export
 
  mcasp_loopback_multiinst_am275x-evm_c75ss0-0_freertos_ti-c7000_export:
 	$(MAKE) -C drivers/mcasp/mcasp_multiinst_loopback/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec export
@@ -162,6 +186,8 @@ help:
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_300Hz/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_auxclk_sel/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_low_latency/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_multicore/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_multicore/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_multiinst_loopback/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_start_stop_test/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C drivers/ospi/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]

@@ -21,14 +21,14 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=mcasp_loopback_multiinst.$(PROFILE).out
+OUTNAME:=mcasp_multicore.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=mcasp_loopback_multiinst.$(PROFILE).mcelf
-BOOTIMAGE_NAME_XIP:=mcasp_loopback_multiinst.$(PROFILE).mcelf_xip
-BOOTIMAGE_NAME_SIGNED:=mcasp_loopback_multiinst.$(PROFILE).mcelf.signed
-BOOTIMAGE_NAME_HS:=mcasp_loopback_multiinst.$(PROFILE).mcelf.hs
-BOOTIMAGE_NAME_HS_FS:=mcasp_loopback_multiinst.$(PROFILE).mcelf.hs_fs
+BOOTIMAGE_NAME:=mcasp_multicore.$(PROFILE).mcelf
+BOOTIMAGE_NAME_XIP:=mcasp_multicore.$(PROFILE).mcelf_xip
+BOOTIMAGE_NAME_SIGNED:=mcasp_multicore.$(PROFILE).mcelf.signed
+BOOTIMAGE_NAME_HS:=mcasp_multicore.$(PROFILE).mcelf.hs
+BOOTIMAGE_NAME_HS_FS:=mcasp_multicore.$(PROFILE).mcelf.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -183,7 +183,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am275x:c75ss0-0:freertos:ti-c7000 mcasp_loopback_multiinst ...
+	@echo  Scrubing: am275x:c75ss0-0:freertos:ti-c7000 mcasp_multicore ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

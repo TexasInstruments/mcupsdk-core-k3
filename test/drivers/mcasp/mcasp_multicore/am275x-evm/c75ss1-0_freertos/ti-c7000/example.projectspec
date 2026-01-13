@@ -10,8 +10,8 @@
     </applicability>
 
     <project
-        title="Mcasp Loopback Multiinst"
-        name = "mcasp_loopback_multiinst_am275x-evm_c75ss1-0_freertos_ti-c7000"
+        title="Mcasp Multicore"
+        name = "mcasp_multicore_am275x-evm_c75ss1-0_freertos_ti-c7000"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -56,7 +56,7 @@
             -i${MCU_PLUS_SDK_PATH}/source/drivers/lib
             -i${MCU_PLUS_SDK_PATH}/source/drivers/udma/lib
             -i${CG_TOOL_ROOT}/lib
-            -m=mcasp_loopback_multiinst.${ConfigName}.map
+            -m=mcasp_multicore.${ConfigName}.map
             -z
             --emit_warnings_as_errors
             --diag_suppress=10063
@@ -72,7 +72,7 @@
             --context c75ss1-0 --part AM2754 --package ANJ
         "
 
-        description="A Mcasp Loopback Multiinst FREERTOS project">
+        description="A Mcasp Multicore FREERTOS project">
 
         <configuration name="Debug"
             compilerBuildOptions="

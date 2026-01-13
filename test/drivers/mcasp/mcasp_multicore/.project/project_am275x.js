@@ -93,7 +93,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "mcasp_loopback_multiinst";
+    property.name = "mcasp_multicore";
     property.isInternal = true;
     property.tirexResourceSubClass = [ "example.gettingstarted" ];
     property.description = "This example verifies Multicore accessing different MCASP simultaneously"

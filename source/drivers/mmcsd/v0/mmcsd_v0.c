@@ -45,7 +45,6 @@
 #include <drivers/mmcsd.h>
 #include <kernel/dpl/SemaphoreP.h>
 #include <kernel/dpl/HwiP.h>
-#include <kernel/dpl/CacheP.h>
 #include <kernel/dpl/ClockP.h>
 #include <drivers/hw_include/cslr.h>
 #include <drivers/mmcsd/mmcsd_priv.h>
@@ -157,7 +156,7 @@ typedef struct
     uint32_t dmaParams;
     uint32_t addrLo;
     uint32_t addrHi;
-
+    uint32_t reserved;
 } MMCSD_ADMA2Descriptor;
 
 /* ========================================================================== */
@@ -171,7 +170,7 @@ static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *tran
 static int32_t MMCSD_isReadyForTransfer(MMCSD_Handle handle);
 static int32_t MMCSD_sendStopCmd(MMCSD_Handle handle);
 static int32_t MMCSD_sendCmd21(MMCSD_Handle handle);
-static int32_t MMCSD_setupADMA2(MMCSD_Handle handle, MMCSD_ADMA2Descriptor *desc, uint64_t bufAddr, uint32_t dataSize);
+static int32_t MMCSD_setupADMA2(MMCSD_Handle handle, MMCSD_ADMA2Descriptor *desc, MMCSD_Transaction *trans, uint32_t dataSize);
 static int32_t MMCSD_sendSwitchCmd(MMCSD_Handle handle, uint32_t arg);
 static int32_t MMCSD_readECSDEmmc(MMCSD_Handle handle);
 static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode);
@@ -179,10 +178,10 @@ static uint32_t MMCSD_getModeEmmc(MMCSD_Handle handle);
 static uint32_t MMCSD_getXferSpeedFromModeEmmc(uint32_t mode);
 static void MMCSD_initTransaction(MMCSD_Transaction *trans);
 static void MMCSD_cmdStatusPollingFxn(MMCSD_Handle handle);
-static void MMCSD_xferStatusPollingFxn(MMCSD_Handle handle);
+static void MMCSD_xferStatusPollingFxn(MMCSD_Handle handle, MMCSD_Transaction *trans);
 static void MMCSD_xferStatusPollingFxnCMD19(MMCSD_Handle handle);
 static int32_t MMCSD_cmdStatusPollingFxnTimeout(MMCSD_Handle handle, uint64_t timeoutMilliSec);
-static int32_t MMCSD_xferStatusPollingFxnTimeout(MMCSD_Handle handle, uint64_t timeoutMilliSec);
+static int32_t MMCSD_xferStatusPollingFxnTimeout(MMCSD_Handle handle, MMCSD_Transaction *trans, uint64_t timeoutMilliSec);
 static int32_t MMCSD_xferStatusPollingFxnCMD19Timeout(MMCSD_Handle handle, uint64_t timeoutMilliSec);
 static int32_t MMCSD_transErrCmdDatReset(MMCSD_Handle handle, MMCSD_Transaction *trans);
 static int32_t MMCSD_retune(MMCSD_Handle handle);
@@ -238,7 +237,7 @@ static MMCSD_DrvObj gMmcsdDrvObj =
 };
 
 /** \brief Global ADMA2 Descriptor */
-MMCSD_ADMA2Descriptor gADMA2Desc;
+MMCSD_ADMA2Descriptor gADMA2Desc[3U];
 
 uint8_t gTuningPattern8Bit[] __attribute__((aligned(128U))) = {
     0xff, 0xff, 0x00, 0xff, 0xff, 0xff, 0x00, 0x00,
@@ -1835,7 +1834,7 @@ static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *tran
                 /* Setup ADMA2 descriptor */
                 uint32_t dataSize = trans->blockCount * trans->blockSize;
 
-                status = MMCSD_setupADMA2(handle, &gADMA2Desc, (uint64_t)trans->dataBuf, dataSize);
+                status = MMCSD_setupADMA2(handle, gADMA2Desc, trans, dataSize);
 
                 if(status == SystemP_SUCCESS)
                 {
@@ -1899,7 +1898,7 @@ static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *tran
                 }
                 else
                 {
-                    status = MMCSD_xferStatusPollingFxnTimeout(handle, timeoutMilliSec);
+                    status = MMCSD_xferStatusPollingFxnTimeout(handle, trans, timeoutMilliSec);
                 }
             }
 
@@ -2116,7 +2115,7 @@ static int32_t MMCSD_isReadyForTransfer(MMCSD_Handle handle)
     return status;
 }
 
-static int32_t MMCSD_setupADMA2(MMCSD_Handle handle, MMCSD_ADMA2Descriptor *desc, uint64_t bufAddr, uint32_t dataSize)
+static int32_t MMCSD_setupADMA2(MMCSD_Handle handle, MMCSD_ADMA2Descriptor *desc, MMCSD_Transaction *trans, uint32_t dataSize)
 {
     int32_t status = SystemP_SUCCESS;
     MMCSD_Object *obj = NULL;
@@ -2124,10 +2123,14 @@ static int32_t MMCSD_setupADMA2(MMCSD_Handle handle, MMCSD_ADMA2Descriptor *desc
     const CSL_mmc_ctlcfgRegs *pReg = NULL;
     uint32_t dmaParams = 0U;
     uint16_t regVal = 0U;
+    uint8_t idx = 0U;
     uint64_t phyDesc;
     uint64_t phyBufAddr;
+    uint64_t bufAddr;
+    uint32_t size;
+    uint64_t addr;
 
-    if((desc == NULL) || (handle == NULL))
+    if((desc == NULL) || (handle == NULL) || (trans == NULL))
     {
         status = SystemP_FAILURE;
     }
@@ -2151,12 +2154,7 @@ static int32_t MMCSD_setupADMA2(MMCSD_Handle handle, MMCSD_ADMA2Descriptor *desc
     }
     if (SystemP_SUCCESS == status)
     {
-
-        dmaParams = dataSize << 16U;
-        dmaParams |= (((dataSize >> 16U) << 6U) | 0x0023U);
-
         /* Enable version 4 for 26 bit sizes */
-        CSL_REG16_FINS(&pReg->HOST_CONTROL2, MMC_CTLCFG_HOST_CONTROL2_HOST_VER40_ENA, 1U);
         CSL_REG16_FINS(&pReg->HOST_CONTROL2, MMC_CTLCFG_HOST_CONTROL2_ADMA2_LEN_MODE, 1U);
         if(obj->xferHighSpeedEn == 1)
         {
@@ -2164,29 +2162,90 @@ static int32_t MMCSD_setupADMA2(MMCSD_Handle handle, MMCSD_ADMA2Descriptor *desc
                  CSL_FMK(MMC_CTLCFG_HOST_CONTROL2_ADMA2_LEN_MODE, 1)  ;
         CSL_REG16_WR(&pReg->HOST_CONTROL2, regVal);
         }
+        CSL_REG16_FINS(&pReg->HOST_CONTROL2, MMC_CTLCFG_HOST_CONTROL2_BIT64_ADDRESSING, 1U);
+        CSL_REG16_FINS(&pReg->HOST_CONTROL2, MMC_CTLCFG_HOST_CONTROL2_HOST_VER40_ENA, 1U);
 
-        phyBufAddr = Soc_getPhyAddr(bufAddr);
+        bufAddr = (uint64_t)trans->dataBuf;
+        trans->startResidualBytes = (uint32_t)((-bufAddr) & (CacheP_CACHELINE_ALIGNMENT - 1U));
+        trans->endResidualBytes = (uint32_t)((bufAddr + dataSize) & (CacheP_CACHELINE_ALIGNMENT - 1U));
+        addr = bufAddr;
+
+        if(trans->dir == MMCSD_CMD_XFER_TYPE_READ)
+        {
+            size = dataSize - trans->endResidualBytes;
+        }
+        else
+        {
+            size = dataSize;
+        }
 
         /* Setup ADMA2 descriptor */
-        desc->dmaParams = dmaParams;
-        desc->addrLo    = (uint32_t)phyBufAddr;
-        desc->addrHi    = (phyBufAddr >> 32) & 0xFFFFFFFFU;
+        if((trans->dir == MMCSD_CMD_XFER_TYPE_READ) && (trans->startResidualBytes > 0U))
+        {
+            if(trans->startResidualBytes < size)
+            {
+                dmaParams = trans->startResidualBytes << 16U;
+                dmaParams |= (((trans->startResidualBytes >> 16U) << 6U) | 0x0021U);
+            }
+            else
+            {
+                dmaParams = trans->startResidualBytes << 16U;
+                dmaParams |= (((trans->startResidualBytes >> 16U) << 6U) | 0x0023U);
+            }
+            uint64_t phyAddr = Soc_getPhyAddr((uint64_t)trans->startResidual);
+            desc[idx].dmaParams = dmaParams;
+            desc[idx].addrLo    = (uint32_t)phyAddr;
+            desc[idx].addrHi    = (uint32_t)((phyAddr >> 32) & 0xFFFFFFFFU);
+            CacheP_inv(trans->startResidual, trans->startResidualBytes, CacheP_TYPE_ALLD);
+            addr = addr + (uint64_t)trans->startResidualBytes;
+            if(size > trans->startResidualBytes)
+            {
+                size -= trans->startResidualBytes;
+            }
+            else
+            {
+                size = 0U;
+            }
+            idx++;
+        }
+
+        if(size > 0U)
+        {
+            /* Last descriptor */
+            dmaParams = size << 16U;
+            dmaParams |= (((size >> 16U) << 6U) | 0x0021U);
+            if((trans->endResidualBytes == 0U) || (trans->dir != MMCSD_CMD_XFER_TYPE_READ))
+            {
+                dmaParams |= 2U;
+            }
+            phyBufAddr = Soc_getPhyAddr(addr);
+            desc[idx].dmaParams = dmaParams;
+            desc[idx].addrLo    = (uint32_t)phyBufAddr;
+            desc[idx].addrHi    = (uint32_t)((phyBufAddr >> 32) & 0xFFFFFFFFU);
+            idx++;
+        }
+
+        if((trans->dir == MMCSD_CMD_XFER_TYPE_READ) && (trans->endResidualBytes > 0U))
+        {
+            dmaParams = trans->endResidualBytes << 16U;
+            dmaParams |= (((trans->endResidualBytes >> 16U) << 6U) | 0x0023U);
+            uint64_t phyAddr = Soc_getPhyAddr((uint64_t)trans->endResidual);
+            desc[idx].dmaParams = dmaParams;
+            desc[idx].addrLo    = (uint32_t)phyAddr;
+            desc[idx].addrHi    = (uint32_t)((phyAddr >> 32) & 0xFFFFFFFFU);
+            CacheP_inv(trans->endResidual, trans->endResidualBytes, CacheP_TYPE_ALLD);
+            idx++;
+        }
 
         /* Set 32 bit ADMA2 */
         CSL_REG8_FINS(&pReg->HOST_CONTROL1, MMC_CTLCFG_HOST_CONTROL1_DMA_SELECT, 2U);
-        if(obj->xferHighSpeedEn == 1)
-        {
-            CSL_REG8_WR(&pReg->HOST_CONTROL1, ((1 << CSL_MMC_CTLCFG_HOST_CONTROL1_EXT_DATA_WIDTH_SHIFT) |
-                       (2 << CSL_MMC_CTLCFG_HOST_CONTROL1_DMA_SELECT_SHIFT)));
-            obj->xferHighSpeedEn = 0;
-        }
 
         phyDesc = Soc_getPhyAddr((uint64_t)desc);
 
         /* Write the descriptor address to ADMA2 Address register */
         CSL_REG64_WR(&pReg->ADMA_SYS_ADDRESS, phyDesc);
 
-        CacheP_wbInv(desc, sizeof(MMCSD_ADMA2Descriptor), CacheP_TYPE_ALL);
+        CacheP_wbInv(desc, sizeof(MMCSD_ADMA2Descriptor)*idx, CacheP_TYPE_ALL);
     }
     else
     {
@@ -2849,7 +2908,7 @@ static void MMCSD_cmdStatusPollingFxn(MMCSD_Handle handle)
     }
 }
 
-static int32_t MMCSD_xferStatusPollingFxnTimeout(MMCSD_Handle handle, uint64_t timeoutMilliSec)
+static int32_t MMCSD_xferStatusPollingFxnTimeout(MMCSD_Handle handle, MMCSD_Transaction *trans, uint64_t timeoutMilliSec)
 {
     int32_t status = SystemP_SUCCESS;
     if(handle != NULL)
@@ -2866,7 +2925,7 @@ static int32_t MMCSD_xferStatusPollingFxnTimeout(MMCSD_Handle handle, uint64_t t
             (obj->dataTimeoutError == FALSE) &&
             (obj->admaError == FALSE)) && (timeout > 0U))
         {
-            MMCSD_xferStatusPollingFxn(handle);
+            MMCSD_xferStatusPollingFxn(handle, trans);
             timeout--;
         }
 
@@ -2885,7 +2944,7 @@ static int32_t MMCSD_xferStatusPollingFxnTimeout(MMCSD_Handle handle, uint64_t t
             (obj->dataTimeoutError == FALSE) &&
             (obj->admaError == FALSE))
         {
-            MMCSD_xferStatusPollingFxn(handle);
+            MMCSD_xferStatusPollingFxn(handle, trans);
 
             if((ClockP_getTimeUsec() - curTime) > (uint64_t)timeoutMilliSec * 1000U)
             {
@@ -2903,7 +2962,7 @@ static int32_t MMCSD_xferStatusPollingFxnTimeout(MMCSD_Handle handle, uint64_t t
     return status;
 }
 
-static void MMCSD_xferStatusPollingFxn(MMCSD_Handle handle)
+static void MMCSD_xferStatusPollingFxn(MMCSD_Handle handle, MMCSD_Transaction *trans)
 {
     MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
     const MMCSD_Attrs *attrs = ((MMCSD_Config *)handle)->attrs;
@@ -2984,6 +3043,12 @@ static void MMCSD_xferStatusPollingFxn(MMCSD_Handle handle)
     {
         if(obj->xferInProgress == TRUE)
         {
+            if(trans->dir == MMCSD_CMD_XFER_TYPE_READ)
+            {
+                uint8_t *endResidualAddr = (uint8_t *)((uint64_t)trans->dataBuf + (uint64_t)((trans->blockSize * trans->blockCount) - (trans->endResidualBytes)));
+                (void) memcpy(trans->dataBuf, trans->startResidual, trans->startResidualBytes);
+                (void) memcpy(endResidualAddr, trans->endResidual, trans->endResidualBytes);
+            }
             MMCSD_halNormalIntrStatusClear(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_STS_XFER_COMPLETE_MASK);
             obj->xferComp = TRUE;
             obj->xferInProgress = FALSE;

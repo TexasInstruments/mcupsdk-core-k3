@@ -112,9 +112,7 @@ void test_main(void *args)
     /* This test fails for bus width is 1 and 4
     RUN_TEST(TestMmcsd_emmcMultipleBusWidths, 8581, NULL);
     */
-    /* This test fails for unaligned buffer R/W
     RUN_TEST(TestMmcsd_unalignedBuffersRawIo, 8690, NULL);
-    */
     RUN_TEST(TestMmcsd_openOpenFail, 8584, NULL);
     RUN_TEST(TestMmcsd_emmcSpeedSwitch, 8689, NULL);
 #if !defined (C7_CORE)

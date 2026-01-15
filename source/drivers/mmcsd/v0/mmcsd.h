@@ -61,6 +61,7 @@
 #include <kernel/dpl/HwiP.h>
 #include <drivers/hw_include/csl_types.h>
 #include <drivers/hw_include/cslr_mmcsd.h>
+#include <kernel/dpl/CacheP.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -391,6 +392,18 @@ typedef struct
 
     uint32_t status;
     /* Status of the transaction */
+
+    uint32_t startResidualBytes;
+    /* Start Residual data length in bytes */
+
+    uint32_t endResidualBytes;
+    /* Start Residual data length in bytes */
+
+    uint8_t startResidual[CacheP_CACHELINE_ALIGNMENT] __attribute__((aligned(CacheP_CACHELINE_ALIGNMENT)));
+    /* Start Residual data for unaligned buffer */
+
+    uint8_t endResidual[CacheP_CACHELINE_ALIGNMENT] __attribute__((aligned(CacheP_CACHELINE_ALIGNMENT)));
+    /* End Residual data for unaligned buffer */
 
 } MMCSD_Transaction;
 

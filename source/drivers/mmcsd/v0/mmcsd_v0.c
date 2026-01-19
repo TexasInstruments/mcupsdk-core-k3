@@ -190,7 +190,7 @@ static int32_t MMCSD_retune(MMCSD_Handle handle);
 /* PHY related functions */
 static int32_t MMCSD_phyInit(uint32_t ssBaseAddr, uint32_t phyType);
 static inline void MMCSD_phyDisableDLL(uint32_t ssBaseAddr);
-static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyType, uint32_t phyMode, uint32_t phyClkFreq, uint32_t driverImpedance, uint8_t tunedItap);
+static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyType, uint32_t phyMode, uint32_t phyClkFreq, uint32_t driverImpedance, uint8_t tunedItap, uint32_t cardType);
 static int32_t MMCSD_phyTuneManual(MMCSD_Handle handle, uint8_t *tunedItap, uint8_t tuningCount);
 static int32_t MMCSD_phyTuneManualEMMC(MMCSD_Handle handle, uint8_t *tunedItap);
 static int32_t MMCSD_phyTuneAuto(MMCSD_Handle handle);
@@ -486,7 +486,7 @@ void MMCSD_close(MMCSD_Handle handle)
 
                 status |= MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, MMCSD_REFERENCE_CLOCK_52M, 0U);
 
-                status |= MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, MMCSD_PHY_MODE_HSSDR50, MMCSD_REFERENCE_CLOCK_52M, attrs->phyDriverType, 0U);
+                status |= MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, MMCSD_PHY_MODE_HSSDR50, MMCSD_REFERENCE_CLOCK_52M, attrs->phyDriverType, 0U, attrs->cardType);
             }
 
             /* Switching to Legacy SDR mode */
@@ -502,7 +502,7 @@ void MMCSD_close(MMCSD_Handle handle)
 
             status |= MMCSD_halSetBusFreq(attrs->ctrlBaseAddr, attrs->inputClkFreq, 400000, 0U);
 
-            status |= MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, MMCSD_PHY_MODE_SDR25, 400000, attrs->phyDriverType, 0U);
+            status |= MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, MMCSD_PHY_MODE_SDR25, 400000, attrs->phyDriverType, 0U, attrs->cardType);
 
             /* Set bus width to 1 bit mode */
             switchArg = (MMCSD_ECSD_ACCESS_MODE << 24U) | (MMCSD_ECSD_BUS_WIDTH_INDEX << 16U) | (((0U << MMCSD_ECSD_BUS_WIDTH_ES_SHIFT) | MMCSD_ECSD_BUS_WIDTH_1BIT) << 8U);
@@ -1356,7 +1356,7 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
 
     if(SystemP_SUCCESS == status)
     {
-        status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, MMCSD_PHY_MODE_SDR25, 400000, attrs->phyDriverType, 0U);
+        status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, MMCSD_PHY_MODE_SDR25, 400000, attrs->phyDriverType, 0U, attrs->cardType);
     }
 
     /* Controller initialization done, moving to card init */
@@ -2424,7 +2424,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
     if(SystemP_SUCCESS == status)
     {
         /* Enable DLL */
-        status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, phyClkFreq, attrs->phyDriverType, tunedItap);
+        status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, phyClkFreq, attrs->phyDriverType, tunedItap, attrs->cardType);
 
         /* Tune the PHY */
         if(attrs->tuningType == MMCSD_PHY_TUNING_TYPE_AUTO)
@@ -2477,7 +2477,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
 
         if(status == SystemP_SUCCESS)
         {
-            status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, MMCSD_REFERENCE_CLOCK_52M, attrs->phyDriverType, tunedItap);
+            status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, MMCSD_REFERENCE_CLOCK_52M, attrs->phyDriverType, tunedItap, attrs->cardType);
         }
 
         if(SystemP_SUCCESS == status)
@@ -2514,7 +2514,7 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
 
             if(status == SystemP_SUCCESS)
             {
-                status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, MMCSD_REFERENCE_CLOCK_200M, attrs->phyDriverType, tunedItap);
+                status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, MMCSD_REFERENCE_CLOCK_200M, attrs->phyDriverType, tunedItap, attrs->cardType);
             }
 
         }
@@ -2631,7 +2631,7 @@ static int32_t MMCSD_retune(MMCSD_Handle handle)
 
             if(status == SystemP_SUCCESS)
             {
-                status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, phyClkFreq, attrs->phyDriverType, tunedItap);
+                status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, phyClkFreq, attrs->phyDriverType, tunedItap, attrs->cardType);
             }
 
             if(status == SystemP_SUCCESS)
@@ -3293,7 +3293,7 @@ static inline void MMCSD_phyDisableDLL(uint32_t ssBaseAddr)
     CSL_REG32_FINS(&ssReg->PHY_CTRL_1_REG, MMC_SSCFG_PHY_CTRL_1_REG_ENDLL, 0U);
 }
 
-static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyType, uint32_t phyMode, uint32_t phyClkFreq, uint32_t driverImpedance, uint8_t tunedItap)
+static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyType, uint32_t phyMode, uint32_t phyClkFreq, uint32_t driverImpedance, uint8_t tunedItap, uint32_t cardType)
 {
     int32_t status = SystemP_SUCCESS;
     const CSL_mmc_sscfgRegs *ssReg = (const CSL_mmc_sscfgRegs *)ssBaseAddr;
@@ -3406,7 +3406,7 @@ static int32_t MMCSD_phyConfigure(uint32_t ssBaseAddr, uint32_t phyType, uint32_
         /* Set CLKBUFSEL*/
         CSL_REG32_FINS(&ssReg->PHY_CTRL_5_REG, MMC_SSCFG_PHY_CTRL_5_REG_CLKBUFSEL, 7U);
 
-        MMCSD_phyGetTapValues(&outputTapDelaySel, &outputTapDelayVal, &inputTapDelaySel, &inputTapDelayVal, phyMode, tunedItap);
+        MMCSD_phyGetTapValues(&outputTapDelaySel, &outputTapDelayVal, &inputTapDelaySel, &inputTapDelayVal, phyMode, tunedItap, cardType);
 
         /* Disable tap window before modifying the receiver clock delay's, so as to not affect the configured delay's */
         if(outputTapDelaySel | inputTapDelaySel)

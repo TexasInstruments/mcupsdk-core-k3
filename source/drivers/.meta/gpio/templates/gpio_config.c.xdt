@@ -46,6 +46,9 @@ void GPIO_init()
     %}
 
     GPIO_setDirMode(baseAddr, `instance.$name.toUpperCase()`_PIN, `instance.$name.toUpperCase()`_DIR);
+    %if (instance.pinDir == "INPUT") {
+    GPIO_setTrigType(baseAddr, `instance.$name.toUpperCase()`_PIN, `instance.$name.toUpperCase()`_TRIG_TYPE);
+    %}
     % }
   %}
 }

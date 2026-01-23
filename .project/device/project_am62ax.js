@@ -216,6 +216,7 @@ const example_file_list = [
     "test/drivers/ipc_notify/.project/project.js",
     "test/drivers/ipc_notify_c7x/.project/project.js",
     "test/drivers/ipc_rpmsg/.project/project.js",
+    "test/drivers/ipc_rpmsg_linux/.project/project.js",
     "test/drivers/ipc_rpmsg_c7x/.project/project.js",
     "test/drivers/mcasp/mcasp_auxclk_sel/.project/project.js",
     "test/drivers/mcasp/mcasp_low_latency/.project/project.js",

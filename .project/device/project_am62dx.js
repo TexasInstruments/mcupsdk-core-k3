@@ -320,7 +320,8 @@ const example_file_list = [
     "test/security/crypto/test_sa3ul_aes/.project/project.js",
     "test/security/crypto/test_sa3ul_rng/.project/project.js",
     "test/security/crypto/test_sa3ul_sha/.project/project.js",
-    "test/drivers/udma/test_udma_system/.project/project.js"
+    "test/drivers/udma/test_udma_system/.project/project.js",
+    "test/drivers/mcan/.project/project.js",
 ];
 
 function getProjectSpecCpu(cpu) {

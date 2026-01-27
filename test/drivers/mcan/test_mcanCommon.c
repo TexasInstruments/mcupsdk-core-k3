@@ -161,9 +161,14 @@
 #define CONFIG_MCAN_TS_INTRNUM                      (CSLR_R5FSS0_CORE0_INTR_MCAN0_EXT_TS_ROLLOVER_LVL_INT_0)
 #elif defined (SOC_AM62X)
 #define CONFIG_MCAN_TS_INTRNUM                      (CSLR_MCU_M4FSS0_CORE0_NVIC_MCU_MCAN0_COMMON_0_MCANSS_EXT_TS_ROLLOVER_LVL_INT_0)
+#elif defined (SOC_AM275X)
+#define CONFIG_MCAN_TS_INTRNUM                      (CSLR_R5FSS0_CORE0_INTR_MCAN0_MCANSS_EXT_TS_ROLLOVER_LVL_INT_0)
+#elif defined (SOC_AM62DX)
+#define CONFIG_MCAN_TS_INTRNUM                      (CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_MCAN0_MCANSS_EXT_TS_ROLLOVER_LVL_INT_0)
 #else
 #define CONFIG_MCAN_TS_INTRNUM                      (CSLR_R5FSS0_CORE0_INTR_MCAN0_MCANSS_EXT_TS_ROLLOVER_LVL_INT_0)
 #endif
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -189,7 +194,7 @@ int32_t mcanTestFunc(st_mcanTestcaseParams_t *testParams);
  *
  * \retval  status      configuration status.
  */
-int32_t App_mcanRegisterInterrupt();
+int32_t App_mcanRegisterInterrupt(void);
 int32_t App_mcanUnRegisterInterrupt();
 
 /**
@@ -305,9 +310,6 @@ uint32_t App_mcangetMsgObjSize(uint32_t elemSize);
  */
 uint32_t App_mcanGetDataSize(uint32_t dlc);
 
-static int32_t App_mcanRegIntrInternal(void);
-static int32_t App_mcanConfigureIrqRouter (uint32_t inputIntrNum, uint32_t outputIntrNum);
-
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -328,7 +330,7 @@ extern uint32_t bitTimingsListSize;
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
-int32_t App_mcanRegisterInterrupt(uint32_t modIdx)
+int32_t App_mcanRegisterInterrupt(void)
 {
     int32_t           status = CSL_PASS;
     HwiP_Params       hwiPrms;
@@ -337,6 +339,7 @@ int32_t App_mcanRegisterInterrupt(uint32_t modIdx)
     HwiP_Params_init(&hwiPrms);
     hwiPrms.intNum      = CONFIG_MCAN0_INTR;
     hwiPrms.callback    = &App_mcanIntr0ISR;
+    hwiPrms.priority = 4;
     status              = HwiP_construct(&gMcanHwiObject, &hwiPrms);
     DebugP_assert(status == SystemP_SUCCESS);
 
@@ -344,16 +347,18 @@ int32_t App_mcanRegisterInterrupt(uint32_t modIdx)
     HwiP_Params_init(&hwiPrms);
     hwiPrms.intNum      = CONFIG_MCAN0_INTR + 1U;
     hwiPrms.callback    = &App_mcanIntr1ISR;
+    hwiPrms.priority = 4;
     status              = HwiP_construct(&gMcanHwiObject3, &hwiPrms);
     DebugP_assert(status == SystemP_SUCCESS);
-
+#if !defined (A53_CORE)
     /* Register MCAN1 interrupt */
     HwiP_Params_init(&hwiPrms);
     hwiPrms.intNum      = CONFIG_MCAN1_INTR;
     hwiPrms.callback    = &App_mcanIntr0ISR;
+    hwiPrms.priority = 4;
     status              = HwiP_construct(&gMcanHwiObject1, &hwiPrms);
     DebugP_assert(status == SystemP_SUCCESS);
-
+#endif
 #if defined (SOC_AM263X)
     /* Register MCAN0 interrupt */
     HwiP_Params_init(&hwiPrms);
@@ -385,15 +390,19 @@ int32_t App_mcanRegisterInterrupt(uint32_t modIdx)
     return status;
 }
 
-int32_t App_mcanUnRegisterInterrupt(uint32_t modIdx)
+int32_t App_mcanUnRegisterInterrupt(void)
 {
     int32_t           status = CSL_PASS;
 
     /* De-Construct Tx/Rx Semaphore objects */
     HwiP_destruct(&gMcanHwiObject);
+#if !defined (A53_CORE)
     HwiP_destruct(&gMcanHwiObject1);
-    HwiP_destruct(&gMcanHwiObject2);
+#endif
     HwiP_destruct(&gMcanHwiObject3);
+#if !defined (SOC_AM273X) && !defined (SOC_AWR294X)
+    HwiP_destruct(&gMcanHwiObject2);
+#endif
 #if defined (SOC_AM263X)
     HwiP_destruct(&gMcanHwiObject4);
     HwiP_destruct(&gMcanHwiObject5);

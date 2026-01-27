@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -33,77 +33,28 @@
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
-#include <inttypes.h>
-#include <unity.h>
+
+#include <board/ioexp/ioexp_tca6424.h>
 #include <kernel/dpl/DebugP.h>
-#include <kernel/dpl/ClockP.h>
-#include <kernel/dpl/HwiP.h>
-#include <kernel/dpl/SemaphoreP.h>
-#include <kernel/dpl/CacheP.h>
-#include <drivers/mcan.h>
-#include "test_mcanTestCases.h"
-#include "ti_drivers_config.h"
-#include "ti_drivers_open_close.h"
-#include "ti_board_open_close.h"
 
 /* ========================================================================== */
-/*                         Structure Declarations                             */
+/*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-/* None */
+/* MCAN STB pins from I/O expander */
+
+#define IO_EXP_MCAN0_STB_PIN  (0x0BU)
+#define IO_EXP_MCAN0_EN_PIN   (0x09U)
 
 /* ========================================================================== */
-/*                          Function Declarations                             */
+/*                          Function Definitions                              */
 /* ========================================================================== */
-static void mcanRunTestcase(void *args);
-int32_t test_mcanEnableTransceiver(void);
 
-void test_main(void *args)
+int32_t test_mcanEnableTransceiver(void)
 {
-    uint32_t  testcaseIdx, status;
-    st_mcanTestcaseParams_t *testParams;
+    int32_t status = SystemP_SUCCESS;
 
-    status = test_mcanEnableTransceiver();
-    if (status != SystemP_SUCCESS)
-    {
-        DebugP_log("Transceiver enable failed\r\n");
-        return;
-    }
+    /* The MCAN transceiver is enabled by default */
 
-    UNITY_BEGIN();
-
-    /* Run all tests */
-    for(testcaseIdx = 0; testcaseIdx < MCAN_NUM_TESTCASES; testcaseIdx++)
-    {
-        /* Initialization for tests */
-        testParams = &gMcanTestcaseParams[testcaseIdx];
-        RUN_TEST(mcanRunTestcase, gMcanTestcaseParams[testcaseIdx].testcaseId, (void*)testParams);
-        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, gMcanTestcaseParams[testcaseIdx].testResult);
-    }
-
-    UNITY_END();
-
-    /* Close drivers */
-    Board_driversClose();
-    Drivers_close();
-
-    return;
-}
-
-/* Unity framework required information */
-void setUp(void)
-{
-}
-
-void tearDown(void)
-{
-}
-
-static void mcanRunTestcase(void *args)
-{
-    st_mcanTestcaseParams_t *testParams = (st_mcanTestcaseParams_t*)args;
-    st_mcanTxApp_main(testParams);
+    return status;
 }

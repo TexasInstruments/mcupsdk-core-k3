@@ -50,7 +50,6 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 #define MCAN_NUM_TESTCASES               (sizeof (gMcanTestcaseParams) / sizeof (st_mcanTestcaseParams_t))
-#define AVV_TEST_ENABLE                  (0U)
 #define MCAN_MANUAL_TEST_ENABLE          (0U)
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -69,7 +68,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
      * testType,
      */
     {
-        TEST_ENABLE, 1234U,
+        TEST_ENABLE, 10222U,
         "None",
         "MCAN: CAN FD Mode with Bit Rate Switching ON And Bitrate 1MBps/5MBps",
         "None", "None",
@@ -98,7 +97,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1235U,
+        TEST_ENABLE, 10223U,
         "None",
         "MCAN: Internal Loopback, High Priority And Bitrate 1MBps/2.5MBps",
         "None", "None",
@@ -127,7 +126,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1236U,
+        TEST_ENABLE, 10224U,
         "None",
         "MCAN: Internal Loopback, High Priority And Bitrate 250Kbps/5MBps",
         "None", "None",
@@ -156,7 +155,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1237U,
+        TEST_ENABLE, 10225U,
         "None",
         "MCAN: Internal Loopback, High Priority And Bitrate 125Kbps/5MBps",
         "None", "None",
@@ -185,7 +184,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1239U,
+        TEST_ENABLE, 10226U,
         "None",
         "MCAN: CAN FD Mode with Bit Rate Switching ON Extended Id Test",
         "None", "None",
@@ -214,7 +213,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1240U,
+        TEST_ENABLE, 10227U,
         "None",
         "MCU MCAN 0: Classic CAN Mode",
         "None", "None",
@@ -243,7 +242,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1242U,
+        TEST_ENABLE, 10228U,
         "None",
         "MCU MCAN 0: Classic CAN Mode",
         "None", "None",
@@ -272,7 +271,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1243U,
+        TEST_ENABLE, 10229U,
         "None",
         "MCAN: Tx Mixed Config. With Buffer and Queue",
         "None", "None",
@@ -301,7 +300,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1244U,
+        TEST_ENABLE, 10230U,
         "None",
         "MCAN: Tx Mixed Config. With Buffer and FIFO",
         "None", "None",
@@ -330,7 +329,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1245U,
+        TEST_ENABLE, 10231U,
         "None",
         "MCAN: CAN FD Mode with Bit Rate Switching ON And MAX TX Buffer Test",
         "None", "None",
@@ -359,7 +358,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1246U,
+        TEST_ENABLE, 10232U,
         "None",
         "MCAN: CAN FD Mode with Bit Rate Switching ON And RX Buffer Test",
         "None", "None",
@@ -388,7 +387,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1247U,
+        TEST_ENABLE, 10271U,
         "None",
         "MCAN: CAN FD Mode with Bit Rate Switching OFF, RX FIFO 0 Test",
         "None", "None",
@@ -416,8 +415,9 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         PRINT_ENABLE,
         (ST_TT_SANITY),
     },
+#if !defined(R5_FREERTOS_CORE)
     {
-        TEST_ENABLE, 1248U,
+        TEST_ENABLE, 10233U,
         "None",
         "MCAN: Rx FIFO 1 Test mode",
         "None", "None",
@@ -446,7 +446,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1249U,
+        TEST_ENABLE, 10234U,
         "None",
         "MCAN: Rx FIFO 0 Message Lost Test",
         "In this TC, no filters will be configured and all incoming messages will be stored into FIFO(by accepting non-matching frame) for later comparison.", "None",
@@ -475,7 +475,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1250U,
+        TEST_ENABLE, 10235U,
         "None",
         "MCAN: Rx FIFO 0 Message Lost Test",
         "In this TC, no filters will be configured and all incoming messages will be stored into FIFO(by accepting non-matching frame) for later comparison.", "None",
@@ -503,8 +503,9 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         PRINT_ENABLE,
         (ST_TT_SANITY),
     },
+#endif
     {
-        TEST_ENABLE, 1251U,
+        TEST_ENABLE, 10236U,
         "None",
         "MCAN: CAN FD Mode with Bit Rate Switching ON And MAX TX Buffer Test",
         "None", "None",
@@ -533,7 +534,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 2022U,
+        TEST_ENABLE, 10237U,
         "None",
         "MCAN: Tx and Rx Throughput Standard ID",
         "None", "None",
@@ -562,7 +563,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 2023U,
+        TEST_ENABLE, 10238U,
         "None",
         "MCAN: Tx and Rx Throughput Extended ID",
         "None", "None",
@@ -591,7 +592,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1252U,
+        TEST_ENABLE, 10239U,
         "None",
         "MCAN: High Priority Messages",
         "None", "None",
@@ -620,7 +621,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1254U,
+        TEST_ENABLE, 10272U,
         "None",
         "MCAN: Message Cancel Test",
         "None", "None",
@@ -649,7 +650,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1255U,
+        TEST_ENABLE, 10273U,
         "None",
         "MCAN: LOOPBACK Automatic Retransmission Test",
         "None", "None",
@@ -678,7 +679,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1258U,
+        TEST_ENABLE, 10240U,
         "None",
         "MCAN: LOOPBACK Transmitter Delay Compensation Test",
         "None", "None",
@@ -707,7 +708,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1260U,
+        TEST_ENABLE, 10274U,
         "None",
         "MCU MCAN 0: Classic CAN Mode",
         "None", "None",
@@ -736,7 +737,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1262U,
+        TEST_ENABLE, 10275U,
         "None",
         "MCAN: Revision ID Test",
         "None", "None",
@@ -765,7 +766,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1263U,
+        TEST_ENABLE, 10241U,
         "None",
         "MCAN: Pin State",
         "None", "None",
@@ -794,7 +795,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1264U,
+        TEST_ENABLE, 10242U,
         "None",
         "MCAN: LOOPBACK Endianess Test",
         "None", "None",
@@ -823,7 +824,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1265U,
+        TEST_ENABLE, 10243U,
         "None",
         "MCAN: Rx FIFO Block Mode/Overwrite mode",
         "In this TC, no filters will be configured and all incoming messages will be stored into FIFO(by accepting non-matching frame) for later comparison.", "None",
@@ -852,7 +853,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1266U,
+        TEST_ENABLE, 10244U,
         "None",
         "MCAN: Acceptance Filter Range Filter Test",
         "None", "None",
@@ -881,7 +882,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1267U,
+        TEST_ENABLE, 10245U,
         "None",
         "MCAN: CAN FD Mode with Bit Rate Switching ON, DUAL FILTER ID Test",
         "None", "None",
@@ -910,7 +911,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1268U,
+        TEST_ENABLE, 10246U,
         "None",
         "MCAN: Internal Loopback, Classic BitMask Filter Test 1MBps/2.5MBps",
         "None", "None",
@@ -938,8 +939,9 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         PRINT_ENABLE,
         (ST_TT_SANITY),
     },
+#if !defined (A53_CORE)
     {
-        TEST_ENABLE, 1633U,
+        TEST_ENABLE, 10247U,
         "None",
         "MCAN: External Time-Stamp Code Coverage Improvement Test",
         "None", "None",
@@ -967,8 +969,9 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         PRINT_ENABLE,
         (ST_TT_SANITY),
     },
+#endif
     {
-        TEST_ENABLE, 1634,
+        TEST_ENABLE, 10248U,
         "None",
         "MCAN: Time Stamp Counter Reset Code Coverage Improvement Test",
         "None", "None",
@@ -997,7 +1000,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1269U,
+        TEST_ENABLE, 10249U,
         "None",
         "MCAN: CAN FD Mode with Bit Rate Switching ON",
         "None", "None",
@@ -1026,7 +1029,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1261U,
+        TEST_ENABLE, 10250U,
         "None",
         "MCAN: Clock Stop Request",
         "None", "None",
@@ -1055,7 +1058,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1635U,
+        TEST_ENABLE, 10251U,
         "None",
         "MCAN: Code Coverage Enhancement Test, Error Test",
         "None", "None",
@@ -1084,7 +1087,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 1636U,
+        TEST_ENABLE, 10253U,
         "None",
         "MCAN: Code Coverage Enhancement Test, Error Test",
         "None", "None",
@@ -1113,7 +1116,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         (ST_TT_SANITY),
     },
     {
-        TEST_ENABLE, 4104U,
+        TEST_ENABLE, 10254U,
         "None",
         "MCAN: Tx and Rx Acceptance Filter Test with SFID as 0xFFFFFFFF",
         "None", "None",
@@ -1220,489 +1223,6 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
             2U, /* standard ID message filter number */
             2U, /* extended ID message filter number */
             &canTxMSG[2U], /* tx Buffer elements/Tx message */
-            &canSTDIDFilter[0U], /* standard message ID filters */
-            &canEXTIDFilter[0U],  /* extended message ID filters */
-            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),  /* Interrupt Enable/Disable Mask */
-            (MCAN_INTR_MASK_ALL),  /* Interrupt Line Select Mask */
-            (MCAN_INTR_LINE_NUM_0)  /* Interrupt Line Select */
-        },
-        PRINT_ENABLE,
-        (ST_TT_SANITY),
-    },
-#endif
-
-#if (AVV_TEST_ENABLE == 1U)
-    {
-        TEST_ENABLE, 21U,
-        "None",
-        "MCAN: CAN FD Mode latency measure",
-        "None", "None",
-        "1.Access MCAN RAM and Registers measure latency.",
-        IPU,
-        {
-            (MCAN_TEST_TYPE_INTERNAL_LOOBACK), /* testType */
-            2U, /* iteration count for tx */
-            &canFDBitTimings[0U], /* mcan module bit timing parameters */
-            &canFDInitParams[0U], /* mcan module initialization parameters */
-            &canFDConfigParams[1U], /* mcan module configuration parameters */
-            &canFDRAMConfigParams[0U], /* mcan module MSG RAM configuration parameters */
-            &canFDECCConfigParams[0U], /* mcan module ECC configuration parameters */
-            &canFDECCErrForceConfigParams[0U], /* mcan module ECC Error Force parameters */
-            1U, /* tx message number */
-            2U, /* standard ID message filter number */
-            2U, /* extended ID message filter number */
-            &canTxMSG[2U], /* tx Buffer elements/Tx message */
-            &canSTDIDFilter[0U], /* standard message ID filters */
-            &canEXTIDFilter[0U],  /* extended message ID filters */
-            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),  /* Interrupt Enable/Disable Mask */
-            (MCAN_INTR_MASK_ALL),  /* Interrupt Line Select Mask */
-            (MCAN_INTR_LINE_NUM_0)  /* Interrupt Line Select */
-        },
-        PRINT_ENABLE,
-        (ST_TT_SANITY),
-    },
-    {
-        TEST_ENABLE,22U,
-        "None",
-        "MCAN: Throughput=>EXT ID",
-        "None", "None",
-        "Sent messages shall match with received message and measured frames per seconds should be 85% of the theoretical.",
-        IPU,
-        {
-#if defined (SOC_AM65XX) || defined (SOC_J721E) || defined (SOC_AM64X)
-            (MCAN_TEST_TYPE_B2B), /* testType */
-#else
-            (MCAN_TEST_TYPE_B2B), /* testType */
-#endif
-            6000U, /* iteration count for tx */
-            &canFDBitTimings[0U], /* mcan module bit timing parameters */
-            &canFDInitParams[0U], /* mcan module initialization parameters */
-            &canFDConfigParams[0U], /* mcan module configuration parameters */
-            &canFDRAMConfigParams[0U], /* mcan module MSG RAM configuration parameters */
-            &canFDECCConfigParams[0U], /* mcan module ECC configuration parameters */
-            &canFDECCErrForceConfigParams[0U], /* mcan module ECC Error Force parameters */
-            1U, /* tx message number */
-            2U, /* standard ID message filter number */
-            2U, /* extended ID message filter number */
-            &canTxMSG[1U], /* tx Buffer elements/Tx message */
-            &canSTDIDFilter[0U], /* standard message ID filters */
-            &canEXTIDFilter[0U],  /* extended message ID filters */
-            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),  /* Interrupt Enable/Disable Mask */
-            (MCAN_INTR_MASK_ALL),  /* Interrupt Line Select Mask */
-            (MCAN_INTR_LINE_NUM_0)  /* Interrupt Line Select */
-        },
-        PRINT_ENABLE,
-        (ST_TT_PERFORMANCE),
-    },
-    {
-        TEST_ENABLE, 23U,
-        "None",
-        "MCAN: Tx and Rx Throughput",
-        "None", "None",
-        "Sent messages shall match with received message and measured frames per seconds should be 85% of the theoretical.",
-        IPU,
-        {
-#if defined (SOC_AM65XX) || defined (SOC_J721E) || defined (SOC_AM64X)
-            (MCAN_TEST_TYPE_INTERNAL_LOOBACK), /* testType */
-#else
-            (MCAN_TEST_TYPE_B2B), /* testType */
-#endif
-            60U, /* iteration count for tx */
-            &canFDBitTimings[0U], /* mcan module bit timing parameters */
-            &canFDInitParams[0U], /* mcan module initialization parameters */
-            &canFDConfigParams[2U], /* mcan module configuration parameters */
-            &canFDRAMConfigParams[0U], /* mcan module MSG RAM configuration parameters */
-            &canFDECCConfigParams[0U], /* mcan module ECC configuration parameters */
-            &canFDECCErrForceConfigParams[0U], /* mcan module ECC Error Force parameters */
-            1U, /* tx message number */
-            2U, /* standard ID message filter number */
-            2U, /* extended ID message filter number */
-            &canTxMSG[1U], /* tx Buffer elements/Tx message */
-            &canSTDIDFilter[0U], /* standard message ID filters */
-            &canEXTIDFilter[0U],  /* extended message ID filters */
-            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),  /* Interrupt Enable/Disable Mask */
-            (MCAN_INTR_MASK_ALL),  /* Interrupt Line Select Mask */
-            (MCAN_INTR_LINE_NUM_0)  /* Interrupt Line Select */
-        },
-        PRINT_ENABLE,
-        (ST_TT_PERFORMANCE),
-    },
-    {
-        TEST_ENABLE, 24U,
-        "None",
-        "MCAN: Message Arbitration",
-        "In this TC, no filters will be configured and all incoming messages will be stored into FIFO(by accepting non-matching frame) for later comparison.", "None",
-        "1.Sent message shall match with received message. 2.Tx Event message marker shall match with sent message.",
-        IPU,
-        {
-            (MCAN_TEST_TYPE_INTERNAL_LOOBACK), /* testType */
-            1U, /* iteration count for tx */
-            &canFDBitTimings[0U], /* mcan module bit timing parameters */
-            &canFDInitParams[0U], /* mcan module initialization parameters */
-            &canFDConfigParams[1U], /* mcan module configuration parameters */
-            &canFDRAMConfigParams[0U], /* mcan module MSG RAM configuration parameters */
-            &canFDECCConfigParams[0U], /* mcan module ECC configuration parameters */
-            &canFDECCErrForceConfigParams[0U], /* mcan module ECC Error Force parameters */
-            4U, /* tx message number */
-            0U, /* standard ID message filter number */
-            0U, /* extended ID message filter number */
-            &canTxMSG[11U], /* tx Buffer elements/Tx message */
-            &canSTDIDFilter[0U], /* standard message ID filters */
-            &canEXTIDFilter[0U],  /* extended message ID filters */
-            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),  /* Interrupt Enable/Disable Mask */
-            (MCAN_INTR_MASK_ALL),  /* Interrupt Line Select Mask */
-            (MCAN_INTR_LINE_NUM_0)  /* Interrupt Line Select */
-        },
-        PRINT_ENABLE,
-        (ST_TT_SANITY),
-    },
-    {
-        TEST_ENABLE, 25U,
-        "None",
-        "MCAN: Rx FIFO Block Mode/Overwrite mode",
-        "In this TC, no filters will be configured and all incoming messages will be stored into FIFO(by accepting non-matching frame) for later comparison.", "None",
-        "1. In Blocking Mode, after FIFO(FIFO1) full, new message shall be rejected. 2. In Overwrite Mode, after FIFO(FIFO0) full, new message shall be overwritten on oldest message.",
-        IPU,
-        {
-            (MCAN_TEST_TYPE_INTERNAL_LOOBACK), /* testType */
-            1U, /* iteration count for tx */
-            &canFDBitTimings[0U], /* mcan module bit timing parameters */
-            &canFDInitParams[0U], /* mcan module initialization parameters */
-            &canFDConfigParams[1U], /* mcan module configuration parameters */
-            &canFDRAMConfigParams[2U], /* mcan module MSG RAM configuration parameters */
-            &canFDECCConfigParams[0U], /* mcan module ECC configuration parameters */
-            &canFDECCErrForceConfigParams[0U], /* mcan module ECC Error Force parameters */
-            1U, /* tx message number */
-            0U, /* standard ID message filter number */
-            0U, /* extended ID message filter number */
-            &canTxMSG[15U], /* tx Buffer elements/Tx message */
-            &canSTDIDFilter[0U], /* standard message ID filters */
-            &canEXTIDFilter[0U],  /* extended message ID filters */
-            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),  /* Interrupt Enable/Disable Mask */
-            (MCAN_INTR_MASK_ALL),  /* Interrupt Line Select Mask */
-            (MCAN_INTR_LINE_NUM_0)  /* Interrupt Line Select */
-        },
-        PRINT_ENABLE,
-        (ST_TT_SANITY),
-    },
-    {
-        TEST_ENABLE, 26U,
-        "None",
-        "MCAN: Tx and Rx Throughput: Classic CAN",
-        "None", "None",
-        "Sent messages shall match with received message and measured frames per seconds should be 85% of the theoretical.",
-        IPU,
-        {
-#if defined (SOC_AM65XX) || defined (SOC_J721E) || defined (SOC_AM64X)
-            (MCAN_TEST_TYPE_INTERNAL_LOOBACK), /* testType */
-#else
-            (MCAN_TEST_TYPE_B2B), /* testType */
-#endif
-            60U, /* iteration count for tx */
-            &canFDBitTimings[0U], /* mcan module bit timing parameters */
-            &canFDInitParams[0U], /* mcan module initialization parameters */
-            &canFDConfigParams[2U], /* mcan module configuration parameters */
-            &canFDRAMConfigParams[0U], /* mcan module MSG RAM configuration parameters */
-            &canFDECCConfigParams[0U], /* mcan module ECC configuration parameters */
-            &canFDECCErrForceConfigParams[0U], /* mcan module ECC Error Force parameters */
-            1U, /* tx message number */
-            2U, /* standard ID message filter number */
-            0U, /* extended ID message filter number */
-            &canTxMSG[16U], /* tx Buffer elements/Tx message */
-            &canSTDIDFilter[0U], /* standard message ID filters */
-            &canEXTIDFilter[1U],  /* extended message ID filters */
-            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),  /* Interrupt Enable/Disable Mask */
-            (MCAN_INTR_MASK_ALL),  /* Interrupt Line Select Mask */
-            (MCAN_INTR_LINE_NUM_0)  /* Interrupt Line Select */
-        },
-        PRINT_ENABLE,
-        (ST_TT_PERFORMANCE),
-    },
-    {
-        TEST_ENABLE, 27U,
-        "None",
-        "MCAN: DMA Events - Classic CAN",
-        "None", "None",
-        "Sent messages shall match with received message. ",
-        IPU,
-        {
-#if defined (SOC_AM65XX) || defined (SOC_J721E) || defined (SOC_AM64X)
-            (MCAN_TEST_TYPE_INTERNAL_LOOBACK), /* testType */
-#else
-            (MCAN_TEST_TYPE_INTERNAL_LOOBACK), /* testType */
-#endif
-            100U, /* iteration count for tx */
-            &canFDBitTimings[0U], /* mcan module bit timing parameters */
-            &canFDInitParams[0U], /* mcan module initialization parameters */
-            &canFDConfigParams[1U], /* mcan module configuration parameters */
-            &canFDRAMConfigParams[0U], /* mcan module MSG RAM configuration parameters */
-            &canFDECCConfigParams[0U], /* mcan module ECC configuration parameters */
-            &canFDECCErrForceConfigParams[0U], /* mcan module ECC Error Force parameters */
-            1U, /* tx message number */
-            2U, /* standard ID message filter number */
-            2U, /* extended ID message filter number */
-            &canTxMSG[16U], /* tx Buffer elements/Tx message */
-            &canSTDIDFilter[0U], /* standard message ID filters */
-            &canEXTIDFilter[1U],  /* extended message ID filters */
-            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND & ~MCAN_INTR_SRC_BIT_ERR_UNCORRECTED & ~MCAN_INTR_SRC_BIT_ERR_CORRECTED),  /* Interrupt Enable/Disable Mask */
-            (MCAN_INTR_MASK_ALL),  /* Interrupt Line Select Mask */
-            (MCAN_INTR_LINE_NUM_0)  /* Interrupt Line Select */
-        },
-        PRINT_ENABLE,
-        (ST_TT_FULL),
-    },
-    {
-        TEST_ENABLE, 99U,
-        "None",
-        "User defined test",
-        "None", "None",
-        "None",
-        IPU,
-        {
-            (MCAN_TEST_TYPE_B2B), /* testType */
-            2U, /* iteration count for tx */
-            &canFDBitTimings[0U], /* mcan module bit timing parameters */
-            &canFDInitParams[0U], /* mcan module initialization parameters */
-            &canFDConfigParams[0U], /* mcan module configuration parameters */
-            &canFDRAMConfigParams[0U], /* mcan module MSG RAM configuration parameters */
-            &canFDECCConfigParams[0U], /* mcan module ECC configuration parameters */
-            &canFDECCErrForceConfigParams[0U], /* mcan module ECC Error Force parameters */
-            1U, /* tx message number */
-            2U, /* standard ID message filter number */
-            2U, /* extended ID message filter number */
-            &canTxMSG[0U], /* tx Buffer elements/Tx message */
-            &canSTDIDFilter[0U], /* standard message ID filters */
-            &canEXTIDFilter[0U],  /* extended message ID filters */
-            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS),  /* Interrupt Enable/Disable Mask */
-            (MCAN_INTR_MASK_ALL),  /* Interrupt Line Select Mask */
-            (MCAN_INTR_LINE_NUM_0)  /* Interrupt Line Select */
-        },
-        PRINT_ENABLE,
-        (ST_TT_SANITY),
-    },
-    {
-        TEST_ENABLE, 100U,
-        "None",
-        "User defined test",
-        "None", "None",
-        "None",
-        IPU,
-        {
-            (MCAN_TEST_TYPE_INTERNAL_LOOBACK), /* testType */
-            2U, /* iteration count for tx */
-            &canFDBitTimings[0U], /* mcan module bit timing parameters */
-            &canFDInitParams[0U], /* mcan module initialization parameters */
-            &canFDConfigParams[0U], /* mcan module configuration parameters */
-            &canFDRAMConfigParams[0U], /* mcan module MSG RAM configuration parameters */
-            &canFDECCConfigParams[0U], /* mcan module ECC configuration parameters */
-            &canFDECCErrForceConfigParams[0U], /* mcan module ECC Error Force parameters */
-            2U, /* tx message number */
-            2U, /* standard ID message filter number */
-            2U, /* extended ID message filter number */
-            &canTxMSG[0U], /* tx Buffer elements/Tx message */
-            &canSTDIDFilter[0U], /* standard message ID filters */
-            &canEXTIDFilter[0U],  /* extended message ID filters */
-            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS),  /* Interrupt Enable/Disable Mask */
-            (MCAN_INTR_MASK_ALL),  /* Interrupt Line Select Mask */
-            (MCAN_INTR_LINE_NUM_0)  /* Interrupt Line Select */
-        },
-        PRINT_ENABLE,
-        (ST_TT_SANITY),
-    },
-    {
-        TEST_ENABLE, 1000U,
-        "None",
-        "MCAN: CAN FD Mode with Bit Rate Switching ON",
-        "None", "None",
-        "1.Sent message shall match with received message. 2.Tx Event message marker shall match with sent message.",
-        IPU,
-        {
-            (MCAN_TEST_TYPE_INTERNAL_LOOBACK), /* testType */
-            2U, /* iteration count for tx */
-            &canFDBitTimings[0U], /* mcan module bit timing parameters */
-            &canFDInitParams[0U], /* mcan module initialization parameters */
-            &canFDConfigParams[1U], /* mcan module configuration parameters */
-            &canFDRAMConfigParams[0U], /* mcan module MSG RAM configuration parameters */
-            &canFDECCConfigParams[0U], /* mcan module ECC configuration parameters */
-            &canFDECCErrForceConfigParams[0U], /* mcan module ECC Error Force parameters */
-            1U, /* tx message number */
-            2U, /* standard ID message filter number */
-            2U, /* extended ID message filter number */
-            &canTxMSG[2U], /* tx Buffer elements/Tx message */
-            &canSTDIDFilter[0U], /* standard message ID filters */
-            &canEXTIDFilter[0U],  /* extended message ID filters */
-            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),  /* Interrupt Enable/Disable Mask */
-            (MCAN_INTR_MASK_ALL),  /* Interrupt Line Select Mask */
-            (MCAN_INTR_LINE_NUM_0)  /* Interrupt Line Select */
-        },
-        PRINT_ENABLE,
-        (ST_TT_SANITY),
-    },
-    {
-        TEST_ENABLE, 1001U,
-        "None",
-        "MCAN: Classic CAN Mode",
-        "None", "None",
-        "Sent message shall match with received message.",
-        IPU,
-        {
-            (MCAN_TEST_TYPE_INTERNAL_LOOBACK), /* testType */
-            1U, /* iteration count for tx */
-            &canFDBitTimings[0U], /* mcan module bit timing parameters */
-            &canFDInitParams[0U], /* mcan module initialization parameters */
-            &canFDConfigParams[0U], /* mcan module configuration parameters */
-            &canFDRAMConfigParams[0U], /* mcan module MSG RAM configuration parameters */
-            &canFDECCConfigParams[0U], /* mcan module ECC configuration parameters */
-            &canFDECCErrForceConfigParams[0U], /* mcan module ECC Error Force parameters */
-            2U, /* tx message number */
-            1U, /* standard ID message filter number */
-            1U, /* extended ID message filter number */
-            &canTxMSG[3U], /* tx Buffer elements/Tx message */
-            &canSTDIDFilter[2U], /* standard message ID filters */
-            &canEXTIDFilter[0U],  /* extended message ID filters */
-            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),  /* Interrupt Enable/Disable Mask */
-            (MCAN_INTR_MASK_ALL),  /* Interrupt Line Select Mask */
-            (MCAN_INTR_LINE_NUM_0)  /* Interrupt Line Select */
-        },
-        PRINT_ENABLE,
-        (ST_TT_SANITY),
-    },
-    {
-        TEST_ENABLE, 1002U,
-        "None",
-        "MCAN: CAN FD Mode with Bit Rate Switching OFF",
-        "None", "None",
-        "Sent message shall match with received message.",
-        IPU,
-        {
-            (MCAN_TEST_TYPE_INTERNAL_LOOBACK), /* testType */
-            1U, /* iteration count for tx */
-            &canFDBitTimings[0U], /* mcan module bit timing parameters */
-            &canFDInitParams[0U], /* mcan module initialization parameters */
-            &canFDConfigParams[0U], /* mcan module configuration parameters */
-            &canFDRAMConfigParams[0U], /* mcan module MSG RAM configuration parameters */
-            &canFDECCConfigParams[0U], /* mcan module ECC configuration parameters */
-            &canFDECCErrForceConfigParams[0U], /* mcan module ECC Error Force parameters */
-            3U, /* tx message number */
-            1U, /* standard ID message filter number */
-            1U, /* extended ID message filter number */
-            &canTxMSG[5U], /* tx Buffer elements/Tx message */
-            &canSTDIDFilter[3U], /* standard message ID filters */
-            &canEXTIDFilter[0U],  /* extended message ID filters */
-            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),  /* Interrupt Enable/Disable Mask */
-            (MCAN_INTR_MASK_ALL),  /* Interrupt Line Select Mask */
-            (MCAN_INTR_LINE_NUM_0)  /* Interrupt Line Select */
-        },
-        PRINT_ENABLE,
-        (ST_TT_SANITY),
-    },
-    {
-        TEST_ENABLE, 1003U,
-        "None",
-        "MCAN: External Time-Stamp",
-        "None", "None",
-        "1.Sent message shall match with received message.2.Tx Event message marker shall match with sent message.",
-        IPU,
-        {
-            (MCAN_TEST_TYPE_INTERNAL_LOOBACK), /* testType */
-            1U, /* iteration count for tx */
-            &canFDBitTimings[0U], /* mcan module bit timing parameters */
-            &canFDInitParams[0U], /* mcan module initialization parameters */
-            &canFDConfigParams[3U], /* mcan module configuration parameters */
-            &canFDRAMConfigParams[0U], /* mcan module MSG RAM configuration parameters */
-            &canFDECCConfigParams[0U], /* mcan module ECC configuration parameters */
-            &canFDECCErrForceConfigParams[0U], /* mcan module ECC Error Force parameters */
-            1U, /* tx message number */
-            1U, /* standard ID message filter number */
-            2U, /* extended ID message filter number */
-            &canTxMSG[2U], /* tx Buffer elements/Tx message */
-            &canSTDIDFilter[0U], /* standard message ID filters */
-            &canEXTIDFilter[0U],  /* extended message ID filters */
-            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),  /* Interrupt Enable/Disable Mask */
-            (MCAN_INTR_MASK_ALL),  /* Interrupt Line Select Mask */
-            (MCAN_INTR_LINE_NUM_0)  /* Interrupt Line Select */
-        },
-        PRINT_ENABLE,
-        (ST_TT_SANITY),
-    },
-    {
-        TEST_ENABLE, 1004U,
-        "None",
-        "MCAN: High Priority Messages",
-        "None", "None",
-        "Sent message shall match with received message with High Priority.",
-        IPU,
-        {
-            (MCAN_TEST_TYPE_INTERNAL_LOOBACK), /* testType */
-            1U, /* iteration count for tx */
-            &canFDBitTimings[0U], /* mcan module bit timing parameters */
-            &canFDInitParams[0U], /* mcan module initialization parameters */
-            &canFDConfigParams[2U], /* mcan module configuration parameters */
-            &canFDRAMConfigParams[0U], /* mcan module MSG RAM configuration parameters */
-            &canFDECCConfigParams[0U], /* mcan module ECC configuration parameters */
-            &canFDECCErrForceConfigParams[0U], /* mcan module ECC Error Force parameters */
-            1U, /* tx message number */
-            2U, /* standard ID message filter number */
-            2U, /* extended ID message filter number */
-            &canTxMSG[7U], /* tx Buffer elements/Tx message */
-            &canSTDIDFilter[5U], /* standard message ID filters */
-            &canEXTIDFilter[0U],  /* extended message ID filters */
-            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),  /* Interrupt Enable/Disable Mask */
-            (MCAN_INTR_MASK_ALL),  /* Interrupt Line Select Mask */
-            (MCAN_INTR_LINE_NUM_0)  /* Interrupt Line Select */
-        },
-        PRINT_ENABLE,
-        (ST_TT_SANITY),
-    },
-    {
-        TEST_ENABLE, 1005U,
-        "None",
-        "MCAN: Internal Loopback",
-        "None", "None",
-        "Sent message shall match with received message with High Priority.",
-        IPU,
-        {
-            (MCAN_TEST_TYPE_INTERNAL_LOOBACK), /* testType */
-            1U, /* iteration count for tx */
-            &canFDBitTimings[0U], /* mcan module bit timing parameters */
-            &canFDInitParams[0U], /* mcan module initialization parameters */
-            &canFDConfigParams[2U], /* mcan module configuration parameters */
-            &canFDRAMConfigParams[0U], /* mcan module MSG RAM configuration parameters */
-            &canFDECCConfigParams[0U], /* mcan module ECC configuration parameters */
-            &canFDECCErrForceConfigParams[0U], /* mcan module ECC Error Force parameters */
-            1U, /* tx message number */
-            2U, /* standard ID message filter number */
-            2U, /* extended ID message filter number */
-            &canTxMSG[7U], /* tx Buffer elements/Tx message */
-            &canSTDIDFilter[5U], /* standard message ID filters */
-            &canEXTIDFilter[0U],  /* extended message ID filters */
-            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),  /* Interrupt Enable/Disable Mask */
-            (MCAN_INTR_MASK_ALL),  /* Interrupt Line Select Mask */
-            (MCAN_INTR_LINE_NUM_0)  /* Interrupt Line Select */
-        },
-        PRINT_ENABLE,
-        (ST_TT_SANITY),
-    },
-    {
-        TEST_ENABLE, 1006U,
-        "None",
-        "MCAN: Tx Mixed Config. With Buffer and FIFO",
-        "None", "None",
-        "Sent messages shall match with received message.",
-        IPU,
-        {
-            (MCAN_TEST_TYPE_INTERNAL_LOOBACK), /* testType */
-            1U, /* iteration count for tx */
-            &canFDBitTimings[0U], /* mcan module bit timing parameters */
-            &canFDInitParams[0U], /* mcan module initialization parameters */
-            &canFDConfigParams[2U], /* mcan module configuration parameters */
-            &canFDRAMConfigParams[1U], /* mcan module MSG RAM configuration parameters */
-            &canFDECCConfigParams[0U], /* mcan module ECC configuration parameters */
-            &canFDECCErrForceConfigParams[0U], /* mcan module ECC Error Force parameters */
-            2U, /* tx message number */
-            2U, /* standard ID message filter number */
-            2U, /* extended ID message filter number */
-            &canTxMSG[8U], /* tx Buffer elements/Tx message */
             &canSTDIDFilter[0U], /* standard message ID filters */
             &canEXTIDFilter[0U],  /* extended message ID filters */
             (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),  /* Interrupt Enable/Disable Mask */

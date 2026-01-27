@@ -135,6 +135,7 @@ static int32_t test_ospi_read_write_test_in_mb(TestData_SizesAttr* testDataCurOb
 static void test_ospi_gdevcfg_set_flash_protocol(uint32_t givenflashProtocol);
 static void set_test_flash_type(void);
 static void test_ospi_unaligned_read_write(void *args);
+static void test_ospi_odd_read_write(void *args);
 static void test_ospi_validateOtp(void* args);
 static void test_ospi_fallBack(void* args);
 static void test_ospi_fallBack_to_1s1s1s(void* args);
@@ -287,6 +288,9 @@ void test_main(void *args)
     Drivers_ospiClose();
     Drivers_ospiOpen();
     RUN_TEST(test_ospi_unaligned_read_write, 6893, NULL);
+    Drivers_ospiClose();
+    Drivers_ospiOpen();
+    RUN_TEST(test_ospi_odd_read_write, 10134, NULL);
     Drivers_ospiClose();
     Drivers_ospiOpen();
     RUN_TEST(test_ospi_read_write_different_frequencies, 7105, NULL);
@@ -549,9 +553,12 @@ static void test_ospi_skip_phy_tuning_perf(void *args)
     int32_t retVal = SystemP_SUCCESS;
     OSPI_Handle ospiHandle;
     OSPI_Handle backupHandle;
-    extern OSPI_Config gOspiConfig[CONFIG_OSPI_NUM_INSTANCES];
+    OSPI_Config *config;
+    OSPI_Attrs attrs;
+    const OSPI_Attrs *tempAttrs;
 
     ospiHandle = OSPI_getHandle(CONFIG_OSPI0);
+    config = (OSPI_Config*)ospiHandle;
 
     retVal = Board_driversOpen();
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
@@ -568,13 +575,22 @@ static void test_ospi_skip_phy_tuning_perf(void *args)
     OSPI_enablePhy(backupHandle);
 
     /* Perform performance test when configuration is skipped*/
-    *(uint32_t*)&gOspiConfig[CONFIG_OSPI0].attrs->phySkipTuning = TRUE;
+    /* Create a non-const copy of attrs and enable phySkipTuning */
+    memcpy((void*)&attrs, config->attrs, sizeof(OSPI_Attrs));
+    attrs.phySkipTuning = TRUE;
+
+    /* Temporarily swap attrs pointer */
+    tempAttrs = config->attrs;
+    config->attrs = &attrs;
+
     Drivers_ospiOpen();
 
     test_ospi_read_perf(NULL);
 
-    *(uint32_t*)&gOspiConfig[CONFIG_OSPI0].attrs->phySkipTuning = FALSE;
     Board_driversClose();
+
+    /* Restore original attrs */
+    config->attrs = tempAttrs;
 }
 
 static void test_ospi_read_write_max_config(void *args)
@@ -690,6 +706,184 @@ static void test_ospi_unaligned_read_write(void *args)
 
     Board_driversClose();
 
+}
+
+static void test_ospi_odd_read_write(void *args)
+{
+    int32_t retVal = SystemP_SUCCESS;
+    uint32_t offset = TEST_OSPI_FLASH_OFFSET_BASE;
+    uint32_t blk, page, txChunkCnt;
+    OSPI_Handle ospiHandle = OSPI_getHandle(CONFIG_OSPI0);
+    OSPI_Config *config = (OSPI_Config*)ospiHandle;
+    OSPI_Attrs attrs;
+
+    /* This test is specifically for 8d8d8d protocol which requires alignment */
+    /* Check if the flash protocol is 8d8d8d */
+    if(modeParams.flashProtocol != FLASH_CFG_PROTO_8D_8D_8D)
+    {
+        /* Skip test for non-8d8d8d protocols */
+        DebugP_log("[TEST OSPI] Odd byte test skipped - only applicable for 8d8d8d protocol\r\n");
+        return;
+    }
+
+    /* Only run for Serial NOR flash */
+    if(modeParams.cfgflashType != CONFIG_FLASH_TYPE_SERIAL_NOR)
+    {
+        DebugP_log("[TEST OSPI] Odd byte test skipped - only applicable for Serial NOR flash\r\n");
+        return;
+    }
+
+    /* Create a non-const copy of attrs and set INDAC mode for testing */
+    memcpy((void*)&attrs, config->attrs, sizeof(OSPI_Attrs));
+    attrs.readMode = OSPI_READ_MODE_INDAC;
+
+    /* Temporarily swap attrs pointer */
+    const OSPI_Attrs *tempAttrs = config->attrs;
+    config->attrs = &attrs;
+
+    /* Open Flash drivers with OSPI instance as input */
+    retVal = Board_driversOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Block erase at the test offset */
+    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset, &blk, &page);
+    retVal = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Prepare test data - write 1024 bytes of test pattern */
+    for(txChunkCnt = 0; txChunkCnt < (TEST_OSPI_1KB_SIZE)/TEST_OSPI_DATA_SIZE; txChunkCnt++)
+    {
+        memcpy(gOspiTestTxBulkBuf + txChunkCnt*sizeof(gOspiTestTxBuf), gOspiTestTxBuf, sizeof(gOspiTestTxBuf));
+    }
+
+    /* Write aligned data first */
+    retVal = Flash_write(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestTxBulkBuf, TEST_OSPI_1KB_SIZE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    DebugP_log("\r\n[TEST OSPI] Testing odd byte reads in INDAC mode for 8d8d8d protocol \r\n");
+
+    /* Test 1: Read odd number of bytes from even address */
+    DebugP_log("[TEST OSPI] Read Test 1: Read 255 bytes from even address (0x%x)\r\n", offset);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestRxBuf, 255);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    retVal = memcmp(gOspiTestRxBuf, gOspiTestTxBulkBuf, 255);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Test 2: Read odd number of bytes from odd address */
+    DebugP_log("[TEST OSPI] Read Test 2: Read 127 bytes from odd address (0x%x)\r\n", offset + 1);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset + 1, gOspiTestRxBuf, 127);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    retVal = memcmp(gOspiTestRxBuf, gOspiTestTxBulkBuf + 1, 127);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Test 3: Read even number of bytes from odd address */
+    DebugP_log("[TEST OSPI] Read Test 3: Read 128 bytes from odd address (0x%x)\r\n", offset + 3);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset + 3, gOspiTestRxBuf, 128);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    retVal = memcmp(gOspiTestRxBuf, gOspiTestTxBulkBuf + 3, 128);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Test 4: Read single byte from odd address */
+    DebugP_log("[TEST OSPI] Read Test 4: Read 1 byte from odd address (0x%x)\r\n", offset + 5);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset + 5, gOspiTestRxBuf, 1);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    retVal = memcmp(gOspiTestRxBuf, gOspiTestTxBulkBuf + 5, 1);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Test 5: Read 3 bytes from odd address */
+    DebugP_log("[TEST OSPI] Read Test 5: Read 3 bytes from odd address (0x%x)\r\n", offset + 7);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset + 7, gOspiTestRxBuf, 3);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    retVal = memcmp(gOspiTestRxBuf, gOspiTestTxBulkBuf + 7, 3);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Test 6: Large odd byte read from even address */
+    DebugP_log("[TEST OSPI] Read Test 6: Read 511 bytes from even address (0x%x)\r\n", offset + 256);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset + 256, gOspiTestRxBuf, 511);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    retVal = memcmp(gOspiTestRxBuf, gOspiTestTxBulkBuf + 256, 511);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Test 7: Large odd byte read from odd address */
+    DebugP_log("[TEST OSPI] Read Test 7: Read 509 bytes from odd address (0x%x)\r\n", offset + 257);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset + 257, gOspiTestRxBuf, 509);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    retVal = memcmp(gOspiTestRxBuf, gOspiTestTxBulkBuf + 257, 509);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Test 8: Read to unaligned destination buffer with odd bytes */
+    DebugP_log("[TEST OSPI] Read Test 8: Read 127 bytes to unaligned destination from odd address\r\n");
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset + 11, gOspiTestRxBuf + 3, 127);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    retVal = memcmp(gOspiTestRxBuf + 3, gOspiTestTxBulkBuf + 11, 127);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    DebugP_log("[TEST OSPI] All odd byte read tests passed!\r\n");
+
+    /* Now test odd byte writes */
+    DebugP_log("\r\n[TEST OSPI] Testing odd byte writes in INDAC mode for 8d8d8d protocol\r\n");
+
+    /* Erase the block again for write tests */
+    offset = TEST_OSPI_FLASH_OFFSET_BASE + TEST_OSPI_BLOCK_SIZE;
+    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset, &blk, &page);
+    retVal = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Write Test 1: Write 255 odd bytes */
+    DebugP_log("[TEST OSPI] Write Test 1: Write 255 bytes at page-aligned address (0x%x)\r\n", offset);
+    retVal = Flash_write(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestTxBulkBuf, 255);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestRxBuf, 255);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    retVal = memcmp(gOspiTestRxBuf, gOspiTestTxBulkBuf, 255);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Write Test 2: Write 127 odd bytes */
+    offset += 256;
+    DebugP_log("[TEST OSPI] Write Test 2: Write 127 bytes at page-aligned address (0x%x)\r\n", offset);
+    retVal = Flash_write(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestTxBulkBuf, 127);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestRxBuf, 127);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    retVal = memcmp(gOspiTestRxBuf, gOspiTestTxBulkBuf, 127);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Write Test 3: Write 1 byte */
+    offset += 256;
+    DebugP_log("[TEST OSPI] Write Test 3: Write 1 byte at page-aligned address (0x%x)\r\n", offset);
+    retVal = Flash_write(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestTxBulkBuf, 1);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestRxBuf, 1);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    retVal = memcmp(gOspiTestRxBuf, gOspiTestTxBulkBuf, 1);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Write Test 4: Write 3 bytes */
+    offset += 256;
+    DebugP_log("[TEST OSPI] Write Test 4: Write 3 bytes at page-aligned address (0x%x)\r\n", offset);
+    retVal = Flash_write(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestTxBulkBuf, 3);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestRxBuf, 3);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    retVal = memcmp(gOspiTestRxBuf, gOspiTestTxBulkBuf, 3);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Write Test 5: Write 511 odd bytes */
+    offset += 256;
+    DebugP_log("[TEST OSPI] Write Test 5: Write 511 bytes at page-aligned address (0x%x)\r\n", offset);
+    retVal = Flash_write(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestTxBulkBuf, 511);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gOspiTestRxBuf, 511);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+    retVal = memcmp(gOspiTestRxBuf, gOspiTestTxBulkBuf, 511);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    DebugP_log("[TEST OSPI] All odd byte write tests passed!\r\n\r\n");
+
+    Board_driversClose();
+
+    /* Restore original attrs */
+    config->attrs = tempAttrs;
 }
 
 static void test_ospi_read_perf(void *args)
@@ -1516,6 +1710,9 @@ static void test_ospi_read_write_indirect_different_frequencies(void *args)
 
         Drivers_ospiClose();
 
+        /* Set INDAC mode in the attrs copy */
+        attrs.readMode = OSPI_READ_MODE_INDAC;
+
         const OSPI_Attrs *tempAttrs = config->attrs;
         config->attrs = &attrs;
 
@@ -1523,12 +1720,8 @@ static void test_ospi_read_write_indirect_different_frequencies(void *args)
         DebugP_log("[TEST OSPI] Different Frequencies Performance Numbers Print Start \n\r");
         DebugP_log("\r\n");
 
-        *(uint32_t*)&gOspiConfig[CONFIG_OSPI0].attrs->readMode = OSPI_READ_MODE_INDAC;
-
         test_ospi_read_write_indirect_25Mhz(&attrs, offset, devConfig);
         test_ospi_read_write_indirect_50Mhz(&attrs, offset, devConfig);
-
-        *(uint32_t*)&gOspiConfig[CONFIG_OSPI0].attrs->readMode = OSPI_READ_MODE_DAC;
 
         config->attrs = tempAttrs;
     }

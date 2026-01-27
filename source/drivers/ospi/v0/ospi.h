@@ -546,6 +546,12 @@ typedef struct
     void* ospiDmaHandle;
     /**< Size of the device connected to the OSPI controller */
     uint32_t deviceSize;
+    /**< Size of a page in bytes for the OSPI flash memory device */
+    uint32_t pageSize;
+    /**< Temporary buffer for odd-byte alignment in 8D-8D-8D protocol mode.
+         Max typical flash page size is 512 bytes. Caller must hold lockObj when
+         using readIndirect/writeIndirect to ensure thread-safe access to this buffer */
+    uint8_t tempBuf[512U] __attribute__((aligned(32)));
 } OSPI_Object;
 
 typedef struct

@@ -72,7 +72,7 @@ extern "C" {
 /** \brief Max Input fifo threshold */
 #define AASRC_MAX_IN_FIFO_THRESHOLD             (32U)
 /** \brief Max Output fifo threshold */
-#define AASRC_MAX_OUT_FIFO_THRESHOLD            (16U)
+#define AASRC_MAX_OUT_FIFO_THRESHOLD            (32U)
 
 /**
  *  \anchor AASRC_ChannelId

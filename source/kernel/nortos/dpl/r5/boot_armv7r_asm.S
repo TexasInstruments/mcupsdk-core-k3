@@ -58,11 +58,27 @@ __stack: .zero 4
         .text
         .global _c_int00_sbl
         .type   _c_int00_sbl,%function
-        .section ".text.boot","ax",%progbits
+        .section ".text.boot.sbl","ax",%progbits
         .arm
         .align 2
 
+/* gAtcmBaseAddr is defined as a constant in the linker script */
+        .extern gAtcmBaseAddr
+
 _c_int00_sbl:
+
+        mrc     p15, #0,  r0, c9, c1, #1    @ ;; Read the ATCM region register
+        tst     r0,  #1                     @ ;; Test if enable bit is already set
+        bne     atcm_already_enabled        @ ;; Skip configuration if already enabled
+        orr     r0,  r0,  #1                @ ;; Set the enable bit
+        ldr     r1,  =gAtcmBaseAddr         @ ;; Load ATCM base value from linker
+        bfc     r0,  #12, #20               @ ;; Clear the base bits
+        orr     r0,  r0,  r1                @ ;; Combine the fields
+        mcr     p15, #0,  r0, c9, c1, #1    @ ;; Write the ATCM region register
+        dsb
+        isb
+atcm_already_enabled:
+
         // entry point for bootloader, if Core 1, then loop forever, else goto _c_int00
         MRC     p15, #0, r1, c0, c0, #5
         BFC     r1, #8, #24

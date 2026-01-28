@@ -1096,7 +1096,7 @@ static void AASRC_udmaIsrRx(Udma_EventHandle eventHandle,
 
         if(AASRC_INVALID_TXN_IDX == aasrcChObj->lastRecQueued)
         {
-            nextCandidate = (aasrcChObj->lastReceived+ 2U)%AASRC_TX_DMA_TR_COUNT;
+            nextCandidate = (aasrcChObj->lastReceived+ 2U)%AASRC_RX_DMA_TR_COUNT;
         }
 
         while (ctrlVar)

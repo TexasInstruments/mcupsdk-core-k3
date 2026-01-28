@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -297,6 +297,10 @@ static int32_t MCASP_primeTxTrpd(MCASP_Config *config)
     Udma_DrvHandle drvHandle;
     const MCASP_Attrs *attrs = NULL;
     const CSL_McaspRegs *pReg = NULL;
+    uint64_t txnByteCnt = 0U;
+    uint32_t tempIcntX = 0U;
+    uint32_t tempIcntY = 0U;
+    uint16_t waterLevel = 0U;
 
     if(config != NULL)
     {
@@ -347,7 +351,7 @@ static int32_t MCASP_primeTxTrpd(MCASP_Config *config)
                 pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_EOL, CSL_UDMAP_TR_FLAGS_EOL_MATCH_SOL_EOL);
                 pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_EVENT_SIZE, CSL_UDMAP_TR_FLAGS_EVENT_SIZE_COMPLETION);
                 pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_TRIGGER0, CSL_UDMAP_TR_FLAGS_TRIGGER_GLOBAL0);
-                pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_TRIGGER0_TYPE, CSL_UDMAP_TR_FLAGS_TRIGGER_TYPE_ICNT2_DEC);
+                pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_TRIGGER0_TYPE, CSL_UDMAP_TR_FLAGS_TRIGGER_TYPE_ICNT3_DEC);
                 pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_TRIGGER1, CSL_UDMAP_TR_FLAGS_TRIGGER_NONE);
                 pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_TRIGGER1_TYPE, CSL_UDMAP_TR_FLAGS_TRIGGER_TYPE_ALL);
                 pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_CMD_ID, 0x25U);  /* This will come back in TR response */
@@ -359,18 +363,47 @@ static int32_t MCASP_primeTxTrpd(MCASP_Config *config)
                 pTr->icnt2 = obj->txDmaIcnt.icnt2;
                 pTr->icnt3 = obj->txDmaIcnt.icnt3;
 
-                pTr->dim1     = pTr->icnt0;
-                pTr->dim2     = (pTr->icnt0 * pTr->icnt1);
-                pTr->dim3     = (pTr->icnt0 * pTr->icnt1 * pTr->icnt2);
+                pTr->dim1     = obj->txDmaIcnt.dim1;
+                pTr->dim2     = obj->txDmaIcnt.dim2;
+                pTr->dim3     = obj->txDmaIcnt.dim3;
 
                 pTr->fmtflags = 0x00000000U;    /* Linear addressing, 1 byte per elem */
 
+                if(attrs->txFifoWaterLevel != 0U)
+                {
+                    waterLevel = attrs->txFifoWaterLevel;
+                }
+                else
+                {
+                    waterLevel = 1U;
+                }
                 /* Dest */
                 pTr->daddr = (uint64_t)((uint8_t *)pReg + 0x8000U);
-                pTr->dicnt0 = obj->txDmaIcnt.icnt0;
-                pTr->dicnt1 = obj->txDmaIcnt.icnt1;
-                pTr->dicnt2 = obj->txDmaIcnt.icnt2;
-                pTr->dicnt3 = obj->txDmaIcnt.icnt3;
+                pTr->dicnt0 = WORD_BYTE_COUNT;
+                pTr->dicnt1 = waterLevel;
+                txnByteCnt = ((uint64_t)obj->XmtObj.txnLoopjob.count * (uint64_t)WORD_BYTE_COUNT);
+                tempIcntX = (uint32_t)(txnByteCnt/((uint64_t)pTr->dicnt0*(uint64_t)pTr->dicnt1));
+                if(tempIcntX < MCASP_ICNT2_MAX)
+                {
+                    pTr->dicnt2 = tempIcntX;
+                    pTr->dicnt3 = 1U;
+                }
+                else
+                {
+                    tempIcntX = tempIcntX & ((-(int32_t)tempIcntX));
+                    tempIcntY = (uint32_t)(txnByteCnt/((uint64_t)pTr->dicnt0*(uint64_t)pTr->dicnt1*(uint64_t)tempIcntX));
+                    if((tempIcntY > MCASP_ICNT2_MAX) || (tempIcntX > MCASP_ICNT2_MAX))
+                    {
+                        DebugP_logError("Transaction count out of bounds \r\n");
+                        status = SystemP_FAILURE;
+                        break;
+                    }
+                    else
+                    {
+                        pTr->dicnt2 = (uint16_t)tempIcntX;
+                        pTr->dicnt3 = (uint16_t)tempIcntY;
+                    }
+                }
                 pTr->ddim1 = 0;
                 pTr->ddim2 = 0;
                 pTr->ddim3 = 0;
@@ -419,9 +452,9 @@ static int32_t MCASP_primeTxTrpd(MCASP_Config *config)
                         pTr->icnt2 = obj->txDmaIcnt.icnt2;
                         pTr->icnt3 = obj->txDmaIcnt.icnt3;
 
-                        pTr->dim1     = pTr->icnt0;
-                        pTr->dim2     = (pTr->icnt0 * pTr->icnt1);
-                        pTr->dim3     = (pTr->icnt0 * pTr->icnt1 * pTr->icnt2);
+                        pTr->dim1     = obj->txDmaIcnt.dim1;
+                        pTr->dim2     = obj->txDmaIcnt.dim2;
+                        pTr->dim3     = obj->txDmaIcnt.dim3;
 
                         CacheP_wb(pTr, sizeof(CSL_UdmapTR3), CacheP_TYPE_ALLD);
 
@@ -503,9 +536,9 @@ static int32_t MCASP_primeTxTrpd(MCASP_Config *config)
                 pTr->icnt2 = obj->txDmaIcnt.icnt2;
                 pTr->icnt3 = obj->txDmaIcnt.icnt3;
 
-                pTr->dim1     = pTr->icnt0;
-                pTr->dim2     = (pTr->icnt0 * pTr->icnt1);
-                pTr->dim3     = (pTr->icnt0 * pTr->icnt1 * pTr->icnt2);
+                pTr->dim1     = obj->txDmaIcnt.dim1;
+                pTr->dim2     = obj->txDmaIcnt.dim2;
+                pTr->dim3     = obj->txDmaIcnt.dim3;
             }
 
             /* Writeback the TRPD memory */
@@ -551,9 +584,9 @@ static int32_t MCASP_primeTxTrpd(MCASP_Config *config)
                         pTr->icnt2 = obj->txDmaIcnt.icnt2;
                         pTr->icnt3 = obj->txDmaIcnt.icnt3;
 
-                        pTr->dim1     = pTr->icnt0;
-                        pTr->dim2     = (pTr->icnt0 * pTr->icnt1);
-                        pTr->dim3     = (pTr->icnt0 * pTr->icnt1 * pTr->icnt2);
+                        pTr->dim1     = obj->txDmaIcnt.dim1;
+                        pTr->dim2     = obj->txDmaIcnt.dim2;
+                        pTr->dim3     = obj->txDmaIcnt.dim3;
 
                         CacheP_wb(pTr, sizeof(CSL_UdmapTR3), CacheP_TYPE_ALLD);
 
@@ -927,9 +960,9 @@ static int32_t MCASP_primeRxTrpd(MCASP_Config *config)
                 pTr->icnt2 = obj->rxDmaIcnt.icnt2;
                 pTr->icnt3 = obj->rxDmaIcnt.icnt3;
 
-                pTr->dim1     = pTr->icnt0;
-                pTr->dim2     = (pTr->icnt0 * pTr->icnt1);
-                pTr->dim3     = (pTr->icnt0 * pTr->icnt1 * pTr->icnt2);
+                pTr->dim1     = obj->rxDmaIcnt.dim1;
+                pTr->dim2     = obj->rxDmaIcnt.dim2;
+                pTr->dim3     = obj->rxDmaIcnt.dim3;
             }
 
             /* Writeback the TRPD memory */
@@ -973,9 +1006,9 @@ static int32_t MCASP_primeRxTrpd(MCASP_Config *config)
                         pTr->icnt2 = obj->rxDmaIcnt.icnt2;
                         pTr->icnt3 = obj->rxDmaIcnt.icnt3;
 
-                        pTr->dim1     = pTr->icnt0;
-                        pTr->dim2     = (pTr->icnt0 * pTr->icnt1);
-                        pTr->dim3     = (pTr->icnt0 * pTr->icnt1 * pTr->icnt2);
+                        pTr->dim1     = obj->rxDmaIcnt.dim1;
+                        pTr->dim2     = obj->rxDmaIcnt.dim2;
+                        pTr->dim3     = obj->rxDmaIcnt.dim3;
 
                         CacheP_wb(pTr, sizeof(CSL_UdmapTR3), CacheP_TYPE_ALLD);
 
@@ -1178,9 +1211,9 @@ static void MCASP_udmaIsrTx(Udma_EventHandle eventHandle,
                     pTr->icnt2 = object->txDmaIcnt.icnt2;
                     pTr->icnt3 = object->txDmaIcnt.icnt3;
 
-                    pTr->dim1     = pTr->icnt0;
-                    pTr->dim2     = (pTr->icnt0 * pTr->icnt1);
-                    pTr->dim3     = (pTr->icnt0 * pTr->icnt1 * pTr->icnt2);
+                    pTr->dim1     = object->txDmaIcnt.dim1;
+                    pTr->dim2     = object->txDmaIcnt.dim2;
+                    pTr->dim3     = object->txDmaIcnt.dim3;
                 }
 
                 txCbParam = object->dmaChCfg->txCbParams;
@@ -1349,9 +1382,9 @@ static void MCASP_udmaIsrTx(Udma_EventHandle eventHandle,
                     pTr->icnt2 = object->txDmaIcnt.icnt2;
                     pTr->icnt3 = object->txDmaIcnt.icnt3;
 
-                    pTr->dim1     = pTr->icnt0;
-                    pTr->dim2     = (pTr->icnt0 * pTr->icnt1);
-                    pTr->dim3     = (pTr->icnt0 * pTr->icnt1 * pTr->icnt2);
+                    pTr->dim1     = object->txDmaIcnt.dim1;
+                    pTr->dim2     = object->txDmaIcnt.dim2;
+                    pTr->dim3     = object->txDmaIcnt.dim3;
                 }
 
                 txCbParam = object->dmaChCfg->txCbParams;
@@ -1520,9 +1553,9 @@ static void MCASP_udmaIsrRx(Udma_EventHandle eventHandle,
                     pTr->icnt2 = object->rxDmaIcnt.icnt2;
                     pTr->icnt3 = object->rxDmaIcnt.icnt3;
 
-                    pTr->dim1     = pTr->icnt0;
-                    pTr->dim2     = (pTr->icnt0 * pTr->icnt1);
-                    pTr->dim3     = (pTr->icnt0 * pTr->icnt1 * pTr->icnt2);
+                    pTr->dim1     = object->rxDmaIcnt.dim1;
+                    pTr->dim2     = object->rxDmaIcnt.dim2;
+                    pTr->dim3     = object->rxDmaIcnt.dim3;
                 }
 
                 rxCbParam = object->dmaChCfg->rxCbParams;
@@ -1622,9 +1655,8 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
     uint64_t txnByteCnt = 0U;
     MCASP_Object *object = NULL;
     const MCASP_Attrs *attrs = NULL;
-    uint32_t tempIcntX = 0U;
-    uint32_t tempIcntY = 0U;
     uint16_t waterLevel = 0U;
+    uint32_t frameCount = 0U;
 
     if ((NULL == handle))
     {
@@ -1698,28 +1730,81 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
                         break;
                     }
 
-                    object->txDmaIcnt.icnt0 = WORD_BYTE_COUNT;
-                    object->txDmaIcnt.icnt1 = (waterLevel);
-                    tempIcntX = (uint32_t)(txnByteCnt/(WORD_BYTE_COUNT*(waterLevel)));
-                    if(tempIcntX < MCASP_ICNT2_MAX)
+                    frameCount = object->XmtObj.txnLoopjob.count / (object->XmtObj.serCount * object->XmtObj.slotCount);
+
+                    switch(object->XmtObj.bufferFormat)
                     {
-                        object->txDmaIcnt.icnt2 = tempIcntX;
-                        object->txDmaIcnt.icnt3 = 1U;
-                    }
-                    else
-                    {
-                        tempIcntX = tempIcntX&(-tempIcntX);
-                        tempIcntY = txnByteCnt/(WORD_BYTE_COUNT*(waterLevel)*tempIcntX);
-                        if((tempIcntY > MCASP_ICNT2_MAX) || (tempIcntX > MCASP_ICNT2_MAX))
+                        case MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_INTERLEAVED:
+                        case MCASP_AUDBUFF_FORMAT_MULTISER_MULTISLOT_SEMI_INTERLEAVED_1:
                         {
-                            DebugP_logError("Transaction count out of bounds \r\n");
-                            status = SystemP_FAILURE;
+                            /* For interleaved formats: data is organized as [slot0][slot1]...[slotN] per frame
+                             *
+                             * DMA Configuration Rationale:
+                             * - icnt1 = waterLevel: Transfer waterLevel words at a time to match FIFO requirements
+                             * - icnt2 = waterLevel/icnt1 = 1: Since icnt1 already equals waterLevel, icnt2 becomes 1
+                             *   This means we process one "waterLevel-sized chunk" per icnt2 iteration
+                             * - This configuration is optimal for interleaved data where consecutive samples
+                             *   from different slots are already arranged sequentially in memory
+                             * - Since CSL_UDMAP_TR_FLAGS_TRIGGER_TYPE_ICNT3_DEC is the trigger point,
+                             *   icnt1*icnt2 should equal waterLevel to ensure proper DMA synchronization
+                             *   with McASP FIFO thresholds for optimal audio streaming performance
+                             */
+                            object->txDmaIcnt.icnt0   = WORD_BYTE_COUNT;
+                            object->txDmaIcnt.icnt1   = (uint16_t)waterLevel;
+                            object->txDmaIcnt.icnt2   = (uint16_t)((uint32_t)waterLevel / (uint32_t)(object->txDmaIcnt.icnt1));  /* Always equals 1 */
+                            object->txDmaIcnt.icnt3   = (uint16_t)((uint32_t)(txnByteCnt/((uint64_t)object->txDmaIcnt.icnt0*(uint64_t)object->txDmaIcnt.icnt1*(uint64_t)object->txDmaIcnt.icnt2)));
+
+                            object->txDmaIcnt.dim1    = (int32_t)object->txDmaIcnt.icnt0;
+                            object->txDmaIcnt.dim2    = (int32_t)((int32_t)object->txDmaIcnt.icnt0 * (int32_t)object->txDmaIcnt.icnt1);
+                            object->txDmaIcnt.dim3    = (int32_t)((int32_t)object->txDmaIcnt.icnt0 * (int32_t)object->txDmaIcnt.icnt1 * (int32_t)object->txDmaIcnt.icnt2);
+
                             break;
                         }
-                        else
+                        
+                        case MCASP_AUDBUFF_FORMAT_MULTISER_MULTISLOT_SEMI_INTERLEAVED_2:
                         {
-                            object->txDmaIcnt.icnt2 = (uint16_t)tempIcntX;
-                            object->txDmaIcnt.icnt3 = (uint16_t)tempIcntY;
+                            /* For semi-interleaved type 2: data is organized by serializer groups */
+                            object->txDmaIcnt.icnt0   = WORD_BYTE_COUNT;
+                            object->txDmaIcnt.icnt1   = (uint16_t)(object->XmtObj.serCount);
+                            object->txDmaIcnt.icnt2   = (uint16_t)((((uint32_t)waterLevel / (uint32_t)object->txDmaIcnt.icnt1) == 0U) ? 1U : ((uint32_t)waterLevel / (uint32_t)object->txDmaIcnt.icnt1));
+                            object->txDmaIcnt.icnt3   = (uint16_t)((uint32_t)(txnByteCnt /((uint64_t)object->txDmaIcnt.icnt0*(uint64_t)object->txDmaIcnt.icnt1*(uint64_t)object->txDmaIcnt.icnt2)));
+
+                            object->txDmaIcnt.dim1    = (int32_t)((int32_t)frameCount * (int32_t)object->XmtObj.slotCount * (int32_t)WORD_BYTE_COUNT);
+                            object->txDmaIcnt.dim2    = (int32_t)WORD_BYTE_COUNT;
+                            object->txDmaIcnt.dim3    = (int32_t)((int32_t)WORD_BYTE_COUNT * (int32_t)((uint32_t)waterLevel / (uint32_t)object->XmtObj.serCount));
+
+                            break;
+                        }
+
+                        case MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_NON_INTERLEAVED:
+                        case MCASP_AUDBUFF_FORMAT_MULTISER_MULTISLOT_NON_INTERLEAVED:
+                        {
+#if defined (MCASP_TX_EVENT_TYPE_L2G)
+                            if((waterLevel % (object->XmtObj.serCount * object->XmtObj.slotCount)) != 0U)
+                            {
+                                status = SystemP_FAILURE;
+                            }
+                            else
+#endif
+                            {
+                                object->txDmaIcnt.icnt0   = WORD_BYTE_COUNT;
+                                object->txDmaIcnt.icnt1   = (uint16_t)(object->XmtObj.serCount * object->XmtObj.slotCount);
+                                object->txDmaIcnt.icnt2   = (uint16_t)((((uint32_t)waterLevel / (uint32_t)(object->txDmaIcnt.icnt1)) == 0U) ? 1U : ((uint32_t)waterLevel / (uint32_t)(object->txDmaIcnt.icnt1)));
+                                object->txDmaIcnt.icnt3   = (uint16_t)((uint32_t)frameCount / (uint32_t)(object->txDmaIcnt.icnt2));
+
+                                object->txDmaIcnt.dim1    = (int32_t)((int32_t)frameCount * (int32_t)WORD_BYTE_COUNT);
+                                object->txDmaIcnt.dim2    = (int32_t)WORD_BYTE_COUNT;
+                                object->txDmaIcnt.dim3    = (int32_t)((int32_t)WORD_BYTE_COUNT * (int32_t)((uint32_t)waterLevel/ ((uint32_t)object->XmtObj.serCount * (uint32_t)object->XmtObj.slotCount)));
+                            }
+
+                            break;
+                        }
+
+                        default:
+                        {
+                            /* Invalid buffer format */
+                            status = SystemP_FAILURE;
+                            break;
                         }
                     }
 
@@ -1784,29 +1869,72 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
                         status = SystemP_FAILURE;
                         break;
                     }
+                    frameCount = object->RcvObj.txnLoopjob.count / (object->RcvObj.serCount * object->RcvObj.slotCount);
 
-                    object->rxDmaIcnt.icnt0 = WORD_BYTE_COUNT;
-                    object->rxDmaIcnt.icnt1 = waterLevel;
-                    tempIcntX = (uint32_t)(txnByteCnt/(WORD_BYTE_COUNT*waterLevel));
-                    if(tempIcntX < MCASP_ICNT2_MAX)
+                    switch(object->RcvObj.bufferFormat)
                     {
-                        object->rxDmaIcnt.icnt2 = (uint16_t)tempIcntX;
-                        object->rxDmaIcnt.icnt3 = 1U;
-                    }
-                    else
-                    {
-                        tempIcntX = tempIcntX&(-tempIcntX);
-                        tempIcntY = (uint32_t)(txnByteCnt/(WORD_BYTE_COUNT*waterLevel*tempIcntX));
-                        if((tempIcntY > MCASP_ICNT2_MAX) || (tempIcntX > MCASP_ICNT2_MAX))
+                        case MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_INTERLEAVED:
+                        case MCASP_AUDBUFF_FORMAT_MULTISER_MULTISLOT_SEMI_INTERLEAVED_1:
                         {
-                            DebugP_logError("Transaction count out of bounds \r\n");
-                            status = SystemP_FAILURE;
+                            /* For interleaved formats: data is organized as [slot0][slot1]...[slotN] per frame
+                             *
+                             * DMA Configuration Rationale:
+                             * - icnt1 = waterLevel: Transfer waterLevel words at a time to match FIFO requirements
+                             * - icnt2 = waterLevel/icnt1 = 1: Since icnt1 already equals waterLevel, icnt2 becomes 1
+                             *   This means we process one "waterLevel-sized chunk" per icnt2 iteration
+                             * - This configuration is optimal for interleaved data where consecutive samples
+                             *   from different slots are already arranged sequentially in memory
+                             * - Since CSL_UDMAP_TR_FLAGS_TRIGGER_TYPE_ICNT3_DEC is the trigger point,
+                             *   icnt1*icnt2 should equal waterLevel to ensure proper DMA synchronization
+                             *   with McASP FIFO thresholds for optimal audio streaming performance
+                             */
+                            object->rxDmaIcnt.icnt0   = WORD_BYTE_COUNT;
+                            object->rxDmaIcnt.icnt1   = (uint16_t)waterLevel;
+                            object->rxDmaIcnt.icnt2   = (uint16_t)((uint32_t)waterLevel / (uint32_t)(object->rxDmaIcnt.icnt1));  /* Always equals 1 */
+                            object->rxDmaIcnt.icnt3   = (uint16_t)((uint32_t)txnByteCnt / ((uint64_t)object->rxDmaIcnt.icnt0 * (uint64_t)object->rxDmaIcnt.icnt1 * (uint64_t)object->rxDmaIcnt.icnt2));
+
+                            object->rxDmaIcnt.dim1    = (int32_t)WORD_BYTE_COUNT;
+                            object->rxDmaIcnt.dim2    = (int32_t)((int32_t)WORD_BYTE_COUNT * (int32_t)object->rxDmaIcnt.icnt1);
+                            object->rxDmaIcnt.dim3    = (int32_t)((int32_t)WORD_BYTE_COUNT * (int32_t)object->rxDmaIcnt.icnt1 * (int32_t)object->rxDmaIcnt.icnt2);
+
                             break;
                         }
-                        else
+
+                        case MCASP_AUDBUFF_FORMAT_MULTISER_MULTISLOT_SEMI_INTERLEAVED_2:
                         {
-                            object->rxDmaIcnt.icnt2 = (uint16_t)tempIcntX;
-                            object->rxDmaIcnt.icnt3 = (uint16_t)tempIcntY;
+                            /* For semi-interleaved type 2: data is organized by serializer groups */
+                            object->rxDmaIcnt.icnt0   = WORD_BYTE_COUNT;
+                            object->rxDmaIcnt.icnt1   = (uint16_t)(object->RcvObj.serCount);
+                            object->rxDmaIcnt.icnt2   = (uint16_t)((((uint32_t)waterLevel / (uint32_t)object->rxDmaIcnt.icnt1) == 0U) ? 1U : ((uint32_t)waterLevel / (uint32_t)object->rxDmaIcnt.icnt1));
+                            object->rxDmaIcnt.icnt3   = (uint16_t)((uint32_t)txnByteCnt/((uint64_t)object->rxDmaIcnt.icnt0*(uint64_t)object->rxDmaIcnt.icnt1*(uint64_t)object->rxDmaIcnt.icnt2));
+
+                            object->rxDmaIcnt.dim1    = (int32_t)((int32_t)frameCount * (int32_t)object->RcvObj.slotCount * (int32_t)WORD_BYTE_COUNT);
+                            object->rxDmaIcnt.dim2    = (int32_t)WORD_BYTE_COUNT;
+                            object->rxDmaIcnt.dim3    = (int32_t)((int32_t)WORD_BYTE_COUNT * (int32_t)((uint32_t)waterLevel/ (uint32_t)object->RcvObj.serCount));
+
+                            break;
+                        }
+
+                        case MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_NON_INTERLEAVED:
+                        case MCASP_AUDBUFF_FORMAT_MULTISER_MULTISLOT_NON_INTERLEAVED:
+                        {
+                            object->rxDmaIcnt.icnt0   = WORD_BYTE_COUNT;
+                            object->rxDmaIcnt.icnt1   = (uint16_t)(object->RcvObj.serCount * object->RcvObj.slotCount);
+                            object->rxDmaIcnt.icnt2   = (uint16_t)(((uint32_t)waterLevel / (uint32_t)(object->rxDmaIcnt.icnt1)) == 0U ? 1U : ((uint32_t)waterLevel / (uint32_t)(object->rxDmaIcnt.icnt1)));
+                            object->rxDmaIcnt.icnt3   = (uint16_t)((uint32_t)frameCount / (uint32_t)(object->rxDmaIcnt.icnt2));
+
+                            object->rxDmaIcnt.dim1    = (int32_t)((int32_t)frameCount * (int32_t)WORD_BYTE_COUNT);
+                            object->rxDmaIcnt.dim2    = (int32_t)WORD_BYTE_COUNT;
+                            object->rxDmaIcnt.dim3    = (int32_t)((int32_t)WORD_BYTE_COUNT * (int32_t)((uint32_t)waterLevel/ ((uint32_t)object->RcvObj.serCount * (uint32_t)object->RcvObj.slotCount)));
+
+                            break;
+                        }
+
+                        default:
+                        {
+                            /* Invalid buffer format */
+                            status = SystemP_FAILURE;
+                            break;
                         }
                     }
 

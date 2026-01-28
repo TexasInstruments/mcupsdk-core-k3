@@ -847,13 +847,34 @@ Then MCASP_Open can be called from application after clock configurations are do
                     name: "txBufferFormat",
                     displayName: "Transmit Audio Buffer Format",
                     default: "1SER_MULTISLOT_INTERLEAVED",
-                    readOnly: true,
-                    options: [
-                        { name: "1SER_MULTISLOT_INTERLEAVED", displayName: "1-Serializer Multi-Slot Interleaved" },
-                        { name: "1SER_MULTISLOT_NON_INTERLEAVED", displayName: "1-Serializer Multi-Slot NonInterleaved" },
-                        { name: "MULTISER_MULTISLOT_SEMI_INTERLEAVED_1", displayName: "Multi-Serializer Multi-Slot Interleaved Type1" },
-                        { name: "MULTISER_MULTISLOT_SEMI_INTERLEAVED_2", displayName: "Multi-Serializer Multi-Slot Interleaved Type2" },
-                    ],
+                    options: function(inst) {
+                        let serInstances = inst["mcaspSer"];
+                        let txSerCount = 0;
+
+                        if(serInstances && serInstances.length > 0) {
+                            for(let i = 0; i < serInstances.length; i++) {
+                                if(serInstances[i] && serInstances[i].dataDir == "Transmit") {
+                                    txSerCount++;
+                                }
+                            }
+                        }
+
+                        if(txSerCount > 1) {
+                            return [
+                                { name: "MULTISER_MULTISLOT_SEMI_INTERLEAVED_1", displayName: "Multi-Serializer Multi-Slot Interleaved Type1" },
+                                { name: "MULTISER_MULTISLOT_SEMI_INTERLEAVED_2", displayName: "Multi-Serializer Multi-Slot Interleaved Type2" },
+                                { name: "MULTISER_MULTISLOT_NON_INTERLEAVED", displayName: "Multi-Serializer Multi-Slot NonInterleaved" },
+                            ];
+                        } else {
+                            return [
+                                { name: "1SER_MULTISLOT_INTERLEAVED", displayName: "1-Serializer Multi-Slot Interleaved" },
+                                { name: "1SER_MULTISLOT_NON_INTERLEAVED", displayName: "1-Serializer Multi-Slot NonInterleaved" },
+                                { name: "MULTISER_MULTISLOT_SEMI_INTERLEAVED_1", displayName: "Multi-Serializer Multi-Slot Interleaved Type1" },
+                                { name: "MULTISER_MULTISLOT_SEMI_INTERLEAVED_2", displayName: "Multi-Serializer Multi-Slot Interleaved Type2" },
+                                { name: "MULTISER_MULTISLOT_NON_INTERLEAVED", displayName: "Multi-Serializer Multi-Slot NonInterleaved" },
+                            ];
+                        }
+                    },
                     description: "Audio buffer format used by the application transmit buffer",
                 },
                 {
@@ -1392,13 +1413,34 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                     name: "rxBufferFormat",
                     displayName: "Receive Audio Buffer Format",
                     default: "1SER_MULTISLOT_INTERLEAVED",
-                    readOnly: true,
-                    options: [
-                        { name: "1SER_MULTISLOT_INTERLEAVED", displayName: "1-Serializer Multi-Slot Interleaved" },
-                        { name: "1SER_MULTISLOT_NON_INTERLEAVED", displayName: "1-Serializer Multi-Slot NonInterleaved" },
-                        { name: "MULTISER_MULTISLOT_SEMI_INTERLEAVED_1", displayName: "Multi-Serializer Multi-Slot Interleaved Type1" },
-                        { name: "MULTISER_MULTISLOT_SEMI_INTERLEAVED_2", displayName: "Multi-Serializer Multi-Slot Interleaved Type2" },
-                    ],
+                    options: function(inst) {
+                        let serInstances = inst["mcaspSer"];
+                        let rxSerCount = 0;
+
+                        if(serInstances && serInstances.length > 0) {
+                            for(let i = 0; i < serInstances.length; i++) {
+                                if(serInstances[i] && serInstances[i].dataDir == "Receive") {
+                                    rxSerCount++;
+                                }
+                            }
+                        }
+
+                        if(rxSerCount > 1) {
+                            return [
+                                { name: "MULTISER_MULTISLOT_SEMI_INTERLEAVED_1", displayName: "Multi-Serializer Multi-Slot Interleaved Type1" },
+                                { name: "MULTISER_MULTISLOT_SEMI_INTERLEAVED_2", displayName: "Multi-Serializer Multi-Slot Interleaved Type2" },
+                                { name: "MULTISER_MULTISLOT_NON_INTERLEAVED", displayName: "Multi-Serializer Multi-Slot NonInterleaved" },
+                            ];
+                        } else {
+                            return [
+                                { name: "1SER_MULTISLOT_INTERLEAVED", displayName: "1-Serializer Multi-Slot Interleaved" },
+                                { name: "1SER_MULTISLOT_NON_INTERLEAVED", displayName: "1-Serializer Multi-Slot NonInterleaved" },
+                                { name: "MULTISER_MULTISLOT_SEMI_INTERLEAVED_1", displayName: "Multi-Serializer Multi-Slot Interleaved Type1" },
+                                { name: "MULTISER_MULTISLOT_SEMI_INTERLEAVED_2", displayName: "Multi-Serializer Multi-Slot Interleaved Type2" },
+                                { name: "MULTISER_MULTISLOT_NON_INTERLEAVED", displayName: "Multi-Serializer Multi-Slot NonInterleaved" },
+                            ];
+                        }
+                    },
                     description: "Audio buffer format used by the application receive buffer",
                 },
                 {
@@ -1819,13 +1861,90 @@ function validate(inst, report) {
         }
     }
 
+    /* Validate waterLevel divisibility for MULTISER_MULTISLOT_NON_INTERLEAVED and 1SER_MULTISLOT_NON_INTERLEAVED formats */
+    if((inst.enableMcaspTx == true) && ((inst.txBufferFormat == "MULTISER_MULTISLOT_NON_INTERLEAVED") || (inst.txBufferFormat == "1SER_MULTISLOT_NON_INTERLEAVED"))) {
+        if(inst.txAfifoEnable == true) {
+            let serCount = 1; /* Default serializer count */
+            let serInstances = inst["mcaspSer"];
+            if(serInstances && serInstances.length > 0) {
+                /* Count active TX serializers */
+                let txSerCount = 0;
+                for(let i = 0; i < serInstances.length; i++) {
+                    if(serInstances[i] && serInstances[i].serMode == "TX") {
+                        txSerCount++;
+                    }
+                }
+                if(txSerCount > 0) {
+                    serCount = txSerCount;
+                }
+            }
+            let totalSlots = serCount * inst.NumTxSlots;
+            if((inst.txAfifoNumEvt % totalSlots) != 0) {
+                report.logError(`For MULTISER_MULTISLOT_NON_INTERLEAVED and 1SER_MULTISLOT_NON_INTERLEAVED formats, TX FIFO water level (${inst.txAfifoNumEvt}) must be evenly divisible by (serializer count * slot count = ${totalSlots})`, inst, "txAfifoNumEvt");
+            }
+        }
+    }
+
+    if((inst.enableMcaspRx == true) && ((inst.rxBufferFormat == "MULTISER_MULTISLOT_NON_INTERLEAVED") || (inst.rxBufferFormat == "1SER_MULTISLOT_NON_INTERLEAVED"))) {
+        if(inst.rxAfifoEnable == true) {
+            let serCount = 1; /* Default serializer count */
+            let serInstances = inst["mcaspSer"];
+            if(serInstances && serInstances.length > 0) {
+                /* Count active RX serializers */
+                let rxSerCount = 0;
+                for(let i = 0; i < serInstances.length; i++) {
+                    if(serInstances[i] && serInstances[i].serMode == "RX") {
+                        rxSerCount++;
+                    }
+                }
+                if(rxSerCount > 0) {
+                    serCount = rxSerCount;
+                }
+            }
+            let totalSlots = serCount * inst.NumRxSlots;
+            if((inst.rxAfifoNumEvt % totalSlots) != 0) {
+                report.logError(`For MULTISER_MULTISLOT_NON_INTERLEAVED and 1SER_MULTISLOT_NON_INTERLEAVED formats, RX FIFO water level (${inst.rxAfifoNumEvt}) must be evenly divisible by (serializer count * slot count = ${totalSlots})`, inst, "rxAfifoNumEvt");
+            }
+        }
+    }
+
+    /* Validate buffer format restrictions when serializer count > 1 */
+    let serInstances = inst["mcaspSer"];
+    if(serInstances && serInstances.length > 0) {
+        /* Count active TX serializers */
+        let txSerCount = 0;
+        let rxSerCount = 0;
+        for(let i = 0; i < serInstances.length; i++) {
+            if(serInstances[i] && serInstances[i].dataDir == "Transmit") {
+                txSerCount++;
+            }
+            if(serInstances[i] && serInstances[i].dataDir == "Receive") {
+                rxSerCount++;
+            }
+        }
+
+        /* Validate TX buffer format when TX serializer count == 1 */
+        if((inst.enableMcaspTx == true) && (txSerCount > 1)) {
+            if((inst.txBufferFormat == "1SER_MULTISLOT_INTERLEAVED") ||
+               (inst.txBufferFormat == "1SER_MULTISLOT_NON_INTERLEAVED")) {
+                report.logError(`When TX serializer count (${txSerCount}) > 1, txBufferFormat cannot be "1SER_MULTISLOT_INTERLEAVED" or "1SER_MULTISLOT_NON_INTERLEAVED"`, inst, "txBufferFormat");
+            }
+        }
+
+        /* Validate RX buffer format when RX serializer count == 1 */
+        if((inst.enableMcaspRx == true) && (rxSerCount > 1)) {
+            if((inst.rxBufferFormat == "1SER_MULTISLOT_INTERLEAVED") ||
+               (inst.rxBufferFormat == "1SER_MULTISLOT_NON_INTERLEAVED")) {
+                report.logError(`When RX serializer count (${rxSerCount}) > 1, rxBufferFormat cannot be "1SER_MULTISLOT_INTERLEAVED" or "1SER_MULTISLOT_NON_INTERLEAVED"`, inst, "rxBufferFormat");
+            }
+        }
+    }
+
     let resArray = [];
     let numSer = 16;
     for (let index = 0; index <= numSer; index++) {
         resArray[index] = false;
     }
-
-    let serInstances = inst["mcaspSer"];
 
     for (let index = 0; index <= serInstances.length; index++) {
         let serInst = serInstances[index];

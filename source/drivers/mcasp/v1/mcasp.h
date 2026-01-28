@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -288,6 +288,13 @@ typedef void *MCASP_Handle;
  *  guide to view the sample data format.
  */
 #define MCASP_AUDBUFF_FORMAT_MULTISER_MULTISLOT_SEMI_INTERLEAVED_2     (3U)
+/**
+ *  \brief This is used for transfer of data with  multiple serializers and
+ *  also multiple slots enabled.please note that niether serializer data nor
+ *  slot data is interleaved in this format. Refer to the user guide to view
+ *  the sample data format.
+ */
+#define MCASP_AUDBUFF_FORMAT_MULTISER_MULTISLOT_NON_INTERLEAVED     (4U)
 /** @} */
 
 /**
@@ -619,6 +626,12 @@ typedef struct
     /**< ICNT2 value for the TR */
     uint16_t icnt3;
     /**< ICNT3 value for the TR */
+    int32_t  dim1;
+    /**< Signed dimension for loop level 1 */
+    int32_t  dim2;
+    /**< Signed dimension for loop level 2 */
+    int32_t  dim3;
+    /**< Signed dimension for loop level 3 */
 } MCASP_DmaIcnt;
 
 /**

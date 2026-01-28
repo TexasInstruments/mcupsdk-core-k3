@@ -91,10 +91,11 @@ CSL_SecProxyCfg gSciclientRomSecProxyCfg =
     0                                          // maxMsgSize
 };
 
+#if defined(CONFIG_LPM_DM)
+
 void _vectors(void);
 uint8_t _freertosresetvectors[0x40];
 
-#if defined(CONFIG_LPM_DM)
 /** \brief Variable to store the LPM context save address required by TISCI APIs */
 static uint64_t *gpLPMCtxt = NULL;
 
@@ -155,7 +156,9 @@ int32_t Sciclient_direct_init(void)
     int32_t ret = SystemP_SUCCESS;
     Sciclient_ConfigPrms_t clientPrms;
 
+#if defined(CONFIG_LPM_DM)
     memcpy((void *)_freertosresetvectors, (void *)_vectors , 0x40);
+#endif
 
     ret = Sciclient_configPrmsInit(&clientPrms);
 

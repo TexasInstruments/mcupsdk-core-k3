@@ -293,6 +293,9 @@ const example_file_list = [
     "test/sdl/vtm/vtm_func_test/.project/project.js",
     "test/sdl/vtm/vtm_unit_test/.project/project.js",
 
+    //Ethfw
+    "source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/.project/project.js",
+    "source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/.project/project.js",
 
     // Safety checkers Examples
     "source/safety_checkers/examples/pm_checkers_app/.project/project.js",

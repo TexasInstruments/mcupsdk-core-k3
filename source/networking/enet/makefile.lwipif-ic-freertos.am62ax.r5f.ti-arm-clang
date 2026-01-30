@@ -2,7 +2,7 @@
 # Auto generated makefile
 #
 
-export MCU_PLUS_SDK_PATH?=$(abspath ../..)
+export MCU_PLUS_SDK_PATH?=$(abspath ../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 
 CG_TOOL_ROOT=$(CGT_TI_ARM_CLANG_PATH)
@@ -13,45 +13,43 @@ AR=$(CGT_TI_ARM_CLANG_PATH)/bin/tiarmar
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-LIBNAME:=board.am62ax.r5f.ti-arm-clang.$(PROFILE).lib
+LIBNAME:=lwipif-ic-freertos.am62ax.r5f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
-    dp83867.c \
-    eeprom.c \
-    eeprom_at24c512c.c \
-    flash.c \
-    flash_nand_ospi.c \
-    flash_nor_ospi.c \
-    generic_phy.c \
-    ioexp_tca6424.c \
-    led.c \
-    led_gpio.c \
-    led_tpic2810.c \
-    led_ioexp.c \
-    nor_spi_sfdp.c \
-    phy_common_priv.c \
+    lwip_ic.c \
+    lwip2lwipif_ic.c \
+    ShdMemCircularBufferP_nortos.c \
+    pbufQ_ic.c \
+    custom_pbuf_ic.c \
 
 FILES_PATH_common = \
-    flash \
-    flash/ospi \
-    flash/sfdp \
-    ioexp \
-    null \
-    led \
-    eeprom \
-    ethphy/enet/rtos_drivers/src \
-    ethphy/enet/rtos_drivers/include \
+    ${MCU_PLUS_SDK_PATH}/source/networking/enet/core/lwip_ic/lwipific/src \
+    ${MCU_PLUS_SDK_PATH}/source/networking/enet/core/lwip_ic/intercore/src \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \
     -I${MCU_PLUS_SDK_PATH}/source \
-    -I${MCU_PLUS_SDK_PATH}/source/board/ethphy/enet/rtos_drivers/include \
-    -I${MCU_PLUS_SDK_PATH}/source/board/ethphy/port \
+    -I${MCU_PLUS_SDK_PATH}/source/networking/enet/core/lwip_ic/lwipific/inc \
+    -I${MCU_PLUS_SDK_PATH}/source/networking/enet/core/lwip_ic/intercore/include \
+    -I${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-port/include \
+    -I${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-port/freertos/include \
+    -I${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-stack/src/include \
+    -I${MCU_PLUS_SDK_PATH}/source/networking/enet/soc/k3/am62ax \
+    -I${MCU_PLUS_SDK_PATH}/source/networking/lwip/lwip-config/am62ax \
 
 DEFINES_common := \
     -DSOC_AM62AX \
-    -DMCU_SDK_BUILD \
-    -DPHY_CFG_TRACE_LEVEL=3 \
+    -DMAKEFILE_BUILD \
+    -DENET_CFG_ASSERT=1 \
+    -DENET_CFG_PRINT_ENABLE \
+    -DENET_CFG_TRACE_LEVEL=3 \
+    -DENABLE_ENET_LOG \
+    -DSW_VERSION=$(SW_VERSION)
+
+DEFINES_debug := \
+    -DENET_CFG_DEV_ERROR=1 \
+    -DLWIPIF_INSTRUMENTATION_ENABLED=1 \
+    -DENETDMA_INSTRUMENTATION_ENABLED=1 \
     -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \
@@ -64,6 +62,12 @@ CFLAGS_common := \
     -g \
     -Wno-gnu-variable-sized-type-not-at-end \
     -Wno-unused-function \
+    -Wno-extra \
+
+CFLAGS_release := \
+    -Os \
+    -Oz \
+    -flto \
 
 CFLAGS_cpp_common := \
     -Wno-c99-designator \
@@ -79,9 +83,6 @@ CFLAGS_cpp_common := \
 
 CFLAGS_debug := \
     -D_DEBUG_=1 \
-
-CFLAGS_release := \
-    -Os \
 
 ARFLAGS_common := \
     rc \
@@ -99,7 +100,7 @@ INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
 ARFLAGS := $(ARFLAGS_common) $(ARFLAGS_$(PROFILE))
 
 LIBDIR := lib
-OBJDIR := obj/am62ax/ti-arm-clang/$(PROFILE)/r5f/board/
+OBJDIR := obj/am62ax/ti-arm-clang/$(PROFILE)/r5f/lwipif-ic-freertos/
 OBJS := $(FILES:%.c=%.obj)
 OBJS += $(ASMFILES:%.S=%.obj)
 DEPS := $(FILES:%.c=%.d)

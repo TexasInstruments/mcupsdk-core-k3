@@ -210,14 +210,7 @@ function getComponentProperty() {
     property.type = "library";
     property.name = "lwip-contrib-freertos";
     property.tag = "contrib-freertos";
-    if (device === "am62ax")
-    {
-        property.isInternal = true;
-    }
-    else
-    {
-        property.isInternal = false;
-    }
+    property.isInternal = false;
     deviceBuildCombos = []
     for (buildCombo of buildOptionCombos)
     {

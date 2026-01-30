@@ -54,7 +54,7 @@ const files = {
         "excelfore-config-uni_access.c",
         "ieee802-dot1ab-lldp_access.c",
         "ieee802-dot1q-cnc-config_access.c",
-        "excelfore-config-uni.c", 
+        "excelfore-config-uni.c",
         "excelfore-config-uni_nconf.c",
         "excelfore-config-uni_runconf.c",
         "ieee802-dot1ab-lldp.c",
@@ -322,14 +322,8 @@ function getComponentProperty(device) {
     property.type = "library";
     property.name = "tsn_uniconf-freertos";
     property.tag  = "tsn_uniconf_freertos";
-    if (device === "am62ax")
-    {
-        property.isInternal = true;
-    }
-    else
-    {
-        property.isInternal = false;
-    }
+
+    property.isInternal = false;
 
     deviceBuildCombos = []
     for (buildCombo of buildOptionCombos)

@@ -228,14 +228,8 @@ function getComponentProperty(device) {
     property.type = "library";
     property.name = "lwipif-cpsw-freertos";
     property.tag = "lwipif-cpsw-freertos";
-    if (device === "am62ax")
-    {
-        property.isInternal = true;
-    }
-    else
-    {
-        property.isInternal = false;
-    }
+
+    property.isInternal = false;
 
     deviceBuildCombos = []
     for (buildCombo of buildOptionCombos)

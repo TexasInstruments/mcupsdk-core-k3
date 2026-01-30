@@ -386,14 +386,8 @@ function getComponentProperty(device) {
     property.type = "library";
     property.name = "lwip-freertos";
     property.tag  = "stack_freertos";
-    if (device === "am62ax")
-    {
-        property.isInternal = true;
-    }
-    else
-    {
-        property.isInternal = false;
-    }
+
+    property.isInternal = false;
 
     deviceBuildCombos = []
     for (buildCombo of buildOptionCombos)

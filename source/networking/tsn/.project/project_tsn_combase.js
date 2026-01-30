@@ -254,14 +254,8 @@ function getComponentProperty(device) {
     property.type = "library";
     property.name = "tsn_combase-freertos";
     property.tag  = "tsn_combase_freertos";
-    if (device === "am62ax")
-    {
-        property.isInternal = true;
-    }
-    else
-    {
-        property.isInternal = false;
-    }
+
+    property.isInternal = false;
 
     deviceBuildCombos = []
     for (buildCombo of buildOptionCombos)

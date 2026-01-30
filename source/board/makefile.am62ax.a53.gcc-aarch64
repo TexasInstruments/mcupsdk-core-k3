@@ -36,6 +36,8 @@ FILES_PATH_common = \
     null \
     led \
     eeprom \
+    ethphy/enet/rtos_drivers/src \
+    ethphy/enet/rtos_drivers/include \
 
 INCLUDES_common := \
     -I${MCU_PLUS_SDK_PATH}/source \

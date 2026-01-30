@@ -288,14 +288,8 @@ function getComponentProperty(device) {
     property.type = "library";
     property.name = "tsn_gptp-freertos";
     property.tag  = "tsn_gptp_freertos";
-    if (device === "am62ax")
-    {
-        property.isInternal = true;
-    }
-    else
-    {
-        property.isInternal = false;
-    }
+
+    property.isInternal = false;
 
     deviceBuildCombos = []
     for (buildCombo of buildOptionCombos)

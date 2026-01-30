@@ -24,6 +24,21 @@ const component_file_list_common = [
     "source/sdl/sdl_sbl/.project/project.js",
     "source/security/.project/project.js",
     "source/safety_checkers/.project/project.js",
+
+    "source/networking/enet/.project/project_cpsw.js",
+    "source/networking/enet/.project/project_cpsw_lwipif_freertos.js",
+    "source/networking/enet/.project/project_cpsw_lwipif_nortos.js",
+    "source/networking/enet/.project/project_cpsw_lwipif_ic_freertos.js",
+    "source/networking/ethfw/.project/project_ethfw.js",
+    "source/networking/lwip/.project/project_contrib_freertos.js",
+    "source/networking/lwip/.project/project_contrib_nortos.js",
+    "source/networking/lwip/.project/project_stack_freertos.js",
+    "source/networking/lwip/.project/project_stack_nortos.js",
+    "source/networking/mbedtls_library/.project/project.js",
+    "source/networking/tsn/.project/project_tsn_combase.js",
+    "source/networking/tsn/.project/project_tsn_gptp.js",
+    "source/networking/tsn/.project/project_tsn_uniconf.js",
+    "source/networking/tsn/.project/project_tsn_unibase.js",
     "test/unity/.project/project.js",
     "test/kernel/smp_tests/disable_multiple_priorities/configs/.project/project.js",
     "test/kernel/smp_tests/disable_preemption/configs/.project/project.js",
@@ -277,6 +292,7 @@ const example_file_list = [
     "test/sdl/stog/stog_unit_test/.project/project.js",
     "test/sdl/vtm/vtm_func_test/.project/project.js",
     "test/sdl/vtm/vtm_unit_test/.project/project.js",
+
 
     // Safety checkers Examples
     "source/safety_checkers/examples/pm_checkers_app/.project/project.js",

@@ -5,17 +5,20 @@ let device = "am62ax";
 
 const files_r5f={
     common: [
+        "dp83867.c",
         "eeprom.c",
         "eeprom_at24c512c.c",
         "flash.c",
         "flash_nand_ospi.c",
         "flash_nor_ospi.c",
+        "generic_phy.c",
+        "ioexp_tca6424.c",
         "led.c",
         "led_gpio.c",
         "led_tpic2810.c",
         "led_ioexp.c",
-        "ioexp_tca6424.c",
         "nor_spi_sfdp.c",
+        "phy_common_priv.c",
     ],
 };
 
@@ -49,6 +52,8 @@ const filedirs = {
         "null",
         "led",
         "eeprom",
+        "ethphy/enet/rtos_drivers/src",
+        "ethphy/enet/rtos_drivers/include",
     ],
 };
 

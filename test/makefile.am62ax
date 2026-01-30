@@ -34,6 +34,10 @@ help:
 	@echo  .
 	@echo  Library build targets,
 	@echo  ======================
+	@echo  $(MAKE) -s -f makefile.am62ax lwipif-cpsw-nortos_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62ax lwip-contrib-nortos_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62ax lwip-nortos_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62ax mbedtls_r5f.ti-arm-clang mbedtls_a53.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62ax unity_r5f.ti-arm-clang unity_a53.gcc-aarch64 unity_c75x.ti-c7000
 	@echo  $(MAKE) -s -f makefile.am62ax freertos-smp-disable-multiple-priorities_a53-smp.gcc-aarch64
 	@echo  $(MAKE) -s -f makefile.am62ax freertos-smp-disable-preemption_a53-smp.gcc-aarch64
@@ -51,6 +55,10 @@ help:
 	@echo  .
 	@echo  Library clean targets,
 	@echo  ======================
+	@echo  $(MAKE) -s -f makefile.am62ax lwipif-cpsw-nortos_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62ax lwip-contrib-nortos_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62ax lwip-nortos_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62ax mbedtls_r5f.ti-arm-clang_clean mbedtls_a53.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62ax unity_r5f.ti-arm-clang_clean unity_a53.gcc-aarch64_clean unity_c75x.ti-c7000_clean
 	@echo  $(MAKE) -s -f makefile.am62ax freertos-smp-disable-multiple-priorities_a53-smp.gcc-aarch64_clean
 	@echo  $(MAKE) -s -f makefile.am62ax freertos-smp-disable-preemption_a53-smp.gcc-aarch64_clean
@@ -228,6 +236,10 @@ help:
 	@echo  .
 
 # Various Component Targets
+BUILD_COMBO_lwipif-cpsw-nortos = lwipif-cpsw-nortos_r5f.ti-arm-clang
+BUILD_COMBO_lwip-contrib-nortos = lwip-contrib-nortos_r5f.ti-arm-clang
+BUILD_COMBO_lwip-nortos = lwip-nortos_r5f.ti-arm-clang
+BUILD_COMBO_mbedtls = mbedtls_r5f.ti-arm-clang mbedtls_a53.gcc-aarch64
 BUILD_COMBO_unity = unity_r5f.ti-arm-clang unity_a53.gcc-aarch64 unity_c75x.ti-c7000
 BUILD_COMBO_freertos-smp-disable-multiple-priorities = freertos-smp-disable-multiple-priorities_a53-smp.gcc-aarch64
 BUILD_COMBO_freertos-smp-disable-preemption = freertos-smp-disable-preemption_a53-smp.gcc-aarch64
@@ -244,7 +256,7 @@ BUILD_COMBO_drivers-mmcsd-inject-fault = drivers-mmcsd-inject-fault_a53.gcc-aarc
 BUILD_COMBO_doxy_samples = doxy_samples_r5f.ti-arm-clang
 
 # Combine all Components
-BUILD_COMBO_ALL = $(BUILD_COMBO_unity) $(BUILD_COMBO_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_freertos-smp-disable-preemption) $(BUILD_COMBO_freertos-smp-interrupt-wait-critical) $(BUILD_COMBO_freertos-smp-multiple-tasks-running) $(BUILD_COMBO_freertos-smp-only-one-task-enter-critical) $(BUILD_COMBO_freertos-smp-only-one-task-enter-suspendall) $(BUILD_COMBO_freertos-smp-schedule-affinity) $(BUILD_COMBO_freertos-smp-schedule-equal-priority) $(BUILD_COMBO_freertos-smp-schedule-highest-priority) $(BUILD_COMBO_freertos-smp-suspend-scheduler) $(BUILD_COMBO_freertos-smp-task-delete) $(BUILD_COMBO_drivers-mmcsd-inject-fault) $(BUILD_COMBO_doxy_samples)
+BUILD_COMBO_ALL = $(BUILD_COMBO_lwipif-cpsw-nortos) $(BUILD_COMBO_lwip-contrib-nortos) $(BUILD_COMBO_lwip-nortos) $(BUILD_COMBO_mbedtls) $(BUILD_COMBO_unity) $(BUILD_COMBO_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_freertos-smp-disable-preemption) $(BUILD_COMBO_freertos-smp-interrupt-wait-critical) $(BUILD_COMBO_freertos-smp-multiple-tasks-running) $(BUILD_COMBO_freertos-smp-only-one-task-enter-critical) $(BUILD_COMBO_freertos-smp-only-one-task-enter-suspendall) $(BUILD_COMBO_freertos-smp-schedule-affinity) $(BUILD_COMBO_freertos-smp-schedule-equal-priority) $(BUILD_COMBO_freertos-smp-schedule-highest-priority) $(BUILD_COMBO_freertos-smp-suspend-scheduler) $(BUILD_COMBO_freertos-smp-task-delete) $(BUILD_COMBO_drivers-mmcsd-inject-fault) $(BUILD_COMBO_doxy_samples)
 
 # Combine all External Components
 BUILD_COMBO_EXTERNAL_ALL =
@@ -262,6 +274,18 @@ libs-external: $(BUILD_COMBO_EXTERNAL_ALL)
 libs-prebuilt: $(BUILD_COMBO_PREBUILT_ALL)
 
 libs-private: $(BUILD_COMBO_PRIVATE_ALL)
+
+$(BUILD_COMBO_lwipif-cpsw-nortos):
+	$(MAKE) -C ../source/networking/enet -f makefile.lwipif-cpsw-nortos.am62ax.$(subst lwipif-cpsw-nortos_,,$@) all
+
+$(BUILD_COMBO_lwip-contrib-nortos):
+	$(MAKE) -C ../source/networking/lwip -f makefile.contrib-nortos.am62ax.$(subst lwip-contrib-nortos_,,$@) all
+
+$(BUILD_COMBO_lwip-nortos):
+	$(MAKE) -C ../source/networking/lwip -f makefile.stack_nortos.am62ax.$(subst lwip-nortos_,,$@) all
+
+$(BUILD_COMBO_mbedtls):
+	$(MAKE) -C ../source/networking/mbedtls_library -f makefile.am62ax.$(subst mbedtls_,,$@) all
 
 $(BUILD_COMBO_unity):
 	$(MAKE) -C unity -f makefile.am62ax.$(subst unity_,,$@) all
@@ -307,6 +331,10 @@ $(BUILD_COMBO_doxy_samples):
 
 
 # Various Component Clean Targets
+BUILD_COMBO_CLEAN_lwipif-cpsw-nortos = lwipif-cpsw-nortos_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_lwip-contrib-nortos = lwip-contrib-nortos_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_lwip-nortos = lwip-nortos_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_mbedtls = mbedtls_r5f.ti-arm-clang_clean mbedtls_a53.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_unity = unity_r5f.ti-arm-clang_clean unity_a53.gcc-aarch64_clean unity_c75x.ti-c7000_clean
 BUILD_COMBO_CLEAN_freertos-smp-disable-multiple-priorities = freertos-smp-disable-multiple-priorities_a53-smp.gcc-aarch64_clean
 BUILD_COMBO_CLEAN_freertos-smp-disable-preemption = freertos-smp-disable-preemption_a53-smp.gcc-aarch64_clean
@@ -323,7 +351,7 @@ BUILD_COMBO_CLEAN_drivers-mmcsd-inject-fault = drivers-mmcsd-inject-fault_a53.gc
 BUILD_COMBO_CLEAN_doxy_samples = doxy_samples_r5f.ti-arm-clang_clean
 
 # Combine all Components Clean
-BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_unity) $(BUILD_COMBO_CLEAN_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_CLEAN_freertos-smp-disable-preemption) $(BUILD_COMBO_CLEAN_freertos-smp-interrupt-wait-critical) $(BUILD_COMBO_CLEAN_freertos-smp-multiple-tasks-running) $(BUILD_COMBO_CLEAN_freertos-smp-only-one-task-enter-critical) $(BUILD_COMBO_CLEAN_freertos-smp-only-one-task-enter-suspendall) $(BUILD_COMBO_CLEAN_freertos-smp-schedule-affinity) $(BUILD_COMBO_CLEAN_freertos-smp-schedule-equal-priority) $(BUILD_COMBO_CLEAN_freertos-smp-schedule-highest-priority) $(BUILD_COMBO_CLEAN_freertos-smp-suspend-scheduler) $(BUILD_COMBO_CLEAN_freertos-smp-task-delete) $(BUILD_COMBO_CLEAN_drivers-mmcsd-inject-fault) $(BUILD_COMBO_CLEAN_doxy_samples)
+BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_lwipif-cpsw-nortos) $(BUILD_COMBO_CLEAN_lwip-contrib-nortos) $(BUILD_COMBO_CLEAN_lwip-nortos) $(BUILD_COMBO_CLEAN_mbedtls) $(BUILD_COMBO_CLEAN_unity) $(BUILD_COMBO_CLEAN_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_CLEAN_freertos-smp-disable-preemption) $(BUILD_COMBO_CLEAN_freertos-smp-interrupt-wait-critical) $(BUILD_COMBO_CLEAN_freertos-smp-multiple-tasks-running) $(BUILD_COMBO_CLEAN_freertos-smp-only-one-task-enter-critical) $(BUILD_COMBO_CLEAN_freertos-smp-only-one-task-enter-suspendall) $(BUILD_COMBO_CLEAN_freertos-smp-schedule-affinity) $(BUILD_COMBO_CLEAN_freertos-smp-schedule-equal-priority) $(BUILD_COMBO_CLEAN_freertos-smp-schedule-highest-priority) $(BUILD_COMBO_CLEAN_freertos-smp-suspend-scheduler) $(BUILD_COMBO_CLEAN_freertos-smp-task-delete) $(BUILD_COMBO_CLEAN_drivers-mmcsd-inject-fault) $(BUILD_COMBO_CLEAN_doxy_samples)
 
 # Combine all External Components Clean
 BUILD_COMBO_EXTERNAL_CLEAN_ALL =
@@ -336,6 +364,18 @@ libs-clean: $(BUILD_COMBO_CLEAN_ALL)
 libs-external-clean: $(BUILD_COMBO_EXTERNAL_CLEAN_ALL)
 
 libs-prebuilt-clean: $(BUILD_COMBO_PREBUILT_CLEAN_ALL)
+
+$(BUILD_COMBO_CLEAN_lwipif-cpsw-nortos):
+	$(MAKE) -C ../source/networking/enet -f makefile.lwipif-cpsw-nortos.am62ax.$(subst lwipif-cpsw-nortos_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_lwip-contrib-nortos):
+	$(MAKE) -C ../source/networking/lwip -f makefile.contrib-nortos.am62ax.$(subst lwip-contrib-nortos_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_lwip-nortos):
+	$(MAKE) -C ../source/networking/lwip -f makefile.stack_nortos.am62ax.$(subst lwip-nortos_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_mbedtls):
+	$(MAKE) -C ../source/networking/mbedtls_library -f makefile.am62ax.$(subst mbedtls_,,$(subst _clean,,$@)) clean
 
 $(BUILD_COMBO_CLEAN_unity):
 	$(MAKE) -C unity -f makefile.am62ax.$(subst unity_,,$(subst _clean,,$@)) clean
@@ -381,6 +421,10 @@ $(BUILD_COMBO_CLEAN_doxy_samples):
 
 
 # Various Component Scrub Targets
+BUILD_COMBO_SCRUB_lwipif-cpsw-nortos = lwipif-cpsw-nortos_r5f.ti-arm-clang_scrub
+BUILD_COMBO_SCRUB_lwip-contrib-nortos = lwip-contrib-nortos_r5f.ti-arm-clang_scrub
+BUILD_COMBO_SCRUB_lwip-nortos = lwip-nortos_r5f.ti-arm-clang_scrub
+BUILD_COMBO_SCRUB_mbedtls = mbedtls_r5f.ti-arm-clang_scrub mbedtls_a53.gcc-aarch64_scrub
 BUILD_COMBO_SCRUB_unity = unity_r5f.ti-arm-clang_scrub unity_a53.gcc-aarch64_scrub unity_c75x.ti-c7000_scrub
 BUILD_COMBO_SCRUB_freertos-smp-disable-multiple-priorities = freertos-smp-disable-multiple-priorities_a53-smp.gcc-aarch64_scrub
 BUILD_COMBO_SCRUB_freertos-smp-disable-preemption = freertos-smp-disable-preemption_a53-smp.gcc-aarch64_scrub
@@ -397,7 +441,7 @@ BUILD_COMBO_SCRUB_drivers-mmcsd-inject-fault = drivers-mmcsd-inject-fault_a53.gc
 BUILD_COMBO_SCRUB_doxy_samples = doxy_samples_r5f.ti-arm-clang_scrub
 
 # Combine all Components Scrub Targets
-BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_unity) $(BUILD_COMBO_SCRUB_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_SCRUB_freertos-smp-disable-preemption) $(BUILD_COMBO_SCRUB_freertos-smp-interrupt-wait-critical) $(BUILD_COMBO_SCRUB_freertos-smp-multiple-tasks-running) $(BUILD_COMBO_SCRUB_freertos-smp-only-one-task-enter-critical) $(BUILD_COMBO_SCRUB_freertos-smp-only-one-task-enter-suspendall) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-affinity) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-equal-priority) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-highest-priority) $(BUILD_COMBO_SCRUB_freertos-smp-suspend-scheduler) $(BUILD_COMBO_SCRUB_freertos-smp-task-delete) $(BUILD_COMBO_SCRUB_drivers-mmcsd-inject-fault) $(BUILD_COMBO_SCRUB_doxy_samples)
+BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_lwipif-cpsw-nortos) $(BUILD_COMBO_SCRUB_lwip-contrib-nortos) $(BUILD_COMBO_SCRUB_lwip-nortos) $(BUILD_COMBO_SCRUB_mbedtls) $(BUILD_COMBO_SCRUB_unity) $(BUILD_COMBO_SCRUB_freertos-smp-disable-multiple-priorities) $(BUILD_COMBO_SCRUB_freertos-smp-disable-preemption) $(BUILD_COMBO_SCRUB_freertos-smp-interrupt-wait-critical) $(BUILD_COMBO_SCRUB_freertos-smp-multiple-tasks-running) $(BUILD_COMBO_SCRUB_freertos-smp-only-one-task-enter-critical) $(BUILD_COMBO_SCRUB_freertos-smp-only-one-task-enter-suspendall) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-affinity) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-equal-priority) $(BUILD_COMBO_SCRUB_freertos-smp-schedule-highest-priority) $(BUILD_COMBO_SCRUB_freertos-smp-suspend-scheduler) $(BUILD_COMBO_SCRUB_freertos-smp-task-delete) $(BUILD_COMBO_SCRUB_drivers-mmcsd-inject-fault) $(BUILD_COMBO_SCRUB_doxy_samples)
 
 # Combine all External Components Scrub Targets
 BUILD_COMBO_EXTERNAL_SCRUB_ALL =
@@ -410,6 +454,18 @@ libs-scrub: $(BUILD_COMBO_SCRUB_ALL)
 libs-external-scrub: $(BUILD_COMBO_EXTERNAL_SCRUB_ALL)
 
 libs-prebuilt-scrub: $(BUILD_COMBO_PREBUILT_SCRUB_ALL)
+
+$(BUILD_COMBO_SCRUB_lwipif-cpsw-nortos):
+	$(MAKE) -C ../source/networking/enet -f makefile.lwipif-cpsw-nortos.am62ax.$(subst lwipif-cpsw-nortos_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_lwip-contrib-nortos):
+	$(MAKE) -C ../source/networking/lwip -f makefile.contrib-nortos.am62ax.$(subst lwip-contrib-nortos_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_lwip-nortos):
+	$(MAKE) -C ../source/networking/lwip -f makefile.stack_nortos.am62ax.$(subst lwip-nortos_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_mbedtls):
+	$(MAKE) -C ../source/networking/mbedtls_library -f makefile.am62ax.$(subst mbedtls_,,$(subst _scrub,,$@)) scrub
 
 $(BUILD_COMBO_SCRUB_unity):
 	$(MAKE) -C unity -f makefile.am62ax.$(subst unity_,,$(subst _scrub,,$@)) scrub

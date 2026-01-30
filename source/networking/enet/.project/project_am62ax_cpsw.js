@@ -197,7 +197,7 @@ function getComponentProperty() {
     property.type = "library";
     property.name = "enet-cpsw";
     property.tag = "cpsw";
-    property.isInternal = true;
+    property.isInternal = false;
     property.buildOptionCombos = buildOptionCombos;
 
     return property;

@@ -8,169 +8,912 @@ Build Sheet of supported features and modules for this SDK release. The followin
 
 The support status is indicated by the following codes:
 
-Cod                   | Note
-----------------------|------------------------------
-Yes                   | The feature or module is supported
-No                    | The feature or module is not supported
-SDKx.y                | The feature or module will be supported in a future version of the SDK
-NA                    | The feature or module is not applicable in the hardware
+<table border="1" cellspacing="0" cellpadding="5" style="border-collapse: collapse; width: 100%;">
+<tr>
+<th style="background-color: #314A7B; color: white; font-weight: bold; text-align: left; padding: 8px; border: 1px solid #333;">Code</th>
+<th style="background-color: #314A7B; color: white; font-weight: bold; text-align: left; padding: 8px; border: 1px solid #333;">Note</th>
+</tr>
+<tr>
+<td style="background-color: #90EE90; text-align: left; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">The feature or module is supported</td>
+</tr>
+<tr>
+<td style="background-color: #FFB6C1; text-align: left; border: 1px solid #333; padding: 8px;">No</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">The feature or module is not supported</td>
+</tr>
+<tr>
+<td style="background-color: #FFE4B5; text-align: left; border: 1px solid #333; padding: 8px;">SDKx.y</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">The feature or module will be supported in a future version of the SDK</td>
+</tr>
+<tr>
+<td style="background-color: #D3D3D3; text-align: left; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">The feature or module is not applicable in the hardware</td>
+</tr>
+</table>
+
 
 ## Software Buildsheet
 
-| Category                                          | Module                                               | SubModule              | RTOS on MCU R5F | RTOS on WKUP R5F |
-| ------------------------------------------------- | ---------------------------------------------------- | ---------------------- | --------------- | ---------------- |
-| System Interconnect                               | Bandwidth regulator                                  |                        | No              | No               |
-|                                                   | CBASS auto-clock gating                              |                        | No              | No               |
-| Initialization                                    | I2C Bootloader Operation                             |                        | No              | No               |
-|                                                   | SPI Bootloader Operation                             |                        | No              | No               |
-|                                                   | QSPI Bootloader Operation                            | NOR                    | NA              | No               |
-|                                                   |                                                      | NAND                   | NA              | No               |
-|                                                   | OSPI Bootloader Operation                            | NOR                    | NA              | Yes              |
-|                                                   |                                                      | NAND (1-bit mode)      | NA              | No               |
-|                                                   |                                                      | NAND (8-bit mode)      | NA              | No               |
-|                                                   | GPMC Bootloader Operation                            | NOR                    | NA              | No               |
-|                                                   |                                                      | NAND                   | NA              | No               |
-|                                                   | Ethernet Bootloader Operation                        |                        | NA              | No               |
-|                                                   | USB Bootloader Operation                             | Host                   | NA              | No               |
-|                                                   |                                                      | Device                 | NA              | No               |
-|                                                   | MMCSD Bootloader Operation                           | SD Card (no UHS)       | NA              | Yes              |
-|                                                   |                                                      | eMMC                   | NA              | Yes              |
-|                                                   | UART Bootloader Operation                            |                        | NA              | Yes              |
-| Device Configuration                              | Power Supply Modules                                 | POK                    | No              | Yes              |
-|                                                   |                                                      | POR                    | No              | No               |
-|                                                   |                                                      | PRG                    | No              | No               |
-|                                                   |                                                      | PGD                    | No              | No               |
-|                                                   |                                                      | VTM                    | Yes             | Yes              |
-| Power Management                                  | Deep Sleep Low Power Mode                            |                        | NA              | NA               |
-|                                                   | Deep Sleep LPM Wakeup Events                         | RTC Timer              | NA              | NA               |
-|                                                   |                                                      | GT Timers              | NA              | NA               |
-|                                                   |                                                      | WKUP UART              | NA              | NA               |
-|                                                   |                                                      | I2C                    | NA              | NA               |
-|                                                   |                                                      | MCU GPIO               | NA              | NA               |
-|                                                   |                                                      | I/O Daisy Chain        | NA              | NA               |
-|                                                   |                                                      | USB Connect/Disconnect | NA              | NA               |
-|                                                   |                                                      | USB Remote Wakeup      | NA              | NA               |
-|                                                   | MCU-Only Low Power Mode                              |                        | NA              | NA               |
-|                                                   | Standby Low Power Mode                               |                        | NA              | NA               |
-|                                                   | IO + DDR Low power mode                              |                        | NA              | NA               |
-|                                                   | Partial I/O Low Power Mode                           |                        | NA              | NA               |
-|                                                   | Boot-time OPP configurations                         |                        | No              | No               |
-|                                                   | Runtime Power Management                             |                        | NA              | NA               |
-|                                                   | DFS/CPUFreq                                          |                        | NA              | NA               |
-|                                                   | CPUIdle (A53 WFI)                                    |                        | NA              | NA               |
-|                                                   | CPUIdle (DDR in Self-Refresh)                        |                        | NA              | NA               |
-| Processors & Accelerators                         | Programmable Real-Time Unit and Industrial           | General PRU Use        | NA              | NA               |
-|                                                   | Communication Subsystem (PRUSS-M)                    |                        |                 |                  |
-|                                                   |                                                      | Industrial Protocols   | NA              | NA               |
-| Interprocessor Communication                      | Mailbox                                              |                        | Yes             | Yes              |
-|                                                   | Spinlock                                             |                        | No              | No               |
-| Memory Controllers                                | DDR Subsystem (DDRSS)                                | DDR4                   | No              | No               |
-|                                                   |                                                      | LPDDR4                 | No              | Yes              |
-|                                                   |                                                      | Inline ECC (1bit err)  | No              | Yes              |
-|                                                   |                                                      | Inline ECC (mbit err)  | No              | Yes              |
-|                                                   | Region-based Address Translation                     |                        | Yes             | Yes              |
-| Time Sync                                         | Time Sync Module (CPTS)                              |                        | No              | No               |
-|                                                   | Timer Manager                                        |                        | No              | No               |
-|                                                   | Time Sync and Compare Events                         |                        | No              | No               |
-| Data Movement Architecture (DMA)                  | Data Movement Subsystem (DMSS)                       |                        | Yes             | Yes              |
-|                                                   | Peripheral DMA (PDMA)                                |                        | No              | No               |
-|                                                   | RingAcc                                              |                        | Yes             | Yes              |
-|                                                   | BCDMA                                                |                        | Yes             | Yes              |
-|                                                   | Packet Streaming Interface Link                      |                        | No              | No               |
-| General Connectivity Peripherals (MAIN domain)    | Multichannel Audio Serial Port (McASP)               | Input                  | NA              | Yes              |
-|                                                   |                                                      | Output                 | NA              | Yes              |
-|                                                   |                                                      | HDMI Output            | NA              | NA               |
-|                                                   | General-Purpose Interface (GPIO)                     |                        | Yes             | Yes              |
-|                                                   | Inter-Integrated Circuit (I2C)                       | Controller             | Yes             | Yes              |
-|                                                   |                                                      | Target                 | Yes             | Yes              |
-|                                                   | Multichannel Serial Peripheral Interface (McSPI)     | Controller             | Yes             | Yes              |
-|                                                   |                                                      | Peripheral             | Yes             | Yes              |
-|                                                   | Universal Asynchronous Receiver/Transmitter (UART)   | UART                   | Yes             | Yes              |
-|                                                   |                                                      | RS-485                 | No              | No               |
-|                                                   |                                                      | IrDA                   | No              | No               |
-| General Connectivity Peripherals (MCU domain)     | General-Purpose Interface (GPIO)                     |                        | Yes             | Yes              |
-|                                                   | Inter-Integrated Circuit (I2C)                       | Controller             | Yes             | Yes              |
-|                                                   |                                                      | Target                 | Yes             | Yes              |
-|                                                   | Multichannel Serial Peripheral Interface (McSPI)     | Controller             | Yes             | Yes              |
-|                                                   |                                                      | Peripheral             | Yes             | Yes              |
-|                                                   | Universal Asynchronous Receiver/Transmitter (UART)   | UART                   | Yes             | Yes              |
-|                                                   |                                                      | RS-485                 | No              | No               |
-|                                                   |                                                      | IrDA                   | No              | No               |
-| General Connectivity Peripherals<br>(WKUP domain) | Inter-Integrated Circuit (I2C)                       | Controller             | Yes             | Yes              |
-|                                                   |                                                      | Target                 | Yes             | Yes              |
-|                                                   | Universal Asynchronous Receiver/Transmitter (UART)   | UART                   | No              | Yes              |
-|                                                   |                                                      | RS-485                 | No              | No               |
-|                                                   |                                                      | IrDA                   | No              | No               |
-| High-speed Serial Interfaces                      | Gigabit Ethernet Switch (CPSW3G)                     | Switch                 | No              | No               |
-|                                                   |                                                      | EndPoint               | No              | No               |
-|                                                   |                                                      | TSN                    | No              | No               |
-|                                                   |                                                      | TSN - VLAN             | No              | No               |
-|                                                   | Universal Serial Bus Subsystem (USBSS)               | Host 3.1               | No              | No               |
-|                                                   |                                                      | Device 3.1             | No              | No               |
-|                                                   |                                                      | Host 2.0               | No              | No               |
-|                                                   |                                                      | Device 2.0             | No              | No               |
-| Memory Interfaces                                 | Flash Subsystem (FSS)                                |                        | No              | No               |
-|                                                   | Quad Serial Peripheral Interface (QSPI)              | NOR                    | No              | No               |
-|                                                   |                                                      | NAND                   | No              | No               |
-|                                                   | Octal Serial Peripheral Interface (OSPI)             | NOR                    | No              | Yes              |
-|                                                   |                                                      | NAND                   | No              | No               |
-|                                                   | Expanded Serial Peripheral Interface (xSPI)          |                        | No              | No               |
-|                                                   | General-Purpose Memory Controller (GPMC)             | FPGA                   | No              | No               |
-|                                                   |                                                      | NAND                   | No              | No               |
-|                                                   |                                                      | NOR                    | No              | No               |
-|                                                   |                                                      | etc.                   | No              | No               |
-|                                                   | Error Location Module (ELM)                          |                        | No              | No               |
-|                                                   | Multimedia Card Secure Digital (MMCSD) Interface     | SD Card                | Yes             | Yes              |
-|                                                   |                                                      | eMMC                   | Yes             | Yes              |
-| Industrial & Control Interfaces                   | Controller Area Network (MCAN) - MAIN domain         | CAN                    | No              | Yes              |
-|                                                   |                                                      | CAN FD                 | No              | Yes              |
-|                                                   | Controller Area Network (MCAN) - MCU domain          | CAN                    | Yes             | No               |
-|                                                   |                                                      | CAN FD                 | Yes             | No               |
-|                                                   | Enhanced Capture (ECAP) Module                       | Capture                | No              | No               |
-|                                                   |                                                      | PWM                    | Yes             | No               |
-|                                                   | Enhanced Pulse Width Modulation (EPWM) Module        |                        | Yes             | No               |
-|                                                   | Enhanced Quadrature Encoder Pulse (EQEP) Module      |                        | No              | No               |
-| Camera Subsystem                                  | Camera Streaming Interface Receiver (CSI_RX_IF)      |                        | NA              | NA               |
-|                                                   | MIPI D-PHY Receiver (DPHY_RX)                        |                        | NA              | NA               |
-|                                                   | Multiple Camera                                      |                        | NA              | NA               |
-| Timer Modules                                     | Global Timebase Cunter (GTC)                         |                        | No              | Yes              |
-|                                                   | Windowed Watchdog Timer (WWDT) - MAIN domain         |                        | No              | No               |
-|                                                   | Windowed Watchdog Timer (WWDT) - MCU domain          |                        | No              | No               |
-|                                                   | Windowed Watchdog Timer (WWDT) - WKUP domain         |                        | No              | No               |
-|                                                   | Real-Time Clock (RTC)                                |                        | Yes             | No               |
-|                                                   | Timers - MAIN domain                                 | Timer                  | NA              | NA               |
-|                                                   |                                                      | Capture                | NA              | NA               |
-|                                                   |                                                      | Compare                | NA              | NA               |
-|                                                   |                                                      | PWM                    | NA              | NA               |
-|                                                   | Timers - MCU domain                                  | Timer                  | Yes             | NA               |
-|                                                   |                                                      | Capture                | No              | NA               |
-|                                                   |                                                      | Compare                | No              | NA               |
-|                                                   |                                                      | PWM                    | No              | NA               |
-|                                                   | Timers - WKUP domain                                 | Timer                  | NA              | Yes              |
-|                                                   |                                                      | Capture                | NA              | No               |
-|                                                   |                                                      | Compare                | NA              | No               |
-|                                                   |                                                      | PWM                    | NA              | No               |
-| Internal Diagnostics Modules                      | Dual Clock Comparator (DCC)                          |                        | Yes             | No               |
-|                                                   | Error Signaling Module (ESM)                         |                        | Yes             | No               |
-|                                                   | Memory Cyclic Redundancy Check (MCRC) Controller     |                        | Yes             | No               |
-|                                                   | SDL Driver Porting Layer(SDL DPL)                    |                        | Yes             | No               |
-|                                                   | RTI(WWDG)                                            |                        | Yes             | No               |
-|                                                   | Voltage and Thermal Management(VTM)                  |                        | Yes             | No               |
-|                                                   | Interconnect Isolation Gasket(STOG)                  |                        | Yes             | No               |
-|                                                   | Interconnect Isolation Gasket(MTOG)                  |                        | Yes             | No               |
-|                                                   | Power OK(POK)                                        |                        | Yes             | No               |
-|                                                   | PBIST(Built In Self Test)                            |                        | Yes             | No               |
-|                                                   | ECC Aggregator                                       |                        | Yes             | No               |
-| DISPLAY Subsystem                                 | Open LVDS Display Interface Transmitter (OLDITX)     |                        | NA              | Yes              |
-|                                                   | DISPLAY Parallel Interface (DPI)                     |                        | NA              | Yes              |
-|                                                   | DSI (display serial interface)                       |                        | NA              | No               |
-|                                                   | Triple Display                                       |                        | NA              | No               |
-| Video Processing Unit                             | Cnm Wave521CL                                        |                        |                 |                  |
-| Graphics Processing Unit                          | IMG BXS                                              |                        | NA              | No               |
-| On-Die Temperature sensor                         |                                                      |                        | NA              | NA               |
-| On-Chip Debug                                     |                                                      |                        | NA              | NA               |
-| Crypto Accelerator (SA3UL)                        | Advanced Encryption Standard (AES)                   | AES-CBC                | NA              | NA               |
-|                                                   |                                                      | AES-ECB                | NA              | NA               |
-|                                                   | SHA/MD5 Crypto Hardware-Accelerated Module (SHA/MD5) | SHA-256                | NA              | NA               |
-|                                                   |                                                      | SHA-512                | NA              | NA               |
-|                                                   | True Random Number Generator (TRNG)                  |                        | NA              | NA               |
+<table border="1" cellspacing="0" cellpadding="5" style="border-collapse: collapse; width: 100%;">
+<tr>
+<th style="background-color: #314A7B; color: white; font-weight: bold; text-align: left; padding: 8px; border: 1px solid #333;">Category</th>
+<th style="background-color: #314A7B; color: white; font-weight: bold; text-align: left; padding: 8px; border: 1px solid #333;">Module</th>
+<th style="background-color: #314A7B; color: white; font-weight: bold; text-align: left; padding: 8px; border: 1px solid #333;">SubModule</th>
+<th style="background-color: #314A7B; color: white; font-weight: bold; text-align: center; padding: 8px; border: 1px solid #333;">RTOS on MCU R5F</th>
+<th style="background-color: #314A7B; color: white; font-weight: bold; text-align: center; padding: 8px; border: 1px solid #333;">RTOS on WKUP R5F</th>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">System Interconnect</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Bandwidth regulator</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">CBASS auto-clock gating</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="15" style="text-align: left; border: 1px solid #333; padding: 8px;">Initialization</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">I2C Bootloader Operation</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">SPI Bootloader Operation</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">QSPI Bootloader Operation</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">NOR</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">NAND</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="3" style="text-align: left; border: 1px solid #333; padding: 8px;">OSPI Bootloader Operation</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">NOR</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">NAND (1-bit mode)</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">NAND (8-bit mode)</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">GPMC Bootloader Operation</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">NOR</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">NAND</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Ethernet Bootloader Operation</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">USB Bootloader Operation</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Host</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Device</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">MMCSD Bootloader Operation</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">SD Card (no UHS)</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">eMMC</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">UART Bootloader Operation</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td rowspan="5" style="text-align: left; border: 1px solid #333; padding: 8px;">Device Configuration</td>
+<td rowspan="5" style="text-align: left; border: 1px solid #333; padding: 8px;">Power Supply Modules</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">POK</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">POR</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">PRG</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">PGD</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">VTM</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td rowspan="18" style="text-align: left; border: 1px solid #333; padding: 8px;">Power Management</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Deep Sleep Low Power Mode</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td rowspan="8" style="text-align: left; border: 1px solid #333; padding: 8px;">Deep Sleep LPM Wakeup Events</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">RTC Timer</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">GT Timers</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">WKUP UART</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">I2C</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">MCU GPIO</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">I/O Daisy Chain</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">USB Connect/Disconnect</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">USB Remote Wakeup</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">MCU-Only Low Power Mode</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Standby Low Power Mode</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">IO + DDR Low power mode</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Partial I/O Low Power Mode</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Boot-time OPP configurations</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Runtime Power Management</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">DFS/CPUFreq</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">CPUIdle (A53 WFI)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">CPUIdle (DDR in Self-Refresh)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">Interprocessor Communication</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Mailbox</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Spinlock</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="5" style="text-align: left; border: 1px solid #333; padding: 8px;">Memory Controllers</td>
+<td rowspan="4" style="text-align: left; border: 1px solid #333; padding: 8px;">DDR Subsystem (DDRSS)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">DDR4</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">LPDDR4</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Inline ECC (1bit err)</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Inline ECC (mbit err)</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Region-based Address Translation</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td rowspan="3" style="text-align: left; border: 1px solid #333; padding: 8px;">Time Sync</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Time Sync Module (CPTS)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Timer Manager</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Time Sync and Compare Events</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="5" style="text-align: left; border: 1px solid #333; padding: 8px;">Data Movement Architecture (DMA)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Data Movement Subsystem (DMSS)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Peripheral DMA (PDMA)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">RingAcc</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">BCDMA</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Packet Streaming Interface Link</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="11" style="text-align: left; border: 1px solid #333; padding: 8px;">General Connectivity Peripherals (MAIN domain)</td>
+<td rowspan="3" style="text-align: left; border: 1px solid #333; padding: 8px;">Multichannel Audio Serial Port (McASP)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Input</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Output</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">HDMI Output</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">General-Purpose Interface (GPIO)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">Inter-Integrated Circuit (I2C)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Controller</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Target</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">Multichannel Serial Peripheral Interface (McSPI)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Controller</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Peripheral</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td rowspan="3" style="text-align: left; border: 1px solid #333; padding: 8px;">Universal Asynchronous Receiver/Transmitter (UART)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">UART</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">RS-485</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">IrDA</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="8" style="text-align: left; border: 1px solid #333; padding: 8px;">General Connectivity Peripherals (MCU domain)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">General-Purpose Interface (GPIO)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">Inter-Integrated Circuit (I2C)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Controller</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Target</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">Multichannel Serial Peripheral Interface (McSPI)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Controller</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Peripheral</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td rowspan="3" style="text-align: left; border: 1px solid #333; padding: 8px;">Universal Asynchronous Receiver/Transmitter (UART)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">UART</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">RS-485</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">IrDA</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="5" style="text-align: left; border: 1px solid #333; padding: 8px;">General Connectivity Peripherals (WKUP domain)</td>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">Inter-Integrated Circuit (I2C)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Controller</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Target</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td rowspan="3" style="text-align: left; border: 1px solid #333; padding: 8px;">Universal Asynchronous Receiver/Transmitter (UART)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">UART</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">RS-485</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">IrDA</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="8" style="text-align: left; border: 1px solid #333; padding: 8px;">High-speed Serial Interfaces</td>
+<td rowspan="4" style="text-align: left; border: 1px solid #333; padding: 8px;">Gigabit Ethernet Switch (CPSW3G)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Switch</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">EndPoint</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">TSN</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">TSN - VLAN</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="4" style="text-align: left; border: 1px solid #333; padding: 8px;">Universal Serial Bus Subsystem (USBSS)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Host 3.1</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Device 3.1</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Host 2.0</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Device 2.0</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="13" style="text-align: left; border: 1px solid #333; padding: 8px;">Memory Interfaces</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Flash Subsystem (FSS)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">Quad Serial Peripheral Interface (QSPI)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">NOR</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">NAND</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">Octal Serial Peripheral Interface (OSPI)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">NOR</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">NAND</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Expanded Serial Peripheral Interface (xSPI)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="4" style="text-align: left; border: 1px solid #333; padding: 8px;">General-Purpose Memory Controller (GPMC)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">FPGA</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">NAND</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">NOR</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">etc.</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Error Location Module (ELM)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">Multimedia Card Secure Digital (MMCSD) Interface</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">SD Card</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">eMMC</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td rowspan="8" style="text-align: left; border: 1px solid #333; padding: 8px;">Industrial & Control Interfaces</td>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">Controller Area Network (MCAN) - MAIN domain</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">CAN</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">CAN FD</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">Controller Area Network (MCAN) - MCU domain</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">CAN</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">CAN FD</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">Enhanced Capture (ECAP) Module</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Capture</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">PWM</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Enhanced Pulse Width Modulation (EPWM) Module</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Enhanced Quadrature Encoder Pulse (EQEP) Module</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="3" style="text-align: left; border: 1px solid #333; padding: 8px;">Camera Subsystem</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Camera Streaming Interface Receiver (CSI_RX_IF)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">MIPI D-PHY Receiver (DPHY_RX)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Multiple Camera</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td rowspan="17" style="text-align: left; border: 1px solid #333; padding: 8px;">Timer Modules</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Global Timebase Cunter (GTC)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Windowed Watchdog Timer (WWDT) - MAIN domain</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Windowed Watchdog Timer (WWDT) - MCU domain</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Windowed Watchdog Timer (WWDT) - WKUP domain</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Real-Time Clock (RTC)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="4" style="text-align: left; border: 1px solid #333; padding: 8px;">Timers - MAIN domain</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Timer</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Capture</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Compare</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">PWM</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td rowspan="4" style="text-align: left; border: 1px solid #333; padding: 8px;">Timers - MCU domain</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Timer</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Capture</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Compare</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">PWM</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td rowspan="4" style="text-align: left; border: 1px solid #333; padding: 8px;">Timers - WKUP domain</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Timer</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Capture</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Compare</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">PWM</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="11" style="text-align: left; border: 1px solid #333; padding: 8px;">Internal Diagnostics Modules</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Dual Clock Comparator (DCC)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Error Signaling Module (ESM)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Memory Cyclic Redundancy Check (MCRC) Controller</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">SDL Driver Porting Layer(SDL DPL)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">RTI(WWDG)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Voltage and Thermal Management(VTM)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Interconnect Isolation Gasket(STOG)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Interconnect Isolation Gasket(MTOG)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Power OK(POK)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">PBIST(Built In Self Test)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">ECC Aggregator</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td rowspan="4" style="text-align: left; border: 1px solid #333; padding: 8px;">DISPLAY Subsystem</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Open LVDS Display Interface Transmitter (OLDITX)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">DISPLAY Parallel Interface (DPI)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">DSI (display serial interface)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Triple Display</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Video Processing Unit</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Cnm Wave521CL</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Graphics Processing Unit</td>
+<td rowspan="3" style="text-align: left; border: 1px solid #333; padding: 8px;">IMG BXS</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">On-Die Temperature sensor</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">On-Chip Debug</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td rowspan="5" style="text-align: left; border: 1px solid #333; padding: 8px;">Crypto Accelerator (SA3UL)</td>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">Advanced Encryption Standard (AES)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">AES-CBC</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">AES-ECB</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">SHA/MD5 Crypto Hardware-Accelerated Module (SHA/MD5)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">SHA-256</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">SHA-512</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">True Random Number Generator (TRNG)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+</table>

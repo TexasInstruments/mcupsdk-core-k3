@@ -69,6 +69,15 @@ FreeRTOS Kernel         | MCU-R5F, WKUP-R5F        | 11.1.0
     </tr>
 </table>
 
+### Keywriter Package
+
+There is __NO__ Keywriter package available specifically based on this version of
+the MCU+ SDK release.
+
+The most recent Keywriter package available (otp_keywriter_am62px_11_01_00) is
+based on the MCU+ SDK version 11.01.00 and it is available on the 'Secure resources'
+portal of ti.com.
+
 ## Key Features
 
 ### OS Kernel

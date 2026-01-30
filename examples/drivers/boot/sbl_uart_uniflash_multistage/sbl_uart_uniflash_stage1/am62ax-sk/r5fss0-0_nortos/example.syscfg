@@ -130,16 +130,14 @@ mpu_armv714.allowExecute = false;
 mpu_armv714.attributes   = "Device";
 
 mpu_armv715.baseAddr     = 0xFA10000;
-mpu_armv715.size         = 12;
+mpu_armv715.size         = 16;
 mpu_armv715.attributes   = "Device";
 mpu_armv715.allowExecute = false;
-mpu_armv715.$name        = "MMCSD0_CTL_CFG_REGISTERS";
+mpu_armv715.$name        = "MMCSD0_REGISTERS";
 
-mpu_armv716.baseAddr     = 0xFA18000;
-mpu_armv716.size         = 10;
-mpu_armv716.attributes   = "Device";
-mpu_armv716.allowExecute = false;
-mpu_armv716.$name        = "MMCSD0_SS_CFG_REGISTERS";
+mpu_armv716.$name    = "ATCM_SOC";
+mpu_armv716.baseAddr = 0x78000000;
+mpu_armv716.size     = 15;
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future

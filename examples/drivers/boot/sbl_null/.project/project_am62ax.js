@@ -61,7 +61,7 @@ const templates_bootloader =
 		input: ".project/templates/am62ax/common/bootloader_linker.cmd.xdt",
 		output: "linker.cmd",
 		options: {
-			heapSize: 0x8000,
+			heapSize: 0x2000,
 			stackSize: 0x2000,
 			irqStackSize: 0x1000,
 			svcStackSize: 0x0100,

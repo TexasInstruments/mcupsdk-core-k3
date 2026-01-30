@@ -26,6 +26,7 @@ const mpu_armv74    = mpu_armv7.addInstance();
 const mpu_armv75    = mpu_armv7.addInstance();
 const mpu_armv76    = mpu_armv7.addInstance();
 const mpu_armv77    = mpu_armv7.addInstance();
+const mpu_armv78    = mpu_armv7.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -82,6 +83,10 @@ mpu_armv76.$name    = "HSM_RAM";
 mpu_armv77.$name    = "OCRAM";
 mpu_armv77.baseAddr = 0x70000000;
 mpu_armv77.size     = 16;
+
+mpu_armv78.$name    = "ATCM_SOC";
+mpu_armv78.baseAddr = 0x78000000;
+mpu_armv78.size     = 15;
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future

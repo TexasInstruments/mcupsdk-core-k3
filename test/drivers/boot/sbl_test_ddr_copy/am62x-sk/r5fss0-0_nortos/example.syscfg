@@ -29,6 +29,7 @@ const mpu_armv78  = mpu_armv7.addInstance();
 const mpu_armv79  = mpu_armv7.addInstance();
 const mpu_armv710 = mpu_armv7.addInstance();
 const mpu_armv711 = mpu_armv7.addInstance();
+const mpu_armv712 = mpu_armv7.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -134,6 +135,10 @@ mpu_armv711.baseAddr     = 0x60000000;
 mpu_armv711.size         = 27;
 mpu_armv711.attributes   = "Device";
 mpu_armv711.allowExecute = false;
+
+mpu_armv712.$name    = "ATCM_SOC";
+mpu_armv712.baseAddr = 0x78000000;
+mpu_armv712.size     = 15;
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future

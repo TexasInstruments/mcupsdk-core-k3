@@ -1,5 +1,9 @@
 --stack_size=16384
 --heap_size=32768
+
+/* ATCM base address */
+gAtcmBaseAddr = 0x78000000;
+
 -e_vectors_sbl  /* for SBL make sure to set entry point to _vectors_sbl */
 
 __IRQ_STACK_SIZE = 4096;
@@ -34,7 +38,7 @@ SECTIONS
     .cinit           : {} palign(8)      > WKUP_R5_MSRAM
     .far             : {} align(8)       > WKUP_R5_MSRAM
     .data            : {} palign(128)    > WKUP_R5_MSRAM
-    .sysmem          : {} palign(8)      > WKUP_R5_MSRAM
+    .sysmem          : {} palign(8)      > ATCM
     .data_buffer     : {} palign(128)    > WKUP_R5_MSRAM
     .boardcfg_data   : {} align(8)       > WKUP_R5_MSRAM
 
@@ -66,7 +70,7 @@ SECTIONS
         .undefinedstack: {. = . + __UNDEFINED_STACK_SIZE;} align(8)
         RUN_START(__UNDEFINED_STACK_START)
         RUN_END(__UNDEFINED_STACK_END)
-    } > WKUP_R5_MSRAM
+    } > ATCM
 
     /* Sections needed for C++ projects */
     GROUP {
@@ -84,6 +88,7 @@ MEMORY
     R5F_TCMA       (RWIX)      : ORIGIN = 0x00000040 LENGTH = 0x00007FC0
     R5F_TCMB_VEC   (RWIX)      : ORIGIN = 0x41010000 LENGTH = 0x00000040
     R5F_TCMB       (RWIX)      : ORIGIN = 0x41010040 LENGTH = 0x00007FC0
+    ATCM           (RWIX)      : ORIGIN = 0x78000040 LENGTH = 0x00007FC0
 
     WKUP_R5_MSRAM_VEC (RWIX)     : ORIGIN = 0x72000000      LENGTH = 0x80 // for vectors
     WKUP_R5_MSRAM (RWIX)         : ORIGIN = 0x72000000+0x80 LENGTH = 0x00080000-0x80 // 512 KB for wakeup core

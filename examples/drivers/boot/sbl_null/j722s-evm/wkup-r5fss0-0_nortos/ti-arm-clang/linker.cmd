@@ -1,6 +1,10 @@
 
 --stack_size=16384
 --heap_size=32768
+
+/* ATCM base address */
+gAtcmBaseAddr = 0x78000000;
+
 -e_vectors_sbl  /* for SBL make sure to set entry point to _vectors_sbl */
 
 __IRQ_STACK_SIZE = 4096;

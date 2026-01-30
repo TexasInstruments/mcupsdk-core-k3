@@ -50,7 +50,7 @@ const templates_bootloader=
         input: ".project/templates/am62px/common/linker_wkup-r5f.cmd.xdt",
         output: "linker.cmd",
         options: {
-            heapSize: 0x8000,
+            heapSize: 0x2000,
             stackSize: 0x2000,
         },
     }

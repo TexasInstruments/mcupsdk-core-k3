@@ -32,7 +32,6 @@ const mpu_armv712 = mpu_armv7.addInstance();
 const mpu_armv713 = mpu_armv7.addInstance();
 const mpu_armv714 = mpu_armv7.addInstance();
 const mpu_armv715 = mpu_armv7.addInstance();
-const mpu_armv716 = mpu_armv7.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -70,80 +69,74 @@ mpu_armv72.$name             = "CONFIG_MPU_REGION1";
 mpu_armv72.accessPermissions = "Supervisor RD+WR, User RD";
 mpu_armv72.size              = 7;
 
-mpu_armv73.$name             = "CONFIG_MPU_REGION2";
-mpu_armv73.accessPermissions = "Supervisor RD+WR, User RD";
-mpu_armv73.baseAddr          = 0x41C00000;
-mpu_armv73.size              = 19;
+mpu_armv73.$name    = "CONFIG_MPU_REGION2";
+mpu_armv73.baseAddr = 0x80000000;
+mpu_armv73.size     = 31;
 
-mpu_armv74.$name             = "CONFIG_MPU_REGION3";
-mpu_armv74.accessPermissions = "Supervisor RD+WR, User RD";
-mpu_armv74.baseAddr          = 0x70000000;
-mpu_armv74.size              = 16;
+mpu_armv74.$name      = "CONFIG_MPU_REGION3";
+mpu_armv74.baseAddr   = 0x41010000;
+mpu_armv74.size       = 15;
+mpu_armv74.attributes = "NonCached";
 
-mpu_armv75.$name    = "CONFIG_MPU_REGION4";
-mpu_armv75.baseAddr = 0x80000000;
-mpu_armv75.size     = 31;
+mpu_armv75.$name      = "CONFIG_MPU_REGION4";
+mpu_armv75.size       = 15;
+mpu_armv75.attributes = "NonCached";
 
-mpu_armv76.$name      = "CONFIG_MPU_REGION5";
-mpu_armv76.baseAddr   = 0x41010000;
-mpu_armv76.size       = 15;
-mpu_armv76.attributes = "NonCached";
+mpu_armv76.$name    = "CONFIG_MPU_REGION5";
+mpu_armv76.baseAddr = 0x43C00000;
+mpu_armv76.size     = 18;
 
-mpu_armv77.$name      = "CONFIG_MPU_REGION6";
-mpu_armv77.size       = 15;
-mpu_armv77.attributes = "NonCached";
+mpu_armv77.$name        = "CONFIG_MPU_REGION6";
+mpu_armv77.baseAddr     = 0xFC40000;
+mpu_armv77.allowExecute = false;
+mpu_armv77.attributes   = "Device";
+mpu_armv77.size         = 8;
 
-mpu_armv78.$name    = "CONFIG_MPU_REGION8";
-mpu_armv78.baseAddr = 0x43C00000;
-mpu_armv78.size     = 18;
+mpu_armv78.$name        = "CONFIG_MPU_REGION7";
+mpu_armv78.baseAddr     = 0x60000000;
+mpu_armv78.allowExecute = false;
+mpu_armv78.attributes   = "Device";
+mpu_armv78.size         = 27;
 
-mpu_armv79.$name        = "CONFIG_MPU_REGION7";
-mpu_armv79.baseAddr     = 0xFC40000;
-mpu_armv79.allowExecute = false;
+mpu_armv79.$name        = "CONFIG_MPU_REGION8";
+mpu_armv79.baseAddr     = 0x2800000;
+mpu_armv79.size         = 9;
 mpu_armv79.attributes   = "Device";
-mpu_armv79.size         = 8;
+mpu_armv79.allowExecute = false;
 
-mpu_armv710.$name        = "CONFIG_MPU_REGION10";
-mpu_armv710.baseAddr     = 0x60000000;
+mpu_armv710.$name        = "CONFIG_MPU_REGION9";
+mpu_armv710.baseAddr     = 0x3B000000;
+mpu_armv710.size         = 10;
 mpu_armv710.allowExecute = false;
 mpu_armv710.attributes   = "Device";
-mpu_armv710.size         = 27;
 
-mpu_armv711.$name        = "CONFIG_MPU_REGION11";
-mpu_armv711.baseAddr     = 0x2800000;
-mpu_armv711.size         = 9;
-mpu_armv711.attributes   = "Device";
+mpu_armv711.$name        = "CONFIG_MPU_REGION10";
+mpu_armv711.baseAddr     = 0x25010000;
+mpu_armv711.size         = 12;
 mpu_armv711.allowExecute = false;
+mpu_armv711.attributes   = "Device";
 
-mpu_armv712.$name        = "CONFIG_MPU_REGION12";
-mpu_armv712.baseAddr     = 0x3B000000;
-mpu_armv712.size         = 10;
+mpu_armv712.$name        = "CONFIG_MPU_REGION11";
+mpu_armv712.baseAddr     = 0x50000000;
+mpu_armv712.size         = 27;
 mpu_armv712.allowExecute = false;
 mpu_armv712.attributes   = "Device";
 
-mpu_armv713.$name        = "CONFIG_MPU_REGION13";
-mpu_armv713.baseAddr     = 0x25010000;
+mpu_armv713.$name        = "MMCSD0_CTL_CFG_REGISTERS";
+mpu_armv713.baseAddr     = 0xFA10000;
 mpu_armv713.size         = 12;
-mpu_armv713.allowExecute = false;
 mpu_armv713.attributes   = "Device";
+mpu_armv713.allowExecute = false;
 
-mpu_armv714.$name        = "CONFIG_MPU_REGION14";
-mpu_armv714.baseAddr     = 0x50000000;
-mpu_armv714.size         = 27;
-mpu_armv714.allowExecute = false;
+mpu_armv714.$name        = "MMCSD0_SS_CFG_REGISTERS";
+mpu_armv714.baseAddr     = 0xFA18000;
+mpu_armv714.size         = 10;
 mpu_armv714.attributes   = "Device";
+mpu_armv714.allowExecute = false;
 
-mpu_armv715.$name        = "MMCSD0_CTL_CFG_REGISTERS";
-mpu_armv715.baseAddr     = 0xFA10000;
-mpu_armv715.size         = 12;
-mpu_armv715.attributes   = "Device";
-mpu_armv715.allowExecute = false;
-
-mpu_armv716.$name        = "MMCSD0_SS_CFG_REGISTERS";
-mpu_armv716.baseAddr     = 0xFA18000;
-mpu_armv716.size         = 10;
-mpu_armv716.attributes   = "Device";
-mpu_armv716.allowExecute = false;
+mpu_armv715.$name    = "ATCM_SOC";
+mpu_armv715.baseAddr = 0x78000000;
+mpu_armv715.size     = 15;
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future

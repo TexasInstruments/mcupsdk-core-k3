@@ -10,7 +10,11 @@
 /* This is the heap size for malloc() API in NORTOS and FreeRTOS
  * This is also the heap used by pvPortMalloc in FreeRTOS
  */
---heap_size=0x8000
+--heap_size=0x2000
+
+/* ATCM base address */
+gAtcmBaseAddr = 0x78000000;
+
 -e_vectors_sbl  /* for SBL make sure to set entry point to _vectors_sbl */
 
 /* This is the size of stack when R5 is in IRQ mode
@@ -50,7 +54,7 @@ SECTIONS
     .bss:    {} palign(8) > HSM_RAM
     RUN_START(__BSS_START)
     RUN_END(__BSS_END)
-    .sysmem: {} palign(8) > HSM_RAM
+    .sysmem: {} palign(8) > ATCM
     .stack:  {} palign(8) > HSM_RAM
     GROUP {
         .irqstack: {. = . + __IRQ_STACK_SIZE;} align(8)
@@ -59,6 +63,8 @@ SECTIONS
         .fiqstack: {. = . + __FIQ_STACK_SIZE;} align(8)
         RUN_START(__FIQ_STACK_START)
         RUN_END(__FIQ_STACK_END)
+    } > ATCM
+    GROUP {
         .svcstack: {. = . + __SVC_STACK_SIZE;} align(8)
         RUN_START(__SVC_STACK_START)
         RUN_END(__SVC_STACK_END)
@@ -79,6 +85,7 @@ MEMORY
     HSM_RAM_VECS: ORIGIN = 0x43C00000 , LENGTH = 0x100
     SBL_BOOT_MAGIC_NUM: ORIGIN = 0x43C00100 , LENGTH = 0x100
     HSM_RAM  : ORIGIN = 0x43C00200 , LENGTH = 0x3c800 - 0x200
+    ATCM :  ORIGIN = 0x78000000 , LENGTH = 0x8000
 
     /* This section is used by the SBL to temporarily load the appimage for authentication */
     APPIMAGE  : ORIGIN = 0x84000000 , LENGTH = 0x800000

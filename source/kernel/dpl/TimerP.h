@@ -46,7 +46,7 @@ extern "C" {
  *
  * This module define's generic APIs to configure and control a timer
  * Depending on the SOC there can be different timer implementation's
- * 
+ *
  * For more details and example usage, see \ref KERNEL_DPL_TIMER_PAGE
  *
  * Timer is used by \ref KERNEL_DPL_CLOCK_PAGE to generate system ticks.
@@ -189,6 +189,45 @@ void TimerP_clearOverflowInt(uint32_t baseAddr);
  * \param baseAddr [in] HW timer base addresss
  */
 uint32_t TimerP_isOverflowed(uint32_t baseAddr);
+
+/**
+ * \brief Configure masked overflows for the timer
+ *
+ * \note Ensure the base address is valid before calling this function.
+ *
+ * \param baseAddr [in] HW timer base address
+ * \param value [in] Value to be set in the timer overflow register
+ */
+void TimerP_configMaskedOverflows(volatile uint32_t baseAddr, uint16_t value);
+
+/**
+ * \brief Set the compare value for the timer
+ *
+ * \note Ensure the timer is properly configured before setting the compare value.
+ *
+ * \param baseAddr [in] HW timer base address
+ * \param value [in] Compare value to be set
+ */
+void TimerP_setCompare(volatile uint32_t baseAddr, uint16_t value);
+
+/**
+ * \brief Configure the timer for PWM mode
+ *
+ * \note    Ensure the timer is properly initialized before calling this function.
+ *          The function calculates and sets the timer registers to generate the
+ *          desired PWM signal based on the provided frequency and duty cycle.
+ *          Remember to multiplex the output pins correctly for the
+ *          configured timer.
+ *
+ * \param baseAddr   [in] HW timer base address
+ * \param params     [in] Pointer to TimerP_Params containing clock settings
+ * \param frequency  [in] Desired PWM frequency in Hz
+ * \param duty_cycle [in] Duty cycle percentage (0-100)
+ *
+ * \return 0 on success, -22 if input parameters are invalid
+ */
+int TimerP_configPwm(volatile uint32_t baseAddr, TimerP_Params *params,
+                        uint32_t frequency, uint8_t duty_cycle);
 
 /** @} */
 

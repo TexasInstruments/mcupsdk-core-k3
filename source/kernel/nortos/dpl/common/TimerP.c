@@ -45,6 +45,8 @@
 #define TIMER_TCRR              (0x3cu)
 #define TIMER_TLDR              (0x40u)
 #define TIMER_TWPS              (0x48u)
+#define TIMER_TMAR              (0x4Cu)
+#define TIMER_TOWR              (0x6Cu)
 #define TIMER_TCLR_PEND_SHIFT   (0U)
 #define TIMER_TCRR_PEND_SHIFT   (1U)
 #define TIMER_TLDR_PEND_SHIFT   (2U)
@@ -252,4 +254,78 @@ uint32_t TimerP_isOverflowed(uint32_t baseAddr)
     val = *(volatile uint32_t *)(baseAddr + TIMER_IRQ_STATUS_RAW);
 
     return ((val >> TIMER_OVF_INT_SHIFT) & 0x1U);
+}
+
+void TimerP_configMaskedOverflows(volatile uint32_t baseAddr, uint16_t value)
+{
+    volatile uint32_t *towr_addr = NULL;
+
+    towr_addr = (volatile uint32_t *)(baseAddr + TIMER_TOWR);
+
+    *towr_addr = (uint32_t)value;
+}
+
+void TimerP_setCompare(volatile uint32_t baseAddr, uint16_t value)
+{
+    volatile uint32_t *tmar_addr = NULL;
+
+    tmar_addr = (volatile uint32_t *)(baseAddr + TIMER_TMAR);
+
+    *tmar_addr = (uint32_t)value;
+}
+
+int TimerP_configPwm(volatile uint32_t baseAddr, TimerP_Params *params,
+                      uint32_t frequency, uint8_t duty_cycle)
+{
+    volatile uint32_t *tldr_reg = (volatile uint32_t *)(baseAddr + TIMER_TLDR);
+    volatile uint32_t *tcrr_reg = (volatile uint32_t *)(baseAddr + TIMER_TCRR);
+    volatile uint32_t *tmar_reg = (volatile uint32_t *)(baseAddr + TIMER_TMAR);
+    volatile uint32_t *twps_reg = (volatile uint32_t *)(baseAddr + TIMER_TWPS);
+
+    uint64_t abs_clock = 0U;
+    uint64_t period_in_ns = 0U;
+    uint64_t counter_ticks = 0U;
+    uint64_t duty_ticks = 0U;
+
+    if (params == NULL)
+        return -22;
+
+    if (params->inputPreScaler == 0U || params->inputClkHz == 0U)
+        return -22;
+
+    if (duty_cycle > 100U || frequency == 0U)
+        return -22;
+
+    if ((params->inputClkHz % params->inputPreScaler) != 0U)
+        return -22;
+
+    abs_clock = (uint64_t)(params->inputClkHz / params->inputPreScaler);
+
+    period_in_ns = TIME_IN_NANO_SECONDS / (uint64_t)frequency;
+
+    counter_ticks = (abs_clock * period_in_ns) / TIME_IN_NANO_SECONDS;
+    if (counter_ticks == 0U)
+        counter_ticks = 1U;
+
+    duty_ticks = counter_ticks - ((counter_ticks * (uint64_t)duty_cycle) / 100U);
+
+    if (duty_ticks == 0U)
+        duty_ticks = 1U;
+    if (duty_ticks >= counter_ticks)
+        duty_ticks = counter_ticks - 1U;
+
+    /* TLDR */
+    while ((*twps_reg & TIMER_TLDR_PEND_MASK) == TIMER_TLDR_PEND_MASK) { }
+    *tldr_reg = (uint32_t)(MAX_TIMER_COUNT_VALUE - (uint32_t)(counter_ticks - 1U));
+    while ((*twps_reg & TIMER_TLDR_PEND_MASK) == TIMER_TLDR_PEND_MASK) { }
+
+    /* TCRR */
+    while ((*twps_reg & TIMER_TCRR_PEND_MASK) == TIMER_TCRR_PEND_MASK) { }
+    *tcrr_reg = (uint32_t)(MAX_TIMER_COUNT_VALUE - (uint32_t)(counter_ticks - 1U));
+    while ((*twps_reg & TIMER_TCRR_PEND_MASK) == TIMER_TCRR_PEND_MASK) { }
+
+    /* TMAR */
+    *tmar_reg = (uint32_t)(MAX_TIMER_COUNT_VALUE - (uint32_t)(duty_ticks - 1U));
+
+    return 0;
 }

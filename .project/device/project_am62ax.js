@@ -137,6 +137,7 @@ const example_file_list = [
     "examples/empty/.project/project_freertos.js",
     "examples/empty/.project/project_nortos.js",
     "examples/hello_world/.project/project.js",
+    "examples/hello_world/.project/project_safertos.js",
     "examples/hello_world_cpp/.project/project.js",
     "examples/kernel/dpl/dpl_demo/.project/project.js",
     "examples/kernel/freertos/dhrystone_benchmark/.project/project.js",

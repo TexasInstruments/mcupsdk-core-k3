@@ -39,7 +39,7 @@ ASMFILES_`prop` := \
 
     % }
 % }
-% if (args.project.device == "awr294x" || args.project.device == "j722s") {
+% if (args.project.device == "awr294x" || args.project.device == "j722s" || (args.project.os == "safertos")) {
 % obj = args.project.asmextnfiles;
 % for (prop in obj) {
     % if ( obj.hasOwnProperty(prop) && Array.isArray(obj[prop]) ) {
@@ -121,7 +121,7 @@ ARFLAGS_`prop` := \
 % }
 FILES := $(FILES_common) $(FILES_$(PROFILE))
 ASMFILES := $(ASMFILES_common) $(ASMFILES_$(PROFILE))
-% if (args.project.device == "awr294x" || args.project.device == "j722s") {
+% if (args.project.device == "awr294x" || args.project.device == "j722s" || (args.project.os == "safertos")) {
 ASMEXTNFILES := $(ASMEXTNFILES_common) $(ASMEXTNFILES_$(PROFILE))
 % }
 FILES_PATH := $(FILES_PATH_common) $(FILES_PATH_$(PROFILE))
@@ -138,7 +138,7 @@ LIBDIR := lib
 OBJDIR := obj/`args.project.device`/`args.project.cgt`/$(PROFILE)/`args.project.cpu`/`args.project.name`/
 OBJS := $(FILES:%.c=%.obj)
 OBJS += $(ASMFILES:%.S=%.obj)
-% if (args.project.device == "awr294x" || args.project.device == "j722s") {
+% if (args.project.device == "awr294x" || args.project.device == "j722s" || (args.project.os == "safertos")) {
 OBJS += $(ASMEXTNFILES:%.asm=%.obj)
 % }
 DEPS := $(FILES:%.c=%.d)
@@ -146,7 +146,7 @@ DEPS := $(FILES:%.c=%.d)
 vpath %.obj $(OBJDIR)
 vpath %.c $(FILES_PATH)
 vpath %.S $(FILES_PATH)
-% if (args.project.device == "awr294x" || args.project.device == "j722s") {
+% if (args.project.device == "awr294x" || args.project.device == "j722s" || (args.project.os == "safertos")) {
 vpath %.asm $(FILES_PATH)
 % }
 
@@ -176,7 +176,7 @@ $(OBJDIR)/%.obj %.obj: %.S
 % if ((args.project.cgt == "gcc-aarch64") || (args.project.cgt == "gcc-armv7")) {
 	$(CC) -c -x assembler-with-cpp $(CFLAGS) $(INCLUDES) $(DEFINES) -o $(OBJDIR)$@ $<
 % }
-% if (args.project.device == "awr294x" || args.project.device == "j722s") {
+% if (args.project.device == "awr294x" || args.project.device == "j722s" || (args.project.os == "safertos")) {
 
 $(OBJDIR)/%.obj %.obj: %.asm
 	@echo  Compiling: $(LIBNAME): $<

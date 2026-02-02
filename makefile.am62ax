@@ -248,6 +248,7 @@ help:
 	@echo  $(MAKE) -s -C examples/kernel/freertos/task_switch/am62ax-sk/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/freertos/task_switch/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/freertos/smp_task_switch/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/kernel/safertos/task_switch/am62ax-sk/c75ss0-0_safertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/lpm/lpm_mcu_mcan_wakeup/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/lpm/lpm_mcu_dmtimer_wakeup/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/lpm/lpm_mcu_uart_wakeup/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -852,6 +853,7 @@ BUILD_COMBO_EXAMPLE_ALL += empty_am62ax-sk_system_nortos
 
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
 # Various Private Example Targets
+BUILD_COMBO_EXAMPLE_PRIVATE_ALL += task_switch_am62ax-sk_c75ss0-0_safertos_ti-c7000
 # Various Private System Example Targets
 
 examples: $(BUILD_COMBO_EXAMPLE_ALL)
@@ -1350,6 +1352,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  smp_task_switch_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64:
 	$(MAKE) -C examples/kernel/freertos/smp_task_switch/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile all
 
+ task_switch_am62ax-sk_c75ss0-0_safertos_ti-c7000:
+	$(MAKE) -C examples/kernel/safertos/task_switch/am62ax-sk/c75ss0-0_safertos/ti-c7000 -f makefile all
+
  lpm_mcu_mcan_wakeup_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/lpm/lpm_mcu_mcan_wakeup/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
@@ -1747,6 +1752,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += empty_am62ax-sk_system_nortos_clean
 
 BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL =
 # Various Private Example Targets
+BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL += task_switch_am62ax-sk_c75ss0-0_safertos_ti-c7000_clean
 # Various Private System Example Targets
 
 examples-clean: $(BUILD_COMBO_EXAMPLE_CLEAN_ALL)
@@ -2245,6 +2251,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  smp_task_switch_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_clean:
 	$(MAKE) -C examples/kernel/freertos/smp_task_switch/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile clean
 
+ task_switch_am62ax-sk_c75ss0-0_safertos_ti-c7000_clean:
+	$(MAKE) -C examples/kernel/safertos/task_switch/am62ax-sk/c75ss0-0_safertos/ti-c7000 -f makefile clean
+
  lpm_mcu_mcan_wakeup_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/lpm/lpm_mcu_mcan_wakeup/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
@@ -2642,6 +2651,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += empty_am62ax-sk_system_nortos_scrub
 
 BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL =
 # Various Private Example Targets
+BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL += task_switch_am62ax-sk_c75ss0-0_safertos_ti-c7000_scrub
 # Various Private System Example Targets
 
 examples-scrub: $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
@@ -3139,6 +3149,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  smp_task_switch_am62ax-sk_a53ss0-0_freertos-smp_gcc-aarch64_scrub:
 	$(MAKE) -C examples/kernel/freertos/smp_task_switch/am62ax-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile scrub
+
+ task_switch_am62ax-sk_c75ss0-0_safertos_ti-c7000_scrub:
+	$(MAKE) -C examples/kernel/safertos/task_switch/am62ax-sk/c75ss0-0_safertos/ti-c7000 -f makefile scrub
 
  lpm_mcu_mcan_wakeup_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/lpm/lpm_mcu_mcan_wakeup/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub

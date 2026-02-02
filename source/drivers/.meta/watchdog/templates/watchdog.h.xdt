@@ -29,7 +29,7 @@
 % else {
 #define `instance.$name.toUpperCase()`_EVENT_ID HWIP_INVALID_EVENT_ID
 % }
-#define WATCHDOG_INSTANCE (`config.wdtInstance`)
+#define WATCHDOG_INSTANCE_`i` (`config.wdtInstance`)
 % }
 #define CONFIG_WATCHDOG_NUM_INSTANCES (`module.$instances.length`U)
 

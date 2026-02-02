@@ -13,6 +13,7 @@ This is specially designed to transmit and receive the digital audio data.
 - Internal Loopback
 - Transmit and Receive in TDM format with multi-serializer, multi-slot support.
 - SysConfig support for driver parameter configuration and initialization.
+- Different audio buffer formats for application
 
 ## SysConfig Features
 
@@ -26,7 +27,6 @@ user will be required to assign same instance and choose to ignore the warning.
 
 - Transmit in DIT mode
 - Burst Mode
-- Different audio buffer format for application
 
 ## Usage Overview
 
@@ -59,6 +59,77 @@ calls the following APIs:
 - #MCASP_withdrawTx(): withdraw buffers submitted to driver for transmission
 - #MCASP_close():  De-initialize the MCASP instance.
 - #MCASP_deinit(): De-Initialize the MCASP driver.
+
+## MCASP migration guide 11.02 to 12.00 {#MCASP_12_0_MIGRATION}
+
+\note This section highlights key features that have changed or got added from 11.02 to 12.00 SDK.
+\note Different Audio Buffer Formats feature was added.
+\note For multi-serializer RX/TX, you should select multi-serializer audio buffer formats only.
+
+### Supported Application Audio Buffer Formats
+
+The McASP driver provides various buffer formats for sending the data to/from
+the audio device. The differences between these formats arise from the way the
+audio samples are collected from various serializers and their timeslots and
+arranged in the system’s memory. This way the application can choose to run
+audio processing algorithms over the data without the need for re-arranging
+those data every frame. This section provides an overview of the various formats
+. In the explanatory diagrams in each section, McASP controller recieves samples
+ in frame intervals denoted by t1,t2..tn. The McASP driver collects these and
+arranges those samples in the memory in various formats in to the host’s System
+ memory. We have chosen 32 bit samples and 32-bit word addresses throughout for
+ simplicity.
+
+- **1-Serializer Multi-Slot Interleaved**:
+  This is applicable if multiple slots are used with one serializer. The samples
+  from the different timeslots are stored interleaved in the memory as below.
+  Different timeslots’ samples are denoted by different colors and are labelled
+  t1,t2..tn according to the time they arrive at the serializer.
+
+\imageStyle{docs_src/docs/api_guide/images/drivers/mcasp_buff_format_1serMultiSlotInterleaved.PNG,width:20%}
+\image html docs_src/docs/api_guide/images/drivers/mcasp_buff_format_1serMultiSlotInterleaved.PNG "mcasp_buff_format_1serMultiSlotInterleaved Block Diagram"
+
+- **1-Serializer Multi-Slot NonInterleaved**:
+  This is applicable if multiple slots are used with one serializer. The samples
+  from the different timeslots are grouped together on the basis of the timeslot
+  and stored in the memory as shown below. Different timeslots’ samples are
+  denoted by different colors and are labelled t1,t2..tn according to the time
+  they arrive at the serializer.
+
+\imageStyle{docs_src/docs/api_guide/images/drivers/mcasp_buff_format_1serMultiSlotNonInterleaved.PNG,width:20%}
+\image html docs_src/docs/api_guide/images/drivers/mcasp_buff_format_1serMultiSlotNonInterleaved.PNG "mcasp_buff_format_1serMultiSlotNonInterleaved Block Diagram"
+
+- **Multi-Serializer Multi-Slot Interleaved Type1**:
+  This is applicable if multiple serializers are used and each serializer
+  containing multiple timeslots. The samples are stored in the memory interleaved
+  based on serializer and timeslots as shown below. In this example, there are 3
+  serializers and 2 timeslots per serializers whose samples are noted by Ln (left)
+  and Rn (right). Different serializers’ samples are denoted by different colors.
+
+\imageStyle{docs_src/docs/api_guide/images/drivers/mcasp_buff_format_MultiSerMultiSlotType1.PNG,width:20%}
+\image html docs_src/docs/api_guide/images/drivers/mcasp_buff_format_MultiSerMultiSlotType1.PNG "mcasp buff format MultiSerMultiSlotType1 Block Diagram"
+
+- **Multi-Serializer Multi-Slot Interleaved Type2**:
+  This is applicable if multiple serializers are used and each serializer containing
+  multiple timeslots. The samples are grouped based on the serializer and within
+  one serializer, the timeslots are interleaved as shown below. In this example,
+  there are 3 serializers and 2 timeslots per serializers whose samples are noted
+  by Ln (left) and Rn (right).Different serializers’ samples are denoted by different
+  colors.
+
+\imageStyle{docs_src/docs/api_guide/images/drivers/mcasp_buff_format_MultiSerMultiSlotType2.png,width:20%}
+\image html docs_src/docs/api_guide/images/drivers/mcasp_buff_format_MultiSerMultiSlotType2.png "mcasp buff format MultiSerMultiSlotType2 Block Diagram"
+
+- **Multi-Serializer Multi-Slot NonInterleaved**:
+  This is applicable if multiple serializers are used and each serializer containing
+  multiple timeslots. The samples are grouped based on the serializer and slot within
+  one serializer, the timeslots are interleaved as shown below. In this example,
+  there are 3 serializers and 2 timeslots per serializers whose samples are noted
+  by Ln (left) and Rn (right).Different serializers’ samples are denoted by different
+  colors.
+
+\imageStyle{docs_src/docs/api_guide/images/drivers/mcasp_buff_format_MulitserMultiSlotNonInterleaved.png,width:20%}
+\image html docs_src/docs/api_guide/images/drivers/mcasp_buff_format_MulitserMultiSlotNonInterleaved.png "mcasp buff format NonInterleaved Block Diagram"
 
 ### Loopjob Configuration
 

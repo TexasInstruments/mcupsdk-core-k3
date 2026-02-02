@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -51,6 +51,13 @@
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
+
+#if ( configINCLUDE_RUNTIMESTATS == 1 )
+#include "runtimestatsAPI.h"
+
+/* RTS structs for all the tasks. */
+static xRTS xIdleTaskRTS = { 0 };
+#endif /* ( configINCLUDE_RUNTIMESTATS == 1 ) */
 
 typedef struct TaskP_Struct_ {
     xTCB taskObj;
@@ -122,12 +129,18 @@ __attribute__((weak)) const xPORT_INIT_PARAMETERS xPortInit =
     },
 #endif
 
+#if ( configINCLUDE_RUNTIMESTATS == 1 )
+    &xIdleTaskRTS,                          /* RTS struct passed in as pvIdleTaskTLSObject */
+#else /* ( configINCLUDE_RUNTIMESTATS == 1 ) */
     NULL,                                   /* pvIdleTaskTLSObject */
+#endif /* ( configINCLUDE_RUNTIMESTATS == 1 ) */
+    "IdleTask",                             /* pcIdleTaskName */
 
     /* Timer feature initialisation parameters */
     configTIMER_TASK_PRIORITY,              /* uxTimerTaskPriority */
     configTIMER_TASK_STACK_SIZE,            /* uxTimerTaskStackSize */
     acTimerTaskStack,                       /* pcTimerTaskStackBuffer */
+    "KernelTimerTask",                      /* pcTimerTaskName */
     configTIMER_QUEUE_LENGTH,               /* uxTimerCommandQueueLength */
     configTIMER_CMD_QUEUE_BUFFER_SIZE,      /* uxTimerCommandQueueBufferSize */
     acTimerCommandQueueBuffer,              /* pcTimerCommandQueueBuffer */

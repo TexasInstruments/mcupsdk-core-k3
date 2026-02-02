@@ -19,6 +19,7 @@ const component_file_list_common = [
     "source/drivers/device_manager/sciserver/.project/project.js",
     "source/drivers/dmautils/.project/project.js",
     "source/kernel/nortos/.project/project.js",
+    "source/kernel/safertos/.project/project.js",
     "source/sdl/.project/project.js",
     "source/sdl/sdl_sbl/.project/project.js",
     "source/security/.project/project.js",

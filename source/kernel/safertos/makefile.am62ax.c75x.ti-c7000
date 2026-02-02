@@ -1,0 +1,200 @@
+#
+# Auto generated makefile
+#
+
+export MCU_PLUS_SDK_PATH?=$(abspath ../../..)
+include $(MCU_PLUS_SDK_PATH)/imports.mak
+
+CG_TOOL_ROOT=$(CGT_TI_C7000_PATH)
+
+CC=$(CGT_TI_C7000_PATH)/bin/cl7x
+AR=$(CGT_TI_C7000_PATH)/bin/ar7x
+
+PROFILE?=release
+ConfigName:=$(PROFILE)
+
+LIBNAME:=safertos.am62ax.c75x.ti-c7000.$(PROFILE).lib
+
+FILES_common := \
+    boot_c75.c \
+    CacheP_c75.c \
+    c7x_module_config.c \
+    CycleCounterP_c75.c \
+    Exception.c \
+    csl_clec.c \
+    HwiP_c75.c \
+    MmuP_c75.c \
+    Startup.c \
+    DebugP_shmLogWriter.c \
+    DebugP_shmLogReader.c \
+    DebugP_log.c \
+    DebugP_uartLogWriter.c \
+    DebugP_uartScanf.c \
+    DebugP_memTraceLogWriter.c \
+    TimerP.c \
+    AddrTranslateP.c \
+    printf.c \
+    HeapP_internal.c \
+    QueueP_nortos.c \
+    ClockP_safertos.c \
+    ClockP_safertos_c75.c \
+    HwiP_safertos_c7x.c \
+    SemaphoreP_safertos.c \
+    HeapP_safertos.c \
+    DebugP_safertos.c \
+    DebugP_shmLogReader_safertos.c \
+    TaskP_safertos.c \
+    EventP_safertos.c \
+    list.c \
+    eventgroups.c \
+    task.c \
+    queue.c \
+    evtmplx.c \
+    timers.c \
+    semaphore.c \
+    mutex.c \
+    streambuffer.c \
+    weakStubs.c \
+    runtimestats.c \
+    portable.c \
+
+ASMFILES_common := \
+    CacheP_c75_asm.S \
+    Clobber_asm.S \
+    Exception_asm.S \
+    Hwi_asm.S \
+    Mmu_asm.S \
+    csl_c7xecr.S \
+
+ASMEXTNFILES_common := \
+    portasm.asm \
+
+FILES_PATH_common = \
+    ../nortos/dpl/c75 \
+    ../nortos/dpl/common \
+    dpl/common \
+    dpl/c75 \
+    c75/kernel \
+    c75/portable/230_C7x \
+    c75/portable/230_C7x/005_TI_CGT \
+    c75/portable/230_C7x/005_TI_CGT/c75x \
+    c75/runtimestats \
+    c75/api/NoWrapper \
+
+INCLUDES_common := \
+    -I${CG_TOOL_ROOT}/include \
+    -I${MCU_PLUS_SDK_PATH}/source \
+    -I../nortos/dpl/c75 \
+    -I../nortos/dpl/c75/soc/am62ax \
+    -Idpl/c75 \
+    -Ic75/api/230_C7x \
+    -Ic75/api/NoWrapper \
+    -Ic75/portable/230_C7x/005_TI_CGT \
+    -Ic75/portable/230_C7x \
+    -Ic75/kernel/include_api \
+    -Ic75/kernel/include_prv \
+    -Ic75/config \
+    -Ic75/runtimestats \
+
+DEFINES_common := \
+    -DSOC_AM62AX \
+    -DOS_SAFERTOS \
+    -DBUILD_C7X \
+    -DSW_VERSION=$(SW_VERSION)
+
+CFLAGS_common := \
+    -mv7504 \
+    -q \
+    -mo \
+    -pden \
+    -pds=238 \
+    -pds=880 \
+    -pds1110 \
+    --disable_inlining \
+    -ea.se71 \
+    --emit_warnings_as_errors \
+    --diag_suppress=770 \
+    --diag_suppress=69 \
+    --diag_suppress=70 \
+    -DBUILD_C7X \
+    -DBUILD_C7X_1 \
+    -DHwi_bootToNonSecure__D=true \
+    -DException_vectors__D \
+    --advice:performance=none  \
+
+CFLAGS_release := \
+    -Dxdc_target_name__=C71 \
+    --opt_level=3 \
+    --symdebug:dwarf \
+
+CFLAGS_debug := \
+    -Dxdc_target_name__=C71 \
+    -D_DEBUG_=1 \
+    --opt_level=0 \
+    --symdebug:dwarf \
+
+ARFLAGS_common := \
+    rq \
+
+FILES := $(FILES_common) $(FILES_$(PROFILE))
+ASMFILES := $(ASMFILES_common) $(ASMFILES_$(PROFILE))
+ASMEXTNFILES := $(ASMEXTNFILES_common) $(ASMEXTNFILES_$(PROFILE))
+FILES_PATH := $(FILES_PATH_common) $(FILES_PATH_$(PROFILE))
+CFLAGS := $(CFLAGS_common) $(CFLAGS_$(PROFILE))
+ASMFLAGS := $(CFLAGS_common) $(CFLAGS_$(PROFILE))
+ifeq ($(CPLUSPLUS_BUILD), yes)
+CFLAGS += $(CFLAGS_cpp_common)
+endif
+DEFINES := $(DEFINES_common) $(DEFINES_$(PROFILE))
+INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
+ARFLAGS := $(ARFLAGS_common) $(ARFLAGS_$(PROFILE))
+
+LIBDIR := lib
+OBJDIR := obj/am62ax/ti-c7000/$(PROFILE)/c75x/safertos/
+OBJS := $(FILES:%.c=%.obj)
+OBJS += $(ASMFILES:%.S=%.obj)
+OBJS += $(ASMEXTNFILES:%.asm=%.obj)
+DEPS := $(FILES:%.c=%.d)
+
+vpath %.obj $(OBJDIR)
+vpath %.c $(FILES_PATH)
+vpath %.S $(FILES_PATH)
+vpath %.asm $(FILES_PATH)
+
+$(OBJDIR)/%.obj %.obj: %.c
+	@echo  Compiling: $(LIBNAME): $<
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fc=$<
+
+$(OBJDIR)/%.obj %.obj: %.S
+	@echo  Compiling: $(LIBNAME): $<
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fa=$<
+
+$(OBJDIR)/%.obj %.obj: %.asm
+	@echo  Compiling: $(LIBNAME): $<
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fa=$<
+
+all: $(LIBDIR)/$(LIBNAME)
+
+$(LIBDIR)/$(LIBNAME): $(OBJS) | $(LIBDIR)
+	@echo  .
+	@echo  Archiving: $(LIBNAME) to $@ ...
+	$(AR) $(ARFLAGS) $@ $(addprefix $(OBJDIR), $(OBJS))
+	@echo  Archiving: $(LIBNAME) Done !!!
+	@echo  .
+
+clean:
+	@echo  Cleaning: $(LIBNAME) ...
+	$(RMDIR) $(OBJDIR)
+	$(RM) $(LIBDIR)/$(LIBNAME)
+
+scrub:
+	@echo  Scrubing: $(LIBNAME) ...
+	-$(RMDIR) obj/
+	-$(RMDIR) lib/
+
+$(OBJS): | $(OBJDIR)
+
+$(LIBDIR) $(OBJDIR):
+	$(MKDIR) $@
+
+-include $(addprefix $(OBJDIR)/, $(DEPS))

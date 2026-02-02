@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 Texas Instruments Incorporated
+ * Copyright (C) 2025-2026 Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -160,7 +160,7 @@ int32_t HwiP_construct(HwiP_Object *object, HwiP_Params *params)
         if(status == SystemP_SUCCESS)
         {
             Hwi_Params_init(&hwiParams);
-            hwiParams.arg = (uint32_t)(params->args);
+            hwiParams.arg = (uintptr_t)(params->args);
 
             if (params->priority==0U)
             {
@@ -232,7 +232,7 @@ uintptr_t HwiP_disable(void)
 void HwiP_restore(uintptr_t key)
 {
     if(( xPortInIsrContext() ) ||
-       ( xTaskIsSchedulerStarted() == pdTRUE ))
+       ( pdFALSE == xTaskIsSchedulerStarted() ))
     {
         (void)Hwi_restore((uint32_t)key);
     }

@@ -113,7 +113,7 @@ function isSafeRTOSSupported() {
         case "am62x":
             return false;
         case "am62ax":
-            return false;
+            return true;
         case "am62dx":
             return false;
         case "am62px":

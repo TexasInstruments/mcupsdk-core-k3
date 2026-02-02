@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -121,4 +121,9 @@ void vApplicationSetupTickInterruptHook( portUInt32Type ulTimerClockHz,
 {
     /* start the tick timer */
     TimerP_start(gClockCtrl.timerBaseAddr);
+
+#if ( configINCLUDE_RUNTIMESTATS == 1 )
+    #include "runtimestats.h"
+    vInitialiseRunTimeStatistics();
+#endif /* ( configINCLUDE_RUNTIMESTATS == 1 ) */
 }

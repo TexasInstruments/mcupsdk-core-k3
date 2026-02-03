@@ -202,7 +202,6 @@ Fast Tuning Window          |          6.71 ms
 - Phy Condition: disabled
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
-
 -----------------|-------------------|-------------------|----------------------|----------------------
       1          |        DAC        |        No         |        0.42          |       2.74
       5          |        DAC        |        No         |        0.43          |       2.74
@@ -216,7 +215,6 @@ Fast Tuning Window          |          6.71 ms
 - Phy Condition: disabled
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
-
 -----------------|-------------------|-------------------|-----------------------|----------------------
       1          |        DAC        |        No         |        0.40           |       5.87
       5          |        DAC        |        No         |        0.40           |       5.87
@@ -230,7 +228,6 @@ Fast Tuning Window          |          6.71 ms
 - Phy Condition: enabled
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
-
 -----------------|-------------------|-------------------|-----------------------|----------------------
       1          |        DAC        |        No         |        0.42           |       6.14
       5          |        DAC        |        No         |        0.43           |       6.14
@@ -244,7 +241,6 @@ Fast Tuning Window          |          6.71 ms
 - Phy Condition: enabled
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
-
 -----------------|-------------------|-------------------|----------------------|----------------------
       1          |        DAC        |        No         |        0.42          |       6.83
       5          |        DAC        |        No         |        0.43          |       6.83
@@ -287,7 +283,6 @@ Fast Tuning Window          |          6.71 ms
 - Phy Condition: disabled
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
-
 -----------------|-------------------|-------------------|----------------------|----------------------
       1          |        DAC        |        No         |        0.42          |       2.74
       5          |        DAC        |        No         |        0.43          |       2.74
@@ -302,7 +297,6 @@ Fast Tuning Window          |          6.71 ms
 - Phy Condition: disabled
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
-
 -----------------|-------------------|-------------------|-----------------------|----------------------
       1          |        DAC        |        No         |        0.40           |       5.87
       5          |        DAC        |        No         |        0.40           |       5.87
@@ -317,7 +311,6 @@ Fast Tuning Window          |          6.71 ms
 - Phy Condition: enabled
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
-
 -----------------|-------------------|-------------------|-----------------------|----------------------
       1          |        DAC        |        No         |        0.42           |       6.14
       5          |        DAC        |        No         |        0.43           |       6.14
@@ -332,7 +325,6 @@ Fast Tuning Window          |          6.71 ms
 - Phy Condition: enabled
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
-
 -----------------|-------------------|-------------------|----------------------|----------------------
       1          |        DAC        |        No         |        0.42          |       6.83
       5          |        DAC        |        No         |        0.43          |       6.83
@@ -373,7 +365,6 @@ Fast Tuning Window          |          7.97 ms
 - Phy Condition: disabled
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
-
 -----------------|-------------------|-------------------|----------------------|----------------------
       1          |        DAC        |        No         |        0.42          |       2.72
       5          |        DAC        |        No         |        0.42          |       2.72
@@ -388,7 +379,6 @@ Fast Tuning Window          |          7.97 ms
 - Phy Condition: disabled
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
-
 -----------------|-------------------|-------------------|-----------------------|----------------------
       1          |        DAC        |        No         |        0.40           |       5.88
       5          |        DAC        |        No         |        0.40           |       5.88
@@ -403,7 +393,6 @@ Fast Tuning Window          |          7.97 ms
 - Phy Condition: enabled
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
-
 -----------------|-------------------|-------------------|-----------------------|----------------------
       1          |        DAC        |        No         |        0.42           |       5.64
       5          |        DAC        |        No         |        0.42           |       5.64

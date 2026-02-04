@@ -301,14 +301,16 @@ const lnkfiles = {
 
 const defines_dm_r5f_nortos = {
     common:[
-        "ENABLE_SCICLIENT_DIRECT"
+        "ENABLE_SCICLIENT_DIRECT",
+        "ENABLE_R5F_CORE"
     ]
 }
 
 const defines_dm_r5f_freertos = {
     common:[
         "ENABLE_SCICLIENT_DIRECT",
-        "ENABLE_MT_TESTS"
+        "ENABLE_MT_TESTS",
+        "ENABLE_R5F_CORE"
     ]
 }
 

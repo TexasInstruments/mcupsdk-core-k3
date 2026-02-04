@@ -44,6 +44,10 @@
 #include "udma_test.h"
 #include "udma_testconfig.h"
 #include <unity.h>
+#if defined(ENABLE_R5F_CORE)
+#include <drivers/sciclient.h>
+#endif
+
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
@@ -118,6 +122,14 @@ static void TestUdma_trpdInit(Udma_ChHandle chHandle,
                               uint32_t length,
                               uint32_t trigger0,
                               uint32_t trigger1);
+#if defined(ENABLE_R5F_CORE)
+static void TestUdma_utcVpacTrpdInit(Udma_ChHandle chHandle,
+                             uint8_t *pTrpdMem,
+                             const void *destBuf,
+                             const void *srcBuf,
+                             uint32_t length);
+#endif
+
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -4686,3 +4698,177 @@ void TestUdma_getMappedChRingAttributesInvalidMappedTxCh(void *args)
 
     TEST_ASSERT_EQUAL_INT(UDMA_EINVALID_PARAMS, retVal);
 }
+
+
+#if defined(ENABLE_R5F_CORE)
+
+/* Helper: Initialize a TR15 transfer record packet descriptor (TRPD) for a
+ * simple 1D block move. Fills source/destination addressing, element counts,
+ * dimensions, and completion event configuration, then performs cache
+ * writeback so hardware sees updated descriptor contents. Expects an already
+ * opened/allocated channel handle. */
+static void TestUdma_utcVpacTrpdInit(Udma_ChHandle chHandle,
+                             uint8_t *pTrpdMem,
+                             const void *destBuf,
+                             const void *srcBuf,
+                             uint32_t length)
+{
+    CSL_UdmapTR15 *pTr = (CSL_UdmapTR15 *)(pTrpdMem + sizeof(CSL_UdmapTR15));
+    uint32_t *pTrResp = (uint32_t *) (pTrpdMem + (sizeof(CSL_UdmapTR15) * 2U));
+    uint32_t cqRingNum = Udma_chGetCqRingNum(chHandle);
+
+
+    /* Make TRPD with TR15 TR type */
+    UdmaUtils_makeTrpdTr15((uint8_t *)pTrpdMem, 1U, cqRingNum);
+
+    /* Setup TR */
+    pTr->flags    = CSL_FMK(UDMAP_TR_FLAGS_TYPE, CSL_UDMAP_TR_FLAGS_TYPE_4D_BLOCK_MOVE)         |
+                    CSL_FMK(UDMAP_TR_FLAGS_STATIC, 0U)                                          |
+                    CSL_FMK(UDMAP_TR_FLAGS_EOL, 0U)                                             |
+                    CSL_FMK(UDMAP_TR_FLAGS_EVENT_SIZE, CSL_UDMAP_TR_FLAGS_EVENT_SIZE_COMPLETION)|
+                    CSL_FMK(UDMAP_TR_FLAGS_TRIGGER0, CSL_UDMAP_TR_FLAGS_TRIGGER_NONE)           |
+                    CSL_FMK(UDMAP_TR_FLAGS_TRIGGER0_TYPE, CSL_UDMAP_TR_FLAGS_TRIGGER_TYPE_ALL)  |
+                    CSL_FMK(UDMAP_TR_FLAGS_TRIGGER1, CSL_UDMAP_TR_FLAGS_TRIGGER_NONE)           |
+                    CSL_FMK(UDMAP_TR_FLAGS_TRIGGER1_TYPE, CSL_UDMAP_TR_FLAGS_TRIGGER_TYPE_ALL)  |
+                    CSL_FMK(UDMAP_TR_FLAGS_CMD_ID, 0x25U)                                       |
+                    CSL_FMK(UDMAP_TR_FLAGS_SA_INDIRECT, 0U)                                     |
+                    CSL_FMK(UDMAP_TR_FLAGS_DA_INDIRECT, 0U)                                     |
+                    CSL_FMK(UDMAP_TR_FLAGS_EOP, 1U);
+    pTr->icnt0    = length;
+    pTr->icnt1    = 1U;
+    pTr->icnt2    = 1U;
+    pTr->icnt3    = 1U;
+    pTr->dim1     = pTr->icnt0;
+    pTr->dim2     = (pTr->icnt0 * pTr->icnt1);
+    pTr->dim3     = (pTr->icnt0 * pTr->icnt1 * pTr->icnt2);
+    pTr->addr     = (uint64_t) srcBuf;
+    pTr->fmtflags = 0x00000000U;
+    pTr->dicnt0   = length;
+    pTr->dicnt1   = 1U;
+    pTr->dicnt2   = 1U;
+    pTr->dicnt3   = 1U;
+    pTr->ddim1    = pTr->dicnt0;
+    pTr->ddim2    = (pTr->dicnt0 * pTr->dicnt1);
+    pTr->ddim3    = (pTr->dicnt0 * pTr->dicnt1 * pTr->dicnt2);
+    pTr->daddr    = (uint64_t) destBuf;
+
+    /* Clear TR response memory */
+    *pTrResp = 0xFFFFFFFFU;
+
+    /* Writeback cache */
+    CacheP_wb(pTrpdMem, TEST_UDMA_TRPD_SIZE, CacheP_TYPE_ALLD);
+
+    return;
+}
+
+/**
+ * \brief VPAC UTC block copy test.
+ *
+ * Test Category: Functional
+ *
+ * Validates block copy operation using VPAC UTC channel.
+ * Initializes UDMA driver, opens UTC channel for VPAC TC, configures TR,
+ * submits transfer, and verifies data.
+ *
+ * Expected: Block copy completes; destination buffer equals source.
+ */
+void TestUdma_utcIdVPAC(void *args)
+{
+    int32_t         retVal = UDMA_SOK;
+    Udma_InitPrms   initPrms;
+    uint32_t        instId;
+    uint32_t        chType;
+    Udma_ChPrms     chPrms;
+    Udma_ChUtcPrms utcPrms;
+    Udma_ChObject chObj;
+    Udma_ChHandle chHandle;
+    static Udma_DrvObject udmaDrvObj;
+    Udma_DrvHandle drvHandle;
+    uint8_t *srcBuf = &TestUdma_Src[0U];
+    uint8_t *destBuf = &TestUdma_Dst[0U];
+    uint32_t length = TEST_UDMA_NUM_BYTES;
+    uint64_t pDesc;
+    uint8_t  *trpdMem = &TestUdma_TrpdSingleDesc[0U];
+    Udma_DrvHandleInt   drvHandleInt;
+    drvHandle = &udmaDrvObj;
+    chHandle = &chObj;
+    drvHandleInt = (Udma_DrvHandleInt) drvHandle;
+    /* Ensure VPAC module is ON so DRU registers are accessible */
+    int32_t sciRet = Sciclient_pmSetModuleState(
+        TISCI_DEV_VPAC0,
+        TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
+        TISCI_MSG_FLAG_AOP,
+        SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT(CSL_PASS, sciRet);
+    /* Driver init with UTC enabled */
+    instId = UDMA_INST_ID_0;
+    retVal = UdmaInitPrms_init(instId, &initPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+    initPrms.instId             = instId;
+    initPrms.enableUtc          = TRUE;
+    initPrms.skipGlobalEventReg = FALSE;
+    initPrms.virtToPhyFxn       = Udma_defaultVirtToPhyFxn;
+    initPrms.phyToVirtFxn       = Udma_defaultPhyToVirtFxn;
+
+    chType = UDMA_CH_TYPE_UTC;
+    retVal = Udma_init(drvHandle, &initPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Open VPAC UTC channel with FQ & CQ rings */
+    UdmaChPrms_init(&chPrms, chType);
+    chPrms.chNum = drvHandleInt->rmInitPrms.startUtcCh[UDMA_UTC_ID_VPAC_TC0]; //UDMA_DMA_CH_ANY;
+    chPrms.utcId = UDMA_UTC_ID_VPAC_TC0;
+    DebugP_log("Opening VPAC UTC channel num=%u\n", chPrms.chNum);
+    /* Single element rings are sufficient for one TRPD */
+    chPrms.fqRingPrms.ringMem       = &TestUdma_FqRingMem[0U];
+    chPrms.fqRingPrms.ringMemSize   = UDMA_CACHELINE_ALIGNMENT;
+    chPrms.fqRingPrms.elemCnt       = TEST_UDMA_RING_ELEM_SINGLE;
+    chPrms.cqRingPrms.ringMem       = &TestUdma_CqRingMem[0U];
+    chPrms.cqRingPrms.ringMemSize   = UDMA_CACHELINE_ALIGNMENT;
+    chPrms.cqRingPrms.elemCnt       = TEST_UDMA_RING_ELEM_SINGLE;
+
+    /* Open channel for block copy */
+    retVal = Udma_chOpen(drvHandle, chHandle, chType, &chPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    UdmaChUtcPrms_init(&utcPrms);
+    utcPrms.chanType = (uint8_t)CSL_BCDMA_CHAN_TYPE_REF_TR_RING;
+    utcPrms.druOwner = (uint8_t)CSL_BCDMA_CHAN_TYPE_REF_TR_RING;
+    retVal = Udma_chConfigUtc(chHandle, &utcPrms);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+    /* Channel enable */
+    retVal = Udma_chEnable(chHandle);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Init buffers and TR packet descriptor */
+    TestUdma_initBuffer(srcBuf, destBuf, length);
+    TestUdma_utcVpacTrpdInit(chHandle, trpdMem, destBuf, srcBuf, length);
+
+    /* Submit TRPD to channel */
+    retVal = Udma_chRingQueueRaw(chHandle, trpdMem, 1);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    retVal = Udma_chRingRingDbRaw(chHandle,1U);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+
+    /* Wait for return descriptor in completion ring - this marks transfer completion */
+    do {
+        retVal = Udma_chRingDeQueueRaw(chHandle, 1U, &pDesc);
+    } while (retVal != UDMA_SOK);
+
+    retVal = Udma_chRingRingRvrDbRaw(chHandle, 1U);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+    /* Compare data */
+    TestUdma_compareBuffer(srcBuf, destBuf, length);
+     /* Disable the channel */
+    retVal = Udma_chDisable(chHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+    /* Close the channel */
+    retVal = Udma_chClose(chHandle);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+    /* deinit the driver */
+    retVal = Udma_deinit(drvHandle);
+    TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+}
+#endif /* ENABLE_R5F_CORE*/
+

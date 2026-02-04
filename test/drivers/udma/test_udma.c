@@ -539,6 +539,9 @@ extern void TestUdma_chGetNumRxandUtc(void *args);
 extern void TestUdma_chGetTdCqRingHandle(void *args);
 extern void TestUdma_chSetChainingUnsupportedChannel(void *args);
 extern void TestUdma_getMappedChRingAttributesInvalidMappedTxCh(void *args);
+#if defined(ENABLE_R5F_CORE)
+extern void TestUdma_utcIdVPAC(void *args);
+#endif
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -943,6 +946,9 @@ void test_udma_main(void *args)
     RUN_TEST(TestUdma_chSetChainingUnsupportedChannel, 11069, NULL);
     RUN_TEST(TestUdma_getMappedChRingAttributesInvalidMappedTxCh, 11070, NULL);
 
+#if defined(ENABLE_R5F_CORE)
+    RUN_TEST(TestUdma_utcIdVPAC, 8299, NULL);
+#endif
     UNITY_END();
 }
 

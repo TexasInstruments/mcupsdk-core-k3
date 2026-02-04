@@ -8,6 +8,6 @@ It consists of below sub-modules
 
 - \subpage KERNEL_FREERTOS_PAGE
 - \subpage KERNEL_NORTOS_PAGE
-\cond SOC_AWR294X
+\cond SOC_AM62AX
 - \subpage KERNEL_SAFERTOS_PAGE
 \endcond

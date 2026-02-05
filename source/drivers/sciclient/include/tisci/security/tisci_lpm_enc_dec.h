@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2025 Texas Instruments Incorporated
+ *  Copyright (C) 2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -62,21 +62,16 @@ extern "C"
 
 
 /**
- * \brief Request for TISCI_MSG_LPM_ENCRYPT.
+ * \brief Request for TISCI_MSG_LPM_ENCRYPT_ATF
  *
- * \param hdr TISCI header to provide ACK/NAK flags to the host.
- * \param unencrypted_addr MSMC source address where the unencrypted binary is placed
- * \param encrypted_addr DDR destination address where the [context + encrypted metadata + encrypted binary] should be placed
- * \param unencrypted_len The size of the unencrypted binary present in the MSMC
- * \param max_encrypted_len The maximum possible size allowed for storing the [context + encrypted metadata + encrypted binary]
- *
+ * \param hdr                TISCI header to provide ACK/NAK flags to the host.
+ * \param unencrypted_addr    Source address where the unencrypted binary is placed
+ * \param unencrypted_len    The size of the unencrypted binary present in the MSMC
  */
-struct tisci_msg_enc_req {
+struct tisci_msg_enc_req_atf {
     struct tisci_header    hdr;
     uint64_t            unencrypted_addr;
-    uint64_t            encrypted_addr;
     uint32_t            unencrypted_len;
-    uint32_t            max_encrypted_len;
 } __attribute__((__packed__));
 
 /**
@@ -90,17 +85,15 @@ struct tisci_msg_enc_resp {
 } __attribute__((__packed__));
 
 /**
- * \brief Request for TISCI_MSG_LPM_DECRYPT.
+ * \brief Request for TISCI_MSG_LPM_DECRYPT_ATF.
  *
- * \param hdr TISCI header to provide ACK/NAK flags to the host.
- * \param unencrypted_addr MSMC destination address where the unencrypted binary should be placed
- * \param encrypted_addr DDR source address where the [context + encrypted metadata + encrypted binary] is placed
+ * \param hdr                TISCI header to provide ACK/NAK flags to the host.
+ * \param unencrypted_addr    Destination address where the unencrypted binary should be placed
  *
  */
-struct tisci_msg_dec_req {
+struct tisci_msg_dec_req_atf {
     struct tisci_header    hdr;
     uint64_t            unencrypted_addr;
-    uint64_t            encrypted_addr;
 } __attribute__((__packed__));
 
 /**

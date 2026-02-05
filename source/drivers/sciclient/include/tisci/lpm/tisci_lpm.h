@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -97,6 +97,11 @@ extern "C"
 #define TISCI_MSG_VALUE_SLEEP_MODE_RTC_PLUS_DDR         0x6U
 
 /**
+ * Sleep mode in which complete SOC except the RTC is turned off
+ */
+#define TISCI_MSG_VALUE_SLEEP_MODE_RTC_ONLY             0x7U
+
+/**
  * Value passed to request device manager for low power mode selection.
  */
 #define TISCI_MSG_VALUE_SLEEP_MODE_DM_MANAGED           0xFDU
@@ -161,6 +166,7 @@ extern "C"
 #define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_MCU_IO                          0x81U
 #define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_CAN_IO                          0x82U
 #define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_MCU_IPC                         0x90U
+#define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_EARLY_WAKE_IPOR                 0xA0U
 #define TISCI_MSG_VALUE_LPM_WAKE_SOURCE_INVALID                         0xFFU
 
 /** Used by TISCI_MSG_LPM_WAKE_REASON to return wake pin number as invalid */
@@ -262,6 +268,26 @@ struct tisci_msg_enter_sleep_req {
 struct tisci_msg_enter_sleep_resp {
     struct tisci_header    hdr;
     uint32_t            status;
+} __attribute__((__packed__));
+
+/**
+ * \brief Request for TI_SCI_MSG_GET_SUSPEND_INITIATOR.
+ *
+ * \param hdr TISCI header to provide ACK/NAK flags to the host.
+ */
+struct tisci_msg_get_suspend_initiator_req {
+    struct tisci_header hdr;
+} __attribute__((__packed__));
+
+/**
+ * \brief Response for TI_SCI_MSG_GET_SUSPEND_INITIATOR.
+ *
+ * \param hdr TISCI header to provide ACK/NAK flags to the host.
+ * \param current_initiator Value that tells who is the current suspend initiator.
+ */
+struct tisci_msg_get_suspend_initiator_resp {
+    struct tisci_header    hdr;
+    uint32_t            current_initiator;
 } __attribute__((__packed__));
 
 /**
@@ -682,6 +708,31 @@ struct tisci_msg_lpm_abort_req {
 struct tisci_msg_lpm_abort_resp {
     struct tisci_header hdr;
 } __attribute__((__packed__));
+
+/**
+ * \brief Request for TISCI_MSG_LPM_SAVE_ADDR.
+ *
+ * \param hdr TISCI header to provide ACK/NAK flags to the host.
+ * \param ctx_addr    Address where the LPM data is to be saved
+ * \param size    Size of the context area
+ *
+ * This message is to be sent when the system is booting up, in order
+ * to relay the context saving address to TIFS.
+ */
+struct tisci_msg_lpm_save_ctx_addr_req {
+    struct tisci_header    hdr;
+    uint64_t            ctx_addr;
+    uint32_t            size;
+}  __attribute__((__packed__));
+
+/**
+ * \brief Response for TISCI_MSG_LPM_SAVE_ADDR.
+ *
+ * \param hdr TISCI header to provide ACK/NAK flags to the host.
+ */
+struct tisci_msg_lpm_save_ctx_addr_resp {
+    struct tisci_header hdr;
+}  __attribute__((__packed__));
 
 
 #ifdef __cplusplus

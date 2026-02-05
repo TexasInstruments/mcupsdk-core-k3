@@ -16,7 +16,6 @@ const component_file_list = [
     "source/sdl/.project/project.js",
     "source/sdl/sdl_sbl/.project/project.js",
     "source/security/.project/project.js",
-    "source/safety_checkers/.project/project.js",
     "source/signal_processing/.project/project.js",
     "source/networking/enet/.project/project_cpsw.js",
     "source/networking/enet/.project/project_cpsw_lwipif_freertos.js",
@@ -307,11 +306,6 @@ const example_file_list = [
     "test/security/crypto/test_sa3ul_aes/.project/project.js",
     "test/security/crypto/test_sa3ul_rng/.project/project.js",
     "test/security/crypto/test_sa3ul_sha/.project/project.js",
-
-    // Safety checkers Examples
-    "source/safety_checkers/examples/pm_checkers_app/.project/project.js",
-    "source/safety_checkers/examples/pm_checkers_warm_reset/.project/project.js",
-    "source/safety_checkers/examples/rm_checkers_app/.project/project.js",
 ];
 
 function getProjectSpecCpu(cpu) {

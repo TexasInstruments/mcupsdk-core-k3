@@ -135,7 +135,6 @@ __attribute__((weak)) const xPORT_INIT_PARAMETERS xPortInit =
     NULL,                                   /* pvIdleTaskTLSObject */
 #endif /* ( configINCLUDE_RUNTIMESTATS == 1 ) */
     "IdleTask",                             /* pcIdleTaskName */
-
     /* Timer feature initialisation parameters */
     configTIMER_TASK_PRIORITY,              /* uxTimerTaskPriority */
     configTIMER_TASK_STACK_SIZE,            /* uxTimerTaskStackSize */
@@ -363,4 +362,14 @@ void TaskP_endScheduler()
 {
     extern void vTaskSuspendScheduler(void);
     vTaskSuspendScheduler();
+}
+uint32_t TaskP_disable(void)
+{
+    vTaskSuspendScheduler();
+    return (uint32_t)0;
+}
+void TaskP_restore(uint32_t key)
+{
+    xTaskResumeScheduler();
+    return;
 }

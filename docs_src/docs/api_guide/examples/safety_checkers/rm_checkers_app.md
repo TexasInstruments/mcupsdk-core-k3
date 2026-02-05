@@ -60,19 +60,6 @@ The user should implement firewall based protection for golden reference and als
 
 \endcond
 
-\cond SOC_AM62DX
-
- Parameter      | Value
- ---------------|-----------
- CPU + OS       | mcu-r5fss0-0 freertos
- ^              | r5fss0-0 freertos
- Toolchain      | ti-arm-clang**
- ^              | arm.gnu.aarch64-none
- Boards         | @VAR_BOARD_NAME_LOWER
- Example folder | source/safety_checkers/examples/
-
-\endcond
-
 # Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination

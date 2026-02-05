@@ -77,7 +77,7 @@ This page lists all the examples and demos supported in this SDK.
 <!-- -# \subpage EXAMPLES_OTP -->
 -# \subpage EXAMPLES_SDL
 -# \subpage EXAMPLES_SECURITY
--# \subpage EXAMPLES_SAFETY_CHECKERS
+<!-- -# \subpage EXAMPLES_SAFETY_CHECKERS -->
 \endcond
 
 \cond SOC_AM275X

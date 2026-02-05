@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024-25 Texas Instruments Incorporated
+ *  Copyright (C) 2024-26 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -67,14 +67,18 @@ portTaskHandleType gPongTaskHandle, gPingTaskHandle;
  * buffer need only be large enough to hold the queue structure itself. */
 portInt8Type gPingSemBuf[ safertosapiQUEUE_OVERHEAD_BYTES ] __attribute__( ( aligned ( safertosapiWORD_ALIGNMENT ) ) ) = { 0 };
 portInt8Type gPongSemBuf[ safertosapiQUEUE_OVERHEAD_BYTES ] __attribute__( ( aligned ( safertosapiWORD_ALIGNMENT ) ) ) = { 0 };
+#if defined(SOC_J722S)
 portInt8Type gPongTaskBuf[ safertosapiQUEUE_OVERHEAD_BYTES ] __attribute__( ( aligned ( safertosapiWORD_ALIGNMENT ) ) ) = { 0 };
+#endif
 HwiP_Object gPingHwiObj;
 HwiP_Object gPongHwiObj;
 
 /* Semaphore Parameters. */
 static xSemaphoreHandle gPingSem = NULL;
 static xSemaphoreHandle gPongSem = NULL;
+#if defined(SOC_J722S)
 static xSemaphoreHandle gPongTaskTermination = NULL;
+#endif
 
 
 static void ping_isr(void *arg)
@@ -133,7 +137,9 @@ void ping_main(void *args)
             HwiP_post(PING_INT_NUM);
             xSemaphoreTake( gPingSem, safertosapiMAX_DELAY); /* wait for ISR to signal */
         }
+#if defined(SOC_J722S)
         xSemaphoreGive( gPongTaskTermination );
+#endif
         curTime = ClockP_getTimeUsec() - curTime;
 
         HwiP_destruct(&gPingHwiObj);
@@ -188,7 +194,9 @@ void pong_main(void *args)
             xSemaphoreTake( gPongSem, safertosapiMAX_DELAY); /* wait for ISR to signal */
             HwiP_post(PONG_INT_NUM);
         }
+#if defined(SOC_J722S)
         xSemaphoreTake( gPongTaskTermination, safertosapiMAX_DELAY);
+#endif
         HwiP_destruct(&gPongHwiObj);
     }
     /* One MUST not return out of a SafeRTOS task instead one MUST call xTaskDelete */
@@ -198,6 +206,12 @@ void pong_main(void *args)
 void task_switch_main(void *args)
 {
     portBaseType xStatus;
+
+    /* Open required drivers for application */
+    Drivers_open();
+
+    /* Open all required board drivers */
+    Board_driversOpen();
 
     /* Create the semaphore used by the first two tasks. */
     xSemaphoreCreateBinary( gPingSemBuf, &gPingSem );
@@ -220,6 +234,7 @@ void task_switch_main(void *args)
         xStatus = xSemaphoreTake( gPongSem, safertosapiMAX_DELAY );
     }
     DebugP_assert(xStatus != pdFAIL);
+#if defined(SOC_J722S)
     xSemaphoreCreateBinary( gPongTaskBuf, &gPongTaskTermination );
     if( gPongTaskTermination == NULL )
     {
@@ -230,6 +245,7 @@ void task_switch_main(void *args)
         xStatus = xSemaphoreTake( gPongTaskTermination, safertosapiMAX_DELAY );
     }
     DebugP_assert(xStatus != pdFAIL);
+#endif
 
     xTaskParameters xPongMainParameters =
     {

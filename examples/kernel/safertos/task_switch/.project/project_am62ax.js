@@ -31,12 +31,33 @@ const safertos_defines_c75 = {
     ],
 };
 
+const safertos_defines_dm_r5 = {
+    common: [
+        "OS_SAFERTOS",
+        "BUILD_MCU",
+        "ENABLE_SCICLIENT_DIRECT",
+    ],
+};
+
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_KERNEL_SAFERTOS_TASK_SWITCH";
 
 const libdirs_safertos_c75 = {
     common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/safertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+    ],
+};
+
+const libdirs_safertos_dm_r5f = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
         "${MCU_PLUS_SDK_PATH}/source/kernel/safertos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
@@ -54,10 +75,34 @@ const includes_safertos_c75 = {
     ],
 };
 
+const includes_safertos_r5f = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/safertos/r5f/kernel/include_api",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/safertos/r5f/api/199_TI_CR5",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/safertos/r5f/api/PrivWrapperStd",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/safertos/r5f/portable/199_TI_CR5",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/safertos/r5f/portable/199_TI_CR5/024_Clang",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/safertos/r5f/config",
+    ],
+};
+
 const libs_safertos_c75 = {
     common: [
         "safertos.am62ax.c75x.ti-c7000.${ConfigName}.lib",
         "drivers.am62ax.c75x.ti-c7000.${ConfigName}.lib",
+    ],
+};
+
+const libs_safertos_dm_r5f = {
+    common: [
+        "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "safertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62ax.dm-r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
@@ -86,8 +131,34 @@ const templates_safertos_c75 =
     }
 ];
 
+const templates_safertos_dm_r5f =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_dm_r5f_safertos.cmd.xdt",
+        output: "linker.cmd",
+        options: {
+            heapSize: 0x10000,
+            stackSize: 0x8000,
+            irqStackSize: 0x2000,
+            svcStackSize: 0x1000,
+            fiqStackSize: 0x1000,
+            abortStackSize: 0x1000,
+            undefinedStackSize: 0x1000,
+            dmStubstacksize: 0x0400,
+        },
+    },
+    {
+        input: ".project/templates/am62ax/safertos/main_safertos_dm.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "task_switch_main",
+        },
+    }
+];
+
 const buildOptionCombos = [
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62ax-sk", os: "safertos"},
+    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "safertos"},
 ]
 
 function getComponentProperty() {
@@ -122,6 +193,16 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_safertos_c75;
             build_property.templates = templates_safertos_c75;
             build_property.defines = safertos_defines_c75;
+        }
+    }
+    else if(buildOption.cpu.match(/r5f*/)) {
+        if(buildOption.os.match(/safertos*/) )
+        {
+            build_property.includes = includes_safertos_r5f;
+            build_property.libdirs = libdirs_safertos_dm_r5f;
+            build_property.libs = libs_safertos_dm_r5f;
+            build_property.templates = templates_safertos_dm_r5f;
+            build_property.defines = safertos_defines_dm_r5;
         }
     }
 

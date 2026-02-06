@@ -1,8 +1,8 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "r5fss1-1" --product "MCU_PLUS_SDK@07.03.01"
+ * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "r5fss1-1" --product "MCU_PLUS_SDK@07.03.01"
  * @versions {"tool":"1.23.0+4000"}
  */
 
@@ -19,7 +19,6 @@ const mpu_armv73 = mpu_armv7.addInstance();
 const mpu_armv74 = mpu_armv7.addInstance();
 const mpu_armv75 = mpu_armv7.addInstance();
 const mpu_armv76 = mpu_armv7.addInstance();
-const mpu_armv77 = mpu_armv7.addInstance();
 const flc        = scripting.addModule("/optiflash/flc/flc", {}, false);
 const flc1       = flc.addInstance();
 const flc2       = flc.addInstance();
@@ -38,6 +37,7 @@ flash1.serialFlashDriver.peripheralDriver.phyEnable    = true;
 flash1.serialFlashDriver.peripheralDriver.OSPI.$assign = "OSPI0";
 
 debug_log.enableUartLog            = true;
+debug_log.enableSharedMemLogReader = true;
 debug_log.uartLog.$name            = "CONFIG_UART0";
 debug_log.uartLog.UART.$assign     = "UART0";
 debug_log.uartLog.UART.RXD.$assign = "UART0_RXD";
@@ -55,24 +55,18 @@ mpu_armv73.baseAddr = 0x41010000;
 mpu_armv73.size     = 15;
 mpu_armv73.$name    = "TCMB";
 
-mpu_armv74.$name    = "MSRAM_BANK0_TO_BANK3";
-mpu_armv74.baseAddr = 0x72000000;
 mpu_armv74.size     = 22;
+mpu_armv74.baseAddr = 0x72000000;
+mpu_armv74.$name    = "MSRAM_BANK0_TO_BANK3";
 
-mpu_armv75.$name    = "MSRAM_BANK4_TO_BANK5";
 mpu_armv75.baseAddr = 0x72400000;
 mpu_armv75.size     = 21;
+mpu_armv75.$name    = "MSRAM_BANK4_TO_BANK5";
 
-mpu_armv76.$name        = "LOG_SHM_MEM";
-mpu_armv76.baseAddr     = 0x72380000;
-mpu_armv76.size         = 18;
-mpu_armv76.allowExecute = false;
-mpu_armv76.attributes   = "NonCached";
-
-mpu_armv77.$name      = "FLASH";
-mpu_armv77.baseAddr   = 0x60000000;
-mpu_armv77.size       = 27;
-mpu_armv77.attributes = "NonCached";
+mpu_armv76.$name      = "FLASH";
+mpu_armv76.baseAddr   = 0x60000000;
+mpu_armv76.size       = 27;
+mpu_armv76.attributes = "NonCached";
 
 flc1.$name = "FLC0";
 flc1.sourceStartAddress      = 0x60000000;

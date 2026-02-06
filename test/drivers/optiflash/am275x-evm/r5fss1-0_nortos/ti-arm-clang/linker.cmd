@@ -20,7 +20,7 @@
  * This is also the heap used by pvPortMalloc in FreeRTOS
  */
 --heap_size=0x10000
--e_vectors  /* This is the entry of the application, _vector MUST be plabed starting aR50_0_OCRAMess 0x0 */
+-e_vectors  /* This is the entry of the application, _vector MUST be plabed starting aR51_0_OCRAMess 0x0 */
 
 /* This is the size of stack when R5 is in IRQ mode
  * In NORTOS,
@@ -46,10 +46,10 @@ SECTIONS
     /* This has the R5F entry point and vector table, this MUST be at 0x0 */
     .vectors:{} palign(8) > R5F_TCMA_VEC
     .startupCode:{} palign(8) > R5F_TCMA
-    .startupData: {} palign(8) > R50_0_OCRAM, type = NOINIT
+    .startupData: {} palign(8) > R51_0_OCRAM, type = NOINIT
 
-    /* This has the R5F boot code until MPU is enabled,  this MUST be at a aR50_0_OCRAMess < 0x80000000
-     * i.e this cannot be placed in R50_0_OCRAM
+    /* This has the R5F boot code until MPU is enabled,  this MUST be at a aR51_0_OCRAMess < 0x80000000
+     * i.e this cannot be placed in R51_0_OCRAM
      */
     GROUP {
         .text.hwi: palign(8)
@@ -60,26 +60,26 @@ SECTIONS
     } > R5F_TCMA
 
 
-    .text            : {} palign(8)      > R50_0_OCRAM
-    .const           : {} palign(8)      > R50_0_OCRAM
-    .rodata          : {} palign(8)      > R50_0_OCRAM
-    .cinit           : {} palign(8)      > R50_0_OCRAM
-    .far             : {} align(4)       > R50_0_OCRAM
-    .data            : {} palign(128)    > R50_0_OCRAM
-    .sysmem          : {}                > R50_0_OCRAM
-    .data_buffer     : {} palign(128)    > R50_0_OCRAM
-    .boardcfg_data   : {} align(4)       > R50_0_OCRAM
+    .text            : {} palign(8)      > R51_0_OCRAM
+    .const           : {} palign(8)      > R51_0_OCRAM
+    .rodata          : {} palign(8)      > R51_0_OCRAM
+    .cinit           : {} palign(8)      > R51_0_OCRAM
+    .far             : {} align(4)       > R51_0_OCRAM
+    .data            : {} palign(128)    > R51_0_OCRAM
+    .sysmem          : {}                > R51_0_OCRAM
+    .data_buffer     : {} palign(128)    > R51_0_OCRAM
+    .boardcfg_data   : {} align(4)       > R51_0_OCRAM
 
     GROUP {
         .bss:    {} palign(4)   /* This is where uninitialized globals go */
         RUN_START(__BSS_START)
         RUN_END(__BSS_END)
-    } > R50_0_OCRAM
+    } > R51_0_OCRAM
 
     /* USB or any other LLD buffer for benchmarking */
-    .benchmark_buffer (NOLOAD) {} ALIGN (8) > R50_0_OCRAM
+    .benchmark_buffer (NOLOAD) {} ALIGN (8) > R51_0_OCRAM
 
-    .stack      : {} align(4) > R50_0_OCRAM  (HIGH)
+    .stack      : {} align(4) > R51_0_OCRAM  (HIGH)
 
     /* This is where the stacks for different R5F modes go */
     GROUP {
@@ -98,22 +98,22 @@ SECTIONS
         .undefinedstack: {. = . + __UNDEFINED_STACK_SIZE;} align(4)
         RUN_START(__UNDEFINED_STACK_START)
         RUN_END(__UNDEFINED_STACK_END)
-    } > R50_0_OCRAM (HIGH)
+    } > R51_0_OCRAM (HIGH)
 
     /* Sections needed for C++ projects */
     GROUP {
         .ARM.exidx:  {} palign(8)   /* Needed for C++ exception handling */
         .init_array: {} palign(8)   /* Contains function pointers called before main */
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
-    } > R50_0_OCRAM
+    } > R51_0_OCRAM
 
     /* rl2 region */
     GROUP (NOLOAD) :   {
     .rl2CacheBank: { . = . + 131072;} palign(4096)
-    } > R50_0_RL2_REGION
+    } > R51_0_RL2_REGION
      
-    RUN_START(__RL2_r5fss00_cachebank_start)
-    RUN_END(__RL2_r5fss00_cachebank_end)
+    RUN_START(__RL2_r5fss10_cachebank_start)
+    RUN_END(__RL2_r5fss10_cachebank_end)
     GROUP  :   {
     .flashSrcBuffer : {
     } palign(131072)

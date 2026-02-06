@@ -169,6 +169,12 @@ help:
 	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_fs_io/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/optiflash/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/optiflash/am275x-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/optiflash/am275x-evm/r5fss0-1_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/optiflash/am275x-evm/r5fss1-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/optiflash/am275x-evm/r5fss1-1_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/optiflash/am275x-evm/r5fss0-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/optiflash/am275x-evm/r5fss1-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/optiflash/am275x-evm/r5fss1-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ospi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ospi/am275x-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/watchdog/test_watchdog_system/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -457,6 +463,12 @@ BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_fs_io_am275x-evm_c75ss0-0_freertos_ti-c700
 BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_fs_io_am275x-evm_c75ss1-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += test_optiflash_am275x-evm_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_optiflash_am275x-evm_r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_optiflash_am275x-evm_r5fss0-1_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_optiflash_am275x-evm_r5fss1-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_optiflash_am275x-evm_r5fss1-1_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_optiflash_am275x-evm_r5fss0-1_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_optiflash_am275x-evm_r5fss1-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_optiflash_am275x-evm_r5fss1-1_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_ospi_am275x-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += test_watchdog_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_watchdog_system_am275x-evm_r5fss0-1_freertos_ti-arm-clang
@@ -876,6 +888,24 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_optiflash_am275x-evm_r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile all
 
+ test_optiflash_am275x-evm_r5fss0-1_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss0-1_nortos/ti-arm-clang -f makefile all
+
+ test_optiflash_am275x-evm_r5fss1-0_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss1-0_nortos/ti-arm-clang -f makefile all
+
+ test_optiflash_am275x-evm_r5fss1-1_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss1-1_nortos/ti-arm-clang -f makefile all
+
+ test_optiflash_am275x-evm_r5fss0-1_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile all
+
+ test_optiflash_am275x-evm_r5fss1-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile all
+
+ test_optiflash_am275x-evm_r5fss1-1_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile all
+
  test_ospi_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/ospi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
@@ -1142,6 +1172,12 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_fs_io_am275x-evm_c75ss0-0_freertos_t
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_fs_io_am275x-evm_c75ss1-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_optiflash_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_optiflash_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_optiflash_am275x-evm_r5fss0-1_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_optiflash_am275x-evm_r5fss1-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_optiflash_am275x-evm_r5fss1-1_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_optiflash_am275x-evm_r5fss0-1_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_optiflash_am275x-evm_r5fss1-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_optiflash_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ospi_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_watchdog_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_watchdog_system_am275x-evm_r5fss0-1_freertos_ti-arm-clang_clean
@@ -1561,6 +1597,24 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_optiflash_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
+ test_optiflash_am275x-evm_r5fss0-1_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss0-1_nortos/ti-arm-clang -f makefile clean
+
+ test_optiflash_am275x-evm_r5fss1-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss1-0_nortos/ti-arm-clang -f makefile clean
+
+ test_optiflash_am275x-evm_r5fss1-1_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss1-1_nortos/ti-arm-clang -f makefile clean
+
+ test_optiflash_am275x-evm_r5fss0-1_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile clean
+
+ test_optiflash_am275x-evm_r5fss1-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile clean
+
+ test_optiflash_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile clean
+
  test_ospi_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/ospi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
@@ -1827,6 +1881,12 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_fs_io_am275x-evm_c75ss0-0_freertos_t
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_fs_io_am275x-evm_c75ss1-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_optiflash_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_optiflash_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_optiflash_am275x-evm_r5fss0-1_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_optiflash_am275x-evm_r5fss1-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_optiflash_am275x-evm_r5fss1-1_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_optiflash_am275x-evm_r5fss0-1_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_optiflash_am275x-evm_r5fss1-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_optiflash_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ospi_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_watchdog_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_watchdog_system_am275x-evm_r5fss0-1_freertos_ti-arm-clang_scrub
@@ -2245,6 +2305,24 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_optiflash_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_optiflash_am275x-evm_r5fss0-1_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss0-1_nortos/ti-arm-clang -f makefile scrub
+
+ test_optiflash_am275x-evm_r5fss1-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss1-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_optiflash_am275x-evm_r5fss1-1_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss1-1_nortos/ti-arm-clang -f makefile scrub
+
+ test_optiflash_am275x-evm_r5fss0-1_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile scrub
+
+ test_optiflash_am275x-evm_r5fss1-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_optiflash_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/optiflash/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile scrub
 
  test_ospi_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/ospi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub

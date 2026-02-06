@@ -101,6 +101,10 @@ SECTIONS
      
     RUN_START(__RL2_r5fss00_cachebank_start)
     RUN_END(__RL2_r5fss00_cachebank_end)
+    GROUP  :   {
+    .flashSrcBuffer : {
+    } palign(131072)
+    } > FLASH  
 }
 
 MEMORY
@@ -131,5 +135,6 @@ MEMORY
     R51_0_RL2_REGION (RWIX)      : ORIGIN = 0x725c0000 LENGTH = 0x00020000 // 128 KB for r5fss1-0 rl2 region
     R51_1_RL2_REGION (RWIX)      : ORIGIN = 0x725e0000 LENGTH = 0x00020000 // 128 KB for r5fss1-1 rl2 region
 
+    FLASH     : ORIGIN = 0x60100000 , LENGTH = 0x00200000
 
 }

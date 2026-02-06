@@ -280,6 +280,9 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
             case TISCI_MSG_GET_FREQ:
             case TISCI_MSG_SET_DEVICE:
             case TISCI_MSG_GET_DEVICE:
+#ifdef CONFIG_GET_DEVICE_MULTIPLE
+            case TISCI_MSG_GET_DEVICE_MULTIPLE:
+#endif
             case TISCI_MSG_SET_DEVICE_RESETS:
             case TISCI_MSG_SYS_RESET:
                 memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
@@ -764,6 +767,10 @@ int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags, void *tx_msg)
             break;
         case TISCI_MSG_GET_DEVICE              :
             ret = get_device_handler((uint32_t*)tx_msg); break;
+#ifdef CONFIG_GET_DEVICE_MULTIPLE
+        case TISCI_MSG_GET_DEVICE_MULTIPLE         :
+            ret = get_device_multiple_handler((uint32_t*)tx_msg); break;
+#endif
         case TISCI_MSG_SET_DEVICE_RESETS       :
             {
                 struct tisci_msg_set_device_resets_req *req =

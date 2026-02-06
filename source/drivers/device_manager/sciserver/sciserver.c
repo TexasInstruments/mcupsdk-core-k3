@@ -582,6 +582,12 @@ static int32_t Sciserver_UserProcessMsg(uint32_t *msg_recv,
             reqMsgSize = sizeof(struct tisci_msg_get_device_req);
             respMsgSize = sizeof(struct tisci_msg_get_device_resp);
             break;
+#ifdef CONFIG_GET_DEVICE_MULTIPLE
+        case TISCI_MSG_GET_DEVICE_MULTIPLE:
+            reqMsgSize = (int32_t)sizeof(struct tisci_msg_get_device_multiple_req);
+            respMsgSize = (int32_t)sizeof(struct tisci_msg_get_device_multiple_resp);
+            break;
+#endif
         case TISCI_MSG_SET_DEVICE_RESETS:
             reqMsgSize = sizeof(struct tisci_msg_set_device_resets_req);
             respMsgSize = sizeof(struct tisci_msg_set_device_resets_resp);

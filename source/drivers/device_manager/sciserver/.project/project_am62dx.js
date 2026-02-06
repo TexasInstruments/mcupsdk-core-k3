@@ -43,6 +43,7 @@ const defines_r5f = {
         "BUILD_MCU1_0",
         "BUILD_MCU",
         "CONFIG_PM_CLK_SSC",
+        "CONFIG_GET_DEVICE_MULTIPLE",
         "CONFIG_LPM_DM",
         "CONFIG_OSAL_MINIMAL_QUEUES",
         "MAKEFILE_BUILD",

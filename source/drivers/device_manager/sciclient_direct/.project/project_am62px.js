@@ -54,6 +54,7 @@ const defines_r5f = {
         "CONFIG_CLK_PLL_16FFT",
         "CONFIG_CLK_PLL_16FFT_FRACF_CALIBRATION",
         "CONFIG_PM_CLK_SSC",
+        "CONFIG_GET_DEVICE_MULTIPLE",
         "CONFIG_DM_BUILD",
         "CONFIG_RM",
         "CONFIG_RM_IRQ",

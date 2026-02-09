@@ -29,6 +29,7 @@ i2c1.I2C_child.$name = "drivers_i2c_v0_i2c_v0_template0";
 mcasp1.$name                                   = "CONFIG_MCASP0";
 mcasp1.txDataMask                              = 0xFFFFFFFF;
 mcasp1.txActiveSlotMask                        = 0x3;
+mcasp1.txBufferFormat                          = "MULTISER_MULTISLOT_SEMI_INTERLEAVED_1";
 mcasp1.txCallbackFxn                           = "mcasp_txcb";
 mcasp1.rxDataMask                              = 0xFFFFFFFF;
 mcasp1.rxCallbackFxn                           = "mcasp_rxcb";

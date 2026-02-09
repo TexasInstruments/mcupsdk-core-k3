@@ -38,6 +38,7 @@ mcasp1.$name                                   = "CONFIG_MCASP0";
 mcasp1.enableLoopback                          = false;
 mcasp1.txDataMask                              = 0xFFFFFFFF;
 mcasp1.txActiveSlotMask                        = 0x3;
+mcasp1.txBufferFormat                          = "MULTISER_MULTISLOT_SEMI_INTERLEAVED_1";
 mcasp1.txCallbackFxn                           = "mcasp_txcb";
 mcasp1.rxCallbackFxn                           = "mcasp_rxcb";
 mcasp1.rxDataMask                              = 0xFFFFFFFF;

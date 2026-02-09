@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2025, Texas Instruments Incorporated
+ * Copyright (c) 2017-2026, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -1103,6 +1103,9 @@ uint32_t Sciclient_getCurrentContext(uint16_t messageType)
         case TISCI_MSG_KEY_WRITER:
         case TISCI_MSG_WRITE_KEYREV:
         case TISCI_MSG_ENTER_SLEEP:
+        case TISCI_MSG_DISABLE_JTAG_UNLOCK:
+        case TISCI_MSG_DISABLE_JTAG_UNLOCK_CHECK:
+        case TISCI_MSG_KEYRING_IMPORT:
             retVal = SCICLIENT_CONTEXT_SEC;
             break;
 

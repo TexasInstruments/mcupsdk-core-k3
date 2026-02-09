@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022-24 Texas Instruments Incorporated
+ *  Copyright (C) 2022-26 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -115,7 +115,11 @@ extern "C" {
 #define SCICLIENT_CONTEXT_A53_NONSEC_3                  (9U)
 /** C7x(Non Secure): C7x core*/
 #define SCICLIENT_CONTEXT_C7_NONSEC_0                   (10U)
-/** DM2TIFS(Non Secure): DM to TIFS Message forwarding */
+/** DM2TIFS(Secure): DM to TIFS Message forwarding.
+ *  Note: Although this context uses a secure thread, it can only forward
+ *  messages from non-secure hosts to TIFS. If the forwarded message is
+ *  marked as secure queue only then TIFS will reject the message.
+ */
 #define SCICLIENT_CONTEXT_DM2TIFS                       (11U)
 
 /** Total number of possible contexts for application. */

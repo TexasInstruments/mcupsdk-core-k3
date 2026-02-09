@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2025 Texas Instruments Incorporated
+ *  Copyright (C) 2025-26 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -108,7 +108,11 @@ extern "C" {
 #define SCICLIENT_CONTEXT_GPU_NONSEC_0                  (12U)
 /** GPU_1(Non Secure): GPU context 1 */
 #define SCICLIENT_CONTEXT_GPU_NONSEC_1                  (13U)
-/** DM2TIFS(Non Secure): DM to TIFS Message forwarding */
+/** DM2TIFS(Secure): DM to TIFS Message forwarding.
+ *  Note: Although this context uses a secure thread, it can only forward
+ *  messages from non-secure hosts to TIFS. If the forwarded message is
+ *  marked as secure queue only then TIFS will reject the message.
+ */
 #define SCICLIENT_CONTEXT_DM2TIFS                       (14U)
 
 /** Total number of possible contexts for application. */

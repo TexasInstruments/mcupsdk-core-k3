@@ -4182,52 +4182,83 @@ static void TestI2c_openNullObject(void *args)
 }
 
 /**
- * \brief Negative test: blocking-mode transfer to a non-existent I2C address with a very short timeout.
+ * \brief Negative test: Blocking-mode I2C transfer with SCL forced low
+ *        to simulate bus stuck condition and validate timeout handling.
  *
- * A 1‑tick timeout is configured and a 1‑byte read is attempted at address 0x7F
- * (chosen to be unmapped). The driver returns I2C_STS_ERR_NO_ACK immediately
- * (NACK), not a timeout, so the test validates NACK handling rather than an
- * actual elapsed timeout condition.
+ * This test simulates the SCL line being stuck low using the SYSTEST register
+ * creating a bus-stuck condition. Since the clock line remains
+ * low, the I2C transfer cannot progress and remains blocked until the
+ * configured timeout expires and exits with I2C_STS_ERR_TIMEOUT.
  *
  * Test intent:
- *  - Open I2C in blocking mode.
- *  - Issue a read (writeCount=0, readCount=1) to an invalid target.
- *  - Confirm the transaction status is I2C_STS_ERR_NO_ACK.
+ *  - Open I2C instance in blocking mode.
+ *  - Drive SCL low to simulate a stuck bus.
+ *  - Initiate a write transaction.
+ *  - Verify that the transaction status is I2C_STS_ERR_TIMEOUT.
  *
  * \param args Unused.
  */
 static void TestI2c_transferTimeoutBlockingMode(void *args)
 {
-    I2C_Params params;
-    I2C_Handle handle;
-    I2C_Transaction Test_i2cTransaction;
-    int32_t status = 0;
 
-    /* Open I2C in blocking mode, interrupts enabled (default) */
-    I2C_Params_init(&params);
+    I2C_Params i2cParams;
+    I2C_Handle handle;
+    uint32_t regVal,i;
+    int32_t status;
+    uint32_t   i2cDelay = I2C_DELAY_SMALL;
+    I2C_Transaction Test_i2cTransaction;
+
+    for (i = 0; i < 10; i++)
+    {
+        gI2cTxBuffer[i + Board_i2cGetEepromAddrSize()] = (uint8_t)i;
+    }
+
+    /* Setup: open I2C instance */
+    I2C_Transaction_init(&Test_i2cTransaction);
+    Test_i2cTransaction.writeBuf = gI2cTxBuffer;
+    Test_i2cTransaction.writeCount = 2;
+    Test_i2cTransaction.readBuf = NULL;
+    Test_i2cTransaction.readCount = 0;
+    Test_i2cTransaction.targetAddress = Board_i2cGetEepromDeviceAddr();
+    Test_i2cTransaction.timeout = 1;
+
     handle = I2C_getHandle(CONFIG_I2C0);
     if(handle)
     {
         I2C_close(handle);
     }
-    params.transferMode = I2C_MODE_BLOCKING;
-    handle = I2C_open(CONFIG_I2C0, &params);
+    gI2cHandle[CONFIG_I2C0] = NULL;
+    I2C_Params_init(&i2cParams);
+    handle = I2C_open(CONFIG_I2C0, &i2cParams);
     TEST_ASSERT_NOT_NULL(handle);
 
-    /* Prepare a transaction to a non-existent address with a very short timeout */
-    I2C_Transaction_init(&Test_i2cTransaction);
-    Test_i2cTransaction.writeBuf = NULL;
-    Test_i2cTransaction.writeCount = 0;
-    Test_i2cTransaction.readBuf = NULL;
-    Test_i2cTransaction.readCount = 1;
-    Test_i2cTransaction.targetAddress = NON_EXISTENT_DEVICE_ADDRESS;
-    Test_i2cTransaction.timeout = 25;
+    handle = I2C_getHandle(CONFIG_I2C0);
+    TEST_ASSERT_NOT_NULL(handle);
+    uint32_t baseAddr = handle->hwAttrs->baseAddr;
+
+    handle->object->i2cLldHandle->bitRate = I2C_400KHZ;
+
+    /* Enable test mode and simulate SCL stuck low */
+    regVal = HW_RD_REG32(baseAddr + CSL_I2C_SYSTEST);
+    regVal |= (1 << CSL_I2C_SYSTEST_ST_EN_SHIFT);       /* ST_EN = 1 */
+    regVal |= (0x3 << CSL_I2C_SYSTEST_TMODE_SHIFT);     /* TMODE = 0b11 */
+    regVal &= ~(1 << CSL_I2C_SYSTEST_SCL_O_SHIFT);       /* SCL_O = 0 (drive low) */
+    HW_WR_REG32(baseAddr + CSL_I2C_SYSTEST, regVal);
+    ClockP_usleep(10);         /* Let the line settle */
+
+    /* Confirm SCL is stuck low */
+    regVal = HW_RD_REG32(baseAddr + CSL_I2C_SYSTEST);
+    bool sclStuck = ((regVal >> CSL_I2C_SYSTEST_SCL_I_SHIFT) & 0x1) == 0;  /* SCL_I == 0 */
+    TEST_ASSERT_TRUE_MESSAGE(sclStuck, "SCL line is not stuck as expected");
 
     status = I2C_transfer(handle, &Test_i2cTransaction);
-    status = Test_i2cTransaction.status;
-    /* Should return SystemP_TIMEOUT due to timeout */
-    TEST_ASSERT_EQUAL_INT32(I2C_STS_ERR_NO_ACK, status);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, status);
 
+    /*  Recover bus */
+    status = I2C_recoverBus(handle, i2cDelay);
+    TEST_ASSERT_EQUAL_INT_MESSAGE(SystemP_SUCCESS, status, "I2C_recoverBus() failed");
+
+    /* Close */
     I2C_close(handle);
 }
 

@@ -52,6 +52,7 @@ extern "C"
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
+#if defined (R5F_CORE)
 
 #define SELF_TCM_READ_ADDRESS           (0x00001000U)
 #define SELF_TCM_WRITE_ADDRESS          (0x00007F00U)
@@ -62,6 +63,13 @@ extern "C"
 #define NON_SELF_TCM_ACCESS_ADDRESS     (0x05E00000U)
 #define NON_SELF_TCM_ACCESS_ADDRESS1    (0x05E00008U)
 
+#elif defined (C7_CORE)
+
+#define SRAM_READ_ADDRESS               (0x80200000U)
+#define L2RAM_READ_ADDRESS              (0x7E000000U)
+
+#endif
+
 typedef struct {
     double cycles;
 } benchmark_t;
@@ -70,9 +78,14 @@ typedef struct {
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
-benchmark_t latencyCalculate_Read32(uint32_t address) __attribute__ ((section ("TCM_function.TCM_function_attr")));
+benchmark_t latencyCalculate_Read32(uint32_t address);
 
-benchmark_t latencyCalculate_Read64(uint32_t address) __attribute__ ((section ("TCM_function.TCM_function_attr")));
+benchmark_t latencyCalculate_Read64(uint32_t address);
+
+#if defined(C7_CORE)
+void c7x_Read32(uint32_t address);
+void c7x_Read64(uint32_t address);
+#endif
 
 #ifdef __cplusplus
 }

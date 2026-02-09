@@ -6,12 +6,12 @@ export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
-CG_TOOL_ROOT=$(CGT_TI_ARM_CLANG_PATH)
+CG_TOOL_ROOT=$(CGT_TI_C7000_PATH)
 
-CC=$(CG_TOOL_ROOT)/bin/tiarmclang
-LNK=$(CG_TOOL_ROOT)/bin/tiarmclang
-STRIP=$(CG_TOOL_ROOT)/bin/tiarmstrip
-OBJCOPY=$(CG_TOOL_ROOT)/bin/tiarmobjcopy
+CC=$(CG_TOOL_ROOT)/bin/cl7x
+LNK=$(CG_TOOL_ROOT)/bin/cl7x
+STRIP=$(CG_TOOL_ROOT)/bin/strip7x
+OBJCOPY=$(CG_TOOL_ROOT)/bin/
 ifeq ($(OS), Windows_NT)
 	PYTHON=python
 else
@@ -45,89 +45,89 @@ FILES_common := \
 	ti_pinmux_config.c \
 	ti_power_clock_config.c \
 
+ASMFILES_common := \
+	memory_latency_benchmark_asm_c7x.S \
+
 FILES_PATH_common = \
 	.. \
 	../../.. \
 	generated \
 
 INCLUDES_common := \
-	-I${CG_TOOL_ROOT}/include/c \
+	-I${CG_TOOL_ROOT}/include \
 	-I${MCU_PLUS_SDK_PATH}/source \
-	-I${MCU_PLUS_SDK_PATH}/examples/benchmarks/memory_latency_benchmark \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am275x/c75x \
 	-Igenerated \
 
 DEFINES_common := \
 	-DSOC_AM275X \
-	-DR5F_CORE \
+	-DC7_CORE \
 
 CFLAGS_common := \
-	-mcpu=cortex-r5 \
-	-mfloat-abi=hard \
-	-mfpu=vfpv3-d16 \
-	-mthumb \
-	-Wall \
-	-Werror \
-	-g \
-	-Wno-gnu-variable-sized-type-not-at-end \
-	-Wno-unused-function \
-
-CFLAGS_cpp_common := \
-	-Wno-c99-designator \
-	-Wno-extern-c-compat \
-	-Wno-c++11-narrowing \
-	-Wno-reorder-init-list \
-	-Wno-deprecated-register \
-	-Wno-writable-strings \
-	-Wno-enum-compare \
-	-Wno-reserved-user-defined-literal \
-	-Wno-unused-const-variable \
-	-x c++ \
+	-mv7524 \
+	-q \
+	-mo \
+	-pden \
+	-pds=238 \
+	-pds=880 \
+	-pds1110 \
+	--disable_inlining \
+	-ea.se71 \
+	--emit_warnings_as_errors \
+	--diag_suppress=770 \
+	--diag_suppress=69 \
+	--diag_suppress=70 \
+	-DBUILD_C7X \
+	-DBUILD_C7X_1 \
 
 CFLAGS_debug := \
+	-Dxdc_target_name__=C71 \
 	-D_DEBUG_=1 \
+	--opt_level=0 \
+	--symdebug:dwarf \
 
 CFLAGS_release := \
-	-Os \
+	-Dxdc_target_name__=C71 \
+	--opt_level=3 \
+	--symdebug:none \
 
 LNK_FILES_common = \
 	linker.cmd \
 
 LIBS_PATH_common = \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/board/lib \
-	-Wl,-i${CG_TOOL_ROOT}/lib \
+	-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
+	-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	-i${MCU_PLUS_SDK_PATH}/source/board/lib \
+	-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
-	-lnortos.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
-	-ldrivers.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lboard.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lfreertos.am275x.c75x.ti-c7000.${ConfigName}.lib \
+	-ldrivers.am275x.c75x.ti-c7000.${ConfigName}.lib \
+	-lboard.am275x.c75x.ti-c7000.${ConfigName}.lib \
 	-llibc.a \
-	-llibsysbm.a \
 
 LFLAGS_common = \
-	-Wl,--diag_suppress=10063 \
-	-Wl,--priority \
-	-Wl,--ram_model \
-	-Wl,--reread_libs \
+	-z \
+	--emit_warnings_as_errors \
+	--diag_suppress=10063 \
+	--ram_model \
+	--warn_sections \
+	-x \
 
 
 LIBS_NAME = \
-	nortos.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
-	drivers.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
-	board.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
+	freertos.am275x.c75x.ti-c7000.${ConfigName}.lib \
+	drivers.am275x.c75x.ti-c7000.${ConfigName}.lib \
+	board.am275x.c75x.ti-c7000.${ConfigName}.lib \
 	libc.a \
-	libsysbm.a \
-
-LIBS_PREBUILD_NAME = \
 
 LIBS_PATH_NAME = \
-	${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
+	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	${CG_TOOL_ROOT}/lib \
-
-LIBS_PREBUILD_PATH_NAME = \
 
 FILES := $(FILES_common) $(FILES_$(PROFILE))
 ASMFILES := $(ASMFILES_common) $(ASMFILES_$(PROFILE))
@@ -136,11 +136,8 @@ CFLAGS := $(CFLAGS_common) $(CFLAGS_$(PROFILE))
 DEFINES := $(DEFINES_common) $(DEFINES_$(PROFILE))
 INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
 LIBS := $(LIBS_common) $(LIBS_$(PROFILE))
-LIBS_PREBUILD := $(LIBS_PREBUILD_common) $(LIBS_PREBUILD_$(PROFILE))
 LIBS_PATH := $(LIBS_PATH_common) $(LIBS_PATH_$(PROFILE))
-LIBS_PREBUILD_PATH := $(LIBS_PREBUILD_PATH_common) $(LIBS_PREBUILD_PATH_$(PROFILE))
 LFLAGS := $(LFLAGS_common) $(LFLAGS_$(PROFILE))
-LNKOPTFLAGS := $(LNKOPTFLAGS_common) $(LNKOPTFLAGS_$(PROFILE))
 LNK_FILES := $(LNK_FILES_common) $(LNK_FILES_$(PROFILE))
 
 OBJDIR := obj/$(PROFILE)/
@@ -155,12 +152,12 @@ vpath %.lib $(LIBS_PATH_NAME)
 vpath %.a $(LIBS_PATH_NAME)
 
 $(OBJDIR)/%.obj %.obj: %.c
-	@echo  Compiling: am275x:r5fss0-0:nortos:ti-arm-clang $(OUTNAME): $<
-	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -o $(OBJDIR)/$@ $<
+	@echo  Compiling: am275x:c75ss0-0:freertos:ti-c7000 $(OUTNAME): $<
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fc=$<
 
 $(OBJDIR)/%.obj %.obj: %.S
-	@echo  Compiling: am275x:r5fss0-0:nortos:ti-arm-clang $(LIBNAME): $<
-	$(CC) -c $(CFLAGS) -o $(OBJDIR)/$@ $<
+	@echo  Compiling: am275x:c75ss0-0:freertos:ti-c7000 $(LIBNAME): $<
+	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fa=$<
 
 all: $(TARGETS)
 
@@ -173,13 +170,13 @@ SYSCFG_GEN_FILES+=generated/ti_board_open_close.c generated/ti_board_open_close.
 
 $(OUTNAME): syscfg $(SYSCFG_GEN_FILES) $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 	@echo  .
-	@echo  Linking: am275x:r5fss0-0:nortos:ti-arm-clang $@ ...
-	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PREBUILD_PATH) $(LIBS_PATH) -Wl,-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS_PREBUILD) $(LIBS) $(LNK_FILES)
-	@echo  Linking: am275x:r5fss0-0:nortos:ti-arm-clang $@ Done !!!
+	@echo  Linking: am275x:c75ss0-0:freertos:ti-c7000 $@ ...
+	$(LNK) $(LFLAGS) $(LIBS_PATH) -m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) $(LNK_FILES)
+	@echo  Linking: am275x:c75ss0-0:freertos:ti-c7000 $@ Done !!!
 	@echo  .
 
 clean:
-	@echo  Cleaning: am275x:r5fss0-0:nortos:ti-arm-clang $(OUTNAME) ...
+	@echo  Cleaning: am275x:c75ss0-0:freertos:ti-c7000 $(OUTNAME) ...
 	$(RMDIR) $(OBJDIR)
 	$(RM) $(OUTNAME)
 	$(RM) $(BOOTIMAGE_NAME)
@@ -190,7 +187,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am275x:r5fss0-0:nortos:ti-arm-clang memory_latency_benchmark ...
+	@echo  Scrubing: am275x:c75ss0-0:freertos:ti-c7000 memory_latency_benchmark ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
@@ -219,10 +216,10 @@ $(SYSCFG_GEN_FILES): syscfg
 
 syscfg: ../example.syscfg
 	@echo Generating SysConfig files ...
-	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM275x --context r5fss0-0 --part AM2754 --package ANJ --output generated/ ../example.syscfg
+	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM275x --context c75ss0-0 --part AM2754 --package ANJ --output generated/ ../example.syscfg
 
 syscfg-gui:
-	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(SYSCFG_SDKPRODUCT) --device AM275x --context r5fss0-0 --part AM2754 --package ANJ --output generated/  ../example.syscfg
+	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(SYSCFG_SDKPRODUCT) --device AM275x --context c75ss0-0 --part AM2754 --package ANJ --output generated/  ../example.syscfg
 
 #
 # Generation of boot image which can be loaded by Secondary Boot Loader (SBL)
@@ -260,12 +257,12 @@ else
 endif
 
 MULTI_CORE_IMAGE_PARAMS = \
-    $(BOOTIMAGE_CORE_ID_r5fss0-0):$(OUTNAME) \
+    $(BOOTIMAGE_CORE_ID_c75ss0-0):$(OUTNAME) \
 
 MCELF_XIP_RANGE?=0x60100000:0x60200000 
 
 $(BOOTIMAGE_NAME): $(OUTNAME)
-	@echo  Boot image: am275x:r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ ...
+	@echo  Boot image: am275x:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$@ ...
 ifneq ($(OS),Windows_NT)
 	$(CHMOD) a+x $(XIPGEN_CMD)
 endif
@@ -275,9 +272,9 @@ endif
     #   Authentication type 0 with load address 0x84000000
     #
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS) --keyversion $(VERSION)
-	@echo  Boot image: am275x:r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ Done !!!
+	@echo  Boot image: am275x:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$@ Done !!!
 	@echo  .
-	@echo  Boot image: am275x:r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
+	@echo  Boot image: am275x:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
 	@echo  .
 
 $(BOOTIMAGE_NAME_HS): $(BOOTIMAGE_NAME)
@@ -297,7 +294,7 @@ else
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_NAME)-enc
 endif
-	@echo  Boot image: am275x:r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
+	@echo  Boot image: am275x:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
 	@echo  .
 endif
 -include $(addprefix $(OBJDIR)/, $(DEPS))

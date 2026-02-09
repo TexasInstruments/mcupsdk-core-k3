@@ -15,6 +15,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dhrystone_benchmarking_am275x-evm_r
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += hyperRam_xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += hyperRam_xip_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += memory_latency_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += memory_latency_benchmark_am275x-evm_c75ss0-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += xip_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += eeprom_read_write_am275x-evm_r5fss0-0_freertos_ti-arm-clang_build
@@ -297,6 +298,9 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
 
  memory_latency_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/benchmarks/memory_latency_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
+
+ memory_latency_benchmark_am275x-evm_c75ss0-0_freertos_ti-c7000_build:
+	$(MAKE) -C examples/benchmarks/memory_latency_benchmark/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec all
 
  xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/benchmarks/xip_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
@@ -1033,6 +1037,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dhrystone_benchmarking_am275x-evm_r
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += hyperRam_xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += hyperRam_xip_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += memory_latency_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += memory_latency_benchmark_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += xip_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += eeprom_read_write_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
@@ -1315,6 +1320,9 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
 
  memory_latency_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/benchmarks/memory_latency_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
+
+ memory_latency_benchmark_am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C examples/benchmarks/memory_latency_benchmark/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec clean
 
  xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/benchmarks/xip_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
@@ -2051,6 +2059,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dhrystone_benchmarking_am275x-evm_
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += hyperRam_xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += hyperRam_xip_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += memory_latency_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += memory_latency_benchmark_am275x-evm_c75ss0-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += xip_benchmark_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += eeprom_read_write_am275x-evm_r5fss0-0_freertos_ti-arm-clang_export
@@ -2333,6 +2342,9 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
  memory_latency_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/benchmarks/memory_latency_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
+
+ memory_latency_benchmark_am275x-evm_c75ss0-0_freertos_ti-c7000_export:
+	$(MAKE) -C examples/benchmarks/memory_latency_benchmark/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec export
 
  xip_benchmark_am275x-evm_r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/benchmarks/xip_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
@@ -3085,6 +3097,7 @@ help:
 	@echo  $(MAKE) -s -C examples/benchmarks/hyperRam_xip_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/benchmarks/hyperRam_xip_benchmark/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/benchmarks/memory_latency_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/benchmarks/memory_latency_benchmark/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/benchmarks/xip_benchmark/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/benchmarks/xip_benchmark/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/board/eeprom/eeprom_read_write/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]

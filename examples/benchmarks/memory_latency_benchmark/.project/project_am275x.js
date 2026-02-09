@@ -28,7 +28,15 @@ const libdirs_nortos = {
     ],
 };
 
-const includes_nortos = {
+const libdirs_freertos_c75 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+    ],
+};
+
+const includes_nortos_r5f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/examples/benchmarks/memory_latency_benchmark",
     ],
@@ -42,10 +50,43 @@ const libs_nortos_r5f = {
     ],
 };
 
+const includes_freertos_c75 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am275x/c75x",
+    ],
+};
+
+const libs_freertos_c75 = {
+    common: [
+        "freertos.am275x.c75x.ti-c7000.${ConfigName}.lib",
+        "drivers.am275x.c75x.ti-c7000.${ConfigName}.lib",
+        "board.am275x.c75x.ti-c7000.${ConfigName}.lib",
+    ],
+};
+
 const lnkfiles = {
     common: [
         "linker.cmd",
     ]
+};
+const defines_r5f = {
+    common:[
+        "R5F_CORE",
+    ]
+}
+
+const defines_c75 = {
+    common:[
+        "C7_CORE",
+    ]
+}
+
+const asmfiles_c75x = {
+    common: [
+        "memory_latency_benchmark_asm_c7x.S",
+    ],
 };
 
 const syscfgfile = "../example.syscfg";
@@ -63,8 +104,21 @@ const templates_nortos_r5f =
 	}
 ];
 
+const templates_freertos_c75_0 =
+[
+    {
+        input: ".project/templates/am275x/freertos/main_freertos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "memory_latency_benchmark_main",
+            stackSize: 64*1024,
+        },
+    }
+];
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
+    { device: device, cpu: "c75ss0-0", cgt: "ti-c7000",    board: "am275x-evm", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -86,15 +140,30 @@ function getComponentBuildProperty(buildOption) {
 
     build_property.files = files;
     build_property.filedirs = filedirs;
-    build_property.includes = includes_nortos;
-    build_property.libdirs = libdirs_nortos;
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
 
     if(buildOption.cpu.match(/r5f*/)) {
-        build_property.libs = libs_nortos_r5f;
-        build_property.templates = templates_nortos_r5f;
+        if(buildOption.os.match(/nortos*/) )
+        {
+            build_property.includes = includes_nortos_r5f;
+            build_property.libdirs = libdirs_nortos;
+            build_property.libs = libs_nortos_r5f;
+            build_property.templates = templates_nortos_r5f;
+        	build_property.defines = defines_r5f;
+        }
+    } else if(buildOption.cpu.match(/c75*/)) {
+        build_property.includes = includes_freertos_c75;
+        build_property.libdirs = libdirs_freertos_c75;
+        build_property.libs = libs_freertos_c75;
+        build_property.defines = defines_c75;
+        build_property.asmfiles = asmfiles_c75x;
+
+        if(buildOption.cpu.match("c75ss0-0"))
+        {
+            build_property.templates = templates_freertos_c75_0;
+        }
     }
 
     return build_property;

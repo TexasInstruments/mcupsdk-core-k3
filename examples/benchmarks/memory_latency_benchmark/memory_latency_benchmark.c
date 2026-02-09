@@ -51,9 +51,17 @@ benchmark_t latencyCalculate_Read32(uint32_t address)
     benchmark_t perf;
     volatile uint32_t *writePtrAddr = (uint32_t *)address;
 
+    /* Suppress unused variable warning - variable is used in inline assembly */
+    (void)writePtrAddr;
+
+#if defined (R5F_CORE)
     startCount = PmuP_ReadCounter(PmuP_PMU_CYCLE_COUNTER_NUM);
+#elif defined (C7_CORE)
+    startCount = CycleCounterP_getCount32();
+#endif
 
     /* Read 32 bytes of data */
+#if defined (R5F_CORE)
     __asm__ __volatile__( "ldr r7, %[value]": : [value] "m" (*writePtrAddr) : "r7");
     __asm__ __volatile__( "ldr r7, %[value]": : [value] "m" (*writePtrAddr) : "r7");
     __asm__ __volatile__( "ldr r7, %[value]": : [value] "m" (*writePtrAddr) : "r7");
@@ -86,8 +94,17 @@ benchmark_t latencyCalculate_Read32(uint32_t address)
     __asm__ __volatile__( "ldr r7, %[value]": : [value] "m" (*writePtrAddr) : "r7");
     __asm__ __volatile__( "ldr r7, %[value]": : [value] "m" (*writePtrAddr) : "r7");
     __asm__ __volatile__( "ldr r7, %[value]": : [value] "m" (*writePtrAddr) : "r7");
+#elif defined (C7_CORE)
+    /* Call the C7x assembly function for 32-bit reads */
+    c7x_Read32((uint32_t)writePtrAddr);
+#endif
 
+#if defined (R5F_CORE)
     stopCount = PmuP_ReadCounter(PmuP_PMU_CYCLE_COUNTER_NUM);
+#elif defined (C7_CORE)
+    stopCount = CycleCounterP_getCount32();
+#endif
+
     perf.cycles = (stopCount - startCount)/(NUMBER_OF_INSTRUCTIONS * APP_32BITS_SIZE);
 
     return perf;
@@ -95,13 +112,21 @@ benchmark_t latencyCalculate_Read32(uint32_t address)
 
 benchmark_t latencyCalculate_Read64(uint32_t address)
 {
-    double startCount, stopCount;
+    double startCount = 0, stopCount = 0;
     benchmark_t perf;
     volatile uint64_t *writePtrAddr = (uint64_t *)address;
 
+    /* Suppress unused variable warning - variable is used in inline assembly */
+    (void)writePtrAddr;
+
+#if defined (R5F_CORE)
     startCount = PmuP_ReadCounter(PmuP_PMU_CYCLE_COUNTER_NUM);
+#elif defined (C7_CORE)
+    startCount = CycleCounterP_getCount32();
+#endif
 
     /* Read 64 bytes of data */
+#if defined (R5F_CORE)
     __asm__ __volatile__( "ldrd r7, r8, %[value]": : [value] "m" (*writePtrAddr) : "r7");
     __asm__ __volatile__( "ldrd r7, r8, %[value]": : [value] "m" (*writePtrAddr) : "r7");
     __asm__ __volatile__( "ldrd r7, r8, %[value]": : [value] "m" (*writePtrAddr) : "r7");
@@ -134,8 +159,17 @@ benchmark_t latencyCalculate_Read64(uint32_t address)
     __asm__ __volatile__( "ldrd r7, r8, %[value]": : [value] "m" (*writePtrAddr) : "r7");
     __asm__ __volatile__( "ldrd r7, r8, %[value]": : [value] "m" (*writePtrAddr) : "r7");
     __asm__ __volatile__( "ldrd r7, r8, %[value]": : [value] "m" (*writePtrAddr) : "r7");
+#elif defined (C7_CORE)
+    /* Call the C7x assembly function for 64-bit reads */
+    c7x_Read64((uint32_t)writePtrAddr);
+#endif
 
+#if defined (R5F_CORE)
     stopCount = PmuP_ReadCounter(PmuP_PMU_CYCLE_COUNTER_NUM);
+#elif defined (C7_CORE)
+    stopCount = CycleCounterP_getCount32();
+#endif
+
     perf.cycles = (stopCount - startCount)/(NUMBER_OF_INSTRUCTIONS * APP_64BITS_SIZE);
 
     return perf;
@@ -143,30 +177,54 @@ benchmark_t latencyCalculate_Read64(uint32_t address)
 
 /*
  * This is a latency project provided to calculate the latency of
- * read and write access.
+ * read access.
  */
 void memory_latency_benchmark_main(void *args)
 {
     benchmark_t perf;
+#if defined (R5F_CORE)
     DebugP_log("BENCHMARK START - ARM R5F - Memory Access latency\r\n\n");
+#elif defined (C7_CORE)
+    DebugP_log("BENCHMARK START - C7x - Memory Access latency\r\n\n");
+#endif
 
     /* 32 BIT Read access */
+#if defined (R5F_CORE)
     perf = latencyCalculate_Read32(SELF_TCM_READ_ADDRESS);
     DebugP_log("[32-BIT READ] Self TCM Access Average Latency Per Byte: %f ns\r\n", ((perf.cycles) * (APP_SECONDS_IN_NANO_SECONDS / SOC_getSelfCpuClk())));
+#elif defined (C7_CORE)
+    perf = latencyCalculate_Read32(L2RAM_READ_ADDRESS);
+    DebugP_log("[32-BIT READ] L2RAM Access Average Latency Per Byte: %f ns\r\n", ((perf.cycles) * (APP_SECONDS_IN_NANO_SECONDS / SOC_getSelfCpuClk())));
+#endif
+
     perf = latencyCalculate_Read32(SRAM_READ_ADDRESS);
     DebugP_log("[32-BIT READ] MSRAM Access Average Latency Per Byte: %f ns\r\n", ((perf.cycles) * (APP_SECONDS_IN_NANO_SECONDS / SOC_getSelfCpuClk())));
+
+#if defined (R5F_CORE)
     perf = latencyCalculate_Read32(NON_SELF_TCM_ACCESS_ADDRESS);
-    DebugP_log("[32-BIT READ] Non-Self TCM Access Average Latency Per Byte: %f ns\r\n\n", ((perf.cycles) * (APP_SECONDS_IN_NANO_SECONDS / SOC_getSelfCpuClk())));
+    DebugP_log("[32-BIT READ] Non-Self TCM Access Average Latency Per Byte: %f ns\r\n", ((perf.cycles) * (APP_SECONDS_IN_NANO_SECONDS / SOC_getSelfCpuClk())));
+#endif
 
     ClockP_sleep(1U);
 
     /* 64 BIT Read access */
+#if defined (R5F_CORE)
     perf = latencyCalculate_Read64(SELF_TCM_READ_ADDRESS);
-    DebugP_log("[64-BIT READ] Self TCM Access Average Latency Per Byte: %f ns\r\n", ((perf.cycles) * (APP_SECONDS_IN_NANO_SECONDS / SOC_getSelfCpuClk())));
+    DebugP_log("\n[64-BIT READ] Self TCM Access Average Latency Per Byte: %f ns\r\n", ((perf.cycles) * (APP_SECONDS_IN_NANO_SECONDS / SOC_getSelfCpuClk())));
+#elif defined (C7_CORE)
+    perf = latencyCalculate_Read64(L2RAM_READ_ADDRESS);
+    DebugP_log("\n[64-BIT READ] L2RAM Access Average Latency Per Byte: %f ns\r\n", ((perf.cycles) * (APP_SECONDS_IN_NANO_SECONDS / SOC_getSelfCpuClk())));
+#endif
+
     perf = latencyCalculate_Read64(SRAM_READ_ADDRESS);
-    DebugP_log("[64-BIT READ] MSRAM Access Read Average Latency Per Byte: %f ns\r\n", ((perf.cycles) * (APP_SECONDS_IN_NANO_SECONDS / SOC_getSelfCpuClk())));
+    DebugP_log("[64-BIT READ] MSRAM Access Average Latency Per Byte: %f ns\r\n", ((perf.cycles) * (APP_SECONDS_IN_NANO_SECONDS / SOC_getSelfCpuClk())));
+
+#if defined (R5F_CORE)
     perf = latencyCalculate_Read64(NON_SELF_TCM_ACCESS_ADDRESS);
-    DebugP_log("[64-BIT READ] Non-Self TCM Access Read Average Latency Per Byte: %f ns\r\n", ((perf.cycles) * (APP_SECONDS_IN_NANO_SECONDS / SOC_getSelfCpuClk())));
+    DebugP_log("[64-BIT READ] Non-Self TCM Access Average Latency Per Byte: %f ns\r\n", ((perf.cycles) * (APP_SECONDS_IN_NANO_SECONDS / SOC_getSelfCpuClk())));
+#endif
 
     DebugP_log("BENCHMARK END\r\n");
+
+    DebugP_log("All tests have passed!!\r\n\r\n");
 }

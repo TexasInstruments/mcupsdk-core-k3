@@ -62,6 +62,7 @@ function getPinMode(peripheralPin)
 function getPinConfigCStruct(pin, interfaceName, inst)
 {
     let pu_pd = undefined;
+    let drv_str = undefined;
 
     let obj;
     // if( interfaceName == "GPIO_n") obj = inst;
@@ -72,6 +73,8 @@ function getPinConfigCStruct(pin, interfaceName, inst)
        pu_pd = obj.pu_pd;
     if(obj.pull != undefined)
        pu_pd = obj.pull;
+    if(pin.drv_str != undefined)
+       drv_str = pin.drv_str;
 
     let rx = obj.rx;
     let mode = getPinMode(pin);
@@ -93,6 +96,14 @@ function getPinConfigCStruct(pin, interfaceName, inst)
         case "nopull":
             settings += "| PIN_PULL_DISABLE ";
             break;
+    }
+    if(drv_str == 'fast')
+    {
+        settings += "| PIN_DRV_STR_FAST ";
+    }
+    if(drv_str == 'nom')
+    {
+        settings += "| PIN_DRV_STR_NOMINAL ";
     }
     settings += ")";
 

@@ -52,18 +52,21 @@ function getPinMode(peripheralPin)
 function getPinConfigCStruct(pin, interfaceName)
 {
     let pu_pd = undefined;
+    let drv_str = undefined;
 
     if(pin.pu_pd != undefined)
        pu_pd = pin.pu_pd;
     if(pin.pull != undefined)
        pu_pd = pin.pull;
+    if(pin.drv_str != undefined)
+       drv_str = pin.drv_str;
 
     let rx = pin.rx;
     let mode = getPinMode(pin);
     let settings = "( ";
 
     /* if no values provided for pu_pd and rx, then use defaults as defined in deviceData */
-    if( pu_pd == undefined && rx == undefined)
+    if( pu_pd == undefined && rx == undefined && drv_str == undefined)
     {
         let peripheralPinDefaultConfig = system.deviceData.peripheralPins[pin.$solution.peripheralPinName].interfacePin.configurables;
 
@@ -75,6 +78,7 @@ function getPinConfigCStruct(pin, interfaceName)
 
         pu_pd = instanceLikeObj.pu_pd;
         rx = instanceLikeObj.rx;
+        drv_str = instanceLikeObj.drv_str;
     }
 
     settings += `PIN_MODE(${mode}) `
@@ -91,6 +95,14 @@ function getPinConfigCStruct(pin, interfaceName)
         case "nopull":
             settings += "| PIN_PULL_DISABLE ";
             break;
+    }
+    if(drv_str == 'fast')
+    {
+        settings += "| PIN_DRV_STR_FAST ";
+    }
+    if(drv_str == 'nom')
+    {
+        settings += "| PIN_DRV_STR_NOMINAL ";
     }
     settings += ")";
 

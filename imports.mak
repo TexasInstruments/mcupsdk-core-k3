@@ -7,8 +7,8 @@ C6X_DSPLIB_VERSION=3_4_0_0
 CGT_C7X_VERSION=5.0.0.LTS
 CGT_ARMLLVM_VERSION=4.0.1.LTS
 CGT_PRU_VERSION=2.3.3
-SYSCONFIG_VERSION=1.24.2
-SYSCONFIG_BUILD=4234
+SYSCONFIG_VERSION=1.26.2
+SYSCONFIG_BUILD=4477
 SW_VERSION=0x0A010000
 CCS_FOLDER_VERSION=2031
 
@@ -27,6 +27,7 @@ ifeq ($(OS),Windows_NT)
     TOUCH=$(CYGWIN_PATH)/touch
     PATHSEP=\\
     CHMOD=$(CYGWIN_PATH)/echo
+    SCRIPT_EXT=bat
     SHELL=cmd.exe
     CGT_GCC_AARCH64_PATH=$(TOOLS_PATH)/gcc-arm-$(GCC_ARCH64_VERSION)-mingw-w64-i686-aarch64-none-elf
     CGT_GCC_ARM_PATH=$(TOOLS_PATH)/gcc-arm-none-eabi-7-2017-q4-major-win32
@@ -47,6 +48,7 @@ else
         export TOUCH=touch
         export PATHSEP=/
         export CHMOD=chmod
+        export SCRIPT_EXT=sh
         CGT_GCC_AARCH64_PATH=$(TOOLS_PATH)/gcc-arm-$(GCC_ARCH64_VERSION)-x86_64-aarch64-none-elf
         CGT_GCC_ARM_PATH=$(TOOLS_PATH)/gcc-arm-none-eabi-7-2017-q4-major
         CGT_GCC_ARMV7_PATH=$(CGT_GCC_ARM_PATH)
@@ -68,6 +70,7 @@ SYSCFG_CLI_PATH ?= $(SYSCFG_PATH)
 SYSCFG_NODE = $(SYSCFG_PATH)/nodejs/node
 SYSCFG_NWJS = $(SYSCFG_PATH)/nw/nw
 SYSCFG_SDKPRODUCT=$(MCU_PLUS_SDK_PATH)/.metadata/product.json
+SYSCFG_GUI_SCRIPT=$(SYSCFG_PATH)/sysconfig_gui.$(SCRIPT_EXT)
 
 # Variable pointing to location of prebuilt industrial communication libraries
 MCU_PLUS_SDK_IND_COMMS_LIBS_PATH ?= $(MCU_PLUS_SDK_PATH)/source/commercial/industrial_comms_libs

@@ -59,7 +59,7 @@ syscfg:
 	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --device J722S_TDA4VEN_TDA4AEN_AM67 --product $(SYSCFG_SDKPRODUCT) $(CORES)
 
 syscfg-gui:
-	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(SYSCFG_SDKPRODUCT) --device J722S_TDA4VEN_TDA4AEN_AM67 --part Default --package AMW $(CORES)
+	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device J722S_TDA4VEN_TDA4AEN_AM67 --part Default --package AMW $(CORES)
 
 #
 # Generation of multi-core boot image which can be loaded by Secondary Boot Loader (SBL)

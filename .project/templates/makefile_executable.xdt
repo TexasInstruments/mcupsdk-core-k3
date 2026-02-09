@@ -671,7 +671,7 @@ syscfg: `args.project.syscfgfile`
 	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device `args.syscfg.device` --context `args.syscfg.cpu` --part `args.syscfg.part` --package `args.syscfg.pkg` --output generated/ `args.project.syscfgfile`
 
 syscfg-gui:
-	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(SYSCFG_SDKPRODUCT) --device `args.syscfg.device` --context `args.syscfg.cpu` --part `args.syscfg.part` --package `args.syscfg.pkg` --output generated/  `args.project.syscfgfile`
+	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device `args.syscfg.device` --context `args.syscfg.cpu` --part `args.syscfg.part` --package `args.syscfg.pkg` --output generated/  `args.project.syscfgfile`
 % }
 
 % if (args.project.isBootLoader) {
@@ -1073,7 +1073,7 @@ endif
 MULTI_CORE_IMAGE_PARAMS = \
     $(BOOTIMAGE_CORE_ID_`args.project.cpu`):$(OUTNAME) \
 
-MCELF_XIP_RANGE?=0x60100000:0x60200000 
+MCELF_XIP_RANGE?=0x60100000:0x60200000
 % } else {
 % if (args.project.device == "am62lx") {
 ifeq ($(DEVICE_TYPE),HS)

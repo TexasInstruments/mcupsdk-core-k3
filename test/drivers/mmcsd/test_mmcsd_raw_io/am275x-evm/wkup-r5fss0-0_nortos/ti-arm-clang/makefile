@@ -240,7 +240,7 @@ syscfg: ../example.syscfg
 	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM275x --context wkup-r5fss0-0 --part AM2754 --package ANJ --output generated/ ../example.syscfg
 
 syscfg-gui:
-	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(SYSCFG_SDKPRODUCT) --device AM275x --context wkup-r5fss0-0 --part AM2754 --package ANJ --output generated/  ../example.syscfg
+	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device AM275x --context wkup-r5fss0-0 --part AM2754 --package ANJ --output generated/  ../example.syscfg
 
 #
 # Generation of boot image which can be loaded by ROM Boot Loader (RBL)

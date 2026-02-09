@@ -64,7 +64,7 @@ syscfg:
 	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --device AM62Px --product $(SYSCFG_SDKPRODUCT) $(CORES)
 
 syscfg-gui:
-	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(SYSCFG_SDKPRODUCT) --device AM62Px --part Default --package AMH $(CORES)
+	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device AM62Px --part Default --package AMH $(CORES)
 
 #
 # Generation of multi-core boot image which can be loaded by Secondary Boot Loader (SBL)

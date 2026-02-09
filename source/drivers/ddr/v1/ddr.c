@@ -83,7 +83,7 @@
 #define DDR_REQ_TYPE_2    2
 
 /* FSP frequency handshake timeout values */
-#define DDR_FSP_REQ_TIMEOUT_US      10000U  /* 10 milliseconds */
+#define DDR_FSP_REQ_TIMEOUT_US      100000U  /* 100 milliseconds */
 #define DDR_FSP_ACK_TIMEOUT_US      10U     /* 10 microseconds */
 
 /* Writing a 0x1 will clear 1-bit ecc error count */

@@ -37,6 +37,7 @@ ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
 endif
 SCISERVER_IMAGE_PATH:=$(MCU_PLUS_SDK_PATH)/tools/sysfw/sciserver_binary/j722s
+SCISERVER_BOOTIMAGE_RPRC_NAME:=$(SCISERVER_IMAGE_PATH)/sciclient_get_version.release.rprc
 
 FILES_common := \
 	sdl_rti_example_uc2.c \
@@ -274,6 +275,7 @@ else
 endif
 
 MULTI_CORE_IMAGE_PARAMS = \
+	   $(SCISERVER_BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_wkup-r5fss0-0) \
 	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
 
 MULTI_CORE_IMAGE_PARAMS_XIP = \

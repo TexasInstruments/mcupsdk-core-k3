@@ -139,6 +139,7 @@ endif
 % }
 % if ((args.project.device == "j722s") && (args.project.cpu != "wkup-r5fss0-0")) {
 SCISERVER_IMAGE_PATH:=$(MCU_PLUS_SDK_PATH)/tools/sysfw/sciserver_binary/j722s
+SCISERVER_BOOTIMAGE_RPRC_NAME:=$(SCISERVER_IMAGE_PATH)/sciclient_get_version.release.rprc
 % }
 % if (atf_build == true) {
 %if((args.project.device == "am62x")){
@@ -1135,6 +1136,9 @@ MULTI_CORE_IMAGE_PARAMS = \
     % }
 % }
 % else {
+    % if((args.project.device == "j722s") && (args.project.cpu != "wkup-r5fss0-0")) {
+	   $(SCISERVER_BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_wkup-r5fss0-0) \
+    % }
 	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_`args.project.cpu`) \
 % }
 % }

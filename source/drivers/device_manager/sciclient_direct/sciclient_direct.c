@@ -519,6 +519,9 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
             case TISCI_MSG_SA2UL_GET_DSMEK :
             case TISCI_MSG_SA2UL_RELEASE_DSMEK :
             case TISCI_MSG_OPEN_DEBUG_FWLS :
+            case TISCI_MSG_DISABLE_JTAG_UNLOCK :
+            case TISCI_MSG_DISABLE_JTAG_UNLOCK_CHECK :
+            case TISCI_MSG_KEYRING_IMPORT :
             case TISCI_MSG_BOARD_CONFIG:
             case TISCI_MSG_BOARD_CONFIG_SECURITY:
                 ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);

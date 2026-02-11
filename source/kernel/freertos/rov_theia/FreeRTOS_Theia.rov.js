@@ -74,7 +74,7 @@ class FreeRTOS {
 
         if (a53) {
             try {
-                heapInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__heap_start__")).toString(16);
+                heapInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__heap_start__")).toString(16).toUpperCase();
                 heapInfo.Size = await this.Program.lookupSymbolValue("__TI_HEAP_SIZE");
             }
             catch (e) {
@@ -83,7 +83,7 @@ class FreeRTOS {
         }
         else if (r5f) {
             try {
-                heapInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("_sys_memory")).toString(16);
+                heapInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("_sys_memory")).toString(16).toUpperCase();
                 heapInfo.Size = await this.Program.lookupSymbolValue("__SYSMEM_SIZE");
             }
             catch (e) {
@@ -92,7 +92,7 @@ class FreeRTOS {
         }
         else if (c7x) {
             try {
-                heapInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("_sys_memory")).toString(16);
+                heapInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("_sys_memory")).toString(16).toUpperCase();
                 heapInfo.Size = await this.Program.lookupSymbolValue("__TI_SYSMEM_SIZE");
             }
             catch (e) {
@@ -123,8 +123,16 @@ class FreeRTOS {
                         let hwi = new Hwi();
 
                         hwi.InterruptNum = i;
-                        hwi.IsrAddress = hwiCtrl.isr[i];
-                        hwi.IsrArgs = hwiCtrl.isrArgs[i];
+                        hwi.IsrArgs = (hwiCtrl.isrArgs[i] != null) ? "0x" + hwiCtrl.isrArgs[i].toString(16).toUpperCase() : "";
+
+                        if (hwiCtrl.isr[i] != null) {
+                            hwi.IsrAddress = "0x" + hwiCtrl.isr[i].toString(16).toUpperCase();
+                            const symbolLookup = await this.Program.task.symbols.lookupSymbols(hwi.IsrAddress + ",1");
+                            hwi.IsrFunctionName = symbolLookup?.symbols?.[0]?.name || "";
+                        } else {
+                            hwi.IsrAddress = "";
+                            hwi.IsrFunctionName = "";
+                        }
 
                         table.push(hwi);
                     }
@@ -147,8 +155,16 @@ class FreeRTOS {
                         let hwiObj = await this.Program.fetchFromAddr(hwiObjAddr, "Hwi_Object");
 
                         hwi.InterruptNum = i;
-                        hwi.IsrAddress = hwiObj.fxn;
-                        hwi.IsrArgs = hwiObj.args;
+                        hwi.IsrArgs = (hwiObj.args != null) ? "0x" + hwiObj.args.toString(16).toUpperCase() : "";
+
+                        if (hwiObj.fxn != null) {
+                            hwi.IsrAddress = "0x" + hwiObj.fxn.toString(16).toUpperCase();
+                            const symbolLookup = await this.Program.task.symbols.lookupSymbols(hwi.IsrAddress + ",1");
+                            hwi.IsrFunctionName = symbolLookup?.symbols?.[0]?.name || "";
+                        } else {
+                            hwi.IsrAddress = "";
+                            hwi.IsrFunctionName = "";
+                        }
 
                         table.push(hwi);
                     }
@@ -273,7 +289,7 @@ class FreeRTOS {
                 let stackInfo = new SystemStack();
 
                 stackInfo.Type = "IRQ";
-                stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__IRQ_STACK_END")).toString(16)
+                stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__IRQ_STACK_END")).toString(16).toUpperCase();
                 stackInfo.Size = await this.Program.lookupSymbolValue("__IRQ_STACK_SIZE");
 
                 if (freertos)
@@ -286,10 +302,10 @@ class FreeRTOS {
             }
 
             try {
-                stackInfo = new SystemStack()
+                let stackInfo = new SystemStack()
 
                 stackInfo.Type = "FIQ";
-                stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__FIQ_STACK_END")).toString(16)
+                stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__FIQ_STACK_END")).toString(16).toUpperCase();
                 stackInfo.Size = await this.Program.lookupSymbolValue("__FIQ_STACK_SIZE");
 
                 table.push(stackInfo);
@@ -299,10 +315,10 @@ class FreeRTOS {
             }
 
             try {
-                stackInfo = new SystemStack();
+                let stackInfo = new SystemStack();
 
                 stackInfo.Type = "SVC";
-                stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__SVC_STACK_END")).toString(16)
+                stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__SVC_STACK_END")).toString(16).toUpperCase();
                 stackInfo.Size = await this.Program.lookupSymbolValue("__SVC_STACK_SIZE");
                 if (freertos)
                     stackInfo.Description = "Stack used by SVC handler and also by IRQ handler after initial IRQ handling. User ISR runs within this stack context";
@@ -314,10 +330,10 @@ class FreeRTOS {
             }
 
             try {
-                stackInfo = new SystemStack()
+                let stackInfo = new SystemStack()
 
                 stackInfo.Type = "ABORT";
-                stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__ABORT_STACK_END")).toString(16)
+                stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__ABORT_STACK_END")).toString(16).toUpperCase();
                 stackInfo.Size = await this.Program.lookupSymbolValue("__ABORT_STACK_SIZE");
 
                 table.push(stackInfo);
@@ -327,10 +343,10 @@ class FreeRTOS {
             }
 
             try {
-                stackInfo = new SystemStack()
+                let stackInfo = new SystemStack()
 
                 stackInfo.Type = "UNDEFINED";
-                stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__UNDEFINED_STACK_END")).toString(16)
+                stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__UNDEFINED_STACK_END")).toString(16).toUpperCase();
                 stackInfo.Size = await this.Program.lookupSymbolValue("__UNDEFINED_STACK_SIZE");
 
                 table.push(stackInfo);
@@ -340,13 +356,13 @@ class FreeRTOS {
             }
 
             try {
-                stackInfo = new SystemStack()
+                let stackInfo = new SystemStack()
 
                 stackInfo.Type = "STACK";
-                stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__STACK_END")).toString(16)
+                stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__STACK_END")).toString(16).toUpperCase();
                 stackInfo.Size = await this.Program.lookupSymbolValue("__STACK_SIZE");
                 if (freertos)
-                    stackInfo.Description = "Stack used by program until FreeRTOS schedular is started in main()";
+                    stackInfo.Description = "Stack used by program until FreeRTOS scheduler is started in main()";
                 else
                     stackInfo.Description = "Stack used by non ISR context";
 
@@ -362,10 +378,10 @@ class FreeRTOS {
                 let stackInfo = new SystemStack();
 
                 stackInfo.Type = "EL1 STACK";
-                stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__TI_STACK_BASE")).toString(16)
+                stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__TI_STACK_BASE")).toString(16).toUpperCase();
                 stackInfo.Size = await this.Program.lookupSymbolValue("__TI_STACK_SIZE");
                 if (freertos)
-                    stackInfo.Description = "Stack used by program until FreeRTOS schedular is started in main() and later stack used by ISR context";
+                    stackInfo.Description = "Stack used by program until FreeRTOS scheduler is started in main() and later stack used by ISR context";
                 else
                     stackInfo.Description = "Stack used by non ISR and ISR context";
 
@@ -380,10 +396,10 @@ class FreeRTOS {
                 let stackInfo = new SystemStack();
 
                 stackInfo.Type = "STACK";
-                stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__TI_STACK_END")).toString(16)
+                stackInfo.BaseAddress = "0x" + (await this.Program.lookupSymbolValue("__TI_STACK_END")).toString(16).toUpperCase();
                 stackInfo.Size = await this.Program.lookupSymbolValue("__TI_STACK_SIZE");
                 if (freertos)
-                    stackInfo.Description = "Stack used by program until FreeRTOS schedular is started in main() and later stack used by ISR context";
+                    stackInfo.Description = "Stack used by program until FreeRTOS scheduler is started in main() and later stack used by ISR context";
                 else
                     stackInfo.Description = "Stack used by non ISR and ISR context";
 
@@ -415,7 +431,7 @@ class FreeRTOS {
                 try {
                     const task = await this.Program.fetchFromAddr(tcbBase, 'TCB_t');
                     const taskInfo = new TaskInstance();
-                    taskInfo.Address = '0x' + tcbBase.toString(16);
+                    taskInfo.Address =  "0x" + tcbBase.toString(16).toUpperCase();
 
                     let name = '';
                     for (let j = 0; j < 12; j++) {
@@ -476,10 +492,10 @@ class FreeRTOS {
                     }
 
                     if (typeof taskInfo.StackBase === 'number') {
-                        taskInfo.StackBase = '0x' + taskInfo.StackBase.toString(16);
+                        taskInfo.StackBase = "0x" + taskInfo.StackBase.toString(16).toUpperCase();
                     }
                     if (typeof taskInfo.CurrentTaskSP === 'number') {
-                        taskInfo.CurrentTaskSP = '0x' + taskInfo.CurrentTaskSP.toString(16);
+                        taskInfo.CurrentTaskSP = "0x" + taskInfo.CurrentTaskSP.toString(16).toUpperCase();
                     }
 
                     table.push(taskInfo);
@@ -534,21 +550,21 @@ class FreeRTOS {
                         let timer = await this.Program.fetchFromAddr(listItem.pvOwner, "Timer_t");
                         let timerInfo = new TimerInstance();
 
-                        timerInfo.Handle = '0x' + listItem.pvOwner.toString(16);
+                        timerInfo.Handle = "0x" + listItem.pvOwner.toString(16).toUpperCase();
                         timerInfo.Name = await this.helperReadStringFromAddr(timer.pcTimerName, 16);
                         timerInfo.PeriodInTicks = timer.xTimerPeriodInTicks;
                         timerInfo.AutoReload = "No";
                         timerInfo.Active = "No";
-                        timerInfo.StaticallyAloc = "No";
+                        timerInfo.StaticallyAlloc = "No";
 
                         if (timer.ucStatus & 0x1)
                             timerInfo.Active = "Yes";
                         if (timer.ucStatus & 0x2)
-                            timerInfo.StaticallyAloc = "Yes";
+                            timerInfo.StaticallyAlloc = "Yes";
                         if (timer.ucStatus & 0x4)
                             timerInfo.AutoReload = "Yes";
 
-                        timerInfo.CallbackAddress = (timer.pxCallbackFunction != 0) ? '0x' + timer.pxCallbackFunction.toString(16) : "-";
+                        timerInfo.CallbackAddress = (timer.pxCallbackFunction != 0) ? "0x" + timer.pxCallbackFunction.toString(16).toUpperCase() : "-";
                         timerInfo.TimerID = timer.pvTimerID;
 
                         table.push(timerInfo);
@@ -687,7 +703,7 @@ class FreeRTOS {
                     let queue = new QueueInstance();
                     queue.Type = await this.getQueueType(xHandle.ucQueueType);
                     queue.Name = await this.helperReadStringFromAddr(xQueueRegistry[i].pcQueueName, 16)
-                    queue.Handle = "0x" + Number(xQueueRegistry[i].xHandle).toString(16);
+                    queue.Handle = "0x" + Number(xQueueRegistry[i].xHandle).toString(16).toUpperCase();
                     queue.CurCount = xHandle.uxMessagesWaiting;
                     queue.MaxCount = xHandle.uxLength;
                     queue.QueueElemSize = xHandle.uxItemSize;
@@ -701,7 +717,7 @@ class FreeRTOS {
                             throw new Error("task is undefined or null");
                         }
 
-                        queue.TopWaitingToRecvTaskHandle = task.tcbBase;
+                        queue.TopWaitingToRecvTaskHandle = "0x" + task.tcbBase.toString(16).toUpperCase();
                         queue.TopWaitingToRecvTaskName = this.getString(task.tcb.pcTaskName);
                     }
 
@@ -711,8 +727,8 @@ class FreeRTOS {
                         if (!task) {
                             throw new Error("task is undefined or null");
                         }
-
-                        queue.TopWaitingToSendTaskHandle = task.tcbBase;
+                        
+                        queue.TopWaitingToSendTaskHandle = "0x" + task.tcbBase.toString(16).toUpperCase();
                         queue.TopWaitingToSendTaskName = this.getString(task.tcb.pcTaskName);
                     }
 
@@ -723,7 +739,7 @@ class FreeRTOS {
                             throw new Error("tcb is undefined or null");
                         }
 
-                        queue.MutexHolderTaskHandle = "0x" + Number(xHandle.xSemaphore.xMutexHolder).toString(16);
+                        queue.MutexHolderTaskHandle = "0x" + Number(xHandle.xSemaphore.xMutexHolder).toString(16).toUpperCase();
                         queue.MutexHolderTaskName = this.getString(tcb.pcTaskName);
                         queue.RecursiveMutexCallCount = xHandle.xSemaphore.uxRecursiveCallCount;
                     }

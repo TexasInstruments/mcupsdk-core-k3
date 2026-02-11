@@ -276,6 +276,16 @@ help:
 	@echo  $(MAKE) -s -C drivers/hyperbus/am275x-evm/r5fss1-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/hyperbus/am275x-evm/r5fss1-1_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/hyperbus/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl_timer/am275x-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl_timer/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl_timer/am275x-evm/r5fss0-1_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl_timer/am275x-evm/r5fss1-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl_timer/am275x-evm/r5fss1-1_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl_timer/am275x-evm/r5fss0-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl_timer/am275x-evm/r5fss1-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl_timer/am275x-evm/r5fss1-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl_timer/am275x-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl_timer/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  .
 	@echo  System Example build targets,
 	@echo  =============================
@@ -631,6 +641,15 @@ BUILD_COMBO_EXAMPLE_ALL += test_hyperbus_am275x-evm_r5fss1-0_freertos_ti-arm-cla
 BUILD_COMBO_EXAMPLE_ALL += test_hyperbus_am275x-evm_r5fss1-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_hyperbus_am275x-evm_r5fss1-1_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_hyperbus_am275x-evm_r5fss1-1_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_dpl_timer_am275x-evm_r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_dpl_timer_am275x-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_dpl_timer_am275x-evm_r5fss0-1_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_dpl_timer_am275x-evm_r5fss1-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_dpl_timer_am275x-evm_r5fss1-1_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_dpl_timer_am275x-evm_r5fss0-1_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_dpl_timer_am275x-evm_r5fss1-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_dpl_timer_am275x-evm_r5fss1-1_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_dpl_timer_am275x-evm_c75ss0-0_freertos_ti-c7000
 # Various System Example Targets
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_notify_am275x-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_notify_c7x_am275x-evm_system_freertos
@@ -1342,6 +1361,36 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_hyperbus_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/hyperbus/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
+ test_dpl_timer_am275x-evm_r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ test_dpl_timer_am275x-evm_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_dpl_timer_am275x-evm_r5fss0-1_nortos_ti-arm-clang:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss0-1_nortos/ti-arm-clang -f makefile all
+
+ test_dpl_timer_am275x-evm_r5fss1-0_nortos_ti-arm-clang:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss1-0_nortos/ti-arm-clang -f makefile all
+
+ test_dpl_timer_am275x-evm_r5fss1-1_nortos_ti-arm-clang:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss1-1_nortos/ti-arm-clang -f makefile all
+
+ test_dpl_timer_am275x-evm_r5fss0-1_freertos_ti-arm-clang:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile all
+
+ test_dpl_timer_am275x-evm_r5fss1-0_freertos_ti-arm-clang:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile all
+
+ test_dpl_timer_am275x-evm_r5fss1-1_freertos_ti-arm-clang:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile all
+
+ test_dpl_timer_am275x-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
+
+ test_dpl_timer_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
  test_ipc_notify_am275x-evm_system_freertos:
 	$(MAKE) -C drivers/ipc_notify/am275x-evm/system_freertos -f makefile all
 
@@ -1595,6 +1644,15 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_hyperbus_am275x-evm_r5fss1-0_freertos_ti-a
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_hyperbus_am275x-evm_r5fss1-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_hyperbus_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_hyperbus_am275x-evm_r5fss1-1_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_timer_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_timer_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_timer_am275x-evm_r5fss0-1_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_timer_am275x-evm_r5fss1-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_timer_am275x-evm_r5fss1-1_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_timer_am275x-evm_r5fss0-1_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_timer_am275x-evm_r5fss1-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_timer_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_timer_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
 # Various System Example Clean Targets
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_notify_am275x-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_notify_c7x_am275x-evm_system_freertos_clean
@@ -2302,6 +2360,36 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_hyperbus_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/hyperbus/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
+ test_dpl_timer_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ test_dpl_timer_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_dpl_timer_am275x-evm_r5fss0-1_nortos_ti-arm-clang_clean:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss0-1_nortos/ti-arm-clang -f makefile clean
+
+ test_dpl_timer_am275x-evm_r5fss1-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss1-0_nortos/ti-arm-clang -f makefile clean
+
+ test_dpl_timer_am275x-evm_r5fss1-1_nortos_ti-arm-clang_clean:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss1-1_nortos/ti-arm-clang -f makefile clean
+
+ test_dpl_timer_am275x-evm_r5fss0-1_freertos_ti-arm-clang_clean:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile clean
+
+ test_dpl_timer_am275x-evm_r5fss1-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile clean
+
+ test_dpl_timer_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile clean
+
+ test_dpl_timer_am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
+ test_dpl_timer_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
  test_ipc_notify_am275x-evm_system_freertos_clean:
 	$(MAKE) -C drivers/ipc_notify/am275x-evm/system_freertos -f makefile clean
 
@@ -2555,6 +2643,15 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_hyperbus_am275x-evm_r5fss1-0_freertos_ti-a
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_hyperbus_am275x-evm_r5fss1-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_hyperbus_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_hyperbus_am275x-evm_r5fss1-1_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_timer_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_timer_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_timer_am275x-evm_r5fss0-1_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_timer_am275x-evm_r5fss1-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_timer_am275x-evm_r5fss1-1_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_timer_am275x-evm_r5fss0-1_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_timer_am275x-evm_r5fss1-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_timer_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_timer_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub
 # Various System Example Scrub Targets
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_notify_am275x-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_notify_c7x_am275x-evm_system_freertos_scrub
@@ -3262,6 +3359,36 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  test_hyperbus_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/hyperbus/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
+ test_dpl_timer_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_dpl_timer_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_dpl_timer_am275x-evm_r5fss0-1_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss0-1_nortos/ti-arm-clang -f makefile scrub
+
+ test_dpl_timer_am275x-evm_r5fss1-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss1-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_dpl_timer_am275x-evm_r5fss1-1_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss1-1_nortos/ti-arm-clang -f makefile scrub
+
+ test_dpl_timer_am275x-evm_r5fss0-1_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile scrub
+
+ test_dpl_timer_am275x-evm_r5fss1-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_dpl_timer_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile scrub
+
+ test_dpl_timer_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
+ test_dpl_timer_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
  test_ipc_notify_am275x-evm_system_freertos_scrub:
 	$(MAKE) -C drivers/ipc_notify/am275x-evm/system_freertos -f makefile scrub
 
@@ -3318,6 +3445,7 @@ sbl: libs
 	$(MAKE) -C kernel/dpl/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 	$(MAKE) -C kernel/freertos/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 	$(MAKE) -C drivers/hyperbus/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
 sbl-clean:
 	$(MAKE) -C drivers/gpio/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
@@ -3335,6 +3463,7 @@ sbl-clean:
 	$(MAKE) -C kernel/dpl/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 	$(MAKE) -C kernel/freertos/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 	$(MAKE) -C drivers/hyperbus/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
 sbl-scrub:
 	$(MAKE) -C drivers/gpio/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
@@ -3352,6 +3481,7 @@ sbl-scrub:
 	$(MAKE) -C kernel/dpl/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C kernel/freertos/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C drivers/hyperbus/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+	$(MAKE) -C kernel/dpl_timer/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
 
 

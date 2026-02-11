@@ -366,6 +366,7 @@ const example_file_list = [
     "test/drivers/udma/test_udma_system/.project/project.js",
     "test/drivers/mcan/.project/project.js",
     "test/drivers/mcan/test_mcan_system/.project/project.js",
+    "test/kernel/dpl_timer/.project/project.js",
 ];
 
 function getProjectSpecCpu(cpu) {

@@ -55,6 +55,11 @@
 
 #define TIMER_OVF_INT_SHIFT     (0x1)
 
+#ifdef ENABLE_DPL_TIMER_FAULT_INJECTION
+    /* Fault handler for injecting fault for DPL Timer */
+    extern void TestDplTimer_faultInjectStubHandler(uint32_t *xsferStatus);
+#endif
+
 void TimerP_Params_init(TimerP_Params *params)
 {
     params->inputPreScaler = 1;
@@ -281,6 +286,11 @@ int32_t TimerP_clearOverflowInt(uint32_t baseAddr)
         /* clear status for overflow interrupt */
         addr = (volatile uint32_t *)(baseAddr + TIMER_IRQ_STATUS);
         *addr = value;
+
+#ifdef ENABLE_DPL_TIMER_FAULT_INJECTION
+        /* Fault handler for injecting fault for DPL Timer */
+        TestDplTimer_faultInjectStubHandler((uint32_t*)addr);
+#endif
 
         /* [MCUSDK-177] read back and make sure interrupt was indeed cleared, if not clear it again
          */

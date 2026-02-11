@@ -313,7 +313,9 @@ const example_file_list = [
     "test/kernel/freertos/.project/project_am275x_wkupr5.js",
     "test/kernel/freertos/.project/project.js",
     "test/drivers/mcan/.project/project.js",
-    "test/drivers/mcan/test_mcan_system/.project/project.js",
+    "test/drivers/mcan/test_mcan_system/.project/project.js",,
+    "test/kernel/dpl_timer/.project/project.js",
+    "test/kernel/dpl_timer/.project/project_am275x_wkupr5.js",
     "test/drivers/hyperbus/.project/project.js",
     "test/drivers/hyperbus/.project/project_am275x_wkupr5.js",
 

@@ -1345,15 +1345,42 @@ endif
 % }
 % }
 % if (args.isInstrumentationMode && args.project.cgt == "ti-arm-clang") {
-.PHONY: coverage
-coverage:
+CONSOLIDATED_REPORT_PATH := $(MCU_PLUS_SDK_PATH)/tools/code_coverage
+CONSOLIDATED_CSV_PATH := $(CONSOLIDATED_REPORT_PATH)/`args.project.device`
+CSV_FILE := `args.project.name`.$(PROFILE).profdata.csv
+COV_REPORT_GEN_SCRIPT_PATH := $(CONSOLIDATED_REPORT_PATH)/coCovReportGen.py
+
+.PHONY: code-coverage merge-coverage
+code-coverage: $(MODULES:%=coverage-%)
+
+code-coverage-%:
 	@echo Creating Coverage Report for `args.project.name`.$(PROFILE) ...
+	$(eval COMMON_PROFDATA_DIR := $(CONSOLIDATED_REPORT_PATH)/`args.project.device`/profdata_merged_$*)
+	$(eval PROFDATA_FILE := $(COMMON_PROFDATA_DIR)/`args.project.name`.$(PROFILE).profdata)
 	$(MKDIR) coverage
-	$(PROFDATA) merge -sparse -obj-file=$(OUTNAME) $(OUTNAME).cnt -o `args.project.name`.$(PROFILE).profdata
-	$(COV) show --format=html --show-expansions --show-instantiations --show-branches=count --object=$(OUTNAME) -instr-profile=`args.project.name`.$(PROFILE).profdata --output-dir=$(COVERAGE_PATH)/coverage
-	$(COV) export --format=text --object=$(OUTNAME) --instr-profile=`args.project.name`.$(PROFILE).profdata > coverage/`args.project.name`.$(PROFILE).profdata.json
-	node $(MCU_PLUS_SDK_PATH)/tools/smart_placement/clang_coverage_analyse.js --input=coverage/`args.project.name`.$(PROFILE).profdata.json --output-json=coverage/`args.project.name`.$(PROFILE).analysis.json --output-lnk=linker_xip.cmd --top-function-count=500
+	$(MKDIR) $(CONSOLIDATED_CSV_PATH)
+	$(MKDIR) $(COMMON_PROFDATA_DIR)
+	$(PROFDATA) merge -sparse -obj-file=$(OUTNAME) default.profraw -o $(PROFDATA_FILE)
+	$(COV) show --format=html --show-expansions --show-instantiations --show-branches=count --object=$(OUTNAME) -instr-profile=$(PROFDATA_FILE) --output-dir=$(COVERAGE_PATH)/coverage
+	$(COV) export --format=csv --object=$(OUTNAME) --instr-profile=$(PROFDATA_FILE) --sources $(foreach f, $(shell find "$(MCU_PLUS_SDK_PATH)/source" -type f -name "*.c"), $(if $(findstring $*,$(f)),$(f))) > $(CONSOLIDATED_REPORT_PATH)/`args.project.device`/$(CSV_FILE)
+	python3 $(COV_REPORT_GEN_SCRIPT_PATH) -mod $* -csv $(CSV_FILE)  -dev `args.project.device` -rep $(CONSOLIDATED_REPORT_PATH);
 	@echo Coverage Report Generated at $(COVERAGE_PATH)/coverage folder !!!
 
+merge-coverage-%:
+	@echo Merging profdata files for module $* ...
+	$(eval COMMON_PROFDATA_DIR := $(CONSOLIDATED_REPORT_PATH)/`args.project.device`/profdata_merged_$*)
+	$(eval MERGED_PROFDATA := $(COMMON_PROFDATA_DIR)/merged.profdata)
+	$(eval PROFDATA_FILES := $(filter-out $(MERGED_PROFDATA),$(wildcard $(COMMON_PROFDATA_DIR)/ *.profdata)))
+	$(eval MERGED_CSV := $(CONSOLIDATED_CSV_PATH)/$*_merged.csv)
+	$(eval MERGED_CSV_FILE := $*_merged.csv)
+	$(eval SOURCE_FILES := $(foreach f, $(shell find "$(MCU_PLUS_SDK_PATH)/source" -type f -name "*.c"), $(if $(findstring $*,$(f)),$(f))))
+	$(eval HTML_PATH := $(CONSOLIDATED_CSV_PATH)/html)
+	$(MKDIR) $(HTML_PATH)
+	@echo Merging $(words $(PROFDATA_FILES)) profdata files into $(MERGED_PROFDATA)
+	$(PROFDATA) merge -sparse $(PROFDATA_FILES) -o $(MERGED_PROFDATA)
+	$(COV) show --format=html --show-expansions --show-instantiations --show-branches=count --object=$(OUTNAME) -instr-profile=$(MERGED_PROFDATA) --output-dir=$(HTML_PATH)
+	$(COV) export --format=csv --object=$(OUTNAME) --instr-profile=$(MERGED_PROFDATA) --sources $(SOURCE_FILES) > $(MERGED_CSV)
+	python3 $(COV_REPORT_GEN_SCRIPT_PATH) -mod $* -csv $(MERGED_CSV_FILE) -dev `args.project.device` -rep $(CONSOLIDATED_REPORT_PATH);
+	@echo Merged coverage report generated at $(MERGED_CSV) !!!
 % }
 -include $(addprefix $(OBJDIR)/, $(DEPS))

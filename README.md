@@ -302,6 +302,54 @@ Download and install PSDK Linux on **${HOME}/ti** directory corresponding to the
    make -s -j4 clean DEVICE=am62ax PROFILE=debug ATF_INTEGRATED_BOOT=no
    make -s -j4 all   DEVICE=am62ax PROFILE=debug ATF_INTEGRATED_BOOT=no
    ```
+---
+
+#### Building with Makefiles with Instrumentation enabled to get code coverage
+
+---
+
+1. Run the following command to create makefiles with Instrumentation enabled
+
+   ```bash
+   make gen-buildfiles DEVICE=am62ax INSTRUMENTATION_MODE=enable
+   ```
+
+2. Make sure to build the libraries before attempting to build a test.
+   For example,
+   to build a dcc unit test for AM62A, run the following:
+   ```bash
+   make -s -j4 libs DEVICE=am62ax PROFILE=debug
+   ```
+   Once the library build is complete, to build the test run:
+   ```bash
+   make -s -C test/sdl/dcc/dcc_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang all PROFILE=debug
+   ```
+
+3. Follow below steps to get code-coverage for a module.
+   For example,
+   to get code-coverage of unit test of dcc module for AM62A, run the following
+   ```bash
+   cd test/sdl/dcc/dcc_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang
+   make -s -f makefile code-coverage-dcc
+   ```
+   To get coverage for any other module
+   ```bash
+   cd <path_to_ti-arm-clang>
+   make -s -f makefile code-coverage-<module_name>
+   ```
+   `Note`: Before running the above command make sure to have profraw file ready
+
+4. To get merged code coverage for a module, follow below steps:
+   For example,
+   to get merged code coverage for dcc unit and functional test for AM62A,
+   ```bash
+   cd test/sdl/dcc/dcc_unit_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang  or
+   cd test/sdl/dcc/dcc_func_test/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang
+   ```
+   ```bash
+   make -s -f makefile merge-coverage-dcc
+   ```
+---
 
 ### Building and Running Secondary-Bootloader (SBL)
 

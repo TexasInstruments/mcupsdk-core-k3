@@ -16,7 +16,7 @@
         "cstdlib": "c",
         "*.h": "c"
     },
-    "files.trimTrailingWhitespace": true,
+    "files.trimTrailingWhitespace": false,
     "http.proxy": "http://wwwgate.ti.com:80",
     "http.proxyStrictSSL": false,
     // Specify paths/files to ignore. (Supports Globs)

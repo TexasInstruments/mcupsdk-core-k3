@@ -13,6 +13,7 @@ let mcasp_auxclk_gf_sel = {
     displayName: "MCASP AUXCLK SEL",
     tisciDevice: "TISCI_DEV_MCASP<n>",
     tisciClock: "TISCI_DEV_MCASP<n>_AUX_CLK",
+    skipTests: [ "configLongDescription" ], /* skipping due to SysConfig 1.26.2 bug */
     longDescription: auxClkMuxLongDescription,
     muxOptions:[
         { name: 1, displayName: "PLL1 HSDIV6 CLKOUT",

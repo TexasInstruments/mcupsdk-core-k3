@@ -1107,6 +1107,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                         {
                             name: "txHclkDiv",
                             displayName: "TX HCLK Divider",
+                            skipTests: [ "configLongDescription" ], /* skipping due to SysConfig 1.26.2 bug in file:// URL generation (MarkdownHelpers.ts:41) */
                             longDescription: `![](../source/drivers/.meta/mcasp/v1/mcasp_hclkdiv.png)`,
                             default: 2,
                             onChange: function (inst, ui) {
@@ -1116,6 +1117,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                         {
                             name: "txClkDiv",
                             displayName: "TX CLK Divider",
+                            skipTests: [ "configLongDescription" ], /* skipping due to SysConfig 1.26.2 bug in file:// URL generation (MarkdownHelpers.ts:41) */
                             longDescription: `![](../source/drivers/.meta/mcasp/v1/mcasp_aclkdiv.png)`,
                             default: 8,
                             onChange: function (inst, ui) {
@@ -1675,6 +1677,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                             {
                                 name: "rxHclkDiv",
                                 displayName: "RX HCLK Divider",
+                                skipTests: [ "configLongDescription" ], /* skipping due to SysConfig 1.26.2 bug in file:// URL generation (MarkdownHelpers.ts:41) */
                                 longDescription: `![](../source/drivers/.meta/mcasp/v1/mcasp_hclkdiv.png)`,
                                 default: 2,
                                 onChange: function (inst, ui) {
@@ -1684,6 +1687,7 @@ Note: This buffer will be declared as extern "Extern Transmit Loopjob";`,
                             {
                                 name: "rxClkDiv",
                                 displayName: "RX CLK Divider",
+                                skipTests: [ "configLongDescription" ], /* skipping due to SysConfig 1.26.2 bug in file:// URL generation (MarkdownHelpers.ts:41) */
                                 longDescription: `![](../source/drivers/.meta/mcasp/v1/mcasp_aclkdiv.png)`,
                                 default: 8,
                                 onChange: function (inst, ui) {

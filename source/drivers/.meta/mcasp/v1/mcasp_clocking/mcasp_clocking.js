@@ -44,6 +44,7 @@ function processConfigArr(configEntry, hide) {
         };
         if(configEntry.longDescription) {
             config.longDescription = configEntry.longDescription.toString();
+            config.skipTests = [ "configLongDescription" ]; /* skipping due to SysConfig 1.26.2 bug in file:// URL generation (MarkdownHelpers.ts:41) */
         }
 
         configArr.push(config);
@@ -72,6 +73,7 @@ function processConfigArr(configEntry, hide) {
         ));
         if(configEntry.longDescription) {
             config.longDescription = configEntry.longDescription.toString();
+            config.skipTests = [ "configLongDescription" ]; /* skipping due to SysConfig 1.26.2 bug in file:// URL generation (MarkdownHelpers.ts:41) */
         }
 
         configArr.push(config);

@@ -48,6 +48,7 @@ const device_defines = {
 const example_file_list = [
     /* SBLs */
     "examples/drivers/boot/sbl_emmc/.project/project.js",
+    "examples/drivers/boot/sbl_eth_uniflash/.project/project.js",
     "examples/drivers/boot/sbl_null/.project/project.js",
     "examples/drivers/boot/sbl_ospi/.project/project.js",
     "examples/drivers/boot/sbl_sd/.project/project.js",

@@ -848,6 +848,26 @@ int32_t Bootloader_socCpuPowerOnResetC7x(uint32_t cpuId, uintptr_t entry_point, 
 
     sciclientCpuDevId = Bootloader_socGetSciclientCpuDevId(cpuId);
 
+    /* Turn on LPSC for C7x UMC memory. This is required to load in to C7x UMC memory */
+    if(cpuId == CSL_CORE_ID_C75SS0_0)
+    {
+        status = Sciclient_pmSetModuleState(TISCI_DEV_C7X256V0_CORE0, TISCI_MSG_VALUE_DEVICE_SW_STATE_ON, TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
+    }
+    else if(cpuId == CSL_CORE_ID_C75SS1_0)
+    {
+        status = Sciclient_pmSetModuleState(TISCI_DEV_C7X256V1_CORE0, TISCI_MSG_VALUE_DEVICE_SW_STATE_ON, TISCI_MSG_FLAG_AOP, SystemP_WAIT_FOREVER);
+    }
+    else
+    {
+        /* No action required */
+        ;
+    }
+
+    if(status != SystemP_SUCCESS)
+    {
+        DebugP_logError("UMC memory power on failed for %s\r\n", Bootloader_socGetCoreName(cpuId));
+    }
+
     status = Sciclient_pmSetModuleState(sciclientCpuDevId,
         TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
         TISCI_MSG_FLAG_AOP,

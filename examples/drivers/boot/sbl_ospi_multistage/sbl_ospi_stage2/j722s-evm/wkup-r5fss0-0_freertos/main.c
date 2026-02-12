@@ -134,6 +134,7 @@ int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *b
             {
                 bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_MCU_R5FSS0_0);
                 status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
+                Bootloader_profileAddCore(CSL_CORE_ID_MCU_R5FSS0_0);
                 socCpuCores[CSL_CORE_ID_MCU_R5FSS0_0] = BOOTLOADER_APP_IMAGE_LOADED;
                 bootCpuInfo[CSL_CORE_ID_MCU_R5FSS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0];
             }
@@ -142,6 +143,7 @@ int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *b
         {
             bootImageInfo->cpuInfo[CSL_CORE_ID_MAIN_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_MAIN_R5FSS0_0);
             status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_MAIN_R5FSS0_0]));
+            Bootloader_profileAddCore(CSL_CORE_ID_MAIN_R5FSS0_0);
             socCpuCores[CSL_CORE_ID_MAIN_R5FSS0_0] = BOOTLOADER_APP_IMAGE_LOADED;
             bootCpuInfo[CSL_CORE_ID_MAIN_R5FSS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_MAIN_R5FSS0_0];
         }
@@ -149,6 +151,7 @@ int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *b
         {
             bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_C75SS0_0);
             status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0]));
+            Bootloader_profileAddCore(CSL_CORE_ID_C75SS0_0);
             socCpuCores[CSL_CORE_ID_C75SS0_0] = BOOTLOADER_APP_IMAGE_LOADED;
             bootCpuInfo[CSL_CORE_ID_C75SS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS0_0];
         }
@@ -156,6 +159,7 @@ int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *b
         {
             bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS1_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_C75SS1_0);
             status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS1_0]));
+            Bootloader_profileAddCore(CSL_CORE_ID_C75SS1_0);
             socCpuCores[CSL_CORE_ID_C75SS1_0] = BOOTLOADER_APP_IMAGE_LOADED;
             bootCpuInfo[CSL_CORE_ID_C75SS1_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_C75SS1_0];
         }
@@ -163,6 +167,7 @@ int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *b
         {
             bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
             status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+            Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
             socCpuCores[CSL_CORE_ID_A53SS0_0] = BOOTLOADER_APP_IMAGE_LOADED;
             bootCpuInfo[CSL_CORE_ID_A53SS0_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0];
         }
@@ -170,6 +175,7 @@ int32_t App_loadImages(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *b
         {
             bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_0);
             status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_0]));
+            Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_0);
             socCpuCores[CSL_CORE_ID_A53SS1_0] = BOOTLOADER_APP_IMAGE_LOADED;
             bootCpuInfo[CSL_CORE_ID_A53SS1_0] = bootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_0];
         }
@@ -307,11 +313,6 @@ void sbl_ospi_stage2_main_thread(void *args)
         if(SystemP_SUCCESS == status)
         {
             status = App_runCpus(bootHandle, &bootImageInfo);
-        }
-        /* Check if multicore image contains wkup R5 core */
-        if ((1U << CSL_CORE_ID_WKUP_R5FSS0_0) && ((Bootloader_Config *)bootHandle)->coresPresentMap)
-        {
-            Bootloader_bootSelfCpu(bootHandle, &bootImageInfo);
         }
 
         Bootloader_close(bootHandle);

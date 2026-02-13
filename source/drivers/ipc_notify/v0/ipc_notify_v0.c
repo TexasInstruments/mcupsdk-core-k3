@@ -225,14 +225,17 @@ void IpcNotify_Params_init(IpcNotify_Params *params)
 {
     uint32_t i;
 
-    params->numCores = 0;
-    for(i=0; i<CSL_CORE_ID_MAX; i++)
+    if (params != NULL)
     {
-        params->coreIdList[i] = CSL_CORE_ID_MAX;
+        params->numCores = 0;
+        for(i=0; i<CSL_CORE_ID_MAX; i++)
+        {
+            params->coreIdList[i] = CSL_CORE_ID_MAX;
+        }
+        params->selfCoreId = CSL_CORE_ID_MAX;
+        params->linuxCoreId = CSL_CORE_ID_MAX;
+        params->timeout = 0xFFFFFFFFU;
     }
-    params->selfCoreId = CSL_CORE_ID_MAX;
-    params->linuxCoreId = CSL_CORE_ID_MAX;
-    params->timeout = 0xFFFFFFFFU;
 }
 
 
@@ -244,140 +247,147 @@ int32_t IpcNotify_init(const IpcNotify_Params *params)
     int32_t status = SystemP_SUCCESS;
     uint32_t mailboxBaseAddr, hwFifoId, userId;
 
-    gIpcNotifyCtrl.linuxCoreId = params->linuxCoreId;
-    gIpcNotifyCtrl.timeout = params->timeout;
-    IpcNotify_getConfig(&gIpcNotifyCtrl.interruptConfig, &gIpcNotifyCtrl.interruptConfigNum);
+    if (params != NULL)
+    {
+        gIpcNotifyCtrl.linuxCoreId = params->linuxCoreId;
+        gIpcNotifyCtrl.timeout = params->timeout;
+        IpcNotify_getConfig(&gIpcNotifyCtrl.interruptConfig, &gIpcNotifyCtrl.interruptConfigNum);
 
-    /* translate mailbox address to local CPU addresses */
-    for(i = 0; gIpcNotifyMailboxBaseAddr[i] != 0U; i++)
-    {
-        gIpcNotifyMailboxBaseAddr[i] = (uint32_t) AddrTranslateP_getLocalAddr(gIpcNotifyMailboxBaseAddr[i]);
-    }
-    uint32_t maxCoreId = CSL_CORE_ID_MAX;
-    gIpcNotifyCtrl.selfCoreId = params->selfCoreId;
-    for(i=0; i<IPC_NOTIFY_CLIENT_ID_MAX; i++)
-    {
-        IpcNotify_unregisterClient(i);
-    }
-    for(core=0; core<CSL_CORE_ID_MAX; core++)
-    {
-        gIpcNotifyCtrl.isCoreEnabled[core] = 0;
-        gIpcNotifyCtrl.syncMsgPend[core] = 0;
-    }
-
-    /* check parameters and config and assert if invalid */
-    if(params->numCores > 0U )
-    {
-        for(core=0; core<params->numCores; core++)
+        /* translate mailbox address to local CPU addresses */
+        for(i = 0; gIpcNotifyMailboxBaseAddr[i] != 0U; i++)
         {
-            if((params->coreIdList[core] < maxCoreId) && (params->coreIdList[core] != params->selfCoreId))
-            {
-                /* mark core as enabled for IPC */
-                gIpcNotifyCtrl.isCoreEnabled[params->coreIdList[core]] = 1;
-            }
+            gIpcNotifyMailboxBaseAddr[i] = (uint32_t) AddrTranslateP_getLocalAddr(gIpcNotifyMailboxBaseAddr[i]);
         }
-        for(i=0; i<gIpcNotifyCtrl.interruptConfigNum; i++)
+        uint32_t maxCoreId = CSL_CORE_ID_MAX;
+        gIpcNotifyCtrl.selfCoreId = params->selfCoreId;
+        for(i=0; i<IPC_NOTIFY_CLIENT_ID_MAX; i++)
         {
-            IpcNotify_InterruptConfig *pInterruptConfig;
+            IpcNotify_unregisterClient(i);
+        }
+        for(core=0; core<CSL_CORE_ID_MAX; core++)
+        {
+            gIpcNotifyCtrl.isCoreEnabled[core] = 0;
+            gIpcNotifyCtrl.syncMsgPend[core] = 0;
+        }
 
-            pInterruptConfig = &gIpcNotifyCtrl.interruptConfig[i];
-
-            if(!(pInterruptConfig->numCores > 0U))
+        /* check parameters and config and assert if invalid */
+        if(params->numCores > 0U )
+        {
+            for(core=0; core<params->numCores; core++)
             {
-                status = SystemP_FAILURE;
-                break;
-            }
-            for(core=0; core<pInterruptConfig->numCores; core++)
-            {
-                mailboxBaseAddr = 0;
-                if((pInterruptConfig->coreIdList[core] < maxCoreId) && (pInterruptConfig->coreIdList[core] != gIpcNotifyCtrl.selfCoreId))
+                if((params->coreIdList[core] < maxCoreId) && (params->coreIdList[core] != params->selfCoreId))
                 {
-                    /* check if mailbox info is valid for this core */
-                    IpcNotify_getReadMailbox(pInterruptConfig->coreIdList[core], &mailboxBaseAddr, &hwFifoId, &userId);
+                    /* mark core as enabled for IPC */
+                    gIpcNotifyCtrl.isCoreEnabled[params->coreIdList[core]] = 1;
+                }
+            }
+            for(i=0; i<gIpcNotifyCtrl.interruptConfigNum; i++)
+            {
+                IpcNotify_InterruptConfig *pInterruptConfig;
 
-                    if(mailboxBaseAddr == 0U)
+                pInterruptConfig = &gIpcNotifyCtrl.interruptConfig[i];
+
+                if(!(pInterruptConfig->numCores > 0U))
+                {
+                    status = SystemP_FAILURE;
+                    break;
+                }
+                for(core=0; core<pInterruptConfig->numCores; core++)
+                {
+                    mailboxBaseAddr = 0;
+                    if((pInterruptConfig->coreIdList[core] < maxCoreId) && (pInterruptConfig->coreIdList[core] != gIpcNotifyCtrl.selfCoreId))
+                    {
+                        /* check if mailbox info is valid for this core */
+                        IpcNotify_getReadMailbox(pInterruptConfig->coreIdList[core], &mailboxBaseAddr, &hwFifoId, &userId);
+
+                        if(mailboxBaseAddr == 0U)
+                        {
+                            status = SystemP_FAILURE;
+                            break;
+                        }
+                    }
+                    else
                     {
                         status = SystemP_FAILURE;
                         break;
                     }
                 }
-                else
+            }
+
+            if(status != SystemP_FAILURE)
+            {
+                IpcNotify_registerClient(IPC_NOTIFY_CLIENT_ID_SYNC, IpcNotify_syncCallback, NULL);
+
+                oldIntState = HwiP_disable();
+
+                for(i=0; i<gIpcNotifyCtrl.interruptConfigNum; i++)
                 {
-                    status = SystemP_FAILURE;
-                    break;
+                    IpcNotify_InterruptConfig *pInterruptConfig;
+
+                    pInterruptConfig = &gIpcNotifyCtrl.interruptConfig[i];
+                    for(core=0; core<pInterruptConfig->numCores; core++)
+                    {
+                        if(gIpcNotifyCtrl.isCoreEnabled[pInterruptConfig->coreIdList[core]] == TRUE)
+                        {
+                            IpcNotify_getReadMailbox(pInterruptConfig->coreIdList[core], &mailboxBaseAddr, &hwFifoId, &userId);
+                            IpcNotify_mailboxDisableInt(mailboxBaseAddr, hwFifoId, userId);
+                        }
+                    }
                 }
+
+                for(i=0; i<gIpcNotifyCtrl.interruptConfigNum; i++)
+                {
+                    Bool isCoreEnable = 0;
+                    HwiP_Params hwiParams;
+                    IpcNotify_InterruptConfig *pInterruptConfig;
+
+                    pInterruptConfig = &gIpcNotifyCtrl.interruptConfig[i];
+
+                    for(core=0; core<pInterruptConfig->numCores; core++)
+                    {
+                        if(gIpcNotifyCtrl.isCoreEnabled[pInterruptConfig->coreIdList[core]] == TRUE)
+                        {
+                            isCoreEnable = 1;
+                        }
+                    }
+
+                    if(isCoreEnable == 1U){
+                    HwiP_Params_init(&hwiParams);
+                    hwiParams.intNum = pInterruptConfig->intNum;
+                    hwiParams.callback = IpcNotify_isr;
+                    hwiParams.args = (void*)pInterruptConfig;
+                    hwiParams.eventId = (uint16_t)pInterruptConfig->eventId;
+                    hwiParams.isPulse = 0; /* mailbox is level interrupt */
+
+                    status += HwiP_construct(
+                                            &pInterruptConfig->hwiObj,
+                                            &hwiParams);
+                                            }
+                }
+
+
+                for(i=0; i<gIpcNotifyCtrl.interruptConfigNum; i++)
+                {
+                    IpcNotify_InterruptConfig *pInterruptConfig;
+
+                    pInterruptConfig = &gIpcNotifyCtrl.interruptConfig[i];
+                    for(core=0; core<pInterruptConfig->numCores; core++)
+                    {
+                        if(gIpcNotifyCtrl.isCoreEnabled[pInterruptConfig->coreIdList[core]] == TRUE)
+                        {
+                            IpcNotify_getReadMailbox(pInterruptConfig->coreIdList[core], &mailboxBaseAddr, &hwFifoId, &userId);
+                            IpcNotify_mailboxClearInt(mailboxBaseAddr, hwFifoId, userId);
+                            IpcNotify_mailboxEnableInt(mailboxBaseAddr, hwFifoId, userId);
+                        }
+                    }
+                }
+
+                HwiP_restore(oldIntState);
             }
         }
-
-        if(status != SystemP_FAILURE)
+        else
         {
-            IpcNotify_registerClient(IPC_NOTIFY_CLIENT_ID_SYNC, IpcNotify_syncCallback, NULL);
-
-            oldIntState = HwiP_disable();
-
-            for(i=0; i<gIpcNotifyCtrl.interruptConfigNum; i++)
-            {
-                IpcNotify_InterruptConfig *pInterruptConfig;
-
-                pInterruptConfig = &gIpcNotifyCtrl.interruptConfig[i];
-                for(core=0; core<pInterruptConfig->numCores; core++)
-                {
-                    if(gIpcNotifyCtrl.isCoreEnabled[pInterruptConfig->coreIdList[core]] == TRUE)
-                    {
-                        IpcNotify_getReadMailbox(pInterruptConfig->coreIdList[core], &mailboxBaseAddr, &hwFifoId, &userId);
-                        IpcNotify_mailboxDisableInt(mailboxBaseAddr, hwFifoId, userId);
-                    }
-                }
-            }
-
-            for(i=0; i<gIpcNotifyCtrl.interruptConfigNum; i++)
-            {
-                Bool isCoreEnable = 0;
-                HwiP_Params hwiParams;
-                IpcNotify_InterruptConfig *pInterruptConfig;
-
-                pInterruptConfig = &gIpcNotifyCtrl.interruptConfig[i];
-
-                for(core=0; core<pInterruptConfig->numCores; core++)
-                {
-                    if(gIpcNotifyCtrl.isCoreEnabled[pInterruptConfig->coreIdList[core]] == TRUE)
-                    {
-                        isCoreEnable = 1;
-                    }
-                }
-
-                if(isCoreEnable == 1U){
-                HwiP_Params_init(&hwiParams);
-                hwiParams.intNum = pInterruptConfig->intNum;
-                hwiParams.callback = IpcNotify_isr;
-                hwiParams.args = (void*)pInterruptConfig;
-                hwiParams.eventId = (uint16_t)pInterruptConfig->eventId;
-                hwiParams.isPulse = 0; /* mailbox is level interrupt */
-
-                status += HwiP_construct(
-                                        &pInterruptConfig->hwiObj,
-                                        &hwiParams);
-                                        }
-            }
-
-
-            for(i=0; i<gIpcNotifyCtrl.interruptConfigNum; i++)
-            {
-                IpcNotify_InterruptConfig *pInterruptConfig;
-
-                pInterruptConfig = &gIpcNotifyCtrl.interruptConfig[i];
-                for(core=0; core<pInterruptConfig->numCores; core++)
-                {
-                    if(gIpcNotifyCtrl.isCoreEnabled[pInterruptConfig->coreIdList[core]] == TRUE)
-                    {
-                        IpcNotify_getReadMailbox(pInterruptConfig->coreIdList[core], &mailboxBaseAddr, &hwFifoId, &userId);
-                        IpcNotify_mailboxClearInt(mailboxBaseAddr, hwFifoId, userId);
-                        IpcNotify_mailboxEnableInt(mailboxBaseAddr, hwFifoId, userId);
-                    }
-                }
-            }
-
-            HwiP_restore(oldIntState);
+            status = SystemP_FAILURE;
         }
     }
     else

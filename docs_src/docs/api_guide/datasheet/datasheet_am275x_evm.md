@@ -379,5 +379,14 @@ For Ethernet AVB performance, refer to the page \ref EAVB_PERFORMANCE
 - [32-BIT READ] Non-Self TCM Access Average Latency Per Byte: 35.320312 ns
 
 - [64-BIT READ] Self TCM Access Average Latency Per Byte: 0.300781 ns
-- [64-BIT READ] MSRAM Access Read Average Latency Per Byte: 4.617188 ns
-- [64-BIT READ] Non-Self TCM Access Read Average Latency Per Byte: 17.660156 ns
+- [64-BIT READ] MSRAM Access Average Latency Per Byte: 4.617188 ns
+- [64-BIT READ] Non-Self TCM Access Average Latency Per Byte: 17.660156 ns
+
+### C7x - Memory Access latency
+
+- [32-BIT READ] L2RAM Access Average Latency Per Byte: 2.437500 ns
+- [32-BIT READ] MSRAM Access Average Latency Per Byte: 2.726562 ns
+
+- [64-BIT READ] L2RAM Access Average Latency Per Byte: 1.152344 ns
+- [64-BIT READ] MSRAM Access Average Latency Per Byte: 1.160156 ns
+

@@ -28,6 +28,9 @@
 \cond SOC_AM275X
 
 ## AM275x
+
+# R5F
+
 Operation | Latency(ns)/byte |
 ----------------|-----------|
 Read (32-bit access) - TCM          | 0.796875 |
@@ -36,6 +39,15 @@ Read (32-bit access) - Non self TCM | 35.320312 |
 Read (64-bit access) - TCM          | 0.300781 |
 Read (64-bit access) - OCRAM        | 4.617188 |
 Read (64-bit access) - Non self TCM | 17.660156 |
+
+# C7
+
+Operation | Latency(ns)/byte |
+----------------|-----------|
+Read (32-bit access) - OCRAM | 2.726562 |
+Read (32-bit access) - L2RAM | 2.437500 |
+Read (64-bit access) - OCRAM | 1.160156 |
+Read (64-bit access) - L2RAM | 1.152344 |
 
 \endcond
 
@@ -64,10 +76,21 @@ BENCHMARK START - ARM R5F - Memory Access latency
 [32-BIT READ] Non-Self TCM Access Average Latency Per Byte: 35.320312 ns
 
 [64-BIT READ] Self TCM Access Average Latency Per Byte: 0.300781 ns
-[64-BIT READ] MSRAM Access Read Average Latency Per Byte: 4.617188 ns
-[64-BIT READ] Non-Self TCM Access Read Average Latency Per Byte: 17.660156 ns
+[64-BIT READ] MSRAM Access Average Latency Per Byte: 4.617188 ns
+[64-BIT READ] Non-Self TCM Access Average Latency Per Byte: 17.660156 ns
 
 BENCHMARK END
+
+BENCHMARK START - C7x - Memory Access latency
+
+[32-BIT READ] L2RAM Access Average Latency Per Byte: 2.437500 ns
+[32-BIT READ] MSRAM Access Average Latency Per Byte: 2.726562 ns
+
+[64-BIT READ] L2RAM Access Average Latency Per Byte: 1.152344 ns
+[64-BIT READ] MSRAM Access Average Latency Per Byte: 1.160156 ns
+
+BENCHMARK END
+
 \endcode
 \endcond
 

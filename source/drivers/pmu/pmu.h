@@ -155,5 +155,4 @@ void PMU_profilePrint(void);
 
 #endif  /* #ifndef PMU_V0_H_ */
 
-
 /** @} */

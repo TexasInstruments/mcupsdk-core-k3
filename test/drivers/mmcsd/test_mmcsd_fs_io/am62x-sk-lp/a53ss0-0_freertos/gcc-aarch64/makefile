@@ -24,17 +24,17 @@ ATF_INTEGRATED_BOOT?=yes
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_mmcsd.$(PROFILE).out
+OUTNAME:=test_mmcsd_fs_io.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_mmcsd.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=test_mmcsd.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=test_mmcsd.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=test_mmcsd.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=test_mmcsd.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=test_mmcsd.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=test_mmcsd.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=test_mmcsd.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=test_mmcsd_fs_io.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=test_mmcsd_fs_io.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=test_mmcsd_fs_io.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=test_mmcsd_fs_io.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=test_mmcsd_fs_io.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=test_mmcsd_fs_io.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=test_mmcsd_fs_io.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=test_mmcsd_fs_io.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -46,7 +46,9 @@ ATF_BIN_NAME:=bl31.a53ss0-0.$(PROFILE).bin
 ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/lib/soc/am62x
 
 FILES_common := \
-	test_mmcsd.c \
+	mmcsd_test_common.c \
+	mmcsd_test_fs.c \
+	test_mmcsd_fs_io.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -58,8 +60,9 @@ FILES_common := \
 
 FILES_PATH_common = \
 	.. \
-	../.. \
-	../../.. \
+	../../ \
+	../../../ \
+	../../../../test_mmcsd_common/ \
 	generated \
 
 INCLUDES_common := \
@@ -67,6 +70,10 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53 \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53 \
+	-I${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/FreeRTOS-FAT/include/ \
+	-I${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable/ \
+	-I${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config/ \
+	-I../../../../test_mmcsd_common/ \
 	-I${MCU_PLUS_SDK_PATH}/test/unity \
 	-Igenerated \
 
@@ -89,6 +96,8 @@ CFLAGS_common := \
 	-fdata-sections \
 	-ffunction-sections \
 	-Wno-unused-function \
+	-DENABLE_MT_TESTS \
+	-DENABLE_FS_TESTS \
 
 CFLAGS_debug := \
 	-D_DEBUG_=1 \
@@ -102,12 +111,14 @@ LNK_FILES_common = \
 LIBS_PATH_common = \
 	-L${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-L${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	-L${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib \
 	-L${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	-L$(CGT_GCC_AARCH64_PATH)/lib \
 
 LIBS_common = \
 	-l:freertos.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 	-l:drivers.am62x.a53.gcc-aarch64.${ConfigName}.lib \
+	-l:freertos_fat.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 	-l:unity.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 
 LFLAGS_common = \
@@ -124,11 +135,13 @@ LFLAGS_common = \
 LIBS_NAME = \
 	freertos.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 	drivers.am62x.a53.gcc-aarch64.${ConfigName}.lib \
+	freertos_fat.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 	unity.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 
 LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	$(CGT_GCC_AARCH64_PATH)/lib \
 
@@ -192,7 +205,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62x:a53ss0-0:freertos:gcc-aarch64 test_mmcsd ...
+	@echo  Scrubing: am62x:a53ss0-0:freertos:gcc-aarch64 test_mmcsd_fs_io ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

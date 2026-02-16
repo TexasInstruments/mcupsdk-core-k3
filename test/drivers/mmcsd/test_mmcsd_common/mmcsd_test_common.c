@@ -60,8 +60,16 @@ uint8_t TestMMCSD_wBuf40M[TEST_MMCSD_40MB_SIZE]
     __attribute__((aligned(128U), section(".globalScratchBuffer")));
 uint8_t TestMMCSD_rBuf40M[TEST_MMCSD_40MB_SIZE]
     __attribute__((aligned(128U), section(".globalScratchBuffer")));
+#else
+uint8_t TestMMCSD_wBuf[TEST_MMCSD_FAT_BLOCK_SIZE * TEST_MMCSD_BLOCK_COUNT]
+    __attribute__((aligned(128U)));
+uint8_t TestMMCSD_rBuf[TEST_MMCSD_FAT_BLOCK_SIZE * TEST_MMCSD_BLOCK_COUNT]
+    __attribute__((aligned(128U)));
+#endif
 
 /* Threads for multithreading test cases */
+#if defined (ENABLE_MT_TESTS)
+#if !defined (SOC_AM275X) && !defined(C7_CORE)
 uint8_t TestMMCSD_task1Wbuf[TEST_MMCSD_SIZE_64K]
     __attribute__((aligned(128U), section(".globalScratchBuffer")));
 uint8_t TestMMCSD_task1Rbuf[TEST_MMCSD_SIZE_64K]
@@ -72,12 +80,6 @@ uint8_t TestMMCSD_task2Wbuf[TEST_MMCSD_SIZE_64K]
 uint8_t TestMMCSD_task2Rbuf[TEST_MMCSD_SIZE_64K]
     __attribute__((aligned(128U), section(".globalScratchBuffer")));
 #else
-uint8_t TestMMCSD_wBuf[TEST_MMCSD_FAT_BLOCK_SIZE * TEST_MMCSD_BLOCK_COUNT]
-    __attribute__((aligned(128U)));
-uint8_t TestMMCSD_rBuf[TEST_MMCSD_FAT_BLOCK_SIZE * TEST_MMCSD_BLOCK_COUNT]
-    __attribute__((aligned(128U)));
-
-/* Threads for multithreading test cases */
 uint8_t TestMMCSD_task1Wbuf[TEST_MMCSD_SIZE_64K]
     __attribute__((aligned(128U)));
 uint8_t TestMMCSD_task1Rbuf[TEST_MMCSD_SIZE_64K]
@@ -87,6 +89,7 @@ uint8_t TestMMCSD_task2Wbuf[TEST_MMCSD_SIZE_64K]
     __attribute__((aligned(128U)));
 uint8_t TestMMCSD_task2Rbuf[TEST_MMCSD_SIZE_64K]
     __attribute__((aligned(128U)));
+#endif
 #endif
 #endif
 

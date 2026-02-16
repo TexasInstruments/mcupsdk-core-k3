@@ -89,9 +89,10 @@ void test_main(void *args)
     RUN_TEST(TestMmcsd_emmcEnableDisableBootPartition, 8308, NULL);
     RUN_TEST(TestMmcsd_sdEnableDisableBootPartition, 9031, NULL);
     RUN_TEST(TestMmcsd_emmcEnableDisableBootPartitionFail, 9032, NULL);
-    RUN_TEST(TestMmcsd_emmcTuningConfig, 8312, NULL);
+    RUN_TEST(TestMmcsd_emmcTuningConfig, 9035, NULL);
     RUN_TEST(TestMmcsd_emmcMultiblockRawIo, 8306, NULL);
     RUN_TEST(TestMmcsd_openInvalidInstance, 8309, NULL);
+/* AM275X: Only one MMCSD peripheral (MMC0) exists — no CONFIG_MMCSD_SD instance, so all SD and dual-instance tests are guarded out */
 #if !defined (SOC_AM275X) && !defined (SOC_J722S)
     RUN_TEST(TestMmcsd_sdSingleBlockTransfer, 9034, NULL);
     RUN_TEST(TestMmcsd_sdRawIo, 1942, NULL);

@@ -116,10 +116,12 @@ extern uint8_t TestMMCSD_wBuf[TEST_MMCSD_FAT_BLOCK_SIZE * TEST_MMCSD_BLOCK_COUNT
 extern uint8_t TestMMCSD_rBuf[TEST_MMCSD_FAT_BLOCK_SIZE * TEST_MMCSD_BLOCK_COUNT];
 
 /* Buffers for multithreading test cases */
+#if defined (ENABLE_MT_TESTS)
 extern uint8_t TestMMCSD_task1Wbuf[TEST_MMCSD_SIZE_64K];
 extern uint8_t TestMMCSD_task1Rbuf[TEST_MMCSD_SIZE_64K];
 extern uint8_t TestMMCSD_task2Wbuf[TEST_MMCSD_SIZE_64K];
 extern uint8_t TestMMCSD_task2Rbuf[TEST_MMCSD_SIZE_64K];
+#endif
 
 /* Buffers for large file transfer */
 #if !defined (SOC_AM275X) &&  !defined (C7_CORE)

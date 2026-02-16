@@ -31,10 +31,12 @@
  */
 
 #include <stdlib.h>
+#include <kernel/dpl/DebugP.h>
 #include "ti_drivers_config.h"
 #include "ti_board_config.h"
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
+#include <drivers/bootloader/soc/bootloader_soc.h>
 
 void test_main(void *args);
 
@@ -42,20 +44,23 @@ int main()
 {
     int32_t status = SystemP_SUCCESS;
 
+    Bootloader_socWaitForFWBoot();
+    status = Bootloader_socOpenFirewalls();
+    DebugP_assertNoLog(status == SystemP_SUCCESS);
+
     System_init();
     Board_init();
 
-    /* Open drivers */
     Drivers_open();
-    /* Open flash and board drivers */
     status = Board_driversOpen();
     DebugP_assert(status==SystemP_SUCCESS);
 
+    DebugP_log("[WKUP NORTOS] main init done\\r\\n");
+    DebugP_log("[WKUP NORTOS] entering test_main\\r\\n");
+
     test_main(NULL);
 
-    /* Close board and flash drivers */
     Board_driversClose();
-    /* Close drivers */
     Drivers_close();
 
     Board_deinit();

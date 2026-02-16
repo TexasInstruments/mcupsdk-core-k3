@@ -33,6 +33,7 @@ mmcsd2.moduleSelect = "MMC1";
 clock.instance = "TIMER1";
 
 debug_log.enableUartLog = true;
+debug_log.uartTrace     = true;
 debug_log.uartLog.$name = "CONFIG_UART0";
 
 mpu_armv71.allowExecute = false;

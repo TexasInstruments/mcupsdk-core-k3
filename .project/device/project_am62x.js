@@ -37,6 +37,7 @@ const component_file_list = [
     "test/kernel/smp_tests/schedule_highest_priority/configs/.project/project.js",
     "test/kernel/smp_tests/suspend_scheduler/configs/.project/project.js",
     "test/kernel/smp_tests/task_delete/configs/.project/project.js",
+    "test/drivers/mmcsd/test_mmcsd_fault_inject/configs/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
 ];
 
@@ -204,6 +205,9 @@ const example_file_list = [
     "test/drivers/mcasp/mcasp_multiinst_loopback/.project/project.js",
     "test/drivers/mcspi/mcspi/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_raw_io/.project/project.js",
+    "test/drivers/mmcsd/test_mmcsd_fs_io/.project/project.js",
+    "test/drivers/mmcsd/test_mmcsd_fault_inject/.project/project.js",
+    "test/drivers/mmcsd/test_mmcsd_system/.project/project.js",
     "test/drivers/ospi/.project/project.js",
     "test/drivers/pinmux_coverage/.project/project.js",
     "test/drivers/soc_coverage/.project/project.js",

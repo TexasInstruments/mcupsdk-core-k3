@@ -21,24 +21,26 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_mmcsd.$(PROFILE).out
+OUTNAME:=test_mmcsd_fs_io.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_mmcsd.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=test_mmcsd.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=test_mmcsd.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=test_mmcsd.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=test_mmcsd.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=test_mmcsd.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=test_mmcsd.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=test_mmcsd.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=test_mmcsd_fs_io.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=test_mmcsd_fs_io.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=test_mmcsd_fs_io.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=test_mmcsd_fs_io.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=test_mmcsd_fs_io.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=test_mmcsd_fs_io.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=test_mmcsd_fs_io.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=test_mmcsd_fs_io.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
 endif
 
 FILES_common := \
-	test_mmcsd.c \
+	mmcsd_test_common.c \
+	mmcsd_test_fs.c \
+	test_mmcsd_fs_io.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -50,8 +52,9 @@ FILES_common := \
 
 FILES_PATH_common = \
 	.. \
-	../.. \
-	../../.. \
+	../../ \
+	../../../ \
+	../../../../test_mmcsd_common/ \
 	generated \
 
 INCLUDES_common := \
@@ -60,7 +63,11 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/r5f \
-	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
+	-I${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/FreeRTOS-FAT/include/ \
+	-I${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable/ \
+	-I${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config/ \
+	-I../../../../test_mmcsd_common/ \
+	-I${MCU_PLUS_SDK_PATH}/test/unity \
 	-Igenerated \
 
 DEFINES_common := \
@@ -77,6 +84,9 @@ CFLAGS_common := \
 	-g \
 	-Wno-gnu-variable-sized-type-not-at-end \
 	-Wno-unused-function \
+	-Wno-unused-function \
+	-DENABLE_MT_TESTS \
+	-DENABLE_FS_TESTS \
 
 CFLAGS_cpp_common := \
 	-Wno-c99-designator \
@@ -100,25 +110,27 @@ LNK_FILES_common = \
 	linker.cmd \
 
 LIBS_PATH_common = \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
+	-lsciserver.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lrm_pm_hal.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lsciclient_direct.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lself_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lsciserver.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldm_stub.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lfreertos.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldrivers.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lunity.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lfreertos_fat.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
 	-llibsysbm.a \
 
@@ -130,28 +142,30 @@ LFLAGS_common = \
 
 
 LIBS_NAME = \
+	sciserver.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	rm_pm_hal.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	sciclient_direct.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	self_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
-	sciserver.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	dm_stub.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	freertos.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	drivers.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	unity.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	freertos_fat.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
 	libsysbm.a \
 
 LIBS_PREBUILD_NAME = \
 
 LIBS_PATH_NAME = \
-	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
+	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
+	${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	${CG_TOOL_ROOT}/lib \
 
 LIBS_PREBUILD_PATH_NAME = \
@@ -219,7 +233,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62x:r5fss0-0:freertos:ti-arm-clang test_mmcsd ...
+	@echo  Scrubing: am62x:r5fss0-0:freertos:ti-arm-clang test_mmcsd_fs_io ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

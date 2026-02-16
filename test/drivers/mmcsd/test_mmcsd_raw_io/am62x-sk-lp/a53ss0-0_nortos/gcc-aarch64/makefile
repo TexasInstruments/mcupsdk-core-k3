@@ -60,15 +60,16 @@ FILES_common := \
 
 FILES_PATH_common = \
 	.. \
-	../.. \
-	../../.. \
+	../../ \
+	../../../ \
 	../../../../test_mmcsd_common/ \
 	generated \
 
 INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source \
+	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
 	-I../../../../test_mmcsd_common/ \
-	-I${MCU_PLUS_SDK_PATH}/test/unity \
+	-I../../../ \
 	-Igenerated \
 
 DEFINES_common := \
@@ -89,8 +90,8 @@ CFLAGS_common := \
 	-Wno-unused-but-set-variable \
 	-fdata-sections \
 	-ffunction-sections \
-	-DENABLE_RAW_TESTS \
 	-Wno-unused-function \
+	-DENABLE_RAW_TESTS \
 
 CFLAGS_debug := \
 	-D_DEBUG_=1 \

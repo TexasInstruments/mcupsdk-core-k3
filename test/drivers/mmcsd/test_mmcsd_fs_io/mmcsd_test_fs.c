@@ -64,7 +64,9 @@ static TaskP_Object TestMMCSD_fatThread2TaskObj;
 /*                           Function Declarations                            */
 /* ========================================================================== */
 
+#if defined(ENABLE_MT_TESTS)
 static void TestMmcsd_initWrBuffer();
+#endif
 #if !defined (SOC_AM275X)  && !defined (C7_CORE)
 static void TestMmcsd_init40MWrBuffer(uint8_t startNum);
 #endif
@@ -220,7 +222,7 @@ void TestMmcsd_emmcNestedDirectories(void *args)
     char filePath[100] = {0};
     uint8_t fillByte[TEST_MMCSD_FILE_COUNT] = {0};
     uint32_t f = 0, size = 0;
-    uint32_t formatNeeded = 0; 
+    uint32_t formatNeeded = 0;
     FF_FILE* testFile = NULL;
     uint32_t blockSize;
     FF_Error_t errVal;
@@ -420,6 +422,7 @@ static void fatThread2(void *pvParameters)
  *
  * \return None.
  */
+#if !defined(SOC_AM275X)
 void TestMmcsd_concurrentFatSdTransfer(void *args)
 {
     int32_t status;
@@ -503,6 +506,7 @@ void TestMmcsd_concurrentFatSdTransfer(void *args)
     TaskP_destruct(&TestMMCSD_fatThread2TaskObj);
     Drivers_mmcsdClose();
 }
+#endif
 
 /**
  * \brief Runs concurrent FAT eMMC file I/O threads to verify
@@ -634,6 +638,7 @@ void TestMmcsd_concurrentFatEmmcTransfer(void *args)
  *
  * \return None.
  */
+#if !defined(SOC_AM275X)
 void TestMmcsd_testConcurrentFatEmmcSdTransfer(void *args)
 {
     int32_t status;
@@ -750,6 +755,7 @@ void TestMmcsd_testConcurrentFatEmmcSdTransfer(void *args)
     Drivers_mmcsdClose();
 }
 #endif
+#endif
 
 /**
  * \brief Validates nested directory file I/O on SD using
@@ -773,6 +779,7 @@ void TestMmcsd_testConcurrentFatEmmcSdTransfer(void *args)
  *
  * \return None.
  */
+#if !defined(SOC_AM275X)
 void TestMmcsd_sdNestedDirectories(void *args)
 {
     int32_t retVal = SystemP_SUCCESS;
@@ -891,6 +898,7 @@ void TestMmcsd_sdNestedDirectories(void *args)
     }
     Drivers_mmcsdClose();
 }
+#endif
 
 /**
  * \brief Executes SD file I/O validation to verify
@@ -914,6 +922,7 @@ void TestMmcsd_sdNestedDirectories(void *args)
  *
  * \return None.
  */
+#if !defined(SOC_AM275X)
 void TestMmcsd_sdFileIo(void *args)
 {
     int32_t retVal = SystemP_SUCCESS;
@@ -1131,6 +1140,7 @@ void TestMmcsd_largeSdFileIo(void *args)
     Drivers_mmcsdClose();
 }
 #endif
+#endif
 
 /* ========================================================================== */
 /*                         Static  Function Definitions                       */
@@ -1140,7 +1150,7 @@ void TestMmcsd_largeSdFileIo(void *args)
 static uint32_t TestMmcsd_isFormatNeeded(uint32_t partitionSize, uint32_t freeSize)
 {
     uint32_t retVal;
-    
+
     /* If the free size is greater than original size or if there is
      * low space left in the FAT partition then a format is needed
      */
@@ -1156,6 +1166,7 @@ static uint32_t TestMmcsd_isFormatNeeded(uint32_t partitionSize, uint32_t freeSi
 }
 
 /* Initializes the write buffers for multithreaded FAT tests. */
+#if defined(ENABLE_MT_TESTS)
 static void TestMmcsd_initWrBuffer()
 {
     uint32_t i;
@@ -1165,6 +1176,7 @@ static void TestMmcsd_initWrBuffer()
         TestMMCSD_task2Wbuf[i] = ((i + 1) % 256);
     }
 }
+#endif
 
 #if !defined (SOC_AM275X)  && !defined (C7_CORE)
 /* Initializes a 1MB write buffer with a starting value. */

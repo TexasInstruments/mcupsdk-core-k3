@@ -118,12 +118,18 @@ void TestMmcsd_cmdTimeOutFaultInjection(void *args);
 void TestMmcsd_emmcCIDMonthFaultInjection(void *args);
 void TestMmcsd_emmcCIDYearFaultInjection(void *args);
 void TestMmcsd_emmcECSDSdRevFaultInjection(void *args);
+/* AM275X: Only one MMCSD peripheral (MMC0) — no CONFIG_MMCSD_SD instance, so SD CSD version tests are guarded out */
+#if !defined (SOC_AM275X)
 void TestMmcsd_sdCSDVer0FaultInjection(void *args);
 void TestMmcsd_sdCSDVer2FaultInjection(void *args);
 void TestMmcsd_sdCSDVer3FaultInjection(void *args);
+#endif
 void TestMmcsd_emmcWarmRstFailFaultInjection(void *args);
 void TestMmcsd_emmcDsrFaultInjection(void *args);
+/* AM275X: Uses SW PHY (manual tuning only) — auto-tuning path would hang the driver, so this test is guarded out */
+#if !defined (SOC_AM275X)
 void TestMmcsd_emmcTuningFaultInjection(void *args);
+#endif
 
 /* ========================================================================== */
 /*                           Function Definitions                             */
@@ -180,13 +186,19 @@ void test_main(void *args)
     RUN_TEST(TestMmcsd_cmdTimeOutFaultInjection, 8699, NULL);
     RUN_TEST(TestMmcsd_emmcWarmRstFailFaultInjection, 8327, NULL);
     RUN_TEST(TestMmcsd_emmcDsrFaultInjection, 8321, NULL);
-    RUN_TEST(TestMmcsd_emmcTuningFaultInjection, 8000, NULL);
+/* AM275X: Uses SW PHY (manual tuning only) — auto-tuning path would hang the driver, so this test is guarded out */
+#if !defined (SOC_AM275X)
+    RUN_TEST(TestMmcsd_emmcTuningFaultInjection, 11606, NULL);
+#endif
     RUN_TEST(TestMmcsd_emmcCIDMonthFaultInjection, 8320, NULL);
     RUN_TEST(TestMmcsd_emmcCIDYearFaultInjection, 8307, NULL);
     RUN_TEST(TestMmcsd_emmcECSDSdRevFaultInjection, 9246, NULL);
+/* AM275X: Only one MMCSD peripheral (MMC0) — no CONFIG_MMCSD_SD instance, so SD CSD version tests are guarded out */
+#if !defined (SOC_AM275X)
     RUN_TEST(TestMmcsd_sdCSDVer0FaultInjection, 9247, NULL);
     RUN_TEST(TestMmcsd_sdCSDVer2FaultInjection, 9248, NULL);
     RUN_TEST(TestMmcsd_sdCSDVer3FaultInjection, 9249, NULL);
+#endif
 
     UNITY_END();
 
@@ -339,14 +351,14 @@ void TestMmcsd_faultInjectStubHandler(uint32_t numArgs, ...)
     uint16_t *normalVal;
     uint16_t *errVal;
     uint16_t dummyVal = 0;
-    
+
     if(TestMMCSD_currFaultType == TEST_MMCSD_DATA_NONE_ERROR)
     {
         return;
     }
 
     va_start(args, numArgs);
-    
+
     if(numArgs == 2)
     {
         normalVal = va_arg(args, uint16_t*);
@@ -548,7 +560,7 @@ void TestMmcsd_dataCrcFaultInjection(void *args)
 
     /* Set the fault flag */
     TestMMCSD_currFaultType = TEST_MMCSD_DATA_CRC_ERROR;
-    
+
     memset(TestMMCSD_rxBuf, 0, TEST_MMCSD_DATA_SIZE);
     retVal = MMCSD_read(handle, TestMMCSD_rxBuf, TEST_MMCSD_EMMC_START_BLK, numBlocksPerIter);
     TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
@@ -594,7 +606,7 @@ void TestMmcsd_dataCrcFaultInjectionHS400(void *args)
 
     /* Set the fault flag */
     TestMMCSD_currFaultType = TEST_MMCSD_DATA_CRC_ERROR;
-    
+
     memset(TestMMCSD_rxBuf, 0, TEST_MMCSD_DATA_SIZE);
     retVal = MMCSD_read(handle, TestMMCSD_rxBuf, TEST_MMCSD_EMMC_START_BLK, numBlocksPerIter);
     TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
@@ -995,7 +1007,7 @@ void TestMmcsd_emmcWarmRstFailFaultInjection(void *args)
 }
 
 /**
- * \brief Test to create EMMC DSR 
+ * \brief Test to create EMMC DSR
  *
  * Test Category: Fault injection test.
  *
@@ -1022,7 +1034,7 @@ void TestMmcsd_emmcDsrFaultInjection(void *args)
 }
 
 /**
- * \brief Test to create EMMC tuning error 
+ * \brief Test to create EMMC tuning error
  *
  * Test Category: Fault injection test.
  *
@@ -1034,6 +1046,7 @@ void TestMmcsd_emmcDsrFaultInjection(void *args)
  *
  * \return None.
  */
+#if !defined (SOC_AM275X)
 void TestMmcsd_emmcTuningFaultInjection(void *args)
 {
     MMCSD_Handle handle;
@@ -1049,6 +1062,7 @@ void TestMmcsd_emmcTuningFaultInjection(void *args)
     MMCSD_close(handle);
     gMmcsdAttrs[CONFIG_MMCSD_EMMC].tuningType = MMCSD_PHY_TUNING_TYPE_MANUAL;
 }
+#endif
 
 /**
  * \brief Test to create CSD version error
@@ -1063,19 +1077,23 @@ void TestMmcsd_emmcTuningFaultInjection(void *args)
  *
  * \return None.
  */
+#if !defined (SOC_AM275X)
 void TestMmcsd_sdCSDVer0FaultInjection(void *args)
 {
     MMCSD_Handle handle;
 
     /* Set the fault flag */
     TestMMCSD_currFaultType = TEST_MMCSD_SD_CSD_CSDVER0_ERROR;
-    gMmcsdAttrs[CONFIG_MMCSD_SD].supportedModes = TestMMCSD_sdModes[0];
+#if !defined (SOC_AM275X)
+    gMmcsdAttrs[CONFIG_MMCSD_SD].supportedModes = TestMMCSD_modes[0];
+#endif
     handle = MMCSD_open(1, &gMmcsdParams[1]);
     TEST_ASSERT_NOT_NULL(handle);
 
     /* cleanup */
     MMCSD_close(handle);
 }
+#endif
 
 /**
  * \brief Test to create CSD version error
@@ -1090,19 +1108,24 @@ void TestMmcsd_sdCSDVer0FaultInjection(void *args)
  *
  * \return None.
  */
+#if !defined (SOC_AM275X)
 void TestMmcsd_sdCSDVer2FaultInjection(void *args)
 {
     MMCSD_Handle handle;
 
     /* Set the fault flag */
     TestMMCSD_currFaultType = TEST_MMCSD_SD_CSD_CSDVER2_ERROR;
-    gMmcsdAttrs[CONFIG_MMCSD_SD].supportedModes = TestMMCSD_sdModes[0];
+#if !defined (SOC_AM275X)
+    gMmcsdAttrs[CONFIG_MMCSD_SD].supportedModes = TestMMCSD_modes[0];
+#endif
+
     handle = MMCSD_open(1, &gMmcsdParams[1]);
     TEST_ASSERT_NOT_NULL(handle);
 
     /* cleanup */
     MMCSD_close(handle);
 }
+#endif
 
 /**
  * \brief Test to create CSD version error
@@ -1117,6 +1140,7 @@ void TestMmcsd_sdCSDVer2FaultInjection(void *args)
  *
  * \return None.
  */
+#if !defined (SOC_AM275X)
 void TestMmcsd_sdCSDVer3FaultInjection(void *args)
 {
     MMCSD_Handle handle;
@@ -1131,3 +1155,5 @@ void TestMmcsd_sdCSDVer3FaultInjection(void *args)
     MMCSD_close(handle);
 
 }
+#endif
+

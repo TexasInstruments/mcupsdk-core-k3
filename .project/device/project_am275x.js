@@ -30,6 +30,7 @@ const component_file_list = [
     "source/signal_processing/.project/project.js",
     "test/unity/.project/project.js",
     "test/drivers/i2c/test_i2c_fault_inject/configs/.project/project_am275x.js",
+    "test/drivers/mmcsd/test_mmcsd_fault_inject/configs/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
 ];
 
@@ -258,6 +259,10 @@ const example_file_list = [
     "test/drivers/mcspi/mcspi/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_raw_io/.project/project_am275x_wkupr5.js",
     "test/drivers/mmcsd/test_mmcsd_raw_io/.project/project.js",
+    "test/drivers/mmcsd/test_mmcsd_fault_inject/.project/project.js",
+    "test/drivers/mmcsd/test_mmcsd_fault_inject/.project/project_am275x_wkupr5.js",
+    "test/drivers/mmcsd/test_mmcsd_fs_io/.project/project.js",
+    "test/drivers/mmcsd/test_mmcsd_fs_io/.project/project_am275x_wkupr5.js",
     "test/drivers/optiflash/.project/project.js",
     "test/drivers/ospi/.project/project_am275x_wkupr5.js",
     "test/drivers/ospi/.project/project.js",

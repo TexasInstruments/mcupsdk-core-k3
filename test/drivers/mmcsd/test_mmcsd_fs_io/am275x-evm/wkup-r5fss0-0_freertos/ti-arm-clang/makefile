@@ -21,13 +21,13 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_mmcsd.$(PROFILE).out
+OUTNAME:=test_mmcsd_fs_io.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME_GP:=test_mmcsd.$(PROFILE).tiimage
-BOOTIMAGE_NAME_HS:=test_mmcsd.$(PROFILE).hs.tiimage
-BOOTIMAGE_NAME_HS_FS:=test_mmcsd.$(PROFILE).hs_fs.tiimage
-BOOTIMAGE_BIN_NAME:=test_mmcsd.$(PROFILE).bin
+BOOTIMAGE_NAME_GP:=test_mmcsd_fs_io.$(PROFILE).tiimage
+BOOTIMAGE_NAME_HS:=test_mmcsd_fs_io.$(PROFILE).hs.tiimage
+BOOTIMAGE_NAME_HS_FS:=test_mmcsd_fs_io.$(PROFILE).hs_fs.tiimage
+BOOTIMAGE_BIN_NAME:=test_mmcsd_fs_io.$(PROFILE).bin
 
 ifeq ($(DEVICE_TYPE),HS)
 	BOOTIMAGE_NAME=$(BOOTIMAGE_NAME_HS)
@@ -36,7 +36,9 @@ else
 endif
 
 FILES_common := \
-	test_mmcsd.c \
+	mmcsd_test_common.c \
+	mmcsd_test_fs.c \
+	test_mmcsd_fs_io.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -50,14 +52,19 @@ FILES_PATH_common = \
 	.. \
 	../.. \
 	../../.. \
+	../../../../test_mmcsd_common/ \
 	generated \
 
 INCLUDES_common := \
 	-I${CG_TOOL_ROOT}/include/c \
 	-I${MCU_PLUS_SDK_PATH}/source \
+	-I${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/FreeRTOS-FAT/include \
+	-I${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable \
+	-I${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am275x/r5f \
+	-I../../../../test_mmcsd_common/ \
 	-I${MCU_PLUS_SDK_PATH}/test/unity \
 	-Igenerated \
 
@@ -75,6 +82,7 @@ CFLAGS_common := \
 	-g \
 	-Wno-gnu-variable-sized-type-not-at-end \
 	-Wno-unused-function \
+	-DENABLE_FS_TESTS \
 
 CFLAGS_cpp_common := \
 	-Wno-c99-designator \
@@ -102,20 +110,23 @@ LIBS_PATH_common = \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/board/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
-	-lsciserver.am275x.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	-lrm_pm_hal.am275x.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	-lsciclient_direct.am275x.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	-lself_reset.am275x.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	-lfreertos.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldrivers.am275x.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	-lboard.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lsciserver.am275x.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
+	-lfreertos_fat.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lunity.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
 	-llibsysbm.a \
@@ -128,13 +139,14 @@ LFLAGS_common = \
 
 
 LIBS_NAME = \
-	sciserver.am275x.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	rm_pm_hal.am275x.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	sciclient_direct.am275x.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	self_reset.am275x.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	freertos.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
 	drivers.am275x.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	board.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
+	sciserver.am275x.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
+	freertos_fat.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
 	unity.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
 	libsysbm.a \
@@ -144,9 +156,11 @@ LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	${MCU_PLUS_SDK_PATH}/source/board/lib \
+	${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	${CG_TOOL_ROOT}/lib \
 
@@ -206,7 +220,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am275x:wkup-r5fss0-0:freertos:ti-arm-clang test_mmcsd ...
+	@echo  Scrubing: am275x:wkup-r5fss0-0:freertos:ti-arm-clang test_mmcsd_fs_io ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

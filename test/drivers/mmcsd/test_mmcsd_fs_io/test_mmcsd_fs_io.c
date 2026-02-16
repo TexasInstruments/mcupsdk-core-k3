@@ -87,17 +87,19 @@ void test_main(void *args)
 
     RUN_TEST(TestMmcsd_emmcFileIo, 6630, NULL);
     RUN_TEST(TestMmcsd_emmcNestedDirectories,  8317, NULL);
+/* AM275X: Only one MMCSD peripheral (MMC0) — SD tests need CONFIG_MMCSD_SD which doesn't exist; wkup-R5 has no ENABLE_MT_TESTS to avoid DM conflicts */
 #if defined(ENABLE_MT_TESTS)
     RUN_TEST(TestMmcsd_concurrentFatEmmcTransfer,  8341, NULL);
+    #if !defined (SOC_AM275X)
     RUN_TEST(TestMmcsd_concurrentFatSdTransfer,  8340, NULL);
     RUN_TEST(TestMmcsd_testConcurrentFatEmmcSdTransfer,  8323, NULL);
     RUN_TEST(TestMmcsd_sdFileIo,  1944, NULL);
     RUN_TEST(TestMmcsd_sdNestedDirectories,  8329, NULL);
-#if !defined (SOC_AM275X) && !defined (C7_CORE)
+    #if !defined (SOC_AM275X) && !defined (C7_CORE)
     RUN_TEST(TestMmcsd_largeSdFileIo,  8342, NULL);
-#endif
+    #endif
+    #endif
 #endif
 
     UNITY_END();
 }
-

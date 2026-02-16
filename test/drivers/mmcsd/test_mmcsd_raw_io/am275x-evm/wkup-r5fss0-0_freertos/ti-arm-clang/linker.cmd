@@ -15,13 +15,16 @@
  *   uses this stack.
  * - After vTaskStartScheduler() each task created in FreeRTOS has its own stack
  */
---stack_size=0x4000
+--stack_size=0x8000
 /* This is the heap size for malloc() API in NORTOS and FreeRTOS
  * This is also the heap used by pvPortMalloc in FreeRTOS
  */
---heap_size=0x8000
--e_vectors /* for SBL make sure to set entry point to _vectors_sbl */
+--heap_size=0x2000
 
+/* ATCM base address */
+gAtcmBaseAddr = 0x78000000;
+
+-e_vectors_sbl /* for SBL make sure to set entry point to _vectors_sbl */
 
 /* This is the size of stack when R5 is in IRQ mode
  * In NORTOS,
@@ -78,6 +81,9 @@ SECTIONS
         RUN_END(__BSS_END)
     } > WKUP_R5_MSRAM
 
+    /* DM RM/PM HAL trace buffer at fixed MSRAM location */
+    .dm_rmpm_trace_buf : (NOLOAD) {} > WKUP_DM_RMPM_TRACE
+
     /* USB or any other LLD buffer for benchmarking */
     .benchmark_buffer (NOLOAD) {} ALIGN (8) > WKUP_R5_MSRAM
 
@@ -91,6 +97,9 @@ SECTIONS
         .fiqstack: {. = . + __FIQ_STACK_SIZE;} align(8)
         RUN_START(__FIQ_STACK_START)
         RUN_END(__FIQ_STACK_END)
+        } > WKUP_R5_TCMA
+
+    GROUP {
         .svcstack: {. = . + __SVC_STACK_SIZE;} align(8)
         RUN_START(__SVC_STACK_START)
         RUN_END(__SVC_STACK_END)
@@ -116,11 +125,13 @@ MEMORY
     R5F_TCMA       (RWIX)      : ORIGIN = 0x00000040 LENGTH = 0x00007FC0
     R5F_TCMB_VEC   (RWIX)      : ORIGIN = 0x41010000 LENGTH = 0x00000040
     R5F_TCMB       (RWIX)      : ORIGIN = 0x41010040 LENGTH = 0x00007FC0
+    WKUP_R5_TCMA   (RWIX)      : ORIGIN = 0x78000000 LENGTH = 0x00008000
 
-    WKUP_R5_MSRAM_VEC (RWIX)     : ORIGIN = 0x72000000      LENGTH = 0x40 // for vectors
-    WKUP_R5_MSRAM (RWIX)         : ORIGIN = 0x72000000+0x40 LENGTH = 0x000A0000-0x40 // 640 KB for wakeup core
+    WKUP_R5_MSRAM_VEC (RWIX)     : ORIGIN = 0x72000000 LENGTH = 0x40       // for vectors
+    WKUP_R5_MSRAM (RWIX)         : ORIGIN = 0x72000040 LENGTH = 0x0007AFC0 // 492 KB for wakeup core
+    WKUP_DM_RMPM_TRACE (RWIX)    : ORIGIN = 0x7207B000 LENGTH = 0x00005000 // 20 KB for DM RM/PM HAL trace buffer
 
-    R50_0_OCRAM   (RWIX)         : ORIGIN = 0x720A0000 LENGTH = 0x000E0000 // 896 KB for r5fss0-0 core
+    R50_0_OCRAM   (RWIX)         : ORIGIN = 0x72080000 LENGTH = 0x00100000 // 1 MB for r5fss0-0 core
     R50_1_OCRAM   (RWIX)         : ORIGIN = 0x72180000 LENGTH = 0x00080000 // 512 KB for r5fss0-1 core
     R51_0_OCRAM   (RWIX)         : ORIGIN = 0x72280000 LENGTH = 0x00080000 // 512 KB for r5fss1-0 core
     R51_1_OCRAM   (RWIX)         : ORIGIN = 0x72300000 LENGTH = 0x00080000 // 512 KB for r5fss1-1 core

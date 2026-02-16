@@ -127,6 +127,7 @@ void * TaskSupport_setupTaskStack(StackType_t * pxStackArrayEndAddress, StackTyp
     uint32_t tskStackSize = (uintptr_t)pxStackArrayEndAddress - (uintptr_t)pxStackArrayStartAddress;
     uint32_t align;
     StackType_t * pxStackArrayStartAddressAligned;
+    uint32_t tempStackSize = tskStackSize;
 
     align = TaskSupport_getStackAlignment();
 
@@ -153,18 +154,36 @@ void * TaskSupport_setupTaskStack(StackType_t * pxStackArrayEndAddress, StackTyp
         pxStackArrayStartAddressAligned = pxStackArrayStartAddress;
     }
 
-    DebugP_assert(tskStackSize >= TaskSupport_defaultStackSize);
+    /* Only half of TaskSupport_defaultStackSize (16KB/2) is used for the task. 
+       The upper 8KB will be used for TSC. */
+    DebugP_assert(tskStackSize >= ((TaskSupport_defaultStackSize * sizeof(StackType_t))/2U));
 
-    if (tskStackSize < TaskSupport_defaultStackSize) {
+    if (tskStackSize < TaskSupport_defaultStackSize)
+    {
         sp = NULL;
     }
     else
     {
-        tcspBase = (void *)(((uintptr_t)pxStackArrayStartAddressAligned + tskStackSize) - TCSP_SIZE);
+        /* Check if stack alignment overhead is significant (>= half default stack size - 8 bytes).
+           If overhead is high, place TCSP immediately after aligned stack to maximize available space.
+           Otherwise, place TCSP with standard TCSP_SIZE offset from aligned stack end. */
+        if((tempStackSize - tskStackSize) >= (((TaskSupport_defaultStackSize * sizeof(StackType_t))/2U) - (2U*sizeof(StackType_t))))
+        {
+            tcspBase = (void *)(((uintptr_t)pxStackArrayStartAddressAligned + tskStackSize));
+        }
+        else
+        {
+            tcspBase = (void *)(((uintptr_t)pxStackArrayStartAddressAligned + tskStackSize) - TCSP_SIZE);
+        }
+
         if (align > 0U)
         {
             DebugP_assert(((uintptr_t)tcspBase & (align - 1U)) == 0U);
         }
+
+        /* Check if TCSP and stack address are not the same */
+        DebugP_assert((tcspBase != (void *)pxStackArrayStartAddressAligned) ? 1 : 0);
+
         /* subtract 16 from size to account for 16-byte free area @SP */
         sp = TaskSupport_buildTaskStack((void *)((size_t)tcspBase - 16U), fxn,
                                         exitPoint, enter, pvParameters, pxCode,

@@ -532,6 +532,10 @@ POSIX                   | FreeRTOS+POSIX        | Similar features, see details 
 - mqueue, timer also uses dynamic alloc APIs
 - Use this layer if application portability to other POSIX OS is important, else it is recommended to use direct FreeRTOS APIs or SDK DPL APIs
 
+\cond SOC_AM62AX || SOC_AM62DX || SOC_AM275X
+## FreeRTOS Task Stack usage for C7x
 
+- The minimum stack usage for a C7x stack needs to be 16KB with the stack aligned at 16KB memory boundary.
+- The upper 8KB aligned 8KB of this stack will be used for TSC, and the rest will be used as the task stack.
 
-
+\endcond

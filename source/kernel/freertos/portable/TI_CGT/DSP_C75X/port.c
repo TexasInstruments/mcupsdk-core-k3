@@ -396,7 +396,8 @@ void vApplicationGetIdleTaskMemory( StaticTask_t ** ppxIdleTaskTCBBuffer,
  * the stack and so not exists after this function exits.
  */
 static StaticTask_t xIdleTaskTCB;
-static StackType_t uxIdleTaskStack[ configMINIMAL_STACK_SIZE ];
+/* Align to 16KB so that the upper 8KB will be 8KB aligned (used for TCSP) */
+static StackType_t uxIdleTaskStack[ configMINIMAL_STACK_SIZE ] __attribute__((aligned(16*1024)));;
 
     /* Pass out a pointer to the StaticTask_t structure in which the Idle task’s
      * state will be stored.
@@ -410,7 +411,10 @@ static StackType_t uxIdleTaskStack[ configMINIMAL_STACK_SIZE ];
      * Note that, as the array is necessarily of type StackType_t,
      * configMINIMAL_STACK_SIZE is specified in words, not bytes.
      */
-    *pulIdleTaskStackSize = sizeof(uxIdleTaskStack)/sizeof(uxIdleTaskStack[0]);
+    /* Stack size is total size - stack depth type, so that top of stack is pointing to the memory boundary. 
+     * Similar implimentation in freertos task creation.
+     */
+    *pulIdleTaskStackSize = (sizeof(uxIdleTaskStack)/sizeof(uxIdleTaskStack[0])) - (sizeof(configSTACK_DEPTH_TYPE));
 }
 
 /* configSUPPORT_STATIC_ALLOCATION and configUSE_TIMERS are both set to 1, so the
@@ -426,7 +430,8 @@ void vApplicationGetTimerTaskMemory( StaticTask_t ** ppxTimerTaskTCBBuffer,
  * the stack and so not exists after this function exits.
  */
 static StaticTask_t xTimerTaskTCB;
-static StackType_t uxTimerTaskStack[ configMINIMAL_STACK_SIZE ];
+/* Align to 16KB so that the upper 8KB will be 8KB aligned (used for TCSP) */
+static StackType_t uxTimerTaskStack[ configMINIMAL_STACK_SIZE ] __attribute__((aligned(16*1024)));;
 
     /* Pass out a pointer to the StaticTask_t structure in which the Timer
      * task's state will be stored.
@@ -440,7 +445,10 @@ static StackType_t uxTimerTaskStack[ configMINIMAL_STACK_SIZE ];
      * Note that, as the array is necessarily of type StackType_t,
      * configTIMER_TASK_STACK_DEPTH is specified in words, not bytes.
      */
-    *pulTimerTaskStackSize = sizeof(uxTimerTaskStack)/sizeof(uxTimerTaskStack[0]);
+    /* Stack size is total size - stack depth type, so that top of stack is pointing to the memory boundary. 
+     * Similar implimentation in freertos task creation.
+     */
+    *pulTimerTaskStackSize = (sizeof(uxTimerTaskStack)/sizeof(uxTimerTaskStack[0])) - (sizeof(configSTACK_DEPTH_TYPE));
 }
 
 

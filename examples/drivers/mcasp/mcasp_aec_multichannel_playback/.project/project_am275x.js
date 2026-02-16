@@ -90,7 +90,7 @@ const templates_freertos_r5f =
         output: "../main.c",
         options: {
             entryFunction: "mcasp_playback",
-            stackSize: 64*1024,        },
+            stackSize: 16*1024,        },
     }
 ];
 
@@ -101,7 +101,7 @@ const templates_freertos_c75 =
         output: "../main.c",
         options: {
             entryFunction: "mcasp_playback",
-            stackSize: 64*1024,
+            stackSize: 16*1024,
         },
     }
 ];

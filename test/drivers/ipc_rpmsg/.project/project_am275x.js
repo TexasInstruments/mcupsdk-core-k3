@@ -89,7 +89,7 @@ const templates_freertos_c75_0 =
         output: "../main.c",
         options: {
             entryFunction: "test_main",
-            stackSize: 64*1024,
+            stackSize: 16*1024,
         },
     }
 ];
@@ -101,7 +101,7 @@ const templates_freertos_c75_1 =
         output: "../main.c",
         options: {
             entryFunction: "test_main",
-            stackSize: 64*1024,
+            stackSize: 16*1024,
         },
     }
 ];

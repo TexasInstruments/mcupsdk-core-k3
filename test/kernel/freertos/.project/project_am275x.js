@@ -164,7 +164,7 @@ const templates_c75 =
         output: "../main.c",
         options: {
             entryFunction: "test_freertos_main",
-            stackSize: 64*1024,
+            stackSize: 16*1024,
         },
     }
 ];

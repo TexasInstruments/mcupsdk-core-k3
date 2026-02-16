@@ -153,7 +153,7 @@ const templates_freertos_c75_0 =
         output: "../main.c",
         options: {
             entryFunction: "hyperRam_perf_app_main",
-            stackSize: 64*1024,
+            stackSize: 16*1024,
         },
     }
 ];

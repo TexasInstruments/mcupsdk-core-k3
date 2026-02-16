@@ -103,7 +103,7 @@ const templates_freertos_c75 =
         output: "../main.c",
         options: {
             entryFunction: "udma_sw_trigger_main",
-            stackSize: 64*1024,
+            stackSize: 16*1024,
         },
     }
 ];

@@ -190,7 +190,7 @@ const templates_freertos_c75 =
         output: "../main.c",
         options: {
             entryFunction: "epwm_duty_cycle_sync_main",
-            stackSize: 64*1024,
+            stackSize: 16*1024,
         },
     }
 ];

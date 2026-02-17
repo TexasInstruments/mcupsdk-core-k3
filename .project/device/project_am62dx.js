@@ -252,6 +252,8 @@ const example_file_list = [
     "test/board/flash/.project/project.js",
     "test/drivers/ddr/.project/project.js",
     "test/drivers/boot/sbl_test_ddr_copy/.project/project.js",
+    "test/drivers/boot/sbl_negative_tests/.project/project.js",
+    "test/drivers/boot/sbl_test_media_boot/.project/project.js",
     "test/drivers/boot/sbl_uart_custom_boardconfig/.project/project.js",
     "test/drivers/device_manager/sciclient_direct/.project/project.js",
     "test/drivers/device_manager/sciclient_tisci_msg/.project/project.js",

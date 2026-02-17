@@ -218,7 +218,7 @@ const templates_freertos_c75 =
         output: "../main.cpp",
         options: {
             entryFunction: "hello_world_main",
-            stackSize: 32*1024,
+            stackSize: 16*1024,
         },
     }
 ];

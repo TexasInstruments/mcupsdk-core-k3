@@ -162,7 +162,7 @@ const templates_freertos_c75_0 =
         output: "../main.cpp",
         options: {
             entryFunction: "fft2d_dsp_main",
-            stackSize: 64*1024,
+            stackSize: 16*1024,
         },
     }
 ];

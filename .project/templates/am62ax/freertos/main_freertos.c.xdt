@@ -59,7 +59,11 @@
 #define MAIN_TASK_PRI  (`taskPri`)
 
 #define MAIN_TASK_SIZE (`stackSize`U/sizeof(configSTACK_DEPTH_TYPE))
+% if (args.project.cgt == "ti-c7000") {
+StackType_t gMainTaskStack[MAIN_TASK_SIZE] __attribute__((aligned(16*1024)));
+% } else {
 StackType_t gMainTaskStack[MAIN_TASK_SIZE] __attribute__((aligned(32)));
+% }
 
 StaticTask_t gMainTaskObj;
 TaskHandle_t gMainTask;

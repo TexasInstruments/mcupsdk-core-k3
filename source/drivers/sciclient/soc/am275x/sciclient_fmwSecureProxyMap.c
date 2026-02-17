@@ -88,7 +88,7 @@ const Sciclient_MapStruct_t gSciclientMap[SCICLIENT_CONTEXT_MAX_NUM] =
         TISCI_SEC_PROXY_WKUP_0_R5_0_READ_RESPONSE_THREAD_ID,
 
         /** Notification Interrupt Number */
-        0
+        CSLR_WKUP_R5FSS0_CORE0_INTR_DMASS0_INTAGGR_0_INTAGGR_VINTR_PEND_40
 
     },
 
@@ -106,7 +106,7 @@ const Sciclient_MapStruct_t gSciclientMap[SCICLIENT_CONTEXT_MAX_NUM] =
         TISCI_SEC_PROXY_WKUP_0_R5_1_READ_RESPONSE_THREAD_ID,
 
         /** Notification Interrupt Number */
-        0
+        CSLR_WKUP_R5FSS0_CORE0_INTR_DMASS0_INTAGGR_0_INTAGGR_VINTR_PEND_41
 
     },
 
@@ -124,7 +124,7 @@ const Sciclient_MapStruct_t gSciclientMap[SCICLIENT_CONTEXT_MAX_NUM] =
         TISCI_SEC_PROXY_MAIN_0_R5_0_READ_RESPONSE_THREAD_ID,
 
         /** Notification Interrupt Number */
-        0
+        CSLR_R5FSS0_CORE0_INTR_DMASS0_INTAGGR_0_INTAGGR_VINTR_PEND_152
 
     },
 
@@ -142,7 +142,7 @@ const Sciclient_MapStruct_t gSciclientMap[SCICLIENT_CONTEXT_MAX_NUM] =
         TISCI_SEC_PROXY_MAIN_0_R5_1_READ_RESPONSE_THREAD_ID,
 
         /** Notification Interrupt Number */
-        0
+        CSLR_R5FSS0_CORE0_INTR_DMASS0_INTAGGR_0_INTAGGR_VINTR_PEND_153
 
     },
 
@@ -160,7 +160,7 @@ const Sciclient_MapStruct_t gSciclientMap[SCICLIENT_CONTEXT_MAX_NUM] =
         TISCI_SEC_PROXY_MAIN_0_R5_2_READ_RESPONSE_THREAD_ID,
 
         /** Notification Interrupt Number */
-        0
+        CSLR_R5FSS0_CORE1_INTR_DMASS0_INTAGGR_0_INTAGGR_VINTR_PEND_154
 
     },
 
@@ -178,7 +178,7 @@ const Sciclient_MapStruct_t gSciclientMap[SCICLIENT_CONTEXT_MAX_NUM] =
         TISCI_SEC_PROXY_MAIN_0_R5_3_READ_RESPONSE_THREAD_ID,
 
         /** Notification Interrupt Number */
-        0
+        CSLR_R5FSS0_CORE1_INTR_DMASS0_INTAGGR_0_INTAGGR_VINTR_PEND_155
 
     },
 
@@ -196,7 +196,7 @@ const Sciclient_MapStruct_t gSciclientMap[SCICLIENT_CONTEXT_MAX_NUM] =
         TISCI_SEC_PROXY_MAIN_1_R5_0_READ_RESPONSE_THREAD_ID,
 
         /** Notification Interrupt Number */
-        0
+        CSLR_R5FSS1_CORE0_INTR_DMASS0_INTAGGR_0_INTAGGR_VINTR_PEND_0
 
     },
 
@@ -214,7 +214,7 @@ const Sciclient_MapStruct_t gSciclientMap[SCICLIENT_CONTEXT_MAX_NUM] =
         TISCI_SEC_PROXY_MAIN_1_R5_1_READ_RESPONSE_THREAD_ID,
 
         /** Notification Interrupt Number */
-        0
+        CSLR_R5FSS1_CORE0_INTR_DMASS0_INTAGGR_0_INTAGGR_VINTR_PEND_1
 
     },
 
@@ -232,7 +232,7 @@ const Sciclient_MapStruct_t gSciclientMap[SCICLIENT_CONTEXT_MAX_NUM] =
         TISCI_SEC_PROXY_MAIN_1_R5_2_READ_RESPONSE_THREAD_ID,
 
         /** Notification Interrupt Number */
-        0
+        CSLR_R5FSS1_CORE1_INTR_DMASS0_INTAGGR_0_INTAGGR_VINTR_PEND_2
 
     },
 
@@ -250,7 +250,7 @@ const Sciclient_MapStruct_t gSciclientMap[SCICLIENT_CONTEXT_MAX_NUM] =
         TISCI_SEC_PROXY_MAIN_1_R5_3_READ_RESPONSE_THREAD_ID,
 
         /** Notification Interrupt Number */
-        0
+        CSLR_R5FSS1_CORE1_INTR_DMASS0_INTAGGR_0_INTAGGR_VINTR_PEND_3
 
     },
 
@@ -268,7 +268,7 @@ const Sciclient_MapStruct_t gSciclientMap[SCICLIENT_CONTEXT_MAX_NUM] =
         TISCI_SEC_PROXY_C7X_0_0_READ_RESPONSE_THREAD_ID,
 
         /** Notification Interrupt Number.**/
-        0U
+        CSLR_C7X256V0_CLEC_GIC_SPI_DMASS0_INTAGGR_0_INTAGGR_VINTR_PEND_32
 
     },
 
@@ -286,7 +286,7 @@ const Sciclient_MapStruct_t gSciclientMap[SCICLIENT_CONTEXT_MAX_NUM] =
         TISCI_SEC_PROXY_C7X_1_0_READ_RESPONSE_THREAD_ID,
 
         /** Notification Interrupt Number.**/
-        0U
+        CSLR_C7X256V1_CLEC_GIC_SPI_DMASS0_INTAGGR_0_INTAGGR_VINTR_PEND_33
 
     },
 
@@ -304,7 +304,7 @@ const Sciclient_MapStruct_t gSciclientMap[SCICLIENT_CONTEXT_MAX_NUM] =
         TISCI_SEC_PROXY_DM2TIFS_READ_RESPONSE_THREAD_ID,
 
         /** Notification Interrupt Number.**/
-        CSLR_WKUP_R5FSS0_CORE0_INTR_DMASS0_INTAGGR_0_INTAGGR_VINTR_PEND_79
+        CSLR_WKUP_R5FSS0_CORE0_INTR_DMASS0_INTAGGR_0_INTAGGR_VINTR_PEND_42
 
     }
 };

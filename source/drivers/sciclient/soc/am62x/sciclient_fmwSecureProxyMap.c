@@ -227,7 +227,7 @@ const Sciclient_MapStruct_t gSciclientMap[SCICLIENT_CONTEXT_MAX_NUM] =
         TISCI_SEC_PROXY_M4_0_READ_RESPONSE_THREAD_ID,
 
         /** Notification Interrupt Number */
-        0
+        CSLR_MCU_M4FSS0_CORE0_NVIC_DMASS0_INTAGGR_0_INTAGGR_VINTR_PEND_175
 
     },
 

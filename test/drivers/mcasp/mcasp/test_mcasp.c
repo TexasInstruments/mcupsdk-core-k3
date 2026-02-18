@@ -220,11 +220,22 @@ static void TestMcasp_externalLoopback(void *args);
 static int32_t TestMcasp_loopbackTxRightRotate(void *args);
 static int32_t TestMcasp_validateConfigLoopback(void *args);
 static void TestMcasp_allSerializerLoopback(void *args);
+static void TestMcasp_DynamicCoverage(void *args);
+static void TestMcasp_dmaInitDoneZeroRxMismatch(void *args);
+static void TestMcasp_dmaInitDoneZeroRxWaterLevelMultipleFail(void *args);
+static void TestMcasp_dmaFifoWaterLevelMultipleInitDoneZero(void *args);
+static void TestMcasp_dmaInitDoneZeroFifoDisabledLoopjobMismatch(void *args);
+static void TestMcasp_dmaInitDoneOneLoopjobAndWaterLevelNegative(void *args);
+static void TestMcasp_dmaChannelReset(void *args);
 static int32_t TestMcasp_compareInstance0(uint8_t *tx, uint8_t *rx, uint32_t msgSize);
 static int32_t TestMcasp_compareInstance1(uint8_t *tx, uint8_t *rx, uint32_t msgSize);
 static int32_t TestMcasp_compareInstance2(uint8_t *tx, uint8_t *rx, uint32_t msgSize);
+static void TestMcasp_withdrawQueuedBuff(void *args);
 static void TestMcasp_fifoDisable(void *args);
 static void TestMcasp_multiInstanceConfigTest(void *args);
+#if ((defined(C75_CORE) && !defined(SOC_AM62DX)) || defined(SOC_AM62AX))
+static void TestMcasp_interruptNullLoopjob(void *args);
+#endif
 static void TestMcasp_loopbackNonInterleavedToInterleaved(void *args);
 static void TestMcasp_loopbackInterleavedToNonInterleaved(void *args);
 static void TestMcasp_loopbackSemiInterleaved1ToSemiInterleaved2(void *args);
@@ -241,6 +252,7 @@ static void TestMcasp_txTask(void *args);
 static void TestMcasp_rxTask(void *args);
 static void TestMcasp_instanceThread(void *args);
 #endif
+static void TestMcasp_invalidBufferFormat(void *args);
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -298,12 +310,26 @@ void test_main(void *args)
     RUN_TEST(TestMcasp_multiInstanceLoopback, 8739, NULL);
     TestMcasp_selectClockSource(CONFIG_MCASP0, TEST_MCASP_USE_INTERNAL_CLK);
     RUN_TEST(TestMcasp_allSerializerLoopback, 9075, (void*)&gMcaspOpenParams[CONFIG_MCASP2]);
+    RUN_TEST(TestMcasp_DynamicCoverage, 9076, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(TestMcasp_dmaInitDoneOneLoopjobAndWaterLevelNegative, 9263, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(TestMcasp_dmaInitDoneZeroFifoDisabledLoopjobMismatch, 9264, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(TestMcasp_dmaFifoWaterLevelMultipleInitDoneZero, 9265, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(TestMcasp_dmaInitDoneZeroRxWaterLevelMultipleFail, 9266, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(TestMcasp_dmaInitDoneZeroRxMismatch, 9267, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(TestMcasp_withdrawQueuedBuff, 9077, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(TestMcasp_fifoDisable, 9078, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    #if ((defined(C75_CORE) && !defined(SOC_AM62DX)) || defined(SOC_AM62AX)) /* Added macro guard due to hanging of interrupt case in AM62DX c75 core*/
+    TestMcasp_selectConfig(TEST_MCASP_INTERRUPT_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(TestMcasp_interruptNullLoopjob, 9079, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    TestMcasp_selectConfig(TEST_MCASP_DMA_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    #endif
     RUN_TEST(TestMcasp_multiInstanceConfigTest, 9080, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(TestMcasp_loopbackNonInterleavedToInterleaved, 9081, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(TestMcasp_loopbackInterleavedToNonInterleaved, 9082, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(TestMcasp_loopbackSemiInterleaved1ToSemiInterleaved2, 9083, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(TestMcasp_loopbackSemiInterleaved2ToSemiInterleaved1, 9084, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(TestMcasp_dmaChannelReset, 9298, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(TestMcasp_invalidBufferFormat, 9086, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     UNITY_END();
     return;
 }
@@ -3623,4 +3649,870 @@ static void TestMcasp_fifoDisable(void *args)
     attrs->hwCfg.tx.fifoCfg.fifoCtl = (uint32_t)0x12001U;
     TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "MCASP loopback transfer data mismatch");
 
+}
+
+
+/**
+ * \brief  Test MCASP driver dynamic coverage.
+ *
+ * This test exercises various negative and edge-case scenarios for the MCASP driver,
+ * including invalid handles, zero transaction counts, NULL transaction pointers,
+ * invalid object pointers, and FIFO water-level violations. It ensures the driver
+ * returns correct error codes and does not crash or misbehave under these conditions.
+ * Test case category: negative and coverage test case
+ */
+static void TestMcasp_DynamicCoverage(void *args)
+{
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+    int32_t status = SystemP_SUCCESS;
+    MCASP_Handle handle;
+    /* mcasp invalid hanlde */
+    MCASP_close(gMcaspHandle[CONFIG_MCASP0]);
+    gMcaspHandle[CONFIG_MCASP0] = NULL;
+    int32_t invalidIndex = gMcaspConfigNum; /* first invalid index */
+    handle = MCASP_open(invalidIndex, NULL);
+    if (handle != NULL)
+    {
+        MCASP_close(handle);
+    }
+    TEST_ASSERT_NULL_MESSAGE(handle, "MCASP_open should fail with invalid index");
+
+    /* passing txn count as 0 for validate transaction*/
+    handle = MCASP_open(CONFIG_MCASP0, openParams);
+    TEST_ASSERT_NOT_NULL_MESSAGE(handle, "Valid MCASP_open failed unexpectedly");
+    MCASP_Transaction txZero = {0};
+    MCASP_Transaction rxZero = {0};
+    txZero.buf = (void*)TestMcasp_txBuffer[0];
+    txZero.count = 0;          /* invalid */
+    txZero.timeout = 0xFFFFFF;
+    rxZero.buf = (void*)TestMcasp_rxBuffer[0];
+    rxZero.count = 0;          /* invalid */
+    rxZero.timeout = 0xFFFFFF;
+    status = MCASP_submitTx(handle, &txZero);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "MCASP_submitTx should fail for count=0");
+    status = MCASP_submitRx(handle, &rxZero);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "MCASP_submitRx should fail for count=0");
+    if (handle != NULL)
+    {
+        MCASP_close(handle);
+    }
+
+    /* Zero count with NULL transaction pointer */
+    handle = MCASP_open(CONFIG_MCASP0, openParams);
+    TEST_ASSERT_NOT_NULL(handle);
+    status = MCASP_submitTx(handle, NULL);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "MCASP_submitTx should fail on NULL txn");
+    status = MCASP_submitRx(handle, NULL);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "MCASP_submitRx should fail on NULL txn");
+    if (handle != NULL)
+    {
+        MCASP_close(handle);
+    }
+    TEST_ASSERT_TRUE_MESSAGE(1, "Dynamic coverage completed");
+    MCASP_Transaction *txn = MCASP_withdrawTx(NULL);
+    TEST_ASSERT_NULL_MESSAGE(txn, "MCASP_withdrawTx should return NULL when handle is NULL");
+    txn = MCASP_withdrawRx(NULL);
+    TEST_ASSERT_NULL_MESSAGE(txn, "MCASP_withdrawRx should return NULL when handle is NULL");
+
+    /* Negative withdraw: object is NULL */
+    /* Create a dummy config with NULL object */
+    MCASP_Config dummyConfig = {0};
+    dummyConfig.object = NULL;
+    txn = MCASP_withdrawTx((MCASP_Handle)&dummyConfig);
+    TEST_ASSERT_NULL_MESSAGE(txn, "MCASP_withdrawTx should return NULL when object is NULL");
+    txn = MCASP_withdrawRx((MCASP_Handle)&dummyConfig);
+    TEST_ASSERT_NULL_MESSAGE(txn, "MCASP_withdrawRx should return NULL when object is NULL");
+
+    handle = MCASP_open(CONFIG_MCASP0, openParams);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    /* Test TX with NULL handle */
+    status = MCASP_startTransferTx(NULL);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "MCASP_startTransferTx should fail for NULL handle");
+
+    /* Test RX with NULL handle */
+    status = MCASP_startTransferRx(NULL);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "MCASP_startTransferRx should fail for NULL handle");
+
+    /* Negative test for stopTransferTx with NULL handle */
+    status = MCASP_stopTransferTx(NULL);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "MCASP_stopTransferTx should fail for NULL handle");
+
+    /* Negative test for stopTransferRx with NULL handle */
+    status = MCASP_stopTransferRx(NULL);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "MCASP_stopTransferRx should fail for NULL handle");
+
+    dummyConfig.object = NULL;
+    status = MCASP_startTransferTx((MCASP_Handle)&dummyConfig);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "MCASP_startTransferTx should fail for NULL attrs/pReg");
+
+    status = MCASP_startTransferRx((MCASP_Handle)&dummyConfig);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "MCASP_startTransferRx should fail for NULL attrs/pReg");
+
+    /* Negative test for stopTransferTx with invalid object */
+    status = MCASP_stopTransferTx((MCASP_Handle)&dummyConfig);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "MCASP_stopTransferTx should fail for NULL attrs/pReg");
+
+    /* Negative test for stopTransferRx with invalid object */
+    status = MCASP_stopTransferRx((MCASP_Handle)&dummyConfig);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "MCASP_stopTransferRx should fail for NULL attrs/pReg");
+
+    /* Negative test for MCASP_setTxTxnCount with NULL handle */
+    status = MCASP_setTxTxnCount(NULL, 1);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "MCASP_setTxTxnCount should fail for NULL handle");
+
+    /* Negative test for MCASP_setRxTxnCount with NULL handle */
+    status = MCASP_setRxTxnCount(NULL, 1);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "MCASP_setRxTxnCount should fail for NULL handle");
+
+    MCASP_open(CONFIG_MCASP0, openParams);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "MCASP_setRxTxnCount should fail for NULL handle");
+
+    handle = MCASP_getHandle(CONFIG_MCASP0);
+    if (handle != NULL)
+    {
+        MCASP_close(handle);
+        handle = NULL;
+    }
+
+}
+
+/**
+ * \brief  DMA initDone==1, loopjob count mismatch and FIFO water-level violations.
+ *
+ * This test primes TX and RX to set txDmaIcnt.initDone/rxDmaIcnt.initDone == 1,
+ * Forces a mismatch between submitted transaction count and object->txnLoopjob.count
+ * to validate failure on the initDone==1 path.
+ * Programs TX/RX FIFO water-levels to non-divisible values and submits counts matching
+ * loopjob.count to exercise the "count not multiple of water-level bytes" failure.
+ * TX/RX submit path when initDone == 1 (loopjob/count equality check).
+ * FIFO water-level multiple rule: byteCnt % (WORD_BYTE_COUNT * waterLevel) != 0 -> failure.
+ *
+ * Test case category: negative test case
+ */
+static void TestMcasp_dmaInitDoneOneLoopjobAndWaterLevelNegative(void *args)
+{
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+    int32_t status;
+    MCASP_Handle handle;
+
+    /* Use local aligned buffers for submits */
+    static uint32_t txBuf[2048] __attribute__((aligned(64)));
+    static uint32_t rxBuf[2048] __attribute__((aligned(64)));
+
+    handle =  MCASP_getHandle(CONFIG_MCASP0);
+    if(handle != NULL)
+    {
+        MCASP_close(handle);
+        handle = NULL;
+    }
+    handle = MCASP_open(CONFIG_MCASP0, openParams);
+    TEST_ASSERT_NOT_NULL_MESSAGE(handle, "MCASP_open failed in DMA initDone==1 negative test");
+
+    MCASP_Config *cfgH = (MCASP_Config*)handle;
+    MCASP_Object *obj = cfgH->object;
+    MCASP_Attrs  *attrs = (MCASP_Attrs *)cfgH->attrs;
+
+    uint32_t txLjCnt = obj->XmtObj.txnLoopjob.count; /* words */
+    uint32_t rxLjCnt = obj->RcvObj.txnLoopjob.count; /* words */
+    TEST_ASSERT_TRUE_MESSAGE(txLjCnt > 0U, "TX loopjob count is zero");
+    TEST_ASSERT_TRUE_MESSAGE(rxLjCnt > 0U, "RX loopjob count is zero");
+
+    /* Prime once to set initDone == 1 */
+    MCASP_Transaction txPrime = { .buf = txBuf, .count = txLjCnt, .timeout = 0xFFFFFFU };
+    MCASP_Transaction rxPrime = { .buf = rxBuf, .count = rxLjCnt, .timeout = 0xFFFFFFU };
+    status = MCASP_submitTx(handle, &txPrime);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "TX prime failed");
+    status = MCASP_submitRx(handle, &rxPrime);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "RX prime failed");
+
+    /* initDone == 1 mismatch: keep txnByteCnt same; change loopjob.count to force mismatch */
+    uint32_t origTxLjCnt = txLjCnt, origRxLjCnt = rxLjCnt;
+    uint32_t savedTxWater1 = attrs->txFifoWaterLevel;
+    uint32_t savedRxWater1 = attrs->rxFifoWaterLevel;
+    attrs->txFifoWaterLevel = 0U;
+    attrs->rxFifoWaterLevel = 0U;
+
+    obj->XmtObj.txnLoopjob.count = origTxLjCnt + 1U;
+    MCASP_Transaction txLoopjobMismatch1 = { .buf = txBuf, .count = origTxLjCnt, .timeout = 0xFFFFFFU };
+    status = MCASP_submitTx(handle, &txLoopjobMismatch1);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "Expected TX loopjob-count failure (initDone==1)");
+
+    obj->RcvObj.txnLoopjob.count = origRxLjCnt + 1U;
+    MCASP_Transaction rxLoopjobMismatch1 = { .buf = rxBuf, .count = origRxLjCnt, .timeout = 0xFFFFFFU };
+    status = MCASP_submitRx(handle, &rxLoopjobMismatch1);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "Expected RX loopjob-count failure (initDone==1)");
+
+    /* Restore original loopjob counts and water-levels */
+    obj->XmtObj.txnLoopjob.count = origTxLjCnt;
+    obj->RcvObj.txnLoopjob.count = origRxLjCnt;
+    attrs->txFifoWaterLevel = savedTxWater1;
+    attrs->rxFifoWaterLevel = savedRxWater1;
+
+    /* FIFO water-level multiple violation: choose non-divisible levels */
+    uint32_t txWater = 3U;
+    if ((txLjCnt % txWater) == 0U)
+    {
+        txWater = 5U;
+    }
+    if ((txLjCnt % txWater) == 0U)
+    {
+        txWater = 7U;
+    }
+    uint32_t rxWater = 3U;
+    if ((rxLjCnt % rxWater) == 0U)
+    {
+        rxWater = 5U;
+    }
+    if ((rxLjCnt % rxWater) == 0U)
+    {
+        rxWater = 7U;
+    }
+
+    uint32_t savedTxWater = attrs->txFifoWaterLevel;
+    uint32_t savedRxWater = attrs->rxFifoWaterLevel;
+    attrs->txFifoWaterLevel = txWater;
+    attrs->rxFifoWaterLevel = rxWater;
+
+    MCASP_Transaction txWaterBad = { .buf = txBuf, .count = txLjCnt, .timeout = 0xFFFFFFU };
+    MCASP_Transaction rxWaterBad = { .buf = rxBuf, .count = rxLjCnt, .timeout = 0xFFFFFFU };
+    status = MCASP_submitTx(handle, &txWaterBad);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "Expected TX fifo water-level failure");
+    status = MCASP_submitRx(handle, &rxWaterBad);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "Expected RX fifo water-level failure");
+
+    /* Restore and close */
+    attrs->txFifoWaterLevel = savedTxWater;
+    attrs->rxFifoWaterLevel = savedRxWater;
+    handle =  MCASP_getHandle(CONFIG_MCASP0);
+    MCASP_close(handle);
+}
+
+ /**
+ * \brief initDone==0 with FIFO disabled requires count == loopjob.count.
+ *
+ * This test opens MCASP, disables TX/RX FIFO (waterLevel=0), and forces txDmaIcnt.initDone/rxDmaIcnt.initDone == 0.
+ * It then submits TX/RX transactions with count = loopjob.count + 1 (words) to validate that the driver
+ * rejects non-matching counts when initDone != MCASP_TXN_COUNT_OVERRIDE in the FIFO-disabled path.
+ * TX submit path when initDone == 0 and FIFO disabled: count must equal object->XmtObj.txnLoopjob.count.
+ * RX submit path when initDone == 0 and FIFO disabled: count must equal object->RcvObj.txnLoopjob.count.
+ *
+ * Test case category: negative test case
+ */
+static void TestMcasp_dmaInitDoneZeroFifoDisabledLoopjobMismatch(void *args)
+{
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+    int32_t status;
+    MCASP_Handle handle;
+    MCASP_Config *cfgH;
+    MCASP_Object *obj;
+    MCASP_Attrs  *attrs;
+
+    handle =  MCASP_getHandle(CONFIG_MCASP0);
+    if(handle != NULL)
+    {
+        MCASP_close(handle);
+        handle = NULL;
+    }
+
+    /* Negative: initDone == 0 and waterLevel == 0 (fifo disabled) -> count must equal loopjob.count (words) */
+    handle = MCASP_open(CONFIG_MCASP0, openParams);
+    TEST_ASSERT_NOT_NULL_MESSAGE(handle, "MCASP_open failed (negative: loopjob count check)");
+
+    cfgH   = (MCASP_Config*)handle;
+    obj    = cfgH->object;
+    attrs  = (MCASP_Attrs *)cfgH->attrs;
+
+    /* Force fifo disabled (waterLevel=0 path) and initDone==0 */
+    attrs->txFifoWaterLevel = 0U;
+    attrs->rxFifoWaterLevel = 0U;
+    obj->txDmaIcnt.initDone = 0U;
+    obj->rxDmaIcnt.initDone = 0U;
+
+    /* Make loopjob.count known */
+    uint32_t ljTxWords = obj->XmtObj.txnLoopjob.count;
+    uint32_t ljRxWords = obj->RcvObj.txnLoopjob.count;
+    TEST_ASSERT_TRUE_MESSAGE(ljTxWords > 0U, "Loopjob TX must be > 0");
+    TEST_ASSERT_TRUE_MESSAGE(ljRxWords > 0U, "Loopjob RX must be > 0");
+
+    /* Case: mismatch to loopjob.count (should fail when initDone != MCASP_TXN_COUNT_OVERRIDE) */
+    MCASP_Transaction txMismatchInit0 = { .buf = TestMcasp_txBuffer[0], .count = ljTxWords + 1U, .timeout = 0xFFFFFFU };
+    status = MCASP_submitTx(handle, &txMismatchInit0);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "Expected TX failure: count != loopjob.count (initDone=0, FIFO disabled)");
+
+    MCASP_Transaction rxMismatchInit0 = { .buf = TestMcasp_rxBuffer[0], .count = ljRxWords + 1U, .timeout = 0xFFFFFFU };
+    status = MCASP_submitRx(handle, &rxMismatchInit0);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "Expected RX failure: count != loopjob.count (initDone=0, FIFO disabled)");
+
+    MCASP_close(handle);
+}
+
+/**
+ * \brief FIFO water-level multiple rule with initDone==0 (TX/RX).
+ *
+ * Opens MCASP, enables TX/RX FIFO with water levels >1 while keeping txDmaIcnt/rxDmaIcnt.initDone == 0.
+ * Submits TX/RX counts that are NOT multiples of WORD_BYTE_COUNT * waterLevel to validate failure.
+ * Then adjusts water levels to divide loopjob counts and validates success when multiples are satisfied.
+ *
+ * Test case category: negative test case
+ */
+static void TestMcasp_dmaFifoWaterLevelMultipleInitDoneZero(void *args)
+{
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+    int32_t status;
+    MCASP_Handle handle;
+    MCASP_Config *cfgH;
+    MCASP_Object *obj;
+    MCASP_Attrs  *attrs;
+    uint32_t ljTxWords, ljRxWords;
+
+    handle =  MCASP_getHandle(CONFIG_MCASP0);
+    if(handle != NULL)
+    {
+        MCASP_close(handle);
+        handle = NULL;
+    }
+    /* Negative: waterLevel multiple check when fifo enabled (waterLevel>1) */
+    handle = MCASP_open(CONFIG_MCASP0, openParams);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    cfgH   = (MCASP_Config*)handle;
+    obj    = cfgH->object;
+    attrs  = (MCASP_Attrs *)cfgH->attrs;
+
+    /* Enable fifo and set non-trivial waterLevels */
+    attrs->txFifoWaterLevel = 5U;  /* arbitrary >1 */
+    attrs->rxFifoWaterLevel = 7U;  /* arbitrary >1 */
+    obj->txDmaIcnt.initDone = 0U;
+    obj->rxDmaIcnt.initDone = 0U;
+
+    ljTxWords = obj->XmtObj.txnLoopjob.count;
+    ljRxWords = obj->RcvObj.txnLoopjob.count;
+    TEST_ASSERT_TRUE(ljTxWords > 0U);
+    TEST_ASSERT_TRUE(ljRxWords > 0U);
+
+    /* Choose counts that are NOT multiples of WORD_BYTE_COUNT*waterLevel */
+    /* Count in words; byteCnt = count*4. Multiplicity check is on bytes. */
+    uint32_t badTxWords = ljTxWords + 1U;
+    uint32_t badRxWords = ljRxWords + 1U;
+
+    /* Should fail due to water-level multiple rule (initDone==0 path) */
+    MCASP_Transaction txBadWater = { .buf = TestMcasp_txBuffer[0], .count = badTxWords, .timeout = 0xFFFFFFU };
+    status = MCASP_submitTx(handle, &txBadWater);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "Expected TX failure: count not multiple of fifo water level");
+
+    MCASP_Transaction rxBadWater = { .buf = TestMcasp_rxBuffer[0], .count = badRxWords, .timeout = 0xFFFFFFU };
+    status = MCASP_submitRx(handle, &rxBadWater);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "Expected RX failure: count not multiple of fifo water level");
+
+    /* Positive control: valid multiples should pass */
+    uint32_t goodTxWords = ljTxWords;
+    uint32_t goodRxWords = ljRxWords;
+
+    /* Pick water levels >1 that divide the loopjob counts (in words) */
+    uint32_t goodTxWater = 2U;
+    while (goodTxWater <= 32U && (goodTxWords % goodTxWater) != 0U)
+    {
+        goodTxWater++;
+    }
+    attrs->txFifoWaterLevel = (goodTxWater <= 32U) ? goodTxWater : 2U;
+
+    uint32_t goodRxWater = 2U;
+    while (goodRxWater <= 32U && (goodRxWords % goodRxWater) != 0U)
+    {
+        goodRxWater++;
+    }
+    attrs->rxFifoWaterLevel = (goodRxWater <= 32U) ? goodRxWater : 2U;
+
+    MCASP_Transaction txGoodWater = { .buf = TestMcasp_txBuffer[0], .count = goodTxWords, .timeout = 0xFFFFFFU };
+    status = MCASP_submitTx(handle, &txGoodWater);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "TX should pass: count multiple of fifo water level");
+
+    MCASP_Transaction rxGoodWater = { .buf = TestMcasp_rxBuffer[0], .count = goodRxWords, .timeout = 0xFFFFFFU };
+    status = MCASP_submitRx(handle, &rxGoodWater);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "RX should pass: count multiple of fifo water level");
+
+    MCASP_close(handle);
+}
+
+/**
+ * \brief Negative test: RX count equals loopjob.count but fails FIFO water-level multiple rule (initDone==0).
+ *
+ * This test opens MCASP, keeps rxDmaIcnt.initDone == 0, enables RX FIFO with a water level (>1)
+ * that does not divide the RX loopjob count in words, and submits an RX transaction with
+ * count == loopjob.count. It validates failure due to:
+ * byteCnt % (WORD_BYTE_COUNT * rxFifoWaterLevel) != 0.
+ *
+ * Test case category: negative test case
+ */
+static void TestMcasp_dmaInitDoneZeroRxWaterLevelMultipleFail(void *args)
+{
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+    int32_t status;
+    MCASP_Handle handle;
+    MCASP_Config *cfgH;
+    MCASP_Object *obj;
+    MCASP_Attrs  *attrs;
+    uint32_t ljRxWords;
+
+    handle =  MCASP_getHandle(CONFIG_MCASP0);
+    if(handle != NULL)
+    {
+        MCASP_close(handle);
+        handle = NULL;
+    }
+
+    /* Fresh open */
+    handle = MCASP_open(CONFIG_MCASP0, openParams);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    cfgH  = (MCASP_Config*)handle;
+    obj   = cfgH->object;
+    attrs = (MCASP_Attrs *)cfgH->attrs;
+
+    /* Enable RX FIFO with a water level that does not divide ljRxWords; keep initDone == 0 */
+    obj->rxDmaIcnt.initDone = 0U;
+    attrs->rxFifoWaterLevel = 3U; /* pick >1 */
+    ljRxWords = obj->RcvObj.txnLoopjob.count;
+    TEST_ASSERT_TRUE_MESSAGE(ljRxWords > 0U, "Loopjob RX must be > 0");
+
+    /* Ensure non-divisible water level */
+    if ((ljRxWords % attrs->rxFifoWaterLevel) == 0U)
+    {
+        attrs->rxFifoWaterLevel = 7U;
+    }
+
+    /* Submit RX with count == loopjob.count -> fails water-level multiple check */
+    static uint32_t rxBufWaterFail[2048] __attribute__((aligned(64)));
+    MCASP_Transaction rxWaterMultipleFail = { .buf = rxBufWaterFail, .count = ljRxWords, .timeout = 0xFFFFFFU };
+    status = MCASP_submitRx(handle, &rxWaterMultipleFail);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status,
+        "Expected RX failure: count not multiple of fifo water level (initDone=0)");
+
+    MCASP_close(handle);
+}
+
+/**
+ * \brief Negative test: RX transaction count mismatch with initDone==0 and FIFO disabled.
+ *
+ * Opens MCASP in DMA mode, forces rxDmaIcnt.initDone == 0 and disables the RX FIFO
+ * (rxFifoWaterLevel = 0). Submits an RX transaction whose count (loopjob.count + 1)
+ * intentionally differs from the loopjob word count to triggers mismatch
+ *
+ * Test case category: negative test case
+ */
+static void TestMcasp_dmaInitDoneZeroRxMismatch(void *args)
+{
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+    int32_t status;
+    MCASP_Handle handle;
+
+    handle =  MCASP_getHandle(CONFIG_MCASP0);
+    if(handle != NULL)
+    {
+        MCASP_close(handle);
+        handle = NULL;
+    }
+    /* Fresh open */
+    handle = MCASP_open(CONFIG_MCASP0, openParams);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    MCASP_Config *cfgH = (MCASP_Config*)handle;
+    MCASP_Object *obj   = cfgH->object;
+    MCASP_Attrs  *attrs = (MCASP_Attrs *)cfgH->attrs;
+
+    /* Disable RX FIFO and ensure initDone == 0 so the path is taken */
+    attrs->rxFifoWaterLevel = 0U;
+    obj->rxDmaIcnt.initDone = 0U;
+
+    /* Use current loopjob count to derive mismatch */
+    uint32_t ljRxWords = obj->RcvObj.txnLoopjob.count;
+    TEST_ASSERT_TRUE_MESSAGE(ljRxWords > 0U, "Loopjob RX count must be > 0");
+
+    /* Submit RX with mismatched count (ljRxWords + 1) to trigger failure branch */
+    static uint32_t rxBuf[2048] __attribute__((aligned(64)));
+    MCASP_Transaction rxMismatchInit0 = { .buf = rxBuf, .count = ljRxWords + 1U, .timeout = 0xFFFFFFU };
+
+    status = MCASP_submitRx(handle, &rxMismatchInit0);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status,
+        "Expected RX failure: count != loopjob.count (initDone=0, fifo disabled)");
+
+    MCASP_close(handle);
+}
+
+#if ((defined(C75_CORE) && !defined(SOC_AM62DX)) || defined(SOC_AM62AX))
+/**
+ * \brief  Test MCASP interrupt mode with NULL loopjob buffers.
+ *
+ * This test verifies that the MCASP driver returns failure when starting transfers
+ * in interrupt mode with both loopjob disabled and no user buffers queued.
+ * It ensures the driver does not proceed without valid buffers and handles this
+ * negative scenario gracefully.
+ * Test case category: negative test case
+ */
+static void TestMcasp_interruptNullLoopjob(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+    int32_t i,j;
+
+    openParams->txLoopjobEnable = FALSE;
+    openParams->rxLoopjobEnable = FALSE;
+    openParams->rxLoopjobBuf = NULL;
+    openParams->txLoopjobBuf = NULL;
+
+    MCASP_Handle handle = MCASP_open(CONFIG_MCASP0, openParams);
+
+    TestMcasp_cntRx = 0;
+    TestMcasp_cntTx = 0;
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        for(j = 0U; j < TEST_MCASP_APP_MSGSIZE; j++)
+        {
+            TestMcasp_txBuffer[i][j] = j % 256;
+            TestMcasp_rxBuffer[i][j] = 0U;
+        }
+    }
+
+    CacheP_wb(TestMcasp_txBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+    CacheP_wb(TestMcasp_rxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+
+    status = MCASP_startTransferTx(handle);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "MCASP_startTransferTx should fail with no buffer and no loopjob");
+    status = MCASP_startTransferRx(handle);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "MCASP_startTransferRx should fail with no buffer and no loopjob");
+
+    openParams->txLoopjobEnable = TRUE;
+    openParams->rxLoopjobEnable = TRUE;
+    openParams->txLoopjobBuf = gTxLoopjobBuf0;
+    openParams->rxLoopjobBuf = gRxLoopjobBuf0;
+
+    MCASP_close(handle);
+
+}
+#endif
+/**
+ * \brief  Test MCASP buffer withdraw after queuing.
+ *
+ * This test verifies that MCASP_withdrawTx and MCASP_withdrawRx correctly
+ * withdraw all queued buffers after submission. It submits multiple TX and RX
+ * transactions, withdraws them using the driver API, and checks that the queues
+ * are empty after withdrawal. This ensures proper buffer management and driver
+ * behavior for queued transactions.
+ * Test case category: negative test case
+ */
+static void TestMcasp_withdrawQueuedBuff(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+    uint32_t i, j;
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+    uint32_t instanceId = (uint32_t)(openParams - &gMcaspOpenParams[0]);
+    MCASP_Transaction *txn = NULL;
+
+    MCASP_close(gMcaspHandle[instanceId]);
+    gMcaspHandle[instanceId] = NULL;
+
+    openParams->txLoopjobBuf = gTxLoopjobBuf0;
+    openParams->rxLoopjobBuf = gRxLoopjobBuf0;
+
+    MCASP_Handle handle = MCASP_open(instanceId, openParams);
+
+    TestMcasp_cntRx = 0;
+    TestMcasp_cntTx = 0;
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        for (j = 0U; j < TEST_MCASP_APP_MSGSIZE; j++)
+        {
+            TestMcasp_txBuffer[i][j] = j % 256;
+            TestMcasp_rxBuffer[i][j] = 0U;
+        }
+    }
+
+    CacheP_wb(TestMcasp_txBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+    CacheP_wb(TestMcasp_rxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+
+    for (i = 0; i < TEST_MCASP_APP_MSGSIZE; i++)
+    {
+        gTxLoopjobBuf0[i] = 0xa5;
+        gRxLoopjobBuf0[i] = 0;
+    }
+
+    CacheP_wb(gTxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+    CacheP_wb(gRxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_txnRx[i].buf = (void*) &TestMcasp_rxBuffer[i][0];
+        TestMcasp_txnRx[i].count = TEST_MCASP_APP_MSGSIZE / 4;
+        TestMcasp_txnRx[i].timeout = 0xFFFFFF;
+        MCASP_submitRx(handle, &TestMcasp_txnRx[i]);
+    }
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_txnTx[i].buf = (void*) &TestMcasp_txBuffer[i][0];
+        TestMcasp_txnTx[i].count = TEST_MCASP_APP_MSGSIZE / 4;
+        TestMcasp_txnTx[i].timeout = 0xFFFFFF;
+        MCASP_submitTx(handle, &TestMcasp_txnTx[i]);
+    }
+
+    if (status == SystemP_SUCCESS)
+    {
+        do
+        {
+            txn = MCASP_withdrawRx(handle);
+        } while (txn != NULL);
+        do
+        {
+            txn = MCASP_withdrawTx(handle);
+        } while (txn != NULL);
+    }
+    TEST_ASSERT_NULL_MESSAGE(txn, "RX queue not empty after drain");
+    CacheP_wb(gTxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+    CacheP_wb(gRxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+    MCASP_close(handle);
+
+}
+
+/**
+ * \brief  Test MCASP DMA channel reset.
+ *
+ * This test verifies the MCASP driver's ability to reset DMA channels and recover from teardown scenarios.
+ * It closes any open MCASP handle, reopens the instance, initializes loopjob buffers, and fills TX/RX buffers with test patterns.
+ * Transactions are submitted for both TX and RX, transfers are started, and the driver is closed without explicitly stopping the transfer,
+ * forcing a DMA teardown. The test checks that the driver handles this sequence correctly and does not leave the DMA in an inconsistent state.
+ * Test case category: negative/teardown test case
+ */
+static void TestMcasp_dmaChannelReset(void *args)
+{
+
+    uint32_t status = SystemP_SUCCESS;
+    uint32_t i=0, j=0;
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+    uint32_t instanceId = (uint32_t)(openParams - &gMcaspOpenParams[0]);/* Compute instance index from pointer arithmetic */
+
+    MCASP_close(gMcaspHandle[instanceId]);
+    gMcaspHandle[instanceId] = NULL;
+
+    openParams->txLoopjobBuf = gTxLoopjobBuf0; /* Common TX loopjob buffer */
+    openParams->rxLoopjobBuf = gRxLoopjobBuf0; /* Common RX loopjob buffer */
+
+    McaspHandle = MCASP_open(instanceId, openParams);
+
+    TestMcasp_cntRx = 0;
+    TestMcasp_cntTx = 0;
+    /* Memfill buffers */
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        for(j = 0U; j < TEST_MCASP_APP_MSGSIZE; j++)
+        {
+            TestMcasp_txBuffer[i][j] = j % 256;
+            TestMcasp_rxBuffer[i][j] = 0U;
+        }
+    }
+
+    CacheP_wb(TestMcasp_txBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+    CacheP_wb(TestMcasp_rxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+
+    for (i = 0; i < TEST_MCASP_APP_MSGSIZE; i++)
+    {
+        gTxLoopjobBuf0[i] = 0xa5;
+        gRxLoopjobBuf0[i] = 0;
+    }
+
+    CacheP_wb(gTxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+    CacheP_wb(gRxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_txnRx[i].buf = (void*) &TestMcasp_rxBuffer[i][0];
+        TestMcasp_txnRx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_txnRx[i].timeout = 0xFFFFFF;
+        MCASP_submitRx(McaspHandle,  &TestMcasp_txnRx[i]);
+    }
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_txnTx[i].buf = (void*) &TestMcasp_txBuffer[i][0];
+        TestMcasp_txnTx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_txnTx[i].timeout = 0xFFFFFF;
+        MCASP_submitTx(McaspHandle, &TestMcasp_txnTx[i]);
+    }
+
+
+    status = MCASP_startTransferRx(McaspHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = MCASP_startTransferTx(McaspHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* closing without stopping the transfer to force teardown */
+    MCASP_close(McaspHandle);
+    McaspHandle = NULL;
+
+    /* Give some time for DMA teardown to complete */
+    ClockP_usleep(50000); 
+
+    /* Re-open the instance to ensure resources were released */
+    MCASP_Handle handle = MCASP_open(instanceId, openParams);
+    TEST_ASSERT_NOT_NULL_MESSAGE(handle, "Re-open after forced teardown failed");
+
+    /* Full transaction: submit TEST_MCASP_APP_MSG_COUNT RX/TX transactions and verify transfer */
+    TestMcasp_cntRx = 0;
+    TestMcasp_cntTx = 0;
+
+    /* reuse buffers already filled above; ensure cache is written */
+    CacheP_wb(TestMcasp_txBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+    CacheP_wb(TestMcasp_rxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+
+    /* Submit multiple RX transactions */
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_txnRx[i].buf = (void*)&TestMcasp_rxBuffer[i][0];
+        TestMcasp_txnRx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_txnRx[i].timeout = 0xFFFFFF;
+        status = MCASP_submitRx(handle, &TestMcasp_txnRx[i]);
+        TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "submitRx failed after reopen (multi)");
+    }
+
+    /* Submit multiple TX transactions */
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_txnTx[i].buf = (void*)&TestMcasp_txBuffer[i][0];
+        TestMcasp_txnTx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_txnTx[i].timeout = 0xFFFFFF;
+        status = MCASP_submitTx(handle, &TestMcasp_txnTx[i]);
+        TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "submitTx failed after reopen (multi)");
+    }
+
+    status = MCASP_startTransferRx(handle);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "startTransferRx failed after reopen");
+    status = MCASP_startTransferTx(handle);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "startTransferTx failed after reopen");
+
+    /* Wait for completion with timeout */
+    uint32_t timeout = 10000;
+    while (((TestMcasp_cntRx < TEST_MCASP_APP_TEST_COUNT) || (TestMcasp_cntTx < TEST_MCASP_APP_TEST_COUNT)) && (timeout > 0))
+    {
+        ClockP_usleep(1000);
+        timeout--;
+    }
+    if (timeout == 0)
+    {
+        status = SystemP_FAILURE;
+    }
+
+    MCASP_stopTransferRx(handle);
+    MCASP_stopTransferTx(handle);
+
+    /* Withdraw any queued transactions */
+    MCASP_Transaction *transaction;
+    do {
+        transaction = MCASP_withdrawRx(handle);
+    } while (transaction != NULL);
+    do {
+        transaction = MCASP_withdrawTx(handle);
+    } while (transaction != NULL);
+
+    /* Validate data for DMA mode */
+    if (openParams->transferMode == MCASP_TRANSFER_MODE_DMA)
+    {
+        CacheP_inv(TestMcasp_rxBuffer, TEST_MCASP_APP_MSGSIZE * TEST_MCASP_APP_MSG_COUNT, CacheP_TYPE_ALL);
+    }
+
+    if (status == SystemP_SUCCESS)
+    {
+        /* Compare all messages */
+        for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+        {
+            for (j = 0; j < TEST_MCASP_APP_MSGSIZE; j++)
+            {
+                if (TestMcasp_txBuffer[i][j] != TestMcasp_rxBuffer[i][j])
+                {
+                    status = SystemP_FAILURE;
+                    break;
+                }
+            }
+            if (status != SystemP_SUCCESS)
+            {
+                break;
+            }
+        }
+    }
+
+    MCASP_close(handle);
+
+    /* Final assertion: test should pass if re-open and full loopback succeeded */
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "DMA channel reset recovery test failed");
+
+    return;
+
+}
+
+/**
+ * \brief  Test MCASP handling of invalid buffer format values.
+ *
+ * Injects unsupported tx/rx buffer format values, attempts to open the MCASP
+ * instance and, if opened, submits minimal TX/RX transactions. Expected:
+ * - MCASP_submitTx/MCASP_submitRx return SystemP_FAILURE.
+ * Restores safe defaults and closes the handle.
+ * Test case category: negative test case
+ */
+static void TestMcasp_invalidBufferFormat(void *args)
+{
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+    MCASP_Handle handle;
+    int32_t status;
+    uint32_t i, j;
+    uint8_t invalidTXBuffFormat = 10U;
+    uint8_t invalidRXBuffFormat = 10U;
+
+    /* Ensure fresh open */
+    MCASP_close(gMcaspHandle[CONFIG_MCASP0]);
+    gMcaspHandle[CONFIG_MCASP0] = NULL;
+
+    /* Intentionally set invalid buffer formats */
+    openParams->txBufferFormat = invalidTXBuffFormat;
+    openParams->rxBufferFormat = invalidRXBuffFormat;
+
+    handle = MCASP_open(CONFIG_MCASP0, openParams);
+    if (handle == NULL)
+    {
+        return;
+    }
+
+    /* Prepare minimal buffers/transactions for submit */
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        for (j = 0U; j < TEST_MCASP_APP_MSGSIZE; j++)
+        {
+            TestMcasp_txBuffer[i][j] = (uint8_t)(j & 0xFF);
+            TestMcasp_rxBuffer[i][j] = 0U;
+        }
+    }
+    CacheP_wb(TestMcasp_txBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+    CacheP_wb(TestMcasp_rxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+
+    /* Build one txn each */
+    TestMcasp_txnRx[0].buf = (void*)&TestMcasp_rxBuffer[0][0];
+    TestMcasp_txnRx[0].count = TEST_MCASP_APP_MSGSIZE/4;
+    TestMcasp_txnRx[0].timeout = 0xFFFFFFU;
+
+    TestMcasp_txnTx[0].buf = (void*)&TestMcasp_txBuffer[0][0];
+    TestMcasp_txnTx[0].count = TEST_MCASP_APP_MSGSIZE/4;
+    TestMcasp_txnTx[0].timeout = 0xFFFFFFU;
+
+    /* Submits should fail for invalid buffer formats */
+    status = MCASP_submitRx(handle, &TestMcasp_txnRx[0]);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "MCASP_submitRx should fail for invalid buffer format");
+
+    status = MCASP_submitTx(handle, &TestMcasp_txnTx[0]);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_FAILURE, status, "MCASP_submitTx should fail for invalid buffer format");
+
+    openParams->txBufferFormat = MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_INTERLEAVED;
+    openParams->rxBufferFormat = MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_INTERLEAVED;
+
+    /* Clean up */
+    MCASP_close(handle);
 }

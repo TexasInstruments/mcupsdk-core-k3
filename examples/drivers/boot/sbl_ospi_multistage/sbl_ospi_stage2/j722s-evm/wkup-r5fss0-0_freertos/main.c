@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023-25 Texas Instruments Incorporated
+ *  Copyright (C) 2023-26 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -68,6 +68,12 @@
 #define TASK_PRI_MAIN_THREAD  (configMAX_PRIORITIES-1)
 #define TASK_PRI_BOOT_THREAD  (configMAX_PRIORITIES-1)
 
+/* Stack size allocated for the sciserver task */
+#define SCISERVER_TASK_STACK_SIZE                   (2U*1024U)
+
+/* Stack memory alignment requirement for the sciserver task */
+#define SCISERVER_TASK_STACK_ALIGNMENT              (32)
+
 /* ========================================================================== */
 /*                         Structures and Enums                               */
 /* ========================================================================== */
@@ -102,6 +108,10 @@ TaskHandle_t gMainTask;
 StackType_t gBootTaskStack[TASK_SIZE] __attribute__((aligned(32U)));
 StaticTask_t gBootTaskObj;
 TaskHandle_t gBootTask;
+
+/* Stack buffers for user high and low priority tasks */
+uint8_t __attribute__((aligned(SCISERVER_TASK_STACK_ALIGNMENT))) gUserHiTaskStack[SCISERVER_TASK_STACK_SIZE];
+uint8_t __attribute__((aligned(SCISERVER_TASK_STACK_ALIGNMENT))) gUserLoTaskStack[SCISERVER_TASK_STACK_SIZE];
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -259,13 +269,19 @@ void sciserver_main_thread(void *args)
 {
     int32_t status = SystemP_SUCCESS;
 
+    /* Configure sciserver task parameters */
+    Sciserver_TirtosCfgPrms_t sciserverCfg = {0};
+    sciserverCfg.hiTaskStack    =   gUserHiTaskStack;
+    sciserverCfg.loTaskStack    =   gUserLoTaskStack;
+    sciserverCfg.taskStackSize  =   SCISERVER_TASK_STACK_SIZE;
+
     /* Open drivers */
     Drivers_open();
     /* Open flash and board drivers */
     status = Board_driversOpen();
     DebugP_assert(status==SystemP_SUCCESS);
 
-    sciServer_init();
+    sciServer_init(&sciserverCfg);
 
     /* Close board and flash drivers */
     Board_driversClose();

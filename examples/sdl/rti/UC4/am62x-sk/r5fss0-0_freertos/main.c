@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -46,16 +46,32 @@
 
 #define TASK_SIZE (16384U/sizeof(configSTACK_DEPTH_TYPE))
 
+/* Stack size allocated for the sciserver task */
+#define SCISERVER_TASK_STACK_SIZE                   (2U*1024U)
+
+/* Stack memory alignment requirement for the sciserver task */
+#define SCISERVER_TASK_STACK_ALIGNMENT              (32)
+
 StackType_t gMainTaskStack[TASK_SIZE] __attribute__((aligned(32)));
 StaticTask_t gMainTaskObj;
 TaskHandle_t gMainTask;
 DM_LPMData_t gDMLPMData __attribute__((section(".lpm_data"), aligned(4)));
+
+/* Stack buffers for user high and low priority tasks */
+uint8_t __attribute__((aligned(SCISERVER_TASK_STACK_ALIGNMENT))) gUserHiTaskStack[SCISERVER_TASK_STACK_SIZE];
+uint8_t __attribute__((aligned(SCISERVER_TASK_STACK_ALIGNMENT))) gUserLoTaskStack[SCISERVER_TASK_STACK_SIZE];
 
 void sdl_rti_example_uc4_main(void *args);
 
 void main_thread(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+
+    /* Configure sciserver task parameters */
+    Sciserver_TirtosCfgPrms_t sciserverCfg = {0};
+    sciserverCfg.hiTaskStack    =   gUserHiTaskStack;
+    sciserverCfg.loTaskStack    =   gUserLoTaskStack;
+    sciserverCfg.taskStackSize  =   SCISERVER_TASK_STACK_SIZE;
 
     /* Open drivers */
     Drivers_open();
@@ -66,7 +82,7 @@ void main_thread(void *args)
     /* Init LPM specific data */
     Sciclient_initDeviceManagerLPMData(&gDMLPMData);
 
-    sciServer_init();
+    sciServer_init(&sciserverCfg);
 
     sdl_rti_example_uc4_main(NULL);
 

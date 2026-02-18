@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -52,6 +52,12 @@
 
 #define TASK_STACK_SIZE (16384U)
 
+/* Stack size allocated for the sciserver task */
+#define SCISERVER_TASK_STACK_SIZE                   (2U*1024U)
+
+/* Stack memory alignment requirement for the sciserver task */
+#define SCISERVER_TASK_STACK_ALIGNMENT              (2U*1024U)
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -76,12 +82,21 @@ portInt8Type gMainTaskStack[TASK_STACK_SIZE] __attribute__(
                                                     (aligned(TASK_STACK_SIZE)));
 xTCB gTaskTCB;
 
+/* Stack buffers for user high and low priority tasks */
+uint8_t __attribute__((aligned(SCISERVER_TASK_STACK_ALIGNMENT))) gUserHiTaskStack[SCISERVER_TASK_STACK_SIZE];
+uint8_t __attribute__((aligned(SCISERVER_TASK_STACK_ALIGNMENT))) gUserLoTaskStack[SCISERVER_TASK_STACK_SIZE];
+
 /* ========================================================================== */
 /*                            Function Definitions                            */
 /* ========================================================================== */
 
 void main_thread(void *args)
 {
+    /* Configure sciserver task parameters */
+    Sciserver_TirtosCfgPrms_t sciserverCfg = {0};
+    sciserverCfg.hiTaskStack    =   gUserHiTaskStack;
+    sciserverCfg.loTaskStack    =   gUserLoTaskStack;
+    sciserverCfg.taskStackSize  =   SCISERVER_TASK_STACK_SIZE;
 
 #if defined(OS_SAFERTOS)
     System_lateInit();
@@ -93,7 +108,7 @@ void main_thread(void *args)
     /* Open flash and board drivers */
     DebugP_assert(SystemP_SUCCESS==Board_driversOpen());
 
-    sciServer_init();
+    sciServer_init(&sciserverCfg);
 
     dpl_demo_main(NULL);
 

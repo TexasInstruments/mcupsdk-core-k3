@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -47,6 +47,12 @@
 
 #define TASK_SIZE (16384U/sizeof(configSTACK_DEPTH_TYPE))
 
+/* Stack size allocated for the sciserver task */
+#define SCISERVER_TASK_STACK_SIZE                   (2U*1024U)
+
+/* Stack memory alignment requirement for the sciserver task */
+#define SCISERVER_TASK_STACK_ALIGNMENT              (32)
+
 /* This buffer needs to be defined for OSPI NOR boot in case of HS device for
  * image authentication.
  * The size of the buffer should be large enough to accomodate the appimage
@@ -61,11 +67,21 @@ StackType_t gBootTaskStack[TASK_SIZE] __attribute__((aligned(32)));
 StaticTask_t gBootTaskObj;
 TaskHandle_t gBootTask;
 
+/* Stack buffers for user high and low priority tasks */
+uint8_t __attribute__((aligned(SCISERVER_TASK_STACK_ALIGNMENT))) gUserHiTaskStack[SCISERVER_TASK_STACK_SIZE];
+uint8_t __attribute__((aligned(SCISERVER_TASK_STACK_ALIGNMENT))) gUserLoTaskStack[SCISERVER_TASK_STACK_SIZE];
+
 void sbl_ospi_stage2_main(void *args);
 
 void main_thread(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+
+    /* Configure sciserver task parameters */
+    Sciserver_TirtosCfgPrms_t sciserverCfg = {0};
+    sciserverCfg.hiTaskStack    =   gUserHiTaskStack;
+    sciserverCfg.loTaskStack    =   gUserLoTaskStack;
+    sciserverCfg.taskStackSize  =   SCISERVER_TASK_STACK_SIZE;
 
     /* Open drivers */
     Drivers_open();
@@ -73,7 +89,7 @@ void main_thread(void *args)
     status = Board_driversOpen();
     DebugP_assert(status==SystemP_SUCCESS);
 
-    sciServer_init();
+    sciServer_init(&sciserverCfg);
 
     /* Close board and flash drivers */
     Board_driversClose();

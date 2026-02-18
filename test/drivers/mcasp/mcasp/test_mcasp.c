@@ -134,6 +134,22 @@ Test_Mcasp_Config cfg = {
     .paramValue = TEST_MCASP_DEFAULT
 };
 
+typedef struct
+{
+    uint32_t tisciDevice;
+    uint32_t tisciClock;
+    uint32_t type;
+    uint32_t isConfigurable;
+    uint32_t freq;
+    uint32_t option;
+} Mcasp_AuxClkConfig;
+
+typedef enum {
+    MCASP_CONFIG_DEFAULT = 0,
+    MCASP_CONFIG_NEW = 1
+
+} Mcasp_ConfigMode;
+
 /* ========================================================================== */
 /*                           Global Variables                                 */
 /* ========================================================================== */
@@ -143,6 +159,7 @@ MCASP_Handle McaspHandle;
 extern uint8_t gTxLoopjobBuf0[];
 extern uint8_t gRxLoopjobBuf0[];
 extern MCASP_Config gMcaspConfig[];
+extern Mcasp_AuxClkConfig gMcaspAuxClkConfig[];
 
 static uint8_t TestMcasp_txBuffer[TEST_MCASP_APP_MSG_COUNT][TEST_MCASP_APP_MSGSIZE]__attribute__((aligned(256)));
 static uint8_t TestMcasp_rxBuffer[TEST_MCASP_APP_MSG_COUNT][TEST_MCASP_APP_MSGSIZE]__attribute__((aligned(256)));
@@ -202,6 +219,17 @@ static void TestMcasp_externalLoopback(void *args);
 #endif
 static int32_t TestMcasp_loopbackTxRightRotate(void *args);
 static int32_t TestMcasp_validateConfigLoopback(void *args);
+static void TestMcasp_allSerializerLoopback(void *args);
+static int32_t TestMcasp_compareInstance0(uint8_t *tx, uint8_t *rx, uint32_t msgSize);
+static int32_t TestMcasp_compareInstance1(uint8_t *tx, uint8_t *rx, uint32_t msgSize);
+static int32_t TestMcasp_compareInstance2(uint8_t *tx, uint8_t *rx, uint32_t msgSize);
+static void TestMcasp_fifoDisable(void *args);
+static void TestMcasp_multiInstanceConfigTest(void *args);
+static void TestMcasp_loopbackNonInterleavedToInterleaved(void *args);
+static void TestMcasp_loopbackInterleavedToNonInterleaved(void *args);
+static void TestMcasp_loopbackSemiInterleaved1ToSemiInterleaved2(void *args);
+static void TestMcasp_loopbackSemiInterleaved2ToSemiInterleaved1(void *args);
+int32_t Drivers_mcaspAuxClkCfg(void);
 void mcasp_txcb(MCASP_Handle handle, MCASP_Transaction *transaction);
 void mcasp_rxcb(MCASP_Handle handle, MCASP_Transaction *transaction);
 #ifdef ENABLE_MT_TESTS
@@ -269,6 +297,13 @@ void test_main(void *args)
     TestMcasp_selectClockSource(CONFIG_MCASP1, TEST_MCASP_USE_EXTERNAL_CLK);
     RUN_TEST(TestMcasp_multiInstanceLoopback, 8739, NULL);
     TestMcasp_selectClockSource(CONFIG_MCASP0, TEST_MCASP_USE_INTERNAL_CLK);
+    RUN_TEST(TestMcasp_allSerializerLoopback, 9075, (void*)&gMcaspOpenParams[CONFIG_MCASP2]);
+    RUN_TEST(TestMcasp_fifoDisable, 9078, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(TestMcasp_multiInstanceConfigTest, 9080, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(TestMcasp_loopbackNonInterleavedToInterleaved, 9081, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(TestMcasp_loopbackInterleavedToNonInterleaved, 9082, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(TestMcasp_loopbackSemiInterleaved1ToSemiInterleaved2, 9083, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
+    RUN_TEST(TestMcasp_loopbackSemiInterleaved2ToSemiInterleaved1, 9084, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     UNITY_END();
     return;
 }
@@ -2492,3 +2527,1100 @@ static void TestMcasp_externalLoopback(void *args)
     TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "MCASP external loopback data mismatch");
 }
 #endif
+
+/**
+ * \brief  Test MCASP all-serializer loopback.
+ *
+ * This test verifies MCASP loopback functionality when multiple serializers are enabled.
+ * It configures all available serializers for both transmit and receive, sets up the pinmux,
+ * performs a loopback transfer, and checks that the received data matches the transmitted data.
+ * After the test, it restores the serializer and FIFO configuration to default values.
+ * Test case category: functionality test case
+ */
+static void TestMcasp_allSerializerLoopback(void *args)
+{
+    int32_t status,i;
+    MCASP_Attrs *attrs = (MCASP_Attrs *)gMcaspConfig[CONFIG_MCASP2].attrs;
+    attrs->hwCfg.gbl.pdir = (uint32_t)0xBC005555;
+
+    for (i = 0; i < 16; i++)
+    {
+        attrs->hwCfg.gbl.serSetup[i] = (i % 2) ? 0x2 : 0x1;
+    }
+    attrs->hwCfg.rx.fifoCfg.fifoCtl = (uint32_t)0x12008U;
+    attrs->hwCfg.tx.fifoCfg.fifoCtl = (uint32_t)0x12008U;
+
+    uint8_t gMcasp2TxSersUsed[8] = {0,2,4,6,8,10,12,14};
+    uint8_t gMcasp2RxSersUsed[8] = {1,3,5,7,9,11,13,15};
+
+    gMcaspOpenParams[2].txSerUsedCount = 8;
+    gMcaspOpenParams[2].rxSerUsedCount = 8;
+    gMcaspOpenParams[2].txSerUsedArray = (uint8_t *) gMcasp2TxSersUsed;
+    gMcaspOpenParams[2].rxSerUsedArray = (uint8_t *) gMcasp2RxSersUsed;
+
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+    static Pinmux_PerCfg_t serPinEnable[] = {
+
+    /* MCASP2 pin config */
+    { PIN_GPMC0_AD10, ( PIN_MODE(3) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) }, /* MCASP2_AXR2 */
+    { PIN_GPMC0_AD11, ( PIN_MODE(3) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) }, /* MCASP2_AXR3 */
+    { PIN_GPMC0_AD0,  ( PIN_MODE(3) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) }, /* MCASP2_AXR4 */
+    { PIN_GPMC0_AD1,  ( PIN_MODE(3) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) }, /* MCASP2_AXR5 */
+    { PIN_GPMC0_AD2,  ( PIN_MODE(3) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) }, /* MCASP2_AXR6 */
+    { PIN_GPMC0_AD3,  ( PIN_MODE(3) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) }, /* MCASP2_AXR7 */
+    { PIN_GPMC0_AD4,  ( PIN_MODE(3) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) }, /* MCASP2_AXR8 */
+    { PIN_GPMC0_AD5,  ( PIN_MODE(3) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) }, /* MCASP2_AXR9 */
+    { PIN_GPMC0_AD6,  ( PIN_MODE(3) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) }, /* MCASP2_AXR10 */
+    { PIN_GPMC0_AD7,  ( PIN_MODE(3) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) }, /* MCASP2_AXR11 */
+    { PIN_GPMC0_BE1N, ( PIN_MODE(3) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) }, /* MCASP2_AXR12 */
+    { PIN_GPMC0_DIR,  ( PIN_MODE(3) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) }, /* MCASP2_AXR13 */
+    { PIN_GPMC0_CSN0, ( PIN_MODE(3) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) }, /* MCASP2_AXR14 */
+    { PIN_GPMC0_CSN1, ( PIN_MODE(3) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) }, /* MCASP2_AXR15 */
+    { PINMUX_END, 0U }
+    };
+
+    Pinmux_config(serPinEnable, PINMUX_DOMAIN_ID_MAIN);
+#endif
+
+    status = TestMcasp_validateConfigLoopback(args);
+
+    attrs->hwCfg.gbl.pdir = (uint32_t)0xBC000001;
+    for (i = 2; i < 16; i++)
+    {
+        attrs->hwCfg.gbl.serSetup[i] = 0x0;
+    }
+    attrs->hwCfg.gbl.serSetup[0] = 0x1;
+    attrs->hwCfg.gbl.serSetup[1] = 0x2;
+    attrs->hwCfg.rx.fifoCfg.fifoCtl = (uint32_t)0x12001U;
+    attrs->hwCfg.tx.fifoCfg.fifoCtl = (uint32_t)0x12001U;
+
+    gMcasp2TxSersUsed[1] = 0;
+    gMcasp2RxSersUsed[1] = 1;
+
+    gMcaspOpenParams[2].txSerUsedCount = 1;
+    gMcaspOpenParams[2].rxSerUsedCount = 1;
+
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+    static Pinmux_PerCfg_t serPinDisable[] = {
+
+    /* MCASP2 pin config */
+    { PIN_GPMC0_AD10, ( PIN_MODE(3) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR2 */
+    { PIN_GPMC0_AD11, ( PIN_MODE(3) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR3 */
+    { PIN_GPMC0_AD0,  ( PIN_MODE(3) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR4 */
+    { PIN_GPMC0_AD1,  ( PIN_MODE(3) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR5 */
+    { PIN_GPMC0_AD2,  ( PIN_MODE(3) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR6 */
+    { PIN_GPMC0_AD3,  ( PIN_MODE(3) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR7 */
+    { PIN_GPMC0_AD4,  ( PIN_MODE(3) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR8 */
+    { PIN_GPMC0_AD5,  ( PIN_MODE(3) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR9 */
+    { PIN_GPMC0_AD6,  ( PIN_MODE(3) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR10 */
+    { PIN_GPMC0_AD7,  ( PIN_MODE(3) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR11 */
+    { PIN_GPMC0_BE1N, ( PIN_MODE(3) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR12 */
+    { PIN_GPMC0_DIR,  ( PIN_MODE(3) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR13 */
+    { PIN_GPMC0_CSN0, ( PIN_MODE(3) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR14 */
+    { PIN_GPMC0_CSN1, ( PIN_MODE(3) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR15 */
+    { PINMUX_END, 0U }
+    };
+    Pinmux_config(serPinDisable, PINMUX_DOMAIN_ID_MAIN);
+#endif
+
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "All serializers enable loopback data mismatch");
+
+}
+
+/**
+ * \brief  Test MCASP semi-interleaved 2 to semi-interleaved 1 loopback.
+ *
+ * This test verifies MCASP data integrity when transmitting in semi-interleaved-2 format
+ * and receiving in semi-interleaved-1 format. It configures the serializers and buffer formats,
+ * performs a loopback transfer, and checks that the received data matches the transmitted data
+ * after appropriate reordering for the buffer formats.
+ * Test case category: functionality test case
+ */
+static void TestMcasp_loopbackSemiInterleaved2ToSemiInterleaved1(void *args)
+{
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+    uint32_t instance = (uint32_t)(openParams - &gMcaspOpenParams[0]);
+    MCASP_Attrs *attrs = (MCASP_Attrs *)gMcaspConfig[instance].attrs;
+    int32_t status = SystemP_SUCCESS;
+    uint32_t i, ser, slot, b, sample;
+
+    const uint32_t numSerializers = 2;
+    const uint32_t numSlots = openParams->rxSlotCount;
+    const uint32_t slotSize = attrs->txSlotSize/8;
+
+    attrs->hwCfg.gbl.pdir = (uint32_t)0xBC000005;
+    attrs->hwCfg.gbl.serSetup[2]=0x1;
+    attrs->hwCfg.gbl.serSetup[3]=0x2;
+    attrs->hwCfg.rx.fifoCfg.fifoCtl = (uint32_t)0x12002U;
+    attrs->hwCfg.tx.fifoCfg.fifoCtl = (uint32_t)0x12002U;
+    uint8_t gMcasp0TxSersUsed[2] = {0,2};
+    uint8_t gMcasp0RxSersUsed[2] = {1,3};
+    gMcaspOpenParams[0].rxSerUsedCount = 2;
+    gMcaspOpenParams[0].rxSerUsedArray = (uint8_t *) gMcasp0RxSersUsed;
+    gMcaspOpenParams[0].txSerUsedCount = 2;
+    gMcaspOpenParams[0].txSerUsedArray = (uint8_t *) gMcasp0TxSersUsed;
+
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+    static Pinmux_PerCfg_t serPinEnable[]=
+    {
+        {PIN_MCASP0_AXR2,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR3,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        { PINMUX_END, 0U }
+    };
+    Pinmux_config(serPinEnable, PINMUX_DOMAIN_ID_MAIN);
+#endif
+
+    /* Set buffer formats */
+    openParams->txBufferFormat = MCASP_AUDBUFF_FORMAT_MULTISER_MULTISLOT_SEMI_INTERLEAVED_2;
+    openParams->rxBufferFormat = MCASP_AUDBUFF_FORMAT_MULTISER_MULTISLOT_SEMI_INTERLEAVED_1;
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        for (b = 0U; b < TEST_MCASP_APP_MSGSIZE; b++)
+        {
+            TestMcasp_txBuffer[i][b] = b % 256;
+            TestMcasp_rxBuffer[i][b] = 0U;
+        }
+    }
+    CacheP_wb(TestMcasp_txBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+    CacheP_wb(TestMcasp_rxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+
+    MCASP_close(gMcaspHandle[CONFIG_MCASP0]);
+    gMcaspHandle[CONFIG_MCASP0] = NULL;
+    MCASP_Handle handle = MCASP_open(CONFIG_MCASP0, openParams);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    TestMcasp_cntRx = 0;
+    TestMcasp_cntTx = 0;
+
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_txnRx[i].buf = (void*)&TestMcasp_rxBuffer[i][0];
+        TestMcasp_txnRx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_txnRx[i].timeout = 0xFFFFFF;
+        MCASP_submitRx(handle, &TestMcasp_txnRx[i]);
+    }
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_txnTx[i].buf = (void*)&TestMcasp_txBuffer[i][0];
+        TestMcasp_txnTx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_txnTx[i].timeout = 0xFFFFFF;
+        MCASP_submitTx(handle, &TestMcasp_txnTx[i]);
+    }
+
+    status = MCASP_startTransferRx(handle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = MCASP_startTransferTx(handle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    uint32_t timeout = 10000;
+    while (((TestMcasp_cntRx < TEST_MCASP_APP_TEST_COUNT) || (TestMcasp_cntTx < TEST_MCASP_APP_TEST_COUNT)) && (timeout > 0))
+    {
+        ClockP_usleep(1000);
+        timeout--;
+    }
+
+    if (timeout == 0)
+    {
+        status = SystemP_FAILURE; /* Timeout occurred */
+    }
+
+    MCASP_stopTransferRx(handle);
+    MCASP_stopTransferTx(handle);
+
+    if (openParams->transferMode == MCASP_TRANSFER_MODE_DMA)
+    {
+        CacheP_inv(TestMcasp_rxBuffer, TEST_MCASP_APP_MSGSIZE * TEST_MCASP_APP_MSG_COUNT, CacheP_TYPE_ALL);
+    }
+
+    if (SystemP_SUCCESS == status)
+    {
+        const uint32_t numSamples = TEST_MCASP_APP_MSGSIZE / (slotSize * numSlots * numSerializers);
+        
+        for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+        {
+            for (sample = 0; sample < numSamples; sample++)
+            {
+                for (ser = 0; ser < numSerializers; ser++)
+                {
+                    for (slot = 0; slot < numSlots; slot++)
+                    {
+                        uint32_t txOffset = ((ser * numSamples * numSlots) + 
+                                            (sample * numSlots) + 
+                                            slot) * slotSize;
+                        
+                        uint32_t rxOffset = ((sample * numSlots * numSerializers) + 
+                                            (slot * numSerializers) + 
+                                            ser) * slotSize;
+                        
+                        /* Compare slot data byte by byte */
+                        for (b = 0; b < slotSize; b++)
+                        {
+                            if (TestMcasp_txBuffer[i][txOffset + b] != TestMcasp_rxBuffer[i][rxOffset + b])
+                            {
+                                status = SystemP_FAILURE;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    attrs->hwCfg.gbl.pdir = (uint32_t)0xBC000001;
+    attrs->hwCfg.gbl.serSetup[2]=0x0;
+    attrs->hwCfg.gbl.serSetup[3]=0x0;
+    attrs->hwCfg.rx.fifoCfg.fifoCtl = (uint32_t)0x12001U;
+    attrs->hwCfg.tx.fifoCfg.fifoCtl = (uint32_t)0x12001U;
+    gMcasp0RxSersUsed[1] = 1;
+    gMcasp0TxSersUsed[1] = 1;
+    gMcaspOpenParams[0].rxSerUsedCount = 1;
+    gMcaspOpenParams[0].txSerUsedCount = 1;
+    gMcaspOpenParams[0].txSerUsedArray = (uint8_t *) gMcasp0TxSersUsed;
+    gMcaspOpenParams[0].rxSerUsedArray = (uint8_t *) gMcasp0RxSersUsed;
+
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+    static Pinmux_PerCfg_t serPinDisable[] =
+    {
+        {PIN_MCASP0_AXR2,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR3,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        { PINMUX_END, 0U }
+    };
+    Pinmux_config(serPinDisable, PINMUX_DOMAIN_ID_MAIN);
+#endif
+
+    openParams->txBufferFormat = MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_INTERLEAVED;
+    openParams->rxBufferFormat = MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_INTERLEAVED;
+    MCASP_close(handle);
+
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "Interleaved to Semi-Interleaved loopback mismatch");
+}
+
+/**
+ * \brief  Test MCASP semi-interleaved-1 to semi-interleaved-2 loopback.
+ *
+ * This test verifies MCASP data integrity when transmitting in semi-interleaved-1 format
+ * and receiving in semi-interleaved-2 format. It configures the serializers and buffer formats,
+ * performs a loopback transfer, and checks that the received data matches the transmitted data
+ * after appropriate reordering for the buffer formats.
+ * Test case category: functionality test case
+ */
+static void TestMcasp_loopbackSemiInterleaved1ToSemiInterleaved2(void *args)
+{
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+    uint32_t instance = (uint32_t)(openParams - &gMcaspOpenParams[0]);
+    MCASP_Attrs *attrs = (MCASP_Attrs *)gMcaspConfig[instance].attrs;
+    int32_t status = SystemP_SUCCESS;
+    uint32_t i, ser, slot, b, sample;
+    const uint32_t numSerializers = 2;
+    const uint32_t numSlots = openParams->rxSlotCount;
+    const uint32_t slotSize = attrs->txSlotSize/8;
+
+    attrs->hwCfg.gbl.pdir = (uint32_t)0xBC000005;
+    attrs->hwCfg.gbl.serSetup[2]=0x1;
+    attrs->hwCfg.gbl.serSetup[3]=0x2;
+    attrs->hwCfg.rx.fifoCfg.fifoCtl = (uint32_t)0x12002U;
+    attrs->hwCfg.tx.fifoCfg.fifoCtl = (uint32_t)0x12002U;
+    uint8_t gMcasp0TxSersUsed[2] = {0,2};
+    uint8_t gMcasp0RxSersUsed[2] = {1,3};
+    gMcaspOpenParams[0].rxSerUsedCount = 2;
+    gMcaspOpenParams[0].rxSerUsedArray = (uint8_t *) gMcasp0RxSersUsed;
+    gMcaspOpenParams[0].txSerUsedCount = 2;
+    gMcaspOpenParams[0].txSerUsedArray = (uint8_t *) gMcasp0TxSersUsed;
+
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+    static Pinmux_PerCfg_t serPinEnable[]=
+    {
+        {PIN_MCASP0_AXR2,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR3,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        { PINMUX_END, 0U }
+    };
+    Pinmux_config(serPinEnable, PINMUX_DOMAIN_ID_MAIN);
+#endif
+
+    openParams->txBufferFormat = MCASP_AUDBUFF_FORMAT_MULTISER_MULTISLOT_SEMI_INTERLEAVED_1;
+    openParams->rxBufferFormat = MCASP_AUDBUFF_FORMAT_MULTISER_MULTISLOT_SEMI_INTERLEAVED_2;
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        for (b = 0U; b < TEST_MCASP_APP_MSGSIZE; b++)
+        {
+            TestMcasp_txBuffer[i][b] = b % 256;
+            TestMcasp_rxBuffer[i][b] = 0U;
+        }
+    }
+    CacheP_wb(TestMcasp_txBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+    CacheP_wb(TestMcasp_rxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+
+    MCASP_close(gMcaspHandle[CONFIG_MCASP0]);
+    gMcaspHandle[CONFIG_MCASP0] = NULL;
+    MCASP_Handle handle = MCASP_open(CONFIG_MCASP0, openParams);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    TestMcasp_cntRx = 0;
+    TestMcasp_cntTx = 0;
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_txnRx[i].buf = (void*)&TestMcasp_rxBuffer[i][0];
+        TestMcasp_txnRx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_txnRx[i].timeout = 0xFFFFFF;
+        MCASP_submitRx(handle, &TestMcasp_txnRx[i]);
+    }
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_txnTx[i].buf = (void*)&TestMcasp_txBuffer[i][0];
+        TestMcasp_txnTx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_txnTx[i].timeout = 0xFFFFFF;
+        MCASP_submitTx(handle, &TestMcasp_txnTx[i]);
+    }
+
+    status = MCASP_startTransferRx(handle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = MCASP_startTransferTx(handle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    uint32_t timeout = 10000;
+    while (((TestMcasp_cntRx < TEST_MCASP_APP_TEST_COUNT) || (TestMcasp_cntTx < TEST_MCASP_APP_TEST_COUNT)) && (timeout > 0))
+    {
+        ClockP_usleep(1000);
+        timeout--;
+    }
+
+    if (timeout == 0)
+    {
+        status = SystemP_FAILURE; /* Timeout occurred */
+    }
+
+    MCASP_stopTransferRx(handle);
+    MCASP_stopTransferTx(handle);
+
+    if (openParams->transferMode == MCASP_TRANSFER_MODE_DMA)
+    {
+        CacheP_inv(TestMcasp_rxBuffer, TEST_MCASP_APP_MSGSIZE * TEST_MCASP_APP_MSG_COUNT, CacheP_TYPE_ALL);
+    }
+
+    if (SystemP_SUCCESS == status)
+    {
+        
+        const uint32_t numSamples = TEST_MCASP_APP_MSGSIZE / (slotSize * numSlots * numSerializers);
+        
+        for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+        {
+            for (sample = 0; sample < numSamples; sample++)
+            {
+                for (ser = 0; ser < numSerializers; ser++)
+                {
+                    for (slot = 0; slot < numSlots; slot++)
+                    {
+                        uint32_t txOffset = ((sample * numSerializers * numSlots) + 
+                                            (ser * numSlots) + 
+                                            slot) * slotSize;
+                        
+                        uint32_t rxOffset = ((slot * numSamples * numSerializers) + 
+                                            (sample * numSerializers) + 
+                                            ser) * slotSize;
+                        
+                        /* Compare slot data byte by byte */
+                        for (b = 0; b < slotSize; b++)
+                        {
+                            if (TestMcasp_txBuffer[i][txOffset + b] != TestMcasp_rxBuffer[i][rxOffset + b])
+                            {
+                                status = SystemP_FAILURE;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    attrs->hwCfg.gbl.pdir = (uint32_t)0xBC000001;
+    attrs->hwCfg.gbl.serSetup[2]=0x0;
+    attrs->hwCfg.gbl.serSetup[3]=0x0;
+    attrs->hwCfg.rx.fifoCfg.fifoCtl = (uint32_t)0x12001U;
+    attrs->hwCfg.tx.fifoCfg.fifoCtl = (uint32_t)0x12001U;
+    gMcasp0RxSersUsed[1] = 1;
+    gMcasp0TxSersUsed[1] = 1;
+    gMcaspOpenParams[0].rxSerUsedCount = 1;
+    gMcaspOpenParams[0].txSerUsedCount = 1;
+    gMcaspOpenParams[0].txSerUsedArray = (uint8_t *) gMcasp0TxSersUsed;
+    gMcaspOpenParams[0].rxSerUsedArray = (uint8_t *) gMcasp0RxSersUsed;
+
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+    static Pinmux_PerCfg_t serPinDisable[] =
+    {
+        {PIN_MCASP0_AXR2,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR3,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        { PINMUX_END, 0U }
+    };
+    Pinmux_config(serPinDisable, PINMUX_DOMAIN_ID_MAIN);
+#endif
+    
+    openParams->txBufferFormat = MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_INTERLEAVED;
+    openParams->rxBufferFormat = MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_INTERLEAVED;
+    MCASP_close(handle);
+
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "Interleaved to Semi-Interleaved-2 loopback mismatch");
+}
+
+/**
+ * \brief  Test MCASP interleaved to non-interleaved loopback.
+ *
+ * This test verifies MCASP data integrity when transmitting in interleaved format
+ * and receiving in non-interleaved format. It configures the buffer formats,
+ * performs a loopback transfer, and checks that the received data matches the transmitted data
+ * after appropriate reordering for the buffer formats.
+ * Test case category: functionality test case
+ */
+static void TestMcasp_loopbackInterleavedToNonInterleaved(void *args)
+{
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+    uint32_t instance = (uint32_t)(openParams - &gMcaspOpenParams[0]);
+    MCASP_Attrs *attrs = (MCASP_Attrs *)gMcaspConfig[instance].attrs;
+    int32_t status = SystemP_SUCCESS;
+    uint32_t i, slot, sample, b;
+    const uint32_t numSlots = openParams->rxSlotCount;
+    const uint32_t slotSize = attrs->txSlotSize/8;
+    const uint32_t numSamples = TEST_MCASP_APP_MSGSIZE / (numSlots * slotSize);
+
+    openParams->txBufferFormat = MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_INTERLEAVED;
+    openParams->rxBufferFormat = MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_NON_INTERLEAVED;
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        for (b = 0U; b < TEST_MCASP_APP_MSGSIZE; b++)
+        {
+            TestMcasp_txBuffer[i][b] = b % 256;
+            TestMcasp_rxBuffer[i][b] = 0U;
+        }
+    }
+    CacheP_wb(TestMcasp_txBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+    CacheP_wb(TestMcasp_rxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+
+    MCASP_close(gMcaspHandle[CONFIG_MCASP0]);
+    gMcaspHandle[CONFIG_MCASP0] = NULL;
+    MCASP_Handle handle = MCASP_open(CONFIG_MCASP0, openParams);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    TestMcasp_cntRx = 0;
+    TestMcasp_cntTx = 0;
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_txnRx[i].buf = (void*)&TestMcasp_rxBuffer[i][0];
+        TestMcasp_txnRx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_txnRx[i].timeout = 0xFFFFFF;
+        MCASP_submitRx(handle, &TestMcasp_txnRx[i]);
+    }
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_txnTx[i].buf = (void*)&TestMcasp_txBuffer[i][0];
+        TestMcasp_txnTx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_txnTx[i].timeout = 0xFFFFFF;
+        MCASP_submitTx(handle, &TestMcasp_txnTx[i]);
+    }
+
+    status = MCASP_startTransferRx(handle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = MCASP_startTransferTx(handle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    uint32_t timeout = 10000;
+    while (((TestMcasp_cntRx < TEST_MCASP_APP_TEST_COUNT) || (TestMcasp_cntTx < TEST_MCASP_APP_TEST_COUNT)) && (timeout > 0))
+    {
+        ClockP_usleep(1000);
+        timeout--;
+    }
+
+    if (timeout == 0)
+    {
+        status = SystemP_FAILURE; /* Timeout occurred */
+    }
+
+    MCASP_stopTransferRx(handle);
+    MCASP_stopTransferTx(handle);
+
+    if (openParams->transferMode == MCASP_TRANSFER_MODE_DMA)
+    {
+        CacheP_inv(TestMcasp_rxBuffer, TEST_MCASP_APP_MSGSIZE * TEST_MCASP_APP_MSG_COUNT, CacheP_TYPE_ALL);
+    }
+
+    if (SystemP_SUCCESS == status)
+    {
+        for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+        {
+            for (slot = 0; slot < numSlots; slot++)
+            {
+                for (sample = 0; sample < numSamples; sample++)
+                {
+                    uint32_t tx_offset = (sample * numSlots + slot) * slotSize;
+                    uint32_t rx_offset = (slot * numSamples + sample) * slotSize;
+                    for (b = 0; b < slotSize; b++)
+                    {
+                        if (TestMcasp_txBuffer[i][tx_offset + b] != TestMcasp_rxBuffer[i][rx_offset + b])
+                        {
+                            status = SystemP_FAILURE;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    openParams->txBufferFormat = MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_INTERLEAVED;
+    openParams->rxBufferFormat = MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_INTERLEAVED;
+    MCASP_close(handle);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "Interleaved to Non-Interleaved loopback mismatch");
+}
+
+/**
+ * \brief  Test MCASP non-interleaved to interleaved loopback.
+ *
+ * This test verifies MCASP data integrity when transmitting in non-interleaved format
+ * and receiving in interleaved format. It configures the buffer formats,
+ * performs a loopback transfer, and checks that the received data matches the transmitted data
+ * after appropriate reordering for the buffer formats.
+ * Test case category: functionality test case
+ */
+static void TestMcasp_loopbackNonInterleavedToInterleaved(void *args)
+{
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+    uint32_t instance = (uint32_t)(openParams - &gMcaspOpenParams[0]);
+    MCASP_Attrs *attrs = (MCASP_Attrs *)gMcaspConfig[instance].attrs;
+    int32_t status = SystemP_SUCCESS;
+    uint32_t i, slot, sample, b;
+    const uint32_t numSlots = openParams->rxSlotCount;
+    const uint32_t slotSize = attrs->txSlotSize/8;
+    const uint32_t numSamples = TEST_MCASP_APP_MSGSIZE / (numSlots * slotSize);
+
+    openParams->txBufferFormat = MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_NON_INTERLEAVED;
+    openParams->rxBufferFormat = MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_INTERLEAVED;
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        for (b = 0U; b < TEST_MCASP_APP_MSGSIZE; b++)
+        {
+            TestMcasp_txBuffer[i][b] = b % 256;
+            TestMcasp_rxBuffer[i][b] = 0U;
+        }
+    }
+    CacheP_wb(TestMcasp_txBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+    CacheP_wb(TestMcasp_rxBuffer, TEST_MCASP_APP_MSG_COUNT * TEST_MCASP_APP_MSGSIZE, CacheP_TYPE_ALL);
+
+    MCASP_close(gMcaspHandle[CONFIG_MCASP0]);
+    gMcaspHandle[CONFIG_MCASP0] = NULL;
+    MCASP_Handle handle = MCASP_open(CONFIG_MCASP0, openParams);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    TestMcasp_cntRx = 0;
+    TestMcasp_cntTx = 0;
+
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_txnRx[i].buf = (void*)&TestMcasp_rxBuffer[i][0];
+        TestMcasp_txnRx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_txnRx[i].timeout = 0xFFFFFF;
+        MCASP_submitRx(handle, &TestMcasp_txnRx[i]);
+    }
+    for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+    {
+        TestMcasp_txnTx[i].buf = (void*)&TestMcasp_txBuffer[i][0];
+        TestMcasp_txnTx[i].count = TEST_MCASP_APP_MSGSIZE/4;
+        TestMcasp_txnTx[i].timeout = 0xFFFFFF;
+        MCASP_submitTx(handle, &TestMcasp_txnTx[i]);
+    }
+
+    status = MCASP_startTransferRx(handle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = MCASP_startTransferTx(handle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    uint32_t timeout = 10000;
+    while (((TestMcasp_cntRx < TEST_MCASP_APP_TEST_COUNT) || (TestMcasp_cntTx < TEST_MCASP_APP_TEST_COUNT)) && (timeout > 0))
+    {
+        ClockP_usleep(1000);
+        timeout--;
+    }
+
+    if (timeout == 0)
+    {
+        status = SystemP_FAILURE; /* Timeout occurred */
+    }
+
+    MCASP_stopTransferRx(handle);
+    MCASP_stopTransferTx(handle);
+
+    if (openParams->transferMode == MCASP_TRANSFER_MODE_DMA)
+    {
+        CacheP_inv(TestMcasp_rxBuffer, TEST_MCASP_APP_MSGSIZE * TEST_MCASP_APP_MSG_COUNT, CacheP_TYPE_ALL);
+    }
+
+    if (SystemP_SUCCESS == status)
+    {
+        for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
+        {
+            for (sample = 0; sample < numSamples; sample++)
+            {
+                for (slot = 0; slot < numSlots; slot++)
+                {
+                    uint32_t tx_offset = (slot * numSamples + sample) * slotSize;
+                    uint32_t rx_offset = (sample * numSlots + slot) * slotSize;
+                    for (b = 0; b < slotSize; b++)
+                    {
+                        if (TestMcasp_txBuffer[i][tx_offset + b] != TestMcasp_rxBuffer[i][rx_offset + b])
+                        {
+                            status = SystemP_FAILURE;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    openParams->txBufferFormat = MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_INTERLEAVED;
+    openParams->rxBufferFormat = MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_INTERLEAVED;
+    MCASP_close(handle);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "Non-Interleaved to Interleaved loopback mismatch");
+}
+
+/**
+ * \brief  Configure MCASP instance for multi-instance tests.
+ *
+ * This function sets the MCASP open parameters and hardware attributes
+ * for the specified MCASP instance, based on the test scenario and configuration mode.
+ * It supports both normal and revert configurations, adjusting slot counts, slot sizes,
+ * masks, formats, frame sync, clock settings, and auxiliary clock configuration as needed.
+ * Used by multi-instance loopback and configuration tests.
+ * Test case category: utility support function
+ */
+static void TestMcasp_configMultiInstance(int instance, int32_t flag,MCASP_OpenParams *openparams)
+{
+    MCASP_Attrs *attrs = (MCASP_Attrs *)gMcaspConfig[instance].attrs;
+
+    switch(instance)
+    {
+        case 0:
+            /* MCASP Instance 0If flag indicates new configuration, configure for 24-bit slots, 8 slots (multichannel) and
+             * set an auxiliary clock for 50MHz for the test scenario.
+             */
+            if (flag == MCASP_CONFIG_NEW)
+            {
+                /* 24 128khz */
+                gMcaspOpenParams[instance].rxSlotCount = 8;
+                gMcaspOpenParams[instance].txSlotCount = 8;
+                attrs->rxSlotSize         = 24;
+                attrs->txSlotSize         = 24;
+                attrs->hwCfg.rx.mask      = (uint32_t)0xFFFFFFU;
+                attrs->hwCfg.rx.fmt       = (uint32_t)0x181B0U; /* MCASP_RXFMT */
+                attrs->hwCfg.rx.frSyncCtl = (uint32_t)0x413U; /* MCASP_RXFMCTL */
+                attrs->hwCfg.tx.mask      = (uint32_t)0xFFFFFFU;
+                attrs->hwCfg.tx.fmt       = (uint32_t)0x181B6U; /* MCASP_TXFMT */
+                attrs->hwCfg.tx.frSyncCtl = (uint32_t)0x413U; /* MCASP_TXFMCTL */
+                gMcaspAuxClkConfig[0].tisciDevice = TISCI_DEV_MCASP0;
+                gMcaspAuxClkConfig[0].tisciClock = TISCI_DEV_MCASP0_AUX_CLK;
+                gMcaspAuxClkConfig[0].isConfigurable = 1U;
+                gMcaspAuxClkConfig[0].freq = 50000000;
+                gMcaspAuxClkConfig[0].option = TISCI_DEV_MCASP0_AUX_CLK_PARENT_POSTDIV4_16FF_MAIN_2_HSDIVOUT8_CLK;
+            }
+            else
+            {
+                /* Else: revert to the default configuration.
+                 * This branch uses 32-bit slots, 2 slots and a standard 48MHz aux clock.
+                 */
+                gMcaspOpenParams[instance].rxSlotCount = 2;
+                gMcaspOpenParams[instance].txSlotCount = 2;
+                attrs->rxSlotSize         = 32;
+                attrs->txSlotSize         = 32;
+                attrs->hwCfg.rx.mask      = (uint32_t)0xFFFFFFFFU;
+                attrs->hwCfg.rx.fmt       = (uint32_t)0x181F0U; /* MCASP_RXFMT */
+                attrs->hwCfg.rx.frSyncCtl = (uint32_t)0x113U; /* MCASP_RXFMCTL */
+                attrs->hwCfg.tx.mask      = (uint32_t)0xFFFFFFFFU;
+                attrs->hwCfg.tx.fmt       = (uint32_t)0x181F0U; /* MCASP_TXFMT */
+                attrs->hwCfg.tx.frSyncCtl = (uint32_t)0x113U; /* MCASP_TXFMCTL */
+                gMcaspAuxClkConfig[0].tisciDevice = TISCI_DEV_MCASP0;
+                gMcaspAuxClkConfig[0].tisciClock = TISCI_DEV_MCASP0_AUX_CLK;
+                gMcaspAuxClkConfig[0].isConfigurable = 1U;
+                gMcaspAuxClkConfig[0].freq = 48000000;
+                gMcaspAuxClkConfig[0].option = TISCI_DEV_MCASP0_AUX_CLK_PARENT_POSTDIV1_16FFT_MAIN_1_HSDIVOUT6_CLK;
+            }
+            break;
+        case 1:
+            /* MCASP Instance 1: branch sets 16-bit slots and slot count as 2 for tx and rx
+            * aux clock is set to 50MHz
+            */
+            if (flag == MCASP_CONFIG_NEW)
+            {
+                /* 16 50khz */
+                gMcaspOpenParams[instance].rxSlotCount = 2;
+                gMcaspOpenParams[instance].txSlotCount = 2;
+                attrs->rxSlotSize         = 16;
+                attrs->txSlotSize         = 16;
+                attrs->hwCfg.rx.mask      = (uint32_t)0xFFFFU;
+                attrs->hwCfg.rx.fmt       = (uint32_t)0x18170U; /* MCASP_RXFMT */
+                attrs->hwCfg.rx.frSyncCtl = (uint32_t)0x113U; /* MCASP_RXFMCTL */
+                attrs->hwCfg.tx.mask      = (uint32_t)0xFFFFU;
+                attrs->hwCfg.tx.fmt       = (uint32_t)0x18174U; /* MCASP_TXFMT */
+                attrs->hwCfg.tx.frSyncCtl = (uint32_t)0x113U; /* MCASP_TXFMCTL */
+                gMcaspAuxClkConfig[1] .tisciDevice = TISCI_DEV_MCASP1;
+                gMcaspAuxClkConfig[1].tisciClock = TISCI_DEV_MCASP1_AUX_CLK;
+                gMcaspAuxClkConfig[1].isConfigurable = 1U;
+                gMcaspAuxClkConfig[1].freq = 50000000;
+                gMcaspAuxClkConfig[1].option = TISCI_DEV_MCASP1_AUX_CLK_PARENT_POSTDIV4_16FF_MAIN_2_HSDIVOUT8_CLK;
+            }
+            else
+            {
+                /* Else: revert to the default configuration.
+                 * This branch uses 32-bit slots, 2 slots and a standard 48MHz aux clock.
+                 */
+                gMcaspOpenParams[instance].rxSlotCount = 2;
+                gMcaspOpenParams[instance].txSlotCount = 2;
+                attrs->rxSlotSize         = 32;
+                attrs->txSlotSize         = 32;
+                attrs->hwCfg.rx.mask      = (uint32_t)0xFFFFFFFFU;
+                attrs->hwCfg.rx.fmt       = (uint32_t)0x181F0U; /* MCASP_RXFMT */
+                attrs->hwCfg.rx.frSyncCtl = (uint32_t)0x113U; /* MCASP_RXFMCTL */
+                attrs->hwCfg.tx.mask      = (uint32_t)0xFFFFFFFFU;
+                attrs->hwCfg.tx.fmt       = (uint32_t)0x181F0U; /* MCASP_TXFMT */
+                attrs->hwCfg.tx.frSyncCtl = (uint32_t)0x113U; /* MCASP_TXFMCTL */
+                gMcaspAuxClkConfig[1].tisciDevice = TISCI_DEV_MCASP1;
+                gMcaspAuxClkConfig[1].tisciClock = TISCI_DEV_MCASP1_AUX_CLK;
+                gMcaspAuxClkConfig[1].isConfigurable = 1U;
+                gMcaspAuxClkConfig[1].freq = 48000000;
+                gMcaspAuxClkConfig[1].option = TISCI_DEV_MCASP1_AUX_CLK_PARENT_POSTDIV1_16FFT_MAIN_1_HSDIVOUT6_CLK;
+            }
+            break;
+
+        case 2:
+            /* Instance 2: 'new' config selects 4-slot 32-bit operation for MCASP instance 2;
+            * aux clock is set to 48MHz.
+            */
+             if (flag == MCASP_CONFIG_NEW)
+            {
+                gMcaspOpenParams[instance].rxSlotCount = 4;
+                gMcaspOpenParams[instance].txSlotCount = 4;
+                attrs->rxSlotSize         = 32;
+                attrs->txSlotSize         = 32;
+                attrs->hwCfg.rx.fmt       = (uint32_t)0x181F0U; /* MCASP_RXFMT */
+                attrs->hwCfg.rx.frSyncCtl = (uint32_t)0x213U; /* MCASP_RXFMCTL */
+                attrs->hwCfg.tx.fmt       = (uint32_t)0x181F0U; /* MCASP_TXFMT */
+                attrs->hwCfg.tx.frSyncCtl = (uint32_t)0x213U; /* MCASP_TXFMCTL */
+                gMcaspAuxClkConfig[2] .tisciDevice = TISCI_DEV_MCASP2;
+                gMcaspAuxClkConfig[2].tisciClock = TISCI_DEV_MCASP2_AUX_CLK;
+                gMcaspAuxClkConfig[2].isConfigurable = 1U;
+                gMcaspAuxClkConfig[2].freq = 48000000;
+                gMcaspAuxClkConfig[2].option = TISCI_DEV_MCASP2_AUX_CLK_PARENT_POSTDIV1_16FFT_MAIN_1_HSDIVOUT6_CLK;
+            }
+            else
+            {
+                /* Else: revert to the default configuration.
+                 * This branch uses 32-bit slots, 2 slots and a standard 48MHz aux clock.
+                 */
+                gMcaspOpenParams[instance].rxSlotCount = 2;
+                gMcaspOpenParams[instance].txSlotCount = 2;
+                attrs->rxSlotSize         = 32;
+                attrs->txSlotSize         = 32;
+                attrs->hwCfg.rx.fmt       = (uint32_t)0x181F0U; /* MCASP_RXFMT */
+                attrs->hwCfg.rx.frSyncCtl = (uint32_t)0x113U; /* MCASP_RXFMCTL */
+                attrs->hwCfg.tx.fmt       = (uint32_t)0x181F0U; /* MCASP_TXFMT */
+                attrs->hwCfg.tx.frSyncCtl = (uint32_t)0x113U; /* MCASP_TXFMCTL */
+                gMcaspAuxClkConfig[2].tisciDevice = TISCI_DEV_MCASP2;
+                gMcaspAuxClkConfig[2].tisciClock = TISCI_DEV_MCASP2_AUX_CLK;
+                gMcaspAuxClkConfig[2].isConfigurable = 1U;
+                gMcaspAuxClkConfig[2].freq = 48000000;
+                gMcaspAuxClkConfig[2].option = TISCI_DEV_MCASP2_AUX_CLK_PARENT_POSTDIV1_16FFT_MAIN_1_HSDIVOUT6_CLK;
+            }
+            break;
+
+        default:
+            break;
+
+    }
+}
+
+/**
+ * \brief  Test MCASP multi-instance configuration.
+ *
+ * This test verifies loopback functionality and data integrity for multiple MCASP instances
+ * with different configurations. It initializes per-instance buffers, configures each instance,
+ * submits transactions, starts transfers, and checks that the received data matches the transmitted data.
+ * The test also reverts instance configurations to default after completion.
+ * Test case category: functionality test case
+ */
+static void TestMcasp_multiInstanceConfigTest(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+    uint32_t i, j, k;
+    uint32_t mismatch = 0;
+    const uint32_t numInstances = TEST_MCASP_NUM_INSTANCES_MT;
+    const uint32_t msgCount     = TEST_MCASP_APP_MSG_COUNT;
+    const uint32_t msgSize      = TEST_MCASP_APP_MSGSIZE;
+    const uint32_t testCount    = TEST_MCASP_APP_TEST_COUNT_MT;
+
+    /* Per-instance TX/RX counters */
+    static volatile uint32_t TestMcasp_instanceCntTx[TEST_MCASP_NUM_INSTANCES_MT];
+    static volatile uint32_t TestMcasp_instanceCntRx[TEST_MCASP_NUM_INSTANCES_MT];
+
+    /* Aligned buffers */
+    static uint8_t TestMcasp_instanceBufferTx[TEST_MCASP_NUM_INSTANCES_MT][TEST_MCASP_APP_MSG_COUNT][TEST_MCASP_APP_MSGSIZE] __attribute__((aligned(256)));
+    static uint8_t TestMcasp_instanceBufferRx[TEST_MCASP_NUM_INSTANCES_MT][TEST_MCASP_APP_MSG_COUNT] [TEST_MCASP_APP_MSGSIZE] __attribute__((aligned(256)));
+
+    MCASP_Transaction TestMcasp_txnBufferTx[TEST_MCASP_NUM_INSTANCES_MT][TEST_MCASP_APP_MSG_COUNT] = {0};
+    MCASP_Transaction TestMcasp_txnBufferRx[TEST_MCASP_NUM_INSTANCES_MT][TEST_MCASP_APP_MSG_COUNT] = {0};
+
+    for (i = 0; i < numInstances; i++)
+    {
+        uint32_t bufStartOffset = 64 * i;
+
+        for (j = 0; j < msgCount; j++)
+        {
+            for (k = 0; k < msgSize; k++)
+            {
+                TestMcasp_instanceBufferTx[i][j][k] = (bufStartOffset + k) & 0xFF;
+                TestMcasp_instanceBufferRx[i][j][k] = 0;
+            }
+        }
+
+        TestMcasp_instanceCntTx[i] = 0;
+        TestMcasp_instanceCntRx[i] = 0;
+    }
+
+    CacheP_wb(TestMcasp_instanceBufferTx, sizeof(TestMcasp_instanceBufferTx), CacheP_TYPE_ALLD);
+    CacheP_wb(TestMcasp_instanceBufferRx, sizeof(TestMcasp_instanceBufferRx), CacheP_TYPE_ALLD);
+
+    for (i = 0; i < numInstances; i++)
+    {
+        if (gMcaspHandle[i] != NULL)
+        {
+            MCASP_close(gMcaspHandle[i]);
+            gMcaspHandle[i] = NULL;
+        }
+
+        TestMcasp_configMultiInstance(i, MCASP_CONFIG_NEW,&gMcaspOpenParams[i]);
+    }
+
+    Drivers_mcaspAuxClkCfg();
+
+    for (i = 0; i < numInstances; i++)
+    {
+
+        gMcaspOpenParams[i].txCallbackFxn = TestMcasp_txcbMt;
+        gMcaspOpenParams[i].rxCallbackFxn = TestMcasp_rxcbMt;
+
+        gMcaspHandle[i] = MCASP_open(i, &gMcaspOpenParams[i]);
+        TEST_ASSERT_NOT_NULL_MESSAGE(gMcaspHandle[i], "MCASP_open failed in multi-instance loopback");
+
+        MCASP_Handle mh = gMcaspHandle[i];
+
+        /* Submit TX */
+        for (j = 0; j < msgCount; j++)
+        {
+            TestMcasp_txnBufferTx[i][j].buf     = &TestMcasp_instanceBufferTx[i][j][0];
+            TestMcasp_txnBufferTx[i][j].count   = msgSize / 4;
+            TestMcasp_txnBufferTx[i][j].timeout = 0xFFFFFF;
+            TestMcasp_txnBufferTx[i][j].args    = (void*)&TestMcasp_instanceCntTx[i];
+
+            MCASP_submitTx(mh, &TestMcasp_txnBufferTx[i][j]);
+        }
+
+        /* Submit RX */
+        for (j = 0; j < msgCount; j++)
+        {
+            TestMcasp_txnBufferRx[i][j].buf     = &TestMcasp_instanceBufferRx[i][j][0];
+            TestMcasp_txnBufferRx[i][j].count   = msgSize / 4;
+            TestMcasp_txnBufferRx[i][j].timeout = 0xFFFFFF;
+            TestMcasp_txnBufferRx[i][j].args    = (void*)&TestMcasp_instanceCntRx[i];
+
+            MCASP_submitRx(mh, &TestMcasp_txnBufferRx[i][j]);
+        }
+
+        /* Start transfers */
+        status = MCASP_startTransferRx(mh);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+        status = MCASP_startTransferTx(mh);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    }
+
+    uint32_t transferComplete = 0;
+    while (!transferComplete)
+    {
+        transferComplete = 1;
+        for (i = 0; i < numInstances; i++)
+        {
+            if ((TestMcasp_instanceCntRx[i] < testCount) ||
+                (TestMcasp_instanceCntTx[i] < testCount))
+            {
+                transferComplete = 0;
+            }
+        }
+    }
+
+    for (i = 0; i < numInstances; i++)
+    {
+        MCASP_Handle mh = gMcaspHandle[i];
+        MCASP_stopTransferRx(mh);
+        MCASP_stopTransferTx(mh);
+
+        gMcaspOpenParams[i].txCallbackFxn = mcasp_txcb;
+        gMcaspOpenParams[i].rxCallbackFxn = mcasp_rxcb;
+
+        MCASP_close(mh);
+        gMcaspHandle[i] = NULL;
+    }
+
+    CacheP_inv(TestMcasp_instanceBufferRx, sizeof(TestMcasp_instanceBufferRx), CacheP_TYPE_ALLD);
+
+    mismatch = 0;
+
+    for (i = 0; i < numInstances; i++)
+    {
+        for (j = 0; j < msgCount; j++)
+        {
+            int cmp_result;
+
+            if (i == 0)
+            {
+                cmp_result = TestMcasp_compareInstance0(TestMcasp_instanceBufferTx[i][j],
+                                               TestMcasp_instanceBufferRx[i][j], msgSize);
+            }
+            else if (i == 1)
+            {
+                cmp_result = TestMcasp_compareInstance1(TestMcasp_instanceBufferTx[i][j],
+                                               TestMcasp_instanceBufferRx[i][j], msgSize);
+            }
+            else
+            {
+                cmp_result = TestMcasp_compareInstance2(TestMcasp_instanceBufferTx[i][j],
+                                               TestMcasp_instanceBufferRx[i][j], msgSize);
+            }
+
+            if (cmp_result)
+            {
+                mismatch++;
+            }
+        }
+    }
+
+    for (i = 0; i < numInstances; i++)
+    {
+        if (gMcaspHandle[i] != NULL)
+        {
+            MCASP_close(gMcaspHandle[i]);
+            gMcaspHandle[i] = NULL;
+        }
+        /* Revert instance configuration to default */
+        TestMcasp_configMultiInstance(i, MCASP_CONFIG_DEFAULT, &gMcaspOpenParams[i]);
+    }
+    Drivers_mcaspAuxClkCfg();
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(0, mismatch, "Multi-instance loopback data mismatch");
+}
+
+/**
+ * \brief  Compare TX and RX buffers for MCASP instance 0.
+ *
+ * function compares the transmitted and received buffers for instance 0,
+ * checking that the lower 24 bits of each transmitted word match the received word.
+ * Used by multi-instance configuration and loopback tests to validate data integrity.
+ * Test case category: utility support function
+ */
+static int32_t TestMcasp_compareInstance0(uint8_t *tx, uint8_t *rx, uint32_t msgSize)
+{
+    uint32_t tx_word, rx_word, j;
+    for (j = 0; j < msgSize; j += 4)
+    {
+        tx_word = (tx[j+3] << 24) |
+                  (tx[j+2] << 16) |
+                  (tx[j+1] << 8)  |
+                  (tx[j+0]);
+        rx_word = (rx[j+2] << 16) |
+                  (rx[j+1] << 8)  |
+                  (rx[j+0]);
+
+        if ((tx_word & 0x00FFFFFF) != rx_word)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/**
+ * \brief  Compare TX and RX buffers for MCASP instance 1.
+ *
+ *  This function compares the transmitted and received buffers for instance 1,
+ *  checking that the lower 16 bits of each transmitted word match the received word.
+ *  Used by multi-instance configuration and loopback tests to validate data integrity.
+ *  Test case category: utility support function
+ */
+static int32_t TestMcasp_compareInstance1(uint8_t *tx, uint8_t *rx, uint32_t msgSize)
+{
+    uint32_t tx_word, rx_word, j;
+    for (j = 0; j < msgSize; j += 4)
+    {
+        tx_word = (tx[j+3] << 24) |
+                  (tx[j+2] << 16) |
+                  (tx[j+1] << 8)  |
+                  (tx[j+0]);
+        rx_word = (rx[j+2] << 16) |
+                  (rx[j+1] << 8)  |
+                  (rx[j+0]);
+
+        if ((tx_word & 0x0000FFFF) != rx_word)
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/**
+ * \brief  Compare TX and RX buffers for MCASP instance 2.
+ *
+ *  This function compares the transmitted and received buffers for instance 2,
+ *  checking that each byte in the transmit buffer matches the corresponding byte in the receive buffer.
+ *  Used by multi-instance configuration and loopback tests to validate data integrity.
+ *  Test case category: utility support function
+ */
+static int32_t TestMcasp_compareInstance2(uint8_t *tx, uint8_t *rx, uint32_t msgSize)
+{
+    uint32_t k;
+    for ( k = 0; k < msgSize; k++)
+    {
+        if (tx[k] != rx[k])
+        {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/**
+ * \brief  Test MCASP FIFO disable configuration.
+ *
+ * This test verifies MCASP loopback functionality when the FIFO is disabled.
+ * It sets the FIFO water-level to zero and disables the FIFO control registers,
+ * performs a loopback transfer, and checks that the received data matches the transmitted data.
+ * After the test, it restores the FIFO configuration to default values.
+ * Test case category: functionality test case
+ */
+static void TestMcasp_fifoDisable(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+    MCASP_Attrs *attrs = (MCASP_Attrs *)gMcaspConfig[CONFIG_MCASP0].attrs;
+
+    attrs->txFifoWaterLevel = 0;
+    attrs->rxFifoWaterLevel = 0;
+    attrs->hwCfg.rx.fifoCfg.fifoCtl = (uint32_t)0x2001U;
+    attrs->hwCfg.tx.fifoCfg.fifoCtl = (uint32_t)0x2001U;
+    openParams->rxCallbackFxn = mcasp_rxcb;
+    openParams->txCallbackFxn = mcasp_txcb;
+
+    status =  TestMcasp_validateConfigLoopback(args);
+
+    attrs->txFifoWaterLevel = 32;
+    attrs->rxFifoWaterLevel = 32;
+    attrs->hwCfg.rx.fifoCfg.fifoCtl = (uint32_t)0x12001U;
+    attrs->hwCfg.tx.fifoCfg.fifoCtl = (uint32_t)0x12001U;
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "MCASP loopback transfer data mismatch");
+
+}

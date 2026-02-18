@@ -297,9 +297,13 @@ void test_main(void *args)
     /* Error Nack test */
     RUN_TEST(test_i2c_error_nack, 6849, (void*)&testParams);
     /* Hw Intr mode I2C_lld_mem_writeIntr*/
+    #if (!defined(SOC_J722S))
     test_i2c_set_test_params(&testParams, 0);
-
     RUN_TEST(test_i2c_write_read, 6248, (void*)&testParams);
+    #else
+    test_i2c_set_test_params(&testParams, 0);
+    RUN_TEST(test_i2c_write_read, 18763, (void*)&testParams);
+    #endif
     test_i2c_set_test_params(&testParams, 0);
     RUN_TEST(TestI2c_eepromReadWithoutAddressWrite, 8883, NULL);
     test_i2c_set_test_params(&testParams, 0);
@@ -337,8 +341,12 @@ void test_main(void *args)
     RUN_TEST(TestI2c_sclStuckRecoverBusWithSystestFault, 8334, NULL);
     RUN_TEST(TestI2c_openNullObject, 8624, NULL);
     RUN_TEST(TestI2c_recoverbusNullObject, 8625, NULL);
+    #if (!defined(SOC_J722S))
     #if (!defined(C7X_CORE))
     RUN_TEST(test_i2c_dynamic_coverage, 6605, NULL);
+    #endif
+    #else
+    RUN_TEST(test_i2c_dynamic_coverage, 18762, NULL);
     #endif
     RUN_TEST(TestI2c_targetModePollingNegative, 8627, NULL);
     RUN_TEST(TestI2c_openWithoutDriverLock, 8628, NULL);
@@ -354,12 +362,6 @@ void test_main(void *args)
     RUN_TEST(TestI2c_sclStuckRecoverBusWithSystestFaultDefaultAnd1MHz, 9012, NULL);
     RUN_TEST(TestI2c_memPrimeTransferInvalidDir, 8626, NULL);
     RUN_TEST(TestI2c_transferTimeoutBlockingMode, 8623, (void*)&testParams);
-
-#if defined(SOC_J722S)
-    RUN_TEST(test_i2c_write_read, 18763, (void*)&testParams);
-
-    RUN_TEST(test_i2c_dynamic_coverage, 18762, NULL);
-#endif
 
     I2C_deinit();
 

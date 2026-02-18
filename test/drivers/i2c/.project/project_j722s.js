@@ -59,11 +59,47 @@ const libdirs_freertos_main_r5f = {
     ],
 };
 
+const libdirs_freertos_c75ss0 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+    ],
+};
+
+const libdirs_freertos_c75ss1 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+    ],
+};
+
 const includes_freertos_r5f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/j722s/r5f",
+        "${MCU_PLUS_SDK_PATH}/test/unity/",
+    ],
+};
+
+const includes_freertos_c75ss0 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/j722s/c75x",
+        "${MCU_PLUS_SDK_PATH}/test/unity/",
+    ],
+};
+
+const includes_freertos_c75ss1 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/j722s/c75x",
         "${MCU_PLUS_SDK_PATH}/test/unity/",
     ],
 };
@@ -95,6 +131,24 @@ const libs_freertos_main_r5f = {
         "drivers.j722s.main-r5f.ti-arm-clang.${ConfigName}.lib",
         "board.j722s.r5f.ti-arm-clang.${ConfigName}.lib",
         "unity.j722s.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
+const libs_freertos_c75ss0 = {
+    common: [
+        "freertos.j722s.c75x.ti-c7000.${ConfigName}.lib",
+        "drivers.j722s.c75ss0-0.ti-c7000.${ConfigName}.lib",
+        "board.j722s.c75x.ti-c7000.${ConfigName}.lib",
+        "unity.j722s.c75x.ti-c7000.${ConfigName}.lib",
+    ],
+};
+
+const libs_freertos_c75ss1 = {
+    common: [
+        "freertos.j722s.c75x.ti-c7000.${ConfigName}.lib",
+        "drivers.j722s.c75ss1-0.ti-c7000.${ConfigName}.lib",
+        "board.j722s.c75x.ti-c7000.${ConfigName}.lib",
+        "unity.j722s.c75x.ti-c7000.${ConfigName}.lib",
     ],
 };
 
@@ -177,10 +231,44 @@ const templates_freertos_main_r5f =
     }
 ];
 
+const templates_freertos_c75ss0 =
+[
+    {
+        input: ".project/templates/j722s/common/linker_c75ss.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/j722s/freertos/main_freertos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "test_main",
+            stackSize: 64*1024,
+        },
+    }
+];
+
+const templates_freertos_c75ss1 =
+[
+    {
+        input: ".project/templates/j722s/common/linker_c75ss.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/j722s/freertos/main_freertos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "test_main",
+            stackSize: 64*1024,
+        },
+    }
+];
+
 const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "j722s-evm", os: "nortos"},
     { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "j722s-evm", os: "freertos"},
     { device: device, cpu: "main-r5fss0-0", cgt: "ti-arm-clang", board: "j722s-evm", os: "freertos"},
+    { device: device, cpu: "c75ss0-0",      cgt: "ti-c7000",     board: "j722s-evm", os: "freertos"},
+    { device: device, cpu: "c75ss1-0",      cgt: "ti-c7000",     board: "j722s-evm", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -232,7 +320,24 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_freertos_main_r5f;
         }
     }
-
+    else if(buildOption.cpu.match(/c75ss0-0*/)) {
+        if(buildOption.os.match(/freertos*/) )
+        {
+            build_property.includes = includes_freertos_c75ss0;
+            build_property.libdirs = libdirs_freertos_c75ss0;
+            build_property.libs = libs_freertos_c75ss0;
+            build_property.templates = templates_freertos_c75ss0;
+        }
+    }
+    else if(buildOption.cpu.match(/c75ss1-0*/)) {
+        if(buildOption.os.match(/freertos*/) )
+        {
+            build_property.includes = includes_freertos_c75ss1;
+            build_property.libdirs = libdirs_freertos_c75ss1;
+            build_property.libs = libs_freertos_c75ss1;
+            build_property.templates = templates_freertos_c75ss1;
+        }
+    }
     return build_property;
 }
 

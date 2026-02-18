@@ -50,3 +50,4 @@ uint8_t Board_i2cGetEepromAddrSize()
 {
 	return EEPROM_ADDR_SIZE;
 }
+

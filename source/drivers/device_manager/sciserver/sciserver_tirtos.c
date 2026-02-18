@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2020-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2020-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -337,7 +337,7 @@ static int32_t Sciserver_tirtosInitHwis(void)
     return ret;
 }
 
-static int32_t Sciserver_tirtosInitUserTasks(Sciserver_TirtosCfgPrms_t *pPrms)
+static int32_t Sciserver_tirtosInitUserTasks(Sciserver_TirtosCfgPrms_t *sciserverCfg)
 {
     uint32_t i = 0U;
     int32_t ret = CSL_PASS;
@@ -345,9 +345,23 @@ static int32_t Sciserver_tirtosInitUserTasks(Sciserver_TirtosCfgPrms_t *pPrms)
     for (i = 0U; i < SCISERVER_ARRAY_SIZE(gSciserverTaskList); i++)
     {
         TaskP_Params_init (&gSciserverUserTaskParams[i]);
-        gSciserverUserTaskParams[i].priority = pPrms->taskPriority[i];
-        gSciserverUserTaskParams[i].stack = gSciserverTaskList[i].stack;
-        gSciserverUserTaskParams[i].stackSize = SCISERVER_TASK_STACK_SIZE;
+
+        if (gSciserverTaskList[i].task_id == SCISERVER_TASK_USER_HI)
+        {
+            gSciserverUserTaskParams[i].stack = sciserverCfg->hiTaskStack;
+        }
+        else if (gSciserverTaskList[i].task_id == SCISERVER_TASK_USER_LO)
+        {
+            gSciserverUserTaskParams[i].stack = sciserverCfg->loTaskStack;
+        }
+        else
+        {
+            ret = CSL_EFAIL;
+            break;
+        }
+
+        gSciserverUserTaskParams[i].priority = sciserverCfg->taskPriority[i];
+        gSciserverUserTaskParams[i].stackSize = sciserverCfg->taskStackSize;
         gSciserverUserTaskParams[i].taskMain = Sciserver_tirtosUserMsgTask; /* Pointer to the function that implements the task. */
         gSciserverUserTaskParams[i].args = (void *) &gSciserverTaskList[i];
         gSciserverUserTaskHandles[i] = &gSciserverUserTaskObjects[i];

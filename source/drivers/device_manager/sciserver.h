@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, Texas Instruments Incorporated
+ * Copyright (c) 2020-2026, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -155,6 +155,8 @@ enum Sciserver_SemaphoreIds {
 };
 
 /** \brief Task Ids to be used for the user and DM tasks */
+#ifndef SCISERVER_TASKIDS_DEFINED
+#define SCISERVER_TASKIDS_DEFINED
 enum Sciserver_TaskIds {
     SCISERVER_TASK_USER_HI = 0,
     /**< User High priority Task ID */
@@ -163,6 +165,7 @@ enum Sciserver_TaskIds {
     SCISERVER_TASK_MAX_CNT = 2,
     /**< User Max Task ID */
 };
+#endif
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -269,9 +272,6 @@ typedef struct {
  *          user space tasks will ever receive messages from
  *          user queues.
  * \param priority Priority level passed to the OSAL for this task.
- * \param stack A pointer to a block of memory to be used as stack for this
- *              task. The OSAL assumes all task stacks are
- *              SCISERVER_TASK_STACK_SIZE.
  */
 typedef struct {
     const int32_t               task_id;
@@ -282,7 +282,6 @@ typedef struct {
     Sciserver_taskState *const  state;
     Sciserver_msgData *const    *user_msg_data;
     const int32_t               priority;
-    uint8_t *const              stack;
 } Sciserver_taskData;
 
 /* ========================================================================== */

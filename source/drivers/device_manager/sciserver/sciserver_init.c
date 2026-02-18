@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-25 Texas Instruments Incorporated
+ *  Copyright (C) 2018-26 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -32,22 +32,6 @@
 
 #include <drivers/device_manager/sciserver/sciserver_init.h>
 #include <drivers/device_manager/sciclient.h>
-
-/** \brief Task Ids to be used for the user and DM tasks */
-enum Sciserver_TaskIds {
-    SCISERVER_TASK_USER_HI = 0,
-    /**< User High priority Task ID */
-    SCISERVER_TASK_USER_LO = 1,
-    /**< User Low priority Task ID */
-    SCISERVER_TASK_MAX_CNT = 2,
-    /**< User Max Task ID */
-};
-
-/** \brief Sciserver App Configuration Parameters */
-typedef struct {
-    uint32_t taskPriority[SCISERVER_TASK_MAX_CNT];
-    /**< Task Priorities */
-} Sciserver_TirtosCfgPrms_t ;
 
 /** \brief Sciserver TI-RTOS Application Init.
  *
@@ -102,10 +86,10 @@ int32_t Sciserver_tirtosInitPrms_Init(Sciserver_TirtosCfgPrms_t *pPrms)
 }
 
 /** \brief Initializing and starting the SCI server
- *  \param None
+ *  \param sciserverCfg Pointer to #Sciserver_TirtosCfgPrms_t
  */
 
-void sciServer_init(void)
+void sciServer_init(Sciserver_TirtosCfgPrms_t *sciserverCfg)
 {
     int32_t ret = SystemP_SUCCESS;
 
@@ -114,9 +98,7 @@ void sciServer_init(void)
     char *rmpmhal_version_str = NULL;
 #endif
 
-    Sciserver_TirtosCfgPrms_t appPrms;
-
-    ret = Sciserver_tirtosInitPrms_Init(&appPrms);
+    ret = Sciserver_tirtosInitPrms_Init(sciserverCfg);
     if (ret != SystemP_SUCCESS)
     {
         DebugP_log("ret variable init FAILED, ret=%d\r\n", ret);
@@ -124,7 +106,7 @@ void sciServer_init(void)
 
     if (ret == SystemP_SUCCESS)
     {
-        ret = Sciserver_tirtosInit(&appPrms);
+        ret = Sciserver_tirtosInit(sciserverCfg);
     }
     else
     {

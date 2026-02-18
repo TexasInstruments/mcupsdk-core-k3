@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, Texas Instruments Incorporated
+ * Copyright (c) 2020-2026, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,11 +64,20 @@
 /*                         Structure Declarations                             */
 /* ========================================================================== */
 
+#ifndef SCISERVER_TIRTOSCFGPRMS_DEFINED
+#define SCISERVER_TIRTOSCFGPRMS_DEFINED
 /** \brief Sciserver App Configuration Parameters */
 typedef struct {
-    uint32_t taskPriority[SCISERVER_TASK_MAX_CNT];
     /**< Task Priorities */
+    uint32_t taskPriority[SCISERVER_TASK_MAX_CNT];
+    /**< Stack buffer for high-priority task */
+    uint8_t *hiTaskStack;
+    /**< Stack buffer for low-priority task */
+    uint8_t *loTaskStack;
+    /**< Stack size for the tasks */
+    uint32_t taskStackSize;
 } Sciserver_TirtosCfgPrms_t ;
+#endif
 
 /* ========================================================================== */
 /*                          Function Declarations                             */

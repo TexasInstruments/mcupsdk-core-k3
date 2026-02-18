@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2022 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -34,9 +34,36 @@
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/SemaphoreP.h>
 
+/** \brief Task Ids to be used for the user and DM tasks */
+#ifndef SCISERVER_TASKIDS_DEFINED
+#define SCISERVER_TASKIDS_DEFINED
+enum Sciserver_TaskIds {
+    /**< User High priority Task ID */
+    SCISERVER_TASK_USER_HI = 0,
+    /**< User Low priority Task ID */    
+    SCISERVER_TASK_USER_LO = 1,
+    /**< User Max Task ID */
+    SCISERVER_TASK_MAX_CNT = 2,
+};
+#endif
+
+#ifndef SCISERVER_TIRTOSCFGPRMS_DEFINED
+#define SCISERVER_TIRTOSCFGPRMS_DEFINED
+/** \brief Sciserver App Configuration Parameters */
+typedef struct {
+    /**< Task Priorities */
+    uint32_t taskPriority[SCISERVER_TASK_MAX_CNT];
+    /**< Stack buffer for high-priority task */
+    uint8_t *hiTaskStack;
+    /**< Stack buffer for low-priority task */
+    uint8_t *loTaskStack;
+    /**< Stack size for the tasks */
+    uint32_t taskStackSize;
+} Sciserver_TirtosCfgPrms_t ;
+#endif
 
 /** \brief Initializing and starting the SCI server
- *  \param None
+ *  \param sciserverCfg Pointer to #Sciserver_TirtosCfgPrms_t
  */
 
-void sciServer_init(void);
+void sciServer_init(Sciserver_TirtosCfgPrms_t *sciserverCfg);

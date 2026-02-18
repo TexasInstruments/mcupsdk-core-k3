@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2024 Texas Instruments Incorporated
+ *  Copyright (c) 2024-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -597,8 +597,6 @@ Sciclient_RespPrm_t respParam2 =
     .respPayloadSize = (uint32_t) sizeof (response2),
 };
 
-static uint8_t __attribute__((aligned(32))) user_hi_task_stack[TEST_SCISERVER_TASK_STACK_SIZE];
-static uint8_t __attribute__((aligned(32))) user_lo_task_stack[TEST_SCISERVER_TASK_STACK_SIZE];
 static uint32_t user_hi_msg_buffer[TEST_SCISERVER_HW_QUEUE_SIZE] = {2,2,2};
 static uint32_t uhd1_hi_msg_buffer[TEST_SCISERVER_HW_QUEUE_SIZE] = {2,2,2};
 static uint32_t user_hi_main_msg_buffer[TEST_SCISERVER_HW_QUEUE_SIZE] = {2,2,2};
@@ -682,7 +680,6 @@ const Sciserver_taskData utdTest1[] = {
         .semaphore_id = 0,
         .state = 0,
         .user_msg_data = uhd1_hi_msg_data_list,
-        .stack = 0,
     },
 };
 
@@ -696,7 +693,6 @@ const Sciserver_taskData utdTest3[] = {
         .semaphore_id = SCISERVER_SEMAPHORE_USER_HI,
         .state = &user_hi_msg_state,
         .user_msg_data = user_hi_msg_data_list,
-        .stack = user_hi_task_stack,
     },
     /* user_lo_msg_task_data */
     {
@@ -707,7 +703,6 @@ const Sciserver_taskData utdTest3[] = {
         .semaphore_id = SCISERVER_SEMAPHORE_USER_LO,
         .state = &user_lo_msg_state,
         .user_msg_data = user_lo_msg_data_list,
-        .stack = user_lo_task_stack,
     },
 };
 

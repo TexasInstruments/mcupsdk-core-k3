@@ -43,9 +43,8 @@
 
 /* MCAN STB pins from I/O expander */
 
-#define IO_EXP_MCAN0_STB_PIN  (0x0BU)
-#define IO_EXP_MCAN0_EN_PIN   (0x09U)
-
+#define IO_EXP_MCAN0_STB_PIN  (0x14U)
+#define IO_EXP_MCAN1_STB_PIN  (0x15U)
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -54,7 +53,51 @@ int32_t test_mcanEnableTransceiver(void)
 {
     int32_t status = SystemP_SUCCESS;
 
-    /* The MCAN transceiver is enabled by default */
+    TCA6424_Params ioExpParams;
+
+    TCA6424_Params_init(&ioExpParams);
+
+    TCA6424_Config ioExpConfig;
+
+    status = TCA6424_open(&ioExpConfig, &ioExpParams);
+
+    /* Configure MCAN0_STB (P24) as output pin */
+    if (status == SystemP_SUCCESS)
+    {
+        status = TCA6424_config(&ioExpConfig, IO_EXP_MCAN0_STB_PIN,
+                                TCA6424_MODE_OUTPUT);
+    }
+
+    /* Set MCAN0_STB level to LOW for normal mode operation of transceiver */
+    if (status == SystemP_SUCCESS)
+    {
+        status = TCA6424_setOutput(&ioExpConfig, IO_EXP_MCAN0_STB_PIN,
+                                   TCA6424_OUT_STATE_LOW);
+    }
+
+    /* Configure MCAN1_STB (P25) as output pin */
+    if (status == SystemP_SUCCESS)
+    {
+        status = TCA6424_config(&ioExpConfig, IO_EXP_MCAN1_STB_PIN,
+                                TCA6424_MODE_OUTPUT);
+    }
+
+    /* Set MCAN1_STB level to LOW for normal mode operation of transceiver */
+    if (status == SystemP_SUCCESS)
+    {
+        status = TCA6424_setOutput(&ioExpConfig, IO_EXP_MCAN1_STB_PIN,
+                                   TCA6424_OUT_STATE_LOW);
+    }
+
+    if (status != SystemP_SUCCESS)
+    {
+        DebugP_log("[MCAN] TCA6424 configuration FAILED!!\r\n");
+        TCA6424_close(&ioExpConfig);
+    }
+    else
+    {
+        DebugP_log("[MCAN] CAN transceiver enabled successfully\r\n");
+    }
 
     return status;
 }

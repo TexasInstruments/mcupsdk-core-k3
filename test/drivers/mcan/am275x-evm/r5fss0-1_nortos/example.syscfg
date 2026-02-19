@@ -23,8 +23,10 @@ const mpu_armv75 = mpu_armv7.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-mcan1.$name        = "CONFIG_MCAN0";
-mcan1.MCAN.$assign = "MCAN0";
+mcan1.$name           = "CONFIG_MCAN0";
+mcan1.MCAN.$assign    = "MCAN0";
+mcan1.MCAN.RX.$assign = "MCU_GPIO0_6";
+mcan1.MCAN.TX.$assign = "MCU_GPIO0_5";
 
 mcan2.$name        = "CONFIG_MCAN1";
 mcan2.MCAN.$assign = "MCAN1";
@@ -61,8 +63,6 @@ mpu_armv75.size     = 21;
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-mcan1.MCAN.RX.$suggestSolution              = "MCAN0_RX";
-mcan1.MCAN.TX.$suggestSolution              = "MCAN0_TX";
 mcan2.MCAN.RX.$suggestSolution              = "MCASP2_AXR3";
 mcan2.MCAN.TX.$suggestSolution              = "MCASP2_AXR2";
 debug_log.uartLog.UART.RXD.$suggestSolution = "MCASP4_AXR0";

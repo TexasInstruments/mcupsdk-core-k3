@@ -42,6 +42,7 @@ FILES_common := \
 	test_mcanCommon.c \
 	test_mcanTxApp.c \
 	main.c \
+	test_mcan_multithread.c \
 	mcan_transceiver.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -69,6 +70,8 @@ INCLUDES_common := \
 DEFINES_common := \
 	-DSOC_AM62DX \
 	-DR5_FREERTOS_CORE \
+	-DFREERTOS_CORE \
+	-DMCU_FREERTOS_CORE \
 
 CFLAGS_common := \
 	-mcpu=cortex-r5 \

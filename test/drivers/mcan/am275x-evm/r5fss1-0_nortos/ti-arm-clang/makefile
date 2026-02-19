@@ -38,6 +38,7 @@ FILES_common := \
 	test_mcan.c \
 	test_mcanCommon.c \
 	test_mcanTxApp.c \
+	test_mcan_multithread.c \
 	main.c \
 	mcan_transceiver.c \
 	ti_drivers_config.c \

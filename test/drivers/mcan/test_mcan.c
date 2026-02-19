@@ -81,7 +81,6 @@ void test_main(void *args)
         /* Initialization for tests */
         testParams = &gMcanTestcaseParams[testcaseIdx];
         RUN_TEST(mcanRunTestcase, gMcanTestcaseParams[testcaseIdx].testcaseId, (void*)testParams);
-        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, gMcanTestcaseParams[testcaseIdx].testResult);
     }
 
     UNITY_END();
@@ -106,4 +105,5 @@ static void mcanRunTestcase(void *args)
 {
     st_mcanTestcaseParams_t *testParams = (st_mcanTestcaseParams_t*)args;
     st_mcanTxApp_main(testParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, testParams->testResult);
 }

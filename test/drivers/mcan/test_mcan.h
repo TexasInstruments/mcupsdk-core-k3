@@ -120,7 +120,7 @@ typedef enum
 typedef enum
 {
     MCAN_TEST_TYPE_B2B  = 0x1U,
-    MCAN_TEST_TYPE_INTERNAL_LOOBACK  = 0x2U,
+    MCAN_TEST_TYPE_INTERNAL_LOOPBACK  = 0x2U,
     MCAN_TEST_TYPE_EXTERNAL_LOOBACK  = 0x4U
 } st_mcanTestType;
 
@@ -232,7 +232,18 @@ typedef struct
 /* ========================================================================== */
 int32_t st_mcanTxApp_main(st_mcanTestcaseParams_t *testParams);
 int32_t App_mcanNegativeTest(st_mcanTestcaseParams_t *testParams);
-
+int32_t App_mcanReadRxMSG(MCAN_RxBufElement *rxMsg,
+                                 uint32_t status);
+int32_t App_mcanConfig(st_mcanTestcaseParams_t *testParams);
+#if defined (FREERTOS_CORE)
+int32_t TestMcan_multiThreadedTest(st_mcanTestcaseParams_t *testParams);
+int32_t TestMcan_concurrentTxTest(st_mcanTestcaseParams_t *testParams);
+int32_t TestMcan_multiInstanceTest(st_mcanTestcaseParams_t *testParams);
+int32_t TestMcan_txFifoRxFifo0ConcurrentTest(st_mcanTestcaseParams_t *testParams);
+int32_t TestMcan_parallelClassicCanFdTest(st_mcanTestcaseParams_t *testParams);
+int32_t TestMcan_intrPollMultiThreadTest(st_mcanTestcaseParams_t *testParams);
+int32_t TestMcan_multiThreadedFilterTest(st_mcanTestcaseParams_t *testParams);
+#endif
 #ifdef __cplusplus
 }
 

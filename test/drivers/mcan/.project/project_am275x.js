@@ -7,6 +7,7 @@ const files = {
         "test_mcan.c",
         "test_mcanCommon.c",
         "test_mcanTxApp.c",
+        "test_mcan_multithread.c",
         "main.c",
         "mcan_transceiver.c"
     ],
@@ -83,6 +84,7 @@ const lnkfiles = {
 const defines_r5_freertos = {
     common:[
         "R5_FREERTOS_CORE",
+        "FREERTOS_CORE"
     ]
 };
 

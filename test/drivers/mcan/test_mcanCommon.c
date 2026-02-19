@@ -195,7 +195,7 @@ int32_t mcanTestFunc(st_mcanTestcaseParams_t *testParams);
  * \retval  status      configuration status.
  */
 int32_t App_mcanRegisterInterrupt(void);
-int32_t App_mcanUnRegisterInterrupt();
+int32_t App_mcanUnRegisterInterrupt(void);
 
 /**
  * \brief   This is Interrupt Service Routine for MCAN interrupt 0.
@@ -447,13 +447,13 @@ void App_mcanIntr1ISR(void *arg)
 
     intrStatus = MCAN_getIntrStatus(gMcanBaseAddr);
     MCAN_clearIntrStatus(gMcanBaseAddr, intrStatus);
-    gMcanIsrIntr0Status = (intrStatus &
+    gMcanIsrIntr1Status = (intrStatus &
                           (MCAN_getIntrLineSelectStatus(gMcanBaseAddr)));
     if(isrPrintEnable == (uint32_t)TRUE)
     {
         DebugP_log("\nInterrupt Status: 0x%x.\n", intrStatus);
     }
-    if ((gMcanIsrIntr0Status & MCAN_INTR_SRC_TRANS_COMPLETE) == MCAN_INTR_SRC_TRANS_COMPLETE)
+    if ((gMcanIsrIntr1Status & MCAN_INTR_SRC_TRANS_COMPLETE) == MCAN_INTR_SRC_TRANS_COMPLETE)
     {
         SemaphoreP_post(&gTxDoneSem);
     }
@@ -462,7 +462,7 @@ void App_mcanIntr1ISR(void *arg)
          MCAN_INTR_SRC_RX_FIFO0_NEW_MSG |
          MCAN_INTR_SRC_RX_FIFO1_NEW_MSG |
          MCAN_INTR_SRC_HIGH_PRIO_MSG;
-    if ((gMcanIsrIntr0Status & rxIntrMask) != 0U)
+    if ((gMcanIsrIntr1Status & rxIntrMask) != 0U)
     {
         /* If any of the Rx interrupts are set,
          * Post the RxSem

@@ -8,6 +8,7 @@ const files = {
         "test_mcanCommon.c",
         "test_mcanTxApp.c",
         "main.c",
+        "test_mcan_multithread.c",
         "mcan_transceiver.c"
     ],
 };
@@ -134,7 +135,15 @@ const defines_common = {
     ]
 };
 
-const defines_common_a53 = {
+const defines_common_a53_freertos = {
+    common:[
+        "SOC_AM62DX",
+        "A53_CORE",
+        "FREERTOS_CORE",
+    ]
+};
+
+const defines_common_a53_nortos = {
     common:[
         "SOC_AM62DX",
         "A53_CORE",
@@ -145,6 +154,8 @@ const defines_r5_freertos = {
     common:[
         "SOC_AM62DX",
         "R5_FREERTOS_CORE",
+        "FREERTOS_CORE",
+        "MCU_FREERTOS_CORE"
     ]
 };
 
@@ -260,14 +271,14 @@ function getComponentBuildProperty(buildOption) {
     }
     else if(buildOption.cpu.match(/a53*/))
     {
-        build_property.defines = defines_common_a53;
-
+           
         if(buildOption.os.match(/freertos*/) )
         {
             build_property.includes = includes_freertos_a53;
             build_property.libdirs = libdirs_freertos_a53;
             build_property.libs = libs_freertos_a53;
             build_property.templates = templates_freertos_a53;
+            build_property.defines = defines_common_a53_freertos;
         }
         else
         {
@@ -275,6 +286,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_nortos_a53;
             build_property.libdirs = libdirs_nortos_a53;
             build_property.templates = templates_nortos_a53;
+            build_property.defines = defines_common_a53_nortos;
         }
 
     }

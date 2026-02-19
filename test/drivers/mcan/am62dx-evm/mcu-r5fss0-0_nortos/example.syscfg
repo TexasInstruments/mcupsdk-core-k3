@@ -26,11 +26,12 @@ const mpu_armv76 = mpu_armv7.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-i2c1.$name               = "CONFIG_I2C0";
-i2c1.MCU_I2C.$assign     = "MCU_I2C0";
-i2c1.MCU_I2C.SCL.$assign = "MCU_I2C0_SCL";
-i2c1.MCU_I2C.SDA.$assign = "MCU_I2C0_SDA";
-i2c1.I2C_child.$name     = "drivers_i2c_v0_i2c_v0_template0";
+i2c1.$name                   = "CONFIG_I2C0";
+i2c1.useMcuDomainPeripherals = false;
+i2c1.I2C.$assign             = "I2C0";
+i2c1.I2C.SCL.$assign         = "I2C0_SCL";
+i2c1.I2C.SDA.$assign         = "I2C0_SDA";
+i2c1.I2C_child.$name         = "drivers_i2c_v0_i2c_v0_template0";
 
 mcan1.$name            = "CONFIG_MCAN0";
 mcan1.MCU_MCAN.$assign = "MCU_MCAN0";

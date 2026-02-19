@@ -62,7 +62,7 @@ debug_log.uartLog.useWakeupDomainPeripherals = false;
 debug_log.uartLog.intrEnable                 = "DISABLE";
 debug_log.uartLog.$name                      = "CONFIG_UART_SBL";
 
-mpu_armv71.attributes        = "NonCached";
+mpu_armv71.attributes        = "Device";
 mpu_armv71.allowExecute      = false;
 mpu_armv71.$name             = "REGISTER_REGION";
 mpu_armv71.accessPermissions = "Supervisor RD+WR, User RD";

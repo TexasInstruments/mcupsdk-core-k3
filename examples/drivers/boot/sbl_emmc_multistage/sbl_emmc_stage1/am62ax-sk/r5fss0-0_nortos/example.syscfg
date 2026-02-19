@@ -63,7 +63,7 @@ debug_log.sysfwUartLog.UART.CTSn.$assign          = "MCASP0_AXR3";
 
 mpu_armv71.accessPermissions = "Supervisor RD+WR, User RD";
 mpu_armv71.allowExecute      = false;
-mpu_armv71.attributes        = "NonCached";
+mpu_armv71.attributes        = "Device";
 mpu_armv71.$name             = "REGISTERS_BASE";
 
 mpu_armv72.accessPermissions = "Supervisor RD+WR, User RD";

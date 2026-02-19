@@ -60,7 +60,7 @@ debug_log.sysfwUartLog.UART.TXD.$assign           = "MCASP0_ACLKR";
 debug_log.sysfwUartLog.UART.RTSn.$assign          = "MCASP0_AXR2";
 debug_log.sysfwUartLog.UART.CTSn.$assign          = "MCASP0_AXR3";
 
-mpu_armv71.attributes        = "NonCached";
+mpu_armv71.attributes        = "Device";
 mpu_armv71.allowExecute      = false;
 mpu_armv71.$name             = "REGISTER_REGION";
 mpu_armv71.accessPermissions = "Supervisor RD+WR, User RD";

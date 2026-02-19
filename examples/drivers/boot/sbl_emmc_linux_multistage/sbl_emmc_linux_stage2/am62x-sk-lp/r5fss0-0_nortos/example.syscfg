@@ -61,7 +61,7 @@ debug_log.uartLog.intrEnable                 = "DISABLE";
 mpu_armv71.$name             = "REGISTERS_BASE";
 mpu_armv71.accessPermissions = "Supervisor RD+WR, User RD";
 mpu_armv71.allowExecute      = false;
-mpu_armv71.attributes        = "NonCached";
+mpu_armv71.attributes        = "Device";
 
 mpu_armv72.$name             = "TCMA_VEC";
 mpu_armv72.accessPermissions = "Supervisor RD+WR, User RD";

@@ -2508,16 +2508,18 @@ void OSPI_setDelays(OSPI_Handle handle, uint32_t inputClkFreq)
 
         /* Delay Setup */
         tsclk = OSPI_DIV_ROUND_UP(inputClkFreq, OSPI_MAX_OPERATING_FREQUENCY);
+
         cssot = OSPI_calculateTicksForns(inputClkFreq, CSL_OSPI_DEV_DELAY_CSSOT_NS);
-
-        if(cssot < tsclk)
-        {
-            cssot = tsclk;
-        }
-
         csset = OSPI_calculateTicksForns(inputClkFreq, CSL_OSPI_DEV_DELAY_CSEOT_NS);
         csdads = OSPI_calculateTicksForns(inputClkFreq, CSL_OSPI_DEV_DELAY_CSDADS_NS);
         csda = OSPI_calculateTicksForns(inputClkFreq, CSL_OSPI_DEV_DELAY_CSDA_NS);
+
+        if(csda < tsclk)
+        {
+            /* Must be at least one SCLK tick */
+            csda = tsclk;
+        }
+
 
         uint32_t devDelay = ((cssot << CSL_OSPI_FLASH_CFG_DEV_DELAY_REG_D_INIT_FLD_SHIFT)  | \
                       (csset << CSL_OSPI_FLASH_CFG_DEV_DELAY_REG_D_AFTER_FLD_SHIFT) | \

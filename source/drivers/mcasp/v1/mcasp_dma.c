@@ -299,7 +299,6 @@ static int32_t MCASP_primeTxTrpd(MCASP_Config *config)
     const CSL_McaspRegs *pReg = NULL;
     uint64_t txnByteCnt = 0U;
     uint32_t tempIcntX = 0U;
-    uint32_t tempIcntY = 0U;
     uint16_t waterLevel = 0U;
 
     if(config != NULL)
@@ -390,81 +389,77 @@ static int32_t MCASP_primeTxTrpd(MCASP_Config *config)
                 }
                 else
                 {
-                    tempIcntX = tempIcntX & ((-(int32_t)tempIcntX));
-                    tempIcntY = (uint32_t)(txnByteCnt/((uint64_t)pTr->dicnt0*(uint64_t)pTr->dicnt1*(uint64_t)tempIcntX));
-                    if((tempIcntY > MCASP_ICNT2_MAX) || (tempIcntX > MCASP_ICNT2_MAX))
-                    {
-                        DebugP_logError("Transaction count out of bounds \r\n");
-                        status = SystemP_FAILURE;
-                        break;
-                    }
-                    else
-                    {
-                        pTr->dicnt2 = (uint16_t)tempIcntX;
-                        pTr->dicnt3 = (uint16_t)tempIcntY;
-                    }
+                    DebugP_logError("Transaction count out of bounds \r\n");
+                    status = SystemP_FAILURE;
+                    break;
                 }
                 pTr->ddim1 = 0;
                 pTr->ddim2 = 0;
                 pTr->ddim3 = 0;
             }
 
-            /* Writeback the TRPD memory */
-            CacheP_wb(obj->dmaChCfg->txTrpdMem, MCASP_UDMA_TR15_TRPD_SIZE_TX*MCASP_TX_DMA_RING_ELEM_CNT, CacheP_TYPE_ALLD);
-
-            /* Prime ring memory with pointers to TRPD */
-            uint64_t *ringPtr = (uint64_t *)obj->dmaChCfg->txRingMem;
-            *ringPtr = (uint64_t)Udma_virtToPhyFxn((uint8_t *)obj->dmaChCfg->txTrpdMem, drvHandle, txChHandle);
-
-            /* Writeback ring memory */
-            CacheP_wb(obj->dmaChCfg->txRingMem, MCASP_UDMA_RING_ENTRY_SIZE * MCASP_TX_DMA_RING_ELEM_CNT, CacheP_TYPE_ALLD);
-
-            /* Check if there are txn already submitted */
-            if(QueueP_isEmpty(obj->reqQueueHandleTx) == QueueP_NOTEMPTY)
+            if(status == SystemP_SUCCESS)
             {
-                MCASP_Transaction *txn = NULL;
-                uint64_t txCnt = 0;
-
-                txCbParam = obj->dmaChCfg->txCbParams;
-
-                for(i = 0; i < MCASP_TX_DMA_TR_COUNT; i++)
+                /* Writeback the TRPD memory */
+                CacheP_wb(obj->dmaChCfg->txTrpdMem, MCASP_UDMA_TR15_TRPD_SIZE_TX*MCASP_TX_DMA_TR_COUNT, CacheP_TYPE_ALLD);
+                
+                /* Writeback the TRPD memory */
+                CacheP_wb(obj->dmaChCfg->txTrpdMem, MCASP_UDMA_TR15_TRPD_SIZE_TX*MCASP_TX_DMA_RING_ELEM_CNT, CacheP_TYPE_ALLD);
+                
+                /* Prime ring memory with pointers to TRPD */
+                uint64_t *ringPtr = (uint64_t *)obj->dmaChCfg->txRingMem;
+                *ringPtr = (uint64_t)Udma_virtToPhyFxn((uint8_t *)obj->dmaChCfg->txTrpdMem, drvHandle, txChHandle);
+                
+                /* Writeback ring memory */
+                CacheP_wb(obj->dmaChCfg->txRingMem, MCASP_UDMA_RING_ENTRY_SIZE * MCASP_TX_DMA_RING_ELEM_CNT, CacheP_TYPE_ALLD);
+                
+                /* Check if there are txn already submitted */
+                if(QueueP_isEmpty(obj->reqQueueHandleTx) == QueueP_NOTEMPTY)
                 {
-                    txn = QueueP_get(obj->reqQueueHandleTx);
-
-                    if(txn != obj->reqQueueHandleTx)
+                    MCASP_Transaction *txn = NULL;
+                    uint64_t txCnt = 0;
+                    
+                    txCbParam = obj->dmaChCfg->txCbParams;
+                    
+                    for(i = 0; i < MCASP_TX_DMA_TR_COUNT; i++)
                     {
-                        /* Update last filled index */
-                        obj->lastFilled = (obj->lastFilled + 1U)%(MCASP_TX_DMA_TR_COUNT);
+                        txn = QueueP_get(obj->reqQueueHandleTx);
+                        
+                        if(txn != obj->reqQueueHandleTx)
+                        {
+                            /* Update last filled index */
+                            obj->lastFilled = (obj->lastFilled + 1U)%(MCASP_TX_DMA_TR_COUNT);
+                            
+                            pTr = UdmaUtils_getTrpdTr15Pointer((uint8_t *)obj->dmaChCfg->txTrpdMem, obj->lastFilled);
+                            
+                            txCnt = (uint32_t)(txn->count*WORD_BYTE_COUNT);
 
-                        pTr = UdmaUtils_getTrpdTr15Pointer((uint8_t *)obj->dmaChCfg->txTrpdMem, obj->lastFilled);
+                            status = MCASP_prepareDmaIcnts((MCASP_Handle)config, (txCnt),
+                                                                    1U);
+                                                                    
+                            DebugP_assert(status == SystemP_SUCCESS);
+                                                                    
+                            pTr->addr =(uint64_t)Udma_virtToPhyFxn(txn->buf, drvHandle, txChHandle);
+                            
+                            pTr->icnt0 = obj->txDmaIcnt.icnt0;
+                            pTr->icnt1 = obj->txDmaIcnt.icnt1;
+                            pTr->icnt2 = obj->txDmaIcnt.icnt2;
+                            pTr->icnt3 = obj->txDmaIcnt.icnt3;
 
-                        txCnt = (uint32_t)(txn->count*WORD_BYTE_COUNT);
-
-                        status = MCASP_prepareDmaIcnts((MCASP_Handle)config, (txCnt),
-                                                                1U);
-
-                        DebugP_assert(status == SystemP_SUCCESS);
-
-                        pTr->addr =(uint64_t)Udma_virtToPhyFxn(txn->buf, drvHandle, txChHandle);
-
-                        pTr->icnt0 = obj->txDmaIcnt.icnt0;
-                        pTr->icnt1 = obj->txDmaIcnt.icnt1;
-                        pTr->icnt2 = obj->txDmaIcnt.icnt2;
-                        pTr->icnt3 = obj->txDmaIcnt.icnt3;
-
-                        pTr->dim1     = obj->txDmaIcnt.dim1;
-                        pTr->dim2     = obj->txDmaIcnt.dim2;
-                        pTr->dim3     = obj->txDmaIcnt.dim3;
-
-                        CacheP_wb(pTr, sizeof(CSL_UdmapTR3), CacheP_TYPE_ALLD);
-
-                        txCbParam = obj->dmaChCfg->txCbParams;
-                        txCbParam = txCbParam + (obj->lastFilled);
-                        *txCbParam = txn;
-                    }
-                    else
-                    {
-                        break;
+                            pTr->dim1     = obj->txDmaIcnt.dim1;
+                            pTr->dim2     = obj->txDmaIcnt.dim2;
+                            pTr->dim3     = obj->txDmaIcnt.dim3;
+                            
+                            CacheP_wb(pTr, sizeof(CSL_UdmapTR3), CacheP_TYPE_ALLD);
+                            
+                            txCbParam = obj->dmaChCfg->txCbParams;
+                            txCbParam = txCbParam + (obj->lastFilled);
+                            *txCbParam = txn;
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
                 }
             }
@@ -740,27 +735,28 @@ int32_t MCASP_enableDmaTx(MCASP_Config *config)
         Udma_DrvHandle drvHandle = obj->mcaspDmaHandle;
 
         status = MCASP_primeTxTrpd(config);
-        DebugP_assert(status == SystemP_SUCCESS);
+        if(status == SystemP_SUCCESS)
+        {
+            status = Udma_chEnable(txChHandle);
+            DebugP_assert(status == SystemP_SUCCESS);
 
-        status = Udma_chEnable(txChHandle);
-        DebugP_assert(status == SystemP_SUCCESS);
+            localEventId = MCASP_getTxLocalEventId(attrs->instNum);
+            DebugP_assert(localEventId != 0xFFFFFFFFU);
 
-        localEventId = MCASP_getTxLocalEventId(attrs->instNum);
-        DebugP_assert(localEventId != 0xFFFFFFFFU);
+            UdmaUtils_mapLocaltoGlobalEvent(drvHandle, txChHandle, localEventId, 1U);
 
-        UdmaUtils_mapLocaltoGlobalEvent(drvHandle, txChHandle, localEventId, 1U);
+            obj->lastPlayed = MCASP_TX_DMA_TR_COUNT-1U;
 
-        obj->lastPlayed = MCASP_TX_DMA_TR_COUNT-1U;
+            /* Reset BCDMA RT Pkt Count */
+            do {
+                status += Udma_chGetStats(txChHandle, &chStats);
 
-        /* Reset BCDMA RT Pkt Count */
-        do {
-            status += Udma_chGetStats(txChHandle, &chStats);
+                /* Reset/Decrement the number of processed packets */
+                status += Udma_chDecStats(txChHandle, &chStats);
 
-            /* Reset/Decrement the number of processed packets */
-            status += Udma_chDecStats(txChHandle, &chStats);
-
-            status += Udma_chGetStats(txChHandle, &chStats);
-        }while(chStats.packetCnt != 0U);
+                status += Udma_chGetStats(txChHandle, &chStats);
+            }while(chStats.packetCnt != 0U);
+        }
     }
 
     return status;
@@ -1800,33 +1796,14 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
                         case MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_NON_INTERLEAVED:
                         case MCASP_AUDBUFF_FORMAT_MULTISER_MULTISLOT_NON_INTERLEAVED:
                         {
-#if defined (MCASP_TX_EVENT_TYPE_L2G)
-                            if((waterLevel % (object->XmtObj.serCount * object->XmtObj.slotCount)) != 0U)
-                            {
-                                status = SystemP_FAILURE;
-                            }
-                            else
-#endif
-                            {
-                                object->txDmaIcnt.icnt0   = WORD_BYTE_COUNT;
-                                object->txDmaIcnt.icnt1   = (uint16_t)(object->XmtObj.serCount * object->XmtObj.slotCount);
-                                object->txDmaIcnt.icnt2   = (uint16_t)((((uint32_t)waterLevel / (uint32_t)(object->txDmaIcnt.icnt1)) == 0U) ? 1U : ((uint32_t)waterLevel / (uint32_t)(object->txDmaIcnt.icnt1)));
-                                
-                                tempIcntX   = ((uint32_t)frameCount / (uint32_t)(object->txDmaIcnt.icnt2));
-                                if(tempIcntX < MCASP_ICNT2_MAX)
-                                {
-                                    object->txDmaIcnt.icnt3 = (uint16_t)tempIcntX;
-                                }
-                                else
-                                {
-                                        DebugP_logError("Transaction count out of bounds \r\n");
-                                        status = SystemP_FAILURE;
-                                }
+                            object->txDmaIcnt.icnt0   = WORD_BYTE_COUNT;
+                            object->txDmaIcnt.icnt1   = (uint16_t)(object->XmtObj.serCount * object->XmtObj.slotCount);
+                            object->txDmaIcnt.icnt2   = (uint16_t)((((uint32_t)waterLevel / (uint32_t)(object->txDmaIcnt.icnt1)) == 0U) ? 1U : ((uint32_t)waterLevel / (uint32_t)(object->txDmaIcnt.icnt1)));
+                            object->txDmaIcnt.icnt3   = (uint16_t)((uint32_t)frameCount / (uint32_t)(object->txDmaIcnt.icnt2));
 
-                                object->txDmaIcnt.dim1    = (int32_t)((int32_t)frameCount * (int32_t)WORD_BYTE_COUNT);
-                                object->txDmaIcnt.dim2    = (int32_t)WORD_BYTE_COUNT;
-                                object->txDmaIcnt.dim3    = (int32_t)((int32_t)WORD_BYTE_COUNT * (int32_t)((uint32_t)waterLevel/ ((uint32_t)object->XmtObj.serCount * (uint32_t)object->XmtObj.slotCount)));
-                            }
+                            object->txDmaIcnt.dim1    = (int32_t)((int32_t)frameCount * (int32_t)WORD_BYTE_COUNT);
+                            object->txDmaIcnt.dim2    = (int32_t)WORD_BYTE_COUNT;
+                            object->txDmaIcnt.dim3    = (int32_t)((int32_t)WORD_BYTE_COUNT * (int32_t)((uint32_t)waterLevel/ ((uint32_t)object->XmtObj.serCount * (uint32_t)object->XmtObj.slotCount)));
 
                             break;
                         }

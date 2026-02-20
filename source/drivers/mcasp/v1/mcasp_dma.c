@@ -1655,6 +1655,7 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
     uint64_t txnByteCnt = 0U;
     MCASP_Object *object = NULL;
     const MCASP_Attrs *attrs = NULL;
+    uint32_t tempIcntX = 0U;
     uint16_t waterLevel = 0U;
     uint32_t frameCount = 0U;
 
@@ -1752,7 +1753,17 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
                             object->txDmaIcnt.icnt0   = WORD_BYTE_COUNT;
                             object->txDmaIcnt.icnt1   = (uint16_t)waterLevel;
                             object->txDmaIcnt.icnt2   = (uint16_t)((uint32_t)waterLevel / (uint32_t)(object->txDmaIcnt.icnt1));  /* Always equals 1 */
-                            object->txDmaIcnt.icnt3   = (uint16_t)((uint32_t)(txnByteCnt/((uint64_t)object->txDmaIcnt.icnt0*(uint64_t)object->txDmaIcnt.icnt1*(uint64_t)object->txDmaIcnt.icnt2)));
+                            
+                            tempIcntX   = (uint32_t)((uint32_t)(txnByteCnt/((uint64_t)object->txDmaIcnt.icnt0*(uint64_t)object->txDmaIcnt.icnt1*(uint64_t)object->txDmaIcnt.icnt2)));
+                            if(tempIcntX < MCASP_ICNT2_MAX)
+                            {
+                                object->txDmaIcnt.icnt3 = (uint16_t)tempIcntX;
+                            }
+                            else
+                            {
+                                    DebugP_logError("Transaction count out of bounds \r\n");
+                                    status = SystemP_FAILURE;
+                            }
 
                             object->txDmaIcnt.dim1    = (int32_t)object->txDmaIcnt.icnt0;
                             object->txDmaIcnt.dim2    = (int32_t)((int32_t)object->txDmaIcnt.icnt0 * (int32_t)object->txDmaIcnt.icnt1);
@@ -1767,7 +1778,17 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
                             object->txDmaIcnt.icnt0   = WORD_BYTE_COUNT;
                             object->txDmaIcnt.icnt1   = (uint16_t)(object->XmtObj.serCount);
                             object->txDmaIcnt.icnt2   = (uint16_t)((((uint32_t)waterLevel / (uint32_t)object->txDmaIcnt.icnt1) == 0U) ? 1U : ((uint32_t)waterLevel / (uint32_t)object->txDmaIcnt.icnt1));
-                            object->txDmaIcnt.icnt3   = (uint16_t)((uint32_t)(txnByteCnt /((uint64_t)object->txDmaIcnt.icnt0*(uint64_t)object->txDmaIcnt.icnt1*(uint64_t)object->txDmaIcnt.icnt2)));
+                            
+                            tempIcntX   = (uint32_t)((uint32_t)(txnByteCnt /((uint64_t)object->txDmaIcnt.icnt0*(uint64_t)object->txDmaIcnt.icnt1*(uint64_t)object->txDmaIcnt.icnt2)));
+                            if(tempIcntX < MCASP_ICNT2_MAX)
+                            {
+                                object->txDmaIcnt.icnt3 = (uint16_t)tempIcntX;
+                            }
+                            else
+                            {
+                                    DebugP_logError("Transaction count out of bounds \r\n");
+                                    status = SystemP_FAILURE;
+                            }
 
                             object->txDmaIcnt.dim1    = (int32_t)((int32_t)frameCount * (int32_t)object->XmtObj.slotCount * (int32_t)WORD_BYTE_COUNT);
                             object->txDmaIcnt.dim2    = (int32_t)WORD_BYTE_COUNT;
@@ -1790,7 +1811,17 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
                                 object->txDmaIcnt.icnt0   = WORD_BYTE_COUNT;
                                 object->txDmaIcnt.icnt1   = (uint16_t)(object->XmtObj.serCount * object->XmtObj.slotCount);
                                 object->txDmaIcnt.icnt2   = (uint16_t)((((uint32_t)waterLevel / (uint32_t)(object->txDmaIcnt.icnt1)) == 0U) ? 1U : ((uint32_t)waterLevel / (uint32_t)(object->txDmaIcnt.icnt1)));
-                                object->txDmaIcnt.icnt3   = (uint16_t)((uint32_t)frameCount / (uint32_t)(object->txDmaIcnt.icnt2));
+                                
+                                tempIcntX   = ((uint32_t)frameCount / (uint32_t)(object->txDmaIcnt.icnt2));
+                                if(tempIcntX < MCASP_ICNT2_MAX)
+                                {
+                                    object->txDmaIcnt.icnt3 = (uint16_t)tempIcntX;
+                                }
+                                else
+                                {
+                                        DebugP_logError("Transaction count out of bounds \r\n");
+                                        status = SystemP_FAILURE;
+                                }
 
                                 object->txDmaIcnt.dim1    = (int32_t)((int32_t)frameCount * (int32_t)WORD_BYTE_COUNT);
                                 object->txDmaIcnt.dim2    = (int32_t)WORD_BYTE_COUNT;
@@ -1891,7 +1922,17 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
                             object->rxDmaIcnt.icnt0   = WORD_BYTE_COUNT;
                             object->rxDmaIcnt.icnt1   = (uint16_t)waterLevel;
                             object->rxDmaIcnt.icnt2   = (uint16_t)((uint32_t)waterLevel / (uint32_t)(object->rxDmaIcnt.icnt1));  /* Always equals 1 */
-                            object->rxDmaIcnt.icnt3   = (uint16_t)((uint32_t)txnByteCnt / ((uint64_t)object->rxDmaIcnt.icnt0 * (uint64_t)object->rxDmaIcnt.icnt1 * (uint64_t)object->rxDmaIcnt.icnt2));
+                            
+                            tempIcntX   = (uint32_t)((uint32_t)txnByteCnt / ((uint64_t)object->rxDmaIcnt.icnt0 * (uint64_t)object->rxDmaIcnt.icnt1 * (uint64_t)object->rxDmaIcnt.icnt2));
+                            if(tempIcntX < MCASP_ICNT2_MAX)
+                            {
+                                object->rxDmaIcnt.icnt3 = (uint16_t)tempIcntX;
+                            }
+                            else
+                            {
+                                    DebugP_logError("Transaction count out of bounds \r\n");
+                                    status = SystemP_FAILURE;
+                            }
 
                             object->rxDmaIcnt.dim1    = (int32_t)WORD_BYTE_COUNT;
                             object->rxDmaIcnt.dim2    = (int32_t)((int32_t)WORD_BYTE_COUNT * (int32_t)object->rxDmaIcnt.icnt1);
@@ -1906,7 +1947,17 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
                             object->rxDmaIcnt.icnt0   = WORD_BYTE_COUNT;
                             object->rxDmaIcnt.icnt1   = (uint16_t)(object->RcvObj.serCount);
                             object->rxDmaIcnt.icnt2   = (uint16_t)((((uint32_t)waterLevel / (uint32_t)object->rxDmaIcnt.icnt1) == 0U) ? 1U : ((uint32_t)waterLevel / (uint32_t)object->rxDmaIcnt.icnt1));
-                            object->rxDmaIcnt.icnt3   = (uint16_t)((uint32_t)txnByteCnt/((uint64_t)object->rxDmaIcnt.icnt0*(uint64_t)object->rxDmaIcnt.icnt1*(uint64_t)object->rxDmaIcnt.icnt2));
+                            
+                            tempIcntX   = (uint32_t)((uint32_t)txnByteCnt/((uint64_t)object->rxDmaIcnt.icnt0*(uint64_t)object->rxDmaIcnt.icnt1*(uint64_t)object->rxDmaIcnt.icnt2));
+                            if(tempIcntX < MCASP_ICNT2_MAX)
+                            {
+                                object->rxDmaIcnt.icnt3 = (uint16_t)tempIcntX;
+                            }
+                            else
+                            {
+                                    DebugP_logError("Transaction count out of bounds \r\n");
+                                    status = SystemP_FAILURE;
+                            }
 
                             object->rxDmaIcnt.dim1    = (int32_t)((int32_t)frameCount * (int32_t)object->RcvObj.slotCount * (int32_t)WORD_BYTE_COUNT);
                             object->rxDmaIcnt.dim2    = (int32_t)WORD_BYTE_COUNT;
@@ -1921,7 +1972,17 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
                             object->rxDmaIcnt.icnt0   = WORD_BYTE_COUNT;
                             object->rxDmaIcnt.icnt1   = (uint16_t)(object->RcvObj.serCount * object->RcvObj.slotCount);
                             object->rxDmaIcnt.icnt2   = (uint16_t)(((uint32_t)waterLevel / (uint32_t)(object->rxDmaIcnt.icnt1)) == 0U ? 1U : ((uint32_t)waterLevel / (uint32_t)(object->rxDmaIcnt.icnt1)));
-                            object->rxDmaIcnt.icnt3   = (uint16_t)((uint32_t)frameCount / (uint32_t)(object->rxDmaIcnt.icnt2));
+                            
+                            tempIcntX   = ((uint32_t)frameCount / (uint32_t)(object->rxDmaIcnt.icnt2));
+                            if(tempIcntX < MCASP_ICNT2_MAX)
+                            {
+                                object->rxDmaIcnt.icnt3 = (uint16_t)tempIcntX;
+                            }
+                            else
+                            {
+                                    DebugP_logError("Transaction count out of bounds \r\n");
+                                    status = SystemP_FAILURE;
+                            }
 
                             object->rxDmaIcnt.dim1    = (int32_t)((int32_t)frameCount * (int32_t)WORD_BYTE_COUNT);
                             object->rxDmaIcnt.dim2    = (int32_t)WORD_BYTE_COUNT;

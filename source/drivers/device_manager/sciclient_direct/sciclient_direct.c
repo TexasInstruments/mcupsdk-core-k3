@@ -229,7 +229,6 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
     uint32_t message[20] = {0};
     struct tisci_header *hdr;
     uint16_t adjSize = 0;
-    uint8_t *fwdStatus = (uint8_t *)&pReqPrm->forwardStatus;
     uint8_t localSeqId;
     uint32_t contextId;
     uint32_t txThread __attribute__((unused));
@@ -335,8 +334,10 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                     /*
                      * This message is forwarded to DMSC for continued
                      * processing of secure RM configuration.
+                     * Note: forwardStatus is set by Sciserver for messages
+                     * from other CPUs. Direct calls from DM R5 should not
+                     * have the forward flag set.
                      */
-                    *fwdStatus = SCISERVER_FORWARD_MSG;
                     ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);
                 }
 
@@ -348,7 +349,6 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                 adjSize = boardcfgRmFindCertSize((uint32_t *)pReqPrm->pReqPayload);
 
                 /* Send to TIFS */
-               *fwdStatus = SCISERVER_FORWARD_MSG;
                 ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);
                 if ((ret == CSL_PASS) &&
                         ((pRespPrm->flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK))
@@ -389,7 +389,6 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                 if (ret == CSL_PASS)
                 {
                     /* Sending to TIFS for further processing */
-                    *fwdStatus = SCISERVER_FORWARD_MSG;
                     ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);
                 }
 
@@ -428,7 +427,6 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                 break;
             case TISCI_MSG_LPM_ABORT:
                 /* Sending to TIFS for further processing */
-                *fwdStatus = SCISERVER_FORWARD_MSG;
                 ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);
 
                 if ((ret == CSL_PASS) &&
@@ -544,19 +542,11 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                  * are made from other CPUs, the sciserver will take care of
                  * setting the forward status prior to calling this function.
                  */
-                *fwdStatus = SCISERVER_FORWARD_MSG;
                 ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);
                 break;
             }
         }
     }
-
-    /*
-     * Reset the forward status. This prevents possible accidental reuse of
-     * stack memory with flag previously set and not properly cleared by the
-     * application.
-     */
-    *fwdStatus = SCISERVER_NO_FORWARD_MSG;
 
     return ret;
 }

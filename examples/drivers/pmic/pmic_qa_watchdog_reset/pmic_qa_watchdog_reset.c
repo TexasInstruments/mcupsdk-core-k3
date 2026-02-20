@@ -157,7 +157,7 @@ static int32_t PMICApp_isWdogResetDone(Pmic_CoreHandle_t *coreHandle)
 
     /* Check whether WD_RST_INT error is raised */
     status = Pmic_wdgGetErrorStatus(coreHandle, &wdgErrStat);
-    if((status == PMIC_ST_SUCCESS) && (wdgErrStat.wdRstInt == true))
+    if((status == PMIC_ST_SUCCESS) && (wdgErrStat.wdRstInt == true) && (wdgErrStat.wdLongWinTimeout == false))
     {
         retVal = SystemP_SUCCESS;
     }

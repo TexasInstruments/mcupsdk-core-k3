@@ -22,6 +22,26 @@ const files_r5f={
         "ioexp_tca6424.c",
         "nor_spi_sfdp.c",
         "phy_common_priv.c",
+        "pmic.c",
+        "pmic_adc.c",
+        "pmic_core.c",
+        "pmic_esm.c",
+        "pmic_fsm.c",
+        "pmic_gpio.c",
+        "pmic_gpio_tps6522x.c",
+        "pmic_gpio_lp8764x.c",
+        "pmic_gpio_tps6594x.c",
+        "pmic_io.c",
+        "pmic_irq_status.c",
+        "pmic_irq_tps6522x.c",
+        "pmic_irq_lp8764x.c",
+        "pmic_irq_tps6594x.c",
+        "pmic_i2c.c",
+        "pmic_power.c",
+        "pmic_power_tps6522x.c",
+        "pmic_power_lp8764x.c",
+        "pmic_power_tps6594x.c",
+        "pmic_wdg.c",
     ],
 };
 
@@ -73,8 +93,44 @@ const filedirs = {
     ],
 };
 
+const filedirs_r5 = {
+    common: [
+        "flash",
+        "flash/ospi",
+        "flash/sfdp",
+        "ioexp",
+        "null",
+        "led",
+        "eeprom",
+        "ethphy/enet/rtos_drivers/src",
+        "ethphy/enet/rtos_drivers/include",
+        "pmic",
+        "pmic/pmic_lld/src",
+        "pmic/pmic_lld/src/cfg/lp8764x",
+        "pmic/pmic_lld/src/cfg/tps6522x",
+        "pmic/pmic_lld/src/cfg/tps6594x",
+    ],
+};
+
 const includes = {
     common: [
+        "${MCU_PLUS_SDK_PATH}/source/board/ethphy/enet/rtos_drivers/include",
+        "${MCU_PLUS_SDK_PATH}/source/board/ethphy/port",
+    ],
+}
+
+const includes_r5f = {
+    common: [
+        "pmic",
+        "pmic/pmic_lld",
+        "pmic/pmic_lld/include",
+        "pmic/pmic_lld/include/cfg/lp8764x",
+        "pmic/pmic_lld/include/cfg/tps6522x",
+        "pmic/pmic_lld/include/cfg/tps6594x",
+        "pmic/pmic_lld/src",
+        "pmic/pmic_lld/src/cfg/lp8764x",
+        "pmic/pmic_lld/src/cfg/tps6522x",
+        "pmic/pmic_lld/src/cfg/tps6594x",
         "${MCU_PLUS_SDK_PATH}/source/board/ethphy/enet/rtos_drivers/include",
         "${MCU_PLUS_SDK_PATH}/source/board/ethphy/port",
     ],
@@ -116,20 +172,24 @@ function getComponentProperty() {
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
-    build_property.filedirs = filedirs;
-    build_property.includes = includes;
     if(buildOption.cpu.match(/r5f*/))
     {
+        build_property.filedirs = filedirs_r5;
+        build_property.includes = includes_r5f;
         build_property.files = files_r5f;
         build_property.defines = defines_common;
     }
     else if(buildOption.cpu.match(/c75x*/))
     {
+        build_property.filedirs = filedirs;
+        build_property.includes = includes;
         build_property.files = files_c75x;
         build_property.defines = defines_common;
     }
     else if(buildOption.cpu.match(/a53*/))
     {
+        build_property.filedirs = filedirs;
+        build_property.includes = includes;
         build_property.files = files_a53;
         build_property.cflags = cflags_a53;
         build_property.defines = defines_common;

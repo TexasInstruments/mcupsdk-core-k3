@@ -11,6 +11,9 @@ const driverVer = {
     "serialFlash": {
         version: "v0",
     },
+    "pmic": {
+        version: "v0",
+    },
 };
 
 const topModules_mcu_r5 = [
@@ -18,6 +21,7 @@ const topModules_mcu_r5 = [
     "/board/eeprom/eeprom",
     "/board/flash/flash",
     "/board/ethphy_cpsw_icssg/ethphy_cpsw_icssg",
+    "/board/pmic/pmic",
 ];
 const topModules_dm_r5 = [
     "/board/eeprom/eeprom",

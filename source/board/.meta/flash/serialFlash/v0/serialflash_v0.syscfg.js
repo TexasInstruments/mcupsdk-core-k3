@@ -1712,7 +1712,6 @@ function fillConfigs(inst, cfg) {
 
         if(pCfg != null)
         {
-            inst.isDtr = pCfg.isDtr;
             inst.cmdRd = pCfg.cmdRd;
             inst.cmdWr = pCfg.cmdWr;
             inst.dummyClksCmd = pCfg.dummyClksCmd;

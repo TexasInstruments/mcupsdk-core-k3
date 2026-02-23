@@ -44,13 +44,13 @@
                 "shift": 0,
                 "mask": "0xFF",
                 "bitP": 223
-            },
+            }
         },
         "p444s": null,
         "p444d": null,
         "p888s": null,
         "p888d": {
-            "isDtr": false,
+            "isDtr": true,
             "cmdRd": "0x9D",
             "cmdWr": "0x84",
             "dummyClksCmd": 8,
@@ -72,8 +72,8 @@
                 "shift": 0,
                 "mask": "0xFF",
                 "bitP": 231
-            },
-        },
+            }
+        }
     },
 
     "cmdExtType": "REPEAT",
@@ -102,5 +102,5 @@
     "xspiEraseStatusReg": "0x0000C000",
 
     "srProgStatus": 3,
-    "srEraseStatus": 2,
+    "srEraseStatus": 2
 }

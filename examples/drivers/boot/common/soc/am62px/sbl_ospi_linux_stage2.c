@@ -204,6 +204,8 @@ void App_loadAndRunImages(Bootloader_LoadImageParams *bootLoadParams)
                 {
                     Bootloader_profileAddProfilePoint("MCU R5 Image Load");
 
+                    gImageSize += Bootloader_getMulticoreImageSize(bootLoadParams->bootHandle);
+
                     status += Bootloader_runCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
                 }
 

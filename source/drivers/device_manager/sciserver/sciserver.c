@@ -311,7 +311,7 @@ int32_t Sciserver_processtask(Sciserver_taskData *utd)
              * so the host verification on TIFS can succeed */
             Sciserver_SetMsgHostId(respMsg, TISCI_HOST_ID_DM);
         }
-        /* Check AOP flag before sending a respone back */
+        /* Check AOP flag before sending a response back */
         if((tisci_flags & TISCI_MSG_FLAG_AOP) == TISCI_MSG_FLAG_AOP){
             ret = Sciserver_TisciMsgResponse(respHost, respMsg, respMsgSize);
         }
@@ -414,16 +414,20 @@ static int32_t Sciserver_ProcessFullMessage(uint32_t *msg_recv,
     memcpy(reqMsgBuffer, msg_recv, reqMsgSize);
 
     reqPrm.messageType = hdr->type;
-    reqPrm.flags = hdr->flags;
     reqPrm.pReqPayload = reqMsgBuffer;
     reqPrm.reqPayloadSize = reqMsgSize;
     reqPrm.timeout = SCICLIENT_SERVICE_WAIT_FOREVER;
 
     /*
-     * If here, the message is intended to be forwarded to another service
-     * provider.
+     * The message is being forwarded to another service provider.
+     * Mark it with the forward status and set the AOP flag in the
+     * message’s flags. The AOP flag tells TIFS to send a response
+     * when the message is forwarded, which Sciserver uses to determine
+     * whether TIFS has processed the message. This ensures proper
+     * synchronization between DM and TIFS.
      */
     reqPrm.forwardStatus = SCISERVER_FORWARD_MSG;
+    reqPrm.flags = (hdr->flags | (uint32_t) TISCI_MSG_FLAG_AOP);
 
     respPrm.flags = 0;
     respPrm.pRespPayload = respMsgBuffer;

@@ -662,9 +662,6 @@ int32_t Sciclient_servicePrepareHeader(const Sciclient_ReqPrm_t *pReqPrm,
         {
             /* Set host if this is not a forwarded message */
             (*header)->host = (uint8_t) gSciclientMap[contextId].hostId;
-        } else {
-            /* Set AOP flag if this is a forwarded message */
-            (*header)->flags |= (uint32_t) TISCI_MSG_FLAG_AOP;
         }
     }
     return status;

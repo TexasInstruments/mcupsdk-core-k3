@@ -36,7 +36,7 @@ bootloader1.$name              = "CONFIG_BOOTLOADER_APP";
 
 ddr1.$name                    = "CONFIG_DDR0";
 ddr1.ddrConfigIncludeFileName = "drivers/ddr/v0/soc/am62x/board_lpddrReginit.h";
-ddr1.sdramIdx                 = 13;
+ddr1.sdramIdx                 = 15;
 
 freertos_fat1.$name                  = "CONFIG_FREERTOS_FAT0";
 freertos_fat1.peripheralDriver.$name = "CONFIG_MMCSD0";

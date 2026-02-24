@@ -26,6 +26,17 @@ application to get the expected result.
 
 \endcond
 
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/pmic/pmic_qa_watchdog_reset
+
+\endcond
+
 # Steps
 
 - **When using CCS projects to build**, import the CCS project for the required combination
@@ -37,9 +48,12 @@ through SBL to get the expected results.
 - Refer \ref GETTING_STARTED_FLASH for flashing the application.
 - Or use default_pmic_qa_watchdog_reset_hs_fs.cfg for HS-FS device, default_pmic_qa_watchdog_reset_hs.cfg for HS-SE device
 - Set bootmode to  \ref BOOTMODE_UART and flash the binary using the following command from {SDK_INSTALLTION_PATH}/tools/boot
-
+\cond SOC_AM62PX
           python uart_uniflash.py -p /dev/ttyUSB0 --cfg=../../examples/drivers/pmic/pmic_qa_watchdog_reset/am62px-sk/default_pmic_qa_watchdog_reset_hs_fs.cfg
-
+\endcond
+\cond SOC_AM62DX
+        python uart_uniflash.py -p /dev/ttyUSB1 --cfg=../../examples/drivers/pmic/pmic_trigger_watchdog_reset/am62dx-evm/default_pmic_qa_watchdog_reset_hs_fs.cfg
+\endcond
 - Power OFF and change the boot mode to  \ref BOOTMODE_OSPI
 - Logs should appear at the MCU_UART0
 

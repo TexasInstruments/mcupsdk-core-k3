@@ -21,6 +21,17 @@ for more information on the parameters configured. The example passes if the con
 
 \endcond
 
+\cond SOC_AM62DX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | mcu-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/pmic/pmic_trigger_watchdog_interrupt
+
+\endcond
+
 # Steps
 
 - **When using CCS projects to build**, import the CCS project for the required combination

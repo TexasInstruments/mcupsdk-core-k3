@@ -471,7 +471,7 @@ static int32_t MCASP_programInstance(MCASP_Config *config, uint32_t transferMode
     CSL_REG32_WR(&pReg->XSTAT, attrs->hwCfg.tx.stat);
 
     /* Configure REVTCTL and XEVTCTL */
-    CSL_REG32_WR(&pReg->REVTCTL, attrs->hwCfg.tx.evtCtl);
+    CSL_REG32_WR(&pReg->REVTCTL, attrs->hwCfg.rx.evtCtl);
     CSL_REG32_WR(&pReg->XEVTCTL, attrs->hwCfg.tx.evtCtl);
 
     /* clear the clk fail bit in status reg*/

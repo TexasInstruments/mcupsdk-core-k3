@@ -267,7 +267,7 @@ MCASP_Handle MCASP_open(uint32_t index, const MCASP_OpenParams *openParams)
                 status += HwiP_construct(&obj->hwiObjTx, &hwiPrms);
             }
 
-            if(attrs->intCfgTx.intrNum != UINT32_MAX)
+            if(attrs->intCfgRx.intrNum != UINT32_MAX)
             {
                 /* Receive section */
                 HwiP_Params_init(&hwiPrms);

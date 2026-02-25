@@ -87,7 +87,8 @@ function getConfigurables()
            common.getSocName().match(/am62ax/)||
            common.getSocName().match(/am62dx/)||
            common.getSocName().match(/am62px/) ||
-           common.getSocName().match(/am275x/) )
+           common.getSocName().match(/am275x/) ||
+           common.getSocName().match(/j722s/))
            {
                 if(element.name == "vringNumBuf")
                 {
@@ -133,7 +134,8 @@ function getConfigurables()
         common.getSocName().match(/am62ax/)||
         common.getSocName().match(/am62dx/)||
         common.getSocName().match(/am62px/) ||
-        common.getSocName().match(/am275x/) )
+        common.getSocName().match(/am275x/) ||
+        common.getSocName().match(/j722s/))
         {
             vringAllocationPDKHidden = false;
             if (common.getSocName().match(/am275x/))

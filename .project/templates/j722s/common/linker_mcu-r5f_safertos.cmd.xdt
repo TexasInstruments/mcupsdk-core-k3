@@ -154,7 +154,7 @@ MEMORY
     % }
     DDR_CODE_DATA                 : ORIGIN = 0xA1200000, LENGTH = 0xE00000   /* Code/Data            */
     % if(args.project.ipcVringRTOS === true){
-    DDR_IPC_VRING_RTOS            : ORIGIN = 0xA5000000, LENGTH = 0x1C00000   /* IPC VRING for RTOS/NoRTOS */
+    DDR_IPC_VRING_RTOS            : ORIGIN = 0xA5000000, LENGTH = 0x1000000   /* IPC VRING for RTOS/NoRTOS */
     % }
     % if(dssFrameBuf == "true") {
     /* DSS frame buffer region in DDR (128 MiB) */

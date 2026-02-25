@@ -160,7 +160,7 @@ MEMORY
     DDR_SECTION                   : ORIGIN = 0xA0200000, LENGTH = 0x800000    /* App Image is loaded here by SBL for validation. */
     DDR_CODE_DATA                 : ORIGIN = 0xA0A00000, LENGTH = 0x700000    /* Code/Data */
     % if(args.project.ipcVringRTOS === true){
-    DDR_IPC_VRING_RTOS            : ORIGIN = 0xA5000000, LENGTH = 0x1C00000   /* IPC VRING for RTOS/NoRTOS */
+    DDR_IPC_VRING_RTOS            : ORIGIN = 0xA5000000, LENGTH = 0x1000000   /* IPC VRING for RTOS/NoRTOS */
     % }
     % if(dssFrameBuf == "true") {
     /* DSS frame buffer region in DDR (128 MiB) */

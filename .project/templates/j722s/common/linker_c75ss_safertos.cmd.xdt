@@ -44,7 +44,7 @@ MEMORY
     % }
     % if(args.project.ipcVringRTOS === true){
     /* Shared memory for RTOS NORTOS IPC */
-    RTOS_NORTOS_IPC_SHM_MEM: org = 0xA5000000, len = 0x1C00000  /* 8MB DDR */
+    RTOS_NORTOS_IPC_SHM_MEM: org = 0xA5000000, len = 0x1000000  /* 16MB DDR */
     % }
 }
 

@@ -115,5 +115,5 @@ MEMORY
     DDR_IPC_RESOURCE_TABLE_LINUX  : ORIGIN = 0xA2100000, LENGTH = 0x400      /* For resource table   */
     DDR_IPC_TRACE_LINUX           : ORIGIN = 0xA2100400, LENGTH = 0xFFC00    /* IPC trace buffer     */
     DDR_CODE_DATA                 : ORIGIN = 0xA2200000, LENGTH = 0xE00000   /* Code/Data            */
-    DDR_IPC_VRING_RTOS            : ORIGIN = 0xA5000000, LENGTH = 0x1C00000   /* IPC VRING for RTOS/NoRTOS */
+    DDR_IPC_VRING_RTOS            : ORIGIN = 0xA5000000, LENGTH = 0x1000000   /* IPC VRING for RTOS/NoRTOS */
 }

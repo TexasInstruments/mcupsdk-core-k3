@@ -206,7 +206,7 @@ MEMORY
     DDR1           (RWIX)      : ORIGIN = 0x93500000 LENGTH = 0x08000000
     % }
     % if(args.project.ipcVringRTOS === true){
-    DDR_IPC_VRING_RTOS            : ORIGIN = 0xA5000000, LENGTH = 0x1C00000   /* IPC VRING for RTOS/NoRTOS */
+    DDR_IPC_VRING_RTOS            : ORIGIN = 0xA5000000, LENGTH = 0x1000000   /* IPC VRING for RTOS/NoRTOS */
     % }
     % if(globalScratchBuf == true) {
     /* global scratch buffer region in DDR */

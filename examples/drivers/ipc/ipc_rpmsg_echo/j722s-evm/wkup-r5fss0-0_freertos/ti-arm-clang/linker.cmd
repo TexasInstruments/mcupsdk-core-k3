@@ -121,5 +121,5 @@ MEMORY
     DDR_SECTION     : ORIGIN = 0xA0200000,      LENGTH = 0x800000       /* App Image is loaded here by SBL for validation */
     DDR             : ORIGIN = 0xA0A00000,      LENGTH = 0x700000
 
-    DDR_IPC_VRING_RTOS            : ORIGIN = 0xA5000000, LENGTH = 0x1C00000   /* IPC VRING for RTOS/NoRTOS */
+    DDR_IPC_VRING_RTOS            : ORIGIN = 0xA5000000, LENGTH = 0x1000000   /* IPC VRING for RTOS/NoRTOS */
 }

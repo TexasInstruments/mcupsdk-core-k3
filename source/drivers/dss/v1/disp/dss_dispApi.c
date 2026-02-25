@@ -954,7 +954,7 @@ static void Dss_dispDrvClientCb(void *arg0)
                 else
                 {
                     /* This can't happen as currQCnt can't be zero!! */
-                    GT_assert(DssTrace, FALSE);
+                    GT_assert(DssTrace, (bool)FALSE);
                 }
             }
         }
@@ -1158,7 +1158,7 @@ static void Dss_dispDrvClientCb(void *arg0)
     else
     {
         /* Should never execute this */
-        GT_assert(DssTrace, FALSE);
+        GT_assert(DssTrace, (bool)FALSE);
     }
 }
 
@@ -2175,7 +2175,7 @@ static void Dss_dispSafetyErrCbFxn(const uint32_t *event,
         }
         else
         {
-            GT_assert(DssTrace, FALSE);
+            GT_assert(DssTrace, (bool)FALSE);
         }
     }
 

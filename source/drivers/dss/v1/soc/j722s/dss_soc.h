@@ -112,7 +112,7 @@ extern "C" {
 #define DSS_DISP_INST_MAX                        (CSL_DSS_VID_PIPE_ID_MAX)
 
 /** \brief Maximum number of display driver instances */
-#define DSS_DISP_INST_INVALIUD                        (CSL_DSS_VID_PIPE_ID_INVALID)
+#define DSS_DISP_INST_INVALID                    (CSL_DSS_VID_PIPE_ID_INVALID)
 /** @} */
 
 /**
@@ -386,7 +386,7 @@ void Dss_setDssSoftReset();
  *  \param  powerState    True to switch ON, false to switch OFF
  *
  */
-void Dss_setOLDITxPowerDown(uint32_t oldiLinkMode, uint32_t powerState);
+void Dss_setOLDITxPowerDown(uint32_t oldiLinkMode, bool powerState);
 /* ========================================================================== */
 /*                       Static Function Definitions                          */
 /* ========================================================================== */

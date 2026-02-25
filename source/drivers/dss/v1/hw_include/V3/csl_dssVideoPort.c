@@ -437,7 +437,7 @@ int32_t CSL_dssVpSetLcdBlankTiming(CSL_dss_vpRegs *vpRegs,
     }
     else /* Embedded Sync */
     {
-        if(TRUE == isCustomTiming)
+        if((uint32_t)TRUE == isCustomTiming)
         {
             hSyncVal = blankCfg->hSyncLen & 0xFFU;
             vSyncVal = (blankCfg->hSyncLen >> 8U) & 0xFU;
@@ -561,7 +561,7 @@ void CSL_dssVpEnableTvGamma(CSL_dss_vpRegs *vpRegs,
 {
     uint32_t regVal, index;
 
-    if(TRUE == gammaCfg->gammaEnable)
+    if((uint32_t)TRUE == gammaCfg->gammaEnable)
     {
         for (index = 0U; index < CSL_DSS_NUM_LUT_ENTRIES; index++)
         {
@@ -802,7 +802,7 @@ static void CSL_dssVpSetVideoFormatConfig(CSL_dss_vpRegs *vpRegs,
         isCscNeeded = FALSE;
     }
 
-    if(TRUE == isCscNeeded)
+    if((uint32_t)TRUE == isCscNeeded)
     {
         if (CSL_DSS_CSC_RANGE_LIMITED == cscRange)
         {
@@ -873,7 +873,7 @@ static void CSL_dssVpGetTdmHblankFact(const CSL_dss_vpRegs *vpRegs,
      * modified based on TDM Cycle format */
     tdmRegVal = CSL_REG32_RD(&vpRegs->CONTROL);
     tdmEnable = CSL_FEXT(tdmRegVal, DSS_VP1_CONTROL_TDMENABLE);
-    if (TRUE == tdmEnable)
+    if ((uint32_t)TRUE == tdmEnable)
     {
         tdmCycleFormat = CSL_FEXT(tdmRegVal,
                                   DSS_VP1_CONTROL_TDMCYCLEFORMAT);
@@ -976,7 +976,7 @@ static int32_t CSL_dssVpSetDiscSyncBlanking(
         regVal = CSL_REG32_RD(&vpRegs->TIMING_V);
         CSL_FINS(regVal, DSS_VP1_TIMING_V_VBP, blankCfg->vBackPorch);
         CSL_FINS(regVal, DSS_VP1_TIMING_V_VFP, blankCfg->vFrontPorch);
-        CSL_FINS(regVal, DSS_VP1_TIMING_V_VSW, blankCfg->vSyncLen - 1);
+        CSL_FINS(regVal, DSS_VP1_TIMING_V_VSW, blankCfg->vSyncLen - 1U);
         CSL_REG32_WR(&vpRegs->TIMING_V, regVal);
     }
 

@@ -122,7 +122,7 @@ void CSL_dssOverlaySetLayerConfig(CSL_dss_overlayRegs *overlayRegs,
     CSL_FINS(regVal,
              DSS_OVR1_ATTRIBUTES_ENABLE,
              layerCfg->layerEnable);
-    if (FALSE == layerCfg->layerEnable)
+    if ((uint32_t)FALSE == layerCfg->layerEnable)
     {
         /* Need to hide the layer from visible range, before disabling it. */
         CSL_dssOverlaySetPipePosConfig(overlayRegs, &maxPipePosCfg, layerCfg->layerNum);
@@ -158,7 +158,7 @@ uint32_t CSL_dssOverlayGetEnabledPipeLayerNum(
         regVal = CSL_REG32_RD(&overlayRegs->ATTRIBUTES[i]);
         enable = CSL_FEXT(regVal, DSS_OVR1_ATTRIBUTES_ENABLE);
         inputPipe = CSL_FEXT(regVal, DSS_OVR1_ATTRIBUTES_CHANNELIN);
-        if((TRUE == enable) && (pipeId == inputPipe))
+        if(((uint32_t)TRUE == enable) && (pipeId == inputPipe))
         {
             layerNum = i;
             break;

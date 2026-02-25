@@ -1992,7 +1992,7 @@ static void Dss_dctrlFuncCbFxn(const uint32_t *event,
         }
         else
         {
-            GT_assert(DssTrace, FALSE);
+            GT_assert(DssTrace, (bool)FALSE);
         }
     }
 
@@ -2036,7 +2036,7 @@ static void Dss_dctrlErrCbFxn(const uint32_t *event,
         }
         else
         {
-            GT_assert(DssTrace, FALSE);
+            GT_assert(DssTrace, (bool)FALSE);
         }
     }
 
@@ -2099,7 +2099,7 @@ static void Dss_dctrlSafetyErrCbFxn(const uint32_t *event,
         }
         else
         {
-            GT_assert(DssTrace, FALSE);
+            GT_assert(DssTrace, (bool)FALSE);
         }
     }
 

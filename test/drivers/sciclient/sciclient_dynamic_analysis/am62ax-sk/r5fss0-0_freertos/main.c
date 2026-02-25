@@ -95,13 +95,13 @@ void main_thread(void *args)
 int main()
 {
     int32_t status = SystemP_SUCCESS;
-    
+
     Bootloader_socWaitForFWBoot();
-    status = Bootloader_socOpenFirewalls();
-    DebugP_assertNoLog(status == SystemP_SUCCESS);
 
     /* init SOC specific modules */
     System_init();
+    status = Bootloader_socOpenFirewalls();
+    DebugP_assertNoLog(status == SystemP_SUCCESS);
     Board_init();
 
     gMainTask = xTaskCreateStatic( main_thread,   /* Pointer to the function that implements the task. */

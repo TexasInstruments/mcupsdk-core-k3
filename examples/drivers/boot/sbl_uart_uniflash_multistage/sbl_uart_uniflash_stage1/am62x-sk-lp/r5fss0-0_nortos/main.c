@@ -1,5 +1,5 @@
  /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -90,10 +90,11 @@ int main()
     Bootloader_UniflashResponseHeader respHeader;
 
     Bootloader_socWaitForFWBoot();
+
+    System_init();
     status = Bootloader_socOpenFirewalls();
     DebugP_assert(status == SystemP_SUCCESS);
 
-    System_init();
     Board_init();
     Drivers_open();
 

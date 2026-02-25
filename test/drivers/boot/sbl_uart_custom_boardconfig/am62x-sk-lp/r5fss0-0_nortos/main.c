@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -147,10 +147,11 @@ int main()
     bool    bEndOfTransfer = false;
 
     Bootloader_socWaitForFWBoot();
+
+    System_init();
     status = Bootloader_socOpenFirewalls();
     DebugP_assert(status == SystemP_SUCCESS);
 
-    System_init();
     Board_init();
     Drivers_open();
 

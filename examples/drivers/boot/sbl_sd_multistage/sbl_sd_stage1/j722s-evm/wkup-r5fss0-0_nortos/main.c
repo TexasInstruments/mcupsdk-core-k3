@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023-25 Texas Instruments Incorporated
+ *  Copyright (C) 2023-26 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -178,12 +178,12 @@ int main()
     Bootloader_profileReset();
 
     Bootloader_socWaitForFWBoot();
-    status = Bootloader_socOpenFirewalls();
-
-    DebugP_assertNoLog(SystemP_SUCCESS == status);
 
     System_init();
     Bootloader_profileAddProfilePoint("System_init");
+
+    status = Bootloader_socOpenFirewalls();
+    DebugP_assertNoLog(SystemP_SUCCESS == status);
 
     Drivers_open();
     Bootloader_profileAddProfilePoint("Drivers_open");

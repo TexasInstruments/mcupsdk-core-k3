@@ -221,15 +221,14 @@ int main()
     Bootloader_profileReset();
 
     Bootloader_socWaitForFWBoot();
-    status = Bootloader_socOpenFirewalls();
-
-    DebugP_assertNoLog(status == SystemP_SUCCESS);
 
     System_init();
     Module_clockSBLEnable();
     Module_clockSBLSetFrequency();
     Bootloader_profileAddProfilePoint("System_init");
 
+    status = Bootloader_socOpenFirewalls();
+    DebugP_assertNoLog(status == SystemP_SUCCESS);
 
     /* wait for PBIST completion */
     status = App_waitForMcuPbist();

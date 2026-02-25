@@ -380,12 +380,12 @@ int main(void)
     status = sciclient_set_boardcfg();
     DebugP_assertNoLog(status == SystemP_SUCCESS);
 
-    status = Bootloader_socOpenFirewalls();
-    DebugP_assertNoLog(status == SystemP_SUCCESS);
-
     /* init SOC specific modules */
 
     status = app_system_init();
+    DebugP_assertNoLog(status == SystemP_SUCCESS);
+
+    status = Bootloader_socOpenFirewalls();
     DebugP_assertNoLog(status == SystemP_SUCCESS);
 
     gMainTask = xTaskCreateStatic( main_thread,   /* Pointer to the function that implements the task. */

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -236,13 +236,14 @@ int main()
     Bootloader_profileReset();
 
     Bootloader_socWaitForFWBoot();
-    status = Bootloader_socOpenFirewalls();
-    DebugP_assert(status == SystemP_SUCCESS);
 
     RTC_erratumi2327Init();
 
     System_init();
     Bootloader_profileAddProfilePoint("System_init");
+
+    status = Bootloader_socOpenFirewalls();
+    DebugP_assert(status == SystemP_SUCCESS);
 
     Board_init();
     Bootloader_profileAddProfilePoint("Board_init");

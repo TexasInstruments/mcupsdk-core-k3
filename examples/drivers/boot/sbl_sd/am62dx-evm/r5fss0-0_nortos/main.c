@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -221,12 +221,12 @@ int main()
     DebugP_assertNoLog(status == SystemP_SUCCESS);
 
     Bootloader_socWaitForFWBoot();
-    status = Bootloader_socOpenFirewalls();
-
-    DebugP_assertNoLog(status == SystemP_SUCCESS);
 
     System_init();
     Bootloader_profileAddProfilePoint("System_init");
+
+    status = Bootloader_socOpenFirewalls();
+    DebugP_assertNoLog(status == SystemP_SUCCESS);
 
     Board_init();
     Bootloader_profileAddProfilePoint("Board_init");

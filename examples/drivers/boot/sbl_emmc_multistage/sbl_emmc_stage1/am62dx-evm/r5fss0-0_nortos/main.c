@@ -120,14 +120,14 @@ int main()
     DebugP_assertNoLog(status == SystemP_SUCCESS);
 
     Bootloader_socWaitForFWBoot();
-    status = Bootloader_socOpenFirewalls();
-
-    DebugP_assertNoLog(status == SystemP_SUCCESS);
 
     System_init();
     Module_clockSBLEnable();
     Module_clockSBLSetFrequency();
     Bootloader_profileAddProfilePoint("System_init");
+
+    status = Bootloader_socOpenFirewalls();
+    DebugP_assertNoLog(status == SystemP_SUCCESS);
 
     Board_init();
     Bootloader_profileAddProfilePoint("Board_init");

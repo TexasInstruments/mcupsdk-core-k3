@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -195,10 +195,11 @@ int main()
     int32_t status;
 
     Bootloader_socWaitForFWBoot();
-    status = Bootloader_socOpenFirewalls();
 
-    DebugP_assertNoLog(status == SystemP_SUCCESS);
     System_init();
+    status = Bootloader_socOpenFirewalls();
+    DebugP_assertNoLog(status == SystemP_SUCCESS);
+
     Board_init();
     Drivers_open();
 

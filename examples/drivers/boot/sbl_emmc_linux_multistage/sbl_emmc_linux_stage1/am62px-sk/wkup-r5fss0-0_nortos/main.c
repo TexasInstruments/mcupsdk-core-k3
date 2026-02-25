@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -117,14 +117,14 @@ int main()
     Bootloader_profileReset();
 
     Bootloader_socWaitForFWBoot();
-    status = Bootloader_socOpenFirewalls();
-
-    DebugP_assertNoLog(status == SystemP_SUCCESS);
 
     System_init();
     Module_clockSBLEnable();
     Module_clockSBLSetFrequency();
     Bootloader_profileAddProfilePoint("System_init");
+
+    status = Bootloader_socOpenFirewalls();
+    DebugP_assertNoLog(status == SystemP_SUCCESS);
 
     Board_init();
     Bootloader_profileAddProfilePoint("Board_init");

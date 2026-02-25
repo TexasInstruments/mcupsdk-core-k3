@@ -135,14 +135,15 @@ int main()
     DebugP_assertNoLog(status == SystemP_SUCCESS);
 
     Bootloader_socWaitForFWBoot();
-    status = Bootloader_socOpenFirewalls();
-    DebugP_assertNoLog(status == SystemP_SUCCESS);
-
-    Bootloader_profileAddProfilePoint("TIFS init");
 
     /* init SOC specific modules */
     System_init();
     Bootloader_profileAddProfilePoint("System_init");
+
+    status = Bootloader_socOpenFirewalls();
+    Bootloader_profileAddProfilePoint("TIFS init");
+    DebugP_assertNoLog(status == SystemP_SUCCESS);
+
     Board_init();
     Bootloader_profileAddProfilePoint("Board_init");
 

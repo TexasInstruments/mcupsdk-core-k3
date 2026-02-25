@@ -175,12 +175,14 @@ int main()
     int32_t status;
 
     Bootloader_socWaitForFWBoot();
-    status = Bootloader_socOpenFirewalls();
-    DebugP_assert(status == SystemP_SUCCESS);
 
     RTC_erratumi2327Init();
 
     System_init();
+
+    status = Bootloader_socOpenFirewalls();
+    DebugP_assert(status == SystemP_SUCCESS);
+
     Board_init();
     Drivers_open();
 

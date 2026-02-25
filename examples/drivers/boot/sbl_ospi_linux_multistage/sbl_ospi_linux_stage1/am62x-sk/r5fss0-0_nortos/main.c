@@ -345,6 +345,8 @@ int main()
 			DebugP_log("Starting MCU-m4f and 2nd stage bootloader\r\n");
 			UART_flushTxFifo(gUartHandle[CONFIG_UART0]);
 		}
+        
+        Board_driversClose();
 
         if(SystemP_SUCCESS == status)
 		{
@@ -364,7 +366,6 @@ int main()
     /* Call DPL deinit to close the tick timer and disable interrupts before jumping to Stage2*/
     Dpl_deinit();
 
-    Board_driversClose();
     Drivers_close();
 
     Bootloader_socCpuResetReleaseSelf();
@@ -374,3 +375,4 @@ int main()
 
     return 0;
 }
+

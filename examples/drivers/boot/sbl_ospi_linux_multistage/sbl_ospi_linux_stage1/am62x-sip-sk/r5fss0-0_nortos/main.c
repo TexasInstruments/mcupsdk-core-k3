@@ -319,9 +319,9 @@ int main()
         {
             if(bootHandle != NULL)
             {
-            ((Bootloader_Config *)bootHandle)->scratchMemPtr = gAppimage;
-			status = App_loadImages(bootHandle, &bootImageInfo);
-            Bootloader_profileAddProfilePoint("App_loadImages");
+                ((Bootloader_Config *)bootHandle)->scratchMemPtr = gAppimage;
+			    status = App_loadImages(bootHandle, &bootImageInfo);
+                Bootloader_profileAddProfilePoint("App_loadImages");
             }
         }
         if(SystemP_SUCCESS == status)
@@ -367,7 +367,6 @@ int main()
     /* Call DPL deinit to close the tick timer and disable interrupts before jumping to Stage2*/
     Dpl_deinit();
 
-    Board_driversClose();
     Drivers_close();
 
     Bootloader_socCpuResetReleaseSelf();

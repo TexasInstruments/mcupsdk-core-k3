@@ -87,7 +87,7 @@ python uart_uniflash.py -p <COM port> --cfg=myconfig.cfg
 def open_serial_port(serial_port, baudrate, timeout=10):
     ser = None
     try:
-        ser = serial.Serial(port=serial_port, baudrate=baudrate, timeout=10)
+        ser = serial.Serial(port=serial_port, baudrate=baudrate, timeout=60)
     except serial.serialutil.SerialException:
         print('[ERROR] Serial port [' + serial_port + '] not found or not accessible !!!')
         sys.exit()

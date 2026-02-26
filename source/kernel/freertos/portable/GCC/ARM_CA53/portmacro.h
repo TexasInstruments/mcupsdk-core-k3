@@ -26,7 +26,7 @@
  *
  */
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -139,9 +139,18 @@ macros is used. */
 #define portTASK_FUNCTION_PROTO( vFunction, pvParameters )	void vFunction( void *pvParameters )
 #define portTASK_FUNCTION( vFunction, pvParameters )	void vFunction( void *pvParameters )
 
-/* Any task that uses the floating point unit MUST call vPortTaskUsesFPU()
-before any floating point instructions are executed. */
-void vPortTaskUsesFPU( void );
+/* If configUSE_TASK_FPU_SUPPORT is set to 1 (or left undefined) then tasks are
+ * created without an FPU context and must call vPortTaskUsesFPU() to give
+ * themselves an FPU context before using any FPU instructions. If
+ * configUSE_TASK_FPU_SUPPORT is set to 2 then all tasks will have an FPU context
+ * by default. */
+#if ( configUSE_TASK_FPU_SUPPORT != 2 )
+    void vPortTaskUsesFPU( void );
+#else
+    /* Each task has an FPU context already, so define this function away to
+     * nothing to prevent it from being called accidentally. */
+    #define vPortTaskUsesFPU()
+#endif /* configUSE_TASK_FPU_SUPPORT */
 #define portTASK_USES_FLOATING_POINT() vPortTaskUsesFPU()
 
 /* Architecture specific optimisations. */

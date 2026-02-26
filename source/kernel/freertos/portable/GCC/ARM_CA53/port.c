@@ -26,7 +26,7 @@
  *
  */
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -77,12 +77,22 @@
 this value. */
 #define portNO_CRITICAL_NESTING			( ( size_t ) 0 )
 
-/* Tasks are not created with a floating point context, but can be given a
-floating point context after they have been created.  A variable is stored as
-part of the tasks context that holds portNO_FLOATING_POINT_CONTEXT if the task
-does not have an FPU context, or any other value if the task does have an FPU
-context. */
+/* In configUSE_TASK_FPU_SUPPORT Mode 1 (or undefined), tasks are not created
+with a floating point context, but can be given a floating point context after
+they have been created by calling vPortTaskUsesFPU(). In Mode 2, tasks are
+created with a floating point context by default.
+A flag is stored on each task's stack indicating whether the task has an FPU
+context. The flag holds portNO_FLOATING_POINT_CONTEXT (0) if the task does not
+have an FPU context, or pdTRUE (1) if it does. The context switch assembly
+checks this flag to determine whether to save/restore FPU registers. */
 #define portNO_FLOATING_POINT_CONTEXT	( ( StackType_t ) 0 )
+
+#if ( configUSE_TASK_FPU_SUPPORT == 2 )
+	/* The space on the stack required to hold the FPU registers.
+	 * There are 32 128-bit registers. Only needed when pre-allocating
+	 * FPU context for all tasks. */
+	#define portFPU_REGISTER_WORDS     ( 32 * 2 )
+#endif
 
 /* Constants required to setup the initial task context. */
 #define portSP_EL0						( ( StackType_t ) 0x00 )
@@ -208,17 +218,38 @@ StackType_t *pxPortInitialiseStack( StackType_t *pxTopOfStack, TaskFunction_t px
 	pxTopOfStack--;
 
 	*pxTopOfStack = ( StackType_t ) pxCode; /* Exception return address. */
-	pxTopOfStack--;
 
-	/* The task will start with a critical nesting count of 0 as interrupts are
-	enabled. */
-	*pxTopOfStack = portNO_CRITICAL_NESTING;
-	pxTopOfStack--;
+	#if ( configUSE_TASK_FPU_SUPPORT == 2 )
+	{
+		/* The task will start with a floating point context. Leave space for the
+		FPU registers. */
+		pxTopOfStack -= portFPU_REGISTER_WORDS;
 
-	/* The task will start without a floating point context.  A task that uses
-	the floating point hardware must call vPortTaskUsesFPU() before executing
-	any floating point instructions. */
-	*pxTopOfStack = portNO_FLOATING_POINT_CONTEXT;
+		pxTopOfStack--;
+
+		/* Store critical nesting count to maintain consistent stack layout
+		 * between Mode 1 and Mode 2. */
+		*pxTopOfStack = portNO_CRITICAL_NESTING;
+
+		pxTopOfStack--;
+		*pxTopOfStack = pdTRUE;  /* FPU context is enabled. */
+		ullPortTaskHasFPUContext = pdTRUE;
+	}
+	#else /* configUSE_TASK_FPU_SUPPORT != 2 */
+	{
+		pxTopOfStack--;
+
+		/* The task will start with a critical nesting count of 0 as interrupts are
+		enabled. */
+		*pxTopOfStack = portNO_CRITICAL_NESTING;
+		pxTopOfStack--;
+
+		/* The task will start without a floating point context.  A task that uses
+		the floating point hardware must call vPortTaskUsesFPU() before executing
+		any floating point instructions. */
+		*pxTopOfStack = portNO_FLOATING_POINT_CONTEXT;
+	}
+	#endif /* configUSE_TASK_FPU_SUPPORT */
 
 	return pxTopOfStack;
 }
@@ -317,6 +348,8 @@ void vPortTimerTickHandler()
     }
 }
 
+#if ( configUSE_TASK_FPU_SUPPORT != 2 )
+
 void vPortTaskUsesFPU( void )
 {
 	/* A task is registering the fact that it needs an FPU context.  Set the
@@ -326,6 +359,8 @@ void vPortTaskUsesFPU( void )
 	/* Consider initialising the FPSR here - but probably not necessary in
 	AArch64. */
 }
+
+#endif /* configUSE_TASK_FPU_SUPPORT */
 
 /* configCHECK_FOR_STACK_OVERFLOW is set to 1, so the application must provide an
  * implementation of vApplicationStackOverflowHook()

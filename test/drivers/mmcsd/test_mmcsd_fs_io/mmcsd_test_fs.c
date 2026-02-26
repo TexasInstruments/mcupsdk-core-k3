@@ -169,7 +169,7 @@ void TestMmcsd_emmcFileIo(void *args)
 
             /* Finally check the partition again */
             errVal = FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
-            TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
+            TEST_ASSERT_EQUAL(pdPASS, errVal);
 
             if (partitionDetails.sectorCount == 0U)
             {
@@ -252,7 +252,7 @@ void TestMmcsd_emmcNestedDirectories(void *args)
         TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
-        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
+        TEST_ASSERT_EQUAL(pdPASS, errVal);
 
         if (partitionDetails.sectorCount == 0U)
         {
@@ -454,7 +454,7 @@ void TestMmcsd_concurrentFatSdTransfer(void *args)
         TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
-        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
+        TEST_ASSERT_EQUAL(pdPASS, errVal);
 
         if (partitionDetails.sectorCount == 0U)
         {
@@ -560,7 +560,7 @@ void TestMmcsd_concurrentFatEmmcTransfer(void *args)
         TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
-        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
+        TEST_ASSERT_EQUAL(pdPASS, errVal);
 
         if (partitionDetails.sectorCount == 0U)
         {
@@ -670,7 +670,7 @@ void TestMmcsd_testConcurrentFatEmmcSdTransfer(void *args)
         TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDGetPartitionDetails(pSdDisk, &sdPartitionDetails);
-        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
+        TEST_ASSERT_EQUAL(pdPASS, errVal);
 
         if (sdPartitionDetails.sectorCount == 0U)
         {
@@ -701,7 +701,7 @@ void TestMmcsd_testConcurrentFatEmmcSdTransfer(void *args)
         TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDGetPartitionDetails(pEmmcDisk, &emmcPartitionDetails);
-        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
+        TEST_ASSERT_EQUAL(pdPASS, errVal);
 
         if (emmcPartitionDetails.sectorCount == 0U)
         {
@@ -815,7 +815,7 @@ void TestMmcsd_sdNestedDirectories(void *args)
         TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
-        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
+        TEST_ASSERT_EQUAL(pdPASS, errVal);
 
         if (partitionDetails.sectorCount == 0U)
         {
@@ -977,7 +977,7 @@ void TestMmcsd_sdFileIo(void *args)
 
             /* Finally check the partition again */
             errVal = FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
-            TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
+            TEST_ASSERT_EQUAL(pdPASS, errVal);
 
             if (partitionDetails.sectorCount == 0U)
             {
@@ -1081,7 +1081,7 @@ void TestMmcsd_largeSdFileIo(void *args)
 
         /* Finally check the partition again */
         errVal = FF_MMCSDGetPartitionDetails(pDisk, &partitionDetails);
-        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
+        TEST_ASSERT_EQUAL(pdPASS, errVal);
 
         if (partitionDetails.sectorCount == 0U)
         {

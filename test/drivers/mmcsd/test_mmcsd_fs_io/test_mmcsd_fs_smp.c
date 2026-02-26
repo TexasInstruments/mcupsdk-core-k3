@@ -221,10 +221,10 @@ void TestMmcsd_synchronousFatEmmcSdTransfer(void* args)
         uint32_t partSectorCount = TEST_MMCSD_FAT_PARTITION_SIZE / sdBlockSize;
 
         errVal = FF_MMCSDCreateAndFormatPartition(pSdDisk, partSectorCount);
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDMountPartition(pSdDisk, "/sd0");
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDGetPartitionDetails(pSdDisk, &sd_partitionDetails);
         TEST_ASSERT_EQUAL(pdPASS, errVal);
@@ -250,10 +250,10 @@ void TestMmcsd_synchronousFatEmmcSdTransfer(void* args)
         uint32_t partSectorCount = TEST_MMCSD_FAT_PARTITION_SIZE / emmcBlockSize;
 
         errVal = FF_MMCSDCreateAndFormatPartition(pEmmcDisk, partSectorCount);
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDMountPartition(pEmmcDisk, "/emmc0");
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDGetPartitionDetails(pEmmcDisk, &emmc_partitionDetails);
         TEST_ASSERT_EQUAL(pdPASS, errVal);
@@ -350,10 +350,10 @@ void TestMmcsd_synchronousFatEmmcBootSdUdaTransfer(void* args)
         uint32_t partSectorCount = TEST_MMCSD_FAT_PARTITION_SIZE / sdBlockSize;
 
         errVal = FF_MMCSDCreateAndFormatPartition(pSdDisk, partSectorCount);
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDMountPartition(pSdDisk, "/sd0");
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDGetPartitionDetails(pSdDisk, &sd_partitionDetails);
         TEST_ASSERT_EQUAL(pdPASS, errVal);
@@ -379,10 +379,10 @@ void TestMmcsd_synchronousFatEmmcBootSdUdaTransfer(void* args)
         uint32_t partSectorCount = TEST_MMCSD_FAT_PARTITION_SIZE / emmcBlockSize;
 
         errVal = FF_MMCSDCreateAndFormatPartition(pEmmcDisk, partSectorCount);
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDMountPartition(pEmmcDisk, "/emmc0");
-        TEST_ASSERT_EQUAL(pdPASS, errVal);
+        TEST_ASSERT_EQUAL(FF_ERR_NONE, errVal);
 
         errVal = FF_MMCSDGetPartitionDetails(pEmmcDisk, &emmc_partitionDetails);
         TEST_ASSERT_EQUAL(pdPASS, errVal);

@@ -107,7 +107,6 @@ static const uint32_t sciclient_brdcfg_binary_hs[] = {
 /*                             External Variables                             */
 /* ========================================================================== */
 
-extern Sciclient_ServiceHandle_t gSciclientHandle;
 extern struct tisci_msg_proc_set_config_req configReq;
 extern struct tisci_msg_fwl_set_firewall_region_resp  setFwResp;
 extern struct tisci_msg_fwl_set_firewall_region_req setFwReq;

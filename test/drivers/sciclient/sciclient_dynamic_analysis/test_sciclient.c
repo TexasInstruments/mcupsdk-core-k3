@@ -108,6 +108,17 @@ void test_sciclient_coverage(void *args)
         DebugP_log("\r\n test_sciclient_message_passing: All testcase passed successfully \r\n");
     }
 
+    failCount = test_sciclient_modes();
+    if(failCount > 0)
+    {
+        DebugP_log("\r\n test_sciclient_modes: %d testcase failed \r\n", failCount);
+        sumFailure += (uint32_t)failCount;
+    }
+    else
+    {
+        DebugP_log("\r\n test_sciclient_modes: All testcase passed successfully \r\n");
+    }
+
 	failCount = test_sciclient_procboot();
     if(failCount > 0)
     {

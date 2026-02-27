@@ -76,6 +76,7 @@ extern "C" {
 
 int8_t test_sciclient(void);
 int8_t test_sciclient_message_passing(void);
+int8_t test_sciclient_modes(void);
 int8_t test_sciclient_rm(void);
 int8_t test_sciclient_pm(void);
 int8_t test_sciclient_lpm(void);

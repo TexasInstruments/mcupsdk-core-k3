@@ -575,7 +575,7 @@ int8_t test_sciclient_procboot(void)
 
 	retVal = Sciclient_procBootWaitProcessorState(SCICLIENT_PROC_ID_A53SS0_CORE_0,
                                                   1, 1, 0, 3, 0, 0, 0, 10);
-    if(retVal == SystemP_SUCCESS)
+    if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
@@ -583,13 +583,36 @@ int8_t test_sciclient_procboot(void)
 
 	retVal = Sciclient_procBootSetSequenceCtrl(SCICLIENT_PROC_ID_A53SS0_CORE_0, 0, 0,
                                                0, 10);
-    if(retVal == SystemP_SUCCESS)
+    if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
 
     retVal = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_A53SS0_CORE_0, 0, 10);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_procBootWaitProcessorState(SCICLIENT_PROC_ID_A53SS0_CORE_0,
+                                                  1, 1, 0, 3, 0, 0, 2, 10);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+	retVal = Sciclient_procBootSetSequenceCtrl(SCICLIENT_PROC_ID_A53SS0_CORE_0, 0, 0,
+                                               2, 10);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_procBootReleaseProcessor(SCICLIENT_PROC_ID_A53SS0_CORE_0, 2, 10);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);

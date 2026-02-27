@@ -102,14 +102,7 @@ void main_thread(void *args)
     /* Close UART as Drivers_open() inside BootApp_main() opens the UART again */
     Drivers_uartClose();
 
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
-
     CanResponseApp_main(NULL);
-
-    Board_driversClose();
-    Drivers_close();
 
     vTaskDelete(NULL);
 }

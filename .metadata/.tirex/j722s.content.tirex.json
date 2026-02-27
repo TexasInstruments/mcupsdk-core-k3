@@ -40,6 +40,39 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "Customised OSPI SBL example with optimizations for Early CAN Response. CPU is WKUP-R5FSS0-0 running NORTOS.",
+        "name": "sbl_ospi_early_can",
+        "location": "../../examples/drivers/boot/sbl_ospi_early_can/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "boot",
+            "sbl_ospi_early_can",
+            "wkup-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Sbl Ospi Stage1 Example. CPU is WKUP-R5FSS0-0 running NORTOS.",
         "name": "sbl_ospi_stage1",
         "location": "../../examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage1/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang/example.projectspec",

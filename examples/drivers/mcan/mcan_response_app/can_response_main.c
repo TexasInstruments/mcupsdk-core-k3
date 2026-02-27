@@ -106,6 +106,10 @@ void CanResponseApp_main(void *args)
                                             gCanResponseAppStack,        /* Pointer to stack base */
                                             &gCanResponseAppTaskObj) ;   /* Pointer to statically allocated task object memory */
     configASSERT(gCanResponseAppTask != NULL);
+
+    Board_driversClose();
+    Drivers_close();
+
 }
 
 /* ========================================================================== */
@@ -115,5 +119,9 @@ void CanResponseApp_main(void *args)
 /* CAN Response App Task Function of type 'TaskFunction_t' (aka 'void (*)(void *)') */
 static void CanResponseApp_taskFxn(void *args)
 {
+    /* Open drivers to open the UART driver for console */
+    Drivers_open();
+    Board_driversOpen();
+
     CanResponseApp_transmit();
 }

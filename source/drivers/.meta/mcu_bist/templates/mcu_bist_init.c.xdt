@@ -10,15 +10,16 @@
     /* BIST */
     {
         int32_t status;
+
+        /* Unlock MMRs */
+        SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 4u);
+        SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 3u);
+
         % if (config.bist === "LBIST"){
 
         /* Initialize SDL DPL */
         status = SDL_dplInit();
         DebugP_assert(status == SDL_PASS);
-
-        /* Unlock MMRs */
-        SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 4u);
-        SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 3u);
 
         /* Start LBIST */
         if (!Bootloader_socIsMCUResetIsoEnabled())

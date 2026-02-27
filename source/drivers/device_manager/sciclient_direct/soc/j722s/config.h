@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-25, Texas Instruments Incorporated
+ * Copyright (c) 2023-26 Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,6 +62,7 @@
 #define CONFIG_RM_RA 1
 #define CONFIG_RM_RA_DMSS_RING 1
 #define CONFIG_RM_UDMAP 1
+#define CONFIG_UDMAP_CHANNEL_BURST_SIZE 1
 #define CONFIG_UDMAP_BCDMA 1
 #define CONFIG_UDMAP_PKTDMA 1
 

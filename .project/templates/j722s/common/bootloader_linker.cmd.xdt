@@ -1,0 +1,203 @@
+%%{
+    let options = args.options;
+
+    let stackSize = 16*1024;
+    let heapSize =  32*1024;
+
+    let irqStackSize = 4*1024;
+    let svcStackSize = 256;
+    let fiqStackSize = 256;
+    let abortStackSize = 256;
+    let undefinedStackSize = 256;
+
+    if(options && options.stackSize)
+        stackSize = options.stackSize;
+    if(options && options.heapSize)
+        heapSize = options.heapSize;
+    if(options && options.irqStackSize)
+        irqStackSize = options.irqStackSize;
+    if(options && options.fiqStackSize)
+        fiqStackSize = options.fiqStackSize;
+    if(options && options.svcStackSize)
+        svcStackSize = options.svcStackSize;
+    if(options && options.abortStackSize)
+        abortStackSize = options.abortStackSize;
+    if(options && options.undefinedStackSize)
+        undefinedStackSize = options.undefinedStackSize;
+
+%%}
+
+--stack_size=`stackSize`
+--heap_size=`heapSize`
+
+% if(args.project.isBootLoader == true){
+/* ATCM base address */
+gAtcmBaseAddr = 0x78000000;
+
+-e_vectors_sbl  /* for SBL make sure to set entry point to _vectors_sbl */
+% } else {
+-e_vectors  /* for SBL make sure to set entry point to _vectors_sbl */
+% }
+
+__IRQ_STACK_SIZE = `irqStackSize`;
+__FIQ_STACK_SIZE = `fiqStackSize`;
+__SVC_STACK_SIZE = `svcStackSize`;
+__ABORT_STACK_SIZE = `abortStackSize`;
+__UNDEFINED_STACK_SIZE = `undefinedStackSize`;
+
+SECTIONS
+{
+    % if(args.project.isBootLoader == true){
+    .vectors:{} palign(8) > OCM_RAM_VECS
+    GROUP {
+        .text:   {} palign(8)
+        .const:  {} palign(8)
+        .text.hwi: palign(8)
+        .text.cache: palign(8)
+        .text.mpu: palign(8)
+        .text.boot: palign(8)
+        .data:   {} palign(8)
+        .rodata: {} palign(8)
+        .boardcfg_data   : {} palign(8)
+    } > OCM_RAM
+    .bss:    {} palign(8) > OCM_RAM
+    RUN_START(__BSS_START)
+    RUN_END(__BSS_END)
+    .sysmem: {} palign(8) > OCM_RAM
+    .stack:  {} palign(8) > OCM_RAM
+    GROUP {
+        .irqstack: {. = . + __IRQ_STACK_SIZE;} align(8)
+        RUN_START(__IRQ_STACK_START)
+        RUN_END(__IRQ_STACK_END)
+        .fiqstack: {. = . + __FIQ_STACK_SIZE;} align(8)
+        RUN_START(__FIQ_STACK_START)
+        RUN_END(__FIQ_STACK_END)
+        .svcstack: {. = . + __SVC_STACK_SIZE;} align(8)
+        RUN_START(__SVC_STACK_START)
+        RUN_END(__SVC_STACK_END)
+        .abortstack: {. = . + __ABORT_STACK_SIZE;} align(8)
+        RUN_START(__ABORT_STACK_START)
+        RUN_END(__ABORT_STACK_END)
+        .undefinedstack: {. = . + __UNDEFINED_STACK_SIZE;} align(8)
+        RUN_START(__UNDEFINED_STACK_START)
+        RUN_END(__UNDEFINED_STACK_END)
+    } > OCM_RAM
+
+    % } else if(args.project.noSelfResetMultistage == true){
+    .vectors:{} palign(8) > DDR
+
+    GROUP {
+        .const:  {} palign(8)
+        .text:   {} palign(8)
+        .text.hwi: palign(8)
+        .text.cache: palign(8)
+        .text.mpu: palign(8)
+        .text.boot: palign(8)
+        .data:   {} palign(8)
+        .rodata: {} palign(8)
+        .boardcfg_data   : {} palign(8)
+    } > DDR
+
+    .bss:    {} palign(8) > DDR
+    RUN_START(__BSS_START)
+    RUN_END(__BSS_END)
+    .sysmem: {} palign(8) > DDR
+    .stack:  {} palign(8) > DDR
+
+    GROUP {
+        .irqstack: {. = . + __IRQ_STACK_SIZE;} align(8)
+        RUN_START(__IRQ_STACK_START)
+        RUN_END(__IRQ_STACK_END)
+        .fiqstack: {. = . + __FIQ_STACK_SIZE;} align(8)
+        RUN_START(__FIQ_STACK_START)
+        RUN_END(__FIQ_STACK_END)
+        .svcstack: {. = . + __SVC_STACK_SIZE;} align(8)
+        RUN_START(__SVC_STACK_START)
+        RUN_END(__SVC_STACK_END)
+        .abortstack: {. = . + __ABORT_STACK_SIZE;} align(8)
+        RUN_START(__ABORT_STACK_START)
+        RUN_END(__ABORT_STACK_END)
+        .undefinedstack: {. = . + __UNDEFINED_STACK_SIZE;} align(8)
+        RUN_START(__UNDEFINED_STACK_START)
+        RUN_END(__UNDEFINED_STACK_END)
+    } > DDR
+    % } else {
+    GROUP {
+    .vectors: {} palign(8)
+    } load = BTCM_VECS, run = ATCM_VECS
+
+    GROUP{
+        .text.hwi: palign(8)
+        .text.cache: palign(8)
+        .text.mpu: palign(8)
+        .text.boot: palign(8)
+    } load = BTCM, run = ATCM
+
+    GROUP {
+        .data:   {} palign(8)
+        .const:  {} palign(8)
+        .text:   {} palign(8)
+        .rodata: {} palign(8)
+        .boardcfg_data   : {} palign(8)
+    } > DDR
+
+    .bss:    {} palign(8) > DDR
+    RUN_START(__BSS_START)
+    RUN_END(__BSS_END)
+    .sysmem: {} palign(8) > DDR
+    .stack:  {} palign(8) > DDR
+
+    GROUP {
+        .irqstack: {. = . + __IRQ_STACK_SIZE;} align(8)
+        RUN_START(__IRQ_STACK_START)
+        RUN_END(__IRQ_STACK_END)
+        .fiqstack: {. = . + __FIQ_STACK_SIZE;} align(8)
+        RUN_START(__FIQ_STACK_START)
+        RUN_END(__FIQ_STACK_END)
+        .svcstack: {. = . + __SVC_STACK_SIZE;} align(8)
+        RUN_START(__SVC_STACK_START)
+        RUN_END(__SVC_STACK_END)
+        .abortstack: {. = . + __ABORT_STACK_SIZE;} align(8)
+        RUN_START(__ABORT_STACK_START)
+        RUN_END(__ABORT_STACK_END)
+        .undefinedstack: {. = . + __UNDEFINED_STACK_SIZE;} align(8)
+        RUN_START(__UNDEFINED_STACK_START)
+        RUN_END(__UNDEFINED_STACK_END)
+    } > DDR
+    % }
+    %if(args.project.isFileBuf){
+    .bss.filebuf (NOLOAD) : {} > APPIMAGE
+    % } else {
+    .bss.app(NOLOAD) : {} > APPIMAGE
+    % }
+}
+
+MEMORY
+{
+    %if(args.project.isBootLoader == true){
+    /* HSM RAM SMS0_HSM_SRAM0_0 is used to accomodate for .stack space in Debug build */
+    HSM_RAM  : ORIGIN = 0x0043C00000, LENGTH = 0x20000
+
+    OCM_RAM_VECS: ORIGIN = 0x43C40000 , LENGTH = 0x100
+    OCM_RAM  : ORIGIN = 0x43C40100 , LENGTH = 0x3E000 - 0x100
+
+    /* This section is used by the SBL to temporarily load the appimage for authentication */
+    %if(args.project.isFileBuf){
+    APPIMAGE  : ORIGIN = 0xC2000000 , LENGTH = 0x2000000
+    % } else {
+    APPIMAGE  : ORIGIN = 0xC2000000 , LENGTH = 0x4000000
+    % }
+    % } else {
+    DDR          : ORIGIN = 0xB0340000 , LENGTH = 0x200000
+    BTCM_VECS    : ORIGIN = 0x41010000 , LENGTH = 0x40
+    BTCM         : ORIGIN = 0x41010040 , LENGTH = 0x8000 - 0x40
+    ATCM_VECS    : ORIGIN = 0x0 , LENGTH = 0x40
+    ATCM         : ORIGIN = 0x40 , LENGTH = 0x8000 - 0x40
+    /* This section is used by the SBL to temporarily load the appimage for authentication */
+    %if(args.project.isFileBuf){
+    APPIMAGE  : ORIGIN = 0xC2000000 , LENGTH = 0x4000000
+    % } else {
+    APPIMAGE  : ORIGIN = 0xC2000000 , LENGTH = 0x2000000
+    % }
+    % }
+}

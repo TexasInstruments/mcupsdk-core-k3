@@ -41,7 +41,6 @@
 /*                                    Macros                                 */
 /*===========================================================================*/
 
-#define TEST_SCISERVER_TASK_STACK_SIZE         (2U*1024U)
 #define TEST_SCISERVER_HW_QUEUE_SIZE           52U
 
 

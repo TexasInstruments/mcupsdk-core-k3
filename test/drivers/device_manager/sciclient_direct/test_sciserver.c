@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Texas Instruments Incorporated
+ * Copyright (C) 2024-26 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -40,13 +40,23 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-/* None */
+#define TEST_SCISERVER_TASK_STACK_SIZE      (2U*1024U)
+#define TEST_SCISERVER_TASK_STACK_ALIGNMENT (32)
 
 /* ========================================================================== */
 /*                         Structures and Enums                               */
 /* ========================================================================== */
 
 /* None */
+
+/* ========================================================================== */
+/*                          Static Variables                                  */
+/* ========================================================================== */
+
+static uint8_t __attribute__((aligned(TEST_SCISERVER_TASK_STACK_ALIGNMENT)))
+    gTestHiTaskStack[TEST_SCISERVER_TASK_STACK_SIZE];
+static uint8_t __attribute__((aligned(TEST_SCISERVER_TASK_STACK_ALIGNMENT)))
+    gTestLoTaskStack[TEST_SCISERVER_TASK_STACK_SIZE];
 
 /* ========================================================================== */
 /*                         Function Definitions                               */
@@ -484,7 +494,7 @@ int8_t test_sciserver_tirtos(void)
 {
     int32_t retVal = SystemP_SUCCESS;
     int8_t failCount = 0;
-    Sciserver_TirtosCfgPrms_t appPrms;
+    Sciserver_TirtosCfgPrms_t appPrms = {0};
 
     retVal = Sciserver_tirtosInit(NULL);
     if(retVal == SystemP_SUCCESS)
@@ -493,8 +503,11 @@ int8_t test_sciserver_tirtos(void)
         failCount++;
     }
 
-	appPrms.taskPriority[SCISERVER_TASK_USER_LO] = 1U;
-	appPrms.taskPriority[SCISERVER_TASK_USER_HI] = 3U;
+    appPrms.taskPriority[SCISERVER_TASK_USER_LO] = 1U;
+    appPrms.taskPriority[SCISERVER_TASK_USER_HI] = 3U;
+    appPrms.hiTaskStack   = gTestHiTaskStack;
+    appPrms.loTaskStack   = gTestLoTaskStack;
+    appPrms.taskStackSize = TEST_SCISERVER_TASK_STACK_SIZE;
 	Sciserver_deinit();
 	retVal = Sciserver_tirtosInit(&appPrms);
     if(retVal != SystemP_SUCCESS)

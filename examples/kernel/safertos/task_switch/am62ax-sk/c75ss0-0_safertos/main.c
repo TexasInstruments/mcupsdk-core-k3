@@ -54,14 +54,10 @@
 portInt8Type gMainTaskStack[MAIN_TASK_SIZE] __attribute__((aligned(MAIN_TASK_SIZE)));
 xTCB gTaskTCB;
 
-void System_lateInit(void);
-
 void task_switch_main(void *args);
 
 void safertos_main(void *args)
 {
-
-    System_lateInit();
 
     task_switch_main(NULL);
 
@@ -72,6 +68,7 @@ void safertos_main(void *args)
 int main()
 {
     portBaseType xStatus;
+    int32_t status = SystemP_SUCCESS;
 
     /* init SOC specific modules */
     System_init();
@@ -79,10 +76,11 @@ int main()
     /* Do Board init */
     Board_init();
 
-    /* Open drivers to open the UART driver for Console */
+    /* Open drivers */
     Drivers_open();
-    /* Open board drivers */
-    Board_driversOpen();
+    /* Open flash and board drivers */
+    status = Board_driversOpen();
+    DebugP_assert(status == SystemP_SUCCESS);
 
     xTaskParameters xTaskPParams =
     {
@@ -119,11 +117,10 @@ int main()
     techniques for trapping heap exhaustion, are described in the book text. */
     DebugP_assertNoLog(0);
 
-    /* Close all open drivers. */
-    Drivers_close();
-
-    /* Close all open board drivers */
+    /* Close board and flash drivers */
     Board_driversClose();
+    /* Close drivers */
+    Drivers_close();
 
     return 0;
 }

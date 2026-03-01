@@ -300,6 +300,8 @@ help:
 	@echo  $(MAKE) -s -C examples/security/mcu_core_test_app/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/security/runtime_debug_unlock/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/security/tisci_msg/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C test/kernel/dpl/am62ax-sk/r5fss0-0_safertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C test/kernel/dpl/am62ax-sk/c75ss0-0_safertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/dcc/dcc_modes/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/ecc/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/ecc_r5f_cache/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -1008,6 +1010,8 @@ BUILD_COMBO_EXAMPLE_PRIVATE_ALL += dpl_demo_am62ax-sk_c75ss0-0_safertos_ti-c7000
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL += dpl_demo_am62ax-sk_r5fss0-0_safertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL += task_switch_am62ax-sk_c75ss0-0_safertos_ti-c7000
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL += task_switch_am62ax-sk_r5fss0-0_safertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_PRIVATE_ALL += test_dpl_am62ax-sk_r5fss0-0_safertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_PRIVATE_ALL += test_dpl_am62ax-sk_c75ss0-0_safertos_ti-c7000
 # Various Private System Example Targets
 
 examples: $(BUILD_COMBO_EXAMPLE_ALL)
@@ -1602,6 +1606,12 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  tisci_msg_am62ax-sk_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C examples/security/tisci_msg/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
 
+ test_dpl_am62ax-sk_r5fss0-0_safertos_ti-arm-clang:
+	$(MAKE) -C test/kernel/dpl/am62ax-sk/r5fss0-0_safertos/ti-arm-clang -f makefile all
+
+ test_dpl_am62ax-sk_c75ss0-0_safertos_ti-c7000:
+	$(MAKE) -C test/kernel/dpl/am62ax-sk/c75ss0-0_safertos/ti-c7000 -f makefile all
+
  dcc_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
@@ -1935,6 +1945,8 @@ BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL += dpl_demo_am62ax-sk_c75ss0-0_safertos_ti
 BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL += dpl_demo_am62ax-sk_r5fss0-0_safertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL += task_switch_am62ax-sk_c75ss0-0_safertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL += task_switch_am62ax-sk_r5fss0-0_safertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL += test_dpl_am62ax-sk_r5fss0-0_safertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL += test_dpl_am62ax-sk_c75ss0-0_safertos_ti-c7000_clean
 # Various Private System Example Targets
 
 examples-clean: $(BUILD_COMBO_EXAMPLE_CLEAN_ALL)
@@ -2529,6 +2541,12 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  tisci_msg_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/security/tisci_msg/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
 
+ test_dpl_am62ax-sk_r5fss0-0_safertos_ti-arm-clang_clean:
+	$(MAKE) -C test/kernel/dpl/am62ax-sk/r5fss0-0_safertos/ti-arm-clang -f makefile clean
+
+ test_dpl_am62ax-sk_c75ss0-0_safertos_ti-c7000_clean:
+	$(MAKE) -C test/kernel/dpl/am62ax-sk/c75ss0-0_safertos/ti-c7000 -f makefile clean
+
  dcc_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
@@ -2862,6 +2880,8 @@ BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL += dpl_demo_am62ax-sk_c75ss0-0_safertos_ti
 BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL += dpl_demo_am62ax-sk_r5fss0-0_safertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL += task_switch_am62ax-sk_c75ss0-0_safertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL += task_switch_am62ax-sk_r5fss0-0_safertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL += test_dpl_am62ax-sk_r5fss0-0_safertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL += test_dpl_am62ax-sk_c75ss0-0_safertos_ti-c7000_scrub
 # Various Private System Example Targets
 
 examples-scrub: $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
@@ -3455,6 +3475,12 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  tisci_msg_am62ax-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/security/tisci_msg/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ test_dpl_am62ax-sk_r5fss0-0_safertos_ti-arm-clang_scrub:
+	$(MAKE) -C test/kernel/dpl/am62ax-sk/r5fss0-0_safertos/ti-arm-clang -f makefile scrub
+
+ test_dpl_am62ax-sk_c75ss0-0_safertos_ti-c7000_scrub:
+	$(MAKE) -C test/kernel/dpl/am62ax-sk/c75ss0-0_safertos/ti-c7000 -f makefile scrub
 
  dcc_am62ax-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/am62ax-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub

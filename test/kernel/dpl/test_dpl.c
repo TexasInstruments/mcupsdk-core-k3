@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -62,7 +62,13 @@
 #else
 #define EVENT_TASK_STACK_SIZE      (4*1024U)
 #endif
+
+#if !defined(OS_SAFERTOS)
 static uint8_t gTaskStack[EVENT_TASK_STACK_SIZE] __attribute__((aligned(32)));
+#else
+static uint8_t gTaskStack[EVENT_TASK_STACK_SIZE] __attribute__((aligned(EVENT_TASK_STACK_SIZE)));
+#endif
+
 static TaskP_Object gEventTask;
 static EventP_Object gMyEvent;
 int32_t gEventSetStatusFromISR;
@@ -131,7 +137,13 @@ static HeapP_Object gMyHeap;
 #else
 #define MY_TASK_STACK_SIZE  (4*1024U)
 #endif
+
+#if !defined(OS_SAFERTOS)
 static uint8_t gMyTaskStack[MY_TASK_STACK_SIZE] __attribute__((aligned(32)));
+#else
+static uint8_t gMyTaskStack[MY_TASK_STACK_SIZE] __attribute__((aligned(MY_TASK_STACK_SIZE)));
+#endif
+
 static TaskP_Object gMyTask;
 
 #if defined(_TMS320C6X)
@@ -1398,23 +1410,23 @@ volatile uint32_t gPrefetchAbortTracker;
 volatile uint32_t gUndefinedInstructionTracker;
 
 /* Strong definition of user exception handleres */
-void HwiP_user_data_abort_handler_c(DFSR dfsr, ADFSR adfsr, volatile uint32_t dfar, volatile uint32_t lr, 
+void HwiP_user_data_abort_handler_c(DFSR dfsr, ADFSR adfsr, volatile uint32_t dfar, volatile uint32_t lr,
                                     volatile uint32_t spsr);
-void HwiP_user_prefetch_abort_handler_c(IFSR ifsr, AIFSR aifsr, volatile uint32_t ifar, 
+void HwiP_user_prefetch_abort_handler_c(IFSR ifsr, AIFSR aifsr, volatile uint32_t ifar,
                                         volatile uint32_t lr, volatile uint32_t spsr);
 void HwiP_user_undefined_handler_c(volatile uint32_t lr, volatile uint32_t spsr);
 
 /* User-defined Data Abort handler */
-void HwiP_user_data_abort_handler_c(DFSR dfsr, ADFSR adfsr, volatile uint32_t dfar, volatile uint32_t lr, 
+void HwiP_user_data_abort_handler_c(DFSR dfsr, ADFSR adfsr, volatile uint32_t dfar, volatile uint32_t lr,
                                     volatile uint32_t spsr)
 {
-    if (gDataAbortTracker > 0U) 
+    if (gDataAbortTracker > 0U)
     {
-        /** This is only for test purpose. 
+        /** This is only for test purpose.
          * Returning from a data abort exception may result in unexpected behaviour. */
         gDataAbortTracker--;
     }
-    else 
+    else
     {
         /* Unexpected fault - loop forever */
         volatile uint32_t loop = 1U;
@@ -1429,16 +1441,16 @@ void HwiP_user_data_abort_handler_c(DFSR dfsr, ADFSR adfsr, volatile uint32_t df
 }
 
 /* User-defined Prefetch Abort handler */
-void HwiP_user_prefetch_abort_handler_c(IFSR ifsr, AIFSR aifsr, volatile uint32_t ifar, 
+void HwiP_user_prefetch_abort_handler_c(IFSR ifsr, AIFSR aifsr, volatile uint32_t ifar,
                                         volatile uint32_t lr, volatile uint32_t spsr)
 {
-    if (gPrefetchAbortTracker > 0U) 
+    if (gPrefetchAbortTracker > 0U)
     {
-        /** This is only for test purpose. 
+        /** This is only for test purpose.
          * Returning from a prefetch abort exception may result in unexpected behaviour. */
         gPrefetchAbortTracker--;
     }
-    else 
+    else
     {
         /* Unexpected fault - loop forever */
         volatile uint32_t loop = 1U;
@@ -1455,13 +1467,13 @@ void HwiP_user_prefetch_abort_handler_c(IFSR ifsr, AIFSR aifsr, volatile uint32_
 /* User-defined Undefined Instruction handler */
 void HwiP_user_undefined_handler_c(volatile uint32_t lr, volatile uint32_t spsr)
 {
-    if (gUndefinedInstructionTracker > 0U) 
+    if (gUndefinedInstructionTracker > 0U)
     {
-        /** This is only for test purpose. 
+        /** This is only for test purpose.
          * Returning from an undefined exception may result in unexpected behaviour. */
         gUndefinedInstructionTracker--;
     }
-    else 
+    else
     {
         /* Unexpected fault - loop forever */
         volatile uint32_t loop = 1U;
@@ -1483,7 +1495,7 @@ void test_exceptionUserHandlers(void *args)
 
     /** Prefetch Abort exception */
     DebugP_log("Triggering Prefetch Abort exception...\r\n");
-    gPrefetchAbortTracker = 1U;                                 /* Set tracker to mark as expected fault    */                          
+    gPrefetchAbortTracker = 1U;                                 /* Set tracker to mark as expected fault    */
     typedef void (*function_ptr)();
     function_ptr trigger_prefetch_abort = (function_ptr)RESTRICTED_ADDRESS;
     trigger_prefetch_abort();                                   /* This should cause prefetch abort         */
@@ -1492,7 +1504,7 @@ void test_exceptionUserHandlers(void *args)
     /** Data Abort exception */
     DebugP_log("Triggering Data Abort exception...\r\n");
     gDataAbortTracker = 1U;                                     /* Set tracker to mark as expected fault    */
-    uint32_t *ptr = (uint32_t *)RESTRICTED_ADDRESS; 
+    uint32_t *ptr = (uint32_t *)RESTRICTED_ADDRESS;
     *ptr = 0xFFFFFFFF;                                          /* This should cause data abort             */
     TEST_ASSERT_EQUAL_UINT32(0U, gDataAbortTracker);            /* Validate Data Abort tracker              */
 }
@@ -1525,7 +1537,7 @@ void test_main(void *args)
     RUN_TEST(test_hwiProfile, 293, NULL);
     RUN_TEST(test_queue, 3808, NULL);
     /* tasks are not supported in nortos */
-    #if defined (OS_FREERTOS) || defined (OS_SAFERTOS)
+    #if defined (OS_FREERTOS)
     RUN_TEST(test_task, 294, NULL);
     RUN_TEST(test_event, 805, NULL);
     #endif
@@ -1546,7 +1558,7 @@ void test_main(void *args)
     RUN_TEST(test_hwiNested, 295, NULL);
     #endif
 
-    #if defined(__ARM_ARCH_7R__) && !defined(OS_THREADX)
+    #if defined(__ARM_ARCH_7R__) && !defined(OS_THREADX) && !defined(OS_SAFERTOS)
     /* floating point operations in ISR supported in R5F only */
     RUN_TEST(test_mainToIsrWithFloatOperations, 1571, NULL);
     #endif
@@ -1566,7 +1578,7 @@ void test_main(void *args)
     RUN_TEST(test_spiInterrupt, 3808, NULL);
 #endif
 
-    #if defined(__ARM_ARCH_7R__)
+    #if defined(__ARM_ARCH_7R__) && !defined(OS_SAFERTOS)
     /* debug aid for exceptions supported in R5F only */
     RUN_TEST(test_exceptionUserHandlers, 7111, NULL);
     #endif

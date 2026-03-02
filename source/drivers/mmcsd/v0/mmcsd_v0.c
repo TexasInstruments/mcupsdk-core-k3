@@ -2598,21 +2598,13 @@ static int32_t MMCSD_sendSwitchCmd(MMCSD_Handle handle, uint32_t arg)
 
     if(handle != NULL)
     {
-        MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
         const MMCSD_Attrs *attrs = ((MMCSD_Config *)handle)->attrs;
         MMCSD_Transaction trans;
         uint32_t switchCmd = 0U;
         uint32_t numRetries = 0U;
         uint64_t timeoutMilliSec = MMCSD_TRANSFER_DEFAULT_TIMEOUT_MS;
 
-        if(obj->cardType == MMCSD_CARD_TYPE_EMMC)
-        {
-            switchCmd = MMCSD_MMC_CMD(6);
-        }
-        else
-        {
-            switchCmd = MMCSD_SD_CMD(6);
-        }
+        switchCmd = MMCSD_MMC_CMD(6);
 
         MMCSD_initTransaction(&trans);
         trans.cmd = switchCmd;
@@ -3147,12 +3139,6 @@ static int32_t MMCSD_sendTuningDataEMMC(MMCSD_Handle handle)
     return status;
 }
 
-static int32_t MMCSD_sendTuningDataSD(MMCSD_Handle handle)
-{
-    int32_t status = SystemP_SUCCESS;
-
-    return status;
-}
 /* ========================================================================== */
 /*                          PHY function definitions                          */
 /* ========================================================================== */
@@ -3576,7 +3562,6 @@ static int32_t MMCSD_phyTuneManualEMMC(MMCSD_Handle handle, uint8_t *tunedItap)
 static int32_t MMCSD_phyTuneAuto(MMCSD_Handle handle)
 {
     int32_t status = SystemP_SUCCESS;
-    MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
     const MMCSD_Attrs *attrs = ((MMCSD_Config *)handle)->attrs;
     const CSL_mmc_ctlcfgRegs *pReg = (const CSL_mmc_ctlcfgRegs *)(attrs->ctrlBaseAddr);
     uint32_t tuningSuccess = FALSE;
@@ -3592,14 +3577,7 @@ static int32_t MMCSD_phyTuneAuto(MMCSD_Handle handle)
     uint32_t i = 0U;
     for(i = 0U; i < 40U; i++)
     {
-        if(obj->cardType == MMCSD_CARD_TYPE_EMMC)
-        {
-            MMCSD_sendTuningDataEMMC(handle);
-        }
-        else
-        {
-            MMCSD_sendTuningDataSD(handle);
-        }
+        MMCSD_sendTuningDataEMMC(handle);
 
         state = CSL_REG16_FEXT(&pReg->HOST_CONTROL2, MMC_CTLCFG_HOST_CONTROL2_EXECUTE_TUNING);
         samplingClock = CSL_REG16_FEXT(&pReg->HOST_CONTROL2, MMC_CTLCFG_HOST_CONTROL2_SAMPLING_CLK_SELECT);

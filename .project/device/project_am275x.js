@@ -350,6 +350,11 @@ const example_file_list = [
     "test/kernel/dpl_timer/.project/project_am275x_wkupr5.js",
     "test/drivers/hyperbus/.project/project.js",
     "test/drivers/hyperbus/.project/project_am275x_wkupr5.js",
+    "test/drivers/boot/sbl_test_media_boot/.project/project.js",
+    "test/drivers/boot/sbl_negative_tests/.project/project.js",
+    "test/drivers/boot/sbl_test_uart_boot/.project/project.js",
+    "test/drivers/boot/sbl_test_multithread/.project/project.js",
+    "test/drivers/boot/sbl_test_multithread/sbl_test_custom_ipc_binary/.project/project.js",
 
 ];
 

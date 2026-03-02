@@ -14,6 +14,10 @@
     if(options && options.enableUdmaBuffers)
         enableUdmaBuffers = options.enableUdmaBuffers;
 
+    let enableAppimageMem = false;
+    if(options && options.enableAppimageMem)
+        enableAppimageMem = options.enableAppimageMem;
+
     let globalScratchBufSizeInMB = globalScratchBufSize / (1024 * 1024)
 
     if(enableUdmaBuffers == true) {
@@ -204,6 +208,12 @@ SECTIONS
 
     % if(dmWithBootloader == "true"){
     .bss.app(NOLOAD) : {} > APPIMAGE
+    % }
+    % if(enableAppimageMem) {
+    /* Appimage embedded data sections (from appimage_data.S .incbin) */
+    .data.appimage_buf0 : {} palign(128) > APPIMAGE
+    .data.appimage_buf1 : {} palign(128) > APPIMAGE
+    .data.appimage_buf2 : {} palign(128) > APPIMAGE
     % }
     % if(globalScratchBuf == "true") {
     /* global scratch buffer region */

@@ -21,17 +21,17 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_sbl_emmc_boot.$(PROFILE).out
+OUTNAME:=test_sbl_media_boot.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_sbl_emmc_boot.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=test_sbl_emmc_boot.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=test_sbl_emmc_boot.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=test_sbl_emmc_boot.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=test_sbl_emmc_boot.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=test_sbl_emmc_boot.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=test_sbl_emmc_boot.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=test_sbl_emmc_boot.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=test_sbl_media_boot.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=test_sbl_media_boot.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=test_sbl_media_boot.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=test_sbl_media_boot.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=test_sbl_media_boot.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=test_sbl_media_boot.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=test_sbl_media_boot.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=test_sbl_media_boot.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -229,7 +229,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62dx:r5fss0-0:freertos:ti-arm-clang test_sbl_emmc_boot ...
+	@echo  Scrubing: am62dx:r5fss0-0:freertos:ti-arm-clang test_sbl_media_boot ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
@@ -263,7 +263,7 @@ syscfg: ../example.syscfg
 	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM62Dx --context r5fss0-0 --part AM62D24-G --package ANF --output generated/ ../example.syscfg
 
 syscfg-gui:
-	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(SYSCFG_SDKPRODUCT) --device AM62Dx --context r5fss0-0 --part AM62D24-G --package ANF --output generated/  ../example.syscfg
+	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device AM62Dx --context r5fss0-0 --part AM62D24-G --package ANF --output generated/  ../example.syscfg
 
 #
 # Generation of boot image which can be loaded by Secondary Boot Loader (SBL)

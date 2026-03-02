@@ -1,0 +1,46 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM62Ax" --package "AMB" --part "Default" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.18.0+3266"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const ipc        = scripting.addModule("/drivers/ipc/ipc");
+const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
+const mmu_armv8  = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
+const mmu_armv81 = mmu_armv8.addInstance();
+const mmu_armv82 = mmu_armv8.addInstance();
+const mmu_armv83 = mmu_armv8.addInstance();
+const mmu_armv84 = mmu_armv8.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+ipc.enableLinuxIpc     = false;
+ipc.vringAllocationPDK = false;
+
+debug_log.enableSharedMemLog = true;
+
+mmu_armv81.size  = 0x80000000;
+mmu_armv81.$name = "SOC_MEM_REGION";
+
+mmu_armv82.vAddr     = 0x80000000;
+mmu_armv82.pAddr     = 0x80000000;
+mmu_armv82.size      = 0x80000000;
+mmu_armv82.attribute = "MAIR7";
+mmu_armv82.$name     = "DDR_REGION";
+
+mmu_armv83.$name     = "LOG_SHM_MEM";
+mmu_armv83.vAddr     = 0xA1000000;
+mmu_armv83.pAddr     = 0xA1000000;
+mmu_armv83.size      = 0x40000;
+mmu_armv83.attribute = "MAIR4";
+
+mmu_armv84.$name     = "RTOS_NORTOS_IPC_VRING";
+mmu_armv84.vAddr     = 0xA0400000;
+mmu_armv84.pAddr     = 0xA0400000;
+mmu_armv84.size      = 0x300000;
+mmu_armv84.attribute = "MAIR4";

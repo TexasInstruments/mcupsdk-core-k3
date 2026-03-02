@@ -52,6 +52,16 @@
             codeDataSizeOcram = options.codeDataSizeOcram;
     }
 
+    let enableAppimageMem = false;
+    let appimageOrigin = 0x72080000;
+    let appimageLength = 0x00380000;
+    if(options && options.enableAppimageMem)
+        enableAppimageMem = true;
+    if(options && options.appimageOrigin)
+        appimageOrigin = options.appimageOrigin;
+    if(options && options.appimageLength)
+        appimageLength = options.appimageLength;
+
     let memoryReg = ""
 
     if(args.project.cpu == "wkup-r5fss0-0") {
@@ -269,12 +279,18 @@ MEMORY
     WKUP_R5_MSRAM (RWIX)         : ORIGIN = 0x72000040 LENGTH = 0x0007AFC0 // 492 KB for wakeup core
     WKUP_DM_RMPM_TRACE (RWIX)    : ORIGIN = 0x7207B000 LENGTH = 0x00005000 // 20 KB for DM RM/PM HAL trace buffer
 
-% if(globalScratchBuf == "true") {
-    SCRATCH_OCRAM (RWIX)         : ORIGIN = 0x72080000 LENGTH = 0x00100000 // 1 MB for scratch
+% if(enableAppimageMem) {
+    /* OCRAM region for appimage scratch buffer */
+    APPIMAGE (RWIX)               : ORIGIN = 0x`appimageOrigin.toString(16).toUpperCase()` LENGTH = 0x`appimageLength.toString(16).toUpperCase()` // `(appimageLength / (1024 * 1024)).toFixed(1)` MB for appimage
+
 % }
 % else {
+    % if(globalScratchBuf == "true") {
+    SCRATCH_OCRAM (RWIX)         : ORIGIN = 0x72080000 LENGTH = 0x00100000 // 1 MB for scratch
+    % }
+    % else {
     R50_0_OCRAM   (RWIX)         : ORIGIN = 0x72080000 LENGTH = 0x00100000 // 1 MB for r5fss0-0 core
-% }
+    % }
     R50_1_OCRAM   (RWIX)         : ORIGIN = 0x72180000 LENGTH = 0x00080000 // 512 KB for r5fss0-1 core
     R51_0_OCRAM   (RWIX)         : ORIGIN = 0x72280000 LENGTH = 0x00080000 // 512 KB for r5fss1-0 core
     R51_1_OCRAM   (RWIX)         : ORIGIN = 0x72300000 LENGTH = 0x00080000 // 512 KB for r5fss1-1 core
@@ -294,6 +310,7 @@ MEMORY
     % }
     % if(useHyperRam) {
     HYPERRAM  : ORIGIN = 0x68100000 , LENGTH = 0x00200000
+    % }
     % }
     % if(enableUdmaBuffers) {
     OCRAM    : ORIGIN = 0x`(codeDataAddrOcram).toString(16).toUpperCase()`,   LENGTH = 0x`(codeDataSizeOcram).toString(16).toUpperCase()`

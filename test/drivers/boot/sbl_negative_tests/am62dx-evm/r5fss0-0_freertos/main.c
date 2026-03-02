@@ -46,7 +46,17 @@
 
 #define TASK_SIZE (16384U/sizeof(configSTACK_DEPTH_TYPE))
 
+/* Stack size allocated for the sciserver task */
+#define SCISERVER_TASK_STACK_SIZE                   (2U*1024U)
+
+/* Stack memory alignment requirement for the sciserver task */
+#define SCISERVER_TASK_STACK_ALIGNMENT              (32)
+
 StackType_t gMainTaskStack[TASK_SIZE] __attribute__((aligned(32)));
+
+/* Stack buffers for user high and low priority tasks */
+uint8_t __attribute__((aligned(SCISERVER_TASK_STACK_ALIGNMENT))) gUserHiTaskStack[SCISERVER_TASK_STACK_SIZE];
+uint8_t __attribute__((aligned(SCISERVER_TASK_STACK_ALIGNMENT))) gUserLoTaskStack[SCISERVER_TASK_STACK_SIZE];
 StaticTask_t gMainTaskObj;
 TaskHandle_t gMainTask;
 DM_LPMData_t gDMLPMData __attribute__((section(".lpm_data"), aligned(4)));
@@ -66,7 +76,13 @@ void main_thread(void *args)
     /* Init LPM specific data */
     Sciclient_initDeviceManagerLPMData(&gDMLPMData);
 
-    sciServer_init();
+    /* Configure sciserver task parameters */
+    Sciserver_TirtosCfgPrms_t sciserverCfg = {0};
+    sciserverCfg.hiTaskStack    =   gUserHiTaskStack;
+    sciserverCfg.loTaskStack    =   gUserLoTaskStack;
+    sciserverCfg.taskStackSize  =   SCISERVER_TASK_STACK_SIZE;
+
+    sciServer_init(&sciserverCfg);
 
     test_main(NULL);
 

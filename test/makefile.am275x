@@ -454,6 +454,10 @@ help:
 	@echo  $(MAKE) -s -C drivers/hyperbus/am275x-evm/r5fss1-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/hyperbus/am275x-evm/r5fss1-1_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/hyperbus/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/boot/sbl_test_media_boot/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/boot/sbl_negative_tests/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/boot/sbl_test_uart_boot/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/boot/sbl_test_multithread/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  .
 	@echo  System Example build targets,
 	@echo  =============================
@@ -470,6 +474,7 @@ help:
 	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Vring_2_Test/am275x-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Vring_4_Test/am275x-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Vring_8_Test/am275x-evm/system_freertos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/boot/sbl_test_multithread/sbl_test_custom_ipc_binary/am275x-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  .
 
 # Various Component Targets
@@ -1005,6 +1010,7 @@ BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_1_am275x-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_2_am275x-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_4_am275x-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_8_am275x-evm_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos
 
 BUILD_COMBO_EXAMPLE_XLIBS_ALL =
 # Various xlibs Example Targets
@@ -2234,6 +2240,18 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_hyperbus_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/hyperbus/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
+ test_sbl_media_boot_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/boot/sbl_test_media_boot/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_sbl_negative_test_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/boot/sbl_negative_tests/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_sbl_uart_boot_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/boot/sbl_test_uart_boot/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ sbl_test_multithread_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/boot/sbl_test_multithread/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
  test_ipc_notify_am275x-evm_system_freertos:
 	$(MAKE) -C drivers/ipc_notify/am275x-evm/system_freertos -f makefile all
 
@@ -2272,6 +2290,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  test_ipc_rpmsg_vring_8_am275x-evm_system_freertos:
 	$(MAKE) -C drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Vring_8_Test/am275x-evm/system_freertos -f makefile all
+
+ ipc_rpmsg_echo_am275x-evm_system_freertos:
+	$(MAKE) -C drivers/boot/sbl_test_multithread/sbl_test_custom_ipc_binary/am275x-evm/system_freertos -f makefile all
 
 
 BUILD_COMBO_EXAMPLE_CLEAN_ALL =
@@ -2659,6 +2680,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_1_am275x-evm_system_freert
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_2_am275x-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_4_am275x-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_8_am275x-evm_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos_clean
 
 BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL =
 # Various xlibs Example Clean Targets
@@ -3884,6 +3906,18 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_hyperbus_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/hyperbus/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
+ test_sbl_media_boot_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/boot/sbl_test_media_boot/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_sbl_negative_test_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/boot/sbl_negative_tests/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_sbl_uart_boot_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/boot/sbl_test_uart_boot/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ sbl_test_multithread_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/boot/sbl_test_multithread/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
  test_ipc_notify_am275x-evm_system_freertos_clean:
 	$(MAKE) -C drivers/ipc_notify/am275x-evm/system_freertos -f makefile clean
 
@@ -3922,6 +3956,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  test_ipc_rpmsg_vring_8_am275x-evm_system_freertos_clean:
 	$(MAKE) -C drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Vring_8_Test/am275x-evm/system_freertos -f makefile clean
+
+ ipc_rpmsg_echo_am275x-evm_system_freertos_clean:
+	$(MAKE) -C drivers/boot/sbl_test_multithread/sbl_test_custom_ipc_binary/am275x-evm/system_freertos -f makefile clean
 
 
 BUILD_COMBO_EXAMPLE_SCRUB_ALL =
@@ -4309,6 +4346,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_1_am275x-evm_system_freert
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_2_am275x-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_4_am275x-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_8_am275x-evm_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos_scrub
 
 BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL =
 # Various xlibs Example Scrub Targets
@@ -5534,6 +5572,18 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  test_hyperbus_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/hyperbus/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
+ test_sbl_media_boot_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/boot/sbl_test_media_boot/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_sbl_negative_test_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/boot/sbl_negative_tests/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_sbl_uart_boot_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/boot/sbl_test_uart_boot/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ sbl_test_multithread_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/boot/sbl_test_multithread/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
  test_ipc_notify_am275x-evm_system_freertos_scrub:
 	$(MAKE) -C drivers/ipc_notify/am275x-evm/system_freertos -f makefile scrub
 
@@ -5573,6 +5623,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  test_ipc_rpmsg_vring_8_am275x-evm_system_freertos_scrub:
 	$(MAKE) -C drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Vring_8_Test/am275x-evm/system_freertos -f makefile scrub
 
+ ipc_rpmsg_echo_am275x-evm_system_freertos_scrub:
+	$(MAKE) -C drivers/boot/sbl_test_multithread/sbl_test_custom_ipc_binary/am275x-evm/system_freertos -f makefile scrub
+
 
 sbl: libs
 	$(MAKE) -f makefile.am275x  test_sciclient_direct_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
@@ -5596,6 +5649,10 @@ sbl: libs
 	$(MAKE) -f makefile.am275x  test_freertos_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
 	$(MAKE) -f makefile.am275x  test_dpl_timer_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
 	$(MAKE) -f makefile.am275x  test_hyperbus_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_sbl_media_boot_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_sbl_negative_test_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_sbl_uart_boot_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  sbl_test_multithread_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
 
 sbl-clean:
 	$(MAKE) -f makefile.am275x  test_sciclient_direct_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
@@ -5619,6 +5676,10 @@ sbl-clean:
 	$(MAKE) -f makefile.am275x  test_freertos_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 	$(MAKE) -f makefile.am275x  test_dpl_timer_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 	$(MAKE) -f makefile.am275x  test_hyperbus_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_sbl_media_boot_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_sbl_negative_test_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_sbl_uart_boot_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  sbl_test_multithread_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 
 sbl-scrub:
 	$(MAKE) -f makefile.am275x  test_sciclient_direct_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
@@ -5642,6 +5703,10 @@ sbl-scrub:
 	$(MAKE) -f makefile.am275x  test_freertos_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 	$(MAKE) -f makefile.am275x  test_dpl_timer_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 	$(MAKE) -f makefile.am275x  test_hyperbus_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_sbl_media_boot_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_sbl_negative_test_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_sbl_uart_boot_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  sbl_test_multithread_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 
 
 

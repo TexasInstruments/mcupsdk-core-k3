@@ -15,6 +15,14 @@ const bootloader    = scripting.addModule("/drivers/bootloader/bootloader", {}, 
 const bootloader1   = bootloader.addInstance();
 const bootloader2   = bootloader.addInstance();
 const bootloader3   = bootloader.addInstance();
+const bootloader4   = bootloader.addInstance();
+const bootloader5   = bootloader.addInstance();
+const bootloader6   = bootloader.addInstance();
+const bootloader7   = bootloader.addInstance();
+const bootloader8   = bootloader.addInstance();
+const bootloader9   = bootloader.addInstance();
+const bootloader10  = bootloader.addInstance();
+const ipc           = scripting.addModule("/drivers/ipc/ipc");
 const mmcsd         = scripting.addModule("/drivers/mmcsd/mmcsd", {}, false);
 const mmcsd1        = mmcsd.addInstance();
 const freertos_fat  = scripting.addModule("/fs/freertos_fat/freertos_fat", {}, false);
@@ -43,16 +51,48 @@ bootloader1.EMMCAppImageOffset = "0x800000";
 bootloader2.$name          = "CONFIG_BOOTLOADER_FLASH_DSP";
 bootloader2.appImageOffset = "0xA00000";
 
-bootloader2.flashDriver                         = flash1;
-flash1.$name                                    = "CONFIG_FLASH_SBL";
-flash1.serialFlashDriver.$name                  = "board_flash_serialFlash_serialflash0";
-flash1.serialFlashDriver.peripheralDriver.$name = "CONFIG_OSPI0";
-
 bootloader3.$name     = "CONFIG_BOOTLOADER_SD_A53";
 bootloader3.bootMedia = "MEM";
 
+bootloader4.$name              = "CONFIG_BOOTLOADER_EMMC_SMP";
+bootloader4.bootMedia          = "EMMC";
+bootloader4.EMMCAppImageOffset = "0xA00000";
+
+bootloader5.$name          = "CONFIG_BOOTLOADER_FLASH_SMP";
+bootloader5.appImageOffset = "0x800000";
+
+bootloader6.$name     = "CONFIG_BOOTLOADER_SD_SMP";
+bootloader6.bootMedia = "MEM";
+
+bootloader7.$name     = "CONFIG_BOOTLOADER_SD_MULTICORE";
+bootloader7.bootMedia = "MEM";
+
+bootloader8.appImageOffset = "0x1200000";
+bootloader8.$name          = "CONFIG_BOOTLOADER_FLASH_MULTICORE";
+
+bootloader2.flashDriver                         = flash1;
+flash1.$name                                    = "CONFIG_FLASH_SBL";
+bootloader5.flashDriver                         = flash1;
+bootloader8.flashDriver                         = flash1;
+flash1.serialFlashDriver.$name                  = "board_flash_serialFlash_serialflash0";
+flash1.serialFlashDriver.peripheralDriver.$name = "CONFIG_OSPI_SBL";
+
+bootloader9.$name              = "CONFIG_BOOTLOADER_EMMC_MULTICORE";
+bootloader9.appImageOffset     = "0x1200000";
+bootloader9.bootMedia          = "EMMC";
+bootloader9.EMMCAppImageOffset = "0x1200000";
+
+bootloader10.$name              = "CONFIG_BOOTLOADER_EMMC_A53";
+bootloader10.bootMedia          = "EMMC";
+bootloader10.EMMCAppImageOffset = "0xC00000";
+
+ipc.a53ss0_0 = "notify_rpmsg";
+
 bootloader1.MMCSDDriver = mmcsd1;
 mmcsd1.$name            = "CONFIG_MMCSD_SBL";
+bootloader4.MMCSDDriver = mmcsd1;
+bootloader9.MMCSDDriver = mmcsd1;
+bootloader10.MMCSDDriver = mmcsd1;
 
 const udma             = scripting.addModule("/drivers/udma/udma", {}, false);
 const udma1            = udma.addInstance({}, false);
@@ -60,6 +100,13 @@ udma1.$name            = "CONFIG_UDMA0";
 bootloader1.udmaDriver = udma1;
 bootloader2.udmaDriver = udma1;
 bootloader3.udmaDriver = udma1;
+bootloader4.udmaDriver = udma1;
+bootloader5.udmaDriver = udma1;
+bootloader6.udmaDriver = udma1;
+bootloader7.udmaDriver = udma1;
+bootloader8.udmaDriver = udma1;
+bootloader9.udmaDriver = udma1;
+bootloader10.udmaDriver = udma1;
 
 const udma_blkcopy_channel     = scripting.addModule("/drivers/udma/udma_blkcopy_channel", {}, false);
 const udma_blkcopy_channel1    = udma_blkcopy_channel.addInstance({}, false);
@@ -67,6 +114,13 @@ udma_blkcopy_channel1.$name    = "CONFIG_UDMA_BLKCOPY_CH0";
 bootloader1.udmaBlkCopyChannel = udma_blkcopy_channel1;
 bootloader2.udmaBlkCopyChannel = udma_blkcopy_channel1;
 bootloader3.udmaBlkCopyChannel = udma_blkcopy_channel1;
+bootloader4.udmaBlkCopyChannel = udma_blkcopy_channel1;
+bootloader5.udmaBlkCopyChannel = udma_blkcopy_channel1;
+bootloader6.udmaBlkCopyChannel = udma_blkcopy_channel1;
+bootloader7.udmaBlkCopyChannel = udma_blkcopy_channel1;
+bootloader8.udmaBlkCopyChannel = udma_blkcopy_channel1;
+bootloader9.udmaBlkCopyChannel = udma_blkcopy_channel1;
+bootloader10.udmaBlkCopyChannel = udma_blkcopy_channel1;
 
 freertos_fat1.$name                  = "CONFIG_FREERTOS_FAT0";
 freertos_fat1.peripheralDriver.$name = "CONFIG_MMCSD0";

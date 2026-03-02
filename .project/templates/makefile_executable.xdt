@@ -8,6 +8,11 @@
     if (args.project.name == "mcan_response_app") {
         targetLoadAddress = (args.project.device=="j722s")?"79100000":"84000000";
     }
+
+    // Allow override from project options
+    if (args.project.appImageLoadAddr) {
+        targetLoadAddress = args.project.appImageLoadAddr.toString(16).toUpperCase();
+    }
 %%}
 export `args.sdkPath`?=$(abspath `args.relPath`)
 include $(`args.sdkPath`)/imports.mak

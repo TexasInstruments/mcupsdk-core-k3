@@ -390,15 +390,6 @@ typedef struct
     uint32_t enableDma;
     /**< DMA enable */
 
-    uint32_t intrEnable;
-    /**< Module interrupt enable */
-
-    uint32_t intrNum;
-    /**< Module interrupt vector */
-
-    uint32_t eventId;
-    /**< Module interrupt event ID */
-
     uint32_t cardType;
     /**< Type of card */
 
@@ -475,9 +466,6 @@ typedef struct
 
     uint32_t enableDma;
     /**< DMA enable */
-
-    uint32_t intrEnable;
-    /**< Module interrupt enable */
 
     volatile uint32_t cmdComp;
     /**< Command completion flag */

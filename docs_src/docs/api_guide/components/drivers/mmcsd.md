@@ -68,6 +68,7 @@ index 0b100a4293c..293b204babf 100644
 - MMCSD0 does not support HS400 DDR.
 \endcond
 - MMCSD1 does not support MMC card, UHS-II SD card and SDR50, DDR50 and SDR104.
+- The MMCSD driver doesn't support interrupt mode.
 
 ## Example Usage
 

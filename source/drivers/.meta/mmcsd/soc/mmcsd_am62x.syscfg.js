@@ -8,7 +8,6 @@ const mmcsd_config_r5fss = [
 		ctrlBaseAddr      : "CSL_MMCSD0_CTL_CFG_BASE",
 		ssBaseAddr        : "CSL_MMCSD0_SS_CFG_BASE",
 		inputClkFreq      : mmcsd_input_clk_freq,
-		intrNum           : 161,
 		busWidth          : "MMCSD_BUS_WIDTH_8BIT",
         phyType           : "MMCSD_PHY_TYPE_SW_PHY",
 		tuningType        : "MMCSD_PHY_TUNING_TYPE_MANUAL",
@@ -26,7 +25,6 @@ const mmcsd_config_r5fss = [
 		ctrlBaseAddr      : "CSL_MMCSD1_CTL_CFG_BASE",
 		ssBaseAddr        : "CSL_MMCSD1_SS_CFG_BASE",
 		inputClkFreq      : mmcsd_input_clk_freq,
-		intrNum           : 162,
 		busWidth          : "MMCSD_BUS_WIDTH_4BIT",
         phyType           : "MMCSD_PHY_TYPE_SW_PHY",
 		tuningType        : "MMCSD_PHY_TUNING_TYPE_AUTO", /* Make this configurable later */
@@ -47,7 +45,6 @@ const mmcsd_config_a53ss = [
 		ctrlBaseAddr      : "CSL_MMCSD0_CTL_CFG_BASE",
 		ssBaseAddr        : "CSL_MMCSD0_SS_CFG_BASE",
 		inputClkFreq      : mmcsd_input_clk_freq,
-		intrNum           : 165,
 		busWidth          : "MMCSD_BUS_WIDTH_8BIT",
         phyType           : "MMCSD_PHY_TYPE_SW_PHY",
 		tuningType        : "MMCSD_PHY_TUNING_TYPE_MANUAL",
@@ -65,7 +62,6 @@ const mmcsd_config_a53ss = [
 		ctrlBaseAddr      : "CSL_MMCSD1_CTL_CFG_BASE",
 		ssBaseAddr        : "CSL_MMCSD1_SS_CFG_BASE",
 		inputClkFreq      : mmcsd_input_clk_freq,
-		intrNum           : 115,
 		busWidth          : "MMCSD_BUS_WIDTH_4BIT",
         phyType           : "MMCSD_PHY_TYPE_SW_PHY",
 		tuningType        : "MMCSD_PHY_TUNING_TYPE_AUTO", /* Make this configurable later */

@@ -1290,7 +1290,7 @@ void TestMmcsd_dmaModes(void *args)
  *
  * \return None.
  */
-
+/*
 void TestMmcsd_intrModes(void *args)
 {
     int32_t retVal = SystemP_SUCCESS;
@@ -1309,7 +1309,7 @@ void TestMmcsd_intrModes(void *args)
             gMmcsdAttrs[CONFIG_MMCSD_EMMC].intrEnable = 1;
         }
 
-        /* Using the HS200 mode */
+        // Using the HS200 mode 
         gMmcsdAttrs[CONFIG_MMCSD_EMMC].supportedModes = TestMMCSD_modes[2];
         Drivers_mmcsdOpen();
         MMCSD_Handle handle = gMmcsdHandle[CONFIG_MMCSD_EMMC];
@@ -1321,6 +1321,7 @@ void TestMmcsd_intrModes(void *args)
     Drivers_mmcsdOpen();
     Drivers_mmcsdClose();
 }
+*/
 
 /**
  * \brief Validates MMCSD driver behavior when opening an

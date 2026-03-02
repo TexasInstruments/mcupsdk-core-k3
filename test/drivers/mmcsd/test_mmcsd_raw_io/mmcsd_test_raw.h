@@ -54,7 +54,6 @@ void TestMmcsd_sdMultipleBusWidths(void *args);
 void TestMmcsd_sdTuningConfig(void *args);
 void TestMmcsd_emmcMultiplePhyconfig(void *args);
 void TestMmcsd_dmaModes(void *args);
-void TestMmcsd_intrModes(void *args);
 void TestMmcsd_getBlockCountValidate(void *args);
 void TestMmcsd_openOpenFail(void *args);
 void TestMmcsd_readArgumentValidate(void *args);

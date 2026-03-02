@@ -8,7 +8,6 @@ const mmcsd_config_a53ss = [
 		ctrlBaseAddr      : "CSL_MMCSD0_CTL_CFG_BASE",
 		ssBaseAddr        : "CSL_MMCSD0_SS_CFG_BASE",
 		inputClkFreq      : mmcsd_input_clk_freq,
-		intrNum           : 271,
 		busWidth          : "MMCSD_BUS_WIDTH_8BIT",
         phyType           : "MMCSD_PHY_TYPE_SW_PHY",
 		tuningType        : "MMCSD_PHY_TUNING_TYPE_AUTO", /* Make this configurable later */
@@ -26,7 +25,6 @@ const mmcsd_config_a53ss = [
 		ctrlBaseAddr      : "CSL_MMCSD1_CTL_CFG_BASE",
 		ssBaseAddr        : "CSL_MMCSD1_SS_CFG_BASE",
 		inputClkFreq      : mmcsd_input_clk_freq,
-		intrNum           : 269,
 		busWidth          : "MMCSD_BUS_WIDTH_4BIT",
         phyType           : "MMCSD_PHY_TYPE_SW_PHY",
 		tuningType        : "MMCSD_PHY_TUNING_TYPE_AUTO", /* Make this configurable later */

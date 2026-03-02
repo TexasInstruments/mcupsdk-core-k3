@@ -221,11 +221,7 @@ static inline void MMCSD_halNormalIntrStatusDisable(uint32_t ctrlBaseAddr, uint1
 static inline void MMCSD_halErrorIntrStatusEnable(uint32_t ctrlBaseAddr, uint16_t intrFlag);
 static inline void MMCSD_halErrorIntrStatusDisable(uint32_t ctrlBaseAddr, uint16_t intrFlag);
 static inline void MMCSD_halNormalSigIntrDisable(uint32_t ctrlBaseAddr, uint16_t intrFlag);
-static inline void MMCSD_halNormalSigIntrEnable(uint32_t ctrlBaseAddr, uint16_t intrFlag);
 static inline void MMCSD_halErrorSigIntrDisable(uint32_t ctrlBaseAddr, uint16_t intrFlag);
-static inline void MMCSD_halErrorSigIntrEnable(uint32_t ctrlBaseAddr, uint16_t intrFlag);
-
-static void MMCSD_isr(void *arg);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -350,7 +346,6 @@ MMCSD_Handle MMCSD_open(uint32_t index, const MMCSD_Params *openParams)
     MMCSD_Handle handle = NULL;
     MMCSD_Config *config = NULL;
     MMCSD_Object *obj = NULL;
-    HwiP_Params hwiPrms;
     const MMCSD_Attrs *attrs;
 
     /* Check for valid index */
@@ -385,16 +380,6 @@ MMCSD_Handle MMCSD_open(uint32_t index, const MMCSD_Params *openParams)
     {
         obj->handle = (MMCSD_Handle)config;
 
-        /* Register interrupt */
-        if((uint32_t)TRUE == attrs->intrEnable)
-        {
-            HwiP_Params_init(&hwiPrms);
-            hwiPrms.intNum      = attrs->intrNum;
-            hwiPrms.callback    = &MMCSD_isr;
-            hwiPrms.args        = (void *)config;
-            status += HwiP_construct(&obj->hwiObj, &hwiPrms);
-        }
-
         /* Create semaphores for transfer completion */
         status += SemaphoreP_constructMutex(&obj->cmdMutex);
         status += SemaphoreP_constructMutex(&obj->xferMutex);
@@ -405,7 +390,6 @@ MMCSD_Handle MMCSD_open(uint32_t index, const MMCSD_Params *openParams)
         /* Program MMCSD instance according the user config */
         obj->cardType = attrs->cardType;
         obj->enableDma = attrs->enableDma;
-        obj->intrEnable = attrs->intrEnable;
         obj->tempDataBuf = openParams->dataBuf;
 
         if(MMCSD_CARD_TYPE_SD == obj->cardType)
@@ -531,11 +515,6 @@ void MMCSD_close(MMCSD_Handle handle)
             ClockP_usleep(5000);
 
             status |= MMCSD_halSoftReset(attrs->ctrlBaseAddr);
-        }
-
-        if(obj->intrEnable == (uint32_t)TRUE)
-        {
-            HwiP_destruct(&obj->hwiObj);
         }
 
         if(status != SystemP_SUCCESS)
@@ -1731,11 +1710,6 @@ static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *tran
         obj = ((MMCSD_Config *)handle)->object;
         attrs = ((MMCSD_Config *)handle)->attrs;
         pReg = (const CSL_mmc_ctlcfgRegs *)(attrs->ctrlBaseAddr);
-
-        if(obj->intrEnable == TRUE)
-        {
-            SemaphoreP_pend(&obj->cmdCompleteSemObj, SystemP_WAIT_FOREVER);
-        }
     }
     else
     {
@@ -1744,17 +1718,7 @@ static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *tran
 
     if(SystemP_SUCCESS == status)
     {
-        /* Check for interrupt enable */
-        if(obj->intrEnable == TRUE)
-        {
-            MMCSD_halNormalSigIntrDisable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_STS_ENA_BUF_WR_READY_MASK);
-            MMCSD_halNormalSigIntrDisable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_STS_ENA_BUF_RD_READY_MASK);
-            MMCSD_halNormalSigIntrDisable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_STS_ENA_XFER_COMPLETE_MASK);
-        }
-        else
-        {
-            MMCSD_halNormalSigIntrDisable(attrs->ctrlBaseAddr, MMCSD_INTERRUPT_ALL_NORMAL);
-        }
+        MMCSD_halNormalSigIntrDisable(attrs->ctrlBaseAddr, MMCSD_INTERRUPT_ALL_NORMAL);
 
         obj->cmdComp = 0;
         obj->cmdTimeout = 0;
@@ -1793,13 +1757,6 @@ static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *tran
             {
                 MMCSD_halNormalIntrStatusEnable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_STS_ENA_BUF_WR_READY_MASK);
                 MMCSD_halNormalIntrStatusDisable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_STS_ENA_BUF_RD_READY_MASK);
-
-                if(obj->intrEnable == TRUE)
-                {
-                    MMCSD_halNormalSigIntrDisable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_SIG_ENA_BUF_WR_READY_MASK);
-                    MMCSD_halNormalSigIntrDisable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_SIG_ENA_BUF_RD_READY_MASK);
-                    MMCSD_halNormalSigIntrDisable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_SIG_ENA_XFER_COMPLETE_MASK);
-                }
                 obj->writeBlockCount = obj->dataBlockCount;
             }
 
@@ -1812,14 +1769,6 @@ static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *tran
             MMCSD_halNormalIntrStatusEnable(attrs->ctrlBaseAddr,
                 CSL_MMC_CTLCFG_NORMAL_INTR_STS_ENA_CMD_COMPLETE_MASK | CSL_MMC_CTLCFG_NORMAL_INTR_STS_ENA_XFER_COMPLETE_MASK);
             MMCSD_halErrorIntrStatusEnable(attrs->ctrlBaseAddr, MMCSD_INTERRUPT_ALL_ERROR);
-
-            if(obj->intrEnable == TRUE)
-            {
-                MMCSD_halNormalSigIntrEnable(attrs->ctrlBaseAddr,
-                    CSL_MMC_CTLCFG_NORMAL_INTR_SIG_ENA_CMD_COMPLETE_MASK);
-                MMCSD_halErrorSigIntrEnable(attrs->ctrlBaseAddr,
-                    CSL_MMC_CTLCFG_ERROR_INTR_SIG_ENA_CMD_TIMEOUT_MASK | CSL_MMC_CTLCFG_ERROR_INTR_SIG_ENA_DATA_TIMEOUT_MASK);
-            }
 
             CacheP_wbInv(obj->dataBufIdx, (trans->blockSize * trans->blockCount), CacheP_TYPE_ALL);
 
@@ -1853,19 +1802,6 @@ static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *tran
 
             if(SystemP_SUCCESS == status)
             {
-                if(obj->intrEnable == TRUE)
-                {
-                    if(trans->dir == MMCSD_CMD_XFER_TYPE_READ)
-                    {
-                        MMCSD_halNormalSigIntrEnable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_SIG_ENA_BUF_RD_READY_MASK);
-                    }
-                    else
-                    {
-                        MMCSD_halNormalSigIntrEnable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_SIG_ENA_BUF_WR_READY_MASK);
-                    }
-                    MMCSD_halNormalSigIntrEnable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_SIG_ENA_XFER_COMPLETE_MASK);
-                }
-
                 MMCSD_halSendCommand(attrs->ctrlBaseAddr, trans);
 
                 /* Wait for transfer to complete */
@@ -1875,14 +1811,7 @@ static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *tran
                 }
                 else
                 {
-                    if(obj->intrEnable == TRUE)
-                    {
-                        SemaphoreP_pend(&obj->cmdCompleteSemObj, SystemP_WAIT_FOREVER);
-                    }
-                    else
-                    {
-                        status = MMCSD_cmdStatusPollingFxnTimeout(handle, timeoutMilliSec);
-                    }
+                    status = MMCSD_cmdStatusPollingFxnTimeout(handle, timeoutMilliSec);
                 }
             }
 
@@ -1894,14 +1823,7 @@ static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *tran
                     status = SystemP_SUCCESS;
                     obj->cmdComp = FALSE;
 
-                    if(obj->intrEnable == FALSE)
-                    {
-                        obj->xferInProgress = TRUE;
-                    }
-                    else
-                    {
-                        SemaphoreP_pend(&obj->dataCopyCompleteSemObj, SystemP_WAIT_FOREVER);
-                    }
+                    obj->xferInProgress = TRUE;
 
                     /* Get command response and update book keeping */
                     MMCSD_halCmdResponseGet(attrs->ctrlBaseAddr, trans->response);
@@ -1913,20 +1835,13 @@ static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *tran
 
             if(SystemP_SUCCESS == status)
             {
-                if(obj->intrEnable == TRUE)
+                if((obj->isManualTuning == FALSE) && (trans->isTuning == TRUE))
                 {
-                    SemaphoreP_pend(&obj->xferCompleteSemObj, SystemP_WAIT_FOREVER);
+                    status = MMCSD_xferStatusPollingFxnCMD19Timeout(handle, timeoutMilliSec);
                 }
                 else
                 {
-                    if((obj->isManualTuning == FALSE) && (trans->isTuning == TRUE))
-                    {
-                        status = MMCSD_xferStatusPollingFxnCMD19Timeout(handle, timeoutMilliSec);
-                    }
-                    else
-                    {
-                        status = MMCSD_xferStatusPollingFxnTimeout(handle, timeoutMilliSec);
-                    }
+                    status = MMCSD_xferStatusPollingFxnTimeout(handle, timeoutMilliSec);
                 }
             }
 
@@ -1959,16 +1874,8 @@ static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *tran
             MMCSD_halNormalIntrStatusEnable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_STS_CMD_COMPLETE_MASK);
             MMCSD_halErrorIntrStatusEnable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_ERROR_INTR_STS_CMD_TIMEOUT_MASK);
 
-            if(obj->intrEnable == TRUE)
-            {
-                MMCSD_halNormalSigIntrEnable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_NORMAL_INTR_SIG_ENA_CMD_COMPLETE_MASK);
-                MMCSD_halErrorSigIntrEnable(attrs->ctrlBaseAddr, CSL_MMC_CTLCFG_ERROR_INTR_SIG_ENA_CMD_TIMEOUT_MASK);
-            }
-            else
-            {
-                MMCSD_halNormalSigIntrDisable(attrs->ctrlBaseAddr, MMCSD_INTERRUPT_ALL_NORMAL);
-                MMCSD_halErrorSigIntrDisable(attrs->ctrlBaseAddr, MMCSD_INTERRUPT_ALL_ERROR);
-            }
+            MMCSD_halNormalSigIntrDisable(attrs->ctrlBaseAddr, MMCSD_INTERRUPT_ALL_NORMAL);
+            MMCSD_halErrorSigIntrDisable(attrs->ctrlBaseAddr, MMCSD_INTERRUPT_ALL_ERROR);
 
             /* Wait for command inhibit to go low */
             status = MMCSD_halPollCmdInhibit(handle, timeoutMilliSec);
@@ -1978,14 +1885,7 @@ static int32_t MMCSD_directTransfer(MMCSD_Handle handle, MMCSD_Transaction *tran
                 MMCSD_halSendCommand(attrs->ctrlBaseAddr, trans);
 
                 /* Wait for transfer to complete */
-                if(obj->intrEnable == TRUE)
-                {
-                    SemaphoreP_pend(&obj->cmdCompleteSemObj, SystemP_WAIT_FOREVER);
-                }
-                else
-                {
-                    status = MMCSD_cmdStatusPollingFxnTimeout(handle, timeoutMilliSec);
-                }
+                status = MMCSD_cmdStatusPollingFxnTimeout(handle, timeoutMilliSec);
             }
 
             if(SystemP_SUCCESS == status)
@@ -3226,11 +3126,9 @@ static int32_t MMCSD_sendTuningDataEMMC(MMCSD_Handle handle)
     int32_t status = SystemP_SUCCESS;
     MMCSD_Object *obj = ((MMCSD_Config *)handle)->object;
 
-    uint32_t intrState = obj->intrEnable;
     uint32_t dmaState = obj->enableDma;
 
-    /* Disable interrupts and DMA during tuning */
-    obj->intrEnable = FALSE;
+    /* Disable DMA during tuning */
     obj->enableDma = FALSE;
 
     /* Send CMD 21 */
@@ -3243,8 +3141,7 @@ static int32_t MMCSD_sendTuningDataEMMC(MMCSD_Handle handle)
         status = memcmp(gTuningPattern8Bit, obj->tempDataBuf, sizeof(gTuningPattern8Bit));
     }
 
-    /* Restore interrupts and DMA */
-    obj->intrEnable = intrState;
+    /* Restore DMA state */
     obj->enableDma = dmaState;
 
     return status;
@@ -4289,17 +4186,6 @@ static inline void MMCSD_halNormalSigIntrDisable(uint32_t ctrlBaseAddr, uint16_t
 
 }
 
-static inline void MMCSD_halNormalSigIntrEnable(uint32_t ctrlBaseAddr, uint16_t intrFlag)
-{
-    const CSL_mmc_ctlcfgRegs *pReg = (const CSL_mmc_ctlcfgRegs *)ctrlBaseAddr;
-    volatile uint16_t regVal = 0U;
-
-    regVal = CSL_REG16_RD(&pReg->NORMAL_INTR_SIG_ENA);
-    regVal |= intrFlag;
-    CSL_REG16_WR(&pReg->NORMAL_INTR_SIG_ENA, regVal);
-
-}
-
 static inline void MMCSD_halErrorSigIntrDisable(uint32_t ctrlBaseAddr, uint16_t intrFlag)
 {
     const CSL_mmc_ctlcfgRegs *pReg = (const CSL_mmc_ctlcfgRegs *)ctrlBaseAddr;
@@ -4311,19 +4197,4 @@ static inline void MMCSD_halErrorSigIntrDisable(uint32_t ctrlBaseAddr, uint16_t 
 
 }
 
-static inline void MMCSD_halErrorSigIntrEnable(uint32_t ctrlBaseAddr, uint16_t intrFlag)
-{
-    const CSL_mmc_ctlcfgRegs *pReg = (const CSL_mmc_ctlcfgRegs *)ctrlBaseAddr;
-    volatile uint16_t regVal = 0U;
-
-    regVal = CSL_REG16_RD(&pReg->ERROR_INTR_SIG_ENA);
-    regVal |= intrFlag;
-    CSL_REG16_WR(&pReg->ERROR_INTR_SIG_ENA, regVal);
-
-}
-
-static void MMCSD_isr(void *arg)
-{
-
-}
 

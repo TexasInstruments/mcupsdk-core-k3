@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025, Texas Instruments Incorporated
+ * Copyright (c) 2025-2026 Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -103,11 +103,11 @@ const struct sproxy_host_tx_thread_data sproxy_route_data[J722S_CONFIG_MAX] = {
 		.sproxy_ntfy_conf_id = J722S_DMASS0_SEC_PROXY_0_TX_DM_NONSEC_C7X_1_0_RESPONSE_TX_THR061_CONF012,
 	},
 	/*
-	 * Non Secure Host GPU_0[31]
+	 * Non Secure Host A53_5[31]
 	 */
-	[HOST_ID_GPU_0] = {
-		.sproxy_resp_conf_id = J722S_DMASS0_SEC_PROXY_0_TX_DM_NONSEC_GPU_0_RESPONSE_TX_THR060_CONF013,
-		.sproxy_ntfy_conf_id = J722S_DMASS0_SEC_PROXY_0_TX_DM_NONSEC_GPU_0_RESPONSE_TX_THR060_CONF013,
+	[HOST_ID_A53_5] = {
+		.sproxy_resp_conf_id = J722S_DMASS0_SEC_PROXY_0_TX_DM_NONSEC_A53_5_RESPONSE_TX_THR060_CONF013,
+		.sproxy_ntfy_conf_id = J722S_DMASS0_SEC_PROXY_0_TX_DM_NONSEC_A53_5_RESPONSE_TX_THR060_CONF013,
 	},
 	/*
 	 * Non Secure Host GPU_1[32]

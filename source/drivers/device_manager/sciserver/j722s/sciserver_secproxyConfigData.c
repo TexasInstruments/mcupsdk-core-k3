@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 Texas Instruments Incorporated
+ * Copyright (c) 2025-2026 Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -171,14 +171,14 @@ const struct Sciserver_SecureProxyTxThreadConfig Sciserver_SecureProxyTxConfigur
 		.evt_error		= SOC_SAFE_EVENT,
 		.rx_thread_instance_id	= J722S_DMASS0_SEC_PROXY_0_RX_C7X_1_0_RESPONSE_THR022_CONF014,
 	},
-	[J722S_DMASS0_SEC_PROXY_0_TX_DM_NONSEC_GPU_0_RESPONSE_TX_THR060_CONF013] =	 {
+	[J722S_DMASS0_SEC_PROXY_0_TX_DM_NONSEC_A53_5_RESPONSE_TX_THR060_CONF013] =	 {
 		.host_id		= HOST_ID_DM,
 		.thread_id		= 60U,
 		.num_credits		= 1U,
 		.threshold		= 1U,
 		.evt_threshold		= SOC_SAFE_EVENT,
 		.evt_error		= SOC_SAFE_EVENT,
-		.rx_thread_instance_id	= J722S_DMASS0_SEC_PROXY_0_RX_GPU_0_RESPONSE_THR024_CONF015,
+		.rx_thread_instance_id	= J722S_DMASS0_SEC_PROXY_0_RX_A53_5_RESPONSE_THR024_CONF015,
 	},
 	[J722S_DMASS0_SEC_PROXY_0_TX_DM_NONSEC_GPU_1_RESPONSE_TX_THR059_CONF014] =	 {
 		.host_id		= HOST_ID_DM,
@@ -306,8 +306,8 @@ const struct Sciserver_SecureProxyTxThreadConfig Sciserver_SecureProxyTxConfigur
 		.evt_error		= SOC_SAFE_EVENT,
 		.rx_thread_instance_id	= J722S_DMASS0_SEC_PROXY_0_RX_DM_NONSEC_LOW_PRIORITY_RX_THR069_CONF001,
 	},
-	[J722S_DMASS0_SEC_PROXY_0_TX_GPU_0_LOW_PRIORITY_THR025_CONF028] =		 {
-		.host_id		= HOST_ID_GPU_0,
+	[J722S_DMASS0_SEC_PROXY_0_TX_A53_5_LOW_PRIORITY_THR025_CONF028] =		 {
+		.host_id		= HOST_ID_A53_5,
 		.thread_id		= 25U,
 		.num_credits		= 1U,
 		.threshold		= 1U,
@@ -500,8 +500,8 @@ const struct Sciserver_SecureProxyRxThreadConfig gSciserverSecureProxyRxConfigur
 		.secure_proxy_instance_id	= J722S_SPROXY_IDX_DMASS0_SEC_PROXY_0,
 		.ring_config_instance_id	= J722S_DMASS0_RINGACC_0_RING_0006_CONF_013,
 	},
-	[J722S_DMASS0_SEC_PROXY_0_RX_GPU_0_RESPONSE_THR024_CONF015] =			{
-		.host_id			= HOST_ID_GPU_0,
+	[J722S_DMASS0_SEC_PROXY_0_RX_A53_5_RESPONSE_THR024_CONF015] =			{
+		.host_id			= HOST_ID_A53_5,
 		.thread_id			= 24U,
 		.threshold			= 1U,
 		.evt_threshold			= SOC_SAFE_EVENT,

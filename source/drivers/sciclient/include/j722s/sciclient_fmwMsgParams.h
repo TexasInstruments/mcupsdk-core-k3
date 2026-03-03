@@ -104,8 +104,8 @@ extern "C" {
 #define SCICLIENT_CONTEXT_C7X_NONSEC_0                  (10U)
 /** C7x(Non Secure): C7x_1 context 0*/
 #define SCICLIENT_CONTEXT_C7X_NONSEC_1                  (11U)
-/** GPU_0(Non Secure): GPU context 0 */
-#define SCICLIENT_CONTEXT_GPU_NONSEC_0                  (12U)
+/** A53_5(Non Secure): A53 context 5 */
+#define SCICLIENT_CONTEXT_A53_NONSEC_5                  (12U)
 /** GPU_1(Non Secure): GPU context 1 */
 #define SCICLIENT_CONTEXT_GPU_NONSEC_1                  (13U)
 /** DM2TIFS(Secure): DM to TIFS Message forwarding.

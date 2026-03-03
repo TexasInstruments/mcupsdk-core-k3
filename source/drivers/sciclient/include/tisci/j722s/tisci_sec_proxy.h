@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -230,18 +230,18 @@ extern "C"
 #define TISCI_SEC_PROXY_C7X_1_0_WRITE_LOW_PRIORITY_NUM_MESSAGES (3U)
 
 /*
- * Secure Proxy configurations for GPU_0 host
+ * Secure Proxy configurations for A53_5 host
  */
 
-/** Thread ID macro for GPU_0 response */
-#define TISCI_SEC_PROXY_GPU_0_READ_RESPONSE_THREAD_ID (24U)
-/** Num messages macro for GPU_0 response */
-#define TISCI_SEC_PROXY_GPU_0_READ_RESPONSE_NUM_MESSAGES (1U)
+/** Thread ID macro for A53_5 response */
+#define TISCI_SEC_PROXY_A53_5_READ_RESPONSE_THREAD_ID (24U)
+/** Num messages macro for A53_5 response */
+#define TISCI_SEC_PROXY_A53_5_READ_RESPONSE_NUM_MESSAGES (1U)
 
-/** Thread ID macro for GPU_0 low_priority */
-#define TISCI_SEC_PROXY_GPU_0_WRITE_LOW_PRIORITY_THREAD_ID (25U)
-/** Num messages macro for GPU_0 low_priority */
-#define TISCI_SEC_PROXY_GPU_0_WRITE_LOW_PRIORITY_NUM_MESSAGES (1U)
+/** Thread ID macro for A53_5 low_priority */
+#define TISCI_SEC_PROXY_A53_5_WRITE_LOW_PRIORITY_THREAD_ID (25U)
+/** Num messages macro for A53_5 low_priority */
+#define TISCI_SEC_PROXY_A53_5_WRITE_LOW_PRIORITY_NUM_MESSAGES (1U)
 
 /*
  * Secure Proxy configurations for GPU_1 host

@@ -439,6 +439,7 @@ help:
 	@echo  $(MAKE) -s -C examples/signal_processing/calcratio/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/signal_processing/swasrc_multichannel_playback/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/tisp/fft2d_dsp_offload/fft2d_linux_dsp_offload/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/tisp/sigchain_dsp_rt/sigchain_biquad_cascade/am62dx-evm/c75ss0-0_freertos_linux/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  .
 	@echo  System Example build targets,
 	@echo  =============================
@@ -1238,6 +1239,7 @@ BUILD_COMBO_EXAMPLE_ALL += tisci_msg_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += mcasp_calcratio_am62dx-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += swasrc_multichannel_playback_am62dx-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += fft2d_linux_dsp_offload_am62dx-evm_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += sigchain_biquad_cascade_am62dx-evm_c75ss0-0_freertos_linux_ti-c7000
 # Various System Example Targets
 BUILD_COMBO_EXAMPLE_ALL += ipc_notify_echo_am62dx-evm_system_freertos_nortos
 BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos
@@ -2257,6 +2259,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  fft2d_linux_dsp_offload_am62dx-evm_c75ss0-0_freertos_ti-c7000:
 	$(MAKE) -C examples/tisp/fft2d_dsp_offload/fft2d_linux_dsp_offload/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
 
+ sigchain_biquad_cascade_am62dx-evm_c75ss0-0_freertos_linux_ti-c7000:
+	$(MAKE) -C examples/tisp/sigchain_dsp_rt/sigchain_biquad_cascade/am62dx-evm/c75ss0-0_freertos_linux/ti-c7000 -f makefile all
+
  ipc_notify_echo_am62dx-evm_system_freertos_nortos:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62dx-evm/system_freertos_nortos -f makefile all
 
@@ -2617,6 +2622,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += tisci_msg_am62dx-evm_a53ss0-0_nortos_gcc-aarch6
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_calcratio_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += swasrc_multichannel_playback_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += fft2d_linux_dsp_offload_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sigchain_biquad_cascade_am62dx-evm_c75ss0-0_freertos_linux_ti-c7000_clean
 # Various System Example Clean Targets
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_notify_echo_am62dx-evm_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos_clean
@@ -3636,6 +3642,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  fft2d_linux_dsp_offload_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C examples/tisp/fft2d_dsp_offload/fft2d_linux_dsp_offload/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
 
+ sigchain_biquad_cascade_am62dx-evm_c75ss0-0_freertos_linux_ti-c7000_clean:
+	$(MAKE) -C examples/tisp/sigchain_dsp_rt/sigchain_biquad_cascade/am62dx-evm/c75ss0-0_freertos_linux/ti-c7000 -f makefile clean
+
  ipc_notify_echo_am62dx-evm_system_freertos_nortos_clean:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62dx-evm/system_freertos_nortos -f makefile clean
 
@@ -3996,6 +4005,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += tisci_msg_am62dx-evm_a53ss0-0_nortos_gcc-aarch6
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_calcratio_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += swasrc_multichannel_playback_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += fft2d_linux_dsp_offload_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sigchain_biquad_cascade_am62dx-evm_c75ss0-0_freertos_linux_ti-c7000_scrub
 # Various System Example Scrub Targets
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_notify_echo_am62dx-evm_system_freertos_nortos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos_scrub
@@ -5014,6 +5024,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  fft2d_linux_dsp_offload_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub:
 	$(MAKE) -C examples/tisp/fft2d_dsp_offload/fft2d_linux_dsp_offload/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
+ sigchain_biquad_cascade_am62dx-evm_c75ss0-0_freertos_linux_ti-c7000_scrub:
+	$(MAKE) -C examples/tisp/sigchain_dsp_rt/sigchain_biquad_cascade/am62dx-evm/c75ss0-0_freertos_linux/ti-c7000 -f makefile scrub
 
  ipc_notify_echo_am62dx-evm_system_freertos_nortos_scrub:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am62dx-evm/system_freertos_nortos -f makefile scrub

@@ -116,7 +116,7 @@ uint32_t graphError = 0;
 
 /* by default, 8ch in and 8ch out from signal chain */
 uint32_t srcStride = DAC_STRIDE;
-uint8_t chmap[8] = {0, 1, 2, 3, 10, 5, 6, 7};
+uint8_t chmap[8] = {0, 1, 2, 3, 4, 5, 6, 7};
 
 void SigchainDSP_McASP_copyChannelSample(int32_t *restrict pBuf,
                                          uint32_t stride)

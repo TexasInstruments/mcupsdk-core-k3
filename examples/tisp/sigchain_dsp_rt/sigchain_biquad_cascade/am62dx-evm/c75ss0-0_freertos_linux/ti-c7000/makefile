@@ -40,6 +40,8 @@ endif
 FILES_common := \
 	main.c \
 	sigchain_dsp_main.c \
+	sigchain_dsp_ipc_linux.c \
+	sigchain_dsp_mcasp_linux.c \
 	sigchain_dsp_ipc.c \
 	sigchain_dsp_mcasp.c \
 	sigchain_dsp_cmdproc.c \
@@ -87,6 +89,7 @@ DEFINES_common := \
 	-DBUILD_C7X \
 	-DSOC_AM62DX \
 	-DDMA_UTILS_STANDALONE \
+	-DSIG_CHAIN_LINUX_HOST \
 
 CFLAGS_common := \
 	-mv7504 \
@@ -220,15 +223,15 @@ vpath %.lib $(LIBS_PATH_NAME)
 vpath %.a $(LIBS_PATH_NAME)
 
 $(OBJDIR)/%.obj %.obj: %.cpp
-	@echo  Compiling: am62dx:c75ss0-0:freertos:ti-c7000 $(OUTNAME): $<
+	@echo  Compiling: am62dx:c75ss0-0:freertos_linux:ti-c7000 $(OUTNAME): $<
 	$(CC) $(CPPFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fp=$<
 
 $(OBJDIR)/%.obj %.obj: %.c
-	@echo  Compiling: am62dx:c75ss0-0:freertos:ti-c7000 $(OUTNAME): $<
+	@echo  Compiling: am62dx:c75ss0-0:freertos_linux:ti-c7000 $(OUTNAME): $<
 	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fc=$<
 
 $(OBJDIR)/%.obj %.obj: %.S
-	@echo  Compiling: am62dx:c75ss0-0:freertos:ti-c7000 $(LIBNAME): $<
+	@echo  Compiling: am62dx:c75ss0-0:freertos_linux:ti-c7000 $(LIBNAME): $<
 	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fa=$<
 
 all: $(TARGETS)
@@ -242,15 +245,18 @@ SYSCFG_GEN_FILES+=generated/ti_board_open_close.c generated/ti_board_open_close.
 
 $(OUTNAME): syscfg $(SYSCFG_GEN_FILES) $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 	@echo  .
-	@echo  Linking: am62dx:c75ss0-0:freertos:ti-c7000 $@ ...
+	@echo  Linking: am62dx:c75ss0-0:freertos_linux:ti-c7000 $@ ...
 	$(LNK) $(LFLAGS) $(LIBS_PATH) -m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) $(LNK_FILES)
-	@echo  Linking: am62dx:c75ss0-0:freertos:ti-c7000 $@ Done !!!
+	$(RM) sigchain_biquad_cascade.c75ss0-0.${ConfigName}.strip.out
+	$(STRIP) -p $@ -o=sigchain_biquad_cascade.c75ss0-0.${ConfigName}.strip.out
+	@echo  Linking: am62dx:c75ss0-0:freertos_linux:ti-c7000 $@ Done !!!
 	@echo  .
 
 clean:
-	@echo  Cleaning: am62dx:c75ss0-0:freertos:ti-c7000 $(OUTNAME) ...
+	@echo  Cleaning: am62dx:c75ss0-0:freertos_linux:ti-c7000 $(OUTNAME) ...
 	$(RMDIR) $(OBJDIR)
 	$(RM) $(OUTNAME)
+	$(RM) sigchain_biquad_cascade.c75ss0-0.${ConfigName}.strip.out
 	$(RM) $(BOOTIMAGE_NAME)
 	$(RM) $(BOOTIMAGE_NAME_XIP)
 	$(RM) $(BOOTIMAGE_NAME_SIGNED)
@@ -261,7 +267,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62dx:c75ss0-0:freertos:ti-c7000 sigchain_biquad_cascade ...
+	@echo  Scrubing: am62dx:c75ss0-0:freertos_linux:ti-c7000 sigchain_biquad_cascade ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
@@ -340,7 +346,7 @@ MULTI_CORE_IMAGE_PARAMS_XIP = \
 	$(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_c75ss0-0) \
 
 $(BOOTIMAGE_NAME): $(OUTNAME)
-	@echo  Boot image: am62dx:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$@ ...
+	@echo  Boot image: am62dx:c75ss0-0:freertos_linux:ti-c7000 $(BOOTIMAGE_PATH)/$@ ...
 ifneq ($(OS),Windows_NT)
 	$(CHMOD) a+x $(XIPGEN_CMD)
 endif
@@ -357,9 +363,9 @@ endif
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
-	@echo  Boot image: am62dx:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$@ Done !!!
+	@echo  Boot image: am62dx:c75ss0-0:freertos_linux:ti-c7000 $(BOOTIMAGE_PATH)/$@ Done !!!
 	@echo  .
-	@echo  Boot image: am62dx:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
+	@echo  Boot image: am62dx:c75ss0-0:freertos_linux:ti-c7000 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
 	@echo  .
 
 $(BOOTIMAGE_NAME_HS): $(BOOTIMAGE_NAME)
@@ -379,7 +385,7 @@ else
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_NAME)-enc
 endif
-	@echo  Boot image: am62dx:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
+	@echo  Boot image: am62dx:c75ss0-0:freertos_linux:ti-c7000 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
 	@echo  .
 endif
 -include $(addprefix $(OBJDIR)/, $(DEPS))

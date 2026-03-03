@@ -148,7 +148,7 @@ function genTirexExampleContentList(example_file_list, device) {
             tirex_content.subCategories = [ ...folder_list, `${buildOption.cpu}` + "_" +`${buildOption.os}`];
             tirex_content.mainCategories = [[ `Examples`, `Development Tools` ]];
 
-            if (buildOption.os == "freertos-smp" || buildOption.os == "threadx")
+            if (buildOption.os == "freertos-smp" || buildOption.os == "threadx" || buildOption.os == "freertos_linux")
             {
 
             }

@@ -67,10 +67,18 @@ void SigchainDSP_main(void *args)
     SigchainDSP_IPC_syncRemote();
 
     /* initialize ipc rpmessage framework */
+#ifdef SIG_CHAIN_LINUX_HOST
+    SigchainDSP_Linux_IPC_init();
+#else
     SigchainDSP_IPC_init();
+#endif
 
     /* setup mcasp for audio procesing */
+#ifdef SIG_CHAIN_LINUX_HOST
+    SigchainDSP_Linux_McASP_setupAudioIO();
+#else
     SigchainDSP_McASP_setupAudioIO();
+#endif
 
     /* create idle task for command processing */
     SigchainDSP_Cmdproc_createIdleTask();

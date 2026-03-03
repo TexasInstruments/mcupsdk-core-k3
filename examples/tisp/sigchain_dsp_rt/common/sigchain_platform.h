@@ -90,11 +90,39 @@ extern "C"
 /*                         Structure Declarations                             */
 /* ========================================================================== */
 
+/**
+ * @brief MCASP command enumeration for Linux-C7x communication
+ *
+ * These commands are sent from Linux host to C7x to control MCASP
+ * audio processing state.
+ */
+typedef enum {
+    MCASP_CMD_NO_CHANGE = 0,    /** No command - maintain current state */
+    MCASP_CMD_START     = 1,    /** Start MCASP audio processing */
+    MCASP_CMD_STOP      = 2     /** Stop MCASP audio processing */
+} McaspCommand_e;
+
+/**
+ * @brief MCASP running state enumeration
+ *
+ * These values indicate the current MCASP audio processing state.
+ */
+typedef enum {
+    MCASP_STATE_STOPPED = 0,    /** MCASP audio processing is stopped */
+    MCASP_STATE_RUNNING = 1     /** MCASP audio processing is running */
+} McaspRunningState_e;
+
 typedef struct __attribute__((__packed__))
 {
     uint32_t dspLoad;
     uint32_t cycleCount;
     float throughput;
+
+#ifdef SIG_CHAIN_LINUX_HOST
+    // MCASP control fields
+    uint32_t mcaspCommand;
+    uint32_t mcaspRunning;
+#endif
 } RtInfo;
 
 /* ========================================================================== */
@@ -111,8 +139,26 @@ extern RtInfo gRtInfo;
 extern uint8_t chmap[8];
 
 /* ========================================================================== */
+/*                   Linux-Specific Declarations                             */
+/* ========================================================================== */
+#ifdef SIG_CHAIN_LINUX_HOST
+
+/* Global variables */
+extern volatile uint8_t gbMcaspPaused;
+
+/* Function declarations */
+void SigchainDSP_checkSharedMemoryCommands(void);
+void SigchainDSP_Linux_McASP_setupAudioIO(void);
+void SigchainDSP_Linux_IPC_init(void);
+
+#endif /* SIG_CHAIN_LINUX_HOST */
+
+/* ========================================================================== */
 /*                          Function Declarations                             */
 /* ========================================================================== */
+
+/* Shutdown callback function (defined in sigchain_dsp_ipc.c) - Used by ALL examples */
+void SigchainDSP_IPC_rpmsgCB(uint16_t remoteCoreId, uint16_t clientId, uint32_t msgValue, void *args);
 
 void SigchainDSP_IPC_init();
 int32_t SigchainDSP_IPC_recv(uint8_t *buf, uint32_t *bufSize);

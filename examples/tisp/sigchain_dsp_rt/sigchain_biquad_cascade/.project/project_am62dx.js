@@ -25,6 +25,21 @@ const files_c7x = {
     ],
 };
 
+const files_c7x_linux = {
+    common: [
+        "main.c",
+        "sigchain_dsp_main.c",
+    	"sigchain_dsp_ipc_linux.c",
+    	"sigchain_dsp_mcasp_linux.c",
+    	"sigchain_dsp_ipc.c",
+    	"sigchain_dsp_mcasp.c",
+    	"sigchain_dsp_cmdproc.c",
+    ],
+    cpp_common: [
+    	"TISP_parametericEq_test.cpp",
+    ],
+};
+
 /* Relative to where the makefile will be generated
  * Typically at <example_folder>/<BOARD>/<core_os_combo>/<compiler>
  */
@@ -57,8 +72,7 @@ const libdirs_freertos = {
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
-        "${MCU_PLUS_SDK_PATH}/source/tisp/lib/Release",
-        "${MCU_PLUS_SDK_PATH}/source/tisp/lib/Debug",
+        "${MCU_PLUS_SDK_PATH}/source/tisp/lib/${ConfigName}",
         "${MCU_PLUS_SDK_PATH}/source/dsplib/lib/${ConfigName}",
         "${MCU_PLUS_SDK_PATH}/source/fftlib/lib/${ConfigName}",
         "${MCU_PLUS_SDK_PATH}/source/audiolib/lib/${ConfigName}",
@@ -179,6 +193,7 @@ const cflags_c75 = {
 
 const buildOptionCombos = [
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62dx-evm", os: "freertos", isPartOfSystemProject: true},
+    { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62dx-evm", os: "freertos_linux", isPartOfSystemProject: false, isLinuxFwGen: true},
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos", isPartOfSystemProject: true},
 ];
 
@@ -220,12 +235,20 @@ function getComponentBuildProperty(buildOption) {
 
     if(buildOption.cpu.match(/c75*/))
     {
-        build_property.files = files_c7x;
+        if(buildOption.os === "freertos_linux")
+        {
+            build_property.files = files_c7x_linux;
+            build_property.defines = {...defines_C7x, common: [...defines_C7x.common, "SIG_CHAIN_LINUX_HOST"]};
+        }
+        else
+        {
+            build_property.files = files_c7x;
+            build_property.defines = defines_C7x;
+        }
         build_property.filedirs = filedirs_c7x;
         build_property.includes = includes_freertos_c75;
         build_property.libs = libs_freertos_c75;
         build_property.libdirs = libdirs_freertos;
-        build_property.defines = defines_C7x;
         build_property.templates = templates_freertos_c75_0;
         build_property.cflags = cflags_c75;
     }

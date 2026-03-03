@@ -11,7 +11,7 @@
 
     <project
         title="Sigchain Biquad Cascade"
-        name = "sigchain_biquad_cascade_am62dx-evm_c75ss0-0_freertos_ti-c7000"
+        name = "sigchain_biquad_cascade_am62dx-evm_c75ss0-0_freertos_linux_ti-c7000"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -65,6 +65,7 @@
             -DBUILD_C7X
             -DSOC_AM62DX
             -DDMA_UTILS_STANDALONE
+            -DSIG_CHAIN_LINUX_HOST
         "
         linkerBuildOptions="
             -i${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib
@@ -97,7 +98,7 @@
             --context c75ss0-0 --part AM62D24-G --package ANF
         "
 
-        description="A Sigchain Biquad Cascade FREERTOS project">
+        description="A Sigchain Biquad Cascade FREERTOS_LINUX project">
 
         <configuration name="Debug"
             compilerBuildOptions="
@@ -148,6 +149,10 @@
         <file path="../main.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
         <file path="../../../../common/sigchain_dsp_main.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../sigchain_dsp_ipc_linux.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../sigchain_dsp_mcasp_linux.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
         <file path="../../../../common/sigchain_dsp_ipc.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>

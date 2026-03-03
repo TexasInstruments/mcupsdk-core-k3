@@ -87,6 +87,7 @@ const example_file_list = [
     "examples/kernel/dpl/dpl_demo/.project/project_safertos.js",
     "examples/kernel/freertos/task_switch/.project/project.js",
     "examples/kernel/safertos/task_switch/.project/project.js",
+    "examples/safety/safety_app/.project/project.js",
     "examples/sdl/dcc/dcc_modes/.project/project.js",
     "examples/sdl/ecc/.project/project.js",
     "examples/sdl/esm/mcu_esm0/.project/project.js",

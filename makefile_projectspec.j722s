@@ -149,6 +149,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += task_switch_j722s-evm_mcu-r5fss0-0_
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += task_switch_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += task_switch_j722s-evm_c75ss0-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += task_switch_j722s-evm_c75ss1-0_freertos_ti-c7000_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += SafetyApp_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += dcc_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ecc_app_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcu_esm0_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_build
@@ -666,6 +667,9 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  task_switch_j722s-evm_c75ss1-0_safertos_ti-c7000_build:
 	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/c75ss1-0_safertos/ti-c7000 -f makefile_projectspec all
 
+ SafetyApp_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_build:
+	$(MAKE) -C examples/safety/safety_app/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
+
  dcc_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
@@ -935,6 +939,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += task_switch_j722s-evm_mcu-r5fss0-0_
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += task_switch_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += task_switch_j722s-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += task_switch_j722s-evm_c75ss1-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += SafetyApp_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += dcc_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ecc_app_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcu_esm0_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
@@ -1452,6 +1457,9 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  task_switch_j722s-evm_c75ss1-0_safertos_ti-c7000_clean:
 	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/c75ss1-0_safertos/ti-c7000 -f makefile_projectspec clean
 
+ SafetyApp_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/safety/safety_app/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
+
  dcc_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
@@ -1721,6 +1729,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += task_switch_j722s-evm_mcu-r5fss0-0
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += task_switch_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += task_switch_j722s-evm_c75ss0-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += task_switch_j722s-evm_c75ss1-0_freertos_ti-c7000_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += SafetyApp_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += dcc_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ecc_app_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcu_esm0_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_export
@@ -2238,6 +2247,9 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  task_switch_j722s-evm_c75ss1-0_safertos_ti-c7000_export:
 	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/c75ss1-0_safertos/ti-c7000 -f makefile_projectspec export
 
+ SafetyApp_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang_export:
+	$(MAKE) -C examples/safety/safety_app/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
+
  dcc_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
@@ -2531,6 +2543,7 @@ help:
 	@echo  $(MAKE) -s -C examples/kernel/safertos/task_switch/j722s-evm/main-r5fss0-0_safertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/kernel/safertos/task_switch/j722s-evm/c75ss0-0_safertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/kernel/safertos/task_switch/j722s-evm/c75ss1-0_safertos/ti-c7000 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/safety/safety_app/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/dcc/dcc_modes/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/ecc/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/sdl/esm/mcu_esm0/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]

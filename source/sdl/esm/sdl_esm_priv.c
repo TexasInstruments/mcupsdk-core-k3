@@ -239,14 +239,13 @@ static void SDL_ESM_handleCfgIntr(uint32_t baseAddr, SDL_ESM_Inst esmInstType)
     SDL_ESM_Instance_t *SDL_ESM_instance;
     uint32_t group;
     uint32_t status;
-    uint32_t actualBaseAddr;
-    SDL_ESM_getBaseAddr(esmInstType, &actualBaseAddr);
+
     SDL_ESM_selectEsmInst(esmInstType, &SDL_ESM_instance);
 
     /* Get the proper ESM SW instance here based on esmInstBaseAddr register base */
     for (group = 0; group < ESM_INTR_GRP_NUM; group++)
     {
-        (void)SDL_ESM_getCfgIntrStatus(actualBaseAddr, group, &status);
+        (void)SDL_ESM_getCfgIntrStatus(baseAddr, group, &status);
         if (status == 0x1u)
         {
             break;
@@ -258,7 +257,7 @@ static void SDL_ESM_handleCfgIntr(uint32_t baseAddr, SDL_ESM_Inst esmInstType)
                                      group, 0, 0, SDL_ESM_instance->arg);
 
     /* Clear the pending interrupt(s) */
-    (void)SDL_ESM_clearCfgIntrStatus(actualBaseAddr, group);
+    (void)SDL_ESM_clearCfgIntrStatus(baseAddr, group);
 
     return;
 }
@@ -336,7 +335,7 @@ void SDL_ESM_loInterruptHandler (void *arg)
         }
         else
         {
-            SDL_ESM_interruptHandler((uint32_t)base_addr, ESM_INTR_PRIORITY_LEVEL_LOW, arg);
+            SDL_ESM_interruptHandler((uint32_t)base_addr, ESM_INTR_PRIORITY_LEVEL_LOW, (void *)esm_inst);
         }
     }
     /* Call common Interrupt handler */

@@ -239,11 +239,12 @@ bool SDL_ESM_checkSpecialEvent(uint32_t esm_base_addr, uint32_t priority, uint32
     bool ret = (bool)false;
     uint32_t intSrc;
     esmGroupIntrStatus_t localEsmGroupIntrStatus;
+    uint32_t check_addr;
 
     *isCfgEvt = (bool)false;
 
-    SDL_ESM_getBaseAddr(SDL_ESM_INST_MAIN_ESM0, base_addr);
-	if (*base_addr != esm_base_addr)
+    SDL_ESM_getBaseAddr(SDL_ESM_INST_MAIN_ESM0, &check_addr);
+	if (check_addr != esm_base_addr)
 	{
 		(void)SDL_ESM_getGroupIntrStatus(esm_base_addr, priority, &localEsmGroupIntrStatus);
 		intSrc = localEsmGroupIntrStatus.highestPendLvlIntNum;
@@ -260,8 +261,8 @@ bool SDL_ESM_checkSpecialEvent(uint32_t esm_base_addr, uint32_t priority, uint32
 			ret = (bool)true;
 		}
 	}
-	SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0, base_addr);
-	if (*base_addr != esm_base_addr)
+	SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0, &check_addr);
+	if (check_addr != esm_base_addr)
 	{
 		(void)SDL_ESM_getGroupIntrStatus(esm_base_addr, priority, &localEsmGroupIntrStatus);
 		intSrc = localEsmGroupIntrStatus.highestPendLvlIntNum;

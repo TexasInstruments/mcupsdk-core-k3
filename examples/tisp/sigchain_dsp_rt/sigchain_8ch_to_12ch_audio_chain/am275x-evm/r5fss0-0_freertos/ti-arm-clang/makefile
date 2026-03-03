@@ -108,15 +108,11 @@ LIBS_PATH_common = \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/board/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/tisp/lib/Release \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Release \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/fftlib/lib/Release \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/audiolib/lib/Release \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/mathlib/lib/Release \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/tisp/lib/Debug \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Debug \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/fftlib/lib/Debug \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/audiolib/lib/Debug \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/mathlib/lib/Debug \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/dsplib/lib/${ConfigName} \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/fftlib/lib/${ConfigName} \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/audiolib/lib/${ConfigName} \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/mathlib/lib/${ConfigName} \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/udma/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/dmautils/lib \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
@@ -153,15 +149,11 @@ LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib \
 	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	${MCU_PLUS_SDK_PATH}/source/tisp/lib/Release \
-	${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Release \
-	${MCU_PLUS_SDK_PATH}/source/fftlib/lib/Release \
-	${MCU_PLUS_SDK_PATH}/source/audiolib/lib/Release \
-	${MCU_PLUS_SDK_PATH}/source/mathlib/lib/Release \
 	${MCU_PLUS_SDK_PATH}/source/tisp/lib/Debug \
-	${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Debug \
-	${MCU_PLUS_SDK_PATH}/source/fftlib/lib/Debug \
-	${MCU_PLUS_SDK_PATH}/source/audiolib/lib/Debug \
-	${MCU_PLUS_SDK_PATH}/source/mathlib/lib/Debug \
+	${MCU_PLUS_SDK_PATH}/source/dsplib/lib/${ConfigName} \
+	${MCU_PLUS_SDK_PATH}/source/fftlib/lib/${ConfigName} \
+	${MCU_PLUS_SDK_PATH}/source/audiolib/lib/${ConfigName} \
+	${MCU_PLUS_SDK_PATH}/source/mathlib/lib/${ConfigName} \
 	${MCU_PLUS_SDK_PATH}/source/drivers/udma/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/dmautils/lib \
 	${CG_TOOL_ROOT}/lib \

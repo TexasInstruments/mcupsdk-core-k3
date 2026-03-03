@@ -242,7 +242,7 @@ function onChangeQnxIpc(instance, ui)
             instance.vringNumBuf = 256;
             instance.vringMsgSize = 512;
             ui.vringMsgSize.readOnly = true;
-            ui.vringNumBuf.readOnly = true;
+            ui.vringNumBuf.readOnly = false;
     }
     else
     {

@@ -89,3 +89,4 @@ source/board/ethphy/enet/
 examples/benchmarks/coremark_pro_benchmark/coremark-pro
 .kwlp
 .kwps
+.serena

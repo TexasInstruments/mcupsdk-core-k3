@@ -527,6 +527,7 @@ const defines_wkup_r5 = {
         "WKUP_R5",
         "ENABLE_SCICLIENT_DIRECT",
         "ENABLE_PHY_TUNING_SOC_BUILD",
+        "CONFIG_ENABLE_FWL_DEVGRP_REINIT",
     ],
 };
 
@@ -534,6 +535,7 @@ const defines_mcu_r5 = {
     common: [
         "MCU_R5",
         "ENABLE_PHY_TUNING_SOC_BUILD",
+        "CONFIG_ENABLE_FWL_DEVGRP_REINIT",
     ],
 };
 
@@ -543,6 +545,7 @@ const defines_main_r5 = {
         "FVID2_CFG_TRACE_ENABLE",
         "FVID2_CFG_ASSERT_ENABLE",
         "ENABLE_PHY_TUNING_SOC_BUILD",
+        "CONFIG_ENABLE_FWL_DEVGRP_REINIT",
     ],
 };
 
@@ -554,11 +557,13 @@ const cflags_wkup_r5f = {
 
 const defines_c75ss0 = {
     common: [
+        "CONFIG_ENABLE_FWL_DEVGRP_REINIT",
     ],
 };
 
 const defines_c75ss1 = {
     common: [
+        "CONFIG_ENABLE_FWL_DEVGRP_REINIT",
     ],
 };
 

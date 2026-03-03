@@ -66,7 +66,8 @@ const defines_r5f = {
         "CONFIG_TRACE_BUFFER",
         "CONFIG_DEVICE_TYPE_GP",
         "CONFIG_PM_FREQ_DIV",
-        "CONFIG_LPM_BOARDCFG_MANAGED"
+        "CONFIG_LPM_BOARDCFG_MANAGED",
+        "CONFIG_ENABLE_FWL_DEVGRP_REINIT",
     ],
 };
 

@@ -143,6 +143,7 @@ ifeq ($(SOC),$(filter $(SOC), am62lx))
 endif
 ifeq ($(SOC),$(filter $(SOC), j722s))
   CFLAGS_BOARDCFG=-DSOC_J722S
+  CFLAGS_BOARDCFG+=-DCONFIG_ENABLE_FWL_DEVGRP_REINIT
 endif
 CFLAGS_BOARDCFG+= \
     -Wno-gnu-variable-sized-type-not-at-end \

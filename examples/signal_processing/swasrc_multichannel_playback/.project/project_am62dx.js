@@ -28,8 +28,8 @@ const libdirs_freertos_c75 = {
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
 		"${MCU_PLUS_SDK_PATH}/source/drivers/udma/lib",
         "${MCU_PLUS_SDK_PATH}/source/signal_processing/lib",
-        "${MCU_PLUS_SDK_PATH}/source/audiolib/lib/Release",
-        "${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Release",
+        "${MCU_PLUS_SDK_PATH}/source/audiolib/lib/${ConfigName}",
+        "${MCU_PLUS_SDK_PATH}/source/dsplib/lib/${ConfigName}",
 	],
 };
 

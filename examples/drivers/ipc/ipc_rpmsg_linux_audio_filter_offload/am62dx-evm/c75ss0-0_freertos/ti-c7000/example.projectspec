@@ -68,9 +68,9 @@
             -i${MCU_PLUS_SDK_PATH}/source/drivers/lib
             -i${MCU_PLUS_SDK_PATH}/source/board/lib
             -i${MCU_PLUS_SDK_PATH}/source/tisp/lib/Release
-            -i${MCU_PLUS_SDK_PATH}/source/audiolib/lib/Release
-            -i${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Release
-            -i${MCU_PLUS_SDK_PATH}/source/fftlib/lib/Release
+            -i${MCU_PLUS_SDK_PATH}/source/audiolib/lib/${ConfigName}
+            -i${MCU_PLUS_SDK_PATH}/source/dsplib/lib/${ConfigName}
+            -i${MCU_PLUS_SDK_PATH}/source/fftlib/lib/${ConfigName}
             -i${CG_TOOL_ROOT}/lib
             -m=ipc_rpmsg_linux_audio_filter_offload.${ConfigName}.map
             -z

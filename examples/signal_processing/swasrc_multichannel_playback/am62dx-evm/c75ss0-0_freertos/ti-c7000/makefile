@@ -108,8 +108,8 @@ LIBS_PATH_common = \
 	-i${MCU_PLUS_SDK_PATH}/source/board/lib \
 	-i${MCU_PLUS_SDK_PATH}/source/drivers/udma/lib \
 	-i${MCU_PLUS_SDK_PATH}/source/signal_processing/lib \
-	-i${MCU_PLUS_SDK_PATH}/source/audiolib/lib/Release \
-	-i${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Release \
+	-i${MCU_PLUS_SDK_PATH}/source/audiolib/lib/${ConfigName} \
+	-i${MCU_PLUS_SDK_PATH}/source/dsplib/lib/${ConfigName} \
 	-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
@@ -152,8 +152,8 @@ LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/udma/lib \
 	${MCU_PLUS_SDK_PATH}/source/signal_processing/lib \
-	${MCU_PLUS_SDK_PATH}/source/audiolib/lib/Release \
-	${MCU_PLUS_SDK_PATH}/source/dsplib/lib/Release \
+	${MCU_PLUS_SDK_PATH}/source/audiolib/lib/${ConfigName} \
+	${MCU_PLUS_SDK_PATH}/source/dsplib/lib/${ConfigName} \
 	${CG_TOOL_ROOT}/lib \
 
 FILES := $(FILES_common) $(FILES_$(PROFILE))

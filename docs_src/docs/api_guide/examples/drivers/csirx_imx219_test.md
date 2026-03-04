@@ -1,28 +1,14 @@
-# CSIRX CAPTURE TEST {#EXAMPLES_DRIVERS_CSIRX_CAPTURE_TEST}
+# CSIRX CAPTURE TEST {#EXAMPLES_DRIVERS_CSIRX_IMX219_TEST}
 
 [TOC]
 # Introduction
 
-\cond SOC_J722S
-In this example, each CSIRX instance in the SOC is configured to receive RAW12 packets from 4 virtual channels
-\endcond
 \cond SOC_AM62AX
-In this example, CSIRX is configured to receive RAW12 packets from 1 virtual channel
+In this example, CSIRX is configured to receive RAW8 packets from 1 virtual channel
 \endcond
 
-# Supported Combinations {#EXAMPLES_DRIVERS_CSIRX_CAPTURE_TEST_COMBOS}
+# Supported Combinations {#EXAMPLES_DRIVERS_CSIRX_IMX219_TEST_COMBOS}
 
-
-\cond SOC_J722S
-
- Parameter      | Value
- ---------------|-----------
- CPU + OS       | main-r5fss0-0 freertos
- Toolchain      | ti-arm-clang
- Board          | @VAR_BOARD_NAME_LOWER
- Example folder | examples/drivers/csirx/csirx_capture_test/
-
-\endcond
 \cond SOC_AM62AX
 
  Parameter      | Value

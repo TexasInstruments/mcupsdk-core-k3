@@ -61,7 +61,6 @@ const includes_nortos_r5f = {
 const defines_dm_r5f = {
     common:[
         "ENABLE_SCICLIENT_DIRECT",
-        "DRV_VERSION_FVID2_V0",
     ]
 }
 

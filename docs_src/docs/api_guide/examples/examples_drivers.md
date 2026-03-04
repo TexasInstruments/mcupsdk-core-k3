@@ -159,6 +159,9 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 \endcond
 
 \cond SOC_AM62AX
+-# CSI-RX
+   -# \subpage EXAMPLES_DRIVERS_CSIRX_CAPTURE_TEST
+   -# \subpage EXAMPLES_DRIVERS_CSIRX_IMX219_TEST
 -# DDR
    -# \subpage EXAMPLES_DRIVERS_DDR_ECC_TEST_MAIN_ESM
    -# \subpage EXAMPLES_DRIVERS_DDR_PERF

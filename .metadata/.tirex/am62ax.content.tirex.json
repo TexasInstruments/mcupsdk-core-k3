@@ -737,6 +737,72 @@
             "example"
         ],
         "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "CSI-RX Fusion2 + IMX390 Capture Test Application CPU is R5FSS0-0 running FREERTOS.",
+        "name": "csirx_capture_testapp",
+        "location": "../../examples/drivers/csirx/csirx_capture_testapp/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "SK-AM62A-LP"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "csirx",
+            "csirx_capture_testapp",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "Capture testapp  CPU is R5FSS0-0 running FREERTOS.",
+        "name": "csirx_imx219_testapp",
+        "location": "../../examples/drivers/csirx/csirx_imx219_testapp/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "SK-AM62A-LP"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "csirx",
+            "csirx_imx219_testapp",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
             "example.general"
         ],
         "description": "A Ddr Ecc Test Main Esm Example. CPU is MCU-R5FSS0-0 running FREERTOS.",

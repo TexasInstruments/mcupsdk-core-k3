@@ -502,7 +502,7 @@ void CsirxDrv_udmaCQEventCb(Udma_EventHandle eventHandle,
 					pTr = UdmaUtils_getTrpdTr1Pointer((uint8_t*)qObj->trpd, 0U);
                     if (pTr->addr == (uint64_t)(chObj->instObj->createParams.frameDropBuf))
                     {
-                        /* Mark qBoj as Normal Frame which can be used next time */
+                        /* Mark qObj as Normal Frame which can be used next time */
                         qObj->type = CSIRX_DRV_Q_OBJ_TYPE_NORMAL;
                         /* This is frame drop buffer so no need to issue CB */
                         appCb = 0U;

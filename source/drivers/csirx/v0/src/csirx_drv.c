@@ -1526,6 +1526,7 @@ static int32_t CsirxDrv_getStatusIoctl(const CsirxDrv_VirtContext *virtContext,
     captStat->dataIdErrorCount      = instObj->status.dataIdErrorCount;
     captStat->invalidAccessCount    = instObj->status.invalidAccessCount;
     captStat->invalidSpCount        = instObj->status.invalidSpCount;
+    captStat->deSkewEntryCount      = instObj->status.deSkewEntryCount;
 
     /* Post the instance semaphore */
     (void)SemaphoreP_post(&instObj->lockSem);
@@ -1691,7 +1692,12 @@ static int32_t Csirx_setDphyCfg(CsirxDrv_VirtContext *virtContext,
 
     /* Check parameters values */
     if ((dphyCfg->inst < CSIRX_INSTANCE_ID_MAX) &&
+    #if defined (SOC_J722S)
         ((dphyCfg->psmClkFreqDiv < 256U) && (dphyCfg->psmClkFreqDiv > 0U)) &&
+    #endif
+    #if defined (SOC_AM62AX)
+        ((dphyCfg->psmClkFreqDiv < 256U) && (dphyCfg->psmClkFreqDiv >= 0U)) &&
+    #endif
         (dphyCfg->leftLaneBandSpeed < CSIRX_LANE_BAND_SPEED_RESERVED) &&
         (dphyCfg->rightLaneBandSpeed < CSIRX_LANE_BAND_SPEED_RESERVED) &&
         (dphyCfg->bandGapTimerVal < 256U))

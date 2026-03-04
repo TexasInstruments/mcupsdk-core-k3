@@ -225,13 +225,19 @@ static int32_t CsirxDrv_eventGroupAllocResource(CsirxDrv_InstObj *instObj,
             switch (eventPrms->eventGroup)
             {
                 case CSIRX_EVENT_GROUP_ERROR:
+                #if defined (SOC_J722S)
                     eventPrms->coreIntrNum = CSIRX_CORE_INTR_NUM_MOD_0_ERR_INTR;
+                #endif
+                #if defined (SOC_AM62AX)
+                    eventPrms->coreIntrNum = CSIRX_CORE_INTR_NUM_MOD_0_FATAL_INTR; /* CSI_RX_IF0_COMMON_0_CSI_ERR_IRQ_0 is not available for DM R5, CSI_RX_IF0_COMMON_0_CSI_FATAL_0=172 used instead */
+                #endif
                 break;
                 default:
                     retVal = FVID2_EBADARGS;
                 break;
             }
         break;
+    #if defined (SOC_J722S) /* AM62A only supports 1 CSIRX Instance */
         case CSIRX_INSTANCE_ID_1:
             switch (eventPrms->eventGroup)
             {
@@ -265,6 +271,7 @@ static int32_t CsirxDrv_eventGroupAllocResource(CsirxDrv_InstObj *instObj,
                 break;
             }
         break;
+    #endif
         default:
             retVal = FVID2_EBADARGS;
         break;

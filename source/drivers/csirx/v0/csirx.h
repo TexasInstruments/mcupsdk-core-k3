@@ -501,6 +501,8 @@ typedef struct
     /**< Counter to keep track of the occurrences of Front FIFO Overflow.
      *   Note: This counter will be reset at the time of driver create and
      *   during driver start. */
+    uint32_t deSkewEntryCount;
+    /**< Counter to keep track of the occurrences of De-skew calibration event */
 } Csirx_InstStatus;
 
 /* ========================================================================== */
@@ -654,6 +656,7 @@ static inline void Csirx_instStatusInit(Csirx_InstStatus *captStatus)
     captStatus->dataIdErrorCount      = 0U;
     captStatus->invalidAccessCount    = 0U;
     captStatus->invalidSpCount        = 0U;
+    captStatus->deSkewEntryCount      = 0U;
     for (strmIdx = 0U ; strmIdx < CSIRX_NUM_STREAM ; strmIdx++)
     {
         captStatus->strmFIFOOvflCount[strmIdx]= 0U;

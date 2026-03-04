@@ -150,6 +150,14 @@ const files_r5f = {
         "utils.c",
         "vtm.c",
         "xmodem.c",
+        "csirx_sanity.c",
+        "csirx_ss.c",
+        "csirx.c",
+        "csirx_soc.c",
+        "csirx_drv.c",
+        "csirx_drvInit.c",
+        "csirx_drvUdma.c",
+        "csirx_event.c",
     ]
 };
 
@@ -342,6 +350,11 @@ const filedirs = {
         "udma/v0/soc/am62ax",
         "soc/am62ax",
         "utils",
+        "csirx/v0/hw_include",
+        "csirx/v0/soc/am62ax",
+        "csirx/v0/src",
+        "csirx/v0",
+        "csirx/v0/include",
     ],
 };
 

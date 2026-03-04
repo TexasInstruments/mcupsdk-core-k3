@@ -138,6 +138,11 @@ FILES_PATH_common = \
     ${MCU_PLUS_SDK_PATH}/source/drivers/udma/v0/soc/am62ax \
     ${MCU_PLUS_SDK_PATH}/source/drivers/soc/am62ax \
     ${MCU_PLUS_SDK_PATH}/source/drivers/utils \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/csirx/v0/hw_include \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/csirx/v0/soc/am62ax \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/csirx/v0/src \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/csirx/v0 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/csirx/v0/include \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \

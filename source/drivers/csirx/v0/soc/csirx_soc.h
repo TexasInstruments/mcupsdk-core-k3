@@ -44,8 +44,16 @@
 /*                             Include Files                                  */
 /* ========================================================================== */
 #include <drivers/soc.h>
+
+#if defined (SOC_J722S)
 #include <drivers/csirx/v0/soc/j722s/csirx_soc.h>
 #include <drivers/csirx/v0/soc/j722s/csirx_socPriv.h>
+#endif
+
+#if defined (SOC_AM62AX)
+#include <drivers/csirx/v0/soc/am62ax/csirx_soc.h>
+#include <drivers/csirx/v0/soc/am62ax/csirx_socPriv.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {

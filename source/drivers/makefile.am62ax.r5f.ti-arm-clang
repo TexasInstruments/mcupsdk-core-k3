@@ -138,6 +138,11 @@ FILES_PATH_common = \
     udma/v0/soc/am62ax \
     soc/am62ax \
     utils \
+    csirx/v0/hw_include \
+    csirx/v0/soc/am62ax \
+    csirx/v0/src \
+    csirx/v0 \
+    csirx/v0/include \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \

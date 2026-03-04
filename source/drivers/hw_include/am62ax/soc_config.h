@@ -61,6 +61,7 @@ extern "C"
 /* This IP version of VPAC points to VPAC3L */
 #define IP_VERSION_VPAC_V3L
 #define IP_VERSION_RINGACC_V0
+#define IP_VERSION_CSIRX_V0
 #define IP_VERSION_DRU_V2
 #define IP_VERSION_WATCHDOG_V1
 
@@ -83,6 +84,8 @@ extern "C"
 #define DRV_VERSION_UDMA_V0
 #define DRV_VERSION_GTC_V0
 #define DRV_VERSION_WATCHDOG_V1
+#define DRV_VERSION_FVID2_V0
+#define DRV_VERSION_CSIRX_V0
 
 /* Driver DMA integration */
 #define DMA_VERSION_MCSPI_UDMA

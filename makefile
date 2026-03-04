@@ -164,6 +164,34 @@ docs:
 	$(CAT) ./docs/api_guide_$(DEVICE)/searchdata.xml >> ./docs/api_guide_$(DEVICE)/search.html
 	@echo "</script>" >> ./docs/api_guide_$(DEVICE)/search.html
 
+ifneq ($(OS),Windows_NT)
+ifeq ($(filter $(DEVICE),am62dx am275x),$(DEVICE))
+	$(MAKE) -C source/fftlib -f makefile.$(DEVICE).c75x.ti-c7000 docs
+	mkdir -p docs/api_guide_$(DEVICE)/fftlib_docs
+	$(COPY) -r source/fftlib/docs/user_guide/ ./docs/api_guide_$(DEVICE)/fftlib_docs
+
+	$(MAKE) -C source/mathlib -f makefile.$(DEVICE).c75x.ti-c7000 docs
+	mkdir -p docs/api_guide_$(DEVICE)/mathlib_docs
+	$(COPY) -r source/mathlib/docs/user_guide/ ./docs/api_guide_$(DEVICE)/mathlib_docs
+
+	$(MAKE) -C source/vxlib -f makefile.$(DEVICE).c75x.ti-c7000 docs
+	mkdir -p docs/api_guide_$(DEVICE)/vxlib_docs
+	$(COPY) -r source/vxlib/docs/user_guide/ ./docs/api_guide_$(DEVICE)/vxlib_docs
+
+	$(MAKE) -C source/dsplib -f makefile.$(DEVICE).c75x.ti-c7000 docs
+	mkdir -p docs/api_guide_$(DEVICE)/dsplib_docs
+	$(COPY) -r source/dsplib/docs/user_guide/ ./docs/api_guide_$(DEVICE)/dsplib_docs
+
+	$(MAKE) -C source/audiolib -f makefile.$(DEVICE).c75x.ti-c7000 docs
+	mkdir -p docs/api_guide_$(DEVICE)/audiolib_docs
+	$(COPY) -r source/audiolib/docs/user_guide/ ./docs/api_guide_$(DEVICE)/audiolib_docs
+
+	$(MAKE) -C source/tisp -f makefile.$(DEVICE).c75x.ti-c7000 docs
+	mkdir -p docs/api_guide_$(DEVICE)/tisp_docs
+	$(COPY) -r source/tisp/docs/user_guide/ ./docs/api_guide_$(DEVICE)/tisp_docs
+endif
+endif # ifneq ($(OS),Windows_NT)
+
 docs-clean:
 	$(MAKE) -C docs_src/docs/api_guide clean DEVICE=$(DEVICE) DOC_COMBO=$(DOC_COMBO)
 

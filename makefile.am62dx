@@ -64,6 +64,12 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62dx tsn_gptp-freertos_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62dx tsn_uniconf-freertos_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62dx tsn_unibase-freertos_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62dx FFTLIB_C7504_c75x.ti-c7000
+	@echo  $(MAKE) -s -f makefile.am62dx MATHLIB_C7504_c75x.ti-c7000
+	@echo  $(MAKE) -s -f makefile.am62dx VXLIB_C7504_c75x.ti-c7000
+	@echo  $(MAKE) -s -f makefile.am62dx DSPLIB_C7504_c75x.ti-c7000
+	@echo  $(MAKE) -s -f makefile.am62dx AUDIOLIB_C7504_c75x.ti-c7000
+	@echo  $(MAKE) -s -f makefile.am62dx TISP_C7504_c75x.ti-c7000
 	@echo  $(MAKE) -s -f makefile.am62dx dm_stub_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62dx rm_pm_hal_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62dx rm_pm_hal_sbl_r5f.ti-arm-clang
@@ -100,6 +106,12 @@ help:
 	@echo  $(MAKE) -s -f makefile.am62dx tsn_gptp-freertos_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62dx tsn_uniconf-freertos_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62dx tsn_unibase-freertos_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62dx FFTLIB_C7504_c75x.ti-c7000_clean
+	@echo  $(MAKE) -s -f makefile.am62dx MATHLIB_C7504_c75x.ti-c7000_clean
+	@echo  $(MAKE) -s -f makefile.am62dx VXLIB_C7504_c75x.ti-c7000_clean
+	@echo  $(MAKE) -s -f makefile.am62dx DSPLIB_C7504_c75x.ti-c7000_clean
+	@echo  $(MAKE) -s -f makefile.am62dx AUDIOLIB_C7504_c75x.ti-c7000_clean
+	@echo  $(MAKE) -s -f makefile.am62dx TISP_C7504_c75x.ti-c7000_clean
 	@echo  $(MAKE) -s -f makefile.am62dx dm_stub_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62dx rm_pm_hal_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62dx rm_pm_hal_sbl_r5f.ti-arm-clang_clean
@@ -496,6 +508,12 @@ BUILD_COMBO_tsn_combase-freertos = tsn_combase-freertos_r5f.ti-arm-clang
 BUILD_COMBO_tsn_gptp-freertos = tsn_gptp-freertos_r5f.ti-arm-clang
 BUILD_COMBO_tsn_uniconf-freertos = tsn_uniconf-freertos_r5f.ti-arm-clang
 BUILD_COMBO_tsn_unibase-freertos = tsn_unibase-freertos_r5f.ti-arm-clang
+BUILD_COMBO_FFTLIB_C7504 = FFTLIB_C7504_c75x.ti-c7000
+BUILD_COMBO_MATHLIB_C7504 = MATHLIB_C7504_c75x.ti-c7000
+BUILD_COMBO_VXLIB_C7504 = VXLIB_C7504_c75x.ti-c7000
+BUILD_COMBO_DSPLIB_C7504 = DSPLIB_C7504_c75x.ti-c7000
+BUILD_COMBO_AUDIOLIB_C7504 = AUDIOLIB_C7504_c75x.ti-c7000
+BUILD_COMBO_TISP_C7504 = TISP_C7504_c75x.ti-c7000
 BUILD_COMBO_dm_stub = dm_stub_r5f.ti-arm-clang
 BUILD_COMBO_rm_pm_hal = rm_pm_hal_r5f.ti-arm-clang
 BUILD_COMBO_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang
@@ -512,7 +530,18 @@ BUILD_COMBO_PREBUILT_ALL =
 # Combine all Private Components
 BUILD_COMBO_PRIVATE_ALL =
 
-libs: $(BUILD_COMBO_ALL)
+# Linux-only Components (not built on Windows)
+ifneq ($(OS),Windows_NT)
+BUILD_COMBO_LINUX_ONLY_ALL = $(BUILD_COMBO_FFTLIB_C7504) $(BUILD_COMBO_MATHLIB_C7504) $(BUILD_COMBO_VXLIB_C7504) $(BUILD_COMBO_DSPLIB_C7504) $(BUILD_COMBO_AUDIOLIB_C7504) $(BUILD_COMBO_TISP_C7504)
+BUILD_COMBO_LINUX_ONLY_CLEAN_ALL = $(BUILD_COMBO_CLEAN_FFTLIB_C7504) $(BUILD_COMBO_CLEAN_MATHLIB_C7504) $(BUILD_COMBO_CLEAN_VXLIB_C7504) $(BUILD_COMBO_CLEAN_DSPLIB_C7504) $(BUILD_COMBO_CLEAN_AUDIOLIB_C7504) $(BUILD_COMBO_CLEAN_TISP_C7504)
+BUILD_COMBO_LINUX_ONLY_SCRUB_ALL = $(BUILD_COMBO_SCRUB_FFTLIB_C7504) $(BUILD_COMBO_SCRUB_MATHLIB_C7504) $(BUILD_COMBO_SCRUB_VXLIB_C7504) $(BUILD_COMBO_SCRUB_DSPLIB_C7504) $(BUILD_COMBO_SCRUB_AUDIOLIB_C7504) $(BUILD_COMBO_SCRUB_TISP_C7504)
+else
+BUILD_COMBO_LINUX_ONLY_ALL =
+BUILD_COMBO_LINUX_ONLY_CLEAN_ALL =
+BUILD_COMBO_LINUX_ONLY_SCRUB_ALL =
+endif
+
+libs: $(BUILD_COMBO_ALL) $(BUILD_COMBO_LINUX_ONLY_ALL)
 
 libs-external: $(BUILD_COMBO_EXTERNAL_ALL)
 
@@ -610,6 +639,24 @@ $(BUILD_COMBO_tsn_uniconf-freertos):
 $(BUILD_COMBO_tsn_unibase-freertos):
 	$(MAKE) -C source/networking/tsn -f makefile.tsn_unibase_freertos.am62dx.$(subst tsn_unibase-freertos_,,$@) all
 
+$(BUILD_COMBO_FFTLIB_C7504):
+	$(MAKE) -C source/fftlib -f makefile.am62dx.$(subst FFTLIB_C7504_,,$@) all
+
+$(BUILD_COMBO_MATHLIB_C7504):
+	$(MAKE) -C source/mathlib -f makefile.am62dx.$(subst MATHLIB_C7504_,,$@) all
+
+$(BUILD_COMBO_VXLIB_C7504):
+	$(MAKE) -C source/vxlib -f makefile.am62dx.$(subst VXLIB_C7504_,,$@) all
+
+$(BUILD_COMBO_DSPLIB_C7504):
+	$(MAKE) -C source/dsplib -f makefile.am62dx.$(subst DSPLIB_C7504_,,$@) all
+
+$(BUILD_COMBO_AUDIOLIB_C7504): $(BUILD_COMBO_DSPLIB_C7504)
+	$(MAKE) -C source/audiolib -f makefile.am62dx.$(subst AUDIOLIB_C7504_,,$@) all
+
+$(BUILD_COMBO_TISP_C7504): $(BUILD_COMBO_AUDIOLIB_C7504)
+	$(MAKE) -C source/tisp -f makefile.am62dx.$(subst TISP_C7504_,,$@) all
+
 $(BUILD_COMBO_dm_stub):
 	$(MAKE) -C source/drivers/device_manager/dm_stub -f makefile.am62dx.$(subst dm_stub_,,$@) all
 
@@ -651,6 +698,12 @@ BUILD_COMBO_CLEAN_tsn_combase-freertos = tsn_combase-freertos_r5f.ti-arm-clang_c
 BUILD_COMBO_CLEAN_tsn_gptp-freertos = tsn_gptp-freertos_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_tsn_uniconf-freertos = tsn_uniconf-freertos_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_tsn_unibase-freertos = tsn_unibase-freertos_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_FFTLIB_C7504 = FFTLIB_C7504_c75x.ti-c7000_clean
+BUILD_COMBO_CLEAN_MATHLIB_C7504 = MATHLIB_C7504_c75x.ti-c7000_clean
+BUILD_COMBO_CLEAN_VXLIB_C7504 = VXLIB_C7504_c75x.ti-c7000_clean
+BUILD_COMBO_CLEAN_DSPLIB_C7504 = DSPLIB_C7504_c75x.ti-c7000_clean
+BUILD_COMBO_CLEAN_AUDIOLIB_C7504 = AUDIOLIB_C7504_c75x.ti-c7000_clean
+BUILD_COMBO_CLEAN_TISP_C7504 = TISP_C7504_c75x.ti-c7000_clean
 BUILD_COMBO_CLEAN_dm_stub = dm_stub_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_rm_pm_hal = rm_pm_hal_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang_clean
@@ -664,7 +717,7 @@ BUILD_COMBO_EXTERNAL_CLEAN_ALL =
 # Combine all Pre-built Components Clean
 BUILD_COMBO_PREBUILT_CLEAN_ALL =
 
-libs-clean: $(BUILD_COMBO_CLEAN_ALL)
+libs-clean: $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_LINUX_ONLY_CLEAN_ALL)
 
 libs-external-clean: $(BUILD_COMBO_EXTERNAL_CLEAN_ALL)
 
@@ -760,6 +813,24 @@ $(BUILD_COMBO_CLEAN_tsn_uniconf-freertos):
 $(BUILD_COMBO_CLEAN_tsn_unibase-freertos):
 	$(MAKE) -C source/networking/tsn -f makefile.tsn_unibase_freertos.am62dx.$(subst tsn_unibase-freertos_,,$(subst _clean,,$@)) clean
 
+$(BUILD_COMBO_CLEAN_FFTLIB_C7504):
+	$(MAKE) -C source/fftlib -f makefile.am62dx.$(subst FFTLIB_C7504_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_MATHLIB_C7504):
+	$(MAKE) -C source/mathlib -f makefile.am62dx.$(subst MATHLIB_C7504_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_VXLIB_C7504):
+	$(MAKE) -C source/vxlib -f makefile.am62dx.$(subst VXLIB_C7504_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_DSPLIB_C7504):
+	$(MAKE) -C source/dsplib -f makefile.am62dx.$(subst DSPLIB_C7504_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_AUDIOLIB_C7504):
+	$(MAKE) -C source/audiolib -f makefile.am62dx.$(subst AUDIOLIB_C7504_,,$(subst _clean,,$@)) clean
+
+$(BUILD_COMBO_CLEAN_TISP_C7504):
+	$(MAKE) -C source/tisp -f makefile.am62dx.$(subst TISP_C7504_,,$(subst _clean,,$@)) clean
+
 $(BUILD_COMBO_CLEAN_dm_stub):
 	$(MAKE) -C source/drivers/device_manager/dm_stub -f makefile.am62dx.$(subst dm_stub_,,$(subst _clean,,$@)) clean
 
@@ -801,6 +872,12 @@ BUILD_COMBO_SCRUB_tsn_combase-freertos = tsn_combase-freertos_r5f.ti-arm-clang_s
 BUILD_COMBO_SCRUB_tsn_gptp-freertos = tsn_gptp-freertos_r5f.ti-arm-clang_scrub
 BUILD_COMBO_SCRUB_tsn_uniconf-freertos = tsn_uniconf-freertos_r5f.ti-arm-clang_scrub
 BUILD_COMBO_SCRUB_tsn_unibase-freertos = tsn_unibase-freertos_r5f.ti-arm-clang_scrub
+BUILD_COMBO_SCRUB_FFTLIB_C7504 = FFTLIB_C7504_c75x.ti-c7000_scrub
+BUILD_COMBO_SCRUB_MATHLIB_C7504 = MATHLIB_C7504_c75x.ti-c7000_scrub
+BUILD_COMBO_SCRUB_VXLIB_C7504 = VXLIB_C7504_c75x.ti-c7000_scrub
+BUILD_COMBO_SCRUB_DSPLIB_C7504 = DSPLIB_C7504_c75x.ti-c7000_scrub
+BUILD_COMBO_SCRUB_AUDIOLIB_C7504 = AUDIOLIB_C7504_c75x.ti-c7000_scrub
+BUILD_COMBO_SCRUB_TISP_C7504 = TISP_C7504_c75x.ti-c7000_scrub
 BUILD_COMBO_SCRUB_dm_stub = dm_stub_r5f.ti-arm-clang_scrub
 BUILD_COMBO_SCRUB_rm_pm_hal = rm_pm_hal_r5f.ti-arm-clang_scrub
 BUILD_COMBO_SCRUB_rm_pm_hal_sbl = rm_pm_hal_sbl_r5f.ti-arm-clang_scrub
@@ -814,7 +891,7 @@ BUILD_COMBO_EXTERNAL_SCRUB_ALL =
 # Combine all Pre-built Components Scrub Targets
 BUILD_COMBO_PREBUILT_SCRUB_ALL =
 
-libs-scrub: $(BUILD_COMBO_SCRUB_ALL)
+libs-scrub: $(BUILD_COMBO_SCRUB_ALL) $(BUILD_COMBO_LINUX_ONLY_SCRUB_ALL)
 
 libs-external-scrub: $(BUILD_COMBO_EXTERNAL_SCRUB_ALL)
 
@@ -909,6 +986,24 @@ $(BUILD_COMBO_SCRUB_tsn_uniconf-freertos):
 
 $(BUILD_COMBO_SCRUB_tsn_unibase-freertos):
 	$(MAKE) -C source/networking/tsn -f makefile.tsn_unibase_freertos.am62dx.$(subst tsn_unibase-freertos_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_FFTLIB_C7504):
+	$(MAKE) -C source/fftlib -f makefile.am62dx.$(subst FFTLIB_C7504_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_MATHLIB_C7504):
+	$(MAKE) -C source/mathlib -f makefile.am62dx.$(subst MATHLIB_C7504_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_VXLIB_C7504):
+	$(MAKE) -C source/vxlib -f makefile.am62dx.$(subst VXLIB_C7504_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_DSPLIB_C7504):
+	$(MAKE) -C source/dsplib -f makefile.am62dx.$(subst DSPLIB_C7504_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_AUDIOLIB_C7504):
+	$(MAKE) -C source/audiolib -f makefile.am62dx.$(subst AUDIOLIB_C7504_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_TISP_C7504):
+	$(MAKE) -C source/tisp -f makefile.am62dx.$(subst TISP_C7504_,,$(subst _scrub,,$@)) scrub
 
 $(BUILD_COMBO_SCRUB_dm_stub):
 	$(MAKE) -C source/drivers/device_manager/dm_stub -f makefile.am62dx.$(subst dm_stub_,,$(subst _scrub,,$@)) scrub
@@ -5224,5 +5319,6 @@ sbl-scrub:
 .PHONY: examples-private examples-private-clean examples-private-scrub
 .PHONY: sbl sbl-clean sbl-scrub
 .PHONY: $(BUILD_COMBO_ALL) $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_SCRUB_ALL)
+.PHONY: $(BUILD_COMBO_LINUX_ONLY_ALL) $(BUILD_COMBO_LINUX_ONLY_CLEAN_ALL) $(BUILD_COMBO_LINUX_ONLY_SCRUB_ALL)
 .PHONY: $(BUILD_COMBO_EXAMPLE_ALL) $(BUILD_COMBO_EXAMPLE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
 .PHONY: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL) $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)

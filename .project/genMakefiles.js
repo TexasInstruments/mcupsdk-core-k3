@@ -3,7 +3,7 @@ const path = require(`path`);
 const fs = require(`fs`);
 const _ = require('lodash');
 
-function genMakefileDeviceTop(component_file_list, example_file_list, device, isInternal) {
+function genMakefileDeviceTop(component_file_list, example_file_list, device, isInternal, linuxOnlyList) {
     let component_make_list = [];
     let example_make_list = [];
     let example_make_projectspec_list = [];
@@ -32,6 +32,10 @@ function genMakefileDeviceTop(component_file_list, example_file_list, device, is
         component_make.name = property.name;
         component_make.tag = tag;
         component_make.relpath = common.path.relative(path.normalize(__dirname + `/../${genFolder}`), property.dirPath);
+        if(property.dependencies)
+        {
+            component_make.dependencies = property.dependencies;
+        }
         if(property.isExternalLibrary === true)
         {
             component_make.isExternalLibrary = true;
@@ -43,6 +47,10 @@ function genMakefileDeviceTop(component_file_list, example_file_list, device, is
         if(property.isPrebuilt === true)
         {
             component_make.isPrebuilt = true;
+        }
+        if(linuxOnlyList && linuxOnlyList.includes(component))
+        {
+            component_make.isLinuxOnly = true;
         }
         for(buildOption of property.buildOptionCombos) {
             buildTarget +=` ${property.name}_${buildOption.cpu}.${buildOption.cgt}`;
@@ -405,14 +413,19 @@ function genMakefilesDevice(device) {
     let component_file_list_top = component_file_list;
 
     let projectFile = require(`./device/project_${device}`);
+    let linuxOnlyList = [];
     if (typeof projectFile.getComponentListWithMakefile !== "undefined")
     {
         let component_file_list_with_makefile = require(`./device/project_${device}`).getComponentListWithMakefile();
         component_file_list_top = component_file_list_top.concat(component_file_list_with_makefile);
     }
+    if (typeof projectFile.getLinuxOnlyComponentList !== "undefined")
+    {
+        linuxOnlyList = projectFile.getLinuxOnlyComponentList();
+    }
 
-    genMakefileDeviceTop(component_file_list_top, example_file_list, device, false);    /* External libs/examples */
-    genMakefileDeviceTop(component_file_list_top, example_file_list, device, true);     /* Internal libs/examples */
+    genMakefileDeviceTop(component_file_list_top, example_file_list, device, false, linuxOnlyList);    /* External libs/examples */
+    genMakefileDeviceTop(component_file_list_top, example_file_list, device, true, linuxOnlyList);     /* Internal libs/examples */
     genMakefileLibrary(component_file_list, device);
     genMakefileExample(example_file_list, device);
     genMakefileProjectSpec(example_file_list, device);

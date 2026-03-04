@@ -36,7 +36,18 @@ const component_file_list = [
 
 
 // List of components where makefile is not generated.
+// Linux-only components (not built on Windows)
+const component_file_list_with_makefile_linux_only = [
+    "source/fftlib/.project/project.js",
+    "source/mathlib/.project/project.js",
+    "source/vxlib/.project/project.js",
+    "source/dsplib/.project/project.js",
+    "source/audiolib/.project/project.js",
+    "source/tisp/.project/project.js",
+];
+
 const component_file_list_with_makefile = [
+    ...component_file_list_with_makefile_linux_only,
     "source/drivers/device_manager/rm_pm_hal/.project/project.js",
     // "source/drivers/device_manager/rm_pm_hal/sbl/.project/project.js",
 ];
@@ -297,6 +308,10 @@ function getComponentListWithMakefile() {
     return component_file_list_with_makefile;
 }
 
+function getLinuxOnlyComponentList() {
+    return component_file_list_with_makefile_linux_only;
+}
+
 function getExampleList() {
     return example_file_list;
 }
@@ -355,6 +370,7 @@ function getFlashAddr() {
 module.exports = {
     getComponentList,
     getComponentListWithMakefile,
+    getLinuxOnlyComponentList,
     getExampleList,
     getSysCfgDevice,
     getSysCfgCpu,

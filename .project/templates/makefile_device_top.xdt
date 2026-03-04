@@ -9,8 +9,16 @@
     let component_target_external_scrub_list_string = [];
     let component_target_prebuilt_clean_list_string = [];
     let component_target_prebuilt_scrub_list_string = [];
+    let component_target_linux_only_list_string = [];
+    let component_target_linux_only_clean_list_string = [];
+    let component_target_linux_only_scrub_list_string = [];
     for (component of args.component_list) {
-        if(component.isExternalLibrary) {
+        if(component.isLinuxOnly) {
+            component_target_linux_only_list_string +=` \$(BUILD_COMBO_${component.name})`
+            component_target_linux_only_clean_list_string +=` \$(BUILD_COMBO_CLEAN_${component.name})`
+            component_target_linux_only_scrub_list_string +=` \$(BUILD_COMBO_SCRUB_${component.name})`
+        }
+        else if(component.isExternalLibrary) {
             component_target_external_list_string +=` \$(BUILD_COMBO_${component.name})`
             component_target_external_clean_list_string +=` \$(BUILD_COMBO_CLEAN_${component.name})`
             component_target_external_scrub_list_string +=` \$(BUILD_COMBO_SCRUB_${component.name})`
@@ -108,7 +116,18 @@ BUILD_COMBO_PREBUILT_ALL =`component_target_prebuilt_list_string`
 # Combine all Private Components
 BUILD_COMBO_PRIVATE_ALL =`component_target_private_list_string`
 
-libs: $(BUILD_COMBO_ALL)
+# Linux-only Components (not built on Windows)
+ifneq ($(OS),Windows_NT)
+BUILD_COMBO_LINUX_ONLY_ALL =`component_target_linux_only_list_string`
+BUILD_COMBO_LINUX_ONLY_CLEAN_ALL =`component_target_linux_only_clean_list_string`
+BUILD_COMBO_LINUX_ONLY_SCRUB_ALL =`component_target_linux_only_scrub_list_string`
+else
+BUILD_COMBO_LINUX_ONLY_ALL =
+BUILD_COMBO_LINUX_ONLY_CLEAN_ALL =
+BUILD_COMBO_LINUX_ONLY_SCRUB_ALL =
+endif
+
+libs: $(BUILD_COMBO_ALL) $(BUILD_COMBO_LINUX_ONLY_ALL)
 
 libs-external: $(BUILD_COMBO_EXTERNAL_ALL)
 
@@ -117,7 +136,13 @@ libs-prebuilt: $(BUILD_COMBO_PREBUILT_ALL)
 libs-private: $(BUILD_COMBO_PRIVATE_ALL)
 
 % for (component of args.component_list) {
-$(BUILD_COMBO_`component.name`):
+%   let depStr = "";
+%   if(component.dependencies) {
+%       for(let dep of component.dependencies) {
+%           depStr += " $(BUILD_COMBO_" + dep + ")";
+%       }
+%   }
+$(BUILD_COMBO_`component.name`):` depStr `
 	$(MAKE) -C `component.relpath` -f makefile`component.tag`.`args.device`.$(subst `component.name`_,,$@) all
 
 % }
@@ -136,7 +161,7 @@ BUILD_COMBO_EXTERNAL_CLEAN_ALL =`component_target_external_clean_list_string`
 # Combine all Pre-built Components Clean
 BUILD_COMBO_PREBUILT_CLEAN_ALL =`component_target_prebuilt_clean_list_string`
 
-libs-clean: $(BUILD_COMBO_CLEAN_ALL)
+libs-clean: $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_LINUX_ONLY_CLEAN_ALL)
 
 libs-external-clean: $(BUILD_COMBO_EXTERNAL_CLEAN_ALL)
 
@@ -162,7 +187,7 @@ BUILD_COMBO_EXTERNAL_SCRUB_ALL =`component_target_external_scrub_list_string`
 # Combine all Pre-built Components Scrub Targets
 BUILD_COMBO_PREBUILT_SCRUB_ALL =`component_target_prebuilt_scrub_list_string`
 
-libs-scrub: $(BUILD_COMBO_SCRUB_ALL)
+libs-scrub: $(BUILD_COMBO_SCRUB_ALL) $(BUILD_COMBO_LINUX_ONLY_SCRUB_ALL)
 
 libs-external-scrub: $(BUILD_COMBO_EXTERNAL_SCRUB_ALL)
 
@@ -397,5 +422,6 @@ sdl-unit-tests: $(BUILD_COMBO_SDL_ALL)
 .PHONY: examples-private examples-private-clean examples-private-scrub
 .PHONY: sbl sbl-clean sbl-scrub
 .PHONY: $(BUILD_COMBO_ALL) $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_SCRUB_ALL)
+.PHONY: $(BUILD_COMBO_LINUX_ONLY_ALL) $(BUILD_COMBO_LINUX_ONLY_CLEAN_ALL) $(BUILD_COMBO_LINUX_ONLY_SCRUB_ALL)
 .PHONY: $(BUILD_COMBO_EXAMPLE_ALL) $(BUILD_COMBO_EXAMPLE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
 .PHONY: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL) $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)

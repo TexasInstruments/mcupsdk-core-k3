@@ -129,6 +129,27 @@ void Udma_initDrvHandle(Udma_DrvHandleInt drvHandle)
         pPktdmaRegs = &drvHandle->pktdmaRegs;
         memset(pPktdmaRegs, 0, sizeof(*pPktdmaRegs));
     }
+	else if(UDMA1_INST_ID_BCDMA_0 == instId)
+    {
+        drvHandle->instType = UDMA_INST_TYPE_LCDMA_BCDMA;
+        pBcdmaRegs = &drvHandle->bcdmaRegs;
+
+        pBcdmaRegs->pGenCfgRegs     = ((CSL_bcdma_gcfgRegs *) CSL_DMASS1_BCDMA_GCFG_BASE);
+//        pBcdmaRegs->pTxChanCfgRegs  = ((CSL_bcdma_txccfgRegs *) CSL_DMASS1_BCDMA_TCHAN_BASE);
+        pBcdmaRegs->pRxChanCfgRegs  = ((CSL_bcdma_rxccfgRegs *) CSL_DMASS1_BCDMA_RCHAN_BASE);
+//        pBcdmaRegs->pTxChanRtRegs   = ((CSL_bcdma_txcrtRegs *) CSL_DMASS1_BCDMA_TCHANRT_BASE);
+        pBcdmaRegs->pRxChanRtRegs   = ((CSL_bcdma_rxcrtRegs *) CSL_DMASS1_BCDMA_RCHANRT_BASE);
+        drvHandle->trigGemOffset    = CSL_DMSS_GEM_BCDMA_TRIGGER_OFFSET;
+        /* Fill other SOC specific parameters by reading from UDMA config
+         * registers */
+        CSL_bcdmaGetCfg(pBcdmaRegs);
+
+        pBcdmaRegs->bcChanCnt += pBcdmaRegs->bcHighCapacityChanCnt;
+        pBcdmaRegs->txChanCnt += pBcdmaRegs->bcHighCapacityChanCnt;
+
+        pPktdmaRegs = &drvHandle->pktdmaRegs;
+        memset(pPktdmaRegs, 0, sizeof(*pPktdmaRegs));
+    }
     else
     {
         drvHandle->instType = UDMA_INST_TYPE_LCDMA_PKTDMA;
@@ -160,6 +181,13 @@ void Udma_initDrvHandle(Udma_DrvHandleInt drvHandle)
         pLcdmaRaRegs->pCredRegs      = (CSL_lcdma_ringacc_credRegs *) CSL_DMASS0_BCDMA_CRED_BASE;
         pLcdmaRaRegs->maxRings       = CSL_DMSS_BCDMA_NUM_BC_CHANS + CSL_DMSS_BCDMA_NUM_TX_CHANS + CSL_DMSS_BCDMA_NUM_RX_CHANS;
     }
+    else if(UDMA1_INST_ID_BCDMA_0 == instId)
+    {
+        pLcdmaRaRegs->pRingCfgRegs   = ((CSL_lcdma_ringacc_ring_cfgRegs *) CSL_DMASS1_BCDMA_RING_BASE);
+        pLcdmaRaRegs->pRingRtRegs    = ((CSL_lcdma_ringacc_ringrtRegs *) CSL_DMASS1_BCDMA_RINGRT_BASE);
+        pLcdmaRaRegs->pCredRegs      = ((CSL_lcdma_ringacc_credRegs *) CSL_DMASS1_BCDMA_CRED_BASE);
+        pLcdmaRaRegs->maxRings       = CSL_DMSS_BCDMA_NUM_RX_HC_CHANS;
+    }
     else
     {
         pLcdmaRaRegs->pRingCfgRegs   = (CSL_lcdma_ringacc_ring_cfgRegs *) CSL_DMASS0_PKTDMA_RING_BASE;
@@ -185,6 +213,22 @@ void Udma_initDrvHandle(Udma_DrvHandleInt drvHandle)
 
     /* IA config init */
     pIaRegs = &drvHandle->iaRegs;
+    if(UDMA1_INST_ID_BCDMA_0 == instId)
+    {
+        pIaRegs->pCfgRegs       = ((CSL_intaggr_cfgRegs *) CSL_DMASS1_INTAGGR_CFG_BASE);
+        pIaRegs->pImapRegs      = ((CSL_intaggr_imapRegs *) CSL_DMASS1_INTAGGR_IMAP_BASE);
+        pIaRegs->pIntrRegs      = ((CSL_intaggr_intrRegs *) CSL_DMASS1_INTAGGR_INTR_BASE);
+        pIaRegs->pMcastRegs     = ((CSL_intaggr_mcastRegs *) CSL_DMASS1_INTAGGR_MCAST_BASE);
+        pIaRegs->pGcntCfgRegs   = ((CSL_intaggr_gcntcfgRegs *) CSL_DMASS1_INTAGGR_GCNTCFG_BASE);
+        pIaRegs->pGcntRtiRegs   = ((CSL_intaggr_gcntrtiRegs *) CSL_DMASS1_INTAGGR_GCNTRTI_BASE);
+        CSL_intaggrGetCfg(pIaRegs);
+
+        drvHandle->iaGemOffset  = CSL_DMSS_GEM_INTA0_SEVI_OFFSET;
+        drvHandle->devIdIa      = TISCI_DEV_DMASS1_INTAGGR_0;
+        drvHandle->devIdCore    = Sciclient_getSelfDevIdCore();
+    }
+    else
+    {
     pIaRegs->pCfgRegs       = (CSL_intaggr_cfgRegs *) CSL_DMASS0_INTAGGR_CFG_BASE;
     pIaRegs->pImapRegs      = (CSL_intaggr_imapRegs *) CSL_DMASS0_INTAGGR_IMAP_BASE;
     pIaRegs->pIntrRegs      = (CSL_intaggr_intrRegs *) CSL_DMASS0_INTAGGR_INTR_BASE;
@@ -226,6 +270,7 @@ void Udma_initDrvHandle(Udma_DrvHandleInt drvHandle)
     utcInfo->druRegs       = ((CSL_DRU_t *) UDMA_UTC_BASE_DRU0);
     utcInfo->numQueue      = CSL_DMSS_UTC_VPAC_TC0_QUEUE_CNT;
 
+    }
     /* Init other variables */
     if(UDMA_INST_ID_BCDMA_0 == instId)
     {
@@ -249,6 +294,29 @@ void Udma_initDrvHandle(Udma_DrvHandleInt drvHandle)
         drvHandle->blkCopyTrIrqOffset   = TISCI_BCDMA0_BC_DC_OES_IRQ_SRC_IDX_START;
         drvHandle->txTrIrqOffset        = TISCI_BCDMA0_TX_DC_OES_IRQ_SRC_IDX_START;
         drvHandle->rxTrIrqOffset        = TISCI_BCDMA0_RX_DC_OES_IRQ_SRC_IDX_START;
+		drvHandle->devIdPsil            = TISCI_DEV_DMASS0;
+    }
+    else if(UDMA1_INST_ID_BCDMA_0 == instId)
+    {
+        drvHandle->txChOffset           = 0; //pBcdmaRegs->bcChanCnt;
+        drvHandle->rxChOffset           = drvHandle->txChOffset + pBcdmaRegs->splitTxChanCnt;
+       /* The srcIdx passed to Sciclient_rmIrqset API for configuring DMA Completion/Ring events,
+        * will be ringNum + the corresponding following offset.
+        * So setting the offset as TISCI Start Idx - corresponding ringNum Offset (if any) */
+//        drvHandle->txRingIrqOffset      = TISCI_BCDMA1_TX_RC_OES_IRQ_SRC_IDX_START - drvHandle->txChOffset;
+        drvHandle->rxRingIrqOffset      = TISCI_BCDMA1_RX_RC_OES_IRQ_SRC_IDX_START - drvHandle->rxChOffset;
+        drvHandle->udmapSrcThreadOffset = CSL_PSILCFG_DMSS_CSI_BCDMA_STRM_PSILS_THREAD_OFFSET;
+        drvHandle->udmapDestThreadOffset= CSL_PSILCFG_DMSS_CSI_BCDMA_STRM_PSILD_THREAD_OFFSET;
+        drvHandle->maxRings             = CSL_DMSS_BCDMA_NUM_RX_HC_CHANS;
+        drvHandle->devIdRing            = TISCI_DEV_DMASS1_BCDMA_0;
+        drvHandle->devIdUdma            = TISCI_DEV_DMASS1_BCDMA_0;
+       /* The srcIdx passed to Sciclient_rmIrqset API for configuring TR events,
+        * will be chNum + the corresponding following offset.
+        * So setting the offset as TISCI Start Idx - corresponding chNum Offset (if any) */
+        drvHandle->srcIdTrIrq           = drvHandle->devIdIa;
+//        drvHandle->txTrIrqOffset        = TISCI_BCDMA1_TX_DC_OES_IRQ_SRC_IDX_START;
+        drvHandle->rxTrIrqOffset        = TISCI_BCDMA1_RX_DC_OES_IRQ_SRC_IDX_START;
+		drvHandle->devIdPsil            = TISCI_DEV_DMASS1;
     }
     else
     {
@@ -267,8 +335,8 @@ void Udma_initDrvHandle(Udma_DrvHandleInt drvHandle)
         drvHandle->blkCopyTrIrqOffset   = 0U;
         drvHandle->txTrIrqOffset        = 0U;
         drvHandle->rxTrIrqOffset        = 0U;
+        drvHandle->devIdPsil            = TISCI_DEV_DMASS0;
     }
-    drvHandle->devIdPsil     = TISCI_DEV_DMASS0;
     drvHandle->extChOffset  = 0U;
     drvHandle->srcIdRingIrq = drvHandle->devIdIa;
 
@@ -287,7 +355,7 @@ uint32_t Udma_isCacheCoherent(void)
 uint8_t Udma_isValidInstance(uint32_t instId)
 {
     uint8_t result = (uint8_t)FALSE;
-    if((UDMA_INST_ID_BCDMA_0 == instId) || (UDMA_INST_ID_PKTDMA_0 == instId))
+    if((UDMA_INST_ID_BCDMA_0 == instId) || (UDMA_INST_ID_PKTDMA_0 == instId) || (UDMA1_INST_ID_BCDMA_0 == instId))
     {
         result = (uint8_t)TRUE;
     }

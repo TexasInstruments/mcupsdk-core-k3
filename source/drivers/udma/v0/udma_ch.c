@@ -4314,7 +4314,7 @@ int32_t Udma_chReset(Udma_ChHandle chHandle)
                 peerOpts.regVal = 0;
 
                 retVal += CSL_bcdmaChanOp(&drvHandle->bcdmaRegs, CSL_BCDMA_CHAN_OP_SET_REMOTE_PEER_REG,
-                                            CSL_BCDMA_CHAN_TYPE_SPLIT_TX, chHandleInt->txChNum,
+                                            CSL_BCDMA_CHAN_TYPE_SPLIT_RX, chHandleInt->rxChNum,
                                             &peerOpts);
 
                 /* Reset stats */

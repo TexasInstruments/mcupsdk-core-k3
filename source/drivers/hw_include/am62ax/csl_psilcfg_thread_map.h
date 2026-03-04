@@ -168,7 +168,11 @@
 #define CSL_PSILCFG_DMSS_SAUL0_PSILS_THREAD_CNT                           (4U)
 #define CSL_PSILCFG_DMSS_SAUL0_PSILD_THREAD_OFFSET                        (CSL_PSILCFG_DEST_THREAD_OFFSET | CSL_PSILCFG_DMSS_SAUL0_PSILS_THREAD_OFFSET)
 #define CSL_PSILCFG_DMSS_SAUL0_PSILD_THREAD_CNT                           (2U)
-
+/*-----------------------------------------------------------------------------
+ * CSI PSIL Map
+ *---------------------------------------------------------------------------*/
+#define CSL_PSILCFG_NAVSS_MAIN_CSI_PSILS_THREAD_OFFSET                          (0x5000U)
+#define CSL_PSILCFG_NAVSS_MAIN_CSI_PSILS_THREAD_CNT                             (256U)
 /* @} */
 
 /**
@@ -188,6 +192,19 @@
  *
  *  @{
  */
+
+/**
+ *  \anchor CSL_PsilCsiCh
+ *  \name PSIL channels for CSI RX
+ *
+ *  List of all CSI channels
+ *
+ *  @{
+ */
+/* AM62A CSIRX PSIL threads streaming to DMSS_CSI start at 0x5000 */
+#define CSL_PSIL_CSI_RX0_CH0                (CSL_PSILCFG_DMSS_CSI_PSILS_THREAD_OFFSET + 0x000U)
+/* Original macro below from Magna, unsure why adding offset of 0x40 ? */
+//#define CSL_PSIL_CSI_RX0_CH0                (CSL_PSILCFG_NAVSS_MAIN_CSI_PSILS_THREAD_OFFSET + 0x40U  + 0U)
 
 /*
  * PDMA SPI MCSPI TX Channels

@@ -411,10 +411,7 @@ static StackType_t uxIdleTaskStack[ configMINIMAL_STACK_SIZE ] __attribute__((al
      * Note that, as the array is necessarily of type StackType_t,
      * configMINIMAL_STACK_SIZE is specified in words, not bytes.
      */
-    /* Stack size is total size - stack depth type, so that top of stack is pointing to the memory boundary. 
-     * Similar implimentation in freertos task creation.
-     */
-    *pulIdleTaskStackSize = (sizeof(uxIdleTaskStack)/sizeof(uxIdleTaskStack[0])) - (sizeof(configSTACK_DEPTH_TYPE));
+    *pulIdleTaskStackSize = (sizeof(uxIdleTaskStack)/sizeof(uxIdleTaskStack[0]));
 }
 
 /* configSUPPORT_STATIC_ALLOCATION and configUSE_TIMERS are both set to 1, so the
@@ -445,10 +442,7 @@ static StackType_t uxTimerTaskStack[ configMINIMAL_STACK_SIZE ] __attribute__((a
      * Note that, as the array is necessarily of type StackType_t,
      * configTIMER_TASK_STACK_DEPTH is specified in words, not bytes.
      */
-    /* Stack size is total size - stack depth type, so that top of stack is pointing to the memory boundary. 
-     * Similar implimentation in freertos task creation.
-     */
-    *pulTimerTaskStackSize = (sizeof(uxTimerTaskStack)/sizeof(uxTimerTaskStack[0])) - (sizeof(configSTACK_DEPTH_TYPE));
+    *pulTimerTaskStackSize = (sizeof(uxTimerTaskStack)/sizeof(uxTimerTaskStack[0]));
 }
 
 

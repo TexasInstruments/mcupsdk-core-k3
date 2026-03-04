@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "c75ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.23.0+4000"}
+ * @versions {"tool":"1.24.2+4234"}
  */
 
 /**
@@ -54,6 +54,7 @@ aasrc1.aasrcChannel[2].txLoopjobBuf                 = "gGroupTxLoopjobBuf0";
 aasrc1.aasrcChannel[2].rxLoopjobBuf                 = "gGroupRxLoopjobBuf0";
 aasrc1.aasrcChannel[2].txLoopjobBufLength           = 5120;
 aasrc1.aasrcChannel[2].rxLoopjobBufLength           = 5120;
+aasrc1.aasrcChannel[2].channelCount                 = "5";
 aasrc1.aasrcReceiveClockZone[0].$name               = "CONFIG_AASRC_CLOCKZONE0";
 aasrc1.aasrcReceiveClockZone[0].clkZoneDiv          = 128;
 aasrc1.aasrcReceiveClockZone[0].isClkZoneDivEnable  = true;
@@ -131,7 +132,6 @@ mmu_armv810.attribute = "MAIR4";
 mmu_armv810.pAddr     = 0x8027F000;
 mmu_armv810.vAddr     = 0x8027F000;
 mmu_armv810.$name     = "CCS_DEBUG_LOG_MEM";
-
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future

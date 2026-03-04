@@ -316,6 +316,7 @@ const example_file_list = [
     "test/drivers/optiflash/test_optiflash_system/.project/project.js",
     "test/drivers/pmu/.project/project_am275x_wkupr5.js",
     "test/drivers/pmu/.project/project.js",
+    "test/drivers/pmu/test_pmu_system/.project/project.js",
     "test/drivers/rtc/.project/project_am275x.js",
     "test/drivers/rtc/test_rtc_system/.project/project.js",
     "test/drivers/sciclient/sciclient_get_version/.project/project_am275x_wkupr5.js",

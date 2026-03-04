@@ -124,7 +124,7 @@ volatile uint32_t waitForUserTrigger = 0u;
 static void TestUtils_resultMsgHandler(uint16_t remoteCoreId, uint16_t localClientId, uint32_t msgValue, void *args);
 static void TestUtils_caseIdMsgHandler(uint16_t remoteCoreId, uint16_t localClientId, uint32_t msgValue, void *args);
 static int32_t TestUtils_testCase(int32_t testCaseId, void* args);
-static void TetsUtils_executeTestCase(void* args);
+static void TestUtils_executeTestCase(void* args);
 static void TestUtils_ipcRemoteCoreStart();
 static void TestUtils_ipcMainCoreStart();
 
@@ -319,7 +319,7 @@ static int32_t TestUtils_testCase(int32_t testCaseId, void* args)
  *
  * @param args Pointer to the test case ID
  */
-static void TetsUtils_executeTestCase(void* args)
+static void TestUtils_executeTestCase(void* args)
 {
     int32_t status = SystemP_FAILURE;
     int32_t testStatus = SystemP_FAILURE;
@@ -462,7 +462,7 @@ static void TestUtils_ipcMainCoreStart()
 
     for (i = 0; gTestCase[i].testFptr != NULL; i++)
     {
-        RUN_TEST(TetsUtils_executeTestCase, gTestCase[i].testCaseId, (void*)&gTestCase[i].testCaseId);
+        RUN_TEST(TestUtils_executeTestCase, gTestCase[i].testCaseId, (void*)&gTestCase[i].testCaseId);
     }
 
     UNITY_END();

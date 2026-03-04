@@ -29,6 +29,7 @@ FILES_common := \
     nor_spi_sfdp.c \
 
 FILES_PATH_common = \
+    control \
     flash \
     flash/ospi \
     flash/sfdp \
@@ -38,6 +39,7 @@ FILES_PATH_common = \
     eeprom \
     ethphy/enet/rtos_drivers/src \
     ethphy/enet/rtos_drivers/include \
+    utils \
 
 INCLUDES_common := \
     -I${MCU_PLUS_SDK_PATH}/source \

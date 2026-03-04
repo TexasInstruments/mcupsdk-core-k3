@@ -17,6 +17,8 @@ LIBNAME:=board.am62ax.r5f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
     dp83867.c \
+    board_control.c \
+    board_utils.c \
     eeprom.c \
     eeprom_at24c512c.c \
     flash.c \
@@ -32,6 +34,7 @@ FILES_common := \
     phy_common_priv.c \
 
 FILES_PATH_common = \
+    control \
     flash \
     flash/ospi \
     flash/sfdp \
@@ -41,6 +44,7 @@ FILES_PATH_common = \
     eeprom \
     ethphy/enet/rtos_drivers/src \
     ethphy/enet/rtos_drivers/include \
+    utils \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \

@@ -19,6 +19,7 @@ FILES_common := \
     ioexp_tca6424.c \
 
 FILES_PATH_common = \
+    control \
     flash \
     flash/ospi \
     flash/sfdp \
@@ -28,6 +29,7 @@ FILES_PATH_common = \
     eeprom \
     ethphy/enet/rtos_drivers/src \
     ethphy/enet/rtos_drivers/include \
+    utils \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include \

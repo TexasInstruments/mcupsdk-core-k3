@@ -61,7 +61,10 @@ extern "C" {
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-/* None */
+/**
+ * \brief To send the MSB of a register offset address first
+ */
+#define BOARD_I2C_REG_ADDR_MSB_FIRST        (0x0U)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -86,6 +89,9 @@ typedef struct BOARD_HdmiCfg_s
 
 void Board_fpdUb960GetI2CAddr(uint8_t *i2cAddr,
                               uint32_t csiInst);
+
+void Board_fpdUb9702GetI2CAddr(uint8_t *i2cAddr,
+                               uint32_t csiInst);
 
 int32_t Board_i2c8BitRegWrSingle(void *handle,
                                  uint32_t slaveAddr,
@@ -112,6 +118,14 @@ int32_t Board_i2c8BitRegRd(void *handle,
                            uint32_t i2cTimeout);
 
 int32_t Board_i2c16BitRegWr(void *handle,
+                            uint32_t slaveAddr,
+                            uint16_t regAddr,
+                            uint8_t *regData,
+                            uint8_t numOfBytes,
+                            uint8_t byteOrdSel,
+                            uint32_t i2cTimeout);
+
+int32_t Board_i2c16BitRegRd(void   *handle,
                             uint32_t slaveAddr,
                             uint16_t regAddr,
                             uint8_t *regData,

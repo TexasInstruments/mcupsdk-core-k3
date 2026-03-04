@@ -45,6 +45,7 @@
 
 #define BOARD_CSI_IOEXP_ADDR                (0x23)
 #define BOARD_CSI_IOEXP_PIN_NUM             (0x0)
+#define I2C_TRANSACTION_TIMEOUT             (2000U)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -101,6 +102,27 @@ void Board_fpdUb960GetI2CAddr(uint8_t *i2cAddr,
     else if (csiInst == 1)
     {
         *i2cAddr = 0x36U;
+    }
+}
+
+void Board_fpdUb9702GetI2CAddr(uint8_t *i2cAddr,
+                             uint32_t csiInst)
+{
+    if (csiInst == 0U)
+    {
+        *i2cAddr = 0x3DU;
+    }
+    else if (csiInst == 1U)
+    {
+        *i2cAddr = 0x30U;
+    }
+    else if(csiInst == 2U)
+    {
+        *i2cAddr = 0x32U;
+    }
+    else
+    {
+        DebugP_log("Enter a correct hub instance");
     }
 }
 
@@ -274,4 +296,64 @@ int32_t Board_i2c16BitRegWr(void *handle,
     status =   I2C_transfer(i2cHandle, &transaction);
 
     return status;
+}
+
+int32_t Board_i2c16BitRegRd(void   *handle,
+                                 uint32_t slaveAddr,
+                                 uint16_t regAddr,
+                                 uint8_t *regData,
+                                 uint8_t numOfBytes,
+                                 uint8_t byteOrdSel,
+                                 uint32_t i2cTimeout)
+{
+    int32_t ret = 0;
+    I2C_Transaction transaction;
+    uint8_t tx[2];
+
+    I2C_Handle i2cHandle = (I2C_Handle)handle;
+
+    /* Initializes the I2C transaction structure with default values */
+    I2C_Transaction_init(&transaction);
+
+    transaction.targetAddress = slaveAddr;
+    transaction.writeBuf     = &tx[0];
+    transaction.writeCount   = 2;
+    transaction.readBuf      = NULL;
+    transaction.readCount    = 0;
+    transaction.timeout      = i2cTimeout;
+
+    /* 16-bit regAddr data to be sent */
+    if(byteOrdSel == BOARD_I2C_REG_ADDR_MSB_FIRST)
+    {
+        tx[0] = (uint8_t)((regAddr & 0xFF00) >> 8);
+        tx[1] = (uint8_t)(regAddr & 0x00FF);
+    }
+    else
+    {
+        tx[0] = (uint8_t)(regAddr & 0x00FF);
+        tx[1] = (uint8_t)((regAddr & 0xFF00) >> 8);
+    }
+
+    ret = I2C_transfer(i2cHandle, &transaction);
+    if(ret != I2C_STS_SUCCESS)
+    {
+        DebugP_log("Failing while transmitting the rd reg addr with error code - %d\n", ret);
+        ret = -1;
+    }
+
+    if (ret == I2C_STS_SUCCESS)
+    {
+        transaction.writeBuf     = NULL;
+        transaction.writeCount   = 0;
+        transaction.readBuf      = regData;
+        transaction.readCount    = numOfBytes;
+
+        ret = I2C_transfer(i2cHandle, &transaction);
+        if(ret != I2C_STS_SUCCESS)
+        {
+            DebugP_log("Failing while reading the register data by returning - %d\n", ret);
+            ret = -1;
+        }
+    }
+    return ret;
 }

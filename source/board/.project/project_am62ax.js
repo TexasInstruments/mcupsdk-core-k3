@@ -6,6 +6,8 @@ let device = "am62ax";
 const files_r5f={
     common: [
         "dp83867.c",
+        "board_control.c",
+        "board_utils.c",
         "eeprom.c",
         "eeprom_at24c512c.c",
         "flash.c",
@@ -45,6 +47,7 @@ const files_a53 = {
 };
 const filedirs = {
     common: [
+        "control",
         "flash",
         "flash/ospi",
         "flash/sfdp",
@@ -54,6 +57,7 @@ const filedirs = {
         "eeprom",
         "ethphy/enet/rtos_drivers/src",
         "ethphy/enet/rtos_drivers/include",
+        "utils",
     ],
 };
 

@@ -520,18 +520,11 @@ static int32_t AASRC_prepareDmaIcnts(AASRC_ChObj *chObj, uint64_t byteCnt, uint8
                         waterLevel = 1U;
                     }
 
-                    if(chObj->txDmaIcnt.initDone != AASRC_TXN_COUNT_OVERRIDE)
+                    if((chObj->rcvObj.txnLoopjob.sampleCount*WORD_BYTE_COUNT) != byteCnt)
                     {
-                        if((chObj->rcvObj.txnLoopjob.sampleCount*WORD_BYTE_COUNT) != byteCnt)
-                        {
-                            DebugP_logError("Keep the transaction count same as loopjob count \r\n");
-                            status = AASRC_EFAIL;
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        chObj->rcvObj.txnLoopjob.sampleCount = (uint32_t)byteCnt/(WORD_BYTE_COUNT);
+                        DebugP_logError("Keep the transaction count same as loopjob count \r\n");
+                        status = AASRC_EFAIL;
+                        break;
                     }
 
                     if((byteCnt % (WORD_BYTE_COUNT * waterLevel)) != 0U)
@@ -607,20 +600,13 @@ static int32_t AASRC_prepareDmaIcnts(AASRC_ChObj *chObj, uint64_t byteCnt, uint8
                         waterLevel = 1U;
                     }
 
-                    if(chObj->rxDmaIcnt.initDone != AASRC_TXN_COUNT_OVERRIDE)
+                    if((chObj->xmtObj.txnLoopjob.sampleCount * WORD_BYTE_COUNT) != txnByteCnt)
                     {
-                        if((chObj->xmtObj.txnLoopjob.sampleCount * WORD_BYTE_COUNT) != txnByteCnt)
-                        {
-                            DebugP_logError("Keep the transaction count same as loopjob count \r\n");
-                            status = AASRC_EFAIL;
-                            break;
-                        }
+                        DebugP_logError("Keep the transaction count same as loopjob count \r\n");
+                        status = AASRC_EFAIL;
+                        break;
                     }
-                    else
-                    {
-                        chObj->xmtObj.txnLoopjob.sampleCount = ((uint32_t)byteCnt) / (WORD_BYTE_COUNT);
-                    }
-
+                    
                     if((byteCnt % (WORD_BYTE_COUNT * waterLevel)) != 0U)
                     {
                         DebugP_logError("Keep the transaction count multiple of fifo water level \r\n");

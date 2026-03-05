@@ -58,7 +58,6 @@ extern "C" {
 #define AASRC_MONO_CHANNELS_PER_ASRC_CHANNEL    (2U)
 #define AASRC_MAX_NUM_MONO_CHANNELS             (AASRC_MAX_NUM_ASRC_CHANNELS * AASRC_MONO_CHANNELS_PER_ASRC_CHANNEL)
 #define AASRC_MAX_NUM_GROUP_CHANNELS            (4U)
-#define AASRC_TXN_COUNT_OVERRIDE                (0xA5U)
 
 /* ========================================================================== */
 /*                      Global Structure Definitions                          */

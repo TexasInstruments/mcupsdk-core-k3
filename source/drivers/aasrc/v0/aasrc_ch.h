@@ -524,6 +524,34 @@ int32_t AASRC_isChEnabled(AASRC_ChHandle chHandle, uint32_t *isEnabled);
  */
 int32_t AASRC_chClose(AASRC_ChHandle chHandle);
 
+/**
+ * \brief Function to set the Tx transaction count
+ *
+ * \param chHandle AASRC_ChHandle
+ * \param txnCount Tx transaction count
+ *
+ * \return  Success/Failure for configuration
+ *
+ * Caution: This API should be called before \ref AASRC_chEnable.
+ *          User needs to ensure the transaction count is matching with the
+ *          loopjob size.
+*/
+int32_t AASRC_setTxTxnCount(AASRC_ChHandle chHandle, uint32_t txnCount);
+
+/**
+ * \brief Function to set the Rx transaction count
+ *
+ * \param chHandle AASRC_ChHandle
+ * \param txnCount Rx transaction count
+ *
+ * \return  Success/Failure for configuration
+ *
+ * Caution: This API should be called before \ref AASRC_chEnable.
+ *          User needs to ensure the transaction count is matching with the
+ *          loopjob size.
+*/
+int32_t AASRC_setRxTxnCount(AASRC_ChHandle chHandle, uint32_t txnCount);
+
 /* ========================================================================== */
 /*                       Static Function Definitions                          */
 /* ========================================================================== */

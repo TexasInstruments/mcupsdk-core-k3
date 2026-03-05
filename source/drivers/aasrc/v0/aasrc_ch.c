@@ -1730,3 +1730,41 @@ static int32_t AASRC_chValidateClockRatios(float clkRxFreq,
 
     return status;
 }
+
+int32_t AASRC_setTxTxnCount(AASRC_ChHandle chHandle, uint32_t txnCount)
+{
+    int32_t status = SystemP_SUCCESS;
+    AASRC_ChObj *chObj = NULL;
+
+    if ((NULL == chHandle) || (0U == txnCount))
+    {
+        status = SystemP_FAILURE;
+    }
+
+    if(status == SystemP_SUCCESS)
+    {
+        chObj = ((AASRC_ChObj *)chHandle);
+        chObj->xmtObj.txnLoopjob.sampleCount = txnCount;
+    }
+
+    return status;
+}
+
+int32_t AASRC_setRxTxnCount(AASRC_ChHandle chHandle, uint32_t txnCount)
+{
+    int32_t status = SystemP_SUCCESS;
+    AASRC_ChObj *chObj = NULL;
+
+    if ((NULL == chHandle) || (0U == txnCount))
+    {
+        status = SystemP_FAILURE;
+    }
+
+    if(status == SystemP_SUCCESS)
+    {
+        chObj = ((AASRC_ChObj *)chHandle);
+        chObj->rcvObj.txnLoopjob.sampleCount = txnCount;
+    }
+
+    return status;
+}

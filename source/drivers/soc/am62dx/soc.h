@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -120,6 +120,20 @@ extern "C"
  * \brief Switch value for EMMC primary boot mode
  */
 #define SOC_PRIMARY_BOOTMODE_EMMC       (0x9)
+
+/**
+ * \brief IO Drive Strength Register offsets
+ */
+#define SOC_H_IO_DRVSTRNGTH0    (0x40C0U)
+#define SOC_H_IO_DRVSTRNGTH1    (0x40C4U)
+#define SOC_V_IO_DRVSTRNGTH0    (0x40D0U)
+#define SOC_V_IO_DRVSTRNGTH1    (0x40D4U)
+
+/**
+ * \brief IO Drive Strength field definitions
+ */
+#define SOC_IO_DRVSTRNGTH_MASK  CSL_MCU_CTRL_MMR_CFG0_H_IO_DRVSTRNGTH0_DRV_STR_MASK
+#define SOC_IO_DRVSTRNGTH_MAX   CSL_MCU_CTRL_MMR_CFG0_H_IO_DRVSTRNGTH0_DRV_STR_MAX
 
 /**
  * \brief Enable clock to specified module
@@ -384,6 +398,15 @@ void SOC_setFSSCtrlFlashBootSize(void);
  * \return Physical Address
  */
 uint64_t Soc_getPhyAddr(uint64_t virtAddr);
+
+/**
+ * \brief Fix fast mode drive strength
+ *
+ * Some devices have all drive strengths hardcoded to the nominal value.
+ * This function updates the drive strength registers on boot to the right
+ * values for fast drive strength. Only fast mode is supported and fixed.
+ */
+void SOC_fixFastDriveStrength(void);
 
 /** @} */
 

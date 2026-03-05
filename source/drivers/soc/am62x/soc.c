@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2022-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2022-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -974,4 +974,40 @@ void SOC_setFSSCtrlFlashBootSize(void)
 uint64_t Soc_getPhyAddr(uint64_t virtAddr)
 {
     return virtAddr;
+}
+
+/* Fast mode drive strength fix
+ * Cause: Some devices have all drive strengths hardcoded to the nominal value
+ * Solution: Update the drive strength registers on boot to the right values for fast drive strength
+ * Note: Only fast mode is supported and fixed
+ */
+void SOC_fixFastDriveStrength(void){
+    uint32_t base, val, reg;
+
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, 1);
+    base = (uint32_t) AddrTranslateP_getLocalAddr(CSL_MCU_CTRL_MMR0_CFG0_BASE);
+
+    /* H Drive strength: add 2 to default value (cap at max) */
+    val = (CSL_REG32_RD(base + SOC_H_IO_DRVSTRNGTH0) & SOC_IO_DRVSTRNGTH_MASK);
+    val += 2U;
+    if (val > SOC_IO_DRVSTRNGTH_MAX)
+    {
+        val = SOC_IO_DRVSTRNGTH_MAX;
+    }
+
+    reg = CSL_REG32_RD(base + SOC_H_IO_DRVSTRNGTH1);
+    CSL_REG32_WR(base + SOC_H_IO_DRVSTRNGTH1, (reg & ~SOC_IO_DRVSTRNGTH_MASK) | val);
+
+    /* V Drive strength: add 2 to default value (cap at max) */
+    val = (CSL_REG32_RD(base + SOC_V_IO_DRVSTRNGTH0) & SOC_IO_DRVSTRNGTH_MASK);
+    val += 2U;
+    if (val > SOC_IO_DRVSTRNGTH_MAX)
+    {
+        val = SOC_IO_DRVSTRNGTH_MAX;
+    }
+
+    reg = CSL_REG32_RD(base + SOC_V_IO_DRVSTRNGTH1);
+    CSL_REG32_WR(base + SOC_V_IO_DRVSTRNGTH1, (reg & ~SOC_IO_DRVSTRNGTH_MASK) | val);
+
+    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MCU, 1);
 }

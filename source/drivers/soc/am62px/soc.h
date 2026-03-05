@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -108,6 +108,20 @@ extern "C"
 #define SOC_SILICON_REVISION_1_1            (0x11U)
 #define SOC_SILICON_REVISION_1_2            (0x12U)
 #define SOC_SILICON_REVISION_UNDEF          (0xFFU)
+
+/**
+ * \brief IO Drive Strength Register offsets
+ */
+#define SOC_H_IO_DRVSTRNGTH0    (0x40C0U)
+#define SOC_H_IO_DRVSTRNGTH1    (0x40C4U)
+#define SOC_V_IO_DRVSTRNGTH0    (0x40D0U)
+#define SOC_V_IO_DRVSTRNGTH1    (0x40D4U)
+
+/**
+ * \brief IO Drive Strength field definitions
+ */
+#define SOC_IO_DRVSTRNGTH_MASK  (0xFU)
+#define SOC_IO_DRVSTRNGTH_MAX   (0xFU)
 
 /**
  * \brief Enable clock to specified module
@@ -357,6 +371,15 @@ uint64_t Soc_getPhyAddr(uint64_t virtAddr);
  * \return Silicon revision version
  */
 uint32_t SOC_getSiliconRevisionVersion(void);
+
+/**
+ * \brief Fix fast mode drive strength
+ *
+ * Some devices have all drive strengths hardcoded to the nominal value.
+ * This function updates the drive strength registers on boot to the right
+ * values for fast drive strength. Only fast mode is supported and fixed.
+ */
+void SOC_fixFastDriveStrength(void);
 
 /** @} */
 

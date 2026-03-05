@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -172,6 +172,8 @@ uint32_t uiPortGetRunTimeCounterValue();
 #define INCLUDE_xTaskGetIdleTaskHandle  (1)
 #define INCLUDE_xSemaphoreGetMutexHolder (1)
 
+/* FPU support mode: 1 = manual (call vPortTaskUsesFPU), 2 = automatic (all tasks) */
+#define configUSE_TASK_FPU_SUPPORT       (2)
 
 #ifdef __cplusplus
 }

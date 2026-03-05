@@ -48,7 +48,7 @@
 #include <drivers/sciclient/include/tisci/am62ax/tisci_boardcfg_constraints.h>
 #include <drivers/sciclient/include/tisci/am62ax/tisci_devices.h>
 
-#define TISCI_RESASG_ENTRIES                                 141
+#define TISCI_RESASG_ENTRIES                                 147
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -930,21 +930,57 @@ __attribute__(( aligned(128), section(".boardcfg_data") )) =
         },
         {
             .num_resource = 6,
+            .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS1_BCDMA_0, TISCI_RESASG_SUBTYPE_BCDMA_RING_SPLIT_TR_RX_CHAN),
+            .start_resource = 0,
+            .host_id = TISCI_HOST_ID_MAIN_0_R5_1,
+        },
+        {
+            .num_resource = 6,
             .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS1_BCDMA_0, TISCI_RESASG_SUBTYPE_BCDMA_SPLIT_TR_RX_CHAN),
             .start_resource = 0,
             .host_id = TISCI_HOST_ID_A53_2,
         },
         {
-            .num_resource = 8,
+            .num_resource = 6,
+            .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS1_BCDMA_0, TISCI_RESASG_SUBTYPE_BCDMA_SPLIT_TR_RX_CHAN),
+            .start_resource = 0,
+            .host_id = TISCI_HOST_ID_MAIN_0_R5_1,
+        },
+        {
+            .num_resource = 5,
             .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS1_INTAGGR_0, TISCI_RESASG_SUBTYPE_IA_VINT),
             .start_resource = 0,
             .host_id = TISCI_HOST_ID_A53_2,
         },
         {
-            .num_resource = 128,
+            .num_resource = 3,
+            .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS1_INTAGGR_0, TISCI_RESASG_SUBTYPE_IA_VINT),
+            .start_resource = 5,
+            .host_id = TISCI_HOST_ID_MAIN_0_R5_0,
+        },
+        {
+            .num_resource = 3,
+            .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS1_INTAGGR_0, TISCI_RESASG_SUBTYPE_IA_VINT),
+            .start_resource = 5,
+            .host_id = TISCI_HOST_ID_MAIN_0_R5_1,
+        },
+        {
+            .num_resource = 64,
             .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS1_INTAGGR_0, TISCI_RESASG_SUBTYPE_GLOBAL_EVENT_SEVT),
             .start_resource = 12288,
             .host_id = TISCI_HOST_ID_A53_2,
+        },
+        {
+            .num_resource = 64,
+            .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS1_INTAGGR_0, TISCI_RESASG_SUBTYPE_GLOBAL_EVENT_SEVT),
+            .start_resource = 12352,
+            .host_id = TISCI_HOST_ID_MAIN_0_R5_0,
+        },
+        {
+            .num_resource = 64,
+            .type = TISCI_RESASG_UTYPE (TISCI_DEV_DMASS1_INTAGGR_0, TISCI_RESASG_SUBTYPE_GLOBAL_EVENT_SEVT),
+            .start_resource = 12352,
+            .host_id = TISCI_HOST_ID_MAIN_0_R5_1,
         },
         {
             .num_resource = 6,

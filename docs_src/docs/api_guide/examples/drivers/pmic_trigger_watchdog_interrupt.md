@@ -37,6 +37,17 @@ application to get the expected result.
 
 \endcond
 
+\cond SOC_AM275X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/pmic/pmic_trigger_watchdog_interrupt
+
+\endcond
+
 # Steps
 
 - **When using CCS projects to build**, import the CCS project for the required combination

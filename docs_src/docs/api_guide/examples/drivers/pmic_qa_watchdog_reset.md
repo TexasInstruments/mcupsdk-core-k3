@@ -37,6 +37,17 @@ application to get the expected result.
 
 \endcond
 
+\cond SOC_AM275X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/pmic/pmic_qa_watchdog_reset
+
+\endcond
+
 # Steps
 
 - **When using CCS projects to build**, import the CCS project for the required combination
@@ -52,7 +63,10 @@ through SBL to get the expected results.
           python uart_uniflash.py -p /dev/ttyUSB0 --cfg=../../examples/drivers/pmic/pmic_qa_watchdog_reset/am62px-sk/default_pmic_qa_watchdog_reset_hs_fs.cfg
 \endcond
 \cond SOC_AM62DX
-        python uart_uniflash.py -p /dev/ttyUSB1 --cfg=../../examples/drivers/pmic/pmic_trigger_watchdog_reset/am62dx-evm/default_pmic_qa_watchdog_reset_hs_fs.cfg
+        python uart_uniflash.py -p /dev/ttyUSB1 --cfg=../../examples/drivers/pmic/pmic_qa_watchdog_reset/am62dx-evm/default_pmic_qa_watchdog_reset_hs_fs.cfg
+\endcond        
+\cond SOC_AM275X
+        python uart_uniflash.py -p /dev/ttyACM0 --cfg=../../examples/drivers/pmic/pmic_qa_watchdog_reset/am275x-evm/default_pmic_qa_watchdog_reset_hs_fs.cfg
 \endcond
 - Power OFF and change the boot mode to  \ref BOOTMODE_OSPI
 - Logs should appear at the MCU_UART0

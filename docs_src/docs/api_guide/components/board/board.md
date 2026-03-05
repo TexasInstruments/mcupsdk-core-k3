@@ -26,4 +26,5 @@ It consists of below sub-modules
 \endcond
 \cond SOC_AM275X
 - \subpage BOARD_HYPERRAM_PAGE
+- \subpage BOARD_PMIC_PAGE
 \endcond

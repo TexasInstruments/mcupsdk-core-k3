@@ -374,6 +374,12 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# OSPI
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_DIAG
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
+-# PMIC
+   -# \subpage EXAMPLES_PMIC_QA_WATCHDOG_INTERRUPT
+   -# \subpage EXAMPLES_PMIC_QA_WATCHDOG_RESET
+   -# \subpage EXAMPLES_PMIC_TRIGGER_WATCHDOG_INTERRUPT
+   -# \subpage EXAMPLES_PMIC_TRIGGER_WATCHDOG_RESET
+   -# \subpage EXAMPLES_PMIC_USER_REG_CFG
 -# PMU
    -# \subpage EXAMPLES_DRIVERS_PMU_MULTIEVENT
 -# RL2

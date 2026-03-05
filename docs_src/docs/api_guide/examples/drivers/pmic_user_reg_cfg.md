@@ -32,6 +32,17 @@ for more information on the parameters configured. The example passes if the con
 
 \endcond
 
+\cond SOC_AM275X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/pmic/pmic_user_reg_cfg
+
+\endcond
+
 # Steps
 
 - **When using CCS projects to build**, import the CCS project for the required combination

@@ -42,6 +42,13 @@ const cflags_a53 = {
     common: [
         "-O3",
         "-march=armv8-a",
+        "-Wno-unused-variable",
+    ],
+};
+
+const cflags_r5f = {
+    common: [
+        "-Wno-unused-but-set-variable",
     ],
 };
 
@@ -73,6 +80,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.cflags = cflags_a53;
     }else if(buildOption.cpu.match("r5f")) {
         build_property.includes = includes_freertos_r5f;
+        build_property.cflags = cflags_r5f;
     }
 
     return build_property;

@@ -93,7 +93,7 @@ void sciServer_init(Sciserver_TirtosCfgPrms_t *sciserverCfg)
 {
     int32_t ret = SystemP_SUCCESS;
 
-#ifndef DEBUG_LOG_DISABLE
+#if !defined(DEBUG_LOG_DISABLE) && DebugP_LOG_ENABLED
     char *version_str = NULL;
     char *rmpmhal_version_str = NULL;
 #endif
@@ -113,7 +113,7 @@ void sciServer_init(Sciserver_TirtosCfgPrms_t *sciserverCfg)
         DebugP_log("Sciserver_tirtosInitPrms_Init FAILED, ret=%d\r\n", ret);
     }
 
-#ifndef DEBUG_LOG_DISABLE
+#if !defined(DEBUG_LOG_DISABLE) && DebugP_LOG_ENABLED
     version_str = Sciserver_getVersionStr();
     rmpmhal_version_str = Sciserver_getRmPmHalVersionStr();
 

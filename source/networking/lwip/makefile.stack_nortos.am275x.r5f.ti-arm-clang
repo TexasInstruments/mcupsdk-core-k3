@@ -187,6 +187,7 @@ CFLAGS_common := \
     -Wno-gnu-variable-sized-type-not-at-end \
     -Wno-unused-function \
     -Wno-extra \
+    -Wno-unused-variable \
     -Wvisibility \
     -mthumb \
     -fno-strict-aliasing \

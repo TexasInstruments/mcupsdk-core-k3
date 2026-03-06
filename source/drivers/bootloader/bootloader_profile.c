@@ -149,6 +149,7 @@ void Bootloader_profileAddCore(uint32_t coreId)
 
 void Bootloader_profilePrintProfileLog(void)
 {
+#if DebugP_LOG_ENABLED
     uint32_t cpuMHz = 0U;
     uint32_t i;
 
@@ -203,4 +204,5 @@ void Bootloader_profilePrintProfileLog(void)
 
     DebugP_log("[BOOTLOADER_PROFILE] %-32s : %10uus \r\n", "SBL Total Time Taken", sblTotalTime);
     DebugP_log("\r\n");
+#endif
 }

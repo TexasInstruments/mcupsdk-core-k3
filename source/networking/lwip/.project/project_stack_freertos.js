@@ -293,6 +293,7 @@ const deviceSpecificIncludes_a53 = {
 const cflags = {
     common: [
         "-Wno-extra",
+        "-Wno-unused-variable",
         "-Wvisibility",
     ],
     release: [
@@ -304,6 +305,8 @@ const cflags = {
 const cflags_a53 = {
     common: [
         "-Wno-extra",
+        "-Wno-unused-variable",
+        "-Wno-unused-function",
     ],
     release: [
         "-flto",

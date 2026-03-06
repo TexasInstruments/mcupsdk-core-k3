@@ -92,6 +92,7 @@ CFLAGS_common := \
     -fdata-sections \
     -ffunction-sections \
     -Wno-extra \
+    -Wno-unused-variable \
     -fno-strict-aliasing \
 
 CFLAGS_release := \

@@ -44,6 +44,12 @@ const defines_common = {
     ]
 };
 
+const cflags_r5f = {
+    common: [
+        "-Wno-unused-but-set-variable",
+    ],
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "a53", cgt: "gcc-aarch64"},
     { device: device, cpu: "r5f", cgt: "ti-arm-clang"},
@@ -73,6 +79,7 @@ function getComponentBuildProperty(buildOption) {
     }else if(buildOption.cpu.match("r5f")) {
         build_property.defines = defines_common;
         build_property.includes = includes_freertos_r5f;
+        build_property.cflags = cflags_r5f;
     }
 
     return build_property;

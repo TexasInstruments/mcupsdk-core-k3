@@ -107,6 +107,8 @@ const deviceSpecificIncludes = {
 const cflags = {
     common: [
         "-Wno-extra",
+        "-Wno-unused-variable",
+        "-Wno-unused-but-set-variable",
         "-Wvisibility",
     ],
     release: [

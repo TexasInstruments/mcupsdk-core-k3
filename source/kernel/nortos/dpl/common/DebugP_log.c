@@ -120,6 +120,7 @@ void _DebugP_assert(int32_t expression, const char *file, const char *function, 
     if(expression == 0)
     {
         volatile uint32_t assert_loop = 1;
+#if DebugP_LOG_ENABLED
         uint64_t curTime = ClockP_getTimeUsec();
 
         DebugP_log("ASSERT: %d.%ds: %s:%s:%d: %s failed !!!\r\n",
@@ -128,6 +129,7 @@ void _DebugP_assert(int32_t expression, const char *file, const char *function, 
             file, function, line,
             expressionString
             );
+#endif
         
         while(assert_loop != 0U)
         {

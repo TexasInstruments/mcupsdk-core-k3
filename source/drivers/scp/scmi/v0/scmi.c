@@ -299,6 +299,7 @@ void SCMI_getProtocolVersionLog(uint32_t instanceIndex)
 
     if(handle != NULL)
     {
+#if DebugP_LOG_ENABLED
         SCMI_Config *config = (SCMI_Config *)handle;
         SCMI_AgentDataInfo *agent  = &config->agentInfo;
         SCMI_PowerDomainProtocol *pdProtocol = &config->powerDomainProto;
@@ -307,6 +308,7 @@ void SCMI_getProtocolVersionLog(uint32_t instanceIndex)
         DebugP_log("SCMI: Base protocol version %x\r\n", agent->version);
         DebugP_log("SCMI: Power Domain: Protocol version %x\r\n", pdProtocol->version);
         DebugP_log("SCMI: Clock: Protocol version %x\r\n", clkProtocol->version);
+#endif
     }
     else
     {

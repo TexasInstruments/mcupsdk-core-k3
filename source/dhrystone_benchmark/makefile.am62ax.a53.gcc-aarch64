@@ -52,6 +52,7 @@ CFLAGS_common := \
     -ffunction-sections \
     -O3 \
     -march=armv8-a \
+    -Wno-unused-variable \
 
 CFLAGS_debug := \
     -D_DEBUG_=1 \

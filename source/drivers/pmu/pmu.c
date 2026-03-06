@@ -246,6 +246,7 @@ void PMU_profilePrintEntry(const char *name)
 
 void PMU_profilePrint(void)
 {
+#if DebugP_LOG_ENABLED
     uint32_t i, j;
     for(i = 0U; i < gProfileObject.logIndex; i++)
     {
@@ -258,6 +259,7 @@ void PMU_profilePrint(void)
         }
         DebugP_log("\r\n");
     }
+#endif
 }
 
 static void PMU_resetCounters(void)

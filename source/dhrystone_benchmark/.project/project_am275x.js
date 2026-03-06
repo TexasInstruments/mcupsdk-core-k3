@@ -26,6 +26,12 @@ const includes_freertos_r5f = {
     ]
 }
 
+const cflags_r5f = {
+    common: [
+        "-Wno-unused-but-set-variable",
+    ],
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5f", cgt: "ti-arm-clang"},
 ];
@@ -50,6 +56,7 @@ function getComponentBuildProperty(buildOption) {
 
     if(buildOption.cpu.match("r5f")) {
         build_property.includes = includes_freertos_r5f;
+        build_property.cflags = cflags_r5f;
     }
 
     return build_property;

@@ -53,3 +53,27 @@ Watchdog Service Example
 ## API
 
 \ref DRV_WDT_MODULE
+
+\cond SOC_AM62AX
+## Migration Guide 11.01 to 11.02 - AM62A {#WATCHDOG_11_2_MIGRATION}
+
+\note This section highlights API changes from 11.01 to 11.02 SDK for AM62A.
+
+### Return type change for Watchdog_setReaction and Watchdog_setWindowSize
+
+- `Watchdog_setReaction` and `Watchdog_setWindowSize` return type changed from `void` to `int32_t`.
+- Both functions now return `SystemP_SUCCESS` on success, `SystemP_FAILURE` if handle is NULL.
+- Update callers to handle the return value.
+\endcond
+
+\cond SOC_AM62X || SOC_AM62DX || SOC_AM62LX || SOC_AM275X
+## Migration Guide 11.02 to 12.00 {#WATCHDOG_12_0_MIGRATION}
+
+\note This section highlights API changes from 11.02 to 12.00 SDK.
+
+### Return type change for Watchdog_setReaction and Watchdog_setWindowSize
+
+- `Watchdog_setReaction` and `Watchdog_setWindowSize` return type changed from `void` to `int32_t`.
+- Both functions now return `SystemP_SUCCESS` on success, `SystemP_FAILURE` if handle is NULL.
+- Update callers to handle the return value.
+\endcond

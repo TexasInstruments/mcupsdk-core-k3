@@ -253,6 +253,12 @@ newer version listed on the table below.
     <td> <= 11.01.00
     <td> >= 11.02.00
 </tr>
+<tr>
+    <td> Watchdog
+    <td> \ref WATCHDOG_12_0_MIGRATION
+    <td> <= 11.02.00
+    <td> >= 12.00.00
+</tr>
 </table>
 
 ### Networking
@@ -270,3 +276,4 @@ newer version listed on the table below.
           include path `<tsn_combase/tilld/cb_lld_ethernet.h>` in the file that uses `cb_lld_notify_linkchange`.
 </tr>
 </table>
+

@@ -151,3 +151,4 @@ newer version listed on the table below.
 Module       | Migration guide                              | Older version  | Newer version
 -------------|----------------------------------------------|----------------| -----------------
 OSPI         |  \ref OSPI_MIGRATION_GUIDE     &zwj;         |   <= 11.01.00  | >= 11.02.00
+Watchdog     |  \ref WATCHDOG_12_0_MIGRATION  &zwj;         |   <= 11.02.00  | >= 12.00.00

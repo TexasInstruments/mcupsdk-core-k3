@@ -255,6 +255,8 @@ typedef struct Watchdog_MCB_t
  *                         Values given by macro
  *
  *
+ * \return  #SystemP_SUCCESS on success, #SystemP_FAILURE if handle is NULL.
+ *
  * \note
  * 1. DWWD need to be serviced if Reaction is changed when DWWD is
  *    enabled and Window is Open,to take immediate effect. If not
@@ -264,7 +266,7 @@ typedef struct Watchdog_MCB_t
  *    Reaction will take immediate effect. DWWD need not to be serviced
  *    in this case.
  */
-void Watchdog_setReaction(Watchdog_Handle handle, uint32_t dwwdReaction);
+int32_t Watchdog_setReaction(Watchdog_Handle handle, uint32_t dwwdReaction);
 
 /**
  * \brief   Get DWWD Window Size.
@@ -286,6 +288,8 @@ uint32_t Watchdog_getWindowSize(Watchdog_Handle handle);
  *                          Values given by macro
  *
  *
+ * \return  #SystemP_SUCCESS on success, #SystemP_FAILURE if handle is NULL.
+ *
  * \note
  * 1. DWWD need to be serviced if Window Size is changed when DWWD is
  *    enabled and Window is Open,to take immediate effect. If not
@@ -295,7 +299,7 @@ uint32_t Watchdog_getWindowSize(Watchdog_Handle handle);
  *    Window Size will take immediate effect. DWWD need not to be serviced
  *    in this case.
  */
-void Watchdog_setWindowSize(Watchdog_Handle handle, uint32_t dwwdWindowSize);
+int32_t Watchdog_setWindowSize(Watchdog_Handle handle, uint32_t dwwdWindowSize);
 
 /**
  *  \brief The function checks for Closed Window.

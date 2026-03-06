@@ -83,34 +83,51 @@ extern uint32_t gWatchdogConfigNum;
 
 uint32_t Watchdog_getWindowSize(Watchdog_Handle handle)
 {
-    uint32_t   windowSize;
+    uint32_t   windowSize = 0U;
     Watchdog_Config*        ptrWatchdogConfig;
     Watchdog_HwAttrs*       ptrHwCfg;
 
-    ptrWatchdogConfig = (Watchdog_Config*)handle;
-    ptrHwCfg = (Watchdog_HwAttrs*)ptrWatchdogConfig->hwAttrs;
-    /* Get configured Window Size */
-    windowSize = HW_RD_REG32(ptrHwCfg->baseAddr + CSL_RTI_RTIWWDSIZECTRL);
+    if (handle != NULL)
+    {
+        ptrWatchdogConfig = (Watchdog_Config*)handle;
+        ptrHwCfg = (Watchdog_HwAttrs*)ptrWatchdogConfig->hwAttrs;
+        /* Get configured Window Size */
+        windowSize = HW_RD_REG32(ptrHwCfg->baseAddr + CSL_RTI_RTIWWDSIZECTRL);
+    }
     return (windowSize);
 }
 
-void Watchdog_setWindowSize(Watchdog_Handle handle, uint32_t dwwdWindowSize)
+int32_t Watchdog_setWindowSize(Watchdog_Handle handle, uint32_t dwwdWindowSize)
 {
     Watchdog_Config*        ptrWatchdogConfig;
     Watchdog_HwAttrs*       ptrHwCfg;
+    int32_t                 status = SystemP_SUCCESS;
 
-    ptrWatchdogConfig = (Watchdog_Config*)handle;
-    ptrHwCfg = (Watchdog_HwAttrs*)ptrWatchdogConfig->hwAttrs;
+    if (handle != NULL)
+    {
+        ptrWatchdogConfig = (Watchdog_Config*)handle;
+        ptrHwCfg = (Watchdog_HwAttrs*)ptrWatchdogConfig->hwAttrs;
 
-    HW_WR_FIELD32(ptrHwCfg->baseAddr + CSL_RTI_RTIWWDSIZECTRL,
-                    CSL_RTI_RTIWWDSIZECTRL_WWDSIZE,
-                    dwwdWindowSize);
+        HW_WR_FIELD32(ptrHwCfg->baseAddr + CSL_RTI_RTIWWDSIZECTRL,
+                        CSL_RTI_RTIWWDSIZECTRL_WWDSIZE,
+                        dwwdWindowSize);
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+    return status;
 }
 
 bool Watchdog_isClosedWindow(Watchdog_Handle handle)
 {
     Watchdog_Config*        ptrWatchdogConfig;
     Watchdog_HwAttrs*       ptrHwCfg;
+
+    if (handle == NULL)
+    {
+        return false;
+    }
 
     ptrWatchdogConfig = (Watchdog_Config*)handle;
     ptrHwCfg = (Watchdog_HwAttrs*)ptrWatchdogConfig->hwAttrs;
@@ -172,22 +189,34 @@ bool Watchdog_isClosedWindow(Watchdog_Handle handle)
 
 }
 
-void Watchdog_setReaction(Watchdog_Handle handle, uint32_t dwwdReaction)
+int32_t Watchdog_setReaction(Watchdog_Handle handle, uint32_t dwwdReaction)
 {
     Watchdog_Config*        ptrWatchdogConfig;
     Watchdog_HwAttrs*       ptrHwCfg;
+    int32_t                 status = SystemP_SUCCESS;
 
-    ptrWatchdogConfig = (Watchdog_Config*)handle;
-    ptrHwCfg = (Watchdog_HwAttrs*)ptrWatchdogConfig->hwAttrs;
+    if (handle != NULL)
+    {
+        ptrWatchdogConfig = (Watchdog_Config*)handle;
+        ptrHwCfg = (Watchdog_HwAttrs*)ptrWatchdogConfig->hwAttrs;
 
-    HW_WR_FIELD32(ptrHwCfg->baseAddr + CSL_RTI_RTIWWDRXNCTRL,
-                CSL_RTI_RTIWWDRXNCTRL_WWDRXN,
-                dwwdReaction);
+        HW_WR_FIELD32(ptrHwCfg->baseAddr + CSL_RTI_RTIWWDRXNCTRL,
+                    CSL_RTI_RTIWWDRXNCTRL_WWDRXN,
+                    dwwdReaction);
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+    return status;
 }
 
 void Watchdog_paramsInit(Watchdog_Params *params)
 {
-    *params = Watchdog_defaultParams;
+    if (params != NULL)
+    {
+        *params = Watchdog_defaultParams;
+    }
 }
 
 void Watchdog_clear(Watchdog_Handle handle)
@@ -339,10 +368,10 @@ Watchdog_Handle Watchdog_open(uint8_t index, Watchdog_Params* params)
                               CSL_RTI_RTIDWDPRLD_DWDPRLD,
                               dwwdPreloadVal_l);
             }
-            
+
             ClockP_usleep(25);
 
-             /* Configure the reaction. */
+            /* Configure the reaction. */
             Watchdog_setReaction(handle, ptrWatchdogMCB->params.resetMode);
 
             ClockP_usleep(25);
@@ -351,13 +380,13 @@ Watchdog_Handle Watchdog_open(uint8_t index, Watchdog_Params* params)
             HW_WR_FIELD32(ptrHwCfg->baseAddr + CSL_RTI_RTIGCTRL,
                           CSL_RTI_RTIGCTRL_COS,
                           ptrWatchdogMCB->params.debugStallMode);
-            
-            ClockP_usleep(25);            
+
+            ClockP_usleep(25);
 
             /* Enable DWWD by writing pre-defined value '0xA98559DA' to RTIDWDCTRL */
             HW_WR_REG32(ptrHwCfg->baseAddr + CSL_RTI_RTIDWDCTRL,
                         CSL_RTI_RTIDWDCTRL_DWDCTRL_ENABLE);
-            
+
             ClockP_usleep(25);
 
             /* Mark the driver to be operational */

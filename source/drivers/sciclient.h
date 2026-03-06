@@ -620,7 +620,45 @@ int32_t Sciclient_service(const Sciclient_ReqPrm_t *pReqPrm,
 
 int32_t Sciclient_deinit(void);
 
-/**<
+/**
+ *  \brief  API to enable interrupt mode for sciclient operations.
+ *          By default, sciclient operates in polling mode. This function switches
+ *          sciclient to interrupt mode where message responses trigger interrupts
+ *          instead of polling. This improves performance and reduces CPU usage.
+ *
+ *  \return CSL_PASS on success, else failure
+ */
+int32_t Sciclient_updateOperModeToInterrupt(void);
+
+/**
+ *  \brief   API to disable interrupt mode and switch back to polling mode.
+ *           This function deconfigures interrupts and switches sciclient back to
+ *           polling mode. All registered ISRs are unregistered and semaphores
+ *           are destroyed.
+ */
+void Sciclient_updateOperModeToPolled(void);
+
+/**
+ *  \brief   API to temporarily disable interrupts without unregistering.
+ *           This function disables the secure proxy response interrupt at the
+ *           interrupt controller level. The interrupt can be re-enabled using
+ *           Sciclient_enableIntr(). This is useful when temporarily suspending
+ *           interrupt handling without fully switching back to polling mode.
+ *
+ *           Note: Only has effect when already in interrupt mode.
+ */
+void Sciclient_disableIntr(void);
+
+/**
+ *  \brief   API to re-enable interrupts after Sciclient_disableIntr().
+ *           This function re-enables the secure proxy response interrupt that
+ *           was previously disabled with Sciclient_disableIntr().
+ *
+ *           Note: Only has effect when already in interrupt mode.
+ */
+void Sciclient_enableIntr(void);
+
+/**
  *  \brief   API to verify that firmware ABI matches the supported ABI.
  *
  *  \return SystemP_SUCCESS on success, else failure

@@ -47,6 +47,8 @@
 #include <drivers/hw_include/hw_types.h>
 #include <drivers/hw_include/csl_types.h>
 #include <drivers/sciclient/csl_sec_proxy.h>
+#include <kernel/dpl/HwiP.h>
+#include <kernel/dpl/SemaphoreP.h>
 
 #if defined (ENABLE_SCICLIENT_DIRECT)
 #include <drivers/device_manager/sciclient.h>
@@ -78,9 +80,28 @@ extern "C" {
 /* Current context is NON-SECURE */
 #define SCICLIENT_NON_SECURE_CONTEXT        (1U)
 
+/* Operation mode: Polling */
+#define SCICLIENT_SERVICE_OPERATION_MODE_POLLED     (0U)
+
+/* Operation mode: Interrupt */
+#define SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT  (1U)
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
+
+/**
+ *  \brief Response interrupt handler enumeration for sciclient contexts
+ */
+typedef enum
+{
+    SCICLIENT_NON_SEC_RESP_INTR_HANDLER,
+    /**< Non-secure context response interrupt handler index */
+    SCICLIENT_SEC_RESP_INTR_HANDLER,
+    /**< Secure context response interrupt handler index */
+    SCICLIENT_MAX_RESP_INTR_HANDLER,
+    /**< Maximum number of response interrupt handlers */
+} Sciclient_ContextRespIntrHandler;
 
 /**
  *  \brief Map structure used by #Sciclient_init function.
@@ -125,6 +146,24 @@ typedef struct
 
     uint32_t              maxMsgSizeBytes;
     /**< Max size of an sciclient message in bytes. Dependent on the secure proxy configuration of the SOC **/
+
+    uint32_t              opModeFlag;
+    /**< Operation mode: 0=Polling, 1=Interrupt **/
+
+    SemaphoreP_Object*    semHandles[SCICLIENT_MAX_QUEUE_SIZE];
+    /**< Pointer array to semaphores for ISR to signal message response received.
+     *   Index is the sequence ID of the request.
+     *   Points to statically allocated semaphore objects. **/
+
+    int32_t               semStatus[SCICLIENT_MAX_QUEUE_SIZE];
+    /**< Status of semaphore pend for each sequence ID.
+     *   0 = waiting, non-zero = pend completed/timed out **/
+
+    HwiP_Object*          respIntr[SCICLIENT_MAX_RESP_INTR_HANDLER];
+    /**< Pointer array to interrupt objects for response interrupts.
+     *   [SCICLIENT_NON_SEC_RESP_INTR_HANDLER] = Non-secure context interrupt
+     *   [SCICLIENT_SEC_RESP_INTR_HANDLER] = Secure context interrupt
+     *   Points to statically allocated HwiP objects. **/
 } Sciclient_ServiceHandle_t;
 
 

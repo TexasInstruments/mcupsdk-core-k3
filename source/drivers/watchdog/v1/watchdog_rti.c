@@ -297,102 +297,112 @@ Watchdog_Handle Watchdog_open(uint8_t index, Watchdog_Params* params)
         /* Get the Watchdog Driver Object */
         ptrWatchdogMCB = (Watchdog_MCB*)ptrWatchdogConfig->object;
 
-        /* Initialize the memory: */
-        memset ((void *)ptrWatchdogMCB, 0, sizeof(Watchdog_MCB));
-
-        /* Store the WDT parameters */
-        if (params == NULL) {
-            /* No params passed in, so use the defaults */
-            Watchdog_paramsInit(&(ptrWatchdogMCB->params));
-        }
-        else {
-            /* Copy the params contents */
-            ptrWatchdogMCB->params = *params;
-        }
-
-        /* Calculate preload value from the expiration time */
-        /* Expiration time (in millisecond)/1000 = (preload value + 1)*(2^13)/RTICLK */
-        preloadValueTmp =((uint64_t)(ptrHwCfg->wdtClkFrequency)) * ((uint64_t)ptrWatchdogMCB->params.expirationTime) / 1000;
-        /* Pre load is 12 bit value in register and actual value should be multiplied by 2^13) */
-        preloadMaxValue = (1 << (12 + 13)) - 1;
-        if (preloadValueTmp > preloadMaxValue)
+        /* Check if the instance is already open */
+        if (ptrWatchdogMCB->state == Watchdog_DriverState_OPERATIONAL)
         {
-            retVal = -1;
+            handle = NULL;
+            status = SystemP_FAILURE;
         }
 
-        if (retVal >= 0)
+        if (status == SystemP_SUCCESS)
         {
-            /* Configure the Watchdog driver. */
-             
-            /* Bring watchdog out of reset */
-            //Watchdog_reset(handle);
-            
-            /* if NMI interrupt mode is configured */
-            if (ptrWatchdogMCB->params.resetMode == Watchdog_RESET_OFF)
+            /* Initialize the memory: */
+            memset ((void *)ptrWatchdogMCB, 0, sizeof(Watchdog_MCB));
+
+            /* Store the WDT parameters */
+            if (params == NULL) {
+                /* No params passed in, so use the defaults */
+                Watchdog_paramsInit(&(ptrWatchdogMCB->params));
+            }
+            else {
+                /* Copy the params contents */
+                ptrWatchdogMCB->params = *params;
+            }
+
+            /* Calculate preload value from the expiration time */
+            /* Expiration time (in millisecond)/1000 = (preload value + 1)*(2^13)/RTICLK */
+            preloadValueTmp =((uint64_t)(ptrHwCfg->wdtClkFrequency)) * ((uint64_t)ptrWatchdogMCB->params.expirationTime) / 1000;
+            /* Pre load is 12 bit value in register and actual value should be multiplied by 2^13) */
+            preloadMaxValue = (1 << (12 + 13)) - 1;
+            if (preloadValueTmp > preloadMaxValue)
             {
-                 /* Clear the status flags */
+                retVal = -1;
+            }
+
+            if (retVal >= 0)
+            {
+                /* Configure the Watchdog driver. */
+
+                /* Bring watchdog out of reset */
+                //Watchdog_reset(handle);
+
+                /* if NMI interrupt mode is configured */
+                if (ptrWatchdogMCB->params.resetMode == Watchdog_RESET_OFF)
+                {
+                    /* Clear the status flags */
+                    HW_WR_REG32(ptrHwCfg->baseAddr + CSL_RTI_RTIWDSTATUS, WATCHDOG_CLEAR_STATUS);
+                }
+                else
+                {
+                    /* Reset is not supported on AM64x.*/
+                    /* Configure the SOC moule to trigger a warm reset upon watchdog reset */
+                    //Watchdog_configureWarmReset(handle);
+                }
+            }
+
+            if (retVal >= 0 )
+            {
+                uint32_t preloadValue;
+                uint32_t dwwdPreloadVal_l;
+                /* CSL API needs shifted value but doesnot do -1 while programming.
+                 * So updating the preload value.
+                 */
+                preloadValue = ((uint32_t)(preloadValueTmp) >> RTI_DWWDPRLD_MULTIPLIER_SHIFT) - 1;
+                preloadValue = preloadValue << RTI_DWWDPRLD_MULTIPLIER_SHIFT;
+
+                /* Clear the status flags */
                 HW_WR_REG32(ptrHwCfg->baseAddr + CSL_RTI_RTIWDSTATUS, WATCHDOG_CLEAR_STATUS);
+
+                /* Configure window in which watch-dog should be serviced */
+                Watchdog_setWindowSize(handle, ptrWatchdogMCB->params.windowSize);
+
+                /* Set the preload value */
+                dwwdPreloadVal_l = (preloadValue >>
+                                    ((uint32_t) RTI_DWWDPRLD_MULTIPLIER_SHIFT));
+                if ((uint32_t) CSL_RTI_RTIDWDPRLD_DWDPRLD_MAX > dwwdPreloadVal_l)
+                {
+                    /* Initialize DWD Expiration Period */
+                    HW_WR_FIELD32(ptrHwCfg->baseAddr + CSL_RTI_RTIDWDPRLD,
+                                  CSL_RTI_RTIDWDPRLD_DWDPRLD,
+                                  dwwdPreloadVal_l);
+                }
+
+                ClockP_usleep(25);
+
+                /* Configure the reaction. */
+                Watchdog_setReaction(handle, ptrWatchdogMCB->params.resetMode);
+
+                ClockP_usleep(25);
+
+                /* Configure the stall mode */
+                HW_WR_FIELD32(ptrHwCfg->baseAddr + CSL_RTI_RTIGCTRL,
+                              CSL_RTI_RTIGCTRL_COS,
+                              ptrWatchdogMCB->params.debugStallMode);
+
+                ClockP_usleep(25);
+
+                /* Enable DWWD by writing pre-defined value '0xA98559DA' to RTIDWDCTRL */
+                HW_WR_REG32(ptrHwCfg->baseAddr + CSL_RTI_RTIDWDCTRL,
+                            CSL_RTI_RTIDWDCTRL_DWDCTRL_ENABLE);
+
+                ClockP_usleep(25);
+
+                /* Mark the driver to be operational */
+                ptrWatchdogMCB->state = Watchdog_DriverState_OPERATIONAL;
+
             }
-            else
-            {                
-                /* Reset is not supported on AM64x.*/
-                /* Configure the SOC moule to trigger a warm reset upon watchdog reset */
-                //Watchdog_configureWarmReset(handle);
-             
-            }
-        }
 
-        if (retVal >= 0 )
-        {
-            uint32_t preloadValue;
-            uint32_t dwwdPreloadVal_l;
-            /* CSL API needs shifted value but doesnot do -1 while programming.
-             * So updating the preload value.
-             */
-            preloadValue = ((uint32_t)(preloadValueTmp) >> RTI_DWWDPRLD_MULTIPLIER_SHIFT) - 1;
-            preloadValue = preloadValue << RTI_DWWDPRLD_MULTIPLIER_SHIFT;
-
-            /* Clear the status flags */
-            HW_WR_REG32(ptrHwCfg->baseAddr + CSL_RTI_RTIWDSTATUS, WATCHDOG_CLEAR_STATUS);
-
-            /* Configure window in which watch-dog should be serviced */
-            Watchdog_setWindowSize(handle, ptrWatchdogMCB->params.windowSize);
-
-            /* Set the preload value */
-            dwwdPreloadVal_l = (preloadValue >>
-                                ((uint32_t) RTI_DWWDPRLD_MULTIPLIER_SHIFT));
-            if ((uint32_t) CSL_RTI_RTIDWDPRLD_DWDPRLD_MAX > dwwdPreloadVal_l)
-            {
-                /* Initialize DWD Expiration Period */
-                HW_WR_FIELD32(ptrHwCfg->baseAddr + CSL_RTI_RTIDWDPRLD,
-                              CSL_RTI_RTIDWDPRLD_DWDPRLD,
-                              dwwdPreloadVal_l);
-            }
-
-            ClockP_usleep(25);
-
-            /* Configure the reaction. */
-            Watchdog_setReaction(handle, ptrWatchdogMCB->params.resetMode);
-
-            ClockP_usleep(25);
-
-            /* Configure the stall mode */
-            HW_WR_FIELD32(ptrHwCfg->baseAddr + CSL_RTI_RTIGCTRL,
-                          CSL_RTI_RTIGCTRL_COS,
-                          ptrWatchdogMCB->params.debugStallMode);
-
-            ClockP_usleep(25);
-
-            /* Enable DWWD by writing pre-defined value '0xA98559DA' to RTIDWDCTRL */
-            HW_WR_REG32(ptrHwCfg->baseAddr + CSL_RTI_RTIDWDCTRL,
-                        CSL_RTI_RTIDWDCTRL_DWDCTRL_ENABLE);
-
-            ClockP_usleep(25);
-
-            /* Mark the driver to be operational */
-            ptrWatchdogMCB->state = Watchdog_DriverState_OPERATIONAL;
-
-        }
+        } /* if (status == SystemP_SUCCESS) - already open check */
 
     }
 

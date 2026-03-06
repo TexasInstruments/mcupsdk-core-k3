@@ -340,11 +340,15 @@ void vPortTimerTickHandler()
 {
     if( ullPortSchedularRunning == pdTRUE )
     {
-        /* Increment the RTOS tick. */
-        if( xTaskIncrementTick() != pdFALSE )
+        portDISABLE_INTERRUPTS();
         {
-            ullPortYieldRequired = pdTRUE;
+            /* Increment the RTOS tick. */
+            if( xTaskIncrementTick() != pdFALSE )
+            {
+                ullPortYieldRequired = pdTRUE;
+            }
         }
+        portENABLE_INTERRUPTS();
     }
 }
 

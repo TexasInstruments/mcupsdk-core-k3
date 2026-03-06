@@ -301,11 +301,15 @@ void vPortTimerTickHandler( void )
 {
     if( ulPortSchedularRunning == pdTRUE )
     {
-        /* Increment the RTOS tick. */
-        if( xTaskIncrementTick() != pdFALSE )
+        portDISABLE_INTERRUPTS();
         {
-            ulPortYieldRequired = pdTRUE;
+            /* Increment the RTOS tick. */
+            if( xTaskIncrementTick() != pdFALSE )
+            {
+                ulPortYieldRequired = pdTRUE;
+            }
         }
+        portENABLE_INTERRUPTS();
     }
 }
 

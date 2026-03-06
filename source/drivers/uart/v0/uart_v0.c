@@ -1145,6 +1145,12 @@ static int32_t UART_checkOpenParams(const UART_Params *prms)
     {
         status = SystemP_FAILURE;
     }
+    if((UART_CONFIG_MODE_INTERRUPT == prms->transferMode) &&
+       (TRUE != prms->skipIntrReg) &&
+       (0xFFFFU == prms->intrNum))
+    {
+        status = SystemP_FAILURE;
+    }
 
     return (status);
 }

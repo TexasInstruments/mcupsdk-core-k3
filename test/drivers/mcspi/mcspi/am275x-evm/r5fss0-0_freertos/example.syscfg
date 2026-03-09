@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.23.0+4000"}
+ * @versions {"tool":"1.26.2+4477"}
  */
 
 /**
@@ -33,7 +33,7 @@ mcspi1.SPI.CLK.$assign       = "SPI0_CLK";
 mcspi1.mcspiChannel[0].$name = "CONFIG_MCSPI_CH0";
 
 mcspi2.$name                 = "CONFIG_MCSPI1";
-mcspi2.SPI.CLK.$assign       = "SPI1_CLK";
+mcspi2.SPI.CLK.$assign       = "OSPI0_D5";
 mcspi2.mcspiChannel[0].$name = "CONFIG_MCSPI_CH1";
 
 mcspi3.$name                 = "CONFIG_MCSPI3";
@@ -88,10 +88,10 @@ mcspi2.SPI.D0.$suggestSolution              = "OSPI0_D6";
 mcspi2.SPI.D1.$suggestSolution              = "OSPI0_D7";
 mcspi2.mcspiChannel[0].CSn.$suggestSolution = "OSPI0_D4";
 mcspi3.SPI.$suggestSolution                 = "SPI2";
-mcspi3.SPI.CLK.$suggestSolution             = "I2C1_SDA";
+mcspi3.SPI.CLK.$suggestSolution             = "SPI2_CLK";
 mcspi3.SPI.D0.$suggestSolution              = "SPI2_D0";
 mcspi3.SPI.D1.$suggestSolution              = "SPI2_D1";
-mcspi3.mcspiChannel[0].CSn.$suggestSolution = "I2C0_SCL";
+mcspi3.mcspiChannel[0].CSn.$suggestSolution = "SPI2_CS0";
 mcspi4.SPI.CLK.$suggestSolution             = "MMC0_DAT0";
 mcspi4.SPI.D0.$suggestSolution              = "MMC0_DAT5";
 mcspi4.SPI.D1.$suggestSolution              = "MMC0_DAT4";

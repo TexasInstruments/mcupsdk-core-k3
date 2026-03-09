@@ -14,6 +14,9 @@ const driverVer = {
     "hyperRam": {
         version: "v0",
     },
+    "pmic": {
+        version: "v0",
+    },
 };
 
 const topModules_r5 = [
@@ -22,6 +25,7 @@ const topModules_r5 = [
     "/board/flash/flash",
     "/board/hyperRam/hyperRam",
     "/board/led/led",
+    "/board/pmic/pmic",
 ];
 const topModules_wkup_r5 = [
     "/board/flash/flash",

@@ -140,7 +140,7 @@ function getConfigurables() {
         },
         {
             name: "longWinTime",
-            displayName: "Lone Window Time In Milli-seconds",
+            displayName: "Long Window Time In Milli-seconds",
             longDescription: "Long Window duration in milli seconds. The value can be either 80ms or"+
                              "from 125ms to 772000ms",
             default: 5000,

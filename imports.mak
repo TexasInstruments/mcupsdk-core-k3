@@ -73,5 +73,17 @@ SYSCFG_SDKPRODUCT=$(MCU_PLUS_SDK_PATH)/.metadata/product.json
 SYSCFG_GUI_SCRIPT=$(SYSCFG_PATH)/sysconfig_gui.$(SCRIPT_EXT)
 SYSCFG_TEST_FLAGS?=--excludeTests eslint
 
+################################################################################
+# Configure SafeRTOS Package versions for SOC/ISA
+################################################################################
+SAFERTOS_VERSION_r5f=009-006-199-024-319-001
+SAFERTOS_VERSION_c7x=009-006-230-005-319-001
+# ISA based directory extensions used in SafeRTOS Package
+SAFERTOS_ISA_EXT_r5f=199_TI_CR5
+SAFERTOS_ISA_EXT_c7x=230_C7x
+# Compiler based directory extensions used in SafeRTOS Package
+SAFERTOS_COMPILER_EXT_r5f=024_Clang
+SAFERTOS_COMPILER_EXT_c7x=005_TI_CGT
+
 # Variable pointing to location of prebuilt industrial communication libraries
 MCU_PLUS_SDK_IND_COMMS_LIBS_PATH ?= $(MCU_PLUS_SDK_PATH)/source/commercial/industrial_comms_libs

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-25 Texas Instruments Incorporated
+ *  Copyright (C) 2021-26 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -125,9 +125,6 @@
 
 #define MMCSD_REFERENCE_CLOCK_200M                (200U*1000000U)
 #define MMCSD_REFERENCE_CLOCK_52M                 (52U*1000000U)
-
-#define MMCSD_DEFAULT_CMD6_TIMEOUT_MS             (500U)
-#define MMCSD_GENERIC_CMD6_TIME_INDEX             (248U)
 
 /* Default timeout value for CMD/Data Transfer */
 #define MMCSD_TRANSFER_DEFAULT_TIMEOUT_MS         (10000U)
@@ -1493,8 +1490,6 @@ static int32_t MMCSD_initEMMC(MMCSD_Handle handle)
 
     if(status == SystemP_SUCCESS)
     {
-        /* Get Generic Switch Command Timeout value */
-        obj->switchCmdTimeout = (obj->tempDataBuf[MMCSD_GENERIC_CMD6_TIME_INDEX]) * 10;
 #ifdef ENABLE_MMCSD_FAULT_INJECTION
         volatile uint16_t retVal = 0;
         TestMmcsd_warmRstFaultInjectInProgress((uint32_t)TRUE);
@@ -2708,7 +2703,7 @@ static int32_t MMCSD_sendSwitchCmd(MMCSD_Handle handle, uint32_t arg)
         MMCSD_Transaction trans;
         uint32_t switchCmd = 0U;
         uint32_t numRetries = 0U;
-        uint64_t timeoutMilliSec = (obj->switchCmdTimeout != 0U) ? obj->switchCmdTimeout : MMCSD_DEFAULT_CMD6_TIMEOUT_MS;
+        uint64_t timeoutMilliSec = MMCSD_TRANSFER_DEFAULT_TIMEOUT_MS;
 
         if(obj->cardType == MMCSD_CARD_TYPE_EMMC)
         {

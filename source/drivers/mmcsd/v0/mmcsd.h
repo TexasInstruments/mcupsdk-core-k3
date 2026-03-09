@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-25 Texas Instruments Incorporated
+ *  Copyright (C) 2021-26 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -445,9 +445,6 @@ typedef struct
 
     uint8_t sdVer;
     /**< Version of SD card */
-
-    uint8_t switchCmdTimeout;
-    /**< Generic Switch Command Timeout */
 
     uint32_t busWidth;
     /**< Current bus width */

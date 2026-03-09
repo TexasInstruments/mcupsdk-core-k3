@@ -1,0 +1,22 @@
+[config]
+pr_commands = [
+    "/review",
+    "/improve --pr_code_suggestions.commitable_code_suggestions=true --pr_code_suggestions.suggestions_score_threshold=7"
+]
+
+[pr_reviewer]
+# Reduce verbosity
+inline_code_comments = false
+num_code_suggestions = 3 # Limit number of suggestions
+require_focused_review = true
+require_estimate_effort_to_review = false
+require_score_review = false
+require_tests_review = false
+require_security_review = false
+
+# Compact output
+extra_instructions = "Be concise. Provide only critical feedback."
+
+[github_action]
+handle_push_trigger = true
+push_commands = ["/describe", "/review"]

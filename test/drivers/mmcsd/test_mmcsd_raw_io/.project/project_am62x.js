@@ -307,8 +307,8 @@ function getComponentBuildProperty(buildOption) {
 	    else {
 		
         	build_property.includes = includes_nortos_r5f;
-        	build_property.libs = libs_freertos_dm_r5f;
-        	build_property.libdirs = libdirs_freertos_dm_r5f;
+        	build_property.libs = libs_nortos_dm_r5f;
+        	build_property.libdirs = libdirs_nortos_dm_r5f;
         	build_property.templates = templates_dm_r5f_nortos;
         	build_property.defines = defines_dm_r5;
         	build_property.cflags = cflags_dm_r5f;

@@ -102,7 +102,7 @@ LNK_FILES_common = \
 	linker.cmd \
 
 LIBS_PATH_common = \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
@@ -118,7 +118,7 @@ LIBS_common = \
 	-lself_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lsciserver.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldm_stub.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lfreertos.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lnortos.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldrivers.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lunity.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
@@ -137,7 +137,7 @@ LIBS_NAME = \
 	self_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	sciserver.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	dm_stub.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
-	freertos.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	nortos.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	drivers.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	unity.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
@@ -146,7 +146,7 @@ LIBS_NAME = \
 LIBS_PREBUILD_NAME = \
 
 LIBS_PATH_NAME = \
-	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
+	${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \

@@ -200,7 +200,7 @@ int32_t SDL_PBIST_handleC7XAuxDevices(bool init)
     return testResult;
 }
 % }
-% if (config.selectedInstances.includes("SDL_PBIST_INST_MAIN")){
+% if (config.selectedInstances.some(inst => ["SDL_PBIST_INST_MAIN", "SDL_PBIST_INST_MAIN_IP"].includes(inst))){
 
 int32_t SDL_PBIST_handleMAINAuxDevices(bool init)
 {
@@ -212,8 +212,12 @@ int32_t SDL_PBIST_handleMAINAuxDevices(bool init)
     SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP,6u);
     SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP,3u);
 
+    % if (socName == "am62x") {
+    *((uint32_t *)(baseAddr + CSL_WKUP_CTRL_MMR_CFG0_CLKGATE_CTRL)) = 0x1;
+    % } else {
     *((uint32_t *)(baseAddr + CSL_WKUP_CTRL_MMR_CFG0_CLKGATE_CTRL0)) = 0x1;
     *((uint32_t *)(baseAddr + CSL_WKUP_CTRL_MMR_CFG0_CLKGATE_CTRL1)) = 0x1;
+    % }
 
     return testResult;
 }
@@ -267,6 +271,59 @@ int32_t SDL_PBIST_handleENCODEAuxDevices(bool init)
     return testResult;
 }
 % }
+% if (config.selectedInstances.includes("SDL_PBIST_INST_PBIST1")){
+
+int32_t SDL_PBIST_handlePBIST1AuxDevices(bool init)
+{
+    int32_t testResult = 0;
+    uint32_t baseAddr;
+
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_WKUP_CTRL_MMR0_CFG0_BASE);
+
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP,6u);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP,3u);
+
+    *((uint32_t *)(baseAddr + CSL_WKUP_CTRL_MMR_CFG0_CLKGATE_CTRL0)) = 0x1;
+    *((uint32_t *)(baseAddr + CSL_WKUP_CTRL_MMR_CFG0_CLKGATE_CTRL1)) = 0x1;
+
+    return testResult;
+}
+% }
+% if (config.selectedInstances.some(inst => ["SDL_PBIST_INST_MAIN_PULSAR_0", "SDL_PBIST_INST_MAIN_PULSAR_1"].includes(inst))){
+
+int32_t SDL_PBIST_handleMAIN_PULSARAuxDevices(bool init)
+{
+    int32_t testResult = 0;
+    uint32_t baseAddr;
+
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_WKUP_CTRL_MMR0_CFG0_BASE);
+
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP,6u);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP,3u);
+
+    *((uint32_t *)(baseAddr + CSL_WKUP_CTRL_MMR_CFG0_CLKGATE_CTRL0)) = 0x1;
+    *((uint32_t *)(baseAddr + CSL_WKUP_CTRL_MMR_CFG0_CLKGATE_CTRL1)) = 0x1;
+
+    return testResult;
+}
+% }
+% if (config.selectedInstances.some(inst => ["SDL_PBIST_INST_C7X_0", "SDL_PBIST_INST_C7X_1"].includes(inst))){
+
+int32_t SDL_PBIST_handleC7XAuxDevices(bool init)
+{
+    int32_t testResult = 0;
+    uint32_t baseAddr;
+
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_WKUP_CTRL_MMR0_CFG0_BASE);
+
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP,2u);
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP,6u);
+
+    *((uint32_t *)(baseAddr + CSL_WKUP_CTRL_MMR_CFG0_CLKGATE_CTRL1)) = 0x00000800;
+
+    return testResult;
+}
+% }
 
 /*
  * Lists of SDL Auxiliary Devices for each selected PBIST instance
@@ -289,8 +346,14 @@ PBIST_TestHandle_t PBIST_TestHandleArray[PBIST_NUM_INSTANCE] =
         .pbistInst              = SDL_PBIST_INST_`config.coreList[i]`,
         .numAuxDevices          = `config.coreList[i]`_NUM_AUX_DEVICES,
         .auxDeviceIds          = &PBIST_`config.coreList[i]`AuxDevList[0],
-        % if (config.coreList[i] === "MCU"){
+        % if (config.coreList[i] === "MCU" || (config.coreList[i] === "MAIN" && socName == "am62px")){
         .auxHandleFunction      = 0,
+        % } else if (config.coreList[i] === "MAIN_IP") {
+        .auxHandleFunction      = SDL_PBIST_handleMAINAuxDevices,
+        % } else if (config.coreList[i] === "MAIN_PULSAR_0" || config.coreList[i] === "MAIN_PULSAR_1") {
+        .auxHandleFunction      = SDL_PBIST_handleMAIN_PULSARAuxDevices,
+        % } else if (config.coreList[i] === "C7X_0" || config.coreList[i] === "C7X_1") {
+        .auxHandleFunction      = SDL_PBIST_handleC7XAuxDevices,
         % } else {
         .auxHandleFunction      = SDL_PBIST_handle`config.coreList[i]`AuxDevices,
         % }
@@ -451,7 +514,7 @@ int32_t SDL_PBIST_completeInstance(uint32_t instanceId)
         % }
         % for (var i=0; i<config.auxPscs.length; i++){
 
-        if ((PBIST_TestHandleArray[instanceId].auxDeviceIds[i] == `config.auxPscs[i]`))
+        if (PBIST_TestHandleArray[instanceId].auxDeviceIds[i] == `config.auxPscs[i]`)
         {
             continue;
         }

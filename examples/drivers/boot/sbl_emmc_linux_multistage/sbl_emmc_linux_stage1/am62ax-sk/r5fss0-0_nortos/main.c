@@ -162,6 +162,31 @@ int main()
 
     if(SystemP_SUCCESS == status)
     {
+        /*
+         * Wait for completion of Positive PBIST tests
+         * that are started in System_init()
+         */
+        status = SDL_PBIST_completeAllTests();
+        DebugP_assert(status == SDL_PASS);
+        Bootloader_profileAddProfilePoint("PBIST Positive Tests");
+
+        /* Turn On PSC devices before initializing Negative tests */
+        status = SDL_PBIST_handlePSCdevices(true);
+        DebugP_assert(status == SDL_PASS);
+
+        /* Start Negative PBIST tests of all selected instances */
+        status = SDL_PBIST_startAllTests(false);
+        DebugP_assert(status == SDL_PASS);
+
+        /* Wait for completion of all Negative PBIST tests */
+        status = SDL_PBIST_completeAllTests();
+        DebugP_assert(status == SDL_PASS);
+        Bootloader_profileAddProfilePoint("PBIST Negative Tests");
+
+        /* Turn Off PSC devices after completion of Negative tests */
+        status = SDL_PBIST_handlePSCdevices(false);
+        DebugP_assert(status == SDL_PASS);
+        
         Bootloader_openDma();
 
         Bootloader_LoadImageParams bootArray[CONFIG_BOOTLOADER_NUM_INSTANCES];

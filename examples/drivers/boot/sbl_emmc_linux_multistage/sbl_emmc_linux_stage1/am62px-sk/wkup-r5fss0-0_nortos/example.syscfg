@@ -1,8 +1,9 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62Px" --package "AMH" --part "Default" --context "wkup-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.20.0+3587"}
+ * @cliArgs --device "AM62Px" --part "Default" --package "AMH" --context "wkup-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @v2CliArgs --device "AM62P" --package "FCBGA (AMH)" --variant "AM62P54-M" --context "wkup-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.24.2+4234"}
  */
 
 /**
@@ -13,6 +14,8 @@ const bootloader1 = bootloader.addInstance();
 const ddr         = scripting.addModule("/drivers/ddr/ddr", {}, false);
 const ddr1        = ddr.addInstance();
 const gtc         = scripting.addModule("/drivers/gtc/gtc");
+const mcu_bist    = scripting.addModule("/drivers/mcu_bist/mcu_bist", {}, false);
+const mcu_bist1   = mcu_bist.addInstance();
 const mmcsd       = scripting.addModule("/drivers/mmcsd/mmcsd", {}, false);
 const mmcsd1      = mmcsd.addInstance();
 const qos         = scripting.addModule("/drivers/qos/qos", {}, false);
@@ -40,10 +43,26 @@ bootloader1.EMMCAppImageOffset = "0x80000";
 
 ddr1.$name = "CONFIG_DDR0";
 
+mcu_bist1.$name                 = "CONFIG_BIST0";
+mcu_bist1.SDL_PBIST_INST_PBIST1 = true;
+mcu_bist1.SDL_PBIST_INST_MAIN   = true;
+mcu_bist1.SDL_PBIST_INST_MPU    = true;
+mcu_bist1.SDL_PBIST_INST_ENCODE = true;
+
 bootloader1.MMCSDDriver = mmcsd1;
 mmcsd1.$name            = "CONFIG_MMCSD_SBL";
 
 qos1.$name = "CONFIG_QOS0";
+
+const udma             = scripting.addModule("/drivers/udma/udma", {}, false);
+const udma1            = udma.addInstance({}, false);
+udma1.$name            = "CONFIG_UDMA0";
+bootloader1.udmaDriver = udma1;
+
+const udma_blkcopy_channel     = scripting.addModule("/drivers/udma/udma_blkcopy_channel", {}, false);
+const udma_blkcopy_channel1    = udma_blkcopy_channel.addInstance({}, false);
+udma_blkcopy_channel1.$name    = "CONFIG_UDMA_BLKCOPY_CH0";
+bootloader1.udmaBlkCopyChannel = udma_blkcopy_channel1;
 
 debug_log.enableCssLog                            = false;
 debug_log.enableUartLog                           = true;
@@ -64,6 +83,7 @@ mpu_armv71.attributes        = "Device";
 mpu_armv71.allowExecute      = false;
 mpu_armv71.$name             = "REGISTER_REGION";
 mpu_armv71.accessPermissions = "Supervisor RD+WR, User RD";
+mpu_armv71.attributes        = "Device";
 
 mpu_armv72.size              = 7;
 mpu_armv72.$name             = "TCMA_VEC";

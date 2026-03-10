@@ -24,6 +24,7 @@ const libdirs_nortos = {
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/sbl/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/sbl/lib",
+        "${MCU_PLUS_SDK_PATH}/source/sdl/sdl_sbl/lib",
     ],
 };
 
@@ -31,6 +32,7 @@ const libs_nortos_r5f = {
     common: [
         "nortos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
         "drivers.am62ax.dm-r5f.ti-arm-clang.${ConfigName}.lib",
+        "sdl_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 

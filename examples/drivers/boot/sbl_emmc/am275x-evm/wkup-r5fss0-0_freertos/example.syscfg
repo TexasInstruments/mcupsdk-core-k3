@@ -18,6 +18,8 @@ const bootloader3 = bootloader.addInstance();
 const bootloader4 = bootloader.addInstance();
 const bootloader5 = bootloader.addInstance();
 const bootloader6 = bootloader.addInstance();
+const mcu_bist    = scripting.addModule("/drivers/mcu_bist/mcu_bist", {}, false);
+const mcu_bist1   = mcu_bist.addInstance();
 const mmcsd       = scripting.addModule("/drivers/mmcsd/mmcsd", {}, false);
 const mmcsd1      = mmcsd.addInstance();
 const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
@@ -35,10 +37,9 @@ const mpu_armv79  = mpu_armv7.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-hyperRam1.$name                       = "CONFIG_HYPERRAM0";
-hyperRam1.addedByBootloader           = true;
-hyperRam1.peripheralDriver.$name      = "CONFIG_HYPERBUS0";
-hyperRam1.peripheralDriver.deviceSize = 0x4000000;
+hyperRam1.$name                  = "CONFIG_HYPERRAM0";
+hyperRam1.addedByBootloader      = true;
+hyperRam1.peripheralDriver.$name = "CONFIG_HYPERBUS0";
 
 bootloader1.bootMedia          = "EMMC";
 bootloader1.$name              = "CONFIG_BOOTLOADER_R50_0";
@@ -64,6 +65,13 @@ bootloader6.$name              = "CONFIG_BOOTLOADER_C751";
 bootloader6.bootMedia          = "EMMC";
 bootloader6.EMMCAppImageOffset = "0x1800000";
 
+mcu_bist1.$name                        = "CONFIG_BIST0";
+mcu_bist1.SDL_PBIST_INST_MAIN_PULSAR_0 = true;
+mcu_bist1.SDL_PBIST_INST_MAIN_PULSAR_1 = true;
+mcu_bist1.SDL_PBIST_INST_C7X_0         = true;
+mcu_bist1.SDL_PBIST_INST_C7X_1         = true;
+mcu_bist1.SDL_PBIST_INST_MAIN_IP       = true;
+
 bootloader1.MMCSDDriver = mmcsd1;
 mmcsd1.$name            = "CONFIG_MMCSD_SBL";
 bootloader2.MMCSDDriver = mmcsd1;
@@ -71,6 +79,26 @@ bootloader3.MMCSDDriver = mmcsd1;
 bootloader4.MMCSDDriver = mmcsd1;
 bootloader5.MMCSDDriver = mmcsd1;
 bootloader6.MMCSDDriver = mmcsd1;
+
+const udma             = scripting.addModule("/drivers/udma/udma", {}, false);
+const udma1            = udma.addInstance({}, false);
+udma1.$name            = "CONFIG_UDMA0";
+bootloader1.udmaDriver = udma1;
+bootloader2.udmaDriver = udma1;
+bootloader3.udmaDriver = udma1;
+bootloader4.udmaDriver = udma1;
+bootloader5.udmaDriver = udma1;
+bootloader6.udmaDriver = udma1;
+
+const udma_blkcopy_channel     = scripting.addModule("/drivers/udma/udma_blkcopy_channel", {}, false);
+const udma_blkcopy_channel1    = udma_blkcopy_channel.addInstance({}, false);
+udma_blkcopy_channel1.$name    = "CONFIG_UDMA_BLKCOPY_CH0";
+bootloader1.udmaBlkCopyChannel = udma_blkcopy_channel1;
+bootloader2.udmaBlkCopyChannel = udma_blkcopy_channel1;
+bootloader3.udmaBlkCopyChannel = udma_blkcopy_channel1;
+bootloader4.udmaBlkCopyChannel = udma_blkcopy_channel1;
+bootloader5.udmaBlkCopyChannel = udma_blkcopy_channel1;
+bootloader6.udmaBlkCopyChannel = udma_blkcopy_channel1;
 
 debug_log.enableUartLog                      = true;
 debug_log.uartLog.intrEnable                 = "DISABLE";

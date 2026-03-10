@@ -107,6 +107,7 @@ LIBS_PATH_common = \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/board/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/sdl/sdl_sbl/lib \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
@@ -117,6 +118,7 @@ LIBS_common = \
 	-ldrivers.am275x.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	-lsciserver.am275x.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	-lboard.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lsdl_sbl.am275x.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
 	-llibsysbm.a \
 
@@ -135,6 +137,7 @@ LIBS_NAME = \
 	drivers.am275x.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	sciserver.am275x.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	board.am275x.r5f.ti-arm-clang.${ConfigName}.lib \
+	sdl_sbl.am275x.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
 	libsysbm.a \
 
@@ -147,6 +150,7 @@ LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	${MCU_PLUS_SDK_PATH}/source/board/lib \
+	${MCU_PLUS_SDK_PATH}/source/sdl/sdl_sbl/lib \
 	${CG_TOOL_ROOT}/lib \
 
 FILES := $(FILES_common) $(FILES_$(PROFILE))

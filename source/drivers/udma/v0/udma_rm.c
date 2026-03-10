@@ -1790,29 +1790,63 @@ int32_t Udma_rmSetSharedResRmInitPrms(const Udma_RmSharedResPrms *rmSharedResPrm
 
     if(UDMA_SOK == retVal)
     {
-        /* Populate share for each instance; Get sum of shares for validation */
-        for(i = 0U;i < numInst; i++)
+        /* 
+         * Check if we are dealing with CSI DMA (Instance ID 4). CSI DMA is present in AM62Ax, and belongs to DMASS1. Hence this case is 
+         * treated differently from BCDMA0 and PKTDMA0 which belong to DMASS0. The resource splitting is done separately for DMASS0/1 
+         */
+        if (instId != UDMA_INST_ID_4)
         {
-            if(rmSharedResPrms->instShare[i] == UDMA_RM_SHARED_RES_CNT_MIN)
+            /* Populate share for each instance; Get sum of shares for validation */
+            for(i = 0U;i < numInst; i++)
             {
-                sumInstShare += minReq;
-                instFinalShare[i] = minReq;
+                if(rmSharedResPrms->instShare[i] == UDMA_RM_SHARED_RES_CNT_MIN)
+                {
+                    sumInstShare += minReq;
+                    instFinalShare[i] = minReq;
+                }
+                else if(rmSharedResPrms->instShare[i] == UDMA_RM_SHARED_RES_CNT_REST)
+                {
+                    sumInstShare += minReq;
+                    splitCnt++;
+                }
+                else
+                {
+                    sumInstShare += rmSharedResPrms->instShare[i];
+                    instFinalShare[i] = rmSharedResPrms->instShare[i];
+                }
             }
-            else if(rmSharedResPrms->instShare[i] == UDMA_RM_SHARED_RES_CNT_REST)
+            /* Check for sum of share with total usable */
+            if(numUnresvRes < sumInstShare)
+            {
+                retVal = UDMA_EINVALID_PARAMS;
+            }
+        }
+        /* 
+         * In case of DMASS1, there is only one allowed instance of DMA ie BCDMA1. 
+         * No splitting is needed, all available resources are allocated.
+         */
+        else
+        {
+            if(rmSharedResPrms->instShare[instId - UDMA_INST_ID_START] == UDMA_RM_SHARED_RES_CNT_MIN)
             {
                 sumInstShare += minReq;
-                splitCnt++;
+                instFinalShare[instId - UDMA_INST_ID_START] = minReq;
+            }
+            else if(rmSharedResPrms->instShare[instId - UDMA_INST_ID_START] == UDMA_RM_SHARED_RES_CNT_REST)
+            {
+                sumInstShare += rangeTotalNum;
+                instFinalShare[instId - UDMA_INST_ID_START] = rangeTotalNum;
             }
             else
             {
-                sumInstShare += rmSharedResPrms->instShare[i];
-                instFinalShare[i] = rmSharedResPrms->instShare[i];
+                sumInstShare += rmSharedResPrms->instShare[instId - UDMA_INST_ID_START];
+                instFinalShare[instId - UDMA_INST_ID_START] = rmSharedResPrms->instShare[instId - UDMA_INST_ID_START];
             }
-        }
-        /* Check for sum of share with total usable */
-        if(numUnresvRes < sumInstShare)
-        {
-            retVal = UDMA_EINVALID_PARAMS;
+            /* Check for sum of share with total usable */
+            if(numUnresvRes < sumInstShare)
+            {
+                retVal = UDMA_EINVALID_PARAMS;
+            }
         }
     }
 

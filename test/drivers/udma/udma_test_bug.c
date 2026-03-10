@@ -101,7 +101,7 @@ int32_t udmaTestBugTcPDK_4654(UdmaTestTaskObj *taskObj)
 
         if(UDMA_SOK == retVal)
         {
-            for(instId = UDMA_INST_ID_START; instId <= UDMA_INST_ID_MAX; instId++)
+            for(instId = UDMA_INST_ID_START; instId <= UDMA_INST_ID_PKTDMA_0; instId++)
             {
                 drvHandle = &taskObj->testObj->drvObj[instId];
 

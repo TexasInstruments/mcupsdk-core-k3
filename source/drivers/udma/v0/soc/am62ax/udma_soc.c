@@ -129,15 +129,13 @@ void Udma_initDrvHandle(Udma_DrvHandleInt drvHandle)
         pPktdmaRegs = &drvHandle->pktdmaRegs;
         memset(pPktdmaRegs, 0, sizeof(*pPktdmaRegs));
     }
-	else if(UDMA1_INST_ID_BCDMA_0 == instId)
+	else if(UDMA_INST_ID_BCDMA_1 == instId)
     {
         drvHandle->instType = UDMA_INST_TYPE_LCDMA_BCDMA;
         pBcdmaRegs = &drvHandle->bcdmaRegs;
 
         pBcdmaRegs->pGenCfgRegs     = ((CSL_bcdma_gcfgRegs *) CSL_DMASS1_BCDMA_GCFG_BASE);
-//        pBcdmaRegs->pTxChanCfgRegs  = ((CSL_bcdma_txccfgRegs *) CSL_DMASS1_BCDMA_TCHAN_BASE);
         pBcdmaRegs->pRxChanCfgRegs  = ((CSL_bcdma_rxccfgRegs *) CSL_DMASS1_BCDMA_RCHAN_BASE);
-//        pBcdmaRegs->pTxChanRtRegs   = ((CSL_bcdma_txcrtRegs *) CSL_DMASS1_BCDMA_TCHANRT_BASE);
         pBcdmaRegs->pRxChanRtRegs   = ((CSL_bcdma_rxcrtRegs *) CSL_DMASS1_BCDMA_RCHANRT_BASE);
         drvHandle->trigGemOffset    = CSL_DMSS_GEM_BCDMA_TRIGGER_OFFSET;
         /* Fill other SOC specific parameters by reading from UDMA config
@@ -181,7 +179,7 @@ void Udma_initDrvHandle(Udma_DrvHandleInt drvHandle)
         pLcdmaRaRegs->pCredRegs      = (CSL_lcdma_ringacc_credRegs *) CSL_DMASS0_BCDMA_CRED_BASE;
         pLcdmaRaRegs->maxRings       = CSL_DMSS_BCDMA_NUM_BC_CHANS + CSL_DMSS_BCDMA_NUM_TX_CHANS + CSL_DMSS_BCDMA_NUM_RX_CHANS;
     }
-    else if(UDMA1_INST_ID_BCDMA_0 == instId)
+    else if(UDMA_INST_ID_BCDMA_1 == instId)
     {
         pLcdmaRaRegs->pRingCfgRegs   = ((CSL_lcdma_ringacc_ring_cfgRegs *) CSL_DMASS1_BCDMA_RING_BASE);
         pLcdmaRaRegs->pRingRtRegs    = ((CSL_lcdma_ringacc_ringrtRegs *) CSL_DMASS1_BCDMA_RINGRT_BASE);
@@ -213,7 +211,7 @@ void Udma_initDrvHandle(Udma_DrvHandleInt drvHandle)
 
     /* IA config init */
     pIaRegs = &drvHandle->iaRegs;
-    if(UDMA1_INST_ID_BCDMA_0 == instId)
+    if(UDMA_INST_ID_BCDMA_1 == instId)
     {
         pIaRegs->pCfgRegs       = ((CSL_intaggr_cfgRegs *) CSL_DMASS1_INTAGGR_CFG_BASE);
         pIaRegs->pImapRegs      = ((CSL_intaggr_imapRegs *) CSL_DMASS1_INTAGGR_IMAP_BASE);
@@ -296,14 +294,12 @@ void Udma_initDrvHandle(Udma_DrvHandleInt drvHandle)
         drvHandle->rxTrIrqOffset        = TISCI_BCDMA0_RX_DC_OES_IRQ_SRC_IDX_START;
 		drvHandle->devIdPsil            = TISCI_DEV_DMASS0;
     }
-    else if(UDMA1_INST_ID_BCDMA_0 == instId)
+    else if(UDMA_INST_ID_BCDMA_1 == instId)
     {
-        drvHandle->txChOffset           = 0; //pBcdmaRegs->bcChanCnt;
-        drvHandle->rxChOffset           = drvHandle->txChOffset + pBcdmaRegs->splitTxChanCnt;
+        drvHandle->rxChOffset           = pBcdmaRegs->splitTxChanCnt;
        /* The srcIdx passed to Sciclient_rmIrqset API for configuring DMA Completion/Ring events,
         * will be ringNum + the corresponding following offset.
         * So setting the offset as TISCI Start Idx - corresponding ringNum Offset (if any) */
-//        drvHandle->txRingIrqOffset      = TISCI_BCDMA1_TX_RC_OES_IRQ_SRC_IDX_START - drvHandle->txChOffset;
         drvHandle->rxRingIrqOffset      = TISCI_BCDMA1_RX_RC_OES_IRQ_SRC_IDX_START - drvHandle->rxChOffset;
         drvHandle->udmapSrcThreadOffset = CSL_PSILCFG_DMSS_CSI_BCDMA_STRM_PSILS_THREAD_OFFSET;
         drvHandle->udmapDestThreadOffset= CSL_PSILCFG_DMSS_CSI_BCDMA_STRM_PSILD_THREAD_OFFSET;
@@ -314,7 +310,6 @@ void Udma_initDrvHandle(Udma_DrvHandleInt drvHandle)
         * will be chNum + the corresponding following offset.
         * So setting the offset as TISCI Start Idx - corresponding chNum Offset (if any) */
         drvHandle->srcIdTrIrq           = drvHandle->devIdIa;
-//        drvHandle->txTrIrqOffset        = TISCI_BCDMA1_TX_DC_OES_IRQ_SRC_IDX_START;
         drvHandle->rxTrIrqOffset        = TISCI_BCDMA1_RX_DC_OES_IRQ_SRC_IDX_START;
 		drvHandle->devIdPsil            = TISCI_DEV_DMASS1;
     }
@@ -355,7 +350,7 @@ uint32_t Udma_isCacheCoherent(void)
 uint8_t Udma_isValidInstance(uint32_t instId)
 {
     uint8_t result = (uint8_t)FALSE;
-    if((UDMA_INST_ID_BCDMA_0 == instId) || (UDMA_INST_ID_PKTDMA_0 == instId) || (UDMA1_INST_ID_BCDMA_0 == instId))
+    if((UDMA_INST_ID_BCDMA_0 == instId) || (UDMA_INST_ID_PKTDMA_0 == instId) || (UDMA_INST_ID_BCDMA_1 == instId))
     {
         result = (uint8_t)TRUE;
     }

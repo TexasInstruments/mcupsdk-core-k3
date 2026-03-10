@@ -74,13 +74,17 @@ extern "C" {
 /** \brief PKTDMA instance */
 #define UDMA_INST_ID_PKTDMA_0            (UDMA_INST_ID_3)
 /** \brief BCDMA(CSI) instance */
-#define UDMA1_INST_ID_BCDMA_0            (UDMA_INST_ID_4)
+#define UDMA_INST_ID_BCDMA_1             (UDMA_INST_ID_4)
 /** \brief Start of UDMA instance */
 #define UDMA_INST_ID_START               (UDMA_INST_ID_2)
 /** \brief Maximum number of UDMA instance */
 #define UDMA_INST_ID_MAX                 (UDMA_INST_ID_4)
 /** \brief Total number of UDMA instances */
-#define UDMA_NUM_INST_ID                 (UDMA_INST_ID_MAX - UDMA_INST_ID_START + 1U)
+#define UDMA_NUM_INST_ID                 ((UDMA_INST_ID_MAX - UDMA_INST_ID_START) + 1U)
+/** \brief Total number of UDMA instances in DMASS0 */
+#define UDMA_NUM_INST_DMASS0             ((UDMA_INST_ID_PKTDMA_0 - UDMA_INST_ID_START) + 1U)
+/** \brief Total number of UDMA instances in DMASS1 */
+#define UDMA_NUM_INST_DMASS1             (1U)
 /** @} */
 
 /**

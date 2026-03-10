@@ -172,8 +172,8 @@ int32_t UdmaRmInitPrms_init(uint32_t instId, Udma_RmInitPrms *rmInitPrms)
         {
             numRes = UDMA_RM_NUM_PKTDMA_RES;
         }
-#if defined (SOC_AM62AX)
-        else if(UDMA1_INST_ID_BCDMA_0 == instId)
+#if defined (UDMA_INST_ID_BCDMA_1)
+        else if(UDMA_INST_ID_BCDMA_1 == instId)
         {
             numRes = UDMA_RM_NUM_BCDMA_RES;
         }

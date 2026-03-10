@@ -83,7 +83,7 @@ int32_t udmaTestInitDriver(UdmaTestObj *testObj)
     Udma_InitPrms   initPrms;
     Udma_DrvHandle  drvHandle;
 
-    for(instId = UDMA_INST_ID_START; instId <= UDMA_INST_ID_MAX; instId++)
+    for(instId = UDMA_INST_ID_START; instId <= UDMA_INST_ID_PKTDMA_0; instId++)
     {
         /* UDMA driver init */
         drvHandle = &testObj->drvObj[instId];
@@ -105,7 +105,7 @@ int32_t udmaTestDeinitDriver(UdmaTestObj *testObj)
     uint32_t        instId;
     Udma_DrvHandle  drvHandle;
 
-    for(instId = UDMA_INST_ID_START; instId <= UDMA_INST_ID_MAX; instId++)
+    for(instId = UDMA_INST_ID_START; instId <= UDMA_INST_ID_PKTDMA_0; instId++)
     {
         /* UDMA driver deinit */
         drvHandle = &testObj->drvObj[instId];

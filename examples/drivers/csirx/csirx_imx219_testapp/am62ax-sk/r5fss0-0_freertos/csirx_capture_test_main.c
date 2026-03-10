@@ -1115,7 +1115,7 @@ static int32_t CsirxApp_init(CsirxApp_CaptCommonObj* appCommonObj)
 
     /* Do UDMA init before CSIRX Init */
     /* UDMA driver init */
-    UdmaInitPrms_init(UDMA1_INST_ID_BCDMA_0, &udmaInitPrms);
+    UdmaInitPrms_init(UDMA_INST_ID_BCDMA_1, &udmaInitPrms);
     dmaStatus = Udma_init(drvHandle, &udmaInitPrms);
     if(UDMA_SOK != dmaStatus)
     {

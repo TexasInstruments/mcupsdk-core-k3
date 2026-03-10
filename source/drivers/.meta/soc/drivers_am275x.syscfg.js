@@ -41,6 +41,9 @@ const driverVer = {
     "mcspi": {
         version: "v0",
     },
+    "mcu_bist": {
+        version: "v0",
+    },
     "mmcsd": {
         version: "v0",
     },
@@ -74,6 +77,7 @@ const topModules_wkup = [
     "/drivers/hyperbus/hyperbus",
     "/drivers/i2c/i2c",
     "/drivers/ipc/ipc",
+    "/drivers/mcu_bist/mcu_bist",
     "/drivers/mmcsd/mmcsd",
     "/drivers/ospi/ospi",
     "/drivers/qos/qos",

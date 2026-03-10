@@ -305,9 +305,7 @@ const defines_mcu_r5 = {
 };
 
 const cflags_wkup_r5f = {
-    debug: [
-        "-Og",
-    ]
+    debug: []
 }
 const buildOptionCombos = [
     { device: device, cpu: "mcu-r5f", cgt: "ti-arm-clang"},

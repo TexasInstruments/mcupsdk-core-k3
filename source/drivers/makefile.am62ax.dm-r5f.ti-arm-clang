@@ -189,7 +189,6 @@ DEFINES_common := \
 
 CFLAGS_debug := \
     -D_DEBUG_=1 \
-    -Og \
 
 CFLAGS_common := \
     -mcpu=cortex-r5 \

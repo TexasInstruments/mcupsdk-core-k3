@@ -352,9 +352,7 @@ const defines_dm_r5 = {
 };
 
 const cflags_r5f = {
-    debug: [
-        "-Og",
-    ]
+    debug: []
 }
 
 const cflags_a53 = {

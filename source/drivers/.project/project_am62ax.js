@@ -381,9 +381,7 @@ const defines_a53 = {
 };
 
 const cflags_dm_r5 = {
-    debug: [
-        "-Og",
-    ]
+    debug: []
 }
 
 const filedirs_a53 =  {

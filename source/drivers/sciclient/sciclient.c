@@ -268,68 +268,67 @@ static uint8_t Sciclient_writeLockSemInited = 0U;
 int32_t Sciclient_init(uint32_t coreId)
 {
     int32_t   status = SystemP_SUCCESS;
-
-    /* Initialize write lock semaphore */
-    if (Sciclient_writeLockSemInited == 0U)
+    
+    /* Check if Sciclient is already initialized */
+    if (Sciclient_handle.coreId != CSL_CORE_ID_INVALID)
     {
-        if (SemaphoreP_constructBinary(&Sciclient_writeLockSem, 1U) ==
-            SystemP_SUCCESS)
+        DebugP_logInfo("Sciclient is already initialized\r\n");
+    }
+    else
+    {
+        /* Initialize write lock semaphore */
+        if (Sciclient_writeLockSemInited == 0U)
         {
-            Sciclient_writeLockSemInited = 1U;
+            if (SemaphoreP_constructBinary(&Sciclient_writeLockSem, 1U) ==
+                SystemP_SUCCESS)
+            {
+                Sciclient_writeLockSemInited = 1U;
+            }
+            else
+            {
+                status = SystemP_FAILURE;
+            }
+        }
+
+        if ((status == SystemP_SUCCESS) && (coreId < CSL_CORE_ID_MAX))
+        {
+            /* convert system address to CPU local address */
+            gSciclientSecProxyCfg.pSecProxyRegs =
+                (CSL_sec_proxyRegs*)AddrTranslateP_getLocalAddr(
+                    (uint64_t)gSciclientSecProxyCfg.pSecProxyRegs);
+            gSciclientSecProxyCfg.pSecProxyScfgRegs =
+                (CSL_sec_proxy_scfgRegs*)AddrTranslateP_getLocalAddr(
+                    (uint64_t)gSciclientSecProxyCfg.pSecProxyScfgRegs);
+            gSciclientSecProxyCfg.pSecProxyRtRegs =
+                (CSL_sec_proxy_rtRegs*)AddrTranslateP_getLocalAddr(
+                    (uint64_t)gSciclientSecProxyCfg.pSecProxyRtRegs);
+            gSciclientSecProxyCfg.proxyTargetAddr =
+                (uint64_t)AddrTranslateP_getLocalAddr(
+                    (uint64_t)gSciclientSecProxyCfg.proxyTargetAddr);
+
+            Sciclient_handle.currSeqId = 0;
+            Sciclient_handle.coreId = coreId;
+            Sciclient_handle.devIdCore = Sciclient_getDevId(coreId);
+            Sciclient_handle.secureContextId =
+                Sciclient_getContext(SCICLIENT_SECURE_CONTEXT, coreId);
+            Sciclient_handle.nonSecureContextId =
+                Sciclient_getContext(SCICLIENT_NON_SECURE_CONTEXT, coreId);
+            Sciclient_handle.maxMsgSizeBytes =
+                CSL_secProxyGetMaxMsgSize(&gSciclientSecProxyCfg) -
+                CSL_SEC_PROXY_RSVD_MSG_BYTES;
+
+            /* Initialize operation mode to polling */
+            Sciclient_handle.opModeFlag = SCICLIENT_SERVICE_OPERATION_MODE_POLLED;
+
+#ifdef ENABLE_SCICLIENT_INTERRUPT_MODE
+            status = Sciclient_updateOperModeToInterrupt();
+#endif
         }
         else
         {
             status = SystemP_FAILURE;
         }
     }
-
-    /* Check if Sciclient is already initialized */
-    if ((status == SystemP_SUCCESS) &&
-        (Sciclient_handle.coreId != CSL_CORE_ID_INVALID))
-    {
-        status = SystemP_FAILURE;
-        DebugP_logError("Sciclient: Already initialized. Call Sciclient_deinit() first.\r\n");
-    }
-
-    if ((status == SystemP_SUCCESS) && (coreId < CSL_CORE_ID_MAX))
-    {
-        /* convert system address to CPU local address */
-        gSciclientSecProxyCfg.pSecProxyRegs =
-            (CSL_sec_proxyRegs*)AddrTranslateP_getLocalAddr(
-                (uint64_t)gSciclientSecProxyCfg.pSecProxyRegs);
-        gSciclientSecProxyCfg.pSecProxyScfgRegs =
-            (CSL_sec_proxy_scfgRegs*)AddrTranslateP_getLocalAddr(
-                (uint64_t)gSciclientSecProxyCfg.pSecProxyScfgRegs);
-        gSciclientSecProxyCfg.pSecProxyRtRegs =
-            (CSL_sec_proxy_rtRegs*)AddrTranslateP_getLocalAddr(
-                (uint64_t)gSciclientSecProxyCfg.pSecProxyRtRegs);
-        gSciclientSecProxyCfg.proxyTargetAddr =
-            (uint64_t)AddrTranslateP_getLocalAddr(
-                (uint64_t)gSciclientSecProxyCfg.proxyTargetAddr);
-
-        Sciclient_handle.currSeqId = 0;
-        Sciclient_handle.coreId = coreId;
-        Sciclient_handle.devIdCore = Sciclient_getDevId(coreId);
-        Sciclient_handle.secureContextId =
-            Sciclient_getContext(SCICLIENT_SECURE_CONTEXT, coreId);
-        Sciclient_handle.nonSecureContextId =
-            Sciclient_getContext(SCICLIENT_NON_SECURE_CONTEXT, coreId);
-        Sciclient_handle.maxMsgSizeBytes =
-            CSL_secProxyGetMaxMsgSize(&gSciclientSecProxyCfg) -
-            CSL_SEC_PROXY_RSVD_MSG_BYTES;
-
-        /* Initialize operation mode to polling */
-        Sciclient_handle.opModeFlag = SCICLIENT_SERVICE_OPERATION_MODE_POLLED;
-
-#ifdef ENABLE_SCICLIENT_INTERRUPT_MODE
-        status = Sciclient_updateOperModeToInterrupt();
-#endif
-    }
-    else
-    {
-        status = SystemP_FAILURE;
-    }
-
     return(status);
 }
 

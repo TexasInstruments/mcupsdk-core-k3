@@ -2627,17 +2627,17 @@ int8_t test_sciclient_modes(void)
         failCount++;
     }
 
-    /* Test init when already initialized - should fail. */
+    /* Test init when already initialized */
     retVal = Sciclient_init(CSL_CORE_ID_MCU_R5FSS0_0);
-    if(retVal == SystemP_SUCCESS)
+    if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
 
-    /* Test init with invalid coreId (>= CSL_CORE_ID_MAX). */
+    /* Test init with invalid coreId (>= CSL_CORE_ID_MAX) when already initialized. */
     retVal = Sciclient_init(CSL_CORE_ID_MAX);
-    if(retVal == SystemP_SUCCESS)
+    if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;

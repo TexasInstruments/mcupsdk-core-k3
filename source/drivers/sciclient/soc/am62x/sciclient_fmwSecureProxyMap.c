@@ -50,7 +50,10 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-/* None */
+/* In Cortex‑M4F, vector slots 0‑15 are core exceptions.
+ * External IRQ numbers therefore need a +16 offset 
+ */
+#define NVIC_EXTERNAL_IRQ_VECTOR_OFFSET (16U)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -227,7 +230,8 @@ const Sciclient_MapStruct_t gSciclientMap[SCICLIENT_CONTEXT_MAX_NUM] =
         TISCI_SEC_PROXY_M4_0_READ_RESPONSE_THREAD_ID,
 
         /** Notification Interrupt Number */
-        CSLR_MCU_M4FSS0_CORE0_NVIC_DMASS0_INTAGGR_0_INTAGGR_VINTR_PEND_175
+        (CSLR_MCU_M4FSS0_CORE0_NVIC_DMASS0_INTAGGR_0_INTAGGR_VINTR_PEND_175 \
+         + NVIC_EXTERNAL_IRQ_VECTOR_OFFSET)
 
     },
 

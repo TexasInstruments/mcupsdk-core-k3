@@ -19,7 +19,7 @@ else ifeq ($(SOC),$(filter $(SOC), am62ax))
   SOC_RES=am62a
 else ifeq ($(SOC),$(filter $(SOC), am62dx))
   SOC_FOLDER=am62dx
-  SOC_RES=am62a
+  SOC_RES=am62d
 else ifeq ($(SOC),$(filter $(SOC), am62px))
   SOC_FOLDER=am62px
   SOC_RES=am62p

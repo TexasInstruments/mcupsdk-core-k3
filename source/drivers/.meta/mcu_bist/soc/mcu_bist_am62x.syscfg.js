@@ -31,7 +31,7 @@ const pbist_instance_config = [
                 auxDevice   :   "TISCI_DEV_COMPUTE_CLUSTER0",
                 pscAddress  :   "PBIST_A53_0_CLUSTER_ADDR",
                 pscPd       :   "CSL_MAIN_PD_A53_CLUSTER_0",
-                lpscId      :   "CSL_MAIN_LPSC_A53_CLUSTER_0_PBIST_0",
+                lpscId      :   "CSL_MAIN_LPSC_A53_CLUSTER_0",
             },
             {
                 auxDevice   :   "TISCI_DEV_A53SS0_CORE_0",

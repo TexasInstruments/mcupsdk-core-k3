@@ -73,12 +73,14 @@ endif
 ELF_FILE_LIST = $(RPRC_LIST:.rprc=.elf)
 
 ifeq ($(BOARD), j722s-evm)
+	COMBINED_APPIMAGE_LOAD_ADDR=C2000000
 	COMBINED_APPIMAGE_PARAMS = \
 		$(RTOS_IMG_LIST) \
 		$(BOOTIMAGE_CORE_ID_a53ss0-0) $(ATF_RPRC) \
 		$(BOOTIMAGE_CORE_ID_load_only) $(OPTEE_RPRC) \
 		$(BOOTIMAGE_CORE_ID_load_only) $(IMAGE_RPRC)
 else
+	COMBINED_APPIMAGE_LOAD_ADDR=84000000
 	COMBINED_APPIMAGE_PARAMS = \
 		$(BOOTIMAGE_CORE_ID_a53ss0-0) $(ATF_RPRC) \
 		$(BOOTIMAGE_CORE_ID_load_only) $(OPTEE_RPRC) \
@@ -140,20 +142,20 @@ ifeq ($(ENC_ENABLED),no)
     #
     #   Authentication type 0 with load address 0x84000000
     #
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(LINUX_BOOTIMAGE) --authtype 0 --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(LINUX_BOOTIMAGE_HS) --keyversion $(VERSION)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(LINUX_BOOTIMAGE) --authtype 0 --loadaddr $(COMBINED_APPIMAGE_LOAD_ADDR) --key $(APP_SIGNING_KEY) --output $(LINUX_BOOTIMAGE_HS) --keyversion $(VERSION)
 else
 	@echo Boot image signing: Encryption is enabled.
     #
     #   Authentication type 0 with load address 0x84000000
     #
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(LINUX_BOOTIMAGE) --authtype 0 --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(LINUX_BOOTIMAGE_HS) --keyversion $(VERSION)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(LINUX_BOOTIMAGE) --authtype 0 --loadaddr $(COMBINED_APPIMAGE_LOAD_ADDR) --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(LINUX_BOOTIMAGE_HS) --keyversion $(VERSION)
 	$(RM) $(LINUX_BOOTIMAGE)-enc
 endif
 else
     #
     #   Authentication type 0 with load address 0x84000000
     #
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(LINUX_BOOTIMAGE) --authtype 0 --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(LINUX_BOOTIMAGE_HS_FS) --keyversion $(VERSION)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(LINUX_BOOTIMAGE) --authtype 0 --loadaddr $(COMBINED_APPIMAGE_LOAD_ADDR) --key $(APP_SIGNING_KEY) --output $(LINUX_BOOTIMAGE_HS_FS) --keyversion $(VERSION)
 endif
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
 	@echo Combined boot image: $@ Done !!!

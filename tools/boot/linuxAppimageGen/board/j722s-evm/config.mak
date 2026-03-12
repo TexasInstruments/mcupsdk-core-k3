@@ -4,14 +4,14 @@ include $(MCU_PLUS_SDK_PATH)/imports.mak
 #Path for prebuit images in Processor SDK linux
 PSDK_LINUX_PREBUILT_IMAGES=$(MCU_PLUS_SDK_PATH)/tools/boot/hlos_prebuilt/j722s-evm/linux
 
-FASTBOOT_LINUX?=0
+FALCON_MODE?=0
 
 #Input linux binaries
 ATF_BIN_NAME=bl31.bin
 OPTEE_BIN_NAME=bl32.bin
 SPL_BIN_NAME=u-boot-spl-j722s-evm.bin
 
-ifeq ($(FASTBOOT_LINUX), 1)
+ifeq ($(FALCON_MODE), 1)
 #Load Kernel directly
 KERN_BIN_NAME=Image
 FDT_BIN_NAME=k3-j722s-evm.dtb
@@ -22,7 +22,7 @@ ATF_LOAD_ADDR=0x9e780000
 OPTEE_LOAD_ADDR=0x9e800000
 SPL_LOAD_ADDR=0x80080000
 
-ifeq ($(FASTBOOT_LINUX), 1)
+ifeq ($(FALCON_MODE), 1)
 KERN_LOAD_ADDR=0x80080000
 FDT_LOAD_ADDR=0x82000000
 endif

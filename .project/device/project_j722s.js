@@ -43,6 +43,7 @@ const example_file_list = [
     "examples/drivers/boot/sbl_sd/.project/project.js",
     "examples/drivers/boot/sbl_ospi_nand/.project/project.js",
     "examples/drivers/boot/sbl_emmc/.project/project.js",
+    "examples/drivers/boot/sbl_sd_hlos/.project/project.js",
     "examples/drivers/boot/sbl_uart/.project/project.js",
     "examples/drivers/boot/sbl_uart_uniflash/.project/project.js",
     "examples/drivers/boot/sbl_uart_uniflash_nand/.project/project.js",

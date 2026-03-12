@@ -60,7 +60,7 @@
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
-static uint32_t Udma_getCoreSciDevId(void);
+/* None */
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -404,7 +404,7 @@ int32_t UdmaRmInitPrms_init(uint32_t instId, Udma_RmInitPrms *rmInitPrms)
     return (retVal);
 }
 
-static uint32_t Udma_getCoreSciDevId(void)
+uint32_t Udma_getCoreSciDevId(void)
 {
     uint32_t devId;
 
@@ -416,6 +416,17 @@ static uint32_t Udma_getCoreSciDevId(void)
         /* Return device ID for GIC as interrupts to A53 core is routed through GIC */
         devId = TISCI_DEV_GICSS0;
     }
+
+#if (CSL_A53SS_CORE_MAIN_CNT > 1U)
+    if ((devId == TISCI_DEV_A53SS0_CORE_1) ||
+        (devId == TISCI_DEV_A53SS0_CORE_2) ||
+        (devId == TISCI_DEV_A53SS0_CORE_3))
+        {
+            /* Return device ID for GIC as interrupts to A53 core is routed through GIC */
+            devId = TISCI_DEV_GICSS0;
+        }
+#endif
+
 #endif
 
 #if defined(BUILD_C7X)

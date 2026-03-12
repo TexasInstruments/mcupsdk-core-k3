@@ -862,6 +862,7 @@ typedef struct
 void Udma_initDrvHandle(Udma_DrvHandleInt drvHandle);
 int32_t UdmaRmInitPrms_init(uint32_t instId, Udma_RmInitPrms *rmInitPrms);
 const Udma_RmDefBoardCfgPrms *Udma_rmGetDefBoardCfgPrms(uint32_t instId);
+uint32_t Udma_getCoreSciDevId(void);
 
 #if ((UDMA_NUM_MAPPED_TX_GROUP + UDMA_NUM_MAPPED_RX_GROUP) > 0)
 int32_t Udma_getMappedChRingAttributes(Udma_DrvHandleInt drvHandle,
@@ -969,15 +970,12 @@ void Udma_rmFreeFreeRing(uint16_t ringNum, Udma_DrvHandleInt drvHandle);
 /* Event RM APIs */
 uint32_t Udma_rmAllocEvent(Udma_DrvHandleInt drvHandle);
 void Udma_rmFreeEvent(uint32_t globalEvent, Udma_DrvHandleInt drvHandle);
-uint32_t Udma_rmAllocVintr(Udma_DrvHandleInt drvHandle);
+uint32_t Udma_rmAllocVintr(uint32_t preferredVintNum, Udma_DrvHandleInt drvHandle);
 void Udma_rmFreeVintr(uint32_t vintrNum, Udma_DrvHandleInt drvHandle);
 uint32_t Udma_rmAllocVintrBit(Udma_EventHandleInt eventHandle);
 void Udma_rmFreeVintrBit(uint32_t vintrBitNum,
                          Udma_DrvHandleInt drvHandle,
                          Udma_EventHandleInt eventHandle);
-uint32_t Udma_rmAllocIrIntr(uint32_t preferredIrIntrNum,
-                              Udma_DrvHandleInt drvHandle);
-void Udma_rmFreeIrIntr(uint32_t irIntrNum, Udma_DrvHandleInt drvHandle);
 uint32_t Udma_rmTranslateIrOutput(Udma_DrvHandleInt drvHandle, uint32_t irIntrNum);
 uint32_t Udma_rmTranslateCoreIntrInput(Udma_DrvHandleInt drvHandle, uint32_t coreIntrNum);
 void Udma_rmFreeCoreIntr(uint32_t coreIntrNum, Udma_DrvHandleInt drvHandle);

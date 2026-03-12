@@ -657,7 +657,8 @@ static int32_t Udma_eventAllocResource(Udma_DrvHandleInt drvHandle,
 {
     int32_t                 retVal = UDMA_SOK;
     uint32_t                vintrNum;
-    uint32_t                preferredIrIntrNum;
+    uint32_t                preferredVintNum = UDMA_EVENT_INVALID;
+    uint16_t                coreIntrNum;
     const Udma_EventPrms   *eventPrms;
     Udma_EventHandleInt     lastEvent;
     uintptr_t               cookie;
@@ -689,7 +690,33 @@ static int32_t Udma_eventAllocResource(Udma_DrvHandleInt drvHandle,
             ((UDMA_EVENT_MODE_SHARED == eventPrms->eventMode) &&
                 (NULL_PTR == eventPrms->masterEventHandle)))
         {
-            eventHandle->vintrNum = Udma_rmAllocVintr(drvHandle);
+            /**
+             * If preferredCoreIntrNum is not UDMA_CORE_INTR_ANY, i.e.,
+             * user wants interrupt at specified core interrupt line,
+             * query Sciclient to obtain VINT mapped to given core interrupt.
+            */
+            if(UDMA_CORE_INTR_ANY != eventPrms->preferredCoreIntrNum)
+            {
+                retVal = Sciclient_rmIrqTranslateIrqInput((uint16_t)Udma_getCoreSciDevId(),
+                                                          (uint16_t)eventPrms->preferredCoreIntrNum,
+                                                          drvHandle->devIdIa,
+                                                          (uint16_t *) &preferredVintNum);
+            }
+            else
+            {
+                preferredVintNum = eventPrms->preferredCoreIntrNum;
+            }
+            /* Check if Sciclient_rmIrqTranslateIrqInput returned success before allocating VINT */
+            if(UDMA_SOK == retVal)
+            {
+                eventHandle->vintrNum = Udma_rmAllocVintr(preferredVintNum, drvHandle);
+            }
+            else
+            {
+                eventHandle->vintrNum = UDMA_EVENT_INVALID;
+                DebugP_logError("[UDMA] preferredVintNum alloc failed!!!\r\n");
+            }
+            /* Check if VINT allocation is successful */
             if(UDMA_EVENT_INVALID == eventHandle->vintrNum)
             {
                 retVal = UDMA_EALLOC;
@@ -720,28 +747,37 @@ static int32_t Udma_eventAllocResource(Udma_DrvHandleInt drvHandle,
                 (NULL_PTR == eventPrms->masterEventHandle)) ||
             (UDMA_EVENT_TYPE_MASTER == eventPrms->eventType))
         {
-            if(UDMA_CORE_INTR_ANY != eventPrms->preferredCoreIntrNum)
+            if((UDMA_INTR_INVALID != eventHandle->vintrNum) && (UDMA_CORE_INTR_ANY == eventPrms->preferredCoreIntrNum))
             {
-                preferredIrIntrNum = Udma_rmTranslateCoreIntrInput(drvHandle, eventPrms->preferredCoreIntrNum);
+                /* VINT was allocated without a specific core interrupt,
+                 * query Sciclient to find which core interrupt it maps to */
+                retVal = Sciclient_rmIrqTranslateIaOutput(drvHandle->devIdIa,
+                                                    (uint16_t)eventHandle->vintrNum,
+                                                    (uint16_t)Udma_getCoreSciDevId(),
+                                                    &coreIntrNum);
+                if(UDMA_SOK == retVal)
+                {
+                    eventHandle->coreIntrNum = (uint32_t)coreIntrNum;
+                }
+                else
+                {
+                    eventHandle->coreIntrNum = UDMA_INTR_INVALID;
+                }
+
             }
             else
             {
-                preferredIrIntrNum = eventPrms->preferredCoreIntrNum;
+                eventHandle->coreIntrNum = eventPrms->preferredCoreIntrNum;
             }
-            if(UDMA_INTR_INVALID != preferredIrIntrNum)
-            {
-                eventHandle->irIntrNum =
-                    Udma_rmAllocIrIntr(preferredIrIntrNum, drvHandle);
-                if(UDMA_INTR_INVALID != eventHandle->irIntrNum)
-                {
-                    eventHandle->coreIntrNum = Udma_rmTranslateIrOutput(drvHandle, eventHandle->irIntrNum);
 
-                }
-            }
             if(UDMA_INTR_INVALID == eventHandle->coreIntrNum)
             {
                 retVal = UDMA_EALLOC;
                 DebugP_logError("[UDMA] Core intr alloc failed!!!\r\n");
+            }
+            else
+            {
+                eventHandle->irIntrNum = eventHandle->coreIntrNum;
             }
         }
     }
@@ -841,7 +877,6 @@ static void Udma_eventFreeResource(Udma_DrvHandleInt drvHandle,
     }
     if(UDMA_INTR_INVALID != eventHandle->irIntrNum)
     {
-        Udma_rmFreeIrIntr(eventHandle->irIntrNum, drvHandle);
         eventHandle->irIntrNum = UDMA_INTR_INVALID;
         eventHandle->coreIntrNum = UDMA_INTR_INVALID;
     }
@@ -1072,7 +1107,7 @@ static int32_t Udma_eventConfig(Udma_DrvHandleInt drvHandle,
             hwiPrms.intNum = coreIntrNum;
 #ifdef BUILD_C7X
             Udma_RmInitPrms *rmInitPrms = &drvHandle->rmInitPrms;
-            hwiPrms.intNum = eventHandle->irIntrNum - rmInitPrms->startIrIntr;
+            hwiPrms.intNum = eventHandle->vintrNum - rmInitPrms->startVintr;
             hwiPrms.intNum += rmInitPrms->startC7xCoreIntr;
             hwiPrms.eventId = (uint16_t)(eventHandle->coreIntrNum + UDMA_VINT_CLEC_OFFSET);
             hwiPrms.isPulse = 0;

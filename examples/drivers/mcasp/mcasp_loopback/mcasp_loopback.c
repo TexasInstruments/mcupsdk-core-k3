@@ -83,14 +83,14 @@ void mcasp_loopback_main(void *args)
     CacheP_wb(gMcaspTxBuffer, APP_MCASP_MSG_COUNT * APP_MCASP_MSGSIZE, CacheP_TYPE_ALL);
     CacheP_wb(gMcaspRxBuffer, APP_MCASP_MSG_COUNT * APP_MCASP_MSGSIZE, CacheP_TYPE_ALL);
 
-    for (i = 0; i < 256; i++)
+    for (i = 0; i < APP_MCASP_MSGSIZE; i++)
     {
         gTxLoopjobBuf0[i] = 0xa5;
         gRxLoopjobBuf0[i] = 0;
     }
 
-    CacheP_wb(gTxLoopjobBuf0, 256, CacheP_TYPE_ALL);
-    CacheP_wb(gRxLoopjobBuf0, 256, CacheP_TYPE_ALL);
+    CacheP_wb(gTxLoopjobBuf0, APP_MCASP_MSGSIZE, CacheP_TYPE_ALL);
+    CacheP_wb(gRxLoopjobBuf0, APP_MCASP_MSGSIZE, CacheP_TYPE_ALL);
 
     mcaspHandle = MCASP_getHandle(CONFIG_MCASP0);
 

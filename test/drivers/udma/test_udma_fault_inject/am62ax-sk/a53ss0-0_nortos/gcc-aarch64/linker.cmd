@@ -40,8 +40,6 @@ MEMORY {
 
 	DDR : ORIGIN =  0x80000000, LENGTH = 0x2000000
 
-    DDR_UDMA : ORIGIN = 0x88000000, LENGTH = 0x8000000
-    OCRAM    : ORIGIN = 0x70000000, LENGTH = 0x10000
 	/* shared memory segments */
 	/* On A53,
 	 * - make sure there is a MMU entry which maps below regions as non-cache
@@ -89,8 +87,4 @@ SECTIONS {
         KEEP(*(.stack))
         . = . + __TI_STACK_SIZE;
     } > DDR
-        .udma_buffer_ddr (NOLOAD) : { *(.udma_buffer_ddr) } > DDR_UDMA
-        .udma_buffer_msmc (NOLOAD) : { *(.udma_buffer_msmc) } > DDR_UDMA
-        .udma_buffer_internal (NOLOAD) : { *(.udma_buffer_internal) } > OCRAM
-        .udma_buffer_ospi (NOLOAD) : { *(.udma_buffer_ospi) } > DDR_UDMA
 }

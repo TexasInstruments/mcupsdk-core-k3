@@ -95,14 +95,6 @@ SECTIONS
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
     } > MSRAM
 
-    GROUP {
-        .udma_buffer_ddr (NOLOAD) : { *(.udma_buffer_ddr) }
-        .udma_buffer_msmc (NOLOAD) : { *(.udma_buffer_msmc) }
-        .udma_buffer_ospi (NOLOAD) : { *(.udma_buffer_ospi) }
-    } > DDR_UDMA
-    GROUP {
-        .udma_buffer_internal (NOLOAD) : { *(.udma_buffer_internal) }
-    } > OCRAM
 }
 
 MEMORY
@@ -112,7 +104,5 @@ MEMORY
     R5F_TCMB  : ORIGIN = 0x41010000 , LENGTH = 0x00008000
 
     MSRAM     : ORIGIN = 0x79100000 , LENGTH = 0x80000
-    DDR_UDMA : ORIGIN = 0x88000000, LENGTH = 0x8000000
-    OCRAM    : ORIGIN = 0x70000000, LENGTH = 0x10000
 
 }

@@ -146,14 +146,6 @@ SECTIONS
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
     } > DDR
 
-    GROUP {
-        .udma_buffer_ddr (NOLOAD) : {}
-        .udma_buffer_msmc (NOLOAD) : { *(.udma_buffer_msmc) }
-        .udma_buffer_ospi (NOLOAD) : { *(.udma_buffer_ospi) }
-    } > DDR_UDMA
-    GROUP {
-        .udma_buffer_internal (NOLOAD) : { *(.udma_buffer_internal) }
-    } > OCRAM
 }
 
 
@@ -174,6 +166,4 @@ MEMORY
     /* DDR for DM R5F code/data [ size 27 MiB + 364 KB ] */
     DDR                         : ORIGIN = 0x9CAA5000 LENGTH = 0x1B5B000
 
-    DDR_UDMA : ORIGIN = 0x90000000, LENGTH = 0x8000000
-    OCRAM    : ORIGIN = 0x70000000, LENGTH = 0x10000
 }

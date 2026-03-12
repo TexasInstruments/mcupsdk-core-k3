@@ -32,7 +32,7 @@ const libdirs_freertos = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
-        "${MCU_PLUS_SDK_PATH}/source/tisp/lib/Release",
+        "${MCU_PLUS_SDK_PATH}/source/tisp/lib/${ConfigName}",
         "${MCU_PLUS_SDK_PATH}/source/audiolib/lib/${ConfigName}",
         "${MCU_PLUS_SDK_PATH}/source/dsplib/lib/${ConfigName}",
         "${MCU_PLUS_SDK_PATH}/source/fftlib/lib/${ConfigName}",

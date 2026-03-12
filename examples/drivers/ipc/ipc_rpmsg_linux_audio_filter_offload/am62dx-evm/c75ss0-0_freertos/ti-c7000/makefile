@@ -118,7 +118,7 @@ LIBS_PATH_common = \
 	-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	-i${MCU_PLUS_SDK_PATH}/source/board/lib \
-	-i${MCU_PLUS_SDK_PATH}/source/tisp/lib/Release \
+	-i${MCU_PLUS_SDK_PATH}/source/tisp/lib/${ConfigName} \
 	-i${MCU_PLUS_SDK_PATH}/source/audiolib/lib/${ConfigName} \
 	-i${MCU_PLUS_SDK_PATH}/source/dsplib/lib/${ConfigName} \
 	-i${MCU_PLUS_SDK_PATH}/source/fftlib/lib/${ConfigName} \
@@ -164,7 +164,7 @@ LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	${MCU_PLUS_SDK_PATH}/source/board/lib \
-	${MCU_PLUS_SDK_PATH}/source/tisp/lib/Release \
+	${MCU_PLUS_SDK_PATH}/source/tisp/lib/${ConfigName} \
 	${MCU_PLUS_SDK_PATH}/source/audiolib/lib/${ConfigName} \
 	${MCU_PLUS_SDK_PATH}/source/dsplib/lib/${ConfigName} \
 	${MCU_PLUS_SDK_PATH}/source/fftlib/lib/${ConfigName} \

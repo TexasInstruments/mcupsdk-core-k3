@@ -304,6 +304,7 @@ const example_file_list = [
     "test/drivers/uart/.project/project.js",
     "test/drivers/watchdog/.project/project.js",
     "test/drivers/uart/.project/project_am275x_wkupr5.js",
+    "test/drivers/spinlock/.project/project.js",
     "test/fileio/.project/project.js",
     "test/kernel/dpl/.project/project_am275x_wkupr5.js",
     "test/kernel/dpl/.project/project.js",

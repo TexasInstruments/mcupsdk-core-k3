@@ -314,6 +314,7 @@ const example_file_list = [
 	"test/drivers/mcspi/mcspi/.project/project.js",
     "test/drivers/watchdog/.project/project.js",
     "test/drivers/watchdog/test_watchdog_reset/.project/project.js",
+    "test/drivers/spinlock/.project/project.js",
     "test/kernel/dpl/.project/project.js",
     "test/kernel/dpl_mpu_test/.project/project.js",
     "test/kernel/dpl_mmu_test/.project/project.js",

@@ -346,11 +346,11 @@ static int32_t Sciserver_tirtosInitUserTasks(Sciserver_TirtosCfgPrms_t *sciserve
     {
         TaskP_Params_init (&gSciserverUserTaskParams[i]);
 
-        if (gSciserverTaskList[i].task_id == SCISERVER_TASK_USER_HI)
+        if (gSciserverTaskList[i].task_id == (int32_t)SCISERVER_TASK_USER_HI)
         {
             gSciserverUserTaskParams[i].stack = sciserverCfg->hiTaskStack;
         }
-        else if (gSciserverTaskList[i].task_id == SCISERVER_TASK_USER_LO)
+        else if (gSciserverTaskList[i].task_id == (int32_t)SCISERVER_TASK_USER_LO)
         {
             gSciserverUserTaskParams[i].stack = sciserverCfg->loTaskStack;
         }

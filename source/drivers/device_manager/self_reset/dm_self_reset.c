@@ -166,7 +166,8 @@ uint32_t SelfReset_deviceManagerReset(void)
 #if defined (CONFIG_LPM_DM)
     if (SelfReset_CANUARTGetMagicWordVal() == SELF_RESET_CANUART_OFF_MODE_MAGIC_WORD)
     {
-        vectorsTemp = (uint32_t *) ((uint32_t)_lpm_vectors + CSL_WKUP_R5FSS0_BTCM_BASE);
+        uint32_t lpmVectorsAddr = (uint32_t)_lpm_vectors;
+        vectorsTemp = (uint32_t *) (lpmVectorsAddr + CSL_WKUP_R5FSS0_BTCM_BASE);
     }
 #endif
 	memcpy((void *)bootVectorTemp, (void *)vectorsTemp, 0x40);

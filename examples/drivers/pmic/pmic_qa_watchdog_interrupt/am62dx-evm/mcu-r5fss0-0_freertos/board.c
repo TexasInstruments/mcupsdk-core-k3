@@ -30,9 +30,7 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdlib.h>
 #include <drivers/hw_include/cslr_soc.h>
-#include <drivers/gpio.h>
 #include <drivers/sciclient.h>
 #include "ti_drivers_config.h"
 
@@ -57,7 +55,7 @@
 static void Sciclient_gpioIrqSet(void);
 static void Sciclient_gpioIrqRelease(void);
 
-void Board_gpioIrqnit(void)
+void Board_gpioIrqInit(void)
 {
     Sciclient_gpioIrqSet();
 }

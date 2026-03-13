@@ -57,7 +57,7 @@
 static void Sciclient_gpioIrqSet(void);
 static void Sciclient_gpioIrqRelease(void);
 
-void Board_gpioIrqnit(void)
+void Board_gpioIrqInit(void)
 {
     Sciclient_gpioIrqSet();
 }

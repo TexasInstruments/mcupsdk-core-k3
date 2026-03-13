@@ -65,7 +65,7 @@
 /*                   External Function Declarations                           */
 /* ========================================================================== */
 
-extern void Board_gpioIrqnit(void);
+extern void Board_gpioIrqInit(void);
 extern void Board_gpioIrqDeinit(void);
 extern uint32_t Board_getGpioIntrNum(void);
 
@@ -184,7 +184,7 @@ static int32_t PMICApp_gpioIntConfigure()
     uint32_t        bankNum;
     HwiP_Params     hwiPrms;
 
-    Board_gpioIrqnit();
+    Board_gpioIrqInit();
 
     pinNum          = GPIO_WDOG_INT_PIN;
     intrNum         = Board_getGpioIntrNum();

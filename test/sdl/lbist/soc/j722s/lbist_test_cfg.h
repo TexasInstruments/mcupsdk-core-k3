@@ -59,6 +59,8 @@
 
 #define LBIST_MAX_TIMEOUT_VALUE       (10000000U)
 
+#define R5F_NUM_AUX_DEVICES               1
+
 extern LBIST_TestHandle_t LBIST_TestHandleArray[SDL_LBIST_NUM_INSTANCES];
 
 LBIST_TestHandle_t* LBIST_getTestHandleArray(void);

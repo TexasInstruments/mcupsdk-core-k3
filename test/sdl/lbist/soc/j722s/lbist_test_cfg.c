@@ -60,6 +60,11 @@
 /*                            Global Variables                                */
 /* ========================================================================== */
 
+uint32_t LBIST_R5FAuxDevList[R5F_NUM_AUX_DEVICES] =
+{
+    TISCI_DEV_MAIN2MCU_VD,
+};
+
 LBIST_TestHandle_t LBIST_TestHandleArray[LBIST_MAX_CORE_INDEX + 1] =
     {
         /* R5F */
@@ -71,7 +76,8 @@ LBIST_TestHandle_t LBIST_TestHandleArray[LBIST_MAX_CORE_INDEX + 1] =
             .cpuStatusFlagMask = 0x00000002U,                  /* Expected boot status value for wfi */
             .tisciProcId = SCICLIENT_PROC_ID_MCU_R5FSS0_CORE0, /* R5F Proc Id */
             .tisciDeviceId = TISCI_DEV_MCU_R5FSS0_CORE0,       /* MCU R5F Device Id */
-            .numAuxDevices = 0u,                               /* No Aux devices */
+            .numAuxDevices = R5F_NUM_AUX_DEVICES,
+            .auxDeviceIdsP = LBIST_R5FAuxDevList,
         },
         /* VPAC0 */
         {

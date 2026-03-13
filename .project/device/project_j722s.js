@@ -14,6 +14,7 @@ const component_file_list = [
     "source/kernel/freertos/.project/project.js",
     "source/sdl/.project/project.js",
     "source/safety_checkers/.project/project.js",
+    "source/pdm_utils/.project/project.js",
 
     /* Test Libraries */
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
@@ -99,6 +100,7 @@ const example_file_list = [
     "source/safety_checkers/examples/pm_checkers_warm_reset/.project/project.js",
     "source/safety_checkers/examples/rm_checkers_app/.project/project.js",
     "source/safety_checkers/examples/tifs_checkers_app/.project/project.js",
+    "source/pdm_utils/examples/dm_power_analysis_app/.project/project.js",
 
     /* Test Applications */
     "test/board/flash/.project/project.js",

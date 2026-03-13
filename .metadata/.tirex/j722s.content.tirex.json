@@ -6020,6 +6020,181 @@
             "example"
         ],
         "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "DM Power Analysis app CPU is WKUP-R5FSS0-0 running FREERTOS.",
+        "name": "dm_power_analysis_app",
+        "location": "../../source/pdm_utils/examples/dm_power_analysis_app/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "pdm_utils",
+            "examples",
+            "dm_power_analysis_app",
+            "wkup-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "DM Power Analysis app CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "dm_power_analysis_app",
+        "location": "../../source/pdm_utils/examples/dm_power_analysis_app/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "pdm_utils",
+            "examples",
+            "dm_power_analysis_app",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "DM Power Analysis app CPU is MAIN-R5FSS0-0 running FREERTOS.",
+        "name": "dm_power_analysis_app",
+        "location": "../../source/pdm_utils/examples/dm_power_analysis_app/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "pdm_utils",
+            "examples",
+            "dm_power_analysis_app",
+            "main-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "DM Power Analysis app CPU is C75SS0-0 running FREERTOS.",
+        "name": "dm_power_analysis_app",
+        "location": "../../source/pdm_utils/examples/dm_power_analysis_app/j722s-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "pdm_utils",
+            "examples",
+            "dm_power_analysis_app",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "DM Power Analysis app CPU is C75SS1-0 running FREERTOS.",
+        "name": "dm_power_analysis_app",
+        "location": "../../source/pdm_utils/examples/dm_power_analysis_app/j722s-evm/c75ss1-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "..",
+            "source",
+            "pdm_utils",
+            "examples",
+            "dm_power_analysis_app",
+            "c75ss1-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
             "example.general"
         ],
         "description": "An SBL example to check if non-booted cores are properly switched off. CPU is WKUP-R5FSS0-0 running NORTOS.",

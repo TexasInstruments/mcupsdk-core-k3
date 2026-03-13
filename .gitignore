@@ -84,6 +84,7 @@ source/vxlib*
 tools/sysfw/boardcfg/k3-resource-partitioning
 source/safety_checkers
 source/board/pmic/pmic_lld
+source/pdm_utils
 tools/boot/multicoreELFImageGen
 source/board/ethphy/enet/
 examples/benchmarks/coremark_pro_benchmark/coremark-pro

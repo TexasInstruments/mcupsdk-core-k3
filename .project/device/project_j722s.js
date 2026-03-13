@@ -12,7 +12,6 @@ const component_file_list = [
     "source/fs/freertos_fat/.project/project.js",
     "source/kernel/nortos/.project/project.js",
     "source/kernel/freertos/.project/project.js",
-    "source/kernel/safertos/.project/project.js",
     "source/sdl/.project/project.js",
     "source/safety_checkers/.project/project.js",
 
@@ -78,9 +77,7 @@ const example_file_list = [
     "examples/empty/.project/project_freertos.js",
     "examples/hello_world/.project/project.js",
     "examples/kernel/dpl/dpl_demo/.project/project.js",
-    "examples/kernel/dpl/dpl_demo/.project/project_safertos.js",
     "examples/kernel/freertos/task_switch/.project/project.js",
-    "examples/kernel/safertos/task_switch/.project/project.js",
     "examples/sdl/dcc/dcc_modes/.project/project.js",
     "examples/sdl/ecc/.project/project.js",
     "examples/sdl/esm/mcu_esm0/.project/project.js",

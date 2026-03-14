@@ -15,6 +15,7 @@
     let dssFrameBuf = "false";
     let dmWithBootloader = "false";
     let globalScratchBuf = "false";
+    let enableUdmaBuffers = false;
 
     /* if no options given use defaults */
     if(options && options.stackSize)
@@ -39,12 +40,28 @@
         dmWithBootloader = options.dmWithBootloader;
     if(options && options.globalScratchBuf)
         globalScratchBuf = options.globalScratchBuf;
+    if(options && options.enableUdmaBuffers)
+        enableUdmaBuffers = options.enableUdmaBuffers;
 
     let globalScratchBufSize = 0x2000000;
     if(options && options.globalScratchBufSize)
         globalScratchBufSize = options.globalScratchBufSize
 
     let globalScratchBufSizeInMB = globalScratchBufSize / (1024 * 1024)
+    if(enableUdmaBuffers == true) {
+        codeDataAddrDdrUdma = 0x90000000;
+        codeDataSizeDdrUdma = 0x08000000;
+        codeDataAddrOcram = 0x70000000;
+        codeDataSizeOcram = 0x00010000;
+        if(options && options.codeDataAddrDdrUdma)
+            codeDataAddrDdrUdma = options.codeDataAddrDdrUdma;
+        if(options && options.codeDataSizeDdrUdma)
+            codeDataSizeDdrUdma = options.codeDataSizeDdrUdma;
+        if(options && options.codeDataAddrOcram)
+            codeDataAddrOcram = options.codeDataAddrOcram;
+        if(options && options.codeDataSizeOcram)
+            codeDataSizeOcram = options.codeDataSizeOcram;
+    }
 %%}
 % if(args.project.isBootLoader != true){
 --retain="*(.irqStack)";
@@ -279,7 +296,18 @@ SECTIONS
     /* global scratch buffer region */
     .globalScratchBuffer (NOLOAD) : {} > DDR2
     % }
+    % if(enableUdmaBuffers) {
+    GROUP {
+        .udma_buffer_ddr  (NOLOAD) : { *(.udma_buffer_ddr) }
+        .udma_buffer_msmc (NOLOAD) : { *(.udma_buffer_msmc) }
+        .udma_buffer_ospi (NOLOAD) : { *(.udma_buffer_ospi) }
+    } > DDR_UDMA
+    GROUP {
+        .udma_buffer_internal (NOLOAD) : { *(.udma_buffer_internal) }
+    } > OCRAM
+    % } else {
 
+    % }
     % }
 }
 
@@ -312,6 +340,10 @@ MEMORY
     DDR_DM_RMPM_TRACE (RWIX)    : ORIGIN = 0x9CAA0000 LENGTH = 0x00005000
     /* DDR for DM R5F code/data [ size 27 MiB + 396 KB ] */
     DDR                         : ORIGIN = 0x9CAA5000 LENGTH = 0x1B63000
+    % if(enableUdmaBuffers) {
+    DDR_UDMA : ORIGIN = 0x`(codeDataAddrDdrUdma).toString(16).toUpperCase()`, LENGTH = 0x`(codeDataSizeDdrUdma).toString(16).toUpperCase()`
+    OCRAM    : ORIGIN = 0x`(codeDataAddrOcram).toString(16).toUpperCase()`, LENGTH = 0x`(codeDataSizeOcram).toString(16).toUpperCase()`
+    % }
 
     % if(args.project.ipcVringRTOS === true){
     DDR_IPC_VRING_RTOS            : ORIGIN = 0x9B500000, LENGTH = 0x300000   /* IPC VRING for RTOS/NoRTOS */

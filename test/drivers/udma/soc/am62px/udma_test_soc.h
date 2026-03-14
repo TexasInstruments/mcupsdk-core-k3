@@ -43,7 +43,7 @@
 extern "C" {
 #endif
 
-#include <drivers/udma/v0/soc/am62ax/udma_soc.h>
+#include <drivers/udma/v0/soc/am62px/udma_soc.h>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */

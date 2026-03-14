@@ -43,6 +43,8 @@
 
 #include "udma_test.h"
 #include "udma_test_soc.h"
+
+/* Current generated pinmux code may emit this helper even when the prebuilt driver lib does not provide it. */
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */

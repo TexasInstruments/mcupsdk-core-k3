@@ -27,6 +27,7 @@
     let addrBaseFlash = 0;
     let globalScratchBufSize = 0;
     let globalScratchBufSizeInMB = 0;
+    let enableUdmaBuffers = false;
     /* Temp change till we support DDR - alloc all memory to single core
      * as we don't plan to run code coverage for system project */
 
@@ -52,6 +53,8 @@
         undefinedStackSize = options.undefinedStackSize;
     if(options && options.useDdr)
         useDdr = options.useDdr;
+    if(options && options.enableUdmaBuffers)
+        enableUdmaBuffers = options.enableUdmaBuffers;
 
     if(options && options.globalScratchBuf) {
         globalScratchBuf = options.globalScratchBuf;
@@ -95,6 +98,20 @@
         codeDataAddrFlash = options.codeDataAddrFlash;
     if(options && options.codeDataSizeFlash)
         codeDataSizeFlash = options.codeDataSizeFlash;
+    if(enableUdmaBuffers == true) {
+        codeDataAddrDdrUdma = 0x88000000;
+        codeDataSizeDdrUdma = 0x08000000;
+        codeDataAddrOcram = 0x70000000;
+        codeDataSizeOcram = 0x00010000;
+        if(options && options.codeDataAddrDdrUdma)
+            codeDataAddrDdrUdma = options.codeDataAddrDdrUdma;
+        if(options && options.codeDataSizeDdrUdma)
+            codeDataSizeDdrUdma = options.codeDataSizeDdrUdma;
+        if(options && options.codeDataAddrOcram)
+            codeDataAddrOcram = options.codeDataAddrOcram;
+        if(options && options.codeDataSizeOcram)
+            codeDataSizeOcram = options.codeDataSizeOcram;
+    }
 %%}
 
 /* This is the stack that is used by code running within main()
@@ -159,6 +176,8 @@ SECTIONS
     } > DDR_CODE_DATA
     % } else if(useFlash) {
     } > FLASH
+    % } else if(enableUdmaBuffers) {
+    } > DDR_UDMA
     % } else {
     } > MSRAM
     % }
@@ -181,6 +200,8 @@ SECTIONS
         .data:   {} palign(8)   /* This is where initialized globals and static go */
     % if(useDdr) {
     } > DDR_CODE_DATA
+    % } else if(enableUdmaBuffers) {
+    } > DDR_UDMA
     % } else {
     } > MSRAM
     % }
@@ -194,15 +215,21 @@ SECTIONS
         .stack:  {} palign(8)   /* This is where the main() stack goes */
     % if(useDdr) {
     } > DDR_CODE_DATA
+    % } else if(enableUdmaBuffers) {
+    } > DDR_UDMA
     % } else {
     } > MSRAM
     % }
 
     % if(args.isInstrumentation) {
     GROUP {
-        __llvm_prf_cnts: {} palign(8)
-        __llvm_prf_bits: {} palign(8)
+        __llvm_prf_cnts
+        __llvm_prf_bits
+    % if(enableUdmaBuffers) {
+    } > DDR_UDMA
+    % } else {
     } > MSRAM
+    % }
 
     % }
     /* This is where the stacks for different R5F modes go */
@@ -245,6 +272,16 @@ SECTIONS
     /* global scratch buffer region */
     .globalScratchBuffer (NOLOAD) : {} > DDR2
     % }
+    % if(enableUdmaBuffers) {
+    GROUP {
+        .udma_buffer_ddr  (NOLOAD) : { *(.udma_buffer_ddr) }
+        .udma_buffer_msmc (NOLOAD) : { *(.udma_buffer_msmc) }
+        .udma_buffer_ospi (NOLOAD) : { *(.udma_buffer_ospi) }
+    } > DDR_UDMA
+    GROUP {
+        .udma_buffer_internal (NOLOAD) : { *(.udma_buffer_internal) }
+    } > OCRAM
+    % }
 }
 
 MEMORY
@@ -254,6 +291,10 @@ MEMORY
     R5F_TCMB0 : ORIGIN = 0x41010000 , LENGTH = 0x00004000
 
     MSRAM     : ORIGIN = 0x`codeDataAddr.toString(16).toUpperCase()` , LENGTH = 0x`codeDataSize.toString(16).toUpperCase()`
+    % if(enableUdmaBuffers) {
+    DDR_UDMA : ORIGIN = 0x`(codeDataAddrDdrUdma).toString(16).toUpperCase()`, LENGTH = 0x`(codeDataSizeDdrUdma).toString(16).toUpperCase()`
+    OCRAM    : ORIGIN = 0x`(codeDataAddrOcram).toString(16).toUpperCase()`, LENGTH = 0x`(codeDataSizeOcram).toString(16).toUpperCase()`
+    % }
 
     % if(args.project.ipcVringRTOS === true){
     DDR_IPC_VRING_RTOS            : ORIGIN = 0x9B500000, LENGTH = 0x300000   /* IPC VRING for RTOS/NoRTOS */

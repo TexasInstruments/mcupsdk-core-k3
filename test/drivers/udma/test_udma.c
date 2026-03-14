@@ -464,7 +464,7 @@ static void TestUdma_txPreferredChannelAllocation(void *args);
 static void TestUdma_blockCopyPreferredChannelAllocation(void *args);
 static void TestUdma_rxPreferredChannelAllocation(void *args);
 
-#ifdef ENABLE_MT_TESTS
+#if defined(ENABLE_MT_TESTS) && !(defined(SOC_AM62PX) && defined(ENABLE_MCU_R5_CORE))
 static void TestUdma_multiInstancePktdmaBcdma(void *args);
 #endif
 
@@ -827,7 +827,7 @@ void test_udma_main(void *args)
     RUN_TEST(TestUdma_blkcpyCircularOcramToOcramPerfTest, 8285, NULL);
     RUN_TEST(TestUdma_blkcpyPacingDdrToOcramCirc4MBTo4KBTest, 8286, NULL);
     RUN_TEST(TestUdma_flowAttachTest, 8287, NULL);
-#ifdef ENABLE_MT_TESTS
+#if defined(ENABLE_MT_TESTS) && !(defined(SOC_AM62PX) && defined(ENABLE_MCU_R5_CORE))
     RUN_TEST(TestUdma_multiInstancePktdmaBcdma, 8618, NULL);
 #endif
     Drivers_udmaClose();
@@ -2625,6 +2625,7 @@ static void TestUdma_allocFreeBlkcopyHcCh(void *args)
     uint8_t *trpdMemory = &TestUdma_TrpdSingleDesc[TEST_UDMA_BUF_INDEX_ZERO];
     uint64_t trpdPhysicalAddr = (uint64_t)Udma_defaultVirtToPhyFxn(trpdMemory, TEST_UDMA_BUF_INDEX_ZERO, NULL);
     uint64_t completionDescAddr;
+    uint32_t remainingPollAttempts;
     /* Event + semaphore objects */
     Udma_EventObject eventObj;
     Udma_EventPrms eventPrms;
@@ -5002,7 +5003,7 @@ static void TestUdma_bcdmaInstanceThread(void *args)
     SemaphoreP_post(&TestUdma_MtCountingSem); /* counting semaphore post */
     TaskP_exit();
 }
-
+#if defined(ENABLE_MT_TESTS) && !(defined(SOC_AM62PX) && defined(ENABLE_MCU_R5_CORE))
 /**
  * \brief UDMA multi-instance PKTDMA and BCDMA concurrency test.
  *
@@ -5055,6 +5056,7 @@ static void TestUdma_multiInstancePktdmaBcdma(void *args)
     TaskP_destruct(&bcdmaParams.taskObj);
     SemaphoreP_destruct(&TestUdma_MtCountingSem);
 }
+#endif /* ENABLE_MT_TESTS && !(SOC_AM62PX && ENABLE_MCU_R5_CORE) */
 #endif
 
 /**

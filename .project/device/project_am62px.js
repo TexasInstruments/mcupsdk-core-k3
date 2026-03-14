@@ -32,6 +32,7 @@ const component_file_list = [
     "test/drivers/mmcsd/test_mmcsd_fault_inject/configs/.project/project.js",
     "test/drivers/i2c/test_i2c_fault_inject/configs/.project/project_am62px.js",
     "test/drivers/mcasp/test_mcasp_fault_injection/configs/.project/project.js",
+    "test/drivers/udma/test_udma_fault_inject/configs/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
 ];
 
@@ -251,6 +252,9 @@ const example_file_list = [
     "test/drivers/fvid2/.project/project.js",
     "test/drivers/ospi/.project/project.js",
     "test/drivers/soc_coverage/.project/project.js",
+    "test/drivers/udma/.project/project.js",
+    "test/drivers/udma/test_udma_fault_inject/.project/project.js",
+    "test/drivers/udma/test_udma_system/.project/project.js",
     "test/drivers/uart/.project/project.js",
     "test/drivers/watchdog/.project/project.js",
     "test/kernel/dpl/.project/project.js",

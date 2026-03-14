@@ -4521,6 +4521,7 @@ void TestUdma_chGetNumRxandUtc(void *args)
     retVal = Udma_deinit(drvHandle);
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
+#if (UDMA_NUM_UTC_INSTANCE > 0)
     /* UTC channel: only run if UTC instances are available */
     UdmaInitPrms_init(UDMA_INST_ID_PKTDMA_0, &initPrms);
     initPrms.enableUtc = TRUE;
@@ -4540,6 +4541,7 @@ void TestUdma_chGetNumRxandUtc(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
     retVal = Udma_deinit(drvHandle);
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+#endif /* UDMA_NUM_UTC_INSTANCE > 0 */
 
 }
 
@@ -4609,6 +4611,7 @@ void TestUdma_chGetTdCqRingHandle(void *args)
  */
 void TestUdma_chSetChainingUnsupportedChannel(void *args)
 {
+#if (UDMA_NUM_UTC_INSTANCE > 0)
     (void)args;
     int32_t retVal;
     static Udma_DrvObject drvObj;
@@ -4664,6 +4667,9 @@ void TestUdma_chSetChainingUnsupportedChannel(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
     retVal = Udma_deinit(drvHandle);
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+#else
+    (void)args;
+#endif /* UDMA_NUM_UTC_INSTANCE > 0 */
 }
 
 

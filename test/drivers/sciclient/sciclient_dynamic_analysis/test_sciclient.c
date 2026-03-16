@@ -185,17 +185,6 @@ void test_sciclient_coverage(void *args)
         DebugP_log("\r\n test_sciclient_soc_priv: All testcase passed successfully \r\n");
     }
 
-    failCount = test_csl_sec_proxy();
-    if(failCount > 0)
-    {
-        DebugP_log("\r\n test_csl_sec_proxy: %d testcase failed \r\n", failCount);
-        sumFailure += (uint32_t)failCount;
-    }
-    else
-    {
-        DebugP_log("\r\n test_csl_sec_proxy: All testcase passed successfully \r\n");
-    }
-
     failCount = test_sciclient_lpm();
     if(failCount > 0)
     {

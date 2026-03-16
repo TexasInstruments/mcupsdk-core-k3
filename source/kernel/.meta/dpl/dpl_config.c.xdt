@@ -44,6 +44,11 @@
 % if (common.isSafeRTOSSupported()) {
 #if defined(OS_SAFERTOS)
 #include "SafeRTOS_API.h"
+#if defined(SOC_J722S)
+% if (cpuName.match(/r5f*/)) {
+#include "queue_register.h"
+% }
+#endif
 
 extern const xPORT_INIT_PARAMETERS xPortInit;
 
@@ -58,7 +63,7 @@ portBaseType Dpl_kernelInit(void)
     if( pdPASS == xInitSchedResult )
     {
 #if ( configQUEUE_REGISTRY_SIZE > 0 )
-        vQueueAddToRegistry( acTimerCommandQueueBuffer, "Timer Command Q" );
+        vQueueAddToRegistry( xPortInit.pcTimerCommandQueueBuffer, "Timer Command Q" );
 #endif
     }
 

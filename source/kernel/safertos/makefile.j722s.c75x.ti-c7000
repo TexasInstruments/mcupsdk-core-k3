@@ -54,6 +54,7 @@ FILES_common := \
     semaphore.c \
     mutex.c \
     streambuffer.c \
+    weakStubs.c \
     portable.c \
 
 ASMFILES_common := \
@@ -117,6 +118,7 @@ CFLAGS_common := \
     -DBUILD_C7X_1 \
     -DHwi_bootToNonSecure__D=true \
     -DException_vectors__D \
+    --advice:performance=none  \
 
 CFLAGS_debug := \
     -Dxdc_target_name__=C71 \

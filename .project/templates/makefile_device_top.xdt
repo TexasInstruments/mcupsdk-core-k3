@@ -12,6 +12,8 @@
     let component_target_linux_only_list_string = [];
     let component_target_linux_only_clean_list_string = [];
     let component_target_linux_only_scrub_list_string = [];
+	let component_target_clean_private_list_string = [];
+	let component_target_scrub_private_list_string = [];
     for (component of args.component_list) {
         if(component.isLinuxOnly) {
             component_target_linux_only_list_string +=` \$(BUILD_COMBO_${component.name})`
@@ -25,8 +27,14 @@
         }
         else if(component.isSkipTopLevelBuild) {
             component_target_private_list_string +=` \$(BUILD_COMBO_${component.name})`
-            component_target_clean_list_string +=` \$(BUILD_COMBO_CLEAN_${component.name})`
-            component_target_scrub_list_string +=` \$(BUILD_COMBO_SCRUB_${component.name})`
+            if (args.device != "j722s") {
+                component_target_clean_list_string +=` \$(BUILD_COMBO_CLEAN_${component.name})`
+                component_target_scrub_list_string +=` \$(BUILD_COMBO_SCRUB_${component.name})`
+            }
+            else {
+                component_target_clean_private_list_string +=` \$(BUILD_COMBO_CLEAN_${component.name})`
+                component_target_scrub_private_list_string +=` \$(BUILD_COMBO_SCRUB_${component.name})`
+            }
         }
         else if(component.isPrebuilt) {
             component_target_prebuilt_list_string +=` \$(BUILD_COMBO_${component.name})`
@@ -52,6 +60,13 @@ all:
 
 clean: libs-clean libs-external-clean sbl-clean examples-clean
 scrub: libs-scrub libs-external-scrub sbl-scrub examples-scrub
+% if (device == "j722s") {
+
+all-private: libs-private
+	$(MAKE) -f makefile.`device` examples-private
+
+scrub-private: libs-private-scrub examples-scrub-private
+%}
 
 help:
 	@echo  Notes,
@@ -161,12 +176,21 @@ BUILD_COMBO_EXTERNAL_CLEAN_ALL =`component_target_external_clean_list_string`
 # Combine all Pre-built Components Clean
 BUILD_COMBO_PREBUILT_CLEAN_ALL =`component_target_prebuilt_clean_list_string`
 
+% if (device == "j722s") {
+# Combine all Private Components Clean
+BUILD_COMBO_PRIVATE_CLEAN_ALL =`component_target_clean_private_list_string`
+
+% }
 libs-clean: $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_LINUX_ONLY_CLEAN_ALL)
 
 libs-external-clean: $(BUILD_COMBO_EXTERNAL_CLEAN_ALL)
 
 libs-prebuilt-clean: $(BUILD_COMBO_PREBUILT_CLEAN_ALL)
 
+% if (device == "j722s") {
+libs-private-clean: $(BUILD_COMBO_PRIVATE_CLEAN_ALL)
+
+% }
 % for (component of args.component_list) {
 $(BUILD_COMBO_CLEAN_`component.name`):
 	$(MAKE) -C `component.relpath` -f makefile`component.tag`.`args.device`.$(subst `component.name`_,,$(subst _clean,,$@)) clean
@@ -187,12 +211,21 @@ BUILD_COMBO_EXTERNAL_SCRUB_ALL =`component_target_external_scrub_list_string`
 # Combine all Pre-built Components Scrub Targets
 BUILD_COMBO_PREBUILT_SCRUB_ALL =`component_target_prebuilt_scrub_list_string`
 
+% if (device == "j722s") {
+# Combine all Private Components Scrub Targets
+BUILD_COMBO_PRIVATE_SCRUB_ALL =`component_target_scrub_private_list_string`
+
+% }
 libs-scrub: $(BUILD_COMBO_SCRUB_ALL) $(BUILD_COMBO_LINUX_ONLY_SCRUB_ALL)
 
 libs-external-scrub: $(BUILD_COMBO_EXTERNAL_SCRUB_ALL)
 
 libs-prebuilt-scrub: $(BUILD_COMBO_PREBUILT_SCRUB_ALL)
 
+% if (device == "j722s") {
+libs-private-scrub: $(BUILD_COMBO_PRIVATE_SCRUB_ALL)
+
+% }
 % for (component of args.component_list) {
 $(BUILD_COMBO_SCRUB_`component.name`):
 	$(MAKE) -C `component.relpath` -f makefile`component.tag`.`args.device`.$(subst `component.name`_,,$(subst _scrub,,$@)) scrub

@@ -72,6 +72,12 @@ static void DplDemo_sgiISR(void *arg)
 
 void dpl_demo_main(void *args)
 {
+    #if defined(OS_SAFERTOS)
+        /* Open drivers to open the UART driver for Console */
+        Drivers_open();
+        /* Open board drivers */
+        Board_driversOpen();
+    #endif
     /* eample usage of Hwi and Sempahore APIs */
     {
     #if defined (AMP_FREERTOS_A53)

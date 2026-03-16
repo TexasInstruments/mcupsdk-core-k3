@@ -50,6 +50,7 @@ FILES_common := \
     semaphore.c \
     mutex.c \
     streambuffer.c \
+    weakStubs.c \
     portable.c \
     mpuARM.c \
     portmpu.c \
@@ -60,6 +61,7 @@ FILES_common := \
     apiStreamBufferWrapper.c \
     apiWrapper.c \
     apiEventGroupsWrapper.c \
+    queue_register.c \
 
 ASMFILES_common := \
     HwiP_armv7r_asm.S \
@@ -71,8 +73,6 @@ ASMFILES_common := \
     CacheP_armv7r_asm.S \
     portasm.S \
 
-ASMEXTNFILES_common := \
-
 FILES_PATH_common = \
     ../nortos/dpl/r5 \
     ../nortos/dpl/common \
@@ -82,6 +82,7 @@ FILES_PATH_common = \
     r5f/portable/199_TI_CR5 \
     r5f/portable/199_TI_CR5/024_Clang \
     r5f/api/PrivWrapperStd \
+    r5f/queue_registry \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \
@@ -94,6 +95,7 @@ INCLUDES_common := \
     -Ir5f/kernel/include_api \
     -Ir5f/kernel/include_prv \
     -Ir5f/config \
+    -Ir5f/queue_registry \
 
 DEFINES_common := \
     -DSOC_J722S \

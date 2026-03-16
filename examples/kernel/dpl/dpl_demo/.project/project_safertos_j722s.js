@@ -79,6 +79,7 @@ const includes_safertos_r5f = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/safertos/r5f/api/PrivWrapperStd",
         "${MCU_PLUS_SDK_PATH}/source/kernel/safertos/r5f/portable/199_TI_CR5",
         "${MCU_PLUS_SDK_PATH}/source/kernel/safertos/r5f/portable/199_TI_CR5/024_Clang",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/safertos/r5f/queue_registry",
         "${MCU_PLUS_SDK_PATH}/source/kernel/safertos/r5f/config",
     ],
 };

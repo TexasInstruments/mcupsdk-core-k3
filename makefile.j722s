@@ -11,6 +11,11 @@ all:
 clean: libs-clean libs-external-clean sbl-clean examples-clean
 scrub: libs-scrub libs-external-scrub sbl-scrub examples-scrub
 
+all-private: libs-private
+	$(MAKE) -f makefile.j722s examples-private
+
+scrub-private: libs-private-scrub examples-scrub-private
+
 help:
 	@echo  Notes,
 	@echo  - Use -j to invoke parallel builds
@@ -44,6 +49,7 @@ help:
 	@echo  $(MAKE) -s -f makefile.j722s freertos_fat_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.j722s nortos_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.j722s freertos_r5f.ti-arm-clang freertos_c75x.ti-c7000
+	@echo  $(MAKE) -s -f makefile.j722s safertos_r5f.ti-arm-clang safertos_c75x.ti-c7000
 	@echo  $(MAKE) -s -f makefile.j722s sdl_mcu-r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.j722s safety_checkers_r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.j722s pdm_utils_wkup-r5fss0-0.ti-arm-clang pdm_utils_mcu-r5fss0-0.ti-arm-clang pdm_utils_main-r5fss0-0.ti-arm-clang pdm_utils_c75ss0-0.ti-c7000 pdm_utils_c75ss1-0.ti-c7000
@@ -62,6 +68,7 @@ help:
 	@echo  $(MAKE) -s -f makefile.j722s freertos_fat_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.j722s nortos_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.j722s freertos_r5f.ti-arm-clang_clean freertos_c75x.ti-c7000_clean
+	@echo  $(MAKE) -s -f makefile.j722s safertos_r5f.ti-arm-clang_clean safertos_c75x.ti-c7000_clean
 	@echo  $(MAKE) -s -f makefile.j722s sdl_mcu-r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.j722s safety_checkers_r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.j722s pdm_utils_wkup-r5fss0-0.ti-arm-clang_clean pdm_utils_mcu-r5fss0-0.ti-arm-clang_clean pdm_utils_main-r5fss0-0.ti-arm-clang_clean pdm_utils_c75ss0-0.ti-c7000_clean pdm_utils_c75ss1-0.ti-c7000_clean
@@ -207,11 +214,19 @@ help:
 	@echo  $(MAKE) -s -C examples/kernel/dpl/dpl_demo/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/dpl/dpl_demo/j722s-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/dpl/dpl_demo/j722s-evm/c75ss1-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/kernel/dpl/dpl_demo/j722s-evm/mcu-r5fss0-0_safertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/kernel/dpl/dpl_demo/j722s-evm/wkup-r5fss0-0_safertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/kernel/dpl/dpl_demo/j722s-evm/main-r5fss0-0_safertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/freertos/task_switch/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/freertos/task_switch/j722s-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/freertos/task_switch/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/freertos/task_switch/j722s-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/kernel/freertos/task_switch/j722s-evm/c75ss1-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/kernel/safertos/task_switch/j722s-evm/wkup-r5fss0-0_safertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/kernel/safertos/task_switch/j722s-evm/mcu-r5fss0-0_safertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/kernel/safertos/task_switch/j722s-evm/main-r5fss0-0_safertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/kernel/safertos/task_switch/j722s-evm/c75ss0-0_safertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/kernel/safertos/task_switch/j722s-evm/c75ss1-0_safertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/dcc/dcc_modes/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/ecc/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/sdl/esm/mcu_esm0/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -267,6 +282,7 @@ BUILD_COMBO_dmautils = dmautils_c75ss0-0.ti-c7000 dmautils_c75ss1-0.ti-c7000
 BUILD_COMBO_freertos_fat = freertos_fat_r5f.ti-arm-clang
 BUILD_COMBO_nortos = nortos_r5f.ti-arm-clang
 BUILD_COMBO_freertos = freertos_r5f.ti-arm-clang freertos_c75x.ti-c7000
+BUILD_COMBO_safertos = safertos_r5f.ti-arm-clang safertos_c75x.ti-c7000
 BUILD_COMBO_sdl = sdl_mcu-r5f.ti-arm-clang
 BUILD_COMBO_safety_checkers = safety_checkers_r5f.ti-arm-clang
 BUILD_COMBO_pdm_utils = pdm_utils_wkup-r5fss0-0.ti-arm-clang pdm_utils_mcu-r5fss0-0.ti-arm-clang pdm_utils_main-r5fss0-0.ti-arm-clang pdm_utils_c75ss0-0.ti-c7000 pdm_utils_c75ss1-0.ti-c7000
@@ -283,7 +299,7 @@ BUILD_COMBO_EXTERNAL_ALL =
 BUILD_COMBO_PREBUILT_ALL =
 
 # Combine all Private Components
-BUILD_COMBO_PRIVATE_ALL =
+BUILD_COMBO_PRIVATE_ALL = $(BUILD_COMBO_safertos)
 
 # Linux-only Components (not built on Windows)
 ifneq ($(OS),Windows_NT)
@@ -334,6 +350,9 @@ $(BUILD_COMBO_nortos):
 $(BUILD_COMBO_freertos):
 	$(MAKE) -C source/kernel/freertos -f makefile.j722s.$(subst freertos_,,$@) all
 
+$(BUILD_COMBO_safertos):
+	$(MAKE) -C source/kernel/safertos -f makefile.j722s.$(subst safertos_,,$@) all
+
 $(BUILD_COMBO_sdl):
 	$(MAKE) -C source/sdl -f makefile.j722s.$(subst sdl_,,$@) all
 
@@ -361,6 +380,7 @@ BUILD_COMBO_CLEAN_dmautils = dmautils_c75ss0-0.ti-c7000_clean dmautils_c75ss1-0.
 BUILD_COMBO_CLEAN_freertos_fat = freertos_fat_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_nortos = nortos_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_freertos = freertos_r5f.ti-arm-clang_clean freertos_c75x.ti-c7000_clean
+BUILD_COMBO_CLEAN_safertos = safertos_r5f.ti-arm-clang_clean safertos_c75x.ti-c7000_clean
 BUILD_COMBO_CLEAN_sdl = sdl_mcu-r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_safety_checkers = safety_checkers_r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_pdm_utils = pdm_utils_wkup-r5fss0-0.ti-arm-clang_clean pdm_utils_mcu-r5fss0-0.ti-arm-clang_clean pdm_utils_main-r5fss0-0.ti-arm-clang_clean pdm_utils_c75ss0-0.ti-c7000_clean pdm_utils_c75ss1-0.ti-c7000_clean
@@ -376,11 +396,16 @@ BUILD_COMBO_EXTERNAL_CLEAN_ALL =
 # Combine all Pre-built Components Clean
 BUILD_COMBO_PREBUILT_CLEAN_ALL =
 
+# Combine all Private Components Clean
+BUILD_COMBO_PRIVATE_CLEAN_ALL = $(BUILD_COMBO_CLEAN_safertos)
+
 libs-clean: $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_LINUX_ONLY_CLEAN_ALL)
 
 libs-external-clean: $(BUILD_COMBO_EXTERNAL_CLEAN_ALL)
 
 libs-prebuilt-clean: $(BUILD_COMBO_PREBUILT_CLEAN_ALL)
+
+libs-private-clean: $(BUILD_COMBO_PRIVATE_CLEAN_ALL)
 
 $(BUILD_COMBO_CLEAN_board):
 	$(MAKE) -C source/board -f makefile.j722s.$(subst board_,,$(subst _clean,,$@)) clean
@@ -412,6 +437,9 @@ $(BUILD_COMBO_CLEAN_nortos):
 $(BUILD_COMBO_CLEAN_freertos):
 	$(MAKE) -C source/kernel/freertos -f makefile.j722s.$(subst freertos_,,$(subst _clean,,$@)) clean
 
+$(BUILD_COMBO_CLEAN_safertos):
+	$(MAKE) -C source/kernel/safertos -f makefile.j722s.$(subst safertos_,,$(subst _clean,,$@)) clean
+
 $(BUILD_COMBO_CLEAN_sdl):
 	$(MAKE) -C source/sdl -f makefile.j722s.$(subst sdl_,,$(subst _clean,,$@)) clean
 
@@ -439,6 +467,7 @@ BUILD_COMBO_SCRUB_dmautils = dmautils_c75ss0-0.ti-c7000_scrub dmautils_c75ss1-0.
 BUILD_COMBO_SCRUB_freertos_fat = freertos_fat_r5f.ti-arm-clang_scrub
 BUILD_COMBO_SCRUB_nortos = nortos_r5f.ti-arm-clang_scrub
 BUILD_COMBO_SCRUB_freertos = freertos_r5f.ti-arm-clang_scrub freertos_c75x.ti-c7000_scrub
+BUILD_COMBO_SCRUB_safertos = safertos_r5f.ti-arm-clang_scrub safertos_c75x.ti-c7000_scrub
 BUILD_COMBO_SCRUB_sdl = sdl_mcu-r5f.ti-arm-clang_scrub
 BUILD_COMBO_SCRUB_safety_checkers = safety_checkers_r5f.ti-arm-clang_scrub
 BUILD_COMBO_SCRUB_pdm_utils = pdm_utils_wkup-r5fss0-0.ti-arm-clang_scrub pdm_utils_mcu-r5fss0-0.ti-arm-clang_scrub pdm_utils_main-r5fss0-0.ti-arm-clang_scrub pdm_utils_c75ss0-0.ti-c7000_scrub pdm_utils_c75ss1-0.ti-c7000_scrub
@@ -454,11 +483,16 @@ BUILD_COMBO_EXTERNAL_SCRUB_ALL =
 # Combine all Pre-built Components Scrub Targets
 BUILD_COMBO_PREBUILT_SCRUB_ALL =
 
+# Combine all Private Components Scrub Targets
+BUILD_COMBO_PRIVATE_SCRUB_ALL = $(BUILD_COMBO_SCRUB_safertos)
+
 libs-scrub: $(BUILD_COMBO_SCRUB_ALL) $(BUILD_COMBO_LINUX_ONLY_SCRUB_ALL)
 
 libs-external-scrub: $(BUILD_COMBO_EXTERNAL_SCRUB_ALL)
 
 libs-prebuilt-scrub: $(BUILD_COMBO_PREBUILT_SCRUB_ALL)
+
+libs-private-scrub: $(BUILD_COMBO_PRIVATE_SCRUB_ALL)
 
 $(BUILD_COMBO_SCRUB_board):
 	$(MAKE) -C source/board -f makefile.j722s.$(subst board_,,$(subst _scrub,,$@)) scrub
@@ -489,6 +523,9 @@ $(BUILD_COMBO_SCRUB_nortos):
 
 $(BUILD_COMBO_SCRUB_freertos):
 	$(MAKE) -C source/kernel/freertos -f makefile.j722s.$(subst freertos_,,$(subst _scrub,,$@)) scrub
+
+$(BUILD_COMBO_SCRUB_safertos):
+	$(MAKE) -C source/kernel/safertos -f makefile.j722s.$(subst safertos_,,$(subst _scrub,,$@)) scrub
 
 $(BUILD_COMBO_SCRUB_sdl):
 	$(MAKE) -C source/sdl -f makefile.j722s.$(subst sdl_,,$(subst _scrub,,$@)) scrub
@@ -688,6 +725,14 @@ BUILD_COMBO_EXAMPLE_ALL += empty_j722s-evm_system_freertos
 
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
 # Various Private Example Targets
+BUILD_COMBO_EXAMPLE_PRIVATE_ALL += dpl_demo_j722s-evm_mcu-r5fss0-0_safertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_PRIVATE_ALL += dpl_demo_j722s-evm_wkup-r5fss0-0_safertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_PRIVATE_ALL += dpl_demo_j722s-evm_main-r5fss0-0_safertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_PRIVATE_ALL += task_switch_j722s-evm_wkup-r5fss0-0_safertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_PRIVATE_ALL += task_switch_j722s-evm_mcu-r5fss0-0_safertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_PRIVATE_ALL += task_switch_j722s-evm_main-r5fss0-0_safertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_PRIVATE_ALL += task_switch_j722s-evm_c75ss0-0_safertos_ti-c7000
+BUILD_COMBO_EXAMPLE_PRIVATE_ALL += task_switch_j722s-evm_c75ss1-0_safertos_ti-c7000
 # Various Private System Example Targets
 DM_APP_PATH = examples/drivers/sciclient/sciclient_get_version/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang
 
@@ -1111,6 +1156,15 @@ examples-private: dm_app
  dpl_demo_j722s-evm_c75ss1-0_freertos_ti-c7000:
 	$(MAKE) -C examples/kernel/dpl/dpl_demo/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile all
 
+ dpl_demo_j722s-evm_mcu-r5fss0-0_safertos_ti-arm-clang:
+	$(MAKE) -C examples/kernel/dpl/dpl_demo/j722s-evm/mcu-r5fss0-0_safertos/ti-arm-clang -f makefile all
+
+ dpl_demo_j722s-evm_wkup-r5fss0-0_safertos_ti-arm-clang:
+	$(MAKE) -C examples/kernel/dpl/dpl_demo/j722s-evm/wkup-r5fss0-0_safertos/ti-arm-clang -f makefile all
+
+ dpl_demo_j722s-evm_main-r5fss0-0_safertos_ti-arm-clang:
+	$(MAKE) -C examples/kernel/dpl/dpl_demo/j722s-evm/main-r5fss0-0_safertos/ti-arm-clang -f makefile all
+
  task_switch_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/kernel/freertos/task_switch/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
@@ -1125,6 +1179,21 @@ examples-private: dm_app
 
  task_switch_j722s-evm_c75ss1-0_freertos_ti-c7000:
 	$(MAKE) -C examples/kernel/freertos/task_switch/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile all
+
+ task_switch_j722s-evm_wkup-r5fss0-0_safertos_ti-arm-clang:
+	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/wkup-r5fss0-0_safertos/ti-arm-clang -f makefile all
+
+ task_switch_j722s-evm_mcu-r5fss0-0_safertos_ti-arm-clang:
+	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/mcu-r5fss0-0_safertos/ti-arm-clang -f makefile all
+
+ task_switch_j722s-evm_main-r5fss0-0_safertos_ti-arm-clang:
+	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/main-r5fss0-0_safertos/ti-arm-clang -f makefile all
+
+ task_switch_j722s-evm_c75ss0-0_safertos_ti-c7000:
+	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/c75ss0-0_safertos/ti-c7000 -f makefile all
+
+ task_switch_j722s-evm_c75ss1-0_safertos_ti-c7000:
+	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/c75ss1-0_safertos/ti-c7000 -f makefile all
 
  dcc_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
@@ -1426,6 +1495,14 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += empty_j722s-evm_system_freertos_clean
 
 BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL =
 # Various Private Example Targets
+BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL += dpl_demo_j722s-evm_mcu-r5fss0-0_safertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL += dpl_demo_j722s-evm_wkup-r5fss0-0_safertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL += dpl_demo_j722s-evm_main-r5fss0-0_safertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL += task_switch_j722s-evm_wkup-r5fss0-0_safertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL += task_switch_j722s-evm_mcu-r5fss0-0_safertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL += task_switch_j722s-evm_main-r5fss0-0_safertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL += task_switch_j722s-evm_c75ss0-0_safertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL += task_switch_j722s-evm_c75ss1-0_safertos_ti-c7000_clean
 # Various Private System Example Targets
 
 examples-clean: $(BUILD_COMBO_EXAMPLE_CLEAN_ALL)
@@ -1843,6 +1920,15 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  dpl_demo_j722s-evm_c75ss1-0_freertos_ti-c7000_clean:
 	$(MAKE) -C examples/kernel/dpl/dpl_demo/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile clean
 
+ dpl_demo_j722s-evm_mcu-r5fss0-0_safertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/kernel/dpl/dpl_demo/j722s-evm/mcu-r5fss0-0_safertos/ti-arm-clang -f makefile clean
+
+ dpl_demo_j722s-evm_wkup-r5fss0-0_safertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/kernel/dpl/dpl_demo/j722s-evm/wkup-r5fss0-0_safertos/ti-arm-clang -f makefile clean
+
+ dpl_demo_j722s-evm_main-r5fss0-0_safertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/kernel/dpl/dpl_demo/j722s-evm/main-r5fss0-0_safertos/ti-arm-clang -f makefile clean
+
  task_switch_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/kernel/freertos/task_switch/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
@@ -1857,6 +1943,21 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  task_switch_j722s-evm_c75ss1-0_freertos_ti-c7000_clean:
 	$(MAKE) -C examples/kernel/freertos/task_switch/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile clean
+
+ task_switch_j722s-evm_wkup-r5fss0-0_safertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/wkup-r5fss0-0_safertos/ti-arm-clang -f makefile clean
+
+ task_switch_j722s-evm_mcu-r5fss0-0_safertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/mcu-r5fss0-0_safertos/ti-arm-clang -f makefile clean
+
+ task_switch_j722s-evm_main-r5fss0-0_safertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/main-r5fss0-0_safertos/ti-arm-clang -f makefile clean
+
+ task_switch_j722s-evm_c75ss0-0_safertos_ti-c7000_clean:
+	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/c75ss0-0_safertos/ti-c7000 -f makefile clean
+
+ task_switch_j722s-evm_c75ss1-0_safertos_ti-c7000_clean:
+	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/c75ss1-0_safertos/ti-c7000 -f makefile clean
 
  dcc_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
@@ -2158,6 +2259,14 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += empty_j722s-evm_system_freertos_scrub
 
 BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL =
 # Various Private Example Targets
+BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL += dpl_demo_j722s-evm_mcu-r5fss0-0_safertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL += dpl_demo_j722s-evm_wkup-r5fss0-0_safertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL += dpl_demo_j722s-evm_main-r5fss0-0_safertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL += task_switch_j722s-evm_wkup-r5fss0-0_safertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL += task_switch_j722s-evm_mcu-r5fss0-0_safertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL += task_switch_j722s-evm_main-r5fss0-0_safertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL += task_switch_j722s-evm_c75ss0-0_safertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL += task_switch_j722s-evm_c75ss1-0_safertos_ti-c7000_scrub
 # Various Private System Example Targets
 
 examples-scrub: $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
@@ -2575,6 +2684,15 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  dpl_demo_j722s-evm_c75ss1-0_freertos_ti-c7000_scrub:
 	$(MAKE) -C examples/kernel/dpl/dpl_demo/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile scrub
 
+ dpl_demo_j722s-evm_mcu-r5fss0-0_safertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/kernel/dpl/dpl_demo/j722s-evm/mcu-r5fss0-0_safertos/ti-arm-clang -f makefile scrub
+
+ dpl_demo_j722s-evm_wkup-r5fss0-0_safertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/kernel/dpl/dpl_demo/j722s-evm/wkup-r5fss0-0_safertos/ti-arm-clang -f makefile scrub
+
+ dpl_demo_j722s-evm_main-r5fss0-0_safertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/kernel/dpl/dpl_demo/j722s-evm/main-r5fss0-0_safertos/ti-arm-clang -f makefile scrub
+
  task_switch_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/kernel/freertos/task_switch/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
@@ -2589,6 +2707,21 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  task_switch_j722s-evm_c75ss1-0_freertos_ti-c7000_scrub:
 	$(MAKE) -C examples/kernel/freertos/task_switch/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile scrub
+
+ task_switch_j722s-evm_wkup-r5fss0-0_safertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/wkup-r5fss0-0_safertos/ti-arm-clang -f makefile scrub
+
+ task_switch_j722s-evm_mcu-r5fss0-0_safertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/mcu-r5fss0-0_safertos/ti-arm-clang -f makefile scrub
+
+ task_switch_j722s-evm_main-r5fss0-0_safertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/main-r5fss0-0_safertos/ti-arm-clang -f makefile scrub
+
+ task_switch_j722s-evm_c75ss0-0_safertos_ti-c7000_scrub:
+	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/c75ss0-0_safertos/ti-c7000 -f makefile scrub
+
+ task_switch_j722s-evm_c75ss1-0_safertos_ti-c7000_scrub:
+	$(MAKE) -C examples/kernel/safertos/task_switch/j722s-evm/c75ss1-0_safertos/ti-c7000 -f makefile scrub
 
  dcc_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/sdl/dcc/dcc_modes/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub

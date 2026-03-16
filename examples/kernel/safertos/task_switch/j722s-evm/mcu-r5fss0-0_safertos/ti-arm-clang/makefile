@@ -63,6 +63,7 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/safertos/r5f/api/PrivWrapperStd \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/safertos/r5f/portable/199_TI_CR5 \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/safertos/r5f/portable/199_TI_CR5/024_Clang \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/safertos/r5f/queue_registry \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/safertos/r5f/config \
 	-Igenerated \
 

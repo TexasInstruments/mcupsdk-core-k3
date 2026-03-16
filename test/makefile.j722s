@@ -11,6 +11,11 @@ all:
 clean: libs-clean libs-external-clean sbl-clean examples-clean
 scrub: libs-scrub libs-external-scrub sbl-scrub examples-scrub
 
+all-private: libs-private
+	$(MAKE) -f makefile.j722s examples-private
+
+scrub-private: libs-private-scrub examples-scrub-private
+
 help:
 	@echo  Notes,
 	@echo  - Use -j to invoke parallel builds
@@ -181,11 +186,16 @@ BUILD_COMBO_EXTERNAL_CLEAN_ALL =
 # Combine all Pre-built Components Clean
 BUILD_COMBO_PREBUILT_CLEAN_ALL =
 
+# Combine all Private Components Clean
+BUILD_COMBO_PRIVATE_CLEAN_ALL =
+
 libs-clean: $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_LINUX_ONLY_CLEAN_ALL)
 
 libs-external-clean: $(BUILD_COMBO_EXTERNAL_CLEAN_ALL)
 
 libs-prebuilt-clean: $(BUILD_COMBO_PREBUILT_CLEAN_ALL)
+
+libs-private-clean: $(BUILD_COMBO_PRIVATE_CLEAN_ALL)
 
 $(BUILD_COMBO_CLEAN_doxy_samples):
 	$(MAKE) -C ../docs_src/docs/api_guide/doxy_samples -f makefile.j722s.$(subst doxy_samples_,,$(subst _clean,,$@)) clean
@@ -207,11 +217,16 @@ BUILD_COMBO_EXTERNAL_SCRUB_ALL =
 # Combine all Pre-built Components Scrub Targets
 BUILD_COMBO_PREBUILT_SCRUB_ALL =
 
+# Combine all Private Components Scrub Targets
+BUILD_COMBO_PRIVATE_SCRUB_ALL =
+
 libs-scrub: $(BUILD_COMBO_SCRUB_ALL) $(BUILD_COMBO_LINUX_ONLY_SCRUB_ALL)
 
 libs-external-scrub: $(BUILD_COMBO_EXTERNAL_SCRUB_ALL)
 
 libs-prebuilt-scrub: $(BUILD_COMBO_PREBUILT_SCRUB_ALL)
+
+libs-private-scrub: $(BUILD_COMBO_PRIVATE_SCRUB_ALL)
 
 $(BUILD_COMBO_SCRUB_doxy_samples):
 	$(MAKE) -C ../docs_src/docs/api_guide/doxy_samples -f makefile.j722s.$(subst doxy_samples_,,$(subst _scrub,,$@)) scrub

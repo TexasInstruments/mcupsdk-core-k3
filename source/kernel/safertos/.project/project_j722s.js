@@ -39,6 +39,7 @@ const files_r5f = {
         "semaphore.c",
         "mutex.c",
         "streambuffer.c",
+        "weakStubs.c",
         // picked from safertos "portable"
         "portable.c",
         "mpuARM.c",
@@ -51,6 +52,8 @@ const files_r5f = {
         "apiStreamBufferWrapper.c",
         "apiWrapper.c",
         "apiEventGroupsWrapper.c",
+        // picked from safertos "queue_registry"
+        "queue_register.c",
     ]
 };
 
@@ -64,6 +67,7 @@ const includes_r5f = {
         "r5f/kernel/include_api",
         "r5f/kernel/include_prv",
         "r5f/config",
+        "r5f/queue_registry",
     ],
 };
 
@@ -89,10 +93,7 @@ const asmfiles_r5f = {
     ],
 };
 
-const asmextnfiles_r5f = {
-    common: [
-    ],
-};
+
 
 const asmextnfiles_c75 = {
     common: [
@@ -114,7 +115,9 @@ const filedirs_r5f = {
         "r5f/portable/199_TI_CR5",
         "r5f/portable/199_TI_CR5/024_Clang",
         // picked from safertos "api"
-        "r5f/api/PrivWrapperStd"
+        "r5f/api/PrivWrapperStd",
+        // picked from safertos "queue_registry"
+        "r5f/queue_registry"
     ],
 };
 
@@ -162,6 +165,7 @@ const files_c75x = {
         "semaphore.c",
         "mutex.c",
         "streambuffer.c",
+        "weakStubs.c",
         // picked from safertos "portable"
         "portable.c",
     ]
@@ -186,6 +190,10 @@ const cflags_c75x = {
     common: [
         "-DHwi_bootToNonSecure__D=true",
         "-DException_vectors__D",
+        "--advice:performance=none ",
+    ],
+    remove: [
+        "--symdebug:none",
     ]
 };
 
@@ -258,7 +266,6 @@ function getComponentBuildProperty(buildOption) {
         build_property.files = files_r5f;
         build_property.includes = includes_r5f;
         build_property.asmfiles = asmfiles_r5f;
-        build_property.asmextnfiles = asmextnfiles_r5f
         build_property.filedirs = filedirs_r5f;
         build_property.cflags = cflags_r5f;
         build_property.defines = defines_r5_safertos;

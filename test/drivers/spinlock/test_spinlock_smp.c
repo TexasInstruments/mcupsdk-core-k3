@@ -75,6 +75,7 @@
 #define SPINLOCK_RETRY_DELAY_US     1000U
 #define SPINLOCK_ACQUIRE_TIMEOUT_US 1000000U
 #define MUTEX_TEST_DONE_TIMEOUT     2000U
+#define UNLOCK_TEST_DONE_TIMEOUT    2000U
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -86,6 +87,7 @@ static volatile uint32_t TestSpinlock_LockOwner = 0U;
 /* Semaphores for task synchronization */
 static SemaphoreP_Object TestSpinlock_taskAcquireLockSem;
 static SemaphoreP_Object TestSpinlock_taskUnlockSem;
+static SemaphoreP_Object TestSpinlock_taskDoneSem;
 
 /* Task stacks */
 static uint8_t TestSpinlock_taskAcquireLockStack[4096] __attribute__((aligned(32)));
@@ -209,6 +211,8 @@ static void TestSpinlock_taskAcquireLock(void *arg)
     Spinlock_unlock(CSL_SPINLOCK0_BASE, TEST_LOCK_NUMBER);
     DebugP_log("[Task A] Unlocked spinlock 0\r\n");
 
+    /* Signal completion so the test function knows it is safe to destruct this task */
+    SemaphoreP_post(&TestSpinlock_taskDoneSem);
     DebugP_log("[Task A] Exiting\r\n");
     TaskP_exit();
 }
@@ -253,6 +257,8 @@ static void TestSpinlock_taskUnlock(void *arg)
     Spinlock_unlock(CSL_SPINLOCK0_BASE, TEST_LOCK_NUMBER);
     DebugP_log("[Task B] Unlocked spinlock 0\r\n");
 
+    /* Signal completion so the test function knows it is safe to destruct this task */
+    SemaphoreP_post(&TestSpinlock_taskDoneSem);
     DebugP_log("[Task B] Exiting\r\n");
     TaskP_exit();
 }
@@ -297,6 +303,10 @@ static void TestSpinlock_verifyUnlockByNonOwner(void *args)
     status = SemaphoreP_constructBinary(&TestSpinlock_taskUnlockSem, 0);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
+    /* Counting semaphore for task completion (expect 2 posts, one per task) */
+    status = SemaphoreP_constructCounting(&TestSpinlock_taskDoneSem, 0, 2);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
     /* Step 1 (cont): Create Task A with equal priority */
     TaskP_Params_init(&tParams);
     tParams.name      = (char*)"SpinlockTaskA";
@@ -321,10 +331,12 @@ static void TestSpinlock_verifyUnlockByNonOwner(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     DebugP_log("Created Task B with priority %d\r\n", tParams.priority);
 
-    /* Allow tasks to run and complete */
-    ClockP_usleep(100000U);  /* 100ms delay to allow tasks to execute */
-
-    /* Step 8: Verify both tasks completed without errors */
+    /* Step 8: Wait for both tasks to signal completion before destructing them */
+    DebugP_log("Waiting for both tasks to complete...\r\n");
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
+                            SemaphoreP_pend(&TestSpinlock_taskDoneSem, UNLOCK_TEST_DONE_TIMEOUT));
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
+                            SemaphoreP_pend(&TestSpinlock_taskDoneSem, UNLOCK_TEST_DONE_TIMEOUT));
     DebugP_log("Both tasks completed\r\n");
 
     /* Step 9: Verify hardware spinlock does not enforce task ownership */
@@ -336,6 +348,7 @@ static void TestSpinlock_verifyUnlockByNonOwner(void *args)
     TaskP_destruct(&taskBObj);
     SemaphoreP_destruct(&TestSpinlock_taskAcquireLockSem);
     SemaphoreP_destruct(&TestSpinlock_taskUnlockSem);
+    SemaphoreP_destruct(&TestSpinlock_taskDoneSem);
 
     DebugP_log("=============================================================\r\n");
     DebugP_log("Test Passed: Unlock by non-owner completed successfully\r\n");

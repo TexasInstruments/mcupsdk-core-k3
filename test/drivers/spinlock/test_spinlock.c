@@ -68,6 +68,9 @@
 #define DEADLOCK_TEST_INT_NUM           (22U)
 #define DEADLOCK_TEST_LOCK_NUMBER       (2U)
 #define DEADLOCK_TEST_TIMEOUT_MS        (1000U)
+/* On a single-core system the ISR runs to completion before the main thread
+ * gets to run again, so this bounds how long the main thread is stalled */
+#define DEADLOCK_TEST_MAX_SPIN_COUNT    (1000U)
 #define PERF_TEST_ITERATIONS            (1000U)
 #define PERF_TEST_LOCK_NUMBER           (3U)
 #define MULTI_LOCK_A                    (4U)
@@ -274,16 +277,16 @@ static void TestSpinlock_isrA(void *args)
 {
     int32_t status;
 
-    /* Acquire spinlock to protect shared data */
-    status = Spinlock_lock(CSL_SPINLOCK0_BASE, ISR_TEST_LOCK_NUMBER);
-
-    /* Critical section: increment shared counter only if lock was acquired */
-    if (status == SPINLOCK_LOCK_STATUS_FREE)
+    /* Acquire spinlock to protect shared data, retrying on contention as
+     * documented by Spinlock_lock() */
+    do
     {
-        gIsrSharedCounter++;
-        /* Release spinlock only if successfully acquired */
-        Spinlock_unlock(CSL_SPINLOCK0_BASE, ISR_TEST_LOCK_NUMBER);
-    }
+        status = Spinlock_lock(CSL_SPINLOCK0_BASE, ISR_TEST_LOCK_NUMBER);
+    } while (status != SPINLOCK_LOCK_STATUS_FREE);
+
+    /* Critical section */
+    gIsrSharedCounter++;
+    Spinlock_unlock(CSL_SPINLOCK0_BASE, ISR_TEST_LOCK_NUMBER);
 
     /* Track ISR A completion */
     gIsrACompleteCount++;
@@ -299,16 +302,16 @@ static void TestSpinlock_isrB(void *args)
 {
     int32_t status;
 
-    /* Acquire spinlock to protect shared data */
-    status = Spinlock_lock(CSL_SPINLOCK0_BASE, ISR_TEST_LOCK_NUMBER);
-
-    /* Critical section: increment shared counter only if lock was acquired */
-    if (status == SPINLOCK_LOCK_STATUS_FREE)
+    /* Acquire spinlock to protect shared data, retrying on contention as
+     * documented by Spinlock_lock() */
+    do
     {
-        gIsrSharedCounter++;
-        /* Release spinlock only if successfully acquired */
-        Spinlock_unlock(CSL_SPINLOCK0_BASE, ISR_TEST_LOCK_NUMBER);
-    }
+        status = Spinlock_lock(CSL_SPINLOCK0_BASE, ISR_TEST_LOCK_NUMBER);
+    } while (status != SPINLOCK_LOCK_STATUS_FREE);
+
+    /* Critical section */
+    gIsrSharedCounter++;
+    Spinlock_unlock(CSL_SPINLOCK0_BASE, ISR_TEST_LOCK_NUMBER);
 
     /* Track ISR B completion */
     gIsrBCompleteCount++;
@@ -528,12 +531,14 @@ static void TestSpinlock_deadlockIsr(void *args)
 {
     int32_t status;
     uint32_t spinCount = 0;
-    uint32_t maxSpinCount = 100000; /* Safety limit to prevent infinite spinning */
+    uint32_t maxSpinCount = DEADLOCK_TEST_MAX_SPIN_COUNT; /* Safety limit to prevent infinite spinning */
 
     /* Mark that ISR has been entered */
     gDeadlockIsrEntered = 1;
 
-    /* Attempt to acquire the same lock held by main thread - this will cause deadlock */
+    /* Attempt to acquire the same lock held by main thread - this will cause deadlock.
+     * This runs to completion before the main thread (which triggered this ISR via
+     * HwiP_post()) can execute again, so keep maxSpinCount small to bound the stall. */
     while (spinCount < maxSpinCount)
     {
         status = Spinlock_lock(CSL_SPINLOCK0_BASE, DEADLOCK_TEST_LOCK_NUMBER);
@@ -592,12 +597,18 @@ static void TestSpinlock_isrDeadlock(void *args)
     status = Spinlock_lock(CSL_SPINLOCK0_BASE, DEADLOCK_TEST_LOCK_NUMBER);
     TEST_ASSERT_EQUAL_INT32(SPINLOCK_LOCK_STATUS_FREE, status);
 
-    /* Step 3: Manually trigger ISR while holding the lock */
+    /* Step 3: Manually trigger ISR while holding the lock.
+     * On a single-core system, HwiP_post() only sets the interrupt pending -
+     * the ISR then preempts and runs to completion (including its bounded
+     * spin loop) before this thread executes again. So gDeadlockIsrEntered
+     * and gDeadlockDetected are only ever observed together, already final;
+     * a single bounded wait (covering interrupt-taken latency plus the ISR's
+     * worst-case spin duration) is all that is meaningful here. */
     HwiP_post(DEADLOCK_TEST_INT_NUM);
 
-    /* Step 4: Wait for ISR to enter and attempt lock acquisition with timeout */
+    /* Step 4: Wait for the ISR to run to completion, with a timeout */
     timeout = DEADLOCK_TEST_TIMEOUT_MS;
-    while (gDeadlockIsrEntered == 0 && timeout > 0)
+    while (gDeadlockDetected == 0 && timeout > 0)
     {
         ClockP_usleep(100);
         timeout--;
@@ -605,14 +616,6 @@ static void TestSpinlock_isrDeadlock(void *args)
 
     /* Verify ISR was entered */
     TEST_ASSERT_EQUAL_UINT32(1, gDeadlockIsrEntered);
-
-    /* Wait for deadlock detection with timeout */
-    timeout = DEADLOCK_TEST_TIMEOUT_MS;
-    while (gDeadlockDetected == 0 && timeout > 0)
-    {
-        ClockP_usleep(100);
-        timeout--;
-    }
 
     /* Step 5: Verify deadlock was detected (ISR spun trying to acquire the lock) */
     TEST_ASSERT_EQUAL_UINT32(1, gDeadlockDetected);

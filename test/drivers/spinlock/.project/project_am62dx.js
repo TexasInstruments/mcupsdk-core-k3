@@ -297,6 +297,43 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template_freertos = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SPINLOCK",
+        testCaseName: "Spinlock driver test application",
+        testCaseIds: "SITSW-10727 SITSW-10728 SITSW-10729 SITSW-10731 SITSW-10804 SITSW-10805 SITSW-10806 SITSW-10807 SITSW-10808 SITSW-10809" +
+                     " SITSW-10810 SITSW-10811 SITSW-10812 SITSW-10813 SITSW-10814 SITSW-10815 SITSW-10816 SITSW-10817 SITSW-10818 SITSW-10819" +
+                     " SITSW-10820 SITSW-10821 SITSW-10822 SITSW-10823",
+        timeout: 660,
+    },
+};
+
+const robot_template_nortos = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SPINLOCK",
+        testCaseName: "Spinlock driver test application",
+        testCaseIds: "SITSW-10727 SITSW-10728 SITSW-10729 SITSW-10731 SITSW-10804 SITSW-10805 SITSW-10806 SITSW-10807 SITSW-10808 SITSW-10809" +
+                     " SITSW-10810 SITSW-10811 SITSW-10812 SITSW-10813 SITSW-10814 SITSW-10815 SITSW-10816",
+        timeout: 660,
+    },
+};
+
+const robot_template_smp = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SPINLOCK",
+        testCaseName: "Spinlock driver SMP test application",
+        appName: "test_spinlock(smp)",
+        testCaseIds: "SITSW-10866 SITSW-10867",
+        timeout: 300,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -358,6 +395,16 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_freertos_c75;
             build_property.defines = defines_c7x;
         }
+    }
+
+    if (buildOption.os.match(/freertos-smp*/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_smp];
+    }
+    else if (buildOption.os.match(/freertos*/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_freertos];
+    }
+    else {
+        build_property.templates = [...(build_property.templates || []), robot_template_nortos];
     }
 
     return build_property;

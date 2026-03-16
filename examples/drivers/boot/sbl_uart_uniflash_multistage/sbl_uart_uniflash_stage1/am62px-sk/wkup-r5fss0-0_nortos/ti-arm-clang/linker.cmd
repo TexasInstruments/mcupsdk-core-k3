@@ -55,7 +55,7 @@ SECTIONS
     RUN_START(__BSS_START)
     RUN_END(__BSS_END)
     .sysmem: {} palign(8) > ATCM
-    .stack:  {} palign(8) > HSM_RAM
+    .stack:  {} palign(8) > ATCM
     GROUP {
         .irqstack: {. = . + __IRQ_STACK_SIZE;} align(8)
         RUN_START(__IRQ_STACK_START)

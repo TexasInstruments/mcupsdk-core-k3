@@ -38,10 +38,18 @@
 /* ========================================================================== */
 
 #include "test_adc.h"
+#include "ti_drivers_config.h"
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
+
+/* SOC-specific ADC base address selection */
+#if defined(SOC_AM275X) || defined(SOC_AM62LX)
+#define ADC_TEST_BASE_ADDR  CONFIG_ADC0_BASE_ADDR
+#else
+#error "Unsupported SOC for ADC test"
+#endif
 
 #define ADC_NUM_TESTCASES (sizeof(gADCTestcaseParams) / sizeof(test_adc_testcaseParams_t))
 
@@ -57,7 +65,7 @@ test_adc_testcaseParams_t gADCTestcaseParams[] =
         .testCaseName       = "ADC Polling mode with FIFO 0",
         .adcConfigParams    =
         {
-            .adcModule = CSL_ADC0_BASE,
+            .adcModule = ADC_TEST_BASE_ADDR,
             .adcMode = ADC_OPERATION_MODE_SINGLE_SHOT,
             .intrEnable = (ADC_INTR_SRC_END_OF_SEQUENCE | ADC_INTR_SRC_FIFO0_OVERRUN |
                            ADC_INTR_SRC_FIFO0_UNDERFLOW),
@@ -112,7 +120,7 @@ test_adc_testcaseParams_t gADCTestcaseParams[] =
         .testCaseName       = "ADC Polling mode with FIFO 1",
         .adcConfigParams    =
         {
-            .adcModule = CSL_ADC0_BASE,
+            .adcModule = ADC_TEST_BASE_ADDR,
             .adcMode = ADC_OPERATION_MODE_SINGLE_SHOT,
             .intrEnable = (ADC_INTR_SRC_END_OF_SEQUENCE | ADC_INTR_SRC_FIFO1_OVERRUN |
                            ADC_INTR_SRC_FIFO1_UNDERFLOW),
@@ -167,7 +175,7 @@ test_adc_testcaseParams_t gADCTestcaseParams[] =
         .testCaseName       = "ADC ISR mode with FIFO 0",
         .adcConfigParams    =
         {
-            .adcModule = CSL_ADC0_BASE,
+            .adcModule = ADC_TEST_BASE_ADDR,
             .adcMode = ADC_OPERATION_MODE_SINGLE_SHOT,
             .intrEnable = (ADC_INTR_SRC_END_OF_SEQUENCE | ADC_INTR_SRC_FIFO0_OVERRUN |
                            ADC_INTR_SRC_FIFO0_UNDERFLOW),
@@ -222,7 +230,7 @@ test_adc_testcaseParams_t gADCTestcaseParams[] =
         .testCaseName       = "ADC ISR mode with FIFO 1",
         .adcConfigParams    =
         {
-            .adcModule = CSL_ADC0_BASE,
+            .adcModule = ADC_TEST_BASE_ADDR,
             .adcMode = ADC_OPERATION_MODE_SINGLE_SHOT,
             .intrEnable = (ADC_INTR_SRC_END_OF_SEQUENCE | ADC_INTR_SRC_FIFO1_OVERRUN |
                            ADC_INTR_SRC_FIFO1_UNDERFLOW),
@@ -277,7 +285,7 @@ test_adc_testcaseParams_t gADCTestcaseParams[] =
         .testCaseName       = "ADC samples averaging",
         .adcConfigParams    =
         {
-            .adcModule = CSL_ADC0_BASE,
+            .adcModule = ADC_TEST_BASE_ADDR,
             .adcMode = ADC_OPERATION_MODE_SINGLE_SHOT,
             .intrEnable = (ADC_INTR_SRC_END_OF_SEQUENCE | ADC_INTR_SRC_FIFO0_OVERRUN |
                            ADC_INTR_SRC_FIFO0_UNDERFLOW),
@@ -310,7 +318,7 @@ test_adc_testcaseParams_t gADCTestcaseParams[] =
         .testCaseName       = "ADC open and sample delay combinations",
         .adcConfigParams    =
         {
-            .adcModule = CSL_ADC0_BASE,
+            .adcModule = ADC_TEST_BASE_ADDR,
             .adcMode = ADC_OPERATION_MODE_SINGLE_SHOT,
             .intrEnable = (ADC_INTR_SRC_END_OF_SEQUENCE | ADC_INTR_SRC_FIFO1_OVERRUN |
                            ADC_INTR_SRC_FIFO1_UNDERFLOW),
@@ -341,7 +349,7 @@ test_adc_testcaseParams_t gADCTestcaseParams[] =
         .testCaseName       = "ADC singleshot Mode",
         .adcConfigParams    =
         {
-            .adcModule = CSL_ADC0_BASE,
+            .adcModule = ADC_TEST_BASE_ADDR,
             .adcMode = ADC_OPERATION_MODE_SINGLE_SHOT,
             .intrEnable = (ADC_INTR_SRC_END_OF_SEQUENCE | ADC_INTR_SRC_FIFO0_OVERRUN |
                            ADC_INTR_SRC_FIFO0_UNDERFLOW),
@@ -396,7 +404,7 @@ test_adc_testcaseParams_t gADCTestcaseParams[] =
         .testCaseName       = "ADC Continuous mode",
         .adcConfigParams    =
         {
-            .adcModule = CSL_ADC0_BASE,
+            .adcModule = ADC_TEST_BASE_ADDR,
             .adcMode = ADC_OPERATION_MODE_CONTINUOUS,
             .intrEnable = (ADC_INTR_SRC_END_OF_SEQUENCE),
             .numSteps = 2,
@@ -422,7 +430,7 @@ test_adc_testcaseParams_t gADCTestcaseParams[] =
         .testCaseName       = "ADC Min Max Range",
         .adcConfigParams    =
         {
-            .adcModule = CSL_ADC0_BASE,
+            .adcModule = ADC_TEST_BASE_ADDR,
             .adcMode = ADC_OPERATION_MODE_SINGLE_SHOT,
             .intrEnable = (ADC_INTR_SRC_END_OF_SEQUENCE | ADC_INTR_SRC_FIFO1_OVERRUN |
                            ADC_INTR_SRC_FIFO1_UNDERFLOW | ADC_INTR_SRC_OUT_OF_RANGE),

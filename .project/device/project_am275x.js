@@ -246,6 +246,7 @@ const example_file_list = [
     "test/sdl/vtm/vtm_func_test/.project/project_am275x.js",
     "test/sdl/vtm/vtm_unit_test/.project/project_am275x.js",
     // Tests
+    "test/drivers/adc/.project/project.js",
     "test/board/eeprom/.project/project.js",
     "test/board/hyperRam/.project/project.js",
     "test/drivers/gpio/.project/project.js",

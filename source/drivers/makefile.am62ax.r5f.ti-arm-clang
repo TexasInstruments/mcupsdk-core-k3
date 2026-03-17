@@ -143,6 +143,8 @@ FILES_PATH_common = \
     csirx/v0/src \
     csirx/v0 \
     csirx/v0/include \
+    watchdog/v1 \
+    watchdog/v1/soc/am62ax \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \

@@ -83,6 +83,7 @@ const topModules_wkup = [
     "/drivers/qos/qos",
     "/drivers/uart/uart",
     "/drivers/udma/udma",
+    "/drivers/watchdog/watchdog",
 ];
 
 const topModules_main = [

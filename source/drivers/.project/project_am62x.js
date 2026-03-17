@@ -119,6 +119,8 @@ const files_r5f = {
         "mcspi_dma.c",
         "mcspi_dma_udma.c",
         "mcan.c",
+        "watchdog_rti.c",
+        "watchdog_soc.c",
     ]
 };
 
@@ -273,6 +275,8 @@ const filedirs = {
         "gpmc/v0/dma",
         "gpmc/v0/dma/udma",
         "utils",
+        "watchdog/v1",
+        `watchdog/v1/soc/am62x`,
     ],
 };
 

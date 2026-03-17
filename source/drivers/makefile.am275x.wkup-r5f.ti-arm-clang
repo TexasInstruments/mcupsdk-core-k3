@@ -84,6 +84,8 @@ FILES_common := \
     udma_soc.c \
     utils.c \
     vtm.c \
+    watchdog_rti.c \
+    watchdog_soc.c \
     xmodem.c \
 
 FILES_PATH_common = \

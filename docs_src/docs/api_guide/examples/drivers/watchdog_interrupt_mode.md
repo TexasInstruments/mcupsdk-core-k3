@@ -108,6 +108,17 @@ This example uses the WDT module in non reset mode to generate NMI Interrupt.
 
 \endcond
 
+\cond SOC_AM62PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | wkup-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/watchdog/watchdog_interrupt/
+
+\endcond
+
 # Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination
@@ -130,7 +141,7 @@ This example uses the WDT module in non reset mode to generate NMI Interrupt.
 
 Shown below is a sample output when the application is run,
 Please note that application prints in both CCS and UART console.
-\if SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM275X || SOC_AM62LX
+\if SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM275X || SOC_AM62LX || SOC_AM62PX
 \code
 Watchdog interrupt Mode Test Started ...
 Watchdog Driver NMI received

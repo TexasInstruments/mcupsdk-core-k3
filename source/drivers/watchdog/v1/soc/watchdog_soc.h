@@ -52,6 +52,8 @@
 #include <drivers/watchdog/v1/soc/am62dx/watchdog_soc.h>
 #elif  defined(SOC_AM62LX)
 #include <drivers/watchdog/v1/soc/am62lx/watchdog_soc.h>
+#elif  defined(SOC_AM62PX)
+#include <drivers/watchdog/v1/soc/am62px/watchdog_soc.h>
 #elif  defined(SOC_AM275X)
 #include <drivers/watchdog/v1/soc/am275x/watchdog_soc.h>
 #elif defined(SOC_AM64X) || defined(SOC_AM243X)

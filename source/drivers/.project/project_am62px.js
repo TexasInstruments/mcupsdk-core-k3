@@ -159,6 +159,8 @@ const files_wkup_r5f = {
         "utils.c",
         "vtm.c",
         "xmodem.c",
+        "watchdog_rti.c",
+        "watchdog_soc.c",
     ]
 };
 
@@ -278,7 +280,9 @@ const filedirs_wkup_r5f = {
         "udma/v0/hw_include",
         "udma/v0/soc",
         "udma/v0/soc/am62px",
-        "utils"
+        "utils",
+        "watchdog/v1",
+        `watchdog/v1/soc/am62px`,
     ],
 };
 

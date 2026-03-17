@@ -144,6 +144,8 @@ const files_r5f = {
         "udma_soc.c",
         "utils.c",
         "vtm.c",
+        "watchdog_rti.c",
+        "watchdog_soc.c",
         "xmodem.c",
 	],
 };
@@ -329,6 +331,8 @@ const filedirs_r5f = {
         "udma/v0/soc",
         "udma/v0/soc/am62dx",
         "utils",
+        "watchdog/v1",
+        `watchdog/v1/soc/am62dx`,
 	],
 };
 

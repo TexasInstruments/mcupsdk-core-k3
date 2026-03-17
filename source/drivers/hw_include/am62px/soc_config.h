@@ -78,6 +78,7 @@ extern "C"
 #define DRV_VERSION_GTC_V0
 #define DRV_VERSION_FVID2_V0
 #define DRV_VERSION_DSS_V0
+#define DRV_VERSION_WATCHDOG_V1
 
 /* Driver DMA integration */
 #define DMA_VERSION_MCSPI_UDMA

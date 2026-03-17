@@ -157,6 +157,8 @@ const files_wkup_r5f = {
         "udma_soc.c",
         "utils.c",
         "vtm.c",
+        "watchdog_rti.c",
+        "watchdog_soc.c",
         "xmodem.c",
     ]
 };

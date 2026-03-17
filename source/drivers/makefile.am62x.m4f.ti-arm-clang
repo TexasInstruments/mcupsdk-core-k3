@@ -108,6 +108,8 @@ FILES_PATH_common = \
     gpmc/v0/dma \
     gpmc/v0/dma/udma \
     utils \
+    watchdog/v1 \
+    watchdog/v1/soc/am62x \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \

@@ -149,6 +149,8 @@ const files_r5f = {
         "udma_soc.c",
         "utils.c",
         "vtm.c",
+        "watchdog_rti.c",
+        "watchdog_soc.c",
         "xmodem.c",
         "csirx_sanity.c",
         "csirx_ss.c",
@@ -355,6 +357,8 @@ const filedirs = {
         "csirx/v0/src",
         "csirx/v0",
         "csirx/v0/include",
+        "watchdog/v1",
+        `watchdog/v1/soc/am62ax`,
     ],
 };
 

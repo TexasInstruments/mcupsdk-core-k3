@@ -112,9 +112,31 @@ const watchdog_c75ss1_config = [
     },
 ];
 
+const watchdog_wkup_r5f_config = [
+    {
+        name: "WKUP_WDT0",
+        wdtInstance: "WATCHDOG_INST_ID_0",
+        baseAddr: "CSL_WKUP_RTI0_CFG_BASE",
+        intrNum         : 30,
+        funcClk: wdt_func_clk,
+        clockIds        : [ "TISCI_DEV_WKUP_RTI0" ],
+        clockFrequencies: [
+            {
+                moduleId: "TISCI_DEV_WKUP_RTI0",
+                clkId   : "TISCI_DEV_WKUP_RTI0_RTI_CLK",
+                clkRate : wdt_func_clk,
+            },
+        ],
+    },
+];
+
 function getConfigArr() {
 
-    if(common.getSelfSysCfgCoreName().match(/r5fss0-0/))
+    if(common.getSelfSysCfgCoreName().match(/wkup-r5f*/))
+    {
+        return watchdog_wkup_r5f_config;
+    }
+    else if(common.getSelfSysCfgCoreName().match(/r5fss0-0/))
     {
         return watchdog_r5fss0_0_config;
     }

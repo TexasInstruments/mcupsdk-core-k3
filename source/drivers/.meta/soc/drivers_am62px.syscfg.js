@@ -68,6 +68,9 @@ const driverVer = {
     "dss": {
         version: "v0",
     },
+    "watchdog": {
+        version: "v1",
+    },
 };
 
 const topModules_wkup = [
@@ -89,6 +92,7 @@ const topModules_wkup = [
     "/drivers/rtc/rtc",
     "/drivers/uart/uart",
     "/drivers/udma/udma",
+    "/drivers/watchdog/watchdog",
 ];
 
 const topModules_mcu = [

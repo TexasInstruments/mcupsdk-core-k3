@@ -143,6 +143,8 @@ FILES_PATH_common = \
     ${MCU_PLUS_SDK_PATH}/source/drivers/csirx/v0/src \
     ${MCU_PLUS_SDK_PATH}/source/drivers/csirx/v0 \
     ${MCU_PLUS_SDK_PATH}/source/drivers/csirx/v0/include \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/watchdog/v1 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/watchdog/v1/soc/am62ax \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \

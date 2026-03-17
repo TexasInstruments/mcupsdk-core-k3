@@ -108,6 +108,8 @@ FILES_common := \
     utils.c \
     vtm.c \
     xmodem.c \
+    watchdog_rti.c \
+    watchdog_soc.c \
 
 FILES_PATH_common = \
     ${MCU_PLUS_SDK_PATH}/source/drivers/bootloader \
@@ -175,6 +177,8 @@ FILES_PATH_common = \
     ${MCU_PLUS_SDK_PATH}/source/drivers/udma/v0/soc \
     ${MCU_PLUS_SDK_PATH}/source/drivers/udma/v0/soc/am62px \
     ${MCU_PLUS_SDK_PATH}/source/drivers/utils \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/watchdog/v1 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/watchdog/v1/soc/am62px \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include/c \

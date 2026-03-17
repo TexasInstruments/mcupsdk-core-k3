@@ -93,6 +93,7 @@ const topModules_wkup = [
     "/drivers/rtc/rtc",
     "/drivers/mcan/mcan",
     "/drivers/qos/qos",
+    "/drivers/watchdog/watchdog",
 ];
 
 const topModules_mcu = [

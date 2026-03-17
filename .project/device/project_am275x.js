@@ -132,6 +132,7 @@ const example_file_list = [
     "examples/drivers/udma/udma_memcpy_polling/.project/project_am275x_wkupr5.js",
 	"examples/drivers/udma/udma_memcpy_polling/.project/project.js",
 	"examples/drivers/udma/udma_sw_trigger/.project/project.js",
+    "examples/drivers/watchdog/watchdog_interrupt/.project/project_am275x_wkupr5.js",
     "examples/drivers/watchdog/watchdog_interrupt/.project/project.js",
     "examples/empty/.project/project_nortos.js",
     "examples/empty/.project/project_am275x_freertos_wkupr5.js",

@@ -57,8 +57,8 @@ ifeq ($(DEVICE_TYPE), HS)
 endif
 % }
 % if ((args.project.device == "j722s") && (args.project.cpu != "wkup-r5fss0-0")) {
-SCISERVER_IMAGE_PATH:=$(MCU_PLUS_SDK_PATH)/tools/sysfw/sciserver_binary/j722s
-SCISERVER_BOOTIMAGE_RPRC_NAME:=$(SCISERVER_IMAGE_PATH)/sciclient_get_version.release.rprc
+SCISERVER_IMAGE_PATH:=$(MCU_PLUS_SDK_PATH)/examples/drivers/sciclient/sciclient_get_version/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang
+SCISERVER_BOOTIMAGE_RPRC_NAME:=$(SCISERVER_IMAGE_PATH)/sciclient_get_version.$(PROFILE).rprc
 % }
 
 % let linker_option_prefix = "";
@@ -602,7 +602,11 @@ MULTI_CORE_IMAGE_PARAMS_XIP = \
     $(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_a53ss0-1) \
 % }
 
+% if ((args.project.device == "j722s") && (args.project.cpu != "wkup-r5fss0-0")) {
+$(BOOTIMAGE_NAME): $(OUTNAME) $(SCISERVER_BOOTIMAGE_RPRC_NAME)
+% } else {
 $(BOOTIMAGE_NAME): $(OUTNAME)
+% }
 	@echo  Boot image: `args.project.device`:`args.project.cpu`:`args.project.os`:`args.project.cgt` $(BOOTIMAGE_PATH)/$@ ...
 ifneq ($(OS),Windows_NT)
 	$(CHMOD) a+x $(XIPGEN_CMD)
@@ -648,5 +652,9 @@ coverage:
 	node $(MCU_PLUS_SDK_PATH)/docs_src/code_coverage/clang_coverage_analyse.js --input=coverage/`args.project.name`.$(PROFILE).profdata.json --output-json=coverage/`args.project.name`.$(PROFILE).analysis.json --output-lnk=linker_xip.cmd --top-function-count=500
 	@echo Coverage Report Generated at $(COVERAGE_PATH)/coverage folder !!!
 
+% }
+% if ((args.project.device == "j722s") && (args.project.cpu != "wkup-r5fss0-0")) {
+$(SCISERVER_BOOTIMAGE_RPRC_NAME):
+	$(MAKE) -C $(MCU_PLUS_SDK_PATH)/examples/drivers/sciclient/sciclient_get_version/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile PROFILE=$(PROFILE) all
 % }
 -include $(addprefix $(OBJDIR)/, $(DEPS))

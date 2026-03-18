@@ -178,6 +178,11 @@ function genMakefileDeviceTop(component_file_list, example_file_list, device, is
         device: device,
     };
 
+    if (device == "j722s") {
+        const dmAppAbsPath = path.normalize(__dirname + `/../examples/drivers/sciclient/sciclient_get_version/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang`);
+        args.dm_app_path = common.path.relative(path.normalize(__dirname + `/../${genFolder}`), dmAppAbsPath);
+    }
+
     common.convertTemplateToFile(
         `.project/templates/makefile_device_top.xdt`,
         `${genFolder}/makefile.${device}`,

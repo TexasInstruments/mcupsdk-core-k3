@@ -226,10 +226,24 @@ BUILD_COMBO_EXAMPLE_PRIVATE_ALL +=`example.buildTarget`
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL +=`example.buildTarget`
 %   }
 % }
+% if (args.device == "j722s") {
+DM_APP_PATH = `args.dm_app_path`
+
+dm_app:
+	$(MAKE) -C $(DM_APP_PATH) -f makefile all
+
+examples: dm_app
+	$(MAKE) -f makefile.`device` $(BUILD_COMBO_EXAMPLE_ALL)
+
+examples-private: dm_app
+	$(MAKE) -f makefile.`device` $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
+% }
+% else {
 
 examples: $(BUILD_COMBO_EXAMPLE_ALL)
 
 examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
+% }
 
 % for (example of args.example_list) {
 `example.buildTarget`:

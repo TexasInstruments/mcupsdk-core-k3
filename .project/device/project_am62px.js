@@ -33,6 +33,7 @@ const component_file_list = [
     "test/drivers/i2c/test_i2c_fault_inject/configs/.project/project_am62px.js",
     "test/drivers/mcasp/test_mcasp_fault_injection/configs/.project/project.js",
     "test/drivers/udma/test_udma_fault_inject/configs/.project/project.js",
+    "test/drivers/mcspi/test_mcspi_fault_inject/configs/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
 ];
 
@@ -175,7 +176,7 @@ const example_file_list = [
     "test/sdl/lbist/.project/project.js",
     "test/sdl/mcrc/mcrcAutomodeTest/.project/project.js",
     "test/sdl/mcrc/mcrcFuncTest/.project/project.js",
-  	"test/sdl/mcrc/mcrcSemimodeTest/.project/project.js",
+    "test/sdl/mcrc/mcrcSemimodeTest/.project/project.js",
     "test/sdl/mcrc/mcrcUt/.project/project.js",
     "test/sdl/mtog/mtog_functest/.project/project.js",
     "test/sdl/mtog/mtog_unit_test/.project/project.js",
@@ -257,6 +258,10 @@ const example_file_list = [
     "test/drivers/udma/.project/project.js",
     "test/drivers/udma/test_udma_fault_inject/.project/project.js",
     "test/drivers/udma/test_udma_system/.project/project.js",
+    "test/drivers/mcspi/mcspi/.project/project.js",
+    "test/drivers/mcspi/mcspi_master_slave/.project/project.js",
+    "test/drivers/mcspi/mcspi_master_slave_dma/.project/project.js",
+    "test/drivers/mcspi/test_mcspi_fault_inject/.project/project.js",
     "test/drivers/uart/.project/project.js",
     "test/drivers/watchdog/.project/project.js",
     "test/drivers/ecap/.project/project.js",
@@ -339,7 +344,7 @@ function getProperty() {
 
 function getLinuxFwName(cpu) {
 
-    switch(cpu) {
+    switch (cpu) {
         case "mcu-r5fss0-0":
             return "mcu-r5f0_0";
         case "wkup-r5fss0-0":

@@ -169,6 +169,22 @@
 #define MCSPI4_EVENT_ID                 (173U)
 #endif
 
+#elif defined(SOC_AM62PX)
+
+#if defined(R5F_CORE) || defined(DM_R5F_CORE)
+#define MCSPI0_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)
+#define MCSPI1_BASE_ADDRESS             (CSL_MCU_MCSPI1_CFG_BASE)
+#define MCSPI2_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
+#define MCSPI3_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
+#define MCSPI4_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
+
+#define MCSPI0_INT_NUM                  (207U)
+#define MCSPI1_INT_NUM                  (208U)
+#define MCSPI2_INT_NUM                  (204U)
+#define MCSPI3_INT_NUM                  (205U)
+#define MCSPI4_INT_NUM                  (206U)
+#endif
+
 #elif defined(SOC_AM62X)
 /* NOTE: For the AM62X R5F domain the logical MCSPI3/MCSPI4 test indices do not
  * match the physical peripheral number. MCSPI3_BASE_ADDRESS maps to
@@ -376,7 +392,7 @@ void test_main(void *args)
 
     TestMcspi_setParamsIns0(&testParams, 8785);
     RUN_TEST(TestMcspi_multithreadSingleInstanceBlocking, 9090, (void*) &testParams);
-    #if defined(SOC_AM62AX)
+    #if defined(SOC_AM62AX)|| defined(SOC_AM62PX)
     /* NOTE: On AM62DX, getting data mismatch at 2nd position; all other data matches. */
     /* Only the 2nd position is overwritten, causing mismatch and hanging other test cases. */
     TestMcspi_setParamsIns0(&testParams, 8421);

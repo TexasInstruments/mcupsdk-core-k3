@@ -170,6 +170,22 @@
 #define MCSPI4_EVENT_ID                 (173U)
 #endif
 
+#elif defined(SOC_AM62PX)
+
+#if defined(R5F_CORE) || defined(DM_R5F_CORE)
+#define MCSPI0_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)
+#define MCSPI1_BASE_ADDRESS             (CSL_MCU_MCSPI1_CFG_BASE)
+#define MCSPI2_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
+#define MCSPI3_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
+#define MCSPI4_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
+
+#define MCSPI0_INT_NUM                  (207U)
+#define MCSPI1_INT_NUM                  (208U)
+#define MCSPI2_INT_NUM                  (204U)
+#define MCSPI3_INT_NUM                  (205U)
+#define MCSPI4_INT_NUM                  (206U)
+#endif
+
 #elif defined(SOC_AM62X)
 
 #ifdef A53_CORE
@@ -338,8 +354,7 @@ void tearDown(void)
 
 void test_main(void *args)
 {
-    MCSPI_TestParams  testParams;
-
+    MCSPI_TestParams testParams;
     UNITY_BEGIN();
 
     TestMcspi_setParamsIns0(&testParams, 9234);

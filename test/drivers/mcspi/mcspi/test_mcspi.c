@@ -195,6 +195,22 @@
 #define MCSPI4_EVENT_ID                 (173U)
 #endif
 
+#elif defined(SOC_AM62PX)
+
+#if defined(R5F_CORE) || defined(DM_R5F_CORE)
+#define MCSPI0_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)
+#define MCSPI1_BASE_ADDRESS             (CSL_MCU_MCSPI1_CFG_BASE)
+#define MCSPI2_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
+#define MCSPI3_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
+#define MCSPI4_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
+
+#define MCSPI0_INT_NUM                  (207U)
+#define MCSPI1_INT_NUM                  (208U)
+#define MCSPI2_INT_NUM                  (204U)
+#define MCSPI3_INT_NUM                  (205U)
+#define MCSPI4_INT_NUM                  (206U)
+#endif
+
 #elif defined(SOC_AM62X)
 /* NOTE: For the AM62X R5F/M4F domain the logical MCSPI3/MCSPI4 test indices do
  * not match the physical peripheral number. MCSPI3_BASE_ADDRESS maps to
@@ -335,7 +351,7 @@ uint64_t dma;
 
 mcspiUtPref gUtPerf[3];
 
-#if (CONFIG_MCSPI_NUM_DMA_INSTANCES > 0U) && (defined(SOC_AM62AX) || defined(SOC_AM62DX) || (defined(SOC_AM62X) && (defined(A53_CORE) || defined(R5F_CORE))))
+#if (CONFIG_MCSPI_NUM_DMA_INSTANCES > 0U) && (defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || (defined(SOC_AM62X) && (defined(A53_CORE) || defined(R5F_CORE))))
 extern MCSPI_DmaConfig gMcspiDmaConfig[];
 
 /* The following symbol is from generated files. */
@@ -432,7 +448,7 @@ void test_mcspi_dma_open_close(void *args);
 static void TestMcspi_dmaSingleWordTransfer(void *args);
 static void TestMcspi_txOnlyTransfer(void *args);
 static void TestMcspi_loopbackDma(void *args);
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || (defined(SOC_AM62X) && (defined(A53_CORE) || defined(R5F_CORE)))
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || (defined(SOC_AM62X) && (defined(A53_CORE) || defined(R5F_CORE)))
 static int32_t TestMcspi_dmaOpenFail(void *args);
 static void TestMcspi_dmaTransferNoDmaHandle(void *args);
 static void TestMcspi_dmaCloseNoDmaHandle(void *args);
@@ -455,7 +471,9 @@ static void TestMcspi_openCallbackNull(void *args);
 static void TestMcspi_chConfig(void *args);
 #endif
 static void TestMcspi_loopbackTurboMode(void *args);
+#if !(defined(SOC_AM62PX) && !ENABLE_MT_TESTS)
 static void TestMcspi_loopbackRampUpWordCount(void *args);
+#endif
 static void TestMcspi_transferCountZero(void *args);
 static void TestMcspi_transferInvalidChannel(void *args);
 static void TestMcspi_transferDataSizeTooSmall(void *args);
@@ -531,7 +549,9 @@ void test_main(void *args)
     RUN_TEST(TestMcspi_chConfig, 8397, (void*) &testParams);
 #endif
     test_mcspi_set_params(&testParams, 9227);
+    #if !(defined(SOC_AM62PX) && !ENABLE_MT_TESTS)
     RUN_TEST(TestMcspi_loopbackRampUpWordCount,  9227, (void*)&testParams);
+    #endif
     test_mcspi_set_params(&testParams, 9233);
     RUN_TEST(TestMcspi_transferCountZero, 9233, (void*)&testParams);
     test_mcspi_set_params(&testParams, 9234);
@@ -557,7 +577,7 @@ void test_main(void *args)
     test_mcspi_set_params(&testParams, 10723);
     RUN_TEST(TestMcspi_MasterCoverageTc, 10723, (void*)&testParams);
 /* AM263X does not support MCU_SPI instance */
-#if !defined(SOC_AM263X) && !defined(SOC_AM62AX) && !defined(SOC_AM62X) && !defined(SOC_AM62DX) && !defined(SOC_AM275X)
+#if !defined(SOC_AM263X) && !defined(SOC_AM62AX) && !defined(SOC_AM62X) && !defined(SOC_AM62DX) && !defined(SOC_AM275X) && !defined(SOC_AM62PX)
 /* AM243 LP we, have only 2 instances available */
 #if (CONFIG_MCSPI_NUM_INSTANCES > 2)
     test_mcspi_set_params(&testParams, 970);
@@ -752,7 +772,7 @@ void test_main(void *args)
     test_mcspi_set_params(&testParams, 4027);
     RUN_TEST(TestMcspi_dmaStop,  9274, (void*)&testParams);
     #endif
-    #if defined(SOC_AM62AX) || defined(SOC_AM62DX) || (defined(SOC_AM62X) && (defined(A53_CORE) || defined(R5F_CORE)))
+    #if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || (defined(SOC_AM62X) && (defined(A53_CORE) || defined(R5F_CORE)))
     test_mcspi_set_params(&testParams, 8412);
     RUN_TEST(TestMcspi_dmaChInitNoDmaHandle, 8412, (void*)&testParams);
     test_mcspi_set_params(&testParams, 8413);
@@ -1391,7 +1411,7 @@ static void TestMcspi_dmaSingleWordTransfer(void *args)
     MCSPI_close(mcspiHandle);
 }
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || (defined(SOC_AM62X) && (defined(A53_CORE) || defined(R5F_CORE)))
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || (defined(SOC_AM62X) && (defined(A53_CORE) || defined(R5F_CORE)))
 static int32_t TestMcspi_dmaOpenFail(void *args)
 {
     (void)args;
@@ -2258,7 +2278,7 @@ static void TestMcspi_transferChannelNotConfigured(void *args)
 
     MCSPI_close(mcspiHandle);
 }
-
+#if !(defined(SOC_AM62PX) && !ENABLE_MT_TESTS)
 /**
  * @brief Test case for MCSPI loopback ramp-up with varying word count.
  *
@@ -2402,7 +2422,7 @@ static void TestMcspi_loopbackRampUpWordCount(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     return;
 }
-
+#endif
 /**
  * @brief Test case for verifying MCSPI FIFO trigger levels functionality.
  *

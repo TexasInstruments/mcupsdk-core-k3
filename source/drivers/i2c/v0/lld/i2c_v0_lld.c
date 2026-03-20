@@ -188,6 +188,7 @@
 
 #define I2C_SYSTEST_INVALID_VALUE           ((uint32_t) 0xFFFFFFFFU)
 #define I2C_DUMMY_BYTE                      ((uint32_t) 0xFFU)
+#define I2C_BUS_DELAY                       ((uint32_t) 10U)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -2273,6 +2274,11 @@ static int32_t I2C_lld_primeTransferPoll(I2CLLD_Handle handle)
         object->readBufIdx = (uint8_t*)object->currentMsg->txn[object->currentTxnCount].readBuf;
         object->readCountIdx = (uint32_t)object->currentMsg->txn[object->currentTxnCount].readCount;
 
+        if(object->intStatusErr != (uint32_t)0)
+        {
+            (void)I2C_lld_recoverBus(object, I2C_BUS_DELAY);
+        }
+
         /* Clear All interrupts */
         I2CControllerIntClearEx(object->baseAddr, I2C_INT_ALL);
 
@@ -2673,7 +2679,7 @@ static int32_t I2C_lld_primeTransferIntr(I2CLLD_Handle handle)
 
     if(object->intStatusErr != (uint32_t)0)
     {
-        (void)I2C_lld_recoverBus(object, 10);
+        (void)I2C_lld_recoverBus(object, I2C_BUS_DELAY);
     }
 
     object->intStatusErr = 0;

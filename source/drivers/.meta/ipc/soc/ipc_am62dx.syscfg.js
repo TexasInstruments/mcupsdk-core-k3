@@ -5,20 +5,20 @@ let common = system.getScript("/common");
 
 let config = [
     {
-        name: "a53ss0_0",
-        displayName: "A53SS0 Core 0",
+        name: "mcu_r5fss0_0",
+        displayName: "MCU R5FSS0 Core 0",
     },
     {
         name: "r5fss0_0",
         displayName: "R5FSS0 Core 0",
     },
     {
-        name: "c75ss0_0",
-        displayName: "C75SS0 Core 0",
+        name: "a53ss0_0",
+        displayName: "A53SS0 Core 0",
     },
     {
-        name: "mcu_r5fss0_0",
-        displayName: "MCU R5FSS0 Core 0",
+        name: "c75ss0_0",
+        displayName: "C75SS0 Core 0",
     },
 ];
 

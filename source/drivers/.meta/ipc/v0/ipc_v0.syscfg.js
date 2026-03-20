@@ -346,9 +346,10 @@ function getRPMessageVringRxTxMap(instance)
             }
         }
     }
-
-    if (instance.vringAllocationPDK == false)
-    {
+        /* Except J722s ,all other devices will use this logic
+        As PDK based vring allocation is no more supported for sitara devices across SDK's */
+        if (instance.vringAllocationPDK == false || common.getSocName().match(/am62x/) || common.getSocName().match(/am62ax/) || common.getSocName().match(/am62dx/) || common.getSocName().match(/am62px/))
+        {
         /* for each name, construct a N x N object mapping SRC CPU to DST CPU VRING ID,
         Assign VRING IDs to each SRC/DST pair, skip assignment when SRC == DST */
         for( let src of enabledCpus ) {
@@ -382,11 +383,7 @@ function getRPMessageVringRxTxMap(instance)
         else
         {
             let length = enabledCpus.length;
-            if(((common.getSocName().match(/am62ax/)) || (common.getSocName().match(/am62dx/))) && (instance.vringAllocationPDK == true)){
-                /* QNX uses pdk based vring allocation.As per PDK, length used for vring logic
-                should be max cpu's for am62ax */
-                length = ipc_soc.getMaxCpus();
-            }
+
             for( let src of enabledCpus ) {
                 rxTxMap[src] = {};
                 for( let dst of enabledCpus ) {

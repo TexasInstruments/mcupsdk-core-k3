@@ -37,6 +37,7 @@ const device_defines = {
 
 const example_file_list = [
     /* Example Applications */
+    "examples/drivers/boot/sbl_emmc_hlos/.project/project.js",
     "examples/drivers/boot/sbl_null/.project/project.js",
     "examples/drivers/boot/sbl_ospi_early_can/.project/project.js",
     "examples/drivers/boot/sbl_ospi/.project/project.js",

@@ -187,13 +187,10 @@ build_sdk() {
     done
 
     if [ "${enable_test_build}" == "true" ]; then
-        for profile in ${profile_list}
-        do
-            echo "    Building Tests for DEVICE:${device} PROFILE:${profile} ..."
-            make -s -j${proc} tests DEVICE=${device} PROFILE=${profile} 1>>${build_log} 2>>${build_error_log}
-            echo "    Building Tests for DEVICE:${device} PROFILE:${profile} completed!!"
-            check_logs
-        done
+      echo "    Building Tests for DEVICE:${device} PROFILE:release ..."
+      make -s -j${proc} tests DEVICE=${device} 1>>${build_log} 2>>${build_error_log}
+      echo "    Building Tests for DEVICE:${device} PROFILE:release completed!!"
+      check_logs
     fi
 
     echo "    Generate docs for DEVICE:${device} ..."

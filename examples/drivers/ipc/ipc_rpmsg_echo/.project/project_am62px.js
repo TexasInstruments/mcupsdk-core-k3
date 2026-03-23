@@ -91,6 +91,12 @@ const defines_dm_r5f = {
     ]
 }
 
+const cflags = {
+    common: [
+        "-Wno-unused-but-set-variable",
+    ],
+};
+
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_IPC_RPMESSAGE_ECHO";
@@ -185,6 +191,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_freertos;
         build_property.libs = libs_freertos_mcu_r5f;
         build_property.templates = templates_freertos_mcu_r5f;
+        build_property.cflags = cflags;
     }
     else if(buildOption.cpu.match(/wkup-r5f*/))
     {
@@ -193,6 +200,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_wkup_r5f;
         build_property.templates = templates_freertos_wkup_r5f;
         build_property.defines = defines_dm_r5f;
+        build_property.cflags = cflags;
     }
 
     return build_property;

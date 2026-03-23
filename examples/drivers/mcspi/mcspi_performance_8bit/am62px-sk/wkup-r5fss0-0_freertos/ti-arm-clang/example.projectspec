@@ -43,6 +43,7 @@
             -g
             -Wno-gnu-variable-sized-type-not-at-end
             -Wno-unused-function
+            -Wno-unused-but-set-variable
             -DSOC_AM62PX
             -DENABLE_SCICLIENT_DIRECT
         "

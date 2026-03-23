@@ -105,6 +105,13 @@ const lnkfiles = {
 	]
 };
 
+const cflags = {
+    common: [
+        "-Wno-unused-but-set-variable",
+        "-Wno-unused-variable",
+    ],
+};
+
 const syscfgfile = "../example.syscfg";
 
 
@@ -174,6 +181,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes_nortos_r5f;
         }
     }
+    build_property.cflags = cflags;
     return build_property;
 }
 

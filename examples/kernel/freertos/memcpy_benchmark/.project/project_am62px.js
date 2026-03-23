@@ -85,6 +85,13 @@ const lnkfiles = {
     ]
 };
 
+const cflags = {
+    common: [
+        "-Wno-unused-but-set-variable",
+        "-Wno-unused-variable",
+    ],
+};
+
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_KERNEL_FREERTOS_MEMCPY_BENCHMARK";
@@ -151,6 +158,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_wkup_r5;
     }
 
+    build_property.cflags = cflags;
     return build_property;
 }
 

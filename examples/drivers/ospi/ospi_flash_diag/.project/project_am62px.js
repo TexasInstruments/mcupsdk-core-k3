@@ -65,6 +65,13 @@ const defines_dm_r5 = {
     ],
 }
 
+const cflags = {
+    common: [
+        "-Wno-unused-but-set-variable",
+        "-Wno-unused-variable",
+    ],
+};
+
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_OSPI_FLASH_DIAG";
@@ -124,6 +131,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.templates = templates_freertos_wkup_r5f;
     build_property.defines = defines_dm_r5;
 
+    build_property.cflags = cflags;
     return build_property;
 }
 

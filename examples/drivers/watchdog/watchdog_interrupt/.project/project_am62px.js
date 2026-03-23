@@ -98,6 +98,12 @@ const lnkfiles = {
     ]
 };
 
+const cflags = {
+    common: [
+        "-Wno-empty-body",
+    ],
+};
+
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_WATCHDOG_INTERRUPT_MODE";
@@ -165,6 +171,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.defines = defines_dm_r5;
         }
     }
+    build_property.cflags = cflags;
     return build_property;
 }
 

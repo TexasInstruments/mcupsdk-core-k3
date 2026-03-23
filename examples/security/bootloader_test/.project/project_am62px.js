@@ -66,6 +66,12 @@ const defines = {
     ]
 }
 
+const cflags = {
+    common: [
+        "-Wno-unused-but-set-variable",
+    ],
+};
+
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_BOOTLOADER_TEST";
@@ -99,6 +105,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
     build_property.libs = libs_nortos_r5f;
     build_property.templates = templates_bootloader;
+    build_property.cflags = cflags;
     return build_property;
 }
 

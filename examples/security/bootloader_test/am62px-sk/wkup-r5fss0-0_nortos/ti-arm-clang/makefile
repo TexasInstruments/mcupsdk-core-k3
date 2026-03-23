@@ -70,6 +70,7 @@ CFLAGS_common := \
 	-g \
 	-Wno-gnu-variable-sized-type-not-at-end \
 	-Wno-unused-function \
+	-Wno-unused-but-set-variable \
 
 CFLAGS_cpp_common := \
 	-Wno-c99-designator \

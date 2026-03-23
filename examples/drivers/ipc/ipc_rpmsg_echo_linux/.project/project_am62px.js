@@ -107,6 +107,12 @@ const defines_mcu = {
     ]
 }
 
+const cflags = {
+    common: [
+        "-Wno-unused-but-set-variable",
+    ],
+};
+
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_IPC_RPMESSAGE_LINUX_ECHO";
@@ -186,6 +192,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_mcu_r5f;
             build_property.templates = templates_freertos_mcu_r5f;
             build_property.defines = defines_mcu;
+            build_property.cflags = cflags;
         }
     }
     if(buildOption.cpu.match(/wkup-r5f*/)) {
@@ -198,6 +205,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_r5f;
             build_property.templates = templates_freertos_wkup_r5f;
             build_property.defines = defines;
+            build_property.cflags = cflags;
         }
     }
     return build_property;

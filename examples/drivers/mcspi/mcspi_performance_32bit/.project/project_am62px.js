@@ -96,6 +96,12 @@ const defines_dm_r5 = {
     ],
 };
 
+const cflags = {
+    common: [
+        "-Wno-unused-but-set-variable",
+    ],
+};
+
 const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_MCSPI_PERFORMANCE_32BIT";
@@ -207,6 +213,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_dm_r5;
     }
 
+    build_property.cflags = cflags;
     return build_property;
 }
 

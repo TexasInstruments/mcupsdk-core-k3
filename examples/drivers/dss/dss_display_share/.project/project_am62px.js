@@ -71,6 +71,12 @@ const defines_dm_r5 = {
     ],
 }
 
+const cflags = {
+    common: [
+        "-Wno-unused-but-set-variable",
+    ],
+};
+
 const syscfgfile = "../example.syscfg"
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_DSS_DISPLAY_SHARE";
@@ -140,6 +146,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos_wkup_r5f;
             build_property.libs = libs_freertos_wkup_r5f;
             build_property.templates = templates_freertos_wkup_r5f;
+            build_property.cflags = cflags;
         }
     }
     return build_property;

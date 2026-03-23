@@ -77,11 +77,38 @@ function escapeHtml(s) {
   });
 }
 
+function escapeRegExp(s) {
+  return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function normalizeSearchText(s) {
+  return String(s || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function highlightTerms(text, terms) {
+  var out = escapeHtml(text || "");
+  var hlOpen = '<span class="hl" style="background-color:#ffeb3b;color:#111;font-weight:700;padding:0 2px;border-radius:2px;">';
+  var hlClose = '</span>';
+  for (var i = 0; i < terms.length; i++) {
+    var re = new RegExp('(' + escapeRegExp(terms[i]) + ')', 'ig');
+    out = out.replace(re, hlOpen + '$1' + hlClose);
+  }
+  return out;
+}
+
 function searchFor(query,page,count) {
-    if(trim(query).length<3)
+  var normalizedQuery = trim(query);
+  var queryLc = normalizeSearchText(normalizedQuery);
+  var terms = queryLc.split(/\s+/).filter(function(t) { return t.length >= 2; });
+
+  if(terms.length===0)
     {
         var results = $('#searchresults');
-        results.html('<p>Query too short (3 chars mininum).</p>');
+    results.html('<p>Query too short (2 chars minimum per term).</p>');
         return;
     }
 
@@ -95,56 +122,172 @@ function searchFor(query,page,count) {
 
     var xmlParser=new DOMParser().parseFromString(xmlData,"text/xml");
 
-    count=0;
-    output='<table>';
+  var matches=[];
+  var partialMatches=[];
     var doc=xmlParser.getElementsByTagName("doc");
     for (i=0;i<doc.length;i++)
     {
-        type=doc[i].getElementsByTagName("field")[0].childNodes[0].nodeValue;
-        name=doc[i].getElementsByTagName("field")[1].childNodes[0].nodeValue;
-        url=doc[i].getElementsByTagName("field")[2].childNodes[0].nodeValue;
-        if (doc[i].getElementsByTagName("field")[4].childNodes.length==0)
+        var fields = doc[i].getElementsByTagName("field");
+        if (fields.length < 3) continue;
+
+        type = (fields[0].childNodes.length > 0) ? fields[0].childNodes[0].nodeValue : "";
+        name = (fields[1].childNodes.length > 0) ? fields[1].childNodes[0].nodeValue : "";
+        url  = (fields[2].childNodes.length > 0) ? fields[2].childNodes[0].nodeValue : "";
+
+        if (fields.length < 4 || fields[3].childNodes.length==0)
+          heading = ""
+        else
+          heading=fields[3].childNodes[0].nodeValue;
+        if (fields.length < 5 || fields[4].childNodes.length==0)
           text = ""
         else
-          text=doc[i].getElementsByTagName("field")[4].childNodes[0].nodeValue;
+          text=fields[4].childNodes[0].nodeValue;
 
-
-        if(text.toLowerCase().indexOf(query.toLowerCase())>=0)
+        var allFieldText = "";
+        for (var fi = 0; fi < fields.length; fi++)
         {
-            count++;
-            output+='<tr class="searchresult">';
-            output+='<td align="right">'+count+'.</td>';
-            output+='<td>'+escapeHtml(type)+'&#160;';
-            output+='<a href="'+escapeHtml(url)+'">';
-            output+=escapeHtml(name);
-            output+='</a>';
-            output+='</td>';
+          if (fields[fi].childNodes.length > 0)
+          {
+            allFieldText += " " + fields[fi].childNodes[0].nodeValue;
+          }
+        }
 
-            var start=text.toLowerCase().indexOf(query.toLowerCase());
-            var fragmentcount=0;
-            while(start>=0 && fragmentcount<3)
+        var typeLc = normalizeSearchText(type);
+        var nameLc = normalizeSearchText(name);
+        var headingLc = normalizeSearchText(heading);
+        var urlLc = normalizeSearchText(url);
+        var textLc = normalizeSearchText(text);
+        var allFieldTextLc = normalizeSearchText(allFieldText);
+        var searchable = allFieldTextLc + " " + urlLc;
+
+        var allTermsFound = true;
+        var matchedTerms = 0;
+        var score = 0;
+        for (var t=0; t<terms.length; t++)
+        {
+          var term = terms[t];
+          if(searchable.indexOf(term)<0)
+          {
+            allTermsFound = false;
+            continue;
+          }
+
+          matchedTerms++;
+
+          if(nameLc === term) score += 100;
+          else if(nameLc.indexOf(term)===0) score += 60;
+          else if(nameLc.indexOf(term)>=0) score += 40;
+
+          if(headingLc === term) score += 90;
+          else if(headingLc.indexOf(term)===0) score += 50;
+          else if(headingLc.indexOf(term)>=0) score += 30;
+
+          if(typeLc.indexOf(term)>=0) score += 10;
+
+          if(urlLc.indexOf(term)>=0) score += 10;
+
+          var textPos = textLc.indexOf(term);
+          if(textPos>=0)
+          {
+            score += 20;
+            var nextPos = textPos;
+            while(nextPos>=0)
             {
-                quotestart=Math.max(start-30,0);
-                quoteend=Math.min(start+query.length+30,text.length);
-                fragment='';
-                if(quotestart>0)
-                    fragment+='...';
-                fragment+=escapeHtml(text.substring(quotestart,start));
-                fragment+='<span class="hl">';
-                fragment+=escapeHtml(text.substring(start,start+query.length));
-                fragment+='</span>';
-                fragment+=escapeHtml(text.substring(start+query.length,quoteend));
-                if(quoteend<query.length);
-                    fragment+='...';
-                output+='<tr><td></td><td>'+fragment+'</td></tr>';
-
-                start=text.toLowerCase().indexOf(query.toLowerCase(),start+1);
-                fragmentcount++;
+              score += 1;
+              nextPos = textLc.indexOf(term, nextPos + term.length);
             }
+          }
+        }
 
-            output+="</tr>";
+        if(allTermsFound)
+        {
+          if (searchable.indexOf(queryLc) >= 0) score += 80;
+
+          matches.push({
+            type:type,
+            name:name,
+            heading:heading,
+            url:url,
+            text:text,
+            allText:allFieldText,
+            score:score
+          });
+        }
+        else if (matchedTerms > 0)
+        {
+          var partialScore = score + (matchedTerms * 15) - 50;
+          partialMatches.push({
+            type:type,
+            name:name,
+            heading:heading,
+            url:url,
+            text:text,
+            allText:allFieldText,
+            score:partialScore
+          });
         }
     }
+
+      if(matches.length===0)
+      {
+        matches = partialMatches;
+      }
+
+      matches.sort(function(a,b){ return b.score-a.score; });
+
+      count=matches.length;
+      output='<table>';
+      for (var m=0; m<matches.length; m++)
+      {
+        var item = matches[m];
+        var typeEsc = highlightTerms(item.type, terms);
+        var nameEsc = highlightTerms(item.name, terms);
+        output+='<tr class="searchresult">';
+        output+='<td align="right">'+(m+1)+'.</td>';
+        output+='<td>'+typeEsc+'&#160;';
+        output+='<a href="'+escapeHtml(item.url)+'">';
+        output+=nameEsc;
+        output+='</a>';
+        output+='</td>';
+
+        if(item.heading)
+        {
+          var headingEsc = highlightTerms(item.heading, terms);
+          output+='<tr><td></td><td><strong>'+headingEsc+'</strong></td></tr>';
+        }
+
+        var snippetSource = item.text ? item.text : (item.heading ? item.heading : item.allText);
+        var textLc = snippetSource.toLowerCase();
+        var fragmentcount=0;
+        var usedStarts = {};
+
+        for (var ti=0; ti<terms.length && fragmentcount<3; ti++)
+        {
+          var term = terms[ti];
+          var start=textLc.indexOf(term);
+          if(start<0) continue;
+
+          if(usedStarts[start]) continue;
+          usedStarts[start] = true;
+
+          var quotestart=Math.max(start-40,0);
+          var quoteend=Math.min(start+term.length+40,snippetSource.length);
+          var fragment='';
+          if(quotestart>0)
+            fragment+='...';
+
+          var segment = snippetSource.substring(quotestart,quoteend);
+          var segmentEsc = highlightTerms(segment, terms);
+          fragment+=segmentEsc;
+
+          if(quoteend<snippetSource.length)
+            fragment+='...';
+          output+='<tr><td></td><td>'+fragment+'</td></tr>';
+          fragmentcount++;
+        }
+
+        output+="</tr>";
+      }
     output+="</table>";
     var results = $('#searchresults');
     if (count==0) {
@@ -162,7 +305,7 @@ $(document).ready(function() {
   if (query) {
     searchFor(query,0,20);
   } else {
-    var results = $('#results');
+    var results = $('#searchresults');
     results.html('<p>Sorry, no documents matching your query.</p>');
   }
 });

@@ -238,6 +238,39 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Sbl Ospi Hlos Example. CPU is WKUP-R5FSS0-0 running NORTOS.",
+        "name": "sbl_ospi_hlos",
+        "location": "../../examples/drivers/boot/sbl_ospi_hlos/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "boot",
+            "sbl_ospi_hlos",
+            "wkup-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A SBL EMMC example. CPU is WKUP-R5FSS0-0 running NORTOS.",
         "name": "sbl_emmc",
         "location": "../../examples/drivers/boot/sbl_emmc/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang/example.projectspec",

@@ -39,6 +39,7 @@ const libdirs_freertos_wkup_r5f = {
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
         "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
     ],
 };
 
@@ -122,6 +123,7 @@ const libs_freertos_wkup_r5f = {
         "rm_pm_hal.j722s.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
         "self_reset.j722s.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
         "unity.j722s.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.j722s.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 

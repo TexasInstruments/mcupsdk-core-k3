@@ -108,6 +108,7 @@ LIBS_PATH_common = \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/board/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
@@ -119,6 +120,7 @@ LIBS_common = \
 	-lfreertos_fat.j722s.r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldrivers.j722s.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	-lboard.j722s.r5f.ti-arm-clang.${ConfigName}.lib \
+	-ldm_stub.j722s.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
 	-llibsysbm.a \
 
@@ -138,6 +140,7 @@ LIBS_NAME = \
 	freertos_fat.j722s.r5f.ti-arm-clang.${ConfigName}.lib \
 	drivers.j722s.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	board.j722s.r5f.ti-arm-clang.${ConfigName}.lib \
+	dm_stub.j722s.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
 	libsysbm.a \
 
@@ -150,6 +153,7 @@ LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	${MCU_PLUS_SDK_PATH}/source/board/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	${CG_TOOL_ROOT}/lib \
 
 FILES := $(FILES_common) $(FILES_$(PROFILE))

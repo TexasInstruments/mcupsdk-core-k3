@@ -26,6 +26,7 @@ const libdirs_nortos = {
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
     ],
 };
 
@@ -36,6 +37,7 @@ const libs_nortos_r5f = {
         "self_reset.j722s.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
         "nortos.j722s.r5f.ti-arm-clang.${ConfigName}.lib",
         "drivers.j722s.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.j722s.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 

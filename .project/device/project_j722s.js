@@ -24,6 +24,7 @@ const component_file_list = [
 
 // List of components where makefile is not generated.
 const component_file_list_with_makefile = [
+    "source/drivers/device_manager/dm_stub/.project/project.js",
     "source/drivers/device_manager/rm_pm_hal/.project/project.js",
     "source/drivers/device_manager/rm_pm_hal/sbl/.project/project.js",
 ];

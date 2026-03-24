@@ -94,7 +94,12 @@ int32_t AASRC_dmaChOpen(AASRC_ChHandle chHandle)
      * UDMA Channel Direction - Tx
      */
 
-    status = AASRC_configUdmaTx(chObj);
+    status = AASRC_configUdmaRx(chObj);
+
+    if (AASRC_SOK == status)
+    {
+        status = AASRC_configPdmaRx(chObj);
+    }
 
     /* Configure AASRC Tx (AASRC Output -> Memory)
      * Source - AASRC (PDMA)
@@ -104,11 +109,17 @@ int32_t AASRC_dmaChOpen(AASRC_ChHandle chHandle)
 
      if (AASRC_SOK == status)
      {
-         status = AASRC_configUdmaRx(chObj);
+         status = AASRC_configUdmaTx(chObj);
+     }
+
+     if (AASRC_SOK == status)
+     {
+         status = AASRC_configPdmaTx(chObj);
      }
 
     return status;
 }
+
 
 int32_t AASRC_dmaChClose(AASRC_ChHandle chHandle)
 {
@@ -151,7 +162,7 @@ int32_t AASRC_dmaChClose(AASRC_ChHandle chHandle)
 
     if(AASRC_SOK == status)
     {
-         status = Udma_chDisable(txChHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT * 10U);
+         status = Udma_chDisable(txChHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT);
     }
 
     if(AASRC_SOK != status)
@@ -174,7 +185,7 @@ int32_t AASRC_dmaChClose(AASRC_ChHandle chHandle)
         if( (status == AASRC_SOK) && (chanEnStatus == 1U) )
         {
             /* Disable Channel */
-            status = Udma_chDisable(rxChHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT * 10U);
+            status = Udma_chDisable(rxChHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT);
             DebugP_assert(AASRC_SOK == status);
         }
     }
@@ -343,14 +354,13 @@ static int32_t AASRC_configUdmaRx(AASRC_ChObj *chObj)
     return status;
 }
 
-static int32_t AASRC_configPdmaRx(AASRC_ChObj *chObj)
+static int32_t AASRC_configPdmaTx(AASRC_ChObj *chObj)
 {
     int32_t status = AASRC_SOK;
     AASRC_DmaChCfg *dmaChCfg = chObj->dmaChCfg;
     Udma_ChHandle txChHandle = dmaChCfg->txChHandle;
     Udma_ChPdmaPrms pdmaPrms;
     uint32_t chCount;
-    uint32_t txnByteCnt;
 
     /* Config PDMA channel */
 
@@ -358,14 +368,11 @@ static int32_t AASRC_configPdmaRx(AASRC_ChObj *chObj)
     UdmaChPdmaPrms_init(&pdmaPrms);
     pdmaPrms.elemSize               = UDMA_PDMA_ES_32BITS; /* X */
     pdmaPrms.elemCnt                = chObj->chCfg.fifoControl.inFifoThreshold; /* Y */
+    pdmaPrms.fifoCnt                = 0U; /* Z */
     pdmaPrms.burst                  = 0U;
     pdmaPrms.acc32                  = 1U;
     pdmaPrms.eol                    = 0U;
     pdmaPrms.isAasrcCh              = 1U;
-
-    /* Calculate fifoCnt based on transaction byte count */
-    txnByteCnt = chObj->rxDmaIcnt.txnByteCnt;
-    pdmaPrms.fifoCnt = txnByteCnt / (WORD_BYTE_COUNT * pdmaPrms.elemCnt); /* Z */
 
     /* AASRC Tx Fifo Config */
     if (chObj->chCfg.chType == AASRC_GROUP)
@@ -400,14 +407,13 @@ static int32_t AASRC_configPdmaRx(AASRC_ChObj *chObj)
     return status;
 }
 
-static int32_t AASRC_configPdmaTx(AASRC_ChObj *chObj)
+static int32_t AASRC_configPdmaRx(AASRC_ChObj *chObj)
 {
     int32_t status = AASRC_SOK;
     AASRC_DmaChCfg *dmaChCfg = chObj->dmaChCfg;
     Udma_ChHandle rxChHandle = dmaChCfg->rxChHandle;
     Udma_ChPdmaPrms pdmaPrms;
     uint32_t chCount;
-    uint32_t txnByteCnt;
 
     /* Config PDMA channel */
 
@@ -415,14 +421,11 @@ static int32_t AASRC_configPdmaTx(AASRC_ChObj *chObj)
     UdmaChPdmaPrms_init(&pdmaPrms);
     pdmaPrms.elemSize               = UDMA_PDMA_ES_32BITS; /* X */
     pdmaPrms.elemCnt                = chObj->chCfg.fifoControl.outFifoThreshold; /* Y */
+    pdmaPrms.fifoCnt                = 0U; /* Z */
     pdmaPrms.burst                  = 0U;
     pdmaPrms.acc32                  = 1U;
     pdmaPrms.eol                    = 0U;
     pdmaPrms.isAasrcCh              = 1U;
-
-    /* Calculate fifoCnt based on transaction byte count */
-    txnByteCnt = chObj->txDmaIcnt.txnByteCnt;
-    pdmaPrms.fifoCnt = txnByteCnt / (WORD_BYTE_COUNT * pdmaPrms.elemCnt); /* Z */
 
     /* AASRC Rx Fifo Config */
     if (chObj->chCfg.chType == AASRC_GROUP)
@@ -457,10 +460,11 @@ static int32_t AASRC_configPdmaTx(AASRC_ChObj *chObj)
     return status;
 }
 
+
 static int32_t AASRC_prepareDmaIcnts(AASRC_ChObj *chObj, uint64_t byteCnt, uint8_t isTx)
 {
     int32_t status = AASRC_SOK;
-    AASRC_ChCfg *chCfg;
+    AASRC_ChCfg             *chCfg;
     uint64_t txnByteCnt = 0U;
     uint32_t tempIcntX = 0U;
     uint32_t tempIcntY = 0U;
@@ -692,7 +696,6 @@ static int32_t AASRC_primeTxTrpd(AASRC_ChObj *chObj)
             pTr = UdmaUtils_getTrpdTr3Pointer((uint8_t *)dmaChCfg->txTrpdMem, i);
 
             pTr->flags = CSL_FMK(UDMAP_TR_FLAGS_TYPE, CSL_UDMAP_TR_FLAGS_TYPE_4D_DATA_MOVE);
-            pTr->flags |= CSL_FMK(UDMAP_TR_FLAGS_EOP, 1U);
 
             pTr->addr = (uint64_t)Udma_virtToPhyFxn(chObj->rcvObj.txnLoopjob.buf, udmaDrvHandle, txChHandle);
 
@@ -781,6 +784,7 @@ static int32_t AASRC_primeTxTrpd(AASRC_ChObj *chObj)
     return status;
 }
 
+
 static int32_t AASRC_primeRxTrpd(AASRC_ChObj *chObj)
 {
     int32_t status = AASRC_SOK;
@@ -828,7 +832,6 @@ static int32_t AASRC_primeRxTrpd(AASRC_ChObj *chObj)
             pTr = UdmaUtils_getTrpdTr3Pointer((uint8_t *)dmaChCfg->rxTrpdMem, i);
 
             pTr->flags = CSL_FMK(UDMAP_TR_FLAGS_TYPE, CSL_UDMAP_TR_FLAGS_TYPE_4D_DATA_MOVE);
-            pTr->flags |= CSL_FMK(UDMAP_TR_FLAGS_EOP, 1U);
 
             pTr->addr = (uint64_t)Udma_virtToPhyFxn(chObj->xmtObj.txnLoopjob.buf, udmaDrvHandle, rxChHandle);
 
@@ -924,9 +927,18 @@ int32_t AASRC_dmaChEnable(AASRC_ChHandle chHandle)
     Udma_ChHandle txChHandle = dmaChCfg->txChHandle;
     Udma_ChHandle rxChHandle = dmaChCfg->rxChHandle;
 
+    status = Udma_chEnable(rxChHandle);
+    DebugP_assert(status == UDMA_SOK);
+
     if (UDMA_SOK == status)
     {
         status = AASRC_primeRxTrpd(chObj);
+    }
+
+    if (UDMA_SOK == status)
+    {
+        status = Udma_chEnable(txChHandle);
+        DebugP_assert(status == UDMA_SOK);
 
         if (UDMA_SOK == status)
         {
@@ -935,32 +947,9 @@ int32_t AASRC_dmaChEnable(AASRC_ChHandle chHandle)
         }
     }
 
-    if (UDMA_SOK == status)
-    {
-        status = AASRC_configPdmaTx(chObj);
-
-        if (UDMA_SOK == status)
-        {
-            status = AASRC_configPdmaRx(chObj);
-            DebugP_assert(status == UDMA_SOK);
-        }
-    }
-
-    if (UDMA_SOK == status)
-    {
-        /* Enable Input */
-        status = Udma_chEnable(txChHandle);
-        
-        if (UDMA_SOK == status)
-        {
-            /* Enable Output */
-            status = Udma_chEnable(rxChHandle);
-            DebugP_assert(status == UDMA_SOK);
-        }
-    }
-
     return status;
 }
+
 
 static void AASRC_udmaIsrRx(Udma_EventHandle eventHandle,
                                  uint32_t eventType,
@@ -1311,31 +1300,19 @@ int32_t AASRC_disableDmaTx(AASRC_ChHandle chHandle)
     int32_t status = SystemP_SUCCESS;
     AASRC_ChObj *chObj = (AASRC_ChObj *)chHandle;
     Udma_ChHandle txChHandle = NULL;
-    uint8_t chanEnStatus;
     int32_t  tempRetVal;
     uint64_t pDesc;
 
     if(NULL != chObj)
     {
         txChHandle = chObj->dmaChCfg->txChHandle;
-        status = Udma_chGetChanEnStatus(txChHandle, &chanEnStatus);
-        DebugP_assert(UDMA_SOK == status);
-        if(chanEnStatus == 1U)
-        {
-            /* Disable Channel */
-            status = Udma_chDisable(txChHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT * 10U);
-        }
+
+        status = Udma_chReset(txChHandle);
 
         do
         {
             tempRetVal = Udma_ringFlushRaw(Udma_chGetFqRingHandle(txChHandle), &pDesc);
         }while(UDMA_ETIMEOUT != tempRetVal);
-
-        /* Reset the tx channel if channel teardown fails */
-        if(SystemP_SUCCESS != status)
-        {
-            status = Udma_chReset(txChHandle);
-        }
 
         /* Set lastPlayed index as AASRC_TX_DMA_RING_ELEM_CNT-1. (So on playing first TRPD will be updated to 0) */
         chObj->lastPlayed = AASRC_TX_DMA_TR_COUNT-1U;
@@ -1371,7 +1348,7 @@ int32_t AASRC_disableDmaRx(AASRC_ChHandle chHandle)
         if(chanEnStatus == 1U)
         {
             /* Disable Channel */
-            status = Udma_chDisable(rxChHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT * 10U);
+            status = Udma_chDisable(rxChHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT);
         }
 
         do

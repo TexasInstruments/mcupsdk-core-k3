@@ -44,7 +44,7 @@ The support status is indicated by the following codes:
 <th style="background-color: #314A7B; color: white; font-weight: bold; text-align: center; padding: 8px; border: 1px solid #333;">RTOS<br>on C7</th>
 </tr>
 <tr>
-<td rowspan="4" style="text-align: left; border: 1px solid #333; padding: 8px;">Memory Map</td>
+<td rowspan="3" style="text-align: left; border: 1px solid #333; padding: 8px;">Memory Map</td>
 <td style="text-align: left; border: 1px solid #333; padding: 8px;">MAIN Domain Memory Map</td>
 <td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
 <td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
@@ -66,18 +66,19 @@ The support status is indicated by the following codes:
 <td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
 </tr>
 <tr>
-<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">Region-based Address Translation</td>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">System Interconnect</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Region-based Address Translation</td>
 <td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
 <td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
 <td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
 <td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
 </tr>
 <tr>
-<td style="text-align: left; border: 1px solid #333; padding: 8px;">System Interconnect</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Quality of Service (QoS)</td>
 <td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
-<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
-<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
-<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
 </tr>
 <tr>
 <td rowspan="14" style="text-align: left; border: 1px solid #333; padding: 8px;">Initialization</td>
@@ -175,7 +176,7 @@ The support status is indicated by the following codes:
 <td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
 </tr>
 <tr>
-<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">Device Configuration</td>
+<td rowspan="3" style="text-align: left; border: 1px solid #333; padding: 8px;">Device Configuration</td>
 <td style="text-align: left; border: 1px solid #333; padding: 8px;">Reset</td>
 <td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
 <td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
@@ -187,6 +188,13 @@ The support status is indicated by the following codes:
 <td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
 <td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
 <td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">PMIC (Power Management IC)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
 <td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
 </tr>
 <tr>
@@ -314,14 +322,7 @@ The support status is indicated by the following codes:
 <td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
 </tr>
 <tr>
-<td rowspan="9" style="text-align: left; border: 1px solid #333; padding: 8px;">General Connectivity Peripherals</td>
-<td style="text-align: left; border: 1px solid #333; padding: 8px;">Analog-to-Digital Converter (ADC)</td>
-<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
-<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
-<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
-<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
-</tr>
-<tr>
+<td rowspan="8" style="text-align: left; border: 1px solid #333; padding: 8px;">General Connectivity Peripherals</td>
 <td style="text-align: left; border: 1px solid #333; padding: 8px;">General-Purpose Interface (GPIO)</td>
 <td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
 <td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
@@ -413,7 +414,7 @@ The support status is indicated by the following codes:
 <td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
 </tr>
 <tr>
-<td rowspan="9" style="text-align: left; border: 1px solid #333; padding: 8px;">Memory Interfaces</td>
+<td rowspan="12" style="text-align: left; border: 1px solid #333; padding: 8px;">Memory Interfaces</td>
 <td style="text-align: left; border: 1px solid #333; padding: 8px;">Flash Subsystem (FSS)</td>
 <td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
 <td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
@@ -423,6 +424,26 @@ The support status is indicated by the following codes:
 <tr>
 <td style="text-align: left; border: 1px solid #333; padding: 8px;">Octal Serial Peripheral Interface (OSPI)</td>
 <td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">OptiFlash</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Fast Local Copy (FLC)</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Remote Layer 2 Cache (RL2)</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td rowspan="1" style="text-align: left; border: 1px solid #333; padding: 8px;">HyperBUS Interface</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">HyperRAM</td>
 <td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
 <td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
 <td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
@@ -471,9 +492,15 @@ The support status is indicated by the following codes:
 <td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
 <td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
 <td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<tr>
+<td rowspan="7" style="text-align: left; border: 1px solid #333; padding: 8px;">Industrial and Control Interfaces</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Analog-to-Digital Converter (ADC)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
 </tr>
 <tr>
-<td rowspan="6" style="text-align: left; border: 1px solid #333; padding: 8px;">Industrial and Control Interfaces</td>
 <td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">Enhanced Capture (ECAP) Module</td>
 <td style="text-align: left; border: 1px solid #333; padding: 8px;">Capture</td>
 <td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
@@ -514,7 +541,7 @@ The support status is indicated by the following codes:
 <td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
 </tr>
 <tr>
-<td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">Audio Interfaces</td>
+<td rowspan="4" style="text-align: left; border: 1px solid #333; padding: 8px;">Audio Interfaces</td>
 <td rowspan="2" style="text-align: left; border: 1px solid #333; padding: 8px;">Multichannel audio serial port (MCASP)</td>
 <td style="text-align: left; border: 1px solid #333; padding: 8px;">I2S</td>
 <td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
@@ -525,6 +552,20 @@ The support status is indicated by the following codes:
 <td style="text-align: left; border: 1px solid #333; padding: 8px;">TDM</td>
 <td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
 <td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Async Sample Rate Converter (AASRC)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">Software Async Sample Rate Converter (SWASRC)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
 <td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
 </tr>
 <tr>

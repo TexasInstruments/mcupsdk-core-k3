@@ -10,8 +10,8 @@
     </applicability>
 
     <project
-        title="Sbl Sd Stage1"
-        name = "sbl_sd_stage1_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang"
+        title="Sbl Sd"
+        name = "sbl_sd_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -55,7 +55,7 @@
             -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/sbl/lib
             -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/sbl/lib
             -i${CG_TOOL_ROOT}/lib
-            -m=sbl_sd_stage1.${ConfigName}.map
+            -m=sbl_sd.${ConfigName}.map
             --diag_suppress=10063
             --priority
             --ram_model
@@ -69,7 +69,7 @@
             --context wkup-r5fss0-0 --part Default --package AMW
         "
 
-        description="A Sbl Sd Stage1 NORTOS project">
+        description="A Sbl Sd NORTOS project">
 
         <configuration name="Debug"
             compilerBuildOptions="

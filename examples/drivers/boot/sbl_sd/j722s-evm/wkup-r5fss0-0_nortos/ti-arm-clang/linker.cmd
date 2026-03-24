@@ -1,6 +1,6 @@
 
 --stack_size=16384
---heap_size=32768
+--heap_size=8192
 
 /* ATCM base address */
 gAtcmBaseAddr = 0x78000000;
@@ -31,11 +31,11 @@ SECTIONS
         .rodata: {} palign(8)
         .boardcfg_data   : {} palign(8)
     } > OCM_RAM
-    .bss:    {} palign(8) > HSM_RAM
+    .bss:    {} palign(8) > OCM_RAM
     RUN_START(__BSS_START)
     RUN_END(__BSS_END)
     .sysmem: {} palign(8) > OCM_RAM
-    .stack:  {} palign(8) > HSM_RAM
+    .stack:  {} palign(8) > OCM_RAM
     GROUP {
         .irqstack: {. = . + __IRQ_STACK_SIZE;} align(8)
         RUN_START(__IRQ_STACK_START)

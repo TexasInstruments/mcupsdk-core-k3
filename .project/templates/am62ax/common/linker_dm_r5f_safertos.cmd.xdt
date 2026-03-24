@@ -146,8 +146,8 @@ SECTIONS
 
     % if(args.isInstrumentation) {
     GROUP {
-        __llvm_prf_cnts
-        __llvm_prf_bits
+        __llvm_prf_cnts: {} palign(8)
+        __llvm_prf_bits: {} palign(8)
     } > DDR
     % }
     GROUP{

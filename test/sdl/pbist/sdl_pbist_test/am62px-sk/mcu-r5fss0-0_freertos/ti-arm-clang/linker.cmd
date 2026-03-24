@@ -95,6 +95,11 @@ SECTIONS
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
     } > MSRAM
 
+    GROUP {
+        __llvm_prf_cnts: {} palign(8)
+        __llvm_prf_bits: {} palign(8)
+    } > MSRAM
+
 }
 
 MEMORY

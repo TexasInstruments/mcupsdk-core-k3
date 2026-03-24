@@ -57,8 +57,8 @@ SECTIONS
     } > R5F_TCMA
 
     GROUP {
-        __llvm_prf_cnts
-        __llvm_prf_bits
+        __llvm_prf_cnts: {} palign(8)
+        __llvm_prf_bits: {} palign(8)
     } > DDR
 
     .text            : {} palign(8)      > DDR

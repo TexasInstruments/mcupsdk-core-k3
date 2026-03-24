@@ -88,6 +88,11 @@ SECTIONS
         RUN_END(__UNDEFINED_STACK_END)
     } > R5F_TCMA
 
+    GROUP {
+        __llvm_prf_cnts: {} palign(8)
+        __llvm_prf_bits: {} palign(8)
+    } > MSRAM
+
     /* Sections needed for C++ projects */
     GROUP {
         .ARM.exidx:  {} palign(8)   /* Needed for C++ exception handling */

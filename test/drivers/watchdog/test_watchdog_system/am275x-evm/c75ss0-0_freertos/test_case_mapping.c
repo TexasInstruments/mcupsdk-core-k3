@@ -30,36 +30,37 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TEST_CONFIG_H
-#define TEST_CONFIG_H
-
-/* This file must be included at the end of the FreeRTOSConfig.h. It contains
- * any FreeRTOS specific configurations that the test requires. */
-
-#ifdef configRUN_MULTIPLE_PRIORITIES
-    #undef configRUN_MULTIPLE_PRIORITIES
-#endif /* ifdef configRUN_MULTIPLE_PRIORITIES */
-
-#ifdef configUSE_CORE_AFFINITY
-    #undef configUSE_CORE_AFFINITY
-#endif /* ifdef configUSE_CORE_AFFINITY */
-
-#ifdef configUSE_TIME_SLICING
-    #undef configUSE_TIME_SLICING
-#endif /* ifdef configUSE_TIME_SLICING */
-
-#ifdef configUSE_PREEMPTION
-    #undef configUSE_PREEMPTION
-#endif /* ifdef configUSE_PREEMPTION */
-
-#define configRUN_MULTIPLE_PRIORITIES    1
-#define configUSE_CORE_AFFINITY          1
-#define configUSE_TIME_SLICING           1
-#define configUSE_PREEMPTION             1
-
-/**
- * @brief Entry point for test runner to run smp test.
+ /**
+ *  \file test_case_mapping.c
+ *
+ *  \brief This file contains mapping of test case IDs to test functions
+ *         for C75 DSP core WATCHDOG system tests.
+ *
  */
-void vRunScheduleAffinityTest( void );
 
-#endif /* ifndef TEST_CONFIG_H */
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+#include "system_test_utils.h"
+#include "test_watchdog.h"
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
+
+/* ========================================================================== */
+/*                 Internal Function Declarations                             */
+/* ========================================================================== */
+
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+testCase_t gTestCase[] =
+{
+    {TestUtils_dummyTestCase, 11099},  /* Dummy */
+    {NULL, 0}
+};
+
+/* ========================================================================== */
+/*                              Function Definitions                          */
+/* ========================================================================== */

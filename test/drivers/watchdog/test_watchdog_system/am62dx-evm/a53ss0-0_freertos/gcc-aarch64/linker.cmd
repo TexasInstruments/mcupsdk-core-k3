@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2026 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,36 +30,64 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TEST_CONFIG_H
-#define TEST_CONFIG_H
 
-/* This file must be included at the end of the FreeRTOSConfig.h. It contains
- * any FreeRTOS specific configurations that the test requires. */
+ENTRY(_c_int00)
 
-#ifdef configRUN_MULTIPLE_PRIORITIES
-    #undef configRUN_MULTIPLE_PRIORITIES
-#endif /* ifdef configRUN_MULTIPLE_PRIORITIES */
+	__TI_STACK_SIZE = 65536;
+	__TI_HEAP_SIZE = 131072;
 
-#ifdef configUSE_CORE_AFFINITY
-    #undef configUSE_CORE_AFFINITY
-#endif /* ifdef configUSE_CORE_AFFINITY */
+MEMORY {
 
-#ifdef configUSE_TIME_SLICING
-    #undef configUSE_TIME_SLICING
-#endif /* ifdef configUSE_TIME_SLICING */
+	DDR : ORIGIN =  0x80000000, LENGTH = 0x2000000
 
-#ifdef configUSE_PREEMPTION
-    #undef configUSE_PREEMPTION
-#endif /* ifdef configUSE_PREEMPTION */
+	/* shared memory segments */
+	/* On A53,
+	 * - make sure there is a MMU entry which maps below regions as non-cache
+	 */
+    USER_SHM_MEM            : ORIGIN = 0x82000000, LENGTH = 0x80
+    LOG_SHM_MEM             : ORIGIN = 0xA1000000, LENGTH = 0x40000
+}
 
-#define configRUN_MULTIPLE_PRIORITIES    1
-#define configUSE_CORE_AFFINITY          1
-#define configUSE_TIME_SLICING           1
-#define configUSE_PREEMPTION             1
+SECTIONS {
 
-/**
- * @brief Entry point for test runner to run smp test.
- */
-void vRunScheduleAffinityTest( void );
+	.vecs : {} > DDR
+		.text : {} > DDR
+		.rodata : {} > DDR
 
-#endif /* ifndef TEST_CONFIG_H */
+		.data : ALIGN (8) {
+			__data_load__ = LOADADDR (.data);
+			__data_start__ = .;
+			*(.data)
+				*(.data*)
+				. = ALIGN (8);
+			__data_end__ = .;
+		} > DDR
+
+    /* General purpose user shared memory, used in some examples */
+    .bss.user_shared_mem (NOLOAD) : { KEEP(*(.bss.user_shared_mem)) } > USER_SHM_MEM
+    /* this is used when Debug log's to shared memory is enabled, else this is not used */
+    .bss.log_shared_mem  (NOLOAD) : { KEEP(*(.bss.log_shared_mem)) } > LOG_SHM_MEM
+
+    .bss : {
+        __bss_start__ = .;
+        *(.bss)
+        *(.bss.*)
+        . = ALIGN (8);
+        *(COMMON)
+        __bss_end__ = .;
+        . = ALIGN (8);
+    } > DDR
+
+    .heap (NOLOAD) : {
+        __heap_start__ = .;
+        KEEP(*(.heap))
+        . = . + __TI_HEAP_SIZE;
+        __heap_end__ = .;
+    } > DDR
+
+    .stack (NOLOAD) : ALIGN(16) {
+        __TI_STACK_BASE = .;
+        KEEP(*(.stack))
+        . = . + __TI_STACK_SIZE;
+    } > DDR
+}

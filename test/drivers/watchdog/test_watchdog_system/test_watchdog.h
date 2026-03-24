@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2026 Texas Instruments Incorporated
+ *  Copyright (c) Texas Instruments Incorporated 2026
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,36 +30,42 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef TEST_CONFIG_H
-#define TEST_CONFIG_H
+/**
+ *  \file test_watchdog.h
+ *
+ *  \brief This file contains all the structures, macros, enums,
+ *  function declarations used by the WATCHDOG test cases
+ *
+ */
 
-/* This file must be included at the end of the FreeRTOSConfig.h. It contains
- * any FreeRTOS specific configurations that the test requires. */
+#ifndef TEST_WATCHDOG_H_
+#define TEST_WATCHDOG_H_
 
-#ifdef configRUN_MULTIPLE_PRIORITIES
-    #undef configRUN_MULTIPLE_PRIORITIES
-#endif /* ifdef configRUN_MULTIPLE_PRIORITIES */
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
 
-#ifdef configUSE_CORE_AFFINITY
-    #undef configUSE_CORE_AFFINITY
-#endif /* ifdef configUSE_CORE_AFFINITY */
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include <inttypes.h>
+#include "ti_drivers_config.h"
 
-#ifdef configUSE_TIME_SLICING
-    #undef configUSE_TIME_SLICING
-#endif /* ifdef configUSE_TIME_SLICING */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#ifdef configUSE_PREEMPTION
-    #undef configUSE_PREEMPTION
-#endif /* ifdef configUSE_PREEMPTION */
-
-#define configRUN_MULTIPLE_PRIORITIES    1
-#define configUSE_CORE_AFFINITY          1
-#define configUSE_TIME_SLICING           1
-#define configUSE_PREEMPTION             1
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
 
 /**
- * @brief Entry point for test runner to run smp test.
+ * \brief  Watchdog timeout triggers interrupt when not serviced.
  */
-void vRunScheduleAffinityTest( void );
+extern int32_t TestWatchdog_systemTimeoutDetection(void *args);
 
-#endif /* ifndef TEST_CONFIG_H */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* #ifndef TEST_WATCHDOG_H_ */

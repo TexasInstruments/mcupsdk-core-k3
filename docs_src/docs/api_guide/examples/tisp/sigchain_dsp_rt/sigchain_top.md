@@ -23,6 +23,7 @@ Key characteristics of TISP signal chains:
 All examples use a dual-core architecture:
 - **C75x DSP Core:** Performs intensive signal-processing computations and configuring the McASP
 - **R5F Core:** Handles codec configuration and IPC communication
+- **A53 Core:** Runs Linux OS for system control and user interface
 - **Audio I/O:** McASP with UDMA places and reads data to and from L2SRAM of the C75x DSP  for real-time, low-latency, high-throughput audio processing
 - **Triple buffering:** Input and output are triple buffered for streaming data and processing the same in parallel
 - **Sampling rate:** 48kHz
@@ -55,6 +56,26 @@ Input (8-ch, int32) → TypeConv → CascadeBiquad (3-stage EQ) → TypeConv →
 - 3-stage parametric EQ using cascade biquad filters
 - Multi-channel processing
 - Configurable filter coefficients
+
+\cond SOC_AM62DX
+## Cascade Biquad Parametric EQ (Linux)
+\subpage EXAMPLES_TISP_SIGCHAIN_BIQUAD_LINUX_EXAMPLE
+
+**Complexity:** Simple (3 processing nodes)
+
+Linux-integrated version of the cascade biquad parametric EQ with DSP-Linux communication and real-time control.
+
+**Signal Chain:**
+```
+Input (8-ch, int32) → TypeConv → CascadeBiquad (3-stage EQ) → TypeConv → Output (8-ch, int32)
+```
+
+**Key Features:**
+- 3-stage parametric equalization using cascade biquad filters
+- Linux-DSP communication via rpmsg-dma framework
+- Real-time EQ on/off control from Linux
+
+\endcond
 
 ## 2. EQ, Gain, and Mute
 \subpage EXAMPLES_TISP_SIGCHAIN_EQ_GAIN_MUTE
@@ -152,6 +173,9 @@ The Audio I/O configuration is as shown below:
 # See Also
 
 - \ref EXAMPLES_TISP_SIGCHAIN_BIQUAD_CASCADE
+\cond SOC_AM62DX
+- \ref EXAMPLES_TISP_SIGCHAIN_BIQUAD_LINUX_EXAMPLE
+\endcond
 - \ref EXAMPLES_TISP_SIGCHAIN_EQ_GAIN_MUTE
 - \ref EXAMPLES_TISP_SIGCHAIN_ROUTER_8CH_12CH
 - \ref EXAMPLES_TISP_SIGCHAIN_8CH_TO_12CH_AUDIO_CHAIN

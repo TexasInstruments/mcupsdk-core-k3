@@ -302,7 +302,6 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# TISP
    -# \subpage EXAMPLES_TISP_FFT2D_DSP_OFFLOAD
    -# \subpage EXAMPLES_TISP_FFT2D_LINUX_DSP_OFFLOAD
-   -# \subpage EXAMPLES_TISP_SIGCHAIN_BIQUAD_LINUX_EXAMPLE
 -# UART
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO
    -# \subpage EXAMPLES_DRIVERS_UART_ECHO_DMA

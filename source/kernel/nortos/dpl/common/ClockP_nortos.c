@@ -47,7 +47,7 @@ void ClockP_timerTickIsr(void *args)
 
     /*  check if the clock instance has expired */
     while ((obj != NULL) &&
-           (obj->timeout == gClockCtrl.ticks)) {
+           (obj->timeout <= gClockCtrl.ticks)) {
         temp = obj->next;
 
         /* clock instance expired */

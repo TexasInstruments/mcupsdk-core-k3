@@ -639,11 +639,10 @@ void test_main(void *args)
     test_mcspi_set_params(&testParams, 2895);
     RUN_TEST(TestMcspi_transferCancelNULL, 10720, (void*)&testParams);
     #endif
-    #if defined(SOC_AM62DX) && !defined(R5F_CORE) && !defined(ENABLE_MT_TESTS)
-    /* NOTE: test_mcspi_loopback_timeout is known to FAIL on R5F NoRTOS core. */
+
     test_mcspi_set_params(&testParams, 2932);
     RUN_TEST(test_mcspi_loopback_timeout, 2932, (void*)&testParams);
-    #endif
+
     test_mcspi_set_params(&testParams, 2933);
     RUN_TEST(test_mcspi_performance_16bit, 2933, (void*)&testParams);
 #if (CONFIG_MCSPI_NUM_INSTANCES > 2) && !defined(BUILD_C7X)

@@ -126,6 +126,7 @@ const example_file_list = [
     "test/drivers/ospi/.project/project.js",
     "test/drivers/sbl/.project/project_j722s.js",
     "test/drivers/uart/.project/project.js",
+    "test/drivers/udma/.project/project.js",
     "test/kernel/dpl/.project/project.js",
     "test/kernel/dpl_exception_test/.project/project.js",
     "test/kernel/dpl_core_r5_test/.project/project.js",

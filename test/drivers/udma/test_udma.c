@@ -4332,16 +4332,16 @@ static void TestUdma_eventArgumentsValidateTests(void *args)
     /* Test: Udma_eventAllocResource fails due to preferredCoreIntrNum = UDMA_INTR_INVALID */
     ch0TrEventPrms.preferredCoreIntrNum = UDMA_INTR_INVALID;
     retVal = Udma_eventRegister(drvHandle, ch0TrEventHandle, &ch0TrEventPrms);
-    TEST_ASSERT_EQUAL_INT32(UDMA_EFAIL, retVal);
+    TEST_ASSERT_EQUAL_INT32(UDMA_EALLOC, retVal);
 
     /* Test: Udma_eventAllocResource fails due to preferredCoreIntrNum = 0 */
     ch0TrEventPrms.preferredCoreIntrNum = UDMA_CORE_INTR_NONE;
     retVal = Udma_eventRegister(drvHandle, ch0TrEventHandle, &ch0TrEventPrms);
-    TEST_ASSERT_EQUAL_INT32(UDMA_EFAIL, retVal);
+    TEST_ASSERT_EQUAL_INT32(UDMA_EALLOC, retVal);
 
     /* Test: Udma_eventAllocResource fails due to chOesAllocDone set */
     eventHandleInt->vintrBitAllocFlag = TEST_UDMA_ALLOC_FLAG_SET;
-    chHandle = (Udma_ChHandleInt) ch0TrEventPrms.chHandle;
+    chHandle = (Udma_ChHandleInt) &ch0TrEventPrms.chHandle;
     chHandle->chOesAllocDone = TEST_UDMA_OES_ALLOC_DONE_FLAG;
     ch0TrEventPrms.eventType = UDMA_EVENT_TYPE_TR;
     ch0TrEventPrms.preferredCoreIntrNum = UDMA_CORE_INTR_ANY;

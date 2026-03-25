@@ -220,10 +220,11 @@ int32_t sbl_jtag_uniflash_load_file(char optype)
             /* Load the image after the header */
             memcpy(gFileBuf, (void *)&uniflashHeader, sizeof(uniflashHeader));
 
-            DebugP_log(" Enter below command in CCS scripting console to load the file data to memory.\r\n");
+            DebugP_log(" Enter below commands in CCS scripting console to load the file data to memory.\r\n");
             DebugP_log(" AFTER the file load is done, enter '1' to continue ...\r\n");
             DebugP_log("\r\n");
-            DebugP_log(" loadRaw(0x%08x, 0, \"%s\", 32, false);",
+            DebugP_log(" var session = ds.openSession(\"WKUP_R5F_0\");\r\n");
+            DebugP_log(" session.memory.loadBinary(0x%08xn, \"%s\");",
                 gFileBuf + sizeof(uniflashHeader), filename);
             DebugP_log("\r\n");
 

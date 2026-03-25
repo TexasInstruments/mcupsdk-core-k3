@@ -271,7 +271,8 @@ const example_file_list = [
     "test/kernel/dpl/.project/project.js",
     "test/kernel/freertos/.project/project_am275x_wkupr5.js",
     "test/kernel/freertos/.project/project.js",
-    "test/drivers/mcan/.project/project.js"
+    "test/drivers/mcan/.project/project.js",
+    "test/drivers/mcan/test_mcan_system/.project/project.js",
 
 ];
 

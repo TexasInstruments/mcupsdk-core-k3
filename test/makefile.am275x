@@ -163,6 +163,10 @@ help:
 	@echo  $(MAKE) -s -C drivers/mcan/am275x-evm/r5fss1-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mcan/am275x-evm/r5fss1-1_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mcan/am275x-evm/r5fss1-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcan/test_mcan_system/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcan/test_mcan_system/am275x-evm/r5fss0-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcan/test_mcan_system/am275x-evm/r5fss1-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcan/test_mcan_system/am275x-evm/r5fss1-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  .
 	@echo  System Example build targets,
 	@echo  =============================
@@ -377,6 +381,10 @@ BUILD_COMBO_EXAMPLE_ALL += test_mcan_am275x-evm_r5fss1-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_mcan_am275x-evm_r5fss1-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_mcan_am275x-evm_r5fss1-1_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_mcan_am275x-evm_r5fss1-1_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcan_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcan_system_am275x-evm_r5fss0-1_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcan_system_am275x-evm_r5fss1-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcan_system_am275x-evm_r5fss1-1_freertos_ti-arm-clang
 # Various System Example Targets
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_notify_am275x-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_notify_c7x_am275x-evm_system_freertos
@@ -743,6 +751,18 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_mcan_am275x-evm_r5fss1-1_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/mcan/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile all
 
+ test_mcan_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mcan/test_mcan_system/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_mcan_system_am275x-evm_r5fss0-1_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mcan/test_mcan_system/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile all
+
+ test_mcan_system_am275x-evm_r5fss1-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mcan/test_mcan_system/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile all
+
+ test_mcan_system_am275x-evm_r5fss1-1_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mcan/test_mcan_system/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile all
+
  test_ipc_notify_am275x-evm_system_freertos:
 	$(MAKE) -C drivers/ipc_notify/am275x-evm/system_freertos -f makefile all
 
@@ -868,6 +888,10 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcan_am275x-evm_r5fss1-0_nortos_ti-arm-cla
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcan_am275x-evm_r5fss1-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcan_am275x-evm_r5fss1-1_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcan_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcan_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcan_system_am275x-evm_r5fss0-1_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcan_system_am275x-evm_r5fss1-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcan_system_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean
 # Various System Example Clean Targets
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_notify_am275x-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_notify_c7x_am275x-evm_system_freertos_clean
@@ -1234,6 +1258,18 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_mcan_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/mcan/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile clean
 
+ test_mcan_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcan/test_mcan_system/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_mcan_system_am275x-evm_r5fss0-1_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcan/test_mcan_system/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile clean
+
+ test_mcan_system_am275x-evm_r5fss1-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcan/test_mcan_system/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile clean
+
+ test_mcan_system_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcan/test_mcan_system/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile clean
+
  test_ipc_notify_am275x-evm_system_freertos_clean:
 	$(MAKE) -C drivers/ipc_notify/am275x-evm/system_freertos -f makefile clean
 
@@ -1359,6 +1395,10 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcan_am275x-evm_r5fss1-0_nortos_ti-arm-cla
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcan_am275x-evm_r5fss1-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcan_am275x-evm_r5fss1-1_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcan_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcan_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcan_system_am275x-evm_r5fss0-1_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcan_system_am275x-evm_r5fss1-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcan_system_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub
 # Various System Example Scrub Targets
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_notify_am275x-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_notify_c7x_am275x-evm_system_freertos_scrub
@@ -1724,6 +1764,18 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_mcan_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/mcan/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile scrub
+
+ test_mcan_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcan/test_mcan_system/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_mcan_system_am275x-evm_r5fss0-1_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcan/test_mcan_system/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile scrub
+
+ test_mcan_system_am275x-evm_r5fss1-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcan/test_mcan_system/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_mcan_system_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcan/test_mcan_system/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile scrub
 
  test_ipc_notify_am275x-evm_system_freertos_scrub:
 	$(MAKE) -C drivers/ipc_notify/am275x-evm/system_freertos -f makefile scrub

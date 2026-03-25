@@ -76,7 +76,7 @@
 /** \brief  Macro to define remote client ID for transfer of test case result */
 #define MASTER_CLIENT_ID (3u)
 
-#if defined(SOC_AM62AX) || defined (SOC_AM62DX) || defined(SOC_AM62X)
+#if defined(SOC_AM62AX) || defined (SOC_AM62DX) || defined(SOC_AM62X) || defined(SOC_AM275X)
 
 /** \brief  Macro to define main core ID */
 #define MAIN_CORE_ID CSL_CORE_ID_R5FSS0_0

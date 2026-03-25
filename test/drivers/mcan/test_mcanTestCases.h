@@ -1263,10 +1263,11 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
     },
     {
         TEST_ENABLE, 11088U,
-        "Test Setup: Connect MCAN HIGH and MCAN LOW Pins to PCAN Tool",
+        "Test Setup: Connect MCAN HIGH and MCAN LOW Pins to PCAN Tool\n"
+        "PCAN: Nominal=1000kbps(SP=85%,Pr=2,TSEG1=33,TSEG2=6,tq=25ns,Nq=40) Data=5000kbps(SP=87.5%,Pr=2,TSEG1=13,TSEG2=2,tq=12.5ns,Nq=16)",
         "MCAN: External PCAN CAN FD TX/RX Test - 1000kbps Nominal (SP=85%) / 5000kbps Data (SP=87.5%)",
         "None", "None",
-        "1. DUT transmits CAN FD message with BRS at 1000/5000 kbps (Nom SP=85%, Data SP=87.5%).\n"
+        "1. DUT transmits CAN FD message with BRS at 1000kbps Nominal / 5000kbps Data (SP=85%/87.5%).\n"
         "2. PCAN tool receives and validates the message.\n"
         "3. PCAN tool sends back a CAN FD message with matching ID (0x04).\n"
         "4. DUT receives and validates the message matches the transmitted one.",
@@ -1295,10 +1296,11 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
     },
     {
         TEST_ENABLE, 11089U,
-        "Test Setup: Connect MCAN HIGH and MCAN LOW Pins to PCAN Tool",
+        "Test Setup: Connect MCAN HIGH and MCAN LOW Pins to PCAN Tool\n"
+        "PCAN: Nominal=500kbps(SP=85%,Pr=2,TSEG1=67,TSEG2=12,tq=25ns,Nq=80) Data=2500kbps(SP=87.5%,Pr=1,TSEG1=27,TSEG2=4,tq=12.5ns,Nq=32)",
         "MCAN: External PCAN CAN FD TX/RX Test - 500kbps Nominal (SP=85%) / 2500kbps Data (SP=87.5%)",
         "None", "None",
-        "1. DUT transmits CAN FD message with BRS at 500/2500 kbps (Nom SP=85%, Data SP=87.5%).\n"
+        "1. DUT transmits CAN FD message with BRS at 500kbps Nominal / 2500kbps Data (SP=85%/87.5%).\n"
         "2. PCAN tool receives and validates the message.\n"
         "3. PCAN tool sends back a CAN FD message with matching ID (0x04).\n"
         "4. DUT receives and validates the message matches the transmitted one.",
@@ -1327,10 +1329,11 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
     },
     {
         TEST_ENABLE, 11090U,
-        "Test Setup: Connect MCAN HIGH and MCAN LOW Pins to PCAN Tool",
+        "Test Setup: Connect MCAN HIGH and MCAN LOW Pins to PCAN Tool\n"
+        "PCAN: Nominal=250kbps(SP=85%,Pr=2,TSEG1=135,TSEG2=24,tq=25ns,Nq=160) Data=5000kbps(SP=87.5%,Pr=1,TSEG1=13,TSEG2=2,tq=12.5ns,Nq=16)",
         "MCAN: External PCAN CAN FD TX/RX Test - 250kbps Nominal (SP=85%) / 5000kbps Data (SP=87.5%)",
         "None", "None",
-        "1. DUT transmits CAN FD message with BRS at 250/5000 kbps (Nom SP=85%, Data SP=87.5%).\n"
+        "1. DUT transmits CAN FD message with BRS at 250kbps Nominal / 5000kbps Data (SP=85%/87.5%).\n"
         "2. PCAN tool receives and validates the message.\n"
         "3. PCAN tool sends back a CAN FD message with matching ID (0x04).\n"
         "4. DUT receives and validates the message matches the transmitted one.",

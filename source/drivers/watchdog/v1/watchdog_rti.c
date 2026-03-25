@@ -252,6 +252,23 @@ void Watchdog_clear(Watchdog_Handle handle)
 
 void Watchdog_close(Watchdog_Handle handle)
 {
+    Watchdog_Config*        ptrWatchdogConfig;
+    Watchdog_MCB*           ptrWatchdogMCB;
+
+    if (handle != NULL)
+    {
+        /* Get the Watchdog Configuration */
+        ptrWatchdogConfig = (Watchdog_Config*)handle;
+
+        /* Get the Watchdog Driver Object */
+        ptrWatchdogMCB = (Watchdog_MCB*)ptrWatchdogConfig->object;
+
+        /* Reset the driver state to UNINIT */
+        if (ptrWatchdogMCB != NULL)
+        {
+            ptrWatchdogMCB->state = Watchdog_DriverState_UNINIT;
+        }
+    }
     return;
 }
 

@@ -177,7 +177,7 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "test_dpl";
     property.isSkipTopLevelBuild = true;
-    property.isInternal = false;
+    property.isInternal = true;
     property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;
 

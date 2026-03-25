@@ -220,6 +220,8 @@ help:
 	@echo  $(MAKE) -s -C kernel/dpl/am62ax-sk/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl/am62ax-sk/mcu-r5fss0-0_threadx/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl/am62ax-sk/r5fss0-0_safertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C kernel/dpl/am62ax-sk/c75ss0-0_safertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/freertos/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/freertos/am62ax-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/freertos/am62ax-sk/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -807,6 +809,8 @@ BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_c7x_am62ax-sk_system_freertos
 
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
 # Various Private Example Targets
+BUILD_COMBO_EXAMPLE_PRIVATE_ALL += test_dpl_am62ax-sk_r5fss0-0_safertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_PRIVATE_ALL += test_dpl_am62ax-sk_c75ss0-0_safertos_ti-c7000
 # Various Private System Example Targets
 
 examples: $(BUILD_COMBO_EXAMPLE_ALL)
@@ -1221,6 +1225,12 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_dpl_am62ax-sk_a53ss0-0_threadx_gcc-aarch64:
 	$(MAKE) -C kernel/dpl/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile all
 
+ test_dpl_am62ax-sk_r5fss0-0_safertos_ti-arm-clang:
+	$(MAKE) -C kernel/dpl/am62ax-sk/r5fss0-0_safertos/ti-arm-clang -f makefile all
+
+ test_dpl_am62ax-sk_c75ss0-0_safertos_ti-c7000:
+	$(MAKE) -C kernel/dpl/am62ax-sk/c75ss0-0_safertos/ti-c7000 -f makefile all
+
  test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C kernel/freertos/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
@@ -1601,6 +1611,8 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_c7x_am62ax-sk_system_freertos_cl
 
 BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL =
 # Various Private Example Targets
+BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL += test_dpl_am62ax-sk_r5fss0-0_safertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL += test_dpl_am62ax-sk_c75ss0-0_safertos_ti-c7000_clean
 # Various Private System Example Targets
 
 examples-clean: $(BUILD_COMBO_EXAMPLE_CLEAN_ALL)
@@ -2015,6 +2027,12 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_dpl_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_clean:
 	$(MAKE) -C kernel/dpl/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile clean
 
+ test_dpl_am62ax-sk_r5fss0-0_safertos_ti-arm-clang_clean:
+	$(MAKE) -C kernel/dpl/am62ax-sk/r5fss0-0_safertos/ti-arm-clang -f makefile clean
+
+ test_dpl_am62ax-sk_c75ss0-0_safertos_ti-c7000_clean:
+	$(MAKE) -C kernel/dpl/am62ax-sk/c75ss0-0_safertos/ti-c7000 -f makefile clean
+
  test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C kernel/freertos/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
@@ -2395,6 +2413,8 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_c7x_am62ax-sk_system_freertos_sc
 
 BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL =
 # Various Private Example Targets
+BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL += test_dpl_am62ax-sk_r5fss0-0_safertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL += test_dpl_am62ax-sk_c75ss0-0_safertos_ti-c7000_scrub
 # Various Private System Example Targets
 
 examples-scrub: $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
@@ -2808,6 +2828,12 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_dpl_am62ax-sk_a53ss0-0_threadx_gcc-aarch64_scrub:
 	$(MAKE) -C kernel/dpl/am62ax-sk/a53ss0-0_threadx/gcc-aarch64 -f makefile scrub
+
+ test_dpl_am62ax-sk_r5fss0-0_safertos_ti-arm-clang_scrub:
+	$(MAKE) -C kernel/dpl/am62ax-sk/r5fss0-0_safertos/ti-arm-clang -f makefile scrub
+
+ test_dpl_am62ax-sk_c75ss0-0_safertos_ti-c7000_scrub:
+	$(MAKE) -C kernel/dpl/am62ax-sk/c75ss0-0_safertos/ti-c7000 -f makefile scrub
 
  test_freertos_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C kernel/freertos/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub

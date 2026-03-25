@@ -35,14 +35,15 @@
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/j722s/c75x
             -DBUILD_C75X_1
-            --advice:performance=none
             -mv7524
+            --abi=eabi
             -q
             -mo
             -pden
             -pds=238
             -pds=880
             -pds1110
+            --endian=little
             --disable_inlining
             -ea.se71
             --emit_warnings_as_errors
@@ -51,6 +52,7 @@
             --diag_suppress=70
             -DBUILD_C7X
             -DBUILD_C7X_1
+            --advice:performance=none
             -DSOC_J722S
         "
         linkerBuildOptions="
@@ -59,12 +61,15 @@
             -i${MCU_PLUS_SDK_PATH}/source/board/lib
             -i${CG_TOOL_ROOT}/lib
             -m=ipc_rpmsg_echo.${ConfigName}.map
+            --silicon_version=7524
             -z
             --emit_warnings_as_errors
             --diag_suppress=10063
             --ram_model
             --warn_sections
+            -q
             -x
+            
         "
 
         postBuildStep="$(MAKE) -C ${CCS_PROJECT_DIR} -f makefile_ccs_bootimage_gen OUTNAME=${BuildArtifactFileBaseName} PROFILE=${ConfigName} MCU_PLUS_SDK_PATH=${MCU_PLUS_SDK_PATH} CG_TOOL_ROOT=${CG_TOOL_ROOT} CCS_INSTALL_DIR=${CCS_INSTALL_DIR} CCS_IDE_MODE=${CCS_IDE_MODE}"
@@ -82,6 +87,7 @@
                 -D_DEBUG_=1
                 --opt_level=0
                 --symdebug:dwarf
+                -DBUILD_C75X
             "
             linkerBuildOptions="
                 -lfreertos.j722s.c75x.ti-c7000.debug.lib
@@ -93,7 +99,8 @@
             compilerBuildOptions="
                 -Dxdc_target_name__=C71
                 --opt_level=3
-                --symdebug:dwarf
+                --symdebug:none
+                -DBUILD_C75X
             "
             linkerBuildOptions="
                 -lfreertos.j722s.c75x.ti-c7000.release.lib

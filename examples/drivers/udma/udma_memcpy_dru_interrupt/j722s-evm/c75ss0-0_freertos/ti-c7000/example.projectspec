@@ -51,6 +51,7 @@
             --diag_suppress=69
             --diag_suppress=70
             -DBUILD_C7X
+            -DBUILD_C7X_1
             --advice:performance=none
             -DSOC_J722S
         "
@@ -96,9 +97,9 @@
         ></configuration>
         <configuration name="Release"
             compilerBuildOptions="
-                --symdebug:none
                 -Dxdc_target_name__=C71
                 --opt_level=3
+                --symdebug:none
                 -DBUILD_C75X
             "
             linkerBuildOptions="

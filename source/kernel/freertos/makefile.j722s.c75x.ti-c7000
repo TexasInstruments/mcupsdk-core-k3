@@ -107,14 +107,15 @@ DEFINES_common := \
     -DSW_VERSION=$(SW_VERSION)
 
 CFLAGS_common := \
-    --advice:performance=none \
     -mv7524 \
+    --abi=eabi \
     -q \
     -mo \
     -pden \
     -pds=238 \
     -pds=880 \
     -pds1110 \
+    --endian=little \
     --disable_inlining \
     -ea.se71 \
     --emit_warnings_as_errors \
@@ -123,6 +124,7 @@ CFLAGS_common := \
     --diag_suppress=70 \
     -DBUILD_C7X \
     -DBUILD_C7X_1 \
+    --advice:performance=none \
     -DHwi_bootToNonSecure__D=true \
     -DException_vectors__D \
 
@@ -131,11 +133,13 @@ CFLAGS_debug := \
     -D_DEBUG_=1 \
     --opt_level=0 \
     --symdebug:dwarf \
+    -DBUILD_C75X \
 
 CFLAGS_release := \
     -Dxdc_target_name__=C71 \
     --opt_level=3 \
-    --symdebug:dwarf \
+    --symdebug:none \
+    -DBUILD_C75X \
 
 ARFLAGS_common := \
     rq \

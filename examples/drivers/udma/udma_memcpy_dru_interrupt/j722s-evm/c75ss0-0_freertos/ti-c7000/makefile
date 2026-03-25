@@ -84,6 +84,7 @@ CFLAGS_common := \
 	--diag_suppress=69 \
 	--diag_suppress=70 \
 	-DBUILD_C7X \
+	-DBUILD_C7X_1 \
 	--advice:performance=none \
 
 CFLAGS_debug := \
@@ -94,9 +95,9 @@ CFLAGS_debug := \
 	-DBUILD_C75X \
 
 CFLAGS_release := \
-	--symdebug:none \
 	-Dxdc_target_name__=C71 \
 	--opt_level=3 \
+	--symdebug:none \
 	-DBUILD_C75X \
 
 LNK_FILES_common = \

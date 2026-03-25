@@ -71,14 +71,15 @@ DEFINES_common := \
 
 CFLAGS_common := \
 	-DBUILD_C75X_1 \
-	--advice:performance=none \
 	-mv7524 \
+	--abi=eabi \
 	-q \
 	-mo \
 	-pden \
 	-pds=238 \
 	-pds=880 \
 	-pds1110 \
+	--endian=little \
 	--disable_inlining \
 	-ea.se71 \
 	--emit_warnings_as_errors \
@@ -87,17 +88,20 @@ CFLAGS_common := \
 	--diag_suppress=70 \
 	-DBUILD_C7X \
 	-DBUILD_C7X_1 \
+	--advice:performance=none \
 
 CFLAGS_debug := \
 	-Dxdc_target_name__=C71 \
 	-D_DEBUG_=1 \
 	--opt_level=0 \
 	--symdebug:dwarf \
+	-DBUILD_C75X \
 
 CFLAGS_release := \
 	-Dxdc_target_name__=C71 \
 	--opt_level=3 \
-	--symdebug:dwarf \
+	--symdebug:none \
+	-DBUILD_C75X \
 
 LNK_FILES_common = \
 	linker.cmd \
@@ -117,12 +121,15 @@ LIBS_common = \
 	-llibc.a \
 
 LFLAGS_common = \
+	--silicon_version=7524 \
 	-z \
 	--emit_warnings_as_errors \
 	--diag_suppress=10063 \
 	--ram_model \
 	--warn_sections \
+	-q \
 	-x \
+	 \
 
 
 LIBS_NAME = \

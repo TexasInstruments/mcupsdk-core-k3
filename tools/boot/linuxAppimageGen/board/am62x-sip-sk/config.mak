@@ -18,7 +18,7 @@ SPL_BIN_NAME=u-boot-spl.bin-am62xxsip-evm
 ifeq ($(FALCON_MODE), 1)
 #Load Kernel directly
 KERN_BIN_NAME=Image
-FDT_BIN_NAME=k3-am6254xxl-sk.dtb
+FDT_BIN_NAME=k3-am6254atl-sk.dtb
 endif
 
 #Linux image load address

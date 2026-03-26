@@ -69,6 +69,10 @@ index 0b100a4293c..293b204babf 100644
 \endcond
 - MMCSD1 does not support MMC card, UHS-II SD card and SDR50, DDR50 and SDR104.
 - The MMCSD driver doesn't support interrupt mode.
+- The MMCSD driver doesn't support 4-bit and 1-bit bus width transfers for eMMC and 1-bit bus width transfer for SD.
+\cond !SOC_AM62PX
+- The default source impedance of 50 Ohms (Driver Type 0) is only supported for eMMC cards. Other driver types are not supported.
+\endcond
 
 ## Example Usage
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2019-25
+ *  Copyright (c) Texas Instruments Incorporated 2019-26
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -79,8 +79,9 @@ extern "C" {
  *  Error interrupts event group.
  */
 #define CSIRX_EVENT_GROUP_ERROR                  ((uint32_t) 0U)
+#define CSIRX_EVENT_GROUP_INFO                   ((uint32_t) 1U)
 #define CSIRX_EVENT_GROUP_MAX                    ((uint32_t) \
-                                                 (CSIRX_EVENT_GROUP_ERROR + 1U))
+                                                 (CSIRX_EVENT_GROUP_INFO + 1U))
 /** @} */
 
 /**
@@ -185,6 +186,27 @@ extern "C" {
                                  CSIRX_EVENT_TYPE_ERR_FIFO_OVERFLOW_STRM3))
 /** @} */
 
+/**
+ *  \anchor CsirxDrv_EventTypeInfo
+ *  \name CSIRX Info Event Type
+ *
+ *  CSIRX info events supported. This is valid if event group is
+ *  'CSIRX_EVENT_GROUP_INFO'
+ *
+ *  @{
+ */
+/**
+ *  \brief Deskew Entry
+ */
+# define CSIRX_EVENT_TYPE_INFO_DESKEW_ENTRY       \
+                            (CSL_CSIRX_INFO_IRQS_MASK_CFG_DESKEW_ENTRY_IRQM_MASK)
+
+/**
+ *  \brief All Info Group interrupts/events mask.
+ */
+#define CSIRX_EVENT_TYPE_INFO_ALL    ((uint32_t) \
+                                (CSIRX_EVENT_TYPE_INFO_DESKEW_ENTRY))
+/** @} */
 
 typedef struct Csirx_EventStatus_t Csirx_EventStatus;
 /**

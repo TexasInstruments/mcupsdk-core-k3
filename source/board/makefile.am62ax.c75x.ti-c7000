@@ -30,6 +30,7 @@ FILES_PATH_common = \
     ethphy/enet/rtos_drivers/src \
     ethphy/enet/rtos_drivers/include \
     utils \
+    utils/soc/am62ax \
 
 INCLUDES_common := \
     -I${CG_TOOL_ROOT}/include \

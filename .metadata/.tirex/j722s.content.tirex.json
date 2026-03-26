@@ -370,6 +370,39 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
+        "description": "Recovery Testapp  CPU is MAIN-R5FSS0-0 running FREERTOS.",
+        "name": "csirx_recovery_testapp",
+        "location": "../../examples/drivers/csirx/csirx_recovery_testapp/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "csirx",
+            "csirx_recovery_testapp",
+            "main-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
         "description": "Capture loopback testapp  CPU is MAIN-R5FSS0-0 running FREERTOS.",
         "name": "csirxtx_loopback_testapp",
         "location": "../../examples/drivers/csirx/csirxtx_loopback_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang/example.projectspec",

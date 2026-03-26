@@ -65,9 +65,7 @@
 /*                            Global Variables                                */
 /* ========================================================================== */
 
-static Board_DetectCfg_t  gBoardDetCfg[BOARD_ID_MAX_BOARDS] =
- {{BOARD_EVM_EEPROM_TARGET_ADDR, "AM62A-SK-LP"},
-  {BOARD_CSI2_EEPROM_TARGET_ADDR, "AM62A-FUSION2-CSI"}};
+extern Board_DetectCfg_t gBoardDetCfg[BOARD_ID_MAX_BOARDS];
 
 /* ========================================================================== */
 /*                          Function Definitions                              */

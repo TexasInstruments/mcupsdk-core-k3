@@ -25,6 +25,8 @@ FILES_common := \
 
 FILES_PATH_common = \
     control \
+    utils \
+    utils/soc/j722s \
     eeprom \
     flash \
     flash/ospi \

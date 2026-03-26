@@ -6,6 +6,8 @@ let device = "j722s";
 const files_r5f={
     common: [
         "board_control.c",
+        "board_utils.c",
+        "board_utils_soc.c",
         "eeprom.c",
         "eeprom_at24c.c",
         "flash.c",
@@ -34,6 +36,8 @@ const files_c75x={
 const filedirs = {
     common: [
         "control",
+        "utils",
+        "utils/soc/j722s",
         "eeprom",
         "flash",
         "flash/ospi",

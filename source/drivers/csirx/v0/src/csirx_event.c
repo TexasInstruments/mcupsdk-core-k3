@@ -63,6 +63,7 @@ extern CsirxDrv_CommonObj gCsirxCommonObj;
 /*                          Function Declarations                             */
 /* ========================================================================== */
 static void CsirxDrv_errorEventIsrFxn(void* arg);
+static void CsirxDrv_infoEventIsrFxn(void* arg);
 static int32_t CsirxDrv_eventValidateParams(const Csirx_EventPrms *eventPrms,
                                             CsirxDrv_InstObj *instObj);
 static int32_t CsirxDrv_eventGroupAllocResource(CsirxDrv_InstObj *instObj,
@@ -133,6 +134,11 @@ int32_t CsirxDrv_eventGroupRegister(Fdrv_Handle drvHandle,
                                       eventPrms,
                                       sizeof(Csirx_EventPrms));
                 break;
+                case CSIRX_EVENT_GROUP_INFO:
+                    Fvid2Utils_memcpy(&eventObj->eventPrms,
+                                      eventPrms,
+                                      sizeof(Csirx_EventPrms));
+                break;
                 default:
                 break;
             }
@@ -146,8 +152,14 @@ int32_t CsirxDrv_eventGroupRegister(Fdrv_Handle drvHandle,
                 HwiP_Params_init(&hwiParams);
                 hwiParams.args = (void*) eventObj;
                 hwiParams.intNum = eventObj->coreIntrNum;
-                hwiParams.callback = CsirxDrv_errorEventIsrFxn;
-
+                if (CSIRX_EVENT_GROUP_ERROR == eventPrms->eventGroup)
+                {
+                    hwiParams.callback = CsirxDrv_errorEventIsrFxn;
+                }
+                else if (CSIRX_EVENT_GROUP_INFO == eventPrms->eventGroup)
+                {
+                    hwiParams.callback = CsirxDrv_infoEventIsrFxn;
+                }
                 /* Register interrupt */
                 if ( HwiP_construct(&eventObj->hwiHandle, &hwiParams) !=
                                             SystemP_SUCCESS)
@@ -232,6 +244,11 @@ static int32_t CsirxDrv_eventGroupAllocResource(CsirxDrv_InstObj *instObj,
                     eventPrms->coreIntrNum = CSIRX_CORE_INTR_NUM_MOD_0_FATAL_INTR; /* CSI_RX_IF0_COMMON_0_CSI_ERR_IRQ_0 is not available for DM R5, CSI_RX_IF0_COMMON_0_CSI_FATAL_0=172 used instead */
                 #endif
                 break;
+                case CSIRX_EVENT_GROUP_INFO:
+                #if defined (SOC_J722S)
+                    eventPrms->coreIntrNum = CSIRX_CORE_INTR_NUM_MOD_0_INFO_INTR;
+                #endif
+                break;
                 default:
                     retVal = FVID2_EBADARGS;
                 break;
@@ -244,6 +261,9 @@ static int32_t CsirxDrv_eventGroupAllocResource(CsirxDrv_InstObj *instObj,
                 case CSIRX_EVENT_GROUP_ERROR:
                     eventPrms->coreIntrNum = CSIRX_CORE_INTR_NUM_MOD_1_ERR_INTR;
                 break;
+                case CSIRX_EVENT_GROUP_INFO:
+                    eventPrms->coreIntrNum = CSIRX_CORE_INTR_NUM_MOD_1_INFO_INTR;
+                break;
                 default:
                     retVal = FVID2_EBADARGS;
                 break;
@@ -254,6 +274,9 @@ static int32_t CsirxDrv_eventGroupAllocResource(CsirxDrv_InstObj *instObj,
             {
                 case CSIRX_EVENT_GROUP_ERROR:
                     eventPrms->coreIntrNum = CSIRX_CORE_INTR_NUM_MOD_2_ERR_INTR;
+                break;
+                case CSIRX_EVENT_GROUP_INFO:
+                    eventPrms->coreIntrNum = CSIRX_CORE_INTR_NUM_MOD_2_INFO_INTR;
                 break;
                 default:
                     retVal = FVID2_EBADARGS;
@@ -289,6 +312,7 @@ int32_t CsirxDrv_eventEnable(Fdrv_Handle drvHandle,
     int32_t retVal = FVID2_SOK;
     CsirxDrv_InstObj *instObj;
     CSIRX_ErrorIrqsMaskCfg errMask;
+    CSIRX_InfoIrqsMaskCfg infoMask;
     CsirxDrv_VirtContext *virtContext;
 
     switch (eventGroup)
@@ -344,6 +368,27 @@ int32_t CsirxDrv_eventEnable(Fdrv_Handle drvHandle,
                 }
             }
         break;
+        case CSIRX_EVENT_GROUP_INFO:
+            virtContext = (CsirxDrv_VirtContext *) drvHandle;
+            instObj = virtContext->instObj;
+            if (CDN_EOK != CSIRX_GetInfoIrqsMaskCfg(&instObj->cslObj.cslCfgData,
+                                          &infoMask))
+            {
+                retVal = FVID2_EFAIL;
+            }
+            if (FVID2_SOK == retVal)
+            {
+                infoMask.deskewEntryIrqm  |= (uint8_t)
+                        ((eventType & CSIRX_EVENT_TYPE_INFO_DESKEW_ENTRY) >>
+                         CSL_CSIRX_INFO_IRQS_MASK_CFG_DESKEW_ENTRY_IRQM_SHIFT);
+
+                if (CDN_EOK != CSIRX_SetInfoIrqsMaskCfg(&instObj->cslObj.cslCfgData,
+                                              &infoMask))
+                {
+                    retVal = FVID2_EFAIL;
+                }
+            }
+        break;
         default:
             retVal = FVID2_EBADARGS;
         break;
@@ -359,6 +404,7 @@ int32_t CsirxDrv_eventDisable(Fdrv_Handle drvHandle,
     int32_t retVal = FVID2_SOK;
     CsirxDrv_InstObj *instObj;
     CSIRX_ErrorIrqsMaskCfg errMask;
+    CSIRX_InfoIrqsMaskCfg infoMask;
 
     instObj = (CsirxDrv_InstObj *) drvHandle;
     switch (eventGroup)
@@ -407,6 +453,25 @@ int32_t CsirxDrv_eventDisable(Fdrv_Handle drvHandle,
 
                 if (CSIRX_SetErrorIrqsMaskCfg(&instObj->cslObj.cslCfgData,
                                               &errMask) != CDN_EOK)
+                {
+                    retVal = FVID2_EFAIL;
+                }
+            }
+        break;
+        case CSIRX_EVENT_GROUP_INFO:
+            if (CDN_EOK != CSIRX_GetInfoIrqsMaskCfg(&instObj->cslObj.cslCfgData,
+                                          &infoMask))
+            {
+                retVal = FVID2_EFAIL;
+            }
+            if (FVID2_SOK == retVal)
+            {
+                infoMask.deskewEntryIrqm  &= (uint8_t)
+                        (~((eventType & CSIRX_EVENT_TYPE_INFO_DESKEW_ENTRY) >>
+                         CSL_CSIRX_INFO_IRQS_MASK_CFG_DESKEW_ENTRY_IRQM_SHIFT));
+
+                if (CDN_EOK != CSIRX_SetInfoIrqsMaskCfg(&instObj->cslObj.cslCfgData,
+                                              &infoMask))
                 {
                     retVal = FVID2_EFAIL;
                 }
@@ -569,6 +634,49 @@ static void CsirxDrv_errorEventIsrFxn(void* arg)
     HwiP_restore(cookie);
 
     if ((eventObj->eventPrms.eventCb != NULL) && (status.eventMasks != 0U))
+    {
+        /* Issue a CB to application */
+        eventObj->eventPrms.eventCb(status, eventObj->eventPrms.appData);
+    }
+}
+
+static void CsirxDrv_infoEventIsrFxn(void* arg)
+{
+    CsirxDrv_InstObj *instObj;
+    CsirxDrv_EventObj *eventObj;
+    Csirx_EventStatus status;
+    CSIRX_InfoIrqs infoStatus;
+    uint32_t cookie;
+    CsirxDrv_VirtContext *virtContext;
+
+    eventObj = (CsirxDrv_EventObj *)arg;
+    virtContext = (CsirxDrv_VirtContext *) eventObj->drvHandle;
+    instObj = virtContext->instObj;
+    status.eventGroup = CSIRX_EVENT_GROUP_INFO;
+    status.eventMasks = 0U;
+    status.drvHandle  = eventObj->drvHandle;
+    /* Disable HW interrupts here */
+    cookie = HwiP_disable();
+    /* Check of event status */
+    GT_assert(CsirxTrace,
+             (CDN_EOK == CSIRX_GetInfoIrqs(&instObj->cslObj.cslCfgData,
+                                            &infoStatus)));
+    /* Clear Event status */
+    GT_assert(CsirxTrace,
+            (CDN_EOK == CSIRX_SetInfoIrqs(&instObj->cslObj.cslCfgData,
+                                           &infoStatus)));
+
+    /* Service pending events */
+    if (1U == infoStatus.deskewEntryIrq)
+    {
+        status.eventMasks |= CSIRX_EVENT_TYPE_INFO_DESKEW_ENTRY;
+        instObj->status.deSkewEntryCount++;
+    }
+
+    /** Enable HW interrupts here */
+    HwiP_restore(cookie);
+
+    if ((NULL != eventObj->eventPrms.eventCb) && (0U != status.eventMasks))
     {
         /* Issue a CB to application */
         eventObj->eventPrms.eventCb(status, eventObj->eventPrms.appData);

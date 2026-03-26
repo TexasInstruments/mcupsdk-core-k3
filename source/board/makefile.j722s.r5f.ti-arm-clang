@@ -17,6 +17,8 @@ LIBNAME:=board.j722s.r5f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
     board_control.c \
+    board_utils.c \
+    board_utils_soc.c \
     eeprom.c \
     eeprom_at24c.c \
     flash.c \
@@ -31,6 +33,8 @@ FILES_common := \
 
 FILES_PATH_common = \
     control \
+    utils \
+    utils/soc/j722s \
     eeprom \
     flash \
     flash/ospi \

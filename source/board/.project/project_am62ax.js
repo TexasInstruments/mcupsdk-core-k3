@@ -8,6 +8,7 @@ const files_r5f={
         "dp83867.c",
         "board_control.c",
         "board_utils.c",
+        "board_utils_soc.c",
         "eeprom.c",
         "eeprom_at24c512c.c",
         "flash.c",
@@ -58,6 +59,7 @@ const filedirs = {
         "ethphy/enet/rtos_drivers/src",
         "ethphy/enet/rtos_drivers/include",
         "utils",
+        "utils/soc/am62ax",
     ],
 };
 

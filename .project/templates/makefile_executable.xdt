@@ -446,6 +446,15 @@ LIBS_PREBUILD_PATH_NAME = \
     % }
 % }
 
+% if (args.project.name == "dm_unit_test") {
+FILES_common += dm_ut_devices.c
+FILES_common += dm_ut_testparser.c
+FILES_common += dm_ut_devices_list.c
+FILES_common += dm_ut_clocks.c
+FILES_common += dm_ut_clocks_list.c
+INCLUDES_common += -I${MCU_PLUS_SDK_PATH}/test/drivers/device_manager/dm_unit_test
+
+% }
 FILES := $(FILES_common) $(FILES_$(PROFILE))
 % obj = args.project.files;
 % if(args.project.files["cpp_common"] != undefined) {

@@ -20,7 +20,8 @@ AM62Dx | MCU R5F, WKUP R5F, A53, C75 | @VAR_BOARD_NAME EVM (referred to as am62d
 
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
- -                                                                                             | -
+ Place DM RM/PM HAL trace buffer fixed at 0x9CAA0000 in DDR                                    | DM
+ Add support for interrupt-based operation mode in SCIClient                                   | SCIClient
 
 ### Experimental Features {#EXPERIMENTAL_FEATURES}
 

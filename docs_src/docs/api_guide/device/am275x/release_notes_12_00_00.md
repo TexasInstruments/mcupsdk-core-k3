@@ -19,7 +19,9 @@ AM275x | R5F, C75                    | @VAR_BOARD_NAME (referred to as am275x-ev
 
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
--                                                                                              | -
+ Place DM RM/PM HAL trace buffer fixed at 0x72000040 in WKUP MSRAM                             | DM
+ Add support to query wake reason for Partial IO (IO Retention) Low Power Mode                 | DM
+ Add support for interrupt-based operation mode in SCIClient                                   | SCIClient
 
 ## Dependent Tools and Compiler Information
 

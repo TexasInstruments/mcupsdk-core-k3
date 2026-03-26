@@ -25,7 +25,8 @@ AM62x  | M4F, R5F, A53   | SK-AM62 (referred as am62x-sk in code), SK-AM62-LP (r
 
 Feature                                                                                        | Module
 -----------------------------------------------------------------------------------------------|-----------------------------------
--                                                                                              | -
+ Place DM RM/PM HAL trace buffer fixed at 0x9DCA0000 in DDR                                    | DM
+ Add support for interrupt-based operation mode in SCIClient                                   | SCIClient
 
 ## Dependent Tools and Compiler Information
 

@@ -264,12 +264,12 @@ void* TaskP_getHndl(TaskP_Object *obj)
     return (void*)taskObj->taskHndl;
 }
 
-void TaskP_yield()
+void TaskP_yield(void)
 {
     taskYIELD();
 }
 
-void TaskP_exit()
+void TaskP_exit(void)
 {
     vTaskDelete(NULL);
 }
@@ -291,7 +291,7 @@ void TaskP_loadGet(TaskP_Object *obj, TaskP_Load *taskLoad)
     xTaskResumeAll();
 }
 
-uint32_t TaskP_loadGetTotalCpuLoad()
+uint32_t TaskP_loadGetTotalCpuLoad(void)
 {
     uint32_t cpuLoad;
 
@@ -316,7 +316,7 @@ uint32_t TaskP_loadGetTotalCpuLoad()
     return cpuLoad;
 }
 
-void TaskP_loadResetAll()
+void TaskP_loadResetAll(void)
 {
     TaskP_Struct *taskObj;
     uint32_t i;
@@ -349,7 +349,7 @@ void TaskP_loadResetAll()
     xTaskResumeAll();
 }
 
-void TaskP_loadUpdateAll()
+void TaskP_loadUpdateAll(void)
 {
     TaskP_Struct *taskObj;
     TaskStatus_t taskStatus;
@@ -438,7 +438,7 @@ void TaskP_loadUpdateAll()
     xTaskResumeAll();
 }
 
-void vApplicationLoadHook()
+void vApplicationLoadHook(void)
 {
     static uint64_t lastUpdateTime = 0;
     uint64_t curUpdateTime = ClockP_getTimeUsec();
@@ -462,7 +462,8 @@ void TaskP_restore(uint32_t key)
     return;
 }
 
-void TaskP_endS(cheduler(){
+void TaskP_endScheduler(void)
+{
     extern void vTaskEndScheduler( void );
     vTaskEndScheduler();
 }

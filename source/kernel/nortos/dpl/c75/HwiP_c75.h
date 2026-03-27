@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -250,7 +250,7 @@ void Hwi_Params_init(Hwi_Params *prms);
 int32_t HwiP_configClec(uint16_t eventId, uint32_t intNum, uint8_t isPulse);
 
 /* Initializes CLEC*/
-void HwiP_configClecAccessCtrl();
+void HwiP_configClecAccessCtrl(void);
 
 unsigned int Hwi_disable(void);
 unsigned int Hwi_enable(void);

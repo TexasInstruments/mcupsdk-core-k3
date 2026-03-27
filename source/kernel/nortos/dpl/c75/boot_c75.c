@@ -1,5 +1,5 @@
 /*****************************************************************************/
-/* Copyright (c) 2021-25 Texas Instruments Incorporated                      */
+/* Copyright (c) 2021-26 Texas Instruments Incorporated                      */
 /* http://www.ti.com/                                                        */
 /*                                                                           */
 /*  Redistribution and  use in source  and binary forms, with  or without    */
@@ -50,7 +50,7 @@ extern uint32_t __BSS_END;
 /* C_INT00() - C ENVIRONMENT ENTRY POINT                                     */
 /*****************************************************************************/
 #pragma CODE_SECTION(_c_int00_secure, ".text:_c_int00_secure")
-void _c_int00_secure()
+void _c_int00_secure(void)
 {
    /*------------------------------------------------------------------------*/
    /* SETUP __SP IN A POSITION-INDEPENDENT MANNER (I.E. NO _symval())        */

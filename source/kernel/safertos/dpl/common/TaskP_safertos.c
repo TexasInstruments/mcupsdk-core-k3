@@ -310,12 +310,12 @@ void* TaskP_getHndl(TaskP_Object *obj)
     return (void*)taskObj->taskHndl;
 }
 
-void TaskP_yield()
+void TaskP_yield(void)
 {
     safertosapiYIELD();
 }
 
-void TaskP_exit()
+void TaskP_exit(void)
 {
     xTaskDelete(NULL);
 }
@@ -327,7 +327,7 @@ void TaskP_loadGet(TaskP_Object *obj, TaskP_Load *taskLoad)
 }
 
 /* This is required for runtime load calculation, which SafeRTOS does not support. */
-uint32_t TaskP_loadGetTotalCpuLoad()
+uint32_t TaskP_loadGetTotalCpuLoad(void)
 {
     uint32_t cpuLoad = 0;
 
@@ -335,19 +335,19 @@ uint32_t TaskP_loadGetTotalCpuLoad()
 }
 
 /* This is required for runtime load calculation, which SafeRTOS does not support. */
-void TaskP_loadResetAll()
+void TaskP_loadResetAll(void)
 {
     /* Not implemented in SafeRTOS */
 }
 
 /* This is required for runtime load calculation, which SafeRTOS does not support. */
-void TaskP_loadUpdateAll()
+void TaskP_loadUpdateAll(void)
 {
     /* Not implemented in SafeRTOS */
 }
 
 /* This is required for runtime load calculation, which SafeRTOS does not support. */
-void vApplicationLoadHook()
+void vApplicationLoadHook(void)
 {
     /* Not implemented in SafeRTOS */
 }
@@ -363,7 +363,7 @@ void vApplicationErrorHook( portTaskHandleType xHandleOfTaskWithError,
     DebugP_assert(pdFALSE);
 }
 
-void TaskP_endScheduler()
+void TaskP_endScheduler(void)
 {
     extern void vTaskSuspendScheduler(void);
     vTaskSuspendScheduler();

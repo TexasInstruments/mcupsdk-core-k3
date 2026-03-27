@@ -50,7 +50,7 @@
 typedef char Hwi_Object__sizingError[(sizeof(Hwi_Object) > sizeof(HwiC7x_Struct)) ? -1 : 1];
 
 extern void Hwi_dispatchAlways(void);
-extern void Hwi_switchAndRunFunc(void (*func)());
+extern void Hwi_switchAndRunFunc(void (*func)(void));
 static CSL_CLEC_EVTRegs* Hwip_getClecBaseAddr(void);
 
 
@@ -67,12 +67,12 @@ extern  char _stack[0x10001];
 #define DPL_C7X_CONFIGNUM_HWI      (64U)
 
 #if Hwi_bootToNonSecure__D
-extern void Hwi_switchToNS();
+extern void Hwi_switchToNS(void);
 #endif
 
 extern const Hwi_Params Hwi_Object__PARAMS__C;
 
-void Hwi_secureStart()
+void Hwi_secureStart(void)
 {
 #if Hwi_bootToNonSecure__D
     /* Initialize the vector table pointer, ESTP */
@@ -237,7 +237,7 @@ void Hwi_Instance_finalize(uint32_t intNum, int status)
  *  ======== Hwi_unPluggedInterrupt ========
  *  Here on interrupt unPlugged by Hwi_delete().
  */
-void Hwi_unPluggedInterrupt() {
+void Hwi_unPluggedInterrupt(void) {
     while(true);
 }
 
@@ -457,7 +457,7 @@ void Hwi_reconfig(Hwi_Object *hwi, Hwi_FuncPtr fxn, const Hwi_Params *params)
  *  Indicate that we are leaving the boot stack and
  *  are about to switch to a task stack.
  */
-void Hwi_switchFromBootStack()
+void Hwi_switchFromBootStack(void)
 {
     Hwi_Module_state.taskSP = 0;
 }
@@ -465,7 +465,7 @@ void Hwi_switchFromBootStack()
 /*
  *  ======== Hwi_getIsrStackAddress ========
  */
-char *Hwi_getIsrStackAddress()
+char *Hwi_getIsrStackAddress(void)
 {
     extern uint8_t __TI_STACK_SIZE;
     uint64_t isrStack;

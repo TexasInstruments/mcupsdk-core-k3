@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -129,7 +129,7 @@ void ClockP_init(void);
  * This API is called at the end of the application to stop timers and destroy interrupt handlers
  *
  */
-void ClockP_deinit();
+void ClockP_deinit(void);
 
 /**
  * \brief Set default values to ClockP_Params

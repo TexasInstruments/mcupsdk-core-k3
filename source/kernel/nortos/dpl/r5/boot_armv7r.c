@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -47,7 +47,7 @@ __attribute__((do_not_share))int _system_pre_init()
 }
 
 #if !defined (__clang__)
-void __TI_auto_init()
+void __TI_auto_init(void)
 {
 }
 #endif

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2024, Texas Instruments Incorporated
+ * Copyright (c) 2015-2026, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -144,7 +144,7 @@ void CacheP_wbAll(uint32_t type)
 
 }
 
-void Cache_wbInvL1dAll()
+void Cache_wbInvL1dAll(void)
 {
     CacheP_setL1DWBINV(1);
 }
@@ -166,7 +166,7 @@ void CacheP_wbInvAll(uint32_t type)
  *  ======== Cache_invAll ========
  *  Performs a global invalidate of L1D cache. This does not trigger writeback.
  */
-void CacheP_invL1dAll()
+void CacheP_invL1dAll(void)
 {
     CacheP_setL1DINV(1);
 }
@@ -255,7 +255,7 @@ void CacheP_wbInv(void * blockPtr, uint32_t byteCnt, uint32_t type)
  *  ======== CacheP_wait ========
  *  Wait for the cache operation to complete.
  */
-void CacheP_wait()
+void CacheP_wait(void)
 {
     __SE0ADV(char);
     /*

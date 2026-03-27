@@ -116,7 +116,7 @@ static void MmuP_addBlockEntry(uint8_t level, uint64_t *tablePtr, uint16_t table
 }
 
 
-static uint64_t* MmuP_allocTable()
+static uint64_t* MmuP_allocTable(void)
 {
     uint64_t *table;
     unsigned int i, tableLen = (Mmu_granuleSize >> 3);
@@ -284,7 +284,7 @@ static uint8_t MmuP_tableWalk(uint8_t level, uint64_t *tablePtr, uint64_t *vaddr
     return 1;
 }
 
-__attribute__((weak)) void MmuP_setConfig()
+__attribute__((weak)) void MmuP_setConfig(void)
 {
 	uint32_t i;
 	int32_t status;
@@ -335,7 +335,7 @@ void MmuP_disable(void)
 /*
  *  ======== Mmu_disableI ========
  */
-void MmuP_disableI()
+void MmuP_disableI(void)
 {
     asm("\t mvk64.l1    0xfffffffffffffffeLL, a2 \n"
         "\t mvc.s1      SCR, a3                  \n"
@@ -347,7 +347,7 @@ void MmuP_disableI()
 /*
  *  ======== Mmu_enable ========
  */
-void MmuP_enable()
+void MmuP_enable(void)
 {
     unsigned int   key;
     unsigned int   mode;
@@ -379,7 +379,7 @@ void MmuP_enable()
 /*
  *  ======== Mmu_enableI_secure ========
  */
-void MmuP_enableI_secure()
+void MmuP_enableI_secure(void)
 {
     asm("\t mvk64.l1    0x80000000000000C1LL, a2 \n"
         "\t mvc.s1      SCR, a3                  \n"
@@ -392,7 +392,7 @@ void MmuP_enableI_secure()
 /*
  *  ======== Mmu_enableI ========
  */
-void MmuP_enableI()
+void MmuP_enableI(void)
 {
     asm("\t mvk64.l1    0x80000000000000C1LL, a2 \n"
         "\t mvc.s1      SCR, a3                \n"
@@ -479,7 +479,7 @@ int32_t MmuP_map(uintptr_t vaddr, uintptr_t paddr, uint32_t size, MmuP_MapAttrs 
     return (status);
 }
 
-void MmuP_init()
+void MmuP_init(void)
 {
     uint64_t tcr = 0;
     uint32_t i, tableLen = Mmu_configInfo.tableLength;

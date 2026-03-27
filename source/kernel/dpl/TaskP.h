@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -196,10 +196,10 @@ void TaskP_loadResetAll(void);
  *
  * \return CPU load in units of percentage with 2 decimal point precision, i.e 1234 means 12.34%
  */
-uint32_t TaskP_loadGetTotalCpuLoad();
+uint32_t TaskP_loadGetTotalCpuLoad(void);
 uint32_t TaskP_disable(void);
 void TaskP_restore(uint32_t key);
-void TaskP_endScheduler();
+void TaskP_endScheduler(void);
 
 /** @} */
 

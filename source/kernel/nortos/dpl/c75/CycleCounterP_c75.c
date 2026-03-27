@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2024, Texas Instruments Incorporated
+ * Copyright (c) 2016-2026, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,19 +44,19 @@
 #include "CycleCounterP_c75.h"
 
 
-uint64_t CycleCounterP_getCount64()
+uint64_t CycleCounterP_getCount64(void)
 {
     uint64_t count = __TSC;
     return count;
 }
 
-uint32_t CycleCounterP_getCount32()
+uint32_t CycleCounterP_getCount32(void)
 {
     uint32_t count = CycleCounterP_getCount64();
 	return count;
 }
 
-void CycleCounterP_reset()
+void CycleCounterP_reset(void)
 {
     /* TSC already started by firmware, nothing to do here */
     return;

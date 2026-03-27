@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -364,7 +364,7 @@ static void ClockP_sleepTicks(uint32_t ticks)
 /*
  *  De-initialize the clock module.
  */
-void ClockP_deinit()
+void ClockP_deinit(void)
 {
     /* Stop the timer and clear any pending interrupts */
     TimerP_stop(gClockCtrl.timerBaseAddr);

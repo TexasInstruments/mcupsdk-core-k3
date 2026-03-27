@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -254,7 +254,7 @@ static uint8_t MmuP_tableWalk(uint8_t level, uintptr_t *tablePtr, uintptr_t *vad
     return 1;
 }
 
-static void MmuP_setConfig()
+static void MmuP_setConfig(void)
 {
 	uint32_t i;
 	int32_t status;
@@ -281,7 +281,7 @@ void MmuP_MapAttrs_init(MmuP_MapAttrs *attrs)
     attrs->global = 1;
 }
 
-void MmuP_enable()
+void MmuP_enable(void)
 {
     uintptr_t key;
     uint32_t type;
@@ -409,7 +409,7 @@ int32_t MmuP_map(uint64_t vaddr, uint64_t paddr, uint32_t size, MmuP_MapAttrs *m
     return (status);
 }
 
-void MmuP_init()
+void MmuP_init(void)
 {
     uint64_t tcr = 0;
     uint32_t i, tableLen = gMmuInfo.tableLength;

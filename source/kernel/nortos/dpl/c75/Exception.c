@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Texas Instruments Incorporated
+ * Copyright (c) 2014-2026 Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -74,8 +74,8 @@ void Exception_Module_startup(void)
 }
 
 #pragma FUNC_CANNOT_INLINE(printTwoVectors)
-static void printTwoVectors(char * name1, void * vectorReg1[],
-                            char * name2, void * vectorReg2[])
+static void printTwoVectors(const char * name1, void * vectorReg1[],
+                            const char * name2, void * vectorReg2[])
 {
     int i;
 

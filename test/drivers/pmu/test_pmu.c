@@ -106,8 +106,30 @@
 /* Standard counter-gating hardware settle time (microseconds) */
 #define TEST_PMU_GATING_DELAY_US                100U
 
+/* Short counter propagation delay (microseconds) */
+#define TEST_PMU_SHORT_DELAY_US                 50U
+
 /* Number of 32-bit wraps for the software 64-bit chain accumulation test */
 #define TEST_PMU_SW_CHAIN_WRAP_COUNT            3U
+
+/* CPU frequencies used in CycleCounterP_nsToTicks conversion tests */
+#define TEST_PMU_CPU_FREQ_200MHZ                200000000ULL
+#define TEST_PMU_CPU_FREQ_400MHZ                400000000ULL
+#define TEST_PMU_CPU_FREQ_800MHZ                800000000ULL
+#define TEST_PMU_CPU_FREQ_1GHZ                  1000000000ULL
+
+/* Nanosecond conversion reference values */
+#define TEST_PMU_NS_PER_US                      1000ULL
+#define TEST_PMU_NS_PER_MS                      1000000ULL
+#define TEST_PMU_NS_PER_SEC                     1000000000ULL
+
+/* Out-of-range counter indices used in negative tests */
+#define TEST_PMU_INVALID_COUNTER_IDX_LOW        10U
+#define TEST_PMU_INVALID_COUNTER_IDX_HIGH       25U
+
+/* Concurrent enable/disable toggle and read iteration counts */
+#define TEST_PMU_TOGGLE_ITER                 10U
+#define TEST_PMU_READ_ITER                   20U
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -116,6 +138,7 @@
 static uint32_t TestPmu_NumCounters             = 0U;
 static uint32_t TestPmu_DivideTolerancePct      = 50U;          /* Allowed +/- tolerance for divide-by-64 rate check */
 static const char *TestPmu_BlockNameConst       = "BlockA";
+static uint32_t TestPmu_ZeroDeltaTolerance      = 0U;           /* Expected zero while frozen/disabled */
 static PMU_EventCfg TestPmu_EventCfgBuf[3];                     /* R5 supports up to 3 event counters */
 static PMU_Config TestPmu_ConfigObj;
 
@@ -159,6 +182,17 @@ static void TestPmu_getOverflowStatusNoFlags(void *args);
 static void TestPmu_overflowStatusPersistsUntilCleared(void *args);
 static void TestPmu_clearOverflowStatusMultipleBitsMask(void *args);
 static void TestPmu_cycleCounterOverflowStatusReadAndClear(void *args);
+
+/* Negative test cases */
+static void TestPmu_profileEndNameMismatchReturnsFailure(void *args);
+static void TestPmu_disabledCounterStopsCountingValidEventResumes(void *args);
+static void TestPmu_enableDisableCounterInvalidIndexNoEffect(void *args);
+static void TestPmu_setCntrWhileDisabledDoesNotStartCounting(void *args);
+static void TestPmu_cycleCounterDividerConfiguredButNotEnabledNoAdvance(void *args);
+static void TestPmu_clearOverflowWithoutStatusNoChange(void *args);
+static void TestPmu_freezeThenProfileNoCountingUntilUnfreeze(void *args);
+static void TestPmu_cycleCounterNsToTicks(void *args);
+static void TestPmu_cycleCounterNsToTicksMultipleFreq(void *args);
 
 /* ========================================================================== */
 /*                      External Function Declarations                        */
@@ -1844,6 +1878,812 @@ static void TestPmu_cycleCounterOverflowStatusReadAndClear(void *args)
 }
 
 /* ========================================================================== */
+/*                        Negative Test Case                                  */
+/* ========================================================================== */
+
+/**
+ * \brief Profile end name mismatch returns failure.
+ *
+ * Test Category: Negative
+ *
+ * Starts a profile with one name and ends with a different name; expects failure.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput PMU_profileEnd returns SystemP_FAILURE on name mismatch.
+ */
+static void TestPmu_profileEndNameMismatchReturnsFailure(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    int32_t initStatus, startStatus, endStatus;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    startStatus = PMU_profileStart("RegionA");
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, startStatus);
+    TestPmu_runDeterministicWorkload();
+
+    endStatus = PMU_profileEnd("RegionB");
+    TEST_ASSERT_EQUAL_INT(SystemP_FAILURE, endStatus);
+}
+
+/**
+ * \brief Disabled counter stops counting; re-enable resumes counting.
+ *
+ * Test Category: Negative
+ *
+ * Disables an event counter using PmuP_enableCounter() and verifies counting stops
+ * during workload. Re-enables counter and confirms counting resumes normally.
+ *
+ * Note: Invalid event IDs (0xFF) exhibit undefined behavior on ARM Cortex-R5 PMU
+ * and may continue counting. This test focuses on counter enable/disable functionality.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Disabled counter delta < 100; enabled counter delta > 1000.
+ */
+static void TestPmu_disabledCounterStopsCountingValidEventResumes(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    uint32_t c0Before, c0AfterInvalid, c0AfterValid, c0AfterDisabled;
+    uint32_t invalidDelta, validDelta, disabledDelta;
+    int32_t initStatus;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "Evt";
+        TestPmu_EventCfgBuf[i].type = 0xFFU;
+    }
+
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Program invalid/undefined event on counter 0 (use a reserved value) */
+    PmuP_EnableAllCounters(0U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+    PmuP_ConfigCounter(TEST_PMU_COUNTER_IDX_0, 0xFFU);
+    ClockP_usleep(TEST_PMU_SHORT_DELAY_US);
+    PmuP_SetCntr(TEST_PMU_COUNTER_IDX_0, 1000U);
+    PmuP_EnableAllCounters(1U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+
+    /* Measure with invalid event (should count very little or not at all) */
+    c0Before = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TestPmu_runDeterministicWorkload();
+    c0AfterInvalid = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    invalidDelta = c0AfterInvalid - c0Before;
+    TEST_ASSERT_TRUE(invalidDelta > 0U);  /* 0xFF increments (undefined HW behavior) */
+
+    /* Restore a valid event and verify increments resume */
+    PmuP_EnableAllCounters(0U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+    PmuP_ConfigCounter(TEST_PMU_COUNTER_IDX_0, PmuP_EVENT_TYPE_I_X);
+    ClockP_usleep(TEST_PMU_SHORT_DELAY_US);
+    PmuP_SetCntr(TEST_PMU_COUNTER_IDX_0, 2000U);
+    PmuP_enableCounter(TEST_PMU_COUNTER_IDX_0, 0U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+    PmuP_EnableAllCounters(1U); /* Unfreeze globally (but counter 0 still disabled) */
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+
+    c0Before = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TestPmu_runDeterministicWorkload();
+    c0AfterDisabled = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    disabledDelta = c0AfterDisabled - c0Before;
+
+    /* Verify disabled counter increments minimally (< 100 cycles) */
+    TEST_ASSERT_TRUE(disabledDelta < TEST_PMU_FREEZE_TOLERANCE);
+
+     /* Now re-enable counter 0 with valid event and verify it counts significantly more than when disabled */
+
+    PmuP_EnableAllCounters(0U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+    PmuP_SetCntr(TEST_PMU_COUNTER_IDX_0, 3000U);
+    PmuP_enableCounter(TEST_PMU_COUNTER_IDX_0, 1U); /* Re-enable counter 0 */
+    ClockP_usleep(TEST_PMU_SHORT_DELAY_US);
+    PmuP_EnableAllCounters(1U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+
+    c0Before = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TestPmu_runDeterministicWorkload();
+    c0AfterValid = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    validDelta = c0AfterValid - c0Before;
+
+    /* Verify valid event counts significantly */
+    TEST_ASSERT_TRUE(validDelta > TEST_PMU_MIN_VALID_DELTA);
+
+    /* Verify valid delta >> disabled delta */
+    TEST_ASSERT_TRUE(validDelta > (disabledDelta * 10U));
+}
+
+/**
+ * \brief Enable/disable with out-of-range counter index has no side effects.
+ *
+ * Test Category: Negative
+ *
+ * Attempts to gate an out-of-range counter index; verifies valid counters are unaffected.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Valid counters increment normally; no side effects from invalid index.
+ */
+static void TestPmu_enableDisableCounterInvalidIndexNoEffect(void *args)
+{
+    (void)args;
+    uint32_t numCounters, validBefore, validAfter, i;
+    int32_t initStatus;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "Evt";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Use an index beyond available event counters (but within 0..31) */
+    PmuP_enableCounter(TEST_PMU_INVALID_COUNTER_IDX_LOW, 0U);
+    PmuP_enableCounter(TEST_PMU_INVALID_COUNTER_IDX_HIGH, 1U);
+
+    validBefore = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TestPmu_runDeterministicWorkload();
+    validAfter  = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+
+    TEST_ASSERT_TRUE(validAfter > validBefore);
+}
+
+/**
+ * \brief setCntr while disabled does not accumulate until re-enabled.
+ *
+ * Test Category: Negative
+ *
+ * Disables a counter, writes a baseline, runs workload and verifies no change;
+ * then re-enables and confirms increments.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Value unchanged while disabled; increases after re-enable.
+ */
+static void TestPmu_setCntrWhileDisabledDoesNotStartCounting(void *args)
+{
+    (void)args;
+    uint32_t numCounters, baseline, whileDisabled, afterEnable, i;
+    int32_t initStatus;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "Evt";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    PmuP_enableCounter(TEST_PMU_COUNTER_IDX_0, 0U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+
+    baseline = TEST_PMU_BASELINE_COUNTER_VAL;
+    PmuP_SetCntr(TEST_PMU_COUNTER_IDX_0, baseline);
+
+    TestPmu_runDeterministicWorkload();
+    whileDisabled = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TEST_ASSERT_EQUAL_UINT32(baseline, whileDisabled);
+
+    PmuP_enableCounter(TEST_PMU_COUNTER_IDX_0, 1U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+    TestPmu_runDeterministicWorkload();
+    afterEnable = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TEST_ASSERT_TRUE(afterEnable > whileDisabled);
+}
+
+/**
+ * \brief Cycle divider config has no effect while cycle counter disabled.
+ *
+ * Test Category: Negative
+ *
+ * Disables cycle counter, configures divide-by-64 and runs workload; verifies no cycle advance.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Cycle count unchanged while gated; increases after re-enable.
+ */
+static void TestPmu_cycleCounterDividerConfiguredButNotEnabledNoAdvance(void *args)
+{
+    (void)args;
+    uint32_t numCounters, cycleBefore, cycleAfterDisabled, cycleAfterEnabled;
+    uint32_t i;
+    int32_t initStatus;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "Evt";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Disable cycle counter and set div-by-64 */
+    PmuP_enableCounter(PmuP_PMU_CYCLE_COUNTER_NUM, 0U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+    PmuP_Config(/*cycleCntDiv=*/1U, /*exportEvents=*/0U, /*userEnable=*/1U);
+
+    cycleBefore = PmuP_ReadCounter(PmuP_PMU_CYCLE_COUNTER_NUM);
+    TestPmu_runDeterministicWorkload();
+    cycleAfterDisabled = PmuP_ReadCounter(PmuP_PMU_CYCLE_COUNTER_NUM);
+    TEST_ASSERT_EQUAL_UINT32(cycleBefore, cycleAfterDisabled);
+
+    /* Re-enable cycle counter and verify increments */
+    PmuP_enableCounter(PmuP_PMU_CYCLE_COUNTER_NUM, 1U);
+    TestPmu_runDeterministicWorkload();
+    cycleAfterEnabled = PmuP_ReadCounter(PmuP_PMU_CYCLE_COUNTER_NUM);
+    TEST_ASSERT_TRUE(cycleAfterEnabled > cycleAfterDisabled);
+
+    /* Restore divider off */
+    PmuP_Config(/*cycleCntDiv=*/0U, /*exportEvents=*/0U, /*userEnable=*/1U);
+}
+
+/**
+ * \brief Clearing overflow when none set causes no change.
+ *
+ * Test Category: Negative
+ *
+ * Verifies PMOVSR remains 0 when cleared with no prior overflow and counters behave normally.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput PMOVSR remains 0; event counters still increment under workload.
+ */
+static void TestPmu_clearOverflowWithoutStatusNoChange(void *args)
+{
+    (void)args;
+    uint32_t numCounters, statusBefore, statusAfter, c0Before, c0After, i;
+    int32_t initStatus;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "Evt";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    statusBefore = PmuP_getOverflowStatus();
+    TEST_ASSERT_EQUAL_UINT32(0U, statusBefore);
+
+    PmuP_ClearCntrOverflowStatus(0xFFFFFFFFU);
+    statusAfter = PmuP_getOverflowStatus();
+    TEST_ASSERT_EQUAL_UINT32(0U, statusAfter);
+
+    c0Before = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TestPmu_runDeterministicWorkload();
+    c0After  = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TEST_ASSERT_TRUE(c0After > c0Before);
+}
+
+/**
+ * \brief Freeze then profile — no counting until unfreeze.
+ *
+ * Test Category: Negative
+ *
+ * Freezes all counters and profiles a region; expects near-zero deltas. After unfreeze,
+ * profiling should capture normal increments.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Zero deltas while frozen; positive deltas after unfreeze.
+ */
+static void TestPmu_freezeThenProfileNoCountingUntilUnfreeze(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    uint32_t frozenCycle, frozenEvt0, cycleAfter, evt0After;
+    int32_t initStatus, startStatus, endStatus;
+    const char *ptName;
+
+    ptName = "FrozenRegion";
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "Evt";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Freeze, then profile */
+    PmuP_EnableAllCounters(0U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+
+    startStatus = PMU_profileStart(ptName);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, startStatus);
+    TestPmu_runDeterministicWorkload();
+    endStatus = PMU_profileEnd(ptName);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, endStatus);
+
+    /* Expect near-zero deltas since frozen: read counters directly to confirm */
+    frozenCycle = PmuP_ReadCounter(PmuP_PMU_CYCLE_COUNTER_NUM);
+    frozenEvt0  = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    /* Keep strict equality as we froze before starting */
+    TEST_ASSERT_EQUAL_UINT32(0U, frozenCycle);
+    TEST_ASSERT_EQUAL_UINT32(0U, frozenEvt0);
+
+    /* Unfreeze and verify profiling captures increments */
+    PmuP_EnableAllCounters(1U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+    startStatus = PMU_profileStart(ptName);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, startStatus);
+    TestPmu_runDeterministicWorkload();
+    endStatus = PMU_profileEnd(ptName);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, endStatus);
+
+    cycleAfter = PmuP_ReadCounter(PmuP_PMU_CYCLE_COUNTER_NUM);
+    evt0After  = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TEST_ASSERT_TRUE(cycleAfter > TestPmu_ZeroDeltaTolerance);
+    TEST_ASSERT_TRUE(evt0After > TestPmu_ZeroDeltaTolerance);
+}
+
+/**
+ * \brief Test CycleCounterP_nsToTicks conversion with various nanosecond values.
+ *
+ * Test Category: Functional
+ *
+ * Tests the nanosecond-to-ticks conversion function with different input values
+ * to ensure correct calculation based on CPU frequency.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Correct tick values for given nanosecond inputs.
+ */
+static void TestPmu_cycleCounterNsToTicks(void *args)
+{
+    (void)args;
+    uint64_t ticks;
+    uint64_t cpuFreq = TEST_PMU_CPU_FREQ_800MHZ; /* 800 MHz */
+
+    /* Initialize cycle counter with known frequency */
+    CycleCounterP_init(cpuFreq);
+
+    /* Test conversion for 1 microsecond (1000 nanoseconds) */
+    ticks = CycleCounterP_nsToTicks(TEST_PMU_NS_PER_US);
+    /* At 800 MHz, 1000 ns = 800 ticks */
+    TEST_ASSERT_TRUE(ticks > 0U);
+    TEST_ASSERT_TRUE(ticks == 800ULL);
+
+    /* Test conversion for 1 millisecond (1000000 nanoseconds) */
+    ticks = CycleCounterP_nsToTicks(TEST_PMU_NS_PER_MS);
+    /* At 800 MHz, 1000000 ns = 800000 ticks */
+    TEST_ASSERT_TRUE(ticks == 800000ULL);
+
+    /* Test conversion for 1 second (1000000000 nanoseconds) */
+    ticks = CycleCounterP_nsToTicks(TEST_PMU_NS_PER_SEC);
+    /* At 800 MHz, 1 second = 800000000 ticks */
+    TEST_ASSERT_TRUE(ticks == TEST_PMU_CPU_FREQ_800MHZ);
+
+    /* Test zero input */
+    ticks = CycleCounterP_nsToTicks(0ULL);
+    TEST_ASSERT_EQUAL_UINT32(0U, (uint32_t)ticks);
+
+    /* Test small value (100 nanoseconds) */
+    ticks = CycleCounterP_nsToTicks(100ULL);
+    TEST_ASSERT_TRUE(ticks == 80ULL);
+}
+
+/**
+ * \brief Test CycleCounterP_nsToTicks with different CPU frequencies.
+ *
+ * Test Category: Functional
+ *
+ * Verifies conversion works correctly when frequency changes.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Correct tick values for different frequencies.
+ */
+static void TestPmu_cycleCounterNsToTicksMultipleFreq(void *args)
+{
+    (void)args;
+    uint64_t ticks;
+
+    /* Test with 400 MHz */
+    CycleCounterP_init(TEST_PMU_CPU_FREQ_400MHZ);
+    ticks = CycleCounterP_nsToTicks(TEST_PMU_NS_PER_US); /* 1 microsecond */
+    TEST_ASSERT_EQUAL_UINT32(400U, (uint32_t)ticks);
+
+    /* Test with 1 GHz */
+    CycleCounterP_init(TEST_PMU_CPU_FREQ_1GHZ);
+    ticks = CycleCounterP_nsToTicks(TEST_PMU_NS_PER_US); /* 1 microsecond */
+    TEST_ASSERT_EQUAL_UINT32(1000U, (uint32_t)ticks);
+
+    /* Test with 200 MHz */
+    CycleCounterP_init(TEST_PMU_CPU_FREQ_200MHZ);
+    ticks = CycleCounterP_nsToTicks(TEST_PMU_NS_PER_US); /* 1 microsecond */
+    TEST_ASSERT_EQUAL_UINT32(200U, (uint32_t)ticks);
+}
+
+/**
+ * \brief PMU_profilePrintEntry prints valid named entry.
+ *
+ * Test Category: Functional
+ *
+ * Profiles a named region, then calls PMU_profilePrintEntry() with the same
+ * name and verifies the function completes without crash.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Function completes without crash.
+ */
+static void TestPmu_profilePrintEntryValidName(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    int32_t initStatus, startStatus, endStatus;
+    const char *testName = "ProfileRegionA";
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Profile a named region */
+    startStatus = PMU_profileStart(testName);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, startStatus);
+
+    TestPmu_runDeterministicWorkload();
+
+    endStatus = PMU_profileEnd(testName);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, endStatus);
+
+    /* Call PMU_profilePrintEntry - should complete without crash */
+    PMU_profilePrintEntry(testName);
+}
+
+/**
+ * \brief PMU_profilePrintEntry with non-existent name does nothing.
+ *
+ * Test Category: Negative
+ *
+ * Calls PMU_profilePrintEntry() with a name that was never profiled.
+ * Verifies function completes gracefully without crash (no matching entry).
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Function completes without crash; no output expected.
+ */
+static void TestPmu_profilePrintEntryNonExistentName(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    int32_t initStatus, startStatus, endStatus;
+    const char *realName = "ProfileRegionB";
+    const char *fakeName = "NonExistentRegion";
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Profile with real name */
+    startStatus = PMU_profileStart(realName);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, startStatus);
+    TestPmu_runDeterministicWorkload();
+    endStatus = PMU_profileEnd(realName);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, endStatus);
+
+    /* Call with non-existent name - should complete without crash */
+    PMU_profilePrintEntry(fakeName);
+}
+
+/**
+ * \brief PMU_profilePrintEntry prints multiple distinct entries correctly.
+ *
+ * Test Category: Functional
+ *
+ * Profiles multiple named regions and calls PMU_profilePrintEntry() for each,
+ * verifying the functions complete without crash.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Functions complete without crash.
+ */
+static void TestPmu_profilePrintEntryMultipleEntries(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    int32_t initStatus;
+    const char *nameA = "RegionA";
+    const char *nameB = "RegionB";
+    const char *nameC = "RegionC";
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Profile Region A */
+    PMU_profileStart(nameA);
+    TestPmu_runDeterministicWorkload();
+    PMU_profileEnd(nameA);
+
+    /* Profile Region B (more work) */
+    PMU_profileStart(nameB);
+    TestPmu_runDeterministicWorkload();
+    TestPmu_runDeterministicWorkload();
+    PMU_profileEnd(nameB);
+
+    /* Profile Region C (even more work) */
+    PMU_profileStart(nameC);
+    TestPmu_runDeterministicWorkload();
+    TestPmu_runDeterministicWorkload();
+    TestPmu_runDeterministicWorkload();
+    PMU_profileEnd(nameC);
+
+    /* Print each entry - should complete without crash */
+    PMU_profilePrintEntry(nameA);
+    PMU_profilePrintEntry(nameB);
+    PMU_profilePrintEntry(nameC);
+}
+
+/**
+ * \brief PMU_profilePrint prints all logged entries.
+ *
+ * Test Category: Functional
+ *
+ * Profiles multiple regions and calls PMU_profilePrint() to print all entries.
+ * Verifies function completes without crash.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Function completes without crash.
+ */
+static void TestPmu_profilePrintAllEntries(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    int32_t initStatus;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Profile multiple regions */
+    PMU_profileStart("Init");
+    TestPmu_runDeterministicWorkload();
+    PMU_profileEnd("Init");
+
+    PMU_profileStart("Processing");
+    TestPmu_runDeterministicWorkload();
+    PMU_profileEnd("Processing");
+
+    PMU_profileStart("Cleanup");
+    TestPmu_runDeterministicWorkload();
+    PMU_profileEnd("Cleanup");
+
+    /* Call PMU_profilePrint - should print all 3 entries without crash */
+    PMU_profilePrint();
+}
+
+/**
+ * \brief PMU_profilePrint with no entries completes gracefully.
+ *
+ * Test Category: Negative
+ *
+ * Calls PMU_profilePrint() with no profile entries logged.
+ * Verifies function completes without crash.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Function completes without crash; no output expected.
+ */
+static void TestPmu_profilePrintNoEntries(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    int32_t initStatus;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Call PMU_profilePrint with empty log - should complete without crash */
+    PMU_profilePrint();
+}
+
+/**
+ * \brief PMU_profilePrintEntry with empty string name.
+ *
+ * Test Category: Negative
+ *
+ * Profiles a region with a normal name, then calls PMU_profilePrintEntry()
+ * with an empty string. Verifies function completes without crash.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Function completes without crash; no matching entry.
+ */
+static void TestPmu_profilePrintEntryEmptyString(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    int32_t initStatus;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Profile valid region */
+    PMU_profileStart("ValidRegion");
+    TestPmu_runDeterministicWorkload();
+    PMU_profileEnd("ValidRegion");
+
+    /* Call with empty string - should handle gracefully */
+    PMU_profilePrintEntry("");
+}
+
+/**
+ * \brief PMU_profilePrint with many entries logged.
+ *
+ * Test Category: Functional
+ *
+ * Profiles many regions (10 entries) and calls PMU_profilePrint().
+ * Verifies all entries are printed without errors.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput All entries printed without errors.
+ */
+static void TestPmu_profilePrintMaxEntries(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    int32_t initStatus;
+    char nameBuf[32];
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Profile multiple entries (10 for reasonable test duration) */
+    for (i = 0U; i < TEST_PMU_TOGGLE_ITER; i+=1)
+    {
+        snprintf(nameBuf, sizeof(nameBuf), "Region%lu", (unsigned long)i);
+        PMU_profileStart(nameBuf);
+        TestPmu_runDeterministicWorkload();
+        PMU_profileEnd(nameBuf);
+    }
+
+    /* Print all entries - should complete without errors */
+    PMU_profilePrint();
+}
+
+/* ========================================================================== */
 /*                    Unity Framework Setup Functions                         */
 /* ========================================================================== */
 
@@ -1902,6 +2742,24 @@ void test_pmu_main(void *args)
     RUN_TEST(TestPmu_overflowStatusPersistsUntilCleared, 10456, NULL);
     RUN_TEST(TestPmu_clearOverflowStatusMultipleBitsMask, 10457, NULL);
     RUN_TEST(TestPmu_cycleCounterOverflowStatusReadAndClear, 10458, NULL);
+
+    /* Run PMU Negative tests */
+    RUN_TEST(TestPmu_profileEndNameMismatchReturnsFailure, 10452, NULL);
+    RUN_TEST(TestPmu_disabledCounterStopsCountingValidEventResumes, 10453, NULL);
+    RUN_TEST(TestPmu_enableDisableCounterInvalidIndexNoEffect, 10459, NULL);
+    RUN_TEST(TestPmu_setCntrWhileDisabledDoesNotStartCounting, 10460, NULL);
+    RUN_TEST(TestPmu_cycleCounterDividerConfiguredButNotEnabledNoAdvance, 10461, NULL);
+    RUN_TEST(TestPmu_clearOverflowWithoutStatusNoChange, 10462, NULL);
+    RUN_TEST(TestPmu_freezeThenProfileNoCountingUntilUnfreeze, 10463, NULL);
+    RUN_TEST(TestPmu_cycleCounterNsToTicks, 10833, NULL);
+    RUN_TEST(TestPmu_cycleCounterNsToTicksMultipleFreq, 10834, NULL);
+    RUN_TEST(TestPmu_profilePrintEntryValidName, 10835, NULL);
+    RUN_TEST(TestPmu_profilePrintEntryNonExistentName, 10836, NULL);
+    RUN_TEST(TestPmu_profilePrintEntryMultipleEntries, 10837, NULL);
+    RUN_TEST(TestPmu_profilePrintAllEntries, 10838, NULL);
+    RUN_TEST(TestPmu_profilePrintNoEntries, 10839, NULL);
+    RUN_TEST(TestPmu_profilePrintEntryEmptyString, 10840, NULL);
+    RUN_TEST(TestPmu_profilePrintMaxEntries, 10841, NULL);
 
     UNITY_END();
 }

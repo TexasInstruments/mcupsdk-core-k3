@@ -83,7 +83,9 @@
 #define TEST_FVID2_MAX_NODES                                    (10)
 #define TEST_FVID2_MAX_EDGES                                    (10)
 #define TEST_FVID2_DRVID                                        (0U)
+#define TEST_FVID2_INVALID_DRVID                                (2U)
 #define TEST_FVID2_DRVID_INST_0                                 (0U)
+#define TEST_FVID2_DRVID_INST_1                                 (1U)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -146,6 +148,9 @@ static Fvid2Utils_Node gNode,gNode1,gNode2,gNode3,gNode4;
 static Fvid2UtilsLinkListObj gllobj;
 #if defined(SOC_J722S)
 static Fdm_Object     gFdmObj = {0};
+static Fvid2_DrvCbParams gTestCbParams;
+static int gCbCalled = 0;
+static int gErrCbCalled = 0;
 #endif
 
 /* ========================================================================== */
@@ -219,6 +224,11 @@ static void TestDss_fvid2ReInitNodes(void)
 /* Dummy create function */
 static Fdrv_Handle TestCreateFxn(uint32_t drvId, uint32_t instanceId, void *createArgs, void *createStatusArgs, const Fvid2_DrvCbParams *fdmCbParams)
 {
+    if (fdmCbParams != NULL)
+    {
+        memcpy(&gTestCbParams, fdmCbParams, sizeof(Fvid2_DrvCbParams));
+    }
+
     return (Fdrv_Handle)1;
 }
 
@@ -230,6 +240,34 @@ static int32_t TestDeleteFxn(Fdrv_Handle handle, void *deleteArgs)
 
 /* Dummy control function */
 static int32_t TestControlFxn(Fdrv_Handle handle, uint32_t cmd, void *cmdArgs, void *cmdStatusArgs)
+{
+    return 0;
+}
+
+/* Dummy callback function */
+static int32_t callbackFxn(Fvid2_Handle handle, void *appData)
+{
+    /* Mark that the callback was executed */
+    gCbCalled = 1;
+    return 0;
+}
+
+/* Dummy error callback function */
+static int32_t errCallbackFxn(Fvid2_Handle handle, void *appData, void *errList)
+{
+    /* Mark that the callback was executed */
+    gErrCbCalled = 1;
+    return 0;
+}
+
+/* Dummy Queue function */
+static int32_t queueFxn(Fvid2_Handle handle, Fvid2_FrameList *frameList, uint32_t streamId)
+{
+    return 0;
+}
+
+/* Dummy Dequeue function */
+static int32_t dequeueFxn(Fvid2_Handle handle, Fvid2_FrameList *frameList, uint32_t streamId, uint32_t timeout)
 {
     return 0;
 }
@@ -249,6 +287,10 @@ static void TestDss_fvid2drvMgrDynCoverage(void)
     Fdm_Channel channelInstance;
     #if defined(SOC_J722S)
     Fvid2_CbParams dummyParams;
+    Fvid2_FrameList errList;
+    Fvid2_Handle handle1[FVID2_CFG_FDM_NUM_CH_OBJS + 1U];
+    Fvid2_DrvOps drvOpsInstance1[FVID2_CFG_FDM_NUM_DRV_OBJS + 1U];
+    uint32_t i;
     #endif
 
     Fvid2_FrameList inFrameList = {0};
@@ -430,7 +472,7 @@ static void TestDss_fvid2drvMgrDynCoverage(void)
     /* Registering FVID2 driver  */
     retVal = Fvid2_registerDriver(&drvOpsInstance);
     TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
-    
+
     /* Re-Registering FVID2 driver  */
     retVal = Fvid2_registerDriver(&drvOpsInstance);
     TEST_ASSERT_EQUAL_INT32(FVID2_EDRIVER_INUSE, retVal);
@@ -444,8 +486,83 @@ static void TestDss_fvid2drvMgrDynCoverage(void)
     TEST_ASSERT_NOT_NULL(handle);
     retVal = Fvid2_delete(handle,NULL);
     TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Unregister driver while handle is active */
+    handle = Fvid2_create(TEST_FVID2_DRVID,TEST_FVID2_DRVID_INST_0,NULL,NULL,&dummyParams);
+    TEST_ASSERT_NOT_NULL(handle);
+    retVal = Fvid2_unRegisterDriver(&drvOpsInstance);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EDEVICE_INUSE, retVal);
+    /* Deleting the handle */
+    retVal = Fvid2_delete(handle,NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Create a valid handle to pass for the queue */
+    drvOpsInstance.queueFxn = &queueFxn;
+    drvOpsInstance.dequeueFxn = &dequeueFxn;
+    handle = Fvid2_create(TEST_FVID2_DRVID,TEST_FVID2_DRVID_INST_0,NULL,NULL,&dummyParams);
+    TEST_ASSERT_NOT_NULL(handle);
+    /* Queue frames using the valid handle */
+    retVal = Fvid2_queue(handle, &inFrameList, 0);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    /* Dequeue frames from the handle */
+    retVal = Fvid2_dequeue(handle, &inFrameList, 0, TEST_FVID2_TIMEOUT);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    /* Release the handle */
+    retVal = Fvid2_delete(handle,NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Create FVID2 handle with valid callbacks */
+    dummyParams.cbFxn = &callbackFxn;
+    dummyParams.errCbFxn = &errCallbackFxn;
+    dummyParams.errList = (void *)&errList;
+    handle = Fvid2_create(TEST_FVID2_DRVID, TEST_FVID2_DRVID_INST_0, NULL, NULL, &dummyParams);
+    TEST_ASSERT_NOT_NULL(handle);
+    /* Trigger driver callback and verify execution */
+    if (gTestCbParams.fdmCbFxn != NULL)
+    {
+      /* Reset callback flag */
+      gCbCalled = 0;
+      gTestCbParams.fdmCbFxn(gTestCbParams.fdmData);
+      TEST_ASSERT_EQUAL_INT32(1, gCbCalled);
+    }
+    else
+    {
+        DebugP_log("\r\nCallback function provided as NULL\r\n");
+    }
+    /* Trigger driver error callback and verify execution */
+    if (gTestCbParams.fdmErrCbFxn != NULL)
+    {
+      gErrCbCalled = 0;
+      gTestCbParams.fdmErrCbFxn(gTestCbParams.fdmData, gTestCbParams.errList);
+      TEST_ASSERT_EQUAL_INT32(1, gErrCbCalled);
+    }
+    else
+    {
+        DebugP_log("\r\nError callback function provided as NULL\r\n");
+    }
+    retVal = Fvid2_delete(handle,NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Passing callback parameter as NULL for Fvid2_create */
+    handle = Fvid2_create(TEST_FVID2_DRVID, TEST_FVID2_DRVID_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(handle);
+    retVal = Fvid2_delete(handle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* passing invalid driver ID for Fvid2_create */
+    handle = Fvid2_create(TEST_FVID2_INVALID_DRVID,TEST_FVID2_DRVID_INST_0,NULL,NULL,&dummyParams);
+    TEST_ASSERT_NULL(handle);
+
+    /* Negative test case: Fvid2_create should fail when the driver create function is NULL */
+    drvOpsInstance.createFxn =  NULL;
+    dummyParams.cbFxn = NULL;
+    dummyParams.errCbFxn = NULL;
+    dummyParams.errList = NULL;
+    handle = Fvid2_create(TEST_FVID2_DRVID,TEST_FVID2_DRVID_INST_0,NULL,NULL,&dummyParams);
+    TEST_ASSERT_NULL(handle);
    
     /* Passing a valid handle to Fvid2_control */
+    drvOpsInstance.createFxn = TestCreateFxn;
     handle = &channelInstance;
     channelInstance.drv = &drvInstance;
     drvInstance.drvOps = &drvOpsInstance;
@@ -462,7 +579,74 @@ static void TestDss_fvid2drvMgrDynCoverage(void)
     /* Fvid2_unRegisterDriver function call with a valid parameter */
     retVal = Fvid2_unRegisterDriver(&drvOpsInstance);
     TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
-    
+
+    /* Fvid2_registerDriver function call with a valid parameter */
+    dummyParams.cbFxn = NULL;
+    dummyParams.errCbFxn = NULL;
+    dummyParams.errList = NULL;
+    for(i = 0; i <= FVID2_CFG_FDM_NUM_DRV_OBJS; i++)
+    {
+        drvOpsInstance1[i].drvId = i;
+        drvOpsInstance1[i].createFxn = TestCreateFxn;
+        drvOpsInstance1[i].deleteFxn = TestDeleteFxn;
+        drvOpsInstance1[i].queueFxn = queueFxn;
+        drvOpsInstance1[i].dequeueFxn = dequeueFxn;
+        drvOpsInstance1[i].controlFxn = TestControlFxn;
+        drvOpsInstance1[i].processRequestFxn = TestDss_fvid2ProcessRequest;
+        drvOpsInstance1[i].getProcessedRequestFxn = TestDss_fvid2ProcessRequest;
+        retVal = Fvid2_registerDriver(&drvOpsInstance1[i]);
+        if(i == FVID2_CFG_FDM_NUM_DRV_OBJS)
+        {
+            TEST_ASSERT_EQUAL_INT32(FVID2_EALLOC, retVal);
+        }
+        else
+        {
+            TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+        }
+    }
+
+    /* Fvid2_create function call with a valid parameter */
+    for(i = 0; i <= FVID2_CFG_FDM_NUM_CH_OBJS; i++)
+    {
+        handle1[i] = Fvid2_create(TEST_FVID2_DRVID, i, NULL, NULL, &dummyParams);
+        if(i == FVID2_CFG_FDM_NUM_CH_OBJS)
+        {
+            TEST_ASSERT_NULL(handle1[i]);
+        }
+        else
+        {
+            TEST_ASSERT_NOT_NULL(handle1[i]);
+        }
+    }
+
+    /* Fvid2_delete function call with a valid parameter */
+    for(i = 0; i <= FVID2_CFG_FDM_NUM_CH_OBJS; i++)
+    {
+        if(i == FVID2_CFG_FDM_NUM_CH_OBJS)
+        {
+            TEST_ASSERT_NULL(handle1[i]);
+        }
+        else
+        {
+            retVal = Fvid2_delete(handle1[i], NULL);
+            TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+        }
+    }
+
+    /* Fvid2_unRegisterDriver function call with a valid parameter */
+    for(i = 0; i <= FVID2_CFG_FDM_NUM_DRV_OBJS; i++)
+    {
+        retVal = Fvid2_unRegisterDriver(&drvOpsInstance1[i]);
+        if(i == FVID2_CFG_FDM_NUM_DRV_OBJS)
+        {
+            TEST_ASSERT_EQUAL_INT32(FVID2_EFAIL, retVal);
+        }
+        else
+        {
+            TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+        }
+    }
+
     /* Fvid2_deInit function call with a NULL parameter */
     retVal = Fvid2_deInit(NULL);
     TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
@@ -900,7 +1084,7 @@ static void TestDss_fvid2UtilsDynCoverage(void)
     /* Fvid2Utils_destructQ function call with a NULL parameter */
     Fvid2Utils_destructQ(NULL);
     
-    /* Fvid2Utils_queue function call with a NULL parameter */
+    /* Fvid2Utils_queue function call with valid parameter */
     Fvid2Utils_queue(&gllobj,doubleNodePtr,&data);
     
     /* Fvid2Utils_dequeue function call with a NULL parameter */
@@ -912,6 +1096,30 @@ static void TestDss_fvid2UtilsDynCoverage(void)
     gllobj.headNode = &gNode3;
     Fvid2Utils_dequeue(&gllobj);
     
+    /* Negative test: Fvid2Utils_peakHead should return NULL when the head node is NULL */
+    gllobj.headNode = NULL;
+    retNode = Fvid2Utils_peakHead(&gllobj);
+    TEST_ASSERT_EQUAL_PTR(NULL,retNode);
+
+    /* Initialize the linked list object */
+    gllobj.listType = FVID2UTILS_LLT_DOUBLE;
+    gllobj.addMode = FVID2UTILS_LAM_PRIORITY;
+    gllobj.headNode = NULL_PTR;
+    gllobj.tailNode = NULL_PTR;
+    gllobj.numElements = 0;
+    gllobj.priorityCnt = 0;
+
+    /* Links a doubly linked list node with lower priority */
+    retVal = Fvid2Utils_linkUniqePriNode(&gllobj, nodePtr, TEST_FVID2_PRIORITY_1);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Links another doubly linked list node with higher priority */
+    retVal = Fvid2Utils_linkUniqePriNode(&gllobj, circularNodePtr, TEST_FVID2_PRIORITY_2);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Unlink the linked list nodes */
+    Fvid2Utils_unLinkNodePri(&gllobj, nodePtr);
+    Fvid2Utils_unLinkNodePri(&gllobj, circularNodePtr);
     #endif
 }
 
@@ -1144,6 +1352,37 @@ static void TestDss_fvid2GraphDynCoverage(void)
         TEST_ASSERT_EQUAL_INT32(FVID2_SOK, result);
     }
 
+    #if defined(SOC_J722S)
+    /* Negative test : passing a node configured with multiple outputs without initialization */
+    nodeArray[1].nodeOutNum = FVID2_GRAPH_NODE_OUT_MULTI;
+    result = Fvid2_graphAllocNodes(&nodeList, &edgeList, FVID2_GRAPH_NODE_MODE_DISABLE);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EFAIL, result);
+
+    /* Negative test : passing invalid startNode and endNode value */
+    edge_List[0].startNode = 5U;
+    edge_List[1].endNode = 5U;
+    result = Fvid2_graphAllocNodes(&nodeList, &edgeList, FVID2_GRAPH_NODE_MODE_ENABLE);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EFAIL, result);
+
+    /* Passing numEdges as 0U to return without any for loop iteration */
+    edgeList.numEdges = 0U;
+    result = Fvid2_graphAllocNodes(&nodeList, &edgeList, FVID2_GRAPH_NODE_MODE_ENABLE);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, result);
+
+    /* Getting the graph path, skipping a node in the middle */
+    edgeList.numEdges = 4;
+    nodeArray[1].nodeOutNum = FVID2_GRAPH_NODE_OUT_SINGLE;
+    edge_List[0].startNode = TEST_FVID2_NODE_ID_0;
+    edge_List[0].endNode = TEST_FVID2_NODE_ID_1;
+    edge_List[1].startNode = TEST_FVID2_NODE_ID_1;
+    edge_List[1].endNode = TEST_FVID2_NODE_ID_2;
+    edge_List[2].startNode = TEST_FVID2_NODE_ID_2;
+    edge_List[2].endNode = TEST_FVID2_NODE_ID_0;
+    edge_List[3].startNode = TEST_FVID2_NODE_ID_0;
+    edge_List[3].endNode = TEST_FVID2_NODE_ID_0;
+    result=Fvid2_graphGetPath(&nodeList, &edgeList, &outNodeList, &outEdgeList, TEST_FVID2_MAX_NODES, TEST_FVID2_MAX_EDGES);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, result);
+    #endif
     /* Passing node list and edge list to free them */
     result = Fvid2_graphFreePath(&Null_nodeList,&Null_edgeList);
     TEST_ASSERT_EQUAL_INT32(FVID2_SOK, result);

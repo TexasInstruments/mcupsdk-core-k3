@@ -233,48 +233,56 @@ static uint8_t MmuP_tableWalk(uint8_t level, uint64_t *tablePtr, uint64_t *vaddr
                 }
             }
         }
-        else if (((desc & 0x3) != MmuP_DescriptorType_TABLE) || (level == 3))
+        else
         {
-            if ((level == 0) || ((level < 3) && (*size < blockSize)) ||
-               ((*size >= blockSize) && ((*vaddr & (blockSize - 1)) != 0)))
+            if (((desc & 0x3) != MmuP_DescriptorType_TABLE) || (level == 3))
             {
-                uint64_t vaddrCopy = (*vaddr & (~(blockSize - 1)));
-                uint64_t paddrCopy;
-                MmuP_MapAttrs mapAttrsCopy;
-                uint32_t sizeCopy = blockSize;
-
-                if ((desc & 0x3) == MmuP_DescriptorType_BLOCK)
+                if ((level == 0) || ((level < 3) && (*size < blockSize)) ||
+                ((*size >= blockSize) && ((*vaddr & (blockSize - 1)) != 0)))
                 {
-                    MmuP_readBlockEntry(level, tablePtr, tableIdx, &paddrCopy,
-                        &mapAttrsCopy);
-                }
+                    uint64_t vaddrCopy = (*vaddr & (~(blockSize - 1)));
+                    uint64_t paddrCopy;
+                    MmuP_MapAttrs mapAttrsCopy;
+                    uint32_t sizeCopy = blockSize;
 
-                nextLevelTablePtr =
-                    MmuP_addTableEntry(tablePtr, tableIdx, mapAttrs);
-                if (nextLevelTablePtr == NULL) {
-                    return 0;
-                }
+                    if ((desc & 0x3) == MmuP_DescriptorType_BLOCK)
+                    {
+                        MmuP_readBlockEntry(level, tablePtr, tableIdx, &paddrCopy,
+                            &mapAttrsCopy);
+                    }
 
-                if ((desc & 0x3) == MmuP_DescriptorType_BLOCK) {
-                    /*
-                     * If old entry is a block entry, a new table entry is
-                     * added and merged with the old block entry.
-                     */
-                    MmuP_tableWalk(level + 1, nextLevelTablePtr, &vaddrCopy,
-                        &paddrCopy, &sizeCopy, &mapAttrsCopy);
-                }
+                    nextLevelTablePtr =
+                        MmuP_addTableEntry(tablePtr, tableIdx, mapAttrs);
+                    if (nextLevelTablePtr == NULL) {
+                        return 0;
+                    }
 
-                retStatus = MmuP_tableWalk(level + 1, nextLevelTablePtr,
-                    vaddr, paddr, size, mapAttrs);
-                if (retStatus == 0U) {
-                    return 0;
+                    if ((desc & 0x3) == MmuP_DescriptorType_BLOCK) {
+                        /*
+                        * If old entry is a block entry, a new table entry is
+                        * added and merged with the old block entry.
+                        */
+                        MmuP_tableWalk(level + 1, nextLevelTablePtr, &vaddrCopy,
+                            &paddrCopy, &sizeCopy, &mapAttrsCopy);
+                    }
+
+                    retStatus = MmuP_tableWalk(level + 1, nextLevelTablePtr,
+                        vaddr, paddr, size, mapAttrs);
+                    if (retStatus == 0U) {
+                        return 0;
+                    }
                 }
-            }
-            else if ((blockTranslation == true) && (*size >= blockSize)) {
-                MmuP_addBlockEntry(level, tablePtr, tableIdx, *paddr, mapAttrs);
-                *size = *size - blockSize;
-                *vaddr = *vaddr + blockSize;
-                *paddr = *paddr + blockSize;
+                else if ((blockTranslation == true) && (*size >= blockSize)) {
+                    MmuP_addBlockEntry(level, tablePtr, tableIdx, *paddr, mapAttrs);
+                    *size = *size - blockSize;
+                    *vaddr = *vaddr + blockSize;
+                    *paddr = *paddr + blockSize;
+                }
+                else
+                {
+                    /* Intentionally add to resolve static failure */
+                    (void)0;
+                }
             }
         }
 
@@ -506,6 +514,10 @@ void MmuP_init(void)
     }
     else if (Mmu_granuleSize == MMUP_GRANULE_SIZE_64KB) {
         tcr = Mmu_GRANULE_SIZE_64KB;
+    }
+    else
+    {
+        tcr = 0;
     }
 
     /*

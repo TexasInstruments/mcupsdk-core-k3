@@ -260,8 +260,11 @@ static size_t _ntoa_format(out_fct_type out, char* buffer, size_t idx, size_t ma
     else if ((base == 16U) && ((flags & FLAGS_UPPERCASE) != 0U) && (len_val < PRINTF_NTOA_BUFFER_SIZE)) {
       buf[len_val++] = 'X';
     }
-    else if ((base == 2U) && (len_val < PRINTF_NTOA_BUFFER_SIZE)) {
-      buf[len_val++] = 'b';
+    else
+    {
+        if ((base == 2U) && (len_val < PRINTF_NTOA_BUFFER_SIZE)) {
+          buf[len_val++] = 'b';
+        }
     }
     if (len_val < PRINTF_NTOA_BUFFER_SIZE) {
       buf[len_val++] = '0';
@@ -275,8 +278,11 @@ static size_t _ntoa_format(out_fct_type out, char* buffer, size_t idx, size_t ma
     else if (flags & FLAGS_PLUS) {
       buf[len_val++] = '+';  // ignore the space if the '+' exists
     }
-    else if (flags & FLAGS_SPACE) {
-      buf[len_val++] = ' ';
+    else
+    {
+        if (flags & FLAGS_SPACE) {
+          buf[len_val++] = ' ';
+        }
     }
   }
 
@@ -420,6 +426,11 @@ static size_t _ftoa(out_fct_type out, char* buffer, size_t idx, size_t maxlen, d
     // if halfway, round up if odd OR if last digit is 0
     ++frac;
   }
+  else
+  {
+      /* Intentionally add to resolve static failure */
+      (void)0;
+  }
 
   if (prec_val == 0U) {
     diff = value_local - (double)whole;
@@ -508,8 +519,11 @@ static size_t _ftoa(out_fct_type out, char* buffer, size_t idx, size_t maxlen, d
     else if (flags & FLAGS_PLUS) {
       buf[len++] = '+';  // ignore the space if the '+' exists
     }
-    else if (flags & FLAGS_SPACE) {
-      buf[len++] = ' ';
+    else
+    {
+        if (flags & FLAGS_SPACE) {
+          buf[len++] = ' ';
+        }
     }
   }
 
@@ -699,6 +713,11 @@ static int _vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, const
       }
       format_val++;
     }
+    else
+    {
+        /* Intentionally add to resolve static failure */
+        (void)0;
+    }
 
     // evaluate precision field
     precision = 0U;
@@ -712,6 +731,11 @@ static int _vsnprintf(out_fct_type out, char* buffer, const size_t maxlen, const
         const int prec = (int)va_arg(va, int);
         precision = prec > 0 ? (unsigned int)prec : 0U;
         format_val++;
+      }
+      else
+      {
+          /* Intentionally add to resolve static failure */
+          (void)0;
       }
     }
 

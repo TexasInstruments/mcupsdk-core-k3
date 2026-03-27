@@ -269,6 +269,39 @@
             "example"
         ],
         "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A Sbl Uart Uniflash Nand Example. CPU is WKUP-R5FSS0-0 running NORTOS.",
+        "name": "sbl_uart_uniflash_nand",
+        "location": "../../examples/drivers/boot/sbl_uart_uniflash_nand/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "J722SXH01EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "boot",
+            "sbl_uart_uniflash_nand",
+            "wkup-r5fss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
             "example.gettingstarted"
         ],
         "description": "Capture testapp  CPU is MAIN-R5FSS0-0 running FREERTOS.",

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -226,7 +226,7 @@ int32_t TaskP_construct(TaskP_Object *obj, TaskP_Params *params)
 #else
     taskObj->taskHndl = xTaskCreateStatic( params->taskMain, /* Pointer to the function that implements the task. */
                                   params->name,              /* Text name for the task.  This is to facilitate debugging only. */
-                                  params->stackSize/(sizeof(configSTACK_DEPTH_TYPE)),  /* Stack depth in units of StackType_t typically uint32_t on 32b CPUs */
+                                  (uint32_t)(params->stackSize/((uint32_t)sizeof(configSTACK_DEPTH_TYPE))),  /* Stack depth in units of StackType_t typically uint32_t on 32b CPUs */
                                   params->args,       /* task specific args */
                                   params->priority,   /* task priority, 0 is lowest priority, configMAX_PRIORITIES-1 is highest */
                                   (StackType_t*)params->stack,      /* pointer to stack base */
@@ -462,8 +462,7 @@ void TaskP_restore(uint32_t key)
     return;
 }
 
-void TaskP_endScheduler()
-{
+void TaskP_endS(cheduler(){
     extern void vTaskEndScheduler( void );
     vTaskEndScheduler();
 }

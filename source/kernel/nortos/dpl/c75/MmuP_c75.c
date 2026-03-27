@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2025, Texas Instruments Incorporated
+ * Copyright (c) 2016-2026, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -137,7 +137,7 @@ static uint64_t* MmuP_allocTable()
          * Use (i << 2) instead of 0 to init table, in order to force
          * compiler to not use memset() as an optimization
          */
-        table[i] = (i << 2);
+        table[i] = ((uint64_t)i << 2U);
     }
 
     return (table);
@@ -525,7 +525,7 @@ void MmuP_init()
 
     for (i = 0; i < Mmu_tableArrayLen; i++)
     {
-        gMmu_tableArray_NS[tableLen * i] = i + 1;
+        gMmu_tableArray_NS[tableLen * i] = ((uint64_t)i + 1U);
     }
 
     gMmu_tableArray_NS[tableLen * (i - 1)] = (~0);

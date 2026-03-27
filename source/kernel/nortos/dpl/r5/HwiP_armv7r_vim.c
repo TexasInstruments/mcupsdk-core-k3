@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -60,7 +60,7 @@ void HWI_SECTION HwiP_enableInt(uint32_t intNum)
     addr = (volatile uint32_t *)(gHwiConfig.intcBaseAddr + VIM_INT_EN(intNum));
     bitPos = VIM_BIT_POS(intNum);
 
-    *addr = (0x1u << bitPos);
+    *addr = ((uint32_t)0x1u << bitPos);
 }
 
 uint32_t HWI_SECTION HwiP_disableInt(uint32_t intNum)
@@ -105,7 +105,7 @@ void HWI_SECTION HwiP_clearInt(uint32_t intNum)
     addr = (volatile uint32_t *)(gHwiConfig.intcBaseAddr + VIM_STS(intNum));
     bitPos = VIM_BIT_POS(intNum);
 
-    *addr = (0x1u << bitPos);
+    *addr = ((uint32_t)0x1u << bitPos);
 }
 
 void HWI_SECTION HwiP_post(uint32_t intNum)
@@ -116,7 +116,7 @@ void HWI_SECTION HwiP_post(uint32_t intNum)
     addr = (volatile uint32_t *)(gHwiConfig.intcBaseAddr + VIM_RAW(intNum));
     bitPos = VIM_BIT_POS(intNum);
 
-    *addr = (0x1u << bitPos);
+    *addr = ((uint32_t)0x1u << bitPos);
 
     /*
      * Add delay to insure posted interrupt are triggered before function

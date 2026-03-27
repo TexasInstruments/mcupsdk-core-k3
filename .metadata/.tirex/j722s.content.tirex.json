@@ -73,9 +73,9 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "A Sbl Ospi Stage1 Example. CPU is WKUP-R5FSS0-0 running NORTOS.",
-        "name": "sbl_ospi_stage1",
-        "location": "../../examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage1/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
+        "description": "A Sbl Ospi Example. CPU is WKUP-R5FSS0-0 running NORTOS.",
+        "name": "sbl_ospi",
+        "location": "../../examples/drivers/boot/sbl_ospi/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
             "J722SXH01EVM"
         ],
@@ -88,43 +88,8 @@
         "subCategories": [
             "drivers",
             "boot",
-            "sbl_ospi_multistage",
-            "sbl_ospi_stage1",
+            "sbl_ospi",
             "wkup-r5fss0-0_nortos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.general"
-        ],
-        "description": "An example for the second-stage of Secondary Boot Loader (SBL) for using OSPI for booting from Flash memory on J722S EVM CPU is WKUP-R5FSS0-0 running FREERTOS.",
-        "name": "sbl_ospi_stage2",
-        "location": "../../examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage2/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
-        "devtools": [
-            "J722SXH01EVM"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "compiler": [
-            "ticlang"
-        ],
-        "subCategories": [
-            "drivers",
-            "boot",
-            "sbl_ospi_multistage",
-            "sbl_ospi_stage2",
-            "wkup-r5fss0-0_freertos"
         ],
         "mainCategories": [
             [

@@ -35,7 +35,7 @@ SECTIONS
     RUN_START(__BSS_START)
     RUN_END(__BSS_END)
     .sysmem: {} palign(8) > OCM_RAM
-    .stack:  {} palign(8) > HSM_RAM
+    .stack:  {} palign(8) > OCM_RAM
     GROUP {
         .irqstack: {. = . + __IRQ_STACK_SIZE;} align(8)
         RUN_START(__IRQ_STACK_START)
@@ -65,5 +65,5 @@ MEMORY
     OCM_RAM  : ORIGIN = 0x43C40100 , LENGTH = 0x3E000 - 0x100
 
     /* This section is used by the SBL to temporarily load the appimage for authentication */
-    APPIMAGE  : ORIGIN = 0xC2000000 , LENGTH = 0x80000
+    APPIMAGE  : ORIGIN = 0xC2000000 , LENGTH = 0x4000000
 }

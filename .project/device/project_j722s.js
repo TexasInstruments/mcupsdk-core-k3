@@ -39,8 +39,7 @@ const example_file_list = [
     /* Example Applications */
     "examples/drivers/boot/sbl_null/.project/project.js",
     "examples/drivers/boot/sbl_ospi_early_can/.project/project.js",
-    "examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage1/.project/project.js",
-    "examples/drivers/boot/sbl_ospi_multistage/sbl_ospi_stage2/.project/project.js",
+    "examples/drivers/boot/sbl_ospi/.project/project.js",
     "examples/drivers/boot/sbl_sd/.project/project.js",
     "examples/drivers/boot/sbl_ospi_nand/.project/project.js",
     "examples/drivers/boot/sbl_emmc/.project/project.js",

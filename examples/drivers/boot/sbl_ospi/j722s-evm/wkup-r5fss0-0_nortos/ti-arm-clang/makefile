@@ -2,7 +2,7 @@
 # Auto generated makefile
 #
 
-export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../../../..)
+export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
@@ -21,13 +21,13 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=sbl_ospi_stage1.$(PROFILE).out
+OUTNAME:=sbl_ospi.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME_GP:=sbl_ospi_stage1.$(PROFILE).tiimage
-BOOTIMAGE_NAME_HS:=sbl_ospi_stage1.$(PROFILE).hs.tiimage
-BOOTIMAGE_NAME_HS_FS:=sbl_ospi_stage1.$(PROFILE).hs_fs.tiimage
-BOOTIMAGE_BIN_NAME:=sbl_ospi_stage1.$(PROFILE).bin
+BOOTIMAGE_NAME_GP:=sbl_ospi.$(PROFILE).tiimage
+BOOTIMAGE_NAME_HS:=sbl_ospi.$(PROFILE).hs.tiimage
+BOOTIMAGE_NAME_HS_FS:=sbl_ospi.$(PROFILE).hs_fs.tiimage
+BOOTIMAGE_BIN_NAME:=sbl_ospi.$(PROFILE).bin
 
 ifeq ($(DEVICE_TYPE),HS)
 	BOOTIMAGE_NAME=$(BOOTIMAGE_NAME_HS)
@@ -191,7 +191,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: j722s:wkup-r5fss0-0:nortos:ti-arm-clang sbl_ospi_stage1 ...
+	@echo  Scrubing: j722s:wkup-r5fss0-0:nortos:ti-arm-clang sbl_ospi ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

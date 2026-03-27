@@ -55,7 +55,7 @@ void _c_int00_secure(void)
    /*------------------------------------------------------------------------*/
    /* SETUP __SP IN A POSITION-INDEPENDENT MANNER (I.E. NO _symval())        */
    /*------------------------------------------------------------------------*/
-    __SP = (((uint64_t)&__TI_STACK_END) - 16) & ~0b111;
+    __SP = (((uint64_t)&__TI_STACK_END) - 16U) & ~((uint64_t)(0b111));
 
    MmuP_init();
 }

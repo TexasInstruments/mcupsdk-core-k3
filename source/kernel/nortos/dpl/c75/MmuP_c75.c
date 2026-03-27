@@ -107,10 +107,10 @@ static void MmuP_addBlockEntry(uint8_t level, uint64_t *tablePtr, uint16_t table
             ((uint64_t)(mapAttrs->accessPerm & 0x3) << 6) |
             ((uint64_t)(mapAttrs->shareable & 0x3) << 8) |
             ((uint64_t)(0x1) << 10) |  /* access flag */
-            ((uint64_t)(!(mapAttrs->global) & 0x1) << 11) |
-            ((uint64_t)(paddr & ~((1 << Mmu_configInfo.tableOffset[level]) - 1))) |
-            ((uint64_t)(!(mapAttrs->privExecute) & 0x1) << 53) |
-            ((uint64_t)(!(mapAttrs->userExecute) & 0x1) << 54);
+            ((uint64_t)((mapAttrs->global == 0U) ? 1U : 0U) << 11U) |
+            ((paddr & ~(((uint64_t)1 << (uint64_t)Mmu_configInfo.tableOffset[level]) - 1U))) |
+            ((uint64_t)((mapAttrs->privExecute == 0U) ? 1U : 0U) << 53U) |
+            ((uint64_t)((mapAttrs->userExecute == 0U) ? 1U : 0U) << 54U);
 
     tablePtr[tableIdx] = desc;
 }
@@ -125,7 +125,7 @@ static uint64_t* MmuP_allocTable(void)
     table = &gMmu_tableArray_NS[tableLen * Mmu_tableArraySlot_NS];
     slot = &Mmu_tableArraySlot_NS;
 
-    if (*slot == (~0)) {
+    if (*slot == (~0U)) {
         return (NULL);
     }
 
@@ -156,7 +156,7 @@ static uint64_t* MmuP_addTableEntry(uint64_t *tablePtr, uint16_t tableIdx,
     }
 
     desc = ((uint64_t)MmuP_DescriptorType_TABLE & 0x3) |
-           ((uint64_t)newTable & ~(Mmu_granuleSize - 1));
+           ((uint64_t)newTable & ~((uint64_t)(Mmu_granuleSize - 1)));
     tablePtr[tableIdx] = desc;
 
     return (newTable);
@@ -173,12 +173,12 @@ static void MmuP_readBlockEntry(uint8_t level, uint64_t *tablePtr, uint16_t tabl
     mapAttrs->attrIndx = (MmuP_AttrIndx)((desc >> 2) & 0x7);
     mapAttrs->accessPerm = (MmuP_AccessPerm)((desc >> 6) & 0x3);
     mapAttrs->shareable = (MmuP_Shareable)((desc >> 8) & 0x3);
-    mapAttrs->global = !((desc >> 11) & 0x1);
-    mapAttrs->privExecute = !((desc >> 53) & 0x1);
-    mapAttrs->userExecute = !((desc >> 54) & 0x1);
+    mapAttrs->global = (((desc >> 11U) & 0x1U) == 0U) ? (uint8_t)1 : (uint8_t)0;
+    mapAttrs->privExecute = (((desc >> 53U) & 0x1U) == 0U) ? (uint8_t)1 : (uint8_t)0;
+    mapAttrs->userExecute = (((desc >> 54U) & 0x1U) == 0U) ? (uint8_t)1 : (uint8_t)0;
 
     *paddr = desc & (uint64_t)Mmu_PADDR_MASK &
-        ~((1 << Mmu_configInfo.tableOffset[level]) - 1);
+        ~((uint64_t)((1 << Mmu_configInfo.tableOffset[level]) - 1));
 }
 
 
@@ -228,7 +228,7 @@ static uint8_t MmuP_tableWalk(uint8_t level, uint64_t *tablePtr, uint64_t *vaddr
                     ~(uint64_t)(Mmu_granuleSize - 1));
                 retStatus = MmuP_tableWalk(level + 1, nextLevelTablePtr,
                     vaddr, paddr, size, mapAttrs);
-                if (!retStatus) {
+                if (retStatus == 0U) {
                     return 0;
                 }
             }
@@ -266,7 +266,7 @@ static uint8_t MmuP_tableWalk(uint8_t level, uint64_t *tablePtr, uint64_t *vaddr
 
                 retStatus = MmuP_tableWalk(level + 1, nextLevelTablePtr,
                     vaddr, paddr, size, mapAttrs);
-                if (!retStatus) {
+                if (retStatus == 0U) {
                     return 0;
                 }
             }
@@ -307,7 +307,7 @@ void MmuP_disable(void)
     unsigned int   key;
 
     /* if MMU is alreay disabled, just return */
-    if (!(MmuP_isEnabled())) {
+    if ((MmuP_isEnabled()) == 0U) {
         return;
     }
 
@@ -528,7 +528,7 @@ void MmuP_init(void)
         gMmu_tableArray_NS[tableLen * i] = ((uint64_t)i + 1U);
     }
 
-    gMmu_tableArray_NS[tableLen * (i - 1)] = (~0);
+    gMmu_tableArray_NS[tableLen * (i - 1)] = (~0U);
     Mmu_tableArraySlot_NS = 0;
 
     /* Allocate level1 Table */

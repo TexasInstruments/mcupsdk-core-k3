@@ -64,7 +64,7 @@ void Exception_Module_startup(void)
     if (Exception_useInternalBuffer) {
         Exception_Module_state.excPtr = (char *)
             (((uint64_t)Exception_Module_state.contextBuf +
-                Exception_sizeContextBuf - 8) & ~0x7);
+                (uint64_t)Exception_sizeContextBuf - 8U) & ~0x7U);
     }
     else {
         Exception_Module_state.excPtr = Hwi_getIsrStackAddress();

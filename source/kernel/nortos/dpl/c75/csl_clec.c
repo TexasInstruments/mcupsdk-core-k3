@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017-2024 Texas Instruments Incorporated.
+ *  Copyright (C) 2017-2026 Texas Instruments Incorporated.
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -90,11 +90,11 @@ int32_t CSL_clecConfigEventLevel(CSL_CLEC_EVTRegs *pRegs,
         regVal = CSL_REG32_RD(&pRegs->CFG[evtNum].MRR);
         if(is_level==0)
         {
-            regVal &= ~(1<<24);
+            regVal &= ~((uint32_t)(1<<24));
         }
         else
         {
-            regVal |= (1<<24);
+            regVal |= (uint32_t)(1<<24);
         }
         CSL_REG32_WR(&pRegs->CFG[evtNum].MRR, regVal);
     }

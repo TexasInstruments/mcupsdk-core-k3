@@ -474,7 +474,7 @@ char *Hwi_getIsrStackAddress(void)
     isrStack += (uint64_t)_symval(&__TI_STACK_SIZE);
     isrStack -= 0x1;
 
-    isrStack &= ~0x7;   /* align to long word */
+    isrStack &= ~((uint64_t)(0x7));   /* align to long word */
 
     return ((char *)isrStack);
 }

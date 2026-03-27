@@ -369,161 +369,167 @@ static size_t _ftoa(out_fct_type out, char* buffer, size_t idx, size_t maxlen, d
   // test for special values
   if (value_local != value_local)
   {
-    return _out_rev(out, buffer, idx, maxlen, "nan", 3, width_val, flags);
+    ret = _out_rev(out, buffer, idx, maxlen, "nan", 3, width_val, flags);
   }
-  if (value_local < -DBL_MAX)
+  else if (value_local < -DBL_MAX)
   {
-    return _out_rev(out, buffer, idx, maxlen, "fni-", 4, width_val, flags);
+    ret = _out_rev(out, buffer, idx, maxlen, "fni-", 4, width_val, flags);
   }
-  if (value_local > DBL_MAX)
+  else if (value_local > DBL_MAX)
   {
-    return _out_rev(out, buffer, idx, maxlen, ((flags & FLAGS_PLUS) != 0U) ? "fni+" : "fni", ((flags & FLAGS_PLUS) != 0U) ? 4U : 3U, width_val, flags);
+    ret = _out_rev(out, buffer, idx, maxlen, ((flags & FLAGS_PLUS) != 0U) ? "fni+" : "fni", ((flags & FLAGS_PLUS) != 0U) ? 4U : 3U, width_val, flags);
   }
 
   // test for very large values
   // standard printf behavior is to print EVERY whole number digit -- which could be 100s of characters overflowing your buffers == bad
-  if ((value_local > PRINTF_MAX_FLOAT) || (value_local < -PRINTF_MAX_FLOAT)) {
-#if defined(PRINTF_SUPPORT_EXPONENTIAL)
-    return _etoa(out, buffer, idx, maxlen, value_local, prec_val, width_val, flags);
-#else
-    return 0U;
-#endif
-  }
-
-  // test for negative
-  bool negative = false;
-  if (value_local < 0) {
-    negative = true;
-    value_local = 0 - value_local;
-  }
-
-  // set default precision, if not set explicitly
-  if ((flags & FLAGS_PRECISION) == 0U) {
-    prec_val = PRINTF_DEFAULT_FLOAT_PRECISION;
-  }
-  // limit precision to 9, cause a prec >= 10 can lead to overflow errors
-  while ((len < PRINTF_FTOA_BUFFER_SIZE) && (prec_val > 9U)) {
-    buf[len++] = '0';
-    prec_val--;
-  }
-
-  int whole = (int)value_local;
-  double tmp = (value_local - whole) * pow10[prec_val];
-  unsigned long frac = (unsigned long)tmp;
-  diff = tmp - frac;
-
-  if (diff > 0.5) {
-    ++frac;
-    // handle rollover, e.g. case 0.99 with prec 1 is 1.0
-    if (frac >= pow10[prec_val]) {
-      frac = 0;
-      ++whole;
-    }
-  }
-  else if (diff < 0.5) {
-  }
-  else if ((frac == 0U) || ((frac & 1U) != 0U)) {
-    // if halfway, round up if odd OR if last digit is 0
-    ++frac;
-  }
   else
   {
-      /* Intentionally add to resolve static failure */
-      (void)0;
-  }
-
-  if (prec_val == 0U) {
-    diff = value_local - (double)whole;
-    if ((!(diff < 0.5) || (diff > 0.5)) && (whole & 1)) {
-      // exactly 0.5 and ODD, then round up
-      // 1.5 -> 2, but 2.5 -> 2
-      ++whole;
+    if ((value_local > PRINTF_MAX_FLOAT) || (value_local < -PRINTF_MAX_FLOAT)) {
+#if defined(PRINTF_SUPPORT_EXPONENTIAL)
+      ret = _etoa(out, buffer, idx, maxlen, value_local, prec_val, width_val, flags);
+#else
+      ret = 0U;
+#endif
     }
   }
-  else {
-    unsigned int count = prec_val;
-    unsigned int omit_trailing_zeros = 1U;
-    unsigned int print_digit = 1U;
-    char temp_buf;
 
-    // now do fractional part, as an unsigned number
-    while (len < PRINTF_FTOA_BUFFER_SIZE) {
-      --count;
-      temp_buf = (char)(48U + (frac % 10U));
+  if (ret == 1U)
+  {
+    // test for negative
+    bool negative = false;
+    if (value_local < 0) {
+      negative = true;
+      value_local = 0 - value_local;
+    }
 
-      if (((flags & FLAGS_ADAPT_EXP) != 0U) && ((flags & FLAGS_HASH) == 0U)) {
-        if(omit_trailing_zeros) {
-          if(temp_buf == '0') {
+    // set default precision, if not set explicitly
+    if ((flags & FLAGS_PRECISION) == 0U) {
+      prec_val = PRINTF_DEFAULT_FLOAT_PRECISION;
+    }
+    // limit precision to 9, cause a prec >= 10 can lead to overflow errors
+    while ((len < PRINTF_FTOA_BUFFER_SIZE) && (prec_val > 9U)) {
+      buf[len++] = '0';
+      prec_val--;
+    }
+
+    int whole = (int)value_local;
+    double tmp = (value_local - whole) * pow10[prec_val];
+    unsigned long frac = (unsigned long)tmp;
+    diff = tmp - frac;
+
+    if (diff > 0.5) {
+      ++frac;
+      // handle rollover, e.g. case 0.99 with prec 1 is 1.0
+      if (frac >= pow10[prec_val]) {
+        frac = 0;
+        ++whole;
+      }
+    }
+    else if (diff < 0.5) {
+    }
+    else if ((frac == 0U) || ((frac & 1U) != 0U)) {
+      // if halfway, round up if odd OR if last digit is 0
+      ++frac;
+    }
+    else
+    {
+      /* Intentionally add to resolve static failure */
+      (void)0;
+    }
+
+    if (prec_val == 0U) {
+      diff = value_local - (double)whole;
+      if ((!(diff < 0.5) || (diff > 0.5)) && (whole & 1)) {
+        // exactly 0.5 and ODD, then round up
+        // 1.5 -> 2, but 2.5 -> 2
+        ++whole;
+      }
+    }
+    else {
+      unsigned int count = prec_val;
+      unsigned int omit_trailing_zeros = 1U;
+      unsigned int print_digit = 1U;
+      char temp_buf;
+
+      // now do fractional part, as an unsigned number
+      while (len < PRINTF_FTOA_BUFFER_SIZE) {
+        --count;
+        temp_buf = (char)(48U + (frac % 10U));
+
+        if (((flags & FLAGS_ADAPT_EXP) != 0U) && ((flags & FLAGS_HASH) == 0U)) {
+          if(omit_trailing_zeros) {
+            if(temp_buf == '0') {
               // Do nothing, omitting the trailing zero
               print_digit = 0;
+            }
+            else {
+              omit_trailing_zeros = 0U;
+              print_digit = 1;
+            }
           }
-          else {
-            omit_trailing_zeros = 0U;
-            print_digit = 1;
-          }
+        }
+
+        if(print_digit) {
+          buf[len++] = temp_buf;
+        }
+        frac = frac / 10U;
+        if (frac == 0U) {
+          break;
         }
       }
 
-      if(print_digit) {
-        buf[len++] = temp_buf;
+      if (((flags & FLAGS_ADAPT_EXP) != 0U) && ((flags & FLAGS_HASH) == 0U) && (omit_trailing_zeros != 0U)) {
+        // Do not add extra zeros
       }
-      frac = frac / 10U;
-      if (frac == 0U) {
+      else {
+        // add extra 0s
+        while ((len < PRINTF_FTOA_BUFFER_SIZE) && (count-- > 0U)) {
+          buf[len++] = '0';
+        }
+      }
+      if (len < PRINTF_FTOA_BUFFER_SIZE) {
+        if (((flags & FLAGS_ADAPT_EXP) != 0U) && ((flags & FLAGS_HASH) == 0U) && (omit_trailing_zeros != 0U)) {
+        // Do not add extra zeros
+        }
+        else {
+          // add decimal
+          buf[len++] = '.';
+        }
+      }
+    }
+
+    // do whole part, number is reversed
+    while (len < PRINTF_FTOA_BUFFER_SIZE) {
+      buf[len++] = (char)(48 + (whole % 10));
+      whole = whole / 10;
+      if (whole == 0) {
         break;
       }
     }
 
-    if (((flags & FLAGS_ADAPT_EXP) != 0U) && ((flags & FLAGS_HASH) == 0U) && (omit_trailing_zeros != 0U)) {
-      // Do not add extra zeros
-    }
-    else {
-      // add extra 0s
-      while ((len < PRINTF_FTOA_BUFFER_SIZE) && (count-- > 0U)) {
+    // pad leading zeros
+    if (((flags & FLAGS_LEFT) == 0U) && ((flags & FLAGS_ZEROPAD) != 0U)) {
+      if ((width_val != 0U) && (negative || ((flags & (FLAGS_PLUS | FLAGS_SPACE)) != 0U))) {
+        width_val--;
+      }
+      while ((len < width_val) && (len < PRINTF_FTOA_BUFFER_SIZE)) {
         buf[len++] = '0';
       }
     }
+
     if (len < PRINTF_FTOA_BUFFER_SIZE) {
-      if (((flags & FLAGS_ADAPT_EXP) != 0U) && ((flags & FLAGS_HASH) == 0U) && (omit_trailing_zeros != 0U)) {
-      // Do not add extra zeros
+      if (negative) {
+        buf[len++] = '-';
       }
-      else {
-        // add decimal
-        buf[len++] = '.';
+      else if (flags & FLAGS_PLUS) {
+        buf[len++] = '+';  // ignore the space if the '+' exists
       }
-    }
-  }
-
-  // do whole part, number is reversed
-  while (len < PRINTF_FTOA_BUFFER_SIZE) {
-    buf[len++] = (char)(48 + (whole % 10));
-    whole = whole / 10;
-    if (whole == 0) {
-      break;
-    }
-  }
-
-  // pad leading zeros
-  if (((flags & FLAGS_LEFT) == 0U) && ((flags & FLAGS_ZEROPAD) != 0U)) {
-    if ((width_val != 0U) && (negative || ((flags & (FLAGS_PLUS | FLAGS_SPACE)) != 0U))) {
-      width_val--;
-    }
-    while ((len < width_val) && (len < PRINTF_FTOA_BUFFER_SIZE)) {
-      buf[len++] = '0';
-    }
-  }
-
-  if (len < PRINTF_FTOA_BUFFER_SIZE) {
-    if (negative) {
-      buf[len++] = '-';
-    }
-    else if (flags & FLAGS_PLUS) {
-      buf[len++] = '+';  // ignore the space if the '+' exists
-    }
-    else
-    {
+      else
+      {
         if (flags & FLAGS_SPACE) {
           buf[len++] = ' ';
         }
+      }
     }
   }
 

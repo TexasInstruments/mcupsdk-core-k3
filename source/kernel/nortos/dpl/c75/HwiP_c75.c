@@ -161,35 +161,38 @@ int Hwi_Instance_init(Hwi_Object *hwi, int intNum,
                       Hwi_FuncPtr fxn, const Hwi_Params *params)
 {
     int status;
+    int retVal = 0;
 
     /* there are 64 "interrupt" events in C7x */
     if (intNum < 0 || intNum > 63) {
-        return (1);
+        retVal = 1;
     }
 
-    if (Hwi_Module_state.dispatchTable[intNum] != NULL) {
-        return (1);
+    if ((retVal == 0) && (Hwi_Module_state.dispatchTable[intNum] != NULL)) {
+        retVal = 1;
     }
 
-    Hwi_Module_state.dispatchTable[intNum] = hwi;
+    if (retVal == 0)
+    {
+        Hwi_Module_state.dispatchTable[intNum] = hwi;
 
-// There is no vector table on C7x.  Instead, all interrupts vector to
-// ESTP + 0x800, where a dispatcher needs to look at AHPEE for interrupt
-// number in service and call the configured ISR.
-//    Hwi_plug(intNum, Hwi_dispatchAlways);
+        // There is no vector table on C7x.  Instead, all interrupts vector to
+        // ESTP + 0x800, where a dispatcher needs to look at AHPEE for interrupt
+        // number in service and call the configured ISR.
+        //    Hwi_plug(intNum, Hwi_dispatchAlways);
 
-    Hwi_reconfig(hwi, fxn, params);
-    hwi->intNum = intNum;
+        Hwi_reconfig(hwi, fxn, params);
+        hwi->intNum = intNum;
 
-    hwi->irp = 0;
+        hwi->irp = 0;
 
-    status = Hwi_postInit(hwi);
+        status = Hwi_postInit(hwi);
 
-    if (status != 0) {
-        return (3 + status);
+        if (status != 0) {
+            retVal = (3 + status);
+        }
     }
-
-    return (0);
+    return (retVal);
 }
 
 /*
@@ -219,16 +222,9 @@ int Hwi_postInit (Hwi_Object *hwi)
  */
 void Hwi_Instance_finalize(uint32_t intNum, int status)
 {
-
-    if (status == 1) {  /* failed early in Hwi_Instance_init() */
-        return;
-    }
-
-    HwiP_disableInt(intNum);
-    Hwi_Module_state.dispatchTable[intNum] = NULL;
-
-    if (status == 2) {  /* failed mid-way into Hwi_Instance_init() */
-        return;
+    if (status != 1) {  /* failed early in Hwi_Instance_init() */
+        HwiP_disableInt(intNum);
+        Hwi_Module_state.dispatchTable[intNum] = NULL;
     }
 
 }
@@ -250,18 +246,17 @@ void Hwi_eventMap(int vectId, int eventId)
 {
     unsigned int mask;          /* Interrupt mask value */
 
-    if (vectId < 0 || vectId > 63) {
-        return;
+    if (vectId >= 0 && vectId <= 63)
+    {
+        mask = Hwi_disable();
+
+        /* Program CLEC to map external eventId to internal interrupt (event) */
+
+        /* clear any residual interrupt */
+        __set_indexed(__EFCLR, 0, 1L << vectId);
+
+        Hwi_restore(mask);
     }
-
-    mask = Hwi_disable();
-
-    /* Program CLEC to map external eventId to internal interrupt (event) */
-
-    /* clear any residual interrupt */
-    __set_indexed(__EFCLR, 0, 1L << vectId);
-
-    Hwi_restore(mask);
 }
 
 /*
@@ -269,13 +264,15 @@ void Hwi_eventMap(int vectId, int eventId)
  */
 int Hwi_getEventId(unsigned int vectId)
 {
+    int retVal = 0;
+
     if (vectId > 63) {
-        return -1;
+        retVal = -1;
     }
 
     /* TODO */
 
-    return 0;
+    return retVal;
 }
 
 /*
@@ -337,11 +334,10 @@ void Hwi_setPriority(unsigned int intNum, unsigned int priority)
 {
     DebugP_assert(priority >= 1U && priority <= 7U);
 
-    if (Hwi_getCXM() != Hwi_TSR_CXM_SecureSupervisor) {
-        return;
+    if (Hwi_getCXM() == Hwi_TSR_CXM_SecureSupervisor)
+    {
+        __set_indexed(__EPRI, intNum, priority << 5);
     }
-
-    __set_indexed(__EPRI, intNum, priority << 5);
 }
 
 
@@ -403,52 +399,50 @@ void Hwi_reconfig(Hwi_Object *hwi, Hwi_FuncPtr fxn, const Hwi_Params *params)
         }
     }
 
-    if (intNum == Hwi_NUM_INTERRUPTS) {
-        return;
-    }
+    if (intNum != Hwi_NUM_INTERRUPTS)
+    {
+        HwiP_disableInt(intNum);
 
+        hwi->fxn = fxn;
+        hwi->arg = params->arg;
 
-    HwiP_disableInt(intNum);
+        if (params->priority == -1) {
+            hwi->priority = Hwi_DEFAULT_INT_PRIORITY;
+        }
+        else {
+            hwi->priority = params->priority;
+        }
 
-    hwi->fxn = fxn;
-    hwi->arg = params->arg;
+        switch (params->maskSetting) {
+            case Hwi_MaskingOption_NONE:
+                hwi->disableMask = 0;
+                hwi->restoreMask = 0;
+                break;
+            case Hwi_MaskingOption_ALL:
+                hwi->disableMask = 0xFFFFFFFFFFFFFFFFUL;
+                hwi->restoreMask = 0xFFFFFFFFFFFFFFFFUL;
+                break;
+            default:
+            case Hwi_MaskingOption_SELF:
+                hwi->disableMask = 1L << intNum;
+                hwi->restoreMask = 1L << intNum;
+                break;
+            case Hwi_MaskingOption_BITMASK:
+                hwi->disableMask = params->disableMask;
+                hwi->restoreMask = params->restoreMask;
+                break;
+        }
 
-    if (params->priority == -1) {
-        hwi->priority = Hwi_DEFAULT_INT_PRIORITY;
-    }
-    else {
-        hwi->priority = params->priority;
-    }
+        if (params->eventId != -1) {
+            Hwi_eventMap(intNum, params->eventId);
+        }
 
-    switch (params->maskSetting) {
-        case Hwi_MaskingOption_NONE:
-            hwi->disableMask = 0;
-            hwi->restoreMask = 0;
-            break;
-        case Hwi_MaskingOption_ALL:
-            hwi->disableMask = 0xFFFFFFFFFFFFFFFFUL;
-            hwi->restoreMask = 0xFFFFFFFFFFFFFFFFUL;
-            break;
-        default:
-        case Hwi_MaskingOption_SELF:
-            hwi->disableMask = 1L << intNum;
-            hwi->restoreMask = 1L << intNum;
-            break;
-        case Hwi_MaskingOption_BITMASK:
-            hwi->disableMask = params->disableMask;
-            hwi->restoreMask = params->restoreMask;
-            break;
-    }
+        /* keep intEvents[] current for ROV */
+        Hwi_Module_state.intEvents[intNum] = Hwi_getEventId(intNum);
 
-    if (params->eventId != -1) {
-        Hwi_eventMap(intNum, params->eventId);
-    }
-
-    /* keep intEvents[] current for ROV */
-    Hwi_Module_state.intEvents[intNum] = Hwi_getEventId(intNum);
-
-    if (params->enableInt) {
-        HwiP_enableInt(intNum);
+        if (params->enableInt) {
+            HwiP_enableInt(intNum);
+        }
     }
 }
 
@@ -592,7 +586,7 @@ void Hwi_dispatchCore(int intNum)
         if ( fxn != NULL)
         {
             (fxn)(arg);
-        }    
+        }
     }
 
     Hwi_setCOP(0xff);

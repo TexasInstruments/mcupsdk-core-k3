@@ -126,18 +126,20 @@ static uint64_t* MmuP_allocTable(void)
     slot = &Mmu_tableArraySlot_NS;
 
     if (*slot == (~0U)) {
-        return (NULL);
+        table = (NULL);
     }
+    else
+    {
+        *slot = *table;
 
-    *slot = *table;
-
-    /* Zero-out level 1 table */
-    for (i = 0; i < tableLen; i++) {
-        /*
-         * Use (i << 2) instead of 0 to init table, in order to force
-         * compiler to not use memset() as an optimization
-         */
-        table[i] = ((uint64_t)i << 2U);
+        /* Zero-out level 1 table */
+        for (i = 0; i < tableLen; i++) {
+            /*
+            * Use (i << 2) instead of 0 to init table, in order to force
+            * compiler to not use memset() as an optimization
+            */
+            table[i] = ((uint64_t)i << 2U);
+        }
     }
 
     return (table);
@@ -150,15 +152,13 @@ static uint64_t* MmuP_addTableEntry(uint64_t *tablePtr, uint16_t tableIdx,
     uint64_t desc, *newTable;
 
     newTable = MmuP_allocTable();
-    if (newTable == NULL)
+    if (newTable != NULL)
     {
-        return (NULL);
+        desc = ((uint64_t)MmuP_DescriptorType_TABLE & 0x3) |
+            ((uint64_t)newTable & ~((uint64_t)(Mmu_granuleSize - 1)));
+        tablePtr[tableIdx] = desc;
+
     }
-
-    desc = ((uint64_t)MmuP_DescriptorType_TABLE & 0x3) |
-           ((uint64_t)newTable & ~((uint64_t)(Mmu_granuleSize - 1)));
-    tablePtr[tableIdx] = desc;
-
     return (newTable);
 }
 
@@ -198,6 +198,7 @@ static uint8_t MmuP_tableWalk(uint8_t level, uint64_t *tablePtr, uint64_t *vaddr
     uint8_t   retStatus;
     uint8_t   blockTranslation;
     uint64_t *nextLevelTablePtr;
+    uint8_t retVal = 1U;
 
     blockTranslation = 1;
     blockSize = 1 << Mmu_configInfo.tableOffset[level];
@@ -229,7 +230,8 @@ static uint8_t MmuP_tableWalk(uint8_t level, uint64_t *tablePtr, uint64_t *vaddr
                 retStatus = MmuP_tableWalk(level + 1, nextLevelTablePtr,
                     vaddr, paddr, size, mapAttrs);
                 if (retStatus == 0U) {
-                    return 0;
+                    retVal = 0U;
+                    break;
                 }
             }
         }
@@ -254,7 +256,8 @@ static uint8_t MmuP_tableWalk(uint8_t level, uint64_t *tablePtr, uint64_t *vaddr
                     nextLevelTablePtr =
                         MmuP_addTableEntry(tablePtr, tableIdx, mapAttrs);
                     if (nextLevelTablePtr == NULL) {
-                        return 0;
+                        retVal = 0U;
+                        break;
                     }
 
                     if ((desc & 0x3) == MmuP_DescriptorType_BLOCK) {
@@ -269,7 +272,8 @@ static uint8_t MmuP_tableWalk(uint8_t level, uint64_t *tablePtr, uint64_t *vaddr
                     retStatus = MmuP_tableWalk(level + 1, nextLevelTablePtr,
                         vaddr, paddr, size, mapAttrs);
                     if (retStatus == 0U) {
-                        return 0;
+                        retVal = 0U;
+                        break;
                     }
                 }
                 else if ((blockTranslation == true) && (*size >= blockSize)) {
@@ -289,7 +293,7 @@ static uint8_t MmuP_tableWalk(uint8_t level, uint64_t *tablePtr, uint64_t *vaddr
         tableIdx++;
     }
 
-    return 1;
+    return retVal;
 }
 
 __attribute__((weak)) void MmuP_setConfig(void)
@@ -315,29 +319,28 @@ void MmuP_disable(void)
     unsigned int   key;
 
     /* if MMU is alreay disabled, just return */
-    if ((MmuP_isEnabled()) == 0U) {
-        return;
+    if ((MmuP_isEnabled()) != 0U)
+    {
+        key = Hwi_disable();
+
+        type = CacheP_TYPE_L1D;
+
+        if (type & CacheP_TYPE_L1D) {
+            /* disable the L1 data cache */
+            CacheP_disable(CacheP_TYPE_L1D);
+        }
+
+        /* disables the MMU */
+        MmuP_disableI();
+
+        /* Invalidate entire TLB */
+        MmuP_tlbInvAll(0);
+
+        /* set cache back to initial settings */
+        CacheP_enable(type);
+
+        Hwi_restore(key);
     }
-
-    key = Hwi_disable();
-
-    type = CacheP_TYPE_L1D;
-
-    if (type & CacheP_TYPE_L1D) {
-        /* disable the L1 data cache */
-        CacheP_disable(CacheP_TYPE_L1D);
-    }
-
-    /* disables the MMU */
-    MmuP_disableI();
-
-    /* Invalidate entire TLB */
-    MmuP_tlbInvAll(0);
-
-    /* set cache back to initial settings */
-    CacheP_enable(type);
-
-    Hwi_restore(key);
 }
 
 /*
@@ -361,27 +364,26 @@ void MmuP_enable(void)
     unsigned int   mode;
 
     /* if MMU is already enabled then just return */
-    if (MmuP_isEnabled()) {
-        return;
+    if (MmuP_isEnabled() == 0U)
+    {
+        key = Hwi_disable();
+
+        CacheP_disable(CacheP_TYPE_L1D);
+
+        /* Invalidate entire TLB */
+        MmuP_tlbInvAll(0);
+
+        /* enables the MMU */
+        mode = Hwi_getCXM();
+        if (mode == Hwi_TSR_CXM_SecureSupervisor) {
+            MmuP_enableI_secure();
+        }
+        MmuP_enableI();
+
+        CacheP_enable(CacheP_TYPE_L1D);
+
+        Hwi_restore(key);
     }
-
-    key = Hwi_disable();
-
-    CacheP_disable(CacheP_TYPE_L1D);
-
-    /* Invalidate entire TLB */
-    MmuP_tlbInvAll(0);
-
-    /* enables the MMU */
-    mode = Hwi_getCXM();
-    if (mode == Hwi_TSR_CXM_SecureSupervisor) {
-        MmuP_enableI_secure();
-    }
-    MmuP_enableI();
-
-    CacheP_enable(CacheP_TYPE_L1D);
-
-    Hwi_restore(key);
 }
 
 /*

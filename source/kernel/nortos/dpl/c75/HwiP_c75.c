@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2025, Texas Instruments Incorporated
+ * Copyright (c) 2013-2026, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -590,7 +590,9 @@ void Hwi_dispatchCore(int intNum)
         }
 
         if ( fxn != NULL)
+        {
             (fxn)(arg);
+        }    
     }
 
     Hwi_setCOP(0xff);

@@ -24,17 +24,17 @@ ATF_INTEGRATED_BOOT?=yes
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_mcspi.$(PROFILE).out
+OUTNAME:=test_mcspi_master_slave.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_mcspi.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=test_mcspi.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=test_mcspi.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=test_mcspi.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=test_mcspi.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=test_mcspi.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=test_mcspi.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=test_mcspi.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=test_mcspi_master_slave.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=test_mcspi_master_slave.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=test_mcspi_master_slave.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=test_mcspi_master_slave.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=test_mcspi_master_slave.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=test_mcspi_master_slave.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=test_mcspi_master_slave.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=test_mcspi_master_slave.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -46,8 +46,9 @@ ATF_BIN_NAME:=bl31.a53ss0-0.$(PROFILE).bin
 ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/lib/soc/am62x
 
 FILES_common := \
-	test_mcspi.c \
-	test_mcspi_multi_thread.c \
+	system_test_utils.c \
+	test_case_mapping.c \
+	test_mcspi_master.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -60,6 +61,7 @@ FILES_common := \
 FILES_PATH_common = \
 	.. \
 	../../.. \
+	../../../../../utils \
 	generated \
 
 INCLUDES_common := \
@@ -67,13 +69,13 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53 \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53 \
-	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
+	-I${MCU_PLUS_SDK_PATH}/test/unity \
+	-I../../.. \
+	-I../../../../../utils/ \
 	-Igenerated \
 
 DEFINES_common := \
 	-DSOC_AM62X \
-	-DA53_CORE \
-	-DENABLE_MT_TESTS \
 
 CFLAGS_common := \
 	-mcpu=cortex-a53+fp+simd \
@@ -193,7 +195,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62x:a53ss0-0:freertos:gcc-aarch64 test_mcspi ...
+	@echo  Scrubing: am62x:a53ss0-0:freertos:gcc-aarch64 test_mcspi_master_slave ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
@@ -224,10 +226,10 @@ $(SYSCFG_GEN_FILES): syscfg
 
 syscfg: ../example.syscfg
 	@echo Generating SysConfig files ...
-	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM62x --context a53ss0-0 --part Default --package AMC --output generated/ ../example.syscfg
+	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM62x --context a53ss0-0 --part Default --package ALW --output generated/ ../example.syscfg
 
 syscfg-gui:
-	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device AM62x --context a53ss0-0 --part Default --package AMC --output generated/  ../example.syscfg
+	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device AM62x --context a53ss0-0 --part Default --package ALW --output generated/  ../example.syscfg
 
 #
 # Generation of boot image which can be loaded by Secondary Boot Loader (SBL)

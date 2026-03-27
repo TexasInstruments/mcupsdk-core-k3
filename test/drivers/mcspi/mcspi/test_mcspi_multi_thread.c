@@ -170,6 +170,25 @@
 #endif
 
 #elif defined(SOC_AM62X)
+/* NOTE: For the AM62X R5F domain the logical MCSPI3/MCSPI4 test indices do not
+ * match the physical peripheral number. MCSPI3_BASE_ADDRESS maps to
+ * CSL_MCSPI1_CFG_BASE (SPI1) and MCSPI4_BASE_ADDRESS maps to CSL_MCSPI0_CFG_BASE
+ * (SPI0). This is intentional and matches the syscfg assignments
+ * (mcspi3 -> SPI1, mcspi4 -> SPI0) for this domain; do not assume MCSPI3 maps
+ * to SPI3 here. */
+#ifdef R5F_CORE
+#define MCSPI0_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)
+#define MCSPI1_BASE_ADDRESS             (CSL_MCU_MCSPI1_CFG_BASE)
+#define MCSPI2_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
+#define MCSPI3_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
+#define MCSPI4_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
+
+#define MCSPI0_INT_NUM                  (207U)
+#define MCSPI1_INT_NUM                  (208U)
+#define MCSPI2_INT_NUM                  (206U)
+#define MCSPI3_INT_NUM                  (205U)
+#define MCSPI4_INT_NUM                  (204U)
+#endif
 
 #ifdef A53_CORE
 #define MCSPI0_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
@@ -323,15 +342,16 @@ static void TestMcspi_setParamsIns3(MCSPI_TestParams *testParams, uint32_t tcId)
 void run_multi_threaded_tests(void *args)
 {
     MCSPI_TestParams  testParams;
-
+    #if !(defined(SOC_AM62X) && defined(R5F_CORE))
     TestMcspi_setParamsIns0(&testParams, 8785);
     RUN_TEST(TestMcspi_multithreadSingleInstanceBlocking, 8785, (void*) &testParams);
     TestMcspi_setParamsIns0(&testParams, 8421);
     RUN_TEST(TestMcspi_multithreadMultiInstanceBlocking, 8421, (void*)&testParams);
+    #endif
     TestMcspi_setParamsIns0(&testParams, 8422);
     RUN_TEST(TestMcspi_multithreadMultiInstanceCallback, 8422, (void*)&testParams);
     /* NOTE: Master-slave external loopback tests are failing on A53 core; this issue has been raised as a bug. */
-    #if !defined A53_CORE
+    #if !defined A53_CORE && !(defined(SOC_AM62X) && defined(R5F_CORE)) 
     TestMcspi_setParamsIns0(&testParams, 8431);
     RUN_TEST(TestMcspi_multithreadMultiInstanceRandom, 9228, (void*) &testParams);
     TestMcspi_setParamsIns0(&testParams, 8432);

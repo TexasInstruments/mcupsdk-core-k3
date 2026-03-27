@@ -47,6 +47,7 @@ ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/lib/soc/am62x
 
 FILES_common := \
 	test_mcspi.c \
+	test_mcspi_multi_thread.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -72,6 +73,7 @@ INCLUDES_common := \
 DEFINES_common := \
 	-DSOC_AM62X \
 	-DA53_CORE \
+	-DENABLE_MT_TESTS \
 
 CFLAGS_common := \
 	-mcpu=cortex-a53+fp+simd \

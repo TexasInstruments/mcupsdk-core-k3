@@ -196,6 +196,39 @@
 #endif
 
 #elif defined(SOC_AM62X)
+/* NOTE: For the AM62X R5F/M4F domain the logical MCSPI3/MCSPI4 test indices do
+ * not match the physical peripheral number. MCSPI3_BASE_ADDRESS maps to
+ * CSL_MCSPI1_CFG_BASE (SPI1) and MCSPI4_BASE_ADDRESS maps to CSL_MCSPI0_CFG_BASE
+ * (SPI0). This is intentional and matches the syscfg assignments
+ * (mcspi3 -> SPI1, mcspi4 -> SPI0) for this domain; do not assume MCSPI3 maps
+ * to SPI3 here. */
+#ifdef R5F_CORE
+#define MCSPI0_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)
+#define MCSPI1_BASE_ADDRESS             (CSL_MCU_MCSPI1_CFG_BASE)
+#define MCSPI2_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
+#define MCSPI3_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
+#define MCSPI4_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
+
+#define MCSPI0_INT_NUM                  (207U)
+#define MCSPI1_INT_NUM                  (208U)
+#define MCSPI2_INT_NUM                  (206U)
+#define MCSPI3_INT_NUM                  (205U)
+#define MCSPI4_INT_NUM                  (204U)
+#endif
+
+#ifdef M4F_CORE
+#define MCSPI0_BASE_ADDRESS             (CSL_MCU_MCSPI0_CFG_BASE)
+#define MCSPI1_BASE_ADDRESS             (CSL_MCU_MCSPI1_CFG_BASE)
+#define MCSPI2_BASE_ADDRESS             (CSL_MCSPI2_CFG_BASE)
+#define MCSPI3_BASE_ADDRESS             (CSL_MCSPI1_CFG_BASE)
+#define MCSPI4_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
+
+#define MCSPI0_INT_NUM                  (38U)
+#define MCSPI1_INT_NUM                  (39U)
+#define MCSPI2_INT_NUM                  (-1)
+#define MCSPI3_INT_NUM                  (-1)
+#define MCSPI4_INT_NUM                  (-1)
+#endif
 
 #ifdef A53_CORE
 #define MCSPI0_BASE_ADDRESS             (CSL_MCSPI0_CFG_BASE)
@@ -302,7 +335,7 @@ uint64_t dma;
 
 mcspiUtPref gUtPerf[3];
 
-#if defined(SOC_AM62AX) ||  defined(SOC_AM62DX)
+#if (CONFIG_MCSPI_NUM_DMA_INSTANCES > 0U) && (defined(SOC_AM62AX) || defined(SOC_AM62DX) || (defined(SOC_AM62X) && (defined(A53_CORE) || defined(R5F_CORE))))
 extern MCSPI_DmaConfig gMcspiDmaConfig[];
 
 /* The following symbol is from generated files. */
@@ -350,7 +383,7 @@ uint16_t     gMcspiPerfTxBuffer[APP_MCSPI_TXONLYMSGSIZE];
 uint32_t     gChEnableRegVal, gChDisableRegVal;
 uint32_t     gCsAssertRegVal, gCsDeAssertRegVal;
 
-#if (CONFIG_MCSPI_NUM_INSTANCES > 2)
+#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && (CONFIG_MCSPI_NUM_DMA_INSTANCES > 0U) && !(defined(SOC_AM62X) && defined(M4F_CORE))
 uint32_t     gMcspiTxBufferDma[APP_MCSPI_MSGSIZE] __attribute__((aligned(CacheP_CACHELINE_ALIGNMENT)));
 uint32_t     gMcspiRxBufferDma[APP_MCSPI_MSGSIZE] __attribute__((aligned(CacheP_CACHELINE_ALIGNMENT)));
 /* Used for DMA large transfer */
@@ -390,7 +423,7 @@ static void mcspi_low_latency_transfer_16bit(uint32_t baseAddr,
                                             uint32_t length,
                                             uint32_t bufWidthShift);
 /* NOTE: DMA test cases are known to fail on C7x core. */
-#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && !defined(BUILD_C7X)
+#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && (CONFIG_MCSPI_NUM_DMA_INSTANCES > 0U) && !defined(BUILD_C7X) && !(defined(SOC_AM62X) && defined(M4F_CORE))
 void test_mcspi_loopback_dma(void *args);
 void test_mcspi_loopback_multimaster_dma(void *args);
 void test_mcspi_loopback_dma_with_csdisable(void *args);
@@ -399,7 +432,7 @@ void test_mcspi_dma_open_close(void *args);
 static void TestMcspi_dmaSingleWordTransfer(void *args);
 static void TestMcspi_txOnlyTransfer(void *args);
 static void TestMcspi_loopbackDma(void *args);
-#if defined(SOC_AM62AX) ||  defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || (defined(SOC_AM62X) && (defined(A53_CORE) || defined(R5F_CORE)))
 static int32_t TestMcspi_dmaOpenFail(void *args);
 static void TestMcspi_dmaTransferNoDmaHandle(void *args);
 static void TestMcspi_dmaCloseNoDmaHandle(void *args);
@@ -418,7 +451,9 @@ static void TestMcspi_reconfigFifo(void *args);
 static void TestMcspi_fifoTriggerLevels(void *args);
 static void TestMcspi_txOnlyLoopback(void *args);
 static void TestMcspi_openCallbackNull(void *args);
+#if !(defined(SOC_AM62X) && defined(R5F_CORE)) || defined(ENABLE_MT_TESTS)
 static void TestMcspi_chConfig(void *args);
+#endif
 static void TestMcspi_loopbackTurboMode(void *args);
 static void TestMcspi_loopbackRampUpWordCount(void *args);
 static void TestMcspi_transferCountZero(void *args);
@@ -436,7 +471,9 @@ void test_mcspi_callback_cancel(MCSPI_Handle handle, MCSPI_Transaction *trans);
 void test_mcspi_transfer_cancel(void *args);
 void test_mcspi_transfer_cancel_transfer(void *args);
 void test_mcspi_transfer_cancel_cancel(void *args);
+#if !(defined(SOC_AM62X) && defined(M4F_CORE))
 static void TestMcspi_dmaStop(void *args);
+#endif
 static void TestMcspi_callbackDmaCancel(MCSPI_Handle handle, MCSPI_Transaction *trans);
 static void TestMcspi_transferCancelCoverage(void *args);
 static void TestMcspi_transferCancelNULL(void *args);
@@ -489,8 +526,10 @@ void test_main(void *args)
     RUN_TEST(TestMcspi_openCallbackNull, 8424, (void*)&testParams);
     test_mcspi_set_params(&testParams, 8398);
     RUN_TEST(TestMcspi_loopbackTurboMode, 8398, (void*) &testParams);
+#if !(defined(SOC_AM62X) && defined(R5F_CORE)) || defined(ENABLE_MT_TESTS)
     test_mcspi_set_params(&testParams, 8397);
     RUN_TEST(TestMcspi_chConfig, 8397, (void*) &testParams);
+#endif
     test_mcspi_set_params(&testParams, 9227);
     RUN_TEST(TestMcspi_loopbackRampUpWordCount,  9227, (void*)&testParams);
     test_mcspi_set_params(&testParams, 9233);
@@ -537,7 +576,7 @@ void test_main(void *args)
 #endif
     test_mcspi_set_params(&testParams, 2902);
     RUN_TEST(test_mcspi_loopback,  2902, (void*)&testParams);
-#if (CONFIG_MCSPI_NUM_INSTANCES > 2)
+#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && !(defined(SOC_AM62X) && defined(M4F_CORE))
     test_mcspi_set_params(&testParams, 4004);
     RUN_TEST(test_mcspi_loopback,  4004, (void*)&testParams);
 #endif
@@ -554,7 +593,7 @@ void test_main(void *args)
     test_mcspi_set_params(&testParams, 2910);
     RUN_TEST(test_mcspi_loopback_performance,  2910, (void*)&testParams);
     /* NOTE: This test case is hanging on C7x core. */
-    #if !defined(BUILD_C7X)
+    #if !defined(BUILD_C7X) && !(defined(SOC_AM62X) && defined(R5F_CORE))
     test_mcspi_set_params(&testParams, 2911);
     RUN_TEST(test_mcspi_loopback_back2back,  2911, (void*)&testParams);
     #endif
@@ -605,7 +644,7 @@ void test_main(void *args)
     RUN_TEST(test_mcspi_loopback,  2926, (void*)&testParams);
     test_mcspi_set_params(&testParams, 2927);
     RUN_TEST(test_mcspi_loopback_multimaster,  2927, (void*)&testParams);
-#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && !defined(BUILD_C7X)
+#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && !defined(BUILD_C7X) && (!(defined(SOC_AM62X) && defined(R5F_CORE)) || defined(ENABLE_MT_TESTS))
     test_mcspi_set_params(&testParams, 4025);
     /* Change clock divider as per test list */
     chConfigParams = &(testParams.mcspiChConfigParams);
@@ -645,7 +684,7 @@ void test_main(void *args)
 
     test_mcspi_set_params(&testParams, 2933);
     RUN_TEST(test_mcspi_performance_16bit, 2933, (void*)&testParams);
-#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && !defined(BUILD_C7X)
+#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && (CONFIG_MCSPI_NUM_DMA_INSTANCES > 0U) && !defined(BUILD_C7X) && !(defined(SOC_AM62X) && defined(M4F_CORE))
     test_mcspi_set_params(&testParams, 4026);
     RUN_TEST(test_mcspi_loopback_multimaster_dma,  4026, (void*)&testParams);
     test_mcspi_set_params(&testParams, 4027);
@@ -690,7 +729,9 @@ void test_main(void *args)
     test_mcspi_set_params(&testParams, 4028);
     RUN_TEST(test_mcspi_loopback_dma_with_csdisable,  8056, (void*)&testParams);
     test_mcspi_set_params(&testParams, 4029);
+    #if !(defined(SOC_AM62X) && defined(R5F_CORE))
     RUN_TEST(test_mcspi_loopback_dma_with_csdisable,  8055, (void*)&testParams);
+    #endif
     test_mcspi_set_params(&testParams, 4027);
     RUN_TEST(TestMcspi_loopbackDma, 10724, (void*)&testParams);
     test_mcspi_set_params(&testParams, 4027);
@@ -700,7 +741,7 @@ void test_main(void *args)
     test_mcspi_set_params(&testParams, 4029);
     RUN_TEST(test_mcspi_loopback_dma_with_toggled_csdisable,  8055, (void*)&testParams);
     #if ENABLE_MT_TESTS
-    #if defined(SOC_AM62AX) && !defined(DM_R5F_CORE)
+    #if (defined(SOC_AM62AX) && !defined(DM_R5F_CORE)) || (defined(SOC_AM62X) && (defined(A53_CORE) || defined(R5F_CORE)))
     /* Runs multi-threaded MCSPI tests using the provided test parameters.*/
     run_multi_threaded_tests(&testParams);
     #endif
@@ -711,7 +752,7 @@ void test_main(void *args)
     test_mcspi_set_params(&testParams, 4027);
     RUN_TEST(TestMcspi_dmaStop,  9274, (void*)&testParams);
     #endif
-    #if defined(SOC_AM62AX) ||  defined(SOC_AM62DX)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62DX) || (defined(SOC_AM62X) && (defined(A53_CORE) || defined(R5F_CORE)))
     test_mcspi_set_params(&testParams, 8412);
     RUN_TEST(TestMcspi_dmaChInitNoDmaHandle, 8412, (void*)&testParams);
     test_mcspi_set_params(&testParams, 8413);
@@ -752,7 +793,7 @@ void test_main(void *args)
     }
     DebugP_log("\nMCSPI Performance Numbers Print End\r\n");
 
-#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && !defined(BUILD_C7X)
+#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && (CONFIG_MCSPI_NUM_DMA_INSTANCES > 0U) && !defined(BUILD_C7X) && !(defined(SOC_AM62X) && defined(M4F_CORE))
     test_mcspi_set_params(&testParams, 6864);
     RUN_TEST(test_mcspi_dma_open_close,  6864, (void*)&testParams);
 #endif
@@ -1038,7 +1079,7 @@ void test_mcspi_loopback_performance(void *args)
     return;
 }
 
-#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && !defined(BUILD_C7X)
+#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && (CONFIG_MCSPI_NUM_DMA_INSTANCES > 0U) && !defined(BUILD_C7X) && !(defined(SOC_AM62X) && defined(M4F_CORE))
 
 /**
  * @brief Test case for MCSPI loopback using DMA mode with callback transfer.
@@ -1350,7 +1391,7 @@ static void TestMcspi_dmaSingleWordTransfer(void *args)
     MCSPI_close(mcspiHandle);
 }
 
-#if defined(SOC_AM62AX) ||  defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || (defined(SOC_AM62X) && (defined(A53_CORE) || defined(R5F_CORE)))
 static int32_t TestMcspi_dmaOpenFail(void *args)
 {
     (void)args;
@@ -2479,6 +2520,7 @@ static void TestMcspi_fifoTriggerLevels(void *args)
  * It covers edge cases such as toggling start bit, polarity, and bitrate to ensure correct behavior.
  * The test asserts success only if all three passes complete without data mismatch or errors.
  */
+#if !(defined(SOC_AM62X) && defined(R5F_CORE)) || defined(ENABLE_MT_TESTS)
 static void TestMcspi_chConfig(void *args)
 {
     int32_t             status = SystemP_SUCCESS;
@@ -2655,6 +2697,7 @@ static void TestMcspi_chConfig(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     return;
 }
+#endif
 
 /**
  * @brief Test case for MCSPI loopback in Turbo Mode.
@@ -3468,7 +3511,7 @@ void test_mcspi_loopback_multimaster(void *args)
     return;
 }
 
-#if (CONFIG_MCSPI_NUM_INSTANCES > 2)
+#if (CONFIG_MCSPI_NUM_INSTANCES > 2) && (CONFIG_MCSPI_NUM_DMA_INSTANCES > 0U) && !(defined(SOC_AM62X) && defined(M4F_CORE))
 void test_mcspi_loopback_multimaster_dma(void *args)
 {
     int32_t             status = SystemP_SUCCESS;
@@ -4798,6 +4841,7 @@ static void TestMcspi_transferCancelNULL(void *args)
     return;
 }
 
+#if (CONFIG_MCSPI_NUM_DMA_INSTANCES > 0U) && !(defined(SOC_AM62X) && defined(M4F_CORE))
 /**
  * @brief Test case to stop DMA operations for MCSPI.
  *
@@ -4962,6 +5006,7 @@ static void TestMcspi_dmaStop(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     return;
 }
+#endif
 
 void test_mcspi_transfer_cancel(void *args)
 {
@@ -5447,7 +5492,7 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
             attrParams->eventId            = MCSPI0_EVENT_ID;
 #endif
             break;
-#if !defined(SOC_AM62LX)
+#if !defined(SOC_AM62LX) && !(defined(SOC_AM62X) && defined(M4F_CORE))
         case 4004:
             attrParams->baseAddr           = MCSPI4_BASE_ADDRESS;
             attrParams->intrNum            = MCSPI4_INT_NUM;
@@ -5529,13 +5574,15 @@ static void test_mcspi_set_params(MCSPI_TestParams *testParams, uint32_t tcId)
         case 2927:
             attrParams->operMode               = MCSPI_OPER_MODE_INTERRUPT;
             break;
+#if !(defined(SOC_AM62X) && defined(R5F_CORE)) || defined(ENABLE_MT_TESTS)
         case 4025:
-        attrParams->baseAddr = MCSPI0_BASE_ADDRESS;
-        attrParams->intrNum = MCSPI0_INT_NUM;
+            attrParams->baseAddr               = MCSPI0_BASE_ADDRESS;
+            attrParams->intrNum                = MCSPI0_INT_NUM;
 #if defined BUILD_C7X
             attrParams->eventId                = MCSPI1_EVENT_ID;
 #endif
            break;
+#endif
         case 2929:
             openParams->transferMode           = MCSPI_TRANSFER_MODE_CALLBACK;
             openParams->transferCallbackFxn    = test_mcspi_callback;

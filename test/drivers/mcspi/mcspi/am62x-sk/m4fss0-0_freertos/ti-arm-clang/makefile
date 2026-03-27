@@ -6,20 +6,17 @@ export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
-CG_TOOL_ROOT=$(CGT_GCC_AARCH64_PATH)
+CG_TOOL_ROOT=$(CGT_TI_ARM_CLANG_PATH)
 
-LD=$(CG_TOOL_ROOT)/bin/aarch64-none-elf-ld
-CC=$(CG_TOOL_ROOT)/bin/aarch64-none-elf-gcc
-LNK=$(CG_TOOL_ROOT)/bin/aarch64-none-elf-gcc
-STRIP=$(CG_TOOL_ROOT)/bin/aarch64-none-elf-strip
-OBJCOPY=$(CG_TOOL_ROOT)/bin/aarch64-none-elf-objcopy
+CC=$(CG_TOOL_ROOT)/bin/tiarmclang
+LNK=$(CG_TOOL_ROOT)/bin/tiarmclang
+STRIP=$(CG_TOOL_ROOT)/bin/tiarmstrip
+OBJCOPY=$(CG_TOOL_ROOT)/bin/tiarmobjcopy
 ifeq ($(OS), Windows_NT)
 	PYTHON=python
 else
 	PYTHON=python3
 endif
-
-ATF_INTEGRATED_BOOT?=yes
 
 PROFILE?=release
 ConfigName:=$(PROFILE)
@@ -39,15 +36,9 @@ TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
 endif
-ATF_LOAD_ADDR:=0x80000000
-ATF_OUTNAME:=bl31.a53ss0-0.$(PROFILE).out
-ATF_RPRC_NAME:=bl31.a53ss0-0.$(PROFILE).rprc
-ATF_BIN_NAME:=bl31.a53ss0-0.$(PROFILE).bin
-ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/lib/soc/am62x
 
 FILES_common := \
 	test_mcspi.c \
-	test_mcspi_multi_thread.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -63,75 +54,85 @@ FILES_PATH_common = \
 	generated \
 
 INCLUDES_common := \
+	-I${CG_TOOL_ROOT}/include/c \
 	-I${MCU_PLUS_SDK_PATH}/source \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
-	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53 \
-	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53 \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CM4F \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/m4f \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
 	-Igenerated \
 
 DEFINES_common := \
 	-DSOC_AM62X \
-	-DA53_CORE \
+	-DSOC_AM62X \
+	-DM4F_CORE \
 	-DENABLE_MT_TESTS \
 
 CFLAGS_common := \
-	-mcpu=cortex-a53+fp+simd \
-	-mabi=lp64 \
-	-mcmodel=large \
-	-mstrict-align \
-	-mfix-cortex-a53-835769 \
-	-mfix-cortex-a53-843419 \
+	-mcpu=cortex-m4 \
+	-mfloat-abi=hard \
+	-mthumb \
 	-Wall \
 	-Werror \
 	-g \
-	-Wno-int-to-pointer-cast \
-	-Wno-pointer-to-int-cast \
-	-Wno-unused-but-set-variable \
-	-fdata-sections \
-	-ffunction-sections \
+	-Wno-gnu-variable-sized-type-not-at-end \
+	-Wno-unused-function \
+
+CFLAGS_cpp_common := \
+	-Wno-c99-designator \
+	-Wno-extern-c-compat \
+	-Wno-c++11-narrowing \
+	-Wno-reorder-init-list \
+	-Wno-deprecated-register \
+	-Wno-writable-strings \
+	-Wno-enum-compare \
+	-Wno-reserved-user-defined-literal \
+	-Wno-unused-const-variable \
+	-x c++ \
 
 CFLAGS_debug := \
 	-D_DEBUG_=1 \
 
 CFLAGS_release := \
-	-O2 \
+	-Os \
 
 LNK_FILES_common = \
 	linker.cmd \
 
 LIBS_PATH_common = \
-	-L${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
-	-L${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	-L${MCU_PLUS_SDK_PATH}/test/unity/lib \
-	-L$(CGT_GCC_AARCH64_PATH)/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/board/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/test/unity/lib \
+	-Wl,-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
-	-l:freertos.am62x.a53.gcc-aarch64.${ConfigName}.lib \
-	-l:drivers.am62x.a53.gcc-aarch64.${ConfigName}.lib \
-	-l:unity.am62x.a53.gcc-aarch64.${ConfigName}.lib \
+	-lfreertos.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
+	-ldrivers.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
+	-lboard.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
+	-lunity.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
+	-llibc.a \
+	-llibsysbm.a \
 
 LFLAGS_common = \
-	-Wl,-static \
-	-Wl,--gc-sections \
-	-Wl,--build-id=none \
-	-lstdc++ \
-	-lgcc \
-	-lm \
-	-lc \
-	-lrdimon \
+	-Wl,--ram_model \
+	-Wl,--reread_libs \
 
 
 LIBS_NAME = \
-	freertos.am62x.a53.gcc-aarch64.${ConfigName}.lib \
-	drivers.am62x.a53.gcc-aarch64.${ConfigName}.lib \
-	unity.am62x.a53.gcc-aarch64.${ConfigName}.lib \
+	freertos.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
+	drivers.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
+	board.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
+	unity.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
+	libc.a \
+	libsysbm.a \
 
 LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
-	$(CGT_GCC_AARCH64_PATH)/lib \
+	${CG_TOOL_ROOT}/lib \
 
 FILES := $(FILES_common) $(FILES_$(PROFILE))
 ASMFILES := $(ASMFILES_common) $(ASMFILES_$(PROFILE))
@@ -142,6 +143,7 @@ INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
 LIBS := $(LIBS_common) $(LIBS_$(PROFILE))
 LIBS_PATH := $(LIBS_PATH_common) $(LIBS_PATH_$(PROFILE))
 LFLAGS := $(LFLAGS_common) $(LFLAGS_$(PROFILE))
+LNKOPTFLAGS := $(LNKOPTFLAGS_common) $(LNKOPTFLAGS_$(PROFILE))
 LNK_FILES := $(LNK_FILES_common) $(LNK_FILES_$(PROFILE))
 
 OBJDIR := obj/$(PROFILE)/
@@ -156,12 +158,12 @@ vpath %.lib $(LIBS_PATH_NAME)
 vpath %.a $(LIBS_PATH_NAME)
 
 $(OBJDIR)/%.obj %.obj: %.c
-	@echo  Compiling: am62x:a53ss0-0:freertos:gcc-aarch64 $(OUTNAME): $<
-	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -MT $@ -o $(OBJDIR)/$@ $<
+	@echo  Compiling: am62x:m4fss0-0:freertos:ti-arm-clang $(OUTNAME): $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -o $(OBJDIR)/$@ $<
 
 $(OBJDIR)/%.obj %.obj: %.S
-	@echo  Compiling: am62x:a53ss0-0:freertos:gcc-aarch64 $(LIBNAME): $<
-	$(CC) -c -x assembler-with-cpp $(CFLAGS) $(INCLUDES) $(DEFINES) -o $(OBJDIR)$@ $<
+	@echo  Compiling: am62x:m4fss0-0:freertos:ti-arm-clang $(LIBNAME): $<
+	$(CC) -c $(CFLAGS) -o $(OBJDIR)/$@ $<
 
 all: $(TARGETS)
 
@@ -174,13 +176,13 @@ SYSCFG_GEN_FILES+=generated/ti_board_open_close.c generated/ti_board_open_close.
 
 $(OUTNAME): syscfg $(SYSCFG_GEN_FILES) $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 	@echo  .
-	@echo  Linking: am62x:a53ss0-0:freertos:gcc-aarch64 $@ ...
-	$(LNK) $(LIBS_PATH) -Wl,-Map=$(OUTNAME:%.out=%.map) -o $@ -Wl,--start-group $(LFLAGS) $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) -Wl,--end-group -Wl,-T,$(LNK_FILES)
-	@echo  Linking: am62x:a53ss0-0:freertos:gcc-aarch64 $@ Done !!!
+	@echo  Linking: am62x:m4fss0-0:freertos:ti-arm-clang $@ ...
+	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PATH) -Wl,-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) $(LNK_FILES)
+	@echo  Linking: am62x:m4fss0-0:freertos:ti-arm-clang $@ Done !!!
 	@echo  .
 
 clean:
-	@echo  Cleaning: am62x:a53ss0-0:freertos:gcc-aarch64 $(OUTNAME) ...
+	@echo  Cleaning: am62x:m4fss0-0:freertos:ti-arm-clang $(OUTNAME) ...
 	$(RMDIR) $(OBJDIR)
 	$(RM) $(OUTNAME)
 	$(RM) $(BOOTIMAGE_NAME)
@@ -193,7 +195,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62x:a53ss0-0:freertos:gcc-aarch64 test_mcspi ...
+	@echo  Scrubing: am62x:m4fss0-0:freertos:ti-arm-clang test_mcspi ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
@@ -224,10 +226,10 @@ $(SYSCFG_GEN_FILES): syscfg
 
 syscfg: ../example.syscfg
 	@echo Generating SysConfig files ...
-	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM62x --context a53ss0-0 --part Default --package AMC --output generated/ ../example.syscfg
+	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM62x --context m4fss0-0 --part Default --package ALW --output generated/ ../example.syscfg
 
 syscfg-gui:
-	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device AM62x --context a53ss0-0 --part Default --package AMC --output generated/  ../example.syscfg
+	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device AM62x --context m4fss0-0 --part Default --package ALW --output generated/  ../example.syscfg
 
 #
 # Generation of boot image which can be loaded by Secondary Boot Loader (SBL)
@@ -265,28 +267,16 @@ else
   XIPGEN_CMD=$(MCU_PLUS_SDK_PATH)/tools/boot/xipGen/xipGen.out
 endif
 
-ifeq ($(ATF_INTEGRATED_BOOT), yes)
 MULTI_CORE_IMAGE_PARAMS = \
-	$(ATF_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
-	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_load_only) \
-
-else
-MULTI_CORE_IMAGE_PARAMS = \
-	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
-
-endif
+	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
 
 MULTI_CORE_IMAGE_PARAMS_XIP = \
-	$(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
+	$(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
 
 $(BOOTIMAGE_NAME): $(OUTNAME)
-	@echo  Boot image: am62x:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$@ ...
+	@echo  Boot image: am62x:m4fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ ...
 ifneq ($(OS),Windows_NT)
 	$(CHMOD) a+x $(XIPGEN_CMD)
-endif
-ifeq ($(ATF_INTEGRATED_BOOT), yes)
-	$(LD) -b binary -A aarch64 --oformat elf64-littleaarch64 --section-start=.data=$(ATF_LOAD_ADDR) -e $(ATF_LOAD_ADDR) $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) -o $(ATF_OUTNAME)
-	$(OUTRPRC_CMD) $(ATF_OUTNAME) $(SW_VERSION)>> $(BOOTIMAGE_TEMP_OUT_FILE)
 endif
 	$(OUTRPRC_CMD) $(OUTNAME) $(SW_VERSION)>> $(BOOTIMAGE_TEMP_OUT_FILE)
 	$(COPY) $(BOOTIMAGE_RPRC_NAME) $(BOOTIMAGE_RPRC_NAME_TMP)
@@ -301,13 +291,9 @@ endif
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
-ifeq ($(ATF_INTEGRATED_BOOT), yes)
-	$(RM) $(ATF_OUTNAME)
-	$(RM) $(ATF_RPRC_NAME)
-endif
-	@echo  Boot image: am62x:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$@ Done !!!
+	@echo  Boot image: am62x:m4fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ Done !!!
 	@echo  .
-	@echo  Boot image: am62x:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
+	@echo  Boot image: am62x:m4fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
 	@echo  .
 
 $(BOOTIMAGE_NAME_HS): $(BOOTIMAGE_NAME)
@@ -327,7 +313,7 @@ else
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_NAME)-enc
 endif
-	@echo  Boot image: am62x:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
+	@echo  Boot image: am62x:m4fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
 	@echo  .
 endif
 -include $(addprefix $(OBJDIR)/, $(DEPS))

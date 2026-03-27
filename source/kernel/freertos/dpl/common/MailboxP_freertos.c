@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -130,6 +130,7 @@ int32_t MailboxP_post(MailboxP_Handle handle,
 
     BaseType_t qStatus;
     int32_t ret_val = SystemP_SUCCESS;
+    uint32_t timeout_val = timeout;
     MailboxP_freertos *mailbox = (MailboxP_freertos *)handle;
 
     if (HwiP_inISR() != 0U)
@@ -142,11 +143,11 @@ int32_t MailboxP_post(MailboxP_Handle handle,
     }
     else
     {
-        if (timeout == SystemP_WAIT_FOREVER)
+        if (timeout_val == SystemP_WAIT_FOREVER)
         {
-            timeout = portMAX_DELAY;
+            timeout_val = portMAX_DELAY;
         }
-        qStatus = xQueueSendToBack(mailbox->xqueueHndl, msg, timeout);
+        qStatus = xQueueSendToBack(mailbox->xqueueHndl, msg, timeout_val);
     }
 
     if (qStatus == pdPASS)
@@ -169,6 +170,7 @@ int32_t MailboxP_pend(MailboxP_Handle handle,
     
     BaseType_t qStatus;
     int32_t ret_val = SystemP_SUCCESS;
+    uint32_t timeout_val = timeout;
     MailboxP_freertos *mailbox = (MailboxP_freertos *)handle;
 
     if (HwiP_inISR() != 0U)
@@ -181,13 +183,13 @@ int32_t MailboxP_pend(MailboxP_Handle handle,
     }
     else
     {
-        if (timeout == SystemP_WAIT_FOREVER)
+        if (timeout_val == SystemP_WAIT_FOREVER)
         {
-            timeout = portMAX_DELAY;
+            timeout_val = portMAX_DELAY;
         }
         qStatus = xQueueReceive(mailbox->xqueueHndl,
                                 msg,
-                                (timeout == SystemP_WAIT_FOREVER) ? portMAX_DELAY : timeout);
+                                timeout_val);
     }
 
     if (qStatus == pdPASS)

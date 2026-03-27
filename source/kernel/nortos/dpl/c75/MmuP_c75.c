@@ -422,18 +422,21 @@ int32_t MmuP_map(uintptr_t vaddr, uintptr_t paddr, uint32_t size, MmuP_MapAttrs 
     uint32_t key;
     uint8_t retStatus, enabled;
     int32_t status = SystemP_SUCCESS;
+    uintptr_t vaddrVal = vaddr;
+    uintptr_t paddrVal = paddr;
+    uint32_t sizeVal = size;
 
     /* Assert that mapAttrs != NULL */
     DebugP_assertNoLog(mapAttrs != NULL);
 
     /* Range check on vaddr and paddr */
-    DebugP_assertNoLog(vaddr <= Mmu_PADDR_MASK);
-    DebugP_assertNoLog(paddr <= Mmu_PADDR_MASK);
+    DebugP_assertNoLog(vaddrVal <= Mmu_PADDR_MASK);
+    DebugP_assertNoLog(paddrVal <= Mmu_PADDR_MASK);
 
     /* Alignment check on vaddr, paddr & size */
-    DebugP_assertNoLog((vaddr & (Mmu_granuleSize - 1)) == 0);
-    DebugP_assertNoLog((paddr & (Mmu_granuleSize - 1)) == 0);
-    DebugP_assertNoLog((size & (Mmu_granuleSize - 1)) == 0);
+    DebugP_assertNoLog((vaddrVal & (Mmu_granuleSize - 1)) == 0);
+    DebugP_assertNoLog((paddrVal & (Mmu_granuleSize - 1)) == 0);
+    DebugP_assertNoLog((sizeVal & (Mmu_granuleSize - 1)) == 0);
 
     key = Hwi_disable();
 
@@ -444,12 +447,12 @@ int32_t MmuP_map(uintptr_t vaddr, uintptr_t paddr, uint32_t size, MmuP_MapAttrs 
     MmuP_disable();
 
     if (Mmu_configInfo.noLevel0Table) {
-        retStatus = MmuP_tableWalk(1, Mmu_level1Table_NS, &vaddr, &paddr,
-            &size, mapAttrs);
+        retStatus = MmuP_tableWalk(1, Mmu_level1Table_NS, &vaddrVal, &paddrVal,
+            &sizeVal, mapAttrs);
     }
     else {
-        retStatus = MmuP_tableWalk(0, Mmu_level1Table_NS, &vaddr, &paddr,
-            &size, mapAttrs);
+        retStatus = MmuP_tableWalk(0, Mmu_level1Table_NS, &vaddrVal, &paddrVal,
+            &sizeVal, mapAttrs);
     }
 
     /* Ensure all translation table updates have been observed */

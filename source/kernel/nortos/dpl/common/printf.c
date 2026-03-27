@@ -437,7 +437,8 @@ static size_t _ftoa(out_fct_type out, char* buffer, size_t idx, size_t maxlen, d
       if(print_digit) {
         buf[len++] = temp_buf;
       }
-      if (!(frac /= 10U)) {
+      frac = frac / 10U;
+      if (frac == 0U) {
         break;
       }
     }
@@ -465,7 +466,8 @@ static size_t _ftoa(out_fct_type out, char* buffer, size_t idx, size_t maxlen, d
   // do whole part, number is reversed
   while (len < PRINTF_FTOA_BUFFER_SIZE) {
     buf[len++] = (char)(48 + (whole % 10));
-    if (!(whole /= 10)) {
+    whole = whole / 10;
+    if (whole == 0) {
       break;
     }
   }

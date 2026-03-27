@@ -145,7 +145,7 @@ const defines_wkup_r5 = {
 
 const syscfgfile = "../example.syscfg"
 
-const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_SCICLIENT_UNIT_TEST";
+const readmeDoxygenPageTag = "TEST_DRIVERS_SCICLIENT_UNIT_TEST";
 
 const templates_freertos_mcu_r5f =
 [
@@ -269,7 +269,8 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "sciclient_unit_test";
     property.description = "Sciclient Unit Test example."
-    property.isInternal = false;
+    property.isInternal = true;
+    property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;
 
     return property;

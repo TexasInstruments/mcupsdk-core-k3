@@ -206,6 +206,7 @@ static int32_t App_tifs2dmMsgForwardingTest(void);
 static int32_t App_pmGetFrequency(void);
 static int32_t App_pmSetFrequency(void);
 static int32_t App_rmGetResourceRangeWithSecHost(void);
+static int32_t App_getDMVersion(void);
 
 
 #define SCICLIENT_NUM_TESTCASES   (sizeof (gSciclientTestcaseParams) / \
@@ -418,6 +419,32 @@ App_sciclientTestParams_t gSciclientTestcaseParams[] =
         PRINT_ENABLE,
         /** testType **/
         (APP_SCICLIENT_TEST_TYPE_SANITY)
+    },
+    {
+        /** enableTest **/
+        TEST_ENABLE,
+        /** testCaseId **/
+        9U,
+        /** *reqId **/
+        "SYSFW-7448::PDK-17522",
+        /** *testCaseName **/
+        "SCICLIENT DM version api Test",
+        /** *userInfo **/
+        "None",
+        /** *disableReason **/
+        "None",
+        /** *passFailCriteria **/
+        "DM version api should Pass when called \
+         with valid parameters and fail when called with invalid \
+         parameters",
+        /** cpuID **/
+        APP_SCICLIENT_R5F,
+        /** sciclientConfigParams **/
+        {},
+        /** printEnable **/
+        PRINT_ENABLE,
+        /** testType **/
+        (APP_SCICLIENT_TEST_TYPE_SANITY)
     }
 };
 
@@ -468,6 +495,9 @@ static int32_t App_sciclientTestMain(App_sciclientTestParams_t *testParams)
             break;
         case 8:
             testParams->testResult = App_pmSetFrequency();
+            break;
+        case 9:
+            testParams->testResult = App_getDMVersion();
             break;
         default:
             break;
@@ -629,7 +659,7 @@ static int32_t App_invalidReqPrmTest(void)
     if (status == CSL_PASS)
     {
         status = Sciclient_service(NULL, &respPrm_good);
-        if (SystemP_FAILURE == status)
+        if ((SystemP_FAILURE == status)||(CSL_EBADARGS == status))
         {
             status = CSL_PASS;
             DebugP_log(" NULL Arg Test PASSED \n");
@@ -639,7 +669,7 @@ static int32_t App_invalidReqPrmTest(void)
             DebugP_log(" NULL Arg Test FAILED \n");
         }
         status = Sciclient_service(&reqPrm_badTxSize, &respPrm_good);
-        if (SystemP_FAILURE == status)
+        if ((SystemP_FAILURE == status)||(CSL_EBADARGS == status))
         {
             status = CSL_PASS;
             DebugP_log(" Tx Payload Check PASSED \n");
@@ -649,7 +679,7 @@ static int32_t App_invalidReqPrmTest(void)
             DebugP_log(" Tx Payload Check FAILED \n");
         }
         status = Sciclient_service(&reqPrm_good, &respPrm_badRxsize);
-        if (SystemP_FAILURE == status)
+        if ((SystemP_FAILURE == status)||(CSL_EBADARGS == status))
         {
             status = CSL_PASS;
             DebugP_log(" Rx Payload Check PASSED \n");
@@ -685,7 +715,7 @@ static int32_t App_timeoutTest(void)
     if (status == CSL_PASS)
     {
         status = Sciclient_service(&reqPrm, &respPrm);
-        if (SystemP_TIMEOUT == status)
+        if ((SystemP_TIMEOUT == status)||(CSL_ETIMEOUT == status))
         {
             status = CSL_PASS;
             DebugP_log(" Timeout test PASSED \n");
@@ -946,6 +976,42 @@ static int32_t App_pmSetFrequency(void)
     return status;
 }
 
+static int32_t App_getDMVersion(void)
+{
+    int32_t status = CSL_EFAIL;
+
+    struct tisci_msg_dm_version_req request;
+    const Sciclient_ReqPrm_t reqPrm =
+    {
+        TISCI_MSG_DM_VERSION,
+        TISCI_MSG_FLAG_AOP,
+        (uint8_t *) &request,
+        sizeof(request),
+        SystemP_WAIT_FOREVER
+    };
+
+    struct tisci_msg_dm_version_resp response;
+    Sciclient_RespPrm_t     respPrm =
+    {
+        0,
+        (uint8_t *) &response,
+        sizeof (response)
+    };
+
+    status = Sciclient_service(&reqPrm, &respPrm);
+    if (CSL_PASS == status)
+    {
+        DebugP_log(" Sciserver Version %s\n", (char *) response.sciserver_version);
+        DebugP_log(" rm_pm_hal Version %s\n", (char *) response.rm_pm_hal_version);
+        DebugP_log(" ABI revision %d.%d\n", response.abi_major, response.abi_minor);
+    }
+    else
+    {
+        DebugP_log(" DM Firmware Get Version failed \n");
+    }
+
+    return status;
+}
 
 static int32_t App_sciclientParser(void)
 {

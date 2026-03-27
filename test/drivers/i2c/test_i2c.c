@@ -96,6 +96,9 @@
 #define TEST_I2C_TMP100_SIGN_BIT          (0x80)
 #define TEST_I2C_TMP100_SIGN_BIT_POS      (8)
 #define TEST_I2C_PERF_TEST_DATA_COUNT   (1U)
+#if defined(SOC_J722S)
+#define I2C_SYSTEST_INVALID_VALUE        ((uint32_t) 0xFFFFFFFFU)
+#endif
 /* Payload sizes (data bytes excluding EEPROM address bytes) */
 #define TEST_I2C_64B_SIZE    (64U)
 #define TEST_I2C_128B_SIZE   (128U)
@@ -1315,6 +1318,11 @@ static int32_t test_i2c_lld(void)
     I2CLLD_Message msg;
     I2CLLD_Transaction txn;
     I2CLLD_Object* i2cLldObject = NULL;
+    #if defined(SOC_J722S)
+    uint32_t targetAddr = NON_EXISTENT_DEVICE_ADDRESS;
+    uint32_t systestRegValue = 0;
+    uint32_t regVal;
+    #endif
 
     I2C_close(gI2cHandle[CONFIG_I2C0]);
     handle = I2C_open(CONFIG_I2C0, &params);
@@ -1438,6 +1446,104 @@ static int32_t test_i2c_lld(void)
     {
         return SystemP_FAILURE;
     }
+#if defined(SOC_J722S)
+    /* negative test case for I2C_lld_transferPoll */
+    status = I2C_lld_transferPoll(NULL,NULL);
+    if (I2C_STS_ERR_INVALID_PARAM != status)
+    {
+        DebugP_log("I2C_lld_transferPoll negative test failed: %d\n", status);
+        return SystemP_FAILURE;
+    }
+
+    /* negative test case for I2C_lld_mem_read */
+    status = I2C_lld_mem_read(NULL,NULL,TESTCASE_RD_WR_TIMEOUT);
+    if (I2C_STS_ERR_INVALID_PARAM != status)
+    {
+        DebugP_log("I2C_lld_mem_read negative test failed: %d\n", status);
+        return SystemP_FAILURE;
+    }
+
+    /* negative test case for I2C_lld_mem_readIntr */
+    status = I2C_lld_mem_readIntr(NULL,NULL);
+    if (I2C_STS_ERR_INVALID_PARAM != status)
+    {
+        DebugP_log("I2C_lld_mem_readIntr negative test failed: %d\n", status);
+        return SystemP_FAILURE;
+    }
+
+    /* negative test case for I2C_lld_mem_write */
+    status = I2C_lld_mem_write(NULL,NULL,TESTCASE_RD_WR_TIMEOUT);
+    if (I2C_STS_ERR_INVALID_PARAM != status)
+    {
+        DebugP_log("I2C_lld_mem_write negative test failed: %d\n", status);
+        return SystemP_FAILURE;
+    }
+
+    /* negative test case for I2C_lld_mem_writeIntr */
+    status = I2C_lld_mem_writeIntr(NULL,NULL);
+    if (I2C_STS_ERR_INVALID_PARAM != status)
+    {
+        DebugP_log("I2C_lld_mem_writeIntr negative test failed: %d\n", status);
+        return SystemP_FAILURE;
+    }
+
+    /* negative test case for I2C_lld_transferIntr */
+    status = I2C_lld_transferIntr(NULL,NULL);
+    if (I2C_STS_ERR_INVALID_PARAM != status)
+    {
+        DebugP_log("I2C_lld_transferIntr negative test failed: %d\n", status);
+        return SystemP_FAILURE;
+    }
+
+    /* negative test case for I2C_lld_probe */
+    status = I2C_lld_probe(NULL,targetAddr);
+    if (I2C_STS_ERR != status)
+    {
+        DebugP_log("I2C_lld_probe negative test failed: %d\n", status);
+        return SystemP_FAILURE;
+    }
+
+    /* negative test case for I2C_lld_recoverBus */
+    status = I2C_lld_recoverBus(NULL,I2C_DELAY_SMALL);
+    if (I2C_STS_ERR_INVALID_PARAM != status)
+    {
+        DebugP_log("I2C_lld_recoverBus negative test failed: %d\n", status);
+        return SystemP_FAILURE;
+    }
+
+    /* negative test case for I2C_lld_getSysTest */
+    regVal = I2C_lld_getSysTest(NULL);
+    if (I2C_SYSTEST_INVALID_VALUE != regVal)
+    {
+        DebugP_log("I2C_lld_getSysTest negative test failed: 0x%x\n", regVal);
+        return SystemP_FAILURE;
+    }
+
+    /* negative test case for I2C_lld_setSysTest */
+    status = I2C_lld_setSysTest(NULL,systestRegValue);
+    if (I2C_STS_ERR_INVALID_PARAM != status)
+    {
+        DebugP_log("I2C_lld_setSysTest negative test failed: %d\n", status);
+        return SystemP_FAILURE;
+    }
+
+    /* I2C probe test with controller in busy state */
+    i2cLldObject = (I2CLLD_Object*)i2cLldHandle;
+    I2C_lld_deInit(i2cLldHandle);
+    i2cLldObject->state = I2C_STATE_BUSY;
+    status = I2C_lld_probe(i2cLldHandle, targetAddr);
+    if (I2C_STS_ERR_BUS_BUSY != status)
+    {
+        DebugP_log("I2C_lld_probe busy test failed: %d\n", status);
+        return SystemP_FAILURE;
+    }
+    /* Restore the driver state to IDLE for subsequent tests */
+    i2cLldObject->state = I2C_STATE_IDLE;
+
+    /* Negative test for I2C_close where handle is NULL */
+    I2C_close(NULL);
+#endif
+
     return SystemP_SUCCESS;
 }
 
@@ -3266,6 +3372,18 @@ void test_i2c_dynamic_coverage(void* args)
 
     retVal = test_i2c_timeout_negative();
     TEST_ASSERT_EQUAL(retVal, I2C_STS_ERR_NO_ACK);
+
+#if defined (SOC_J722S)
+    /* address validation test for I2C0 */
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_I2C0_CFG_BASE);
+    retVal = test_i2c_baseaddress(baseAddr);
+    TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
+
+    /* address validation test for I2C4 */
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_I2C4_CFG_BASE);
+    retVal = test_i2c_baseaddress(baseAddr);
+    TEST_ASSERT_EQUAL(retVal, SystemP_SUCCESS);
+#endif
 
     /* lld_init test case */
     retVal = test_i2c_lld();

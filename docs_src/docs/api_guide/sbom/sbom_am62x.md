@@ -260,7 +260,7 @@
         <td>Reference</td>
         <td>BQ</td>
         <td>NA</td>
-        <td>mysecuresw</td>
+        <td>TI.com Secure Resources</td>
         <td>Reference tool to program the keys</td>
     </tr>
     <tr>

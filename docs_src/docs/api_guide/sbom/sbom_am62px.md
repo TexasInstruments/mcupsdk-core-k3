@@ -231,6 +231,20 @@
     <tr>
         <td>Stack/ Middleware</td>
         <td>
+            Ethernet Firmware (EthFw)
+            <em>
+            <br/>${SDK_INSTALL_PATH}/source/networking/ethfw
+            </em>
+        </td>
+        <td>Reference</td>
+        <td>Demo quality</td>
+        <td>NA</td>
+        <td>TI.com</td>
+        <td>Experimental: Ethernet traffic sharing firmware across multiple cores</td>
+    </tr>
+    <tr>
+        <td>Stack/ Middleware</td>
+        <td>
             FreeRTOS FAT FS
             <em>
             <br/>${SDK_INSTALL_PATH}/source/fs/freertos_fat
@@ -263,7 +277,7 @@
         <td>Reference</td>
         <td>BQ</td>
         <td>NA</td>
-        <td>mysecuresw</td>
+        <td>TI.com Secure Resources</td>
         <td>Reference tool to program the keys</td>
     </tr>
     <tr>

@@ -177,7 +177,7 @@ The support status is indicated by the following codes:
 <td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
 </tr>
 <tr>
-<td rowspan="5" style="text-align: left; border: 1px solid #333; padding: 8px;">Device Configuration</td>
+<td rowspan="6" style="text-align: left; border: 1px solid #333; padding: 8px;">Device Configuration</td>
 <td rowspan="5" style="text-align: left; border: 1px solid #333; padding: 8px;">Power Supply Modules</td>
 <td style="text-align: left; border: 1px solid #333; padding: 8px;">POK</td>
 <td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
@@ -212,6 +212,14 @@ The support status is indicated by the following codes:
 <td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
 <td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
 <td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+</tr>
+<tr>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;">PMIC (Power Management IC)</td>
+<td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
+<td style="background-color: #D3D3D3; text-align: center; border: 1px solid #333; padding: 8px;">NA</td>
 </tr>
 <tr>
 <td rowspan="18" style="text-align: left; border: 1px solid #333; padding: 8px;">Power MaNAgement</td>
@@ -943,7 +951,7 @@ The support status is indicated by the following codes:
 <tr>
 <td style="text-align: left; border: 1px solid #333; padding: 8px;">Windowed Watchdog Timer (WWDT) - MCU domain</td>
 <td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
-<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
 <td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
 <td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
 <td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
@@ -952,14 +960,14 @@ The support status is indicated by the following codes:
 <td style="text-align: left; border: 1px solid #333; padding: 8px;">Windowed Watchdog Timer (WWDT) - WKUP domain</td>
 <td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
 <td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
-<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
 <td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
 <td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
 </tr>
 <tr>
 <td style="text-align: left; border: 1px solid #333; padding: 8px;">Real-Time Clock (RTC)</td>
 <td style="text-align: left; border: 1px solid #333; padding: 8px;"></td>
-<td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
+<td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
 <td style="background-color: #90EE90; text-align: center; border: 1px solid #333; padding: 8px;">Yes</td>
 <td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>
 <td style="background-color: #FFB6C1; text-align: center; border: 1px solid #333; padding: 8px;">No</td>

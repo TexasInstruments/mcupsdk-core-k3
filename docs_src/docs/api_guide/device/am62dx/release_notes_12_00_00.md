@@ -18,10 +18,21 @@ AM62Dx | MCU R5F, WKUP R5F, A53, C75 | @VAR_BOARD_NAME EVM (referred to as am62d
 ## Features Added in This Release
 \note Update of OSPI tuning algorithm on this SDK causes increase in tuning time. Refer \ref OSPI_DATA_SHEET
 
-Feature                                                                                        | Module
------------------------------------------------------------------------------------------------|-----------------------------------
- Place DM RM/PM HAL trace buffer fixed at 0x9CAA0000 in DDR                                    | DM
- Add support for interrupt-based operation mode in SCIClient                                   | SCIClient
+Feature                                                                                      | Module
+---------------------------------------------------------------------------------------------|-----------------------------------
+ PADCFG drive strength adjustment through SYSCFG                                             | Pinmux
+ Support de-interleave of data on MCASP                                                      | MCASP
+ LBIST/PBIST initiated in SBL EMMC                                                           | SBL
+ Enable WKUP-R5F ATCM                                                                        | SBL
+ Add support for Burton PMIC                                                                 | PMIC
+ Watchdog support for DM R5/WKUP-R5F                                                         | WDT
+ Save/Restore of FPU registers on context switch enabled by default on A53                   | FreeRTOS
+ MMCSD drive strength as a configurable option                                               | MMCSD
+ Add 8S-8S-8S protocol support                                                               | OSPI
+ Route SecProxy event for MCU cores                                                          | DM
+ Interrupt mode in SCIClient                                                                 | SCI Client
+ Move task stack allocation to application layer                                             | SCI Server
+ Add Linux sigchain biquad cascade example                                                   | TISP
 
 ### Experimental Features {#EXPERIMENTAL_FEATURES}
 
@@ -127,6 +138,24 @@ MCASP driver
         <td>Yes</td>
     </tr>
     <tr>
+        <td>ECAP</td>
+        <td>Main</td>
+        <td>A53, C75</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>EPWM</td>
+        <td>Main</td>
+        <td>A53, C75</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>EQEP</td>
+        <td>Main</td>
+        <td>A53</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
         <td rowspan=3>GPIO</td>
         <td>MCU</td>
         <td>MCU-R5F</td>
@@ -181,12 +210,12 @@ MCASP driver
         <td>Yes</td>
     </tr>
     <tr>
-        <td>Maim</td>
+        <td>Main</td>
         <td>A53</td>
         <td>Yes</td>
     </tr>
     <tr>
-        <td rowspan>MCASP</td>
+        <td>MCASP</td>
         <td>Main</td>
         <td>A53, C75</td>
         <td>Yes</td>
@@ -210,18 +239,23 @@ MCASP driver
     </tr>
     <tr>
         <td>Wakeup</td>
-        <td>WKUP-R5</td>
+        <td>WKUP-R5F</td>
         <td>Yes</td>
     </tr>
     <tr>
-        <td rowspan=2>OSPI</td>
+        <td rowspan=3>OSPI</td>
         <td>Main</td>
         <td>A53</td>
         <td>Yes</td>
     </tr>
     <tr>
+        <td>MCU</td>
+        <td>MCU-R5F</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
         <td>Wakeup</td>
-        <td>WKUP-R5</td>
+        <td>WKUP-R5F</td>
         <td>Yes</td>
     </tr>
     <tr>
@@ -241,9 +275,37 @@ MCASP driver
         <td>Yes</td>
     </tr>
     <tr>
+        <td rowspan=2>PMU</td>
+        <td>MCU</td>
+        <td>MCU-R5F</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>Wakeup</td>
+        <td>WKUP-R5F</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td rowspan=2>RTC</td>
+        <td>MCU</td>
+        <td>MCU-R5F</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>Wakeup</td>
+        <td>WKUP-R5F</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
         <td>SA3UL</td>
         <td>Main</td>
         <td>A53</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>SCIClient</td>
+        <td>NA</td>
+        <td>MCU-R5F, WKUP-R5F, A53, C75</td>
         <td>Yes</td>
     </tr>
     <tr>
@@ -253,9 +315,14 @@ MCASP driver
         <td>Yes</td>
     </tr>
     <tr>
-        <td>SCIClient</td>
-        <td>NA</td>
-        <td>MCU-R5F, WKUP-R5F, A53, C75</td>
+        <td rowspan=2>Spinlock</td>
+        <td>Main</td>
+        <td>A53</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>MCU</td>
+        <td>MCU-R5F</td>
         <td>Yes</td>
     </tr>
     <tr>
@@ -291,7 +358,7 @@ MCASP driver
         <td>Yes</td>
     </tr>
     <tr>
-        <td rowspan=2>WDT</td>
+        <td rowspan=3>WDT</td>
         <td>Main</td>
         <td>A53</td>
         <td>Yes</td>
@@ -301,17 +368,24 @@ MCASP driver
         <td>MCU-R5F</td>
         <td>Yes</td>
     </tr>
+    <tr>
+        <td>Wakeup</td>
+        <td>WKUP-R5F</td>
+        <td>Yes</td>
+    </tr>
 </table>
 
 \note Refer \ref MAIN_DOMAIN_PERIPHERAL_FROM_MCU for accessing main/wakeup peripherals from MCU Domain.
 
 ### Board Device Drivers
 
-Peripheral | Supported CPUs      | SysConfig Support
------------|---------------------|-------------------
-EEPROM     | MCU-R5F, A53, C75   | Yes
-Flash      | WKUP-R5F, A53       | Yes
-LED        | MCU-R5F, A53, C75   | Yes
+Peripheral    | Supported CPUs                    | SysConfig Support
+--------------|-----------------------------------|-------------------
+EEPROM        | MCU-R5F, WKUP-R5F, A53, C75      | Yes
+Ethernet PHY  | MCU-R5F, WKUP-R5F, A53, C75      | Yes
+Flash         | MCU-R5F, WKUP-R5F, A53            | Yes
+LED           | MCU-R5F, A53, C75                 | Yes
+PMIC          | MCU-R5F                           | Yes
 ### SDL
 
 SDL Module       | Supported CPUs | SysConfig Support
@@ -333,14 +407,99 @@ ROM_CHECKSUM     |MCU-R5F         | No
 
 <table>
 <tr>
-   <th> ID
-   <th> Head Line
-   <th> Module
+    <th> ID
+    <th> Head Line
+    <th> Module
 </tr>
 <tr>
-    <td> -
-    <td> -
-    <td> -
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-245, EXT_SITMPUSW-245}
+    <td> MCU+ SDK LPDDR4 Driver starts DDR Training/Leveling Sequence twice
+    <td> DDR
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-309, EXT_SITMPUSW-309}
+    <td> LPM: Spurious wake up on MCU only mode
+    <td> DM
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-312, EXT_SITMPUSW-312}
+    <td> Incorrect context description of SCICLIENT_CONTEXT_DM2TIFS
+    <td> DM
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-251, EXT_SITMPUSW-251}
+    <td> MCU+ SDK Example Projects using incorrect ARMv7 MPU Attributes for Peripheral Register Region
+    <td> Examples
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-301, EXT_SITMPUSW-301}
+    <td> OSPI_norFlashInit1s1s1s has an implementation of wait for 500 milliseconds instead of microseconds
+    <td> Flash
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-304, EXT_SITMPUSW-304}
+    <td> AM62x: Critical section protection not added in vPortTimerTickHandler for A53
+    <td> FreeRTOS
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-282, EXT_SITMPUSW-282}
+    <td> Sysconfig not generating code for GPIO Trigger
+    <td> GPIO
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-279, EXT_SITMPUSW-279}
+    <td> I2C close is not working properly during error conditions
+    <td> I2C
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-299, EXT_SITMPUSW-299}
+    <td> IPC notify: Null check is not handled properly
+    <td> IPC
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-277, EXT_SITMPUSW-277}
+    <td> MCASP: tx.evtCtl Used Instead of rx.evtCtl for REVTCTL Configuration
+    <td> MCASP
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-276, EXT_SITMPUSW-276}
+    <td> MCASP: intCfgTx.intrNum Used Instead of intCfgRx.intrNum in Interrupt Check
+    <td> MCASP
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-114, EXT_SITMPUSW-114}
+    <td> MMCSD_enableBootPartition implements two mutually exclusive concepts as one function
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-295, EXT_SITMPUSW-295}
+    <td> Flash Close Logic Requires OSPI Handle to be reset to 1S-1S-1S
+    <td> OSPI
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-280, EXT_SITMPUSW-280}
+    <td> OSPI Indac Mode Should Check for odd bytes
+    <td> OSPI
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-292, EXT_SITMPUSW-292}
+    <td> Bootloader_socOpenFirewalls is called before System_init in the SBLs
+    <td> SBL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-281, EXT_SITMPUSW-281}
+    <td> UART: UART_open fails when NULL argument is passed as UART_Params argument
+    <td> UART
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-214, EXT_SITMPUSW-214}
+    <td> WDT: Hang due to no valid argument check in APIs
+    <td> Watchdog
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13267, EXT_EP-13267}
+    <td> SDL ESM: Wrong instance argument in SDL_ESM_loInterruptHandler causing misidentification of ESM0 interrupts
+    <td> SDL-ESM
 </tr>
 </table>
 
@@ -353,13 +512,71 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <th> ID
     <th> Head Line
     <th> Module
-    <th> Workaround
 </tr>
 <tr>
-    <td> -
-    <td> -
-    <td> -
-    <td> -
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-153, EXT_SITMPUSW-153}
+    <td> MCU+ SDK CCS Project Build Generates Invalid/Redundant Boot Image Files
+    <td> Build
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-221, EXT_SITMPUSW-221}
+    <td> DebugP_log does not work when tried from multiple cores in SMP mode.
+    <td> DPL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-219, EXT_SITMPUSW-219}
+    <td> AM62D/A/275: C7x `portGET_RUN_TIME_COUNTER_VALUE` API uses hard coded CPU Freq
+    <td> FreeRTOS
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-224, EXT_SITMPUSW-224}
+    <td> Mcasp :  Not working on interrupt mode
+    <td> MCASP
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-222, EXT_SITMPUSW-222}
+    <td> MMCSD field Card Type is not ordered logically in the Sysconfig
+    <td> MMCSD
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-220, EXT_SITMPUSW-220}
+    <td> SBL_SD bootloaders report incorrect boot image size
+    <td> SBL
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-214, EXT_SITMPUSW-214}
+    <td> Spinlock: Hang in multithread test cases due to HW interrupt config
+    <td> Spinlock
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-214, EXT_SITMPUSW-214}
+    <td> Spinlock: Missing NULL Pointer Validation for Base Address Parameter in Spinlock APIs
+    <td> Spinlock
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-324, EXT_SITMPUSW-324}
+    <td> UART_udmaIsrTx does not handles continuous Callbacks properly
+    <td> UART
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12276, EXT_EP-12276}
+    <td> ECC: Firewall related aggregators failures
+    <td> SDL-ECC
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12283, EXT_EP-12283}
+    <td> ECC aggregators CPSW0, CSI RX are failing on AM62A and CPSW0 on AM62D.
+    <td> SDL-ECC
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13265, EXT_EP-13265}
+    <td> MCU R5 ECC Aggr init fails when MCU LBIST is enabled in bootloader
+    <td> SDL-LBIST
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12280, EXT_EP-12280}
+    <td> Running MCU LBIST on SBL causes JTAG connection issues to MCU R5F
+    <td> SDL-LBIST
 </tr>
 </table>
 

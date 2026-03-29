@@ -23,10 +23,19 @@ AM62x  | M4F, R5F, A53   | SK-AM62 (referred as am62x-sk in code), SK-AM62-LP (r
 
 \attention DeepSleep low power mode (LPM) is not supported if the DM R5 is used for a general purpose application. This is because when the SoC goes to any LPM, the context of peripherals used by DM R5 will be lost. To use DM R5 for a general purpose application, disable LPM support. Refer \ref DISABLE_LPM to know how to disable LPM.
 
-Feature                                                                                        | Module
------------------------------------------------------------------------------------------------|-----------------------------------
- Place DM RM/PM HAL trace buffer fixed at 0x9DCA0000 in DDR                                    | DM
- Add support for interrupt-based operation mode in SCIClient                                   | SCIClient
+Feature                                                                                      | Module
+---------------------------------------------------------------------------------------------|-----------------------------------
+ PADCFG drive strength adjustment through SYSCFG                                             | Pinmux
+ LBIST/PBIST initiated in SBL EMMC                                                           | SBL
+ Enable WKUP-R5F ATCM                                                                        | SBL
+ Watchdog support for DM R5/WKUP-R5F                                                         | WDT
+ Save/Restore of FPU registers on context switch enabled by default on A53                   | FreeRTOS
+ MMCSD drive strength as a configurable option                                               | MMCSD
+ Add 8S-8S-8S protocol support                                                               | OSPI
+ Route SecProxy event for MCU cores                                                          | DM
+ Interrupt mode in SCIClient                                                                 | SCI Client
+ Move task stack allocation to application layer                                             | SCI Server
+ Add WFI in MCU only mode to save power                                                      | LPM
 
 ## Dependent Tools and Compiler Information
 
@@ -195,6 +204,12 @@ MCASP driver
         <td>Yes</td>
     </tr>
     <tr>
+        <td>MCASP</td>
+        <td>Main</td>
+        <td>A53</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
         <td rowspan=2>MCSPI</td>
         <td>Main</td>
         <td>M4F, R5F, A53</td>
@@ -216,6 +231,7 @@ MCASP driver
         <td>Main</td>
         <td>R5F, A53</td>
         <td>Yes</td>
+    </tr>
     <tr>
         <td rowspan=3>Pinmux</td>
         <td>Main</td>
@@ -230,6 +246,12 @@ MCASP driver
     <tr>
         <td>Wakeup</td>
         <td>M4F, R5F</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>PMU</td>
+        <td>Wakeup</td>
+        <td>R5F</td>
         <td>Yes</td>
     </tr>
     <tr>
@@ -248,6 +270,17 @@ MCASP driver
         <td>SCIClient</td>
         <td>NA</td>
         <td>M4F, R5F, A53</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td rowspan=2>Spinlock</td>
+        <td>Main</td>
+        <td>A53</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>Wakeup</td>
+        <td>R5F</td>
         <td>Yes</td>
     </tr>
     <tr>
@@ -273,9 +306,14 @@ MCASP driver
         <td>Yes</td>
     </tr>
     <tr>
-        <td>WDT</td>
+        <td rowspan=2>WDT</td>
         <td>Main</td>
         <td>A53</td>
+        <td>Yes</td>
+    </tr>
+    <tr>
+        <td>Wakeup</td>
+        <td>R5F</td>
         <td>Yes</td>
     </tr>
 </table>
@@ -283,9 +321,12 @@ MCASP driver
 \note Refer \ref MAIN_DOMAIN_PERIPHERAL_FROM_MCU for accessing main/wakeup peripherals from MCU Domain.
 ### Board Device Drivers
 
-Peripheral | Supported CPUs | SysConfig Support
------------|----------------|-------------------
-Flash      | R5F            | Yes
+Peripheral    | Supported CPUs | SysConfig Support
+--------------|----------------|-------------------
+EEPROM        | A53            | Yes
+Ethernet PHY  | A53            | Yes
+Flash         | R5F, A53       | Yes
+LED           | M4F, R5F, A53  | Yes
 
 ### Software Diagnostic Library (SDL)
 
@@ -309,329 +350,124 @@ ROM Checksum | R5F            | No
 
 <table>
 <tr>
-   <th> ID
-   <th> Head Line
-   <th> Module
+    <th> ID
+    <th> Head Line
+    <th> Module
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-134, EXT_SITMPUSW-134}
-    <td> GPIO input interrupt example not working  on A53 AMP
-    <td> AMP
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-177, EXT_SITMPUSW-177}
-    <td> Invalid comment in the linker command files
-    <td> BUILD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-269, EXT_SITMPUSW-269}
-    <td> LPDDR: DDR PLL reset code issue
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-245, EXT_SITMPUSW-245}
+    <td> MCU+ SDK LPDDR4 Driver starts DDR Training/Leveling Sequence twice
     <td> DDR
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-172, EXT_SITMPUSW-172}
-    <td> DebugP_assert: change so that it does not lock up the entire core
-    <td> DPL
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-293, EXT_SITMPUSW-293}
+    <td> Sciclient driver uses incorrect context for the TISCI_MSG_KEYRING_IMPORT
+    <td> DM
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-217, EXT_SITMPUSW-217}
-    <td> ClockP_usleep() getting into infinite loop due to timer wraparound
-    <td> DPL
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-309, EXT_SITMPUSW-309}
+    <td> LPM: Spurious wake up on MCU only mode
+    <td> DM
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-234, EXT_SITMPUSW-234}
-    <td> OLDI Single Link Common Mode VOCM Voltage Drop with MCU+SDK
-    <td> Display
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-303, EXT_SITMPUSW-303}
+    <td> DM does not handle NACK properly for LPM msgs and RM board config msg
+    <td> DM
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-109, EXT_SITMPUSW-109}
-    <td> Wrong comments on HwiP_inISR() API
-    <td> Documentation
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-291, EXT_SITMPUSW-291}
+    <td> Wait for Status mechanism via Sciclient API call fails during self reset
+    <td> DM
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-112, EXT_SITMPUSW-112}
-    <td> SysConfig does not generate correct FLASH section parameters.
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-312, EXT_SITMPUSW-312}
+    <td> Incorrect context description of SCICLIENT_CONTEXT_DM2TIFS
+    <td> DM
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-288, EXT_SITMPUSW-288}
+    <td> LPM: Unable to enter LPM in Interrupt Mode
+    <td> DM
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-251, EXT_SITMPUSW-251}
+    <td> MCU+ SDK Example Projects using incorrect ARMv7 MPU Attributes for Peripheral Register Region
+    <td> Examples
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-297, EXT_SITMPUSW-297}
+    <td> Flash Params Not Reflected In Syscfg
+    <td> FLASH
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-301, EXT_SITMPUSW-301}
+    <td> OSPI_norFlashInit1s1s1s has an implementation of wait for 500 milliseconds instead of microseconds
     <td> Flash
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-179, EXT_SITMPUSW-179}
-    <td> I2C Target Overrun Test Hangs Waiting for Callback
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-304, EXT_SITMPUSW-304}
+    <td> AM62x: Critical section protection not added in vPortTimerTickHandler for A53
+    <td> FreeRTOS
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-282, EXT_SITMPUSW-282}
+    <td> Sysconfig not generating code for GPIO Trigger
+    <td> GPIO
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-279, EXT_SITMPUSW-279}
+    <td> I2C close is not working properly during error conditions
     <td> I2C
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-183, EXT_SITMPUSW-183}
-    <td> I2c_transfer not returning correct status when transfer mode is set to polling
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-306, EXT_SITMPUSW-306}
+    <td> Missing call to I2C_lld_recoverBus on polling mode
     <td> I2C
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-191, EXT_SITMPUSW-191}
-    <td> I2C_transfer() return not handled properly while i2cLldHandle is NULL
-    <td> I2C
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-192, EXT_SITMPUSW-192}
-    <td> SysConfig does not support configuring both 10-bit own addresses for I2C target mode
-    <td> I2C
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-194, EXT_SITMPUSW-194}
-    <td> NACK is not returned to application when performing i2c write in polling mode
-    <td> I2C
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-232, EXT_SITMPUSW-232}
-    <td> I2C target mode with multiple own addresses transaction fails
-    <td> I2C
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-117, EXT_SITMPUSW-117}
-    <td> Linux Kernel IPC Examples are broken
-    <td> IPC
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-211, EXT_SITMPUSW-211}
-    <td> DMA channel teardown sequence is not proper in MCASP_disableDmaTx
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-277, EXT_SITMPUSW-277}
+    <td> MCASP: tx.evtCtl Used Instead of rx.evtCtl for REVTCTL Configuration
     <td> MCASP
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-188, EXT_SITMPUSW-188}
-    <td> [MCSPI]End of Channel Transfer status check is missing for DMA mode
-    <td> MCSPI
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-276, EXT_SITMPUSW-276}
+    <td> MCASP: intCfgTx.intrNum Used Instead of intCfgRx.intrNum in Interrupt Check
+    <td> MCASP
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-200, EXT_SITMPUSW-200}
-    <td> [MCSPI] Timeout mechanism missing to prevent Infinite loops in MCSPI driver
-    <td> MCSPI
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-110, EXT_SITMPUSW-110}
-    <td> eMMC Init Code Missing DLL Register Settings needed for Initial Legacy SDR Mode Phase
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-114, EXT_SITMPUSW-114}
+    <td> MMCSD_enableBootPartition implements two mutually exclusive concepts as one function
     <td> MMCSD
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-113, EXT_SITMPUSW-113}
-    <td> eMMC PHY I/O Calibration not getting executed during eMMC boot
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-123, EXT_SITMPUSW-123}
-    <td> MMCSD driver does not follow the SWITCH command sequence correctly
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-124, EXT_SITMPUSW-124}
-    <td> EXTCSD HS_TIMING register is set incorrectly at certain places in the driver
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-125, EXT_SITMPUSW-125}
-    <td> MMCSD driver uses infinite loop instead of timeout for checking fields of PRESENTSTATE register
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-126, EXT_SITMPUSW-126}
-    <td> Timing issues with MMCSD host controller driver
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-127, EXT_SITMPUSW-127}
-    <td> Incorrect handling of the CAPABILITIES register in the eMMC initialization
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-153, EXT_SITMPUSW-153}
-    <td> eMMC Driver Error Interrupt Flags accessed in Wrong Register
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-153, EXT_SITMPUSW-153}
-    <td> eMMC Init Code ignores early failures and continues Execution
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-155, EXT_SITMPUSW-155}
-    <td> eMMC Driver Error Recovery Recursion can lead to System Crashes
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-171, EXT_SITMPUSW-171}
-    <td> MMCSD : Read fails when injecting Command time out  fault
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-176, EXT_SITMPUSW-176}
-    <td> MMCSD : Read fails when injecting Command Index  fault
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-185, EXT_SITMPUSW-185}
-    <td> MMCSD : Read times out in HS200 mode after writing in SDR50 mode
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-186, EXT_SITMPUSW-186}
-    <td> MMCSD : Read fails when injecting Command CRC fault
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-195, EXT_SITMPUSW-195}
-    <td> MMCSD : Read fails when passing invalid argument.
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-204, EXT_SITMPUSW-204}
-    <td> MMCSD close() is not proper
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-209, EXT_SITMPUSW-209}
-    <td> Simultaneous FAT transfer fails for the same instance while being accessed from two different tasks.
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-212, EXT_SITMPUSW-212}
-    <td> MMCSD : Write fails when passing invalid argument.
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-215, EXT_SITMPUSW-215}
-    <td> MMCSD : Read fails when injecting Command End Bit  fault
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-230, EXT_SITMPUSW-230}
-    <td> MMCSD close fails after opening the same instance twice.
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-78, EXT_SITMPUSW-78}
-    <td> MMCSD Sysconfig provides options to configure PHY type
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-84, EXT_SITMPUSW-84}
-    <td> MMCSD error recovery sequence isn't implemented correctly
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-207, EXT_SITMPUSW-207}
-    <td> Missing -p flag with strip command to reduce the size of *.out
-    <td> Makefiles
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-118, EXT_SITMPUSW-118}
-    <td> OSPI tuning algorithm finds points in noisy region on rare scenarios
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-295, EXT_SITMPUSW-295}
+    <td> Flash Close Logic Requires OSPI Handle to be reset to 1S-1S-1S
     <td> OSPI
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-158, EXT_SITMPUSW-158}
-    <td> OSPI_flashExecCmd has a couple of checks where the code may get stuck
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-280, EXT_SITMPUSW-280}
+    <td> OSPI Indac Mode Should Check for odd bytes
     <td> OSPI
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-181, EXT_SITMPUSW-181}
-    <td> Configured dummy cycles in flash driver contradicts flash data sheet
-    <td> OSPI
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-256, EXT_SITMPUSW-256}
+    <td> Incorrect calculation of rowColEnd in the ext_otp_writeMmr
+    <td> OTP
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-187, EXT_SITMPUSW-187}
-    <td> OSPI DAC Mode Configuration hardcoded and not based on flashsize
-    <td> OSPI
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-190, EXT_SITMPUSW-190}
-    <td> OSPI_PhyTuneGrapher missing read delay value 4
-    <td> OSPI
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-213, EXT_SITMPUSW-213}
-    <td> OSPI Phy Status Check Missing
-    <td> OSPI
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-231, EXT_SITMPUSW-231}
-    <td> OSPI NAND Writes DAC enable
-    <td> OSPI
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-240, EXT_SITMPUSW-240}
-    <td> NOR Flash Fixup missing in SBL NULL
-    <td> OSPI
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-85, EXT_SITMPUSW-85}
-    <td> Flash_eraseSector and Flash_norOspiEraseSector does not erases the mentioned sector.
-    <td> OSPI
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-133, EXT_SITMPUSW-133}
-    <td> Falcon Boot through SBL is not supported
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-292, EXT_SITMPUSW-292}
+    <td> Bootloader_socOpenFirewalls is called before System_init in the SBLs
     <td> SBL
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-189, EXT_SITMPUSW-189}
-    <td> Secure board configurations by default allows JTAG unlocking
-    <td> SBL
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-193, EXT_SITMPUSW-193}
-    <td> DMA is not enabled for SOC Memory boot media in the SysConfig
-    <td> SBL
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-202, EXT_SITMPUSW-202}
-    <td> gAppimage is not allocated to the intended section defined in the linker command files
-    <td> SBL
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-205, EXT_SITMPUSW-205}
-    <td> sbl_uart_uniflash_stage2 is not prebuilt
-    <td> SBL
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-122, EXT_SITMPUSW-122}
-    <td> HSM core does not boot
-    <td> SBL
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-121, EXT_SITMPUSW-121}
-    <td> FORCE bit not book keeped properly for MCSPI DMA mode of operation
-    <td> Software
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-226, EXT_SITMPUSW-226}
-    <td> Improve Sysconfig tool tips for all drivers
-    <td> SysConfig
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-174, EXT_SITMPUSW-174}
-    <td> UDMA: HC/UHC channel allocation fails due to RM config mismatch with CSL defines
-    <td> UDMA
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-214, EXT_SITMPUSW-214}
-    <td> UDMA multiple channel open for the same channel and invalid instance not handling properly
-    <td> UDMA
+    <td> WDT: Hang due to no valid argument check in APIs
+    <td> Watchdog
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13056, EXT_EP-13056}
-    <td> VTM module sensor reset sequence modification for reliable functionality
-    <td> SDL
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13057, EXT_EP-13057}
-    <td> SDL DCC Seed Value Calculation Deviates from TRM Guidelines
-    <td> SDL
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13069, EXT_EP-13069}
-    <td> AM62x: POK Example and FT are failing in r5f-freertos
-    <td> SDL
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13070, EXT_EP-13070}
-    <td> AM62x: VTM Example and FT are failing in r5f-freertos
-    <td> SDL
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13267, EXT_EP-13267}
+    <td> SDL ESM: Wrong instance argument in SDL_ESM_loInterruptHandler causing misidentification of ESM0 interrupts
+    <td> SDL-ESM
 </tr>
 </table>
 
@@ -641,19 +477,14 @@ ROM Checksum | R5F            | No
 
 <table>
 <tr>
-   <th> ID
-   <th> Head Line
-   <th> Module
+    <th> ID
+    <th> Head Line
+    <th> Module
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-153, EXT_SITMPUSW-153}
     <td> MCU+ SDK CCS Project Build Generates Invalid/Redundant Boot Image Files
     <td> Build
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-251, EXT_SITMPUSW-251}
-    <td> MCU+ SDK Example Projects using incorrect ARMv7 MPU Attributes for Peripheral Register Region
-    <td> Examples
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-87, EXT_SITMPUSW-87}
@@ -666,24 +497,9 @@ ROM Checksum | R5F            | No
     <td> IPC
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-114, EXT_SITMPUSW-114}
-    <td> MMCSD_enableBootPartition implements two mutually exclusive concepts as one function
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-138, EXT_SITMPUSW-138}
-    <td> MMCSD_read & MMCSD_write function are not designed simple & readable
-    <td> MMCSD
-</tr>
-<tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-222, EXT_SITMPUSW-222}
     <td> MMCSD field Card Type is not ordered logically in the Sysconfig
     <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-256, EXT_SITMPUSW-256}
-    <td> Incorrect calculation of rowColEnd in the ext_otp_writeMmr
-    <td> OTP
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-220, EXT_SITMPUSW-220}
@@ -691,29 +507,39 @@ ROM Checksum | R5F            | No
     <td> SBL
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-252, EXT_SITMPUSW-252}
-    <td> AM62X : Loading an A53 example is not working after the CPU Reset from the CCS
-    <td> CCS
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-214, EXT_SITMPUSW-214}
+    <td> Spinlock: Missing NULL Pointer Validation for Base Address Parameter in Spinlock APIs
+    <td> Spinlock
+</tr>
+<tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-324, EXT_SITMPUSW-324}
+    <td> UART_udmaIsrTx does not handles continuous Callbacks properly
+    <td> UART
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12275, EXT_EP-12275}
-    <td> AM62x: ECC: SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR and SDL_DMASS0_DMSS_AM62_ECCAGGR aggregators are failing.
-    <td> SDL
+    <td> AM62x: ECC: SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR and  SDL_DMASS0_DMSS_AM62_ECCAGGR aggregators are failing
+    <td> SDL-ECC
+</tr>
+<tr>
+    <td> PROC_SDL-8868
+    <td> AM62x: ECC: ecc_test_app is failing
+    <td> SDL-ECC
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12276, EXT_EP-12276}
-    <td> ECC: Firewall related aggregators failures - ECC Aggregators SDL_SMS0_SMS_TIFS_ECC, SDL_SMS0_SMS_HSM_ECC, SDL_SA3_SS0_SA3SS_AM62A_DMSS_ECCAGGR and SDL_SA3_SS0_SA3SS_AM62A_SA_UL_ECC_AGGR fail because of firewall access issues faced by SDL
-    <td> SDL
+    <td> ECC: Firewall related aggregators failures
+    <td> SDL-ECC
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12278, EXT_EP-12278}
-    <td> ECC Aggregator SMS0_SMS_HSM_ECC Aggr fails on AM62x.
-    <td> SDL
+    <td> ECC Aggregator SMS0_SMS_HSM_ECC Aggr fails on AM62x
+    <td> SDL-ECC
 </tr>
 <tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12279, EXT_EP-12279}
     <td> CSI RX ECC aggregators are failing on AM62P/AM62X
-    <td> SDL
+    <td> SDL-ECC
 </tr>
 </table>
 

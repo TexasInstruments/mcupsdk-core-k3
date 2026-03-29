@@ -432,6 +432,12 @@ newer version listed on the table below.
     <td> <= 11.02.00
     <td> >= 12.00.00
 </tr>
+<tr>
+    <td> SCI Server
+    <td> \ref SCISERVER_12_0_MIGRATION
+    <td> <= 11.02.00
+    <td> >= 12.00.00
+</tr>
 </table>
 
 ### Networking

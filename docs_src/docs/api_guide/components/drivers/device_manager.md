@@ -91,3 +91,71 @@ During low power mode, DDR is kept in self refresh, which means DM R5 cannot run
                 }  palign(8)
             }  load = R5F_TCMB, run = R5F_TCMA
   - Rebuild the application.
+
+\cond SOC_AM62AX
+## Migration Guide 11.01 to 11.02 - AM62A {#SCISERVER_11_2_MIGRATION}
+
+\note This section highlights API changes from 11.01 to 11.02 SDK for AM62A.
+
+### Task stack allocation moved to application layer
+
+- `sciServer_init` parameter changed from `void` to `Sciserver_TirtosCfgPrms_t *sciserverCfg`.
+- `Sciserver_TirtosCfgPrms_t` gained three new required fields: `hiTaskStack`, `loTaskStack`, and `taskStackSize`.
+- Allocate task stack buffers in the application as **global arrays** and populate these fields before calling `sciServer_init`.
+- \attention Stack buffers must be declared as global variables. Declaring them on the stack (as local variables) will result in undefined behavior once the declaring function returns.
+
+Old usage:
+\code{.c}
+sciServer_init();
+\endcode
+
+New usage:
+\code{.c}
+#define SCISERVER_TASK_STACK_SIZE      (2U * 1024U)
+#define SCISERVER_TASK_STACK_ALIGNMENT (32)
+
+uint8_t __attribute__((aligned(SCISERVER_TASK_STACK_ALIGNMENT))) gUserHiTaskStack[SCISERVER_TASK_STACK_SIZE];
+uint8_t __attribute__((aligned(SCISERVER_TASK_STACK_ALIGNMENT))) gUserLoTaskStack[SCISERVER_TASK_STACK_SIZE];
+
+/* In your init function */
+Sciserver_TirtosCfgPrms_t sciserverCfg = {0};
+sciserverCfg.hiTaskStack   = gUserHiTaskStack;
+sciserverCfg.loTaskStack   = gUserLoTaskStack;
+sciserverCfg.taskStackSize = SCISERVER_TASK_STACK_SIZE;
+sciServer_init(&sciserverCfg);
+\endcode
+\endcond
+
+\cond SOC_AM62X || SOC_AM62DX || SOC_AM62PX || SOC_AM275X
+## Migration Guide 11.02 to 12.00 {#SCISERVER_12_0_MIGRATION}
+
+\note This section highlights API changes from 11.02 to 12.00 SDK.
+
+### Task stack allocation moved to application layer
+
+- `sciServer_init` parameter changed from `void` to `Sciserver_TirtosCfgPrms_t *sciserverCfg`.
+- `Sciserver_TirtosCfgPrms_t` gained three new required fields: `hiTaskStack`, `loTaskStack`, and `taskStackSize`.
+- Allocate task stack buffers in the application as **global arrays** and populate these fields before calling `sciServer_init`.
+- \attention Stack buffers must be declared as global variables. Declaring them on the stack (as local variables) will result in undefined behavior once the declaring function returns.
+
+Old usage:
+\code{.c}
+sciServer_init();
+\endcode
+
+New usage:
+\code{.c}
+#define SCISERVER_TASK_STACK_SIZE      (2U * 1024U)
+#define SCISERVER_TASK_STACK_ALIGNMENT (32)
+
+uint8_t __attribute__((aligned(SCISERVER_TASK_STACK_ALIGNMENT))) gUserHiTaskStack[SCISERVER_TASK_STACK_SIZE];
+uint8_t __attribute__((aligned(SCISERVER_TASK_STACK_ALIGNMENT))) gUserLoTaskStack[SCISERVER_TASK_STACK_SIZE];
+
+/* In your init function */
+Sciserver_TirtosCfgPrms_t sciserverCfg = {0};
+sciserverCfg.hiTaskStack   = gUserHiTaskStack;
+sciserverCfg.loTaskStack   = gUserLoTaskStack;
+sciserverCfg.taskStackSize = SCISERVER_TASK_STACK_SIZE;
+sciServer_init(&sciserverCfg);
+\endcode
+\endcond

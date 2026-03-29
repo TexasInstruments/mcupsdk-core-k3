@@ -755,6 +755,7 @@ Module       | Migration guide                        | Older version  | Newer v
 Bootloader   |  \ref BOOTLOADER_MIGRATION_GUIDELINE  &zwj; |   <= 10.01.00  | >= 11.00.00
 OSPI         |  \ref OSPI_MIGRATION_GUIDE     &zwj;         |   <= 11.01.00  | >= 11.02.00
 Watchdog     |  \ref WATCHDOG_11_2_MIGRATION  &zwj;         |   <= 11.01.00  | >= 11.02.00
+SCI Server   |  \ref SCISERVER_11_2_MIGRATION  &zwj;        |   <= 11.01.00  | >= 11.02.00
 
 ### Networking
 

@@ -39,6 +39,10 @@
 #include <c7x.h>
 #include "kernel/dpl/StartuphooksP.h"
 
+int _system_pre_init(void);
+void _system_post_cinit(void);
+void _c_int00_secure(void);
+
 extern char __TI_STACK_END[];
 register volatile uint64_t __SP;
 

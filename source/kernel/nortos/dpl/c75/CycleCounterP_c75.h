@@ -77,6 +77,9 @@ extern "C" {
  */
 
 extern void CycleCounterP_Module_startup( void );
+uint64_t CycleCounterP_getCount64(void);
+uint32_t CycleCounterP_getCount32(void);
+void CycleCounterP_reset(void);
 
 #ifdef __cplusplus
     } /* extern C */

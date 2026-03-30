@@ -71,7 +71,7 @@ void CycleCounterP_reset(void)
                          asm(" NOP "); \
                          asm(" NOP "); \
                          asm(" NOP "); \
-                     } while (0)
+                     } while (0 != 0)
 
 #define NOP50        do {      \
                          NOP5; \
@@ -84,7 +84,7 @@ void CycleCounterP_reset(void)
                          NOP5; \
                          NOP5; \
                          NOP5; \
-                     } while(0)
+                     } while(0 != 0)
 
 #define NOP500     do {         \
                          NOP50; \
@@ -97,12 +97,12 @@ void CycleCounterP_reset(void)
                          NOP50; \
                          NOP50; \
                          NOP50; \
-                     } while(0)
+                     } while(0 != 0)
 
 #define NOP1000   do {           \
                         NOP500;  \
                         NOP500;  \
-                  } while(0)
+                  } while(0 != 0)
 
 uint64_t gTscDeltaCalib = 0;
 

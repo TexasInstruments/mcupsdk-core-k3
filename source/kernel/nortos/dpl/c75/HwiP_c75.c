@@ -65,6 +65,7 @@ extern  char _stack[0x10001];
 
 #define  HWIP_USE_DEFAULT_PRIORITY   (~((uint8_t)0))
 #define DPL_C7X_CONFIGNUM_HWI      (64U)
+#define KEEP_LOOPING               (1U)
 
 #if Hwi_bootToNonSecure__D
 extern void Hwi_switchToNS(void);
@@ -234,7 +235,7 @@ void Hwi_Instance_finalize(uint32_t intNum, int status)
  *  Here on interrupt unPlugged by Hwi_delete().
  */
 void Hwi_unPluggedInterrupt(void) {
-    while(true);
+    while(KEEP_LOOPING != 0U);
 }
 
 /*
@@ -372,7 +373,7 @@ void HwiP_enableInt(uint32_t intNum)
 
 void HwiP_restoreInt(uint32_t intNum, uint32_t key)
 {
-    if (key) {
+    if (key != 0U) {
         HwiP_enableInt(intNum);
     }
     else {
@@ -572,7 +573,7 @@ void Hwi_dispatchCore(int intNum)
             * been stored on it.
             */
             ncnt = (__ECSP_S & 0xe000) >> 13;
-            if (ncnt) {
+            if (ncnt != 0U) {
                 contextStack = (uint64_t *)(((uint64_t)__ECSP_S) +
                                         ((ncnt - 1) * 0x2000));
             }

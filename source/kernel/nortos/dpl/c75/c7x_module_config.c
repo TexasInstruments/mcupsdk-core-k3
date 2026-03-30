@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, Texas Instruments Incorporated
+ * Copyright (c) 2021-2026, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -92,12 +92,12 @@ const unsigned int Hwi_DEFAULT_INT_PRIORITY = (unsigned int)0x6U;
 static void ExceptionInternalHook(void)
 {
     volatile int loop = 1;
-    while (loop);
+    while (loop != 0);
 }
 
 
 static void ExceptionHook(void)
 {
     volatile int loop = 1;
-    while (loop);
+    while (loop != 0);
 }

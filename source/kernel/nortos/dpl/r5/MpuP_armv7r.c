@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -136,7 +136,7 @@ void MPU_SECTION MpuP_enable(void)
         /* get the current enabled bits */
         type = (uint32_t)CacheP_getEnabled();
 
-        if (type & CacheP_TYPE_ALLP) {
+        if ((type & CacheP_TYPE_ALLP) != 0U) {
             CacheP_disable(CacheP_TYPE_ALLP);
         }
 

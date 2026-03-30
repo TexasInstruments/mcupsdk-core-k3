@@ -325,7 +325,7 @@ void MmuP_disable(void)
 
         type = CacheP_TYPE_L1D;
 
-        if (type & CacheP_TYPE_L1D) {
+        if ((type & CacheP_TYPE_L1D) != 0U) {
             /* disable the L1 data cache */
             CacheP_disable(CacheP_TYPE_L1D);
         }
@@ -456,7 +456,7 @@ int32_t MmuP_map(uintptr_t vaddr, uintptr_t paddr, uint32_t size, MmuP_MapAttrs 
     /* disable the MMU (if already disabled, does nothing) */
     MmuP_disable();
 
-    if (Mmu_configInfo.noLevel0Table) {
+    if (Mmu_configInfo.noLevel0Table != 0U) {
         retStatus = MmuP_tableWalk(1, Mmu_level1Table_NS, &vaddrVal, &paddrVal,
             &sizeVal, mapAttrs);
     }
@@ -473,7 +473,7 @@ int32_t MmuP_map(uintptr_t vaddr, uintptr_t paddr, uint32_t size, MmuP_MapAttrs 
     );
 #endif
 
-    if (enabled) {
+    if (enabled != 0U) {
         /* if Mmu was enabled, then re-enable it */
         MmuP_enable();
     }

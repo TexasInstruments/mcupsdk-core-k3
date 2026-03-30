@@ -167,7 +167,7 @@ void Exception_handler(bool abortFlag, int vectorType)
     }
 
     ncnt = (__ECSP_S & 0xe000) >> 13;
-    if (ncnt) {
+    if (ncnt != 0U) {
         contextStack = (uint64_t *)(((uint64_t)__ECSP_S) + ((ncnt - 1) * 0x2000));
     }
     else  {
@@ -241,7 +241,7 @@ void Exception_internalHandler(void)
         iesr15_0 = Exception_Module_state.iesr & 0xffff;
         ierr = Exception_Module_state.ierr;
 
-        if (ierr & Exception_IERRPFX) {
+        if ((ierr & Exception_IERRPFX) != 0U) {
             DebugP_log("  Page fault exception:\r\n");
             switch (iesr19_16) {
               case 0:
@@ -266,23 +266,23 @@ void Exception_internalHandler(void)
                 break;
             }
         }
-        if (ierr & Exception_IERRIFX) {
+        if ((ierr & Exception_IERRIFX) != 0U) {
             DebugP_log("  Instruction fetch exception, cpu_pmc_rstatus[2:0]=0x%x\r\n",
                           iesr15_0 & 0x7);
         }
-        if (ierr & Exception_IERRFPX) {
+        if ((ierr & Exception_IERRFPX) != 0U) {
             DebugP_log("  Fetch packet exception\r\n");
         }
-        if (ierr & Exception_IERREPX) {
+        if ((ierr & Exception_IERREPX) != 0U) {
             DebugP_log("  Execute packet exception\r\n");
         }
-        if (ierr & Exception_IERROPX) {
+        if ((ierr & Exception_IERROPX) != 0U) {
             DebugP_log("  Illegal opcode exception\r\n");
         }
-        if (ierr & Exception_IERRRCX) {
+        if ((ierr & Exception_IERRRCX) != 0U) {
             DebugP_log("  Resource conflict exception\r\n");
         }
-        if (ierr & Exception_IERRRAX) {
+        if ((ierr & Exception_IERRRAX) != 0U) {
             DebugP_log("  Resource access exception\r\n");
             switch (iesr19_16) {
               case 0:
@@ -308,7 +308,7 @@ void Exception_internalHandler(void)
                 break;
             }
         }
-        if (ierr & Exception_IERRPRX) {
+        if ((ierr & Exception_IERRPRX) != 0U) {
             DebugP_log("  Privilege exception\r\n");
             switch (iesr19_16) {
               case 0:
@@ -333,17 +333,17 @@ void Exception_internalHandler(void)
                 break;
             }
         }
-        if (ierr & Exception_IERRLBX) {
+        if ((ierr & Exception_IERRLBX) != 0U) {
             DebugP_log("  Loop buffer exception\r\n");
         }
-        if (ierr & Exception_IERRMSX) {
+        if ((ierr & Exception_IERRMSX) != 0U) {
             DebugP_log("  Missed stall exception\r\n");
         }
-        if (ierr & Exception_IERRDFX) {
+        if ((ierr & Exception_IERRDFX) != 0U) {
             DebugP_log("  Data fetch exception\r\n");
             DebugP_log("  cpu_dmc_X_rstatus[2:0]=0x%x\r\n", iesr15_0 & 0x7);
         }
-        if (ierr & Exception_IERRSEX) {
+        if ((ierr & Exception_IERRSEX) != 0U) {
             DebugP_log("  Streaming engine exception\r\n");
             switch (iesr19_16) {
               case 0:
@@ -360,7 +360,7 @@ void Exception_internalHandler(void)
                 break;
             }
         }
-        if (ierr & Exception_IERREXX) {
+        if ((ierr & Exception_IERREXX) != 0U) {
             DebugP_log("  Execution exception\r\n");
             switch (iesr19_16) {
               case 0:
@@ -375,7 +375,7 @@ void Exception_internalHandler(void)
                 break;
             }
         }
-        if (ierr & Exception_IERRADX) {
+        if ((ierr & Exception_IERRADX) != 0U) {
             DebugP_log("  Address exception\r\n");
             switch (iesr19_16) {
               case 0:
@@ -390,7 +390,7 @@ void Exception_internalHandler(void)
                 break;
             }
         }
-        if (ierr & Exception_IERRMMX) {
+        if ((ierr & Exception_IERRMMX) != 0U) {
             DebugP_log("  MMA exception\r\n");
             switch (iesr19_16) {
               case 0:

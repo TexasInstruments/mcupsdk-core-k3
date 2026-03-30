@@ -59,7 +59,7 @@ void CacheP_Module_startup(void)
 void CacheP_enable(uint32_t type)
 {
     /* Enable L1D cache */
-    if (type & CacheP_TYPE_L1D)
+    if ((type & CacheP_TYPE_L1D) != 0U)
     {
         uint64_t L1D_cfg = CacheP_getL1DCFG();
         L1D_cfg |= 1U;
@@ -75,7 +75,7 @@ void CacheP_enable(uint32_t type)
 void CacheP_disable(uint32_t type)
 {
     /* Disable L1D cache */
-    if (type & CacheP_TYPE_L1D)
+    if ((type & CacheP_TYPE_L1D) != 0U)
     {
         uint64_t L1D_cfg = CacheP_getL1DCFG();
         L1D_cfg &= ~((uint64_t) 1);
@@ -91,7 +91,7 @@ void CacheP_disable(uint32_t type)
 void CacheP_enableWB(uint32_t type)
 {
      /* Enable writeback */
-    if (type & CacheP_TYPE_L1D)
+    if ((type & CacheP_TYPE_L1D) != 0U)
     {
         uint64_t L1D_cfg = CacheP_getL1DCFG();
         L1D_cfg |= 0x10U;
@@ -107,7 +107,7 @@ void CacheP_enableWB(uint32_t type)
 void CacheP_enableWT(uint32_t type)
 {
     /* Disabling the Writeback enable write through */
-    if (type & CacheP_TYPE_L1D)
+    if ((type & CacheP_TYPE_L1D) != 0U)
     {
         uint64_t L1D_cfg = CacheP_getL1DCFG();
         L1D_cfg &= ~((uint64_t) 0x10U);
@@ -136,7 +136,7 @@ void CacheP_getSize(CacheP_Size *size)
 */
 void CacheP_wbAll(uint32_t type)
 {
-    if (type & CacheP_TYPE_L1D)
+    if ((type & CacheP_TYPE_L1D) != 0U)
     {
         // Performs a global write back of L1D cache
         CacheP_setL1DWB(1);
@@ -156,7 +156,7 @@ void Cache_wbInvL1dAll(void)
  */
 void CacheP_wbInvAll(uint32_t type)
 {
-    if (type & CacheP_TYPE_L1D)
+    if ((type & CacheP_TYPE_L1D) != 0U)
     {
         CacheP_setL1DWBINV(1);
     }

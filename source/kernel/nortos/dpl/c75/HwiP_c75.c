@@ -505,7 +505,8 @@ bool Hwi_getStackInfo(Hwi_StackInfo *stkInfo, bool computeStackDepth)
         /* Compute stack depth */
         do {
         } while(*isrSP++ == (char)0xbe);
-        stkInfo->hwiStackPeak = stkInfo->hwiStackSize - (size_t)(--isrSP - (char *)stkInfo->hwiStackBase);
+        isrSP--;
+        stkInfo->hwiStackPeak = stkInfo->hwiStackSize - (size_t)(isrSP - (char *)stkInfo->hwiStackBase);
     }
     else {
         stkInfo->hwiStackPeak = 0;

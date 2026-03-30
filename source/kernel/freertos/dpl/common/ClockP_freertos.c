@@ -52,7 +52,7 @@ void ClockP_timerTickIsr(void *args)
     void vPortTimerTickHandler(void);
 
     /* increment the systick counter */
-    gClockCtrl.ticks++;
+    gClockCtrl.ticks = gClockCtrl.ticks + 1U;
 
     vPortTimerTickHandler();
 

@@ -235,7 +235,7 @@ void Hwi_Instance_finalize(uint32_t intNum, int status)
  *  Here on interrupt unPlugged by Hwi_delete().
  */
 void Hwi_unPluggedInterrupt(void) {
-    while(KEEP_LOOPING != 0U);
+    while(KEEP_LOOPING != 0U){;}
 }
 
 /*

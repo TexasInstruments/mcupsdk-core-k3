@@ -92,12 +92,12 @@ const unsigned int Hwi_DEFAULT_INT_PRIORITY = (unsigned int)0x6U;
 static void ExceptionInternalHook(void)
 {
     volatile int loop = 1;
-    while (loop != 0);
+    while (loop != 0){;}
 }
 
 
 static void ExceptionHook(void)
 {
     volatile int loop = 1;
-    while (loop != 0);
+    while (loop != 0){;}
 }

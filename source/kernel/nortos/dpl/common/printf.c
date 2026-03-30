@@ -172,7 +172,7 @@ static inline unsigned int _strnlen_s(const char* str, size_t maxsize)
 {
   const char* s;
   size_t maxsize_val = maxsize;
-  for (s = str; *s && maxsize_val--; ++s);
+  for (s = str; *s && maxsize_val--; ++s){;}
   return (unsigned int)(s - str);
 }
 
@@ -654,7 +654,7 @@ static size_t _etoa(out_fct_type out, char* buffer, size_t idx, size_t maxlen, d
     idx_val = _ntoa_long(out, buffer, idx_val, maxlen, (expval < 0) ? -expval : expval, expval < 0, 10, 0, minwidth-1, FLAGS_ZEROPAD | FLAGS_PLUS);
     // might need to right-pad spaces
     if ((flags_local & FLAGS_LEFT) != 0U) {
-      while (idx_val - start_idx < width) out(' ', buffer, idx_val++, maxlen);
+      while (idx_val - start_idx < width) {out(' ', buffer, idx_val++, maxlen);}
     }
   }
   return idx_val;

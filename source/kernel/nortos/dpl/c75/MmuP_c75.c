@@ -52,7 +52,7 @@
 
 #include "MmuP_c75.h"
 
-#define Mmu_PADDR_MASK          0x0000FFFFFFFFFFFF
+#define Mmu_PADDR_MASK          0x0000FFFFFFFFFFFFU
 
 #define Mmu_GRANULE_SIZE_4KB    0x000
 #define Mmu_GRANULE_SIZE_16KB   0x100
@@ -102,11 +102,11 @@ static void MmuP_addBlockEntry(uint8_t level, uint64_t *tablePtr, uint16_t table
         desc = MmuP_DescriptorType_BLOCK;
     }
 
-    desc |= ((uint64_t)(mapAttrs->attrIndx & 0x7) << 2) |
-            ((uint64_t)(0x1 << 5)) |
-            ((uint64_t)(mapAttrs->accessPerm & 0x3) << 6) |
-            ((uint64_t)(mapAttrs->shareable & 0x3) << 8) |
-            ((uint64_t)(0x1) << 10) |  /* access flag */
+    desc |= (((uint64_t)mapAttrs->attrIndx & (uint64_t)0x7) << 2U) |
+            (((uint64_t)0x1 << 5U)) |
+            (((uint64_t)mapAttrs->accessPerm & (uint64_t)0x3) << 6U) |
+            (((uint64_t)mapAttrs->shareable & (uint64_t)0x3) << 8U) |
+            ((uint64_t)(0x1) << 10U) |  /* access flag */
             ((uint64_t)((mapAttrs->global == 0U) ? 1U : 0U) << 11U) |
             ((paddr & ~(((uint64_t)1 << (uint64_t)Mmu_configInfo.tableOffset[level]) - 1U))) |
             ((uint64_t)((mapAttrs->privExecute == 0U) ? 1U : 0U) << 53U) |
@@ -119,7 +119,7 @@ static void MmuP_addBlockEntry(uint8_t level, uint64_t *tablePtr, uint16_t table
 static uint64_t* MmuP_allocTable(void)
 {
     uint64_t *table;
-    unsigned int i, tableLen = (Mmu_granuleSize >> 3);
+    unsigned int i, tableLen = ((uint64_t)Mmu_granuleSize >> 3U);
     uint64_t *slot;
 
     table = &gMmu_tableArray_NS[tableLen * Mmu_tableArraySlot_NS];
@@ -154,8 +154,8 @@ static uint64_t* MmuP_addTableEntry(uint64_t *tablePtr, uint16_t tableIdx,
     newTable = MmuP_allocTable();
     if (newTable != NULL)
     {
-        desc = ((uint64_t)MmuP_DescriptorType_TABLE & 0x3) |
-            ((uint64_t)newTable & ~((uint64_t)(Mmu_granuleSize - 1)));
+        desc = ((uint64_t)MmuP_DescriptorType_TABLE & 0x3U) |
+            ((uint64_t)newTable & ~(((uint64_t)Mmu_granuleSize - 1U)));
         tablePtr[tableIdx] = desc;
 
     }
@@ -167,25 +167,29 @@ static void MmuP_readBlockEntry(uint8_t level, uint64_t *tablePtr, uint16_t tabl
     uint64_t *paddr, MmuP_MapAttrs *mapAttrs)
 {
     uint64_t desc;
+    uint64_t mask;
 
     desc = tablePtr[tableIdx];
 
-    mapAttrs->attrIndx = (MmuP_AttrIndx)((desc >> 2) & 0x7);
-    mapAttrs->accessPerm = (MmuP_AccessPerm)((desc >> 6) & 0x3);
-    mapAttrs->shareable = (MmuP_Shareable)((desc >> 8) & 0x3);
+    mapAttrs->attrIndx = (MmuP_AttrIndx)((desc >> 2U) & 0x7U);
+    mapAttrs->accessPerm = (MmuP_AccessPerm)((desc >> 6U) & 0x3U);
+    mapAttrs->shareable = (MmuP_Shareable)((desc >> 8U) & 0x3U);
     mapAttrs->global = (((desc >> 11U) & 0x1U) == 0U) ? (uint8_t)1 : (uint8_t)0;
     mapAttrs->privExecute = (((desc >> 53U) & 0x1U) == 0U) ? (uint8_t)1 : (uint8_t)0;
     mapAttrs->userExecute = (((desc >> 54U) & 0x1U) == 0U) ? (uint8_t)1 : (uint8_t)0;
 
-    *paddr = desc & (uint64_t)Mmu_PADDR_MASK &
-        ~((uint64_t)((1 << Mmu_configInfo.tableOffset[level]) - 1));
+    mask = ((uint64_t)1U << (uint64_t)Mmu_configInfo.tableOffset[level]) - 1U;
+    *paddr = desc & (uint64_t)Mmu_PADDR_MASK & ~mask;
 }
 
 
 static void MmuP_freeTable(uint64_t *table)
 {
+    ptrdiff_t diff;
+
     *table = Mmu_tableArraySlot_NS;
-    Mmu_tableArraySlot_NS = (table - gMmu_tableArray_NS) / (Mmu_granuleSize >> 3);
+    diff = (ptrdiff_t)(table - gMmu_tableArray_NS);
+    Mmu_tableArraySlot_NS = (uint64_t)diff / ((uint64_t)Mmu_granuleSize >> 3U);
 }
 
 
@@ -201,7 +205,7 @@ static uint8_t MmuP_tableWalk(uint8_t level, uint64_t *tablePtr, uint64_t *vaddr
     uint8_t retVal = 1U;
 
     blockTranslation = 1;
-    blockSize = 1 << Mmu_configInfo.tableOffset[level];
+    blockSize = (uint32_t)1 << (uint32_t)Mmu_configInfo.tableOffset[level];
     if ((level == 0) ||
        ((level == 1) && (Mmu_granuleSize != MMUP_GRANULE_SIZE_4KB))) {
         blockTranslation = 0;
@@ -213,20 +217,20 @@ static uint8_t MmuP_tableWalk(uint8_t level, uint64_t *tablePtr, uint64_t *vaddr
     while ((*size != 0) && (tableIdx < Mmu_configInfo.tableLength)) {
         desc = tablePtr[tableIdx];
 
-        if (((desc & 0x3) == MmuP_DescriptorType_TABLE) && (level != 3)) {
-            if ((blockTranslation == 1) && (*size >= blockSize) &&
-                (*vaddr & (blockSize - 1) == 0))
+        if (((desc & (uint64_t)0x3) == (uint64_t)MmuP_DescriptorType_TABLE) && ((uint64_t)level != (uint64_t)3)) {
+            if ((blockTranslation == 1U) && (*size >= blockSize) &&
+                (((*vaddr) & (uint64_t)(blockSize - 1U)) == (uint64_t)0))
             {
                 MmuP_addBlockEntry(level, tablePtr, tableIdx, *paddr, mapAttrs);
                 *size = *size - blockSize;
                 *vaddr = *vaddr + blockSize;
                 *paddr = *paddr + blockSize;
                 MmuP_freeTable((uint64_t *)(Mmu_PADDR_MASK & desc &
-                    ~(uint64_t)(Mmu_granuleSize - 1)));
+                    ~((uint64_t)Mmu_granuleSize - 1U)));
             }
             else {
                 nextLevelTablePtr = (uint64_t *)(Mmu_PADDR_MASK & desc &
-                    ~(uint64_t)(Mmu_granuleSize - 1));
+                    ~((uint64_t)Mmu_granuleSize - 1U));
                 retStatus = MmuP_tableWalk(level + 1, nextLevelTablePtr,
                     vaddr, paddr, size, mapAttrs);
                 if (retStatus == 0U) {
@@ -237,17 +241,17 @@ static uint8_t MmuP_tableWalk(uint8_t level, uint64_t *tablePtr, uint64_t *vaddr
         }
         else
         {
-            if (((desc & 0x3) != MmuP_DescriptorType_TABLE) || (level == 3))
+            if (((desc & 0x3U) != MmuP_DescriptorType_TABLE) || (level == 3U))
             {
-                if ((level == 0) || ((level < 3) && (*size < blockSize)) ||
-                ((*size >= blockSize) && ((*vaddr & (blockSize - 1)) != 0)))
+                if ((level == 0U) || ((level < 3U) && (*size < blockSize)) ||
+                ((*size >= blockSize) && ((*vaddr & (blockSize - 1U)) != 0U)))
                 {
-                    uint64_t vaddrCopy = (*vaddr & (~(blockSize - 1)));
+                    uint64_t vaddrCopy = (*vaddr & (~(blockSize - 1U)));
                     uint64_t paddrCopy;
                     MmuP_MapAttrs mapAttrsCopy;
                     uint32_t sizeCopy = blockSize;
 
-                    if ((desc & 0x3) == MmuP_DescriptorType_BLOCK)
+                    if ((desc & 0x3U) == MmuP_DescriptorType_BLOCK)
                     {
                         MmuP_readBlockEntry(level, tablePtr, tableIdx, &paddrCopy,
                             &mapAttrsCopy);
@@ -260,7 +264,7 @@ static uint8_t MmuP_tableWalk(uint8_t level, uint64_t *tablePtr, uint64_t *vaddr
                         break;
                     }
 
-                    if ((desc & 0x3) == MmuP_DescriptorType_BLOCK) {
+                    if ((desc & 0x3U) == MmuP_DescriptorType_BLOCK) {
                         /*
                         * If old entry is a block entry, a new table entry is
                         * added and merged with the old block entry.
@@ -444,9 +448,9 @@ int32_t MmuP_map(uintptr_t vaddr, uintptr_t paddr, uint32_t size, MmuP_MapAttrs 
     DebugP_assertNoLog(paddrVal <= Mmu_PADDR_MASK);
 
     /* Alignment check on vaddr, paddr & size */
-    DebugP_assertNoLog((vaddrVal & (Mmu_granuleSize - 1)) == 0);
-    DebugP_assertNoLog((paddrVal & (Mmu_granuleSize - 1)) == 0);
-    DebugP_assertNoLog((sizeVal & (Mmu_granuleSize - 1)) == 0);
+    DebugP_assertNoLog(((uint32_t)vaddrVal & ((uint32_t)Mmu_granuleSize - (uint32_t)1)) == (uint32_t)0);
+    DebugP_assertNoLog(((uint32_t)paddrVal & ((uint32_t)Mmu_granuleSize - (uint32_t)1)) == (uint32_t)0);
+    DebugP_assertNoLog((sizeVal & ((uint32_t)Mmu_granuleSize - (uint32_t)1)) == (uint32_t)0);
 
     key = Hwi_disable();
 
@@ -529,9 +533,9 @@ void MmuP_init(void)
      *  - Physical address size is 48-bits wide
      *  - TTBR0 is used for translating VA 0 to (2^48 - 1)
      */
-    tcr = tcr | (uint64_t)Mmu_MEMTYPE_CACHEABLE | Mmu_OUTER_SHAREABLE |
-          Mmu_OUTER_CACHEABLE | Mmu_INNER_CACHEABLE |
-          ((64 - MMUP_PA_MAX_WIDTH) << 1) | Mmu_WALK_EN;
+    tcr = tcr | (uint64_t)Mmu_MEMTYPE_CACHEABLE | (uint64_t)Mmu_OUTER_SHAREABLE |
+          (uint64_t)Mmu_OUTER_CACHEABLE | (uint64_t)Mmu_INNER_CACHEABLE |
+          ((64U - (uint64_t)MMUP_PA_MAX_WIDTH) << 1U) | (uint64_t)Mmu_WALK_EN;
 
     mode = Hwi_getCXM();
     if (mode == Hwi_TSR_CXM_SecureSupervisor)

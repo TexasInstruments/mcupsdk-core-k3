@@ -254,7 +254,7 @@ void Hwi_eventMap(int vectId, int eventId)
         /* Program CLEC to map external eventId to internal interrupt (event) */
 
         /* clear any residual interrupt */
-        __set_indexed(__EFCLR, 0, 1L << vectId);
+        __set_indexed(__EFCLR, 0, 1UL << (uint32_t)vectId);
 
         Hwi_restore(mask);
     }
@@ -345,7 +345,7 @@ void Hwi_setPriority(unsigned int intNum, unsigned int priority)
 void HwiP_post(uint32_t intrNum)
 {
 
-    __set_indexed(__EFSET, 0, 1L << intrNum);
+    __set_indexed(__EFSET, 0, 1UL << intrNum);
 
     return;
 
@@ -355,7 +355,7 @@ void HwiP_post(uint32_t intrNum)
 
 uint32_t HwiP_disableInt(uint32_t intNum)
 {
-    unsigned long mask = 1L << intNum;
+    unsigned long mask = 1UL << intNum;
 
     /* Hwi_disableIER() returns old EER */
     return ((Hwi_disableIER(mask) & mask) != 0L);
@@ -363,7 +363,7 @@ uint32_t HwiP_disableInt(uint32_t intNum)
 
 void HwiP_enableInt(uint32_t intNum)
 {
-    unsigned long mask = 1L << intNum;
+    unsigned long mask = 1UL << intNum;
 
     Hwi_enableIER(mask);
 
@@ -383,7 +383,7 @@ void HwiP_restoreInt(uint32_t intNum, uint32_t key)
 
 void HwiP_clearInt(uint32_t intNum)
 {
-    __set_indexed(__EFCLR, 0, 1L << intNum);
+    __set_indexed(__EFCLR, 0, 1UL << intNum);
 }
 
 /*
@@ -425,8 +425,8 @@ void Hwi_reconfig(Hwi_Object *hwi, Hwi_FuncPtr fxn, const Hwi_Params *params)
                 break;
             default:
             case Hwi_MaskingOption_SELF:
-                hwi->disableMask = 1L << intNum;
-                hwi->restoreMask = 1L << intNum;
+                hwi->disableMask = 1UL << intNum;
+                hwi->restoreMask = 1UL << intNum;
                 break;
             case Hwi_MaskingOption_BITMASK:
                 hwi->disableMask = params->disableMask;
@@ -573,7 +573,7 @@ void Hwi_dispatchCore(int intNum)
             * one because ncnt would be > 0 if an interrupt's context had already
             * been stored on it.
             */
-            ncnt = (__ECSP_S & 0xe000) >> 13;
+            ncnt = ((uint64_t)__ECSP_S & 0xe000U) >> 13U;
             if (ncnt != 0U) {
                 contextStack = (uint64_t *)(((uint64_t)__ECSP_S) +
                                         ((ncnt - 1) * 0x2000));

@@ -90,11 +90,11 @@ int32_t CSL_clecConfigEventLevel(CSL_CLEC_EVTRegs *pRegs,
         regVal = CSL_REG32_RD(&pRegs->CFG[evtNum].MRR);
         if(is_level==0)
         {
-            regVal &= ~((uint32_t)(1<<24));
+            regVal &= ~(1U<<24U);
         }
         else
         {
-            regVal |= (uint32_t)(1<<24);
+            regVal |= (1U<<24U);
         }
         CSL_REG32_WR(&pRegs->CFG[evtNum].MRR, regVal);
     }

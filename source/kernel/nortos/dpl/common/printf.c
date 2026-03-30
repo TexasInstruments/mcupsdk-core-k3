@@ -355,7 +355,7 @@ static size_t _ntoa_long_long(out_fct_type out, char* buffer, size_t idx, size_t
       buf[len] = (digit < 10) ? ('0' + digit) : ((((flags_local & FLAGS_UPPERCASE) != 0U) ? 'A' : 'a') + (digit - 10));
       len = len + 1U;
       value_local /= base;
-    } while (value_local && (len < PRINTF_NTOA_BUFFER_SIZE));
+    } while ((value_local != 0U) && (len < PRINTF_NTOA_BUFFER_SIZE));
   }
 
   return _ntoa_format(out, buffer, idx, maxlen, buf, len, negative, (unsigned int)base, prec, width, flags_local);
@@ -459,7 +459,7 @@ static size_t _ftoa(out_fct_type out, char* buffer, size_t idx, size_t maxlen, d
 
     if (prec_val == 0U) {
       diff = value_local - (double)whole;
-      if ((!(diff < 0.5) || (diff > 0.5)) && (whole & 1)) {
+      if ((diff >= 0.5) && (((uint32_t)whole & 1U) != 0U )) {
         // exactly 0.5 and ODD, then round up
         // 1.5 -> 2, but 2.5 -> 2
         ++whole;

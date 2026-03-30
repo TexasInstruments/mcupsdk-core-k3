@@ -166,7 +166,7 @@ void Exception_handler(bool abortFlag, int vectorType)
         DebugP_log("\r\n");
     }
 
-    ncnt = (__ECSP_S & 0xe000) >> 13;
+    ncnt = ((uint64_t)__ECSP_S & 0xe000U) >> 13U;
     if (ncnt != 0U) {
         contextStack = (uint64_t *)(((uint64_t)__ECSP_S) + ((ncnt - 1) * 0x2000));
     }
@@ -237,16 +237,16 @@ void Exception_internalHandler(void)
                       Exception_Module_state.iear,
                       Exception_Module_state.iesr);
 
-        iesr19_16 = (Exception_Module_state.iesr & 0xf0000) >> 16;
-        iesr15_0 = Exception_Module_state.iesr & 0xffff;
+        iesr19_16 = (Exception_Module_state.iesr & 0xf0000U) >> 16U;
+        iesr15_0 = Exception_Module_state.iesr & 0xffffU;
         ierr = Exception_Module_state.ierr;
 
-        if ((ierr & Exception_IERRPFX) != 0U) {
+        if ((ierr & (uint64_t)Exception_IERRPFX) != 0U) {
             DebugP_log("  Page fault exception:\r\n");
             switch (iesr19_16) {
               case 0:
                 DebugP_log("    uTLB Fault, cpu_pmc_rstatus[10:0]=0x%x\r\n",
-                              iesr15_0 & 0x7ff);
+                              iesr15_0 & 0x7ffU);
                 break;
               case 1:
                 DebugP_log("    .D1 or .D2 uTLB lookup fault, Non-speculative load\r\n");
@@ -258,7 +258,7 @@ void Exception_internalHandler(void)
                 break;
               case 3:
                 DebugP_log("    uTLB Fault, cpu_se_N_rstatus[10:0]=0x%x\r\n",
-                              iesr15_0 & 0x7ff);
+                              iesr15_0 & (uint64_t)0x7ff);
                 break;
               default:
                 DebugP_log("    unknown sub-type, iesr[19:16]=0x%x\r\n",
@@ -266,23 +266,23 @@ void Exception_internalHandler(void)
                 break;
             }
         }
-        if ((ierr & Exception_IERRIFX) != 0U) {
+        if ((ierr & (uint64_t)Exception_IERRIFX) != 0U) {
             DebugP_log("  Instruction fetch exception, cpu_pmc_rstatus[2:0]=0x%x\r\n",
-                          iesr15_0 & 0x7);
+                          iesr15_0 & (uint64_t)0x7);
         }
-        if ((ierr & Exception_IERRFPX) != 0U) {
+        if ((ierr & (uint64_t)Exception_IERRFPX) != 0U) {
             DebugP_log("  Fetch packet exception\r\n");
         }
-        if ((ierr & Exception_IERREPX) != 0U) {
+        if ((ierr & (uint64_t)Exception_IERREPX) != 0U) {
             DebugP_log("  Execute packet exception\r\n");
         }
-        if ((ierr & Exception_IERROPX) != 0U) {
+        if ((ierr & (uint64_t)Exception_IERROPX) != 0U) {
             DebugP_log("  Illegal opcode exception\r\n");
         }
-        if ((ierr & Exception_IERRRCX) != 0U) {
+        if ((ierr & (uint64_t)Exception_IERRRCX) != 0U) {
             DebugP_log("  Resource conflict exception\r\n");
         }
-        if ((ierr & Exception_IERRRAX) != 0U) {
+        if ((ierr & (uint64_t)Exception_IERRRAX) != 0U) {
             DebugP_log("  Resource access exception\r\n");
             switch (iesr19_16) {
               case 0:
@@ -308,7 +308,7 @@ void Exception_internalHandler(void)
                 break;
             }
         }
-        if ((ierr & Exception_IERRPRX) != 0U) {
+        if ((ierr & (uint64_t)Exception_IERRPRX) != 0U) {
             DebugP_log("  Privilege exception\r\n");
             switch (iesr19_16) {
               case 0:
@@ -333,26 +333,26 @@ void Exception_internalHandler(void)
                 break;
             }
         }
-        if ((ierr & Exception_IERRLBX) != 0U) {
+        if ((ierr & (uint64_t)Exception_IERRLBX) != 0U) {
             DebugP_log("  Loop buffer exception\r\n");
         }
-        if ((ierr & Exception_IERRMSX) != 0U) {
+        if ((ierr & (uint64_t)Exception_IERRMSX) != 0U) {
             DebugP_log("  Missed stall exception\r\n");
         }
-        if ((ierr & Exception_IERRDFX) != 0U) {
+        if ((ierr & (uint64_t)Exception_IERRDFX) != 0U) {
             DebugP_log("  Data fetch exception\r\n");
-            DebugP_log("  cpu_dmc_X_rstatus[2:0]=0x%x\r\n", iesr15_0 & 0x7);
+            DebugP_log("  cpu_dmc_X_rstatus[2:0]=0x%x\r\n", iesr15_0 & (uint64_t)0x7);
         }
-        if ((ierr & Exception_IERRSEX) != 0U) {
+        if ((ierr & (uint64_t)Exception_IERRSEX) != 0U) {
             DebugP_log("  Streaming engine exception\r\n");
             switch (iesr19_16) {
               case 0:
                 DebugP_log("    L2 Return Error, cpu_se_N_rstatus[2:0]=0x%x\r\n",
-                              iesr15_0 & 0x7);
+                              iesr15_0 & (uint64_t)0x7);
                 break;
               case 1:
                 DebugP_log("    SE Internal Error, cpu_se_N_rstatus[2:0]=0x%x\r\n",
-                              iesr15_0 & 0x7);
+                              iesr15_0 & (uint64_t)0x7);
                 break;
               default:
                 DebugP_log("    unknown sub-type, iesr[19:16]=0x%x\r\n",
@@ -360,7 +360,7 @@ void Exception_internalHandler(void)
                 break;
             }
         }
-        if ((ierr & Exception_IERREXX) != 0U) {
+        if ((ierr & (uint64_t)Exception_IERREXX) != 0U) {
             DebugP_log("  Execution exception\r\n");
             switch (iesr19_16) {
               case 0:
@@ -375,7 +375,7 @@ void Exception_internalHandler(void)
                 break;
             }
         }
-        if ((ierr & Exception_IERRADX) != 0U) {
+        if ((ierr & (uint64_t)Exception_IERRADX) != 0U) {
             DebugP_log("  Address exception\r\n");
             switch (iesr19_16) {
               case 0:
@@ -390,7 +390,7 @@ void Exception_internalHandler(void)
                 break;
             }
         }
-        if ((ierr & Exception_IERRMMX) != 0U) {
+        if ((ierr & (uint64_t)Exception_IERRMMX) != 0U) {
             DebugP_log("  MMA exception\r\n");
             switch (iesr19_16) {
               case 0:

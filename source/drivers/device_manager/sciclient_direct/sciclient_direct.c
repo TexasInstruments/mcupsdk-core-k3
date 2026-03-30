@@ -285,11 +285,11 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
 #endif
             case TISCI_MSG_SET_DEVICE_RESETS:
             case TISCI_MSG_SYS_RESET:
-                memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+                memcpy((void *)message, (const void*)pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
                 ret = Sciclient_ProcessPmMessage(pReqPrm->flags, message);
                 if (pRespPrm->pRespPayload != NULL)
                 {
-                    memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
+                    memcpy((void *)pRespPrm->pRespPayload, (const void *)message, pRespPrm->respPayloadSize);
                 }
                 hdr = (struct tisci_header *) &message;
                 pRespPrm->flags = hdr->flags;
@@ -300,11 +300,11 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
             case TISCI_MSG_RM_UDMAP_FLOW_SIZE_THRESH_CFG:
             case TISCI_MSG_RM_UDMAP_FLOW_DELEGATE:
             case TISCI_MSG_RM_UDMAP_GCFG_CFG:
-                memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+                memcpy((void *)message, (const void *)pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
                 ret = Sciclient_ProcessRmMessage(message);
                 if (pRespPrm->pRespPayload != NULL)
                 {
-                    memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
+                    memcpy((void *)pRespPrm->pRespPayload, (const void *)message, pRespPrm->respPayloadSize);
                 }
                 hdr = (struct tisci_header *) &message;
                 pRespPrm->flags = hdr->flags;
@@ -320,11 +320,11 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
             case TISCI_MSG_RM_UDMAP_TX_CH_CFG:
             case TISCI_MSG_RM_UDMAP_RX_CH_CFG:
             case TISCI_MSG_RM_PROXY_CFG:
-                memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+                memcpy((void *)message, (const void *)pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
                 ret = Sciclient_ProcessRmMessage(message);
                 if (pRespPrm->pRespPayload != NULL)
                 {
-                    memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
+                    memcpy((void *)pRespPrm->pRespPayload, (const void *)message, pRespPrm->respPayloadSize);
                 }
                 hdr = (struct tisci_header *) &message;
                 pRespPrm->flags = hdr->flags;
@@ -370,11 +370,11 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                         ((pRespPrm->flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK))
                 {
 
-                    memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+                    memcpy((void *)message, (const void *)pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
                     ret = Sciclient_ProcessRmMessage(message);
                     if (pRespPrm->pRespPayload != NULL)
                     {
-                        memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
+                        memcpy((void *)pRespPrm->pRespPayload, (const void *)message, pRespPrm->respPayloadSize);
                     }
                     hdr = (struct tisci_header *) &message;
                     pRespPrm->flags = hdr->flags;
@@ -397,13 +397,13 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                         ((pRespPrm->flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK))
                 {
                     /* Copy the message for local processing */
-                    memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+                    memcpy((void *)message, (const void *)pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
 
                     /* Processing prepare sleep message locally */
                     ret = Sciclient_ProcessPmMessage(pReqPrm->flags,message);
                     if (pRespPrm->pRespPayload != NULL)
                     {
-                        memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
+                        memcpy((void *)pRespPrm->pRespPayload, (const void *)message, pRespPrm->respPayloadSize);
                     }
 
                     hdr = (struct tisci_header *) &message;
@@ -435,13 +435,13 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                     ((pRespPrm->flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK))
                 {
                     /* Copy the message for local processing */
-                    memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+                    memcpy((void *)message, (const void *)pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
 
                     /* Processing message locally */
                     ret = Sciclient_ProcessPmMessage(pReqPrm->flags,message);
                     if (pRespPrm->pRespPayload != NULL)
                     {
-                        memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
+                        memcpy((void *)pRespPrm->pRespPayload, (const void *)message, pRespPrm->respPayloadSize);
                     }
 
                     hdr = (struct tisci_header *) &message;
@@ -457,12 +457,12 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
             case TISCI_MSG_LPM_GET_NEXT_SYS_MODE:
             case TISCI_MSG_LPM_GET_NEXT_HOST_STATE:
             case TISCI_MSG_SET_IO_ISOLATION:
-                memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+                memcpy((void *)message, (const void *)pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
                 /* Processing enter sleep message locally */
                 ret = Sciclient_ProcessPmMessage(pReqPrm->flags,message);
                 if (pRespPrm->pRespPayload != NULL)
                 {
-                    memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
+                    memcpy((void *)pRespPrm->pRespPayload, (const void *)message, pRespPrm->respPayloadSize);
                 }
                 hdr = (struct tisci_header *) &message;
                 pRespPrm->flags = hdr->flags;
@@ -471,13 +471,13 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
             case TISCI_MSG_PREPARE_SLEEP:
             case TISCI_MSG_LPM_WAKE_REASON:
                 /* Copy the message for local processing */
-                memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+                memcpy((void *)message, (const void *)pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
 
                 /* Processing prepare sleep message locally */
                 ret = Sciclient_ProcessPmMessage(pReqPrm->flags,message);
                 if (pRespPrm->pRespPayload != NULL)
                 {
-                    memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
+                    memcpy((void *)pRespPrm->pRespPayload, (const void *)message, pRespPrm->respPayloadSize);
                 }
 
                 hdr = (struct tisci_header *) &message;
@@ -485,23 +485,23 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                 break;
 #endif
             case TISCI_MSG_QUERY_FW_CAPS:
-                memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+                memcpy((void *)message, (const void *)pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
                 /* Processing enter sleep message locally */
                 Sciclient_query_fw_caps_handler(pReqPrm->flags,message);
                 if (pRespPrm->pRespPayload != NULL)
                 {
-                    memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
+                    memcpy((void *)pRespPrm->pRespPayload, (const void *)message, pRespPrm->respPayloadSize);
                 }
                 hdr = (struct tisci_header *) &message;
                 pRespPrm->flags = hdr->flags;
 
                 break;
             case TISCI_MSG_DM_VERSION:
-                memcpy(message, pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
+                memcpy((void *)message, (const void *)pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);
                 ret = Sciclient_processDMVersionMessage(message);
                 if (pRespPrm->pRespPayload != NULL)
                 {
-                    memcpy(pRespPrm->pRespPayload, message, pRespPrm->respPayloadSize);
+                    memcpy((void *)pRespPrm->pRespPayload, (const void *)message, pRespPrm->respPayloadSize);
                 }
                 hdr = (struct tisci_header *) &message;
                 pRespPrm->flags = hdr->flags;

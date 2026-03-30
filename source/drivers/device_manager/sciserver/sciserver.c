@@ -411,7 +411,7 @@ static int32_t Sciserver_ProcessFullMessage(uint32_t *msg_recv,
     /* Store the request sequence value */
     reqSeq = hdr->seq;
 
-    memcpy(reqMsgBuffer, msg_recv, reqMsgSize);
+    memcpy((void *)reqMsgBuffer, (const void *)msg_recv, reqMsgSize);
 
     reqPrm.messageType = hdr->type;
     reqPrm.pReqPayload = reqMsgBuffer;
@@ -435,7 +435,7 @@ static int32_t Sciserver_ProcessFullMessage(uint32_t *msg_recv,
 
     ret = Sciclient_service(&reqPrm, &respPrm);
 
-    memcpy(msg_recv, respMsgBuffer, respMsgSize);
+    memcpy((void *)msg_recv, (const void *)respMsgBuffer, respMsgSize);
 
     /* Must restore the seq field. When forwarded message is processed by
      * TIFS, the returned message would have incorrect sequence value */

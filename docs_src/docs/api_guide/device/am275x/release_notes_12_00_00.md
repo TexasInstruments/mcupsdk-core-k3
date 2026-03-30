@@ -23,7 +23,7 @@ Feature                                                                         
  Support de-interleave of data on MCASP                                                      | MCASP
  LBIST/PBIST initiated in SBL EMMC                                                           | SBL
  Enable WKUP-R5F ATCM                                                                        | SBL
- Add support for Burton PMIC                                                                 | PMIC
+ Support PMIC driver for TPS6522X                                                            | PMIC
  Watchdog support for DM R5/WKUP-R5F                                                         | WDT
  Example for Memory latency benchmarking on R5F and C7x                                      | Becnhmarks
  MMCSD drive strength as a configurable option                                               | MMCSD

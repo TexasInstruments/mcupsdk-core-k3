@@ -24,7 +24,7 @@ Feature                                                                         
  Support de-interleave of data on MCASP                                                      | MCASP
  LBIST/PBIST initiated in SBL EMMC                                                           | SBL
  Enable WKUP-R5F ATCM                                                                        | SBL
- Add support for Burton PMIC                                                                 | PMIC
+ Support PMIC driver for TPS6522X                                                            | PMIC
  Watchdog support for DM R5/WKUP-R5F                                                         | WDT
  Save/Restore of FPU registers on context switch enabled by default on A53                   | FreeRTOS
  MMCSD drive strength as a configurable option                                               | MMCSD

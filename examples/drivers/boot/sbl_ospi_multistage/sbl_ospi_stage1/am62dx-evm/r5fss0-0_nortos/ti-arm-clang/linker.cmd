@@ -63,7 +63,7 @@ MEMORY
     R5F_TCMB0: ORIGIN = 0x41010000 , LENGTH = 0x00008000 */
     HSM_RAM_VECS: ORIGIN = 0x43C00000 , LENGTH = 0x100
     HSM_RAM  : ORIGIN = 0x43C00100 , LENGTH = 0x3c800 - 0x100
-    ATCM :  ORIGIN = 0x78000000 , LENGTH = 0x8000
+    ATCM :  ORIGIN = 0x78000100 , LENGTH = 0x8000 - 0x100
     /* This section is used by the SBL to temporarily load the appimage for authentication */
     APPIMAGE  : ORIGIN = 0x84000000 , LENGTH = 0x800000
 }

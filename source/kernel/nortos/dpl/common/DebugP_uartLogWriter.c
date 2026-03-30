@@ -66,7 +66,7 @@ void DebugP_uartLogWriterPutChar(char character)
     {
         UART_Transaction trans;
         UART_Transaction_init(&trans);
-        trans.buf   = &value;
+        trans.buf   = (void *)&value;
         trans.count = 1;
         (void) UART_write(uartHandle, &trans);
     }

@@ -58,7 +58,7 @@ int32_t DebugP_readLine(char *lineBuf, uint32_t bufSize)
             status = SystemP_SUCCESS;
 
             /* Read one char */
-            trans.buf   = &readByte;
+            trans.buf   = (void *)&readByte;
             trans.count = 1;
             transferOK = UART_read(uartHandle, &trans);
             if((SystemP_SUCCESS != (transferOK)) || (UART_TRANSFER_STATUS_SUCCESS != trans.status))
@@ -74,7 +74,7 @@ int32_t DebugP_readLine(char *lineBuf, uint32_t bufSize)
                 }
 
                 /* Echo the char */
-                trans.buf   = &readByte;
+                trans.buf   = (void *)&readByte;
                 trans.count = 1;
                 transferOK = UART_write(uartHandle, &trans);
                 if((SystemP_SUCCESS != (transferOK)) || (UART_TRANSFER_STATUS_SUCCESS != trans.status))
@@ -93,7 +93,7 @@ int32_t DebugP_readLine(char *lineBuf, uint32_t bufSize)
 
                     /* Echo a new line to terminal (ASCII: 10) */
                     readByte = 10;
-                    trans.buf   = &readByte;
+                    trans.buf   = (void *)&readByte;
                     trans.count = 1;
                     transferOK = UART_write(uartHandle, &trans);
                     if((SystemP_SUCCESS != (transferOK)) || (UART_TRANSFER_STATUS_SUCCESS != trans.status))

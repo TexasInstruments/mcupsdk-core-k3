@@ -484,6 +484,7 @@ bool Hwi_getStackInfo(Hwi_StackInfo *stkInfo, bool computeStackDepth)
 
     char *isrSP;
     bool stackOverflow;
+    uintptr_t stackAddr;
 
     /*
      * Copy the stack base address and size.
@@ -494,7 +495,9 @@ bool Hwi_getStackInfo(Hwi_StackInfo *stkInfo, bool computeStackDepth)
      */
     stkInfo->hwiStackSize = (size_t)_symval(&__TI_STACK_SIZE) -
                             (HWI_ECSP_SIZE + 0x2000);
-    stkInfo->hwiStackBase = _stack + HWI_ECSP_SIZE + 0x2000;
+    stackAddr = (uintptr_t)_stack;
+    stackAddr += (uintptr_t)(HWI_ECSP_SIZE + 0x2000);
+    stkInfo->hwiStackBase = (char *)stackAddr;
 
     isrSP = stkInfo->hwiStackBase;
 

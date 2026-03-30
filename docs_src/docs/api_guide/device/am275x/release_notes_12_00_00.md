@@ -312,6 +312,11 @@ ROM_CHECKSUM     |  R5F           | No
     <th> Module
 </tr>
 <tr>
+    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-326, EXT_SITMPUSW-326}
+    <td> AASRC - AASRC channel data gets shifted when c7x workload is high and multiple mcasp instances are used
+    <td> AASRC
+</tr>
+<tr>
     <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-153, EXT_SITMPUSW-153}
     <td> MCU+ SDK CCS Project Build Generates Invalid/Redundant Boot Image Files
     <td> Build

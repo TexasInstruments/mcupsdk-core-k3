@@ -35,31 +35,31 @@ Data Placement          | MSRAM / L2RAM
 
 - Software/Application used        : sbl_ospi, ipc_rpmsg_echo
 - Cores booted by SBL              : r5fss0-0 r5fss0-1 r5fss1-0 r5fss1-1 c75ss0-0 c75ss1-0
-- Size of images loaded            : 463 KB
+- Size of images loaded            : 467 KB
 - Boot Media Clock                 : 166.667 MHz
 - Mode                             : PHY enabled, DMA enabled
 - Protocol                         : 8D-8D-8D
 
 SBL boot time breakdown          |   Time (us)
 ---------------------------------|--------------
-TIFS init                        |        779
-System_init                      |       1903
+TIFS init                        |        294
+System_init                      |       2743
 Board_init                       |          7
-FreeRtosTask Create              |        296
-Drivers_open                     |       5793
-Board_driversOpen                |        159
-sciServer_init                   |      15160
-SBL Drivers_open                 |       3233
-SBL Board_driversOpen            |       5886
-Sciclient Get Version            |       6546
-R5FSS0_0 Image Load              |       2187
-R5FSS0_1 Image Load              |       1644
-R5FSS1_0 Image Load              |       1638
-R5FSS1_1 Image Load              |       1625
-DSP 0 Image Load                 |       7007
-DSP 1 Image Load                 |       6893
+FreeRtosTask Create              |        255
+Drivers_open                     |       5789
+Board_driversOpen                |        158
+sciServer_init                   |      15084
+SBL Drivers_open                 |       3212
+SBL Board_driversOpen            |       5810
+Sciclient Get Version            |       6608
+R5FSS0_0 Image Load              |       2188
+R5FSS0_1 Image Load              |       1652
+R5FSS1_0 Image Load              |       1651
+R5FSS1_1 Image Load              |       1633
+DSP 0 Image Load                 |       7020
+DSP 1 Image Load                 |       6908
 ---------------------------------|--------------
-SBL Total Time Taken             |      60762
+SBL Total Time Taken             |      61020
 
 ### SBL Fast-xSPI NOR performance (HS-FS)
 
@@ -72,24 +72,24 @@ SBL Total Time Taken             |      60762
 
 SBL boot time breakdown          |   Time (us)
 ---------------------------------|--------------
-TIFS init                        |        801
-System_init                      |       1901
-Board_init                       |          8
-FreeRtosTask Create              |        296
-Drivers_open                     |       5794
-Board_driversOpen                |        160
-sciServer_init                   |      15164
-SBL Drivers_open                 |       3230
-SBL Board_driversOpen            |        472
-Sciclient Get Version            |       6551
-R5FSS0_0 Image Load              |       2226
-R5FSS0_1 Image Load              |       1683
-R5FSS1_0 Image Load              |       1677
-R5FSS1_1 Image Load              |       1660
-DSP 0 Image Load                 |       7117
-DSP 1 Image Load                 |       7010
+TIFS init                        |        294
+System_init                      |       2743
+Board_init                       |          7
+FreeRtosTask Create              |        255
+Drivers_open                     |       5789
+Board_driversOpen                |        158
+sciServer_init                   |      15084
+SBL Drivers_open                 |       3212
+SBL Board_driversOpen            |       5810
+Sciclient Get Version            |       6608
+R5FSS0_0 Image Load              |       2188
+R5FSS0_1 Image Load              |       1652
+R5FSS1_0 Image Load              |       1651
+R5FSS1_1 Image Load              |       1633
+DSP 0 Image Load                 |       7020
+DSP 1 Image Load                 |       6908
 ---------------------------------|--------------
-SBL Total Time Taken             |      55757
+SBL Total Time Taken             |      61020
 
 #### R5FSS0_0 boot time using Fast-xSPI Bootmode
 
@@ -115,29 +115,29 @@ For how to enable Fast XSPI boot refer \ref FAST_XSPI_BOOTMODE_GUIDE
 
 - Software/Application used        : sbl_emmc, ipc_rpmsg_echo
 - Cores booted by SBL              : r5fss0-0 r5fss0-1 r5fss1-0 r5fss1-1 c75ss0-0 c75ss1-0
-- Size of images loaded            : 463 KB
+- Size of images loaded            : 467 KB
 - Boot Media Clock                 : 200.00 MHz
 - Mode                             : HS200
 
 SBL boot time breakdown          |   Time (us)
 ---------------------------------|--------------
-TIFS init                        |       1079
-System_init                      |        793
-Board_init                       |          4
-FreeRtosTask Create              |        255
-Drivers_open                     |       6808
-Board_driversOpen                |        159
-sciServer_init                   |        114
-SBL Drivers_open                 |      16431
-Sciclient Get Version            |       6528
-R5FSS0_0 Image Load              |      13763
-R5FSS0_1 Image Load              |      11341
-R5FSS1_0 Image Load              |      12086
-R5FSS1_1 Image Load              |      12040
-DSP 0 Image Load                 |      18117
-DSP 1 Image Load                 |      18763
+TIFS init                        |        333
+System_init                      |      13387
+Board_init                       |          5
+FreeRtosTask Create              |        258
+Drivers_open                     |       5809
+Board_driversOpen                |        162
+sciServer_init                   |        129
+SBL Drivers_open                 |      61609
+Sciclient Get Version            |       6648
+R5FSS0_0 Image Load              |      18949
+R5FSS0_1 Image Load              |      16830
+R5FSS1_0 Image Load              |      16830
+R5FSS1_1 Image Load              |      16812
+DSP 0 Image Load                 |      19136
+DSP 1 Image Load                 |      19059
 ---------------------------------|--------------
-SBL Total Time Taken             |     118287
+SBL Total Time Taken             |     196946
 
 ### IPC performance
 
@@ -147,41 +147,41 @@ SBL Total Time Taken             |     118287
 
 Local Core  | Remote Core | Average Message Latency (us)
 ------------|-------------|------------------------------
-c75ss0-0	| c75ss1-0	  | 1.425
- r5f0-0	    | r5f0-1	  | 1.131
+c75ss0-0	| c75ss1-0	  | 1.700
+ r5f0-0	    | r5f0-1	  | 1.133
  r5f0-0	    | r5f1-0	  | 1.261
- r5f0-0	    | r5f1-1	  | 1.140
- r5f0-0	    | c75ss0-0	  | 1.163
- r5f0-0	    | c75ss1-0	  | 1.163
+ r5f0-0	    | r5f1-1	  | 1.121
+ r5f0-0	    | c75ss0-0	  | 1.164
+ r5f0-0	    | c75ss1-0	  | 1.166
 #### IPC RPMSG
 
 - 1000 messages are sent and average one way message latency is measured
 Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Latency (us) |
 ------------|-------------|--------------|------------------------------|------------------|
-      r5f0-0|       r5f0-1|            32|                         6.959|                 7|
-      r5f0-0|       r5f0-1|            64|                         8.331|                 8|
-      r5f0-0|       r5f0-1|           112|                        10.515|                11|
-      r5f0-0|       r5f1-0|            32|                         6.811|                 7|
-      r5f0-0|       r5f1-0|            64|                         8.290|                 9|
-      r5f0-0|       r5f1-0|           112|                        10.466|                11|
-      r5f0-0|       r5f1-1|            32|                         6.965|                 7|
-      r5f0-0|       r5f1-1|            64|                         8.352|                 9|
-      r5f0-0|       r5f1-1|           112|                        10.518|                11|
-      r5f0-0|     c75ss0-0|            32|                         8.673|                10|
-      r5f0-0|     c75ss0-0|            64|                         9.296|                10|
-      r5f0-0|     c75ss0-0|           112|                        10.368|                11|
-      r5f0-0|     c75ss1-0|            32|                         8.906|                10|
-      r5f0-0|     c75ss1-0|            64|                         9.543|                10|
-      r5f0-0|     c75ss1-0|           112|                        10.564|                11|
+      r5f0-0|       r5f0-1|            32|                         6.975|                 7|
+      r5f0-0|       r5f0-1|            64|                         8.338|                 9|
+      r5f0-0|       r5f0-1|           112|                        10.535|                11|
+      r5f0-0|       r5f1-0|            32|                         6.820|                 7|
+      r5f0-0|       r5f1-0|            64|                         8.311|                 9|
+      r5f0-0|       r5f1-0|           112|                        10.457|                11|
+      r5f0-0|       r5f1-1|            32|                         6.971|                 7|
+      r5f0-0|       r5f1-1|            64|                         8.329|                 9|
+      r5f0-0|       r5f1-1|           112|                        10.519|                11|
+      r5f0-0|     c75ss0-0|            32|                         8.511|                10|
+      r5f0-0|     c75ss0-0|            64|                         9.185|                10|
+      r5f0-0|     c75ss0-0|           112|                        10.235|                11|
+      r5f0-0|     c75ss1-0|            32|                         8.778|                10|
+      r5f0-0|     c75ss1-0|            64|                         9.407|                10|
+      r5f0-0|     c75ss1-0|           112|                        10.490|                11|
 
 
 ### EMMC Performance
 
 Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 -------|----------------|--------------------|-----------------
-SDR50  | 	   1        |       26.20		 |      45.23
-DDR50  | 	   1        |       50.49		 |      82.64
-HS200  | 	   1        |       79.73		 |     157.23
+SDR50  | 	   1        |       29.34   |      43.81
+DDR50  | 	   1        |       41.35   |      77.93
+HS200  | 	   1        |       59.52   |     138.55
 
 ### OSPI NOR Flash Performance {#OSPI_DATA_SHEET}
 
@@ -190,20 +190,20 @@ HS200  | 	   1        |       79.73		 |     157.23
  - PHY condition: enabled
  - Flash type: SERIAL NOR
  - Flash protocol: FLASH_CFG_PROTO_8S_8S_8S
- - Temperature: 46.43
+ - Temperature: 47.86
 
 Non-DQS Tuning Algorithm    |    Tuning Time (ms)
 ----------------------------|------------------------
-Default Tuning Window       |          0.99  ms
-Fast Tuning Window          |          0.40  ms
+Default Tuning Window       |          1.02  ms
+Fast Tuning Window          |          0.42  ms
 
  - Flash type: SERIAL NOR
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
 
 DQS Tuning Algorithm        |    Tuning Time (ms)
 ----------------------------|------------------------
-Default Tuning Window       |          5.29 ms
-Fast Tuning Window          |          5.36 ms
+Default Tuning Window       |          5.39 ms
+Fast Tuning Window          |          5.40 ms
 
  - Flash frequency: 25Mhz
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
@@ -211,8 +211,8 @@ Fast Tuning Window          |          5.36 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|-------------------|----------------------|----------------------
-      1          |        DAC        |        No         |        0.45          |        3.09
-      1          |        DAC        |        Yes        |        0.45          |       48.73
+      1          |        DAC        |        No         |        0.44          |        3.09
+      1          |        DAC        |        Yes        |        0.44          |       48.73
 
  - Flash frequency: 50Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
@@ -220,8 +220,8 @@ Fast Tuning Window          |          5.36 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
 -----------------|-------------------|-------------------|-----------------------|----------------------
-      1          |        DAC        |        No         |        0.43           |       6.24
-      1          |        DAC        |        Yes        |        0.42           |       6.23
+      1          |        DAC        |        No         |        0.41           |       6.24
+      1          |        DAC        |        Yes        |        0.41           |       6.23
 
  - Flash frequency: 50Mhz
  - Flash protocol: FLASH_CFG_PROTO_8S_8S_8S
@@ -229,8 +229,8 @@ Fast Tuning Window          |          5.36 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
 -----------------|-------------------|-------------------|-----------------------|----------------------
-      1          |        DAC        |        No         |        0.43           |       4.57
-      1          |        DAC        |        Yes        |        0.43           |       48.74
+      1          |        DAC        |        No         |        0.44           |       4.57
+      1          |        DAC        |        Yes        |        0.44           |       48.74
 
  - Flash frequency: 133Mhz
  - Flash protocol: FLASH_CFG_PROTO_8S_8S_8S
@@ -238,8 +238,8 @@ Fast Tuning Window          |          5.36 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
 -----------------|-------------------|-------------------|-----------------------|----------------------
-      1          |        DAC        |        No         |        0.42           |       7.20
-      1          |        DAC        |        Yes        |        0.42           |       124.64
+      1          |        DAC        |        No         |        0.43           |       7.20
+      1          |        DAC        |        Yes        |        0.43           |       124.64
 
  - Flash frequency: 133Mhz
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
@@ -247,8 +247,8 @@ Fast Tuning Window          |          5.36 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
 -----------------|-------------------|-------------------|-----------------------|----------------------
-      1          |        DAC        |        No         |        0.45           |        7.66
-      1          |        DAC        |        Yes        |        0.45           |      233.99
+      1          |        DAC        |        No         |        0.43           |        7.67
+      1          |        DAC        |        Yes        |        0.43           |      234.02
 
  - Flash frequency: 166Mhz
  - Flash protocol: FLASH_CFG_PROTO_8S_8S_8S
@@ -256,8 +256,8 @@ Fast Tuning Window          |          5.36 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
 -----------------|-------------------|-------------------|-----------------------|----------------------
-      1          |        DAC        |        No         |        0.42           |       8.27
-      1          |        DAC        |        Yes        |        0.42           |       153.29
+      1          |        DAC        |        No         |        0.43           |       8.20
+      1          |        DAC        |        Yes        |        0.43           |       153.31
 
  - Flash frequency: 166Mhz
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
@@ -265,8 +265,8 @@ Fast Tuning Window          |          5.36 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|-------------------|----------------------|----------------------
-      1          |        DAC        |        No         |        0.45          |         8.75
-      1          |        DAC        |        Yes        |        0.45          |       283.86
+      1          |        DAC        |        No         |        0.44          |         8.75
+      1          |        DAC        |        Yes        |        0.44          |       283.88
 
  - Flash frequency: 25Mhz
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
@@ -274,7 +274,7 @@ Fast Tuning Window          |          5.36 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|-------------------|----------------------|----------------------
-      1          |       INDAC       |        No         |        0.44          |        21.14
+      1          |       INDAC       |        No         |        0.44          |        21.07
 
  - Flash frequency: 50Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
@@ -290,18 +290,18 @@ Fast Tuning Window          |          5.36 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
 -----------------|-------------------|-------------------|-----------------------|----------------------
-      1          |       INDAC       |        No         |        0.43           |       21.07
+      1          |       INDAC       |        No         |        0.44           |       21.06
 
 **c75ss0:**
 
  - PHY condition: enabled
  - Flash type: SERIAL NOR
  - Flash protocol: FLASH_CFG_PROTO_8S_8S_8S
- - Temperature: 51.75
+ - Temperature: 49.99
 
 Non-DQS Tuning Algorithm    |    Tuning Time (ms)
 ----------------------------|------------------------
-Default Tuning Window       |          0.95  ms
+Default Tuning Window       |          0.96  ms
 Fast Tuning Window          |          0.40  ms
 
  - Flash type: SERIAL NOR
@@ -309,7 +309,7 @@ Fast Tuning Window          |          0.40  ms
 
 DQS Tuning Algorithm        |    Tuning Time (ms)
 ----------------------------|------------------------
-Default Tuning Window       |          5.03 ms
+Default Tuning Window       |          5.02 ms
 Fast Tuning Window          |          5.04 ms
 
  Flash frequency: 25Mhz
@@ -318,8 +318,8 @@ Fast Tuning Window          |          5.04 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|-------------------|----------------------|----------------------
-      1          |        DAC        |        No         |        0.43          |        5.87
-      1          |        DAC        |        Yes        |        0.43          |       49.85
+      1          |        DAC        |        No         |        0.45          |        5.87
+      1          |        DAC        |        Yes        |        0.45          |       49.86
 
  - Flash frequency: 50Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
@@ -327,8 +327,8 @@ Fast Tuning Window          |          5.04 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
 -----------------|-------------------|-------------------|-----------------------|----------------------
-      1          |        DAC        |        No         |        0.41           |       6.23
-      1          |        DAC        |        Yes        |        0.41           |       6.25
+      1          |        DAC        |        No         |        0.42           |       6.23
+      1          |        DAC        |        Yes        |        0.42           |       6.25
 
  - Flash frequency: 50Mhz
  - Flash protocol: FLASH_CFG_PROTO_8S_8S_8S
@@ -336,8 +336,8 @@ Fast Tuning Window          |          5.04 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
 -----------------|-------------------|-------------------|-----------------------|----------------------
-      1          |        DAC        |        No         |        0.42           |       8.49
-      1          |        DAC        |        Yes        |        0.42           |       49.86
+      1          |        DAC        |        No         |        0.45           |       8.49
+      1          |        DAC        |        Yes        |        0.45           |       49.86
 
  - Flash frequency: 133Mhz
  - Flash protocol: FLASH_CFG_PROTO_8S_8S_8S
@@ -345,8 +345,8 @@ Fast Tuning Window          |          5.04 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
 -----------------|-------------------|-------------------|-----------------------|----------------------
-      1          |        DAC        |        No         |        0.41           |       11.96
-      1          |        DAC        |        Yes        |        0.41           |       132.26
+      1          |        DAC        |        No         |        0.44           |       11.96
+      1          |        DAC        |        Yes        |        0.44           |       132.26
 
  - Flash frequency: 133Mhz
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
@@ -354,8 +354,8 @@ Fast Tuning Window          |          5.04 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
 -----------------|-------------------|-------------------|-----------------------|----------------------
-      1          |        DAC        |        No         |        0.43           |       13.34
-      1          |        DAC        |        Yes        |        0.43           |      262.44
+      1          |        DAC        |        No         |        0.44           |       13.34
+      1          |        DAC        |        Yes        |        0.44           |      262.44
 
  - Flash frequency: 166Mhz
  - Flash protocol: FLASH_CFG_PROTO_8S_8S_8S
@@ -363,8 +363,8 @@ Fast Tuning Window          |          5.04 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
 -----------------|-------------------|-------------------|-----------------------|----------------------
-      1          |        DAC        |        No         |        0.41           |       14.65
-      1          |        DAC        |        Yes        |        0.41           |       165.01
+      1          |        DAC        |        No         |        0.44           |       14.62
+      1          |        DAC        |        Yes        |        0.44           |       165.02
 
  - Flash frequency: 166Mhz
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
@@ -372,8 +372,8 @@ Fast Tuning Window          |          5.04 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|-------------------|----------------------|----------------------
-      1          |        DAC        |        No         |        0.43          |        16.64
-      1          |        DAC        |        Yes        |        0.43          |       326.73
+      1          |        DAC        |        No         |        0.45          |        16.64
+      1          |        DAC        |        Yes        |        0.44          |       326.78
 
  - Flash frequency: 25Mhz
  - Flash protocol: FLASH_CFG_PROTO_8D_8D_8D
@@ -381,7 +381,7 @@ Fast Tuning Window          |          5.04 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|-------------------|----------------------|----------------------
-      1          |       INDAC       |        No         |        0.43          |       21.79
+      1          |       INDAC       |        No         |        0.45          |       21.77
 
  - Flash frequency: 50Mhz
  - Flash protocol: FLASH_CFG_PROTO_1S_1S_1S
@@ -389,7 +389,7 @@ Fast Tuning Window          |          5.04 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)  |    Read Speed(mbps)
 -----------------|-------------------|-------------------|----------------------|----------------------
-      1          |       INDAC       |        No         |        0.41          |        6.25
+      1          |       INDAC       |        No         |        0.42          |        6.25
 
  - Flash frequency: 50Mhz
  - Flash protocol: FLASH_CFG_PROTO_8S_8S_8S
@@ -397,7 +397,7 @@ Fast Tuning Window          |          5.04 ms
 
  Data Size(MiB)  |     READ MODE     |    DMA Enabled    |   Write Speed(mbps)   |    Read Speed(mbps)
 -----------------|-------------------|-------------------|-----------------------|----------------------
-      1          |       INDAC       |        No         |        0.42           |       21.79
+      1          |       INDAC       |        No         |        0.45           |       21.77
 
  ### XIP Benchmark
 - Core :	R5F
@@ -427,10 +427,10 @@ For R5 core:-
 
 ECC         | Transfer Mode  | Write speed(MiBps) | Read speed(MiBps)
 ------------|----------------|--------------------|-------------------
-Disabled    |     CPU        |      80.57         |        68.63
-Disabled    |     BCDMA      |      144.04        |        143.82
-enabled     |     CPU        |      75.29         |        68.92
-enabled     |     BCDMA      |      108.63        |        136.20
+Disabled    |     CPU        |      80.18         |        70.00
+Disabled    |     BCDMA      |      143.82         |        143.82
+enabled     |     CPU        |      75.64         |        64.63
+enabled     |     BCDMA      |      108.51         |        136.20
 
 For c7x core:-
 
@@ -451,17 +451,17 @@ enabled     |     BCDMA      |      108.63        |        136.01
 
 Caching status                          | Cycles taken
 ----------------------------------------|-------------
-Code/Data fully cached                  |    23905
-Code/Data not cached                    |    54895
-Code/Data not cached 1 of 10 iterations |    27006
+Code/Data fully cached                  |    23913
+Code/Data not cached                    |    48303
+Code/Data not cached 1 of 10 iterations |    26354
 
 - 2) MEMCPY operation
 
 Caching status                          | Cycles taken
 ----------------------------------------|-------------
 Code/Data fully cached                  |    1564
-Code/Data not cached                    |    5386
-Code/Data not cached 1 of 10 iterations |    1950
+Code/Data not cached                    |    4358
+Code/Data not cached 1 of 10 iterations |    1844
 
 ### Ethernet Performance
 For Ethernet performance Refer to the page \ref enetlld_performance
@@ -475,8 +475,8 @@ For Ethernet AVB performance, refer to the page \ref EAVB_PERFORMANCE
  - Rx To Tx pin to pin latency ~126us
 
 ### ARM R5F - Memory Access latency
-- [32-BIT READ] Self TCM Access Average Latency Per Byte: 0.796875 ns
-- [32-BIT READ] MSRAM Access Average Latency Per Byte: 9.234375 ns
+- [32-BIT READ] Self TCM Access Average Latency Per Byte: 1.078125 ns
+- [32-BIT READ] MSRAM Access Average Latency Per Byte: 9.132812 ns
 - [32-BIT READ] Non-Self TCM Access Average Latency Per Byte: 35.320312 ns
 
 - [64-BIT READ] Self TCM Access Average Latency Per Byte: 0.300781 ns
@@ -485,9 +485,9 @@ For Ethernet AVB performance, refer to the page \ref EAVB_PERFORMANCE
 
 ### C7x - Memory Access latency
 
-- [32-BIT READ] L2RAM Access Average Latency Per Byte: 2.437500 ns
-- [32-BIT READ] MSRAM Access Average Latency Per Byte: 2.726562 ns
+- [32-BIT READ] L2RAM Access Average Latency Per Byte: 2.117188 ns
+- [32-BIT READ] MSRAM Access Average Latency Per Byte: 2.320312 ns
 
-- [64-BIT READ] L2RAM Access Average Latency Per Byte: 1.152344 ns
-- [64-BIT READ] MSRAM Access Average Latency Per Byte: 1.160156 ns
+- [64-BIT READ] L2RAM Access Average Latency Per Byte: 1.187500 ns
+- [64-BIT READ] MSRAM Access Average Latency Per Byte: 1.375000 ns
 

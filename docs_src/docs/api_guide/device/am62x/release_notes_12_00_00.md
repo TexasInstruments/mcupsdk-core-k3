@@ -588,6 +588,7 @@ NETWORKING   |  \ref enet_mcupsdk_update       &zwj;       |   <= 11.01.00  | >=
 OSPI         |  \ref OSPI_MIGRATION_GUIDE       &zwj;      |   <= 11.01.00  | >= 11.02.00
 Watchdog     |  \ref WATCHDOG_12_0_MIGRATION    &zwj;      |   <= 11.02.00  | >= 12.00.00
 SCI Server   |  \ref SCISERVER_12_0_MIGRATION   &zwj;      |   <= 11.02.00  | >= 12.00.00
+SBL Linker   |  \ref SBL_LINKER_12_0_MIGRATION   &zwj;     |   <= 11.02.00  | >= 12.00.00
 
 
 ### Networking

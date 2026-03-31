@@ -40,6 +40,72 @@ bootloader2.udmaBlkCopyChannel                               = udma_blkcopy_chan
 bootloader3.udmaBlkCopyChannel                               = udma_blkcopy_channel1;
 \endcode
 
+\cond SOC_AM62AX
+## Migration Guide 11.02 to 11.03 - AM62Ax {#SBL_LINKER_11_3_MIGRATION}
+
+\note This section highlights linker changes from SDK 11.02 to 11.03 for AM62Ax.
+\endcond
+\cond SOC_AM62X || SOC_AM62DX || SOC_AM62PX || SOC_AM275X
+## Migration Guide 11.02 to 12.00 {#SBL_LINKER_12_0_MIGRATION}
+
+\note This section highlights linker changes from SDK 11.02 to 12.00.
+\endcond
+
+### `gAtcmBaseAddr` symbol required in SBL linker.cmd
+
+- SBL startup code (entered via `-e_vectors_sbl`) now references `gAtcmBaseAddr`
+  to configure the ATCM base address at boot time.
+- Custom SBL linker.cmd files that specify `-e_vectors_sbl` as the entry point must
+  define this symbol, or the linker will report an undefined symbol error.
+
+Old `linker.cmd`:
+\code{.bash}
+--heap_size=0x8000
+-e_vectors_sbl
+
+\endcode
+
+New `linker.cmd`:
+\code{.bash}
+--heap_size=0x2000
+
+/* ATCM base address - required when using -e_vectors_sbl entry point */
+gAtcmBaseAddr = 0x78000000;
+
+-e_vectors_sbl
+
+\endcode
+
+\note If ATCM is also needed for SBL heap and interrupt stacks, add the `ATCM` region
+to `MEMORY` and relocate `.sysmem` and stack sections to `ATCM`. An MPU entry for
+ATCM is needed to be added to `example.syscfg` as well if so used.
+\code{.bash}
+MEMORY
+{
+    ATCM     (RWIX) : ORIGIN = 0x78000000 LENGTH = 0x8000
+    HSM_RAM  (RWIX) : ORIGIN = 0x43C00000 LENGTH = 0x3E000
+}
+
+SECTIONS
+{
+    .sysmem: {} palign(8) > ATCM
+    GROUP {
+        .irqstack:  {. = . + __IRQ_STACK_SIZE;}  align(8)
+        .fiqstack:  {. = . + __FIQ_STACK_SIZE;}  align(8)
+    } > ATCM
+    GROUP {
+        .svcstack:   {. = . + __SVC_STACK_SIZE;}   align(8)
+        .abortstack: {. = . + __ABORT_STACK_SIZE;}  align(8)
+    } > ATCM
+}
+\endcode
+\code{.js}
+const mpu_armv7_ATCM  = mpu_armv7.addInstance();
+mpu_armv7_ATCM.$name    = "ATCM_SOC";
+mpu_armv7_ATCM.baseAddr = 0x78000000;
+mpu_armv7_ATCM.size     = 15;
+\endcode
+
 ## Features Supported
 
 - OSPI Boot

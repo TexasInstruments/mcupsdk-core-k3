@@ -553,6 +553,7 @@ Bootloader   |  \ref BOOTLOADER_MIGRATION_GUIDELINE  &zwj; |   <= 10.01.00  | >=
 NETWORKING   |  \ref enet_mcupsdk_update       &zwj;       |   <= 11.01.00  | >= 11.02.00
 OSPI         |  \ref OSPI_MIGRATION_GUIDE       &zwj;      |   <= 11.01.00  | >= 11.02.00
 SCI Server   |  \ref SCISERVER_12_0_MIGRATION   &zwj;      |   <= 11.02.00  | >= 12.00.00
+SBL Linker   |  \ref SBL_LINKER_12_0_MIGRATION   &zwj;     |   <= 11.02.00  | >= 12.00.00
 
 ### Networking
 

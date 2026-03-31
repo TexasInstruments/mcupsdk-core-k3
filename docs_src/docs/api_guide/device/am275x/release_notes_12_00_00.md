@@ -443,6 +443,12 @@ newer version listed on the table below.
     <td> <= 11.02.00
     <td> >= 12.00.00
 </tr>
+<tr>
+    <td> SBL Linker
+    <td> \ref SBL_LINKER_12_0_MIGRATION
+    <td> <= 11.02.00
+    <td> >= 12.00.00
+</tr>
 </table>
 
 ### Networking

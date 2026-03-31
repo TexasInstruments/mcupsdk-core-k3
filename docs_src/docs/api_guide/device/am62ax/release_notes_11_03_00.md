@@ -355,6 +355,7 @@ Module       | Migration guide                        | Older version  | Newer v
 -------------|----------------------------------------|----------------| -----------------
 Bootloader   |  \ref BOOTLOADER_MIGRATION_GUIDELINE  &zwj; |   <= 10.01.00  | >= 11.00.00
 OSPI         |  \ref OSPI_MIGRATION_GUIDE     &zwj;         |   <= 11.01.00  | >= 11.02.00
+SBL Linker   |  \ref SBL_LINKER_11_3_MIGRATION  &zwj;      |   <= 11.02.00  | >= 11.03.00
 
 ### Networking
 

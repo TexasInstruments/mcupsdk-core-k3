@@ -220,6 +220,11 @@ POSIX                   | FreeRTOS+POSIX        | Similar features, see details 
     \endcode
 - FreeRTOS schedular, by default task switch does not save/restore FPU (floating point unit) registers, tasks which need FPU need to call `portTASK_USES_FLOATING_POINT`
   once before using FPU operations. If in doubt always call this function
+  - **Exception for ARM Cortex-A53 (SDK >= 12.00.00):** FPU context is automatically
+    saved/restored for all tasks (`configUSE_TASK_FPU_SUPPORT=2`). Calling
+    `vPortTaskUsesFPU()` is not required on A53. Note that each task stack uses
+    an additional **512 bytes** for FPU register storage — increase your task stack
+    sizes accordingly when migrating from older SDK versions.
 - ISR handler may or may not save FPU state depending on the CPU, see \ref FREERTOS_SUPPORTED_FEATURES to check if your CPU of interest supports FPU save/restore
 - On task delete, FreeRTOS will free any memory allocated internally, if dynamically memory allocation mode was used.
   This memory free is done in “IDLE” task, so “IDLE” needs to get opportunity to run at some point.

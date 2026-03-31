@@ -100,6 +100,19 @@ function highlightTerms(text, terms) {
   return out;
 }
 
+function shouldSkipResult(type, name, url) {
+  var typeLc = String(type || "").toLowerCase();
+  var nameLc = String(name || "").toLowerCase();
+  var urlLc = String(url || "").toLowerCase();
+
+  if (typeLc === "source") return true;
+  if (/_8md\.html(?:#|$)/.test(urlLc)) return true;
+  if (/_8h(?:_source)?\.html(?:#|$)/.test(urlLc)) return true;
+  if (/\.md$/.test(nameLc) || /\.h$/.test(nameLc)) return true;
+
+  return false;
+}
+
 function searchFor(query,page,count) {
   var normalizedQuery = trim(query);
   var queryLc = normalizeSearchText(normalizedQuery);
@@ -130,18 +143,22 @@ function searchFor(query,page,count) {
         var fields = doc[i].getElementsByTagName("field");
         if (fields.length < 3) continue;
 
-        type = (fields[0].childNodes.length > 0) ? fields[0].childNodes[0].nodeValue : "";
-        name = (fields[1].childNodes.length > 0) ? fields[1].childNodes[0].nodeValue : "";
-        url  = (fields[2].childNodes.length > 0) ? fields[2].childNodes[0].nodeValue : "";
+        var fieldMap = {};
+        for (var fj = 0; fj < fields.length; fj++)
+        {
+          var fname = fields[fj].getAttribute("name");
+          var fval = (fields[fj].childNodes.length > 0) ? fields[fj].childNodes[0].nodeValue : "";
+          if (fname) fieldMap[fname] = fval;
+        }
 
-        if (fields.length < 4 || fields[3].childNodes.length==0)
-          heading = ""
-        else
-          heading=fields[3].childNodes[0].nodeValue;
-        if (fields.length < 5 || fields[4].childNodes.length==0)
-          text = ""
-        else
-          text=fields[4].childNodes[0].nodeValue;
+        type = fieldMap["type"] || "";
+        name = fieldMap["name"] || "";
+        url = fieldMap["url"] || "";
+        heading = fieldMap["heading"] || fieldMap["args"] || "";
+        text = fieldMap["text"] || "";
+
+        if (!url) continue;
+        if (shouldSkipResult(type, name, url)) continue;
 
         var allFieldText = "";
         for (var fi = 0; fi < fields.length; fi++)

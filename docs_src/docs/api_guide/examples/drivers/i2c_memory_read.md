@@ -46,6 +46,8 @@ then reading back the same data from the EEPROM.
   and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
+- For **A53 targets**, short the **J10** header on the board before running the example.
+- For **MCU R5 targets**, short the **J20** header on the board before running the example.
 - Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE
 
 # See Also

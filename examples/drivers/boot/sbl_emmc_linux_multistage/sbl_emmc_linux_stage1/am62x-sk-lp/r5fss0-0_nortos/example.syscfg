@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62x" --part "Default" --package "AMC" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM625-Q1" --package "FCBGA (AMC)" --variant "AM6254-G" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.24.2+4234"}
+ * @versions {"tool":"1.26.2+4477"}
  */
 
 /**
@@ -15,8 +15,6 @@ const bootloader2 = bootloader.addInstance();
 const ddr         = scripting.addModule("/drivers/ddr/ddr", {}, false);
 const ddr1        = ddr.addInstance();
 const gtc         = scripting.addModule("/drivers/gtc/gtc");
-const mcu_bist    = scripting.addModule("/drivers/mcu_bist/mcu_bist", {}, false);
-const mcu_bist1   = mcu_bist.addInstance();
 const mmcsd       = scripting.addModule("/drivers/mmcsd/mmcsd", {}, false);
 const mmcsd1      = mmcsd.addInstance();
 const qos         = scripting.addModule("/drivers/qos/qos", {}, false);
@@ -48,10 +46,6 @@ bootloader2.EMMCAppImageOffset = "0x80000";
 
 ddr1.$name                    = "CONFIG_DDR0";
 ddr1.ddrConfigIncludeFileName = "drivers/ddr/v0/soc/am62x/board_lpddrReginit.h";
-
-mcu_bist1.$name               = "CONFIG_BIST0";
-mcu_bist1.SDL_PBIST_INST_MPU  = true;
-mcu_bist1.SDL_PBIST_INST_MAIN = true;
 
 mmcsd1.$name            = "CONFIG_MMCSD0";
 bootloader1.MMCSDDriver = mmcsd1;

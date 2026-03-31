@@ -88,10 +88,11 @@ This example is more or less like a flashing server, and will terminate until us
 
  Enter file name along with path to write or verify :  ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/am275x-evm/sbl_null.release.hs_fs.tiimage
  Enter flash offset (in hex format) : 0x0
- Enter below command in CCS scripting console to load the file data to memory.
+ Enter below commands in CCS scripting console to load the file data to memory.
  AFTER the file load is done, enter '1' to continue ...
 
- loadRaw(0x72100020, 0, "${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/am275x-evm/sbl_null.release.hs_fs.", 32, false);
+ var session = ds.openSession("WKUP_R5F_0");
+ session.memory.loadBinary(0x72100020n, "${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/am275x-evm/sbl_null.release.hs_fs.tiimage");
 1
  [FLASH WRITER] Flashing success!!...
 
@@ -108,12 +109,13 @@ This example is more or less like a flashing server, and will terminate until us
 
  Enter Choice: 3
 
- Enter file name along with path to write or verify : ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/am275x-evm/sbl_null.release.hs_fs.
+ Enter file name along with path to write or verify : ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/am275x-evm/sbl_null.release.hs_fs.tiimage
  Enter flash offset (in hex format) : 0x0
- Enter below command in CCS scripting console to load the file data to memory.
+ Enter below commands in CCS scripting console to load the file data to memory.
  AFTER the file load is done, enter '1' to continue ...
 
- loadRaw(0x72100020, 0, "${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/am275x-evm/sbl_null.release.hs_fs.", 32, false);
+ var session = ds.openSession("WKUP_R5F_0");
+ session.memory.loadBinary(0x72100020n, "${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/am275x-evm/sbl_null.release.hs_fs.tiimage");
 1
  [FLASH WRITER] Verifying success!!...
 

@@ -44,6 +44,7 @@ const example_file_list = [
     "examples/drivers/boot/sbl_sd/.project/project.js",
     "examples/drivers/boot/sbl_ospi_nand/.project/project.js",
     "examples/drivers/boot/sbl_ospi_hlos/.project/project.js",
+    "examples/drivers/boot/sbl_sd_hlos_fc/.project/project.js",
 	"examples/drivers/boot/sbl_ospi_nand_hlos/.project/project.js",
     "examples/drivers/boot/sbl_emmc/.project/project.js",
     "examples/drivers/boot/sbl_sd_hlos/.project/project.js",

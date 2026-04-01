@@ -219,7 +219,9 @@ static void TestMcasp_externalLoopback(void *args);
 #endif
 static int32_t TestMcasp_loopbackTxRightRotate(void *args);
 static int32_t TestMcasp_validateConfigLoopback(void *args);
+#if defined (SOC_AM62DX) || defined (SOC_AM62AX) || !defined(SOC_AM275X)
 static void TestMcasp_allSerializerLoopback(void *args);
+#endif
 static void TestMcasp_DynamicCoverage(void *args);
 static void TestMcasp_dmaInitDoneZeroRxMismatch(void *args);
 static void TestMcasp_dmaInitDoneZeroRxWaterLevelMultipleFail(void *args);
@@ -233,7 +235,7 @@ static int32_t TestMcasp_compareInstance2(uint8_t *tx, uint8_t *rx, uint32_t msg
 static void TestMcasp_withdrawQueuedBuff(void *args);
 static void TestMcasp_fifoDisable(void *args);
 static void TestMcasp_multiInstanceConfigTest(void *args);
-#if ((defined(C75_CORE) && !defined(SOC_AM62DX)) || defined(SOC_AM62AX))
+#if ((defined(C75_CORE) && !defined(SOC_AM62DX) && !defined(SOC_AM275X)) || defined(SOC_AM62AX))
 static void TestMcasp_interruptNullLoopjob(void *args);
 #endif
 static void TestMcasp_loopbackNonInterleavedToInterleaved(void *args);
@@ -273,7 +275,8 @@ void test_main(void *args)
     TestMcasp_selectConfig(TEST_MCASP_DMA_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP1]);
     #endif
     #endif
-    #if ((defined(C75_CORE) && !defined(SOC_AM62DX)) || defined(SOC_AM62AX)) /* Added macro guard due to hanging of interrupt case in AM62DX c75 core*/
+    /* Added macro guard due to hanging of interrupt case in AM62DX and AM275x c75 core*/
+    #if ((defined(C75_CORE) && !defined(SOC_AM62DX) && !defined(SOC_AM275X)) || defined(SOC_AM62AX))
     TestMcasp_selectConfig(TEST_MCASP_INTERRUPT_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(TestMcasp_loopbackTransfer, 8343, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     TestMcasp_selectConfig(TEST_MCASP_DMA_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
@@ -309,7 +312,9 @@ void test_main(void *args)
     TestMcasp_selectClockSource(CONFIG_MCASP1, TEST_MCASP_USE_EXTERNAL_CLK);
     RUN_TEST(TestMcasp_multiInstanceLoopback, 8739, NULL);
     TestMcasp_selectClockSource(CONFIG_MCASP0, TEST_MCASP_USE_INTERNAL_CLK);
+#if defined (SOC_AM62DX) || defined (SOC_AM62AX) || !defined(SOC_AM275X)
     RUN_TEST(TestMcasp_allSerializerLoopback, 9075, (void*)&gMcaspOpenParams[CONFIG_MCASP2]);
+#endif
     RUN_TEST(TestMcasp_DynamicCoverage, 9076, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(TestMcasp_dmaInitDoneOneLoopjobAndWaterLevelNegative, 9263, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(TestMcasp_dmaInitDoneZeroFifoDisabledLoopjobMismatch, 9264, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
@@ -318,7 +323,8 @@ void test_main(void *args)
     RUN_TEST(TestMcasp_dmaInitDoneZeroRxMismatch, 9267, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(TestMcasp_withdrawQueuedBuff, 9077, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(TestMcasp_fifoDisable, 9078, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
-    #if ((defined(C75_CORE) && !defined(SOC_AM62DX)) || defined(SOC_AM62AX)) /* Added macro guard due to hanging of interrupt case in AM62DX c75 core*/
+    /* Added macro guard due to hanging of interrupt case in AM62DX and AM275x c75 core*/
+    #if ((defined(C75_CORE) && !defined(SOC_AM62DX) && !defined(SOC_AM275X)) || defined(SOC_AM62AX)) 
     TestMcasp_selectConfig(TEST_MCASP_INTERRUPT_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(TestMcasp_interruptNullLoopjob, 9079, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     TestMcasp_selectConfig(TEST_MCASP_DMA_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
@@ -2554,6 +2560,7 @@ static void TestMcasp_externalLoopback(void *args)
 }
 #endif
 
+#if defined (SOC_AM62DX) || defined (SOC_AM62AX) || !defined(SOC_AM275X)
 /**
  * \brief  Test MCASP all-serializer loopback.
  *
@@ -2565,8 +2572,10 @@ static void TestMcasp_externalLoopback(void *args)
  */
 static void TestMcasp_allSerializerLoopback(void *args)
 {
+    MCASP_OpenParams *openParams = (MCASP_OpenParams*)args;
+    uint32_t instance = (uint32_t)(openParams - &gMcaspOpenParams[0]);
+    MCASP_Attrs *attrs = (MCASP_Attrs *)gMcaspConfig[instance].attrs;
     int32_t status,i;
-    MCASP_Attrs *attrs = (MCASP_Attrs *)gMcaspConfig[CONFIG_MCASP2].attrs;
     attrs->hwCfg.gbl.pdir = (uint32_t)0xBC005555;
 
     for (i = 0; i < 16; i++)
@@ -2602,6 +2611,28 @@ static void TestMcasp_allSerializerLoopback(void *args)
     { PIN_GPMC0_DIR,  ( PIN_MODE(3) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) }, /* MCASP2_AXR13 */
     { PIN_GPMC0_CSN0, ( PIN_MODE(3) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) }, /* MCASP2_AXR14 */
     { PIN_GPMC0_CSN1, ( PIN_MODE(3) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) }, /* MCASP2_AXR15 */
+    { PINMUX_END, 0U }
+    };
+
+    Pinmux_config(serPinEnable, PINMUX_DOMAIN_ID_MAIN);
+#elif defined (SOC_AM275X)
+    static Pinmux_PerCfg_t serPinEnable[] = {
+
+    /* MCASP2 pin config */
+    { PIN_MCASP3_AXR2,  ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) | PIN_DRV_STR_NOMINAL }, /* MCASP2_AXR2 */
+    { PIN_MCASP0_AXR3,  ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) | PIN_DRV_STR_NOMINAL }, /* MCASP2_AXR3 */
+    { PIN_MCASP0_AXR4,  ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) | PIN_DRV_STR_NOMINAL }, /* MCASP2_AXR4 */
+    { PIN_MCASP0_AXR5,  ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) | PIN_DRV_STR_NOMINAL }, /* MCASP2_AXR5 */
+    { PIN_MCASP0_AXR6,  ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) | PIN_DRV_STR_NOMINAL }, /* MCASP2_AXR6 */
+    { PIN_MCASP0_AXR7,  ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) | PIN_DRV_STR_NOMINAL }, /* MCASP2_AXR7 */
+    { PIN_MCASP0_AXR8,  ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) | PIN_DRV_STR_NOMINAL }, /* MCASP2_AXR8 */
+    { PIN_MCASP0_AXR9,  ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) | PIN_DRV_STR_NOMINAL }, /* MCASP2_AXR9 */
+    { PIN_MCASP0_AXR10, ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) | PIN_DRV_STR_NOMINAL }, /* MCASP2_AXR10 */
+    { PIN_MCASP0_AXR11, ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) | PIN_DRV_STR_NOMINAL }, /* MCASP2_AXR11 */
+    { PIN_MCASP0_AXR12, ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) | PIN_DRV_STR_NOMINAL }, /* MCASP2_AXR12 */
+    { PIN_MCASP0_AXR13, ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) | PIN_DRV_STR_NOMINAL }, /* MCASP2_AXR13 */
+    { PIN_MCASP0_AXR14, ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) | PIN_DRV_STR_NOMINAL }, /* MCASP2_AXR14 */
+    { PIN_MCASP0_AXR15, ( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE ) | PIN_DRV_STR_NOMINAL }, /* MCASP2_AXR15 */
     { PINMUX_END, 0U }
     };
 
@@ -2647,11 +2678,33 @@ static void TestMcasp_allSerializerLoopback(void *args)
     { PINMUX_END, 0U }
     };
     Pinmux_config(serPinDisable, PINMUX_DOMAIN_ID_MAIN);
+#elif defined (SOC_AM275X)
+    static Pinmux_PerCfg_t serPinDisable[] = {
+
+    /* MCASP2 pin config */
+    { PIN_MCASP3_AXR2,  ( PIN_MODE(0) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR2 */
+    { PIN_MCASP0_AXR3,  ( PIN_MODE(0) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR3 */
+    { PIN_MCASP0_AXR4,  ( PIN_MODE(0) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR4 */
+    { PIN_MCASP0_AXR5,  ( PIN_MODE(0) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR5 */
+    { PIN_MCASP0_AXR6,  ( PIN_MODE(0) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR6 */
+    { PIN_MCASP0_AXR7,  ( PIN_MODE(0) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR7 */
+    { PIN_MCASP0_AXR8,  ( PIN_MODE(0) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR8 */
+    { PIN_MCASP0_AXR9,  ( PIN_MODE(0) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR9 */
+    { PIN_MCASP0_AXR10, ( PIN_MODE(0) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR10 */
+    { PIN_MCASP0_AXR11, ( PIN_MODE(0) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR11 */
+    { PIN_MCASP0_AXR12, ( PIN_MODE(0) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR12 */
+    { PIN_MCASP0_AXR13, ( PIN_MODE(0) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR13 */
+    { PIN_MCASP0_AXR14, ( PIN_MODE(0) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR14 */
+    { PIN_MCASP0_AXR15, ( PIN_MODE(0) | PIN_PULL_DISABLE ) }, /* MCASP2_AXR15 */
+    { PINMUX_END, 0U }
+    };
+    Pinmux_config(serPinDisable, PINMUX_DOMAIN_ID_MAIN);
 #endif
 
     TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "All serializers enable loopback data mismatch");
 
 }
+#endif
 
 /**
  * \brief  Test MCASP semi-interleaved 2 to semi-interleaved 1 loopback.
@@ -2691,6 +2744,14 @@ static void TestMcasp_loopbackSemiInterleaved2ToSemiInterleaved1(void *args)
     {
         {PIN_MCASP0_AXR2,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
         {PIN_MCASP0_AXR3,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        { PINMUX_END, 0U }
+    };
+    Pinmux_config(serPinEnable, PINMUX_DOMAIN_ID_MAIN);
+#elif defined(SOC_AM275X)
+    static Pinmux_PerCfg_t serPinEnable[]=
+    {
+        {PIN_MCASP0_AXR2,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE | PIN_DRV_STR_NOMINAL )},
+        {PIN_MCASP0_AXR3,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE | PIN_DRV_STR_NOMINAL )},
         { PINMUX_END, 0U }
     };
     Pinmux_config(serPinEnable, PINMUX_DOMAIN_ID_MAIN);
@@ -2806,7 +2867,7 @@ static void TestMcasp_loopbackSemiInterleaved2ToSemiInterleaved1(void *args)
     gMcaspOpenParams[0].txSerUsedArray = (uint8_t *) gMcasp0TxSersUsed;
     gMcaspOpenParams[0].rxSerUsedArray = (uint8_t *) gMcasp0RxSersUsed;
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
     static Pinmux_PerCfg_t serPinDisable[] =
     {
         {PIN_MCASP0_AXR2,( PIN_MODE(0) | PIN_PULL_DISABLE )},
@@ -2860,6 +2921,14 @@ static void TestMcasp_loopbackSemiInterleaved1ToSemiInterleaved2(void *args)
     {
         {PIN_MCASP0_AXR2,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
         {PIN_MCASP0_AXR3,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        { PINMUX_END, 0U }
+    };
+    Pinmux_config(serPinEnable, PINMUX_DOMAIN_ID_MAIN);
+#elif defined(SOC_AM275X)
+    static Pinmux_PerCfg_t serPinEnable[]=
+    {
+        {PIN_MCASP0_AXR2,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE | PIN_DRV_STR_NOMINAL )},
+        {PIN_MCASP0_AXR3,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE | PIN_DRV_STR_NOMINAL )},
         { PINMUX_END, 0U }
     };
     Pinmux_config(serPinEnable, PINMUX_DOMAIN_ID_MAIN);
@@ -2974,7 +3043,7 @@ static void TestMcasp_loopbackSemiInterleaved1ToSemiInterleaved2(void *args)
     gMcaspOpenParams[0].txSerUsedArray = (uint8_t *) gMcasp0TxSersUsed;
     gMcaspOpenParams[0].rxSerUsedArray = (uint8_t *) gMcasp0RxSersUsed;
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
     static Pinmux_PerCfg_t serPinDisable[] =
     {
         {PIN_MCASP0_AXR2,( PIN_MODE(0) | PIN_PULL_DISABLE )},
@@ -3222,7 +3291,173 @@ static void TestMcasp_loopbackNonInterleavedToInterleaved(void *args)
 static void TestMcasp_configMultiInstance(int instance, int32_t flag,MCASP_OpenParams *openparams)
 {
     MCASP_Attrs *attrs = (MCASP_Attrs *)gMcaspConfig[instance].attrs;
+#if defined(SOC_AM275X)
+    switch (instance)
+    {
+        case 0:
+        /* MCASP Instance 0If flag indicates new configuration, configure for 24-bit slots, 8 slots (multichannel) and
+             * set an auxiliary clock for 50MHz for the test scenario.
+             */
+            if (flag == MCASP_CONFIG_NEW)
+            {
+                /* 24 128khz */
+                gMcaspOpenParams[instance].rxSlotCount = 8;
+                gMcaspOpenParams[instance].txSlotCount = 8;
+                attrs->rxSlotSize         = 24;
+                attrs->txSlotSize         = 24;
+                attrs->hwCfg.rx.mask      = (uint32_t)0xFFFFFFU;
+                attrs->hwCfg.rx.fmt       = (uint32_t)0x181B0U; /* MCASP_RXFMT */
+                attrs->hwCfg.rx.frSyncCtl = (uint32_t)0x413U; /* MCASP_RXFMCTL */
+                attrs->hwCfg.tx.mask      = (uint32_t)0xFFFFFFU;
+                attrs->hwCfg.tx.fmt       = (uint32_t)0x181B6U; /* MCASP_TXFMT */
+                attrs->hwCfg.tx.frSyncCtl = (uint32_t)0x413U; /* MCASP_TXFMCTL */
+                gMcaspAuxClkConfig[0].tisciDevice = TISCI_DEV_MCASP0;
+                gMcaspAuxClkConfig[0].tisciClock = TISCI_DEV_MCASP0_AUX_CLK;
+                gMcaspAuxClkConfig[0].isConfigurable = 0U;
+                gMcaspAuxClkConfig[0].option = TISCI_DEV_MCASP0_AUX_CLK_PARENT_MCASPN_AUXCLK_LOCAL_SEL_OUT0;
 
+                gMcaspAuxClkConfig[1].tisciDevice = TISCI_DEV_MCASP0_LOCAL_AUXCLK_SEL_DEV_VD;
+                gMcaspAuxClkConfig[1].tisciClock = TISCI_DEV_MCASP0_LOCAL_AUXCLK_SEL_DEV_VD_CLK;
+                gMcaspAuxClkConfig[1].isConfigurable = 1U;
+                gMcaspAuxClkConfig[1].freq = 49152000;
+                gMcaspAuxClkConfig[1].option = TISCI_DEV_MCASP0_LOCAL_AUXCLK_SEL_DEV_VD_CLK_PARENT_HSDIV3_16FFT_MAIN_4_HSDIVOUT0_CLK;
+            }
+            else
+            {
+                /* Else: revert to the default configuration.
+                 * This branch uses 32-bit slots, 2 slots and a standard 48MHz aux clock.
+                 */
+                gMcaspOpenParams[instance].rxSlotCount = 2;
+                gMcaspOpenParams[instance].txSlotCount = 2;
+                attrs->rxSlotSize         = 32;
+                attrs->txSlotSize         = 32;
+                attrs->hwCfg.rx.mask      = (uint32_t)0xFFFFFFFFU;
+                attrs->hwCfg.rx.fmt       = (uint32_t)0x181F0U; /* MCASP_RXFMT */
+                attrs->hwCfg.rx.frSyncCtl = (uint32_t)0x113U; /* MCASP_RXFMCTL */
+                attrs->hwCfg.tx.mask      = (uint32_t)0xFFFFFFFFU;
+                attrs->hwCfg.tx.fmt       = (uint32_t)0x181F0U; /* MCASP_TXFMT */
+                attrs->hwCfg.tx.frSyncCtl = (uint32_t)0x113U; /* MCASP_TXFMCTL */
+                gMcaspAuxClkConfig[0].tisciDevice = TISCI_DEV_MCASP0;
+                gMcaspAuxClkConfig[0].tisciClock = TISCI_DEV_MCASP0_AUX_CLK;
+                gMcaspAuxClkConfig[0].isConfigurable = 0U;
+                gMcaspAuxClkConfig[0].option = TISCI_DEV_MCASP0_AUX_CLK_PARENT_MCASPN_AUXCLK_LOCAL_SEL_OUT0;
+
+                gMcaspAuxClkConfig[1].tisciDevice = TISCI_DEV_MCASP0_LOCAL_AUXCLK_SEL_DEV_VD;
+                gMcaspAuxClkConfig[1].tisciClock = TISCI_DEV_MCASP0_LOCAL_AUXCLK_SEL_DEV_VD_CLK;
+                gMcaspAuxClkConfig[1].isConfigurable = 1U;
+                gMcaspAuxClkConfig[1].freq = 49152000;
+                gMcaspAuxClkConfig[1].option = TISCI_DEV_MCASP0_LOCAL_AUXCLK_SEL_DEV_VD_CLK_PARENT_HSDIV3_16FFT_MAIN_4_HSDIVOUT0_CLK;
+            }
+            break;
+        case 1:
+            /* MCASP Instance 1: branch sets 16-bit slots and slot count as 2 for tx and rx
+            * aux clock is set to 50MHz
+            */
+            if (flag == MCASP_CONFIG_NEW)
+            {
+                /* 16 50khz */
+                gMcaspOpenParams[instance].rxSlotCount = 2;
+                gMcaspOpenParams[instance].txSlotCount = 2;
+                attrs->rxSlotSize         = 16;
+                attrs->txSlotSize         = 16;
+                attrs->hwCfg.rx.mask      = (uint32_t)0xFFFFU;
+                attrs->hwCfg.rx.fmt       = (uint32_t)0x18170U; /* MCASP_RXFMT */
+                attrs->hwCfg.rx.frSyncCtl = (uint32_t)0x113U; /* MCASP_RXFMCTL */
+                attrs->hwCfg.tx.mask      = (uint32_t)0xFFFFU;
+                attrs->hwCfg.tx.fmt       = (uint32_t)0x18174U; /* MCASP_TXFMT */
+                attrs->hwCfg.tx.frSyncCtl = (uint32_t)0x113U; /* MCASP_TXFMCTL */
+                gMcaspAuxClkConfig[2].tisciDevice = TISCI_DEV_MCASP1;
+                gMcaspAuxClkConfig[2].tisciClock = TISCI_DEV_MCASP1_AUX_CLK;
+                gMcaspAuxClkConfig[2].isConfigurable = 0U;
+                gMcaspAuxClkConfig[2].option = TISCI_DEV_MCASP1_AUX_CLK_PARENT_MCASPN_AUXCLK_LOCAL_SEL_OUT1;
+
+                gMcaspAuxClkConfig[3].tisciDevice = TISCI_DEV_MCASP1_LOCAL_AUXCLK_SEL_DEV_VD;
+                gMcaspAuxClkConfig[3].tisciClock = TISCI_DEV_MCASP1_LOCAL_AUXCLK_SEL_DEV_VD_CLK;
+                gMcaspAuxClkConfig[3].isConfigurable = 1U;
+                gMcaspAuxClkConfig[3].freq = 12500000;
+                gMcaspAuxClkConfig[3].option = TISCI_DEV_MCASP1_LOCAL_AUXCLK_SEL_DEV_VD_CLK_PARENT_MAIN_PLL4_HFOSC_SEL_OUT0;
+            }
+            else
+            {
+                /* Else: revert to the default configuration.
+                 * This branch uses 32-bit slots, 2 slots and a standard 48MHz aux clock.
+                 */
+                gMcaspOpenParams[instance].rxSlotCount = 2;
+                gMcaspOpenParams[instance].txSlotCount = 2;
+                attrs->rxSlotSize         = 32;
+                attrs->txSlotSize         = 32;
+                attrs->hwCfg.rx.mask      = (uint32_t)0xFFFFFFFFU;
+                attrs->hwCfg.rx.fmt       = (uint32_t)0x181F0U; /* MCASP_RXFMT */
+                attrs->hwCfg.rx.frSyncCtl = (uint32_t)0x113U; /* MCASP_RXFMCTL */
+                attrs->hwCfg.tx.mask      = (uint32_t)0xFFFFFFFFU;
+                attrs->hwCfg.tx.fmt       = (uint32_t)0x181F0U; /* MCASP_TXFMT */
+                attrs->hwCfg.tx.frSyncCtl = (uint32_t)0x113U; /* MCASP_TXFMCTL */
+                gMcaspAuxClkConfig[2].tisciDevice = TISCI_DEV_MCASP1;
+                gMcaspAuxClkConfig[2].tisciClock = TISCI_DEV_MCASP1_AUX_CLK;
+                gMcaspAuxClkConfig[2].isConfigurable = 0U;
+                gMcaspAuxClkConfig[2].option = TISCI_DEV_MCASP1_AUX_CLK_PARENT_MCASPN_AUXCLK_LOCAL_SEL_OUT1;
+
+                gMcaspAuxClkConfig[3].tisciDevice = TISCI_DEV_MCASP1_LOCAL_AUXCLK_SEL_DEV_VD;
+                gMcaspAuxClkConfig[3].tisciClock = TISCI_DEV_MCASP1_LOCAL_AUXCLK_SEL_DEV_VD_CLK;
+                gMcaspAuxClkConfig[3].isConfigurable = 1U;
+                gMcaspAuxClkConfig[3].freq = 49152000;
+                gMcaspAuxClkConfig[3].option = TISCI_DEV_MCASP1_LOCAL_AUXCLK_SEL_DEV_VD_CLK_PARENT_HSDIV3_16FFT_MAIN_4_HSDIVOUT0_CLK;
+            }
+            break;
+        case 2:
+            /* Instance 2: 'new' config selects 4-slot 32-bit operation for MCASP instance 2;
+            * aux clock is set to 48MHz.
+            */
+             if (flag == MCASP_CONFIG_NEW)
+            {
+                gMcaspOpenParams[instance].rxSlotCount = 4;
+                gMcaspOpenParams[instance].txSlotCount = 4;
+                attrs->rxSlotSize         = 32;
+                attrs->txSlotSize         = 32;
+                attrs->hwCfg.rx.fmt       = (uint32_t)0x181F0U; /* MCASP_RXFMT */
+                attrs->hwCfg.rx.frSyncCtl = (uint32_t)0x213U; /* MCASP_RXFMCTL */
+                attrs->hwCfg.tx.fmt       = (uint32_t)0x181F0U; /* MCASP_TXFMT */
+                attrs->hwCfg.tx.frSyncCtl = (uint32_t)0x213U; /* MCASP_TXFMCTL */
+                gMcaspAuxClkConfig[4].tisciDevice = TISCI_DEV_MCASP2;
+                gMcaspAuxClkConfig[4].tisciClock = TISCI_DEV_MCASP2_AUX_CLK;
+                gMcaspAuxClkConfig[4].isConfigurable = 0U;
+                gMcaspAuxClkConfig[4].option = TISCI_DEV_MCASP2_AUX_CLK_PARENT_MCASPN_AUXCLK_SEL_OUT2;
+
+                gMcaspAuxClkConfig[5].tisciDevice = TISCI_DEV_MCASP2_AUXCLK_SEL_DEV_VD;
+                gMcaspAuxClkConfig[5].tisciClock = TISCI_DEV_MCASP2_AUXCLK_SEL_DEV_VD_CLK;
+                gMcaspAuxClkConfig[5].isConfigurable = 1U;
+                gMcaspAuxClkConfig[5].freq = 96000000;
+                gMcaspAuxClkConfig[5].option = TISCI_DEV_MCASP2_AUXCLK_SEL_DEV_VD_CLK_PARENT_POSTDIV1_16FFT_MAIN_1_HSDIVOUT6_CLK;
+            }
+            else
+            {
+                /* Else: revert to the default configuration.
+                 * This branch uses 32-bit slots, 2 slots and a standard 48MHz aux clock.
+                 */
+                gMcaspOpenParams[instance].rxSlotCount = 2;
+                gMcaspOpenParams[instance].txSlotCount = 2;
+                attrs->rxSlotSize         = 32;
+                attrs->txSlotSize         = 32;
+                attrs->hwCfg.rx.fmt       = (uint32_t)0x181F0U; /* MCASP_RXFMT */
+                attrs->hwCfg.rx.frSyncCtl = (uint32_t)0x113U; /* MCASP_RXFMCTL */
+                attrs->hwCfg.tx.fmt       = (uint32_t)0x181F0U; /* MCASP_TXFMT */
+                attrs->hwCfg.tx.frSyncCtl = (uint32_t)0x113U; /* MCASP_TXFMCTL */
+                gMcaspAuxClkConfig[4].tisciDevice = TISCI_DEV_MCASP2;
+                gMcaspAuxClkConfig[4].tisciClock = TISCI_DEV_MCASP2_AUX_CLK;
+                gMcaspAuxClkConfig[4].isConfigurable = 0U;
+                gMcaspAuxClkConfig[4].option = TISCI_DEV_MCASP2_AUX_CLK_PARENT_MCASPN_AUXCLK_LOCAL_SEL_OUT2;
+
+                gMcaspAuxClkConfig[5].tisciDevice = TISCI_DEV_MCASP2_LOCAL_AUXCLK_SEL_DEV_VD;
+                gMcaspAuxClkConfig[5].tisciClock = TISCI_DEV_MCASP2_LOCAL_AUXCLK_SEL_DEV_VD_CLK;
+                gMcaspAuxClkConfig[5].isConfigurable = 1U;
+                gMcaspAuxClkConfig[5].freq = 49152000;
+                gMcaspAuxClkConfig[5].option = TISCI_DEV_MCASP2_LOCAL_AUXCLK_SEL_DEV_VD_CLK_PARENT_HSDIV3_16FFT_MAIN_4_HSDIVOUT0_CLK;
+            }
+            break;
+        default:
+            break;
+    }
+#else
     switch(instance)
     {
         case 0:
@@ -3361,6 +3596,7 @@ static void TestMcasp_configMultiInstance(int instance, int32_t flag,MCASP_OpenP
             break;
 
     }
+#endif
 }
 
 /**
@@ -4140,7 +4376,7 @@ static void TestMcasp_dmaInitDoneZeroRxMismatch(void *args)
     MCASP_close(handle);
 }
 
-#if ((defined(C75_CORE) && !defined(SOC_AM62DX)) || defined(SOC_AM62AX))
+#if ((defined(C75_CORE) && !defined(SOC_AM62DX) && !defined(SOC_AM275X)) || defined(SOC_AM62AX))
 /**
  * \brief  Test MCASP interrupt mode with NULL loopjob buffers.
  *

@@ -106,7 +106,7 @@ RPMessage_Object gIpcAckReplyMsgObject;
 #define DYNAMIC_ANALYSIS_MSG_COUNT 10
 #endif
 
-#if defined (SOC_AM62AX) || defined (SOC_AM62DX)
+#if defined (SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_J722S)
 #define IPC_RPMESSAGE_TASK_STACK_SIZE  (64*1024U)
 #define LPM_MCU_SUSPEND_TASK_STACK_SIZE   (64*1024U)
 #else

@@ -78,7 +78,7 @@
 #define configSYSTICK_CLOCK_HZ                  (0) /* NOT USED in TI ports */
 #define configTICK_RATE_HZ                      (1000)
 #define configMAX_PRIORITIES                    (32)
-#define configMINIMAL_STACK_SIZE                (8192) /* in units of configSTACK_DEPTH_TYPE, not bytes */
+#define configMINIMAL_STACK_SIZE                (2048) /* in units of configSTACK_DEPTH_TYPE, not bytes */
 #define configMAX_TASK_NAME_LEN                 (32)
 #define configUSE_TRACE_FACILITY                (1)
 #if (configOPTIMIZE_FOR_LATENCY==0)

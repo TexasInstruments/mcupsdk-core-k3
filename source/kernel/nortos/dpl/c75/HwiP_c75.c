@@ -423,7 +423,6 @@ void Hwi_reconfig(Hwi_Object *hwi, Hwi_FuncPtr fxn, const Hwi_Params *params)
                 hwi->disableMask = 0xFFFFFFFFFFFFFFFFUL;
                 hwi->restoreMask = 0xFFFFFFFFFFFFFFFFUL;
                 break;
-            default:
             case Hwi_MaskingOption_SELF:
                 hwi->disableMask = 1UL << intNum;
                 hwi->restoreMask = 1UL << intNum;
@@ -431,6 +430,8 @@ void Hwi_reconfig(Hwi_Object *hwi, Hwi_FuncPtr fxn, const Hwi_Params *params)
             case Hwi_MaskingOption_BITMASK:
                 hwi->disableMask = params->disableMask;
                 hwi->restoreMask = params->restoreMask;
+                break;
+            default:
                 break;
         }
 

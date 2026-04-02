@@ -57,14 +57,13 @@ typedef void (*Hwi_FuncPtr)(unsigned int arg1);
 typedef uint32_t Hwi_Irp;
 
 /* MaskingOption */
-enum Hwi_MaskingOption {
+typedef enum {
     Hwi_MaskingOption_NONE,
     Hwi_MaskingOption_ALL,
     Hwi_MaskingOption_SELF,
     Hwi_MaskingOption_BITMASK,
     Hwi_MaskingOption_LOWER
-};
-typedef enum Hwi_MaskingOption Hwi_MaskingOption;
+}Hwi_MaskingOption;
 
 /* StackInfo */
 typedef struct Hwi_StackInfo_ {
@@ -81,15 +80,14 @@ typedef struct Hwi_StackInfo_ {
 typedef void (*Hwi_PlugFuncPtr)(void );  //check if req
 
 /* TSR_CXM */
-enum Hwi_TSR_CXM {
+typedef enum {
     Hwi_TSR_CXM_GuestUser,
     Hwi_TSR_CXM_GuestSupervisor,
     Hwi_TSR_CXM_RootUser,
     Hwi_TSR_CXM_RootSupervisor,
     Hwi_TSR_CXM_SecureUser,
     Hwi_TSR_CXM_SecureSupervisor
-};
-typedef enum Hwi_TSR_CXM Hwi_TSR_CXM;
+}Hwi_TSR_CXM;
 
 
 /* Args__create */

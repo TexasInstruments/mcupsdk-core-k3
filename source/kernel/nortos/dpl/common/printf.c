@@ -580,118 +580,125 @@ static size_t _etoa(out_fct_type out, char* buffer, size_t idx, size_t maxlen, d
   unsigned int flags_local = flags;
   size_t idx_val = idx;
   double value_local = value;
+  size_t retVal = 0U;
+  bool handled = false;
 
   // check for NaN and special values
   if ((value_local != value_local) || (value_local > DBL_MAX) || (value_local < -DBL_MAX) || ((value_local == 0.0) && ((flags_local & FLAGS_ADAPT_EXP) != 0U))) {
-    return _ftoa(out, buffer, idx_val, maxlen, value_local, prec_val, width, flags_local);
+    retVal = _ftoa(out, buffer, idx_val, maxlen, value_local, prec_val, width, flags_local);
+    handled = true;
   }
 
-  // determine the sign
-  const bool negative = value_local < 0;
-  if (negative) {
-    value_local = -value_local;
-  }
+  if (handled != true)
+  {
+    // determine the sign
+    const bool negative = value_local < 0;
+    if (negative) {
+      value_local = -value_local;
+    }
 
-  // default precision
-  if ((flags_local & FLAGS_PRECISION) == 0U) {
-    prec_val = PRINTF_DEFAULT_FLOAT_PRECISION;
-  }
+    // default precision
+    if ((flags_local & FLAGS_PRECISION) == 0U) {
+      prec_val = PRINTF_DEFAULT_FLOAT_PRECISION;
+    }
 
-  // determine the decimal exponent
-  // based on the algorithm by David Gay (https://www.ampl.com/netlib/fp/dtoa.c)
-  union {
-    uint64_t U;
-    double   F;
-  } conv;
+    // determine the decimal exponent
+    // based on the algorithm by David Gay (https://www.ampl.com/netlib/fp/dtoa.c)
+    union {
+      uint64_t U;
+      double   F;
+    } conv;
 
-  conv.F = value_local;
-  int exp2 = (int)((conv.U >> 52U) & 0x07FFU) - 1023;           // effectively log2
-  conv.U = (conv.U & ((1ULL << 52U) - 1U)) | (1023ULL << 52U);  // drop the exponent so conv.F is now in [1,2)
-  // now approximate log10 from the log2 integer part and an expansion of ln around 1.5
-  int expval = (int)(0.1760912590558 + exp2 * 0.301029995663981 + (conv.F - 1.5) * 0.289529654602168);
-  // now we want to compute 10^expval but we want to be sure it won't overflow
-  exp2 = (int)(expval * 3.321928094887362 + 0.5);
-  const double z  = expval * 2.302585092994046 - exp2 * 0.6931471805599453;
-  const double z2 = z * z;
-  conv.U = ((uint64_t)(exp2) + 1023U) << 52U;
-  // compute exp(z) using continued fractions, see https://en.wikipedia.org/wiki/Exponential_function#Continued_fractions_for_ex
-  conv.F *= 1 + 2 * z / (2 - z + (z2 / (6 + (z2 / (10 + z2 / 14)))));
-  // correct for rounding errors
-  if (value_local < conv.F) {
-    expval--;
-    conv.F /= 10;
-  }
+    conv.F = value_local;
+    int exp2 = (int)((conv.U >> 52U) & 0x07FFU) - 1023;           // effectively log2
+    conv.U = (conv.U & ((1ULL << 52U) - 1U)) | (1023ULL << 52U);  // drop the exponent so conv.F is now in [1,2)
+    // now approximate log10 from the log2 integer part and an expansion of ln around 1.5
+    int expval = (int)(0.1760912590558 + exp2 * 0.301029995663981 + (conv.F - 1.5) * 0.289529654602168);
+    // now we want to compute 10^expval but we want to be sure it won't overflow
+    exp2 = (int)(expval * 3.321928094887362 + 0.5);
+    const double z  = expval * 2.302585092994046 - exp2 * 0.6931471805599453;
+    const double z2 = z * z;
+    conv.U = ((uint64_t)(exp2) + 1023U) << 52U;
+    // compute exp(z) using continued fractions, see https://en.wikipedia.org/wiki/Exponential_function#Continued_fractions_for_ex
+    conv.F *= 1 + 2 * z / (2 - z + (z2 / (6 + (z2 / (10 + z2 / 14)))));
+    // correct for rounding errors
+    if (value_local < conv.F) {
+      expval--;
+      conv.F /= 10;
+    }
 
-  /* if value is zero exponent value should be zero */
-  if((value_local) == 0.0){
-    expval = 0;
-  }
-  // the exponent format is "%+03d" and largest value is "307", so set aside 4-5 characters
-  unsigned int minwidth = ((expval < 100) && (expval > -100)) ? 4U : 5U;
+    /* if value is zero exponent value should be zero */
+    if((value_local) == 0.0){
+      expval = 0;
+    }
+    // the exponent format is "%+03d" and largest value is "307", so set aside 4-5 characters
+    unsigned int minwidth = ((expval < 100) && (expval > -100)) ? 4U : 5U;
 
-  // in "%g" mode, "prec" is the number of *significant figures* not decimals
-  if ((flags_local & FLAGS_ADAPT_EXP) != 0U) {
-    // do we want to fall-back to "%f" mode?
-    if ((value_local >= 1e-4) && (value_local < 1e6)) {
-      if ((int)prec_val > expval) {
-        prec_val = (unsigned)((int)prec_val - expval - 1);
+    // in "%g" mode, "prec" is the number of *significant figures* not decimals
+    if ((flags_local & FLAGS_ADAPT_EXP) != 0U) {
+      // do we want to fall-back to "%f" mode?
+      if ((value_local >= 1e-4) && (value_local < 1e6)) {
+        if ((int)prec_val > expval) {
+          prec_val = (unsigned)((int)prec_val - expval - 1);
+        }
+        else {
+          prec_val = 0;
+        }
+        flags_local |= FLAGS_PRECISION;   // make sure _ftoa respects precision
+        // no characters in exponent
+        minwidth = 0U;
+        expval   = 0;
       }
       else {
-        prec_val = 0;
-      }
-      flags_local |= FLAGS_PRECISION;   // make sure _ftoa respects precision
-      // no characters in exponent
-      minwidth = 0U;
-      expval   = 0;
-    }
-    else {
-      // we use one sigfig for the whole part
-      if ((prec_val > 0) && ((flags_local & FLAGS_PRECISION) != 0U)) {
-        prec_val = prec_val - 1U;
+        // we use one sigfig for the whole part
+        if ((prec_val > 0) && ((flags_local & FLAGS_PRECISION) != 0U)) {
+          prec_val = prec_val - 1U;
+        }
       }
     }
-  }
 
-  // will everything fit?
-  unsigned int fwidth = width;
-  if (width > minwidth) {
-    // we didn't fall-back so subtract the characters required for the exponent
-    fwidth -= minwidth;
-  } else {
-    // not enough characters, so go back to default sizing
-    fwidth = 0U;
-  }
-  if (((flags_local & FLAGS_LEFT) != 0U) && (minwidth != 0U)) {
-    // if we're padding on the right, DON'T pad the floating part
-    fwidth = 0U;
-  }
+    // will everything fit?
+    unsigned int fwidth = width;
+    if (width > minwidth) {
+      // we didn't fall-back so subtract the characters required for the exponent
+      fwidth -= minwidth;
+    } else {
+      // not enough characters, so go back to default sizing
+      fwidth = 0U;
+    }
+    if (((flags_local & FLAGS_LEFT) != 0U) && (minwidth != 0U)) {
+      // if we're padding on the right, DON'T pad the floating part
+      fwidth = 0U;
+    }
 
-  // rescale the float value
-  if (expval != 0) {
-    value_local = value_local / conv.F;
-  }
+    // rescale the float value
+    if (expval != 0) {
+      value_local = value_local / conv.F;
+    }
 
-  // output the floating part
-  const size_t start_idx = idx_val;
-  idx_val = _ftoa(out, buffer, idx_val, maxlen, negative ? -value_local : value_local, prec_val, fwidth, flags_local);
+    // output the floating part
+    const size_t start_idx = idx_val;
+    idx_val = _ftoa(out, buffer, idx_val, maxlen, negative ? -value_local : value_local, prec_val, fwidth, flags_local);
 
-  // output the exponent part
-  if (minwidth != 0U) {
-    // output the exponential symbol
-    out(((flags_local & FLAGS_UPPERCASE) != 0U) ? 'E' : 'e', buffer, idx_val, maxlen);
-    idx_val = idx_val + 1U;
-    // output the exponent value
-    idx_val = _ntoa_long(out, buffer, idx_val, maxlen, (expval < 0) ? -expval : expval, expval < 0, 10, 0, minwidth-1, FLAGS_ZEROPAD | FLAGS_PLUS);
-    // might need to right-pad spaces
-    if ((flags_local & FLAGS_LEFT) != 0U) {
-      while ((idx_val - start_idx) < width)
-      {
-        out(' ', buffer, idx_val, maxlen);
-        idx_val = idx_val + 1U;
+    // output the exponent part
+    if (minwidth != 0U) {
+      // output the exponential symbol
+      out(((flags_local & FLAGS_UPPERCASE) != 0U) ? 'E' : 'e', buffer, idx_val, maxlen);
+      idx_val = idx_val + 1U;
+      // output the exponent value
+      idx_val = _ntoa_long(out, buffer, idx_val, maxlen, (expval < 0) ? -expval : expval, expval < 0, 10, 0, minwidth-1, FLAGS_ZEROPAD | FLAGS_PLUS);
+      // might need to right-pad spaces
+      if ((flags_local & FLAGS_LEFT) != 0U) {
+        while ((idx_val - start_idx) < width)
+        {
+          out(' ', buffer, idx_val, maxlen);
+          idx_val = idx_val + 1U;
+        }
       }
     }
+    retVal = idx_val;
   }
-  return idx_val;
+  return retVal;
 }
 #endif  // PRINTF_SUPPORT_EXPONENTIAL
 #endif  // PRINTF_SUPPORT_FLOAT

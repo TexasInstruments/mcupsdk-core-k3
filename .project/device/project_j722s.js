@@ -46,6 +46,7 @@ const example_file_list = [
     "examples/drivers/boot/sbl_uart/.project/project.js",
     "examples/drivers/boot/sbl_uart_uniflash/.project/project.js",
     "examples/drivers/boot/sbl_uart_uniflash_nand/.project/project.js",
+    "examples/drivers/boot/sbl_xip/.project/project.js",
     "examples/drivers/csirx/csirx_capture_testapp/.project/project.js",
     "examples/drivers/csirx/csirxtx_loopback_test/.project/project.js",
     "examples/drivers/csitx/csitx_transmit_test/.project/project.js",

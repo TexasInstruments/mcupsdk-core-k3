@@ -88,6 +88,7 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_uniflash/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_uniflash_nand/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_xip/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/csirx/csirx_capture_testapp/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/csirx/csirxtx_loopback_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/csitx/csitx_transmit_test/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -776,6 +777,9 @@ examples-private: dm_app
 
  sbl_uart_uniflash_nand_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_nand/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ sbl_xip_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/boot/sbl_xip/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
  csirx_capture_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/csirx/csirx_capture_testapp/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile all
@@ -1546,6 +1550,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  sbl_uart_uniflash_nand_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_nand/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
+ sbl_xip_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/boot/sbl_xip/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
  csirx_capture_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/csirx/csirx_capture_testapp/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
@@ -2315,6 +2322,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  sbl_uart_uniflash_nand_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_nand/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
+ sbl_xip_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/boot/sbl_xip/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
  csirx_capture_testapp_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/csirx/csirx_capture_testapp/j722s-evm/main-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
@@ -2872,6 +2882,7 @@ sbl: libs
 	$(MAKE) -C examples/drivers/boot/sbl_uart/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_nand/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+	$(MAKE) -C examples/drivers/boot/sbl_xip/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
 sbl-clean:
 	$(MAKE) -C examples/drivers/boot/sbl_null/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
@@ -2883,6 +2894,7 @@ sbl-clean:
 	$(MAKE) -C examples/drivers/boot/sbl_uart/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_nand/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+	$(MAKE) -C examples/drivers/boot/sbl_xip/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
 sbl-scrub:
 	$(MAKE) -C examples/drivers/boot/sbl_null/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
@@ -2894,6 +2906,7 @@ sbl-scrub:
 	$(MAKE) -C examples/drivers/boot/sbl_uart/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash_nand/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+	$(MAKE) -C examples/drivers/boot/sbl_xip/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
 
 host-emu:

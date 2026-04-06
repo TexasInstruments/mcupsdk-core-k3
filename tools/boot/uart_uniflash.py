@@ -414,7 +414,7 @@ def main(argv):
                     if linecfg.filename is not None:
                         f_size = os.path.getsize(linecfg.filename)
 
-                    if((f_size + BOOTLOADER_UNIFLASH_HEADER_SIZE >= BOOTLOADER_UNIFLASH_BUF_SIZE) and (linecfg.optype in ["flash", "flashverify"])):
+                    if((f_size + BOOTLOADER_UNIFLASH_HEADER_SIZE >= BOOTLOADER_UNIFLASH_BUF_SIZE) and (linecfg.optype in ["flash", "flashverify", 'flash-emmc'])):
                         # Send by parts
                         status, timetaken = send_file_by_parts(linecfg, serialport)
                     else:

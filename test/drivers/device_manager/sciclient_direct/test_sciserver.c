@@ -251,7 +251,7 @@ int8_t test_sciserver_secproxyTransfer(void)
     {
         retVal = Sciserver_SproxyMsgIsPending(rxIdTest);
     }
-#elif defined (SOC_AM62PX)
+#elif defined (SOC_AM62PX) || defined (SOC_J722S)
     for(checkTest=0; checkTest<20;checkTest++)
     {
         retVal = Sciserver_SproxyMsgIsPending(rxIdTest);
@@ -336,6 +336,45 @@ int8_t test_sciserver(void)
 {
     int32_t retVal = SystemP_SUCCESS;
     int8_t failCount = 0;
+    Sciserver_taskData *task = (Sciserver_taskData *)&utdTest3[0];
+    uint32_t testTypes[] =
+    {
+        TISCI_MSG_VERSION,
+        TISCI_MSG_BOARD_CONFIG_RM,
+        TISCI_MSG_RM_GET_RESOURCE_RANGE,
+        TISCI_MSG_RM_IRQ_SET,
+        TISCI_MSG_RM_IRQ_RELEASE,
+        TISCI_MSG_RM_RING_CFG,
+        TISCI_MSG_RM_RING_MON_CFG,
+        TISCI_MSG_RM_UDMAP_TX_CH_CFG,
+        TISCI_MSG_RM_UDMAP_RX_CH_CFG,
+        TISCI_MSG_RM_UDMAP_FLOW_CFG,
+        TISCI_MSG_RM_UDMAP_FLOW_SIZE_THRESH_CFG,
+        TISCI_MSG_RM_UDMAP_FLOW_DELEGATE,
+        TISCI_MSG_RM_UDMAP_GCFG_CFG,
+        TISCI_MSG_RM_PSIL_PAIR,
+        TISCI_MSG_RM_PSIL_UNPAIR,
+        TISCI_MSG_RM_PSIL_READ,
+        TISCI_MSG_RM_PSIL_WRITE,
+        TISCI_MSG_RM_PROXY_CFG,
+        TISCI_MSG_BOARD_CONFIG_PM,
+        TISCI_MSG_SET_CLOCK,
+        TISCI_MSG_GET_CLOCK,
+        TISCI_MSG_SET_CLOCK_PARENT,
+        TISCI_MSG_GET_CLOCK_PARENT,
+        TISCI_MSG_GET_NUM_CLOCK_PARENTS,
+        TISCI_MSG_SET_FREQ,
+        TISCI_MSG_QUERY_FREQ,
+        TISCI_MSG_GET_FREQ,
+        TISCI_MSG_SET_DEVICE,
+        TISCI_MSG_GET_DEVICE,
+        TISCI_MSG_SET_DEVICE_RESETS,
+        TISCI_MSG_QUERY_FW_CAPS,
+        TISCI_MSG_DM_VERSION
+    };
+    int numTypes = 0;
+    uint32_t *msgBuf = NULL;
+    struct tisci_header *hdr = NULL;
 
     /* no return type */
     (void)Sciserver_setProcessState(SCISERVER_PROCESS_STATE_WAIT);
@@ -487,6 +526,40 @@ int8_t test_sciserver(void)
         failCount++;
     }
 
+    numTypes = sizeof(testTypes)/sizeof(testTypes[0]);
+    msgBuf = task->hw_msg_buffer_list[0];
+    hdr = (struct tisci_header *)msgBuf;
+    for (int i = 0; i < numTypes; i++)
+    {
+        hdr->type  = testTypes[i];
+        hdr->host  = TISCI_HOST_ID_TIFS2DM;
+        hdr->seq   = i;
+        hdr->flags = 0;
+        task->user_msg_data[0]->is_pending = true;
+        task->user_msg_data[0]->host = 1;
+        task->state->current_buffer_idx = 0;
+        retVal = Sciserver_processtask(task);
+        if(retVal != SystemP_SUCCESS)
+        {
+            DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+            failCount++;
+        }
+    }
+
+    hdr->type = 0xFFFF;
+    hdr->host = 1;
+    hdr->seq  = 0xFF;
+    hdr->flags = 0;
+    task->user_msg_data[0]->is_pending = true;
+    task->state->current_buffer_idx = 0;
+
+    retVal = Sciserver_processtask(task);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
     return failCount;
 }
 
@@ -526,6 +599,7 @@ int8_t test_sciserver_tirtos(void)
 	Sciserver_tirtosEnableIntr();
 
 	Sciserver_tirtosDeinit();
+
 	retVal = Sciserver_tirtosInit(&appPrms);
     if(retVal != SystemP_SUCCESS)
     {

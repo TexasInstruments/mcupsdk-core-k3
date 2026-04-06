@@ -16,6 +16,9 @@ const defines_dm_r5 = {
     common: [
         "ENABLE_SCICLIENT_DIRECT",
         "SCICLIENT_INTERRUPT_MODE",
+        "TEST_SCICLIENT_INTERRUPT_MODE",
+        "CONFIG_LPM_DM",
+        "BUILD_MCU1_0",
     ],
 }
 

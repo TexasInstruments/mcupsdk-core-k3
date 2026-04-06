@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Texas Instruments Incorporated
+ * Copyright (C) 2026 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -115,6 +115,7 @@ static void test_dm_full_test(void *args)
         DebugP_log("\r\n test_sciclient_modes: All testcase passed successfully \r\n");
     }
 
+#if defined(CONFIG_LPM_DM)
     failCount = test_lpm_apis();
     if(failCount > 0)
     {
@@ -125,6 +126,7 @@ static void test_dm_full_test(void *args)
     {
         DebugP_log("\r\n test_lpm_apis: All testcase passed successfully \r\n");
     }
+#endif
 
     failCount = test_sciclient_secproxyRoutingDescription();
     if(failCount > 0)
@@ -137,7 +139,7 @@ static void test_dm_full_test(void *args)
         DebugP_log("\r\n test_sciclient_secproxyRoutingDescription: All testcase passed successfully \r\n");
     }
 
-	failCount = test_sciclient_procboot();
+    failCount = test_sciclient_procboot();
     if(failCount > 0)
     {
         DebugP_log("\r\n test_sciclient_procboot: %d testcase failed \r\n", failCount);
@@ -280,6 +282,7 @@ static void test_dm_full_test(void *args)
         DebugP_log("\r\n test_sciserver_tirtos: All testcase passed successfully \r\n");
     }
 
+#if defined(CONFIG_LPM_DM)
     failCount =  test_sciclient_lowPowerReq();
     if(failCount > 0)
     {
@@ -290,6 +293,7 @@ static void test_dm_full_test(void *args)
     {
         DebugP_log("\r\n test_sciclient_lowPowerReq: All testcase passed successfully \r\n");
     }
+#endif
 
     failCount = test_sciclient_boardcfgRM();
     if(failCount > 0)

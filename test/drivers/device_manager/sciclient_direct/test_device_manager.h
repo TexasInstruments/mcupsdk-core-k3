@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -78,6 +78,10 @@
 #include "am62dx-evm/test_sciclient_val.h"
 #include <drivers/sciclient/soc/am62dx/sciclient_soc_priv.h>
 #include <drivers/sciclient/include/tisci/am62dx/tisci_clocks.h>
+#elif defined (SOC_J722S)
+#include "j722s-evm/test_sciclient_val.h"
+#include <drivers/sciclient/soc/sciclient_soc_priv.h>
+#include <drivers/sciclient/include/tisci/j722s/tisci_clocks.h>
 #endif
 
 #ifdef __cplusplus

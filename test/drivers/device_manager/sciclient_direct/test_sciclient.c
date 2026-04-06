@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Texas Instruments Incorporated
+ * Copyright (C) 2026 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -92,7 +92,7 @@ void test_sciclient_rm_ir_output(void *args)
         TISCI_DEV_TIMESYNC_EVENT_ROUTER0,
     };
     uint16_t freeOutp[TEST_SCICLIENT_DEV_ID_SIZE] = { 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF};
-#elif defined(SOC_AM62PX)
+#elif defined(SOC_AM62PX) || defined(SOC_J722S)
 #define TEST_SCICLIENT_DEV_ID_SIZE 3
     uint16_t validIrDevIds[TEST_SCICLIENT_DEV_ID_SIZE] = {
         TISCI_DEV_MAIN_GPIOMUX_INTROUTER0,
@@ -1032,7 +1032,11 @@ int8_t test_sciclient(void)
     gSciclientHandle.isSecureMode = 1U;
     Sciclient_ConfigPrms_t cfgPrms;
     gSciclientHandle.initCount = 0U;
+#if defined(TEST_SCICLIENT_INTERRUPT_MODE)
     cfgPrms.opModeFlag = SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT;
+#else
+    cfgPrms.opModeFlag = SCICLIENT_SERVICE_OPERATION_MODE_POLLED;
+#endif
     retVal = Sciclient_init(&cfgPrms);
     if(retVal == SystemP_SUCCESS)
     {
@@ -1046,6 +1050,7 @@ int8_t test_sciclient(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
+
     retVal = Sciclient_deinit();
     if(retVal != SystemP_SUCCESS)
     {
@@ -1238,6 +1243,168 @@ int8_t test_sciclient(void)
         failCount++;
     }
 
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_BOOT_NOTIFICATION);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_SEC_HANDOVER);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_BOARD_CONFIG);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_BOARD_CONFIG_SECURITY);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_SA2UL_SET_DKEK);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_SA2UL_GET_DKEK);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_SA2UL_RELEASE_DKEK);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_SA2UL_SET_DSMEK);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_SA2UL_GET_DSMEK);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_SA2UL_RELEASE_DSMEK);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_OPEN_DEBUG_FWLS);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_WRITE_OTP_ROW);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_READ_OTP_MMR);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_LOCK_OTP_ROW);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_GET_OTP_ROW_LOCK_STATUS);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_SOFT_LOCK_OTP_WRITE_GLOBAL);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_READ_SWREV);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_WRITE_SWREV);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_READ_KEYCNT_KEYREV);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_KEY_WRITER);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_WRITE_KEYREV);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(TISCI_MSG_ENTER_SLEEP);
+    if(retVal != SCICLIENT_CONTEXT_SEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    gSciclientHandle.isSecureMode = 0U;
+    retVal = Sciclient_getCurrentContext(0xFFFFU);
+    if(retVal != SCICLIENT_CONTEXT_NONSEC)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
     return failCount;
 }
 
@@ -1323,6 +1490,7 @@ int8_t test_sciclient_modes(void)
         failCount++;
     }
 
+#if defined(TEST_SCICLIENT_INTERRUPT_MODE)
     // Calling API to update operation mode to Interrupt.
     gSciclientHandle.opModeFlag = SCICLIENT_SERVICE_OPERATION_MODE_POLLED;
     retVal = Sciclient_updateOperModeToInterrupt();
@@ -1377,6 +1545,7 @@ int8_t test_sciclient_modes(void)
     * Enable Interrupts API has been called.
     */
     Sciclient_enableIntr();
+#endif
 
     // Calling API to test various sciclient message types.
     failCountInterrupt = test_sciclient_message_passing();
@@ -1390,6 +1559,7 @@ int8_t test_sciclient_modes(void)
         DebugP_log("\r\n test_sciclient_message_passing: All testcase passed successfully in Interrupt Mode\r\n");
     }
 
+#if defined(TEST_SCICLIENT_INTERRUPT_MODE)
     /* Simulating case where operation mode is set to Interrupt
     * but all interrupts have already been setup
     * and Update to Interrupt Mode API has been called.
@@ -1441,6 +1611,7 @@ int8_t test_sciclient_modes(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
+#endif
     gSciclientHandle.respIntr[2] = tempRespIntr[2];
 
     /*
@@ -1867,7 +2038,7 @@ int8_t test_sciclient_pm(void)
         failCount++;
     }
 
-    retVal = Sciclient_pmSetModuleState(0xFF, deviceState, 2, 0);
+    retVal = Sciclient_pmSetModuleState(0xFFFF, deviceState, 2, 0);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -1888,7 +2059,7 @@ int8_t test_sciclient_pm(void)
         failCount++;
     }
 
-    retVal = Sciclient_pmGetModuleState(0xFF, &moduleState, &resetState, &contextLossState, 0);
+    retVal = Sciclient_pmGetModuleState(0xFFFF, &moduleState, &resetState, &contextLossState, 0);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -1902,7 +2073,7 @@ int8_t test_sciclient_pm(void)
         failCount++;
     }
 
-    retVal = Sciclient_pmSetModuleRst(0xFF, 0x0, 0x0U);
+    retVal = Sciclient_pmSetModuleRst(0xFFFF, 0x0, 0x0U);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -1916,7 +2087,7 @@ int8_t test_sciclient_pm(void)
         failCount++;
     }
 
-    retVal = Sciclient_pmSetModuleRst_flags(0xFF, 0x0, reqFlag, 0x0);
+    retVal = Sciclient_pmSetModuleRst_flags(0xFFFF, 0x0, reqFlag, 0x0);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -1930,7 +2101,7 @@ int8_t test_sciclient_pm(void)
         failCount++;
     }
 
-    retVal = Sciclient_pmModuleClkRequest(0xFF, 0x0, 0x0, 0x0, 0x0);
+    retVal = Sciclient_pmModuleClkRequest(0xFFFF, 0x0, 0x0, 0x0, 0x0);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -1944,7 +2115,7 @@ int8_t test_sciclient_pm(void)
         failCount++;
     }
 
-    retVal = Sciclient_pmModuleGetClkStatus(0xFF, 0x0, &state, 0x0);
+    retVal = Sciclient_pmModuleGetClkStatus(0xFFFF, 0x0, &state, 0x0);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -1965,7 +2136,7 @@ int8_t test_sciclient_pm(void)
         failCount++;
     }
 
-    retVal = Sciclient_pmSetModuleClkParent(0xFF, 0x0, 0x0, 0x0);
+    retVal = Sciclient_pmSetModuleClkParent(0xFFFF, 0x0, 0x0, 0x0);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -1979,7 +2150,7 @@ int8_t test_sciclient_pm(void)
         failCount++;
     }
 
-    retVal = Sciclient_pmGetModuleClkParent(0xFF, 0x0U, &parent, 0x0);
+    retVal = Sciclient_pmGetModuleClkParent(0xFFFF, 0x0U, &parent, 0x0);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -2007,7 +2178,7 @@ int8_t test_sciclient_pm(void)
         failCount++;
     }
 
-    retVal = Sciclient_pmSetModuleClkFreq(0xFF, 0x0, 1000005U, 0x1, 0x0);
+    retVal = Sciclient_pmSetModuleClkFreq(0xFFFF, 0x0, 1000005U, 0x1, 0x0);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -2021,7 +2192,7 @@ int8_t test_sciclient_pm(void)
         failCount++;
     }
 
-    retVal = Sciclient_pmQueryModuleClkFreq(0xFF, 0x0, 1000005U, &respFreqHz, 10U);
+    retVal = Sciclient_pmQueryModuleClkFreq(0xFFFF, 0x0, 1000005U, &respFreqHz, 10U);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -2035,7 +2206,7 @@ int8_t test_sciclient_pm(void)
         failCount++;
     }
 
-    retVal = Sciclient_pmGetModuleClkFreq(0xFF, 0x0, &respFreqHz, 0x0);
+    retVal = Sciclient_pmGetModuleClkFreq(0xFFFF, 0x0, &respFreqHz, 0x0);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -2085,6 +2256,20 @@ int8_t test_sciclient_boardcfg(void)
 
     retVal = Sciclient_getDefaultBoardCfgInfo(NULL);
     if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_boardCfg(&brdCfg);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_boardCfgSec(&brdCfg);
+    if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
@@ -2196,6 +2381,42 @@ int8_t test_sciclient_directWrapper(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
+
+#if defined(CONFIG_LPM_BOARDCFG_MANAGED)
+    uint64_t pCtxtAddr;
+
+    /* Call to get address where LPM context has to be saved */
+    retVal  =  Sciclient_getLPMCtxtSaveAddr(&pCtxtAddr);
+    if(retVal == SystemP_FAILURE)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    /* Call to copy FS stub from load address in DDR to DM local memory */
+    retVal  =  Sciclient_copyLPMFSStubToLocalMem();
+    if(retVal == SystemP_FAILURE)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    /* Call to suspend the application that is running along with DM */
+    retVal  =  Sciclient_suspendLPMApplication();
+    if(retVal == SystemP_FAILURE)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    /* Call to resume the application that is running along with DM */
+    retVal  =  Sciclient_resumeLPMApplication();
+    if(retVal == SystemP_FAILURE)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+#endif
 
     return failCount;
 }
@@ -2340,6 +2561,30 @@ int8_t test_sciclient_direct(void)
         sizeof (responseRst)
     };
     retVal = Sciclient_service(&reqPrmRst, &respPrmRst);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    tx_msg.type = SCICLIENT_DEV_WKUP_R5FSS0_CORE0;
+    retVal = Sciclient_ProcessPmMessage(0, &tx_msg);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    tx_msg.type = TISCI_MSG_RM_RING_MON_CFG;
+    retVal = Sciclient_ProcessRmMessage(&tx_msg);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    tx_msg.type = TISCI_MSG_RM_PROXY_CFG;
+    retVal = Sciclient_ProcessRmMessage(&tx_msg);
     if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
@@ -2969,7 +3214,9 @@ int8_t test_sciclient_serviceSecProxy(void)
         failCount++;
     }
 
+#if defined(TEST_SCICLIENT_INTERRUPT_MODE)
     Sciclient_updateOperModeToInterrupt();
+#endif
     retVal = Sciclient_serviceSecureProxy(NULL, &RespParam);
     if(retVal == SystemP_SUCCESS)
     {

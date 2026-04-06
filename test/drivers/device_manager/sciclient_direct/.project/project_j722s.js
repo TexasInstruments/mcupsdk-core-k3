@@ -1,6 +1,6 @@
 let path = require('path');
 
-let device = "am62ax";
+let device = "j722s";
 
 const files = {
     common: [
@@ -12,70 +12,54 @@ const files = {
         "main.c",
     ],
 };
-const defines_dm_r5 = {
-    common: [
-        "ENABLE_SCICLIENT_DIRECT",
-        "SCICLIENT_INTERRUPT_MODE",
-        "TEST_SCICLIENT_INTERRUPT_MODE",
-        "CONFIG_LPM_DM",
-        "BUILD_MCU1_0",
-    ],
-}
-
 
 /* Relative to where the makefile will be generated
  * Typically at <example_folder>/<BOARD>/<core_os_combo>/<compiler>
  */
 const filedirs = {
     common: [
-        "..",       /* JS */
-        "../..",    /* core_os_combo base */
-        "../../..", /* Board base */
-        "../../../..", /* Example base */
+        "..",       /* core_os_combo base */
+        "../..",    /* Board base */
+        "../../..", /* Example base */
     ],
 };
 
-const libdirs_dm_r5f = {
+const libdirs_freertos_wkup_r5f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
-        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
     ],
 };
 
-const includes = {
-    common: [
-        "${MCU_PLUS_SDK_PATH}/test/unity/",
-    ],
-};
-
-const includes_freertos = {
+const includes_freertos_r5f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/r5f",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/j722s/r5f",
         "${MCU_PLUS_SDK_PATH}/test/unity/",
     ],
 };
 
-const libs_dm_r5f = {
+const libs_freertos_wkup_r5f = {
     common: [
-        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "drivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "freertos.j722s.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.j722s.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.j722s.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.j722s.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.j722s.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal.j722s.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.j722s.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
+        "unity.j722s.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.j722s.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
-
 
 const lnkfiles = {
     common: [
@@ -83,16 +67,24 @@ const lnkfiles = {
     ]
 };
 
+const defines_wkup_r5 = {
+    common: [
+        "ENABLE_SCICLIENT_DIRECT",
+        "BUILD_MCU1_0",
+        "CONFIG_LPM_BOARDCFG_MANAGED",
+    ],
+}
+
 const syscfgfile = "../example.syscfg";
 
-const templates_dm_r5f =
+const templates_freertos_wkup_r5f =
 [
     {
-        input: ".project/templates/am62ax/common/linker_dm_r5f.cmd.xdt",
+        input: ".project/templates/j722s/common/linker_wkup-r5f.cmd.xdt",
         output: "linker.cmd",
         options: {
-            heapSize: 0x8000,
-            stackSize: 0x4000,
+            heapSize: 0x10000,
+            stackSize: 0x8000,
             irqStackSize: 0x1000,
             svcStackSize: 0x0100,
             fiqStackSize: 0x0100,
@@ -102,7 +94,7 @@ const templates_dm_r5f =
         },
     },
     {
-        input: ".project/templates/am62ax/freertos/main_freertos_dm.c.xdt",
+        input: ".project/templates/j722s/freertos/main_freertos_wkup.c.xdt",
         output: "../main.c",
         options: {
             entryFunction: "test_main",
@@ -111,7 +103,7 @@ const templates_dm_r5f =
 ];
 
 const buildOptionCombos = [
-    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
+    { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "j722s-evm", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -127,21 +119,6 @@ function getComponentProperty() {
     return property;
 }
 
-const robot_template = {
-    input: ".project/templates/am62ax/astra/tests.robot.xdt",
-    output: "../tests.robot",
-    options: {
-        componentName: "DM",
-        testCaseName: "Test the Device Manager by cfg file",
-        testCaseIds: "SITSW-3641",
-        withCfg: true,
-        cfgPath: "test/drivers/device_manager/sciclient_direct/{board}/default_sbl_uart_${DEVICE_TYPE}.cfg",
-        expectedString: "Overall test status: All testcases are passed successfully",
-        expectTimeout: 100,
-        timeout: 700,
-    },
-};
-
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -150,16 +127,14 @@ function getComponentBuildProperty(buildOption) {
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
 
-    if(buildOption.cpu.match(/r5f*/)) {
-        build_property.includes = includes_freertos;
-        build_property.libs = libs_dm_r5f;
-        build_property.libdirs = libdirs_dm_r5f;
-        build_property.templates = templates_dm_r5f;
-        build_property.defines = defines_dm_r5;
+    if(buildOption.cpu.match(/wkup-r5f*/)) {
+        build_property.includes = includes_freertos_r5f;
+        build_property.libdirs = libdirs_freertos_wkup_r5f;
+        build_property.libs = libs_freertos_wkup_r5f;
+        build_property.templates = templates_freertos_wkup_r5f;
+        build_property.defines = defines_wkup_r5;
     }
-
-
-    build_property.templates = [...(build_property.templates || []), robot_template];
+       
     return build_property;
 }
 

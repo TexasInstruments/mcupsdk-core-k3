@@ -69,6 +69,10 @@
 #define TEST_PMU_COUNTER_IDX_1                  1U
 #define TEST_PMU_COUNTER_IDX_2                  2U
 
+/* Minimum counter count requirements for multi-counter tests */
+#define TEST_PMU_MIN_COUNTERS_DUAL              2U
+#define TEST_PMU_MIN_COUNTERS_TRIPLE            3U
+
 /* Counter preload values near 32-bit overflow for wrapping tests */
 #define TEST_PMU_NEAR_OVERFLOW_2                0xFFFFFFFEU     /* 2 counts before max */
 #define TEST_PMU_NEAR_OVERFLOW_4                0xFFFFFFFCU     /* 4 counts before max */
@@ -112,6 +116,9 @@
 /* Number of 32-bit wraps for the software 64-bit chain accumulation test */
 #define TEST_PMU_SW_CHAIN_WRAP_COUNT            3U
 
+/* Maximum gated cycle counter delta (must be effectively zero) */
+#define TEST_PMU_GATED_CYCLE_DELTA_MAX          10U
+
 /* CPU frequencies used in CycleCounterP_nsToTicks conversion tests */
 #define TEST_PMU_CPU_FREQ_200MHZ                200000000ULL
 #define TEST_PMU_CPU_FREQ_400MHZ                400000000ULL
@@ -123,6 +130,9 @@
 #define TEST_PMU_NS_PER_MS                      1000000ULL
 #define TEST_PMU_NS_PER_SEC                     1000000000ULL
 
+/* Number of profile entries for the max-entries print test */
+#define TEST_PMU_MAX_PRINT_ENTRIES              10U
+
 /* Out-of-range counter indices used in negative tests */
 #define TEST_PMU_INVALID_COUNTER_IDX_LOW        10U
 #define TEST_PMU_INVALID_COUNTER_IDX_HIGH       25U
@@ -130,6 +140,60 @@
 /* Concurrent enable/disable toggle and read iteration counts */
 #define TEST_PMU_TOGGLE_ITER                 10U
 #define TEST_PMU_READ_ITER                   20U
+
+/* PMU driver's internal profile log capacity (PMU_MAX_LOG_ENTRIES in
+ * source/drivers/pmu/pmu.c). Not exposed via pmu.h, so it is mirrored here;
+ * keep in sync with the driver's private definition. */
+#define TEST_PMU_LOG_CAPACITY                64U
+/* Number of profile points logged beyond TEST_PMU_LOG_CAPACITY to exercise
+ * the driver's handling of log overflow. */
+#define TEST_PMU_LOG_OVERFLOW_COUNT          4U
+
+/* Tolerance percentage for divide-by-64 rate check in global variable init */
+#define TEST_PMU_DIVIDE_TOLERANCE_PCT           50U
+
+/* Workload arithmetic constants for the deterministic inner loop: sum += i*MUL + ADD */
+#define TEST_PMU_WORKLOAD_MULTIPLY              3U
+#define TEST_PMU_WORKLOAD_ADDEND                7U
+
+/* Busy-wait spin count to let a counter reset settle before reading */
+#define TEST_PMU_RESET_SPIN_COUNT               100U
+
+/* Mini inner-loop iteration count used inside overflow poll/retry loops */
+#define TEST_PMU_MINI_WORKLOAD_ITER_COUNT       100U
+
+/* Rapid-read/write value formula: val = k * MUL + ADD */
+#define TEST_PMU_RW_VALUE_MULTIPLIER            7U
+#define TEST_PMU_RW_VALUE_ADDEND                3U
+
+/* Number of consecutive overflow-status reads to verify flag persistence */
+#define TEST_PMU_OVERFLOW_STATUS_VERIFY_ITER    4U
+
+/* Counter preload presets for disabled-counter tests (low/mid/high) */
+#define TEST_PMU_DISABLED_CNTR_PRESET_LOW       1000U
+#define TEST_PMU_DISABLED_CNTR_PRESET_MID       2000U
+#define TEST_PMU_DISABLED_CNTR_PRESET_HIGH      3000U
+
+/* Factor by which a re-enabled counter delta must exceed the disabled delta */
+#define TEST_PMU_RESUME_VS_DISABLED_FACTOR      10U
+
+/* Expected tick counts for CycleCounterP_nsToTicks tests */
+#define TEST_PMU_TICKS_PER_US_AT_200MHZ         200U        /* 1 µs ticks at 200 MHz */
+#define TEST_PMU_TICKS_PER_US_AT_400MHZ         400U        /* 1 µs ticks at 400 MHz */
+#define TEST_PMU_TICKS_PER_US_AT_800MHZ         800ULL      /* 1 µs ticks at 800 MHz */
+#define TEST_PMU_TICKS_PER_MS_AT_800MHZ         800000ULL   /* 1 ms ticks at 800 MHz */
+#define TEST_PMU_TICKS_PER_US_AT_1GHZ           1000U       /* 1 µs ticks at 1 GHz  */
+#define TEST_PMU_NS_100                         100ULL      /* 100-nanosecond test input */
+#define TEST_PMU_TICKS_100NS_AT_800MHZ          80ULL       /* Expected ticks for 100 ns at 800 MHz */
+
+/* MT FreeRTOS task priority for concurrent test tasks */
+#define TEST_PMU_MT_TASK_PRIORITY               3U
+
+/* Semaphore pend timeout (microseconds) for MT task rendezvous */
+#define TEST_PMU_SEM_TIMEOUT_US                 5000U
+
+/* Per-iteration counter increment step used in MT SetCntr atomicity test */
+#define TEST_PMU_MT_SETCNTR_STEP                10U
 
 /* Multithreaded test globals */
 #if defined(ENABLE_MT_TESTS)
@@ -140,7 +204,11 @@
 /* MT task teardown settle time (microseconds) */
 #define TEST_PMU_MT_TEARDOWN_DELAY_US           5000U
 #define TEST_PMU_MT_TASK_COUNT                  2U
+#if defined(SOC_AM275X)
+#define TEST_PMU_MT_TASK_STACK_SIZE             (32u * 1024U)
+#else
 #define TEST_PMU_MT_TASK_STACK_SIZE             (16u * 1024U)
+#endif
 
 /* MT thread array indices */
 #define TEST_PMU_MT_THREAD_A_IDX                0U
@@ -151,6 +219,9 @@
 
 /* MT event-reprogram synchronization step count */
 #define TEST_PMU_MT_REPROGRAM_STEPS             4U
+
+/* MT overflow-generation test iteration count */
+#define TEST_PMU_MT_OVERFLOW_ITER               2U
 #endif /* ENABLE_MT_TESTS */
 
 /* ========================================================================== */
@@ -158,10 +229,10 @@
 /* ========================================================================== */
 
 static uint32_t TestPmu_NumCounters             = 0U;
-static uint32_t TestPmu_DivideTolerancePct      = 50U;          /* Allowed +/- tolerance for divide-by-64 rate check */
+static uint32_t TestPmu_DivideTolerancePct      = TEST_PMU_DIVIDE_TOLERANCE_PCT; /* Allowed +/- tolerance for divide-by-64 rate check */
 static const char *TestPmu_BlockNameConst       = "BlockA";
 static uint32_t TestPmu_ZeroDeltaTolerance      = 0U;           /* Expected zero while frozen/disabled */
-static PMU_EventCfg TestPmu_EventCfgBuf[3];                     /* R5 supports up to 3 event counters */
+static PMU_EventCfg TestPmu_EventCfgBuf[TEST_PMU_MIN_COUNTERS_TRIPLE];         /* R5 supports up to 3 event counters */
 static PMU_Config TestPmu_ConfigObj;
 
 /* Multithreaded test globals */
@@ -179,6 +250,25 @@ static volatile uint32_t TestPmu_MtBarrierCount;
 static SemaphoreP_Object TestPmu_MtReprogramStepSem;
 static volatile uint32_t TestPmu_MtReprogramComplete;
 static volatile uint32_t TestPmu_MtCounter0ReadCount;
+
+/* Global state for TC_MT06 - Cycle counter gating test */
+static volatile uint32_t TestPmu_MtCycleGated;
+static volatile uint32_t TestPmu_MtCycleDeltaWhileGated;
+
+/* Global state for TC_MT07 - Divider toggle test */
+static volatile uint32_t TestPmu_MtDividerToggled;
+static uint32_t TestPmu_MtDeltaNormal;
+static uint32_t TestPmu_MtDeltaDivided;
+
+/* Global state for TC_MT08 - Overflow generation test */
+static volatile uint32_t TestPmu_MtOverflowCleared;
+static volatile uint32_t TestPmu_MtOverflowCount;
+
+/* Global state for TC_MT09 - Global freeze test */
+static volatile uint32_t TestPmu_MtFrozenReadIndex;
+
+/* Global state for TC_MT10 - Multi-core isolation test */
+/* (Uses existing TestPmu_MtThreadResults) */
 
 #endif /* ENABLE_MT_TESTS */
 
@@ -213,6 +303,25 @@ static void TestPmu_mtSetCntrThreadB(void *arg);
 static void TestPmu_mtReprogramThreadA(void *arg);
 static void TestPmu_mtReprogramThreadB(void *arg);
 
+/* Thread functions for cycle counter gating test */
+static void TestPmu_mtCycleGateThreadA(void *arg);
+static void TestPmu_mtCycleGateThreadB(void *arg);
+
+/* Thread functions for divider toggle test */
+static void TestPmu_mtDividerThreadA(void *arg);
+static void TestPmu_mtDividerThreadB(void *arg);
+
+/* Thread functions for overflow test */
+static void TestPmu_mtOverflowThreadA(void *arg);
+static void TestPmu_mtOverflowThreadB(void *arg);
+
+/* Thread functions for global freeze test */
+static void TestPmu_mtFreezeThreadA(void *arg);
+static void TestPmu_mtFreezeThreadB(void *arg);
+
+/* Thread functions for multi-core isolation test */
+static void TestPmu_mtMultiCoreThreadA(void *arg);
+static void TestPmu_mtMultiCoreThreadB(void *arg);
 #endif /* ENABLE_MT_TESTS */
 
 /* ========================================================================== */
@@ -267,6 +376,11 @@ static void TestPmu_concurrentResetAllVsCycleOnlyCoordinated(void *args);
 static void TestPmu_concurrentEnableDisableAndReadDifferentCounters(void *args);
 static void TestPmu_concurrentSetCntrWriteReadAtomicity(void *args);
 static void TestPmu_concurrentReprogramEventWhileOtherThreadReads(void *args);
+static void TestPmu_concurrentCycleCounterGatingAndMeasurement(void *args);
+static void TestPmu_concurrentDividerToggleAndRateCheck(void *args);
+static void TestPmu_concurrentOverflowGenerationAndStatusClear(void *args);
+static void TestPmu_concurrentGlobalFreezeUnfreezeAcrossThreads(void *args);
+static void TestPmu_threadsPinnedToDifferentCoresIsolatedCounting(void *args);
 #endif /* ENABLE_MT_TESTS */
 
 /* ========================================================================== */
@@ -292,7 +406,7 @@ static void TestPmu_runDeterministicWorkload(void)
     uint32_t i;
     for (i = 0U; i < TEST_PMU_WORKLOAD_ITER_COUNT; i+=1)
     {
-        sum += (i * 3U) + 7U;
+        sum += (i * TEST_PMU_WORKLOAD_MULTIPLY) + TEST_PMU_WORKLOAD_ADDEND;
     }
     (void)sum;
 }
@@ -365,7 +479,7 @@ static void TestPmu_coreDiscoveryAndInit(void *args)
     int32_t initStatus;
     /* Step 1: Discover number of event counters */
     TestPmu_NumCounters = PmuP_GetNumCntrs();
-    TEST_ASSERT_TRUE(TestPmu_NumCounters > 0U && TestPmu_NumCounters <= 3U);
+    TEST_ASSERT_TRUE(TestPmu_NumCounters > 0U && TestPmu_NumCounters <= TEST_PMU_MIN_COUNTERS_TRIPLE);
 
     /* Step 2: Build PMU_Config with valid events and initialize */
     for (i = 0U; i < TestPmu_NumCounters; i+=1)
@@ -492,7 +606,7 @@ static void TestPmu_resetEventCountersOnly(void *args)
     PmuP_ResetCounters();
 
     /* Small delay to allow reset to complete */
-    delayCount = 100U;
+    delayCount = TEST_PMU_RESET_SPIN_COUNT;
     while (delayCount > 0U)
     {
         delayCount-=1;
@@ -562,7 +676,7 @@ static void TestPmu_resetCycleCounterOnly(void *args)
     PmuP_ResetCycleCnt();
 
     /* Small delay to allow reset to complete */
-    delayCount = 100U;
+    delayCount = TEST_PMU_RESET_SPIN_COUNT;
     while (delayCount > 0U)
     {
         delayCount-=1;
@@ -608,7 +722,7 @@ static void TestPmu_initEnablesSelectedEventCounters(void *args)
     uint32_t i, counter0Before, counter0After;
     /* Assign a valid event to counter 0 */
     TestPmu_NumCounters = PmuP_GetNumCntrs();
-    TEST_ASSERT_TRUE(TestPmu_NumCounters > 0U && TestPmu_NumCounters <= 3U);
+    TEST_ASSERT_TRUE(TestPmu_NumCounters > 0U && TestPmu_NumCounters <= TEST_PMU_MIN_COUNTERS_TRIPLE);
 
     for (i = 0U; i < TestPmu_NumCounters; i+=1)
     {
@@ -647,7 +761,7 @@ static void TestPmu_profileStartEndReturnCodes(void *args)
     int32_t initStatus, startStatus, endStatus;
 
     numCounters = PmuP_GetNumCntrs();
-    TEST_ASSERT_TRUE(numCounters > 0U && numCounters <= 3U);
+    TEST_ASSERT_TRUE(numCounters > 0U && numCounters <= TEST_PMU_MIN_COUNTERS_TRIPLE);
 
     for (i = 0U; i < numCounters; i+=1)
     {
@@ -690,7 +804,7 @@ static void TestPmu_reinitializeWithNewEventSelection(void *args)
     int32_t initStatusA, initStatusB;
 
     numCounters = PmuP_GetNumCntrs();
-    TEST_ASSERT_TRUE(numCounters > 0U && numCounters <= 3U);
+    TEST_ASSERT_TRUE(numCounters > 0U && numCounters <= TEST_PMU_MIN_COUNTERS_TRIPLE);
 
     for (i = 0U; i < numCounters; i+=1)
     {
@@ -748,7 +862,7 @@ static void TestPmu_perCounterEnableDisable(void *args)
     uint32_t c0After, c1AfterDisabled, c1AfterEnabled;
 
     numCounters = PmuP_GetNumCntrs();
-    TEST_ASSERT_TRUE(numCounters >= 2U);
+    TEST_ASSERT_TRUE(numCounters >= TEST_PMU_MIN_COUNTERS_DUAL);
 
     for (i = 0U; i < numCounters; i+=1)
     {
@@ -1033,7 +1147,7 @@ static void TestPmu_overflowIsrLogicDetectAndClear(void *args)
     int32_t initStatus;
 
     numCounters = PmuP_GetNumCntrs();
-    TEST_ASSERT_TRUE(numCounters >= 2U);
+    TEST_ASSERT_TRUE(numCounters >= TEST_PMU_MIN_COUNTERS_DUAL);
 
     for (i = 0U; i < numCounters; i+=1)
     {
@@ -1211,7 +1325,7 @@ static void TestPmu_perCounterEnableDisableHaltsOnlyThatCounter(void *args)
     int32_t initStatus;
 
     numCounters = PmuP_GetNumCntrs();
-    TEST_ASSERT_TRUE(numCounters >= 2U);
+    TEST_ASSERT_TRUE(numCounters >= TEST_PMU_MIN_COUNTERS_DUAL);
 
     for (i = 0U; i < numCounters; i+=1)
     {
@@ -1357,9 +1471,9 @@ static void TestPmu_counterOverflowFlagAndWrap(void *args)
     while ((pollBudget > 0U) && ((statusMask & (1U << TEST_PMU_COUNTER_IDX_0)) == 0U))
     {
         sum = 0U;
-        for (i = 0U; i < 100U; i+=1)
+        for (i = 0U; i < TEST_PMU_MINI_WORKLOAD_ITER_COUNT; i+=1)
         {
-            sum += (i * 3U) + 7U;
+            sum += (i * TEST_PMU_WORKLOAD_MULTIPLY) + TEST_PMU_WORKLOAD_ADDEND;
         }
         (void)sum;
 
@@ -1386,7 +1500,7 @@ static void TestPmu_counterOverflowFlagAndWrap(void *args)
         for (retry = 0U; retry < TEST_PMU_POLL_BUDGET; retry+=1)
         {
             sum = 0U;
-            for (i = 0U; i < 100U; i+=1)
+            for (i = 0U; i < TEST_PMU_MINI_WORKLOAD_ITER_COUNT; i+=1)
             {
                 sum += i;
             }
@@ -1449,7 +1563,7 @@ static void TestPmu_globalFreezePreservesAccumulatedValuesAcrossMultipleCycles(v
     /* Phase 1: Accumulate to known value */
     TestPmu_runDeterministicWorkload();
     c0Phase1 = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
-    TEST_ASSERT_TRUE(c0Phase1 > 1000U);
+    TEST_ASSERT_TRUE(c0Phase1 > TEST_PMU_MIN_VALID_DELTA);
 
     /* Freeze and verify unchanged */
     PmuP_EnableAllCounters(0U);
@@ -1508,7 +1622,7 @@ static void TestPmu_perCounterReprogramDoesNotAffectOthers(void *args)
     int32_t initStatus;
 
     numCounters = PmuP_GetNumCntrs();
-    TEST_ASSERT_TRUE(numCounters >= 2U);
+    TEST_ASSERT_TRUE(numCounters >= TEST_PMU_MIN_COUNTERS_DUAL);
 
     for (i = 0U; i < numCounters; i+=1)
     {
@@ -1688,7 +1802,7 @@ static void TestPmu_enableDisableDoesNotCorruptOtherCountersState(void *args)
     volatile uint32_t sum;
 
     numCounters = PmuP_GetNumCntrs();
-    TEST_ASSERT_TRUE(numCounters >= 2U);
+    TEST_ASSERT_TRUE(numCounters >= TEST_PMU_MIN_COUNTERS_DUAL);
 
     for (i = 0U; i < numCounters; i+=1)
     {
@@ -1779,7 +1893,7 @@ static void TestPmu_rapidBackToBackReadWriteIsRaceFree(void *args)
     ClockP_usleep(TEST_PMU_GATING_DELAY_US);
     for (k = 0U; k < TEST_PMU_RAPID_RW_ITER_COUNT; k+=1)
     {
-        val = (k * 7U) + 3U;
+        val = (k * TEST_PMU_RW_VALUE_MULTIPLIER) + TEST_PMU_RW_VALUE_ADDEND;
         PmuP_SetCntr(TEST_PMU_COUNTER_IDX_0, val);
         rd = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
         TEST_ASSERT_EQUAL_UINT32(val, rd);
@@ -1878,7 +1992,7 @@ static void TestPmu_overflowStatusPersistsUntilCleared(void *args)
     TestPmu_runDeterministicWorkload();
 
     /* Read multiple times; bit should persist */
-    for (i = 0U; i < 4U; i+=1)
+    for (i = 0U; i < TEST_PMU_OVERFLOW_STATUS_VERIFY_ITER; i+=1)
     {
         statusMask = PmuP_getOverflowStatus();
         TEST_ASSERT_TRUE((statusMask & (1U << TEST_PMU_COUNTER_IDX_0)) != 0U);
@@ -1909,7 +2023,7 @@ static void TestPmu_clearOverflowStatusMultipleBitsMask(void *args)
     int32_t initStatus;
 
     numCounters = PmuP_GetNumCntrs();
-    TEST_ASSERT_TRUE(numCounters >= 2U);
+    TEST_ASSERT_TRUE(numCounters >= TEST_PMU_MIN_COUNTERS_DUAL);
 
     for (i = 0U; i < numCounters; i+=1)
     {
@@ -2044,9 +2158,6 @@ static void TestPmu_profileEndNameMismatchReturnsFailure(void *args)
  * Disables an event counter using PmuP_enableCounter() and verifies counting stops
  * during workload. Re-enables counter and confirms counting resumes normally.
  *
- * Note: Invalid event IDs (0xFF) exhibit undefined behavior on ARM Cortex-R5 PMU
- * and may continue counting. This test focuses on counter enable/disable functionality.
- *
  * \param args Unused.
  * \return None.
  * \expectedOutput Disabled counter delta < 100; enabled counter delta > 1000.
@@ -2055,8 +2166,8 @@ static void TestPmu_disabledCounterStopsCountingValidEventResumes(void *args)
 {
     (void)args;
     uint32_t numCounters, i;
-    uint32_t c0Before, c0AfterInvalid, c0AfterValid, c0AfterDisabled;
-    uint32_t invalidDelta, validDelta, disabledDelta;
+    uint32_t c0Before, c0AfterValid, c0AfterDisabled;
+    uint32_t validDelta, disabledDelta;
     int32_t initStatus;
 
     numCounters = PmuP_GetNumCntrs();
@@ -2065,7 +2176,7 @@ static void TestPmu_disabledCounterStopsCountingValidEventResumes(void *args)
     for (i = 0U; i < numCounters; i+=1)
     {
         TestPmu_EventCfgBuf[i].name = "Evt";
-        TestPmu_EventCfgBuf[i].type = 0xFFU;
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
     }
 
     TestPmu_ConfigObj.bCycleCounter    = 1U;
@@ -2074,28 +2185,12 @@ static void TestPmu_disabledCounterStopsCountingValidEventResumes(void *args)
     initStatus = PMU_init(&TestPmu_ConfigObj);
     TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
 
-    /* Program invalid/undefined event on counter 0 (use a reserved value) */
-    PmuP_EnableAllCounters(0U);
-    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
-    PmuP_ConfigCounter(TEST_PMU_COUNTER_IDX_0, 0xFFU);
-    ClockP_usleep(TEST_PMU_SHORT_DELAY_US);
-    PmuP_SetCntr(TEST_PMU_COUNTER_IDX_0, 1000U);
-    PmuP_EnableAllCounters(1U);
-    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
-
-    /* Measure with invalid event (should count very little or not at all) */
-    c0Before = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
-    TestPmu_runDeterministicWorkload();
-    c0AfterInvalid = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
-    invalidDelta = c0AfterInvalid - c0Before;
-    TEST_ASSERT_TRUE(invalidDelta > 0U);  /* 0xFF increments (undefined HW behavior) */
-
-    /* Restore a valid event and verify increments resume */
+    /* Disable counter 0 and verify counting stops during workload */
     PmuP_EnableAllCounters(0U);
     ClockP_usleep(TEST_PMU_GATING_DELAY_US);
     PmuP_ConfigCounter(TEST_PMU_COUNTER_IDX_0, PmuP_EVENT_TYPE_I_X);
     ClockP_usleep(TEST_PMU_SHORT_DELAY_US);
-    PmuP_SetCntr(TEST_PMU_COUNTER_IDX_0, 2000U);
+    PmuP_SetCntr(TEST_PMU_COUNTER_IDX_0, TEST_PMU_DISABLED_CNTR_PRESET_MID);
     PmuP_enableCounter(TEST_PMU_COUNTER_IDX_0, 0U);
     ClockP_usleep(TEST_PMU_GATING_DELAY_US);
     PmuP_EnableAllCounters(1U); /* Unfreeze globally (but counter 0 still disabled) */
@@ -2113,7 +2208,7 @@ static void TestPmu_disabledCounterStopsCountingValidEventResumes(void *args)
 
     PmuP_EnableAllCounters(0U);
     ClockP_usleep(TEST_PMU_GATING_DELAY_US);
-    PmuP_SetCntr(TEST_PMU_COUNTER_IDX_0, 3000U);
+    PmuP_SetCntr(TEST_PMU_COUNTER_IDX_0, TEST_PMU_DISABLED_CNTR_PRESET_HIGH);
     PmuP_enableCounter(TEST_PMU_COUNTER_IDX_0, 1U); /* Re-enable counter 0 */
     ClockP_usleep(TEST_PMU_SHORT_DELAY_US);
     PmuP_EnableAllCounters(1U);
@@ -2128,7 +2223,7 @@ static void TestPmu_disabledCounterStopsCountingValidEventResumes(void *args)
     TEST_ASSERT_TRUE(validDelta > TEST_PMU_MIN_VALID_DELTA);
 
     /* Verify valid delta >> disabled delta */
-    TEST_ASSERT_TRUE(validDelta > (disabledDelta * 10U));
+    TEST_ASSERT_TRUE(validDelta > (disabledDelta * TEST_PMU_RESUME_VS_DISABLED_FACTOR));
 }
 
 /**
@@ -2416,12 +2511,12 @@ static void TestPmu_cycleCounterNsToTicks(void *args)
     ticks = CycleCounterP_nsToTicks(TEST_PMU_NS_PER_US);
     /* At 800 MHz, 1000 ns = 800 ticks */
     TEST_ASSERT_TRUE(ticks > 0U);
-    TEST_ASSERT_TRUE(ticks == 800ULL);
+    TEST_ASSERT_TRUE(ticks == TEST_PMU_TICKS_PER_US_AT_800MHZ);
 
     /* Test conversion for 1 millisecond (1000000 nanoseconds) */
     ticks = CycleCounterP_nsToTicks(TEST_PMU_NS_PER_MS);
     /* At 800 MHz, 1000000 ns = 800000 ticks */
-    TEST_ASSERT_TRUE(ticks == 800000ULL);
+    TEST_ASSERT_TRUE(ticks == TEST_PMU_TICKS_PER_MS_AT_800MHZ);
 
     /* Test conversion for 1 second (1000000000 nanoseconds) */
     ticks = CycleCounterP_nsToTicks(TEST_PMU_NS_PER_SEC);
@@ -2433,8 +2528,8 @@ static void TestPmu_cycleCounterNsToTicks(void *args)
     TEST_ASSERT_EQUAL_UINT32(0U, (uint32_t)ticks);
 
     /* Test small value (100 nanoseconds) */
-    ticks = CycleCounterP_nsToTicks(100ULL);
-    TEST_ASSERT_TRUE(ticks == 80ULL);
+    ticks = CycleCounterP_nsToTicks(TEST_PMU_NS_100);
+    TEST_ASSERT_TRUE(ticks == TEST_PMU_TICKS_100NS_AT_800MHZ);
 }
 
 /**
@@ -2456,17 +2551,17 @@ static void TestPmu_cycleCounterNsToTicksMultipleFreq(void *args)
     /* Test with 400 MHz */
     CycleCounterP_init(TEST_PMU_CPU_FREQ_400MHZ);
     ticks = CycleCounterP_nsToTicks(TEST_PMU_NS_PER_US); /* 1 microsecond */
-    TEST_ASSERT_EQUAL_UINT32(400U, (uint32_t)ticks);
+    TEST_ASSERT_EQUAL_UINT32(TEST_PMU_TICKS_PER_US_AT_400MHZ, (uint32_t)ticks);
 
     /* Test with 1 GHz */
     CycleCounterP_init(TEST_PMU_CPU_FREQ_1GHZ);
     ticks = CycleCounterP_nsToTicks(TEST_PMU_NS_PER_US); /* 1 microsecond */
-    TEST_ASSERT_EQUAL_UINT32(1000U, (uint32_t)ticks);
+    TEST_ASSERT_EQUAL_UINT32(TEST_PMU_TICKS_PER_US_AT_1GHZ, (uint32_t)ticks);
 
     /* Test with 200 MHz */
     CycleCounterP_init(TEST_PMU_CPU_FREQ_200MHZ);
     ticks = CycleCounterP_nsToTicks(TEST_PMU_NS_PER_US); /* 1 microsecond */
-    TEST_ASSERT_EQUAL_UINT32(200U, (uint32_t)ticks);
+    TEST_ASSERT_EQUAL_UINT32(TEST_PMU_TICKS_PER_US_AT_200MHZ, (uint32_t)ticks);
 }
 
 /**
@@ -2752,22 +2847,29 @@ static void TestPmu_profilePrintEntryEmptyString(void *args)
 }
 
 /**
- * \brief PMU_profilePrint with many entries logged.
+ * \brief PMU_profilePrint with many entries logged, including beyond capacity.
  *
- * Test Category: Functional
+ * Test Category: Functional / Negative
  *
- * Profiles many regions (10 entries) and calls PMU_profilePrint().
- * Verifies all entries are printed without errors.
+ * Profiles TEST_PMU_LOG_CAPACITY regions - the PMU driver's internal log
+ * capacity (PMU_MAX_LOG_ENTRIES = 64 in source/drivers/pmu/pmu.c) - and
+ * calls PMU_profilePrint(), verifying all entries are printed without
+ * errors. Then logs TEST_PMU_LOG_OVERFLOW_COUNT additional profile
+ * points beyond that capacity, verifying they are rejected safely
+ * (SystemP_FAILURE) instead of being silently accepted, which would
+ * write past the end of the driver's internal log array.
  *
  * \param args Unused.
  * \return None.
- * \expectedOutput All entries printed without errors.
+ * \expectedOutput Entries up to TEST_PMU_LOG_CAPACITY are printed
+ * without errors; entries beyond that are rejected with
+ * SystemP_FAILURE rather than corrupting memory.
  */
 static void TestPmu_profilePrintMaxEntries(void *args)
 {
     (void)args;
     uint32_t numCounters, i;
-    int32_t initStatus;
+    int32_t initStatus, startStatus, endStatus;
     char nameBuf[32];
 
     numCounters = PmuP_GetNumCntrs();
@@ -2785,17 +2887,36 @@ static void TestPmu_profilePrintMaxEntries(void *args)
     initStatus = PMU_init(&TestPmu_ConfigObj);
     TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
 
-    /* Profile multiple entries (10 for reasonable test duration) */
-    for (i = 0U; i < TEST_PMU_TOGGLE_ITER; i+=1)
+    /* Fill the log up to its internal capacity - all of these must succeed */
+    for (i = 0U; i < TEST_PMU_LOG_CAPACITY; i+=1)
     {
         snprintf(nameBuf, sizeof(nameBuf), "Region%lu", (unsigned long)i);
-        PMU_profileStart(nameBuf);
+        startStatus = PMU_profileStart(nameBuf);
+        TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, startStatus);
+
         TestPmu_runDeterministicWorkload();
-        PMU_profileEnd(nameBuf);
+
+        endStatus = PMU_profileEnd(nameBuf);
+        TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, endStatus);
     }
 
     /* Print all entries - should complete without errors */
     PMU_profilePrint();
+
+    /* Log is now full. Additional profile points must be rejected safely
+     * rather than being written past the end of the internal log array. */
+    for (i = 0U; i < TEST_PMU_LOG_OVERFLOW_COUNT; i+=1)
+    {
+        snprintf(nameBuf, sizeof(nameBuf), "OverflowRegion%lu", (unsigned long)i);
+        startStatus = PMU_profileStart(nameBuf);
+
+        TestPmu_runDeterministicWorkload();
+
+        endStatus = PMU_profileEnd(nameBuf);
+
+        TEST_ASSERT_EQUAL_INT(SystemP_FAILURE, startStatus);
+        TEST_ASSERT_EQUAL_INT(SystemP_FAILURE, endStatus);
+    }
 }
 
 /* ========================================================================== */
@@ -2904,7 +3025,7 @@ static void TestPmu_concurrentInitSingleCoreSerializesUsage(void *args)
 
     /* Spawn threads */
     TaskP_Params_init(&taskParams);
-    taskParams.priority   = 3U;
+    taskParams.priority   = TEST_PMU_MT_TASK_PRIORITY;
     taskParams.stack      = TestPmu_MtTaskStack[TEST_PMU_MT_THREAD_A_IDX];
     taskParams.stackSize  = TEST_PMU_MT_TASK_STACK_SIZE;
     taskParams.name       = "PmuMtInitA";
@@ -2913,7 +3034,7 @@ static void TestPmu_concurrentInitSingleCoreSerializesUsage(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
     TaskP_Params_init(&taskParams);
-    taskParams.priority   = 3U;
+    taskParams.priority   = TEST_PMU_MT_TASK_PRIORITY;
     taskParams.stack      = TestPmu_MtTaskStack[TEST_PMU_MT_THREAD_B_IDX];
     taskParams.stackSize  = TEST_PMU_MT_TASK_STACK_SIZE;
     taskParams.name       = "PmuMtInitB";
@@ -2925,7 +3046,7 @@ static void TestPmu_concurrentInitSingleCoreSerializesUsage(void *args)
     timeout = 0U;
     for (i = 0U; i < TEST_PMU_MT_TASK_COUNT; i+=1)
     {
-        status = SemaphoreP_pend(&TestPmu_MtCompletionSem, 5000U);
+        status = SemaphoreP_pend(&TestPmu_MtCompletionSem, TEST_PMU_SEM_TIMEOUT_US);
         if (status != SystemP_SUCCESS)
         {
             timeout = 1U;
@@ -2939,6 +3060,7 @@ static void TestPmu_concurrentInitSingleCoreSerializesUsage(void *args)
     TEST_ASSERT_EQUAL_UINT32(1U, TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_B_IDX]);
 
     /* Cleanup: destruct tasks FIRST, then semaphores */
+    ClockP_usleep(TEST_PMU_MT_TEARDOWN_DELAY_US);
     TaskP_destruct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_A_IDX]);
     TaskP_destruct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_B_IDX]);
 
@@ -3046,7 +3168,7 @@ static void TestPmu_concurrentResetAllVsCycleOnlyCoordinated(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
     TaskP_Params_init(&taskParams);
-    taskParams.priority   = 3U;
+    taskParams.priority   = TEST_PMU_MT_TASK_PRIORITY;
     taskParams.stack      = TestPmu_MtTaskStack[TEST_PMU_MT_THREAD_A_IDX];
     taskParams.stackSize  = TEST_PMU_MT_TASK_STACK_SIZE;
     taskParams.name       = "PmuMtResetA";
@@ -3055,7 +3177,7 @@ static void TestPmu_concurrentResetAllVsCycleOnlyCoordinated(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
     TaskP_Params_init(&taskParams);
-    taskParams.priority   = 3U;
+    taskParams.priority   = TEST_PMU_MT_TASK_PRIORITY;
     taskParams.stack      = TestPmu_MtTaskStack[TEST_PMU_MT_THREAD_B_IDX];
     taskParams.stackSize  = TEST_PMU_MT_TASK_STACK_SIZE;
     taskParams.name       = "PmuMtResetB";
@@ -3146,7 +3268,7 @@ static void TestPmu_concurrentEnableDisableAndReadDifferentCounters(void *args)
     uint32_t i;
 
     numCounters = PmuP_GetNumCntrs();
-    TEST_ASSERT_TRUE(numCounters >= 2U);
+    TEST_ASSERT_TRUE(numCounters >= TEST_PMU_MIN_COUNTERS_DUAL);
 
     for (i = 0U; i < numCounters; i+=1)
     {
@@ -3163,7 +3285,7 @@ static void TestPmu_concurrentEnableDisableAndReadDifferentCounters(void *args)
     SemaphoreP_constructCounting(&TestPmu_MtCompletionSem, 0U, TEST_PMU_MT_TASK_COUNT);
 
     TaskP_Params_init(&taskParams);
-    taskParams.priority   = 3U;
+    taskParams.priority   = TEST_PMU_MT_TASK_PRIORITY;
     taskParams.stack      = TestPmu_MtTaskStack[TEST_PMU_MT_THREAD_A_IDX];
     taskParams.stackSize  = TEST_PMU_MT_TASK_STACK_SIZE;
     taskParams.name       = "PmuMtEnDisA";
@@ -3172,7 +3294,7 @@ static void TestPmu_concurrentEnableDisableAndReadDifferentCounters(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
     TaskP_Params_init(&taskParams);
-    taskParams.priority   = 3U;
+    taskParams.priority   = TEST_PMU_MT_TASK_PRIORITY;
     taskParams.stack      = TestPmu_MtTaskStack[TEST_PMU_MT_THREAD_B_IDX];
     taskParams.stackSize  = TEST_PMU_MT_TASK_STACK_SIZE;
     taskParams.name       = "PmuMtEnDisB";
@@ -3206,7 +3328,7 @@ static void TestPmu_mtSetCntrThreadA(void *arg)
         PmuP_enableCounter(TEST_PMU_COUNTER_IDX_2, 0U);
         ClockP_usleep(TEST_PMU_SHORT_DELAY_US); /* Let gating take effect */
 
-        PmuP_SetCntr(TEST_PMU_COUNTER_IDX_2, k * 10U);
+        PmuP_SetCntr(TEST_PMU_COUNTER_IDX_2, k * TEST_PMU_MT_SETCNTR_STEP);
 
         TestPmu_barrierWait(); /* Sync: A wrote, now B can read */
 
@@ -3235,8 +3357,8 @@ static void TestPmu_mtSetCntrThreadB(void *arg)
 
         readVal = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_2);
 
-        /* Counter is frozen, so readVal should exactly equal k * 10U */
-        if (readVal != (k * 10U))
+        /* Counter is frozen, so readVal should exactly equal k * TEST_PMU_MT_SETCNTR_STEP */
+        if (readVal != (k * TEST_PMU_MT_SETCNTR_STEP))
         {
             consistent = 0U;
             break;
@@ -3269,7 +3391,7 @@ static void TestPmu_concurrentSetCntrWriteReadAtomicity(void *args)
     uint32_t i;
 
     numCounters = PmuP_GetNumCntrs();
-    TEST_ASSERT_TRUE(numCounters >= 3U);
+    TEST_ASSERT_TRUE(numCounters >= TEST_PMU_MIN_COUNTERS_TRIPLE);
 
     for (i = 0U; i < numCounters; i+=1)
     {
@@ -3293,7 +3415,7 @@ static void TestPmu_concurrentSetCntrWriteReadAtomicity(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
     TaskP_Params_init(&taskParams);
-    taskParams.priority   = 3U;
+    taskParams.priority   = TEST_PMU_MT_TASK_PRIORITY;
     taskParams.stack      = TestPmu_MtTaskStack[TEST_PMU_MT_THREAD_A_IDX];
     taskParams.stackSize  = TEST_PMU_MT_TASK_STACK_SIZE;
     taskParams.name       = "PmuMtSetA";
@@ -3302,7 +3424,7 @@ static void TestPmu_concurrentSetCntrWriteReadAtomicity(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
     TaskP_Params_init(&taskParams);
-    taskParams.priority   = 3U;
+    taskParams.priority   = TEST_PMU_MT_TASK_PRIORITY;
     taskParams.stack      = TestPmu_MtTaskStack[TEST_PMU_MT_THREAD_B_IDX];
     taskParams.stackSize  = TEST_PMU_MT_TASK_STACK_SIZE;
     taskParams.name       = "PmuMtSetB";
@@ -3392,7 +3514,7 @@ static void TestPmu_mtReprogramThreadB(void *arg)
     for (step = 0U; step < TEST_PMU_MT_REPROGRAM_STEPS; step+=1)
     {
         /* Wait for A's signal for this step */
-        status = SemaphoreP_pend(&TestPmu_MtReprogramStepSem, 5000U);
+        status = SemaphoreP_pend(&TestPmu_MtReprogramStepSem, TEST_PMU_SEM_TIMEOUT_US);
         if (status != SystemP_SUCCESS)
         {
             break;
@@ -3445,7 +3567,7 @@ static void TestPmu_concurrentReprogramEventWhileOtherThreadReads(void *args)
     TaskP_Params taskParams;
 
     numCounters = PmuP_GetNumCntrs();
-    TEST_ASSERT_TRUE(numCounters >= 2U);
+    TEST_ASSERT_TRUE(numCounters >= TEST_PMU_MIN_COUNTERS_DUAL);
 
     /* Initialize with instruction execution events on both counters */
     for (i = 0U; i < numCounters; i+=1)
@@ -3479,7 +3601,7 @@ static void TestPmu_concurrentReprogramEventWhileOtherThreadReads(void *args)
 
     /* Spawn Thread A (reprogrammer) */
     TaskP_Params_init(&taskParams);
-    taskParams.priority   = 3U;
+    taskParams.priority   = TEST_PMU_MT_TASK_PRIORITY;
     taskParams.stack      = TestPmu_MtTaskStack[TEST_PMU_MT_THREAD_A_IDX];
     taskParams.stackSize  = TEST_PMU_MT_TASK_STACK_SIZE;
     taskParams.name       = "PmuMtReprogramA";
@@ -3489,7 +3611,7 @@ static void TestPmu_concurrentReprogramEventWhileOtherThreadReads(void *args)
 
     /* Spawn Thread B (reader) */
     TaskP_Params_init(&taskParams);
-    taskParams.priority   = 3U;
+    taskParams.priority   = TEST_PMU_MT_TASK_PRIORITY;
     taskParams.stack      = TestPmu_MtTaskStack[TEST_PMU_MT_THREAD_B_IDX];
     taskParams.stackSize  = TEST_PMU_MT_TASK_STACK_SIZE;
     taskParams.name       = "PmuMtReprogramB";
@@ -3509,11 +3631,808 @@ static void TestPmu_concurrentReprogramEventWhileOtherThreadReads(void *args)
     TEST_ASSERT_TRUE(TestPmu_MtCounter0ReadCount > 0U);
 
     /* Cleanup */
+    ClockP_usleep(TEST_PMU_MT_TEARDOWN_DELAY_US);
     TaskP_destruct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_A_IDX]);
     TaskP_destruct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_B_IDX]);
     SemaphoreP_destruct(&TestPmu_MtReprogramStepSem);
     SemaphoreP_destruct(&TestPmu_MtBarrierArrive);
     SemaphoreP_destruct(&TestPmu_MtBarrierLeave);
+    SemaphoreP_destruct(&TestPmu_MtCompletionSem);
+}
+
+/* Thread: Thread A for cycle counter gating test - Gates the cycle counter. */
+static void TestPmu_mtCycleGateThreadA(void *arg)
+{
+    (void)arg;
+
+    TestPmu_barrierWait(); /* Phase 1: Start together */
+
+    /* Disable cycle counter */
+    PmuP_enableCounter(PmuP_PMU_CYCLE_COUNTER_NUM, 0U);
+    ClockP_usleep(200); /* Ensure gating takes effect */
+
+    TestPmu_MtCycleGated = 1U;
+
+    TestPmu_barrierWait(); /* Phase 2: Gating complete, B can measure */
+
+    /* Wait for B to finish measurement */
+    TestPmu_barrierWait(); /* Phase 3: B measured while gated */
+
+    /* Re-enable cycle counter */
+    PmuP_enableCounter(PmuP_PMU_CYCLE_COUNTER_NUM, 1U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+
+    TestPmu_barrierWait(); /* Phase 4: Re-enabled, B can verify resume */
+
+    TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_A_IDX] = 1U;
+
+    SemaphoreP_post(&TestPmu_MtCompletionSem);
+    TaskP_exit();
+}
+
+/* Thread: Thread B for cycle counter gating test - Measures cycle counter while gated and after. */
+static void TestPmu_mtCycleGateThreadB(void *arg)
+{
+    (void)arg;
+    uint32_t cycleBeforeGated;
+    uint32_t cycleAfterGated;
+    uint32_t cycleBeforeResume;
+    uint32_t cycleAfterResume;
+    uint32_t gatedDelta;
+    uint32_t resumeDelta;
+
+    TestPmu_barrierWait(); /* Phase 1: Start together */
+
+    /* Wait for A to gate */
+    TestPmu_barrierWait(); /* Phase 2: Gating complete */
+
+    /* Measure cycle counter while gated */
+    cycleBeforeGated = PmuP_ReadCounter(PmuP_PMU_CYCLE_COUNTER_NUM);
+    TestPmu_runDeterministicWorkload();
+    cycleAfterGated = PmuP_ReadCounter(PmuP_PMU_CYCLE_COUNTER_NUM);
+
+    gatedDelta = cycleAfterGated - cycleBeforeGated;
+    TestPmu_MtCycleDeltaWhileGated = gatedDelta;
+
+    TestPmu_barrierWait(); /* Phase 3: Measurement while gated done */
+
+    /* Wait for A to re-enable */
+    TestPmu_barrierWait(); /* Phase 4: Re-enabled */
+
+    /* Measure after re-enable */
+    cycleBeforeResume = PmuP_ReadCounter(PmuP_PMU_CYCLE_COUNTER_NUM);
+    TestPmu_runDeterministicWorkload();
+    cycleAfterResume = PmuP_ReadCounter(PmuP_PMU_CYCLE_COUNTER_NUM);
+
+    resumeDelta = cycleAfterResume - cycleBeforeResume;
+
+    /* Verify: gated delta should be zero or minimal, resume delta should be significant */
+    TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_B_IDX] = (gatedDelta < TEST_PMU_GATED_CYCLE_DELTA_MAX && resumeDelta > TEST_PMU_MIN_VALID_DELTA) ? 1U : 0U;
+
+    SemaphoreP_post(&TestPmu_MtCompletionSem);
+    TaskP_exit();
+}
+
+/**
+ * \brief Concurrent cycle counter gating and measurement.
+ *
+ * Test Category: Multithreaded Functional
+ *
+ * One thread gates the cycle counter while another measures workload cycles.
+ * Verifies cycle counter stops incrementing when gated and resumes after re-enable.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput No increment while gated; increments resume after re-enable.
+ */
+static void TestPmu_concurrentCycleCounterGatingAndMeasurement(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    int32_t initStatus, status;
+    TaskP_Params taskParams;
+
+    numCounters = PmuP_GetNumCntrs();
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Initialize globals */
+    TestPmu_MtCycleGated = 0U;
+    TestPmu_MtCycleDeltaWhileGated = 0U;
+    TestPmu_MtBarrierCount = 0U;
+
+    /* Construct semaphores */
+    status = SemaphoreP_constructCounting(&TestPmu_MtBarrierArrive, 0U, TEST_PMU_MT_TASK_COUNT);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = SemaphoreP_constructCounting(&TestPmu_MtBarrierLeave, 0U, TEST_PMU_MT_TASK_COUNT);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = SemaphoreP_constructCounting(&TestPmu_MtCompletionSem, 0U, TEST_PMU_MT_TASK_COUNT);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Spawn threads */
+    TaskP_Params_init(&taskParams);
+    taskParams.priority   = TEST_PMU_MT_TASK_PRIORITY;
+    taskParams.stack      = TestPmu_MtTaskStack[TEST_PMU_MT_THREAD_A_IDX];
+    taskParams.stackSize  = TEST_PMU_MT_TASK_STACK_SIZE;
+    taskParams.name       = "PmuMtCycleGateA";
+    taskParams.taskMain   = TestPmu_mtCycleGateThreadA;
+    status = TaskP_construct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_A_IDX], &taskParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.priority   = TEST_PMU_MT_TASK_PRIORITY;
+    taskParams.stack      = TestPmu_MtTaskStack[TEST_PMU_MT_THREAD_B_IDX];
+    taskParams.stackSize  = TEST_PMU_MT_TASK_STACK_SIZE;
+    taskParams.name       = "PmuMtCycleGateB";
+    taskParams.taskMain   = TestPmu_mtCycleGateThreadB;
+    status = TaskP_construct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_B_IDX], &taskParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Wait for completion */
+    for (i = 0U; i < TEST_PMU_MT_TASK_COUNT; i+=1)
+    {
+        SemaphoreP_pend(&TestPmu_MtCompletionSem, SystemP_WAIT_FOREVER);
+    }
+
+    /* Verify results */
+    TEST_ASSERT_EQUAL_UINT32(1U, TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_A_IDX]);
+    TEST_ASSERT_EQUAL_UINT32(1U, TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_B_IDX]);
+    TEST_ASSERT_TRUE(TestPmu_MtCycleDeltaWhileGated < TEST_PMU_GATED_CYCLE_DELTA_MAX); /* Minimal while gated */
+
+    /* Cleanup */
+    ClockP_usleep(TEST_PMU_MT_TEARDOWN_DELAY_US);
+    TaskP_destruct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_A_IDX]);
+    TaskP_destruct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_B_IDX]);
+    SemaphoreP_destruct(&TestPmu_MtBarrierArrive);
+    SemaphoreP_destruct(&TestPmu_MtBarrierLeave);
+    SemaphoreP_destruct(&TestPmu_MtCompletionSem);
+}
+
+/* Thread: Thread A for divider toggle test - Toggles divide-by-64 mode. */
+static void TestPmu_mtDividerThreadA(void *arg)
+{
+    (void)arg;
+
+    TestPmu_barrierWait(); /* Phase 1: B measures normal rate */
+
+    /* Enable divide-by-64 */
+    PmuP_Config(/*cycleCntDiv=*/1U, /*exportEvents=*/0U, /*userEnable=*/1U);
+    PmuP_ResetCycleCnt();
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+
+    TestPmu_MtDividerToggled = 1U;
+
+    TestPmu_barrierWait(); /* Phase 2: Divider enabled, B can measure */
+
+    /* Wait for B to finish measurement */
+    TestPmu_barrierWait(); /* Phase 3: B measured with divider */
+
+    /* Restore normal rate */
+    PmuP_Config(/*cycleCntDiv=*/0U, /*exportEvents=*/0U, /*userEnable=*/1U);
+
+    TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_A_IDX] = 1U;
+
+    SemaphoreP_post(&TestPmu_MtCompletionSem);
+    TaskP_exit();
+}
+
+/* Thread: Thread B for divider toggle test - Measures cycle deltas with and without divider. */
+static void TestPmu_mtDividerThreadB(void *arg)
+{
+    (void)arg;
+    uint32_t startTicks;
+    uint32_t endTicks;
+    uint32_t deltaNormal;
+    uint32_t deltaDivided;
+    uint32_t ratio;
+    uint32_t minRatio;
+    uint32_t maxRatio;
+
+    /* Measure normal rate */
+    PmuP_ResetCycleCnt();
+    startTicks = PmuP_ReadCounter(PmuP_PMU_CYCLE_COUNTER_NUM);
+    TestPmu_runDeterministicWorkload();
+    endTicks = PmuP_ReadCounter(PmuP_PMU_CYCLE_COUNTER_NUM);
+    deltaNormal = endTicks - startTicks;
+
+    TestPmu_MtDeltaNormal = deltaNormal;
+
+    TestPmu_barrierWait(); /* Phase 1: Normal measurement done */
+
+    /* Wait for A to enable divider */
+    TestPmu_barrierWait(); /* Phase 2: Divider enabled */
+
+    /* Measure with divider */
+    startTicks = PmuP_ReadCounter(PmuP_PMU_CYCLE_COUNTER_NUM);
+    TestPmu_runDeterministicWorkload();
+    endTicks = PmuP_ReadCounter(PmuP_PMU_CYCLE_COUNTER_NUM);
+    deltaDivided = endTicks - startTicks;
+
+    TestPmu_MtDeltaDivided = deltaDivided;
+
+    TestPmu_barrierWait(); /* Phase 3: Divided measurement done */
+
+    /* Verify ratio approximately 64 with tolerance */
+    ratio = (deltaNormal / (deltaDivided == 0U ? 1U : deltaDivided));
+    minRatio = (TEST_PMU_DIVIDER_RATIO - (TEST_PMU_DIVIDER_RATIO * TestPmu_DivideTolerancePct) / 100U);
+    maxRatio = (TEST_PMU_DIVIDER_RATIO + (TEST_PMU_DIVIDER_RATIO * TestPmu_DivideTolerancePct) / 100U);
+
+    TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_B_IDX] = (ratio >= minRatio && ratio <= maxRatio) ? 1U : 0U;
+
+    SemaphoreP_post(&TestPmu_MtCompletionSem);
+    TaskP_exit();
+}
+
+/**
+ * \brief Concurrent divider toggle and rate check.
+ *
+ * Test Category: Multithreaded Functional
+ *
+ * Toggles divide-by-64 mode concurrently with measurement and verifies the cycle
+ * counter rate changes by approximately 64x.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Ratio of normal to divided delta approximately 64 within tolerance.
+ */
+static void TestPmu_concurrentDividerToggleAndRateCheck(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    int32_t initStatus, status;
+    TaskP_Params taskParams;
+
+    numCounters = PmuP_GetNumCntrs();
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Initialize globals */
+    TestPmu_MtDividerToggled = 0U;
+    TestPmu_MtDeltaNormal = 0U;
+    TestPmu_MtDeltaDivided = 0U;
+    TestPmu_MtBarrierCount = 0U;
+
+    /* Construct semaphores */
+    status = SemaphoreP_constructCounting(&TestPmu_MtBarrierArrive, 0U, TEST_PMU_MT_TASK_COUNT);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = SemaphoreP_constructCounting(&TestPmu_MtBarrierLeave, 0U, TEST_PMU_MT_TASK_COUNT);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = SemaphoreP_constructCounting(&TestPmu_MtCompletionSem, 0U, TEST_PMU_MT_TASK_COUNT);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Spawn threads */
+    TaskP_Params_init(&taskParams);
+    taskParams.priority   = TEST_PMU_MT_TASK_PRIORITY;
+    taskParams.stack      = TestPmu_MtTaskStack[TEST_PMU_MT_THREAD_A_IDX];
+    taskParams.stackSize  = TEST_PMU_MT_TASK_STACK_SIZE;
+    taskParams.name       = "PmuMtDividerA";
+    taskParams.taskMain   = TestPmu_mtDividerThreadA;
+    status = TaskP_construct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_A_IDX], &taskParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.priority   = TEST_PMU_MT_TASK_PRIORITY;
+    taskParams.stack      = TestPmu_MtTaskStack[TEST_PMU_MT_THREAD_B_IDX];
+    taskParams.stackSize  = TEST_PMU_MT_TASK_STACK_SIZE;
+    taskParams.name       = "PmuMtDividerB";
+    taskParams.taskMain   = TestPmu_mtDividerThreadB;
+    status = TaskP_construct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_B_IDX], &taskParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Wait for completion */
+    for (i = 0U; i < TEST_PMU_MT_TASK_COUNT; i+=1)
+    {
+        SemaphoreP_pend(&TestPmu_MtCompletionSem, SystemP_WAIT_FOREVER);
+    }
+
+    /* Verify results */
+    TEST_ASSERT_EQUAL_UINT32(1U, TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_A_IDX]);
+    TEST_ASSERT_EQUAL_UINT32(1U, TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_B_IDX]);
+    TEST_ASSERT_TRUE(TestPmu_MtDeltaNormal > 0U);
+    TEST_ASSERT_TRUE(TestPmu_MtDeltaDivided > 0U);
+
+    /* Cleanup */
+    ClockP_usleep(TEST_PMU_MT_TEARDOWN_DELAY_US);
+    TaskP_destruct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_A_IDX]);
+    TaskP_destruct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_B_IDX]);
+    SemaphoreP_destruct(&TestPmu_MtBarrierArrive);
+    SemaphoreP_destruct(&TestPmu_MtBarrierLeave);
+    SemaphoreP_destruct(&TestPmu_MtCompletionSem);
+}
+
+/* Thread: Thread A for overflow test - Generates overflow. */
+static void TestPmu_mtOverflowThreadA(void *arg)
+{
+    (void)arg;
+    uint32_t overflowIterations;
+    uint32_t i;
+
+    overflowIterations = 0U;
+
+    for (i = 0U; i < TEST_PMU_MT_OVERFLOW_ITER; i+=1)
+    {
+        TestPmu_barrierWait(); /* Phase 1: Start iteration */
+
+        /* Set counter near overflow */
+        PmuP_enableCounter(TEST_PMU_COUNTER_IDX_0, 0U);
+        ClockP_usleep(TEST_PMU_SHORT_DELAY_US);
+        PmuP_SetCntr(TEST_PMU_COUNTER_IDX_0, TEST_PMU_NEAR_OVERFLOW_16);
+        PmuP_enableCounter(TEST_PMU_COUNTER_IDX_0, 1U);
+
+        /* Trigger overflow */
+        TestPmu_runDeterministicWorkload();
+
+        TestPmu_barrierWait(); /* Phase 2: Overflow triggered, B can check */
+
+        /* Wait for B to clear */
+        TestPmu_barrierWait(); /* Phase 3: B cleared overflow */
+
+        overflowIterations+=1;
+    }
+
+    TestPmu_MtOverflowCount = overflowIterations;
+    TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_A_IDX] = (overflowIterations == TEST_PMU_MT_OVERFLOW_ITER) ? 1U : 0U;
+
+    SemaphoreP_post(&TestPmu_MtCompletionSem);
+    TaskP_exit();
+}
+
+/* Thread: Thread B for overflow test - Polls and clears overflow status. */
+static void TestPmu_mtOverflowThreadB(void *arg)
+{
+    (void)arg;
+    uint32_t statusMask;
+    uint32_t pollBudget;
+    uint32_t successfulClears;
+    uint32_t i;
+
+    successfulClears = 0U;
+
+    for (i = 0U; i < TEST_PMU_MT_OVERFLOW_ITER; i+=1)
+    {
+        TestPmu_barrierWait(); /* Phase 1: Start iteration */
+
+        /* Wait for A to trigger */
+        TestPmu_barrierWait(); /* Phase 2: A triggered overflow */
+
+        /* Poll for overflow status */
+        statusMask = 0U;
+        pollBudget = TEST_PMU_POLL_BUDGET_LARGE;
+        while ((pollBudget > 0U) && ((statusMask & (1U << TEST_PMU_COUNTER_IDX_0)) == 0U))
+        {
+            statusMask = PmuP_ReadCntrOverflowStatus();
+            if ((statusMask & (1U << TEST_PMU_COUNTER_IDX_0)) != 0U)
+            {
+                break;
+            }
+            ClockP_usleep(1);
+            pollBudget-=1;
+        }
+
+        if ((statusMask & (1U << TEST_PMU_COUNTER_IDX_0)) != 0U)
+        {
+            /* Clear overflow */
+            PmuP_ClearCntrOverflowStatus(1U << TEST_PMU_COUNTER_IDX_0);
+            TestPmu_MtOverflowCleared = 1U;
+
+            /* Verify cleared */
+            statusMask = PmuP_ReadCntrOverflowStatus();
+            if ((statusMask & (1U << TEST_PMU_COUNTER_IDX_0)) == 0U)
+            {
+                successfulClears+=1;
+            }
+        }
+
+        TestPmu_barrierWait(); /* Phase 3: Cleared */
+    }
+
+    TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_B_IDX] = (successfulClears == TEST_PMU_MT_OVERFLOW_ITER) ? 1U : 0U;
+
+    SemaphoreP_post(&TestPmu_MtCompletionSem);
+    TaskP_exit();
+}
+
+/**
+ * \brief Concurrent overflow generation and status clear.
+ *
+ * Test Category: Multithreaded Functional
+ *
+ * Generates overflow in one thread while another clears status and verifies
+ * re-arm behavior across multiple cycles.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Overflow detected, cleared, and detected again successfully.
+ */
+static void TestPmu_concurrentOverflowGenerationAndStatusClear(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    int32_t initStatus, status;
+    TaskP_Params taskParams;
+
+    numCounters = PmuP_GetNumCntrs();
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Enable overflow interrupt for counter 0 */
+    PmuP_EnableCounterOverflowInterrupt(TEST_PMU_COUNTER_IDX_0, 1U);
+
+    /* Initialize globals */
+    TestPmu_MtOverflowCleared = 0U;
+    TestPmu_MtOverflowCount = 0U;
+    TestPmu_MtBarrierCount = 0U;
+
+    /* Construct semaphores */
+    status = SemaphoreP_constructCounting(&TestPmu_MtBarrierArrive, 0U, TEST_PMU_MT_TASK_COUNT);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = SemaphoreP_constructCounting(&TestPmu_MtBarrierLeave, 0U, TEST_PMU_MT_TASK_COUNT);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = SemaphoreP_constructCounting(&TestPmu_MtCompletionSem, 0U, TEST_PMU_MT_TASK_COUNT);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Spawn threads */
+    TaskP_Params_init(&taskParams);
+    taskParams.priority   = TEST_PMU_MT_TASK_PRIORITY;
+    taskParams.stack      = TestPmu_MtTaskStack[TEST_PMU_MT_THREAD_A_IDX];
+    taskParams.stackSize  = TEST_PMU_MT_TASK_STACK_SIZE;
+    taskParams.name       = "PmuMtOverflowA";
+    taskParams.taskMain   = TestPmu_mtOverflowThreadA;
+    status = TaskP_construct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_A_IDX], &taskParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.priority   = TEST_PMU_MT_TASK_PRIORITY;
+    taskParams.stack      = TestPmu_MtTaskStack[TEST_PMU_MT_THREAD_B_IDX];
+    taskParams.stackSize  = TEST_PMU_MT_TASK_STACK_SIZE;
+    taskParams.name       = "PmuMtOverflowB";
+    taskParams.taskMain   = TestPmu_mtOverflowThreadB;
+    status = TaskP_construct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_B_IDX], &taskParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Wait for completion */
+    for (i = 0U; i < TEST_PMU_MT_TASK_COUNT; i+=1)
+    {
+        SemaphoreP_pend(&TestPmu_MtCompletionSem, SystemP_WAIT_FOREVER);
+    }
+
+    /* Verify results */
+    TEST_ASSERT_EQUAL_UINT32(1U, TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_A_IDX]); /* Thread A: 2 overflows */
+    TEST_ASSERT_EQUAL_UINT32(1U, TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_B_IDX]); /* Thread B: 2 clears */
+    TEST_ASSERT_EQUAL_UINT32(TEST_PMU_MT_OVERFLOW_ITER, TestPmu_MtOverflowCount);
+
+    /* Cleanup */
+    ClockP_usleep(TEST_PMU_MT_TEARDOWN_DELAY_US);
+    TaskP_destruct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_A_IDX]);
+    TaskP_destruct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_B_IDX]);
+    SemaphoreP_destruct(&TestPmu_MtBarrierArrive);
+    SemaphoreP_destruct(&TestPmu_MtBarrierLeave);
+    SemaphoreP_destruct(&TestPmu_MtCompletionSem);
+}
+
+/* Thread: Thread A for global freeze test - Freezes and unfreezes all counters. */
+static void TestPmu_mtFreezeThreadA(void *arg)
+{
+    (void)arg;
+
+    TestPmu_barrierWait(); /* Phase 1: Start */
+
+    /* Freeze all counters */
+    PmuP_EnableAllCounters(0U);
+    ClockP_usleep(200);
+
+    TestPmu_barrierWait(); /* Phase 2: Frozen, B can read */
+
+    /* Wait for B to finish frozen reads */
+    TestPmu_barrierWait(); /* Phase 3: B read while frozen */
+
+    /* Unfreeze all counters */
+    PmuP_EnableAllCounters(1U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+
+    TestPmu_barrierWait(); /* Phase 4: Unfrozen, B can verify resume */
+
+    TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_A_IDX] = 1U;
+
+    SemaphoreP_post(&TestPmu_MtCompletionSem);
+    TaskP_exit();
+}
+
+/* Thread: Thread B for global freeze test - Executes workload and verifies freeze effect. */
+static void TestPmu_mtFreezeThreadB(void *arg)
+{
+    (void)arg;
+    uint32_t counter0Frozen;
+    uint32_t counter0AfterWork;
+    uint32_t counter0BeforeResume;
+    uint32_t counter0AfterResume;
+    uint32_t allFrozen;
+    uint32_t resumedCorrectly;
+
+    TestPmu_barrierWait(); /* Phase 1: Start */
+
+    /* Wait for A to freeze */
+    TestPmu_barrierWait(); /* Phase 2: Frozen */
+
+    /* Read counters while frozen */
+    counter0Frozen = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TestPmu_runDeterministicWorkload();
+    counter0AfterWork = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+
+    allFrozen = (counter0AfterWork == counter0Frozen) ? 1U : 0U;
+
+    TestPmu_barrierWait(); /* Phase 3: Frozen reads done */
+
+    /* Wait for A to unfreeze */
+    TestPmu_barrierWait(); /* Phase 4: Unfrozen */
+
+    /* Verify resume */
+    counter0BeforeResume = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TestPmu_runDeterministicWorkload();
+    counter0AfterResume = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+
+    resumedCorrectly = (counter0AfterResume > counter0BeforeResume) ? 1U : 0U;
+
+    TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_B_IDX] = (allFrozen && resumedCorrectly) ? 1U : 0U;
+
+    SemaphoreP_post(&TestPmu_MtCompletionSem);
+    TaskP_exit();
+}
+
+/**
+ * \brief Concurrent global freeze/unfreeze across threads.
+ *
+ * Test Category: Multithreaded Functional
+ *
+ * Freezes and unfreezes all counters while another thread executes workload and
+ * verifies gating effect.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput No counter increments during freeze; increments resume after unfreeze.
+ */
+static void TestPmu_concurrentGlobalFreezeUnfreezeAcrossThreads(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    int32_t initStatus, status;
+    TaskP_Params taskParams;
+
+    numCounters = PmuP_GetNumCntrs();
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Initialize globals */
+    TestPmu_MtFrozenReadIndex = 0U;
+    TestPmu_MtBarrierCount = 0U;
+
+    /* Construct semaphores */
+    status = SemaphoreP_constructCounting(&TestPmu_MtBarrierArrive, 0U, TEST_PMU_MT_TASK_COUNT);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = SemaphoreP_constructCounting(&TestPmu_MtBarrierLeave, 0U, TEST_PMU_MT_TASK_COUNT);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = SemaphoreP_constructCounting(&TestPmu_MtCompletionSem, 0U, TEST_PMU_MT_TASK_COUNT);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Spawn threads */
+    TaskP_Params_init(&taskParams);
+    taskParams.priority   = TEST_PMU_MT_TASK_PRIORITY;
+    taskParams.stack      = TestPmu_MtTaskStack[TEST_PMU_MT_THREAD_A_IDX];
+    taskParams.stackSize  = TEST_PMU_MT_TASK_STACK_SIZE;
+    taskParams.name       = "PmuMtFreezeA";
+    taskParams.taskMain   = TestPmu_mtFreezeThreadA;
+    status = TaskP_construct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_A_IDX], &taskParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.priority   = TEST_PMU_MT_TASK_PRIORITY;
+    taskParams.stack      = TestPmu_MtTaskStack[TEST_PMU_MT_THREAD_B_IDX];
+    taskParams.stackSize  = TEST_PMU_MT_TASK_STACK_SIZE;
+    taskParams.name       = "PmuMtFreezeB";
+    taskParams.taskMain   = TestPmu_mtFreezeThreadB;
+    status = TaskP_construct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_B_IDX], &taskParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Wait for completion */
+    for (i = 0U; i < TEST_PMU_MT_TASK_COUNT; i+=1)
+    {
+        SemaphoreP_pend(&TestPmu_MtCompletionSem, SystemP_WAIT_FOREVER);
+    }
+
+    /* Verify results */
+    TEST_ASSERT_EQUAL_UINT32(1U, TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_A_IDX]);
+    TEST_ASSERT_EQUAL_UINT32(1U, TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_B_IDX]);
+
+    /* Cleanup */
+    ClockP_usleep(TEST_PMU_MT_TEARDOWN_DELAY_US);
+    TaskP_destruct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_A_IDX]);
+    TaskP_destruct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_B_IDX]);
+    SemaphoreP_destruct(&TestPmu_MtBarrierArrive);
+    SemaphoreP_destruct(&TestPmu_MtBarrierLeave);
+    SemaphoreP_destruct(&TestPmu_MtCompletionSem);
+}
+
+/* Thread: Thread A for multi-core isolation test - Simulates core-isolated counting.
+ *
+ * Note: On R5, we cannot truly test multi-core PMU isolation since both threads
+ * run on the same core. This thread simulates independent core initialization
+ * of PMU, executes workload, and verifies its own counters increment without
+ * interference.
+ */
+static void TestPmu_mtMultiCoreThreadA(void *arg)
+{
+    (void)arg;
+    uint32_t numCounters;
+    int32_t initStatus;
+    uint32_t counter0Before;
+    uint32_t counter0After;
+    uint32_t i;
+
+    /* Simulate independent core initialization */
+    numCounters = PmuP_GetNumCntrs();
+    PMU_EventCfg localEventCfgA[3];
+    PMU_Config   localCfgA;
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        localEventCfgA[i].name = "InstrExecA";
+        localEventCfgA[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    localCfgA.bCycleCounter    = 1U;
+    localCfgA.numEventCounters = numCounters;
+    localCfgA.eventCounters    = localEventCfgA;
+
+    initStatus = PMU_init(&localCfgA);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Execute workload and verify local increments */
+    counter0Before = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TestPmu_runDeterministicWorkload();
+    counter0After = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+
+    TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_A_IDX] = (counter0After > counter0Before) ? 1U : 0U;
+
+    SemaphoreP_post(&TestPmu_MtCompletionSem);
+    TaskP_exit();
+}
+
+/* Thread: Thread B for multi-core isolation test - Simulates core-isolated counting. */
+static void TestPmu_mtMultiCoreThreadB(void *arg)
+{
+    (void)arg;
+    uint32_t numCounters;
+    int32_t initStatus;
+    uint32_t counter0Before;
+    uint32_t counter0After;
+    uint32_t i;
+    PMU_EventCfg localEventCfgB[3];
+    PMU_Config   localCfgB;
+
+    /* Simulate independent core initialization */
+    numCounters = PmuP_GetNumCntrs();
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        localEventCfgB[i].name = "InstrExecB";
+        localEventCfgB[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    localCfgB.bCycleCounter    = 1U;
+    localCfgB.numEventCounters = numCounters;
+    localCfgB.eventCounters    = localEventCfgB;
+
+    initStatus = PMU_init(&localCfgB);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Execute workload and verify local increments */
+    counter0Before = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TestPmu_runDeterministicWorkload();
+    counter0After = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+
+    TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_B_IDX] = (counter0After > counter0Before) ? 1U : 0U;
+
+    SemaphoreP_post(&TestPmu_MtCompletionSem);
+    TaskP_exit();
+}
+
+/**
+ * \brief Threads pinned to different cores with isolated counting.
+ *
+ * Test Category: Multithreaded Functional
+ *
+ * Note: On single-core R5, this test simulates multi-core behavior by having
+ * each thread independently initialize PMU and verify counters increment without
+ * cross-talk. In true multi-core scenario, threads would be pinned to separate cores.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Both threads' counters increment independently.
+ */
+static void TestPmu_threadsPinnedToDifferentCoresIsolatedCounting(void *args)
+{
+    (void)args;
+    uint32_t i;
+    int32_t status;
+    TaskP_Params taskParams;
+
+    /* Note: No PMU init here; each thread initializes independently */
+
+    /* Construct completion semaphore only */
+    status = SemaphoreP_constructCounting(&TestPmu_MtCompletionSem, 0U, TEST_PMU_MT_TASK_COUNT);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Spawn threads */
+    TaskP_Params_init(&taskParams);
+    taskParams.priority   = TEST_PMU_MT_TASK_PRIORITY;
+    taskParams.stack      = TestPmu_MtTaskStack[TEST_PMU_MT_THREAD_A_IDX];
+    taskParams.stackSize  = TEST_PMU_MT_TASK_STACK_SIZE;
+    taskParams.name       = "PmuMtMultiCoreA";
+    taskParams.taskMain   = TestPmu_mtMultiCoreThreadA;
+    status = TaskP_construct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_A_IDX], &taskParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.priority   = TEST_PMU_MT_TASK_PRIORITY;
+    taskParams.stack      = TestPmu_MtTaskStack[TEST_PMU_MT_THREAD_B_IDX];
+    taskParams.stackSize  = TEST_PMU_MT_TASK_STACK_SIZE;
+    taskParams.name       = "PmuMtMultiCoreB";
+    taskParams.taskMain   = TestPmu_mtMultiCoreThreadB;
+    status = TaskP_construct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_B_IDX], &taskParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Wait for completion */
+    for (i = 0U; i < TEST_PMU_MT_TASK_COUNT; i+=1)
+    {
+        SemaphoreP_pend(&TestPmu_MtCompletionSem, SystemP_WAIT_FOREVER);
+    }
+
+    /* Verify both threads succeeded */
+    TEST_ASSERT_EQUAL_UINT32(1U, TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_A_IDX]);
+    TEST_ASSERT_EQUAL_UINT32(1U, TestPmu_MtThreadResults[TEST_PMU_MT_THREAD_B_IDX]);
+
+    /* Cleanup */
+    ClockP_usleep(TEST_PMU_MT_TEARDOWN_DELAY_US);
+    TaskP_destruct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_A_IDX]);
+    TaskP_destruct(&TestPmu_MtTaskObj[TEST_PMU_MT_THREAD_B_IDX]);
     SemaphoreP_destruct(&TestPmu_MtCompletionSem);
 }
 
@@ -3604,6 +4523,11 @@ void test_pmu_main(void *args)
     RUN_TEST(TestPmu_concurrentEnableDisableAndReadDifferentCounters, 10466, NULL);
     RUN_TEST(TestPmu_concurrentSetCntrWriteReadAtomicity, 10467, NULL);
     RUN_TEST(TestPmu_concurrentReprogramEventWhileOtherThreadReads, 10468, NULL);
+    RUN_TEST(TestPmu_concurrentCycleCounterGatingAndMeasurement, 10469, NULL);
+    RUN_TEST(TestPmu_concurrentDividerToggleAndRateCheck, 10470, NULL);
+    RUN_TEST(TestPmu_concurrentOverflowGenerationAndStatusClear, 10471, NULL);
+    RUN_TEST(TestPmu_concurrentGlobalFreezeUnfreezeAcrossThreads, 10472, NULL);
+    RUN_TEST(TestPmu_threadsPinnedToDifferentCoresIsolatedCounting, 10473, NULL);
 #endif /* ENABLE_MT_TESTS */
     UNITY_END();
 }

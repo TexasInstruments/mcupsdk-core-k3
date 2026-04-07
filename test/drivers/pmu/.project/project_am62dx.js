@@ -257,6 +257,72 @@ const templates_freertos_dm_r5f =
 	}
 ];
 
+const robot_template_nortos = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "PMU",
+        testCaseName: "PMU Driver Test nortos",
+        appName: "test_pmu(nortos)",
+        testCaseIds: "SITSW-10428 SITSW-10429 SITSW-10430 SITSW-10431 SITSW-10432 SITSW-10433 SITSW-10434 SITSW-10435 SITSW-10436 SITSW-10437" +
+                     " SITSW-10438 SITSW-10439 SITSW-10440 SITSW-10441 SITSW-10442 SITSW-10444 SITSW-10445 SITSW-10446 SITSW-10447 SITSW-10448" +
+                     " SITSW-10449 SITSW-10450 SITSW-10451 SITSW-10452 SITSW-10453 SITSW-10454 SITSW-10455 SITSW-10456 SITSW-10457 SITSW-10458" +
+                     " SITSW-10459 SITSW-10460 SITSW-10461 SITSW-10462 SITSW-10463 SITSW-10833 SITSW-10834 SITSW-10835 SITSW-10836 SITSW-10837" +
+                     " SITSW-10838 SITSW-10839 SITSW-10840 SITSW-10841",
+        timeout: 300,
+    },
+};
+
+const robot_template_freertos = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "PMU",
+        testCaseName: "PMU Driver Test freertos",
+        appName: "test_pmu(freertos)",
+        testCaseIds: "SITSW-10428 SITSW-10429 SITSW-10430 SITSW-10431 SITSW-10432 SITSW-10433 SITSW-10434 SITSW-10435 SITSW-10436 SITSW-10437" +
+                     " SITSW-10438 SITSW-10439 SITSW-10440 SITSW-10441 SITSW-10442 SITSW-10444 SITSW-10445 SITSW-10446 SITSW-10447 SITSW-10448" +
+                     " SITSW-10449 SITSW-10450 SITSW-10451 SITSW-10452 SITSW-10453 SITSW-10454 SITSW-10455 SITSW-10456 SITSW-10457 SITSW-10458" +
+                     " SITSW-10459 SITSW-10460 SITSW-10461 SITSW-10462 SITSW-10463 SITSW-10464 SITSW-10465 SITSW-10466 SITSW-10467 SITSW-10468" +
+                     " SITSW-10469 SITSW-10470 SITSW-10471 SITSW-10472 SITSW-10473 SITSW-10833 SITSW-10834 SITSW-10835 SITSW-10836 SITSW-10837" +
+                     " SITSW-10838 SITSW-10839 SITSW-10840 SITSW-10841",
+        timeout: 300,
+    },
+};
+
+const robot_template_dm_nortos = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "PMU",
+        testCaseName: "PMU Driver Test nortos",
+        appName: "test_pmu_dm(nortos)",
+        testCaseIds: "SITSW-10428 SITSW-10429 SITSW-10430 SITSW-10431 SITSW-10432 SITSW-10433 SITSW-10434 SITSW-10435 SITSW-10436 SITSW-10437" +
+                     " SITSW-10438 SITSW-10439 SITSW-10440 SITSW-10441 SITSW-10442 SITSW-10444 SITSW-10445 SITSW-10446 SITSW-10447 SITSW-10448" +
+                     " SITSW-10449 SITSW-10450 SITSW-10451 SITSW-10452 SITSW-10453 SITSW-10454 SITSW-10455 SITSW-10456 SITSW-10457 SITSW-10458" +
+                     " SITSW-10459 SITSW-10460 SITSW-10461 SITSW-10462 SITSW-10463 SITSW-10833 SITSW-10834 SITSW-10835 SITSW-10836 SITSW-10837" +
+                     " SITSW-10838 SITSW-10839 SITSW-10840 SITSW-10841",
+        timeout: 300,
+    },
+};
+
+const robot_template_dm_freertos = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "PMU",
+        testCaseName: "PMU Driver Test freertos",
+        appName: "test_pmu_dm(freertos)",
+        testCaseIds: "SITSW-10428 SITSW-10429 SITSW-10430 SITSW-10431 SITSW-10432 SITSW-10433 SITSW-10434 SITSW-10435 SITSW-10436 SITSW-10437" +
+                     " SITSW-10438 SITSW-10439 SITSW-10440 SITSW-10441 SITSW-10442 SITSW-10444 SITSW-10445 SITSW-10446 SITSW-10447 SITSW-10448" +
+                     " SITSW-10449 SITSW-10450 SITSW-10451 SITSW-10452 SITSW-10453 SITSW-10454 SITSW-10455 SITSW-10456 SITSW-10457 SITSW-10458" +
+                     " SITSW-10459 SITSW-10460 SITSW-10461 SITSW-10462 SITSW-10463 SITSW-10464 SITSW-10465 SITSW-10466 SITSW-10467 SITSW-10468" +
+                     " SITSW-10469 SITSW-10470 SITSW-10471 SITSW-10472 SITSW-10473 SITSW-10833 SITSW-10834 SITSW-10835 SITSW-10836 SITSW-10837" +
+                     " SITSW-10838 SITSW-10839 SITSW-10840 SITSW-10841",
+        timeout: 300,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "nortos"},
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos"},
@@ -323,6 +389,20 @@ function getComponentBuildProperty(buildOption) {
             build_property.libsprebuild = libs_prebuild_nortos;
             build_property.templates = templates_nortos_dm_r5f;
             build_property.defines = defines_dm_r5f_nortos;
+        }
+    }
+
+    if(buildOption.cpu.match(/mcu-r5f*/)) {
+        if(buildOption.os.match(/freertos*/)) {
+            build_property.templates = [...(build_property.templates || []), robot_template_freertos];
+        } else {
+            build_property.templates = [...(build_property.templates || []), robot_template_nortos];
+        }
+    } else if(buildOption.cpu.match(/r5f*/)) {
+        if(buildOption.os.match(/freertos*/)) {
+            build_property.templates = [...(build_property.templates || []), robot_template_dm_freertos];
+        } else {
+            build_property.templates = [...(build_property.templates || []), robot_template_dm_nortos];
         }
     }
 

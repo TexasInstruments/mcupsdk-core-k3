@@ -19,6 +19,17 @@ This example demonstrates the AES CMAC-256 using SA3UL module.
 
 \endcond
 
+\cond SOC_AM275X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/security/crypto/sa3ul_aes/crypto_aes_cmac_256/crypto_aes_cmac_256.c
+
+\endcond
+
 # Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination

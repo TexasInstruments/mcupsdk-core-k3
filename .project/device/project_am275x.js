@@ -171,6 +171,7 @@ const example_file_list = [
     "examples/kernel/freertos/task_switch/.project/project.js",
     "examples/kernel/nortos/basic_smart_placement/.project/project.js",
     "examples/lpm/lpm_partial_io/.project/project.js",
+    "examples/security/crypto/sa3ul_aes/crypto_aes_cmac_256/.project/project_am275x.js",
     "examples/security/runtime_debug_unlock/.project/project_am275x.js",
     "examples/security/fwl_exception_log/.project/project.js",
     "examples/security/fwl_exception_trigger/.project/project.js",

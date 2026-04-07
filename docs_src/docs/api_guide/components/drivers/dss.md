@@ -14,11 +14,16 @@ transmitter (OLDITX), or can directly drive device pads as a Display Parallel
 Interface (DPI).This document has detailed API description that user can use to
 make use of the DSS driver.
 
-DSS supports two types of display interfaces:
+DSS supports following display interfaces:
 - Display parallel interface via DISPC Video Port 2 (VP2) output.
 - Two low-voltage differential signaling (LVDS) interfaces, each with four data
 lanes and one clock lane, via Open LDI Transmitters (OLDITX0 and OLDITX1)
 connected to DISPC Video Port 1 (VP1) output.
+\cond SOC_J722S
+- Display Serial Interface (DSI) via DISPC Video Port 2 (VP2) [Using the second DSS instance DSS1]
+
+Note - DSI is coming out of the SoC and connected to a DSI2DP bridge on the EVM.
+\endcond
 
 \image html docs_src/docs/api_guide/images/drivers/Dss7ul_blockDiagram.PNG "DSS BLOCK DIAGRAM"
 

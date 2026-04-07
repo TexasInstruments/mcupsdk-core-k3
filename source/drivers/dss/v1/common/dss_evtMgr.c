@@ -808,9 +808,9 @@ static Dss_EvtMgrInstObj *Dss_evtMgrGetInstObj(uint32_t instId)
     {
         for(cnt=0U; cnt<DSS_EVT_MGR_INST_ID_MAX; cnt++)
         {
-            if(gDss_EvtMgrInstObj[instId].instId == instId)
+            if(gDss_EvtMgrInstObj[cnt].instId == instId)
             {
-                instObj = &gDss_EvtMgrInstObj[instId];
+                instObj = &gDss_EvtMgrInstObj[cnt];
                 break;
             }
         }

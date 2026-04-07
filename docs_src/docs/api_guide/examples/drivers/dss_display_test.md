@@ -13,7 +13,7 @@ for VIDL pipeline in DDR. The example configures VIDL pipeline for different att
 
 \endcond
 
-\cond SOC_AM62X || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62PX || SOC_J722S
 This example tests the complete video pipeline configuration of DSS and displays
 it on a video port. DSS includes two video pipelines:
     - Video pipeline (VID)
@@ -39,7 +39,7 @@ The example generates test pattern for both pipelines based on the frame format
 selected. The supported frame formats are RGB 16-bit, RGB 32-bit, RGB 64-bit,
 RGB 24-bit and YUV formats.
 
-\cond SOC_AM62X || SOC_AM62PX
+\cond SOC_AM62X || SOC_AM62PX || SOC_J722S
 The example configures Zorder for overlay manager where VID and VIDL pipelines
 have Zorder 1 and 2 respectively. The Zorder can be changed using sysconfig
 option. The example configures scaling by default for VID pipeline. The VIDL
@@ -102,6 +102,17 @@ flow sequence.
 
 \endcond
 
+\cond SOC_J722S
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | main-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/drivers/dss/dss_display_test
+
+\endcond
+
 # Steps to Run the Example
 
 \cond SOC_AM62LX
@@ -112,7 +123,7 @@ flow sequence.
 - To Load and Run an example (see \ref DFU_LOAD_CCS_DEBUG)
 \endcond
 
-\cond SOC_AM62X
+\cond SOC_AM62X || SOC_J722S
 - **When using CCS projects to build**, import the CCS project for the required combination
   and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).
 - **When using makefiles to build**, note the required combination and build using
@@ -162,6 +173,18 @@ through SBL.
 \endcond
 
 # See Also
+
+\cond SOC_J722S
+
+### Sysconfig options for different interfaces that are supported by display test.
+
+\image html docs_src/docs/api_guide/images/drivers/hdmi.png "Sysconfig option for HDMI" width=50%
+
+\image html docs_src/docs/api_guide/images/drivers/oldi.png "Sysconfig option for OLDI" width=50%
+
+\image html docs_src/docs/api_guide/images/drivers/dsi.png "Sysconfig option for DSI" width=50%
+
+\endcond
 
 \ref DRIVERS_DSS_PAGE
 

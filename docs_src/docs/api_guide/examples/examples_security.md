@@ -56,6 +56,7 @@ This page lists all the examples related to Security.
 -# \subpage EXAMPLES_FWL_EXCPT_LOG
 -# \subpage EXAMPLES_FWL_EXCPT_TRIGGER
 -# \subpage EXAMPLES_DRIVERS_SA3UL_AES_CMAC_256
+-# \subpage EXAMPLES_DRIVERS_SA3UL_RNG
 -# \subpage EXAMPLES_TISCI_MSG
 -# \subpage EXAMPLES_RUNTIME_DEBUG_UNLOCK
 \endcond

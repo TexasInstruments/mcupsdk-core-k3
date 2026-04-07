@@ -170,6 +170,7 @@ void TaskP_Params_init(TaskP_Params *params)
     params->priority = (TaskP_PRIORITY_HIGHEST - TaskP_PRIORITY_LOWEST) / 2U;
     params->args = NULL;
     params->taskMain = 0;
+    params->taskPrivilege = 0;
 #ifdef SMP_FREERTOS
     params->coreAffinity = (uintptr_t)(~0);
 #endif

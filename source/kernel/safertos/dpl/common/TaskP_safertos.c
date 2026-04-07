@@ -212,6 +212,11 @@ void TaskP_Params_init(TaskP_Params *params)
     params->priority = (TaskP_PRIORITY_HIGHEST - TaskP_PRIORITY_LOWEST) / 2;
     params->args = NULL;
     params->taskMain = NULL;
+#if defined(BUILD_MCU)
+    params->taskPrivilege = mpuPRIVILEGED_TASK;
+#else
+    params->taskPrivilege = 0;
+#endif
 }
 
 int32_t TaskP_construct(TaskP_Object *obj, TaskP_Params *params)
@@ -254,7 +259,7 @@ int32_t TaskP_construct(TaskP_Object *obj, TaskP_Params *params)
         params->args,
         params->priority,
         NULL,
-#if defined (BUILD_MAIN_R5) || defined (BUILD_MCU_R5) || defined (BUILD_WKUP_R5)
+#if defined(BUILD_MCU)
         pdFALSE,                            /* Task does not use the FPU by default. */
         {                                   /* MPU task parameters. */
             params->taskPrivilege,          /* Check task is privileged. */

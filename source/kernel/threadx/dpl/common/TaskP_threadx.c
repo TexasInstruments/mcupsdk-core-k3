@@ -149,6 +149,7 @@ void TaskP_Params_init(TaskP_Params *params)
     params->priority = ((TaskP_PRIORITY_HIGHEST - TaskP_PRIORITY_LOWEST) /(uint32_t) 2);
     params->args = NULL;
     params->taskMain = NULL;
+    params->taskPrivilege = 0;
 }
 
 int32_t TaskP_construct(TaskP_Object *obj, TaskP_Params *params)

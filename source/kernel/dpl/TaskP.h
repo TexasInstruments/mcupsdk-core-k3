@@ -109,6 +109,7 @@ typedef struct TaskP_Params_ {
     void         *args;         /**< User arguments that are passed back as parater to task main */
     TaskP_FxnMain taskMain;     /**< Entry point function to the task */
     uintptr_t     coreAffinity; /**< Core affinity for the task (Applicable in case of SMP only)*/
+    uint64_t taskPrivilege; /**< Task Privilege (Appilcable only for R5F SAFERTOS) */
 
 } TaskP_Params;
 

@@ -13,6 +13,7 @@ from re import sub
 from random import randint
 import shutil
 from textwrap import dedent
+from elftools.elf.elffile import ELFFile
 
 # Some globals
 g_sha_to_use = "sha512"
@@ -70,9 +71,10 @@ emailAddress           = Albert@gt.ti.com
 [ v3_ca ]
 basicConstraints = CA:true
 1.3.6.1.4.1.294.1.34 = ASN1:SEQUENCE:sysfw_image_integrity
-1.3.6.1.4.1.294.1.35 = ASN1:SEQUENCE:sysfw_image_load
+{SYSFW_IMAGE_LOAD_SEQUENCE}
 1.3.6.1.4.1.294.1.3 = ASN1:SEQUENCE:swrv
 {ENCRYPTION_SEQUENCE}
+{ENCRYPTION_EXTENDED_SEQUENCE}
 
 [ sysfw_image_integrity ]
 shaType = OID:{TEST_IMAGE_SHA_OID}
@@ -107,6 +109,21 @@ iterationCnt =  INTEGER:{TEST_IMAGE_KEY_DERIVE_INDEX}
 salt         =  FORMAT:HEX,OCT:{TEST_IMAGE_KEY_DERIVE_SALT}
 '''
 
+g_enc_extended_seq = '''
+[ encryption_extended ]
+nPaddingBytes = INTEGER:{N_PADDING_BYTES}
+rsvd0 = INTEGER:0
+rsvd1 = INTEGER:0
+'''
+
+def is_elf_file(bin_file_name):
+	try:
+		with open(bin_file_name, 'rb') as f:
+			ELFFile(f)
+		return True
+	except Exception:
+		return False
+
 def get_cert(args):
 
 	global g_signopt
@@ -126,6 +143,9 @@ def get_cert(args):
 	v_TEST_IMAGE_ENC_RS           = "0000"
 	v_TEST_IMAGE_KEY_DERIVE_INDEX = 0
 	v_TEST_IMAGE_KEY_DERIVE_SALT  = "0000"
+	v_N_PADDING_BYTES             = 0
+
+	is_mcelf = False
 
 	# Validation of args.
 
@@ -137,6 +157,7 @@ def get_cert(args):
 		print("Binary file not found!")
 		exit(2)
 	else:
+		is_mcelf = is_elf_file(args.bin)
 		# Check if encryption is enabled
 		if(args.enc == 'y'):
 			if((args.enckey is None) or (not os.path.exists(args.enckey))):
@@ -157,27 +178,91 @@ def get_cert(args):
 				enc_rs = subprocess.check_output('openssl rand 32', shell=True)
 				v_TEST_IMAGE_ENC_RS = binascii.hexlify(enc_rs).decode('ascii')
 
-				# Pad zeros to a temporary binary to make the size multiple of 16
-				zeros_pad = bytearray(16 - (os.path.getsize(bin_file) % 16))
-				tempfile_name = "tmpfile" + str(randint(1111, 9999))
-				encbin_name = args.bin + "-enc"
+				if is_mcelf:
+					# MCELF encryption: only encrypt the LOAD segment range,
+					# preserving the ELF header, PHT and Note segment unencrypted
+					tempfile_name = "tmpfile" + str(randint(1111, 9999))
+					enc_segments_temp = tempfile_name + "-encseg"
+					encbin_name = args.bin + "-enc"
 
-				shutil.copy(args.bin, tempfile_name)
+					with open(args.bin, 'rb') as f:
+						file_data = bytearray(f.read())
 
-				# append zeros to tempfile
-				with open(tempfile_name, "ab") as f:
-					f.write(zeros_pad)
-					# append the enc_rs value to the padded tempfile
-					f.write(enc_rs)
+					# Find the contiguous range covering all LOAD segments
+					with open(args.bin, 'rb') as f:
+						elf = ELFFile(f)
+						encryption_start = None
+						encryption_end = 0
+						for seg in elf.iter_segments():
+							if seg['p_type'] == 'PT_LOAD':
+								offset = seg['p_offset']
+								size = seg['p_filesz']
+								# Each LOAD segment size must be a multiple of 16 bytes for decryption
+								if (size % 16) != 0:
+									print("MCELF LOAD segment size is not a multiple of 16 bytes")
+									exit(2)
+								if encryption_start is None:
+									encryption_start = offset
+								seg_end = offset + size
+								if seg_end > encryption_end:
+									encryption_end = seg_end
 
-				# Finally generate the encrypted image
-				subprocess.check_output('openssl aes-256-cbc -e -K {} -iv {} -in {} -out {} -nopad'.format(enc_key, enc_iv, tempfile_name, encbin_name), shell=True)
+					if encryption_start is None:
+						print("No LOAD segments found in MCELF file!")
+						exit(2)
 
-				# If encryption was successful, point the bin file to the encrypted image
-				bin_file = encbin_name
+					encryption_size = encryption_end - encryption_start
 
-				# Delete the temp file
-				os.remove(tempfile_name)
+					# Extract LOAD segment data, append RS
+					segments_data = bytearray(file_data[encryption_start:encryption_start + encryption_size])
+					segments_data += enc_rs
+
+					with open(tempfile_name, 'wb') as f:
+						f.write(segments_data)
+
+					try:
+						# Encrypt the LOAD segment data
+						subprocess.check_output('openssl aes-256-cbc -e -K {} -iv {} -in {} -out {} -nopad'.format(enc_key, enc_iv, tempfile_name, enc_segments_temp), shell=True)
+
+						with open(enc_segments_temp, 'rb') as f:
+							encrypted_data = f.read()
+
+						# Reconstruct: unencrypted header, pht, note + encrypted LOAD data
+						with open(encbin_name, 'wb') as f:
+							f.write(bytes(file_data[:encryption_start]))
+							f.write(encrypted_data)
+
+						# If encryption was successful, point the bin file to the encrypted image
+						bin_file = encbin_name
+					finally:
+						# Delete the temp files
+						if os.path.exists(tempfile_name):
+							os.remove(tempfile_name)
+						if os.path.exists(enc_segments_temp):
+							os.remove(enc_segments_temp)
+				else:
+					# RPRC encryption: encrypt the entire binary
+					# Pad zeros to a temporary binary to make the size multiple of 16
+					zeros_pad = bytearray(16 - (os.path.getsize(bin_file) % 16))
+					tempfile_name = "tmpfile" + str(randint(1111, 9999))
+					encbin_name = args.bin + "-enc"
+
+					shutil.copy(args.bin, tempfile_name)
+
+					# append zeros to tempfile
+					with open(tempfile_name, "ab") as f:
+						f.write(zeros_pad)
+						# append the enc_rs value to the padded tempfile
+						f.write(enc_rs)
+
+					# Finally generate the encrypted image
+					subprocess.check_output('openssl aes-256-cbc -e -K {} -iv {} -in {} -out {} -nopad'.format(enc_key, enc_iv, tempfile_name, encbin_name), shell=True)
+
+					# If encryption was successful, point the bin file to the encrypted image
+					bin_file = encbin_name
+
+					# Delete the temp file
+					os.remove(tempfile_name)
 		else:
 			pass
 
@@ -234,11 +319,23 @@ def get_cert(args):
 	else:
 		enc_seq = ''
 
-	ret_cert = g_x509_template.format(TEST_IMAGE_SHA_OID=v_TEST_IMAGE_SHA_OID, TEST_IMAGE_SHA_VAL=v_TEST_IMAGE_SHA_VAL, TEST_IMAGE_LENGTH=v_TEST_IMAGE_LENGTH, TEST_BOOT_ADDR=v_TEST_BOOT_ADDR, AUTH_TYPE=v_AUTH_TYPE, ENCRYPTION_SEQUENCE=enc_seq)
+	sysfw_load_seq = ''
+	if not is_mcelf:
+		sysfw_load_seq = "1.3.6.1.4.1.294.1.35 = ASN1:SEQUENCE:sysfw_image_load"
+
+	enc_ext_seq = ''
+	if is_mcelf and args.enc == 'y':
+		enc_ext_seq = "1.3.6.1.4.1.294.1.40 = ASN1:SEQUENCE:encryption_extended"
+
+	ret_cert = g_x509_template.format(TEST_IMAGE_SHA_OID=v_TEST_IMAGE_SHA_OID, TEST_IMAGE_SHA_VAL=v_TEST_IMAGE_SHA_VAL, TEST_IMAGE_LENGTH=v_TEST_IMAGE_LENGTH, TEST_BOOT_ADDR=v_TEST_BOOT_ADDR, AUTH_TYPE=v_AUTH_TYPE, ENCRYPTION_SEQUENCE=enc_seq, SYSFW_IMAGE_LOAD_SEQUENCE=sysfw_load_seq, ENCRYPTION_EXTENDED_SEQUENCE=enc_ext_seq)
 
 	# If encryption is enabled, append that sequence to the current certificate
 	if(args.enc == 'y'):
 		ret_cert += g_enc_boot_seq.format(TEST_IMAGE_ENC_IV=v_TEST_IMAGE_ENC_IV, TEST_IMAGE_ENC_RS=v_TEST_IMAGE_ENC_RS, TEST_IMAGE_KEY_DERIVE_INDEX=v_TEST_IMAGE_KEY_DERIVE_INDEX, TEST_IMAGE_KEY_DERIVE_SALT=v_TEST_IMAGE_KEY_DERIVE_SALT)
+
+	# If MCELF with encryption, append the encryption_extended sequence
+	if is_mcelf and args.enc == 'y':
+		ret_cert += g_enc_extended_seq.format(N_PADDING_BYTES=v_N_PADDING_BYTES)
 
 	# NOTE: Boot sequence is not used. We assume that SBL always sets the reset vectors and does image load
 

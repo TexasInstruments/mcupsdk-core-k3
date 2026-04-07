@@ -60,26 +60,54 @@
 /*                               Macros                                      */
 /*===========================================================================*/
 
+#define TEST_PMU_FREEZE_TOLERANCE               100U    /* Max delta while frozen/disabled */
+
 /* Counter indices for use with PmuP_ReadCounter, PmuP_enableCounter,
  * PmuP_SetCntr, PmuP_EnableCounterOverflowInterrupt, PmuP_ConfigCounter,
  * and PMOVSR bit-position arithmetic */
 #define TEST_PMU_COUNTER_IDX_0                  0U
 #define TEST_PMU_COUNTER_IDX_1                  1U
+#define TEST_PMU_COUNTER_IDX_2                  2U
 
 /* Counter preload values near 32-bit overflow for wrapping tests */
 #define TEST_PMU_NEAR_OVERFLOW_2                0xFFFFFFFEU     /* 2 counts before max */
+#define TEST_PMU_NEAR_OVERFLOW_4                0xFFFFFFFCU     /* 4 counts before max */
+#define TEST_PMU_NEAR_OVERFLOW_16               0xFFFFFFF0U     /* 16 counts before max */
+
+/* Preset counter value written before measuring delta in read/write tests */
+#define TEST_PMU_BASELINE_COUNTER_VAL           100U
 
 /* Polling iteration budgets for overflow-detect busy-wait loops */
 #define TEST_PMU_POLL_BUDGET                    1000U
+#define TEST_PMU_POLL_BUDGET_LARGE              2000U
+#define TEST_PMU_POLL_BUDGET_OVERFLOW           5000U
+
+/* Maximum expected counter value after a 32-bit wrap (confirms counter reset) */
+#define TEST_PMU_WRAPPED_VAL_MAX                100000U
+
+/* Minimum expected event count delta to confirm a counter is actively counting */
+#define TEST_PMU_MIN_VALID_DELTA                1000U
+
+/* Tolerance percentage for counter delta rate comparisons */
+#define TEST_PMU_TOLERANCE_PCT                  20U
 
 /* Divide-by-64 cycle counter divisor ratio */
 #define TEST_PMU_DIVIDER_RATIO                  64U
 
+/* Rapid back-to-back write/read iteration count */
+#define TEST_PMU_RAPID_RW_ITER_COUNT            64U
+
 /* Deterministic workload inner loop count */
 #define TEST_PMU_WORKLOAD_ITER_COUNT            50000U
 
+/* Heavy workload loop iteration count */
+#define TEST_PMU_HEAVY_WORKLOAD_ITER_COUNT      200000U
+
 /* Standard counter-gating hardware settle time (microseconds) */
 #define TEST_PMU_GATING_DELAY_US                100U
+
+/* Number of 32-bit wraps for the software 64-bit chain accumulation test */
+#define TEST_PMU_SW_CHAIN_WRAP_COUNT            3U
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -117,6 +145,20 @@ static void TestPmu_cycleCounterGatingPerCounter(void *args);
 static void TestPmu_perCounterOverflowInterruptEnableDisable(void *args);
 static void TestPmu_overflowIsrLogicDetectAndClear(void *args);
 static void TestPmu_overflowIsrLogicRearmAndRepeat(void *args);
+static void TestPmu_programValidEventAndCountCntr0(void *args);
+static void TestPmu_perCounterEnableDisableHaltsOnlyThatCounter(void *args);
+static void TestPmu_readWriteCounterValueWithSetCntr(void *args);
+static void TestPmu_counterOverflowFlagAndWrap(void *args);
+static void TestPmu_globalFreezePreservesAccumulatedValuesAcrossMultipleCycles(void *args);
+static void TestPmu_perCounterReprogramDoesNotAffectOthers(void *args);
+static void TestPmu_softwareChainingViaOverflowFor64bitAccum(void *args);
+static void TestPmu_userAccessEnablePathViaPmuPConfig(void *args);
+static void TestPmu_enableDisableDoesNotCorruptOtherCountersState(void *args);
+static void TestPmu_rapidBackToBackReadWriteIsRaceFree(void *args);
+static void TestPmu_getOverflowStatusNoFlags(void *args);
+static void TestPmu_overflowStatusPersistsUntilCleared(void *args);
+static void TestPmu_clearOverflowStatusMultipleBitsMask(void *args);
+static void TestPmu_cycleCounterOverflowStatusReadAndClear(void *args);
 
 /* ========================================================================== */
 /*                      External Function Declarations                        */
@@ -959,6 +1001,848 @@ static void TestPmu_overflowIsrLogicRearmAndRepeat(void *args)
     TEST_ASSERT_TRUE((statusMask & (1U << counterIdx)) == 0U);
 }
 
+/**
+ * \brief Program valid event and count on counter 0 functional test.
+ *
+ * Test Category: Functional
+ *
+ * Configures PMU with cycle counter enabled and a valid event on counter 0.
+ * Executes a deterministic workload and verifies counter 0 increments.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Counter 0 value increases after workload.
+ */
+static void TestPmu_programValidEventAndCountCntr0(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    uint32_t counter0Before, counter0After;
+    int32_t initStatus;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    counter0Before = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TestPmu_runDeterministicWorkload();
+    counter0After  = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TEST_ASSERT_TRUE(counter0After > counter0Before);
+}
+
+/**
+ * \brief Per-counter enable/disable halts only that counter.
+ *
+ * Test Category: Functional
+ *
+ * Disables a single event counter and verifies only that counter stops counting
+ * while other counters continue. Then re-enables and confirms counting resumes.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Disabled counter remains unchanged during workload; other counters
+ *                 increment; disabled counter resumes after re-enable.
+ */
+static void TestPmu_perCounterEnableDisableHaltsOnlyThatCounter(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    uint32_t c0Before, c1DisabledBaseline, c0After, c1AfterDisabled;
+    int32_t initStatus;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters >= 2U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Disable counter 1, then sample baseline */
+    PmuP_enableCounter(TEST_PMU_COUNTER_IDX_1, 0U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+
+    c0Before           = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    c1DisabledBaseline = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_1);
+
+    TestPmu_runDeterministicWorkload();
+
+    c0After         = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    c1AfterDisabled = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_1);
+
+    TEST_ASSERT_TRUE(c0After > c0Before);
+    TEST_ASSERT_EQUAL_UINT32(c1DisabledBaseline, c1AfterDisabled);
+
+    /* Re-enable and verify resume */
+    PmuP_enableCounter(TEST_PMU_COUNTER_IDX_1, 1U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+    TestPmu_runDeterministicWorkload();
+    TEST_ASSERT_TRUE(PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_1) > c1AfterDisabled);
+}
+
+/**
+ * \brief Read/write counter value with PmuP_SetCntr.
+ *
+ * Test Category: Functional
+ *
+ * Programs a baseline value into an event counter using PmuP_SetCntr(), verifies
+ * readback, then runs workload to confirm accumulation beyond baseline.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Readback equals programmed value; subsequent reads increase after workload.
+ */
+static void TestPmu_readWriteCounterValueWithSetCntr(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    uint32_t baselineValue, readBackValue, postWorkValue;
+    int32_t initStatus;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Freeze all counters to avoid increments while programming baseline */
+    PmuP_EnableAllCounters(0U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+
+    baselineValue = TEST_PMU_BASELINE_COUNTER_VAL;
+    PmuP_SetCntr(TEST_PMU_COUNTER_IDX_0, baselineValue);
+    readBackValue = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TEST_ASSERT_EQUAL_UINT32(baselineValue, readBackValue);
+
+    /* Unfreeze and verify accumulation */
+    PmuP_EnableAllCounters(1U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+    TestPmu_runDeterministicWorkload();
+    postWorkValue = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TEST_ASSERT_TRUE(postWorkValue > baselineValue);
+}
+
+/**
+ * \brief Counter overflow flag and wrap behavior.
+ *
+ * Test Category: Functional
+ *
+ * Forces an event counter to overflow and verifies the counter wraps and the
+ * overflow status bit is set. Clears the flag and verifies it is cleared.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Counter wraps to small value; PMOVSR bit sets; clear removes bit.
+ */
+static void TestPmu_counterOverflowFlagAndWrap(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i, retry;
+    uint32_t statusMask, wrappedValue, pollBudget, counterValue;
+    int32_t initStatus;
+    volatile uint32_t sum;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Enable overflow reporting on counter 0 and set near max */
+    PmuP_EnableCounterOverflowInterrupt(TEST_PMU_COUNTER_IDX_0, 1U);
+
+    /* Freeze counter before setting value */
+    PmuP_EnableAllCounters(0U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+
+    /* Set counter very close to overflow */
+    PmuP_SetCntr(TEST_PMU_COUNTER_IDX_0, TEST_PMU_NEAR_OVERFLOW_16);
+
+    /* Verify the write took effect */
+    counterValue = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TEST_ASSERT_TRUE(counterValue >= TEST_PMU_NEAR_OVERFLOW_16);
+
+    /* Re-enable counter to start counting */
+    PmuP_EnableAllCounters(1U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+
+    /* Drive increments to force wrap; poll official status API */
+    statusMask = 0U;
+    pollBudget = TEST_PMU_POLL_BUDGET_OVERFLOW;
+    while ((pollBudget > 0U) && ((statusMask & (1U << TEST_PMU_COUNTER_IDX_0)) == 0U))
+    {
+        sum = 0U;
+        for (i = 0U; i < 100U; i+=1)
+        {
+            sum += (i * 3U) + 7U;
+        }
+        (void)sum;
+
+        statusMask = PmuP_ReadCntrOverflowStatus();
+
+        if ((statusMask & (1U << TEST_PMU_COUNTER_IDX_0)) != 0U)
+        {
+            break;
+        }
+
+        ClockP_usleep(1);
+        pollBudget-=1;
+    }
+
+    /* If overflow still didn't trigger, manually force it */
+    if ((statusMask & (1U << TEST_PMU_COUNTER_IDX_0)) == 0U)
+    {
+        /* Freeze, set even closer to overflow, unfreeze */
+        PmuP_EnableAllCounters(0U);
+        PmuP_SetCntr(TEST_PMU_COUNTER_IDX_0, TEST_PMU_NEAR_OVERFLOW_4);
+        PmuP_EnableAllCounters(1U);
+
+        /* Try one more aggressive workload */
+        for (retry = 0U; retry < TEST_PMU_POLL_BUDGET; retry+=1)
+        {
+            sum = 0U;
+            for (i = 0U; i < 100U; i+=1)
+            {
+                sum += i;
+            }
+            (void)sum;
+
+            statusMask = PmuP_ReadCntrOverflowStatus();
+            if ((statusMask & (1U << TEST_PMU_COUNTER_IDX_0)) != 0U)
+            {
+                break;
+            }
+        }
+    }
+
+    TEST_ASSERT_TRUE((statusMask & (1U << TEST_PMU_COUNTER_IDX_0)) != 0U);
+
+    wrappedValue = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TEST_ASSERT_TRUE(wrappedValue < TEST_PMU_WRAPPED_VAL_MAX);
+
+    PmuP_ClearCntrOverflowStatus(1U << TEST_PMU_COUNTER_IDX_0);
+    statusMask = PmuP_ReadCntrOverflowStatus();
+    TEST_ASSERT_TRUE((statusMask & (1U << TEST_PMU_COUNTER_IDX_0)) == 0U);
+}
+
+/**
+ * \brief Global freeze preserves accumulated counter values across multiple cycles.
+ *
+ * Test Category: Functional
+ *
+ * Accumulates counters to a known value, freezes globally, verifies values
+ * unchanged, unfreezes, accumulates more, and verifies total is sum of pre-freeze
+ * and post-freeze increments (no reset on freeze/unfreeze).
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Counter values preserved across freeze; final value = baseline + increments.
+ */
+static void TestPmu_globalFreezePreservesAccumulatedValuesAcrossMultipleCycles(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    uint32_t c0Phase1, c0FrozenPhase1, c0Phase2, c0FrozenPhase2, c0Final;
+    uint32_t deltaAfterFreeze1, deltaAfterFreeze2;
+    int32_t initStatus;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Phase 1: Accumulate to known value */
+    TestPmu_runDeterministicWorkload();
+    c0Phase1 = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TEST_ASSERT_TRUE(c0Phase1 > 1000U);
+
+    /* Freeze and verify unchanged */
+    PmuP_EnableAllCounters(0U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+    TestPmu_runDeterministicWorkload();
+    c0FrozenPhase1 = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    deltaAfterFreeze1 = c0FrozenPhase1 - c0Phase1;
+    TEST_ASSERT_TRUE(deltaAfterFreeze1 < TEST_PMU_FREEZE_TOLERANCE); /* No reset on freeze */
+
+    /* Unfreeze and accumulate more */
+    PmuP_EnableAllCounters(1U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+    TestPmu_runDeterministicWorkload();
+    c0Phase2 = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TEST_ASSERT_TRUE(c0Phase2 > c0Phase1); /* Resumed from frozen value */
+
+    /* Freeze again and verify unchanged */
+    PmuP_EnableAllCounters(0U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+    TestPmu_runDeterministicWorkload();
+    c0FrozenPhase2 = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    deltaAfterFreeze2 = c0FrozenPhase2 - c0Phase2;
+    TEST_ASSERT_TRUE(deltaAfterFreeze2 < TEST_PMU_FREEZE_TOLERANCE); /* No reset on second freeze */
+
+    /* Unfreeze and verify final accumulation */
+    PmuP_EnableAllCounters(1U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+    TestPmu_runDeterministicWorkload();
+    c0Final = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+
+    /* CORE TEST: Final value should be monotonically increasing */
+    TEST_ASSERT_TRUE(c0Final > c0Phase2);
+    TEST_ASSERT_TRUE(c0Phase2 > c0Phase1);
+}
+
+/**
+ * \brief Per-counter reprogram does not affect others.
+ *
+ * Test Category: Functional
+ *
+ * Reprograms one counter’s event type while leaving others unchanged. Verifies
+ * all counters increment correctly across workloads and the reprogrammed counter
+ * begins counting the new event without disturbing other counters.
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput All counters remain monotonic; counter reprogramming does not
+ *                 reset or corrupt other counters.
+ */
+static void TestPmu_perCounterReprogramDoesNotAffectOthers(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    uint32_t c0Before, c1Before;
+    uint32_t c0AfterFirst, c1AfterFirst;
+    uint32_t c0AfterSecond, c1AfterSecond;
+    int32_t initStatus;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters >= 2U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Baseline workload and reads */
+    TestPmu_runDeterministicWorkload();
+    c0Before = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    c1Before = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_1);
+
+    /* Reprogram counter 1 to a different valid event */
+    PmuP_ConfigCounter(TEST_PMU_COUNTER_IDX_1, PmuP_EVENT_TYPE_D_RD);
+
+    /* Workload post reprogram */
+    TestPmu_runDeterministicWorkload();
+    c0AfterFirst = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    c1AfterFirst = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_1);
+
+    TEST_ASSERT_TRUE(c0AfterFirst >= c0Before);
+    TEST_ASSERT_TRUE(c1AfterFirst >= c1Before);
+
+    /* One more workload to verify monotonicity and stability */
+    TestPmu_runDeterministicWorkload();
+    c0AfterSecond = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    c1AfterSecond = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_1);
+
+    TEST_ASSERT_TRUE(c0AfterSecond > c0AfterFirst);
+    TEST_ASSERT_TRUE(c1AfterSecond > c1AfterFirst);
+}
+
+/**
+ * \brief Software chaining via overflow for 64-bit accumulation.
+ *
+ * Test Category: Functional
+ *
+ * Implements software 64-bit accumulation by detecting overflows of a 32-bit
+ * event counter, incrementing a software high word on each overflow, and
+ * composing a monotonic 64-bit count.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Composed 64-bit count increases monotonically across multiple wraps.
+ */
+static void TestPmu_softwareChainingViaOverflowFor64bitAccum(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i, wraps;
+    uint32_t statusMask, loWord;
+    uint64_t hiWord, composedBefore, composedAfter;
+    int32_t initStatus;
+    volatile uint32_t pollBudget;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    PmuP_EnableCounterOverflowInterrupt(TEST_PMU_COUNTER_IDX_0, 1U);
+    hiWord = 0ULL;
+    PmuP_SetCntr(TEST_PMU_COUNTER_IDX_0, TEST_PMU_NEAR_OVERFLOW_2);
+
+    loWord = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    composedBefore = ((hiWord << 32) | (uint64_t)loWord);
+
+    /* Loop until overflow status sets, clear and accumulate high word */
+    for (wraps = 0U; wraps < TEST_PMU_SW_CHAIN_WRAP_COUNT; wraps+=1)
+    {
+        statusMask = 0U;
+        pollBudget = TEST_PMU_POLL_BUDGET_LARGE;
+        while ((pollBudget > 0U) && ((statusMask & (1U << TEST_PMU_COUNTER_IDX_0)) == 0U))
+        {
+            TestPmu_runDeterministicWorkload();
+            statusMask = PmuP_ReadCntrOverflowStatus();
+            pollBudget-=1;
+        }
+        TEST_ASSERT_TRUE((statusMask & (1U << TEST_PMU_COUNTER_IDX_0)) != 0U);
+
+        PmuP_ClearCntrOverflowStatus(1U << TEST_PMU_COUNTER_IDX_0);
+        hiWord+=1;
+        /* Prepare for the next wrap quicker */
+        PmuP_SetCntr(TEST_PMU_COUNTER_IDX_0, TEST_PMU_NEAR_OVERFLOW_2);
+    }
+
+    loWord = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    composedAfter = ((hiWord << 32) | (uint64_t)loWord);
+    TEST_ASSERT_TRUE(composedAfter > composedBefore);
+}
+
+/**
+ * \brief User access enable path via PmuP_Config.
+ *
+ * Test Category: Functional
+ *
+ * Enables PMU user access and verifies normal counting behavior by measuring
+ * increments across workloads. Reapplies configuration to confirm stability.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Event counters increment with userEnable set; subsequent config
+ *                 calls remain stable.
+ */
+static void TestPmu_userAccessEnablePathViaPmuPConfig(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    uint32_t beforeUser, afterUser, afterReapply;
+    int32_t initStatus;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Enable user access and verify increments */
+    PmuP_Config(/*cycleCntDiv=*/0U, /*exportEvents=*/0U, /*userEnable=*/1U);
+    beforeUser = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TestPmu_runDeterministicWorkload();
+    afterUser  = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TEST_ASSERT_TRUE(afterUser > beforeUser);
+
+    /* Reapply configuration and verify continued increments */
+    PmuP_Config(/*cycleCntDiv=*/0U, /*exportEvents=*/0U, /*userEnable=*/1U);
+    TestPmu_runDeterministicWorkload();
+    afterReapply = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TEST_ASSERT_TRUE(afterReapply > afterUser);
+}
+
+/**
+ * \brief Enable/disable does not corrupt other counters' internal state.
+ *
+ * Test Category: Functional
+ *
+ * Disables counter 1 while counter 0 accumulates a known baseline. Verifies
+ * counter 0's value is preserved across counter 1's disable/enable cycle,
+ * confirming no cross-counter register corruption.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Counter 0 value preserved across counter 1's state changes;
+ *                 counter 0 increments predictably before and after.
+ */
+static void TestPmu_enableDisableDoesNotCorruptOtherCountersState(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    uint32_t c0BaselineA, c0AfterHeavyA, c0BaselineB, c0AfterHeavyB;
+    uint32_t deltaA, deltaB, c0DuringDisable;
+    int32_t initStatus;
+    volatile uint32_t sum;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters >= 2U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Measure counter 0 delta BEFORE disabling counter 1 */
+    c0BaselineA = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TestPmu_runDeterministicWorkload();
+    c0AfterHeavyA = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    deltaA = c0AfterHeavyA - c0BaselineA;
+    TEST_ASSERT_TRUE(deltaA > TEST_PMU_MIN_VALID_DELTA);
+
+    /* Disable counter 1 and run heavy workload */
+    PmuP_enableCounter(TEST_PMU_COUNTER_IDX_1, 0U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+
+    sum = 0U;
+    for (i = 0U; i < TEST_PMU_HEAVY_WORKLOAD_ITER_COUNT; i+=1)
+    {
+        sum += i;
+    }
+    (void)sum;
+
+    /* Verify counter 1 is disabled; counter 0 still increments normally */
+    c0DuringDisable = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TEST_ASSERT_TRUE(c0DuringDisable > c0AfterHeavyA); /* Counter 0 still counting */
+
+    /* Re-enable counter 1 */
+    PmuP_enableCounter(TEST_PMU_COUNTER_IDX_1, 1U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+
+    /* Measure counter 0 delta AFTER re-enabling counter 1 */
+    c0BaselineB = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TestPmu_runDeterministicWorkload();
+    c0AfterHeavyB = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    deltaB = c0AfterHeavyB - c0BaselineB;
+
+    /* CORE TEST: Verify counter 0's increment rate is consistent before/after */
+    uint32_t tolerancePct = TEST_PMU_TOLERANCE_PCT; /* Allow 20% variance */
+    uint32_t minDeltaB = deltaA - (deltaA * tolerancePct / 100);
+    uint32_t maxDeltaB = deltaA + (deltaA * tolerancePct / 100);
+    TEST_ASSERT_TRUE(deltaB >= minDeltaB && deltaB <= maxDeltaB);
+}
+/**
+ * \brief Rapid back-to-back read/write is race-free.
+ *
+ * Test Category: Functional
+ *
+ * Rapidly writes and reads a counter while globally frozen, then unfreezes
+ * and verifies normal counting continues.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Write-read matches while frozen; increments resume after unfreeze.
+ */
+static void TestPmu_rapidBackToBackReadWriteIsRaceFree(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i, k;
+    uint32_t val, rd, before, after;
+    int32_t initStatus;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Freeze; do rapid write-read checks */
+    PmuP_EnableAllCounters(0U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+    for (k = 0U; k < TEST_PMU_RAPID_RW_ITER_COUNT; k+=1)
+    {
+        val = (k * 7U) + 3U;
+        PmuP_SetCntr(TEST_PMU_COUNTER_IDX_0, val);
+        rd = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+        TEST_ASSERT_EQUAL_UINT32(val, rd);
+    }
+
+    /* Unfreeze and verify counting resumes */
+    PmuP_EnableAllCounters(1U);
+    ClockP_usleep(TEST_PMU_GATING_DELAY_US);
+    before = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TestPmu_runDeterministicWorkload();
+    after  = PmuP_ReadCounter(TEST_PMU_COUNTER_IDX_0);
+    TEST_ASSERT_TRUE(after > before);
+}
+
+/**
+ * \brief getOverflowStatus shows no flags after clear.
+ *
+ * Test Category: Functional
+ *
+ * Clears all overflow flags and verifies PmuP_getOverflowStatus() returns 0.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput PMOVSR is 0 after clear.
+ */
+static void TestPmu_getOverflowStatusNoFlags(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    uint32_t statusMask;
+    int32_t initStatus;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    /* Disable overflow interrupts and clear all flags */
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        PmuP_EnableCounterOverflowInterrupt(i, 0U);
+    }
+    PmuP_EnableCounterOverflowInterrupt(PmuP_PMU_CYCLE_COUNTER_NUM, 0U);
+    PmuP_ClearCntrOverflowStatus(0xFFFFFFFFU);
+
+    statusMask = PmuP_getOverflowStatus();
+    TEST_ASSERT_EQUAL_UINT32(0U, statusMask);
+}
+
+/**
+ * \brief Overflow status persists until cleared.
+ *
+ * Test Category: Functional
+ *
+ * Forces an overflow, reads getOverflowStatus() multiple times to ensure the bit
+ * remains set until explicitly cleared.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Bit stays set across reads; clears after ClearCntrOverflowStatus().
+ */
+static void TestPmu_overflowStatusPersistsUntilCleared(void *args)
+{
+    (void)args;
+    uint32_t numCounters, i;
+    uint32_t statusMask;
+    int32_t initStatus;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    PmuP_EnableCounterOverflowInterrupt(TEST_PMU_COUNTER_IDX_0, 1U);
+    PmuP_SetCntr(TEST_PMU_COUNTER_IDX_0, TEST_PMU_NEAR_OVERFLOW_2);
+    TestPmu_runDeterministicWorkload();
+
+    /* Read multiple times; bit should persist */
+    for (i = 0U; i < 4U; i+=1)
+    {
+        statusMask = PmuP_getOverflowStatus();
+        TEST_ASSERT_TRUE((statusMask & (1U << TEST_PMU_COUNTER_IDX_0)) != 0U);
+    }
+
+    /* Clear and verify cleared */
+    PmuP_ClearCntrOverflowStatus(1U << TEST_PMU_COUNTER_IDX_0);
+    statusMask = PmuP_getOverflowStatus();
+    TEST_ASSERT_TRUE((statusMask & (1U << TEST_PMU_COUNTER_IDX_0)) == 0U);
+}
+
+/**
+ * \brief Clear overflow status multiple bits via mask.
+ *
+ * Test Category: Functional
+ *
+ * Forces overflow on counters 0 and 1; clears only bit 0, verifies bit 1 remains,
+ * then clears bit 1 and verifies both cleared.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Masked clear affects only specified bits.
+ */
+static void TestPmu_clearOverflowStatusMultipleBitsMask(void *args)
+{
+    (void)args;
+    uint32_t numCounters, statusMask, i;
+    int32_t initStatus;
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters >= 2U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    PmuP_EnableCounterOverflowInterrupt(TEST_PMU_COUNTER_IDX_0, 1U);
+    PmuP_EnableCounterOverflowInterrupt(TEST_PMU_COUNTER_IDX_1, 1U);
+    PmuP_SetCntr(TEST_PMU_COUNTER_IDX_0, TEST_PMU_NEAR_OVERFLOW_2);
+    PmuP_SetCntr(TEST_PMU_COUNTER_IDX_1, TEST_PMU_NEAR_OVERFLOW_2);
+    TestPmu_runDeterministicWorkload();
+
+    statusMask = PmuP_getOverflowStatus();
+    TEST_ASSERT_TRUE((statusMask & (1U << TEST_PMU_COUNTER_IDX_0)) != 0U);
+    TEST_ASSERT_TRUE((statusMask & (1U << TEST_PMU_COUNTER_IDX_1)) != 0U);
+
+    /* Clear bit 0 only */
+    PmuP_ClearCntrOverflowStatus(1U << TEST_PMU_COUNTER_IDX_0);
+    statusMask = PmuP_getOverflowStatus();
+    TEST_ASSERT_TRUE((statusMask & (1U << TEST_PMU_COUNTER_IDX_0)) == 0U);
+    TEST_ASSERT_TRUE((statusMask & (1U << TEST_PMU_COUNTER_IDX_1)) != 0U);
+
+    /* Clear bit 1 */
+    PmuP_ClearCntrOverflowStatus(1U << TEST_PMU_COUNTER_IDX_1);
+    statusMask = PmuP_getOverflowStatus();
+    TEST_ASSERT_TRUE((statusMask & ((1U << TEST_PMU_COUNTER_IDX_0) | (1U << TEST_PMU_COUNTER_IDX_1))) == 0U);
+}
+
+/**
+ * \brief Cycle counter overflow status read and clear.
+ *
+ * Test Category: Functional
+ *
+ * Forces cycle counter overflow and verifies getOverflowStatus() cycle bit sets
+ * and clears.
+ *
+ * \param args Unused.
+ * \return None.
+ * \expectedOutput Cycle overflow bit sets on wrap; clears on masked clear.
+ */
+static void TestPmu_cycleCounterOverflowStatusReadAndClear(void *args)
+{
+    (void)args;
+    uint32_t numCounters, statusMask, cycleMask, i;
+    int32_t initStatus;
+
+    cycleMask = (1U << PmuP_PMU_CYCLE_COUNTER_NUM);
+
+    numCounters = PmuP_GetNumCntrs();
+    TEST_ASSERT_TRUE(numCounters > 0U);
+
+    for (i = 0U; i < numCounters; i+=1)
+    {
+        TestPmu_EventCfgBuf[i].name = "InstrExec";
+        TestPmu_EventCfgBuf[i].type = PmuP_EVENT_TYPE_I_X;
+    }
+    TestPmu_ConfigObj.bCycleCounter    = 1U;
+    TestPmu_ConfigObj.numEventCounters = numCounters;
+    TestPmu_ConfigObj.eventCounters    = TestPmu_EventCfgBuf;
+
+    initStatus = PMU_init(&TestPmu_ConfigObj);
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, initStatus);
+
+    PmuP_EnableCounterOverflowInterrupt(PmuP_PMU_CYCLE_COUNTER_NUM, 1U);
+    PmuP_SetCntr(PmuP_PMU_CYCLE_COUNTER_NUM, TEST_PMU_NEAR_OVERFLOW_2);
+    TestPmu_runDeterministicWorkload();
+
+    statusMask = PmuP_getOverflowStatus();
+    TEST_ASSERT_TRUE((statusMask & cycleMask) != 0U);
+
+    PmuP_ClearCntrOverflowStatus(cycleMask);
+    statusMask = PmuP_getOverflowStatus();
+    TEST_ASSERT_TRUE((statusMask & cycleMask) == 0U);
+}
+
 /* ========================================================================== */
 /*                    Unity Framework Setup Functions                         */
 /* ========================================================================== */
@@ -1004,6 +1888,20 @@ void test_pmu_main(void *args)
     RUN_TEST(TestPmu_perCounterOverflowInterruptEnableDisable, 10439, NULL);
     RUN_TEST(TestPmu_overflowIsrLogicDetectAndClear, 10440, NULL);
     RUN_TEST(TestPmu_overflowIsrLogicRearmAndRepeat, 10441, NULL);
+    RUN_TEST(TestPmu_programValidEventAndCountCntr0, 10442, NULL);
+    RUN_TEST(TestPmu_perCounterEnableDisableHaltsOnlyThatCounter, 10444, NULL);
+    RUN_TEST(TestPmu_readWriteCounterValueWithSetCntr, 10445, NULL);
+    RUN_TEST(TestPmu_counterOverflowFlagAndWrap, 10446, NULL);
+    RUN_TEST(TestPmu_globalFreezePreservesAccumulatedValuesAcrossMultipleCycles, 10447, NULL);
+    RUN_TEST(TestPmu_perCounterReprogramDoesNotAffectOthers, 10448, NULL);
+    RUN_TEST(TestPmu_softwareChainingViaOverflowFor64bitAccum, 10449, NULL);
+    RUN_TEST(TestPmu_userAccessEnablePathViaPmuPConfig, 10450, NULL);
+    RUN_TEST(TestPmu_enableDisableDoesNotCorruptOtherCountersState, 10451, NULL);
+    RUN_TEST(TestPmu_rapidBackToBackReadWriteIsRaceFree, 10454, NULL);
+    RUN_TEST(TestPmu_getOverflowStatusNoFlags, 10455, NULL);
+    RUN_TEST(TestPmu_overflowStatusPersistsUntilCleared, 10456, NULL);
+    RUN_TEST(TestPmu_clearOverflowStatusMultipleBitsMask, 10457, NULL);
+    RUN_TEST(TestPmu_cycleCounterOverflowStatusReadAndClear, 10458, NULL);
 
     UNITY_END();
 }

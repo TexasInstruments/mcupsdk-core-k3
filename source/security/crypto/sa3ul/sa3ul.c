@@ -1783,6 +1783,9 @@ static int32_t SA3UL_hwInit(SA3UL_Attrs  *attrs)
     }
     else
     {
+#if defined (SOC_AM275X)
+        /* Nothing to do */
+#else
         /* Enable specific SA3UL engine modules */
         reg = CSL_REG_RD(&pSaRegs->UPDATES.ENGINE_ENABLE);
         CSL_FINS(reg, CP_ACE_UPDATES_ENGINE_ENABLE_CTX_EN, 1u);
@@ -1811,6 +1814,7 @@ static int32_t SA3UL_hwInit(SA3UL_Attrs  *attrs)
         {
             retVal = SystemP_FAILURE;
         }
+#endif
     }
     return (retVal);
 
@@ -1829,6 +1833,9 @@ static uint32_t SA3UL_hwDeInit(SA3UL_Attrs  *attrs)
     }
     else
     {
+#if defined (SOC_AM275X)
+        /* Nothing to do */
+#else
         /* Enable specific SA3UL engine modules */
         reg = CSL_REG_RD(&pSaRegs->UPDATES.ENGINE_ENABLE);
         CSL_FINS(reg, CP_ACE_UPDATES_ENGINE_ENABLE_CTX_EN, 0u);
@@ -1847,6 +1854,7 @@ static uint32_t SA3UL_hwDeInit(SA3UL_Attrs  *attrs)
               CSL_CP_ACE_CMD_STATUS_TRNG_EN_MASK          |
               CSL_CP_ACE_CMD_STATUS_ENCSS_EN_MASK         |
               CSL_CP_ACE_CMD_STATUS_AUTHSS_EN_MASK;
+#endif
     }
 
     return (retVal);
@@ -1894,6 +1902,21 @@ int32_t SA3UL_rngSetup(SA3UL_Handle handle)
 
     /* Initial Seed values:
     *JTAGID, JTAG_USER_ID and DIE_ID0 to 3, In future additional device specific ids will add for rest of fields */
+
+#if defined (SOC_AM275X)
+    pTrngRegs->TRNG_PS_AI_0  = 0U;
+    pTrngRegs->TRNG_PS_AI_1  = 0U;
+    pTrngRegs->TRNG_PS_AI_2  = 0U;
+    pTrngRegs->TRNG_PS_AI_3  = 0U;
+    pTrngRegs->TRNG_PS_AI_4  = 0U;
+    pTrngRegs->TRNG_PS_AI_5  = 0U;
+    pTrngRegs->TRNG_PS_AI_6  = 0U;
+    pTrngRegs->TRNG_PS_AI_7  = 0U;
+    pTrngRegs->TRNG_PS_AI_8  = 0U;
+    pTrngRegs->TRNG_PS_AI_9  = 0U;
+    pTrngRegs->TRNG_PS_AI_10 = 0U;
+    pTrngRegs->TRNG_PS_AI_11 = 0U;
+#else
     pTrngRegs->TRNG_PS_AI_0  = (uint32_t)pMainMmrCtrl->JTAGID;
     pTrngRegs->TRNG_PS_AI_1  = (uint32_t)pMainMmrCtrl->JTAG_USER_ID;
     pTrngRegs->TRNG_PS_AI_2  = (uint32_t)pMainMmrCtrl->DIE_ID0;
@@ -1906,6 +1929,7 @@ int32_t SA3UL_rngSetup(SA3UL_Handle handle)
     pTrngRegs->TRNG_PS_AI_9  = 0x02cd76ac;
     pTrngRegs->TRNG_PS_AI_10 = 0x76acadd3;
     pTrngRegs->TRNG_PS_AI_11 = 0x74b6d702;
+#endif
     val = CSL_REG_RD(&pTrngRegs->TRNG_CONTROL);
 
     /* We always request the maximum number of blocks possible */

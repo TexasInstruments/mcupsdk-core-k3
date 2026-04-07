@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2022 Texas Instruments Incorporated
+ *  Copyright (C) 2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,28 +30,22 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef SOC_PSIL_THREAD_ID_H
-#define SOC_PSIL_THREAD_ID_H
+
+#ifndef AM275X_PSIL_THREAD_ID_H
+#define AM275X_PSIL_THREAD_ID_H
+
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-#if defined (SOC_AM62AX)
-#include <security/crypto/psil_thread_id/soc/am62ax/psil_thread_id.h>
-#endif
-
-#if defined (SOC_AM62DX)
-#include <security/crypto/psil_thread_id/soc/am62dx/psil_thread_id.h>
-#endif
-
-#if defined (SOC_AM275X)
-#include <security/crypto/psil_thread_id/soc/am275x/psil_thread_id.h>
-#endif
+#define     TX_PSIL_THREAD_ID       (0xf500)
+#define     RX_PSIL0_THREAD_ID      (0x7504)
+#define     RX_PSIL1_THREAD_ID      (0x7505)
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif
+#endif /* AM275X_PSIL_THREAD_ID_H */

@@ -911,6 +911,16 @@ let dss_module = {
                         }
 
                     ],
+                },
+                {
+                    name : "vpGammaConfig",
+                    displayName : "Enable VP Gamma Correction",
+                    default : "false",
+                    hidden: false,
+                    options: [
+                        { name : "false", displayName: "Disable" },
+                        { name : "true", displayName : "Enable" },
+                    ],
                 }
             ],
         },

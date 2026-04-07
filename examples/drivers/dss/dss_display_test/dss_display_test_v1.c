@@ -403,6 +403,17 @@ static void DispApp_initDssParams(Dss_Object *appObj, uint32_t dssInstanceNum)
     vpParams->lcdPolarityCfg.vsPolarity = gDssVpParams[dssInstanceNum].lcdPolarityCfg.vsPolarity;
     vpParams->lcdPolarityCfg.pixelClkPolarity = gDssVpParams[dssInstanceNum].lcdPolarityCfg.pixelClkPolarity ;
 
+    if (TRUE == gDssVpParams[dssInstanceNum].gammaCfg.gammaEnable)
+    {
+        vpParams->gammaCfg.gammaEnable = gDssVpParams[dssInstanceNum].gammaCfg.gammaEnable;
+        for (uint32_t i = 0; i < CSL_DSS_NUM_LUT_ENTRIES; i++)
+        {
+            /* Writing R(23:16), G(15:8),B(7:0) components with white color, output : white screen */
+            vpParams->gammaCfg.gammaData[i] = 0xFFFFFF;
+        }
+        DebugP_log("Gamma Configuration Done !! \r\n");
+    }
+
     /* Configure VP Advance Params*/
     advVpParams->vpId = gDssAdvVpParams[dssInstanceNum].vpId;
     advVpParams->lcdAdvSignalCfg.hVAlign = gDssAdvVpParams[dssInstanceNum].lcdAdvSignalCfg.hVAlign;

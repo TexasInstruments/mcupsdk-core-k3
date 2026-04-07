@@ -413,6 +413,8 @@ typedef struct
     /**< LCD TDM Configuration. See \ref CSL_DssVpLcdTdmCfg for details */
     Dss_DctrlSyncOpCfg syncOpCfg;
     /**< Sync operation Configuration. See \ref Dss_DctrlSyncOpCfg for details */
+    CSL_DssVpGammaCfg gammaCfg;
+    /**< Gamma Correction configuration. See \ref CSL_DssVpGammaCfg for details */
 } Dss_DctrlVpParams;
 
 /**
@@ -783,6 +785,7 @@ static inline void Dss_dctrlVpParamsInit(Dss_DctrlVpParams *vpParams)
     if(NULL != vpParams)
     {
         vpParams->vpId = CSL_DSS_VP_ID_1;
+        vpParams->gammaCfg.gammaEnable = FALSE;
         CSL_dssVpLcdOpTimingCfgInit(&(vpParams->lcdOpTimingCfg));
         CSL_dssVpLcdSignalPolarityCfgInit(&(vpParams->lcdPolarityCfg));
         CSL_dssVpLcdTdmCfgInit(&(vpParams->lcdTdmCfg));

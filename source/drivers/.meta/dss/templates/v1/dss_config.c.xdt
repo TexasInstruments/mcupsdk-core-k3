@@ -48,6 +48,16 @@ Dss_DctrlVpParams gDssVpParams[CONFIG_DSS_NUM_INSTANCES] =
             .vsPolarity = FVID2_`config.vSyncPolarity`,
             .pixelClkPolarity = FVID2_`config.pixelClockPolarity`,
         },
+        .gammaCfg = {
+            % if(config.vpGammaConfig == "true")
+            % {
+            .gammaEnable = TRUE,
+            % }
+            % else
+            % {
+            .gammaEnable = FALSE,
+            % }
+        }
     },
 % }
 };

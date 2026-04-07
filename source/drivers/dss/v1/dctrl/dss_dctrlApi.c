@@ -981,6 +981,7 @@ static int32_t Dss_dctrlDrvSetVpParamsIoctl(
     const CSL_DssVpLcdSignalPolarityCfg *lcdPolarityCfg;
     const CSL_DssVpLcdTdmCfg *lcdTdmCfg;
     const Dss_DctrlSyncOpCfg *syncOpCfg;
+    const CSL_DssVpGammaCfg *gammaCfg;
     Dss_DctrlVpParams *pVpParams;
     Dss_DctrlDrvInfo *pDrvInfo;
 
@@ -1035,6 +1036,7 @@ static int32_t Dss_dctrlDrvSetVpParamsIoctl(
         lcdPolarityCfg = &vpParams->lcdPolarityCfg;
         lcdTdmCfg = &vpParams->lcdTdmCfg;
         syncOpCfg = &vpParams->syncOpCfg;
+        gammaCfg = &vpParams->gammaCfg;
         pVpParams = &gDss_DctrlDrvInfo.vpParams[vpId];
 
         pVpParams->syncOpCfg.enabled = syncOpCfg->enabled;
@@ -1097,6 +1099,11 @@ static int32_t Dss_dctrlDrvSetVpParamsIoctl(
         if(FVID2_SOK != retVal)
         {
             GT_assert(DssTrace, FALSE);
+        }
+        
+        if (TRUE == gammaCfg->gammaEnable)
+        {
+            CSL_dssVpEnableTvGamma(vpRegs, gammaCfg);
         }
 
         if(lcdOpTimingCfg->mInfo.height > 5U)

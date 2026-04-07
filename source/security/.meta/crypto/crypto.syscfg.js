@@ -119,7 +119,7 @@ function validate(instance, report) {
     common.validate.checkSameInstanceName(instance, report);
 }
 
-if(common.getSocName() == "am62ax" || common.getSocName() == "am62dx" ) {
+if(common.getSocName() == "am62ax" || common.getSocName() == "am62dx" || common.getSocName() == "am275x") {
     exports = crypto_module_sa3ul;
 }
 else{

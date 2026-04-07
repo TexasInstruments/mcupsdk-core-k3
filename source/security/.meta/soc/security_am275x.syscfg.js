@@ -4,7 +4,8 @@ const topModules_wkup = [
 
 ];
 const topModules_r5f = [
-
+    "/security/crypto/crypto",
+    "/security/sa3ul/sa3ul",
 ];
 const topModules_c75 = [
 

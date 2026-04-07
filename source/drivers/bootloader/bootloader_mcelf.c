@@ -71,6 +71,9 @@
                                                (ELF_MAX_SEGMENTS * ELF_P_HEADER_MAX_SIZE) \
                                                + ELF_NOTE_SEGMENT_MAX_SIZE)
 
+#define BOOTLOADER_MCELF_FINAL_PACKET_ID      (0x5AU)
+#define BOOTLOADER_MCELF_PACKET_ID            (0xA5U)
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -130,8 +133,9 @@ static int32_t Bootloader_parseNoteSegment(Bootloader_Handle handle,
 
 /* Functions to call TISCI APIs for authentication */
 static int32_t Bootloader_authInit(uint32_t certLoadAddr);
-static int32_t Bootloader_authUpdate(uint32_t segAddr, uint32_t segSize, bool final_pkt, uint64_t dst);
+static int32_t Bootloader_authUpdate(uint32_t segAddr, uint32_t segSize, uint8_t final_pkt, uint64_t dst);
 static int32_t Bootloader_authFinish(void);
+static bool Bootloader_mcelfIsEncrypted(uint32_t certAddr, uint32_t certLen);
 
 /* Function to copy DMA restricted regions */
 static void Bootloader_restrictedRegionCopy(Bootloader_Handle handle, uint32_t segmentSize, uint32_t loadAddr);
@@ -139,6 +143,32 @@ static void Bootloader_restrictedRegionCopy(Bootloader_Handle handle, uint32_t s
 /* ========================================================================== */
 /*                             Function Definitions                           */
 /* ========================================================================== */
+
+static bool Bootloader_mcelfIsEncrypted(uint32_t certAddr, uint32_t certLen)
+{
+    /* DER encoding of OID 1.3.6.1.4.1.294.1.4 (encryption extension) */
+    const uint8_t encOID[] = {
+        0x06, 0x09, 0x2B, 0x06, 0x01, 0x04, 0x01, 0x82, 0x26, 0x01, 0x04
+    };
+    const uint32_t oidLen = (uint32_t)sizeof(encOID);
+    const uint8_t *cert   = (const uint8_t *)certAddr;
+    uint32_t i;
+
+    /* Prevent integer underflow when certLen < oidLen */
+    if (certLen < oidLen)
+    {
+        return false;
+    }
+
+    for (i = 0U; i <= certLen - oidLen; i++)
+    {
+        if (memcmp(cert + i, encOID, oidLen) == 0U)
+        {
+            return true;
+        }
+    }
+    return false;
+}
 
 int32_t Bootloader_parseAndLoadMultiCoreELF(Bootloader_Handle handle, Bootloader_BootImageInfo *bootImageInfo)
 {
@@ -201,7 +231,9 @@ int32_t Bootloader_parseAndLoadMultiCoreELF(Bootloader_Handle handle, Bootloader
             if(status == SystemP_SUCCESS)
             {
                 uint32_t i = 1U, cslCoreId = 0U, mcelfCoreId = 0U, imgAddr;
-                bool isFinalPkt = FALSE;
+                uint8_t isFinalPkt = BOOTLOADER_MCELF_PACKET_ID;
+                bool isEncrypted = false;
+                uint8_t rsSizeForDecryp = 0U;
 
                 if(config->bootMedia == BOOTLOADER_MEDIA_FLASH)
                 {
@@ -210,6 +242,18 @@ int32_t Bootloader_parseAndLoadMultiCoreELF(Bootloader_Handle handle, Bootloader
                     flashArgs->enablePhyPipeline = TRUE;
                     status = config->fxns->imgCustomFxn(config->args);
                     imgAddr = (uint32_t) FLASH_BASE_ADDRESS + flashArgs->appImageOffset + certLen;
+                    /* Determine once whether image is encrypted */
+                    uint32_t certStartAddr = imgAddr - certLen;
+                    isEncrypted = Bootloader_mcelfIsEncrypted(certStartAddr, certLen);
+                }
+                else if((config->bootMedia == BOOTLOADER_MEDIA_SD) || (config->bootMedia == BOOTLOADER_MEDIA_EMMC))
+                {
+                    /* Certificate was already read into scratchMemPtr by Bootloader_authCertificate */
+                    isEncrypted = Bootloader_mcelfIsEncrypted((uint32_t)(config->scratchMemPtr), certLen);
+                }
+                else
+                {
+                    /* do nothing */
                 }
 
                 if(mcelfMetaInfo.elfClass == ELFCLASS_32)
@@ -258,13 +302,14 @@ int32_t Bootloader_parseAndLoadMultiCoreELF(Bootloader_Handle handle, Bootloader
                                     {
                                         if (i == elfPtr32->ePhnum - 1U)
                                         {
-                                            isFinalPkt = TRUE;
+                                            isFinalPkt = BOOTLOADER_MCELF_FINAL_PACKET_ID;
+                                            rsSizeForDecryp = isEncrypted ? 32U : 0U;
                                         }
 
                                         if(config->bootMedia == BOOTLOADER_MEDIA_FLASH)
                                         {
                                             status = Bootloader_authUpdate( imgAddr + elfPhdrPtr32[i].offset, \
-                                                                    (uint32_t) elfPhdrPtr32[i].filesz, \
+                                                                    (uint32_t) (elfPhdrPtr32[i].filesz + rsSizeForDecryp), \
                                                                     isFinalPkt, \
                                                                     (uint64_t) addr);
 
@@ -281,16 +326,16 @@ int32_t Bootloader_parseAndLoadMultiCoreELF(Bootloader_Handle handle, Bootloader
                                                 {
                                                     loadAddr = elfPhdrPtr32[i].paddr;
                                                 }
-                                                Bootloader_restrictedRegionCopy(handle, (uint32_t) elfPhdrPtr32[i].filesz, loadAddr);
+                                                Bootloader_restrictedRegionCopy(handle, (uint32_t) (elfPhdrPtr32[i].filesz + rsSizeForDecryp), loadAddr);
                                             }
                                             else
                                             {
-                                                config->fxns->imgReadFxn((void *)(loadAddr), (uint32_t)elfPhdrPtr32[i].filesz, config->args);
+                                                config->fxns->imgReadFxn((void *)(loadAddr), (uint32_t)(elfPhdrPtr32[i].filesz + rsSizeForDecryp), config->args);
                                             }
 
                                             /* Do auth init from the load address */
                                             status = Bootloader_authUpdate( addr, \
-                                                                    (uint32_t) elfPhdrPtr32[i].filesz, \
+                                                                    (uint32_t) (elfPhdrPtr32[i].filesz + rsSizeForDecryp), \
                                                                     isFinalPkt, \
                                                                     (uint64_t) addr);
 
@@ -363,13 +408,14 @@ int32_t Bootloader_parseAndLoadMultiCoreELF(Bootloader_Handle handle, Bootloader
                                 {
                                     if (i == (elfPtr64->ePhnum - 1U))
                                     {
-                                        isFinalPkt = TRUE;
+                                        isFinalPkt = BOOTLOADER_MCELF_FINAL_PACKET_ID;
+                                        rsSizeForDecryp = isEncrypted ? 32U : 0U;
                                     }
 
                                     if(config->bootMedia == BOOTLOADER_MEDIA_FLASH)
                                     {
                                         status = Bootloader_authUpdate( imgAddr + elfPhdrPtr64[i].offset, \
-                                                                (uint32_t) elfPhdrPtr64[i].filesz, \
+                                                                (uint32_t) (elfPhdrPtr64[i].filesz + rsSizeForDecryp), \
                                                                 isFinalPkt, \
                                                                 (uint64_t) addr);
                                         ((Bootloader_Config *)handle)->bootImageSize += elfPhdrPtr64[i].filesz;
@@ -385,16 +431,16 @@ int32_t Bootloader_parseAndLoadMultiCoreELF(Bootloader_Handle handle, Bootloader
                                             {
                                                 loadAddr = (uint32_t) elfPhdrPtr64[i].paddr;
                                             }
-                                            Bootloader_restrictedRegionCopy(handle, (uint32_t) elfPhdrPtr64[i].filesz, loadAddr);
+                                            Bootloader_restrictedRegionCopy(handle, (uint32_t) (elfPhdrPtr64[i].filesz + rsSizeForDecryp), loadAddr);
                                         }
                                         else
                                         {
-                                            config->fxns->imgReadFxn((void *)(addr), (uint32_t) elfPhdrPtr64[i].filesz, config->args);
+                                            config->fxns->imgReadFxn((void *)(addr), (uint32_t)(elfPhdrPtr64[i].filesz + rsSizeForDecryp), config->args);
                                         }
 
                                         /* Do auth init from the load address */
                                         status = Bootloader_authUpdate( addr, \
-                                                                (uint32_t) elfPhdrPtr64[i].filesz, \
+                                                                (uint32_t) (elfPhdrPtr64[i].filesz + rsSizeForDecryp), \
                                                                 isFinalPkt, \
                                                                 (uint64_t) addr);
 
@@ -969,7 +1015,7 @@ static int32_t Bootloader_authInit(uint32_t certLoadAddr)
     return authStatus;
 }
 
-static int32_t Bootloader_authUpdate(uint32_t segAddr, uint32_t segSize, bool final_pkt, uint64_t dst)
+static int32_t Bootloader_authUpdate(uint32_t segAddr, uint32_t segSize, uint8_t final_pkt, uint64_t dst)
 {
     int32_t status;
     struct tisci_security_mesg_mcelf_update_req request;
@@ -1129,7 +1175,12 @@ int32_t Bootloader_UartParseAndLoadMultiCoreELF(Bootloader_Handle handle, Bootlo
             if(status == SystemP_SUCCESS)
             {
                 uint32_t i = 1U, cslCoreId = 0U, mcelfCoreId = 0U;
-                bool isFinalPkt = FALSE;
+                uint8_t isFinalPkt = BOOTLOADER_MCELF_PACKET_ID;
+                /* Determine once whether image is encrypted */
+                Bootloader_UartArgs *uartArgs = (Bootloader_UartArgs *)(config->args);
+                uint32_t certStartAddr = (uint32_t)(uartArgs->appImageBaseAddr);
+                bool isEncrypted = Bootloader_mcelfIsEncrypted(certStartAddr, certLen);
+                uint8_t rsSizeForDecryp = 0U;
 
                 if(mcelfMetaInfo.elfClass == ELFCLASS_32)
                 {
@@ -1175,7 +1226,8 @@ int32_t Bootloader_UartParseAndLoadMultiCoreELF(Bootloader_Handle handle, Bootlo
                                 {
                                     if (i == (mcelfMetaInfo.elfPtr32->ePhnum - 1U))
                                     {
-                                        isFinalPkt = TRUE;
+                                        isFinalPkt = BOOTLOADER_MCELF_FINAL_PACKET_ID;
+                                        rsSizeForDecryp = isEncrypted ? 32U : 0U;
                                     }
 
                                     Bootloader_UartArgs *uartArgs = (Bootloader_UartArgs *)(config->args);
@@ -1185,7 +1237,7 @@ int32_t Bootloader_UartParseAndLoadMultiCoreELF(Bootloader_Handle handle, Bootlo
                                     }
                                     uartArgs->finalPacket = false;
                                     uartArgs->virtMemOffset = elfPhdrPtr32[i].offset + certLen;
-                                    uartArgs->segmentSize = elfPhdrPtr32[i].filesz;
+                                    uartArgs->segmentSize = elfPhdrPtr32[i].filesz + rsSizeForDecryp;
                                     uartArgs->loadAddress = loadAddr;
 
                                     /* Request the program segment required and store to load address*/
@@ -1195,7 +1247,7 @@ int32_t Bootloader_UartParseAndLoadMultiCoreELF(Bootloader_Handle handle, Bootlo
                                     {
                                             /* Do auth init from the load address */
                                         status = Bootloader_authUpdate( addr, \
-                                                                (uint32_t) elfPhdrPtr32[i].filesz, \
+                                                                (uint32_t) (elfPhdrPtr32[i].filesz + rsSizeForDecryp), \
                                                                 isFinalPkt, \
                                                                 (uint64_t) addr);
                                     }
@@ -1257,7 +1309,8 @@ int32_t Bootloader_UartParseAndLoadMultiCoreELF(Bootloader_Handle handle, Bootlo
                             {
                                 if (i == (mcelfMetaInfo.elfPtr64->ePhnum - 1U))
                                 {
-                                    isFinalPkt = TRUE;
+                                    isFinalPkt = BOOTLOADER_MCELF_FINAL_PACKET_ID;
+                                    rsSizeForDecryp = isEncrypted ? 32U : 0U;
                                 }
                                 if(cslCoreId == CSL_CORE_ID_WKUP_R5FSS0_0)
                                 {
@@ -1270,7 +1323,7 @@ int32_t Bootloader_UartParseAndLoadMultiCoreELF(Bootloader_Handle handle, Bootlo
 
                                 uartArgs->finalPacket = false;
                                 uartArgs->virtMemOffset = elfPhdrPtr64[i].offset + certLen;
-                                uartArgs->segmentSize = elfPhdrPtr64[i].filesz;
+                                uartArgs->segmentSize = elfPhdrPtr64[i].filesz + rsSizeForDecryp;
                                 uartArgs->loadAddress = loadAddr;
 
                                 status = config->fxns->imgCustomFxn(config->args);
@@ -1279,7 +1332,7 @@ int32_t Bootloader_UartParseAndLoadMultiCoreELF(Bootloader_Handle handle, Bootlo
                                 {
                                         /* Do auth init from the load address */
                                     status = Bootloader_authUpdate( addr, \
-                                                            (uint32_t) elfPhdrPtr64[i].filesz, \
+                                                            (uint32_t) (elfPhdrPtr64[i].filesz + rsSizeForDecryp), \
                                                             isFinalPkt, \
                                                             (uint64_t) addr);
                                 }
@@ -1424,7 +1477,7 @@ int32_t Bootloader_parseELFMeta(Bootloader_Handle handle, Bootloader_BootImageIn
                                             (uint32_t) mcelfMetaInfo->elfPtr64->eEhsize + \
                                             (mcelfMetaInfo->elfPtr64->ePhnum * mcelfMetaInfo->elfPtr64->ePhentsize) + \
                                             mcelfMetaInfo->elfPhdrPtr64[0U].filesz, \
-                                            FALSE, \
+                                            BOOTLOADER_MCELF_PACKET_ID, \
                                             (uint64_t) &gElfBuffer[0U]);
             }
         }
@@ -1459,7 +1512,7 @@ int32_t Bootloader_parseELFMeta(Bootloader_Handle handle, Bootloader_BootImageIn
                                             (uint32_t) mcelfMetaInfo->elfPtr32->eEhsize + \
                                             (mcelfMetaInfo->elfPtr32->ePhnum * mcelfMetaInfo->elfPtr32->ePhentsize) + \
                                             (mcelfMetaInfo->elfPhdrPtr32)[0U].filesz, \
-                                            FALSE, \
+                                            BOOTLOADER_MCELF_PACKET_ID, \
                                             (uint64_t) &gElfBuffer[0U]);
             }
         }

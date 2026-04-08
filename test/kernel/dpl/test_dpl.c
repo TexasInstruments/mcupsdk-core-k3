@@ -47,6 +47,9 @@
 #include <drivers/soc.h>
 #include <unity.h>
 #include "ti_drivers_open_close.h"
+#if defined(CODE_COVERAGE)
+    extern void __llvm_profile_write_file(void);
+#endif
 
 #define TEST_INT_NUM     (20U)
 
@@ -1582,7 +1585,10 @@ void test_main(void *args)
     /* debug aid for exceptions supported in R5F only */
     RUN_TEST(test_exceptionUserHandlers, 7111, NULL);
     #endif
-
+    #if defined (CODE_COVERAGE)
+    DebugP_log("Debud print at write!!\r\n");
+        __llvm_profile_write_file();
+    #endif
     UNITY_END();
 
 }

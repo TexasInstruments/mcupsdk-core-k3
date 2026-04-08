@@ -1,8 +1,8 @@
 /**
  * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
- * @cliArgs --device "AM62Dx" --part "AM62D24-G" --package "ANF" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @v2CliArgs --device "AM62D-Q1" --package "FCBGA (ANF)" --variant "AM62D24-G" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @cliArgs --device "AM62Ax" --part "Default" --package "AMB" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @v2CliArgs --device "AM62A7-Q1" --package "FCBGA (AMB)" --variant "AM62A74-M" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @versions {"tool":"1.26.2+4477"}
  */
 
@@ -33,7 +33,6 @@ ddr1.$name = "CONFIG_DDR0";
 debug_log.enableCssLog                  = false;
 debug_log.enableUartLog                 = true;
 debug_log.uartLog.$name                 = "CONFIG_UART1";
-debug_log.uartLog.intrEnable            = "DISABLE";
 debug_log.uartLog.WKUP_UART.$assign     = "WKUP_USART0";
 debug_log.uartLog.WKUP_UART.RXD.$assign = "WKUP_UART0_RXD";
 debug_log.uartLog.WKUP_UART.TXD.$assign = "WKUP_UART0_TXD";

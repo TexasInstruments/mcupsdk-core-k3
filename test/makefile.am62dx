@@ -91,6 +91,9 @@ help:
 	@echo  $(MAKE) -s -C board/eeprom/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C board/flash/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ddr/am62dx-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ddr/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ddr/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ddr/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/boot/sbl_test_ddr_copy/am62dx-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/boot/sbl_uart_custom_boardconfig/am62dx-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/device_manager/sciclient_direct/am62dx-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -1100,6 +1103,15 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  test_ddr_am62dx-evm_r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C drivers/ddr/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ test_ddr_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/ddr/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_ddr_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/ddr/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ test_ddr_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/ddr/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
  sbl_test_ddr_copy_am62dx-evm_r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C drivers/boot/sbl_test_ddr_copy/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile all
@@ -2421,6 +2433,15 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_ddr_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/ddr/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
+ test_ddr_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/ddr/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_ddr_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/ddr/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ test_ddr_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/ddr/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
  sbl_test_ddr_copy_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/boot/sbl_test_ddr_copy/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
@@ -3741,6 +3762,15 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  test_ddr_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/ddr/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
+ test_ddr_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/ddr/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_ddr_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/ddr/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_ddr_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/ddr/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
  sbl_test_ddr_copy_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/boot/sbl_test_ddr_copy/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
@@ -4695,16 +4725,25 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
 sbl: libs
 	$(MAKE) -C drivers/ddr/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile all
+	$(MAKE) -C drivers/ddr/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+	$(MAKE) -C drivers/ddr/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+	$(MAKE) -C drivers/ddr/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
 	$(MAKE) -C drivers/boot/sbl_test_ddr_copy/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile all
 	$(MAKE) -C drivers/boot/sbl_uart_custom_boardconfig/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile all
 
 sbl-clean:
 	$(MAKE) -C drivers/ddr/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+	$(MAKE) -C drivers/ddr/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+	$(MAKE) -C drivers/ddr/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+	$(MAKE) -C drivers/ddr/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 	$(MAKE) -C drivers/boot/sbl_test_ddr_copy/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 	$(MAKE) -C drivers/boot/sbl_uart_custom_boardconfig/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
 sbl-scrub:
 	$(MAKE) -C drivers/ddr/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+	$(MAKE) -C drivers/ddr/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+	$(MAKE) -C drivers/ddr/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+	$(MAKE) -C drivers/ddr/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C drivers/boot/sbl_test_ddr_copy/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C drivers/boot/sbl_uart_custom_boardconfig/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 

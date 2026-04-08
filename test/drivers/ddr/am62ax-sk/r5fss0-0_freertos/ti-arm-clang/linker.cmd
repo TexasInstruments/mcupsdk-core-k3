@@ -1,5 +1,5 @@
 
---stack_size=16384
+--stack_size=8192
 --heap_size=8192
 
 /* ATCM base address */
@@ -30,7 +30,7 @@ SECTIONS
     RUN_START(__BSS_START)
     RUN_END(__BSS_END)
     .sysmem: {} palign(8) > ATCM
-    .stack:  {} palign(8) > ATCM
+    .stack:  {} palign(8) > HSM_RAM
     GROUP {
         .irqstack: {. = . + __IRQ_STACK_SIZE;} align(8)
         RUN_START(__IRQ_STACK_START)

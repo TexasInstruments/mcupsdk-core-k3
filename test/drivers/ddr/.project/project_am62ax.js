@@ -1,6 +1,6 @@
 let path = require('path');
 
-let device = "am62dx";
+let device = "am62ax";
 
 const files = {
     common: [
@@ -52,17 +52,17 @@ const libdirs_prebuild_nortos = {
 
 const libs_nortos_r5f = {
     common: [
-        "nortos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib",
-        "board.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "unity.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "nortos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62ax.dm-r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
 const libs_prebuild_nortos_r5f = {
     common: [
-        "sciclient_direct_sbl.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "rm_pm_hal_sbl.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ]
 };
 
@@ -70,7 +70,7 @@ const includes_freertos_r5f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/r5f",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/r5f",
         "${MCU_PLUS_SDK_PATH}/test/unity/",
     ],
 };
@@ -94,17 +94,17 @@ const libdirs_freertos = {
 
 const libs_freertos_dm_r5f = {
     common: [
-        "freertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "drivers.am62dx.dm-r5f.ti-arm-clang.${ConfigName}.lib",
-        "board.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "unity.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62ax.dm-r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
 const libs_prebuild_freertos_r5f = {
     common: [
-        "sciclient_direct_sbl.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "rm_pm_hal_sbl.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal_sbl.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ]
 };
 
@@ -119,7 +119,7 @@ const includes_freertos_mcu_r5f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/r5f",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/r5f",
         "${MCU_PLUS_SDK_PATH}/test/unity/",
     ],
 };
@@ -144,25 +144,25 @@ const libdirs_freertos_mcu_r5f = {
 
 const libs_nortos_mcu_r5f = {
     common: [
-        "nortos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "drivers.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "board.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "unity.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "nortos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
 const libs_freertos_mcu_r5f = {
     common: [
-        "freertos.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "drivers.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "board.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
-        "unity.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
+        "freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
 const defines_mcu_r5f = {
     common: [
-        "SOC_AM62DX",
+        "SOC_AM62AX",
         "MCU_R5",
     ],
 };
@@ -177,7 +177,7 @@ const syscfgfile = "../example.syscfg";
 
 const defines = {
     common:[
-        "SOC_AM62DX",
+        "SOC_AM62AX",
         "ENABLE_SCICLIENT_DIRECT",
     ]
 }
@@ -189,10 +189,10 @@ const cflags_freertos = {
 }
 
 const buildOptionCombos = [
-    { device: device, cpu: "r5fss0-0",     cgt: "ti-arm-clang", board: "am62dx-evm", os: "nortos"},
-    { device: device, cpu: "r5fss0-0",     cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos"},
-    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "nortos"},
-    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos"},
+    { device: device, cpu: "r5fss0-0",     cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos"},
+    { device: device, cpu: "r5fss0-0",     cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos"},
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -210,7 +210,7 @@ function getComponentProperty() {
 }
 
 const robot_template_r5f_nortos = {
-    input: ".project/templates/am62dx/astra/tests_sbl.robot.xdt",
+    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "DDR",
@@ -223,7 +223,7 @@ const robot_template_r5f_nortos = {
                      " SITSW-11916 SITSW-11917 SITSW-11918 SITSW-11919 SITSW-11920 SITSW-11921 SITSW-11922 SITSW-11923 SITSW-11924 SITSW-11925" +
                      " SITSW-11927 SITSW-11928 SITSW-11929 SITSW-11930 SITSW-11931 SITSW-11932 SITSW-11938",
         cfgPath: "test/drivers/ddr/{board}/{coreName}/default_test_ddr_${DEVICE_TYPE}.cfg",
-        bootMode: "OSPI_NOR_BOOT_MODE",
+        bootMode: "OSPI_NAND_BOOT_MODE",
         expectPort: "USB2",
         appName: "test_ddr(r5f_nortos)",
         timeout: 1800,
@@ -232,7 +232,7 @@ const robot_template_r5f_nortos = {
 };
 
 const robot_template_r5f_freertos = {
-    input: ".project/templates/am62dx/astra/tests_sbl.robot.xdt",
+    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
     output: "../tests_freertos.robot",
     options: {
         componentName: "DDR",
@@ -246,7 +246,7 @@ const robot_template_r5f_freertos = {
                      " SITSW-11927 SITSW-11928 SITSW-11929 SITSW-11930 SITSW-11931 SITSW-11932 SITSW-11933 SITSW-11934 SITSW-11935 SITSW-11936" +
                      " SITSW-11937 SITSW-11938",
         cfgPath: "test/drivers/ddr/{board}/{coreName}/default_test_ddr_${DEVICE_TYPE}.cfg",
-        bootMode: "OSPI_NOR_BOOT_MODE",
+        bootMode: "OSPI_NAND_BOOT_MODE",
         expectPort: "USB2",
         appName: "test_ddr(r5f_freertos)",
         timeout: 1800,
@@ -255,7 +255,7 @@ const robot_template_r5f_freertos = {
 };
 
 const robot_template_mcu_r5f_nortos = {
-    input: ".project/templates/am62dx/astra/tests_sbl.robot.xdt",
+    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
     output: "../tests_mcu.robot",
     options: {
         componentName: "DDR",
@@ -265,7 +265,7 @@ const robot_template_mcu_r5f_nortos = {
                      " SITSW-11917 SITSW-11918 SITSW-11919 SITSW-11920 SITSW-11921 SITSW-11922 SITSW-11923 SITSW-11924 SITSW-11925" +
                      " SITSW-11928 SITSW-11931 SITSW-11932 SITSW-11938",
         cfgPath: "test/drivers/ddr/{board}/{coreName}/default_test_ddr_${DEVICE_TYPE}.cfg",
-        bootMode: "OSPI_NOR_BOOT_MODE",
+        bootMode: "OSPI_NAND_BOOT_MODE",
         expectPort: "USB3",
         appName: "test_ddr(mcu_nortos)",
         timeout: 1200,
@@ -274,7 +274,7 @@ const robot_template_mcu_r5f_nortos = {
 };
 
 const robot_template_mcu_r5f_freertos = {
-    input: ".project/templates/am62dx/astra/tests_sbl.robot.xdt",
+    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
     output: "../tests_mcu_freertos.robot",
     options: {
         componentName: "DDR",
@@ -284,7 +284,7 @@ const robot_template_mcu_r5f_freertos = {
                      " SITSW-11917 SITSW-11918 SITSW-11919 SITSW-11920 SITSW-11921 SITSW-11922 SITSW-11923 SITSW-11924 SITSW-11925" +
                      " SITSW-11928 SITSW-11931 SITSW-11932 SITSW-11938",
         cfgPath: "test/drivers/ddr/{board}/{coreName}/default_test_ddr_${DEVICE_TYPE}.cfg",
-        bootMode: "OSPI_NOR_BOOT_MODE",
+        bootMode: "OSPI_NAND_BOOT_MODE",
         expectPort: "USB3",
         appName: "test_ddr(mcu_freertos)",
         timeout: 1200,
@@ -304,9 +304,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.defines = defines;
 
     if(buildOption.cpu.match(/mcu-r5f*/)) {
-        /* MCU domain R5F: DDR already initialized by DM-R5F.
-         * MCU-R5F is a secondary core loaded by SBL as appimage, NOT tiimage.
-         * Override isBootLoader so the makefile generator produces appimage. */
+        /* MCU domain R5F: DDR already initialized by DM-R5F */
         build_property.isBootLoader = false;
         build_property.includes = includes_nortos_mcu_r5f;
         build_property.libdirs = libdirs_nortos_mcu_r5f;

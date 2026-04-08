@@ -260,6 +260,13 @@ static int32_t App_create(CsirxTestTaskObj *taskObj)
                       APP_NAME
                       ":Set D-PHY Configuration FAILED!!!\r\n");
         }
+        else
+        {
+            GT_0trace(gAppTrace,
+                      GT_ERR,
+                      APP_NAME
+                      ":Set D-PHY Configuration SUCCESSFUL!!!\r\n");
+        }
 
     }
     if (FVID2_SOK == retVal)
@@ -275,6 +282,11 @@ static int32_t App_create(CsirxTestTaskObj *taskObj)
 
     return retVal;
 }
+
+/* Timeout per semaphore pend: 5 seconds. At ~30 FPS, one frame arrives
+ * every ~33 ms. A 5-second timeout is generous enough for normal operation
+ * and prevents an infinite hang when sensors are not streaming. */
+#define APP_FRAME_WAIT_TIMEOUT_USEC     (5000000U)
 
 static int32_t App_csiTest(CsirxTestTaskObj *taskObj)
 {
@@ -322,6 +334,11 @@ static int32_t App_csiTest(CsirxTestTaskObj *taskObj)
         retVal = FVID2_EFAIL;
     }
 
+    if (FVID2_SOK == retVal)
+    {
+        GT_0trace(gAppTrace, GT_INFO,
+                  APP_NAME ": Sensor Configuration SUCCESSFUL!!!\r\n");
+    }
 
     if (FVID2_SOK == retVal)
     {
@@ -333,24 +350,39 @@ static int32_t App_csiTest(CsirxTestTaskObj *taskObj)
         }
     }
 
-    startTime = App_getCurTimeInMsec();
-
-    /* Wait for reception completion */
-    while (App_continueCapture(taskObj))
+    if (FVID2_SOK == retVal)
     {
-        /* Pend on semaphore until last frame is received */
-        SemaphoreP_pend(&taskObj->instObj.lockSem,
-                        SystemP_WAIT_FOREVER);
-    }
+        startTime = App_getCurTimeInMsec();
 
-    elapsedTime = App_getElapsedTimeInMsec(startTime);
+        /* Wait for reception completion */
+        while (App_continueCapture(taskObj))
+        {
+            /* Pend with timeout to avoid infinite hang when sensor
+             * is not streaming (misconfigured, not connected, etc.) */
+            if (SystemP_TIMEOUT == SemaphoreP_pend(&taskObj->instObj.lockSem,
+                            (uint32_t)ClockP_usecToTicks(APP_FRAME_WAIT_TIMEOUT_USEC)))
+            {
+                GT_0trace(gAppTrace, GT_ERR,
+                          APP_NAME ": Timed out waiting for frame - sensor not streaming!!!\r\n");
+                retVal = FVID2_ETIMEOUT;
+                break;
+            }
+        }
+
+        elapsedTime = App_getElapsedTimeInMsec(startTime);
+    }
+    else
+    {
+        elapsedTime = 0U;
+    }
 
     retVal = Fvid2_stop(taskObj->drvHandle, NULL);
     instObj = &taskObj->instObj;
     for (chIdx = 0U; chIdx < instObj->instCfgInfo->numCh ; chIdx++)
     {
         chObj = &instObj->chObj[chIdx];
-        chObj->fps = ((float)(chObj->captFrames) * 1000U /elapsedTime);
+        chObj->fps = (elapsedTime > 0U) ?
+                     ((float)(chObj->captFrames) * 1000U / elapsedTime) : 0.0f;
     }
     if (FVID2_SOK != retVal)
     {

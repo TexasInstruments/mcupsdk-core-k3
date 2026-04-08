@@ -134,7 +134,7 @@ extern I2C_Handle gI2cHandle;
 uint16_t gSensorCfg[SENSOR_CFG_SIZE][3] = IMX390_LINEAR_1920X1080_CONFIG;
 uint16_t gUb960SensorCfg[][3] = {
     {0x01, 0x02, 0x100},
-    {0x1F, 0x05, 0x1},
+    {0x1f, 0x00, 0x1},
 
     {0xB0, 0x1C,0x1},
     {0xB1, 0x16,0x1},
@@ -160,15 +160,15 @@ uint16_t gUb960SensorCfg[][3] = {
 
     /*Select Channel 1*/
     {0x4C, 0x12, 0x1},
-    {0x58, 0x5D, 0x1},/*Enable Back channel, set to 50Mbs*/
+    {0x58, 0x5E, 0x1}, /*Enable Back channel, set to 50Mbs*/
 
     /*Select Channel 2*/
     {0x4C, 0x24, 0x1},
-    {0x58, 0x5D, 0x1},/*Enable Back channel, set to 50Mbs*/
+    {0x58, 0x5E, 0x1}, /*Enable Back channel, set to 50Mbs*/
 
     /*Select Channel 3*/
     {0x4C, 0x38, 0x1},
-    {0x58, 0x5D, 0x1},/*Enable Back channel, set to 50Mbs*/
+    {0x58, 0x5E, 0x1}, /*Enable Back channel, set to 50Mbs*/
 
     /*Select Channel 0*/
     {0x4C, 0x01, 0x1},
@@ -497,6 +497,11 @@ int32_t App_sensorConfig(CsirxSensorCfg *senCfg)
     {
         regAddr8 = deSerConfig[cnt][0] & 0xFF;
         regVal   = deSerConfig[cnt][1] & 0xFF;
+        /* In pattern gen mode, dynamically substitute VC number.
+         * In sensor mode the gUb960SensorCfg table already has the
+         * correct per-port VC values hardcoded (0x00/0x55/0xAA/0xFF),
+         * so substitution is skipped to avoid wrong VC assignment and
+         * out-of-bounds access when numCh > 1. */
         if(0x72U == regAddr8)
         {
             regVal = senCfg->vcNum[chIterNum];
@@ -579,11 +584,13 @@ int32_t App_sensorConfig(CsirxSensorCfg *senCfg)
                      regAddr = gSensorCfg[cnt][0];
                      regVal = gSensorCfg[cnt][1];
 
-                     status = Board_i2c8BitRegWr(gI2cHandle,
+                     /* IMX390 uses 16-bit register addresses */
+                     status = Board_i2c16BitRegWr(gI2cHandle,
                                                   i2cAddr,
                                                   regAddr,
                                                   &regVal,
                                                   1,
+                                                  0,
                                                   APP_I2C_TRANSACTION_TIMEOUT);
                      if (0 != status)
                      {

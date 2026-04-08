@@ -59,6 +59,9 @@ extern "C" {
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
+#define CSIRX_DRV_UDMA_MASTER_EVNT_INIT_DONE        ((uint32_t)0x1U)
+#define CSIRX_DRV_UDMA_MASTER_EVNT_INIT_PENDING     ((uint32_t)0x0U)
+
 /* PSIL Source Tag */
 #define CSIRX_DRV_PSI_SRC_TAG                         ((uint32_t)0x0)
 /* PSIL Destination Tag */

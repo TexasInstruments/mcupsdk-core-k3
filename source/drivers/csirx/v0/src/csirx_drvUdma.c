@@ -51,9 +51,6 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define INITIALIZED      0x1
-#define UNINITIALIZED    0x0
-
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -86,8 +83,7 @@ extern uint32_t gTrSubmitCnt;
 extern uint32_t gTrOut[CSIRX_DRV_TR_LOG_CNT][4];
 extern uint32_t gTrOutCnt;
 #endif
-
-uint32_t gCsirxUdmaMasterEvntInitDone = UNINITIALIZED;
+uint32_t gCsirxUdmaMasterEvntInitDone = CSIRX_DRV_UDMA_MASTER_EVNT_INIT_PENDING;
 
 /* ========================================================================== */
 /*                  Internal/Private Function Declarations                   */
@@ -301,7 +297,7 @@ int32_t CsirxDrv_setChUdmaParams(CsirxDrv_ChObj *chObj)
         {
             /* UDMA Master event is registered only once. Subsequent Event
              * registrations use the same Master event */
-            if(gCsirxUdmaMasterEvntInitDone != INITIALIZED)
+            if(gCsirxUdmaMasterEvntInitDone != CSIRX_DRV_UDMA_MASTER_EVNT_INIT_DONE)
             {
                 UdmaEventPrms_init(&eventParams);
                 eventParams.eventType         = UDMA_EVENT_TYPE_MASTER;
@@ -313,8 +309,10 @@ int32_t CsirxDrv_setChUdmaParams(CsirxDrv_ChObj *chObj)
                 {
                     retVal = CsirxDrv_udmaToFvid2ErrorMap(retVal);
                 }
-
-                gCsirxUdmaMasterEvntInitDone = INITIALIZED;
+                else
+                {
+                    gCsirxUdmaMasterEvntInitDone = CSIRX_DRV_UDMA_MASTER_EVNT_INIT_DONE;
+                }
             }
 
             if (retVal == FVID2_SOK)

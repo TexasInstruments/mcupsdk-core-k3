@@ -223,7 +223,6 @@ int32_t csirxTestParser(void)
             DebugP_scanf("%c", &option);
         }
         GT_0trace(gAppTrace, GT_INFO, " \r\n");
-	option = '1';
         tcType = CSIRX_TCT_SANITY;
         switch(option)
         {

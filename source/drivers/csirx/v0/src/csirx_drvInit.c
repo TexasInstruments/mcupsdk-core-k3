@@ -106,6 +106,7 @@ int32_t CsirxDrv_modInstObjInit(CsirxDrv_InstObj *instObj, uint32_t instId);
 /*                            Global Variables                                */
 /* ========================================================================== */
 extern CsirxDrv_CommonObj gCsirxCommonObj;
+extern uint32_t gCsirxUdmaMasterEvntInitDone;
 
 /* ========================================================================== */
 /*                  Internal/Private Function Declarations                   */
@@ -240,11 +241,12 @@ int32_t Csirx_deInit(void)
     }
     if (retVal == FVID2_SOK)
     {
-        //if(captObj->masterEvent.drvHandle != NULL)
+        if(gCsirxUdmaMasterEvntInitDone == CSIRX_DRV_UDMA_MASTER_EVNT_INIT_DONE)
         {
              /* Unregister the UDMA Master event handle */
              tempRetVal = Udma_eventUnRegister(&captObj->masterEvent);
              retVal = CsirxDrv_udmaToFvid2ErrorMap(tempRetVal);
+             gCsirxUdmaMasterEvntInitDone = CSIRX_DRV_UDMA_MASTER_EVNT_INIT_PENDING;
         }
     }
 

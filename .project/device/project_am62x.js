@@ -39,6 +39,7 @@ const component_file_list = [
     "test/kernel/smp_tests/task_delete/configs/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_fault_inject/configs/.project/project.js",
     "test/drivers/i2c/test_i2c_fault_inject/configs/.project/project_am62x.js",
+    "test/drivers/mcasp/test_mcasp_fault_injection/configs/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
 ];
 
@@ -226,6 +227,8 @@ const example_file_list = [
     "test/drivers/mcasp/mcasp_auxclk_sel/.project/project.js",
     "test/drivers/mcasp/mcasp_start_stop_test/.project/project.js",
     "test/drivers/mcasp/mcasp_multiinst_loopback/.project/project.js",
+    "test/drivers/mcasp/mcasp/.project/project.js",
+    "test/drivers/mcasp/test_mcasp_fault_injection/.project/project.js",
     "test/drivers/mcspi/mcspi/.project/project.js",
     "test/drivers/mcspi/mcspi_master_slave/.project/project.js",
     "test/drivers/mcspi/mcspi_master_slave_dma/.project/project.js",
@@ -290,7 +293,7 @@ const example_file_list = [
     "test/sdl/mcrc/mcrcFuncTest/.project/project.js",
     "test/sdl/mcrc/mcrcUt/.project/project.js",
     "test/sdl/mcrc/mcrcAutomodeTest/.project/project.js",
-  	"test/sdl/mcrc/mcrcSemimodeTest/.project/project.js",
+    "test/sdl/mcrc/mcrcSemimodeTest/.project/project.js",
     "test/sdl/mtog/mtog_functest/.project/project.js",
     "test/sdl/mtog/mtog_unit_test/.project/project.js",
     "test/sdl/pbist/ip_pbist_test/.project/project.js",
@@ -311,15 +314,14 @@ const example_file_list = [
     // Safety checkers Examples
     "source/safety_checkers/examples/pm_checkers_app/.project/project.js",
     "source/safety_checkers/examples/pm_checkers_warm_reset/.project/project.js",
-	"source/safety_checkers/examples/rm_checkers_app/.project/project.js",
+    "source/safety_checkers/examples/rm_checkers_app/.project/project.js",
     "source/safety_checkers/examples/tifs_checkers_app/.project/project.js",
 
     // Kernel DPL timer test
     "test/kernel/dpl_timer/.project/project.js",
 ];
 
-function getIsDMR5Supported()
-{
+function getIsDMR5Supported() {
     return isDMR5Supported;
 }
 
@@ -352,12 +354,10 @@ function getExampleList() {
 }
 
 function getSysCfgDevice(board) {
-    if (board == "am62x-sip-sk")
-    {
+    if (board == "am62x-sip-sk") {
         return "AM62SIP";
     }
-    else
-    {
+    else {
         return "AM62x";
     }
 }
@@ -371,16 +371,13 @@ function getSysCfgCpu(cpu) {
 }
 
 function getSysCfgPkg(board) {
-    if (board == "am62x-sk-lp")
-    {
+    if (board == "am62x-sk-lp") {
         return "AMC";
     }
-    else if (board == "am62x-sip-sk")
-    {
+    else if (board == "am62x-sip-sk") {
         return "AMK";
     }
-    else
-    {
+    else {
         return "ALW";
     }
 
@@ -407,7 +404,7 @@ function getProperty() {
 
 function getLinuxFwName(cpu) {
 
-    switch(cpu) {
+    switch (cpu) {
         case "m4fss0-0":
             return "mcu-m4f0_0";
         case "r5fss0-0":

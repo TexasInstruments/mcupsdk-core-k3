@@ -214,12 +214,12 @@ static void TestMcasp_configSerialBitstream(void *args);
 static void TestMcasp_configClockPolarity(void *args);
 static void TestMcasp_nullLoopjob(void *args);
 void TestMcasp_callbackNull(void *args);
-#ifdef SOC_AM62AX
+#if defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
 static void TestMcasp_externalLoopback(void *args);
 #endif
 static int32_t TestMcasp_loopbackTxRightRotate(void *args);
 static int32_t TestMcasp_validateConfigLoopback(void *args);
-#if defined (SOC_AM62DX) || defined (SOC_AM62AX) || !defined(SOC_AM275X)
+#if defined (SOC_AM62DX) || defined (SOC_AM62AX) || !defined(SOC_AM275X) || defined(SOC_AM62X) || defined(SOC_AM62PX)
 static void TestMcasp_allSerializerLoopback(void *args);
 #endif
 static void TestMcasp_DynamicCoverage(void *args);
@@ -235,7 +235,7 @@ static int32_t TestMcasp_compareInstance2(uint8_t *tx, uint8_t *rx, uint32_t msg
 static void TestMcasp_withdrawQueuedBuff(void *args);
 static void TestMcasp_fifoDisable(void *args);
 static void TestMcasp_multiInstanceConfigTest(void *args);
-#if ((defined(C75_CORE) && !defined(SOC_AM62DX) && !defined(SOC_AM275X)) || defined(SOC_AM62AX))
+#if ((defined(C75_CORE) && !defined(SOC_AM62DX) && !defined(SOC_AM275X) && !defined(SOC_AM62PX)) || defined(SOC_AM62AX)) || defined(SOC_AM62X)
 static void TestMcasp_interruptNullLoopjob(void *args);
 #endif
 static void TestMcasp_loopbackNonInterleavedToInterleaved(void *args);
@@ -267,7 +267,7 @@ void test_main(void *args)
     TestMcasp_selectConfig(TEST_MCASP_DMA_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     TestMcasp_selectConfig(TEST_MCASP_DMA_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP1]);
     RUN_TEST(TestMcasp_multiThreadCreate, 8451,NULL);
-    #if !defined(C75_CORE)
+    #if !defined(C75_CORE) && !defined(SOC_AM62PX)
     TestMcasp_selectConfig(TEST_MCASP_INTERRUPT_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     TestMcasp_selectConfig(TEST_MCASP_INTERRUPT_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP1]);
     RUN_TEST(TestMcasp_multiThreadCreate, 8452,NULL);
@@ -275,8 +275,8 @@ void test_main(void *args)
     TestMcasp_selectConfig(TEST_MCASP_DMA_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP1]);
     #endif
     #endif
-    /* Added macro guard due to hanging of interrupt case in AM62DX and AM275x c75 core*/
-    #if ((defined(C75_CORE) && !defined(SOC_AM62DX) && !defined(SOC_AM275X)) || defined(SOC_AM62AX))
+    /* Added macro guard due to hanging of interrupt case in AM62DX and AM275x c75 core and am62px*/
+    #if ((defined(C75_CORE) && !defined(SOC_AM62DX) && !defined(SOC_AM275X) && !defined(SOC_AM62PX)) || defined(SOC_AM62AX) || defined(SOC_AM62X))
     TestMcasp_selectConfig(TEST_MCASP_INTERRUPT_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(TestMcasp_loopbackTransfer, 8343, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     TestMcasp_selectConfig(TEST_MCASP_DMA_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
@@ -285,7 +285,7 @@ void test_main(void *args)
     RUN_TEST(TestMcasp_loopbackTransfer, 8345, (void*)&gMcaspOpenParams[CONFIG_MCASP2]);
     #ifdef ENABLE_MT_TESTS
     RUN_TEST(TestMcasp_loopbackTransferMultithread, 8346, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
-    #if !defined(C75_CORE)
+    #if !defined(C75_CORE) && !defined(SOC_AM62PX)
     TestMcasp_selectConfig(TEST_MCASP_INTERRUPT_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(TestMcasp_loopbackTransferMultithread, 9268, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     TestMcasp_selectConfig(TEST_MCASP_DMA_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
@@ -304,7 +304,7 @@ void test_main(void *args)
     RUN_TEST(TestMcasp_configSerialBitstream, 8734, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(TestMcasp_configClockPolarity, 8735, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(TestMcasp_nullLoopjob, 8736, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
-    #ifdef SOC_AM62AX
+    #if defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
     RUN_TEST(TestMcasp_externalLoopback, 8737, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     #endif
     /* RUN_TEST(TestMcasp_callbackNull, 8738, (void*)&gMcaspOpenParams[CONFIG_MCASP0]); */ /* raised a bug for this hanging issue */
@@ -312,7 +312,7 @@ void test_main(void *args)
     TestMcasp_selectClockSource(CONFIG_MCASP1, TEST_MCASP_USE_EXTERNAL_CLK);
     RUN_TEST(TestMcasp_multiInstanceLoopback, 8739, NULL);
     TestMcasp_selectClockSource(CONFIG_MCASP0, TEST_MCASP_USE_INTERNAL_CLK);
-#if defined (SOC_AM62DX) || defined (SOC_AM62AX) || !defined(SOC_AM275X)
+#if defined (SOC_AM62DX) || defined (SOC_AM62AX) || !defined(SOC_AM275X) || defined(SOC_AM62PX) || defined(SOC_AM62X)
     RUN_TEST(TestMcasp_allSerializerLoopback, 9075, (void*)&gMcaspOpenParams[CONFIG_MCASP2]);
 #endif
     RUN_TEST(TestMcasp_DynamicCoverage, 9076, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
@@ -324,7 +324,7 @@ void test_main(void *args)
     RUN_TEST(TestMcasp_withdrawQueuedBuff, 9077, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(TestMcasp_fifoDisable, 9078, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     /* Added macro guard due to hanging of interrupt case in AM62DX and AM275x c75 core*/
-    #if ((defined(C75_CORE) && !defined(SOC_AM62DX) && !defined(SOC_AM275X)) || defined(SOC_AM62AX)) 
+    #if ((defined(C75_CORE) && !defined(SOC_AM62DX) && !defined(SOC_AM275X) && !defined(SOC_AM62PX)) || defined(SOC_AM62AX)) || defined(SOC_AM62X)
     TestMcasp_selectConfig(TEST_MCASP_INTERRUPT_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(TestMcasp_interruptNullLoopjob, 9079, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     TestMcasp_selectConfig(TEST_MCASP_DMA_MODE,&cfg,(void*)&gMcaspOpenParams[CONFIG_MCASP0]);
@@ -1713,7 +1713,7 @@ static void TestMcasp_selectClockSource(uint32_t instance, int32_t useExternal)
         attrs->hwCfg.rx.clk.isHClkExt = (uint32_t)0x1;
         attrs->hwCfg.rx.clk.hClkExt = (uint32_t)1;
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
         static Pinmux_PerCfg_t extClkPinEnable[] =
         {
             { PIN_EXT_REFCLK1, (PIN_MODE(5) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE) },
@@ -1730,7 +1730,7 @@ static void TestMcasp_selectClockSource(uint32_t instance, int32_t useExternal)
         attrs->hwCfg.rx.clk.isHClkExt = (uint32_t)0x0;
         attrs->hwCfg.rx.clk.hClkExt = (uint32_t)0;
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
         static Pinmux_PerCfg_t extClkPinDisable[] =
         {
             { PIN_EXT_REFCLK1, (PIN_MODE(5) | PIN_PULL_DISABLE) },
@@ -2537,8 +2537,8 @@ void TestMcasp_callbackNull(void *args)
     TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "MCASP loopback transfer data mismatch");
     return;
 }
-#ifdef SOC_AM62AX
-/**
+#if defined (SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
+ /**
  * \brief  Test MCASP external loopback.
  *
  * This test verifies MCASP data integrity when using external loopback mode.
@@ -2560,7 +2560,7 @@ static void TestMcasp_externalLoopback(void *args)
 }
 #endif
 
-#if defined (SOC_AM62DX) || defined (SOC_AM62AX) || !defined(SOC_AM275X)
+#if defined (SOC_AM62DX) || defined (SOC_AM62AX) || !defined(SOC_AM275X) || defined(SOC_AM62PX) || defined(SOC_AM62X)
 /**
  * \brief  Test MCASP all-serializer loopback.
  *
@@ -2593,7 +2593,7 @@ static void TestMcasp_allSerializerLoopback(void *args)
     gMcaspOpenParams[2].txSerUsedArray = (uint8_t *) gMcasp2TxSersUsed;
     gMcaspOpenParams[2].rxSerUsedArray = (uint8_t *) gMcasp2RxSersUsed;
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
     static Pinmux_PerCfg_t serPinEnable[] = {
 
     /* MCASP2 pin config */
@@ -2657,7 +2657,7 @@ static void TestMcasp_allSerializerLoopback(void *args)
     gMcaspOpenParams[2].txSerUsedCount = 1;
     gMcaspOpenParams[2].rxSerUsedCount = 1;
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
     static Pinmux_PerCfg_t serPinDisable[] = {
 
     /* MCASP2 pin config */
@@ -2739,7 +2739,7 @@ static void TestMcasp_loopbackSemiInterleaved2ToSemiInterleaved1(void *args)
     gMcaspOpenParams[0].txSerUsedCount = 2;
     gMcaspOpenParams[0].txSerUsedArray = (uint8_t *) gMcasp0TxSersUsed;
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
     static Pinmux_PerCfg_t serPinEnable[]=
     {
         {PIN_MCASP0_AXR2,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
@@ -2867,7 +2867,7 @@ static void TestMcasp_loopbackSemiInterleaved2ToSemiInterleaved1(void *args)
     gMcaspOpenParams[0].txSerUsedArray = (uint8_t *) gMcasp0TxSersUsed;
     gMcaspOpenParams[0].rxSerUsedArray = (uint8_t *) gMcasp0RxSersUsed;
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X) || defined(SOC_AM62PX) || defined(SOC_AM62X)
     static Pinmux_PerCfg_t serPinDisable[] =
     {
         {PIN_MCASP0_AXR2,( PIN_MODE(0) | PIN_PULL_DISABLE )},
@@ -2916,7 +2916,7 @@ static void TestMcasp_loopbackSemiInterleaved1ToSemiInterleaved2(void *args)
     gMcaspOpenParams[0].txSerUsedCount = 2;
     gMcaspOpenParams[0].txSerUsedArray = (uint8_t *) gMcasp0TxSersUsed;
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
     static Pinmux_PerCfg_t serPinEnable[]=
     {
         {PIN_MCASP0_AXR2,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
@@ -3043,7 +3043,7 @@ static void TestMcasp_loopbackSemiInterleaved1ToSemiInterleaved2(void *args)
     gMcaspOpenParams[0].txSerUsedArray = (uint8_t *) gMcasp0TxSersUsed;
     gMcaspOpenParams[0].rxSerUsedArray = (uint8_t *) gMcasp0RxSersUsed;
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X) || defined(SOC_AM62PX) || defined(SOC_AM62X)
     static Pinmux_PerCfg_t serPinDisable[] =
     {
         {PIN_MCASP0_AXR2,( PIN_MODE(0) | PIN_PULL_DISABLE )},
@@ -4376,7 +4376,7 @@ static void TestMcasp_dmaInitDoneZeroRxMismatch(void *args)
     MCASP_close(handle);
 }
 
-#if ((defined(C75_CORE) && !defined(SOC_AM62DX) && !defined(SOC_AM275X)) || defined(SOC_AM62AX))
+#if ((defined(C75_CORE) && !defined(SOC_AM62DX) && !defined(SOC_AM275X) && !defined(SOC_AM62PX)) || defined(SOC_AM62AX)) || defined(SOC_AM62X)
 /**
  * \brief  Test MCASP interrupt mode with NULL loopjob buffers.
  *

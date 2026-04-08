@@ -31,6 +31,7 @@ const component_file_list = [
     "test/unity/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_fault_inject/configs/.project/project.js",
     "test/drivers/i2c/test_i2c_fault_inject/configs/.project/project_am62px.js",
+    "test/drivers/mcasp/test_mcasp_fault_injection/configs/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
 ];
 
@@ -211,6 +212,8 @@ const example_file_list = [
     "test/drivers/epwm/.project/project.js",
     "test/drivers/epwm/test_epwm_system/.project/project.js",
     "test/drivers/pinmux_coverage/.project/project.js",
+    "test/drivers/mcasp/mcasp/.project/project.js",
+    "test/drivers/mcasp/test_mcasp_fault_injection/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_raw_io/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_fs_io/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_fault_inject/.project/project.js",

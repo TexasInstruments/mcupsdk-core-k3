@@ -116,7 +116,7 @@ uint32_t Sciclient_getContext(uint32_t contextType, uint32_t coreId)
         }
         else
         {
-            retVal = SCICLIENT_CONTEXT_MAIN_1_R5_1_NONSEC_0;
+            retVal = SCICLIENT_CONTEXT_MAIN_1_R5_0_NONSEC_0;
         }
         break;
 
@@ -128,7 +128,7 @@ uint32_t Sciclient_getContext(uint32_t contextType, uint32_t coreId)
         }
         else
         {
-            retVal = SCICLIENT_CONTEXT_MAIN_1_R5_0_NONSEC_0;
+            retVal = SCICLIENT_CONTEXT_MAIN_1_R5_1_NONSEC_0;
         }
         break;
 

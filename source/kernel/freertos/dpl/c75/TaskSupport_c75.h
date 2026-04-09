@@ -99,7 +99,7 @@ void TaskSupport_swap( void **oldtskContext, void **newtskContext);
 /* getStackAlignment */
 unsigned int TaskSupport_getStackAlignment( void);
 
-extern void * TaskSupport_buildTaskStack(void * stack, Task_FuncPtr fxn, TaskSupport_FuncPtr exit, TaskSupport_FuncPtr enter, void* arg0, TaskFunction_t arg1, void * TCSP, bool privileged);
+extern void * TaskSupport_buildTaskStack(void * stack, Task_FuncPtr fxn, TaskSupport_FuncPtr exitPoint, TaskSupport_FuncPtr enter, void* arg0, TaskFunction_t arg1, void * TCSP, bool privileged);
 
 extern void * TaskSupport_setupTaskStack(StackType_t * pxTopOfStack, StackType_t * pxEndOfStack, Task_FuncPtr fxn, TaskSupport_FuncPtr exitPoint, TaskSupport_FuncPtr enter, TaskFunction_t pxCode, void * pvParameters , bool privileged);
 

@@ -646,17 +646,17 @@ void HwiP_enable(void)
 int32_t HwiP_setArgs(HwiP_Object *handle, void *args)
 {
     HwiP_Struct *obj = (HwiP_Struct *)handle;
-    int32_t exp;
+    int32_t expVal;
 
     if (obj->intNum < DPL_C7X_CONFIGNUM_HWI)
     {
-        exp=1;
+        expVal=1;
     }
     else
     {
-        exp=0;
+        expVal=0;
     }
-    DebugP_assertNoLog(exp);
+    DebugP_assertNoLog(expVal);
 
     Hwi_Module_state.dispatchTable[obj->intNum]->arg = (unsigned int)args;
 

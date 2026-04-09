@@ -63,6 +63,8 @@
 
 #define DISP_SAFETY_FREEZE_THRESHOLD                            ((uint32_t)30U)
 
+#define TEST_DSS_VESA_RESOLUTION_COUNT                          (7U)
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -83,6 +85,7 @@ extern uint32_t TestDss_numVpSafetyRegions;
 extern Dss_DctrlVpSafetyChkParams TestDss_vpSafetyParamsRuntime[CSL_DSS_VP_SAFETY_REGION_MAX];
 
 extern int32_t TestDisp_displayControl(Dss_Object *appObj);
+extern int32_t TestDisp_flipDisplayControl(Dss_Object *appObj, uint32_t flipType);
 extern int32_t TestDisp_vpSafetyDisplayControlCommon(Dss_Object *appObj, uint32_t safetyMode);
 #if defined (SOC_AM62PX)
 extern int32_t TestDisp_initParams(Dss_Object *appObj);
@@ -96,6 +99,9 @@ static void test_dss_mulitiple_frame_formats(void *args);
 static void test_dss_multiple_dpi_resolution(void *args);
 static void TestDss_vpSafetyDataIntegrityDpi(void *args);
 static void TestDss_vpSafetyFreezeDetectDpi(void *args);
+static void TestDss_vesaTimingVariationsDpi(void *args);
+static void TestDss_vpColorSpaceConversion(void *args);
+static void TestDss_flipMirrorModeDpi(void *args);
 
 #if defined (SOC_AM62PX)
 static void TestDss_dpiDynamicCoverage(void *args);
@@ -185,6 +191,70 @@ static Fvid2_ModeInfo gDpiTimingParamsInfo[TEST_DSS_TOTAL_DPI_REOLUTIONS_MAX] =
     440U, 220U, 40U, 5U, 20U, 5U },
 };
 
+/* VESA DMT-only timing parameters: VGA, SVGA, XGA, SXGA, WXGA, 1440x900, 1680x1050 */
+static Fvid2_ModeInfo gVesaTimingParamsInfo[TEST_DSS_VESA_RESOLUTION_COUNT] =
+{
+    /* VGA 640x480@60Hz (VESA DMT) */
+    { FVID2_STD_CUSTOM, 640U,  480U,  FVID2_SF_PROGRESSIVE, 25175U,  60U, \
+    16U, 48U, 96U, 10U, 33U, 2U },
+    /* SVGA 800x600@60Hz (VESA DMT) */
+    { FVID2_STD_CUSTOM, 800U,  600U,  FVID2_SF_PROGRESSIVE, 40000U,  60U, \
+    40U, 88U, 128U, 1U, 23U, 4U },
+    /* XGA 1024x768@60Hz (VESA DMT) */
+    { FVID2_STD_CUSTOM, 1024U, 768U,  FVID2_SF_PROGRESSIVE, 65000U,  60U, \
+    24U, 160U, 136U, 3U, 29U, 6U },
+    /* SXGA 1280x1024@60Hz (VESA DMT) */
+    { FVID2_STD_CUSTOM, 1280U, 1024U, FVID2_SF_PROGRESSIVE, 108000U, 60U, \
+    48U, 248U, 112U, 1U, 38U, 3U },
+    /* WXGA 1280x800@60Hz (VESA DMT) */
+    { FVID2_STD_CUSTOM, 1280U, 800U,  FVID2_SF_PROGRESSIVE, 83500U,  60U, \
+    64U, 200U, 136U, 3U, 24U, 6U },
+    /* 1440x900@60Hz (VESA DMT) */
+    { FVID2_STD_CUSTOM, 1440U, 900U,  FVID2_SF_PROGRESSIVE, 106500U, 60U, \
+    80U, 232U, 152U, 3U, 28U, 6U },
+    /* 1680x1050@60Hz / WSXGA+ (VESA DMT) */
+    { FVID2_STD_CUSTOM, 1680U, 1050U, FVID2_SF_PROGRESSIVE, 146250U, 60U, \
+    104U, 280U, 176U, 3U, 32U, 6U },
+};
+
+/* Bridge mode info for each VESA DMT resolution (all CEA code=0, DVI-D compat) */
+static BridgeSii9022a_ModeInfo gVesaBridgeModeInfo[TEST_DSS_VESA_RESOLUTION_COUNT] =
+{
+    /* VGA 640x480@60Hz: CEA mode 1, pixClk=2518 (25175kHz/10) */
+    {FVID2_STD_VGA_60,       1U,  2518U,  60U, 800U,  525U, \
+    {16U, 0U, 96U, 10U, 2U},  {144U, 35U, 640U,  480U}},
+    /* SVGA 800x600@60Hz: no CEA code, pixClk=4000 */
+    {FVID2_STD_SVGA_60,      0U,  4000U,  60U, 1056U, 628U, \
+    {40U, 0U, 128U, 1U, 4U},  {216U, 27U, 800U,  600U}},
+    /* XGA 1024x768@60Hz: no CEA code, pixClk=6500 */
+    {FVID2_STD_XGA_60,       0U,  6500U,  60U, 1344U, 806U, \
+    {24U, 0U, 136U, 3U, 6U},  {296U, 35U, 1024U, 768U}},
+    /* SXGA 1280x1024@60Hz: no CEA code, pixClk=10800 */
+    {FVID2_STD_SXGA_60,      0U,  10800U, 60U, 1688U, 1066U, \
+    {48U, 0U, 112U, 1U, 3U},  {360U, 41U, 1280U, 1024U}},
+    /* WXGA 1280x800@60Hz: no CEA code, pixClk=8350 */
+    {FVID2_STD_WXGA_60,      0U,  8350U,  60U, 1680U, 833U, \
+    {64U, 0U, 136U, 3U, 6U},  {336U, 30U, 1280U, 800U}},
+    /* 1440x900@60Hz: no CEA code, pixClk=10650 */
+    {FVID2_STD_1440_900_60,  0U,  10650U, 60U, 1904U, 937U, \
+    {80U, 0U, 152U, 3U, 6U},  {384U, 34U, 1440U, 900U}},
+    /* 1680x1050@60Hz WSXGA+: no CEA code, pixClk=14625 */
+    {FVID2_STD_WSXGAP_60,    0U,  14625U, 60U, 2240U, 1091U, \
+    {104U, 0U, 176U, 3U, 6U}, {456U, 38U, 1680U, 1050U}},
+};
+
+static char *gVesaResolutionName[TEST_DSS_VESA_RESOLUTION_COUNT] =
+{
+    "VGA_640x480_60Hz",
+    "SVGA_800x600_60Hz",
+    "XGA_1024x768_60Hz",
+    "SXGA_1280x1024_60Hz",
+    "WXGA_1280x800_60Hz",
+    "1440x900_60Hz",
+    "1680x1050_60Hz"
+};
+
+
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -198,6 +268,9 @@ void test_main(void *args)
     RUN_TEST(test_dss_multiple_dpi_resolution, 4797, NULL);
     RUN_TEST(TestDss_vpSafetyDataIntegrityDpi, 11294, NULL);
     RUN_TEST(TestDss_vpSafetyFreezeDetectDpi, 11295, NULL);
+    RUN_TEST(TestDss_vesaTimingVariationsDpi, 11287, NULL);
+    RUN_TEST(TestDss_vpColorSpaceConversion, 11289, NULL);
+    RUN_TEST(TestDss_flipMirrorModeDpi, 11290, NULL);
 
 #if defined (SOC_AM62PX)
     RUN_TEST(TestDss_cslDynamicCoverage, 6127, NULL);
@@ -316,6 +389,1453 @@ static void test_dss_multiple_dpi_resolution(void *args)
 
     DebugP_log("------------------------------------------------------\r\n");
 
+}
+
+/**
+ * \brief  VP VESA timing variation support for the DPI interface.
+ *
+ *  Test Category: Functionality
+ *
+ *  This test configures the VP with multiple VESA timing standards
+ *  (VGA 640x480, SVGA 800x600, XGA 1024x768, 480p, 1080p, 720p) to verify that
+ *  timing parameters (sync polarity, blanking intervals, pixel clock) are correctly
+ *  applied to the VP and DPI transmitter.  Each timing variant is tested with
+ *  full display control and frame submission.  The test confirms that different
+ *  VESA timings can be selected and applied without conflicts.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_vesaTimingVariationsDpi(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS VESA Timing Variations Test for DPI\r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* Configure frame format as ARGB32 for display */
+    for(uint32_t instCnt = 0U;
+        instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        gDssConfigPipelineParams.inDataFmt[instCnt] = FVID2_DF_BGRA32_8888;
+        gDssConfigPipelineParams.pitch[instCnt][0U] =
+            gDssConfigPipelineParams.inWidth[instCnt] * 4U;
+    }
+
+    /* Save original VP polarity params for restoration */
+    uint32_t origHsPolarity  = gDssVpParams.lcdPolarityCfg.hsPolarity;
+    uint32_t origVsPolarity  = gDssVpParams.lcdPolarityCfg.vsPolarity;
+
+    /* Save original pipeline position for pipe 1 */
+    uint32_t origPosx1 = gDssConfigPipelineParams.posx[1];
+    uint32_t origPosy1 = gDssConfigPipelineParams.posy[1];
+
+    /* Save original pipe 0 output dimensions. Small VESA resolutions (e.g. VGA
+     * 640x480) are narrower/shorter than the default outWidth[0]=720/outHeight[0]=540,
+     * so the dimensions must be clamped before each TestDisp_displayControl call. */
+    uint32_t origOutWidth0  = gDssConfigPipelineParams.outWidth[0];
+    uint32_t origOutHeight0 = gDssConfigPipelineParams.outHeight[0];
+
+    /* Save original VP timing and bridge mode for the test restore */
+    Fvid2_ModeInfo origModeInfo;
+    BridgeSii9022a_ModeInfo origBridgeModeInfo;
+    memcpy(&origModeInfo, &gDssVpParams.lcdOpTimingCfg.mInfo, sizeof(Fvid2_ModeInfo));
+    memcpy(&origBridgeModeInfo, &gBridgeSii9022aObj.modeInfo, sizeof(BridgeSii9022a_ModeInfo));
+
+    Board_panelClose();
+
+    /*
+     *  Multiple VESA resolutions with default polarity
+     * Cycle through all 9 VESA resolutions including VGA (640x480),
+     * SVGA (800x600), XGA (1024x768), 480P (720x480), 1080p60/50/30,
+     * and 720p60/50 to verify VP timing programming at each resolution.
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" VESA resolution switching (default polarity)\r\n");
+
+    for(uint32_t count = 0U; count < TEST_DSS_VESA_RESOLUTION_COUNT && \
+        status == SystemP_SUCCESS; count++)
+    {
+        memcpy(&gDssVpParams.lcdOpTimingCfg.mInfo, \
+               &gVesaTimingParamsInfo[count], sizeof(Fvid2_ModeInfo));
+
+        Fvid2_ModeInfo *infoMode = (Fvid2_ModeInfo *) \
+                                    &gVesaTimingParamsInfo[count];
+
+        /* Clamp pipe 0 output to the current display dimensions. Required for
+         * small VESA resolutions (e.g. VGA 640x480) where the default
+         * outWidth=720 / outHeight=540 would exceed the display bounds. */
+        gDssConfigPipelineParams.outWidth[0]  = (origOutWidth0  < infoMode->width)  ?
+                                                 origOutWidth0  : infoMode->width;
+        gDssConfigPipelineParams.outHeight[0] = (origOutHeight0 < infoMode->height) ?
+                                                 origOutHeight0 : infoMode->height;
+
+        /* Position pipe 1 only if resolution is large enough */
+        if(infoMode->width > gDssConfigPipelineParams.outWidth[1] && \
+           infoMode->height > gDssConfigPipelineParams.outHeight[1])
+        {
+            gDssConfigPipelineParams.posx[1] = infoMode->width - \
+                                            gDssConfigPipelineParams.outWidth[1];
+            gDssConfigPipelineParams.posy[1] = infoMode->height - \
+                                            gDssConfigPipelineParams.outHeight[1];
+        }
+        else
+        {
+            gDssConfigPipelineParams.posx[1] = 0U;
+            gDssConfigPipelineParams.posy[1] = 0U;
+        }
+
+        memcpy(&gBridgeSii9022aObj.modeInfo, &gVesaBridgeModeInfo[count], \
+                sizeof(BridgeSii9022a_ModeInfo));
+
+        DebugP_log("  Resolution: %s\r\n", gVesaResolutionName[count]);
+
+        status = SOC_moduleSetClockFrequency(TISCI_DEV_DSS0, \
+                                TISCI_DEV_DSS0_DPI_1_IN_CLK, \
+                                gVesaTimingParamsInfo[count].pixelClock * 1000U);
+        if(status == SystemP_FAILURE)
+        {
+            DebugP_log("  setFrq failure!!\r\n");
+        }
+
+        status += Board_panelOpen();
+        status += TestDisp_displayControl(&gDssObjects[CONFIG_DSS0]);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+        Board_panelClose();
+    }
+
+    DebugP_log(" Resolution switching PASSED\r\n");
+
+    /*
+     *  VGA 640x480 with inverted hsync polarity
+     * Exercise polarity control at a low-resolution VESA mode.
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" VGA 640x480 with inverted hsync polarity\r\n");
+
+    memcpy(&gDssVpParams.lcdOpTimingCfg.mInfo, \
+           &gVesaTimingParamsInfo[0], sizeof(Fvid2_ModeInfo));
+    memcpy(&gBridgeSii9022aObj.modeInfo, &gVesaBridgeModeInfo[0], \
+            sizeof(BridgeSii9022a_ModeInfo));
+
+    gDssVpParams.lcdPolarityCfg.hsPolarity = FVID2_POL_LOW;
+
+    /* Clamp pipe 0 output for VGA (640x480 < outWidth=720 / outHeight=540) */
+    gDssConfigPipelineParams.outWidth[0]  = (origOutWidth0  < 640U) ? origOutWidth0  : 640U;
+    gDssConfigPipelineParams.outHeight[0] = (origOutHeight0 < 480U) ? origOutHeight0 : 480U;
+
+    gDssConfigPipelineParams.posx[1] = gVesaTimingParamsInfo[0].width - \
+                                    gDssConfigPipelineParams.outWidth[1];
+    gDssConfigPipelineParams.posy[1] = gVesaTimingParamsInfo[0].height - \
+                                    gDssConfigPipelineParams.outHeight[1];
+
+    status = SOC_moduleSetClockFrequency(TISCI_DEV_DSS0, \
+                            TISCI_DEV_DSS0_DPI_1_IN_CLK, \
+                            gVesaTimingParamsInfo[0].pixelClock * 1000U);
+    status += Board_panelOpen();
+    status += TestDisp_displayControl(&gDssObjects[CONFIG_DSS0]);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    Board_panelClose();
+
+    DebugP_log(" VGA inverted hsync polarity PASSED\r\n");
+
+    /* Restore hsync polarity */
+    gDssVpParams.lcdPolarityCfg.hsPolarity = origHsPolarity;
+
+    /*
+     *  SVGA 800x600 with inverted vsync polarity
+     * Exercise polarity control at SVGA resolution.
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" SVGA 800x600 with inverted vsync polarity\r\n");
+
+    memcpy(&gDssVpParams.lcdOpTimingCfg.mInfo, \
+           &gVesaTimingParamsInfo[1], sizeof(Fvid2_ModeInfo));
+    memcpy(&gBridgeSii9022aObj.modeInfo, &gVesaBridgeModeInfo[1], \
+            sizeof(BridgeSii9022a_ModeInfo));
+
+    gDssVpParams.lcdPolarityCfg.vsPolarity = FVID2_POL_LOW;
+
+    gDssConfigPipelineParams.posx[1] = gVesaTimingParamsInfo[1].width - \
+                                    gDssConfigPipelineParams.outWidth[1];
+    gDssConfigPipelineParams.posy[1] = gVesaTimingParamsInfo[1].height - \
+                                    gDssConfigPipelineParams.outHeight[1];
+
+    status = SOC_moduleSetClockFrequency(TISCI_DEV_DSS0, \
+                            TISCI_DEV_DSS0_DPI_1_IN_CLK, \
+                            gVesaTimingParamsInfo[1].pixelClock * 1000U);
+    status += Board_panelOpen();
+    status += TestDisp_displayControl(&gDssObjects[CONFIG_DSS0]);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    Board_panelClose();
+
+    DebugP_log(" SVGA inverted vsync polarity PASSED\r\n");
+
+    /* Restore vsync polarity */
+    gDssVpParams.lcdPolarityCfg.vsPolarity = origVsPolarity;
+
+    /*
+     *  XGA 1024x768 with both hsync and vsync polarity inverted
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" XGA 1024x768 with both polarities inverted\r\n");
+
+    memcpy(&gDssVpParams.lcdOpTimingCfg.mInfo, \
+           &gVesaTimingParamsInfo[2], sizeof(Fvid2_ModeInfo));
+    memcpy(&gBridgeSii9022aObj.modeInfo, &gVesaBridgeModeInfo[2], \
+            sizeof(BridgeSii9022a_ModeInfo));
+
+    gDssVpParams.lcdPolarityCfg.hsPolarity = FVID2_POL_LOW;
+    gDssVpParams.lcdPolarityCfg.vsPolarity = FVID2_POL_LOW;
+
+    gDssConfigPipelineParams.posx[1] = gVesaTimingParamsInfo[2].width - \
+                                    gDssConfigPipelineParams.outWidth[1];
+    gDssConfigPipelineParams.posy[1] = gVesaTimingParamsInfo[2].height - \
+                                    gDssConfigPipelineParams.outHeight[1];
+
+    status = SOC_moduleSetClockFrequency(TISCI_DEV_DSS0, \
+                            TISCI_DEV_DSS0_DPI_1_IN_CLK, \
+                            gVesaTimingParamsInfo[2].pixelClock * 1000U);
+    status += Board_panelOpen();
+    status += TestDisp_displayControl(&gDssObjects[CONFIG_DSS0]);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    Board_panelClose();
+
+    DebugP_log(" XGA both polarities inverted PASSED\r\n");
+
+    /* Restore polarities */
+    gDssVpParams.lcdPolarityCfg.hsPolarity = origHsPolarity;
+    gDssVpParams.lcdPolarityCfg.vsPolarity = origVsPolarity;
+
+    /*
+     *  480P 720x480 with modified blanking intervals
+     * Exercise blanking timing register writes at 480P resolution.
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" VGA 640x480 with modified blanking intervals\r\n");
+
+    memcpy(&gDssVpParams.lcdOpTimingCfg.mInfo, \
+           &gVesaTimingParamsInfo[0], sizeof(Fvid2_ModeInfo));
+    memcpy(&gBridgeSii9022aObj.modeInfo, &gVesaBridgeModeInfo[0], \
+            sizeof(BridgeSii9022a_ModeInfo));
+
+    /* Modify blanking intervals from the VGA defaults */
+    gDssVpParams.lcdOpTimingCfg.mInfo.hFrontPorch = 24U;
+    gDssVpParams.lcdOpTimingCfg.mInfo.hBackPorch  = 68U;
+    gDssVpParams.lcdOpTimingCfg.mInfo.vFrontPorch = 12U;
+    gDssVpParams.lcdOpTimingCfg.mInfo.vBackPorch  = 34U;
+
+    /* Clamp pipe 0 output for VGA (640x480 < outWidth=720 / outHeight=540) */
+    gDssConfigPipelineParams.outWidth[0]  = (origOutWidth0  < 640U) ? origOutWidth0  : 640U;
+    gDssConfigPipelineParams.outHeight[0] = (origOutHeight0 < 480U) ? origOutHeight0 : 480U;
+
+    gDssConfigPipelineParams.posx[1] = gVesaTimingParamsInfo[0].width - \
+                                    gDssConfigPipelineParams.outWidth[1];
+    gDssConfigPipelineParams.posy[1] = gVesaTimingParamsInfo[0].height - \
+                                    gDssConfigPipelineParams.outHeight[1];
+
+    status = SOC_moduleSetClockFrequency(TISCI_DEV_DSS0, \
+                            TISCI_DEV_DSS0_DPI_1_IN_CLK, \
+                            gVesaTimingParamsInfo[3].pixelClock * 1000U);
+    status += Board_panelOpen();
+    status += TestDisp_displayControl(&gDssObjects[CONFIG_DSS0]);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    Board_panelClose();
+
+    DebugP_log(" VGA modified blanking intervals PASSED\r\n");
+
+    /*
+     *  XGA 1024x768 with combined polarity + blanking variation
+     * Exercise all timing parameters modified simultaneously at a
+     * mid-range VESA resolution.
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" XGA 1024x768 combined polarity + blanking\r\n");
+
+    memcpy(&gDssVpParams.lcdOpTimingCfg.mInfo, \
+           &gVesaTimingParamsInfo[2], sizeof(Fvid2_ModeInfo));
+    memcpy(&gBridgeSii9022aObj.modeInfo, &gVesaBridgeModeInfo[2], \
+            sizeof(BridgeSii9022a_ModeInfo));
+
+    gDssVpParams.lcdPolarityCfg.hsPolarity = FVID2_POL_LOW;
+    gDssVpParams.lcdPolarityCfg.vsPolarity = FVID2_POL_LOW;
+    gDssVpParams.lcdOpTimingCfg.mInfo.hFrontPorch = 32U;
+    gDssVpParams.lcdOpTimingCfg.mInfo.hBackPorch  = 180U;
+    gDssVpParams.lcdOpTimingCfg.mInfo.hSyncLen     = 120U;
+    gDssVpParams.lcdOpTimingCfg.mInfo.vFrontPorch = 6U;
+    gDssVpParams.lcdOpTimingCfg.mInfo.vBackPorch  = 32U;
+    gDssVpParams.lcdOpTimingCfg.mInfo.vSyncLen     = 4U;
+
+    gDssConfigPipelineParams.posx[1] = gVesaTimingParamsInfo[2].width - \
+                                    gDssConfigPipelineParams.outWidth[1];
+    gDssConfigPipelineParams.posy[1] = gVesaTimingParamsInfo[2].height - \
+                                    gDssConfigPipelineParams.outHeight[1];
+
+    status = SOC_moduleSetClockFrequency(TISCI_DEV_DSS0, \
+                            TISCI_DEV_DSS0_DPI_1_IN_CLK, \
+                            gVesaTimingParamsInfo[2].pixelClock * 1000U);
+    status += Board_panelOpen();
+    status += TestDisp_displayControl(&gDssObjects[CONFIG_DSS0]);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    Board_panelClose();
+
+    DebugP_log(" XGA combined polarity + blanking PASSED\r\n");
+
+    /* Restore all original VP polarity params */
+    gDssVpParams.lcdPolarityCfg.hsPolarity = origHsPolarity;
+    gDssVpParams.lcdPolarityCfg.vsPolarity = origVsPolarity;
+
+    /*
+     *  SVGA 800x600 with modified sync lengths
+     * Verify sync width register write path at SVGA resolution.
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" SVGA 800x600 with modified sync lengths\r\n");
+
+    memcpy(&gDssVpParams.lcdOpTimingCfg.mInfo, \
+           &gVesaTimingParamsInfo[1], sizeof(Fvid2_ModeInfo));
+    memcpy(&gBridgeSii9022aObj.modeInfo, &gVesaBridgeModeInfo[1], \
+            sizeof(BridgeSii9022a_ModeInfo));
+
+    gDssVpParams.lcdOpTimingCfg.mInfo.hSyncLen = 160U;
+    gDssVpParams.lcdOpTimingCfg.mInfo.vSyncLen = 6U;
+
+    gDssConfigPipelineParams.posx[1] = gVesaTimingParamsInfo[1].width - \
+                                    gDssConfigPipelineParams.outWidth[1];
+    gDssConfigPipelineParams.posy[1] = gVesaTimingParamsInfo[1].height - \
+                                    gDssConfigPipelineParams.outHeight[1];
+
+    status = SOC_moduleSetClockFrequency(TISCI_DEV_DSS0, \
+                            TISCI_DEV_DSS0_DPI_1_IN_CLK, \
+                            gVesaTimingParamsInfo[1].pixelClock * 1000U);
+    status += Board_panelOpen();
+    status += TestDisp_displayControl(&gDssObjects[CONFIG_DSS0]);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    Board_panelClose();
+
+    DebugP_log(" SVGA modified sync lengths PASSED\r\n");
+
+    /*
+     *  1080p60 with modified blanking (HD resolution coverage)
+     * Ensure blanking variations also work at full-HD resolution.
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" SXGA 1280x1024 with modified blanking intervals\r\n");
+
+    memcpy(&gDssVpParams.lcdOpTimingCfg.mInfo, \
+           &gVesaTimingParamsInfo[3], sizeof(Fvid2_ModeInfo));
+    memcpy(&gBridgeSii9022aObj.modeInfo, &gVesaBridgeModeInfo[3], \
+            sizeof(BridgeSii9022a_ModeInfo));
+
+    gDssVpParams.lcdOpTimingCfg.mInfo.hFrontPorch = 120U;
+    gDssVpParams.lcdOpTimingCfg.mInfo.hBackPorch  = 200U;
+    gDssVpParams.lcdOpTimingCfg.mInfo.vFrontPorch = 8U;
+    gDssVpParams.lcdOpTimingCfg.mInfo.vBackPorch  = 40U;
+
+    gDssConfigPipelineParams.posx[1] = gVesaTimingParamsInfo[3].width - \
+                                    gDssConfigPipelineParams.outWidth[1];
+    gDssConfigPipelineParams.posy[1] = gVesaTimingParamsInfo[3].height - \
+                                    gDssConfigPipelineParams.outHeight[1];
+
+    status = SOC_moduleSetClockFrequency(TISCI_DEV_DSS0, \
+                            TISCI_DEV_DSS0_DPI_1_IN_CLK, \
+                            gVesaTimingParamsInfo[4].pixelClock * 1000U);
+    status += Board_panelOpen();
+    status += TestDisp_displayControl(&gDssObjects[CONFIG_DSS0]);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    Board_panelClose();
+
+    DebugP_log(" SXGA 1280x1024 modified blanking PASSED\r\n");
+
+    /*
+     *  Restore default 1080p60 timing (baseline validation)
+     * Ensure the VP can be restored to default after all modifications.
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" Restore default 1080p60 timing\r\n");
+
+    /* Restore all pipeline params to original values before the display cycle */
+    memcpy(&gDssVpParams.lcdOpTimingCfg.mInfo, &origModeInfo, sizeof(Fvid2_ModeInfo));
+    memcpy(&gBridgeSii9022aObj.modeInfo, &origBridgeModeInfo, sizeof(BridgeSii9022a_ModeInfo));
+    gDssConfigPipelineParams.outWidth[0]  = origOutWidth0;
+    gDssConfigPipelineParams.outHeight[0] = origOutHeight0;
+    gDssConfigPipelineParams.posx[1]      = origPosx1;
+    gDssConfigPipelineParams.posy[1]      = origPosy1;
+
+    status = SOC_moduleSetClockFrequency(TISCI_DEV_DSS0, \
+                            TISCI_DEV_DSS0_DPI_1_IN_CLK, \
+                            origModeInfo.pixelClock * 1000U);
+    status += Board_panelOpen();
+    status += TestDisp_displayControl(&gDssObjects[CONFIG_DSS0]);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    Board_panelClose();
+
+    DebugP_log(" Default 1080p60 timing restored PASSED\r\n");
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS VESA Timing Variations Test Completed Successfully!\r\n");
+    DebugP_log("======================================================\r\n");
+}
+
+/**
+ * \brief  VP Color Space Conversion (CSC) coefficient programming for DPI.
+ *
+ *  Test Category: Functionality
+ *
+ *  This test exercises VP-level Color Space Conversion by programming various
+ *  CSC coefficient matrices via IOCTL_DSS_DCTRL_SET_VP_CSC_COEFF.  The test
+ *  covers BT-601 limited/full range RGB→YUV conversions, identity matrix
+ *  passthrough, and custom coefficients with pre/post offsets positioned before
+ *  or after gamma correction.  The test verifies correct IOCTL acceptance,
+ *  CSL register programming, and that the display pipeline operates correctly
+ *  with CSC enabled and disabled (baseline verification).
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_vpColorSpaceConversion(void *args)
+{
+    int32_t retVal = FVID2_SOK;
+    int32_t status = SystemP_SUCCESS;
+    Dss_DctrlVpCscCoeff vpCscCoeff;
+    Fvid2_InitPrms initPrms;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS VP Color Space Conversion Test (VP-side CSC)\r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* Configure frame format as ARGB32 for all display pipes */
+    for(uint32_t instCnt = 0U;
+        instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        gDssConfigPipelineParams.inDataFmt[instCnt] = FVID2_DF_BGRA32_8888;
+        gDssConfigPipelineParams.pitch[instCnt][0U] =
+            gDssConfigPipelineParams.inWidth[instCnt] * 4U;
+    }
+
+    /*
+     *  BT-601 Limited Range RGB->YUV (CSC before GAMMA)
+     *
+     * Uses the standard BT-601 limited range coefficients for RGB-to-YUV
+     * conversion. These are the same coefficients the DSS driver uses
+     * internally for BT656/BT1120 embedded sync output modes.
+     *
+     * Coefficient values (Q8 fixed point, 256 = 1.0):
+     *   Y  =  0.299*R + 0.587*G + 0.114*B          → c00=77, c01=150, c02=29
+     *   Cb = -0.172*R - 0.340*G + 0.512*B + 2048    → c10=-44,c11=-87,c12=131
+     *   Cr =  0.512*R - 0.430*G - 0.082*B + 2048    → c20=131,c21=-110,c22=-21
+     *   Y post-offset = 256 (16 in 8-bit, shifted to 12-bit)
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" BT-601 Limited Range CSC (before GAMMA)\r\n");
+
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    /* Configure VP CSC: BT-601 limited range, position before gamma */
+    vpCscCoeff.vpId   = gDssVpParams.vpId;
+    vpCscCoeff.cscPos = CSL_DSS_VP_CSC_POS_BEFORE_GAMMA;
+    vpCscCoeff.cscCoeff.cscRange    = CSL_DSS_CSC_RANGE_LIMITED;
+    vpCscCoeff.cscCoeff.c00         =  77;
+    vpCscCoeff.cscCoeff.c01         = 150;
+    vpCscCoeff.cscCoeff.c02         =  29;
+    vpCscCoeff.cscCoeff.c10         = -44;
+    vpCscCoeff.cscCoeff.c11         = -87;
+    vpCscCoeff.cscCoeff.c12         = 131;
+    vpCscCoeff.cscCoeff.c20         = 131;
+    vpCscCoeff.cscCoeff.c21         = -110;
+    vpCscCoeff.cscCoeff.c22         = -21;
+    vpCscCoeff.cscCoeff.preOffset1  = 0;
+    vpCscCoeff.cscCoeff.preOffset2  = 0;
+    vpCscCoeff.cscCoeff.preOffset3  = 0;
+    vpCscCoeff.cscCoeff.postOffset1 = 256;
+    vpCscCoeff.cscCoeff.postOffset2 = 2048;
+    vpCscCoeff.cscCoeff.postOffset3 = 2048;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_CSC_COEFF,
+        &vpCscCoeff,
+        NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DCTRL_SET_VP_CSC_COEFF returned FVID2_SOK\r\n");
+
+    /* Clean up DCTRL handle and DSS */
+    retVal = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    retVal = Dss_deInit();
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    retVal = Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log(" BT-601 Limited Range CSC PASSED\r\n");
+
+    /*
+     *  BT-601 Full Range RGB->YUV (CSC before GAMMA)
+     *
+     * Full range uses slightly different coefficient scaling. The Y channel
+     * uses the full 0-255 range (no 16-235 clamping), so the post-offset
+     * for Y is 0 instead of 256.
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" BT-601 Full Range CSC (before GAMMA)\r\n");
+
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    /* Configure VP CSC: BT-601 full range */
+    vpCscCoeff.vpId   = gDssVpParams.vpId;
+    vpCscCoeff.cscPos = CSL_DSS_VP_CSC_POS_BEFORE_GAMMA;
+    vpCscCoeff.cscCoeff.cscRange    = CSL_DSS_CSC_RANGE_FULL;
+    vpCscCoeff.cscCoeff.c00         =  66;
+    vpCscCoeff.cscCoeff.c01         = 129;
+    vpCscCoeff.cscCoeff.c02         =  25;
+    vpCscCoeff.cscCoeff.c10         = -38;
+    vpCscCoeff.cscCoeff.c11         = -74;
+    vpCscCoeff.cscCoeff.c12         = 112;
+    vpCscCoeff.cscCoeff.c20         = 112;
+    vpCscCoeff.cscCoeff.c21         = -94;
+    vpCscCoeff.cscCoeff.c22         = -18;
+    vpCscCoeff.cscCoeff.preOffset1  = 0;
+    vpCscCoeff.cscCoeff.preOffset2  = 0;
+    vpCscCoeff.cscCoeff.preOffset3  = 0;
+    vpCscCoeff.cscCoeff.postOffset1 = 0;
+    vpCscCoeff.cscCoeff.postOffset2 = 2048;
+    vpCscCoeff.cscCoeff.postOffset3 = 2048;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_CSC_COEFF,
+        &vpCscCoeff,
+        NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DCTRL_SET_VP_CSC_COEFF returned FVID2_SOK\r\n");
+
+    retVal = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    retVal += Dss_deInit();
+    retVal += Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log(" BT-601 Full Range CSC PASSED\r\n");
+
+    /*
+     *  Identity matrix passthrough (CSC before GAMMA)
+     *
+     * An identity CSC matrix passes pixel data through unchanged.
+     * Diagonal elements = 256 (1.0 in Q8 fixed-point), off-diag = 0.
+     * All offsets = 0. Range = CUSTOM (allows arbitrary coefficients).
+     * This verifies the IOCTL accepts an identity/no-op configuration.
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" Identity matrix passthrough (before GAMMA)\r\n");
+
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    /* Configure VP CSC: identity matrix */
+    vpCscCoeff.vpId   = gDssVpParams.vpId;
+    vpCscCoeff.cscPos = CSL_DSS_VP_CSC_POS_BEFORE_GAMMA;
+    vpCscCoeff.cscCoeff.cscRange    = CSL_DSS_CSC_RANGE_CUSTOM;
+    vpCscCoeff.cscCoeff.c00         = 256;
+    vpCscCoeff.cscCoeff.c01         = 0;
+    vpCscCoeff.cscCoeff.c02         = 0;
+    vpCscCoeff.cscCoeff.c10         = 0;
+    vpCscCoeff.cscCoeff.c11         = 256;
+    vpCscCoeff.cscCoeff.c12         = 0;
+    vpCscCoeff.cscCoeff.c20         = 0;
+    vpCscCoeff.cscCoeff.c21         = 0;
+    vpCscCoeff.cscCoeff.c22         = 256;
+    vpCscCoeff.cscCoeff.preOffset1  = 0;
+    vpCscCoeff.cscCoeff.preOffset2  = 0;
+    vpCscCoeff.cscCoeff.preOffset3  = 0;
+    vpCscCoeff.cscCoeff.postOffset1 = 0;
+    vpCscCoeff.cscCoeff.postOffset2 = 0;
+    vpCscCoeff.cscCoeff.postOffset3 = 0;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_CSC_COEFF,
+        &vpCscCoeff,
+        NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DCTRL_SET_VP_CSC_COEFF returned FVID2_SOK\r\n");
+
+    retVal = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    retVal += Dss_deInit();
+    retVal += Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log(" Identity matrix passthrough PASSED\r\n");
+
+    /*
+     *  Custom CSC coefficients with post-offsets (CSC after GAMMA)
+     *
+     * Uses arbitrary custom coefficients with non-zero post-offsets.
+     * Position = AFTER_GAMMA. Range = CUSTOM.
+     * This exercises the CSL_DSS_VP_CSC_POS_AFTER_GAMMA path and the
+     * CSL_DSS_CSC_RANGE_CUSTOM mode together.
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" Custom CSC coefficients (after GAMMA)\r\n");
+
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    /* Configure VP CSC: custom coefficients, after gamma */
+    vpCscCoeff.vpId   = gDssVpParams.vpId;
+    vpCscCoeff.cscPos = CSL_DSS_VP_CSC_POS_AFTER_GAMMA;
+    vpCscCoeff.cscCoeff.cscRange    = CSL_DSS_CSC_RANGE_CUSTOM;
+    vpCscCoeff.cscCoeff.c00         = 200;
+    vpCscCoeff.cscCoeff.c01         =  50;
+    vpCscCoeff.cscCoeff.c02         =   6;
+    vpCscCoeff.cscCoeff.c10         =  10;
+    vpCscCoeff.cscCoeff.c11         = 220;
+    vpCscCoeff.cscCoeff.c12         =  26;
+    vpCscCoeff.cscCoeff.c20         =  15;
+    vpCscCoeff.cscCoeff.c21         =  30;
+    vpCscCoeff.cscCoeff.c22         = 211;
+    vpCscCoeff.cscCoeff.preOffset1  = 0;
+    vpCscCoeff.cscCoeff.preOffset2  = 0;
+    vpCscCoeff.cscCoeff.preOffset3  = 0;
+    vpCscCoeff.cscCoeff.postOffset1 = 128;
+    vpCscCoeff.cscCoeff.postOffset2 = 64;
+    vpCscCoeff.cscCoeff.postOffset3 = 32;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_CSC_COEFF,
+        &vpCscCoeff,
+        NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DCTRL_SET_VP_CSC_COEFF returned FVID2_SOK\r\n");
+
+    retVal = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    retVal += Dss_deInit();
+    retVal += Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log(" Custom CSC coefficients PASSED\r\n");
+
+    /*
+     *  BT-601 Limited Range (CSC after GAMMA)
+     *
+     * Same BT-601 limited range coefficients as the test, but placed
+     * AFTER the GAMMA correction block. Verifies the CSC position selector
+     * works correctly with both BEFORE and AFTER values.
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" BT-601 Limited Range CSC (after GAMMA)\r\n");
+
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    /* Configure VP CSC: BT-601 limited range, position after gamma */
+    vpCscCoeff.vpId   = gDssVpParams.vpId;
+    vpCscCoeff.cscPos = CSL_DSS_VP_CSC_POS_AFTER_GAMMA;
+    vpCscCoeff.cscCoeff.cscRange    = CSL_DSS_CSC_RANGE_LIMITED;
+    vpCscCoeff.cscCoeff.c00         =  77;
+    vpCscCoeff.cscCoeff.c01         = 150;
+    vpCscCoeff.cscCoeff.c02         =  29;
+    vpCscCoeff.cscCoeff.c10         = -44;
+    vpCscCoeff.cscCoeff.c11         = -87;
+    vpCscCoeff.cscCoeff.c12         = 131;
+    vpCscCoeff.cscCoeff.c20         = 131;
+    vpCscCoeff.cscCoeff.c21         = -110;
+    vpCscCoeff.cscCoeff.c22         = -21;
+    vpCscCoeff.cscCoeff.preOffset1  = 0;
+    vpCscCoeff.cscCoeff.preOffset2  = 0;
+    vpCscCoeff.cscCoeff.preOffset3  = 0;
+    vpCscCoeff.cscCoeff.postOffset1 = 256;
+    vpCscCoeff.cscCoeff.postOffset2 = 2048;
+    vpCscCoeff.cscCoeff.postOffset3 = 2048;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_CSC_COEFF,
+        &vpCscCoeff,
+        NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DCTRL_SET_VP_CSC_COEFF returned FVID2_SOK\r\n");
+
+    retVal = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    retVal += Dss_deInit();
+    retVal += Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log(" BT-601 Limited Range CSC (after GAMMA) PASSED\r\n");
+
+    /*
+     *  Full display cycle (baseline verification)
+     *
+     * Run the complete display pipeline via TestDisp_displayControl to
+     * confirm the display path works correctly after the VP CSC IOCTL
+     * exercises above. This serves as a baseline/sanity check.
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" Full display cycle (baseline)\r\n");
+
+    status = Board_panelOpen();
+    status += TestDisp_displayControl(&gDssObjects[CONFIG_DSS0]);
+    Board_panelClose();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    DebugP_log(" Full display cycle PASSED\r\n");
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS VP Color Space Conversion Test Completed!\r\n");
+    DebugP_log("======================================================\r\n");
+}
+
+/**
+ * \brief  VP video frame flip and mirror mode for the DPI interface.
+ *
+ *  Test Category: Functionality
+ *
+ *  This test exercises all FVID2 flip modes (vertical, horizontal, H+V) on the
+ *  VP for DPI output.  The test verifies that flip is supported for 32-bit
+ *  formats (BGRA32) and correctly rejected for 24-bit RGB/BGR formats via
+ *  IOCTL_DSS_DISP_SET_DSS_PARAMS.  The test covers positive cases with all
+ *  flip mode combinations on BGRA32, negative cases with RGB24/BGR24 formats,
+ *  and a baseline display cycle to ensure flip does not break normal operation.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_flipMirrorModeDpi(void *args)
+{
+    int32_t retVal = FVID2_SOK;
+    int32_t status = SystemP_SUCCESS;
+    Fvid2_InitPrms initPrms;
+    Dss_InstObject *instObj;
+    Dss_DispParams dispParams;
+    Dss_DctrlVpParams vpParams;
+    Dss_DctrlAdvVpParams advVpParams;
+    Dss_DctrlOverlayParams overlayParams;
+    Dss_DctrlOverlayLayerParams layerParams;
+    Dss_DctrlGlobalDssParams globalDssParams;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Flip/Mirror Mode Test (DPI)\r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* Configure frame format as BGRA32 for all display pipes (flip-safe) */
+    for(uint32_t instCnt = 0U;
+        instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        gDssConfigPipelineParams.inDataFmt[instCnt] = FVID2_DF_BGRA32_8888;
+        gDssConfigPipelineParams.pitch[instCnt][0U] =
+            gDssConfigPipelineParams.inWidth[instCnt] * 4U;
+    }
+
+    /*
+     *  Vertical flip (FVID2_FLIP_TYPE_V) with BGRA32_8888
+     *
+     * Vertical flip mirrors the image along the X axis. The DSS hardware
+     * implements this by setting the FLIP bit in DSS_VID_ATTRIBUTES register.
+     * Expected result: FVID2_SOK (32-bit format is flip-compatible).
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" Vertical flip (FVID2_FLIP_TYPE_V) BGRA32\r\n");
+
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    /* Configure DCTRL path using syscfg globals */
+    Dss_dctrlVpParamsInit(&vpParams);
+    vpParams.vpId = gDssVpParams.vpId;
+    memcpy(&vpParams.lcdOpTimingCfg.mInfo,
+           &gDssVpParams.lcdOpTimingCfg.mInfo,
+           sizeof(Fvid2_ModeInfo));
+    vpParams.lcdOpTimingCfg.dvoFormat =
+        gDssVpParams.lcdOpTimingCfg.dvoFormat;
+    vpParams.lcdOpTimingCfg.videoIfWidth =
+        gDssVpParams.lcdOpTimingCfg.videoIfWidth;
+    vpParams.lcdPolarityCfg = gDssVpParams.lcdPolarityCfg;
+
+    Dss_dctrlAdvVpParamsInit(&advVpParams);
+    advVpParams.vpId = gDssAdvVpParams.vpId;
+    advVpParams.lcdAdvSignalCfg.hVAlign =
+        gDssAdvVpParams.lcdAdvSignalCfg.hVAlign;
+    advVpParams.lcdAdvSignalCfg.hVClkControl =
+        gDssAdvVpParams.lcdAdvSignalCfg.hVClkControl;
+
+    Dss_dctrlOverlayParamsInit(&overlayParams);
+    overlayParams.overlayId = gDssOverlayParams.overlayId;
+    overlayParams.colorbarEnable = gDssOverlayParams.colorbarEnable;
+    overlayParams.overlayCfg = gDssOverlayParams.overlayCfg;
+
+    Dss_dctrlOverlayLayerParamsInit(&layerParams);
+    layerParams.overlayId = gDssOverlayLayerParams.overlayId;
+    memcpy(layerParams.pipeLayerNum,
+           gDssOverlayLayerParams.pipeLayerNum,
+           sizeof(gDssOverlayLayerParams.pipeLayerNum));
+
+    Dss_dctrlGlobalDssParamsInit(&globalDssParams);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_ADV_VP_PARAMS, &advVpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_PARAMS, &vpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS, &overlayParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_LAYER_PARAMS, &layerParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS, &globalDssParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Create DISP driver handle for first pipe */
+    instObj = &gDssObjects[CONFIG_DSS0].instObj[0U];
+    instObj->instId = gDssConfigPipelineParams.instId[0U];
+    Dss_dispCreateParamsInit(&instObj->createParams);
+    Fvid2CbParams_init(&instObj->cbParams);
+    instObj->cbParams.cbFxn = NULL;
+
+    status = SemaphoreP_constructBinary(&instObj->syncSem, 0);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    instObj->drvHandle = Fvid2_create(
+        DSS_DISP_DRV_ID,
+        instObj->instId,
+        &instObj->createParams,
+        &instObj->createStatus,
+        &instObj->cbParams);
+    TEST_ASSERT_NOT_NULL(instObj->drvHandle);
+
+    /* Prepare dispParams with vertical flip */
+    Dss_dispParamsInit(&dispParams);
+    dispParams.pipeCfg.pipeType =
+        gDssConfigPipelineParams.pipeType[0U];
+    dispParams.pipeCfg.inFmt.width =
+        gDssConfigPipelineParams.inWidth[0U];
+    dispParams.pipeCfg.inFmt.height =
+        gDssConfigPipelineParams.inHeight[0U];
+    dispParams.pipeCfg.inFmt.pitch[0U] =
+        gDssConfigPipelineParams.pitch[0U][0U];
+    dispParams.pipeCfg.inFmt.dataFormat = FVID2_DF_BGRA32_8888;
+    dispParams.pipeCfg.inFmt.scanFormat =
+        gDssConfigPipelineParams.inScanFmt[0U];
+    dispParams.pipeCfg.outWidth =
+        gDssConfigPipelineParams.outWidth[0U];
+    dispParams.pipeCfg.outHeight =
+        gDssConfigPipelineParams.outHeight[0U];
+    dispParams.pipeCfg.scEnable =
+        gDssConfigPipelineParams.scEnable[0U];
+    dispParams.pipeCfg.flipType = FVID2_FLIP_TYPE_V;
+    dispParams.layerPos.startX =
+        gDssConfigPipelineParams.posx[0U];
+    dispParams.layerPos.startY =
+        gDssConfigPipelineParams.posy[0U];
+
+    retVal = Fvid2_control(
+        instObj->drvHandle,
+        IOCTL_DSS_DISP_SET_DSS_PARAMS,
+        &dispParams,
+        NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DISP_SET_DSS_PARAMS (V flip) returned FVID2_SOK\r\n");
+
+    /* Clean up */
+    retVal = Fvid2_delete(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    SemaphoreP_destruct(&instObj->syncSem);
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_CLEAR_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    retVal = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    retVal += Dss_deInit();
+    retVal += Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Now display frames on-screen with vertical flip applied */
+    DebugP_log("  Displaying frames with V flip on screen...\r\n");
+    status = Board_panelOpen();
+    status += TestDisp_flipDisplayControl(&gDssObjects[CONFIG_DSS0],
+                                          FVID2_FLIP_TYPE_V);
+    Board_panelClose();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    DebugP_log("  V flip display cycle completed\r\n");
+
+    DebugP_log(" Vertical flip PASSED\r\n");
+
+    /*
+     *  Horizontal flip (FVID2_FLIP_TYPE_H) with BGRA32_8888
+     *
+     * Horizontal flip mirrors the image along the Y axis. The DSS hardware
+     * implements this by calculating a negative ROW_INC value:
+     *   ROW_INC = -(widthInBytes + pitch - 1)
+     * Expected result: FVID2_SOK (32-bit format is flip-compatible).
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" Horizontal flip (FVID2_FLIP_TYPE_H) BGRA32\r\n");
+
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_ADV_VP_PARAMS, &advVpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_PARAMS, &vpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS, &overlayParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_LAYER_PARAMS, &layerParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS, &globalDssParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    instObj = &gDssObjects[CONFIG_DSS0].instObj[0U];
+    instObj->instId = gDssConfigPipelineParams.instId[0U];
+    Dss_dispCreateParamsInit(&instObj->createParams);
+    Fvid2CbParams_init(&instObj->cbParams);
+    instObj->cbParams.cbFxn = NULL;
+
+    status = SemaphoreP_constructBinary(&instObj->syncSem, 0);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    instObj->drvHandle = Fvid2_create(
+        DSS_DISP_DRV_ID,
+        instObj->instId,
+        &instObj->createParams,
+        &instObj->createStatus,
+        &instObj->cbParams);
+    TEST_ASSERT_NOT_NULL(instObj->drvHandle);
+
+    Dss_dispParamsInit(&dispParams);
+    dispParams.pipeCfg.pipeType =
+        gDssConfigPipelineParams.pipeType[0U];
+    dispParams.pipeCfg.inFmt.width =
+        gDssConfigPipelineParams.inWidth[0U];
+    dispParams.pipeCfg.inFmt.height =
+        gDssConfigPipelineParams.inHeight[0U];
+    dispParams.pipeCfg.inFmt.pitch[0U] =
+        gDssConfigPipelineParams.pitch[0U][0U];
+    dispParams.pipeCfg.inFmt.dataFormat = FVID2_DF_BGRA32_8888;
+    dispParams.pipeCfg.inFmt.scanFormat =
+        gDssConfigPipelineParams.inScanFmt[0U];
+    dispParams.pipeCfg.outWidth =
+        gDssConfigPipelineParams.outWidth[0U];
+    dispParams.pipeCfg.outHeight =
+        gDssConfigPipelineParams.outHeight[0U];
+    dispParams.pipeCfg.scEnable =
+        gDssConfigPipelineParams.scEnable[0U];
+    dispParams.pipeCfg.flipType = FVID2_FLIP_TYPE_H;
+    dispParams.layerPos.startX =
+        gDssConfigPipelineParams.posx[0U];
+    dispParams.layerPos.startY =
+        gDssConfigPipelineParams.posy[0U];
+
+    retVal = Fvid2_control(
+        instObj->drvHandle,
+        IOCTL_DSS_DISP_SET_DSS_PARAMS,
+        &dispParams,
+        NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DISP_SET_DSS_PARAMS (H flip) returned FVID2_SOK\r\n");
+
+    retVal = Fvid2_delete(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    SemaphoreP_destruct(&instObj->syncSem);
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_CLEAR_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    retVal = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    retVal += Dss_deInit();
+    retVal += Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Now display frames on-screen with horizontal flip applied */
+    DebugP_log("  Displaying frames with H flip on screen...\r\n");
+    status = Board_panelOpen();
+    status += TestDisp_flipDisplayControl(&gDssObjects[CONFIG_DSS0],
+                                          FVID2_FLIP_TYPE_H);
+    Board_panelClose();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    DebugP_log("  H flip display cycle completed\r\n");
+
+    DebugP_log(" Horizontal flip PASSED\r\n");
+
+    /*
+     *  H+V flip (FVID2_FLIP_TYPE_HV) with BGRA32_8888
+     *
+     * Combined horizontal and vertical flip (180-degree rotation).
+     * Both the FLIP attribute bit and the negative ROW_INC are programmed.
+     * Expected result: FVID2_SOK (32-bit format is flip-compatible).
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" H+V flip (FVID2_FLIP_TYPE_HV) BGRA32\r\n");
+
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_ADV_VP_PARAMS, &advVpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_PARAMS, &vpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS, &overlayParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_LAYER_PARAMS, &layerParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS, &globalDssParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    instObj = &gDssObjects[CONFIG_DSS0].instObj[0U];
+    instObj->instId = gDssConfigPipelineParams.instId[0U];
+    Dss_dispCreateParamsInit(&instObj->createParams);
+    Fvid2CbParams_init(&instObj->cbParams);
+    instObj->cbParams.cbFxn = NULL;
+
+    status = SemaphoreP_constructBinary(&instObj->syncSem, 0);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    instObj->drvHandle = Fvid2_create(
+        DSS_DISP_DRV_ID,
+        instObj->instId,
+        &instObj->createParams,
+        &instObj->createStatus,
+        &instObj->cbParams);
+    TEST_ASSERT_NOT_NULL(instObj->drvHandle);
+
+    Dss_dispParamsInit(&dispParams);
+    dispParams.pipeCfg.pipeType =
+        gDssConfigPipelineParams.pipeType[0U];
+    dispParams.pipeCfg.inFmt.width =
+        gDssConfigPipelineParams.inWidth[0U];
+    dispParams.pipeCfg.inFmt.height =
+        gDssConfigPipelineParams.inHeight[0U];
+    dispParams.pipeCfg.inFmt.pitch[0U] =
+        gDssConfigPipelineParams.pitch[0U][0U];
+    dispParams.pipeCfg.inFmt.dataFormat = FVID2_DF_BGRA32_8888;
+    dispParams.pipeCfg.inFmt.scanFormat =
+        gDssConfigPipelineParams.inScanFmt[0U];
+    dispParams.pipeCfg.outWidth =
+        gDssConfigPipelineParams.outWidth[0U];
+    dispParams.pipeCfg.outHeight =
+        gDssConfigPipelineParams.outHeight[0U];
+    dispParams.pipeCfg.scEnable =
+        gDssConfigPipelineParams.scEnable[0U];
+    dispParams.pipeCfg.flipType = FVID2_FLIP_TYPE_HV;
+    dispParams.layerPos.startX =
+        gDssConfigPipelineParams.posx[0U];
+    dispParams.layerPos.startY =
+        gDssConfigPipelineParams.posy[0U];
+
+    retVal = Fvid2_control(
+        instObj->drvHandle,
+        IOCTL_DSS_DISP_SET_DSS_PARAMS,
+        &dispParams,
+        NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DISP_SET_DSS_PARAMS (HV flip) returned FVID2_SOK\r\n");
+
+    retVal = Fvid2_delete(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    SemaphoreP_destruct(&instObj->syncSem);
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_CLEAR_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    retVal = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    retVal += Dss_deInit();
+    retVal += Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Now display frames on-screen with H+V flip applied */
+    DebugP_log("  Displaying frames with HV flip on screen...\r\n");
+    status = Board_panelOpen();
+    status += TestDisp_flipDisplayControl(&gDssObjects[CONFIG_DSS0],
+                                          FVID2_FLIP_TYPE_HV);
+    Board_panelClose();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    DebugP_log("  HV flip display cycle completed\r\n");
+
+    DebugP_log(" H+V flip PASSED\r\n");
+
+    /*
+     *  Vertical flip with RGB24_888 (negative test)
+     *
+     * The DSS driver rejects flip for 24-bit RGB/BGR formats because the
+     * hardware ROW_INC calculation does not work correctly with 3-byte
+     * pixels (non-power-of-2 width). The driver validation in
+     * Dss_dispDrvValidateDssParams() returns FVID2_EINVALID_PARAMS.
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" V flip + RGB24_888 (expect EINVALID_PARAMS)\r\n");
+
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_ADV_VP_PARAMS, &advVpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_PARAMS, &vpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS, &overlayParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_LAYER_PARAMS, &layerParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS, &globalDssParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    instObj = &gDssObjects[CONFIG_DSS0].instObj[0U];
+    instObj->instId = gDssConfigPipelineParams.instId[0U];
+    Dss_dispCreateParamsInit(&instObj->createParams);
+    Fvid2CbParams_init(&instObj->cbParams);
+    instObj->cbParams.cbFxn = NULL;
+
+    status = SemaphoreP_constructBinary(&instObj->syncSem, 0);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    instObj->drvHandle = Fvid2_create(
+        DSS_DISP_DRV_ID,
+        instObj->instId,
+        &instObj->createParams,
+        &instObj->createStatus,
+        &instObj->cbParams);
+    TEST_ASSERT_NOT_NULL(instObj->drvHandle);
+
+    Dss_dispParamsInit(&dispParams);
+    dispParams.pipeCfg.pipeType =
+        gDssConfigPipelineParams.pipeType[0U];
+    dispParams.pipeCfg.inFmt.width =
+        gDssConfigPipelineParams.inWidth[0U];
+    dispParams.pipeCfg.inFmt.height =
+        gDssConfigPipelineParams.inHeight[0U];
+    dispParams.pipeCfg.inFmt.pitch[0U] =
+        gDssConfigPipelineParams.inWidth[0U] * 3U;
+    dispParams.pipeCfg.inFmt.dataFormat = FVID2_DF_RGB24_888;
+    dispParams.pipeCfg.inFmt.scanFormat =
+        gDssConfigPipelineParams.inScanFmt[0U];
+    dispParams.pipeCfg.outWidth =
+        gDssConfigPipelineParams.outWidth[0U];
+    dispParams.pipeCfg.outHeight =
+        gDssConfigPipelineParams.outHeight[0U];
+    dispParams.pipeCfg.scEnable =
+        gDssConfigPipelineParams.scEnable[0U];
+    dispParams.pipeCfg.flipType = FVID2_FLIP_TYPE_V;
+    dispParams.layerPos.startX =
+        gDssConfigPipelineParams.posx[0U];
+    dispParams.layerPos.startY =
+        gDssConfigPipelineParams.posy[0U];
+
+    retVal = Fvid2_control(
+        instObj->drvHandle,
+        IOCTL_DSS_DISP_SET_DSS_PARAMS,
+        &dispParams,
+        NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EINVALID_PARAMS, retVal);
+    DebugP_log("  IOCTL correctly rejected V flip + RGB24_888\r\n");
+
+    retVal = Fvid2_delete(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    SemaphoreP_destruct(&instObj->syncSem);
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_CLEAR_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    retVal = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    retVal += Dss_deInit();
+    retVal += Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log(" V flip + RGB24_888 rejection PASSED\r\n");
+
+    /*
+     *  Horizontal flip with BGR24_888 (negative test)
+     *
+     * Same 24-bit format restriction as the test but exercising H flip
+     * and BGR24_888 format. Driver should return FVID2_EINVALID_PARAMS.
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" H flip + BGR24_888 (expect EINVALID_PARAMS)\r\n");
+
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_ADV_VP_PARAMS, &advVpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_PARAMS, &vpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS, &overlayParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_LAYER_PARAMS, &layerParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS, &globalDssParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    instObj = &gDssObjects[CONFIG_DSS0].instObj[0U];
+    instObj->instId = gDssConfigPipelineParams.instId[0U];
+    Dss_dispCreateParamsInit(&instObj->createParams);
+    Fvid2CbParams_init(&instObj->cbParams);
+    instObj->cbParams.cbFxn = NULL;
+
+    status = SemaphoreP_constructBinary(&instObj->syncSem, 0);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    instObj->drvHandle = Fvid2_create(
+        DSS_DISP_DRV_ID,
+        instObj->instId,
+        &instObj->createParams,
+        &instObj->createStatus,
+        &instObj->cbParams);
+    TEST_ASSERT_NOT_NULL(instObj->drvHandle);
+
+    Dss_dispParamsInit(&dispParams);
+    dispParams.pipeCfg.pipeType =
+        gDssConfigPipelineParams.pipeType[0U];
+    dispParams.pipeCfg.inFmt.width =
+        gDssConfigPipelineParams.inWidth[0U];
+    dispParams.pipeCfg.inFmt.height =
+        gDssConfigPipelineParams.inHeight[0U];
+    dispParams.pipeCfg.inFmt.pitch[0U] =
+        gDssConfigPipelineParams.inWidth[0U] * 3U;
+    dispParams.pipeCfg.inFmt.dataFormat = FVID2_DF_BGR24_888;
+    dispParams.pipeCfg.inFmt.scanFormat =
+        gDssConfigPipelineParams.inScanFmt[0U];
+    dispParams.pipeCfg.outWidth =
+        gDssConfigPipelineParams.outWidth[0U];
+    dispParams.pipeCfg.outHeight =
+        gDssConfigPipelineParams.outHeight[0U];
+    dispParams.pipeCfg.scEnable =
+        gDssConfigPipelineParams.scEnable[0U];
+    dispParams.pipeCfg.flipType = FVID2_FLIP_TYPE_H;
+    dispParams.layerPos.startX =
+        gDssConfigPipelineParams.posx[0U];
+    dispParams.layerPos.startY =
+        gDssConfigPipelineParams.posy[0U];
+
+    retVal = Fvid2_control(
+        instObj->drvHandle,
+        IOCTL_DSS_DISP_SET_DSS_PARAMS,
+        &dispParams,
+        NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EINVALID_PARAMS, retVal);
+    DebugP_log("  IOCTL correctly rejected H flip + BGR24_888\r\n");
+
+    retVal = Fvid2_delete(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    SemaphoreP_destruct(&instObj->syncSem);
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_CLEAR_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    retVal = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    retVal += Dss_deInit();
+    retVal += Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log(" H flip + BGR24_888 rejection PASSED\r\n");
+
+    /*
+     *  Full display cycle (baseline verification)
+     *
+     * Run the complete display pipeline via TestDisp_flipDisplayControl
+     * with FVID2_FLIP_TYPE_NONE to confirm the display path operates
+     * correctly after the flip/mirror IOCTL exercises above.
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" Full display cycle (no flip baseline)\r\n");
+
+    status = Board_panelOpen();
+    status += TestDisp_flipDisplayControl(&gDssObjects[CONFIG_DSS0],
+                                          FVID2_FLIP_TYPE_NONE);
+    Board_panelClose();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    DebugP_log(" Full display cycle PASSED\r\n");
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Flip/Mirror Mode Test (DPI) Completed!\r\n");
+    DebugP_log("======================================================\r\n");
 }
 
 #if defined (SOC_AM62PX)

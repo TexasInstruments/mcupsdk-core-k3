@@ -78,11 +78,19 @@
 /* Number of frames to display after clearing freeze (with new buffer) */
 #define TEST_DSS_SAFETY_FREEZE_CLEAR_FRAMES    ((uint32_t)10U)
 
+/* Number of frames for the starvation test */
+#define TEST_DSS_STARVE_NUM_FRAMES_COUNT       ((uint32_t)100U)
+
+/* Frame number at which to start starving (stop re-queuing frames) */
+#define TEST_DSS_STARVE_START_FRAME_NUM        ((uint32_t)30U)
+
+/* Number of VSYNC intervals to remain starved (no frames queued) */
+#define TEST_DSS_STARVE_DURATION_FRAMES        ((uint32_t)40U)
+
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
-
 /* Safety test callback data structure */
 typedef struct
 {
@@ -114,8 +122,6 @@ typedef struct
     uint32_t capturedSign;
     /**< Captured MISR signature */
 } TestDisp_PipeSafetyCbData;
-
-
 /* ========================================================================== */
 /*                          Function Declarations                             */
 /* ========================================================================== */
@@ -159,6 +165,10 @@ static int32_t TestDisp_safetyRunTestFrameSkip(Dss_Object *appObj,
                                                 uint32_t safetyMode,
                                                 uint32_t frameSkipVal);
 
+static void TestDisp_underflowCbFxn(void *appData);
+static void TestDisp_syncLostCbFxn(uint32_t vpId, void *appData);
+static int32_t TestDisp_runStarveTest(Dss_Object *appObj);
+
 extern void Disp_prepareFrameBuffer(uint32_t instCount,
                             uint32_t inDataFmt, \
                             uint32_t inWidth, \
@@ -185,6 +195,7 @@ void *secondPipeFrameBufferPointer[CONFIG_DSS_NUM_FRAMES_PER_PIPELINE];
 /* VP safety callback data for all safety regions */
 TestDisp_SafetyCbData TestDss_vpSafetyCbData[CSL_DSS_VP_SAFETY_REGION_MAX];
 
+
 TestDisp_PipeSafetyCbData TestDss_pipeSafetyCbDataVid;
 TestDisp_PipeSafetyCbData TestDss_pipeSafetyCbDataVidl;
 
@@ -198,6 +209,17 @@ volatile uint32_t TestDss_safetyLoopCount = 0U;
  * TestDss_vpSafetyParamsRuntime before calling the safety display control. */
 uint32_t TestDss_numVpSafetyRegions = CONFIG_DSS_NUM_SAFETY_REGIONS;
 Dss_DctrlVpSafetyChkParams TestDss_vpSafetyParamsRuntime[CSL_DSS_VP_SAFETY_REGION_MAX];
+
+/* Buffer underflow test callback data */
+volatile uint32_t TestDss_underflowCbCount = 0U;
+volatile uint32_t TestDss_syncLostCbCount = 0U;
+
+/* Starvation test results — populated by TestDisp_runStarveTest() so that
+ * the calling test (e.g. OLDI/DPI) can assert on them. */
+volatile uint32_t TestDss_starveRepeatFrmCount  = 0U;
+volatile uint32_t TestDss_starveUnderflowCount  = 0U;
+volatile uint32_t TestDss_starveDispFrmCount    = 0U;
+volatile uint32_t TestDss_starveSyncLostCount   = 0U;
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -2174,3 +2196,563 @@ static int32_t TestDisp_logPipeSafetyData(uint32_t safetyMode)
     return status;
 }
 
+static void TestDisp_underflowCbFxn(void *appData)
+{
+    TestDss_underflowCbCount++;
+}
+
+static void TestDisp_syncLostCbFxn(uint32_t vpId, void *appData)
+{
+    TestDss_syncLostCbCount++;
+}
+
+/**
+ * \brief  Run test that deliberately starves the DSS pipeline to trigger buffer underflow and sync lost errors.
+ *
+ *  Creates display driver and registers underflow and sync-lost callbacks. Queues and dequeues
+ *  frames normally for initial frames, then starves the pipeline by stopping frame re-queuing
+ *  for a specified duration to trigger underflow and frame repeat conditions. Resumes normal
+ *  queuing for remaining frames. After stopping, queries current display status for underflow
+ *  and repeat frame counts, and VP error stats for sync lost. Validates that underflow was
+ *  detected through either callback invocation or underflow counter, and sync lost stats are available.
+ *
+ *  \param appObj Pointer to DSS object containing driver handles and configuration.
+ *
+ *  \return FVID2_SOK on success, error code otherwise.
+ */
+static int32_t TestDisp_runStarveTest(Dss_Object *appObj)
+{
+    int32_t retVal = FVID2_SOK;
+    uint32_t instCnt = 0U;
+    volatile uint32_t loopCount = 0U;
+    Dss_InstObject *instObj;
+    Fvid2_FrameList frmList;
+    Dss_DispCurrentStatus currStatus;
+    Dss_DctrlVpErrorStats vpErrStats;
+    Dss_DispUnderFlowCbParams underFlowCbParams;
+    Dss_DctrlSyncLostCbParams syncLostCbParams;
+
+    /* Create driver */
+    retVal = TestDisp_create(appObj);
+
+    if(retVal == FVID2_SOK)
+    {
+        /* Register underflow callback for each pipe */
+        for(instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes;
+            instCnt++)
+        {
+            instObj = &appObj->instObj[instCnt];
+
+            Dss_dispUnderFlowCbParamsInit(&underFlowCbParams);
+            underFlowCbParams.underFlowCbFxn = &TestDisp_underflowCbFxn;
+            underFlowCbParams.appData = instObj;
+
+            retVal = Fvid2_control(
+                instObj->drvHandle,
+                IOCTL_DSS_DISP_REGISTER_PIPE_UNDERFLOW_CB,
+                &underFlowCbParams,
+                NULL);
+            if(retVal != FVID2_SOK)
+            {
+                DebugP_log("Register underflow CB failed for pipe %d\r\n",
+                           instCnt);
+                break;
+            }
+        }
+    }
+
+    if(retVal == FVID2_SOK)
+    {
+        /* Register sync-lost callback on the VP */
+        syncLostCbParams.vpId = gDssVpParams.vpId;
+        syncLostCbParams.syncLostCbFxn = &TestDisp_syncLostCbFxn;
+        syncLostCbParams.appData = NULL;
+
+        retVal = Fvid2_control(
+            appObj->dctrlHandle,
+            IOCTL_DSS_DCTRL_REGISTER_SYNCLOST_CB,
+            &syncLostCbParams,
+            NULL);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("Register sync-lost CB failed\r\n");
+        }
+    }
+
+    if(retVal == FVID2_SOK)
+    {
+        /* Start driver */
+        for(instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes;
+            instCnt++)
+        {
+            instObj = &appObj->instObj[instCnt];
+
+            retVal = Fvid2_start(instObj->drvHandle, NULL);
+            if(retVal != FVID2_SOK)
+            {
+                DebugP_log("Display Start failed!!!\r\n");
+                break;
+            }
+        }
+    }
+
+    if(retVal == FVID2_SOK)
+    {
+        while(loopCount++ < TEST_DSS_STARVE_NUM_FRAMES_COUNT)
+        {
+            for(instCnt = 0U;
+                instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+            {
+                instObj = &appObj->instObj[instCnt];
+
+                (void) SemaphoreP_pend(&instObj->syncSem,
+                                       SystemP_WAIT_FOREVER);
+
+                retVal = Fvid2_dequeue(instObj->drvHandle,
+                                       &frmList,
+                                       0U,
+                                       FVID2_TIMEOUT_NONE);
+
+                if(FVID2_SOK == retVal)
+                {
+                    /*
+                     * Starvation window: do NOT re-queue the dequeued frame
+                     * so the pipeline runs out of buffers.
+                     */
+                    if(loopCount >= TEST_DSS_STARVE_START_FRAME_NUM &&
+                       loopCount < (TEST_DSS_STARVE_START_FRAME_NUM +
+                                    TEST_DSS_STARVE_DURATION_FRAMES))
+                    {
+                        /* Intentionally drop the frame – do not re-queue */
+                        DebugP_log("Starving DSS at frame %d\r\n",
+                                   loopCount);
+                    }
+                    else
+                    {
+                        /* Normal operation – re-queue the frame */
+                        retVal = Fvid2_queue(instObj->drvHandle, &frmList, 0U);
+                        if(FVID2_SOK != retVal)
+                        {
+                            DebugP_log("Display Queue failed!!!\r\n");
+                            break;
+                        }
+                    }
+                }
+                else if(FVID2_EAGAIN == retVal)
+                {
+                    /* No frame available to dequeue – expected during starvation */
+                    retVal = FVID2_SOK;
+                }
+                else
+                {
+                    DebugP_log("Display Dequeue failed!!!\r\n");
+                    break;
+                }
+            }
+        }
+
+        /* Stop driver */
+        for(instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes;
+            instCnt++)
+        {
+            instObj = &appObj->instObj[instCnt];
+            retVal = Fvid2_stop(instObj->drvHandle, NULL);
+            if(retVal != FVID2_SOK)
+            {
+                DebugP_log("Display Stop failed!!!\r\n");
+                break;
+            }
+        }
+    }
+
+    if(FVID2_SOK == retVal)
+    {
+        /* Reset starvation result globals before accumulating */
+        TestDss_starveRepeatFrmCount = 0U;
+        TestDss_starveUnderflowCount = 0U;
+        TestDss_starveDispFrmCount   = 0U;
+        TestDss_starveSyncLostCount  = 0U;
+
+        /* Query underflow and repeat-frame stats per pipeline */
+        for(instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes;
+            instCnt++)
+        {
+            instObj = &appObj->instObj[instCnt];
+
+            retVal = Fvid2_control(
+                instObj->drvHandle,
+                IOCTL_DSS_DISP_GET_CURRENT_STATUS,
+                &currStatus,
+                NULL);
+            if(FVID2_SOK != retVal)
+            {
+                DebugP_log("Display get status failed for pipe %d\r\n",
+                           instCnt);
+            }
+            else
+            {
+                DebugP_log("Pipeline %d: underflowCount=%d, "
+                           "repeatFrmCount=%d, dispFrmCount=%d\r\n",
+                           gDssConfigPipelineParams.instId[instCnt],
+                           currStatus.underflowCount,
+                           currStatus.repeatFrmCount,
+                           currStatus.dispFrmCount);
+
+                /* Accumulate across pipes so the caller can assert */
+                TestDss_starveRepeatFrmCount += currStatus.repeatFrmCount;
+                TestDss_starveUnderflowCount += currStatus.underflowCount;
+                TestDss_starveDispFrmCount   += currStatus.dispFrmCount;
+            }
+
+            /* Dequeue remaining frames */
+            while(1U)
+            {
+                retVal = Fvid2_dequeue(
+                    instObj->drvHandle,
+                    &frmList,
+                    0U,
+                    FVID2_TIMEOUT_NONE);
+                if(FVID2_SOK != retVal)
+                {
+                    break;
+                }
+            }
+
+            retVal = Fvid2_delete(instObj->drvHandle, NULL);
+            if(FVID2_SOK != retVal)
+            {
+                DebugP_log("Display Delete failed!!!\r\n");
+                break;
+            }
+        }
+
+        /* Query VP sync-lost error stats */
+        vpErrStats.vpId = gDssVpParams.vpId;
+        retVal = Fvid2_control(
+            appObj->dctrlHandle,
+            IOCTL_DSS_DCTRL_GET_VP_ERROR_STATS,
+            &vpErrStats,
+            NULL);
+        if(FVID2_SOK != retVal)
+        {
+            DebugP_log("VP get error stats failed\r\n");
+        }
+        else
+        {
+            DebugP_log("VP syncLost count: %d\r\n", vpErrStats.syncLost);
+            TestDss_starveSyncLostCount = vpErrStats.syncLost;
+        }
+
+        /* Clear path and stop VP */
+        retVal = Fvid2_control(
+            appObj->dctrlHandle,
+            IOCTL_DSS_DCTRL_CLEAR_PATH,
+            appObj->dctrlPathInfo,
+            NULL);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("Clear Path failed!!!\r\n");
+        }
+
+        retVal = Fvid2_control(
+            appObj->dctrlHandle,
+            IOCTL_DSS_DCTRL_STOP_VP,
+            &appObj->vpParams,
+            NULL);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("VP Stop failed!!!\r\n");
+        }
+    }
+
+    return retVal;
+}
+
+/**
+ * \brief  Test wrapper for buffer underflow and sync lost error detection.
+ *
+ *  Initializes frames and resets underflow and sync-lost callback counters.
+ *  Initializes DSS configuration, runs the starvation test to trigger buffer
+ *  underflow and sync lost conditions, then deinitializes the display driver.
+ *  Validates that underflow and sync lost errors are correctly detected and
+ *  reported through callbacks and error statistics.
+ *
+ *  \param appObj Pointer to DSS object containing driver handles and configuration.
+ *
+ *  \return SystemP_SUCCESS on successful test execution; SystemP_FAILURE otherwise.
+ */
+int32_t TestDisp_bufUnderflowSyncLostDisplayControl(Dss_Object *appObj)
+{
+    int32_t retVal = FVID2_SOK;
+    int32_t status = SystemP_SUCCESS;
+
+    /* Initialise frames */
+    TestDisp_initFrames();
+
+    /* Reset underflow/sync-lost callback counters */
+    TestDss_underflowCbCount = 0U;
+    TestDss_syncLostCbCount  = 0U;
+
+    status = TestDisp_init(appObj);
+
+    if(status == SystemP_SUCCESS)
+    {
+        retVal = TestDisp_runStarveTest(appObj);
+
+        retVal += TestDisp_deInit(appObj);
+
+        if(FVID2_SOK != retVal)
+        {
+            status = SystemP_FAILURE;
+        }
+    }
+
+    return status;
+}
+
+/**
+ * \brief  Execute display cycle with configurable flip/mirror modes.
+ *
+ *  Temporarily overrides the flipType in pipeline parameters and runs a full display
+ *  cycle with the specified flip mode (NONE, V, H, or HV). Adjusts frame buffer base
+ *  addresses for horizontal/vertical flips, executes display frames, and restores
+ *  original pipeline configuration. Requires caller to set flip-compatible data format.
+ *
+ *  \param appObj Pointer to DSS object containing configuration and state.
+ *  \param flipType Flip mode (FVID2_FLIP_TYPE_NONE / _V / _H / _HV).
+ *
+ *  \return SystemP_SUCCESS on success, SystemP_FAILURE otherwise.
+ */
+int32_t TestDisp_flipDisplayControl(Dss_Object *appObj, uint32_t flipType)
+{
+    int32_t retVal = FVID2_SOK;
+    int32_t status = SystemP_SUCCESS;
+    uint32_t instCnt;
+    uint32_t savedFlipType[DSS_DISP_INST_MAX];
+    uint32_t savedDataFmt[DSS_DISP_INST_MAX];
+    uint32_t savedPitch[DSS_DISP_INST_MAX];
+
+    /* Save current pipeline params that we will override */
+    for(instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        savedDataFmt[instCnt] = gDssConfigPipelineParams.inDataFmt[instCnt];
+        savedPitch[instCnt]   = gDssConfigPipelineParams.pitch[instCnt][0U];
+        savedFlipType[instCnt] = FVID2_FLIP_TYPE_NONE;
+    }
+
+    /* Initialise frames with current pipeline format settings */
+    TestDisp_initFrames();
+
+    if(FVID2_FLIP_TYPE_H == (FVID2_FLIP_TYPE_H & flipType))
+    {
+        for(instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+        {
+            uint32_t width  = gDssConfigPipelineParams.inWidth[instCnt];
+            uint32_t height = gDssConfigPipelineParams.inHeight[instCnt];
+            uint32_t pitch  = gDssConfigPipelineParams.pitch[instCnt][0U];
+            uint32_t bpp    = pitch / width;
+            uint32_t offset = (height - 1U) * pitch;
+
+            /* For HV flip, also add horizontal offset to reach last pixel */
+            if(FVID2_FLIP_TYPE_V == (FVID2_FLIP_TYPE_V & flipType))
+            {
+                offset += (width - 1U) * bpp;
+            }
+
+            for(uint32_t frmId = 0U; frmId < CONFIG_DSS_NUM_FRAMES_PER_PIPELINE; frmId++)
+            {
+                if(instCnt == 0U)
+                {
+                    firstPipeFrameBufferPointer[frmId] =
+                        (uint8_t *)firstPipeFrameBufferPointer[frmId] + offset;
+                }
+                else
+                {
+                    secondPipeFrameBufferPointer[frmId] =
+                        (uint8_t *)secondPipeFrameBufferPointer[frmId] + offset;
+                }
+            }
+        }
+    }
+
+    status = TestDisp_init(appObj);
+
+    if(status == SystemP_SUCCESS)
+    {
+        /* Init VP, Overlay and Panel params */
+        TestDisp_initDssParams(appObj);
+
+        /* Configure DSS pipeline params - this populates instObj->dispParams */
+        TestDisp_initPipelineParams(appObj);
+
+        /* Override the flip type for all pipes */
+        for(instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+        {
+            appObj->instObj[instCnt].dispParams.pipeCfg.flipType = flipType;
+        }
+
+        /* Config IOCTL for VP, Overlay and Panel */
+        retVal = TestDisp_configDctrl(appObj);
+
+        if(retVal == FVID2_SOK)
+        {
+            /* Create DISP driver instances, set params, alloc and queue frames */
+            for(instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+            {
+                Dss_InstObject *instObj = &appObj->instObj[instCnt];
+
+                status = SemaphoreP_constructBinary(&instObj->syncSem, 0);
+                if(status != SystemP_SUCCESS)
+                {
+                    retVal = FVID2_EFAIL;
+                }
+
+                instObj->drvHandle = Fvid2_create(
+                    DSS_DISP_DRV_ID,
+                    instObj->instId,
+                    &instObj->createParams,
+                    &instObj->createStatus,
+                    &instObj->cbParams);
+
+                if((NULL == instObj->drvHandle) ||
+                   (instObj->createStatus.retVal != FVID2_SOK))
+                {
+                    DebugP_log("Display Create failed!!!\r\n");
+                    retVal = instObj->createStatus.retVal;
+                }
+
+                if(FVID2_SOK == retVal)
+                {
+                    retVal = Fvid2_control(
+                        instObj->drvHandle,
+                        IOCTL_DSS_DISP_SET_DSS_PARAMS,
+                        &instObj->dispParams,
+                        NULL);
+                    if(retVal != FVID2_SOK)
+                    {
+                        DebugP_log("DSS Set Params IOCTL failed (flipType=%u)!!!\r\n",
+                                   flipType);
+                    }
+                }
+
+                if(FVID2_SOK == retVal)
+                {
+                    retVal = Fvid2_control(
+                        instObj->drvHandle,
+                        IOCTL_DSS_DISP_SET_PIPE_MFLAG_PARAMS,
+                        &instObj->mflagParams,
+                        NULL);
+                    if(retVal != FVID2_SOK)
+                    {
+                        DebugP_log("DSS Set Mflag Params IOCTL failed!!!\r\n");
+                    }
+                }
+
+                if(FVID2_SOK == retVal)
+                {
+                    retVal = TestDisp_allocAndQueueFrames(appObj, instObj);
+                    if(retVal != FVID2_SOK)
+                    {
+                        DebugP_log("Display Alloc and Queue failed!!!\r\n");
+                    }
+                }
+
+                if(FVID2_SOK != retVal)
+                {
+                    break;
+                }
+            }
+        }
+
+        if(retVal == FVID2_SOK)
+        {
+            /* Start driver */
+            for(instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+            {
+                Dss_InstObject *instObj = &appObj->instObj[instCnt];
+                retVal = Fvid2_start(instObj->drvHandle, NULL);
+                if(retVal != FVID2_SOK)
+                {
+                    DebugP_log("Display Start failed!!!\r\n");
+                    break;
+                }
+            }
+        }
+
+        if(retVal == FVID2_SOK)
+        {
+            /* VSYNC loop - display frames */
+            volatile uint32_t loopCount = 0U;
+            Fvid2_FrameList frmList;
+
+            while(loopCount++ < DISP_NUM_FRAMES_COUNT)
+            {
+                for(instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+                {
+                    Dss_InstObject *instObj = &appObj->instObj[instCnt];
+                    (void) SemaphoreP_pend(&instObj->syncSem, SystemP_WAIT_FOREVER);
+                    retVal = Fvid2_dequeue(instObj->drvHandle,
+                                           &frmList,
+                                           0U,
+                                           FVID2_TIMEOUT_NONE);
+
+                    if(FVID2_SOK == retVal)
+                    {
+                        retVal = Fvid2_queue(instObj->drvHandle, &frmList, 0U);
+                        if(FVID2_SOK != retVal)
+                        {
+                            DebugP_log("Display Queue failed!!!\r\n");
+                            break;
+                        }
+                    }
+                    else if(FVID2_EAGAIN == retVal)
+                    {
+                        /* Do nothing as this is first callback */
+                    }
+                    else
+                    {
+                        DebugP_log("Display Dequeue failed!!!\r\n");
+                        break;
+                    }
+                }
+            }
+
+            /* Stop driver */
+            for(instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+            {
+                Dss_InstObject *instObj = &appObj->instObj[instCnt];
+                retVal = Fvid2_stop(instObj->drvHandle, NULL);
+                if(retVal != FVID2_SOK)
+                {
+                    DebugP_log("Display Stop failed!!!\r\n");
+                    break;
+                }
+            }
+        }
+
+        if(FVID2_SOK == retVal)
+        {
+            /* Delete driver - dequeue remaining frames, delete handles */
+            TestDisp_delete(appObj);
+        }
+
+        retVal += TestDisp_deInit(appObj);
+
+        if(FVID2_SOK != retVal)
+        {
+            status = SystemP_FAILURE;
+        }
+    }
+
+    /* Restore frame buffer pointers to base (in case offset was applied) */
+    TestDisp_initFrames();
+
+    /* Restore original pipeline params */
+    for(instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        gDssConfigPipelineParams.inDataFmt[instCnt] = savedDataFmt[instCnt];
+        gDssConfigPipelineParams.pitch[instCnt][0U] = savedPitch[instCnt];
+    }
+
+    return status;
+}

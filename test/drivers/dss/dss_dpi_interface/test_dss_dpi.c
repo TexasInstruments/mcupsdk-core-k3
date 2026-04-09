@@ -678,7 +678,7 @@ static void TestDss_vesaTimingVariationsDpi(void *args)
 
     status = SOC_moduleSetClockFrequency(TISCI_DEV_DSS0, \
                             TISCI_DEV_DSS0_DPI_1_IN_CLK, \
-                            gVesaTimingParamsInfo[3].pixelClock * 1000U);
+                            gVesaTimingParamsInfo[0].pixelClock * 1000U);
     status += Board_panelOpen();
     status += TestDisp_displayControl(&gDssObjects[CONFIG_DSS0]);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
@@ -781,7 +781,7 @@ static void TestDss_vesaTimingVariationsDpi(void *args)
 
     status = SOC_moduleSetClockFrequency(TISCI_DEV_DSS0, \
                             TISCI_DEV_DSS0_DPI_1_IN_CLK, \
-                            gVesaTimingParamsInfo[4].pixelClock * 1000U);
+                            gVesaTimingParamsInfo[3].pixelClock * 1000U);
     status += Board_panelOpen();
     status += TestDisp_displayControl(&gDssObjects[CONFIG_DSS0]);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
@@ -2978,6 +2978,7 @@ static void TestDss_vpSafetyDataIntegrityDpi(void *args)
 
     /* Restore defaults */
     TestDss_numVpSafetyRegions = 0U;
+    memset(TestDss_vpSafetyParamsRuntime, 0, sizeof(TestDss_vpSafetyParamsRuntime));
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -3067,6 +3068,7 @@ static void TestDss_vpSafetyFreezeDetectDpi(void *args)
 
     /* Restore defaults */
     TestDss_numVpSafetyRegions = 0U;
+    memset(TestDss_vpSafetyParamsRuntime, 0, sizeof(TestDss_vpSafetyParamsRuntime));
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 

@@ -476,6 +476,10 @@ int32_t TestDisp_frameSkipDisplayControl(Dss_Object *appObj,
         }
     }
 
+    /* Reset safety-region test state to prevent cross-test contamination */
+    TestDss_numVpSafetyRegions = 0U;
+    memset(TestDss_vpSafetyParamsRuntime, 0, sizeof(TestDss_vpSafetyParamsRuntime));
+
     return status;
 }
 
@@ -524,6 +528,10 @@ int32_t TestDisp_vpSafetyDisplayControlCommon(Dss_Object *appObj,
     {
         status = TestDisp_logVpSafetyData(safetyMode);
     }
+
+    /* Reset safety-region test state to prevent cross-test contamination */
+    TestDss_numVpSafetyRegions = 0U;
+    memset(TestDss_vpSafetyParamsRuntime, 0, sizeof(TestDss_vpSafetyParamsRuntime));
 
     return status;
 }
@@ -2045,8 +2053,7 @@ static int32_t TestDisp_logVpSafetyData(uint32_t safetyMode)
         {
             DebugP_log("Safety Check Interrupt Trigger: TRUE\r\n");
 
-            if(TestDss_vpSafetyCbData[count].safetyCheckMode ==
-               CSL_DSS_SAFETY_CHK_FRAME_FREEZE_DETECT)
+            if(safetyMode == CSL_DSS_SAFETY_CHK_FRAME_FREEZE_DETECT)
             {
                 DebugP_log("Safety Check Mode: FRAME_FREEZE_DETECT\r\n");
 
@@ -2067,10 +2074,17 @@ static int32_t TestDisp_logVpSafetyData(uint32_t safetyMode)
                     status = SystemP_FAILURE;
                 }
             }
-            else if(TestDss_vpSafetyCbData[count].safetyCheckMode ==
-                    CSL_DSS_SAFETY_CHK_DATA_INTEGRITY)
+            else if(safetyMode == CSL_DSS_SAFETY_CHK_DATA_INTEGRITY)
             {
                 DebugP_log("Safety Check Mode: DATA_INTEGRITY\r\n");
+
+                if(TestDss_vpSafetyCbData[count].safetyCheckMode !=
+                   CSL_DSS_SAFETY_CHK_DATA_INTEGRITY)
+                {
+                    DebugP_log("ERROR: Expected DATA_INTEGRITY mode, got %d\r\n",
+                               TestDss_vpSafetyCbData[count].safetyCheckMode);
+                    status = SystemP_FAILURE;
+                }
             }
 
             DebugP_log("Safety Data Frame count: %d\r\n",
@@ -4892,3 +4906,253 @@ int32_t TestDisp_dualDisplayDpiOldi(Dss_Object *appObjOldi,
     return status;
 }
 #endif
+
+#if defined(SOC_AM62PX)
+ /**
+ * \brief  Interlaced video format display test.
+ *
+ *  Test Category: Functionality
+ *
+ *  Tests display pipeline with multiple interlaced video formats (NTSC, PAL, 480I, 576I,
+ *  CIF, 1080I_60, 1080I_50) and verifies proper handling of field-based buffer addressing
+ *  and scan format configuration. Tests the field merge calculations for interlaced buffers,
+ *  TOP/BOTTOM field buffer addressing in VP configuration, and VP output mode enable flag
+ *  for all interlaced format variations.
+ *
+ *  This test exercises:
+ *  - csl_dssVideoPort.c: Interlaced scan format handling (lines 316-321)
+ *  - csl_dssVideoPipe.c: Field merge logic with row increment calculations
+ *  - dss_dispApi.c: TOP/BOTTOM field buffer address setup
+ *  - dss_dctrlApi.c: Scan format tracking for interlaced modes
+ *
+ *  Tested formats: NTSC, PAL, 480I, 576I, CIF, 1080I_60, 1080I_50
+ *
+ *  \param appObj Pointer to DSS object containing configuration and state.
+ *
+ *  \return SystemP_SUCCESS on successful test execution, SystemP_FAILURE on error.
+ */
+int32_t TestDisp_interlacedDisplayControl(Dss_Object *appObj)
+{
+    int32_t retVal = FVID2_SOK;
+    int32_t status = SystemP_SUCCESS;
+    uint32_t instCnt = 0U, formatIdx = 0U;
+    Fvid2_FrameList frmList;
+
+    /* Interlaced format configuration table */
+    typedef struct {
+        uint32_t standard;
+        uint32_t width;
+        uint32_t height;
+        uint32_t hFrontPorch;
+        uint32_t hBackPorch;
+        uint32_t hSyncLen;
+        uint32_t vFrontPorch;
+        uint32_t vBackPorch;
+        uint32_t vSyncLen;
+        uint32_t pixelClock;
+        const char *formatName;
+    } InterlacedFormatConfig;
+
+    static const InterlacedFormatConfig interlacedFormats[] = {
+        /* NTSC: 720x480i @ 29.97 Hz */
+        {FVID2_STD_NTSC, 720U, 480U, 38U, 114U, 62U, 3U, 19U, 3U, 27000000U, "NTSC"},
+        /* PAL: 720x576i @ 25 Hz */
+        {FVID2_STD_PAL, 720U, 576U, 48U, 132U, 63U, 2U, 21U, 3U, 27000000U, "PAL"},
+        /* 480I: 720x480i */
+        {FVID2_STD_480I, 720U, 480U, 38U, 114U, 62U, 3U, 19U, 3U, 27000000U, "480I"},
+        /* 576I: 720x576i */
+        {FVID2_STD_576I, 720U, 576U, 48U, 132U, 63U, 2U, 21U, 3U, 27000000U, "576I"},
+        /* CIF: 352x288i */
+        {FVID2_STD_CIF, 352U, 288U, 24U, 66U, 31U, 1U, 10U, 3U, 13500000U, "CIF"},
+        /* 1080I_60: 1920x1080i @ 60 Hz */
+        {FVID2_STD_1080I_60, 1920U, 1080U, 88U, 148U, 44U, 4U, 36U, 5U, 74250000U, "1080I_60"},
+        /* 1080I_50: 1920x1080i @ 50 Hz */
+        {FVID2_STD_1080I_50, 1920U, 1080U, 528U, 148U, 44U, 2U, 22U, 5U, 72000000U, "1080I_50"},
+    };
+
+    static const uint32_t numFormats = sizeof(interlacedFormats) / sizeof(InterlacedFormatConfig);
+
+    /* Save original video standard timing parameters */
+    uint32_t savedStandard = gDssVpParams.lcdOpTimingCfg.mInfo.standard;
+    uint32_t savedWidth = gDssVpParams.lcdOpTimingCfg.mInfo.width;
+    uint32_t savedHeight = gDssVpParams.lcdOpTimingCfg.mInfo.height;
+    uint32_t savedHFrontPorch = gDssVpParams.lcdOpTimingCfg.mInfo.hFrontPorch;
+    uint32_t savedHBackPorch = gDssVpParams.lcdOpTimingCfg.mInfo.hBackPorch;
+    uint32_t savedHSyncLen = gDssVpParams.lcdOpTimingCfg.mInfo.hSyncLen;
+    uint32_t savedVFrontPorch = gDssVpParams.lcdOpTimingCfg.mInfo.vFrontPorch;
+    uint32_t savedVBackPorch = gDssVpParams.lcdOpTimingCfg.mInfo.vBackPorch;
+    uint32_t savedVSyncLen = gDssVpParams.lcdOpTimingCfg.mInfo.vSyncLen;
+    uint32_t savedPixelClock = gDssVpParams.lcdOpTimingCfg.mInfo.pixelClock;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("Interlaced Display Test: Testing %d formats\r\n", numFormats);
+    DebugP_log("======================================================\r\n");
+
+    /* Loop through all interlaced formats */
+    for(formatIdx = 0U; formatIdx < numFormats && status == SystemP_SUCCESS; formatIdx++)
+    {
+        const InterlacedFormatConfig *fmt = &interlacedFormats[formatIdx];
+
+        DebugP_log("------------------------------------------------------\r\n");
+        DebugP_log("Testing format: %s\r\n", fmt->formatName);
+
+        /* Configure for current interlaced format */
+        gDssVpParams.lcdOpTimingCfg.mInfo.standard = fmt->standard;
+        gDssVpParams.lcdOpTimingCfg.mInfo.width = fmt->width;
+        gDssVpParams.lcdOpTimingCfg.mInfo.height = fmt->height;
+        gDssVpParams.lcdOpTimingCfg.mInfo.hFrontPorch = fmt->hFrontPorch;
+        gDssVpParams.lcdOpTimingCfg.mInfo.hBackPorch = fmt->hBackPorch;
+        gDssVpParams.lcdOpTimingCfg.mInfo.hSyncLen = fmt->hSyncLen;
+        gDssVpParams.lcdOpTimingCfg.mInfo.vFrontPorch = fmt->vFrontPorch;
+        gDssVpParams.lcdOpTimingCfg.mInfo.vBackPorch = fmt->vBackPorch;
+        gDssVpParams.lcdOpTimingCfg.mInfo.vSyncLen = fmt->vSyncLen;
+        gDssVpParams.lcdOpTimingCfg.mInfo.pixelClock = fmt->pixelClock;
+
+        retVal = FVID2_SOK;
+
+        if(FVID2_SOK == retVal)
+        {
+            /* Initialize frame buffers for test */
+            TestDisp_initFrames();
+        }
+
+        if(FVID2_SOK == retVal)
+        {
+            /* Initialize DSS module */
+            retVal = TestDisp_init(appObj);
+        }
+
+        if(FVID2_SOK == retVal)
+        {
+            /* Initialize DSS parameters with interlaced format */
+            TestDisp_initDssParams(appObj);
+        }
+
+        if(FVID2_SOK == retVal)
+        {
+            /* Initialize pipeline parameters */
+            TestDisp_initPipelineParams(appObj);
+        }
+
+        if(FVID2_SOK == retVal)
+        {
+            /* Configure display controller with interlaced VP settings */
+            retVal = TestDisp_configDctrl(appObj);
+        }
+
+        if(FVID2_SOK == retVal)
+        {
+            /* Create display driver instances */
+            retVal = TestDisp_create(appObj);
+        }
+
+        if(FVID2_SOK == retVal)
+        {
+            /* Pump frames to exercise field merge and interlaced buffer addressing */
+            volatile uint32_t loopCount = 0U;
+            while(loopCount++ < DISP_NUM_FRAMES_COUNT)
+            {
+                for(instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+                {
+                    Dss_InstObject *instObj = &appObj->instObj[instCnt];
+                    (void) SemaphoreP_pend(&instObj->syncSem, SystemP_WAIT_FOREVER);
+                    retVal = Fvid2_dequeue(instObj->drvHandle,
+                                           &frmList,
+                                           0U,
+                                           FVID2_TIMEOUT_NONE);
+
+                    if(FVID2_SOK == retVal)
+                    {
+                        retVal = Fvid2_queue(instObj->drvHandle, &frmList, 0U);
+                        if(FVID2_SOK != retVal)
+                        {
+                            DebugP_log("  Frame pump failed\r\n");
+                            status = SystemP_FAILURE;
+                            break;
+                        }
+                    }
+                    else if(FVID2_EAGAIN == retVal)
+                    {
+                        /* First callback - expected */
+                        retVal = FVID2_SOK;
+                    }
+                    else
+                    {
+                        DebugP_log("  Dequeue failed\r\n");
+                        status = SystemP_FAILURE;
+                        break;
+                    }
+                }
+                if(status != SystemP_SUCCESS)
+                {
+                    break;
+                }
+            }
+
+            /* Stop driver */
+            for(instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+            {
+                Dss_InstObject *instObj = &appObj->instObj[instCnt];
+                retVal = Fvid2_stop(instObj->drvHandle, NULL);
+                if(retVal != FVID2_SOK)
+                {
+                    DebugP_log("  Stop failed\r\n");
+                    status = SystemP_FAILURE;
+                    break;
+                }
+            }
+        }
+
+        /* Delete driver instances and cleanup */
+        if(FVID2_SOK == retVal)
+        {
+            TestDisp_delete(appObj);
+        }
+
+        retVal += TestDisp_deInit(appObj);
+
+        if(FVID2_SOK != retVal)
+        {
+            status = SystemP_FAILURE;
+        }
+
+        if(status == SystemP_SUCCESS)
+        {
+            DebugP_log("  Format %s: PASS\r\n", fmt->formatName);
+        }
+        else
+        {
+            DebugP_log("  Format %s: FAIL\r\n", fmt->formatName);
+        }
+    }
+
+    /* Restore original video parameters */
+    gDssVpParams.lcdOpTimingCfg.mInfo.standard = savedStandard;
+    gDssVpParams.lcdOpTimingCfg.mInfo.width = savedWidth;
+    gDssVpParams.lcdOpTimingCfg.mInfo.height = savedHeight;
+    gDssVpParams.lcdOpTimingCfg.mInfo.hFrontPorch = savedHFrontPorch;
+    gDssVpParams.lcdOpTimingCfg.mInfo.hBackPorch = savedHBackPorch;
+    gDssVpParams.lcdOpTimingCfg.mInfo.hSyncLen = savedHSyncLen;
+    gDssVpParams.lcdOpTimingCfg.mInfo.vFrontPorch = savedVFrontPorch;
+    gDssVpParams.lcdOpTimingCfg.mInfo.vBackPorch = savedVBackPorch;
+    gDssVpParams.lcdOpTimingCfg.mInfo.vSyncLen = savedVSyncLen;
+    gDssVpParams.lcdOpTimingCfg.mInfo.pixelClock = savedPixelClock;
+
+    /* Restore frame buffer pointers */
+    TestDisp_initFrames();
+
+    DebugP_log("======================================================\r\n");
+    if(status == SystemP_SUCCESS)
+    {
+        DebugP_log("Interlaced Display Test: ALL FORMATS PASSED\r\n");
+    }
+    else
+    {
+        DebugP_log("Interlaced Display Test: FAILED\r\n");
+    }
+    DebugP_log("======================================================\r\n");
+
+    return status;
+}
+
+#endif /* SOC_AM62PX */

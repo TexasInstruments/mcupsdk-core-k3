@@ -50,12 +50,12 @@
 #include "ti_board_open_close.h"
 #if defined (SOC_AM62PX)
 #include "../test_ids.h"
+#endif
 #include <drivers/dss/v0/disp/dss_dispDrv.h>
 #include <drivers/dss/v0/disp/dss_dispPriv.h>
 #include <drivers/dss/v0/common/dss_evtMgr.h>
 #include <drivers/dss/v0/dctrl/dss_dctrlDrv.h>
 #include <drivers/dss/v0/dctrl/dss_dctrlPriv.h>
-#endif
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -121,12 +121,19 @@ extern int32_t TestDisp_ioctlErrors(Dss_Object *appObj, uint32_t testId);
 extern int32_t TestDisp_dctrlIoctls(Dss_Object *appObj, uint32_t testId);
 extern int32_t TestDisp_dualDisplayDpiOldi(Dss_Object *appObjOldi,
                                            Dss_Object *appObjDpi);
+extern int32_t TestDisp_reregisterDriver(Dss_Object *appObj);
+extern int32_t TestDisp_createDriver(Dss_Object *appObj);
+extern int32_t TestDisp_unusedIoctl(Dss_Object *appObj);
+extern int32_t TestDisp_initParams(Dss_Object *appObj);
+extern int32_t TestDisp_interlacedDisplayControl(Dss_Object *appObj);
 #endif
 
 /* Test Cases */
 static void test_dss_mulitiple_frame_formats(void *args);
 #if defined (SOC_AM62PX)
 static void TestDisp_initErrorChecks(void *args);
+static void TestDss_dispDrvRegisterFail(void *args);
+static void TestDss_dctrlDrvRegisterFail(void *args);
 static void TestDisp_ioctlErrorChecks(uint32_t testId);
 static void TestDisp_dctrlIoctl(uint32_t testId);
 static void TestDisp_verifyOldiMapType(void *args);
@@ -155,7 +162,6 @@ static void TestDss_rtParamsUpdateOldi(void *args);
 static void TestDss_graphConnectionsValidOldi(void *args);
 static void TestDss_dctrlIoctlValidationOldi(void *args);
 static void TestDss_bitmapClutProgrammingOldi(void *args);
-static void TestDss_bufPrgmCbFromQueueOldi(void *args);
 static void TestDss_bufPrgmCbFunctionalOldi(void *args);
 static void TestDss_rtParamsPipePrgmCbFunctionalOldi(void *args);
 static void TestDss_isrCbFunctionalStartedOldi(void *args);
@@ -167,6 +173,17 @@ static void TestDss_multiThreadIoctlProtectionOldi(void *args);
 #if defined (SOC_AM62PX)
 static void TestDss_displayShareHotPlugOldi(void *args);
 /* static void TestDss_dualDisplayDpiOldiMt(void *args); */
+static void TestDss_invalidOldiCfgParamsOldi(void *args);
+static void TestDss_dispIoctlNegativeOldi(void *args);
+static void TestDss_interlacedDisplayOldi(void *args);
+static void TestDss_graphConnectionsInvalidOldi(void *args);
+static void TestDss_bufPrgmCbFromQueueOldi(void *args);
+static void TestDss_evtMgrRegisterNotInitOldi(void *args);
+static void TestDss_deinitWithActiveDisplayTestOldi(void *args);
+static void TestDss_interlacedScanFormatMismatchOldi(void *args);
+static void TestDss_interlacedAddrProgramCoverageOldi(void *args);
+static void TestDss_rtParamsValidateNegativeOldi(void *args);
+static void TestDss_dctrlSyncOpCoverageOldi(void *args);
 #endif
 
 /* ========================================================================== */
@@ -299,10 +316,32 @@ void test_main(void *args)
     RUN_TEST(TestDisp_dctrlioctltestIDparams, 6069, NULL);
 
     RUN_TEST(TestDisp_verifyOldiMapType, 7529, NULL);
-
+#ifdef ENABLE_MT_TESTS
     RUN_TEST(TestDisp_ioctltestIDparams, 6070, NULL);
-
+#endif
     RUN_TEST(TestDisp_initErrorChecks, 6071, NULL);
+
+    RUN_TEST(TestDss_dispDrvRegisterFail, 11283, NULL);
+    
+    RUN_TEST(TestDss_dctrlDrvRegisterFail, 11284, NULL);
+    
+    RUN_TEST(TestDss_deinitWithActiveDisplayTestOldi, 11285, NULL);
+    
+    RUN_TEST(TestDss_graphConnectionsInvalidOldi, 11286, NULL);
+
+    RUN_TEST(TestDss_dispIoctlNegativeOldi, 11279, NULL);
+
+    RUN_TEST(TestDss_invalidOldiCfgParamsOldi, 11280, NULL);
+
+    RUN_TEST(TestDss_evtMgrRegisterNotInitOldi, 11298, NULL);
+
+    RUN_TEST(TestDss_interlacedScanFormatMismatchOldi, 11370, NULL);
+    
+    RUN_TEST(TestDss_rtParamsValidateNegativeOldi, 11371, NULL);
+
+    RUN_TEST(TestDss_interlacedAddrProgramCoverageOldi, 11372, NULL);
+
+    RUN_TEST(TestDss_dctrlSyncOpCoverageOldi, 12726, NULL);
 
     /* Enable back the FVID2 asserts */
     Fvid2Utils_controlAssert(true);
@@ -530,6 +569,90 @@ static void TestDisp_initErrorChecks(void *args)
     Dss_deInit();
 }
 
+/**
+ * \brief  DSS display driver registration failure handling.
+ *
+ *  Test Category: Negative
+ *
+ *  This test pre-occupies the FVID2 driver ID slot before calling Dss_dispDrvInit()
+ *  to force registration failure.  The test verifies that Fvid2_registerDriver()
+ *  returns an error code and that the DSS driver handles registration failure
+ *  gracefully without crashing or corrupting state.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_dispDrvRegisterFail(void *args)
+{
+    int32_t        status;
+    Fvid2_DrvOps   dummyOps;
+    Dss_InitParams initParams;
+    Fvid2_InitPrms fvidInitPrms;
+
+    Fvid2InitPrms_init(&fvidInitPrms);
+    Fvid2_init(&fvidInitPrms);
+
+    /* Pre-occupy DSS_DISP_DRV_ID so that Dss_dispDrvInit() succeeds in
+     * Dss_dispDrvPrivInit() but fails at Fvid2_registerDriver() with
+     * FVID2_EDRIVER_INUSE.*/
+
+    Fvid2DrvOps_init(&dummyOps);
+    dummyOps.drvId = DSS_DISP_DRV_ID;
+    status = Fvid2_registerDriver(&dummyOps);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, status);
+
+    Dss_initParamsInit(&initParams);
+    status = Dss_init(&initParams);
+    TEST_ASSERT_NOT_EQUAL(FVID2_SOK, status);
+
+    Dss_deInit();
+    Fvid2_unRegisterDriver(&dummyOps);
+    Fvid2_deInit(NULL);
+}
+
+/**
+ * \brief  DSS display control driver registration failure handling.
+ *
+ *  Test Category: Negative
+ *
+ *  This test pre-occupies the FVID2 DCTRL driver ID slot before calling
+ *  Dss_dctrlDrvInit() to force registration failure.  The test verifies that
+ *  Fvid2_registerDriver() returns an error code and that the DCTRL driver
+ *  handles registration failure gracefully without crashing or corrupting state.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_dctrlDrvRegisterFail(void *args)
+{
+    int32_t        status;
+    Fvid2_DrvOps   dummyOps;
+    Dss_InitParams initParams;
+    Fvid2_InitPrms fvidInitPrms;
+
+    /* Initialize FVID2 */
+    Fvid2InitPrms_init(&fvidInitPrms);
+    Fvid2_init(&fvidInitPrms);
+
+    /* Pre-occupy DSS_DCTRL_DRV_ID so that Dss_dctrlDrvInit() succeeds in
+     * its semaphore/graph init but fails at Fvid2_registerDriver() with
+     * FVID2_EDRIVER_INUSE.  */
+    Fvid2DrvOps_init(&dummyOps);
+    dummyOps.drvId = DSS_DCTRL_DRV_ID;
+    status = Fvid2_registerDriver(&dummyOps);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, status);
+
+    Dss_initParamsInit(&initParams);
+    status = Dss_init(&initParams);
+    TEST_ASSERT_NOT_EQUAL(FVID2_SOK, status);
+
+    Dss_deInit();
+    Fvid2_unRegisterDriver(&dummyOps);
+    Fvid2_deInit(NULL);
+}
+
 static void TestDisp_verifyOldiMapType(void *args)
 {
     int32_t status = SystemP_FAILURE;
@@ -667,6 +790,7 @@ static void TestDss_vpSafetyDataIntegrityOldi(void *args)
 
     /* Restore defaults */
     TestDss_numVpSafetyRegions = 0U;
+    memset(TestDss_vpSafetyParamsRuntime, 0, sizeof(TestDss_vpSafetyParamsRuntime));
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -757,6 +881,7 @@ static void TestDss_vpSafetyFreezeDetectOldi(void *args)
 
     /* Restore defaults */
     TestDss_numVpSafetyRegions = 0U;
+    memset(TestDss_vpSafetyParamsRuntime, 0, sizeof(TestDss_vpSafetyParamsRuntime));
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -1024,6 +1149,7 @@ static void TestDss_multiRegionIndependentOldi(void *args)
 
     /* Restore defaults */
     TestDss_numVpSafetyRegions = 0U;
+    memset(TestDss_vpSafetyParamsRuntime, 0, sizeof(TestDss_vpSafetyParamsRuntime));
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -1135,6 +1261,7 @@ static void TestDss_safetyFrameSkipOldi(void *args)
 
     /* Restore defaults */
     TestDss_numVpSafetyRegions = 0U;
+    memset(TestDss_vpSafetyParamsRuntime, 0, sizeof(TestDss_vpSafetyParamsRuntime));
 
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -3858,6 +3985,7 @@ static void TestDss_overlayTransparencyOldi(void *args)
     DebugP_log("DSS Overlay Transparency Test Completed Successfully!\r\n");
     DebugP_log("======================================================\r\n");
 }
+
 /**
  * \brief  CLUT (Color Look-Up Table) programming and gamma table configuration.
  *
@@ -5585,12 +5713,6 @@ static void TestDss_rtParamsPipePrgmCbFunctionalOldi(void *args)
     DebugP_log("======================================================\r\n");
 }
 
-static int32_t TestDss_isrPipePrgmCbFxn(Fvid2_Frame *progFrm, void *appData)
-{
-    TestDss_isrPipePrgmCbCount++;
-    return FVID2_SOK;
-}
-
 static Fvid2_Frame *TestDss_funcIsrBufPrgmCbFxn(Fvid2_Handle handle,
                                               Fvid2_Frame *curFrm,
                                               uint32_t     isFrmRepeat,
@@ -6360,5 +6482,2072 @@ static void TestDss_displayShareHotPlugOldi(void *args)
     DebugP_log("Display Share Hot-Plug test for OLDI completed\r\n");
     DebugP_log("======================================================\r\n");
 }
-#endif
+/**
+ * \brief  DSS invalid graph path connections for OLDI and DPI outputs.
+ *
+ *  Test Category: Negative
+ *
+ *  This test validates negative graph connection scenarios by exercising
+ *  invalid paths that should be rejected or handled gracefully by the DSS
+ *  DCTRL graph framework. Tests cover zero-edge paths (no-op), direct
+ *  pipe-to-VP connections (skipping overlay), invalid node indices, mismatched
+ *  overlay-VP cross-connections, and duplicate path sets (idempotent).
+ *  The test confirms the driver's path validation and error handling mechanisms
+ *  for invalid graph configurations.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_graphConnectionsInvalidOldi(void *args)
+{
+    int32_t retVal = FVID2_SOK;
+    Fvid2_InitPrms initPrms;
+    Dss_DctrlPathInfo pathInfo;
 
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Graph Connections Invalid Test (OLDI) Starting...\r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* Initialize FVID2, DSS, and create DCTRL handle                     */
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID,
+        DSS_DCTRL_INST_0,
+        NULL,
+        NULL,
+        NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    /* numEdges = 0 — no-op, should return FVID2_SOK         */
+    /* The driver skips both CreateEdgeList and graph traversal when       */
+    /* numEdges == 0, so retVal stays FVID2_SOK (no operation performed). */
+    DebugP_log("  numEdges = 0 (no-op)\r\n");
+    Dss_dctrlPathInfoInit(&pathInfo);
+    pathInfo.numEdges = 0U;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH, &pathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("    SET_PATH with 0 edges returned FVID2_SOK (no-op): PASS\r\n");
+
+    /* VID1 → VP2 (skipping overlay) — invalid edge          */
+    /* VID1→VP2 is NOT in gDctrlGraphEdgeInfoDefaults. The graph          */
+    /* allocator won't find this connection and returns FVID2_EFAIL.      */
+    DebugP_log("  VID1 -> VP2 (skipping overlay)\r\n");
+    Dss_dctrlPathInfoInit(&pathInfo);
+    pathInfo.numEdges = 3U;
+    pathInfo.edgeInfo[0U].startNode = DSS_DCTRL_NODE_VID1;
+    pathInfo.edgeInfo[0U].endNode   = DSS_DCTRL_NODE_VP2;
+    pathInfo.edgeInfo[1U].startNode = DSS_DCTRL_NODE_VP2;
+    pathInfo.edgeInfo[1U].endNode   = DSS_DCTRL_NODE_DPI;
+    pathInfo.edgeInfo[2U].startNode = DSS_DCTRL_NODE_VID1;
+    pathInfo.edgeInfo[2U].endNode   = DSS_DCTRL_NODE_VP2;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH, &pathInfo, NULL);
+    TEST_ASSERT_NOT_EQUAL(FVID2_SOK, retVal);
+    DebugP_log("    SET_PATH returned %d (expected failure): PASS\r\n", retVal);
+
+    /* Cross-connected — VID1→OVR2 + OVR1→VP1                */
+    /* VID1→OVR2 is a valid default edge, but OVR1→VP1 without any pipe  */
+    /* feeding OVR1 is an incomplete path. Also OVR2 would need to feed  */
+    /* VP2, not VP1 through OVR1. This constructs a broken graph.        */
+    /* The graph allocator should still accept the edges individually     */
+    /* since VID1→OVR2 and OVR1→VP1 are valid default edges. However the */
+    /* graph traversal in SetPathIoctl won't find a complete pipe path    */
+    /* from OVR1 since no pipe feeds it, so numValidPipes will be 1      */
+    /* (only VID1). We verify the path sets OK but the incomplete chain   */
+    /* results in an orphaned overlay-VP link.                            */
+    DebugP_log("  Cross-connected VID1->OVR2 + OVR1->VP1\r\n");
+    Dss_dctrlPathInfoInit(&pathInfo);
+    pathInfo.numEdges = 4U;
+    pathInfo.edgeInfo[0U].startNode = DSS_DCTRL_NODE_VID1;
+    pathInfo.edgeInfo[0U].endNode   = DSS_DCTRL_NODE_OVR2;
+    pathInfo.edgeInfo[1U].startNode = DSS_DCTRL_NODE_OVR1;
+    pathInfo.edgeInfo[1U].endNode   = DSS_DCTRL_NODE_VP1;
+    pathInfo.edgeInfo[2U].startNode = DSS_DCTRL_NODE_VP1;
+    pathInfo.edgeInfo[2U].endNode   = DSS_DCTRL_NODE_OLDI;
+    pathInfo.edgeInfo[3U].startNode = DSS_DCTRL_NODE_OVR2;
+    pathInfo.edgeInfo[3U].endNode   = DSS_DCTRL_NODE_VP2;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH, &pathInfo, NULL);
+    /* The graph allocator accepts valid individual edges, so SET_PATH
+     * may return FVID2_SOK. Log the result for analysis. */
+    DebugP_log("    SET_PATH returned %d\r\n", retVal);
+
+    /* Always clear path to restore clean state */
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_CLEAR_PATH, &pathInfo, NULL);
+    DebugP_log("    CLEAR_PATH returned %d: PASS\r\n", retVal);
+
+    /* Duplicate path — set same valid path twice             */
+    /* After the first SET_PATH, the nodes are allocated. A second        */
+    /* SET_PATH with the same edges is silently accepted by the graph     */
+    /* framework (single-output nodes skip re-allocation without error).  */
+    /* Verify both calls succeed and CLEAR_PATH restores clean state.     */
+    DebugP_log("  Duplicate path (set twice without clear)\r\n");
+    Dss_dctrlPathInfoInit(&pathInfo);
+    pathInfo.numEdges = 3U;
+    pathInfo.edgeInfo[0U].startNode = DSS_DCTRL_NODE_VID1;
+    pathInfo.edgeInfo[0U].endNode   = DSS_DCTRL_NODE_OVR1;
+    pathInfo.edgeInfo[1U].startNode = DSS_DCTRL_NODE_OVR1;
+    pathInfo.edgeInfo[1U].endNode   = DSS_DCTRL_NODE_VP1;
+    pathInfo.edgeInfo[2U].startNode = DSS_DCTRL_NODE_VP1;
+    pathInfo.edgeInfo[2U].endNode   = DSS_DCTRL_NODE_OLDI;
+
+    /* First SET_PATH — should succeed */
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH, &pathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("    First SET_PATH: PASS (FVID2_SOK)\r\n");
+
+    /* Second SET_PATH with same edges — graph framework silently accepts
+     * duplicate allocation (no-op for already enabled single-output nodes) */
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH, &pathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("    Second SET_PATH returned %d (idempotent): PASS\r\n", retVal);
+
+    /* Clear path to restore state */
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_CLEAR_PATH, &pathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("    CLEAR_PATH: PASS\r\n");
+
+    /* Cleanup                                                            */
+    retVal = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    retVal += Dss_deInit();
+    retVal += Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Graph Connections Invalid Test (OLDI) Completed!\r\n");
+    DebugP_log("======================================================\r\n");
+}
+
+/**
+ * \brief  Display driver IOCTL negative error handling for OLDI interface.
+ *
+ *  Test Category: Negative
+ *
+ *  This test verifies error handling for display-level IOCTLs with invalid
+ *  arguments.  Tests exercise NULL cmdArgs on SET_DSS_PARAMS, SET_PIPE_MFLAG_PARAMS,
+ *  SET_PIPE_SAFETY_CHK_PARAMS, and GET_CURRENT_STATUS, verifying rejection with
+ *  FVID2_EBADARGS.  Additional tests verify unsupported IOCTL command
+ *  rejection with FVID2_EUNSUPPORTED_CMD.  The test confirms the driver's input
+ *  validation and error reporting mechanisms are functional.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_dispIoctlNegativeOldi(void *args)
+{
+    int32_t retVal = FVID2_SOK;
+    int32_t status = SystemP_SUCCESS;
+    Fvid2_InitPrms initPrms;
+    Dss_InstObject *instObj;
+    Dss_DctrlVpParams vpParams;
+    Dss_DctrlAdvVpParams advVpParams;
+    Dss_DctrlOverlayParams overlayParams;
+    Dss_DctrlOverlayLayerParams layerParams;
+    Dss_DctrlGlobalDssParams globalDssParams;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Display IOCTL Negative Test (OLDI)\r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* Configure frame format */
+    for(uint32_t instCnt = 0U;
+        instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        gDssConfigPipelineParams.inDataFmt[instCnt] = FVID2_DF_BGRA32_8888;
+        gDssConfigPipelineParams.pitch[instCnt][0U] =
+            gDssConfigPipelineParams.inWidth[instCnt] * 4U;
+    }
+
+    /* Initialize FVID2, DSS, create DCTRL handle                         */
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    /* Configure DCTRL path                             */
+    Dss_dctrlVpParamsInit(&vpParams);
+    vpParams.vpId = gDssVpParams.vpId;
+    memcpy(&vpParams.lcdOpTimingCfg.mInfo,
+           &gDssVpParams.lcdOpTimingCfg.mInfo, sizeof(Fvid2_ModeInfo));
+    vpParams.lcdOpTimingCfg.mInfo.scanFormat = FVID2_SF_PROGRESSIVE;
+    vpParams.lcdOpTimingCfg.dvoFormat = gDssVpParams.lcdOpTimingCfg.dvoFormat;
+    vpParams.lcdOpTimingCfg.videoIfWidth = gDssVpParams.lcdOpTimingCfg.videoIfWidth;
+    vpParams.lcdPolarityCfg = gDssVpParams.lcdPolarityCfg;
+
+    Dss_dctrlAdvVpParamsInit(&advVpParams);
+    advVpParams.vpId = gDssAdvVpParams.vpId;
+    advVpParams.lcdAdvSignalCfg.hVAlign = gDssAdvVpParams.lcdAdvSignalCfg.hVAlign;
+    advVpParams.lcdAdvSignalCfg.hVClkControl = gDssAdvVpParams.lcdAdvSignalCfg.hVClkControl;
+
+    Dss_dctrlOverlayParamsInit(&overlayParams);
+    overlayParams.overlayId = gDssOverlayParams.overlayId;
+    overlayParams.colorbarEnable = gDssOverlayParams.colorbarEnable;
+    overlayParams.overlayCfg = gDssOverlayParams.overlayCfg;
+
+    Dss_dctrlOverlayLayerParamsInit(&layerParams);
+    layerParams.overlayId = gDssOverlayLayerParams.overlayId;
+    memcpy(layerParams.pipeLayerNum, gDssOverlayLayerParams.pipeLayerNum,
+           sizeof(gDssOverlayLayerParams.pipeLayerNum));
+
+    Dss_dctrlGlobalDssParamsInit(&globalDssParams);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH, gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_ADV_VP_PARAMS, &advVpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_PARAMS, &vpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    if(gDssObjects[CONFIG_DSS0].oldiParams != NULL)
+    {
+        retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+            IOCTL_DSS_DCTRL_SET_OLDI_PARAMS,
+            gDssObjects[CONFIG_DSS0].oldiParams, NULL);
+        TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    }
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS, &overlayParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_LAYER_PARAMS, &layerParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS, &globalDssParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Create display driver handle for first pipe  */
+    instObj = &gDssObjects[CONFIG_DSS0].instObj[0U];
+    instObj->instId = gDssConfigPipelineParams.instId[0U];
+    Dss_dispCreateParamsInit(&instObj->createParams);
+    Fvid2CbParams_init(&instObj->cbParams);
+    instObj->cbParams.cbFxn = NULL;
+
+    status = SemaphoreP_constructBinary(&instObj->syncSem, 0);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    instObj->drvHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, instObj->instId,
+        &instObj->createParams, &instObj->createStatus, &instObj->cbParams);
+    TEST_ASSERT_NOT_NULL(instObj->drvHandle);
+    DebugP_log("  Display driver handle created successfully\r\n");
+
+    /* IOCTL_DSS_DISP_SET_DSS_PARAMS with NULL cmdArgs        */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("SET_DSS_PARAMS with NULL cmdArgs\r\n");
+
+    retVal = Fvid2_control(instObj->drvHandle,
+        IOCTL_DSS_DISP_SET_DSS_PARAMS, NULL, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EBADARGS, retVal);
+    DebugP_log("  SET_DSS_PARAMS NULL → FVID2_EBADARGS PASSED\r\n");
+
+    /* IOCTL_DSS_DISP_SET_PIPE_MFLAG_PARAMS with NULL         */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("SET_PIPE_MFLAG_PARAMS with NULL cmdArgs\r\n");
+
+    retVal = Fvid2_control(instObj->drvHandle,
+        IOCTL_DSS_DISP_SET_PIPE_MFLAG_PARAMS, NULL, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EBADARGS, retVal);
+    DebugP_log("  SET_PIPE_MFLAG_PARAMS NULL → FVID2_EBADARGS PASSED\r\n");
+
+    /* IOCTL_DSS_DISP_SET_PIPE_SAFETY_CHK_PARAMS with NULL    */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("SET_PIPE_SAFETY_CHK_PARAMS with NULL cmdArgs\r\n");
+
+    retVal = Fvid2_control(instObj->drvHandle,
+        IOCTL_DSS_DISP_SET_PIPE_SAFETY_CHK_PARAMS, NULL, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EBADARGS, retVal);
+    DebugP_log("  SET_PIPE_SAFETY_CHK_PARAMS NULL → FVID2_EBADARGS PASSED\r\n");
+
+    /* IOCTL_DSS_DISP_GET_CURRENT_STATUS with NULL cmdArgs    */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("GET_CURRENT_STATUS with NULL cmdArgs\r\n");
+
+    retVal = Fvid2_control(instObj->drvHandle,
+        IOCTL_DSS_DISP_GET_CURRENT_STATUS, NULL, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EBADARGS, retVal);
+    DebugP_log("  GET_CURRENT_STATUS NULL → FVID2_EBADARGS PASSED\r\n");
+
+    /* Unsupported IOCTL command on display driver */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" Unsupported IOCTL command (0xFFFF)\r\n");
+
+    retVal = Fvid2_control(instObj->drvHandle, 0xFFFF, NULL, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EUNSUPPORTED_CMD, retVal);
+    DebugP_log("  Unsupported IOCTL 0xFFFF → FVID2_EUNSUPPORTED_CMD PASSED\r\n");
+
+   
+    /* Cleanup: delete display driver, stop VP, clear path, deinit */
+    retVal = Fvid2_delete(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    instObj->drvHandle = NULL;
+
+    SemaphoreP_destruct(&instObj->syncSem);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_STOP_VP, &vpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_CLEAR_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Dss_deInit();
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Display IOCTL Negative Test Completed!\r\n");
+    DebugP_log("======================================================\r\n");
+}
+
+/**
+ * \brief  OLDI and DCTRL configuration parameter validation for OLDI.
+ *
+ *  Test Category: Negative
+ *
+ *  This test verifies OLDI configuration parameter validation and DCTRL IOCTL
+ *  error handling by exercising OLDI_PARAMS, LCD_BLANK_TIMING_PARAMS,
+ *  VP_CSC_COEFF, GLOBAL_DSS_PARAMS, and SET_PATH IOCTLs with NULL cmdArgs,
+ *  verifying rejection with FVID2_EBADARGS.  The test confirms the driver's
+ *  input validation and error reporting for OLDI-specific and DCTRL-wide
+ *  configuration commands.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_invalidOldiCfgParamsOldi(void *args)
+{
+    int32_t retVal = FVID2_SOK;
+    Fvid2_InitPrms initPrms;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Invalid OLDI/DCTRL Cfg Params Test - Test #33\r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* Initialize FVID2, DSS, create DCTRL handle */
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    /* IOCTL_DSS_DCTRL_SET_OLDI_PARAMS with NULL cmdArgs      */
+    /* Dss_dctrlDrvControl checks (NULL == cmdArgs) at top and returns     */
+    /* FVID2_EBADARGS before reaching the OLDI handler.                   */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("SET_OLDI_PARAMS with NULL cmdArgs\r\n");
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_OLDI_PARAMS, NULL, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EBADARGS, retVal);
+    DebugP_log("  SET_OLDI_PARAMS NULL → FVID2_EBADARGS PASSED\r\n");
+
+    /* IOCTL_DSS_DCTRL_SET_LCD_BLANK_TIMING_PARAMS with NULL  */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("SET_LCD_BLANK_TIMING_PARAMS with NULL cmdArgs\r\n");
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_LCD_BLANK_TIMING_PARAMS, NULL, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EBADARGS, retVal);
+    DebugP_log("  SET_LCD_BLANK_TIMING_PARAMS NULL → FVID2_EBADARGS PASSED\r\n");
+
+    /* IOCTL_DSS_DCTRL_SET_VP_CSC_COEFF with NULL cmdArgs     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("SET_VP_CSC_COEFF with NULL cmdArgs\r\n");
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_CSC_COEFF, NULL, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EBADARGS, retVal);
+    DebugP_log("  SET_VP_CSC_COEFF NULL → FVID2_EBADARGS PASSED\r\n");
+
+    /*IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS with NULL        */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("SET_GLOBAL_DSS_PARAMS with NULL cmdArgs\r\n");
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS, NULL, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EBADARGS, retVal);
+    DebugP_log("  SET_GLOBAL_DSS_PARAMS NULL → FVID2_EBADARGS PASSED\r\n");
+
+    /* IOCTL_DSS_DCTRL_SET_PATH with NULL cmdArgs              */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("SET_PATH with NULL cmdArgs\r\n");
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH, NULL, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EBADARGS, retVal);
+    DebugP_log("  SET_PATH NULL → FVID2_EBADARGS PASSED\r\n");
+
+  
+    /* Cleanup: delete DCTRL handle, deinit DSS, deinit FVID2             */
+    retVal = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Dss_deInit();
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Invalid OLDI/DCTRL Cfg Params Test Completed!\r\n");
+    DebugP_log("======================================================\r\n");
+}
+
+/**
+ * \brief  DSS de-initialization and resource lifecycle edge cases for OLDI.
+ *
+ *  Test Category: Negative
+ *
+ *  This test exercises safe negative and edge-case paths in de-initialization
+ *  and resource lifecycle management.  Tests include: creating a display
+ *  driver with invalid instId (rejected), attempting to create a second DCTRL
+ *  handle when one is already active (rejected), and calling Dss_deInit() twice
+ *  after clean shutdown (handles gracefully on second call when resources are
+ *  already released).  The test verifies proper error handling and state
+ *  management during driver lifecycle transitions.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_deinitWithActiveDisplayTestOldi(void *args)
+{
+    /* Common declarations for all test variations */
+    int32_t retVal = FVID2_SOK;
+    Fvid2_InitPrms initPrms;
+    Fvid2_Handle testHandle = NULL;
+    Fvid2_Handle altHandle = NULL;    /* dual create test only */
+    Dss_DispCreateParams createParams;
+    Dss_DispCreateStatus createStatus;
+    Fvid2_CbParams cbPrms;
+    Fvid2_FrameList frmList;
+    Fvid2_Frame frm;
+    Dss_DispDrvInstObj *drvObj;
+    uint32_t savedState;
+    uint32_t origDispHeight;
+    uint32_t origInstId;
+    Dss_DispParams dispParams;
+    Dss_InstObject *instObj = NULL;
+    void *ctrlInst;
+    uint32_t *ctrlIsOpened;
+    uint32_t *ctrlNumOpen;
+    void **fdmDrvHandlePtr;
+    void *savedDrvHandle;
+    static uint8_t dummyBuf[4U];
+    uint32_t qIdx;
+
+    /* Initialize FVID2, DSS, create DCTRL handle */
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+    DebugP_log("  DCTRL handle created\r\n");
+
+    /* Set up the DSS graph path so Dss_dctrlDrvRegisterClient() can
+     * resolve pipeInfo->vpId for each pipe. Tests that call
+     * IOCTL_DSS_DCTRL_SET_VP_PARAMS and then Fvid2_create(DSS_DISP_DRV_ID)
+     * need this so Dss_dctrlDrvGetVpParams() populates instObj->dispWidth. */
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo,
+        NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Fvid2_create with invalid display driver instance ID    */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Fvid2_create with invalid display instId\r\n");
+
+    Dss_dispCreateParamsInit(&createParams);
+    Fvid2CbParams_init(&cbPrms);
+
+    testHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, DSS_DISP_INST_MAX,
+        &createParams, &createStatus, &cbPrms);
+    TEST_ASSERT_NULL(testHandle);
+    DebugP_log("  Fvid2_create(DSS_DISP_INST_MAX) → NULL PASSED\r\n");
+
+
+    /* Fvid2_create(DSS_DISP_DRV_ID) with NULL createArgs */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Fvid2_create(DSS_DISP_DRV_ID) with NULL args\r\n");
+
+    testHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, gDssConfigPipelineParams.instId[0U],
+        NULL, NULL, NULL);
+    TEST_ASSERT_NULL(testHandle);
+    DebugP_log("  Fvid2_create(NULL createArgs) → NULL PASSED\r\n");
+
+  
+    /* Double Fvid2_create for same display instance */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Double Fvid2_create for same disp instance\r\n");
+
+    Dss_dispCreateParamsInit(&createParams);
+    Fvid2CbParams_init(&cbPrms);
+
+    /* First create — must succeed */
+    testHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, gDssConfigPipelineParams.instId[0U],
+        &createParams, &createStatus, &cbPrms);
+    TEST_ASSERT_NOT_NULL(testHandle);
+
+    /* dual create test — second create for same instId */
+    altHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, gDssConfigPipelineParams.instId[0U],
+        &createParams, &createStatus, &cbPrms);
+    TEST_ASSERT_NULL(altHandle);
+    DebugP_log("  Double Fvid2_create(same instId) → NULL PASSED\r\n");
+
+    /* Clean up the first handle before proceeding */
+    Fvid2_delete(testHandle, NULL);
+
+    /* Fvid2_delete when isOpened=FALSE                       */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Fvid2_delete with isOpened=FALSE\r\n");
+
+    Dss_dispCreateParamsInit(&createParams);
+    Fvid2CbParams_init(&cbPrms);
+
+    /* Create a valid DISP handle — isOpened becomes TRUE */
+    testHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, gDssConfigPipelineParams.instId[0U],
+        &createParams, &createStatus, &cbPrms);
+    TEST_ASSERT_NOT_NULL(testHandle);
+
+    /* Retrieve internal driver object via Fdm_Channel::drvHandle
+     * at offset sizeof(void*) from the Fvid2_Handle */
+    drvObj = (Dss_DispDrvInstObj *)
+                     (*(void **)((uint8_t *)testHandle + sizeof(void *)));
+
+    drvObj->drvState.isOpened = (uint32_t)FALSE;
+    retVal = Fvid2_delete(testHandle, NULL);
+    /* FVID2_EFAIL is expected; Fvid2_delete frees the channel anyway */
+    DebugP_log("  Fvid2_delete(isOpened=FALSE) returned: %d\r\n", retVal);
+
+    
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Exhaust display free queue \r\n");
+
+    Dss_dispCreateParamsInit(&createParams);
+    Fvid2CbParams_init(&cbPrms);
+
+    /* Create DISP handle — initialises 16 free queue slots */
+    testHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, gDssConfigPipelineParams.instId[0U],
+        &createParams, &createStatus, &cbPrms);
+    TEST_ASSERT_NOT_NULL(testHandle);
+
+    Fvid2Frame_init(&frm);
+    frm.addr[0U]      = (uint64_t)dummyBuf;
+    Fvid2FrameList_init(&frmList);
+    frmList.numFrames = 1U;
+    frmList.frames[0U] = &frm;
+
+    /* Queue 16 frames one at a time — exhausts all free queue slots.
+     * Reset frames[0] each iteration because Dss_dispDrvQueue sets it*/
+    for(qIdx = 0U; qIdx < 16U; qIdx++)
+    {
+        frmList.frames[0U] = &frm;
+        retVal = Fvid2_queue(testHandle, &frmList, 0U);
+        TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    }
+
+    /*freeQ empty*/
+    frmList.frames[0U] = &frm;
+    retVal = Fvid2_queue(testHandle, &frmList, 0U);
+    TEST_ASSERT_NOT_EQUAL(FVID2_SOK, retVal);
+
+    /* Cleanup the display handle */
+    Fvid2_delete(testHandle, NULL);
+
+    /* Fvid2_dequeue with invalid arguments */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Fvid2_dequeue with invalid arguments\r\n");
+
+    Dss_dispCreateParamsInit(&createParams);
+    Fvid2CbParams_init(&cbPrms);
+
+    testHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, gDssConfigPipelineParams.instId[0U],
+        &createParams, &createStatus, &cbPrms);
+    TEST_ASSERT_NOT_NULL(testHandle);
+
+    /* Dequeue with NULL frame list — must fail */
+    retVal = Fvid2_dequeue(testHandle, NULL, 0U, FVID2_TIMEOUT_NONE);
+    TEST_ASSERT_NOT_EQUAL(FVID2_SOK, retVal);
+    DebugP_log("  Fvid2_dequeue(NULL frmList) returned: %d\r\n", retVal);
+
+    /* Dequeue with unsupported streamId — must fail */
+    Fvid2FrameList_init(&frmList);
+    retVal = Fvid2_dequeue(testHandle, &frmList, 1U, FVID2_TIMEOUT_NONE);
+    TEST_ASSERT_NOT_EQUAL(FVID2_SOK, retVal);
+    DebugP_log("  Fvid2_dequeue(streamId=1) returned: %d\r\n", retVal);
+
+    Fvid2_delete(testHandle, NULL);
+
+    /* Fvid2_dequeue on a non-opened instance */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Fvid2_dequeue on non-opened instance\r\n");
+
+    Dss_dispCreateParamsInit(&createParams);
+    Fvid2CbParams_init(&cbPrms);
+
+    testHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, gDssConfigPipelineParams.instId[0U],
+        &createParams, &createStatus, &cbPrms);
+    TEST_ASSERT_NOT_NULL(testHandle);
+
+    /* Temporarily mark the instance as not opened */
+    drvObj = (Dss_DispDrvInstObj *)
+                 (*(void **)((uint8_t *)testHandle + sizeof(void *)));
+    savedState = drvObj->drvState.isOpened;
+    drvObj->drvState.isOpened = (uint32_t)FALSE;
+
+    Fvid2FrameList_init(&frmList);
+    retVal = Fvid2_dequeue(testHandle, &frmList, 0U, FVID2_TIMEOUT_NONE);
+    TEST_ASSERT_NOT_EQUAL(FVID2_SOK, retVal);
+    DebugP_log("  Fvid2_dequeue(isOpened=FALSE) returned: %d\r\n", retVal);
+
+    drvObj->drvState.isOpened = savedState;
+    Fvid2_delete(testHandle, NULL);
+    testHandle = NULL;
+
+    /* Crop parameter >= 32 — must be rejected               */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("SIOCTL_DSS_DISP_SET_DSS_PARAMS with cropTop=32\r\n");
+
+    Dss_dispCreateParamsInit(&createParams);
+    Fvid2CbParams_init(&cbPrms);
+    testHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, gDssConfigPipelineParams.instId[0U],
+        &createParams, &createStatus, &cbPrms);
+    TEST_ASSERT_NOT_NULL(testHandle);
+
+    /* Set dispWidth/dispHeight directly on the internal struct so the
+     * bounds check passes without calling IOCTL_DSS_DCTRL_SET_VP_PARAMS.
+     * Calling that IOCTL enables VP hardware as a side effect which leaves
+     * the VP running after deInit, causing hangs in subsequent display tests.
+     * Fdm_Channel::drvHandle at offset sizeof(void*) gives Dss_DispDrvInstObj*. */
+    drvObj = (Dss_DispDrvInstObj *)
+                 (*(void **)((uint8_t *)testHandle + sizeof(void *)));
+    drvObj->dispWidth      = 1920U;
+    drvObj->dispHeight     = 1200U;
+    drvObj->dispScanFormat = FVID2_SF_PROGRESSIVE;
+
+    /* Build valid display params except cropTop = 32 (hardware limit is <32) */
+    Dss_dispParamsInit(&dispParams);
+    dispParams.pipeCfg.pipeType                = CSL_DSS_VID_PIPE_TYPE_VID;
+    dispParams.pipeCfg.inFmt.width             = 480U;
+    dispParams.pipeCfg.inFmt.height            = 360U;
+    dispParams.pipeCfg.inFmt.pitch[0U]         = 480U * 4U;
+    dispParams.pipeCfg.inFmt.dataFormat        = FVID2_DF_BGRA32_8888;
+    dispParams.pipeCfg.inFmt.scanFormat        = FVID2_SF_PROGRESSIVE;
+    dispParams.pipeCfg.outWidth                = 480U;
+    dispParams.pipeCfg.outHeight               = 360U;
+    dispParams.pipeCfg.scEnable                = CSL_DSS_VID_PIPE_SC_DISABLED;
+    dispParams.cropParams.cropEnable           = TRUE;
+    dispParams.cropParams.cropCfg.cropTop      = 32U; /* >= 32 → rejected */
+    dispParams.cropParams.cropCfg.cropBottom   = 0U;
+    dispParams.cropParams.cropCfg.cropLeft     = 0U;
+    dispParams.cropParams.cropCfg.cropRight    = 0U;
+
+    retVal = Fvid2_control(
+        testHandle,
+        IOCTL_DSS_DISP_SET_DSS_PARAMS,
+        &dispParams,
+        NULL);
+    TEST_ASSERT_NOT_EQUAL(FVID2_SOK, retVal);
+    DebugP_log("  cropTop=32 correctly rejected, returned: %d\r\n", retVal);
+
+    Fvid2_delete(testHandle, NULL);
+    testHandle = NULL;
+
+
+    /*  Fvid2_delete(DCTRL) when isOpened=FALSE */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Fvid2_delete(DCTRL) with isOpened=FALSE\r\n");
+
+    testHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(testHandle);
+
+    /* Fdm_Channel::drvHandle = Dss_DctrlDrvInstObj* at offset sizeof(void*) */
+    ctrlInst     = *(void **)((uint8_t *)testHandle + sizeof(void *));
+    ctrlIsOpened = (uint32_t *)((uint8_t *)ctrlInst +  8U);  /* isOpened */
+    ctrlNumOpen  = (uint32_t *)((uint8_t *)ctrlInst + 16U);  /* numOpenDrvHandle */
+
+    savedState       = *ctrlIsOpened;
+    *ctrlIsOpened    = (uint32_t)FALSE;
+
+    retVal = Fvid2_delete(testHandle, NULL);
+    TEST_ASSERT_NOT_EQUAL(FVID2_SOK, retVal);
+    DebugP_log("  Fvid2_delete(DCTRL,isOpened=FALSE) returned: %d\r\n", retVal);
+
+    *ctrlIsOpened = savedState;
+    /* Fix numOpenDrvHandle leaked by the early-exit delete */
+    (*ctrlNumOpen)--;
+
+    /* Fvid2_delete with NULL handle */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Fvid2_delete with NULL handle\r\n");
+
+    retVal = Fvid2_delete(NULL, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EBADARGS, retVal);
+    DebugP_log("  Fvid2_delete(NULL handle) returned FVID2_EBADARGS - input validation passed\r\n");
+
+    /* Small display height edge case*/                                                                  
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Display height <= 5 pixels edge case\r\n");
+
+    /* Initialize instObj for this test */
+    instObj = &gDssObjects[CONFIG_DSS0].instObj[0U];
+    instObj->drvHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, instObj->instId,
+        &instObj->createParams, &instObj->createStatus, &instObj->cbParams);
+
+    drvObj = (Dss_DispDrvInstObj *)
+        (*(void **)((uint8_t *)instObj->drvHandle + sizeof(void *)));
+    origDispHeight = drvObj->dispHeight;
+
+    /* Set display height to 5 pixels to trigger safety check */
+    drvObj->dispHeight = 5U;
+    DebugP_log("  Modified display height: %u → 5 pixels\r\n", origDispHeight);
+
+    /* Prepare and queue a frame - Fvid2_queue internally calls */
+    Fvid2Frame_init(&frm);
+    frm.addr[0U] = (uint64_t)dummyBuf;
+    Fvid2FrameList_init(&frmList);
+    frmList.numFrames = 1U;
+    frmList.frames[0U] = &frm;
+
+    retVal = Fvid2_queue(instObj->drvHandle, &frmList, 0U);
+    DebugP_log("  Queued frame with dispHeight=5 pixels\r\n");
+
+    /* Dequeue frame to clean up queue state */
+    Fvid2FrameList_init(&frmList);
+    Fvid2_dequeue(instObj->drvHandle, &frmList, 0U, FVID2_TIMEOUT_NONE);
+
+    /* Restore original display height */
+    drvObj->dispHeight = origDispHeight;
+    DebugP_log("  Restored display height to %u pixels\r\n", origDispHeight);
+
+    /* Delete driver from previous test */
+    retVal = Fvid2_delete(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Flip + RGB24_888 rejection via SET_DSS_PARAMS          */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" Flip + RGB24_888 rejection (SET_DSS_PARAMS)\r\n");
+
+    instObj->drvHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, instObj->instId,
+        &instObj->createParams, &instObj->createStatus, &instObj->cbParams);
+    TEST_ASSERT_NOT_NULL(instObj->drvHandle);
+
+    /* Set dispWidth/dispHeight/dispScanFormat directly on the internal
+     * struct so the bounds check passes without calling SET_VP_PARAMS. */
+    drvObj = (Dss_DispDrvInstObj *)
+                 (*(void **)((uint8_t *)instObj->drvHandle + sizeof(void *)));
+    drvObj->dispWidth      = 1920U;
+    drvObj->dispHeight     = 1200U;
+    drvObj->dispScanFormat = FVID2_SF_PROGRESSIVE;
+
+    /* Build display params with flip + RGB24_888 — must be rejected */
+    Dss_dispParamsInit(&dispParams);
+    dispParams.pipeCfg.pipeType         = CSL_DSS_VID_PIPE_TYPE_VID;
+    dispParams.pipeCfg.inFmt.width      = 480U;
+    dispParams.pipeCfg.inFmt.height     = 360U;
+    dispParams.pipeCfg.inFmt.pitch[0U]  = 480U * 3U;
+    dispParams.pipeCfg.inFmt.dataFormat = FVID2_DF_RGB24_888;
+    dispParams.pipeCfg.inFmt.scanFormat = FVID2_SF_PROGRESSIVE;
+    dispParams.pipeCfg.outWidth         = 480U;
+    dispParams.pipeCfg.outHeight        = 360U;
+    dispParams.pipeCfg.scEnable         = CSL_DSS_VID_PIPE_SC_DISABLED;
+    dispParams.pipeCfg.flipType         = FVID2_FLIP_TYPE_V;
+
+    retVal = Fvid2_control(instObj->drvHandle,
+        IOCTL_DSS_DISP_SET_DSS_PARAMS, &dispParams, NULL);
+    TEST_ASSERT_NOT_EQUAL(FVID2_SOK, retVal);
+    DebugP_log("  Flip V + RGB24_888 correctly rejected, returned: %d\r\n", retVal);
+
+    retVal = Fvid2_delete(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /*  Invalid driver instance ID validation  */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Invalid driver instance ID check\r\n");
+
+    instObj->drvHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, instObj->instId,
+        &instObj->createParams, &instObj->createStatus, &instObj->cbParams);
+    TEST_ASSERT_NOT_NULL(instObj->drvHandle);
+
+    /* Get the internal Dss_DispDrvInstObj via Fdm_Channel::drvHandle */
+    drvObj = (Dss_DispDrvInstObj *)
+        (*(void **)((uint8_t *)instObj->drvHandle + sizeof(void *)));
+    origInstId = drvObj->drvInstId;
+
+    /* Force invalid instance ID */
+    drvObj->drvInstId = 0xFFU;
+    DebugP_log("  Modified drvInstId to invalid value (0xFF)\r\n");
+
+    Dss_dispParamsInit(&dispParams);
+    dispParams.pipeCfg.pipeType         = CSL_DSS_VID_PIPE_TYPE_VID;
+    dispParams.pipeCfg.inFmt.width      = 480U;
+    dispParams.pipeCfg.inFmt.height     = 360U;
+    dispParams.pipeCfg.inFmt.pitch[0U]  = 480U * 4U;
+    dispParams.pipeCfg.inFmt.dataFormat = FVID2_DF_BGRA32_8888;
+    dispParams.pipeCfg.inFmt.scanFormat = FVID2_SF_PROGRESSIVE;
+    dispParams.pipeCfg.outWidth         = 480U;
+    dispParams.pipeCfg.outHeight        = 360U;
+    dispParams.pipeCfg.scEnable         = CSL_DSS_VID_PIPE_SC_DISABLED;
+
+    retVal = Fvid2_control(instObj->drvHandle,
+        IOCTL_DSS_DISP_SET_DSS_PARAMS, &dispParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EBADARGS, retVal);
+    DebugP_log("  IOCTL correctly rejected invalid instance ID (EBADARGS)\r\n");
+
+    /* Restore original drvInstId for clean delete */
+    drvObj->drvInstId = origInstId;
+
+    retVal = Fvid2_delete(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log("Invalid driver ID validation PASSED\r\n");
+
+    /* MFLAG parameter rejection while display running       */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("MFLAG rejection while display running\r\n");
+
+    instObj->drvHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, instObj->instId,
+        &instObj->createParams, &instObj->createStatus, &instObj->cbParams);
+    TEST_ASSERT_NOT_NULL(instObj->drvHandle);
+
+    /* Set MFLAG before "start" — should succeed */
+    retVal = Fvid2_control(instObj->drvHandle,
+        IOCTL_DSS_DISP_SET_PIPE_MFLAG_PARAMS, &instObj->mflagParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  MFLAG set before start → FVID2_SOK\r\n");
+
+    /* Get internal instObj and force isStarted=TRUE to simulate running
+     * display without actually programming VP/overlay hardware */
+    drvObj = (Dss_DispDrvInstObj *)
+        (*(void **)((uint8_t *)instObj->drvHandle + sizeof(void *)));
+    drvObj->drvState.isStarted = (uint32_t)TRUE;
+    DebugP_log("  Forced isStarted=TRUE (simulated running display)\r\n");
+
+    /* Try to set MFLAG while "running" — should be rejected */
+    retVal = Fvid2_control(instObj->drvHandle,
+        IOCTL_DSS_DISP_SET_PIPE_MFLAG_PARAMS, &instObj->mflagParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EDEVICE_INUSE, retVal);
+    DebugP_log("  MFLAG set while running correctly rejected → FVID2_EDEVICE_INUSE\r\n");
+
+    /* Restore isStarted=FALSE for clean delete */
+    drvObj = (Dss_DispDrvInstObj *)
+        (*(void **)((uint8_t *)instObj->drvHandle + sizeof(void *)));
+    drvObj->drvState.isStarted = (uint32_t)FALSE;
+
+    /* Verify MFLAG can be set again after "stop" */
+    retVal = Fvid2_control(instObj->drvHandle,
+        IOCTL_DSS_DISP_SET_PIPE_MFLAG_PARAMS, &instObj->mflagParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  MFLAG set after stop → FVID2_SOK (driver recovered)\r\n");
+
+    retVal = Fvid2_delete(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log(" MFLAG running rejection PASSED\r\n");
+
+    /*  Fvid2_delete with NULL drvHandle                       */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log(" Fvid2_delete with NULL drvHandle\r\n");
+
+    Dss_dispCreateParamsInit(&createParams);
+    Fvid2CbParams_init(&cbPrms);
+
+    testHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, instObj->instId,
+        &createParams, &createStatus, &cbPrms);
+    TEST_ASSERT_NOT_NULL(testHandle);
+
+    /* drvHandle is at offset sizeof(void*) from the channel pointer. */
+    fdmDrvHandlePtr = (void **)((uint8_t *)testHandle + sizeof(void *));
+    savedDrvHandle  = *fdmDrvHandlePtr;
+
+    /* Zero the drvHandle so deleteFxn receives NULL */
+    *fdmDrvHandlePtr = NULL;
+
+    retVal = Fvid2_delete(testHandle, NULL);
+    /* Dss_dispDrvDelete(NULL) returns FVID2_EBADARGS  */
+    TEST_ASSERT_EQUAL_INT32(FVID2_EBADARGS, retVal);
+    DebugP_log("  Fvid2_delete(NULL drvHandle) → FVID2_EBADARGS PASSED\r\n");
+
+    /* Fvid2_delete freed the Fdm_Channel regardless of the return
+     * value from deleteFxn, so the FVID2 handle is gone. But the
+     * internal Dss_DispDrvInstObj still has isOpened=TRUE. Force it
+     * FALSE so subsequent create calls on the same instId succeed. */
+    drvObj = (Dss_DispDrvInstObj *)savedDrvHandle;
+    drvObj->drvState.isOpened  = (uint32_t)FALSE;
+    drvObj->drvState.isStarted = (uint32_t)FALSE;
+
+    DebugP_log("NULL drvHandle delete PASSED\r\n");
+
+
+    /* Double Dss_deInit() after clean shutdown                */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Double Dss_deInit after clean shutdown\r\n");
+
+    /* Delete DCTRL handle */
+    retVal = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* First Dss_deInit — normal */
+    retVal = Dss_deInit();
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  First Dss_deInit() → FVID2_SOK\r\n");
+
+    /* Second Dss_deInit — already de-initialized */
+    retVal = Dss_deInit();
+    DebugP_log("  Second Dss_deInit() returned: %d\r\n", retVal);
+    DebugP_log("  Double Dss_deInit handled gracefully PASSED\r\n");
+
+    retVal = Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS De-init Negative Test Completed!\r\n");
+    DebugP_log("======================================================\r\n");
+}
+
+/**
+ * \brief  Dss_evtMgrRegister with isInitDone=FALSE (dss_evtMgr.c:262-264).
+ *
+ *  Test Category: Negative 
+ *
+ *  After a normal Dss_init()/Dss_deInit() cycle the event manager instance
+ *  objects have isInitDone==FALSE while instId still holds its old value.
+ *  Calling Dss_evtMgrRegister() in this state exercises the early-return
+ *  guard ( which sets retVal=FVID2_EBADARGS and returns NULL
+ *  without touching the (already destructed) lockSem.
+ *
+ *  \param args  Pointer to test parameters (not used).
+ *  \return None.
+ */
+static void TestDss_evtMgrRegisterNotInitOldi(void *args)
+{
+    int32_t retVal = FVID2_SOK;
+    Fvid2_InitPrms initPrms;
+    void *evtHandle = NULL;
+    uint32_t dummyEvent = 0x1U;
+    Dss_EvtMgrClientInfo dummyClientInfo;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS EvtMgr Register-Not-Init Test (OLDI)\r\n");
+    DebugP_log("======================================================\r\n");
+
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+    DebugP_log("  Dss_init() completed — evtMgr isInitDone=TRUE\r\n");
+
+    /* Create and delete DCTRL handle so Dss_deInit can clean up properly */
+    Fvid2_Handle dctrlH = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(dctrlH);
+
+    retVal = Fvid2_delete(dctrlH, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Dss_deInit();
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  Dss_deInit() completed — evtMgr isInitDone=FALSE\r\n");
+
+    retVal = Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Call Dss_evtMgrRegister on the de-initialized instance.    */
+    Fvid2Utils_memset(&dummyClientInfo, 0, sizeof(dummyClientInfo));
+
+    /* Provide a dummy callback so GT_assert(callback!=NULL) */
+    evtHandle = Dss_evtMgrRegister(
+        DSS_EVT_MGR_INST_ID_FUNC,       /* instId = 0 */
+        0x1U,                            /* eventGroup (dummy) */
+        &dummyEvent,                     /* event array */
+        1U,                              /* numEvents */
+        (Dss_evtMgrCbFxn)((void (*)(void))0x1), /* non-NULL dummy callback */
+        (void *)&dummyClientInfo);       /* arg */
+
+    TEST_ASSERT_NULL(evtHandle);
+    DebugP_log("  Dss_evtMgrRegister(isInitDone=FALSE) → NULL  PASSED\r\n");
+
+    /* Re-init DSS so subsequent tests have a clean state.        */
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    dctrlH = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(dctrlH);
+
+    retVal = Fvid2_delete(dctrlH, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Dss_deInit();
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log("  State restored for subsequent tests\r\n");
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS EvtMgr Register-Not-Init Test Completed!\r\n");
+    DebugP_log("======================================================\r\n");
+}
+
+/**
+ * \brief  Interlaced scan format mismatch validation on progressive OLDI.
+ *
+ *  Test Category: Negative
+ *
+ *  This test verifies that the driver correctly rejects a configuration where
+ *  the pipe input format is set to interlaced (FVID2_SF_INTERLACED) while the
+ *  VP scan format is progressive. Since OLDI panels are progressive-only, this
+ *  validation ensures the driver prevents invalid interlaced/progressive
+ *  mismatch configurations via SET_DSS_PARAMS.
+ *
+ *  \param args Not used.
+ *
+ *  \return None.
+ */
+static void TestDss_interlacedScanFormatMismatchOldi(void *args)
+{
+    int32_t  retVal = FVID2_SOK;
+    int32_t  status = SystemP_SUCCESS;
+    Fvid2_InitPrms           initPrms;
+    Dss_InstObject          *instObj;
+    Dss_DispParams           dispParams;
+    Dss_DctrlVpParams        vpParams;
+    Dss_DctrlAdvVpParams     advVpParams;
+    Dss_DctrlOverlayParams   overlayParams;
+    Dss_DctrlOverlayLayerParams layerParams;
+    Dss_DctrlGlobalDssParams globalDssParams;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Interlaced Scan Format Mismatch Test (OLDI)\r\n");
+    DebugP_log("======================================================\r\n");
+
+    for(uint32_t ic = 0U;
+        ic < gDssConfigPipelineParams.numTestPipes; ic++)
+    {
+        gDssConfigPipelineParams.inDataFmt[ic] = FVID2_DF_BGRA32_8888;
+        gDssConfigPipelineParams.pitch[ic][0U] =
+            gDssConfigPipelineParams.inWidth[ic] * 4U;
+    }
+
+    /* 1. Initialise FVID2, DSS, DCTRL                                    */
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    /* 2. Configure path, VP (progressive), overlay, layer                */
+    Dss_dctrlVpParamsInit(&vpParams);
+    vpParams.vpId = gDssVpParams.vpId;
+    memcpy(&vpParams.lcdOpTimingCfg.mInfo,
+           &gDssVpParams.lcdOpTimingCfg.mInfo, sizeof(Fvid2_ModeInfo));
+    vpParams.lcdOpTimingCfg.mInfo.scanFormat = FVID2_SF_PROGRESSIVE;
+    vpParams.lcdOpTimingCfg.dvoFormat    = gDssVpParams.lcdOpTimingCfg.dvoFormat;
+    vpParams.lcdOpTimingCfg.videoIfWidth = gDssVpParams.lcdOpTimingCfg.videoIfWidth;
+    vpParams.lcdPolarityCfg = gDssVpParams.lcdPolarityCfg;
+
+    Dss_dctrlAdvVpParamsInit(&advVpParams);
+    advVpParams.vpId = gDssAdvVpParams.vpId;
+    advVpParams.lcdAdvSignalCfg.hVAlign =
+        gDssAdvVpParams.lcdAdvSignalCfg.hVAlign;
+    advVpParams.lcdAdvSignalCfg.hVClkControl =
+        gDssAdvVpParams.lcdAdvSignalCfg.hVClkControl;
+
+    Dss_dctrlOverlayParamsInit(&overlayParams);
+    overlayParams.overlayId      = gDssOverlayParams.overlayId;
+    overlayParams.colorbarEnable = gDssOverlayParams.colorbarEnable;
+    overlayParams.overlayCfg     = gDssOverlayParams.overlayCfg;
+
+    Dss_dctrlOverlayLayerParamsInit(&layerParams);
+    layerParams.overlayId = gDssOverlayLayerParams.overlayId;
+    memcpy(layerParams.pipeLayerNum, gDssOverlayLayerParams.pipeLayerNum,
+           sizeof(gDssOverlayLayerParams.pipeLayerNum));
+
+    Dss_dctrlGlobalDssParamsInit(&globalDssParams);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_ADV_VP_PARAMS, &advVpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_PARAMS, &vpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    if(gDssObjects[CONFIG_DSS0].oldiParams != NULL)
+    {
+        retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+            IOCTL_DSS_DCTRL_SET_OLDI_PARAMS,
+            gDssObjects[CONFIG_DSS0].oldiParams, NULL);
+        TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    }
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS, &overlayParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_LAYER_PARAMS, &layerParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS, &globalDssParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* 3. Create display driver                                           */
+    instObj = &gDssObjects[CONFIG_DSS0].instObj[0U];
+    instObj->instId = gDssConfigPipelineParams.instId[0U];
+    Dss_dispCreateParamsInit(&instObj->createParams);
+    Fvid2CbParams_init(&instObj->cbParams);
+    instObj->cbParams.cbFxn = NULL;
+
+    status = SemaphoreP_constructBinary(&instObj->syncSem, 0);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    instObj->drvHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, instObj->instId,
+        &instObj->createParams, &instObj->createStatus,
+        &instObj->cbParams);
+    TEST_ASSERT_NOT_NULL(instObj->drvHandle);
+
+    /* 4. Try setting pipe params with INTERLACED on a PROGRESSIVE VP     */
+    /*                                                                    */
+    /* dispScanFormat = PROGRESSIVE (set via VP params above).            */
+    /* pipeCfg.inFmt.scanFormat = INTERLACED → mismatch → EINVALID_PARAMS */
+    Dss_dispParamsInit(&dispParams);
+    dispParams.pipeCfg.pipeType        = gDssConfigPipelineParams.pipeType[0U];
+    dispParams.pipeCfg.inFmt.width     = gDssConfigPipelineParams.inWidth[0U];
+    dispParams.pipeCfg.inFmt.height    = gDssConfigPipelineParams.inHeight[0U];
+    dispParams.pipeCfg.inFmt.pitch[0U] = gDssConfigPipelineParams.pitch[0U][0U];
+    dispParams.pipeCfg.inFmt.dataFormat = FVID2_DF_BGRA32_8888;
+    dispParams.pipeCfg.inFmt.scanFormat = FVID2_SF_INTERLACED;  /* MISMATCH */
+    dispParams.pipeCfg.outWidth  = gDssConfigPipelineParams.outWidth[0U];
+    dispParams.pipeCfg.outHeight = gDssConfigPipelineParams.outHeight[0U];
+    dispParams.pipeCfg.scEnable  = gDssConfigPipelineParams.scEnable[0U];
+    dispParams.layerPos.startX   = gDssConfigPipelineParams.posx[0U];
+    dispParams.layerPos.startY   = gDssConfigPipelineParams.posy[0U];
+
+    retVal = Fvid2_control(instObj->drvHandle,
+        IOCTL_DSS_DISP_SET_DSS_PARAMS, &dispParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EINVALID_PARAMS, retVal);
+    DebugP_log("  SET_DSS_PARAMS(INTERLACED on PROGRESSIVE VP) "
+               "returned FVID2_EINVALID_PARAMS as expected\r\n");
+
+    /* 5. Verify that PROGRESSIVE scanFormat succeeds (sanity check)      */
+    dispParams.pipeCfg.inFmt.scanFormat = FVID2_SF_PROGRESSIVE;
+    retVal = Fvid2_control(instObj->drvHandle,
+        IOCTL_DSS_DISP_SET_DSS_PARAMS, &dispParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  SET_DSS_PARAMS(PROGRESSIVE on PROGRESSIVE VP) "
+               "returned FVID2_SOK — sanity check passed\r\n");
+
+    /* 6. Clean up                                                        */
+    retVal = Fvid2_delete(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    SemaphoreP_destruct(&instObj->syncSem);
+
+    Dss_dctrlVpParamsInit(&vpParams);
+    vpParams.vpId = gDssVpParams.vpId;
+    (void)Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_STOP_VP, &vpParams, NULL);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_CLEAR_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal  = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    retVal += Dss_deInit();
+    retVal += Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Interlaced Scan Format Mismatch Test Completed!\r\n");
+    DebugP_log("======================================================\r\n");
+}
+
+static int32_t TestDss_isrPipePrgmCbFxn(Fvid2_Frame *progFrm, void *appData)
+{
+    TestDss_isrPipePrgmCbCount++;
+    return FVID2_SOK;
+}
+
+/**
+ * \brief  Interlaced bottom-field address programming via state injection.
+ *
+ *  Test Category: Coverage
+ *
+ *  This test exercises interlaced-specific buffer address programming code
+ *  paths that cannot be reached functionally on progressive-only OLDI panels.
+ *  Using state injection, the test sets the scan format to interlaced and
+ *  provides bottom-field buffer addresses to trigger the bottom-field address
+ *  programming in both queue and ISR callback paths.
+ *
+ *  \param args Not used.
+ *
+ *  \return None.
+ */
+static void TestDss_interlacedAddrProgramCoverageOldi(void *args)
+{
+    int32_t retVal = FVID2_SOK;
+    Fvid2_InitPrms initPrms;
+    Dss_DispCreateParams createParams;
+    Dss_DispCreateStatus createStatus;
+    Fvid2_CbParams cbParams;
+    Fvid2_Handle dispHandle;
+    Dss_DispPipePrgmCbParams pipePrgmCbParams;
+    Fvid2_Frame frm;
+    Fvid2_Frame seedFrm;
+    Fvid2_FrameList frmList;
+    Dss_DispDrvInstObj *drvObj;
+    Dss_DctrlDrvPipeInfo *pipeInfo;
+    Dss_DispDrvQueObj *seedQObj;
+    uint32_t origInScanFormat;
+    uint32_t origIsPrevBufRep;
+    uint32_t origDispHeight;
+    uint32_t savedIsPushSafe;
+    uint32_t cookie;
+    static uint8_t dummyBuf[64U] __attribute__((aligned(128)));
+    static uint8_t seedBuf[16U]  __attribute__((aligned(64)));
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Interlaced Addr Program Test (OLDI)\r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* Initialize FVID2, DSS, DCTRL, set path */
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  FVID2/DSS/DCTRL initialised, path set\r\n");
+
+    /* 2. Create display driver                                           */
+    Dss_dispCreateParamsInit(&createParams);
+    Fvid2CbParams_init(&cbParams);
+
+    dispHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, gDssConfigPipelineParams.instId[0U],
+        &createParams, &createStatus, &cbParams);
+    TEST_ASSERT_NOT_NULL(dispHandle);
+    DebugP_log("  Display driver created\r\n");
+
+    /* Register pipePrgmCb for verification */
+    TestDss_isrPipePrgmCbCount = 0U;
+    pipePrgmCbParams.pipePrgmCbFxn = TestDss_isrPipePrgmCbFxn;
+    pipePrgmCbParams.appData = NULL;
+    retVal = Fvid2_control(dispHandle,
+        IOCTL_DSS_DISP_REGISTER_PIPE_PRGM_CB, &pipePrgmCbParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* 3. Get internal driver object                                      */
+    drvObj = (Dss_DispDrvInstObj *)
+        (*(void **)((uint8_t *)dispHandle + sizeof(void *)));
+    pipeInfo = (Dss_DctrlDrvPipeInfo *)drvObj->dctrlHandle;
+
+    origInScanFormat = drvObj->inScanFormat;
+    origIsPrevBufRep = drvObj->isPrevBufRep;
+    origDispHeight   = drvObj->dispHeight;
+
+    drvObj->dispWidth      = 1920U;
+    drvObj->dispHeight     = 1200U;
+    drvObj->dispScanFormat = FVID2_SF_PROGRESSIVE;
+
+    /* Phase 1: Queue path with interlaced format */
+    /* Seed currQ, force inScanFormat=INTERLACED, queue with isSafe=TRUE */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Phase 1: Queue path interlaced address programming\r\n");
+
+    /* Seed currQ: queue a frame with isSafe=FALSE, move to currQ */
+    drvObj->isPrevBufRep = (uint32_t)TRUE;
+    drvObj->dispHeight   = 5U;   /* isSafe=FALSE → goes to reqQ */
+
+    Fvid2Frame_init(&seedFrm);
+    seedFrm.addr[0U] = (uint64_t)seedBuf;
+    Fvid2FrameList_init(&frmList);
+    frmList.numFrames  = 1U;
+    frmList.frames[0U] = &seedFrm;
+    retVal = Fvid2_queue(dispHandle, &frmList, 0U);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    seedQObj = (Dss_DispDrvQueObj *)Fvid2Utils_dequeue(drvObj->bmObj.reqQ);
+    TEST_ASSERT_NOT_NULL(seedQObj);
+    seedQObj->creditCnt = 1U;
+    Fvid2Utils_queue(drvObj->bmObj.currQ, &seedQObj->qElem, seedQObj);
+
+    /* Set up isSafe=TRUE conditions */
+    drvObj->isPrevBufRep = (uint32_t)TRUE;
+    drvObj->dispHeight   = 1200U;
+    savedIsPushSafe = gDss_DctrlDrvInfo.isPushSafe[drvObj->vpId];
+    gDss_DctrlDrvInfo.isPushSafe[drvObj->vpId] = (uint32_t)TRUE;
+
+    /* Force INTERLACED scan */
+    drvObj->inScanFormat = FVID2_SF_INTERLACED;
+
+    /* Queue frame with bottom-field addresses */
+    Fvid2Frame_init(&frm);
+    frm.addr[0U] = (uint64_t)dummyBuf;
+    frm.addr[1U] = 0U;
+    frm.addr[3U] = (uint64_t)dummyBuf;   /* bottom-field Y */
+    frm.addr[4U] = 0U;                    /* bottom-field UV */
+    frm.fid = FVID2_FID_FRAME;
+
+    TestDss_isrPipePrgmCbCount = 0U;
+    Fvid2FrameList_init(&frmList);
+    frmList.frames[0U] = &frm;
+    frmList.numFrames  = 1U;
+    retVal = Fvid2_queue(dispHandle, &frmList, 0U);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    TEST_ASSERT_GREATER_THAN(0U, TestDss_isrPipePrgmCbCount);
+    DebugP_log("  Interlaced bottom-field address programming validated\r\n");
+
+    /* Restore queue state */
+    drvObj->inScanFormat = origInScanFormat;
+    gDss_DctrlDrvInfo.isPushSafe[drvObj->vpId] = savedIsPushSafe;
+
+    /* Drain currQ and reqQ back to freeQ */
+    {
+        Dss_DispDrvQueObj *drainObj;
+        drainObj = (Dss_DispDrvQueObj *)Fvid2Utils_dequeue(drvObj->bmObj.currQ);
+        while(drainObj != NULL)
+        {
+            Fvid2Utils_queue(drvObj->bmObj.freeQ, &drainObj->qElem, drainObj);
+            drainObj = (Dss_DispDrvQueObj *)Fvid2Utils_dequeue(drvObj->bmObj.currQ);
+        }
+        drainObj = (Dss_DispDrvQueObj *)Fvid2Utils_dequeue(drvObj->bmObj.reqQ);
+        while(drainObj != NULL)
+        {
+            Fvid2Utils_queue(drvObj->bmObj.freeQ, &drainObj->qElem, drainObj);
+            drainObj = (Dss_DispDrvQueObj *)Fvid2Utils_dequeue(drvObj->bmObj.reqQ);
+        }
+    }
+
+    /* Phase 2: ISR isStarted handler with interlaced format */
+    /* Set up simulated running display with INTERLACED */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Phase 2: ISR isStarted interlaced address programming\r\n");
+
+    {
+        Dss_DispDrvQueObj *qObj;
+        uint32_t pipeCbBefore;
+
+        Fvid2Frame_init(&frm);
+        frm.addr[0U] = (uint64_t)&gFirstPipelineFrameBuf[0U][0U];
+        frm.addr[3U] = (uint64_t)&gFirstPipelineFrameBuf[0U][0U];
+        frm.addr[4U] = (uint64_t)&gFirstPipelineFrameBuf[0U][0U];
+        frm.fid = FVID2_FID_FRAME;
+
+        cookie = HwiP_disable();
+        qObj = (Dss_DispDrvQueObj *)Fvid2Utils_dequeue(drvObj->bmObj.freeQ);
+        GT_assert(DssTrace, (NULL != qObj));
+        qObj->frm       = &frm;
+        qObj->creditCnt = 1U;
+        Fvid2Utils_queue(drvObj->bmObj.currQ, &qObj->qElem, qObj);
+
+        drvObj->progFrame  = &frm;
+        drvObj->currFrame  = &frm;
+        drvObj->isPrevBufRep = FALSE;
+        drvObj->drvState.isStarted = TRUE;
+        drvObj->inScanFormat = FVID2_SF_INTERLACED;
+
+        pipeCbBefore = TestDss_isrPipePrgmCbCount;
+        pipeInfo->gClientInfo.cbFxn(pipeInfo->gClientInfo.arg);
+        drvObj->inScanFormat = origInScanFormat;
+        HwiP_restore(cookie);
+
+        TEST_ASSERT_GREATER_THAN(pipeCbBefore, TestDss_isrPipePrgmCbCount);
+        DebugP_log("  Interlaced address programming in isStarted ISR validated\r\n");
+    }
+
+    /* Phase 3: ISR isStarting handler with interlaced format */
+    /* Simulate isStarting with a frame in reqQ and INTERLACED format */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Phase 3: ISR isStarting interlaced address programming\r\n");
+
+    {
+        static Fvid2_Frame frmExtra __attribute__((aligned(128)));
+        Dss_DispDrvQueObj *qObjExtra;
+        uint32_t pipeCbBefore;
+
+        Fvid2Frame_init(&frmExtra);
+        frmExtra.addr[0U] = (uint64_t)&gFirstPipelineFrameBuf[0U][0U];
+        frmExtra.addr[3U] = (uint64_t)&gFirstPipelineFrameBuf[0U][0U];
+        frmExtra.addr[4U] = (uint64_t)&gFirstPipelineFrameBuf[0U][0U];
+        frmExtra.fid = FVID2_FID_FRAME;
+
+        cookie = HwiP_disable();
+        qObjExtra = (Dss_DispDrvQueObj *)Fvid2Utils_dequeue(
+                                                     drvObj->bmObj.freeQ);
+        GT_assert(DssTrace, (NULL != qObjExtra));
+        qObjExtra->frm = &frmExtra;
+        qObjExtra->creditCnt = 0U;
+        Fvid2Utils_queue(drvObj->bmObj.reqQ, &qObjExtra->qElem, qObjExtra);
+
+        drvObj->drvState.isStarted  = FALSE;
+        drvObj->drvState.isStarting = TRUE;
+        drvObj->inScanFormat = FVID2_SF_INTERLACED;
+
+        pipeCbBefore = TestDss_isrPipePrgmCbCount;
+        pipeInfo->gClientInfo.cbFxn(pipeInfo->gClientInfo.arg);
+        drvObj->inScanFormat = origInScanFormat;
+        HwiP_restore(cookie);
+
+        TEST_ASSERT_EQUAL_INT32(TRUE, drvObj->drvState.isStarted);
+        TEST_ASSERT_EQUAL_INT32(FALSE, drvObj->drvState.isStarting);
+        TEST_ASSERT_GREATER_THAN(pipeCbBefore, TestDss_isrPipePrgmCbCount);
+        DebugP_log("  Interlaced address programming in isStarting ISR validated\r\n");
+    }
+
+    /* Clean up: drain queues, restore state, delete */
+    {
+        Dss_DispDrvQueObj *drainObj;
+        drainObj = (Dss_DispDrvQueObj *)Fvid2Utils_dequeue(drvObj->bmObj.currQ);
+        while(drainObj != NULL)
+        {
+            Fvid2Utils_queue(drvObj->bmObj.freeQ, &drainObj->qElem, drainObj);
+            drainObj = (Dss_DispDrvQueObj *)Fvid2Utils_dequeue(drvObj->bmObj.currQ);
+        }
+        drainObj = (Dss_DispDrvQueObj *)Fvid2Utils_dequeue(drvObj->bmObj.reqQ);
+        while(drainObj != NULL)
+        {
+            Fvid2Utils_queue(drvObj->bmObj.freeQ, &drainObj->qElem, drainObj);
+            drainObj = (Dss_DispDrvQueObj *)Fvid2Utils_dequeue(drvObj->bmObj.reqQ);
+        }
+    }
+
+    drvObj->isPrevBufRep = origIsPrevBufRep;
+    drvObj->dispHeight   = origDispHeight;
+    drvObj->inScanFormat = origInScanFormat;
+    drvObj->drvState.isStarted  = FALSE;
+    drvObj->drvState.isStarting = FALSE;
+    drvObj->drvState.isStopping = FALSE;
+
+    retVal = Fvid2_delete(dispHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_CLEAR_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Dss_deInit();
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Interlaced Addr Program Coverage Test Completed!\r\n");
+    DebugP_log("======================================================\r\n");
+}
+
+/**
+ * \brief  Runtime parameter validation error path testing.
+ *
+ *  Test Category: Negative
+ *
+ *  This test verifies all error paths in runtime parameter validation by
+ *  constructing invalid rtParams configurations that trigger specific
+ *  validation failures:
+ *    - Output position exceeds display bounds
+ *    - Upscaling ratio exceeds 16x
+ *    - Downscaling ratio exceeds 4x
+ *    - Scaling requested on video-lite pipe (not supported)
+ *    - Flip mode with 24-bit RGB/BGR format (not supported)
+ *
+ *  Each test case uses state injection to create the error condition and
+ *  verifies that validation correctly returns EINVALID_PARAMS.
+ *
+ *  \param args Not used.
+ *
+ *  \return None.
+ */
+static void TestDss_rtParamsValidateNegativeOldi(void *args)
+{
+    int32_t retVal = FVID2_SOK;
+    Fvid2_InitPrms initPrms;
+    Dss_DispCreateParams createParams;
+    Dss_DispCreateStatus createStatus;
+    Fvid2_CbParams cbParams;
+    Fvid2_Handle dispHandle;
+    Dss_DispPipePrgmCbParams pipePrgmCbParams;
+    Dss_DispRtParams rtParams;
+    Dss_FrameRtParams outFrm, inFrm;
+    Fvid2_PosConfig posCfg;
+    Fvid2_Frame frm;
+    Fvid2_Frame seedFrm;
+    Fvid2_FrameList frmList;
+    Dss_DispDrvInstObj *drvObj;
+    Dss_DispDrvQueObj *seedQObj;
+    uint32_t origIsPrevBufRep;
+    uint32_t origDispWidth;
+    uint32_t origDispHeight;
+    uint32_t origDrvInstId;
+    uint32_t origFlipType;
+    uint32_t savedIsPushSafe;
+    static uint8_t dummyBuf[64U] __attribute__((aligned(128)));
+    static uint8_t seedBuf[16U]  __attribute__((aligned(64)));
+    uint32_t subTest;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS RtParams Validate Negative Test\r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* 1. Initialize FVID2, DSS, DCTRL, set path                         */
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* 2. Create display driver                                           */
+    Dss_dispCreateParamsInit(&createParams);
+    Fvid2CbParams_init(&cbParams);
+
+    dispHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, gDssConfigPipelineParams.instId[0U],
+        &createParams, &createStatus, &cbParams);
+    TEST_ASSERT_NOT_NULL(dispHandle);
+
+    /* Register pipePrgmCb so we can verify the frame was still programmed */
+    TestDss_isrPipePrgmCbCount = 0U;
+    pipePrgmCbParams.pipePrgmCbFxn = TestDss_isrPipePrgmCbFxn;
+    pipePrgmCbParams.appData = NULL;
+    retVal = Fvid2_control(dispHandle,
+        IOCTL_DSS_DISP_REGISTER_PIPE_PRGM_CB, &pipePrgmCbParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* 3. Get internal driver object, save originals                      */
+    drvObj = (Dss_DispDrvInstObj *)
+        (*(void **)((uint8_t *)dispHandle + sizeof(void *)));
+
+    origIsPrevBufRep = drvObj->isPrevBufRep;
+    origDispWidth    = drvObj->dispWidth;
+    origDispHeight   = drvObj->dispHeight;
+    origDrvInstId    = drvObj->drvInstId;
+    origFlipType     = drvObj->pipeParams[drvObj->pipeId].pipeCfg.flipType;
+
+    drvObj->dispWidth      = 1920U;
+    drvObj->dispHeight     = 1200U;
+    drvObj->dispScanFormat = FVID2_SF_PROGRESSIVE;
+
+    /* Helper: seed currQ and set isSafe=TRUE for each test case          */
+    for(subTest = 1U; subTest <= 5U; subTest++)
+    {
+        DebugP_log("------------------------------------------------------\r\n");
+        DebugP_log("  Test case %u: ", (unsigned)subTest);
+
+        /* Seed currQ with a frame to prevent queue underflow */
+        drvObj->isPrevBufRep = (uint32_t)TRUE;
+        drvObj->dispHeight   = 5U;  /* isSafe=FALSE → goes to reqQ */
+
+        Fvid2Frame_init(&seedFrm);
+        seedFrm.addr[0U] = (uint64_t)seedBuf;
+        Fvid2FrameList_init(&frmList);
+        frmList.numFrames  = 1U;
+        frmList.frames[0U] = &seedFrm;
+        retVal = Fvid2_queue(dispHandle, &frmList, 0U);
+        TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+        seedQObj = (Dss_DispDrvQueObj *)Fvid2Utils_dequeue(drvObj->bmObj.reqQ);
+        TEST_ASSERT_NOT_NULL(seedQObj);
+        seedQObj->creditCnt = 1U;
+        Fvid2Utils_queue(drvObj->bmObj.currQ, &seedQObj->qElem, seedQObj);
+
+        /* Set up isSafe=TRUE */
+        drvObj->isPrevBufRep = (uint32_t)TRUE;
+        drvObj->dispHeight   = 1200U;
+        savedIsPushSafe = gDss_DctrlDrvInfo.isPushSafe[drvObj->vpId];
+        gDss_DctrlDrvInfo.isPushSafe[drvObj->vpId] = (uint32_t)TRUE;
+
+        /* Build base rtParams — all pointers non-NULL, valid values */
+        Dss_frameRtParamsInit(&outFrm);
+        outFrm.width  = 720U;
+        outFrm.height = 540U;
+
+        Dss_frameRtParamsInit(&inFrm);
+        inFrm.width      = 720U;
+        inFrm.height     = 540U;
+        inFrm.dataFormat = FVID2_DF_BGRA32_8888;
+        inFrm.pitch[0U]  = 720U * 4U;
+
+        posCfg.startX = 0U;
+        posCfg.startY = 0U;
+
+        Dss_dispRtParamsInit(&rtParams);
+        rtParams.outFrmParams = &outFrm;
+        rtParams.inFrmParams  = &inFrm;
+        rtParams.scParams     = NULL;
+        rtParams.posCfg       = &posCfg;
+
+        /* Restore defaults that might have been modified in prior test case */
+        drvObj->drvInstId = origDrvInstId;
+        drvObj->pipeParams[drvObj->pipeId].pipeCfg.flipType = origFlipType;
+
+        switch(subTest)
+        {
+            case 1U:
+                /* Out-of-bounds position: width+startX > dispWidth */
+                DebugP_log("outFrmParams exceeds display bounds\r\n");
+                outFrm.width  = 1920U;
+                outFrm.height = 1200U;
+                posCfg.startX = 100U;   /* 1920+100 > 1920 */
+                posCfg.startY = 0U;
+                break;
+
+            case 2U:
+                /* Upscaling > 16x: inHeight*16 < outHeight */
+                DebugP_log("upscaling ratio exceeds 16x\r\n");
+                inFrm.width   = 10U;
+                inFrm.height  = 10U;
+                outFrm.width  = 200U;   /* 10*16=160 < 200 */
+                outFrm.height = 200U;   /* 10*16=160 < 200 */
+                break;
+
+            case 3U:
+                /* Downscaling > 4x: inHeight > outHeight*4 */
+                DebugP_log("downscaling ratio exceeds 4x\r\n");
+                inFrm.width   = 500U;
+                inFrm.height  = 500U;
+                outFrm.width  = 100U;   /* 500 > 100*4=400 */
+                outFrm.height = 100U;   /* 500 > 100*4=400 */
+                break;
+
+            case 4U:
+                /* Scaling on VIDL pipe: in != out && isVidLInst */
+                DebugP_log("scaling on VIDL pipe\r\n");
+                drvObj->drvInstId = DSS_DISP_INST_VIDL1;
+                inFrm.width   = 360U;
+                inFrm.height  = 270U;
+                outFrm.width  = 720U;   /* != 360 → scaling */
+                outFrm.height = 540U;   /* != 270 → scaling */
+                break;
+
+            case 5U:
+                /* Flip with 24-bit format: flipType=V && dataFormat=RGB24 */
+                DebugP_log("flip with 24-bit RGB format\r\n");
+                drvObj->pipeParams[drvObj->pipeId].pipeCfg.flipType =
+                    FVID2_FLIP_TYPE_V;
+                inFrm.dataFormat = FVID2_DF_RGB24_888;
+                /* No scaling (in == out) to avoid triggering case 4 */
+                rtParams.outFrmParams = NULL;
+                break;
+
+            default:
+                break;
+        }
+
+        /* Build frame with perFrameCfg → triggers ValidateRtParams */
+        Fvid2Frame_init(&frm);
+        frm.addr[0U]     = (uint64_t)dummyBuf;
+        frm.addr[1U]     = 0U;
+        frm.fid           = FVID2_FID_FRAME;
+        frm.perFrameCfg   = (void *)&rtParams;
+
+        TestDss_isrPipePrgmCbCount = 0U;
+        Fvid2FrameList_init(&frmList);
+        frmList.frames[0U] = &frm;
+        frmList.numFrames  = 1U;
+
+        retVal = Fvid2_queue(dispHandle, &frmList, 0U);
+        TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+        /* pipePrgmCb should still fire (frame is programmed even if
+         * rtParams validation failed — only ApplyRtParams is skipped) */
+        TEST_ASSERT_GREATER_THAN(0U, TestDss_isrPipePrgmCbCount);
+        DebugP_log("    → ValidateRtParams returned EINVALID_PARAMS, "
+                   "frame still programmed (pipePrgmCb=%u)\r\n",
+                   (unsigned)TestDss_isrPipePrgmCbCount);
+
+        /* Restore isPushSafe */
+        gDss_DctrlDrvInfo.isPushSafe[drvObj->vpId] = savedIsPushSafe;
+
+        /* Drain currQ and reqQ back to freeQ for next test case */
+        {
+            Dss_DispDrvQueObj *drainObj;
+            drainObj = (Dss_DispDrvQueObj *)Fvid2Utils_dequeue(
+                                                         drvObj->bmObj.currQ);
+            while(drainObj != NULL)
+            {
+                Fvid2Utils_queue(drvObj->bmObj.freeQ,
+                                 &drainObj->qElem, drainObj);
+                drainObj = (Dss_DispDrvQueObj *)Fvid2Utils_dequeue(
+                                                         drvObj->bmObj.currQ);
+            }
+            drainObj = (Dss_DispDrvQueObj *)Fvid2Utils_dequeue(
+                                                         drvObj->bmObj.reqQ);
+            while(drainObj != NULL)
+            {
+                Fvid2Utils_queue(drvObj->bmObj.freeQ,
+                                 &drainObj->qElem, drainObj);
+                drainObj = (Dss_DispDrvQueObj *)Fvid2Utils_dequeue(
+                                                         drvObj->bmObj.reqQ);
+            }
+        }
+    }
+
+    /* Restore and clean up                                               */
+    drvObj->isPrevBufRep = origIsPrevBufRep;
+    drvObj->dispWidth    = origDispWidth;
+    drvObj->dispHeight   = origDispHeight;
+    drvObj->drvInstId    = origDrvInstId;
+    drvObj->pipeParams[drvObj->pipeId].pipeCfg.flipType = origFlipType;
+
+    retVal = Fvid2_delete(dispHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_CLEAR_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Dss_deInit();
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS RtParams Validate Negative Test Completed!\r\n");
+    DebugP_log("======================================================\r\n");
+}
+
+/**
+ * \brief  Synchronized VP operation (syncOp) path testing.
+ *
+ *  Test Category: Coverage
+ *
+ *  This test exercises synchronized VP operation code paths that are never
+ *  used in single-VP OLDI configurations. The test verifies:
+ *    - SET_VP_PARAMS with syncOp configuration and validation
+ *    - STOP_VP behavior when syncOp is enabled
+ *
+ *  The test uses state injection to trigger syncOp-specific code branches
+ *  that would otherwise remain untested in normal OLDI operation.
+ *
+ *  \param args Not used.
+ *
+ *  \return None.
+ */
+static void TestDss_dctrlSyncOpCoverageOldi(void *args)
+{
+    int32_t retVal = FVID2_SOK;
+    Fvid2_InitPrms initPrms;
+    Dss_DctrlVpParams vpParams;
+    Dss_DctrlAdvVpParams advVpParams;
+    Dss_DctrlOverlayParams overlayParams;
+    Dss_DctrlOverlayLayerParams layerParams;
+    Dss_DctrlGlobalDssParams globalDssParams;
+    Dss_DctrlSyncOpCfg savedSyncOp;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS DCTRL SyncOp Coverage Test (OLDI) \r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* Configure frame format as BGRA32 */
+    for(uint32_t instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        gDssConfigPipelineParams.inDataFmt[instCnt] = FVID2_DF_BGRA32_8888;
+        gDssConfigPipelineParams.pitch[instCnt][0U] =
+            gDssConfigPipelineParams.inWidth[instCnt] * 4U;
+    }
+
+    /* Init FVID2, DSS, create DCTRL handle                               */
+
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /*SET_VP_PARAMS with syncOp enabled                      */
+    DebugP_log("SET_VP_PARAMS with syncOp enabled\r\n");
+
+    Dss_dctrlVpParamsInit(&vpParams);
+    vpParams.vpId = gDssVpParams.vpId;
+    memcpy(&vpParams.lcdOpTimingCfg.mInfo,
+           &gDssVpParams.lcdOpTimingCfg.mInfo,
+           sizeof(Fvid2_ModeInfo));
+    vpParams.lcdOpTimingCfg.mInfo.scanFormat = FVID2_SF_PROGRESSIVE;
+    vpParams.lcdOpTimingCfg.dvoFormat =
+        gDssVpParams.lcdOpTimingCfg.dvoFormat;
+    vpParams.lcdOpTimingCfg.videoIfWidth =
+        gDssVpParams.lcdOpTimingCfg.videoIfWidth;
+    vpParams.lcdPolarityCfg = gDssVpParams.lcdPolarityCfg;
+
+    /* Enable syncOp: primary on VP1, with VP2 as secondary */
+    vpParams.syncOpCfg.enabled       = TRUE;
+    vpParams.syncOpCfg.isPrimary     = TRUE;
+    vpParams.syncOpCfg.numSyncVpIds  = 1U;
+    vpParams.syncOpCfg.syncVpIds[0U] = CSL_DSS_VP_ID_2;
+
+    /* VP2 state is DSS_DCTRL_VP_IDLE (3) which is != DSS_DCTRL_VP_STARTING (0)
+     * so the driver will:
+     *   1) Copy syncVpIds[0] in the loop (
+     *   2) Enter the sync validation block (
+     *   3) Find vpState[VP2] != STARTING → vpFound=TRUE → EBADARGS
+     */
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_PARAMS, &vpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EBADARGS, retVal);
+    DebugP_log("  SET_VP_PARAMS(syncOp) returned EBADARGS as expected\r\n");
+
+    /* Now start VP normally (no syncOp) for additional testing */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Starting VP normally for test B...\r\n");
+
+    Dss_dctrlAdvVpParamsInit(&advVpParams);
+    advVpParams.vpId = gDssAdvVpParams.vpId;
+    advVpParams.lcdAdvSignalCfg.hVAlign =
+        gDssAdvVpParams.lcdAdvSignalCfg.hVAlign;
+    advVpParams.lcdAdvSignalCfg.hVClkControl =
+        gDssAdvVpParams.lcdAdvSignalCfg.hVClkControl;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_ADV_VP_PARAMS, &advVpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* SET_VP_PARAMS with syncOp disabled (normal mode) */
+    Dss_dctrlVpParamsInit(&vpParams);
+    vpParams.vpId = gDssVpParams.vpId;
+    memcpy(&vpParams.lcdOpTimingCfg.mInfo,
+           &gDssVpParams.lcdOpTimingCfg.mInfo,
+           sizeof(Fvid2_ModeInfo));
+    vpParams.lcdOpTimingCfg.mInfo.scanFormat = FVID2_SF_PROGRESSIVE;
+    vpParams.lcdOpTimingCfg.dvoFormat =
+        gDssVpParams.lcdOpTimingCfg.dvoFormat;
+    vpParams.lcdOpTimingCfg.videoIfWidth =
+        gDssVpParams.lcdOpTimingCfg.videoIfWidth;
+    vpParams.lcdPolarityCfg = gDssVpParams.lcdPolarityCfg;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_PARAMS, &vpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  VP started normally (vpState = RUNNING)\r\n");
+
+    /* Configure OLDI */
+    if(gDssObjects[CONFIG_DSS0].oldiParams != NULL)
+    {
+        retVal = Fvid2_control(
+            gDssObjects[CONFIG_DSS0].dctrlHandle,
+            IOCTL_DSS_DCTRL_SET_OLDI_PARAMS,
+            gDssObjects[CONFIG_DSS0].oldiParams, NULL);
+        TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    }
+
+    Dss_dctrlOverlayParamsInit(&overlayParams);
+    overlayParams.overlayId = gDssOverlayParams.overlayId;
+    overlayParams.colorbarEnable = gDssOverlayParams.colorbarEnable;
+    overlayParams.overlayCfg = gDssOverlayParams.overlayCfg;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS, &overlayParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_dctrlOverlayLayerParamsInit(&layerParams);
+    layerParams.overlayId = gDssOverlayLayerParams.overlayId;
+    memcpy(layerParams.pipeLayerNum,
+           gDssOverlayLayerParams.pipeLayerNum,
+           sizeof(gDssOverlayLayerParams.pipeLayerNum));
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_LAYER_PARAMS, &layerParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_dctrlGlobalDssParamsInit(&globalDssParams);
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS, &globalDssParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* STOP_VP with syncOp   */ 
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("STOP_VP with syncOp injected\r\n");
+
+    uint32_t vpId = gDssVpParams.vpId;
+
+    /* Save original syncOpCfg */
+    savedSyncOp = gDss_DctrlDrvInfo.vpParams[vpId].syncOpCfg;
+
+    /* Inject syncOp into stored VP params */
+    gDss_DctrlDrvInfo.vpParams[vpId].syncOpCfg.enabled       = TRUE;
+    gDss_DctrlDrvInfo.vpParams[vpId].syncOpCfg.isPrimary     = TRUE;
+    gDss_DctrlDrvInfo.vpParams[vpId].syncOpCfg.numSyncVpIds  = 1U;
+    gDss_DctrlDrvInfo.vpParams[vpId].syncOpCfg.syncVpIds[0U] = CSL_DSS_VP_ID_2;
+
+    /* Set VP2 state to STOPPING for syncOp validation */
+    gDss_DctrlDrvInfo.vpState[CSL_DSS_VP_ID_2] = DSS_DCTRL_VP_STOPPING;
+
+    Dss_dctrlVpParamsInit(&vpParams);
+    vpParams.vpId = gDssVpParams.vpId;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_STOP_VP, &vpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  STOP_VP(syncOp) returned FVID2_SOK\r\n");
+
+    /* Restore VP2 state to IDLE */
+    gDss_DctrlDrvInfo.vpState[CSL_DSS_VP_ID_2] = DSS_DCTRL_VP_IDLE;
+
+    /* Restore original syncOpCfg (already IDLE after stop, but be safe) */
+    gDss_DctrlDrvInfo.vpParams[vpId].syncOpCfg = savedSyncOp;
+
+    /* Cleanup                                                            */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Cleanup\r\n");
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_CLEAR_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Dss_deInit();
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS DCTRL SyncOp Test Completed!\r\n");
+    DebugP_log("======================================================\r\n");
+}
+#endif

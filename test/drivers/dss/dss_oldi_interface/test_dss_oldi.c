@@ -107,9 +107,20 @@ extern int32_t TestDisp_pipeSafetyDisplayControl(Dss_Object *appObj,
 extern int32_t TestDisp_frameSkipDisplayControl(Dss_Object *appObj,
                                                 uint32_t frameSkipVal);
 extern int32_t TestDisp_bufUnderflowSyncLostDisplayControl(Dss_Object *appObj);
+#ifdef ENABLE_MT_TESTS
+extern int32_t TestDisp_multiThreadDisplayControl(Dss_Object *appObj);
+extern int32_t TestDisp_multiThreadIoctlProtection(Dss_Object *appObj);
+#endif
+extern int32_t TestDisp_displayShareHotPlug(Dss_Object *appObj,
+                                            uint32_t overlayId,
+                                            uint32_t vpId,
+                                            uint32_t outputNode);
+extern int32_t TestDisp_reregisterDriver(Dss_Object *appObj);
 #if defined (SOC_AM62PX)
 extern int32_t TestDisp_ioctlErrors(Dss_Object *appObj, uint32_t testId);
 extern int32_t TestDisp_dctrlIoctls(Dss_Object *appObj, uint32_t testId);
+extern int32_t TestDisp_dualDisplayDpiOldi(Dss_Object *appObjOldi,
+                                           Dss_Object *appObjDpi);
 #endif
 
 /* Test Cases */
@@ -149,6 +160,14 @@ static void TestDss_bufPrgmCbFunctionalOldi(void *args);
 static void TestDss_rtParamsPipePrgmCbFunctionalOldi(void *args);
 static void TestDss_isrCbFunctionalStartedOldi(void *args);
 static void TestDss_isrCbFunctionalProgPipeOldi(void *args);
+#ifdef ENABLE_MT_TESTS
+static void TestDss_multiThreadPipelineConfigOldi(void *args);
+static void TestDss_multiThreadIoctlProtectionOldi(void *args);
+#endif
+#if defined (SOC_AM62PX)
+static void TestDss_displayShareHotPlugOldi(void *args);
+/* static void TestDss_dualDisplayDpiOldiMt(void *args); */
+#endif
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -264,8 +283,16 @@ void test_main(void *args)
     RUN_TEST(TestDss_bufPrgmCbFunctionalOldi, 11367, NULL);
     RUN_TEST(TestDss_isrCbFunctionalStartedOldi, 11368, NULL);
     RUN_TEST(TestDss_isrCbFunctionalProgPipeOldi, 11369, NULL);
-
+#ifdef ENABLE_MT_TESTS
+    RUN_TEST(TestDss_multiThreadPipelineConfigOldi, 11276, NULL);
+    RUN_TEST(TestDss_multiThreadIoctlProtectionOldi, 11277, NULL);
+#endif
+#if 0
+    RUN_TEST(TestDss_dualDisplayDpiOldiMt, 11297, NULL);
+#endif
 #if defined (SOC_AM62PX)
+    RUN_TEST(TestDss_displayShareHotPlugOldi, 11278, NULL);
+
     /* Disable the FVID2 asserts */
     Fvid2Utils_controlAssert(false);
 
@@ -6044,3 +6071,294 @@ static void TestDss_isrCbFunctionalProgPipeOldi(void *args)
     DebugP_log("  pipePrgmCb invoked during isStopping transition\r\n");
     DebugP_log("======================================================\r\n");
 }
+
+#ifdef ENABLE_MT_TESTS
+/**
+ * \brief  Multi-threaded concurrent pipeline configuration for OLDI.
+ *
+ *  Test Category: Functionality
+ *
+ *  This test verifies that VID and VIDL pipelines can be configured and
+ *  operated from separate threads concurrently with frame queuing and FPS
+ *  validation.  Each thread independently dequeues and requeues frames on its
+ *  pipeline for 20 iterations while the other thread does the same.  The main
+ *  thread waits for both threads via semaphore, then verifies no frame drops,
+ *  no buffer corruption, and consistent FPS on each pipeline.  The test
+ *  confirms thread-safe concurrent pipeline operation.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_multiThreadPipelineConfigOldi(void *args)
+{
+    int32_t status = SystemP_FAILURE;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Multi-Thread Pipeline Config Test for OLDI\r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* Configure frame format — use BGRA32_8888 (4 bytes/pixel) for both pipes */
+    for(uint32_t instCnt = 0U;
+        instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        gDssConfigPipelineParams.inDataFmt[instCnt] =
+            gMultipleFrameDataArray[2].frameType;  /* FVID2_DF_ARGB32_8888 */
+        gDssConfigPipelineParams.pitch[instCnt][0U] =
+            gDssConfigPipelineParams.inWidth[instCnt] *
+            gMultipleFrameDataArray[2].bytesPerPixel;
+    }
+
+    DebugP_log("Frame format: %s\r\n", gMultipleFrameDataArray[2].frameName);
+    DebugP_log("VID1:  %dx%d → %dx%d at pos (%d,%d)\r\n",
+               gDssConfigPipelineParams.inWidth[0],
+               gDssConfigPipelineParams.inHeight[0],
+               gDssConfigPipelineParams.outWidth[0],
+               gDssConfigPipelineParams.outHeight[0],
+               gDssConfigPipelineParams.posx[0],
+               gDssConfigPipelineParams.posy[0]);
+
+    if(gDssConfigPipelineParams.numTestPipes > 1U)
+    {
+        DebugP_log("VIDL1: %dx%d → %dx%d at pos (%d,%d)\r\n",
+                   gDssConfigPipelineParams.inWidth[1],
+                   gDssConfigPipelineParams.inHeight[1],
+                   gDssConfigPipelineParams.outWidth[1],
+                   gDssConfigPipelineParams.outHeight[1],
+                   gDssConfigPipelineParams.posx[1],
+                   gDssConfigPipelineParams.posy[1]);
+    }
+
+    DebugP_log("Spawning %d threads (1 per pipeline) with 20 iterations each\r\n",
+               gDssConfigPipelineParams.numTestPipes);
+
+    /* Run the multi-thread display control helper */
+    status = TestDisp_multiThreadDisplayControl(&gDssObjects[CONFIG_DSS0]);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    DebugP_log("Multi-Thread Pipeline Config test completed\r\n");
+    DebugP_log("======================================================\r\n");
+}
+
+/**
+ * \brief  Multi-threaded concurrent IOCTL protection for DCTRL.
+ *
+ *  Test Category: Functionality
+ *
+ *  This test verifies that concurrent DCTRL IOCTLs from multiple threads are
+ *  safely serialized by the driver's internal lockSem without corrupting DSS
+ *  state.  Tests exercise overlapping IOCTL pairs (overlay vs VP params,
+ *  safety region writes with different regionIds, layer vs global DSS params)
+ *  issued concurrently from separate threads, each running 10 iterations.  The
+ *  test verifies no state tearing, no register corruption, and consistent driver
+ *  behavior across all concurrent operations.  Final readback of VP error stats
+ *  confirms state integrity.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_multiThreadIoctlProtectionOldi(void *args)
+{
+    int32_t status = SystemP_FAILURE;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Multi-Thread IOCTL Protection Test for OLDI\r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* Configure frame format — use BGRA32_8888 (4 bytes/pixel) */
+    for(uint32_t instCnt = 0U;
+        instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        gDssConfigPipelineParams.inDataFmt[instCnt] =
+            gMultipleFrameDataArray[2].frameType;  /* FVID2_DF_ARGB32_8888 */
+        gDssConfigPipelineParams.pitch[instCnt][0U] =
+            gDssConfigPipelineParams.inWidth[instCnt] *
+            gMultipleFrameDataArray[2].bytesPerPixel;
+    }
+
+    status = TestDisp_multiThreadIoctlProtection(&gDssObjects[CONFIG_DSS0]);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    DebugP_log("Multi-Thread IOCTL Protection test completed\r\n");
+    DebugP_log("======================================================\r\n");
+}
+#endif /* ENABLE_MT_TESTS */
+
+#if defined (SOC_AM62PX)
+#if 0
+/**
+ * \brief  Concurrent DPI (VP2) + OLDI (VP1) dual display with multi-threaded pipeline control.
+ *
+ *  Test Category: Functionality
+ *
+ *  This test configures two DSS instances: CONFIG_DSS0 with VP1/OVR1/VID1 for OLDI output,
+ *  and CONFIG_DSS1 with VP2/OVR2/VIDL1 for DPI output. Two independent worker threads are
+ *  spawned (Thread 0 for VID1, Thread 1 for VIDL1) and synchronized via a start barrier to
+ *  run concurrent frame iterations. The test verifies that both OLDI panel and DPI/HDMI
+ *  monitor display content simultaneously without sync-lost or underflow errors.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_dualDisplayDpiOldiMt(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Dual Display DPI + OLDI Multi-Thread Test (TC21)\r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* Open DPI/HDMI bridge (SII9022A or equivalent) before starting the
+     * dual display test.  OLDI does not need a bridge. */
+    status = Board_panelOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+#if (CONFIG_DSS_NUM_INSTANCES > 1U)
+    /* Pre-populate DPI instance (CONFIG_DSS1) VP/OVR/Layer/AdvVP params.
+     *
+     * The Dss_Object::vpParams / overlayParams / advVpParams / layerParams
+     * fields are NOT populated by the syscfg-generated gDssObjects init
+     * (only dctrlPathInfo, oldiParams, fwlConfig are set there).
+     * TestDisp_dualDisplayDpiOldi() populates the OLDI instance via the
+     * single-instance gDssVpParams / gDssOverlayParams globals; for the
+     * DPI instance those globals hold VP1/OVR1 values and cannot be used.
+     *
+     * TODO: When the 2-instance syscfg is generated, replace the hardcoded
+     * 1080p60 timing below with the per-instance DPI globals
+     * (e.g. gDssVpParams[CONFIG_DSS1], gDssOverlayParams[CONFIG_DSS1] or
+     * whatever names the syscfg template produces). */
+    {
+        Dss_DctrlVpParams           *vp  = &gDssObjects[CONFIG_DSS1].vpParams;
+        Dss_DctrlAdvVpParams        *avp = &gDssObjects[CONFIG_DSS1].advVpParams;
+        Dss_DctrlOverlayParams      *ovr = &gDssObjects[CONFIG_DSS1].overlayParams;
+        Dss_DctrlOverlayLayerParams *lyr = &gDssObjects[CONFIG_DSS1].layerParams;
+
+        /* VP2 — standard 1080p60 DPI timing (HDMI CEA mode 16) */
+        Dss_dctrlVpParamsInit(vp);
+        vp->vpId                              = CSL_DSS_VP_ID_2;
+        vp->lcdOpTimingCfg.mInfo.standard     = FVID2_STD_1080P_60;
+        vp->lcdOpTimingCfg.mInfo.width        = 1920U;
+        vp->lcdOpTimingCfg.mInfo.height       = 1080U;
+        vp->lcdOpTimingCfg.mInfo.hFrontPorch  = 88U;
+        vp->lcdOpTimingCfg.mInfo.hBackPorch   = 148U;
+        vp->lcdOpTimingCfg.mInfo.hSyncLen     = 44U;
+        vp->lcdOpTimingCfg.mInfo.vFrontPorch  = 4U;
+        vp->lcdOpTimingCfg.mInfo.vBackPorch   = 36U;
+        vp->lcdOpTimingCfg.mInfo.vSyncLen     = 5U;
+        vp->lcdOpTimingCfg.mInfo.scanFormat   = FVID2_SF_PROGRESSIVE;
+        vp->lcdOpTimingCfg.dvoFormat          = FVID2_DV_GENERIC_DISCSYNC;
+        vp->lcdOpTimingCfg.videoIfWidth       = FVID2_VIFW_24BIT;
+        vp->lcdPolarityCfg.actVidPolarity     = FVID2_POL_HIGH;
+        vp->lcdPolarityCfg.hsPolarity         = FVID2_POL_HIGH;
+        vp->lcdPolarityCfg.vsPolarity         = FVID2_POL_HIGH;
+        vp->lcdPolarityCfg.pixelClkPolarity   = FVID2_EDGE_POL_RISING;
+
+        /* VP2 advance signal config */
+        Dss_dctrlAdvVpParamsInit(avp);
+        avp->vpId                                = CSL_DSS_VP_ID_2;
+        avp->lcdAdvSignalCfg.hVAlign             = CSL_DSS_VP_HVSYNC_ALIGNED;
+        avp->lcdAdvSignalCfg.hVClkControl        = CSL_DSS_VP_HVCLK_CONTROL_ON;
+
+        /* OVR2 — black background, no colorbar */
+        Dss_dctrlOverlayParamsInit(ovr);
+        ovr->overlayId                           = CSL_DSS_OVERLAY_ID_2;
+        ovr->colorbarEnable                      = FALSE;
+        ovr->overlayCfg.colorKeyEnable           = FALSE;
+        ovr->overlayCfg.colorKeySel              = CSL_DSS_OVERLAY_TRANS_COLOR_DEST;
+        ovr->overlayCfg.backGroundColor          = 0x000000U;
+
+        /* OVR2 layer: VIDL1 at z-order 0 */
+        Dss_dctrlOverlayLayerParamsInit(lyr);
+        lyr->overlayId                           = CSL_DSS_OVERLAY_ID_2;
+        lyr->pipeLayerNum[CSL_DSS_VID_PIPE_ID_VID1]  =
+                                                CSL_DSS_OVERLAY_LAYER_INVALID;
+        lyr->pipeLayerNum[CSL_DSS_VID_PIPE_ID_VIDL1] = 0U;
+
+        Dss_dctrlGlobalDssParamsInit(&gDssObjects[CONFIG_DSS1].globalDssParams);
+    }
+
+    /* Thread 0 (DSS_DD_OLDI) drives VID1  → VP1 → OLDI panel.
+     * Thread 1 (DSS_DD_DPI)  drives VIDL1 → VP2 → DPI/HDMI monitor.
+     * Both threads are spawned and released simultaneously. */
+    status = TestDisp_dualDisplayDpiOldi(&gDssObjects[CONFIG_DSS0],
+                                          &gDssObjects[CONFIG_DSS1]);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+#else
+    DebugP_log("TC21 skipped: requires CONFIG_DSS_NUM_INSTANCES > 1.\r\n");
+    DebugP_log("Enable a 2nd DSS instance (DPI) in syscfg to run this test.\r\n");
+#endif /* CONFIG_DSS_NUM_INSTANCES > 1U */
+
+    Board_panelClose();
+
+    DebugP_log("DSS Dual Display DPI + OLDI Multi-Thread Test Done!\r\n");
+    DebugP_log("======================================================\r\n");
+}
+#endif
+/**
+ * \brief  DSS display hot-plug detection and sharing for OLDI interface.
+ *
+ *  Test Category: Functionality
+ *
+ *  This test verifies DSS hot-plug detection when a display is dynamically
+ *  connected or disconnected during operation.  The test checks that the driver
+ *  detects the hot-plug event and updates display state appropriately.  Multiple
+ *  attach/detach cycles are tested to verify hot-plug robustness and state
+ *  management across shared display instances.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_displayShareHotPlugOldi(void *args)
+{
+    int32_t status = SystemP_FAILURE;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Display Share Hot-Plug Test for OLDI\r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* Configure frame format — use ARGB32_8888 (4 bytes/pixel) for both pipes */
+    for(uint32_t instCnt = 0U;
+        instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        gDssConfigPipelineParams.inDataFmt[instCnt] =
+            gMultipleFrameDataArray[2].frameType;  /* FVID2_DF_ARGB32_8888 */
+        gDssConfigPipelineParams.pitch[instCnt][0U] =
+            gDssConfigPipelineParams.inWidth[instCnt] *
+            gMultipleFrameDataArray[2].bytesPerPixel;
+    }
+
+    DebugP_log("Frame format: %s\r\n", gMultipleFrameDataArray[2].frameName);
+    DebugP_log("Pipe 0 (VIDL): %dx%d at pos (%d,%d)\r\n",
+               gDssConfigPipelineParams.inWidth[0],
+               gDssConfigPipelineParams.inHeight[0],
+               gDssConfigPipelineParams.posx[0],
+               gDssConfigPipelineParams.posy[0]);
+
+    if(gDssConfigPipelineParams.numTestPipes > 1U)
+    {
+        DebugP_log("Pipe 1 (VID):  %dx%d at pos (%d,%d)\r\n",
+                   gDssConfigPipelineParams.inWidth[1],
+                   gDssConfigPipelineParams.inHeight[1],
+                   gDssConfigPipelineParams.posx[1],
+                   gDssConfigPipelineParams.posy[1]);
+    }
+
+    status = TestDisp_displayShareHotPlug(
+                 &gDssObjects[CONFIG_DSS0],
+                 CSL_DSS_OVERLAY_ID_1,   /* OVR1 for OLDI */
+                 CSL_DSS_VP_ID_1,        /* VP1  for OLDI */
+                 DSS_DCTRL_NODE_OLDI);   /* Output: OLDI  */
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    DebugP_log("Display Share Hot-Plug test for OLDI completed\r\n");
+    DebugP_log("======================================================\r\n");
+}
+#endif
+

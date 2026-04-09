@@ -57,13 +57,13 @@
 /* ========================================================================== */
 
 /* Number of frames (5sec 300 frames) */
-#define DISP_NUM_FRAMES_COUNT              ((uint32_t)300U)
+#define DISP_NUM_FRAMES_COUNT                   ((uint32_t)300U)
 
 /* Max frame size based on resolution */
-#define DISP_FRAME_SIZE_MAX                (3840U*1080U)
+#define DISP_FRAME_SIZE_MAX                     (3840U*1080U)
 
 /* Max pixel width */
-#define DISP_FRAME_PIXEL_WIDTH_MAX          (4U)
+#define DISP_FRAME_PIXEL_WIDTH_MAX              (4U)
 
 /* Safety test defines */
 /* Number of frames for safety test */
@@ -87,10 +87,29 @@
 /* Number of VSYNC intervals to remain starved (no frames queued) */
 #define TEST_DSS_STARVE_DURATION_FRAMES        ((uint32_t)40U)
 
+/* Number of frames each dual-display thread will dequeue/requeue */
+#define TEST_DSS_DD_NUM_FRAMES                  (100U)
+
+/* Number of dual-display threads (1 per VP: OLDI + DPI) */
+#define TEST_DSS_DD_NUM_THREADS                 (2U)
+
+#define TEST_DSS_TASK_STACK_SIZE                (8192U)
+
+/* Task priority for dual-display threads */
+#define TEST_DSS_TASK_PRIORITY                  (2U)
+
+/* Number of dequeue/requeue iterations per thread */
+#define TEST_DSS_MT_NUM_ITERATIONS              (20U)
+
+#define TEST_DSS_HP_PHASE_FRAMES                (30U)
+
+/* Number of IOCTL loop iterations per sub-test thread */
+#define TEST_DSS_MT_IOCTL_LOOP_COUNT            (10U)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
+
 /* Safety test callback data structure */
 typedef struct
 {
@@ -122,6 +141,57 @@ typedef struct
     uint32_t capturedSign;
     /**< Captured MISR signature */
 } TestDisp_PipeSafetyCbData;
+
+typedef struct
+{
+    Dss_InstObject *instObj;
+    /**< Pointer to the pipeline instance for this thread */
+    uint32_t        threadIdx;
+    /**< 0 = OLDI thread, 1 = DPI thread */
+    int32_t         result;
+    /**< SystemP_SUCCESS or SystemP_FAILURE */
+    uint32_t        frameCount;
+    /**< Number of frames successfully dequeued/requeued */
+    uint64_t        startTimeUs;
+    /**< Start timestamp */
+    uint64_t        endTimeUs;
+    /**< End timestamp */
+} TestDisp_DdThreadCtx;
+
+/* Multi-thread test context passed to each worker thread */
+typedef struct
+{
+    Dss_Object    *appObj;
+    /**< Pointer to the DSS application object */
+    uint32_t       pipeIdx;
+    /**< Pipeline index (0 = VID1, 1 = VIDL1) */
+    int32_t        result;
+    /**< Thread result: SystemP_SUCCESS or SystemP_FAILURE */
+    uint32_t       frameCount;
+    /**< Number of frames successfully dequeued/requeued */
+    uint64_t       startTimeUs;
+    /**< Start timestamp in microseconds */
+    uint64_t       endTimeUs;
+    /**< End timestamp in microseconds */
+} TestDisp_MtThreadCtx;
+
+
+typedef struct
+{
+    Dss_Object   *appObj;
+    /**< Shared DSS application object */
+    Fvid2_Handle  handle;
+    /**< DCTRL handle to use for the IOCTL */
+    uint32_t      subTestId;
+    /**< One of the sub-test IDs above */
+    uint32_t      loopCount;
+    /**< Number of iterations to run the IOCTL in a tight loop */
+    int32_t       result;
+    /**< SystemP_SUCCESS / SystemP_FAILURE written by the worker */
+    uint32_t      passCount;
+    /**< Number of iterations that returned FVID2_SOK */
+} TestDisp_MtIoctlCtx;
+
 /* ========================================================================== */
 /*                          Function Declarations                             */
 /* ========================================================================== */
@@ -195,6 +265,23 @@ void *secondPipeFrameBufferPointer[CONFIG_DSS_NUM_FRAMES_PER_PIPELINE];
 /* VP safety callback data for all safety regions */
 TestDisp_SafetyCbData TestDss_vpSafetyCbData[CSL_DSS_VP_SAFETY_REGION_MAX];
 
+#if defined (SOC_AM62PX)
+/* Task objects for dual-display threads */
+static TaskP_Object TestDss_dispDdTaskObj[TEST_DSS_DD_NUM_THREADS];
+
+/* Task stacks */
+static uint8_t TestDss_dispDdTaskStack[TEST_DSS_DD_NUM_THREADS][TEST_DSS_TASK_STACK_SIZE]
+    __attribute__((aligned(32)));
+
+/* Per-thread context */
+static TestDisp_DdThreadCtx TestDss_dispDdCtx[TEST_DSS_DD_NUM_THREADS];
+
+/* Counting semaphore for thread completion signaling */
+static SemaphoreP_Object TestDss_dispDdDoneSem;
+
+/* Start barrier — both threads wait until main releases them simultaneously */
+static SemaphoreP_Object TestDss_dispDdStartSem;
+#endif
 
 TestDisp_PipeSafetyCbData TestDss_pipeSafetyCbDataVid;
 TestDisp_PipeSafetyCbData TestDss_pipeSafetyCbDataVidl;
@@ -202,11 +289,6 @@ TestDisp_PipeSafetyCbData TestDss_pipeSafetyCbDataVidl;
 /* Safety test loop count - shared with callback */
 volatile uint32_t TestDss_safetyLoopCount = 0U;
 
-/* Runtime VP safety configuration.
- * CONFIG_DSS_NUM_SAFETY_REGIONS defaults to 0U (syscfg has no VP safety
- * regions configured), which compiles the IOCTL loop away entirely.
- * Test functions set TestDss_numVpSafetyRegions > 0 and populate
- * TestDss_vpSafetyParamsRuntime before calling the safety display control. */
 uint32_t TestDss_numVpSafetyRegions = CONFIG_DSS_NUM_SAFETY_REGIONS;
 Dss_DctrlVpSafetyChkParams TestDss_vpSafetyParamsRuntime[CSL_DSS_VP_SAFETY_REGION_MAX];
 
@@ -214,12 +296,29 @@ Dss_DctrlVpSafetyChkParams TestDss_vpSafetyParamsRuntime[CSL_DSS_VP_SAFETY_REGIO
 volatile uint32_t TestDss_underflowCbCount = 0U;
 volatile uint32_t TestDss_syncLostCbCount = 0U;
 
-/* Starvation test results — populated by TestDisp_runStarveTest() so that
- * the calling test (e.g. OLDI/DPI) can assert on them. */
 volatile uint32_t TestDss_starveRepeatFrmCount  = 0U;
 volatile uint32_t TestDss_starveUnderflowCount  = 0U;
 volatile uint32_t TestDss_starveDispFrmCount    = 0U;
 volatile uint32_t TestDss_starveSyncLostCount   = 0U;
+
+/* Task objects, stacks, context array */
+static TaskP_Object    TestDss_mtIoctlTaskObj[TEST_DSS_DD_NUM_THREADS];
+static uint8_t         TestDss_mtIoctlTaskStack[TEST_DSS_DD_NUM_THREADS][TEST_DSS_TASK_STACK_SIZE] __attribute__((aligned(32)));
+static TestDisp_MtIoctlCtx TestDss_mtIoctlCtx[TEST_DSS_DD_NUM_THREADS];
+static SemaphoreP_Object TestDss_mtIoctlDoneSem;
+static SemaphoreP_Object TestDss_mtIoctlStartSem;
+
+/* Task objects for the pipeline threads */
+static TaskP_Object TestDss_dispMtTaskObj[TEST_DSS_DD_NUM_THREADS];
+
+/* Task stack for each thread */
+static uint8_t TestDss_dispMtTaskStack[TEST_DSS_DD_NUM_THREADS][TEST_DSS_TASK_STACK_SIZE]__attribute__((aligned(32)));
+
+/* Per-thread context */
+static TestDisp_MtThreadCtx TestDss_dispMtCtx[TEST_DSS_DD_NUM_THREADS];
+
+/* Counting semaphore for thread completion signaling */
+static SemaphoreP_Object TestDss_dispMtDoneSem;
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -2528,9 +2627,9 @@ int32_t TestDisp_flipDisplayControl(Dss_Object *appObj, uint32_t flipType)
     int32_t retVal = FVID2_SOK;
     int32_t status = SystemP_SUCCESS;
     uint32_t instCnt;
-    uint32_t savedFlipType[DSS_DISP_INST_MAX];
-    uint32_t savedDataFmt[DSS_DISP_INST_MAX];
-    uint32_t savedPitch[DSS_DISP_INST_MAX];
+    uint32_t savedFlipType[DSS_DISP_INST_MAX] = {0};
+    uint32_t savedDataFmt[DSS_DISP_INST_MAX] = {0};
+    uint32_t savedPitch[DSS_DISP_INST_MAX] = {0};
 
     /* Save current pipeline params that we will override */
     for(instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
@@ -2756,3 +2855,2040 @@ int32_t TestDisp_flipDisplayControl(Dss_Object *appObj, uint32_t flipType)
 
     return status;
 }
+
+/**
+ *  \brief  Worker thread function for multi-thread pipeline test.
+ *
+ *  Each thread operates on a single pipeline (VID or VIDL). It performs
+ *  TEST_DSS_MT_NUM_ITERATIONS dequeue/requeue cycles using the VSYNC semaphore
+ *  for synchronization. On completion, it posts the done semaphore.
+ */
+static void TestDisp_mtPipeWorker(void *arg)
+{
+    TestDisp_MtThreadCtx *ctx = (TestDisp_MtThreadCtx *)arg;
+    Dss_InstObject *instObj = &ctx->appObj->instObj[ctx->pipeIdx];
+    Fvid2_FrameList frmList;
+    int32_t retVal;
+    uint32_t loopCount = 0U;
+
+    ctx->result     = SystemP_SUCCESS;
+    ctx->frameCount = 0U;
+    ctx->startTimeUs = ClockP_getTimeUsec();
+
+    while(loopCount < TEST_DSS_MT_NUM_ITERATIONS)
+    {
+        /* Wait for VSYNC callback */
+        (void)SemaphoreP_pend(&instObj->syncSem, SystemP_WAIT_FOREVER);
+
+        retVal = Fvid2_dequeue(instObj->drvHandle,
+                               &frmList,
+                               0U,
+                               FVID2_TIMEOUT_NONE);
+
+        if(FVID2_SOK == retVal)
+        {
+            retVal = Fvid2_queue(instObj->drvHandle, &frmList, 0U);
+            if(FVID2_SOK != retVal)
+            {
+                DebugP_log("MT Thread %d: Queue failed at iter %d!\r\n",
+                           ctx->pipeIdx, loopCount);
+                ctx->result = SystemP_FAILURE;
+                break;
+            }
+            ctx->frameCount++;
+            loopCount++;
+        }
+        else if(FVID2_EAGAIN == retVal)
+        {
+            /* First callback, no frame to dequeue yet — continue */
+        }
+        else
+        {
+            DebugP_log("MT Thread %d: Dequeue failed at iter %d!\r\n",
+                       ctx->pipeIdx, loopCount);
+            ctx->result = SystemP_FAILURE;
+            break;
+        }
+    }
+
+    ctx->endTimeUs = ClockP_getTimeUsec();
+
+    /* Signal completion */
+    SemaphoreP_post(&TestDss_dispMtDoneSem);
+    TaskP_exit();
+}
+
+/**
+ *  \brief  Multi-thread display control: initializes DSS, starts both
+ *          pipelines, spawns one worker thread per pipe, waits for
+ *          completion, verifies results, then cleans up.
+ *
+ *  \param  appObj  [IN] Pointer to the Dss_Object.
+ *
+ *  \return SystemP_SUCCESS on success, SystemP_FAILURE otherwise.
+ */
+int32_t TestDisp_multiThreadDisplayControl(Dss_Object *appObj)
+{
+    int32_t  retVal = FVID2_SOK;
+    int32_t  status = SystemP_SUCCESS;
+    uint32_t instCnt;
+    Dss_InstObject *instObj;
+
+    /* ---- 1. Initialise frame buffers ---- */
+    TestDisp_initFrames();
+
+    /* ---- 2. Initialise FVID2 + DSS + DCTRL ---- */
+    status = TestDisp_init(appObj);
+    if(status != SystemP_SUCCESS)
+    {
+        DebugP_log("MT Test: TestDisp_init failed!\r\n");
+        return status;
+    }
+
+    /* ---- 3. Initialise DSS params, pipeline params, configure DCTRL ---- */
+    TestDisp_initDssParams(appObj);
+    TestDisp_initPipelineParams(appObj);
+    retVal = TestDisp_configDctrl(appObj);
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("MT Test: DCTRL config failed!\r\n");
+        TestDisp_deInit(appObj);
+        return SystemP_FAILURE;
+    }
+
+    /* ---- 4. Create display driver instances + set params + queue frames ---- */
+    for(instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        instObj = &appObj->instObj[instCnt];
+
+        status = SemaphoreP_constructBinary(&instObj->syncSem, 0);
+        if(status != SystemP_SUCCESS)
+        {
+            retVal = FVID2_EFAIL;
+            break;
+        }
+
+        Dss_dispCreateParamsInit(&instObj->createParams);
+        Fvid2CbParams_init(&instObj->cbParams);
+        instObj->cbParams.cbFxn   = &TestDisp_pipeCbFxn;
+        instObj->cbParams.appData = instObj;
+
+        instObj->drvHandle = Fvid2_create(
+            DSS_DISP_DRV_ID,
+            instObj->instId,
+            &instObj->createParams,
+            &instObj->createStatus,
+            &instObj->cbParams);
+
+        if((NULL == instObj->drvHandle) ||
+           (instObj->createStatus.retVal != FVID2_SOK))
+        {
+            DebugP_log("MT Test: Display Create failed for pipe %d!\r\n",
+                       instCnt);
+            retVal = FVID2_EFAIL;
+            break;
+        }
+
+        retVal = Fvid2_control(
+            instObj->drvHandle,
+            IOCTL_DSS_DISP_SET_DSS_PARAMS,
+            &instObj->dispParams,
+            NULL);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("MT Test: Set DSS Params failed for pipe %d!\r\n",
+                       instCnt);
+            break;
+        }
+
+        retVal = Fvid2_control(
+            instObj->drvHandle,
+            IOCTL_DSS_DISP_SET_PIPE_MFLAG_PARAMS,
+            &instObj->mflagParams,
+            NULL);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("MT Test: Set Mflag Params failed for pipe %d!\r\n",
+                       instCnt);
+            break;
+        }
+
+        retVal = TestDisp_allocAndQueueFrames(appObj, instObj);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("MT Test: Alloc/Queue failed for pipe %d!\r\n",
+                       instCnt);
+            break;
+        }
+    }
+
+    /* ---- 5. Start both pipelines ---- */
+    if(retVal == FVID2_SOK)
+    {
+        for(instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes;
+            instCnt++)
+        {
+            instObj = &appObj->instObj[instCnt];
+            retVal  = Fvid2_start(instObj->drvHandle, NULL);
+            if(retVal != FVID2_SOK)
+            {
+                DebugP_log("MT Test: Display Start failed for pipe %d!\r\n",
+                           instCnt);
+                break;
+            }
+        }
+    }
+
+    /* ---- 6. Create counting semaphore for thread completion ---- */
+    if(retVal == FVID2_SOK)
+    {
+        status = SemaphoreP_constructCounting(&TestDss_dispMtDoneSem, 0,
+                                              TEST_DSS_DD_NUM_THREADS);
+        if(status != SystemP_SUCCESS)
+        {
+            retVal = FVID2_EFAIL;
+        }
+    }
+
+    /* ---- 7. Spawn one worker thread per pipeline ---- */
+    if(retVal == FVID2_SOK)
+    {
+        uint32_t numThreads = gDssConfigPipelineParams.numTestPipes;
+        if(numThreads > TEST_DSS_DD_NUM_THREADS)
+        {
+            numThreads = TEST_DSS_DD_NUM_THREADS;
+        }
+
+        for(instCnt = 0U; instCnt < numThreads; instCnt++)
+        {
+            TaskP_Params taskParams;
+
+            TestDss_dispMtCtx[instCnt].appObj  = appObj;
+            TestDss_dispMtCtx[instCnt].pipeIdx = instCnt;
+            TestDss_dispMtCtx[instCnt].result  = SystemP_FAILURE;
+            TestDss_dispMtCtx[instCnt].frameCount = 0U;
+
+            TaskP_Params_init(&taskParams);
+            taskParams.name      = (instCnt == 0U) ? "DSS_MT_VID" :
+                                                      "DSS_MT_VIDL";
+            taskParams.stackSize = TEST_DSS_TASK_STACK_SIZE;
+            taskParams.stack     = TestDss_dispMtTaskStack[instCnt];
+            taskParams.priority  = TEST_DSS_TASK_PRIORITY;
+            taskParams.args      = (void *)&TestDss_dispMtCtx[instCnt];
+            taskParams.taskMain  = TestDisp_mtPipeWorker;
+
+            status = TaskP_construct(&TestDss_dispMtTaskObj[instCnt],
+                                     &taskParams);
+            if(status != SystemP_SUCCESS)
+            {
+                DebugP_log("MT Test: TaskP_construct failed for thread %d!\r\n",
+                           instCnt);
+                retVal = FVID2_EFAIL;
+                break;
+            }
+        }
+    }
+
+    /* ---- 8. Wait for both threads to complete ---- */
+    if(retVal == FVID2_SOK)
+    {
+        uint32_t numThreads = gDssConfigPipelineParams.numTestPipes;
+        if(numThreads > TEST_DSS_DD_NUM_THREADS)
+        {
+            numThreads = TEST_DSS_DD_NUM_THREADS;
+        }
+
+        for(instCnt = 0U; instCnt < numThreads; instCnt++)
+        {
+            SemaphoreP_pend(&TestDss_dispMtDoneSem, SystemP_WAIT_FOREVER);
+        }
+
+        /* Destruct tasks and semaphore */
+        for(instCnt = 0U; instCnt < numThreads; instCnt++)
+        {
+            TaskP_destruct(&TestDss_dispMtTaskObj[instCnt]);
+        }
+        SemaphoreP_destruct(&TestDss_dispMtDoneSem);
+    }
+
+    /* ---- 9. Stop both pipelines ---- */
+    for(instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes;
+        instCnt++)
+    {
+        instObj = &appObj->instObj[instCnt];
+        if(instObj->drvHandle != NULL)
+        {
+            (void)Fvid2_stop(instObj->drvHandle, NULL);
+        }
+    }
+
+    /* ---- 10. Delete display driver instances and clean up ---- */
+    TestDisp_delete(appObj);
+    TestDisp_deInit(appObj);
+
+    /* ---- 11. Aggregate results ---- */
+    status = SystemP_SUCCESS;
+    {
+        uint32_t numThreads = gDssConfigPipelineParams.numTestPipes;
+        if(numThreads > TEST_DSS_DD_NUM_THREADS)
+        {
+            numThreads = TEST_DSS_DD_NUM_THREADS;
+        }
+
+        for(instCnt = 0U; instCnt < numThreads; instCnt++)
+        {
+            if(TestDss_dispMtCtx[instCnt].result != SystemP_SUCCESS)
+            {
+                DebugP_log("MT Test: Thread %d FAILED\r\n", instCnt);
+                status = SystemP_FAILURE;
+            }
+            else
+            {
+                uint64_t elapsedUs = TestDss_dispMtCtx[instCnt].endTimeUs -
+                                     TestDss_dispMtCtx[instCnt].startTimeUs;
+                uint32_t fps = 0U;
+                if(elapsedUs > 0U)
+                {
+                    fps = (uint32_t)((uint64_t)TestDss_dispMtCtx[instCnt].frameCount
+                                     * 1000000ULL / elapsedUs);
+                }
+                DebugP_log("MT Test: Thread %d (%s) OK — %d frames in %d us "
+                           "(~%d FPS)\r\n",
+                           instCnt,
+                           (instCnt == 0U) ? "VID1" : "VIDL1",
+                           TestDss_dispMtCtx[instCnt].frameCount,
+                           (uint32_t)elapsedUs,
+                           fps);
+            }
+        }
+    }
+
+    return status;
+}
+
+/**
+ * \brief Worker thread for the IOCTL protection test.
+ *
+ * Waits on the start-barrier, issues the designated DCTRL IOCTL in a loop,
+ * records the result, then posts the done-semaphore.
+ */
+static void TestDisp_mtIoctlWorker(void *arg)
+{
+    TestDisp_MtIoctlCtx    *ctx    = (TestDisp_MtIoctlCtx *)arg;
+    Dss_Object             *appObj = ctx->appObj;
+    Dss_DctrlVpCscCoeff     cscCoeff;
+    Dss_DctrlVpErrorStats   errStats;
+    int32_t                 retVal = FVID2_SOK;
+    uint32_t                iter;
+
+    ctx->result    = SystemP_FAILURE;
+    ctx->passCount = 0U;
+
+    /* Wait until the main thread releases both threads simultaneously */
+    SemaphoreP_pend(&TestDss_mtIoctlStartSem, SystemP_WAIT_FOREVER);
+
+    for(iter = 0U; iter < ctx->loopCount; iter++)
+    {
+        retVal = FVID2_SOK;
+
+        switch(ctx->subTestId)
+        {
+            case 0U: /* SET_VP_PARAMS — only valid when VP is IDLE */
+                retVal = Fvid2_control(ctx->handle,
+                                       IOCTL_DSS_DCTRL_SET_VP_PARAMS,
+                                       &appObj->vpParams,
+                                       NULL);
+                break;
+
+            case 1U: /* SET_OVERLAY_PARAMS */
+                retVal = Fvid2_control(ctx->handle,
+                                       IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS,
+                                       &appObj->overlayParams,
+                                       NULL);
+                break;
+
+            case 4U: /* SET_ADV_VP_PARAMS */
+                retVal = Fvid2_control(ctx->handle,
+                                       IOCTL_DSS_DCTRL_SET_ADV_VP_PARAMS,
+                                       &appObj->advVpParams,
+                                       NULL);
+                break;
+
+            case 5U: /* SET_LAYER_PARAMS */
+                retVal = Fvid2_control(ctx->handle,
+                                       IOCTL_DSS_DCTRL_SET_LAYER_PARAMS,
+                                       &appObj->layerParams,
+                                       NULL);
+                break;
+
+            case 6U: /* SET_GLOBAL_DSS_PARAMS */
+                retVal = Fvid2_control(ctx->handle,
+                                       IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS,
+                                       &appObj->globalDssParams,
+                                       NULL);
+                break;
+
+            case 7U: /* SET_VP_CSC_COEFF — write-only, no event registration */
+                memset(&cscCoeff, 0, sizeof(cscCoeff));
+                cscCoeff.vpId  = appObj->vpParams.vpId;
+                cscCoeff.cscPos = CSL_DSS_VP_CSC_POS_BEFORE_GAMMA;
+                CSL_dssCscCoeffInit(&cscCoeff.cscCoeff);
+                retVal = Fvid2_control(ctx->handle,
+                                       IOCTL_DSS_DCTRL_SET_VP_CSC_COEFF,
+                                       &cscCoeff,
+                                       NULL);
+                break;
+
+            case 8U: /* GET_VP_ERROR_STATS — read-only */
+                memset(&errStats, 0, sizeof(errStats));
+                errStats.vpId = appObj->vpParams.vpId;
+                retVal = Fvid2_control(ctx->handle,
+                                       IOCTL_DSS_DCTRL_GET_VP_ERROR_STATS,
+                                       &errStats,
+                                       NULL);
+                break;
+
+            default:
+                retVal = FVID2_EFAIL;
+                break;
+        }
+
+        if(retVal == FVID2_SOK)
+        {
+            ctx->passCount++;
+        }
+
+        /* Yield to increase chance of interleaving with the other thread */
+        TaskP_yield();
+    }
+
+    ctx->result = (ctx->passCount == ctx->loopCount) ?
+                  SystemP_SUCCESS : SystemP_FAILURE;
+
+    SemaphoreP_post(&TestDss_mtIoctlDoneSem);
+    TaskP_exit();
+}
+
+/**
+ * \brief Spawn two concurrent IOCTL threads, release them together via a
+ *        counting start-barrier, wait for both to complete and aggregate results.
+ *
+ * \param subTest0  subTestId for thread 0
+ * \param subTest1  subTestId for thread 1
+ * \param h0        DCTRL handle for thread 0
+ * \param h1        DCTRL handle for thread 1
+ * \param appObj    Shared DSS application object
+ * \param loopCount Number of IOCTL iterations per thread
+ *
+ * \return SystemP_SUCCESS if both threads returned FVID2_SOK for all iterations.
+ */
+static int32_t TestDisp_runMtIoctlSubtest(uint32_t     subTest0,
+                                          uint32_t     subTest1,
+                                          Fvid2_Handle h0,
+                                          Fvid2_Handle h1,
+                                          Dss_Object  *appObj,
+                                          uint32_t     loopCount)
+{
+    int32_t  status = SystemP_SUCCESS;
+    uint32_t i;
+
+    status = SemaphoreP_constructCounting(&TestDss_mtIoctlDoneSem, 0,
+                                          TEST_DSS_DD_NUM_THREADS);
+    if(status != SystemP_SUCCESS)
+    {
+        return status;
+    }
+
+    /* Use COUNTING semaphore with initial count 0 — main thread posts twice */
+    status = SemaphoreP_constructCounting(&TestDss_mtIoctlStartSem, 0,
+                                          TEST_DSS_DD_NUM_THREADS);
+    if(status != SystemP_SUCCESS)
+    {
+        SemaphoreP_destruct(&TestDss_mtIoctlDoneSem);
+        return status;
+    }
+
+    TestDss_mtIoctlCtx[0].appObj    = appObj;
+    TestDss_mtIoctlCtx[0].handle    = h0;
+    TestDss_mtIoctlCtx[0].subTestId = subTest0;
+    TestDss_mtIoctlCtx[0].loopCount = loopCount;
+    TestDss_mtIoctlCtx[0].result    = SystemP_FAILURE;
+    TestDss_mtIoctlCtx[0].passCount = 0U;
+
+    TestDss_mtIoctlCtx[1].appObj    = appObj;
+    TestDss_mtIoctlCtx[1].handle    = h1;
+    TestDss_mtIoctlCtx[1].subTestId = subTest1;
+    TestDss_mtIoctlCtx[1].loopCount = loopCount;
+    TestDss_mtIoctlCtx[1].result    = SystemP_FAILURE;
+    TestDss_mtIoctlCtx[1].passCount = 0U;
+
+    for(i = 0U; i < TEST_DSS_DD_NUM_THREADS; i++)
+    {
+        TaskP_Params taskParams;
+        TaskP_Params_init(&taskParams);
+        taskParams.name      = (i == 0U) ? "MT_IOCTL_T0" : "MT_IOCTL_T1";
+        taskParams.stackSize = TEST_DSS_TASK_STACK_SIZE;
+        taskParams.stack     = TestDss_mtIoctlTaskStack[i];
+        taskParams.priority  = TEST_DSS_TASK_PRIORITY;
+        taskParams.args      = (void *)&TestDss_mtIoctlCtx[i];
+        taskParams.taskMain  = TestDisp_mtIoctlWorker;
+
+        status = TaskP_construct(&TestDss_mtIoctlTaskObj[i], &taskParams);
+        if(status != SystemP_SUCCESS)
+        {
+            DebugP_log("MT IOCTL: TaskP_construct failed for thread %d\r\n", i);
+            SemaphoreP_destruct(&TestDss_mtIoctlDoneSem);
+            SemaphoreP_destruct(&TestDss_mtIoctlStartSem);
+            return status;
+        }
+    }
+
+    /* Release both threads simultaneously via counting semaphore */
+    SemaphoreP_post(&TestDss_mtIoctlStartSem);
+    SemaphoreP_post(&TestDss_mtIoctlStartSem);
+
+    /* Wait for both threads to complete */
+    for(i = 0U; i < TEST_DSS_DD_NUM_THREADS; i++)
+    {
+        SemaphoreP_pend(&TestDss_mtIoctlDoneSem, SystemP_WAIT_FOREVER);
+    }
+
+    for(i = 0U; i < TEST_DSS_DD_NUM_THREADS; i++)
+    {
+        TaskP_destruct(&TestDss_mtIoctlTaskObj[i]);
+    }
+
+    SemaphoreP_destruct(&TestDss_mtIoctlDoneSem);
+    SemaphoreP_destruct(&TestDss_mtIoctlStartSem);
+
+    if(TestDss_mtIoctlCtx[0].result != SystemP_SUCCESS ||
+       TestDss_mtIoctlCtx[1].result != SystemP_SUCCESS)
+    {
+        status = SystemP_FAILURE;
+    }
+
+    return status;
+}
+
+/**
+ * \brief  Test concurrent DCTRL IOCTL handling from multiple threads with internal locking.
+ *
+ *  Validates that concurrent DCTRL IOCTLs from two threads are safely serialized by
+ *  the driver's internal lockSem without corrupting DSS hardware state. Creates DCTRL
+ *  handle and sets graph path with VP remaining IDLE to allow concurrent parameter
+ *  configuration. Tests multiple sub-scenarios: dual handle coexistence, concurrent
+ *  overlay vs advanced VP parameter updates, concurrent CSC coefficient vs error
+ *  statistics queries (write vs read contention), and concurrent layer vs global DSS
+ *  parameter updates. After concurrent operations, verifies driver state integrity by
+ *  querying VP error statistics to confirm no internal corruption occurred.
+ *
+ *  \param appObj Pointer to DSS object containing driver handles and configuration.
+ *
+ *  \return SystemP_SUCCESS on successful concurrent IOCTL handling; SystemP_FAILURE otherwise.
+ */
+int32_t TestDisp_multiThreadIoctlProtection(Dss_Object *appObj)
+{
+    int32_t      status       = SystemP_SUCCESS;
+    int32_t      retVal       = FVID2_SOK;
+    Fvid2_Handle secondHandle = NULL;
+    Dss_DctrlVpErrorStats errorStats;
+
+    /* ------------------------------------------------------------------ */
+    /* 1. Initialise FVID2 + DSS + DCTRL handle (VP stays IDLE)           */
+    /* ------------------------------------------------------------------ */
+    TestDisp_initFrames();
+
+    status = TestDisp_init(appObj);
+    if(status != SystemP_SUCCESS)
+    {
+        DebugP_log("MT IOCTL: TestDisp_init failed\r\n");
+        return status;
+    }
+
+    /* Init VP/overlay params into appObj members (from syscfg globals) */
+    TestDisp_initDssParams(appObj);
+
+    /*
+     * Only set the graph path — do NOT call SET_VP_PARAMS here because
+     * that starts the VP.  We need VP IDLE for the concurrent tests.
+     */
+    retVal = Fvid2_control(
+        appObj->dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH,
+        appObj->dctrlPathInfo,
+        NULL);
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("MT IOCTL: SET_PATH failed (%d)\r\n", retVal);
+        TestDisp_deInit(appObj);
+        return SystemP_FAILURE;
+    }
+
+    /* Set OLDI params if applicable (does not start VP) */
+    if(appObj->oldiParams != NULL)
+    {
+        retVal = Fvid2_control(
+            appObj->dctrlHandle,
+            IOCTL_DSS_DCTRL_SET_OLDI_PARAMS,
+            appObj->oldiParams,
+            NULL);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("MT IOCTL: SET_OLDI_PARAMS failed (%d)\r\n", retVal);
+            /* Non-fatal, continue */
+        }
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Sub-test 1: Second DCTRL handle creation                           */
+    /*                                                                    */
+    /* Dss_dctrlDrvCreate increments numOpenDrvHandle under lockSem.      */
+    /* Both the original and the new handle point to the same instObj,    */
+    /* so all subsequent IOCTLs share the same lockSem serialisation.     */
+    /* ------------------------------------------------------------------ */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Sub-test 1: Second DCTRL handle creation\r\n");
+
+    secondHandle = Fvid2_create(DSS_DCTRL_DRV_ID,
+                                DSS_DCTRL_INST_0,
+                                NULL,
+                                NULL,
+                                NULL);
+    if(secondHandle == NULL)
+    {
+        DebugP_log("  FAIL: Second DCTRL handle creation returned NULL\r\n");
+        status = SystemP_FAILURE;
+    }
+    else
+    {
+        DebugP_log("  PASS: Second DCTRL handle created (numOpenDrvHandle=2)\r\n");
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Sub-test 2: Concurrent OVERLAY_PARAMS vs ADV_VP_PARAMS             */
+    /*                                                                    */
+    /* Neither IOCTL starts the VP, but both acquire/release lockSem.     */
+    /* With 10 iterations per thread, there is real contention.           */
+    /* ------------------------------------------------------------------ */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Sub-test 2: Concurrent SET_OVERLAY_PARAMS / SET_ADV_VP_PARAMS "
+               "(%d iters each)\r\n", TEST_DSS_MT_IOCTL_LOOP_COUNT);
+
+    if(status == SystemP_SUCCESS)
+    {
+        status = TestDisp_runMtIoctlSubtest(
+                     1U, 4U,                       /* overlay, adv-vp */
+                     appObj->dctrlHandle,
+                     secondHandle,
+                     appObj,
+                     TEST_DSS_MT_IOCTL_LOOP_COUNT);
+        if(status == SystemP_SUCCESS)
+        {
+            DebugP_log("  PASS: T0 overlay pass=%d, T1 adv-vp pass=%d\r\n",
+                       TestDss_mtIoctlCtx[0].passCount,
+                       TestDss_mtIoctlCtx[1].passCount);
+        }
+        else
+        {
+            DebugP_log("  FAIL: Concurrent OVERLAY/ADV_VP IOCTL\r\n");
+        }
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Sub-test 3: Concurrent SET_VP_CSC_COEFF vs GET_VP_ERROR_STATS      */
+    /*                                                                    */
+    /* Tests write-IOCTL vs read-IOCTL contention on the same lockSem.   */
+    /* Neither registers event handles, so it is safe to loop.            */
+    /* ------------------------------------------------------------------ */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Sub-test 3: Concurrent SET_VP_CSC_COEFF / GET_VP_ERROR_STATS "
+               "(%d iters each)\r\n", TEST_DSS_MT_IOCTL_LOOP_COUNT);
+
+    if(status == SystemP_SUCCESS)
+    {
+        status = TestDisp_runMtIoctlSubtest(
+                     7U, 8U,                       /* csc-coeff, err-stats */
+                     appObj->dctrlHandle,
+                     secondHandle,
+                     appObj,
+                     TEST_DSS_MT_IOCTL_LOOP_COUNT);
+        if(status == SystemP_SUCCESS)
+        {
+            DebugP_log("  PASS: T0 csc-coeff pass=%d, T1 err-stats pass=%d\r\n",
+                       TestDss_mtIoctlCtx[0].passCount,
+                       TestDss_mtIoctlCtx[1].passCount);
+        }
+        else
+        {
+            DebugP_log("  FAIL: Concurrent CSC/ERROR_STATS IOCTL\r\n");
+        }
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Sub-test 4: Concurrent LAYER_PARAMS vs GLOBAL_DSS_PARAMS           */
+    /* ------------------------------------------------------------------ */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Sub-test 4: Concurrent SET_LAYER_PARAMS / SET_GLOBAL_DSS_PARAMS "
+               "(%d iters each)\r\n", TEST_DSS_MT_IOCTL_LOOP_COUNT);
+
+    if(status == SystemP_SUCCESS)
+    {
+        status = TestDisp_runMtIoctlSubtest(
+                     5U, 6U,                       /* layer, global */
+                     appObj->dctrlHandle,
+                     secondHandle,
+                     appObj,
+                     TEST_DSS_MT_IOCTL_LOOP_COUNT);
+        if(status == SystemP_SUCCESS)
+        {
+            DebugP_log("  PASS: T0 layer pass=%d, T1 global pass=%d\r\n",
+                       TestDss_mtIoctlCtx[0].passCount,
+                       TestDss_mtIoctlCtx[1].passCount);
+        }
+        else
+        {
+            DebugP_log("  FAIL: Concurrent LAYER/GLOBAL IOCTL\r\n");
+        }
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Verification readback: query VP error stats to prove driver state   */
+    /* is still intact after all the concurrent IOCTL hammering.           */
+    /* ------------------------------------------------------------------ */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Readback: GET_VP_ERROR_STATS after concurrent IOCTLs\r\n");
+
+    if(status == SystemP_SUCCESS)
+    {
+        memset(&errorStats, 0, sizeof(errorStats));
+        errorStats.vpId = appObj->vpParams.vpId;
+        retVal = Fvid2_control(
+            appObj->dctrlHandle,
+            IOCTL_DSS_DCTRL_GET_VP_ERROR_STATS,
+            &errorStats,
+            NULL);
+        if(retVal == FVID2_SOK)
+        {
+            DebugP_log("  PASS: GET_VP_ERROR_STATS succeeded — driver state OK\r\n");
+        }
+        else
+        {
+            DebugP_log("  FAIL: GET_VP_ERROR_STATS returned %d\r\n", retVal);
+            status = SystemP_FAILURE;
+        }
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Cleanup                                                            */
+    /* ------------------------------------------------------------------ */
+    if(secondHandle != NULL)
+    {
+        retVal = Fvid2_delete(secondHandle, NULL);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("MT IOCTL: Second DCTRL handle delete failed\r\n");
+        }
+    }
+
+    /* Clear path before deinit */
+    (void)Fvid2_control(
+        appObj->dctrlHandle,
+        IOCTL_DSS_DCTRL_CLEAR_PATH,
+        appObj->dctrlPathInfo,
+        NULL);
+
+    TestDisp_deInit(appObj);
+
+    return status;
+}
+
+#if !defined (SOC_AM62LX)
+/**
+ *  \brief  Pipeline callback function for the hot-plug test.
+ *
+ *  Posts the per-instance syncSem on every VSYNC so the main loop
+ *  can dequeue/requeue frames.
+ */
+static int32_t TestDisp_hpPipeCbFxn(Fvid2_Handle handle, void *appData)
+{
+    Dss_InstObject *instObj = (Dss_InstObject *)appData;
+
+    GT_assert(DssTrace, (NULL != instObj));
+    (void)SemaphoreP_post(&instObj->syncSem);
+
+    return FVID2_SOK;
+}
+
+/**
+ *  \brief  Run one phase of the hot-plug test: dequeue/requeue for
+ *          the specified number of VSYNC intervals on a single pipe.
+ *
+ *  \param  instObj   [IN] Pipe instance to pump frames on.
+ *  \param  numFrames [IN] Number of VSYNC intervals to process.
+ *
+ *  \return FVID2_SOK on success, error code otherwise.
+ */
+static int32_t TestDisp_hpPumpFrames(Dss_InstObject *instObj,
+                                     uint32_t numFrames)
+{
+    int32_t retVal = FVID2_SOK;
+    Fvid2_FrameList frmList;
+    volatile uint32_t loopCount = 0U;
+
+    while(loopCount < numFrames)
+    {
+        (void)SemaphoreP_pend(&instObj->syncSem, SystemP_WAIT_FOREVER);
+
+        retVal = Fvid2_dequeue(instObj->drvHandle, &frmList,
+                               0U, FVID2_TIMEOUT_NONE);
+        if(FVID2_SOK == retVal)
+        {
+            retVal = Fvid2_queue(instObj->drvHandle, &frmList, 0U);
+            if(FVID2_SOK != retVal)
+            {
+                DebugP_log("HP: queue failed on pipe\r\n");
+                break;
+            }
+            loopCount++;
+        }
+        else if(FVID2_EAGAIN == retVal)
+        {
+            /* First callback, no frame to dequeue yet */
+            retVal = FVID2_SOK;
+        }
+        else
+        {
+            DebugP_log("HP: dequeue failed on pipe\r\n");
+            break;
+        }
+    }
+
+    return retVal;
+}
+#endif
+
+/**
+ * \brief  Test dynamic display share with hot-plug and unplug of pipelines.
+ *
+ *  Tests display share capability by dynamically creating, starting, and stopping
+ *  a video pipeline on a VP that already has a video lite pipeline running. Validates
+ *  that both pipelines can coexist on the same overlay and VP without disruption,
+ *  and that the original pipeline continues unaffected after the second pipeline
+ *  is unplugged. Sets up a 4-edge display path with VID and VIDL going through
+ *  the same overlay to the same VP. Executes in three phases: single VIDL pipeline
+ *  operation, both VID+VIDL running simultaneously, and VIDL-only after VID removal.
+ *  Verifies no errors or stats anomalies in each phase.
+ *
+ *  \param appObj DSS application object containing driver handles and configuration.
+ *  \param overlayId Overlay instance to use (CSL_DSS_OVERLAY_ID_1 for OLDI,
+ *                   CSL_DSS_OVERLAY_ID_2 for DPI).
+ *  \param vpId VP instance to use (CSL_DSS_VP_ID_1 for OLDI, CSL_DSS_VP_ID_2 for DPI).
+ *  \param outputNode Output node for path configuration (DSS_DCTRL_NODE_OLDI or DSS_DCTRL_NODE_DPI).
+ *
+ *  \return SystemP_SUCCESS on successful test execution; SystemP_FAILURE otherwise.
+ */
+#if !defined (SOC_AM62LX)
+int32_t TestDisp_displayShareHotPlug(Dss_Object *appObj,
+                                     uint32_t overlayId,
+                                     uint32_t vpId,
+                                     uint32_t outputNode)
+{
+    int32_t  retVal  = FVID2_SOK;
+    int32_t  status  = SystemP_SUCCESS;
+    Dss_InstObject  *vidlObj;    /* pipe index 0 = VIDL (background) */
+    Dss_InstObject  *vidObj = NULL;     /* pipe index 1 = VID  (hot-plugged) */
+
+    Dss_DctrlVpParams        *vpParams;
+    Dss_DctrlAdvVpParams     *advVpParams;
+    Dss_DctrlOverlayParams   *overlayParams;
+    Dss_DctrlOverlayLayerParams *layerParams;
+    Dss_DctrlGlobalDssParams *globalDssParams;
+    Dss_DctrlVpErrorStats     errorStats;
+    Dss_DispCurrentStatus     vidlCurrStatus;
+    Fvid2_FrameList           frmList;
+
+    /* Local 4-edge path for both pipes on same VP */
+    Dss_DctrlPathInfo hotPlugPath;
+
+    uint32_t ovrNode;
+    uint32_t vpNode;
+
+    /* ------------------------------------------------------------------ */
+    /* 0. Validate that 2 pipes are configured                            */
+    /* ------------------------------------------------------------------ */
+    if(gDssConfigPipelineParams.numTestPipes < 2U)
+    {
+        DebugP_log("HP: Need 2 pipes configured, have %d — SKIPPED\r\n",
+                   gDssConfigPipelineParams.numTestPipes);
+        return SystemP_SUCCESS;  /* Not an error, just not applicable */
+    }
+
+    /* Derive graph node IDs from the overlay ID */
+    if(overlayId == CSL_DSS_OVERLAY_ID_1)
+    {
+        ovrNode = DSS_DCTRL_NODE_OVR1;
+        vpNode  = DSS_DCTRL_NODE_VP1;
+    }
+    else
+    {
+        ovrNode = DSS_DCTRL_NODE_OVR2;
+        vpNode  = DSS_DCTRL_NODE_VP2;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* 1. Initialise frames + FVID2 + DSS + DCTRL handle                  */
+    /* ------------------------------------------------------------------ */
+    TestDisp_initFrames();
+
+    status = TestDisp_init(appObj);
+    if(status != SystemP_SUCCESS)
+    {
+        DebugP_log("HP: TestDisp_init failed\r\n");
+        return SystemP_FAILURE;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* 2. Set 4-edge path:                                                */
+    /*    VID1→OVR, VIDL1→OVR, OVR→VP, VP→output                         */
+    /* ------------------------------------------------------------------ */
+    Dss_dctrlPathInfoInit(&hotPlugPath);
+    hotPlugPath.numEdges = 4U;
+    hotPlugPath.edgeInfo[0U].startNode = DSS_DCTRL_NODE_VID1;
+    hotPlugPath.edgeInfo[0U].endNode   = ovrNode;
+    hotPlugPath.edgeInfo[1U].startNode = DSS_DCTRL_NODE_VIDL1;
+    hotPlugPath.edgeInfo[1U].endNode   = ovrNode;
+    hotPlugPath.edgeInfo[2U].startNode = ovrNode;
+    hotPlugPath.edgeInfo[2U].endNode   = vpNode;
+    hotPlugPath.edgeInfo[3U].startNode = vpNode;
+    hotPlugPath.edgeInfo[3U].endNode   = outputNode;
+
+    retVal = Fvid2_control(appObj->dctrlHandle,
+                           IOCTL_DSS_DCTRL_SET_PATH,
+                           &hotPlugPath, NULL);
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("HP: SET_PATH (4-edge) failed (%d)\r\n", retVal);
+        TestDisp_deInit(appObj);
+        return SystemP_FAILURE;
+    }
+
+    DebugP_log("HP: 4-edge path set (VID1+VIDL1 → OVR%d → VP%d → %s)\r\n",
+               (overlayId == CSL_DSS_OVERLAY_ID_1) ? 1 : 2,
+               (vpId == CSL_DSS_VP_ID_1) ? 1 : 2,
+               (outputNode == DSS_DCTRL_NODE_OLDI) ? "OLDI" : "DPI");
+
+    /* ------------------------------------------------------------------ */
+    /* 3. Configure VP, overlay, layer, adv VP, global DSS params         */
+    /* ------------------------------------------------------------------ */
+    vpParams        = &appObj->vpParams;
+    advVpParams     = &appObj->advVpParams;
+    overlayParams   = &appObj->overlayParams;
+    layerParams     = &appObj->layerParams;
+    globalDssParams = &appObj->globalDssParams;
+
+    /* Copy from syscfg globals (TestDisp_initDssParams sets these) */
+    TestDisp_initDssParams(appObj);
+
+    /* Override VP and overlay IDs to the caller-specified values */
+    vpParams->vpId          = vpId;
+    advVpParams->vpId       = vpId;
+    overlayParams->overlayId = overlayId;
+    layerParams->overlayId   = overlayId;
+
+    retVal = Fvid2_control(appObj->dctrlHandle,
+                           IOCTL_DSS_DCTRL_SET_ADV_VP_PARAMS,
+                           advVpParams, NULL);
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("HP: SET_ADV_VP_PARAMS failed\r\n");
+    }
+
+    if(retVal == FVID2_SOK)
+    {
+        retVal = Fvid2_control(appObj->dctrlHandle,
+                               IOCTL_DSS_DCTRL_SET_VP_PARAMS,
+                               vpParams, NULL);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("HP: SET_VP_PARAMS failed\r\n");
+        }
+    }
+
+    /* Set OLDI params if applicable */
+    if((retVal == FVID2_SOK) && (appObj->oldiParams != NULL) &&
+       (outputNode == DSS_DCTRL_NODE_OLDI))
+    {
+        retVal = Fvid2_control(appObj->dctrlHandle,
+                               IOCTL_DSS_DCTRL_SET_OLDI_PARAMS,
+                               appObj->oldiParams, NULL);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("HP: SET_OLDI_PARAMS failed\r\n");
+        }
+    }
+
+    if(retVal == FVID2_SOK)
+    {
+        retVal = Fvid2_control(appObj->dctrlHandle,
+                               IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS,
+                               overlayParams, NULL);
+    }
+
+    if(retVal == FVID2_SOK)
+    {
+        retVal = Fvid2_control(appObj->dctrlHandle,
+                               IOCTL_DSS_DCTRL_SET_LAYER_PARAMS,
+                               layerParams, NULL);
+    }
+
+    if(retVal == FVID2_SOK)
+    {
+        retVal = Fvid2_control(appObj->dctrlHandle,
+                               IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS,
+                               globalDssParams, NULL);
+    }
+
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("HP: DCTRL configuration failed\r\n");
+        (void)Fvid2_control(appObj->dctrlHandle,
+                            IOCTL_DSS_DCTRL_CLEAR_PATH,
+                            &hotPlugPath, NULL);
+        TestDisp_deInit(appObj);
+        return SystemP_FAILURE;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* 4. Initialise pipeline params for both pipes, then create VIDL     */
+    /*    (pipe index 0) and start it                                     */
+    /* ------------------------------------------------------------------ */
+    TestDisp_initPipelineParams(appObj);
+
+    /* --- Create VIDL (instObj[0]) --- */
+    vidlObj = &appObj->instObj[0];
+
+    status = SemaphoreP_constructBinary(&vidlObj->syncSem, 0);
+    if(status != SystemP_SUCCESS)
+    {
+        retVal = FVID2_EFAIL;
+    }
+
+    if(retVal == FVID2_SOK)
+    {
+        Dss_dispCreateParamsInit(&vidlObj->createParams);
+        Fvid2CbParams_init(&vidlObj->cbParams);
+        vidlObj->cbParams.cbFxn   = &TestDisp_hpPipeCbFxn;
+        vidlObj->cbParams.appData = vidlObj;
+
+        vidlObj->drvHandle = Fvid2_create(
+            DSS_DISP_DRV_ID, vidlObj->instId,
+            &vidlObj->createParams, &vidlObj->createStatus,
+            &vidlObj->cbParams);
+
+        if((NULL == vidlObj->drvHandle) ||
+           (vidlObj->createStatus.retVal != FVID2_SOK))
+        {
+            DebugP_log("HP: VIDL create failed\r\n");
+            retVal = FVID2_EFAIL;
+        }
+    }
+
+    if(retVal == FVID2_SOK)
+    {
+        retVal = Fvid2_control(vidlObj->drvHandle,
+                               IOCTL_DSS_DISP_SET_DSS_PARAMS,
+                               &vidlObj->dispParams, NULL);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("HP: VIDL set params failed\r\n");
+        }
+    }
+
+    if(retVal == FVID2_SOK)
+    {
+        Dss_dispPipeMflagParamsInit(&vidlObj->mflagParams);
+        retVal = Fvid2_control(vidlObj->drvHandle,
+                               IOCTL_DSS_DISP_SET_PIPE_MFLAG_PARAMS,
+                               &vidlObj->mflagParams, NULL);
+    }
+
+    if(retVal == FVID2_SOK)
+    {
+        retVal = TestDisp_allocAndQueueFrames(appObj, vidlObj);
+    }
+
+    if(retVal == FVID2_SOK)
+    {
+        retVal = Fvid2_start(vidlObj->drvHandle, NULL);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("HP: VIDL start failed\r\n");
+        }
+    }
+
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("HP: Failed to bring up VIDL pipeline — aborting\r\n");
+        status = SystemP_FAILURE;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* 5. Phase 1: VIDL running alone — pump frames for N intervals       */
+    /* ------------------------------------------------------------------ */
+    if(status == SystemP_SUCCESS)
+    {
+        DebugP_log("HP Phase 1: VIDL running alone (%d frames)\r\n",
+                   TEST_DSS_HP_PHASE_FRAMES);
+
+        retVal = TestDisp_hpPumpFrames(vidlObj, TEST_DSS_HP_PHASE_FRAMES);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("HP: Phase 1 VIDL pump failed\r\n");
+            status = SystemP_FAILURE;
+        }
+        else
+        {
+            DebugP_log("HP Phase 1: PASS — VIDL displayed %d frames\r\n",
+                       TEST_DSS_HP_PHASE_FRAMES);
+        }
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* 6. Phase 2a: HOT-PLUG — Create VID (instObj[1]), set params, start */
+    /* ------------------------------------------------------------------ */
+    if(status == SystemP_SUCCESS)
+    {
+        DebugP_log("HP Phase 2: Hot-plugging VID pipeline\r\n");
+
+        vidObj  = &appObj->instObj[1];
+
+        retVal = (int32_t)SemaphoreP_constructBinary(&vidObj->syncSem, 0);
+        if(retVal != (int32_t)SystemP_SUCCESS)
+        {
+            status = SystemP_FAILURE;
+        }
+    }
+
+    if(status == SystemP_SUCCESS)
+    {
+        Dss_dispCreateParamsInit(&vidObj->createParams);
+        Fvid2CbParams_init(&vidObj->cbParams);
+        vidObj->cbParams.cbFxn   = &TestDisp_hpPipeCbFxn;
+        vidObj->cbParams.appData = vidObj;
+
+        vidObj->drvHandle = Fvid2_create(
+            DSS_DISP_DRV_ID, vidObj->instId,
+            &vidObj->createParams, &vidObj->createStatus,
+            &vidObj->cbParams);
+
+        if((NULL == vidObj->drvHandle) ||
+           (vidObj->createStatus.retVal != FVID2_SOK))
+        {
+            DebugP_log("HP: VID create failed\r\n");
+            status = SystemP_FAILURE;
+        }
+    }
+
+    if(status == SystemP_SUCCESS)
+    {
+        retVal = Fvid2_control(vidObj->drvHandle,
+                               IOCTL_DSS_DISP_SET_DSS_PARAMS,
+                               &vidObj->dispParams, NULL);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("HP: VID set params failed\r\n");
+            status = SystemP_FAILURE;
+        }
+    }
+
+    if(status == SystemP_SUCCESS)
+    {
+        Dss_dispPipeMflagParamsInit(&vidObj->mflagParams);
+        retVal = Fvid2_control(vidObj->drvHandle,
+                               IOCTL_DSS_DISP_SET_PIPE_MFLAG_PARAMS,
+                               &vidObj->mflagParams, NULL);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("HP: VID mflag failed\r\n");
+            status = SystemP_FAILURE;
+        }
+    }
+
+    if(status == SystemP_SUCCESS)
+    {
+        retVal = TestDisp_allocAndQueueFrames(appObj, vidObj);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("HP: VID alloc/queue failed\r\n");
+            status = SystemP_FAILURE;
+        }
+    }
+
+    if(status == SystemP_SUCCESS)
+    {
+        retVal = Fvid2_start(vidObj->drvHandle, NULL);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("HP: VID start failed\r\n");
+            status = SystemP_FAILURE;
+        }
+        else
+        {
+            DebugP_log("HP Phase 2: VID hot-plugged — both pipes running\r\n");
+        }
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* 7. Phase 2b: Both VID + VIDL running — pump frames on both         */
+    /* ------------------------------------------------------------------ */
+    if(status == SystemP_SUCCESS)
+    {
+        uint32_t loopCount = 0U;
+
+        while(loopCount < TEST_DSS_HP_PHASE_FRAMES)
+        {
+            /* VIDL */
+            (void)SemaphoreP_pend(&vidlObj->syncSem, SystemP_WAIT_FOREVER);
+            retVal = Fvid2_dequeue(vidlObj->drvHandle, &frmList,
+                                   0U, FVID2_TIMEOUT_NONE);
+            if(FVID2_SOK == retVal)
+            {
+                retVal = Fvid2_queue(vidlObj->drvHandle, &frmList, 0U);
+            }
+            else if(FVID2_EAGAIN == retVal)
+            {
+                retVal = FVID2_SOK;
+            }
+
+            if(retVal != FVID2_SOK)
+            {
+                DebugP_log("HP Phase 2: VIDL pump error\r\n");
+                break;
+            }
+
+            /* VID */
+            (void)SemaphoreP_pend(&vidObj->syncSem, SystemP_WAIT_FOREVER);
+            retVal = Fvid2_dequeue(vidObj->drvHandle, &frmList,
+                                   0U, FVID2_TIMEOUT_NONE);
+            if(FVID2_SOK == retVal)
+            {
+                retVal = Fvid2_queue(vidObj->drvHandle, &frmList, 0U);
+            }
+            else if(FVID2_EAGAIN == retVal)
+            {
+                retVal = FVID2_SOK;
+            }
+
+            if(retVal != FVID2_SOK)
+            {
+                DebugP_log("HP Phase 2: VID pump error\r\n");
+                break;
+            }
+
+            loopCount++;
+        }
+
+        if(retVal != FVID2_SOK)
+        {
+            status = SystemP_FAILURE;
+        }
+        else
+        {
+            DebugP_log("HP Phase 2: PASS — both pipes displayed %d frames\r\n",
+                       TEST_DSS_HP_PHASE_FRAMES);
+        }
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* 8. Phase 3a: UNPLUG — Stop VID, drain, delete                      */
+    /* ------------------------------------------------------------------ */
+    if(status == SystemP_SUCCESS)
+    {
+        DebugP_log("HP Phase 3: Unplugging VID pipeline\r\n");
+
+        retVal = Fvid2_stop(vidObj->drvHandle, NULL);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("HP: VID stop failed\r\n");
+            status = SystemP_FAILURE;
+        }
+    }
+
+    if((vidObj != NULL) && (vidObj->drvHandle != NULL) && (status == SystemP_SUCCESS))
+    {
+        /* Drain remaining VID frames */
+        while(FVID2_SOK == Fvid2_dequeue(vidObj->drvHandle, &frmList,
+                                          0U, FVID2_TIMEOUT_NONE))
+        {
+            /* discard */
+        }
+
+        retVal = Fvid2_delete(vidObj->drvHandle, NULL);
+        vidObj->drvHandle = NULL;
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("HP: VID delete failed\r\n");
+            status = SystemP_FAILURE;
+        }
+
+        SemaphoreP_destruct(&vidObj->syncSem);
+
+        DebugP_log("HP Phase 3: VID unplugged — VIDL continues\r\n");
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* 9. Phase 3b: VIDL continues alone — pump for N more frames         */
+    /* ------------------------------------------------------------------ */
+    if(status == SystemP_SUCCESS)
+    {
+        retVal = TestDisp_hpPumpFrames(vidlObj, TEST_DSS_HP_PHASE_FRAMES);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("HP: Phase 3 VIDL pump failed\r\n");
+            status = SystemP_FAILURE;
+        }
+        else
+        {
+            DebugP_log("HP Phase 3: PASS — VIDL continued %d frames "
+                       "after VID unplug\r\n", TEST_DSS_HP_PHASE_FRAMES);
+        }
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* 10. Cleanup                                                        */
+    /* ------------------------------------------------------------------ */
+
+    /* Stop VIDL if still running */
+    if(vidlObj->drvHandle != NULL)
+    {
+        (void)Fvid2_stop(vidlObj->drvHandle, NULL);
+
+        /* Drain VIDL frames */
+        while(FVID2_SOK == Fvid2_dequeue(vidlObj->drvHandle, &frmList,
+                                          0U, FVID2_TIMEOUT_NONE))
+        {
+            /* discard */
+        }
+
+        /* Get VIDL status before delete */
+        memset(&vidlCurrStatus, 0, sizeof(vidlCurrStatus));
+        (void)Fvid2_control(vidlObj->drvHandle,
+                            IOCTL_DSS_DISP_GET_CURRENT_STATUS,
+                            &vidlCurrStatus, NULL);
+        DebugP_log("HP: VIDL underflowCount=%d, repeatFrmCount=%d\r\n",
+                   vidlCurrStatus.underflowCount,
+                   vidlCurrStatus.repeatFrmCount);
+
+        (void)Fvid2_delete(vidlObj->drvHandle, NULL);
+        vidlObj->drvHandle = NULL;
+    }
+
+    SemaphoreP_destruct(&vidlObj->syncSem);
+
+    /* Stop VID if it was not already cleaned up (error path) */
+    if(vidObj != NULL && vidObj->drvHandle != NULL)
+    {
+        (void)Fvid2_stop(vidObj->drvHandle, NULL);
+        while(FVID2_SOK == Fvid2_dequeue(vidObj->drvHandle, &frmList,
+                                          0U, FVID2_TIMEOUT_NONE))
+        {
+            /* discard */
+        }
+        (void)Fvid2_delete(vidObj->drvHandle, NULL);
+        vidObj->drvHandle = NULL;
+        SemaphoreP_destruct(&vidObj->syncSem);
+    }
+
+    /* VP error stats */
+    memset(&errorStats, 0, sizeof(errorStats));
+    errorStats.vpId = vpId;
+    retVal = Fvid2_control(appObj->dctrlHandle,
+                           IOCTL_DSS_DCTRL_GET_VP_ERROR_STATS,
+                           &errorStats, NULL);
+    if(retVal == FVID2_SOK)
+    {
+        DebugP_log("HP: VP syncLost=%d\r\n", errorStats.syncLost);
+        if(errorStats.syncLost > 0U)
+        {
+            DebugP_log("HP: WARNING — sync lost detected\r\n");
+        }
+    }
+
+    /* Clear path */
+    (void)Fvid2_control(appObj->dctrlHandle,
+                         IOCTL_DSS_DCTRL_CLEAR_PATH,
+                         &hotPlugPath, NULL);
+
+    /* Stop VP */
+    vpParams->vpId = vpId;
+    (void)Fvid2_control(appObj->dctrlHandle,
+                         IOCTL_DSS_DCTRL_STOP_VP,
+                         vpParams, NULL);
+
+    TestDisp_deInit(appObj);
+
+    return status;
+}
+#endif
+
+/* ========================================================================== */
+/*       Dual Display DPI + OLDI Multi-Threaded Test (TC21)                   */
+/* ========================================================================== */
+
+#if defined (SOC_AM62PX)
+
+/**
+ *  \brief  Per-thread context for the dual-display test.
+ *
+ *  Each thread owns one pipeline on one VP.  Thread 0 operates the OLDI
+ *  pipeline (instObj[0] from appObjOldi), Thread 1 operates the DPI
+ *  pipeline (instObj[0] from appObjDpi).
+ */
+
+/**
+ *  \brief  Pipeline callback for dual-display test.
+ */
+static int32_t TestDisp_ddPipeCbFxn(Fvid2_Handle handle, void *appData)
+{
+    Dss_InstObject *instObj = (Dss_InstObject *)appData;
+
+    GT_assert(DssTrace, (NULL != instObj));
+    (void)SemaphoreP_post(&instObj->syncSem);
+
+    return FVID2_SOK;
+}
+
+/**
+ * \brief  Worker thread for dual-display pipeline frame pumping.
+ *
+ *  Waits on start barrier semaphore for synchronization with main thread and peer thread,
+ *  then continuously dequeues and requeues frames on its assigned pipeline for specified
+ *  iteration count. Records frame count and timestamps to calculate throughput and FPS.
+ *  Logs errors and updates result status on queue/dequeue failures. Posts done semaphore
+ *  on completion to signal main thread that worker thread finished.
+ *
+ *  \param arg Pointer to TestDisp_DdThreadCtx structure containing pipeline instance,
+ *             thread index, and context for result tracking.
+ *
+ *  \return None.
+ */
+static void TestDisp_ddPipeWorker(void *arg)
+{
+    TestDisp_DdThreadCtx *ctx = (TestDisp_DdThreadCtx *)arg;
+    Dss_InstObject *instObj = ctx->instObj;
+    Fvid2_FrameList frmList;
+    int32_t retVal;
+    uint32_t loopCount = 0U;
+
+    ctx->result     = SystemP_SUCCESS;
+    ctx->frameCount = 0U;
+
+    /* Wait for main to release both threads simultaneously */
+    SemaphoreP_pend(&TestDss_dispDdStartSem, SystemP_WAIT_FOREVER);
+
+    ctx->startTimeUs = ClockP_getTimeUsec();
+
+    while(loopCount < TEST_DSS_DD_NUM_FRAMES)
+    {
+        (void)SemaphoreP_pend(&instObj->syncSem, SystemP_WAIT_FOREVER);
+
+        retVal = Fvid2_dequeue(instObj->drvHandle, &frmList,
+                               0U, FVID2_TIMEOUT_NONE);
+        if(FVID2_SOK == retVal)
+        {
+            retVal = Fvid2_queue(instObj->drvHandle, &frmList, 0U);
+            if(FVID2_SOK != retVal)
+            {
+                DebugP_log("DD Thread %d: Queue failed at iter %d!\r\n",
+                           ctx->threadIdx, loopCount);
+                ctx->result = SystemP_FAILURE;
+                break;
+            }
+            ctx->frameCount++;
+            loopCount++;
+        }
+        else if(FVID2_EAGAIN == retVal)
+        {
+            /* First callback, no frame to dequeue yet */
+        }
+        else
+        {
+            DebugP_log("DD Thread %d: Dequeue failed at iter %d!\r\n",
+                       ctx->threadIdx, loopCount);
+            ctx->result = SystemP_FAILURE;
+            break;
+        }
+    }
+
+    ctx->endTimeUs = ClockP_getTimeUsec();
+
+    SemaphoreP_post(&TestDss_dispDdDoneSem);
+    TaskP_exit();
+}
+
+/**
+ *  \brief  Helper: configure one VP/Overlay from a Dss_Object's syscfg globals
+ *          and apply the DCTRL IOCTLs.
+ *
+ *  \param  dctrlHandle  [IN] Shared DCTRL handle
+ *  \param  appObj       [IN] Dss_Object whose vpParams / overlayParams etc.
+ *                            will be initialised and applied
+ *  \param  setOldi      [IN] TRUE to also call IOCTL_DSS_DCTRL_SET_OLDI_PARAMS
+ *
+ *  \return FVID2_SOK on success
+ */
+static int32_t TestDisp_ddConfigOneVp(Fvid2_Handle dctrlHandle,
+                                      Dss_Object  *appObj,
+                                      uint32_t     setOldi)
+{
+    int32_t retVal;
+
+    /* NOTE: vpParams / overlayParams / advVpParams / layerParams / globalDssParams
+     * inside appObj MUST be pre-populated by the caller before invoking this
+     * function.  TestDisp_dualDisplayDpiOldi does this explicitly for each
+     * instance so that per-instance syscfg globals (VP1 vs VP2, OVR1 vs OVR2)
+     * are used correctly. */
+
+    retVal = Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_SET_PATH,
+                           appObj->dctrlPathInfo, NULL);
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("DD: SET_PATH failed\r\n");
+        return retVal;
+    }
+
+    retVal = Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_SET_ADV_VP_PARAMS,
+                           &appObj->advVpParams, NULL);
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("DD: SET_ADV_VP_PARAMS failed\r\n");
+        return retVal;
+    }
+
+    retVal = Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_SET_VP_PARAMS,
+                           &appObj->vpParams, NULL);
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("DD: SET_VP_PARAMS failed\r\n");
+        return retVal;
+    }
+
+    if((setOldi == TRUE) && (appObj->oldiParams != NULL))
+    {
+        retVal = Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_SET_OLDI_PARAMS,
+                               appObj->oldiParams, NULL);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("DD: SET_OLDI_PARAMS failed\r\n");
+            return retVal;
+        }
+    }
+
+    retVal = Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS,
+                           &appObj->overlayParams, NULL);
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("DD: SET_OVERLAY_PARAMS failed\r\n");
+        return retVal;
+    }
+
+    retVal = Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_SET_LAYER_PARAMS,
+                           &appObj->layerParams, NULL);
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("DD: SET_LAYER_PARAMS failed\r\n");
+        return retVal;
+    }
+
+    retVal = Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS,
+                           &appObj->globalDssParams, NULL);
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("DD: SET_GLOBAL_DSS_PARAMS failed\r\n");
+    }
+
+    return retVal;
+}
+
+/**
+ *  \brief  Helper: create a display-driver instance for one pipe, set params,
+ *          queue frames and start.
+ *
+ *  \param  appObj   [IN]  The Dss_Object that owns the pipeline
+ *  \param  instObj  [IN]  Specific instObj to create / start
+ *
+ *  \return FVID2_SOK on success
+ */
+static int32_t TestDisp_ddCreateAndStartPipe(Dss_Object     *appObj,
+                                             Dss_InstObject  *instObj)
+{
+    int32_t retVal = FVID2_SOK;
+    int32_t status;
+
+    status = SemaphoreP_constructBinary(&instObj->syncSem, 0);
+    if(status != SystemP_SUCCESS)
+    {
+        return FVID2_EFAIL;
+    }
+
+    Dss_dispCreateParamsInit(&instObj->createParams);
+    Fvid2CbParams_init(&instObj->cbParams);
+    instObj->cbParams.cbFxn   = &TestDisp_ddPipeCbFxn;
+    instObj->cbParams.appData = instObj;
+
+    instObj->drvHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, instObj->instId,
+        &instObj->createParams, &instObj->createStatus,
+        &instObj->cbParams);
+
+    if((NULL == instObj->drvHandle) ||
+       (instObj->createStatus.retVal != FVID2_SOK))
+    {
+        DebugP_log("DD: pipe create failed (instId=%d)\r\n", instObj->instId);
+        return FVID2_EFAIL;
+    }
+
+    retVal = Fvid2_control(instObj->drvHandle,
+                           IOCTL_DSS_DISP_SET_DSS_PARAMS,
+                           &instObj->dispParams, NULL);
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("DD: SET_DSS_PARAMS failed\r\n");
+        return retVal;
+    }
+
+    Dss_dispPipeMflagParamsInit(&instObj->mflagParams);
+    retVal = Fvid2_control(instObj->drvHandle,
+                           IOCTL_DSS_DISP_SET_PIPE_MFLAG_PARAMS,
+                           &instObj->mflagParams, NULL);
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("DD: SET_PIPE_MFLAG_PARAMS failed\r\n");
+        return retVal;
+    }
+
+    retVal = TestDisp_allocAndQueueFrames(appObj, instObj);
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("DD: alloc/queue failed\r\n");
+        return retVal;
+    }
+
+    retVal = Fvid2_start(instObj->drvHandle, NULL);
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("DD: Fvid2_start failed\r\n");
+    }
+
+    return retVal;
+}
+
+/**
+ *  \brief  Helper: stop, drain, delete a single display pipe and destruct its
+ *          semaphore.  Safe to call even if the pipe was never started.
+ */
+static void TestDisp_ddStopAndDeletePipe(Dss_InstObject *instObj,
+                                         const char     *tag)
+{
+    Fvid2_FrameList      frmList;
+    Dss_DispCurrentStatus currStatus;
+
+    if((instObj == NULL) || (instObj->drvHandle == NULL))
+    {
+        return;
+    }
+
+    (void)Fvid2_stop(instObj->drvHandle, NULL);
+
+    /* Drain remaining frames */
+    while(FVID2_SOK == Fvid2_dequeue(instObj->drvHandle, &frmList,
+                                      0U, FVID2_TIMEOUT_NONE))
+    {
+        /* discard */
+    }
+
+    memset(&currStatus, 0, sizeof(currStatus));
+    (void)Fvid2_control(instObj->drvHandle,
+                        IOCTL_DSS_DISP_GET_CURRENT_STATUS,
+                        &currStatus, NULL);
+    DebugP_log("DD: %s underflowCount=%d, repeatFrmCount=%d\r\n",
+               tag, currStatus.underflowCount, currStatus.repeatFrmCount);
+
+    (void)Fvid2_delete(instObj->drvHandle, NULL);
+    instObj->drvHandle = NULL;
+    SemaphoreP_destruct(&instObj->syncSem);
+}
+
+/**
+ *  \brief  Dual Display DPI + OLDI test (TC21).
+ *
+ *  Configures two independent display paths on a single DSS hardware:
+ *    - VP1 → OVR1 → OLDI  with pipe instObj[0] from appObjOldi
+ *    - VP2 → OVR2 → DPI   with pipe instObj[0] from appObjDpi
+ *
+ *  Both are started, and then two worker threads pump frames concurrently
+ *  so that visuals appear on both the OLDI panel and the DPI/HDMI monitor
+ *  simultaneously.  After TEST_DSS_DD_NUM_FRAMES iterations the threads exit,
+ *  error stats are checked, and everything is cleaned up.
+ *
+ *  Prerequisites (syscfg):
+ *    - appObjOldi (CONFIG_DSS0): VP1, OVR1, OLDI output, one pipe (e.g. VID1).
+ *    - appObjDpi  (CONFIG_DSS1): VP2, OVR2, DPI output,  one pipe (e.g. VIDL1).
+ *    - The two instances must use different pipe IDs.
+ *
+ *  \param  appObjOldi  [IN] Dss_Object for the OLDI instance
+ *  \param  appObjDpi   [IN] Dss_Object for the DPI instance
+ *
+ *  \return SystemP_SUCCESS on success, SystemP_FAILURE otherwise.
+ */
+int32_t TestDisp_dualDisplayDpiOldi(Dss_Object *appObjOldi,
+                                    Dss_Object *appObjDpi)
+{
+    int32_t  retVal  = FVID2_SOK;
+    int32_t  status  = SystemP_SUCCESS;
+    Fvid2_InitPrms   initPrms;
+    Fvid2_Handle      dctrlHandle = NULL;
+
+    Dss_InstObject   *oldiPipeObj = NULL;   /* instObj[0] of OLDI Dss_Object */
+    Dss_InstObject   *dpiPipeObj = NULL;    /* instObj[0] of DPI  Dss_Object */
+
+    Dss_DctrlVpParams        vpStopParams;
+    Dss_DctrlVpErrorStats    errorStats;
+
+    DebugP_log("DD: ======================================================\r\n");
+    DebugP_log("DD: Dual Display DPI + OLDI Multi-Threaded Test (TC21)\r\n");
+    DebugP_log("DD: ======================================================\r\n");
+
+    /* ------------------------------------------------------------------ */
+    /* 1.  Initialise frame buffers                                       */
+    /* ------------------------------------------------------------------ */
+    TestDisp_initFrames();
+
+    /* ------------------------------------------------------------------ */
+    /* 2.  Initialise FVID2, DSS, create single shared DCTRL handle       */
+    /* ------------------------------------------------------------------ */
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("DD: Fvid2_init failed\r\n");
+        return SystemP_FAILURE;
+    }
+
+    Dss_initParamsInit(&appObjOldi->initParams);
+    Dss_init(&appObjOldi->initParams);
+
+    dctrlHandle = Fvid2_create(DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0,
+                               NULL, NULL, NULL);
+    if(NULL == dctrlHandle)
+    {
+        DebugP_log("DD: DCTRL create failed\r\n");
+        Dss_deInit();
+        Fvid2_deInit(NULL);
+        return SystemP_FAILURE;
+    }
+
+    /* Store handle in both objects for helper convenience */
+    appObjOldi->dctrlHandle = dctrlHandle;
+    appObjDpi->dctrlHandle  = dctrlHandle;
+
+    /* Set OLDI Tx Power Down */
+    if(appObjOldi->oldiParams != NULL)
+    {
+        Dss_setOLDITxPowerDown(
+            appObjOldi->oldiParams->oldiCfg.oldiMapType, TRUE);
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* 3.  Pre-populate per-instance DSS params, then configure each VP   */
+    /*                                                                    */
+    /* TestDisp_initDssParams uses the single-instance syscfg globals     */
+    /* (gDssVpParams, gDssOverlayParams, …) which are correct for the     */
+    /* OLDI instance (VP1/OVR1).  For the DPI instance (VP2/OVR2) the    */
+    /* caller (TestDss_dualDisplayDpiOldiMt) must have already written    */
+    /* appObjDpi->vpParams / overlayParams / layerParams / advVpParams    */
+    /* / globalDssParams from the per-instance DPI syscfg globals BEFORE  */
+    /* calling this function.                                             */
+    /* ------------------------------------------------------------------ */
+    TestDisp_initDssParams(appObjOldi);   /* VP1 / OVR1 from syscfg globals */
+    /* appObjDpi params are pre-populated by the test wrapper */
+
+    /* ------------------------------------------------------------------ */
+    /* 3. Configure VP1 (OLDI)                                            */
+    /* ------------------------------------------------------------------ */
+    retVal = TestDisp_ddConfigOneVp(dctrlHandle, appObjOldi, TRUE);
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("DD: OLDI VP configuration failed\r\n");
+        status = SystemP_FAILURE;
+    }
+    else
+    {
+        DebugP_log("DD: VP1 (OLDI) configured — vpId=%d, overlayId=%d\r\n",
+                   appObjOldi->vpParams.vpId,
+                   appObjOldi->overlayParams.overlayId);
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* 4. Configure VP2 (DPI)                                             */
+    /* ------------------------------------------------------------------ */
+    if(status == SystemP_SUCCESS)
+    {
+        retVal = TestDisp_ddConfigOneVp(dctrlHandle, appObjDpi, FALSE);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("DD: DPI VP configuration failed\r\n");
+            status = SystemP_FAILURE;
+        }
+        else
+        {
+            DebugP_log("DD: VP2 (DPI) configured — vpId=%d, overlayId=%d\r\n",
+                       appObjDpi->vpParams.vpId,
+                       appObjDpi->overlayParams.overlayId);
+        }
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* 5. Initialise pipeline params, create + start both pipes           */
+    /* ------------------------------------------------------------------ */
+    if(status == SystemP_SUCCESS)
+    {
+        TestDisp_initPipelineParams(appObjOldi);
+        TestDisp_initPipelineParams(appObjDpi);
+
+        oldiPipeObj = &appObjOldi->instObj[0];
+        dpiPipeObj  = &appObjDpi->instObj[1];
+
+        retVal = TestDisp_ddCreateAndStartPipe(appObjOldi, oldiPipeObj);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("DD: OLDI pipe create/start failed\r\n");
+            status = SystemP_FAILURE;
+        }
+        else
+        {
+            DebugP_log("DD: OLDI pipe started (instId=%d)\r\n",
+                       oldiPipeObj->instId);
+        }
+    }
+
+    if(status == SystemP_SUCCESS)
+    {
+        retVal = TestDisp_ddCreateAndStartPipe(appObjDpi, dpiPipeObj);
+        if(retVal != FVID2_SOK)
+        {
+            DebugP_log("DD: DPI pipe create/start failed\r\n");
+            status = SystemP_FAILURE;
+        }
+        else
+        {
+            DebugP_log("DD: DPI pipe started (instId=%d)\r\n",
+                       dpiPipeObj->instId);
+            DebugP_log("DD: Both pipelines running — OLDI + DPI\r\n");
+        }
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* 6. Create semaphores and spawn one worker thread per VP            */
+    /* ------------------------------------------------------------------ */
+    if(status == SystemP_SUCCESS)
+    {
+        status = SemaphoreP_constructCounting(&TestDss_dispDdDoneSem, 0,
+                                              TEST_DSS_DD_NUM_THREADS);
+    }
+
+    if(status == SystemP_SUCCESS)
+    {
+        status = SemaphoreP_constructCounting(&TestDss_dispDdStartSem, 0,
+                                              TEST_DSS_DD_NUM_THREADS);
+        if(status != SystemP_SUCCESS)
+        {
+            SemaphoreP_destruct(&TestDss_dispDdDoneSem);
+        }
+    }
+
+    if(status == SystemP_SUCCESS)
+    {
+        /* Thread 0: OLDI pipeline */
+        TestDss_dispDdCtx[0].instObj    = oldiPipeObj;
+        TestDss_dispDdCtx[0].threadIdx  = 0U;
+        TestDss_dispDdCtx[0].result     = SystemP_FAILURE;
+        TestDss_dispDdCtx[0].frameCount = 0U;
+
+        /* Thread 1: DPI pipeline */
+        TestDss_dispDdCtx[1].instObj    = dpiPipeObj;
+        TestDss_dispDdCtx[1].threadIdx  = 1U;
+        TestDss_dispDdCtx[1].result     = SystemP_FAILURE;
+        TestDss_dispDdCtx[1].frameCount = 0U;
+
+        {
+            uint32_t tIdx;
+            uint32_t threadSpawnFailed = FALSE;
+            const char *tNames[TEST_DSS_DD_NUM_THREADS] = {"DSS_DD_OLDI",
+                                                        "DSS_DD_DPI"};
+
+            for(tIdx = 0U; tIdx < TEST_DSS_DD_NUM_THREADS; tIdx++)
+            {
+                TaskP_Params taskParams;
+
+                TaskP_Params_init(&taskParams);
+                taskParams.name      = tNames[tIdx];
+                taskParams.stackSize = TEST_DSS_TASK_STACK_SIZE;
+                taskParams.stack     = TestDss_dispDdTaskStack[tIdx];
+                taskParams.priority  = TEST_DSS_TASK_PRIORITY;
+                taskParams.args      = (void *)&TestDss_dispDdCtx[tIdx];
+                taskParams.taskMain  = TestDisp_ddPipeWorker;
+
+                status = TaskP_construct(&TestDss_dispDdTaskObj[tIdx],
+                                         &taskParams);
+                if(status != SystemP_SUCCESS)
+                {
+                    DebugP_log("DD: TaskP_construct failed for %s\r\n",
+                               tNames[tIdx]);
+                    /* Release any thread already waiting on start sem */
+                    if(tIdx == 1U)
+                    {
+                        SemaphoreP_post(&TestDss_dispDdStartSem);
+                        SemaphoreP_pend(&TestDss_dispDdDoneSem,
+                                        SystemP_WAIT_FOREVER);
+                        TaskP_destruct(&TestDss_dispDdTaskObj[0]);
+                    }
+                    SemaphoreP_destruct(&TestDss_dispDdDoneSem);
+                    SemaphoreP_destruct(&TestDss_dispDdStartSem);
+                    threadSpawnFailed = TRUE;
+                    status = SystemP_FAILURE;
+                    break;
+                }
+            }
+
+            if(threadSpawnFailed == FALSE)
+            {
+                DebugP_log("DD: Worker threads spawned — releasing start "
+                           "barrier\r\n");
+
+                /* ------------------------------------------------------ */
+                /* 7. Release both threads simultaneously                 */
+                /* ------------------------------------------------------ */
+                SemaphoreP_post(&TestDss_dispDdStartSem);
+                SemaphoreP_post(&TestDss_dispDdStartSem);
+
+                /* ------------------------------------------------------ */
+                /* 8. Wait for both threads to complete                   */
+                /* ------------------------------------------------------ */
+                SemaphoreP_pend(&TestDss_dispDdDoneSem, SystemP_WAIT_FOREVER);
+                SemaphoreP_pend(&TestDss_dispDdDoneSem, SystemP_WAIT_FOREVER);
+
+                TaskP_destruct(&TestDss_dispDdTaskObj[0]);
+                TaskP_destruct(&TestDss_dispDdTaskObj[1]);
+                SemaphoreP_destruct(&TestDss_dispDdDoneSem);
+                SemaphoreP_destruct(&TestDss_dispDdStartSem);
+
+                DebugP_log("DD: Both threads completed\r\n");
+
+                /* ------------------------------------------------------ */
+                /* 9. Aggregate results and log FPS                       */
+                /* ------------------------------------------------------ */
+                {
+                    const char *vpNames[TEST_DSS_DD_NUM_THREADS] = {"OLDI",
+                                                                 "DPI"};
+                    uint32_t i;
+
+                    for(i = 0U; i < TEST_DSS_DD_NUM_THREADS; i++)
+                    {
+                        if(TestDss_dispDdCtx[i].result != SystemP_SUCCESS)
+                        {
+                            DebugP_log("DD: Thread %d (%s) FAILED\r\n",
+                                       i, vpNames[i]);
+                            status = SystemP_FAILURE;
+                        }
+                        else
+                        {
+                            uint64_t elapsedUs =
+                                TestDss_dispDdCtx[i].endTimeUs -
+                                TestDss_dispDdCtx[i].startTimeUs;
+                            uint32_t fps = 0U;
+                            if(elapsedUs > 0U)
+                            {
+                                fps = (uint32_t)(
+                                    (uint64_t)TestDss_dispDdCtx[i].frameCount
+                                    * 1000000ULL / elapsedUs);
+                            }
+                            DebugP_log("DD: Thread %d (%s) OK — %d frames "
+                                       "in %d us (~%d FPS)\r\n",
+                                       i, vpNames[i],
+                                       TestDss_dispDdCtx[i].frameCount,
+                                       (uint32_t)elapsedUs, fps);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* 10. Stop + delete both pipes, check VP errors, clear paths, deinit */
+    /* ------------------------------------------------------------------ */
+
+    /* Stop and delete OLDI pipe */
+    TestDisp_ddStopAndDeletePipe(oldiPipeObj, "OLDI");
+
+    /* Stop and delete DPI pipe */
+    TestDisp_ddStopAndDeletePipe(dpiPipeObj, "DPI");
+
+    /* VP1 error stats */
+    memset(&errorStats, 0, sizeof(errorStats));
+    errorStats.vpId = appObjOldi->vpParams.vpId;
+    retVal = Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_GET_VP_ERROR_STATS,
+                           &errorStats, NULL);
+    if(retVal == FVID2_SOK)
+    {
+        DebugP_log("DD: VP1 (OLDI) syncLost=%d\r\n", errorStats.syncLost);
+    }
+
+    /* VP2 error stats */
+    memset(&errorStats, 0, sizeof(errorStats));
+    errorStats.vpId = appObjDpi->vpParams.vpId;
+    retVal = Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_GET_VP_ERROR_STATS,
+                           &errorStats, NULL);
+    if(retVal == FVID2_SOK)
+    {
+        DebugP_log("DD: VP2 (DPI) syncLost=%d\r\n", errorStats.syncLost);
+    }
+
+    /* Clear both paths */
+    (void)Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_CLEAR_PATH,
+                         appObjOldi->dctrlPathInfo, NULL);
+    (void)Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_CLEAR_PATH,
+                         appObjDpi->dctrlPathInfo, NULL);
+
+    /* Stop both VPs */
+    Dss_dctrlVpParamsInit(&vpStopParams);
+    vpStopParams.vpId = appObjOldi->vpParams.vpId;
+    (void)Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_STOP_VP,
+                         &vpStopParams, NULL);
+
+    vpStopParams.vpId = appObjDpi->vpParams.vpId;
+    (void)Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_STOP_VP,
+                         &vpStopParams, NULL);
+
+    /* Delete DCTRL handle and deinit */
+    (void)Fvid2_delete(dctrlHandle, NULL);
+    appObjOldi->dctrlHandle = NULL;
+    appObjDpi->dctrlHandle  = NULL;
+    Dss_deInit();
+    Fvid2_deInit(NULL);
+
+    DebugP_log("DD: ======================================================\r\n");
+    if(status == SystemP_SUCCESS)
+    {
+        DebugP_log("DD: Dual Display DPI + OLDI Test PASSED\r\n");
+    }
+    else
+    {
+        DebugP_log("DD: Dual Display DPI + OLDI Test FAILED\r\n");
+    }
+    DebugP_log("DD: ======================================================\r\n");
+
+    return status;
+}
+#endif

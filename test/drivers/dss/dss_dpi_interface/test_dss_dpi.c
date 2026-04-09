@@ -90,6 +90,10 @@ extern Dss_DctrlVpSafetyChkParams TestDss_vpSafetyParamsRuntime[CSL_DSS_VP_SAFET
 extern int32_t TestDisp_displayControl(Dss_Object *appObj);
 extern int32_t TestDisp_flipDisplayControl(Dss_Object *appObj, uint32_t flipType);
 extern int32_t TestDisp_vpSafetyDisplayControlCommon(Dss_Object *appObj, uint32_t safetyMode);
+extern int32_t TestDisp_displayShareHotPlug(Dss_Object *appObj,
+                                            uint32_t overlayId,
+                                            uint32_t vpId,
+                                            uint32_t outputNode);
 #if defined (SOC_AM62PX)
 extern int32_t TestDisp_initParams(Dss_Object *appObj);
 extern int32_t TestDisp_reregisterDriver(Dss_Object *appObj);
@@ -100,18 +104,23 @@ extern int32_t TestDisp_unusedIoctl(Dss_Object *appObj);
 /* Test Cases */
 static void test_dss_mulitiple_frame_formats(void *args);
 static void test_dss_multiple_dpi_resolution(void *args);
+#if !defined (SOC_AM62LX)
 static void TestDss_vpSafetyDataIntegrityDpi(void *args);
 static void TestDss_vpSafetyFreezeDetectDpi(void *args);
 static void TestDss_vesaTimingVariationsDpi(void *args);
+#endif
 static void TestDss_vpColorSpaceConversion(void *args);
 static void TestDss_flipMirrorModeDpi(void *args);
 static void TestDss_tdmDisplayDpi(void *args);
 static void TestDss_backgroundColorDpi(void *args);
+#if !defined (SOC_AM62LX)
 static void TestDss_colorbarEnableDpi(void *args);
+#endif
 
 #if defined (SOC_AM62PX)
 static void TestDss_dpiDynamicCoverage(void *args);
 static void TestDss_cslDynamicCoverage(void *args);
+static void TestDss_displayShareHotPlugDpi(void *args);
 #endif
 
 /* ========================================================================== */
@@ -197,6 +206,7 @@ static Fvid2_ModeInfo gDpiTimingParamsInfo[TEST_DSS_TOTAL_DPI_REOLUTIONS_MAX] =
     440U, 220U, 40U, 5U, 20U, 5U },
 };
 
+#if !defined (SOC_AM62LX)
 /* VESA DMT-only timing parameters: VGA, SVGA, XGA, SXGA, WXGA, 1440x900, 1680x1050 */
 static Fvid2_ModeInfo gVesaTimingParamsInfo[TEST_DSS_VESA_RESOLUTION_COUNT] =
 {
@@ -273,6 +283,7 @@ static const char *TestDss_colorbarResolutionName[TEST_DSS_COLORBAR_RESOLUTION_C
     "1080P@50Hz",
     "1080P@30Hz"
 };
+#endif
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -285,18 +296,23 @@ void test_main(void *args)
 
     RUN_TEST(test_dss_mulitiple_frame_formats, 4796, NULL);
     RUN_TEST(test_dss_multiple_dpi_resolution, 4797, NULL);
+#if !defined (SOC_AM62LX)
     RUN_TEST(TestDss_vpSafetyDataIntegrityDpi, 11294, NULL);
     RUN_TEST(TestDss_vpSafetyFreezeDetectDpi, 11295, NULL);
     RUN_TEST(TestDss_vesaTimingVariationsDpi, 11287, NULL);
+#endif
     RUN_TEST(TestDss_vpColorSpaceConversion, 11289, NULL);
     RUN_TEST(TestDss_flipMirrorModeDpi, 11290, NULL);
     RUN_TEST(TestDss_backgroundColorDpi, 11291, NULL);
+#if !defined (SOC_AM62LX)
     RUN_TEST(TestDss_colorbarEnableDpi, 11293, NULL);
+#endif
     RUN_TEST(TestDss_tdmDisplayDpi, 11297, NULL);
 
 #if defined (SOC_AM62PX)
     RUN_TEST(TestDss_cslDynamicCoverage, 6127, NULL);
     RUN_TEST(TestDss_dpiDynamicCoverage, 6067, NULL);
+    RUN_TEST(TestDss_displayShareHotPlugDpi, 11296, NULL);
 #endif
 
     UNITY_END();
@@ -413,6 +429,7 @@ static void test_dss_multiple_dpi_resolution(void *args)
 
 }
 
+#if !defined (SOC_AM62LX)
 /**
  * \brief  VP VESA timing variation support for the DPI interface.
  *
@@ -801,6 +818,7 @@ static void TestDss_vesaTimingVariationsDpi(void *args)
     DebugP_log("DSS VESA Timing Variations Test Completed Successfully!\r\n");
     DebugP_log("======================================================\r\n");
 }
+#endif
 
 /**
  * \brief  VP Color Space Conversion (CSC) coefficient programming for DPI.
@@ -2878,6 +2896,7 @@ static void TestDss_cslDynamicCoverage(void *args)
 
 #endif
 
+#if !defined (SOC_AM62LX)
 /**
  * \brief  VP safety data integrity detection for the DPI interface.
  *
@@ -3054,6 +3073,7 @@ static void TestDss_vpSafetyFreezeDetectDpi(void *args)
     DebugP_log("VP Safety Freeze Frame Detection DPI test completed\r\n");
     DebugP_log("======================================================\r\n");
 }
+#endif
 /**
  * \brief  VP background color overlay for the DPI interface.
  *
@@ -3131,6 +3151,7 @@ static void TestDss_backgroundColorDpi(void *args)
     DebugP_log("Background color DPI test completed\r\n");
 }
 
+#if !defined (SOC_AM62LX)
 /**
  * \brief  Overlay colorbar pattern generation for the DPI interface.
  *
@@ -3246,6 +3267,7 @@ static void TestDss_colorbarEnableDpi(void *args)
     DebugP_log("------------------------------------------------------\r\n");
     DebugP_log("Colorbar DPI test completed successfully!\r\n");
 }
+#endif
 
 /**
  * \brief  TDM (Time Division Multiplexing) mode display test wrapper for DPI.
@@ -3362,3 +3384,71 @@ static void TestDss_tdmDisplayDpi(void *args)
     }
     DebugP_log("======================================================\r\n");
 }
+
+#if defined (SOC_AM62PX)
+/**
+ * \brief  Display share hot-plug dynamic pipeline connection for DPI.
+ *
+ *  Test Category: Functionality
+ *
+ *  This test validates dynamic pipeline hot-plug/unplug on VP2 (DPI/HDMI).
+ *  VIDL pipeline runs first for 30 frames, then VID pipeline is dynamically
+ *  added to share the same overlay and VP while VIDL continues running.  Both
+ *  pipelines run concurrently for 30 frames, then VID is unplugged and VIDL
+ *  continues for 30 more frames without disruption.  The test verifies no
+ *  sync-lost errors, no underflow, and seamless operation across hot-plug
+ *  and hot-unplug transitions on shared display resources.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_displayShareHotPlugDpi(void *args)
+{
+    int32_t status = SystemP_FAILURE;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Display Share Hot-Plug Test for DPI\r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* Configure frame format — use ARGB32_8888 (4 bytes/pixel) for both pipes */
+    for(uint32_t instCnt = 0U;
+        instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        gDssConfigPipelineParams.inDataFmt[instCnt] =
+            gMultipleFrameDataArray[2].frameType;  /* FVID2_DF_ARGB32_8888 */
+        gDssConfigPipelineParams.pitch[instCnt][0U] =
+            gDssConfigPipelineParams.inWidth[instCnt] *
+            gMultipleFrameDataArray[2].bytesPerPixel;
+    }
+
+    DebugP_log("Frame format: %s\r\n", gMultipleFrameDataArray[2].frameName);
+    DebugP_log("Pipe 0 (VIDL): %dx%d at pos (%d,%d)\r\n",
+               gDssConfigPipelineParams.inWidth[0],
+               gDssConfigPipelineParams.inHeight[0],
+               gDssConfigPipelineParams.posx[0],
+               gDssConfigPipelineParams.posy[0]);
+
+    if(gDssConfigPipelineParams.numTestPipes > 1U)
+    {
+        DebugP_log("Pipe 1 (VID):  %dx%d at pos (%d,%d)\r\n",
+                   gDssConfigPipelineParams.inWidth[1],
+                   gDssConfigPipelineParams.inHeight[1],
+                   gDssConfigPipelineParams.posx[1],
+                   gDssConfigPipelineParams.posy[1]);
+    }
+
+    status = TestDisp_displayShareHotPlug(
+                 &gDssObjects[CONFIG_DSS0],
+                 CSL_DSS_OVERLAY_ID_2,   /* OVR2 for DPI */
+                 CSL_DSS_VP_ID_2,        /* VP2  for DPI */
+                 DSS_DCTRL_NODE_DPI);    /* Output: DPI  */
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    DebugP_log("Display Share Hot-Plug test for DPI completed\r\n");
+    DebugP_log("======================================================\r\n");
+}
+
+#endif
+

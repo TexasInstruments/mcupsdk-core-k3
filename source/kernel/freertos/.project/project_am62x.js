@@ -19,6 +19,7 @@ const files_r5f = {
         "printf.c",
         "AddrTranslateP.c",
         "PmuP_armv7r.c",
+        "StartuphooksP_nortos.c",
         // picked from freertos DPL
         "ClockP_freertos.c",
         "ClockP_freertos_r5.c",

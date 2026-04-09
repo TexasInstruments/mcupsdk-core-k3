@@ -31,6 +31,7 @@
  */
 #include <stdint.h>
 #include <string.h>
+#include "kernel/dpl/StartuphooksP.h"
 
 extern uint32_t __BSS_START;
 extern uint32_t __BSS_END;
@@ -41,6 +42,7 @@ __attribute__((do_not_share))int _system_pre_init()
 {
     uint32_t bss_size = ((uintptr_t)&__BSS_END - (uintptr_t)&__BSS_START);
     memset((void*)&__BSS_START, 0x00, bss_size);
+    StartuphooksP_systemPreInit();
     return 1;
 }
 

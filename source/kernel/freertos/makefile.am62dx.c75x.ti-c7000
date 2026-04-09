@@ -37,6 +37,7 @@ FILES_common := \
     printf.c \
     HeapP_internal.c \
     QueueP_nortos.c \
+    StartuphooksP_nortos.c \
     ClockP_freertos.c \
     ClockP_freertos_c75.c \
     HwiP_freertos_c7x.c \

@@ -40,6 +40,7 @@ FILES_common := \
     ClockP_safertos_c75.c \
     HwiP_safertos_c7x.c \
     SemaphoreP_safertos.c \
+    StartuphooksP_safertos.c \
     HeapP_safertos.c \
     DebugP_safertos.c \
     DebugP_shmLogReader_safertos.c \

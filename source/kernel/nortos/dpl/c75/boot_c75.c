@@ -37,6 +37,7 @@
 #include <string.h>
 #include "MmuP_c75.h"
 #include <c7x.h>
+#include "kernel/dpl/StartuphooksP.h"
 
 extern char __TI_STACK_END[];
 register volatile uint64_t __SP;
@@ -82,6 +83,7 @@ int _system_pre_init(void)
     /* initialize .bss to zero */
     uint32_t bss_size = ((uintptr_t)&__BSS_END - (uintptr_t)&__BSS_START);
     memset((void*)&__BSS_START, 0x00, bss_size);
+    StartuphooksP_systemPreInit();
     return 1;
 }
 
@@ -112,4 +114,5 @@ void _system_post_cinit(void)
         __HWAOPEN(mmaConfig, mmaOffset, __MMA_OPEN_FSM_RESET);
         __HWACLOSE(0);
     }
+    StartuphooksP_systemPostCInit();
 }

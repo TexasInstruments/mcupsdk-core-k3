@@ -34,6 +34,7 @@ FILES_common := \
     AddrTranslateP.c \
     PmuP_armv7r.c \
     QueueP_nortos.c \
+    StartuphooksP_nortos.c \
     ClockP_freertos.c \
     ClockP_freertos_r5.c \
     SemaphoreP_freertos.c \

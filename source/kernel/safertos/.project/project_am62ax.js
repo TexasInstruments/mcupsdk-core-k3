@@ -35,6 +35,7 @@ const files_c75x = {
         "ClockP_safertos_c75.c",
         "HwiP_safertos_c7x.c",
         "SemaphoreP_safertos.c",
+        "StartuphooksP_safertos.c",
         "HeapP_safertos.c",
         "DebugP_safertos.c",
         "DebugP_shmLogReader_safertos.c",
@@ -85,6 +86,7 @@ const files_r5f = {
         "DebugP_safertos.c",
         "DebugP_shmLogReader_safertos.c",
         "SemaphoreP_safertos.c",
+        "StartuphooksP_safertos.c",
         "TaskP_safertos.c",
         "EventP_safertos.c",
         // picked from safertos "kernel"

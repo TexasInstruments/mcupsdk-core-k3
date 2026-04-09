@@ -218,6 +218,7 @@ FILES_common := \
     AddrTranslateP.c \
     PmuP_armv7r.c \
     QueueP_nortos.c \
+    StartuphooksP_nortos.c \
     ClockP_threadx.c \
     DebugP_shmLogReader_threadx.c \
     DebugP_threadx.c \

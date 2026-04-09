@@ -39,6 +39,7 @@ FILES_common := \
     DebugP_safertos.c \
     DebugP_shmLogReader_safertos.c \
     SemaphoreP_safertos.c \
+    StartuphooksP_safertos.c \
     TaskP_safertos.c \
     EventP_safertos.c \
     list.c \

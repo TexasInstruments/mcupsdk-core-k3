@@ -13,6 +13,7 @@ const files_r5f = {
         "DebugP_log.c",
         "DebugP_nortos.c",
         "SemaphoreP_nortos.c",
+        "StartuphooksP_nortos.c",
         "ClockP_nortos.c",
         "ClockP_nortos_r5.c",
         "EventP_nortos.c",

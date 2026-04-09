@@ -208,6 +208,7 @@ const files_r5f_port = [
         "AddrTranslateP.c",
         "PmuP_armv7r.c",
         "QueueP_nortos.c",
+        "StartuphooksP_nortos.c",
         // DPL common
         "ClockP_threadx.c",
         "DebugP_shmLogReader_threadx.c",
@@ -247,6 +248,7 @@ const files_c75x_port = [
         "printf.c",
         "HeapP_internal.c",
         "QueueP_nortos.c",
+        "StartuphooksP_nortos.c",
     ];
 
 const files_a53_port = [

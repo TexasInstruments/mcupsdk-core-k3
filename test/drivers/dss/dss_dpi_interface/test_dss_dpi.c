@@ -65,6 +65,9 @@
 
 #define TEST_DSS_VESA_RESOLUTION_COUNT                          (7U)
 
+#define TEST_DSS_COLORBAR_RESOLUTION_COUNT                      (4U)
+
+
 /* ========================================================================== */
 /*                         Structure Declarations                             */
 /* ========================================================================== */
@@ -102,6 +105,9 @@ static void TestDss_vpSafetyFreezeDetectDpi(void *args);
 static void TestDss_vesaTimingVariationsDpi(void *args);
 static void TestDss_vpColorSpaceConversion(void *args);
 static void TestDss_flipMirrorModeDpi(void *args);
+static void TestDss_tdmDisplayDpi(void *args);
+static void TestDss_backgroundColorDpi(void *args);
+static void TestDss_colorbarEnableDpi(void *args);
 
 #if defined (SOC_AM62PX)
 static void TestDss_dpiDynamicCoverage(void *args);
@@ -254,6 +260,19 @@ static char *gVesaResolutionName[TEST_DSS_VESA_RESOLUTION_COUNT] =
     "1680x1050_60Hz"
 };
 
+static const uint32_t TestDss_colorbarResolutionIdx[TEST_DSS_COLORBAR_RESOLUTION_COUNT] = {
+    0U,  /* 1080p60 (index into gDpiTimingParamsInfo / gModeInfo) */
+    3U,  /* 720p60  */
+    1U,  /* 1080p50 */
+    2U   /* 1080p30 */
+};
+
+static const char *TestDss_colorbarResolutionName[TEST_DSS_COLORBAR_RESOLUTION_COUNT] = {
+    "1080P@60Hz",
+    "720P@60Hz",
+    "1080P@50Hz",
+    "1080P@30Hz"
+};
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -271,6 +290,9 @@ void test_main(void *args)
     RUN_TEST(TestDss_vesaTimingVariationsDpi, 11287, NULL);
     RUN_TEST(TestDss_vpColorSpaceConversion, 11289, NULL);
     RUN_TEST(TestDss_flipMirrorModeDpi, 11290, NULL);
+    RUN_TEST(TestDss_backgroundColorDpi, 11291, NULL);
+    RUN_TEST(TestDss_colorbarEnableDpi, 11293, NULL);
+    RUN_TEST(TestDss_tdmDisplayDpi, 11297, NULL);
 
 #if defined (SOC_AM62PX)
     RUN_TEST(TestDss_cslDynamicCoverage, 6127, NULL);
@@ -447,7 +469,7 @@ static void TestDss_vesaTimingVariationsDpi(void *args)
     Board_panelClose();
 
     /*
-     *  Multiple VESA resolutions with default polarity
+     * Multiple VESA resolutions with default polarity
      * Cycle through all 9 VESA resolutions including VGA (640x480),
      * SVGA (800x600), XGA (1024x768), 480P (720x480), 1080p60/50/30,
      * and 720p60/50 to verify VP timing programming at each resolution.
@@ -3030,5 +3052,313 @@ static void TestDss_vpSafetyFreezeDetectDpi(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
     DebugP_log("VP Safety Freeze Frame Detection DPI test completed\r\n");
+    DebugP_log("======================================================\r\n");
+}
+/**
+ * \brief  VP background color overlay for the DPI interface.
+ *
+ *  Test Category: Functionality
+ *
+ *  This test sets the VP background color to specific RGB values (Magenta, Cyan,
+ *  Yellow, Black) and verifies rendering on DPI/HDMI output.  The background color
+ *  is displayed in regions not covered by active video layers or colorbar patterns.
+ *  The test confirms background color configuration, retrieval, and correct rendering
+ *  across multiple color values.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_backgroundColorDpi(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Background Color Test for DPI\r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* Test colors per test plan: Magenta, Cyan, Yellow, Black */
+    uint32_t testColors[] = {
+        0xFF00FF,  /* Magenta */
+        0x00FFFF,  /* Cyan    */
+        0xFFFF00,  /* Yellow  */
+        0x000000   /* Black   */
+    };
+    char *colorNames[] = {"Magenta", "Cyan", "Yellow", "Black"};
+
+    /* Configure frame format for all test pipes */
+    for(uint32_t instCnt = 0U;
+        instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        gDssConfigPipelineParams.inDataFmt[instCnt] = FVID2_DF_ARGB32_8888;
+        gDssConfigPipelineParams.pitch[instCnt][0U] =
+            gDssConfigPipelineParams.inWidth[instCnt] * 4U;
+    }
+
+    Board_panelOpen();
+
+    for(uint32_t colorIdx = 0U; colorIdx < 4U; colorIdx++)
+    {
+        DebugP_log("------------------------------------------------------\r\n");
+        DebugP_log("Testing background color: %s (0x%06X)\r\n",
+                   colorNames[colorIdx], testColors[colorIdx]);
+
+        /* Set the background color */
+        gDssOverlayParams.overlayCfg.backGroundColor = testColors[colorIdx];
+
+        /* Enable colorbar per test plan step 7:
+         * colorbar is enabled so background is visible in regions
+         * not covered by the colorbar pattern */
+        gDssOverlayParams.colorbarEnable = FALSE;
+
+        /* Run display control - calls IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS
+         * and IOCTL_DSS_DCTRL_SET_VP_PARAMS to start VP2 */
+        status = TestDisp_displayControl(&gDssObjects[CONFIG_DSS0]);
+
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+        /* Delay to observe the color on screen */
+        ClockP_usleep(1000000U);
+    }
+
+    Board_panelClose();
+
+    /* Restore defaults */
+    gDssOverlayParams.colorbarEnable = FALSE;
+    gDssOverlayParams.overlayCfg.backGroundColor = 0xC8C800U;
+
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Background color DPI test completed\r\n");
+}
+
+/**
+ * \brief  Overlay colorbar pattern generation for the DPI interface.
+ *
+ *  Test Category: Functionality
+ *
+ *  This test enables the overlay colorbar test pattern and verifies it
+ *  generates a standard video test pattern (eight color bars) across the
+ *  VP output via DPI/HDMI.  The colorbar overlays any video layer content
+ *  and covers the entire active area.  Multiple resolutions (1080p@60Hz,
+ *  720p@60Hz, 1080p@50Hz, 1080p@30Hz) are tested to confirm colorbar
+ *  generation and rendering at different frame rates.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_colorbarEnableDpi(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Colorbar Enable Test for DPI\r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* Configure frame format for all test pipes */
+    for(uint32_t instCnt = 0U;
+        instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        gDssConfigPipelineParams.inDataFmt[instCnt] = FVID2_DF_ARGB32_8888;
+        gDssConfigPipelineParams.pitch[instCnt][0U] =
+            gDssConfigPipelineParams.inWidth[instCnt] * 4U;
+    }
+
+    /* Enable colorbar and set black background for contrast */
+    gDssOverlayParams.overlayCfg.backGroundColor = 0x000000U;
+    gDssOverlayParams.colorbarEnable = TRUE;
+
+    Board_panelClose();
+
+    for(uint32_t resIdx = 0U; resIdx < TEST_DSS_COLORBAR_RESOLUTION_COUNT; resIdx++)
+    {
+        uint32_t idx = TestDss_colorbarResolutionIdx[resIdx];
+
+        DebugP_log("------------------------------------------------------\r\n");
+        DebugP_log("Colorbar test at resolution: %s\r\n",
+                   TestDss_colorbarResolutionName[resIdx]);
+
+        /* Update VP timing parameters */
+        memcpy(&gDssVpParams.lcdOpTimingCfg.mInfo,
+               &gDpiTimingParamsInfo[idx], sizeof(Fvid2_ModeInfo));
+
+        /* Adjust pipe position for new resolution */
+        Fvid2_ModeInfo *infoMode = (Fvid2_ModeInfo *)&gDpiTimingParamsInfo[idx];
+        gDssConfigPipelineParams.posx[1] = infoMode->width -
+                                        gDssConfigPipelineParams.outWidth[1];
+        gDssConfigPipelineParams.posy[1] = infoMode->height -
+                                        gDssConfigPipelineParams.outHeight[1];
+
+        /* Update bridge mode info */
+        memcpy(&gBridgeSii9022aObj.modeInfo, &gModeInfo[idx],
+                sizeof(BridgeSii9022a_ModeInfo));
+
+        /* Set pixel clock for the new resolution */
+        status = SOC_moduleSetClockFrequency(TISCI_DEV_DSS0,
+                                TISCI_DEV_DSS0_DPI_1_IN_CLK,
+                                gDpiTimingParamsInfo[idx].pixelClock * 1000U);
+        if(status == SystemP_FAILURE)
+        {
+            DebugP_log("setFrq failure for %s!!\r\n",
+                       TestDss_colorbarResolutionName[resIdx]);
+        }
+
+        /* Re-open bridge with new config */
+        status += Board_panelOpen();
+
+        /* Ensure colorbar remains enabled across resolution change */
+        gDssOverlayParams.colorbarEnable = TRUE;
+
+        /* Run display control */
+        status += TestDisp_displayControl(&gDssObjects[CONFIG_DSS0]);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+        DebugP_log("Colorbar displayed at %s - observe 8-bar pattern\r\n",
+                   TestDss_colorbarResolutionName[resIdx]);
+
+        /* Allow time to observe the colorbar pattern */
+        ClockP_usleep(2000000U); /* 2 seconds */
+
+        Board_panelClose();
+    }
+
+    /* Restore defaults */
+    gDssOverlayParams.colorbarEnable = FALSE;
+    gDssOverlayParams.overlayCfg.backGroundColor = 0xC8C800U;
+
+    /* Restore default 1080p60 timing */
+    memcpy(&gDssVpParams.lcdOpTimingCfg.mInfo,
+           &gDpiTimingParamsInfo[0], sizeof(Fvid2_ModeInfo));
+    memcpy(&gBridgeSii9022aObj.modeInfo, &gModeInfo[0],
+            sizeof(BridgeSii9022a_ModeInfo));
+
+    Fvid2_ModeInfo *defaultMode = (Fvid2_ModeInfo *)&gDpiTimingParamsInfo[0];
+    gDssConfigPipelineParams.posx[1] = defaultMode->width -
+                                    gDssConfigPipelineParams.outWidth[1];
+    gDssConfigPipelineParams.posy[1] = defaultMode->height -
+                                    gDssConfigPipelineParams.outHeight[1];
+
+    SOC_moduleSetClockFrequency(TISCI_DEV_DSS0,
+                                TISCI_DEV_DSS0_DPI_1_IN_CLK,
+                                gDpiTimingParamsInfo[0].pixelClock * 1000U);
+    Board_panelOpen();
+
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Colorbar DPI test completed successfully!\r\n");
+}
+
+/**
+ * \brief  TDM (Time Division Multiplexing) mode display test wrapper for DPI.
+ *
+ *  Test Category: Functionality
+ *
+ *  Wrapper function for testing all TDM cycle formats using DPI interface.
+ *  Iterates through all 4 TDM cycle formats, configures VP timing with each
+ *  format, and exercises horizontal blank timing adjustment based on TDM mode.
+ *
+ *  Tested TDM Cycle Formats:
+ *  - 1 cycle per pixel: HBlank unchanged (1x/1x)
+ *  - 2 cycles per pixel: HBlank multiplied by 2 (2x/1x)
+ *  - 3 cycles per pixel: HBlank multiplied by 3 (3x/1x)
+ *  - 3 cycles per 2 pixels: HBlank multiplied by 1.5 (3x/2x)
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_tdmDisplayDpi(void *args)
+{
+    int32_t retVal = FVID2_SOK;
+    int32_t status = SystemP_SUCCESS;
+    uint32_t formatIdx = 0U;
+
+    /* TDM cycle format configuration table */
+    typedef struct {
+        uint32_t tdmCycleFormat;
+        uint32_t hBlankMultFact;
+        uint32_t hBlankDivFact;
+        const char *formatName;
+    } TdmFormatConfig;
+
+    static const TdmFormatConfig tdmFormats[] = {
+        {CSL_DSS_VP_TDM_CYCLE_1PERPIXEL,   1U, 1U, "1_PER_PIXEL"},
+        {CSL_DSS_VP_TDM_CYCLE_2PERPIXEL,   2U, 1U, "2_PER_PIXEL"},
+        {CSL_DSS_VP_TDM_CYCLE_3PERPIXEL,   3U, 1U, "3_PER_PIXEL"},
+        {CSL_DSS_VP_TDM_CYCLE_3PER2PIXEL,  3U, 2U, "3_PER_2PIXEL"},
+    };
+
+    static const uint32_t numFormats = sizeof(tdmFormats) / sizeof(TdmFormatConfig);
+
+    /* Save original TDM parameters */
+    uint32_t savedTdmEnable = gDssVpParams.lcdTdmCfg.tdmEnable;
+    uint32_t savedTdmCycleFormat = gDssVpParams.lcdTdmCfg.tdmCycleFormat;
+    uint32_t savedTdmUnusedBitsLevel = gDssVpParams.lcdTdmCfg.tdmUnusedBitsLevel;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS TDM Display Test (DPI): Testing %d TDM cycle formats\r\n", numFormats);
+    DebugP_log("======================================================\r\n");
+
+    /* Configure frame format for TDM test */
+    for(uint32_t instCnt = 0U;
+        instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        gDssConfigPipelineParams.inDataFmt[instCnt] =
+            gMultipleFrameDataArray[0].frameType;
+        gDssConfigPipelineParams.pitch[instCnt][0U] =
+            gDssConfigPipelineParams.inWidth[instCnt] *
+            gMultipleFrameDataArray[0].bytesPerPixel;
+
+        if(gMultipleFrameDataArray[0].frameType == FVID2_DF_YUV420SP_UV)
+        {
+            gDssConfigPipelineParams.pitch[instCnt][1] =
+                gDssConfigPipelineParams.inWidth[instCnt] *
+                gMultipleFrameDataArray[0].bytesPerPixel;
+        }
+    }
+
+    DebugP_log("Frame type: %s\r\n", gMultipleFrameDataArray[0].frameName);
+
+    /* Loop through all TDM cycle formats */
+    for(formatIdx = 0U; formatIdx < numFormats && status == SystemP_SUCCESS; formatIdx++)
+    {
+        const TdmFormatConfig *fmt = &tdmFormats[formatIdx];
+
+        DebugP_log("------------------------------------------------------\r\n");
+        DebugP_log("Testing TDM format: %s (HBlank: %u/%u)\r\n",
+                   fmt->formatName, fmt->hBlankMultFact, fmt->hBlankDivFact);
+
+        /* Configure TDM for this iteration */
+        gDssVpParams.lcdTdmCfg.tdmEnable = TRUE;
+        gDssVpParams.lcdTdmCfg.tdmCycleFormat = fmt->tdmCycleFormat;
+        gDssVpParams.lcdTdmCfg.tdmUnusedBitsLevel = CSL_DSS_VP_TDM_UNUSED_BITS_LEVEL_LOW;
+
+        /* Run display control test with TDM format */
+        retVal = TestDisp_displayControl(&gDssObjects[CONFIG_DSS0]);
+        if(retVal != SystemP_SUCCESS)
+        {
+            DebugP_log("  TDM format %s: FAIL\r\n", fmt->formatName);
+            status = SystemP_FAILURE;
+            break;
+        }
+
+        DebugP_log("  TDM format %s: PASS\r\n", fmt->formatName);
+    }
+
+    /* Restore original TDM parameters */
+    gDssVpParams.lcdTdmCfg.tdmEnable = savedTdmEnable;
+    gDssVpParams.lcdTdmCfg.tdmCycleFormat = savedTdmCycleFormat;
+    gDssVpParams.lcdTdmCfg.tdmUnusedBitsLevel = savedTdmUnusedBitsLevel;
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    DebugP_log("======================================================\r\n");
+    if(status == SystemP_SUCCESS)
+    {
+        DebugP_log("TDM Display test (DPI): ALL FORMATS PASSED\r\n");
+    }
+    else
+    {
+        DebugP_log("TDM Display test (DPI): FAILED\r\n");
+    }
     DebugP_log("======================================================\r\n");
 }

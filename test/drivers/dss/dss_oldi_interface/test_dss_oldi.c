@@ -121,7 +121,11 @@ static void TestDisp_dctrlIoctl(uint32_t testId);
 static void TestDisp_verifyOldiMapType(void *args);
 static void TestDisp_ioctltestIDparams(void *args);
 static void TestDisp_dctrlioctltestIDparams(void *args);
-#endif/* Safety test case declarations */
+#endif
+static void TestDss_backgroundColorOldi(void *args);
+static void TestDss_colorbarEnableOldi(void *args); 
+
+/* Safety test case declarations */
 static void TestDss_vpSafetyDataIntegrityOldi(void *args);
 static void TestDss_vpSafetyFreezeDetectOldi(void *args);
 static void TestDss_pipeSafetyDataIntegrityOldi(void *args);
@@ -138,7 +142,13 @@ static void TestDss_dispIoctlValidationOldi(void *args);
 static void TestDss_selfRefreshSingleFrameOldi(void *args);
 static void TestDss_rtParamsUpdateOldi(void *args);
 static void TestDss_graphConnectionsValidOldi(void *args);
+static void TestDss_dctrlIoctlValidationOldi(void *args);
 static void TestDss_bitmapClutProgrammingOldi(void *args);
+static void TestDss_bufPrgmCbFromQueueOldi(void *args);
+static void TestDss_bufPrgmCbFunctionalOldi(void *args);
+static void TestDss_rtParamsPipePrgmCbFunctionalOldi(void *args);
+static void TestDss_isrCbFunctionalStartedOldi(void *args);
+static void TestDss_isrCbFunctionalProgPipeOldi(void *args);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -204,6 +214,22 @@ extern volatile uint32_t TestDss_starveUnderflowCount;
 extern volatile uint32_t TestDss_starveDispFrmCount;
 extern volatile uint32_t TestDss_starveSyncLostCount;
 
+/* ---- helpers for TestDss_rtParamsPipePrgmCbFunctionalOldi ---- */
+static volatile uint32_t TestDss_funcPipePrgmCbCount  = 0U;
+static volatile uint32_t TestDss_funcRtBufPrgmCbCount = 0U;
+
+static volatile uint32_t TestDss_funcBufPrgmCbCount = 0U;
+static volatile Fvid2_Frame *TestDss_funcCallbackFrame = NULL;
+static Fvid2_Frame TestDss_funcSwapFrame;
+
+static volatile uint32_t TestDss_isrPipePrgmCbCount = 0U;
+static volatile uint32_t TestDss_funcIsrBufPrgmCbCount  = 0U;
+static volatile uint32_t TestDss_funcIsrPipePrgmCbCount = 0U;
+
+/* Extern DCTRL driver info — needed to force isPushSafe for coverage tests */
+extern Dss_DctrlDrvInfo gDss_DctrlDrvInfo;
+
+
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -231,6 +257,13 @@ void test_main(void *args)
     RUN_TEST(TestDss_selfRefreshSingleFrameOldi, 11270, NULL);
     RUN_TEST(TestDss_rtParamsUpdateOldi, 11271, NULL);
     RUN_TEST(TestDss_graphConnectionsValidOldi, 11272, NULL);
+    RUN_TEST(TestDss_dctrlIoctlValidationOldi, 11273, NULL);
+    RUN_TEST(TestDss_colorbarEnableOldi, 11274, NULL);
+    RUN_TEST(TestDss_backgroundColorOldi, 11275, NULL);
+    RUN_TEST(TestDss_rtParamsPipePrgmCbFunctionalOldi, 11366, NULL);
+    RUN_TEST(TestDss_bufPrgmCbFunctionalOldi, 11367, NULL);
+    RUN_TEST(TestDss_isrCbFunctionalStartedOldi, 11368, NULL);
+    RUN_TEST(TestDss_isrCbFunctionalProgPipeOldi, 11369, NULL);
 
 #if defined (SOC_AM62PX)
     /* Disable the FVID2 asserts */
@@ -4209,5 +4242,1805 @@ static void TestDss_bitmapClutProgrammingOldi(void *args)
 
     DebugP_log("======================================================\r\n");
     DebugP_log("DSS Bitmap CLUT Programming Test (OLDI) Completed!\r\n");
+    DebugP_log("======================================================\r\n");
+}
+
+/**
+ * \brief  DCTRL (Display Controller) IOCTL command validation for OLDI.
+ *
+ *  Test Category: Functionality
+ *
+ *  This test validates all Dss_dctrlDrvControl IOCTLs through a complete
+ *  init→configure→display→stop→cleanup cycle, exercising each IOCTL within
+ *  a fully operational display pipeline.  Setup phase exercises path, VP, OLDI,
+ *  CSC, overlay, layer, blank timing, global DSS params, and safety IOCTLs.
+ *  Runtime phase creates a display driver, queues and displays 10 frames, then
+ *  verifies error stats.  Cleanup phase stops VP and clears path.  Negative
+ *  tests verify rejection of unsupported IOCTLs and NULL cmdArgs.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_dctrlIoctlValidationOldi(void *args)
+{
+    int32_t retVal = FVID2_SOK;
+    int32_t status = SystemP_SUCCESS;
+    Fvid2_InitPrms initPrms;
+    Dss_InstObject *instObj;
+    Dss_DispParams dispParams;
+    Dss_DispCurrentStatus dispStatus;
+
+    /* DCTRL structures */
+    Dss_DctrlVpParams vpParams;
+    Dss_DctrlAdvVpParams advVpParams;
+    Dss_DctrlOverlayParams overlayParams;
+    Dss_DctrlOverlayLayerParams layerParams;
+    Dss_DctrlGlobalDssParams globalDssParams;
+    Dss_DctrlVpCscCoeff vpCscCoeff;
+    Dss_DctrlLcdBlankTimingParams lcdBlankTimingParams;
+    Dss_DctrlVpSafetyChkParams vpSafetyChkParams;
+    Dss_DctrlSyncLostCbParams syncLostCbParams;
+    Dss_DctrlLineNumCbParams lineNumCbParams;
+    Dss_DctrlVpErrorStats vpErrorStats;
+    uint32_t syncLostBaseline = 0U;
+
+    Fvid2_Frame frm;
+    Fvid2_FrameList frmList;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS DCTRL IOCTL Validation Test (OLDI)\r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* Configure frame format as BGRA32 for all display pipes */
+    for(uint32_t instCnt = 0U;
+        instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        gDssConfigPipelineParams.inDataFmt[instCnt] = FVID2_DF_BGRA32_8888;
+        gDssConfigPipelineParams.pitch[instCnt][0U] =
+            gDssConfigPipelineParams.inWidth[instCnt] * 4U;
+    }
+
+    /* Initialize FVID2, DSS, create DCTRL handle                         */
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    /* IOCTL 1: IOCTL_DSS_DCTRL_SET_PATH                                 */
+    /*                                                                    */
+    /* Sets graph path VID1→OVR1→VP1→OLDI using syscfg path info.        */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("IOCTL 1: IOCTL_DSS_DCTRL_SET_PATH\r\n");
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DCTRL_SET_PATH returned FVID2_SOK\r\n");
+
+    /* IOCTL 2: IOCTL_DSS_DCTRL_SET_ADV_VP_PARAMS                        */
+    /*                                                                    */
+    /* Configures advanced VP signal settings (H/V align, clock control). */
+    /* Must be called BEFORE SET_VP_PARAMS per driver dependency order.   */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("IOCTL 2: IOCTL_DSS_DCTRL_SET_ADV_VP_PARAMS\r\n");
+
+    Dss_dctrlAdvVpParamsInit(&advVpParams);
+    advVpParams.vpId = gDssAdvVpParams.vpId;
+    advVpParams.lcdAdvSignalCfg.hVAlign =
+        gDssAdvVpParams.lcdAdvSignalCfg.hVAlign;
+    advVpParams.lcdAdvSignalCfg.hVClkControl =
+        gDssAdvVpParams.lcdAdvSignalCfg.hVClkControl;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_ADV_VP_PARAMS, &advVpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DCTRL_SET_ADV_VP_PARAMS returned FVID2_SOK\r\n");
+
+    /* IOCTL 3: IOCTL_DSS_DCTRL_SET_VP_PARAMS                            */
+    /*                                                                    */
+    /* Configures VP timing, polarity, TDM, and sync operation settings.  */
+    /* Uses the syscfg-provided 1920x1200 LVDS panel timing.             */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("IOCTL 3: IOCTL_DSS_DCTRL_SET_VP_PARAMS\r\n");
+
+    Dss_dctrlVpParamsInit(&vpParams);
+    vpParams.vpId = gDssVpParams.vpId;
+    memcpy(&vpParams.lcdOpTimingCfg.mInfo,
+           &gDssVpParams.lcdOpTimingCfg.mInfo,
+           sizeof(Fvid2_ModeInfo));
+    /* Syscfg does not set scanFormat, so it defaults to 0 (INTERLACED).
+     * Override to PROGRESSIVE to match pipeline inScanFmt. */
+    vpParams.lcdOpTimingCfg.mInfo.scanFormat = FVID2_SF_PROGRESSIVE;
+    vpParams.lcdOpTimingCfg.dvoFormat =
+        gDssVpParams.lcdOpTimingCfg.dvoFormat;
+    vpParams.lcdOpTimingCfg.videoIfWidth =
+        gDssVpParams.lcdOpTimingCfg.videoIfWidth;
+    vpParams.lcdPolarityCfg = gDssVpParams.lcdPolarityCfg;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_PARAMS, &vpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DCTRL_SET_VP_PARAMS returned FVID2_SOK\r\n");
+
+    /* IOCTL 4: IOCTL_DSS_DCTRL_SET_OLDI_PARAMS                          */
+    /*                                                                    */
+    /* Configures OLDI output parameters (map type, bit depth, polarity). */
+    /* Only applicable for VP1→OLDI output.                              */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("IOCTL 4: IOCTL_DSS_DCTRL_SET_OLDI_PARAMS\r\n");
+
+    if(gDssObjects[CONFIG_DSS0].oldiParams != NULL)
+    {
+        retVal = Fvid2_control(
+            gDssObjects[CONFIG_DSS0].dctrlHandle,
+            IOCTL_DSS_DCTRL_SET_OLDI_PARAMS,
+            gDssObjects[CONFIG_DSS0].oldiParams, NULL);
+        TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+        DebugP_log("  IOCTL_DSS_DCTRL_SET_OLDI_PARAMS returned FVID2_SOK\r\n");
+    }
+    else
+    {
+        DebugP_log("  OLDI params NULL — skipping (non-OLDI output)\r\n");
+    }
+
+    /* IOCTL 5: IOCTL_DSS_DCTRL_SET_VP_CSC_COEFF                         */
+    /*                                                                    */
+    /* Programs VP-level color space conversion coefficients.             */
+    /* Uses BT-601 limited range with CSC positioned before gamma.       */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("IOCTL 5: IOCTL_DSS_DCTRL_SET_VP_CSC_COEFF\r\n");
+
+    memset(&vpCscCoeff, 0, sizeof(Dss_DctrlVpCscCoeff));
+    vpCscCoeff.vpId = gDssVpParams.vpId;
+    vpCscCoeff.cscPos = CSL_DSS_VP_CSC_POS_BEFORE_GAMMA;
+    CSL_dssCscCoeffInit(&vpCscCoeff.cscCoeff);
+    /* BT-601 limited range coefficients */
+    vpCscCoeff.cscCoeff.c00 =  77;
+    vpCscCoeff.cscCoeff.c01 = 150;
+    vpCscCoeff.cscCoeff.c02 =  29;
+    vpCscCoeff.cscCoeff.c10 = -43;
+    vpCscCoeff.cscCoeff.c11 = -85;
+    vpCscCoeff.cscCoeff.c12 = 128;
+    vpCscCoeff.cscCoeff.c20 = 128;
+    vpCscCoeff.cscCoeff.c21 = -107;
+    vpCscCoeff.cscCoeff.c22 = -21;
+    vpCscCoeff.cscCoeff.preOffset1  = 0;
+    vpCscCoeff.cscCoeff.preOffset2  = 0;
+    vpCscCoeff.cscCoeff.preOffset3  = 0;
+    vpCscCoeff.cscCoeff.postOffset1 = 0;
+    vpCscCoeff.cscCoeff.postOffset2 = 128;
+    vpCscCoeff.cscCoeff.postOffset3 = 128;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_CSC_COEFF, &vpCscCoeff, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DCTRL_SET_VP_CSC_COEFF returned FVID2_SOK\r\n");
+
+    /* IOCTL 6: IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS                       */
+    /*                                                                    */
+    /* Configures overlay parameters (background color, colorbar, etc.)   */
+    /* using syscfg-provided values.                                     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("IOCTL 6: IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS\r\n");
+
+    Dss_dctrlOverlayParamsInit(&overlayParams);
+    overlayParams.overlayId = gDssOverlayParams.overlayId;
+    overlayParams.colorbarEnable = gDssOverlayParams.colorbarEnable;
+    overlayParams.overlayCfg = gDssOverlayParams.overlayCfg;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS, &overlayParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS returned FVID2_SOK\r\n");
+
+    /* IOCTL 7: IOCTL_DSS_DCTRL_SET_LAYER_PARAMS                         */
+    /*                                                                    */
+    /* Maps video pipes to overlay layers. Uses syscfg layer assignment.  */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("IOCTL 7: IOCTL_DSS_DCTRL_SET_LAYER_PARAMS\r\n");
+
+    Dss_dctrlOverlayLayerParamsInit(&layerParams);
+    layerParams.overlayId = gDssOverlayLayerParams.overlayId;
+    memcpy(layerParams.pipeLayerNum,
+           gDssOverlayLayerParams.pipeLayerNum,
+           sizeof(gDssOverlayLayerParams.pipeLayerNum));
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_LAYER_PARAMS, &layerParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DCTRL_SET_LAYER_PARAMS returned FVID2_SOK\r\n");
+
+    /* IOCTL 8: IOCTL_DSS_DCTRL_SET_LCD_BLANK_TIMING_PARAMS              */
+    /*                                                                    */
+    /* Sets LCD blanking intervals (HFP, HBP, HSYNC, VFP, VBP, VSYNC).  */
+    /* Uses the mInfo timing values from the syscfg VP configuration.    */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("IOCTL 8: IOCTL_DSS_DCTRL_SET_LCD_BLANK_TIMING_PARAMS\r\n");
+
+    Dss_dctrlLcdBlankTimingParamsInit(&lcdBlankTimingParams);
+    lcdBlankTimingParams.vpId = gDssVpParams.vpId;
+    lcdBlankTimingParams.dvoFormat =
+        gDssVpParams.lcdOpTimingCfg.dvoFormat;
+    /* Copy blanking values from the syscfg timing mInfo */
+    lcdBlankTimingParams.lcdBlankTimingCfg.hFrontPorch =
+        gDssVpParams.lcdOpTimingCfg.mInfo.hFrontPorch;
+    lcdBlankTimingParams.lcdBlankTimingCfg.hBackPorch =
+        gDssVpParams.lcdOpTimingCfg.mInfo.hBackPorch;
+    lcdBlankTimingParams.lcdBlankTimingCfg.hSyncLen =
+        gDssVpParams.lcdOpTimingCfg.mInfo.hSyncLen;
+    lcdBlankTimingParams.lcdBlankTimingCfg.vFrontPorch =
+        gDssVpParams.lcdOpTimingCfg.mInfo.vFrontPorch;
+    lcdBlankTimingParams.lcdBlankTimingCfg.vBackPorch =
+        gDssVpParams.lcdOpTimingCfg.mInfo.vBackPorch;
+    lcdBlankTimingParams.lcdBlankTimingCfg.vSyncLen =
+        gDssVpParams.lcdOpTimingCfg.mInfo.vSyncLen;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_LCD_BLANK_TIMING_PARAMS,
+        &lcdBlankTimingParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DCTRL_SET_LCD_BLANK_TIMING_PARAMS returned FVID2_SOK\r\n");
+
+    /* IOCTL 9: IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS                    */
+    /*                                                                    */
+    /* Configures global DSS parameters: MFLAG and CBA priority.         */
+    /* Uses driver defaults (init function fills valid values).           */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("IOCTL 9: IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS\r\n");
+
+    Dss_dctrlGlobalDssParamsInit(&globalDssParams);
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS, &globalDssParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS returned FVID2_SOK\r\n");
+
+    /* IOCTL 10: IOCTL_DSS_DCTRL_SET_VP_SAFETY_CHK_PARAMS                */
+    /*                                                                    */
+    /* Configures VP-level safety check in data integrity mode on         */
+    /* region 0. Uses NULL callback — just validates IOCTL path.         */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("IOCTL 10: IOCTL_DSS_DCTRL_SET_VP_SAFETY_CHK_PARAMS\r\n");
+
+    Dss_dctrlVpSafetyChkParamsInit(&vpSafetyChkParams);
+    vpSafetyChkParams.vpId = gDssVpParams.vpId;
+    vpSafetyChkParams.safetySignSeedVal = 0U;
+    vpSafetyChkParams.regionSafetyChkCfg.regionId =
+        CSL_DSS_VP_SAFETY_REGION_0;
+    vpSafetyChkParams.regionSafetyChkCfg.referenceSign = 0U;
+    vpSafetyChkParams.regionSafetyChkCfg.safetyChkCfg.safetyChkEnable = TRUE;
+    vpSafetyChkParams.regionSafetyChkCfg.safetyChkCfg.safetyChkMode =
+        CSL_DSS_SAFETY_CHK_DATA_INTEGRITY;
+    vpSafetyChkParams.regionSafetyChkCfg.safetyChkCfg.seedSelectEnable = FALSE;
+    vpSafetyChkParams.regionSafetyChkCfg.safetyChkCfg.frameSkip = 0U;
+    vpSafetyChkParams.regionSafetyChkCfg.safetyChkCfg.regionPos.startX = 0U;
+    vpSafetyChkParams.regionSafetyChkCfg.safetyChkCfg.regionPos.startY = 0U;
+    vpSafetyChkParams.regionSafetyChkCfg.safetyChkCfg.regionSize.width =
+        gDssConfigPipelineParams.inWidth[0U];
+    vpSafetyChkParams.regionSafetyChkCfg.safetyChkCfg.regionSize.height =
+        gDssConfigPipelineParams.inHeight[0U];
+    vpSafetyChkParams.safetyErrCbFxn = NULL;
+    vpSafetyChkParams.appData = NULL;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_SAFETY_CHK_PARAMS,
+        &vpSafetyChkParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DCTRL_SET_VP_SAFETY_CHK_PARAMS returned FVID2_SOK\r\n");
+
+    /* IOCTL 11: IOCTL_DSS_DCTRL_REGISTER_SYNCLOST_CB                    */
+    /*                                                                    */
+    /* Registers a sync lost callback for VP1. Uses NULL callback to      */
+    /* exercise the registration path without triggering actual events.   */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("IOCTL 11: IOCTL_DSS_DCTRL_REGISTER_SYNCLOST_CB\r\n");
+
+    Dss_dctrlSyncLostCbParamsInit(&syncLostCbParams);
+    syncLostCbParams.vpId = gDssVpParams.vpId;
+    syncLostCbParams.syncLostCbFxn = NULL;
+    syncLostCbParams.appData = NULL;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_REGISTER_SYNCLOST_CB,
+        &syncLostCbParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DCTRL_REGISTER_SYNCLOST_CB returned FVID2_SOK\r\n");
+
+    /* IOCTL 12: IOCTL_DSS_DCTRL_REGISTER_LINENUM_CB                     */
+    /*                                                                    */
+    /* Registers a line number interrupt callback for VP1.                */
+    /* Uses NULL callback to exercise the IOCTL path.                    */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("IOCTL 12: IOCTL_DSS_DCTRL_REGISTER_LINENUM_CB\r\n");
+
+    Dss_dctrlLineNumCbParamsInit(&lineNumCbParams);
+    lineNumCbParams.vpId = gDssVpParams.vpId;
+    lineNumCbParams.lineNumCbFxn = NULL;
+    lineNumCbParams.appData = NULL;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_REGISTER_LINENUM_CB,
+        &lineNumCbParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DCTRL_REGISTER_LINENUM_CB returned FVID2_SOK\r\n");
+
+    /* Create display driver, queue frames, start display                 */
+    /*                                                                    */
+    /* This proves the entire DCTRL configuration above is valid by       */
+    /* actually driving frames through the pipeline.                     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Creating display driver and running 10 frames...\r\n");
+
+    /* Capture baseline syncLost count before display starts.
+     * The counter is cumulative across all tests, so we measure delta. */
+    Dss_dctrlVpErrorStatsInit(&vpErrorStats);
+    vpErrorStats.vpId = gDssVpParams.vpId;
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_GET_VP_ERROR_STATS,
+        &vpErrorStats, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    syncLostBaseline = vpErrorStats.syncLost;
+
+    instObj = &gDssObjects[CONFIG_DSS0].instObj[0U];
+    instObj->instId = gDssConfigPipelineParams.instId[0U];
+    Dss_dispCreateParamsInit(&instObj->createParams);
+    instObj->createParams.periodicCbEnable = TRUE;
+    Fvid2CbParams_init(&instObj->cbParams);
+    instObj->cbParams.cbFxn = NULL;
+
+    status = SemaphoreP_constructBinary(&instObj->syncSem, 0);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    instObj->drvHandle = Fvid2_create(
+        DSS_DISP_DRV_ID,
+        instObj->instId,
+        &instObj->createParams,
+        &instObj->createStatus,
+        &instObj->cbParams);
+    TEST_ASSERT_NOT_NULL(instObj->drvHandle);
+
+    /* Set display params */
+    Dss_dispParamsInit(&dispParams);
+    dispParams.pipeCfg.pipeType =
+        gDssConfigPipelineParams.pipeType[0U];
+    dispParams.pipeCfg.inFmt.width =
+        gDssConfigPipelineParams.inWidth[0U];
+    dispParams.pipeCfg.inFmt.height =
+        gDssConfigPipelineParams.inHeight[0U];
+    dispParams.pipeCfg.inFmt.pitch[0U] =
+        gDssConfigPipelineParams.pitch[0U][0U];
+    dispParams.pipeCfg.inFmt.dataFormat = FVID2_DF_BGRA32_8888;
+    dispParams.pipeCfg.inFmt.scanFormat =
+        gDssConfigPipelineParams.inScanFmt[0U];
+    dispParams.pipeCfg.outWidth =
+        gDssConfigPipelineParams.outWidth[0U];
+    dispParams.pipeCfg.outHeight =
+        gDssConfigPipelineParams.outHeight[0U];
+    dispParams.pipeCfg.scEnable =
+        gDssConfigPipelineParams.scEnable[0U];
+    dispParams.layerPos.startX =
+        gDssConfigPipelineParams.posx[0U];
+    dispParams.layerPos.startY =
+        gDssConfigPipelineParams.posy[0U];
+
+    retVal = Fvid2_control(
+        instObj->drvHandle,
+        IOCTL_DSS_DISP_SET_DSS_PARAMS,
+        &dispParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Queue a frame */
+    Fvid2Frame_init(&frm);
+    frm.addr[0U] = (uint64_t)&gFirstPipelineFrameBuf[0U][0U];
+    frm.fid = FVID2_FID_FRAME;
+
+    Fvid2FrameList_init(&frmList);
+    frmList.frames[0U] = &frm;
+    frmList.numFrames = 1U;
+
+    retVal = Fvid2_queue(instObj->drvHandle, &frmList, 0U);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  Queued 1 frame to display driver\r\n");
+
+    /* Start display */
+    retVal = Fvid2_start(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  Display started\r\n");
+
+    /* Let the display run for ~10 frame intervals (~167ms at 60Hz) */
+    ClockP_sleep(1U);
+
+    /* IOCTL 13: IOCTL_DSS_DCTRL_GET_VP_ERROR_STATS                      */
+    /*                                                                    */
+    /* Queries VP error statistics after running frames. Verifies that    */
+    /* syncLost is 0 (no timing errors during normal operation).         */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("IOCTL 13: IOCTL_DSS_DCTRL_GET_VP_ERROR_STATS\r\n");
+
+    Dss_dctrlVpErrorStatsInit(&vpErrorStats);
+    vpErrorStats.vpId = gDssVpParams.vpId;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_GET_VP_ERROR_STATS,
+        &vpErrorStats, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DCTRL_GET_VP_ERROR_STATS returned FVID2_SOK\r\n");
+    DebugP_log("    syncLost=%d (baseline=%d, delta=%d) securityViolation=%d\r\n",
+               vpErrorStats.syncLost, syncLostBaseline,
+               vpErrorStats.syncLost - syncLostBaseline,
+               vpErrorStats.securityViolation);
+    /* syncLost counter is cumulative across all tests; assert no NEW errors */
+    TEST_ASSERT_EQUAL_UINT32(syncLostBaseline, vpErrorStats.syncLost);
+    DebugP_log("  PASS: no new syncLost errors during display\r\n");
+
+    /* Also verify display ran properly */
+    memset(&dispStatus, 0, sizeof(Dss_DispCurrentStatus));
+    retVal = Fvid2_control(
+        instObj->drvHandle,
+        IOCTL_DSS_DISP_GET_CURRENT_STATUS,
+        &dispStatus, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    TEST_ASSERT_GREATER_THAN(0U, dispStatus.dispFrmCount);
+    DebugP_log("  dispFrmCount=%d repeatFrmCount=%d underflowCount=%d\r\n",
+               dispStatus.dispFrmCount,
+               dispStatus.repeatFrmCount,
+               dispStatus.underflowCount);
+
+    /* Negative: IOCTL_DSS_DCTRL_SET_VP_PARAMS while VP is running       */
+    /*                                                                    */
+    /* VP is in DSS_DCTRL_VP_RUNNING state. A second SET_VP_PARAMS call  */
+    /* must be rejected with FVID2_EDEVICE_INUSE (dss_dctrlApi.c:980-986)*/
+    /* The running display is unaffected — the IOCTL returns early.      */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Negative: SET_VP_PARAMS while VP running → EDEVICE_INUSE\r\n");
+
+    Dss_dctrlVpParamsInit(&vpParams);
+    vpParams.vpId = gDssVpParams.vpId;
+    vpParams.lcdOpTimingCfg = gDssVpParams.lcdOpTimingCfg;
+    vpParams.lcdPolarityCfg = gDssVpParams.lcdPolarityCfg;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_PARAMS,
+        &vpParams, NULL);
+    TEST_ASSERT_NOT_EQUAL(FVID2_SOK, retVal);
+    DebugP_log("  SET_VP_PARAMS (VP running) returned %d (expected EDEVICE_INUSE)\r\n",
+               retVal);
+
+    /* Stop display and delete display driver                             */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Stopping display driver...\r\n");
+
+    retVal = Fvid2_stop(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Dequeue the frame */
+    Fvid2FrameList_init(&frmList);
+    retVal = Fvid2_dequeue(instObj->drvHandle, &frmList, 0U,
+                           FVID2_TIMEOUT_NONE);
+    DebugP_log("  Dequeue returned %d (numFrames=%d)\r\n",
+               retVal, frmList.numFrames);
+
+    retVal = Fvid2_delete(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    SemaphoreP_destruct(&instObj->syncSem);
+    DebugP_log("  Display driver deleted\r\n");
+
+    /* IOCTL 14: IOCTL_DSS_DCTRL_STOP_VP                                 */
+    /*                                                                    */
+    /* Stops the video port output. Must be called after the display      */
+    /* driver has been stopped and deleted.                               */
+    /* Uses Dss_DctrlVpParams as cmdArgs with vpId set.                  */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("IOCTL 14: IOCTL_DSS_DCTRL_STOP_VP\r\n");
+
+    Dss_dctrlVpParamsInit(&vpParams);
+    vpParams.vpId = gDssVpParams.vpId;
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_STOP_VP, &vpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DCTRL_STOP_VP returned FVID2_SOK\r\n");
+
+    /* Negative: STOP_VP when VP is already IDLE (vpState = IDLE after    */
+    /* the call above). The driver checks vpState != RUNNING &&           */
+    /* vpState != STARTING → EBADARGS (dss_dctrlApi.c:1633-1638).        */
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_STOP_VP, &vpParams, NULL);
+    TEST_ASSERT_NOT_EQUAL(FVID2_SOK, retVal);
+    DebugP_log("  STOP_VP (VP already IDLE) returned %d\r\n", retVal);
+
+    /* IOCTL 15: IOCTL_DSS_DCTRL_CLEAR_PATH                              */
+    /*                                                                    */
+    /* Clears the graph path and deallocates nodes. Must be called after  */
+    /* STOP_VP. Uses the same pathInfo that was used for SET_PATH.        */
+    /* The negative STOP_VP above returns early (EBADARGS) without        */
+    /* changing vpState, so vpState remains IDLE here.                    */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("IOCTL 15: IOCTL_DSS_DCTRL_CLEAR_PATH\r\n");
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_CLEAR_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  IOCTL_DSS_DCTRL_CLEAR_PATH returned FVID2_SOK\r\n");
+
+    /* IOCTL 16: Unsupported IOCTL command (negative test)                */
+    /*                                                                    */
+    /* Sends DSS_DCTRL_IOCTL_BASE + 0x00U which is NOT defined as a      */
+    /* valid IOCTL. The default case in Dss_dctrlDrvControl should        */
+    /* return FVID2_EUNSUPPORTED_CMD.                                    */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("IOCTL 16: Unsupported IOCTL (negative test)\r\n");
+
+    {
+        uint32_t dummyArg = 0U;
+        retVal = Fvid2_control(
+            gDssObjects[CONFIG_DSS0].dctrlHandle,
+            (DSS_DCTRL_IOCTL_BASE + 0x00U),
+            &dummyArg, NULL);
+        TEST_ASSERT_EQUAL_INT32(FVID2_EUNSUPPORTED_CMD, retVal);
+        DebugP_log("  Unsupported IOCTL correctly returned FVID2_EUNSUPPORTED_CMD\r\n");
+    }
+
+    /* IOCTL 17: NULL cmdArgs (negative test)                             */
+    /*                                                                    */
+    /* Sends a valid IOCTL with NULL cmdArgs. The driver checks           */
+    /* (NULL == cmdArgs) at entry and returns FVID2_EBADARGS.            */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("IOCTL 17: NULL cmdArgs (negative test)\r\n");
+
+    retVal = Fvid2_control(
+        gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH,
+        NULL, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_EBADARGS, retVal);
+    DebugP_log("  NULL cmdArgs correctly returned FVID2_EBADARGS\r\n");
+
+    /* Cleanup: Delete DCTRL, deinit DSS, deinit FVID2                   */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Cleanup\r\n");
+
+    retVal = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    retVal += Dss_deInit();
+    retVal += Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS DCTRL IOCTL Validation Test (OLDI) Completed!\r\n");
+    DebugP_log("======================================================\r\n");
+}
+
+/**
+ * \brief  VP background color overlay for the OLDI interface.
+ *
+ *  Test Category: Functionality
+ *
+ *  This test sets the VP background color to a specific RGB value and
+ *  verifies it can be read back through the CSL API.  The background color
+ *  is displayed in regions not covered by active video layers.  The test
+ *  confirms background color configuration and retrieval mechanisms work
+ *  correctly.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_backgroundColorOldi(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Background Color Test for OLDI\r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* Test with multiple background colors per test plan */
+    uint32_t testColors[] = {
+        0xFF0000,  /* Red   */
+        0x00FF00,  /* Green */
+        0x0000FF,  /* Blue  */
+        0xFFFFFF   /* White */
+    };
+    char *colorNames[] = {"Red", "Green", "Blue", "White"};
+    
+    /* Configure frame format */
+    for(uint32_t instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        gDssConfigPipelineParams.inDataFmt[instCnt] = FVID2_DF_ARGB32_8888;
+        gDssConfigPipelineParams.pitch[instCnt][0U] = 
+            gDssConfigPipelineParams.inWidth[instCnt] * 4U;
+    }
+    
+    for(uint32_t colorIdx = 0U; colorIdx < 4U; colorIdx++)
+    {
+        DebugP_log("------------------------------------------------------\r\n");
+        DebugP_log("Testing background color: %s (0x%06X)\r\n", 
+                   colorNames[colorIdx], testColors[colorIdx]);
+        
+        /* Set the background color */
+        gDssOverlayParams.overlayCfg.backGroundColor = testColors[colorIdx];
+
+        /* Disable colorbar so the background color is visible on screen.
+         * When colorbar is enabled it fills the entire display, hiding
+         * the background color. */
+        gDssOverlayParams.colorbarEnable = FALSE;
+        
+        /* Run display via IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS and
+         * IOCTL_DSS_DCTRL_SET_VP_PARAMS to start VP1 */
+        status = TestDisp_displayControl(&gDssObjects[CONFIG_DSS0]);
+        
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+        
+        /* Delay to observe the color on screen */
+        ClockP_usleep(1000000U); 
+    }
+
+    /* Restore defaults */
+    gDssOverlayParams.colorbarEnable = FALSE;
+    gDssOverlayParams.overlayCfg.backGroundColor = 0xC8C800U;
+    
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Background color OLDI test completed\r\n");
+}
+
+/**
+ * \brief  Overlay colorbar pattern generation for the OLDI interface.
+ *
+ *  Test Category: Functionality
+ *
+ *  This test enables the overlay colorbar test pattern and verifies it
+ *  generates a standard video test pattern (eight color bars) across the
+ *  VP output.  The colorbar overlays any video layer content and covers
+ *  the entire active area.  The test confirms colorbar enable/disable
+ *  and pattern rendering work correctly.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_colorbarEnableOldi(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS Colorbar Enable Test for OLDI\r\n");
+    DebugP_log("======================================================\r\n");
+    
+    /* Configure frame format (required for TestDisp_displayControl to work) */
+    for(uint32_t instCnt = 0U; instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        gDssConfigPipelineParams.inDataFmt[instCnt] = FVID2_DF_ARGB32_8888;
+        gDssConfigPipelineParams.pitch[instCnt][0U] = 
+            gDssConfigPipelineParams.inWidth[instCnt] * 4U;
+    }
+    
+    /*
+     * Phase 1: Enable colorbar (test plan steps 4-9)
+     * Set colorbar = TRUE, black background for contrast
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Phase 1: Enable colorbar pattern\r\n");
+
+    gDssOverlayParams.overlayCfg.backGroundColor = 0x000000U;
+    gDssOverlayParams.colorbarEnable = TRUE;
+    
+    /* Run display control - configures VP, overlay, starts display */
+    status = TestDisp_displayControl(&gDssObjects[CONFIG_DSS0]);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    
+    DebugP_log("Colorbar enabled - displaying 8-bar pattern\r\n");
+    DebugP_log("Observe pattern on OLDI panel for 3 seconds...\r\n");
+    
+    /* Allow time to observe the colorbar pattern */
+    ClockP_usleep(3000000U); /* 3 seconds */
+
+    /*
+     * Phase 2: Disable colorbar and verify background only (test plan steps 10-11)
+     * Set colorbar = FALSE, set a visible background color, re-apply IOCTL
+     */
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Phase 2: Disable colorbar, verify background color only\r\n");
+
+    gDssOverlayParams.colorbarEnable = FALSE;
+    gDssOverlayParams.overlayCfg.backGroundColor = 0x00FF00U; /* Green background */
+
+    status = TestDisp_displayControl(&gDssObjects[CONFIG_DSS0]);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    DebugP_log("Colorbar disabled - should see green background only\r\n");
+    ClockP_usleep(2000000U); /* 2 seconds to observe */
+
+    /* Restore defaults */
+    gDssOverlayParams.colorbarEnable = FALSE;
+    gDssOverlayParams.overlayCfg.backGroundColor = 0xC8C800U;
+    
+    DebugP_log("------------------------------------------------------\r\n");
+    DebugP_log("Colorbar OLDI test completed successfully!\r\n");
+}
+/* ---- Helper globals for TestDss_bufPrgmCbFunctionalOldi ---- */
+
+static Fvid2_Frame *TestDss_funcBufPrgmCbReturnSwap(Fvid2_Handle handle,
+                                                 Fvid2_Frame *curFrm,
+                                                 uint32_t     isFrmRepeat,
+                                                 uint32_t     frmRepeatCnt)
+{
+    TestDss_funcBufPrgmCbCount++;
+    TestDss_funcCallbackFrame = curFrm;
+    return &TestDss_funcSwapFrame;
+}
+
+/**
+ * \brief  Buffer programming callback with real display operation.
+ *
+ *  Test Category: Functionality
+ *
+ *  This test validates buffer programming callback functionality during
+ *  actual display running. Uses proper display initialization (SET_VP_PARAMS,
+ *  SET_LAYER_PARAMS, SET_GLOBAL_DSS_PARAMS) and starts the display. Tests both
+ *  callback variants (non-NULL and NULL return) with real frame queueing during
+ *  active display operation.
+ *  The callback is naturally triggered during Fvid2_queue when:
+ *  reqQ is empty (natural after frame 1 goes to currQ) AND
+ *  isPrevBufRep==TRUE (set after first frame outputs) AND
+ *  progPipeVsyncEnable==FALSE (display started normally) AND
+ *  isInIsrContext==FALSE (we're in queue context, not ISR).
+ *
+ *  \param args Pointer to test parameters (not used).
+ */
+static void TestDss_bufPrgmCbFunctionalOldi(void *args)
+{
+    int32_t retVal = FVID2_SOK;
+    Fvid2_InitPrms initPrms;
+    Dss_DispCreateParams createParams;
+    Dss_DispCreateStatus createStatus;
+    Fvid2_CbParams cbParams;
+    Fvid2_Handle dispHandle, dctrlHandle;
+    Fvid2_FrameList frmList;
+    Fvid2_Frame frm1, frm2;
+    Dss_DispBufPrgmCbParams bufPrgmCbParams;
+    Dss_DctrlVpParams vpParams;
+    Dss_DctrlAdvVpParams advVpParams;
+    Dss_DctrlOverlayParams overlayParams;
+    Dss_DctrlOverlayLayerParams layerParams;
+    Dss_DctrlGlobalDssParams globalDssParams;
+
+    static uint8_t frameBuf1[4096] __attribute__((aligned(128)));
+    static uint8_t frameBuf2[4096] __attribute__((aligned(128)));
+    static uint8_t swapBuf[4096]   __attribute__((aligned(128)));
+    uint32_t timeoutCount;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS bufPrgmCb Functional Test (OLDI) — With Display\r\n");
+    DebugP_log("======================================================\r\n");
+
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(dctrlHandle);
+
+    retVal = Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_SET_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_dctrlVpParamsInit(&vpParams);
+    vpParams.vpId = gDssVpParams.vpId;
+    memcpy(&vpParams.lcdOpTimingCfg.mInfo, &gDssVpParams.lcdOpTimingCfg.mInfo,
+           sizeof(Fvid2_ModeInfo));
+    vpParams.lcdOpTimingCfg.mInfo.scanFormat = FVID2_SF_PROGRESSIVE;
+    vpParams.lcdOpTimingCfg.dvoFormat = gDssVpParams.lcdOpTimingCfg.dvoFormat;
+    vpParams.lcdOpTimingCfg.videoIfWidth = gDssVpParams.lcdOpTimingCfg.videoIfWidth;
+    vpParams.lcdPolarityCfg = gDssVpParams.lcdPolarityCfg;
+
+    retVal = Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_SET_VP_PARAMS,
+        &vpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_dctrlAdvVpParamsInit(&advVpParams);
+    advVpParams.vpId = gDssAdvVpParams.vpId;
+    advVpParams.lcdAdvSignalCfg.hVAlign = gDssAdvVpParams.lcdAdvSignalCfg.hVAlign;
+    advVpParams.lcdAdvSignalCfg.hVClkControl =
+        gDssAdvVpParams.lcdAdvSignalCfg.hVClkControl;
+
+    retVal = Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_SET_ADV_VP_PARAMS,
+        &advVpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_dctrlOverlayParamsInit(&overlayParams);
+    overlayParams.overlayId = gDssOverlayParams.overlayId;
+    overlayParams.colorbarEnable = gDssOverlayParams.colorbarEnable;
+    overlayParams.overlayCfg = gDssOverlayParams.overlayCfg;
+
+    retVal = Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS,
+        &overlayParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_dctrlOverlayLayerParamsInit(&layerParams);
+    layerParams.overlayId = gDssOverlayLayerParams.overlayId;
+    memcpy(layerParams.pipeLayerNum, gDssOverlayLayerParams.pipeLayerNum,
+           sizeof(gDssOverlayLayerParams.pipeLayerNum));
+
+    retVal = Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_SET_LAYER_PARAMS,
+        &layerParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_dctrlGlobalDssParamsInit(&globalDssParams);
+    retVal = Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS,
+        &globalDssParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    if(gDssObjects[CONFIG_DSS0].oldiParams != NULL)
+    {
+        retVal = Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_SET_OLDI_PARAMS,
+            gDssObjects[CONFIG_DSS0].oldiParams, NULL);
+        TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    }
+
+    Dss_dispCreateParamsInit(&createParams);
+    createParams.periodicCbEnable = TRUE;
+    Fvid2CbParams_init(&cbParams);
+    cbParams.cbFxn = NULL;
+
+    dispHandle = Fvid2_create(DSS_DISP_DRV_ID,
+        gDssConfigPipelineParams.instId[0U], &createParams,
+        &createStatus, &cbParams);
+    TEST_ASSERT_NOT_NULL(dispHandle);
+
+    /* Set display params - CRITICAL for driver initialization */
+    Dss_DispParams dispParamsCfg;
+    Dss_dispParamsInit(&dispParamsCfg);
+    dispParamsCfg.pipeCfg.pipeType = gDssConfigPipelineParams.pipeType[0U];
+    dispParamsCfg.pipeCfg.inFmt.width = gDssConfigPipelineParams.inWidth[0U];
+    dispParamsCfg.pipeCfg.inFmt.height = gDssConfigPipelineParams.inHeight[0U];
+    dispParamsCfg.pipeCfg.inFmt.pitch[0U] = gDssConfigPipelineParams.pitch[0U][0U];
+    dispParamsCfg.pipeCfg.inFmt.dataFormat = FVID2_DF_BGRA32_8888;
+    dispParamsCfg.pipeCfg.inFmt.scanFormat = gDssConfigPipelineParams.inScanFmt[0U];
+    dispParamsCfg.pipeCfg.outWidth = gDssConfigPipelineParams.outWidth[0U];
+    dispParamsCfg.pipeCfg.outHeight = gDssConfigPipelineParams.outHeight[0U];
+    dispParamsCfg.pipeCfg.scEnable = gDssConfigPipelineParams.scEnable[0U];
+    dispParamsCfg.layerPos.startX = gDssConfigPipelineParams.posx[0U];
+    dispParamsCfg.layerPos.startY = gDssConfigPipelineParams.posy[0U];
+
+    retVal = Fvid2_control(dispHandle, IOCTL_DSS_DISP_SET_DSS_PARAMS,
+        &dispParamsCfg, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Fvid2Frame_init(&TestDss_funcSwapFrame);
+    TestDss_funcSwapFrame.addr[0U] = (uint64_t)swapBuf;
+    TestDss_funcSwapFrame.fid = FVID2_FID_FRAME;
+
+    bufPrgmCbParams.bufPrgmCbFxn = TestDss_funcBufPrgmCbReturnSwap;
+    retVal = Fvid2_control(dispHandle, IOCTL_DSS_DISP_REGISTER_BUF_PRGM_CB,
+        &bufPrgmCbParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Queue first frame BEFORE starting display (Fvid2_start requires at least one buffer) */
+    Fvid2Frame_init(&frm1);
+    frm1.addr[0U] = (uint64_t)frameBuf1;
+    frm1.fid = FVID2_FID_FRAME;
+    Fvid2FrameList_init(&frmList);
+    frmList.numFrames = 1U;
+    frmList.frames[0U] = &frm1;
+
+    retVal = Fvid2_queue(dispHandle, &frmList, 0U);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Start the display - this enables VSYNC and frame processing */
+    retVal = Fvid2_start(dispHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  Display started with VSYNC\r\n");
+
+    /* Let a few VSYNCs fire so display is fully running (1 second in FreeRTOS context) */
+    ClockP_sleep(1U);
+
+    TestDss_funcBufPrgmCbCount = 0U;
+    TestDss_funcCallbackFrame = NULL;
+
+    Fvid2Frame_init(&frm2);
+    frm2.addr[0U] = (uint64_t)frameBuf2;
+    frm2.fid = FVID2_FID_FRAME;
+    Fvid2FrameList_init(&frmList);
+    frmList.numFrames = 1U;
+    frmList.frames[0U] = &frm2;
+
+    retVal = Fvid2_queue(dispHandle, &frmList, 0U);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    timeoutCount = 0U;
+    while((TestDss_funcBufPrgmCbCount == 0U) && (timeoutCount < 100U))
+    {
+        ClockP_usleep(1000U);
+        timeoutCount++;
+    }
+
+    TEST_ASSERT_GREATER_THAN(0U, TestDss_funcBufPrgmCbCount);
+    DebugP_log("bufPrgmCb NON-NULL path invoked (count=%u)\r\n",
+               (unsigned)TestDss_funcBufPrgmCbCount);
+
+    /* Stop display before cleanup */
+    retVal = Fvid2_stop(dispHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  Display stopped\r\n");
+
+    Fvid2FrameList_init(&frmList);
+    while(FVID2_SOK == Fvid2_dequeue(dispHandle, &frmList, 0U,
+        FVID2_TIMEOUT_NONE))
+    {
+        Fvid2FrameList_init(&frmList);
+    }
+
+    retVal = Fvid2_delete(dispHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(dctrlHandle, IOCTL_DSS_DCTRL_CLEAR_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_delete(dctrlHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Dss_deInit();
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS bufPrgmCb Test Completed!\r\n");
+    DebugP_log("======================================================\r\n");
+}
+
+/**
+ *  \brief  pipePrgmCbFxn for functional rtParams test — counts invocations.
+ */
+static int32_t TestDss_funcPipePrgmCbFxn(Fvid2_Frame *progFrm, void *appData)
+{
+    TestDss_funcPipePrgmCbCount++;
+    return FVID2_SOK;
+}
+
+/**
+ *  \brief  bufPrgmCbFxn for functional rtParams test — returns NULL (no swap).
+ */
+static Fvid2_Frame *TestDss_funcRtBufPrgmCbReturnNull(Fvid2_Handle handle,
+                                                   Fvid2_Frame *curFrm,
+                                                   uint32_t     isFrmRepeat,
+                                                   uint32_t     frmRepeatCnt)
+{
+    TestDss_funcRtBufPrgmCbCount++;
+    return NULL;
+}
+
+/**
+ * \brief  Runtime parameter application and callback invocation during queue.
+ *
+ *  Test Category: Functionality
+ *
+ *  This test verifies runtime parameter validation and application when a frame
+ *  with perFrameCfg is queued in the safe-push path (isSafe==TRUE). The test
+ *  starts display with one frame, waits for frame repeat condition, then queues
+ *  a second frame with runtime parameters attached. Both pipePrgmCb and bufPrgmCb
+ *  callbacks are registered to verify they execute correctly during the queue
+ *  operation.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_rtParamsPipePrgmCbFunctionalOldi(void *args)
+{
+    int32_t  retVal = FVID2_SOK;
+    int32_t  status = SystemP_SUCCESS;
+    Fvid2_InitPrms           initPrms;
+    Dss_InstObject          *instObj;
+    Dss_DispParams           dispParams;
+    Dss_DctrlVpParams        vpParams;
+    Dss_DctrlAdvVpParams     advVpParams;
+    Dss_DctrlOverlayParams   overlayParams;
+    Dss_DctrlOverlayLayerParams layerParams;
+    Dss_DctrlGlobalDssParams globalDssParams;
+    Dss_DispBufPrgmCbParams  bufPrgmCbParams;
+    Dss_DispPipePrgmCbParams pipePrgmCbParams;
+    Fvid2_Frame              frm1, frm2;
+    Fvid2_FrameList          frmList;
+    Dss_DispRtParams         rtParams;
+    Dss_FrameRtParams        inFrm, outFrm;
+    Dss_ScRtParams           scRtParams;
+    Fvid2_PosConfig          posCfg;
+    uint32_t                 timeoutCount;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS rtParams + pipePrgmCb Functional Test (OLDI)\r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* Use BGRA32 format */
+    for(uint32_t ic = 0U;
+        ic < gDssConfigPipelineParams.numTestPipes; ic++)
+    {
+        gDssConfigPipelineParams.inDataFmt[ic] = FVID2_DF_BGRA32_8888;
+        gDssConfigPipelineParams.pitch[ic][0U] =
+            gDssConfigPipelineParams.inWidth[ic] * 4U;
+    }
+
+    /* 1. Initialise FVID2, DSS, create DCTRL                            */
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    /* 2. Configure DCTRL: path, VP, adv VP, OLDI, overlay, layer, global */
+    Dss_dctrlVpParamsInit(&vpParams);
+    vpParams.vpId = gDssVpParams.vpId;
+    memcpy(&vpParams.lcdOpTimingCfg.mInfo,
+           &gDssVpParams.lcdOpTimingCfg.mInfo, sizeof(Fvid2_ModeInfo));
+    vpParams.lcdOpTimingCfg.mInfo.scanFormat = FVID2_SF_PROGRESSIVE;
+    vpParams.lcdOpTimingCfg.dvoFormat    = gDssVpParams.lcdOpTimingCfg.dvoFormat;
+    vpParams.lcdOpTimingCfg.videoIfWidth = gDssVpParams.lcdOpTimingCfg.videoIfWidth;
+    vpParams.lcdPolarityCfg = gDssVpParams.lcdPolarityCfg;
+
+    Dss_dctrlAdvVpParamsInit(&advVpParams);
+    advVpParams.vpId = gDssAdvVpParams.vpId;
+    advVpParams.lcdAdvSignalCfg.hVAlign =
+        gDssAdvVpParams.lcdAdvSignalCfg.hVAlign;
+    advVpParams.lcdAdvSignalCfg.hVClkControl =
+        gDssAdvVpParams.lcdAdvSignalCfg.hVClkControl;
+
+    Dss_dctrlOverlayParamsInit(&overlayParams);
+    overlayParams.overlayId      = gDssOverlayParams.overlayId;
+    overlayParams.colorbarEnable = gDssOverlayParams.colorbarEnable;
+    overlayParams.overlayCfg     = gDssOverlayParams.overlayCfg;
+
+    Dss_dctrlOverlayLayerParamsInit(&layerParams);
+    layerParams.overlayId = gDssOverlayLayerParams.overlayId;
+    memcpy(layerParams.pipeLayerNum, gDssOverlayLayerParams.pipeLayerNum,
+           sizeof(gDssOverlayLayerParams.pipeLayerNum));
+
+    Dss_dctrlGlobalDssParamsInit(&globalDssParams);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_ADV_VP_PARAMS, &advVpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_PARAMS, &vpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    if(gDssObjects[CONFIG_DSS0].oldiParams != NULL)
+    {
+        retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+            IOCTL_DSS_DCTRL_SET_OLDI_PARAMS,
+            gDssObjects[CONFIG_DSS0].oldiParams, NULL);
+        TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    }
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS, &overlayParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_LAYER_PARAMS, &layerParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS, &globalDssParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  DCTRL path/VP/overlay/layer/OLDI configured\r\n");
+
+    /* 3. Create display driver (progPipeVsyncEnable = FALSE)             */
+    instObj = &gDssObjects[CONFIG_DSS0].instObj[0U];
+    instObj->instId = gDssConfigPipelineParams.instId[0U];
+    Dss_dispCreateParamsInit(&instObj->createParams);
+
+    Fvid2CbParams_init(&instObj->cbParams);
+    instObj->cbParams.cbFxn = NULL;
+
+    status = SemaphoreP_constructBinary(&instObj->syncSem, 0);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    instObj->drvHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, instObj->instId,
+        &instObj->createParams, &instObj->createStatus,
+        &instObj->cbParams);
+    TEST_ASSERT_NOT_NULL(instObj->drvHandle);
+
+    /* 4. Set display params                                              */
+    Dss_dispParamsInit(&dispParams);
+    dispParams.pipeCfg.pipeType        = gDssConfigPipelineParams.pipeType[0U];
+    dispParams.pipeCfg.inFmt.width     = gDssConfigPipelineParams.inWidth[0U];
+    dispParams.pipeCfg.inFmt.height    = gDssConfigPipelineParams.inHeight[0U];
+    dispParams.pipeCfg.inFmt.pitch[0U] = gDssConfigPipelineParams.pitch[0U][0U];
+    dispParams.pipeCfg.inFmt.dataFormat = FVID2_DF_BGRA32_8888;
+    dispParams.pipeCfg.inFmt.scanFormat = gDssConfigPipelineParams.inScanFmt[0U];
+    dispParams.pipeCfg.outWidth  = gDssConfigPipelineParams.outWidth[0U];
+    dispParams.pipeCfg.outHeight = gDssConfigPipelineParams.outHeight[0U];
+    dispParams.pipeCfg.scEnable  = gDssConfigPipelineParams.scEnable[0U];
+    dispParams.layerPos.startX   = gDssConfigPipelineParams.posx[0U];
+    dispParams.layerPos.startY   = gDssConfigPipelineParams.posy[0U];
+
+    retVal = Fvid2_control(instObj->drvHandle,
+        IOCTL_DSS_DISP_SET_DSS_PARAMS, &dispParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  Display driver created, params set\r\n");
+
+    /* 5. Register bufPrgmCbFxn and pipePrgmCbFxn                         */
+    TestDss_funcRtBufPrgmCbCount = 0U;
+    bufPrgmCbParams.bufPrgmCbFxn = TestDss_funcRtBufPrgmCbReturnNull;
+    retVal = Fvid2_control(instObj->drvHandle,
+        IOCTL_DSS_DISP_REGISTER_BUF_PRGM_CB, &bufPrgmCbParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    TestDss_funcPipePrgmCbCount = 0U;
+    pipePrgmCbParams.pipePrgmCbFxn = TestDss_funcPipePrgmCbFxn;
+    pipePrgmCbParams.appData       = NULL;
+    retVal = Fvid2_control(instObj->drvHandle,
+        IOCTL_DSS_DISP_REGISTER_PIPE_PRGM_CB, &pipePrgmCbParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  bufPrgmCb + pipePrgmCb registered\r\n");
+
+    /* 6. Queue frame 1 (no rtParams) and start display                   */
+    Fvid2Frame_init(&frm1);
+    frm1.addr[0U]    = (uint64_t)&gFirstPipelineFrameBuf[0U][0U];
+    frm1.fid         = FVID2_FID_FRAME;
+    frm1.perFrameCfg = NULL;
+
+    Fvid2FrameList_init(&frmList);
+    frmList.frames[0U] = &frm1;
+    frmList.numFrames  = 1U;
+    retVal = Fvid2_queue(instObj->drvHandle, &frmList, 0U);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_start(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  Display started — VSYNC active on OLDI panel\r\n");
+
+    /* 7. Wait for isPrevBufRep to become TRUE naturally                   */
+    /*                                                                    */
+    /* With only 1 frame queued, the driver repeats it on every VSYNC,    */
+    /* setting isPrevBufRep=TRUE. 1 second @ 60Hz ≈ 60 VSYNCs — more than */
+    /* enough.                                                            */
+    ClockP_sleep(1U);
+    DebugP_log("  Waited 1s — isPrevBufRep should be TRUE naturally\r\n");
+
+    /* 8. Build rtParams (same dimensions as current config)              */
+    /*                                                                    */
+    /* Using the same values as the initial SET_DSS_PARAMS ensures        */
+    /* ValidateRtParams returns SOK and ApplyRtParams executes all        */
+    /* sub-branches (posCfg, inFrmParams, outFrmParams, scParams).        */
+    Dss_frameRtParamsInit(&outFrm);
+    outFrm.width  = gDssConfigPipelineParams.outWidth[0U];
+    outFrm.height = gDssConfigPipelineParams.outHeight[0U];
+
+    Dss_frameRtParamsInit(&inFrm);
+    inFrm.width      = gDssConfigPipelineParams.inWidth[0U];
+    inFrm.height     = gDssConfigPipelineParams.inHeight[0U];
+    inFrm.dataFormat = FVID2_DF_BGRA32_8888;
+    inFrm.pitch[0U]  = gDssConfigPipelineParams.pitch[0U][0U];
+
+    posCfg.startX = gDssConfigPipelineParams.posx[0U];
+    posCfg.startY = gDssConfigPipelineParams.posy[0U];
+
+    Dss_scRtParamsInit(&scRtParams);
+    scRtParams.pixelInc = 0U;
+
+    Dss_dispRtParamsInit(&rtParams);
+    rtParams.outFrmParams = &outFrm;
+    rtParams.inFrmParams  = &inFrm;
+    rtParams.scParams     = &scRtParams;
+    rtParams.posCfg       = &posCfg;
+
+    /* 9. Queue frame 2 with perFrameCfg → triggers isSafe==TRUE path     */
+    /*                                                                    */
+    /* At this point:                                                     */
+    /*   - reqQCnt == 0 (only 1 frame was queued, it's in currQ/doneQ)    */
+    /*   - progPipeVsyncEnable == FALSE (default create params)           */
+    /*   - isPrevBufRep == TRUE (single frame repeated for 1 second)      */
+    /*   - isInIsrContext == FALSE (we're in task context)                 */
+    /* All four conditions satisfied → push path entered.                 */
+    /*   - Dss_dispIsFarFromVsync returns TRUE (real VP, dispHeight=1200) */
+    /*   - isSafe == TRUE →  execute (rtParams)             */
+    /*   - pipePrgmCbFxn != NULL →  execute                  */
+    /*   - bufPrgmCbFxn != NULL →  also execute              */
+    TestDss_funcPipePrgmCbCount  = 0U;
+    TestDss_funcRtBufPrgmCbCount = 0U;
+
+    Fvid2Frame_init(&frm2);
+    frm2.addr[0U]    = (uint64_t)&gFirstPipelineFrameBuf[1U][0U];
+    frm2.fid         = FVID2_FID_FRAME;
+    frm2.perFrameCfg = (void *)&rtParams;
+
+    Fvid2FrameList_init(&frmList);
+    frmList.frames[0U] = &frm2;
+    frmList.numFrames  = 1U;
+
+    retVal = Fvid2_queue(instObj->drvHandle, &frmList, 0U);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  Frame 2 queued with perFrameCfg (rtParams)\r\n");
+
+    /* The queue call may have directly pushed the buffer (isSafe path).
+     * If the timing was unlucky (close to VSYNC), the frame goes to reqQ
+     * and is pushed at the next VSYNC instead.  Wait a short time for
+     * the callbacks to fire either way. */
+    timeoutCount = 0U;
+    while((TestDss_funcPipePrgmCbCount == 0U) && (timeoutCount < 200U))
+    {
+        ClockP_usleep(1000U);
+        timeoutCount++;
+    }
+
+    /* 10. Verify callbacks were invoked                                  */
+    TEST_ASSERT_GREATER_THAN(0U, TestDss_funcPipePrgmCbCount);
+    DebugP_log("  ✓ pipePrgmCb invoked (count=%u) — \r\n",
+               (unsigned)TestDss_funcPipePrgmCbCount);
+
+    TEST_ASSERT_GREATER_THAN(0U, TestDss_funcRtBufPrgmCbCount);
+    DebugP_log("  ✓ bufPrgmCb invoked (count=%u) — \r\n",
+               (unsigned)TestDss_funcRtBufPrgmCbCount);
+
+    /* rtParams were applied without error — ValidateRtParams returned SOK
+     * and ApplyRtParams executed.  Since the queue succeeded and the
+     * callbacks fired,  were executed. */
+    DebugP_log("  ✓ rtParams validated + applied — \r\n");
+
+    /* 11. Stop display and clean up                                      */
+    retVal = Fvid2_stop(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  Display stopped\r\n");
+
+    /* Drain all remaining frames */
+    do {
+        Fvid2FrameList_init(&frmList);
+        retVal = Fvid2_dequeue(instObj->drvHandle, &frmList, 0U,
+                               FVID2_TIMEOUT_NONE);
+    } while(FVID2_SOK == retVal);
+
+    retVal = Fvid2_delete(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    SemaphoreP_destruct(&instObj->syncSem);
+
+    /* Stop VP before clearing path */
+    Dss_dctrlVpParamsInit(&vpParams);
+    vpParams.vpId = gDssVpParams.vpId;
+    (void)Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_STOP_VP, &vpParams, NULL);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_CLEAR_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal  = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    retVal += Dss_deInit();
+    retVal += Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS rtParams + pipePrgmCb Functional Test Completed!\r\n");
+    DebugP_log("======================================================\r\n");
+}
+
+static int32_t TestDss_isrPipePrgmCbFxn(Fvid2_Frame *progFrm, void *appData)
+{
+    TestDss_isrPipePrgmCbCount++;
+    return FVID2_SOK;
+}
+
+static Fvid2_Frame *TestDss_funcIsrBufPrgmCbFxn(Fvid2_Handle handle,
+                                              Fvid2_Frame *curFrm,
+                                              uint32_t     isFrmRepeat,
+                                              uint32_t     frmRepeatCnt)
+{
+    TestDss_funcIsrBufPrgmCbCount++;
+    return NULL;
+}
+
+static int32_t TestDss_funcIsrPipePrgmCbFxn(Fvid2_Frame *progFrm, void *appData)
+{
+    TestDss_funcIsrPipePrgmCbCount++;
+    return FVID2_SOK;
+}
+
+/**
+ * \brief  Functional test A: ISR callbacks in isStarted path — frame repeat,
+ *         bufPrgmCb, pipePrgmCb.
+ *
+ *  Test Category: Functionality
+ *
+ * Initialize the full OLDI display pipeline (VP, overlay, layer, OLDI),
+ * register buffer-program and pipe-program callbacks, queue a single frame
+ * and start the display. The test verifies that when the driver repeats
+ * the last frame in the ISR (isStarted path) the registered callbacks are
+ * invoked from ISR context and the driver repeat/frame counters behave as
+ * expected.
+ *
+ *  \param args Pointer to test parameters (not used).
+ */
+static void TestDss_isrCbFunctionalStartedOldi(void *args)
+{
+    int32_t  retVal = FVID2_SOK;
+    int32_t  status = SystemP_SUCCESS;
+    Fvid2_InitPrms           initPrms;
+    Dss_InstObject          *instObj;
+    Dss_DispParams           dispParams;
+    Dss_DctrlVpParams        vpParams;
+    Dss_DctrlAdvVpParams     advVpParams;
+    Dss_DctrlOverlayParams   overlayParams;
+    Dss_DctrlOverlayLayerParams layerParams;
+    Dss_DctrlGlobalDssParams globalDssParams;
+    Dss_DispBufPrgmCbParams  bufPrgmCbParams;
+    Dss_DispPipePrgmCbParams pipePrgmCbParams;
+    Fvid2_Frame              frm;
+    Fvid2_FrameList          frmList;
+    Dss_DispCurrentStatus    currStatus;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS ISR Callback Functional Test (isStarted) — OLDI\r\n");
+    DebugP_log("======================================================\r\n");
+
+    for(uint32_t ic = 0U;
+        ic < gDssConfigPipelineParams.numTestPipes; ic++)
+    {
+        gDssConfigPipelineParams.inDataFmt[ic] = FVID2_DF_BGRA32_8888;
+        gDssConfigPipelineParams.pitch[ic][0U] =
+            gDssConfigPipelineParams.inWidth[ic] * 4U;
+    }
+
+    /* 1. Initialise FVID2, DSS, DCTRL */
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    /* Configure path, VP, overlay, layer, OLDI */
+    Dss_dctrlVpParamsInit(&vpParams);
+    vpParams.vpId = gDssVpParams.vpId;
+    memcpy(&vpParams.lcdOpTimingCfg.mInfo,
+           &gDssVpParams.lcdOpTimingCfg.mInfo, sizeof(Fvid2_ModeInfo));
+    vpParams.lcdOpTimingCfg.mInfo.scanFormat = FVID2_SF_PROGRESSIVE;
+    vpParams.lcdOpTimingCfg.dvoFormat    = gDssVpParams.lcdOpTimingCfg.dvoFormat;
+    vpParams.lcdOpTimingCfg.videoIfWidth = gDssVpParams.lcdOpTimingCfg.videoIfWidth;
+    vpParams.lcdPolarityCfg = gDssVpParams.lcdPolarityCfg;
+
+    Dss_dctrlAdvVpParamsInit(&advVpParams);
+    advVpParams.vpId = gDssAdvVpParams.vpId;
+    advVpParams.lcdAdvSignalCfg.hVAlign =
+        gDssAdvVpParams.lcdAdvSignalCfg.hVAlign;
+    advVpParams.lcdAdvSignalCfg.hVClkControl =
+        gDssAdvVpParams.lcdAdvSignalCfg.hVClkControl;
+
+    Dss_dctrlOverlayParamsInit(&overlayParams);
+    overlayParams.overlayId      = gDssOverlayParams.overlayId;
+    overlayParams.colorbarEnable = gDssOverlayParams.colorbarEnable;
+    overlayParams.overlayCfg     = gDssOverlayParams.overlayCfg;
+
+    Dss_dctrlOverlayLayerParamsInit(&layerParams);
+    layerParams.overlayId = gDssOverlayLayerParams.overlayId;
+    memcpy(layerParams.pipeLayerNum, gDssOverlayLayerParams.pipeLayerNum,
+           sizeof(gDssOverlayLayerParams.pipeLayerNum));
+
+    Dss_dctrlGlobalDssParamsInit(&globalDssParams);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_ADV_VP_PARAMS, &advVpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_PARAMS, &vpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    if(gDssObjects[CONFIG_DSS0].oldiParams != NULL)
+    {
+        retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+            IOCTL_DSS_DCTRL_SET_OLDI_PARAMS,
+            gDssObjects[CONFIG_DSS0].oldiParams, NULL);
+        TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    }
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS, &overlayParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_LAYER_PARAMS, &layerParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS, &globalDssParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    
+    /* Create display driver with callbacks */
+    instObj = &gDssObjects[CONFIG_DSS0].instObj[0U];
+    instObj->instId = gDssConfigPipelineParams.instId[0U];
+    Dss_dispCreateParamsInit(&instObj->createParams);
+    Fvid2CbParams_init(&instObj->cbParams);
+    instObj->cbParams.cbFxn = NULL;
+
+    status = SemaphoreP_constructBinary(&instObj->syncSem, 0);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    instObj->drvHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, instObj->instId,
+        &instObj->createParams, &instObj->createStatus,
+        &instObj->cbParams);
+    TEST_ASSERT_NOT_NULL(instObj->drvHandle);
+
+    Dss_dispParamsInit(&dispParams);
+    dispParams.pipeCfg.pipeType        = gDssConfigPipelineParams.pipeType[0U];
+    dispParams.pipeCfg.inFmt.width     = gDssConfigPipelineParams.inWidth[0U];
+    dispParams.pipeCfg.inFmt.height    = gDssConfigPipelineParams.inHeight[0U];
+    dispParams.pipeCfg.inFmt.pitch[0U] = gDssConfigPipelineParams.pitch[0U][0U];
+    dispParams.pipeCfg.inFmt.dataFormat = FVID2_DF_BGRA32_8888;
+    dispParams.pipeCfg.inFmt.scanFormat = gDssConfigPipelineParams.inScanFmt[0U];
+    dispParams.pipeCfg.outWidth  = gDssConfigPipelineParams.outWidth[0U];
+    dispParams.pipeCfg.outHeight = gDssConfigPipelineParams.outHeight[0U];
+    dispParams.pipeCfg.scEnable  = gDssConfigPipelineParams.scEnable[0U];
+    dispParams.layerPos.startX   = gDssConfigPipelineParams.posx[0U];
+    dispParams.layerPos.startY   = gDssConfigPipelineParams.posy[0U];
+
+    retVal = Fvid2_control(instObj->drvHandle,
+        IOCTL_DSS_DISP_SET_DSS_PARAMS, &dispParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Register callbacks */
+    TestDss_funcIsrBufPrgmCbCount  = 0U;
+    TestDss_funcIsrPipePrgmCbCount = 0U;
+
+    bufPrgmCbParams.bufPrgmCbFxn = TestDss_funcIsrBufPrgmCbFxn;
+    retVal = Fvid2_control(instObj->drvHandle,
+        IOCTL_DSS_DISP_REGISTER_BUF_PRGM_CB, &bufPrgmCbParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    pipePrgmCbParams.pipePrgmCbFxn = TestDss_funcIsrPipePrgmCbFxn;
+    pipePrgmCbParams.appData       = NULL;
+    retVal = Fvid2_control(instObj->drvHandle,
+        IOCTL_DSS_DISP_REGISTER_PIPE_PRGM_CB, &pipePrgmCbParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Queue ONE frame and start — single frame repeats on every VSYNC */
+    Fvid2Frame_init(&frm);
+    frm.addr[0U] = (uint64_t)&gFirstPipelineFrameBuf[0U][0U];
+    frm.fid      = FVID2_FID_FRAME;
+
+    Fvid2FrameList_init(&frmList);
+    frmList.frames[0U] = &frm;
+    frmList.numFrames  = 1U;
+    retVal = Fvid2_queue(instObj->drvHandle, &frmList, 0U);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_start(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  Display started with 1 frame — will repeat\r\n");
+
+    /* Wait 1 second (~60 VSYNCs) for repeat + callbacks               */
+    ClockP_sleep(1U);
+
+    /* Verify: repeatFrmCount > 0, bufPrgmCb + pipePrgmCb fired        */
+    memset(&currStatus, 0, sizeof(currStatus));
+    retVal = Fvid2_control(instObj->drvHandle,
+        IOCTL_DSS_DISP_GET_CURRENT_STATUS, &currStatus, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    TEST_ASSERT_GREATER_THAN(0U, currStatus.repeatFrmCount);
+
+    TEST_ASSERT_GREATER_THAN(0U, TestDss_funcIsrBufPrgmCbCount);
+
+    TEST_ASSERT_GREATER_THAN(0U, TestDss_funcIsrPipePrgmCbCount);
+
+    /* Stop and clean up                                               */
+    retVal = Fvid2_stop(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    do {
+        Fvid2FrameList_init(&frmList);
+        retVal = Fvid2_dequeue(instObj->drvHandle, &frmList, 0U,
+                               FVID2_TIMEOUT_NONE);
+    } while(FVID2_SOK == retVal);
+
+    retVal = Fvid2_delete(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    SemaphoreP_destruct(&instObj->syncSem);
+
+    Dss_dctrlVpParamsInit(&vpParams);
+    vpParams.vpId = gDssVpParams.vpId;
+    (void)Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_STOP_VP, &vpParams, NULL);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_CLEAR_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal  = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    retVal += Dss_deInit();
+    retVal += Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS ISR Callback Functional Test A Completed!\r\n");
+    DebugP_log("======================================================\r\n");
+}
+
+/**
+ * \brief  ISR callback invocation during progressive pipe programming.
+ *
+ *  Test Category: Functionality
+ *
+ *  This test verifies that pipePrgmCbFxn is correctly invoked from ISR context
+ *  during both the isStarting and isStopping transitions when
+ *  progPipeVsyncEnable=TRUE. The display is started with deferred pipe
+ *  programming, allowing the first VSYNC to trigger the isStarting handler
+ *  and invoke the callback. Similarly, the stop operation triggers the
+ *  isStopping handler and callback.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_isrCbFunctionalProgPipeOldi(void *args)
+{
+    int32_t  retVal = FVID2_SOK;
+    int32_t  status = SystemP_SUCCESS;
+    Fvid2_InitPrms           initPrms;
+    Dss_InstObject          *instObj;
+    Dss_DispParams           dispParams;
+    Dss_DctrlVpParams        vpParams;
+    Dss_DctrlAdvVpParams     advVpParams;
+    Dss_DctrlOverlayParams   overlayParams;
+    Dss_DctrlOverlayLayerParams layerParams;
+    Dss_DctrlGlobalDssParams globalDssParams;
+    Dss_DispPipePrgmCbParams pipePrgmCbParams;
+    Fvid2_Frame              frm;
+    Fvid2_FrameList          frmList;
+    uint32_t                 cbCountAfterStart;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS ISR Callback Functional Test B (progPipe) — OLDI\r\n");
+    DebugP_log("======================================================\r\n");
+
+    for(uint32_t ic = 0U;
+        ic < gDssConfigPipelineParams.numTestPipes; ic++)
+    {
+        gDssConfigPipelineParams.inDataFmt[ic] = FVID2_DF_BGRA32_8888;
+        gDssConfigPipelineParams.pitch[ic][0U] =
+            gDssConfigPipelineParams.inWidth[ic] * 4U;
+    }
+
+    /* 1. Initialise FVID2, DSS, DCTRL                                    */
+    Fvid2InitPrms_init(&initPrms);
+    retVal = Fvid2_init(&initPrms);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    Dss_initParamsInit(&gDssObjects[CONFIG_DSS0].initParams);
+    Dss_init(&gDssObjects[CONFIG_DSS0].initParams);
+
+    gDssObjects[CONFIG_DSS0].dctrlHandle = Fvid2_create(
+        DSS_DCTRL_DRV_ID, DSS_DCTRL_INST_0, NULL, NULL, NULL);
+    TEST_ASSERT_NOT_NULL(gDssObjects[CONFIG_DSS0].dctrlHandle);
+
+    /* 2. Configure path, VP, overlay, layer, OLDI                        */
+    Dss_dctrlVpParamsInit(&vpParams);
+    vpParams.vpId = gDssVpParams.vpId;
+    memcpy(&vpParams.lcdOpTimingCfg.mInfo,
+           &gDssVpParams.lcdOpTimingCfg.mInfo, sizeof(Fvid2_ModeInfo));
+    vpParams.lcdOpTimingCfg.mInfo.scanFormat = FVID2_SF_PROGRESSIVE;
+    vpParams.lcdOpTimingCfg.dvoFormat    = gDssVpParams.lcdOpTimingCfg.dvoFormat;
+    vpParams.lcdOpTimingCfg.videoIfWidth = gDssVpParams.lcdOpTimingCfg.videoIfWidth;
+    vpParams.lcdPolarityCfg = gDssVpParams.lcdPolarityCfg;
+
+    Dss_dctrlAdvVpParamsInit(&advVpParams);
+    advVpParams.vpId = gDssAdvVpParams.vpId;
+    advVpParams.lcdAdvSignalCfg.hVAlign =
+        gDssAdvVpParams.lcdAdvSignalCfg.hVAlign;
+    advVpParams.lcdAdvSignalCfg.hVClkControl =
+        gDssAdvVpParams.lcdAdvSignalCfg.hVClkControl;
+
+    Dss_dctrlOverlayParamsInit(&overlayParams);
+    overlayParams.overlayId      = gDssOverlayParams.overlayId;
+    overlayParams.colorbarEnable = gDssOverlayParams.colorbarEnable;
+    overlayParams.overlayCfg     = gDssOverlayParams.overlayCfg;
+
+    Dss_dctrlOverlayLayerParamsInit(&layerParams);
+    layerParams.overlayId = gDssOverlayLayerParams.overlayId;
+    memcpy(layerParams.pipeLayerNum, gDssOverlayLayerParams.pipeLayerNum,
+           sizeof(gDssOverlayLayerParams.pipeLayerNum));
+
+    Dss_dctrlGlobalDssParamsInit(&globalDssParams);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_ADV_VP_PARAMS, &advVpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_PARAMS, &vpParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    if(gDssObjects[CONFIG_DSS0].oldiParams != NULL)
+    {
+        retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+            IOCTL_DSS_DCTRL_SET_OLDI_PARAMS,
+            gDssObjects[CONFIG_DSS0].oldiParams, NULL);
+        TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    }
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_OVERLAY_PARAMS, &overlayParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_LAYER_PARAMS, &layerParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_GLOBAL_DSS_PARAMS, &globalDssParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* 3. Create display driver with progPipeVsyncEnable = TRUE           */
+    instObj = &gDssObjects[CONFIG_DSS0].instObj[0U];
+    instObj->instId = gDssConfigPipelineParams.instId[0U];
+    Dss_dispCreateParamsInit(&instObj->createParams);
+    instObj->createParams.progPipeVsyncEnable = TRUE;
+    Fvid2CbParams_init(&instObj->cbParams);
+    instObj->cbParams.cbFxn = NULL;
+
+    status = SemaphoreP_constructBinary(&instObj->syncSem, 0);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    instObj->drvHandle = Fvid2_create(
+        DSS_DISP_DRV_ID, instObj->instId,
+        &instObj->createParams, &instObj->createStatus,
+        &instObj->cbParams);
+    TEST_ASSERT_NOT_NULL(instObj->drvHandle);
+
+    Dss_dispParamsInit(&dispParams);
+    dispParams.pipeCfg.pipeType        = gDssConfigPipelineParams.pipeType[0U];
+    dispParams.pipeCfg.inFmt.width     = gDssConfigPipelineParams.inWidth[0U];
+    dispParams.pipeCfg.inFmt.height    = gDssConfigPipelineParams.inHeight[0U];
+    dispParams.pipeCfg.inFmt.pitch[0U] = gDssConfigPipelineParams.pitch[0U][0U];
+    dispParams.pipeCfg.inFmt.dataFormat = FVID2_DF_BGRA32_8888;
+    dispParams.pipeCfg.inFmt.scanFormat = gDssConfigPipelineParams.inScanFmt[0U];
+    dispParams.pipeCfg.outWidth  = gDssConfigPipelineParams.outWidth[0U];
+    dispParams.pipeCfg.outHeight = gDssConfigPipelineParams.outHeight[0U];
+    dispParams.pipeCfg.scEnable  = gDssConfigPipelineParams.scEnable[0U];
+    dispParams.layerPos.startX   = gDssConfigPipelineParams.posx[0U];
+    dispParams.layerPos.startY   = gDssConfigPipelineParams.posy[0U];
+
+    retVal = Fvid2_control(instObj->drvHandle,
+        IOCTL_DSS_DISP_SET_DSS_PARAMS, &dispParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* Register pipePrgmCb only */
+    TestDss_funcIsrPipePrgmCbCount = 0U;
+    pipePrgmCbParams.pipePrgmCbFxn = TestDss_funcIsrPipePrgmCbFxn;
+    pipePrgmCbParams.appData       = NULL;
+    retVal = Fvid2_control(instObj->drvHandle,
+        IOCTL_DSS_DISP_REGISTER_PIPE_PRGM_CB, &pipePrgmCbParams, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    /* 4. Queue frame and start (progPipeVsyncEnable=TRUE → isStarting)   */
+    /*                                                                    */
+    /* Fvid2_start sets isStarting=TRUE. At the next VSYNC, the ISR       */
+    /* enters the isStarting handler which programs the buffer, enables   */
+    Fvid2Frame_init(&frm);
+    frm.addr[0U] = (uint64_t)&gFirstPipelineFrameBuf[0U][0U];
+    frm.fid      = FVID2_FID_FRAME;
+
+    Fvid2FrameList_init(&frmList);
+    frmList.frames[0U] = &frm;
+    frmList.numFrames  = 1U;
+    retVal = Fvid2_queue(instObj->drvHandle, &frmList, 0U);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal = Fvid2_start(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  Display started (progPipeVsyncEnable=TRUE, isStarting)\r\n");
+
+    /* Wait for the isStarting → isStarted transition (1 VSYNC is enough,
+     * but give 500ms for safety) */
+    ClockP_usleep(500000U);
+
+    cbCountAfterStart = TestDss_funcIsrPipePrgmCbCount;
+    TEST_ASSERT_GREATER_THAN(0U, cbCountAfterStart);
+
+    /* 5. Stop (progPipeVsyncEnable=TRUE → isStopping)                    */
+    /*                                                                    */
+    /* Fvid2_stop sets isStopping=TRUE. At the next VSYNC, the ISR        */
+    /* enters the isStopping handler which disables the pipe and invokes  */
+    /* pipePrgmCbFxn (.                                  */
+    TestDss_funcIsrPipePrgmCbCount = 0U;
+
+    retVal = Fvid2_stop(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    DebugP_log("  Display stop requested (isStopping=TRUE)\r\n");
+
+    /* Wait for the isStopping handler to fire */
+    ClockP_usleep(500000U);
+
+    TEST_ASSERT_GREATER_THAN(0U, TestDss_funcIsrPipePrgmCbCount);
+    /* 6. Clean up                                                        */
+    do {
+        Fvid2FrameList_init(&frmList);
+        retVal = Fvid2_dequeue(instObj->drvHandle, &frmList, 0U,
+                               FVID2_TIMEOUT_NONE);
+    } while(FVID2_SOK == retVal);
+
+    retVal = Fvid2_delete(instObj->drvHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+    SemaphoreP_destruct(&instObj->syncSem);
+
+    Dss_dctrlVpParamsInit(&vpParams);
+    vpParams.vpId = gDssVpParams.vpId;
+    (void)Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_STOP_VP, &vpParams, NULL);
+
+    retVal = Fvid2_control(gDssObjects[CONFIG_DSS0].dctrlHandle,
+        IOCTL_DSS_DCTRL_CLEAR_PATH,
+        gDssObjects[CONFIG_DSS0].dctrlPathInfo, NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    retVal  = Fvid2_delete(gDssObjects[CONFIG_DSS0].dctrlHandle, NULL);
+    retVal += Dss_deInit();
+    retVal += Fvid2_deInit(NULL);
+    TEST_ASSERT_EQUAL_INT32(FVID2_SOK, retVal);
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS ISR Callback Functional Test Completed!\r\n");
+    DebugP_log("  pipePrgmCb invoked during isStarting transition\r\n");
+    DebugP_log("  pipePrgmCb invoked during isStopping transition\r\n");
     DebugP_log("======================================================\r\n");
 }

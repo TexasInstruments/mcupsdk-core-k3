@@ -50,6 +50,8 @@
 #include "ti_board_open_close.h"
 #include <board/panel/i2c/i2c_bridge_sii9022a.h>
 #include <drivers/fvid2.h>
+#include <drivers/dss/v0/include/dss_dctrl.h>
+#include "../test_ids.h"
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -58,6 +60,8 @@
 #define TEST_DSS_TOTAL_FRAME_TYPES_MAX                          (33U)
 
 #define TEST_DSS_TOTAL_DPI_REOLUTIONS_MAX                       (5U)
+
+#define DISP_SAFETY_FREEZE_THRESHOLD                            ((uint32_t)30U)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -74,7 +78,12 @@ typedef struct
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
+/* Runtime VP safety globals from test_display_control.c */
+extern uint32_t TestDss_numVpSafetyRegions;
+extern Dss_DctrlVpSafetyChkParams TestDss_vpSafetyParamsRuntime[CSL_DSS_VP_SAFETY_REGION_MAX];
+
 extern int32_t TestDisp_displayControl(Dss_Object *appObj);
+extern int32_t TestDisp_vpSafetyDisplayControlCommon(Dss_Object *appObj, uint32_t safetyMode);
 #if defined (SOC_AM62PX)
 extern int32_t TestDisp_initParams(Dss_Object *appObj);
 extern int32_t TestDisp_reregisterDriver(Dss_Object *appObj);
@@ -85,6 +94,8 @@ extern int32_t TestDisp_unusedIoctl(Dss_Object *appObj);
 /* Test Cases */
 static void test_dss_mulitiple_frame_formats(void *args);
 static void test_dss_multiple_dpi_resolution(void *args);
+static void TestDss_vpSafetyDataIntegrityDpi(void *args);
+static void TestDss_vpSafetyFreezeDetectDpi(void *args);
 
 #if defined (SOC_AM62PX)
 static void TestDss_dpiDynamicCoverage(void *args);
@@ -185,6 +196,8 @@ void test_main(void *args)
 
     RUN_TEST(test_dss_mulitiple_frame_formats, 4796, NULL);
     RUN_TEST(test_dss_multiple_dpi_resolution, 4797, NULL);
+    RUN_TEST(TestDss_vpSafetyDataIntegrityDpi, 11294, NULL);
+    RUN_TEST(TestDss_vpSafetyFreezeDetectDpi, 11295, NULL);
 
 #if defined (SOC_AM62PX)
     RUN_TEST(TestDss_cslDynamicCoverage, 6127, NULL);
@@ -1322,3 +1335,180 @@ static void TestDss_cslDynamicCoverage(void *args)
 }
 
 #endif
+
+/**
+ * \brief  VP safety data integrity detection for the DPI interface.
+ *
+ *  Test Category: Functionality
+ *
+ *  This test configures four VP safety regions (960x540 quadrants within the
+ *  VP2 active output area for 1080p) in DATA_INTEGRITY mode with zero reference
+ *  MISR signature.  The display is started on VP2 (DPI/HDMI) with a single RGB888
+ *  frame.  At frame 70, the frame buffer is corrupted.  The test verifies that
+ *  the safety error callback fires for all four regions, confirming the MISR
+ *  signature mismatch detection mechanism is functional on the DPI output path.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_vpSafetyDataIntegrityDpi(void *args)
+{
+    int32_t status = SystemP_FAILURE;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS VP Safety Data Integrity Test for DPI\r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* Configure frame format for safety test */
+    for(uint32_t instCnt = 0U;
+        instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        gDssConfigPipelineParams.inDataFmt[instCnt] =
+            gMultipleFrameDataArray[0].frameType;
+        gDssConfigPipelineParams.pitch[instCnt][0U] =
+            gDssConfigPipelineParams.inWidth[instCnt] *
+            gMultipleFrameDataArray[0].bytesPerPixel;
+
+        if(gMultipleFrameDataArray[0].frameType == FVID2_DF_YUV420SP_UV)
+        {
+            gDssConfigPipelineParams.pitch[instCnt][1U] =
+                gDssConfigPipelineParams.inWidth[instCnt] *
+                gMultipleFrameDataArray[0].bytesPerPixel;
+        }
+    }
+
+    /* Enable VP safety at runtime — CONFIG_DSS_NUM_SAFETY_REGIONS = 0 by
+     * default. Configure 4 quadrant regions within VID1 active output area
+     * (720x540 at origin) to ensure all regions have active pipeline pixels
+     * for reliable MISR violation. referenceSign=0U: MISR of real content
+     * is never 0, covering Dss_dctrlSafetyErrCbFxn. */
+    TestDss_numVpSafetyRegions = 4U;
+    for(uint32_t r = 0U; r < TestDss_numVpSafetyRegions; r++)
+    {
+        Dss_dctrlVpSafetyChkParamsInit(&TestDss_vpSafetyParamsRuntime[r]);
+        TestDss_vpSafetyParamsRuntime[r].vpId              = CSL_DSS_VP_ID_2;
+        TestDss_vpSafetyParamsRuntime[r].safetySignSeedVal = 0U;
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.regionId      =
+            r;
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.referenceSign = 0U;
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.safetyChkCfg.safetyChkEnable  = TRUE;
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.safetyChkCfg.safetyChkMode    =
+            CSL_DSS_SAFETY_CHK_DATA_INTEGRITY;
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.safetyChkCfg.seedSelectEnable = FALSE;
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.safetyChkCfg.thresholdValue   = 0U;
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.safetyChkCfg.frameSkip        =
+            CSL_DSS_SAFETY_CHK_FRAME_SKIP_NO;
+        /* 4 quadrants within VID1 output (720x540): each 360x270 */
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.safetyChkCfg.regionPos.startX =
+            (r & 1U) ? 360U : 0U;
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.safetyChkCfg.regionPos.startY =
+            (r & 2U) ? 270U : 0U;
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.safetyChkCfg.regionSize.width  = 360U;
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.safetyChkCfg.regionSize.height = 270U;
+    }
+
+    DebugP_log("Frame type input for safety test: %s\r\n",
+               gMultipleFrameDataArray[0].frameName);
+
+    /* MISR is computed inside DSS before the output bridge — Board_panelOpen
+     * is not required for safety violation detection. */
+    status = TestDisp_vpSafetyDisplayControlCommon(&gDssObjects[CONFIG_DSS0], CSL_DSS_SAFETY_CHK_DATA_INTEGRITY);
+
+    /* Restore defaults */
+    TestDss_numVpSafetyRegions = 0U;
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    DebugP_log("VP Safety Data Integrity DPI test completed\r\n");
+    DebugP_log("======================================================\r\n");
+}
+
+/**
+ * \brief  VP safety frame freeze detection for the DPI interface.
+ *
+ *  Test Category: Functionality
+ *
+ *  This test configures VP2 safety regions in FRAME_FREEZE_DETECT mode with
+ *  a threshold of 30 frames.  A single RGB888 frame is queued and the display
+ *  is started on VP2 (DPI).  The same frame is repeatedly re-queued until
+ *  the freeze threshold is crossed.  The test verifies that the safety error
+ *  callback fires for all configured regions, confirming the freeze detection
+ *  mechanism is functional on the DPI output path.
+ *
+ *  \param args Pointer to test parameters (not used).
+ *
+ *  \return None.
+ */
+static void TestDss_vpSafetyFreezeDetectDpi(void *args)
+{
+    int32_t status = SystemP_FAILURE;
+
+    DebugP_log("======================================================\r\n");
+    DebugP_log("DSS VP Safety Freeze Frame Detection Test for DPI\r\n");
+    DebugP_log("======================================================\r\n");
+
+    /* Configure frame format for freeze detect test */
+    for(uint32_t instCnt = 0U;
+        instCnt < gDssConfigPipelineParams.numTestPipes; instCnt++)
+    {
+        gDssConfigPipelineParams.inDataFmt[instCnt] =
+            gMultipleFrameDataArray[0].frameType;
+        gDssConfigPipelineParams.pitch[instCnt][0U] =
+            gDssConfigPipelineParams.inWidth[instCnt] *
+            gMultipleFrameDataArray[0].bytesPerPixel;
+
+        if(gMultipleFrameDataArray[0].frameType == FVID2_DF_YUV420SP_UV)
+        {
+            gDssConfigPipelineParams.pitch[instCnt][1U] =
+                gDssConfigPipelineParams.inWidth[instCnt] *
+                gMultipleFrameDataArray[0].bytesPerPixel;
+        }
+    }
+
+    /* Enable VP safety at runtime — 4 quadrant regions within VID1 active
+     * output area (720x540 at origin). TestDisp_safetyInitDssParams overrides
+     * safetyChkMode to FRAME_FREEZE_DETECT and sets
+     * thresholdValue=DISP_SAFETY_FREEZE_THRESHOLD via
+     * CSL_DSS_SAFETY_CHK_FRAME_FREEZE_DETECT mode. */
+    TestDss_numVpSafetyRegions = 4U;
+    for(uint32_t r = 0U; r < TestDss_numVpSafetyRegions; r++)
+    {
+        Dss_dctrlVpSafetyChkParamsInit(&TestDss_vpSafetyParamsRuntime[r]);
+        TestDss_vpSafetyParamsRuntime[r].vpId              = CSL_DSS_VP_ID_2;
+        TestDss_vpSafetyParamsRuntime[r].safetySignSeedVal = 0U;
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.regionId      =
+            r;
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.referenceSign = 0U;
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.safetyChkCfg.safetyChkEnable  = TRUE;
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.safetyChkCfg.safetyChkMode    =
+            CSL_DSS_SAFETY_CHK_FRAME_FREEZE_DETECT;
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.safetyChkCfg.seedSelectEnable = FALSE;
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.safetyChkCfg.thresholdValue   =
+            DISP_SAFETY_FREEZE_THRESHOLD;
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.safetyChkCfg.frameSkip        =
+            CSL_DSS_SAFETY_CHK_FRAME_SKIP_NO;
+        /* 4 quadrants within VID1 output (720x540): each 360x270 */
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.safetyChkCfg.regionPos.startX =
+            (r & 1U) ? 360U : 0U;
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.safetyChkCfg.regionPos.startY =
+            (r & 2U) ? 270U : 0U;
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.safetyChkCfg.regionSize.width  = 360U;
+        TestDss_vpSafetyParamsRuntime[r].regionSafetyChkCfg.safetyChkCfg.regionSize.height = 270U;
+    }
+
+    DebugP_log("Frame type input for freeze detect test: %s\r\n",
+               gMultipleFrameDataArray[0].frameName);
+
+    /* MISR is computed inside DSS before the output bridge — Board_panelOpen
+     * is not required for freeze detection. */
+    status = TestDisp_vpSafetyDisplayControlCommon(&gDssObjects[CONFIG_DSS0], CSL_DSS_SAFETY_CHK_FRAME_FREEZE_DETECT);
+
+    /* Restore defaults */
+    TestDss_numVpSafetyRegions = 0U;
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    DebugP_log("VP Safety Freeze Frame Detection DPI test completed\r\n");
+    DebugP_log("======================================================\r\n");
+}

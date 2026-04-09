@@ -1,0 +1,97 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM62x" --package "ALW" --part "Default" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.20.0+3587"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const dss        = scripting.addModule("/drivers/dss/dss", {}, false);
+const dss1       = dss.addInstance();
+const clock      = scripting.addModule("/kernel/dpl/clock");
+const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
+const mmu_armv8  = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
+const mmu_armv81 = mmu_armv8.addInstance();
+const mmu_armv82 = mmu_armv8.addInstance();
+const mmu_armv83 = mmu_armv8.addInstance();
+const mmu_armv84 = mmu_armv8.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+dss1.$name                                   = "CONFIG_DSS0";
+dss1.selectOverlayManager                    = "OVR2";
+dss1.selectVP                                = "VP2";
+dss1.selectDisplayInterface                  = "DPI";
+dss1.DPIPanel[0].$name                       = "CONFIG_PANEL0";
+dss1.DPIPanel[0].bridgeSII9022A.$name        = "board_panel_bridge_bridge_sii9022a0";
+dss1.DPIPanel[0].i2cInstance.I2C.$assign     = "I2C1";
+dss1.DPIPanel[0].i2cInstance.I2C_child.$name = "drivers_i2c_v0_i2c_v0_template0";
+
+debug_log.enableUartLog        = true;
+debug_log.uartLog.$name        = "CONFIG_UART0";
+debug_log.uartLog.UART.$assign = "USART0";
+
+mmu_armv81.$name = "SOC_MEM_REGION";
+mmu_armv81.size  = 0x80000000;
+
+mmu_armv82.$name             = "ATF_REGION";
+mmu_armv82.vAddr             = 0x80000000;
+mmu_armv82.pAddr             = 0x80000000;
+mmu_armv82.size              = 0x80000;
+mmu_armv82.accessPermissions = "Privilege RO, User None";
+mmu_armv82.shareable         = "Non Shareable";
+
+mmu_armv83.size      = 0x80000000;
+mmu_armv83.attribute = "MAIR7";
+mmu_armv83.$name     = "DDR_REGION";
+mmu_armv83.vAddr     = 0x80080000;
+mmu_armv83.pAddr     = 0x80080000;
+
+mmu_armv84.$name     = "DDR_FRAMEBUFFER";
+mmu_armv84.attribute = "MAIR7";
+mmu_armv84.vAddr     = 0x93500000;
+mmu_armv84.pAddr     = 0x93500000;
+mmu_armv84.size      = 0x8000000;
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+dss1.DSS.$suggestSolution                             = "DSS0";
+dss1.DSS.DATA0.$suggestSolution                       = "VOUT0_DATA0";
+dss1.DSS.DATA1.$suggestSolution                       = "VOUT0_DATA1";
+dss1.DSS.DATA2.$suggestSolution                       = "VOUT0_DATA2";
+dss1.DSS.DATA3.$suggestSolution                       = "VOUT0_DATA3";
+dss1.DSS.DATA4.$suggestSolution                       = "VOUT0_DATA4";
+dss1.DSS.DATA5.$suggestSolution                       = "VOUT0_DATA5";
+dss1.DSS.DATA6.$suggestSolution                       = "VOUT0_DATA6";
+dss1.DSS.DATA7.$suggestSolution                       = "VOUT0_DATA7";
+dss1.DSS.DATA8.$suggestSolution                       = "VOUT0_DATA8";
+dss1.DSS.DATA9.$suggestSolution                       = "VOUT0_DATA9";
+dss1.DSS.DATA10.$suggestSolution                      = "VOUT0_DATA10";
+dss1.DSS.DATA11.$suggestSolution                      = "VOUT0_DATA11";
+dss1.DSS.DATA12.$suggestSolution                      = "VOUT0_DATA12";
+dss1.DSS.DATA13.$suggestSolution                      = "VOUT0_DATA13";
+dss1.DSS.DATA14.$suggestSolution                      = "VOUT0_DATA14";
+dss1.DSS.DATA15.$suggestSolution                      = "VOUT0_DATA15";
+dss1.DSS.DATA16.$suggestSolution                      = "GPMC0_AD8";
+dss1.DSS.DATA17.$suggestSolution                      = "GPMC0_AD9";
+dss1.DSS.DATA18.$suggestSolution                      = "GPMC0_AD10";
+dss1.DSS.DATA19.$suggestSolution                      = "GPMC0_AD11";
+dss1.DSS.DATA20.$suggestSolution                      = "GPMC0_AD12";
+dss1.DSS.DATA21.$suggestSolution                      = "GPMC0_AD13";
+dss1.DSS.DATA22.$suggestSolution                      = "GPMC0_AD14";
+dss1.DSS.DATA23.$suggestSolution                      = "GPMC0_AD15";
+dss1.DSS.DE.$suggestSolution                          = "VOUT0_DE";
+dss1.DSS.EXTPCLKIN.$suggestSolution                   = "GPMC0_WAIT1";
+dss1.DSS.HSYNC.$suggestSolution                       = "VOUT0_HSYNC";
+dss1.DSS.PCLK.$suggestSolution                        = "VOUT0_PCLK";
+dss1.DSS.VSYNC.$suggestSolution                       = "VOUT0_VSYNC";
+dss1.DPIPanel[0].i2cInstance.I2C.SCL.$suggestSolution = "I2C1_SCL";
+dss1.DPIPanel[0].i2cInstance.I2C.SDA.$suggestSolution = "I2C1_SDA";
+debug_log.uartLog.UART.RXD.$suggestSolution           = "UART0_RXD";
+debug_log.uartLog.UART.TXD.$suggestSolution           = "UART0_TXD";

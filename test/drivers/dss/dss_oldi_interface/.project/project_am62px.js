@@ -108,6 +108,12 @@ const defines_dm_r5 = {
     ],
 }
 
+const cflags_freertos_wkup_r5f = {
+    common: [
+        "-DENABLE_MT_TESTS",
+    ],
+}
+
 const syscfgfile = "../example.syscfg";
 
 const templates_freertos_wkup_r5f =
@@ -150,7 +156,8 @@ const templates_nortos_wkup_r5f =
             abortStackSize: 0x0100,
             undefinedStackSize: 0x0100,
             dmStubstacksize: 0x0400,
-            dssFrameBuf: "true"
+            dssFrameBuf: "true",
+            dssTest: "true",
         },
     },
     {
@@ -164,6 +171,7 @@ const templates_nortos_wkup_r5f =
 
 const buildOptionCombos = [
     { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "freertos"},
+    { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "nortos"},
 ];
 
 function getComponentProperty() {
@@ -207,6 +215,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos_wkup_r5f;
             build_property.libs = libs_freertos_wkup_r5f;
             build_property.templates = templates_freertos_wkup_r5f;
+            build_property.cflags = cflags_freertos_wkup_r5f;
         }
         else
         {

@@ -1,3 +1,39 @@
+/*
+ * Copyright (C) 2021-2026 Texas Instruments Incorporated
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *   Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ *   Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in the
+ *   documentation and/or other materials provided with the
+ *   distribution.
+ *
+ *   Neither the name of Texas Instruments Incorporated nor the names of
+ *   its contributors may be used to endorse or promote products derived
+ *   from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*===================================================================*/
+/* 					  Include Files 					     */
+/*===================================================================*/
+
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
@@ -15,6 +51,10 @@
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 
+/*===================================================================*/
+/* 					  Macro defines 					     */
+/*===================================================================*/
+
 #define TEST_SBL_APPIMAGE_MAX_FILE_SIZE                  (0x800000)
 #define TEST_SBL_SECOND_STAGE_RESERVED_MEMORY_START      (0x9CA00000)
 #define TEST_SBL_SECOND_STAGE_RESERVED_MEMORY_LENGTH     (0x1C08000)
@@ -22,6 +62,58 @@
 #define TEST_SBL_MT_NUM_CORES                            (3U)
 #define TEST_SBL_MT_TASK_STACK_SIZE                      (16384U)
 #define TEST_SBL_MT_TASK_PRIORITY                        (2U)
+
+#define TEST_SBL_MM_NUM_CORES                            (2U)
+#define TEST_SBL_MM_MEDIA_EMMC                           (0U)
+#define TEST_SBL_MM_MEDIA_FLASH                          (1U)
+
+#if defined(SOC_AM275X)
+/*
+ * Scratch buffer size for Bootloader_parseAndLoadMultiCoreELF auth path.
+ */
+#define TEST_SBL_SCRATCH_BUF_SIZE (0x1000U)
+#endif
+
+/*===================================================================*/
+/* 					     Typedefs 					         */
+/*===================================================================*/
+
+/**
+ * @brief Per-thread arguments for the multithread boot test.
+ */
+typedef struct TestSbl_MtThreadArgs_s
+{
+    uint8_t             *appImageBuf;
+    uint32_t             appImageBufSize;
+    uint32_t             coreId;
+    uint32_t             bootloaderInstanceId;
+    int32_t              loadStatus;
+    Bootloader_CpuInfo   cpuInfo;
+    Bootloader_Handle    bootHandle;
+    SemaphoreP_Object   *doneSem;
+    SemaphoreP_Object   *parseMutex;  /* serialize TIFS auth (not thread-safe) */
+} TestSbl_MtThreadArgs;
+
+/**
+ * @brief Per-thread arguments for the multi-media multithread boot test.
+ */
+typedef struct TestSbl_MmMtThreadArgs_s
+{
+    uint8_t             *appImageBuf;     /* scratch (EMMC/FLASH) or image data (MEM) */
+    uint32_t             appImageBufSize;
+    uint32_t             coreId;
+    uint32_t             bootloaderInstanceId;
+    uint32_t             mediaType;
+    int32_t              loadStatus;
+    Bootloader_CpuInfo   cpuInfo;
+    Bootloader_Handle    bootHandle;
+    SemaphoreP_Object   *doneSem;
+    SemaphoreP_Object   *parseMutex;  /* serialize TIFS auth (not thread-safe) */
+} TestSbl_MmMtThreadArgs;
+
+/*===================================================================*/
+/* 					  Global Variables				         */
+/*===================================================================*/
 
 /* Per-core app image buffers for multithread boot test.
  * These are defined in appimage_data.S which embeds the signed per-core
@@ -45,9 +137,12 @@ uint8_t gMtTaskStack2[TEST_SBL_MT_TASK_STACK_SIZE] __attribute__((aligned(32)));
  * which needs scratchMemPtr for cert copy and restricted-region loads.
  * Threads are mutex-serialized so a single shared buffer is sufficient.
  */
-#define TEST_SBL_SCRATCH_BUF_SIZE (0x1000U)
 uint8_t gMtScratchBuf[TEST_SBL_SCRATCH_BUF_SIZE] __attribute__((aligned(128), section(".bss.app")));
 #endif
+
+/*===================================================================*/
+/* 				  Function Declarations				         */
+/*===================================================================*/
 
 void TestSbl_multiThreadBoot(void *args);
 void TestSbl_multiMediaMultiThreadBoot(void *args);
@@ -59,11 +154,31 @@ void TestSbl_closeBootEMMC();
 void TestSbl_closeBootDriverFlash();
 void TestSbl_closeBootBoardFlash();
 
+/*===================================================================*/
+/* 				  Function Definitions				         */
+/*===================================================================*/
+
+/**
+ * @brief Unity per-test setup hook.
+ *
+ * Called automatically by the Unity framework before each test case.
+ * No special initialization is required for the multithread boot tests.
+ *
+ * @return void
+ */
 void setUp(void)
 {
     /* Setup function nothing to perform */
 }
 
+/**
+ * @brief Unity per-test teardown hook.
+ *
+ * Called automatically by the Unity framework after each test case.
+ * No special cleanup is required for the multithread boot tests.
+ *
+ * @return void
+ */
 void tearDown(void)
 {
     /* Tear down function nothing to perform */
@@ -77,14 +192,25 @@ void loop_forever()
         ;
 }
 
+/**
+ * @brief Main SBL multithread boot test entry point.
+ *
+ * Initializes Unity and executes the multithread and multi-media
+ * multithread boot tests. The MT test runs first because the MM
+ * test overwrites the embedded appimage buffers used as scratch.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void test_main(void * args)
 {
     UNITY_BEGIN();
     /* Run MT test first: MM test overwrites the embedded appimage buffers
      * (used as scratch for eMMC/OSPI auth) so MT must complete before MM. */
-    RUN_TEST(TestSbl_multiThreadBoot,           8000, NULL);
+    RUN_TEST(TestSbl_multiThreadBoot,           11446, NULL);
 #if !defined(SKIP_MULTIMEDIA_TEST)
-    RUN_TEST(TestSbl_multiMediaMultiThreadBoot, 8000, NULL);
+    RUN_TEST(TestSbl_multiMediaMultiThreadBoot, 11447, NULL);
 #else
     DebugP_log("Skipping TestSbl_multiMediaMultiThreadBoot (SKIP_MULTIMEDIA_TEST defined)\r\n");
 #endif
@@ -92,25 +218,9 @@ void test_main(void * args)
 }
 
 /*
- * Multithread boot test structures and functions
- *
- * Each thread loads a single-core appimage from its own DDR buffer and
- * boots the corresponding core. The test verifies parallel boot of
- * MCU_R5FSS0_0, A53SS0_0, and C75SS0_0 using separate buffers and threads.
+ * Multithread boot test: loads a single-core appimage from its own DDR
+ * buffer per thread and boots the corresponding core.
  */
-
-typedef struct TestSbl_MtThreadArgs_s
-{
-    uint8_t             *appImageBuf;
-    uint32_t             appImageBufSize;
-    uint32_t             coreId;
-    uint32_t             bootloaderInstanceId;
-    int32_t              loadStatus;
-    Bootloader_CpuInfo   cpuInfo;
-    Bootloader_Handle    bootHandle;
-    SemaphoreP_Object   *doneSem;
-    SemaphoreP_Object   *parseMutex;  /* serialize TIFS auth (not thread-safe) */
-} TestSbl_MtThreadArgs;
 
 static void TestSbl_mtLoadThread(void *args)
 {
@@ -313,13 +423,32 @@ static void TestSbl_mtLoadThread(void *args)
     TaskP_exit();
 }
 
+/**
+ * @brief Multithread boot test — parallel load and boot of multiple cores.
+ *
+ * Each thread loads a single-core appimage from its own DDR buffer and
+ * boots the corresponding core. Verifies parallel boot of MCU_R5FSS0_0,
+ * A53SS0_0, and C75SS0_0 (or AM275x equivalents) using separate buffers
+ * and threads.
+ *
+ * Test Steps:
+ * 1. Verify pre-loaded appimage buffers contain non-zero data.
+ * 2. Create a mutex to serialize TIFS authentication (not thread-safe).
+ * 3. Spawn one FreeRTOS task per core, each calling Bootloader_open,
+ *    parse, and load with its own appimage buffer.
+ * 4. Wait for all threads to complete and verify all loads succeeded.
+ * 5. Call Bootloader_runCpu for each loaded core.
+ * 6. Wait for IPC sync from each booted core.
+ * 7. Reset all CPUs, close bootloader instances, and clean up resources.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_multiThreadBoot(void *args)
 {
     int32_t  status = SystemP_SUCCESS;
     uint32_t loopVar;
-
-    DebugP_log("Starting TestSbl_multiThreadBoot test...\r\n");
-
     /*
      * Table mapping each thread to its core, pre-loaded DDR buffer,
      * bootloader instance, and task stack.
@@ -338,13 +467,11 @@ void TestSbl_multiThreadBoot(void *args)
 #endif
         CSL_CORE_ID_C75SS0_0,
     };
-
     uint8_t *appImageBufs[TEST_SBL_MT_NUM_CORES] = {
         gAppImageBuf0,
         gAppImageBuf1,
         gAppImageBuf2,
     };
-
     uint32_t bootloaderInstances[TEST_SBL_MT_NUM_CORES] = {
 #if defined(SOC_AM275X)
         /* MEM bootloaders for R5FSS0_0, R5FSS1_0, C75SS0_0 (appimages embedded in binary) */
@@ -357,17 +484,17 @@ void TestSbl_multiThreadBoot(void *args)
         CONFIG_BOOTLOADER_SD_MULTICORE,
 #endif
     };
-
     uint8_t *taskStacks[TEST_SBL_MT_NUM_CORES] = {
         gMtTaskStack0,
         gMtTaskStack1,
         gMtTaskStack2,
     };
-
     TestSbl_MtThreadArgs threadArgs[TEST_SBL_MT_NUM_CORES];
     TaskP_Object         taskObjs[TEST_SBL_MT_NUM_CORES];
     SemaphoreP_Object    doneSems[TEST_SBL_MT_NUM_CORES];
     SemaphoreP_Object    parseMutex;
+
+    DebugP_log("Starting TestSbl_multiThreadBoot test...\r\n");
 
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
     Bootloader_openDma();
@@ -508,30 +635,9 @@ void TestSbl_multiThreadBoot(void *args)
 }
 
 /*
- * Multi-media multithread boot test structures and functions
- *
- * Each thread loads a single-core appimage from a different boot media
- * (eMMC, OSPI Flash, SD/MEM) and boots the corresponding core.
- * This verifies parallel boot across heterogeneous media.
+ * Multi-media multithread boot test: loads a single-core appimage from a
+ * different boot media per thread and boots the corresponding core.
  */
-
-#define TEST_SBL_MM_NUM_CORES    (2U)
-#define TEST_SBL_MM_MEDIA_EMMC   (0U)
-#define TEST_SBL_MM_MEDIA_FLASH  (1U)
-
-typedef struct TestSbl_MmMtThreadArgs_s
-{
-    uint8_t             *appImageBuf;     /* scratch (EMMC/FLASH) or image data (MEM) */
-    uint32_t             appImageBufSize;
-    uint32_t             coreId;
-    uint32_t             bootloaderInstanceId;
-    uint32_t             mediaType;
-    int32_t              loadStatus;
-    Bootloader_CpuInfo   cpuInfo;
-    Bootloader_Handle    bootHandle;
-    SemaphoreP_Object   *doneSem;
-    SemaphoreP_Object   *parseMutex;  /* serialize TIFS auth (not thread-safe) */
-} TestSbl_MmMtThreadArgs;
 
 static void TestSbl_mmMtLoadThread(void *args)
 {
@@ -718,13 +824,91 @@ static void TestSbl_mmMtLoadThread(void *args)
     TaskP_exit();
 }
 
+/**
+ * @brief Multi-media multithread boot test — parallel load across heterogeneous media.
+ *
+ * Each thread loads a single-core appimage from a different boot media
+ * (eMMC, OSPI Flash) and boots the corresponding core. Verifies parallel
+ * boot across heterogeneous media.
+ *
+ * Test Steps:
+ * 1. Open eMMC, OSPI, and Flash drivers.
+ * 2. Create a mutex to serialize TIFS authentication (not thread-safe).
+ * 3. Spawn one FreeRTOS task per core:
+ *    - Thread 0: MCU R5FSS0_0 from eMMC.
+ *    - Thread 1: C75SS0_0 from OSPI Flash.
+ * 4. Wait for all threads to complete and verify all loads succeeded.
+ * 5. Call Bootloader_runCpu for each loaded core.
+ * 6. Wait for IPC sync from each booted core.
+ * 7. Reset all CPUs, close bootloader and media driver instances.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_multiMediaMultiThreadBoot(void *args)
 {
     int32_t  status = SystemP_SUCCESS;
     uint32_t loopVar;
+    /*
+     * Thread-to-core-to-media mapping:
+     *   Thread 0: MCU R5FSS0_0  from eMMC       (CONFIG_BOOTLOADER_EMMC_MCU)
+     *   Thread 1: C75SS0_0      from OSPI Flash (CONFIG_BOOTLOADER_FLASH_DSP)
+     */
+    uint32_t coreIds[TEST_SBL_MM_NUM_CORES] = {
+#if defined(SOC_AM275X)
+        CSL_CORE_ID_R5FSS0_0,
+#else
+        CSL_CORE_ID_MCU_R5FSS0_0,
+#endif
+        CSL_CORE_ID_C75SS0_0,
+    };
+    uint32_t mediaTypes[TEST_SBL_MM_NUM_CORES] = {
+        TEST_SBL_MM_MEDIA_EMMC,
+        TEST_SBL_MM_MEDIA_FLASH,
+    };
+    /*
+     * Scratch buffers for eMMC/Flash parse+load.  On AM275x use the
+     * dedicated gMtScratchBuf (4 KB in .bss.app) so that the embedded
+     * appimage data in gAppImageBuf0/2 is not corrupted for the
+     * subsequent MEM boot test.  Threads are mutex-serialized so a
+     * single shared buffer is safe.
+     */
+    uint8_t *appImageBufs[TEST_SBL_MM_NUM_CORES] = {
+#if defined(SOC_AM275X)
+        gMtScratchBuf,   /* shared scratch — threads serialized by parseMutex */
+        gMtScratchBuf,
+#elif defined(SOC_AM62DX)
+        /*
+         * On AM62DX HS-FS, Bootloader_socAuthImage DMAs the cert-stripped
+         * payload to the loadaddr embedded in the x509 cert (0x84000000).
+         * scratchMemPtr must match loadaddr so the post-auth parse reads
+         * the stripped payload, not the stale cert header.
+         * gAppImageBuf2 is at 0x84000000 (APPIMAGE region start).
+         * Threads are mutex-serialized so a single buffer is safe.
+         */
+        gAppImageBuf2,   /* 0x84000000 = loadaddr for both eMMC & OSPI images */
+        gAppImageBuf2,
+#else
+        gAppImageBuf0,   /* scratch for eMMC */
+        gAppImageBuf2,   /* scratch for OSPI Flash */
+#endif
+    };
+    uint32_t bootloaderInstances[TEST_SBL_MM_NUM_CORES] = {
+        CONFIG_BOOTLOADER_EMMC_MCU,
+        CONFIG_BOOTLOADER_FLASH_DSP,
+    };
+    uint8_t *taskStacks[TEST_SBL_MM_NUM_CORES] = {
+        gMtTaskStack0,
+        gMtTaskStack1,
+    };
+    TestSbl_MmMtThreadArgs threadArgs[TEST_SBL_MM_NUM_CORES];
+    TaskP_Object           taskObjs[TEST_SBL_MM_NUM_CORES];
+    SemaphoreP_Object      doneSems[TEST_SBL_MM_NUM_CORES];
+    SemaphoreP_Object      parseMutex;
 
     DebugP_log("Starting TestSbl_multiMediaMultiThreadBoot test...\r\n");
-	
+
 #if defined(SOC_AM275X)
     /*
      * Open media drivers before thread creation.
@@ -789,68 +973,6 @@ void TestSbl_multiMediaMultiThreadBoot(void *args)
     DebugP_log("[MM] Flash open status = %d\r\n", status);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
     DebugP_log("Flash driver opened\r\n");
-
-    /*
-     * Thread-to-core-to-media mapping:
-     *   Thread 0: MCU R5FSS0_0  from eMMC       (CONFIG_BOOTLOADER_EMMC_MCU)
-     *   Thread 1: C75SS0_0      from OSPI Flash (CONFIG_BOOTLOADER_FLASH_DSP)
-     */
-    uint32_t coreIds[TEST_SBL_MM_NUM_CORES] = {
-#if defined(SOC_AM275X)
-        CSL_CORE_ID_R5FSS0_0,
-#else
-        CSL_CORE_ID_MCU_R5FSS0_0,
-#endif
-        CSL_CORE_ID_C75SS0_0,
-    };
-
-    uint32_t mediaTypes[TEST_SBL_MM_NUM_CORES] = {
-        TEST_SBL_MM_MEDIA_EMMC,
-        TEST_SBL_MM_MEDIA_FLASH,
-    };
-
-    /*
-     * Scratch buffers for eMMC/Flash parse+load.  On AM275x use the
-     * dedicated gMtScratchBuf (4 KB in .bss.app) so that the embedded
-     * appimage data in gAppImageBuf0/2 is not corrupted for the
-     * subsequent MEM boot test.  Threads are mutex-serialized so a
-     * single shared buffer is safe.
-     */
-    uint8_t *appImageBufs[TEST_SBL_MM_NUM_CORES] = {
-#if defined(SOC_AM275X)
-        gMtScratchBuf,   /* shared scratch — threads serialized by parseMutex */
-        gMtScratchBuf,
-#elif defined(SOC_AM62DX)
-        /*
-         * On AM62DX HS-FS, Bootloader_socAuthImage DMAs the cert-stripped
-         * payload to the loadaddr embedded in the x509 cert (0x84000000).
-         * scratchMemPtr must match loadaddr so the post-auth parse reads
-         * the stripped payload, not the stale cert header.
-         * gAppImageBuf2 is at 0x84000000 (APPIMAGE region start).
-         * Threads are mutex-serialized so a single buffer is safe.
-         */
-        gAppImageBuf2,   /* 0x84000000 = loadaddr for both eMMC & OSPI images */
-        gAppImageBuf2,
-#else
-        gAppImageBuf0,   /* scratch for eMMC */
-        gAppImageBuf2,   /* scratch for OSPI Flash */
-#endif
-    };
-
-    uint32_t bootloaderInstances[TEST_SBL_MM_NUM_CORES] = {
-        CONFIG_BOOTLOADER_EMMC_MCU,
-        CONFIG_BOOTLOADER_FLASH_DSP,
-    };
-
-    uint8_t *taskStacks[TEST_SBL_MM_NUM_CORES] = {
-        gMtTaskStack0,
-        gMtTaskStack1,
-    };
-
-    TestSbl_MmMtThreadArgs threadArgs[TEST_SBL_MM_NUM_CORES];
-    TaskP_Object           taskObjs[TEST_SBL_MM_NUM_CORES];
-    SemaphoreP_Object      doneSems[TEST_SBL_MM_NUM_CORES];
-    SemaphoreP_Object      parseMutex;
 
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
     Bootloader_openDma();

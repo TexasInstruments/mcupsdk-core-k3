@@ -51,6 +51,10 @@
  * The host script (uart_uniflash.py) must send this as the last XMODEM frame.
  */
 
+/*===================================================================*/
+/* 					  Include Files 					     */
+/*===================================================================*/
+
 #include <stdlib.h>
 #include <string.h>
 #include "ti_drivers_config.h"
@@ -62,9 +66,9 @@
 #include <kernel/dpl/DebugP.h>
 #include <unity.h>
 
-/* ========================================================================== */
-/*                          Buffer sizes                                      */
-/* ========================================================================== */
+/*===================================================================*/
+/* 					  Macro defines 					     */
+/*===================================================================*/
 
 /*
  * Use SOC-specific sizes matching the .bss.filebuf linker sections:
@@ -80,6 +84,21 @@
 #endif
 
 /*
+ * The host script sends this 4-byte word as the last XMODEM frame to signal
+ * end of test.  Pattern matches the convention used in sbl_test_uart_boot.
+ * Add "--eot" or a dummy file containing these bytes at the end of the .cfg.
+ */
+#define BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH (4U)
+
+/*===================================================================*/
+/* 					     Typedefs 					         */
+/*===================================================================*/
+
+/*===================================================================*/
+/* 					  Global Variables				         */
+/*===================================================================*/
+
+/*
  * Receive buffer — placed in the dedicated .bss.filebuf linker section
  * (FILE_BUFF on AM275X, DDR1 on AM62DX).
  * The XMODEM receive pointer is offset backwards by the response header size
@@ -91,55 +110,67 @@ uint8_t gUniflashFileBuf[BOOTLOADER_UNIFLASH_MAX_FILE_SIZE]
 uint8_t gUniflashVerifyBuf[BOOTLOADER_UNIFLASH_VERIFY_BUF_MAX_SIZE]
     __attribute__((aligned(128), section(".bss.filebuf")));
 
-/* ========================================================================== */
-/*                          End-of-transfer marker                            */
-/* ========================================================================== */
-
-/*
- * The host script sends this 4-byte word as the last XMODEM frame to signal
- * end of test.  Pattern matches the convention used in sbl_test_uart_boot.
- * Add "--eot" or a dummy file containing these bytes at the end of the .cfg.
- */
-#define BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH (4U)
 static const uint8_t gEndOfFilesTransferWord[BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH] =
     {0x45U, 0x4FU, 0x46U, 0x54U};   /* 'E','O','F','T' */
 
-/* ========================================================================== */
-/*                          Unity setUp / tearDown                            */
-/* ========================================================================== */
+/*===================================================================*/
+/* 				  Function Declarations				         */
+/*===================================================================*/
 
+/*===================================================================*/
+/* 				  Function Definitions				         */
+/*===================================================================*/
+
+/**
+ * @brief Unity per-test setup hook.
+ *
+ * Called automatically by the Unity framework before each test case.
+ * No special initialization is required for the uniflash server tests.
+ *
+ * @return void
+ */
 void setUp(void)    { /* nothing */ }
+
+/**
+ * @brief Unity per-test teardown hook.
+ *
+ * Called automatically by the Unity framework after each test case.
+ * No special cleanup is required for the uniflash server tests.
+ *
+ * @return void
+ */
 void tearDown(void) { /* nothing */ }
 
-/* ========================================================================== */
-/*                          Test case                                         */
-/* ========================================================================== */
-
-/*
- * test_uniflashServer
+/**
+ * @brief XMODEM uniflash server loop test.
  *
- * Runs the XMODEM uniflash server loop, mirroring the functionality of:
- *   examples/drivers/boot/sbl_uart_uniflash/am275x-evm/wkup-r5fss0-0_nortos/main.c
+ * Runs the XMODEM uniflash server loop, mirroring the functionality of
+ * sbl_uart_uniflash. Receives files from the host over XMODEM, processes
+ * each uniflash command, and verifies the response header is well-formed.
  *
- * For each file received from the host:
- *   1. Receive via XMODEM on CONFIG_UART0.
- *   2. Detect EOFT end-of-transfer marker and exit if found.
- *   3. Detect buffer overflow and send an error response.
- *   4. Parse the uniflash file header.
- *   5. Call Bootloader_uniflashProcessFlashCommands().
- *   6. Assert the response header magic is always set correctly.
- *   7. Transmit the response back to the host via CONFIG_UART0.
+ * Test Steps:
+ * 1. Receive one XMODEM frame on CONFIG_UART0 into gUniflashFileBuf.
+ * 2. Detect EOFT end-of-transfer marker and exit the loop if found.
+ * 3. If XMODEM receive times out (no more files), exit cleanly.
+ * 4. Detect buffer overflow and send an error response to the host.
+ * 5. Parse the Bootloader_UniflashFileHeader from the received data.
+ * 6. Call Bootloader_uniflashProcessFlashCommands() with the parsed config.
+ * 7. Assert the response header magic is always BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER.
+ * 8. Transmit the response header back to the host via CONFIG_UART0.
+ * 9. Repeat until EOFT is received or XMODEM times out.
  *
- * Unity output (debug_log) is routed to CONFIG_UART1 (wakeup UART),
- * independent of the XMODEM data channel on CONFIG_UART0.
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void test_uniflashServer(void *args)
 {
     int32_t  status   = SystemP_SUCCESS;
     uint32_t done     = 0U;
     uint32_t fileSize;
-    Bootloader_UniflashConfig        uniflashConfig;
+    Bootloader_UniflashConfig         uniflashConfig;
     Bootloader_UniflashResponseHeader respHeader;
+    Bootloader_UniflashFileHeader     fileHeader;
 
     DebugP_log("\r\n[SBL UART UNIFLASH TEST] Uniflash server test started.\r\n");
     DebugP_log("[SBL UART UNIFLASH TEST] Waiting for files on UART0 (XMODEM)...\r\n");
@@ -198,8 +229,6 @@ void test_uniflashServer(void *args)
 
         if(status == SystemP_SUCCESS)
         {
-            Bootloader_UniflashFileHeader fileHeader;
-
             memcpy(&fileHeader,
                    gUniflashFileBuf - sizeof(Bootloader_UniflashResponseHeader),
                    sizeof(Bootloader_UniflashFileHeader));
@@ -232,19 +261,23 @@ void test_uniflashServer(void *args)
     DebugP_log("[SBL UART UNIFLASH TEST] Server loop finished.\r\n");
 }
 
-/* ========================================================================== */
-/*                          test_main                                         */
-/* ========================================================================== */
-
-/*
+/**
+ * @brief Main SBL UART uniflash test entry point.
+ *
  * Entry point called from both nortos main() and freertos main_thread().
- * Unity output is routed through DebugP_log to the wakeup UART (CONFIG_UART1).
+ * Initializes Unity, executes the uniflash server test case, and finalizes
+ * the Unity framework. Unity output is routed through DebugP_log to the
+ * wakeup UART (CONFIG_UART1).
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void test_main(void *args)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(test_uniflashServer, 0, NULL);
+    RUN_TEST(test_uniflashServer, 11472, NULL);
 
     UNITY_END();
 }

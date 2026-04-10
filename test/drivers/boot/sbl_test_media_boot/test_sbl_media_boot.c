@@ -1,3 +1,39 @@
+/*
+ * Copyright (C) 2021-2026 Texas Instruments Incorporated
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *   Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ *   Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in the
+ *   documentation and/or other materials provided with the
+ *   distribution.
+ *
+ *   Neither the name of Texas Instruments Incorporated nor the names of
+ *   its contributors may be used to endorse or promote products derived
+ *   from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*===================================================================*/
+/* 					  Include Files 					     */
+/*===================================================================*/
+
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
@@ -12,6 +48,10 @@
 #include "ti_board_open_close.h"
 #include <drivers/bootloader/bootloader_uniflash.h>
 
+/*===================================================================*/
+/* 					  Macro defines 					     */
+/*===================================================================*/
+
 #define TEST_SBL_SD_A53_APPIMAGE_FILENAME                ("/sd0/app_a53")
 #define TEST_SBL_SD_A53_SMP_FILENAME                     ("/sd0/app_smp")
 #define TEST_SBL_SD_A53_INVALID_IMGNAME                  ("/sd0/app_inv")
@@ -21,6 +61,14 @@
 #define TEST_SBL_SECOND_STAGE_RESERVED_MEMORY_START      (0x9CA00000)
 #define TEST_SBL_SECOND_STAGE_RESERVED_MEMORY_LENGTH     (0x1C08000)
 
+/*===================================================================*/
+/* 					     Typedefs 					         */
+/*===================================================================*/
+
+/*===================================================================*/
+/* 					  Global Variables				         */
+/*===================================================================*/
+
 #if defined(SOC_AM275X)
 /* AM275x has limited SRAM — use a smaller buffer that fits in the APPIMAGE region */
 uint8_t gAppimage[0x200000] __attribute__ ((section (".bss.app"), aligned (128)));
@@ -28,6 +76,10 @@ uint8_t gAppimage[0x200000] __attribute__ ((section (".bss.app"), aligned (128))
 uint8_t gAppimage[0x1900000] __attribute__ ((section (".bss.app"), aligned (128)));
 #endif
 float TestSbl_sdImageSz = 0.0;
+
+/*===================================================================*/
+/* 				  Function Declarations				         */
+/*===================================================================*/
 
 void TestSbl_singleCoreImageEmmcBoot(void *args);
 void TestSbl_singleCoreImageSdBoot(void *args);
@@ -75,16 +127,41 @@ void TestSbl_closeBootEMMC();
 void TestSbl_closeBootDriverFlash();
 void TestSbl_closeBootBoardFlash();
 
+/*===================================================================*/
+/* 				  Function Definitions				         */
+/*===================================================================*/
+
+/**
+ * @brief Unity per-test setup hook.
+ *
+ * Called automatically by the Unity framework before each test case.
+ *
+ * @return void
+ */
 void setUp(void)
 {
     /* Setup function nothing to perform */
 }
 
+/**
+ * @brief Unity per-test teardown hook.
+ *
+ * Called automatically by the Unity framework after each test case.
+ *
+ * @return void
+ */
 void tearDown(void)
 {
     /* Tear down function nothing to perform */
 }
 
+/**
+ * @brief Infinite loop for debug hold.
+ *
+ * Spins in an infinite loop, used for debug purposes.
+ *
+ * @return void
+ */
 void loop_forever()
 {
     volatile uint32_t loop = 1;
@@ -93,67 +170,76 @@ void loop_forever()
         ;
 }
 
+/**
+ * @brief Main SBL media boot test entry point.
+ *
+ * Initializes Unity, executes all SBL media boot test cases
+  * (eMMC, OSPI, SD single/multi/SMP boot, uniflash, parse), and
+  * finalizes the Unity framework.
+ *
+ * @return void
+ */
 void test_main(void * args)
 {
 
     UNITY_BEGIN();
     //media_all
-    RUN_TEST(TestSbl_singleCoreImageEmmcBoot,     8000, NULL);
-    RUN_TEST(TestSbl_singleCoreImageOspiBoot,     8000, NULL);
-    RUN_TEST(TestSbl_singleCoreImageSdBoot,       8000, NULL);
-    RUN_TEST(TestSbl_validateSingleCorePresent,   8000, NULL);
-    RUN_TEST(TestSbl_invalidImage,                8000, NULL);
-    RUN_TEST(TestSbl_validateGetMultiCoreImageSz, 8000, NULL);
-    RUN_TEST(TestSbl_validateMultiCorePresent,    8000, NULL);
-    RUN_TEST(TestSbl_runwithoutLoad,              8000, NULL);
-    RUN_TEST(TestSbl_runFail,                     8000, NULL);
-    RUN_TEST(TestSbl_isCorePresentFail,           8000, NULL);
-    RUN_TEST(TestSbl_setInvalidClkFreqFail,       8000, NULL);
-    RUN_TEST(TestSbl_runInvalidCore,              8000, NULL);
-    RUN_TEST(TestSbl_uniflashInvalidMagic,          8000, NULL);
-    RUN_TEST(TestSbl_uniflashInvalidOptype,         8000, NULL);
-    RUN_TEST(TestSbl_uniflashFlashAndVerify,        8000, NULL);
-    RUN_TEST(TestSbl_uniflashFlashErase,            8000, NULL);
-    RUN_TEST(TestSbl_uniflashFlashVerifyOnly,       8000, NULL);
-    RUN_TEST(TestSbl_uniflashFileSizeAlignment,     8000, NULL);
-    RUN_TEST(TestSbl_uniflashEmmcFlashAndVerify,    8000, NULL);
-    RUN_TEST(TestSbl_uniflashEmmcVerifyOnly,        8000, NULL);
-    RUN_TEST(TestSbl_uniflashEmmcFlashMultiBlock,   8000, NULL);
-    RUN_TEST(TestSbl_parseAppImageNullHandle,       8000, NULL);
-    RUN_TEST(TestSbl_parseAppImageInvalidMagic,     8000, NULL);
+    RUN_TEST(TestSbl_singleCoreImageEmmcBoot,     11410, NULL);
+    RUN_TEST(TestSbl_singleCoreImageOspiBoot,     11411, NULL);
+    RUN_TEST(TestSbl_singleCoreImageSdBoot,       11412, NULL);
+    RUN_TEST(TestSbl_validateSingleCorePresent,   11415, NULL);
+    RUN_TEST(TestSbl_invalidImage,                11423, NULL);
+    RUN_TEST(TestSbl_validateGetMultiCoreImageSz, 11413, NULL);
+    RUN_TEST(TestSbl_validateMultiCorePresent,    11414, NULL);
+    RUN_TEST(TestSbl_runwithoutLoad,              11417, NULL);
+    RUN_TEST(TestSbl_runFail,                     11416, NULL);
+    RUN_TEST(TestSbl_isCorePresentFail,           11418, NULL);
+    RUN_TEST(TestSbl_setInvalidClkFreqFail,       11420, NULL);
+    RUN_TEST(TestSbl_runInvalidCore,              11419, NULL);
+    RUN_TEST(TestSbl_uniflashInvalidMagic,          11427, NULL);
+    RUN_TEST(TestSbl_uniflashInvalidOptype,         11428, NULL);
+    RUN_TEST(TestSbl_uniflashFlashAndVerify,        11429, NULL);
+    RUN_TEST(TestSbl_uniflashFlashErase,            11430, NULL);
+    RUN_TEST(TestSbl_uniflashFlashVerifyOnly,       11431, NULL);
+    RUN_TEST(TestSbl_uniflashFileSizeAlignment,     11432, NULL);
+    RUN_TEST(TestSbl_uniflashEmmcFlashAndVerify,    11433, NULL);
+    RUN_TEST(TestSbl_uniflashEmmcVerifyOnly,        11434, NULL);
+    RUN_TEST(TestSbl_uniflashEmmcFlashMultiBlock,   11435, NULL);
+    RUN_TEST(TestSbl_parseAppImageNullHandle,       11422, NULL);
+    RUN_TEST(TestSbl_parseAppImageInvalidMagic,     11424, NULL);
     
     
     /* The following test cases have to enabled one by one 
      * due to failure in powering off the CPU 
     //media_1 
-    RUN_TEST(TestSbl_sdSmpBoot,                   8000, NULL);
+    RUN_TEST(TestSbl_sdSmpBoot,                   11436, NULL);
     //media_2
-    RUN_TEST(TestSbl_emmcSmpBoot,                 8000, NULL);
+    RUN_TEST(TestSbl_emmcSmpBoot,                 11437, NULL);
     //media_3
-    RUN_TEST(TestSbl_ospiSmpBoot,                 8000, NULL);
+    RUN_TEST(TestSbl_ospiSmpBoot,                 11438, NULL);
     //media_4
-    RUN_TEST(TestSbl_multiCoreImageSdBoot,        8000, NULL);
+    RUN_TEST(TestSbl_multiCoreImageSdBoot,        11439, NULL);
     //media_5
-    RUN_TEST(TestSbl_multiCoreImageEmmcBoot,      8000, NULL);
+    RUN_TEST(TestSbl_multiCoreImageEmmcBoot,      11440, NULL);
     //media_6
-    RUN_TEST(TestSbl_multiCoreImageOspiBoot,      8000, NULL); 
+    RUN_TEST(TestSbl_multiCoreImageOspiBoot,      11441, NULL); 
 
     //media_7
-    RUN_TEST(TestSbl_runSelfCpuSetup,               8000, NULL);
+    RUN_TEST(TestSbl_runSelfCpuSetup,               11442, NULL);
     //media_8
-    RUN_TEST(TestSbl_jumpSelfCpuSetup,              8000, NULL);
+    RUN_TEST(TestSbl_jumpSelfCpuSetup,              11443, NULL);
 
     //media_9
-    RUN_TEST(TestSbl_runSelfCpuSdBoot,            8000, NULL);
+    RUN_TEST(TestSbl_runSelfCpuSdBoot,            11444, NULL);
     //media_10
-    RUN_TEST(TestSbl_jumpSelfCpuSdBoot,           8000, NULL);
+    RUN_TEST(TestSbl_jumpSelfCpuSdBoot,           11445, NULL);
 
     //media_11
-    RUN_TEST(TestSbl_parseAppImageSdBoot,           8000, NULL);
+    RUN_TEST(TestSbl_parseAppImageSdBoot,           11421, NULL);
     //media_12
-    RUN_TEST(TestSbl_parseAppImageMultiCore,        8000, NULL);
+    RUN_TEST(TestSbl_parseAppImageMultiCore,        11425, NULL);
     //media_13
-    RUN_TEST(TestSbl_parseAppImageSingleCorePresent, 8000, NULL);
+    RUN_TEST(TestSbl_parseAppImageSingleCorePresent, 11426, NULL);
     
     *
     */
@@ -169,22 +255,32 @@ void test_main(void * args)
 
 #if !defined(SOC_AM275X)
 
+/**
+ * @brief Single-core image boot from eMMC.
+ *
+ * Opens the eMMC bootloader, parses and loads a single-core MCU R5 image,
+  * boots the core, waits for IPC sync, and resets the CPU.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_singleCoreImageEmmcBoot(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+    Bootloader_BootImageInfo bootImageInfoMCU;
+    Bootloader_Params        bootParamsMCU;
+    Bootloader_Handle        bootHandleMCU = NULL;
+
     DebugP_log("Starting TestSbl_singleCoreImageEmmcBoot test...\r\n");
-    
-    /* Open the EMMC bootloader instance since it 
-     * not opened in the generated files 
+
+    /* Open the EMMC bootloader instance since it
+     * not opened in the generated files
      */
-    status = TestSbl_openBootEMMC(); 
+    status = TestSbl_openBootEMMC();
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
     Bootloader_openDma();
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
-
-    Bootloader_BootImageInfo bootImageInfoMCU;
-    Bootloader_Params bootParamsMCU;
-    Bootloader_Handle bootHandleMCU = NULL;
 
     Bootloader_Params_init(&bootParamsMCU);
     Bootloader_BootImageInfo_init(&bootImageInfoMCU);
@@ -235,9 +331,23 @@ void TestSbl_singleCoreImageEmmcBoot(void *args)
     TestSbl_closeBootEMMC();
 }
 
+/**
+ * @brief Single-core image boot from OSPI flash.
+ *
+ * Opens the OSPI bootloader, parses and loads a single-core C75 DSP image,
+  * boots the core, waits for IPC sync, and resets the CPU.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_singleCoreImageOspiBoot(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+    Bootloader_BootImageInfo bootImageInfoDSP;
+    Bootloader_Params        bootParamsDSP;
+    Bootloader_Handle        bootHandleDSP = NULL;
+
     DebugP_log("Starting TestSbl_singleCoreImageOspiBoot test... \r\n");
 
     /* Open the bootloader OSPI and Flash
@@ -253,10 +363,6 @@ void TestSbl_singleCoreImageOspiBoot(void *args)
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
 
     Bootloader_openDma();
-    Bootloader_BootImageInfo bootImageInfoDSP;
-    Bootloader_Params bootParamsDSP;
-    Bootloader_Handle bootHandleDSP = NULL;
-
     Bootloader_Params_init(&bootParamsDSP);
     Bootloader_BootImageInfo_init(&bootImageInfoDSP);
     
@@ -305,32 +411,41 @@ void TestSbl_singleCoreImageOspiBoot(void *args)
     TestSbl_closeBootDriverFlash();
 }
 
+/**
+ * @brief Single-core image boot from SD card.
+ *
+ * Opens the SD bootloader, parses and loads a single-core A53 image,
+  * boots the core, waits for IPC sync, and resets the CPU.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_singleCoreImageSdBoot(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+    Bootloader_BootImageInfo bootImageInfoA53;
+    Bootloader_Params        bootParamsA53;
+    Bootloader_Handle        bootHandleA53 = NULL;
+    Bootloader_Config       *bootConfigA53;
 
-    /* For SD boot the instance is already opened 
+    /* For SD boot the instance is already opened
      * from the main.
      */
     DebugP_log("Starting TestSbl_singleCoreImageSdBoot test... \r\n");
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
 
     Bootloader_openDma();
-    Bootloader_BootImageInfo bootImageInfoA53;
-    Bootloader_Params bootParamsA53;
-    Bootloader_Handle bootHandleA53 = NULL;
-
     Bootloader_Params_init(&bootParamsA53);
     Bootloader_BootImageInfo_init(&bootImageInfoA53);
     bootParamsA53.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
-    
-    status = TestSbl_openSdImage(TEST_SBL_SD_A53_APPIMAGE_FILENAME); 
+
+    status = TestSbl_openSdImage(TEST_SBL_SD_A53_APPIMAGE_FILENAME);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     bootHandleA53 = Bootloader_open(CONFIG_BOOTLOADER_SD_A53, &bootParamsA53);
     TEST_ASSERT_NOT_NULL(bootHandleA53);
 
-    Bootloader_Config *bootConfigA53;
     bootConfigA53 = (Bootloader_Config *)bootHandleA53;
     bootConfigA53->coresPresentMap = 0;
     status = Bootloader_parseMultiCoreAppImage(bootHandleA53, &bootImageInfoA53);
@@ -369,32 +484,41 @@ void TestSbl_singleCoreImageSdBoot(void *args)
     Bootloader_close(bootHandleA53);
 }
 
+/**
+ * @brief Run CPU with NULL handle and NULL cpuInfo.
+ *
+ * Verifies Bootloader_runCpu returns FAILURE when called with
+  * NULL handle or NULL cpuInfo pointer.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_runFail(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+    Bootloader_BootImageInfo bootImageInfoA53;
+    Bootloader_Params        bootParamsA53;
+    Bootloader_Handle        bootHandleA53 = NULL;
+    Bootloader_Config       *bootConfigA53;
 
-    /* For SD boot the instance is already opened 
+    /* For SD boot the instance is already opened
      * from the main.
      */
     DebugP_log("Starting TestSbl_runFail... \r\n");
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
 
     Bootloader_openDma();
-    Bootloader_BootImageInfo bootImageInfoA53;
-    Bootloader_Params bootParamsA53;
-    Bootloader_Handle bootHandleA53 = NULL;
-
     Bootloader_Params_init(&bootParamsA53);
     Bootloader_BootImageInfo_init(&bootImageInfoA53);
     bootParamsA53.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
-    
-    status = TestSbl_openSdImage(TEST_SBL_SD_A53_APPIMAGE_FILENAME); 
+
+    status = TestSbl_openSdImage(TEST_SBL_SD_A53_APPIMAGE_FILENAME);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     bootHandleA53 = Bootloader_open(CONFIG_BOOTLOADER_SD_A53, &bootParamsA53);
     TEST_ASSERT_NOT_NULL(bootHandleA53);
 
-    Bootloader_Config *bootConfigA53;
     bootConfigA53 = (Bootloader_Config *)bootHandleA53;
     bootConfigA53->coresPresentMap = 0;
     status = Bootloader_parseMultiCoreAppImage(bootHandleA53, &bootImageInfoA53);
@@ -428,32 +552,40 @@ void TestSbl_runFail(void *args)
     Bootloader_close(bootHandleA53);
 }
 
+/**
+ * @brief Check core presence with invalid core ID.
+ *
+ * Verifies Bootloader_isCorePresent returns 0 for an out-of-range core ID.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_isCorePresentFail(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+    Bootloader_BootImageInfo bootImageInfoA53;
+    Bootloader_Params        bootParamsA53;
+    Bootloader_Handle        bootHandleA53 = NULL;
+    Bootloader_Config       *bootConfigA53;
 
-    /* For SD boot the instance is already opened 
+    /* For SD boot the instance is already opened
      * from the main.
      */
     DebugP_log("Starting TestSbl_isCorePresentFail test... \r\n");
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
 
     Bootloader_openDma();
-    Bootloader_BootImageInfo bootImageInfoA53;
-    Bootloader_Params bootParamsA53;
-    Bootloader_Handle bootHandleA53 = NULL;
-
     Bootloader_Params_init(&bootParamsA53);
     Bootloader_BootImageInfo_init(&bootImageInfoA53);
     bootParamsA53.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
-    
-    status = TestSbl_openSdImage(TEST_SBL_SD_A53_APPIMAGE_FILENAME); 
+
+    status = TestSbl_openSdImage(TEST_SBL_SD_A53_APPIMAGE_FILENAME);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     bootHandleA53 = Bootloader_open(CONFIG_BOOTLOADER_SD_A53, &bootParamsA53);
     TEST_ASSERT_NOT_NULL(bootHandleA53);
 
-    Bootloader_Config *bootConfigA53;
     bootConfigA53 = (Bootloader_Config *)bootHandleA53;
     bootConfigA53->coresPresentMap = 0;
     status = Bootloader_parseMultiCoreAppImage(bootHandleA53, &bootImageInfoA53);
@@ -476,32 +608,41 @@ void TestSbl_isCorePresentFail(void *args)
     Bootloader_close(bootHandleA53);    
 }
 
+/**
+ * @brief Set CPU clock frequency to zero.
+ *
+ * Sets cpuInfo clkHz to 0 before Bootloader_loadCpu. Verifies the
+  * load fails due to invalid clock frequency.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_setInvalidClkFreqFail(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+    Bootloader_BootImageInfo bootImageInfoA53;
+    Bootloader_Params        bootParamsA53;
+    Bootloader_Handle        bootHandleA53 = NULL;
+    Bootloader_Config       *bootConfigA53;
 
-    /* For SD boot the instance is already opened 
+    /* For SD boot the instance is already opened
      * from the main.
      */
     DebugP_log("Starting TestSbl_setInvalidClkFreqFail test... \r\n");
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
 
     Bootloader_openDma();
-    Bootloader_BootImageInfo bootImageInfoA53;
-    Bootloader_Params bootParamsA53;
-    Bootloader_Handle bootHandleA53 = NULL;
-
     Bootloader_Params_init(&bootParamsA53);
     Bootloader_BootImageInfo_init(&bootImageInfoA53);
     bootParamsA53.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
-    
-    status = TestSbl_openSdImage(TEST_SBL_SD_A53_APPIMAGE_FILENAME); 
+
+    status = TestSbl_openSdImage(TEST_SBL_SD_A53_APPIMAGE_FILENAME);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     bootHandleA53 = Bootloader_open(CONFIG_BOOTLOADER_SD_A53, &bootParamsA53);
     TEST_ASSERT_NOT_NULL(bootHandleA53);
 
-    Bootloader_Config *bootConfigA53;
     bootConfigA53 = (Bootloader_Config *)bootHandleA53;
     bootConfigA53->coresPresentMap = 0;
     status = Bootloader_parseMultiCoreAppImage(bootHandleA53, &bootImageInfoA53);
@@ -527,32 +668,41 @@ void TestSbl_setInvalidClkFreqFail(void *args)
     Bootloader_close(bootHandleA53);
 }
 
+/**
+ * @brief Run a different core than the one loaded.
+ *
+ * Loads an A53 image but attempts to run C75 core, which was not loaded.
+  * Verifies Bootloader_runCpu returns FAILURE.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_runInvalidCore(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+    Bootloader_BootImageInfo bootImageInfoA53;
+    Bootloader_Params        bootParamsA53;
+    Bootloader_Handle        bootHandleA53 = NULL;
+    Bootloader_Config       *bootConfigA53;
 
-    /* For SD boot the instance is already opened 
+    /* For SD boot the instance is already opened
      * from the main.
      */
     DebugP_log("Starting TestSbl_runInvalidCore test... \r\n");
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
 
     Bootloader_openDma();
-    Bootloader_BootImageInfo bootImageInfoA53;
-    Bootloader_Params bootParamsA53;
-    Bootloader_Handle bootHandleA53 = NULL;
-
     Bootloader_Params_init(&bootParamsA53);
     Bootloader_BootImageInfo_init(&bootImageInfoA53);
     bootParamsA53.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
-    
-    status = TestSbl_openSdImage(TEST_SBL_SD_A53_APPIMAGE_FILENAME); 
+
+    status = TestSbl_openSdImage(TEST_SBL_SD_A53_APPIMAGE_FILENAME);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     bootHandleA53 = Bootloader_open(CONFIG_BOOTLOADER_SD_A53, &bootParamsA53);
     TEST_ASSERT_NOT_NULL(bootHandleA53);
 
-    Bootloader_Config *bootConfigA53;
     bootConfigA53 = (Bootloader_Config *)bootHandleA53;
     bootConfigA53->coresPresentMap = 0;
     status = Bootloader_parseMultiCoreAppImage(bootHandleA53, &bootImageInfoA53);
@@ -585,30 +735,78 @@ void TestSbl_runInvalidCore(void *args)
     Bootloader_close(bootHandleA53);
 }
 
+/**
+ * @brief Set default clocks, load the SMP A53 CPU, and add profiling entries for
+ *        all four A53 sub-system cores.
+ *
+ * Sets default clock frequencies for A53SS0_0, A53SS0_1, A53SS1_0 and A53SS1_1,
+ * loads the A53SS0_0 CPU image (which covers all four SMP cores), and records
+ * a profiling point for each core.
+ *
+ * @param[in]  bootHandle      Bootloader handle for the A53 boot media.
+ * @param[in]  pBootImageInfo  Pointer to the boot image info structure to be updated.
+ *
+ * @return SystemP_SUCCESS on success; SystemP_FAILURE otherwise.
+ */
+static int32_t TestSbl_loadSmpA53Cores(Bootloader_Handle bootHandle,
+                                       Bootloader_BootImageInfo *pBootImageInfo)
+{
+    int32_t status;
+
+    pBootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
+    pBootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_1].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_1);
+    pBootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_0);
+    pBootImageInfo->cpuInfo[CSL_CORE_ID_A53SS1_1].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_1);
+    status = Bootloader_loadCpu(bootHandle, &(pBootImageInfo->cpuInfo[CSL_CORE_ID_A53SS0_0]));
+
+    Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
+    Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_A53SS0_0)");
+
+    Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_1);
+    Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_A53SS0_1)");
+
+    Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_0);
+    Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_A53SS1_0)");
+
+    Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_1);
+    Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_A53SS1_1)");
+
+    return status;
+}
+
+/**
+ * @brief SMP A53 boot from SD card.
+ *
+ * Boots all four A53 cores in SMP mode from SD card, waits for IPC sync,
+  * and resets all cores.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_sdSmpBoot(void *args)
 {   
     int32_t status = SystemP_SUCCESS;
     uint32_t loopVar;
+    Bootloader_BootImageInfo bootImageInfoA53;
+    Bootloader_Params        bootParamsA53;
+    Bootloader_Handle        bootHandleA53 = NULL;
+    Bootloader_Config       *bootConfigA53;
 
     DebugP_log("Starting TestSbl_sdSmpBoot test... \r\n");
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
 
     Bootloader_openDma();
-    Bootloader_BootImageInfo bootImageInfoA53;
-    Bootloader_Params bootParamsA53;
-    Bootloader_Handle bootHandleA53 = NULL;
-
     Bootloader_Params_init(&bootParamsA53);
     Bootloader_BootImageInfo_init(&bootImageInfoA53);
     bootParamsA53.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
-    
-    status = TestSbl_openSdImage(TEST_SBL_SD_A53_SMP_FILENAME); 
+
+    status = TestSbl_openSdImage(TEST_SBL_SD_A53_SMP_FILENAME);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     bootHandleA53 = Bootloader_open(CONFIG_BOOTLOADER_SD_SMP, &bootParamsA53);
     TEST_ASSERT_NOT_NULL(bootHandleA53);
 
-    Bootloader_Config *bootConfigA53;
     bootConfigA53 = (Bootloader_Config *)bootHandleA53;
     bootConfigA53->coresPresentMap = 0;
     status = Bootloader_parseMultiCoreAppImage(bootHandleA53, &bootImageInfoA53);
@@ -619,23 +817,7 @@ void TestSbl_sdSmpBoot(void *args)
     
     if(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].smpEnable == true)
     {
-        bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
-        bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_1].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_1);
-        bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS1_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_0);
-        bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS1_1].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_1);
-        status = Bootloader_loadCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0]));
-
-        Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
-        Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_A53SS0_0)");
-
-        Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_1);
-        Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_A53SS0_1)");
-
-        Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_0);
-        Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_A53SS1_0)");
-
-        Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_1);
-        Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_A53SS1_1)");
+        status = TestSbl_loadSmpA53Cores(bootHandleA53, &bootImageInfoA53);
     }
     else
     {   
@@ -668,41 +850,49 @@ void TestSbl_sdSmpBoot(void *args)
     Bootloader_close(bootHandleA53);
 }
 
+/**
+ * @brief Multi-core image boot from SD card.
+ *
+ * Boots MCU R5, A53, and C75 cores simultaneously from a multicore
+  * SD appimage, waits for IPC sync from each, and resets all cores.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_multiCoreImageSdBoot(void *args)
 {
     int32_t status = SystemP_SUCCESS;
     uint32_t loopVar;
-    
-    /* The test exeecutable to be booted is ipc_rpmsg
+    uint32_t numCores;
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
+    Bootloader_Config       *bootConfig;
+    /* The test executable to be booted is ipc_rpmsg
      * system project for AM62DX which has the following
      * cores enabled
      */
     uint32_t enabledCores[] = { CSL_CORE_ID_MCU_R5FSS0_0,
-                                CSL_CORE_ID_A53SS0_0,     
+                                CSL_CORE_ID_A53SS0_0,
                                 CSL_CORE_ID_C75SS0_0,
                               };
-    uint32_t numCores = sizeof(enabledCores)/sizeof(enabledCores[0]);
-                               
-    
+    numCores = sizeof(enabledCores)/sizeof(enabledCores[0]);
+
     DebugP_log("Starting TestSbl_multiCoreImageSdBoot... \r\n");
-    Bootloader_profileAddProfilePoint("SBL Drivers_open"); 
+    Bootloader_profileAddProfilePoint("SBL Drivers_open");
 
     Bootloader_openDma();
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
-
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
     bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
 
-    status = TestSbl_openSdImage(TEST_SBL_SD_MULTICORE_IMG); 
+    status = TestSbl_openSdImage(TEST_SBL_SD_MULTICORE_IMG);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     bootHandle = Bootloader_open(CONFIG_BOOTLOADER_SD_MULTICORE, &bootParams);
     TEST_ASSERT_NOT_NULL(bootHandle);
 
-    Bootloader_Config *bootConfig;
     bootConfig = (Bootloader_Config *)bootHandle;
     bootConfig->coresPresentMap = 0;
     status = Bootloader_parseMultiCoreAppImage(bootHandle, &bootImageInfo);
@@ -764,23 +954,33 @@ void TestSbl_multiCoreImageSdBoot(void *args)
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief SMP A53 boot from eMMC.
+ *
+ * Boots all four A53 cores in SMP mode from eMMC, waits for IPC sync,
+  * and resets all cores.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_emmcSmpBoot(void *args)
 {
     int32_t status = SystemP_SUCCESS;
     uint32_t loopVar;
+    Bootloader_BootImageInfo bootImageInfoA53;
+    Bootloader_Params        bootParamsA53;
+    Bootloader_Handle        bootHandleA53 = NULL;
+
     DebugP_log("Starting TestSbl_emmcSmpBoot...\r\n");
-    
-    /* Open the EMMC bootloader instance since it 
-     * not opened in the generated files 
+
+    /* Open the EMMC bootloader instance since it
+     * not opened in the generated files
      */
-    status = TestSbl_openBootEMMC(); 
+    status = TestSbl_openBootEMMC();
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
     Bootloader_openDma();
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
-
-    Bootloader_BootImageInfo bootImageInfoA53;
-    Bootloader_Params bootParamsA53;
-    Bootloader_Handle bootHandleA53 = NULL;
 
     Bootloader_Params_init(&bootParamsA53);
     Bootloader_BootImageInfo_init(&bootImageInfoA53);
@@ -795,16 +995,7 @@ void TestSbl_emmcSmpBoot(void *args)
 
     if(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].smpEnable == true)
     {
-        bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
-        bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_1].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_1);
-        bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS1_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_0);
-        bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS1_1].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_1);
-
-        Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
-        Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_1);
-        Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_0);
-        Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_1);
-        status = Bootloader_loadCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0]));
+        status = TestSbl_loadSmpA53Cores(bootHandleA53, &bootImageInfoA53);
     }
     else
     {
@@ -838,30 +1029,40 @@ void TestSbl_emmcSmpBoot(void *args)
     TestSbl_closeBootEMMC();
 }
 
+/**
+ * @brief Multi-core image boot from eMMC.
+ *
+ * Boots MCU R5, A53, and C75 cores simultaneously from a multicore
+  * eMMC appimage, waits for IPC sync from each, and resets all cores.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_multiCoreImageEmmcBoot(void *args)
 {
     int32_t status = SystemP_SUCCESS;
     uint32_t loopVar;
-    DebugP_log("Starting TestSbl_multiCoreImageEmmcBoot...\r\n");
-    
-    status = TestSbl_openBootEMMC(); 
-    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-    Bootloader_openDma();
-    Bootloader_profileAddProfilePoint("SBL Drivers_open");
-
+    uint32_t numCores;
     Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
-
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
     /* The test executable to be booted is ipc_rpmsg
      * system project for AM62DX which has the following
      * cores enabled
      */
     uint32_t enabledCores[] = { CSL_CORE_ID_MCU_R5FSS0_0,
-                                CSL_CORE_ID_A53SS0_0,     
+                                CSL_CORE_ID_A53SS0_0,
                                 CSL_CORE_ID_C75SS0_0,
                               };
-    uint32_t numCores = sizeof(enabledCores)/sizeof(enabledCores[0]);
+    numCores = sizeof(enabledCores)/sizeof(enabledCores[0]);
+
+    DebugP_log("Starting TestSbl_multiCoreImageEmmcBoot...\r\n");
+
+    status = TestSbl_openBootEMMC();
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+    Bootloader_openDma();
+    Bootloader_profileAddProfilePoint("SBL Drivers_open");
 
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
@@ -937,10 +1138,24 @@ void TestSbl_multiCoreImageEmmcBoot(void *args)
     TestSbl_closeBootEMMC();
 }
 
+/**
+ * @brief SMP A53 boot from OSPI flash.
+ *
+ * Boots all four A53 cores in SMP mode from OSPI flash, waits for IPC
+  * sync, and resets all cores.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_ospiSmpBoot(void *args)
 {
     int32_t status = SystemP_SUCCESS;
     uint32_t loopVar;
+    Bootloader_BootImageInfo bootImageInfoA53;
+    Bootloader_Params        bootParamsA53;
+    Bootloader_Handle        bootHandleA53 = NULL;
+
     DebugP_log("Starting TestSbl_ospiSmpBoot... \r\n");
 
     /* Open the bootloader OSPI and Flash
@@ -956,10 +1171,6 @@ void TestSbl_ospiSmpBoot(void *args)
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
 
     Bootloader_openDma();
-    Bootloader_BootImageInfo bootImageInfoA53;
-    Bootloader_Params bootParamsA53;
-    Bootloader_Handle bootHandleA53 = NULL;
-
     Bootloader_Params_init(&bootParamsA53);
     Bootloader_BootImageInfo_init(&bootImageInfoA53);
     
@@ -974,16 +1185,7 @@ void TestSbl_ospiSmpBoot(void *args)
 
     if(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].smpEnable == true)
     {
-        bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
-        bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_1].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_1);
-        bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS1_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_0);
-        bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS1_1].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS1_1);
-
-        Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
-        Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_1);
-        Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_0);
-        Bootloader_profileAddCore(CSL_CORE_ID_A53SS1_1);
-        status = Bootloader_loadCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0]));
+        status = TestSbl_loadSmpA53Cores(bootHandleA53, &bootImageInfoA53);
     }
     else
     {
@@ -1021,21 +1223,35 @@ void TestSbl_ospiSmpBoot(void *args)
     TestSbl_closeBootDriverFlash();
 }
 
+/**
+ * @brief Multi-core image boot from OSPI flash.
+ *
+ * Boots MCU R5, A53, and C75 cores simultaneously from a multicore
+  * OSPI flash appimage, waits for IPC sync from each, and resets all cores.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_multiCoreImageOspiBoot(void *args)
 {
     int32_t status = SystemP_SUCCESS;
     uint32_t loopVar;
-    DebugP_log("Starting TestSbl_multiCoreImageOspiBoot... \r\n");
-
+    uint32_t numCores;
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
     /* The test executable to be booted is ipc_rpmsg
      * system project for AM62DX which has the following
      * cores enabled
      */
     uint32_t enabledCores[] = { CSL_CORE_ID_MCU_R5FSS0_0,
-                                CSL_CORE_ID_A53SS0_0,     
+                                CSL_CORE_ID_A53SS0_0,
                                 CSL_CORE_ID_C75SS0_0,
                               };
-    uint32_t numCores = sizeof(enabledCores)/sizeof(enabledCores[0]);
+    numCores = sizeof(enabledCores)/sizeof(enabledCores[0]);
+
+    DebugP_log("Starting TestSbl_multiCoreImageOspiBoot... \r\n");
 
     /* Open the bootloader OSPI and Flash
      * instances as they are not opened
@@ -1050,10 +1266,6 @@ void TestSbl_multiCoreImageOspiBoot(void *args)
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
 
     Bootloader_openDma();
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
-
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
     
@@ -1129,9 +1341,23 @@ void TestSbl_multiCoreImageOspiBoot(void *args)
     
 }
 
+/**
+ * @brief Run CPU without prior image loading.
+ *
+ * Parses an appimage but skips Bootloader_loadCpu, then calls
+  * Bootloader_runCpu. Verifies it returns FAILURE.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_runwithoutLoad(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+    Bootloader_BootImageInfo bootImageInfoA53;
+    Bootloader_Params        bootParamsA53;
+    Bootloader_Handle        bootHandleA53 = NULL;
+    Bootloader_Config       *bootConfigA53;
 
     /* For SD boot the instance is already opened 
      * from the main.
@@ -1140,10 +1366,6 @@ void TestSbl_runwithoutLoad(void *args)
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
 
     Bootloader_openDma();
-    Bootloader_BootImageInfo bootImageInfoA53;
-    Bootloader_Params bootParamsA53;
-    Bootloader_Handle bootHandleA53 = NULL;
-
     Bootloader_Params_init(&bootParamsA53);
     Bootloader_BootImageInfo_init(&bootImageInfoA53);
     bootParamsA53.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
@@ -1154,7 +1376,6 @@ void TestSbl_runwithoutLoad(void *args)
     bootHandleA53 = Bootloader_open(CONFIG_BOOTLOADER_SD_A53, &bootParamsA53);
     TEST_ASSERT_NOT_NULL(bootHandleA53);
 
-    Bootloader_Config *bootConfigA53;
     bootConfigA53 = (Bootloader_Config *)bootHandleA53;
     bootConfigA53->coresPresentMap = 0;
     status = Bootloader_parseMultiCoreAppImage(bootHandleA53, &bootImageInfoA53);
@@ -1179,12 +1400,26 @@ void TestSbl_runwithoutLoad(void *args)
     Bootloader_close(bootHandleA53);
 }
 
+/**
+ * @brief Power off CPU after successful boot and verify state.
+ *
+ * Boots A53 via SD, waits for IPC sync, powers off, and queries TIFS
+  * to verify the core is in HW_STATE_OFF.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_powerOffAfterLoadSuccess(void *args)
 {
     int32_t status = SystemP_SUCCESS;
     uint32_t moduleState = TISCI_MSG_VALUE_DEVICE_HW_STATE_TRANS;
     uint32_t resetState = 0;
     uint32_t contextLossState = 0;
+    Bootloader_BootImageInfo bootImageInfoA53;
+    Bootloader_Params        bootParamsA53;
+    Bootloader_Handle        bootHandleA53 = NULL;
+    Bootloader_Config       *bootConfigA53;
 
     /* For SD boot the instance is already opened 
      * from the main.
@@ -1193,10 +1428,6 @@ void TestSbl_powerOffAfterLoadSuccess(void *args)
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
 
     Bootloader_openDma();
-    Bootloader_BootImageInfo bootImageInfoA53;
-    Bootloader_Params bootParamsA53;
-    Bootloader_Handle bootHandleA53 = NULL;
-
     Bootloader_Params_init(&bootParamsA53);
     Bootloader_BootImageInfo_init(&bootImageInfoA53);
     bootParamsA53.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
@@ -1207,7 +1438,6 @@ void TestSbl_powerOffAfterLoadSuccess(void *args)
     bootHandleA53 = Bootloader_open(CONFIG_BOOTLOADER_SD_A53, &bootParamsA53);
     TEST_ASSERT_NOT_NULL(bootHandleA53);
 
-    Bootloader_Config *bootConfigA53;
     bootConfigA53 = (Bootloader_Config *)bootHandleA53;
     bootConfigA53->coresPresentMap = 0;
     status = Bootloader_parseMultiCoreAppImage(bootHandleA53, &bootImageInfoA53);
@@ -1224,8 +1454,6 @@ void TestSbl_powerOffAfterLoadSuccess(void *args)
 
     status = Bootloader_runCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0]));
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-
-
 
     Bootloader_closeDma();
     Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootHandleA53));
@@ -1254,18 +1482,28 @@ void TestSbl_powerOffAfterLoadSuccess(void *args)
     Bootloader_close(bootHandleA53);
 }
 
+/**
+ * @brief Validate multicore presence bitmap after parsing.
+ *
+ * Parses a multicore SD appimage and verifies that all expected cores
+  * (MCU R5, A53, C75) are reported as present via Bootloader_isCorePresent.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_validateMultiCorePresent(void *args)
 { 
     int32_t status = SystemP_SUCCESS;
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
+    Bootloader_Config       *bootConfig;
     
     DebugP_log("Starting TestSbl_validateMultiCorePresent... \r\n");
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
     
     Bootloader_openDma();
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
-    
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
     bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
@@ -1276,7 +1514,6 @@ void TestSbl_validateMultiCorePresent(void *args)
     bootHandle = Bootloader_open(CONFIG_BOOTLOADER_SD_MULTICORE, &bootParams);
     TEST_ASSERT_NOT_NULL(bootHandle);
 
-    Bootloader_Config *bootConfig;
     bootConfig = (Bootloader_Config *)bootHandle;
     bootConfig->coresPresentMap = 0;
     status = Bootloader_parseMultiCoreAppImage(bootHandle, &bootImageInfo);
@@ -1296,11 +1533,25 @@ void TestSbl_validateMultiCorePresent(void *args)
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Validate multicore image size after parsing.
+ *
+ * Parses an SD appimage and verifies that Bootloader_getMulticoreImageSize
+  * returns a value within expected bounds of the original file size.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_validateGetMultiCoreImageSz(void *args)
 {
     int32_t status = SystemP_SUCCESS;
     float size;
     float minSize, maxSize;
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
+    Bootloader_Config       *bootConfig;
 
     /* For this test case the A53 NORTOS
      * example of ipc_rpmsg_echo is to be
@@ -1311,10 +1562,6 @@ void TestSbl_validateGetMultiCoreImageSz(void *args)
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
  
     Bootloader_openDma();
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
-
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
     bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
@@ -1328,7 +1575,6 @@ void TestSbl_validateGetMultiCoreImageSz(void *args)
     bootHandle = Bootloader_open(CONFIG_BOOTLOADER_SD_A53, &bootParams);
     TEST_ASSERT_NOT_NULL(bootHandle);
  
-    Bootloader_Config *bootConfig;
     bootConfig = (Bootloader_Config *)bootHandle;
     bootConfig->coresPresentMap = 0;
     status = Bootloader_parseMultiCoreAppImage(bootHandle, &bootImageInfo);
@@ -1340,19 +1586,29 @@ void TestSbl_validateGetMultiCoreImageSz(void *args)
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Validate single-core presence in appimage.
+ *
+ * Parses a single-core A53 appimage and verifies that only A53SS0_0
+  * is reported as present while all other cores are absent.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_validateSingleCorePresent(void *args)
 {
     int32_t status = SystemP_SUCCESS;
     uint32_t loopVar;
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
+    Bootloader_Config       *bootConfig;
     
     DebugP_log("Starting TestSbl_validateSingleCorePresent... \r\n");
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
     
     Bootloader_openDma();
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
-    
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
     bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
@@ -1363,7 +1619,6 @@ void TestSbl_validateSingleCorePresent(void *args)
     bootHandle = Bootloader_open(CONFIG_BOOTLOADER_SD_A53, &bootParams);
     TEST_ASSERT_NOT_NULL(bootHandle);
 
-    Bootloader_Config *bootConfig;
     bootConfig = (Bootloader_Config *)bootHandle;
     bootConfig->coresPresentMap = 0;
     status = Bootloader_parseMultiCoreAppImage(bootHandle, &bootImageInfo);
@@ -1387,17 +1642,28 @@ void TestSbl_validateSingleCorePresent(void *args)
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Parse invalid/corrupt appimage.
+ *
+ * Attempts to parse an appimage with invalid content and verifies
+  * that Bootloader_parseMultiCoreAppImage returns FAILURE.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_invalidImage(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
+    Bootloader_Config       *bootConfig;
+
     DebugP_log("Starting TestSbl_invalidImage... \r\n");
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
 
     Bootloader_openDma();
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
-
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
     bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
@@ -1408,7 +1674,6 @@ void TestSbl_invalidImage(void *args)
     bootHandle = Bootloader_open(CONFIG_BOOTLOADER_SD_A53, &bootParams);
     TEST_ASSERT_NOT_NULL(bootHandle);
 
-    Bootloader_Config *bootConfig;
     bootConfig = (Bootloader_Config *)bootHandle;
     bootConfig->coresPresentMap = 0;
     status = Bootloader_parseMultiCoreAppImage(bootHandle, &bootImageInfo);
@@ -1429,6 +1694,9 @@ void TestSbl_invalidImage(void *args)
 
 void TestSbl_singleCoreImageEmmcBoot(void *args)
 {
+    Bootloader_Params bootParams;
+    Bootloader_Handle bootHandle = NULL;
+
     DebugP_log("Starting TestSbl_singleCoreImageEmmcBoot test (AM275x)...\r\n");
 
     /*
@@ -1436,9 +1704,6 @@ void TestSbl_singleCoreImageEmmcBoot(void *args)
      * initialized it. Calling MMCSD_open() again hangs. Just verify
      * the bootloader open/close infrastructure works.
      */
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
-
     Bootloader_Params_init(&bootParams);
 
     bootHandle = Bootloader_open(CONFIG_BOOTLOADER_EMMC_MCU, &bootParams);
@@ -1447,8 +1712,21 @@ void TestSbl_singleCoreImageEmmcBoot(void *args)
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Single-core image boot from OSPI flash.
+ *
+ * Opens the OSPI bootloader, parses and loads a single-core C75 DSP image,
+  * boots the core, waits for IPC sync, and resets the CPU.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_singleCoreImageOspiBoot(void *args)
 {
+    Bootloader_Params bootParams;
+    Bootloader_Handle bootHandle = NULL;
+
     DebugP_log("Starting TestSbl_singleCoreImageOspiBoot test (AM275x)...\r\n");
 
     /*
@@ -1456,9 +1734,6 @@ void TestSbl_singleCoreImageOspiBoot(void *args)
      * initialized it. Calling OSPI_open() again hangs. Just verify
      * the bootloader open/close infrastructure works.
      */
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
-
     Bootloader_Params_init(&bootParams);
 
     bootHandle = Bootloader_open(CONFIG_BOOTLOADER_FLASH_DSP, &bootParams);
@@ -1467,21 +1742,40 @@ void TestSbl_singleCoreImageOspiBoot(void *args)
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Single-core image boot from SD card.
+ *
+ * Opens the SD bootloader, parses and loads a single-core A53 image,
+  * boots the core, waits for IPC sync, and resets the CPU.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_singleCoreImageSdBoot(void *args)
 {
     DebugP_log("Skipping TestSbl_singleCoreImageSdBoot — AM275x has no SD boot\r\n");
     TEST_IGNORE_MESSAGE("SD boot not available on AM275x");
 }
 
+/**
+ * @brief Run CPU with NULL handle and NULL cpuInfo.
+ *
+ * Verifies Bootloader_runCpu returns FAILURE when called with
+  * NULL handle or NULL cpuInfo pointer.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_runFail(void *args)
 {
     int32_t status;
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
 
     DebugP_log("Starting TestSbl_runFail test (AM275x)...\r\n");
-
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
 
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
@@ -1501,14 +1795,22 @@ void TestSbl_runFail(void *args)
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Check core presence with invalid core ID.
+ *
+ * Verifies Bootloader_isCorePresent returns 0 for an out-of-range core ID.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_isCorePresentFail(void *args)
 {
     int32_t status;
-
-    DebugP_log("Starting TestSbl_isCorePresentFail test (AM275x)...\r\n");
-
     Bootloader_Params bootParams;
     Bootloader_Handle bootHandle = NULL;
+
+    DebugP_log("Starting TestSbl_isCorePresentFail test (AM275x)...\r\n");
 
     Bootloader_Params_init(&bootParams);
     bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
@@ -1523,42 +1825,102 @@ void TestSbl_isCorePresentFail(void *args)
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Set CPU clock frequency to zero.
+ *
+ * Sets cpuInfo clkHz to 0 before Bootloader_loadCpu. Verifies the
+  * load fails due to invalid clock frequency.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_setInvalidClkFreqFail(void *args)
 {
     DebugP_log("Skipping TestSbl_setInvalidClkFreqFail — requires loadCpu with SD boot on AM62DX\r\n");
     TEST_IGNORE_MESSAGE("Not applicable on AM275x (no SD boot / A53 core)");
 }
 
+/**
+ * @brief Run a different core than the one loaded.
+ *
+ * Loads an A53 image but attempts to run C75 core, which was not loaded.
+  * Verifies Bootloader_runCpu returns FAILURE.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_runInvalidCore(void *args)
 {
     DebugP_log("Skipping TestSbl_runInvalidCore — requires loadCpu with SD boot on AM62DX\r\n");
     TEST_IGNORE_MESSAGE("Not applicable on AM275x (no SD boot / A53 core)");
 }
 
+/**
+ * @brief SMP A53 boot from SD card.
+ *
+ * Boots all four A53 cores in SMP mode from SD card, waits for IPC sync,
+  * and resets all cores.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_sdSmpBoot(void *args)
 {
     DebugP_log("Skipping TestSbl_sdSmpBoot — AM275x has no SD boot / A53 SMP\r\n");
     TEST_IGNORE_MESSAGE("SD SMP boot not available on AM275x");
 }
 
+/**
+ * @brief Multi-core image boot from SD card.
+ *
+ * Boots MCU R5, A53, and C75 cores simultaneously from a multicore
+  * SD appimage, waits for IPC sync from each, and resets all cores.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_multiCoreImageSdBoot(void *args)
 {
     DebugP_log("Skipping TestSbl_multiCoreImageSdBoot — AM275x has no SD boot\r\n");
     TEST_IGNORE_MESSAGE("SD boot not available on AM275x");
 }
 
+/**
+ * @brief SMP A53 boot from eMMC.
+ *
+ * Boots all four A53 cores in SMP mode from eMMC, waits for IPC sync,
+  * and resets all cores.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_emmcSmpBoot(void *args)
 {
     DebugP_log("Skipping TestSbl_emmcSmpBoot — AM275x has no A53 SMP\r\n");
     TEST_IGNORE_MESSAGE("A53 SMP boot not available on AM275x");
 }
 
+/**
+ * @brief Multi-core image boot from eMMC.
+ *
+ * Boots MCU R5, A53, and C75 cores simultaneously from a multicore
+  * eMMC appimage, waits for IPC sync from each, and resets all cores.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_multiCoreImageEmmcBoot(void *args)
 {
-    DebugP_log("Starting TestSbl_multiCoreImageEmmcBoot test (AM275x)...\r\n");
-
     Bootloader_Params bootParams;
     Bootloader_Handle bootHandle = NULL;
+
+    DebugP_log("Starting TestSbl_multiCoreImageEmmcBoot test (AM275x)...\r\n");
 
     Bootloader_Params_init(&bootParams);
 
@@ -1573,18 +1935,38 @@ void TestSbl_multiCoreImageEmmcBoot(void *args)
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief SMP A53 boot from OSPI flash.
+ *
+ * Boots all four A53 cores in SMP mode from OSPI flash, waits for IPC
+  * sync, and resets all cores.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_ospiSmpBoot(void *args)
 {
     DebugP_log("Skipping TestSbl_ospiSmpBoot — AM275x has no A53 SMP\r\n");
     TEST_IGNORE_MESSAGE("A53 SMP boot not available on AM275x");
 }
 
+/**
+ * @brief Multi-core image boot from OSPI flash.
+ *
+ * Boots MCU R5, A53, and C75 cores simultaneously from a multicore
+  * OSPI flash appimage, waits for IPC sync from each, and resets all cores.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_multiCoreImageOspiBoot(void *args)
 {
-    DebugP_log("Starting TestSbl_multiCoreImageOspiBoot test (AM275x)...\r\n");
-
     Bootloader_Params bootParams;
     Bootloader_Handle bootHandle = NULL;
+
+    DebugP_log("Starting TestSbl_multiCoreImageOspiBoot test (AM275x)...\r\n");
 
     Bootloader_Params_init(&bootParams);
 
@@ -1599,15 +1981,24 @@ void TestSbl_multiCoreImageOspiBoot(void *args)
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Run CPU without prior image loading.
+ *
+ * Parses an appimage but skips Bootloader_loadCpu, then calls
+  * Bootloader_runCpu. Verifies it returns FAILURE.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_runwithoutLoad(void *args)
 {
     int32_t status;
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
 
     DebugP_log("Starting TestSbl_runwithoutLoad test (AM275x)...\r\n");
-
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
 
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
@@ -1623,12 +2014,23 @@ void TestSbl_runwithoutLoad(void *args)
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Validate multicore image size after parsing.
+ *
+ * Parses an SD appimage and verifies that Bootloader_getMulticoreImageSize
+  * returns a value within expected bounds of the original file size.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_validateGetMultiCoreImageSz(void *args)
 {
-    DebugP_log("Starting TestSbl_validateGetMultiCoreImageSz test (AM275x)...\r\n");
-
     Bootloader_Params bootParams;
     Bootloader_Handle bootHandle = NULL;
+    uint32_t sz;
+
+    DebugP_log("Starting TestSbl_validateGetMultiCoreImageSz test (AM275x)...\r\n");
 
     Bootloader_Params_init(&bootParams);
     bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
@@ -1636,20 +2038,30 @@ void TestSbl_validateGetMultiCoreImageSz(void *args)
     bootHandle = Bootloader_open(CONFIG_BOOTLOADER_MEM_R5FSS0_0, &bootParams);
     TEST_ASSERT_NOT_NULL(bootHandle);
 
-    uint32_t sz = Bootloader_getMulticoreImageSize(bootHandle);
+    sz = Bootloader_getMulticoreImageSize(bootHandle);
     TEST_ASSERT_EQUAL(sz, 0);
 
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Validate multicore presence bitmap after parsing.
+ *
+ * Parses a multicore SD appimage and verifies that all expected cores
+  * (MCU R5, A53, C75) are reported as present via Bootloader_isCorePresent.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_validateMultiCorePresent(void *args)
 {
     int32_t status;
-
-    DebugP_log("Starting TestSbl_validateMultiCorePresent test (AM275x)...\r\n");
-
     Bootloader_Params bootParams;
     Bootloader_Handle bootHandle = NULL;
+    uint32_t loopVar;
+
+    DebugP_log("Starting TestSbl_validateMultiCorePresent test (AM275x)...\r\n");
 
     Bootloader_Params_init(&bootParams);
     bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
@@ -1658,7 +2070,6 @@ void TestSbl_validateMultiCorePresent(void *args)
     TEST_ASSERT_NOT_NULL(bootHandle);
 
     /* No image loaded, so no cores present */
-    uint32_t loopVar;
     for(loopVar = 0; loopVar < CSL_CORE_ID_MAX; loopVar++)
     {
         status = Bootloader_isCorePresent(bootHandle, loopVar);
@@ -1668,12 +2079,24 @@ void TestSbl_validateMultiCorePresent(void *args)
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Validate single-core presence in appimage.
+ *
+ * Parses a single-core A53 appimage and verifies that only A53SS0_0
+  * is reported as present while all other cores are absent.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_validateSingleCorePresent(void *args)
 {
-    DebugP_log("Starting TestSbl_validateSingleCorePresent test (AM275x)...\r\n");
-
     Bootloader_Params bootParams;
     Bootloader_Handle bootHandle = NULL;
+    uint32_t loopVar;
+    int32_t status;
+
+    DebugP_log("Starting TestSbl_validateSingleCorePresent test (AM275x)...\r\n");
 
     Bootloader_Params_init(&bootParams);
     bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
@@ -1682,25 +2105,33 @@ void TestSbl_validateSingleCorePresent(void *args)
     TEST_ASSERT_NOT_NULL(bootHandle);
 
     /* Empty image — no core should be marked present */
-    uint32_t loopVar;
     for(loopVar = 0; loopVar < CSL_CORE_ID_MAX; loopVar++)
     {
-        int32_t status = Bootloader_isCorePresent(bootHandle, loopVar);
+        status = Bootloader_isCorePresent(bootHandle, loopVar);
         TEST_ASSERT_EQUAL(status, 0);
     }
 
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Parse invalid/corrupt appimage.
+ *
+ * Attempts to parse an appimage with invalid content and verifies
+  * that Bootloader_parseMultiCoreAppImage returns FAILURE.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_invalidImage(void *args)
 {
     int32_t status;
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
 
     DebugP_log("Starting TestSbl_invalidImage test (AM275x)...\r\n");
-
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
 
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
@@ -1719,6 +2150,16 @@ void TestSbl_invalidImage(void *args)
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Power off CPU after successful boot and verify state.
+ *
+ * Boots A53 via SD, waits for IPC sync, powers off, and queries TIFS
+  * to verify the core is in HW_STATE_OFF.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_powerOffAfterLoadSuccess(void *args)
 {
     DebugP_log("Skipping TestSbl_powerOffAfterLoadSuccess — not applicable on AM275x\r\n");
@@ -1742,6 +2183,13 @@ int32_t TestSbl_openBootEMMC()
     return status;
 }
 
+/**
+ * @brief Open OSPI driver for boot tests.
+ *
+ * Opens the OSPI instance used for flash boot.
+ *
+ * @return int32_t SystemP_SUCCESS on success, SystemP_FAILURE otherwise.
+ */
 int32_t TestSbl_openBootDriverFlash()
 {
     int32_t status = SystemP_SUCCESS;
@@ -1756,6 +2204,13 @@ int32_t TestSbl_openBootDriverFlash()
     return status;
 }
 
+/**
+ * @brief Open Flash driver for boot tests.
+ *
+ * Opens the Flash instance backed by the OSPI driver.
+ *
+ * @return int32_t SystemP_SUCCESS on success, SystemP_FAILURE otherwise.
+ */
 int32_t TestSbl_openBootBoardFlash()
 {
     int32_t status = SystemP_SUCCESS;
@@ -1774,18 +2229,39 @@ int32_t TestSbl_openBootBoardFlash()
     return status;
 }
 
+/**
+ * @brief Close eMMC (MMCSD) driver.
+ *
+ * Closes the MMCSD instance used for eMMC boot.
+ *
+ * @return void
+ */
 void TestSbl_closeBootEMMC()
 {
     MMCSD_close(gMmcsdHandle[CONFIG_MMCSD_SBL]);
     gMmcsdHandle[CONFIG_MMCSD_SBL] = NULL;
 }
 
+/**
+ * @brief Close Flash driver.
+ *
+ * Closes the Flash instance.
+ *
+ * @return void
+ */
 void TestSbl_closeBootBoardFlash()
 {
     Flash_close(gFlashHandle[CONFIG_FLASH_SBL]);
     gFlashHandle[CONFIG_FLASH_SBL] = NULL;
 }
 
+/**
+ * @brief Close OSPI driver.
+ *
+ * Closes the OSPI instance used for flash boot.
+ *
+ * @return void
+ */
 void TestSbl_closeBootDriverFlash()
 {
     OSPI_close(gOspiHandle[CONFIG_OSPI_SBL]);
@@ -1794,6 +2270,16 @@ void TestSbl_closeBootDriverFlash()
 
 #if !defined(SOC_AM275X)
 
+/**
+ * @brief Open and read an SD card image file into gAppimage.
+ *
+ * Opens the named file from the SD card, reads it into gAppimage buffer.
+  * Returns SystemP_FAILURE if the file is not found or too large.
+ *
+ * @param[in] imageName Path to the SD card image file.
+ *
+ * @return int SystemP_SUCCESS on success, SystemP_FAILURE otherwise.
+ */
 int TestSbl_openSdImage(char* imageName)
 {
     int status = SystemP_SUCCESS;
@@ -1831,12 +2317,12 @@ int TestSbl_openSdImage(char* imageName)
 void TestSbl_parseAppImageSdBoot(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
+    uint32_t hdr[6];
 
     DebugP_log("Starting TestSbl_parseAppImageSdBoot test...\r\n");
-
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
 
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
@@ -1850,7 +2336,6 @@ void TestSbl_parseAppImageSdBoot(void *args)
      * signed, so loading them directly would fail the magic check.
      */
     memset(gAppimage, 0, 64);
-    uint32_t hdr[6];
     hdr[0] = 0x5254534DU;   /* magicStr  (MSTR) */
     hdr[1] = 1U;            /* numFiles          */
     hdr[2] = 0U;            /* devId             */
@@ -1877,6 +2362,15 @@ void TestSbl_parseAppImageSdBoot(void *args)
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Parse appimage with NULL handle.
+ *
+ * Verifies Bootloader_parseAppImage returns FAILURE for NULL handle.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_parseAppImageNullHandle(void *args)
 {
     int32_t status;
@@ -1890,15 +2384,25 @@ void TestSbl_parseAppImageNullHandle(void *args)
     TEST_ASSERT_EQUAL(status, SystemP_FAILURE);
 }
 
+/**
+ * @brief Parse appimage with invalid magic string.
+ *
+ * Constructs an image with invalid magic (0xDEADBEEF) and verifies
+  * Bootloader_parseAppImage returns FAILURE.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_parseAppImageInvalidMagic(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
+    uint32_t hdr[4];
 
     DebugP_log("Starting TestSbl_parseAppImageInvalidMagic test...\r\n");
-
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
 
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
@@ -1906,7 +2410,6 @@ void TestSbl_parseAppImageInvalidMagic(void *args)
 
     /* Construct an image header with an invalid magic string */
     memset(gAppimage, 0, 64);
-    uint32_t hdr[4];
     hdr[0] = 0xDEADBEEFU;   /* invalid magicStr */
     hdr[1] = 0U;
     hdr[2] = 0U;
@@ -1925,15 +2428,25 @@ void TestSbl_parseAppImageInvalidMagic(void *args)
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Parse synthetic multi-core appimage.
+ *
+ * Constructs a synthetic 3-core appimage (MCU R5, A53, C75) and verifies
+  * all cores are present after Bootloader_parseAppImage.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_parseAppImageMultiCore(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
+    uint32_t hdr[10];
 
     DebugP_log("Starting TestSbl_parseAppImageMultiCore test...\r\n");
-
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
 
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
@@ -1944,7 +2457,6 @@ void TestSbl_parseAppImageMultiCore(void *args)
      * Meta header (16 bytes) + 3 core headers (8 bytes each) = 40 bytes total.
      */
     memset(gAppimage, 0, 64);
-    uint32_t hdr[10];
     hdr[0] = 0x5254534DU;   /* magicStr  (MSTR) */
     hdr[1] = 3U;            /* numFiles          */
     hdr[2] = 0U;            /* devId             */
@@ -1994,12 +2506,31 @@ int TestSbl_openSdImage(char* imageName)
     return SystemP_FAILURE;
 }
 
+/**
+ * @brief Parse synthetic appimage from SD bootloader.
+ *
+ * Constructs a synthetic unsigned appimage header in gAppimage and
+  * verifies Bootloader_parseAppImage succeeds and core is present.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_parseAppImageSdBoot(void *args)
 {
     DebugP_log("Skipping TestSbl_parseAppImageSdBoot — AM275x has no SD boot\r\n");
     TEST_IGNORE_MESSAGE("SD boot not available on AM275x");
 }
 
+/**
+ * @brief Parse appimage with NULL handle.
+ *
+ * Verifies Bootloader_parseAppImage returns FAILURE for NULL handle.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_parseAppImageNullHandle(void *args)
 {
     int32_t status;
@@ -2018,15 +2549,25 @@ void TestSbl_parseAppImageNullHandle(void *args)
     TEST_ASSERT_EQUAL(status, SystemP_FAILURE);
 }
 
+/**
+ * @brief Parse appimage with invalid magic string.
+ *
+ * Constructs an image with invalid magic (0xDEADBEEF) and verifies
+  * Bootloader_parseAppImage returns FAILURE.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_parseAppImageInvalidMagic(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
+    uint32_t hdr[4];
 
     DebugP_log("Starting TestSbl_parseAppImageInvalidMagic test (AM275x)...\r\n");
-
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
 
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
@@ -2034,7 +2575,6 @@ void TestSbl_parseAppImageInvalidMagic(void *args)
 
     /* Construct an image header with an invalid magic string */
     memset(gAppimage, 0, 64);
-    uint32_t hdr[4];
     hdr[0] = 0xDEADBEEFU;   /* invalid magicStr */
     hdr[1] = 0U;
     hdr[2] = 0U;
@@ -2053,6 +2593,16 @@ void TestSbl_parseAppImageInvalidMagic(void *args)
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Parse synthetic multi-core appimage.
+ *
+ * Constructs a synthetic 3-core appimage (MCU R5, A53, C75) and verifies
+  * all cores are present after Bootloader_parseAppImage.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_parseAppImageMultiCore(void *args)
 {
     DebugP_log("Skipping TestSbl_parseAppImageMultiCore — requires SD-based CONFIG_BOOTLOADER_SD_MULTICORE\r\n");
@@ -2066,12 +2616,12 @@ void TestSbl_parseAppImageSingleCorePresent(void *args)
 #if !defined(SOC_AM275X)
     int32_t status = SystemP_SUCCESS;
     uint32_t loopVar;
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
+    uint32_t hdr[6];
 
     DebugP_log("Starting TestSbl_parseAppImageSingleCorePresent test...\r\n");
-
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
 
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
@@ -2079,7 +2629,6 @@ void TestSbl_parseAppImageSingleCorePresent(void *args)
 
     /* Construct a synthetic single-core A53 appimage header */
     memset(gAppimage, 0, 64);
-    uint32_t hdr[6];
     hdr[0] = 0x5254534DU;   /* magicStr  (MSTR) */
     hdr[1] = 1U;            /* numFiles          */
     hdr[2] = 0U;            /* devId             */
@@ -2113,11 +2662,11 @@ void TestSbl_parseAppImageSingleCorePresent(void *args)
     Bootloader_close(bootHandle);
 #else
     int32_t status = SystemP_SUCCESS;
-
-    DebugP_log("Starting TestSbl_parseAppImageSingleCorePresent test (AM275x)...\r\n");
-
     Bootloader_Params bootParams;
     Bootloader_Handle bootHandle = NULL;
+    uint32_t loopVar;
+
+    DebugP_log("Starting TestSbl_parseAppImageSingleCorePresent test (AM275x)...\r\n");
 
     Bootloader_Params_init(&bootParams);
     bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
@@ -2126,7 +2675,6 @@ void TestSbl_parseAppImageSingleCorePresent(void *args)
     TEST_ASSERT_NOT_NULL(bootHandle);
 
     /* Verify no core is present in an empty image */
-    uint32_t loopVar;
     for(loopVar = 0; loopVar < CSL_CORE_ID_MAX; loopVar++)
     {
         status = Bootloader_isCorePresent(bootHandle, loopVar);
@@ -2171,6 +2719,16 @@ void TestSbl_uniflashInvalidMagic(void *args)
     TEST_ASSERT_EQUAL(respHeader.statusCode, BOOTLOADER_UNIFLASH_STATUSCODE_MAGIC_ERROR);
 }
 
+/**
+ * @brief Uniflash process with unknown operation type.
+ *
+ * Prepares a buffer with valid magic but an unrecognized optype.
+  * Verifies the response contains STATUSCODE_OPTYPE_ERROR.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_uniflashInvalidOptype(void *args)
 {
     int32_t status;
@@ -2203,6 +2761,16 @@ void TestSbl_uniflashInvalidOptype(void *args)
 
 #if !defined(SOC_AM275X)
 
+/**
+ * @brief Uniflash flash-and-verify on OSPI.
+ *
+ * Writes a known pattern to OSPI flash via the uniflash API and
+  * verifies the operation succeeds with STATUSCODE_SUCCESS.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_uniflashFlashAndVerify(void *args)
 {
     int32_t status;
@@ -2215,6 +2783,7 @@ void TestSbl_uniflashFlashAndVerify(void *args)
     uint32_t dataSize;
     uint8_t *dataBuf;
     uint8_t *verifyBuf;
+    uint32_t i;
 
     DebugP_log("Starting TestSbl_uniflashFlashAndVerify test...\r\n");
 
@@ -2237,7 +2806,6 @@ void TestSbl_uniflashFlashAndVerify(void *args)
 
     /* Fill the data region with a known pattern */
     memset(gAppimage, 0, sizeof(Bootloader_UniflashFileHeader) + eraseBlockSize * 2U);
-    uint32_t i;
     for(i = 0; i < dataSize; i++)
     {
         dataBuf[i] = (uint8_t)(i & 0xFFU);
@@ -2266,6 +2834,16 @@ void TestSbl_uniflashFlashAndVerify(void *args)
     TestSbl_closeBootDriverFlash();
 }
 
+/**
+ * @brief Uniflash erase on OSPI.
+ *
+ * Erases one block on OSPI flash via the uniflash API and verifies
+  * the operation succeeds with STATUSCODE_SUCCESS.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_uniflashFlashErase(void *args)
 {
     int32_t status;
@@ -2313,6 +2891,16 @@ void TestSbl_uniflashFlashErase(void *args)
     TestSbl_closeBootDriverFlash();
 }
 
+/**
+ * @brief Uniflash verify-only on OSPI.
+ *
+ * Writes a pattern, then issues a verify-only operation and asserts
+  * STATUSCODE_SUCCESS.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_uniflashFlashVerifyOnly(void *args)
 {
     int32_t status;
@@ -2325,6 +2913,7 @@ void TestSbl_uniflashFlashVerifyOnly(void *args)
     uint32_t dataSize;
     uint8_t *dataBuf;
     uint8_t *verifyBuf;
+    uint32_t i;
 
     DebugP_log("Starting TestSbl_uniflashFlashVerifyOnly test...\r\n");
 
@@ -2345,7 +2934,6 @@ void TestSbl_uniflashFlashVerifyOnly(void *args)
 
     /* First flash a known pattern */
     memset(gAppimage, 0, sizeof(Bootloader_UniflashFileHeader) + eraseBlockSize * 2U);
-    uint32_t i;
     for(i = 0; i < dataSize; i++)
     {
         dataBuf[i] = (uint8_t)(i & 0xFFU);
@@ -2381,6 +2969,16 @@ void TestSbl_uniflashFlashVerifyOnly(void *args)
     TestSbl_closeBootDriverFlash();
 }
 
+/**
+ * @brief Uniflash with non-16-byte-aligned file size.
+ *
+ * Uses a file size (250 bytes) not aligned to 16 bytes. Verifies the
+  * uniflash API pads correctly and the operation succeeds.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_uniflashFileSizeAlignment(void *args)
 {
     int32_t status;
@@ -2392,6 +2990,7 @@ void TestSbl_uniflashFileSizeAlignment(void *args)
     uint32_t dataSize;
     uint8_t *dataBuf;
     uint8_t *verifyBuf;
+    uint32_t i;
 
     DebugP_log("Starting TestSbl_uniflashFileSizeAlignment test...\r\n");
 
@@ -2410,7 +3009,6 @@ void TestSbl_uniflashFileSizeAlignment(void *args)
     verifyBuf = gAppimage + sizeof(Bootloader_UniflashFileHeader) + eraseBlockSize;
 
     memset(gAppimage, 0, sizeof(Bootloader_UniflashFileHeader) + eraseBlockSize * 2U);
-    uint32_t i;
     for(i = 0; i < dataSize; i++)
     {
         dataBuf[i] = (uint8_t)((i + 0x55U) & 0xFFU);
@@ -2449,18 +3047,48 @@ void TestSbl_uniflashFlashAndVerify(void *args)
     TEST_IGNORE_MESSAGE("OSPI addedByBootloader on AM275x, cannot re-open");
 }
 
+/**
+ * @brief Uniflash erase on OSPI.
+ *
+ * Erases one block on OSPI flash via the uniflash API and verifies
+  * the operation succeeds with STATUSCODE_SUCCESS.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_uniflashFlashErase(void *args)
 {
     DebugP_log("Skipping TestSbl_uniflashFlashErase (OSPI addedByBootloader on AM275x)\r\n");
     TEST_IGNORE_MESSAGE("OSPI addedByBootloader on AM275x, cannot re-open");
 }
 
+/**
+ * @brief Uniflash verify-only on OSPI.
+ *
+ * Writes a pattern, then issues a verify-only operation and asserts
+  * STATUSCODE_SUCCESS.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_uniflashFlashVerifyOnly(void *args)
 {
     DebugP_log("Skipping TestSbl_uniflashFlashVerifyOnly (OSPI addedByBootloader on AM275x)\r\n");
     TEST_IGNORE_MESSAGE("OSPI addedByBootloader on AM275x, cannot re-open");
 }
 
+/**
+ * @brief Uniflash with non-16-byte-aligned file size.
+ *
+ * Uses a file size (250 bytes) not aligned to 16 bytes. Verifies the
+  * uniflash API pads correctly and the operation succeeds.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_uniflashFileSizeAlignment(void *args)
 {
     DebugP_log("Skipping TestSbl_uniflashFileSizeAlignment (OSPI addedByBootloader on AM275x)\r\n");
@@ -2473,6 +3101,16 @@ void TestSbl_uniflashFileSizeAlignment(void *args)
 
 #if !defined(SOC_AM275X)
 
+/**
+ * @brief Uniflash flash-and-verify on eMMC.
+ *
+ * Writes a known pattern to eMMC via the uniflash API and verifies
+  * the operation succeeds with STATUSCODE_SUCCESS.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_uniflashEmmcFlashAndVerify(void *args)
 {
     int32_t status;
@@ -2482,6 +3120,7 @@ void TestSbl_uniflashEmmcFlashAndVerify(void *args)
     uint32_t dataSize;
     uint8_t *dataBuf;
     uint8_t *verifyBuf;
+    uint32_t i;
 
     DebugP_log("Starting TestSbl_uniflashEmmcFlashAndVerify test...\r\n");
 
@@ -2493,7 +3132,6 @@ void TestSbl_uniflashEmmcFlashAndVerify(void *args)
     verifyBuf = gAppimage + sizeof(Bootloader_UniflashFileHeader) + 4096U;
 
     memset(gAppimage, 0, sizeof(Bootloader_UniflashFileHeader) + 8192U);
-    uint32_t i;
     for(i = 0; i < dataSize; i++)
     {
         dataBuf[i] = (uint8_t)((i + 0xAAU) & 0xFFU);
@@ -2519,6 +3157,16 @@ void TestSbl_uniflashEmmcFlashAndVerify(void *args)
     TestSbl_closeBootEMMC();
 }
 
+/**
+ * @brief Uniflash verify-only on eMMC.
+ *
+ * Writes a pattern to eMMC, then issues a verify-only operation and
+  * asserts STATUSCODE_SUCCESS.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_uniflashEmmcVerifyOnly(void *args)
 {
     int32_t status;
@@ -2528,6 +3176,7 @@ void TestSbl_uniflashEmmcVerifyOnly(void *args)
     uint32_t dataSize;
     uint8_t *dataBuf;
     uint8_t *verifyBuf;
+    uint32_t i;
 
     DebugP_log("Starting TestSbl_uniflashEmmcVerifyOnly test...\r\n");
 
@@ -2539,7 +3188,6 @@ void TestSbl_uniflashEmmcVerifyOnly(void *args)
     verifyBuf = gAppimage + sizeof(Bootloader_UniflashFileHeader) + 4096U;
 
     memset(gAppimage, 0, sizeof(Bootloader_UniflashFileHeader) + 8192U);
-    uint32_t i;
     for(i = 0; i < dataSize; i++)
     {
         dataBuf[i] = (uint8_t)((i + 0xAAU) & 0xFFU);
@@ -2576,6 +3224,16 @@ void TestSbl_uniflashEmmcVerifyOnly(void *args)
     TestSbl_closeBootEMMC();
 }
 
+/**
+ * @brief Uniflash multi-block eMMC write.
+ *
+ * Uses 1025 bytes of data forcing 3-block writes. Exercises the
+  * first-block, middle-block, and last-block write branches.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_uniflashEmmcFlashMultiBlock(void *args)
 {
     int32_t status;
@@ -2585,6 +3243,7 @@ void TestSbl_uniflashEmmcFlashMultiBlock(void *args)
     uint32_t dataSize;
     uint8_t *dataBuf;
     uint8_t *verifyBuf;
+    uint32_t i;
 
     DebugP_log("Starting TestSbl_uniflashEmmcFlashMultiBlock test...\r\n");
 
@@ -2603,7 +3262,6 @@ void TestSbl_uniflashEmmcFlashMultiBlock(void *args)
     verifyBuf = gAppimage + sizeof(Bootloader_UniflashFileHeader) + 8192U;
 
     memset(gAppimage, 0, sizeof(Bootloader_UniflashFileHeader) + 16384U);
-    uint32_t i;
     for(i = 0; i < dataSize; i++)
     {
         dataBuf[i] = (uint8_t)((i + 0x55U) & 0xFFU);
@@ -2648,12 +3306,32 @@ void TestSbl_uniflashEmmcFlashAndVerify(void *args)
     TEST_IGNORE_MESSAGE("MMCSD addedByBootloader on AM275x, cannot re-open");
 }
 
+/**
+ * @brief Uniflash verify-only on eMMC.
+ *
+ * Writes a pattern to eMMC, then issues a verify-only operation and
+  * asserts STATUSCODE_SUCCESS.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_uniflashEmmcVerifyOnly(void *args)
 {
     DebugP_log("Skipping TestSbl_uniflashEmmcVerifyOnly (MMCSD addedByBootloader on AM275x)\r\n");
     TEST_IGNORE_MESSAGE("MMCSD addedByBootloader on AM275x, cannot re-open");
 }
 
+/**
+ * @brief Uniflash multi-block eMMC write.
+ *
+ * Uses 1025 bytes of data forcing 3-block writes. Exercises the
+  * first-block, middle-block, and last-block write branches.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_uniflashEmmcFlashMultiBlock(void *args)
 {
     DebugP_log("Skipping TestSbl_uniflashEmmcFlashMultiBlock (MMCSD addedByBootloader on AM275x)\r\n");
@@ -2663,18 +3341,48 @@ void TestSbl_uniflashEmmcFlashMultiBlock(void *args)
 #endif /* !defined(SOC_AM275X) */
 
 #else
+/**
+ * @brief Uniflash flash-and-verify on eMMC.
+ *
+ * Writes a known pattern to eMMC via the uniflash API and verifies
+  * the operation succeeds with STATUSCODE_SUCCESS.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_uniflashEmmcFlashAndVerify(void *args)
 {
     DebugP_log("Skipping TestSbl_uniflashEmmcFlashAndVerify (MMCSD not enabled)\r\n");
     TEST_IGNORE_MESSAGE("MMCSD driver not enabled, skipping EMMC flash test");
 }
 
+/**
+ * @brief Uniflash verify-only on eMMC.
+ *
+ * Writes a pattern to eMMC, then issues a verify-only operation and
+  * asserts STATUSCODE_SUCCESS.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_uniflashEmmcVerifyOnly(void *args)
 {
     DebugP_log("Skipping TestSbl_uniflashEmmcVerifyOnly (MMCSD not enabled)\r\n");
     TEST_IGNORE_MESSAGE("MMCSD driver not enabled, skipping EMMC verify test");
 }
 
+/**
+ * @brief Uniflash multi-block eMMC write.
+ *
+ * Uses 1025 bytes of data forcing 3-block writes. Exercises the
+  * first-block, middle-block, and last-block write branches.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_uniflashEmmcFlashMultiBlock(void *args)
 {
     DebugP_log("Skipping TestSbl_uniflashEmmcFlashMultiBlock (MMCSD not enabled)\r\n");
@@ -2688,9 +3396,23 @@ void TestSbl_uniflashEmmcFlashMultiBlock(void *args)
 
 #if !defined(SOC_AM275X)
 
+/**
+ * @brief Run-self-CPU setup validation.
+ *
+ * Validates the entire setup flow leading up to Bootloader_runSelfCpu
+  * (open, parse, load) without calling the terminal runSelfCpu.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_runSelfCpuSetup(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
+    Bootloader_Config       *bootConfig;
 
     DebugP_log("Starting TestSbl_runSelfCpuSetup test...\r\n");
 
@@ -2701,10 +3423,6 @@ void TestSbl_runSelfCpuSetup(void *args)
      * itself because it resets the CPU and does not return.
      */
     Bootloader_openDma();
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
-
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
     bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
@@ -2715,7 +3433,6 @@ void TestSbl_runSelfCpuSetup(void *args)
     bootHandle = Bootloader_open(CONFIG_BOOTLOADER_SD_A53, &bootParams);
     TEST_ASSERT_NOT_NULL(bootHandle);
 
-    Bootloader_Config *bootConfig;
     bootConfig = (Bootloader_Config *)bootHandle;
     bootConfig->coresPresentMap = 0;
     status = Bootloader_parseMultiCoreAppImage(bootHandle, &bootImageInfo);
@@ -2753,9 +3470,24 @@ void TestSbl_runSelfCpuSetup(void *args)
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Jump-self-CPU setup validation.
+ *
+ * Validates Bootloader_socCpuSetEntryPoint succeeds as a prerequisite
+  * for Bootloader_JumpSelfCpu, without calling the terminal jump.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_jumpSelfCpuSetup(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
+    Bootloader_Config       *bootConfig;
+    uintptr_t entryPoint;
 
     DebugP_log("Starting TestSbl_jumpSelfCpuSetup test...\r\n");
 
@@ -2766,10 +3498,6 @@ void TestSbl_jumpSelfCpuSetup(void *args)
      * does not return.
      */
     Bootloader_openDma();
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
-
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
     bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
@@ -2780,7 +3508,6 @@ void TestSbl_jumpSelfCpuSetup(void *args)
     bootHandle = Bootloader_open(CONFIG_BOOTLOADER_SD_A53, &bootParams);
     TEST_ASSERT_NOT_NULL(bootHandle);
 
-    Bootloader_Config *bootConfig;
     bootConfig = (Bootloader_Config *)bootHandle;
     bootConfig->coresPresentMap = 0;
     status = Bootloader_parseMultiCoreAppImage(bootHandle, &bootImageInfo);
@@ -2794,7 +3521,7 @@ void TestSbl_jumpSelfCpuSetup(void *args)
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Validate that setting the self CPU entry point succeeds */
-    uintptr_t entryPoint = bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0].entryPoint;
+    entryPoint = bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0].entryPoint;
     status = Bootloader_socCpuSetEntryPoint(CSL_CORE_ID_A53SS0_0, entryPoint);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
@@ -2821,9 +3548,23 @@ void TestSbl_jumpSelfCpuSetup(void *args)
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Run-self-CPU full flow via SD boot.
+ *
+ * Full flow: loads A53 image from SD, then calls Bootloader_runSelfCpu.
+  * WARNING: resets the self CPU and does not return.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_runSelfCpuSdBoot(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
+    Bootloader_Config       *bootConfig;
 
     DebugP_log("Starting TestSbl_runSelfCpuSdBoot test...\r\n");
     DebugP_log("WARNING: This test resets the self CPU and will not return!\r\n");
@@ -2834,10 +3575,6 @@ void TestSbl_runSelfCpuSdBoot(void *args)
      * control will never return to this point.
      */
     Bootloader_openDma();
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
-
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
     bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
@@ -2848,7 +3585,6 @@ void TestSbl_runSelfCpuSdBoot(void *args)
     bootHandle = Bootloader_open(CONFIG_BOOTLOADER_SD_A53, &bootParams);
     TEST_ASSERT_NOT_NULL(bootHandle);
 
-    Bootloader_Config *bootConfig;
     bootConfig = (Bootloader_Config *)bootHandle;
     bootConfig->coresPresentMap = 0;
     status = Bootloader_parseMultiCoreAppImage(bootHandle, &bootImageInfo);
@@ -2868,9 +3604,24 @@ void TestSbl_runSelfCpuSdBoot(void *args)
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Jump-self-CPU full flow via SD boot.
+ *
+ * Full flow: loads A53 image from SD, sets entry point, then calls
+  * Bootloader_JumpSelfCpu. WARNING: jumps and does not return.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_jumpSelfCpuSdBoot(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
+    Bootloader_Config       *bootConfig;
+    uintptr_t entryPoint;
 
     DebugP_log("Starting TestSbl_jumpSelfCpuSdBoot test...\r\n");
     DebugP_log("WARNING: This test jumps the self CPU and will not return!\r\n");
@@ -2882,10 +3633,6 @@ void TestSbl_jumpSelfCpuSdBoot(void *args)
      * never return to this point.
      */
     Bootloader_openDma();
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
-
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
     bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
@@ -2896,7 +3643,6 @@ void TestSbl_jumpSelfCpuSdBoot(void *args)
     bootHandle = Bootloader_open(CONFIG_BOOTLOADER_SD_A53, &bootParams);
     TEST_ASSERT_NOT_NULL(bootHandle);
 
-    Bootloader_Config *bootConfig;
     bootConfig = (Bootloader_Config *)bootHandle;
     bootConfig->coresPresentMap = 0;
     status = Bootloader_parseMultiCoreAppImage(bootHandle, &bootImageInfo);
@@ -2907,7 +3653,7 @@ void TestSbl_jumpSelfCpuSdBoot(void *args)
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Set the self CPU entry point */
-    uintptr_t entryPoint = bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0].entryPoint;
+    entryPoint = bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0].entryPoint;
     status = Bootloader_socCpuSetEntryPoint(CSL_CORE_ID_A53SS0_0, entryPoint);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
@@ -2925,6 +3671,11 @@ void TestSbl_jumpSelfCpuSdBoot(void *args)
 
 void TestSbl_runSelfCpuSetup(void *args)
 {
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
+    Bootloader_Config       *bootConfig;
+
     DebugP_log("Starting TestSbl_runSelfCpuSetup test (AM275x)...\r\n");
 
     /*
@@ -2932,10 +3683,6 @@ void TestSbl_runSelfCpuSetup(void *args)
      * MEM bootloader with R5FSS0_0. We do NOT call runSelfCpu itself
      * because it resets the CPU and does not return.
      */
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
-
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
     bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
@@ -2943,7 +3690,6 @@ void TestSbl_runSelfCpuSetup(void *args)
     bootHandle = Bootloader_open(CONFIG_BOOTLOADER_MEM_R5FSS0_0, &bootParams);
     TEST_ASSERT_NOT_NULL(bootHandle);
 
-    Bootloader_Config *bootConfig;
     bootConfig = (Bootloader_Config *)bootHandle;
     bootConfig->coresPresentMap = 0;
 
@@ -2960,9 +3706,24 @@ void TestSbl_runSelfCpuSetup(void *args)
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Jump-self-CPU setup validation.
+ *
+ * Validates Bootloader_socCpuSetEntryPoint succeeds as a prerequisite
+  * for Bootloader_JumpSelfCpu, without calling the terminal jump.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_jumpSelfCpuSetup(void *args)
 {
     int32_t status = SystemP_SUCCESS;
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
+    Bootloader_Handle        bootHandle = NULL;
+    Bootloader_Config       *bootConfig;
+    uintptr_t entryPoint;
 
     DebugP_log("Starting TestSbl_jumpSelfCpuSetup test (AM275x)...\r\n");
 
@@ -2971,10 +3732,6 @@ void TestSbl_jumpSelfCpuSetup(void *args)
      * using MEM bootloader with R5FSS0_0. We do NOT call JumpSelfCpu
      * itself because it jumps to the entry point and does not return.
      */
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-    Bootloader_Handle bootHandle = NULL;
-
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
     bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
@@ -2982,7 +3739,6 @@ void TestSbl_jumpSelfCpuSetup(void *args)
     bootHandle = Bootloader_open(CONFIG_BOOTLOADER_MEM_R5FSS0_0, &bootParams);
     TEST_ASSERT_NOT_NULL(bootHandle);
 
-    Bootloader_Config *bootConfig;
     bootConfig = (Bootloader_Config *)bootHandle;
     bootConfig->coresPresentMap = 0;
 
@@ -2994,19 +3750,39 @@ void TestSbl_jumpSelfCpuSetup(void *args)
     /* MEM with empty image may fail — that's OK for setup validation */
 
     /* Validate that setting the self CPU entry point succeeds */
-    uintptr_t entryPoint = 0x70000000U; /* Dummy entry point for validation */
+    entryPoint = 0x70000000U; /* Dummy entry point for validation */
     status = Bootloader_socCpuSetEntryPoint(CSL_CORE_ID_R5FSS0_0, entryPoint);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     Bootloader_close(bootHandle);
 }
 
+/**
+ * @brief Run-self-CPU full flow via SD boot.
+ *
+ * Full flow: loads A53 image from SD, then calls Bootloader_runSelfCpu.
+  * WARNING: resets the self CPU and does not return.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_runSelfCpuSdBoot(void *args)
 {
     DebugP_log("Skipping TestSbl_runSelfCpuSdBoot (SD boot not available on AM275x)\r\n");
     TEST_IGNORE_MESSAGE("SD boot not available on AM275x");
 }
 
+/**
+ * @brief Jump-self-CPU full flow via SD boot.
+ *
+ * Full flow: loads A53 image from SD, sets entry point, then calls
+  * Bootloader_JumpSelfCpu. WARNING: jumps and does not return.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_jumpSelfCpuSdBoot(void *args)
 {
     DebugP_log("Skipping TestSbl_jumpSelfCpuSdBoot (SD boot not available on AM275x)\r\n");

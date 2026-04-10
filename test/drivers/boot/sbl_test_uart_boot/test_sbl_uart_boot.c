@@ -1,3 +1,39 @@
+/*
+ * Copyright (C) 2021-2026 Texas Instruments Incorporated
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ *   Redistributions of source code must retain the above copyright
+ *   notice, this list of conditions and the following disclaimer.
+ *
+ *   Redistributions in binary form must reproduce the above copyright
+ *   notice, this list of conditions and the following disclaimer in the
+ *   documentation and/or other materials provided with the
+ *   distribution.
+ *
+ *   Neither the name of Texas Instruments Incorporated nor the names of
+ *   its contributors may be used to endorse or promote products derived
+ *   from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*===================================================================*/
+/* 					  Include Files 					     */
+/*===================================================================*/
+
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
@@ -13,6 +49,10 @@
 #include "ti_board_open_close.h"
 #include <drivers/bootloader/bootloader_profile.h>
 
+/*===================================================================*/
+/* 					  Macro defines 					     */
+/*===================================================================*/
+
 #define BOOTLOADER_UART_STATUS_LOAD_SUCCESS           (0x53554343) 
 #define BOOTLOADER_UART_STATUS_LOAD_CPU_FAIL          (0x4641494C) 
 #define BOOTLOADER_UART_STATUS_APPIMAGE_SIZE_EXCEEDED (0x45584344) 
@@ -24,10 +64,29 @@
  * and then parsed + loaded from memory. */
 #define BOOTLOADER_APPIMAGE_MAX_FILE_SIZE (0x100000U)
 #define TEST_SBL_SCRATCH_BUF_SIZE        (0x1000U)
-static uint8_t gScratchBuf[TEST_SBL_SCRATCH_BUF_SIZE] __attribute__((aligned(128), section(".bss.app")));
 #else
 #define BOOTLOADER_APPIMAGE_MAX_FILE_SIZE (0x1900000)
 #endif
+
+/*===================================================================*/
+/* 					     Typedefs 					         */
+/*===================================================================*/
+
+/*===================================================================*/
+/* 					  Global Variables				         */
+/*===================================================================*/
+
+#if defined(SOC_AM275X)
+static uint8_t gScratchBuf[TEST_SBL_SCRATCH_BUF_SIZE] __attribute__((aligned(128), section(".bss.app")));
+#endif
+
+/*===================================================================*/
+/* 					     Typedefs 					         */
+/*===================================================================*/
+
+/*===================================================================*/
+/* 					  Global Variables				         */
+/*===================================================================*/
 
 uint8_t gAppimage[BOOTLOADER_APPIMAGE_MAX_FILE_SIZE] __attribute__ ((section (".bss.app"), aligned (128)));
 uint8_t gEndOfFilesTransferWord[BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH] = {0x45,0x4F,0x46,0x54};
@@ -36,17 +95,41 @@ Bootloader_Handle bootHandle;
 Bootloader_CpuInfo bootCpuInfo[CSL_CORE_ID_MAX];
 uint8_t socCpuCores[CSL_CORE_ID_MAX]    = {0};
 
+/*===================================================================*/
+/* 				  Function Declarations				         */
+/*===================================================================*/
+
 void TestSbl_uartBoot(void *args);
 void TestSbl_uartSmpBoot(void *args);
 
 int32_t TestSbl_loadCpu();
 int32_t TestSbl_runCpus();
 
+/*===================================================================*/
+/* 				  Function Definitions				         */
+/*===================================================================*/
+
+/**
+ * @brief Unity per-test setup hook.
+ *
+ * Called automatically by the Unity framework before each test case.
+ * No special initialization is required for the UART boot tests.
+ *
+ * @return void
+ */
 void setUp(void)
 {
     /* Setup function nothing to perform */
 }
 
+/**
+ * @brief Unity per-test teardown hook.
+ *
+ * Called automatically by the Unity framework after each test case.
+ * No special cleanup is required for the UART boot tests.
+ *
+ * @return void
+ */
 void tearDown(void)
 {
     /* Tear down function nothing to perform */
@@ -60,17 +143,47 @@ void loop_forever()
         ;
 }
 
+/**
+ * @brief Main SBL UART boot test entry point.
+ *
+ * Initializes Unity, executes the UART SMP boot test case, and finalizes
+ * the Unity framework.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void test_main(void * args)
 {
 
     UNITY_BEGIN();
 
-    //RUN_TEST(TestSbl_uartBoot,    8000, NULL);
-    RUN_TEST(TestSbl_uartSmpBoot, 8000, NULL);
+    //RUN_TEST(TestSbl_uartBoot,    11448, NULL);
+    RUN_TEST(TestSbl_uartSmpBoot, 11449, NULL);
 
     UNITY_END();
 }
 
+/**
+ * @brief UART single-image boot test.
+ *
+ * Receives appimages over XMODEM, loads and boots the embedded cores,
+ * waits for IPC sync, then resets CPUs. Validates the end-to-end UART
+ * boot flow for individual appimages.
+ *
+ * Test Steps:
+ * 1. Receive appimage via Bootloader_xmodemReceive on CONFIG_UART0.
+ * 2. Detect EOFT end-of-transfer marker to exit the loop.
+ * 3. Check for buffer overflow; send error response if exceeded.
+ * 4. Call TestSbl_loadCpu to parse and load the appimage to cores.
+ * 5. Send status response via Bootloader_xmodemTransmit.
+ * 6. After all images received, call TestSbl_runCpus to boot all loaded cores.
+ * 7. Wait for IPC sync from each booted core and reset CPUs.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_uartBoot(void *args)
 {
     int32_t status;
@@ -125,6 +238,26 @@ void TestSbl_uartBoot(void *args)
     }
 }
 
+/**
+ * @brief UART SMP boot test.
+ *
+ * Receives appimages over XMODEM, loads and boots the embedded cores
+ * including SMP A53 configurations, waits for IPC sync, then resets CPUs.
+ * Validates the end-to-end UART boot flow with SMP support.
+ *
+ * Test Steps:
+ * 1. Receive appimage via Bootloader_xmodemReceive on CONFIG_UART0.
+ * 2. Detect EOFT end-of-transfer marker to exit the loop.
+ * 3. Check for buffer overflow; send error response if exceeded.
+ * 4. Call TestSbl_loadCpu to parse and load the appimage (handles SMP).
+ * 5. Send status response via Bootloader_xmodemTransmit.
+ * 6. After all images received, call TestSbl_runCpus to boot all loaded cores.
+ * 7. Wait for IPC sync from each booted core and reset CPUs.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void TestSbl_uartSmpBoot(void *args)
 {
     int32_t status;
@@ -179,6 +312,14 @@ void TestSbl_uartSmpBoot(void *args)
     }
 }
 
+/**
+ * @brief Run all loaded CPUs, wait for IPC sync, and reset.
+ *
+ * Iterates over all core IDs, runs each loaded core via Bootloader_runCpu,
+ * waits for IPC sync from each, and resets them to their original state.
+ *
+ * @return int32_t SystemP_SUCCESS if all cores booted and synced, SystemP_FAILURE otherwise.
+ */
 int32_t TestSbl_runCpus()
 {
     int32_t status = SystemP_FAILURE;
@@ -235,17 +376,25 @@ int32_t TestSbl_runCpus()
     return status;
 }
 
+/**
+ * @brief Parse and load a received appimage to the appropriate CPU cores.
+ *
+ * Opens the bootloader, parses the multi-core appimage, and loads each
+ * present core (MCU R5, A53, C75). Handles SMP detection for A53 cores.
+ * On AM275x, uses MCELF format via Bootloader_parseAndLoadMultiCoreELF.
+ *
+ * @return int32_t SystemP_SUCCESS if parsing and loading succeeded, SystemP_FAILURE otherwise.
+ */
 int32_t TestSbl_loadCpu()
 {
     int32_t status = SystemP_SUCCESS;
+    Bootloader_BootImageInfo bootImageInfo;
+    Bootloader_Params        bootParams;
 
-    /* The test exeecutable to be booted is ipc_rpmsg
+    /* The test executable to be booted is ipc_rpmsg
      * system project for AM62DX which has the following
      * cores enabled
      */
-    Bootloader_BootImageInfo bootImageInfo;
-    Bootloader_Params bootParams;
-
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
 

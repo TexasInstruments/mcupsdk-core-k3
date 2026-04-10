@@ -30,6 +30,10 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*===================================================================*/
+/* 					  Include Files 					     */
+/*===================================================================*/
+
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
@@ -41,21 +45,47 @@
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 
+/*===================================================================*/
+/* 					  Macro defines 					     */
+/*===================================================================*/
+
 /*
  * Buffer sizes for test data.
  * The buffer must be large enough to hold a Bootloader_UniflashFileHeader
  * plus the largest payload used in any test case.
  */
-#define TEST_BUF_SIZE       (0x10000U)
+#define TEST_BUF_SIZE        (0x10000U)
 #define TEST_VERIFY_BUF_SIZE (0x10000U)
+
+/*===================================================================*/
+/* 					     Typedefs 					         */
+/*===================================================================*/
+
+/*===================================================================*/
+/* 					  Global Variables				         */
+/*===================================================================*/
 
 /* Align buffers to 128 bytes for cache coherency */
 static uint8_t gTestBuf[TEST_BUF_SIZE] __attribute__((aligned(128)));
 static uint8_t gVerifyBuf[TEST_VERIFY_BUF_SIZE] __attribute__((aligned(128)));
 
-/* ========================================================================== */
-/*                          Helper Functions                                  */
-/* ========================================================================== */
+/*===================================================================*/
+/* 				  Function Declarations				         */
+/*===================================================================*/
+
+static uint8_t *TestUniflash_prepareHeader(uint32_t magicNumber,
+                                           uint32_t opType,
+                                           uint32_t offset,
+                                           uint32_t eraseSize,
+                                           uint32_t actualFileSize);
+static uint32_t TestUniflash_buildRprcImage(uint8_t *buf, uint32_t sectionAddr,
+                                            uint32_t sectionSize, const uint8_t *sectionData);
+static uint32_t TestUniflash_buildXipImage(uint8_t *buf, uint32_t sectionAddr,
+                                           uint32_t sectionSize, const uint8_t *sectionData);
+
+/*===================================================================*/
+/* 				  Function Definitions				         */
+/*===================================================================*/
 
 /*
  * Prepare a Bootloader_UniflashFileHeader in the test buffer.
@@ -149,28 +179,41 @@ static uint32_t TestUniflash_buildXipImage(uint8_t *buf, uint32_t sectionAddr,
     return offset;
 }
 
-/* ========================================================================== */
-/*                          Setup / Teardown                                  */
-/* ========================================================================== */
-
+/**
+ * @brief Unity per-test setup hook.
+ *
+ * Called automatically by the Unity framework before each test case.
+ * Clears both the test and verify buffers to ensure clean state.
+ *
+ * @return void
+ */
 void setUp(void)
 {
     memset(gTestBuf, 0, TEST_BUF_SIZE);
     memset(gVerifyBuf, 0, TEST_VERIFY_BUF_SIZE);
 }
 
+/**
+ * @brief Unity per-test teardown hook.
+ *
+ * Called automatically by the Unity framework after each test case.
+ * No special cleanup is required.
+ *
+ * @return void
+ */
 void tearDown(void)
 {
 }
 
-/* ========================================================================== */
-/*                          Test Cases                                        */
-/* ========================================================================== */
-
-/*
- * TC1: Invalid magic number in file header.
+/**
+ * @brief Invalid magic number in file header.
+ *
  * Covers: Bootloader_uniflashProcessFlashCommands -> magic number check branch.
  * Expected: BOOTLOADER_UNIFLASH_STATUSCODE_MAGIC_ERROR
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_invalidMagicNumber(void *args)
 {
@@ -192,9 +235,14 @@ void TestUniflash_invalidMagicNumber(void *args)
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER, respHeader.magicNumber);
 }
 
-/*
- * TC2: Valid magic, OPTYPE_FLASH with valid flash index and block-aligned offset.
+/**
+ * @brief Valid magic, OPTYPE_FLASH with valid flash index and block-aligned offset.
+ *
  * Covers: OPTYPE_FLASH case, Bootloader_uniflashFlashFile, Bootloader_uniflashFlashVerifyFile.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_flashOpType(void *args)
 {
@@ -220,10 +268,9 @@ void TestUniflash_flashOpType(void *args)
 
     int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
-    TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER, respHeader.magicNumber);
-
     if(status == SystemP_SUCCESS)
     {
+        TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER, respHeader.magicNumber);
         TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_SUCCESS, respHeader.statusCode);
     }
     else
@@ -236,9 +283,14 @@ void TestUniflash_flashOpType(void *args)
     }
 }
 
-/*
- * TC3: OPTYPE_FLASH_VERIFY with valid magic.
+/**
+ * @brief OPTYPE_FLASH_VERIFY with valid magic.
+ *
  * Covers: OPTYPE_FLASH_VERIFY case, Bootloader_uniflashFlashVerifyFile.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_flashVerifyOpType(void *args)
 {
@@ -269,9 +321,14 @@ void TestUniflash_flashVerifyOpType(void *args)
     }
 }
 
-/*
- * TC4: OPTYPE_FLASH_ERASE with valid magic.
+/**
+ * @brief OPTYPE_FLASH_ERASE with valid magic.
+ *
  * Covers: OPTYPE_FLASH_ERASE case, Bootloader_uniflashFlashErase.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_flashEraseOpType(void *args)
 {
@@ -302,21 +359,29 @@ void TestUniflash_flashEraseOpType(void *args)
     }
 }
 
-/*
- * TC5: OPTYPE_FLASH_XIP with valid XIP image (meta header + RPRC).
+/**
+ * @brief OPTYPE_FLASH_XIP with valid XIP image (meta header + RPRC).
+ *
  * Covers: OPTYPE_FLASH_XIP case, Bootloader_uniflashFlashXipFile,
  *         Bootloader_uniflashFlashOrVerifyXipFile,
  *         Bootloader_uniflashFlashOrVerifyRprcXipFile.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_flashXipOpType(void *args)
 {
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
+    Bootloader_UniflashFileHeader *hdr;
     uint8_t sectionData[64];
+    uint8_t *payload;
+    uint32_t xipSize;
 
     memset(sectionData, 0xBB, sizeof(sectionData));
 
-    uint8_t *payload = TestUniflash_prepareHeader(
+    payload = TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         BOOTLOADER_UNIFLASH_OPTYPE_FLASH_XIP,
         0U,
@@ -325,10 +390,10 @@ void TestUniflash_flashXipOpType(void *args)
     );
 
     /* Build XIP image in the payload area. Section address must be block-aligned. */
-    uint32_t xipSize = TestUniflash_buildXipImage(payload, 0U, 64U, sectionData);
+    xipSize = TestUniflash_buildXipImage(payload, 0U, 64U, sectionData);
 
     /* Patch the actual file size in the header */
-    Bootloader_UniflashFileHeader *hdr = (Bootloader_UniflashFileHeader *)gTestBuf;
+    hdr = (Bootloader_UniflashFileHeader *)gTestBuf;
     hdr->actualFileSize = xipSize;
 
     config.flashIndex    = CONFIG_FLASH0;
@@ -350,19 +415,27 @@ void TestUniflash_flashXipOpType(void *args)
     }
 }
 
-/*
- * TC6: OPTYPE_FLASH_VERIFY_XIP with valid XIP image.
+/**
+ * @brief OPTYPE_FLASH_VERIFY_XIP with valid XIP image.
+ *
  * Covers: OPTYPE_FLASH_VERIFY_XIP case, Bootloader_uniflashFlashVerifyXipFile.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_flashVerifyXipOpType(void *args)
 {
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
+    Bootloader_UniflashFileHeader *hdr;
     uint8_t sectionData[64];
+    uint8_t *payload;
+    uint32_t xipSize;
 
     memset(sectionData, 0xCC, sizeof(sectionData));
 
-    uint8_t *payload = TestUniflash_prepareHeader(
+    payload = TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         BOOTLOADER_UNIFLASH_OPTYPE_FLASH_VERIFY_XIP,
         0U,
@@ -370,9 +443,9 @@ void TestUniflash_flashVerifyXipOpType(void *args)
         0U
     );
 
-    uint32_t xipSize = TestUniflash_buildXipImage(payload, 0U, 64U, sectionData);
+    xipSize = TestUniflash_buildXipImage(payload, 0U, 64U, sectionData);
 
-    Bootloader_UniflashFileHeader *hdr = (Bootloader_UniflashFileHeader *)gTestBuf;
+    hdr = (Bootloader_UniflashFileHeader *)gTestBuf;
     hdr->actualFileSize = xipSize;
 
     config.flashIndex    = CONFIG_FLASH0;
@@ -391,9 +464,14 @@ void TestUniflash_flashVerifyXipOpType(void *args)
     }
 }
 
-/*
- * TC7: OPTYPE_FLASH_TUNING_DATA.
+/**
+ * @brief OPTYPE_FLASH_TUNING_DATA.
+ *
  * Covers: OPTYPE_FLASH_TUNING_DATA case, Bootloader_uniflashFlashPhyTuningData.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_flashTuningDataOpType(void *args)
 {
@@ -424,9 +502,14 @@ void TestUniflash_flashTuningDataOpType(void *args)
     }
 }
 
-/*
- * TC8: Unknown/invalid optype.
+/**
+ * @brief Unknown/invalid optype.
+ *
  * Covers: default case in the switch.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_unknownOpType(void *args)
 {
@@ -454,9 +537,14 @@ void TestUniflash_unknownOpType(void *args)
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_OPTYPE_ERROR, respHeader.statusCode);
 }
 
-/*
- * TC9: File size not 16B aligned — test the padding branch.
+/**
+ * @brief File size not 16B aligned — test the padding branch.
+ *
  * Covers: remainder != 0 branch in Bootloader_uniflashProcessFlashCommands.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_fileSizeNotAligned(void *args)
 {
@@ -486,9 +574,14 @@ void TestUniflash_fileSizeNotAligned(void *args)
     (void)status;
 }
 
-/*
- * TC10: File size exactly 16B aligned — test the no-padding branch.
+/**
+ * @brief File size exactly 16B aligned — test the no-padding branch.
+ *
  * Covers: remainder == 0 (do nothing) branch.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_fileSizeAligned(void *args)
 {
@@ -515,9 +608,14 @@ void TestUniflash_fileSizeAligned(void *args)
     (void)status;
 }
 
-/*
- * TC11: OPTYPE_FLASH with non-block-aligned offset.
+/**
+ * @brief OPTYPE_FLASH with non-block-aligned offset.
+ *
  * Covers: flashOffset % eraseBlockSize != 0 branch in Bootloader_uniflashFlashFile.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_flashNonAlignedOffset(void *args)
 {
@@ -546,9 +644,14 @@ void TestUniflash_flashNonAlignedOffset(void *args)
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR, respHeader.statusCode);
 }
 
-/*
- * TC12: OPTYPE_FLASH_ERASE with non-block-aligned offset.
+/**
+ * @brief OPTYPE_FLASH_ERASE with non-block-aligned offset.
+ *
  * Covers: flashOffset % eraseBlockSize != 0 branch in Bootloader_uniflashFlashErase.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_eraseNonAlignedOffset(void *args)
 {
@@ -575,9 +678,14 @@ void TestUniflash_eraseNonAlignedOffset(void *args)
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERASE_ERROR, respHeader.statusCode);
 }
 
-/*
- * TC13: OPTYPE_FLASH_ERASE with eraseSize > flashSize.
+/**
+ * @brief OPTYPE_FLASH_ERASE with eraseSize > flashSize.
+ *
  * Covers: eraseSize > flashSize branch in Bootloader_uniflashFlashErase.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_eraseExceedsFlashSize(void *args)
 {
@@ -604,17 +712,25 @@ void TestUniflash_eraseExceedsFlashSize(void *args)
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERASE_ERROR, respHeader.statusCode);
 }
 
-/*
- * TC14: XIP with invalid meta header magic.
+/**
+ * @brief XIP with invalid meta header magic.
+ *
  * Covers: mHdrStr.magicStr != BOOTLOADER_META_HDR_MAGIC_STR branch in
  *         Bootloader_uniflashFlashOrVerifyXipFile.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_xipInvalidMetaHeaderMagic(void *args)
 {
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
+    Bootloader_MetaHeaderStart mHdrStr;
+    Bootloader_UniflashFileHeader *hdr;
+    uint8_t *payload;
 
-    uint8_t *payload = TestUniflash_prepareHeader(
+    payload = TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         BOOTLOADER_UNIFLASH_OPTYPE_FLASH_XIP,
         0U,
@@ -623,13 +739,12 @@ void TestUniflash_xipInvalidMetaHeaderMagic(void *args)
     );
 
     /* Write an invalid meta header magic */
-    Bootloader_MetaHeaderStart mHdrStr;
     memset(&mHdrStr, 0, sizeof(mHdrStr));
     mHdrStr.magicStr = 0xBADBADBAU;  /* Invalid */
     mHdrStr.numFiles = 1U;
     memcpy(payload, &mHdrStr, sizeof(mHdrStr));
 
-    Bootloader_UniflashFileHeader *hdr = (Bootloader_UniflashFileHeader *)gTestBuf;
+    hdr = (Bootloader_UniflashFileHeader *)gTestBuf;
     hdr->actualFileSize = 64U;
 
     config.flashIndex    = CONFIG_FLASH0;
@@ -644,17 +759,29 @@ void TestUniflash_xipInvalidMetaHeaderMagic(void *args)
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR, respHeader.statusCode);
 }
 
-/*
- * TC15: XIP with invalid RPRC magic inside XIP image.
+/**
+ * @brief XIP with invalid RPRC magic inside XIP image.
+ *
  * Covers: header.magic != BOOTLOADER_RPRC_MAGIC_NUMBER branch in
  *         Bootloader_uniflashFlashOrVerifyRprcXipFile.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_xipInvalidRprcMagic(void *args)
 {
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
+    Bootloader_MetaHeaderStart mHdrStr;
+    Bootloader_MetaHeaderCore mHdrCore;
+    Bootloader_RprcFileHeader rprcHdr;
+    Bootloader_UniflashFileHeader *hdr;
+    uint8_t *payload;
+    uint32_t offset = 0U;
+    uint32_t rprcOffset;
 
-    uint8_t *payload = TestUniflash_prepareHeader(
+    payload = TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         BOOTLOADER_UNIFLASH_OPTYPE_FLASH_XIP,
         0U,
@@ -663,17 +790,13 @@ void TestUniflash_xipInvalidRprcMagic(void *args)
     );
 
     /* Build a valid meta header but with invalid RPRC content */
-    Bootloader_MetaHeaderStart mHdrStr;
-    Bootloader_MetaHeaderCore mHdrCore;
-    uint32_t offset = 0U;
-
     memset(&mHdrStr, 0, sizeof(mHdrStr));
     mHdrStr.magicStr = BOOTLOADER_META_HDR_MAGIC_STR;
     mHdrStr.numFiles = 1U;
     memcpy(payload + offset, &mHdrStr, sizeof(mHdrStr));
     offset += (uint32_t)sizeof(mHdrStr);
 
-    uint32_t rprcOffset = offset + (uint32_t)sizeof(mHdrCore);
+    rprcOffset = offset + (uint32_t)sizeof(mHdrCore);
     memset(&mHdrCore, 0, sizeof(mHdrCore));
     mHdrCore.coreId      = 0U;
     mHdrCore.imageOffset = rprcOffset;
@@ -681,14 +804,13 @@ void TestUniflash_xipInvalidRprcMagic(void *args)
     offset += (uint32_t)sizeof(mHdrCore);
 
     /* Write an invalid RPRC header */
-    Bootloader_RprcFileHeader rprcHdr;
     memset(&rprcHdr, 0, sizeof(rprcHdr));
     rprcHdr.magic = 0xDEADDEADU;  /* Invalid RPRC magic */
     rprcHdr.sectionCount = 0U;
     memcpy(payload + offset, &rprcHdr, sizeof(rprcHdr));
     offset += (uint32_t)sizeof(rprcHdr);
 
-    Bootloader_UniflashFileHeader *hdr = (Bootloader_UniflashFileHeader *)gTestBuf;
+    hdr = (Bootloader_UniflashFileHeader *)gTestBuf;
     hdr->actualFileSize = offset;
 
     config.flashIndex    = CONFIG_FLASH0;
@@ -703,27 +825,33 @@ void TestUniflash_xipInvalidRprcMagic(void *args)
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR, respHeader.statusCode);
 }
 
-/*
- * TC16: XIP with coreId == 0xFFFFFFFF (skip core).
+/**
+ * @brief XIP with coreId == 0xFFFFFFFF (skip core).
+ *
  * Covers: mHdrCore[i].coreId == 0xFFFFFFFF branch in
  *         Bootloader_uniflashFlashOrVerifyXipFile.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_xipSkippedCore(void *args)
 {
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
+    Bootloader_MetaHeaderStart mHdrStr;
+    Bootloader_MetaHeaderCore mHdrCore;
+    Bootloader_UniflashFileHeader *hdr;
+    uint8_t *payload;
+    uint32_t offset = 0U;
 
-    uint8_t *payload = TestUniflash_prepareHeader(
+    payload = TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         BOOTLOADER_UNIFLASH_OPTYPE_FLASH_XIP,
         0U,
         0U,
         0U
     );
-
-    Bootloader_MetaHeaderStart mHdrStr;
-    Bootloader_MetaHeaderCore mHdrCore;
-    uint32_t offset = 0U;
 
     memset(&mHdrStr, 0, sizeof(mHdrStr));
     mHdrStr.magicStr = BOOTLOADER_META_HDR_MAGIC_STR;
@@ -737,7 +865,7 @@ void TestUniflash_xipSkippedCore(void *args)
     memcpy(payload + offset, &mHdrCore, sizeof(mHdrCore));
     offset += (uint32_t)sizeof(mHdrCore);
 
-    Bootloader_UniflashFileHeader *hdr = (Bootloader_UniflashFileHeader *)gTestBuf;
+    hdr = (Bootloader_UniflashFileHeader *)gTestBuf;
     hdr->actualFileSize = offset;
 
     config.flashIndex    = CONFIG_FLASH0;
@@ -753,12 +881,17 @@ void TestUniflash_xipSkippedCore(void *args)
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_SUCCESS, respHeader.statusCode);
 }
 
-/*
- * TC17: Resp header init with NULL pointer.
+/**
+ * @brief Resp header init with NULL pointer.
+ *
  * Covers: respHeader == 0 branch in Bootloader_uniflashInitRespHeader.
  * Note: Bootloader_uniflashInitRespHeader is static, but calling
  * Bootloader_uniflashProcessFlashCommands exercises it with a valid pointer.
  * This test verifies the non-NULL path works correctly.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_respHeaderInit(void *args)
 {
@@ -788,10 +921,15 @@ void TestUniflash_respHeaderInit(void *args)
     TEST_ASSERT_EQUAL_UINT32(0xDEADBABE, respHeader.rsv1);
 }
 
-/*
- * TC18: OPTYPE_FLASH with an invalid flash index (use a very large index).
+/**
+ * @brief OPTYPE_FLASH with an invalid flash index (use a very large index).
+ *
  * Covers: flashAttrs == 0 || flashHandle == NULL branch in
  *         Bootloader_uniflashFlashFile and Bootloader_uniflashFlashVerifyFile.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_flashInvalidFlashIndex(void *args)
 {
@@ -820,10 +958,15 @@ void TestUniflash_flashInvalidFlashIndex(void *args)
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR, respHeader.statusCode);
 }
 
-/*
- * TC19: OPTYPE_FLASH_VERIFY with an invalid flash index.
+/**
+ * @brief OPTYPE_FLASH_VERIFY with an invalid flash index.
+ *
  * Covers: flashAttrs == 0 || flashHandle == NULL branch in
  *         Bootloader_uniflashFlashVerifyFile.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_verifyInvalidFlashIndex(void *args)
 {
@@ -850,10 +993,15 @@ void TestUniflash_verifyInvalidFlashIndex(void *args)
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_VERIFY_ERROR, respHeader.statusCode);
 }
 
-/*
- * TC20: OPTYPE_FLASH_ERASE with an invalid flash index.
+/**
+ * @brief OPTYPE_FLASH_ERASE with an invalid flash index.
+ *
  * Covers: flashAttrs == 0 || flashHandle == NULL branch in
  *         Bootloader_uniflashFlashErase.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_eraseInvalidFlashIndex(void *args)
 {
@@ -880,10 +1028,15 @@ void TestUniflash_eraseInvalidFlashIndex(void *args)
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERASE_ERROR, respHeader.statusCode);
 }
 
-/*
- * TC21: OPTYPE_FLASH_TUNING_DATA with an invalid flash index.
+/**
+ * @brief OPTYPE_FLASH_TUNING_DATA with an invalid flash index.
+ *
  * Covers: flashAttrs == 0 || flashHandle == NULL branch in
  *         Bootloader_uniflashFlashPhyTuningData.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_tuningDataInvalidFlashIndex(void *args)
 {
@@ -910,29 +1063,36 @@ void TestUniflash_tuningDataInvalidFlashIndex(void *args)
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR, respHeader.statusCode);
 }
 
-/*
- * TC22: XIP with multiple cores — one valid, one skipped (0xFFFFFFFF).
+/**
+ * @brief XIP with multiple cores — one valid, one skipped (0xFFFFFFFF).
+ *
  * Covers: the loop iteration with mixed valid/invalid coreIds.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
  */
 void TestUniflash_xipMultipleCoresMixed(void *args)
 {
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
+    Bootloader_MetaHeaderStart mHdrStr;
+    Bootloader_MetaHeaderCore mHdrCore[2];
+    Bootloader_UniflashFileHeader *hdr;
     uint8_t sectionData[64];
+    uint8_t *payload;
+    uint32_t offset = 0U;
+    uint32_t rprcStart;
 
     memset(sectionData, 0xAA, sizeof(sectionData));
 
-    uint8_t *payload = TestUniflash_prepareHeader(
+    payload = TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         BOOTLOADER_UNIFLASH_OPTYPE_FLASH_XIP,
         0U,
         0U,
         0U
     );
-
-    Bootloader_MetaHeaderStart mHdrStr;
-    Bootloader_MetaHeaderCore mHdrCore[2];
-    uint32_t offset = 0U;
 
     memset(&mHdrStr, 0, sizeof(mHdrStr));
     mHdrStr.magicStr = BOOTLOADER_META_HDR_MAGIC_STR;
@@ -946,7 +1106,7 @@ void TestUniflash_xipMultipleCoresMixed(void *args)
     mHdrCore[0].imageOffset = 0U;
 
     /* Second core: valid */
-    uint32_t rprcStart = offset + 2U * (uint32_t)sizeof(Bootloader_MetaHeaderCore);
+    rprcStart = offset + 2U * (uint32_t)sizeof(Bootloader_MetaHeaderCore);
     memset(&mHdrCore[1], 0, sizeof(Bootloader_MetaHeaderCore));
     mHdrCore[1].coreId      = 0U;
     mHdrCore[1].imageOffset = rprcStart;
@@ -959,7 +1119,7 @@ void TestUniflash_xipMultipleCoresMixed(void *args)
     /* Build RPRC image at rprcStart */
     offset += TestUniflash_buildRprcImage(payload + offset, 0U, 64U, sectionData);
 
-    Bootloader_UniflashFileHeader *hdr = (Bootloader_UniflashFileHeader *)gTestBuf;
+    hdr = (Bootloader_UniflashFileHeader *)gTestBuf;
     hdr->actualFileSize = offset;
 
     config.flashIndex    = CONFIG_FLASH0;
@@ -974,36 +1134,43 @@ void TestUniflash_xipMultipleCoresMixed(void *args)
     (void)status;
 }
 
-/* ========================================================================== */
-/*                          Test Runner                                       */
-/* ========================================================================== */
-
+/**
+ * @brief Main SBL uniflash unit test entry point.
+ *
+ * Initializes Unity, executes all uniflash API validation tests
+ * (magic number, flash/verify/erase operations, XIP, alignment,
+ * tuning data, invalid indices), and finalizes the Unity framework.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
 void test_main(void *args)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(TestUniflash_invalidMagicNumber,           2000, NULL);
-    RUN_TEST(TestUniflash_flashOpType,                  5000, NULL);
-    RUN_TEST(TestUniflash_flashVerifyOpType,            5000, NULL);
-    RUN_TEST(TestUniflash_flashEraseOpType,             5000, NULL);
-    RUN_TEST(TestUniflash_flashXipOpType,               5000, NULL);
-    RUN_TEST(TestUniflash_flashVerifyXipOpType,         5000, NULL);
-    RUN_TEST(TestUniflash_flashTuningDataOpType,        5000, NULL);
-    RUN_TEST(TestUniflash_unknownOpType,                2000, NULL);
-    RUN_TEST(TestUniflash_fileSizeNotAligned,           5000, NULL);
-    RUN_TEST(TestUniflash_fileSizeAligned,              5000, NULL);
-    RUN_TEST(TestUniflash_flashNonAlignedOffset,        5000, NULL);
-    RUN_TEST(TestUniflash_eraseNonAlignedOffset,        5000, NULL);
-    RUN_TEST(TestUniflash_eraseExceedsFlashSize,        5000, NULL);
-    RUN_TEST(TestUniflash_xipInvalidMetaHeaderMagic,    5000, NULL);
-    RUN_TEST(TestUniflash_xipInvalidRprcMagic,          5000, NULL);
-    RUN_TEST(TestUniflash_xipSkippedCore,               5000, NULL);
-    RUN_TEST(TestUniflash_respHeaderInit,               2000, NULL);
-    RUN_TEST(TestUniflash_flashInvalidFlashIndex,       2000, NULL);
-    RUN_TEST(TestUniflash_verifyInvalidFlashIndex,      2000, NULL);
-    RUN_TEST(TestUniflash_eraseInvalidFlashIndex,       2000, NULL);
-    RUN_TEST(TestUniflash_tuningDataInvalidFlashIndex,  2000, NULL);
-    RUN_TEST(TestUniflash_xipMultipleCoresMixed,        5000, NULL);
+    RUN_TEST(TestUniflash_invalidMagicNumber,           11450, NULL);
+    RUN_TEST(TestUniflash_flashOpType,                  11451, NULL);
+    RUN_TEST(TestUniflash_flashVerifyOpType,            11452, NULL);
+    RUN_TEST(TestUniflash_flashEraseOpType,             11453, NULL);
+    RUN_TEST(TestUniflash_flashXipOpType,               11454, NULL);
+    RUN_TEST(TestUniflash_flashVerifyXipOpType,         11455, NULL);
+    RUN_TEST(TestUniflash_flashTuningDataOpType,        11456, NULL);
+    RUN_TEST(TestUniflash_unknownOpType,                11457, NULL);
+    RUN_TEST(TestUniflash_fileSizeNotAligned,           11458, NULL);
+    RUN_TEST(TestUniflash_fileSizeAligned,              11459, NULL);
+    RUN_TEST(TestUniflash_flashNonAlignedOffset,        11460, NULL);
+    RUN_TEST(TestUniflash_eraseNonAlignedOffset,        11461, NULL);
+    RUN_TEST(TestUniflash_eraseExceedsFlashSize,        11462, NULL);
+    RUN_TEST(TestUniflash_xipInvalidMetaHeaderMagic,    11463, NULL);
+    RUN_TEST(TestUniflash_xipInvalidRprcMagic,          11464, NULL);
+    RUN_TEST(TestUniflash_xipSkippedCore,               11465, NULL);
+    RUN_TEST(TestUniflash_respHeaderInit,               11466, NULL);
+    RUN_TEST(TestUniflash_flashInvalidFlashIndex,       11467, NULL);
+    RUN_TEST(TestUniflash_verifyInvalidFlashIndex,      11468, NULL);
+    RUN_TEST(TestUniflash_eraseInvalidFlashIndex,       11469, NULL);
+    RUN_TEST(TestUniflash_tuningDataInvalidFlashIndex,  11470, NULL);
+    RUN_TEST(TestUniflash_xipMultipleCoresMixed,        11471, NULL);
 
     UNITY_END();
 }

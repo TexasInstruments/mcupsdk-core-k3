@@ -44,31 +44,31 @@ __UNDEFINED_STACK_SIZE = 0x0100;  /* This is the size of stack when R5 is in UND
 SECTIONS
 {
     /* This has the R5F entry point and vector table, this MUST be at 0x0 */
-    .vectors:{} palign(8) > R5F_TCMA_VEC
-    .startupCode:{} palign(8) > R5F_TCMA
-    .startupData: {} palign(8) > R50_1_OCRAM, type = NOINIT
+    .vectors:{} palign(16) > R5F_TCMA_VEC
+    .startupCode:{} palign(16) > R5F_TCMA
+    .startupData: {} palign(16) > R50_1_OCRAM, type = NOINIT
 
     /* This has the R5F boot code until MPU is enabled,  this MUST be at a aR50_1_OCRAMess < 0x80000000
      * i.e this cannot be placed in R50_1_OCRAM
      */
     GROUP {
-        .text.hwi: palign(8)
-        .text.cache: palign(8)
-        .text.mpu: palign(8)
-        .text.boot: palign(8)
-        .text:abort: palign(8) /* this helps in loading symbols when using XIP mode */
+        .text.hwi: palign(16)
+        .text.cache: palign(16)
+        .text.mpu: palign(16)
+        .text.boot: palign(16)
+        .text:abort: palign(16) /* this helps in loading symbols when using XIP mode */
     } > R5F_TCMA
 
 
-    .text            : {} palign(8)      > R50_1_OCRAM
-    .const           : {} palign(8)      > R50_1_OCRAM
-    .rodata          : {} palign(8)      > R50_1_OCRAM
-    .cinit           : {} palign(8)      > R50_1_OCRAM
-    .far             : {} align(4)       > R50_1_OCRAM
+    .text            : {} palign(16)      > R50_1_OCRAM
+    .const           : {} palign(16)      > R50_1_OCRAM
+    .rodata          : {} palign(16)      > R50_1_OCRAM
+    .cinit           : {} palign(16)      > R50_1_OCRAM
+    .far             : {} palign(16)       > R50_1_OCRAM
     .data            : {} palign(128)    > R50_1_OCRAM
     .sysmem          : {}                > R50_1_OCRAM
     .data_buffer     : {} palign(128)    > R50_1_OCRAM
-    .boardcfg_data   : {} align(4)       > R50_1_OCRAM
+    .boardcfg_data   : {} palign(16)       > R50_1_OCRAM
 
     GROUP {
         .bss:    {} palign(4)   /* This is where uninitialized globals go */
@@ -102,9 +102,9 @@ SECTIONS
 
     /* Sections needed for C++ projects */
     GROUP {
-        .ARM.exidx:  {} palign(8)   /* Needed for C++ exception handling */
-        .init_array: {} palign(8)   /* Contains function pointers called before main */
-        .fini_array: {} palign(8)   /* Contains function pointers called after main */
+        .ARM.exidx:  {} palign(16)   /* Needed for C++ exception handling */
+        .init_array: {} palign(16)   /* Contains function pointers called before main */
+        .fini_array: {} palign(16)   /* Contains function pointers called after main */
     } > R50_1_OCRAM
 
 }

@@ -41,20 +41,20 @@ SECTIONS
 {
     .vecs       >       C75_0_L2SRAM ALIGN(0x200000)
     .text:_c_int00_secure > C75_0_OCRAM_ENTRY ALIGN(0x200000)
-    .text       >       C75_0_OCRAM
+    .text       >       C75_0_OCRAM PALIGN(16)
 
     .bss        >       C75_0_L2SRAM  /* Zero-initialized data */
     RUN_START(__BSS_START)
     RUN_END(__BSS_END)
 
-    .data       >       C75_0_L2SRAM  /* Initialized data */
+    .data       >       C75_0_L2SRAM PALIGN(16) /* Initialized data */
 
-    .cinit      >       C75_0_OCRAM  /* could be part of const */
-    .init_array >       C75_0_OCRAM  /* C++ initializations */
+    .cinit      >       C75_0_OCRAM PALIGN(16) /* could be part of const */
+    .init_array >       C75_0_OCRAM PALIGN(16) /* C++ initializations */
     .stack      >       C75_0_L2SRAM ALIGN(0x2000)
     .args       >       C75_0_L2SRAM
     .cio        >       C75_0_CIO_MEM
-    .const      >       C75_0_OCRAM
+    .const      >       C75_0_OCRAM PALIGN(16)
     .switch     >       C75_0_L2SRAM /* For exception handling. */
     .sysmem     >       C75_0_OCRAM /* heap */
 

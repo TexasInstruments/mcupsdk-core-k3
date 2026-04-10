@@ -36,28 +36,28 @@ __UNDEFINED_STACK_SIZE = 256;  /* This is the size of stack when R5 is in UNDEF 
 SECTIONS
 {
     /* This has the R5F entry point and vector table, this MUST be at 0x0 */
-    .vectors:{} palign(8) > R5F_VECS
+    .vectors:{} palign(16) > R5F_VECS
 
     /* This has the R5F boot code until MPU is enabled,  this MUST be at a address < 0x80000000
      * i.e this cannot be placed in R50_0_OCRAM
      */
     GROUP {
-        .text.hwi: palign(8)
-        .text.cache: palign(8)
-        .text.mpu: palign(8)
-        .text.boot: palign(8)
-        .text:abort: palign(8) /* this helps in loading symbols when using XIP mode */
+        .text.hwi: palign(16)
+        .text.cache: palign(16)
+        .text.mpu: palign(16)
+        .text.boot: palign(16)
+        .text:abort: palign(16) /* this helps in loading symbols when using XIP mode */
     } > R5F_TCMA
 
     /* This is rest of code. This can be placed in R50_0_OCRAM if R50_0_OCRAM is available and needed */
     GROUP {
-        .text:   {} palign(8)   /* This is where code resides */
-        .rodata: {} palign(8)   /* This is where const's go */
+        .text:   {} palign(16)   /* This is where code resides */
+        .rodata: {} palign(16)   /* This is where const's go */
     } > HYPERRAM
 
     /* This is rest of initialized data. This can be placed in R50_0_OCRAM if R50_0_OCRAM is available and needed */
     GROUP {
-        .data:   {} palign(8)   /* This is where initialized globals and static go */
+        .data:   {} palign(16)   /* This is where initialized globals and static go */
     } > HYPERRAM
 
     /* This is rest of uninitialized data. This can be placed in R50_0_OCRAM if R50_0_OCRAM is available and needed */
@@ -90,9 +90,9 @@ SECTIONS
 
     /* Sections needed for C++ projects */
     GROUP {
-        .ARM.exidx:  {} palign(8)   /* Needed for C++ exception handling */
-        .init_array: {} palign(8)   /* Contains function pointers called before main */
-        .fini_array: {} palign(8)   /* Contains function pointers called after main */
+        .ARM.exidx:  {} palign(16)   /* Needed for C++ exception handling */
+        .init_array: {} palign(16)   /* Contains function pointers called before main */
+        .fini_array: {} palign(16)   /* Contains function pointers called after main */
     } > HYPERRAM
 }
 

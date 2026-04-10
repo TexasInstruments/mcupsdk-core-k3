@@ -355,6 +355,8 @@ const example_file_list = [
     "test/drivers/boot/sbl_test_uart_boot/.project/project.js",
     "test/drivers/boot/sbl_test_multithread/.project/project.js",
     "test/drivers/boot/sbl_test_multithread/sbl_test_custom_ipc_binary/.project/project.js",
+    "test/drivers/boot/sbl_test_uniflash/.project/project.js",
+    "test/drivers/boot/sbl_uart_uniflash_test/.project/project.js",
 
 ];
 

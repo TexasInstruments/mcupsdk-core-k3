@@ -149,6 +149,7 @@ int32_t Board_i2c8BitRegWr(void *handle,
     transaction.writeCount   = 2;
     transaction.readBuf      = NULL;
     transaction.readCount    = 0;
+    transaction.timeout      = i2cTimeout;
 
     tx[0] = regAddr;
     txPtr = &tx[1];
@@ -188,6 +189,7 @@ int32_t Board_i2c8BitRegRd(void *handle,
     transaction.writeCount   = 1;
     transaction.readBuf      = &tx[1];
     transaction.readCount    = 1;
+    transaction.timeout      = i2cTimeout;
 
     tx[0] = regAddr;
 
@@ -217,6 +219,7 @@ int32_t Board_i2c8BitRegWrSingle(void *handle,
     transaction.writeCount   = 1;
     transaction.readBuf      = NULL;
     transaction.readCount    = 0;
+    transaction.timeout      = i2cTimeout;
 
     tx[0] = *regData;
 
@@ -245,6 +248,7 @@ int32_t Board_i2c8BitRegRdSingle(void *handle,
     transaction.writeCount   = 0;
     transaction.readBuf      = &tx[0];
     transaction.readCount    = 1;
+    transaction.timeout      = i2cTimeout;
 
     status = I2C_transfer(i2cHandle, &transaction);
     *regData = tx[0];
@@ -276,6 +280,7 @@ int32_t Board_i2c16BitRegWr(void *handle,
     transaction.writeCount   = (numOfBytes + 2);
     transaction.readBuf      = NULL;
     transaction.readCount    = 0;
+    transaction.timeout      = i2cTimeout;
 
     /* 16-bit regAddr data to be sent */
     {

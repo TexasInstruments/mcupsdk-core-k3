@@ -180,13 +180,27 @@ function getComponentProperty() {
     return property;
 }
 
-const robot_template = {
+const robot_template_freertos = {
     input: ".project/templates/am62px/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "DSS",
         testCaseName: "dss_dpi_interface test application",
-        testCaseIds: "SITSW-4796 SITSW-4797 SITSW-6067 SITSW-6127",
+        testCaseIds: "SITSW-4796 SITSW-4797 SITSW-6067 SITSW-6127 SITSW-11287 SITSW-11289 SITSW-11290 SITSW-11291 SITSW-11293 SITSW-11294" +
+                     " SITSW-11295 SITSW-11296 SITSW-11297",
+        expectTimeout: 600,
+        timeout: 900,
+    },
+};
+
+const robot_template_nortos = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DSS",
+        testCaseName: "dss_dpi_interface test application",
+        testCaseIds: "SITSW-4796 SITSW-4797 SITSW-6067 SITSW-6127 SITSW-11287 SITSW-11289 SITSW-11290 SITSW-11291 SITSW-11293 SITSW-11294" +
+                     " SITSW-11295 SITSW-11296 SITSW-11297",
         expectTimeout: 600,
         timeout: 900,
     },
@@ -218,7 +232,12 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.os.match(/freertos*/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_freertos];
+    }
+    else {
+        build_property.templates = [...(build_property.templates || []), robot_template_nortos];
+    }
     return build_property;
 }
 

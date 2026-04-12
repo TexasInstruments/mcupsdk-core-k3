@@ -11,6 +11,15 @@ const files = {
     ],
 };
 
+const files_smp = {
+    common: [
+        "test_dss_smp.c",
+        "test_display_control.c",
+        "dss_display_pattern.c",
+        "main.c",
+    ],
+};
+
 /* Relative to where the makefile will be generated
  * Typically at <example_folder>/<BOARD>/<core_os_combo>/<compiler>
  */
@@ -75,6 +84,36 @@ const libs_freertos_a53 = {
     ],
 };
 
+const includes_a53_smp = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable_smp/GCC/ARM_CA53",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53-smp",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include/private",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include/portable",
+        "${MCU_PLUS_SDK_PATH}/test/unity/",
+    ],
+};
+
+const libs_a53_smp = {
+    common: [
+        "freertos.am62x.a53-smp.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62x.a53.gcc-aarch64.${ConfigName}.lib",
+        "board.am62x.a53.gcc-aarch64.${ConfigName}.lib",
+        "unity.am62x.a53.gcc-aarch64.${ConfigName}.lib",
+    ],
+};
+
+const defines_a53_smp = {
+    common: [
+        "OS_FREERTOS",
+        "SMP_FREERTOS",
+        "SMP_QUADCORE_FREERTOS",
+    ],
+};
+
 const lnkfiles = {
     common: [
         "linker.cmd",
@@ -125,13 +164,60 @@ const templates_nortos_a53 =
         },
     ];
 
-const robot_template = {
+const templates_a53_smp =
+    [
+        {
+            input: ".project/templates/am62x/common/linker_a53_smp.cmd.xdt",
+            output: "linker.cmd",
+            options: {
+                dssFrameBuf: "true",
+            },
+        },
+        {
+            input: ".project/templates/am62x/freertos/main_freertos_smp.c.xdt",
+            output: "../main.c",
+            options: {
+                entryFunction: "test_dss_smp_main",
+            },
+        },
+    ];
+
+const robot_template_freertos = {
     input: ".project/templates/am62x/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "DSS",
         testCaseName: "DSS: OLDI Interface - Test multiple frame input formats",
-        testCaseIds: "SITSW-4560",
+        testCaseIds: "SITSW-4560 SITSW-11256 SITSW-11257 SITSW-11258 SITSW-11259 SITSW-11260 SITSW-11261 SITSW-11262 SITSW-11263 SITSW-11264" +
+                     " SITSW-11266 SITSW-11267 SITSW-11268 SITSW-11269 SITSW-11270 SITSW-11271 SITSW-11272 SITSW-11273 SITSW-11274 SITSW-11275" +
+                     " SITSW-11276 SITSW-11277 SITSW-11282 SITSW-11366 SITSW-11367 SITSW-11368 SITSW-11369",
+        expectTimeout: 600,
+        timeout: 900,
+    },
+};
+
+const robot_template_nortos = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DSS",
+        testCaseName: "DSS: OLDI Interface - Test multiple frame input formats",
+        testCaseIds: "SITSW-4560 SITSW-11256 SITSW-11257 SITSW-11258 SITSW-11259 SITSW-11260 SITSW-11261 SITSW-11262 SITSW-11263 SITSW-11264" +
+                     " SITSW-11266 SITSW-11267 SITSW-11268 SITSW-11269 SITSW-11270 SITSW-11271 SITSW-11272 SITSW-11273 SITSW-11274 SITSW-11275" +
+                     " SITSW-11282 SITSW-11366 SITSW-11367 SITSW-11368 SITSW-11369",
+        expectTimeout: 600,
+        timeout: 900,
+    },
+};
+
+const robot_template_smp = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DSS",
+        testCaseName: "DSS: OLDI Interface - Test multiple frame input formats",
+        appName: "test_dss_oldi(smp)",
+        testCaseIds: "SITSW-11298 SITSW-11520",
         expectTimeout: 600,
         timeout: 900,
     },
@@ -144,6 +230,9 @@ const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sk", os: "nortos" },
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sip-sk", os: "nortos" },
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sk-lp", os: "nortos" },
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sk", os: "freertos-smp" },
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sip-sk", os: "freertos-smp" },
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sk-lp", os: "freertos-smp" },
 ];
 
 function getComponentProperty() {
@@ -168,7 +257,15 @@ function getComponentBuildProperty(buildOption) {
     build_property.syscfgfile = syscfgfile;
 
     if (buildOption.cpu.match(/a53*/)) {
-        if (buildOption.os.match(/freertos*/)) {
+        if ((buildOption.os.match(/freertos-smp*/))) {
+            build_property.files = files_smp;
+            build_property.templates = templates_a53_smp;
+            build_property.includes = includes_a53_smp;
+            build_property.libdirs = libdirs_freertos_a53;
+            build_property.libs = libs_a53_smp;
+            build_property.defines = defines_a53_smp;
+        }
+        else if (buildOption.os.match(/freertos*/)) {
             build_property.includes = includes_freertos_a53;
             build_property.libdirs = libdirs_freertos_a53;
             build_property.libs = libs_freertos_a53;
@@ -183,7 +280,15 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.os.match(/freertos-smp*/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_smp];
+    }
+    else if (buildOption.os.match(/freertos*/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_freertos];
+    }
+    else {
+        build_property.templates = [...(build_property.templates || []), robot_template_nortos];
+    }
 
     return build_property;
 }

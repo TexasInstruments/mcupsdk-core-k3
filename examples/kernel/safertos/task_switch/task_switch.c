@@ -207,12 +207,6 @@ void task_switch_main(void *args)
 {
     portBaseType xStatus;
 
-    /* Open required drivers for application */
-    Drivers_open();
-
-    /* Open all required board drivers */
-    Board_driversOpen();
-
     /* Create the semaphore used by the first two tasks. */
     xSemaphoreCreateBinary( gPingSemBuf, &gPingSem );
     if( gPingSem == NULL )

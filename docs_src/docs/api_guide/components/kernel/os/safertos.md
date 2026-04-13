@@ -86,8 +86,7 @@ R5F Core
 - R5F ISRs
 \endcond
 
-Application-dependent parameters : queue registry size (only for R5F) and runtime statistics (for both R5F and C75) are disabled in configSafeRTOSConfig.h of source.
-Enable them as required by your application.
+\note The runtimestats (configured using configINCLUDE_RUNTIMESTATS for r5f, and c75) and queueregistry (configured using configQUEUE_REGISTRY_SIZE for r5f) features within the SDK are NOT supported with SafeRTOS but are enabled by default in config/SafeRTOSConfig.h. They should be disabled to avoid compilation issues.
 
 ## Migration of examples built with freertos to safertos
 

@@ -103,8 +103,10 @@ extern "C" {
 #define UDMA_INST_TYPE_LCDMA_BCDMA      (1U)
 /** \brief LCDMA - Packet DMA instance type*/
 #define UDMA_INST_TYPE_LCDMA_PKTDMA     (2U)
+/** \brief C7X DRU (Direct Ring Unit) instance type*/
+#define UDMA_INST_TYPE_C7X_DRU          (3U)
 /** \brief Maximum number of UDMA instance types */
-#define UDMA_INST_TYPE_MAX              (3U)
+#define UDMA_INST_TYPE_MAX              (4U)
 /* @} */
 
 /**
@@ -134,6 +136,9 @@ extern "C" {
 
 /** \brief Macro used to specify shift value for RX flow threshold before passing to SysFw */
 #define UDMA_RFLOW_RX_SIZE_THRESH_VAL_SHIFT      ((uint32_t) 0x00000005U)
+
+/** \brief Invalid core ID */
+#define UDMA_CORE_ID_INVALID               ((uint32_t) 0xFFFF0008U)
 
 /** \brief UDMA driver handle */
 typedef struct Udma_DrvObjectInt_t     *Udma_DrvHandleInt;
@@ -636,6 +641,12 @@ typedef struct Udma_DrvObjectInt_t
 #endif
 #if (UDMA_SOC_CFG_RA_LCDMA_PRESENT == 1)
     CSL_LcdmaRingaccCfg     lcdmaRaRegs;
+#endif
+#if defined(BUILD_C7X) && defined(UDMA_LOCAL_C7X_DRU_PRESENT) && (UDMA_LOCAL_C7X_DRU_PRESENT == 1)
+    CSL_DRU_t              *druRegs;
+    /**< DRU register overlay — applicable only for C7X DRU instance type */
+    uint32_t                numQueue;
+    /**< Number of queues present in the DRU */
 #endif
     /**< RA register configuration */
     CSL_IntaggrCfg          iaRegs;

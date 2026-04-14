@@ -158,6 +158,21 @@ Udma_RmSharedResPrms gBcdmaCsiRmSharedResPrms[UDMA_RM_NUM_SHARED_RES] =
     {UDMA_RM_RES_ID_VINTR,        0U,            0U,          UDMA_NUM_INST_ID,  0U,     {0U, 0U, UDMA_RM_SHARED_RES_CNT_REST, 0U, 0U}},
 };
 
+#if (UDMA_LOCAL_C7X_DRU_PRESENT == 1)
+/* These DRUs are local to C7X cores, user need to take care of resource overlapping when they try to override default allocation */
+Udma_RmSharedResPrms gBcdmaDruRmSharedResPrms[UDMA_RM_NUM_SHARED_RES] =
+{
+#if defined(BUILD_C75X_1)
+    /* resId,                      startResrvCnt, endResrvCnt, numInst,           minReq, instShare */
+    {UDMA_INST_ID_C7X_DRU_0,       0U,            0U,          UDMA_NUM_C7X_CORE, 4U,    {UDMA_RM_SHARED_RES_CNT_REST, UDMA_RM_SHARED_RES_CNT_MIN, 0U, 0U, 0U} },
+    {UDMA_INST_ID_C7X_DRU_1,       0U,            0U,          UDMA_NUM_C7X_CORE, 4U,    {UDMA_RM_SHARED_RES_CNT_MIN,  UDMA_RM_SHARED_RES_CNT_REST, 0U, 0U, 0U} },
+#elif defined(BUILD_C75X_2)
+    {UDMA_INST_ID_C7X_DRU_0,       0U,            0U,          UDMA_NUM_C7X_CORE, 4U,    {UDMA_RM_SHARED_RES_CNT_MIN,  UDMA_RM_SHARED_RES_CNT_REST, 0U, 0U, 0U} },
+    {UDMA_INST_ID_C7X_DRU_1,       0U,            0U,          UDMA_NUM_C7X_CORE, 4U,    {UDMA_RM_SHARED_RES_CNT_REST, UDMA_RM_SHARED_RES_CNT_MIN, 0U, 0U, 0U} },
+#endif
+};
+#endif
+
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -187,6 +202,31 @@ Udma_RmSharedResPrms *Udma_rmGetSharedResPrms(uint32_t instId, uint32_t resId)
     Udma_RmSharedResPrms  *rmSharedResPrms = NULL;
     uint32_t    i;
 
+#if (UDMA_LOCAL_C7X_DRU_PRESENT == 1)
+    if(instId == UDMA_INST_ID_C7X_DRU_0)
+    {
+        for(i = 0; i < UDMA_INST_ID_C7X_DRU_MAX; i++)
+        {
+            if(resId == gBcdmaDruRmSharedResPrms[i].resId)
+            {
+                rmSharedResPrms = &gBcdmaDruRmSharedResPrms[i];
+                break;
+            }
+        }
+    }
+    else if(instId == UDMA_INST_ID_C7X_DRU_1)
+    {
+        for(i = 0; i < UDMA_INST_ID_C7X_DRU_MAX; i++)
+        {
+            if(resId == gBcdmaDruRmSharedResPrms[i].resId)
+            {
+                rmSharedResPrms = &gBcdmaDruRmSharedResPrms[i];
+                break;
+            }
+        }
+    }
+    else
+#endif
     if(instId == UDMA_INST_ID_BCDMA_1)
     {
         for(i = 0; i < UDMA_RM_NUM_SHARED_RES; i++)

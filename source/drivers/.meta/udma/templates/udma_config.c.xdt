@@ -20,6 +20,11 @@ static Udma_InitPrms    gUdmaInitPrms[CONFIG_UDMA_NUM_INSTANCES] =
     % let config = module.getInstanceConfig(instance);
     {
         .instId             = UDMA_INST_ID_`config.name`,
+        % if (config.name.includes("DRU")) {
+        .enableUtc          = TRUE,
+        % } else {
+        .enableUtc          = FALSE,
+        % }
         .skipGlobalEventReg = `config.skipGlobalEventReg.toString(10).toUpperCase()`,
         .virtToPhyFxn       = `config.virtToPhyFxn`,
         .phyToVirtFxn       = `config.phyToVirtFxn`,

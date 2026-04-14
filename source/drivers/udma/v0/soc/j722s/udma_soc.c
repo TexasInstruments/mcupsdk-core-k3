@@ -112,6 +112,23 @@ void Udma_initDrvHandle(Udma_DrvHandleInt drvHandle)
      * BCDMA/PKTDMA config init
      */
     /* Init the instance config structure - one time step */
+#if (UDMA_LOCAL_C7X_DRU_PRESENT == 1)
+    if(UDMA_INST_ID_C7X_DRU_0 == instId)
+    {
+        drvHandle->instType         = UDMA_INST_TYPE_C7X_DRU;
+        drvHandle->druRegs          = ((CSL_DRU_t *)CSL_C7X256V0_DRU_BASE);
+
+        drvHandle->numQueue         = CSL_DMSS_UTC_MSMC_DRU_QUEUE_CNT;
+    }
+    else if(UDMA_INST_ID_C7X_DRU_1 == instId)
+    {
+        drvHandle->instType         = UDMA_INST_TYPE_C7X_DRU;
+        drvHandle->druRegs          = ((CSL_DRU_t *)CSL_C7X256V1_DRU_BASE);
+
+        drvHandle->numQueue         = CSL_DMSS_UTC_MSMC_DRU_QUEUE_CNT;
+    }
+    else
+#endif
     if(UDMA_INST_ID_BCDMA_0 == instId)
     {
         drvHandle->instType = UDMA_INST_TYPE_LCDMA_BCDMA;
@@ -374,6 +391,20 @@ uint8_t Udma_isValidInstance(uint32_t instId)
 
     return result;
 }
+
+#if (UDMA_LOCAL_C7X_DRU_PRESENT == 1)
+uint32_t Udma_getCoreId(void)
+{
+    uint32_t coreId = UDMA_CORE_ID_INVALID;
+#if defined(BUILD_C75X_1)
+    coreId = UDMA_CORE_ID_C7X_1;
+#endif
+#if defined(BUILD_C75X_2)
+    coreId = UDMA_CORE_ID_C7X_2;
+#endif
+    return (coreId);
+}
+#endif
 
 int32_t Udma_getMappedChRingAttributes(Udma_DrvHandleInt drvHandle,
                                        uint32_t mappedGrp,

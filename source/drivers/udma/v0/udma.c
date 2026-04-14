@@ -114,33 +114,31 @@ int32_t Udma_init(Udma_DrvHandle drvHandle, const Udma_InitPrms *initPrms)
             Udma_rmInit(drvHandleInt);
 
             drvHandleInt->drvInitDone = UDMA_INIT_DONE;
-        
-        /* Bypass the global event register while UTC is used  */
-        if(initPrms->enableUtc == FALSE)
-        {
-            if(FALSE == initPrms->skipGlobalEventReg)
+            /* Bypass the global event register while UTC is used  */
+            if(initPrms->enableUtc == FALSE)
             {
-                Udma_EventPrms  eventPrms;
+                if(FALSE == initPrms->skipGlobalEventReg)
+                {
+                    Udma_EventPrms  eventPrms;
 
-                UdmaEventPrms_init(&eventPrms);
-                eventPrms.eventType = UDMA_EVENT_TYPE_MASTER;
-                eventPrms.eventMode = UDMA_EVENT_MODE_SHARED;
-                retVal = Udma_eventRegister(
-                                drvHandle, &drvHandleInt->globalEventObj, &eventPrms);
-                if(UDMA_SOK != retVal)
-                {
-                    DebugP_logError("[UDMA] Global master event register failed!!!\r\n");
-                }
-                else
-                {
-                    drvHandleInt->globalEventHandle = &drvHandleInt->globalEventObj;
+                    UdmaEventPrms_init(&eventPrms);
+                    eventPrms.eventType = UDMA_EVENT_TYPE_MASTER;
+                    eventPrms.eventMode = UDMA_EVENT_MODE_SHARED;
+                    retVal = Udma_eventRegister(
+                                    drvHandle, &drvHandleInt->globalEventObj, &eventPrms);
+                    if(UDMA_SOK != retVal)
+                    {
+                        DebugP_logError("[UDMA] Global master event register failed!!!\r\n");
+                    }
+                    else
+                    {
+                        drvHandleInt->globalEventHandle = &drvHandleInt->globalEventObj;
+                    }
                 }
             }
-        }
 
             if(UDMA_SOK != retVal)
             {
-                /* Free-up allocated resources */
                 SemaphoreP_destruct(&drvHandleInt->rmLockObj);
                 drvHandleInt->rmLock = NULL_PTR;
                 drvHandleInt->drvInitDone = UDMA_DEINIT_DONE;

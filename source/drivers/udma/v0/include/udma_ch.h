@@ -870,6 +870,22 @@ int32_t Udma_chEnable(Udma_ChHandle chHandle);
 int32_t Udma_chDisable(Udma_ChHandle chHandle, uint32_t timeout);
 
 /**
+ *  \brief UDMA channel disable with polling API.
+ *
+ *  Same as Udma_chDisable but polls for teardown completion in a loop
+ *  instead of blocking. Suitable for graceful shutdown without timeout
+ *  blocking overhead. Supports BCDMA, PKTDMA, and UTC/DRU channels.
+ *
+ *  \param chHandle     [IN] UDMA channel handle.
+ *                           This parameter can't be NULL.
+ *  \param timeout      [IN] Timeout in ms.
+ *                           Use #SystemP_WAIT_FOREVER to wait forever.
+ *
+ *  \return \ref Udma_ErrorCodes
+ */
+int32_t Udma_chDisablePolling(Udma_ChHandle chHandle, uint32_t timeout);
+
+/**
  *  \brief UDMA channel pause API.
  *
  *  This function will pause the UDMA channel by setting the pause bit of the

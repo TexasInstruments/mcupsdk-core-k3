@@ -172,12 +172,6 @@ int32_t UdmaRmInitPrms_init(uint32_t instId, Udma_RmInitPrms *rmInitPrms)
         {
             numRes = UDMA_RM_NUM_PKTDMA_RES;
         }
-#if defined (UDMA_INST_ID_BCDMA_1)
-        else if(UDMA_INST_ID_BCDMA_1 == instId)
-        {
-            numRes = UDMA_RM_NUM_BCDMA_RES;
-        }
-#endif
         else
         {
             /* Do Nothing */
@@ -227,11 +221,34 @@ int32_t UdmaRmInitPrms_init(uint32_t instId, Udma_RmInitPrms *rmInitPrms)
             rmInitPrms->startRxCh           = rmDefBoardCfgResp[UDMA_RM_RES_ID_RX].rangeStart;
             rmInitPrms->numRxCh             = rmDefBoardCfgResp[UDMA_RM_RES_ID_RX].rangeNum;
         }
+#if (UDMA_LOCAL_C7X_DRU_PRESENT == 1)
+        else
+        {
+            /* Split DRU channels between C7x_1 and C7x_2 using
+             * gBcdmaDruRmSharedResPrms (numInst=2, indices 0 and 1).
+             *
+             * k3_next Udma_rmSetSharedResRmInitPrms (6-arg) indexes via:
+             *   instFinalShare[instId - UDMA_INST_ID_START]
+             * DRU instance IDs (5,6) would give indices 3,4 — out of bounds.
+             * Remap to indices 0,1 by passing UDMA_INST_ID_START + druCoreIdx
+             * so the index math resolves correctly:
+             *   C7x_1 (idx=0): instId = UDMA_INST_ID_START+0=2 → index 0
+             *   C7x_2 (idx=1): instId = UDMA_INST_ID_START+1=3 → index 1
+             */
+            uint32_t druCoreIdx = (Udma_getCoreId() == UDMA_CORE_ID_C7X_1) ? 0U : 1U;
+            retVal += Udma_rmSetSharedResRmInitPrms(Udma_rmGetSharedResPrms(instId, instId),
+                                                    UDMA_INST_ID_START + druCoreIdx,
+                                                    UDMA_UTC_START_CH_DRU0,
+                                                    UDMA_UTC_NUM_CH_DRU0,
+                                                    &rmInitPrms->startBlkCopyCh,
+                                                    &rmInitPrms->numBlkCopyCh);
+        }
+#endif
 #if defined(BUILD_C7X)
         /* Get the startInstVintStart i.e., start value of range of VINT interrupts
                allocated to first instance */
-        uint32_t startInstVintStart = 0;
-        uint32_t num = 0;
+        uint32_t startInstVintStart = 0U;
+        uint32_t num = 0U;
 
         retVal += Udma_rmSetSharedResRmInitPrms(Udma_rmGetSharedResPrms(instId, UDMA_RM_RES_ID_VINTR),
                                                 UDMA_INST_ID_START,
@@ -268,13 +285,13 @@ int32_t UdmaRmInitPrms_init(uint32_t instId, Udma_RmInitPrms *rmInitPrms)
             /* One to one mapping exists from Virtual Interrupts.
              * So translate to corresponding range.
              * In case of devices like AM64x, where there are no Interrupt Routers,
-             * this refers to core interrupt itslef. */
+             * this refers to core interrupt itself. */
             retVal += Sciclient_rmIrqTranslateIaOutput(rmDefBoardCfgPrms[UDMA_RM_RES_ID_VINTR].sciclientReqType,
                                                        (uint16_t)rmInitPrms->startVintr,
                                                        (uint16_t)Udma_getCoreSciDevId(),
                                                        (uint16_t *) &rmInitPrms->startIrIntr);
 
-            rmInitPrms->numIrIntr                          = rmInitPrms->numVintr;
+            rmInitPrms->numIrIntr = rmInitPrms->numVintr;
         }
 
         if(UDMA_INST_ID_PKTDMA_0 == instId)

@@ -932,6 +932,128 @@ int32_t Udma_chDisable(Udma_ChHandle chHandle, uint32_t timeout)
     return (retVal);
 }
 
+int32_t Udma_chDisablePolling(Udma_ChHandle chHandle, uint32_t timeout)
+{
+    int32_t             retVal = UDMA_SOK;
+    Udma_DrvHandleInt   drvHandle;
+    Udma_ChHandleInt    chHandleInt = (Udma_ChHandleInt) chHandle;
+    uint32_t            startTime   = ClockP_getTimeUsec();
+    uint32_t            timeoutUs   = timeout * 1000U;
+#if (UDMA_SOC_CFG_LCDMA_PRESENT == 1)
+    CSL_BcdmaRT         bcdmaRtStatus;
+    CSL_PktdmaRT        pktdmaRtStatus;
+#endif
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+    const Udma_UtcInstInfo *utcInfo;
+    uint32_t                utcChNum;
+#endif
+
+    /* Error check */
+    if((NULL_PTR == chHandleInt) || (chHandleInt->chInitDone != UDMA_INIT_DONE))
+    {
+        retVal = UDMA_EBADARGS;
+    }
+    if(UDMA_SOK == retVal)
+    {
+        drvHandle = chHandleInt->drvHandle;
+        if((NULL_PTR == drvHandle) || (drvHandle->drvInitDone != UDMA_INIT_DONE))
+        {
+            retVal = UDMA_EFAIL;
+        }
+    }
+
+    if(UDMA_SOK == retVal)
+    {
+        retVal = Udma_chDisable(chHandle, 0U);
+
+        while(UDMA_SOK != retVal)
+        {
+            bool end_loop = false;
+            if((ClockP_getTimeUsec() - startTime) >= timeoutUs)
+            {
+                end_loop = true;
+                retVal   = UDMA_ETIMEOUT;
+            }
+
+#if (UDMA_NUM_UTC_INSTANCE > 0)
+            if(UDMA_CH_FLAG_UTC == (chHandleInt->chType & UDMA_CH_FLAG_UTC))
+            {
+                utcInfo  = chHandleInt->utcInfo;
+                utcChNum = chHandleInt->extChNum - utcInfo->startCh;
+                if(CSL_druChIsTeardownComplete(utcInfo->druRegs, utcChNum))
+                {
+                    end_loop = true;
+                    retVal   = UDMA_SOK;
+                }
+            }
+            else
+#endif
+#if (UDMA_SOC_CFG_LCDMA_PRESENT == 1)
+            if((chHandleInt->chType & UDMA_CH_FLAG_RX) == UDMA_CH_FLAG_RX)
+            {
+                if(UDMA_INST_TYPE_LCDMA_BCDMA == drvHandle->instType)
+                {
+                    (void) CSL_bcdmaGetRxRT(&drvHandle->bcdmaRegs,
+                                            chHandleInt->rxChNum, &bcdmaRtStatus);
+                    if(FALSE == bcdmaRtStatus.enable)
+                    {
+                        end_loop = true;
+                        retVal   = UDMA_SOK;
+                    }
+                }
+                else if(UDMA_INST_TYPE_LCDMA_PKTDMA == drvHandle->instType)
+                {
+                    (void) CSL_pktdmaGetRxRT(&drvHandle->pktdmaRegs,
+                                             chHandleInt->rxChNum, &pktdmaRtStatus);
+                    if(FALSE == pktdmaRtStatus.enable)
+                    {
+                        end_loop = true;
+                        retVal   = UDMA_SOK;
+                    }
+                }
+                else
+                {
+                    /* Do Nothing */
+                }
+            }
+            else
+            {
+                if(UDMA_INST_TYPE_LCDMA_BCDMA == drvHandle->instType)
+                {
+                    (void) CSL_bcdmaGetTxRT(&drvHandle->bcdmaRegs,
+                                            chHandleInt->txChNum, &bcdmaRtStatus);
+                    if(FALSE == bcdmaRtStatus.enable)
+                    {
+                        end_loop = true;
+                        retVal   = UDMA_SOK;
+                    }
+                }
+                else if(UDMA_INST_TYPE_LCDMA_PKTDMA == drvHandle->instType)
+                {
+                    (void) CSL_pktdmaGetTxRT(&drvHandle->pktdmaRegs,
+                                             chHandleInt->txChNum, &pktdmaRtStatus);
+                    if(FALSE == pktdmaRtStatus.enable)
+                    {
+                        end_loop = true;
+                        retVal   = UDMA_SOK;
+                    }
+                }
+                else
+                {
+                    /* Do Nothing */
+                }
+            }
+#endif
+            if(true == end_loop)
+            {
+                break;
+            }
+        }
+    }
+
+    return retVal;
+}
+
 int32_t Udma_chPause(Udma_ChHandle chHandle)
 {
     int32_t             retVal = UDMA_SOK;

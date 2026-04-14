@@ -67,7 +67,18 @@ extern "C" {
 #define UDMA_INST_ID_PKTDMA_0            (UDMA_INST_ID_3)
 /** \brief BCDMA(CSI) instance */
 #define UDMA_INST_ID_BCDMA_1             (UDMA_INST_ID_4)
-
+#if defined(BUILD_C75X)
+/** \brief DRU_0 instance */
+#define UDMA_INST_ID_C7X_DRU_0            (UDMA_INST_ID_5)
+/** \brief DRU_1 instance */
+#define UDMA_INST_ID_C7X_DRU_1            (UDMA_INST_ID_6)
+/** \brief Start of DRU instance */
+#define UDMA_INST_ID_C7X_DRU_START        (UDMA_INST_ID_5)
+/** \brief Maximum Number of DRU instance */
+#define UDMA_INST_ID_C7X_DRU_MAX          (UDMA_INST_ID_6)
+/** \brief Total Number of DRU instances */
+#define UDMA_NUM_INST_ID_C7X_DRU          (UDMA_INST_ID_C7X_DRU_MAX - UDMA_INST_ID_C7X_DRU_START + 1U)
+#endif
 /** \brief Start of UDMA instance */
 #define UDMA_INST_ID_START               (UDMA_INST_ID_2)
 /** \brief Maximum number of UDMA instance */
@@ -103,6 +114,11 @@ extern "C" {
 
 /** \brief Flag to indicate Ring Monitor is present or not in the SOC*/
 #define UDMA_SOC_CFG_RING_MON_PRESENT            (0U)
+
+#if defined(BUILD_C75X)
+/* Flag to indicate DRU local to C7X cores is present or not in the SoC */
+#define UDMA_LOCAL_C7X_DRU_PRESENT               (1U)
+#endif
 
 /** \brief Flag to indicate the SOC needs ring reset workaround */
 #define UDMA_SOC_CFG_APPLY_RING_WORKAROUND       (0U)
@@ -253,7 +269,13 @@ extern "C" {
 #define UDMA_UTC_START_THREAD_ID_DMPAC_TC0  (CSL_PSILCFG_NAVSS_MAIN_DMPAC_TC0_CC_PSILD_THREAD_OFFSET)
 
 /** \brief DRU0 UTC baseaddress */
+#if defined (BUILD_C75X_1)
+#define UDMA_UTC_BASE_DRU0                  (CSL_C7X256V0_DRU_BASE)
+#elif defined (BUILD_C75X_2)
+#define UDMA_UTC_BASE_DRU0                  (CSL_C7X256V1_DRU_BASE)
+#else
 #define UDMA_UTC_BASE_DRU0                  (CSL_VPAC0_IVPAC_TOP_0_CFG_SLV_DRU_UTC_VPAC0_DRU_MMR_CFG_DRU_DRU_BASE)
+#endif
 #define UDMA_UTC_DMPAC_BASE_DRU0            (CSL_DMPAC0_DMPAC_TOP_CFG_SLV_DRU_UTC_DMPAC0_DRU_MMR_CFG_DRU_DRU_BASE)
 
 /**
@@ -583,7 +605,7 @@ uint32_t Udma_getCoreId(void);
  *  \brief Returns TRUE if the given UDMA Instance ID is valid for this
  *         SoC
  *
- *  \return TRUE/TRUE
+ *  \return TRUE/FALSE
  */
 uint8_t Udma_isValidInstance(uint32_t instId);
 

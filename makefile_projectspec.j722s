@@ -112,6 +112,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += uart_echo_low_latency_polling_j722s
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += uart_echo_low_latency_polling_j722s-evm_c75ss0-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += uart_echo_low_latency_polling_j722s-evm_c75ss1-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += udma_chaining_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += udma_memcpy_dru_interrupt_j722s-evm_c75ss0-0_freertos_ti-c7000_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += udma_memcpy_dru_interrupt_j722s-evm_c75ss1-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += udma_memcpy_interrupt_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += udma_memcpy_interrupt_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += udma_memcpy_interrupt_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_build
@@ -532,6 +534,12 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  udma_chaining_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/udma/udma_chaining/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
+ udma_memcpy_dru_interrupt_j722s-evm_c75ss0-0_freertos_ti-c7000_build:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_dru_interrupt/j722s-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec all
+
+ udma_memcpy_dru_interrupt_j722s-evm_c75ss1-0_freertos_ti-c7000_build:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_dru_interrupt/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec all
+
  udma_memcpy_interrupt_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec all
 
@@ -902,6 +910,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += uart_echo_low_latency_polling_j722s
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += uart_echo_low_latency_polling_j722s-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += uart_echo_low_latency_polling_j722s-evm_c75ss1-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += udma_chaining_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += udma_memcpy_dru_interrupt_j722s-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += udma_memcpy_dru_interrupt_j722s-evm_c75ss1-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += udma_memcpy_interrupt_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += udma_memcpy_interrupt_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += udma_memcpy_interrupt_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_clean
@@ -1322,6 +1332,12 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  udma_chaining_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/udma/udma_chaining/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
+ udma_memcpy_dru_interrupt_j722s-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_dru_interrupt/j722s-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec clean
+
+ udma_memcpy_dru_interrupt_j722s-evm_c75ss1-0_freertos_ti-c7000_clean:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_dru_interrupt/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec clean
+
  udma_memcpy_interrupt_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec clean
 
@@ -1692,6 +1708,8 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += uart_echo_low_latency_polling_j722
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += uart_echo_low_latency_polling_j722s-evm_c75ss0-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += uart_echo_low_latency_polling_j722s-evm_c75ss1-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += udma_chaining_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += udma_memcpy_dru_interrupt_j722s-evm_c75ss0-0_freertos_ti-c7000_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += udma_memcpy_dru_interrupt_j722s-evm_c75ss1-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += udma_memcpy_interrupt_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += udma_memcpy_interrupt_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += udma_memcpy_interrupt_j722s-evm_main-r5fss0-0_nortos_ti-arm-clang_export
@@ -2112,6 +2130,12 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  udma_chaining_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/udma/udma_chaining/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
+ udma_memcpy_dru_interrupt_j722s-evm_c75ss0-0_freertos_ti-c7000_export:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_dru_interrupt/j722s-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec export
+
+ udma_memcpy_dru_interrupt_j722s-evm_c75ss1-0_freertos_ti-c7000_export:
+	$(MAKE) -C examples/drivers/udma/udma_memcpy_dru_interrupt/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec export
+
  udma_memcpy_interrupt_j722s-evm_mcu-r5fss0-0_nortos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/udma/udma_memcpy_interrupt/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec export
 
@@ -2498,6 +2522,8 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/uart/uart_echo_low_latency_polling/j722s-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/uart/uart_echo_low_latency_polling/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_chaining/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_dru_interrupt/j722s-evm/c75ss0-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_dru_interrupt/j722s-evm/c75ss1-0_freertos/ti-c7000 -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_interrupt/j722s-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_interrupt/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/udma/udma_memcpy_interrupt/j722s-evm/main-r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]

@@ -97,7 +97,7 @@ const Udma_RmInitPrms gUdmaRmDefCfg_Main =
 #else
 #if (UDMA_NUM_UTC_INSTANCE > 0)
         {0U, 0U, 0U},                                   /* startUtcCh[] */
-        {32U, 64U, 0U},                                   /* numUtcCh[] */
+        {32U, 32U, 32U},                                   /* numUtcCh[] */
 #endif
 #endif
 

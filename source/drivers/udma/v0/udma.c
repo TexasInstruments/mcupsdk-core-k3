@@ -99,8 +99,9 @@ int32_t Udma_init(Udma_DrvHandle drvHandle, const Udma_InitPrms *initPrms)
         }
         else
         {
+            /* Initialize default RM resources for Block Copy/TX/RX channels */
             (void) memset(&drvHandleInt->initPrms.rmInitPrms, 0, sizeof(Udma_RmInitPrms));
-            (void) memcpy(&drvHandleInt->rmInitPrms, Udma_rmGetDefaultCfg(), sizeof (Udma_RmInitPrms));
+            (void) memcpy(&drvHandleInt->rmInitPrms, Udma_rmGetDefaultCfg(), sizeof(Udma_RmInitPrms));
         }
 
         if(UDMA_SOK == retVal)
@@ -113,6 +114,10 @@ int32_t Udma_init(Udma_DrvHandle drvHandle, const Udma_InitPrms *initPrms)
             Udma_rmInit(drvHandleInt);
 
             drvHandleInt->drvInitDone = UDMA_INIT_DONE;
+        
+        /* Bypass the global event register while UTC is used  */
+        if(initPrms->enableUtc == FALSE)
+        {
             if(FALSE == initPrms->skipGlobalEventReg)
             {
                 Udma_EventPrms  eventPrms;
@@ -131,6 +136,7 @@ int32_t Udma_init(Udma_DrvHandle drvHandle, const Udma_InitPrms *initPrms)
                     drvHandleInt->globalEventHandle = &drvHandleInt->globalEventObj;
                 }
             }
+        }
 
             if(UDMA_SOK != retVal)
             {

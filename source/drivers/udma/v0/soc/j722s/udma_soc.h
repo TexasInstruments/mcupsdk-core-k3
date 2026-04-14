@@ -210,7 +210,6 @@ extern "C" {
 /** \brief Default DRU queue ID */
 #define UDMA_DEFAULT_UTC_DRU_QUEUE_ID                                       (CSL_DRU_QUEUE_ID_3)
 
-#define UDMA_NUM_UTC_INSTANCE               (3U)
 
 /**
  *  \anchor Udma_UtcIdSoc
@@ -223,6 +222,13 @@ extern "C" {
 #define UDMA_UTC_ID_MSMC_DRU0               (UDMA_UTC_ID0)
 #define UDMA_UTC_ID_VPAC_TC0                (UDMA_UTC_ID1)
 #define UDMA_UTC_ID_DMPAC_TC0               (UDMA_UTC_ID2)
+
+/** \brief Start of UTC instance */
+#define UDMA_UTC_ID_START                   (UDMA_UTC_ID0)
+/** \brief Maximum number of UTC instance */
+#define UDMA_UTC_ID_MAX                     (UDMA_UTC_ID2)
+/** \brief Total number of UTC instances */
+#define UDMA_NUM_UTC_INSTANCE               (UDMA_UTC_ID_MAX - UDMA_UTC_ID_START + 1U)
 /** @} */
 /** @} */
 

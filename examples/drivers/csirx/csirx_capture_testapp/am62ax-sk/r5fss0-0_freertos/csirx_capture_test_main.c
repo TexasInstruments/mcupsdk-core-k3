@@ -98,30 +98,12 @@
 /**< Fusion Board Revision.
      '0': for Rev B or older boards.
      '1': for Rev C board. */
-#define FUSION_BOARD_VER                       (1U)
 /**< D3 IMX390 sensor type. */
 #define D3IMX390_CM_MODULE                     (0U)
 #define D3IMX390_RCM_MODULE                    (1U)
 
 #define APP_CSIRX_INST0_CAMERA_SENSOR          (D3IMX390_RCM_MODULE)
 #define APP_CSIRX_INST1_CAMERA_SENSOR          (D3IMX390_RCM_MODULE)
-#define APP_CSIRX_INST2_CAMERA_SENSOR          (D3IMX390_RCM_MODULE)
-
-
-#define UB960_USE_PATTERN_GENERATOR            (0U)
-
-#define UB9702_DESER_RESET_CTL_REG_ADDR        (1U)
-#define UB9702_DESER_RESET_VALUE               (2U)
-
-#define BOARD_CSI_I2C_MUX_INSTANCE             (0U)
-#define BOARD_CSI_I2C_SWITCH_INSTANCE          (1U)
-
-/**< SOC GPIO0_68 CSI2_EXP_RSTz used with CSI Fusion2 Daughter Board */
-#define CONFIG_GPIO0_PIN (68U) // IO EXPANDER-P11 in AM62a
-
-/**< SOC GPIO0_68 CSI2_EXP_RSTz used with CSI Fusion2 Daughter Board */
-#define I2C_SWITCH_TCA9543APWR_SLV_ADDR (0x70U)
-/** @} */
 
 /**< Frame Attribute: Pitch in bytes */
 #define APP_CAPT_FRAME_PITCH                      ((uint32_t)\
@@ -129,27 +111,6 @@
 /**< Frame Attribute: size in bytes */
 #define APP_CAPT_FRAME_SIZE                                ((uint32_t)\
             (APP_CAPT_FRAME_HEIGHT * APP_CAPT_FRAME_WIDTH * APP_CAPT_FRAME_BPP))
-
-/**< For Ub960 Pattern Generator, most significant byte of active line length in
- * bytes
- */
-#define APP_CAPT_FRAME_LINE_LEN_HIGH           ((APP_CAPT_FRAME_PITCH & 0xFF00)>>8)
-
-/**< For Ub960 Pattern Generator, least significant byte of active line length in
- * bytes
- */
-#define APP_CAPT_FRAME_LINE_LEN_LOW            (APP_CAPT_FRAME_PITCH & 0x00FF)
-
-
-/**< For Ub960 Pattern Generator, most significant byte of number of active
- * lines in frame
- */
-#define APP_CAPT_FRAME_HEIGHT_HIGH             ((APP_CAPT_FRAME_HEIGHT & 0xFF00)>>8)
-
-/**< For Ub960 Pattern Generator, least significant byte of number of active
- * lines per frame
- */
-#define APP_CAPT_FRAME_HEIGHT_LOW              (APP_CAPT_FRAME_HEIGHT & 0x00FF)
 
 /* Print buffer character limit for prints- UART or CCS Console */
 #define APP_PRINT_BUFFER_SIZE                   ((uint32_t)4000)
@@ -165,7 +126,7 @@
 /**< Print Driver Logs. Set to '1' to enable printing. */
 #define APP_PRINT_DRV_LOGS                                     (0U)
 
-#define SENSOR_CFG_SIZE  (3907U)
+#define SENSOR_CFG_SIZE  (3078U)
 
 /**
  * @{
@@ -216,29 +177,11 @@
 
 /** @} */
 
-/**
- * @{
- * Generic Alias Addresses for serialisers attached to the UB960 Instance1
- */
-#define D3IMX390_INST2_PORT_0_SER_ADDR       (0x54U)
-#define D3IMX390_INST2_PORT_1_SER_ADDR       (0x56U)
-#define D3IMX390_INST2_PORT_2_SER_ADDR       (0x58U)
-#define D3IMX390_INST2_PORT_3_SER_ADDR       (0x5AU)
-/** @} */
-
-/**
- * @{
- * Generic Alias Addresses for sensors attached to the UB960 Instance1
- */
-#define D3IMX390_INST2_PORT_0_SENSOR_ADDR    (0x50U)
-#define D3IMX390_INST2_PORT_1_SENSOR_ADDR    (0x52U)
-#define D3IMX390_INST2_PORT_2_SENSOR_ADDR    (0x5CU)
-#define D3IMX390_INST2_PORT_3_SENSOR_ADDR    (0x5EU)
-
-
-
 /**< Number of channels */
 #define APP_CAPT_CH_MAX                           ((uint32_t)4U)
+
+#define CSIRX_APP_TAKE_I2CDUMP              (0U)
+#define CSIRX_APP_TAKE_IMGDUMP              (0U)
 
 TCA6424_Params TCA6424_IOexp_params =
 {
@@ -552,245 +495,13 @@ extern TaskP_Handle gCsirxAppTask;
 #endif
 extern uint32_t gTimerBaseAddr[TIMER_NUM_INSTANCES];
 
-// static Pinmux_PerCfg_t gMainPinmuxData[] =
-// {
-//     {
-//         PIN_MMC2_DAT0, /* PADCONFIG Ball Name */ // Package signal name is blank in 62a schematic
-//         /* Pin mode 7 for accessing GPIO_68 CSI2_EXP_RSTz */
-//         PIN_MODE(7) | ((PIN_PULL_DISABLE | PIN_INPUT_ENABLE) & (~PIN_PULL_DIRECTION)) /* 0x50007 */
-//     },
-//     {PINMUX_END, PINMUX_END}
-// };
-
 uint16_t gSensorCfg[SENSOR_CFG_SIZE][3] = IMX390_LINEAR_1920X1080_CONFIG;
-uint16_t gUb960SensorCfg[][3]={
-#if UB960_USE_PATTERN_GENERATOR
-    {0x32, 0x01, 0x50},
-    {0x1F, 0x10, 0x1},
-    {0xC9, 0x32, 0x1},
-    {0xB0, 0x1C, 0x1},
-    {0xB1, 0x92, 0x1},
-    {0xB2, 0x40, 0x1},
-    {0xB0, 0x01, 0x1},
-    {0xB1, 0x01, 0x1},
-    {0xB2, 0x01, 0x1},
-    {0xB1, 0x02, 0x1},
-    {0xB2, 0xF3, 0x1},
-    {0xB1, 0x03, 0x1},
-    {0xB2, APP_CAPT_IMAGE_DT, 0x1},
-    {0xB1, 0x04, 0x1},
-    {0xB2, APP_CAPT_FRAME_LINE_LEN_HIGH, 0x1},
-    {0xB1, 0x05, 0x1},
-    {0xB2, APP_CAPT_FRAME_LINE_LEN_LOW, 0x1},
-    {0xB1, 0x06, 0x1},
-    {0xB2, 0x02, 0x1},
-    {0xB1, 0x07, 0x1},
-    {0xB2, 0x80, 0x1},/*D0*/
-    {0xB1, 0x08, 0x1},
-    {0xB2, APP_CAPT_FRAME_HEIGHT_HIGH, 0x1},
-    {0xB1, 0x09, 0x1},
-    {0xB2, APP_CAPT_FRAME_HEIGHT_LOW, 0x1},
-    {0xB1, 0x0A, 0x1},
-    {0xB2, 0x08, 0x1},
-    {0xB1, 0x0B, 0x1},
-    {0xB2, 0x80, 0x1},
-    {0xB1, 0x0C, 0x1},
-    {0xB2, 0x04, 0x1},
-    {0xB1, 0x0D, 0x1},
-    {0xB2, 0x7D, 0x1},
-    {0xB1, 0x0E, 0x1},
-    {0xB2, 0x07, 0x1},
-    {0xB1, 0x0F, 0x1},
-    {0xB2, 0x08, 0x1},
-    {0x33, 0x02, 0x1},
-    {0xFFFF, 0x00, 0x0} /*End of script */
-#else
-    {0x01, 0x02, 0x100},
-    {0x1f, 0x00, 0x1},
-
-    {0xB0, 0x1C,0x1},
-    {0xB1, 0x16,0x1},
-    {0xB2, 0x00,0x1},
-    {0xB1, 0x17,0x1},
-    {0xB2, 0x00,0x1},
-    {0xB1, 0x18,0x1},
-    {0xB2, 0x00,0x1},
-    {0xB1, 0x19,0x1},
-    {0xB2, 0x00,0x1},
-    {0xB0, 0x1C,0x1},
-    {0xB1, 0x15,0x1},
-    {0xB2, 0x0A,0x1},
-    {0xB2, 0x00,0x10},
-
-    {0x0D, 0x90, 0x1}, /*I/O to 3V3 - Options not valid with datashee*/
-    {0x0C, 0x0F, 0x1}, /*Enable All ports*/
-
-    /*Select Channel 0*/
-    {0x4C, 0x01, 0x1},
-    {0x58, 0x5E, 0x1},
-    {0x72, 0x00, 0x1}, /*VC map*/
-
-    /*Select Channel 1*/
-    {0x4C, 0x12, 0x1},
-    {0x58, 0x5E, 0x1},/*Enable Back channel, set to 50Mbs*/
-
-    /*Select Channel 2*/
-    {0x4C, 0x24, 0x1},
-    {0x58, 0x5E, 0x1},/*Enable Back channel, set to 50Mbs*/
-
-    /*Select Channel 3*/
-    {0x4C, 0x38, 0x1},
-    {0x58, 0x5E, 0x1},/*Enable Back channel, set to 50Mbs*/
-
-    /*Select Channel 0*/
-    {0x4C, 0x01, 0x1},
-    {0xB0, 0x04, 0x1},
-    {0xB1, 0x03, 0x1},
-    {0xB2, 0x20, 0x1},
-    {0xB1, 0x13, 0x1},
-    {0xB2, 0x20, 0x1},
-    {0xB0, 0x04, 0x1},
-    {0xB1, 0x04, 0x1},
-    {0xB2, 0x3F, 0x1},
-    {0xB1, 0x14, 0x1},
-    {0xB2, 0x3F, 0x1},
-    {0x42, 0x71, 0x1}, /*Unknown*/
-    {0x41, 0xF0, 0x1}, /*Unknown*/
-    {0xB9, 0x18, 0x1},
-
-    /*Select Channel 1*/
-    {0x4C, 0x12, 0x1},
-    {0xB0, 0x08, 0x1},
-    {0xB1, 0x03, 0x1},
-    {0xB2, 0x20, 0x1},
-    {0xB1, 0x13, 0x1},
-    {0xB2, 0x20, 0x1},
-    {0xB0, 0x08, 0x1},
-    {0xB1, 0x04, 0x1},
-    {0xB2, 0x3F, 0x1},
-    {0xB1, 0x14, 0x1},
-    {0xB2, 0x3F, 0x1},
-    {0xB0, 0x08, 0x1},
-    {0x42, 0x71, 0x1}, /*Unknown*/
-    {0x41, 0xF0, 0x1}, /*Unknown*/
-    {0xB9, 0x18, 0x1},
-
-    /*Select Channel 2*/
-    {0x4C, 0x24, 0x1},
-    {0xB0, 0x0C, 0x1},
-    {0xB1, 0x03, 0x1},
-    {0xB2, 0x20, 0x1},
-    {0xB1, 0x13, 0x1},
-    {0xB2, 0x20, 0x1},
-    {0xB0, 0x0C, 0x1},
-    {0xB1, 0x04, 0x1},
-    {0xB2, 0x3F, 0x1},
-    {0xB1, 0x14, 0x1},
-    {0xB2, 0x3F, 0x1},
-    {0x42, 0x71, 0x1},/*Unknown*/
-    {0x41, 0xF0, 0x1},/*Unknown*/
-    {0xB9, 0x18, 0x1},
-
-    /*Select Channel 3*/
-    {0x4C, 0x38, 0x1},
-    {0xB0, 0x10, 0x1},
-    {0xB1, 0x03, 0x1},
-    {0xB2, 0x20, 0x1},
-    {0xB1, 0x13, 0x1},
-    {0xB2, 0x20, 0x1},
-    {0xB0, 0x10, 0x1},
-    {0xB1, 0x04, 0x1},
-    {0xB2, 0x3F, 0x1},
-    {0xB1, 0x14, 0x1},
-    {0xB2, 0x3F, 0x1},
-    {0x42, 0x71, 0x1},/*Unknown*/
-    {0x41, 0xF0, 0x1},/*Unknown*/
-    {0xB9, 0x18, 0x1},
-
-    {0x32, 0x01, 0x1}, /*Enable TX port 0*/
-    {0x20, 0x00, 0x1}, /*Forwarding and using CSIport 0 */
-
-    /*Sets GPIOS*/
-    {0x10, 0x83, 0x1},
-    {0x11, 0xA3, 0x1},
-    {0x12, 0xC3, 0x1},
-    {0x13, 0xE3, 0x1},
-
-    {0x4C, 0x01, 0x1}, /* 0x01 */
-    {0x32, 0x01, 0x1}, /*Enable TX port 0*/
-    {0x33, 0x02, 0x1}, /*Enable Continuous clock mode and CSI output*/
-    {0xBC, 0x00, 0x1}, /*Unknown*/
-    {0x5D, (UB960_SERIALISER_ADDR << 1U), 0x1}, /*Serializer I2C Address*/
-    {0x65, (D3IMX390_INST0_PORT_0_SER_ADDR << 1U), 0x1},
-    {0x5E, (D3IMX390_SENSOR_ADDR_CM_MODULE << 1U), 0x1}, /*Sensor I2C Address*/
-    {0x66, (D3IMX390_INST0_PORT_0_SENSOR_ADDR << 1U), 0x1},
-    {0x6D, 0x6C,0x1}, /*CSI Mode*/
-    {0x72, 0x00,0x1}, /*VC Map - All to 0 */
-    {0x7C, 0x20, 0x10}, /*Line Valid active high, Frame Valid active high*/
-    {0xD5, 0xF3, 0x10}, /*Auto Attenuation*/
-    {0xB0, 0x1C, 0x1},
-    {0xB1, 0x15, 0x1},
-    {0xB2, 0x0A, 0x1},
-    {0xB2, 0x00, 0x1},
-
-    {0x4C, 0x12, 0x1}, /* 0x12 */
-    {0x32, 0x01, 0x1}, /*Enable TX port 0*/
-    {0x33, 0x02, 0x1}, /*Enable Continuous clock mode and CSI output*/
-    {0xBC, 0x00, 0x1}, /*Unknown*/
-    {0x5D, (UB960_SERIALISER_ADDR << 1U), 0x1}, /*Serializer I2C Address*/
-    {0x65, (D3IMX390_INST0_PORT_1_SER_ADDR << 1U), 0x1},
-    {0x5E, (D3IMX390_SENSOR_ADDR_CM_MODULE << 1U), 0x1}, /*Sensor I2C Address*/
-    {0x66, (D3IMX390_INST0_PORT_1_SENSOR_ADDR << 1U), 0x1},
-    {0x6D, 0x6C,0x1}, /*CSI Mode*/
-    {0x72, 0x55,0x1}, /*VC Map - All to 1 */
-    {0x7C, 0x20, 0x10}, /*Line Valid active high, Frame Valid active high*/
-    {0xD5, 0xF3, 0x10}, /*Auto Attenuation*/
-    {0xB0, 0x1C, 0x1},
-    {0xB1, 0x15, 0x1},
-    {0xB2, 0x0A, 0x1},
-    {0xB2, 0x00, 0x1},
-
-    {0x4C, 0x24, 0x1}, /* 0x24 */
-    {0x32, 0x01, 0x1}, /*Enable TX port 0*/
-    {0x33, 0x02, 0x1}, /*Enable Continuous clock mode and CSI output*/
-    {0xBC, 0x00, 0x1}, /*Unknown*/
-    {0x5D, (UB960_SERIALISER_ADDR << 1U), 0x1}, /*Serializer I2C Address*/
-    {0x65, (D3IMX390_INST0_PORT_2_SER_ADDR << 1U), 0x1},
-    {0x5E, (D3IMX390_SENSOR_ADDR_CM_MODULE << 1U), 0x1}, /*Sensor I2C Address*/
-    {0x66, (D3IMX390_INST0_PORT_2_SENSOR_ADDR << 1U), 0x1},
-    {0x6D, 0x6C,0x1}, /*CSI Mode*/
-    {0x72, 0xaa,0x1}, /*VC Map - All to 2 */
-    {0x7C, 0x20, 0x10}, /*Line Valid active high, Frame Valid active high*/
-    {0xD5, 0xF3, 0x10}, /*Auto Attenuation*/
-    {0xB0, 0x1C, 0x1},
-    {0xB1, 0x15, 0x1},
-    {0xB2, 0x0A, 0x1},
-    {0xB2, 0x00, 0x1},
-
-    {0x4C, 0x38, 0x1}, /* 0x38 */
-    {0x32, 0x01, 0x1}, /*Enable TX port 0*/
-    {0x33, 0x02, 0x1}, /*Enable Continuous clock mode and CSI output*/
-    {0xBC, 0x00, 0x1}, /*Unknown*/
-    {0x5D, (UB960_SERIALISER_ADDR << 1U), 0x1}, /*Serializer I2C Address*/
-    {0x65, (D3IMX390_INST0_PORT_3_SER_ADDR << 1U), 0x1},
-    {0x5E, (D3IMX390_SENSOR_ADDR_CM_MODULE << 1U), 0x1}, /*Sensor I2C Address*/
-    {0x66, (D3IMX390_INST0_PORT_3_SENSOR_ADDR << 1U), 0x1},
-    {0x6D, 0x6C,0x1}, /*CSI Mode*/
-    {0x72, 0xFF,0x1}, /*VC Map - All to 3 */
-    {0x7C, 0x20, 0x10}, /*Line Valid active high, Frame Valid active high*/
-    {0xD5, 0xF3, 0x10}, /*Auto Attenuation*/
-    {0xB0, 0x1C, 0x1},
-    {0xB1, 0x15, 0x1},
-    {0xB2, 0x0A, 0x1},
-    {0xB2, 0x00, 0x100},
-#endif
-};
 
 uint16_t gUb9702SensorCfg[][3] = {
     {0x3C, 0x3F, 0x10}, /* Disable lock lost feature */ //!
 
     /*Sets GPIOS*/
-    {0x10, 0x00, 0x1},//! ALL 4
+    {0x10, 0x00, 0x1},
     {0x11, 0x00, 0x1},
     {0x12, 0x00, 0x1},
     {0x13, 0x00, 0x1},
@@ -817,67 +528,9 @@ uint16_t gUb9702SensorCfg[][3] = {
     {0xB2, 0x48, 0x20},
 
     {0x4C, 0x01, 0x20},
-    // {0xB0, 0x04, 0x20},
     {0xD4, 0x10, 0x20}, /* Hold State Machine in reset */
-    // {0xB1, 0x28, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set AEQ max to 0 */
     {0xE4, 0x02, 0x10}, /* Set FPD functional mode to FPD3 Async CSI Mode */
     {0x58, 0x5E, 0x10}, /* BC_FREQ_SELECT=(PLL_FREQ/3200) Mbps */
-    // {0xB1, 0xA8, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set aeq_lock_mode = 1 */
-    // {0xB1, 0x04, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set FPD PBC drv into FPD IV mode */
-    // {0xB1, 0x1B, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set FPD PBC drv into FPD IV mode */
-
-
-    // /*Port 1 Config*/
-    // {0x4C, 0x12, 0x20},//!
-    // {0xB0, 0x08, 0x20},
-    // {0xD4, 0x10, 0x20}, /* Hold State Machine in reset */
-    // {0xB1, 0x28, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set AEQ max to 0 */
-    // {0xE4, 0x02, 0x10}, /* Set FPD functional mode to FPD3 Async CSI Mode */
-    // {0x58, 0x5E, 0x10}, /* BC_FREQ_SELECT=(PLL_FREQ/3200) Mbps */
-    // {0xB1, 0xA8, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set aeq_lock_mode = 1 */
-    // {0xB1, 0x04, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set FPD PBC drv into FPD IV mode */
-    // {0xB1, 0x1B, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set FPD PBC drv into FPD IV mode */
-
-
-    // /*Port 2 Config*/
-    // {0x4C, 0x24, 0x20},//!
-    // {0xB0, 0x0C, 0x20},
-    // {0xD4, 0x10, 0x20}, /* Hold State Machine in reset */
-    // {0xB1, 0x28, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set AEQ max to 0 */
-    // {0xE4, 0x02, 0x10}, /* Set FPD functional mode to FPD3 Async CSI Mode */
-    // {0x58, 0x5E, 0x10}, /* BC_FREQ_SELECT=(PLL_FREQ/3200) Mbps */
-    // {0xB1, 0xA8, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set aeq_lock_mode = 1 */
-    // {0xB1, 0x04, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set FPD PBC drv into FPD IV mode */
-    // {0xB1, 0x1B, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set FPD PBC drv into FPD IV mode */
-
-
-    //  /*Port 3 Config*/
-    // {0x4C, 0x38, 0x20},//!
-    // {0xB0, 0x10, 0x20},
-    // {0xD4, 0x10, 0x20}, /* Hold State Machine in reset */
-    // {0xB1, 0x28, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set AEQ max to 0 */
-    // {0xE4, 0x02, 0x10}, /* Set FPD functional mode to FPD3 Async CSI Mode */
-    // {0x58, 0x5E, 0x10}, /* BC_FREQ_SELECT=(PLL_FREQ/3200) Mbps */
-    // {0xB1, 0xA8, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set aeq_lock_mode = 1 */
-    // {0xB1, 0x04, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set FPD PBC drv into FPD IV mode */
-    // {0xB1, 0x1B, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set FPD PBC drv into FPD IV mode */
-
 
     {0x0C, 0x01, 0x20}, /* Enable RX ports */   //!
     {0x01, 0x21, 0x20}, /* Soft Reset and Release GPIO Hold */
@@ -885,46 +538,10 @@ uint16_t gUb9702SensorCfg[][3] = {
 
     /*Port 0 Config*/
     {0x4C, 0x01, 0x20},
-    // {0xB0, 0x04, 0x20},
     {0xD4, 0x00, 0x20}, /* Release State Machine in reset */
-    // {0xB1, 0x28, 0x20},
-    // {0xB2, 0x23, 0x20}, /* AEQ restart to provide more deterministic AEQ code prior to AEQ LMS */
-    /* First Time Power Up */
-    // {0xB1, 0x2C, 0x20},
-    // {0xB1, 0x27, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set AEQ Min */
-    // {0xB1, 0x28, 0x20},
-    // {0xB2, 0x01, 0x20}, /* Set AEQ Max */
-    // {0xB1, 0x2B, 0x20}, /* Set AEQ offset */
-    // {0xB2, 0x00, 0x20}, /* Set Offset to 0 */
-    // {0xB1, 0x9E, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Enable AEQ tap2 */
-    // {0xB1, 0xF1, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set VGA Gain 1 Gain 2 override to 0 */
-    // {0xB1, 0x77, 0x20},
-    // {0xB2, 0x80, 0x20}, /* Set VGA Initial Sweep Gain to 0 */
-    // {0xB1, 0x74, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set VGA_Adapt (VGA Gain) override to 0 (thermometer encoded) */
-    // {0xB1, 0x2E, 0x20},
-    // {0xB2, 0x40, 0x20}, /* Enable VGA_SWEEP */
-    // {0xB1, 0xF0, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Disable VGA_SWEEP_GAIN_OV, disable VGA_TUNE_OV */
-    // {0xB1, 0x72, 0x20},
-    // {0xB2, 0x2B, 0x20}, /* Set VGA HIGH Threshold to 43 */
-    // {0xB1, 0x73, 0x20},
-    // {0xB2, 0x12, 0x20}, /* Set VGA LOW Threshold to 18 */
-    // {0xB1, 0x87, 0x20},
-    // {0xB2, 0x20, 0x20}, /* Set vga_sweep_th to 32 */
-    // {0xB1, 0x21, 0x20},
-    // {0xB2, 0xEF, 0x20}, /* Set AEQ timer to 400us/step and parity threshold to 7 */
     {0xD4, 0x10, 0x20}, /* Hold State Machine in reset */
     {0x01, 0x21, 0x20}, /* Soft reset and release GPIO hold */
     {0xD4, 0x00, 0x20}, /* Release SM in reset */
-    // {0xB1, 0x90, 0x20},
-    // {0xB2, 0x40, 0x20}, /* Enable DFE LMS */
-    // {0xB1, 0x71, 0x20},
-    // {0xB2, 0x20, 0x20}, /* Disable VGA Gain1 override */
-    // {0xB2, 0x00, 0x20}, /* Disable VGA Gain2 override */
     {0x32, 0x01, 0x20}, /* Enable TX ports */ //!
     {0x33, 0x42, 0x1}, /*Enable Continuous clock mode and CSI output*/
     {0x5D, (UB960_SERIALISER_ADDR << 1U), 0x1}, /*Serializer I2C Address*/
@@ -934,190 +551,17 @@ uint16_t gUb9702SensorCfg[][3] = {
     {0x6D, 0x78,0x0}, /*CSI Mode*/ //!
 
     {0xA0, 0x10, 0x0}, /*VC Map */
-    // {0xB0, 0x04, 0x20},
     {0x01, 0x01, 0x50},
-
-    // /*Port 1 Config*/
-    // {0x4C, 0x12, 0x20},
-    // {0xB0, 0x08, 0x20},
-    // {0xD4, 0x00, 0x20}, /* Release State Machine in reset */
-    // {0xB1, 0x28, 0x20},
-    // {0xB2, 0x23, 0x20}, /* AEQ restart to provide more deterministic AEQ code prior to AEQ LMS */
-    // /* First Time Power Up */
-    // {0xB1, 0x2C, 0x20},
-    // {0xB1, 0x27, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set AEQ Min */
-    // {0xB1, 0x28, 0x20},
-    // {0xB2, 0x01, 0x20}, /* Set AEQ Max */
-    // {0xB1, 0x2B, 0x20}, /* Set AEQ offset */
-    // {0xB2, 0x00, 0x20}, /* Set Offset to 0 */
-    // {0xB1, 0x9E, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Enable AEQ tap2 */
-    // {0xB1, 0xF1, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set VGA Gain 1 Gain 2 override to 0 */
-    // {0xB1, 0x77, 0x20},
-    // {0xB2, 0x80, 0x20}, /* Set VGA Initial Sweep Gain to 0 */
-    // {0xB1, 0x74, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set VGA_Adapt (VGA Gain) override to 0 (thermometer encoded) */
-    // {0xB1, 0x2E, 0x20},
-    // {0xB2, 0x40, 0x20}, /* Enable VGA_SWEEP */
-    // {0xB1, 0xF0, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Disable VGA_SWEEP_GAIN_OV, disable VGA_TUNE_OV */
-    // {0xB1, 0x72, 0x20},
-    // {0xB2, 0x2B, 0x20}, /* Set VGA HIGH Threshold to 43 */
-    // {0xB1, 0x73, 0x20},
-    // {0xB2, 0x12, 0x20}, /* Set VGA LOW Threshold to 18 */
-    // {0xB1, 0x87, 0x20},
-    // {0xB2, 0x20, 0x20}, /* Set vga_sweep_th to 32 */
-    // {0xB1, 0x21, 0x20},
-    // {0xB2, 0xEF, 0x20}, /* Set AEQ timer to 400us/step and parity threshold to 7 */
-    // {0xD4, 0x10, 0x20}, /* Hold State Machine in reset */
-    // {0x01, 0x21, 0x20}, /* Soft reset and release GPIO hold */
-    // {0xD4, 0x00, 0x20}, /* Release SM in reset */
-    // {0xB1, 0x90, 0x20},
-    // {0xB2, 0x40, 0x20}, /* Enable DFE LMS */
-    // {0xB1, 0x71, 0x20},
-    // {0xB2, 0x20, 0x20}, /* Disable VGA Gain1 override */
-    // {0xB2, 0x00, 0x20}, /* Disable VGA Gain2 override */
-    // {0x32, 0x03, 0x20}, /* Enable TX ports */
-    // {0x33, 0x42, 0x1}, /*Enable Continuous clock mode and CSI output*/
-    // {0x5D, (UB960_SERIALISER_ADDR << 1U), 0x1}, /*Serializer I2C Address*/
-    // {0x65, (D3IMX390_INST0_PORT_1_SER_ADDR << 1U), 0x1},
-    // {0x5E, (D3IMX390_SENSOR_ADDR_RCM_MODULE << 1U), 0x1}, /*Sensor I2C Address*/
-    // {0x66, (D3IMX390_INST0_PORT_1_SENSOR_ADDR << 1U), 0x1},
-    // {0x6D, 0x6C, 0x0}, /*CSI Mode*/
-
-    // {0xA0, 0x11, 0x0}, /*VC Map */
-    // {0xB0, 0x08, 0x20},
-    // {0x01, 0x01, 0x50},
-
-
-    // /*Port 2 Config*/
-    // {0x4C, 0x24, 0x20},
-    // {0xB0, 0x0C, 0x20},
-    // {0xD4, 0x00, 0x20}, /* Release State Machine in reset */
-    // {0xB1, 0x28, 0x20},
-    // {0xB2, 0x23, 0x20}, /* AEQ restart to provide more deterministic AEQ code prior to AEQ LMS */
-    // /* First Time Power Up */
-    // {0xB1, 0x2C, 0x20},
-    // {0xB1, 0x27, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set AEQ Min */
-    // {0xB1, 0x28, 0x20},
-    // {0xB2, 0x01, 0x20}, /* Set AEQ Max */
-    // {0xB1, 0x2B, 0x20}, /* Set AEQ offset */
-    // {0xB2, 0x00, 0x20}, /* Set Offset to 0 */
-    // {0xB1, 0x9E, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Enable AEQ tap2 */
-    // {0xB1, 0xF1, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set VGA Gain 1 Gain 2 override to 0 */
-    // {0xB1, 0x77, 0x20},
-    // {0xB2, 0x80, 0x20}, /* Set VGA Initial Sweep Gain to 0 */
-    // {0xB1, 0x74, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set VGA_Adapt (VGA Gain) override to 0 (thermometer encoded) */
-    // {0xB1, 0x2E, 0x20},
-    // {0xB2, 0x40, 0x20}, /* Enable VGA_SWEEP */
-    // {0xB1, 0xF0, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Disable VGA_SWEEP_GAIN_OV, disable VGA_TUNE_OV */
-    // {0xB1, 0x72, 0x20},
-    // {0xB2, 0x2B, 0x20}, /* Set VGA HIGH Threshold to 43 */
-    // {0xB1, 0x73, 0x20},
-    // {0xB2, 0x12, 0x20}, /* Set VGA LOW Threshold to 18 */
-    // {0xB1, 0x87, 0x20},
-    // {0xB2, 0x20, 0x20}, /* Set vga_sweep_th to 32 */
-    // {0xB1, 0x21, 0x20},
-    // {0xB2, 0xEF, 0x20}, /* Set AEQ timer to 400us/step and parity threshold to 7 */
-    // {0xD4, 0x10, 0x20}, /* Hold State Machine in reset */
-    // {0x01, 0x21, 0x20}, /* Soft reset and release GPIO hold */
-    // {0xD4, 0x00, 0x20}, /* Release SM in reset */
-    // {0xB1, 0x90, 0x20},
-    // {0xB2, 0x40, 0x20}, /* Enable DFE LMS */
-    // {0xB1, 0x71, 0x20},
-    // {0xB2, 0x20, 0x20}, /* Disable VGA Gain1 override */
-    // {0xB2, 0x00, 0x20}, /* Disable VGA Gain2 override */
-    // {0x32, 0x03, 0x20}, /* Enable TX ports */
-    // {0x33, 0x42, 0x1}, /*Enable Continuous clock mode and CSI output*/
-    // {0x5D, (UB960_SERIALISER_ADDR << 1U), 0x1}, /*Serializer I2C Address*/
-    // {0x65, (D3IMX390_INST0_PORT_2_SER_ADDR << 1U), 0x1},
-    // {0x5E, (D3IMX390_SENSOR_ADDR_RCM_MODULE << 1U), 0x1}, /*Sensor I2C Address*/
-    // {0x66, (D3IMX390_INST0_PORT_2_SENSOR_ADDR << 1U), 0x1},
-    // {0x6D, 0x6C, 0x0}, /*CSI Mode*/
-
-    // {0xA0, 0x12, 0x0}, /*VC Map */
-    // {0xB0, 0x0C, 0x20},
-    // {0x01, 0x01, 0x50},
-
-
-    // /*Port 3 Config*/
-    // {0x4C, 0x38, 0x20},
-    // {0xB0, 0x10, 0x20},
-    // {0xD4, 0x00, 0x20}, /* Release State Machine in reset */
-    // {0xB1, 0x28, 0x20},
-    // {0xB2, 0x23, 0x20}, /* AEQ restart to provide more deterministic AEQ code prior to AEQ LMS */
-    // /* First Time Power Up */
-    // {0xB1, 0x2C, 0x20},
-    // {0xB1, 0x27, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set AEQ Min */
-    // {0xB1, 0x28, 0x20},
-    // {0xB2, 0x01, 0x20}, /* Set AEQ Max */
-    // {0xB1, 0x2B, 0x20}, /* Set AEQ offset */
-    // {0xB2, 0x00, 0x20}, /* Set Offset to 0 */
-    // {0xB1, 0x9E, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Enable AEQ tap2 */
-    // {0xB1, 0xF1, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set VGA Gain 1 Gain 2 override to 0 */
-    // {0xB1, 0x77, 0x20},
-    // {0xB2, 0x80, 0x20}, /* Set VGA Initial Sweep Gain to 0 */
-    // {0xB1, 0x74, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Set VGA_Adapt (VGA Gain) override to 0 (thermometer encoded) */
-    // {0xB1, 0x2E, 0x20},
-    // {0xB2, 0x40, 0x20}, /* Enable VGA_SWEEP */
-    // {0xB1, 0xF0, 0x20},
-    // {0xB2, 0x00, 0x20}, /* Disable VGA_SWEEP_GAIN_OV, disable VGA_TUNE_OV */
-    // {0xB1, 0x72, 0x20},
-    // {0xB2, 0x2B, 0x20}, /* Set VGA HIGH Threshold to 43 */
-    // {0xB1, 0x73, 0x20},
-    // {0xB2, 0x12, 0x20}, /* Set VGA LOW Threshold to 18 */
-    // {0xB1, 0x87, 0x20},
-    // {0xB2, 0x20, 0x20}, /* Set vga_sweep_th to 32 */
-    // {0xB1, 0x21, 0x20},
-    // {0xB2, 0xEF, 0x20}, /* Set AEQ timer to 400us/step and parity threshold to 7 */
-    // {0xD4, 0x10, 0x20}, /* Hold State Machine in reset */
-    // {0x01, 0x21, 0x20}, /* Soft reset and release GPIO hold */
-    // {0xD4, 0x00, 0x20}, /* Release SM in reset */
-    // {0xB1, 0x90, 0x20},
-    // {0xB2, 0x40, 0x20}, /* Enable DFE LMS */
-    // {0xB1, 0x71, 0x20},
-    // {0xB2, 0x20, 0x20}, /* Disable VGA Gain1 override */
-    // {0xB2, 0x00, 0x20}, /* Disable VGA Gain2 override */
-    // {0x32, 0x03, 0x20}, /* Enable TX ports */
-    // {0x33, 0x42, 0x1}, /*Enable Continuous clock mode and CSI output*/
-    // {0x5D, (UB960_SERIALISER_ADDR << 1U), 0x1}, /*Serializer I2C Address*/
-    // {0x65, (D3IMX390_INST0_PORT_3_SER_ADDR << 1U), 0x1},//!
-    // {0x5E, (D3IMX390_SENSOR_ADDR_RCM_MODULE << 1U), 0x1}, /*Sensor I2C Address*/ //!
-    // {0x66, (D3IMX390_INST0_PORT_3_SENSOR_ADDR << 1U), 0x1},
-    // {0x6D, 0x6C, 0x0}, /*CSI Mode*/
-
-    // {0xA0, 0x13, 0x0}, /*VC Map */
-    // {0xB0, 0x10, 0x20},
-    // {0x01, 0x01, 0x50},
-
     {0x32, 0x01, 0x20},
 
     /*  2500mbps   */
-    {0x1F, 0x00, 0x20},//!
-    {0xC9, 0x10, 0x20},//!
-    // {0xB0, 0x1C, 0x20},
-    // {0xB1, 0x92, 0x20},
-    // {0xB2, 0x80, 0x20},
-
-    {0x20, 0xE0, 0x20},//!
-    {0xC7, 0x00, 0x20},//!
-    // {0x20, 0x00, 0x20},
-
+    {0x1F, 0x00, 0x20},
+    {0xC9, 0x10, 0x20},
+    {0x20, 0xE0, 0x20},
+    {0xC7, 0x00, 0x20},
     {0x3B, 0xFF, 0x20},
 
     /* Additional config */
-    // {0x5C, 0X30, 0X20},
     {0xC2, 0X01, 0X20},
     {0xD8, 0X07, 0X20},
     {0xD9, 0X7F, 0X20},
@@ -1129,27 +573,16 @@ uint16_t gUb9702SensorCfg[][3] = {
     {0xa5, 0x00, 0x20},
     {0xa6, 0x00, 0x20},
     {0xa7, 0x00, 0x20},
-    {0x33, 0x43, 0x20},//!
+    {0x33, 0x43, 0x20},
 };
 
 uint16_t gUb953SensorCfg[][3] = {
     {0x01, 0x01, 0x80},
     {0x02, 0x72, 0x10},
-
-#if (FUSION_BOARD_VER == 0)
-    {0x06, 0x21, 0x1F},
-#elif (FUSION_BOARD_VER == 1)
     {0x06, 0x41, 0x1F},
-#else
-/* Unsupported version */
-#endif
-    {0x07, 0x23, 0x1F}, //!
-    {0x0D, 0x02, 0x10}, //!
-
-    {0x0E, 0x2D, 0x10}, //!
-    // {0xB0, 0x04, 0x10},
-    // {0xB1, 0x08, 0x10},
-    // {0xB2, 0x07, 0x80},
+    {0x07, 0x23, 0x1F},
+    {0x0D, 0x02, 0x10},
+    {0x0E, 0x2D, 0x10},
 };
 
 uint32_t gUb953I2CAddrInst0[APP_CAPT_CH_MAX] =
@@ -1182,21 +615,7 @@ uint32_t gSensorI2CAddrInst1[APP_CAPT_CH_MAX] =
     D3IMX390_INST1_PORT_2_SENSOR_ADDR,
     D3IMX390_INST1_PORT_3_SENSOR_ADDR
 };
-uint32_t gUb953I2CAddrInst2[APP_CAPT_CH_MAX] =
-{
-    D3IMX390_INST2_PORT_0_SER_ADDR,
-    D3IMX390_INST2_PORT_1_SER_ADDR,
-    D3IMX390_INST2_PORT_2_SER_ADDR,
-    D3IMX390_INST2_PORT_3_SER_ADDR
-};
 
-uint32_t gSensorI2CAddrInst2[APP_CAPT_CH_MAX] =
-{
-    D3IMX390_INST2_PORT_0_SENSOR_ADDR,
-    D3IMX390_INST2_PORT_1_SENSOR_ADDR,
-    D3IMX390_INST2_PORT_2_SENSOR_ADDR,
-    D3IMX390_INST2_PORT_3_SENSOR_ADDR
-};
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -1210,8 +629,6 @@ int Csirx_fusion2Test(void)
     CsirxApp_CaptInstObj *appInstObj[APP_CAPT_TEST_INST_NUM];
     CsirxApp_CaptCommonObj *appCommonObj;
     appCommonObj = &gAppCommonObj;
-
-    // Drivers_open(); called in main.c
 
     /* Creating semaphore to indicate application completion of each Instance */
     SemaphoreP_constructBinary(&gAppCompletionSem,0U);
@@ -1467,8 +884,6 @@ static int32_t CsirxApp_create(CsirxApp_CaptInstObj* appInstObj)
         /* Set CSIRX D-PHY configuration parameters */
         Csirx_initDPhyCfg(&dphyCfg);
         dphyCfg.inst = appInstObj->instId;
-        // dphyCfg.leftLaneBandSpeed  = CSIRX_LANE_BAND_SPEED_2250_TO_2500_MBPS;
-        // dphyCfg.rightLaneBandSpeed = CSIRX_LANE_BAND_SPEED_2250_TO_2500_MBPS;
         retVal = Fvid2_control(appInstObj->drvHandle,
                                 IOCTL_CSIRX_SET_DPHY_CONFIG,
                                 &dphyCfg,
@@ -1551,18 +966,23 @@ static int32_t CsirxApp_csiTest(CsirxApp_CaptCommonObj* appCommonObj)
             }
         }
     }
-    /* Dump all device registers after configuration */
-    // CsirxApp_dumpAllRegisters(gI2cHandle[CONFIG_I2C2],
-    //                           gFusion2Det,
-    //                           0x3D,  /* UB9702 address */
-    //                           D3IMX390_INST0_PORT_0_SER_ADDR,  /* UB971 address */
-    //                           D3IMX390_INST0_PORT_0_SENSOR_ADDR);  /* IMX390 address */
+    /* Enable this macro to dump all device registers after configuration */
+#if (CSIRX_APP_TAKE_I2CDUMP)
+    CsirxApp_dumpAllRegisters(gI2cHandle[CONFIG_I2C2],
+                              gFusion2Det,
+                              0x3D,  /* UB9702 address */
+                              D3IMX390_INST0_PORT_0_SER_ADDR,  /* UB971 address */
+                              D3IMX390_INST0_PORT_0_SENSOR_ADDR);  /* IMX390 address */
+#endif
     /* start the tick timer */
     TimerP_start(gTimerBaseAddr[CONFIG_TIMER0]);
     SemaphoreP_pend(&gAppCompletionSem, SystemP_WAIT_FOREVER);
     DebugP_log("Finished capturing! \r\n");
+    /* Enable this macro to visualize the camera capture - access gFrms and take its dump after the console log */
+#if (CSIRX_APP_TAKE_IMGDUMP)
     volatile int a = 1;
     while(a);
+#endif
     /* Stop the streams immediately after the timeout is reached */
     for(int i=0; i<APP_CAPT_TEST_INST_NUM; i++)
     {
@@ -1625,9 +1045,7 @@ static int32_t CsirxApp_csiTest(CsirxApp_CaptCommonObj* appCommonObj)
         GT_1trace(CsirxAppTrace, GT_INFO,
                   APP_NAME ": Frames Received: %d\r\n",
                   appCommonObj->appInstObj[i].numFramesRcvd);
-        // GT_1trace(CsirxAppTrace, GT_INFO,
-        //           APP_NAME ": De Skew Count: %d\r\n",
-        //           appCommonObj->appInstObj[i].captStatus.deSkewEntryCount);
+
         for(loopCnt = 0U ; loopCnt < APP_CAPT_CH_NUM ; loopCnt++)
         {
             GT_4trace(CsirxAppTrace, GT_INFO,
@@ -2079,37 +1497,13 @@ static int32_t CsirxApp_sensorConfig(CsirxApp_CaptInstObj* appInstObj)
     int32_t timeOut = 0;
     int32_t status = FVID2_SOK;
     uint32_t cnt;
-#if !UB960_USE_PATTERN_GENERATOR
     uint32_t sensorIdx;
     uint16_t regAddr;
-    // uint8_t i2cswitchreg;
-#endif
     uint8_t i2cInst = 0U, i2cAddr = 0U, regAddr8, regVal;
 
     uint32_t *ub953I2cAddr, portNum=0;
     uint32_t *sensorI2cAddr = NULL;
     static uint16_t deSerConfig[500][3] = {};
-
-    // /*
-    //  * SOC GPIO0_68 CSI2_EXP_RSTz is muxed to Padconfig Package MMC2_DAT0
-    //  * Muxmode = 7 configures MMC2_DAT0 as GPIO_68
-    //  * Note: CSI2_EXP_RSTz is active-low reset (z suffix indicates inverted)
-    //  */
-    // Pinmux_config(gMainPinmuxData, PINMUX_DOMAIN_ID_MAIN);
-
-    // /*
-    //  * Perform proper reset sequence for CSI2 expansion devices (UB9702/cameras)
-    //  * Reset is active-low: LOW = reset asserted, HIGH = normal operation
-    //  */
-    // GPIO_setDirMode(CSL_GPIO0_BASE, CONFIG_GPIO0_PIN, GPIO_DIRECTION_OUTPUT); // which GPIO instance is IO Expander pin 11?
-    // GPIO_pinWriteHigh(CSL_GPIO0_BASE, CONFIG_GPIO0_PIN);    // same as above
-
-    // /*
-    //  * 24bit I2C GPIO EXP1 TCA6424ARGJR (SLV ADDR 0x23) is connected to I2C0
-    //  * which needs to be programmed to use CSI fusion expansion boards connected
-    //  * to Main I2C2 instance bus.
-    //  */
-    // status = Board_enableCSII2c(BOARD_CSI_I2C_MUX_INSTANCE); //port API from jac_master
 
     TCA6424_Config TCA6424_IOexp_config;
 
@@ -2128,7 +1522,7 @@ static int32_t CsirxApp_sensorConfig(CsirxApp_CaptInstObj* appInstObj)
         DebugP_log("ERROR: Pin 20 (CSI_EN) configuration FAILED (status=%d)\r\n", retVal);
     }
 
-    ClockP_usleep(50000);  // 50ms for power-up
+    ClockP_usleep(50000);
 
     retVal |= TCA6424_config(&TCA6424_IOexp_config, 9, TCA6424_MODE_OUTPUT);
 
@@ -2170,18 +1564,6 @@ static int32_t CsirxApp_sensorConfig(CsirxApp_CaptInstObj* appInstObj)
     if (FVID2_SOK == status)
     {
         DebugP_log("Success in Board_enableCSII2c in line 1829\r\n");
-        /*
-         * CSI2_A Expansion Connector is connected to channel 0 of 2-Channel
-         * I2C Bus Switch TCA9543APWR (Switch 1). A value of 0x01 needs to
-         * be programmed to enable Channel 0. The address of TCA9543APWR is
-         * 0x70 on J7AEN (defined by hardware).
-         */
-        // i2cswitchreg = 0x03;
-        // status = Board_i2c8BitRegWrSingle(gI2cHandle[CONFIG_I2C2], 0x71, &i2cswitchreg, APP_I2C_TRANSACTION_TIMEOUT);    // There is 1 i2c switch in am62a and its address is 0x71. 1 is written to enable Ch0, 2 for Ch1, 3 for both
-        // if (status != SystemP_SUCCESS)
-        // {
-        //     DebugP_log("ERROR: Failed to configure I2C switch!\r\n");
-        // }
         uint8_t switchConfig = 0x02;
         I2C_Transaction i2cTransaction;
 
@@ -2199,7 +1581,6 @@ static int32_t CsirxApp_sensorConfig(CsirxApp_CaptInstObj* appInstObj)
             DebugP_log("ERROR: Failed to configure I2C switch!\r\n");
         }
 
-        // Verify by reading back
         uint8_t readback;
         i2cTransaction.writeBuf = NULL;
         i2cTransaction.writeCount = 0;
@@ -2209,7 +1590,6 @@ static int32_t CsirxApp_sensorConfig(CsirxApp_CaptInstObj* appInstObj)
         DebugP_log("Switch readback: 0x%02X (should be 0x02)\r\n", readback);
     }
 
-    /* CRITICAL: Complete I2C bus scan to find all devices */
     if (gI2cHandle[CONFIG_I2C2] != NULL)
     {
         DebugP_log("\n=== COMPLETE I2C2 Bus Scan (After Pin 11 Reset) ===\r\n");
@@ -2375,8 +1755,7 @@ static int32_t CsirxApp_sensorConfig(CsirxApp_CaptInstObj* appInstObj)
         }
         else
         {
-            Board_fpdUb960GetI2CAddr(&i2cAddr, appInstObj->boardCsiInstID);
-            memcpy(deSerConfig, gUb960SensorCfg, (sizeof(gUb960SensorCfg)));
+            DebugP_log("Fusion 2 board NOT detected!");
         }
     }
 
@@ -2417,17 +1796,14 @@ static int32_t CsirxApp_sensorConfig(CsirxApp_CaptInstObj* appInstObj)
                 {
                     regVal = ((D3IMX390_SENSOR_ADDR_RCM_MODULE) << 1) & 0xFF ;
                 }
-                // regVal = 0x00;
             }
             else if(regAddr8 == 0x65)
             {
                 regVal = ((ub953I2cAddr[portNum]) << 1) & 0xFF ;
-                // regVal = 0x94;
             }
             else if(regAddr8 == 0x66)
             {
                 regVal = ((sensorI2cAddr[portNum]) << 1) & 0xFF ;
-                // regVal = 0x00;
                 portNum++;
             }
             else
@@ -2455,125 +1831,91 @@ static int32_t CsirxApp_sensorConfig(CsirxApp_CaptInstObj* appInstObj)
             }
         }
 
-#if !UB960_USE_PATTERN_GENERATOR
         for (sensorIdx = 0U ; sensorIdx < APP_CAPT_CH_NUM ; sensorIdx++)
         {
             if (0 == status)
             {
                 /* UB953 serializer Port configuration */
-                // i2cAddr = ub953I2cAddr[sensorIdx];
-                // i2cAddr = ub953_probe();
                 i2cAddr = D3IMX390_INST0_PORT_0_SER_ADDR;
                 for (cnt = 0;
                      cnt < sizeof(gUb953SensorCfg)/(sizeof(gUb953SensorCfg[0]));
                      cnt ++)
                 {
                     regAddr8 = gUb953SensorCfg[cnt][0] & 0xFF;
-                //     if(regAddr8 == 0x07)
-                //     {
-                //         if(appInstObj->cameraSensor == D3IMX390_CM_MODULE)
-                //         {
-                //             regVal = 0x28;
-                //             timeOut = 0x1F;
-                //         }
-                //         else if (appInstObj->cameraSensor == D3IMX390_RCM_MODULE)
-                //         {
-                //             regVal =  0x25;
-                //             timeOut = 0x80;
-                //         }
-                //    }
-                //    else if(regAddr8 == 0x0D)
-                //    {
-                //        if(appInstObj->cameraSensor == D3IMX390_CM_MODULE)
-                //        {
-                //             regVal =  0x01;
-                //             timeOut = 0x10;
-                //        }
-                //        else if (appInstObj->cameraSensor == D3IMX390_RCM_MODULE)
-                //        {
-                //             regVal =  0x03;
-                //             timeOut = 0x10;
-                //        }
-                //    }
-                //    else
-                //    {
-                        regVal = gUb953SensorCfg[cnt][1] & 0xFF;
-                        timeOut = gUb953SensorCfg[cnt][2];
-                //    }
-                   status = Board_i2c8BitRegWr(gI2cHandle[CONFIG_I2C2],
-                                              i2cAddr,
-                                              regAddr8,
-                                              &regVal,
-                                              1,
-                                              APP_I2C_TRANSACTION_TIMEOUT);
+                    regVal = gUb953SensorCfg[cnt][1] & 0xFF;
+                    timeOut = gUb953SensorCfg[cnt][2];
+                    status = Board_i2c8BitRegWr(gI2cHandle[CONFIG_I2C2],
+                                                i2cAddr,
+                                                regAddr8,
+                                                &regVal,
+                                                1,
+                                                APP_I2C_TRANSACTION_TIMEOUT);
 
-                   if (0 != status)
-                   {
-                       GT_3trace(CsirxAppTrace, GT_INFO,
-                                 APP_NAME
-                                 ": Failed to Set UB953 register %x: Value:%x for CSIRX instance %d\n",
-                                 gUb953SensorCfg[cnt][0],
-                                 gUb953SensorCfg[cnt][1],
-                 appInstObj->instId);
-                      break;
-                   }
-                   else
-                   {
-                       App_wait(timeOut);
-                   }
+                    if (0 != status)
+                    {
+                        GT_3trace(CsirxAppTrace, GT_INFO,
+                                  APP_NAME
+                                  ": Failed to Set UB953 register %x: Value:%x for CSIRX instance %d\n",
+                                  gUb953SensorCfg[cnt][0],
+                                  gUb953SensorCfg[cnt][1],
+                                  appInstObj->instId);
+                        break;
+                    }
+                    else
+                    {
+                        App_wait(timeOut);
+                    }
                 }
-             }
-             else
-             {
-                 break;
-             }
-         }
+            }
+            else
+            {
+                break;
+            }
+        }
 
-         if (0 == status)
-         {
-              GT_1trace(CsirxAppTrace, GT_INFO,
-                        APP_NAME ": Configuring IMX390 Sensor for CSIRX instance %d\r\n",appInstObj->instId);
-         }
-         for (sensorIdx = 0U ; sensorIdx < APP_CAPT_CH_NUM ; sensorIdx++)
-         {
-             if (0 == status)
-             {
-                  /* Sensor 0 configuration */
-                //   i2cAddr = sensorI2cAddr[sensorIdx];
+        if (0 == status)
+        {
+            GT_1trace(CsirxAppTrace, GT_INFO,
+                      APP_NAME ": Configuring IMX390 Sensor for CSIRX instance %d\r\n",appInstObj->instId);
+        }
+        for (sensorIdx = 0U ; sensorIdx < APP_CAPT_CH_NUM ; sensorIdx++)
+        {
+            if (0 == status)
+            {
+                /* Sensor 0 configuration */
                 i2cAddr = D3IMX390_INST0_PORT_0_SENSOR_ADDR;
-                  for (cnt = 0; cnt < SENSOR_CFG_SIZE; cnt ++)
-                  {
-                      regAddr = gSensorCfg[cnt][0];
-                      regVal = gSensorCfg[cnt][1];
+                for (cnt = 0; cnt < SENSOR_CFG_SIZE; cnt ++)
+                {
+                    regAddr = gSensorCfg[cnt][0];
+                    regVal = gSensorCfg[cnt][1];
 
-                      status = Board_i2c16BitRegWr(gI2cHandle[CONFIG_I2C2],
-                                                   i2cAddr,
-                                                   regAddr,
-                                                   &regVal,
-                                                   1,
-                                                   0,
-                                                   APP_I2C_TRANSACTION_TIMEOUT);
-                      if (0 != status)
-                      {
-                          GT_4trace(CsirxAppTrace, GT_INFO,
-                                         APP_NAME
-                                         ": Failed to Set Sensor%x register %x: Value:0x%x for CSIRX instance %d\n",
-                                         sensorIdx,
-                                         regAddr,
-                                         regVal,
-                                        appInstObj->instId);
-                          break;
-                      }
-                  }
-              }
-              else
-              {
-                  break;
-              }
-         }
-#endif
-          if (0 == status)
-          {
+                    status = Board_i2c16BitRegWr(gI2cHandle[CONFIG_I2C2],
+                                                 i2cAddr,
+                                                 regAddr,
+                                                 &regVal,
+                                                 1,
+                                                 0,
+                                                 APP_I2C_TRANSACTION_TIMEOUT);
+                    if (0 != status)
+                    {
+                        GT_4trace(CsirxAppTrace, GT_INFO,
+                                  APP_NAME
+                                  ": Failed to Set Sensor%x register %x: Value:0x%x for CSIRX instance %d\n",
+                                  sensorIdx,
+                                  regAddr,
+                                  regVal,
+                                  appInstObj->instId);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+        if (0 == status)
+        {
             if(BTRUE == gFusion2Det)
             {
                 Board_fpdUb9702GetI2CAddr(&i2cAddr, appInstObj->boardCsiInstID);
@@ -2614,12 +1956,12 @@ static int32_t CsirxApp_sensorConfig(CsirxApp_CaptInstObj* appInstObj)
                 GT_1trace(CsirxAppTrace, GT_INFO,
                             APP_NAME ": Sensor Configuration done for CSIRX instance %d!!!\r\n",appInstObj->instId);
             }
-         }
-         else
-         {
-                GT_1trace(CsirxAppTrace, GT_INFO,
-                          APP_NAME ": Sensor Configuration Failed for CSIRX instance %d!!!\r\n",appInstObj->instId);
-         }
+        }
+        else
+        {
+            GT_1trace(CsirxAppTrace, GT_INFO,
+                      APP_NAME ": Sensor Configuration Failed for CSIRX instance %d!!!\r\n",appInstObj->instId);
+        }
     }
 
     return (retVal);

@@ -27,7 +27,6 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_uart_linux_am62ax-sk_r5fss0-0_n
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_uart_uniflash_stage1_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_uart_uniflash_stage2_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += csirx_capture_testapp_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_build
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += csirx_imx219_testapp_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ddr_ecc_test_main_esm_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ddr_perf_app_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ecap_apwm_mode_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_build
@@ -312,9 +311,6 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
 
  csirx_capture_testapp_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/csirx/csirx_capture_testapp/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
-
- csirx_imx219_testapp_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_build:
-	$(MAKE) -C examples/drivers/csirx/csirx_imx219_testapp/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
  ddr_ecc_test_main_esm_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C examples/drivers/ddr/ddr_ecc_test_main_esm/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
@@ -961,7 +957,6 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_uart_linux_am62ax-sk_r5fss0-0_n
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_uart_uniflash_stage1_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_uart_uniflash_stage2_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += csirx_capture_testapp_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += csirx_imx219_testapp_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ddr_ecc_test_main_esm_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ddr_perf_app_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ecap_apwm_mode_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_clean
@@ -1246,9 +1241,6 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
 
  csirx_capture_testapp_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/csirx/csirx_capture_testapp/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
-
- csirx_imx219_testapp_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C examples/drivers/csirx/csirx_imx219_testapp/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
  ddr_ecc_test_main_esm_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/ddr/ddr_ecc_test_main_esm/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
@@ -1895,7 +1887,6 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_uart_linux_am62ax-sk_r5fss0-0_
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_uart_uniflash_stage1_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_uart_uniflash_stage2_am62ax-sk_r5fss0-0_nortos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += csirx_capture_testapp_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_export
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += csirx_imx219_testapp_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ddr_ecc_test_main_esm_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ddr_perf_app_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ecap_apwm_mode_am62ax-sk_a53ss0-0_nortos_gcc-aarch64_export
@@ -2180,9 +2171,6 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
 
  csirx_capture_testapp_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/csirx/csirx_capture_testapp/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
-
- csirx_imx219_testapp_am62ax-sk_r5fss0-0_freertos_ti-arm-clang_export:
-	$(MAKE) -C examples/drivers/csirx/csirx_imx219_testapp/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
  ddr_ecc_test_main_esm_am62ax-sk_mcu-r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C examples/drivers/ddr/ddr_ecc_test_main_esm/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
@@ -2845,7 +2833,6 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage1/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/boot/sbl_uart_uniflash_multistage/sbl_uart_uniflash_stage2/am62ax-sk/r5fss0-0_nortos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/csirx/csirx_capture_testapp/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
-	@echo  $(MAKE) -s -C examples/drivers/csirx/csirx_imx219_testapp/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/ddr/ddr_ecc_test_main_esm/am62ax-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/ddr/ddr_perf/am62ax-sk/r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/ecap/ecap_apwm_mode/am62ax-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile_projectspec [export all clean]

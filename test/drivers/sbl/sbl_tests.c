@@ -42,6 +42,7 @@
 #include "ti_board_open_close.h"
 #include <drivers/qos.h>
 #include "qos_data.h"
+#include <drivers/qos/v0/qos.c>
 
 /* ========================================================================== */
 /*                 Internal Function Declarations                             */
@@ -55,9 +56,6 @@ void validate_dss_qos_config(void *args);
 
 void sbl_tests(void *args)
 {
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
 
     UNITY_BEGIN();
 
@@ -65,12 +63,13 @@ void sbl_tests(void *args)
 
     UNITY_END();
 
-    Board_driversClose();
-    Drivers_close();
 }
 
 void validate_dss_qos_config(void *args)
 {
+    /* Setup the QoS */
+    QOS_init(gQosData, gQosCount);
+
     for (uint32_t i = 0; i< gQosCount; i++) {
         TEST_ASSERT_EQUAL_UINT32(CSL_REG32_RD(gQosData[i].reg), gQosData[i].val);
     }

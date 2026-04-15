@@ -136,10 +136,6 @@ void SblNonBootedCoreTest_main()
     uint32_t                moduleId = 0U;
     int32_t                 result = 0;
 
-    /* Open drivers to open the UART driver for console */
-    Drivers_open();
-    Board_driversOpen();
-
     for(int32_t coreId = 0; coreId < BOOT_MAX_CORE_ID; coreId++)
     {
         moduleId = (uint32_t) coreInfo[coreId].deviceId;
@@ -183,9 +179,6 @@ void SblNonBootedCoreTest_main()
     {
         DebugP_log("All tests have passed\r\n");
     }
-
-    Board_driversClose();
-    Drivers_close();
 
     return;
 }

@@ -15,7 +15,7 @@ OPTEE_BIN_NAME=bl32.bin
 QNX_BIN_NAME=qnx-ifs
 
 #QNX image load address
-ATF_LOAD_ADDR=0x9e780000
+ATF_LOAD_ADDR=0x80000000
 OPTEE_LOAD_ADDR=0x9e800000
 QNX_LOAD_ADDR=0x80080000
 
@@ -38,7 +38,7 @@ BOOTIMAGE_CORE_ID_a53ss1-0      = 7
 BOOTIMAGE_CORE_ID_a53ss1-1      = 8
 
 # Add path to executable binaries that you want to run along with the Linux
-IMG1 = $(BOOTIMAGE_CORE_ID_wkup-r5fss0-0) $(MCU_PLUS_SDK_PATH)/tools/sysfw/sciserver_binary/j722s/sciclient_get_version.release.rprc
+IMG1 = $(BOOTIMAGE_CORE_ID_wkup-r5fss0-0) $(MCU_PLUS_SDK_PATH)/examples/drivers/sciclient/sciclient_get_version/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang/sciclient_get_version.release.rprc
 IMG2 =
 IMG3 =
 

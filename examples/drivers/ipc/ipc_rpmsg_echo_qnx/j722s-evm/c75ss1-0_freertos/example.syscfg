@@ -26,6 +26,7 @@ const mmu_armv89  = mmu_armv8.addInstance();
  */
 ipc.enableLinuxIpc     = false;
 ipc.a53ss0_0           = "notify_rpmsg";
+ipc.remoteCoreQNX      = true;
 
 debug_log.enableSharedMemLog   = true;
 debug_log.enableLogZoneWarning = false;

@@ -159,7 +159,8 @@ function getConfigurables()
 
         if(common.getSocName().match(/am62x/)||
         common.getSocName().match(/am62ax/)||
-        common.getSocName().match(/am62px/))
+        common.getSocName().match(/am62px/)||
+        common.getSocName().match(/j722s/))
         {
             config.push(
                 {

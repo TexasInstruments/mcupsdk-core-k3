@@ -120,5 +120,5 @@ MEMORY
     /* DDR for DM R5F code/data [ size 29 MiB ] */
     DDR       : ORIGIN = 0xA0200000 LENGTH = 0xE00000
 
-    DDR_IPC_VRING_RTOS            : ORIGIN = 0xA5000000, LENGTH = 0x1C00000   /* IPC VRING for RTOS/NoRTOS */
+    DDR_IPC_VRING_RTOS            : ORIGIN = 0xA5000000, LENGTH = 0x1000000   /* IPC VRING for RTOS/NoRTOS */
 }

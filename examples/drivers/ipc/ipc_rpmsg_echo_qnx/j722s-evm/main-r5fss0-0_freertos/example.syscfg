@@ -26,6 +26,7 @@ const mpu_armv79 = mpu_armv7.addInstance();
  */
 ipc.enableLinuxIpc     = false;
 ipc.a53ss0_0           = "notify_rpmsg";
+ipc.remoteCoreQNX      = true;
 
 debug_log.enableSharedMemLog   = false;
 debug_log.enableLogZoneWarning = false;

@@ -314,7 +314,7 @@ int32_t CsirxDrv_eventEnable(Fdrv_Handle drvHandle,
                          CSL_CSIRX_ERROR_IRQS_HEADER_ECC_IRQ_SHIFT);
                 errMask.headerCorrectedEccIrqm |= (uint8_t)
                         ((eventType & CSIRX_EVENT_TYPE_ERR_HEADER_CORRECTED_ECC) >>
-                         CSL_CSIRX_ERROR_IRQS_INVALID_ACCESS_IRQ_SHIFT);
+                         CSL_CSIRX_ERROR_IRQS_HEADER_CORRECTED_ECC_IRQ_SHIFT);
                 errMask.dataIdIrqm             |= (uint8_t)
                         ((eventType & CSIRX_EVENT_TYPE_ERR_DATA_ID) >>
                          CSL_CSIRX_ERROR_IRQS_DATA_ID_IRQ_SHIFT);
@@ -382,7 +382,7 @@ int32_t CsirxDrv_eventDisable(Fdrv_Handle drvHandle,
                          CSL_CSIRX_ERROR_IRQS_HEADER_ECC_IRQ_SHIFT));
                 errMask.headerCorrectedEccIrqm &= (uint8_t)
                         (~((eventType & CSIRX_EVENT_TYPE_ERR_HEADER_CORRECTED_ECC) >>
-                         CSL_CSIRX_ERROR_IRQS_INVALID_ACCESS_IRQ_SHIFT));
+                         CSL_CSIRX_ERROR_IRQS_HEADER_CORRECTED_ECC_IRQ_SHIFT));
                 errMask.dataIdIrqm             &= (uint8_t)
                         (~((eventType & CSIRX_EVENT_TYPE_ERR_DATA_ID) >>
                          CSL_CSIRX_ERROR_IRQS_DATA_ID_IRQ_SHIFT));
@@ -685,7 +685,7 @@ int32_t CsirxDrv_eventGroupUnRegister(Fdrv_Handle drvHandle,
         if (retVal == FVID2_SOK)
         {
             /* Disable All HW events for the given group first */
-            retVal = CsirxDrv_eventDisable(drvHandle, eventGroup, 0U);
+            retVal = CsirxDrv_eventDisable(drvHandle, eventGroup, eventObj->eventPrms.eventMasks);
         }
         if (retVal == FVID2_SOK)
         {

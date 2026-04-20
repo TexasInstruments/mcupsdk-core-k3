@@ -1101,7 +1101,7 @@ void Udma_rmFreeExtCh(uint32_t chNum,
 {
     uint32_t            i, offset, bitPos, bitMask;
     uint32_t            utcId;
-    Udma_RmInitPrms    *rmInitPrms = &drvHandle->initPrms.rmInitPrms;
+    Udma_RmInitPrms    *rmInitPrms = &drvHandle->rmInitPrms;
 
     DebugP_assert((NULL_PTR != utcInfo));
     utcId = utcInfo->utcId;

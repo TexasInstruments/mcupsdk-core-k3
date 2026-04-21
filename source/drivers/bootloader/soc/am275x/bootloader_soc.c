@@ -278,6 +278,13 @@ Bootloader_CoreBootInfo gCoreBootInfo[] =
         .defaultClockHz = BOOTLOADER_SOC_C7X_CLK_FREQ_1000MHZ,
         .coreName       = "c7x1-0",
     },
+    {
+        .tisciProcId    = PROC_ID_HSM0,
+        .tisciDevId     = TISCI_DEV_HSM0,
+        .tisciClockId   = TISCI_DEV_HSM0_DAP_CLK,
+        .defaultClockHz = (uint32_t)(400*1000000),
+        .coreName       = "m4f1-0",
+    },
 
 };
 
@@ -416,6 +423,23 @@ Bootloader_CoreAddrTranslateInfo gAddrTranslateInfo[] =
                 .socAddr      = BOOTLOADER_SOC_SRAM_BASE_ADDR,
                 .regionSize   = BOOTLOADER_C7X1_0_SRAM_ALIAS_SIZE,
             }
+        },
+    },
+    /* CSL_CORE_ID_HSM_M4FSS0_0 */
+    {
+        .numRegions = 2,
+        .addrRegionInfo =
+        {
+            {
+                .cpuLocalAddr = BOOTLOADER_HSM_M4F_SRAM0_0_BASE,
+                .socAddr      = CSL_SMS0_HSM_SRAM0_0_BASE,
+                .regionSize   = CSL_SMS0_HSM_SRAM0_0_SIZE + CSL_SMS0_HSM_SRAM0_1_SIZE,
+            },
+            {
+                .cpuLocalAddr = BOOTLOADER_HSM_M4F_SRAM1_BASE,
+                .socAddr      = CSL_SMS0_HSM_SRAM1_BASE,
+                .regionSize   = CSL_SMS0_HSM_SRAM1_SIZE,
+            },
         },
     },
 };

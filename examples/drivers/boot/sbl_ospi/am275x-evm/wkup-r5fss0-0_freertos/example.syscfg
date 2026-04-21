@@ -64,6 +64,9 @@ bootloader6.appImageOffset = "0x1400000";
 bootloader7.$name          = "CONFIG_BOOTLOADER_C751";
 bootloader7.appImageOffset = "0x1800000";
 
+bootloader7.$name          = "CONFIG_BOOTLOADER_HSM";
+bootloader7.appImageOffset = "0x1C00000";
+
 bootloader1.flashDriver                                = flash1;
 flash1.$name                                           = "CONFIG_FLASH_SBL";
 bootloader2.flashDriver                                = flash1;

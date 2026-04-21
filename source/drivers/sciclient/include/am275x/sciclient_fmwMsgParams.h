@@ -142,6 +142,11 @@ extern "C" {
 #define PROC_ID_C7X256V1_C7XV_CORE_0 (0x04U)
 
 /**
+ * SMS_MAIN_0_SECCTRL_0: (Cluster 0 Processor 1)
+ */
+#define PROC_ID_HSM0 (0x80U)
+
+/**
  * AM275_MAIN_SEC_MMR_MAIN_0: (Cluster 0 Processor 0)
  */
 #define PROC_ID_R5FSS0_CORE0 (0x06U)
@@ -169,7 +174,7 @@ extern "C" {
 /**
  * Total Number of processors in AM275X
  */
-#define SOC_NUM_PROCESSORS (0x07U)
+#define SOC_NUM_PROCESSORS (0x08U)
 
 /** @} */
 

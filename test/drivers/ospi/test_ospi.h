@@ -90,7 +90,7 @@
 #define TEST_OSPI_SDR_BAUD_RATE_DIV        (4U)   /* Baud rate divisor for SDR mode */
 #define TEST_OSPI_DDR_BAUD_RATE_DIV        (8U)   /* Baud rate divisor for DDR mode */
 
-#if defined (SOC_AM275X) || defined(SOC_J722S)
+#if defined (SOC_AM275X)
 #if defined(__C7504__) || defined(__C7524__)
 #define TEST_OSPI_MAX_TEST_SIZE            (TEST_OSPI_1MB_SIZE)
 #else

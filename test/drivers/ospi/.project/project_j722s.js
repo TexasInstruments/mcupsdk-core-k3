@@ -151,32 +151,6 @@ const templates_freertos_wkup_r5f =
     }
 ];
 
-const templates_freertos_main_r5f =
-[
-    {
-        input: ".project/templates/j722s/common/linker_main-r5f.cmd.xdt",
-        output: "linker.cmd",
-        options: {
-            heapSize: 0x8000,
-            stackSize: 0x4000,
-            irqStackSize: 0x1000,
-            svcStackSize: 0x0100,
-            fiqStackSize: 0x0100,
-            abortStackSize: 0x0100,
-            undefinedStackSize: 0x0100,
-            dmStubstacksize: 0x0400,
-            globalScratchBuf: true,
-        },
-    },
-    {
-        input: ".project/templates/j722s/freertos/main_freertos.c.xdt",
-        output: "../main.c",
-        options: {
-            entryFunction: "test_main",
-        },
-    }
-];
-
 const templates_freertos_mcu_r5f =
 [
     {
@@ -246,7 +220,6 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes_freertos_main_r5f;
             build_property.libdirs = libdirs_freertos_main_r5f;
             build_property.libs = libs_freertos_main_r5f;
-            build_property.templates = templates_freertos_main_r5f;
         }
     }
     else if(buildOption.cpu.match(/mcu-r5f*/)) {

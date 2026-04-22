@@ -381,6 +381,7 @@ static size_t _ftoa(out_fct_type out, char* buffer, size_t idx, size_t maxlen, d
   double value_local = value;
   unsigned int prec_val = prec;
   unsigned int width_val = width;
+  bool special_case = false;
 
   // powers of 10
   static const double pow10[] = { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000 };
@@ -389,14 +390,17 @@ static size_t _ftoa(out_fct_type out, char* buffer, size_t idx, size_t maxlen, d
   if (value_local != value_local)
   {
     ret = _out_rev(out, buffer, idx, maxlen, "nan", 3, width_val, flags);
+    special_case = true;
   }
   else if (value_local < -DBL_MAX)
   {
     ret = _out_rev(out, buffer, idx, maxlen, "fni-", 4, width_val, flags);
+    special_case = true;
   }
   else if (value_local > DBL_MAX)
   {
     ret = _out_rev(out, buffer, idx, maxlen, ((flags & FLAGS_PLUS) != 0U) ? "fni+" : "fni", ((flags & FLAGS_PLUS) != 0U) ? 4U : 3U, width_val, flags);
+    special_case = true;
   }
 
   // test for very large values
@@ -409,10 +413,11 @@ static size_t _ftoa(out_fct_type out, char* buffer, size_t idx, size_t maxlen, d
 #else
       ret = 0U;
 #endif
+    special_case = true;
     }
   }
 
-  if (ret == 1U)
+  if (special_case == false)
   {
     // test for negative
     bool negative = false;

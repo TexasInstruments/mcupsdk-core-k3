@@ -510,9 +510,8 @@ void vPortYieldAsyncFromISR( void )
      * Workaround is to execute a dummy NLCINIT that refreshes the NLC hardware state.
      * For FreeRTOS, this is only a problem with the configUSE_TIME_SLICING turned on.
      */
-#if (1U == configUSE_TIME_SLICING)
     vPortRefreshNLC();
-#endif
+
 }
 
 /*

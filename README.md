@@ -56,8 +56,7 @@ that need to be cloned and are listed below:
 - [FreeRTOS-POSIX](https://github.com/TexasInstruments/mcupsdk-FreeRTOS-POSIX)
 - [FreeRTOS-FAT](https://github.com/TexasInstruments/mcupsdk-FreeRTOS-FAT)
 
-We use the [repo tool](https://gerrit.googlesource.com/git-repo) to clone and manage
-multiple repositories. To setup the repo tool, navigate to [repo tool setup](#repo-tool-setup) section.
+We use the [West tool](https://docs.zephyrproject.org/latest/develop/west/index.html) to clone and manage multiple repositories. To setup the west tool, navigate to [west tool setup](#west-tool-setup) section.
 
 Prebuilt SDK installers  for specific devices are available at below links. Please note that installers are packaged specific to each device to reduce size.
 
@@ -77,38 +76,42 @@ Prebuilt SDK installers  for specific devices are available at below links. Plea
 
 ### Clone and build from GIT
 
-#### Repo Tool Setup
+#### West tool Setup
 
-MCU+ SDK has multiple components (in multiple repositories) and dependencies
-(like compiler, CCS and other tools). We use repo tool from Google to manage these
-multiple repositories. Follow the below mentioned steps to setup repo tool:
+MCU+ SDK has multiple components (in multiple repositories) and dependencies (like compiler, CCS and other tools). 
+We utilize [West tool](https://docs.zephyrproject.org/latest/develop/west/index.html) from the Zephyr project to manage these multiple repositories. 
+West serves as an alternative to Google's repo tool. We are transitioning to West because the repo tool does not support the Windows native shell. 
+For those using West to clone the repository, the repo tool setup is unnecessary. Follow the steps below to set up the West tool:
 
 Make sure [python3 is installed](https://wiki.python.org/moin/BeginnersGuide/Download) and is in your OS path.
+Recommended to use west v1.5.0 or above.
 
+Do the following in terminal
 - Linux:
+  
   ```bash
-  sudo apt-get update
-  sudo apt-get install repo
+  pip3 install --user -U west
   ```
 
-#### Cloning The Repositories
+- Windows and macOS
+  ```bash
+  pip3 install -U west 
+  ```
+If you are using a network proxy, include the --proxy={your_network_proxy} option in the pip installation command.
 
-To clone the repositories using repo tool, do below in your workarea folder:
+#### Cloning The Repositories - West
 
-Note that depending on the SoC you're working with, the components you clone might be
-slightly different. So please choose the manifest folder according to the SoC of your
-interest. For example, we are showing for am62ax below.
+To clone the repositories using West tool, do below in your workarea folder:
+
+ Note that the components you clone may vary depending on the SoC you are working with. Therefore, 
+ please select the manifest folder that corresponds to the SoC you are interested in. 
+ For example, {device}/dev.yml. We are providing the link for cloning dependent repositories for 
+ all devices in the /dev.yml file below.
 
 ```bash
-repo init -u https://github.com/TexasInstruments/mcupsdk-manifests.git -m am62ax/dev.xml -b k3_main
+west init -m https://github.com/TexasInstruments/mcupsdk-manifests.git --mr k3_main --mf all/dev.yml
 ```
-
-To download the recent tag,
-
-```bash
-repo init -u https://github.com/TexasInstruments/mcupsdk-manifests.git -m am62ax/main.xml -b k3_main
-```
-Replace am62ax with the SoC name of your interest as per the table below
+Replace device with the SoC name of your interest as per the table below
 
 | SoC                                    | Name to used in SDK
 |:---------------------------------------|:----------------------
@@ -119,21 +122,13 @@ Replace am62ax with the SoC name of your interest as per the table below
 | AM62L                                  | am62lx
 | AM2754-Q1                              | am275x
 
-After the repo is initialized, do a repo sync
-
-
-```bash
-repo sync
-```
-
-This should clone all the repositories required for MCU+ SDK development.
-
-You can start the repositories with adefault branch `dev` by doing below:
+After the west is initialized, do a
 
 ```bash
-repo start dev --all
+west update
 ```
-Now download and install the dependencies.
+
+This should clone all the repositories required for MCU+ SDK development. Now proceed to [Download and Install dependencies](#downloading-and-installing-dependencies) section
 
 #### Downloading And Installing Dependencies
 

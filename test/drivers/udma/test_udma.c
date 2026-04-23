@@ -394,8 +394,16 @@ static void TestUdma_blkcpyIntrTest(void *args);
 static void TestUdma_blkcpySwGlobal0PollingTest(void *args);
 static void TestUdma_blkcpySwGlobal0IntrTest(void *args);
 static void TestUdma_blkcpyCircularIcnt1EventTest(void *args);
+/*
+ * AM275x has no external DDR. All UDMA buffers are mapped to on-chip OCRAM.
+ * The DDR heap small — the running tests use only a few KB of dynamic
+ * allocation. Tests requiring large DDR allocations (e.g. JIRA - 8245/8246 needing
+ * 1MB) cannot run on AM275x regardless of heap size and must remain disabled.
+ */
+#if !(defined (SOC_AM275X))
 static void TestUdma_blkcpyCircularIcnt2EventTest(void *args);
 static void TestUdma_blkcpyCircularIcnt3EventTest(void *args);
+#endif /* SOC_AM275X */
 static void TestUdma_ringFlushTest(void *args);
 static void TestUdma_ringParamCheckTest(void *args);
 static void TestUdma_ringUtilsMemSizeTest(void *args);
@@ -409,11 +417,13 @@ static void TestUdma_flowAttachMappedTest(void *args);
 static void TestUdma_trMakeTest(void *args);
 static void TestUdma_structSizeTest(void *args);
 static void TestUdma_chPktdmaParamCheckTest(void *args);
+#if !(defined (SOC_AM275X)) /* AM275X has no external DDR.*/
 static void TestUdma_blkcpyDdrToDdr1MBPerfTest(void *args);
 static void TestUdma_blkcpyCircularSrcOcramToDdrPerfTest(void *args);
 static void TestUdma_blkcpyDdrToCircularDestOcramPerfTest(void *args);
-static void TestUdma_blkcpyCircularOcramToOcramPerfTest(void *args);
 static void TestUdma_blkcpyPacingDdrToOcramCirc4MBTo4KBTest(void *args);
+#endif /* SOC_AM275X */
+static void TestUdma_blkcpyCircularOcramToOcramPerfTest(void *args);
 #if !(defined(SOC_AM62X) && defined(ENABLE_A53_CORE))
 static void TestUdma_flowAttachTest(void *args);
 #endif
@@ -812,8 +822,16 @@ void test_udma_main(void *args)
     RUN_TEST(TestUdma_blkcpySwGlobal0PollingTest, 8242, NULL);
     RUN_TEST(TestUdma_blkcpySwGlobal0IntrTest, 8243, NULL);
     RUN_TEST(TestUdma_blkcpyCircularIcnt1EventTest, 8244, NULL);
+/*
+ * AM275x has no external DDR. All UDMA buffers are mapped to on-chip OCRAM.
+ * The DDR heap small — the running tests use only a few KB of dynamic
+ * allocation. Tests requiring large DDR allocations (e.g. JIRA - 8245/8246 needing
+ * 1MB) cannot run on AM275x regardless of heap size and must remain disabled.
+ */
+#if !(defined (SOC_AM275X))
     RUN_TEST(TestUdma_blkcpyCircularIcnt2EventTest, 8245, NULL);
     RUN_TEST(TestUdma_blkcpyCircularIcnt3EventTest, 8246, NULL);
+#endif /* SOC_AM275X */
     RUN_TEST(TestUdma_ringFlushTest, 8248, NULL);
     RUN_TEST(TestUdma_ringParamCheckTest, 8249, NULL);
     RUN_TEST(TestUdma_ringUtilsMemSizeTest, 8274, NULL);
@@ -827,11 +845,13 @@ void test_udma_main(void *args)
     RUN_TEST(TestUdma_trMakeTest, 8278, NULL);
     RUN_TEST(TestUdma_structSizeTest, 8279, NULL);
     RUN_TEST(TestUdma_chPktdmaParamCheckTest, 8280, NULL);
+#if !(defined (SOC_AM275X)) /* AM275X has no external DDR.*/
     RUN_TEST(TestUdma_blkcpyDdrToDdr1MBPerfTest, 8282, NULL);
     RUN_TEST(TestUdma_blkcpyCircularSrcOcramToDdrPerfTest, 8283, NULL);
     RUN_TEST(TestUdma_blkcpyDdrToCircularDestOcramPerfTest, 8284, NULL);
-    RUN_TEST(TestUdma_blkcpyCircularOcramToOcramPerfTest, 8285, NULL);
     RUN_TEST(TestUdma_blkcpyPacingDdrToOcramCirc4MBTo4KBTest, 8286, NULL);
+#endif /* SOC_AM275X */
+    RUN_TEST(TestUdma_blkcpyCircularOcramToOcramPerfTest, 8285, NULL);
 #if !(defined(SOC_AM62X) && defined(ENABLE_A53_CORE))
     RUN_TEST(TestUdma_flowAttachTest, 8287, NULL);
 #endif
@@ -869,7 +889,9 @@ void test_udma_main(void *args)
     RUN_TEST(TestUdma_chArgumentsValidateTests, 8610, NULL);
     RUN_TEST(TestUdma_argumentsValidateTests, 8611, NULL);
     RUN_TEST(TestUdma_utilsArgumentsValidateTests, 8612, NULL);
+    #if !(defined (SOC_AM275X))
     RUN_TEST(TestUdma_eventArgumentsValidateTests, 8613, NULL);
+    #endif 
     RUN_TEST(TestUdma_ringCommonArgumentsValidateTests, 8614, NULL);
     RUN_TEST(TestUdma_flowArgumentsValidateTests, 8615, NULL);
     RUN_TEST(TestUdma_invalidInstance, 8617, NULL);
@@ -1395,6 +1417,13 @@ static void TestUdma_blkcpyCircularIcnt1EventTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
+/*
+ * AM275x has no external DDR. All UDMA buffers are mapped to on-chip OCRAM.
+ * The DDR heap small — the running tests use only a few KB of dynamic
+ * allocation. Tests requiring large DDR allocations (e.g. JIRA - 8245/8246 needing
+ * 1MB) cannot run on AM275x regardless of heap size and must remain disabled.
+ */
+#if !(defined (SOC_AM275X))
 /**
  * \brief Circular addressing event test (ICNT2).
  *
@@ -1508,6 +1537,7 @@ static void TestUdma_blkcpyCircularIcnt3EventTest(void *args)
     /* Deinitialize driver/memory */
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
+#endif /* SOC_AM275X */
 
 /**
  * \brief Ring flush API functional test.
@@ -2132,6 +2162,7 @@ static void TestUdma_chPktdmaParamCheckTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
+#if !(defined (SOC_AM275X)) /* AM275X has no external DDR.*/
 /**
  * \brief DDR 1MB to DDR 1MB performance test.
  *
@@ -2304,6 +2335,7 @@ static void TestUdma_blkcpyDdrToCircularDestOcramPerfTest(void *args)
     /* Deinitialize driver/memory */
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
+#endif /* SOC_AM275X has no external DDR.*/
 
 /**
  * \brief Circular OCRAM to circular OCRAM performance test.
@@ -2362,6 +2394,7 @@ static void TestUdma_blkcpyCircularOcramToOcramPerfTest(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
 
+#if !(defined (SOC_AM275X)) /* AM275X has no external DDR.*/
 /**
  * \brief Pacing test DDR 4MB to OCRAM circular 4KB.
  *
@@ -2417,6 +2450,7 @@ static void TestUdma_blkcpyPacingDdrToOcramCirc4MBTo4KBTest(void *args)
     /* Deinitialize driver/memory */
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
+#endif /* SOC_AM275X has no external DDR.*/
 
 /**
  * \brief Flow attach and detach test.
@@ -4232,6 +4266,7 @@ static void TestUdma_eventArgumentsValidateTests(void *args)
     uint32_t retVal = TEST_UDMA_API_RETVAL_INIT;
     uint32_t chType = TEST_UDMA_INVALID_CH_TYPE_4;
     uint32_t evtId;
+    uint32_t savedDrvInitDone, savedInstType, savedNumGlobalEvent, savedNumVintr;
     Udma_ChHandle       ch0Handle = NULL;
     Udma_EventObject    ch0TrEventObj;
     Udma_DrvHandle      drvHandle = &gUdmaDrvObj[CONFIG_UDMA0];
@@ -4260,6 +4295,14 @@ static void TestUdma_eventArgumentsValidateTests(void *args)
     ch0TrEventPrms.appData           = NULL;
 
     drvHandleInt = (Udma_DrvHandleInt) drvHandle;
+
+    /* Save driver fields that will be temporarily overwritten by negative tests.
+     * Restoring them at function exit ensures subsequent tests see a clean state. */
+    savedDrvInitDone       = drvHandleInt->drvInitDone;
+    savedInstType          = drvHandleInt->instType;
+    savedNumGlobalEvent    = drvHandleInt->rmInitPrms.numGlobalEvent;
+    savedNumVintr          = drvHandleInt->rmInitPrms.numVintr;
+
     /* Passing NULL to Udma_eventRegister returns UDMA_EBADARGS */
     retVal = Udma_eventRegister(NULL, ch0TrEventHandle, &ch0TrEventPrms);
     TEST_ASSERT_EQUAL_INT32(UDMA_EBADARGS, retVal);
@@ -4545,6 +4588,12 @@ static void TestUdma_eventArgumentsValidateTests(void *args)
     eventHandleInt->drvHandle = NULL;
     retVal = Udma_eventUnRegister(ch0TrEventHandle);
     TEST_ASSERT_EQUAL_INT32(UDMA_EFAIL, retVal);
+
+    /* Restore driver fields modified by the negative tests above */
+    drvHandleInt->drvInitDone               = savedDrvInitDone;
+    drvHandleInt->instType                  = savedInstType;
+    drvHandleInt->rmInitPrms.numGlobalEvent = savedNumGlobalEvent;
+    drvHandleInt->rmInitPrms.numVintr       = savedNumVintr;
 }
 
 /**

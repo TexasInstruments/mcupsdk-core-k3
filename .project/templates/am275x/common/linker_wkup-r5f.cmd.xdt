@@ -15,6 +15,7 @@
     let useFlash = false;
     let globalScratchBuf = "false";
     let useHyperRam = false;
+    let enableUdmaBuffers = false;
 
     /* if no options given use defaults */
     if(options && options.stackSize)
@@ -39,6 +40,17 @@
         globalScratchBuf = options.globalScratchBuf;
     if(options && options.useHyperRam)
         useHyperRam = true;
+    if(options && options.enableUdmaBuffers)
+        enableUdmaBuffers = options.enableUdmaBuffers;
+
+    if(enableUdmaBuffers == true) {
+        codeDataAddrOcram   = 0x72490000;
+        codeDataSizeOcram   = 0x00180000;
+        if(options && options.codeDataAddrOcram)
+            codeDataAddrOcram = options.codeDataAddrOcram;
+        if(options && options.codeDataSizeOcram)
+            codeDataSizeOcram = options.codeDataSizeOcram;
+    }
 
     let memoryReg = ""
 
@@ -186,7 +198,9 @@ SECTIONS
         RUN_END(__BSS_END)
         .sysmem: {} palign(8)   /* This is where the malloc heap goes */
         .stack:  {} align(8)    /* This is where the main() stack goes */
-    % if(useHyperRam) {
+    % if(enableUdmaBuffers) {
+    } > OCRAM
+    % } else if(useHyperRam) {
     } > HYPERRAM
     % } else {
     } > WKUP_R5_MSRAM
@@ -233,6 +247,14 @@ SECTIONS
     /* global scratch buffer region */
     .globalScratchBuffer (NOLOAD) : {} > SCRATCH_OCRAM
     % }
+    % if(enableUdmaBuffers) {
+    GROUP {
+        .udma_buffer_ddr  (NOLOAD) : { *(.udma_buffer_ddr) }
+        .udma_buffer_msmc (NOLOAD) : { *(.udma_buffer_msmc) }
+        .udma_buffer_ospi (NOLOAD) : { *(.udma_buffer_ospi) }
+        .udma_buffer_internal (NOLOAD) : { *(.udma_buffer_internal) }
+    } > OCRAM
+    % }
 }
 
 MEMORY
@@ -272,5 +294,8 @@ MEMORY
     % }
     % if(useHyperRam) {
     HYPERRAM  : ORIGIN = 0x68100000 , LENGTH = 0x00200000
+    % }
+    % if(enableUdmaBuffers) {
+    OCRAM    : ORIGIN = 0x`(codeDataAddrOcram).toString(16).toUpperCase()`,   LENGTH = 0x`(codeDataSizeOcram).toString(16).toUpperCase()`
     % }
 }

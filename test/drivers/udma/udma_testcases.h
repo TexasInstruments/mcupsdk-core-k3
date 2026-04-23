@@ -64,6 +64,11 @@ extern "C" {
 #define MB                              (KB * KB)
 #endif
 
+/* Default to 500 unless overridden by the SoC header (e.g. AM275x uses 2). */
+#ifndef UDMA_TEST_RING_PRIME_QDEPTH
+#define UDMA_TEST_RING_PRIME_QDEPTH     (500U)
+#endif
+
 /* ========================================================================== */
 /*                          Function Declarations                             */
 /* ========================================================================== */
@@ -1494,7 +1499,7 @@ static UdmaTestParams gUdmaTestCases[] =
         .instId     = {UDMA_TEST_INST_ID_BCDMA_BC},
         .testType   = {UDMA_TT_MISC},
         .testFxnPtr = {&udmaTestRingPrimeLcdmaTc},
-        .qdepth     = {500U},
+        .qdepth     = {UDMA_TEST_RING_PRIME_QDEPTH},
         .pacingTime = {PACING_NONE},
         .chPrmId    = {UDMA_TEST_CH_PRMID_DEF},
         .icnt       = {

@@ -31,9 +31,9 @@
  */
 
 /**
- *  \file udma_test_soc_v1.c
+ *  \file udma_test_soc.c
  *
- *  \brief UDMA SOC specific file for J7200.
+ *  \brief UDMA SOC specific file for am275x.
  *
  */
 

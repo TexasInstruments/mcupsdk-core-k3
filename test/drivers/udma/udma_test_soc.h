@@ -46,6 +46,10 @@
 #include "soc/am62px/udma_test_soc.h"
 #endif
 
+#if defined(SOC_AM275X)
+#include "soc/am275x/udma_test_soc.h"
+#endif
+
 #if defined(SOC_AM62X)
 #include "soc/am62x/udma_test_soc.h"
 #endif

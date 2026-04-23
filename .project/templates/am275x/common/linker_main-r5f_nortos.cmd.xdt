@@ -3,6 +3,7 @@
 
     let stackSize = 0x8000;
     let heapSize =  0x10000;
+    let enableUdmaBuffers = false;
     /* with nested interrupts logic added, IRQ stack is only used minimally, instead
      * SVC stack is used, hence IRQ stack size is less as compared to SVC stack
      */
@@ -60,6 +61,17 @@
     let enableAasrcBuffers = "false";
     if(options && options.enableAasrcBuffers)
         enableAasrcBuffers = options.enableAasrcBuffers;
+    if(options && options.enableUdmaBuffers)
+        enableUdmaBuffers = options.enableUdmaBuffers;
+
+    if(enableUdmaBuffers == true) {
+        codeDataAddrOcram   = 0x72490000;
+        codeDataSizeOcram   = 0x00180000;
+        if(options && options.codeDataAddrOcram)
+            codeDataAddrOcram = options.codeDataAddrOcram;
+        if(options && options.codeDataSizeOcram)
+            codeDataSizeOcram = options.codeDataSizeOcram;
+    }
 
     let memoryReg = ""
 
@@ -385,6 +397,14 @@ SECTIONS
     } > `SSO_LCL`   , palign(4096)
 
     %}
+    % if(enableUdmaBuffers) {
+    GROUP {
+        .udma_buffer_ddr  (NOLOAD) : { *(.udma_buffer_ddr) }
+        .udma_buffer_msmc (NOLOAD) : { *(.udma_buffer_msmc) }
+        .udma_buffer_ospi (NOLOAD) : { *(.udma_buffer_ospi) }
+        .udma_buffer_internal (NOLOAD) : { *(.udma_buffer_internal) }
+    } > OCRAM
+    % }
 }
 
 MEMORY
@@ -461,5 +481,8 @@ MEMORY
     % }
     % if(useHyperRam) {
     HYPERRAM  : ORIGIN = 0x68100000 , LENGTH = 0x00200000
+    % }
+    % if(enableUdmaBuffers) {
+    OCRAM    : ORIGIN = 0x`(codeDataAddrOcram).toString(16).toUpperCase()`,   LENGTH = 0x`(codeDataSizeOcram).toString(16).toUpperCase()`
     % }
 }

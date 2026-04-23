@@ -19,6 +19,7 @@
     let flashSrcBuffer = "false";
     let useHyperRam = false;
     let isOptishareEnabled = false;
+    let enableUdmaBuffers = false;
 
     /* if no options given use defaults */
     if(options && options.stackSize)
@@ -50,6 +51,17 @@
     
     if(options && options.flashSrcBuffer)
         flashSrcBuffer = options.flashSrcBuffer;
+    if(options && options.enableUdmaBuffers)
+        enableUdmaBuffers = options.enableUdmaBuffers;
+
+    if(enableUdmaBuffers == true) {
+        codeDataAddrOcram   = 0x72490000;
+        codeDataSizeOcram   = 0x00180000;
+        if(options && options.codeDataAddrOcram)
+            codeDataAddrOcram = options.codeDataAddrOcram;
+        if(options && options.codeDataSizeOcram)
+            codeDataSizeOcram = options.codeDataSizeOcram;
+    }
 
     if(options && options.isOptishare)
         isOptishareEnabled = options.isOptishare;
@@ -322,6 +334,14 @@ SECTIONS
     } > `SSO_LCL`   , palign(4096)
 
     %}
+    % if(enableUdmaBuffers) {
+    GROUP {
+        .udma_buffer_ddr  (NOLOAD) : { *(.udma_buffer_ddr) }
+        .udma_buffer_msmc (NOLOAD) : { *(.udma_buffer_msmc) }
+        .udma_buffer_ospi (NOLOAD) : { *(.udma_buffer_ospi) }
+        .udma_buffer_internal (NOLOAD) : { *(.udma_buffer_internal) }
+    } > OCRAM
+    % }
 }
 
 MEMORY
@@ -400,4 +420,7 @@ MEMORY
     % if(useHyperRam) {
     HYPERRAM  : ORIGIN = 0x68100000 , LENGTH = 0x00200000
     % }  
+    % if(enableUdmaBuffers) {
+    OCRAM    : ORIGIN = 0x`(codeDataAddrOcram).toString(16).toUpperCase()`,   LENGTH = 0x`(codeDataSizeOcram).toString(16).toUpperCase()`
+    % }
 }

@@ -1586,7 +1586,6 @@ void test_main(void *args)
     RUN_TEST(test_exceptionUserHandlers, 7111, NULL);
     #endif
     #if defined (CODE_COVERAGE)
-    DebugP_log("Debud print at write!!\r\n");
         __llvm_profile_write_file();
     #endif
     UNITY_END();

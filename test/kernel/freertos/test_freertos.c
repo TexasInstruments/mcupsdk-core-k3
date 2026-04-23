@@ -707,30 +707,30 @@ void ping_main(void *args)
 
     UNITY_BEGIN();
 
-    RUN_TEST(test_taskSwitchWithSemaphore, 272, NULL);
-    RUN_TEST(test_taskSwitchWithTaskNotify, 273, NULL);
-    RUN_TEST(test_taskSwitchWithEventGroups, 637, NULL);
-    RUN_TEST(test_taskToIsrUsingEventGroups, 638, NULL);
-    RUN_TEST(test_taskYeild, 274, NULL);
-    RUN_TEST(test_taskToIsrUsingSemaphoreAndNoTaskSwitch, 275, NULL);
-    RUN_TEST(test_taskToIsrUsingTaskNotifyAndNoTaskSwitch, 276, NULL);
-    RUN_TEST(test_taskToIsrUsingSemaphoreAndWithTaskSwitch, 277, NULL);
-    RUN_TEST(test_taskToIsrUsingTaskNotifyAndWithTaskSwitch, 278, NULL);
-    RUN_TEST(test_taskSwitchWithFloatOperations, 279, NULL);
+    RUN_TEST(test_taskSwitchWithSemaphore, 1251, NULL);
+    RUN_TEST(test_taskSwitchWithTaskNotify, 1252, NULL);
+    RUN_TEST(test_taskSwitchWithEventGroups, 1275, NULL);
+    RUN_TEST(test_taskToIsrUsingEventGroups, 1276, NULL);
+    RUN_TEST(test_taskYeild, 1253, NULL);
+    RUN_TEST(test_taskToIsrUsingSemaphoreAndNoTaskSwitch, 1254, NULL);
+    RUN_TEST(test_taskToIsrUsingTaskNotifyAndNoTaskSwitch, 1255, NULL);
+    RUN_TEST(test_taskToIsrUsingSemaphoreAndWithTaskSwitch, 1256, NULL);
+    RUN_TEST(test_taskToIsrUsingTaskNotifyAndWithTaskSwitch, 1257, NULL);
+    RUN_TEST(test_taskSwitchWithFloatOperations, 1259, NULL);
 #if defined(__ARM_ARCH_7R__)
     /* floating point operations in ISR supported in R5F only */
-    RUN_TEST(test_taskToIsrWithFloatOperations, 639, NULL);
+    RUN_TEST(test_taskToIsrWithFloatOperations, 3074, NULL);
 #endif
-    RUN_TEST(test_taskDelay, 280, NULL);
-    RUN_TEST(test_timer, 281, NULL);
+    RUN_TEST(test_taskDelay, 1260, NULL);
+    RUN_TEST(test_timer, 1261, NULL);
 #if defined(__ARM_ARCH_7R__) || defined(__aarch64__)
     /* atomics not tested with other architectures */
     /* TBD: atomic test need slicing enabled, otherwise it may fial randomely. Disable it for now */
 #if 0
-    RUN_TEST(test_atomics, 1371, NULL);
+    RUN_TEST(test_atomics, 1457, NULL);
 #endif
 #endif
-    RUN_TEST(test_taskLoad, 1372, NULL);
+    RUN_TEST(test_taskLoad, 1279, NULL);
 
     UNITY_END();
 

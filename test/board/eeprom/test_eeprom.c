@@ -90,8 +90,8 @@ void test_main(void *args)
     status = Board_driversOpen();
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
-    RUN_TEST(test_eeprom_attributes, 244, NULL);
-    RUN_TEST(test_eeprom_readwrite,  245, NULL);
+    RUN_TEST(test_eeprom_attributes, 3059, NULL);
+    RUN_TEST(test_eeprom_readwrite,  3060, NULL);
 
     UNITY_END();
 

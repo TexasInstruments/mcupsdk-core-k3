@@ -142,10 +142,10 @@ void test_main(void *args)
     Drivers_ospiOpen();
 #endif
 #if defined(SOC_AM62AX) || defined (SOC_AM62X)
-    RUN_TEST(test_nand_flash_read_multiple, 247, NULL);
+    RUN_TEST(test_nand_flash_read_multiple, 6340, NULL);
     RUN_TEST(test_nand_flash_skip_bad_block, 4852, NULL);
 #else
-    RUN_TEST(test_flash_read_multiple, 247, NULL);
+    RUN_TEST(test_flash_read_multiple, 6340, NULL);
 #endif
 
 #if !defined(SOC_AM62AX)

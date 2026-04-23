@@ -144,13 +144,13 @@ void test_main(void *args)
     gEpwmBaseAddr = (uint32_t)AddrTranslateP_getLocalAddr(CONFIG_EPWM0_BASE_ADDR);
 
     /* Run tests */
-    RUN_TEST(test_epwm_max_freq_min_duty, 346, NULL);
-    RUN_TEST(test_epwm_min_freq_max_duty, 347, NULL);
-    RUN_TEST(test_epwm_chopper, 348, NULL);
-    RUN_TEST(test_epwm_deadband, 349, NULL);
-    RUN_TEST(test_epwm_tbclkcfg_api, 350, NULL);
-    RUN_TEST(test_epwm_tbfreqcfg_api, 351, NULL);
-    RUN_TEST(test_epwm_countercomparecfg_api, 352, NULL);
+    RUN_TEST(test_epwm_max_freq_min_duty, 3010, NULL);
+    RUN_TEST(test_epwm_min_freq_max_duty, 4826, NULL);
+    RUN_TEST(test_epwm_chopper, 4825, NULL);
+    RUN_TEST(test_epwm_deadband, 3013, NULL);
+    RUN_TEST(test_epwm_tbclkcfg_api, 3014, NULL);
+    RUN_TEST(test_epwm_tbfreqcfg_api, 3015, NULL);
+    RUN_TEST(test_epwm_countercomparecfg_api, 3016, NULL);
 
     UNITY_END();
 

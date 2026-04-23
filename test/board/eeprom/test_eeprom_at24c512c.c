@@ -81,8 +81,8 @@ void test_main(void *args)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(test_eeprom_attributes, 244, NULL);
-    RUN_TEST(test_eeprom_readwrite,  245, NULL);
+    RUN_TEST(test_eeprom_attributes, 3059, NULL);
+    RUN_TEST(test_eeprom_readwrite,  3060, NULL);
 
     UNITY_END();
 

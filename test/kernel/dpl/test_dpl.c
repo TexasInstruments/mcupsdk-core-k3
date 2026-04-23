@@ -1523,27 +1523,27 @@ void test_main(void *args)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(test_hwi, 282, NULL);
-    RUN_TEST(test_semaphoreMutex, 283, NULL);
-    RUN_TEST(test_semaphoreBinary, 284, NULL);
-    RUN_TEST(test_semaphoreCounting, 285, NULL);
-    RUN_TEST(test_semaphoreTimeout, 286, NULL);
-    RUN_TEST(test_clockMode, 287, (void *)0);
-    RUN_TEST(test_clockMode, 288, (void *)1);
-    RUN_TEST(test_clock, 289, NULL);
-    RUN_TEST(test_heap, 290, NULL);
-    RUN_TEST(test_cycleCounter, 291, NULL);
-    RUN_TEST(test_debugLog, 292, NULL);
-    RUN_TEST(test_hwiProfile, 293, NULL);
-    RUN_TEST(test_queue, 3808, NULL);
+    RUN_TEST(test_hwi, 1262, NULL);
+    RUN_TEST(test_semaphoreMutex, 1263, NULL);
+    RUN_TEST(test_semaphoreBinary, 1264, NULL);
+    RUN_TEST(test_semaphoreCounting, 1265, NULL);
+    RUN_TEST(test_semaphoreTimeout, 1266, NULL);
+    RUN_TEST(test_clockMode, 1267, (void *)0);
+    RUN_TEST(test_clockMode, 1235, (void *)1);
+    RUN_TEST(test_clock, 1268, NULL);
+    RUN_TEST(test_heap, 1269, NULL);
+    RUN_TEST(test_cycleCounter, 1270, NULL);
+    RUN_TEST(test_debugLog, 1271, NULL);
+    RUN_TEST(test_hwiProfile, 1272, NULL);
+    RUN_TEST(test_queue, 1455, NULL);
     /* tasks are not supported in nortos */
     #if defined (OS_FREERTOS)
-    RUN_TEST(test_task, 294, NULL);
-    RUN_TEST(test_event, 805, NULL);
+    RUN_TEST(test_task, 1273, NULL);
+    RUN_TEST(test_event, 1277, NULL);
     #endif
 
     #if defined (OS_FREERTOS) && ((!defined(BUILD_C7X)) || defined(SOC_J722S))
-    RUN_TEST(test_mailbox, 13390, NULL);
+    RUN_TEST(test_mailbox, 4735, NULL);
     #endif
 
     #if defined(__ARM_ARCH_7R__) && (defined(OS_FREERTOS) || defined(OS_THREADX) || !defined(__C7524__))
@@ -1555,12 +1555,12 @@ void test_main(void *args)
     #elif defined(__C7524__)
     /* nested ISR not supported in C75x */
     #else
-    RUN_TEST(test_hwiNested, 295, NULL);
+    RUN_TEST(test_hwiNested, 1274, NULL);
     #endif
 
     #if defined(__ARM_ARCH_7R__) && !defined(OS_THREADX) && !defined(OS_SAFERTOS)
     /* floating point operations in ISR supported in R5F only */
-    RUN_TEST(test_mainToIsrWithFloatOperations, 1571, NULL);
+    RUN_TEST(test_mainToIsrWithFloatOperations, 3073, NULL);
     #endif
 
     /* disabled by default since otherwise the application wait for user input */
@@ -1573,9 +1573,9 @@ void test_main(void *args)
     test_c66x();
 #endif
 
-    RUN_TEST(test_addrconversion, 898, NULL);
+    RUN_TEST(test_addrconversion, 1278, NULL);
 #if defined(AMP_FREERTOS_A53)
-    RUN_TEST(test_spiInterrupt, 3808, NULL);
+    RUN_TEST(test_spiInterrupt, 1455, NULL);
 #endif
 
     #if defined(__ARM_ARCH_7R__) && !defined(OS_SAFERTOS)

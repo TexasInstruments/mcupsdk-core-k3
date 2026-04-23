@@ -218,9 +218,9 @@ void *test_ddr_main(void *args)
     Drivers_open();
     UNITY_BEGIN();
 
-    RUN_TEST(write_read_test, 649, NULL);
-	RUN_TEST(board_walking1s_test, 875, NULL);
-	RUN_TEST(board_walking0s_test, 876, NULL);	
+    RUN_TEST(write_read_test, 3246, NULL);
+	RUN_TEST(board_walking1s_test, 3248, NULL);
+	RUN_TEST(board_walking0s_test, 3247, NULL);	
 
     UNITY_END();
     Drivers_close();

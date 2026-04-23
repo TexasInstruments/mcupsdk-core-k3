@@ -56,7 +56,7 @@ static Crypto_Context gCryptoRngContext __attribute__ ((aligned (SA3UL_CACHELINE
 
 void test_main(void *args)
 {
-    RUN_TEST(test_sa3ulRng, 2133, NULL);
+    RUN_TEST(test_sa3ulRng, 3136, NULL);
 }
 
 void test_sa3ulRng(void *args)

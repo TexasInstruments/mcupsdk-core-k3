@@ -95,10 +95,10 @@ void test_main(void *args)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(test_gpio_output,  166, NULL);
-    RUN_TEST(test_gpio_read,    167, NULL);
-    RUN_TEST(test_gpio_trigger, 168, NULL);
-    RUN_TEST(test_gpio_macros,  169, NULL);
+    RUN_TEST(test_gpio_output,  1348, NULL);
+    RUN_TEST(test_gpio_read,    1349, NULL);
+    RUN_TEST(test_gpio_trigger, 1350, NULL);
+    RUN_TEST(test_gpio_macros,  1351, NULL);
 
     UNITY_END();
 

@@ -90,12 +90,12 @@ void test_main(void *args)
 
     UNITY_BEGIN();
 
-    test_uart_set_params(&testParams, 1111);
-    RUN_TEST(uart_echo_read_full_test, 1111, (void*)&testParams);
-    test_uart_set_params(&testParams, 1116);
-    RUN_TEST(uart_echo_read_full_test, 1116, (void*)&testParams);
-    test_uart_set_params(&testParams, 1117);
-    RUN_TEST(uart_echo_read_partial_test, 1117, (void*)&testParams);
+    test_uart_set_params(&testParams, 8918);
+    RUN_TEST(uart_echo_read_full_test, 8918, (void*)&testParams);
+    test_uart_set_params(&testParams, 1304);
+    RUN_TEST(uart_echo_read_full_test, 1304, (void*)&testParams);
+    test_uart_set_params(&testParams, 1305);
+    RUN_TEST(uart_echo_read_partial_test, 1305, (void*)&testParams);
 
     #if defined(SOC_AM64X) || defined(SOC_AM243X)
     test_uart_set_params(&testParams, 2514);
@@ -424,13 +424,13 @@ static void test_uart_set_params(UART_TestParams *testParams, uint32_t tcId)
 
     switch (tcId)
     {
-        case 1111:
+        case 8918:
             params->transferMode = UART_CONFIG_MODE_POLLED;
             break;
-        case 1116:
+        case 1304:
             params->readReturnMode = UART_READ_RETURN_MODE_FULL;
             break;
-        case 1117:
+        case 1305:
             params->readReturnMode = UART_READ_RETURN_MODE_PARTIAL;
             break;
         case 2514:

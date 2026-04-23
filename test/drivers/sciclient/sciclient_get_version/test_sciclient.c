@@ -81,12 +81,12 @@ void test_main(void *args)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(test_sciclient_version,  171, NULL);
+    RUN_TEST(test_sciclient_version,  1298, NULL);
 #if !defined(ENABLE_SCICLIENT_DIRECT)
-    RUN_TEST(test_sciclient_timeout,  172, NULL);
-    RUN_TEST(test_sciclient_invalid_params, 173, NULL);
+    RUN_TEST(test_sciclient_timeout,  1297, NULL);
+    RUN_TEST(test_sciclient_invalid_params, 1296, NULL);
 #endif
-    RUN_TEST(test_sciclient_rm_ir_output, 4048, NULL);
+    RUN_TEST(test_sciclient_rm_ir_output, 3075, NULL);
 
     UNITY_END();
 

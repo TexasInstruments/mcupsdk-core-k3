@@ -92,9 +92,9 @@ extern "C"
 #define TISCI_MSG_VALUE_SLEEP_MODE_SOC_OFF              0x5U
 
 /**
- * Sleep mode in which complete SOC except the RTC and DDR is off
+ * Sleep mode in which complete SOC except the RTC, WKUP I/Os and DDR is off
  */
-#define TISCI_MSG_VALUE_SLEEP_MODE_RTC_PLUS_DDR         0x6U
+#define TISCI_MSG_VALUE_SLEEP_MODE_RTC_PLUS_IO_PLUS_DDR 0x6U
 
 /**
  * Sleep mode in which complete SOC except the RTC is turned off

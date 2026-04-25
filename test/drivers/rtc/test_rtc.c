@@ -87,6 +87,11 @@
 #define TEST_RTC_PATTERN_DEAD_BASE           (0xDEAD0000U)
 #define TEST_RTC_PATTERN_DEADBEEF            (0xDEADBEEFU)
 #define TEST_RTC_PATTERN_UNIQUE              (0x12345678U)
+#define TEST_RTC_PATTERN_KNOWN               (0xAABBCCDDU)
+
+/* Invalid index values for negative tests */
+#define TEST_RTC_INVALID_INDEX_MAX           (0xFFFFFFFFU)
+#define TEST_RTC_INVALID_SCRATCH_INDEX       (8U)
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -96,6 +101,7 @@ static SemaphoreP_Object TestRtc_OnOffSemObj;
 static SemaphoreP_Object TestRtc_OffOnSemObj;
 /* External reference to RTC config array (defined in generated ti_drivers_config.c) */
 extern RTC_Config gRTCConfig[];
+extern uint32_t gRTCConfigNum;
 
 /* ========================================================================== */
 /*                         Structures and Enums                               */
@@ -148,6 +154,26 @@ static void TestRtc_scratchRegisterReadWrite(void *args);
 static void TestRtc_scratchRegisterPersistence(void *args);
 static void TestRtc_adjustForDriftCompensation(void *args);
 static void TestRtc_writeAccessControl(void *args);
+
+/* Negative Test Cases */
+static void TestRtc_invalidDateReject(void *args);
+static void TestRtc_nullHandleRejected(void *args);
+static void TestRtc_outOfRangeYear(void *args);
+static void TestRtc_openInvalidIndex(void *args);
+static void TestRtc_doubleOpenAndDoubleClose(void *args);
+static void TestRtc_calendarFieldBoundaryValidation(void *args);
+static void TestRtc_timeFieldOutOfRange(void *args);
+static void TestRtc_nullDataPointerAllApis(void *args);
+static void TestRtc_alarmInPast(void *args);
+static void TestRtc_scratchRegisterOutOfRange(void *args);
+static void TestRtc_operationsOnClosedHandle(void *args);
+static void TestRtc_redundantStopAndStart(void *args);
+static void TestRtc_deinitWithOpenInstance(void *args);
+/* Disabled: driver bug — RTC_convertTimeToSeconds() has unbounded
+ * for-loop (iterates year from 1970 to rtc_time->year). With
+ * UINT32_MAX fields the loop runs ~4.29 billion iterations causing
+ * an indefinite hang. Needs input validation in RTC_setTime(). */
+/* static void TestRtc_setTimeMaxUint32Fields(void *args); */
 
 /* ========================================================================== */
 /*                       Internal Function Definitions                        */
@@ -212,6 +238,26 @@ void test_main(void *args)
     RUN_TEST(TestRtc_scratchRegisterPersistence,            11825, NULL);
     RUN_TEST(TestRtc_adjustForDriftCompensation,            11826, NULL);
     RUN_TEST(TestRtc_writeAccessControl,                    11827, NULL);
+
+    /* Negative Test Cases */
+    RUN_TEST(TestRtc_invalidDateReject,                     11828, NULL);
+    RUN_TEST(TestRtc_nullHandleRejected,                    11829, NULL);
+    RUN_TEST(TestRtc_outOfRangeYear,                        11830, NULL);
+    RUN_TEST(TestRtc_openInvalidIndex,                      11831, NULL);
+    RUN_TEST(TestRtc_doubleOpenAndDoubleClose,              11832, NULL);
+    RUN_TEST(TestRtc_calendarFieldBoundaryValidation,       11833, NULL);
+    RUN_TEST(TestRtc_timeFieldOutOfRange,                   11834, NULL);
+    RUN_TEST(TestRtc_nullDataPointerAllApis,                11835, NULL);
+    RUN_TEST(TestRtc_alarmInPast,                           11836, NULL);
+    RUN_TEST(TestRtc_scratchRegisterOutOfRange,             11837, NULL);
+    RUN_TEST(TestRtc_operationsOnClosedHandle,              11838, NULL);
+    RUN_TEST(TestRtc_redundantStopAndStart,                 11839, NULL);
+    RUN_TEST(TestRtc_deinitWithOpenInstance,                11840, NULL);
+    /* Disabled: driver bug — RTC_convertTimeToSeconds() has unbounded
+     * for-loop (iterates year from 1970 to rtc_time->year). With
+     * UINT32_MAX fields the loop runs ~4.29 billion iterations causing
+     * an indefinite hang. Needs input validation in RTC_setTime(). */
+    /* RUN_TEST(TestRtc_setTimeMaxUint32Fields,             11850, NULL); */
 
     UNITY_END();
 
@@ -2887,3 +2933,1128 @@ static void TestRtc_writeAccessControl(void *args)
     TEST_ASSERT_EQUAL_UINT32(14U, readTimeC.hour);
     TEST_ASSERT_EQUAL_UINT32(30U, readTimeC.minute);
 }
+
+/* ========================================================================== */
+/*                     Negative Test case definitions                         */
+/* ========================================================================== */
+
+/**
+ * \brief Test RTC rejects logically invalid date values
+ *
+ * Test Category: Negative
+ *
+ * Verifies that RTC_setTime() rejects impossible Gregorian dates.
+ * DRIVER GAP: current driver has no input validation; these calls may
+ * corrupt the 48-bit seconds counter. Test documents expected behavior.
+ *
+ * Test steps:
+ * 1. Set valid time 2024-06-15 12:00:00; verify with RTC_getTime().
+ * 2. Attempt Feb 30; assert SystemP_FAILURE.
+ * 3. Attempt month=13; assert SystemP_FAILURE.
+ * 4. Attempt day=0; assert SystemP_FAILURE.
+ * 5. Verify RTC_getTime() still matches the initial valid time.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput All invalid dates rejected. Counter not corrupted.
+ */
+static void TestRtc_invalidDateReject(void *args)
+{
+    RTC_Handle  rtcHandle = NULL;
+    RTC_Time    validTime;
+    RTC_Time    invalidTime;
+    RTC_Time    readBackTime;
+    int32_t     status = SystemP_SUCCESS;
+
+    /* Ensure clean state */
+    if (gRTCHandle[CONFIG_RTC0] != NULL)
+    {
+        RTC_close(gRTCHandle[CONFIG_RTC0]);
+        gRTCHandle[CONFIG_RTC0] = NULL;
+    }
+    RTC_deinit();
+    RTC_init();
+
+    rtcHandle = RTC_open(CONFIG_RTC0, NULL);
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    /* Step 1: Set valid baseline time */
+    validTime.year   = 2024U;
+    validTime.month  = 6U;
+    validTime.day    = 15U;
+    validTime.hour   = 12U;
+    validTime.minute = 0U;
+    validTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &validTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = RTC_getTime(rtcHandle, &readBackTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT32(2024U, readBackTime.year);
+    TEST_ASSERT_EQUAL_UINT32(6U, readBackTime.month);
+    TEST_ASSERT_EQUAL_UINT32(15U, readBackTime.day);
+
+    /* Step 2: Feb 30 — invalid */
+    invalidTime.year   = 2024U;
+    invalidTime.month  = 2U;
+    invalidTime.day    = 30U;
+    invalidTime.hour   = 0U;
+    invalidTime.minute = 0U;
+    invalidTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &invalidTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 3: month=13 — invalid */
+    invalidTime.month = 13U;
+    invalidTime.day   = 1U;
+
+    status = RTC_setTime(rtcHandle, &invalidTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 4: day=0 — invalid */
+    invalidTime.month = 6U;
+    invalidTime.day   = 0U;
+
+    status = RTC_setTime(rtcHandle, &invalidTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 5: Verify counter still matches initial valid time */
+    status = RTC_getTime(rtcHandle, &readBackTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT32(2024U, readBackTime.year);
+    TEST_ASSERT_EQUAL_UINT32(6U, readBackTime.month);
+    TEST_ASSERT_EQUAL_UINT32(15U, readBackTime.day);
+    TEST_ASSERT_EQUAL_UINT32(12U, readBackTime.hour);
+}
+
+/**
+ * \brief Test all public RTC APIs reject NULL handle gracefully
+ *
+ * Test Category: Negative
+ *
+ * Verifies every public RTC API with a NULL handle returns failure or
+ * a safe default value. No crash, assertion, or HW access occurs.
+ *
+ * Test steps:
+ * 1. RTC_setTime(NULL, validTime) returns SystemP_FAILURE.
+ * 2. RTC_getTime(NULL, outTime) returns SystemP_FAILURE.
+ * 3. RTC_stop(NULL) returns SystemP_FAILURE.
+ * 4. RTC_start(NULL) returns SystemP_FAILURE.
+ * 5. RTC_readScratchRegister(NULL, 0) returns 0U.
+ * 6. RTC_writeScratchRegister(NULL, 0, 0xABU) returns SystemP_FAILURE.
+ * 7. RTC_adjustForDrift(NULL, 0.5f) returns SystemP_FAILURE.
+ * 8. RTC_close(NULL) does not crash.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput All calls return failure or safe value. No crash.
+ */
+static void TestRtc_nullHandleRejected(void *args)
+{
+    RTC_Time    validTime;
+    RTC_Time    outputTime;
+    int32_t     status = SystemP_SUCCESS;
+    uint32_t    scratchReadValue = 0U;
+
+    validTime.year   = 2024U;
+    validTime.month  = 1U;
+    validTime.day    = 1U;
+    validTime.hour   = 0U;
+    validTime.minute = 0U;
+    validTime.second = 0U;
+
+    /* Step 1: RTC_setTime with NULL handle */
+    status = RTC_setTime(NULL, &validTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 2: RTC_getTime with NULL handle */
+    status = RTC_getTime(NULL, &outputTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 3: RTC_stop with NULL handle */
+    status = RTC_stop(NULL);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 4: RTC_start with NULL handle */
+    status = RTC_start(NULL);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 5: RTC_readScratchRegister with NULL handle */
+    scratchReadValue = RTC_readScratchRegister(NULL, 0U);
+    TEST_ASSERT_EQUAL_UINT32(0U, scratchReadValue);
+
+    /* Step 6: RTC_writeScratchRegister with NULL handle */
+    status = RTC_writeScratchRegister(NULL, 0U, 0xABU);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 7: RTC_adjustForDrift with NULL handle */
+    status = RTC_adjustForDrift(NULL, 0.5f);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 8: RTC_close with NULL handle — should not crash */
+    RTC_close(NULL);
+}
+
+/**
+ * \brief Test RTC rejects year values below epoch baseline (1970)
+ *
+ * Test Category: Negative
+ *
+ * RTC_convertTimeToSeconds() loops from RTC_EPOCH_YEAR to year.
+ * For year < 1970, the loop does not execute and produces incorrect
+ * seconds values. Test documents expected rejection behavior.
+ *
+ * Test steps:
+ * 1. Set valid time 2024-01-01 00:00:00; verify with RTC_getTime().
+ * 2. Attempt year=1969; assert SystemP_FAILURE.
+ * 3. Attempt year=0; assert SystemP_FAILURE.
+ * 4. Verify RTC_getTime() still returns original valid time.
+ * 5. Set year=1970 (epoch minimum); assert SystemP_SUCCESS.
+ * 6. Verify RTC_getTime() returns year=1970.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Sub-epoch years rejected. Epoch year 1970 accepted.
+ */
+static void TestRtc_outOfRangeYear(void *args)
+{
+    RTC_Handle  rtcHandle = NULL;
+    RTC_Time    validTime;
+    RTC_Time    invalidTime;
+    RTC_Time    epochTime;
+    RTC_Time    readBackTime;
+    int32_t     status = SystemP_SUCCESS;
+
+    /* Ensure clean state */
+    if (gRTCHandle[CONFIG_RTC0] != NULL)
+    {
+        RTC_close(gRTCHandle[CONFIG_RTC0]);
+        gRTCHandle[CONFIG_RTC0] = NULL;
+    }
+    RTC_deinit();
+    RTC_init();
+
+    rtcHandle = RTC_open(CONFIG_RTC0, NULL);
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    /* Step 1: Set valid baseline time */
+    validTime.year   = 2024U;
+    validTime.month  = 1U;
+    validTime.day    = 1U;
+    validTime.hour   = 0U;
+    validTime.minute = 0U;
+    validTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &validTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = RTC_getTime(rtcHandle, &readBackTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT32(2024U, readBackTime.year);
+
+    /* Step 2: year=1969 — below epoch */
+    invalidTime        = validTime;
+    invalidTime.year   = 1969U;
+
+    status = RTC_setTime(rtcHandle, &invalidTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 3: year=0 — far below epoch */
+    invalidTime.year = 0U;
+
+    status = RTC_setTime(rtcHandle, &invalidTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 4: Verify original time still held */
+    status = RTC_getTime(rtcHandle, &readBackTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT32(2024U, readBackTime.year);
+
+    /* Step 5: Epoch minimum year=1970 */
+    epochTime.year   = 1970U;
+    epochTime.month  = 1U;
+    epochTime.day    = 1U;
+    epochTime.hour   = 0U;
+    epochTime.minute = 0U;
+    epochTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &epochTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 6: Verify epoch year */
+    status = RTC_getTime(rtcHandle, &readBackTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT32(1970U, readBackTime.year);
+}
+
+/**
+ * \brief Test RTC_open() rejects out-of-bounds instance index
+ *
+ * Test Category: Negative
+ *
+ * Verifies the guard (idx >= gRTCConfigNum) returns NULL and does not
+ * access gRTCConfig[] out of bounds. Also confirms a valid open still
+ * succeeds afterward (driver state not corrupted).
+ *
+ * Test steps:
+ * 1. RTC_open(gRTCConfigNum, NULL) returns NULL.
+ * 2. RTC_open(gRTCConfigNum + 1, NULL) returns NULL.
+ * 3. RTC_open(0xFFFFFFFF, NULL) returns NULL.
+ * 4. RTC_open(CONFIG_RTC0, NULL) still succeeds. Close it.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput All invalid indices return NULL handle. Valid open
+ *                 succeeds, confirming no driver corruption.
+ */
+static void TestRtc_openInvalidIndex(void *args)
+{
+    RTC_Handle  invalidHandle = NULL;
+    RTC_Handle  validHandle = NULL;
+
+    /* Close existing handle so CONFIG_RTC0 is available */
+    if (gRTCHandle[CONFIG_RTC0] != NULL)
+    {
+        RTC_close(gRTCHandle[CONFIG_RTC0]);
+        gRTCHandle[CONFIG_RTC0] = NULL;
+    }
+    RTC_deinit();
+    RTC_init();
+
+    /* Step 1: Index == gRTCConfigNum */
+    invalidHandle = RTC_open(gRTCConfigNum, NULL);
+    TEST_ASSERT_NULL(invalidHandle);
+
+    /* Step 2: Index == gRTCConfigNum + 1 */
+    invalidHandle = RTC_open(gRTCConfigNum + 1U, NULL);
+    TEST_ASSERT_NULL(invalidHandle);
+
+    /* Step 3: Maximum uint32 index */
+    invalidHandle = RTC_open(TEST_RTC_INVALID_INDEX_MAX, NULL);
+    TEST_ASSERT_NULL(invalidHandle);
+
+    /* Step 4: Valid open still succeeds */
+    validHandle = RTC_open(CONFIG_RTC0, NULL);
+    TEST_ASSERT_NOT_NULL(validHandle);
+
+    RTC_close(validHandle);
+
+    /* Re-open with syscfg params to restore state for subsequent tests */
+    RTC_deinit();
+    RTC_init();
+    gRTCHandle[CONFIG_RTC0] = RTC_open(CONFIG_RTC0, &gRTCParams[CONFIG_RTC0]);
+    TEST_ASSERT_NOT_NULL(gRTCHandle[CONFIG_RTC0]);
+}
+
+/**
+ * \brief Test RTC double open returns NULL and double close does not crash
+ *
+ * Test Category: Negative
+ *
+ * Verifies that a second RTC_open() on an already-open instance returns
+ * NULL (isOpen guard). Also verifies that calling RTC_close() twice
+ * does not crash or hang.
+ *
+ * Test steps:
+ * 1. Open CONFIG_RTC0; assert handle1 is not NULL.
+ * 2. Open CONFIG_RTC0 again; assert handle2 is NULL.
+ * 3. Verify handle1 is still usable via RTC_setTime() / RTC_getTime().
+ * 4. Close handle1.
+ * 5. Close handle1 again (double close); verify no crash.
+ * 6. Re-open CONFIG_RTC0 to confirm re-openability.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Double open returns NULL. Double close does not crash.
+ *                 Instance is re-openable after close.
+ */
+static void TestRtc_doubleOpenAndDoubleClose(void *args)
+{
+    RTC_Handle  handleFirst = NULL;
+    RTC_Handle  handleSecond = NULL;
+    RTC_Time    setTime;
+    RTC_Time    readBackTime;
+    int32_t     status = SystemP_SUCCESS;
+
+    /* Ensure clean state */
+    if (gRTCHandle[CONFIG_RTC0] != NULL)
+    {
+        RTC_close(gRTCHandle[CONFIG_RTC0]);
+        gRTCHandle[CONFIG_RTC0] = NULL;
+    }
+    RTC_deinit();
+    RTC_init();
+
+    /* Step 1: First open */
+    handleFirst = RTC_open(CONFIG_RTC0, NULL);
+    TEST_ASSERT_NOT_NULL(handleFirst);
+
+    /* Step 2: Second open on same instance — must return NULL */
+    handleSecond = RTC_open(CONFIG_RTC0, NULL);
+    TEST_ASSERT_NULL(handleSecond);
+
+    /* Step 3: Verify handle1 is still usable */
+    setTime.year   = 2024U;
+    setTime.month  = 3U;
+    setTime.day    = 15U;
+    setTime.hour   = 8U;
+    setTime.minute = 30U;
+    setTime.second = 0U;
+
+    status = RTC_setTime(handleFirst, &setTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = RTC_getTime(handleFirst, &readBackTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT32(2024U, readBackTime.year);
+    TEST_ASSERT_EQUAL_UINT32(3U, readBackTime.month);
+    TEST_ASSERT_EQUAL_UINT32(8U, readBackTime.hour);
+
+    /* Step 4: First close */
+    RTC_close(handleFirst);
+
+    /* Step 5: Second close (double close) — should not crash */
+    RTC_close(handleFirst);
+
+    /* Step 6: Re-open to confirm re-openability */
+    RTC_deinit();
+    RTC_init();
+    gRTCHandle[CONFIG_RTC0] = RTC_open(CONFIG_RTC0, &gRTCParams[CONFIG_RTC0]);
+    TEST_ASSERT_NOT_NULL(gRTCHandle[CONFIG_RTC0]);
+}
+
+/**
+ * \brief Test RTC rejects invalid calendar field boundary values
+ *
+ * Test Category: Negative
+ *
+ * Exercises invalid calendar fields not covered by TestRtc_invalidDateReject.
+ * Tests leap year edge cases, month boundaries, and extreme field values.
+ * DRIVER GAP: driver lacks field validation in RTC_setTime().
+ *
+ * Test steps:
+ * 1. Set valid baseline 2024-06-15 12:00:00.
+ * 2. Feb 29 non-leap year=2023; assert SystemP_FAILURE.
+ * 3. Century year=1900 Feb 29; assert SystemP_FAILURE.
+ * 4. Jan 32; assert SystemP_FAILURE.
+ * 5. Jun 31; assert SystemP_FAILURE.
+ * 6. month=0; assert SystemP_FAILURE.
+ * 7. month=255; assert SystemP_FAILURE.
+ * 8. Verify RTC_getTime() still returns baseline.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput All invalid fields rejected. Baseline preserved.
+ */
+static void TestRtc_calendarFieldBoundaryValidation(void *args)
+{
+    RTC_Handle  rtcHandle = NULL;
+    RTC_Time    baselineTime;
+    RTC_Time    invalidTime;
+    RTC_Time    readBackTime;
+    int32_t     status = SystemP_SUCCESS;
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    /* Step 1: Set valid baseline */
+    baselineTime.year   = 2024U;
+    baselineTime.month  = 6U;
+    baselineTime.day    = 15U;
+    baselineTime.hour   = 12U;
+    baselineTime.minute = 0U;
+    baselineTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &baselineTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 2: Feb 29 on non-leap year 2023 */
+    invalidTime.year   = 2023U;
+    invalidTime.month  = 2U;
+    invalidTime.day    = 29U;
+    invalidTime.hour   = 0U;
+    invalidTime.minute = 0U;
+    invalidTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &invalidTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 3: Century year 1900 Feb 29 (not a leap year) */
+    invalidTime.year = 1900U;
+
+    status = RTC_setTime(rtcHandle, &invalidTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 4: Jan 32 */
+    invalidTime.year  = 2024U;
+    invalidTime.month = 1U;
+    invalidTime.day   = 32U;
+
+    status = RTC_setTime(rtcHandle, &invalidTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 5: Jun 31 (June has 30 days) */
+    invalidTime.month = 6U;
+    invalidTime.day   = 31U;
+
+    status = RTC_setTime(rtcHandle, &invalidTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 6: month=0 */
+    invalidTime.month = 0U;
+    invalidTime.day   = 1U;
+
+    status = RTC_setTime(rtcHandle, &invalidTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 7: month=255 */
+    invalidTime.month = 255U;
+
+    status = RTC_setTime(rtcHandle, &invalidTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 8: Verify baseline preserved */
+    status = RTC_getTime(rtcHandle, &readBackTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT32(2024U, readBackTime.year);
+    TEST_ASSERT_EQUAL_UINT32(6U, readBackTime.month);
+    TEST_ASSERT_EQUAL_UINT32(15U, readBackTime.day);
+    TEST_ASSERT_EQUAL_UINT32(12U, readBackTime.hour);
+    TEST_ASSERT_EQUAL_UINT32(0U, readBackTime.minute);
+    TEST_ASSERT_EQUAL_UINT32(0U, readBackTime.second);
+}
+
+/**
+ * \brief Negative: Reject time fields outside valid ranges
+ *
+ * Test Category: Negative
+ *
+ * Verifies that RTC_setTime() rejects hour >= 24, minute >= 60, or
+ * second >= 60, returning SystemP_FAILURE for each invalid combination.
+ * Note: RTC_convertTimeToSeconds() does not currently validate ranges;
+ * this test documents the required behavior.
+ *
+ * Test steps:
+ * 1. Set valid baseline time; assert SystemP_SUCCESS.
+ * 2. {hour=24}; assert SystemP_FAILURE.
+ * 3. {hour=255}; assert SystemP_FAILURE.
+ * 4. {minute=60}; assert SystemP_FAILURE.
+ * 5. {second=60}; assert SystemP_FAILURE.
+ * 6. {minute=60, second=60}; assert SystemP_FAILURE.
+ * 7. Verify baseline year/month/day/hour/minute unchanged.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput RTC_setTime() returns SystemP_FAILURE for all invalid
+ *                 field combinations. Baseline date/time fields unchanged.
+ */
+static void TestRtc_timeFieldOutOfRange(void *args)
+{
+    RTC_Handle  rtcHandle = NULL;
+    RTC_Time    baselineTime;
+    RTC_Time    invalidTime;
+    RTC_Time    verifyTime;
+    int32_t     status = SystemP_SUCCESS;
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    /* Step 1: Set valid baseline time */
+    baselineTime.year   = 2024U;
+    baselineTime.month  = 6U;
+    baselineTime.day    = 15U;
+    baselineTime.hour   = 10U;
+    baselineTime.minute = 30U;
+    baselineTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &baselineTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 2: hour = 24 (valid range is 0-23) */
+    invalidTime        = baselineTime;
+    invalidTime.hour   = 24U;
+    invalidTime.minute = 0U;
+    invalidTime.second = 0U;
+    status = RTC_setTime(rtcHandle, &invalidTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 3: hour = 255 (far out of range) */
+    invalidTime.hour = 255U;
+    status = RTC_setTime(rtcHandle, &invalidTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 4: minute = 60 (valid range is 0-59) */
+    invalidTime        = baselineTime;
+    invalidTime.minute = 60U;
+    invalidTime.second = 0U;
+    status = RTC_setTime(rtcHandle, &invalidTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 5: second = 60 (valid range is 0-59) */
+    invalidTime        = baselineTime;
+    invalidTime.minute = 0U;
+    invalidTime.second = 60U;
+    status = RTC_setTime(rtcHandle, &invalidTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 6: minute = 60 and second = 60 (both out of range) */
+    invalidTime        = baselineTime;
+    invalidTime.minute = 60U;
+    invalidTime.second = 60U;
+    status = RTC_setTime(rtcHandle, &invalidTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 7: Verify baseline date/time is unchanged (only seconds may differ) */
+    status = RTC_getTime(rtcHandle, &verifyTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT32(baselineTime.year,   verifyTime.year);
+    TEST_ASSERT_EQUAL_UINT32(baselineTime.month,  verifyTime.month);
+    TEST_ASSERT_EQUAL_UINT32(baselineTime.day,    verifyTime.day);
+    TEST_ASSERT_EQUAL_UINT32(baselineTime.hour,   verifyTime.hour);
+    TEST_ASSERT_EQUAL_UINT32(baselineTime.minute, verifyTime.minute);
+}
+
+/**
+ * \brief Negative: NULL time pointer passed to all time APIs
+ *
+ * Test Category: Negative
+ *
+ * Verifies that RTC_setTime(), RTC_getTime(), RTC_setOn_OffTimerEvent(),
+ * and RTC_setOff_OnTimerEvent() each return SystemP_FAILURE when passed
+ * a NULL time pointer. Verifies the instance recovers and accepts valid
+ * calls afterward.
+ *
+ * Test steps:
+ * 1. RTC_setTime(handle, NULL); assert SystemP_FAILURE.
+ * 2. RTC_getTime(handle, NULL); assert SystemP_FAILURE.
+ * 3. RTC_setOn_OffTimerEvent(handle, NULL); assert SystemP_FAILURE.
+ * 4. RTC_setOff_OnTimerEvent(handle, NULL); assert SystemP_FAILURE.
+ * 5. Verify instance still works with valid set/get calls.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput All four API calls return SystemP_FAILURE for NULL input.
+ *                 Subsequent valid calls complete with SystemP_SUCCESS.
+ */
+static void TestRtc_nullDataPointerAllApis(void *args)
+{
+    RTC_Handle  rtcHandle = NULL;
+    RTC_Time    validTime;
+    RTC_Time    readTime;
+    int32_t     status = SystemP_SUCCESS;
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    /* Step 1: RTC_setTime with NULL pointer */
+    status = RTC_setTime(rtcHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 2: RTC_getTime with NULL pointer */
+    status = RTC_getTime(rtcHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 3: RTC_setOn_OffTimerEvent with NULL pointer */
+    status = RTC_setOn_OffTimerEvent(rtcHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 4: RTC_setOff_OnTimerEvent with NULL pointer */
+    status = RTC_setOff_OnTimerEvent(rtcHandle, NULL);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 5: Verify instance still works with valid calls */
+    validTime.year   = 2024U;
+    validTime.month  = 7U;
+    validTime.day    = 1U;
+    validTime.hour   = 12U;
+    validTime.minute = 0U;
+    validTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &validTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = RTC_getTime(rtcHandle, &readTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT32(2024U, readTime.year);
+    TEST_ASSERT_EQUAL_UINT32(12U,   readTime.hour);
+}
+
+/**
+ * \brief Negative: Alarm set in the past must never fire
+ *
+ * Test Category: Negative
+ *
+ * Sets the RTC to 2024-07-01 12:00:00, then programs an On-Off alarm at
+ * 2024-07-01 11:59:55 (5 seconds before the current time). Waits 5 seconds
+ * and verifies the alarm semaphore was never posted (pend returns
+ * SystemP_TIMEOUT). Verifies the RTC counter continued advancing normally.
+ *
+ * Test steps:
+ * 1. Set RTC to 2024-07-01 12:00:00.
+ * 2. Construct binary semaphore (count = 0).
+ * 3. Set On-Off alarm to 2024-07-01 11:59:55.
+ * 4. Sleep 5 seconds.
+ * 5. Pend semaphore with 2-second timeout; assert SystemP_TIMEOUT.
+ * 6. Verify RTC time advanced past 12:00:00.
+ * 7. Destruct semaphore.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Semaphore pend returns SystemP_TIMEOUT. RTC time is
+ *                 in hour 12, confirming the counter advanced normally.
+ */
+static void TestRtc_alarmInPast(void *args)
+{
+    RTC_Handle  rtcHandle = NULL;
+    RTC_Time    currentTime;
+    RTC_Time    pastAlarmTime;
+    RTC_Time    verifyTime;
+    int32_t     pendStatus = SystemP_SUCCESS;
+    int32_t     status = SystemP_SUCCESS;
+    uint32_t    semaphoreTimeoutTicks = (uint32_t)ClockP_usecToTicks(TEST_RTC_SEM_TIMEOUT_2_SEC);
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    /* Step 2: Construct binary semaphore */
+    SemaphoreP_constructBinary(&TestRtc_OnOffSemObj, 0U);
+
+    /* Step 1: Set RTC time to 2024-07-01 12:00:00 */
+    currentTime.year   = 2024U;
+    currentTime.month  = 7U;
+    currentTime.day    = 1U;
+    currentTime.hour   = 12U;
+    currentTime.minute = 0U;
+    currentTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &currentTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 3: Set alarm 5 seconds before current time (in the past) */
+    pastAlarmTime.year   = 2024U;
+    pastAlarmTime.month  = 7U;
+    pastAlarmTime.day    = 1U;
+    pastAlarmTime.hour   = 11U;
+    pastAlarmTime.minute = 59U;
+    pastAlarmTime.second = 55U;
+
+    status = RTC_setOn_OffTimerEvent(rtcHandle, &pastAlarmTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 4: Sleep 5 seconds — alarm must not fire during this window */
+    ClockP_sleep(TEST_RTC_ALARM_WAIT_SEC);
+
+    /* Step 5: Semaphore should NOT have been posted; pend must time out */
+    pendStatus = SemaphoreP_pend(&TestRtc_OnOffSemObj, semaphoreTimeoutTicks);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, pendStatus);
+
+    /* Step 6: Verify RTC time advanced past 12:00:00 */
+    status = RTC_getTime(rtcHandle, &verifyTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT32(2024U, verifyTime.year);
+    TEST_ASSERT_EQUAL_UINT32(7U,    verifyTime.month);
+    TEST_ASSERT_EQUAL_UINT32(1U,    verifyTime.day);
+    TEST_ASSERT_EQUAL_UINT32(12U,   verifyTime.hour);
+    TEST_ASSERT_TRUE(verifyTime.second >= 5U);
+
+    /* Step 7: Destruct semaphore */
+    SemaphoreP_destruct(&TestRtc_OnOffSemObj);
+}
+
+/**
+ * \brief Negative: Scratch register index out of range must be rejected
+ *
+ * Test Category: Negative
+ *
+ * Verifies that RTC_writeScratchRegister() rejects indices >= 8 and returns
+ * SystemP_FAILURE. Note: the driver does not currently validate the index;
+ * this test documents the required behavior. Confirms valid registers are
+ * unaffected by the invalid accesses.
+ *
+ * Test steps:
+ * 1. Write a known value to valid index 0; assert SystemP_SUCCESS.
+ * 2. Write to index 8; assert SystemP_FAILURE.
+ * 3. Write to index 0xFFFFFFFF; assert SystemP_FAILURE.
+ * 4. Read back index 0; assert value unchanged.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Indices >= 8 rejected with SystemP_FAILURE. Valid
+ *                 register contents are unmodified.
+ */
+static void TestRtc_scratchRegisterOutOfRange(void *args)
+{
+    RTC_Handle  rtcHandle = NULL;
+    int32_t     writeStatus = SystemP_SUCCESS;
+    uint32_t    knownValue = TEST_RTC_PATTERN_KNOWN;
+    uint32_t    validReadback = 0U;
+    uint32_t    validIndex = 0U;
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    /* Step 1: Write known value to a valid index */
+    writeStatus = RTC_writeScratchRegister(rtcHandle, validIndex, knownValue);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, writeStatus);
+
+    /* Step 2: Index 8 is out of range (valid indices are 0-7) */
+    writeStatus = RTC_writeScratchRegister(rtcHandle, TEST_RTC_INVALID_SCRATCH_INDEX, TEST_RTC_PATTERN_DEADBEEF);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, writeStatus);
+
+    /* Step 3: Large invalid index */
+    writeStatus = RTC_writeScratchRegister(rtcHandle, TEST_RTC_INVALID_INDEX_MAX, TEST_RTC_PATTERN_UNIQUE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, writeStatus);
+
+    /* Step 4: Confirm valid register 0 is unaffected */
+    validReadback = RTC_readScratchRegister(rtcHandle, validIndex);
+    TEST_ASSERT_EQUAL_UINT32(knownValue, validReadback);
+}
+
+/**
+ * \brief Negative: Operations on a closed handle have undefined behavior
+ *
+ * Test Category: Negative
+ *
+ * Documents that calling RTC APIs on a closed handle is undefined. After
+ * RTC_close(), the per-instance mutex is destructed; subsequent API calls
+ * that pend on it may hang or corrupt state. This test verifies recovery
+ * by re-initializing and re-opening the instance.
+ *
+ * \warning Steps 3-6 call APIs on a closed handle. If the driver does not
+ *          check isOpen before pending on the mutex, these calls may hang
+ *          indefinitely. Run this test only with a hardware watchdog active.
+ *
+ * Test steps:
+ * 1. Open RTC instance; assert handle is not NULL.
+ * 2. Close handle via RTC_close().
+ * 3. Call RTC_setTime(handle, validTime) on closed handle.
+ * 4. Call RTC_getTime(handle, readTime) on closed handle.
+ * 5. Call RTC_stop(handle) on closed handle.
+ * 6. Call RTC_writeScratchRegister(handle, 0, 0xABCD) on closed handle.
+ * 7. Re-init and re-open; assert new handle is valid and time set/get works.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Instance recovers after re-init. RTC_setTime() and
+ *                 RTC_getTime() return SystemP_SUCCESS on re-opened handle.
+ */
+static void TestRtc_operationsOnClosedHandle(void *args)
+{
+    RTC_Handle  closedHandle = NULL;
+    RTC_Handle  recoveredHandle = NULL;
+    RTC_Time    validTime;
+    RTC_Time    readTime;
+    int32_t     status = SystemP_SUCCESS;
+
+    /* Ensure clean state */
+    if (gRTCHandle[CONFIG_RTC0] != NULL)
+    {
+        RTC_close(gRTCHandle[CONFIG_RTC0]);
+        gRTCHandle[CONFIG_RTC0] = NULL;
+    }
+    RTC_deinit();
+    RTC_init();
+
+    /* Step 1: Open RTC instance */
+    closedHandle = RTC_open(CONFIG_RTC0, NULL);
+    TEST_ASSERT_NOT_NULL(closedHandle);
+
+    /* Step 2: Close the handle — mutex and HWI are destructed after this */
+    RTC_close(closedHandle);
+
+    /*
+     * Steps 3-6: Operations on the closed handle.
+     * WARNING: If the driver does not check isOpen before locking the
+     * per-instance mutex, the following calls may hang indefinitely.
+     * A hardware watchdog must be active when running this test.
+     */
+    validTime.year   = 2024U;
+    validTime.month  = 8U;
+    validTime.day    = 1U;
+    validTime.hour   = 10U;
+    validTime.minute = 0U;
+    validTime.second = 0U;
+
+    /* Step 3 */
+    status = RTC_setTime(closedHandle, &validTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 4 */
+    status = RTC_getTime(closedHandle, &readTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 5 */
+    status = RTC_stop(closedHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 6 */
+    status = RTC_writeScratchRegister(closedHandle, 0U, TEST_RTC_PATTERN_UNIQUE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 7: Recover — deinit/init cycle resets isOpen flags */
+    RTC_deinit();
+    RTC_init();
+
+    recoveredHandle = RTC_open(CONFIG_RTC0, &gRTCParams[CONFIG_RTC0]);
+    TEST_ASSERT_NOT_NULL(recoveredHandle);
+
+    validTime.second = 0U;
+    status = RTC_setTime(recoveredHandle, &validTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = RTC_getTime(recoveredHandle, &readTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    gRTCHandle[CONFIG_RTC0] = recoveredHandle;
+}
+
+/**
+ * \brief Negative: Redundant stop and start must not break RTC
+ *
+ * Test Category: Negative
+ *
+ * Verifies that calling RTC_stop() twice and RTC_start() twice does not
+ * crash the driver, that the counter is frozen during the stopped interval,
+ * and that the counter resumes monotonically after start.
+ *
+ * Test steps:
+ * 1. Set baseline time to 2024-09-01 08:00:00.
+ * 2. Call RTC_stop() twice; assert no SystemP_FAILURE on first call.
+ * 3. Sleep 2 seconds; verify time is frozen (second is near 0).
+ * 4. Call RTC_start() twice; assert no SystemP_FAILURE on first call.
+ * 5. Sleep 3 seconds; verify time advanced by approximately 3 seconds.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Counter frozen after double stop. Counter resumes and
+ *                 advances normally after double start.
+ */
+static void TestRtc_redundantStopAndStart(void *args)
+{
+    RTC_Handle  rtcHandle = NULL;
+    RTC_Time    baselineTime;
+    RTC_Time    frozenTime;
+    RTC_Time    resumedTime;
+    int32_t     status = SystemP_SUCCESS;
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    /* Step 1: Set baseline time */
+    baselineTime.year   = 2024U;
+    baselineTime.month  = 9U;
+    baselineTime.day    = 1U;
+    baselineTime.hour   = 8U;
+    baselineTime.minute = 0U;
+    baselineTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &baselineTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 2: Double stop — first must succeed; second is redundant */
+    status = RTC_stop(rtcHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = RTC_stop(rtcHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 3: Sleep 2 seconds; verify counter is frozen */
+    ClockP_sleep(TEST_RTC_SLEEP_2_SEC);
+
+    status = RTC_getTime(rtcHandle, &frozenTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT32(8U, frozenTime.hour);
+    TEST_ASSERT_EQUAL_UINT32(0U, frozenTime.minute);
+    TEST_ASSERT_UINT32_WITHIN(1U, 0U, frozenTime.second);
+
+    /* Step 4: Double start — first must succeed; second is redundant */
+    status = RTC_start(rtcHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    status = RTC_start(rtcHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 5: Sleep 3 seconds; verify counter resumed and advanced */
+    ClockP_sleep(TEST_RTC_SLEEP_3_SEC);
+
+    status = RTC_getTime(rtcHandle, &resumedTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT32(8U, resumedTime.hour);
+    TEST_ASSERT_EQUAL_UINT32(0U, resumedTime.minute);
+    TEST_ASSERT_UINT32_WITHIN(2U, 3U, resumedTime.second);
+}
+
+/**
+ * \brief Negative: RTC_deinit() while instance is open leads to unsafe state
+ *
+ * Test Category: Negative
+ *
+ * Documents that calling RTC_deinit() while an instance is open destroys
+ * the driver-level lock without closing the instance. Subsequent API calls
+ * through the still-open object are undefined. Verifies that recovery is
+ * possible via a full RTC_init() + RTC_open() cycle.
+ *
+ * \warning Steps 3-4 operate on an instance whose driver lock was destroyed
+ *          by RTC_deinit(). Behavior is implementation-defined and may
+ *          cause assertion failures or hangs. Run with a watchdog active.
+ *
+ * Test steps:
+ * 1. Open RTC instance.
+ * 2. Call RTC_deinit() without closing — driver lock is destroyed.
+ * 3. Call RTC_getTime() on the open handle (undefined, may succeed).
+ * 4. Call RTC_close() on the open handle (undefined, may assert).
+ * 5. Call RTC_init() and RTC_open(); assert recovery and valid operation.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput RTC recovers fully after RTC_init() + RTC_open() cycle.
+ *                 Time set and get operations succeed on re-opened handle.
+ */
+static void TestRtc_deinitWithOpenInstance(void *args)
+{
+    RTC_Handle  openHandle = NULL;
+    RTC_Handle  recoveredHandle = NULL;
+    RTC_Time    readTime;
+    RTC_Time    validTime;
+    int32_t     status = SystemP_SUCCESS;
+
+
+    /* Ensure clean state */
+    if (gRTCHandle[CONFIG_RTC0] != NULL)
+    {
+        RTC_close(gRTCHandle[CONFIG_RTC0]);
+        gRTCHandle[CONFIG_RTC0] = NULL;
+    }
+    RTC_deinit();
+    RTC_init();
+
+    /* Step 1: Open RTC instance */
+    openHandle = RTC_open(CONFIG_RTC0, NULL);
+    TEST_ASSERT_NOT_NULL(openHandle);
+
+    /* Step 2: Deinit while instance is open — driver lock is destroyed */
+    RTC_deinit();
+
+    /*
+     * Step 3: RTC_getTime on still-open handle.
+     * The per-instance mutex may still be intact; this may succeed or hang.
+     */
+    status = RTC_getTime(openHandle, &readTime);
+
+    /*
+     * Step 4: Skip RTC_close — driver lock was destroyed by RTC_deinit().
+     * RTC_close() asserts gRTCDrvObj.lock != NULL and will abort.
+     * Recovery via RTC_init() resets isOpen for all instances.
+     */
+
+    /* Step 5: Full recovery via init + open */
+    RTC_init();
+
+    recoveredHandle = RTC_open(CONFIG_RTC0, &gRTCParams[CONFIG_RTC0]);
+    TEST_ASSERT_NOT_NULL(recoveredHandle);
+
+    validTime.year   = 2024U;
+    validTime.month  = 10U;
+    validTime.day    = 1U;
+    validTime.hour   = 9U;
+    validTime.minute = 0U;
+    validTime.second = 0U;
+
+    status = RTC_setTime(recoveredHandle, &validTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = RTC_getTime(recoveredHandle, &readTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT32(2024U, readTime.year);
+
+    gRTCHandle[CONFIG_RTC0] = recoveredHandle;
+}
+
+/* Disabled: driver bug — RTC_convertTimeToSeconds() has unbounded
+ * for-loop (iterates year from 1970 to rtc_time->year). With
+ * UINT32_MAX fields the loop runs ~4.29 billion iterations causing
+ * an indefinite hang. Needs input validation in RTC_setTime(). 
+ */
+#if 0
+/**
+ * \brief Negative: UINT32_MAX time fields must be rejected immediately
+ *
+ * Test Category: Negative
+ *
+ * Verifies that RTC_setTime() rejects an RTC_Time struct with all fields
+ * set to UINT32_MAX and returns SystemP_FAILURE without entering an
+ * unbounded loop. Without the fix, RTC_convertTimeToSeconds() will iterate
+ * over UINT32_MAX years, causing an indefinite hang.
+ *
+ * \warning Without a range-validation fix in RTC_convertTimeToSeconds(),
+ *          the call in step 2 will hang indefinitely. Run only with a
+ *          hardware watchdog configured, or after confirming the fix
+ *          is in place.
+ *
+ * Test steps:
+ * 1. Set a valid known baseline time.
+ * 2. Set all RTC_Time fields to UINT32_MAX; call RTC_setTime(); assert
+ *    SystemP_FAILURE (fixed driver) or observe hang (unfixed driver).
+ * 3. Verify RTC time is unchanged from the baseline.
+ * 4. Verify RTC still accepts a subsequent valid set/get call.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput RTC_setTime() returns SystemP_FAILURE immediately.
+ *                 RTC time is unchanged. Subsequent valid calls succeed.
+ */
+static void TestRtc_setTimeMaxUint32Fields(void *args)
+{
+    RTC_Handle  rtcHandle = NULL;
+    RTC_Time    baselineTime;
+    RTC_Time    maxFieldTime;
+    RTC_Time    verifyTime;
+    int32_t     status = SystemP_SUCCESS;
+
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    /* Step 1: Set a valid known baseline */
+    baselineTime.year   = 2024U;
+    baselineTime.month  = 11U;
+    baselineTime.day    = 1U;
+    baselineTime.hour   = 6U;
+    baselineTime.minute = 0U;
+    baselineTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &baselineTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 2: All fields UINT32_MAX — expect immediate failure, not hang */
+    maxFieldTime.year   = TEST_RTC_PATTERN_ALL_ONES;
+    maxFieldTime.month  = TEST_RTC_PATTERN_ALL_ONES;
+    maxFieldTime.day    = TEST_RTC_PATTERN_ALL_ONES;
+    maxFieldTime.hour   = TEST_RTC_PATTERN_ALL_ONES;
+    maxFieldTime.minute = TEST_RTC_PATTERN_ALL_ONES;
+    maxFieldTime.second = TEST_RTC_PATTERN_ALL_ONES;
+
+    status = RTC_setTime(rtcHandle, &maxFieldTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+
+    /* Step 3: Verify RTC time is unchanged from the baseline */
+    status = RTC_getTime(rtcHandle, &verifyTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT32(baselineTime.year,   verifyTime.year);
+    TEST_ASSERT_EQUAL_UINT32(baselineTime.month,  verifyTime.month);
+    TEST_ASSERT_EQUAL_UINT32(baselineTime.day,    verifyTime.day);
+    TEST_ASSERT_EQUAL_UINT32(baselineTime.hour,   verifyTime.hour);
+    TEST_ASSERT_EQUAL_UINT32(baselineTime.minute, verifyTime.minute);
+
+    /* Step 4: Verify instance accepts a subsequent valid call */
+    baselineTime.year   = 2025U;
+    baselineTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &baselineTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = RTC_getTime(rtcHandle, &verifyTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT32(2025U, verifyTime.year);
+}
+#endif

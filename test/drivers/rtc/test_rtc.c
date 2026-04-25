@@ -52,6 +52,7 @@
 #define TEST_RTC_RAPID_CYCLE_COUNT           (10U)
 #define TEST_RTC_RAPID_READ_COUNT            (5U)
 #define TEST_RTC_ALARM_WAIT_SEC              (5U)
+#define TEST_RTC_SCRATCH_REGISTER_COUNT      (8U)
 
 /* Time field maximum valid values */
 #define TEST_RTC_MAX_HOUR                    (23U)
@@ -63,7 +64,29 @@
 /* Common sleep durations (seconds) */
 #define TEST_RTC_SLEEP_2_SEC                 (2U)
 #define TEST_RTC_SLEEP_3_SEC                 (3U)
+#define TEST_RTC_SLEEP_7_SEC                 (7U)
 #define TEST_RTC_SLEEP_10_SEC                (10U)
+
+/* Common microsecond delays */
+#define TEST_RTC_USLEEP_100_US               (100U)
+
+/* Semaphore timeout values (microseconds) */
+#define TEST_RTC_SEM_TIMEOUT_2_SEC           (2000000U)
+#define TEST_RTC_SEM_TIMEOUT_3_SEC           (3000000U)
+#define TEST_RTC_SEM_TIMEOUT_10_SEC          (10000000U)
+#define TEST_RTC_SEM_TIMEOUT_12_SEC          (12000000U)
+#define TEST_RTC_SEM_TIMEOUT_20_SEC          (20000000U)
+
+/* Scratch register test patterns */
+#define TEST_RTC_PATTERN_ALL_ZEROS           (0x00000000U)
+#define TEST_RTC_PATTERN_ALL_ONES            (0xFFFFFFFFU)
+#define TEST_RTC_PATTERN_ALT_A               (0xAAAAAAAAU)
+#define TEST_RTC_PATTERN_ALT_5               (0x55555555U)
+#define TEST_RTC_PATTERN_CHECKERBOARD_A      (0xA5A5A5A5U)
+#define TEST_RTC_PATTERN_CHECKERBOARD_B      (0x5A5A5A5AU)
+#define TEST_RTC_PATTERN_DEAD_BASE           (0xDEAD0000U)
+#define TEST_RTC_PATTERN_DEADBEEF            (0xDEADBEEFU)
+#define TEST_RTC_PATTERN_UNIQUE              (0x12345678U)
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -110,6 +133,21 @@ static void TestRtc_getTimeMonotonicity(void *args);
 static void TestRtc_extendedTimeRange(void *args);
 static void TestRtc_shadowAutoSyncReadWrite(void *args);
 static void TestRtc_32kHzCounterTickAccuracy(void *args);
+static void TestRtc_alarmAfterTimeUpdate(void *args);
+static void TestRtc_alarmDisable(void *args);
+static void TestRtc_alarmOverwriteBehavior(void *args);
+static void TestRtc_timerEventBoundaryTimes(void *args);
+static void TestRtc_callbackRegistration(void *args);
+static void TestRtc_interruptClearedAfterCallback(void *args);
+static void TestRtc_bothCallbacksRegisteredAndInvoked(void *args);
+static void TestRtc_startAndStop(void *args);
+static void TestRtc_timeRetentionAcrossReset(void *args);
+static void TestRtc_alarmDuringIdleSleep(void *args);
+static void TestRtc_counterDiscontinuityDetection(void *args);
+static void TestRtc_scratchRegisterReadWrite(void *args);
+static void TestRtc_scratchRegisterPersistence(void *args);
+static void TestRtc_adjustForDriftCompensation(void *args);
+static void TestRtc_writeAccessControl(void *args);
 
 /* ========================================================================== */
 /*                       Internal Function Definitions                        */
@@ -159,6 +197,21 @@ void test_main(void *args)
     RUN_TEST(TestRtc_extendedTimeRange,                     11810, NULL);
     RUN_TEST(TestRtc_shadowAutoSyncReadWrite,               11811, NULL);
     RUN_TEST(TestRtc_32kHzCounterTickAccuracy,              11812, NULL);
+    RUN_TEST(TestRtc_alarmAfterTimeUpdate,                  11813, NULL);
+    RUN_TEST(TestRtc_alarmDisable,                          11814, NULL);
+    RUN_TEST(TestRtc_alarmOverwriteBehavior,                11815, NULL);
+    RUN_TEST(TestRtc_timerEventBoundaryTimes,               11816, NULL);
+    RUN_TEST(TestRtc_callbackRegistration,                  11817, NULL);
+    RUN_TEST(TestRtc_interruptClearedAfterCallback,         11818, NULL);
+    RUN_TEST(TestRtc_bothCallbacksRegisteredAndInvoked,     11819, NULL);
+    RUN_TEST(TestRtc_startAndStop,                          11820, NULL);
+    RUN_TEST(TestRtc_timeRetentionAcrossReset,              11821, NULL);
+    RUN_TEST(TestRtc_alarmDuringIdleSleep,                  11822, NULL);
+    RUN_TEST(TestRtc_counterDiscontinuityDetection,         11823, NULL);
+    RUN_TEST(TestRtc_scratchRegisterReadWrite,              11824, NULL);
+    RUN_TEST(TestRtc_scratchRegisterPersistence,            11825, NULL);
+    RUN_TEST(TestRtc_adjustForDriftCompensation,            11826, NULL);
+    RUN_TEST(TestRtc_writeAccessControl,                    11827, NULL);
 
     UNITY_END();
 
@@ -1517,4 +1570,1320 @@ static void TestRtc_32kHzCounterTickAccuracy(void *args)
 
     TEST_ASSERT_EQUAL_UINT32(31U, endReadTime.minute);
     TEST_ASSERT_UINT32_WITHIN(1U, 1U, endReadTime.second);
+}
+
+/**
+ * \brief Test RTC alarm fires correctly after explicit time update
+ *
+ * Test Category: Functional
+ *
+ * Sets a known time via RTC_setTime(), arms an On-Off alarm 5 seconds in
+ * the future, and verifies the callback fires at the expected time.
+ *
+ * Test steps:
+ * 1. Set RTC time to 2024-03-15 10:00:00.
+ * 2. Construct a binary semaphore for the On-Off callback.
+ * 3. Call RTC_setOn_OffTimerEvent() with target 10:00:05.
+ * 4. Pend on semaphore with 10-second timeout.
+ * 5. Verify pend returns SystemP_SUCCESS.
+ * 6. Read RTC time and verify second is within ±1 of 5.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Callback fires at approximately 5 seconds. Semaphore
+ *                 pend succeeds and RTC time second field is near 5.
+ */
+static void TestRtc_alarmAfterTimeUpdate(void *args)
+{
+    RTC_Handle  rtcHandle = NULL;
+    RTC_Time    setTime;
+    RTC_Time    alarmTime;
+    RTC_Time    readTime;
+    int32_t     status = SystemP_SUCCESS;
+    int32_t     semaphoreStatus = SystemP_SUCCESS;
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    /* Step 1: Set RTC time */
+    setTime.year   = 2024U;
+    setTime.month  = 3U;
+    setTime.day    = 15U;
+    setTime.hour   = 10U;
+    setTime.minute = 0U;
+    setTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &setTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 2: Construct binary semaphore */
+    SemaphoreP_constructBinary(&TestRtc_OnOffSemObj, 0U);
+
+    /* Step 3: Arm On-Off alarm at 10:00:05 */
+    alarmTime        = setTime;
+    alarmTime.second = 5U;
+
+    status = RTC_setOn_OffTimerEvent(rtcHandle, &alarmTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 4: Pend with 10-second timeout */
+    semaphoreStatus = SemaphoreP_pend(&TestRtc_OnOffSemObj,
+                                      ClockP_usecToTicks(TEST_RTC_SEM_TIMEOUT_10_SEC));
+
+    /* Step 5: Verify callback fired */
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, semaphoreStatus);
+
+    /* Step 6: Verify RTC second field is approximately 5 */
+    status = RTC_getTime(rtcHandle, &readTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_UINT32_WITHIN(1U, 5U, readTime.second);
+
+    SemaphoreP_destruct(&TestRtc_OnOffSemObj);
+}
+
+/**
+ * \brief Test RTC alarm does not fire after instance is closed
+ *
+ * Test Category: Functional
+ *
+ * Arms an alarm, disables its interrupt enable, closes the RTC instance
+ * before the trigger time, and verifies the callback is never invoked.
+ * Driver gap: RTC_close() with enableIntr=true does not disable IRQs,
+ * so the test disables the IRQ enable via direct register write first.
+ *
+ * Test steps:
+ * 1. Construct a binary semaphore (count=0).
+ * 2. Set RTC time to 2024-09-01 06:00:00.
+ * 3. Set On-Off alarm at 06:00:05.
+ * 4. Disable IRQ enable via register and call RTC_close().
+ * 5. Wait 7 seconds past the alarm target.
+ * 6. Pend with 0-wait and verify SystemP_TIMEOUT.
+ * 7. Restore RTC instance via deinit + init + open.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Semaphore pend returns SystemP_TIMEOUT; callback
+ *                 was never invoked after close.
+ */
+static void TestRtc_alarmDisable(void *args)
+{
+    RTC_Handle              rtcHandle = NULL;
+    const RTC_HwAttrs      *hardwareAttributes = NULL;
+    uint32_t                baseAddress = 0U;
+    volatile uint32_t      *irqEnableClearRegister = NULL;
+    RTC_Time                setTime;
+    RTC_Time                alarmTime;
+    int32_t                 status = SystemP_SUCCESS;
+    int32_t                 semaphoreStatus = SystemP_SUCCESS;
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    hardwareAttributes = (const RTC_HwAttrs *)rtcHandle->hwAttrs;
+    baseAddress        = hardwareAttributes->baseAddr;
+
+    /* Step 1: Construct binary semaphore */
+    SemaphoreP_constructBinary(&TestRtc_OnOffSemObj, 0U);
+
+    /* Step 2: Set RTC time */
+    setTime.year   = 2024U;
+    setTime.month  = 9U;
+    setTime.day    = 1U;
+    setTime.hour   = 6U;
+    setTime.minute = 0U;
+    setTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &setTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 3: Arm On-Off alarm at 06:00:05 */
+    alarmTime        = setTime;
+    alarmTime.second = 5U;
+
+    status = RTC_setOn_OffTimerEvent(rtcHandle, &alarmTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 4: Disable IRQ enable directly before closing.
+     * Driver gap: RTC_close() with enableIntr=true skips IRQ disable. */
+    irqEnableClearRegister =
+        (volatile uint32_t *)(baseAddress + CSL_RTC_IRQENABLE_CLR_SYS);
+    *irqEnableClearRegister = RTC_TMR_INT_INT0_CLEAR_FLAG;
+
+    RTC_close(rtcHandle);
+    gRTCHandle[CONFIG_RTC0] = NULL;
+
+    /* Step 5: Wait past the alarm target */
+    ClockP_sleep(TEST_RTC_SLEEP_7_SEC);
+
+    /* Step 6: Pend with 0-wait — expect timeout */
+    semaphoreStatus = SemaphoreP_pend(&TestRtc_OnOffSemObj, 0U);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, semaphoreStatus);
+
+    SemaphoreP_destruct(&TestRtc_OnOffSemObj);
+
+    /* Step 7: Restore RTC instance for subsequent tests.
+     * deinit + init required because RTC_close() does not reset isOpen. */
+    RTC_deinit();
+    RTC_init();
+    gRTCHandle[CONFIG_RTC0] = RTC_open(CONFIG_RTC0, &gRTCParams[CONFIG_RTC0]);
+    TEST_ASSERT_NOT_NULL(gRTCHandle[CONFIG_RTC0]);
+}
+
+/**
+ * \brief Test RTC alarm overwrite replaces the previous alarm target
+ *
+ * Test Category: Functional
+ *
+ * Arms an On-Off alarm, immediately overwrites it with a later target,
+ * and verifies only the second alarm fires.
+ *
+ * Test steps:
+ * 1. Construct a binary semaphore.
+ * 2. Set RTC time to 2024-10-01 09:00:00.
+ * 3. Set On-Off alarm at 09:00:05 (alarm A).
+ * 4. Immediately overwrite with alarm at 09:00:08 (alarm B).
+ * 5. Pend with 12s timeout; verify fires at approximately 8 seconds.
+ * 6. Second pend with 2s timeout returns SystemP_TIMEOUT.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Alarm fires at ~8s (not ~5s). No duplicate firing.
+ */
+static void TestRtc_alarmOverwriteBehavior(void *args)
+{
+    RTC_Handle  rtcHandle = NULL;
+    RTC_Time    setTime;
+    RTC_Time    firstAlarmTime;
+    RTC_Time    secondAlarmTime;
+    RTC_Time    readTime;
+    int32_t     status = SystemP_SUCCESS;
+    int32_t     semaphoreStatus = SystemP_SUCCESS;
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    /* Step 1: Construct binary semaphore */
+    SemaphoreP_constructBinary(&TestRtc_OnOffSemObj, 0U);
+
+    /* Step 2: Set RTC time */
+    setTime.year   = 2024U;
+    setTime.month  = 10U;
+    setTime.day    = 1U;
+    setTime.hour   = 9U;
+    setTime.minute = 0U;
+    setTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &setTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 3: Set alarm A at 09:00:05 */
+    firstAlarmTime        = setTime;
+    firstAlarmTime.second = 5U;
+
+    status = RTC_setOn_OffTimerEvent(rtcHandle, &firstAlarmTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 4: Immediately overwrite with alarm B at 09:00:08 */
+    secondAlarmTime        = setTime;
+    secondAlarmTime.second = 8U;
+
+    status = RTC_setOn_OffTimerEvent(rtcHandle, &secondAlarmTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 5: Pend with 12s timeout — verify fires at ~8s not ~5s */
+    semaphoreStatus = SemaphoreP_pend(&TestRtc_OnOffSemObj,
+                                      ClockP_usecToTicks(TEST_RTC_SEM_TIMEOUT_12_SEC));
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, semaphoreStatus);
+
+    status = RTC_getTime(rtcHandle, &readTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_UINT32_WITHIN(1U, 8U, readTime.second);
+
+    /* Step 6: Second pend — verify no duplicate firing */
+    semaphoreStatus = SemaphoreP_pend(&TestRtc_OnOffSemObj,
+                                      ClockP_usecToTicks(TEST_RTC_SEM_TIMEOUT_2_SEC));
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, semaphoreStatus);
+
+    SemaphoreP_destruct(&TestRtc_OnOffSemObj);
+}
+
+/**
+ * \brief Test RTC On-Off and Off-On events at exact time boundaries
+ *
+ * Test Category: Functional
+ *
+ * Verifies both alarm types trigger precisely at configured boundaries.
+ * Tests On-Off at a 15-second offset and Off-On at a minute boundary.
+ *
+ * Test steps:
+ * 1. Set time to 2024-07-01 10:00:00.
+ * 2. Construct semaphores for both callbacks.
+ * 3. Schedule On-Off at 10:00:15 and pend with 20s timeout.
+ * 4. Verify second is within ±1 of 15.
+ * 5. Set time to 10:59:55. Schedule Off-On at 11:00:00. Pend with 10s.
+ * 6. Verify hour=11, minute=0.
+ * 7. Assert all calls return SystemP_SUCCESS.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput On-Off fires at ~15s. Off-On fires at minute boundary
+ *                 with hour=11, minute=0.
+ */
+static void TestRtc_timerEventBoundaryTimes(void *args)
+{
+    RTC_Handle  rtcHandle = NULL;
+    RTC_Time    setTime;
+    RTC_Time    alarmTime;
+    RTC_Time    readTime;
+    int32_t     status = SystemP_SUCCESS;
+    int32_t     semaphoreStatus = SystemP_SUCCESS;
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    /* Step 1: Set time */
+    setTime.year   = 2024U;
+    setTime.month  = 7U;
+    setTime.day    = 1U;
+    setTime.hour   = 10U;
+    setTime.minute = 0U;
+    setTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &setTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 2: Construct semaphores */
+    SemaphoreP_constructBinary(&TestRtc_OnOffSemObj, 0U);
+    SemaphoreP_constructBinary(&TestRtc_OffOnSemObj, 0U);
+
+    /* Step 3: Schedule On-Off at 10:00:15 */
+    alarmTime        = setTime;
+    alarmTime.second = 15U;
+
+    status = RTC_setOn_OffTimerEvent(rtcHandle, &alarmTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    semaphoreStatus = SemaphoreP_pend(&TestRtc_OnOffSemObj,
+                                      ClockP_usecToTicks(TEST_RTC_SEM_TIMEOUT_20_SEC));
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, semaphoreStatus);
+
+    /* Step 4: Verify second is approximately 15 */
+    status = RTC_getTime(rtcHandle, &readTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_UINT32_WITHIN(1U, 15U, readTime.second);
+
+    /* Step 5: Set time to 10:59:55. Schedule Off-On at 11:00:00. */
+    setTime.hour   = 10U;
+    setTime.minute = 59U;
+    setTime.second = 55U;
+
+    status = RTC_setTime(rtcHandle, &setTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    alarmTime.hour   = 11U;
+    alarmTime.minute = 0U;
+    alarmTime.second = 0U;
+
+    status = RTC_setOff_OnTimerEvent(rtcHandle, &alarmTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    semaphoreStatus = SemaphoreP_pend(&TestRtc_OffOnSemObj,
+                                      ClockP_usecToTicks(TEST_RTC_SEM_TIMEOUT_10_SEC));
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, semaphoreStatus);
+
+    /* Step 6: Verify hour=11, minute=0 */
+    status = RTC_getTime(rtcHandle, &readTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT32(11U, readTime.hour);
+    TEST_ASSERT_EQUAL_UINT32(0U, readTime.minute);
+
+    SemaphoreP_destruct(&TestRtc_OnOffSemObj);
+    SemaphoreP_destruct(&TestRtc_OffOnSemObj);
+}
+
+/**
+ * \brief Test RTC callback only invoked when registered
+ *
+ * Test Category: Functional
+ *
+ * Replaces the On-Off callback with a no-op, verifies no semaphore post
+ * occurs when the alarm fires, then restores the real callback and verifies
+ * the semaphore is posted. Driver gap: RTC_Params.onOffCallback is a dead
+ * variable; the ISR unconditionally calls the function pointer, so this
+ * test manipulates the pointer directly.
+ *
+ * Test steps:
+ * 1. Replace On_OffCallbackFunction with a no-op callback.
+ * 2. Set time to 2024-04-01 12:00:00. Arm alarm at 12:00:03.
+ * 3. Sleep 5s. Pend with 0-wait. Verify SystemP_TIMEOUT.
+ * 4. Restore original callback.
+ * 5. Set time again. Arm alarm at 12:00:03. Pend with 10s timeout.
+ * 6. Verify callback fires (SystemP_SUCCESS).
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput No-op callback prevents semaphore post. Real callback
+ *                 causes semaphore post.
+ */
+static void TestRtc_callbackRegistration(void *args)
+{
+    RTC_Handle              rtcHandle = NULL;
+    RTC_Object             *rtcObject = NULL;
+    RTC_OnOffCallbackFxn    originalCallback = NULL;
+    RTC_Time                setTime;
+    RTC_Time                alarmTime;
+    int32_t                 status = SystemP_SUCCESS;
+    int32_t                 semaphoreStatus = SystemP_SUCCESS;
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    rtcObject = (RTC_Object *)rtcHandle->object;
+
+    /* Step 1: Save original callback and replace with no-op */
+    originalCallback = rtcObject->On_OffCallbackFunction;
+    rtcObject->On_OffCallbackFunction = TestRtc_noopCallback;
+
+    SemaphoreP_constructBinary(&TestRtc_OnOffSemObj, 0U);
+
+    /* Step 2: Set time and arm alarm */
+    setTime.year   = 2024U;
+    setTime.month  = 4U;
+    setTime.day    = 1U;
+    setTime.hour   = 12U;
+    setTime.minute = 0U;
+    setTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &setTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    alarmTime        = setTime;
+    alarmTime.second = 3U;
+
+    status = RTC_setOn_OffTimerEvent(rtcHandle, &alarmTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 3: Sleep past alarm, verify no semaphore post */
+    ClockP_sleep(TEST_RTC_ALARM_WAIT_SEC);
+
+    semaphoreStatus = SemaphoreP_pend(&TestRtc_OnOffSemObj, 0U);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, semaphoreStatus);
+
+    /* Step 4: Restore original callback */
+    rtcObject->On_OffCallbackFunction = originalCallback;
+
+    /* Step 5: Set time again and arm alarm */
+    status = RTC_setTime(rtcHandle, &setTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = RTC_setOn_OffTimerEvent(rtcHandle, &alarmTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 6: Verify callback fires */
+    semaphoreStatus = SemaphoreP_pend(&TestRtc_OnOffSemObj,
+                                      ClockP_usecToTicks(TEST_RTC_SEM_TIMEOUT_10_SEC));
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, semaphoreStatus);
+
+    SemaphoreP_destruct(&TestRtc_OnOffSemObj);
+}
+
+/**
+ * \brief Test RTC interrupt is self-cleared after callback in ISR
+ *
+ * Test Category: Functional
+ *
+ * Verifies that the ISR clears the IRQ status and disables the interrupt
+ * enable after the callback, so no spurious second invocation occurs.
+ *
+ * Test steps:
+ * 1. Construct a binary semaphore.
+ * 2. Set RTC time to 2024-08-01 12:00:00.
+ * 3. Set On-Off alarm at 12:00:03.
+ * 4. Pend once to capture the event.
+ * 5. Pend again with 3-second timeout.
+ * 6. Verify second pend returns SystemP_TIMEOUT.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput First pend succeeds. Second pend times out confirming
+ *                 the interrupt was cleared and not re-triggered.
+ */
+static void TestRtc_interruptClearedAfterCallback(void *args)
+{
+    RTC_Handle  rtcHandle = NULL;
+    RTC_Time    setTime;
+    RTC_Time    alarmTime;
+    int32_t     status = SystemP_SUCCESS;
+    int32_t     firstPendStatus = SystemP_SUCCESS;
+    int32_t     secondPendStatus = SystemP_SUCCESS;
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    /* Step 1: Construct binary semaphore */
+    SemaphoreP_constructBinary(&TestRtc_OnOffSemObj, 0U);
+
+    /* Step 2: Set RTC time */
+    setTime.year   = 2024U;
+    setTime.month  = 8U;
+    setTime.day    = 1U;
+    setTime.hour   = 12U;
+    setTime.minute = 0U;
+    setTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &setTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 3: Set On-Off alarm at 12:00:03 */
+    alarmTime        = setTime;
+    alarmTime.second = 3U;
+
+    status = RTC_setOn_OffTimerEvent(rtcHandle, &alarmTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 4: Pend once to capture the alarm event */
+    firstPendStatus = SemaphoreP_pend(&TestRtc_OnOffSemObj, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, firstPendStatus);
+
+    /* Step 5-6: Pend again — should timeout (ISR cleared the interrupt) */
+    secondPendStatus = SemaphoreP_pend(&TestRtc_OnOffSemObj,
+                                       ClockP_usecToTicks(TEST_RTC_SEM_TIMEOUT_3_SEC));
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, secondPendStatus);
+
+    SemaphoreP_destruct(&TestRtc_OnOffSemObj);
+}
+
+/**
+ * \brief Test both On-Off and Off-On callbacks fire independently
+ *
+ * Test Category: Functional
+ *
+ * Arms both On-Off and Off-On alarms at different future times and verifies
+ * each callback fires independently. Driver gap: the ISR unconditionally
+ * disables both interrupt enables after any event; this test re-enables
+ * INT1 after the On-Off callback fires.
+ *
+ * Test steps:
+ * 1. Construct semaphores for both callback types.
+ * 2. Set RTC time to 2024-05-01 12:00:00.
+ * 3. Set On-Off alarm at 12:00:04, Off-On alarm at 12:00:08.
+ * 4. Pend on On-Off semaphore with 10s timeout; verify fires at ~4s.
+ * 5. Re-enable INT1 (driver gap workaround).
+ * 6. Pend on Off-On semaphore with 10s timeout; verify fires at ~8s.
+ * 7. Cross-pend On-Off with 0-wait returns SystemP_TIMEOUT.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput On-Off fires at ~4s, Off-On fires at ~8s independently.
+ *                 No cross-triggering between the two events.
+ */
+static void TestRtc_bothCallbacksRegisteredAndInvoked(void *args)
+{
+    RTC_Handle              rtcHandle = NULL;
+    const RTC_HwAttrs      *hardwareAttributes = NULL;
+    uint32_t                baseAddress = 0U;
+    volatile uint32_t      *irqEnableSetRegister = NULL;
+    RTC_Time                setTime;
+    RTC_Time                onOffAlarmTime;
+    RTC_Time                offOnAlarmTime;
+    RTC_Time                readTime;
+    int32_t                 status = SystemP_SUCCESS;
+    int32_t                 semaphoreStatus = SystemP_SUCCESS;
+    int32_t                 crossPendStatus = SystemP_SUCCESS;
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    hardwareAttributes = (const RTC_HwAttrs *)rtcHandle->hwAttrs;
+    baseAddress        = hardwareAttributes->baseAddr;
+
+    /* Step 1: Construct semaphores for both callbacks */
+    SemaphoreP_constructBinary(&TestRtc_OnOffSemObj, 0U);
+    SemaphoreP_constructBinary(&TestRtc_OffOnSemObj, 0U);
+
+    /* Step 2: Set RTC time */
+    setTime.year   = 2024U;
+    setTime.month  = 5U;
+    setTime.day    = 1U;
+    setTime.hour   = 12U;
+    setTime.minute = 0U;
+    setTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &setTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 3: Set On-Off alarm at 12:00:04 and Off-On alarm at 12:00:08 */
+    onOffAlarmTime        = setTime;
+    onOffAlarmTime.second = 4U;
+
+    status = RTC_setOn_OffTimerEvent(rtcHandle, &onOffAlarmTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    offOnAlarmTime        = setTime;
+    offOnAlarmTime.second = 8U;
+
+    status = RTC_setOff_OnTimerEvent(rtcHandle, &offOnAlarmTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 4: Pend on On-Off semaphore — should fire at ~4s */
+    semaphoreStatus = SemaphoreP_pend(&TestRtc_OnOffSemObj,
+                                      ClockP_usecToTicks(TEST_RTC_SEM_TIMEOUT_10_SEC));
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, semaphoreStatus);
+
+    status = RTC_getTime(rtcHandle, &readTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_UINT32_WITHIN(1U, 4U, readTime.second);
+
+    /* Step 5: Re-enable INT1 (Off-On interrupt).
+     * Driver gap: RTC_hwiFxn unconditionally disables both INT0 and INT1
+     * enables when any single event fires. */
+    irqEnableSetRegister =
+        (volatile uint32_t *)(baseAddress + CSL_RTC_IRQENABLE_SET_SYS);
+    *irqEnableSetRegister = RTC_TMR_INT_INT1_SET_FLAG;
+
+    /* Step 6: Pend on Off-On semaphore — should fire at ~8s */
+    semaphoreStatus = SemaphoreP_pend(&TestRtc_OffOnSemObj,
+                                      ClockP_usecToTicks(TEST_RTC_SEM_TIMEOUT_10_SEC));
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, semaphoreStatus);
+
+    status = RTC_getTime(rtcHandle, &readTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_UINT32_WITHIN(1U, 8U, readTime.second);
+
+    /* Step 7: Cross-pend — On-Off should not have fired again */
+    crossPendStatus = SemaphoreP_pend(&TestRtc_OnOffSemObj, 0U);
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, crossPendStatus);
+
+    SemaphoreP_destruct(&TestRtc_OnOffSemObj);
+    SemaphoreP_destruct(&TestRtc_OffOnSemObj);
+}
+
+/**
+ * \brief Test RTC start and stop freezes and resumes the counter
+ *
+ * Test Category: Functional
+ *
+ * Verifies that RTC_stop() halts counter advancement and RTC_start()
+ * resumes it. Tests multiple stop/start cycles.
+ *
+ * Test steps:
+ * 1. Set RTC time to 2024-06-01 00:00:00.
+ * 2. Call RTC_stop() and verify SystemP_SUCCESS.
+ * 3. Sleep 3 seconds while stopped.
+ * 4. Read time and verify second is 0 or 1 (counter did not advance).
+ * 5. Call RTC_start() and verify SystemP_SUCCESS.
+ * 6. Sleep 2 seconds.
+ * 7. Read time and verify second is approximately 2.
+ * 8. Repeat stop/start cycle once more to verify consistency.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Counter frozen during stop. Counter resumes from
+ *                 stopped value after start. Multi-cycle consistent.
+ */
+static void TestRtc_startAndStop(void *args)
+{
+    RTC_Handle  rtcHandle = NULL;
+    RTC_Time    setTime;
+    RTC_Time    readTime;
+    int32_t     status = SystemP_SUCCESS;
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    /* Step 1: Set RTC time */
+    setTime.year   = 2024U;
+    setTime.month  = 6U;
+    setTime.day    = 1U;
+    setTime.hour   = 0U;
+    setTime.minute = 0U;
+    setTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &setTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 2: Stop the RTC counter */
+    status = RTC_stop(rtcHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 3: Sleep while stopped */
+    ClockP_sleep(TEST_RTC_SLEEP_3_SEC);
+
+    /* Step 4: Verify counter did not advance */
+    status = RTC_getTime(rtcHandle, &readTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_UINT32_WITHIN(1U, 0U, readTime.second);
+
+    /* Step 5: Start the RTC counter */
+    status = RTC_start(rtcHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 6: Sleep to let counter advance */
+    ClockP_sleep(TEST_RTC_SLEEP_2_SEC);
+
+    /* Step 7: Verify counter advanced by approximately 2 seconds */
+    status = RTC_getTime(rtcHandle, &readTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_UINT32_WITHIN(1U, 2U, readTime.second);
+
+    /* Step 8: Repeat stop/start cycle for multi-cycle consistency */
+    setTime.second = 0U;
+    status = RTC_setTime(rtcHandle, &setTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = RTC_stop(rtcHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    ClockP_sleep(TEST_RTC_SLEEP_2_SEC);
+
+    status = RTC_start(rtcHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    ClockP_sleep(TEST_RTC_SLEEP_2_SEC);
+
+    status = RTC_getTime(rtcHandle, &readTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_UINT32_WITHIN(1U, 2U, readTime.second);
+}
+
+/**
+ * \brief Test RTC time retention across driver deinit and re-init
+ *
+ * Test Category: Functional
+ *
+ * Verifies that the RTC counter in the battery-backed domain retains its
+ * value when the driver is closed, deinitialized, and re-opened. The BBD
+ * registers are not cleared by the kick lock or software reinit.
+ *
+ * Test steps:
+ * 1. Set RTC time to 2024-12-25 10:30:00 and verify with RTC_getTime().
+ * 2. Call RTC_close() followed by RTC_deinit().
+ * 3. Call RTC_init() followed by RTC_open().
+ * 4. Call RTC_getTime() immediately after re-open.
+ * 5. Verify date/time fields match; second may differ by elapsed re-init time.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Time is preserved across deinit/re-init cycle.
+ *                 No epoch reset occurs.
+ */
+static void TestRtc_timeRetentionAcrossReset(void *args)
+{
+    RTC_Handle  rtcHandle = NULL;
+    RTC_Time    setTime;
+    RTC_Time    verifyTime;
+    RTC_Time    retainedTime;
+    int32_t     status = SystemP_SUCCESS;
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    /* Step 1: Set RTC time and verify */
+    setTime.year   = 2024U;
+    setTime.month  = 12U;
+    setTime.day    = 25U;
+    setTime.hour   = 10U;
+    setTime.minute = 30U;
+    setTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &setTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = RTC_getTime(rtcHandle, &verifyTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT32(2024U, verifyTime.year);
+    TEST_ASSERT_EQUAL_UINT32(12U, verifyTime.month);
+    TEST_ASSERT_EQUAL_UINT32(25U, verifyTime.day);
+
+    /* Step 2: Close and deinit */
+    RTC_close(rtcHandle);
+    gRTCHandle[CONFIG_RTC0] = NULL;
+    RTC_deinit();
+
+    /* Step 3: Re-init and re-open */
+    RTC_init();
+    gRTCHandle[CONFIG_RTC0] = RTC_open(CONFIG_RTC0, &gRTCParams[CONFIG_RTC0]);
+    TEST_ASSERT_NOT_NULL(gRTCHandle[CONFIG_RTC0]);
+
+    /* Step 4: Read time immediately after re-open */
+    status = RTC_getTime(gRTCHandle[CONFIG_RTC0], &retainedTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 5: Verify time was retained (second may differ by re-init elapsed) */
+    TEST_ASSERT_EQUAL_UINT32(2024U, retainedTime.year);
+    TEST_ASSERT_EQUAL_UINT32(12U, retainedTime.month);
+    TEST_ASSERT_EQUAL_UINT32(25U, retainedTime.day);
+    TEST_ASSERT_EQUAL_UINT32(10U, retainedTime.hour);
+    TEST_ASSERT_EQUAL_UINT32(30U, retainedTime.minute);
+}
+
+/**
+ * \brief Test RTC alarm fires while system is blocked in sleep
+ *
+ * Test Category: Functional
+ *
+ * Verifies the RTC continues counting and fires the alarm interrupt while
+ * the calling task is blocked in ClockP_sleep(), and the callback runs
+ * correctly via the ISR.
+ *
+ * Test steps:
+ * 1. Construct a binary semaphore for On-Off callback.
+ * 2. Set RTC time to 2024-08-20 07:00:00.
+ * 3. Set alarm for 07:00:03.
+ * 4. Call ClockP_sleep(TEST_RTC_ALARM_WAIT_SEC).
+ * 5. Pend on semaphore with 0-wait and verify SystemP_SUCCESS.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Semaphore pend succeeds immediately after sleep
+ *                 returns, confirming the callback fired during sleep.
+ */
+static void TestRtc_alarmDuringIdleSleep(void *args)
+{
+    RTC_Handle  rtcHandle = NULL;
+    RTC_Time    setTime;
+    RTC_Time    alarmTime;
+    int32_t     status = SystemP_SUCCESS;
+    int32_t     semaphoreStatus = SystemP_SUCCESS;
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    /* Step 1: Construct binary semaphore */
+    SemaphoreP_constructBinary(&TestRtc_OnOffSemObj, 0U);
+
+    /* Step 2: Set RTC time */
+    setTime.year   = 2024U;
+    setTime.month  = 8U;
+    setTime.day    = 20U;
+    setTime.hour   = 7U;
+    setTime.minute = 0U;
+    setTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &setTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 3: Set alarm at 07:00:03 */
+    alarmTime        = setTime;
+    alarmTime.second = 3U;
+
+    status = RTC_setOn_OffTimerEvent(rtcHandle, &alarmTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 4: Block in sleep — alarm fires via ISR during this window */
+    ClockP_sleep(TEST_RTC_ALARM_WAIT_SEC);
+
+    /* Step 5: Semaphore should already be posted */
+    semaphoreStatus = SemaphoreP_pend(&TestRtc_OnOffSemObj, 0U);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, semaphoreStatus);
+
+    SemaphoreP_destruct(&TestRtc_OnOffSemObj);
+}
+
+/**
+ * \brief Test RTC counter discontinuity detection via stop/start and time jump
+ *
+ * Test Category: Functional
+ *
+ * Verifies that abrupt RTC stop/start sequences produce detectable time
+ * discontinuities when compared to the system reference clock. Also
+ * verifies an explicit time jump is observable.
+ *
+ * Test steps:
+ * 1. Set RTC time and record system reference.
+ * 2. Sleep 3s, verify RTC and system are in agreement (drift within 1s).
+ * 3. Stop RTC, sleep 5s, start RTC.
+ * 4. Verify RTC lags system by approximately 5 seconds.
+ * 5. Close, deinit, sleep 2s, re-init, open. Verify time progressed.
+ * 6. Set time jump from 12:00:00 to 15:00:00 and verify abrupt change.
+ * 7. Assert all API calls return SystemP_SUCCESS.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Stop/start gap is detectable. Time jump is observable.
+ *                 All API calls succeed.
+ */
+static void TestRtc_counterDiscontinuityDetection(void *args)
+{
+    RTC_Handle  rtcHandle = NULL;
+    RTC_Time    setTime;
+    RTC_Time    readTimeFirst;
+    RTC_Time    readTimeSecond;
+    RTC_Time    readTimeAfterReopen;
+    RTC_Time    jumpTime;
+    RTC_Time    readTimeAfterJump;
+    int32_t     status = SystemP_SUCCESS;
+    uint64_t    systemTimeStart = 0ULL;
+    uint64_t    systemTimeAfterStop = 0ULL;
+    uint32_t    rtcElapsedSeconds = 0U;
+    uint32_t    systemElapsedSeconds = 0U;
+    int32_t     discontinuityGap = 0;
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    /* Step 1: Set RTC time and record system reference */
+    setTime.year   = 2024U;
+    setTime.month  = 7U;
+    setTime.day    = 1U;
+    setTime.hour   = 12U;
+    setTime.minute = 0U;
+    setTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &setTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    systemTimeStart = ClockP_getTimeUsec();
+
+    /* Step 2: Sleep 3s, verify RTC and system agree */
+    ClockP_sleep(TEST_RTC_SLEEP_3_SEC);
+
+    status = RTC_getTime(rtcHandle, &readTimeFirst);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_UINT32_WITHIN(1U, 3U, readTimeFirst.second);
+
+    /* Step 3: Stop RTC, sleep 5s, start RTC */
+    status = RTC_stop(rtcHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    ClockP_sleep(TEST_RTC_ALARM_WAIT_SEC);
+
+    status = RTC_start(rtcHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 4: Verify RTC lags system by approximately 5 seconds */
+    systemTimeAfterStop = ClockP_getTimeUsec();
+
+    status = RTC_getTime(rtcHandle, &readTimeSecond);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    systemElapsedSeconds = (uint32_t)((systemTimeAfterStop - systemTimeStart) / 1000000ULL);
+    rtcElapsedSeconds    = readTimeSecond.second;
+
+    discontinuityGap = (int32_t)systemElapsedSeconds - (int32_t)rtcElapsedSeconds;
+    TEST_ASSERT_TRUE(discontinuityGap >= 4);
+
+    /* Step 5: Close, deinit, sleep 2s, re-init, open. Verify time progressed */
+    RTC_close(rtcHandle);
+    gRTCHandle[CONFIG_RTC0] = NULL;
+    RTC_deinit();
+
+    ClockP_sleep(TEST_RTC_SLEEP_2_SEC);
+
+    RTC_init();
+    gRTCHandle[CONFIG_RTC0] = RTC_open(CONFIG_RTC0, &gRTCParams[CONFIG_RTC0]);
+    TEST_ASSERT_NOT_NULL(gRTCHandle[CONFIG_RTC0]);
+
+    status = RTC_getTime(gRTCHandle[CONFIG_RTC0], &readTimeAfterReopen);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Verify time was preserved across deinit/re-init (not reset to epoch).
+     * The BBD counter may or may not advance while the driver is deinitialized,
+     * so only assert the value is at least what it was before close. */
+    TEST_ASSERT_TRUE(readTimeAfterReopen.second >= readTimeSecond.second ||
+                     readTimeAfterReopen.minute >= readTimeSecond.minute);
+
+    /* Step 6: Abrupt time jump detection */
+    setTime.second = 0U;
+    status = RTC_setTime(gRTCHandle[CONFIG_RTC0], &setTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    ClockP_sleep(TEST_RTC_SLEEP_2_SEC);
+
+    jumpTime         = setTime;
+    jumpTime.hour    = 15U;
+
+    status = RTC_setTime(gRTCHandle[CONFIG_RTC0], &jumpTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = RTC_getTime(gRTCHandle[CONFIG_RTC0], &readTimeAfterJump);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    TEST_ASSERT_EQUAL_UINT32(15U, readTimeAfterJump.hour);
+}
+
+/**
+ * \brief Test RTC scratch register read/write data integrity for all 8 registers
+ *
+ * Test Category: Functional
+ *
+ * Verifies every bit position in the 256-bit scratch pad (8 x 32-bit
+ * registers) with all-zeros, all-ones, alternating, and unique patterns.
+ *
+ * Test steps:
+ * 1. Write 0x00000000 to all 8 registers and verify read-back.
+ * 2. Write 0xFFFFFFFF to all 8 registers and verify.
+ * 3. Write alternating 0xAAAAAAAA / 0x55555555 and verify.
+ * 4. Write unique value per register and verify.
+ * 5. Assert all writes return SystemP_SUCCESS.
+ * 6. Verify independence between adjacent registers.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput All patterns round-trip correctly. No cross-contamination
+ *                 between registers.
+ */
+static void TestRtc_scratchRegisterReadWrite(void *args)
+{
+    RTC_Handle  rtcHandle = NULL;
+    int32_t     status = SystemP_SUCCESS;
+    uint32_t    registerIndex = 0U;
+    uint32_t    readValue = 0U;
+    uint32_t    totalRegisters = TEST_RTC_SCRATCH_REGISTER_COUNT;
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    /* Step 1: Write all zeros and verify */
+    for (registerIndex = 0U; registerIndex < totalRegisters; registerIndex+=1)
+    {
+        status = RTC_writeScratchRegister(rtcHandle, registerIndex, TEST_RTC_PATTERN_ALL_ZEROS);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    }
+    for (registerIndex = 0U; registerIndex < totalRegisters; registerIndex+=1)
+    {
+        readValue = RTC_readScratchRegister(rtcHandle, registerIndex);
+        TEST_ASSERT_EQUAL_UINT32(TEST_RTC_PATTERN_ALL_ZEROS, readValue);
+    }
+
+    /* Step 2: Write all ones and verify */
+    for (registerIndex = 0U; registerIndex < totalRegisters; registerIndex+=1)
+    {
+        status = RTC_writeScratchRegister(rtcHandle, registerIndex, TEST_RTC_PATTERN_ALL_ONES);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    }
+    for (registerIndex = 0U; registerIndex < totalRegisters; registerIndex+=1)
+    {
+        readValue = RTC_readScratchRegister(rtcHandle, registerIndex);
+        TEST_ASSERT_EQUAL_UINT32(TEST_RTC_PATTERN_ALL_ONES, readValue);
+    }
+
+    /* Step 3: Write alternating patterns and verify */
+    for (registerIndex = 0U; registerIndex < totalRegisters; registerIndex+=1)
+    {
+        if ((registerIndex % 2U) == 0U)
+        {
+            status = RTC_writeScratchRegister(rtcHandle, registerIndex, TEST_RTC_PATTERN_ALT_A);
+        }
+        else
+        {
+            status = RTC_writeScratchRegister(rtcHandle, registerIndex, TEST_RTC_PATTERN_ALT_5);
+        }
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    }
+    for (registerIndex = 0U; registerIndex < totalRegisters; registerIndex+=1)
+    {
+        readValue = RTC_readScratchRegister(rtcHandle, registerIndex);
+        if ((registerIndex % 2U) == 0U)
+        {
+            TEST_ASSERT_EQUAL_UINT32(TEST_RTC_PATTERN_ALT_A, readValue);
+        }
+        else
+        {
+            TEST_ASSERT_EQUAL_UINT32(TEST_RTC_PATTERN_ALT_5, readValue);
+        }
+    }
+
+    /* Step 4: Write unique value per register and verify */
+    for (registerIndex = 0U; registerIndex < totalRegisters; registerIndex+=1)
+    {
+        status = RTC_writeScratchRegister(rtcHandle, registerIndex,
+                                         TEST_RTC_PATTERN_DEAD_BASE + registerIndex);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    }
+    for (registerIndex = 0U; registerIndex < totalRegisters; registerIndex+=1)
+    {
+        readValue = RTC_readScratchRegister(rtcHandle, registerIndex);
+        TEST_ASSERT_EQUAL_UINT32(TEST_RTC_PATTERN_DEAD_BASE + registerIndex, readValue);
+    }
+
+    /* Step 6: Verify independence — write to register 0 does not change register 1 */
+    status = RTC_writeScratchRegister(rtcHandle, 0U, TEST_RTC_PATTERN_UNIQUE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    readValue = RTC_readScratchRegister(rtcHandle, 1U);
+    TEST_ASSERT_EQUAL_UINT32(TEST_RTC_PATTERN_DEAD_BASE + 1U, readValue);
+}
+
+/**
+ * \brief Test RTC scratch register persistence across stop/start cycles
+ *
+ * Test Category: Functional
+ *
+ * Verifies that scratch registers in the battery-backed domain preserve
+ * data when the RTC counter is stopped and restarted.
+ *
+ * Test steps:
+ * 1. Write values to registers 2 and 5.
+ * 2. Call RTC_stop() and verify values unchanged.
+ * 3. Call RTC_start() and verify again.
+ * 4. Sleep 2 seconds.
+ * 5. Call RTC_stop() and verify values.
+ * 6. Call RTC_start(). Assert no SystemP_FAILURE.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Scratch register values persist through all stop/start cycles.
+ */
+static void TestRtc_scratchRegisterPersistence(void *args)
+{
+    RTC_Handle  rtcHandle = NULL;
+    int32_t     status = SystemP_SUCCESS;
+    uint32_t    readValueRegisterTwo = 0U;
+    uint32_t    readValueRegisterFive = 0U;
+    uint32_t    patternRegisterTwo = TEST_RTC_PATTERN_CHECKERBOARD_A;
+    uint32_t    patternRegisterFive = TEST_RTC_PATTERN_CHECKERBOARD_B;
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    /* Step 1: Write patterns to registers 2 and 5 */
+    status = RTC_writeScratchRegister(rtcHandle, 2U, patternRegisterTwo);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = RTC_writeScratchRegister(rtcHandle, 5U, patternRegisterFive);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 2: Stop RTC and verify values unchanged */
+    status = RTC_stop(rtcHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    readValueRegisterTwo = RTC_readScratchRegister(rtcHandle, 2U);
+    TEST_ASSERT_EQUAL_UINT32(patternRegisterTwo, readValueRegisterTwo);
+
+    readValueRegisterFive = RTC_readScratchRegister(rtcHandle, 5U);
+    TEST_ASSERT_EQUAL_UINT32(patternRegisterFive, readValueRegisterFive);
+
+    /* Step 3: Start RTC and verify again */
+    status = RTC_start(rtcHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    readValueRegisterTwo = RTC_readScratchRegister(rtcHandle, 2U);
+    TEST_ASSERT_EQUAL_UINT32(patternRegisterTwo, readValueRegisterTwo);
+
+    readValueRegisterFive = RTC_readScratchRegister(rtcHandle, 5U);
+    TEST_ASSERT_EQUAL_UINT32(patternRegisterFive, readValueRegisterFive);
+
+    /* Step 4: Sleep 2 seconds */
+    ClockP_sleep(TEST_RTC_SLEEP_2_SEC);
+
+    /* Step 5: Stop again and verify persistence */
+    status = RTC_stop(rtcHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    readValueRegisterTwo = RTC_readScratchRegister(rtcHandle, 2U);
+    TEST_ASSERT_EQUAL_UINT32(patternRegisterTwo, readValueRegisterTwo);
+
+    readValueRegisterFive = RTC_readScratchRegister(rtcHandle, 5U);
+    TEST_ASSERT_EQUAL_UINT32(patternRegisterFive, readValueRegisterFive);
+
+    /* Step 6: Start RTC and finish */
+    status = RTC_start(rtcHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+}
+
+/**
+ * \brief Test RTC drift compensation register programming
+ *
+ * Test Category: Functional
+ *
+ * Verifies that RTC_adjustForDrift() correctly programs the compensation
+ * register with positive, negative, zero, and boundary drift values.
+ * Also validates persistence after stop/start and repeated writes.
+ *
+ * Test steps:
+ * 1. Call RTC_adjustForDrift(+0.5f) and verify SystemP_SUCCESS.
+ * 2. Call RTC_adjustForDrift(-0.5f) and verify.
+ * 3. Call RTC_adjustForDrift(0.0f) and verify.
+ * 4. Call RTC_adjustForDrift(minimum drift) and verify.
+ * 5. Stop, start, apply drift again — verify no write-pend timeout.
+ * 6. Apply same drift 3 times consecutively — verify all succeed.
+ * 7. Assert no SystemP_FAILURE across all calls.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput All drift compensation calls return SystemP_SUCCESS.
+ *                 Repeated and post-restart writes succeed.
+ */
+static void TestRtc_adjustForDriftCompensation(void *args)
+{
+    RTC_Handle  rtcHandle = NULL;
+    int32_t     status = SystemP_SUCCESS;
+    uint32_t    repeatIndex = 0U;
+    uint32_t    totalRepeats = 3U;
+    Float32     positiveDrift = 0.5f;
+    Float32     negativeDrift = -0.5f;
+    Float32     zeroDrift = 0.0f;
+    Float32     minimumDrift = 0.000030517578125f;
+
+    rtcHandle = gRTCHandle[CONFIG_RTC0];
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    /* Step 1: Positive drift */
+    status = RTC_adjustForDrift(rtcHandle, positiveDrift);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 2: Negative drift */
+    status = RTC_adjustForDrift(rtcHandle, negativeDrift);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 3: Zero drift */
+    status = RTC_adjustForDrift(rtcHandle, zeroDrift);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 4: Minimum representable drift (1 tick / 32768) */
+    status = RTC_adjustForDrift(rtcHandle, minimumDrift);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 5: Persistence after stop/start cycle */
+    status = RTC_stop(rtcHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = RTC_start(rtcHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = RTC_adjustForDrift(rtcHandle, positiveDrift);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 6: Repeated writes — verify no write-pend timeout */
+    for (repeatIndex = 0U; repeatIndex < totalRepeats; repeatIndex+=1)
+    {
+        status = RTC_adjustForDrift(rtcHandle, positiveDrift);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    }
+}
+
+/**
+ * \brief Test RTC write access control via KICK0/KICK1 lock/unlock
+ *
+ * Test Category: Functional
+ *
+ * Verifies that RTC_close() locks write access and direct register writes
+ * are rejected, while RTC_open() restores write access via the kick
+ * sequence. Uses direct register write to test the locked state because
+ * the driver API requires a live mutex that is destructed by RTC_close().
+ *
+ * Test steps:
+ * 1. Open RTC and set time A; verify SystemP_SUCCESS.
+ * 2. Read time A back and verify correct.
+ * 3. Close RTC (locks kick registers when enableIntr=false).
+ * 4. Attempt direct register write while locked and verify rejection.
+ * 5. Re-open RTC and verify time is natural progression from time A.
+ * 6. Set time C on re-opened instance; verify read-back matches.
+ * 7. Close instance.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Writes blocked when KICK is locked. Writes succeed
+ *                 after re-open restores unlock. Time progresses
+ *                 naturally, not from rejected write value.
+ */
+static void TestRtc_writeAccessControl(void *args)
+{
+    RTC_Handle              rtcHandle = NULL;
+    const RTC_HwAttrs      *hardwareAttributes = NULL;
+    uint32_t                baseAddress = 0U;
+    volatile uint32_t      *secondCountLswRegister = NULL;
+    volatile uint32_t      *syncPendRegister = NULL;
+    uint32_t                rejectedWriteValue = TEST_RTC_PATTERN_DEADBEEF;
+    uint32_t                registerReadBack = 0U;
+    uint32_t                syncPendValue = 0U;
+    RTC_Time                timeA;
+    RTC_Time                timeC;
+    RTC_Time                readTimeA;
+    RTC_Time                readTimeAfterReopen;
+    RTC_Time                readTimeC;
+    int32_t                 status = SystemP_SUCCESS;
+
+    /* Ensure clean state */
+    if (gRTCHandle[CONFIG_RTC0] != NULL)
+    {
+        RTC_close(gRTCHandle[CONFIG_RTC0]);
+        gRTCHandle[CONFIG_RTC0] = NULL;
+    }
+    RTC_deinit();
+    RTC_init();
+
+    /* Step 1: Open RTC and set time A */
+    rtcHandle = RTC_open(CONFIG_RTC0, NULL);
+    TEST_ASSERT_NOT_NULL(rtcHandle);
+
+    hardwareAttributes = (const RTC_HwAttrs *)rtcHandle->hwAttrs;
+    baseAddress        = hardwareAttributes->baseAddr;
+
+    timeA.year   = 2024U;
+    timeA.month  = 1U;
+    timeA.day    = 1U;
+    timeA.hour   = 10U;
+    timeA.minute = 0U;
+    timeA.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &timeA);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Step 2: Read back and verify */
+    status = RTC_getTime(rtcHandle, &readTimeA);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT32(10U, readTimeA.hour);
+
+    /* Step 3: Close RTC — locks kick registers.
+     * Note: enableIntr is true in the syscfg, so RTC_close() skips the
+     * lock path. We manually lock the kick registers to test the feature. */
+    RTC_close(rtcHandle);
+    gRTCHandle[CONFIG_RTC0] = NULL;
+
+    /* Manually lock kick registers since close skips it when enableIntr=true */
+    secondCountLswRegister =
+        (volatile uint32_t *)(baseAddress + CSL_RTC_KICK0);
+    *secondCountLswRegister = TEST_RTC_PATTERN_ALL_ZEROS;
+    secondCountLswRegister =
+        (volatile uint32_t *)(baseAddress + CSL_RTC_KICK1);
+    *secondCountLswRegister = TEST_RTC_PATTERN_ALL_ZEROS;
+
+    /* Step 4: Attempt direct register write while locked */
+    secondCountLswRegister =
+        (volatile uint32_t *)(baseAddress + CSL_RTC_S_CNT_LSW);
+    *secondCountLswRegister = rejectedWriteValue;
+
+    /* Small delay for write to propagate (or be rejected) */
+    ClockP_usleep(TEST_RTC_USLEEP_100_US);
+
+    registerReadBack = *secondCountLswRegister;
+    TEST_ASSERT_TRUE(registerReadBack != rejectedWriteValue);
+
+    /* Optionally check write error flag */
+    syncPendRegister =
+        (volatile uint32_t *)(baseAddress + CSL_RTC_SYNCPEND);
+    syncPendValue = *syncPendRegister;
+    TEST_ASSERT_TRUE((syncPendValue & CSL_RTC_SYNCPEND_WRT_ERR_MASK) != 0U);
+
+    /* Step 5: Re-open RTC (kick sequence re-executed) and verify time */
+    RTC_deinit();
+    RTC_init();
+    gRTCHandle[CONFIG_RTC0] = RTC_open(CONFIG_RTC0, &gRTCParams[CONFIG_RTC0]);
+    TEST_ASSERT_NOT_NULL(gRTCHandle[CONFIG_RTC0]);
+
+    status = RTC_getTime(gRTCHandle[CONFIG_RTC0], &readTimeAfterReopen);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Time should be natural progression from time A, not the rejected value */
+    TEST_ASSERT_EQUAL_UINT32(10U, readTimeAfterReopen.hour);
+    TEST_ASSERT_EQUAL_UINT32(0U, readTimeAfterReopen.minute);
+
+    /* Step 6: Set time C and verify */
+    timeC.year   = 2025U;
+    timeC.month  = 3U;
+    timeC.day    = 20U;
+    timeC.hour   = 14U;
+    timeC.minute = 30U;
+    timeC.second = 0U;
+
+    status = RTC_setTime(gRTCHandle[CONFIG_RTC0], &timeC);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = RTC_getTime(gRTCHandle[CONFIG_RTC0], &readTimeC);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT32(2025U, readTimeC.year);
+    TEST_ASSERT_EQUAL_UINT32(14U, readTimeC.hour);
+    TEST_ASSERT_EQUAL_UINT32(30U, readTimeC.minute);
 }

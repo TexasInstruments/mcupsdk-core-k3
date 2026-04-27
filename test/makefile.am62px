@@ -34,16 +34,16 @@ help:
 	@echo  .
 	@echo  Library build targets,
 	@echo  ======================
-	@echo  $(MAKE) -s -f makefile.am62px drivers-mmcsd-inject-fault_wkup-r5f.ti-arm-clang
-	@echo  $(MAKE) -s -f makefile.am62px drivers-i2c-inject-fault_mcu-r5f.ti-arm-clang drivers-i2c-inject-fault_wkup-r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62px unity_r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62px drivers-mmcsd-inject-fault_wkup-r5f.ti-arm-clang drivers-mmcsd-inject-fault_mcu-r5f.ti-arm-clang
+	@echo  $(MAKE) -s -f makefile.am62px drivers-i2c-inject-fault_mcu-r5f.ti-arm-clang drivers-i2c-inject-fault_wkup-r5f.ti-arm-clang
 	@echo  $(MAKE) -s -f makefile.am62px doxy_samples_r5f.ti-arm-clang
 	@echo  .
 	@echo  Library clean targets,
 	@echo  ======================
-	@echo  $(MAKE) -s -f makefile.am62px drivers-mmcsd-inject-fault_wkup-r5f.ti-arm-clang_clean
-	@echo  $(MAKE) -s -f makefile.am62px drivers-i2c-inject-fault_mcu-r5f.ti-arm-clang_clean drivers-i2c-inject-fault_wkup-r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62px unity_r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62px drivers-mmcsd-inject-fault_wkup-r5f.ti-arm-clang_clean drivers-mmcsd-inject-fault_mcu-r5f.ti-arm-clang_clean
+	@echo  $(MAKE) -s -f makefile.am62px drivers-i2c-inject-fault_mcu-r5f.ti-arm-clang_clean drivers-i2c-inject-fault_wkup-r5f.ti-arm-clang_clean
 	@echo  $(MAKE) -s -f makefile.am62px doxy_samples_r5f.ti-arm-clang_clean
 	@echo  .
 	@echo  Example build targets,
@@ -98,8 +98,18 @@ help:
 	@echo  $(MAKE) -s -C drivers/pinmux_coverage/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_raw_io/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_raw_io/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_raw_io/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_raw_io/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_fs_io/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_fs_io/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_fs_io/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_fs_io/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_fault_inject/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_fault_inject/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_fault_inject/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_fault_inject/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_system/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mmcsd/test_mmcsd_system/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/rtc/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/rtc/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/sciclient/sciclient_get_version/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -134,13 +144,13 @@ help:
 	@echo  .
 
 # Various Component Targets
-BUILD_COMBO_drivers-mmcsd-inject-fault = drivers-mmcsd-inject-fault_wkup-r5f.ti-arm-clang
-BUILD_COMBO_drivers-i2c-inject-fault = drivers-i2c-inject-fault_mcu-r5f.ti-arm-clang drivers-i2c-inject-fault_wkup-r5f.ti-arm-clang
 BUILD_COMBO_unity = unity_r5f.ti-arm-clang
+BUILD_COMBO_drivers-mmcsd-inject-fault = drivers-mmcsd-inject-fault_wkup-r5f.ti-arm-clang drivers-mmcsd-inject-fault_mcu-r5f.ti-arm-clang
+BUILD_COMBO_drivers-i2c-inject-fault = drivers-i2c-inject-fault_mcu-r5f.ti-arm-clang drivers-i2c-inject-fault_wkup-r5f.ti-arm-clang
 BUILD_COMBO_doxy_samples = doxy_samples_r5f.ti-arm-clang
 
 # Combine all Components
-BUILD_COMBO_ALL = $(BUILD_COMBO_drivers-mmcsd-inject-fault) $(BUILD_COMBO_drivers-i2c-inject-fault) $(BUILD_COMBO_unity) $(BUILD_COMBO_doxy_samples)
+BUILD_COMBO_ALL = $(BUILD_COMBO_unity) $(BUILD_COMBO_drivers-mmcsd-inject-fault) $(BUILD_COMBO_drivers-i2c-inject-fault) $(BUILD_COMBO_doxy_samples)
 
 # Combine all External Components
 BUILD_COMBO_EXTERNAL_ALL =
@@ -170,27 +180,27 @@ libs-prebuilt: $(BUILD_COMBO_PREBUILT_ALL)
 
 libs-private: $(BUILD_COMBO_PRIVATE_ALL)
 
+$(BUILD_COMBO_unity):
+	$(MAKE) -C unity -f makefile.am62px.$(subst unity_,,$@) all
+
 $(BUILD_COMBO_drivers-mmcsd-inject-fault):
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/configs -f makefile.am62px.$(subst drivers-mmcsd-inject-fault_,,$@) all
 
 $(BUILD_COMBO_drivers-i2c-inject-fault):
 	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/configs -f makefile.am62px.$(subst drivers-i2c-inject-fault_,,$@) all
 
-$(BUILD_COMBO_unity):
-	$(MAKE) -C unity -f makefile.am62px.$(subst unity_,,$@) all
-
 $(BUILD_COMBO_doxy_samples):
 	$(MAKE) -C ../docs_src/docs/api_guide/doxy_samples -f makefile.am62px.$(subst doxy_samples_,,$@) all
 
 
 # Various Component Clean Targets
-BUILD_COMBO_CLEAN_drivers-mmcsd-inject-fault = drivers-mmcsd-inject-fault_wkup-r5f.ti-arm-clang_clean
-BUILD_COMBO_CLEAN_drivers-i2c-inject-fault = drivers-i2c-inject-fault_mcu-r5f.ti-arm-clang_clean drivers-i2c-inject-fault_wkup-r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_unity = unity_r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_drivers-mmcsd-inject-fault = drivers-mmcsd-inject-fault_wkup-r5f.ti-arm-clang_clean drivers-mmcsd-inject-fault_mcu-r5f.ti-arm-clang_clean
+BUILD_COMBO_CLEAN_drivers-i2c-inject-fault = drivers-i2c-inject-fault_mcu-r5f.ti-arm-clang_clean drivers-i2c-inject-fault_wkup-r5f.ti-arm-clang_clean
 BUILD_COMBO_CLEAN_doxy_samples = doxy_samples_r5f.ti-arm-clang_clean
 
 # Combine all Components Clean
-BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_drivers-mmcsd-inject-fault) $(BUILD_COMBO_CLEAN_drivers-i2c-inject-fault) $(BUILD_COMBO_CLEAN_unity) $(BUILD_COMBO_CLEAN_doxy_samples)
+BUILD_COMBO_CLEAN_ALL = $(BUILD_COMBO_CLEAN_unity) $(BUILD_COMBO_CLEAN_drivers-mmcsd-inject-fault) $(BUILD_COMBO_CLEAN_drivers-i2c-inject-fault) $(BUILD_COMBO_CLEAN_doxy_samples)
 
 # Combine all External Components Clean
 BUILD_COMBO_EXTERNAL_CLEAN_ALL =
@@ -204,27 +214,27 @@ libs-external-clean: $(BUILD_COMBO_EXTERNAL_CLEAN_ALL)
 
 libs-prebuilt-clean: $(BUILD_COMBO_PREBUILT_CLEAN_ALL)
 
+$(BUILD_COMBO_CLEAN_unity):
+	$(MAKE) -C unity -f makefile.am62px.$(subst unity_,,$(subst _clean,,$@)) clean
+
 $(BUILD_COMBO_CLEAN_drivers-mmcsd-inject-fault):
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/configs -f makefile.am62px.$(subst drivers-mmcsd-inject-fault_,,$(subst _clean,,$@)) clean
 
 $(BUILD_COMBO_CLEAN_drivers-i2c-inject-fault):
 	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/configs -f makefile.am62px.$(subst drivers-i2c-inject-fault_,,$(subst _clean,,$@)) clean
 
-$(BUILD_COMBO_CLEAN_unity):
-	$(MAKE) -C unity -f makefile.am62px.$(subst unity_,,$(subst _clean,,$@)) clean
-
 $(BUILD_COMBO_CLEAN_doxy_samples):
 	$(MAKE) -C ../docs_src/docs/api_guide/doxy_samples -f makefile.am62px.$(subst doxy_samples_,,$(subst _clean,,$@)) clean
 
 
 # Various Component Scrub Targets
-BUILD_COMBO_SCRUB_drivers-mmcsd-inject-fault = drivers-mmcsd-inject-fault_wkup-r5f.ti-arm-clang_scrub
-BUILD_COMBO_SCRUB_drivers-i2c-inject-fault = drivers-i2c-inject-fault_mcu-r5f.ti-arm-clang_scrub drivers-i2c-inject-fault_wkup-r5f.ti-arm-clang_scrub
 BUILD_COMBO_SCRUB_unity = unity_r5f.ti-arm-clang_scrub
+BUILD_COMBO_SCRUB_drivers-mmcsd-inject-fault = drivers-mmcsd-inject-fault_wkup-r5f.ti-arm-clang_scrub drivers-mmcsd-inject-fault_mcu-r5f.ti-arm-clang_scrub
+BUILD_COMBO_SCRUB_drivers-i2c-inject-fault = drivers-i2c-inject-fault_mcu-r5f.ti-arm-clang_scrub drivers-i2c-inject-fault_wkup-r5f.ti-arm-clang_scrub
 BUILD_COMBO_SCRUB_doxy_samples = doxy_samples_r5f.ti-arm-clang_scrub
 
 # Combine all Components Scrub Targets
-BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_drivers-mmcsd-inject-fault) $(BUILD_COMBO_SCRUB_drivers-i2c-inject-fault) $(BUILD_COMBO_SCRUB_unity) $(BUILD_COMBO_SCRUB_doxy_samples)
+BUILD_COMBO_SCRUB_ALL = $(BUILD_COMBO_SCRUB_unity) $(BUILD_COMBO_SCRUB_drivers-mmcsd-inject-fault) $(BUILD_COMBO_SCRUB_drivers-i2c-inject-fault) $(BUILD_COMBO_SCRUB_doxy_samples)
 
 # Combine all External Components Scrub Targets
 BUILD_COMBO_EXTERNAL_SCRUB_ALL =
@@ -238,14 +248,14 @@ libs-external-scrub: $(BUILD_COMBO_EXTERNAL_SCRUB_ALL)
 
 libs-prebuilt-scrub: $(BUILD_COMBO_PREBUILT_SCRUB_ALL)
 
+$(BUILD_COMBO_SCRUB_unity):
+	$(MAKE) -C unity -f makefile.am62px.$(subst unity_,,$(subst _scrub,,$@)) scrub
+
 $(BUILD_COMBO_SCRUB_drivers-mmcsd-inject-fault):
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/configs -f makefile.am62px.$(subst drivers-mmcsd-inject-fault_,,$(subst _scrub,,$@)) scrub
 
 $(BUILD_COMBO_SCRUB_drivers-i2c-inject-fault):
 	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/configs -f makefile.am62px.$(subst drivers-i2c-inject-fault_,,$(subst _scrub,,$@)) scrub
-
-$(BUILD_COMBO_SCRUB_unity):
-	$(MAKE) -C unity -f makefile.am62px.$(subst unity_,,$(subst _scrub,,$@)) scrub
 
 $(BUILD_COMBO_SCRUB_doxy_samples):
 	$(MAKE) -C ../docs_src/docs/api_guide/doxy_samples -f makefile.am62px.$(subst doxy_samples_,,$(subst _scrub,,$@)) scrub
@@ -298,8 +308,18 @@ BUILD_COMBO_EXAMPLE_ALL += test_gtc_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += pinmux_coverage_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_raw_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_raw_io_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_raw_io_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_raw_io_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_fs_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_fs_io_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_fs_io_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_fs_io_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_fault_inject_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_fault_inject_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_fault_inject_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_fault_inject_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_system_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mmcsd_system_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_rtc_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_rtc_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_sciclient_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
@@ -488,11 +508,41 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_mmcsd_raw_io_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
+ test_mmcsd_raw_io_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_mmcsd_raw_io_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ test_mmcsd_fs_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fs_io/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_mmcsd_fs_io_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fs_io/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ test_mmcsd_fs_io_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fs_io/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_mmcsd_fs_io_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fs_io/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
  test_mmcsd_fault_inject_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
  test_mmcsd_fault_inject_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ test_mmcsd_fault_inject_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_mmcsd_fault_inject_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ test_mmcsd_system_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_system/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_mmcsd_system_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_system/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
  test_rtc_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/rtc/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
@@ -626,8 +676,18 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_gtc_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-c
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += pinmux_coverage_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_raw_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_raw_io_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_raw_io_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_raw_io_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_fs_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_fs_io_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_fs_io_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_fs_io_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_fault_inject_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_fault_inject_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_fault_inject_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_fault_inject_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_system_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mmcsd_system_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_rtc_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_rtc_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sciclient_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
@@ -816,11 +876,41 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_mmcsd_raw_io_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
+ test_mmcsd_raw_io_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_mmcsd_raw_io_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ test_mmcsd_fs_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fs_io/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_mmcsd_fs_io_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fs_io/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ test_mmcsd_fs_io_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fs_io/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_mmcsd_fs_io_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fs_io/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
  test_mmcsd_fault_inject_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
  test_mmcsd_fault_inject_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ test_mmcsd_fault_inject_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_mmcsd_fault_inject_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ test_mmcsd_system_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_system/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_mmcsd_system_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_system/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
  test_rtc_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/rtc/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
@@ -954,8 +1044,18 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_gtc_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-c
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += pinmux_coverage_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_raw_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_raw_io_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_raw_io_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_raw_io_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_fs_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_fs_io_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_fs_io_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_fs_io_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_fault_inject_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_fault_inject_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_fault_inject_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_fault_inject_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_system_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mmcsd_system_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_rtc_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_rtc_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sciclient_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
@@ -1144,11 +1244,41 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  test_mmcsd_raw_io_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
+ test_mmcsd_raw_io_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_mmcsd_raw_io_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_mmcsd_fs_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fs_io/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_mmcsd_fs_io_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fs_io/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_mmcsd_fs_io_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fs_io/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_mmcsd_fs_io_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fs_io/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
  test_mmcsd_fault_inject_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  test_mmcsd_fault_inject_am62px-sk_wkup-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62px-sk/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_mmcsd_fault_inject_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_mmcsd_fault_inject_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_mmcsd_system_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_system/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_mmcsd_system_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mmcsd/test_mmcsd_system/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  test_rtc_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/rtc/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub

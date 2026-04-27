@@ -55,6 +55,13 @@ SECTIONS
         .text:abort: palign(8) /* this helps in loading symbols when using XIP mode */
     } load = R5F_TCMB, run = R5F_TCMA
 
+    GROUP {
+        /* This is the resource table used by linux to know where the IPC "VRINGs" are located */
+        .resource_table: {} palign(1024)
+    } > DDR_IPC_RESOURCE_TABLE_LINUX
+    /* This IPC log can be viewed via ROV in CCS and when linux is enabled, this log can also be viewed via linux debugfs */
+    .bss.debug_mem_trace_buf    : {} palign(128)    > DDR_IPC_TRACE_LINUX
+
     .lpm_data (NOLOAD)      : {} align(4)       > DDR_LPM_DATA
     .text                   : {} palign(8)      > DDR
     .const                  : {} palign(8)      > DDR
@@ -145,8 +152,6 @@ SECTIONS
         .init_array: {} palign(8)   /* Contains function pointers called before main */
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
     } > DDR
-    /* global scratch buffer region */
-    .globalScratchBuffer (NOLOAD) : {} > DDR2
 
 }
 
@@ -167,6 +172,7 @@ MEMORY
     /* DDR for DM R5F code/data [ size 27 MiB + 396 KB ] */
     DDR                         : ORIGIN = 0x9CAA5000 LENGTH = 0x1B63000
 
-    /* global scratch buffer region in DDR (128 MB) */
-    DDR2           (RWIX)      : ORIGIN = 0xA0000000 LENGTH = 0x08000000
+    DDR_IPC_VRING_LINUX           : ORIGIN = 0x9C800000, LENGTH = 0x100000   /* IPC VRING with Linux */
+    DDR_IPC_RESOURCE_TABLE_LINUX  : ORIGIN = 0x9C900000, LENGTH = 0x400      /* For resource table   */
+    DDR_IPC_TRACE_LINUX           : ORIGIN = 0x9C900400, LENGTH = 0xFFC00    /* IPC trace buffer     */
 }

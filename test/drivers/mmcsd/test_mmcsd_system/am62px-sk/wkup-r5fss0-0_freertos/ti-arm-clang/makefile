@@ -21,26 +21,26 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_mmcsd_fs_io.$(PROFILE).out
+OUTNAME:=test_mmcsd_system.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_mmcsd_fs_io.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=test_mmcsd_fs_io.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=test_mmcsd_fs_io.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=test_mmcsd_fs_io.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=test_mmcsd_fs_io.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=test_mmcsd_fs_io.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=test_mmcsd_fs_io.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=test_mmcsd_fs_io.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=test_mmcsd_system.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=test_mmcsd_system.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=test_mmcsd_system.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=test_mmcsd_system.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=test_mmcsd_system.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=test_mmcsd_system.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=test_mmcsd_system.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=test_mmcsd_system.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
 endif
 
 FILES_common := \
-	mmcsd_test_common.c \
-	mmcsd_test_fs.c \
-	test_mmcsd_fs_io.c \
+	system_test_utils.c \
+	test_mmcsd_emmc.c \
+	test_case_mapping.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -52,22 +52,22 @@ FILES_common := \
 
 FILES_PATH_common = \
 	.. \
-	../../ \
-	../../../ \
-	../../../../test_mmcsd_common/ \
+	../../.. \
+	../../../../../utils \
 	generated \
 
 INCLUDES_common := \
 	-I${CG_TOOL_ROOT}/include/c \
 	-I${MCU_PLUS_SDK_PATH}/source \
-	-I${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/FreeRTOS-FAT/include \
-	-I${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable \
-	-I${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62px/r5f \
-	-I../../../../test_mmcsd_common/ \
-	-I${MCU_PLUS_SDK_PATH}/test/unity \
+	-I${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/FreeRTOS-FAT/include/ \
+	-I${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable/ \
+	-I${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config/ \
+	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
+	-I../../.. \
+	-I../../../../../utils \
 	-Igenerated \
 
 DEFINES_common := \
@@ -84,8 +84,6 @@ CFLAGS_common := \
 	-g \
 	-Wno-gnu-variable-sized-type-not-at-end \
 	-Wno-unused-function \
-	-DENABLE_FS_TESTS \
-	-DENABLE_MT_TESTS \
 
 CFLAGS_cpp_common := \
 	-Wno-c99-designator \
@@ -113,12 +111,12 @@ LIBS_PATH_common = \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/board/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/test/unity/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
@@ -161,12 +159,12 @@ LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
+	${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
-	${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib \
 	${CG_TOOL_ROOT}/lib \
 
 FILES := $(FILES_common) $(FILES_$(PROFILE))
@@ -230,7 +228,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62px:wkup-r5fss0-0:freertos:ti-arm-clang test_mmcsd_fs_io ...
+	@echo  Scrubing: am62px:wkup-r5fss0-0:freertos:ti-arm-clang test_mmcsd_system ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

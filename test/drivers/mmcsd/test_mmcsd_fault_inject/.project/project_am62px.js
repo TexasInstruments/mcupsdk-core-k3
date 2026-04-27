@@ -74,6 +74,24 @@ const libdirs_nortos_wkup_r5 = {
     ],
 };
 
+const libdirs_freertos_mcu_r5 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "../../../configs/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+    ],
+};
+
+const libdirs_nortos_mcu_r5 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
+        "../../../configs/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+    ],
+};
+
 const libs_freertos_wkup_r5f = {
     common: [
         "sciserver.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
@@ -102,6 +120,24 @@ const libs_nortos_wkup_r5f = {
     ],
 };
 
+const libs_freertos_mcu_r5f = {
+    common: [
+        "freertos.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers-mmcsd-inject-fault.am62px.mcu-r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
+        "unity.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
+const libs_nortos_mcu_r5f = {
+    common: [
+        "nortos.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers-mmcsd-inject-fault.am62px.mcu-r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
+        "unity.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
 const lnkfiles = {
     common: [
         "linker.cmd",
@@ -115,6 +151,18 @@ const cflags_wkup_r5_freertos = {
 }
 
 const cflags_wkup_r5_nortos = {
+    common: [
+        "-DENABLE_RAW_TESTS",
+    ]
+}
+
+const cflags_mcu_r5_freertos = {
+    common: [
+        "-DENABLE_RAW_TESTS",
+    ]
+}
+
+const cflags_mcu_r5_nortos = {
     common: [
         "-DENABLE_RAW_TESTS",
     ]
@@ -188,9 +236,67 @@ const templates_nortos_wkup_r5f =
     }
 ];
 
+const templates_freertos_mcu_r5f =
+[
+    {
+        input: ".project/templates/am62px/common/linker_mcu-r5f.cmd.xdt",
+        output: "linker.cmd",
+        options: {
+            heapSize: 0x8000,
+            stackSize: 0x4000,
+            irqStackSize: 0x1000,
+            svcStackSize: 0x0100,
+            fiqStackSize: 0x0100,
+            abortStackSize: 0x0100,
+            undefinedStackSize: 0x0100,
+            dmStubstacksize: 0x0400,
+            useDdr: "true",
+            globalScratchBuf: "true",
+            globalScratchBufSize: 0x8000000,
+        },
+    },
+    {
+        input: ".project/templates/am62px/freertos/main_freertos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "test_main",
+        },
+    }
+];
+
+const templates_nortos_mcu_r5f =
+[
+    {
+        input: ".project/templates/am62px/common/linker_mcu-r5f.cmd.xdt",
+        output: "linker.cmd",
+        options: {
+            heapSize: 0x8000,
+            stackSize: 0x4000,
+            irqStackSize: 0x1000,
+            svcStackSize: 0x0100,
+            fiqStackSize: 0x0100,
+            abortStackSize: 0x0100,
+            undefinedStackSize: 0x0100,
+            dmStubstacksize: 0x0400,
+            useDdr: "true",
+            globalScratchBuf: "true",
+            globalScratchBufSize: 0x8000000,
+        },
+    },
+    {
+        input: ".project/templates/am62px/nortos/main_nortos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "test_main",
+        },
+    }
+];
+
 const buildOptionCombos = [
     { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "freertos"},
     { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "nortos"},
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "freertos"},
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "nortos"},
 ];
 
 function getComponentProperty() {
@@ -232,6 +338,24 @@ function getComponentBuildProperty(buildOption) {
         	build_property.templates = templates_nortos_wkup_r5f;
 		    build_property.cflags = cflags_wkup_r5_nortos;
         	build_property.defines = defines_dm_r5f;
+	    }
+    }
+    else if(buildOption.cpu.match(/mcu-r5f*/)) {
+	    if(buildOption.os.match(/freertos*/))
+	    {
+            build_property.includes = includes_freertos_r5f;
+        	build_property.libdirs = libdirs_freertos_mcu_r5;
+        	build_property.libs = libs_freertos_mcu_r5f;
+        	build_property.templates = templates_freertos_mcu_r5f;
+		    build_property.cflags = cflags_mcu_r5_freertos;
+	    }
+	    else
+	    {
+		    build_property.includes = includes_nortos_r5f;
+        	build_property.libdirs = libdirs_nortos_mcu_r5;
+        	build_property.libs = libs_nortos_mcu_r5f;
+        	build_property.templates = templates_nortos_mcu_r5f;
+		    build_property.cflags = cflags_mcu_r5_nortos;
 	    }
     }
 

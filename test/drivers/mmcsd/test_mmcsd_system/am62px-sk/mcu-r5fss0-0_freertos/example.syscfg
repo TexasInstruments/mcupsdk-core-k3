@@ -1,0 +1,110 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM62Px" --package "AMH" --part "Default" --context "mcu-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.16.1+2960"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const ipc             = scripting.addModule("/drivers/ipc/ipc");
+const freertos_fat    = scripting.addModule("/fs/freertos_fat/freertos_fat", {}, false);
+const freertos_fat1   = freertos_fat.addInstance();
+const addr_translate  = scripting.addModule("/kernel/dpl/addr_translate", {}, false);
+const addr_translate1 = addr_translate.addInstance();
+const addr_translate2 = addr_translate.addInstance();
+const addr_translate3 = addr_translate.addInstance();
+const clock           = scripting.addModule("/kernel/dpl/clock");
+const debug_log       = scripting.addModule("/kernel/dpl/debug_log");
+const mpu_armv7       = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
+const mpu_armv71      = mpu_armv7.addInstance();
+const mpu_armv72      = mpu_armv7.addInstance();
+const mpu_armv73      = mpu_armv7.addInstance();
+const mpu_armv74      = mpu_armv7.addInstance();
+const mpu_armv75      = mpu_armv7.addInstance();
+const mpu_armv76      = mpu_armv7.addInstance();
+const mpu_armv77      = mpu_armv7.addInstance();
+const mpu_armv78      = mpu_armv7.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+ipc.enableLinuxIpc  = false;
+ipc.wkup_r5fss0_0  = "notify";
+
+freertos_fat1.$name                  = "CONFIG_FREERTOS_FAT0";
+freertos_fat1.peripheralDriver.$name = "CONFIG_MMCSD_SD";
+
+addr_translate1.$name      = "CONFIG_ADDR_TRANSLATE_REGION0";
+addr_translate1.localAddr  = 0x9B000000;
+addr_translate1.systemAddr = 0x9B000000;
+addr_translate1.size       = 24;
+
+addr_translate2.$name      = "CONFIG_ADDR_TRANSLATE_REGION2";
+addr_translate2.localAddr  = 0x9C000000;
+addr_translate2.size       = 24;
+addr_translate2.systemAddr = 0x9C000000;
+
+addr_translate3.$name      = "CONFIG_ADDR_TRANSLATE_REGION1";
+addr_translate3.localAddr  = 0xA0000000;
+addr_translate3.systemAddr = 0xA0000000;
+addr_translate3.size       = 24;
+
+debug_log.enableCssLog       = false;
+debug_log.enableSharedMemLog = true;
+
+mpu_armv71.$name             = "CONFIG_MPU_REGION0";
+mpu_armv71.size              = 31;
+mpu_armv71.attributes        = "Device";
+mpu_armv71.accessPermissions = "Supervisor RD+WR, User RD";
+mpu_armv71.allowExecute      = false;
+
+mpu_armv72.$name             = "CONFIG_MPU_REGION1";
+mpu_armv72.size              = 15;
+mpu_armv72.accessPermissions = "Supervisor RD+WR, User RD";
+
+mpu_armv73.$name             = "CONFIG_MPU_REGION2";
+mpu_armv73.baseAddr          = 0x41010000;
+mpu_armv73.size              = 15;
+mpu_armv73.accessPermissions = "Supervisor RD+WR, User RD";
+
+mpu_armv74.$name             = "CONFIG_MPU_REGION3";
+mpu_armv74.accessPermissions = "Supervisor RD+WR, User RD";
+mpu_armv74.baseAddr          = 0x79100000;
+mpu_armv74.size              = 19;
+
+mpu_armv75.$name             = "CONFIG_MPU_REGION4";
+mpu_armv75.baseAddr          = 0x60000000;
+mpu_armv75.size              = 28;
+mpu_armv75.accessPermissions = "Supervisor RD, User RD";
+
+mpu_armv76.$name      = "CONFIG_MPU_REGION5";
+mpu_armv76.attributes = "NonCached";
+mpu_armv76.size       = 24;
+mpu_armv76.baseAddr   = 0x9B000000;
+
+mpu_armv77.$name        = "CONFIG_MPU_REGION6";
+mpu_armv77.baseAddr     = 0x9B500000;
+mpu_armv77.allowExecute = false;
+mpu_armv77.attributes   = "NonCached";
+mpu_armv77.size         = 20;
+
+mpu_armv78.baseAddr   = 0xA1000000;
+mpu_armv78.attributes = "NonCached";
+mpu_armv78.$name      = "LOG_SHM_MEM";
+mpu_armv78.size       = 18;
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+freertos_fat1.peripheralDriver.MMC1.$suggestSolution      = "MMC1";
+freertos_fat1.peripheralDriver.MMC1.CLK.$suggestSolution  = "MMC1_CLK";
+freertos_fat1.peripheralDriver.MMC1.CMD.$suggestSolution  = "MMC1_CMD";
+freertos_fat1.peripheralDriver.MMC1.DAT0.$suggestSolution = "MMC1_DAT0";
+freertos_fat1.peripheralDriver.MMC1.DAT1.$suggestSolution = "MMC1_DAT1";
+freertos_fat1.peripheralDriver.MMC1.DAT2.$suggestSolution = "MMC1_DAT2";
+freertos_fat1.peripheralDriver.MMC1.DAT3.$suggestSolution = "MMC1_DAT3";
+freertos_fat1.peripheralDriver.MMC1.SDCD.$suggestSolution = "MMC1_SDCD";

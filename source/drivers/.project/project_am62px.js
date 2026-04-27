@@ -58,7 +58,6 @@ const files_mcu_r5f = {
         "udma_rm.c",
         "udma_rmcfg_common.c",
         "udma_utils.c",
-        "soc.c",
         "udma_rmcfg.c",
         "udma_soc.c",
         "utils.c",
@@ -209,7 +208,6 @@ const filedirs_mcu_r5f = {
         "udma/v0/hw_include",
         "udma/v0/soc",
         "udma/v0/soc/am62px",
-        "soc/am62px",
         "utils"
     ],
 };

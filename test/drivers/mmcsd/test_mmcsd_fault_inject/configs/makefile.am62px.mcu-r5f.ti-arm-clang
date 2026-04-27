@@ -13,7 +13,7 @@ AR=$(CGT_TI_ARM_CLANG_PATH)/bin/tiarmar
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-LIBNAME:=drivers-i2c-inject-fault.am62px.mcu-r5f.ti-arm-clang.$(PROFILE).lib
+LIBNAME:=drivers-mmcsd-inject-fault.am62px.mcu-r5f.ti-arm-clang.$(PROFILE).lib
 
 FILES_common := \
     csl_emif.c \
@@ -138,7 +138,7 @@ CFLAGS_common := \
     -g \
     -Wno-gnu-variable-sized-type-not-at-end \
     -Wno-unused-function \
-    -DENABLE_I2C_FAULT_INJECTION \
+    -DENABLE_MMCSD_FAULT_INJECTION \
 
 CFLAGS_cpp_common := \
     -Wno-c99-designator \
@@ -174,7 +174,7 @@ INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
 ARFLAGS := $(ARFLAGS_common) $(ARFLAGS_$(PROFILE))
 
 LIBDIR := lib
-OBJDIR := obj/am62px/ti-arm-clang/$(PROFILE)/mcu-r5f/drivers-i2c-inject-fault/
+OBJDIR := obj/am62px/ti-arm-clang/$(PROFILE)/mcu-r5f/drivers-mmcsd-inject-fault/
 OBJS := $(FILES:%.c=%.obj)
 OBJS += $(ASMFILES:%.S=%.obj)
 DEPS := $(FILES:%.c=%.d)

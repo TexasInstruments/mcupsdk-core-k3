@@ -28,9 +28,9 @@ const component_file_list = [
     "source/sdl/.project/project.js",
     "source/sdl/sdl_sbl/.project/project.js",
     "source/safety_checkers/.project/project.js",
+    "test/unity/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_fault_inject/configs/.project/project.js",
     "test/drivers/i2c/test_i2c_fault_inject/configs/.project/project_am62px.js",
-    "test/unity/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
 ];
 
@@ -209,7 +209,9 @@ const example_file_list = [
     "test/drivers/gtc/.project/project.js",
     "test/drivers/pinmux_coverage/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_raw_io/.project/project.js",
+    "test/drivers/mmcsd/test_mmcsd_fs_io/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_fault_inject/.project/project.js",
+    "test/drivers/mmcsd/test_mmcsd_system/.project/project.js",
     "test/drivers/rtc/.project/project.js",
     "test/drivers/sciclient/sciclient_get_version/.project/project.js",
     "test/drivers/sciclient/sciclient_dynamic_analysis/.project/project.js",

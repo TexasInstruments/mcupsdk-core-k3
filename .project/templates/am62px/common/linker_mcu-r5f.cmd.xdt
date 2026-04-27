@@ -19,11 +19,14 @@
     let codeDataSizeFlash = 0;
     let useDdr = false;
     let usetcma = false;
+    let globalScratchBuf = "false";
     let resourceTableSizeDdr = 0;
     let useFlash = false;
     let addrBase = 0;
     let addrBaseDdr = 0;
     let addrBaseFlash = 0;
+    let globalScratchBufSize = 0;
+    let globalScratchBufSizeInMB = 0;
     /* Temp change till we support DDR - alloc all memory to single core
      * as we don't plan to run code coverage for system project */
 
@@ -49,6 +52,14 @@
         undefinedStackSize = options.undefinedStackSize;
     if(options && options.useDdr)
         useDdr = options.useDdr;
+
+    if(options && options.globalScratchBuf) {
+        globalScratchBuf = options.globalScratchBuf;
+        globalScratchBufSize = 0x2000000;
+        if(options.globalScratchBufSize)
+            globalScratchBufSize = options.globalScratchBufSize;
+        globalScratchBufSizeInMB = globalScratchBufSize / (1024 * 1024);
+    }
 
 
     codeDataSize = 0x80000;
@@ -230,6 +241,10 @@ SECTIONS
     } > MSRAM
     % }
 
+    % if(globalScratchBuf == "true") {
+    /* global scratch buffer region */
+    .globalScratchBuffer (NOLOAD) : {} > DDR2
+    % }
 }
 
 MEMORY
@@ -249,4 +264,8 @@ MEMORY
     DDR_IPC_TRACE_LINUX           : ORIGIN = 0x9B900400, LENGTH = 0xFFC00    /* IPC trace buffer     */
     % }
     DDR_CODE_DATA                 : ORIGIN = 0x9BA00000, LENGTH = 0xE00000   /* Code/Data            */
+    % if(globalScratchBuf == "true") {
+    /* global scratch buffer region in DDR (`globalScratchBufSizeInMB` MB) */
+    DDR2           (RWIX)      : ORIGIN = 0xA0000000, LENGTH = 0x0`(globalScratchBufSize).toString(16).toUpperCase()`
+    % }
 }

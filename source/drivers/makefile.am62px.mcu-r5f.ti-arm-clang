@@ -70,7 +70,6 @@ FILES_common := \
     udma_rm.c \
     udma_rmcfg_common.c \
     udma_utils.c \
-    soc.c \
     udma_rmcfg.c \
     udma_soc.c \
     utils.c \
@@ -118,7 +117,6 @@ FILES_PATH_common = \
     udma/v0/hw_include \
     udma/v0/soc \
     udma/v0/soc/am62px \
-    soc/am62px \
     utils \
 
 INCLUDES_common := \

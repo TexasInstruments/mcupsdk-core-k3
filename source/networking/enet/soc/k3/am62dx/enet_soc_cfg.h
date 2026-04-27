@@ -164,6 +164,12 @@ extern "C" {
 #define ENET_CFG_RX_FLOWS_NUM                       (ENET_CFG_RM_RX_CH_MAX)
 #define ENET_CFG_TX_CHANNELS_NUM                    (ENET_CFG_RM_TX_CH_MAX)
 
+/*! \brief Number of CPSW GENF modules */
+#define ENET_CFG_CPSW_GENF_NUM                      (2U)
+
+/*! \brief Number of CPSW Hardware push events */
+#define ENET_CFG_CPSW_HWPUSH_NUM                    (8U)
+
 /* ========================================================================== */
 /*                         Structures and Enums                               */
 /* ========================================================================== */

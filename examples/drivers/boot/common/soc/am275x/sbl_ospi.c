@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -61,6 +61,7 @@
 
 int32_t App_loadImages(Bootloader_LoadImageParams *bootLoadParams);
 int32_t App_runCpus(Bootloader_LoadImageParams *bootLoadParams);
+int32_t App_loadSSOImage(Bootloader_Handle bootHandle);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -155,8 +156,54 @@ void App_bootMultipleCoreFlash()
         Bootloader_LoadImageParams bootArray[CONFIG_BOOTLOADER_NUM_INSTANCES];
         uint32_t imageSize = 0U;
 
+        /*
+         * Step 1: Load SSO (Shared Static Object) image first.
+         *
+         * The SSO image (CONFIG_BOOTLOADER_SHARED, offset 0x1C00000) contains
+         * shared code and data placed in SSO_SHM.  It must be loaded into memory
+         * before any per-core optishare image starts executing, because those
+         * images reference symbols that live in SSO_SHM.
+         *
+         * The SSO image is NOT associated with any application core — do NOT call
+         * App_runCpus for it.  Its bootloader handle is closed after loading.
+         */
+        {
+            Bootloader_Params_init(&bootArray[CONFIG_BOOTLOADER_SHARED].bootParams);
+            Bootloader_BootImageInfo_init(&bootArray[CONFIG_BOOTLOADER_SHARED].bootImageInfo);
+            bootArray[CONFIG_BOOTLOADER_SHARED].bootHandle =
+                Bootloader_open(CONFIG_BOOTLOADER_SHARED, &bootArray[CONFIG_BOOTLOADER_SHARED].bootParams);
+            bootArray[CONFIG_BOOTLOADER_SHARED].loadStatus = BOOTLOADER_IMAGE_NOT_LOADED;
+
+            if(bootArray[CONFIG_BOOTLOADER_SHARED].bootHandle != NULL)
+            {
+                ((Bootloader_Config *)bootArray[CONFIG_BOOTLOADER_SHARED].bootHandle)->scratchMemPtr = gScratchBuffer;
+                status = App_loadSSOImage(bootArray[CONFIG_BOOTLOADER_SHARED].bootHandle);
+                if(SystemP_SUCCESS == status)
+                {
+                    imageSize += Bootloader_getMulticoreImageSize(bootArray[CONFIG_BOOTLOADER_SHARED].bootHandle);
+                    Bootloader_profileAddProfilePoint("SSO Image Load");
+                }
+                else
+                {
+                    DebugP_logWarn("SSO image load failed, shared memory may not be initialised !!!\r\n");
+                    status = SystemP_SUCCESS; /* non-fatal: attempt per-core boot regardless */
+                }
+                Bootloader_close(bootArray[CONFIG_BOOTLOADER_SHARED].bootHandle);
+                bootArray[CONFIG_BOOTLOADER_SHARED].bootHandle = NULL;
+            }
+        }
+
+        /*
+         * Step 2: Load per-core images.
+         *
+         * Iterate over all instances except CONFIG_BOOTLOADER_SHARED.
+         * Each instance maps to one flash offset and one core image.
+         */
         for(uint8_t inst = 0U; inst < CONFIG_BOOTLOADER_NUM_INSTANCES; inst++)
         {
+            if(inst == CONFIG_BOOTLOADER_SHARED)
+                continue;
+
             Bootloader_Params_init(&bootArray[inst].bootParams);
             Bootloader_BootImageInfo_init(&bootArray[inst].bootImageInfo);
             bootArray[inst].bootHandle = Bootloader_open(inst, &bootArray[inst].bootParams);
@@ -165,7 +212,7 @@ void App_bootMultipleCoreFlash()
             if(bootArray[inst].bootHandle != NULL)
             {
                 ((Bootloader_Config *)bootArray[inst].bootHandle)->scratchMemPtr = gScratchBuffer;
-		    	status = App_loadImages(&bootArray[inst]);
+                status = App_loadImages(&bootArray[inst]);
             }
 
             if(SystemP_SUCCESS == status)
@@ -175,10 +222,10 @@ void App_bootMultipleCoreFlash()
             else
             {
                 DebugP_logWarn("App_loadImages failed for core %s !!!\r\n", \
-                    Bootloader_socGetCoreName(bootArray[inst].bootImageInfo.cpuInfo[inst + 1].cpuId));
+                    Bootloader_socGetCoreName(bootArray[inst].bootImageInfo.cpuInfo[inst].cpuId));
 
                 DebugP_logWarn("App_loadImages failed at address %x !!!\r\n", \
-                    bootArray[inst].bootImageInfo.cpuInfo[inst + 1].entryPoint);
+                    bootArray[inst].bootImageInfo.cpuInfo[inst].entryPoint);
             }
         }
 
@@ -186,21 +233,30 @@ void App_bootMultipleCoreFlash()
         Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_FLASH, OSPI_getInputClk(gOspiHandle[CONFIG_OSPI_SBL]));
 
         if(SystemP_SUCCESS == status)
-		{
-			Bootloader_profilePrintProfileLog();
-			DebugP_log("Image loading done...\r\n");
-			DebugP_log("Starting RTOS/Baremetal applications\r\n");
-			UART_flushTxFifo(gUartHandle[CONFIG_UART0]);
-		}
+        {
+            Bootloader_profilePrintProfileLog();
+            DebugP_log("Image loading done...\r\n");
+            DebugP_log("Starting RTOS/Baremetal applications\r\n");
+            UART_flushTxFifo(gUartHandle[CONFIG_UART0]);
+        }
 
-         /* Deinitialise the flash and driver peripherial used by bootloader before starting other cores,
-          * so that other systems can access and reinitialise it.
-          */
+        /* Deinitialise the flash and driver peripheral used by bootloader before
+         * starting other cores, so that other systems can access and reinitialise it.
+         */
         App_boardDriversClose();
         App_driversClose();
 
+        /*
+         * Step 3: Run per-core images.
+         *
+         * CONFIG_BOOTLOADER_SHARED is skipped — its handle was already closed
+         * after loading in Step 1 and there is no core to boot from it.
+         */
         for(uint8_t inst = 0U; inst < CONFIG_BOOTLOADER_NUM_INSTANCES; inst++)
         {
+            if(inst == CONFIG_BOOTLOADER_SHARED)
+                continue;
+
             if(bootArray[inst].loadStatus == BOOTLOADER_IMAGE_LOADED)
             {
                 status = App_runCpus(&bootArray[inst]);
@@ -211,7 +267,10 @@ void App_bootMultipleCoreFlash()
             }
             else
             {
-                Bootloader_powerOffCpu(bootArray[inst].bootHandle, &bootArray[inst].bootImageInfo.cpuInfo[inst + 1]);
+                if(bootArray[inst].bootHandle != NULL)
+                {
+                    Bootloader_powerOffCpu(bootArray[inst].bootHandle, &bootArray[inst].bootImageInfo.cpuInfo[inst]);
+                }
             }
         }
 

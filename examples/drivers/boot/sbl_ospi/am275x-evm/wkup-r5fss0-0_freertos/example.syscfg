@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "wkup-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "wkup-r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.24.2+4234"}
+ * @versions {"tool":"1.26.2+4477"}
  */
 
 /**
@@ -20,6 +20,7 @@ const bootloader3 = bootloader.addInstance();
 const bootloader4 = bootloader.addInstance();
 const bootloader5 = bootloader.addInstance();
 const bootloader6 = bootloader.addInstance();
+const bootloader7 = bootloader.addInstance();
 const gtc         = scripting.addModule("/drivers/gtc/gtc");
 const qos         = scripting.addModule("/drivers/qos/qos", {}, false);
 const qos1        = qos.addInstance();
@@ -38,28 +39,30 @@ const mpu_armv79  = mpu_armv7.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-hyperRam1.$name                       = "CONFIG_HYPERRAM0";
-hyperRam1.addedByBootloader           = true;
-hyperRam1.peripheralDriver.$name      = "CONFIG_HYPERBUS0";
-hyperRam1.peripheralDriver.deviceSize = 0x4000000;
+hyperRam1.$name                  = "CONFIG_HYPERRAM0";
+hyperRam1.addedByBootloader      = true;
+hyperRam1.peripheralDriver.$name = "CONFIG_HYPERBUS0";
 
-bootloader1.appImageOffset = "0x400000";
-bootloader1.$name          = "CONFIG_BOOTLOADER_R50_0";
+bootloader1.$name          = "CONFIG_BOOTLOADER_SHARED";
+bootloader1.appImageOffset = "0x1C00000";
 
-bootloader2.$name          = "CONFIG_BOOTLOADER_R50_1";
-bootloader2.appImageOffset = "0x800000";
+bootloader2.$name          = "CONFIG_BOOTLOADER_R50_0";
+bootloader2.appImageOffset = "0x400000";
 
-bootloader3.$name          = "CONFIG_BOOTLOADER_R51_0";
-bootloader3.appImageOffset = "0xC00000";
+bootloader3.$name          = "CONFIG_BOOTLOADER_R50_1";
+bootloader3.appImageOffset = "0x800000";
 
-bootloader4.$name          = "CONFIG_BOOTLOADER_R51_1";
-bootloader4.appImageOffset = "0x1000000";
+bootloader4.$name          = "CONFIG_BOOTLOADER_R51_0";
+bootloader4.appImageOffset = "0xC00000";
 
-bootloader5.$name          = "CONFIG_BOOTLOADER_C750";
-bootloader5.appImageOffset = "0x1400000";
+bootloader5.$name          = "CONFIG_BOOTLOADER_R51_1";
+bootloader5.appImageOffset = "0x1000000";
 
-bootloader6.$name          = "CONFIG_BOOTLOADER_C751";
-bootloader6.appImageOffset = "0x1800000";
+bootloader6.$name          = "CONFIG_BOOTLOADER_C750";
+bootloader6.appImageOffset = "0x1400000";
+
+bootloader7.$name          = "CONFIG_BOOTLOADER_C751";
+bootloader7.appImageOffset = "0x1800000";
 
 bootloader1.flashDriver                                = flash1;
 flash1.$name                                           = "CONFIG_FLASH_SBL";
@@ -68,6 +71,7 @@ bootloader3.flashDriver                                = flash1;
 bootloader4.flashDriver                                = flash1;
 bootloader5.flashDriver                                = flash1;
 bootloader6.flashDriver                                = flash1;
+bootloader7.flashDriver                                = flash1;
 flash1.serialFlashDriver.$name                         = "board_flash_serialFlash_serialflash0";
 flash1.serialFlashDriver.peripheralDriver.$name        = "CONFIG_OSPI_SBL";
 flash1.serialFlashDriver.peripheralDriver.dmaEnable    = true;
@@ -86,6 +90,7 @@ bootloader3.udmaDriver                               = udma1;
 bootloader4.udmaDriver                               = udma1;
 bootloader5.udmaDriver                               = udma1;
 bootloader6.udmaDriver                               = udma1;
+bootloader7.udmaDriver                               = udma1;
 
 const udma_blkcopy_channel                                   = scripting.addModule("/drivers/udma/udma_blkcopy_channel", {}, false);
 const udma_blkcopy_channel1                                  = udma_blkcopy_channel.addInstance({}, false);
@@ -97,6 +102,7 @@ bootloader3.udmaBlkCopyChannel                               = udma_blkcopy_chan
 bootloader4.udmaBlkCopyChannel                               = udma_blkcopy_channel1;
 bootloader5.udmaBlkCopyChannel                               = udma_blkcopy_channel1;
 bootloader6.udmaBlkCopyChannel                               = udma_blkcopy_channel1;
+bootloader7.udmaBlkCopyChannel                               = udma_blkcopy_channel1;
 
 debug_log.enableUartLog                      = true;
 debug_log.enableCssLog                       = false;

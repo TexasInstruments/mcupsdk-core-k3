@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -812,6 +812,22 @@ static int32_t Bootloader_initCpu(Bootloader_Handle handle, Bootloader_CpuInfo *
         else
         {
             Bootloader_Config *config = (Bootloader_Config *)handle;
+
+            /* SSO images must not power-on any CPU — segments are loaded to shared
+             * memory only.  Per-core images are responsible for their own CPU init.
+             */
+            if(config->skipCpuInit != 0U)
+            {
+                break;
+            }
+
+            /* Prevent double power-on if this CPU was already initialised by a
+             * previous per-core image load.
+             */
+            if((gCoresBootedMap & (1U << cpuInfo->cpuId)) != 0U)
+            {
+                break;
+            }
 
             status = Bootloader_socEnableDomain(cpuInfo->cpuId, &gCoresBootedMap);
 

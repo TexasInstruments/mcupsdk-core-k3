@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -235,6 +235,7 @@ typedef struct Bootloader_Config_s
     uint8_t *scratchMemPtr;
     void *socCoreOpMode;
     uint32_t enableDma;
+    uint32_t skipCpuInit;
 } Bootloader_Config;
 
 #include <drivers/bootloader/bootloader_flash.h>

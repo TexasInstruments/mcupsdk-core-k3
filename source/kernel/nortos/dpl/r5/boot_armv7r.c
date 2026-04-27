@@ -37,7 +37,7 @@ extern uint32_t __BSS_END;
 
 int32_t _system_pre_init(void);
 
-int _system_pre_init()
+__attribute__((do_not_share))int _system_pre_init()
 {
     uint32_t bss_size = ((uintptr_t)&__BSS_END - (uintptr_t)&__BSS_START);
     memset((void*)&__BSS_START, 0x00, bss_size);

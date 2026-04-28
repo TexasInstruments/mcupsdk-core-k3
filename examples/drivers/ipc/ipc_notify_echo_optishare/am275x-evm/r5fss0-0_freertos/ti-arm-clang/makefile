@@ -22,6 +22,7 @@ PROFILE?=release
 ConfigName:=$(PROFILE)
 
 OUTNAME:=ipc_notify_echo_optishare.$(PROFILE).out
+COREOUTNAME:=ipc_notify_echo_optishare.$(PROFILE).optishare.out
 
 BOOTIMAGE_PATH=$(abspath .)
 BOOTIMAGE_NAME:=ipc_notify_echo_optishare.$(PROFILE).mcelf
@@ -29,6 +30,10 @@ BOOTIMAGE_NAME_XIP:=ipc_notify_echo_optishare.$(PROFILE).mcelf_xip
 BOOTIMAGE_NAME_SIGNED:=ipc_notify_echo_optishare.$(PROFILE).mcelf.signed
 BOOTIMAGE_NAME_HS:=ipc_notify_echo_optishare.$(PROFILE).mcelf.hs
 BOOTIMAGE_NAME_HS_FS:=ipc_notify_echo_optishare.$(PROFILE).mcelf.hs_fs
+
+MULTI_CORE_BOOTIMAGE_NAME_MCELF_OPTISHARE:=ipc_notify_echo_optishare.$(PROFILE).optishare.mcelf
+MULTI_CORE_BOOTIMAGE_NAME_MCELF_OPTISHARE_HS_FS:=ipc_notify_echo_optishare.$(PROFILE).optishare.mcelf.hs_fs
+
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -109,6 +114,7 @@ LFLAGS_common = \
 	-Wl,--priority \
 	-Wl,--ram_model \
 	-Wl,--reread_libs \
+	-Wl,--gen_xml_func_hash \
 
 
 LIBS_NAME = \
@@ -139,6 +145,9 @@ LIBS_PREBUILD_PATH := $(LIBS_PREBUILD_PATH_common) $(LIBS_PREBUILD_PATH_$(PROFIL
 LFLAGS := $(LFLAGS_common) $(LFLAGS_$(PROFILE))
 LNKOPTFLAGS := $(LNKOPTFLAGS_common) $(LNKOPTFLAGS_$(PROFILE))
 LNK_FILES := $(LNK_FILES_common) $(LNK_FILES_$(PROFILE))
+
+LNK_FILES_OPTISHARE = \
+	linker_optishare.cmd \
 
 OBJDIR := obj/$(PROFILE)/
 OBJS := $(FILES:%.c=%.obj)
@@ -171,9 +180,24 @@ SYSCFG_GEN_FILES+=generated/ti_board_open_close.c generated/ti_board_open_close.
 $(OUTNAME): syscfg $(SYSCFG_GEN_FILES) $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 	@echo  .
 	@echo  Linking: am275x:r5fss0-0:freertos:ti-arm-clang $@ ...
-	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PREBUILD_PATH) $(LIBS_PATH) -Wl,-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS_PREBUILD) $(LIBS) $(LNK_FILES)
+	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PREBUILD_PATH) $(LIBS_PATH) -Wl,-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS_PREBUILD) $(LIBS) $(LNK_FILES) -Wl,--xml_link_info=$(basename $@).lnkxml
 	@echo  Linking: am275x:r5fss0-0:freertos:ti-arm-clang $@ Done !!!
 	@echo  .
+
+coreout: $(COREOUTNAME)
+$(COREOUTNAME): linker_optishare.cmd $(SYSTEM_COMMAND)
+	@echo  .
+	@echo  Relinking Linking: am275x:r5fss0-0:freertos:ti-arm-clang $@ with OptiShare SSO..
+	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PATH) -Wl,-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) $(LNK_FILES_OPTISHARE) -Wl,--xml_link_info=$(basename $@).lnkxml -Wl,--import_sso=$(SSO_PATH)
+	@echo  Relinking with optishare: am275x:r5fss0-0:freertos:ti-arm-clang $@ Done !!!
+	@echo  .
+	$(PYTHON) $(MCELF_IMAGE_GEN) $(CORE_IMG_OPTISHARE_ARGS) --output=$(MULTI_CORE_BOOTIMAGE_NAME_MCELF_OPTISHARE) --xip=$(MCELF_XIP_RANGE) --sw_version=$(SW_VERSION)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(MULTI_CORE_BOOTIMAGE_NAME_MCELF_OPTISHARE) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(MULTI_CORE_BOOTIMAGE_NAME_MCELF_OPTISHARE_HS_FS) --keyversion $(VERSION)
+	@echo  optishare.out to optishare.mcelf is generated
+
+linker_optishare.cmd: $(OPTISHARE_MEMMAP)
+	@echo  Generating optishare linker: $(CORE_NAME) ...
+	$(PYTHON) $(OPTISHARE_GEN_SCRIPT) --core $(CORE_NAME) --memmap $(OPTISHARE_MEMMAP) --output $@
 
 clean:
 	@echo  Cleaning: am275x:r5fss0-0:freertos:ti-arm-clang $(OUTNAME) ...
@@ -192,12 +216,16 @@ scrub:
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
 	$(RM) \*.map
+	$(RM) \*.lnkxml
+	$(RM) \*.ossr
 	$(RM) \*.mcelf*
 	$(RM) \*.tiimage*
 	$(RM) \*.bin
 else
 	$(RM) *.out
 	$(RM) *.map
+	$(RM) *.lnkxml
+	$(RM) *.ossr
 	$(RM) *.mcelf*
 	$(RM) *.tiimage*
 	$(RM) *.bin
@@ -260,6 +288,15 @@ MULTI_CORE_IMAGE_PARAMS = \
     $(BOOTIMAGE_CORE_ID_r5fss0-0):$(OUTNAME) \
 
 MCELF_XIP_RANGE?=0x60100000:0x60200000
+
+CORE_IMG_OPTISHARE_ARGS :=
+
+CORE_OPTISHARE_IMG=ipc_notify_echo_optishare.$(PROFILE).optishare.out 
+CORE_IMG_OPTISHARE_ARGS +=--core-img=$(BOOTIMAGE_CORE_ID_r5fss0-0):$(CORE_OPTISHARE_IMG)
+
+CORE_NAME := r5fss0-0
+OPTISHARE_GEN_SCRIPT := $(abspath ../../system_freertos/gen_linker_optishare.py)
+OPTISHARE_MEMMAP     := $(abspath ../../system_freertos/optishare_memmap.json)
 
 $(BOOTIMAGE_NAME): $(OUTNAME)
 	@echo  Boot image: am275x:r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ ...

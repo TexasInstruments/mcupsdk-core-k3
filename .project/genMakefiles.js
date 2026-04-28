@@ -268,7 +268,15 @@ function genMakefileExample(example_file_list, device) {
     for(example of example_file_list) {
         property = require(`../${example}`).getComponentProperty(device);
         for(buildOption of property.buildOptionCombos) {
-            let commonCgtOptions = require(`./cgt/cgt_${buildOption.cgt}`).getCgtOptions(buildOption.cpu);
+            // Detect Optishare projects early for CGT options
+            let isOptishareEarly = false;
+            if(property.name && property.name.toLowerCase().includes('optishare')) {
+                isOptishareEarly = true;
+            }
+            if(property.dirPath && property.dirPath.toLowerCase().includes('optishare')) {
+                isOptishareEarly = true;
+            }
+            let commonCgtOptions = require(`./cgt/cgt_${buildOption.cgt}`).getCgtOptions(buildOption.cpu, { isOptishare: isOptishareEarly });
             let common_build_property = require(`./device/project_${device}`).getProperty();
             let project = [];
             let makefileOutPath = common.path.makeExampleOutPath(property.dirPath, buildOption);
@@ -289,12 +297,22 @@ function genMakefileExample(example_file_list, device) {
             if(common.isInstrumentationMode()) {
                 isInstrumentationMode = true;
             }
+
+            // Detect Optishare projects by name or path
+            let isOptishare = false;
+            if(property.name && property.name.toLowerCase().includes('optishare')) {
+                isOptishare = true;
+            }
+            if(property.dirPath && property.dirPath.toLowerCase().includes('optishare')) {
+                isOptishare = true;
+            }
+
             let args = {
                 sdkPath: "MCU_PLUS_SDK_PATH",
                 relPath: common.path.relative(project.dirPath, "."),
                 project: project,
                 common: common,
-                cgtOptions: require(`./cgt/cgt_${project.cgt}`).getCgtOptions(buildOption.cpu),
+                cgtOptions: require(`./cgt/cgt_${project.cgt}`).getCgtOptions(buildOption.cpu, { isOptishare: isOptishare }),
                 syscfg: {
                     device: require(`./device/project_${device}.js`).getSysCfgDevice(buildOption.board),
                     cpu: require(`./device/project_${device}.js`).getSysCfgCpu(buildOption.cpu),
@@ -305,6 +323,9 @@ function genMakefileExample(example_file_list, device) {
                 isInstrumentationMode: isInstrumentationMode,
                 isSmartPlacement: project.isSmartPlacement || false,
                 flashAddr: require(`./device/project_${device}.js`).getFlashAddr(),
+                options: {
+                    isOptishare: isOptishare
+                }
             };
 
             if(project.makefile) {

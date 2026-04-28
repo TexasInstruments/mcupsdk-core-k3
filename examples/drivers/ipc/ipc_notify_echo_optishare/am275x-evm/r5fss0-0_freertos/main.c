@@ -31,6 +31,8 @@
  */
 
 #include <stdlib.h>
+#include "kernel/dpl/AddrTranslateP.h"
+#include <string.h>
 #include <kernel/dpl/DebugP.h>
 #include "ti_drivers_config.h"
 #include "ti_board_config.h"
@@ -42,12 +44,26 @@
 #define MAIN_TASK_PRI  (configMAX_PRIORITIES-1)
 
 #define MAIN_TASK_SIZE (16384U/sizeof(configSTACK_DEPTH_TYPE))
+
+extern int __TI_ATRegion0_src_addr;
+extern int __TI_ATRegion0_trg_addr;
+extern int __TI_ATRegion0_region_sz;
+extern int __TI_ATRegion1_src_addr;
+extern int __TI_ATRegion1_trg_addr;
+extern int __TI_ATRegion1_region_sz;
+extern int __TI_ATRegion2_src_addr;
+extern int __TI_ATRegion2_trg_addr;
+extern int __TI_ATRegion2_region_sz;
+
 StackType_t gMainTaskStack[MAIN_TASK_SIZE] __attribute__((aligned(32)));
 
 StaticTask_t gMainTaskObj;
 TaskHandle_t gMainTask;
 
 void ipc_notify_echo_main(void *args);
+void __attribute__((do_not_share)) AddrTranslateP_init (AddrTranslateP_Params *params);
+void __attribute__((do_not_share)) AddrTranslateP_Params_init (AddrTranslateP_Params *params) ;
+
 
 void freertos_main(void *args)
 {
@@ -70,7 +86,7 @@ void freertos_main(void *args)
 }
 
 
-int main()
+int AppStart(void)
 {
     /* init SOC specific modules */
     System_init();
@@ -96,4 +112,52 @@ int main()
     DebugP_assertNoLog(0);
 
     return 0;
+}
+__attribute__((do_not_share)) int main(void)
+{
+
+    AddrTranslateP_Params params;
+    AddrTranslateP_RegionConfig region[3];
+
+    AddrTranslateP_Params_init(&params);
+
+    if((uint32_t)(&__TI_ATRegion0_region_sz) > 0)
+    {
+        params.numRegions++;
+        region[0].size = 0;
+        uint32_t actualSize = (uint32_t)(&__TI_ATRegion0_region_sz);
+        region[0].localAddr = (uint32_t)&__TI_ATRegion0_src_addr;
+        region[0].systemAddr = (uint32_t)&__TI_ATRegion0_trg_addr;
+        memcpy((void *)(uint32_t)(&__TI_ATRegion0_trg_addr), (const void *)(uint32_t)(&__TI_ATRegion0_src_addr), (uint32_t)(&__TI_ATRegion0_region_sz));
+        for(uint32_t sz = 1; sz < actualSize; region[0].size++)
+        {
+            sz = sz << 1;
+        }
+    }
+
+    if((uint32_t)(&__TI_ATRegion1_region_sz) > 0)
+    {
+        params.numRegions++;
+        region[1].size = 0;
+        region[1].localAddr = (uint32_t)&__TI_ATRegion1_src_addr;
+        region[1].systemAddr = (uint32_t)&__TI_ATRegion1_trg_addr;
+        memcpy((void *)(uint32_t)(&__TI_ATRegion1_trg_addr), (const void *)(uint32_t)(&__TI_ATRegion1_src_addr), (uint32_t)(&__TI_ATRegion1_region_sz));
+        for(uint32_t sz = 1; sz < (uint32_t)(&__TI_ATRegion1_region_sz); sz <<= 1, region[1].size++);
+    }
+
+    if((uint32_t)(&__TI_ATRegion2_region_sz) > 0)
+    {
+        params.numRegions++;
+        region[2].size = 0;
+        region[2].localAddr = (uint32_t)&__TI_ATRegion2_src_addr;
+        region[2].systemAddr = (uint32_t)&__TI_ATRegion2_trg_addr;
+        memcpy((void *)(uint32_t)(&__TI_ATRegion2_trg_addr), (const void *)(uint32_t)(&__TI_ATRegion2_src_addr), (uint32_t)(&__TI_ATRegion2_region_sz));
+        for(uint32_t sz = 1; sz < (uint32_t)(&__TI_ATRegion2_region_sz); sz <<= 1, region[2].size++);
+    }
+
+    params.ratBaseAddr = CSL_R5FSS0_RAT_CFG_BASE;
+    params.regionConfig = region;
+    AddrTranslateP_init(&params);
+
+    return AppStart();
 }

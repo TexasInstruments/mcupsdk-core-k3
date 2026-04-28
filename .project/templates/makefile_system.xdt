@@ -41,6 +41,8 @@ MULTI_CORE_BOOTIMAGE_PATH=$(abspath .)
 MULTI_CORE_BOOTIMAGE_NAME:=`args.project.name`_system.$(PROFILE).mcelf
 MULTI_CORE_BOOTIMAGE_NAME_SIGNED:=$(MULTI_CORE_BOOTIMAGE_NAME).signed
 MULTI_CORE_BOOTIMAGE_NAME_XIP:=`args.project.name`_system.$(PROFILE).mcelf_xip
+MULTI_CORE_BOOTIMAGE_NAME_HS:=$(MULTI_CORE_BOOTIMAGE_NAME).hs
+MULTI_CORE_BOOTIMAGE_NAME_HS_FS:=$(MULTI_CORE_BOOTIMAGE_NAME).hs_fs
 % } else {
 MULTI_CORE_BOOTIMAGE_NAME:=`args.project.name`_system.$(PROFILE).appimage
 MULTI_CORE_BOOTIMAGE_NAME_SIGNED:=$(MULTI_CORE_BOOTIMAGE_NAME).signed
@@ -64,18 +66,86 @@ ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/lib/soc/am62x
 ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/lib/soc/am62lx
 % }
 % }
-
+% function getCoreId(cpu) {
+% 	if (args.project.device != "am275x") return -1;
+% 	if (cpu == "wkup-r5fss0-0") return 0;
+% 	else if (cpu == "r5fss0-0") return 1;
+% 	else if (cpu == "r5fss0-1") return 2;
+% 	else if (cpu == "r5fss1-0") return 3;
+% 	else if (cpu == "r5fss1-1") return 4;
+% 	else if (cpu == "c75ss0-0") return 5;
+% 	else if (cpu == "c75ss1-0") return 6;
+% 	else return -1;
+% }
 % let numProjects = 0;
+% if (args.project.device == "am275x") {
+% for (let project of args.project.projects) {
+% let coreId = getCoreId(project.cpu);
+% if(-1 != coreId) {
+CORE_`coreId`=--script ../`project.cpu`_`project.os`/example.syscfg --context `args.device.getSysCfgCpu(project.cpu)` --output ../`project.cpu`_`project.os`/`project.cgt`/generated
+    % numProjects = numProjects + 1;
+% }
+% }
+% } else {
+
 % for (let project of args.project.projects) {
 CORE_`numProjects`=--script ../`project.cpu`_`project.os`/example.syscfg --context `args.device.getSysCfgCpu(project.cpu)` --output ../`project.cpu`_`project.os`/`project.cgt`/generated
     % numProjects = numProjects + 1;
 % }
+% }
 
 CORES = \
+% if (args.project.device == "am275x") {
+% for (let project of args.project.projects) {
+% let coreId = getCoreId(project.cpu);
+% if(-1 != coreId) {
+    $(CORE_`coreId`) \
+% }
+% }
+% } else {
 % for (let i = numProjects-1; i>=0; i--) {
     $(CORE_`i`) \
 % }
+% }
 
+% if (imageFormat == "mcelf") {
+% if(args.options && args.options.isOptishare === true) {
+MULTI_CORE_BOOTIMAGE_NAME_OPTISHARE:=`args.project.name`_system.$(PROFILE).optishare.mcelf
+MULTI_CORE_BOOTIMAGE_NAME_OPTISHARE_HS_FS:=`args.project.name`_system.$(PROFILE).optishare.mcelf.hs_fs
+
+CORE_IMG_OPTISHARE_ARGS :=
+
+	% for (let project of args.project.projects) {
+		% let coreId = getCoreId(project.cpu);
+% if(-1 != coreId) {
+CORE_`coreId`_OPTISHARE_IMG=../`project.cpu`_`project.os`/`project.cgt`/`args.project.name`.$(PROFILE).optishare.out
+CORE_IMG_OPTISHARE_ARGS +=--core-img=`coreId`:$(CORE_`coreId`_OPTISHARE_IMG)
+
+% }
+% }
+COREXMLS = \
+% for (let project of args.project.projects) {
+	../`project.cpu`_`project.os`/`project.cgt`/`args.project.name`.$(PROFILE).lnkxml\
+% }
+
+% }
+SYSTEM_FLAG := true
+% }
+% if (args.project.device == "am275x") {
+
+all: postBuild
+
+corebuild: syscfg
+% for (let project of args.project.projects) {
+	$(MAKE) -C ../`project.cpu`_`project.os`/`project.cgt`/ all SYSTEM_FLAG=${SYSTEM_FLAG}
+% }
+
+postBuild: corebuild
+	$(MAKE) $(MULTI_CORE_BOOTIMAGE_NAME)
+ifeq ($(DEVICE_TYPE), HS)
+	$(MAKE) $(MULTI_CORE_BOOTIMAGE_NAME_HS)
+endif
+% } else {
 all: syscfg
 % for (let project of args.project.projects) {
 	$(MAKE) -C ../`project.cpu`_`project.os`/`project.cgt`/ all
@@ -89,6 +159,7 @@ endif
 % for (let project of args.project.projects) {
 % if (project.isLinuxFwGen) {
 	$(COPY) ../`project.cpu`_`project.os`/`project.cgt`/`args.device.getLinuxFwName(project.cpu)` .
+% }
 % }
 % }
 
@@ -124,6 +195,13 @@ ifeq ($(OS),Windows_NT)
 	$(RM) \*.mcelf.hs_fs
 	$(RM) \*.mcelf.hs
 	$(RM) \*.mcelf_xip
+	$(RM) \*.tmp
+	$(RM) \*.out
+	$(RM) \*.map
+% if(args.options && args.options.isOptishare === true) {
+	$(RM) \*.lnkxml
+% }
+	$(RM) \*.mcelf-enc
 % } else {
 	$(RM) \*.appimage
 	$(RM) \*.appimage.signed
@@ -134,11 +212,18 @@ ifeq ($(OS),Windows_NT)
 % }
 else
 % if (imageFormat == "mcelf") {
+	$(RM) *.tmp
+	$(RM) *.out
+	$(RM) *.map
+% if(args.options && args.options.isOptishare === true) {
+	$(RM) *.lnkxml
+% }
 	$(RM) *.mcelf
 	$(RM) *.mcelf.signed
 	$(RM) *.mcelf.hs
 	$(RM) *.mcelf.hs_fs
 	$(RM) *.mcelf_xip
+	$(RM) *.mcelf-enc
 % } else {
 	$(RM) *.appimage
 	$(RM) *.appimage.signed
@@ -271,6 +356,60 @@ SBL_RUN_ADDRESS=0x80000000
 SBL_DEV_ID=55
 % }
 % if (imageFormat == "mcelf") {
+
+CG_TOOL_ROOT=$(CGT_TI_ARM_CLANG_PATH)
+CC=$(CG_TOOL_ROOT)/bin/tiarmclang
+LNK=$(CG_TOOL_ROOT)/bin/tiarmclang
+
+% if(args.options && args.options.isOptishare === true) {
+sso: optisave
+
+coreout: sso.out
+	@echo .
+	@echo generating files with sso
+% for (let project of args.project.projects) {
+	$(MAKE) -C ../`project.cpu`_`project.os`/`project.cgt`/ coreout SYSTEM_FLAG=${SYSTEM_FLAG} SSO_PATH=../../system_freertos/sso.out
+% }
+	@echo generating files with sso done!
+	@echo .
+
+sso.out: sso.cmd
+	@echo .
+	@echo generating sso.out
+	$(CC) -Wl,sso.cmd.tmp -o sso.out -Wl,--xml_link_info=sso.lnkxml -Wl,--gen_xml_func_hash
+	@echo done
+	@echo .
+
+sso.cmd: all $(COREXMLS)
+	@echo .
+	@echo generating sso.cmd.tmp
+	$(OPTISHARE) -o sso.cmd.tmp $(COREXMLS) -s sso.info.tmp --mem_spec optishare_memmap.json
+	@echo generating sso.cmd done
+	@echo .
+
+optisave: buildmcelfsso
+% for (let project of args.project.projects) {
+	$(OPTISAVE) ../`project.cpu`_`project.os`/`project.cgt`/`args.project.name`.$(PROFILE).lnkxml ../`project.cpu`_`project.os`/`project.cgt`/`args.project.name`.$(PROFILE).optishare.lnkxml > ../`project.cpu`_`project.os`/`project.cgt`/`args.project.name`.$(PROFILE).ossr
+% }
+
+buildmcelfsso: coreout
+	@echo .
+	@echo generating mcelf with sso
+	$(PYTHON) $(MCELF_IMAGE_GEN) $(CORE_IMG_OPTISHARE_ARGS) --output=$(MULTI_CORE_BOOTIMAGE_NAME_OPTISHARE) --xip=$(MCELF_XIP_RANGE) --sw_version=$(SW_VERSION) --sso=sso.out
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(MULTI_CORE_BOOTIMAGE_NAME_OPTISHARE) --authtype 0  --loadaddr `targetLoadAddress` --key $(APP_SIGNING_KEY) --output $(MULTI_CORE_BOOTIMAGE_NAME_OPTISHARE_HS_FS) --keyversion $(VERSION)
+	@echo  Boot multi-core ELF image: $(MULTI_CORE_BOOTIMAGE_PATH)/$@ Done !!!
+	@echo  .
+	$(MAKE) sso.mcelf
+
+sso.mcelf: sso.out
+	@echo .
+	@echo generating standalone sso.mcelf from sso.out ...
+	$(PYTHON) $(MCELF_IMAGE_GEN) --core-img=1:sso.out --output=sso.mcelf --xip=$(MCELF_XIP_RANGE) --sw_version=$(SW_VERSION)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin sso.mcelf --authtype 0 --loadaddr `targetLoadAddress` --key $(APP_SIGNING_KEY) --output sso.mcelf.hs_fs --keyversion $(VERSION)
+	@echo  sso.mcelf and sso.mcelf.hs_fs generated !!!
+	@echo  .
+
+% }
 MCELF_IMAGE_GEN = $(MCU_PLUS_SDK_PATH)/tools/boot/multicoreELFImageGen/genimage.py
 % } else {
 MULTI_CORE_IMAGE_GEN = $(SYSCFG_NODE) $(MCU_PLUS_SDK_PATH)/tools/boot/multicoreImageGen/multicoreImageGen.js
@@ -283,9 +422,7 @@ APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_
 % if (imageFormat == "mcelf") {
 MULTI_CORE_APP_PARAMS = \
 % for (let project of args.project.projects) {
-    % if(project.isPartOfSystemProject == true){
     --core-img=$(BOOTIMAGE_CORE_ID_`project.cpu`):../`project.cpu`_`project.os`/`project.cgt`/`args.project.name`.$(PROFILE).out \
-    %}
 % }
 
 MCELF_XIP_RANGE?=0x60100000:0x60200000
@@ -345,9 +482,7 @@ MULTI_CORE_APP_PARAMS_QSPI = $(MULTI_CORE_APP_PARAMS) $(R4_RPRC_PATH)@$(BOOTIMAG
 % if (imageFormat == "mcelf") {
 MULTI_CORE_BOOTIMAGE_DEPENDENCY = \
 % for (let project of args.project.projects) {
-    % if(project.isPartOfSystemProject == true){
     ../`project.cpu`_`project.os`/`project.cgt`/`args.project.name`.$(PROFILE).out \
-    %}
 % }
 % } else {
 % if (atf_build == true) {

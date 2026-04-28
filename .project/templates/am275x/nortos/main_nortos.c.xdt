@@ -1,10 +1,14 @@
 %%{
     let options = args.options;
+    let isOptishareEnabled = false;
 
     entryFunction = "example_main";
 
     if(options && options.entryFunction)
          entryFunction = options.entryFunction;
+        
+    if(options && options.isOptishare)
+        isOptishareEnabled = options.isOptishare;
 %%}
 /*
  *  Copyright (C) 2018-2025 Texas Instruments Incorporated
@@ -38,15 +42,39 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+%if(isOptishareEnabled == "true") {
+#include "kernel/dpl/AddrTranslateP.h"
+%}
 #include <stdlib.h>
 #include "ti_drivers_config.h"
 #include "ti_board_config.h"
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 
+%if(isOptishareEnabled == "true") {
+extern int __TI_ATRegion0_src_addr;
+extern int __TI_ATRegion0_trg_addr;
+extern int __TI_ATRegion0_region_sz;
+extern int __TI_ATRegion1_src_addr;
+extern int __TI_ATRegion1_trg_addr;
+extern int __TI_ATRegion1_region_sz;
+extern int __TI_ATRegion2_src_addr;
+extern int __TI_ATRegion2_trg_addr;
+extern int __TI_ATRegion2_region_sz;
+
+%}
 void `entryFunction`(void *args);
+%if(isOptishareEnabled == "true") {
+void __attribute__((do_not_share)) AddrTranslateP_init (AddrTranslateP_Params *params);
+void __attribute__((do_not_share)) AddrTranslateP_Params_init (AddrTranslateP_Params *params) ;
+
+%}
+%if(isOptishareEnabled == "true") {
+int AppStart(void)
+%}else{
 
 int main()
+%}
 {
     int32_t status = SystemP_SUCCESS;
 
@@ -71,3 +99,80 @@ int main()
 
     return 0;
 }
+%if(isOptishareEnabled == "true") {
+__attribute__((do_not_share)) int main(void)
+{
+
+    AddrTranslateP_Params params;
+    AddrTranslateP_RegionConfig region[3];
+
+    AddrTranslateP_Params_init(&params);
+
+    if((uint32_t)(&__TI_ATRegion0_region_sz) > 0)
+    {
+        params.numRegions++;
+        region[0].size = 0;
+        uint32_t actualSize = (uint32_t)(&__TI_ATRegion0_region_sz);
+        region[0].localAddr = (uint32_t)&__TI_ATRegion0_src_addr;
+        region[0].systemAddr = (uint32_t)&__TI_ATRegion0_trg_addr;
+        for(uint32_t sz = 1; sz < actualSize; region[0].size++)
+        {
+            sz = sz << 1;
+        }
+    }
+
+    if((uint32_t)(&__TI_ATRegion1_region_sz) > 0)
+    {
+        params.numRegions++;
+        region[1].size = 0;
+        region[1].localAddr = (uint32_t)&__TI_ATRegion1_src_addr;
+        region[1].systemAddr = (uint32_t)&__TI_ATRegion1_trg_addr;
+        for(uint32_t sz = 1; sz < (uint32_t)(&__TI_ATRegion1_region_sz); sz <<= 1, region[1].size++);
+    }
+
+    if((uint32_t)(&__TI_ATRegion2_region_sz) > 0)
+    {
+        params.numRegions++;
+        region[2].size = 0;
+        region[2].localAddr = (uint32_t)&__TI_ATRegion2_src_addr;
+        region[2].systemAddr = (uint32_t)&__TI_ATRegion2_trg_addr;
+        for(uint32_t sz = 1; sz < (uint32_t)(&__TI_ATRegion2_region_sz); sz <<= 1, region[2].size++);
+    }
+
+    /* Copy SSO-initialized shared data to this core's local region BEFORE
+     * programming the RAT.  While RAT is inactive the AT src addresses
+     * (SSO_SHM_RW) are directly readable; they hold the correct initial
+     * values loaded by the SSO binary.  After AddrTranslateP_init the RAT
+     * redirects every SSO_SHM_RW access to this core's C{N}_SSO_LCL, which
+     * is now properly initialised — handling gHwiConfig, gDebugShmLogWriter,
+     * and any other variable opti-share placed in .shared.data/.shared.bss.
+     */
+    if((uint32_t)(&__TI_ATRegion0_region_sz) > 0)
+    {
+        uint8_t *s = (uint8_t *)(uint32_t)(&__TI_ATRegion0_src_addr);
+        uint8_t *d = (uint8_t *)(uint32_t)(&__TI_ATRegion0_trg_addr);
+        uint32_t n = (uint32_t)(&__TI_ATRegion0_region_sz);
+        for(uint32_t i = 0; i < n; i++) { d[i] = s[i]; }
+    }
+    if((uint32_t)(&__TI_ATRegion1_region_sz) > 0)
+    {
+        uint8_t *s = (uint8_t *)(uint32_t)(&__TI_ATRegion1_src_addr);
+        uint8_t *d = (uint8_t *)(uint32_t)(&__TI_ATRegion1_trg_addr);
+        uint32_t n = (uint32_t)(&__TI_ATRegion1_region_sz);
+        for(uint32_t i = 0; i < n; i++) { d[i] = s[i]; }
+    }
+    if((uint32_t)(&__TI_ATRegion2_region_sz) > 0)
+    {
+        uint8_t *s = (uint8_t *)(uint32_t)(&__TI_ATRegion2_src_addr);
+        uint8_t *d = (uint8_t *)(uint32_t)(&__TI_ATRegion2_trg_addr);
+        uint32_t n = (uint32_t)(&__TI_ATRegion2_region_sz);
+        for(uint32_t i = 0; i < n; i++) { d[i] = s[i]; }
+    }
+
+    params.ratBaseAddr = CSL_R5FSS0_RAT_CFG_BASE;
+    params.regionConfig = region;
+    AddrTranslateP_init(&params);
+
+    return AppStart();
+}
+%}

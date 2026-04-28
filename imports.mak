@@ -5,7 +5,7 @@ GCC_ARCH64_VERSION=9.2-2019.12
 CGT_C6X_VERSION=8.3.12
 C6X_DSPLIB_VERSION=3_4_0_0
 CGT_C7X_VERSION=5.0.0.LTS
-CGT_ARMLLVM_VERSION=4.0.1.LTS
+CGT_ARMLLVM_VERSION=4.0.5.LTS
 CGT_PRU_VERSION=2.3.3
 SYSCONFIG_VERSION=1.26.2
 SYSCONFIG_BUILD=4477
@@ -87,3 +87,6 @@ SAFERTOS_COMPILER_EXT_c7x=005_TI_CGT
 
 # Variable pointing to location of prebuilt industrial communication libraries
 MCU_PLUS_SDK_IND_COMMS_LIBS_PATH ?= $(MCU_PLUS_SDK_PATH)/source/commercial/industrial_comms_libs
+
+OPTISHARE = $(CCS_NODE) $(CGT_TI_ARM_CLANG_PATH)/opti-share/opti-share.js
+OPTISAVE = $(CCS_NODE) $(CGT_TI_ARM_CLANG_PATH)/opti-share/utils/opti-save.js

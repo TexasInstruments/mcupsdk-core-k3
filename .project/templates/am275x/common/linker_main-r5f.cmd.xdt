@@ -18,6 +18,7 @@
     let isrl2 = "false";
     let flashSrcBuffer = "false";
     let useHyperRam = false;
+    let isOptishareEnabled = false;
 
     /* if no options given use defaults */
     if(options && options.stackSize)
@@ -50,22 +51,48 @@
     if(options && options.flashSrcBuffer)
         flashSrcBuffer = options.flashSrcBuffer;
 
+    if(options && options.isOptishare)
+        isOptishareEnabled = options.isOptishare;
+
     let memoryReg = ""
 
-    if(args.project.cpu == "wkup-r5fss0-0") {
-        memoryReg = "WKUP_R5_OCRAM"
-    } else if(args.project.cpu == "r5fss0-0"){
-        memoryReg = "R50_0_OCRAM"
-    } else if(args.project.cpu == "r5fss0-1"){
-        memoryReg = "R50_1_OCRAM"
-    } else if(args.project.cpu == "r5fss1-0"){
-        memoryReg = "R51_0_OCRAM"
-    }  else if(args.project.cpu == "r5fss1-1"){
-        memoryReg = "R51_1_OCRAM"
-    } else if(args.project.cpu == "c75ss0-0"){
-        memoryReg = "C75_0_OCRAM"
-    } else if(args.project.cpu == "c75ss1-0"){
-        memoryReg = "C75_1_OCRAM"
+    if(isOptishareEnabled == "true") {
+            memoryReg = "OCRAM"
+    }
+    else 
+    {
+        if(args.project.cpu == "wkup-r5fss0-0") {
+            memoryReg = "WKUP_R5_OCRAM"
+        } else if(args.project.cpu == "r5fss0-0"){
+            memoryReg = "R50_0_OCRAM"
+        } else if(args.project.cpu == "r5fss0-1"){
+            memoryReg = "R50_1_OCRAM"
+        } else if(args.project.cpu == "r5fss1-0"){
+            memoryReg = "R51_0_OCRAM"
+        }  else if(args.project.cpu == "r5fss1-1"){
+            memoryReg = "R51_1_OCRAM"
+        } else if(args.project.cpu == "c75ss0-0"){
+            memoryReg = "C75_0_OCRAM"
+        } else if(args.project.cpu == "c75ss1-0"){
+            memoryReg = "C75_1_OCRAM"
+        }
+    }
+        
+    let SSO_LCL = ""
+    if(isOptishareEnabled == "true") {
+        if(args.project.cpu == "r5fss0-0"){
+            SSO_LCL = "C0_SSO_LCL"
+        } else if(args.project.cpu == "r5fss0-1"){
+            SSO_LCL = "C1_SSO_LCL"
+        } else if(args.project.cpu == "r5fss1-0"){
+            SSO_LCL = "C2_SSO_LCL"
+        }  else if(args.project.cpu == "r5fss1-1"){
+            SSO_LCL = "C3_SSO_LCL"
+        } else if(args.project.cpu == "c75ss0-0"){
+            SSO_LCL = "C4_SSO_LCL"
+        } else if(args.project.cpu == "c75ss1-0"){
+            SSO_LCL = "C5_SSO_LCL"
+        }
     }
 %%}
 
@@ -257,6 +284,27 @@ SECTIONS
     } palign(131072)
     } > FLASH  
     %}
+    %if(isOptishareEnabled == "true"){
+
+    .bss.user_shared_mem (NOLOAD) : {
+    } > USER_SHM   , palign(8) 
+
+    .bss.log_shared_mem (NOLOAD) : {
+    } > LOG_SHM_MEM   , palign(16384) 
+
+    .shared.text  : {
+    } > `SSO_LCL`   , palign(4096) 
+
+    .shared.rodata  : {
+    } > `SSO_LCL`   , palign(4096) 
+
+    .shared.data  : {
+    } > `SSO_LCL`   , palign(4096) 
+
+    .shared.bss  : {
+    } > `SSO_LCL`   , palign(4096)
+
+    %}
 }
 
 MEMORY
@@ -267,13 +315,38 @@ MEMORY
 
     WKUP_R5_OCRAM (RWIX)         : ORIGIN = 0x72000000 LENGTH = 0x00080000 // 512 KB for wakeup core
 
+    %if(args.project.cpu == "r5fss0-0" && isOptishareEnabled == "true") {
+    OCRAM         (RWIX)         : ORIGIN = 0x72080000 LENGTH = 0x00100000 // 1 MB for r5fss0-0 core
+    %} else{
     R50_0_OCRAM   (RWIX)         : ORIGIN = 0x72080000 LENGTH = 0x00100000 // 1 MB for r5fss0-0 core
+    %}
+    %if(args.project.cpu == "r5fss0-1" && isOptishareEnabled == "true") {
+    OCRAM         (RWIX)         : ORIGIN = 0x72180000 LENGTH = 0x00080000 // 512 KB for r5fss0-1 core
+    %} else{
     R50_1_OCRAM   (RWIX)         : ORIGIN = 0x72180000 LENGTH = 0x00080000 // 512 KB for r5fss0-1 core
+    %}
+    %if(args.project.cpu == "r5fss1-0" && isOptishareEnabled == "true") {
+    OCRAM         (RWIX)         : ORIGIN = 0x72280000 LENGTH = 0x00080000 // 512 KB for r5fss1-0 core
+    %} else{
     R51_0_OCRAM   (RWIX)         : ORIGIN = 0x72280000 LENGTH = 0x00080000 // 512 KB for r5fss1-0 core
+    %}
+    %if(args.project.cpu == "r5fss1-1" && isOptishareEnabled == "true") {
+    OCRAM         (RWIX)         : ORIGIN = 0x72300000 LENGTH = 0x00080000 // 512 KB for r5fss1-1 core
+    %} else{
     R51_1_OCRAM   (RWIX)         : ORIGIN = 0x72300000 LENGTH = 0x00080000 // 512 KB for r5fss1-1 core
+    %}
 
     C75_0_OCRAM   (RWIX)         : ORIGIN = 0x72200000 LENGTH = 0x00080000 // 512 KB for c75ss0-0 core
     C75_1_OCRAM   (RWIX)         : ORIGIN = 0x72400000 LENGTH = 0x00080000 // 512 KB for c75ss1-0 core
+    %if(isOptishareEnabled == "true"){ // 512 KB for optishare core
+        
+    C0_SSO_LCL   : ORIGIN = 0x72480000 , LENGTH = 0x8000 
+    C1_SSO_LCL   : ORIGIN = 0x72488000 , LENGTH = 0x8000 
+    C2_SSO_LCL   : ORIGIN = 0x72490000 , LENGTH = 0x8000 
+    C3_SSO_LCL   : ORIGIN = 0x72498000 , LENGTH = 0x8000 
+    SSO_SHM      : ORIGIN = 0x724A0000 , LENGTH = 0x10000 
+    USER_SHM     : ORIGIN = 0x724B0000 , LENGTH = 0x50000
+    %}
 
     % if(args.project.isLogSHM === true){
     LOG_SHM_MEM                  : ORIGIN = 0x72380000, LENGTH = 0x40000

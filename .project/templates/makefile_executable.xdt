@@ -54,6 +54,9 @@ PROFILE?=release
 ConfigName:=$(PROFILE)
 
 OUTNAME:=`args.project.name`.$(PROFILE).out
+% if(args.options && args.options.isOptishare === true) {
+COREOUTNAME:=`args.project.name`.$(PROFILE).optishare.out
+% }
 
 BOOTIMAGE_PATH=$(abspath .)
 % if (args.project.isBootLoader) {
@@ -87,6 +90,12 @@ BOOTIMAGE_NAME_XIP:=`args.project.name`.$(PROFILE).mcelf_xip
 BOOTIMAGE_NAME_SIGNED:=`args.project.name`.$(PROFILE).mcelf.signed
 BOOTIMAGE_NAME_HS:=`args.project.name`.$(PROFILE).mcelf.hs
 BOOTIMAGE_NAME_HS_FS:=`args.project.name`.$(PROFILE).mcelf.hs_fs
+% if(args.options && args.options.isOptishare === true) {
+
+MULTI_CORE_BOOTIMAGE_NAME_MCELF_OPTISHARE:=`args.project.name`.$(PROFILE).optishare.mcelf
+MULTI_CORE_BOOTIMAGE_NAME_MCELF_OPTISHARE_HS_FS:=`args.project.name`.$(PROFILE).optishare.mcelf.hs_fs
+
+% }
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -467,6 +476,11 @@ LNKOPTFLAGS := $(LNKOPTFLAGS_common) $(LNKOPTFLAGS_$(PROFILE))
 % }
 LNK_FILES := $(LNK_FILES_common) $(LNK_FILES_$(PROFILE))
 
+% if(args.options && args.options.isOptishare === true) {
+LNK_FILES_OPTISHARE = \
+	linker_optishare.cmd \
+
+%}
 OBJDIR := obj/$(PROFILE)/
 OBJS := $(FILES:%.c=%.obj)
 % if(args.project.files["cpp_common"] != undefined) {
@@ -557,11 +571,19 @@ $(OUTNAME): $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 % if (args.project.cgt == "ti-arm-clang" || args.project.cgt == "ti-c6000" || args.project.cgt == "ti-c7000") {
 % if (args.project.cgt == "ti-arm-clang") {
     % if (supportPreBuildLibs == true) {
+% if(args.options && args.options.isOptishare === true) {
+	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PREBUILD_PATH) $(LIBS_PATH) `linker_option_prefix`-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS_PREBUILD) $(LIBS) $(LNK_FILES) -Wl,--xml_link_info=$(basename $@).lnkxml
+% } else {
 	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PREBUILD_PATH) $(LIBS_PATH) `linker_option_prefix`-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS_PREBUILD) $(LIBS) $(LNK_FILES)
+% }
     % }
     % else
     % {
+% if(args.options && args.options.isOptishare === true) {
+	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PATH) `linker_option_prefix`-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) $(LNK_FILES) -Wl,--xml_link_info=$(basename $@).lnkxml
+% } else {
 	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PATH) `linker_option_prefix`-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) $(LNK_FILES)
+% }
     % }
 % } else {
 	$(LNK) $(LFLAGS) $(LIBS_PATH) `linker_option_prefix`-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) $(LNK_FILES)
@@ -585,6 +607,31 @@ $(OUTNAME): $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 	@echo  Linking: `args.project.device`:`args.project.cpu`:`args.project.os`:`args.project.cgt` $@ Done !!!
 	@echo  .
 
+% if(args.options && args.options.isOptishare === true) {
+% if (args.project.cgt == "ti-arm-clang") {
+coreout: $(COREOUTNAME)
+% if ( args.project.syscfgfile ) {
+$(COREOUTNAME): linker_optishare.cmd $(SYSTEM_COMMAND)
+% } else {
+$(COREOUTNAME): linker_optishare.cmd $(OBJS) $(LNK_FILES_OPTISHARE) $(LIBS_NAME)
+% }
+	@echo  .
+	@echo  Relinking Linking: `args.project.device`:`args.project.cpu`:`args.project.os`:`args.project.cgt` $@ with OptiShare SSO..
+	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PATH) `linker_option_prefix`-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) $(LNK_FILES_OPTISHARE) -Wl,--xml_link_info=$(basename $@).lnkxml -Wl,--import_sso=$(SSO_PATH)
+	@echo  Relinking with optishare: `args.project.device`:`args.project.cpu`:`args.project.os`:`args.project.cgt` $@ Done !!!
+	@echo  .
+% if (imageFormat == "mcelf") {
+	$(PYTHON) $(MCELF_IMAGE_GEN) $(CORE_IMG_OPTISHARE_ARGS) --output=$(MULTI_CORE_BOOTIMAGE_NAME_MCELF_OPTISHARE) --xip=$(MCELF_XIP_RANGE) --sw_version=$(SW_VERSION)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(MULTI_CORE_BOOTIMAGE_NAME_MCELF_OPTISHARE) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(MULTI_CORE_BOOTIMAGE_NAME_MCELF_OPTISHARE_HS_FS) --keyversion $(VERSION)
+	@echo  optishare.out to optishare.mcelf is generated
+% }
+
+linker_optishare.cmd: $(OPTISHARE_MEMMAP)
+	@echo  Generating optishare linker: $(CORE_NAME) ...
+	$(PYTHON) $(OPTISHARE_GEN_SCRIPT) --core $(CORE_NAME) --memmap $(OPTISHARE_MEMMAP) --output $@
+
+%}
+%}
 clean:
 	@echo  Cleaning: `args.project.device`:`args.project.cpu`:`args.project.os`:`args.project.cgt` $(OUTNAME) ...
 	$(RMDIR) $(OBJDIR)
@@ -642,6 +689,10 @@ scrub:
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
 	$(RM) \*.map
+% if(args.options && args.options.isOptishare === true) {
+	$(RM) \*.lnkxml
+	$(RM) \*.ossr
+%}
 % if (imageFormat == "mcelf") {
 	$(RM) \*.mcelf*
 % } else {
@@ -653,6 +704,10 @@ ifeq ($(OS),Windows_NT)
 else
 	$(RM) *.out
 	$(RM) *.map
+% if(args.options && args.options.isOptishare === true) {
+	$(RM) *.lnkxml
+	$(RM) *.ossr
+%}
 % if (imageFormat == "mcelf") {
 	$(RM) *.mcelf*
 % } else {
@@ -1086,6 +1141,17 @@ MULTI_CORE_IMAGE_PARAMS = \
     $(BOOTIMAGE_CORE_ID_`args.project.cpu`):$(OUTNAME) \
 
 MCELF_XIP_RANGE?=0x60100000:0x60200000
+% if(args.options && args.options.isOptishare === true) {
+
+CORE_IMG_OPTISHARE_ARGS :=
+
+CORE_OPTISHARE_IMG=`args.project.name`.$(PROFILE).optishare.out 
+CORE_IMG_OPTISHARE_ARGS +=--core-img=$(BOOTIMAGE_CORE_ID_`args.project.cpu`):$(CORE_OPTISHARE_IMG)
+
+CORE_NAME := `args.project.cpu`
+OPTISHARE_GEN_SCRIPT := $(abspath ../../system_freertos/gen_linker_optishare.py)
+OPTISHARE_MEMMAP     := $(abspath ../../system_freertos/optishare_memmap.json)
+%}
 % } else {
 % if (args.project.device == "am62lx") {
 ifeq ($(DEVICE_TYPE),HS)

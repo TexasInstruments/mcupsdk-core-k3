@@ -39,7 +39,7 @@ SECTIONS
     .vectors:{} palign(8) > R5F_VECS
 
     /* This has the R5F boot code until MPU is enabled,  this MUST be at a address < 0x80000000
-     * i.e this cannot be placed in R51_0_OCRAM
+     * i.e this cannot be placed in OCRAM
      */
     GROUP {
         .text.hwi: palign(8)
@@ -49,27 +49,27 @@ SECTIONS
         .text:abort: palign(8) /* this helps in loading symbols when using XIP mode */
     } > R5F_TCMA
 
-    /* This is rest of code. This can be placed in R51_0_OCRAM if R51_0_OCRAM is available and needed */
+    /* This is rest of code. This can be placed in OCRAM if OCRAM is available and needed */
     GROUP {
         .text:   {} palign(8)   /* This is where code resides */
         .rodata: {} palign(8)   /* This is where const's go */
-    } > R51_0_OCRAM
+    } > OCRAM
 
     /* this is used when Debug log's to shared memory is enabled, else this is not used */
     .bss.log_shared_mem  (NOLOAD) : {} > LOG_SHM_MEM
-    /* This is rest of initialized data. This can be placed in R51_0_OCRAM if R51_0_OCRAM is available and needed */
+    /* This is rest of initialized data. This can be placed in OCRAM if OCRAM is available and needed */
     GROUP {
         .data:   {} palign(8)   /* This is where initialized globals and static go */
-    } > R51_0_OCRAM
+    } > OCRAM
 
-    /* This is rest of uninitialized data. This can be placed in R51_0_OCRAM if R51_0_OCRAM is available and needed */
+    /* This is rest of uninitialized data. This can be placed in OCRAM if OCRAM is available and needed */
     GROUP {
         .bss:    {} palign(8)   /* This is where uninitialized globals go */
         RUN_START(__BSS_START)
         RUN_END(__BSS_END)
         .sysmem: {} palign(8)   /* This is where the malloc heap goes */
         .stack:  {} palign(8)   /* This is where the main() stack goes */
-    } > R51_0_OCRAM
+    } > OCRAM
 
     /* This is where the stacks for different R5F modes go */
     GROUP {
@@ -88,14 +88,33 @@ SECTIONS
         .undefinedstack: {. = . + __UNDEFINED_STACK_SIZE;} align(8)
         RUN_START(__UNDEFINED_STACK_START)
         RUN_END(__UNDEFINED_STACK_END)
-    } > R51_0_OCRAM
+    } > OCRAM
 
     /* Sections needed for C++ projects */
     GROUP {
         .ARM.exidx:  {} palign(8)   /* Needed for C++ exception handling */
         .init_array: {} palign(8)   /* Contains function pointers called before main */
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
-    } > R51_0_OCRAM
+    } > OCRAM
+
+    .bss.user_shared_mem (NOLOAD) : {
+    } > USER_SHM   , palign(8) 
+
+    .bss.log_shared_mem (NOLOAD) : {
+    } > LOG_SHM_MEM   , palign(16384) 
+
+    .shared.text  : {
+    } > C2_SSO_LCL   , palign(4096) 
+
+    .shared.rodata  : {
+    } > C2_SSO_LCL   , palign(4096) 
+
+    .shared.data  : {
+    } > C2_SSO_LCL   , palign(4096) 
+
+    .shared.bss  : {
+    } > C2_SSO_LCL   , palign(4096)
+
 }
 
 MEMORY
@@ -108,11 +127,18 @@ MEMORY
 
     R50_0_OCRAM   (RWIX)         : ORIGIN = 0x72080000 LENGTH = 0x00100000 // 1 MB for r5fss0-0 core
     R50_1_OCRAM   (RWIX)         : ORIGIN = 0x72180000 LENGTH = 0x00080000 // 512 KB for r5fss0-1 core
-    R51_0_OCRAM   (RWIX)         : ORIGIN = 0x72280000 LENGTH = 0x00080000 // 512 KB for r5fss1-0 core
+    OCRAM         (RWIX)         : ORIGIN = 0x72280000 LENGTH = 0x00080000 // 512 KB for r5fss1-0 core
     R51_1_OCRAM   (RWIX)         : ORIGIN = 0x72300000 LENGTH = 0x00080000 // 512 KB for r5fss1-1 core
 
     C75_0_OCRAM   (RWIX)         : ORIGIN = 0x72200000 LENGTH = 0x00080000 // 512 KB for c75ss0-0 core
     C75_1_OCRAM   (RWIX)         : ORIGIN = 0x72400000 LENGTH = 0x00080000 // 512 KB for c75ss1-0 core
+        
+    C0_SSO_LCL   : ORIGIN = 0x72480000 , LENGTH = 0x8000 
+    C1_SSO_LCL   : ORIGIN = 0x72488000 , LENGTH = 0x8000 
+    C2_SSO_LCL   : ORIGIN = 0x72490000 , LENGTH = 0x8000 
+    C3_SSO_LCL   : ORIGIN = 0x72498000 , LENGTH = 0x8000 
+    SSO_SHM      : ORIGIN = 0x724A0000 , LENGTH = 0x10000 
+    USER_SHM     : ORIGIN = 0x724B0000 , LENGTH = 0x50000
 
     LOG_SHM_MEM                  : ORIGIN = 0x72380000, LENGTH = 0x40000
 

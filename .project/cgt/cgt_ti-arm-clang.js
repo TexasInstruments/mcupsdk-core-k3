@@ -136,9 +136,12 @@ const cgt_main_r5 = {
     },
 };
 
-function getCgtOptions(cpu)
+function getCgtOptions(cpu, options)
 {
     let cgtOptions = {};
+    let isOptishare = false;
+    if(options && options.isOptishare)
+        isOptishare = options.isOptishare;
 
     if(cpu.match(/r5f*/))
     {
@@ -165,6 +168,12 @@ function getCgtOptions(cpu)
         {
             cgtOptions = common.mergeCgtOptions(cgtOptions, cgt_main_r5);
         }
+    }
+    if(isOptishare)
+    {
+        cgtOptions.lflags = cgtOptions.lflags || {};
+        cgtOptions.lflags.common = cgtOptions.lflags.common || [];
+        cgtOptions.lflags.common.push("--gen_xml_func_hash");
     }
     return cgtOptions;
 }

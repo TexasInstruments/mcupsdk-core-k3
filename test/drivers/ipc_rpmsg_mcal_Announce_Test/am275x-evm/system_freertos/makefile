@@ -20,30 +20,40 @@ MULTI_CORE_BOOTIMAGE_PATH=$(abspath .)
 MULTI_CORE_BOOTIMAGE_NAME:=test_ipc_rpmsg_announce_system.$(PROFILE).mcelf
 MULTI_CORE_BOOTIMAGE_NAME_SIGNED:=$(MULTI_CORE_BOOTIMAGE_NAME).signed
 MULTI_CORE_BOOTIMAGE_NAME_XIP:=test_ipc_rpmsg_announce_system.$(PROFILE).mcelf_xip
-
-CORE_0=--script ../c75ss0-0_freertos/example.syscfg --context c75ss0-0 --output ../c75ss0-0_freertos/ti-c7000/generated
-CORE_1=--script ../c75ss1-0_freertos/example.syscfg --context c75ss1-0 --output ../c75ss1-0_freertos/ti-c7000/generated
-CORE_2=--script ../r5fss0-0_freertos/example.syscfg --context r5fss0-0 --output ../r5fss0-0_freertos/ti-arm-clang/generated
-CORE_3=--script ../r5fss0-1_freertos/example.syscfg --context r5fss0-1 --output ../r5fss0-1_freertos/ti-arm-clang/generated
-CORE_4=--script ../r5fss1-0_freertos/example.syscfg --context r5fss1-0 --output ../r5fss1-0_freertos/ti-arm-clang/generated
-CORE_5=--script ../r5fss1-1_freertos/example.syscfg --context r5fss1-1 --output ../r5fss1-1_freertos/ti-arm-clang/generated
+MULTI_CORE_BOOTIMAGE_NAME_HS:=$(MULTI_CORE_BOOTIMAGE_NAME).hs
+MULTI_CORE_BOOTIMAGE_NAME_HS_FS:=$(MULTI_CORE_BOOTIMAGE_NAME).hs_fs
+CORE_5=--script ../c75ss0-0_freertos/example.syscfg --context c75ss0-0 --output ../c75ss0-0_freertos/ti-c7000/generated
+CORE_6=--script ../c75ss1-0_freertos/example.syscfg --context c75ss1-0 --output ../c75ss1-0_freertos/ti-c7000/generated
+CORE_1=--script ../r5fss0-0_freertos/example.syscfg --context r5fss0-0 --output ../r5fss0-0_freertos/ti-arm-clang/generated
+CORE_2=--script ../r5fss0-1_freertos/example.syscfg --context r5fss0-1 --output ../r5fss0-1_freertos/ti-arm-clang/generated
+CORE_3=--script ../r5fss1-0_freertos/example.syscfg --context r5fss1-0 --output ../r5fss1-0_freertos/ti-arm-clang/generated
+CORE_4=--script ../r5fss1-1_freertos/example.syscfg --context r5fss1-1 --output ../r5fss1-1_freertos/ti-arm-clang/generated
 
 CORES = \
     $(CORE_5) \
-    $(CORE_4) \
-    $(CORE_3) \
-    $(CORE_2) \
+    $(CORE_6) \
     $(CORE_1) \
-    $(CORE_0) \
+    $(CORE_2) \
+    $(CORE_3) \
+    $(CORE_4) \
 
-all: syscfg
-	$(MAKE) -C ../c75ss0-0_freertos/ti-c7000/ all
-	$(MAKE) -C ../c75ss1-0_freertos/ti-c7000/ all
-	$(MAKE) -C ../r5fss0-0_freertos/ti-arm-clang/ all
-	$(MAKE) -C ../r5fss0-1_freertos/ti-arm-clang/ all
-	$(MAKE) -C ../r5fss1-0_freertos/ti-arm-clang/ all
-	$(MAKE) -C ../r5fss1-1_freertos/ti-arm-clang/ all
+SYSTEM_FLAG := true
+
+all: postBuild
+
+corebuild: syscfg
+	$(MAKE) -C ../c75ss0-0_freertos/ti-c7000/ all SYSTEM_FLAG=${SYSTEM_FLAG}
+	$(MAKE) -C ../c75ss1-0_freertos/ti-c7000/ all SYSTEM_FLAG=${SYSTEM_FLAG}
+	$(MAKE) -C ../r5fss0-0_freertos/ti-arm-clang/ all SYSTEM_FLAG=${SYSTEM_FLAG}
+	$(MAKE) -C ../r5fss0-1_freertos/ti-arm-clang/ all SYSTEM_FLAG=${SYSTEM_FLAG}
+	$(MAKE) -C ../r5fss1-0_freertos/ti-arm-clang/ all SYSTEM_FLAG=${SYSTEM_FLAG}
+	$(MAKE) -C ../r5fss1-1_freertos/ti-arm-clang/ all SYSTEM_FLAG=${SYSTEM_FLAG}
+
+postBuild: corebuild
 	$(MAKE) $(MULTI_CORE_BOOTIMAGE_NAME)
+ifeq ($(DEVICE_TYPE), HS)
+	$(MAKE) $(MULTI_CORE_BOOTIMAGE_NAME_HS)
+endif
 
 clean:
 	$(MAKE) -C ../c75ss0-0_freertos/ti-c7000/ clean
@@ -69,12 +79,20 @@ ifeq ($(OS),Windows_NT)
 	$(RM) \*.mcelf.hs_fs
 	$(RM) \*.mcelf.hs
 	$(RM) \*.mcelf_xip
+	$(RM) \*.tmp
+	$(RM) \*.out
+	$(RM) \*.map
+	$(RM) \*.mcelf-enc
 else
+	$(RM) *.tmp
+	$(RM) *.out
+	$(RM) *.map
 	$(RM) *.mcelf
 	$(RM) *.mcelf.signed
 	$(RM) *.mcelf.hs
 	$(RM) *.mcelf.hs_fs
 	$(RM) *.mcelf_xip
+	$(RM) *.mcelf-enc
 endif
 
 syscfg:
@@ -102,6 +120,11 @@ BOOTIMAGE_CORE_ID_c75ss1-0      = 6
 BOOTIMAGE_CORE_ID_hsm-m4fss0-0  = 7
 SBL_RUN_ADDRESS=0x43C00000
 SBL_DEV_ID=55
+
+CG_TOOL_ROOT=$(CGT_TI_ARM_CLANG_PATH)
+CC=$(CG_TOOL_ROOT)/bin/tiarmclang
+LNK=$(CG_TOOL_ROOT)/bin/tiarmclang
+
 MCELF_IMAGE_GEN = $(MCU_PLUS_SDK_PATH)/tools/boot/multicoreELFImageGen/genimage.py
 APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_gen.py
 

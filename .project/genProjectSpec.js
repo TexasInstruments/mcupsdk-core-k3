@@ -243,7 +243,15 @@ function genProjectSpecExample(device) {
             continue;
 
         for(buildOption of property.buildOptionCombos) {
-            let commonCgtOptions = require(`./cgt/cgt_${buildOption.cgt}`).getCgtOptions(buildOption.cpu);
+            // Detect Optishare projects for CGT options
+            let isOptishare = false;
+            if(property.name && property.name.toLowerCase().includes('optishare')) {
+                isOptishare = true;
+            }
+            if(property.dirPath && property.dirPath.toLowerCase().includes('optishare')) {
+                isOptishare = true;
+            }
+            let commonCgtOptions = require(`./cgt/cgt_${buildOption.cgt}`).getCgtOptions(buildOption.cpu, { isOptishare: isOptishare });
             let common_build_property = require(`./device/project_${device}`).getProperty();
             let project = [];
             let projectSpecOutPath = common.path.makeExampleOutPath(property.dirPath, buildOption);
@@ -268,7 +276,7 @@ function genProjectSpecExample(device) {
                 project: project,
                 utils: utils,
                 common: common,
-                cgtOptions: require(`./cgt/cgt_${project.cgt}`).getCgtOptions(buildOption.cpu),
+                cgtOptions: require(`./cgt/cgt_${project.cgt}`).getCgtOptions(buildOption.cpu, { isOptishare: isOptishare }),
                 linuxFwName: require(`./device/project_${device}`).getLinuxFwName(buildOption.cpu),
                 syscfg: {
                     device: require(`./device/project_${device}.js`).getSysCfgDevice(buildOption.board),

@@ -22,6 +22,15 @@ function genSystemProjectDevice(device) {
 
             project.device = device;
 
+            // Detect Optishare projects by name or path
+            let isOptishare = false;
+            if(property.name && property.name.toLowerCase().includes('optishare')) {
+                isOptishare = true;
+            }
+            if(property.dirPath && property.dirPath.toLowerCase().includes('optishare')) {
+                isOptishare = true;
+            }
+
             let args = {
                 sdkName: "MCU_PLUS_SDK_PATH",
                 relPath: common.path.relative(outPath, "."),
@@ -29,6 +38,9 @@ function genSystemProjectDevice(device) {
                 utils: require(`./genProjectSpec.js`).utils,
                 common: common,
                 device: require(`./device/project_${device}.js`),
+                options: {
+                    isOptishare: isOptishare
+                }
             };
 
             fs.mkdirSync(outPath, { recursive: true });

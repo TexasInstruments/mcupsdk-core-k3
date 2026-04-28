@@ -262,6 +262,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += mcasp_calcratio_am275x-evm_c75ss0-0
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += swasrc_multichannel_playback_am275x-evm_c75ss0-0_freertos_ti-c7000_build
 # Various System Example Projectspec Build Targets
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_notify_echo_am275x-evm_system_freertos_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_notify_echo_optishare_am275x-evm_system_freertos_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_rpmsg_rtos_audio_am275x-evm_system_freertos_nortos_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += fft2d_rtos_dsp_offload_am275x-evm_system_freertos_nortos_build
@@ -1049,6 +1050,9 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  ipc_notify_echo_am275x-evm_system_freertos_build:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am275x-evm/system_freertos -f makefile_projectspec all
 
+ ipc_notify_echo_optishare_am275x-evm_system_freertos_build:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo_optishare/am275x-evm/system_freertos -f makefile_projectspec all
+
  ipc_rpmsg_echo_am275x-evm_system_freertos_build:
 	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am275x-evm/system_freertos -f makefile_projectspec all
 
@@ -1332,6 +1336,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += mcasp_calcratio_am275x-evm_c75ss0-0
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += swasrc_multichannel_playback_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
 # Various System Example Projectspec Clean Targets
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_notify_echo_am275x-evm_system_freertos_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_notify_echo_optishare_am275x-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_rpmsg_rtos_audio_am275x-evm_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += fft2d_rtos_dsp_offload_am275x-evm_system_freertos_nortos_clean
@@ -2119,6 +2124,9 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  ipc_notify_echo_am275x-evm_system_freertos_clean:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am275x-evm/system_freertos -f makefile_projectspec clean
 
+ ipc_notify_echo_optishare_am275x-evm_system_freertos_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo_optishare/am275x-evm/system_freertos -f makefile_projectspec clean
+
  ipc_rpmsg_echo_am275x-evm_system_freertos_clean:
 	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am275x-evm/system_freertos -f makefile_projectspec clean
 
@@ -2402,6 +2410,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += mcasp_calcratio_am275x-evm_c75ss0-
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += swasrc_multichannel_playback_am275x-evm_c75ss0-0_freertos_ti-c7000_export
 # Various System Example Projectspec Export Targets
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_notify_echo_am275x-evm_system_freertos_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_notify_echo_optishare_am275x-evm_system_freertos_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_rpmsg_rtos_audio_am275x-evm_system_freertos_nortos_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += fft2d_rtos_dsp_offload_am275x-evm_system_freertos_nortos_export
@@ -3189,6 +3198,9 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  ipc_notify_echo_am275x-evm_system_freertos_export:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am275x-evm/system_freertos -f makefile_projectspec export
 
+ ipc_notify_echo_optishare_am275x-evm_system_freertos_export:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo_optishare/am275x-evm/system_freertos -f makefile_projectspec export
+
  ipc_rpmsg_echo_am275x-evm_system_freertos_export:
 	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am275x-evm/system_freertos -f makefile_projectspec export
 
@@ -3490,6 +3502,7 @@ help:
 	@echo  System Example ProjectSpec build targets,
 	@echo  =========================================
 	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_notify_echo/am275x-evm/system_freertos -f makefile_projectspec [export all clean]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_notify_echo_optishare/am275x-evm/system_freertos -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo/am275x-evm/system_freertos -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_rtos_audio_filter_offload/am275x-evm/system_freertos_nortos -f makefile_projectspec [export all clean]
 	@echo  $(MAKE) -s -C examples/tisp/fft2d_dsp_offload/fft2d_rtos_dsp_offload/am275x-evm/system_freertos_nortos -f makefile_projectspec [export all clean]

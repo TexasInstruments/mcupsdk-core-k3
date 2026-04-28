@@ -371,6 +371,7 @@ help:
 	@echo  System Example build targets,
 	@echo  =============================
 	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_notify_echo/am275x-evm/system_freertos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_notify_echo_optishare/am275x-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo/am275x-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_rtos_audio_filter_offload/am275x-evm/system_freertos_nortos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/tisp/fft2d_dsp_offload/fft2d_rtos_dsp_offload/am275x-evm/system_freertos_nortos [all clean syscfg-gui syscfg]
@@ -1099,6 +1100,7 @@ BUILD_COMBO_EXAMPLE_ALL += vtm_example_am275x-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += mcasp_calcratio_am275x-evm_c75ss0-0_freertos_ti-c7000
 # Various System Example Targets
 BUILD_COMBO_EXAMPLE_ALL += ipc_notify_echo_am275x-evm_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += ipc_notify_echo_optishare_am275x-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos
 
 BUILD_COMBO_EXAMPLE_XLIBS_ALL =
@@ -1900,6 +1902,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  ipc_notify_echo_am275x-evm_system_freertos:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am275x-evm/system_freertos -f makefile all
 
+ ipc_notify_echo_optishare_am275x-evm_system_freertos:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo_optishare/am275x-evm/system_freertos -f makefile all
+
  ipc_rpmsg_echo_am275x-evm_system_freertos:
 	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am275x-evm/system_freertos -f makefile all
 
@@ -2157,6 +2162,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += vtm_example_am275x-evm_r5fss0-0_nortos_ti-arm-c
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_calcratio_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
 # Various System Example Clean Targets
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_notify_echo_am275x-evm_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_notify_echo_optishare_am275x-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos_clean
 
 BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL =
@@ -2954,6 +2960,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  ipc_notify_echo_am275x-evm_system_freertos_clean:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am275x-evm/system_freertos -f makefile clean
 
+ ipc_notify_echo_optishare_am275x-evm_system_freertos_clean:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo_optishare/am275x-evm/system_freertos -f makefile clean
+
  ipc_rpmsg_echo_am275x-evm_system_freertos_clean:
 	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am275x-evm/system_freertos -f makefile clean
 
@@ -3211,6 +3220,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += vtm_example_am275x-evm_r5fss0-0_nortos_ti-arm-c
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_calcratio_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub
 # Various System Example Scrub Targets
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_notify_echo_am275x-evm_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_notify_echo_optishare_am275x-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos_scrub
 
 BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL =
@@ -4007,6 +4017,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  ipc_notify_echo_am275x-evm_system_freertos_scrub:
 	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo/am275x-evm/system_freertos -f makefile scrub
+
+ ipc_notify_echo_optishare_am275x-evm_system_freertos_scrub:
+	$(MAKE) -C examples/drivers/ipc/ipc_notify_echo_optishare/am275x-evm/system_freertos -f makefile scrub
 
  ipc_rpmsg_echo_am275x-evm_system_freertos_scrub:
 	$(MAKE) -C examples/drivers/ipc/ipc_rpmsg_echo/am275x-evm/system_freertos -f makefile scrub

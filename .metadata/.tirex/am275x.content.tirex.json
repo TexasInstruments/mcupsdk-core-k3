@@ -2302,6 +2302,138 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A IPC Notify echo example CPU is R5FSS0-0 running FREERTOS.",
+        "name": "ipc_notify_echo_optishare",
+        "location": "../../examples/drivers/ipc/ipc_notify_echo_optishare/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_notify_echo_optishare",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC Notify echo example CPU is R5FSS0-1 running FREERTOS.",
+        "name": "ipc_notify_echo_optishare",
+        "location": "../../examples/drivers/ipc/ipc_notify_echo_optishare/am275x-evm/r5fss0-1_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_notify_echo_optishare",
+            "r5fss0-1_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC Notify echo example CPU is R5FSS1-0 running FREERTOS.",
+        "name": "ipc_notify_echo_optishare",
+        "location": "../../examples/drivers/ipc/ipc_notify_echo_optishare/am275x-evm/r5fss1-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_notify_echo_optishare",
+            "r5fss1-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC Notify echo example CPU is R5FSS1-1 running FREERTOS.",
+        "name": "ipc_notify_echo_optishare",
+        "location": "../../examples/drivers/ipc/ipc_notify_echo_optishare/am275x-evm/r5fss1-1_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_notify_echo_optishare",
+            "r5fss1-1_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A IPC rpmsg echo example CPU is C75SS0-0 running FREERTOS.",
         "name": "ipc_rpmsg_echo",
         "location": "../../examples/drivers/ipc/ipc_rpmsg_echo/am275x-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
@@ -9390,6 +9522,36 @@
             "drivers",
             "ipc",
             "ipc_notify_echo",
+            "system_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "A IPC Notify echo example System project.",
+        "name": "ipc_notify_echo_optishare",
+        "location": "../../examples/drivers/ipc/ipc_notify_echo_optishare/am275x-evm/system_freertos/system.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "subCategories": [
+            "drivers",
+            "ipc",
+            "ipc_notify_echo_optishare",
             "system_freertos"
         ],
         "mainCategories": [

@@ -1017,6 +1017,21 @@ void test_rpmsgSendErrorChecks(void *args)
                             RPMessage_getLocalEndPt(&gSendErrorCheckMsgObject),
                             timeout);
     }
+
+    /** Need to recv the messages as well, otherwise the receiver server 
+     * will go to pend during the send reply part and keep waiting for 
+     * the sender to recv the message and wake it up, without below loop hang
+     * will be observed for MCU core for any tests done after this test */
+    for (msg = 0; msg < echoMsgCount; msg++)
+    {
+        status = RPMessage_recv(&gSendErrorCheckMsgObject, 
+                                ackMsgBuf,
+                                &ackMsgSize,
+                                &remoteCoreId,
+                                &remoteCoreEndPt,
+                                timeout);
+    }
+
     DebugP_logZoneRestore(oldDebugLogZone);
 }
 
@@ -2859,7 +2874,8 @@ void test_ipc_main_core_start()
     #if defined(SOC_J722S)
     testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     testArgs.msgSize = INVALID_MSG_SIZE;
-    testArgs.echoMsgCount = 512;
+    testArgs.echoMsgCount = 512+10;
+    /* To induce the send timeout error, we need atleast 2*(Num of vring buffers ) + 1 i.e atleast 256*2 + 1 = 513 for j722s */ 
     RUN_TEST(test_rpmsgSendErrorChecks, 18760, &testArgs);
     #endif
 

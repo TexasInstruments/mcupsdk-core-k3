@@ -280,18 +280,14 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
             case TISCI_MSG_SET_CLOCK_PARENT:
             case TISCI_MSG_GET_CLOCK_PARENT:
             case TISCI_MSG_GET_NUM_CLOCK_PARENTS:
-#ifdef CONFIG_PM_CLK_SSC
             case TISCI_MSG_SET_CLOCK_SSC:
             case TISCI_MSG_GET_CLOCK_SSC:
-#endif
             case TISCI_MSG_SET_FREQ:
             case TISCI_MSG_QUERY_FREQ:
             case TISCI_MSG_GET_FREQ:
             case TISCI_MSG_SET_DEVICE:
             case TISCI_MSG_GET_DEVICE:
-#ifdef CONFIG_GET_DEVICE_MULTIPLE
             case TISCI_MSG_GET_DEVICE_MULTIPLE:
-#endif
             case TISCI_MSG_SET_DEVICE_RESETS:
             case TISCI_MSG_SYS_RESET:
                 memcpy((void *)message, (const void*)pReqPrm->pReqPayload, pReqPrm->reqPayloadSize);

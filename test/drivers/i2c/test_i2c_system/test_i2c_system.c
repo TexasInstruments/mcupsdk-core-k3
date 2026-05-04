@@ -224,6 +224,13 @@ int32_t TestI2c_EepromWriteRead(void *args)
     uint8_t rxBuf[3] = {0};
     int32_t status;
 
+    /* Close if already open from Drivers_open(), then re-open with desired params */
+    if (gI2cHandle[CONFIG_I2C1] != NULL)
+    {
+        I2C_close(gI2cHandle[CONFIG_I2C1]);
+        gI2cHandle[CONFIG_I2C1] = NULL;
+    }
+
     /* Open I2C in blocking mode */
     I2C_Params_init(&params);
     params.transferMode = I2C_MODE_BLOCKING;

@@ -5,7 +5,7 @@ let device = "am62px";
 const files = {
     common: [
         "main.c",
-        "test_i2c.c",
+        "test_i2c_fault_injection.c",
         "board.c",
     ],
 };
@@ -26,6 +26,7 @@ const libdirs = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+        "../../../configs/lib",
     ],
 };
 
@@ -35,6 +36,7 @@ const libdirs_freertos_mcu_r5f = {
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
         "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+        "../../../configs/lib",
     ],
 };
 
@@ -50,6 +52,7 @@ const libdirs_wkup_r5f = {
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
         "${MCU_PLUS_SDK_PATH}/test/unity/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
+        "../../../configs/lib",
     ],
 };
 
@@ -92,24 +95,23 @@ const includes_freertos_r5f = {
 const libs_mcu_r5f = {
     common: [
         "nortos.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
-        "drivers.am62px.mcu-r5f.ti-arm-clang.${ConfigName}.lib",
         "unity.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers-i2c-inject-fault.am62px.mcu-r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
 const libs_freertos_mcu_r5f = {
     common: [
         "freertos.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
-        "drivers.am62px.mcu-r5f.ti-arm-clang.${ConfigName}.lib",
         "board.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
         "unity.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers-i2c-inject-fault.am62px.mcu-r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
 const libs_nortos_wkup_r5f = {
     common: [
         "nortos.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
-        "drivers.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
         "board.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
         "sciserver.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
         "sciclient_direct.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
@@ -117,13 +119,13 @@ const libs_nortos_wkup_r5f = {
         "self_reset.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
         "unity.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
         "dm_stub.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers-i2c-inject-fault.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
 const libs_freertos_wkup_r5f = {
     common: [
         "freertos.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
-        "drivers.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
         "board.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
         "sciserver.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
         "sciclient_direct.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
@@ -131,6 +133,7 @@ const libs_freertos_wkup_r5f = {
         "self_reset.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
         "unity.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
         "dm_stub.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers-i2c-inject-fault.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
@@ -240,38 +243,13 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "test_i2c";
+    property.name = "test_i2c_fault_inject";
     property.isInternal = true;
     property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;
 
     return property;
 }
-
-const robot_template = {
-    input: ".project/templates/am62px/astra/tests.robot.xdt",
-    output: "../tests.robot",
-    options: {
-        componentName: "I2C",
-        testCaseName: "I2C: Dynamic Coverage Test, to improve the statement and branch coverages.",
-        testCaseIds: "SITSW-3178",
-        expectTimeout: 60,
-        timeout: 660,
-    },
-};
-
-const robot_template_i2c = {
-    input: ".project/templates/am62px/astra/tests.robot.xdt",
-    output: "../tests_i2c.robot",
-    options: {
-        componentName: "I2C",
-        testCaseName: "I2C: Dynamic Coverage Test, to improve the statement and branch coverages.",
-        testCaseIds: "SITSW-1311 SITSW-1312 SITSW-1313 SITSW-1314 SITSW-1315 SITSW-1316 SITSW-1317 SITSW-1318 SITSW-1319 SITSW-1320" +
-                     " SITSW-6605 SITSW-6849",
-        appName: "test_i2c",
-        expectTimeout: 60,
-    },
-};
 
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
@@ -314,10 +292,6 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
-
-    build_property.templates = [...(build_property.templates || []), robot_template];
-
-    build_property.templates = [...build_property.templates, robot_template_i2c];
     return build_property;
 }
 

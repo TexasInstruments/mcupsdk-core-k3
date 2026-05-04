@@ -59,7 +59,7 @@ INCLUDES_common := \
 	-I${CG_TOOL_ROOT}/include/c \
 	-I${MCU_PLUS_SDK_PATH}/source \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
-	-I${MCU_PLUS_SDK_PATH}/test/drivers/i2c/am62px-evm \
+	-I${MCU_PLUS_SDK_PATH}/test/drivers/i2c/am62px-sk \
 	-Igenerated \
 
 DEFINES_common := \
@@ -75,6 +75,7 @@ CFLAGS_common := \
 	-g \
 	-Wno-gnu-variable-sized-type-not-at-end \
 	-Wno-unused-function \
+	-DENABLE_TARGET_EXTERNAL_LOOPBACK \
 
 CFLAGS_cpp_common := \
 	-Wno-c99-designator \

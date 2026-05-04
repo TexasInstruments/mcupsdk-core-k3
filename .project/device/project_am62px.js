@@ -29,8 +29,9 @@ const component_file_list = [
     "source/sdl/sdl_sbl/.project/project.js",
     "source/safety_checkers/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_fault_inject/configs/.project/project.js",
-    "docs_src/docs/api_guide/doxy_samples/.project/project.js",
+    "test/drivers/i2c/test_i2c_fault_inject/configs/.project/project_am62px.js",
     "test/unity/.project/project.js",
+    "docs_src/docs/api_guide/doxy_samples/.project/project.js",
 ];
 
 // List of components where makefile is not generated.
@@ -214,6 +215,8 @@ const example_file_list = [
     "test/drivers/sciclient/sciclient_dynamic_analysis/.project/project.js",
     "test/drivers/sciclient/sciclient_interrupt_mode/.project/project.js",
     "test/drivers/i2c/.project/project.js",
+    "test/drivers/i2c/test_i2c_fault_inject/.project/project.js",
+    "test/drivers/i2c/test_i2c_system/.project/project.js",
     "test/drivers/ipc_notify/.project/project.js",
     "test/drivers/ipc_rpmsg/.project/project.js",
     "test/drivers/fvid2/.project/project.js",

@@ -3012,8 +3012,8 @@ extern "C"
 #define CSL_STD_FW_MSRAM_1MB0_RAM_MMR_BASE                                                         (0x00000045040000U)
 #define CSL_STD_FW_MSRAM_1MB0_RAM_NUM_REGIONS                                                      (8U)
 #define CSL_STD_FW_MSRAM_1MB0_RAM_NUM_PRIV_IDS_PER_REGION                                          (3U)
-#define CSL_STD_FW_MSRAM_1MB0_RAM_RAM_START                                                        (0x00000043c40000U)
-#define CSL_STD_FW_MSRAM_1MB0_RAM_RAM_END                                                          (0x00000043c7ffffU)
+#define CSL_STD_FW_MSRAM_1MB0_RAM_RAM_START                                                        (0x00000072000000U)
+#define CSL_STD_FW_MSRAM_1MB0_RAM_RAM_END                                                          (0x000000720fffffU)
 
 /* Properties of firewall at slave: MSRAM_1MB1_RAM */
 #define CSL_STD_FW_MSRAM_1MB1_RAM_ID                                                               (257U)

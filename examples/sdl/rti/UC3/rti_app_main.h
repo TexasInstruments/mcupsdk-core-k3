@@ -64,7 +64,6 @@
 /* ========================================================================== */
 
 #define RTI_CLOCK_SOURCE_32KHZ_FREQ_KHZ        (32U)
-#define RTI_CLOCK_SOURCE_200MHZ_FREQ_KHZ       (200000U)
 /**< RTI Clock Source Selection */
 #define RTI_NO_INTERRUPT                       (0U)
 #define RTI_CPU_INTERRUPT                      (1U)
@@ -103,8 +102,6 @@ typedef enum rtiClockSource
     /**< to select clock frequency of 12 MHz */
     RTI_CLOCK_SOURCE_32KHZ = 3U,
     /**< to select clock frequency of 32KHz */
-    RTI_CLOCK_SOURCE_200MHZ = 4U,
-    /**< to select clock frequency of 200 MHz */
 }rtiClockSource_t;
 
 /*===========================================================================*/

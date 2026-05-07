@@ -288,6 +288,9 @@ static void TestDplTimer_multithread_concurrent_start_stop(void *args)
     tparamsA.args      = (void *)(uintptr_t)baseAddr;
     tparamsA.taskMain  = TestDplTimer_mt_task_toggler;
     tparamsA.name      = (char *)"Timer_Toggle_A";
+#if defined(CONFIG_SMP_TEST_ENABLE)
+    tparamsA.coreAffinity   = ( 1U << 0);
+#endif
 
     TaskP_Params_init(&tparamsB);
     tparamsB.priority  = 3U;
@@ -296,6 +299,9 @@ static void TestDplTimer_multithread_concurrent_start_stop(void *args)
     tparamsB.args      = (void *)(uintptr_t)baseAddr;
     tparamsB.taskMain  = TestDplTimer_mt_task_toggler;
     tparamsB.name      = (char *)"Timer_Toggle_B";
+#if defined(CONFIG_SMP_TEST_ENABLE)
+    tparamsB.coreAffinity   = ( 1U << 1);
+#endif
 
     TaskP_Params_init(&tparamsC);
     tparamsC.priority  = 4U;
@@ -304,6 +310,9 @@ static void TestDplTimer_multithread_concurrent_start_stop(void *args)
     tparamsC.args      = (void *)(uintptr_t)baseAddr;
     tparamsC.taskMain  = TestDplTimer_mt_task_counter;
     tparamsC.name      = (char *)"Timer_Counter";
+#if defined(CONFIG_SMP_TEST_ENABLE)
+    tparamsC.coreAffinity   = ( 1U << 2);
+#endif
 
     status = TaskP_construct(&taskToggleA, &tparamsA);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
@@ -360,6 +369,9 @@ static void TestDplTimer_multithread_concurrent_start_stop(void *args)
 
     TimerP_stop(baseAddr);
 
+#if defined(CONFIG_SMP_TEST_ENABLE)
+    ClockP_usleep(10000U);
+#endif
 
     /* Validate results */
     TEST_ASSERT_TRUE(TestDplTimer_mtIsrCount >= 1U);
@@ -532,6 +544,9 @@ static void TestDplTimer_multithread_multiple_instances(void *args)
     tparamsTogA.args      = (void *)(uintptr_t)baseA;
     tparamsTogA.taskMain  = TestDplTimer_mt_task_toggler;
     tparamsTogA.name      = (char *)"TimerA_Toggler";
+#if defined(CONFIG_SMP_TEST_ENABLE)
+    tparamsTogA.coreAffinity   = ( 1U << 0);
+#endif
 
     status = TaskP_construct(&taskToggleA, &tparamsTogA);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
@@ -543,7 +558,9 @@ static void TestDplTimer_multithread_multiple_instances(void *args)
     tparamsTogB.args      = (void *)(uintptr_t)baseB;
     tparamsTogB.taskMain  = TestDplTimer_mt_task_toggler;
     tparamsTogB.name      = (char *)"TimerB_Toggler";
-
+#if defined(CONFIG_SMP_TEST_ENABLE)
+    tparamsTogB.coreAffinity   = ( 1U << 1);
+#endif
     status = TaskP_construct(&taskToggleB, &tparamsTogB);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -557,7 +574,9 @@ static void TestDplTimer_multithread_multiple_instances(void *args)
     tparamsCnt.args      = (void *)(uintptr_t)baseA;
     tparamsCnt.taskMain  = TestDplTimer_mt_task_counter;
     tparamsCnt.name      = (char *)"TimerA_Counter";
-
+#if defined(CONFIG_SMP_TEST_ENABLE)
+    tparamsCnt.coreAffinity   = ( 1U << 3);
+#endif
     status = TaskP_construct(&taskCounter, &tparamsCnt);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -603,7 +622,9 @@ static void TestDplTimer_multithread_multiple_instances(void *args)
     tparamsCnt.args      = (void *)(uintptr_t)baseB;
     tparamsCnt.taskMain  = TestDplTimer_mt_task_counter;
     tparamsCnt.name      = (char *)"TimerB_Counter";
-
+#if defined(CONFIG_SMP_TEST_ENABLE)
+    tparamsCnt.coreAffinity   = ( 1U << 1);
+#endif
     status = TaskP_construct(&taskCounter, &tparamsCnt);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -629,6 +650,10 @@ static void TestDplTimer_multithread_multiple_instances(void *args)
             break;
         }
     }
+
+#if defined(CONFIG_SMP_TEST_ENABLE)
+    ClockP_usleep(10000U);
+#endif
 
     TaskP_destruct(&taskCounter);
 

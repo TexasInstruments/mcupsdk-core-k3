@@ -235,6 +235,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 \cond SOC_AM62DX
 -# DDR
    -# \subpage EXAMPLES_DRIVERS_DDR_ECC_TEST_MAIN_ESM
+   -# \subpage EXAMPLES_DRIVERS_DDR_MEMTESTER
    -# \subpage EXAMPLES_DRIVERS_DDR_PERF
 -# ECAP
    -# \subpage EXAMPLES_DRIVERS_ECAP_APWM_MODE

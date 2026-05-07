@@ -49,6 +49,8 @@ const component_file_list = [
     "test/drivers/i2c/test_i2c_fault_inject/configs/.project/project_am62dx.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
     "test/drivers/uart/test_uart_fault_inject/configs/.project/project.js",
+    "test/kernel/dpl_timer/test_dpl_timer_fault_inject/configs_freertos/.project/project.js",
+    "test/kernel/dpl_timer/test_dpl_timer_fault_inject/configs_nortos/.project/project.js",
 ];
 
 // List of components where makefile is not generated.
@@ -367,6 +369,7 @@ const example_file_list = [
     "test/drivers/mcan/.project/project.js",
     "test/drivers/mcan/test_mcan_system/.project/project.js",
     "test/kernel/dpl_timer/.project/project.js",
+    "test/kernel/dpl_timer/test_dpl_timer_fault_inject/.project/project.js",
 ];
 
 function getProjectSpecCpu(cpu) {

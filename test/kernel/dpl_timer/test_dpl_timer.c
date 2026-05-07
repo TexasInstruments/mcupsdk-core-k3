@@ -47,9 +47,18 @@
 /* 					      Macro defines 					         */
 /*===================================================================*/
 
-#if ((defined(SOC_AM275X) && !((defined(CPU_C75_0) || defined(CPU_C75_1)))))
+#if ((defined(SOC_AM275X) && !((defined(CPU_C75_0) || defined(CPU_C75_1)))) || \
+((defined(SOC_AM62AX) || defined(SOC_AM62DX)) && !defined(__C7000__)))
 static uint8_t TestDplTimer_udmaFqDualChannel[128] __attribute__((aligned(128)));
 static uint8_t TestDplTimer_udmaCqDualChannel[128]  __attribute__((aligned(128)));
+#endif
+
+#if ((defined(SOC_AM62AX) || defined(SOC_AM62DX)) && !defined(__C7000__))
+/* Static DMA data buffers for AM62AX/AM62DX: placed in identity-mapped DDR so that
+ * Udma_defaultVirtToPhyFxn returns the correct physical address on A53 (MMU on). */
+static uint8_t TestDplTimer_am62DmaSrc[256]        __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+static uint8_t TestDplTimer_am62DmaDst[256]        __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
+static uint8_t TestDplTimer_am62TrpdMemory[UDMA_GET_TRPD_TR15_SIZE(1U)] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
 #endif
 
 /*===================================================================*/
@@ -97,6 +106,9 @@ TEST_EXECUTE_SKIP_IDS(TestDplTimer_am275_r5f_skip, 10360, 10372, 10373, 10374, 1
 /* C7x-0*/
 TEST_EXECUTE_SKIP_IDS(TestDplTimer_am275_c7x_0_skip, 10360, 10372)
 
+/* Wkp-R5*/
+TEST_EXECUTE_SKIP_IDS(TestDplTimer_am275_wkp_r5_skip, 10360, 10372, 10377, 10379, 10382)
+
 /* Testcase execution list */
 const TestExecute_idList TestExecute_SkipTestIdMatrix[TEST_SOC_COUNT][TEST_CORE_COUNT] = {
     TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62DX, TEST_CORE_IDX_MCU_R5F0, TestDplTimer_am62dx_mcur5_skip),
@@ -114,6 +126,7 @@ const TestExecute_idList TestExecute_SkipTestIdMatrix[TEST_SOC_COUNT][TEST_CORE_
     TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM275X, TEST_CORE_IDX_R5F1_0, TestDplTimer_am275_r5f_skip),
     TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM275X, TEST_CORE_IDX_R5F1_1, TestDplTimer_am275_r5f_skip),
     TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM275X, TEST_CORE_IDX_C75_0, TestDplTimer_am275_c7x_0_skip),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM275X, TEST_CORE_IDX_R5F0, TestDplTimer_am275_wkp_r5_skip),
 };
 
 static volatile bool TestDplTimer_timerCallbackCalled = false;
@@ -142,6 +155,9 @@ static void TestDplTimer_periodic_mode_param(void *args);
 static void TestDplTimer_dma_trigger_flag(void *args);
 #if ((defined(SOC_AM275X) && !((defined(CPU_C75_0) || defined(CPU_C75_1)))))
 static void TestDplTimer_dma_trigger_transfer(void *args);
+#endif
+#if ((defined(SOC_AM62AX) || defined(SOC_AM62DX)) && !defined(__C7000__))
+static void TestDplTimer_dma_trigger_transfer_am62(void *args);
 #endif
 static void TestDplTimer_params_init_defaults(void *args);
 static void TestDplTimer_setup_boundary_values(void *args);
@@ -216,6 +232,10 @@ static void TestDplTimer_stTestcase(void)
 #if ((defined(SOC_AM275X) && !((defined(CPU_C75_0) || defined(CPU_C75_1)))))
     /* Testcase to validate DMA trigger transfer behavior. */
     TEST_EXECUTE_TEST_CASE(TestDplTimer_dma_trigger_transfer, 10370, NULL);
+#endif
+#if ((defined(SOC_AM62AX) || defined(SOC_AM62DX)) && !defined(__C7000__))
+    /* Testcase to validate DMA trigger transfer behavior on AM62AX/AM62DX. */
+    TEST_EXECUTE_TEST_CASE(TestDplTimer_dma_trigger_transfer_am62, 11963, NULL);
 #endif
     /* Testcase to validate timer parameter initialization defaults. */
     TEST_EXECUTE_TEST_CASE(TestDplTimer_params_init_defaults, 10371, NULL);
@@ -1406,7 +1426,7 @@ static void TestDplTimer_dma_trigger_transfer(void *args)
     CSL_UdmapTR15     *pTrReq;
     uint8_t           trpdMemory[UDMA_GET_TRPD_TR15_SIZE(1U)] __attribute__((aligned(UDMA_CACHELINE_ALIGNMENT)));
     uint64_t          physTrDesc;
-    int32_t          timeoutTicks;
+    int32_t           timeoutTicks;
     uint32_t          cqRingNum;
     uint64_t          cqPtr;
 
@@ -1606,6 +1626,253 @@ static void TestDplTimer_dma_trigger_transfer(void *args)
 }
 
 #endif /* SOC_AM275X UDMA v0 */
+
+#if ((defined(SOC_AM62AX) || defined(SOC_AM62DX)) && !defined(__C7000__))
+/**
+ * @brief DMA trigger transfer (AM62AX / AM62DX).
+ *
+ * Validates timer-driven BCDMA block-copy transfer on AM62AX and AM62DX.
+ * Both SoCs expose UDMA v0 BCDMA (UDMA_INST_ID_BCDMA_0 = UDMA_INST_ID_2)
+ * accessible from all non-C7x cores.
+ *
+ * Test Steps:
+ * 1. Fill a 256-byte source buffer with a known pattern; zero destination buffer.
+ * 2. Construct binary semaphore; bind overflow ISR to CONFIG_TIMER0.
+ * 3. Initialize UDMA driver with UDMA_INST_ID_BCDMA_0; open a TR block-copy channel.
+ * 4. Build a TR15 TRPD for a 1D memory-to-memory copy (src -> dst, 256 bytes).
+ * 5. Enable the channel; queue the descriptor to the FQ ring.
+ * 6. Configure timer with DMA trigger enabled, one-shot mode, 1 ms period; start timer.
+ * 7. Wait for timer ISR (overflow); then poll CQ ring for transfer completion.
+ * 8. Invalidate D-cache; verify destination matches source byte-for-byte.
+ * 9. Disable/close UDMA channel; deinit driver; destruct ISR and semaphore.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
+static void TestDplTimer_dma_trigger_transfer_am62(void *args)
+{
+#if !defined(DRV_VERSION_UDMA_V0)
+    TEST_IGNORE_MESSAGE("UDMA v0 required; skipping on this build.");
+    return;
+#else
+    uint32_t          baseAddr;
+    uint32_t          intNum;
+    int32_t           status;
+    HwiP_Object       timerHwiObj;
+    HwiP_Params       hwiParams;
+    TimerP_Params     tParams;
+    uint32_t          i;
+    bool              equal;
+    Udma_DrvObject    drvObj;
+    Udma_DrvHandle    drvHandle = &drvObj;
+    Udma_InitPrms     initPrms;
+    Udma_ChObject     chObj;
+    Udma_ChHandle     chHandle;
+    Udma_ChPrms       chPrms;
+    Udma_ChTxPrms     txPrms;
+    Udma_RingHandle   fqRing;
+    Udma_RingHandle   cqRing;
+    CSL_UdmapTR15    *pTrReq;
+    uint64_t          physTrDesc;
+    uint64_t          physSrc;
+    uint64_t          physDst;
+    int32_t           timeoutTicks;
+    uint32_t          cqRingNum;
+    uint64_t          cqPtr;
+
+    baseAddr = gTimerBaseAddr[CONFIG_TIMER0];
+    intNum   = CONFIG_TIMER0_INT_NUM;
+
+    /* Use static globals so Udma_defaultVirtToPhyFxn returns the correct physical
+     * address on A53 (MMU enabled, stack virtual != physical). */
+    /* Initialize source buffer with a test pattern */
+    for (i = 0U; i < sizeof(TestDplTimer_am62DmaSrc); i++)
+    {
+        TestDplTimer_am62DmaSrc[i] = (uint8_t)(i ^ 0xA5U);
+    }
+
+    /* Clear destination buffer */
+    for (i = 0U; i < sizeof(TestDplTimer_am62DmaDst); i++)
+    {
+        TestDplTimer_am62DmaDst[i] = 0U;
+    }
+
+    /* Construct semaphore for timer ISR synchronization */
+    status = SemaphoreP_constructBinary(&TestDplTimer_timerSem, 0);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Configure timer ISR */
+    HwiP_destruct(&gTimerHwiObj[CONFIG_TIMER0]);
+    HwiP_Params_init(&hwiParams);
+    hwiParams.intNum   = intNum;
+    hwiParams.callback = TestDplTimer_overflow_isr;
+    hwiParams.isPulse  = 1U;   /* AM62AX / AM62DX use pulse interrupts */
+    hwiParams.args     = (void *)(uintptr_t)baseAddr;
+    hwiParams.priority = 4U;
+    HwiP_construct(&timerHwiObj, &hwiParams);
+
+    /* Initialize UDMA driver — BCDMA instance (same inst ID as AM275X) */
+    status = UdmaInitPrms_init(UDMA_INST_ID_BCDMA_0, &initPrms);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(UDMA_SOK, status, "UdmaInitPrms_init failed");
+
+    status = Udma_init(drvHandle, &initPrms);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(UDMA_SOK, status, "Udma_init failed");
+
+    /* Open UDMA TR block-copy channel */
+    chHandle = &chObj;
+    UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_TR_BLK_COPY);
+    chPrms.fqRingPrms.ringMem     = TestDplTimer_udmaFqDualChannel;
+    chPrms.fqRingPrms.ringMemSize = sizeof(TestDplTimer_udmaFqDualChannel);
+    chPrms.fqRingPrms.elemCnt     = 1U;
+    chPrms.cqRingPrms.ringMem     = TestDplTimer_udmaCqDualChannel;
+    chPrms.cqRingPrms.ringMemSize = sizeof(TestDplTimer_udmaCqDualChannel);
+    chPrms.cqRingPrms.elemCnt     = 1U;
+    chPrms.chNum                  = UDMA_DMA_CH_ANY;
+
+    status = Udma_chOpen(drvHandle, chHandle, UDMA_CH_TYPE_TR_BLK_COPY, &chPrms);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(UDMA_SOK, status, "Udma_chOpen failed");
+
+    /* Configure TX parameters for block copy */
+    UdmaChTxPrms_init(&txPrms, UDMA_CH_TYPE_TR_BLK_COPY);
+    status = Udma_chConfigTx(chHandle, &txPrms);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(UDMA_SOK, status, "Udma_chConfigTx failed");
+
+    /* Get FQ and CQ ring handles from channel */
+    fqRing = Udma_chGetFqRingHandle(chHandle);
+    cqRing = Udma_chGetCqRingHandle(chHandle);
+    TEST_ASSERT_NOT_NULL_MESSAGE(fqRing, "FQ ring handle is NULL");
+    TEST_ASSERT_NOT_NULL_MESSAGE(cqRing, "CQ ring handle is NULL");
+
+    cqRingNum = Udma_ringGetNum(cqRing);
+
+    /* Build TRPD with one TR15 record for memory copy */
+    UdmaUtils_makeTrpd(TestDplTimer_am62TrpdMemory, UDMA_TR_TYPE_15, 1U, cqRingNum);
+
+    /* Get pointer to TR15 within the TRPD */
+    pTrReq = UdmaUtils_getTrpdTr15Pointer(TestDplTimer_am62TrpdMemory, 0U);
+
+    /* Configure TR15 flags for 1D block move */
+    pTrReq->flags    = CSL_FMK(UDMAP_TR_FLAGS_TYPE, CSL_UDMAP_TR_FLAGS_TYPE_4D_BLOCK_MOVE_REPACKING_INDIRECTION);
+    pTrReq->flags   |= CSL_FMK(UDMAP_TR_FLAGS_STATIC, 0U);
+    pTrReq->flags   |= CSL_FMK(UDMAP_TR_FLAGS_EOL, CSL_UDMAP_TR_FLAGS_EOL_MATCH_SOL_EOL);
+    pTrReq->flags   |= CSL_FMK(UDMAP_TR_FLAGS_EVENT_SIZE, CSL_UDMAP_TR_FLAGS_EVENT_SIZE_COMPLETION);
+    pTrReq->flags   |= CSL_FMK(UDMAP_TR_FLAGS_TRIGGER0, CSL_UDMAP_TR_FLAGS_TRIGGER_NONE);
+    pTrReq->flags   |= CSL_FMK(UDMAP_TR_FLAGS_TRIGGER0_TYPE, CSL_UDMAP_TR_FLAGS_TRIGGER_TYPE_ALL);
+    pTrReq->flags   |= CSL_FMK(UDMAP_TR_FLAGS_TRIGGER1, CSL_UDMAP_TR_FLAGS_TRIGGER_NONE);
+    pTrReq->flags   |= CSL_FMK(UDMAP_TR_FLAGS_TRIGGER1_TYPE, CSL_UDMAP_TR_FLAGS_TRIGGER_TYPE_ALL);
+    pTrReq->flags   |= CSL_FMK(UDMAP_TR_FLAGS_CMD_ID, 0x25U);
+    pTrReq->flags   |= CSL_FMK(UDMAP_TR_FLAGS_SA_INDIRECT, 0U);
+    pTrReq->flags   |= CSL_FMK(UDMAP_TR_FLAGS_DA_INDIRECT, 0U);
+    pTrReq->flags   |= CSL_FMK(UDMAP_TR_FLAGS_EOP, 1U);
+
+    /* Set transfer dimensions (1D copy of 256 bytes).
+     * BCDMA hardware requires PHYSICAL addresses — translate via
+     * Udma_defaultVirtToPhyFxn so the test works on A53 (MMU on) as
+     * well as on R5 (no MMU, virt == phys). */
+    physSrc = Udma_defaultVirtToPhyFxn((const void *)TestDplTimer_am62DmaSrc, 0U, NULL);
+    physDst = Udma_defaultVirtToPhyFxn((const void *)TestDplTimer_am62DmaDst, 0U, NULL);
+
+    pTrReq->icnt0    = (uint16_t)sizeof(TestDplTimer_am62DmaSrc);
+    pTrReq->icnt1    = 1U;
+    pTrReq->icnt2    = 1U;
+    pTrReq->icnt3    = 1U;
+    pTrReq->addr     = physSrc;
+    pTrReq->fmtflags = 0U;
+    pTrReq->dicnt0   = (uint16_t)sizeof(TestDplTimer_am62DmaDst);
+    pTrReq->dicnt1   = 1U;
+    pTrReq->dicnt2   = 1U;
+    pTrReq->dicnt3   = 1U;
+    pTrReq->daddr    = physDst;
+    pTrReq->dim1     = 0;
+    pTrReq->dim2     = 0;
+    pTrReq->dim3     = 0;
+    pTrReq->ddim1    = 0;
+    pTrReq->ddim2    = 0;
+    pTrReq->ddim3    = 0;
+
+    /* Cache writeback for coherency.
+     * On A53 (cache+MMU enabled) we must flush EVERY buffer the DMA will
+     * touch before the transfer so that:
+     *   - src  : CPU-written pattern is visible to BCDMA in DDR
+     *   - dst  : CPU-written zeros are pushed out of cache; otherwise
+     *             CacheP_inv after the DMA may flush them back and overwrite
+     *             the DMA-written data
+     *   - trpd : descriptor is in DDR before we push its address to FQ ring */
+    CacheP_wb((void *)TestDplTimer_am62DmaSrc,    sizeof(TestDplTimer_am62DmaSrc),    CacheP_TYPE_ALLD);
+    CacheP_wb((void *)TestDplTimer_am62DmaDst,    sizeof(TestDplTimer_am62DmaDst),    CacheP_TYPE_ALLD);
+    CacheP_wb(TestDplTimer_am62TrpdMemory,        sizeof(TestDplTimer_am62TrpdMemory), CacheP_TYPE_ALLD);
+
+    /* Convert TRPD virtual to physical address */
+    physTrDesc = Udma_defaultVirtToPhyFxn((const void *)TestDplTimer_am62TrpdMemory, 0U, NULL);
+
+    /* Enable the UDMA channel */
+    status = Udma_chEnable(chHandle);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(UDMA_SOK, status, "Udma_chEnable failed");
+
+    /* Queue TR descriptor to FQ ring */
+    status = Udma_ringQueueRaw(fqRing, physTrDesc);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(UDMA_SOK, status, "Udma_ringQueueRaw failed");
+
+    /* Configure timer with DMA trigger enabled, one-shot, 1 ms */
+    TimerP_Params_init(&tParams);
+    tParams.enableOverflowInt = 1U;
+    tParams.periodInUsec      = 1000U;
+    tParams.periodInNsec      = 0U;
+    tParams.inputPreScaler    = 1U;
+    tParams.oneshotMode       = 1U;
+    tParams.enableDmaTrigger  = 1U;
+
+    TimerP_setup(baseAddr, &tParams);
+    TimerP_clearOverflowInt(baseAddr);
+
+    TestDplTimer_clearInIsr          = true;
+    TestDplTimer_timerCallbackCalled = false;
+
+    /* Start timer — overflow triggers BCDMA transfer */
+    TimerP_start(baseAddr);
+
+    /* Wait for timer ISR (confirms timer fired and DMA trigger was issued) */
+    SemaphoreP_pend(&TestDplTimer_timerSem, SystemP_WAIT_FOREVER);
+    TEST_ASSERT_TRUE(TestDplTimer_timerCallbackCalled);
+
+    /* Poll CQ ring for BCDMA transfer completion */
+    timeoutTicks = 1000000;
+    while (timeoutTicks-- > 0)
+    {
+        status = Udma_ringDequeueRaw(cqRing, &cqPtr);
+        if (status == UDMA_SOK)
+        {
+            break;
+        }
+    }
+    TEST_ASSERT_TRUE(timeoutTicks > 0);
+
+    /* Invalidate cache before reading destination */
+    CacheP_inv((void *)TestDplTimer_am62DmaDst, sizeof(TestDplTimer_am62DmaDst), CacheP_TYPE_ALLD);
+
+    /* Verify destination matches source */
+    equal = true;
+    for (i = 0U; i < sizeof(TestDplTimer_am62DmaSrc); i++)
+    {
+        if (TestDplTimer_am62DmaDst[i] != TestDplTimer_am62DmaSrc[i])
+        {
+            equal = false;
+            break;
+        }
+    }
+    TEST_ASSERT_TRUE(equal);
+
+    /* Cleanup */
+    TimerP_stop(baseAddr);
+    Udma_chDisable(chHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT);
+    Udma_chClose(chHandle);
+    Udma_deinit(&drvObj);
+    HwiP_destruct(&timerHwiObj);
+    SemaphoreP_destruct(&TestDplTimer_timerSem);
+#endif
+}
+#endif /* (SOC_AM62AX || SOC_AM62DX) non-C7x */
 
 /**
  * @brief Params init defaults.

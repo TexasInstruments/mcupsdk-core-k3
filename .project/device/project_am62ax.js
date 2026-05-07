@@ -58,6 +58,8 @@ const component_file_list_common = [
     "test/drivers/mcasp/test_mcasp_fault_injection/configs/.project/project.js",
     "test/drivers/udma/test_udma_fault_inject/configs/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
+    "test/kernel/dpl_timer/test_dpl_timer_fault_inject/configs_freertos/.project/project.js",
+    "test/kernel/dpl_timer/test_dpl_timer_fault_inject/configs_nortos/.project/project.js",
 ];
 
 const component_file_list_freertos = [
@@ -287,7 +289,7 @@ const example_file_list = [
     "test/security/crypto/test_sa3ul_rng/.project/project.js",
     "test/security/crypto/test_sa3ul_sha/.project/project.js",
     "test/kernel/dpl_timer/.project/project.js",
-
+    "test/kernel/dpl_timer/test_dpl_timer_fault_inject/.project/project.js",
     // SDL Examples and tests
     "examples/sdl/dcc/dcc_modes/.project/project.js",
     "examples/sdl/ecc/.project/project.js",

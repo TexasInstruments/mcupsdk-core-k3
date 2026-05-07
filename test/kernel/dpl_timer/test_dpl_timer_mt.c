@@ -123,7 +123,7 @@ static void TestDplTimer_mt_task_toggler(void *args)
     {
         TimerP_start(baseAddr);
         /* Give timer enough time to actually advance count */
-        ClockP_usleep(2000U); /* was 500us */
+        ClockP_usleep(2000U);
 
         TimerP_stop(baseAddr);
         ClockP_usleep(200U);
@@ -152,7 +152,7 @@ static void TestDplTimer_mt_task_counter(void *args)
     last     = TimerP_getCount(baseAddr);
 
     /* Give scheduler/hardware a moment to progress before tight polling */
-    ClockP_usleep(200U); /* was 50us */
+    ClockP_usleep(200U);
 
     cur      = last;
     loops    = 2000000U; /* more budget to observe change under contention */
@@ -252,7 +252,7 @@ static void TestDplTimer_multithread_concurrent_start_stop(void *args)
     HwiP_Params_init(&hwiParams);
     hwiParams.intNum   = intNum;
     hwiParams.callback = TestDplTimer_mt_overflow_isr;
-#if defined(__ARM_ARCH_7R__) || defined(SOC_AM64X) || defined(SOC_AM243X) || defined(SOC_AM62X) || defined(SOC_AM62AX)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX)
     hwiParams.isPulse  = 1U;
 #else
     hwiParams.isPulse  = 0U;
@@ -480,7 +480,7 @@ static void TestDplTimer_multithread_multiple_instances(void *args)
     HwiP_Params_init(&hwiParams);
     hwiParams.intNum   = intA;
     hwiParams.callback = TestDplTimer_mt_overflow_isr;
-#if defined(__ARM_ARCH_7R__) || defined(SOC_AM64X) || defined(SOC_AM243X) || defined(SOC_AM62X) || defined(SOC_AM62AX)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX)
     hwiParams.isPulse  = 1U;
 #else
     hwiParams.isPulse  = 0U;
@@ -497,7 +497,7 @@ static void TestDplTimer_multithread_multiple_instances(void *args)
     HwiP_Params_init(&hwiParams);
     hwiParams.intNum   = intB;
     hwiParams.callback = TestDplTimer_mt_overflow_isr;
-#if defined(__ARM_ARCH_7R__) || defined(SOC_AM64X) || defined(SOC_AM243X) || defined(SOC_AM62X) || defined(SOC_AM62AX)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX)
     hwiParams.isPulse  = 1U;
 #else
     hwiParams.isPulse  = 0U;

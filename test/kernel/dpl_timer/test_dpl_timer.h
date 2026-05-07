@@ -79,5 +79,7 @@ extern HwiP_Object gTimerHwiObj[];
 /* 					         Function Declarations		             */
 /*===================================================================*/
 
+void TestDplTimer_mtTestcase(void);
+
 
 #endif /* TEST_DPL_TIMER_H_ */

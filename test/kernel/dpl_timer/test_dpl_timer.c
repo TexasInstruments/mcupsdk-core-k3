@@ -181,6 +181,9 @@ void test_main(void *args)
     UNITY_BEGIN();
 
     TestDplTimer_stTestcase();
+#if defined (CONFIG_MULTI_INSTANCE_TEST_ENABLE)
+    TestDplTimer_mtTestcase();
+#endif /* CONFIG_MULTI_INSTANCE_TEST_ENABLE */
 
     /* Finalize Unity Test Framework */
     UNITY_END();

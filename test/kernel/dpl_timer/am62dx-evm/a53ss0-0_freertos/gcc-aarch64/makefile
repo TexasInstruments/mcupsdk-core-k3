@@ -40,6 +40,7 @@ endif
 
 FILES_common := \
 	test_dpl_timer.c \
+	test_dpl_timer_mt.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \

@@ -12,6 +12,7 @@ const files = {
 const files_freertos = {
 	common: [
 		"test_dpl_timer.c",
+        "test_dpl_timer_mt.c",
 		"main.c",
 	],
 };

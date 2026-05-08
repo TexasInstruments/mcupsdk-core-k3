@@ -216,11 +216,13 @@ static void TestI2c_multithreadSharedEepromTemp(void *args);
 #endif
 #if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62X)
 static void TestI2c_multithreadWriteTestSharedOpenCb(void* args);
+static void TestI2c_callbackMultithreadWriteTest(void* args);
+#if !defined(M4F_CORE)
 static void TestI2c_multithreadReadTestSharedOpen(void* args);
 static void TestI2c_multithreadWriteRead(void* args);
-static void TestI2c_callbackMultithreadWriteTest(void* args);
 static void TestI2c_multithreadEepromAndTemp(void *args);
 static void TestI2c_tempTask(void *arg);
+#endif
 #endif
 #endif
 #if (defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62X)) && defined(ENABLE_TARGET_EXTERNAL_LOOPBACK)
@@ -322,10 +324,14 @@ void test_main(void *args)
     #endif
     #if defined(SOC_AM62AX) || defined (SOC_AM62PX) || defined(SOC_AM62X)
     RUN_TEST(TestI2c_multithreadWriteTestSharedOpenCb, 8586, (void*)&testParams);
+    #if !defined(M4F_CORE)
     RUN_TEST(TestI2c_multithreadReadTestSharedOpen, 8587, (void*)&testParams);
     RUN_TEST(TestI2c_multithreadWriteRead, 8324,(void*)&testParams);
+    #endif
     RUN_TEST(TestI2c_callbackMultithreadWriteTest, 8325,(void*)&testParams);
+    #if !defined(M4F_CORE)
     RUN_TEST(TestI2c_multithreadEepromAndTemp,8326,(void*)&testParams);
+    #endif
     #endif
     #endif
     #if (defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62X)) && defined(ENABLE_TARGET_EXTERNAL_LOOPBACK)
@@ -2255,6 +2261,7 @@ static void TestI2c_writeWorkerCb(void *arg)
     TaskP_exit();
 }
 
+#if !defined(M4F_CORE)
 /**
  * \brief Multi-threaded I2C write/Read test: one thread uses callback mode, one uses blocking mode.
  *
@@ -2305,6 +2312,7 @@ static void TestI2c_multithreadWriteRead(void *args)
     TaskP_destruct(&TestI2c_TaskObjs[1]);
     SemaphoreP_destruct(&TestI2c_testSem);
 }
+#endif /* !defined(M4F_CORE) */
 
 /**
  * \brief Worker thread for multi-threaded I2C write test (callback mode) using a single I2C instance.
@@ -2504,6 +2512,7 @@ static void TestI2c_eepromTask(void *arg)
     TaskP_exit();
 }
 
+#if !defined(M4F_CORE)
 /**
  * \brief Worker thread for multi-threaded I2C temperature sensor read.
  *
@@ -2734,6 +2743,7 @@ static void TestI2c_multithreadReadTestSharedOpen(void* args)
     I2C_close(handle);
     SemaphoreP_destruct(&TestI2c_testSem);
 }
+#endif /* !defined(M4F_CORE) */
 
 /**
  * \brief Worker thread for multi-threaded I2C write test with shared I2C handle (callback mode).

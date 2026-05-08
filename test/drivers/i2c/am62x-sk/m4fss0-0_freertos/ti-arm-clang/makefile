@@ -58,12 +58,15 @@ FILES_PATH_common = \
 INCLUDES_common := \
 	-I${CG_TOOL_ROOT}/include/c \
 	-I${MCU_PLUS_SDK_PATH}/source \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CM4F \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/m4f \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
-	-I${MCU_PLUS_SDK_PATH}/test/drivers/i2c/am62x-evm \
 	-Igenerated \
 
 DEFINES_common := \
 	-DSOC_AM62X \
+	-DM4F_CORE \
 
 CFLAGS_common := \
 	-mcpu=cortex-m4 \
@@ -74,6 +77,7 @@ CFLAGS_common := \
 	-g \
 	-Wno-gnu-variable-sized-type-not-at-end \
 	-Wno-unused-function \
+	-DENABLE_MT_TESTS \
 
 CFLAGS_cpp_common := \
 	-Wno-c99-designator \
@@ -97,13 +101,13 @@ LNK_FILES_common = \
 	linker.cmd \
 
 LIBS_PATH_common = \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
-	-lnortos.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
+	-lfreertos.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
 	-ldrivers.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
 	-lunity.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
@@ -115,14 +119,14 @@ LFLAGS_common = \
 
 
 LIBS_NAME = \
-	nortos.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
+	freertos.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
 	drivers.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
 	unity.am62x.m4f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
 	libsysbm.a \
 
 LIBS_PATH_NAME = \
-	${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
+	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	${CG_TOOL_ROOT}/lib \

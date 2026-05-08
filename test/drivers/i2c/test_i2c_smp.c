@@ -82,7 +82,7 @@ static I2C_Handle sharedI2cHandle = NULL;
 
 uint8_t Board_getSocTemperatureSensorAddr(void);
 uint8_t Board_i2cGetEepromDeviceAddr();
-#ifdef SOC_AM62AX
+#if defined(SOC_AM62AX) || defined(SOC_AM62X)
 static void Test_I2c_smpEepromTask(void *arg);
 static void Test_I2C_smpTempTask(void *arg);
 void Test_I2C_smpMultiInstance(void *args);
@@ -98,7 +98,7 @@ void tearDown(void);
 /* ========================================================================== */
 /*                        Function Definitions                                */
 /* ========================================================================== */
-#ifdef SOC_AM62AX
+#if defined(SOC_AM62AX) || defined(SOC_AM62X)
 /**
  *  \brief   Task to test I2C EEPROM access in SMP mode on AM62AX.
  *
@@ -442,7 +442,7 @@ void tearDown(void)
 void test_i2c_smp_main(void *args)
 {
     UNITY_BEGIN();
-    #ifdef SOC_AM62AX
+    #if defined(SOC_AM62AX) || defined(SOC_AM62X)
     RUN_TEST(Test_I2C_smpMultiInstance, 8877, args);
     #endif
     #ifdef SOC_AM62DX

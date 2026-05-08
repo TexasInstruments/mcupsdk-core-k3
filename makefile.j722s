@@ -689,10 +689,16 @@ BUILD_COMBO_EXAMPLE_ALL += empty_j722s-evm_system_freertos
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
 # Various Private Example Targets
 # Various Private System Example Targets
+DM_APP_PATH = examples/drivers/sciclient/sciclient_get_version/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang
 
-examples: $(BUILD_COMBO_EXAMPLE_ALL)
+dm_app:
+	$(MAKE) -C $(DM_APP_PATH) -f makefile all
 
-examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
+examples: dm_app
+	$(MAKE) -f makefile.j722s $(BUILD_COMBO_EXAMPLE_ALL)
+
+examples-private: dm_app
+	$(MAKE) -f makefile.j722s $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  sbl_null_j722s-evm_wkup-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/boot/sbl_null/j722s-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all

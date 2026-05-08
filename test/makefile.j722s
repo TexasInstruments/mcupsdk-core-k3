@@ -304,10 +304,16 @@ BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_j722s-evm_system_freertos
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
 # Various Private Example Targets
 # Various Private System Example Targets
+DM_APP_PATH = ../examples/drivers/sciclient/sciclient_get_version/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang
 
-examples: $(BUILD_COMBO_EXAMPLE_ALL)
+dm_app:
+	$(MAKE) -C $(DM_APP_PATH) -f makefile all
 
-examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
+examples: dm_app
+	$(MAKE) -f makefile.j722s $(BUILD_COMBO_EXAMPLE_ALL)
+
+examples-private: dm_app
+	$(MAKE) -f makefile.j722s $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  test_flash_j722s-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C board/flash/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all

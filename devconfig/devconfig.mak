@@ -28,6 +28,9 @@ ENC_SBL_ENABLED?=yes
 # Debug option for HS (yes/no)
 DBG_ENABLED?=no
 
+# X509 certificate software revision
+X509_SW_REV?=1
+
 # Generic macros to be used depending on the device type
 APP_SIGNING_KEY=
 APP_ENCRYPTION_KEY=

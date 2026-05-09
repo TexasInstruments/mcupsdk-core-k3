@@ -194,16 +194,16 @@ endif
 
 $(APP_NAME): $(HEXFILES)
 ifeq ($(SOC),$(filter $(SOC), am64x am243x))
-	$(PYTHON) $(BLOB_GEN) --sw-rev 1 --devgrp 0 --bcfg $(BCFG) --bcfg-rm $(BCFG_RM) --bcfg-pm $(BCFG_PM) --bcfg-sec $(BCFG_SEC) --output-file $(BCFG_BLOB_FILE)
-	$(PYTHON) $(BLOB_GEN) --sw-rev 1 --devgrp 0 --bcfg $(BCFG_LINUX) --bcfg-rm $(BCFG_RM_LINUX) --bcfg-pm $(BCFG_PM_LINUX) --bcfg-sec $(BCFG_SEC_LINUX) --output-file $(BCFG_BLOB_LINUX_FILE)
+	$(PYTHON) $(BLOB_GEN) --sw-rev $(X509_SW_REV) --devgrp 0 --bcfg $(BCFG) --bcfg-rm $(BCFG_RM) --bcfg-pm $(BCFG_PM) --bcfg-sec $(BCFG_SEC) --output-file $(BCFG_BLOB_FILE)
+	$(PYTHON) $(BLOB_GEN) --sw-rev $(X509_SW_REV) --devgrp 0 --bcfg $(BCFG_LINUX) --bcfg-rm $(BCFG_RM_LINUX) --bcfg-pm $(BCFG_PM_LINUX) --bcfg-sec $(BCFG_SEC_LINUX) --output-file $(BCFG_BLOB_LINUX_FILE)
 else
 ifeq ($(SOC),$(filter $(SOC), am62lx))
-	$(PYTHON) $(BLOB_GEN) --sw-rev 1 --devgrp 0 --bcfg $(BCFG) --bcfg-sec $(BCFG_SEC) --output-file $(BCFG_BLOB_FILE)
+	$(PYTHON) $(BLOB_GEN) --sw-rev $(X509_SW_REV) --devgrp 0 --bcfg $(BCFG) --bcfg-sec $(BCFG_SEC) --output-file $(BCFG_BLOB_FILE)
 else
-	$(PYTHON) $(BLOB_GEN) --sw-rev 1 --devgrp 0 --bcfg $(BCFG) --bcfg-rm $(BCFG_RM) --bcfg-sec $(BCFG_SEC) --output-file $(BCFG_BLOB_FILE)
+	$(PYTHON) $(BLOB_GEN) --sw-rev $(X509_SW_REV) --devgrp 0 --bcfg $(BCFG) --bcfg-rm $(BCFG_RM) --bcfg-sec $(BCFG_SEC) --output-file $(BCFG_BLOB_FILE)
 endif
 ifeq ($(SOC),$(filter $(SOC), am62x am62ax am62dx am62px am275x j722s))
-	$(PYTHON) $(BLOB_GEN) --sw-rev 1 --devgrp 0 --bcfg-rm $(BCFG_RM) --bcfg-pm $(BCFG_PM) --output-file $(BCFG_SBLDATA_BLOB_FILE)
+	$(PYTHON) $(BLOB_GEN) --sw-rev $(X509_SW_REV) --devgrp 0 --bcfg-rm $(BCFG_RM) --bcfg-pm $(BCFG_PM) --output-file $(BCFG_SBLDATA_BLOB_FILE)
 endif
 endif
 

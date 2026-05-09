@@ -371,6 +371,17 @@ function getConfigurables()
             },
         },
         {
+            name: "cardType",
+            displayName: "Card Type",
+            description: "Select the card type. Select NO_DEVICE for the driver to assume no card is connected to the selected MMCSD module.",
+            default: "EMMC",
+            options: [
+                { name: "EMMC" },
+                { name: "SD" },
+                { name: "NO_DEVICE" },
+            ],
+        },
+        {
             name: "modeSelectEMMC",
             displayName: "EMMC Operating Mode",
             description: "Select the operating mode for EMMC",
@@ -407,17 +418,6 @@ function getConfigurables()
             default: soc.getDefaultDriveStrengthController().name,
             options: soc.getDriveStrengthController(),
             hidden: false,
-        },
-        {
-            name: "cardType",
-            displayName: "Card Type",
-            description: "Select the card type. Select NO_DEVICE for the driver to assume no card is connected to the selected MMCSD module.",
-            default: "EMMC",
-            options: [
-                { name: "EMMC" },
-                { name: "SD" },
-                { name: "NO_DEVICE" },
-            ],
         },
         {
             name: "intrEnable",

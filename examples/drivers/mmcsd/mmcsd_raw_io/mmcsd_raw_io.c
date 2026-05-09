@@ -84,7 +84,8 @@ void mmcsd_raw_io_main(void *args)
 
     if(SystemP_SUCCESS == status)
     {
-        DebugP_log("Achieved throughput %.2f \r\n",(float)((float)APP_MMCSD_DATA_SIZE/(float)(curTime)));
+        DebugP_log("Achieved throughput %.2f MiB/s\r\n",
+                   (float)APP_MMCSD_DATA_SIZE * 1000000.0f / ((float)curTime * 1024.0f * 1024.0f));
         DebugP_log("All tests have passed!!\r\n");
     }
     else

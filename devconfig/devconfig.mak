@@ -23,7 +23,10 @@ CUST_MEK=$(SIGNING_TOOL_PATH)/custMek.txt
 ENC_ENABLED?=no
 
 # Encryption option for SBL (yes/no)
-ENC_SBL_ENABLED?=yes
+# NOTE: Disabled by default. Enable only when encryption keys are programmed
+# into the device eFUSEs. Enabling this OOB on HSSE devices without programmed
+# keys will cause boot failures.
+ENC_SBL_ENABLED?=no
 
 # Debug option for HS (yes/no)
 DBG_ENABLED?=no

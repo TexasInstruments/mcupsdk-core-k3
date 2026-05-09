@@ -1699,8 +1699,8 @@ static int32_t TestMmcsd_rawIo(MMCSD_Handle handle, uint32_t instType)
         {
             DebugP_log(" %.2f\t       | %.2f\t\t    | %.2f\r\n",
                 testDataObj[testCount].dataSize,
-                (float)((float)(testDataObj[testCount].dataSize * TEST_MMCSD_1MB_SIZE) / (float)testDataObj[testCount].writeSpeed),
-                (float)((float)(testDataObj[testCount].dataSize * TEST_MMCSD_1MB_SIZE) / (float)testDataObj[testCount].readSpeed));
+                (float)(testDataObj[testCount].dataSize * 1000000.0f / (float)testDataObj[testCount].writeSpeed),
+                (float)(testDataObj[testCount].dataSize * 1000000.0f / (float)testDataObj[testCount].readSpeed));
         }
 
         DebugP_log("\n[TEST MMCSD] Performance Numbers Print End\r\n\n");

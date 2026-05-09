@@ -2444,36 +2444,54 @@ uint32_t UART_getBaseAddr(UART_Handle handle)
     return baseAddr;
 }
 
-void UART_enableLoopbackMode(uint32_t baseAddr)
+int32_t UART_enableLoopbackMode(uint32_t baseAddr)
 {
     uint32_t lcrRegValue;
+    int32_t  status = SystemP_SUCCESS;
 
-    /* Switching to Register Configuration Mode A. */
-    lcrRegValue = UART_regConfigModeEnable(baseAddr, UART_REG_CONFIG_MODE_A);
+    if(baseAddr == 0U)
+    {
+        DebugP_logError("UART_enableLoopbackMode: invalid baseAddr\r\n");
+        status = SystemP_FAILURE;
+    }
+    else
+    {
+        /* Switching to Register Configuration Mode A. */
+        lcrRegValue = UART_regConfigModeEnable(baseAddr, UART_REG_CONFIG_MODE_A);
 
-    /* Enable Loopback Mode. */
-    HW_WR_FIELD32(baseAddr + UART_MCR, UART_MCR_LOOPBACK_EN,
-                  UART_MCR_LOOPBACK_EN_LOOPBACK_EN_VALUE_1);
+        /* Enable Loopback Mode. */
+        HW_WR_FIELD32(baseAddr + UART_MCR, UART_MCR_LOOPBACK_EN,
+                      UART_MCR_LOOPBACK_EN_LOOPBACK_EN_VALUE_1);
 
-    /* Restoring the value of LCR. */
-    HW_WR_REG32(baseAddr + UART_LCR, lcrRegValue);
+        /* Restoring the value of LCR. */
+        HW_WR_REG32(baseAddr + UART_LCR, lcrRegValue);
+    }
 
-    return;
+    return status;
 }
 
-void UART_disableLoopbackMode(uint32_t baseAddr)
+int32_t UART_disableLoopbackMode(uint32_t baseAddr)
 {
     uint32_t lcrRegValue;
+    int32_t  status = SystemP_SUCCESS;
 
-    /* Switching to Register Configuration Mode A. */
-    lcrRegValue = UART_regConfigModeEnable(baseAddr, UART_REG_CONFIG_MODE_A);
+    if(baseAddr == 0U)
+    {
+        DebugP_logError("UART_disableLoopbackMode: invalid baseAddr\r\n");
+        status = SystemP_FAILURE;
+    }
+    else
+    {
+        /* Switching to Register Configuration Mode A. */
+        lcrRegValue = UART_regConfigModeEnable(baseAddr, UART_REG_CONFIG_MODE_A);
 
-    /* Enable Loopback Mode. */
-    HW_WR_FIELD32(baseAddr + UART_MCR, UART_MCR_LOOPBACK_EN,
-                  UART_MCR_LOOPBACK_EN_LOOPBACK_EN_VALUE_0);
+        /* Disable Loopback Mode. */
+        HW_WR_FIELD32(baseAddr + UART_MCR, UART_MCR_LOOPBACK_EN,
+                      UART_MCR_LOOPBACK_EN_LOOPBACK_EN_VALUE_0);
 
-    /* Restoring the value of LCR. */
-    HW_WR_REG32(baseAddr + UART_LCR, lcrRegValue);
+        /* Restoring the value of LCR. */
+        HW_WR_REG32(baseAddr + UART_LCR, lcrRegValue);
+    }
 
-    return;
+    return status;
 }

@@ -911,9 +911,11 @@ uint32_t UART_getBaseAddr(UART_Handle handle);
  *
  *  \param  baseAddr    Memory address of the UART instance being used.
  *
+ *  \return \ref SystemP_SUCCESS on success, \ref SystemP_FAILURE if baseAddr is 0
+ *
  *  \sa     #UART_open
  */
-void UART_enableLoopbackMode(uint32_t baseAddr);
+int32_t UART_enableLoopbackMode(uint32_t baseAddr);
 
 /**
  *  \brief  Function to disable loopback mode. This function is for internal use.
@@ -921,9 +923,11 @@ void UART_enableLoopbackMode(uint32_t baseAddr);
  *
  *  \param  baseAddr    Memory address of the UART instance being used.
  *
+ *  \return \ref SystemP_SUCCESS on success, \ref SystemP_FAILURE if baseAddr is 0
+ *
  *  \sa     #UART_open
  */
-void UART_disableLoopbackMode(uint32_t baseAddr);
+int32_t UART_disableLoopbackMode(uint32_t baseAddr);
 
 /**
  * \brief   This API writes a byte to the Transmitter FIFO without checking for

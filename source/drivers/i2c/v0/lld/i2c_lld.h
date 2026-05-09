@@ -120,7 +120,7 @@ extern "C" {
 #define I2C_NO_WAIT                         ((uint32_t)0)
 /** \brief Value to use when needing a timeout of infinity or
  *  wait forver until resource is available */
-#define I2C_WAIT_FOREVER                    ((uint32_t)-1)
+#define I2C_WAIT_FOREVER                    (0xFFFFFFFFU)
 
 /** @} */
 

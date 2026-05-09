@@ -137,6 +137,15 @@ A combined boot method is employed in these devices, by virtue of which the SBL,
 
 The SBL is signed with a dummy customer MPK in the SDK. This is supposed to be used only with the devices with the same dummy customer MPK burnt into the eFUSEes. If the SDK is supposed to be used with a production/development device with actual customer MPKs burnt into the device, please replace the file at ${SDK_INSTALL_PATH}/tools/boot/signing/custMpk_${SOC}.pem. This is true for also the encryption key used, which can also be found at ${SDK_INSTALL_PATH}/tools/boot/signing/custMek_${SOC}.txt. Whenever any SBL is built, it will be signed with dummy customer MPK, and the signed image generated will have an extension of `*.hs.tiimage`. There is no extra step required other than making sure that the MPK used is indeed the one burnt into the eFUSEs.
 
+\note **Encryption key format**: The signing scripts (both ROM and appimage) expect the SMEK/BMEK encryption key in **hex text format** — one hex byte per line (e.g. `custMek_${SOC}.txt`). The OTP Keywriter, however, generates keys in **binary format**. To convert a binary key file to the required hex text format, use the following command:
+\code
+# Linux
+xxd -p -c 1 <key.bin> > custMek_${SOC}.txt
+
+# Windows (PowerShell)
+Format-Hex <key.bin> | ForEach-Object { $_.Bytes | ForEach-Object { "{0:x2}" -f $_ } } | Out-File custMek_${SOC}.txt
+\endcode
+
 \cond SOC_AM62X | SOC_AM62AX || SOC_AM62DX || SOC_AM62PX
 #### Signing the HSM Runtime binary (SYSFW)
 As mentioned above, since we follow a combined boot method, SYSFW and SBL is signed with the same certificate using the same key. In case of a GP device this will be a degenerate key for easy parsing from ROM. In the case of an HS device, SYSFW will be already signed with TI MPK (and encrypted). This is then countersigned again with dummy customer MPK during the combined image generation process.

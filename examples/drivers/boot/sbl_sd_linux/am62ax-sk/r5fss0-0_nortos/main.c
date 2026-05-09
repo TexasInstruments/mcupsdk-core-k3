@@ -264,8 +264,8 @@ int main()
 
                 if(bootHandle != NULL)
                 {
-                    appImageSize += Bootloader_getMulticoreImageSize(bootHandle);
                     App_loadImages(bootHandle, &bootImageInfo);
+                    appImageSize += Bootloader_getMulticoreImageSize(bootHandle);
                 }
             }
             noOfFiles++;

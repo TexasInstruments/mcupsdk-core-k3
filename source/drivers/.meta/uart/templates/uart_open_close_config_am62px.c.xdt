@@ -4,6 +4,19 @@
     let driverVer = soc.getDriverVer("uart");
     let module = system.modules['/drivers/uart/uart'];
 %%}
+%%{
+    let debugLogModule   = system.modules['/kernel/dpl/debug_log'];
+    let debugLogInst     = debugLogModule ? debugLogModule.$static : null;
+    let isSharedMemReader = debugLogInst && (debugLogInst.enableSharedMemLogReader === true);
+    let debugUartInst    = (isSharedMemReader && debugLogInst.uartLog) ? debugLogInst.uartLog : null;
+    let debugUartIdx     = -1;
+    if(debugUartInst) {
+        for(let i = 0; i < module.$instances.length; i++) {
+            if(module.$instances[i] === debugUartInst) { debugUartIdx = i; break; }
+        }
+    }
+%%}
+
 /*
  * UART
  */
@@ -167,6 +180,12 @@ void Drivers_uartClose(void)
     /* Close all instances that are open */
     for(instCnt = 0U; instCnt < CONFIG_UART_NUM_INSTANCES; instCnt++)
     {
+% if(debugUartIdx >= 0) {
+        /* Skip the debug log UART on the shared memory log reader core —
+         * remote cores may still be flushing logs to the console */
+        if(instCnt == `debugUartIdx`U) { continue; }
+% }
+
         % if (common.isDMWithBootSupported()) {
         if(!gUartAddedByBootloader[instCnt])
         {

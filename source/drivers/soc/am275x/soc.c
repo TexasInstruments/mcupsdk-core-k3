@@ -475,6 +475,24 @@ void SOC_setDevStat(uint32_t bootMode)
     return;
 }
 
+void SOC_generateSwWarmResetMcuDomain(void)
+{
+    /* Reset Ctrl belongs to partition 6 of the MCU CTRL MMR */
+    uint32_t     rstPartition = 6U, baseAddr;
+
+    /* Unlock CONTROL MMR registers */
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU, rstPartition);
+
+    /* MCU domain warm reset */
+    baseAddr = (uint32_t) AddrTranslateP_getLocalAddr(CSL_MCU_CTRL_MMR0_CFG0_BASE);
+    CSL_REG32_FINS(baseAddr + CSL_MCU_CTRL_MMR_CFG0_RST_CTRL,
+                    MCU_CTRL_MMR_CFG0_RST_CTRL_SW_MCU_WARMRST,
+                    0x6U);
+
+    /* Lock CONTROL MMR registers */
+    SOC_controlModuleLockMMR(SOC_DOMAIN_ID_MCU, rstPartition);
+}
+
 void SOC_generateSwWarmResetMainDomain(void)
 {
     /* Reset Ctrl belongs to partition 6 of the CTRL MMR */

@@ -447,6 +447,21 @@ function validate(instance, report) {
     common.validate.checkConfigurableValueMatchForAllCores(ipc_module_name, instance, report, "vringNumBuf");
     common.validate.checkConfigurableValueMatchForAllCores(ipc_module_name, instance, report, "vringMsgSize");
 
+    /* vringNumBuf must be a power of 2. The vring available and used ring
+     * indices (lastAvailIdx / lastUsedIdx) are uint16_t and wrap from 65535
+     * back to 0. The ring slot is computed as idx % numBuf, which only
+     * produces a correct modulo when numBuf is a power of 2 - for other
+     * values the wrap-around causes the index to land on the wrong slot,
+     * leading to silent message corruption or stall. */
+    if ((instance.vringNumBuf & (instance.vringNumBuf - 1)) !== 0) {
+        report.logError(
+            `RP Message Number of Buffers must be a power of 2. ` +
+            `The ring index is computed as (lastAvailIdx % numBuf); ` +
+            `lastAvailIdx is uint16_t and wraps at 65535->0, so numBuf ` +
+            `must be a power of 2 to keep the modulo correct after the wrap.`,
+            instance, "vringNumBuf");
+    }
+
     for ( let config of configs)
     {
         if(config.name != "enableLinuxIpc" && config.name != "enableMailboxIpc" ) {

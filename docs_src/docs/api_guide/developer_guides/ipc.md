@@ -132,6 +132,10 @@ from user application point of view remains the same.
 - When Linux is one end of the IPC message exchange, the max RP Message packet or buffer size is 512 bytes.
 \endcond
 - When both ends of the IPC message exchange run RTOS or NORTOS, the max RP Message packet or buffer size is defined by user. Default is 128 bytes. This allows to optimize the memory needed for shared memory in order to fit the shared memory in on-chip RAM.
+- The RP Message number of buffers (configured as `vringNumBuf` in SysConfig) **must be a power of 2**. The vring ring
+  index is computed as `lastAvailIdx % numBuf`, where `lastAvailIdx` is a `uint16_t` that wraps from 65535 back to 0.
+  If `numBuf` is not a power of 2, the modulo produces an incorrect slot index after the wrap, causing silent message
+  corruption or stall. SysConfig enforces this constraint and will report an error if a non-power-of-2 value is used.
 - When needing to transport larger data more than packet size, it is recommended to pass a "pointer" or "offset" to the data
   buffer in the message packet rather than copying the data in the message itself.
 

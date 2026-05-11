@@ -54,6 +54,7 @@ extern "C" {
 /* ========================================================================== */
 
 #define MCASP_TXN_COUNT_OVERRIDE            (0xA5U)
+#define MCASP_INVALID_TXN_IDX               (0xDEADBEEFU)
 
 /* ========================================================================== */
 /*                          Function Declarations */
@@ -118,6 +119,25 @@ void MCASP_disableDmaRx(MCASP_Config *config);
  *
  */
 int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isTx);
+
+/**
+ * \brief   Read UDMA channel statistics to determine DMA progress within
+ *          the currently-executing TX TR slot.
+ *
+ * \param config                pointer to #MCASP_Config.
+ * \param pProcessedBytes [OUT] bytes from TRs (user and loopjob) that completed
+ *                              since the last ISR chDecStats but not yet
+ *                              acknowledged by the ISR.
+ * \param pInFlightBytes        [OUT] bytes DMA has already read from source
+ *                              memory in the current active TR (started but
+ *                              not yet completed).
+ * \param pPacketCnt            [OUT] number of TRs completed since the last
+ *                              ISR chDecStats call but not yet acknowledged.
+ */
+void MCASP_getTxDmaProgress(MCASP_Config *config,
+                            uint32_t *pProcessedBytes,
+                            uint32_t *pInFlightBytes,
+                            uint32_t *pPacketCnt);
 
 #ifdef __cplusplus
 }

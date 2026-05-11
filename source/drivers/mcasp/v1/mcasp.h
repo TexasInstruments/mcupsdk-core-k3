@@ -371,6 +371,33 @@ typedef struct
 } MCASP_Transaction;
 
 /**
+ *  \brief Queue status structure for MCASP presentation time tracking
+ *
+ *  This structure contains information about pending transactions in the
+ *  MCASP queue, used for calculating presentation time and latency.
+ */
+typedef struct
+{
+    uint32_t numPendingBufs;        /**< Number of buffers in queue */
+    uint32_t totalPendingSamples;   /**< Total samples across all pending buffers */
+    uint32_t sampleSize;            
+    /**< [IN] Bytes per sample used to compute totalPendingSamples;
+     *  equals slot size for single-channel or slotCount x slot size for a TDM frame;*/
+} MCASP_QueueStatus;
+
+/**
+ *  \brief Presentation time structure for MCASP timing calculations
+ *
+ *  This structure contains timing information for when samples will be
+ *  transmitted on the TDM pins, used for accurate audio synchronization.
+ */
+typedef struct
+{
+    uint32_t offsetUs;              /**< Microseconds until next sample transmission */
+    uint32_t samplesRemaining;      /**< Samples until start of transmission */
+} MCASP_PresentationTime;
+
+/**
  *  \brief  The definition of a callback function used by the MCASP driver
  *  when used in Callback Mode
  *
@@ -709,6 +736,17 @@ typedef struct
     /**< DMA Icnt values for Tx */
     MCASP_DmaIcnt rxDmaIcnt;
     /**< DMA Icnt values for Rx */
+
+    uint32_t txSampleRate;
+    /**< sample rate for Tx (samples/sec) */
+    uint32_t rxSampleRate;
+    /**< sample rate for Rx (samples/sec) */
+
+    void *txDmaChHandle;
+    /**< UDMA TX channel handle */
+    void *rxDmaChHandle;
+    /**< UDMA RX channel handle */
+
 } MCASP_Object;
 
 /** \brief MCASP instance attributes - used during init time */
@@ -743,6 +781,10 @@ typedef struct
     /**< FIFO waterlevel for TX */
     uint8_t rxFifoWaterLevel;
     /**< FIFO waterlevel for RX */
+    uint32_t txFsRate;
+    /**< TX frame sync frequency in Hz */
+    uint32_t rxFsRate;
+    /**< RX frame sync frequency in Hz */
 } MCASP_Attrs;
 
 typedef struct
@@ -944,6 +986,41 @@ int32_t MCASP_setTxTxnCount(MCASP_Handle handle, uint32_t txnCount);
  *          loopjob size.
 */
 int32_t MCASP_setRxTxnCount(MCASP_Handle handle, uint32_t txnCount);
+
+/**
+ * \brief Function to get current Tx queue status
+ *
+ * Returns information about pending Tx transactions including number of buffers
+ * and total samples awaiting transmission. Used for presentation time calculation.
+ *
+ * \param handle MCASP_Handle
+ * \param qStatus Pointer to #MCASP_QueueStatus to receive queue information
+ *
+ * \return Success (0) or error code if handle or pointer is invalid
+ *
+ * \sa MCASP_getTxPresentationTime
+ */
+int32_t MCASP_getTxQueueStatus(MCASP_Handle handle, MCASP_QueueStatus *qStatus);
+
+/**
+ * \brief Compute the TX presentation time offset
+ *
+ * Returns the time in microseconds until the first sample currently queued
+ * will reach the TDM TX pins.  This accounts for all bytes sitting in the
+ * software queues (reqQueue + curentQueue) plus any bytes already handed to
+ * the DMA but not yet transmitted.
+ *
+ * \param handle  MCASP_Handle returned by #MCASP_open
+ * \param pTime   Pointer to #MCASP_PresentationTime; on success receives:
+ *                - \c offsetUs         -- microseconds of audio data pending
+ *                - \c samplesRemaining -- 32-bit word count pending in software queues
+ *
+ * \return #SystemP_SUCCESS, or #SystemP_FAILURE if any argument is NULL or
+ *         the DMA statistics query fails
+ *
+ * \sa MCASP_getTxQueueStatus
+ */
+int32_t MCASP_getTxPresentationTime(MCASP_Handle handle, MCASP_PresentationTime *pTime);
 
 /* ========================================================================== */
 /*                       Static Function Definitions */

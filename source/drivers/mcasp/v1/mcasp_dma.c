@@ -67,8 +67,6 @@
 
 #define WORD_BYTE_COUNT                                 (4U)
 
-#define MCASP_INVALID_TXN_IDX                           (0xDEADBEEFU)
-
 #define MCASP_ICNT2_MAX                                 (65535U)
 
 #define MCASP_DMA_BUS_ORDER_ID                          (8U)
@@ -140,6 +138,9 @@ int32_t MCASP_openDma(MCASP_Config *config, MCASP_DmaChConfig *dmaChCfg)
             status = Udma_chOpen(drvHandle, txChHandle, chanType, &chPrms);
             DebugP_assert(UDMA_SOK == status);
 
+            /* Store TX DMA channel handle for real-time byte counter access */
+            obj->txDmaChHandle = (void *)txChHandle;
+
             /* Configure TX channel */
             UdmaChTxPrms_init(&txPrms, chanType);
 
@@ -197,6 +198,9 @@ int32_t MCASP_openDma(MCASP_Config *config, MCASP_DmaChConfig *dmaChCfg)
             status = Udma_chOpen(drvHandle, txChHandle, chType, &chPrms);
             DebugP_assert(SystemP_SUCCESS == status);
 
+            /* Store TX DMA channel handle for real-time byte counter access */
+            obj->txDmaChHandle = (void *)txChHandle;
+
             /* Config TX channel */
             UdmaChTxPrms_init(&txPrms, chType);
 
@@ -251,6 +255,9 @@ int32_t MCASP_openDma(MCASP_Config *config, MCASP_DmaChConfig *dmaChCfg)
 
             status = Udma_chOpen(drvHandle, rxChHandle, chType, &chPrms);
             DebugP_assert(SystemP_SUCCESS == status);
+
+            /* Store RX DMA channel handle for real-time byte counter access */
+            obj->rxDmaChHandle = (void *)rxChHandle;
 
             UdmaChRxPrms_init(&rxPrms, chType);
             rxPrms.configDefaultFlow = FALSE;
@@ -1984,4 +1991,74 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
     }
 
     return status;
+}
+
+void MCASP_getTxDmaProgress(MCASP_Config *config,
+                            uint32_t *pProcessedBytes,
+                            uint32_t *pInFlightBytes,
+                            uint32_t *pPacketCnt)
+{
+    MCASP_Object       *obj      = config->object;
+    Udma_ChHandle       txCh     = (Udma_ChHandle)obj->dmaChCfg->txChHandle;
+    MCASP_Transaction **cbParams = (MCASP_Transaction **)obj->dmaChCfg->txCbParams;
+    Udma_ChStats        stats    = { 0U };
+    uint32_t            i;
+    uint32_t            slot;
+
+    *pProcessedBytes = 0U;
+    *pInFlightBytes  = 0U;
+    *pPacketCnt      = 0U;
+
+    if (Udma_chGetStats(txCh, &stats) != UDMA_SOK)
+    {
+        return;
+    }
+
+    *pPacketCnt = stats.packetCnt;
+
+    /*
+     * packetCnt: TRs that completed since the last ISR chDecStats call.
+     * Their cbParams are not yet cleared by the ISR.
+     * Walk those slots and sum bytes for both user and loopjob TRs.
+     */
+    {
+        uint32_t loopjobBytes = (uint32_t)obj->XmtObj.txnLoopjob.count * WORD_BYTE_COUNT;
+        for (i = 0U; i < stats.packetCnt; i++)
+        {
+            slot = (obj->lastPlayed + 1U + i) % MCASP_TX_DMA_TR_COUNT;
+            if (cbParams[slot] != NULL)
+            {
+                *pProcessedBytes += (uint32_t)(cbParams[slot]->count) * WORD_BYTE_COUNT;
+            }
+            else
+            {
+                *pProcessedBytes += loopjobBytes;
+            }
+        }
+    }
+
+    /*
+     * Compute in-flight bytes: bytes DMA has read from source memory in the
+     * current active TR but not yet serialized by McASP.
+     * Subtract bytes from fully-completed TRs (already counted via packetCnt)
+     * and bytes sitting in the TX AFIFO (DMA considers them done but McASP
+     * has not yet transmitted them).
+     */
+    {
+        uint32_t completedTrBytes = (uint32_t)stats.packetCnt *
+                                    (uint32_t)obj->XmtObj.txnLoopjob.count *
+                                    WORD_BYTE_COUNT;
+
+        const MCASP_Attrs   *attrs   = config->attrs;
+        const CSL_McaspRegs *pReg    = (const CSL_McaspRegs *)attrs->baseAddr;
+        uint32_t             afifoWords = CSL_REG32_RD(&pReg->WFIFOSTS) &
+                                          CSL_AFIFO_WFIFOSTS_WLVL_MASK;
+        uint32_t             afifoBytes = afifoWords * WORD_BYTE_COUNT;
+
+        if (stats.completedByteCnt >= (completedTrBytes + afifoBytes))
+        {
+            *pInFlightBytes = stats.completedByteCnt - completedTrBytes - afifoBytes;
+        }
+    }
+
 }

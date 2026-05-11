@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -163,6 +163,61 @@ uint32_t QueueP_isEmpty(QueueP_Handle handle)
     }
 
     return (ret_val);
+}
+
+/*
+ *  ======== QueueP_getSize ========
+ */
+uint32_t QueueP_getSize(QueueP_Handle handle)
+{
+    DebugP_assert((handle != NULL));
+
+    uintptr_t       key;
+    uint32_t        count = 0U;
+    QueueP_nortos  *queue = (QueueP_nortos *)handle;
+    QueueP_Elem    *q;
+    QueueP_Elem    *elem;
+
+    key = HwiP_disable();
+
+    q    = &queue->queueHndl;
+    elem = q->next;
+
+    while (elem != q)
+    {
+        count++;
+        elem = elem->next;
+    }
+
+    HwiP_restore(key);
+
+    return count;
+}
+
+/*
+ *  ======== QueueP_peekHead ========
+ */
+void * QueueP_peekHead(QueueP_Handle handle)
+{
+    DebugP_assert((handle != NULL));
+
+    uintptr_t       key;
+    void           *elem = NULL;
+    QueueP_nortos  *queue = (QueueP_nortos *)handle;
+    QueueP_Elem    *q;
+
+    key = HwiP_disable();
+
+    q = &queue->queueHndl;
+
+    if (q->next != q)
+    {
+        elem = (void *)q->next;
+    }
+
+    HwiP_restore(key);
+
+    return elem;
 }
 
 /* Nothing past this point */

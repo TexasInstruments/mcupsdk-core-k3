@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -152,6 +152,24 @@ int32_t QueueP_put(QueueP_Handle handle,
  *    - QueueP_EMPTY: queue is empty
  */
 uint32_t QueueP_isEmpty(QueueP_Handle handle);
+
+/*!
+ *  @brief  Function to get the number of elements in the queue
+ *
+ *  @param  handle  [in] A QueueP_Handle returned from QueueP_create
+ *
+ *  @return Number of elements currently in the queue
+ */
+uint32_t QueueP_getSize(QueueP_Handle handle);
+
+/*!
+ *  @brief  Function to peek at the head element without removing it
+ *
+ *  @param  handle  [in] A QueueP_Handle returned from QueueP_create
+ *
+ *  @return Pointer to the head element, or NULL if the queue is empty
+ */
+void * QueueP_peekHead(QueueP_Handle handle);
 
 #ifdef __cplusplus
 }

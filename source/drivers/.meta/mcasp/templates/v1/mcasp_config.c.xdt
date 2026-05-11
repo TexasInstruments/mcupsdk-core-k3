@@ -98,6 +98,8 @@ static MCASP_Attrs gMcaspAttrs[CONFIG_MCASP_NUM_INSTANCES] =
         % } else {
         .rxFifoWaterLevel = 0U,
         % }
+        .txFsRate = (uint32_t)`Math.round(instance.txFsyncCalculated)`,
+        .rxFsRate = (uint32_t)`Math.round(instance.rxFsyncCalculated)`,
         .hwCfg =
         {
             .gbl =

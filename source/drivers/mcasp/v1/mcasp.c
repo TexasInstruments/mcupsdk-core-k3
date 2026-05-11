@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -45,11 +45,14 @@
 #include <string.h>
 #include <drivers/mcasp.h>
 #include <drivers/mcasp/v1/mcasp_priv.h>
+#include <drivers/mcasp/v1/mcasp_drv_configs/mcasp_drv_config.h>
 #include <kernel/dpl/SemaphoreP.h>
 #include <kernel/dpl/HwiP.h>
 #include <kernel/dpl/CacheP.h>
+#include <kernel/dpl/QueueP.h>
 #include <drivers/hw_include/cslr.h>
 #include <drivers/hw_include/hw_types.h>
+#include <drivers/udma.h>
 
 /* SOC specific headers */
 #if defined (SOC_AM62AX)
@@ -67,6 +70,7 @@
 #define UDMA_DMA_XFER_SIZE                  (64512U)
 
 #define WORD_BYTE_COUNT                     (4U)
+#define USEC_PER_SEC                        (1000000ULL)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -92,6 +96,7 @@ static int32_t MCASP_bitClearGblCtl(const MCASP_Handle handle, uint32_t bitMask)
 static int32_t MCASP_bitSetGblCtl(const MCASP_Handle handle, uint32_t bitMask);
 static int32_t MCASP_validateTransaction (MCASP_Handle handle, MCASP_Transaction *txn, uint8_t isTx);
 static int32_t MCASP_getBufferOffset(MCASP_TransferObj *xfrObj, uint8_t serIdx, uint32_t* pOffset);
+static uint32_t MCASP_getQueueBytes(QueueP_Handle queueHandle);
 
 #ifdef ENABLE_MCASP_FAULT_INJECTION
 void Test_Mcasp_FaultInjectStubHandler(uint32_t side, uint32_t *statusReg);
@@ -293,6 +298,9 @@ MCASP_Handle MCASP_open(uint32_t index, const MCASP_OpenParams *openParams)
             MCASP_openDma(config, obj->dmaChCfg);
         }
 
+        /* Sample rates from SysConfig-calculated FSX frequency */
+        obj->txSampleRate = attrs->txFsRate;
+        obj->rxSampleRate = attrs->rxFsRate;
     }
 
     if(SystemP_SUCCESS == status)
@@ -1458,6 +1466,222 @@ int32_t MCASP_setRxTxnCount(MCASP_Handle handle, uint32_t txnCount)
         object->rxDmaIcnt.initDone = MCASP_TXN_COUNT_OVERRIDE;
 
         status = MCASP_prepareDmaIcnts(handle, (uint64_t)((uint64_t)txnCount*(uint64_t)4U), 0U);
+    }
+
+    return status;
+}
+
+/**
+ * Returns total bytes pending in a queue.
+ * All MCASP buffers in a queue are the same size, so:
+ * total = QueueP_getSize() * head->count * WORD_BYTE_COUNT
+ */
+static uint32_t MCASP_getQueueBytes(QueueP_Handle queueHandle)
+{
+    MCASP_Transaction *head = (MCASP_Transaction *)QueueP_peekHead(queueHandle);
+
+    if (head == NULL)
+    {
+        return 0U;
+    }
+
+    return (QueueP_getSize(queueHandle) * head->count) * WORD_BYTE_COUNT;
+}
+
+int32_t MCASP_getTxQueueStatus(MCASP_Handle handle, MCASP_QueueStatus *qStatus)
+{
+    int32_t status = SystemP_SUCCESS;
+    MCASP_Object *object = NULL;
+
+    if ((NULL == handle) || (NULL == qStatus))
+    {
+        status = SystemP_FAILURE;
+    }
+
+    if (SystemP_SUCCESS == status)
+    {
+        object = ((MCASP_Config *)handle)->object;
+        if (NULL == object)
+        {
+            status = SystemP_FAILURE;
+        }
+    }
+
+    if (SystemP_SUCCESS == status)
+    {
+        uint32_t totalBytes = MCASP_getQueueBytes(object->reqQueueHandleTx);
+
+        qStatus->numPendingBufs = QueueP_getSize(object->reqQueueHandleTx);
+
+        qStatus->totalPendingSamples = (qStatus->sampleSize > 0U) ?
+                                       (totalBytes / qStatus->sampleSize) : totalBytes;
+    }
+
+    return status;
+}
+
+int32_t MCASP_getTxPresentationTime(MCASP_Handle handle,
+                                           MCASP_PresentationTime *pTime)
+{
+    int32_t status = SystemP_SUCCESS;
+    MCASP_Object *object = NULL;
+    uint32_t queueBytes = 0U;
+
+    if ((NULL == handle) || (NULL == pTime))
+    {
+        status = SystemP_FAILURE;
+    }
+
+    if (SystemP_SUCCESS == status)
+    {
+        object = ((MCASP_Config *)handle)->object;
+        if (NULL == object)
+        {
+            status = SystemP_FAILURE;
+        }
+    }
+
+    if (SystemP_SUCCESS == status)
+    {
+        /*
+         * Take an atomic snapshot of the queue, TRPD byte counters, and DMA
+         * channel stats to ensure all three reads are consistent with each
+         * other. Without this critical section, a concurrent TX DMA ISR could
+         * modify these values between reads, causing the same buffer to be
+         * counted in multiple sources and producing an over-estimate.
+         */
+        uint32_t dmaProcessed    = 0U;
+        uint32_t dmaInFlight     = 0U;
+        uint32_t dmaPacketCnt    = 0U;
+        uint32_t trpdUserPending = 0U;
+
+        uintptr_t key = HwiP_disable();
+
+        queueBytes = MCASP_getQueueBytes(object->reqQueueHandleTx);
+
+        if (object->lastFilled != MCASP_INVALID_TXN_IDX && object->dmaChCfg != NULL)
+        {
+            MCASP_Transaction **cbParams  = (MCASP_Transaction **)object->dmaChCfg->txCbParams;
+            uint32_t loopjobBytes = (uint32_t)object->XmtObj.txnLoopjob.count * WORD_BYTE_COUNT;
+            uint32_t slot = (object->lastPlayed + 1U) % MCASP_TX_DMA_TR_COUNT;
+            uint32_t end  = (object->lastFilled + 1U) % MCASP_TX_DMA_TR_COUNT;
+            while (slot != end)
+            {
+                if (cbParams[slot] != NULL)
+                {
+                    trpdUserPending += (uint32_t)cbParams[slot]->count * WORD_BYTE_COUNT;
+                }
+                else
+                {
+                    trpdUserPending += loopjobBytes;
+                }
+                slot = (slot + 1U) % MCASP_TX_DMA_TR_COUNT;
+            }
+        }
+
+        if (object->isTxStarted != 0U && object->dmaChCfg != NULL)
+        {
+            MCASP_getTxDmaProgress((MCASP_Config *)handle,
+                                   &dmaProcessed,
+                                   &dmaInFlight,
+                                   &dmaPacketCnt);
+        }
+
+        HwiP_restore(key);
+
+        if (trpdUserPending >= dmaProcessed)
+        {
+            trpdUserPending -= dmaProcessed;
+        }
+        else
+        {
+            trpdUserPending = 0U;
+        }
+
+        if (object->txSampleRate > 0U)
+        {
+            uint32_t totalBytes;
+            uint32_t bytesPerSec = (object->txSampleRate * object->XmtObj.slotCount * WORD_BYTE_COUNT);
+
+            if ((queueBytes > 0U) || (trpdUserPending > 0U))
+            {
+                /* Either the queue has user bytes pending or TRPD slots are
+                 * still carrying user data (or both). Sum them to get the
+                 * total uncommitted user bytes, then subtract the bytes
+                 * already in-flight in the current DMA transfer to arrive
+                 * at the true remaining latency. */
+                totalBytes = queueBytes + trpdUserPending;
+                if (totalBytes >= dmaInFlight)
+                {
+                    totalBytes -= dmaInFlight;
+                }
+                else
+                {
+                    totalBytes = 0U;
+                }
+            }
+            else if (object->isTxStarted != 0U)
+            {
+                /* No user bytes anywhere — full ring is cycling loopjob.
+                 * Estimate latency as remaining bytes in the current loopjob
+                 * slot plus the full loopjob slots DMA must complete before
+                 * the next user buffer can be loaded.
+                 */
+                {
+                    uint32_t loopjobBytes = (uint32_t)object->XmtObj.txnLoopjob.count *
+                                            WORD_BYTE_COUNT;
+                    uint32_t currentSlot  = (object->lastPlayed + 1U) %
+                                            MCASP_TX_DMA_TR_COUNT;
+                    uint32_t nextCandidate;
+
+                    if (object->lastFilled != MCASP_INVALID_TXN_IDX)
+                    {
+                        uint32_t P    = object->lastPlayed;
+                        uint32_t diff = (P < object->lastFilled) ?
+                                        (object->lastFilled - P) :
+                                        (MCASP_TX_DMA_TR_COUNT - P + object->lastFilled);
+                        /*
+                         * Determine nextCandidate based on whether enough
+                         * slots remain between lastPlayed and lastFilled for
+                         * the ISR to advance using lastFilled, or whether it
+                         * must fall back to a lastPlayed-relative slot.
+                         */
+                        if (diff >= (dmaPacketCnt + 1U + 2U))
+                        {
+                            nextCandidate = (object->lastFilled + 1U) % MCASP_TX_DMA_TR_COUNT;
+                        }
+                        else
+                        {
+                            nextCandidate = (currentSlot + 2U) % MCASP_TX_DMA_TR_COUNT;
+                        }
+                    }
+                    else
+                    {
+                        nextCandidate = (currentSlot + 2U) % MCASP_TX_DMA_TR_COUNT;
+                    }
+
+                    uint32_t slotsToFF = (nextCandidate + MCASP_TX_DMA_TR_COUNT -
+                                          currentSlot - 1U) % MCASP_TX_DMA_TR_COUNT;
+                    uint32_t remaining = (loopjobBytes >= dmaInFlight) ?
+                                         (loopjobBytes - dmaInFlight) : 0U;
+                    totalBytes = remaining + slotsToFF * loopjobBytes;
+                }
+            }
+            else
+            {
+                totalBytes = 0U;
+            }
+
+            if (bytesPerSec > 0U)
+            {
+                pTime->offsetUs = (uint32_t)((uint64_t)totalBytes * USEC_PER_SEC / bytesPerSec);
+            }
+        }
+        else
+        {
+            pTime->offsetUs = 0U;
+        }
+        pTime->samplesRemaining = queueBytes / WORD_BYTE_COUNT;
     }
 
     return status;

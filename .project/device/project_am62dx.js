@@ -373,6 +373,7 @@ const example_file_list = [
     "test/drivers/mcan/test_mcan_system/.project/project.js",
     "test/kernel/dpl_timer/.project/project.js",
     "test/kernel/dpl_timer/test_dpl_timer_fault_inject/.project/project.js",
+    "test/drivers/ddr/test_ddr_system/.project/project.js",
 ];
 
 function getProjectSpecCpu(cpu) {

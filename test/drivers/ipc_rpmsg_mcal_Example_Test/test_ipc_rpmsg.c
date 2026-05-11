@@ -161,6 +161,55 @@ static void populate_vring_addresses(RPMessage_Params *params,
         params->vringRxBaseAddr[CSL_CORE_ID_C75SS0_0] = (uintptr_t)(gRPMessageVringMem + 24U * vringSlotSize);
     }
 
+#elif defined (SOC_AM62DX)
+    /* AM62DX has 4 cores: MCU_R5FSS0_0, R5FSS0_0, A53SS0_0, C75SS0_0 */
+    if(selfCoreId == CSL_CORE_ID_C75SS0_0)
+    {
+        /* Remote core (C75SS0_0) vring mapping - VRING slots: TX{mcu_r5fss0_0:9, r5fss0_0:10, a53ss0_0:11} RX{mcu_r5fss0_0:2, r5fss0_0:5, a53ss0_0:8} */
+        params->vringTxBaseAddr[CSL_CORE_ID_MCU_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 9U * vringSlotSize);
+        params->vringTxBaseAddr[CSL_CORE_ID_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 10U * vringSlotSize);
+        params->vringTxBaseAddr[CSL_CORE_ID_A53SS0_0] = (uintptr_t)(gRPMessageVringMem + 11U * vringSlotSize);
+
+        params->vringRxBaseAddr[CSL_CORE_ID_MCU_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 2U * vringSlotSize);
+        params->vringRxBaseAddr[CSL_CORE_ID_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 5U * vringSlotSize);
+        params->vringRxBaseAddr[CSL_CORE_ID_A53SS0_0] = (uintptr_t)(gRPMessageVringMem + 8U * vringSlotSize);
+    }
+    else if(selfCoreId == CSL_CORE_ID_MCU_R5FSS0_0)
+    {
+        /* MCU core (MCU_R5FSS0_0) vring mapping - VRING slots: TX{r5fss0_0:0, a53ss0_0:1, c75ss0_0:2} RX{r5fss0_0:3, a53ss0_0:6, c75ss0_0:9} */
+        params->vringTxBaseAddr[CSL_CORE_ID_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 0U * vringSlotSize);
+        params->vringTxBaseAddr[CSL_CORE_ID_A53SS0_0] = (uintptr_t)(gRPMessageVringMem + 1U * vringSlotSize);
+        params->vringTxBaseAddr[CSL_CORE_ID_C75SS0_0] = (uintptr_t)(gRPMessageVringMem + 2U * vringSlotSize);
+
+        params->vringRxBaseAddr[CSL_CORE_ID_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 3U * vringSlotSize);
+        params->vringRxBaseAddr[CSL_CORE_ID_A53SS0_0] = (uintptr_t)(gRPMessageVringMem + 6U * vringSlotSize);
+        params->vringRxBaseAddr[CSL_CORE_ID_C75SS0_0] = (uintptr_t)(gRPMessageVringMem + 9U * vringSlotSize);
+    }
+    else if(selfCoreId == CSL_CORE_ID_R5FSS0_0)
+    {
+        /* Main core (R5FSS0_0) vring mapping - VRING slots: TX{mcu_r5fss0_0:3, a53ss0_0:4, c75ss0_0:5} RX{mcu_r5fss0_0:0, a53ss0_0:7, c75ss0_0:10} */
+        params->vringTxBaseAddr[CSL_CORE_ID_MCU_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 3U * vringSlotSize);
+        params->vringTxBaseAddr[CSL_CORE_ID_A53SS0_0] = (uintptr_t)(gRPMessageVringMem + 4U * vringSlotSize);
+        params->vringTxBaseAddr[CSL_CORE_ID_C75SS0_0] = (uintptr_t)(gRPMessageVringMem + 5U * vringSlotSize);
+
+        params->vringRxBaseAddr[CSL_CORE_ID_MCU_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 0U * vringSlotSize);
+        params->vringRxBaseAddr[CSL_CORE_ID_A53SS0_0] = (uintptr_t)(gRPMessageVringMem + 7U * vringSlotSize);
+        params->vringRxBaseAddr[CSL_CORE_ID_C75SS0_0] = (uintptr_t)(gRPMessageVringMem + 10U * vringSlotSize);
+    }
+    else if(selfCoreId == CSL_CORE_ID_A53SS0_0)
+    {
+        /* A53 core (A53SS0_0) vring mapping - VRING slots: TX{mcu_r5fss0_0:6, r5fss0_0:7, c75ss0_0:8} RX{mcu_r5fss0_0:1, r5fss0_0:4, c75ss0_0:11} */
+        params->vringTxBaseAddr[CSL_CORE_ID_MCU_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 6U * vringSlotSize);
+        params->vringTxBaseAddr[CSL_CORE_ID_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 7U * vringSlotSize);
+        params->vringTxBaseAddr[CSL_CORE_ID_C75SS0_0] = (uintptr_t)(gRPMessageVringMem + 8U * vringSlotSize);
+
+        params->vringRxBaseAddr[CSL_CORE_ID_MCU_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 1U * vringSlotSize);
+        params->vringRxBaseAddr[CSL_CORE_ID_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 4U * vringSlotSize);
+        params->vringRxBaseAddr[CSL_CORE_ID_C75SS0_0] = (uintptr_t)(gRPMessageVringMem + 11U * vringSlotSize);
+    }
+
+#endif
+
     /* Common vring properties derived from the passed-in parameters */
     params->vringNumBuf      = vringNumBuf;
     params->vringMsgSize     = vringMsgSize;
@@ -172,7 +221,6 @@ static void populate_vring_addresses(RPMessage_Params *params,
      * thinking they're not used, causing vringTxBaseAddr/vringRxBaseAddr to remain uninitialized. */
     volatile RPMessage_Params *volatile_params = (volatile RPMessage_Params *)params;
     (void)volatile_params; /* Prevent compiler from removing the volatile alias */
-#endif
 }
 
 #if defined (SOC_AM275X)
@@ -187,7 +235,9 @@ uint32_t gRemoteCoreId[] = {
     CSL_CORE_ID_MAX
 };
 
+#if defined (SOC_AM275X)
 static uint32_t gExcludeC75SS1_0 = 2; /* 2 = C75SS1_0 enabled, 1 = disabled, 0 = auto-detect */
+#endif
 
 static uint16_t getServerEndPtForCore(uint32_t remoteCoreId)
 {
@@ -201,8 +251,34 @@ static uint16_t getServerEndPtForCore(uint32_t remoteCoreId)
             return 16;
         case CSL_CORE_ID_C75SS0_0:
             return 13;
+#if defined (SOC_AM275X)
         case CSL_CORE_ID_C75SS1_0:
             return 17;
+#endif
+        default:
+            return 10;
+    }
+}
+#elif defined (SOC_AM62DX)
+uint32_t gMainCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+
+uint32_t gRemoteCoreId[] = {
+    CSL_CORE_ID_R5FSS0_0,
+    CSL_CORE_ID_A53SS0_0,
+    CSL_CORE_ID_C75SS0_0,
+    CSL_CORE_ID_MAX
+};
+
+static uint16_t getServerEndPtForCore(uint32_t remoteCoreId)
+{
+    switch(remoteCoreId)
+    {
+        case CSL_CORE_ID_R5FSS0_0:
+            return 13;
+        case CSL_CORE_ID_A53SS0_0:
+            return 14;
+        case CSL_CORE_ID_C75SS0_0:
+            return 15;
         default:
             return 10;
     }
@@ -279,6 +355,7 @@ void test_rpmsgCreateObjects()
     int32_t status;
     RPMessage_CreateParams createParams;
 
+#if defined (SOC_AM275X)
     if (gExcludeC75SS1_0 == 0)
     {
         int32_t testStatus;
@@ -301,6 +378,7 @@ void test_rpmsgCreateObjects()
             // DebugP_log("[IPC] C75SS1_0 available - Using 6-core configuration\r\n");
         }
     }
+#endif
 
     // DebugP_log("[IPC] Core %s: Creating semaphores...\r\n", SOC_getCoreName(IpcNotify_getSelfCoreId()));
     status = SemaphoreP_constructBinary(&gAckDoneSem, 0);
@@ -364,10 +442,12 @@ void test_rpmsgAnyToAny(void *args)
 
         for(i=0; gRemoteCoreId[i]!=CSL_CORE_ID_MAX; i++ )
         {
+#if defined (SOC_AM275X)
             if ((gExcludeC75SS1_0 == 1) && (gRemoteCoreId[i] == CSL_CORE_ID_C75SS1_0))
             {
                 continue;
             }
+#endif
 
             if(gRemoteCoreId[i] != IpcNotify_getSelfCoreId())
             {
@@ -381,10 +461,12 @@ void test_rpmsgAnyToAny(void *args)
         }
         for(i=0; gRemoteCoreId[i]!=CSL_CORE_ID_MAX; i++ )
         {
+#if defined (SOC_AM275X)
             if ((gExcludeC75SS1_0 == 1) && (gRemoteCoreId[i] == CSL_CORE_ID_C75SS1_0))
             {
                 continue;
             }
+#endif
 
             if(gRemoteCoreId[i] != IpcNotify_getSelfCoreId())
             {
@@ -422,7 +504,11 @@ void test_ipc_remote_core_start()
 
     /* Populate TX/RX vring addresses with vringNumBuf=8 to match main core Phase 0.
      * Slot stride = 2*8*512 = 8192 bytes, same as the initial syscfg configuration. */
+#if defined (SOC_AM275X)
     populate_vring_addresses(&rpmsgParams, 16U, 512U);
+#elif defined (SOC_AM62DX)
+    populate_vring_addresses(&rpmsgParams, 256U, 512U);
+#endif
 
     status = RPMessage_init(&rpmsgParams);
 

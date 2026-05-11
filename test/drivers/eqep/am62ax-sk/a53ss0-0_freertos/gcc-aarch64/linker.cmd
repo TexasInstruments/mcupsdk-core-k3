@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2023 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,54 +30,61 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef EQEP_PATTERN_GEN_H_
-#define EQEP_PATTERN_GEN_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+ENTRY(_c_int00)
 
-typedef struct EqepAppPatternParams_s
-{
-    uint32_t eqepClockFreq;
-/** \brief EQEP Input Signal Frequency */
-    uint32_t direction;
-/** \brief EQEP Direction */
-    uint32_t idxEvtCnt;
-/** \brief EQEP Index Count */
-    uint32_t loopCnt;
-/** \brief Application loop count to generate eqep pattern */
-    uint32_t generateIdxPulse;
-/** \brief Enable/Disable Index Pulse */
-}EqepAppPatternParams;
+	__TI_STACK_SIZE = 65536;
+	__TI_HEAP_SIZE = 131072;
 
-void App_eqepGeneratePattern(EqepAppPatternParams *patParam);
+MEMORY {
 
-void App_eqepGenerateClockDirPattern(EqepAppPatternParams *patParam);
+	DDR : ORIGIN =  0x80000000, LENGTH = 0x2000000
 
-void App_eqepGenerateUpCountPattern(EqepAppPatternParams *patParam);
-
-void App_eqepGenerateStrobePattern(EqepAppPatternParams *patParam);
-
-void App_eqepReadPinValue(uint32_t *pEqepAPin,
-                          uint32_t *pEqepBPin,
-                          uint32_t *pEqepIPin,
-                          uint32_t *pEqepSPin);
-
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62X)
-void App_eqepGeneratePatternEqep1(EqepAppPatternParams *patParam);
-
-void App_eqepGenerateDualPattern(EqepAppPatternParams *patParam);
-
-void App_eqepGenerateDualClockDirPattern(EqepAppPatternParams *patParam);
-#endif /* SOC_AM62AX || SOC_AM62DX || SOC_AM62X */
-
-#if defined(SOC_AM62AX) || defined(SOC_AM62X)
-void Board_userExpansionHeaderEnable(void);
-#endif
-
-#ifdef __cplusplus
+	/* shared memory segments */
+	/* On A53,
+	 * - make sure there is a MMU entry which maps below regions as non-cache
+	 */
+    USER_SHM_MEM            : ORIGIN = 0x82000000, LENGTH = 0x80
 }
-#endif
 
-#endif /* #ifndef EQEP_PATTERN_GEN_H_ */
+SECTIONS {
+
+	.vecs : {} > DDR
+		.text : {} > DDR
+		.rodata : {} > DDR
+
+		.data : ALIGN (8) {
+			__data_load__ = LOADADDR (.data);
+			__data_start__ = .;
+			*(.data)
+				*(.data*)
+				. = ALIGN (8);
+			__data_end__ = .;
+		} > DDR
+
+    /* General purpose user shared memory, used in some examples */
+    .bss.user_shared_mem (NOLOAD) : { KEEP(*(.bss.user_shared_mem)) } > USER_SHM_MEM
+
+    .bss : {
+        __bss_start__ = .;
+        *(.bss)
+        *(.bss.*)
+        . = ALIGN (8);
+        *(COMMON)
+        __bss_end__ = .;
+        . = ALIGN (8);
+    } > DDR
+
+    .heap (NOLOAD) : {
+        __heap_start__ = .;
+        KEEP(*(.heap))
+        . = . + __TI_HEAP_SIZE;
+        __heap_end__ = .;
+    } > DDR
+
+    .stack (NOLOAD) : ALIGN(16) {
+        __TI_STACK_BASE = .;
+        KEEP(*(.stack))
+        . = . + __TI_STACK_SIZE;
+    } > DDR
+}

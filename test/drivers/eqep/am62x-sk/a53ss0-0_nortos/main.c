@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,54 +30,36 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef EQEP_PATTERN_GEN_H_
-#define EQEP_PATTERN_GEN_H_
+#include <stdlib.h>
+#include "ti_drivers_config.h"
+#include "ti_board_config.h"
+#include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+void test_main(void *args);
 
-typedef struct EqepAppPatternParams_s
+int main()
 {
-    uint32_t eqepClockFreq;
-/** \brief EQEP Input Signal Frequency */
-    uint32_t direction;
-/** \brief EQEP Direction */
-    uint32_t idxEvtCnt;
-/** \brief EQEP Index Count */
-    uint32_t loopCnt;
-/** \brief Application loop count to generate eqep pattern */
-    uint32_t generateIdxPulse;
-/** \brief Enable/Disable Index Pulse */
-}EqepAppPatternParams;
+    int32_t status = SystemP_SUCCESS;
 
-void App_eqepGeneratePattern(EqepAppPatternParams *patParam);
+    System_init();
+    Board_init();
 
-void App_eqepGenerateClockDirPattern(EqepAppPatternParams *patParam);
+    /* Open drivers */
+    Drivers_open();
+    /* Open flash and board drivers */
+    status = Board_driversOpen();
+    DebugP_assert(status==SystemP_SUCCESS);
 
-void App_eqepGenerateUpCountPattern(EqepAppPatternParams *patParam);
+    test_main(NULL);
 
-void App_eqepGenerateStrobePattern(EqepAppPatternParams *patParam);
+    /* Close board and flash drivers */
+    Board_driversClose();
+    /* Close drivers */
+    Drivers_close();
 
-void App_eqepReadPinValue(uint32_t *pEqepAPin,
-                          uint32_t *pEqepBPin,
-                          uint32_t *pEqepIPin,
-                          uint32_t *pEqepSPin);
+    Board_deinit();
+    System_deinit();
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62X)
-void App_eqepGeneratePatternEqep1(EqepAppPatternParams *patParam);
-
-void App_eqepGenerateDualPattern(EqepAppPatternParams *patParam);
-
-void App_eqepGenerateDualClockDirPattern(EqepAppPatternParams *patParam);
-#endif /* SOC_AM62AX || SOC_AM62DX || SOC_AM62X */
-
-#if defined(SOC_AM62AX) || defined(SOC_AM62X)
-void Board_userExpansionHeaderEnable(void);
-#endif
-
-#ifdef __cplusplus
+    return 0;
 }
-#endif
-
-#endif /* #ifndef EQEP_PATTERN_GEN_H_ */

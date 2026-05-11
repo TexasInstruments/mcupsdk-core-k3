@@ -193,6 +193,7 @@ const example_file_list = [
     "test/drivers/dss/dss_oldi_interface/.project/project.js",
     "test/drivers/ecap/.project/project.js",
     "test/drivers/epwm/.project/project.js",
+    "test/drivers/eqep/.project/project.js",
     "test/drivers/gpio/.project/project.js",
     "test/drivers/gpmc/.project/project.js",
     "test/drivers/gtc/.project/project_am62x.js",

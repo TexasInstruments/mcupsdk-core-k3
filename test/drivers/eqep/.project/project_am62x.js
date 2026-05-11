@@ -1,13 +1,12 @@
 let path = require('path');
 
-let device = "am62dx";
+let device = "am62x";
 
 const files = {
     common: [
         "test_eqep.c",
         "test_eqep_pattern_gen.c",
         "main.c",
-
     ],
 };
 
@@ -21,19 +20,39 @@ const filedirs = {
     ],
 };
 
+const libdirs_freertos_a53 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+    ],
+};
+
+const libs_freertos_a53 = {
+    common: [
+        "freertos.am62x.a53.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62x.a53.gcc-aarch64.${ConfigName}.lib",
+        "unity.am62x.a53.gcc-aarch64.${ConfigName}.lib",
+        "board.am62x.a53.gcc-aarch64.${ConfigName}.lib",
+    ],
+};
+
+const includes_freertos_a53 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53",
+        "${MCU_PLUS_SDK_PATH}/test/unity/",
+    ],
+};
+
 const libdirs_nortos_a53 = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/test/unity/lib",
-    ],
-};
-
-const libdirs_freertos_a53 = {
-    common: [
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
-	"${MCU_PLUS_SDK_PATH}/test/unity/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
     ],
 };
 
@@ -44,35 +63,18 @@ const includes_nortos_a53 = {
     ],
 };
 
-const includes_freertos_a53 = {
-    common: [
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/a53",
-	"${MCU_PLUS_SDK_PATH}/test/unity/",
-    ],
-};
-
-
 const libs_nortos_a53 = {
     common: [
-        "nortos.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
-        "drivers.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
-        "unity.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
-    ],
-};
-
-const libs_freertos_a53 = {
-    common: [
-        "freertos.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
-        "drivers.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
-	"unity.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
+        "nortos.am62x.a53.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62x.a53.gcc-aarch64.${ConfigName}.lib",
+        "unity.am62x.a53.gcc-aarch64.${ConfigName}.lib",
+        "board.am62x.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
 
 const defines_common = {
-    common:[
-        "SOC_AM62DX",
+    common: [
+        "SOC_AM62X",
     ]
 };
 
@@ -83,11 +85,11 @@ const cflags = {
     ],
 };
 
-const cflags_freertos ={
-        common: [
-            "-DENABLE_MT_TESTS",
-            "-Wno-error",
-            "-Wno-unused-but-set-variable",
+const cflags_freertos = {
+    common: [
+        "-DENABLE_MT_TESTS",
+        "-Wno-error",
+        "-Wno-unused-but-set-variable",
     ],
 }
 
@@ -99,39 +101,40 @@ const lnkfiles = {
 
 const syscfgfile = "../example.syscfg"
 
+
 const templates_freertos_a53 =
-[
-    {
-        input: ".project/templates/am62dx/common/linker_a53.cmd.xdt",
-        output: "linker.cmd",
-    },
-    {
-        input: ".project/templates/am62dx/freertos/main_freertos.c.xdt",
-        output: "../main.c",
-        options: {
-            entryFunction: "test_main",
+    [
+        {
+            input: ".project/templates/am62x/common/linker_a53.cmd.xdt",
+            output: "linker.cmd",
         },
-    },
-];
+        {
+            input: ".project/templates/am62x/freertos/main_freertos.c.xdt",
+            output: "../main.c",
+            options: {
+                entryFunction: "test_main",
+            },
+        },
+    ];
 
 const templates_nortos_a53 =
-[
-    {
-        input: ".project/templates/am62dx/common/linker_a53.cmd.xdt",
-        output: "linker.cmd",
-    },
-    {
-        input: ".project/templates/am62dx/nortos/main_nortos.c.xdt",
-        output: "../main.c",
-        options: {
-            entryFunction: "test_main",
+    [
+        {
+            input: ".project/templates/am62x/common/linker_a53.cmd.xdt",
+            output: "linker.cmd",
         },
-    },
-];
+        {
+            input: ".project/templates/am62x/nortos/main_nortos.c.xdt",
+            output: "../main.c",
+            options: {
+                entryFunction: "test_main",
+            },
+        },
+    ];
 
 const buildOptionCombos = [
-    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62dx-evm", os: "nortos"},
-    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62dx-evm", os: "freertos"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sk", os: "freertos" },
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sk", os: "nortos" },
 ];
 
 function getComponentProperty(device) {
@@ -147,17 +150,6 @@ function getComponentProperty(device) {
     return property;
 }
 
-const robot_template = {
-    input: ".project/templates/am62dx/astra/tests.robot.xdt",
-    output: "../tests.robot",
-    options: {
-        componentName: "EQEP",
-        testCaseName: "eqep test application",
-        testCaseIds: "SITSW-6988 SITSW-7263 SITSW-7264 SITSW-7265 SITSW-7266 SITSW-7267 SITSW-7268 SITSW-7270 SITSW-7271 SITSW-7272" +
-                     " SITSW-7314",
-    },
-};
-
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -168,16 +160,14 @@ function getComponentBuildProperty(buildOption) {
     build_property.cflags = cflags;
     build_property.defines = defines_common;
 
-    if(buildOption.cpu.match(/a53*/)){
-        if(buildOption.os.match(/nortos*/) )
-        {
+    if (buildOption.cpu.match(/a53*/)) {
+        if (buildOption.os.match(/nortos*/)) {
             build_property.includes = includes_nortos_a53;
             build_property.libdirs = libdirs_nortos_a53;
             build_property.libs = libs_nortos_a53;
             build_property.templates = templates_nortos_a53;
         }
-        else if(buildOption.os.match(/freertos*/) )
-        {
+        else if (buildOption.os.match(/freertos*/)) {
             build_property.includes = includes_freertos_a53;
             build_property.libdirs = libdirs_freertos_a53;
             build_property.libs = libs_freertos_a53;
@@ -186,8 +176,6 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
-
-    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

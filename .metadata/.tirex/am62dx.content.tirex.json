@@ -2088,6 +2088,105 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
+        "description": "MCASP Audio Presentation Time Example - Demonstrates queue status and presentation time APIs for RNC applications CPU is C75SS0-0 running FREERTOS.",
+        "name": "mcasp_audio_presentation_time",
+        "location": "../../examples/drivers/mcasp/mcasp_audio_presentation_time/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AUDIO-AM62D-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcasp",
+            "mcasp_audio_presentation_time",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "MCASP Audio Presentation Time Example - Demonstrates queue status and presentation time APIs for RNC applications CPU is A53SS0-0 running FREERTOS.",
+        "name": "mcasp_audio_presentation_time",
+        "location": "../../examples/drivers/mcasp/mcasp_audio_presentation_time/am62dx-evm/a53ss0-0_freertos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AUDIO-AM62D-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcasp",
+            "mcasp_audio_presentation_time",
+            "a53ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "MCASP Audio Presentation Time Example - Demonstrates queue status and presentation time APIs for RNC applications CPU is A53SS0-0 running NORTOS.",
+        "name": "mcasp_audio_presentation_time",
+        "location": "../../examples/drivers/mcasp/mcasp_audio_presentation_time/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/example.projectspec",
+        "devtools": [
+            "AUDIO-AM62D-EVM"
+        ],
+        "kernel": [
+            "nortos"
+        ],
+        "compiler": [
+            "gcc"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcasp",
+            "mcasp_audio_presentation_time",
+            "a53ss0-0_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
         "description": "This example verifies MCASP Audio Expansion Card Multichannel Playback CPU is C75SS0-0 running FREERTOS.",
         "name": "mcasp_aec_playback",
         "location": "../../examples/drivers/mcasp/mcasp_aec_multichannel_playback/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",

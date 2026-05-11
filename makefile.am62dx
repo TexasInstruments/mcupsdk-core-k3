@@ -181,6 +181,9 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/mcan/mcan_loopback_interrupt/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/mcan/mcan_loopback_interrupt/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/mcan/mcan_loopback_interrupt/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcasp/mcasp_audio_presentation_time/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcasp/mcasp_audio_presentation_time/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/mcasp/mcasp_audio_presentation_time/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/mcasp/mcasp_aec_multichannel_playback/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/mcasp/mcasp_chime_tad5212/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/mcasp/mcasp_loopback/am62dx-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
@@ -1076,6 +1079,9 @@ BUILD_COMBO_EXAMPLE_ALL += mcan_loopback_interrupt_am62dx-evm_mcu-r5fss0-0_norto
 BUILD_COMBO_EXAMPLE_ALL += mcan_loopback_interrupt_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += mcan_loopback_interrupt_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += mcan_loopback_interrupt_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += mcasp_audio_presentation_time_am62dx-evm_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += mcasp_audio_presentation_time_am62dx-evm_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += mcasp_audio_presentation_time_am62dx-evm_a53ss0-0_nortos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += mcasp_aec_playback_am62dx-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += mcasp_chime_tad5212_am62dx-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += mcasp_loopback_am62dx-evm_c75ss0-0_freertos_ti-c7000
@@ -1567,6 +1573,15 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  mcan_loopback_interrupt_am62dx-evm_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C examples/drivers/mcan/mcan_loopback_interrupt/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ mcasp_audio_presentation_time_am62dx-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_audio_presentation_time/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
+
+ mcasp_audio_presentation_time_am62dx-evm_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_audio_presentation_time/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ mcasp_audio_presentation_time_am62dx-evm_a53ss0-0_nortos_gcc-aarch64:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_audio_presentation_time/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile all
 
  mcasp_aec_playback_am62dx-evm_c75ss0-0_freertos_ti-c7000:
 	$(MAKE) -C examples/drivers/mcasp/mcasp_aec_multichannel_playback/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
@@ -2507,6 +2522,9 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcan_loopback_interrupt_am62dx-evm_mcu-r5fss0-0
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcan_loopback_interrupt_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcan_loopback_interrupt_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcan_loopback_interrupt_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_audio_presentation_time_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_audio_presentation_time_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_audio_presentation_time_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_aec_playback_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_chime_tad5212_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_loopback_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean
@@ -2998,6 +3016,15 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  mcan_loopback_interrupt_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C examples/drivers/mcan/mcan_loopback_interrupt/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ mcasp_audio_presentation_time_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_audio_presentation_time/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
+ mcasp_audio_presentation_time_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_audio_presentation_time/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ mcasp_audio_presentation_time_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_audio_presentation_time/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
 
  mcasp_aec_playback_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C examples/drivers/mcasp/mcasp_aec_multichannel_playback/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
@@ -3938,6 +3965,9 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcan_loopback_interrupt_am62dx-evm_mcu-r5fss0-0
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcan_loopback_interrupt_am62dx-evm_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcan_loopback_interrupt_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcan_loopback_interrupt_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_audio_presentation_time_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_audio_presentation_time_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_audio_presentation_time_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_aec_playback_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_chime_tad5212_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_loopback_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub
@@ -4429,6 +4459,15 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  mcan_loopback_interrupt_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C examples/drivers/mcan/mcan_loopback_interrupt/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ mcasp_audio_presentation_time_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_audio_presentation_time/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
+ mcasp_audio_presentation_time_am62dx-evm_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_audio_presentation_time/am62dx-evm/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ mcasp_audio_presentation_time_am62dx-evm_a53ss0-0_nortos_gcc-aarch64_scrub:
+	$(MAKE) -C examples/drivers/mcasp/mcasp_audio_presentation_time/am62dx-evm/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
 
  mcasp_aec_playback_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub:
 	$(MAKE) -C examples/drivers/mcasp/mcasp_aec_multichannel_playback/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub

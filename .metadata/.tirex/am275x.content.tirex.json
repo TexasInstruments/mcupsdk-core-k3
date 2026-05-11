@@ -2699,6 +2699,72 @@
         "resourceSubClass": [
             "example.gettingstarted"
         ],
+        "description": "MCASP Audio Presentation Time Example - Demonstrates queue status and presentation time APIs for RNC applications CPU is C75SS0-0 running FREERTOS.",
+        "name": "mcasp_audio_presentation_time",
+        "location": "../../examples/drivers/mcasp/mcasp_audio_presentation_time/am275x-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcasp",
+            "mcasp_audio_presentation_time",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
+        "description": "MCASP Audio Presentation Time Example - Demonstrates queue status and presentation time APIs for RNC applications CPU is R5FSS0-0 running FREERTOS.",
+        "name": "mcasp_audio_presentation_time",
+        "location": "../../examples/drivers/mcasp/mcasp_audio_presentation_time/am275x-evm/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "AUDIO-AM275-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "drivers",
+            "mcasp",
+            "mcasp_audio_presentation_time",
+            "r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.gettingstarted"
+        ],
         "description": "This example verifies MCASP Audio Expansion Card Multichannel Playback CPU is C75SS0-0 running FREERTOS.",
         "name": "mcasp_aec_playback",
         "location": "../../examples/drivers/mcasp/mcasp_aec_multichannel_playback/am275x-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",

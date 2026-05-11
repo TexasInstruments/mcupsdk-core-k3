@@ -104,6 +104,7 @@ const example_file_list = [
     "examples/drivers/mcan/mcan_external_read_write/.project/project_am275x.js",
     "examples/drivers/mcan/mcan_loopback_polling/.project/project.js",
     "examples/drivers/mcan/mcan_loopback_interrupt/.project/project.js",
+    "examples/drivers/mcasp/mcasp_audio_presentation_time/.project/project.js",
     "examples/drivers/mcasp/mcasp_aec_multichannel_playback/.project/project.js",
     "examples/drivers/mcasp/mcasp_chime_tad5212/.project/project.js",
     "examples/drivers/mcasp/mcasp_loopback/.project/project.js",

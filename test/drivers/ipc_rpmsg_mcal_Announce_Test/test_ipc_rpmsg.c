@@ -136,8 +136,7 @@ static void populate_vring_addresses(RPMessage_Params *params,
         params->vringRxBaseAddr[CSL_CORE_ID_R5FSS1_1] = (uintptr_t)(gRPMessageVringMem + 15U * vringSlotSize);
     }
 
-#elif defined (SOC_AM62DX)
-    /* AM62DX Announce_Test: Only R5FSS0_0 as remote core - 2-core configuration */
+#elif defined (SOC_AM62DX) || defined (SOC_AM62AX)
     if(selfCoreId == CSL_CORE_ID_MCU_R5FSS0_0)
     {
         /* MCU core (MCU_R5FSS0_0) vring mapping - VRING slots: TX{r5fss0_0:0} RX{r5fss0_0:1} */
@@ -195,7 +194,7 @@ static uint16_t getServerEndPtForCore(uint32_t remoteCoreId)
             return 10;
     }
 }
-#elif defined (SOC_AM62DX)
+#elif defined (SOC_AM62DX) || defined (SOC_AM62AX)
 uint32_t gMainCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
 
 uint32_t gRemoteCoreId[] = {
@@ -261,7 +260,7 @@ void test_rpmsgServerMain(void *args)
 
 #if defined (SOC_AM275X)
     status = RPMessage_announce(CSL_CORE_ID_R5FSS0_0, 11 , "ti.ipc4.ping-pong");
-#elif defined (SOC_AM62DX)
+#elif defined (SOC_AM62DX) || defined (SOC_AM62AX)
     status = RPMessage_announce(CSL_CORE_ID_MCU_R5FSS0_0, 13 , "ti.ipc4.ping-pong");
 #endif
 
@@ -446,7 +445,7 @@ void test_ipc_remote_core_start()
      * Slot stride = 2*8*512 = 8192 bytes, same as the initial syscfg configuration. */
 #if defined (SOC_AM275X)
     populate_vring_addresses(&rpmsgParams, 16U, 512U);
-#elif defined (SOC_AM62DX)
+#elif defined (SOC_AM62DX) || defined (SOC_AM62AX)
     populate_vring_addresses(&rpmsgParams, 256U, 512U);
 #endif
 

@@ -161,8 +161,7 @@ static void populate_vring_addresses(RPMessage_Params *params,
         params->vringRxBaseAddr[CSL_CORE_ID_C75SS0_0] = (uintptr_t)(gRPMessageVringMem + 24U * vringSlotSize);
     }
 
-#elif defined (SOC_AM62DX)
-    /* AM62DX has 4 cores: MCU_R5FSS0_0, R5FSS0_0, A53SS0_0, C75SS0_0 */
+#elif defined (SOC_AM62DX) || defined (SOC_AM62AX)
     if(selfCoreId == CSL_CORE_ID_C75SS0_0)
     {
         /* Remote core (C75SS0_0) vring mapping - VRING slots: TX{mcu_r5fss0_0:9, r5fss0_0:10, a53ss0_0:11} RX{mcu_r5fss0_0:2, r5fss0_0:5, a53ss0_0:8} */
@@ -259,7 +258,7 @@ static uint16_t getServerEndPtForCore(uint32_t remoteCoreId)
             return 10;
     }
 }
-#elif defined (SOC_AM62DX)
+#elif defined (SOC_AM62DX) || defined (SOC_AM62AX)
 uint32_t gMainCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
 
 uint32_t gRemoteCoreId[] = {
@@ -506,7 +505,7 @@ void test_ipc_remote_core_start()
      * Slot stride = 2*8*512 = 8192 bytes, same as the initial syscfg configuration. */
 #if defined (SOC_AM275X)
     populate_vring_addresses(&rpmsgParams, 16U, 512U);
-#elif defined (SOC_AM62DX)
+#elif defined (SOC_AM62DX) || defined (SOC_AM62AX)
     populate_vring_addresses(&rpmsgParams, 256U, 512U);
 #endif
 

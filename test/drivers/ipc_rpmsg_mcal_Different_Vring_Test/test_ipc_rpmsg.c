@@ -150,6 +150,20 @@ static void populate_vring_addresses(RPMessage_Params *params,
         params->vringRxBaseAddr[CSL_CORE_ID_MCU_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 0U * vringSlotSize);
     }
 
+#elif defined (SOC_AM62PX)
+    if(selfCoreId == CSL_CORE_ID_MCU_R5FSS0_0)
+    {
+        /* MCU core (MCU_R5FSS0_0) vring mapping - VRING slots: TX{wkup_r5fss0_0:0} RX{wkup_r5fss0_0:1} */
+        params->vringTxBaseAddr[CSL_CORE_ID_WKUP_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 0U * vringSlotSize);
+        params->vringRxBaseAddr[CSL_CORE_ID_WKUP_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 1U * vringSlotSize);
+    }
+    else if(selfCoreId == CSL_CORE_ID_WKUP_R5FSS0_0)
+    {
+        /* Wakeup core (WKUP_R5FSS0_0) vring mapping - VRING slots: TX{mcu_r5fss0_0:1} RX{mcu_r5fss0_0:0} */
+        params->vringTxBaseAddr[CSL_CORE_ID_MCU_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 1U * vringSlotSize);
+        params->vringRxBaseAddr[CSL_CORE_ID_MCU_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 0U * vringSlotSize);
+    }
+
 #endif
 
     /* Common vring properties derived from the passed-in parameters */
@@ -212,6 +226,24 @@ static uint16_t getServerEndPtForCore(uint32_t remoteCoreId)
     switch(remoteCoreId)
     {
         case CSL_CORE_ID_R5FSS0_0:
+            return 13;
+        default:
+            return 10;
+    }
+}
+#elif defined (SOC_AM62PX)
+uint32_t gMainCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+
+uint32_t gRemoteCoreId[] = {
+    CSL_CORE_ID_WKUP_R5FSS0_0,
+    CSL_CORE_ID_MAX
+};
+
+static uint16_t getServerEndPtForCore(uint32_t remoteCoreId)
+{
+    switch(remoteCoreId)
+    {
+        case CSL_CORE_ID_WKUP_R5FSS0_0:
             return 13;
         default:
             return 10;
@@ -440,7 +472,7 @@ void test_ipc_remote_core_start()
      * Slot stride = 2*8*512 = 8192 bytes, same as the initial syscfg configuration. */
 #if defined (SOC_AM275X)
     populate_vring_addresses(&rpmsgParams, 8U, 512U);
-#elif defined (SOC_AM62DX) || defined (SOC_AM62AX)
+#elif defined (SOC_AM62DX) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
     populate_vring_addresses(&rpmsgParams, 256U, 512U);
 #endif
     status = RPMessage_init(&rpmsgParams);
@@ -465,7 +497,7 @@ void test_ipc_remote_core_start()
 
 #if defined (SOC_AM275X)
     uint32_t bufferConfigs[] = {4U, 2U, 16U, 4U};
-#elif defined (SOC_AM62DX) || defined (SOC_AM62AX)
+#elif defined (SOC_AM62DX) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
     uint32_t bufferConfigs[] = {128U, 64U, 32U, 16U, 8U, 4U, 2U, 1U};
 #endif
     uint32_t numConfigs = sizeof(bufferConfigs) / sizeof(bufferConfigs[0]);

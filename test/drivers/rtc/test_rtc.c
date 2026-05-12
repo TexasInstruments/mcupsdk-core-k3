@@ -41,6 +41,7 @@
 #include <drivers/rtc.h>
 #include <kernel/dpl/ClockP.h>
 #include <kernel/dpl/SemaphoreP.h>
+#include <kernel/dpl/TaskP.h>
 #include "ti_drivers_config.h"
 #include "ti_drivers_open_close.h"
 
@@ -62,6 +63,7 @@
 #define TEST_RTC_SECONDS_PER_MINUTE          (60U)
 
 /* Common sleep durations (seconds) */
+#define TEST_RTC_SLEEP_1_SEC                 (1U)
 #define TEST_RTC_SLEEP_2_SEC                 (2U)
 #define TEST_RTC_SLEEP_3_SEC                 (3U)
 #define TEST_RTC_SLEEP_7_SEC                 (7U)
@@ -69,12 +71,19 @@
 
 /* Common microsecond delays */
 #define TEST_RTC_USLEEP_100_US               (100U)
+#define TEST_RTC_USLEEP_1_MS                 (1000U)
+#define TEST_RTC_USLEEP_5_MS                 (5000U)
+#define TEST_RTC_USLEEP_10_MS                (10000U)
+#define TEST_RTC_USLEEP_50_MS                (50000U)
+#define TEST_RTC_USLEEP_100_MS               (100000U)
+#define TEST_RTC_USLEEP_200_MS               (200000U)
 
 /* Semaphore timeout values (microseconds) */
 #define TEST_RTC_SEM_TIMEOUT_2_SEC           (2000000U)
 #define TEST_RTC_SEM_TIMEOUT_3_SEC           (3000000U)
 #define TEST_RTC_SEM_TIMEOUT_10_SEC          (10000000U)
 #define TEST_RTC_SEM_TIMEOUT_12_SEC          (12000000U)
+#define TEST_RTC_SEM_TIMEOUT_15_SEC          (15000000U)
 #define TEST_RTC_SEM_TIMEOUT_20_SEC          (20000000U)
 
 /* Scratch register test patterns */
@@ -88,10 +97,31 @@
 #define TEST_RTC_PATTERN_DEADBEEF            (0xDEADBEEFU)
 #define TEST_RTC_PATTERN_UNIQUE              (0x12345678U)
 #define TEST_RTC_PATTERN_KNOWN               (0xAABBCCDDU)
+#define TEST_RTC_PATTERN_SCRATCH_A_BASE      (0xAAAA0000U)
+#define TEST_RTC_PATTERN_SCRATCH_B_BASE      (0xBBBB0000U)
+#define TEST_RTC_PATTERN_UPPER_MASK          (0xFFFF0000U)
 
 /* Invalid index values for negative tests */
 #define TEST_RTC_INVALID_INDEX_MAX           (0xFFFFFFFFU)
 #define TEST_RTC_INVALID_SCRATCH_INDEX       (8U)
+
+#ifdef ENABLE_MT_TESTS
+
+#define TEST_RTC_MT_TASK_STACK_SIZE          (4096U)
+#define TEST_RTC_MT_TASK_PRIORITY_HIGH       (4U)
+#define TEST_RTC_MT_TASK_PRIORITY_LOW        (3U)
+#define TEST_RTC_MT_TIMEOUT_TICKS            (20000U)
+
+#define TEST_RTC_MT_WRITER_ITERATIONS        (50U)
+#define TEST_RTC_MT_READER_ITERATIONS        (100U)
+#define TEST_RTC_MT_SCRATCH_ITERATIONS       (50U)
+#define TEST_RTC_MT_STOPSTART_ITERATIONS     (10U)
+#define TEST_RTC_MT_GETTIME_ITERATIONS       (200U)
+#define TEST_RTC_MT_SETTIME_LOOP_COUNT       (50U)
+#define TEST_RTC_MT_PARALLEL_ITERATIONS      (1000U)
+#define TEST_RTC_MT_ALARM_SETTIME_ITERATIONS (20U)
+
+#endif /* ENABLE_MT_TESTS */
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -102,6 +132,30 @@ static SemaphoreP_Object TestRtc_OffOnSemObj;
 /* External reference to RTC config array (defined in generated ti_drivers_config.c) */
 extern RTC_Config gRTCConfig[];
 extern uint32_t gRTCConfigNum;
+
+#ifdef ENABLE_MT_TESTS
+
+/* Reusable task stacks (tests are sequential, stacks reused) */
+static uint8_t TestRtc_TaskStackA[TEST_RTC_MT_TASK_STACK_SIZE] __attribute__((aligned(32)));
+static uint8_t TestRtc_TaskStackB[TEST_RTC_MT_TASK_STACK_SIZE] __attribute__((aligned(32)));
+
+/* Counting semaphore for task completion join */
+static SemaphoreP_Object TestRtc_TaskDoneSemaphore;
+
+/* Barrier semaphore for synchronized start (concurrentOpenAttempt) */
+static SemaphoreP_Object TestRtc_BarrierSemaphore;
+
+/* Per-task volatile result variables (reset before each test) */
+static volatile int32_t  TestRtc_TaskFailCountA;
+static volatile int32_t  TestRtc_TaskFailCountB;
+static volatile uint32_t TestRtc_TaskFlagA;
+static volatile uint32_t TestRtc_TaskFlagB;
+
+/* Concurrent open handles */
+static volatile RTC_Handle TestRtc_RaceHandleA;
+static volatile RTC_Handle TestRtc_RaceHandleB;
+
+#endif /* ENABLE_MT_TESTS */
 
 /* ========================================================================== */
 /*                         Structures and Enums                               */
@@ -174,6 +228,39 @@ static void TestRtc_deinitWithOpenInstance(void *args);
  * UINT32_MAX fields the loop runs ~4.29 billion iterations causing
  * an indefinite hang. Needs input validation in RTC_setTime(). */
 /* static void TestRtc_setTimeMaxUint32Fields(void *args); */
+
+#ifdef ENABLE_MT_TESTS
+/* Multithread Test Cases */
+static void TestRtc_multipleInstances(void *args);
+static void TestRtc_concurrentAlarmSameTime(void *args);
+static void TestRtc_concurrentAccessRaceCondition(void *args);
+static void TestRtc_concurrentScratchRegisterAccess(void *args);
+static void TestRtc_concurrentAlarmAndSetTime(void *args);
+static void TestRtc_concurrentStopStartWithGetTime(void *args);
+static void TestRtc_isrDuringApiExecution(void *args);
+static void TestRtc_concurrentOpenAttempt(void *args);
+static void TestRtc_highFrequencyParallelGetTime(void *args);
+
+/* Task worker functions */
+static void TestRtc_instanceWorkerA(void *args);
+static void TestRtc_instanceWorkerB(void *args);
+static void TestRtc_alarmSameTimeWorkerA(void *args);
+static void TestRtc_alarmSameTimeWorkerB(void *args);
+static void TestRtc_raceWriterWorker(void *args);
+static void TestRtc_raceReaderWorker(void *args);
+static void TestRtc_scratchWorkerA(void *args);
+static void TestRtc_scratchWorkerB(void *args);
+static void TestRtc_alarmSetTimeWorkerA(void *args);
+static void TestRtc_alarmSetTimeWorkerB(void *args);
+static void TestRtc_stopStartWorker(void *args);
+static void TestRtc_getTimeLoopWorker(void *args);
+static void TestRtc_isrSetTimeWorker(void *args);
+static void TestRtc_isrAlarmWaitWorker(void *args);
+static void TestRtc_openRaceWorkerA(void *args);
+static void TestRtc_openRaceWorkerB(void *args);
+static void TestRtc_parallelGetTimeWorkerA(void *args);
+static void TestRtc_parallelGetTimeWorkerB(void *args);
+#endif /* ENABLE_MT_TESTS */
 
 /* ========================================================================== */
 /*                       Internal Function Definitions                        */
@@ -258,6 +345,18 @@ void test_main(void *args)
      * UINT32_MAX fields the loop runs ~4.29 billion iterations causing
      * an indefinite hang. Needs input validation in RTC_setTime(). */
     /* RUN_TEST(TestRtc_setTimeMaxUint32Fields,             11850, NULL); */
+#ifdef ENABLE_MT_TESTS
+    /* Multithread Test Cases */
+    RUN_TEST(TestRtc_multipleInstances,                     11841, NULL);
+    RUN_TEST(TestRtc_concurrentAlarmSameTime,               11842, NULL);
+    RUN_TEST(TestRtc_concurrentAccessRaceCondition,         11843, NULL);
+    RUN_TEST(TestRtc_concurrentScratchRegisterAccess,       11844, NULL);
+    RUN_TEST(TestRtc_concurrentAlarmAndSetTime,             11845, NULL);
+    RUN_TEST(TestRtc_concurrentStopStartWithGetTime,        11846, NULL);
+    RUN_TEST(TestRtc_isrDuringApiExecution,                 11847, NULL);
+    RUN_TEST(TestRtc_concurrentOpenAttempt,                 11848, NULL);
+    RUN_TEST(TestRtc_highFrequencyParallelGetTime,          11849, NULL);
+#endif /* ENABLE_MT_TESTS */
 
     UNITY_END();
 
@@ -4058,3 +4157,1241 @@ static void TestRtc_setTimeMaxUint32Fields(void *args)
     TEST_ASSERT_EQUAL_UINT32(2025U, verifyTime.year);
 }
 #endif
+
+/* ========================================================================== */
+/*                         Multithread Test Cases                             */
+/* ========================================================================== */
+
+#ifdef ENABLE_MT_TESTS
+
+/* ========================================================================== */
+/*                  Multithread Task Worker Functions                         */
+/* ========================================================================== */
+
+/* --- multipleInstances Workers --- */
+
+static void TestRtc_instanceWorkerA(void *args)
+{
+    RTC_Handle  rtcHandle = gRTCHandle[CONFIG_RTC0];
+    RTC_Time    setTime;
+    RTC_Time    readTime;
+    int32_t     status;
+
+
+    setTime.year   = 2024U;
+    setTime.month  = 1U;
+    setTime.day    = 1U;
+    setTime.hour   = 12U;
+    setTime.minute = 0U;
+    setTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &setTime);
+    if (status != SystemP_SUCCESS) 
+    { 
+        TestRtc_TaskFailCountA+=1; 
+    }
+
+    ClockP_sleep(TEST_RTC_SLEEP_2_SEC);
+
+    status = RTC_getTime(rtcHandle, &readTime);
+    if (status != SystemP_SUCCESS) 
+    { 
+        TestRtc_TaskFailCountA+=1; 
+    }
+
+    if ((readTime.second >= 1U) && (readTime.second <= 3U))
+    {
+        TestRtc_TaskFlagA = 1U;
+    }
+    SemaphoreP_post(&TestRtc_TaskDoneSemaphore);
+    TaskP_exit();
+}
+
+static void TestRtc_instanceWorkerB(void *args)
+{
+    RTC_Handle invalidHandle;
+
+    invalidHandle = RTC_open(gRTCConfigNum, NULL);
+    if (invalidHandle == NULL)
+    {
+        TestRtc_TaskFlagB = 1U;
+    }
+    else
+    {
+        RTC_close(invalidHandle);
+    }
+
+    SemaphoreP_post(&TestRtc_TaskDoneSemaphore);
+    TaskP_exit();
+}
+
+/* --- concurrentAlarmSameTime Workers --- */
+
+static void TestRtc_alarmSameTimeWorkerA(void *args)
+{
+    RTC_Handle  rtcHandle = gRTCHandle[CONFIG_RTC0];
+    RTC_Time    alarmTime;
+    int32_t     status;
+    int32_t     pendStatus;
+
+    alarmTime.year   = 2024U;
+    alarmTime.month  = 9U;
+    alarmTime.day    = 15U;
+    alarmTime.hour   = 14U;
+    alarmTime.minute = 0U;
+    alarmTime.second = 5U;
+
+    status = RTC_setOn_OffTimerEvent(rtcHandle, &alarmTime);
+    if (status != SystemP_SUCCESS) 
+    { 
+        TestRtc_TaskFailCountA+=1; 
+    }
+
+    pendStatus = SemaphoreP_pend(&TestRtc_OnOffSemObj,
+                                 ClockP_usecToTicks(TEST_RTC_SEM_TIMEOUT_10_SEC));
+    if (pendStatus != SystemP_SUCCESS) 
+    { 
+        TestRtc_TaskFailCountA+=1; 
+    }
+
+    SemaphoreP_post(&TestRtc_TaskDoneSemaphore);
+    TaskP_exit();
+}
+
+static void TestRtc_alarmSameTimeWorkerB(void *args)
+{
+    RTC_Handle          rtcHandle = gRTCHandle[CONFIG_RTC0];
+    const RTC_HwAttrs  *hardwareAttributes;
+    uint32_t            baseAddress;
+    RTC_Time            alarmTime;
+    int32_t             status;
+    int32_t             pendStatus;
+
+    hardwareAttributes = (const RTC_HwAttrs *)rtcHandle->hwAttrs;
+    baseAddress        = hardwareAttributes->baseAddr;
+
+    alarmTime.year   = 2024U;
+    alarmTime.month  = 9U;
+    alarmTime.day    = 15U;
+    alarmTime.hour   = 14U;
+    alarmTime.minute = 0U;
+    alarmTime.second = 5U;
+
+    status = RTC_setOff_OnTimerEvent(rtcHandle, &alarmTime);
+    if (status != SystemP_SUCCESS) 
+    { 
+        TestRtc_TaskFailCountB+=1; 
+    }
+
+    /* Re-enable OFF_ON interrupt — ISR disables both enables on any event */
+    *((volatile uint32_t *)(baseAddress + CSL_RTC_IRQENABLE_SET_SYS)) =
+        RTC_TMR_INT_INT1_SET_FLAG;
+
+    pendStatus = SemaphoreP_pend(&TestRtc_OffOnSemObj,
+                                 ClockP_usecToTicks(TEST_RTC_SEM_TIMEOUT_10_SEC));
+    if (pendStatus != SystemP_SUCCESS) 
+    { 
+        TestRtc_TaskFailCountB+=1; 
+    }
+
+    SemaphoreP_post(&TestRtc_TaskDoneSemaphore);
+    TaskP_exit();
+}
+
+/* --- concurrentAccessRaceCondition Workers --- */
+
+static void TestRtc_raceWriterWorker(void *args)
+{
+    RTC_Handle  rtcHandle = gRTCHandle[CONFIG_RTC0];
+    RTC_Time    setTime;
+    int32_t     status;
+    uint32_t    iteration;
+
+    setTime.year   = 2024U;
+    setTime.month  = 1U;
+    setTime.day    = 1U;
+    setTime.hour   = 0U;
+    setTime.minute = 0U;
+
+    for (iteration = 0U; iteration < TEST_RTC_MT_WRITER_ITERATIONS; iteration+=1)
+    {
+        setTime.second = iteration;
+        status = RTC_setTime(rtcHandle, &setTime);
+        if (status != SystemP_SUCCESS) 
+        { 
+            TestRtc_TaskFailCountA+=1; 
+        }
+        ClockP_usleep(TEST_RTC_USLEEP_10_MS);
+    }
+
+    SemaphoreP_post(&TestRtc_TaskDoneSemaphore);
+    TaskP_exit();
+}
+
+static void TestRtc_raceReaderWorker(void *args)
+{
+    RTC_Handle  rtcHandle = gRTCHandle[CONFIG_RTC0];
+    RTC_Time    readTime;
+    int32_t     status;
+    uint32_t    iteration;
+    uint32_t    currentTotalSeconds;
+    uint32_t    previousTotalSeconds = 0U;
+
+    for (iteration = 0U; iteration < TEST_RTC_MT_READER_ITERATIONS; iteration+=1)
+    {
+        status = RTC_getTime(rtcHandle, &readTime);
+        if (status != SystemP_SUCCESS) 
+        { 
+            TestRtc_TaskFailCountB+=1; 
+        }
+
+        if ((readTime.hour > TEST_RTC_MAX_HOUR) || (readTime.minute > TEST_RTC_MAX_MINUTE) ||
+            (readTime.second > TEST_RTC_MAX_SECOND))
+        {
+            TestRtc_TaskFlagB+=1;
+        }
+
+        currentTotalSeconds = (readTime.hour * TEST_RTC_SECONDS_PER_HOUR) +
+                              (readTime.minute * TEST_RTC_SECONDS_PER_MINUTE) +
+                              readTime.second;
+
+        if ((iteration > 0U) && (currentTotalSeconds < previousTotalSeconds))
+        {
+            TestRtc_TaskFlagA+=1;
+        }
+        previousTotalSeconds = currentTotalSeconds;
+    }
+
+    SemaphoreP_post(&TestRtc_TaskDoneSemaphore);
+    TaskP_exit();
+}
+
+/* --- concurrentScratchRegisterAccess Workers --- */
+
+static void TestRtc_scratchWorkerA(void *args)
+{
+    RTC_Handle  rtcHandle = gRTCHandle[CONFIG_RTC0];
+    int32_t     status;
+    uint32_t    iteration;
+    uint32_t    readValue;
+
+    for (iteration = 0U; iteration < TEST_RTC_MT_SCRATCH_ITERATIONS; iteration+=1)
+    {
+        status = RTC_writeScratchRegister(rtcHandle, 0U,
+                                         TEST_RTC_PATTERN_SCRATCH_A_BASE | iteration);
+        if (status != SystemP_SUCCESS) 
+        { 
+            TestRtc_TaskFailCountA+=1; 
+        }
+
+        ClockP_usleep(TEST_RTC_USLEEP_1_MS);
+
+        readValue = RTC_readScratchRegister(rtcHandle, 3U);
+        if ((readValue & TEST_RTC_PATTERN_UPPER_MASK) == TEST_RTC_PATTERN_SCRATCH_A_BASE)
+        {
+            TestRtc_TaskFlagA+=1;
+        }
+    }
+
+    SemaphoreP_post(&TestRtc_TaskDoneSemaphore);
+    TaskP_exit();
+}
+
+static void TestRtc_scratchWorkerB(void *args)
+{
+    RTC_Handle  rtcHandle = gRTCHandle[CONFIG_RTC0];
+    int32_t     status;
+    uint32_t    iteration;
+    uint32_t    readValue;
+
+    for (iteration = 0U; iteration < TEST_RTC_MT_SCRATCH_ITERATIONS; iteration+=1)
+    {
+        status = RTC_writeScratchRegister(rtcHandle, 3U,
+                                         TEST_RTC_PATTERN_SCRATCH_B_BASE | iteration);
+        if (status != SystemP_SUCCESS) 
+        { 
+            TestRtc_TaskFailCountB+=1; 
+        }
+
+        ClockP_usleep(TEST_RTC_USLEEP_1_MS);
+
+        readValue = RTC_readScratchRegister(rtcHandle, 0U);
+        if ((readValue & TEST_RTC_PATTERN_UPPER_MASK) == TEST_RTC_PATTERN_SCRATCH_B_BASE)
+        {
+            TestRtc_TaskFlagB+=1;
+        }
+    }
+
+    SemaphoreP_post(&TestRtc_TaskDoneSemaphore);
+    TaskP_exit();
+}
+
+/* --- concurrentAlarmAndSetTime Workers --- */
+
+static void TestRtc_alarmSetTimeWorkerA(void *args)
+{
+    RTC_Handle  rtcHandle = gRTCHandle[CONFIG_RTC0];
+    RTC_Time    alarmTime;
+    int32_t     status;
+    int32_t     pendStatus;
+
+    alarmTime.year   = 2024U;
+    alarmTime.month  = 1U;
+    alarmTime.day    = 1U;
+    alarmTime.hour   = 12U;
+    alarmTime.minute = 0U;
+    alarmTime.second = 10U;
+
+    status = RTC_setOn_OffTimerEvent(rtcHandle, &alarmTime);
+    if (status != SystemP_SUCCESS) 
+    { 
+        TestRtc_TaskFailCountA+=1; 
+    }
+
+    pendStatus = SemaphoreP_pend(&TestRtc_OnOffSemObj,
+                                 ClockP_usecToTicks(TEST_RTC_SEM_TIMEOUT_15_SEC));
+    if (pendStatus != SystemP_SUCCESS) 
+    { 
+        TestRtc_TaskFailCountA+=1; 
+    }
+
+    SemaphoreP_post(&TestRtc_TaskDoneSemaphore);
+    TaskP_exit();
+}
+
+static void TestRtc_alarmSetTimeWorkerB(void *args)
+{
+    RTC_Handle  rtcHandle = gRTCHandle[CONFIG_RTC0];
+    RTC_Time    setTime;
+    int32_t     status;
+    uint32_t    iteration;
+
+    setTime.year   = 2024U;
+    setTime.month  = 1U;
+    setTime.day    = 1U;
+    setTime.hour   = 12U;
+    setTime.minute = 0U;
+
+    for (iteration = 0U; iteration < TEST_RTC_MT_ALARM_SETTIME_ITERATIONS;
+         iteration+=1)
+    {
+        setTime.second = iteration;
+        status = RTC_setTime(rtcHandle, &setTime);
+        if (status != SystemP_SUCCESS) 
+        { 
+            TestRtc_TaskFailCountB+=1; 
+        }
+        ClockP_usleep(TEST_RTC_USLEEP_200_MS);
+    }
+
+    SemaphoreP_post(&TestRtc_TaskDoneSemaphore);
+    TaskP_exit();
+}
+
+/* --- concurrentStopStartWithGetTime Workers --- */
+
+static void TestRtc_stopStartWorker(void *args)
+{
+    RTC_Handle  rtcHandle = gRTCHandle[CONFIG_RTC0];
+    int32_t     status;
+    uint32_t    iteration;
+
+    for (iteration = 0U; iteration < TEST_RTC_MT_STOPSTART_ITERATIONS;
+         iteration+=1)
+    {
+        status = RTC_stop(rtcHandle);
+        if (status != SystemP_SUCCESS) 
+        { 
+            TestRtc_TaskFailCountA+=1; 
+        }
+
+        ClockP_usleep(TEST_RTC_USLEEP_50_MS);
+
+        status = RTC_start(rtcHandle);
+        if (status != SystemP_SUCCESS) 
+        { 
+            TestRtc_TaskFailCountA+=1; 
+        }
+
+        ClockP_usleep(TEST_RTC_USLEEP_50_MS);
+    }
+
+    SemaphoreP_post(&TestRtc_TaskDoneSemaphore);
+    TaskP_exit();
+}
+
+static void TestRtc_getTimeLoopWorker(void *args)
+{
+    RTC_Handle  rtcHandle = gRTCHandle[CONFIG_RTC0];
+    RTC_Time    readTime;
+    int32_t     status;
+    uint32_t    iteration;
+    uint32_t    currentTotalSeconds;
+    uint32_t    previousTotalSeconds = 0U;
+
+    for (iteration = 0U; iteration < TEST_RTC_MT_GETTIME_ITERATIONS; iteration+=1)
+    {
+        status = RTC_getTime(rtcHandle, &readTime);
+        if (status != SystemP_SUCCESS) 
+        { 
+            TestRtc_TaskFailCountB+=1; 
+        }
+
+        if ((readTime.hour > TEST_RTC_MAX_HOUR) || (readTime.minute > TEST_RTC_MAX_MINUTE) ||
+            (readTime.second > TEST_RTC_MAX_SECOND))
+        {
+            TestRtc_TaskFlagB+=1;
+        }
+
+        currentTotalSeconds = (readTime.hour * TEST_RTC_SECONDS_PER_HOUR) +
+                              (readTime.minute * TEST_RTC_SECONDS_PER_MINUTE) +
+                              readTime.second;
+
+        if ((iteration > 0U) && (currentTotalSeconds < previousTotalSeconds))
+        {
+            TestRtc_TaskFlagA+=1;
+        }
+        previousTotalSeconds = currentTotalSeconds;
+    }
+
+    SemaphoreP_post(&TestRtc_TaskDoneSemaphore);
+    TaskP_exit();
+}
+
+/* --- isrDuringApiExecution Workers --- */
+
+static void TestRtc_isrSetTimeWorker(void *args)
+{
+    RTC_Handle  rtcHandle = gRTCHandle[CONFIG_RTC0];
+    RTC_Time    setTime;
+    int32_t     status;
+    uint32_t    iteration;
+
+    setTime.year   = 2024U;
+    setTime.month  = 1U;
+    setTime.day    = 1U;
+    setTime.hour   = 12U;
+    setTime.minute = 0U;
+
+    for (iteration = 0U; iteration < TEST_RTC_MT_SETTIME_LOOP_COUNT; iteration+=1)
+    {
+        setTime.second = iteration % 60U;
+        status = RTC_setTime(rtcHandle, &setTime);
+        if (status != SystemP_SUCCESS) 
+        { 
+            TestRtc_TaskFailCountA+=1; 
+        }
+        ClockP_usleep(TEST_RTC_USLEEP_100_MS);
+    }
+
+    SemaphoreP_post(&TestRtc_TaskDoneSemaphore);
+    TaskP_exit();
+}
+
+static void TestRtc_isrAlarmWaitWorker(void *args)
+{
+    int32_t pendStatus;
+
+    pendStatus = SemaphoreP_pend(&TestRtc_OnOffSemObj,
+                                 ClockP_usecToTicks(TEST_RTC_SEM_TIMEOUT_10_SEC));
+    if (pendStatus == SystemP_SUCCESS)
+    {
+        TestRtc_TaskFlagB = 1U;
+    }
+
+    SemaphoreP_post(&TestRtc_TaskDoneSemaphore);
+    TaskP_exit();
+}
+
+/* --- concurrentOpenAttempt Workers --- */
+
+static void TestRtc_openRaceWorkerA(void *args)
+{
+    SemaphoreP_pend(&TestRtc_BarrierSemaphore, SystemP_WAIT_FOREVER);
+    TestRtc_RaceHandleA = RTC_open(CONFIG_RTC0, NULL);
+    SemaphoreP_post(&TestRtc_TaskDoneSemaphore);
+    TaskP_exit();
+}
+
+static void TestRtc_openRaceWorkerB(void *args)
+{
+    SemaphoreP_pend(&TestRtc_BarrierSemaphore, SystemP_WAIT_FOREVER);
+    TestRtc_RaceHandleB = RTC_open(CONFIG_RTC0, NULL);
+    SemaphoreP_post(&TestRtc_TaskDoneSemaphore);
+    TaskP_exit();
+}
+
+/* --- highFrequencyParallelGetTime Workers --- */
+
+static void TestRtc_parallelGetTimeWorkerA(void *args)
+{
+    RTC_Handle  rtcHandle = gRTCHandle[CONFIG_RTC0];
+    RTC_Time    readTime;
+    int32_t     status;
+    uint32_t    iteration;
+    uint32_t    currentTotalSeconds;
+    uint32_t    previousTotalSeconds = 0U;
+
+    for (iteration = 0U; iteration < TEST_RTC_MT_PARALLEL_ITERATIONS; iteration+=1)
+    {
+        status = RTC_getTime(rtcHandle, &readTime);
+        if (status != SystemP_SUCCESS) 
+        { 
+            TestRtc_TaskFailCountA+=1; 
+        }
+
+        if ((readTime.hour > TEST_RTC_MAX_HOUR) || (readTime.minute > TEST_RTC_MAX_MINUTE) ||
+            (readTime.second > TEST_RTC_MAX_SECOND))
+        {
+            TestRtc_TaskFlagA+=1;
+        }
+
+        currentTotalSeconds = (readTime.hour * TEST_RTC_SECONDS_PER_HOUR) +
+                              (readTime.minute * TEST_RTC_SECONDS_PER_MINUTE) +
+                              readTime.second;
+
+        if ((iteration > 0U) && (currentTotalSeconds < previousTotalSeconds))
+        {
+            TestRtc_TaskFailCountA+=1;
+        }
+        previousTotalSeconds = currentTotalSeconds;
+    }
+
+    SemaphoreP_post(&TestRtc_TaskDoneSemaphore);
+    TaskP_exit();
+}
+
+static void TestRtc_parallelGetTimeWorkerB(void *args)
+{
+    RTC_Handle  rtcHandle = gRTCHandle[CONFIG_RTC0];
+    RTC_Time    readTime;
+    int32_t     status;
+    uint32_t    iteration;
+    uint32_t    currentTotalSeconds;
+    uint32_t    previousTotalSeconds = 0U;
+
+    for (iteration = 0U; iteration < TEST_RTC_MT_PARALLEL_ITERATIONS; iteration+=1)
+    {
+        status = RTC_getTime(rtcHandle, &readTime);
+        if (status != SystemP_SUCCESS) 
+        { 
+            TestRtc_TaskFailCountB+=1; 
+        }
+
+        if ((readTime.hour > TEST_RTC_MAX_HOUR) || (readTime.minute > TEST_RTC_MAX_MINUTE) ||
+            (readTime.second > TEST_RTC_MAX_SECOND))
+        {
+            TestRtc_TaskFlagB+=1;
+        }
+
+        currentTotalSeconds = (readTime.hour * TEST_RTC_SECONDS_PER_HOUR) +
+                              (readTime.minute * TEST_RTC_SECONDS_PER_MINUTE) +
+                              readTime.second;
+
+        if ((iteration > 0U) && (currentTotalSeconds < previousTotalSeconds))
+        {
+            TestRtc_TaskFailCountB+=1;
+        }
+        previousTotalSeconds = currentTotalSeconds;
+    }
+
+    SemaphoreP_post(&TestRtc_TaskDoneSemaphore);
+    TaskP_exit();
+}
+
+/* ========================================================================== */
+/*                  Multithread Test Case Definitions                         */
+/* ========================================================================== */
+
+/**
+ * \brief Test RTC single-instance boundary with two concurrent tasks
+ *
+ * Test Category: Functional
+ *
+ * Task A operates on the open instance (set/get time, verify 2s advance).
+ * Task B attempts to open an out-of-bounds index and verifies NULL.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Task A time advances ~2s. Task B gets NULL handle.
+ */
+static void TestRtc_multipleInstances(void *args)
+{
+    TaskP_Object    taskObjectA;
+    TaskP_Object    taskObjectB;
+    TaskP_Params    taskParams;
+    int32_t         pendStatus;
+
+
+    TestRtc_TaskFailCountA = 0;
+    TestRtc_TaskFailCountB = 0;
+    TestRtc_TaskFlagA      = 0U;
+    TestRtc_TaskFlagB      = 0U;
+
+    SemaphoreP_constructCounting(&TestRtc_TaskDoneSemaphore, 0U, 2U);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.name      = (char *)"RtcInstA";
+    taskParams.stackSize = TEST_RTC_MT_TASK_STACK_SIZE;
+    taskParams.stack     = TestRtc_TaskStackA;
+    taskParams.priority  = TEST_RTC_MT_TASK_PRIORITY_HIGH;
+    taskParams.args      = NULL;
+    taskParams.taskMain  = TestRtc_instanceWorkerA;
+    TaskP_construct(&taskObjectA, &taskParams);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.name      = (char *)"RtcInstB";
+    taskParams.stackSize = TEST_RTC_MT_TASK_STACK_SIZE;
+    taskParams.stack     = TestRtc_TaskStackB;
+    taskParams.priority  = TEST_RTC_MT_TASK_PRIORITY_LOW;
+    taskParams.args      = NULL;
+    taskParams.taskMain  = TestRtc_instanceWorkerB;
+    TaskP_construct(&taskObjectB, &taskParams);
+
+    pendStatus = SemaphoreP_pend(&TestRtc_TaskDoneSemaphore, TEST_RTC_MT_TIMEOUT_TICKS);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, pendStatus);
+
+    pendStatus = SemaphoreP_pend(&TestRtc_TaskDoneSemaphore, TEST_RTC_MT_TIMEOUT_TICKS);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, pendStatus);
+
+
+
+    TEST_ASSERT_EQUAL_INT32(0, TestRtc_TaskFailCountA);
+    TEST_ASSERT_EQUAL_UINT32(1U, TestRtc_TaskFlagA);
+    TEST_ASSERT_EQUAL_UINT32(1U, TestRtc_TaskFlagB);
+
+    ClockP_usleep(TEST_RTC_USLEEP_5_MS);
+    TaskP_destruct(&taskObjectA);
+    TaskP_destruct(&taskObjectB);
+    SemaphoreP_destruct(&TestRtc_TaskDoneSemaphore);
+}
+
+/**
+ * \brief Test both ON_OFF and OFF_ON alarms at the same timestamp
+ *
+ * Test Category: Functional
+ *
+ * Sets RTC time to 14:00:00. Task A arms ON_OFF at 14:00:05, Task B
+ * arms OFF_ON at 14:00:05. Both pend on respective callback semaphores.
+ * Verifies both fire and no duplicate follow-up events occur.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Both alarms fire. Follow-up pend returns timeout.
+ */
+static void TestRtc_concurrentAlarmSameTime(void *args)
+{
+    RTC_Handle      rtcHandle = gRTCHandle[CONFIG_RTC0];
+    RTC_Time        setTime;
+    int32_t         status;
+    int32_t         duplicatePendStatus;
+    TaskP_Object    taskObjectA;
+    TaskP_Object    taskObjectB;
+    TaskP_Params    taskParams;
+
+    TestRtc_TaskFailCountA = 0;
+    TestRtc_TaskFailCountB = 0;
+
+    setTime.year   = 2024U;
+    setTime.month  = 9U;
+    setTime.day    = 15U;
+    setTime.hour   = 14U;
+    setTime.minute = 0U;
+    setTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &setTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    SemaphoreP_constructCounting(&TestRtc_OnOffSemObj, 0U, 1U);
+    SemaphoreP_constructCounting(&TestRtc_OffOnSemObj, 0U, 1U);
+    SemaphoreP_constructCounting(&TestRtc_TaskDoneSemaphore, 0U, 2U);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.name      = (char *)"AlarmA";
+    taskParams.stackSize = TEST_RTC_MT_TASK_STACK_SIZE;
+    taskParams.stack     = TestRtc_TaskStackA;
+    taskParams.priority  = TEST_RTC_MT_TASK_PRIORITY_HIGH;
+    taskParams.args      = NULL;
+    taskParams.taskMain  = TestRtc_alarmSameTimeWorkerA;
+    TaskP_construct(&taskObjectA, &taskParams);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.name      = (char *)"AlarmB";
+    taskParams.stackSize = TEST_RTC_MT_TASK_STACK_SIZE;
+    taskParams.stack     = TestRtc_TaskStackB;
+    taskParams.priority  = TEST_RTC_MT_TASK_PRIORITY_LOW;
+    taskParams.args      = NULL;
+    taskParams.taskMain  = TestRtc_alarmSameTimeWorkerB;
+    TaskP_construct(&taskObjectB, &taskParams);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
+        SemaphoreP_pend(&TestRtc_TaskDoneSemaphore, TEST_RTC_MT_TIMEOUT_TICKS));
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
+        SemaphoreP_pend(&TestRtc_TaskDoneSemaphore, TEST_RTC_MT_TIMEOUT_TICKS));
+
+    TEST_ASSERT_EQUAL_INT32(0, TestRtc_TaskFailCountA);
+    TEST_ASSERT_EQUAL_INT32(0, TestRtc_TaskFailCountB);
+
+    /* Verify no duplicate firing */
+    duplicatePendStatus = SemaphoreP_pend(&TestRtc_OnOffSemObj,
+                                          ClockP_usecToTicks(TEST_RTC_SEM_TIMEOUT_2_SEC));
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, duplicatePendStatus);
+
+    duplicatePendStatus = SemaphoreP_pend(&TestRtc_OffOnSemObj,
+                                          ClockP_usecToTicks(TEST_RTC_SEM_TIMEOUT_2_SEC));
+    TEST_ASSERT_EQUAL_INT32(SystemP_TIMEOUT, duplicatePendStatus);
+
+    ClockP_usleep(TEST_RTC_USLEEP_5_MS);
+    TaskP_destruct(&taskObjectA);
+    TaskP_destruct(&taskObjectB);
+    SemaphoreP_destruct(&TestRtc_TaskDoneSemaphore);
+    SemaphoreP_destruct(&TestRtc_OnOffSemObj);
+    SemaphoreP_destruct(&TestRtc_OffOnSemObj);
+}
+
+/**
+ * \brief Test concurrent writer (setTime) and reader (getTime) race
+ *
+ * Test Category: Multithread
+ *
+ * Task A writes 50 incrementing times. Task B reads 100 times and
+ * validates field ranges and monotonicity. Verifies no API failure,
+ * no invalid fields, and no deadlock.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput No failures. All reads have valid fields.
+ *                 Reader times are monotonically non-decreasing.
+ */
+static void TestRtc_concurrentAccessRaceCondition(void *args)
+{
+    RTC_Handle      rtcHandle = gRTCHandle[CONFIG_RTC0];
+    RTC_Time        initialTime;
+    RTC_Time        finalTime;
+    int32_t         status;
+    TaskP_Object    taskObjectA;
+    TaskP_Object    taskObjectB;
+    TaskP_Params    taskParams;
+
+    TestRtc_TaskFailCountA = 0;
+    TestRtc_TaskFailCountB = 0;
+    TestRtc_TaskFlagA      = 0U;
+    TestRtc_TaskFlagB      = 0U;
+
+    initialTime.year   = 2024U;
+    initialTime.month  = 1U;
+    initialTime.day    = 1U;
+    initialTime.hour   = 0U;
+    initialTime.minute = 0U;
+    initialTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &initialTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    SemaphoreP_constructCounting(&TestRtc_TaskDoneSemaphore, 0U, 2U);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.name      = (char *)"Writer";
+    taskParams.stackSize = TEST_RTC_MT_TASK_STACK_SIZE;
+    taskParams.stack     = TestRtc_TaskStackA;
+    taskParams.priority  = TEST_RTC_MT_TASK_PRIORITY_HIGH;
+    taskParams.args      = NULL;
+    taskParams.taskMain  = TestRtc_raceWriterWorker;
+    TaskP_construct(&taskObjectA, &taskParams);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.name      = (char *)"Reader";
+    taskParams.stackSize = TEST_RTC_MT_TASK_STACK_SIZE;
+    taskParams.stack     = TestRtc_TaskStackB;
+    taskParams.priority  = TEST_RTC_MT_TASK_PRIORITY_LOW;
+    taskParams.args      = NULL;
+    taskParams.taskMain  = TestRtc_raceReaderWorker;
+    TaskP_construct(&taskObjectB, &taskParams);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
+        SemaphoreP_pend(&TestRtc_TaskDoneSemaphore, TEST_RTC_MT_TIMEOUT_TICKS));
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
+        SemaphoreP_pend(&TestRtc_TaskDoneSemaphore, TEST_RTC_MT_TIMEOUT_TICKS));
+
+    TEST_ASSERT_EQUAL_INT32(0, TestRtc_TaskFailCountA);
+    TEST_ASSERT_EQUAL_INT32(0, TestRtc_TaskFailCountB);
+    TEST_ASSERT_EQUAL_UINT32(0U, TestRtc_TaskFlagA);
+    TEST_ASSERT_EQUAL_UINT32(0U, TestRtc_TaskFlagB);
+
+    status = RTC_getTime(rtcHandle, &finalTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    ClockP_usleep(TEST_RTC_USLEEP_5_MS);
+    TaskP_destruct(&taskObjectA);
+    TaskP_destruct(&taskObjectB);
+    SemaphoreP_destruct(&TestRtc_TaskDoneSemaphore);
+}
+
+/**
+ * \brief Test concurrent scratch register writes to different indices
+ *
+ * Test Category: Multithread
+ *
+ * Task A writes 50 values to scratch register 0. Task B writes 50
+ * values to scratch register 3. Each task reads the other's register
+ * and checks for cross-contamination. Final values are verified.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput No write failures. Final reg 0 = 0xAAAA0031.
+ *                 Final reg 3 = 0xBBBB0031. No cross-contamination.
+ */
+static void TestRtc_concurrentScratchRegisterAccess(void *args)
+{
+    RTC_Handle      rtcHandle = gRTCHandle[CONFIG_RTC0];
+    uint32_t        finalReadRegZero;
+    uint32_t        finalReadRegThree;
+    TaskP_Object    taskObjectA;
+    TaskP_Object    taskObjectB;
+    TaskP_Params    taskParams;
+
+    TestRtc_TaskFailCountA = 0;
+    TestRtc_TaskFailCountB = 0;
+    TestRtc_TaskFlagA      = 0U;
+    TestRtc_TaskFlagB      = 0U;
+
+    SemaphoreP_constructCounting(&TestRtc_TaskDoneSemaphore, 0U, 2U);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.name      = (char *)"ScrA";
+    taskParams.stackSize = TEST_RTC_MT_TASK_STACK_SIZE;
+    taskParams.stack     = TestRtc_TaskStackA;
+    taskParams.priority  = TEST_RTC_MT_TASK_PRIORITY_HIGH;
+    taskParams.args      = NULL;
+    taskParams.taskMain  = TestRtc_scratchWorkerA;
+    TaskP_construct(&taskObjectA, &taskParams);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.name      = (char *)"ScrB";
+    taskParams.stackSize = TEST_RTC_MT_TASK_STACK_SIZE;
+    taskParams.stack     = TestRtc_TaskStackB;
+    taskParams.priority  = TEST_RTC_MT_TASK_PRIORITY_LOW;
+    taskParams.args      = NULL;
+    taskParams.taskMain  = TestRtc_scratchWorkerB;
+    TaskP_construct(&taskObjectB, &taskParams);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
+        SemaphoreP_pend(&TestRtc_TaskDoneSemaphore, TEST_RTC_MT_TIMEOUT_TICKS));
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
+        SemaphoreP_pend(&TestRtc_TaskDoneSemaphore, TEST_RTC_MT_TIMEOUT_TICKS));
+
+    TEST_ASSERT_EQUAL_INT32(0, TestRtc_TaskFailCountA);
+    TEST_ASSERT_EQUAL_INT32(0, TestRtc_TaskFailCountB);
+
+    /* Allow write sync */
+    ClockP_sleep(TEST_RTC_SLEEP_1_SEC);
+
+    finalReadRegZero = RTC_readScratchRegister(rtcHandle, 0U);
+    TEST_ASSERT_EQUAL_UINT32(TEST_RTC_PATTERN_SCRATCH_A_BASE | (TEST_RTC_MT_SCRATCH_ITERATIONS - 1U),
+                             finalReadRegZero);
+
+    finalReadRegThree = RTC_readScratchRegister(rtcHandle, 3U);
+    TEST_ASSERT_EQUAL_UINT32(TEST_RTC_PATTERN_SCRATCH_B_BASE | (TEST_RTC_MT_SCRATCH_ITERATIONS - 1U),
+                             finalReadRegThree);
+
+    TEST_ASSERT_EQUAL_UINT32(0U, TestRtc_TaskFlagA);
+    TEST_ASSERT_EQUAL_UINT32(0U, TestRtc_TaskFlagB);
+
+    ClockP_usleep(TEST_RTC_USLEEP_5_MS);
+    TaskP_destruct(&taskObjectA);
+    TaskP_destruct(&taskObjectB);
+    SemaphoreP_destruct(&TestRtc_TaskDoneSemaphore);
+}
+
+/**
+ * \brief Test concurrent alarm programming and time updates
+ *
+ * Test Category: Multithread
+ *
+ * Task A arms ON_OFF alarm at 12:00:10, then pends. Task B writes 20
+ * incrementing times with 200ms delay. Verifies no API failure, no
+ * deadlock, and no crash. Alarm may or may not fire (timing-dependent).
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Both tasks complete. No SystemP_FAILURE. No crash.
+ */
+static void TestRtc_concurrentAlarmAndSetTime(void *args)
+{
+    RTC_Handle      rtcHandle = gRTCHandle[CONFIG_RTC0];
+    RTC_Time        initialTime;
+    int32_t         status;
+    TaskP_Object    taskObjectA;
+    TaskP_Object    taskObjectB;
+    TaskP_Params    taskParams;
+
+    TestRtc_TaskFailCountA = 0;
+    TestRtc_TaskFailCountB = 0;
+
+    initialTime.year   = 2024U;
+    initialTime.month  = 1U;
+    initialTime.day    = 1U;
+    initialTime.hour   = 12U;
+    initialTime.minute = 0U;
+    initialTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &initialTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    SemaphoreP_constructCounting(&TestRtc_OnOffSemObj, 0U, 1U);
+    SemaphoreP_constructCounting(&TestRtc_TaskDoneSemaphore, 0U, 2U);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.name      = (char *)"AlarmT";
+    taskParams.stackSize = TEST_RTC_MT_TASK_STACK_SIZE;
+    taskParams.stack     = TestRtc_TaskStackA;
+    taskParams.priority  = TEST_RTC_MT_TASK_PRIORITY_HIGH;
+    taskParams.args      = NULL;
+    taskParams.taskMain  = TestRtc_alarmSetTimeWorkerA;
+    TaskP_construct(&taskObjectA, &taskParams);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.name      = (char *)"SetTT";
+    taskParams.stackSize = TEST_RTC_MT_TASK_STACK_SIZE;
+    taskParams.stack     = TestRtc_TaskStackB;
+    taskParams.priority  = TEST_RTC_MT_TASK_PRIORITY_LOW;
+    taskParams.args      = NULL;
+    taskParams.taskMain  = TestRtc_alarmSetTimeWorkerB;
+    TaskP_construct(&taskObjectB, &taskParams);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
+        SemaphoreP_pend(&TestRtc_TaskDoneSemaphore, TEST_RTC_MT_TIMEOUT_TICKS));
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
+        SemaphoreP_pend(&TestRtc_TaskDoneSemaphore, TEST_RTC_MT_TIMEOUT_TICKS));
+
+    TEST_ASSERT_EQUAL_INT32(0, TestRtc_TaskFailCountB);
+
+    ClockP_usleep(TEST_RTC_USLEEP_5_MS);
+    TaskP_destruct(&taskObjectA);
+    TaskP_destruct(&taskObjectB);
+    SemaphoreP_destruct(&TestRtc_TaskDoneSemaphore);
+    SemaphoreP_destruct(&TestRtc_OnOffSemObj);
+}
+
+/**
+ * \brief Test repeated stop/start while another task reads time
+ *
+ * Test Category: Multithread
+ *
+ * Task A performs 10 stop/start cycles with 50ms delays. Task B
+ * reads time 200 times, validates field ranges and monotonicity.
+ * Time readings may plateau when stopped but must never go backward.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput All API calls succeed. No invalid fields. Time
+ *                 readings are monotonically non-decreasing.
+ */
+static void TestRtc_concurrentStopStartWithGetTime(void *args)
+{
+    RTC_Handle      rtcHandle = gRTCHandle[CONFIG_RTC0];
+    RTC_Time        initialTime;
+    int32_t         status;
+    TaskP_Object    taskObjectA;
+    TaskP_Object    taskObjectB;
+    TaskP_Params    taskParams;
+
+    TestRtc_TaskFailCountA = 0;
+    TestRtc_TaskFailCountB = 0;
+    TestRtc_TaskFlagA      = 0U;
+    TestRtc_TaskFlagB      = 0U;
+
+    initialTime.year   = 2024U; 
+    initialTime.month  = 1U;
+    initialTime.day    = 1U;
+    initialTime.hour   = 0U;
+    initialTime.minute = 0U;
+    initialTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &initialTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    SemaphoreP_constructCounting(&TestRtc_TaskDoneSemaphore, 0U, 2U);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.name      = (char *)"StpStrt";
+    taskParams.stackSize = TEST_RTC_MT_TASK_STACK_SIZE;
+    taskParams.stack     = TestRtc_TaskStackA;
+    taskParams.priority  = TEST_RTC_MT_TASK_PRIORITY_HIGH;
+    taskParams.args      = NULL;
+    taskParams.taskMain  = TestRtc_stopStartWorker;
+    TaskP_construct(&taskObjectA, &taskParams);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.name      = (char *)"GetTRd";
+    taskParams.stackSize = TEST_RTC_MT_TASK_STACK_SIZE;
+    taskParams.stack     = TestRtc_TaskStackB;
+    taskParams.priority  = TEST_RTC_MT_TASK_PRIORITY_LOW;
+    taskParams.args      = NULL;
+    taskParams.taskMain  = TestRtc_getTimeLoopWorker;
+    TaskP_construct(&taskObjectB, &taskParams);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
+        SemaphoreP_pend(&TestRtc_TaskDoneSemaphore, TEST_RTC_MT_TIMEOUT_TICKS));
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
+        SemaphoreP_pend(&TestRtc_TaskDoneSemaphore, TEST_RTC_MT_TIMEOUT_TICKS));
+
+    TEST_ASSERT_EQUAL_INT32(0, TestRtc_TaskFailCountA);
+    TEST_ASSERT_EQUAL_INT32(0, TestRtc_TaskFailCountB);
+    TEST_ASSERT_EQUAL_UINT32(0U, TestRtc_TaskFlagA);
+    TEST_ASSERT_EQUAL_UINT32(0U, TestRtc_TaskFlagB);
+
+    ClockP_usleep(TEST_RTC_USLEEP_5_MS);
+    TaskP_destruct(&taskObjectA);
+    TaskP_destruct(&taskObjectB);
+    SemaphoreP_destruct(&TestRtc_TaskDoneSemaphore);
+}
+
+/**
+ * \brief Test alarm fires while task holds per-instance mutex
+ *
+ * Test Category: Multithread
+ *
+ * Schedules ON_OFF alarm at 12:00:02. Task A performs 50 setTime calls
+ * with 100ms delay (~5s total), contending the mutex. Task B pends on
+ * the alarm semaphore. Verifies callback fires, all setTime calls
+ * succeed, and getTime returns valid time afterward.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Callback invoked. All setTime calls succeed.
+ *                 getTime returns valid time after completion.
+ */
+static void TestRtc_isrDuringApiExecution(void *args)
+{
+    RTC_Handle      rtcHandle = gRTCHandle[CONFIG_RTC0];
+    RTC_Time        initialTime;
+    RTC_Time        alarmTime;
+    RTC_Time        verifyTime;
+    int32_t         status;
+    TaskP_Object    taskObjectA;
+    TaskP_Object    taskObjectB;
+    TaskP_Params    taskParams;
+
+    TestRtc_TaskFailCountA = 0;
+    TestRtc_TaskFlagB      = 0U;
+
+    initialTime.year   = 2024U;
+    initialTime.month  = 1U;
+    initialTime.day    = 1U;
+    initialTime.hour   = 12U;
+    initialTime.minute = 0U;
+    initialTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &initialTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    SemaphoreP_constructCounting(&TestRtc_OnOffSemObj, 0U, 1U);
+
+    alarmTime          = initialTime;
+    alarmTime.second   = 2U;
+
+    status = RTC_setOn_OffTimerEvent(rtcHandle, &alarmTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    SemaphoreP_constructCounting(&TestRtc_TaskDoneSemaphore, 0U, 2U);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.name      = (char *)"SetTLp";
+    taskParams.stackSize = TEST_RTC_MT_TASK_STACK_SIZE;
+    taskParams.stack     = TestRtc_TaskStackA;
+    taskParams.priority  = TEST_RTC_MT_TASK_PRIORITY_LOW;
+    taskParams.args      = NULL;
+    taskParams.taskMain  = TestRtc_isrSetTimeWorker;
+    TaskP_construct(&taskObjectA, &taskParams);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.name      = (char *)"IsrWait";
+    taskParams.stackSize = TEST_RTC_MT_TASK_STACK_SIZE;
+    taskParams.stack     = TestRtc_TaskStackB;
+    taskParams.priority  = TEST_RTC_MT_TASK_PRIORITY_HIGH;
+    taskParams.args      = NULL;
+    taskParams.taskMain  = TestRtc_isrAlarmWaitWorker;
+    TaskP_construct(&taskObjectB, &taskParams);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
+        SemaphoreP_pend(&TestRtc_TaskDoneSemaphore, TEST_RTC_MT_TIMEOUT_TICKS));
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
+        SemaphoreP_pend(&TestRtc_TaskDoneSemaphore, TEST_RTC_MT_TIMEOUT_TICKS));
+
+    TEST_ASSERT_EQUAL_INT32(0, TestRtc_TaskFailCountA);
+    TEST_ASSERT_EQUAL_UINT32(1U, TestRtc_TaskFlagB);
+
+    status = RTC_getTime(rtcHandle, &verifyTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    TEST_ASSERT_TRUE(verifyTime.hour <= TEST_RTC_MAX_HOUR);
+    TEST_ASSERT_TRUE(verifyTime.minute <= TEST_RTC_MAX_MINUTE);
+    TEST_ASSERT_TRUE(verifyTime.second <= TEST_RTC_MAX_SECOND);
+
+    ClockP_usleep(TEST_RTC_USLEEP_5_MS);
+    TaskP_destruct(&taskObjectA);
+    TaskP_destruct(&taskObjectB);
+    SemaphoreP_destruct(&TestRtc_TaskDoneSemaphore);
+    SemaphoreP_destruct(&TestRtc_OnOffSemObj);
+}
+
+/**
+ * \brief Test two tasks race to open the same RTC instance
+ *
+ * Test Category: Multithread
+ *
+ * Ensures CONFIG_RTC0 is closed. Task A and Task B simultaneously
+ * attempt RTC_open(CONFIG_RTC0). Exactly one must succeed (non-NULL)
+ * and the other must fail (NULL). No crash or assertion failure.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Exactly one handle is non-NULL. No crash.
+ */
+static void TestRtc_concurrentOpenAttempt(void *args)
+{
+    RTC_Handle      winnerHandle = NULL;
+    TaskP_Object    taskObjectA;
+    TaskP_Object    taskObjectB;
+    TaskP_Params    taskParams;
+
+    /* Close existing handle to free CONFIG_RTC0 */
+    if (gRTCHandle[CONFIG_RTC0] != NULL)
+    {
+        RTC_close(gRTCHandle[CONFIG_RTC0]);
+        gRTCHandle[CONFIG_RTC0] = NULL;
+    }
+    RTC_deinit();
+    RTC_init();
+
+    TestRtc_RaceHandleA = NULL;
+    TestRtc_RaceHandleB = NULL;
+
+    SemaphoreP_constructCounting(&TestRtc_TaskDoneSemaphore, 0U, 2U);
+    SemaphoreP_constructCounting(&TestRtc_BarrierSemaphore, 0U, 2U);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.name      = (char *)"OpenA";
+    taskParams.stackSize = TEST_RTC_MT_TASK_STACK_SIZE;
+    taskParams.stack     = TestRtc_TaskStackA;
+    taskParams.priority  = TEST_RTC_MT_TASK_PRIORITY_HIGH;
+    taskParams.args      = NULL;
+    taskParams.taskMain  = TestRtc_openRaceWorkerA;
+    TaskP_construct(&taskObjectA, &taskParams);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.name      = (char *)"OpenB";
+    taskParams.stackSize = TEST_RTC_MT_TASK_STACK_SIZE;
+    taskParams.stack     = TestRtc_TaskStackB;
+    taskParams.priority  = TEST_RTC_MT_TASK_PRIORITY_HIGH;
+    taskParams.args      = NULL;
+    taskParams.taskMain  = TestRtc_openRaceWorkerB;
+    TaskP_construct(&taskObjectB, &taskParams);
+
+    /* Release both tasks simultaneously */
+    SemaphoreP_post(&TestRtc_BarrierSemaphore);
+    SemaphoreP_post(&TestRtc_BarrierSemaphore);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
+        SemaphoreP_pend(&TestRtc_TaskDoneSemaphore, TEST_RTC_MT_TIMEOUT_TICKS));
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
+        SemaphoreP_pend(&TestRtc_TaskDoneSemaphore, TEST_RTC_MT_TIMEOUT_TICKS));
+
+    /* Exactly one must be non-NULL */
+    TEST_ASSERT_TRUE(
+        ((TestRtc_RaceHandleA != NULL) && (TestRtc_RaceHandleB == NULL)) ||
+        ((TestRtc_RaceHandleA == NULL) && (TestRtc_RaceHandleB != NULL)));
+
+    /* Close the winning handle */
+    winnerHandle = (TestRtc_RaceHandleA != NULL) ?
+                    TestRtc_RaceHandleA : TestRtc_RaceHandleB;
+    RTC_close(winnerHandle);
+
+    ClockP_usleep(TEST_RTC_USLEEP_5_MS);
+    TaskP_destruct(&taskObjectA);
+    TaskP_destruct(&taskObjectB);
+    SemaphoreP_destruct(&TestRtc_TaskDoneSemaphore);
+    SemaphoreP_destruct(&TestRtc_BarrierSemaphore);
+
+    /* Restore for subsequent tests */
+    RTC_deinit();
+    RTC_init();
+    gRTCHandle[CONFIG_RTC0] = RTC_open(CONFIG_RTC0, &gRTCParams[CONFIG_RTC0]);
+    TEST_ASSERT_NOT_NULL(gRTCHandle[CONFIG_RTC0]);
+}
+
+/**
+ * \brief Test two tasks perform rapid parallel getTime reads
+ *
+ * Test Category: Multithread
+ *
+ * Sets RTC time to 12:00:00. Two tasks each perform 1000 getTime calls
+ * with no delay. Verifies all calls succeed, no invalid fields, and
+ * values are monotonically non-decreasing within each task.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput All 2000 reads succeed. No invalid fields. Each
+ *                 task's sequence is monotonically non-decreasing.
+ */
+static void TestRtc_highFrequencyParallelGetTime(void *args)
+{
+    RTC_Handle      rtcHandle = gRTCHandle[CONFIG_RTC0];
+    RTC_Time        initialTime;
+    int32_t         status;
+    TaskP_Object    taskObjectA;
+    TaskP_Object    taskObjectB;
+    TaskP_Params    taskParams;
+
+    TestRtc_TaskFailCountA = 0;
+    TestRtc_TaskFailCountB = 0;
+    TestRtc_TaskFlagA      = 0U;
+    TestRtc_TaskFlagB      = 0U;
+
+    initialTime.year   = 2024U;
+    initialTime.month  = 6U;
+    initialTime.day    = 15U;
+    initialTime.hour   = 12U;
+    initialTime.minute = 0U;
+    initialTime.second = 0U;
+
+    status = RTC_setTime(rtcHandle, &initialTime);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    SemaphoreP_constructCounting(&TestRtc_TaskDoneSemaphore, 0U, 2U);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.name      = (char *)"ParA";
+    taskParams.stackSize = TEST_RTC_MT_TASK_STACK_SIZE;
+    taskParams.stack     = TestRtc_TaskStackA;
+    taskParams.priority  = TEST_RTC_MT_TASK_PRIORITY_HIGH;
+    taskParams.args      = NULL;
+    taskParams.taskMain  = TestRtc_parallelGetTimeWorkerA;
+    TaskP_construct(&taskObjectA, &taskParams);
+
+    TaskP_Params_init(&taskParams);
+    taskParams.name      = (char *)"ParB";
+    taskParams.stackSize = TEST_RTC_MT_TASK_STACK_SIZE;
+    taskParams.stack     = TestRtc_TaskStackB;
+    taskParams.priority  = TEST_RTC_MT_TASK_PRIORITY_HIGH;
+    taskParams.args      = NULL;
+    taskParams.taskMain  = TestRtc_parallelGetTimeWorkerB;
+    TaskP_construct(&taskObjectB, &taskParams);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
+        SemaphoreP_pend(&TestRtc_TaskDoneSemaphore, TEST_RTC_MT_TIMEOUT_TICKS));
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
+        SemaphoreP_pend(&TestRtc_TaskDoneSemaphore, TEST_RTC_MT_TIMEOUT_TICKS));
+
+    TEST_ASSERT_EQUAL_INT32(0, TestRtc_TaskFailCountA);
+    TEST_ASSERT_EQUAL_INT32(0, TestRtc_TaskFailCountB);
+    TEST_ASSERT_EQUAL_UINT32(0U, TestRtc_TaskFlagA);
+    TEST_ASSERT_EQUAL_UINT32(0U, TestRtc_TaskFlagB);
+
+    ClockP_usleep(TEST_RTC_USLEEP_5_MS);
+    TaskP_destruct(&taskObjectA);
+    TaskP_destruct(&taskObjectB);
+    SemaphoreP_destruct(&TestRtc_TaskDoneSemaphore);
+}
+
+#endif /* ENABLE_MT_TESTS */

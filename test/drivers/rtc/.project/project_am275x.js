@@ -40,7 +40,6 @@ const libdirs_freertos = {
 const includes_nortos_r5f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/test/unity/",
-        "${MCU_PLUS_SDK_PATH}/test/drivers/gpio/am275x-evm",
     ],
 };
 
@@ -76,6 +75,12 @@ const lnkfiles = {
         "linker.cmd",
     ]
 };
+
+const defines_r5f_freertos = {
+    common:[
+        "ENABLE_MT_TESTS",
+    ]
+}
 
 const syscfgfile = "../example.syscfg";
 
@@ -142,8 +147,14 @@ const robot_template = {
 };
 
 const buildOptionCombos = [
-    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
+    { device: device, cpu: "r5fss0-1", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
+    { device: device, cpu: "r5fss1-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
+    { device: device, cpu: "r5fss1-1", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
+    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
+    { device: device, cpu: "r5fss0-1", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
+    { device: device, cpu: "r5fss1-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
+    { device: device, cpu: "r5fss1-1", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -172,6 +183,7 @@ function getComponentBuildProperty(buildOption) {
     if(buildOption.cpu.match(/r5f*/)) {
         if(buildOption.os.match(/freertos*/) )
         {
+            build_property.defines = defines_r5f_freertos;
             build_property.includes = includes_freertos_r5f;
             build_property.libdirs = libdirs_freertos;
             build_property.libs = libs_freertos_r5f;

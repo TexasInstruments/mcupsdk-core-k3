@@ -121,16 +121,12 @@ LIBS_NAME = \
 	libc.a \
 	libsysbm.a \
 
-LIBS_PREBUILD_NAME = \
-
 LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	${CG_TOOL_ROOT}/lib \
-
-LIBS_PREBUILD_PATH_NAME = \
 
 FILES := $(FILES_common) $(FILES_$(PROFILE))
 ASMFILES := $(ASMFILES_common) $(ASMFILES_$(PROFILE))
@@ -139,9 +135,7 @@ CFLAGS := $(CFLAGS_common) $(CFLAGS_$(PROFILE))
 DEFINES := $(DEFINES_common) $(DEFINES_$(PROFILE))
 INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
 LIBS := $(LIBS_common) $(LIBS_$(PROFILE))
-LIBS_PREBUILD := $(LIBS_PREBUILD_common) $(LIBS_PREBUILD_$(PROFILE))
 LIBS_PATH := $(LIBS_PATH_common) $(LIBS_PATH_$(PROFILE))
-LIBS_PREBUILD_PATH := $(LIBS_PREBUILD_PATH_common) $(LIBS_PREBUILD_PATH_$(PROFILE))
 LFLAGS := $(LFLAGS_common) $(LFLAGS_$(PROFILE))
 LNKOPTFLAGS := $(LNKOPTFLAGS_common) $(LNKOPTFLAGS_$(PROFILE))
 LNK_FILES := $(LNK_FILES_common) $(LNK_FILES_$(PROFILE))
@@ -158,11 +152,11 @@ vpath %.lib $(LIBS_PATH_NAME)
 vpath %.a $(LIBS_PATH_NAME)
 
 $(OBJDIR)/%.obj %.obj: %.c
-	@echo  Compiling: am275x:r5fss0-0:nortos:ti-arm-clang $(OUTNAME): $<
+	@echo  Compiling: am275x:r5fss1-1:nortos:ti-arm-clang $(OUTNAME): $<
 	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -o $(OBJDIR)/$@ $<
 
 $(OBJDIR)/%.obj %.obj: %.S
-	@echo  Compiling: am275x:r5fss0-0:nortos:ti-arm-clang $(LIBNAME): $<
+	@echo  Compiling: am275x:r5fss1-1:nortos:ti-arm-clang $(LIBNAME): $<
 	$(CC) -c $(CFLAGS) -o $(OBJDIR)/$@ $<
 
 all: $(TARGETS)
@@ -176,13 +170,13 @@ SYSCFG_GEN_FILES+=generated/ti_board_open_close.c generated/ti_board_open_close.
 
 $(OUTNAME): syscfg $(SYSCFG_GEN_FILES) $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 	@echo  .
-	@echo  Linking: am275x:r5fss0-0:nortos:ti-arm-clang $@ ...
-	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PREBUILD_PATH) $(LIBS_PATH) -Wl,-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS_PREBUILD) $(LIBS) $(LNK_FILES)
-	@echo  Linking: am275x:r5fss0-0:nortos:ti-arm-clang $@ Done !!!
+	@echo  Linking: am275x:r5fss1-1:nortos:ti-arm-clang $@ ...
+	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PATH) -Wl,-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) $(LNK_FILES)
+	@echo  Linking: am275x:r5fss1-1:nortos:ti-arm-clang $@ Done !!!
 	@echo  .
 
 clean:
-	@echo  Cleaning: am275x:r5fss0-0:nortos:ti-arm-clang $(OUTNAME) ...
+	@echo  Cleaning: am275x:r5fss1-1:nortos:ti-arm-clang $(OUTNAME) ...
 	$(RMDIR) $(OBJDIR)
 	$(RM) $(OUTNAME)
 	$(RM) $(BOOTIMAGE_NAME)
@@ -193,7 +187,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am275x:r5fss0-0:nortos:ti-arm-clang test_rtc ...
+	@echo  Scrubing: am275x:r5fss1-1:nortos:ti-arm-clang test_rtc ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
@@ -222,10 +216,10 @@ $(SYSCFG_GEN_FILES): syscfg
 
 syscfg: ../example.syscfg
 	@echo Generating SysConfig files ...
-	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM275x --context r5fss0-0 --part AM2754 --package ANJ --output generated/ ../example.syscfg
+	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM275x --context r5fss1-1 --part AM2754 --package ANJ --output generated/ ../example.syscfg
 
 syscfg-gui:
-	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device AM275x --context r5fss0-0 --part AM2754 --package ANJ --output generated/  ../example.syscfg
+	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device AM275x --context r5fss1-1 --part AM2754 --package ANJ --output generated/  ../example.syscfg
 
 #
 # Generation of boot image which can be loaded by Secondary Boot Loader (SBL)
@@ -263,12 +257,12 @@ else
 endif
 
 MULTI_CORE_IMAGE_PARAMS = \
-    $(BOOTIMAGE_CORE_ID_r5fss0-0):$(OUTNAME) \
+    $(BOOTIMAGE_CORE_ID_r5fss1-1):$(OUTNAME) \
 
 MCELF_XIP_RANGE?=0x60100000:0x60200000
 
 $(BOOTIMAGE_NAME): $(OUTNAME)
-	@echo  Boot image: am275x:r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ ...
+	@echo  Boot image: am275x:r5fss1-1:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ ...
 ifneq ($(OS),Windows_NT)
 	$(CHMOD) a+x $(XIPGEN_CMD)
 endif
@@ -278,9 +272,9 @@ endif
     #   Authentication type 0 with load address 0x84000000
     #
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS) --keyversion $(VERSION)
-	@echo  Boot image: am275x:r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ Done !!!
+	@echo  Boot image: am275x:r5fss1-1:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ Done !!!
 	@echo  .
-	@echo  Boot image: am275x:r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
+	@echo  Boot image: am275x:r5fss1-1:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
 	@echo  .
 
 $(BOOTIMAGE_NAME_HS): $(BOOTIMAGE_NAME)
@@ -288,13 +282,19 @@ ifeq ($(DEVICE_TYPE), HS)
 # Sign the appimage using appimage signing script
 ifeq ($(ENC_ENABLED),no)
 	@echo Boot image signing: Encryption is disabled.
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
+    #
+    #   Authentication type 0 with load address 0x84000000
+    #
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
 else
 	@echo Boot image signing: Encryption is enabled.
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
+    #
+    #   Authentication type 0 with load address 0x84000000
+    #
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_NAME)-enc
 endif
-	@echo  Boot image: am275x:r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
+	@echo  Boot image: am275x:r5fss1-1:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
 	@echo  .
 endif
 -include $(addprefix $(OBJDIR)/, $(DEPS))

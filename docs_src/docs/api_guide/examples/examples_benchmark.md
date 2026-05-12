@@ -13,6 +13,7 @@ This page lists all the examples related to benchmarks of SOC and board peripher
    -# \subpage EXAMPLES_MEMORY_LATENCY_BENCHMARK
    -# \subpage EXAMPLES_BENCHMARKS_XIP_BENCHMARK
    -# \subpage EXAMPLES_BENCHMARKS_HYPERRAM_XIP_BENCHMARK
+   -# \subpage BENCHMARK_SMART_PLACEMENT
 \endcond
 
 \cond  SOC_AM62LX

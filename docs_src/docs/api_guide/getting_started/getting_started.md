@@ -56,6 +56,10 @@ On successful completion of below steps, you would have achieved the following
 - **Step 6:** Flash the "hello world" example on the EVM and boot without CCS, see \subpage GETTING_STARTED_FLASH [**OPTIONAL and is typically needed after all development via CCS is done**]
 \endcond
 
+\cond SOC_AM275X
+- **Step 7:** Getting started with Smart Placement, see \subpage SMART_PLACEMENT_GETTING_STARTED [**OPTIONAL**]
+\endcond
+
 \cond SOC_AM62LX
 - **Step 4:** Build a "hello world" example for the EVM, see \subpage GETTING_STARTED_BUILD
 

@@ -105,7 +105,7 @@
 
 #define UART_EFR2                             (0x8CU)
 #define UART_EFR2_TIMEOUT_BEHAVE_SHIFT        (0x6U)
-#define UART_EFR2_TIMEOUT_BEHAVE_MASK         (0x6U)
+#define UART_EFR2_TIMEOUT_BEHAVE_MASK         (0x40U)
 
 /* ========================================================================== */
 /*                         Structures and Enums                               */

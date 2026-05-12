@@ -19,8 +19,6 @@ else
 	PYTHON=python3
 endif
 
-ATF_INTEGRATED_BOOT?=yes
-
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
@@ -39,14 +37,9 @@ TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
 endif
-ATF_LOAD_ADDR:=0x80000000
-ATF_OUTNAME:=bl31.a53ss0-0.$(PROFILE).out
-ATF_RPRC_NAME:=bl31.a53ss0-0.$(PROFILE).rprc
-ATF_BIN_NAME:=bl31.a53ss0-0.$(PROFILE).bin
-ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/lib/soc/am62x
 
 FILES_common := \
-	test_eqep.c \
+	test_eqep_smp.c \
 	test_eqep_pattern_gen.c \
 	main.c \
 	ti_drivers_config.c \
@@ -65,13 +58,20 @@ FILES_PATH_common = \
 INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
-	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53 \
-	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53 \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable_smp/GCC/ARM_CA53 \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53-smp \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include/private \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include/portable \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
 	-Igenerated \
 
 DEFINES_common := \
 	-DSOC_AM62X \
+	-DOS_FREERTOS \
+	-DSMP_FREERTOS \
+	-DSMP_QUADCORE_FREERTOS \
 
 CFLAGS_common := \
 	-mcpu=cortex-a53+fp+simd \
@@ -88,7 +88,6 @@ CFLAGS_common := \
 	-Wno-unused-but-set-variable \
 	-fdata-sections \
 	-ffunction-sections \
-	-DENABLE_MT_TESTS \
 	-Wno-error \
 	-Wno-unused-but-set-variable \
 
@@ -109,7 +108,7 @@ LIBS_PATH_common = \
 	-L$(CGT_GCC_AARCH64_PATH)/lib \
 
 LIBS_common = \
-	-l:freertos.am62x.a53.gcc-aarch64.${ConfigName}.lib \
+	-l:freertos.am62x.a53-smp.gcc-aarch64.${ConfigName}.lib \
 	-l:drivers.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 	-l:unity.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 	-l:board.am62x.a53.gcc-aarch64.${ConfigName}.lib \
@@ -126,7 +125,7 @@ LFLAGS_common = \
 
 
 LIBS_NAME = \
-	freertos.am62x.a53.gcc-aarch64.${ConfigName}.lib \
+	freertos.am62x.a53-smp.gcc-aarch64.${ConfigName}.lib \
 	drivers.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 	unity.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 	board.am62x.a53.gcc-aarch64.${ConfigName}.lib \
@@ -161,11 +160,11 @@ vpath %.lib $(LIBS_PATH_NAME)
 vpath %.a $(LIBS_PATH_NAME)
 
 $(OBJDIR)/%.obj %.obj: %.c
-	@echo  Compiling: am62x:a53ss0-0:freertos:gcc-aarch64 $(OUTNAME): $<
+	@echo  Compiling: am62x:a53ss0-0:freertos-smp:gcc-aarch64 $(OUTNAME): $<
 	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -MT $@ -o $(OBJDIR)/$@ $<
 
 $(OBJDIR)/%.obj %.obj: %.S
-	@echo  Compiling: am62x:a53ss0-0:freertos:gcc-aarch64 $(LIBNAME): $<
+	@echo  Compiling: am62x:a53ss0-0:freertos-smp:gcc-aarch64 $(LIBNAME): $<
 	$(CC) -c -x assembler-with-cpp $(CFLAGS) $(INCLUDES) $(DEFINES) -o $(OBJDIR)$@ $<
 
 all: $(TARGETS)
@@ -179,13 +178,13 @@ SYSCFG_GEN_FILES+=generated/ti_board_open_close.c generated/ti_board_open_close.
 
 $(OUTNAME): syscfg $(SYSCFG_GEN_FILES) $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 	@echo  .
-	@echo  Linking: am62x:a53ss0-0:freertos:gcc-aarch64 $@ ...
+	@echo  Linking: am62x:a53ss0-0:freertos-smp:gcc-aarch64 $@ ...
 	$(LNK) $(LIBS_PATH) -Wl,-Map=$(OUTNAME:%.out=%.map) -o $@ -Wl,--start-group $(LFLAGS) $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) -Wl,--end-group -Wl,-T,$(LNK_FILES)
-	@echo  Linking: am62x:a53ss0-0:freertos:gcc-aarch64 $@ Done !!!
+	@echo  Linking: am62x:a53ss0-0:freertos-smp:gcc-aarch64 $@ Done !!!
 	@echo  .
 
 clean:
-	@echo  Cleaning: am62x:a53ss0-0:freertos:gcc-aarch64 $(OUTNAME) ...
+	@echo  Cleaning: am62x:a53ss0-0:freertos-smp:gcc-aarch64 $(OUTNAME) ...
 	$(RMDIR) $(OBJDIR)
 	$(RM) $(OUTNAME)
 	$(RM) $(BOOTIMAGE_NAME)
@@ -198,7 +197,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62x:a53ss0-0:freertos:gcc-aarch64 test_eqep ...
+	@echo  Scrubing: am62x:a53ss0-0:freertos-smp:gcc-aarch64 test_eqep ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
@@ -257,6 +256,7 @@ BOOTIMAGE_CORE_ID_r5fss0-0 = 4
 BOOTIMAGE_CORE_ID_m4fss0-0 = 5
 BOOTIMAGE_CORE_ID_hsm-m4fss0-0 = 6
 BOOTIMAGE_CORE_ID_load_only = 21
+BOOTIMAGE_CORE_ID_freertos-smp = 100
 SBL_RUN_ADDRESS=0x43C00000
 SBL_DEV_ID=55
 
@@ -270,28 +270,17 @@ else
   XIPGEN_CMD=$(MCU_PLUS_SDK_PATH)/tools/boot/xipGen/xipGen.out
 endif
 
-ifeq ($(ATF_INTEGRATED_BOOT), yes)
 MULTI_CORE_IMAGE_PARAMS = \
-	$(ATF_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
-	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_load_only) \
+	    $(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_freertos-smp) \
 
-else
-MULTI_CORE_IMAGE_PARAMS = \
-	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
-
-endif
 
 MULTI_CORE_IMAGE_PARAMS_XIP = \
-	$(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
+	    $(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_freertos-smp) \
 
 $(BOOTIMAGE_NAME): $(OUTNAME)
-	@echo  Boot image: am62x:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$@ ...
+	@echo  Boot image: am62x:a53ss0-0:freertos-smp:gcc-aarch64 $(BOOTIMAGE_PATH)/$@ ...
 ifneq ($(OS),Windows_NT)
 	$(CHMOD) a+x $(XIPGEN_CMD)
-endif
-ifeq ($(ATF_INTEGRATED_BOOT), yes)
-	$(LD) -b binary -A aarch64 --oformat elf64-littleaarch64 --section-start=.data=$(ATF_LOAD_ADDR) -e $(ATF_LOAD_ADDR) $(ATF_BUILD_PATH)/$(ATF_BIN_NAME) -o $(ATF_OUTNAME)
-	$(OUTRPRC_CMD) $(ATF_OUTNAME) $(SW_VERSION)>> $(BOOTIMAGE_TEMP_OUT_FILE)
 endif
 	$(OUTRPRC_CMD) $(OUTNAME) $(SW_VERSION)>> $(BOOTIMAGE_TEMP_OUT_FILE)
 	$(COPY) $(BOOTIMAGE_RPRC_NAME) $(BOOTIMAGE_RPRC_NAME_TMP)
@@ -306,13 +295,9 @@ endif
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
-ifeq ($(ATF_INTEGRATED_BOOT), yes)
-	$(RM) $(ATF_OUTNAME)
-	$(RM) $(ATF_RPRC_NAME)
-endif
-	@echo  Boot image: am62x:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$@ Done !!!
+	@echo  Boot image: am62x:a53ss0-0:freertos-smp:gcc-aarch64 $(BOOTIMAGE_PATH)/$@ Done !!!
 	@echo  .
-	@echo  Boot image: am62x:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
+	@echo  Boot image: am62x:a53ss0-0:freertos-smp:gcc-aarch64 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
 	@echo  .
 
 $(BOOTIMAGE_NAME_HS): $(BOOTIMAGE_NAME)
@@ -332,7 +317,7 @@ else
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_NAME)-enc
 endif
-	@echo  Boot image: am62x:a53ss0-0:freertos:gcc-aarch64 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
+	@echo  Boot image: am62x:a53ss0-0:freertos-smp:gcc-aarch64 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
 	@echo  .
 endif
 -include $(addprefix $(OBJDIR)/, $(DEPS))

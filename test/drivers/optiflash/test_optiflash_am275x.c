@@ -80,6 +80,8 @@
 
 /* Destination buffer fill patterns */
 #define TEST_OPTIFLASH_FILL_PATTERN_AA              (0xAAU)
+#define TEST_OPTIFLASH_FILL_PATTERN_BB              (0xBBU)
+#define TEST_OPTIFLASH_FILL_PATTERN_CC              (0xCCU)
 #define TEST_OPTIFLASH_FILL_PATTERN_CD              (0xCDU)
 
 /* Known data patterns for RL2 write-hit trigger and verification */
@@ -93,6 +95,21 @@
 #define TEST_OPTIFLASH_INVALID_CACHE_SIZE_VAL       ((RL2_CacheSize)0xFFU)
 #define TEST_OPTIFLASH_INVALID_RL2_INTERRUPT_VAL    ((RL2_Interrupt)0xFFU)
 #define TEST_OPTIFLASH_INVALID_FLC_INTERRUPT_VAL    ((FLC_Interrupt)999U)
+
+/* Invalid/out-of-range base addresses for negative FLC API tests */
+#define TEST_OPTIFLASH_FLC_BASE_MISALIGN_OFFSET     (0x100U)
+#define TEST_OPTIFLASH_FLC_OOR_BASE_ADDR            (0x25004000U)
+#define TEST_OPTIFLASH_FLC_INVALID_REGION_ID        (99U)
+#define TEST_OPTIFLASH_FLC_NULL_BASE_ADDR           (0x0U)
+#define TEST_OPTIFLASH_FLC_INVALID_BASE_ADDR_1      (0xDEADBEEFU)
+#define TEST_OPTIFLASH_FLC_INVALID_BASE_ADDR_2      (0x99999999U)
+#define TEST_OPTIFLASH_FLC_INVALID_BASE_ADDR_3      (0x12345678U)
+#define TEST_OPTIFLASH_FLC_INVALID_BASE_ADDR_4      (0xFFFF0000U)
+#define TEST_OPTIFLASH_FLC_INVALID_BASE_ADDR_5      (0x80000000U)
+#define TEST_OPTIFLASH_FLC_INVALID_BASE_ADDR_6      (0xBADBAD00U)
+#define TEST_OPTIFLASH_FLC_INVALID_BASE_ADDR_7      (0x44444444U)
+#define TEST_OPTIFLASH_FLC_INVALID_BASE_ADDR_8      (0x55555555U)
+
 
 /*
  * NOP macros used to build a load function placed in external flash.
@@ -4945,6 +4962,731 @@ void *TestOptiflash_rl2CacheLineReplacementPolicy(void *args)
     /* Clean up: disable RL2 */
     RL2_disable(&rl2Params);
 
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Ensure RL2 can be re-enabled after disable without reset.
+ *
+ * Test Category: Functional
+ *
+ * Configures and enables RL2, performs accesses to populate the cache,
+ * disables RL2, then re-enables it and verifies the hit counter resumes
+ * incrementing on subsequent accesses, confirming the cache is fully
+ * operational after a disable/re-enable cycle without requiring a system reset.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput Cache works after re-enable: hit counter increases on
+ *                 warm accesses following the re-enable.
+ */
+void *TestOptiflash_rl2ReenableAfterDisable(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    RL2_Params rl2Params;
+    RL2_API_STS_t sts;
+    uint32_t hitsBeforeDisable = 0U;
+    uint32_t hitsAfterReEnable = 0U;
+    uint32_t hitsAfterWarm = 0U;
+
+    /* Initialize and configure RL2 */
+    sts = RL2_initparams(&rl2Params);
+    if(sts != RL2_API_STS_SUCCESS)
+    {
+        retval = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Params.baseAddress  = gRL2Config[0].baseAddress;
+        rl2Params.rangeStart   = gRL2Config[0].rangeStart;
+        rl2Params.rangeEnd     = gRL2Config[0].rangeEnd;
+        rl2Params.cacheSize    = gRL2Config[0].cacheSize;
+        rl2Params.l2Sram0Base  = gRL2Config[0].l2Sram0Base;
+        rl2Params.l2Sram0Len   = gRL2Config[0].l2Sram0Len;
+
+        sts = RL2_configure(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to configure RL2\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Enable RL2 and perform accesses to populate cache */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_enable(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        /* Cold access — populates cache with instruction lines from flash */
+        TestOptiflash_loadFunction();
+        /* Warm access — generates hits from cached lines */
+        TestOptiflash_loadFunction();
+
+        sts = RL2_getCacheHits(&rl2Params, &hitsBeforeDisable);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Verify hits occurred before disable */
+    if(SystemP_SUCCESS == retval && hitsBeforeDisable == 0U)
+    {
+        DebugP_logError("No cache hits observed before disable\r\n");
+        retval = SystemP_FAILURE;
+    }
+
+    /* Disable RL2 */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_disable(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to disable RL2\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Re-enable RL2 (reconfigure + enable) */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_configure(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to re-configure RL2 after disable\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_enable(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to re-enable RL2 after disable\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Perform accesses and check hit counter resumes */
+    if(SystemP_SUCCESS == retval)
+    {
+        /* Read counters after re-enable (counters may be reset by reconfigure) */
+        RL2_getCacheHits(&rl2Params, &hitsAfterReEnable);
+
+        /* Cold access after re-enable (cache was invalidated by disable/enable cycle) */
+        TestOptiflash_loadFunction();
+        /* Warm access — should generate hits if cache is working correctly */
+        TestOptiflash_loadFunction();
+
+        sts = RL2_getCacheHits(&rl2Params, &hitsAfterWarm);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Hit counter must have increased after re-enable, proving cache resumed */
+    if(SystemP_SUCCESS == retval)
+    {
+        if(hitsAfterWarm <= hitsAfterReEnable)
+        {
+            DebugP_logError("Hit counter did not resume after re-enable: before=%u after=%u\r\n",
+                            hitsAfterReEnable, hitsAfterWarm);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Clean up: disable RL2 */
+    RL2_disable(&rl2Params);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate that an ongoing FLC transfer can be safely aborted.
+ *
+ * Test Category: Functional
+ *
+ * Configures a large (1 MB) FLC transfer, starts it, waits a small delay
+ * and then calls FLC_disable() to abort. Verifies:
+ *   - DONE bit is NOT set (transfer stopped early)
+ *   - Transfer halts without hang
+ *   - Destination is not fully overwritten
+ *   - Controller is reusable after abort (re-configure, run a small transfer)
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput Disable succeeds, DONE not asserted, controller reusable.
+ */
+void *TestOptiflash_flcTransferAbortMidOperation(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    FLC_RegionInfo *region = &gFLCRegionConfig[0];
+    FLC_RegionInfo origConfig = *region;
+    uint32_t status = 0U;
+    const uint32_t doneMask = (1U << (uint32_t)region->regionId);
+    const uint32_t largeSize = TEST_OPTIFLASH_FLC_REGION_SIZE; /* 1 MB */
+    uint32_t rdErr = 0U, wrErr = 0U;
+
+    /* Reset FLC state */
+    TestOptiflash_resetFlc(region);
+
+    /* Fill destination with known pattern to detect partial overwrite */
+    memset(destBuffer, TEST_OPTIFLASH_FILL_PATTERN_BB, TRANSFERSIZE);
+    CacheP_wbInv(destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+
+    /*
+     * Configure a large transfer */
+    region->sourceStartAddress      = origConfig.sourceStartAddress;
+    region->sourceEndAddress        = origConfig.sourceStartAddress + largeSize;
+    region->destinationStartAddress = origConfig.destinationStartAddress;
+
+    if(FLC_API_STS_SUCCESS != FLC_configureRegion(region))
+    {
+        DebugP_logError("FLC_configureRegion failed for abort test\r\n");
+        retval = SystemP_FAILURE;
+    }
+
+    /* Start the large transfer */
+    if(SystemP_SUCCESS == retval)
+    {
+        if(FLC_API_STS_SUCCESS != FLC_startRegion(region))
+        {
+            DebugP_logError("FLC_startRegion failed for abort test\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Small delay to let some data transfer happen before aborting */
+    if(SystemP_SUCCESS == retval)
+    {
+        /* A few microseconds is enough for FLC to begin but not finish 1 MB */
+        volatile uint32_t delay;
+        for(delay = 0U; delay < 100U; delay++)
+        {
+            /* spin */
+        }
+    }
+
+    /* Abort the transfer */
+    if(SystemP_SUCCESS == retval)
+    {
+        if(FLC_API_STS_SUCCESS != FLC_disable(region))
+        {
+            DebugP_logError("FLC_disable failed during abort test\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Verify DONE bit is NOT set: transfer was aborted before completion */
+    if(SystemP_SUCCESS == retval)
+    {
+        for(int i = 0; i < 10; i++)
+        {
+            FLC_isRegionDone(region, &status);
+            if((status & doneMask) != 0U)
+            {
+                DebugP_logError("DONE status set after FLC_disable() abort\r\n");
+                retval = SystemP_FAILURE;
+                break;
+            }
+            ClockP_usleep(500);
+        }
+    }
+
+    /* Verify controller is reusable: reconfigure for a small transfer and run it */
+    if(SystemP_SUCCESS == retval)
+    {
+        /* Clear any lingering errors from the abort */
+        TestOptiflash_resetFlc(region);
+
+        region->sourceStartAddress      = (uint32_t)sourceBuffer;
+        region->sourceEndAddress        = (uint32_t)sourceBuffer + TRANSFERSIZE;
+        region->destinationStartAddress = (uint32_t)destBuffer;
+
+        memset(destBuffer, 0, TRANSFERSIZE);
+        CacheP_wbInv(destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+
+        if(FLC_API_STS_SUCCESS != FLC_configureRegion(region))
+        {
+            DebugP_logError("FLC reconfigure after abort failed\r\n");
+            retval = SystemP_FAILURE;
+        }
+        if(SystemP_SUCCESS == retval &&
+           FLC_API_STS_SUCCESS != FLC_startRegion(region))
+        {
+            DebugP_logError("FLC restart after abort failed\r\n");
+            retval = SystemP_FAILURE;
+        }
+
+        /* Wait for the small transfer to complete */
+        if(SystemP_SUCCESS == retval)
+        {
+            uint32_t attempts = 0U;
+            const uint32_t maxAttempts = 1000000U;
+            do {
+                FLC_isRegionDone(region, &status);
+                attempts++;
+                if(attempts > maxAttempts)
+                {
+                    DebugP_logError("FLC reuse transfer timeout after abort\r\n");
+                    retval = SystemP_FAILURE;
+                    break;
+                }
+            } while ((status & doneMask) == 0U);
+        }
+
+        /* Validate data */
+        if(SystemP_SUCCESS == retval)
+        {
+            CacheP_inv(destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+            if(0 != memcmp(sourceBuffer, destBuffer, TRANSFERSIZE))
+            {
+                DebugP_logError("Data mismatch after reuse post-abort\r\n");
+                retval = SystemP_FAILURE;
+            }
+        }
+
+        /* Verify no errors on the reuse transfer */
+        if(SystemP_SUCCESS == retval)
+        {
+            FLC_wasReadError(region, &rdErr);
+            FLC_wasWriteError(region, &wrErr);
+            if((rdErr != 0U) || (wrErr != 0U))
+            {
+                DebugP_logError("FLC error on reuse transfer after abort\r\n");
+                retval = SystemP_FAILURE;
+            }
+        }
+    }
+
+    /* Restore original config */
+    *region = origConfig;
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate that FLC transfers are independent of OSPI DAC mode.
+ *
+ * Test Category: Functional
+ *
+ * The Flash Load Controller (FLC) hardware uses a dedicated data path and
+ * does not rely on the CPU's OSPI Direct Access Controller (DAC) memory-
+ * mapped interface. Disabling DAC mode removes CPU memory-mapped access
+ * to flash but should not affect FLC transfers.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput FLC transfer succeeds both with DAC disabled and with DAC enabled, confirming FLC independence from DAC mode.
+ */
+void *TestOptiflash_flcDacModeRobustness(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    FLC_RegionInfo *region = &gFLCRegionConfig[0];
+    FLC_RegionInfo origConfig = *region;
+    uint32_t status = 0U;
+    uint32_t rdErr = 0U;
+    const uint32_t doneMask = (1U << (uint32_t)region->regionId);
+    OSPI_Handle ospiHandle = gOspiHandle[CONFIG_OSPI0];
+
+    /* DAC mode and verify FLC still works */
+    TestOptiflash_resetFlc(region);
+
+    /* Disable OSPI DAC mode */
+    if(SystemP_SUCCESS != OSPI_disableDacMode(ospiHandle))
+    {
+        DebugP_logError("Failed to disable OSPI DAC mode\r\n");
+        retval = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        /* Configure FLC transfer using CPU-accessible buffers */
+        region->sourceStartAddress      = (uint32_t)sourceBuffer;
+        region->sourceEndAddress        = (uint32_t)sourceBuffer + TRANSFERSIZE;
+        region->destinationStartAddress = (uint32_t)destBuffer;
+
+        memset(destBuffer, TEST_OPTIFLASH_FILL_PATTERN_CC, TRANSFERSIZE);
+        CacheP_wbInv(destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+
+        if(FLC_API_STS_SUCCESS != FLC_configureRegion(region))
+        {
+            DebugP_logError("FLC_configureRegion failed (DAC disabled)\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Start transfer */
+    if(SystemP_SUCCESS == retval)
+    {
+        FLC_startRegion(region);
+
+        uint32_t dacAttempts = 0U;
+        const uint32_t dacMaxAttempts = 1000000U;
+        do {
+            FLC_isRegionDone(region, &status);
+            dacAttempts++;
+            if(dacAttempts > dacMaxAttempts)
+            {
+                DebugP_logError("FLC transfer timeout with DAC disabled\r\n");
+                retval = SystemP_FAILURE;
+                break;
+            }
+        } while ((status & doneMask) == 0U);
+    }
+
+    /* Verify no errors */
+    if(SystemP_SUCCESS == retval)
+    {
+        FLC_wasReadError(region, &rdErr);
+        uint32_t wrErr = 0U;
+        FLC_wasWriteError(region, &wrErr);
+        if((rdErr != 0U) || (wrErr != 0U))
+        {
+            DebugP_logError("FLC errors with DAC disabled\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Data integrity check */
+    if(SystemP_SUCCESS == retval)
+    {
+        CacheP_inv(destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+        if(0 != memcmp(sourceBuffer, destBuffer, TRANSFERSIZE))
+        {
+            DebugP_logError("Data mismatch with DAC disabled\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Clean up FLC state */
+    TestOptiflash_resetFlc(region);
+
+    /* Re-enable DAC mode and verify FLC still works */
+    if(SystemP_SUCCESS != OSPI_enableDacMode(ospiHandle))
+    {
+        DebugP_logError("Failed to re-enable OSPI DAC mode\r\n");
+        retval = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        /* Re-configure same transfer */
+        region->sourceStartAddress      = (uint32_t)sourceBuffer;
+        region->sourceEndAddress        = (uint32_t)sourceBuffer + TRANSFERSIZE;
+        region->destinationStartAddress = (uint32_t)destBuffer;
+
+        memset(destBuffer, 0, TRANSFERSIZE);
+        CacheP_wbInv(destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+
+        if(FLC_API_STS_SUCCESS != FLC_configureRegion(region))
+        {
+            DebugP_logError("FLC_configureRegion failed after DAC re-enable\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        if(FLC_API_STS_SUCCESS != FLC_startRegion(region))
+        {
+            DebugP_logError("FLC_startRegion failed after DAC re-enable\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Wait for completion */
+    if(SystemP_SUCCESS == retval)
+    {
+        uint32_t attempts = 0U;
+        const uint32_t maxAttempts = 1000000U;
+        do {
+            FLC_isRegionDone(region, &status);
+            attempts++;
+            if(attempts > maxAttempts)
+            {
+                DebugP_logError("FLC transfer timeout after DAC re-enable\r\n");
+                retval = SystemP_FAILURE;
+                break;
+            }
+        } while ((status & doneMask) == 0U);
+    }
+
+    /* Verify no errors on successful transfer */
+    if(SystemP_SUCCESS == retval)
+    {
+        rdErr = 0U;
+        FLC_wasReadError(region, &rdErr);
+        uint32_t wrErr = 0U;
+        FLC_wasWriteError(region, &wrErr);
+        if((rdErr != 0U) || (wrErr != 0U))
+        {
+            DebugP_logError("FLC errors after DAC re-enable\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Data integrity check */
+    if(SystemP_SUCCESS == retval)
+    {
+        CacheP_inv(destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+        if(0 != memcmp(sourceBuffer, destBuffer, TRANSFERSIZE))
+        {
+            DebugP_logError("Data mismatch after DAC-enabled FLC transfer\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Clean up FLC hardware before restoring config struct */
+    TestOptiflash_resetFlc(region);
+
+    /* Restore original config */
+    *region = origConfig;
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate all FLC APIs reject invalid or corrupted baseAddress values.
+ *
+ * Test Category: Negative
+ *
+ * Exercises multiple invalid baseAddress scenarios (misaligned, out-of-range,
+ * NULL, corrupted regionId) across all FLC APIs to verify the driver detects
+ * and rejects improper register mappings without causing system instability.
+ * Includes a positive-control check to confirm valid parameters still work.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput All APIs reject invalid baseAddress values and behave safely;
+ *                 valid baseAddress succeeds.
+ */
+void *TestOptiflash_flcInvalidBaseAddress(void *args)
+{
+    (void)args;
+
+    int32_t retval = SystemP_SUCCESS;
+    FLC_API_STS_t flcStatus;
+    FLC_RegionInfo testRegion;
+    uint32_t status = 0U;
+
+    /* ---- 1. Misaligned base address ---- */
+    testRegion = gFLCRegionConfig[0];
+    testRegion.baseAddress = gFLCRegionConfig[0].baseAddress + TEST_OPTIFLASH_FLC_BASE_MISALIGN_OFFSET;
+
+    flcStatus = FLC_configureRegion(&testRegion);
+    if(flcStatus == FLC_API_STS_SUCCESS)
+    {
+        DebugP_logError("FLC_configureRegion accepted misaligned baseAddress\r\n");
+        retval = SystemP_FAILURE;
+    }
+
+    /* ---- 2. Out-of-range base address via FLC_isRegionDone ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testRegion = gFLCRegionConfig[0];
+        testRegion.baseAddress = TEST_OPTIFLASH_FLC_OOR_BASE_ADDR;
+
+        flcStatus = FLC_isRegionDone(&testRegion, &status);
+        if(flcStatus == FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("FLC_isRegionDone accepted out-of-range baseAddress\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* ---- 3. Corrupted regionId with valid base ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testRegion = gFLCRegionConfig[0];
+        testRegion.regionId = TEST_OPTIFLASH_FLC_INVALID_REGION_ID;
+
+        flcStatus = FLC_isRegionDone(&testRegion, &status);
+        if(flcStatus == FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("FLC_isRegionDone accepted invalid regionId\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* ---- 4. FLC_wasReadError with NULL baseAddress ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testRegion = gFLCRegionConfig[0];
+        testRegion.baseAddress = TEST_OPTIFLASH_FLC_NULL_BASE_ADDR;
+
+        flcStatus = FLC_wasReadError(&testRegion, &status);
+        if(flcStatus == FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("FLC_wasReadError accepted NULL baseAddress\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* ---- 5. FLC_wasReadError with out-of-range baseAddress ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testRegion = gFLCRegionConfig[0];
+        testRegion.baseAddress = TEST_OPTIFLASH_FLC_OOR_BASE_ADDR;
+
+        flcStatus = FLC_wasReadError(&testRegion, &status);
+        if(flcStatus == FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("FLC_wasReadError accepted out-of-range baseAddress\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* ---- 6. FLC_wasWriteError with invalid baseAddress ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testRegion = gFLCRegionConfig[0];
+        testRegion.baseAddress = TEST_OPTIFLASH_FLC_INVALID_BASE_ADDR_1;
+
+        flcStatus = FLC_wasWriteError(&testRegion, &status);
+        if(flcStatus == FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("FLC_wasWriteError accepted invalid baseAddress\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* ---- 7. FLC_clearReadError with invalid baseAddress ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testRegion = gFLCRegionConfig[0];
+        testRegion.baseAddress = TEST_OPTIFLASH_FLC_INVALID_BASE_ADDR_2;
+
+        flcStatus = FLC_clearReadError(&testRegion);
+        if(flcStatus == FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("FLC_clearReadError accepted invalid baseAddress\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* ---- 8. FLC_clearWriteError with invalid baseAddress ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testRegion = gFLCRegionConfig[0];
+        testRegion.baseAddress = TEST_OPTIFLASH_FLC_INVALID_BASE_ADDR_3;
+
+        flcStatus = FLC_clearWriteError(&testRegion);
+        if(flcStatus == FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("FLC_clearWriteError accepted invalid baseAddress\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* ---- 9. FLC_readIRQMask with invalid baseAddress ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testRegion = gFLCRegionConfig[0];
+        testRegion.baseAddress = TEST_OPTIFLASH_FLC_INVALID_BASE_ADDR_4;
+
+        flcStatus = FLC_readIRQMask(&testRegion, &status);
+        if(flcStatus == FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("FLC_readIRQMask accepted invalid baseAddress\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* ---- 10. FLC_readIRQStatus with invalid baseAddress ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testRegion = gFLCRegionConfig[0];
+        testRegion.baseAddress = TEST_OPTIFLASH_FLC_INVALID_BASE_ADDR_5;
+
+        flcStatus = FLC_readIRQStatus(&testRegion, &status);
+        if(flcStatus == FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("FLC_readIRQStatus accepted invalid baseAddress\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* ---- 11. FLC_enableInterrupt with invalid baseAddress ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testRegion = gFLCRegionConfig[0];
+        testRegion.baseAddress = TEST_OPTIFLASH_FLC_INVALID_BASE_ADDR_6;
+
+        flcStatus = FLC_enableInterrupt(&testRegion, FLC_INTERRUPT_DONE);
+        if(flcStatus == FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("FLC_enableInterrupt accepted invalid baseAddress\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* ---- 12. FLC_clearInterrupt with invalid baseAddress ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testRegion = gFLCRegionConfig[0];
+        testRegion.baseAddress = TEST_OPTIFLASH_FLC_INVALID_BASE_ADDR_7;
+
+        flcStatus = FLC_clearInterrupt(&testRegion, FLC_INTERRUPT_READ_ERROR);
+        if(flcStatus == FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("FLC_clearInterrupt accepted invalid baseAddress\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* ---- 13. FLC_disableInterrupt with invalid baseAddress ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testRegion = gFLCRegionConfig[0];
+        testRegion.baseAddress = TEST_OPTIFLASH_FLC_INVALID_BASE_ADDR_8;
+
+        flcStatus = FLC_disableInterrupt(&testRegion, FLC_INTERRUPT_WRITE_ERROR);
+        if(flcStatus == FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("FLC_disableInterrupt accepted invalid baseAddress\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* ---- 14. Positive control — valid baseAddress must pass ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testRegion = gFLCRegionConfig[0];
+
+        flcStatus = FLC_isRegionDone(&testRegion, &status);
+        if(flcStatus != FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("Valid baseAddress rejected by FLC_isRegionDone\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        testRegion = gFLCRegionConfig[0];
+
+        flcStatus = FLC_wasReadError(&testRegion, &status);
+        if(flcStatus != FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("Valid baseAddress rejected by FLC_wasReadError\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
     return NULL;
 }

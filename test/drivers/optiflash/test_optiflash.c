@@ -117,6 +117,10 @@ void test_main(void *args)
     RUN_TEST((UnityTestFunction)TestOptiflash_rl2IRQMaskValidationFunc, 10892, NULL);
     RUN_TEST((UnityTestFunction)TestOptiflash_rl2ReadIRQStatusValidation, 10893, NULL);
     RUN_TEST((UnityTestFunction)TestOptiflash_rl2CacheLineReplacementPolicy, 10894, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_rl2ReenableAfterDisable, 10895, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_flcTransferAbortMidOperation, 10896, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_flcDacModeRobustness, 10897, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_flcInvalidBaseAddress, 10902, NULL);
 
     UNITY_END();
 

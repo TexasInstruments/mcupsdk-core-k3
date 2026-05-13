@@ -84,5 +84,9 @@ void *TestOptiflash_RL2WriteErrorInterrupt(void *args);
 void *TestOptiflash_rl2IRQMaskValidationFunc(void *args);
 void *TestOptiflash_rl2ReadIRQStatusValidation(void *args);
 void *TestOptiflash_rl2CacheLineReplacementPolicy(void *args);
+void *TestOptiflash_rl2ReenableAfterDisable(void *args);
+void *TestOptiflash_flcTransferAbortMidOperation(void *args);
+void *TestOptiflash_flcDacModeRobustness(void *args);
+void *TestOptiflash_flcInvalidBaseAddress(void *args);
 
 #endif

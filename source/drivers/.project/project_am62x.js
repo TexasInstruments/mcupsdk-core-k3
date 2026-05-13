@@ -369,6 +369,13 @@ const defines_a53 = {
     common: [
         "AMP_FREERTOS_A53",
         "ENABLE_PHY_TUNING_SOC_BUILD",
+        "SCICLIENT_INTERRUPT_MODE",
+    ]
+};
+
+const defines_m4f = {
+    common:[
+        "SCICLIENT_INTERRUPT_MODE",
     ]
 };
 
@@ -396,6 +403,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.filedirs = filedirs;
     if(buildOption.cpu.match(/m4f*/)) {
         build_property.files = files_m4f;
+        build_property.defines = defines_m4f;
     }
     if(buildOption.cpu.match(/r5f*/)){
         build_property.files=files_r5f;

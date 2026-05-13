@@ -9,6 +9,12 @@ const files = {
     ],
 };
 
+const defines_m4f = {
+    common:[
+        "SCICLIENT_INTERRUPT_MODE",
+    ]
+}
+
 /* Relative to where the makefile will be generated
  * Typically at <example_folder>/<BOARD>/<core_os_combo>/<compiler>
  */
@@ -119,6 +125,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.syscfgfile = syscfgfile;
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
     build_property.includes = includes;
+    build_property.defines =  defines_m4f;
     if(buildOption.cpu.match(/m4f*/)) {
         build_property.libs = libs_m4f;
         build_property.templates = templates_nortos_m4f;

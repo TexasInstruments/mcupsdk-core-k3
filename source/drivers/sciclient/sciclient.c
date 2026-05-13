@@ -184,6 +184,7 @@ static void Sciclient_recvMessage(uint32_t rxThread,
  */
 static void Sciclient_secProxyFlush(uint32_t thread);
 
+#if defined(SCICLIENT_INTERRUPT_MODE)
 /**
  *  \brief   Interrupt Service Routine for secure proxy response notification
  *
@@ -212,6 +213,7 @@ static int32_t Sciclient_setupRespIntr(uint32_t contextId,
  *  \return  None
  */
 static void Sciclient_unregisterIntr(void);
+#endif
 
 /* ========================================================================== */
 /*                            Extern Functions                                */
@@ -238,6 +240,7 @@ static Sciclient_ServiceHandle_t Sciclient_handle = {
     .coreId = CSL_CORE_ID_INVALID
 };
 
+#if defined(SCICLIENT_INTERRUPT_MODE)
 /**
  *   \brief Static storage for semaphore objects used in interrupt mode.
  *          These are pointed to by Sciclient_handle.semHandles[]
@@ -249,6 +252,7 @@ static SemaphoreP_Object Sciclient_semObjects[SCICLIENT_MAX_QUEUE_SIZE];
  *          These are pointed to by Sciclient_handle.respIntr[]
  */
 static HwiP_Object Sciclient_respIntrObj[SCICLIENT_MAX_RESP_INTR_HANDLER];
+#endif
 
 /**
  *   \brief Semaphore to serialize concurrent Sciclient_service() calls.
@@ -319,10 +323,6 @@ int32_t Sciclient_init(uint32_t coreId)
 
             /* Initialize operation mode to polling */
             Sciclient_handle.opModeFlag = SCICLIENT_SERVICE_OPERATION_MODE_POLLED;
-
-#ifdef ENABLE_SCICLIENT_INTERRUPT_MODE
-            status = Sciclient_updateOperModeToInterrupt();
-#endif
         }
         else
         {
@@ -349,12 +349,14 @@ int32_t Sciclient_deinit(void)
     }
     else
     {
+#if defined(SCICLIENT_INTERRUPT_MODE)
         /* Unregister interrupt if it was configured */
         if (Sciclient_handle.opModeFlag ==
             SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT)
         {
             Sciclient_unregisterIntr();
         }
+#endif
 
         Sciclient_handle.currSeqId = 0;
         Sciclient_handle.coreId = CSL_CORE_ID_INVALID;
@@ -367,6 +369,7 @@ int32_t Sciclient_deinit(void)
     return(status);
 }
 
+#if defined(SCICLIENT_INTERRUPT_MODE)
 int32_t Sciclient_updateOperModeToInterrupt(void)
 {
     DebugP_log("\r\nSciclient: Attempting to initialize in interrupt mode\r\n");
@@ -465,21 +468,6 @@ int32_t Sciclient_updateOperModeToInterrupt(void)
     return(status);
 }
 
-void Sciclient_updateOperModeToPolled(void)
-{
-    /* Check if sciclient is initialized */
-    if (Sciclient_handle.coreId != CSL_CORE_ID_INVALID)
-    {
-        if (Sciclient_handle.opModeFlag ==
-            SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT)
-        {
-            Sciclient_unregisterIntr();
-        }
-        Sciclient_handle.opModeFlag =
-            SCICLIENT_SERVICE_OPERATION_MODE_POLLED;
-    }
-}
-
 void Sciclient_disableIntr(void)
 {
     if (Sciclient_handle.opModeFlag ==
@@ -527,6 +515,24 @@ void Sciclient_enableIntr(void)
                 gSciclientMap[Sciclient_handle.secureContextId]
                     .respIntrNum);
         }
+    }
+}
+#endif
+
+void Sciclient_updateOperModeToPolled(void)
+{
+    /* Check if sciclient is initialized */
+    if (Sciclient_handle.coreId != CSL_CORE_ID_INVALID)
+    {
+#if defined(SCICLIENT_INTERRUPT_MODE)
+        if (Sciclient_handle.opModeFlag ==
+            SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT)
+        {
+            Sciclient_unregisterIntr();
+        }
+#endif
+        Sciclient_handle.opModeFlag =
+            SCICLIENT_SERVICE_OPERATION_MODE_POLLED;
     }
 }
 
@@ -1408,6 +1414,7 @@ static void Sciclient_secProxyFlush(uint32_t thread)
     return;
 }
 
+#if defined(SCICLIENT_INTERRUPT_MODE)
 static void Sciclient_ISR(uintptr_t arg)
 {
     uint32_t contextId = (uint32_t)arg;
@@ -1581,3 +1588,4 @@ static void Sciclient_unregisterIntr(void)
         Sciclient_handle.semStatus[i] = 0;
     }
 }
+#endif

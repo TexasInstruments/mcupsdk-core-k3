@@ -67,6 +67,7 @@ INCLUDES_common := \
 
 DEFINES_common := \
 	-DSOC_AM62X \
+	-DSCICLIENT_INTERRUPT_MODE \
 
 CFLAGS_common := \
 	-mcpu=cortex-m4 \

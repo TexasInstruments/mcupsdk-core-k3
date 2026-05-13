@@ -15,6 +15,7 @@ const files = {
 const defines_dm_r5 = {
     common: [
         "ENABLE_SCICLIENT_DIRECT",
+        "SCICLIENT_INTERRUPT_MODE",
     ],
 }
 

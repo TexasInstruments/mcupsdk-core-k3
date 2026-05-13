@@ -402,12 +402,14 @@ const defines_r5 = {
     common: [
         "MCU_R5",
         "ENABLE_PHY_TUNING_SOC_BUILD",
+        "SCICLIENT_INTERRUPT_MODE",
     ],
 };
 
 const defines_c7x = {
     common: [
         "ENABLE_PHY_TUNING_SOC_BUILD",
+        "SCICLIENT_INTERRUPT_MODE",
     ],
 };
 

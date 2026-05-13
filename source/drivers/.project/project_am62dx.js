@@ -358,12 +358,14 @@ const defines_r5 = {
         "SOC_AM62DX",
         "MCU_R5",
         "ENABLE_PHY_TUNING_SOC_BUILD",
+        "SCICLIENT_INTERRUPT_MODE",
     ],
 };
 
 const defines_common = {
     common:[
         "SOC_AM62DX",
+        "SCICLIENT_INTERRUPT_MODE",
     ]
 };
 
@@ -372,6 +374,7 @@ const defines_a53 = {
         "SOC_AM62DX",
         "AMP_FREERTOS_A53",
         "ENABLE_PHY_TUNING_SOC_BUILD",
+        "SCICLIENT_INTERRUPT_MODE",
     ]
 };
 

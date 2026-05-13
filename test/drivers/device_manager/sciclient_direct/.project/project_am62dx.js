@@ -16,6 +16,7 @@ const defines_dm_r5 = {
     common: [
         "SOC_AM62DX",
         "ENABLE_SCICLIENT_DIRECT",
+        "SCICLIENT_INTERRUPT_MODE",
     ],
 }
 

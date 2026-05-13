@@ -72,6 +72,7 @@ DEFINES_common := \
 	-DSOC_AM62PX \
 	-DENABLE_SCICLIENT_DIRECT \
 	-DR5F_CORE \
+	-DSCICLIENT_INTERRUPT_MODE \
 
 CFLAGS_common := \
 	-mcpu=cortex-r5 \

@@ -71,6 +71,7 @@ const defines = {
     common:[
         "ENABLE_SCICLIENT_DIRECT",
         "R5F_CORE",
+        "SCICLIENT_INTERRUPT_MODE",
     ]
 }
 

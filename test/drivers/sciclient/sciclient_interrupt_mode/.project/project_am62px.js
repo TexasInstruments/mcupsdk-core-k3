@@ -9,6 +9,12 @@ const files = {
     ],
 };
 
+const defines_mcu_r5 = {
+    common:[
+        "SCICLIENT_INTERRUPT_MODE",
+    ]
+}
+
 /* Relative to where the makefile will be generated
  * Typically at <example_folder>/<BOARD>/<core_os_combo>/<compiler>
  */
@@ -116,6 +122,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.syscfgfile = syscfgfile;
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
     build_property.includes = includes;
+    build_property.defines = defines_mcu_r5;
     if(buildOption.cpu.match(/r5f/)) {
         build_property.libs = libs_r5f;
         build_property.templates = templates_nortos_r5f;

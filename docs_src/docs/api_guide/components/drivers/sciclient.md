@@ -226,24 +226,13 @@ Sciclient can operate in two modes for processing TISCI messages:
 - **Polling Mode (Default)**: The driver polls for the response from SYSFW/DM after sending a request. This is the default mode.
 - **Interrupt Mode**: The driver uses interrupts to detect when a response is available, allowing the CPU to perform other tasks while waiting.
 
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX || SOC_AM275X
 To switch the mode to Interrupt Mode, follow the steps below:
 
-\cond SOC_AM62X
-  - Add the line `-DENABLE_SCICLIENT_INTERRUPT_MODE \` to `DEFINES_common` in `source/drivers/makefile.am62x.m4f.ti-arm-clang`.
+- Call `Sciclient_updateOperModeToInterrupt()` API in the application main function. For example, if you want to run `ipc_rpmsg_echo` example, call inside ipc_rpmsg_echo_main() function.
+
+- Rebuild the application.
 \endcond
-\cond SOC_AM62AX
-  - Add the line `-DENABLE_SCICLIENT_INTERRUPT_MODE \` to `DEFINES_common` in `source/drivers/makefile.am62ax.r5f.ti-arm-clang`.
-\endcond
-\cond SOC_AM62DX
-  - Add the line `-DENABLE_SCICLIENT_INTERRUPT_MODE \` to `DEFINES_common` in `source/drivers/makefile.am62dx.r5f.ti-arm-clang`.
-\endcond
-\cond SOC_AM62PX
-  - Add the line `-DENABLE_SCICLIENT_INTERRUPT_MODE \` to `DEFINES_common` in `source/drivers/makefile.am62px.mcu-r5f.ti-arm-clang`.
-\endcond
-\cond SOC_AM275X
-  - Add the line `-DENABLE_SCICLIENT_INTERRUPT_MODE \` to `DEFINES_common` in `source/drivers/makefile.am275x.r5f.ti-arm-clang`.
-\endcond
-  - Rebuild the libraries and application.
 
 ## API
 

@@ -375,12 +375,20 @@ const defines_r5 = {
     common: [
         "MCU_R5",
         "ENABLE_PHY_TUNING_SOC_BUILD",
+        "SCICLIENT_INTERRUPT_MODE",
     ],
 };
 
 const defines_a53 = {
     common: [
         "ENABLE_PHY_TUNING_SOC_BUILD",
+        "SCICLIENT_INTERRUPT_MODE",
+    ],
+};
+
+const defines_c75 = {
+    common: [
+        "SCICLIENT_INTERRUPT_MODE",
     ],
 };
 
@@ -471,6 +479,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_r5;
     }else if(buildOption.cpu.match(/c75*/)) {
         build_property.files = files_c75;
+        build_property.defines = defines_c75;
     }else if(buildOption.cpu.match(/a53*/)) {
         build_property.filedirs = filedirs_a53;
         build_property.files = files_a53;

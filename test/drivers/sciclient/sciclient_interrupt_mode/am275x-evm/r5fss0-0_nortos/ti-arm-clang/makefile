@@ -64,6 +64,7 @@ INCLUDES_common := \
 
 DEFINES_common := \
 	-DSOC_AM275X \
+	-DSCICLIENT_INTERRUPT_MODE \
 
 CFLAGS_common := \
 	-mcpu=cortex-r5 \

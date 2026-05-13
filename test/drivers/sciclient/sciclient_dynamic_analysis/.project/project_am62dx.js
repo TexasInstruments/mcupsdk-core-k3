@@ -17,6 +17,7 @@ const files = {
 const defines_dm_r5f = {
     common:[
         "SOC_AM62DX",
+        "SCICLIENT_INTERRUPT_MODE",
     ]
 }
 

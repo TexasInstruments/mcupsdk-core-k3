@@ -303,6 +303,7 @@ const defines_r5 = {
 const defines_mcu_r5 = {
     common: [
         "MCU_R5",
+        "SCICLIENT_INTERRUPT_MODE",
     ],
 };
 

@@ -70,6 +70,7 @@ const defines_r5f = {
         "CONFIG_TRACE_BUFFER",
         "CONFIG_TRACE_UART",
         "CONFIG_DEVICE_TYPE_GP",
+        "SCICLIENT_INTERRUPT_MODE",
     ],
 };
 

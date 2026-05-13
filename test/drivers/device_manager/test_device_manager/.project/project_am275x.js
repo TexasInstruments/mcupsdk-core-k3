@@ -21,6 +21,7 @@ const defines_dm_wkup_r5 = {
     common: [
         "ENABLE_SCICLIENT_DIRECT",
         "CONFIG_LPM_MIN",
+        "SCICLIENT_INTERRUPT_MODE",
     ],
 };
 

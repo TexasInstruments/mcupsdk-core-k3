@@ -28,6 +28,7 @@ const defines_dm_r5 = {
         "SOC_AM62DX",
         "ENABLE_SCICLIENT_DIRECT",
         "CONFIG_LPM_DM",
+        "SCICLIENT_INTERRUPT_MODE",
     ],
 };
 

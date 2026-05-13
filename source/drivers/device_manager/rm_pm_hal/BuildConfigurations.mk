@@ -220,4 +220,5 @@ endif
 ifeq ($(CONFIG_LPM_DM),y)
 SRCDIR += src/priv/osal
 SRCS_COMMON +=  osal_dm.c
+CFLAGS_LOCAL_COMMON += -DSCICLIENT_INTERRUPT_MODE
 endif

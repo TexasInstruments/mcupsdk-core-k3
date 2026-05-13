@@ -72,6 +72,7 @@
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
+#if defined(SCICLIENT_INTERRUPT_MODE)
 /**
  *  \brief   ISR called when a response is received from DMSC.
  *
@@ -93,6 +94,18 @@ static void Sciclient_ISR(uintptr_t arg);
  */
 static int32_t Sciclient_setupRespIntr(uint32_t contextId,
                                        uint8_t sciclientRespIntrHandler);
+
+/**
+ *  \brief   This utility function is to be used to unregister
+ *           interrupts for various Sciclient contexts and delete
+ *           semaphore handles tied to the interrupts
+ *
+ *  \param   None
+ *
+ *  \return  None
+ */
+static void Sciclient_unregisterIntr(void);
+#endif
 
 /**
  *  \brief   This utility function is to be used to take care of
@@ -122,17 +135,6 @@ static int32_t Sciclient_serviceGetPayloadSize(const Sciclient_ReqPrm_t *pReqPrm
                                         const Sciclient_RespPrm_t      *pRespPrm,
                                         uint32_t *txPayloadSize,
                                         uint32_t *rxPayloadSize);
-
-/**
- *  \brief   This utility function is to be used to unregister
- *           interrupts for various Sciclient contexts and delete
- *           semaphore handles tied to the interrupts
- *
- *  \param   None
- *
- *  \return  None
- */
-static void Sciclient_unregisterIntr(void);
 
 #if defined(_TMS320C6X)
 /**
@@ -171,10 +173,13 @@ static struct tisci_sec_header gSciclient_secHeader;
 *       the sec_proxy IP */
 extern CSL_SecProxyCfg *pSciclient_secProxyCfg;
 
+#if defined(SCICLIENT_INTERRUPT_MODE)
 static SemaphoreP_Object gSciclient_semObjects[SCICLIENT_MAX_QUEUE_SIZE];
 
 /**<  Interrupt for notification **/
 static HwiP_Object           gRespIntrObj[SCICLIENT_MAX_RESP_INTR_HANDLER];
+#endif
+
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -286,6 +291,7 @@ int32_t Sciclient_configPrmsInit(Sciclient_ConfigPrms_t *pCfgPrms)
     return ret;
 }
 
+#if defined(SCICLIENT_INTERRUPT_MODE)
 int32_t Sciclient_updateOperModeToInterrupt(void)
 {
     int32_t  status = CSL_PASS;
@@ -347,15 +353,6 @@ int32_t Sciclient_updateOperModeToInterrupt(void)
     return status;
 }
 
-void Sciclient_updateOperModeToPolled(void)
-{
-    if (gSciclientHandle.opModeFlag == SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT)
-    {
-        Sciclient_unregisterIntr();
-    }
-    gSciclientHandle.opModeFlag = SCICLIENT_SERVICE_OPERATION_MODE_POLLED;
-}
-
 void Sciclient_disableIntr(void)
 {
     if (gSciclientHandle.respIntr[SCICLIENT_NON_SEC_RESP_INTR_HANDLER] != NULL)
@@ -386,6 +383,18 @@ void Sciclient_enableIntr(void)
     {
         HwiP_enableInt(gSciclientMap[SCICLIENT_CONTEXT_DM2TIFS].respIntrNum);
     }
+}
+#endif
+
+void Sciclient_updateOperModeToPolled(void)
+{
+#if defined(SCICLIENT_INTERRUPT_MODE)
+    if (gSciclientHandle.opModeFlag == SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT)
+    {
+        Sciclient_unregisterIntr();
+    }
+#endif
+    gSciclientHandle.opModeFlag = SCICLIENT_SERVICE_OPERATION_MODE_POLLED;
 }
 
 int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms)
@@ -442,11 +451,13 @@ int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms)
             {
                 Sciclient_updateOperModeToPolled();
             }
+#if defined(SCICLIENT_INTERRUPT_MODE)
             else if (pCfgPrms->opModeFlag ==
                 SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT)
             {
                 status = Sciclient_updateOperModeToInterrupt();
             }
+#endif
             else
             {
                 status = CSL_EBADARGS;
@@ -985,12 +996,14 @@ int32_t Sciclient_deinit(void)
 
     if (1U == doDeInit)
     {
+#if defined(SCICLIENT_INTERRUPT_MODE)
         if ((gSciclientHandle.opModeFlag ==
          SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT) &&
         (status == CSL_PASS))
         {
             Sciclient_unregisterIntr();
         }
+#endif
         gSciclientHandle.opModeFlag = 0xDEAD;
 #if defined(_TMS320C6X)
         CSL_ratDisableRegionTranslation(pC66xRatRegs, gSciclientHandle.c66xRatRegion);
@@ -1128,6 +1141,7 @@ uint32_t Sciclient_getCurrentContext(uint16_t messageType)
 /*                 Internal Function Definitions                              */
 /* -------------------------------------------------------------------------- */
 
+#if defined(SCICLIENT_INTERRUPT_MODE)
 static void Sciclient_ISR(uintptr_t arg)
 {
     uint32_t contextId = (uint32_t )(arg);
@@ -1170,22 +1184,6 @@ static void Sciclient_ISR(uintptr_t arg)
             HwiP_clearInt( (uint32_t) gSciclientMap[contextId].respIntrNum);
         }
     }
-}
-
-int32_t Sciclient_contextIdFromIntrNum(uint32_t intrNum)
-{
-    int32_t retVal = CSL_EFAIL;
-    uint32_t i = 0U;
-    while ((i < SCICLIENT_CONTEXT_MAX_NUM) &&
-        (gSciclientMap[i].respIntrNum != intrNum))
-    {
-        i++;
-    }
-    if (i < SCICLIENT_CONTEXT_MAX_NUM)
-    {
-        retVal = (int32_t)i;
-    }
-    return retVal;
 }
 
 static int32_t Sciclient_setupRespIntr(uint32_t contextId, uint8_t sciclientRespIntrHandler)
@@ -1268,6 +1266,23 @@ static void Sciclient_unregisterIntr(void)
         HwiP_destruct(gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER]);
         gSciclientHandle.respIntr[SCICLIENT_DM2TIFS_RESP_INTR_HANDLER] = NULL_PTR;
     }
+}
+#endif
+
+int32_t Sciclient_contextIdFromIntrNum(uint32_t intrNum)
+{
+    int32_t retVal = CSL_EFAIL;
+    uint32_t i = 0U;
+    while ((i < SCICLIENT_CONTEXT_MAX_NUM) &&
+        (gSciclientMap[i].respIntrNum != intrNum))
+    {
+        i++;
+    }
+    if (i < SCICLIENT_CONTEXT_MAX_NUM)
+    {
+        retVal = (int32_t)i;
+    }
+    return retVal;
 }
 
 static void Sciclient_utilByteCopy(uint8_t *src,

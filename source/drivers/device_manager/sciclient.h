@@ -667,6 +667,7 @@ int32_t Sciclient_init(const Sciclient_ConfigPrms_t *pCfgPrms);
 int32_t Sciclient_service(const Sciclient_ReqPrm_t *pReqPrm,
                           Sciclient_RespPrm_t      *pRespPrm);
 
+#if defined(SCICLIENT_INTERRUPT_MODE)
 /**
  *  \brief  This API allows to update the sciclient operating mode to interrupt
  *          mode.
@@ -685,6 +686,7 @@ void Sciclient_disableIntr(void);
  *          operating mode.
  */
 void Sciclient_enableIntr(void);
+#endif
 
 /**
  *  \brief  This API allows to update the sciclient operating mode to polling

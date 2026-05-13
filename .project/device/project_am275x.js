@@ -313,6 +313,7 @@ const example_file_list = [
     "test/drivers/watchdog/test_watchdog_system/.project/project.js",
     "test/drivers/optiflash/test_optiflash_system/.project/project.js",
     "test/drivers/rtc/.project/project_am275x.js",
+    "test/drivers/rtc/test_rtc_system/.project/project.js",
     "test/drivers/sciclient/sciclient_get_version/.project/project_am275x_wkupr5.js",
     "test/drivers/sciclient/sciclient_get_version/.project/project.js",
     "test/drivers/sciclient/sciclient_interrupt_mode/.project/project.js",

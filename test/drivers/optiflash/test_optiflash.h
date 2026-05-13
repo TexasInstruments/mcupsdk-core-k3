@@ -44,5 +44,15 @@ void *test_flc_interrupt(void*);
 void *test_flc_enable_disable(void*);
 void *test_rl2_config(void *);
 void *test_rat_config(void *);
+void *TestOptiflash_configAllFlcRegions(void*);
+void *TestOptiflash_validateFlcDataIntegrity(void*);
+void *TestOptiflash_concurrentFlcRegionCopy(void*);
+void *TestOptiflash_flcReadErrorDetection(void*);
+void *TestOptiflash_flcWriteErrorDetection(void *args);
+void *TestOptiflash_disableFlcRegion(void*);
+void *TestOptiflash_flcReadIRQMaskValidation(void*);
+void *TestOptiflash_flcReadIRQStatusValidation(void*);
+void *TestOptiflash_configureRL2Cache(void*);
+void *TestOptiflash_rL2CacheSizeSelection(void*);
 
 #endif

@@ -768,10 +768,11 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
                 {
                     status = SDL_PBIST_selfTest((SDL_PBIST_inst)PBIST_TestHandleArray[instanceId].pbistInst, testType, PBIST_APP_TIMEOUT, &PBISTResult);
                 }
-                if (status != SDL_PASS)
+                if ((status != SDL_PASS) || (PBISTResult == false))
                 {
-                    DebugP_log(" %s failed in PBIST Run %d\r\n",
-                                runNegTest ? "SDL_PBIST_selfTest for Negative test" : "SDL_PBIST_selfTest for Positive test", i);
+                    DebugP_log(" %s failed in PBIST Run %d %s\r\n",
+                               runNegTest ? "SDL_PBIST_selfTest for Negative test" : "SDL_PBIST_selfTest for Positive test",
+                               i, PBISTResult ? "" : "due to PBIST result mistmatch");
                     testResult = -1;
                 }
             }

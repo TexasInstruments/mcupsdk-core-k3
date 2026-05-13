@@ -367,6 +367,44 @@ const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "freertos-smp"},
 ];
 
+const robot_template_freertos = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "EQEP",
+        testCaseName: "eqep test application",
+        testCaseIds: "SITSW-6988 SITSW-7263 SITSW-7264 SITSW-7265 SITSW-7266 SITSW-7267 SITSW-7268 SITSW-7270 SITSW-7271 SITSW-7272" +
+                     " SITSW-7314 SITSW-11967 SITSW-11968 SITSW-11969 SITSW-11970 SITSW-11971 SITSW-11972 SITSW-11973 SITSW-11974" +
+                     " SITSW-11975 SITSW-11976 SITSW-11977 SITSW-11978",
+        timeout: 660,
+    },
+};
+
+const robot_template_nortos = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "EQEP",
+        testCaseName: "eqep test application",
+        testCaseIds: "SITSW-6988 SITSW-7263 SITSW-7264 SITSW-7265 SITSW-7266 SITSW-7267 SITSW-7268 SITSW-7270 SITSW-7271 SITSW-7272" +
+                     " SITSW-7314 SITSW-11967 SITSW-11968 SITSW-11969 SITSW-11970 SITSW-11974 SITSW-11975 SITSW-11976 SITSW-11977" +
+                     " SITSW-11978",
+        timeout: 660,
+    },
+};
+
+const robot_template_smp = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "EQEP",
+        testCaseName: "eqep SMP test application",
+        appName: "test_eqep(smp)",
+        testCaseIds: "SITSW-11980 SITSW-11981 SITSW-11982",
+        timeout: 300,
+    },
+};
+
 function getComponentProperty(device) {
     let property = {};
 
@@ -444,6 +482,17 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_c75;
         build_property.cflags = cflags_freertos_c75;
     }
+
+    if (buildOption.os.match(/freertos-smp*/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_smp];
+    }
+    else if (buildOption.os.match(/freertos*/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_freertos];
+    }
+    else {
+        build_property.templates = [...(build_property.templates || []), robot_template_nortos];
+    }
+
     return build_property;
 }
 

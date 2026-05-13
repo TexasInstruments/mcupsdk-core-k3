@@ -209,6 +209,7 @@ const example_file_list = [
     "test/drivers/epwm/.project/project.js",
     "test/drivers/ecap/.project/project.js",
     "test/drivers/eqep/.project/project.js",
+    "test/drivers/eqep/test_eqep_system/.project/project.js",
     "test/board/eeprom/.project/project.js",
     "test/drivers/fvid2/.project/project.js",
     "test/drivers/gpio/.project/project.js",

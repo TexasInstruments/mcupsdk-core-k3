@@ -103,7 +103,20 @@ int32_t Watchdog_setWindowSize(Watchdog_Handle handle, uint32_t dwwdWindowSize)
     Watchdog_HwAttrs*       ptrHwCfg;
     int32_t                 status = SystemP_SUCCESS;
 
-    if (handle != NULL)
+    if (handle == NULL)
+    {
+        status = SystemP_FAILURE;
+    }
+    else if ((dwwdWindowSize != (uint32_t)Watchdog_WINDOW_100_PERCENT) &&
+             (dwwdWindowSize != (uint32_t)Watchdog_WINDOW_50_PERCENT)  &&
+             (dwwdWindowSize != (uint32_t)Watchdog_WINDOW_25_PERCENT)  &&
+             (dwwdWindowSize != (uint32_t)Watchdog_WINDOW_12_5_PERCENT) &&
+             (dwwdWindowSize != (uint32_t)Watchdog_WINDOW_6_25_PERCENT) &&
+             (dwwdWindowSize != (uint32_t)Watchdog_WINDOW_3_125_PERCENT))
+    {
+        status = SystemP_FAILURE;
+    }
+    else
     {
         ptrWatchdogConfig = (Watchdog_Config*)handle;
         ptrHwCfg = (Watchdog_HwAttrs*)ptrWatchdogConfig->hwAttrs;
@@ -111,10 +124,6 @@ int32_t Watchdog_setWindowSize(Watchdog_Handle handle, uint32_t dwwdWindowSize)
         HW_WR_FIELD32(ptrHwCfg->baseAddr + CSL_RTI_RTIWWDSIZECTRL,
                         CSL_RTI_RTIWWDSIZECTRL_WWDSIZE,
                         dwwdWindowSize);
-    }
-    else
-    {
-        status = SystemP_FAILURE;
     }
     return status;
 }

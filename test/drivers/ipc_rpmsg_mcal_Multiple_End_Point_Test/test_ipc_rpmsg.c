@@ -164,6 +164,20 @@ static void populate_vring_addresses(RPMessage_Params *params,
         params->vringRxBaseAddr[CSL_CORE_ID_MCU_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 0U * vringSlotSize);
     }
 
+#elif defined (SOC_AM62X)
+    if(selfCoreId == CSL_CORE_ID_M4FSS0_0)
+    {
+        /* M4 core (M4FSS0_0) vring mapping - VRING slots: TX{r5fss0_0:0} RX{r5fss0_0:1} */
+        params->vringTxBaseAddr[CSL_CORE_ID_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 0U * vringSlotSize);
+        params->vringRxBaseAddr[CSL_CORE_ID_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 1U * vringSlotSize);
+    }
+    else if(selfCoreId == CSL_CORE_ID_R5FSS0_0)
+    {
+        /* R5 core (R5FSS0_0) vring mapping - VRING slots: TX{m4fss0_0:1} RX{m4fss0_0:0} */
+        params->vringTxBaseAddr[CSL_CORE_ID_M4FSS0_0] = (uintptr_t)(gRPMessageVringMem + 1U * vringSlotSize);
+        params->vringRxBaseAddr[CSL_CORE_ID_M4FSS0_0] = (uintptr_t)(gRPMessageVringMem + 0U * vringSlotSize);
+    }
+
 #endif
 
     /* Common vring properties derived from the passed-in parameters */
@@ -244,6 +258,24 @@ static uint16_t getServerEndPtForCore(uint32_t remoteCoreId)
     switch(remoteCoreId)
     {
         case CSL_CORE_ID_WKUP_R5FSS0_0:
+            return 13;
+        default:
+            return 10;
+    }
+}
+#elif defined (SOC_AM62X)
+uint32_t gMainCoreId = CSL_CORE_ID_R5FSS0_0;
+
+uint32_t gRemoteCoreId[] = {
+    CSL_CORE_ID_M4FSS0_0,
+    CSL_CORE_ID_MAX
+};
+
+static uint16_t getServerEndPtForCore(uint32_t remoteCoreId)
+{
+    switch(remoteCoreId)
+    {
+        case CSL_CORE_ID_M4FSS0_0:
             return 13;
         default:
             return 10;
@@ -472,7 +504,7 @@ void test_ipc_remote_core_start()
      * Slot stride = 2*8*512 = 8192 bytes, same as the initial syscfg configuration. */
 #if defined (SOC_AM275X)
     populate_vring_addresses(&rpmsgParams, 16U, 512U);
-#elif defined (SOC_AM62DX) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
+#elif defined (SOC_AM62DX) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62X)
     populate_vring_addresses(&rpmsgParams, 256U, 512U);
 #endif
 

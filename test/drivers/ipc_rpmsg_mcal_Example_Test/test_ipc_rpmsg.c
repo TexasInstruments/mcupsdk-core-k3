@@ -207,6 +207,52 @@ static void populate_vring_addresses(RPMessage_Params *params,
         params->vringRxBaseAddr[CSL_CORE_ID_C75SS0_0] = (uintptr_t)(gRPMessageVringMem + 11U * vringSlotSize);
     }
 
+#elif defined (SOC_AM62X)
+    if(selfCoreId == CSL_CORE_ID_M4FSS0_0)
+    {
+        /* M4 core (M4FSS0_0) vring mapping - VRING slots: TX{r5fss0_0:0, a53ss0_0:1, a53ss0_1:2} RX{r5fss0_0:3, a53ss0_0:6, a53ss0_1:9} */
+        params->vringTxBaseAddr[CSL_CORE_ID_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 0U * vringSlotSize);
+        params->vringTxBaseAddr[CSL_CORE_ID_A53SS0_0] = (uintptr_t)(gRPMessageVringMem + 1U * vringSlotSize);
+        params->vringTxBaseAddr[CSL_CORE_ID_A53SS0_1] = (uintptr_t)(gRPMessageVringMem + 2U * vringSlotSize);
+
+        params->vringRxBaseAddr[CSL_CORE_ID_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 3U * vringSlotSize);
+        params->vringRxBaseAddr[CSL_CORE_ID_A53SS0_0] = (uintptr_t)(gRPMessageVringMem + 6U * vringSlotSize);
+        params->vringRxBaseAddr[CSL_CORE_ID_A53SS0_1] = (uintptr_t)(gRPMessageVringMem + 9U * vringSlotSize);
+    }
+    else if(selfCoreId == CSL_CORE_ID_R5FSS0_0)
+    {
+        /* R5 core (R5FSS0_0) vring mapping - VRING slots: TX{m4fss0_0:3, a53ss0_0:4, a53ss0_1:5} RX{m4fss0_0:0, a53ss0_0:7, a53ss0_1:10} */
+        params->vringTxBaseAddr[CSL_CORE_ID_M4FSS0_0] = (uintptr_t)(gRPMessageVringMem + 3U * vringSlotSize);
+        params->vringTxBaseAddr[CSL_CORE_ID_A53SS0_0] = (uintptr_t)(gRPMessageVringMem + 4U * vringSlotSize);
+        params->vringTxBaseAddr[CSL_CORE_ID_A53SS0_1] = (uintptr_t)(gRPMessageVringMem + 5U * vringSlotSize);
+
+        params->vringRxBaseAddr[CSL_CORE_ID_M4FSS0_0] = (uintptr_t)(gRPMessageVringMem + 0U * vringSlotSize);
+        params->vringRxBaseAddr[CSL_CORE_ID_A53SS0_0] = (uintptr_t)(gRPMessageVringMem + 7U * vringSlotSize);
+        params->vringRxBaseAddr[CSL_CORE_ID_A53SS0_1] = (uintptr_t)(gRPMessageVringMem + 10U * vringSlotSize);
+    }
+    else if(selfCoreId == CSL_CORE_ID_A53SS0_0)
+    {
+        /* A53 SS0_0 core vring mapping - VRING slots: TX{m4fss0_0:6, r5fss0_0:7, a53ss0_1:8} RX{m4fss0_0:1, r5fss0_0:4, a53ss0_1:11} */
+        params->vringTxBaseAddr[CSL_CORE_ID_M4FSS0_0] = (uintptr_t)(gRPMessageVringMem + 6U * vringSlotSize);
+        params->vringTxBaseAddr[CSL_CORE_ID_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 7U * vringSlotSize);
+        params->vringTxBaseAddr[CSL_CORE_ID_A53SS0_1] = (uintptr_t)(gRPMessageVringMem + 8U * vringSlotSize);
+
+        params->vringRxBaseAddr[CSL_CORE_ID_M4FSS0_0] = (uintptr_t)(gRPMessageVringMem + 1U * vringSlotSize);
+        params->vringRxBaseAddr[CSL_CORE_ID_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 4U * vringSlotSize);
+        params->vringRxBaseAddr[CSL_CORE_ID_A53SS0_1] = (uintptr_t)(gRPMessageVringMem + 11U * vringSlotSize);
+    }
+    else if(selfCoreId == CSL_CORE_ID_A53SS0_1)
+    {
+        /* A53 SS0_1 core vring mapping - VRING slots: TX{m4fss0_0:9, r5fss0_0:10, a53ss0_0:11} RX{m4fss0_0:2, r5fss0_0:5, a53ss0_0:8} */
+        params->vringTxBaseAddr[CSL_CORE_ID_M4FSS0_0] = (uintptr_t)(gRPMessageVringMem + 9U * vringSlotSize);
+        params->vringTxBaseAddr[CSL_CORE_ID_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 10U * vringSlotSize);
+        params->vringTxBaseAddr[CSL_CORE_ID_A53SS0_0] = (uintptr_t)(gRPMessageVringMem + 11U * vringSlotSize);
+
+        params->vringRxBaseAddr[CSL_CORE_ID_M4FSS0_0] = (uintptr_t)(gRPMessageVringMem + 2U * vringSlotSize);
+        params->vringRxBaseAddr[CSL_CORE_ID_R5FSS0_0] = (uintptr_t)(gRPMessageVringMem + 5U * vringSlotSize);
+        params->vringRxBaseAddr[CSL_CORE_ID_A53SS0_0] = (uintptr_t)(gRPMessageVringMem + 8U * vringSlotSize);
+    }
+
 #elif defined (SOC_AM62PX)
     if(selfCoreId == CSL_CORE_ID_MCU_R5FSS0_0)
     {
@@ -310,6 +356,30 @@ static uint16_t getServerEndPtForCore(uint32_t remoteCoreId)
     {
         case CSL_CORE_ID_WKUP_R5FSS0_0:
             return 13;
+        default:
+            return 10;
+    }
+}
+#elif defined (SOC_AM62X)
+uint32_t gMainCoreId = CSL_CORE_ID_R5FSS0_0;
+
+uint32_t gRemoteCoreId[] = {
+    CSL_CORE_ID_M4FSS0_0,
+    CSL_CORE_ID_A53SS0_0,
+    CSL_CORE_ID_A53SS0_1,
+    CSL_CORE_ID_MAX
+};
+
+static uint16_t getServerEndPtForCore(uint32_t remoteCoreId)
+{
+    switch(remoteCoreId)
+    {
+        case CSL_CORE_ID_M4FSS0_0:
+            return 13;
+        case CSL_CORE_ID_A53SS0_0:
+            return 14;
+        case CSL_CORE_ID_A53SS0_1:
+            return 15;
         default:
             return 10;
     }
@@ -537,7 +607,7 @@ void test_ipc_remote_core_start()
      * Slot stride = 2*8*512 = 8192 bytes, same as the initial syscfg configuration. */
 #if defined (SOC_AM275X)
     populate_vring_addresses(&rpmsgParams, 16U, 512U);
-#elif defined (SOC_AM62DX) || defined (SOC_AM62AX) || defined (SOC_AM62PX)
+#elif defined (SOC_AM62DX) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62X)
     populate_vring_addresses(&rpmsgParams, 256U, 512U);
 #endif
 

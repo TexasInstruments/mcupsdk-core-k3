@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 Texas Instruments Incorporated
+ * Copyright (C) 2025-2026 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -120,6 +120,13 @@ void test_main(void *args)
     RUN_TEST((UnityTestFunction)TestOptiflash_rl2ReenableAfterDisable, 10895, NULL);
     RUN_TEST((UnityTestFunction)TestOptiflash_flcTransferAbortMidOperation, 10896, NULL);
     RUN_TEST((UnityTestFunction)TestOptiflash_flcDacModeRobustness, 10897, NULL);
+#if defined ENABLE_MT_TESTS
+    RUN_TEST((UnityTestFunction)TestOptiflash_multithreadFlcIndependentRegions, 10529, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_multithreadFlcSameRegionAccess, 10530, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_multithreadFlcInterruptHandling, 10531, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_multithreadRl2ConcurrentAccess, 10898, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_multithreadRl2InterruptAndFlcTransfer, 10899, NULL);
+#endif
     RUN_TEST((UnityTestFunction)TestOptiflash_flcInvalidBaseAddress, 10902, NULL);
 
     UNITY_END();

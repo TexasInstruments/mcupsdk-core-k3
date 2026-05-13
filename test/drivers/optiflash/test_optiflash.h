@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2025 Texas Instruments Incorporated
+ *  Copyright (C) 2025-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -88,5 +88,12 @@ void *TestOptiflash_rl2ReenableAfterDisable(void *args);
 void *TestOptiflash_flcTransferAbortMidOperation(void *args);
 void *TestOptiflash_flcDacModeRobustness(void *args);
 void *TestOptiflash_flcInvalidBaseAddress(void *args);
+#if defined ENABLE_MT_TESTS
+void *TestOptiflash_multithreadFlcIndependentRegions(void *args);
+void *TestOptiflash_multithreadFlcSameRegionAccess(void *args);
+void *TestOptiflash_multithreadFlcInterruptHandling(void *args);
+void *TestOptiflash_multithreadRl2ConcurrentAccess(void *args);
+void *TestOptiflash_multithreadRl2InterruptAndFlcTransfer(void *args);
+#endif
 
 #endif

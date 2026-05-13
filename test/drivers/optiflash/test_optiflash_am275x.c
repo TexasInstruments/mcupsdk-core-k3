@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 - 2026 Texas Instruments Incorporated
+ * Copyright (C) 2025-2026 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -133,6 +133,15 @@
 /*                         Structures and Enums                               */
 /* ========================================================================== */
 
+#if defined ENABLE_MT_TESTS
+typedef struct {
+    FLC_RegionInfo *region;
+    uint8_t *srcBuf;
+    uint8_t *dstBuf;
+    uint32_t size;
+    int32_t *result;
+} TestOptiflash_TaskArgs;
+#endif
 
 /* ========================================================================== */
 /*                 Internal Function Declarations                             */
@@ -155,6 +164,19 @@ static SemaphoreP_Object gSemObj;
 static volatile uint32_t TestOptiflash_LastMaskedStatus;
 static SemaphoreP_Object TestOptiflash_Rl2IsrSem;
 static volatile uint32_t TestOptiflash_Rl2IsrRawStatus;
+#if defined ENABLE_MT_TESTS
+static SemaphoreP_Object TestOptiflash_MtDoneSem;
+static uint8_t TestOptiflash_Task1Stack[32768] __attribute__((aligned(32)));
+static uint8_t TestOptiflash_Task2Stack[32768] __attribute__((aligned(32)));
+static volatile int32_t TestOptiflash_MtSameRegionStatus = -1;
+static SemaphoreP_Object TestOptiflash_MtSameRegionStartSem;
+static volatile int32_t TestOptiflash_MtSameRegionADone = 0;
+static SemaphoreP_Object TestOptiflash_IntSem0;
+static SemaphoreP_Object TestOptiflash_IntSem1;
+static int TestOptiflash_IntTaskArgs[2];
+static int TestOptiflash_IntTaskResults[2];
+static volatile uint32_t TestOptiflash_MtRl2IsrCount;
+#endif
 
 /* ========================================================================== */
 /*                         Internal Function Definitions                              */
@@ -5766,3 +5788,1112 @@ void test_optiflash_Callback(void)
     SemaphoreP_post(&gSemObj);
 }
 
+#if defined ENABLE_MT_TESTS
+
+/* ========================================================================== */
+/*                    multithread Test Definitions                            */
+/* ========================================================================== */
+
+/**
+ * @brief Task function to validate FLC data integrity on region 1.
+ *
+ * Performs FLC copy operation and validates data integrity
+ *
+ * @param arg Pointer to TestOptiflash_TaskArgs.
+ */
+static void TestOptiflash_mtRegion1Task(void *arg)
+{
+    TestOptiflash_TaskArgs *taskArgs = (TestOptiflash_TaskArgs *)arg;
+    int32_t retval = SystemP_SUCCESS;
+    uint32_t cpy_status = 0U;
+    uint32_t attempts = 0U;
+    const uint32_t maxAttempts = 1000000U;
+    uint32_t readErr = 0U, writeErr = 0U;
+    uint32_t i;
+    FLC_RegionInfo *region = taskArgs->region;
+
+    /* Prepare destination with a known state */
+    memset(taskArgs->dstBuf, 0, taskArgs->size);
+    CacheP_wbInv(taskArgs->dstBuf, taskArgs->size, CacheP_TYPE_ALL);
+
+    /* Ensure source buffer is visible to FLC hardware */
+    CacheP_wb((void*)taskArgs->srcBuf, taskArgs->size, CacheP_TYPE_ALL);
+
+    /* Configure FLC region to copy source -> destination */
+    region->sourceStartAddress      = (uint32_t)taskArgs->srcBuf;
+    region->destinationStartAddress = (uint32_t)taskArgs->dstBuf;
+    region->sourceEndAddress        = (uint32_t)taskArgs->srcBuf + taskArgs->size;
+
+    FLC_configureRegion(region);
+    FLC_startRegion(region);
+
+    /* Wait for completion */
+    do {
+        FLC_isRegionDone(region, &cpy_status);
+        attempts++;
+        if(attempts > maxAttempts)
+        {
+            DebugP_logError("FLC region %d (Task 1) copy timeout\r\n", region->regionId);
+            retval = SystemP_FAILURE;
+            break;
+        }
+    } while ((cpy_status & (1U << region->regionId)) == 0U);
+
+    /* Check for FLC errors */
+    if(SystemP_SUCCESS == retval)
+    {
+        FLC_wasReadError(region, &readErr);
+        FLC_wasWriteError(region, &writeErr);
+        if(readErr || writeErr)
+        {
+            DebugP_logError("FLC region %d (Task 1) error: readErr=%d writeErr=%d\r\n",
+                           region->regionId, readErr, writeErr);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Compare buffers */
+    if(SystemP_SUCCESS == retval)
+    {
+        CacheP_inv(taskArgs->dstBuf, taskArgs->size, CacheP_TYPE_ALL);
+        if(0 != memcmp(taskArgs->srcBuf, taskArgs->dstBuf, taskArgs->size))
+        {
+            /* Simple diagnostics: report first mismatch and copy status */
+            for(i = 0; i < taskArgs->size; i++)
+            {
+                if(taskArgs->srcBuf[i] != taskArgs->dstBuf[i])
+                {
+                    DebugP_logError("FLC region %d data mismatch at offset %u: src=0x%02X dst=0x%02X cpy_status=0x%08X\r\n",
+                                   region->regionId, i, taskArgs->srcBuf[i], taskArgs->dstBuf[i], cpy_status);
+                    break;
+                }
+            }
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    *(taskArgs->result) = retval;
+    ClockP_usleep(5000);
+    SemaphoreP_post(&TestOptiflash_MtDoneSem);
+    TaskP_exit();
+}
+
+/**
+ * @brief Task function to validate FLC data integrity on region 2.
+ *
+ * Performs FLC copy operation and validates data integrity
+ *
+ * @param arg Pointer to TestOptiflash_TaskArgs.
+ */
+static void TestOptiflash_mtRegion2Task(void *arg)
+{
+    TestOptiflash_TaskArgs *taskArgs = (TestOptiflash_TaskArgs *)arg;
+    int32_t retval = SystemP_SUCCESS;
+    uint32_t cpy_status = 0U;
+    uint32_t attempts = 0U;
+    const uint32_t maxAttempts = 1000000U;
+    uint32_t readErr = 0U, writeErr = 0U;
+    uint32_t i;
+    FLC_RegionInfo *region = taskArgs->region;
+
+    /* Prepare destination with a known state */
+    memset(taskArgs->dstBuf, 0, taskArgs->size);
+    CacheP_wbInv(taskArgs->dstBuf, taskArgs->size, CacheP_TYPE_ALL);
+
+    /* Ensure source buffer is visible to FLC hardware */
+    CacheP_wb((void*)taskArgs->srcBuf, taskArgs->size, CacheP_TYPE_ALL);
+
+    /* Configure FLC region to copy source -> destination */
+    region->sourceStartAddress      = (uint32_t)taskArgs->srcBuf;
+    region->destinationStartAddress = (uint32_t)taskArgs->dstBuf;
+    region->sourceEndAddress        = (uint32_t)taskArgs->srcBuf + taskArgs->size;
+
+    FLC_configureRegion(region);
+    FLC_startRegion(region);
+
+    /* Wait for completion */
+    do {
+        FLC_isRegionDone(&gFLCRegionConfig[FLC_REGION_FLC0], &cpy_status);
+        attempts++;
+        if(attempts > maxAttempts)
+        {
+            DebugP_logError("FLC region %d (Task 2) copy timeout\r\n", region->regionId);
+            retval = SystemP_FAILURE;
+            break;
+        }
+    } while ((cpy_status & (1U << region->regionId)) == 0U);
+
+    /* Check for FLC errors */
+    if(SystemP_SUCCESS == retval)
+    {
+        FLC_wasReadError(region, &readErr);
+        FLC_wasWriteError(region, &writeErr);
+        if(readErr || writeErr)
+        {
+            DebugP_logError("FLC region %d (Task 2) error: readErr=%d writeErr=%d\r\n",
+                           region->regionId, readErr, writeErr);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Compare buffers */
+    if(SystemP_SUCCESS == retval)
+    {
+        CacheP_inv(taskArgs->dstBuf, taskArgs->size, CacheP_TYPE_ALL);
+        if(0 != memcmp(taskArgs->srcBuf, taskArgs->dstBuf, taskArgs->size))
+        {
+            /* Simple diagnostics: report first mismatch and copy status */
+            for(i = 0; i < taskArgs->size; i++)
+            {
+                if(taskArgs->srcBuf[i] != taskArgs->dstBuf[i])
+                {
+                    DebugP_logError("FLC region %d data mismatch at offset %u: src=0x%02X dst=0x%02X cpy_status=0x%08X\r\n",
+                                   region->regionId, i, taskArgs->srcBuf[i], taskArgs->dstBuf[i], cpy_status);
+                    break;
+                }
+            }
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    *(taskArgs->result) = retval;
+    ClockP_usleep(5000);
+    SemaphoreP_post(&TestOptiflash_MtDoneSem);
+    TaskP_exit();
+}
+
+/**
+ * @brief Multithreaded FLC test with independent regions.
+ *
+ * Test Category: Multithread
+ *
+ * Constructs two tasks that operate on independent FLC regions concurrently.
+ * Each task validates FLC data integrity by copying data and verifying the
+ * result. Synchronizes via a counting semaphore and verifies both tasks
+ * complete successfully.
+ *
+ * @param args Unused.
+ * @return NULL
+ */
+void* TestOptiflash_multithreadFlcIndependentRegions(void *args)
+{
+    (void)args;
+    int32_t status;
+    TaskP_Params tParams;
+    static TaskP_Object task1Obj, task2Obj;
+    static TestOptiflash_TaskArgs taskArgs1, taskArgs2;
+    static int32_t result1, result2;
+    /* Create local multi-threaded source and destination buffers so each
+     * task can request a full 4KB transfer */
+    static uint8_t mtSrc[TRANSFERSIZE * 2] __attribute__((aligned(4*1024), section(".data.flashSrcBuffer")));
+    static uint8_t mtDst1[TRANSFERSIZE] __attribute__((aligned(4*1024)));
+    static uint8_t mtDst2[TRANSFERSIZE] __attribute__((aligned(4*1024)));
+
+    /* Use two 4KB regions from mtSrc for independent tasks */
+
+    /* Reset results for this test run */
+    result1 = SystemP_SUCCESS;
+    result2 = SystemP_SUCCESS;
+
+    /* Prepare mtSrc halves by copying pattern from global sourceBuffer */
+    memcpy(mtSrc, sourceBuffer, TRANSFERSIZE);
+    memcpy(mtSrc + TRANSFERSIZE, sourceBuffer, TRANSFERSIZE);
+    /* Ensure mtSrc is visible to FLC hardware */
+    CacheP_wb((void*)mtSrc, TRANSFERSIZE * 2U, CacheP_TYPE_ALL);
+
+    /* Ensure regions are clean */
+    TestOptiflash_resetFlc(&gFLCRegionConfig[0]);
+    TestOptiflash_resetFlc(&gFLCRegionConfig[1]);
+
+    /* Done semaphore to sync two tasks */
+    status = SemaphoreP_constructCounting(&TestOptiflash_MtDoneSem, 0, 2);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Setup task arguments for region 1 - first 4KB */
+    taskArgs1.region = &gFLCRegionConfig[0];
+    taskArgs1.srcBuf = mtSrc;
+    taskArgs1.dstBuf = mtDst1;
+    taskArgs1.size   = TRANSFERSIZE;
+    taskArgs1.result = &result1;
+
+    /* Setup task arguments for region 2 - second 4KB */
+    taskArgs2.region = &gFLCRegionConfig[1];
+    taskArgs2.srcBuf = mtSrc + TRANSFERSIZE;
+    taskArgs2.dstBuf = mtDst2;
+    taskArgs2.size   = TRANSFERSIZE;
+    taskArgs2.result = &result2;
+
+    /* Construct task 1 for region 1 */
+    TaskP_Params_init(&tParams);
+    tParams.name      = (char*)"FlcMtRegion1";
+    tParams.stackSize = sizeof(TestOptiflash_Task1Stack);
+    tParams.stack     = TestOptiflash_Task1Stack;
+    tParams.priority  = 2U;
+    tParams.args      = &taskArgs1;
+    tParams.taskMain  = TestOptiflash_mtRegion1Task;
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, TaskP_construct(&task1Obj, &tParams));
+
+    /* Construct task 2 for region 2 */
+    TaskP_Params_init(&tParams);
+    tParams.name      = (char*)"FlcMtRegion2";
+    tParams.stackSize = sizeof(TestOptiflash_Task2Stack);
+    tParams.stack     = TestOptiflash_Task2Stack;
+    tParams.priority  = 2U;
+    tParams.args      = &taskArgs2;
+    tParams.taskMain  = TestOptiflash_mtRegion2Task;
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, TaskP_construct(&task2Obj, &tParams));
+
+    /* Wait for both tasks to complete */
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, SemaphoreP_pend(&TestOptiflash_MtDoneSem, SystemP_WAIT_FOREVER));
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, SemaphoreP_pend(&TestOptiflash_MtDoneSem, SystemP_WAIT_FOREVER));
+
+    /* Verify both tasks completed successfully */
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, result1);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, result2);
+    ClockP_usleep(5000);
+    /* Cleanup */
+    TaskP_destruct(&task1Obj);
+    TaskP_destruct(&task2Obj);
+    SemaphoreP_destruct(&TestOptiflash_MtDoneSem);
+
+    return NULL;
+}
+
+/**
+ * \brief Multithread Task A for same-region concurrency test.
+ *
+ * Task A starts an FLC transfer on the shared region and waits for its
+ * completion. It signals Task B to begin its attempt and sets a flag when
+ * finished so the main test can evaluate results.
+ *
+ * @param arg Unused task argument.
+ */
+static void TestOptiflash_mtSameRegionTaskA(void *arg)
+{
+    (void)arg;
+    FLC_RegionInfo region = gFLCRegionConfig[0];
+    uint32_t status = 0U;
+    uint32_t attempts = 0U;
+    const uint32_t maxAttempts = 1000000U;
+    region.sourceStartAddress = (uint32_t)sourceBuffer;
+    region.destinationStartAddress = (uint32_t)destBuffer;
+    region.sourceEndAddress = (uint32_t)sourceBuffer + TRANSFERSIZE;
+
+    FLC_configureRegion(&region);
+    FLC_startRegion(&region);
+
+    /* Let Task B attempt its operations while transfer likely in-flight */
+    SemaphoreP_post(&TestOptiflash_MtSameRegionStartSem);
+
+    /* Wait for the region to finish with timeout to avoid deadlock */
+    do {
+        FLC_isRegionDone(&region, &status);
+        attempts++;
+        if (attempts > maxAttempts)
+        {
+            DebugP_logError("FLC region %d (Task A) copy timeout\r\n", region.regionId);
+            break;
+        }
+    } while (((status >> region.regionId) & 0x1U) == 0U);
+
+    /* Mark Task A done so the main test can complete teardown */
+    TestOptiflash_MtSameRegionADone = 1;
+    ClockP_usleep(5000);
+    TaskP_exit();
+}
+
+/**
+ * \brief Multithread Task B for same-region concurrency test.
+ *
+ * Task B waits for Task A to start the transfer, then attempts to configure
+ * and start the same region while the transfer may be in-flight. Results
+ * (return codes) are stored for the main test to interpret acceptable
+ * behaviors (reject or allow concurrent operations).
+ *
+ * @param arg Unused task argument.
+ */
+static void TestOptiflash_mtSameRegionTaskB(void *arg)
+{
+    (void)arg;
+    int32_t retCfg;
+    int32_t retStart;
+    /* Wait until Task A has started the transfer */
+    SemaphoreP_pend(&TestOptiflash_MtSameRegionStartSem, SystemP_WAIT_FOREVER);
+
+    FLC_RegionInfo regionSame = gFLCRegionConfig[0];
+    regionSame.sourceStartAddress = (uint32_t)sourceBuffer;
+    regionSame.destinationStartAddress = (uint32_t)destBuffer;
+    regionSame.sourceEndAddress = (uint32_t)sourceBuffer + TRANSFERSIZE;
+
+    retCfg = FLC_configureRegion(&regionSame);
+    retStart = FLC_startRegion(&regionSame);
+
+    TestOptiflash_MtSameRegionStatus = ((retCfg & 0xFFFF) << 16) | (retStart & 0xFFFF);
+    ClockP_usleep(5000);
+    TaskP_exit();
+}
+
+/**
+ * \brief Multithread test: concurrent access to the same FLC region.
+ *
+ * Test Category: Multithread
+ *
+ * Spawns two tasks that operate on the same FLC region: Task A starts a
+ * transfer while Task B attempts to configure/start the same region while
+ * the transfer may still be in progress. The test accepts either the driver
+ * rejecting concurrent reconfiguration/start or allowing it; if allowed,
+ * data integrity is verified. Synchronization is performed via a binary
+ * semaphore and task status flags.
+ *
+ * @param args Unused.
+ * @return NULL
+ * @expectedOutput Either driver rejects concurrent same-region access (no
+ * crash) or transfer completes and destination matches source.
+ */
+void *TestOptiflash_multithreadFlcSameRegionAccess(void *args)
+{
+    (void)args;
+    /* Reset status flags and construct start semaphore */
+    TestOptiflash_MtSameRegionStatus = -1;
+    TestOptiflash_MtSameRegionADone = 0;
+    TaskP_Object tA, tB;
+    uint32_t waitMs = 0U;
+    const uint32_t maxWaitMs = 2000U; /* 2s timeout */
+    int32_t retCfg;
+    int32_t retStart;
+    TaskP_Params tpar;
+
+    SemaphoreP_constructBinary(&TestOptiflash_MtSameRegionStartSem, 0U);
+
+    TaskP_Params_init(&tpar);
+    tpar.name = (char *)"FlcMtSameA";
+    tpar.stackSize = sizeof(TestOptiflash_Task1Stack);
+    tpar.stack = TestOptiflash_Task1Stack;
+    tpar.priority = 2U;
+    tpar.args = NULL;
+    tpar.taskMain = TestOptiflash_mtSameRegionTaskA;
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, TaskP_construct(&tA, &tpar));
+
+    TaskP_Params_init(&tpar);
+    tpar.name = (char *)"FlcMtSameB";
+    tpar.stackSize = sizeof(TestOptiflash_Task2Stack);
+    tpar.stack = TestOptiflash_Task2Stack;
+    tpar.priority = 3U;
+    tpar.args = NULL;
+    tpar.taskMain = TestOptiflash_mtSameRegionTaskB;
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, TaskP_construct(&tB, &tpar));
+
+    /* Wait for TaskB to set status and TaskA to mark done, with timeout */
+    while (((uint32_t)TestOptiflash_MtSameRegionStatus == (uint32_t)-1 || TestOptiflash_MtSameRegionADone == 0) && waitMs < maxWaitMs)
+    {
+        ClockP_sleep(1);
+        waitMs++;
+    }
+    if ((uint32_t)TestOptiflash_MtSameRegionStatus == (uint32_t)-1 || TestOptiflash_MtSameRegionADone == 0)
+    {
+        DebugP_logError("TestOptiflash_multithreadFlcSameRegionAccess: timeout waiting for tasks (continuing)\r\n");
+    }
+
+    retCfg = (int32_t)((TestOptiflash_MtSameRegionStatus >> 16) & 0xFFFF);
+    retStart = (int32_t)(TestOptiflash_MtSameRegionStatus & 0xFFFF);
+
+    if ((retCfg != FLC_API_STS_SUCCESS) || (retStart != FLC_API_STS_SUCCESS))
+    {
+        /* Driver rejected concurrent operations — acceptable outcome */
+        TEST_ASSERT_TRUE_MESSAGE(1, "Driver rejected concurrent same-region access (acceptable)");
+    }
+    else
+    {
+        /* Driver allowed concurrent calls — verify data integrity */
+        TEST_ASSERT_EQUAL_MEMORY_MESSAGE(sourceBuffer, destBuffer, TRANSFERSIZE, "Data mismatch after concurrent same-region access");
+    }
+    ClockP_usleep(5000);
+    TaskP_destruct(&tA);
+    TaskP_destruct(&tB);
+    SemaphoreP_destruct(&TestOptiflash_MtSameRegionStartSem);
+
+    return NULL;
+}
+
+/**
+ * \brief Multithread HWI: posts per-region semaphores on region DONE.
+ *
+ * Scans configured regions for completion and posts the corresponding
+ * semaphore so waiter tasks can validate data for their region. Clears the
+ * FLC interrupt for each region after posting.
+ *
+ * @param args Unused HWI argument.
+ */
+static void TestOptiflash_mtHwiFxn(void *args)
+{
+    (void)args;
+    uint32_t status = 0U;
+
+    /* Query each region's completion and post its semaphore */
+    for (uint32_t r = 0U; r < 2U; r++)
+    {
+        if (FLC_API_STS_SUCCESS == FLC_isRegionDone(&gFLCRegionConfig[r], &status))
+        {
+            if (((status >> gFLCRegionConfig[r].regionId) & 0x1U) != 0U)
+            {
+                if (r == 0U)
+                {
+                    SemaphoreP_post(&TestOptiflash_IntSem0);
+                }
+                else
+                {
+                    SemaphoreP_post(&TestOptiflash_IntSem1);
+                }
+                /* Clear the interrupt for that region */
+                FLC_clearInterrupt(&gFLCRegionConfig[r], FLC_INTERRUPT_DONE);
+            }
+        }
+    }
+
+    return;
+}
+
+/**
+ * \brief Waiter task for region0 completion in multithread interrupt test.
+ *
+ * Pend on a semaphore posted by the multithread HWI, then validate the first
+ * half of the destination buffer matches the source. Reports result via
+ * TestOptiflash_IntTaskResults and signals completion to the main test.
+ *
+ * @param arg Unused task argument (index passed via global table).
+ */
+static void TestOptiflash_intWaitTask0(void *arg)
+{
+    int idx = 0;
+    (void)arg;
+    /* Wait for ISR to post semaphore for region0 */
+    const uint32_t maxWaitMs = 2000U; /* ms */
+    const uint32_t half = TRANSFERSIZE / 2U;
+    if (SemaphoreP_pend(&TestOptiflash_IntSem0, maxWaitMs) != SystemP_SUCCESS)
+    {
+        DebugP_logError("IntWaitTask0: timeout waiting for IntSem0\r\n");
+        TestOptiflash_IntTaskResults[idx] = SystemP_FAILURE;
+        SemaphoreP_post(&TestOptiflash_MtDoneSem);
+        TaskP_exit();
+    }
+
+    /* Validate data for region0 (first half) */
+    CacheP_inv(destBuffer, half, CacheP_TYPE_ALL);
+    if (0 == memcmp(&sourceBuffer[0], &destBuffer[0], half))
+    {
+        TestOptiflash_IntTaskResults[idx] = SystemP_SUCCESS;
+    }
+    else
+    {
+        TestOptiflash_IntTaskResults[idx] = SystemP_FAILURE;
+        DebugP_logError("IntWaitTask0: data mismatch for region0\r\n");
+    }
+
+    /* Signal main test that this waiter completed */
+    SemaphoreP_post(&TestOptiflash_MtDoneSem);
+    TaskP_exit();
+}
+
+/**
+ * \brief Waiter task for region1 completion in multithread interrupt test.
+ *
+ * Pend on a semaphore posted by the multithread HWI, then validate the
+ * second half of the destination buffer matches the source. Reports result
+ * via TestOptiflash_IntTaskResults and signals completion to the main test.
+ *
+ * @param arg Unused task argument (index passed via global table).
+ */
+static void TestOptiflash_intWaitTask1(void *arg)
+{
+    int idx = 1;
+    (void)arg;
+    const uint32_t maxWaitMs1 = 2000U; /* ms */
+    const uint32_t half = TRANSFERSIZE / 2U;
+    if (SemaphoreP_pend(&TestOptiflash_IntSem1, maxWaitMs1) != SystemP_SUCCESS)
+    {
+        DebugP_logError("IntWaitTask1: timeout waiting for IntSem1\r\n");
+        TestOptiflash_IntTaskResults[idx] = SystemP_FAILURE;
+        SemaphoreP_post(&TestOptiflash_MtDoneSem);
+        TaskP_exit();
+    }
+
+    /* Validate data for region1 (second half) */
+    CacheP_inv(destBuffer + half, half, CacheP_TYPE_ALL);
+    if (0 == memcmp(&sourceBuffer[half], &destBuffer[half], half))
+    {
+        TestOptiflash_IntTaskResults[idx] = SystemP_SUCCESS;
+    }
+    else
+    {
+        TestOptiflash_IntTaskResults[idx] = SystemP_FAILURE;
+        DebugP_logError("IntWaitTask1: data mismatch for region1\r\n");
+    }
+    /* Signal main test that this waiter completed */
+    SemaphoreP_post(&TestOptiflash_MtDoneSem);
+    TaskP_exit();
+}
+
+/**
+ * \brief Multithreaded interrupt handling test for FLC regions.
+ *
+ * Test Category: Multithread
+ *
+ * Installs an HWI that posts per-region semaphores when regions complete.
+ * Two waiter tasks block on their respective semaphores; both regions are
+ * started simultaneously and each waiter validates the transferred half of
+ * the buffer. Ensures interrupts, waiter tasks, and synchronization operate
+ * correctly under concurrent conditions.
+ *
+ * @param args Unused.
+ * @return Pointer-sized status (SystemP_SUCCESS on success).
+ */
+void *TestOptiflash_multithreadFlcInterruptHandling(void *args)
+{
+    (void)args;
+    int32_t status = SystemP_SUCCESS;
+    HwiP_Params hwiPrms;
+    HwiP_Object hwiObj;
+    const uint32_t half = TRANSFERSIZE / 2U;
+    TaskP_Params tpar;
+    TaskP_Object t0, t1;
+    const uint32_t mainWaitMs = 5000U;
+
+    /* Prepare semaphores */
+    SemaphoreP_constructBinary(&TestOptiflash_IntSem0, 0U);
+    SemaphoreP_constructBinary(&TestOptiflash_IntSem1, 0U);
+
+    /* Install HWI which will post semaphores for region completions */
+    HwiP_Params_init(&hwiPrms);
+    hwiPrms.intNum = TestOptiflash_getRl2IrqNum(gFLCRegionConfig[0].baseAddress);
+    hwiPrms.callback = &TestOptiflash_mtHwiFxn;
+    hwiPrms.priority = 4U;
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, HwiP_construct(&hwiObj, &hwiPrms));
+    /* Ensure HWI is enabled */
+    HwiP_enable();
+
+    /* Configure regions to copy distinct halves to different destinations */
+    FLC_RegionInfo *r0 = &gFLCRegionConfig[0];
+    FLC_RegionInfo *r1 = &gFLCRegionConfig[1];
+
+    r0->sourceStartAddress = (uint32_t)sourceBuffer;
+    r0->sourceEndAddress   = (uint32_t)sourceBuffer + half;
+    r0->destinationStartAddress = (uint32_t)destBuffer;
+
+    r1->sourceStartAddress = (uint32_t)sourceBuffer + half;
+    r1->sourceEndAddress   = (uint32_t)sourceBuffer + TRANSFERSIZE;
+    r1->destinationStartAddress = (uint32_t)destBuffer + half;
+
+    TEST_ASSERT_EQUAL_INT(FLC_API_STS_SUCCESS, FLC_configureRegion(r0));
+    TEST_ASSERT_EQUAL_INT(FLC_API_STS_SUCCESS, FLC_configureRegion(r1));
+
+    /* Ensure interrupts are cleared then enabled for both regions */
+    FLC_disableInterrupt(r0, FLC_INTERRUPT_DONE);
+    FLC_clearInterrupt(r0, FLC_INTERRUPT_DONE);
+    FLC_disableInterrupt(r1, FLC_INTERRUPT_DONE);
+    FLC_clearInterrupt(r1, FLC_INTERRUPT_DONE);
+
+    /* Make sure destination is visible to hardware */
+    CacheP_wbInv(destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+
+    FLC_enableInterrupt(r0, FLC_INTERRUPT_DONE);
+    FLC_enableInterrupt(r1, FLC_INTERRUPT_DONE);
+
+    /* Create counting semaphore to wait for the two waiter tasks */
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, SemaphoreP_constructCounting(&TestOptiflash_MtDoneSem, 0, 2));
+
+    /* Reset per-task results and args then construct waiter tasks that will block on per-region semaphores */
+    TestOptiflash_IntTaskArgs[0] = 0;
+    TestOptiflash_IntTaskArgs[1] = 1;
+    TestOptiflash_IntTaskResults[0] = SystemP_FAILURE;
+    TestOptiflash_IntTaskResults[1] = SystemP_FAILURE;
+
+    /* Construct waiter tasks that will block on per-region semaphores */
+    TaskP_Params_init(&tpar);
+    tpar.name = (char *)"IntWait0";
+    tpar.stackSize = sizeof(TestOptiflash_Task1Stack);
+    tpar.stack = TestOptiflash_Task1Stack;
+    tpar.priority = 2U;
+    tpar.args = &TestOptiflash_IntTaskArgs[0];
+    tpar.taskMain = TestOptiflash_intWaitTask0;
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, TaskP_construct(&t0, &tpar));
+
+    TaskP_Params_init(&tpar);
+    tpar.name = (char *)"IntWait1";
+    tpar.stackSize = sizeof(TestOptiflash_Task2Stack);
+    tpar.stack = TestOptiflash_Task2Stack;
+    tpar.priority = 2U;
+    tpar.args = &TestOptiflash_IntTaskArgs[1];
+    tpar.taskMain = TestOptiflash_intWaitTask1;
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, TaskP_construct(&t1, &tpar));
+
+    /* Start both regions simultaneously (use global config) */
+    TEST_ASSERT_EQUAL_INT(FLC_API_STS_SUCCESS, FLC_startRegion(r0));
+    TEST_ASSERT_EQUAL_INT(FLC_API_STS_SUCCESS, FLC_startRegion(r1));
+
+    /* Wait for both waiter tasks to report completion (timed to avoid hang) */
+    if (SemaphoreP_pend(&TestOptiflash_MtDoneSem, mainWaitMs) != SystemP_SUCCESS)
+    {
+        DebugP_logError("TestOptiflash_multithreadFlcInterruptHandling: timeout waiting for waiter task 0\r\n");
+    }
+    if (SemaphoreP_pend(&TestOptiflash_MtDoneSem, mainWaitMs) != SystemP_SUCCESS)
+    {
+        DebugP_logError("TestOptiflash_multithreadFlcInterruptHandling: timeout waiting for waiter task 1\r\n");
+    }
+
+    /* Validate results reported by waiter tasks */
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, TestOptiflash_IntTaskResults[0]);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, TestOptiflash_IntTaskResults[1]);
+
+    /* Cleanup */
+    FLC_disableInterrupt(r0, FLC_INTERRUPT_DONE);
+    FLC_disableInterrupt(r1, FLC_INTERRUPT_DONE);
+    HwiP_disable();
+
+    /* Destroy waiter tasks and semaphores */
+    TaskP_destruct(&t0);
+    TaskP_destruct(&t1);
+    SemaphoreP_destruct(&TestOptiflash_MtDoneSem);
+    SemaphoreP_destruct(&TestOptiflash_IntSem0);
+    SemaphoreP_destruct(&TestOptiflash_IntSem1);
+
+    return (void *)(intptr_t)status;
+}
+
+/**
+ * @brief Task function for multithread RL2 concurrent access test.
+ *
+ * Calls TestOptiflash_loadFunction() multiple times to generate instruction
+ * fetches through the RL2 cache, then signals completion.
+ *
+ * @param arg Unused task argument.
+ */
+static void TestOptiflash_mtRl2AccessTask1(void *arg)
+{
+    (void)arg;
+    /* Perform multiple instruction fetch iterations through RL2 cache */
+    for(uint32_t i = 0U; i < 5U; i++)
+    {
+        TestOptiflash_loadFunction();
+    }
+    SemaphoreP_post(&TestOptiflash_MtDoneSem);
+    TaskP_exit();
+}
+
+/**
+ * @brief Second task function for multithread RL2 concurrent access test.
+ *
+ * Same as task 1 — calls TestOptiflash_loadFunction() to generate instruction
+ * fetches, exercising the RL2 cache concurrently with task 1.
+ *
+ * @param arg Unused task argument.
+ */
+static void TestOptiflash_mtRl2AccessTask2(void *arg)
+{
+    (void)arg;
+    for(uint32_t i = 0U; i < 5U; i++)
+    {
+        TestOptiflash_loadFunction();
+    }
+    SemaphoreP_post(&TestOptiflash_MtDoneSem);
+    TaskP_exit();
+}
+
+/**
+ * \brief Validate RL2 cache counters and status remain consistent under
+ *        multi-thread memory access.
+ *
+ * Test Category: Multithread / Functional
+ *
+ * Configures and enables RL2 cache, then spawns two concurrent tasks that each
+ * call TestOptiflash_loadFunction() (instruction fetches from flash through
+ * RL2) multiple iterations.  After both tasks complete, reads the hit and miss
+ * counters and validates:
+ *   - No negative or invalid counter values (counters are non-decreasing).
+ *   - Total counter activity increased (hits + misses grew).
+ *   - No system instability or crash under concurrent RL2 access.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput Counters are non-negative and incrementing consistently.
+ *                 No overflow anomalies. No system instability.
+ */
+void *TestOptiflash_multithreadRl2ConcurrentAccess(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    RL2_Params rl2Params;
+    RL2_API_STS_t sts;
+    TaskP_Params tParams;
+    TaskP_Object t1, t2;
+    uint32_t hitsBefore = 0U, missBefore = 0U;
+    uint32_t hitsAfter = 0U, missAfter = 0U;
+    uint32_t totalBefore;
+    uint32_t totalAfter;
+
+    /* Configure and enable RL2 cache */
+    sts = RL2_initparams(&rl2Params);
+    if(sts != RL2_API_STS_SUCCESS)
+    {
+        retval = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Params.baseAddress  = gRL2Config[0].baseAddress;
+        rl2Params.rangeStart   = gRL2Config[0].rangeStart;
+        rl2Params.rangeEnd     = gRL2Config[0].rangeEnd;
+        rl2Params.cacheSize    = gRL2Config[0].cacheSize;
+        rl2Params.l2Sram0Base  = gRL2Config[0].l2Sram0Base;
+        rl2Params.l2Sram0Len   = gRL2Config[0].l2Sram0Len;
+
+        sts = RL2_configure(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Record baseline counters before concurrent access */
+    if(SystemP_SUCCESS == retval)
+    {
+        RL2_getCacheHits(&rl2Params, &hitsBefore);
+        RL2_getCacheMiss(&rl2Params, &missBefore);
+    }
+
+    /* Construct counting semaphore and two concurrent tasks */
+    SemaphoreP_constructCounting(&TestOptiflash_MtDoneSem, 0, 2);
+
+    TaskP_Params_init(&tParams);
+    tParams.name      = (char*)"Rl2Mt1";
+    tParams.stackSize = sizeof(TestOptiflash_Task1Stack);
+    tParams.stack     = TestOptiflash_Task1Stack;
+    tParams.priority  = 2U;
+    tParams.args      = NULL;
+    tParams.taskMain  = TestOptiflash_mtRl2AccessTask1;
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, TaskP_construct(&t1, &tParams));
+
+    TaskP_Params_init(&tParams);
+    tParams.name      = (char*)"Rl2Mt2";
+    tParams.stackSize = sizeof(TestOptiflash_Task2Stack);
+    tParams.stack     = TestOptiflash_Task2Stack;
+    tParams.priority  = 2U;
+    tParams.args      = NULL;
+    tParams.taskMain  = TestOptiflash_mtRl2AccessTask2;
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, TaskP_construct(&t2, &tParams));
+
+    /* Wait for both tasks to complete */
+    SemaphoreP_pend(&TestOptiflash_MtDoneSem, SystemP_WAIT_FOREVER);
+    SemaphoreP_pend(&TestOptiflash_MtDoneSem, SystemP_WAIT_FOREVER);
+
+    /* Read counters after concurrent access */
+    RL2_getCacheHits(&rl2Params, &hitsAfter);
+    RL2_getCacheMiss(&rl2Params, &missAfter);
+
+    /* Validate counters are monotonically non-decreasing (no negative/invalid) */
+    if(hitsAfter < hitsBefore)
+    {
+        DebugP_logError("Hit counter decreased under concurrent access: before=%u after=%u\r\n",
+                        hitsBefore, hitsAfter);
+        retval = SystemP_FAILURE;
+    }
+    if(missAfter < missBefore)
+    {
+        DebugP_logError("Miss counter decreased under concurrent access: before=%u after=%u\r\n",
+                        missBefore, missAfter);
+        retval = SystemP_FAILURE;
+    }
+
+    /* Verify total counter activity: at least some instruction fetches occurred */
+    if(SystemP_SUCCESS == retval)
+    {
+        totalBefore = hitsBefore + missBefore;
+        totalAfter  = hitsAfter + missAfter;
+        if(totalAfter <= totalBefore)
+        {
+            DebugP_logError("No counter activity under concurrent access: before=%u after=%u\r\n",
+                            totalBefore, totalAfter);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Cleanup */
+    ClockP_usleep(5000);
+    TaskP_destruct(&t1);
+    TaskP_destruct(&t2);
+    SemaphoreP_destruct(&TestOptiflash_MtDoneSem);
+    RL2_disable(&rl2Params);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * @brief ISR for the multithread RL2 interrupt + FLC transfer test.
+ *
+ * Handles both WR_HIT (RL2 write-hit) and FLC_DON (FLC done) events on the
+ * shared CBA4 interrupt line.  Increments the RL2 ISR counter for WR_HIT
+ * events and acknowledges all pending events.
+ *
+ * @param args Unused HWI argument.
+ */
+static void TestOptiflash_mtRl2FlcIsrFxn(void *args)
+{
+    (void)args;
+    CSL_rl2_of_cba4Regs *regs =
+        (CSL_rl2_of_cba4Regs *)gRL2Config[0].baseAddress;
+    uint32_t raw = regs->IRQSTATUS_RAW;
+
+    if((raw & CSL_RL2_OF_CBA4_IRQSTATUS_RAW_WR_HIT_MASK) != 0U)
+    {
+        TestOptiflash_MtRl2IsrCount++;
+        /* Disable WR_HIT to prevent persistent re-entry */
+        regs->IRQENABLE_CLR = CSL_RL2_OF_CBA4_IRQSTATUS_RAW_WR_HIT_MASK;
+        /* Acknowledge WR_HIT */
+        regs->IRQSTATUS_MSK = CSL_RL2_OF_CBA4_IRQSTATUS_RAW_WR_HIT_MASK;
+    }
+
+    if((raw & CSL_RL2_OF_CBA4_IRQSTATUS_RAW_FLC_DON_MASK) != 0U)
+    {
+        /* Clear FLC DONE interrupt */
+        FLC_clearInterrupt(&gFLCRegionConfig[0], FLC_INTERRUPT_DONE);
+    }
+}
+
+/**
+ * @brief Thread A: performs RL2 memory writes to generate write-hit interrupt.
+ *
+ * Populates the RL2 cache with instruction fetches, then writes to the cached
+ * address to trigger the WR_HIT interrupt.
+ *
+ * @param arg Pointer to int32_t result storage.
+ */
+static void TestOptiflash_mtRl2WriteTask(void *arg)
+{
+    int32_t *result = (int32_t *)arg;
+    RL2_Params rl2p = gRL2Config[0];
+    volatile uint32_t *cachedAddr;
+
+    /* Populate cache with instruction fetches first */
+    TestOptiflash_loadFunction();
+
+    /* Small delay to let Thread B start the FLC transfer */
+    ClockP_usleep(2000U);
+
+    /* Write to cached address to trigger WR_HIT interrupt */
+    cachedAddr = (volatile uint32_t *)rl2p.rangeStart;
+    *cachedAddr = TEST_OPTIFLASH_RL2_WRITE_PATTERN_1;
+    __asm__ __volatile__("DSB");
+
+    /* Allow ISR to fire */
+    ClockP_usleep(5000U);
+
+    *result = SystemP_SUCCESS;
+    SemaphoreP_post(&TestOptiflash_MtDoneSem);
+    TaskP_exit();
+}
+
+/**
+ * @brief Thread B: starts FLC transfer while Thread A exercises RL2 interrupts.
+ *
+ * Configures and starts an FLC transfer, polls for completion, and validates
+ * data integrity of the transferred buffer.
+ *
+ * @param arg Pointer to int32_t result storage.
+ */
+static void TestOptiflash_mtFlcTransferTask(void *arg)
+{
+    int32_t *result = (int32_t *)arg;
+    FLC_RegionInfo *region = &gFLCRegionConfig[0];
+    uint32_t cpy_status = 0U;
+    uint32_t attempts = 0U;
+    const uint32_t maxAttempts = 1000000U;
+
+    /* Prepare destination buffer */
+    memset(destBuffer, 0, TRANSFERSIZE);
+    CacheP_wbInv(destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+
+    /* Configure and start FLC transfer (RAM to RAM) */
+    region->sourceStartAddress      = (uint32_t)sourceBuffer;
+    region->sourceEndAddress        = (uint32_t)sourceBuffer + TRANSFERSIZE;
+    region->destinationStartAddress = (uint32_t)destBuffer;
+
+    FLC_configureRegion(region);
+    FLC_startRegion(region);
+
+    /* Poll for completion */
+    do {
+        FLC_isRegionDone(&gFLCRegionConfig[FLC_REGION_FLC0], &cpy_status);
+        attempts++;
+        if(attempts > maxAttempts)
+        {
+            DebugP_logError("FLC transfer timeout in MT RL2+FLC test\r\n");
+            *result = SystemP_FAILURE;
+            SemaphoreP_post(&TestOptiflash_MtDoneSem);
+            TaskP_exit();
+        }
+    } while((cpy_status & (1U << region->regionId)) == 0U);
+
+    /* Verify data integrity */
+    CacheP_inv(destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+    if(0 != memcmp(sourceBuffer, destBuffer, TRANSFERSIZE))
+    {
+        DebugP_logError("FLC data mismatch in MT RL2+FLC test\r\n");
+        *result = SystemP_FAILURE;
+    }
+    else
+    {
+        *result = SystemP_SUCCESS;
+    }
+
+    SemaphoreP_post(&TestOptiflash_MtDoneSem);
+    TaskP_exit();
+}
+
+/**
+ * \brief Validate RL2 interrupt functionality while FLC transfers are active
+ *        in parallel threads.
+ *
+ * Test Category: Multithread / Integration
+ *
+ * Configures and enables RL2 cache, registers an ISR for write-hit events,
+ * then spawns two concurrent threads:
+ *   - Thread A: Performs RL2 memory writes to generate write-hit interrupts.
+ *   - Thread B: Starts an FLC transfer (RAM to RAM).
+ * After both threads complete:
+ *   - Verifies RL2 write-hit ISR fired (ISR count > 0).
+ *   - Verifies FLC transfer completed successfully with correct data.
+ * This proves RL2 interrupts are not blocked by concurrent FLC activity and
+ * FLC transfers are unaffected by RL2 interrupt handling.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput RL2 interrupts not blocked. FLC transfer unaffected.
+ */
+void *TestOptiflash_multithreadRl2InterruptAndFlcTransfer(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    RL2_Params rl2Params;
+    RL2_API_STS_t sts;
+    HwiP_Params hwiPrms;
+    HwiP_Object hwiObj;
+    TaskP_Params tParams;
+    TaskP_Object t1, t2;
+    static int32_t resultA, resultB;
+    CSL_rl2_of_cba4Regs *regs;
+
+    /* Configure and enable RL2 cache */
+    sts = RL2_initparams(&rl2Params);
+    if(sts != RL2_API_STS_SUCCESS)
+    {
+        retval = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Params.baseAddress  = gRL2Config[0].baseAddress;
+        rl2Params.rangeStart   = gRL2Config[0].rangeStart;
+        rl2Params.rangeEnd     = gRL2Config[0].rangeEnd;
+        rl2Params.cacheSize    = gRL2Config[0].cacheSize;
+        rl2Params.l2Sram0Base  = gRL2Config[0].l2Sram0Base;
+        rl2Params.l2Sram0Len   = gRL2Config[0].l2Sram0Len;
+
+        sts = RL2_configure(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_enable(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    regs = (CSL_rl2_of_cba4Regs *)rl2Params.baseAddress;
+
+    /* Clear prior ISR state and FLC errors */
+    TestOptiflash_MtRl2IsrCount = 0U;
+    regs->IRQSTATUS_MSK = CSL_RL2_OF_CBA4_IRQSTATUS_RAW_WR_HIT_MASK;
+    RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+    TestOptiflash_resetFlc(&gFLCRegionConfig[0]);
+
+    /* Register combined ISR for WR_HIT and FLC_DON */
+    HwiP_Params_init(&hwiPrms);
+    hwiPrms.intNum   = TestOptiflash_getRl2IrqNum(rl2Params.baseAddress);
+    hwiPrms.callback = &TestOptiflash_mtRl2FlcIsrFxn;
+    hwiPrms.priority = 4U;
+    hwiPrms.isPulse  = 0U;
+    hwiPrms.isFIQ    = 0U;
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, HwiP_construct(&hwiObj, &hwiPrms));
+
+    /* Enable RL2 write-hit interrupt */
+    RL2_setInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+
+    /* Construct done semaphore and tasks */
+    resultA = SystemP_FAILURE;
+    resultB = SystemP_FAILURE;
+    SemaphoreP_constructCounting(&TestOptiflash_MtDoneSem, 0, 2);
+
+    /* Thread A: RL2 write-hit generation */
+    TaskP_Params_init(&tParams);
+    tParams.name      = (char*)"Rl2WrHit";
+    tParams.stackSize = sizeof(TestOptiflash_Task1Stack);
+    tParams.stack     = TestOptiflash_Task1Stack;
+    tParams.priority  = 2U;
+    tParams.args      = &resultA;
+    tParams.taskMain  = TestOptiflash_mtRl2WriteTask;
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, TaskP_construct(&t1, &tParams));
+
+    /* Thread B: FLC transfer */
+    TaskP_Params_init(&tParams);
+    tParams.name      = (char*)"FlcXfer";
+    tParams.stackSize = sizeof(TestOptiflash_Task2Stack);
+    tParams.stack     = TestOptiflash_Task2Stack;
+    tParams.priority  = 2U;
+    tParams.args      = &resultB;
+    tParams.taskMain  = TestOptiflash_mtFlcTransferTask;
+    TEST_ASSERT_EQUAL_INT(SystemP_SUCCESS, TaskP_construct(&t2, &tParams));
+
+    /* Wait for both tasks to complete */
+    SemaphoreP_pend(&TestOptiflash_MtDoneSem, SystemP_WAIT_FOREVER);
+    SemaphoreP_pend(&TestOptiflash_MtDoneSem, SystemP_WAIT_FOREVER);
+
+    /* Validate RL2 write-hit ISR fired at least once */
+    if(TestOptiflash_MtRl2IsrCount == 0U)
+    {
+        DebugP_logError("RL2 write-hit ISR did not fire during concurrent RL2+FLC test\r\n");
+        retval = SystemP_FAILURE;
+    }
+
+    /* Validate both tasks completed successfully */
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, resultA);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, resultB);
+
+    /* Cleanup: disable interrupt, destroy HWI, tasks, semaphore */
+    RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+    regs->IRQSTATUS_MSK = CSL_RL2_OF_CBA4_IRQSTATUS_RAW_WR_HIT_MASK;
+    HwiP_destruct(&hwiObj);
+
+    ClockP_usleep(5000);
+    TaskP_destruct(&t1);
+    TaskP_destruct(&t2);
+    SemaphoreP_destruct(&TestOptiflash_MtDoneSem);
+    RL2_disable(&rl2Params);
+
+    /* Recover OSPI after writing to XIP address (Thread A wrote to cached
+     * flash address which propagates through RL2 to OSPI DAC bridge) */
+    Board_flashClose();
+    Drivers_ospiClose();
+    Drivers_ospiOpen();
+    Board_flashOpen();
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+#endif

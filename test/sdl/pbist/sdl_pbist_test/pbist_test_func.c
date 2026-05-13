@@ -129,10 +129,6 @@
 /*                 Internal Function Declarations                             */
 /* ========================================================================== */
 
-#if !defined (SOC_J722S)
-static void PBIST_SBL_API_Test(SDL_PBIST_inst instance);
-#endif
-
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -142,37 +138,6 @@ static uint64_t PBIST_profilingTime = 0;
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
-
-#if !defined (SOC_J722S)
-/* This is to test the SBL APIs*/
-static void PBIST_SBL_API_Test(SDL_PBIST_inst instance)
-{
-    int32_t status;
-    status = Sciclient_pmSetModuleState(PBIST_TestHandleArray[instance].tisciPBISTDeviceId,
-                                            TISCI_MSG_VALUE_DEVICE_SW_STATE_ON,
-                                            TISCI_MSG_FLAG_AOP,
-                                            SystemP_WAIT_FOREVER);
-    if (status == SDL_PASS)
-    {
-        /*
-        * The following APIs are meant to be used with SBL and not in this
-        * context. Hence, they may return fails or other non-pass values
-        * here, which is expected. Since we are testing them here for
-        * coverage purposes, the return values are being discarded.
-        */
-
-        SDL_SBL_PBIST_selfTest(instance, SDL_PBIST_TEST);
-
-        SDL_SBL_PBIST_checkDone(instance);
-
-        SDL_SBL_PBIST_checkResult(instance);
-    }
-    else
-    {
-        DebugP_log("\r\n Issue in powering on PBIST device for SBL test. \r\n");
-    }
-}
-#endif
 
 /*
  * Certain IPs are left in a transition state after performing PBIST
@@ -224,12 +189,16 @@ int32_t PBIST_PSCForceBit(uint32_t pscAddr, uint32_t pdShift, bool powerOn)
 }
 #endif
 
-int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
+int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest, bool sblTest)
 {
     int32_t testResult = 0;
     SDL_ErrType_t status;
     bool PBISTResult;
     SDL_PBIST_testType testType;
+#if !defined(SOC_J722S)
+    SDL_PBIST_inst sblInstance;
+    int timeout;
+#endif
 
     uint64_t startTime, testStartTime, testEndTime, endTime;
     uint64_t prepTime, diffTime, restoreTime, instanceTime;
@@ -592,11 +561,50 @@ int32_t PBIST_runTest(uint32_t instanceId, bool runNegTest)
     {
         /* Get start time for PBIST test */
         testStartTime = ClockP_getTimeUsec();
-        status = SDL_PBIST_selfTest((SDL_PBIST_inst)PBIST_TestHandleArray[instanceId].pbistInst, testType, PBIST_APP_TIMEOUT, &PBISTResult);
-        if ((status != SDL_PASS) || (PBISTResult == false))
+        if (sblTest)
         {
-            DebugP_log("   SDL_PBIST_selfTest FAILED \r\n");
-            testResult = -1;
+#if !defined(SOC_J722S)
+            sblInstance = (SDL_PBIST_inst)PBIST_TestHandleArray[APP_PBIST_SBL_TEST_INST].pbistInst;
+            status = SDL_SBL_PBIST_selfTest(sblInstance, testType);
+            if (status == SDL_PASS)
+            {
+                timeout = PBIST_APP_TIMEOUT;
+                while (timeout > 0 && SDL_SBL_PBIST_checkDone(sblInstance) != PBIST_DONE)
+                {
+                    timeout--;
+                }
+                if (timeout > 0)
+                {
+                    status = SDL_SBL_PBIST_checkResult(sblInstance);
+                    if (status == SDL_PASS)
+                    {
+                        DebugP_log("   SDL_SBL_PBIST_selfTest successful \r\n");
+                    }
+                    else
+                    {
+                        DebugP_log("   SDL_SBL_PBIST_selfTest wrong result \r\n");
+                    }
+                }
+                else
+                {
+                    status = SDL_EFAIL;
+                    DebugP_log("   SDL_SBL_PBIST_selfTest timed out \r\n");
+                }
+            }
+            else 
+            {
+                DebugP_log("   SDL_SBL_PBIST_selfTest FAILED \r\n");
+            }
+#endif
+        }
+        else
+        {
+            status = SDL_PBIST_selfTest((SDL_PBIST_inst)PBIST_TestHandleArray[instanceId].pbistInst, testType, PBIST_APP_TIMEOUT, &PBISTResult);
+            if ((status != SDL_PASS) || (PBISTResult == false))
+            {
+                DebugP_log("   SDL_PBIST_selfTest FAILED \r\n");
+                testResult = -1;
+            }
         }
     }
 
@@ -1040,7 +1048,9 @@ int32_t PBIST_funcTest(void)
 #endif
         /* First run the SBL API test */
 #if !defined (SOC_J722S)
-        PBIST_SBL_API_Test(PBIST_TestHandleArray[APP_PBIST_SBL_TEST_INST].pbistInst);
+        DebugP_log(" Starting SBL API test run");
+        PBIST_runTest(APP_PBIST_SBL_TEST_INST, false, true);
+        DebugP_log(" SBL API test run completed\r\n");
 #endif
 
         /* Run the test for diagnostics */
@@ -1048,7 +1058,7 @@ int32_t PBIST_funcTest(void)
         {
             /* Run test on selected instance */
 #if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
-            testResult = PBIST_runTest(i, true);
+            testResult = PBIST_runTest(i, true, false);
 #endif
             if ( testResult != 0)
             {
@@ -1066,7 +1076,7 @@ int32_t PBIST_funcTest(void)
             {
                 /* Run test on selected instance */
 #if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62DX) || defined (SOC_AM275X)
-                testResult = PBIST_runTest(i, false);
+                testResult = PBIST_runTest(i, false, false);
 #endif
                 if ( testResult != 0)
                 {

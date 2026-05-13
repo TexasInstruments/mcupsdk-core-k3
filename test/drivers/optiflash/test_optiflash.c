@@ -111,6 +111,12 @@ void test_main(void *args)
     RUN_TEST((UnityTestFunction)TestOptiflash_rl2ReadIRQStatusRaw, 10886, NULL);
     RUN_TEST((UnityTestFunction)TestOptiflash_rl2IRQMaskApiValidation, 10887, NULL);
     RUN_TEST((UnityTestFunction)TestOptiflash_rL2CacheMissBehavior, 10888, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_rL2CacheHitBehavior, 10889, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_RL2WriteHitInterrupt, 10890, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_RL2WriteErrorInterrupt, 10891, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_rl2IRQMaskValidationFunc, 10892, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_rl2ReadIRQStatusValidation, 10893, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_rl2CacheLineReplacementPolicy, 10894, NULL);
 
     UNITY_END();
 

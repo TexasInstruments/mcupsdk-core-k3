@@ -78,5 +78,11 @@ void *TestOptiflash_rl2ClearInterruptWriteHitAndWriteError(void *args);
 void *TestOptiflash_rl2ReadIRQStatusRaw(void *args);
 void *TestOptiflash_rl2IRQMaskApiValidation(void *args);
 void *TestOptiflash_rL2CacheMissBehavior(void *args);
+void *TestOptiflash_rL2CacheHitBehavior(void *args);
+void *TestOptiflash_RL2WriteHitInterrupt(void *args);
+void *TestOptiflash_RL2WriteErrorInterrupt(void *args);
+void *TestOptiflash_rl2IRQMaskValidationFunc(void *args);
+void *TestOptiflash_rl2ReadIRQStatusValidation(void *args);
+void *TestOptiflash_rl2CacheLineReplacementPolicy(void *args);
 
 #endif

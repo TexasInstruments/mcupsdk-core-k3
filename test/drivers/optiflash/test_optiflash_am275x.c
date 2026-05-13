@@ -83,6 +83,9 @@
 #define TEST_OPTIFLASH_FILL_PATTERN_CD              (0xCDU)
 
 /* Known data patterns for RL2 write-hit trigger and verification */
+#define TEST_OPTIFLASH_RL2_WRITE_PATTERN_1          (0xDEADBEEFU)
+#define TEST_OPTIFLASH_RL2_WRITE_PATTERN_2          (0xCAFEBABEU)
+#define TEST_OPTIFLASH_RL2_WRITE_PATTERN_3          (0xFEEDFACEU)
 #define TEST_OPTIFLASH_RL2_REGION_FILL_PATTERN      (0xA5A5A5A5U)
 
 #define TEST_OPTIFLASH_FLC_INVALID_SRC_ADDR         (0x74000000U)
@@ -125,6 +128,7 @@ static void test_optiflash_hwiFxn(void *args);
 static uint32_t TestOptiflash_getRl2IrqNum(uint32_t rl2Base);
 static void TestOptiflash_resetFlc(FLC_RegionInfo *region);
 static void TestOptiflash_flcDoneIsr(void *args);
+static void TestOptiflash_rl2WriteHitErrorIsr(void *args);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -132,6 +136,8 @@ static void TestOptiflash_flcDoneIsr(void *args);
 
 static SemaphoreP_Object gSemObj;
 static volatile uint32_t TestOptiflash_LastMaskedStatus;
+static SemaphoreP_Object TestOptiflash_Rl2IsrSem;
+static volatile uint32_t TestOptiflash_Rl2IsrRawStatus;
 
 /* ========================================================================== */
 /*                         Internal Function Definitions                              */
@@ -4019,9 +4025,961 @@ void *TestOptiflash_rL2CacheMissBehavior(void *args)
     return NULL;
 }
 
+/**
+ * \brief Validate RL2_getCacheHits returns the L2 cache hit counter.
+ *
+ * Test Category: Functional
+ *
+ * Configures and enables RL2, then reads the cache hit counter via
+ * RL2_getCacheHits across three scenarios:
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput RL2_getCacheHits returns SUCCESS for valid inputs and
+ *                 the returned hit count matches the L2HC register value.
+ *                 Hit count increases after re-reading cached addresses.
+ */
+void *TestOptiflash_rL2CacheHitBehavior(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    RL2_Params rl2Params;
+    RL2_API_STS_t sts;
+    CSL_rl2_of_cba4Regs *regs;
+    uint32_t apiHits = 0U;
+    uint32_t regHits = 0U;
+    uint32_t prevHits = 0U;
+
+    /* Initialize and configure RL2 */
+    sts = RL2_initparams(&rl2Params);
+    if(sts != RL2_API_STS_SUCCESS)
+    {
+        retval = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Params.baseAddress  = gRL2Config[0].baseAddress;
+        rl2Params.rangeStart   = gRL2Config[0].rangeStart;
+        rl2Params.rangeEnd     = gRL2Config[0].rangeEnd;
+        rl2Params.cacheSize    = gRL2Config[0].cacheSize;
+        rl2Params.l2Sram0Base  = gRL2Config[0].l2Sram0Base;
+        rl2Params.l2Sram0Len   = gRL2Config[0].l2Sram0Len;
+
+        sts = RL2_configure(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    regs = (CSL_rl2_of_cba4Regs *)rl2Params.baseAddress;
+
+    /* --- Scenario 1: Read hit counter right after configure --- */
+    if(SystemP_SUCCESS == retval)
+    {
+        apiHits = 0xFFFFFFFFU;
+        sts = RL2_getCacheHits(&rl2Params, &apiHits);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_getCacheHits (initial) returned error 0x%x\r\n", sts);
+            retval = SystemP_FAILURE;
+        }
+    }
+    if(SystemP_SUCCESS == retval)
+    {
+        regHits = regs->L2HC;
+        if(apiHits != regHits)
+        {
+            DebugP_logError("Cache hits initial mismatch: API=%u REG=%u\r\n",
+                            apiHits, regHits);
+            retval = SystemP_FAILURE;
+        }
+        prevHits = apiHits;
+    }
+
+    /* RL2 cache is already enabled by RL2_configure — no redundant
+     * RL2_enable call that would momentarily disable and re-enable
+     * without waiting for OK_TO_GO, which would reset the counters. */
+
+    /* --- Scenario 2: Warm the cache via instruction execution from flash,
+     *     then re-execute so the second call generates cache hits.
+     *     Data pointer reads do NOT traverse RL2 on the R5F Harvard bus;
+     *     only instruction fetches go through the RL2 cache --- */
+    if(SystemP_SUCCESS == retval)
+    {
+        /* First call — cold, generates mostly misses in RL2 cache */
+        TestOptiflash_loadFunction();
+        /* Second call — same instructions are now cached, generates hits */
+        TestOptiflash_loadFunction();
+        apiHits = 0U;
+        sts = RL2_getCacheHits(&rl2Params, &apiHits);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_getCacheHits after flash code execution returned error\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+    if(SystemP_SUCCESS == retval)
+    {
+        regHits = regs->L2HC;
+        if(apiHits != regHits)
+        {
+            DebugP_logError("Cache hits mismatch after reads: API=%u REG=%u\r\n",
+                            apiHits, regHits);
+            retval = SystemP_FAILURE;
+        }
+        /* Hit counter must have increased after cached re-reads */
+        if(apiHits <= prevHits)
+        {
+            DebugP_logError("Cache hits counter decreased: prev=%u curr=%u\r\n",
+                            prevHits, apiHits);
+            retval = SystemP_FAILURE;
+        }
+        prevHits = apiHits;
+    }
+
+    /* --- Scenario 3: Successive read — counter must stay >= previous --- */
+    if(SystemP_SUCCESS == retval)
+    {
+        apiHits = 0U;
+        sts = RL2_getCacheHits(&rl2Params, &apiHits);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_getCacheHits (third read) returned error\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+    if(SystemP_SUCCESS == retval)
+    {
+        regHits = regs->L2HC;
+        if(apiHits != regHits)
+        {
+            DebugP_logError("Cache hits third-read mismatch: API=%u REG=%u\r\n",
+                            apiHits, regHits);
+            retval = SystemP_FAILURE;
+        }
+        if(apiHits < prevHits)
+        {
+            DebugP_logError("Cache hits counter decreased (third): prev=%u curr=%u\r\n",
+                            prevHits, apiHits);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Clean up: disable RL2 */
+    RL2_disable(&rl2Params);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate RL2 write-hit interrupt generation end-to-end.
+ *
+ * Test Category: Functional
+ *
+ * Simulates an application that uses the RL2 write-hit interrupt to detect
+ * writes to regions backed by the RL2 cache.
+ * \note The RL2-cached range resides in flash address space.  The write
+ *       reaches the RL2 on the CBA4 fabric — RL2 flags WR_HIT before the
+ *       transaction propagates downstream to OSPI.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput ISR executes and WR_HIT bit is observed in captured status.
+ */
+void *TestOptiflash_RL2WriteHitInterrupt(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    RL2_Params rl2Params;
+    RL2_API_STS_t sts;
+    HwiP_Params hwiPrms;
+    HwiP_Object hwiObj;
+    volatile uint32_t *cachedAddr;
+    int32_t semSts;
+    CSL_rl2_of_cba4Regs *regs;
+    /* Configure and enable RL2 cache */
+    sts = RL2_initparams(&rl2Params);
+    if(sts != RL2_API_STS_SUCCESS)
+    {
+        retval = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Params.baseAddress  = gRL2Config[0].baseAddress;
+        rl2Params.rangeStart   = gRL2Config[0].rangeStart;
+        rl2Params.rangeEnd     = gRL2Config[0].rangeEnd;
+        rl2Params.cacheSize    = gRL2Config[0].cacheSize;
+        rl2Params.l2Sram0Base  = gRL2Config[0].l2Sram0Base;
+        rl2Params.l2Sram0Len   = gRL2Config[0].l2Sram0Len;
+        sts = RL2_configure(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_enable(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    regs = (CSL_rl2_of_cba4Regs *)rl2Params.baseAddress;
+
+    /* Fill the RL2 cache with instruction fetches from flash */
+    if(SystemP_SUCCESS == retval)
+    {
+        TestOptiflash_loadFunction();
+    }
+
+    /* Register ISR and enable write-hit interrupt */
+    if(SystemP_SUCCESS == retval)
+    {
+        TestOptiflash_Rl2IsrRawStatus = 0U;
+        SemaphoreP_constructBinary(&TestOptiflash_Rl2IsrSem, 0U);
+        /* Clear any prior pending WR_HIT via masked-status W1C register */
+        regs->IRQSTATUS_MSK = CSL_RL2_OF_CBA4_IRQSTATUS_RAW_WR_HIT_MASK;
+        RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+        HwiP_Params_init(&hwiPrms);
+        hwiPrms.intNum   = TestOptiflash_getRl2IrqNum(rl2Params.baseAddress);
+        hwiPrms.callback = &TestOptiflash_rl2WriteHitErrorIsr;
+        hwiPrms.args     = (void*)&rl2Params;
+        hwiPrms.priority = 4U;
+        hwiPrms.isPulse  = 0U;
+        hwiPrms.isFIQ    = 0U;
+        if(SystemP_SUCCESS != HwiP_construct(&hwiObj, &hwiPrms))
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_setInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_setInterrupt(WRITE_HIT) returned error 0x%x\r\n", sts);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Write to the RL2-cached address to trigger write-hit.
+     * The write traverses the CBA4 fabric and RL2 detects the write to a
+     * cached address, setting WR_HIT in IRQSTATUS_RAW. */
+    if(SystemP_SUCCESS == retval)
+    {
+        cachedAddr = (volatile uint32_t *)rl2Params.rangeStart;
+        *cachedAddr = TEST_OPTIFLASH_RL2_WRITE_PATTERN_1;
+        __asm__ __volatile__("DSB");
+    }
+
+    /* Wait for ISR (timeout ~500ms) */
+    if(SystemP_SUCCESS == retval)
+    {
+        semSts = SemaphoreP_pend(&TestOptiflash_Rl2IsrSem, 500U);
+        if(semSts != SystemP_SUCCESS)
+        {
+            DebugP_logError("RL2 write-hit ISR did not fire within timeout\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Verify ISR captured WR_HIT bit */
+    if(SystemP_SUCCESS == retval)
+    {
+        if((TestOptiflash_Rl2IsrRawStatus & CSL_RL2_OF_CBA4_IRQSTATUS_RAW_WR_HIT_MASK) == 0U)
+        {
+            DebugP_logError("ISR raw status 0x%08x did not contain WR_HIT bit\r\n",
+                            TestOptiflash_Rl2IsrRawStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Clean up */
+    RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+    regs->IRQSTATUS_MSK = CSL_RL2_OF_CBA4_IRQSTATUS_RAW_WR_HIT_MASK;
+    HwiP_destruct(&hwiObj);
+    SemaphoreP_destruct(&TestOptiflash_Rl2IsrSem);
+    RL2_disable(&rl2Params);
+    /* The write to the OSPI XIP address propagates
+     * through the RL2 to the OSPI controller's DAC bridge.  This can leave
+     * the OSPI controller and/or flash device in a bad state because DAC
+     * writes to NOR flash are not a normal read-XIP operation.  Close and
+     * reopen the Flash driver so that the OSPI controller is fully
+     * reinitialized (DAC mode, PHY tuning, flash protocol reset). */
+    Board_flashClose();
+    Drivers_ospiClose();
+    Drivers_ospiOpen();
+    Board_flashOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate RL2 write-error interrupt generation via FLC.
+ *
+ * Test Category: Functional
+ *
+ * The RL2 WRITE_ERROR interrupt (FLC_WRERR) fires when the FLC hardware
+ * encounters a write error during a DMA transfer.  An application uses this
+ * interrupt to detect and handle transfer failures gracefully.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput ISR fires and FLC_WRERR bit is observed in captured status.
+ */
+void *TestOptiflash_RL2WriteErrorInterrupt(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    RL2_Params rl2Params;
+    RL2_API_STS_t rl2Sts;
+    FLC_RegionInfo *region = &gFLCRegionConfig[0];
+    FLC_RegionInfo origConfig = gFLCRegionConfig[0];
+    HwiP_Params hwiPrms;
+    HwiP_Object hwiObj;
+    int32_t semSts;
+    CSL_rl2_of_cba4Regs *regs;
+
+    /* Configure RL2 */
+    rl2Sts = RL2_initparams(&rl2Params);
+    if(rl2Sts != RL2_API_STS_SUCCESS)
+    {
+        retval = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Params.baseAddress  = gRL2Config[0].baseAddress;
+        rl2Params.rangeStart   = gRL2Config[0].rangeStart;
+        rl2Params.rangeEnd     = gRL2Config[0].rangeEnd;
+        rl2Params.cacheSize    = gRL2Config[0].cacheSize;
+        rl2Params.l2Sram0Base  = gRL2Config[0].l2Sram0Base;
+        rl2Params.l2Sram0Len   = gRL2Config[0].l2Sram0Len;
+        rl2Sts = RL2_configure(&rl2Params);
+        if(rl2Sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    regs = (CSL_rl2_of_cba4Regs *)rl2Params.baseAddress;
+
+    /* Register ISR and enable write-error interrupt */
+    if(SystemP_SUCCESS == retval)
+    {
+        TestOptiflash_Rl2IsrRawStatus = 0U;
+        SemaphoreP_constructBinary(&TestOptiflash_Rl2IsrSem, 0U);
+
+        /* Clear any prior pending status and FLC error latches */
+        regs->IRQSTATUS_MSK = CSL_RL2_OF_CBA4_IRQSTATUS_RAW_FLC_WRERR_MASK;
+        RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_ERROR);
+        TestOptiflash_resetFlc(region);
+
+        HwiP_Params_init(&hwiPrms);
+        hwiPrms.intNum   = TestOptiflash_getRl2IrqNum(rl2Params.baseAddress);
+        hwiPrms.callback = &TestOptiflash_rl2WriteHitErrorIsr;
+        hwiPrms.args     = (void*)&rl2Params;
+        hwiPrms.priority = 4U;
+        hwiPrms.isPulse  = 0U;
+        hwiPrms.isFIQ    = 0U;
+
+        if(SystemP_SUCCESS != HwiP_construct(&hwiObj, &hwiPrms))
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Sts = RL2_setInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_ERROR);
+        if(rl2Sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_setInterrupt(WRITE_ERROR) returned error 0x%x\r\n", rl2Sts);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Trigger FLC write error: valid flash source, unmapped destination */
+    if(SystemP_SUCCESS == retval)
+    {
+        region->sourceStartAddress      = origConfig.sourceStartAddress;
+        region->sourceEndAddress        = origConfig.sourceStartAddress + TEST_OPTIFLASH_ERROR_XFER_SIZE;
+        region->destinationStartAddress = TEST_OPTIFLASH_UNMAPPED_DST_ADDR; /* unmapped SRAM → FLC write error */
+        if(FLC_API_STS_SUCCESS != FLC_configureRegion(region))
+        {
+            DebugP_logError("FLC_configureRegion returned error\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        if(FLC_API_STS_SUCCESS != FLC_startRegion(region))
+        {
+            DebugP_logError("FLC_startRegion returned error\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+    /* Wait for ISR (timeout ~500ms) */
+    if(SystemP_SUCCESS == retval)
+    {
+        semSts = SemaphoreP_pend(&TestOptiflash_Rl2IsrSem, 500U);
+        if(semSts != SystemP_SUCCESS)
+        {
+            DebugP_logError("RL2 write-error ISR did not fire within timeout\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+    /* Verify ISR captured FLC_WRERR bit */
+    if(SystemP_SUCCESS == retval)
+    {
+        if((TestOptiflash_Rl2IsrRawStatus & CSL_RL2_OF_CBA4_IRQSTATUS_RAW_FLC_WRERR_MASK) == 0U)
+        {
+            DebugP_logError("ISR raw status 0x%08x did not contain FLC_WRERR bit\r\n",
+                            TestOptiflash_Rl2IsrRawStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+    /* Clean up */
+    RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_ERROR);
+    regs->IRQSTATUS_MSK = CSL_RL2_OF_CBA4_IRQSTATUS_RAW_FLC_WRERR_MASK;
+    TestOptiflash_resetFlc(region);
+    gFLCRegionConfig[0] = origConfig;
+    /* Restore valid FLC configuration in hardware so stale unmapped-destination
+     * addresses from the error injection do not leave the CBA4 interconnect
+     * in an unhealthy state for subsequent RL2 cache accesses. */
+    FLC_configureRegion(&gFLCRegionConfig[0]);
+    HwiP_destruct(&hwiObj);
+    SemaphoreP_destruct(&TestOptiflash_Rl2IsrSem);
+    RL2_disable(&rl2Params);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Application-level verification of RL2 IRQ mask after write-hit event.
+ *
+ * Test Category: Functional
+ *
+ * Demonstrates how an application uses RL2_readIRQMask() to:
+ *   - Confirm no spurious events before an operation.
+ *   - Detect that a write to the cached region produced a masked WR_HIT event.
+ *   - Verify the event is cleared after acknowledgement.
+ * \note The masked status register is IRQSTATUS_MSK = IRQSTATUS_RAW & IRQENABLE_SET.
+ *       Simply enabling the interrupt does NOT set the bit — a hardware event
+ *       (write to cached address) is required to set the RAW bit.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput Masked WR_HIT observed after write event, cleared after ack.
+ */
+void *TestOptiflash_rl2IRQMaskValidationFunc(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    RL2_Params rl2Params;
+    RL2_API_STS_t sts;
+    CSL_rl2_of_cba4Regs *regs;
+    uint32_t mask = 0U;
+    uint32_t rl2Irq;
+    uint32_t rl2IrqOldState;
+    volatile uint32_t *cachedAddr;
+
+    /* Configure and enable RL2 cache */
+    sts = RL2_initparams(&rl2Params);
+    if(sts != RL2_API_STS_SUCCESS)
+    {
+        retval = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Params.baseAddress  = gRL2Config[0].baseAddress;
+        rl2Params.rangeStart   = gRL2Config[0].rangeStart;
+        rl2Params.rangeEnd     = gRL2Config[0].rangeEnd;
+        rl2Params.cacheSize    = gRL2Config[0].cacheSize;
+        rl2Params.l2Sram0Base  = gRL2Config[0].l2Sram0Base;
+        rl2Params.l2Sram0Len   = gRL2Config[0].l2Sram0Len;
+        sts = RL2_configure(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_enable(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    regs = (CSL_rl2_of_cba4Regs *)rl2Params.baseAddress;
+
+    /* Clear prior state */
+    if(SystemP_SUCCESS == retval)
+    {
+        regs->IRQSTATUS_MSK = CSL_RL2_OF_CBA4_IRQSTATUS_RAW_WR_HIT_MASK;
+        RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+    }
+
+    /* Enable write-hit interrupt */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_setInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Disable the RL2 IRQ at the VIM so that no ISR clears the event */
+    rl2Irq = TestOptiflash_getRl2IrqNum(rl2Params.baseAddress);
+    rl2IrqOldState = HwiP_disableInt(rl2Irq);
+    /* No event yet — mask must be 0 for WR_HIT */
+    if(SystemP_SUCCESS == retval)
+    {
+        mask = 0xFFFFFFFFU;
+        sts = RL2_readIRQMask(&rl2Params, &mask);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+        if(SystemP_SUCCESS == retval &&
+           (mask & CSL_RL2_OF_CBA4_IRQSTATUS_MSK_WR_HIT_MASK) != 0U)
+        {
+            DebugP_logError("Masked WR_HIT bit set before event (mask=0x%08x)\r\n", mask);
+            retval = SystemP_FAILURE;
+        }
+    }
+    /* Fill cache and trigger write-hit */
+    if(SystemP_SUCCESS == retval)
+    {
+        TestOptiflash_loadFunction(); /* populate cache */
+        cachedAddr = (volatile uint32_t *)rl2Params.rangeStart;
+        *cachedAddr = TEST_OPTIFLASH_RL2_WRITE_PATTERN_2;
+        __asm__ __volatile__("DSB");
+    }
+    /* Read masked status — WR_HIT should now be set */
+    if(SystemP_SUCCESS == retval)
+    {
+        mask = 0U;
+        sts = RL2_readIRQMask(&rl2Params, &mask);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+        if(SystemP_SUCCESS == retval &&
+           (mask & CSL_RL2_OF_CBA4_IRQSTATUS_MSK_WR_HIT_MASK) == 0U)
+        {
+            DebugP_logError("Masked WR_HIT bit NOT set after write event (mask=0x%08x)\r\n", mask);
+            retval = SystemP_FAILURE;
+        }
+    }
+    /* Clear WR_HIT via masked-status W1C register */
+    if(SystemP_SUCCESS == retval)
+    {
+        regs->IRQSTATUS_MSK = CSL_RL2_OF_CBA4_IRQSTATUS_RAW_WR_HIT_MASK;
+    }
+
+    /* Masked status should now be cleared */
+    if(SystemP_SUCCESS == retval)
+    {
+        mask = 0xFFFFFFFFU;
+        sts = RL2_readIRQMask(&rl2Params, &mask);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+        if(SystemP_SUCCESS == retval &&
+           (mask & CSL_RL2_OF_CBA4_IRQSTATUS_MSK_WR_HIT_MASK) != 0U)
+        {
+            DebugP_logError("Masked WR_HIT still set after clearing RAW (mask=0x%08x)\r\n", mask);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Disable interrupt and verify mask remains 0 */
+    if(SystemP_SUCCESS == retval)
+    {
+        RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+        mask = 0xFFFFFFFFU;
+        sts = RL2_readIRQMask(&rl2Params, &mask);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+        if(SystemP_SUCCESS == retval &&
+           (mask & CSL_RL2_OF_CBA4_IRQSTATUS_MSK_WR_HIT_MASK) != 0U)
+        {
+            DebugP_logError("Masked WR_HIT set after disabling interrupt\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Restore IRQ and clean up */
+    HwiP_restoreInt(rl2Irq, rl2IrqOldState);
+    RL2_disable(&rl2Params);
+
+    /* The write to the OSPI XIP address propagates through the RL2
+     * to the OSPI controller's DAC bridge.  This can leave the OSPI controller
+     * and/or flash device in a bad state because DAC writes to NOR flash are
+     * not a normal read-XIP operation.  Close and reopen the Flash driver so
+     * that the OSPI controller is fully reinitialized. */
+    Board_flashClose();
+    Drivers_ospiClose();
+    Drivers_ospiOpen();
+    Board_flashOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Application-level polling of RL2 IRQ status for write-hit events.
+ *
+ * Test Category: Functional
+ *
+ * Demonstrates an application that polls RL2_readIRQStatus() (raw status)
+ * instead of relying on an ISR to detect a write-hit event.
+ * \note IRQSTATUS_RAW reflects hardware events regardless of the interrupt
+ *       enable mask.  However, enabling the interrupt ensures the RL2
+ *       hardware latches the event in the RAW register.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput WR_HIT bit observed in raw status, then cleared after ack.
+ */
+void *TestOptiflash_rl2ReadIRQStatusValidation(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    RL2_Params rl2Params;
+    RL2_API_STS_t sts;
+    CSL_rl2_of_cba4Regs *regs;
+    uint32_t raw = 0U;
+    uint32_t attempts = 0U;
+    const uint32_t maxAttempts = 5000U;
+    uint32_t rl2Irq;
+    uint32_t rl2IrqOldState;
+    volatile uint32_t *cachedAddr;
+
+    /* Configure and enable RL2 cache */
+    sts = RL2_initparams(&rl2Params);
+    if(sts != RL2_API_STS_SUCCESS)
+    {
+        retval = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Params.baseAddress  = gRL2Config[0].baseAddress;
+        rl2Params.rangeStart   = gRL2Config[0].rangeStart;
+        rl2Params.rangeEnd     = gRL2Config[0].rangeEnd;
+        rl2Params.cacheSize    = gRL2Config[0].cacheSize;
+        rl2Params.l2Sram0Base  = gRL2Config[0].l2Sram0Base;
+        rl2Params.l2Sram0Len   = gRL2Config[0].l2Sram0Len;
+
+        sts = RL2_configure(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_enable(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    regs = (CSL_rl2_of_cba4Regs *)rl2Params.baseAddress;
+
+    /* Clear prior state */
+    if(SystemP_SUCCESS == retval)
+    {
+        regs->IRQSTATUS_MSK = CSL_RL2_OF_CBA4_IRQSTATUS_RAW_WR_HIT_MASK;
+        RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+    }
+
+    /* Enable write-hit interrupt */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_setInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Disable RL2 IRQ at VIM to prevent ISR from clearing the event */
+    rl2Irq = TestOptiflash_getRl2IrqNum(rl2Params.baseAddress);
+    rl2IrqOldState = HwiP_disableInt(rl2Irq);
+    /* Fill cache then write to cached region */
+    if(SystemP_SUCCESS == retval)
+    {
+        TestOptiflash_loadFunction(); /* populate cache via instruction fetches */
+        cachedAddr = (volatile uint32_t *)rl2Params.rangeStart;
+        *cachedAddr = TEST_OPTIFLASH_RL2_WRITE_PATTERN_3;
+        __asm__ __volatile__("DSB");
+    }
+
+    /* Poll RL2_readIRQStatus() for WR_HIT bit */
+    if(SystemP_SUCCESS == retval)
+    {
+        attempts = 0U;
+        do {
+            sts = RL2_readIRQStatus(&rl2Params, &raw);
+            if(sts != RL2_API_STS_SUCCESS)
+            {
+                retval = SystemP_FAILURE;
+                break;
+            }
+            if((raw & CSL_RL2_OF_CBA4_IRQSTATUS_RAW_WR_HIT_MASK) != 0U)
+            {
+                break; /* WR_HIT observed */
+            }
+            ClockP_usleep(100);
+            attempts++;
+        } while(attempts < maxAttempts);
+        if(SystemP_SUCCESS == retval &&
+           (raw & CSL_RL2_OF_CBA4_IRQSTATUS_RAW_WR_HIT_MASK) == 0U)
+        {
+            DebugP_logError("WR_HIT not observed in IRQSTATUS_RAW after write event\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Acknowledge: write 1 to IRQSTATUS_MSK to clear WR_HIT (W1C) */
+    if(SystemP_SUCCESS == retval)
+    {
+        regs->IRQSTATUS_MSK = CSL_RL2_OF_CBA4_IRQSTATUS_RAW_WR_HIT_MASK;
+    }
+
+    /* Read status again — WR_HIT should be cleared */
+    if(SystemP_SUCCESS == retval)
+    {
+        raw = 0xFFFFFFFFU;
+        sts = RL2_readIRQStatus(&rl2Params, &raw);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+        if(SystemP_SUCCESS == retval &&
+           (raw & CSL_RL2_OF_CBA4_IRQSTATUS_RAW_WR_HIT_MASK) != 0U)
+        {
+            DebugP_logError("WR_HIT still set in IRQSTATUS_RAW after W1C clear\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Disable interrupt and clean up */
+    RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+    HwiP_restoreInt(rl2Irq, rl2IrqOldState);
+    RL2_disable(&rl2Params);
+
+    /* The write to the OSPI XIP address in propagates through the RL2
+     * to the OSPI controller's DAC bridge.  This can leave the OSPI controller
+     * and/or flash device in a bad state because DAC writes to NOR flash are
+     * not a normal read-XIP operation.  Close and reopen the Flash driver so
+     * that the OSPI controller is fully reinitialized. */
+    Board_flashClose();
+    Drivers_ospiClose();
+    Drivers_ospiOpen();
+    Board_flashOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate cache line replacement occurs when RL2 cache is full.
+ *
+ * Test Category: Functional
+ *
+ * Configures RL2 with the smallest cache size (8K = 128 cache lines of 64B).
+ * Executes TestOptiflash_loadFunction (~8KB of instructions from flash) which
+ * fills the entire cache generating compulsory misses.  A second call to the
+ * same function hits the cached lines.  The test verifies:
+ *   - Miss counter increases on cold (first) access.
+ *   - Miss counter stays stable on warm (second) access.
+ *   - Hit counter increases on warm access, proving replacement settled and
+ *     cached lines are served correctly.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput Miss counter increases on first access; hit counter
+ *                 increases on second access without significant new misses.
+ */
+void *TestOptiflash_rl2CacheLineReplacementPolicy(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    RL2_Params rl2Params;
+    RL2_API_STS_t sts;
+    uint32_t miss0 = 0U, miss1 = 0U, miss2 = 0U;
+    uint32_t hits0 = 0U, hits1 = 0U;
+    uint32_t coldMisses = 0U;
+    uint32_t warmMisses = 0U;
+
+    /* Initialize and configure RL2 with smallest cache size (8K) */
+    sts = RL2_initparams(&rl2Params);
+    if(sts != RL2_API_STS_SUCCESS)
+    {
+        retval = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Params.baseAddress  = gRL2Config[0].baseAddress;
+        rl2Params.rangeStart   = gRL2Config[0].rangeStart;
+        rl2Params.rangeEnd     = gRL2Config[0].rangeEnd;
+        rl2Params.cacheSize    = RL2_CACHESIZE_8K;  /* Smallest: 128 lines x 64B */
+        rl2Params.l2Sram0Base  = gRL2Config[0].l2Sram0Base;
+        rl2Params.l2Sram0Len   = gRL2Config[0].l2Sram0Len;
+
+        sts = RL2_configure(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to configure RL2 with 8K cache\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Read initial miss counter */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_getCacheMiss(&rl2Params, &miss0);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* First call: cold cache — fills all 128 lines (8K / 64B),
+     * generating compulsory misses as each cache line is fetched from flash. */
+    if(SystemP_SUCCESS == retval)
+    {
+        TestOptiflash_loadFunction();
+
+        sts = RL2_getCacheMiss(&rl2Params, &miss1);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Miss counter must have increased on cold access */
+    if(SystemP_SUCCESS == retval)
+    {
+        if(miss1 <= miss0)
+        {
+            DebugP_logError("Miss counter did not increase on cold access: miss0=%u miss1=%u\r\n",
+                            miss0, miss1);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Read hit counter before warm access */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_getCacheHits(&rl2Params, &hits0);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Second call: warm cache — same instructions already cached,
+     * should generate hits with minimal or no new misses */
+    if(SystemP_SUCCESS == retval)
+    {
+        TestOptiflash_loadFunction();
+
+        sts = RL2_getCacheMiss(&rl2Params, &miss2);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+        sts = RL2_getCacheHits(&rl2Params, &hits1);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* On warm access: new misses should be significantly fewer than cold misses,
+     * proving the cache lines are being served from cache (replacement settled) */
+    if(SystemP_SUCCESS == retval)
+    {
+        coldMisses = miss1 - miss0;
+        warmMisses = miss2 - miss1;
+        if(warmMisses >= coldMisses)
+        {
+            DebugP_logError("Warm access generated as many misses as cold: cold=%u warm=%u\r\n",
+                            coldMisses, warmMisses);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Hit counter must have increased on warm access */
+    if(SystemP_SUCCESS == retval)
+    {
+        if(hits1 <= hits0)
+        {
+            DebugP_logError("Hit counter did not increase on warm access: hits0=%u hits1=%u\r\n",
+                            hits0, hits1);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Clean up: disable RL2 */
+    RL2_disable(&rl2Params);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
 /* ========================================================================== */
 /*                     API ISR Function Definitions                           */
 /* ========================================================================== */
+
+/**
+ * \brief ISR for RL2 write-hit and write-error interrupt events.
+ *
+ * Reads the raw interrupt status, saves it for the test to inspect,
+ * acknowledges the pending event by writing the captured value back to
+ * IRQSTATUS_MSK (W1C), and posts a semaphore to unblock the waiting test.
+ */
+static void TestOptiflash_rl2WriteHitErrorIsr(void *args)
+{
+    CSL_rl2_of_cba4Regs *regs = (CSL_rl2_of_cba4Regs *)((RL2_Params *)args)->baseAddress;
+    uint32_t raw = regs->IRQSTATUS_RAW;
+
+    /* Save raw status for the test to inspect */
+    TestOptiflash_Rl2IsrRawStatus = raw;
+
+    /* Disable the interrupt sources that fired to prevent re-entry.
+     * Persistent conditions like FLC_WRERR stay asserted in IRQSTATUS_RAW
+     * until the underlying FLC error is cleared; without disabling here
+     * the ISR would re-fire immediately after acknowledge. */
+    regs->IRQENABLE_CLR = raw;
+
+    /* Acknowledge: write-1-to-clear captured pending bits */
+    regs->IRQSTATUS_MSK = raw;
+
+    /* Post semaphore to unblock the waiting test */
+    SemaphoreP_post(&TestOptiflash_Rl2IsrSem);
+}
 
 /* HWI Function */
 static void test_optiflash_hwiFxn(void *args)

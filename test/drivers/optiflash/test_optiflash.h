@@ -71,5 +71,12 @@ void *TestOptiflash_flcCpuCacheCoherencyAfterTransfer(void *args);
 void *TestOptiflash_flcOverlappingRegions(void *args);
 void *TestOptiflash_EnableRL2Cache(void *args);
 void *TestOptiflash_DisableRL2Cache(void *args);
+void *TestOptiflash_flcThroughputComparison(void *args);
+void *TestOptiflash_rl2RemoteLengthEncoding(void *args);
+void *TestOptiflash_rl2SetInterruptWriteHitAndWriteError(void *args);
+void *TestOptiflash_rl2ClearInterruptWriteHitAndWriteError(void *args);
+void *TestOptiflash_rl2ReadIRQStatusRaw(void *args);
+void *TestOptiflash_rl2IRQMaskApiValidation(void *args);
+void *TestOptiflash_rL2CacheMissBehavior(void *args);
 
 #endif

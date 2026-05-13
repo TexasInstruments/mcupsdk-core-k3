@@ -3119,6 +3119,906 @@ void *TestOptiflash_DisableRL2Cache(void *args)
     return NULL;
 }
 
+/**
+ * \brief  FLC throughput comparison and data-integrity test.
+ *
+ * Test Category: Functional
+ * Compare memcpy vs. FLC hardware copy throughput and verify the copied data matches the source.
+ * \param args  Unused.
+ * \return NULL on success; TEST_ASSERT fires on failure.
+ */
+void *TestOptiflash_flcThroughputComparison(void *args)
+{
+    int32_t  retval = SystemP_SUCCESS;
+    uint32_t i;
+    uint64_t startTime, endTime, baselineTime, flcTime;
+    uint32_t cpy_status = 0U;
+    uint32_t attempts   = 0U;
+    const uint32_t maxAttempts = 1000000U;
+
+    FLC_RegionInfo *region = &gFLCRegionConfig[FLC_REGION_FLC0];
+
+    /* Fill source buffer with pattern */
+    for (i = 0U; i < TRANSFERSIZE; i++)
+    {
+        sourceBuffer[i] = (uint8_t)(i % 256U);
+    }
+    CacheP_wbInv(sourceBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+
+    /* Baseline – plain memcpy throughput (without FLC) */
+    memset(destBuffer, 0, TRANSFERSIZE);
+    CacheP_wbInv(destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+
+    startTime = ClockP_getTimeUsec();
+    memcpy(destBuffer, sourceBuffer, TRANSFERSIZE);
+    endTime   = ClockP_getTimeUsec();
+    baselineTime = endTime - startTime;
+    if (baselineTime == 0U)
+    {
+        baselineTime = 1U; /* avoid division by zero */
+    }
+
+    DebugP_log("Throughput without FLC (memcpy): %.5f MiBps\r\n",
+               (float)((float)TRANSFERSIZE / (float)baselineTime));
+
+    /* FLC copy */
+    /* Bring region to a clean state */
+    TestOptiflash_resetFlc(region);
+
+    memset(destBuffer, 0, TRANSFERSIZE);
+    CacheP_wbInv(destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+
+    /* Configure FLC region: source -> destination */
+    region->sourceStartAddress      = (uint32_t)sourceBuffer;
+    region->sourceEndAddress        = (uint32_t)sourceBuffer + TRANSFERSIZE;
+    region->destinationStartAddress = (uint32_t)destBuffer;
+
+    if (FLC_API_STS_SUCCESS != FLC_configureRegion(region))
+    {
+        DebugP_logError("FLC configure failed\r\n");
+        retval = SystemP_FAILURE;
+    }
+
+    startTime = ClockP_getTimeUsec();
+
+    if (SystemP_SUCCESS == retval)
+    {
+        if (FLC_API_STS_SUCCESS != FLC_startRegion(region))
+        {
+            DebugP_logError("FLC start failed\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Wait for FLC completion */
+    if (SystemP_SUCCESS == retval)
+    {
+        do
+        {
+            FLC_isRegionDone(&gFLCRegionConfig[FLC_REGION_FLC0], &cpy_status);
+            attempts++;
+            if (attempts > maxAttempts)
+            {
+                DebugP_logError("FLC throughput test: copy timeout\r\n");
+                retval = SystemP_FAILURE;
+                break;
+            }
+        } while ((cpy_status & (1U << FLC_REGION_FLC0)) == 0U);
+    }
+
+    endTime = ClockP_getTimeUsec();
+    flcTime = endTime - startTime;
+    if (flcTime == 0U)
+    {
+        flcTime = 1U;
+    }
+
+    DebugP_log("Throughput with FLC: %.5f MiBps\r\n",
+               (float)((float)TRANSFERSIZE / (float)flcTime));
+
+    /* Data-integrity check */
+    if (SystemP_SUCCESS == retval)
+    {
+        CacheP_inv(destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+        for (i = 0U; i < TRANSFERSIZE; i++)
+        {
+            if (sourceBuffer[i] != destBuffer[i])
+            {
+                DebugP_logError("FLC throughput test: data mismatch at %d\r\n", i);
+                retval = SystemP_FAILURE;
+                break;
+            }
+        }
+    }
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate that l2Sram0Len is encoded in the HW register in units of
+ *        64 bytes.
+ *
+ * Test Category: Functional
+ *
+ * The REM.LEN register field occupies bits [18:6]
+ * (CSL_RL2_OF_CBA4_REM_LEN_LEN_SHIFT == 6).  When the driver writes the raw
+ * byte-length value, the hardware interprets the shifted field as the number
+ * of 64-byte blocks.  This test verifies that relationship for several
+ * representative lengths.
+ * \param args  Unused.
+ * \return NULL
+ * \expectedOutput Extracted LEN field == byteLen / 64 for every test vector.
+ */
+void *TestOptiflash_rl2RemoteLengthEncoding(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    CSL_rl2_of_cba4Regs *regs = (CSL_rl2_of_cba4Regs *)gRL2Config[0].baseAddress;
+
+    /* Save original RL2 config so we can restore it afterwards */
+    RL2_Params savedConfig = gRL2Config[0];
+
+    /* { byteLength, expectedFieldValue } */
+    const uint32_t testVectors[][2] = {
+        { 4096U,       4096U / TEST_OPTIFLASH_CACHE_LINE_BYTES  },    /* 64 cache lines   */
+        { 8U * 1024U,  (8U * 1024U) / TEST_OPTIFLASH_CACHE_LINE_BYTES },  /* 128 cache lines  */
+        { 64U * 1024U, (64U * 1024U) / TEST_OPTIFLASH_CACHE_LINE_BYTES }, /* 1024 cache lines */
+        { 128U * 1024U,(128U * 1024U) / TEST_OPTIFLASH_CACHE_LINE_BYTES }, /* 2048 cache lines */
+    };
+    const uint32_t numVectors = sizeof(testVectors) / sizeof(testVectors[0]);
+    uint32_t rawLen;
+    uint32_t fieldVal;
+    RL2_API_STS_t sts;
+    for (uint32_t i = 0U; i < numVectors; i++)
+    {
+        RL2_Params params = gRL2Config[0];
+        params.l2Sram0Len = testVectors[i][0];
+
+        sts = RL2_configure(&params);
+        if (sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_configure failed for l2Sram0Len = %u\r\n",
+                            testVectors[i][0]);
+            retval = SystemP_FAILURE;
+            break;
+        }
+
+        /* Read the raw register and extract the LEN field */
+        rawLen = regs->REM.LEN;
+        fieldVal = (rawLen & CSL_RL2_OF_CBA4_REM_LEN_LEN_MASK)
+                            >> CSL_RL2_OF_CBA4_REM_LEN_LEN_SHIFT;
+
+        if (fieldVal != testVectors[i][1])
+        {
+            DebugP_logError("LEN field mismatch: expected %u, got %u "
+                            "(raw 0x%08X) for byteLen %u\r\n",
+                            testVectors[i][1], fieldVal, rawLen,
+                            testVectors[i][0]);
+            retval = SystemP_FAILURE;
+            break;
+        }
+    }
+
+    /* Restore original configuration */
+    gRL2Config[0] = savedConfig;
+    RL2_configure(&gRL2Config[0]);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate RL2_setInterrupt for WRITE_HIT and WRITE_ERROR cases.
+ *
+ * Test Category: Functional
+ *
+ * Configures RL2, then calls RL2_setInterrupt with RL2_INTERRUPT_WRITE_HIT
+ * and RL2_INTERRUPT_WRITE_ERROR, verifying the corresponding bits in the
+ * IRQENABLE_SET register are set.  Cleans up by clearing both interrupts.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput IRQENABLE_SET reflects WR_HIT and FLC_WRERR mask bits after set.
+ */
+void *TestOptiflash_rl2SetInterruptWriteHitAndWriteError(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    RL2_Params rl2Params;
+    RL2_API_STS_t sts;
+    CSL_rl2_of_cba4Regs *regs;
+
+    /* Initialize and configure RL2 with valid settings */
+    sts = RL2_initparams(&rl2Params);
+    if(sts != RL2_API_STS_SUCCESS)
+    {
+        retval = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Params.baseAddress  = gRL2Config[0].baseAddress;
+        rl2Params.rangeStart   = gRL2Config[0].rangeStart;
+        rl2Params.rangeEnd     = gRL2Config[0].rangeEnd;
+        rl2Params.cacheSize    = gRL2Config[0].cacheSize;
+        rl2Params.l2Sram0Base  = gRL2Config[0].l2Sram0Base;
+        rl2Params.l2Sram0Len   = gRL2Config[0].l2Sram0Len;
+
+        sts = RL2_configure(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    regs = (CSL_rl2_of_cba4Regs *)rl2Params.baseAddress;
+
+    /* Clear both interrupts first to start from a known state */
+    if(SystemP_SUCCESS == retval)
+    {
+        RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+        RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_ERROR);
+    }
+
+    /* Test RL2_setInterrupt with RL2_INTERRUPT_WRITE_HIT */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_setInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_setInterrupt(WRITE_HIT) returned error 0x%x\r\n", sts);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Verify the WR_HIT enable bit is set in IRQENABLE_SET register */
+    if(SystemP_SUCCESS == retval)
+    {
+        if((regs->IRQENABLE_SET & CSL_RL2_OF_CBA4_IRQSTATUS_RAW_WR_HIT_MASK) == 0U)
+        {
+            DebugP_logError("IRQENABLE_SET WR_HIT bit not set after RL2_setInterrupt(WRITE_HIT)\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test RL2_setInterrupt with RL2_INTERRUPT_WRITE_ERROR */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_setInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_ERROR);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_setInterrupt(WRITE_ERROR) returned error 0x%x\r\n", sts);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Verify the FLC_WRERR enable bit is set in IRQENABLE_SET register */
+    if(SystemP_SUCCESS == retval)
+    {
+        if((regs->IRQENABLE_SET & CSL_RL2_OF_CBA4_IRQSTATUS_RAW_FLC_WRERR_MASK) == 0U)
+        {
+            DebugP_logError("IRQENABLE_SET FLC_WRERR bit not set after RL2_setInterrupt(WRITE_ERROR)\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Verify both bits are set simultaneously */
+    if(SystemP_SUCCESS == retval)
+    {
+        uint32_t expectedMask = CSL_RL2_OF_CBA4_IRQSTATUS_RAW_WR_HIT_MASK |
+                                CSL_RL2_OF_CBA4_IRQSTATUS_RAW_FLC_WRERR_MASK;
+        if((regs->IRQENABLE_SET & expectedMask) != expectedMask)
+        {
+            DebugP_logError("IRQENABLE_SET does not have both WR_HIT and FLC_WRERR set simultaneously\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Clean up: clear both interrupts */
+    RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+    RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_ERROR);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate RL2_clearInterrupt for WRITE_HIT and WRITE_ERROR cases.
+ *
+ * Test Category: Functional
+ *
+ * Sets both WR_HIT and WRITE_ERROR interrupts, then clears them one at a
+ * time using RL2_clearInterrupt, verifying the corresponding bits in the
+ * IRQENABLE_CLR register are written and the enable is removed.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput IRQENABLE_CLR is written with proper mask; after clear,
+ *                 IRQENABLE_SET no longer shows the cleared bit.
+ */
+void *TestOptiflash_rl2ClearInterruptWriteHitAndWriteError(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    RL2_Params rl2Params;
+    RL2_API_STS_t sts;
+    CSL_rl2_of_cba4Regs *regs;
+
+    /* Initialize and configure RL2 with valid settings */
+    sts = RL2_initparams(&rl2Params);
+    if(sts != RL2_API_STS_SUCCESS)
+    {
+        retval = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Params.baseAddress  = gRL2Config[0].baseAddress;
+        rl2Params.rangeStart   = gRL2Config[0].rangeStart;
+        rl2Params.rangeEnd     = gRL2Config[0].rangeEnd;
+        rl2Params.cacheSize    = gRL2Config[0].cacheSize;
+        rl2Params.l2Sram0Base  = gRL2Config[0].l2Sram0Base;
+        rl2Params.l2Sram0Len   = gRL2Config[0].l2Sram0Len;
+
+        sts = RL2_configure(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    regs = (CSL_rl2_of_cba4Regs *)rl2Params.baseAddress;
+
+    /* Set both interrupts so we have something to clear */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_setInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_setInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_ERROR);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Clear RL2_INTERRUPT_WRITE_HIT */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_clearInterrupt(WRITE_HIT) returned error 0x%x\r\n", sts);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* After clearing WR_HIT, the WR_HIT enable should no longer be set,
+     * but FLC_WRERR should remain set */
+    if(SystemP_SUCCESS == retval)
+    {
+        if((regs->IRQENABLE_SET & CSL_RL2_OF_CBA4_IRQSTATUS_RAW_WR_HIT_MASK) != 0U)
+        {
+            DebugP_logError("IRQENABLE_SET WR_HIT bit still set after RL2_clearInterrupt(WRITE_HIT)\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+    if(SystemP_SUCCESS == retval)
+    {
+        if((regs->IRQENABLE_SET & CSL_RL2_OF_CBA4_IRQSTATUS_RAW_FLC_WRERR_MASK) == 0U)
+        {
+            DebugP_logError("IRQENABLE_SET FLC_WRERR bit unexpectedly cleared\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Clear RL2_INTERRUPT_WRITE_ERROR */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_ERROR);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_clearInterrupt(WRITE_ERROR) returned error 0x%x\r\n", sts);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* After clearing FLC_WRERR, neither bit should be enabled */
+    if(SystemP_SUCCESS == retval)
+    {
+        uint32_t checkMask = CSL_RL2_OF_CBA4_IRQSTATUS_RAW_WR_HIT_MASK |
+                             CSL_RL2_OF_CBA4_IRQSTATUS_RAW_FLC_WRERR_MASK;
+        if((regs->IRQENABLE_SET & checkMask) != 0U)
+        {
+            DebugP_logError("IRQENABLE_SET still has bits set after clearing both interrupts\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate RL2_readIRQStatus reads IRQSTATUS_RAW register correctly.
+ *
+ * Test Category: Functional
+ *
+ * Configures RL2, reads the raw IRQ status register via RL2_readIRQStatus API
+ * and verifies it returns RL2_API_STS_SUCCESS and reflects the IRQSTATUS_RAW
+ * register value. Also validates that after setting/clearing specific
+ * interrupt enable bits, the IRQSTATUS_RAW is still independently readable.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput RL2_readIRQStatus returns SUCCESS and provides a valid
+ *                 IRQSTATUS_RAW value that matches direct register read.
+ */
+void *TestOptiflash_rl2ReadIRQStatusRaw(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    RL2_Params rl2Params;
+    RL2_API_STS_t sts;
+    CSL_rl2_of_cba4Regs *regs;
+    uint32_t apiStatus = 0U;
+    uint32_t regStatus = 0U;
+
+    /* Initialize and configure RL2 with valid settings */
+    sts = RL2_initparams(&rl2Params);
+    if(sts != RL2_API_STS_SUCCESS)
+    {
+        retval = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Params.baseAddress  = gRL2Config[0].baseAddress;
+        rl2Params.rangeStart   = gRL2Config[0].rangeStart;
+        rl2Params.rangeEnd     = gRL2Config[0].rangeEnd;
+        rl2Params.cacheSize    = gRL2Config[0].cacheSize;
+        rl2Params.l2Sram0Base  = gRL2Config[0].l2Sram0Base;
+        rl2Params.l2Sram0Len   = gRL2Config[0].l2Sram0Len;
+
+        sts = RL2_configure(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    regs = (CSL_rl2_of_cba4Regs *)rl2Params.baseAddress;
+
+    /* Basic RL2_readIRQStatus call succeeds and returns value */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_readIRQStatus(&rl2Params, &apiStatus);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_readIRQStatus returned error 0x%x\r\n", sts);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Compare API-returned value with direct register read */
+    if(SystemP_SUCCESS == retval)
+    {
+        regStatus = regs->IRQSTATUS_RAW;
+        if(apiStatus != regStatus)
+        {
+            DebugP_logError("RL2_readIRQStatus value 0x%08x != direct reg read 0x%08x\r\n",
+                            apiStatus, regStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Enable WR_HIT interrupt, read IRQ status, verify independent */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_setInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        apiStatus = 0U;
+        sts = RL2_readIRQStatus(&rl2Params, &apiStatus);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_readIRQStatus after setInterrupt(WR_HIT) returned error\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Verify the API value still matches the register read */
+    if(SystemP_SUCCESS == retval)
+    {
+        regStatus = regs->IRQSTATUS_RAW;
+        if(apiStatus != regStatus)
+        {
+            DebugP_logError("IRQ status mismatch after WR_HIT enable: API=0x%08x, REG=0x%08x\r\n",
+                            apiStatus, regStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Enable WRITE_ERROR interrupt, read IRQ status again */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_setInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_ERROR);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        apiStatus = 0U;
+        sts = RL2_readIRQStatus(&rl2Params, &apiStatus);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_readIRQStatus after setInterrupt(WRITE_ERROR) returned error\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        regStatus = regs->IRQSTATUS_RAW;
+        if(apiStatus != regStatus)
+        {
+            DebugP_logError("IRQ status mismatch after WRITE_ERROR enable: API=0x%08x, REG=0x%08x\r\n",
+                            apiStatus, regStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Clear both interrupts, read IRQ status, verify match */
+    if(SystemP_SUCCESS == retval)
+    {
+        RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+        RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_ERROR);
+
+        apiStatus = 0xFFFFFFFFU;
+        sts = RL2_readIRQStatus(&rl2Params, &apiStatus);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_readIRQStatus after clearInterrupt returned error\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        regStatus = regs->IRQSTATUS_RAW;
+        if(apiStatus != regStatus)
+        {
+            DebugP_logError("IRQ status mismatch after clearing both: API=0x%08x, REG=0x%08x\r\n",
+                            apiStatus, regStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate RL2_readIRQMask returns the masked IRQ status register.
+ *
+ * Test Category: Functional
+ *
+ * Configures RL2 with valid parameters, then exercises RL2_readIRQMask
+ * through four scenarios:
+ * Each step cross-checks the API-returned value against a direct register
+ * read of IRQSTATUS_MSK to ensure the API faithfully wraps the register.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput RL2_readIRQMask returns SUCCESS every time and the
+ *                 output matches the direct HW register read.
+ */
+void *TestOptiflash_rl2IRQMaskApiValidation(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    RL2_Params rl2Params;
+    RL2_API_STS_t sts;
+    CSL_rl2_of_cba4Regs *regs;
+    uint32_t apiMask = 0U;
+    uint32_t regMask = 0U;
+
+    /* Initialize and configure RL2 */
+    sts = RL2_initparams(&rl2Params);
+    if(sts != RL2_API_STS_SUCCESS)
+    {
+        retval = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Params.baseAddress  = gRL2Config[0].baseAddress;
+        rl2Params.rangeStart   = gRL2Config[0].rangeStart;
+        rl2Params.rangeEnd     = gRL2Config[0].rangeEnd;
+        rl2Params.cacheSize    = gRL2Config[0].cacheSize;
+        rl2Params.l2Sram0Base  = gRL2Config[0].l2Sram0Base;
+        rl2Params.l2Sram0Len   = gRL2Config[0].l2Sram0Len;
+
+        sts = RL2_configure(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    regs = (CSL_rl2_of_cba4Regs *)rl2Params.baseAddress;
+
+    /* Clear both interrupt enable bits to start from a known baseline */
+    if(SystemP_SUCCESS == retval)
+    {
+        RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+        RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_ERROR);
+    }
+
+    /* --- Scenario 1: No interrupts enabled — mask should match register --- */
+    if(SystemP_SUCCESS == retval)
+    {
+        apiMask = 0xFFFFFFFFU; /* poison value */
+        sts = RL2_readIRQMask(&rl2Params, &apiMask);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_readIRQMask (no intrs) returned error 0x%x\r\n", sts);
+            retval = SystemP_FAILURE;
+        }
+    }
+    if(SystemP_SUCCESS == retval)
+    {
+        regMask = regs->IRQSTATUS_MSK;
+        if(apiMask != regMask)
+        {
+            DebugP_logError("IRQMask baseline mismatch: API=0x%08x REG=0x%08x\r\n",
+                            apiMask, regMask);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* --- Scenario 2: Enable WR_HIT, read mask --- */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_setInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+    if(SystemP_SUCCESS == retval)
+    {
+        apiMask = 0U;
+        sts = RL2_readIRQMask(&rl2Params, &apiMask);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_readIRQMask after WR_HIT enable returned error\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+    if(SystemP_SUCCESS == retval)
+    {
+        regMask = regs->IRQSTATUS_MSK;
+        if(apiMask != regMask)
+        {
+            DebugP_logError("IRQMask mismatch after WR_HIT: API=0x%08x REG=0x%08x\r\n",
+                            apiMask, regMask);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* --- Scenario 3: Enable WRITE_ERROR (both now set), read mask --- */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_setInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_ERROR);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+    if(SystemP_SUCCESS == retval)
+    {
+        apiMask = 0U;
+        sts = RL2_readIRQMask(&rl2Params, &apiMask);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_readIRQMask after both intrs enabled returned error\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+    if(SystemP_SUCCESS == retval)
+    {
+        regMask = regs->IRQSTATUS_MSK;
+        if(apiMask != regMask)
+        {
+            DebugP_logError("IRQMask mismatch (both enabled): API=0x%08x REG=0x%08x\r\n",
+                            apiMask, regMask);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* --- Scenario 4: Clear all, mask should return to baseline --- */
+    if(SystemP_SUCCESS == retval)
+    {
+        RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_HIT);
+        RL2_clearInterrupt(&rl2Params, RL2_INTERRUPT_WRITE_ERROR);
+
+        apiMask = 0xFFFFFFFFU;
+        sts = RL2_readIRQMask(&rl2Params, &apiMask);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_readIRQMask after clearing all returned error\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+    if(SystemP_SUCCESS == retval)
+    {
+        regMask = regs->IRQSTATUS_MSK;
+        if(apiMask != regMask)
+        {
+            DebugP_logError("IRQMask post-clear mismatch: API=0x%08x REG=0x%08x\r\n",
+                            apiMask, regMask);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate RL2_getCacheMiss returns the L2 cache miss counter.
+ *
+ * Test Category: Functional
+ *
+ * Configures and enables RL2, then reads the cache miss counter via
+ * RL2_getCacheMiss in increasing-activity scenarios:
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput RL2_getCacheMiss returns SUCCESS for valid inputs and
+ *                 the returned miss count matches the L2MC register value.
+ */
+void *TestOptiflash_rL2CacheMissBehavior(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    RL2_Params rl2Params;
+    RL2_API_STS_t sts;
+    CSL_rl2_of_cba4Regs *regs;
+    uint32_t apiMiss = 0U;
+    uint32_t regMiss = 0U;
+    uint32_t prevMiss = 0U;
+
+    /* Initialize and configure RL2 */
+    sts = RL2_initparams(&rl2Params);
+    if(sts != RL2_API_STS_SUCCESS)
+    {
+        retval = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Params.baseAddress  = gRL2Config[0].baseAddress;
+        rl2Params.rangeStart   = gRL2Config[0].rangeStart;
+        rl2Params.rangeEnd     = gRL2Config[0].rangeEnd;
+        rl2Params.cacheSize    = gRL2Config[0].cacheSize;
+        rl2Params.l2Sram0Base  = gRL2Config[0].l2Sram0Base;
+        rl2Params.l2Sram0Len   = gRL2Config[0].l2Sram0Len;
+
+        sts = RL2_configure(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    regs = (CSL_rl2_of_cba4Regs *)rl2Params.baseAddress;
+
+    /* --- Scenario 1: Read miss counter right after configure --- */
+    if(SystemP_SUCCESS == retval)
+    {
+        apiMiss = 0xFFFFFFFFU;
+        sts = RL2_getCacheMiss(&rl2Params, &apiMiss);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_getCacheMiss (initial) returned error 0x%x\r\n", sts);
+            retval = SystemP_FAILURE;
+        }
+    }
+    if(SystemP_SUCCESS == retval)
+    {
+        regMiss = regs->L2MC;
+        if(apiMiss != regMiss)
+        {
+            DebugP_logError("Cache miss initial mismatch: API=%u REG=%u\r\n",
+                            apiMiss, regMiss);
+            retval = SystemP_FAILURE;
+        }
+        prevMiss = apiMiss;
+    }
+
+    /* --- Scenario 2: Generate cache misses by executing code from flash.
+     *     Data pointer reads do NOT traverse RL2 on the R5F Harvard bus;
+     *     only instruction fetches go through the RL2 cache.--- */
+    if(SystemP_SUCCESS == retval)
+    {
+        /* Call function placed in .flashSrcBuffer (external flash) to
+         * force instruction fetches through the RL2 cached range. */
+        TestOptiflash_loadFunction();
+        apiMiss = 0U;
+        sts = RL2_getCacheMiss(&rl2Params, &apiMiss);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_getCacheMiss after flash code execution returned error\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+    if(SystemP_SUCCESS == retval)
+    {
+        regMiss = regs->L2MC;
+        if(apiMiss != regMiss)
+        {
+            DebugP_logError("Cache miss mismatch after reads: API=%u REG=%u\r\n",
+                            apiMiss, regMiss);
+            retval = SystemP_FAILURE;
+        }
+        /* Miss counter must be monotonically non-decreasing */
+        if(apiMiss <= prevMiss)
+        {
+            DebugP_logError("Cache miss counter decreased: prev=%u curr=%u\r\n",
+                            prevMiss, apiMiss);
+            retval = SystemP_FAILURE;
+        }
+        prevMiss = apiMiss;
+    }
+
+    /* --- Scenario 3: Read miss counter again — must still be >= previous --- */
+    if(SystemP_SUCCESS == retval)
+    {
+        apiMiss = 0U;
+        sts = RL2_getCacheMiss(&rl2Params, &apiMiss);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_getCacheMiss (third read) returned error\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+    if(SystemP_SUCCESS == retval)
+    {
+        regMiss = regs->L2MC;
+        if(apiMiss != regMiss)
+        {
+            DebugP_logError("Cache miss third-read mismatch: API=%u REG=%u\r\n",
+                            apiMiss, regMiss);
+            retval = SystemP_FAILURE;
+        }
+        if(apiMiss < prevMiss)
+        {
+            DebugP_logError("Cache miss counter decreased (third): prev=%u curr=%u\r\n",
+                            prevMiss, apiMiss);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Clean up: disable RL2 */
+    RL2_disable(&rl2Params);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
 /* ========================================================================== */
 /*                     API ISR Function Definitions                           */
 /* ========================================================================== */

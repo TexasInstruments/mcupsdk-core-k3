@@ -104,6 +104,13 @@ void test_main(void *args)
     RUN_TEST((UnityTestFunction)TestOptiflash_flcOverlappingRegions, 10528, NULL);
     RUN_TEST((UnityTestFunction)TestOptiflash_EnableRL2Cache, 10880, NULL);
     RUN_TEST((UnityTestFunction)TestOptiflash_DisableRL2Cache, 10881, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_flcThroughputComparison, 10882, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_rl2RemoteLengthEncoding, 10883, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_rl2SetInterruptWriteHitAndWriteError, 10884, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_rl2ClearInterruptWriteHitAndWriteError, 10885, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_rl2ReadIRQStatusRaw, 10886, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_rl2IRQMaskApiValidation, 10887, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_rL2CacheMissBehavior, 10888, NULL);
 
     UNITY_END();
 

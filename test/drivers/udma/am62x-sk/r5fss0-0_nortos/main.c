@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2025 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,22 +30,36 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#if defined(SOC_J722S)
-#include "soc/j722s/udma_test_soc.h"
-#endif
+#include <stdlib.h>
+#include "ti_drivers_config.h"
+#include "ti_board_config.h"
+#include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
 
-#if defined(SOC_AM62AX)
-#include "soc/am62ax/udma_test_soc.h"
-#endif
+void test_udma_main(void *args);
 
-#if defined(SOC_AM62DX)
-#include "soc/am62dx/udma_test_soc.h"
-#endif
+int main()
+{
+    int32_t status = SystemP_SUCCESS;
 
-#if defined(SOC_AM62PX)
-#include "soc/am62px/udma_test_soc.h"
-#endif
+    System_init();
+    Board_init();
 
-#if defined(SOC_AM62X)
-#include "soc/am62x/udma_test_soc.h"
-#endif
+    /* Open drivers */
+    Drivers_open();
+    /* Open flash and board drivers */
+    status = Board_driversOpen();
+    DebugP_assert(status==SystemP_SUCCESS);
+
+    test_udma_main(NULL);
+
+    /* Close board and flash drivers */
+    Board_driversClose();
+    /* Close drivers */
+    Drivers_close();
+
+    Board_deinit();
+    System_deinit();
+
+    return 0;
+}

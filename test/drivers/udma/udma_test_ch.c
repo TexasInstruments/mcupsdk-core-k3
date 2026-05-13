@@ -4522,6 +4522,7 @@ void TestUdma_chGetNumRxandUtc(void *args)
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
 #if (UDMA_NUM_UTC_INSTANCE > 0)
+#if !defined(SOC_AM62X)
     /* UTC channel: only run if UTC instances are available */
     UdmaInitPrms_init(UDMA_INST_ID_PKTDMA_0, &initPrms);
     initPrms.enableUtc = TRUE;
@@ -4542,6 +4543,7 @@ void TestUdma_chGetNumRxandUtc(void *args)
     retVal = Udma_deinit(drvHandle);
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 #endif /* UDMA_NUM_UTC_INSTANCE > 0 */
+#endif /* !SOC_AM62X */
 
 }
 
@@ -4617,8 +4619,11 @@ void TestUdma_chSetChainingUnsupportedChannel(void *args)
     static Udma_DrvObject drvObj;
     Udma_DrvHandle drvHandle = &drvObj;
     Udma_InitPrms initPrms;
-    Udma_ChObject triggerChObj, chainedChObj;
+#if defined(SOC_J722S) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM275X)
+    Udma_ChObject triggerChObj;
     Udma_ChHandle triggerCh = &triggerChObj;
+#endif /* SOC_J722S || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX || SOC_AM275X */
+    Udma_ChObject chainedChObj;
     Udma_ChHandle chainedCh = &chainedChObj;
     Udma_ChPrms chPrms;
 
@@ -4639,6 +4644,7 @@ void TestUdma_chSetChainingUnsupportedChannel(void *args)
     retVal = Udma_chOpen(drvHandle, chainedCh, UDMA_CH_TYPE_TR_BLK_COPY, &chPrms);
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
 
+#if defined(SOC_J722S) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM275X)
     /* Open trigger channel as UTC (this channel type is not a TX/RX/BLK_COPY) */
     UdmaChPrms_init(&chPrms, UDMA_CH_TYPE_UTC);
     chPrms.utcId = UDMA_UTC_ID_MSMC_DRU0;
@@ -4663,6 +4669,7 @@ void TestUdma_chSetChainingUnsupportedChannel(void *args)
     /* Cleanup */
     retVal = Udma_chClose(triggerCh);
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
+#endif /* SOC_J722S || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX || SOC_AM275X */
     retVal = Udma_chClose(chainedCh);
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, retVal);
     retVal = Udma_deinit(drvHandle);

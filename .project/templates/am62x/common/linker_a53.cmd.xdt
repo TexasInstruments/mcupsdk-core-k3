@@ -43,6 +43,10 @@
     let addrAtfJump = 0x80080000;
     let dssFrameBuf = "false";
 
+    let enableUdmaBuffers = false;
+    let codeDataAddrDdrUdma = 0x88000000;
+    let codeDataSizeDdrUdma = 0x08000000;
+
 	/* if no options given use defaults */
 	if(options && options.stackSize)
 		stackSize = options.stackSize;
@@ -69,6 +73,19 @@
 	if (options && options.enableDMARegion && options.dmaHeapSize) {
 		codeDataSizeDdr -= options.dmaHeapSize;
 	}
+
+    if(options && options.enableUdmaBuffers)
+        enableUdmaBuffers = options.enableUdmaBuffers;
+    if(options && options.codeDataAddrDdrUdma)
+        codeDataAddrDdrUdma = options.codeDataAddrDdrUdma;
+    if(options && options.codeDataSizeDdrUdma)
+        codeDataSizeDdrUdma = options.codeDataSizeDdrUdma;
+    /* Legacy alias: udmaDdrAddr / udmaDdrSize */
+    if(options && options.udmaDdrAddr)
+        codeDataAddrDdrUdma = options.udmaDdrAddr;
+    if(options && options.udmaDdrSize)
+        codeDataSizeDdrUdma = options.udmaDdrSize;
+
     if(options && options.dssFrameBuf)
         dssFrameBuf = options.dssFrameBuf;
 
@@ -96,6 +113,9 @@ MEMORY {
 	DDR_DMA : ORIGIN =  0x`(codeDataAddrDdr+codeDataSizeDdr).toString(16).toUpperCase()`, LENGTH = 0x`(options.dmaHeapSize).toString(16).toUpperCase()`
 	% }
 	% }
+    % if(enableUdmaBuffers) {
+    DDR_UDMA : ORIGIN = 0x`(codeDataAddrDdrUdma).toString(16).toUpperCase()`, LENGTH = 0x`(codeDataSizeDdrUdma).toString(16).toUpperCase()`
+    % }
 
     % if(dssFrameBuf == "true") {
     /* DSS frame buffer region in DDR (128 MiB) */
@@ -178,6 +198,12 @@ SECTIONS {
         KEEP(*(.stack))
         . = . + __TI_STACK_SIZE;
     } > DDR
+        % if(enableUdmaBuffers) {
+        .udma_buffer_ddr (NOLOAD) : { *(.udma_buffer_ddr) } > DDR_UDMA
+        .udma_buffer_msmc (NOLOAD) : { *(.udma_buffer_msmc) } > DDR_UDMA
+        .udma_buffer_internal (NOLOAD) : { *(.udma_buffer_internal) } > DDR_UDMA
+        .udma_buffer_ospi (NOLOAD) : { *(.udma_buffer_ospi) } > DDR_UDMA
+        % }
     % if (options && options.enableDMARegion) {
 
     .enet_dma_mem (NOLOAD) : {

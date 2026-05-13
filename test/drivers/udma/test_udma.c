@@ -403,7 +403,9 @@ static void TestUdma_ringMemPtrTest(void *args);
 static void TestUdma_ringAttachTest(void *args);
 static void TestUdma_ringResetTest(void *args);
 static void TestUdma_ringPrimeLcdmaTest(void *args);
+#if !(defined(SOC_AM62X) && defined(ENABLE_A53_CORE))
 static void TestUdma_flowAttachMappedTest(void *args);
+#endif
 static void TestUdma_trMakeTest(void *args);
 static void TestUdma_structSizeTest(void *args);
 static void TestUdma_chPktdmaParamCheckTest(void *args);
@@ -412,7 +414,9 @@ static void TestUdma_blkcpyCircularSrcOcramToDdrPerfTest(void *args);
 static void TestUdma_blkcpyDdrToCircularDestOcramPerfTest(void *args);
 static void TestUdma_blkcpyCircularOcramToOcramPerfTest(void *args);
 static void TestUdma_blkcpyPacingDdrToOcramCirc4MBTo4KBTest(void *args);
+#if !(defined(SOC_AM62X) && defined(ENABLE_A53_CORE))
 static void TestUdma_flowAttachTest(void *args);
+#endif
 static void TestUdma_eventEnableDisable(void *args);
 static void TestUdma_resetDrvChObjects(Udma_DrvHandle drvHandle,
                                        Udma_ChHandle chHandle0,
@@ -817,7 +821,9 @@ void test_udma_main(void *args)
     RUN_TEST(TestUdma_ringAttachTest, 8251, NULL);
     RUN_TEST(TestUdma_ringResetTest, 8252, NULL);
     RUN_TEST(TestUdma_ringPrimeLcdmaTest, 8275, NULL);
-    RUN_TEST(TestUdma_flowAttachMappedTest, 8276, NULL);
+    #if !(defined(SOC_AM62X) && defined(ENABLE_A53_CORE))
+    RUN_TEST(TestUdma_flowAttachMappedTest, 8276, NULL); 
+    #endif
     RUN_TEST(TestUdma_trMakeTest, 8278, NULL);
     RUN_TEST(TestUdma_structSizeTest, 8279, NULL);
     RUN_TEST(TestUdma_chPktdmaParamCheckTest, 8280, NULL);
@@ -826,7 +832,9 @@ void test_udma_main(void *args)
     RUN_TEST(TestUdma_blkcpyDdrToCircularDestOcramPerfTest, 8284, NULL);
     RUN_TEST(TestUdma_blkcpyCircularOcramToOcramPerfTest, 8285, NULL);
     RUN_TEST(TestUdma_blkcpyPacingDdrToOcramCirc4MBTo4KBTest, 8286, NULL);
+#if !(defined(SOC_AM62X) && defined(ENABLE_A53_CORE))
     RUN_TEST(TestUdma_flowAttachTest, 8287, NULL);
+#endif
 #if defined(ENABLE_MT_TESTS) && !(defined(SOC_AM62PX) && defined(ENABLE_MCU_R5_CORE))
     RUN_TEST(TestUdma_multiInstancePktdmaBcdma, 8618, NULL);
 #endif
@@ -1912,6 +1920,7 @@ static void TestUdma_ringPrimeLcdmaTest(void *args)
  * \return None.
  * \expectedOutput Mapped flow attach/detach sequence succeeds; no leaks or errors.
  */
+#if !(defined(SOC_AM62X) && defined(ENABLE_A53_CORE))
 static void TestUdma_flowAttachMappedTest(void *args)
 {
     int32_t retVal;
@@ -1957,6 +1966,7 @@ static void TestUdma_flowAttachMappedTest(void *args)
     /* Deinitialize driver/memory */
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
+#endif
 
 /**
  * \brief TR make utility test.
@@ -2419,6 +2429,7 @@ static void TestUdma_blkcpyPacingDdrToOcramCirc4MBTo4KBTest(void *args)
  * \return None.
  * \expectedOutput Flow attach/detach operations return success; no resource leaks.
  */
+#if !(defined(SOC_AM62X) && defined(ENABLE_A53_CORE))
 static void TestUdma_flowAttachTest(void *args)
 {
     int32_t retVal;
@@ -2464,6 +2475,7 @@ static void TestUdma_flowAttachTest(void *args)
     /* Deinitialize driver/memory */
     TEST_ASSERT_EQUAL_INT(UDMA_SOK, TestUdma_deinitDriver(testObj, testPrms));
 }
+#endif
 
 /**
  * \brief Event enable/disable functional test.

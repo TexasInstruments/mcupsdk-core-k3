@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2025 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,22 +30,28 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#if defined(SOC_J722S)
-#include "soc/j722s/udma_test_soc.h"
-#endif
+ /**
+ *  \file test_case_mapping.c
+ *
+ *  \brief This file contains mapping of test case IDs to test functions
+ *
+ */
 
-#if defined(SOC_AM62AX)
-#include "soc/am62ax/udma_test_soc.h"
-#endif
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+#include "system_test_utils.h"
+#include "test_udma.h"
+/* ========================================================================== */
+/*                 Internal Function Declarations                             */
+/* ========================================================================== */
 
-#if defined(SOC_AM62DX)
-#include "soc/am62dx/udma_test_soc.h"
-#endif
 
-#if defined(SOC_AM62PX)
-#include "soc/am62px/udma_test_soc.h"
-#endif
-
-#if defined(SOC_AM62X)
-#include "soc/am62x/udma_test_soc.h"
-#endif
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+testCase_t gTestCase[] =
+{
+    {TestUtils_dummyTestCase, 9520},
+    {NULL, 0}
+};

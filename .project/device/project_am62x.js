@@ -40,6 +40,7 @@ const component_file_list = [
     "test/drivers/mmcsd/test_mmcsd_fault_inject/configs/.project/project.js",
     "test/drivers/i2c/test_i2c_fault_inject/configs/.project/project_am62x.js",
     "test/drivers/mcasp/test_mcasp_fault_injection/configs/.project/project.js",
+    "test/drivers/udma/test_udma_fault_inject/configs/.project/project.js",
     "docs_src/docs/api_guide/doxy_samples/.project/project.js",
 ];
 
@@ -231,6 +232,8 @@ const example_file_list = [
     "test/drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Vring_256_Test/.project/project.js",
     "test/drivers/mcan/.project/project.js",
     "test/drivers/mcan/test_mcan_system/.project/project.js",
+    "test/drivers/udma/.project/project_am62x.js",
+    "test/drivers/udma/test_udma_fault_inject/.project/project.js",
     "test/drivers/mcasp/mcasp_auxclk_sel/.project/project.js",
     "test/drivers/mcasp/mcasp_start_stop_test/.project/project.js",
     "test/drivers/mcasp/mcasp_multiinst_loopback/.project/project.js",
@@ -253,6 +256,7 @@ const example_file_list = [
     "test/drivers/watchdog/test_watchdog_system/.project/project.js",
     "test/drivers/ddr/.project/project.js",
     "test/drivers/ddr/test_ddr_system/.project/project.js",
+    "test/drivers/udma/test_udma_system/.project/project.js",
     "test/kernel/dpl/.project/project.js",
     "test/kernel/dpl_mmu_test/.project/project.js",
     "test/kernel/dpl_mpu_test/.project/project.js",

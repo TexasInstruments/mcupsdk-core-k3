@@ -1,0 +1,208 @@
+#
+# Auto generated makefile
+#
+
+export MCU_PLUS_SDK_PATH?=$(abspath ../../../../..)
+include $(MCU_PLUS_SDK_PATH)/imports.mak
+
+CG_TOOL_ROOT=$(CGT_TI_ARM_CLANG_PATH)
+
+CC=$(CGT_TI_ARM_CLANG_PATH)/bin/tiarmclang
+AR=$(CGT_TI_ARM_CLANG_PATH)/bin/tiarmar
+
+PROFILE?=release
+ConfigName:=$(PROFILE)
+
+LIBNAME:=drivers-udma-inject-fault.am62x.m4f.ti-arm-clang.$(PROFILE).lib
+
+FILES_common := \
+    csl_emif.c \
+    csl_sec_proxy.c \
+    ddr.c \
+    ddr_soc.c \
+    epwm.c \
+    i2c_v0.c \
+    i2c_v0_lld.c \
+    i2c_soc.c \
+    gpio.c \
+    pinmux.c \
+    mcspi_v0.c \
+    mcspi_dma.c \
+    mcspi_dma_udma.c \
+    ipc_notify_v0.c \
+    ipc_notify_v0_cfg.c \
+    ipc_rpmsg.c \
+    ipc_rpmsg_vring.c \
+    mcan.c \
+    sciclient.c \
+    sciclient_lpm.c \
+    sciclient_pm.c \
+    sciclient_rm.c \
+    sciclient_rm_irq.c \
+    sciclient_procboot.c \
+    sciclient_firewall.c \
+    sciclient_irq_rm.c \
+    sciclient_fmwSecureProxyMap.c \
+    sciclient_soc_priv.c \
+    soc.c \
+    uart_v0.c \
+    uart_dma.c \
+    utils.c \
+
+FILES_PATH_common = \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/i2c/v0 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/i2c/v0/lld \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/i2c/v0/soc/am62x \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/pinmux/am62x \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/mcan/v0 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/ipc_notify/v0 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/epwm/v0 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/gpio/v0 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/mcspi/v0 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/mcspi/v0/dma \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/mcspi/v0/dma/udma \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/ipc_notify/v0/soc/am62x \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/ipc_rpmsg/ \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/sciclient \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/sciclient/soc/am62x \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/soc/am62x \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/gpio/v0 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/gtc/v0 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/gtc/v0/soc/am62x \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/bootloader \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/bootloader/soc/am62x \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/ddr/v0 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/ddr/cdn_drv/ \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/ddr/cdn_drv/common/include \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/ddr/cdn_drv/v0/include \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/ddr/cdn_drv/common \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/ddr/cdn_drv/v0 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/ddr \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/ddr/v0/soc/am62x \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/mmcsd \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/mmcsd/v0 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/mmcsd/soc \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/mmcsd/soc/am62x \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/ospi \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/ospi/v0 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/ospi/v0/dma \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/ospi/v0/dma/udma \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/pmu \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/qos \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/qos/v0 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/uart/v0 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/uart/v0/dma \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/udma/v0 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/udma/v0/hw_include \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/udma/v0/soc \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/udma/v0/soc/am62x \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/rtc \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/rtc/v0 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/rtc/v0/soc/am62x \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/soc/am62x \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/spinlock/v0 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/elm/v0 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/gpmc/v0 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/gpmc/v0/dma \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/gpmc/v0/dma/udma \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/utils \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/watchdog/v1 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/watchdog/v1/soc/am62x \
+
+INCLUDES_common := \
+    -I${CG_TOOL_ROOT}/include/c \
+    -I${MCU_PLUS_SDK_PATH}/source \
+
+DEFINES_common := \
+    -DSOC_AM62X \
+    -DSW_VERSION=$(SW_VERSION)
+
+CFLAGS_common := \
+    -mcpu=cortex-m4 \
+    -mfloat-abi=hard \
+    -mthumb \
+    -Wall \
+    -Werror \
+    -g \
+    -Wno-gnu-variable-sized-type-not-at-end \
+    -Wno-unused-function \
+    -DENABLE_UDMA_FAULT_INJECTION \
+
+CFLAGS_cpp_common := \
+    -Wno-c99-designator \
+    -Wno-extern-c-compat \
+    -Wno-c++11-narrowing \
+    -Wno-reorder-init-list \
+    -Wno-deprecated-register \
+    -Wno-writable-strings \
+    -Wno-enum-compare \
+    -Wno-reserved-user-defined-literal \
+    -Wno-unused-const-variable \
+    -x c++ \
+
+CFLAGS_debug := \
+    -D_DEBUG_=1 \
+
+CFLAGS_release := \
+    -Os \
+
+ARFLAGS_common := \
+    rc \
+
+FILES := $(FILES_common) $(FILES_$(PROFILE))
+ASMFILES := $(ASMFILES_common) $(ASMFILES_$(PROFILE))
+FILES_PATH := $(FILES_PATH_common) $(FILES_PATH_$(PROFILE))
+CFLAGS := $(CFLAGS_common) $(CFLAGS_$(PROFILE))
+ASMFLAGS := $(CFLAGS_common) $(CFLAGS_$(PROFILE))
+ifeq ($(CPLUSPLUS_BUILD), yes)
+CFLAGS += $(CFLAGS_cpp_common)
+endif
+DEFINES := $(DEFINES_common) $(DEFINES_$(PROFILE))
+INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
+ARFLAGS := $(ARFLAGS_common) $(ARFLAGS_$(PROFILE))
+
+LIBDIR := lib
+OBJDIR := obj/am62x/ti-arm-clang/$(PROFILE)/m4f/drivers-udma-inject-fault/
+OBJS := $(FILES:%.c=%.obj)
+OBJS += $(ASMFILES:%.S=%.obj)
+DEPS := $(FILES:%.c=%.d)
+
+vpath %.obj $(OBJDIR)
+vpath %.c $(FILES_PATH)
+vpath %.S $(FILES_PATH)
+
+$(OBJDIR)/%.obj %.obj: %.c
+	@echo  Compiling: $(LIBNAME): $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -o $(OBJDIR)/$@ $<
+
+$(OBJDIR)/%.obj %.obj: %.S
+	@echo  Compiling: $(LIBNAME): $<
+	$(CC) -c $(ASMFLAGS) -o $(OBJDIR)/$@ $<
+
+all: $(LIBDIR)/$(LIBNAME)
+
+$(LIBDIR)/$(LIBNAME): $(OBJS) | $(LIBDIR)
+	@echo  .
+	@echo  Archiving: $(LIBNAME) to $@ ...
+	$(AR) $(ARFLAGS) $@ $(addprefix $(OBJDIR), $(OBJS))
+	@echo  Archiving: $(LIBNAME) Done !!!
+	@echo  .
+
+clean:
+	@echo  Cleaning: $(LIBNAME) ...
+	$(RMDIR) $(OBJDIR)
+	$(RM) $(LIBDIR)/$(LIBNAME)
+
+scrub:
+	@echo  Scrubing: $(LIBNAME) ...
+	-$(RMDIR) obj/
+	-$(RMDIR) lib/
+
+$(OBJS): | $(OBJDIR)
+
+$(LIBDIR) $(OBJDIR):
+	$(MKDIR) $@
+
+-include $(addprefix $(OBJDIR)/, $(DEPS))

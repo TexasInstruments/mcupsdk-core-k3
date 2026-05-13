@@ -67,10 +67,17 @@
 /* Small transfer size for error-injection tests (bytes) */
 #define TEST_OPTIFLASH_ERROR_XFER_SIZE              (256U)
 
+/* FLC / RL2 cache-line granularity (bytes) */
+#define TEST_OPTIFLASH_CACHE_LINE_BYTES             (64U)
+
 /* Destination buffer fill patterns */
 #define TEST_OPTIFLASH_FILL_PATTERN_AA              (0xAAU)
-#define TEST_OPTIFLASH_FLC_INVALID_SRC_ADDR         (0x74000000U)
+#define TEST_OPTIFLASH_FILL_PATTERN_CD              (0xCDU)
 
+/* Known data patterns for RL2 write-hit trigger and verification */
+#define TEST_OPTIFLASH_RL2_REGION_FILL_PATTERN      (0xA5A5A5A5U)
+
+#define TEST_OPTIFLASH_FLC_INVALID_SRC_ADDR         (0x74000000U)
 /* ========================================================================== */
 /*                         Structures and Enums                               */
 /* ========================================================================== */
@@ -1181,6 +1188,973 @@ void *TestOptiflash_rL2CacheSizeSelection(void *args)
         }
     }
 
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Safe RL2 reconfiguration while enabled.
+ *
+ * Test Category: Functional
+ *
+ * Configures RL2 with one cache size, enables it, then reconfigures to a
+ * different cache size to ensure the RL2 API safely disables/reapplies
+ * configuration and the control/status registers reflect the change.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput RL2 reconfiguration succeeds and control/status registers match new settings.
+ */
+void *TestOptiflash_rl2SafeReconfigureBehavior(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    RL2_Params params;
+    RL2_API_STS_t sts;
+    CSL_rl2_of_cba4Regs *regs = (CSL_rl2_of_cba4Regs *)gRL2Config[0].baseAddress;
+
+    /* Cache sizes A and B for reconfiguration */
+    const RL2_CacheSize sizeA = RL2_CACHESIZE_16K;
+    const RL2_CacheSize sizeB = RL2_CACHESIZE_64K;
+
+    /* Initialize params and seed from SysCfg-generated config */
+    sts = RL2_initparams(&params);
+    if(sts != RL2_API_STS_SUCCESS)
+    {
+        retval = SystemP_FAILURE;
+    }
+    if(SystemP_SUCCESS == retval)
+    {
+        params.baseAddress = gRL2Config[0].baseAddress;
+        params.rangeStart  = gRL2Config[0].rangeStart;
+        params.rangeEnd    = gRL2Config[0].rangeEnd;
+        params.l2Sram0Base = gRL2Config[0].l2Sram0Base;
+        params.l2Sram0Len  = gRL2Config[0].l2Sram0Len;
+    }
+
+    /* Configure RL2 with cache size A and enable */
+    if(SystemP_SUCCESS == retval)
+    {
+        params.cacheSize = sizeA;
+        sts = RL2_configure(&params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to configure RL2 with cache size A\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_enable(&params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to enable RL2 with cache size A\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Confirm enable bit and size A set in L2_CTRL */
+    if(SystemP_SUCCESS == retval)
+    {
+        uint32_t ctrl = regs->L2_CTRL;
+        uint32_t enabled = (ctrl & CSL_RL2_OF_CBA4_L2_CTRL_ENABLE_MASK);
+        uint32_t sizeFld = (ctrl & CSL_RL2_OF_CBA4_L2_CTRL_SIZE_MASK) >> CSL_RL2_OF_CBA4_L2_CTRL_SIZE_SHIFT;
+        if((enabled == 0U) || (sizeFld != (uint32_t)sizeA))
+        {
+            DebugP_logError("RL2 control register does not reflect enabled state and cache size A\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Modify to cache size B and call RL2_configure(); RL2_configure safely disables internally */
+    if(SystemP_SUCCESS == retval)
+    {
+        params.cacheSize = sizeB;
+        sts = RL2_configure(&params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to reconfigure RL2 with cache size B\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Verify new cache size applied, RL2_STS OK_TO_GO and enable bit set */
+    if(SystemP_SUCCESS == retval)
+    {
+        uint32_t ctrl = regs->L2_CTRL;
+        uint32_t enabled = (ctrl & CSL_RL2_OF_CBA4_L2_CTRL_ENABLE_MASK);
+        uint32_t sizeFld = (ctrl & CSL_RL2_OF_CBA4_L2_CTRL_SIZE_MASK) >> CSL_RL2_OF_CBA4_L2_CTRL_SIZE_SHIFT;
+        if((enabled == 0U) || (sizeFld != (uint32_t)sizeB))
+        {
+            DebugP_logError("RL2 control register does not reflect enabled state and cache size B\r\n");
+            retval = SystemP_FAILURE;
+        }
+        if(SystemP_SUCCESS == retval && regs->L2_STS != CSL_RL2_OF_CBA4_L2_STS_OK_TO_GO_MASK)
+        {
+            DebugP_logError("RL2 status register does not indicate OK_TO_GO\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Explicitly re-enable and confirm operational state remains enabled */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_enable(&params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to re-enable RL2\r\n");
+            retval = SystemP_FAILURE;
+        }
+        else
+        {
+            uint32_t ctrl = regs->L2_CTRL;
+            if((ctrl & CSL_RL2_OF_CBA4_L2_CTRL_ENABLE_MASK) == 0U)
+            {
+                DebugP_logError("RL2 control register does not reflect enabled state\r\n");
+                retval = SystemP_FAILURE;
+            }
+        }
+    }
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Integration test: FLC transfer while RL2 cache enabled.
+ *
+ * Test Category: Integration
+ *
+ * Configures and enables RL2 cache, performs an FLC copy from flash to
+ * destination, invalidates CPU caches for the destination and verifies data
+ * integrity and RL2 IRQ mask read operations.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput FLC completes, destination equals source, and RL2 IRQ mask readable.
+ */
+void *TestOptiflash_integrationFlcWithRl2CacheCoherency(void *args)
+{
+    int32_t retval = SystemP_SUCCESS;
+    uint32_t i;
+    volatile uint32_t sink = 0U;
+    FLC_API_STS_t flcSts;
+    uint32_t sts = 0U;
+    uint32_t doneMask;
+    uint32_t attempts = 0U;
+    const uint32_t maxAttempts = 200U; /* 200 x 1ms = ~200ms */
+    uint32_t irqMask = 0U;
+    /* Prepare RL2 configuration using SysCfg-provided defaults (flash XIP cache) */
+    RL2_Params rl2Cfg;
+    RL2_API_STS_t rl2Sts = RL2_initparams(&rl2Cfg);
+    if(rl2Sts != RL2_API_STS_SUCCESS)
+    {
+        retval = SystemP_FAILURE;
+    }
+    else
+    {
+        rl2Cfg.baseAddress = gRL2Config[0].baseAddress;
+        rl2Cfg.rangeStart  = gRL2Config[0].rangeStart;
+        rl2Cfg.rangeEnd    = gRL2Config[0].rangeEnd;
+        rl2Cfg.cacheSize   = gRL2Config[0].cacheSize;
+        rl2Cfg.l2Sram0Base = gRL2Config[0].l2Sram0Base;
+        rl2Cfg.l2Sram0Len  = gRL2Config[0].l2Sram0Len;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Sts = RL2_configure(&rl2Cfg);
+        if(rl2Sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to configure RL2 cache\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Sts = RL2_enable(&rl2Cfg);
+        if(rl2Sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to enable RL2 cache\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* do NOT modify flash-backed sourceBuffer; clear destination */
+    memset(destBuffer, 0, TRANSFERSIZE);
+
+    /* Flush the dirty zero-filled cache lines to physical memory and
+     * invalidate them so no dirty lines remain when FLC writes via DMA. */
+    CacheP_wbInv((void*)destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+
+    /* warm CPU cache for destBuffer via reads */
+    for(i = 0U; i < TRANSFERSIZE; i++)
+    {
+        sink ^= destBuffer[i];
+    }
+    (void)sink;
+
+    /* start FLC transfer source -> dest */
+    TestOptiflash_resetFlc(&gFLCRegionConfig[0]);
+    gFLCRegionConfig[0].sourceStartAddress      = (uint32_t)sourceBuffer;
+    gFLCRegionConfig[0].destinationStartAddress = (uint32_t)destBuffer;
+    gFLCRegionConfig[0].sourceEndAddress        = (uint32_t)sourceBuffer + TRANSFERSIZE;
+
+    if(SystemP_SUCCESS == retval)
+    {
+        flcSts = FLC_configureRegion(&gFLCRegionConfig[0]);
+        if(flcSts != FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to configure FLC region\r\n");
+            retval = SystemP_FAILURE;
+        }
+        else
+        {
+            flcSts = FLC_startRegion(&gFLCRegionConfig[0]);
+            if(flcSts != FLC_API_STS_SUCCESS)
+            {
+                DebugP_logError("Failed to start FLC region\r\n");
+                retval = SystemP_FAILURE;
+            }
+        }
+    }
+
+    /* Wait for completion with ~200ms timeout using usleep */
+    if(SystemP_SUCCESS == retval)
+    {
+        doneMask = (1U << (gFLCRegionConfig[0].regionId & 0x3U));
+        attempts = 0U;
+        do {
+            FLC_isRegionDone(&gFLCRegionConfig[0], &sts);
+            if((sts & doneMask) == 0U)
+            {
+                ClockP_usleep(1000U);
+                attempts++;
+            }
+        } while(((sts & doneMask) == 0U) && (attempts < maxAttempts));
+
+        if((sts & doneMask) == 0U)
+        {
+            DebugP_logError("FLC region copy did not complete within timeout\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Keep RL2 enabled; invalidate CPU cache lines for dest range only */
+    if(SystemP_SUCCESS == retval)
+    {
+        CacheP_inv((void*)destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+    }
+
+    /* Verify data */
+    if(SystemP_SUCCESS == retval)
+    {
+        int cmp = memcmp(destBuffer, sourceBuffer, TRANSFERSIZE);
+        if(cmp != 0)
+        {
+            DebugP_logError("Data mismatch between source and destination buffers after FLC transfer with RL2 cache enabled\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Basic SysCfg sanity: RL2 registers are readable */
+    if(SystemP_SUCCESS == retval)
+    {
+        irqMask = 0U;
+        rl2Sts = RL2_readIRQMask(&rl2Cfg, &irqMask);
+        if(rl2Sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to read RL2 IRQ mask register\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* RL2 remains enabled during this test */
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Start-while-busy API robustness test.
+ *
+ * Test Category: Functional
+ *
+ * Starts an FLC region then immediately calls start again while hardware is
+ * busy to ensure the API behaves safely (returns success) and hardware
+ * completes the original transfer without data corruption or errors.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput Second start returns success; transfer completes and data matches.
+ */
+void *TestOptiflash_flcStartWhileBusy(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    FLC_API_STS_t flcSts;
+    FLC_RegionInfo *region = &gFLCRegionConfig[0];
+    uint32_t status = 0U;
+    FLC_API_STS_t flcSts2;
+    uint32_t attempts = 0U;
+    const uint32_t maxAttempts = 200U;
+    uint32_t rdErr = 0U, wrErr = 0U;
+    const uint32_t doneMask = (1U << (uint32_t)region->regionId);
+
+    /* Clean state */
+    TestOptiflash_resetFlc(region);
+
+    /* Prepare destination and cache state */
+    memset(destBuffer, 0, TRANSFERSIZE);
+    CacheP_wbInv(destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+
+    /* Configure a valid transfer */
+    region->sourceStartAddress      = (uint32_t)sourceBuffer;
+    region->sourceEndAddress        = (uint32_t)sourceBuffer + TRANSFERSIZE;
+    region->destinationStartAddress = (uint32_t)destBuffer;
+    flcSts = FLC_configureRegion(region);
+    if(flcSts != FLC_API_STS_SUCCESS)
+    {
+        DebugP_logError("Failed to configure FLC region\r\n");
+        retval = SystemP_FAILURE;
+    }
+
+    /* Start Region0 transfer */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcSts = FLC_startRegion(region);
+        if(flcSts != FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to start FLC region\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Immediately request start again while busy */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcSts2 = FLC_startRegion(region);
+        /* Expect call to be safe; API returns success and hardware remains busy */
+        if(flcSts2 != FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("FLC_startRegion() did not return success when called while busy\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Wait for completion with timeout (~200ms) */
+    if(SystemP_SUCCESS == retval)
+    {
+        attempts = 0U;
+        do {
+            FLC_isRegionDone(region, &status);
+            if((status & doneMask) == 0U)
+            {
+                ClockP_usleep(1000U);
+                attempts++;
+            }
+        } while(((status & doneMask) == 0U) && (attempts < maxAttempts));
+
+        if((status & doneMask) == 0U)
+        {
+            DebugP_logError("FLC did not complete after start-while-busy sequence\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Verify data */
+    if(SystemP_SUCCESS == retval)
+    {
+        CacheP_inv(destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+        if(0 != memcmp(sourceBuffer, destBuffer, TRANSFERSIZE))
+        {
+            DebugP_logError("Data mismatch after start-while-busy\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Ensure no read/write error latched */
+    if(SystemP_SUCCESS == retval)
+    {
+        FLC_wasReadError(region, &rdErr);
+        FLC_wasWriteError(region, &wrErr);
+        if((rdErr != 0U) || (wrErr != 0U))
+        {
+            DebugP_logError("Unexpected FLC error after start-while-busy\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Zero-length transfer behavior validation.
+ *
+ * Test Category: Functional
+ *
+ * Configures a transfer where sourceStart == sourceEnd to validate that the
+ * hardware/driver handles zero-length or single-beat transfers gracefully and
+ * does not produce widespread unintended writes.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput Transfer completes without errors; destination unchanged or only first beat modified.
+ */
+void *TestOptiflash_flcZeroLengthTransfer(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    FLC_API_STS_t flcSts;
+    FLC_RegionInfo *region = &gFLCRegionConfig[0];
+    uint32_t status = 0U;
+    uint32_t attempts = 0U;
+    const uint32_t maxAttempts = 200U;
+    const uint32_t beat = TEST_OPTIFLASH_CACHE_LINE_BYTES; /* typical cache line/granularity */
+    uint32_t diffCount = 0U;
+    uint32_t raw = 0U;
+    const uint32_t doneMask = (1U << (uint32_t)region->regionId);
+
+    /* Clean state */
+    TestOptiflash_resetFlc(region);
+
+    /* Prime destination with a known pattern and flush caches */
+    memset(destBuffer, TEST_OPTIFLASH_FILL_PATTERN_CD, TRANSFERSIZE);
+    CacheP_wbInv(destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+
+    /* Configure zero-length transfer: sourceStart == sourceEnd */
+    region->sourceStartAddress      = (uint32_t)sourceBuffer;
+    region->sourceEndAddress        = (uint32_t)sourceBuffer; /* zero length */
+    region->destinationStartAddress = (uint32_t)destBuffer;
+
+    flcSts = FLC_configureRegion(region);
+    if(flcSts != FLC_API_STS_SUCCESS)
+    {
+        DebugP_logError("Failed to configure FLC region for zero-length transfer\r\n");
+        retval = SystemP_FAILURE;
+    }
+
+    /* Start transfer */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcSts = FLC_startRegion(region);
+        if(flcSts != FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to start FLC region for zero-length transfer\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Poll DONE; expect graceful completion quickly */
+    if(SystemP_SUCCESS == retval)
+    {
+        attempts = 0U;
+        do {
+            FLC_isRegionDone(region, &status);
+            if((status & doneMask) == 0U)
+            {
+                ClockP_usleep(1000U);
+                attempts++;
+            }
+        } while(((status & doneMask) == 0U) && (attempts < maxAttempts));
+
+        if((status & doneMask) == 0U)
+        {
+            DebugP_logError("Zero-length transfer did not report DONE\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Verify destination unchanged OR only the first beat (e.g., 64B) was written.
+     * Some implementations treat LO==HI as a single-beat transfer. Accept either
+     * behavior as graceful (no errors) but flag unexpected widespread changes.
+     */
+    if(SystemP_SUCCESS == retval)
+    {
+        CacheP_inv(destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+        diffCount = 0U;
+        for(uint32_t i = 0U; i < TRANSFERSIZE; i++)
+        {
+            if(destBuffer[i] != (uint8_t)TEST_OPTIFLASH_FILL_PATTERN_CD)
+            {
+                diffCount++;
+            }
+        }
+        if(diffCount == 0U)
+        {
+            /* strict no-modification behavior */
+        }
+        else if(diffCount <= beat)
+        {
+            /* Accept localized first-beat modification; ensure bytes beyond beat remain unchanged */
+            for(uint32_t i = beat; i < TRANSFERSIZE; i++)
+            {
+                if(destBuffer[i] != (uint8_t)TEST_OPTIFLASH_FILL_PATTERN_CD)
+                {
+                    DebugP_logError("Bytes beyond first beat modified during zero-length transfer\r\n");
+                    retval = SystemP_FAILURE;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            DebugP_logError("Destination modified beyond one beat during zero-length transfer\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Verify no error interrupts latched */
+    if(SystemP_SUCCESS == retval)
+    {
+        FLC_readIRQStatus(region, &raw);
+        if(((raw & CSL_RL2_OF_CBA4_IRQSTATUS_RAW_FLC_RDERR_MASK) != 0U) ||
+           ((raw & CSL_RL2_OF_CBA4_IRQSTATUS_RAW_FLC_WRERR_MASK) != 0U))
+        {
+            DebugP_logError("Error IRQ latched during zero-length transfer\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Back-to-back FLC transfer stress test.
+ *
+ * Test Category: Stress
+ *
+ * Repeatedly reconfigures and starts transfers in quick succession to ensure
+ * the driver and hardware remain stable across rapid reconfiguration/use
+ * cycles and that no data corruption or errors occur.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput All cycles complete with correct data and no errors.
+ */
+void *TestOptiflash_flcBackToBackTransfers(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    FLC_RegionInfo *region = &gFLCRegionConfig[0];
+    const uint32_t doneMask = (1U << (uint32_t)region->regionId);
+    const uint32_t cycles = 5U;
+    uint32_t status = 0U;
+    uint32_t attempts = 0U;
+    uint32_t len;
+    uint32_t rdErr = 0U, wrErr = 0U;
+    const uint32_t maxAttempts = 400U; /* allow more time across cycles */
+
+    /* Start from a clean state */
+    TestOptiflash_resetFlc(region);
+
+    /* Ensure RL2 cache is disabled so FLC writes are observed deterministically */
+    RL2_disable(&gRL2Config[0]);
+
+    for(uint32_t c = 0U; (SystemP_SUCCESS == retval) && (c < cycles); c++)
+    {
+        /* Ensure FLC is clean before each reconfiguration */
+        TestOptiflash_resetFlc(region);
+
+        /* Alternate length: full vs half to exercise reconfiguration path */
+        len = (c % 2U == 0U) ? TRANSFERSIZE : (TRANSFERSIZE / 2U);
+
+        /* Prime destination with a known pattern beyond len to detect overflow */
+        memset(destBuffer, TEST_OPTIFLASH_FILL_PATTERN_AA, TRANSFERSIZE);
+        CacheP_wbInv(destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+
+        /* Configure region for current cycle */
+        region->sourceStartAddress      = (uint32_t)sourceBuffer;
+        region->sourceEndAddress        = (uint32_t)sourceBuffer + len;
+        region->destinationStartAddress = (uint32_t)destBuffer;
+
+        if(FLC_API_STS_SUCCESS != FLC_configureRegion(region))
+        {
+            DebugP_logError("FLC configure failed in back-to-back cycle\r\n");
+            retval = SystemP_FAILURE;
+            break;
+        }
+        if(FLC_API_STS_SUCCESS != FLC_startRegion(region))
+        {
+            DebugP_logError("FLC start failed in back-to-back cycle\r\n");
+            retval = SystemP_FAILURE;
+            break;
+        }
+
+        /* Wait for completion */
+        do {
+            FLC_isRegionDone(region, &status);
+            if((status & doneMask) == 0U)
+            {
+                ClockP_usleep(1000U);
+                attempts++;
+            }
+        } while(((status & doneMask) == 0U) && (attempts < maxAttempts));
+
+        if((status & doneMask) == 0U)
+        {
+            DebugP_logError("FLC did not complete in back-to-back cycle\r\n");
+            retval = SystemP_FAILURE;
+            break;
+        }
+
+        /* Give hardware a moment to drain writes before cache ops */
+        ClockP_usleep(1000U);
+
+        /* Verify no errors latched */
+        FLC_wasReadError(region, &rdErr);
+        FLC_wasWriteError(region, &wrErr);
+        if((rdErr != 0U) || (wrErr != 0U))
+        {
+            DebugP_logError("Unexpected FLC error in back-to-back cycle\r\n");
+            retval = SystemP_FAILURE;
+            break;
+        }
+
+        /* Validate data integrity for the configured length */
+        /* Invalidate source and entire destination to avoid partial-line staleness */
+        CacheP_inv(sourceBuffer, len, CacheP_TYPE_ALL);
+        CacheP_inv(destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+        if(0 != memcmp(sourceBuffer, destBuffer, len))
+        {
+            DebugP_logError("Data mismatch in back-to-back cycle\r\n");
+            retval = SystemP_FAILURE;
+            break;
+        }
+
+        /* Ensure no writes occurred beyond len in this cycle */
+        for(uint32_t i = len; i < TRANSFERSIZE; i++)
+        {
+            if(destBuffer[i] != (uint8_t)TEST_OPTIFLASH_FILL_PATTERN_AA)
+            {
+                DebugP_logError("Destination modified beyond expected length in back-to-back cycle\r\n");
+                retval = SystemP_FAILURE;
+                break;
+            }
+        }
+
+        /* Small delay to allow hardware to fully settle before next cycle */
+        if(SystemP_SUCCESS == retval)
+        {
+            ClockP_usleep(1000U);
+        }
+    }
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Disable RL2 while CPU is actively accessing cached region.
+ *
+ * Test Category: Stress
+ *
+ * Fills an RL2-cached region with a known pattern, continuously reads it
+ * for multiple iterations, disables RL2 halfway through and continues reads
+ * to verify no crash or data corruption occurs when RL2 is turned off during
+ * active access.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput No data corruption detected before or after disabling RL2.
+ */
+void *TestOptiflash_rl2DisableDuringActiveAccess(void *args)
+{
+    RL2_API_STS_t retval;
+    uint32_t i;
+    int errors = 0;
+
+    /* Use RL2 and FLC config from generated structures */
+    RL2_Params rl2Params = gRL2Config[0];
+    uint32_t *testRegion = (uint32_t *)gFLCRegionConfig[0].destinationStartAddress;
+    uint32_t regionSize = gFLCRegionConfig[0].sourceEndAddress - gFLCRegionConfig[0].sourceStartAddress;
+    uint32_t regionWords = regionSize / sizeof(uint32_t);
+    uint32_t expected = TEST_OPTIFLASH_RL2_REGION_FILL_PATTERN;
+    const uint32_t readIterations = regionWords * 4; /* 4x region size for stress test */
+
+    /* Initialize and enable RL2 cache */
+    retval = RL2_initparams(&rl2Params);
+    TEST_ASSERT_EQUAL_INT32(RL2_API_STS_SUCCESS, retval);
+
+    rl2Params.baseAddress = gRL2Config[0].baseAddress;
+    rl2Params.cacheSize = gRL2Config[0].cacheSize;
+
+    retval = RL2_configure(&rl2Params);
+    TEST_ASSERT_EQUAL_INT32(RL2_API_STS_SUCCESS, retval);
+
+    retval = RL2_enable(&rl2Params);
+    TEST_ASSERT_EQUAL_INT32(RL2_API_STS_SUCCESS, retval);
+
+    /* Fill region with known pattern */
+    for (i = 0; i < regionWords; i++)
+    {
+        testRegion[i] = expected;
+    }
+
+    /* Flush cache to ensure data is written to memory */
+    CacheP_wbInv((void *)testRegion, regionWords * sizeof(uint32_t), CacheP_TYPE_ALL);
+
+    /* Continuous read loop, disable RL2 mid-way, continue reading */
+    for (i = 0; i < readIterations; i++)
+    {
+        volatile uint32_t val = testRegion[i % regionWords];
+
+        if (val != expected)
+        {
+            errors++;
+            DebugP_logError("Data corruption detected at iteration %d: expected 0x%08X, got 0x%08X\r\n",
+                       i, expected, val);
+        }
+
+        /* Disable RL2 cache mid-way through reads */
+        if (i == (readIterations / 2))
+        {
+            retval = RL2_disable(&rl2Params);
+            TEST_ASSERT_EQUAL_INT32(RL2_API_STS_SUCCESS, retval);
+        }
+    }
+
+    /* Verify no data corruption occurred */
+    TEST_ASSERT_EQUAL_INT32(0, errors);
+    return NULL;
+}
+
+/**
+ * \brief Validate FLC APIs return error for NULL pointer inputs.
+ *
+ * Test Category: Negative
+ *
+ * Calls multiple FLC APIs with NULL pointers (for region or status) and
+ * verifies the driver returns `FLC_API_STS_ERROR_NULL_PTR` for each case.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput All NULL-pointer API calls return ERROR_NULL_PTR.
+ */
+void *TestOptiflash_flcNullPointerHandling(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    FLC_API_STS_t flcStatus;
+    uint32_t dummyStatus;
+    FLC_RegionInfo validRegion = gFLCRegionConfig[0];
+
+    /* Test FLC_configureRegion with NULL */
+    flcStatus = FLC_configureRegion(NULL);
+    if(flcStatus != FLC_API_STS_ERROR_NULL_PTR)
+    {
+        DebugP_logError("FLC_configureRegion(NULL) failed: expected ERROR_NULL_PTR, got %d\r\n", flcStatus);
+        retval = SystemP_FAILURE;
+    }
+
+    /* Test FLC_startRegion with NULL */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcStatus = FLC_startRegion(NULL);
+        if(flcStatus != FLC_API_STS_ERROR_NULL_PTR)
+        {
+            DebugP_logError("FLC_startRegion(NULL) failed: expected ERROR_NULL_PTR, got %d\r\n", flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test FLC_isRegionDone with NULL region */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcStatus = FLC_isRegionDone(NULL, &dummyStatus);
+        if(flcStatus != FLC_API_STS_ERROR_NULL_PTR)
+        {
+            DebugP_logError("FLC_isRegionDone(NULL, &status) failed: expected ERROR_NULL_PTR, got %d\r\n", flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test FLC_isRegionDone with NULL status */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcStatus = FLC_isRegionDone(&validRegion, NULL);
+        if(flcStatus != FLC_API_STS_ERROR_NULL_PTR)
+        {
+            DebugP_logError("FLC_isRegionDone(&region, NULL) failed: expected ERROR_NULL_PTR, got %d\r\n", flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test FLC_wasReadError with NULL region */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcStatus = FLC_wasReadError(NULL, &dummyStatus);
+        if(flcStatus != FLC_API_STS_ERROR_NULL_PTR)
+        {
+            DebugP_logError("FLC_wasReadError(NULL, &status) failed: expected ERROR_NULL_PTR, got %d\r\n", flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test FLC_wasReadError with NULL status */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcStatus = FLC_wasReadError(&validRegion, NULL);
+        if(flcStatus != FLC_API_STS_ERROR_NULL_PTR)
+        {
+            DebugP_logError("FLC_wasReadError(&region, NULL) failed: expected ERROR_NULL_PTR, got %d\r\n", flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test FLC_enableInterrupt with NULL */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcStatus = FLC_enableInterrupt(NULL, FLC_INTERRUPT_DONE);
+        if(flcStatus != FLC_API_STS_ERROR_NULL_PTR)
+        {
+            DebugP_logError("FLC_enableInterrupt(NULL) failed: expected ERROR_NULL_PTR, got %d\r\n", flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test FLC_disable with NULL */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcStatus = FLC_disable(NULL);
+        if(flcStatus != FLC_API_STS_ERROR_NULL_PTR)
+        {
+            DebugP_logError("FLC_disable(NULL) failed: expected ERROR_NULL_PTR, got %d\r\n", flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test FLC_wasWriteError with NULL region */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcStatus = FLC_wasWriteError(NULL, &dummyStatus);
+        if(flcStatus != FLC_API_STS_ERROR_NULL_PTR)
+        {
+            DebugP_logError("FLC_wasWriteError(NULL, &status) failed: expected ERROR_NULL_PTR, got %d\r\n", flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test FLC_wasWriteError with NULL status */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcStatus = FLC_wasWriteError(&validRegion, NULL);
+        if(flcStatus != FLC_API_STS_ERROR_NULL_PTR)
+        {
+            DebugP_logError("FLC_wasWriteError(&region, NULL) failed: expected ERROR_NULL_PTR, got %d\r\n", flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test FLC_clearWriteError with NULL */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcStatus = FLC_clearWriteError(NULL);
+        if(flcStatus != FLC_API_STS_ERROR_NULL_PTR)
+        {
+            DebugP_logError("FLC_clearWriteError(NULL) failed: expected ERROR_NULL_PTR, got %d\r\n", flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test FLC_clearReadError with NULL */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcStatus = FLC_clearReadError(NULL);
+        if(flcStatus != FLC_API_STS_ERROR_NULL_PTR)
+        {
+            DebugP_logError("FLC_clearReadError(NULL) failed: expected ERROR_NULL_PTR, got %d\r\n", flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test FLC_readIRQMask with NULL region */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcStatus = FLC_readIRQMask(NULL, &dummyStatus);
+        if(flcStatus != FLC_API_STS_ERROR_NULL_PTR)
+        {
+            DebugP_logError("FLC_readIRQMask(NULL, &status) failed: expected ERROR_NULL_PTR, got %d\r\n", flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test FLC_readIRQStatus with NULL region */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcStatus = FLC_readIRQStatus(NULL, &dummyStatus);
+        if(flcStatus != FLC_API_STS_ERROR_NULL_PTR)
+        {
+            DebugP_logError("FLC_readIRQStatus(NULL, &status) failed: expected ERROR_NULL_PTR, got %d\r\n", flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test FLC_clearInterrupt with NULL */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcStatus = FLC_clearInterrupt(NULL, FLC_INTERRUPT_DONE);
+        if(flcStatus != FLC_API_STS_ERROR_NULL_PTR)
+        {
+            DebugP_logError("FLC_clearInterrupt(NULL) failed: expected ERROR_NULL_PTR, got %d\r\n", flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test FLC_disableInterrupt with NULL */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcStatus = FLC_disableInterrupt(NULL, FLC_INTERRUPT_DONE);
+        if(flcStatus != FLC_API_STS_ERROR_NULL_PTR)
+        {
+            DebugP_logError("FLC_disableInterrupt(NULL) failed: expected ERROR_NULL_PTR, got %d\r\n", flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate FLC configuration rejects illegal region IDs.
+ *
+ * Test Category: Negative
+ *
+ * Attempts to configure a region with `regionId == FLC_MAX_REGION` and with
+ * regionId > FLC_MAX_REGION and expects the API to return
+ * `FLC_API_STS_ERROR_ILLEGAL_REGION_ID`.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput API returns ERROR_ILLEGAL_REGION_ID for invalid region IDs.
+ */
+void *TestOptiflash_flcIllegalRegionId(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    FLC_API_STS_t flcStatus;
+    FLC_RegionInfo badRegion;
+
+    /* Copy valid region and modify regionId to invalid value */
+    badRegion = gFLCRegionConfig[0];
+    badRegion.regionId = FLC_MAX_REGION; /* Invalid: equal to max */
+
+    flcStatus = FLC_configureRegion(&badRegion);
+    if(flcStatus != FLC_API_STS_ERROR_ILLEGAL_REGION_ID)
+    {
+        DebugP_logError("FLC_configureRegion with regionId=%u failed: expected ERROR_ILLEGAL_REGION_ID, got %d\r\n",
+                       FLC_MAX_REGION, flcStatus);
+        retval = SystemP_FAILURE;
+    }
+
+    /* Test with regionId > FLC_MAX_REGION */
+    if(SystemP_SUCCESS == retval)
+    {
+        badRegion.regionId = FLC_MAX_REGION + 10U;
+        flcStatus = FLC_configureRegion(&badRegion);
+        if(flcStatus != FLC_API_STS_ERROR_ILLEGAL_REGION_ID)
+        {
+            DebugP_logError("FLC_configureRegion with regionId=%u failed: expected ERROR_ILLEGAL_REGION_ID, got %d\r\n",
+                           FLC_MAX_REGION + 10U, flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
     return NULL;
 }

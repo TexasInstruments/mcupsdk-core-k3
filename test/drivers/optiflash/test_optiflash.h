@@ -54,5 +54,13 @@ void *TestOptiflash_flcReadIRQMaskValidation(void*);
 void *TestOptiflash_flcReadIRQStatusValidation(void*);
 void *TestOptiflash_configureRL2Cache(void*);
 void *TestOptiflash_rL2CacheSizeSelection(void*);
+void *TestOptiflash_rl2SafeReconfigureBehavior(void*);
+void *TestOptiflash_integrationFlcWithRl2CacheCoherency(void*);
+void *TestOptiflash_flcStartWhileBusy(void*);
+void *TestOptiflash_flcZeroLengthTransfer(void*);
+void *TestOptiflash_flcBackToBackTransfers(void*);
+void *TestOptiflash_rl2DisableDuringActiveAccess(void *args);
+void *TestOptiflash_flcNullPointerHandling(void *args);
+void *TestOptiflash_flcIllegalRegionId(void *args);
 
 #endif

@@ -87,7 +87,14 @@ void test_main(void *args)
     RUN_TEST((UnityTestFunction)TestOptiflash_flcReadIRQStatusValidation, 10511, NULL);
     RUN_TEST((UnityTestFunction)TestOptiflash_configureRL2Cache, 10512, NULL);
     RUN_TEST((UnityTestFunction)TestOptiflash_rL2CacheSizeSelection, 10513, NULL);
-
+    RUN_TEST((UnityTestFunction)TestOptiflash_rl2SafeReconfigureBehavior, 10514, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_integrationFlcWithRl2CacheCoherency, 10515, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_flcStartWhileBusy, 10516, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_flcZeroLengthTransfer, 10517, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_flcBackToBackTransfers, 10518, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_rl2DisableDuringActiveAccess, 10519, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_flcNullPointerHandling, 10520, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_flcIllegalRegionId, 10521, NULL);
     UNITY_END();
 
     return;

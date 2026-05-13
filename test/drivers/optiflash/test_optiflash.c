@@ -95,6 +95,16 @@ void test_main(void *args)
     RUN_TEST((UnityTestFunction)TestOptiflash_rl2DisableDuringActiveAccess, 10519, NULL);
     RUN_TEST((UnityTestFunction)TestOptiflash_flcNullPointerHandling, 10520, NULL);
     RUN_TEST((UnityTestFunction)TestOptiflash_flcIllegalRegionId, 10521, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_rl2NullPointerHandling, 10522, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_rl2UnknownCacheSize, 10523, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_rl2UnknownInterruptType, 10524, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_flcMisalignedAddress, 10525, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_flcUnknownInterruptType, 10526, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_flcCpuCacheCoherencyAfterTransfer, 10527, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_flcOverlappingRegions, 10528, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_EnableRL2Cache, 10880, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_DisableRL2Cache, 10881, NULL);
+
     UNITY_END();
 
     return;

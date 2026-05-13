@@ -70,6 +70,14 @@
 /* FLC / RL2 cache-line granularity (bytes) */
 #define TEST_OPTIFLASH_CACHE_LINE_BYTES             (64U)
 
+/* Overlapping-region test addresses (within the FLC source/destination window) */
+#define TEST_OPTIFLASH_OVERLAP_R0_SRC_START         (0x60001000U)
+#define TEST_OPTIFLASH_OVERLAP_R0_SRC_END           (0x60002000U)
+#define TEST_OPTIFLASH_OVERLAP_R0_DST               (0x72100000U)
+#define TEST_OPTIFLASH_OVERLAP_R1_SRC_START         (0x60001800U)
+#define TEST_OPTIFLASH_OVERLAP_R1_SRC_END           (0x60002800U)
+#define TEST_OPTIFLASH_OVERLAP_R1_DST               (0x72101000U)
+
 /* Destination buffer fill patterns */
 #define TEST_OPTIFLASH_FILL_PATTERN_AA              (0xAAU)
 #define TEST_OPTIFLASH_FILL_PATTERN_CD              (0xCDU)
@@ -78,6 +86,29 @@
 #define TEST_OPTIFLASH_RL2_REGION_FILL_PATTERN      (0xA5A5A5A5U)
 
 #define TEST_OPTIFLASH_FLC_INVALID_SRC_ADDR         (0x74000000U)
+/* Invalid enum values for negative API tests */
+#define TEST_OPTIFLASH_INVALID_CACHE_SIZE_VAL       ((RL2_CacheSize)0xFFU)
+#define TEST_OPTIFLASH_INVALID_RL2_INTERRUPT_VAL    ((RL2_Interrupt)0xFFU)
+#define TEST_OPTIFLASH_INVALID_FLC_INTERRUPT_VAL    ((FLC_Interrupt)999U)
+
+/*
+ * NOP macros used to build a load function placed in external flash.
+ * Calling this function generates instruction fetches through the RL2 cache,
+ * which is needed to exercise the L2MC (miss) and L2HC (hit) counters.
+ */
+#define NOP1()    do{ __asm__ __volatile__("NOP"); }while(0)
+#define NOP2()    do{ NOP1();   NOP1();   }while(0)
+#define NOP4()    do{ NOP2();   NOP2();   }while(0)
+#define NOP8()    do{ NOP4();   NOP4();   }while(0)
+#define NOP16()   do{ NOP8();   NOP8();   }while(0)
+#define NOP32()   do{ NOP16();  NOP16();  }while(0)
+#define NOP64()   do{ NOP32();  NOP32();  }while(0)
+#define NOP128()  do{ NOP64();  NOP64();  }while(0)
+#define NOP256()  do{ NOP128(); NOP128(); }while(0)
+#define NOP512()  do{ NOP256(); NOP256(); }while(0)
+#define NOP1024() do{ NOP512(); NOP512(); }while(0)
+#define NOP2048() do{ NOP1024();NOP1024();}while(0)
+
 /* ========================================================================== */
 /*                         Structures and Enums                               */
 /* ========================================================================== */
@@ -105,6 +136,17 @@ static volatile uint32_t TestOptiflash_LastMaskedStatus;
 /* ========================================================================== */
 /*                         Internal Function Definitions                              */
 /* ========================================================================== */
+
+/*
+ * Small function placed in external flash (.flashSrcBuffer section).
+ * Calling it forces instruction fetches through the RL2 cache so that
+ * the L2MC / L2HC counters increment.
+ */
+void TestOptiflash_loadFunction(void) __attribute__((section(".flashSrcBuffer")));
+void TestOptiflash_loadFunction(void)
+{
+    NOP2048();
+}
 
 /* Map RL2 instance base address to the correct R5 IRQ number.
  * IRQ numbers for RL2_OF_CBA4_[0..3]_ERR_LVL_0 are 89..92 on all R5 cores. */
@@ -2155,6 +2197,924 @@ void *TestOptiflash_flcIllegalRegionId(void *args)
             retval = SystemP_FAILURE;
         }
     }
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate RL2 APIs return error for NULL pointer inputs.
+ *
+ * Test Category: Negative
+ *
+ * Calls RL2 APIs with NULL pointers and verifies they return
+ * `RL2_API_STS_CANNOT_CONFIGURE` indicating invalid input handling.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput All RL2 NULL-pointer API calls return CANNOT_CONFIGURE.
+ */
+void *TestOptiflash_rl2NullPointerHandling(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    RL2_API_STS_t rl2Status;
+    uint32_t dummyValue;
+    RL2_Params validConfig = gRL2Config[0];
+
+    /* Test RL2_configure with NULL */
+    rl2Status = RL2_configure(NULL);
+    if(rl2Status != RL2_API_STS_CANNOT_CONFIGURE)
+    {
+        DebugP_logError("RL2_configure(NULL) failed: expected CANNOT_CONFIGURE, got 0x%x\r\n", rl2Status);
+        retval = SystemP_FAILURE;
+    }
+
+    /* Test RL2_initparams with NULL */
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Status = RL2_initparams(NULL);
+        if(rl2Status != RL2_API_STS_CANNOT_CONFIGURE)
+        {
+            DebugP_logError("RL2_initparams(NULL) failed: expected CANNOT_CONFIGURE, got 0x%x\r\n", rl2Status);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test RL2_enable with NULL */
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Status = RL2_enable(NULL);
+        if(rl2Status != RL2_API_STS_CANNOT_CONFIGURE)
+        {
+            DebugP_logError("RL2_enable(NULL) failed: expected CANNOT_CONFIGURE, got 0x%x\r\n", rl2Status);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test RL2_disable with NULL */
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Status = RL2_disable(NULL);
+        if(rl2Status != RL2_API_STS_CANNOT_CONFIGURE)
+        {
+            DebugP_logError("RL2_disable(NULL) failed: expected CANNOT_CONFIGURE, got 0x%x\r\n", rl2Status);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test RL2_setInterrupt with NULL */
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Status = RL2_setInterrupt(NULL, RL2_INTERRUPT_WRITE_HIT);
+        if(rl2Status != RL2_API_STS_CANNOT_CONFIGURE)
+        {
+            DebugP_logError("RL2_setInterrupt(NULL) failed: expected CANNOT_CONFIGURE, got 0x%x\r\n", rl2Status);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test RL2_clearInterrupt with NULL */
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Status = RL2_clearInterrupt(NULL, RL2_INTERRUPT_WRITE_HIT);
+        if(rl2Status != RL2_API_STS_CANNOT_CONFIGURE)
+        {
+            DebugP_logError("RL2_clearInterrupt(NULL) failed: expected CANNOT_CONFIGURE, got 0x%x\r\n", rl2Status);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test RL2_getCacheHits with NULL config */
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Status = RL2_getCacheHits(NULL, &dummyValue);
+        if(rl2Status != RL2_API_STS_CANNOT_CONFIGURE)
+        {
+            DebugP_logError("RL2_getCacheHits(NULL, &hits) failed: expected CANNOT_CONFIGURE, got 0x%x\r\n", rl2Status);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test RL2_getCacheHits with NULL hits pointer */
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Status = RL2_getCacheHits(&validConfig, NULL);
+        if(rl2Status != RL2_API_STS_CANNOT_CONFIGURE)
+        {
+            DebugP_logError("RL2_getCacheHits(&config, NULL) failed: expected CANNOT_CONFIGURE, got 0x%x\r\n", rl2Status);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test RL2_getCacheMiss with NULL config */
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Status = RL2_getCacheMiss(NULL, &dummyValue);
+        if(rl2Status != RL2_API_STS_CANNOT_CONFIGURE)
+        {
+            DebugP_logError("RL2_getCacheMiss(NULL, &miss) failed: expected CANNOT_CONFIGURE, got 0x%x\r\n", rl2Status);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test RL2_getCacheMiss with NULL miss pointer */
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Status = RL2_getCacheMiss(&validConfig, NULL);
+        if(rl2Status != RL2_API_STS_CANNOT_CONFIGURE)
+        {
+            DebugP_logError("RL2_getCacheMiss(&config, NULL) failed: expected CANNOT_CONFIGURE, got 0x%x\r\n", rl2Status);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test RL2_readIRQMask with NULL config */
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Status = RL2_readIRQMask(NULL, &dummyValue);
+        if(rl2Status != RL2_API_STS_CANNOT_CONFIGURE)
+        {
+            DebugP_logError("RL2_readIRQMask(NULL, &status) failed: expected CANNOT_CONFIGURE, got 0x%x\r\n", rl2Status);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test RL2_readIRQMask with NULL status pointer */
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Status = RL2_readIRQMask(&validConfig, NULL);
+        if(rl2Status != RL2_API_STS_CANNOT_CONFIGURE)
+        {
+            DebugP_logError("RL2_readIRQMask(&config, NULL) failed: expected CANNOT_CONFIGURE, got 0x%x\r\n", rl2Status);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test RL2_readIRQStatus with NULL config */
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Status = RL2_readIRQStatus(NULL, &dummyValue);
+        if(rl2Status != RL2_API_STS_CANNOT_CONFIGURE)
+        {
+            DebugP_logError("RL2_readIRQStatus(NULL, &status) failed: expected CANNOT_CONFIGURE, got 0x%x\r\n", rl2Status);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test RL2_readIRQStatus with NULL status pointer */
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Status = RL2_readIRQStatus(&validConfig, NULL);
+        if(rl2Status != RL2_API_STS_CANNOT_CONFIGURE)
+        {
+            DebugP_logError("RL2_readIRQStatus(&config, NULL) failed: expected CANNOT_CONFIGURE, got 0x%x\r\n", rl2Status);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate RL2 rejects unknown/invalid cache size values.
+ *
+ * Test Category: Negative
+ *
+ * Modifies a valid RL2 config to use an invalid cache size and expects
+ * `RL2_configure` to return error flags including `RL2_API_STS_UNKNOWN_CACHE_SIZE`.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput RL2_configure returns UNKNOWN_CACHE_SIZE along with cannot-configure.
+ */
+void *TestOptiflash_rl2UnknownCacheSize(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    RL2_API_STS_t rl2Status;
+    RL2_Params config;
+
+    /* Initialize with valid config then set invalid cache size */
+    config = gRL2Config[0];
+    config.cacheSize = TEST_OPTIFLASH_INVALID_CACHE_SIZE_VAL; /* Invalid cache size value */
+
+    rl2Status = RL2_configure(&config);
+
+    /* Should return both CANNOT_CONFIGURE and UNKNOWN_CACHE_SIZE flags */
+    if((rl2Status & RL2_API_STS_CANNOT_CONFIGURE) == 0U ||
+       (rl2Status & RL2_API_STS_UNKNOWN_CACHE_SIZE) == 0U)
+    {
+        DebugP_logError("RL2_configure with invalid cacheSize failed: expected CANNOT_CONFIGURE|UNKNOWN_CACHE_SIZE, got 0x%x\r\n",
+                       rl2Status);
+        retval = SystemP_FAILURE;
+    }
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate RL2 interrupt APIs reject unknown interrupt types.
+ *
+ * Test Category: Negative
+ *
+ * Initializes RL2 with valid settings and calls `RL2_setInterrupt` and
+ * `RL2_clearInterrupt` with an invalid interrupt enum value, expecting the
+ * API to indicate `RL2_API_STS_UNKNOWN_INTERRUPT`.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput RL2 interrupt APIs return UNKNOWN_INTERRUPT for invalid types.
+ */
+void *TestOptiflash_rl2UnknownInterruptType(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    RL2_API_STS_t rl2Status;
+    RL2_Params rl2Params;
+    RL2_Interrupt invalidInterrupt = TEST_OPTIFLASH_INVALID_RL2_INTERRUPT_VAL; /* Invalid interrupt type */
+
+    /* Initialize and configure RL2 with valid settings */
+    rl2Status = RL2_initparams(&rl2Params);
+    if(rl2Status != RL2_API_STS_SUCCESS)
+    {
+        DebugP_logError("Failed to initialize RL2 params\r\n");
+        retval = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Params.baseAddress = gRL2Config[0].baseAddress;
+        rl2Params.rangeStart  = gRL2Config[0].rangeStart;
+        rl2Params.rangeEnd    = gRL2Config[0].rangeEnd;
+        rl2Params.cacheSize   = RL2_CACHESIZE_8K;
+        rl2Params.l2Sram0Base = gRL2Config[0].l2Sram0Base;
+        rl2Params.l2Sram0Len  = gRL2Config[0].l2Sram0Len;
+
+        rl2Status = RL2_configure(&rl2Params);
+        if(rl2Status != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to configure RL2\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test RL2_setInterrupt with invalid interrupt type */
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Status = RL2_setInterrupt(&rl2Params, invalidInterrupt);
+        if((rl2Status & RL2_API_STS_UNKNOWN_INTERRUPT) == 0U)
+        {
+            DebugP_logError("RL2_setInterrupt with invalid type failed: expected UNKNOWN_INTERRUPT flag, got 0x%x\r\n",
+                           rl2Status);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test RL2_clearInterrupt with invalid interrupt type */
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Status = RL2_clearInterrupt(&rl2Params, invalidInterrupt);
+        if((rl2Status & RL2_API_STS_UNKNOWN_INTERRUPT) == 0U)
+        {
+            DebugP_logError("RL2_clearInterrupt with invalid type failed: expected UNKNOWN_INTERRUPT flag, got 0x%x\r\n",
+                           rl2Status);
+            retval = SystemP_FAILURE;
+        }
+    }
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate FLC behavior with misaligned flash/SRAM addresses.
+ *
+ * Test Category: Functional
+ *
+ * Attempts to configure and possibly start a transfer using addresses that
+ * are intentionally misaligned by a single byte and documents whether the
+ * driver/hardware rejects, auto-aligns or reports errors for misalignment.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput API either rejects misaligned addresses or completes with documented behavior.
+ */
+void *TestOptiflash_flcMisalignedAddress(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    FLC_API_STS_t flcStatus;
+    FLC_RegionInfo misalignedRegion;
+    uint32_t status = 0U;
+    uint32_t readError = 0U;
+    uint32_t writeError = 0U;
+    uint32_t timeout = 1000U;
+
+    /* Create region with misaligned addresses (offset by 1 byte) */
+    misalignedRegion = gFLCRegionConfig[0];
+    misalignedRegion.sourceStartAddress += 1U;      /* Misaligned source */
+    misalignedRegion.sourceEndAddress += 1U;
+    misalignedRegion.destinationStartAddress += 1U; /* Misaligned destination */
+
+    /* Try to configure region with misaligned addresses */
+    flcStatus = FLC_configureRegion(&misalignedRegion);
+    if(flcStatus != FLC_API_STS_SUCCESS)
+    {
+        DebugP_log(" FLC_configureRegion rejected misaligned addresses (status=%d)\r\n", flcStatus);
+        /* This is acceptable behavior - API validates alignment */
+    }
+    else
+    {
+        /* Reset FLC region to clean state */
+        TestOptiflash_resetFlc(&misalignedRegion);
+
+        /* Try to start transfer */
+        flcStatus = FLC_startRegion(&misalignedRegion);
+        if(flcStatus == FLC_API_STS_SUCCESS)
+        {
+
+            /* Wait for completion with timeout */
+            while(timeout > 0U)
+            {
+                FLC_isRegionDone(&misalignedRegion, &status);
+                if((status & (1U << misalignedRegion.regionId)) != 0U)
+                {
+                    break;
+                }
+                ClockP_usleep(100);
+                timeout--;
+            }
+
+            /* Check for errors */
+            FLC_wasReadError(&misalignedRegion, &readError);
+            FLC_wasWriteError(&misalignedRegion, &writeError);
+
+            if(readError || writeError)
+            {
+                DebugP_log(" Transfer completed with errors (read=%u, write=%u)\r\n",
+                           readError, writeError);
+                DebugP_log(" Hardware detected misalignment issue\r\n");
+            }
+            else if(timeout == 0U)
+            {
+                DebugP_log(" Transfer timed out - possible misalignment issue\r\n");
+            }
+            else
+            {
+                DebugP_log(" Transfer completed successfully\r\n");
+            }
+
+            /* Clean up */
+            FLC_disable(&misalignedRegion);
+            TestOptiflash_resetFlc(&misalignedRegion);
+        }
+    }
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate FLC interrupt APIs reject unknown interrupt types.
+ *
+ * Test Category: Negative
+ *
+ * Passes invalid interrupt enumeration values to FLC interrupt APIs and
+ * verifies the driver returns `FLC_API_STS_ERROR_UNKNOWN_INTERRUPT`.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput Unknown interrupt types produce ERROR_UNKNOWN_INTERRUPT.
+ */
+void *TestOptiflash_flcUnknownInterruptType(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    FLC_API_STS_t flcStatus;
+    FLC_RegionInfo *region = &gFLCRegionConfig[0];
+    const FLC_Interrupt invalidInterrupt = TEST_OPTIFLASH_INVALID_FLC_INTERRUPT_VAL; /* Invalid interrupt type */
+
+    /* Test FLC_enableInterrupt with invalid interrupt type */
+    flcStatus = FLC_enableInterrupt(region, invalidInterrupt);
+    if(flcStatus != FLC_API_STS_ERROR_UNKNOWN_INTERRUPT)
+    {
+        DebugP_logError("FLC_enableInterrupt(invalidType) failed: expected ERROR_UNKNOWN_INTERRUPT, got %d\r\n", flcStatus);
+        retval = SystemP_FAILURE;
+    }
+
+    /* Test FLC_clearInterrupt with invalid interrupt type */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcStatus = FLC_clearInterrupt(region, invalidInterrupt);
+        if(flcStatus != FLC_API_STS_ERROR_UNKNOWN_INTERRUPT)
+        {
+            DebugP_logError("FLC_clearInterrupt(invalidType) failed: expected ERROR_UNKNOWN_INTERRUPT, got %d\r\n", flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test FLC_disableInterrupt with invalid interrupt type */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcStatus = FLC_disableInterrupt(region, invalidInterrupt);
+        if(flcStatus != FLC_API_STS_ERROR_UNKNOWN_INTERRUPT)
+        {
+            DebugP_logError("FLC_disableInterrupt(invalidType) failed: expected ERROR_UNKNOWN_INTERRUPT, got %d\r\n", flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate CPU cache coherency semantics after FLC transfer.
+ *
+ * Test Category: Functional
+ *
+ * Demonstrates the effect of CPU cache state on reads after an FLC transfer
+ * by showing stale cached reads prior to invalidation and fresh data after
+ * calling `CacheP_inv` for the destination region.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput After cache invalidation, destination matches source data.
+ */
+void *TestOptiflash_flcCpuCacheCoherencyAfterTransfer(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    FLC_API_STS_t flcSts;
+    uint32_t i;
+    uint32_t sts = 0U;
+    uint32_t doneMask;
+    uint32_t attempts = 0U;
+    const uint32_t maxAttempts = 200U;
+    uint8_t staleData[16];
+    uint8_t freshData[16];
+    volatile uint8_t temp;
+    volatile uint8_t *destPtr;
+    uint8_t readData[16];
+    int isStale ;
+
+    /* Ensure source writes are visible to FLC */
+    CacheP_wb((void *)sourceBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+
+    /* Clear destination buffer and push pattern to memory */
+    memset(destBuffer, TEST_OPTIFLASH_FILL_PATTERN_AA, TRANSFERSIZE);
+    CacheP_wb((void *)destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+
+    /* Warm CPU cache for destination buffer by reading it */
+    for(i = 0U; i < TRANSFERSIZE; i++)
+    {
+        temp = destBuffer[i];
+    }
+    (void)temp;
+
+    /* Save what we read (should be 0xAA) */
+    memcpy(staleData, destBuffer, 16);
+
+    /* Configure FLC to copy source to destination */
+    TestOptiflash_resetFlc(&gFLCRegionConfig[0]);
+    gFLCRegionConfig[0].sourceStartAddress      = (uint32_t)sourceBuffer;
+    gFLCRegionConfig[0].destinationStartAddress = (uint32_t)destBuffer;
+    gFLCRegionConfig[0].sourceEndAddress        = (uint32_t)sourceBuffer + TRANSFERSIZE;
+
+    flcSts = FLC_configureRegion(&gFLCRegionConfig[0]);
+    if(flcSts != FLC_API_STS_SUCCESS)
+    {
+        DebugP_logError("Failed to configure FLC region\r\n");
+        retval = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        flcSts = FLC_startRegion(&gFLCRegionConfig[0]);
+        if(flcSts != FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to start FLC region\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Wait for FLC completion */
+    if(SystemP_SUCCESS == retval)
+    {
+        doneMask = (1U << (gFLCRegionConfig[0].regionId & 0x3U));
+        attempts = 0U;
+        do {
+            FLC_isRegionDone(&gFLCRegionConfig[0], &sts);
+            if((sts & doneMask) == 0U)
+            {
+                ClockP_usleep(1000U);
+                attempts++;
+            }
+        } while(((sts & doneMask) == 0U) && (attempts < maxAttempts));
+
+        if((sts & doneMask) == 0U)
+        {
+            DebugP_logError("FLC transfer did not complete\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Read destination WITHOUT invalidating cache - should see stale cached data */
+    if(SystemP_SUCCESS == retval)
+    {
+        destPtr = (volatile uint8_t *)destBuffer;
+        for(i = 0U; i < 16; i++)
+        {
+            readData[i] = destPtr[i];
+        }
+
+        /* Data should still be stale (0xAA) because CPU cache wasn't invalidated */
+        isStale = (memcmp(readData, staleData, 16) == 0);
+        if(!isStale)
+        {
+            DebugP_log("Note: CPU cache may have been automatically updated by hardware\r\n");
+        }
+    }
+
+    /* Now invalidate CPU cache for destination region */
+    if(SystemP_SUCCESS == retval)
+    {
+        CacheP_inv((void*)destBuffer, TRANSFERSIZE, CacheP_TYPE_ALL);
+    }
+
+    /* Read again - should now see fresh data from memory */
+    if(SystemP_SUCCESS == retval)
+    {
+        memcpy(freshData, destBuffer, 16);
+
+        /* Verify data matches source */
+        if(memcmp(freshData, sourceBuffer, 16) != 0)
+        {
+            DebugP_logError("Data mismatch after cache invalidation: src[0]=0x%02x dst[0]=0x%02x\r\n",
+                            sourceBuffer[0], freshData[0]);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate behavior when FLC source regions overlap.
+ *
+ * Test Category: Functional
+ *
+ * Configures two overlapping FLC source ranges and observes whether both
+ * transfers complete, if hardware reports errors, and documents the result.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput Test completes without crash; behavior documented via logs.
+ */
+void *TestOptiflash_flcOverlappingRegions(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    FLC_API_STS_t flcSts;
+    uint32_t sts0 = 0U, sts1 = 0U;
+    uint32_t doneMask0, doneMask1;
+    uint32_t attempts = 0U;
+    const uint32_t maxAttempts = 200U;
+    uint32_t readErr0 = 0U, writeErr0 = 0U;
+    uint32_t readErr1 = 0U, writeErr1 = 0U;
+
+    /* Ensure we have at least 2 FLC regions available */
+    if(FLC_MAX_REGION < 2)
+    {
+        DebugP_logError("Test requires at least 2 FLC regions\r\n");
+        retval = SystemP_FAILURE;
+    }
+
+    /* Configure Region 0: source from 0x88001000 to 0x88002000 */
+    if(SystemP_SUCCESS == retval)
+    {
+        TestOptiflash_resetFlc(&gFLCRegionConfig[0]);
+        gFLCRegionConfig[0].sourceStartAddress      = TEST_OPTIFLASH_OVERLAP_R0_SRC_START;
+        gFLCRegionConfig[0].sourceEndAddress        = TEST_OPTIFLASH_OVERLAP_R0_SRC_END;
+        gFLCRegionConfig[0].destinationStartAddress = TEST_OPTIFLASH_OVERLAP_R0_DST;
+
+        flcSts = FLC_configureRegion(&gFLCRegionConfig[0]);
+        if(flcSts != FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to configure FLC region 0\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Configure Region 1: overlapping source from 0x88001800 to 0x88002800 */
+    if(SystemP_SUCCESS == retval)
+    {
+        TestOptiflash_resetFlc(&gFLCRegionConfig[1]);
+        gFLCRegionConfig[1].sourceStartAddress      = TEST_OPTIFLASH_OVERLAP_R1_SRC_START;  /* Overlaps with Region 0 */
+        gFLCRegionConfig[1].sourceEndAddress        = TEST_OPTIFLASH_OVERLAP_R1_SRC_END;
+        gFLCRegionConfig[1].destinationStartAddress = TEST_OPTIFLASH_OVERLAP_R1_DST;
+
+        flcSts = FLC_configureRegion(&gFLCRegionConfig[1]);
+        if(flcSts != FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to configure FLC region 1\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Start both regions */
+    if(SystemP_SUCCESS == retval)
+    {
+        flcSts = FLC_startRegion(&gFLCRegionConfig[0]);
+        if(flcSts != FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to start FLC region 0\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        flcSts = FLC_startRegion(&gFLCRegionConfig[1]);
+        if(flcSts != FLC_API_STS_SUCCESS)
+        {
+            DebugP_logError("Failed to start FLC region 1\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Wait for both regions to complete or timeout */
+    if(SystemP_SUCCESS == retval)
+    {
+        doneMask0 = (1U << (gFLCRegionConfig[0].regionId & 0x3U));
+        doneMask1 = (1U << (gFLCRegionConfig[1].regionId & 0x3U));
+        attempts = 0U;
+
+        do {
+            FLC_isRegionDone(&gFLCRegionConfig[0], &sts0);
+            FLC_isRegionDone(&gFLCRegionConfig[1], &sts1);
+
+            if(((sts0 & doneMask0) == 0U) || ((sts1 & doneMask1) == 0U))
+            {
+                ClockP_usleep(1000U);
+                attempts++;
+            }
+        } while((((sts0 & doneMask0) == 0U) || ((sts1 & doneMask1) == 0U)) &&
+                (attempts < maxAttempts));
+    }
+
+    /* Check for errors on both regions */
+    if(SystemP_SUCCESS == retval)
+    {
+        FLC_wasReadError(&gFLCRegionConfig[0], &readErr0);
+        FLC_wasWriteError(&gFLCRegionConfig[0], &writeErr0);
+        FLC_wasReadError(&gFLCRegionConfig[1], &readErr1);
+        FLC_wasWriteError(&gFLCRegionConfig[1], &writeErr1);
+
+        /* Test is informational - document the behavior */
+        if((sts0 & doneMask0) && (sts1 & doneMask1))
+        {
+            DebugP_log("Both regions completed - hardware allows overlapping transfers\r\n");
+        }
+        else if(readErr0 || writeErr0 || readErr1 || writeErr1)
+        {
+            DebugP_log("Errors detected with overlapping regions\r\n");
+        }
+    }
+
+    /* Cleanup: disable FLC regions and clear all errors/interrupts */
+    TestOptiflash_resetFlc(&gFLCRegionConfig[0]);
+    TestOptiflash_resetFlc(&gFLCRegionConfig[1]);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate enabling RL2 cache and confirm cache hits increase.
+ *
+ * Test Category: Functional
+ *
+ * Configures RL2, enables it, then executes a function from external flash
+ * repeatedly to generate instruction-fetch traffic through the RL2 cache.
+ * Reads the cache-hit counter before and after and verifies that it increases.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput RL2_enable succeeds and RL2_getCacheHits counter increases
+ *                 after repeated instruction fetches from the cached flash range.
+ */
+void *TestOptiflash_EnableRL2Cache(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    RL2_Params rl2Params;
+    RL2_API_STS_t sts;
+    uint32_t hitsBefore = 0U;
+    uint32_t hitsAfter  = 0U;
+
+    /* Configure RL2 */
+    sts = RL2_initparams(&rl2Params);
+    if(sts != RL2_API_STS_SUCCESS)
+    {
+        retval = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Params.baseAddress  = gRL2Config[0].baseAddress;
+        rl2Params.rangeStart   = gRL2Config[0].rangeStart;
+        rl2Params.rangeEnd     = gRL2Config[0].rangeEnd;
+        rl2Params.cacheSize    = gRL2Config[0].cacheSize;
+        rl2Params.l2Sram0Base  = gRL2Config[0].l2Sram0Base;
+        rl2Params.l2Sram0Len   = gRL2Config[0].l2Sram0Len;
+
+        sts = RL2_configure(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_configure failed: 0x%x\r\n", sts);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Enable RL2 cache */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_enable(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_enable failed: 0x%x\r\n", sts);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Cold pass — populate the cache via instruction fetches from flash */
+    if(SystemP_SUCCESS == retval)
+    {
+        TestOptiflash_loadFunction();
+
+        /* Record hit counter after cold pass */
+        sts = RL2_getCacheHits(&rl2Params, &hitsBefore);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_getCacheHits (before) failed\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Warm passes — same instructions are cached, generating hits */
+    if(SystemP_SUCCESS == retval)
+    {
+        TestOptiflash_loadFunction();
+        TestOptiflash_loadFunction();
+        TestOptiflash_loadFunction();
+
+        sts = RL2_getCacheHits(&rl2Params, &hitsAfter);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_getCacheHits (after) failed\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Confirm cache hits increased */
+    if(SystemP_SUCCESS == retval)
+    {
+        if(hitsAfter <= hitsBefore)
+        {
+            DebugP_logError("Cache hits did not increase: before=%u after=%u\r\n",
+                            hitsBefore, hitsAfter);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Cleanup */
+    RL2_disable(&rl2Params);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate disabling RL2 cache stops hit-counter accumulation.
+ *
+ * Test Category: Functional
+ *
+ * Enables RL2, warms the cache via instruction fetches, records the hit count,
+ * disables RL2, performs more instruction fetches from flash, and verifies that
+ * the hit counter no longer increases.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput After RL2_disable, repeated flash instruction fetches do not
+ *                 cause RL2_getCacheHits counter to increase.
+ */
+void *TestOptiflash_DisableRL2Cache(void *args)
+{
+    (void)args;
+    int32_t retval = SystemP_SUCCESS;
+    RL2_Params rl2Params;
+    RL2_API_STS_t sts;
+    uint32_t hitsBeforeDisable = 0U;
+    uint32_t hitsAtDisable     = 0U;
+    uint32_t hitsAfterDisable  = 0U;
+
+    /* Configure and enable RL2 */
+    sts = RL2_initparams(&rl2Params);
+    if(sts != RL2_API_STS_SUCCESS)
+    {
+        retval = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        rl2Params.baseAddress  = gRL2Config[0].baseAddress;
+        rl2Params.rangeStart   = gRL2Config[0].rangeStart;
+        rl2Params.rangeEnd     = gRL2Config[0].rangeEnd;
+        rl2Params.cacheSize    = gRL2Config[0].cacheSize;
+        rl2Params.l2Sram0Base  = gRL2Config[0].l2Sram0Base;
+        rl2Params.l2Sram0Len   = gRL2Config[0].l2Sram0Len;
+
+        sts = RL2_configure(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_configure failed: 0x%x\r\n", sts);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_enable(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_enable failed: 0x%x\r\n", sts);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Warm cache with instruction fetches */
+    if(SystemP_SUCCESS == retval)
+    {
+        TestOptiflash_loadFunction();  /* cold pass */
+        TestOptiflash_loadFunction();  /* warm pass — generates hits */
+    }
+
+    /* Record hit count BEFORE disabling RL2 to capture the baseline */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_getCacheHits(&rl2Params, &hitsBeforeDisable);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_getCacheHits failed\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Disable RL2 */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_disable(&rl2Params);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_disable failed: 0x%x\r\n", sts);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Record the hit counter immediately after RL2_disable() */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_getCacheHits(&rl2Params, &hitsAtDisable);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_getCacheHits failed\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Perform more instruction fetches from flash with RL2 disabled */
+    if(SystemP_SUCCESS == retval)
+    {
+        TestOptiflash_loadFunction();
+        TestOptiflash_loadFunction();
+        TestOptiflash_loadFunction();
+    }
+
+    /* Verify hit count did not increase */
+    if(SystemP_SUCCESS == retval)
+    {
+        sts = RL2_getCacheHits(&rl2Params, &hitsAfterDisable);
+        if(sts != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("RL2_getCacheHits failed\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        if(hitsAfterDisable > hitsBeforeDisable)
+        {
+            DebugP_logError("Cache hits increased after disable: before=%u atDisable=%u after=%u\r\n",
+                            hitsBeforeDisable, hitsAtDisable, hitsAfterDisable);
+            retval = SystemP_FAILURE;
+        }
+    }
+    DebugP_log("Cache hits: before=%u atDisable=%u after=%u\r\n",
+                            hitsBeforeDisable, hitsAtDisable, hitsAfterDisable);
+
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
     return NULL;
 }

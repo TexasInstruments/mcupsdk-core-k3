@@ -62,5 +62,14 @@ void *TestOptiflash_flcBackToBackTransfers(void*);
 void *TestOptiflash_rl2DisableDuringActiveAccess(void *args);
 void *TestOptiflash_flcNullPointerHandling(void *args);
 void *TestOptiflash_flcIllegalRegionId(void *args);
+void *TestOptiflash_rl2NullPointerHandling(void *args);
+void *TestOptiflash_rl2UnknownCacheSize(void *args);
+void *TestOptiflash_rl2UnknownInterruptType(void *args);
+void *TestOptiflash_flcMisalignedAddress(void *args);
+void *TestOptiflash_flcUnknownInterruptType(void *args);
+void *TestOptiflash_flcCpuCacheCoherencyAfterTransfer(void *args);
+void *TestOptiflash_flcOverlappingRegions(void *args);
+void *TestOptiflash_EnableRL2Cache(void *args);
+void *TestOptiflash_DisableRL2Cache(void *args);
 
 #endif

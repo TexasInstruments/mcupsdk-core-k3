@@ -1467,6 +1467,7 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  test_ospi_system_am62dx-evm_c75ss0-0_freertos_ti-c7000:
 	$(MAKE) -C drivers/ospi/test_ospi_system/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
+
  test_rtc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C drivers/rtc/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
@@ -2770,6 +2771,7 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  test_ospi_system_am62dx-evm_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C drivers/ospi/test_ospi_system/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
  test_rtc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/rtc/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
@@ -4073,6 +4075,7 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_ospi_system_am62dx-evm_c75ss0-0_freertos_ti-c7000_scrub:
 	$(MAKE) -C drivers/ospi/test_ospi_system/am62dx-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
  test_rtc_am62dx-evm_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/rtc/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 

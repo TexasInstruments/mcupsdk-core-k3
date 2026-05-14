@@ -458,7 +458,8 @@ static void TestRtc_multipleOnOffInterrupts(void* args)
         RTC_setOn_OffTimerEvent(rtcHandle, &setTime);
 
         /* Wait for the interrupt */
-        SemaphoreP_pend(&TestRtc_OnOffSemObj, SystemP_WAIT_FOREVER);
+        status = SemaphoreP_pend(&TestRtc_OnOffSemObj, ClockP_usecToTicks(TEST_RTC_SEM_TIMEOUT_10_SEC));
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
     }
     TEST_ASSERT_EQUAL_UINT32(4U,i);
@@ -502,7 +503,8 @@ static void TestRtc_multipleOffOnInterrupts(void* args)
         RTC_setOff_OnTimerEvent(rtcHandle, &setTime);
 
         /* Wait for the interrupt */
-        SemaphoreP_pend(&TestRtc_OffOnSemObj, SystemP_WAIT_FOREVER);
+        status = SemaphoreP_pend(&TestRtc_OffOnSemObj, ClockP_usecToTicks(TEST_RTC_SEM_TIMEOUT_10_SEC));
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
     }
     TEST_ASSERT_EQUAL_UINT32(4U,i);
@@ -1666,13 +1668,12 @@ static void TestRtc_32kHzCounterTickAccuracy(void *args)
 
         /* Step 5: Compute elapsed and compare */
         systemElapsedMicroseconds = systemTimeEnd - systemTimeStart;
-        rtcElapsedSeconds = endReadTime.second - startReadTime.second;
-
-        /* Handle minute rollover within the iteration */
-        if (endReadTime.minute > startReadTime.minute)
+        int32_t secDiff = (int32_t)endReadTime.second - (int32_t)startReadTime.second;
+        if (secDiff < 0)
         {
-            rtcElapsedSeconds += (endReadTime.minute - startReadTime.minute) * TEST_RTC_SECONDS_PER_MINUTE;
+            secDiff += 60;
         }
+        rtcElapsedSeconds = (uint32_t)secDiff + (endReadTime.minute - startReadTime.minute) * 60U;
 
         perIterationDrift = (int32_t)rtcElapsedSeconds
                           - (int32_t)(systemElapsedMicroseconds / 1000000ULL);
@@ -4757,6 +4758,7 @@ static void TestRtc_multipleInstances(void *args)
 
 
     TEST_ASSERT_EQUAL_INT32(0, TestRtc_TaskFailCountA);
+    TEST_ASSERT_EQUAL_INT32(0, TestRtc_TaskFailCountB);
     TEST_ASSERT_EQUAL_UINT32(1U, TestRtc_TaskFlagA);
     TEST_ASSERT_EQUAL_UINT32(1U, TestRtc_TaskFlagB);
 
@@ -5174,6 +5176,7 @@ static void TestRtc_isrDuringApiExecution(void *args)
     TaskP_Params    taskParams;
 
     TestRtc_TaskFailCountA = 0;
+    TestRtc_TaskFailCountB = 0;
     TestRtc_TaskFlagB      = 0U;
 
     initialTime.year   = 2024U;

@@ -117,7 +117,7 @@ else:
     print("{} is not a valid soc argument! Valid SOCs are : {}. Exiting ...".format(args.soc, ','.join(g_supported_socs)))
     exit(2)
 
-key = "../../boot/signing/custMpk_"+args.soc+".pem"
+key = "../../boot/signing/custMpk.pem"
 
 if (args.key is not None):
     if (not os.path.exists(args.key)):

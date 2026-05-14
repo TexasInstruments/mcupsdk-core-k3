@@ -23,7 +23,7 @@ g_dbg_types = {
 	"DBG_SECURE_ENABLE"  : '5',
 }
 
-g_supported_socs =["am62ax", "am62px"]
+g_supported_socs =["am62ax", "am62px", "am275x"]
 
 g_x509_template = '''
 [ req ]
@@ -87,6 +87,10 @@ def get_cert(args):
         nonsec_dbg = "0x0103"
         sec_dbg = "0x20212223"
 
+    if (args.soc == "am275x"):
+        nonsec_dbg = "0x0106070809"
+        sec_dbg = "0xFF"
+
     if(args.coreDbgEn is not None):
         nonsec_dbg = args.coreDbgEn
 
@@ -101,7 +105,7 @@ def get_cert(args):
 # arguments definition
 my_parser = argparse.ArgumentParser(description="Generates a x509 debug certificate for run time JTAG debug unlock in HS device")
 
-my_parser.add_argument('-s', '--soc',     type=str, required=True, help='SOC for which debug certificate has to be created. Supported SOCs: am62ax, am62px')
+my_parser.add_argument('-s', '--soc',     type=str, required=True, help='SOC for which debug certificate has to be created. Supported SOCs: am62ax, am62px, am275x')
 my_parser.add_argument('--key',           type=str, help='File with signing key inside it. Optional')
 my_parser.add_argument('--swrv',          type=str, help='Software revision number. Required if you have specified a non-zero debug certificate revision in the secure boardcfg')
 my_parser.add_argument('--socUID',        type=str, help='SOC unique ID. Required if board config does not allow wild card JTAG unlock')

@@ -16,6 +16,11 @@ This page lists all the examples related to Ethernet Communication.
 -# \subpage ETHFW_SERVER_AND_CLIENT
 \endcond
 
+\cond SOC_AM62AX
+### Ethernet Firmware
+-# \subpage ETHFW_SERVER_AND_CLIENT
+\endcond
+
 \cond SOC_AM62X
 ### Layer 2 Examples on FreeRTOS
 -# \subpage EXAMPLES_ENET_CPSW_LOOPBACK

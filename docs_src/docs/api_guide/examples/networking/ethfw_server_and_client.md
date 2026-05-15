@@ -31,6 +31,14 @@ MAC Port 2: Configured in MAC-only mode, allowing direct traffic to the host por
  Board          | @VAR_BOARD_NAME_LOWER
  Example folder | source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/
 \endcond
+\cond SOC_AM62AX
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0_freertos
+ Toolchain      | ti-arm-clang
+ Board          | @VAR_BOARD_NAME_LOWER
+ Example folder | source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/
+\endcond
 \cond SOC_AM62DX
  Parameter      | Value
  ---------------|-----------
@@ -59,6 +67,13 @@ MAC Port 2: Configured in MAC-only mode, allowing direct traffic to the host por
  Linux Client   | A53-linux
 \endcond
 
+\cond SOC_AM62AX
+ Client Env     | Supported Core + OS
+ ---------------|-----------
+ MCAL Client    | mcu-r5fss0-0_freertos
+ Linux Client   | A53-linux
+\endcond
+
 \cond SOC_AM62DX
  Client Env     | Supported Core + OS
  ---------------|-----------
@@ -69,7 +84,7 @@ MAC Port 2: Configured in MAC-only mode, allowing direct traffic to the host por
 # Steps to Run the Example
 
 ## Prerequisites
-\cond SOC_AM62PX
+\cond SOC_AM62PX || SOC_AM62AX
 - EVM Board
 \endcond
 \cond SOC_AM62DX
@@ -90,7 +105,7 @@ MAC Port 2: Configured in MAC-only mode, allowing direct traffic to the host por
   make command (see \ref MAKEFILE_BUILD_PAGE)
 
 ## HW Setup
-\cond SOC_AM62PX
+\cond SOC_AM62PX || SOC_AM62AX
 - Connect the One end of the CAT6 cable to the EVM and the other end of the CAT6 cable to network.
 \endcond
 \cond SOC_AM62DX
@@ -102,7 +117,7 @@ MAC Port 2: Configured in MAC-only mode, allowing direct traffic to the host por
 \attention If you need to reload and run again, a CPU power-cycle is MUST.
 
 \note CCS loading is not supported for any core. Applications are tested with OSPI boot mode
-\cond SOC_AM62PX
+\cond SOC_AM62PX || SOC_AM62AX
 - Load wkup-r5 Server binary to the evm via OSPI boot mode.
 \endcond
 \cond SOC_AM62DX
@@ -113,7 +128,7 @@ MAC Port 2: Configured in MAC-only mode, allowing direct traffic to the host por
 - The prints will indicate the IP address acquired by clients against their corresponding MAC addresses
 
 ## Sample output
-\cond SOC_AM62PX
+\cond SOC_AM62PX || SOC_AM62AX
 ### WKUP-R5 Server Application logs
 \code
 =======================================================
@@ -583,7 +598,7 @@ The key concepts of a system with MAC-only mode enabled are as follows:
 The default port configuration for AM62Dx is shown below:
 
  \image html ethfw_portCfg_am62dx.png
-\cond SOC_AM62PX
+\cond SOC_AM62PX || SOC_AM62AX
 ## Enable MAC-only mode on MAC port 2
 
 1. Add `-DENABLE_MAC_ONLY_PORTS` flag to `DEFINES_common` in the client app, server app and ethfw library makefiles
@@ -610,4 +625,6 @@ The default port configuration for AM62Dx is shown below:
 \endcond
 # See Also
 
+\cond SOC_AM62PX || SOC_AM62DX
 \ref NETWORKING
+\endcond

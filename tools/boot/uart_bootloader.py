@@ -467,6 +467,20 @@ def main(argv):
             send_status, timetaken = xmodem_send_receive_file(appimage_file, serialport, get_response=True)
             print("Sent application {} of size {} bytes in {}s.".format(appimage_file, os.path.getsize(appimage_file), timetaken))
             print(send_status)
+
+            # Send End Of File Transfer message
+            magic_word_filename = "magic_word_file.dat"
+            magic_word_file     = open(magic_word_filename,"wb")
+            magic_word_bytes    = BOOTLOADER_END_OF_FILES_TRANSFER.to_bytes(BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH,"big")
+            magic_word_file.write(magic_word_bytes)
+            magic_word_file.close()
+            print("")
+            print("Sending End Of File Transfer message ...")
+            sendd_status, timetaken = xmodem_send_receive_file(magic_word_filename, serialport, get_response=False)
+            print("Sent End Of File Transfer message of size {} bytes in {}s.".format(os.path.getsize(magic_word_filename), timetaken))
+            print("")
+            os.remove(magic_word_filename)
+
             if("SUCCESS" in send_status):
                 print("Connect to UART in 5 seconds to see logs from UART !!!")
 

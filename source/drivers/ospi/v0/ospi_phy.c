@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -593,6 +593,7 @@ void OSPI_phyGetTuningData(uint32_t *tuningData, uint32_t *tuningDataSize)
 int32_t OSPI_phyTuneGrapher(OSPI_Handle handle, uint32_t flashOffset, uint8_t arrays[5][128][128])
 {
     int32_t status = SystemP_SUCCESS;
+    int32_t readStatus = SystemP_SUCCESS;
 
     if((handle != NULL) && (arrays != NULL))
     {
@@ -609,9 +610,9 @@ int32_t OSPI_phyTuneGrapher(OSPI_Handle handle, uint32_t flashOffset, uint8_t ar
 
         for(rdDelay = OSPI_PHY_GRAPHER_INIT_RD_DELAY; rdDelay <= OSPI_PHY_GRAPHER_MAX_RD_DELAY; rdDelay++)
         {
-            for(txDll = 0; txDll < 128; txDll++)
+            for(txDll = 0; txDll < OSPI_PHY_MAX_DLL; txDll++)
             {
-                for(rxDll = 0; rxDll < 128; rxDll++)
+                for(rxDll = 0; rxDll < OSPI_PHY_MAX_DLL; rxDll++)
                 {
                     searchPoint.rdDelay = rdDelay;
                     searchPoint.rxDLL = rxDll;
@@ -619,8 +620,8 @@ int32_t OSPI_phyTuneGrapher(OSPI_Handle handle, uint32_t flashOffset, uint8_t ar
 
                     OSPI_phySetRdDelayTxRxDLL(handle, &searchPoint);
 
-                    status = OSPI_phyReadAttackVector(handle, flashOffset);
-                    if(status == SystemP_SUCCESS)
+                    readStatus = OSPI_phyReadAttackVector(handle, flashOffset);
+                    if(readStatus == SystemP_SUCCESS)
                     {
                         arrays[rdDelay][txDll][rxDll] = 1;
                     }

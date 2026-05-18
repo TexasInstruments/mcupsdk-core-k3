@@ -52,6 +52,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_DMA
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_DIAG
+   -# \subpage 
 \cond SOC_AM64X || SOC_AM243X
 -# PCIE
    -# \subpage EXAMPLES_DRIVERS_PCIE_BENCHMARK_RC
@@ -134,6 +135,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# OSPI
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_DIAG
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
+   -# \subpage EXAMPLES_DRIVERS_OSPI_PHY_GRAPHER_UART
 -# PMU
    -# \subpage EXAMPLES_DRIVERS_PMU_MULTIEVENT
 -# RTC
@@ -205,6 +207,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    -# \subpage EXAMPLES_DRIVERS_MMCSD_RAW_IO
 -# OSPI
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
+   -# \subpage EXAMPLES_DRIVERS_OSPI_PHY_GRAPHER_UART
 -# PMU
    -# \subpage EXAMPLES_DRIVERS_PMU_MULTIEVENT
 -# RTC
@@ -286,6 +289,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# OSPI
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_DIAG
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
+   -# \subpage EXAMPLES_DRIVERS_OSPI_PHY_GRAPHER_UART
 -# PMIC
    -# \subpage EXAMPLES_PMIC_QA_WATCHDOG_INTERRUPT
    -# \subpage EXAMPLES_PMIC_QA_WATCHDOG_RESET
@@ -374,6 +378,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# OSPI
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_DIAG
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
+   -# \subpage EXAMPLES_DRIVERS_OSPI_PHY_GRAPHER_UART
 -# PMIC
    -# \subpage EXAMPLES_PMIC_QA_WATCHDOG_INTERRUPT
    -# \subpage EXAMPLES_PMIC_QA_WATCHDOG_RESET
@@ -451,6 +456,7 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 -# OSPI
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_DIAG
    -# \subpage EXAMPLES_DRIVERS_OSPI_FLASH_IO
+   -# \subpage EXAMPLES_DRIVERS_OSPI_PHY_GRAPHER_UART
 -# PMIC
    -# \subpage EXAMPLES_PMIC_QA_WATCHDOG_INTERRUPT
    -# \subpage EXAMPLES_PMIC_QA_WATCHDOG_RESET

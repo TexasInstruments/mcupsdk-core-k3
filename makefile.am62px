@@ -159,6 +159,7 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/mmcsd/mmcsd_file_io/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/ospi/ospi_flash_io/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/ospi/ospi_flash_diag/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/drivers/ospi/ospi_phy_grapher_uart/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/pmic/pmic_qa_watchdog_interrupt/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/pmic/pmic_qa_watchdog_reset/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/pmic/pmic_trigger_watchdog_interrupt/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -746,6 +747,7 @@ BUILD_COMBO_EXAMPLE_ALL += mmcsd_file_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm
 BUILD_COMBO_EXAMPLE_ALL += mmcsd_file_io_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += ospi_flash_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += ospi_flash_diag_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += ospi_phy_grapher_uart_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += pmic_qa_watchdog_interrupt_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += pmic_qa_watchdog_reset_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += pmic_trigger_watchdog_interrupt_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
@@ -1026,6 +1028,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  ospi_flash_diag_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/ospi/ospi_flash_diag/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ ospi_phy_grapher_uart_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C examples/drivers/ospi/ospi_phy_grapher_uart/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
  pmic_qa_watchdog_interrupt_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C examples/drivers/pmic/pmic_qa_watchdog_interrupt/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
@@ -1376,6 +1381,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += mmcsd_file_io_am62px-sk_wkup-r5fss0-0_freertos_
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mmcsd_file_io_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ospi_flash_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ospi_flash_diag_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += ospi_phy_grapher_uart_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += pmic_qa_watchdog_interrupt_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += pmic_qa_watchdog_reset_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += pmic_trigger_watchdog_interrupt_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
@@ -1656,6 +1662,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  ospi_flash_diag_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/ospi/ospi_flash_diag/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ ospi_phy_grapher_uart_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C examples/drivers/ospi/ospi_phy_grapher_uart/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
  pmic_qa_watchdog_interrupt_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C examples/drivers/pmic/pmic_qa_watchdog_interrupt/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
@@ -2006,6 +2015,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += mmcsd_file_io_am62px-sk_wkup-r5fss0-0_freertos_
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mmcsd_file_io_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ospi_flash_io_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ospi_flash_diag_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += ospi_phy_grapher_uart_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += pmic_qa_watchdog_interrupt_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += pmic_qa_watchdog_reset_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += pmic_trigger_watchdog_interrupt_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
@@ -2286,6 +2296,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  ospi_flash_diag_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/ospi/ospi_flash_diag/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ ospi_phy_grapher_uart_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C examples/drivers/ospi/ospi_phy_grapher_uart/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  pmic_qa_watchdog_interrupt_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C examples/drivers/pmic/pmic_qa_watchdog_interrupt/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub

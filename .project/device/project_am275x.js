@@ -121,6 +121,7 @@ const example_file_list = [
     "examples/drivers/ospi/ospi_flash_diag/.project/project.js",
     "examples/drivers/ospi/ospi_flash_io/.project/project_am275x_wkupr5.js",
     "examples/drivers/ospi/ospi_flash_io/.project/project.js",
+    "examples/drivers/ospi/ospi_phy_grapher_uart/.project/project.js",
     "examples/drivers/pmic/pmic_qa_watchdog_interrupt/.project/project.js",
     "examples/drivers/pmic/pmic_qa_watchdog_reset/.project/project.js",
     "examples/drivers/pmic/pmic_trigger_watchdog_interrupt/.project/project.js",

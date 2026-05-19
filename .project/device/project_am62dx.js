@@ -323,6 +323,7 @@ const example_file_list = [
     "test/drivers/sciclient/sciclient_dynamic_analysis/.project/project.js",
     "test/drivers/sciclient/sciclient_get_version/.project/project.js",
     "test/drivers/sciclient/sciclient_interrupt_mode/.project/project.js",
+    "test/drivers/sciclient/test_sciclient/.project/project.js",
 	"test/drivers/uart/.project/project.js",
     "test/drivers/uart/test_uart_fault_inject/.project/project.js",
     "test/drivers/udma/.project/project.js",

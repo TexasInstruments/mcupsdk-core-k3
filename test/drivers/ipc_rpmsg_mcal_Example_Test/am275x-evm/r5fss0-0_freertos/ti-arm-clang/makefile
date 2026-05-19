@@ -46,8 +46,8 @@ FILES_common := \
 	ti_power_clock_config.c \
 
 FILES_PATH_common = \
-	../../../ \
 	.. \
+	../../.. \
 	generated \
 
 INCLUDES_common := \

@@ -46,8 +46,8 @@ FILES_common := \
 	ti_power_clock_config.c \
 
 FILES_PATH_common = \
-	../../../ \
 	.. \
+	../../.. \
 	generated \
 
 INCLUDES_common := \
@@ -216,7 +216,7 @@ $(SYSCFG_GEN_FILES): syscfg
 
 syscfg: ../example.syscfg
 	@echo Generating SysConfig files ...
-# 	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM275x --context r5fss1-0 --part AM2754 --package ANJ --output generated/ ../example.syscfg
+	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM275x --context r5fss1-0 --part AM2754 --package ANJ --output generated/ ../example.syscfg
 
 syscfg-gui:
 	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device AM275x --context r5fss1-0 --part AM2754 --package ANJ --output generated/  ../example.syscfg

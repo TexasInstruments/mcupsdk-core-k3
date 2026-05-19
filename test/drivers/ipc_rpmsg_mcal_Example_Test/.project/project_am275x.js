@@ -117,7 +117,7 @@ const buildOptionCombos = [
 
 const systemProjects =[
     {
-        name: "test_ipc_rpmsg",
+        name: "test_ipc_rpmsg_example",
         tag: "freertos",
         skipProjectSpec: true,
         board: "am275x-evm",
@@ -137,7 +137,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "test_ipc_rpmsg";
+    property.name = "test_ipc_rpmsg_example";
     property.isInternal = true;
     property.skipProjectSpec = true;
     property.isLinuxInSystem = true;

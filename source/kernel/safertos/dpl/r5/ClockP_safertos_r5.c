@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024-25 Texas Instruments Incorporated
+ *  Copyright (C) 2024-26 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -90,6 +90,7 @@ void ClockP_init(void)
 
     /* init internal data structure */
     gClockCtrl.ticks = 0;
+    gClockCtrl.schedulerStarted = 0U;
     gClockCtrl.usecPerTick = gClockConfig.usecPerTick;
     gClockCtrl.timerBaseAddr = gClockConfig.timerBaseAddr;
 
@@ -104,7 +105,7 @@ void ClockP_init(void)
             );
     }
 
-    /* setup timer but dont start it */
+    /* setup timer - timer will be started below after ISR is registered */
     TimerP_Params_init(&timerParams);
     timerParams.inputPreScaler    = gClockConfig.timerInputPreScaler;
     timerParams.inputClkHz        = gClockConfig.timerInputClkHz;
@@ -122,14 +123,21 @@ void ClockP_init(void)
     timerHwiParams.callback = ClockP_timerTickIsr;
     timerHwiParams.isPulse = 0;
     (void) HwiP_construct(&gClockCtrl.timerHwiObj, &timerHwiParams);
+
+    /* Start the timer here so that ClockP_getTimeUsec works correctly
+     * before the scheduler starts. The ISR uses schedulerStarted to
+     * guard vTaskProcessSystemTickFromISR until the scheduler is ready. 
+     */
+    TimerP_start(gClockCtrl.timerBaseAddr);
 }
 
-/* SafeRTOS expects SysTick to be enabled during the start of the scheduler.
- * This API is a hook that SafeRTOS calls into when it needs to start the SysTick.
+/* SafeRTOS hook invoked at scheduler startup. The timer is already
+ * running from ClockP_init; set schedulerStarted to allow the ISR
+ * to begin tick processing.
  */
 void vApplicationSetupTickInterruptHook( portUInt32Type ulTimerClockHz,
                                          portUInt32Type ulTickRateHz )
 {
-    /* Start the tick timer */
-    TimerP_start(gClockCtrl.timerBaseAddr);
+    /* Signal the ISR that the scheduler is ready for tick processing */
+    gClockCtrl.schedulerStarted = 1U;
 }

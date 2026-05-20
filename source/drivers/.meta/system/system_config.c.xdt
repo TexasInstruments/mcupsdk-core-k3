@@ -80,31 +80,6 @@ void PowerClock_deinit(void);
 /*
  * Common Functions
  */
-% if(common.isSafeRTOSSupported()) {
-#if defined(OS_SAFERTOS)
-    void System_lateInit(void)
-    {
-        % if (common.isSciClientSupported()) {
-        /* We should do sciclient init before we enable power and clock to the peripherals */
-        `system.getTemplate(sciclientInitTemplate)()`
-        % }
-        PowerClock_init();
-        /* Now we can do pinmux */
-        Pinmux_init();
-        /* finally we initialize all peripheral drivers */
-        % for(let subTemplate of args) {
-            % if (subTemplate.driver_init) {
-            `system.getTemplate(subTemplate.driver_init)()`
-            % }
-        % }
-        % if(cpuName.match(/a53/)) {
-            }
-
-        % }
-    }
-#endif
-
-% }
 void System_init(void)
 {
     /* DPL init sets up address transalation unit, on some CPUs this is needed

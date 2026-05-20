@@ -66,11 +66,12 @@ extern "C"
 
 typedef struct ClockP_Control_
 {
-    uint64_t ticks;
+    volatile uint64_t ticks;
     uint32_t usecPerTick;
     HwiP_Object timerHwiObj;
     uint32_t timerBaseAddr;
     uint32_t timerReloadCount;
+    volatile uint32_t schedulerStarted; /* Set to 1U once the SafeRTOS scheduler starts */
 } ClockP_Control;
 
 /* ========================================================================== */

@@ -88,7 +88,18 @@ void ClockP_timerTickIsr(void *args)
     /* increment the systick counter */
     gClockCtrl.ticks++;
 
-    vTaskProcessSystemTickFromISR();
+    /**
+     * Timer starts in System_init() before xTaskStartScheduler(). 
+     * guard vTaskProcessSystemTickFromISR() until 
+     * vApplicationSetupTickInterruptHook() signals the scheduler is ready.
+     * vTaskProcessSystemTickFromISR() requires RTOS internal state
+     * initialized by xTaskStartScheduler() - calling it pre-scheduler 
+     * corrupts state and causes hangs or faults. 
+     */
+    if (gClockCtrl.schedulerStarted != 0U)
+    {
+        vTaskProcessSystemTickFromISR();
+    }
 
     ClockP_timerClearOverflowInt(gClockConfig.timerBaseAddr);
 }

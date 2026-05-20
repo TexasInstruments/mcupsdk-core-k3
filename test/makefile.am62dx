@@ -312,6 +312,11 @@ help:
 	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_c7x/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcu_r5f/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_a53/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal_Announce_Test/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal_Diagnostic_Test/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal_Different_Vring_Test/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal_Example_Test/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal_Multiple_End_Point_Test/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mcasp/mcasp_system_load/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  .
 
@@ -824,6 +829,11 @@ BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_am62dx-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_c7x_am62dx-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_mcu_r5f_am62dx-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_a53_am62dx-evm_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_announce_am62dx-evm_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_diagnostic_am62dx-evm_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_am62dx-evm_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_example_am62dx-evm_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_end_point_am62dx-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_mcasp_system_load_am62dx-evm_system_freertos
 
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
@@ -1539,6 +1549,21 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_ipc_rpmsg_a53_am62dx-evm_system_freertos:
 	$(MAKE) -C drivers/ipc_rpmsg_a53/am62dx-evm/system_freertos -f makefile all
 
+ test_ipc_rpmsg_announce_am62dx-evm_system_freertos:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Announce_Test/am62dx-evm/system_freertos -f makefile all
+
+ test_ipc_rpmsg_diagnostic_am62dx-evm_system_freertos:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Diagnostic_Test/am62dx-evm/system_freertos -f makefile all
+
+ test_ipc_rpmsg_vring_am62dx-evm_system_freertos:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Different_Vring_Test/am62dx-evm/system_freertos -f makefile all
+
+ test_ipc_rpmsg_example_am62dx-evm_system_freertos:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Example_Test/am62dx-evm/system_freertos -f makefile all
+
+ test_ipc_rpmsg_end_point_am62dx-evm_system_freertos:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Multiple_End_Point_Test/am62dx-evm/system_freertos -f makefile all
+
  test_mcasp_system_load_am62dx-evm_system_freertos:
 	$(MAKE) -C drivers/mcasp/mcasp_system_load/am62dx-evm/system_freertos -f makefile all
 
@@ -1778,6 +1803,11 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_am62dx-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_c7x_am62dx-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_mcu_r5f_am62dx-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_a53_am62dx-evm_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_announce_am62dx-evm_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_diagnostic_am62dx-evm_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_am62dx-evm_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_example_am62dx-evm_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_end_point_am62dx-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcasp_system_load_am62dx-evm_system_freertos_clean
 
 BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL =
@@ -2493,6 +2523,21 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_ipc_rpmsg_a53_am62dx-evm_system_freertos_clean:
 	$(MAKE) -C drivers/ipc_rpmsg_a53/am62dx-evm/system_freertos -f makefile clean
 
+ test_ipc_rpmsg_announce_am62dx-evm_system_freertos_clean:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Announce_Test/am62dx-evm/system_freertos -f makefile clean
+
+ test_ipc_rpmsg_diagnostic_am62dx-evm_system_freertos_clean:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Diagnostic_Test/am62dx-evm/system_freertos -f makefile clean
+
+ test_ipc_rpmsg_vring_am62dx-evm_system_freertos_clean:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Different_Vring_Test/am62dx-evm/system_freertos -f makefile clean
+
+ test_ipc_rpmsg_example_am62dx-evm_system_freertos_clean:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Example_Test/am62dx-evm/system_freertos -f makefile clean
+
+ test_ipc_rpmsg_end_point_am62dx-evm_system_freertos_clean:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Multiple_End_Point_Test/am62dx-evm/system_freertos -f makefile clean
+
  test_mcasp_system_load_am62dx-evm_system_freertos_clean:
 	$(MAKE) -C drivers/mcasp/mcasp_system_load/am62dx-evm/system_freertos -f makefile clean
 
@@ -2732,6 +2777,11 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_am62dx-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_c7x_am62dx-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_mcu_r5f_am62dx-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_a53_am62dx-evm_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_announce_am62dx-evm_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_diagnostic_am62dx-evm_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_am62dx-evm_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_example_am62dx-evm_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_end_point_am62dx-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcasp_system_load_am62dx-evm_system_freertos_scrub
 
 BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL =
@@ -3446,6 +3496,21 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_ipc_rpmsg_a53_am62dx-evm_system_freertos_scrub:
 	$(MAKE) -C drivers/ipc_rpmsg_a53/am62dx-evm/system_freertos -f makefile scrub
+
+ test_ipc_rpmsg_announce_am62dx-evm_system_freertos_scrub:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Announce_Test/am62dx-evm/system_freertos -f makefile scrub
+
+ test_ipc_rpmsg_diagnostic_am62dx-evm_system_freertos_scrub:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Diagnostic_Test/am62dx-evm/system_freertos -f makefile scrub
+
+ test_ipc_rpmsg_vring_am62dx-evm_system_freertos_scrub:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Different_Vring_Test/am62dx-evm/system_freertos -f makefile scrub
+
+ test_ipc_rpmsg_example_am62dx-evm_system_freertos_scrub:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Example_Test/am62dx-evm/system_freertos -f makefile scrub
+
+ test_ipc_rpmsg_end_point_am62dx-evm_system_freertos_scrub:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Multiple_End_Point_Test/am62dx-evm/system_freertos -f makefile scrub
 
  test_mcasp_system_load_am62dx-evm_system_freertos_scrub:
 	$(MAKE) -C drivers/mcasp/mcasp_system_load/am62dx-evm/system_freertos -f makefile scrub

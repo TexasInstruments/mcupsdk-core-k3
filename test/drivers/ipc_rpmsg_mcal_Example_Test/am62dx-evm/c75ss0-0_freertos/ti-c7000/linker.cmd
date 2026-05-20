@@ -26,7 +26,7 @@ MEMORY
     C7X_DDR_SPACE: org = C7X_DDR_SPACE_BASE+0x1000, len = 0x00BF0000-0x1000  /*  11.9MB - 4KB DDR  */
     DDR_LOG_SHM_MEM             : ORIGIN = 0xA2000000, LENGTH = 0x40000
     /* Shared memory for RTOS NORTOS IPC */
-    DDR_IPC_VRING_RTOS: org = 0xA0400000, len = 0xE00000  /* 3MB DDR */
+    DDR_IPC_VRING_RTOS: org = 0xA0400000, len = 0xE00000  /* 14MB DDR */
 }
 
 SECTIONS

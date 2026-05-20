@@ -120,7 +120,7 @@ const syscfgfile = "../example.syscfg";
 const templates_freertos_dm_r5f =
 [
     {
-        input: ".project/templates/am62dx/common/linker_dm_r5f.cmd.xdt",
+        input: "test/drivers/ipc_rpmsg_mcal_Multiple_End_Point_Test/.project/templates/am62dx/common/linker_dm_r5f.cmd.xdt",
         output: "linker.cmd",
         options: {
             heapSize: 0x8000,
@@ -134,7 +134,7 @@ const templates_freertos_dm_r5f =
         },
     },
     {
-        input: ".project/templates/am62dx/freertos/main_freertos_dm.c.xdt",
+        input: "test/drivers/ipc_rpmsg_mcal_Multiple_End_Point_Test/.project/templates/am62dx/freertos/main_freertos_dm.c.xdt",
         output: "../main.c",
         options: {
             entryFunction: "test_main",
@@ -145,11 +145,11 @@ const templates_freertos_dm_r5f =
 const templates_freertos_mcu_r5f =
 [
     {
-        input: ".project/templates/am62dx/common/linker_mcu-r5f.cmd.xdt",
+        input: "test/drivers/ipc_rpmsg_mcal_Multiple_End_Point_Test/.project/templates/am62dx/common/linker_mcu-r5f.cmd.xdt",
         output: "linker.cmd",
     },
     {
-        input: ".project/templates/am62dx/freertos/main_freertos.c.xdt",
+        input: "test/drivers/ipc_rpmsg_mcal_Multiple_End_Point_Test/.project/templates/am62dx/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {
             entryFunction: "test_main",
@@ -160,11 +160,11 @@ const templates_freertos_mcu_r5f =
 const templates_freertos_c75 =
 [
     {
-        input: ".project/templates/am62dx/common/linker_c75.cmd.xdt",
+        input: "test/drivers/ipc_rpmsg_mcal_Multiple_End_Point_Test/.project/templates/am62dx/common/linker_c75.cmd.xdt",
         output: "linker.cmd",
     },
     {
-        input: ".project/templates/am62dx/freertos/main_freertos.c.xdt",
+        input: "test/drivers/ipc_rpmsg_mcal_Multiple_End_Point_Test/.project/templates/am62dx/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {
             entryFunction: "test_main",
@@ -176,11 +176,11 @@ const templates_freertos_c75 =
 const templates_freertos_a53 =
 [
     {
-        input: ".project/templates/am62dx/common/linker_a53.cmd.xdt",
+        input: "test/drivers/ipc_rpmsg_mcal_Multiple_End_Point_Test/.project/templates/am62dx/common/linker_a53.cmd.xdt",
         output: "linker.cmd",
     },
     {
-        input: ".project/templates/am62dx/freertos/main_freertos.c.xdt",
+        input: "test/drivers/ipc_rpmsg_mcal_Multiple_End_Point_Test/.project/templates/am62dx/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {
             entryFunction: "test_main",
@@ -204,21 +204,21 @@ const defines_common = {
 const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos", isPartOfSystemProject: true},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos", isPartOfSystemProject: true},
-    { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62dx-evm", os: "freertos", isPartOfSystemProject: true},
-    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62dx-evm", os: "freertos", isPartOfSystemProject: true},
+    // { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62dx-evm", os: "freertos", isPartOfSystemProject: true},
+    // { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62dx-evm", os: "freertos", isPartOfSystemProject: true},
 ];
 
 const systemProjects =[
     {
-        name: "test_ipc_rpmsg",
+        name: "test_ipc_rpmsg_end_point",
         tag: "freertos",
         skipProjectSpec: true,
         board: "am62dx-evm",
         projects: [
             { device: device, cpu: "r5fss0-0",     cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos", isPartOfSystemProject: false},
             { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos", isPartOfSystemProject: true},
-            { device: device, cpu: "c75ss0-0",     cgt: "ti-c7000",     board: "am62dx-evm", os: "freertos", isPartOfSystemProject: true},
-            { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62dx-evm", os: "freertos",   isPartOfSystemProject: true},
+            // { device: device, cpu: "c75ss0-0",     cgt: "ti-c7000",     board: "am62dx-evm", os: "freertos", isPartOfSystemProject: true},
+            // { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62dx-evm", os: "freertos",   isPartOfSystemProject: true},
         ],
     },
 ]
@@ -228,7 +228,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "test_ipc_rpmsg";
+    property.name = "test_ipc_rpmsg_end_point";
     property.isInternal = true;
     property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;

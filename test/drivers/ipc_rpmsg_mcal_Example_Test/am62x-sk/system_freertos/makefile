@@ -19,9 +19,9 @@ PROFILE?=release
 LD=$(CGT_GCC_AARCH64_PATH)/bin/aarch64-none-elf-ld
 
 MULTI_CORE_BOOTIMAGE_PATH=$(abspath .)
-MULTI_CORE_BOOTIMAGE_NAME:=test_ipc_rpmsg_system.$(PROFILE).appimage
+MULTI_CORE_BOOTIMAGE_NAME:=test_ipc_rpmsg_example_system.$(PROFILE).appimage
 MULTI_CORE_BOOTIMAGE_NAME_SIGNED:=$(MULTI_CORE_BOOTIMAGE_NAME).signed
-MULTI_CORE_BOOTIMAGE_NAME_XIP:=test_ipc_rpmsg_system.$(PROFILE).appimage_xip
+MULTI_CORE_BOOTIMAGE_NAME_XIP:=test_ipc_rpmsg_example_system.$(PROFILE).appimage_xip
 MULTI_CORE_BOOTIMAGE_NAME_HS:=$(MULTI_CORE_BOOTIMAGE_NAME).hs
 ATF_LOAD_ADDR:=0x80000000
 ATF_OUTNAME:=bl31.a53ss0-0.$(PROFILE).out
@@ -29,19 +29,16 @@ ATF_RPRC_NAME:=bl31.a53ss0-0.$(PROFILE).rprc
 ATF_BIN_NAME:=bl31.a53ss0-0.$(PROFILE).bin
 ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/lib/soc/am62x
 
-CORE_0=--script ../r5fss0-0_freertos/example.syscfg --context r5fss0-0 --output ../r5fss0-0_freertos/ti-arm-clang/generated
-CORE_1=--script ../m4fss0-0_freertos/example.syscfg --context m4fss0-0 --output ../m4fss0-0_freertos/ti-arm-clang/generated
-CORE_2=--script ../a53ss0-0_freertos/example.syscfg --context a53ss0-0 --output ../a53ss0-0_freertos/gcc-aarch64/generated
-CORE_3=--script ../a53ss0-1_freertos/example.syscfg --context a53ss0-1 --output ../a53ss0-1_freertos/gcc-aarch64/generated
+CORE_0=--script ../m4fss0-0_freertos/example.syscfg --context m4fss0-0 --output ../m4fss0-0_freertos/ti-arm-clang/generated
+CORE_1=--script ../a53ss0-0_freertos/example.syscfg --context a53ss0-0 --output ../a53ss0-0_freertos/gcc-aarch64/generated
+CORE_2=--script ../a53ss0-1_freertos/example.syscfg --context a53ss0-1 --output ../a53ss0-1_freertos/gcc-aarch64/generated
 
 CORES = \
-    $(CORE_3) \
     $(CORE_2) \
     $(CORE_1) \
-    # $(CORE_0) \
+    $(CORE_0) \
 
 all: syscfg
-	# $(MAKE) -C ../r5fss0-0_freertos/ti-arm-clang/ all
 	$(MAKE) -C ../m4fss0-0_freertos/ti-arm-clang/ all
 	$(MAKE) -C ../a53ss0-0_freertos/gcc-aarch64/ all
 	$(MAKE) -C ../a53ss0-1_freertos/gcc-aarch64/ all
@@ -51,7 +48,6 @@ ifeq ($(DEVICE_TYPE), HS)
 endif
 
 clean:
-	# $(MAKE) -C ../r5fss0-0_freertos/ti-arm-clang/ clean
 	$(MAKE) -C ../m4fss0-0_freertos/ti-arm-clang/ clean
 	$(MAKE) -C ../a53ss0-0_freertos/gcc-aarch64/ clean
 	$(MAKE) -C ../a53ss0-1_freertos/gcc-aarch64/ clean
@@ -60,7 +56,6 @@ clean:
 	$(RM) $(MULTI_CORE_BOOTIMAGE_NAME_XIP)
 
 scrub:
-	# $(MAKE) -C ../r5fss0-0_freertos/ti-arm-clang/ scrub
 	$(MAKE) -C ../m4fss0-0_freertos/ti-arm-clang/ scrub
 	$(MAKE) -C ../a53ss0-0_freertos/gcc-aarch64/ scrub
 	$(MAKE) -C ../a53ss0-1_freertos/gcc-aarch64/ scrub
@@ -108,40 +103,35 @@ APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_
 ifeq ($(ATF_INTEGRATED_BOOT), yes)
 MULTI_CORE_APP_PARAMS = \
 	$(ATF_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
-    # ../r5fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
-    ../m4fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
-    ../a53ss0-0_freertos/gcc-aarch64/test_ipc_rpmsg.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_load_only) \
-    ../a53ss0-1_freertos/gcc-aarch64/test_ipc_rpmsg.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_load_only) \
+    ../m4fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg_example.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
+    ../a53ss0-0_freertos/gcc-aarch64/test_ipc_rpmsg_example.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_load_only) \
+    ../a53ss0-1_freertos/gcc-aarch64/test_ipc_rpmsg_example.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_load_only) \
 
 else
 MULTI_CORE_APP_PARAMS = \
-    # ../r5fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
-    ../m4fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
-    ../a53ss0-0_freertos/gcc-aarch64/test_ipc_rpmsg.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
-    ../a53ss0-1_freertos/gcc-aarch64/test_ipc_rpmsg.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_a53ss0-1) \
+    ../m4fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg_example.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
+    ../a53ss0-0_freertos/gcc-aarch64/test_ipc_rpmsg_example.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
+    ../a53ss0-1_freertos/gcc-aarch64/test_ipc_rpmsg_example.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_a53ss0-1) \
 
 endif
 
 MULTI_CORE_APP_PARAMS_XIP = \
-    # ../r5fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
-    ../m4fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
-    ../a53ss0-0_freertos/gcc-aarch64/test_ipc_rpmsg.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
-    ../a53ss0-1_freertos/gcc-aarch64/test_ipc_rpmsg.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_a53ss0-1) \
+    ../m4fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg_example.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
+    ../a53ss0-0_freertos/gcc-aarch64/test_ipc_rpmsg_example.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
+    ../a53ss0-1_freertos/gcc-aarch64/test_ipc_rpmsg_example.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_a53ss0-1) \
 
 ifeq ($(ATF_INTEGRATED_BOOT), yes)
 MULTI_CORE_BOOTIMAGE_DEPENDENCY = \
 	$(ATF_RPRC_NAME) \
-    # ../r5fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).rprc \
-    ../m4fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).rprc \
-    ../a53ss0-0_freertos/gcc-aarch64/test_ipc_rpmsg.$(PROFILE).rprc \
-    ../a53ss0-1_freertos/gcc-aarch64/test_ipc_rpmsg.$(PROFILE).rprc \
+    ../m4fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg_example.$(PROFILE).rprc \
+    ../a53ss0-0_freertos/gcc-aarch64/test_ipc_rpmsg_example.$(PROFILE).rprc \
+    ../a53ss0-1_freertos/gcc-aarch64/test_ipc_rpmsg_example.$(PROFILE).rprc \
 
 else
 MULTI_CORE_IMAGE_PARAMS = \
-    # ../r5fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).rprc \
-    ../m4fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).rprc \
-    ../a53ss0-0_freertos/gcc-aarch64/test_ipc_rpmsg.$(PROFILE).rprc \
-    ../a53ss0-1_freertos/gcc-aarch64/test_ipc_rpmsg.$(PROFILE).rprc \
+    ../m4fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg_example.$(PROFILE).rprc \
+    ../a53ss0-0_freertos/gcc-aarch64/test_ipc_rpmsg_example.$(PROFILE).rprc \
+    ../a53ss0-1_freertos/gcc-aarch64/test_ipc_rpmsg_example.$(PROFILE).rprc \
 
 endif
 

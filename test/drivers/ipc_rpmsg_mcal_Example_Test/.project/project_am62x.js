@@ -123,7 +123,7 @@ const syscfgfile = "../example.syscfg";
 const templates_freertos_r5f =
 [
     {
-        input: ".project/templates/am62x/common/linker_dm_r5f.cmd.xdt",
+        input: "test/drivers/ipc_rpmsg_mcal_Example_Test/.project/templates/am62x/common/linker_dm_r5f.cmd.xdt",
         output: "linker.cmd",
         options: {
             heapSize: 0x10000,
@@ -137,7 +137,7 @@ const templates_freertos_r5f =
         },
     },
     {
-        input: ".project/templates/am62x/freertos/main_freertos_dm.c.xdt",
+        input: "test/drivers/ipc_rpmsg_mcal_Example_Test/.project/templates/am62x/freertos/main_freertos_dm.c.xdt",
         output: "../main.c",
         options: {
             entryFunction: "test_main",
@@ -148,11 +148,11 @@ const templates_freertos_r5f =
 const templates_freertos_m4f =
 [
     {
-        input: ".project/templates/am62x/common/linker_m4f.cmd.xdt",
+        input: "test/drivers/ipc_rpmsg_mcal_Example_Test/.project/templates/am62x/common/linker_m4f.cmd.xdt",
         output: "linker.cmd",
     },
     {
-        input: ".project/templates/am62x/freertos/main_freertos.c.xdt",
+        input: "test/drivers/ipc_rpmsg_mcal_Example_Test/.project/templates/am62x/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {
             entryFunction: "test_main",
@@ -163,11 +163,11 @@ const templates_freertos_m4f =
 const templates_freertos_a53ss00 =
 [
     {
-        input: ".project/templates/am62x/common/linker_a53ss0-0.cmd.xdt",
+        input: "test/drivers/ipc_rpmsg_mcal_Example_Test/.project/templates/am62x/common/linker_a53ss0-0.cmd.xdt",
         output: "linker.cmd",
     },
     {
-        input: ".project/templates/am62x/freertos/main_freertos.c.xdt",
+        input: "test/drivers/ipc_rpmsg_mcal_Example_Test/.project/templates/am62x/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {
             entryFunction: "test_main",
@@ -178,11 +178,11 @@ const templates_freertos_a53ss00 =
 const templates_freertos_a53ss01 =
 [
     {
-        input: ".project/templates/am62x/common/linker_a53ss0-1.cmd.xdt",
+        input: "test/drivers/ipc_rpmsg_mcal_Example_Test/.project/templates/am62x/common/linker_a53ss0-1.cmd.xdt",
         output: "linker.cmd",
     },
     {
-        input: ".project/templates/am62x/freertos/main_freertos.c.xdt",
+        input: "test/drivers/ipc_rpmsg_mcal_Example_Test/.project/templates/am62x/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {
             entryFunction: "test_main",
@@ -191,58 +191,34 @@ const templates_freertos_a53ss01 =
 ];
 const buildOptionCombos = [
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos", isPartOfSystemProject: true},
-    { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "freertos", isPartOfSystemProject: true},
-    { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "freertos", isPartOfSystemProject: true},
+    //{ device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "freertos", isPartOfSystemProject: true},
+    //{ device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "freertos", isPartOfSystemProject: true},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sk", os: "freertos", isPartOfSystemProject: true},
-    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sip-sk", os: "freertos", isPartOfSystemProject: true},
-    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sk-lp", os: "freertos", isPartOfSystemProject: true},
+    //{ device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sip-sk", os: "freertos", isPartOfSystemProject: true},
+    //{ device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sk-lp", os: "freertos", isPartOfSystemProject: true},
     { device: device, cpu: "a53ss0-1", cgt: "gcc-aarch64",  board: "am62x-sk", os: "freertos", isPartOfSystemProject: true},
-    { device: device, cpu: "a53ss0-1", cgt: "gcc-aarch64",  board: "am62x-sip-sk", os: "freertos", isPartOfSystemProject: true},
-    { device: device, cpu: "a53ss0-1", cgt: "gcc-aarch64",  board: "am62x-sk-lp", os: "freertos", isPartOfSystemProject: true},
+    //{ device: device, cpu: "a53ss0-1", cgt: "gcc-aarch64",  board: "am62x-sip-sk", os: "freertos", isPartOfSystemProject: true},
+    //{ device: device, cpu: "a53ss0-1", cgt: "gcc-aarch64",  board: "am62x-sk-lp", os: "freertos", isPartOfSystemProject: true},
 ];
 
 const buildOptionCombos_dm_r5 = [
-    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos", isPartOfSystemProject: true},
-    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "freertos", isPartOfSystemProject: true},
-    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "freertos", isPartOfSystemProject: true},
+    //{ device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos", isPartOfSystemProject: true},
+    //{ device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "freertos", isPartOfSystemProject: true},
+    //{ device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "freertos", isPartOfSystemProject: true},
 
 ];
 
 const systemProject = [
     {
-        name: "test_ipc_rpmsg",
+        name: "test_ipc_rpmsg_example",
         tag: "freertos",
         skipProjectSpec: true,
         board: "am62x-sk",
         projects: [
-            { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
+            //{ device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
             { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
             { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sk", os: "freertos"},
             { device: device, cpu: "a53ss0-1", cgt: "gcc-aarch64",  board: "am62x-sk", os: "freertos"},
-        ],
-    },
-    {
-        name: "test_ipc_rpmsg",
-        tag: "freertos",
-        skipProjectSpec: true,
-        board: "am62x-sip-sk",
-        projects: [
-            { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "freertos"},
-            { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "freertos"},
-            { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sip-sk", os: "freertos"},
-            { device: device, cpu: "a53ss0-1", cgt: "gcc-aarch64",  board: "am62x-sip-sk", os: "freertos"},
-        ],
-    },
-    {
-        name: "test_ipc_rpmsg",
-        tag: "freertos",
-        skipProjectSpec: true,
-        board: "am62x-sk-lp",
-        projects: [
-            { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "freertos"},
-            { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "freertos"},
-            { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sk-lp", os: "freertos"},
-            { device: device, cpu: "a53ss0-1", cgt: "gcc-aarch64",  board: "am62x-sk-lp", os: "freertos"},
         ],
     },
 ];
@@ -252,7 +228,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "test_ipc_rpmsg";
+    property.name = "test_ipc_rpmsg_example";
     property.isInternal = true
     property.skipProjectSpec = true;
 

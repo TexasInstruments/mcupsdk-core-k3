@@ -181,6 +181,7 @@ static int32_t SDL_POK_Thres_config_seq(SDL_POK_Inst instance, SDL_POK_config *p
 {
     SDL_POK_config          pokCfg;
     SDL_pokVal_t            pokVal;
+    SDL_pokPorCfg_t         porCfg;
     int32_t                 retVal = SDL_EFAIL;
     uint32_t pbaseAddress;
     SDL_POK_getBaseaddr(SDL_POK_MCU_CTRL_MMR0, &pbaseAddress);
@@ -198,6 +199,19 @@ static int32_t SDL_POK_Thres_config_seq(SDL_POK_Inst instance, SDL_POK_config *p
     else
     {
 
+        /* POR configuration */
+        /* MASKHHV set to 1 */
+        porCfg.maskHHVOutputEnable  = TRUE;
+
+        /* TRIM Mux selection is set to 1 */
+        porCfg.trim_select          = SDL_POR_TRIM_SELECTION_FROM_CTRL_REGS;
+
+        retVal = SDL_porSetControl(pBaseAddr,&porCfg);
+    }
+
+    /* Proceed with POK configuration only if POR setup succeeded */
+    if (retVal == SDL_PASS)
+    {
         /* POK configuration */
         /* Step 1: Mask POK event propogation by programming ESM_INTR_EN_CLR reg */
         (void)SDL_ESM_disableIntr(ESM_INSTANCE, esm_err_sig_uv);
@@ -265,7 +279,7 @@ static int32_t SDL_POK_Thres_config_seq(SDL_POK_Inst instance, SDL_POK_config *p
         retVal = SDL_pokSetControl(pBaseAddr,&pokCfg,instance);
 
         /* Step 5: Wait for 100 us for the POK to settle */
-       SDL_DPL_delay(DELAY);
+        SDL_DPL_delay(DELAY);
 
         /* Step 7: If Power Good == Yes, unmask POK to ESM event propagation by
                     programming ESM_INTR_EN_SET register(s) else report to MCU_ESM0*/
@@ -311,7 +325,7 @@ static int32_t SDL_POR_Thres_config_seq(SDL_POK_Inst instance, SDL_POK_config *p
     /* Step 1: MASKHHV set to 1 */
     porCfg.maskHHVOutputEnable                 = TRUE;
 
-    /* Step 2: TRIM Mux selection is set to 0 */
+    /* Step 2: TRIM Mux selection is set to 1 */
     porCfg.trim_select                         = SDL_POR_TRIM_SELECTION_FROM_CTRL_REGS;
 
     retVal = SDL_porSetControl(pBaseAddr,&porCfg);

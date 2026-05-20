@@ -91,7 +91,7 @@ const syscfgfile = "../example.syscfg";
 const templates_freertos_wkup_r5f =
 [
     {
-        input: ".project/templates/am62px/common/linker_wkup-r5f.cmd.xdt",
+        input: "test/drivers/ipc_rpmsg_mcal_Announce_Test/.project/templates/am62px/common/linker_wkup-r5f.cmd.xdt",
         output: "linker.cmd",
         options: {
             heapSize: 0x10000,
@@ -105,7 +105,7 @@ const templates_freertos_wkup_r5f =
         },
     },
     {
-        input: ".project/templates/am62px/freertos/main_freertos_dm.c.xdt",
+        input: "test/drivers/ipc_rpmsg_mcal_Announce_Test/.project/templates/am62px/freertos/main_freertos_dm.c.xdt",
         output: "../main.c",
         options: {
             entryFunction: "test_main",
@@ -116,11 +116,11 @@ const templates_freertos_wkup_r5f =
 const templates_freertos_mcu_r5f =
 [
     {
-        input: ".project/templates/am62px/common/linker_mcu-r5f.cmd.xdt",
+        input: "test/drivers/ipc_rpmsg_mcal_Announce_Test/.project/templates/am62px/common/linker_mcu-r5f.cmd.xdt",
         output: "linker.cmd",
     },
     {
-        input: ".project/templates/am62px/freertos/main_freertos.c.xdt",
+        input: "test/drivers/ipc_rpmsg_mcal_Announce_Test/.project/templates/am62px/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {
             entryFunction: "test_main",
@@ -129,19 +129,19 @@ const templates_freertos_mcu_r5f =
 ];
 
 const buildOptionCombos = [
-    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "freertos", isPartOfSystemProject: true},
+//    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "freertos", isPartOfSystemProject: true},
     { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "freertos", isPartOfSystemProject: true},
 ];
 
 const systemProjects =[
     {
-        name: "test_ipc_rpmsg",
+        name: "test_ipc_rpmsg_announce",
         tag: "freertos",
         skipProjectSpec: true,
         board: "am62px-sk",
         projects: [
             { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "freertos", isPartOfSystemProject: false},
-            { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "freertos", isPartOfSystemProject: true},
+//            { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "freertos", isPartOfSystemProject: true},
         ],
     },
 ]
@@ -151,7 +151,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "test_ipc_rpmsg";
+    property.name = "test_ipc_rpmsg_announce";
     property.isInternal = true;
     property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;

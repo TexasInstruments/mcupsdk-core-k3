@@ -17,20 +17,18 @@ PROFILE?=release
 LD=$(CGT_GCC_AARCH64_PATH)/bin/aarch64-none-elf-ld
 
 MULTI_CORE_BOOTIMAGE_PATH=$(abspath .)
-MULTI_CORE_BOOTIMAGE_NAME:=test_ipc_rpmsg_system.$(PROFILE).appimage
+MULTI_CORE_BOOTIMAGE_NAME:=test_ipc_rpmsg_diagnostic_system.$(PROFILE).appimage
 MULTI_CORE_BOOTIMAGE_NAME_SIGNED:=$(MULTI_CORE_BOOTIMAGE_NAME).signed
-MULTI_CORE_BOOTIMAGE_NAME_XIP:=test_ipc_rpmsg_system.$(PROFILE).appimage_xip
+MULTI_CORE_BOOTIMAGE_NAME_XIP:=test_ipc_rpmsg_diagnostic_system.$(PROFILE).appimage_xip
 MULTI_CORE_BOOTIMAGE_NAME_HS:=$(MULTI_CORE_BOOTIMAGE_NAME).hs
 
 CORE_0=--script ../wkup-r5fss0-0_freertos/example.syscfg --context wkup-r5fss0-0 --output ../wkup-r5fss0-0_freertos/ti-arm-clang/generated
-CORE_1=--script ../mcu-r5fss0-0_freertos/example.syscfg --context mcu-r5fss0-0 --output ../mcu-r5fss0-0_freertos/ti-arm-clang/generated
 
 CORES = \
     $(CORE_0) \
 
 all: syscfg
 	$(MAKE) -C ../wkup-r5fss0-0_freertos/ti-arm-clang/ all
-	# $(MAKE) -C ../mcu-r5fss0-0_freertos/ti-arm-clang/ all
 	$(MAKE) $(MULTI_CORE_BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
 	$(MAKE) $(MULTI_CORE_BOOTIMAGE_NAME_HS)
@@ -38,14 +36,12 @@ endif
 
 clean:
 	$(MAKE) -C ../wkup-r5fss0-0_freertos/ti-arm-clang/ clean
-	# $(MAKE) -C ../mcu-r5fss0-0_freertos/ti-arm-clang/ clean
 	$(RM) $(MULTI_CORE_BOOTIMAGE_NAME)
 	$(RM) $(MULTI_CORE_BOOTIMAGE_NAME_SIGNED)
 	$(RM) $(MULTI_CORE_BOOTIMAGE_NAME_XIP)
 
 scrub:
 	$(MAKE) -C ../wkup-r5fss0-0_freertos/ti-arm-clang/ scrub
-	# $(MAKE) -C ../mcu-r5fss0-0_freertos/ti-arm-clang/ scrub
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.appimage
 	$(RM) \*.appimage.signed
@@ -87,16 +83,13 @@ OUTRPRC_CMD = $(SYSCFG_NODE) $(MCU_PLUS_SDK_PATH)/tools/boot/out2rprc/elf2rprc.j
 APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_gen.py
 
 MULTI_CORE_APP_PARAMS = \
-    ../wkup-r5fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_wkup-r5fss0-0) \
-    # ../mcu-r5fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
+    ../wkup-r5fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg_diagnostic.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_wkup-r5fss0-0) \
 
 MULTI_CORE_APP_PARAMS_XIP = \
-    ../wkup-r5fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_wkup-r5fss0-0) \
-    # ../mcu-r5fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
+    ../wkup-r5fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg_diagnostic.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_wkup-r5fss0-0) \
 
 MULTI_CORE_BOOTIMAGE_DEPENDENCY = \
-    ../wkup-r5fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).rprc \
-    # ../mcu-r5fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg.$(PROFILE).rprc \
+    ../wkup-r5fss0-0_freertos/ti-arm-clang/test_ipc_rpmsg_diagnostic.$(PROFILE).rprc \
 
 $(MULTI_CORE_BOOTIMAGE_DEPENDENCY):
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -46,7 +46,7 @@ MEMORY {
 	 */
     USER_SHM_MEM            : ORIGIN = 0x82000000, LENGTH = 0x80
     LOG_SHM_MEM             : ORIGIN = 0xA2000000, LENGTH = 0x40000
-    RTOS_NORTOS_IPC_SHM_MEM : ORIGIN = 0xA0400000, LENGTH = 0xE00000
+    RTOS_NORTOS_IPC_SHM_MEM   : ORIGIN = 0xA0400000 LENGTH = 0xE00000
 }
 
 SECTIONS {

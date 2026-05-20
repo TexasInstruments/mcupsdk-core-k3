@@ -21,17 +21,17 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_ipc_rpmsg.$(PROFILE).out
+OUTNAME:=test_ipc_rpmsg_vring.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_ipc_rpmsg.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=test_ipc_rpmsg.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=test_ipc_rpmsg.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=test_ipc_rpmsg.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=test_ipc_rpmsg.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=test_ipc_rpmsg.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=test_ipc_rpmsg.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=test_ipc_rpmsg.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=test_ipc_rpmsg_vring.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=test_ipc_rpmsg_vring.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=test_ipc_rpmsg_vring.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=test_ipc_rpmsg_vring.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=test_ipc_rpmsg_vring.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=test_ipc_rpmsg_vring.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=test_ipc_rpmsg_vring.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=test_ipc_rpmsg_vring.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -222,7 +222,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62ax:r5fss0-0:freertos:ti-arm-clang test_ipc_rpmsg ...
+	@echo  Scrubing: am62ax:r5fss0-0:freertos:ti-arm-clang test_ipc_rpmsg_vring ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

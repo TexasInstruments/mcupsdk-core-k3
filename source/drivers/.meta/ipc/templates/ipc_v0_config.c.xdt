@@ -48,17 +48,17 @@ void IpcNotify_getConfig(IpcNotify_InterruptConfig **interruptConfig, uint32_t *
 /* Max size of a buffer in a VRING */
 #define IPC_RPMESSAGE_MAX_VRING_BUF_SIZE  (`instance.vringMsgSize`U)
 
-        % if(instance.pdkIpc) {
-/* Size of each VRING is
- *     number of buffers x ( size of each buffer + space for data structures of one buffer (32B) )
- */
-#define IPC_RPMESSAGE_VRING_SIZE          RPMESSAGE_VRING_SIZE(IPC_RPMESSAGE_NUM_VRING_BUF, IPC_RPMESSAGE_MAX_VRING_BUF_SIZE)
-        % }
-        % else {
+        % if(instance.vringAllocationPDK) {
 /* Size of each VRING is
  *     2 x number of buffers x size of each buffer
  */
 #define IPC_RPMESSAGE_VRING_SIZE          RPMESSAGE_VRING_SIZE_PDK(IPC_RPMESSAGE_NUM_VRING_BUF, IPC_RPMESSAGE_MAX_VRING_BUF_SIZE)
+        % }
+        % else {
+/* Size of each VRING is
+ *     number of buffers x ( size of each buffer + space for data structures of one buffer (32B) )
+ */
+#define IPC_RPMESSAGE_VRING_SIZE          RPMESSAGE_VRING_SIZE(IPC_RPMESSAGE_NUM_VRING_BUF, IPC_RPMESSAGE_MAX_VRING_BUF_SIZE)
         % }
 
 

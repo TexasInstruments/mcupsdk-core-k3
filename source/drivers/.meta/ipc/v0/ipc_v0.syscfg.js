@@ -291,7 +291,7 @@ function onChange(instance, ui)
 function getRPMessageVringSize(instance) {
     let enabledRPMessageCpus = getEnabledRPMessageCpus(instance);
 
-    if (instance.vringAllocationPDKHidden == false)
+    if (instance.vringAllocationPDK == false)
     {
         return (enabledRPMessageCpus.length+1) * (enabledRPMessageCpus.length+1 - 1)
             * ( instance.vringNumBuf * (instance.vringMsgSize + 32) + 32);
@@ -470,6 +470,27 @@ function validate(instance, report) {
         report.logError(`RP Message Shared Memory size must be <= ${ipc_soc.getMaxVringSize()} bytes. Reduce RP Message number of buffers or buffer size`,
             instance, "vringSize" );
 
+    }
+
+    /* Verify VRING size calculation matches expected formula based on vringAllocationPDK setting */
+    let enabledRPMessageCpus = getEnabledRPMessageCpus(instance);
+    if (enabledRPMessageCpus.length > 0 || instance.enableLinuxIpc == true) {
+        let numCores = enabledRPMessageCpus.length + 1;
+        let numVrings = numCores * (numCores - 1);
+        let expectedTotalVringSize;
+
+        if (instance.vringAllocationPDK == false) {
+            /* Non-PDK calculation: numBuf * (msgSize + 32) + 32 per VRING, then multiply by numVrings for total */
+            expectedTotalVringSize = numVrings * (instance.vringNumBuf * (instance.vringMsgSize + 32) + 32);
+        } else {
+            /* PDK calculation: 2 * numBuf * msgSize per VRING, then multiply by numVrings for total */
+            expectedTotalVringSize = numVrings * (2 * instance.vringNumBuf * instance.vringMsgSize);
+        }
+
+        if (instance.vringSize != expectedTotalVringSize) {
+            report.logWarning(`VRING size calculation mismatch. Expected: ${expectedTotalVringSize} bytes for vringAllocationPDK=${instance.vringAllocationPDK}, got: ${instance.vringSize} bytes. Verify the PDK IPC setting has been applied correctly.`,
+                instance, "vringSize");
+        }
     }
 }
 

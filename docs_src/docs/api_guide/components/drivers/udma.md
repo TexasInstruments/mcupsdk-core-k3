@@ -47,6 +47,7 @@ to setup and initiate DMA transfers.
 \cond !SOC_AM62LX
 - UDMA driver is not supported for M4F core as the DMSS is present only in the main domain
 \endcond
+- LEVI and MCMAP features are not supported in UDMA driver. 
 
 ## Failure Prevention Guidelines for Applications
 

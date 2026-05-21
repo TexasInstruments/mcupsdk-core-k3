@@ -218,6 +218,8 @@ Board_open()
             -> myBootQuirksFxn(Flash_Config *cfg)
 ~~~
 
+**Note for Custom Flash Users:**
+If you are using a custom flash part, leave these fields empty unless you have specifically implemented quirks functions for your custom flash. The predefined quirks functions (such as Flash_quirkSpansionConfigureLayout) are only compatible with TI-provided reference flash parts.
 `
 /* Protocol Configs */
 /* 1-1-1 */
@@ -468,8 +470,18 @@ function getConfigurables()
                 if(inst.device == "TI_DEFAULT_FLASH") {
                     inst.fname = soc.getDefaultFlashName();
                     inst.protocol = soc.getDefaultProtocol().name;
+                    /* Set quirks based on flash part for default flash */
+                    if(inst.fname == "S28HS512T") {
+                        inst.quirks = "Flash_quirkSpansionConfigureLayout";
+                        inst.bootQuirks = "Flash_quirkSpansionSafebootDetection";
+                    } else {
+                        inst.quirks = "";
+                        inst.bootQuirks = "";
+                    }
                 } else if(inst.device == "CUSTOM_FLASH") {
                     inst.fname = "";
+                    inst.quirks = "";
+                    inst.bootQuirks = "";
                 }
             }
         },
@@ -539,8 +551,14 @@ function getConfigurables()
 
                     inst.cmdRdsr = serialNorDefaultCfg.cmdRdsr;
                     inst.xspiWipRdCmd = serialNorDefaultCfg.xspiWipRdCmd;
-                    inst.quirks = "Flash_quirkSpansionConfigureLayout";
-                    inst.bootQuirks = "Flash_quirkSpansionSafebootDetection";
+                    /* Set quirks based on flash part */
+                    if(inst.fname == "S28HS512T") {
+                        inst.quirks = "Flash_quirkSpansionConfigureLayout";
+                        inst.bootQuirks = "Flash_quirkSpansionSafebootDetection";
+                    } else {
+                        inst.quirks = "";
+                        inst.bootQuirks = "";
+                    }
                     inst.xspiWipReg = serialNorDefaultCfg.xspiWipReg;
                     inst.cmdWrsr = serialNorDefaultCfg.cmdWrsr;
 
@@ -613,6 +631,19 @@ function getConfigurables()
             displayName: "Flash Name",
             default: soc.getDefaultFlashName(),
             placeholder: "Type your flash name here",
+            onChange: function(inst, ui) {
+                /* Set boot quirks based on flash part */
+                if(inst.fname == "S28HS512T") {
+                    inst.bootQuirks = "Flash_quirkSpansionSafebootDetection";
+                    inst.quirks = "Flash_quirkSpansionConfigureLayout";
+                }
+                else
+                {
+                    /* For custom or unknown flash parts, clear quirks */
+                    inst.bootQuirks = "";
+                    inst.quirks = "";
+                }
+            }
         },
         {
             name: "protocol",

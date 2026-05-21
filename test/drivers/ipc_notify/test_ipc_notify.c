@@ -1020,6 +1020,10 @@ void test_ipc_main_core_start()
     RUN_TEST(TestIpcNotify_oneToManyEndpoint, 9644, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
     RUN_TEST(TestIpcNotify_oneToManyEndpoint, 9645, (void*)CSL_CORE_ID_A53SS0_0);
 
+    RUN_TEST(test_notifyErrorChecks, 9390, (void*)CSL_CORE_ID_R5FSS0_0);
+    RUN_TEST(test_notifyErrorChecks, 9654, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
+    RUN_TEST(test_notifyErrorChecks, 9655, (void*)CSL_CORE_ID_A53SS0_0);
+
     #ifdef IPC_NOTIFY_MULTITHREAD_TEST
     RUN_TEST(TestIpcNotify_multithreadManyToOne, 9535, (void*)CSL_CORE_ID_R5FSS0_0);
     RUN_TEST(TestIpcNotify_multithreadManyToOne, 9646, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
@@ -1037,11 +1041,6 @@ void test_ipc_main_core_start()
     RUN_TEST(TestIpcNotify_multithreadBackToBack, 9652,  (void*)CSL_CORE_ID_MCU_R5FSS0_0);
     RUN_TEST(TestIpcNotify_multithreadBackToBack, 9653,  (void*)CSL_CORE_ID_A53SS0_0);
     #endif
-    /* The below test case are hang in the driver */
-/*  RUN_TEST(test_notifyErrorChecks, 9390, (void*)CSL_CORE_ID_R5FSS0_0);
-    RUN_TEST(test_notifyErrorChecks, 9654, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
-    RUN_TEST(test_notifyErrorChecks, 9655, (void*)CSL_CORE_ID_A53SS0_0); */
-
     RUN_TEST(test_notifySendErrorCheck, 9372, (void*)CSL_CORE_ID_C75SS0_0);
     #endif
 

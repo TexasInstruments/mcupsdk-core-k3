@@ -4555,10 +4555,11 @@ static void TestUdma_utilsArgumentsValidateTests(void *args)
     Udma_ChHandleInt chHandle = (Udma_ChHandleInt)&chObject;
     int32_t retVal;
 
-    /* Test: Call Udma_virtToPhyFxn with all NULL arguments (should not crash or dereference NULL) */
-    /* Commented out because Udma_virtToPhyFxn does not check for NULL driver handle,
-    * causing a crash/hang when called with NULL.
-    * Udma_virtToPhyFxn(NULL, NULL, NULL); */
+    /* Test: Call Udma_virtToPhyFxn with all NULL arguments (should return 0/NULL safely, not crash) */
+    TEST_ASSERT_EQUAL_UINT32(0U, (uint32_t)Udma_virtToPhyFxn(NULL, NULL, NULL));
+
+    /* Test: Call Udma_phyToVirtFxn with NULL drvHandle (should return NULL safely, not crash) */
+    TEST_ASSERT_NULL(Udma_phyToVirtFxn(0, NULL, NULL));
 
     /* Test: Call Udma_virtToPhyFxn with valid drvHandle and chHandle, but NULL virtAddr */
     drvHandleUtils->initPrms.virtToPhyFxn = Udma_defaultVirtToPhyFxn;

@@ -206,7 +206,8 @@ uint64_t Udma_virtToPhyFxn(const void *virtAddr,
         appData = chHandle->chPrms.appData;
     }
 
-    if((Udma_VirtToPhyFxn) NULL_PTR != drvHandle->initPrms.virtToPhyFxn)
+    if((NULL_PTR != drvHandle) &&
+       ((Udma_VirtToPhyFxn) NULL_PTR != drvHandle->initPrms.virtToPhyFxn))
     {
         phyAddr = drvHandle->initPrms.virtToPhyFxn(virtAddr, chNum, appData);
     }
@@ -232,7 +233,8 @@ void *Udma_phyToVirtFxn(uint64_t phyAddr,
         appData = chHandle->chPrms.appData;
     }
 
-    if((Udma_VirtToPhyFxn) NULL_PTR != drvHandle->initPrms.virtToPhyFxn)
+    if((NULL_PTR != drvHandle) &&
+       ((Udma_PhyToVirtFxn) NULL_PTR != drvHandle->initPrms.phyToVirtFxn))
     {
         virtAddr = drvHandle->initPrms.phyToVirtFxn(phyAddr, chNum, appData);
     }

@@ -285,9 +285,9 @@ static int32_t  App_dmautilsDmaAutoIncSetupTr(  int16_t   width,
     transferPropIn[0].circProp.circSize1 = 0;
     transferPropIn[0].circProp.circSize2 = 0;
     transferPropIn[0].circProp.addrModeIcnt0 = DMAUTILSAUTOINC3D_ADDR_LINEAR;
-    transferPropIn[0].circProp.addrModeIcnt0 = DMAUTILSAUTOINC3D_ADDR_LINEAR;
-    transferPropIn[0].circProp.addrModeIcnt0 = DMAUTILSAUTOINC3D_ADDR_LINEAR;
-    transferPropIn[0].circProp.addrModeIcnt0 = DMAUTILSAUTOINC3D_ADDR_LINEAR;
+    transferPropIn[0].circProp.addrModeIcnt1 = DMAUTILSAUTOINC3D_ADDR_LINEAR;
+    transferPropIn[0].circProp.addrModeIcnt2 = DMAUTILSAUTOINC3D_ADDR_LINEAR;
+    transferPropIn[0].circProp.addrModeIcnt3 = DMAUTILSAUTOINC3D_ADDR_LINEAR;
 
     transferPropIn[0].ioPointers.srcPtr = pInput;
     transferPropIn[0].ioPointers.dstPtr = pInputBlock;
@@ -677,6 +677,14 @@ static int32_t  App_dmautilsBlockCopy(
             goto Exit;
         }
 
+        /* Invalidate pInputBlock and pOutputBlock cache BEFORE the first DMA write.
+           malloc leaves dirty cache lines in these buffers (heap bookkeeping).
+           CacheP_wbInvAll is write-back+invalidate, so it would flush those malloc
+           dirty lines back to DDR AFTER the DMA writes, overwriting the DMA data.
+           Discarding them first (inv = discard dirty without writeback) prevents that. */
+        CacheP_inv(pInputBlock, (uint32_t)(blockWidth * blockHeight * 2U), CacheP_TYPE_ALL);
+        CacheP_inv(pOutputBlock, (uint32_t)(blockWidth * blockHeight * 2U), CacheP_TYPE_ALL);
+
         /* DMA trigger for pipe-up, out transfer is dummy and handled inside DMA utility */
         DmaUtilsAutoInc3d_trigger(dmautilsContext, DMAUTILSTESTAUTOINC_CHANNEL_IN);
         /* Wait for previous transfer of in */
@@ -689,6 +697,8 @@ static int32_t  App_dmautilsBlockCopy(
         {
             pingPongFlag^=1;
 
+            CacheP_wbInvAll(CacheP_TYPE_ALL);
+
             if (firstTrigger != 0 )
             {
                 blockIdx = DmaUtilsAutoInc3d_trigger(dmautilsContext, DMAUTILSTESTAUTOINC_CHANNEL_OUT) ;
@@ -699,8 +709,6 @@ static int32_t  App_dmautilsBlockCopy(
             {
                 DmaUtilsAutoInc3d_trigger(dmautilsContext, DMAUTILSTESTAUTOINC_CHANNEL_IN);
             }
-
-            CacheP_wbInvAll(CacheP_TYPE_ALL);
             App_dmautilsBlockCopyKernel(
                 pInputBlock   + pingPongFlag * blockWidth * blockHeight,
                 pOutputBlock + pingPongFlag * blockWidth * blockHeight,

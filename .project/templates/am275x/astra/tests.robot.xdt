@@ -1,0 +1,104 @@
+%%{
+/*
+ * Template: tests.robot.xdt
+ *
+ * Use this template for examples that boot via the standard UART SBL flow
+ * using UartBootloader (not UartUniFlash). Covers three modes:
+ *
+ *  - WITH ARGS (default): passes --soc, --bootloader, --file inline.
+ *    Used for regular examples (hello_world, gpio, uart, dpl_demo, etc.)
+ *    that load a single binary over UART SBL.
+ *
+ *  - WITH ARGS, wkup-r5f: passes --soc and --bootloader only (no --file).
+ *    wkup-r5f boots directly from ROM — the app binary itself is the
+ *    bootloader; there is no separate SBL stage.
+ *
+ *  - WITH CFG (withCfg: true): passes a .cfg file path.
+ *    Used for multi-core system examples (IPC, Spinlock, SBL UART)
+ *    where a config file orchestrates loading of multiple binaries.
+ *    Requires cfgPath option (path relative to SDK root).
+ *
+ * Supports optional interactive UART tests via interactPrompt + interactSend.
+ */
+    let options  = args.options;
+    let project  = args.project;
+
+    let isWkupR5f = project.cpu.match(/wkup-r5f/) ? true : false;
+
+	let sblPort = "ACM0";
+    let logPort = "ACM0";
+    if (isWkupR5f) {
+		logPort = "USB2";
+	} else if (project.cpu.match(/c75/)) {
+		logPort = "USB0";
+	}
+    let expectedString = (options && options.expectedString) ? options.expectedString : "All tests have passed";
+    let timeout 	   = (options && options.timeout)        ? options.timeout        : 630;
+    let componentName  = (options && options.componentName)  ? options.componentName  : project.name;
+    let testCaseIds    = (options && options.testCaseIds)    ? options.testCaseIds.trim().split(/\s+/).join("    ") : "SITSW-XXXXX";
+    let testCaseName   = (options && options.testCaseName)   ? options.testCaseName   : componentName + " application";
+    let interactPrompt = (options && options.interactPrompt) ? options.interactPrompt : null;
+    let interactSend   = (options && options.interactSend)   ? options.interactSend   : [];
+    let withCfg        = (options && options.withCfg)        ? true                   : false;
+
+    let coreName  = project.cpu + "_" + project.os;
+    let binaryExt = isWkupR5f ? "${DEVICE_TYPE}.tiimage" : "mcelf.${DEVICE_TYPE}";
+    let sbl       = "sbl_prebuilt/" + project.board + "/sbl_uart.release.${DEVICE_TYPE}.tiimage";
+    let appBinary = "../../" + project.relpath + "/" + project.board + "/" + coreName + "/" + project.cgt + "/" + project.name + ".release." + binaryExt;
+    let cfgFile   = "${SDK_PATH}/" + options.cfgPath;
+%%}
+*** Comments ***
+`componentName` `coreName` TEST FILE
+
+*** Settings ***
+Documentation    Suite for `componentName` `coreName` TESTING
+
+# ------------- Resource Files ---------------------
+Resource    test_infra.resource
+
+# ------------- Setup and Teardown ---------------------
+Test Setup    INFRA_TEST_SETUP
+Test Teardown    INFRA_TEST_TEARDOWN
+
+*** Variables ***
+
+% if (withCfg) {
+${CFG_FILE}    `cfgFile`
+% } else if (isWkupR5f) {
+${SOC}    `project.device`
+${DEVICE_TYPE}    ${{ 'hs' if 'hsse' in '${PLATFORM}' else 'hs_fs' }}
+${APP_BINARY}    `appBinary`
+% } else {
+${SOC}    `project.device`
+${DEVICE_TYPE}    ${{ 'hs' if 'hsse' in '${PLATFORM}' else 'hs_fs' }}
+${SBL}    `sbl`
+${APP_BINARY}    `appBinary`
+% }
+
+
+*** Test Cases ***
+`testCaseName`
+	[Tags]    core:`coreName`    component:`componentName`    app_name:`project.name`	`testCaseIds`
+	[Timeout]    `timeout`
+	DUT ON
+	CHANGE BOOT MODE    ${UART_BOOT_MODE}
+	DUT OFF
+	DUT ON
+	Sleep    2s
+	DUT`sblPort`.CONNECT TO UART PORT    ${`sblPort`}
+	DUT`sblPort`.EXPECT STRING AT UART PORT    CCC
+% if (withCfg) {
+	UartBootloader.WITH CFG    ${`sblPort`}    ${UartBootloaderPath}    ${CFG_FILE}
+% } else if (isWkupR5f) {
+	UartBootloader.WITH ARGS    ${`sblPort`}    ${UartBootloaderPath}    --soc=${SOC} --bootloader=${APP_BINARY}
+% } else {
+	UartBootloader.WITH ARGS    ${`sblPort`}    ${UartBootloaderPath}    --soc=${SOC} --bootloader=${SBL} --file=${APP_BINARY}
+% }
+	DUT`logPort`.CONNECT TO UART PORT    ${`logPort`}
+% if (interactPrompt) {
+	DUT`logPort`.EXPECT STRING AT UART PORT    `interactPrompt`    20
+% for (let cmd of interactSend) {
+	DUT`logPort`.SEND COMMAND AND VERIFY    `cmd`
+% }
+% }
+	DUT`logPort`.EXPECT STRING AT UART PORT    `expectedString`     30

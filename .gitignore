@@ -90,3 +90,4 @@ examples/benchmarks/coremark_pro_benchmark/coremark-pro
 .kwlp
 .kwps
 .serena
+*.robot

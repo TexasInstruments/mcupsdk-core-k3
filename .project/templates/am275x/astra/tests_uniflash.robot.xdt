@@ -1,0 +1,75 @@
+%%{
+/*
+ * Template: tests_uniflash.robot.xdt
+ *
+ * Use this template for examples that flash an image to OSPI/HyperFlash
+ * using UartUniFlash, then reboot the board into the flashed image via a
+ * boot mode change. The cfg file is located within the example directory
+ * itself (not under tools/boot/sbl_prebuilt/).
+ *
+ * Supported examples: rtc_led_blink, xip_benchmark
+ *
+ * Flow:
+ *   1. Flash via UartUniFlash.WITH CFG using ${CFG_FILE}
+ *   2. CHANGE BOOT MODE to bootMode (e.g. XSPI_1S_BOOT_MODE)
+ *   3. DUT OFF/ON (reboot from flash)
+ *   4. EXPECT expectedString on logPort
+ *
+ * Key options: cfgFileName (required, filename only — path derived from
+ *   project.relpath/board/coreName/cfgFileName), bootMode (required)
+ */
+    let options  = args.options;
+    let project  = args.project;
+
+    let sblPort = "ACM0";
+    let logPort = "ACM0";
+    if (project.cpu.match(/wkup-r5f/)) {
+        logPort = "USB2";
+    } else if (project.cpu.match(/c75/)) {
+        logPort = "USB0";
+    }
+    let expectedString = (options && options.expectedString) ? options.expectedString : "All tests have passed";
+    let timeout        = (options && options.timeout)        ? options.timeout        : 630;
+    let expectTimeout  = (options && options.expectTimeout)  ? options.expectTimeout  : 120;
+    let componentName  = (options && options.componentName)  ? options.componentName  : project.name;
+    let testCaseIds    = (options && options.testCaseIds)    ? options.testCaseIds    : "SITSW-XXXXX";
+    let testCaseName   = (options && options.testCaseName)   ? options.testCaseName   : componentName + " application";
+    let bootMode       = (options && options.bootMode)       ? options.bootMode       : "XSPI_1S_BOOT_MODE";
+
+    let coreName = project.cpu + "_" + project.os;
+    let cfgFile  = "${SDK_PATH}/" + project.relpath + "/" + project.board + "/" + coreName + "/" + options.cfgFileName;
+%%}
+*** Comments ***
+`componentName` `coreName` TEST FILE
+
+*** Settings ***
+Documentation    Suite for `componentName` `coreName` TESTING
+
+# ------------- Resource Files ---------------------
+Resource    test_infra.resource
+
+# ------------- Setup and Teardown ---------------------
+Test Setup    INFRA_TEST_SETUP
+Test Teardown    INFRA_TEST_TEARDOWN
+
+*** Variables ***
+
+${CFG_FILE}    `cfgFile`
+
+
+*** Test Cases ***
+`testCaseName`
+	[Tags]    core:`coreName`    component:`componentName`    app_name:`project.name`	`testCaseIds`
+	[Timeout]    `timeout`
+	DUT ON
+	CHANGE BOOT MODE    ${UART_BOOT_MODE}
+	DUT OFF
+	DUT ON
+	Sleep    2s
+	DUT`sblPort`.CONNECT TO UART PORT    ${`sblPort`}
+	DUT`sblPort`.EXPECT STRING AT UART PORT    CCC
+	UartUniFlash.WITH CFG    ${`sblPort`}    ${UartUniFlashPath}    ${CFG_FILE}
+	CHANGE BOOT MODE    ${`bootMode`}
+	DUT OFF
+	DUT ON
+	DUT`logPort`.EXPECT STRING AT UART PORT    `expectedString`    `expectTimeout`

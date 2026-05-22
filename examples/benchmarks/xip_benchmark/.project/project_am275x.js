@@ -120,6 +120,17 @@ const templates_freertos_r5f =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests_uniflash.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "XIP",
+        testCaseName: "XIP: example for XIP Benchmark",
+        testCaseIds: "SITSW-6362",
+        timeout: 780,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
@@ -161,13 +172,15 @@ function getComponentBuildProperty(buildOption) {
         }
 
         else
-        {            
+        {
             build_property.includes = includes_nortos_r5f;
             build_property.libdirs = libdirs_nortos;
             build_property.libs = libs_nortos_r5f;
             build_property.templates = templates_nortos_r5f;
         }
     }
+
+    build_property.templates = [...build_property.templates, { ...robot_template, options: { ...robot_template.options, cfgFileName: "xip_benchmark_sbl_ospi_hs.cfg", bootMode: "XSPI_1S_BOOT_MODE" } }];
 
     return build_property;
 }

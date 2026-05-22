@@ -169,6 +169,17 @@ const templates_c75 =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "FreeRTOS",
+        testCaseName: "FreeRTOS Test Application",
+        testCaseIds: "SITSW-1251 SITSW-1252 SITSW-1253 SITSW-1254 SITSW-1255 SITSW-1256 SITSW-1257 SITSW-1259 SITSW-1260 SITSW-1261 " +
+             "SITSW-1275 SITSW-1276 SITSW-1279 SITSW-1457 SITSW-3074",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000",    board: "am275x-evm", os: "freertos"},
@@ -238,6 +249,9 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_c75;
         build_property.templates = templates_c75;
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
+
     return build_property;
 }
 

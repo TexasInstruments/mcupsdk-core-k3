@@ -76,6 +76,17 @@ const templates_freertos_r5f =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "UART",
+        testCaseName: "UART Test Application",
+        testCaseIds: "SITSW-1303 SITSW-1304 SITSW-1305 SITSW-10109 SITSW-10110 SITSW-10111 SITSW-10112 SITSW-10113 SITSW-10114 SITSW-10115 " +
+             "SITSW-10116 SITSW-10117 SITSW-10118 SITSW-10119 SITSW-10121 SITSW-10148 SITSW-10149 SITSW-10150 SITSW-10151 SITSW-10152",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
 ];
@@ -107,6 +118,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_r5f;
         build_property.templates = templates_freertos_r5f;
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

@@ -120,6 +120,18 @@ const templates_nortos_r5f =
 ];
 
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests_uniflash.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "RTC",
+        testCaseName: "RTC Led Blink Example",
+        testCaseIds: "SITSW-6021",
+        expectedString: "RTC LED blink test passed!!",
+        timeout: 300,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
@@ -163,6 +175,8 @@ function getComponentBuildProperty(buildOption) {
            build_property.templates = templates_nortos_r5f;
         }
     }
+
+    build_property.templates = [...build_property.templates, { ...robot_template, options: { ...robot_template.options, cfgFileName: "default_rtc_led_blink_hs.cfg", bootMode: "XSPI_1S_BOOT_MODE" } }];
 
     return build_property;
 }

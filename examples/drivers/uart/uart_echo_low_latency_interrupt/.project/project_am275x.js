@@ -127,6 +127,18 @@ const templates_freertos_c75 =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "UART",
+        testCaseName: "UART Low Latency Sample Application Interrupt",
+        testCaseIds: "SITSW-1308",
+        interactPrompt: "Receives 8 characters then echo's back and exits..",
+        interactSend: ["1\\r\\n", "2\\r\\n", "3\\r\\n", "4\\r\\n", "5\\r\\n", "6\\r\\n", "7\\r\\n", "8\\r\\n"],
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
@@ -179,6 +191,8 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_freertos_c75;
         }
     }
+
+    build_property.templates = [...build_property.templates, robot_template];
 
     return build_property;
 }

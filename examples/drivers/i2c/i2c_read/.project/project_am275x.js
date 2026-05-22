@@ -133,6 +133,16 @@ const templates_freertos_c75 =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "I2C",
+        testCaseName: "I2C EEPROM Read Sample Application",
+        testCaseIds: "SITSW-1310",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
@@ -183,6 +193,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_c75;
         build_property.templates = templates_freertos_c75;
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

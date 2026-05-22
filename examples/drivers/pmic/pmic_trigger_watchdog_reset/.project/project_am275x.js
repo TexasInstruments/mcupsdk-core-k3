@@ -79,6 +79,18 @@ const templates_freertos_r5f =
 	}
 ];
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "PMIC",
+        testCaseName: "PMIC: Trigger watchdog reset mode example",
+        testCaseIds: "SITSW-4634",
+        cfgPath: "examples/drivers/pmic/pmic_trigger_watchdog_reset/am275x-evm/default_pmic_trigger_watchdog_reset_hs.cfg",
+        bootMode: "XSPI_1S_BOOT_MODE",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
 ];
@@ -115,6 +127,8 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_freertos_r5f;
         }
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

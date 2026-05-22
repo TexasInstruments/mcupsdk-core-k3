@@ -147,6 +147,21 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MCAN",
+        testCaseName: "MCAN test application",
+        testCaseIds: "SITSW-10222 SITSW-10223 SITSW-10224 SITSW-10225 SITSW-10226 SITSW-10228 " +
+                     "SITSW-10229 SITSW-10230 SITSW-10231 SITSW-10232 SITSW-10233 SITSW-10234 " +
+                     "SITSW-10237 SITSW-10238 SITSW-10239 SITSW-10240 SITSW-10241 SITSW-10242 " +
+                     "SITSW-10243 SITSW-10244 SITSW-10245 SITSW-10246 SITSW-10247 SITSW-10248 " +
+                     "SITSW-10249 SITSW-10250 SITSW-10251 SITSW-10253 SITSW-10254 SITSW-10271 " +
+                     "SITSW-10272 SITSW-10273 SITSW-10274 SITSW-10275 SITSW-11863",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -172,6 +187,8 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_nortos_r5f;
         }
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

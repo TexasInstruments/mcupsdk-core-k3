@@ -92,6 +92,16 @@ const templates_freertos_wkup =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "OSPI",
+        testCaseName: "OSPI FLASH DIAG Application",
+        testCaseIds: "SITSW-5622",
+    },
+};
+
 const buildOptionCombosWkup = [
     { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
 ];
@@ -125,7 +135,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_wkup;
         build_property.defines = defines_wkup_r5f;
     }
-    
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

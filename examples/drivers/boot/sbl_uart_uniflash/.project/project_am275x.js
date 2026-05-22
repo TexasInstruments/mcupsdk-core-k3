@@ -62,6 +62,18 @@ const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_SBL_UART_UNIFLASH";
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL,UART",
+        testCaseName: "Bootloader: UART Uniflash bootloader",
+        testCaseIds: "SITSW-1633",
+        withCfg: true,
+        cfgPath: "tools/boot/sbl_prebuilt/am275x-evm/sbl_null_hs.cfg",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
 ];
@@ -94,6 +106,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_nortos;
         build_property.libs = libs_nortos_dm_r5f;
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

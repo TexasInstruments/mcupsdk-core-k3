@@ -237,6 +237,17 @@ const templates_freertos_c75_1 =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DPL",
+        testCaseName: "DPL Test Application",
+        testCaseIds: "SITSW-1235 SITSW-1262 SITSW-1263 SITSW-1264 SITSW-1265 SITSW-1266 SITSW-1267 SITSW-1268 SITSW-1269 SITSW-1270 " +
+             "SITSW-1271 SITSW-1272 SITSW-1273 SITSW-1274 SITSW-1277 SITSW-1278 SITSW-1455 SITSW-4735 SITSW-7111",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
@@ -334,6 +345,8 @@ function getComponentBuildProperty(buildOption) {
     {
         build_property.templates = templates_freertos_c75_1;
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

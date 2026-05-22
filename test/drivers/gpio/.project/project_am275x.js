@@ -281,6 +281,17 @@ const templates_freertos_wkup_r5f =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "GPIO",
+        testCaseName: "GPIO Test Application",
+        testCaseIds: "SITSW-1348 SITSW-1349 SITSW-1350 SITSW-1351 SITSW-9542 SITSW-9543 SITSW-9544 SITSW-9545 SITSW-9546 SITSW-9547 " +
+             "SITSW-9548 SITSW-9549 SITSW-9550 SITSW-9633 SITSW-9635 SITSW-9916",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
     { device: device, cpu: "r5fss0-1", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
@@ -377,6 +388,8 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_freertos_c75_1;
         }
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

@@ -129,6 +129,18 @@ const templates_nortos_r5f =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests_uniflash.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "RTC",
+        testCaseName: "RTC Test Application",
+        testCaseIds: "SITSW-5822 SITSW-5823 SITSW-5824",
+        bootMode: "XSPI_1S_BOOT_MODE",
+        cfgFileName: "default_test_rtc_hs.cfg",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
@@ -171,6 +183,8 @@ function getComponentBuildProperty(buildOption) {
            build_property.templates = templates_nortos_r5f;
         }
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

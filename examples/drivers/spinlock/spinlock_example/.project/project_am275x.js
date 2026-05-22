@@ -85,6 +85,19 @@ const templates_freertos_c75 =
     },
 ];
 
+const robot_sbl_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Spinlock",
+        testCaseName: "Spinlock Example application",
+        testCaseIds: "SITSW-4836",
+        withCfg: true,
+        cfgPath: "examples/drivers/spinlock/spinlock_example/am275x-evm/spinlock_example_sbl_uart_hs.cfg",
+        timeout: 720,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am275x-evm", os: "freertos"},
@@ -133,6 +146,7 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+    build_property.templates = [...build_property.templates, robot_sbl_template];
     return build_property;
 }
 

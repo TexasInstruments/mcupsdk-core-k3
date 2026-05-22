@@ -118,6 +118,21 @@ const templates_nortos_r5f =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "FLC",
+        testCaseName: "OptiFlash Test Application",
+        testCaseIds: "SITSW-7172 SITSW-7173 SITSW-7174 SITSW-7175 SITSW-7176 SITSW-10501 SITSW-10502 SITSW-10503 SITSW-10507 SITSW-10508 " +
+             "SITSW-10509 SITSW-10510 SITSW-10511 SITSW-10512 SITSW-10513 SITSW-10514 SITSW-10515 SITSW-10516 SITSW-10517 SITSW-10518 " +
+             "SITSW-10519 SITSW-10520 SITSW-10521 SITSW-10522 SITSW-10523 SITSW-10524 SITSW-10525 SITSW-10526 SITSW-10527 SITSW-10528 " +
+             "SITSW-10529 SITSW-10530 SITSW-10531 SITSW-10880 SITSW-10881 SITSW-10882 SITSW-10883 SITSW-10884 SITSW-10885 SITSW-10886 " +
+             "SITSW-10887 SITSW-10888 SITSW-10889 SITSW-10890 SITSW-10891 SITSW-10892 SITSW-10893 SITSW-10894 SITSW-10895 SITSW-10896 " +
+             "SITSW-10897 SITSW-10898 SITSW-10899 SITSW-10902",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
@@ -160,6 +175,8 @@ function getComponentBuildProperty(buildOption) {
            build_property.templates = templates_nortos_r5f;
         }
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

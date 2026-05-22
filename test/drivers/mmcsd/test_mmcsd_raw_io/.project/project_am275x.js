@@ -267,6 +267,16 @@ const templates_freertos_c75 =
 ];
 
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MMCSD",
+        testCaseName: "MMCSD Raw IO Test Application",
+        testCaseIds: "SITSW-3017 SITSW-8306 SITSW-8308 SITSW-8309 SITSW-9031 SITSW-9032 SITSW-9035",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
@@ -361,6 +371,8 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_freertos_c75;
         }
     }
+    build_property.templates = [...(build_property.templates || []), robot_template];
+
     return build_property;
 }
 

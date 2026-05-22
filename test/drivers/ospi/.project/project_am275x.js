@@ -130,6 +130,17 @@ const templates_freertos_c75 =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "OSPI",
+        testCaseName: "OSPI Test Application",
+        testCaseIds: "SITSW-3174 SITSW-3175 SITSW-3825 SITSW-6893 SITSW-7105 SITSW-8012 SITSW-8493 SITSW-8494 SITSW-8724 SITSW-9211 " +
+             "SITSW-10134",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000",    board: "am275x-evm", os: "freertos"}
 ];
@@ -192,6 +203,8 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_freertos_c75;
         }
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

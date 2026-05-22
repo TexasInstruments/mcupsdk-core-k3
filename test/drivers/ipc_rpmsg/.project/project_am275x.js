@@ -112,6 +112,20 @@ const defines_common = {
     ]
 };
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "IPC",
+        testCaseName: "IPC RPMSG Test Application",
+        testCaseIds: "SITSW-2456 SITSW-2458 SITSW-2463 SITSW-6224 SITSW-6225 SITSW-6226 SITSW-6227 SITSW-6228 SITSW-6229 SITSW-6230 " +
+             "SITSW-6231 SITSW-6232 SITSW-6233 SITSW-6234 SITSW-6235 SITSW-6236 SITSW-6237 SITSW-6238 SITSW-9825 SITSW-9826 " +
+             "SITSW-9827 SITSW-9828 SITSW-9829",
+        withCfg: true,
+        cfgPath: "test/drivers/ipc_rpmsg/am275x-evm/ipc_rpmsg_test_sbl_uart_hs.cfg",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am275x-evm", os: "freertos", isPartOfSystemProject: true},
     { device: device, cpu: "c75ss1-0", cgt: "ti-c7000", board: "am275x-evm", os: "freertos", isPartOfSystemProject: true},
@@ -185,6 +199,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_freertos_c75_1;
         }
     }
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

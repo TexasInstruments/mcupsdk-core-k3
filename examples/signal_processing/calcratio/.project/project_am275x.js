@@ -81,6 +81,17 @@ const templates_freertos_c75 =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "CALCRATIO",
+        testCaseName: "Calc ratio Implementation on with DMA counter",
+        testCaseIds: "SITSW-8997",
+        timeout: 1000,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000",    board: "am275x-evm", os: "freertos"},
 ];
@@ -116,6 +127,8 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_freertos_c75;
         }
     }
+
+    build_property.templates = [...build_property.templates, robot_template];
 
     return build_property;
 }

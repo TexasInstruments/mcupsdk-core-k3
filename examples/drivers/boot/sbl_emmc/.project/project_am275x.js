@@ -98,6 +98,17 @@ const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_SBL_EMMC";
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        testCaseName: "Bootloader: SBL EMMC",
+        testCaseIds: "SITSW-2730",
+        cfgPath: "tools/boot/sbl_prebuilt/am275x-evm/sbl_emmc_hs.cfg",
+        bootMode: "EMMC_BOOT_MODE",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
 ];
@@ -135,6 +146,8 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_dm_r5f;
         }
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

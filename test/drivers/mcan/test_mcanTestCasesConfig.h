@@ -657,24 +657,30 @@ MCAN_MsgRAMConfigParams canFDRAMConfigParams[] =
         .rxFIFO1WaterMark = 32U,                         /* RX FIFO1 FIFO Watermark */
     },
     [8U] =
-    /* Config 8 - MAX Dedicated Tx Buffers and MAX Dedicated Rx Buffers Configuration */
+    /* Config 8 - MAX Dedicated TX Buffers -> MAX Dedicated RX Buffers.
+     * lss=32  : space for 32 std-ID filters (one per TX/RX buffer pair).
+     * txBufCnt=32 : 32 dedicated TX buffers (maximum).
+     * txFIFO/rxFIFO0/1 = 0 : no FIFO path; every received frame lands in
+     *                        a dedicated RX buffer addressed by the filter.
+     * Word budget: 32*1(filt) + 32*18(txBuf) = 32+576 = 608 <= 4352 OK.
+     */
     {
-        .lss = 2U,      /* List Size: Standard ID - minimal allocation */
-        .lse = 2U,      /* List Size: Extended ID - minimal allocation */
-        .txBufCnt = 32U,           /* Number of Dedicated Transmit Buffers - MAX */
-        .txFIFOCnt = 0U,            /* Transmit FIFO/Queue Size */
-        .txBufMode = 0U,                              /* Tx FIFO/Queue Mode */
-        .txEventFIFOCnt = 32U,          /* Tx Event FIFO Size - MAX */
-        .rxFIFO0Cnt = 0U,           /* RX FIFO0 Size */
-        .rxFIFO0OpMode = 0U,                              /* Rx FIFO0 Operation Mode - Blocking */
-        .rxFIFO1Cnt = 0U,             /* Rx FIFO1 Size */
-        .rxFIFO1OpMode = 0U,                              /* Rx FIFO1 Operation Mode - Blocking */
-        .rxBufElemSize = MCAN_ELEM_SIZE_64BYTES,          /* Rx Buffer Element Size */
-        .rxFIFO0ElemSize = MCAN_ELEM_SIZE_64BYTES,          /* Rx FIFO0 Element Size */
-        .rxFIFO1ElemSize = MCAN_ELEM_SIZE_64BYTES,          /* Rx FIFO1 Element Size */
-        .txEventFIFOWaterMark = 16U,                         /* Tx Event FIFO Watermark */
-        .rxFIFO0WaterMark = 0U,                         /* RX FIFO0 Watermark */
-        .rxFIFO1WaterMark = 0U,                         /* RX FIFO1 FIFO Watermark */
+        .lss = 32U,                               /* 32 std-ID filter slots */
+        .lse = 0U,                                /* no ext-ID filters */
+        .txBufCnt = 32U,                          /* 32 dedicated TX buffers */
+        .txFIFOCnt = 0U,                          /* no TX FIFO */
+        .txBufMode = 0U,                          /* buffer mode */
+        .txEventFIFOCnt = 0U,                     /* no TX event FIFO */
+        .rxFIFO0Cnt = 0U,                         /* no RX FIFO0 */
+        .rxFIFO0OpMode = 0U,
+        .rxFIFO1Cnt = 0U,                         /* no RX FIFO1 */
+        .rxFIFO1OpMode = 0U,
+        .rxBufElemSize = MCAN_ELEM_SIZE_64BYTES,  /* overwritten by driver */
+        .rxFIFO0ElemSize = MCAN_ELEM_SIZE_64BYTES,
+        .rxFIFO1ElemSize = MCAN_ELEM_SIZE_64BYTES,
+        .txEventFIFOWaterMark = 0U,
+        .rxFIFO0WaterMark = 0U,
+        .rxFIFO1WaterMark = 0U,
     },
     [9U] =
     /* Config 9 - MAXIMUM Message RAM Configuration (uses all 4352 words)
@@ -726,6 +732,32 @@ MCAN_MsgRAMConfigParams canFDRAMConfigParams[] =
         .txEventFIFOWaterMark = 3U,                         /* Tx Event FIFO Watermark */
         .rxFIFO0WaterMark = 3U,                         /* RX FIFO0 Watermark */
         .rxFIFO1WaterMark = 3U,                         /* RX FIFO1 FIFO Watermark */
+    },
+    [11U] =
+    /* Config 11 - Burst Dedicated TX Buffers -> Dedicated RX Buffers.
+     * lss=32          : 32 standard-ID filters (one per TX/RX buffer pair).
+     * txBufCnt=32     : 32 dedicated TX buffers.
+     * txFIFOCnt=0     : no TX FIFO; all TX via dedicated buffers.
+     * rxFIFO0/1=0     : no FIFO; received frames land in dedicated RX buffers.
+     * Word budget: 32*1(filt) + 32*18(txBuf) = 608 <= 4352 OK.
+     */
+    {
+        .lss = 32U,                               /* 32 std-ID filter slots */
+        .lse = 0U,                                /* no ext-ID filters */
+        .txBufCnt = 32U,                          /* 32 dedicated TX buffers */
+        .txFIFOCnt = 0U,                          /* no TX FIFO */
+        .txBufMode = 0U,                          /* buffer mode */
+        .txEventFIFOCnt = 0U,                     /* no TX event FIFO */
+        .rxFIFO0Cnt = 0U,                         /* no RX FIFO0 */
+        .rxFIFO0OpMode = 0U,
+        .rxFIFO1Cnt = 0U,                         /* no RX FIFO1 */
+        .rxFIFO1OpMode = 0U,
+        .rxBufElemSize = MCAN_ELEM_SIZE_64BYTES,
+        .rxFIFO0ElemSize = MCAN_ELEM_SIZE_64BYTES,
+        .rxFIFO1ElemSize = MCAN_ELEM_SIZE_64BYTES,
+        .txEventFIFOWaterMark = 0U,
+        .rxFIFO0WaterMark = 0U,
+        .rxFIFO1WaterMark = 0U,
     },
 };
 

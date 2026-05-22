@@ -54,14 +54,14 @@
 #define TEST_MCAN_MT_MESSAGE_COUNT    (TEST_MCAN_MT_ACCEPT_COUNT + TEST_MCAN_MT_REJECT_COUNT)
 #define TEST_MCAN_MT_TX_TASK_PRI      (6U)
 #define TEST_MCAN_MT_TASK_STACK_SIZE  (4U * 1024U)
-#define MCAN_MT_MAX_THREADS           (2U)
+#define MCAN_MT_MAX_THREADS           (3U)
 #define TEST_MCAN_MT_DATA_SIZE        (8U)  /* Number of data bytes per CAN message */
 
 /* Classic bitmask filter IDs (sfid1=0x100, sfid2=0x700 -> accepts 0x100-0x1FF) */
 #define FILTER_TEST_CLASSIC_ID         (0x100U)  /* Base ID */
 #define FILTER_TEST_CLASSIC_MASK       (0x700U)  /* Mask: bits[10:8] must match */
 #define FILTER_TEST_CLASSIC_REJECT_ID1 (0x300U)  /* Out of range: bits[10:8]==0x3 */
-#define FILTER_TEST_CLASSIC_REJECT_ID2 (0x500U)  /* Out of range: bits[10:8]==0x5 */
+#define FILTER_TEST_CLASSIC_REJECT_ID2 (0x600U)  /* Out of range: bits[10:8]==0x6 (0x500 reserved for range filter) */
 #define FILTER_TEST_ID_NIBBLE_MASK     (0x0FU)   /* Lower nibble for accept ID variation */
 
 /* Dual filter IDs (sfid1=0x200, sfid2=0x201 -> accepts only 0x200 or 0x201) */
@@ -69,6 +69,17 @@
 #define FILTER_TEST_DUAL_ID2           (0x201U)  /* Accepted: exact match */
 #define FILTER_TEST_DUAL_REJECT_ID1    (0x202U)  /* Rejected: not 0x200 or 0x201 */
 #define FILTER_TEST_DUAL_REJECT_ID2    (0x400U)  /* Rejected: not 0x200 or 0x201 */
+
+/* Range filter IDs (sfid1=0x500, sfid2=0x5FF -> accepts 0x500-0x5FF) */
+#define FILTER_TEST_RANGE_LOW          (0x500U)  /* Range filter lower bound */
+#define FILTER_TEST_RANGE_HIGH         (0x5FFU)  /* Range filter upper bound */
+#define FILTER_TEST_RANGE_ACCEPT_ID1   (0x500U)  /* Within range (lower boundary) */
+#define FILTER_TEST_RANGE_ACCEPT_ID2   (0x550U)  /* Within range (mid-point) */
+#define FILTER_TEST_RANGE_ACCEPT_ID3   (0x5FFU)  /* Within range (upper boundary) */
+#define FILTER_TEST_RANGE_REJECT_ID1   (0x4FFU)  /* Below range: should reject */
+#define FILTER_TEST_RANGE_REJECT_ID2   (0x601U)  /* Above range: should reject */
+
+
 
 
 /* ========================================================================== */
@@ -2579,10 +2590,10 @@ int32_t TestMcan_intrPollMultiThreadTest(st_mcanTestcaseParams_t *testParams)
 /* ========================================================================== */
 /**
  * \brief    ISR for multi-threaded filter test.
- *           Handles TX completion for buffers 0 and 1.
- *           Posts RX semaphore for FIFO0 (Thread 1) or FIFO1 (Thread 2)
- *           when a new message arrives. Rejection test frames are handled
- *           by threads via direct FIFO polling — no ISR action needed.
+ *           Handles TX completion for buffers 0, 1, and 2.
+ *           Posts RX semaphore for FIFO0 or FIFO1 based on the active thread
+ *           phase. Rejection test frames are handled by threads via direct
+ *           FIFO polling — no ISR action needed.
  */
 static void TestMcan_filterTestISR(void *arg)
 {
@@ -2599,7 +2610,7 @@ static void TestMcan_filterTestISR(void *arg)
     {
         uint32_t txBufStatus = MCAN_getTxBufTransmissionStatus(gMcanBaseAddr);
 
-        for(i = 0U; i < 2U; i++)
+        for(i = 0U; i < 3U; i++)
         {
             if(((txBufStatus & (1U << i)) != 0U) && (gMcanMtTxSemPtrs[i] != NULL))
             {
@@ -2628,29 +2639,22 @@ static void TestMcan_filterTestISR(void *arg)
 }
 
 /**
- * \brief    Thread 1 - Classic (Bitmask) Filter -> FIFO0
- *           Filter: sfid1=0x100, sfid2=0x700 (mask). Accepts any ID where
- *           bits[10:8]==0x1 (range 0x100-0x1FF). Rejects all other IDs.
- *
- *           Sequence (TEST_MCAN_MT_ACCEPT_COUNT accepted + TEST_MCAN_MT_REJECT_COUNT rejected):
- *             Accept: 0x100, 0x101, 0x10F  -> must arrive in FIFO0
- *             Reject: 0x300, 0x500         -> must NOT arrive in FIFO0
- *
- *           For accepted IDs: waits on TX sem then RX sem (ISR-driven).
- *           For rejected IDs: waits on TX sem then polls FIFO0 with a
- *           short timeout expecting it to remain empty.
+ * \brief    Thread 1 - Classic (bitmask) filter -> FIFO0
+ *           Filter: sfid1=0x100, sfid2=0x700. Accepts IDs where bits[10:8]==0x1
+ *           (range 0x100-0x1FF).
+ *           Accept: 0x100, 0x101, 0x10F must arrive in FIFO0.
+ *           Reject: 0x300, 0x600 must NOT arrive in FIFO0.
  */
 static void TestMcan_filterTestThread1(void *args)
 {
-    /* Accept IDs (bits[10:8]==0x1, within 0x100-0x1FF) */
+    /* Classic Accept IDs (bits[10:8]==0x1, within 0x100-0x1FF) */
     static const uint32_t acceptIds[TEST_MCAN_MT_ACCEPT_COUNT] = {
         0x100U, 0x101U, 0x10FU
     };
-    /* Reject IDs (bits[10:8] != 0x1, filtered out by catch-all REJECT at slot 2) */
+    /* Classic Reject IDs (bits[10:8] != 0x1, discarded by GFC anfs=3) */
     static const uint32_t rejectIds[TEST_MCAN_MT_REJECT_COUNT] = {
         FILTER_TEST_CLASSIC_REJECT_ID1, FILTER_TEST_CLASSIC_REJECT_ID2
     };
-
     MCAN_TxBufElement txMsg;
     MCAN_RxBufElement rxMsg;
     MCAN_RxFIFOStatus fifoStatus;
@@ -2730,7 +2734,7 @@ static void TestMcan_filterTestThread1(void *args)
         ClockP_usleep(100U);
     }
 
-    /* ---- Rejection test: 0x300, 0x500 must NOT arrive in FIFO0 ---- */
+    /* ---- Rejection test: 0x300, 0x600 must NOT arrive in FIFO0 ---- */
     for(n = 0U; n < TEST_MCAN_MT_REJECT_COUNT; n++)
     {
         txMsg.id = (rejectIds[n] << APP_MCAN_STD_ID_SHIFT);
@@ -2749,7 +2753,7 @@ static void TestMcan_filterTestThread1(void *args)
         }
 
         /* Wait for TX completion — frame was transmitted and loopback-received
-         * then discarded by the catch-all REJECT filter at slot 2. */
+         * then discarded by GFC anfs=3 (no matching filter). */
         SemaphoreP_pend(&gMcanMtPerThreadTxSem[0], SystemP_WAIT_FOREVER);
 
         /* Poll FIFO0 with short timeout — expect it to stay empty */
@@ -2803,7 +2807,7 @@ static void TestMcan_filterTestThread2(void *args)
     static const uint32_t acceptIds[TEST_MCAN_MT_ACCEPT_COUNT] = {
         FILTER_TEST_DUAL_ID1, FILTER_TEST_DUAL_ID2, FILTER_TEST_DUAL_ID1
     };
-    /* Reject IDs (not 0x200 or 0x201, hit catch-all REJECT at slot 2) */
+    /* Reject IDs (not 0x200 or 0x201, discarded by GFC anfs=3) */
     static const uint32_t rejectIds[TEST_MCAN_MT_REJECT_COUNT] = {
         FILTER_TEST_DUAL_REJECT_ID1, FILTER_TEST_DUAL_REJECT_ID2
     };
@@ -2940,26 +2944,184 @@ static void TestMcan_filterTestThread2(void *args)
 }
 
 /**
+ * \brief    Thread 3 - Range filter -> FIFO0 (Phase 2)
+ *           Filter: sfid1=0x500, sfid2=0x5FF, sfec=FIFO0, sft=RANGE.
+ *           Accepts IDs in [0x500, 0x5FF]; rejects IDs outside the range.
+ *
+ *           Sequence (TEST_MCAN_MT_ACCEPT_COUNT accepted + TEST_MCAN_MT_REJECT_COUNT rejected):
+ *             Accept: 0x500, 0x550, 0x5FF -> must arrive in FIFO0
+ *             Reject: 0x4FF, 0x601        -> must NOT arrive in FIFO0 (GFC anfs=3)
+ *
+ *           Runs in Phase 2 (after Threads 1 and 2 finish). The main function
+ *           switches gMcanMtRxSemPtrs[0] to &gMcanMtPerThreadRxSem[2] before
+ *           unblocking this thread so ISR FIFO0 events post to Thread 3 sem.
+ */
+static void TestMcan_filterTestThread3(void *args)
+{
+    static const uint32_t acceptIds[TEST_MCAN_MT_ACCEPT_COUNT] = {
+        FILTER_TEST_RANGE_ACCEPT_ID1, FILTER_TEST_RANGE_ACCEPT_ID2, FILTER_TEST_RANGE_ACCEPT_ID3
+    };
+    static const uint32_t rejectIds[TEST_MCAN_MT_REJECT_COUNT] = {
+        FILTER_TEST_RANGE_REJECT_ID1, FILTER_TEST_RANGE_REJECT_ID2
+    };
+    MCAN_TxBufElement txMsg;
+    MCAN_RxBufElement rxMsg;
+    MCAN_RxFIFOStatus fifoStatus;
+    uint32_t loopCnt, n;
+    uint32_t pollTimeout;
+    int32_t  rc;
+
+    (void)args;
+
+    txMsg.rtr = 0U;
+    txMsg.xtd = 0U;
+    txMsg.esi = 0U;
+    txMsg.dlc = MCAN_DATA_SIZE_8BYTES;
+    txMsg.brs = 1U;
+    txMsg.fdf = 1U;
+    txMsg.efc = 0U;
+    txMsg.mm  = 0x03U;
+
+    SemaphoreP_pend(&gMcanMtStartSem, SystemP_WAIT_FOREVER);
+
+    /* ---- Acceptance test: 0x500, 0x550, 0x5FF must arrive in FIFO0 ---- */
+    for(n = 0U; n < TEST_MCAN_MT_ACCEPT_COUNT; n++)
+    {
+        txMsg.id = (acceptIds[n] << APP_MCAN_STD_ID_SHIFT);
+        for(loopCnt = 0U; loopCnt < TEST_MCAN_MT_DATA_SIZE; loopCnt++)
+        {
+            txMsg.data[loopCnt] = (uint8_t)(0x50U + loopCnt + n);
+        }
+
+        MCAN_writeMsgRam(gMcanBaseAddr, MCAN_MEM_TYPE_BUF, 2U, &txMsg);
+        rc = MCAN_txBufAddReq(gMcanBaseAddr, 2U);
+        if(rc != CSL_PASS)
+        {
+            DebugP_log("[Thread 3] TX request failed for accept ID 0x%03X\n", acceptIds[n]);
+            gMcanMtPerThreadErrors[2]++;
+            continue;
+        }
+
+        SemaphoreP_pend(&gMcanMtPerThreadTxSem[2], SystemP_WAIT_FOREVER);
+        SemaphoreP_pend(&gMcanMtPerThreadRxSem[2], SystemP_WAIT_FOREVER);
+
+        fifoStatus.num = MCAN_RX_FIFO_NUM_0;
+        MCAN_getRxFIFOStatus(gMcanBaseAddr, &fifoStatus);
+        MCAN_readMsgRam(gMcanBaseAddr, MCAN_MEM_TYPE_FIFO, fifoStatus.getIdx,
+                        (uint32_t)fifoStatus.num, &rxMsg);
+        MCAN_writeRxFIFOAck(gMcanBaseAddr, (uint32_t)fifoStatus.num, fifoStatus.getIdx);
+
+        uint32_t rxId = (rxMsg.id >> APP_MCAN_STD_ID_SHIFT) & 0x7FFU;
+        if(rxId != acceptIds[n])
+        {
+            DebugP_log("[Thread 3] ACCEPT FAIL: sent 0x%03X received 0x%03X in FIFO0\n",
+                       acceptIds[n], rxId);
+            gMcanMtPerThreadErrors[2]++;
+        }
+        else
+        {
+            uint32_t dataOk = 1U;
+            for(loopCnt = 0U; loopCnt < TEST_MCAN_MT_DATA_SIZE; loopCnt++)
+            {
+                if(rxMsg.data[loopCnt] != (uint8_t)(0x50U + loopCnt + n))
+                {
+                    dataOk = 0U;
+                    break;
+                }
+            }
+            if(dataOk)
+            {
+                DebugP_log("[Thread 3] ACCEPT PASS: ID 0x%03X received in FIFO0\n", acceptIds[n]);
+                gMcanMtPerThreadCount[2]++;
+            }
+            else
+            {
+                DebugP_log("[Thread 3] ACCEPT FAIL: data mismatch for ID 0x%03X\n", acceptIds[n]);
+                gMcanMtPerThreadErrors[2]++;
+            }
+        }
+        ClockP_usleep(100U);
+    }
+
+    /* ---- Rejection test: 0x4FF, 0x601 must NOT arrive in FIFO0 ---- */
+    for(n = 0U; n < TEST_MCAN_MT_REJECT_COUNT; n++)
+    {
+        txMsg.id = (rejectIds[n] << APP_MCAN_STD_ID_SHIFT);
+        for(loopCnt = 0U; loopCnt < TEST_MCAN_MT_DATA_SIZE; loopCnt++)
+        {
+            txMsg.data[loopCnt] = (uint8_t)(0xBBU + loopCnt);
+        }
+
+        MCAN_writeMsgRam(gMcanBaseAddr, MCAN_MEM_TYPE_BUF, 2U, &txMsg);
+        rc = MCAN_txBufAddReq(gMcanBaseAddr, 2U);
+        if(rc != CSL_PASS)
+        {
+            DebugP_log("[Thread 3] TX request failed for reject ID 0x%03X\n", rejectIds[n]);
+            gMcanMtPerThreadErrors[2]++;
+            continue;
+        }
+
+        /* Wait for TX completion — frame was transmitted and loopback-received
+         * then discarded by GFC anfs=3 (no matching filter). */
+        SemaphoreP_pend(&gMcanMtPerThreadTxSem[2], SystemP_WAIT_FOREVER);
+
+        /* Poll FIFO0 with short timeout — expect it to stay empty */
+        fifoStatus.num = MCAN_RX_FIFO_NUM_0;
+        pollTimeout = 10000U;
+        do
+        {
+            MCAN_getRxFIFOStatus(gMcanBaseAddr, &fifoStatus);
+            pollTimeout--;
+        } while((fifoStatus.fillLvl == 0U) && (pollTimeout > 0U));
+
+        if(fifoStatus.fillLvl == 0U)
+        {
+            DebugP_log("[Thread 3] REJECT PASS: ID 0x%03X correctly not in FIFO0\n", rejectIds[n]);
+            gMcanMtPerThreadCount[2]++;
+        }
+        else
+        {
+            uint32_t rxId;
+            MCAN_readMsgRam(gMcanBaseAddr, MCAN_MEM_TYPE_FIFO, fifoStatus.getIdx,
+                            (uint32_t)MCAN_RX_FIFO_NUM_0, &rxMsg);
+            MCAN_writeRxFIFOAck(gMcanBaseAddr, (uint32_t)fifoStatus.num, fifoStatus.getIdx);
+            rxId = (rxMsg.id >> APP_MCAN_STD_ID_SHIFT) & 0x7FFU;
+            DebugP_log("[Thread 3] REJECT FAIL: ID 0x%03X should be rejected but 0x%03X arrived in FIFO0\n",
+                       rejectIds[n], rxId);
+            gMcanMtPerThreadErrors[2]++;
+        }
+        ClockP_usleep(100U);
+    }
+
+    SemaphoreP_post(&gMcanMtCompleteSem);
+    TaskP_exit();
+}
+
+/**
  * \brief    Multi-threaded Filter Test
- *           Two threads run concurrently, each testing their filter with both
- *           accepted and rejected IDs:
+ *           Tests Classic, Dual, and Range filter types with acceptance and
+ *           rejection cases.
  *
- *           Thread 1: Classic bitmask filter (sfid1=0x100, sfid2=0x700) -> FIFO0
- *             Accept: 0x100, 0x101, 0x10F  (bits[10:8]==0x1 -> pass)
- *             Reject: 0x300, 0x500         (bits[10:8]!=0x1 -> caught by catch-all)
+ *           Phase 1 (concurrent — Thread 1 and Thread 2):
+ *             Thread 1: Classic bitmask filter (sfid1=0x100, sfid2=0x700) -> FIFO0
+ *               Accept: 0x100, 0x101, 0x10F  (bits[10:8]==0x1)
+ *               Reject: 0x300, 0x600         (discarded by GFC anfs=3)
+ *             Thread 2: Dual filter (sfid1=0x200, sfid2=0x201) -> FIFO1
+ *               Accept: 0x200, 0x201, 0x200  (exact dual match)
+ *               Reject: 0x202, 0x400         (discarded by GFC anfs=3)
  *
- *           Thread 2: Dual filter (sfid1=0x200, sfid2=0x201) -> FIFO1
- *             Accept: 0x200, 0x201, 0x200  (exact dual match -> pass)
- *             Reject: 0x202, 0x400         (no match -> caught by catch-all)
+ *           Phase 2 (Thread 3, after Phase 1 completes):
+ *             Thread 3: Range filter (sfid1=0x500, sfid2=0x5FF) -> FIFO0
+ *               Accept: 0x500, 0x550, 0x5FF  (within range)
+ *               Reject: 0x4FF, 0x601         (outside range, discarded by GFC anfs=3)
+ *
+ *           GFC configured with anfs=3 (reject non-matching standard frames)
+ *           so rejection is enforced by hardware without a catch-all filter.
  *
  *           Filter slots:
- *             Slot 0: Classic bitmask -> FIFO0  (Thread 1)
- *             Slot 1: Dual            -> FIFO1  (Thread 2)
- *             Slot 2: Range 0x000-0x7FF -> REJECT  (catch-all, platform-independent)
- *
- *           Rejection is enforced by the catch-all REJECT filter at slot 2,
- *           not by GFC.ANFS, making the test portable across platforms where
- *           MCAN_reset() is a no-op and GFC defaults may vary.
+ *             Slot 0: Classic bitmask -> FIFO0
+ *             Slot 1: Dual            -> FIFO1
+ *             Slot 2: Range 0x500-0x5FF -> FIFO0
  */
 int32_t TestMcan_multiThreadedFilterTest(st_mcanTestcaseParams_t *testParams)
 {
@@ -2973,15 +3135,31 @@ int32_t TestMcan_multiThreadedFilterTest(st_mcanTestcaseParams_t *testParams)
     gMcanMtStopThreads = 0U;
     gMcanMtPerThreadCount[0] = 0U;
     gMcanMtPerThreadCount[1] = 0U;
+    gMcanMtPerThreadCount[2] = 0U;
     gMcanMtPerThreadErrors[0] = 0U;
     gMcanMtPerThreadErrors[1] = 0U;
-    
+    gMcanMtPerThreadErrors[2] = 0U;
+
     /* Configure MCAN module */
     configStatus = App_mcanConfig(testParams);
     if(configStatus != CSL_PASS)
     {
         DebugP_log("MCAN Configuration FAILED\n");
         return configStatus;
+    }
+
+    /* Configure GFC to reject non-matching standard frames (anfs=3).
+     * This removes the need for a catch-all REJECT filter and ensures that
+     * IDs outside the three active filter ranges are silently discarded.   */
+    {
+        MCAN_ConfigParams cfgAnfs = *testParams->mcanConfigParams.configParams;
+        cfgAnfs.filterConfig.anfs = 3U;
+        MCAN_setOpMode(gMcanBaseAddr, MCAN_OPERATION_MODE_SW_INIT);
+        while(MCAN_OPERATION_MODE_SW_INIT != MCAN_getOpMode(gMcanBaseAddr)) {}
+        MCAN_config(gMcanBaseAddr, &cfgAnfs);
+        MCAN_lpbkModeEnable(gMcanBaseAddr, MCAN_LPBK_MODE_INTERNAL, TRUE);
+        MCAN_setOpMode(gMcanBaseAddr, MCAN_OPERATION_MODE_NORMAL);
+        while(MCAN_OPERATION_MODE_NORMAL != MCAN_getOpMode(gMcanBaseAddr)) {}
     }
 
     /* ========== Configure Filter Slot 0: Classic bitmask -> FIFO0 ==========
@@ -3002,17 +3180,31 @@ int32_t TestMcan_multiThreadedFilterTest(st_mcanTestcaseParams_t *testParams)
     stdIdFilter.sft   = MCAN_STD_FILT_TYPE_DUAL;
     MCAN_addStdMsgIDFilter(gMcanBaseAddr, 1U, &stdIdFilter);
 
-    /* ========== Configure Filter Slot 2: Catch-all REJECT ==========
-     * Range 0x000-0x7FF covers all standard IDs. Because MCAN evaluates
-     * filters in slot order, any ID accepted by slot 0 or slot 1 is stored
-     * before reaching here. IDs that matched neither slot will be rejected
-     * by this filter. This avoids reliance on GFC.ANFS which cannot be
-     * reliably changed after init on this platform.                         */
-    stdIdFilter.sfid1 = 0x000U;
-    stdIdFilter.sfid2 = 0x7FFU;
-    stdIdFilter.sfec  = MCAN_STD_FILT_ELEM_REJECT;
+    /* ========== Configure Filter Slot 2: Range filter -> FIFO0 ==========
+     * Accepts IDs 0x500-0x5FF. Thread 3 tests accept IDs 0x500, 0x550,
+     * 0x5FF and reject IDs 0x4FF, 0x601 (discarded by GFC anfs=3).         */
+    stdIdFilter.sfid1 = FILTER_TEST_RANGE_LOW;
+    stdIdFilter.sfid2 = FILTER_TEST_RANGE_HIGH;
+    stdIdFilter.sfec  = MCAN_STD_FILT_ELEM_FIFO0;
     stdIdFilter.sft   = MCAN_STD_FILT_TYPE_RANGE;
     MCAN_addStdMsgIDFilter(gMcanBaseAddr, 2U, &stdIdFilter);
+
+    /* Disable all unused standard ID filter slots (3 .. lss-1).
+     * Message RAM is NOT cleared between tests, so stale filter elements
+     * from prior tests may match unintended IDs and override GFC anfs.     */
+    {
+        MCAN_StdMsgIDFilterElement disFilter;
+        uint32_t slot;
+        uint32_t lss = testParams->mcanConfigParams.ramConfig->lss;
+        disFilter.sfid1 = 0U;
+        disFilter.sfid2 = 0U;
+        disFilter.sfec  = MCAN_STD_FILT_ELEM_DISABLE;
+        disFilter.sft   = MCAN_STD_FILT_TYPE_RANGE;
+        for(slot = 3U; slot < lss; slot++)
+        {
+            MCAN_addStdMsgIDFilter(gMcanBaseAddr, slot, &disFilter);
+        }
+    }
 
     /* Register custom ISR for this test */
     HwiP_Params_init(&hwiPrms);
@@ -3067,11 +3259,20 @@ int32_t TestMcan_multiThreadedFilterTest(st_mcanTestcaseParams_t *testParams)
 
     if(configStatus == CSL_PASS)
     {
-        /* Create synchronization semaphores (max count = 2 threads) */
-        status = SemaphoreP_constructCounting(&gMcanMtStartSem, 0, 2);
+        configStatus = MCAN_txBufTransIntrEnable(gMcanBaseAddr, 2U, (uint32_t)TRUE);
+        if(configStatus != CSL_PASS)
+        {
+            DebugP_log("MCAN Tx Buffer 2 Interrupt Enable FAILED\n");
+        }
+    }
+
+    if(configStatus == CSL_PASS)
+    {
+        /* Create synchronization semaphores (max count = 3 threads) */
+        status = SemaphoreP_constructCounting(&gMcanMtStartSem, 0, 3);
         DebugP_assert(status == SystemP_SUCCESS);
 
-        status = SemaphoreP_constructCounting(&gMcanMtCompleteSem, 0, 2);
+        status = SemaphoreP_constructCounting(&gMcanMtCompleteSem, 0, 3);
         DebugP_assert(status == SystemP_SUCCESS);
 
         /* Create TX/RX semaphores for Thread 1 (FIFO0) */
@@ -3086,9 +3287,17 @@ int32_t TestMcan_multiThreadedFilterTest(st_mcanTestcaseParams_t *testParams)
         status = SemaphoreP_constructBinary(&gMcanMtPerThreadRxSem[1], 0);
         DebugP_assert(status == SystemP_SUCCESS);
 
-        /* Expose semaphores to ISR */
+        /* Create TX/RX semaphores for Thread 3 (Range, FIFO0 Phase 2) */
+        status = SemaphoreP_constructBinary(&gMcanMtPerThreadTxSem[2], 0);
+        DebugP_assert(status == SystemP_SUCCESS);
+        status = SemaphoreP_constructBinary(&gMcanMtPerThreadRxSem[2], 0);
+        DebugP_assert(status == SystemP_SUCCESS);
+
+        /* Expose TX semaphores to ISR (all 3 threads); RX sem[0] starts as
+         * Thread 1's semaphore and is switched to Thread 3's before Phase 2. */
         gMcanMtTxSemPtrs[0] = &gMcanMtPerThreadTxSem[0];
         gMcanMtTxSemPtrs[1] = &gMcanMtPerThreadTxSem[1];
+        gMcanMtTxSemPtrs[2] = &gMcanMtPerThreadTxSem[2];
         gMcanMtRxSemPtrs[0] = &gMcanMtPerThreadRxSem[0];
         gMcanMtRxSemPtrs[1] = &gMcanMtPerThreadRxSem[1];
 
@@ -3130,34 +3339,68 @@ int32_t TestMcan_multiThreadedFilterTest(st_mcanTestcaseParams_t *testParams)
 
     if(configStatus == CSL_PASS)
     {
-        /* Give a small delay to ensure both threads are waiting on startSem */
+        /* Create Thread 3: Range filter, accept + reject in FIFO0 (Phase 2) */
+        TaskP_Params_init(&taskParams);
+        taskParams.name      = "MCAN_FILTER_RANGE";
+        taskParams.stackSize = TEST_MCAN_MT_TASK_STACK_SIZE;
+        taskParams.stack     = gMcanMtTaskStack[2];
+        taskParams.priority  = TEST_MCAN_MT_TX_TASK_PRI;
+        taskParams.args      = testParams;
+        taskParams.taskMain  = TestMcan_filterTestThread3;
+
+        status = TaskP_construct(&gMcanMtTaskObj[2], &taskParams);
+        if(status != SystemP_SUCCESS)
+        {
+            DebugP_log("TaskP_construct for Thread 3 failed\n");
+            configStatus = CSL_EFAIL;
+        }
+    }
+
+    if(configStatus == CSL_PASS)
+    {
+        /* Give a small delay to ensure all threads are waiting on startSem */
         ClockP_usleep(1000U);
 
-        /* Start both threads simultaneously */
+        /* ===== Phase 1: Thread 1 (Classic) and Thread 2 (Dual) concurrent ===== */
         SemaphoreP_post(&gMcanMtStartSem);  /* Thread 1 */
         SemaphoreP_post(&gMcanMtStartSem);  /* Thread 2 */
 
-        /* Wait for both threads to complete */
-        SemaphoreP_pend(&gMcanMtCompleteSem, SystemP_WAIT_FOREVER);  /* Thread 1 */
-        SemaphoreP_pend(&gMcanMtCompleteSem, SystemP_WAIT_FOREVER);  /* Thread 2 */
+        SemaphoreP_pend(&gMcanMtCompleteSem, SystemP_WAIT_FOREVER);  /* Thread 1 done */
+        SemaphoreP_pend(&gMcanMtCompleteSem, SystemP_WAIT_FOREVER);  /* Thread 2 done */
 
         gMcanMtStopThreads = 1U;
 
-        /* Each thread performs TEST_MCAN_MT_MESSAGE_COUNT checks
-         * (TEST_MCAN_MT_ACCEPT_COUNT accepted + TEST_MCAN_MT_REJECT_COUNT rejected). */
+        /* Validate Thread 1 (Classic) and Thread 2 (Dual) */
         if((gMcanMtPerThreadCount[0] != TEST_MCAN_MT_MESSAGE_COUNT) ||
            (gMcanMtPerThreadCount[1] != TEST_MCAN_MT_MESSAGE_COUNT) ||
            (gMcanMtPerThreadErrors[0] != 0U) ||
            (gMcanMtPerThreadErrors[1] != 0U))
         {
-            DebugP_log("FAIL: Thread results: T1 pass=%d err=%d, T2 pass=%d err=%d\n",
-                       gMcanMtPerThreadCount[0], gMcanMtPerThreadErrors[0],
-                       gMcanMtPerThreadCount[1], gMcanMtPerThreadErrors[1]);
+            DebugP_log("FAIL: Phase 1: T1 pass=%d err=%d (expected %d), T2 pass=%d err=%d (expected %d)\n",
+                       gMcanMtPerThreadCount[0], gMcanMtPerThreadErrors[0], TEST_MCAN_MT_MESSAGE_COUNT,
+                       gMcanMtPerThreadCount[1], gMcanMtPerThreadErrors[1], TEST_MCAN_MT_MESSAGE_COUNT);
             configStatus = CSL_EFAIL;
         }
-        else
+
+        /* ===== Phase 2: Thread 3 (Range) — FIFO0 RX sem switched to Thread 3 ===== */
+        gMcanMtRxSemPtrs[0] = &gMcanMtPerThreadRxSem[2];
+        gMcanMtStopThreads = 0U;
+        SemaphoreP_post(&gMcanMtStartSem);  /* Thread 3 */
+        SemaphoreP_pend(&gMcanMtCompleteSem, SystemP_WAIT_FOREVER);  /* Thread 3 done */
+        gMcanMtStopThreads = 1U;
+
+        /* Validate Thread 3 (Range) */
+        if((gMcanMtPerThreadCount[2] != TEST_MCAN_MT_MESSAGE_COUNT) ||
+           (gMcanMtPerThreadErrors[2] != 0U))
         {
-            DebugP_log("PASS: Both threads completed accept+reject validation successfully\n");
+            DebugP_log("FAIL: Phase 2: T3 pass=%d err=%d (expected %d)\n",
+                       gMcanMtPerThreadCount[2], gMcanMtPerThreadErrors[2], TEST_MCAN_MT_MESSAGE_COUNT);
+            configStatus = CSL_EFAIL;
+        }
+
+        if(configStatus == CSL_PASS)
+        {
+            DebugP_log("PASS: Classic, Dual, and Range accept+reject validation complete\n");
         }
     }
 
@@ -3178,6 +3421,7 @@ int32_t TestMcan_multiThreadedFilterTest(st_mcanTestcaseParams_t *testParams)
     /* Destruct tasks */
     TaskP_destruct(&gMcanMtTaskObj[0]);
     TaskP_destruct(&gMcanMtTaskObj[1]);
+    TaskP_destruct(&gMcanMtTaskObj[2]);
 
     /* Restore the original shared ISR */
     HwiP_destruct(&gMcanMtHwiObj[0]);
@@ -3191,17 +3435,20 @@ int32_t TestMcan_multiThreadedFilterTest(st_mcanTestcaseParams_t *testParams)
         (void)HwiP_construct(&gMcanHwiObject, &hwiPrms2);
     }
 
-    /* Destruct semaphores (2 TX + 2 RX + start + complete) */
+    /* Destruct semaphores (3 TX + 3 RX + start + complete) */
     SemaphoreP_destruct(&gMcanMtPerThreadTxSem[0]);
     SemaphoreP_destruct(&gMcanMtPerThreadRxSem[0]);
     SemaphoreP_destruct(&gMcanMtPerThreadTxSem[1]);
     SemaphoreP_destruct(&gMcanMtPerThreadRxSem[1]);
+    SemaphoreP_destruct(&gMcanMtPerThreadTxSem[2]);
+    SemaphoreP_destruct(&gMcanMtPerThreadRxSem[2]);
     SemaphoreP_destruct(&gMcanMtStartSem);
     SemaphoreP_destruct(&gMcanMtCompleteSem);
 
     /* Disable TX buffer interrupts */
     MCAN_txBufTransIntrEnable(gMcanBaseAddr, 0U, (uint32_t)FALSE);
     MCAN_txBufTransIntrEnable(gMcanBaseAddr, 1U, (uint32_t)FALSE);
+    MCAN_txBufTransIntrEnable(gMcanBaseAddr, 2U, (uint32_t)FALSE);
 
     return configStatus;
 }

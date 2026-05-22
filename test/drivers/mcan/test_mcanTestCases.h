@@ -1603,123 +1603,154 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
     {
         TEST_ENABLE, 10485U,
         "None",
-        "MCAN: MAX Tx FIFO (32) and MAX RX FIFO0 (64) Test",
-        "None", "None",
-        "Send maximum 32 messages using Tx FIFO and receive in RX FIFO0 (64 deep). Verify all messages transmitted and received correctly.",
+        "MCAN: Burst TX FIFO (32) -> MAX RX FIFO0 (64) Test",
+        "Burst test: all 32 TX FIFO slots are filled and all TX requests are submitted\n"
+        "before waiting for any acknowledgement (Phase 1 burst fill).\n"
+        "Phase 2 polls TXBTO until all 32 TXBTO bits are set.\n"
+        "Phase 3 waits until RX FIFO0 fill level reaches 32, then drains continuously.",
+        "None",
+        "1. All 32 TX requests must complete without protocol errors.\n"
+        "2. RX FIFO0 must accumulate exactly 32 messages.\n"
+        "3. Each received message data[0] must match its submission sequence index (0-31).",
         IPU,
         {
             (MCAN_TEST_TYPE_INTERNAL_LOOPBACK), /* testType */
-            32U, /* iteration count for tx - send 32 messages to fill Tx FIFO */
+            32U, /* iteration count (used by App_mcanBurstTxTest as bust count) */
             &canFDBitTimings[0U], /* bit timing params */
             &canFDInitParams[0U], /* init params */
             &canFDConfigParams[1U], /* config params */
-            &canFDRAMConfigParams[7U], /* MSG RAM config with MAX Tx FIFO=32, RX FIFO0=64 */
+            &canFDRAMConfigParams[7U], /* MSG RAM: txFIFO=32, rxFIFO0=64, rxFIFO1=64 */
             &canFDECCConfigParams[0U], /* ECC config params */
             &canFDECCErrForceConfigParams[0U], /* ECC Err Force params */
             1U, /* tx message number */
-            1U, /* standard ID message filter number - 1 filter to route to FIFO0 */
+            1U, /* standard ID message filter number */
             0U, /* extended ID message filter number */
-            &canTxMSG[3U], /* tx message using FIFO storage, routing to RX FIFO0 */
-            &canSTDIDFilter[2U], /* standard message ID filters */
-            &canEXTIDFilter[0U],  /* extended message ID filters */
-            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),  /* Interrupt Mask */
-            (MCAN_INTR_MASK_ALL),  /* Interrupt Line Select Mask */
-            (MCAN_INTR_LINE_NUM_0)  /* Interrupt Line Select */
+            &canTxMSG[3U], /* Classic CAN 8B frame; storageId=FIFO, rxFIFO=FIFO0 */
+            &canSTDIDFilter[2U], /* range [0x04..0x0A] -> FIFO0 */
+            &canEXTIDFilter[0U],
+            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),
+            (MCAN_INTR_MASK_ALL),
+            (MCAN_INTR_LINE_NUM_0)
         },
         PRINT_ENABLE,
-        (ST_TT_SANITY),
+        (ST_TT_SANITY | ST_TT_PERFORMANCE),
     },
     {
         TEST_ENABLE, 10486U,
         "None",
-        "MCAN: MAX Tx FIFO (32) and MAX RX FIFO1 (64) Test",
-        "None", "None",
-        "Send maximum 32 messages using Tx FIFO and receive in RX FIFO1 (64 deep). Verify all messages transmitted and received correctly.",
+        "MCAN: Burst TX FIFO (32) -> MAX RX FIFO1 (64) Test",
+        "Burst test: all 32 TX FIFO slots are filled and all TX requests are submitted\n"
+        "before waiting for any acknowledgement (Phase 1 burst fill).\n"
+        "Phase 2 polls TXBTO until all 32 TXBTO bits are set.\n"
+        "Phase 3 waits until RX FIFO1 fill level reaches 32, then drains continuously.\n"
+        "canTxMSG[23] has ID=0x3 which does not match filter [2] (range 0x04-0x0A),\n"
+        "so GFC anfs=1 routes non-matching standard frames to RX FIFO1.",
+        "None",
+        "1. All 32 TX requests must complete without protocol errors.\n"
+        "2. RX FIFO1 must accumulate exactly 32 messages.\n"
+        "3. Each received message data[0] must match its submission sequence index (0-31).",
         IPU,
         {
             (MCAN_TEST_TYPE_INTERNAL_LOOPBACK), /* testType */
-            32U, /* iteration count for tx - send 32 messages to fill Tx FIFO */
-            &canFDBitTimings[0U], /* bit timing params */
-            &canFDInitParams[0U], /* init params */
-            &canFDConfigParams[1U], /* config params */
-            &canFDRAMConfigParams[7U], /* MSG RAM config with MAX Tx FIFO=32, RX FIFO1=64 */
-            &canFDECCConfigParams[0U], /* ECC config params */
-            &canFDECCErrForceConfigParams[0U], /* ECC Err Force params */
+            32U, /* iteration count */
+            &canFDBitTimings[0U],
+            &canFDInitParams[0U],
+            &canFDConfigParams[1U], /* GFC: anfs=1 routes non-matching std frames to FIFO1 */
+            &canFDRAMConfigParams[7U], /* MSG RAM: txFIFO=32, rxFIFO0=64, rxFIFO1=64 */
+            &canFDECCConfigParams[0U],
+            &canFDECCErrForceConfigParams[0U],
             1U, /* tx message number */
-            1U, /* standard ID message filter number - 1 filter to route to FIFO1 */
+            1U, /* standard ID message filter number */
             0U, /* extended ID message filter number */
-            &canTxMSG[23U], /* tx message using FIFO storage, routing to RX FIFO1 */
-            &canSTDIDFilter[2U], /* standard message ID filters */
-            &canEXTIDFilter[0U],  /* extended message ID filters */
-            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),  /* Interrupt Mask */
-            (MCAN_INTR_MASK_ALL),  /* Interrupt Line Select Mask */
-            (MCAN_INTR_LINE_NUM_0)  /* Interrupt Line Select */
+            &canTxMSG[23U], /* CAN-FD 64B frame; ID=0x3 (below filter range) -> FIFO1 via GFC */
+            &canSTDIDFilter[2U], /* range [0x04..0x0A] -> FIFO0; ID 0x3 misses -> GFC -> FIFO1 */
+            &canEXTIDFilter[0U],
+            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),
+            (MCAN_INTR_MASK_ALL),
+            (MCAN_INTR_LINE_NUM_0)
         },
         PRINT_ENABLE,
-        (ST_TT_SANITY),
+        (ST_TT_SANITY | ST_TT_PERFORMANCE),
     },
     {
         TEST_ENABLE, 10487U,
         "None",
-        "MCAN: MAX Dedicated Tx Buffers (32) and MAX Dedicated Rx Buffers (64) Test",
-        "None", "None",
-        "Send maximum 32 messages using dedicated Tx buffers and receive in dedicated Rx buffers (64 deep). Verify all messages transmitted and received correctly.",
+        "MCAN: Burst Dedicated TX Buffers (32) -> Dedicated RX Buffers (32) Test",
+        "Burst test validating the dedicated RX buffer path with maximum (32) buffers.\n"
+        "Setup: 32 std ID filters programmed dynamically in SW_INIT; each filter uses\n"
+        "sfec=MCAN_STD_FILT_ELEM_BUFFER to route ID (0x001+i) into dedicated RX buffer i.\n"
+        "Phase 1: Burst-fill all 32 dedicated TX buffers (data[0]=i, ID=0x001+i) and\n"
+        "         issue all 32 TX requests at once before waiting for any completion.\n"
+        "Phase 2: Poll MCAN_getTxBufTransmissionStatus() until all 32 TXBTO bits [0..31] set.\n"
+        "Phase 3: Poll MCAN_getNewDataStatus().statusLow until bits 0..31 all set,\n"
+        "         then read each dedicated RX buffer via MCAN_MEM_TYPE_BUF and verify.\n"
+        "Uses canFDRAMConfigParams[8] (lss=32, txBufCnt=32, rxFIFO0/1=0).",
+        "None",
+        "1. All 32 TX buffers must transmit successfully (TXBTO bits 0..31 set).\n"
+        "2. All 32 dedicated RX buffers must receive exactly one message each\n"
+        "   (MCAN_getNewDataStatus().statusLow bits 0..31 all set).\n"
+        "3. data[0] of each received message must equal its buffer index i.\n"
+        "4. ID in each received message must equal (0x001 + i) in standard ID field.\n"
+        "5. No protocol errors or error counter increments during the burst.\n"
+        "6. RX FIFO0 and FIFO1 must remain empty (no messages routed there).",
         IPU,
         {
             (MCAN_TEST_TYPE_INTERNAL_LOOPBACK), /* testType */
-            32U, /* iteration count for tx - send 32 messages to fill Tx Buffers */
-            &canFDBitTimings[0U], /* bit timing params */
-            &canFDInitParams[0U], /* init params */
-            &canFDConfigParams[1U], /* config params */
-            &canFDRAMConfigParams[8U], /* MSG RAM config with MAX Tx Buffers=32, RX Buffers=64 */
-            &canFDECCConfigParams[0U], /* ECC config params */
-            &canFDECCErrForceConfigParams[0U], /* ECC Err Force params */
-            1U, /* tx message number */
-            1U, /* standard ID message filter number - 1 filter to route to buffer */
-            0U, /* extended ID message filter number */
-            &canTxMSG[0U], /* tx message using dedicated buffer storage, routing to RX Buffer */
-            &canSTDIDFilter[0U], /* standard message ID filters */
-            &canEXTIDFilter[0U],  /* extended message ID filters */
-            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),  /* Interrupt Mask */
-            (MCAN_INTR_MASK_ALL),  /* Interrupt Line Select Mask */
-            (MCAN_INTR_LINE_NUM_0)  /* Interrupt Line Select */
+            1U,                                 /* iteration count (test controls 32 internally) */
+            &canFDBitTimings[0U],
+            &canFDInitParams[0U],
+            &canFDConfigParams[1U],
+            &canFDRAMConfigParams[8U],           /* lss=32, txBufCnt=32, rxFIFO0/1=0 */
+            &canFDECCConfigParams[0U],
+            &canFDECCErrForceConfigParams[0U],
+            1U,                                 /* tx message number (template; 32 used internally) */
+            0U,                                 /* std ID filter num (added dynamically in test) */
+            0U,                                 /* extended ID message filter number */
+            &canTxMSG[0U],                      /* tx Buffer element template */
+            &canSTDIDFilter[0U],                /* not used (stdIdFiltNum=0) */
+            &canEXTIDFilter[0U],
+            (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),
+            (MCAN_INTR_MASK_ALL),
+            (MCAN_INTR_LINE_NUM_0)
         },
         PRINT_ENABLE,
-        (ST_TT_SANITY),
+        (ST_TT_SANITY | ST_TT_FUNCTIONAL),
     },
     {
         TEST_ENABLE, 10488U,
         "None",
-        "MCAN: Maximum Message RAM Configuration Test",
-        "This test configures MCAN with maximum possible message RAM allocation:\n"
+        "MCAN: Max Msg RAM Word Count - Send 193 Receive 192 Test",
+        "This test validates max message RAM word count configuration (4352 words).\n"
         "128 Std ID filters, 64 Ext ID filters, 32 Tx buffers, 32 Tx Event FIFO,\n"
-        "64 RX FIFO0, 64 RX FIFO1, 64 RX Buffers (Total 4352 words - at limit)",
+        "64 RX FIFO0, 64 RX FIFO1, 64 RX Buffers (Total 192 RX elements at limit).\n"
+        "Sends 193 messages, receives 192 successfully, 193rd receive should fail.",
         "None",
-        "1. Message RAM configuration should succeed at maximum allocation.\n"
-        "2. Sent messages shall match with received messages.\n"
-        "3. Transmission/reception should work correctly with full RAM utilization.",
+        "1. Message RAM configuration should succeed at maximum allocation (4352 words).\n"
+        "2. 192 messages should be received successfully (64 FIFO0 + 64 FIFO1 + 64 RX Buf).\n"
+        "3. 193rd message should be lost (MSG_LOST) as all RX paths are full.\n"
+        "4. Total received count must equal 192.",
         IPU,
         {
             (MCAN_TEST_TYPE_INTERNAL_LOOPBACK), /* testType */
-            5U, /* iteration count for tx - test multiple messages */
+            1U, /* iteration count - test uses custom send/receive logic */
             &canFDBitTimings[0U], /* mcan module bit timing parameters */
             &canFDInitParams[0U], /* mcan module initialization parameters */
             &canFDConfigParams[0U], /* mcan module configuration parameters */
             &canFDRAMConfigParams[9U], /* mcan module MSG RAM configuration parameters - MAX Config */
             &canFDECCConfigParams[0U], /* mcan module ECC configuration parameters */
             &canFDECCErrForceConfigParams[0U], /* mcan module ECC Error Force parameters */
-            5U, /* tx message number */
-            2U, /* standard ID message filter number */
-            2U, /* extended ID message filter number */
-            &canTxMSG[0U], /* tx message using dedicated buffer storage */
-            &canSTDIDFilter[0U], /* standard message ID filters */
-            &canEXTIDFilter[0U],  /* extended message ID filters */
+            1U, /* tx message number - test sends internally */
+            0U, /* standard ID message filter number - filters set up dynamically */
+            0U, /* extended ID message filter number - filters set up dynamically */
+            &canTxMSG[0U], /* tx message template (uses dedicated buffer 0) */
+            &canSTDIDFilter[0U], /* not used (stdIdFiltNum=0) */
+            &canEXTIDFilter[0U],  /* not used (extIdFiltNum=0) */
             (MCAN_INTR_MASK_ALL & ~MCAN_INTR_SRC_RES_ADDR_ACCESS & ~MCAN_INTR_SRC_TIMESTAMP_WRAPAROUND),  /* Interrupt Mask */
             (MCAN_INTR_MASK_ALL),  /* Interrupt Line Select Mask */
             (MCAN_INTR_LINE_NUM_0)  /* Interrupt Line Select */
         },
         PRINT_ENABLE,
-        (ST_TT_SANITY),
+        (ST_TT_SANITY | ST_TT_FUNCTIONAL),
     },
     {
         TEST_ENABLE, 10489U,

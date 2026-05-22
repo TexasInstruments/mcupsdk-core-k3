@@ -76,7 +76,11 @@
 #define MCANSS_TX_BUFFER_ELEM_EFC_MASK                           (0x00800000U)
 #define MCANSS_TX_BUFFER_ELEM_MM_SHIFT                           (24U)
 #define MCANSS_TX_BUFFER_ELEM_MM_MASK                            (0xFF000000U)
-
+#define MAX_RAM_FIFO0_CNT                                        (64U)
+#define MAX_RAM_FIFO1_CNT                                        (64U)
+#define MAX_RAM_RXBUF_CNT                                        (64U)
+#define MAX_RAM_TOTAL_RX                                         (MAX_RAM_FIFO0_CNT + MAX_RAM_FIFO1_CNT + MAX_RAM_RXBUF_CNT)  /* 192 */
+#define MAX_RAM_SEND_CNT                                         (MAX_RAM_TOTAL_RX + 1U)  /* 193 */
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
@@ -338,7 +342,10 @@ static int32_t TestMcan_eCCIntrStatusTest(st_mcanTestcaseParams_t *testParams);
 static int32_t TestMcan_mixedExtIdClassicFdTest(st_mcanTestcaseParams_t *testParams);
 static int32_t TestMcan_explicitBufferNumbersIsolationTest(st_mcanTestcaseParams_t *testParams);
 static int32_t TestMcan_combinedFilterTypeTest(st_mcanTestcaseParams_t *testParams);
+static int32_t App_mcanBurstTxTest(st_mcanTestcaseParams_t *testParams);
+static int32_t App_mcanBurstDedicatedRxBufTest(st_mcanTestcaseParams_t *testParams);
 static int32_t App_mcanExternalReadWriteTest(st_mcanTestcaseParams_t *testParams);
+static int32_t TestMcan_maxMsgRamWordCntTest(st_mcanTestcaseParams_t *testParams);
 static int32_t TestMcan_initTxRxSem(void);
 static void TestMcan_deInitTxRxSem(void);
 /* ========================================================================== */
@@ -515,6 +522,16 @@ int32_t st_mcanTxApp_main(st_mcanTestcaseParams_t *testParams)
                     testParams->testResult = TestMcan_eCCIntrStatusTest(testParams);
                  break;
                 #endif
+                case 10485:
+                case 10486:
+                    testParams->testResult = App_mcanBurstTxTest(testParams);
+                break;
+                case 10487:
+                    testParams->testResult = App_mcanBurstDedicatedRxBufTest(testParams);
+                break;
+                case 10488:
+                    testParams->testResult = TestMcan_maxMsgRamWordCntTest(testParams);
+                break;
                 case 10870:
                     testParams->testResult = TestMcan_mixedExtIdClassicFdTest(testParams);
                 break;
@@ -835,6 +852,400 @@ int32_t App_mcanConfig(st_mcanTestcaseParams_t *testParams)
     while (MCAN_OPERATION_MODE_NORMAL != MCAN_getOpMode(gMcanBaseAddr))
     {}
     return configStatus;
+}
+
+/**
+ * @brief  Burst TX FIFO test: fill all 32 TX FIFO slots, request all
+ *         transmissions at once, then continuously drain the receive FIFO.
+ *
+ * Covers two FIFO-path variants (both use canFDRAMConfigParams[7U],
+ * txFIFO=32, rxFIFO0=64, rxFIFO1=64):
+ *
+ *   10485 - 32 CAN-Classic frames -> TX FIFO -> RX FIFO0.
+ *   10486 - 32 CAN-FD frames -> TX FIFO -> RX FIFO1
+ *           (ID below filter range falls through to FIFO1 via GFC anfs=1).
+ *
+ * Phase 1: Write unique data[0] stamp (0..31) into each TX FIFO slot and call
+ *          MCAN_txBufAddReq() for every slot before waiting for any reply.
+ * Phase 2: Poll MCAN_getTxBufTransmissionStatus() until all 32 TXBTO bits set.
+ * Phase 3: Poll RX FIFO fillLvl until 32 messages are buffered, then drain
+ *          and verify all 32 messages in a continuous loop.
+ */
+static int32_t App_mcanBurstTxTest(st_mcanTestcaseParams_t *testParams)
+{
+    int32_t            testStatus    = CSL_PASS;
+    int32_t            configStatus;
+    uint32_t           loopCnt;
+    uint32_t           txBufIdx;
+    uint32_t           txAllDoneMask = 0U;
+    uint32_t           txStatus;
+    uint32_t           burstCount;
+    uint32_t           rxFIFONum;
+    MCAN_TxFIFOStatus  txFIFOStat;
+    MCAN_RxFIFOStatus  rxFIFOStatus;
+    MCAN_TxBufElement  txElem;
+    MCAN_RxBufElement  rxMsg;
+    MCAN_ProtocolStatus protStatus;
+    MCAN_ErrCntStatus   errCounter;
+
+    /* FIFO-only path: burst count equals TX FIFO depth */
+    burstCount = testParams->mcanConfigParams.ramConfig->txFIFOCnt;
+
+    /* Determine which RX FIFO to drain from the tx-message config */
+    rxFIFONum = testParams->mcanConfigParams.txMsg[0U].rxBuffNum;
+
+    /* Enable MCAN interrupts and interrupt line */
+    MCAN_enableIntr(gMcanBaseAddr,
+                    testParams->mcanConfigParams.intrEnable,
+                    (uint32_t)TRUE);
+    MCAN_selectIntrLine(gMcanBaseAddr,
+                        testParams->mcanConfigParams.intrLineSelectMask,
+                        testParams->mcanConfigParams.intrLine);
+    MCAN_enableIntrLine(gMcanBaseAddr,
+                        testParams->mcanConfigParams.intrLine, 1U);
+
+    /* Enable TX transmission interrupts for all TX FIFO slots */
+    for (loopCnt = 0U; loopCnt < burstCount; loopCnt++)
+    {
+        configStatus = MCAN_txBufTransIntrEnable(gMcanBaseAddr, loopCnt,
+                                                 (uint32_t)TRUE);
+        if (configStatus != CSL_PASS)
+        {
+            DebugP_log("\nMCAN TX intr enable FAILED for slot %u\n", loopCnt);
+        }
+    }
+
+    DebugP_log("\n=== Burst TX FIFO Test: %u messages -> RX FIFO%u ===\n",
+               burstCount, rxFIFONum);
+
+    /* ------------------------------------------------------------------
+     * Phase 1: Burst-fill all TX FIFO slots and issue all TX requests
+     *          before waiting for any acknowledgement.
+     * ------------------------------------------------------------------ */
+    DebugP_log("Phase 1: Loading %u messages into TX FIFO and requesting all TX...\n",
+               burstCount);
+
+    for (loopCnt = 0U; loopCnt < burstCount; loopCnt++)
+    {
+        /* Stamp data[0] with sequence number for per-message verification */
+        txElem          = testParams->mcanConfigParams.txMsg[0U].txElem;
+        txElem.data[0U] = (uint8_t)loopCnt;
+
+        /* TX FIFO mode: hardware advances putIdx after each TXBAR write */
+        MCAN_getTxFIFOQueStatus(gMcanBaseAddr, &txFIFOStat);
+        txBufIdx = txFIFOStat.putIdx;
+        MCAN_writeMsgRam(gMcanBaseAddr, MCAN_MEM_TYPE_FIFO, txBufIdx, &txElem);
+
+        configStatus = MCAN_txBufAddReq(gMcanBaseAddr, txBufIdx);
+        if (configStatus != CSL_PASS)
+        {
+            DebugP_log("FAIL: MCAN_txBufAddReq() returned %d for slot %u\n",
+                       configStatus, txBufIdx);
+            testStatus = CSL_EFAIL;
+        }
+        txAllDoneMask |= (1U << txBufIdx);
+    }
+
+    DebugP_log("Phase 1 complete: all %u TX FIFO requests submitted.\n", burstCount);
+
+    /* ------------------------------------------------------------------
+     * Phase 2: Poll TXBTO until all FIFO slots report transmission done.
+     * ------------------------------------------------------------------ */
+    DebugP_log("Phase 2: Polling for all TX completions (mask=0x%08X)...\n",
+               txAllDoneMask);
+
+    do
+    {
+        txStatus = MCAN_getTxBufTransmissionStatus(gMcanBaseAddr);
+    } while ((txStatus & txAllDoneMask) != txAllDoneMask);
+
+    DebugP_log("Phase 2 complete: TXBTO=0x%08X - all %u messages transmitted.\n",
+               txStatus, burstCount);
+
+    /* Verify no protocol errors occurred during burst transmission */
+    MCAN_getErrCounters(gMcanBaseAddr, &errCounter);
+    MCAN_getProtocolStatus(gMcanBaseAddr, &protStatus);
+    if ((errCounter.recErrCnt != 0U) || (errCounter.canErrLogCnt != 0U))
+    {
+        DebugP_log("FAIL: Error counters non-zero after burst TX "
+                   "(TEC=%u REC=%u)\n",
+                   errCounter.canErrLogCnt, errCounter.recErrCnt);
+        testStatus = CSL_EFAIL;
+    }
+    if (!((MCAN_ERR_CODE_NO_ERROR == protStatus.lastErrCode ||
+           MCAN_ERR_CODE_NO_CHANGE == protStatus.lastErrCode) &&
+          (MCAN_ERR_CODE_NO_ERROR == protStatus.dlec ||
+           MCAN_ERR_CODE_NO_CHANGE == protStatus.dlec) &&
+          (0U == protStatus.pxe)))
+    {
+        DebugP_log("FAIL: Protocol errors detected after burst TX\n");
+        testStatus = CSL_EFAIL;
+    }
+
+    /* ------------------------------------------------------------------
+     * Phase 3: Continuously drain the RX FIFO.
+     * Wait until all burstCount messages are present, then read them
+     * one after another in a single loop and verify the sequence stamp.
+     * ------------------------------------------------------------------ */
+    DebugP_log("Phase 3: Draining RX FIFO%u - waiting for %u messages...\n",
+               rxFIFONum, burstCount);
+
+    rxFIFOStatus.num = rxFIFONum;
+
+    /* Spin until the FIFO has accumulated all transmitted messages */
+    do
+    {
+        MCAN_getRxFIFOStatus(gMcanBaseAddr, &rxFIFOStatus);
+    } while (rxFIFOStatus.fillLvl < burstCount);
+
+    DebugP_log("RX FIFO%u fillLvl=%u. Continuously reading all messages...\n",
+               rxFIFONum, rxFIFOStatus.fillLvl);
+
+    for (loopCnt = 0U; loopCnt < burstCount; loopCnt++)
+    {
+        MCAN_getRxFIFOStatus(gMcanBaseAddr, &rxFIFOStatus);
+        MCAN_readMsgRam(gMcanBaseAddr,
+                        MCAN_MEM_TYPE_FIFO,
+                        rxFIFOStatus.getIdx,
+                        rxFIFONum,
+                        &rxMsg);
+        MCAN_writeRxFIFOAck(gMcanBaseAddr, rxFIFONum, rxFIFOStatus.getIdx);
+
+        /* Check per-message sequence stamp planted in Phase 1 */
+        if (rxMsg.data[0U] != (uint8_t)loopCnt)
+        {
+            DebugP_log("FAIL: msg[%u] data[0]: expected 0x%02X got 0x%02X\n",
+                       loopCnt, (uint8_t)loopCnt, rxMsg.data[0U]);
+            testStatus = CSL_EFAIL;
+        }
+    }
+
+    if (testStatus == CSL_PASS)
+    {
+        DebugP_log("Phase 3 complete: all %u messages received and verified OK.\n",
+                   burstCount);
+    }
+
+    /* Disable TX interrupts */
+    for (loopCnt = 0U; loopCnt < burstCount; loopCnt++)
+    {
+        (void)MCAN_txBufTransIntrEnable(gMcanBaseAddr, loopCnt, (uint32_t)FALSE);
+    }
+
+    DebugP_log("=== Burst TX Test %s ===\n",
+               (testStatus == CSL_PASS) ? "PASSED" : "FAILED");
+
+    return testStatus;
+}
+
+/**
+ * @brief  Burst test for 32 dedicated TX buffers -> 32 dedicated RX buffers.
+ *
+ * Covers the dedicated RX buffer path end-to-end with maximum capacity:
+ *
+ * Setup:
+ *   Enters SW_INIT to add 32 standard ID filters.
+ *   Each filter uses sfec=MCAN_STD_FILT_ELEM_BUFFER (7) to route a unique ID
+ *   (0x001+i) directly into dedicated RX buffer slot i (i = 0..31).
+ *   Requires canFDRAMConfigParams[8U]: lss=32, txBufCnt=32, no RX FIFO.
+ *
+ * Phase 1: Write all 32 dedicated TX buffers (unique ID + data stamp),
+ *          call MCAN_txBufAddReq() for all 32 before waiting for any reply.
+ *
+ * Phase 2: Poll MCAN_getTxBufTransmissionStatus() until all 32 TXBTO bits set.
+ *
+ * Phase 3: Poll MCAN_getNewDataStatus() until statusLow bits 0..31 are all set,
+ *          then read and verify each dedicated RX buffer in order.
+ *
+ * @param  testParams  Test case parameters (expects canFDRAMConfigParams[11U]).
+ * @return CSL_PASS if all 32 TX->RX transfers verified OK, CSL_EFAIL otherwise.
+ */
+static int32_t App_mcanBurstDedicatedRxBufTest(st_mcanTestcaseParams_t *testParams)
+{
+    int32_t                    testStatus    = CSL_PASS;
+    int32_t                    configStatus;
+    uint32_t                   loopCnt;
+    uint32_t                   txAllDoneMask = 0U;
+    uint32_t                   txStatus;
+    uint32_t                   pollCnt;
+    MCAN_StdMsgIDFilterElement filterElem;
+    MCAN_TxBufElement          txElem;
+    MCAN_RxBufElement          rxMsg;
+    MCAN_RxNewDataStatus       newDataStatus;
+    MCAN_ProtocolStatus        protStatus;
+    MCAN_ErrCntStatus          errCounter;
+
+#define BURST_DED_BUF_COUNT  (32U)
+
+    DebugP_log("\n=== Burst Dedicated TX->RX Buffer Test: %u messages ===\n",
+               BURST_DED_BUF_COUNT);
+
+    /* ------------------------------------------------------------------
+     * Setup: Enter SW_INIT to program 32 standard ID filters.
+     *        Each filter routes a unique ID (0x001+i) to dedicated RX
+     *        buffer slot i (sfec=MCAN_STD_FILT_ELEM_BUFFER, sfid2=i).
+     * ------------------------------------------------------------------ */
+    MCAN_setOpMode(gMcanBaseAddr, MCAN_OPERATION_MODE_SW_INIT);
+    while (MCAN_OPERATION_MODE_SW_INIT != MCAN_getOpMode(gMcanBaseAddr))
+    {}
+
+    for (loopCnt = 0U; loopCnt < BURST_DED_BUF_COUNT; loopCnt++)
+    {
+        filterElem.sfid1 = 0x001U + loopCnt;           /* ID to match */
+        filterElem.sfid2 = loopCnt;                    /* dedicated RX buffer index */
+        filterElem.sfec  = MCAN_STD_FILT_ELEM_BUFFER;  /* sfec=7: store in RX buffer */
+        filterElem.sft   = MCAN_STD_FILT_TYPE_RANGE;   /* SFT ignored when sfec=7 */
+        MCAN_addStdMsgIDFilter(gMcanBaseAddr, loopCnt, &filterElem);
+    }
+
+    /* Re-enable internal loopback (must be set in SW_INIT mode) */
+    MCAN_lpbkModeEnable(gMcanBaseAddr, MCAN_LPBK_MODE_INTERNAL, TRUE);
+
+    MCAN_setOpMode(gMcanBaseAddr, MCAN_OPERATION_MODE_NORMAL);
+    while (MCAN_OPERATION_MODE_NORMAL != MCAN_getOpMode(gMcanBaseAddr))
+    {}
+
+    /* Enable TX completion interrupts for all 32 dedicated TX buffer slots */
+    for (loopCnt = 0U; loopCnt < BURST_DED_BUF_COUNT; loopCnt++)
+    {
+        configStatus = MCAN_txBufTransIntrEnable(gMcanBaseAddr, loopCnt,
+                                                 (uint32_t)TRUE);
+        if (configStatus != CSL_PASS)
+        {
+            DebugP_log("\nMCAN TX intr enable FAILED for slot %u\n", loopCnt);
+        }
+    }
+
+    DebugP_log("Phase 1: Loading %u dedicated TX buffers and requesting all TX...\n",
+               BURST_DED_BUF_COUNT);
+
+    /* ------------------------------------------------------------------
+     * Phase 1: Burst fill all 32 dedicated TX buffers.
+     *   Each message: STD ID = (0x001 + i), Classic CAN, 8 bytes,
+     *   data[0] = i (sequence stamp for verification in Phase 3).
+     *   All 32 TX requests are issued before waiting for any completion.
+     * ------------------------------------------------------------------ */
+    MCAN_initTxBufElement(&txElem);
+    txElem.xtd = 0U;                     /* Standard ID */
+    txElem.dlc = MCAN_DATA_SIZE_8BYTES;  /* 8 bytes */
+    txElem.fdf = 0U;                     /* Classic CAN */
+    txElem.brs = 0U;
+    txElem.efc = 0U;
+
+    for (loopCnt = 0U; loopCnt < BURST_DED_BUF_COUNT; loopCnt++)
+    {
+        txElem.id       = ((0x001U + loopCnt) << APP_MCAN_STD_ID_SHIFT);
+        txElem.data[0U] = (uint8_t)loopCnt;  /* sequence stamp */
+
+        MCAN_writeMsgRam(gMcanBaseAddr, MCAN_MEM_TYPE_BUF, loopCnt, &txElem);
+        MCAN_txBufAddReq(gMcanBaseAddr, loopCnt);
+        txAllDoneMask |= (1U << loopCnt);
+    }
+
+    DebugP_log("Phase 1 complete: all %u TX requests submitted (mask=0x%08X).\n",
+               BURST_DED_BUF_COUNT, txAllDoneMask);
+
+    /* ------------------------------------------------------------------
+     * Phase 2: Poll TXBTO until all 32 dedicated TX buffers report
+     *          transmission complete.
+     * ------------------------------------------------------------------ */
+    DebugP_log("Phase 2: Polling TXBTO for all %u TX completions...\n",
+               BURST_DED_BUF_COUNT);
+
+    do
+    {
+        txStatus = MCAN_getTxBufTransmissionStatus(gMcanBaseAddr);
+    } while ((txStatus & txAllDoneMask) != txAllDoneMask);
+
+    DebugP_log("Phase 2 complete: TXBTO=0x%08X - all %u messages transmitted.\n",
+               txStatus, BURST_DED_BUF_COUNT);
+
+    /* Verify no protocol errors occurred during burst */
+    MCAN_getErrCounters(gMcanBaseAddr, &errCounter);
+    MCAN_getProtocolStatus(gMcanBaseAddr, &protStatus);
+    if ((errCounter.recErrCnt != 0U) || (errCounter.canErrLogCnt != 0U))
+    {
+        DebugP_log("FAIL: Error counters non-zero after burst (TEC=%u REC=%u)\n",
+                   errCounter.canErrLogCnt, errCounter.recErrCnt);
+        testStatus = CSL_EFAIL;
+    }
+    if (!((MCAN_ERR_CODE_NO_ERROR == protStatus.lastErrCode ||
+           MCAN_ERR_CODE_NO_CHANGE == protStatus.lastErrCode) &&
+          (MCAN_ERR_CODE_NO_ERROR == protStatus.dlec ||
+           MCAN_ERR_CODE_NO_CHANGE == protStatus.dlec) &&
+          (0U == protStatus.pxe)))
+    {
+        DebugP_log("FAIL: Protocol errors detected after burst TX\n");
+        testStatus = CSL_EFAIL;
+    }
+
+    /* ------------------------------------------------------------------
+     * Phase 3: Poll MCAN_getNewDataStatus() until statusLow bits 0..31
+     *          are all set (one bit per dedicated RX buffer 0..31).
+     *          Then read and verify each buffer sequentially.
+     * ------------------------------------------------------------------ */
+    DebugP_log("Phase 3: Waiting for all %u dedicated RX buffers to flag new data...\n",
+               BURST_DED_BUF_COUNT);
+
+    pollCnt = 0U;
+    do
+    {
+        MCAN_getNewDataStatus(gMcanBaseAddr, &newDataStatus);
+        pollCnt++;
+    } while ((newDataStatus.statusLow & txAllDoneMask) != txAllDoneMask);
+
+    DebugP_log("Phase 3: All %u RX buffers ready (ND1=0x%08X pollCnt=%u).\n",
+               BURST_DED_BUF_COUNT, newDataStatus.statusLow, pollCnt);
+
+    for (loopCnt = 0U; loopCnt < BURST_DED_BUF_COUNT; loopCnt++)
+    {
+        MCAN_readMsgRam(gMcanBaseAddr,
+                        MCAN_MEM_TYPE_BUF,
+                        loopCnt,
+                        MCAN_RX_FIFO_NUM_0,  /* fifoNum unused for MEM_TYPE_BUF */
+                        &rxMsg);
+
+        /* Clear new-data flag for this buffer */
+        newDataStatus.statusLow  = (1U << loopCnt);
+        newDataStatus.statusHigh = 0U;
+        MCAN_clearNewDataStatus(gMcanBaseAddr, &newDataStatus);
+
+        /* Verify sequence stamp */
+        if (rxMsg.data[0U] != (uint8_t)loopCnt)
+        {
+            DebugP_log("FAIL: buf[%u] data[0]: expected 0x%02X got 0x%02X\n",
+                       loopCnt, (uint8_t)loopCnt, rxMsg.data[0U]);
+            testStatus = CSL_EFAIL;
+        }
+        /* Verify standard ID */
+        if ((rxMsg.id & APP_MCAN_STD_ID_MASK) !=
+            (((0x001U + loopCnt) << APP_MCAN_STD_ID_SHIFT) & APP_MCAN_STD_ID_MASK))
+        {
+            DebugP_log("FAIL: buf[%u] ID mismatch: expected 0x%03X got 0x%03X\n",
+                       loopCnt,
+                       (unsigned)(0x001U + loopCnt),
+                       (unsigned)((rxMsg.id & APP_MCAN_STD_ID_MASK) >>
+                                   APP_MCAN_STD_ID_SHIFT));
+            testStatus = CSL_EFAIL;
+        }
+    }
+
+    if (testStatus == CSL_PASS)
+    {
+        DebugP_log("Phase 3 complete: all %u dedicated RX buffers received and verified OK.\n",
+                   BURST_DED_BUF_COUNT);
+    }
+
+    /* Disable TX interrupts */
+    for (loopCnt = 0U; loopCnt < BURST_DED_BUF_COUNT; loopCnt++)
+    {
+        (void)MCAN_txBufTransIntrEnable(gMcanBaseAddr, loopCnt, (uint32_t)FALSE);
+    }
+
+    DebugP_log("=== Burst Dedicated TX->RX Buffer Test %s ===\n",
+               (testStatus == CSL_PASS) ? "PASSED" : "FAILED");
+
+    return testStatus;
 }
 
 static int32_t App_mcanTxTest(st_mcanTestcaseParams_t *testParams)
@@ -5904,5 +6315,452 @@ static int32_t App_mcanExternalReadWriteTest(st_mcanTestcaseParams_t *testParams
     }
 
     testParams->isRun = CSL_PASS;
+    return testStatus;
+}
+
+/**
+ * \brief   Test case 10488U: Max Msg RAM Word Count - Send 193 Receive 192.
+ *
+ *          Validates that with maximum message RAM configuration (4352 words),
+ *          exactly 192 messages can be received (64 FIFO0 + 64 FIFO1 + 64 RX
+ *          buffers). The 193rd message is lost because all RX paths are full.
+ *
+ *          Flow:
+ *          1. Configure filters dynamically:
+ *             - 2 std ID filters (range to FIFO0 and FIFO1)
+ *             - 64 ext ID filters (each routing to a dedicated RX buffer)
+ *          2. Send 193 messages without reading:
+ *             - 64 with std IDs 0x001-0x040 -> FIFO0
+ *             - 64 with std IDs 0x041-0x080 -> FIFO1
+ *             - 64 with ext IDs 0x001-0x040 -> RX buffers 0-63
+ *             - 1 more with std ID 0x001 -> FIFO0 full -> MSG_LOST
+ *          3. Receive phase: read 192 messages, verify 193rd is lost.
+ *
+ * \param   testParams  Test case parameters.
+ *
+ * \retval  CSL_PASS on success, CSL_EFAIL on failure.
+ */
+static int32_t TestMcan_maxMsgRamWordCntTest(st_mcanTestcaseParams_t *testParams)
+{
+    int32_t  testStatus   = CSL_PASS;
+    int32_t  configStatus = CSL_PASS;
+    uint32_t loopCnt      = 0U;
+    uint32_t txBufNum     = 0U;
+    uint32_t bitPos, txStatus;
+    uint32_t totalRxCount = 0U;
+    uint32_t msgLostDetected = 0U;
+    MCAN_ProtocolStatus    protStatus;
+    MCAN_ErrCntStatus      errCounter;
+    MCAN_TxBufElement      txElem;
+    MCAN_TxBufElement      refTxElem;
+    MCAN_RxBufElement      rxMsg;
+    uint32_t               fifo0Idx  = 0U;
+    uint32_t               fifo1Idx  = 0U;
+    MCAN_RxFIFOStatus      fifoStatus;
+    MCAN_RxNewDataStatus   newDataStatus;
+    MCAN_RxNewDataStatus   clearStatus;
+    MCAN_StdMsgIDFilterElement stdFilter;
+    MCAN_ExtMsgIDFilterElement extFilter;
+    MCAN_ConfigParams      configParams;
+
+    DebugP_log("\n=== Max Msg RAM Word Count Test: Send %u, Receive %u ===\n",
+               MAX_RAM_SEND_CNT, MAX_RAM_TOTAL_RX);
+
+    /* ------------------------------------------------------------------
+     * Setup: Enter SW_INIT mode to configure filters dynamically.
+     * ------------------------------------------------------------------ */
+    MCAN_setOpMode(gMcanBaseAddr, MCAN_OPERATION_MODE_SW_INIT);
+    while (MCAN_OPERATION_MODE_SW_INIT != MCAN_getOpMode(gMcanBaseAddr))
+    {}
+
+    /* Configure non-matching frame acceptance to reject all non-matching */
+    configParams.monEnable        = testParams->mcanConfigParams.configParams->monEnable;
+    configParams.asmEnable        = testParams->mcanConfigParams.configParams->asmEnable;
+    configParams.tsPrescalar      = testParams->mcanConfigParams.configParams->tsPrescalar;
+    configParams.tsSelect         = testParams->mcanConfigParams.configParams->tsSelect;
+    configParams.timeoutPreload   = testParams->mcanConfigParams.configParams->timeoutPreload;
+    configParams.timeoutCntEnable = testParams->mcanConfigParams.configParams->timeoutCntEnable;
+    configParams.filterConfig.rrfe = testParams->mcanConfigParams.configParams->filterConfig.rrfe;
+    configParams.filterConfig.rrfs = testParams->mcanConfigParams.configParams->filterConfig.rrfs;
+    configParams.filterConfig.anfe = 3U;  /* Reject non-matching extended frames */
+    configParams.filterConfig.anfs = 3U;  /* Reject non-matching standard frames */
+    MCAN_config(gMcanBaseAddr, &configParams);
+
+    /* Std Filter 0: Range 0x001-0x040 -> FIFO0 (messages 1-64) */
+    stdFilter.sfid1 = 0x001U;
+    stdFilter.sfid2 = 0x040U;
+    stdFilter.sfec  = MCAN_STD_FILT_ELEM_FIFO0;
+    stdFilter.sft   = MCAN_STD_FILT_TYPE_RANGE;
+    MCAN_addStdMsgIDFilter(gMcanBaseAddr, 0U, &stdFilter);
+
+    /* Std Filter 1: Range 0x041-0x080 -> FIFO1 (messages 65-128) */
+    stdFilter.sfid1 = 0x041U;
+    stdFilter.sfid2 = 0x080U;
+    stdFilter.sfec  = MCAN_STD_FILT_ELEM_FIFO1;
+    stdFilter.sft   = MCAN_STD_FILT_TYPE_RANGE;
+    MCAN_addStdMsgIDFilter(gMcanBaseAddr, 1U, &stdFilter);
+
+    /* Ext Filters 0-63: Each routes ext ID (i+1) to RX buffer i (messages 129-192) */
+    for (loopCnt = 0U; loopCnt < MAX_RAM_RXBUF_CNT; loopCnt++)
+    {
+        extFilter.efid1 = loopCnt + 1U;             /* Extended ID to match */
+        extFilter.efec  = MCAN_EXT_FILT_ELEM_BUFFER; /* Store into RX buffer */
+        extFilter.efid2 = loopCnt;                   /* RX buffer index */
+        extFilter.eft   = MCAN_STD_FILT_TYPE_RANGE;  /* Ignored when efec=7 */
+        MCAN_addExtMsgIDFilter(gMcanBaseAddr, loopCnt, &extFilter);
+    }
+
+    /* Re-enable internal loopback (must be set in SW_INIT mode) */
+    MCAN_lpbkModeEnable(gMcanBaseAddr, MCAN_LPBK_MODE_INTERNAL, TRUE);
+
+    MCAN_setOpMode(gMcanBaseAddr, MCAN_OPERATION_MODE_NORMAL);
+    while (MCAN_OPERATION_MODE_NORMAL != MCAN_getOpMode(gMcanBaseAddr))
+    {}
+
+    /* Enable Interrupts */
+    MCAN_enableIntr(gMcanBaseAddr, testParams->mcanConfigParams.intrEnable, (uint32_t)TRUE);
+    MCAN_selectIntrLine(gMcanBaseAddr,
+                        testParams->mcanConfigParams.intrLineSelectMask,
+                        testParams->mcanConfigParams.intrLine);
+    MCAN_enableIntrLine(gMcanBaseAddr,
+                        testParams->mcanConfigParams.intrLine, 1U);
+
+    /* Enable TX buffer 0 transmission interrupt */
+    configStatus = MCAN_txBufTransIntrEnable(gMcanBaseAddr, txBufNum, (uint32_t)TRUE);
+    if (configStatus != CSL_PASS)
+    {
+        DebugP_log("\nMCAN TX intr enable FAILED\n");
+        MCAN_enableIntr(gMcanBaseAddr, MCAN_INTR_MASK_ALL, (uint32_t)FALSE);
+        DebugP_log("=== Max Msg RAM Word Count Test FAILED ===\n");
+        return CSL_EFAIL;
+    }
+
+    /* ------------------------------------------------------------------
+     * Phase 1: Send 193 messages without reading any.
+     *   Messages 1-64:   Std ID 0x001-0x040 -> FIFO0
+     *   Messages 65-128: Std ID 0x041-0x080 -> FIFO1
+     *   Messages 129-192: Ext ID 0x001-0x040 -> RX Buffers 0-63
+     *   Message 193:      Std ID 0x001 -> FIFO0 (full) -> MSG_LOST
+     * ------------------------------------------------------------------ */
+    DebugP_log("Phase 1: Sending %u messages without reading...\n", MAX_RAM_SEND_CNT);
+    MCAN_initTxBufElement(&txElem);
+    txElem.dlc = MCAN_DATA_SIZE_8BYTES;
+    txElem.fdf = 0U;
+    txElem.brs = 0U;
+    txElem.efc = 0U;
+
+    gMcanIsrIntr0Status = 0U;
+
+    for (loopCnt = 0U; loopCnt < MAX_RAM_SEND_CNT; loopCnt++)
+    {
+        if (loopCnt < MAX_RAM_FIFO0_CNT)
+        {
+            /* Messages 0-63: Std ID 0x001-0x040 -> FIFO0 */
+            txElem.id  = ((0x001U + loopCnt) << APP_MCAN_STD_ID_SHIFT);
+            txElem.xtd = 0U;
+        }
+        else if (loopCnt < (MAX_RAM_FIFO0_CNT + MAX_RAM_FIFO1_CNT))
+        {
+            /* Messages 64-127: Std ID 0x041-0x080 -> FIFO1 */
+            txElem.id  = ((0x041U + (loopCnt - MAX_RAM_FIFO0_CNT)) << APP_MCAN_STD_ID_SHIFT);
+            txElem.xtd = 0U;
+        }
+        else if (loopCnt < MAX_RAM_TOTAL_RX)
+        {
+            /* Messages 128-191: Ext ID 0x001-0x040 -> RX Buffers 0-63 */
+            txElem.id  = (loopCnt - MAX_RAM_FIFO0_CNT - MAX_RAM_FIFO1_CNT) + 1U;
+            txElem.xtd = 1U;
+        }
+        else
+        {
+            /* Message 192 (193rd): Std ID 0x001 -> FIFO0 full -> MSG_LOST */
+            txElem.id  = (0x001U << APP_MCAN_STD_ID_SHIFT);
+            txElem.xtd = 0U;
+        }
+
+        /* Stamp data with message sequence number for verification */
+        txElem.data[0U] = (uint8_t)(loopCnt & 0xFFU);
+        txElem.data[1U] = (uint8_t)((loopCnt >> 8U) & 0xFFU);
+
+        /* Write to TX buffer 0 and request transmission */
+        MCAN_writeMsgRam(gMcanBaseAddr, MCAN_MEM_TYPE_BUF, txBufNum, &txElem);
+        configStatus = MCAN_txBufAddReq(gMcanBaseAddr, txBufNum);
+        if (CSL_PASS != configStatus)
+        {
+            DebugP_log("\nError in Adding TX Request for msg %u\n", loopCnt);
+            testStatus = CSL_EFAIL;
+            break;
+        }
+
+        /* Wait for TX completion */
+        while (!((gMcanIsrIntr0Status & MCAN_INTR_SRC_TRANS_COMPLETE) ==
+                                MCAN_INTR_SRC_TRANS_COMPLETE))
+        {}
+
+        /* Poll TXBTO for confirmation */
+        bitPos = (1U << txBufNum);
+        do
+        {
+            txStatus = MCAN_getTxBufTransmissionStatus(gMcanBaseAddr);
+        } while ((txStatus & bitPos) != bitPos);
+
+        /* Check for MSG_LOST on the 193rd message */
+        if (loopCnt == (MAX_RAM_SEND_CNT - 1U))
+        {
+            if ((gMcanIsrIntr0Status & MCAN_INTR_SRC_RX_FIFO0_MSG_LOST) ==
+                                MCAN_INTR_SRC_RX_FIFO0_MSG_LOST)
+            {
+                msgLostDetected = 1U;
+                DebugP_log("MSG_LOST detected for message %u (expected)\n", loopCnt + 1U);
+            }
+        }
+
+        gMcanIsrIntr0Status = 0U;
+
+        /* Check for protocol errors */
+        MCAN_getErrCounters(gMcanBaseAddr, &errCounter);
+        if ((0U != errCounter.recErrCnt) || (0U != errCounter.canErrLogCnt))
+        {
+            DebugP_log("\nError counters non-zero at msg %u (TEC=%u REC=%u)\n",
+                       loopCnt, errCounter.canErrLogCnt, errCounter.recErrCnt);
+            testStatus = CSL_EFAIL;
+            break;
+        }
+
+        MCAN_getProtocolStatus(gMcanBaseAddr, &protStatus);
+        if (!((MCAN_ERR_CODE_NO_ERROR == protStatus.lastErrCode) ||
+              (MCAN_ERR_CODE_NO_CHANGE == protStatus.lastErrCode)) ||
+            !((MCAN_ERR_CODE_NO_ERROR == protStatus.dlec) ||
+              (MCAN_ERR_CODE_NO_CHANGE == protStatus.dlec)) ||
+            (0U != protStatus.pxe))
+        {
+            DebugP_log("\nProtocol error at msg %u\n", loopCnt);
+            testStatus = CSL_EFAIL;
+            break;
+        }
+    }
+
+    DebugP_log("Phase 1 complete: All %u messages sent.\n", MAX_RAM_SEND_CNT);
+
+    /* ------------------------------------------------------------------
+     * Phase 2: Verify MSG_LOST was detected for the 193rd message.
+     * ------------------------------------------------------------------ */
+    if (msgLostDetected != 1U)
+    {
+        DebugP_log("FAIL: MSG_LOST not detected for 193rd message!\n");
+        testStatus = CSL_EFAIL;
+    }
+    else
+    {
+        DebugP_log("Phase 2: MSG_LOST correctly detected for 193rd message.\n");
+    }
+
+    /* ------------------------------------------------------------------
+     * Phase 3: Receive phase - read 192 messages from all RX paths.
+     * ------------------------------------------------------------------ */
+    DebugP_log("Phase 3: Receiving messages from all RX paths...\n");
+
+    /* Initialize reference TX element with same constant fields as send loop */
+    MCAN_initTxBufElement(&refTxElem);
+    refTxElem.dlc = MCAN_DATA_SIZE_8BYTES;
+    refTxElem.fdf = 0U;
+    refTxElem.brs = 0U;
+    refTxElem.efc = 0U;
+
+    /* Read from FIFO0 (expect 64 messages) */
+    fifoStatus.num = MCAN_RX_FIFO_NUM_0;
+    MCAN_getRxFIFOStatus(gMcanBaseAddr, &fifoStatus);
+    DebugP_log("FIFO0: fillLvl=%u, fifoFull=%u\n", fifoStatus.fillLvl, fifoStatus.fifoFull);
+
+    if (fifoStatus.fifoFull != 1U)
+    {
+        DebugP_log("FAIL: FIFO0 should be full (64 messages)\n");
+        testStatus = CSL_EFAIL;
+    }
+
+    while (fifoStatus.fillLvl > 0U)
+    {
+        MCAN_readMsgRam(gMcanBaseAddr,
+                        MCAN_MEM_TYPE_FIFO,
+                        fifoStatus.getIdx,
+                        (uint32_t)fifoStatus.num,
+                        &rxMsg);
+        (void)MCAN_writeRxFIFOAck(gMcanBaseAddr,
+                                  (uint32_t)fifoStatus.num,
+                                  fifoStatus.getIdx);
+        totalRxCount++;
+        /* Reconstruct expected TX element and compare TX/RX data */
+        refTxElem.id       = ((0x001U + fifo0Idx) << APP_MCAN_STD_ID_SHIFT);
+        refTxElem.xtd      = 0U;
+        refTxElem.data[0U] = (uint8_t)(fifo0Idx & 0xFFU);
+        refTxElem.data[1U] = (uint8_t)((fifo0Idx >> 8U) & 0xFFU);
+        if (App_mcanTxRxMessageCheck(refTxElem, rxMsg) != CSL_PASS)
+        {
+            DebugP_log("FAIL: FIFO0 msg %u TX/RX mismatch\n", fifo0Idx);
+            testStatus = CSL_EFAIL;
+        }
+        fifo0Idx++;
+        MCAN_getRxFIFOStatus(gMcanBaseAddr, &fifoStatus);
+    }
+    DebugP_log("FIFO0: Read %u messages\n", totalRxCount);
+
+    /* Read from FIFO1 (expect 64 messages) */
+    fifoStatus.num = MCAN_RX_FIFO_NUM_1;
+    MCAN_getRxFIFOStatus(gMcanBaseAddr, &fifoStatus);
+    DebugP_log("FIFO1: fillLvl=%u, fifoFull=%u\n", fifoStatus.fillLvl, fifoStatus.fifoFull);
+
+    if (fifoStatus.fifoFull != 1U)
+    {
+        DebugP_log("FAIL: FIFO1 should be full (64 messages)\n");
+        testStatus = CSL_EFAIL;
+    }
+
+    while (fifoStatus.fillLvl > 0U)
+    {
+        MCAN_readMsgRam(gMcanBaseAddr,
+                        MCAN_MEM_TYPE_FIFO,
+                        fifoStatus.getIdx,
+                        (uint32_t)fifoStatus.num,
+                        &rxMsg);
+        (void)MCAN_writeRxFIFOAck(gMcanBaseAddr,
+                                  (uint32_t)fifoStatus.num,
+                                  fifoStatus.getIdx);
+        totalRxCount++;
+        /* Reconstruct expected TX element and compare TX/RX data */
+        refTxElem.id       = ((0x041U + fifo1Idx) << APP_MCAN_STD_ID_SHIFT);
+        refTxElem.xtd      = 0U;
+        refTxElem.data[0U] = (uint8_t)((MAX_RAM_FIFO0_CNT + fifo1Idx) & 0xFFU);
+        refTxElem.data[1U] = (uint8_t)(((MAX_RAM_FIFO0_CNT + fifo1Idx) >> 8U) & 0xFFU);
+        if (App_mcanTxRxMessageCheck(refTxElem, rxMsg) != CSL_PASS)
+        {
+            DebugP_log("FAIL: FIFO1 msg %u TX/RX mismatch\n", fifo1Idx);
+            testStatus = CSL_EFAIL;
+        }
+        fifo1Idx++;
+        MCAN_getRxFIFOStatus(gMcanBaseAddr, &fifoStatus);
+    }
+    DebugP_log("FIFO0+FIFO1: Read %u messages total\n", totalRxCount);
+
+    /* Read from dedicated RX buffers 0-63 (expect 64 messages).
+     * newDataStatus is read once and kept intact for all 64 checks.
+     * clearStatus is a separate struct used only for the clear call. */
+    MCAN_getNewDataStatus(gMcanBaseAddr, &newDataStatus);
+    for (loopCnt = 0U; loopCnt < MAX_RAM_RXBUF_CNT; loopCnt++)
+    {
+        if (loopCnt < 32U)
+        {
+            bitPos = (1U << loopCnt);
+            if ((newDataStatus.statusLow & bitPos) == bitPos)
+            {
+                MCAN_readMsgRam(gMcanBaseAddr,
+                                MCAN_MEM_TYPE_BUF,
+                                loopCnt,
+                                MCAN_RX_FIFO_NUM_0,
+                                &rxMsg);
+                /* Clear new-data flag for this buffer only */
+                clearStatus.statusLow  = bitPos;
+                clearStatus.statusHigh = 0U;
+                MCAN_clearNewDataStatus(gMcanBaseAddr, &clearStatus);
+                totalRxCount++;
+                /* Reconstruct expected TX element and compare TX/RX data */
+                refTxElem.id       = (loopCnt + 1U);
+                refTxElem.xtd      = 1U;
+                refTxElem.data[0U] = (uint8_t)((MAX_RAM_FIFO0_CNT + MAX_RAM_FIFO1_CNT + loopCnt) & 0xFFU);
+                refTxElem.data[1U] = (uint8_t)(((MAX_RAM_FIFO0_CNT + MAX_RAM_FIFO1_CNT + loopCnt) >> 8U) & 0xFFU);
+                if (App_mcanTxRxMessageCheck(refTxElem, rxMsg) != CSL_PASS)
+                {
+                    DebugP_log("FAIL: RX buffer %u TX/RX mismatch\n", loopCnt);
+                    testStatus = CSL_EFAIL;
+                }
+            }
+            else
+            {
+                DebugP_log("FAIL: RX buffer %u has no new data\n", loopCnt);
+                testStatus = CSL_EFAIL;
+            }
+        }
+        else
+        {
+            bitPos = (1U << (loopCnt - 32U));
+            if ((newDataStatus.statusHigh & bitPos) == bitPos)
+            {
+                MCAN_readMsgRam(gMcanBaseAddr,
+                                MCAN_MEM_TYPE_BUF,
+                                loopCnt,
+                                MCAN_RX_FIFO_NUM_0,
+                                &rxMsg);
+                /* Clear new-data flag for this buffer only */
+                clearStatus.statusLow  = 0U;
+                clearStatus.statusHigh = bitPos;
+                MCAN_clearNewDataStatus(gMcanBaseAddr, &clearStatus);
+                totalRxCount++;
+                /* Reconstruct expected TX element and compare TX/RX data */
+                refTxElem.id       = (loopCnt + 1U);
+                refTxElem.xtd      = 1U;
+                refTxElem.data[0U] = (uint8_t)((MAX_RAM_FIFO0_CNT + MAX_RAM_FIFO1_CNT + loopCnt) & 0xFFU);
+                refTxElem.data[1U] = (uint8_t)(((MAX_RAM_FIFO0_CNT + MAX_RAM_FIFO1_CNT + loopCnt) >> 8U) & 0xFFU);
+                if (App_mcanTxRxMessageCheck(refTxElem, rxMsg) != CSL_PASS)
+                {
+                    DebugP_log("FAIL: RX buffer %u TX/RX mismatch\n", loopCnt);
+                    testStatus = CSL_EFAIL;
+                }
+            }
+            else
+            {
+                DebugP_log("FAIL: RX buffer %u has no new data\n", loopCnt);
+                testStatus = CSL_EFAIL;
+            }
+        }
+    }
+    DebugP_log("Total messages received: %u (expected %u)\n", totalRxCount, MAX_RAM_TOTAL_RX);
+
+    /* ------------------------------------------------------------------
+     * Phase 4: Verify total count and that no more messages are available.
+     * ------------------------------------------------------------------ */
+    if (totalRxCount != MAX_RAM_TOTAL_RX)
+    {
+        DebugP_log("FAIL: Expected %u received messages, got %u\n",
+                   MAX_RAM_TOTAL_RX, totalRxCount);
+        testStatus = CSL_EFAIL;
+    }
+
+    /* Verify FIFO0 is empty */
+    fifoStatus.num = MCAN_RX_FIFO_NUM_0;
+    MCAN_getRxFIFOStatus(gMcanBaseAddr, &fifoStatus);
+    if (fifoStatus.fillLvl != 0U)
+    {
+        DebugP_log("FAIL: FIFO0 still has %u messages after reading\n", fifoStatus.fillLvl);
+        testStatus = CSL_EFAIL;
+    }
+
+    /* Verify FIFO1 is empty */
+    fifoStatus.num = MCAN_RX_FIFO_NUM_1;
+    MCAN_getRxFIFOStatus(gMcanBaseAddr, &fifoStatus);
+    if (fifoStatus.fillLvl != 0U)
+    {
+        DebugP_log("FAIL: FIFO1 still has %u messages after reading\n", fifoStatus.fillLvl);
+        testStatus = CSL_EFAIL;
+    }
+
+    /* Verify no new data in RX buffers (193rd receive attempt fails) */
+    MCAN_getNewDataStatus(gMcanBaseAddr, &newDataStatus);
+    if ((newDataStatus.statusLow != 0U) || (newDataStatus.statusHigh != 0U))
+    {
+        DebugP_log("FAIL: RX buffers still have new data (low=0x%08X high=0x%08X)\n",
+                   newDataStatus.statusLow, newDataStatus.statusHigh);
+        testStatus = CSL_EFAIL;
+    }
+
+    DebugP_log("Phase 4: 193rd message receive correctly failed (no more messages available)\n");
+
+    /* Disable TX buffer interrupt */
+    (void)MCAN_txBufTransIntrEnable(gMcanBaseAddr, txBufNum, (uint32_t)FALSE);
+
+    /* Disable Interrupts */
+    MCAN_enableIntr(gMcanBaseAddr, MCAN_INTR_MASK_ALL, (uint32_t)FALSE);
+
+    DebugP_log("=== Max Msg RAM Word Count Test %s ===\n",
+               (testStatus == CSL_PASS) ? "PASSED" : "FAILED");
+
     return testStatus;
 }

@@ -221,7 +221,11 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_freertos_c75_1;
         }
     }
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    // cfg boots all cores simultaneously; only r5fss0-0 (master) needs the robot test
+    if(buildOption.cpu.match("r5fss0-0"))
+    {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

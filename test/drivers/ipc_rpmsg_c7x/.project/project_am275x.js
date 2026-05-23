@@ -203,7 +203,11 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_freertos_c75_1;
         }
     }
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    // cfg boots all cores simultaneously; only c75ss0-0 (master) needs the robot test
+    if(buildOption.cpu.match("c75ss0-0"))
+    {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
 
     return build_property;
 }

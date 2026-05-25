@@ -129,6 +129,8 @@ const robot_template = {
         testCaseIds: "SITSW-6021",
         expectedString: "RTC LED blink test passed!!",
         timeout: 300,
+        cfgFileName: "default_rtc_led_blink_${DEVICE_TYPE}.cfg",
+        bootMode: "XSPI_1S_BOOT_MODE",
     },
 };
 
@@ -176,7 +178,7 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
-    build_property.templates = [...build_property.templates, { ...robot_template, options: { ...robot_template.options, cfgFileName: "default_rtc_led_blink_hs.cfg", bootMode: "XSPI_1S_BOOT_MODE" } }];
+    build_property.templates = [...build_property.templates, robot_template];
 
     return build_property;
 }

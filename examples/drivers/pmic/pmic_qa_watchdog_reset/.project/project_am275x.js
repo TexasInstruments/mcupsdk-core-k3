@@ -86,7 +86,7 @@ const robot_template = {
         componentName: "PMIC",
         testCaseName: "PMIC: Q&A watchdog reset mode example",
         testCaseIds: "SITSW-4633",
-        cfgPath: "examples/drivers/pmic/pmic_qa_watchdog_reset/am275x-evm/default_pmic_qa_watchdog_reset_hs.cfg",
+        cfgPath: "examples/drivers/pmic/pmic_qa_watchdog_reset/am275x-evm/default_pmic_qa_watchdog_reset_${DEVICE_TYPE}.cfg",
         bootMode: "XSPI_1S_BOOT_MODE",
     },
 };

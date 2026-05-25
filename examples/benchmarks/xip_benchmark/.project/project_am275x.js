@@ -128,6 +128,8 @@ const robot_template = {
         testCaseName: "XIP: example for XIP Benchmark",
         testCaseIds: "SITSW-6362",
         timeout: 780,
+        cfgFileName: "xip_benchmark_sbl_ospi_${DEVICE_TYPE}.cfg",
+        bootMode: "XSPI_1S_BOOT_MODE",
     },
 };
 
@@ -180,7 +182,7 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
-    build_property.templates = [...build_property.templates, { ...robot_template, options: { ...robot_template.options, cfgFileName: "xip_benchmark_sbl_ospi_hs.cfg", bootMode: "XSPI_1S_BOOT_MODE" } }];
+    build_property.templates = [...build_property.templates, robot_template];
 
     return build_property;
 }

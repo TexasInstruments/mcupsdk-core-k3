@@ -63,14 +63,17 @@ const syscfgfile = "../example.syscfg";
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_SBL_UART_UNIFLASH";
 
 const robot_template = {
-    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    input: ".project/templates/am275x/astra/tests_uniflash.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "SBL,UART",
         testCaseName: "Bootloader: UART Uniflash bootloader",
         testCaseIds: "SITSW-1633",
-        withCfg: true,
-        cfgPath: "tools/boot/sbl_prebuilt/am275x-evm/sbl_null_hs.cfg",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/sbl_null_${DEVICE_TYPE}.cfg",
+        bootMode: "XSPI_1S_BOOT_MODE",
+        expectedString: "SBL Total Time Taken",
+        expectTimeout: 300,
+        timeout: 400,
     },
 };
 

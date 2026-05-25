@@ -104,7 +104,7 @@ const robot_template = {
     options: {
         testCaseName: "Bootloader: SBL EMMC",
         testCaseIds: "SITSW-2730",
-        cfgPath: "tools/boot/sbl_prebuilt/am275x-evm/sbl_emmc_hs.cfg",
+        cfgPath: "tools/boot/sbl_prebuilt/am275x-evm/sbl_emmc_${DEVICE_TYPE}.cfg",
         bootMode: "EMMC_BOOT_MODE",
     },
 };

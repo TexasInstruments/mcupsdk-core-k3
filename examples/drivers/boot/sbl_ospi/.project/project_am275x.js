@@ -103,7 +103,7 @@ const robot_template = {
     options: {
         testCaseName: "Bootloader: SBL OSPI",
         testCaseIds: "SITSW-5669",
-        cfgPath: "tools/boot/sbl_prebuilt/am275x-evm/sbl_ospi_hs.cfg",
+        cfgPath: "tools/boot/sbl_prebuilt/am275x-evm/sbl_ospi_${DEVICE_TYPE}.cfg",
         bootMode: "XSPI_1S_BOOT_MODE",
     },
 };

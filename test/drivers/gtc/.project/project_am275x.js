@@ -259,6 +259,7 @@ const robot_template = {
         componentName: "GTC",
         testCaseName: "GTC Test Application",
         testCaseIds: "SITSW-2096 SITSW-9400 SITSW-9401",
+        expectTimeout: 500,
     },
 };
 

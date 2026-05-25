@@ -32,12 +32,14 @@
     let timeout        = (options && options.timeout)        ? options.timeout        : 630;
     let expectTimeout  = (options && options.expectTimeout)  ? options.expectTimeout  : 120;
     let componentName  = (options && options.componentName)  ? options.componentName  : project.name;
-    let testCaseIds    = (options && options.testCaseIds)    ? options.testCaseIds    : "SITSW-XXXXX";
+    let testCaseIds    = (options && options.testCaseIds)    ? options.testCaseIds.trim().split(/\s+/).join("    ") : "SITSW-XXXXX";
     let testCaseName   = (options && options.testCaseName)   ? options.testCaseName   : componentName + " application";
     let bootMode       = (options && options.bootMode)       ? options.bootMode       : "XSPI_1S_BOOT_MODE";
 
     let coreName = project.cpu + "_" + project.os;
-    let cfgFile  = "${SDK_PATH}/" + project.relpath + "/" + project.board + "/" + coreName + "/" + options.cfgFileName;
+    let cfgFile  = options.cfgPath
+                 ? "${SDK_PATH}/" + options.cfgPath.replace("{board}", project.board)
+                 : "${SDK_PATH}/" + project.relpath + "/" + project.board + "/" + coreName + "/" + options.cfgFileName;
 %%}
 *** Comments ***
 `componentName` `coreName` TEST FILE
@@ -73,4 +75,5 @@ ${CFG_FILE}    `cfgFile`
 	CHANGE BOOT MODE    ${`bootMode`}
 	DUT OFF
 	DUT ON
+	DUT`logPort`.CONNECT TO UART PORT    ${`logPort`}
 	DUT`logPort`.EXPECT STRING AT UART PORT    `expectedString`    `expectTimeout`

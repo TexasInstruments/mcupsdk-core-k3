@@ -93,7 +93,7 @@ const robot_sbl_template = {
         testCaseName: "Spinlock Example application",
         testCaseIds: "SITSW-4836",
         withCfg: true,
-        cfgPath: "examples/drivers/spinlock/spinlock_example/am275x-evm/spinlock_example_sbl_uart_hs.cfg",
+        cfgPath: "examples/drivers/spinlock/spinlock_example/am275x-evm/spinlock_example_sbl_uart_${DEVICE_TYPE}.cfg",
         timeout: 720,
     },
 };

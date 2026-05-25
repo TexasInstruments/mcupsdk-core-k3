@@ -137,7 +137,7 @@ const robot_template = {
         testCaseName: "RTC Test Application",
         testCaseIds: "SITSW-5822 SITSW-5823 SITSW-5824",
         bootMode: "XSPI_1S_BOOT_MODE",
-        cfgFileName: "default_test_rtc_hs.cfg",
+        cfgFileName: "default_test_rtc_${DEVICE_TYPE}.cfg",
     },
 };
 

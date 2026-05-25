@@ -177,7 +177,7 @@ const robot_sbl_template = {
         testCaseIds: "SITSW-1940",
         timeout: 1200,
         withCfg: true,
-        cfgPath: "examples/drivers/ipc/ipc_notify_echo/am275x-evm/ipc_notify_echo_sbl_uart_hs.cfg",
+        cfgPath: "examples/drivers/ipc/ipc_notify_echo/am275x-evm/ipc_notify_echo_sbl_uart_${DEVICE_TYPE}.cfg",
     },
 };
 

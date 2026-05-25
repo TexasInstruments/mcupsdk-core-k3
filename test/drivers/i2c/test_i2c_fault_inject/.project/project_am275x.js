@@ -179,6 +179,18 @@ const templates_freertos_wkup_r5f =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "I2C",
+        testCaseName: "I2C Fault Injection Test",
+        testCaseIds: "SITSW-8316 SITSW-8337",
+        timeout: 660,
+        expectTimeout: 600,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
@@ -260,6 +272,8 @@ function getComponentBuildProperty(buildOption) {
             build_property.cflags = cflags_free_rtos_mcu_r5_nortos;
         }
     }
+    build_property.templates = [...(build_property.templates || []), robot_template];
+
     return build_property;
 }
 

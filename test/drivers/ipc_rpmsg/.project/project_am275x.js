@@ -122,7 +122,7 @@ const robot_template = {
              "SITSW-6231 SITSW-6232 SITSW-6233 SITSW-6234 SITSW-6235 SITSW-6236 SITSW-6237 SITSW-6238 SITSW-9825 SITSW-9826 " +
              "SITSW-9827 SITSW-9828 SITSW-9829",
         withCfg: true,
-        cfgPath: "test/drivers/ipc_rpmsg/am275x-evm/ipc_rpmsg_test_sbl_uart_hs.cfg",
+        cfgPath: "test/drivers/ipc_rpmsg/am275x-evm/ipc_rpmsg_test_sbl_uart_${DEVICE_TYPE}.cfg",
     },
 };
 

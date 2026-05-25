@@ -145,7 +145,7 @@ const robot_template = {
         testCaseIds: "SITSW-4561",
         expectedString: "All tests passed",
         withCfg: true,
-        cfgPath: "test/drivers/ipc_notify_benchmark/am275x-evm/ipc_notify_benchmark_test_sbl_uart_hs.cfg",
+        cfgPath: "test/drivers/ipc_notify_benchmark/am275x-evm/ipc_notify_benchmark_test_sbl_uart_${DEVICE_TYPE}.cfg",
     },
 };
 

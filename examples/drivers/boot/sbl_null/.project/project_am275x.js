@@ -81,7 +81,7 @@ const robot_template = {
     options: {
         testCaseName: "Bootloader: Null bootloader",
         testCaseIds: "SITSW-1630",
-        cfgPath: "tools/boot/sbl_prebuilt/am275x-evm/sbl_null_hs.cfg",
+        cfgPath: "tools/boot/sbl_prebuilt/am275x-evm/sbl_null_${DEVICE_TYPE}.cfg",
     },
 };
 

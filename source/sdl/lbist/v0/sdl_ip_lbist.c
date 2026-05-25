@@ -50,6 +50,9 @@
 #define SDL_LBIST_STAT_OUT_MUX_CTL_MISR_VALUE_1             (0x2U)
 #define SDL_LBIST_STAT_OUT_MUX_CTL_MISR_VALUE_2             (0x3U)
 
+#define DSB_ENABLE  asm("dsb")
+#define ISB_ENABLE  asm("isb")
+
 /* Local Function prototypes */
 static void SDL_LBIST_setLoadDiv(SDL_lbistRegs *pLBISTRegs);
 
@@ -91,7 +94,11 @@ int32_t SDL_LBIST_getMISR(SDL_lbistRegs *pLBISTRegs, uint32_t *pMISRValue)
         muxVal  = SDL_LBIST_STAT_OUT_MUX_CTL_MISR_VALUE_1;
         regVal |= (muxVal << SDL_LBIST_STAT_OUT_MUX_CTL_SHIFT);
         pLBISTRegs->LBIST_STAT = regVal;
+        DSB_ENABLE;
+        ISB_ENABLE;
         *pMISRValue  = pLBISTRegs->LBIST_MISR;
+        DSB_ENABLE;
+        ISB_ENABLE;
     }
     return status;
 }

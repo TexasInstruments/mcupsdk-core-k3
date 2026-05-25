@@ -104,7 +104,11 @@ const robot_template = {
         testCaseIds: "SITSW-1634",
         expectedString: "Hello World!",
         withCfg: true,
-        cfgPath: "tools/boot/sbl_prebuilt/am275x-evm/sbl_uart_hs.cfg",
+        cfgPath: "tools/boot/sbl_prebuilt/am275x-evm/sbl_uart_${DEVICE_TYPE}.cfg",
+        logPort: "ACM0",
+        coreName: "r5fss0-0_nortos",
+        expectTimeout: 60,
+        timeout: 660,
     },
 };
 

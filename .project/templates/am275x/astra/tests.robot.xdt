@@ -19,29 +19,45 @@
  *    Requires cfgPath option (path relative to SDK root).
  *
  * Supports optional interactive UART tests via interactPrompt + interactSend.
+ *
+ * Options:
+ *   componentName, testCaseName, testCaseIds
+ *   expectedString (default: "All tests have passed")
+ *   timeout (default: 630), expectTimeout (default: 30)
+ *   logPort — override computed log port (ACM0/USB0/USB2)
+ *   coreName — override computed core name
+ *   withCfg — use UartBootloader.WITH CFG with cfgPath
+ *   cfgPath — path relative to SDK root (supports ${DEVICE_TYPE})
+ *   interactPrompt, interactSend, interactPromptTimeout (default: 20)
  */
     let options  = args.options;
     let project  = args.project;
 
     let isWkupR5f = project.cpu.match(/wkup-r5f/) ? true : false;
 
-	let sblPort = "ACM0";
+    let sblPort = "ACM0";
     let logPort = "ACM0";
     if (isWkupR5f) {
-		logPort = "USB2";
-	} else if (project.cpu.match(/c75/)) {
-		logPort = "USB0";
-	}
-    let expectedString = (options && options.expectedString) ? options.expectedString : "All tests have passed";
-    let timeout 	   = (options && options.timeout)        ? options.timeout        : 630;
-    let componentName  = (options && options.componentName)  ? options.componentName  : project.name;
-    let testCaseIds    = (options && options.testCaseIds)    ? options.testCaseIds.trim().split(/\s+/).join("    ") : "SITSW-XXXXX";
-    let testCaseName   = (options && options.testCaseName)   ? options.testCaseName   : componentName + " application";
-    let interactPrompt = (options && options.interactPrompt) ? options.interactPrompt : null;
-    let interactSend   = (options && options.interactSend)   ? options.interactSend   : [];
-    let withCfg        = (options && options.withCfg)        ? true                   : false;
+        logPort = "USB2";
+    } else if (project.cpu.match(/c75/)) {
+        logPort = "USB0";
+    }
+    if (options && options.logPort) logPort = options.logPort;
 
-    let coreName  = project.cpu + "_" + project.os;
+    let expectedString        = (options && options.expectedString)        ? options.expectedString        : "All tests have passed";
+    let timeout               = (options && options.timeout)               ? options.timeout               : 630;
+    let expectTimeout         = (options && options.expectTimeout)         ? options.expectTimeout         : 30;
+    let componentName         = (options && options.componentName)         ? options.componentName         : project.name;
+    let testCaseIds           = (options && options.testCaseIds)           ? options.testCaseIds.trim().split(/\s+/).join("    ") : "SITSW-XXXXX";
+    let testCaseName          = (options && options.testCaseName)          ? options.testCaseName          : componentName + " application";
+    let interactPrompt        = (options && options.interactPrompt)        ? options.interactPrompt        : null;
+    let interactSend          = (options && options.interactSend)          ? options.interactSend          : [];
+    let interactPromptTimeout = (options && options.interactPromptTimeout) ? options.interactPromptTimeout : 20;
+    let secondaryInteractPort = (options && options.secondaryInteractPort) ? options.secondaryInteractPort : null;
+    let secondaryInteractSend = (options && options.secondaryInteractSend) ? options.secondaryInteractSend : [];
+    let withCfg               = (options && options.withCfg)               ? true                         : false;
+
+    let coreName  = (options && options.coreName) ? options.coreName : project.cpu + "_" + project.os;
     let binaryExt = isWkupR5f ? "${DEVICE_TYPE}.tiimage" : "mcelf.${DEVICE_TYPE}";
     let sbl       = "sbl_prebuilt/" + project.board + "/sbl_uart.release.${DEVICE_TYPE}.tiimage";
     let appBinary = "../../" + project.relpath + "/" + project.board + "/" + coreName + "/" + project.cgt + "/" + project.name + ".release." + binaryExt;
@@ -63,15 +79,14 @@ Test Teardown    INFRA_TEST_TEARDOWN
 *** Variables ***
 
 % if (withCfg) {
-${CFG_FILE}    `cfgFile`
-% } else if (isWkupR5f) {
-${SOC}    `project.device`
 ${DEVICE_TYPE}    ${{ 'hs' if 'hsse' in '${PLATFORM}' else 'hs_fs' }}
-${APP_BINARY}    `appBinary`
+${CFG_FILE}    `cfgFile`
 % } else {
 ${SOC}    `project.device`
 ${DEVICE_TYPE}    ${{ 'hs' if 'hsse' in '${PLATFORM}' else 'hs_fs' }}
+% if (!isWkupR5f) {
 ${SBL}    `sbl`
+% }
 ${APP_BINARY}    `appBinary`
 % }
 
@@ -96,9 +111,15 @@ ${APP_BINARY}    `appBinary`
 % }
 	DUT`logPort`.CONNECT TO UART PORT    ${`logPort`}
 % if (interactPrompt) {
-	DUT`logPort`.EXPECT STRING AT UART PORT    `interactPrompt`    20
+	DUT`logPort`.EXPECT STRING AT UART PORT    `interactPrompt`    `interactPromptTimeout`
 % for (let cmd of interactSend) {
 	DUT`logPort`.SEND COMMAND AND VERIFY    `cmd`
 % }
 % }
-	DUT`logPort`.EXPECT STRING AT UART PORT    `expectedString`     30
+% if (secondaryInteractPort) {
+	DUT`secondaryInteractPort`.CONNECT TO UART PORT    ${`secondaryInteractPort`}
+% for (let cmd of secondaryInteractSend) {
+	DUT`secondaryInteractPort`.SEND COMMAND AND VERIFY    `cmd`
+% }
+% }
+	DUT`logPort`.EXPECT STRING AT UART PORT    `expectedString`     `expectTimeout`

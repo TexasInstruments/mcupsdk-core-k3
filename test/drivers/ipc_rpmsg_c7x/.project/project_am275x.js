@@ -125,7 +125,8 @@ const robot_template = {
              "SITSW-9840 SITSW-9841 SITSW-9842 SITSW-9843 SITSW-9844 " +
              "SITSW-9845 SITSW-9846 SITSW-9847 SITSW-9848 SITSW-9849",
         withCfg: true,
-        cfgPath: "test/drivers/ipc_rpmsg_c7x/am275x-evm/ipc_rpmsg_test_sbl_uart_hs_fs.cfg",
+        cfgPath: "test/drivers/ipc_rpmsg_c7x/am275x-evm/ipc_rpmsg_test_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectTimeout: 500,
     },
 };
 

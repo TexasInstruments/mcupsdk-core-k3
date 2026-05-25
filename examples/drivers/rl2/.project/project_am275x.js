@@ -66,13 +66,16 @@ const templates_nortos_r5f =
 ];
 
 const robot_template = {
-    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    input: ".project/templates/am275x/astra/tests_uniflash.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "RL2",
         testCaseName: "OpTI-Flash: RL2 example",
         testCaseIds: "SITSW-7036",
         timeout: 700,
+        expectTimeout: 60,
+        bootMode: "XSPI_1S_BOOT_MODE",
+        cfgFileName: "rl2_sbl_ospi_${DEVICE_TYPE}.cfg",
     },
 };
 

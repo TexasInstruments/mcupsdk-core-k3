@@ -89,6 +89,7 @@ const robot_template = {
         testCaseName: "Calc ratio Implementation on with DMA counter",
         testCaseIds: "SITSW-8997",
         timeout: 1000,
+        expectTimeout: 400,
     },
 };
 

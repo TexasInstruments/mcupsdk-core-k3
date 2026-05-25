@@ -123,6 +123,7 @@ const robot_template = {
         componentName: "MCASP",
         testCaseName: "Mcasp internal loopback",
         testCaseIds: "SITSW-2702",
+        expectTimeout: 20,
     },
 };
 

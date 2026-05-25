@@ -2754,28 +2754,31 @@ static int32_t Udma_chFreeResource(Udma_ChHandleInt chHandle)
 #endif
     chHandle->pdmaChNum = UDMA_DMA_CH_INVALID;
     chHandle->peerThreadId = UDMA_THREAD_ID_INVALID;
-
-    if(NULL_PTR != chHandle->fqRing)
+    if( UDMA_CH_FLAG_UTC != (chHandle->chType & UDMA_CH_FLAG_UTC))
     {
-        retVal += Udma_ringFree(chHandle->fqRing);
-        if(UDMA_SOK != retVal)
+        /* UTC channels use caller-provided memory, skip ring free */
+        if(NULL_PTR != chHandle->fqRing)
         {
-            DebugP_logError("[UDMA] RM Free FQ ring failed!!!\r\n");
+            retVal += Udma_ringFree(chHandle->fqRing);
+            if(UDMA_SOK != retVal)
+            {
+                DebugP_logError("[UDMA] RM Free FQ ring failed!!!\r\n");
+            }
+            chHandle->fqRing = (Udma_RingHandleInt) NULL_PTR;
         }
-        chHandle->fqRing = (Udma_RingHandleInt) NULL_PTR;
-    }
-    if(NULL_PTR != chHandle->cqRing)
-    {
-        chHandle->cqRing = (Udma_RingHandleInt) NULL_PTR;
-    }
-    if(NULL_PTR != chHandle->tdCqRing)
-    {
-        retVal += Udma_ringFree(chHandle->tdCqRing);
-        if(UDMA_SOK != retVal)
+        if(NULL_PTR != chHandle->cqRing)
         {
-            DebugP_logError("[UDMA] RM Free TDCQ ring failed!!!\r\n");
+            chHandle->cqRing = (Udma_RingHandleInt) NULL_PTR;
         }
-        chHandle->tdCqRing = (Udma_RingHandleInt) NULL_PTR;
+        if(NULL_PTR != chHandle->tdCqRing)
+        {
+            retVal += Udma_ringFree(chHandle->tdCqRing);
+            if(UDMA_SOK != retVal)
+            {
+                DebugP_logError("[UDMA] RM Free TDCQ ring failed!!!\r\n");
+            }
+            chHandle->tdCqRing = (Udma_RingHandleInt) NULL_PTR;
+        }
     }
 
     return (retVal);

@@ -46,7 +46,8 @@
 #include <sdl/include/am275x/sdlr_soc_baseaddress.h>
 #include <sdl/include/am275x/sdlr_mcu_ctrl_mmr.h>
 #include <drivers/sciclient/include/am275x/sciclient_fmwMsgParams.h>
-
+#include <drivers/soc.h>
+#include <sdl/include/hw_types.h>
 
 /* #define DEBUG */
 
@@ -57,10 +58,6 @@
 /* ========================================================================== */
 /*                            Global Variables                                */
 /* ========================================================================== */
-
-
-
-
 
 LBIST_TestHandle_t LBIST_TestHandleArray[LBIST_MAX_CORE_INDEX+1] =
 {
@@ -93,6 +90,120 @@ LBIST_TestHandle_t LBIST_TestHandleArray[LBIST_MAX_CORE_INDEX+1] =
   .numAuxDevices          = 0u,                         /* No Aux devices */
  },
 };
+
+#if defined(R5FSS1)
+LBIST_PSC_t LBIST_pscDisableList[LBIST_NUM_DISABLES] =
+{
+    /* PBIST PSC */
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MAIN,
+        .pscPowerDomainId   = CSL_MAIN_R5SS_0,
+        .pscIndex           = CSL_MAIN_LPSC_MAIN_R5SS0_PBIST,
+    },
+    /* Core PSC */
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MAIN,
+        .pscPowerDomainId   = CSL_MAIN_R5SS_0,
+        .pscIndex           = CSL_MAIN_LPSC_MAIN_R5SS0_CORE0,
+    },
+    /* Core PSC */
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MAIN,
+        .pscPowerDomainId   = CSL_MAIN_R5SS_0,
+        .pscIndex           = CSL_MAIN_LPSC_MAIN_R5SS0_CORE1,
+    },
+};
+
+LBIST_PSC_t LBIST_pscEnableList[LBIST_NUM_ENABLES] = 
+{
+
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MCU,
+        .pscPowerDomainId   = CSL_WKUP_GP_CORE_CTL_MCU,
+        .pscIndex           = CSL_WKUP_LPSC_DM2MCU_ISO,
+    },
+
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MAIN,
+        .pscPowerDomainId   = CSL_MAIN_GP_CORE,
+        .pscIndex           = CSL_MAIN_LPSC_MAIN_MAIN2DM_ISO,
+    },
+
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MAIN,
+        .pscPowerDomainId   = CSL_MAIN_R5SS_0,
+        .pscIndex           = CSL_MAIN_LPSC_MAIN_R5SS0_CORE0,
+    },
+
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MAIN,
+        .pscPowerDomainId   = CSL_MAIN_R5SS_0,
+        .pscIndex           = CSL_MAIN_LPSC_MAIN_R5SS0_CORE1,
+    },
+
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MAIN,
+        .pscPowerDomainId   = CSL_MAIN_R5SS_0,
+        .pscIndex           = CSL_MAIN_LPSC_MAIN_R5SS0_PBIST,
+    },
+};
+#elif defined(R5FSS0)
+LBIST_PSC_t LBIST_pscDisableList[LBIST_NUM_DISABLES] =
+{
+    /* PBIST PSC */
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MAIN,
+        .pscPowerDomainId   = CSL_MAIN_R5SS_1,
+        .pscIndex           = CSL_MAIN_LPSC_MAIN_R5SS1_PBIST,
+    },
+    /* Core PSC */
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MAIN,
+        .pscPowerDomainId   = CSL_MAIN_R5SS_1,
+        .pscIndex           = CSL_MAIN_LPSC_MAIN_R5SS1_CORE0,
+    },
+    /* Core PSC */
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MAIN,
+        .pscPowerDomainId   = CSL_MAIN_R5SS_1,
+        .pscIndex           = CSL_MAIN_LPSC_MAIN_R5SS1_CORE1,
+    },
+};
+
+LBIST_PSC_t LBIST_pscEnableList[LBIST_NUM_ENABLES] = 
+{
+
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MCU,
+        .pscPowerDomainId   = CSL_WKUP_GP_CORE_CTL_MCU,
+        .pscIndex           = CSL_WKUP_LPSC_DM2MCU_ISO,
+    },
+
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MAIN,
+        .pscPowerDomainId   = CSL_MAIN_GP_CORE,
+        .pscIndex           = CSL_MAIN_LPSC_MAIN_MAIN2DM_ISO,
+    },
+
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MAIN,
+        .pscPowerDomainId   = CSL_MAIN_R5SS_1,
+        .pscIndex           = CSL_MAIN_LPSC_MAIN_R5SS1_CORE0,
+    },
+
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MAIN,
+        .pscPowerDomainId   = CSL_MAIN_R5SS_1,
+        .pscIndex           = CSL_MAIN_LPSC_MAIN_R5SS1_CORE1,
+    },
+
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MAIN,
+        .pscPowerDomainId   = CSL_MAIN_R5SS_1,
+        .pscIndex           = CSL_MAIN_LPSC_MAIN_R5SS1_PBIST,
+    },
+};
+#endif
 
 LBIST_TestHandle_t* LBIST_getTestHandleArray(void)
 {

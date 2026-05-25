@@ -117,13 +117,12 @@ static int32_t LBIST_appInitBoard(void)
     SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU,4);
     SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU,5);
     SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MCU,6);
-#if defined (SOC_AM275X)
     SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN,3);
-#elif defined (SOC_J722S)
+    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_WKUP,3);
+#if defined (SOC_J722S)
     SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 0);
     SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 1);
     SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 2);
-    SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 3);
     SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 4);
     SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 5);
     SOC_controlModuleUnlockMMR(SOC_DOMAIN_ID_MAIN, 6);

@@ -61,7 +61,14 @@
 
 #define LBIST_MAX_TIMEOUT_VALUE       (10000000u)
 
+#define LBIST_NUM_DISABLES  (3u)
+#define LBIST_NUM_ENABLES   (5u)
+
 extern LBIST_TestHandle_t LBIST_TestHandleArray[SDL_LBIST_NUM_INSTANCES];
+
+extern LBIST_PSC_t LBIST_pscDisableList[LBIST_NUM_DISABLES];
+
+extern LBIST_PSC_t LBIST_pscEnableList[LBIST_NUM_ENABLES];
 
 LBIST_TestHandle_t* LBIST_getTestHandleArray(void);
 

@@ -47,6 +47,8 @@
 #include <sdl/include/am62x/sdlr_soc_baseaddress.h>
 #include <sdl/include/am62x/sdlr_mcu_ctrl_mmr.h>
 #include <drivers/sciclient/include/am62x/sciclient_fmwMsgParams.h>
+#include <drivers/soc.h>
+#include <sdl/include/hw_types.h>
 
 /* #define DEBUG */
 
@@ -85,6 +87,50 @@ LBIST_TestHandle_t LBIST_TestHandleArray[LBIST_MAX_CORE_INDEX+1] =
   .numAuxDevices          = 0u,                       /* No Aux devices */
  },
 
+};
+
+LBIST_PSC_t LBIST_pscDisableList[LBIST_NUM_DISABLES] =
+{
+    /* Core PSC */
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MCU,
+        .pscPowerDomainId   = CSL_WKUP_PD_M4F,
+        .pscIndex           = CSL_WKUP_LPSC_MCU_M4F,
+    },
+};
+
+LBIST_PSC_t LBIST_pscEnableList[LBIST_NUM_ENABLES] = 
+{
+
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MCU,
+        .pscPowerDomainId   = CSL_WKUP_PD_M4F,
+        .pscIndex           = CSL_WKUP_LPSC_MCU_COMMON,
+    },
+
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MCU,
+        .pscPowerDomainId   = CSL_WKUP_GP_CORE_CTL_MCU,
+        .pscIndex           = CSL_WKUP_LPSC_MAIN2MCU_ISO,
+    },
+
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MCU,
+        .pscPowerDomainId   = CSL_WKUP_PD_M4F,
+        .pscIndex           = CSL_WKUP_LPSC_MCU_M4F,
+    },
+
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MCU,
+        .pscPowerDomainId   = CSL_WKUP_PD_M4F,
+        .pscIndex           = CSL_WKUP_LPSC_MCU_MCANSS_0,
+    },
+
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MCU,
+        .pscPowerDomainId   = CSL_WKUP_PD_M4F,
+        .pscIndex           = CSL_WKUP_LPSC_MCU_MCANSS_1,
+    },
 };
 
 LBIST_TestHandle_t* LBIST_getTestHandleArray(void)

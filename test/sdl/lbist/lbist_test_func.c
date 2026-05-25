@@ -48,6 +48,8 @@
 #include <sdl/lbist/v0/sdl_ip_lbist.h>
 #include <drivers/sciclient.h>
 #include <drivers/device_manager/sciclient.h>
+#include <drivers/soc.h>
+#include <sdl/include/hw_types.h>
 
 #if defined (SOC_AM62X)
 #include <sdl/include/am62x/sdlr_mcu_ctrl_mmr.h>
@@ -89,7 +91,19 @@
 #define LBIST_POST_COMPLETED_FAILURE      (1u)
 #define LBIST_POST_ATTEMPTED_TIMEOUT      (2u)
 #define LBIST_POST_NOT_RUN                (3u)
-#define SCICLIENT_SERVICE_WAIT_FOREVER                    (0xFFFFFFFFU)
+#define SCICLIENT_SERVICE_WAIT_FOREVER    (0xFFFFFFFFU)
+
+#define LBIST_PSC_NEXT_MASK               (0x0000003F)
+#define LBIST_PSC_FORCE_OFF               (0x80000000)
+#define LBIST_PSC_FORCE_ON                (0x80000003)
+#define LBIST_PSC_PTCMD_TIMEOUT           (1000000U)
+
+#define DSB_ENABLE                        asm("dsb")
+#define ISB_ENABLE                        asm("isb")
+
+#define LBIST_WKUP_PSC_BASE     (0x04000000)
+#define LBIST_MAIN_PSC_BASE     (0x00400000)
+
 /* ========================================================================== */
 /*                 Internal Function Declarations                             */
 /* ========================================================================== */
@@ -103,13 +117,187 @@ int32_t LBIST_funcTest(void);
 /*                          Function Definitions                              */
 /* ========================================================================== */
 
+static int32_t LBIST_PSCForceBit(uint32_t pscDomain, uint32_t pscPD, uint32_t pscID, bool powerOn)
+{
+    int32_t result = SDL_PASS;
+    int32_t pscTimeout = LBIST_PSC_PTCMD_TIMEOUT;
+    uint32_t pdShift = (1<<pscPD);
+    uint32_t pscRdValue, pscAddr, ptcmdAddr, ptstatAddr;
+    if (pscDomain == SOC_PSC_DOMAIN_ID_MCU)
+    {
+        pscAddr = LBIST_WKUP_PSC_BASE + CSL_PSC_MDCTL(pscID);
+        ptcmdAddr = LBIST_WKUP_PSC_BASE + CSL_PSC_PTCMD(0);
+        ptstatAddr = LBIST_WKUP_PSC_BASE + CSL_PSC_PTSTAT(0);
+    }
+    else
+    {
+        pscAddr = LBIST_MAIN_PSC_BASE + CSL_PSC_MDCTL(pscID);
+        ptcmdAddr = LBIST_MAIN_PSC_BASE + CSL_PSC_PTCMD(0);
+        ptstatAddr = LBIST_MAIN_PSC_BASE + CSL_PSC_PTSTAT(0);
+    }
+
+    /* Read current value of the register */
+    pscRdValue = HW_RD_REG32(pscAddr);
+    /* Delete bits corresponding to state */
+    pscRdValue &= ~LBIST_PSC_NEXT_MASK;
+
+    /* Bits to be set for SwRstDisable or On state and Force bit */
+    if (powerOn == TRUE)
+    {
+        pscRdValue |= LBIST_PSC_FORCE_ON;
+    }
+    else
+    {
+        pscRdValue |= LBIST_PSC_FORCE_OFF;
+    }
+
+    /* Write back to the PSC register */
+    HW_WR_REG32(pscAddr, pscRdValue);
+    /* Write shift value to PSC_PTCMD to cause state change */
+    HW_WR_REG32(ptcmdAddr, pdShift);
+    DSB_ENABLE;
+    ISB_ENABLE;
+
+    /* Wait until state transition is completed */
+    while (((HW_RD_REG32(ptstatAddr) & pdShift) != 0) && (pscTimeout > 0))
+    {
+        pscTimeout--;
+    }
+
+    /* If the transition wait timed out */
+    if ((HW_RD_REG32(ptstatAddr) & pdShift) != 0)
+    {
+        result = SDL_EFAIL;
+    }
+    return result;
+}
+
+static int32_t LBIST_pscOp(uint32_t pscDomain, uint32_t pscPD, uint32_t pscID, bool powerOn)
+{
+    int32_t status = SystemP_SUCCESS;
+    if(powerOn)
+    {
+        status = SOC_setPSCState(pscDomain, pscPD, pscID, SOC_PSC_ENABLE);
+        if (status != SystemP_SUCCESS)
+        {
+            status = LBIST_PSCForceBit(pscDomain, pscPD, pscID, TRUE);
+        }
+        if (status != SystemP_SUCCESS)
+        {
+            DebugP_log("\r\n Failure in enable of PSC %d in %s!", pscID, pscDomain==0? "Main PSC domain" : "WKUP PSC domain");
+        }
+    }
+    else
+    {
+        status = SOC_setPSCState(pscDomain, pscPD, pscID, SOC_PSC_SYNCRESETDISABLE);
+        if (status != SystemP_SUCCESS)
+        {
+            status = LBIST_PSCForceBit(pscDomain, pscPD, pscID, FALSE);
+        }
+        if (status != SystemP_SUCCESS)
+        {
+            DebugP_log("\r\n Failure in disable of PSC %d in %s!", pscID, pscDomain==0? "Main PSC domain" : "WKUP PSC domain");
+        }
+    }
+    return status;
+}
+
+static int32_t core_power_down()
+{
+    int32_t status = SystemP_SUCCESS;
+    uint32_t corePD, corePSC;
+    uint32_t core_PDCTL, core_PTCMD, core_PTSTAT;
+#if defined(SOC_AM275X)
+#if defined(R5FSS0)
+    corePD = CSL_MAIN_R5SS_1;
+    corePSC = CSL_MAIN_LPSC_MAIN_R5SS1_CORE0;
+#else
+    corePD = CSL_MAIN_R5SS_0;
+    corePSC = CSL_MAIN_LPSC_MAIN_R5SS0_CORE0;
+#endif
+    status = SOC_setPSCState(SOC_PSC_DOMAIN_ID_MAIN, corePD, corePSC+2, SOC_PSC_SYNCRESETDISABLE);
+    if (status == SystemP_SUCCESS)
+    {
+        status = SOC_setPSCState(SOC_PSC_DOMAIN_ID_MAIN, corePD, corePSC+1, SOC_PSC_SYNCRESETDISABLE);
+    }
+    if (status == SystemP_SUCCESS)
+    {
+        status = SOC_setPSCState(SOC_PSC_DOMAIN_ID_MAIN, corePD, corePSC, SOC_PSC_SYNCRESETDISABLE);
+    }
+#elif defined(SOC_AM62X) || defined(SOC_AM62PX) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_J722S)
+#if !defined(SOC_AM62X)
+    corePD = CSL_WKUP_PD_MCUSS;
+    corePSC = CSL_WKUP_LPSC_MCU_R5;
+#else
+    corePD = CSL_WKUP_PD_M4F;
+    corePSC = CSL_WKUP_LPSC_MCU_M4F;
+#endif
+    status = SOC_setPSCState(SOC_PSC_DOMAIN_ID_MCU, corePD, corePSC, SOC_PSC_SYNCRESETDISABLE);
+    if (status == SystemP_SUCCESS)
+    {
+        status = SOC_setPSCState(SOC_PSC_DOMAIN_ID_MCU, corePD, CSL_WKUP_LPSC_MCU_MCANSS_0, SOC_PSC_SYNCRESETDISABLE);
+    }
+    if (status == SystemP_SUCCESS)
+    {
+        status = SOC_setPSCState(SOC_PSC_DOMAIN_ID_MCU, corePD, CSL_WKUP_LPSC_MCU_MCANSS_1, SOC_PSC_SYNCRESETDISABLE);
+    }
+#if !defined(SOC_AM62X)
+    if (status == SystemP_SUCCESS)
+    {
+        status = SOC_setPSCState(SOC_PSC_DOMAIN_ID_MCU, corePD, CSL_WKUP_LPSC_MCU_PBIST, SOC_PSC_SYNCRESETDISABLE);
+    }
+#endif
+    if (status == SystemP_SUCCESS)
+    {
+        status = SOC_setPSCState(SOC_PSC_DOMAIN_ID_MCU, corePD, CSL_WKUP_LPSC_MCU_COMMON, SOC_PSC_SYNCRESETDISABLE);
+    }
+#endif
+
+    if (status != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Failure in PSC settings during core power down");
+        return -1;
+    }
+
+#if defined(SOC_AM275X)
+    core_PDCTL = CSL_PSCSS0_VBUS_BASE + CSL_PSC_PDCTL(corePD);
+    core_PTCMD = CSL_PSCSS0_VBUS_BASE + CSL_PSC_PTCMD(0);
+    core_PTSTAT = CSL_PSCSS0_VBUS_BASE + CSL_PSC_PTSTAT(0);
+#elif defined(SOC_AM62X) || defined(SOC_AM62PX) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_J722S)
+    core_PDCTL = CSL_WKUP_PSC0_BASE + CSL_PSC_PDCTL(corePD);
+    core_PTCMD = CSL_WKUP_PSC0_BASE + CSL_PSC_PTCMD(0);
+    core_PTSTAT = CSL_WKUP_PSC0_BASE + CSL_PSC_PTSTAT(0);
+#endif
+    int32_t pscTimeout = 1000000U;
+    /* Write desired power state to the PSC register */
+    HW_WR_REG32(core_PDCTL, SOC_PSC_DOMAIN_OFF);
+    /* Write shift value to PSC_PTCMD to cause state change */
+    HW_WR_REG32(core_PTCMD, (1 << corePD));
+    DSB_ENABLE;
+    ISB_ENABLE;
+    /* Wait until state transition is completed */
+    while (((HW_RD_REG32(core_PTSTAT) & (1 << corePD)) != 0) && (pscTimeout > 0))
+    {
+        pscTimeout--;
+    }
+
+    /* If the transition wait timed out */
+    if ((HW_RD_REG32(core_PTSTAT) & (1 << corePD)) != 0)
+    {
+        status = SDL_EFAIL;
+        DebugP_log("\r\n Failure in core power down");
+    }
+    return status;
+}
+
 int32_t LBIST_runTest(uint32_t coreIndex)
 {
     int32_t testResult = 0;
-    int32_t status;
+    int32_t status = 0;
     uint64_t startTime , testStartTime,  testEndTime, endTime;
     uint64_t prepTime, diffTime, restoreTime;
     bool result = false;
+    LBIST_PSC_t currPSC;
 
     DebugP_log("\r\n Starting LBIST test on %s, index %d...",
                 LBIST_TestHandleArray[coreIndex].coreName,
@@ -134,10 +322,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
     /* Get start time of test */
     startTime = ClockP_getTimeUsec();
 
-    /*-- Step 2: Configure processor to correct state --*/
-    /* SW-initiated LBIST test flow */
-
-    /**--- Step 2a: Request Primary core ---*/
+    /* Request Primary core */
     if (testResult == 0)
     {
         if (LBIST_TestHandleArray[coreIndex].tisciProcId != 0u)
@@ -158,7 +343,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
         }
     }
 
-    /**--- Step 2b: Request Secondary core ---*/
+    /* Request Secondary core */
     if (testResult == 0)
     {
         if ((LBIST_TestHandleArray[coreIndex].secondaryCoreNeeded)
@@ -181,137 +366,16 @@ int32_t LBIST_runTest(uint32_t coreIndex)
         }
     }
 
-    /**--- Step 2c: Place all Auxilliary modules needed to run test into module reset ---*/
-    if (testResult == 0)
+    /* Pre-LBIST PSC power downs */
+    for (int i=0; i<LBIST_NUM_DISABLES; i++)
     {
-        int i;
-
-        /* Place all Auxilliary modules required for test into module reset */
-        for ( i = 0; i < LBIST_TestHandleArray[coreIndex].numAuxDevices; i++)
+        currPSC = LBIST_pscDisableList[i];
+        status = LBIST_pscOp(currPSC.pscDomainId, currPSC.pscPowerDomainId, currPSC.pscIndex, FALSE);
+        if (status != SystemP_SUCCESS)
         {
-#ifdef DEBUG
-            DebugP_log("  Putting into module reset Device number %d Device Id %x\r\n",
-                        i,
-                        LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
-#endif
-            status = Sciclient_pmSetModuleRst(LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i],
-                                              0x2, /* Module Reset asserted */
-                                              SCICLIENT_SERVICE_WAIT_FOREVER);
-            if (status != SDL_PASS)
-            {
-                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
-                            LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
-                testResult = -1;
-                break;
-            }
-        }
-    }
-
-    /**--- Step 2d: Put Primary core in module reset and local reset ---*/
-    if ((testResult == 0) && (LBIST_TestHandleArray[coreIndex].tisciDeviceId != 0U))
-    {
-#ifdef DEBUG
-        DebugP_log("  Primary core: Putting in module and local reset the core %s \r\n",
-                    LBIST_TestHandleArray[coreIndex].coreName);
-#endif
-        status = Sciclient_pmSetModuleRst(LBIST_TestHandleArray[coreIndex].tisciDeviceId,
-                                          0x3, /* Module Reset and Local Reset asserted */
-                                          SCICLIENT_SERVICE_WAIT_FOREVER);
-        if (status != SDL_PASS)
-        {
-             DebugP_log("  Sciclient_pmSetModuleRst 0x%x ...FAILED \r\n",
-                         LBIST_TestHandleArray[coreIndex].tisciDeviceId);
-             testResult = -1;
-        }
-    }
-
-    /**--- Step 2e: Put Secondary core in module reset and local reset ---*/
-    if ((testResult == 0) && (LBIST_TestHandleArray[coreIndex].tisciSecDeviceId != 0U))
-    {
-#ifdef DEBUG
-        DebugP_log("  Secondary core: Putting in module and local reset the core %s \r\n",
-                    LBIST_TestHandleArray[coreIndex].secCoreName);
-#endif
-        status = Sciclient_pmSetModuleRst(LBIST_TestHandleArray[coreIndex].tisciSecDeviceId,
-                                          0x3, /* Module Reset and Local Reset asserted */
-                                          SCICLIENT_SERVICE_WAIT_FOREVER);
-        if (status != SDL_PASS)
-        {
-             DebugP_log("  Sciclient_pmSetModuleRst 0x%x ...FAILED \r\n",
-                         LBIST_TestHandleArray[coreIndex].tisciSecDeviceId);
-             testResult = -1;
-        }
-    }
-
-    /**--- Step 2f: Place all Auxilliary modules needed to run test into retention ---*/
-    if (testResult == 0)
-    {
-        int i;
-
-        /* Place all Auxilliary modules required for test into retention */
-        for ( i = 0; i < LBIST_TestHandleArray[coreIndex].numAuxDevices; i++)
-        {
-#ifdef DEBUG
-            DebugP_log("  Putting into Retention Device number %d Device Id %x\r\n",
-                        i,
-                        LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
-#endif
-
-            status = Sciclient_pmSetModuleState(LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i],
-                                                TISCI_MSG_VALUE_DEVICE_SW_STATE_RETENTION,
-                                                TISCI_MSG_FLAG_AOP,
-                                                SCICLIENT_SERVICE_WAIT_FOREVER);
-            if (status != SDL_PASS)
-            {
-                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
-                            LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
-                testResult = -1;
-                break;
-            }
-        }
-    }
-
-    /**--- Step 2g: Place Primary core into retention ---*/
-    if (testResult == 0)
-    {
-        if (LBIST_TestHandleArray[coreIndex].tisciDeviceId != 0u)
-        {
-            /* Placing Primary core into Retention */
-#ifdef DEBUG
-            DebugP_log("  Primary core: Putting into Retention %s \r\n",
-                        LBIST_TestHandleArray[coreIndex].coreName);
-#endif
-            status =  Sciclient_pmSetModuleState(LBIST_TestHandleArray[coreIndex].tisciDeviceId,
-                                                 TISCI_MSG_VALUE_DEVICE_SW_STATE_RETENTION,
-                                                 TISCI_MSG_FLAG_AOP,
-                                                 SCICLIENT_SERVICE_WAIT_FOREVER);
-            if (status != SDL_PASS)
-            {
-                DebugP_log("   Primary core: Sciclient_pmSetModuleState...FAILED \r\n");
-                testResult = -1;
-            }
-        }
-    }
-
-    /**--- Step 2h: Place Secondary core into retention ---*/
-    if (testResult == 0)
-    {
-        if (LBIST_TestHandleArray[coreIndex].tisciSecDeviceId != 0u)
-        {
-            /* Placing Secondary core into Retention */
-#ifdef DEBUG
-            DebugP_log("  Secondary core: Putting into Retention %s \r\n",
-                        LBIST_TestHandleArray[coreIndex].secCoreName);
-#endif
-            status =  Sciclient_pmSetModuleState(LBIST_TestHandleArray[coreIndex].tisciSecDeviceId,
-                                                 TISCI_MSG_VALUE_DEVICE_SW_STATE_RETENTION,
-                                                 TISCI_MSG_FLAG_AOP,
-                                                 SCICLIENT_SERVICE_WAIT_FOREVER);
-            if (status != SDL_PASS)
-            {
-                DebugP_log("   Secondary core: Sciclient_pmSetModuleState...FAILED \r\n");
-                testResult = -1;
-            }
+            DebugP_log("\r\n Failure in PSC settings before LBIST!");
+            testResult = -1;
+            break;
         }
     }
 
@@ -319,7 +383,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
     testStartTime = ClockP_getTimeUsec();
     uint32_t timeoutCount = 0;
 
-    /**-- Step 3: Run LBIST test --*/
+    /* Run LBIST test */
     if (testResult == 0)
     {
         status = SDL_LBIST_selfTest(LBIST_TestHandleArray[coreIndex].instance, SDL_LBIST_TEST);
@@ -355,296 +419,34 @@ int32_t LBIST_runTest(uint32_t coreIndex)
     /* Here LBIST test is complete , get end time of test */
     testEndTime = ClockP_getTimeUsec();
 
-    /**-- Step 5: Restore cores --*/
-    /* The following sequence is needed to restore core to normal operation */
-
-    /**--- Step 5a: Switch off Secondary core ---*/
-    if (testResult == 0)
+    /* Switch off core PD */
+    status = core_power_down();
+    if (status != SystemP_SUCCESS)
     {
-        if (LBIST_TestHandleArray[coreIndex].secondaryCoreNeeded)
-        {
-            /* Power off Secondary core */
-#ifdef DEBUG
-            DebugP_log("  Secondary core: Powering off %s \r\n",
-                        LBIST_TestHandleArray[coreIndex].secCoreName);
-#endif
-            status =  Sciclient_pmSetModuleState(LBIST_TestHandleArray[coreIndex].tisciSecDeviceId,
-                                                 TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
-                                                 TISCI_MSG_FLAG_AOP,
-                                                 SCICLIENT_SERVICE_WAIT_FOREVER);
-            if (status != SDL_PASS)
-            {
-                DebugP_log("   Secondary core: Sciclient_pmSetModuleState:  Power off FAILED \r\n");
-                testResult = -1;
-            }
-        }
+        DebugP_log("\r\n Failure in core power down after LBIST!");
+        testResult = SDL_EFAIL;
     }
-
-    /**--- Step 5b: Switch off Primary core ---*/
+ 
+    /* Disable Isolation */
     if (testResult == 0)
     {
-        /* Power off Primary core */
-#ifdef DEBUG
-        DebugP_log("  Primary core: Powering off %s \r\n",
-                    LBIST_TestHandleArray[coreIndex].coreName);
-#endif
-        status =  Sciclient_pmSetModuleState(LBIST_TestHandleArray[coreIndex].tisciDeviceId,
-                                             TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
-                                             TISCI_MSG_FLAG_AOP,
-                                             SCICLIENT_SERVICE_WAIT_FOREVER);
-        if (status != SDL_PASS)
-        {
-            DebugP_log("   Primary core: Sciclient_pmSetModuleState: Power off FAILED \r\n");
-        }
-    }
-
-    /**--- Step 5c: Switch off Auxilliary modules ---*/
-    if (testResult == 0)
-    {
-        int i;
-
-        /* Place all Auxilliary modules required for test into retention */
-        for ( i = 0; i < LBIST_TestHandleArray[coreIndex].numAuxDevices; i++)
-        {
-#ifdef DEBUG
-            DebugP_log("  Powering off Device number %d Device Id %x\r\n",
-                        i,
-                        LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
-#endif
-
-            status = Sciclient_pmSetModuleState(LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i],
-                                                TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
-                                                TISCI_MSG_FLAG_AOP,
-                                                SCICLIENT_SERVICE_WAIT_FOREVER);
-            if (status != SDL_PASS)
-            {
-                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
-                            LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
-                testResult = -1;
-                break;
-            }
-        }
-    }
-
-    /**--- Step 5d: Disable Isolation ---*/
-    if (testResult == 0)
-    {
-#ifdef DEBUG
-        DebugP_log("  Disabling isolation \r\n");
-#endif
         status = SDL_LBIST_selfTest(LBIST_TestHandleArray[coreIndex].instance, SDL_LBIST_TEST_RELEASE);
-        if (status != SDL_PASS)
+    }
+
+    /* Post-LBIST PSC power ups */
+    for (int i=0; i<LBIST_NUM_ENABLES; i++)
+    {
+        currPSC = LBIST_pscEnableList[i];
+        status = LBIST_pscOp(currPSC.pscDomainId, currPSC.pscPowerDomainId, currPSC.pscIndex, TRUE);
+        if (status != SystemP_SUCCESS)
         {
-            DebugP_log("   SDL_LBIST_disableIsolation ...FAILED \r\n");
+            DebugP_log("\r\n Failure in PSC settings after LBIST!");
             testResult = -1;
+            break;
         }
     }
 
-    /**--- Step 5e: Place all Auxilliary modules into retention ---*/
-    if (testResult == 0)
-    {
-        int i;
-
-        /* Place all Auxilliary modules required for test into retention */
-        for ( i = 0; i < LBIST_TestHandleArray[coreIndex].numAuxDevices; i++)
-        {
-#ifdef DEBUG
-            DebugP_log("  Putting into Retention Device number %d Device Id %x\r\n",
-                        i,
-                        LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
-#endif
-
-            status = Sciclient_pmSetModuleState(LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i],
-                                                TISCI_MSG_VALUE_DEVICE_SW_STATE_RETENTION,
-                                                TISCI_MSG_FLAG_AOP,
-                                                SCICLIENT_SERVICE_WAIT_FOREVER);
-            if (status != SDL_PASS)
-            {
-                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
-                            LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
-                testResult = -1;
-                break;
-            }
-        }
-    }
-
-    /**--- Step 5f: Place Primary core into retention ---*/
-    if (testResult == 0)
-    {
-        /* Placing Primary core into Retention */
-#ifdef DEBUG
-        DebugP_log("  Primary core: Putting into Retention %s \r\n",
-                    LBIST_TestHandleArray[coreIndex].coreName);
-#endif
-        status = Sciclient_pmSetModuleState(LBIST_TestHandleArray[coreIndex].tisciDeviceId,
-                                            TISCI_MSG_VALUE_DEVICE_SW_STATE_RETENTION,
-                                            TISCI_MSG_FLAG_AOP,
-                                            SCICLIENT_SERVICE_WAIT_FOREVER);
-
-        if (status != SDL_PASS)
-        {
-            DebugP_log("   Primary core: Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
-                        LBIST_TestHandleArray[coreIndex].tisciDeviceId);
-            testResult = -1;
-        }
-    }
-
-    /**--- Step 5g: Place Secondary core into retention ---*/
-    if (testResult == 0)
-    {
-        if (LBIST_TestHandleArray[coreIndex].secondaryCoreNeeded)
-        {
-            /* Placing Secondary core into Retention */
-#ifdef DEBUG
-            DebugP_log("  Secondary core: Putting into Retention %s \r\n",
-                        LBIST_TestHandleArray[coreIndex].secCoreName);
-#endif
-            status = Sciclient_pmSetModuleState(LBIST_TestHandleArray[coreIndex].tisciSecDeviceId,
-                                                TISCI_MSG_VALUE_DEVICE_SW_STATE_RETENTION,
-                                                TISCI_MSG_FLAG_AOP,
-                                                SCICLIENT_SERVICE_WAIT_FOREVER);
-            if (status != SDL_PASS)
-            {
-                DebugP_log("   Secondary core: Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
-                            LBIST_TestHandleArray[coreIndex].tisciSecDeviceId);
-                testResult = -1;
-                return testResult;
-            }
-        }
-    }
-
-    /**--- Step 5i: Power off Secondary core ---*/
-    if (testResult == 0)
-    {
-        if (LBIST_TestHandleArray[coreIndex].secondaryCoreNeeded)
-        {
-            /* Power off Secondary core */
-#ifdef DEBUG
-            DebugP_log("  Secondary core: Powering off %s \r\n",
-                        LBIST_TestHandleArray[coreIndex].secCoreName);
-#endif
-            status =  Sciclient_pmSetModuleState(LBIST_TestHandleArray[coreIndex].tisciSecDeviceId,
-                                                 TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
-                                                 TISCI_MSG_FLAG_AOP,
-                                                 SCICLIENT_SERVICE_WAIT_FOREVER);
-            if (status != SDL_PASS)
-            {
-                DebugP_log("   Secondary core: Sciclient_pmSetModuleState:  Power off FAILED \r\n");
-                testResult = -1;
-            }
-        }
-    }
-
-    /**--- Step 5j: Power off Primary core ---*/
-    if (testResult == 0)
-    {
-        /* Power off Primary core */
-#ifdef DEBUG
-        DebugP_log("  Primary core: Powering off %s \r\n",
-                    LBIST_TestHandleArray[coreIndex].coreName);
-#endif
-        status =  Sciclient_pmSetModuleState(LBIST_TestHandleArray[coreIndex].tisciDeviceId,
-                                             TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
-                                             TISCI_MSG_FLAG_AOP,
-                                             SCICLIENT_SERVICE_WAIT_FOREVER);
-        if (status != SDL_PASS)
-        {
-            DebugP_log("   Primary core: Sciclient_pmSetModuleState: Power off FAILED \r\n");
-        }
-    }
-
-    /**--- Step 5k: Power off Auxilliary modules ---*/
-    if (testResult == 0)
-    {
-        int i;
-
-        /* Place all Auxilliary modules required for test into retention */
-        for ( i = 0; i < LBIST_TestHandleArray[coreIndex].numAuxDevices; i++)
-        {
-#ifdef DEBUG
-            DebugP_log("  Powering off Device number %d Device Id %x\r\n",
-                        i,
-                        LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
-#endif
-
-            status = Sciclient_pmSetModuleState(LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i],
-                                                TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF,
-                                                TISCI_MSG_FLAG_AOP,
-                                                SCICLIENT_SERVICE_WAIT_FOREVER);
-            if (status != SDL_PASS)
-            {
-                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
-                            LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
-                testResult = -1;
-                break;
-            }
-        }
-    }
-
-    /**--- Step 5l: Take Primary core out of local reset ---*/
-    if ((testResult == 0) && (LBIST_TestHandleArray[coreIndex].tisciDeviceId != 0U))
-    {
-#ifdef DEBUG
-        DebugP_log("  Primary core: Taking out of local reset the core %s \r\n",
-                    LBIST_TestHandleArray[coreIndex].coreName);
-#endif
-        status = Sciclient_pmSetModuleRst(LBIST_TestHandleArray[coreIndex].tisciDeviceId,
-                                          0x0,
-                                          SCICLIENT_SERVICE_WAIT_FOREVER);
-        if (status != SDL_PASS)
-        {
-            DebugP_log("  Sciclient_pmSetModuleRst 0x%x ...FAILED \r\n",
-                        LBIST_TestHandleArray[coreIndex].tisciDeviceId);
-            testResult = -1;
-        }
-    }
-
-    /**--- Step 5m: Take Secondary core out of local reset ---*/
-    if ((testResult == 0) && (LBIST_TestHandleArray[coreIndex].tisciSecDeviceId != 0U))
-    {
-#ifdef DEBUG
-        DebugP_log("  Secondary core: Taking out of local reset the core %s \r\n",
-                    LBIST_TestHandleArray[coreIndex].secCoreName);
-#endif
-        status = Sciclient_pmSetModuleRst(LBIST_TestHandleArray[coreIndex].tisciSecDeviceId,
-                                          0x0,
-                                          SCICLIENT_SERVICE_WAIT_FOREVER);
-        if (status != SDL_PASS)
-        {
-            DebugP_log("  Sciclient_pmSetModuleRst 0x%x ...FAILED \r\n",
-                        LBIST_TestHandleArray[coreIndex].tisciSecDeviceId);
-            testResult = -1;
-        }
-    }
-
-    /**--- Step 5n: Take Auxilliary modules out of module reset ---*/
-    if (testResult == 0)
-    {
-        int i;
-
-        /* Place all Auxilliary modules required for test into module reset */
-        for ( i = 0; i < LBIST_TestHandleArray[coreIndex].numAuxDevices; i++)
-        {
-#ifdef DEBUG
-            DebugP_log("  Putting into module reset Device number %d Device Id %x\r\n",
-                        i,
-                        LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
-#endif
-
-            status = Sciclient_pmSetModuleRst(LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i],
-                                              0x0, // Need to keep Local Reset too??
-                                              SCICLIENT_SERVICE_WAIT_FOREVER);
-            if (status != SDL_PASS)
-            {
-                DebugP_log("  Sciclient_pmSetModuleState 0x%x ...FAILED \r\n",
-                            LBIST_TestHandleArray[coreIndex].auxDeviceIdsP[i]);
-                testResult = -1;
-                break;
-            }
-        }
-    }
-
-    /**--- Step 5o: Release Primary core ---*/
+    /* Release Primary core */
     if ((testResult == 0) && (LBIST_TestHandleArray[coreIndex].tisciProcId !=0))
     {
         /* release processor Primary core */
@@ -663,8 +465,7 @@ int32_t LBIST_runTest(uint32_t coreIndex)
             testResult = -1;
         }
     }
-
-    /**--- Step 5p: Release Secondary core ---*/
+    /* Release Secondary core */
     if (testResult == 0)
     {
         if ((LBIST_TestHandleArray[coreIndex].secondaryCoreNeeded)

@@ -47,6 +47,8 @@
 #include <sdl/include/j722s/sdlr_soc_baseaddress.h>
 #include <sdl/include/j722s/sdlr_mcu_ctrl_mmr.h>
 #include <drivers/sciclient/include/j722s/sciclient_fmwMsgParams.h>
+#include <drivers/soc.h>
+#include <drivers/hw_include/j722s/csl_soc_psc.h>
 
 /* ========================================================================== */
 /*                                Macros                                      */
@@ -102,6 +104,45 @@ LBIST_TestHandle_t LBIST_TestHandleArray[LBIST_MAX_CORE_INDEX + 1] =
             .numAuxDevices = 0u,               /* No Aux devices */
         },
 
+};
+
+LBIST_PSC_t LBIST_pscDisableList[LBIST_NUM_DISABLES] =
+{
+    /* Core PSC */
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MCU,
+        .pscPowerDomainId   = CSL_WKUP_PD_MCUSS,
+        .pscIndex           = CSL_WKUP_LPSC_MCU_R5,
+    },
+};
+
+LBIST_PSC_t LBIST_pscEnableList[LBIST_NUM_ENABLES] =
+{
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MCU,
+        .pscPowerDomainId   = CSL_WKUP_PD_MCUSS,
+        .pscIndex           = CSL_WKUP_LPSC_MCU2DM_ISO,
+    },
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MCU,
+        .pscPowerDomainId   = CSL_WKUP_PD_MCUSS,
+        .pscIndex           = CSL_WKUP_LPSC_MCU_R5,
+    },
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MCU,
+        .pscPowerDomainId   = CSL_WKUP_PD_MCUSS,
+        .pscIndex           = CSL_WKUP_LPSC_MCU_MCANSS_0,
+    },
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MCU,
+        .pscPowerDomainId   = CSL_WKUP_PD_MCUSS,
+        .pscIndex           = CSL_WKUP_LPSC_MCU_MCANSS_1,
+    },
+    {
+        .pscDomainId        = SOC_PSC_DOMAIN_ID_MCU,
+        .pscPowerDomainId   = CSL_WKUP_PD_MCUSS,
+        .pscIndex           = CSL_WKUP_LPSC_MCU_PBIST,
+    },
 };
 
 LBIST_TestHandle_t *LBIST_getTestHandleArray(void)

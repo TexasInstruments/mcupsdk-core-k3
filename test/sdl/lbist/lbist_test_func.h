@@ -62,6 +62,17 @@ extern "C"
 
 typedef void (*LBIST_handlerPtr)(uint32_t coreIndex);
 
+typedef struct LBIST_PSC_s
+{
+  /** Domain of PSC. Refer SOC_PSCDomainId_t */
+  uint32_t pscDomainId;
+  /** Power domain (PD) of PSC. Refer csl_soc_psc.h */
+  uint32_t pscPowerDomainId;
+  /** Index of PSC. Refer csl_soc_psc.h */
+  uint32_t pscIndex;
+  /** Secondary core name */
+} LBIST_PSC_t;
+
 typedef struct LBIST_TestHandle_s
 {
   /** Core name */

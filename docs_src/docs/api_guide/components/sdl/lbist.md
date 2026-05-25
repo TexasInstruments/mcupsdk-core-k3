@@ -50,7 +50,7 @@ The LBIST Module of the SDL supports execution of the software-initiated LBIST f
   </tr>
   <tr>
     <td>M4F</td>
-    <td>7858 us</td>
+    <td>12957 us</td>
   </tr>
 </table>
 \note The above numbers were obtained in the r5fss0-0_freertos setting
@@ -63,7 +63,7 @@ The LBIST Module of the SDL supports execution of the software-initiated LBIST f
   </tr>
   <tr>
     <td>MCU-R5F</td>
-    <td>7919 us</td>
+    <td>7883 us</td>
   </tr>
 </table>
 \note The above numbers were obtained in the wkup-r5fss0-0_freertos setting
@@ -76,7 +76,7 @@ The LBIST Module of the SDL supports execution of the software-initiated LBIST f
   </tr>
   <tr>
     <td>R5F</td>
-    <td>7917 us</td>
+    <td>7881 us</td>
   </tr>
 </table>
 \note The above numbers were obtained in the r5fss0-0_freertos setting
@@ -89,7 +89,7 @@ The LBIST Module of the SDL supports execution of the software-initiated LBIST f
   </tr>
   <tr>
     <td>R5F</td>
-    <td>7929 us</td>
+    <td>7884 us</td>
   </tr>
 </table>
 \note The above numbers were obtained in the r5fss0-0_freertos setting
@@ -102,11 +102,11 @@ The LBIST Module of the SDL supports execution of the software-initiated LBIST f
   </tr>
   <tr>
     <td>MAIN-R5F1-0</td>
-    <td>15696 us</td>
+    <td>15438 us</td>
   </tr>
   <tr>
     <td>MAIN-R5F0-0</td>
-    <td>15698 us</td>
+    <td>15439 us</td>
   </tr>
 </table>
 \note The above numbers were obtained in the r5fss0-0_nortos and r5fss1-0_nortos settings respectively

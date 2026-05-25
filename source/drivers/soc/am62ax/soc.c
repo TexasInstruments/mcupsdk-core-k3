@@ -852,8 +852,8 @@ int32_t SOC_setPSCState(uint32_t instNum, uint32_t domainNum, uint32_t moduleNum
             uint32_t pwrDmnNumInGrp = domainNum & 0x1FU;
             CSL_REG32_WR (((uint32_t)baseAddr + CSL_PSC_PTCMD(pwrDmnGrp)), ((uint32_t)1U << pwrDmnNumInGrp));
             do {
-                pdTransStatus = CSL_FEXTR( baseAddr + CSL_PSC_PTSTAT(pwrDmnGrp), \
-                                pwrDmnNumInGrp, pwrDmnNumInGrp );
+                pdTransStatus = CSL_FEXTR(CSL_REG32_RD(baseAddr + CSL_PSC_PTSTAT(pwrDmnGrp)), \
+                                            pwrDmnNumInGrp, pwrDmnNumInGrp);
                 loopCnt++;
             } while ((pdTransStatus != 0U) && (loopCnt < PSC_TIMEOUT));
 

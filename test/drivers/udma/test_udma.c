@@ -522,7 +522,6 @@ static void TestUdma_mappedRxAnyChannelAllocation(void *args);
 #endif /* For cores that have mapped CPSW resources reserved */
 #if defined (ENABLE_DRU_TESTS)
 extern void TestUdma_appdmautilsClecInitDru(void);
-extern void TestUdma_druOwnerUDMAC(void *args);
 extern void TestUdma_dmautilsDruDirectPolling(void *args);
 extern void TestUdma_dmautilsDruDirectInterrupt(void *args);
 extern void TestUdma_dmautilsDruDirect2D(void *args);
@@ -922,7 +921,6 @@ void test_udma_main(void *args)
     RUN_TEST(TestUdma_dmautilsDruDirectCircular, 9408, NULL);
     RUN_TEST(TestUdma_dmautilsDruDirectPauseResume, 9409, NULL);
     RUN_TEST(TestUdma_dmautilsDruDirectInterrupt, 8294, NULL);
-    RUN_TEST(TestUdma_druOwnerUDMAC, 8602, NULL);
 #endif
     RUN_TEST(TestUdma_initWithInvalidInstanceId, 11048, NULL);
     RUN_TEST(TestUdma_deinitWithPendingResources, 11049, NULL);

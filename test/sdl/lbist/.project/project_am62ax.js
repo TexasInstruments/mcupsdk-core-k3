@@ -20,7 +20,6 @@ const filedirs = {
     common: [
         "..",       /* core_os_combo base */
         "../../..", /* Example base */
-        /*"../../../soc/am62ax", *//* am62ax-specific example base */
         "../../../../dpl", /* SDL DPL base */
         "../../../../lbist/soc/am62ax",
         "../../../../lbist/am62ax-sk",
@@ -32,6 +31,7 @@ const filedirs = {
 const r5_macro = {
     common: [
         "R5F_CORE",
+        "SOC_AM62AX",
     ],
 
 };
@@ -171,7 +171,6 @@ const lnkfiles = {
 };
 
 const syscfgfile = "../example.syscfg";
-
 
 const templates_nortos_mcu_r5f =
 [

@@ -69,7 +69,7 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/r5f \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
 	-I${MCU_PLUS_SDK_PATH}/test/sdl/dpl/ \
-	-I${MCU_PLUS_SDK_PATH}/test/sdl/lbist/soc/am62ax/ \
+	-I${MCU_PLUS_SDK_PATH}/test/sdl/lbist/soc/am62dx/ \
 	-I${MCU_PLUS_SDK_PATH}/test/sdl/lbist/ \
 	-Igenerated \
 

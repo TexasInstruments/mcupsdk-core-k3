@@ -45,6 +45,21 @@ const filedirs_nortos_r5 = {
     ],
 };
 
+const r5_0_macro = {
+    common: [
+        "R5F_CORE",
+        "R5FSS0"
+    ],
+
+};
+
+const r5_1_macro = {
+    common: [
+        "R5F_CORE",
+        "R5FSS1"
+    ],
+
+};
 
 const libdirs_nortos_r5f = {
     common: [
@@ -73,7 +88,7 @@ const includes_freertos_r5f = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am275x/r5f",
         "${MCU_PLUS_SDK_PATH}/test/unity/",
         "${MCU_PLUS_SDK_PATH}/test/sdl/dpl/",
-        "${MCU_PLUS_SDK_PATH}/test/sdl/lbist/soc/am62ax/",
+        "${MCU_PLUS_SDK_PATH}/test/sdl/lbist/soc/am275x/",
         "${MCU_PLUS_SDK_PATH}/test/sdl/lbist/",
     ],
 };
@@ -82,7 +97,7 @@ const includes_nortos_r5f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/test/unity/",
         "${MCU_PLUS_SDK_PATH}/test/sdl/dpl/",
-        "${MCU_PLUS_SDK_PATH}/test/sdl/lbist/soc/am62ax/",
+        "${MCU_PLUS_SDK_PATH}/test/sdl/lbist/soc/am275x/",
         "${MCU_PLUS_SDK_PATH}/test/sdl/lbist/",
     ],
 };
@@ -201,6 +216,15 @@ function getComponentBuildProperty(buildOption) {
     build_property.syscfgfile = syscfgfile;
     build_property.defines = defines_dm_r5;
 
+    if(buildOption.cpu.match(/r5fss0-0*/))
+    {
+        build_property.defines = r5_0_macro;
+    }
+    else
+    {
+        build_property.defines = r5_1_macro;
+    }
+    
     if(buildOption.cpu.match(/r5f*/)) {
         if(buildOption.os.match(/freertos*/) )
         {

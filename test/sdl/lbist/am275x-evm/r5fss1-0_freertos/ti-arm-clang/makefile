@@ -66,13 +66,14 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am275x/r5f \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
 	-I${MCU_PLUS_SDK_PATH}/test/sdl/dpl/ \
-	-I${MCU_PLUS_SDK_PATH}/test/sdl/lbist/soc/am62ax/ \
+	-I${MCU_PLUS_SDK_PATH}/test/sdl/lbist/soc/am275x/ \
 	-I${MCU_PLUS_SDK_PATH}/test/sdl/lbist/ \
 	-Igenerated \
 
 DEFINES_common := \
 	-DSOC_AM275X \
 	-DR5F_CORE \
+	-DR5FSS1 \
 
 CFLAGS_common := \
 	-mcpu=cortex-r5 \

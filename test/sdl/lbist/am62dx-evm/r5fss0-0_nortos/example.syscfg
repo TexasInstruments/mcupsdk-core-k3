@@ -1,0 +1,124 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM62Dx" --package "AMB" --part "AM62D22-G" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.16.1+2960"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const flash       = scripting.addModule("/board/flash/flash", {}, false);
+const flash1      = flash.addInstance();
+const bootloader  = scripting.addModule("/drivers/bootloader/bootloader", {}, false);
+const bootloader1 = bootloader.addInstance();
+const bootloader2 = bootloader.addInstance();
+const bootloader3 = bootloader.addInstance();
+const bootloader4 = bootloader.addInstance();
+const bootloader5 = bootloader.addInstance();
+const bootloader6 = bootloader.addInstance();
+const bootloader7 = bootloader.addInstance();
+const bootloader8 = bootloader.addInstance();
+const mmcsd       = scripting.addModule("/drivers/mmcsd/mmcsd", {}, false);
+const mmcsd1      = mmcsd.addInstance();
+const uart        = scripting.addModule("/drivers/uart/uart", {}, false);
+const uart1       = uart.addInstance();
+const clock       = scripting.addModule("/kernel/dpl/clock");
+const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
+const mpu_armv7   = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
+const mpu_armv71  = mpu_armv7.addInstance();
+const mpu_armv72  = mpu_armv7.addInstance();
+const mpu_armv73  = mpu_armv7.addInstance();
+const mpu_armv74  = mpu_armv7.addInstance();
+const mpu_armv75  = mpu_armv7.addInstance();
+const mpu_armv76  = mpu_armv7.addInstance();
+const mpu_armv77  = mpu_armv7.addInstance();
+const mpu_armv78  = mpu_armv7.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+bootloader1.$name          = "CONFIG_BOOTLOADER_FLASH_HSM";
+bootloader1.appImageOffset = "0x240000";
+
+bootloader2.$name          = "CONFIG_BOOTLOADER_FLASH_A53";
+bootloader2.appImageOffset = "0x1200000";
+
+bootloader3.$name          = "CONFIG_BOOTLOADER_FLASH_DSP";
+bootloader3.appImageOffset = "0xA00000";
+
+bootloader4.$name          = "CONFIG_BOOTLOADER_FLASH_MCU";
+bootloader4.appImageOffset = "0x800000";
+
+bootloader1.flashDriver                         = flash1;
+flash1.$name                                    = "CONFIG_FLASH_SBL";
+bootloader2.flashDriver                         = flash1;
+bootloader3.flashDriver                         = flash1;
+bootloader4.flashDriver                         = flash1;
+flash1.serialFlashDriver.$name                  = "board_flash_serialFlash_serialflash0";
+flash1.serialFlashDriver.peripheralDriver.$name = "CONFIG_OSPI_SBL";
+
+bootloader5.$name              = "CONFIG_BOOTLOADER_EMMC_HSM";
+bootloader5.appImageOffset     = "0x240000";
+bootloader5.bootMedia          = "EMMC";
+bootloader5.EMMCAppImageOffset = "0x240000";
+
+bootloader6.$name              = "CONFIG_BOOTLOADER_EMMC_A53";
+bootloader6.bootMedia          = "EMMC";
+bootloader6.EMMCAppImageOffset = "0x1200000";
+
+bootloader7.$name              = "CONFIG_BOOTLOADER_EMMC_DSP";
+bootloader7.bootMedia          = "EMMC";
+bootloader7.EMMCAppImageOffset = "0xA00000";
+
+bootloader8.$name              = "CONFIG_BOOTLOADER_EMMC_MCU";
+bootloader8.bootMedia          = "EMMC";
+bootloader8.EMMCAppImageOffset = "0x800000";
+
+bootloader5.MMCSDDriver = mmcsd1;
+bootloader6.MMCSDDriver = mmcsd1;
+bootloader7.MMCSDDriver = mmcsd1;
+bootloader8.MMCSDDriver = mmcsd1;
+mmcsd1.$name            = "CONFIG_MMCSD_SBL";
+
+uart1.$name                      = "CONFIG_UART_SBL";
+uart1.useWakeupDomainPeripherals = false;
+uart1.addedByBootloader          = true;
+
+mpu_armv71.accessPermissions = "Supervisor RD+WR, User RD";
+mpu_armv71.allowExecute      = false;
+mpu_armv71.size              = 31;
+mpu_armv71.attributes        = "Device";
+mpu_armv71.$name             = "REGISTER_REGION";
+
+mpu_armv72.accessPermissions = "Supervisor RD+WR, User RD";
+mpu_armv72.size              = 7;
+mpu_armv72.$name             = "TCMA_VEC";
+
+mpu_armv73.$name             = "CONFIG_MPU_REGION2";
+mpu_armv73.accessPermissions = "Supervisor RD+WR, User RD";
+mpu_armv73.baseAddr          = 0x41C00000;
+mpu_armv73.size              = 19;
+
+mpu_armv74.$name             = "CONFIG_MPU_REGION3";
+mpu_armv74.accessPermissions = "Supervisor RD+WR, User RD";
+mpu_armv74.baseAddr          = 0x70000000;
+mpu_armv74.size              = 16;
+
+mpu_armv75.$name    = "DDR";
+mpu_armv75.size     = 31;
+mpu_armv75.baseAddr = 0x80000000;
+
+mpu_armv76.baseAddr   = 0x41010000;
+mpu_armv76.size       = 15;
+mpu_armv76.attributes = "NonCached";
+mpu_armv76.$name      = "TCMB";
+
+mpu_armv77.size       = 15;
+mpu_armv77.attributes = "NonCached";
+mpu_armv77.$name      = "TCMA";
+
+mpu_armv78.baseAddr = 0x43C00000;
+mpu_armv78.size     = 18;
+mpu_armv78.$name    = "HSM_RAM";
+

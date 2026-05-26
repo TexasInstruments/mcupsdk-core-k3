@@ -58,7 +58,11 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#define DSB_ENABLE  asm("dsb");
+#define DSB_ENABLE      asm("dsb");
+#if defined(M4F_CORE)
+/* This is roughly 2x the time required for CRC calculation per 32-bit data entry */
+#define MCRC_M4F_DELAY  10U
+#endif
 
 /* ========================================================================== */
 /*                         Structures and Enums                               */
@@ -1113,6 +1117,17 @@ int32_t SDL_MCRC_computeSignCPUmode (SDL_MCRC_InstType instance,
 
         if (result == SDL_PASS)
         {
+#if defined (M4F_CORE)
+            /* 
+             * In the M4F core, we cannot perform 64 bit operations from the MCRC signature registers. Hence, any read has a 
+             * chance to be only partially completed, before the MCRC value stabilizes. So, a delay is used to ensure stability 
+             */
+            volatile uint8_t delay = MCRC_M4F_DELAY;
+            while(delay)
+            {
+                delay--;
+            }
+#endif
             /* Get the MCRC signature value */
             result = SDL_MCRC_getPSASectorSig(instance,
                                               channel,

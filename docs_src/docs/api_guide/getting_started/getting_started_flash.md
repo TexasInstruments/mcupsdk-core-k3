@@ -13,6 +13,8 @@
 In this step we will flash the application that we have build and run using CCS to the EVM flash.
 We can then boot this application without being connected to CCS via JTAG.
 
+\attention **Flash Write Address Alignment Requirement**: All flash write operations require the flash offset/address to be aligned to the flash **erase block size**. For example, if the erase block size is 64KB (0x10000 bytes), the flash offset must be a multiple of 0x10000. Using non-block-aligned addresses will result in "Flashing Failed Error". Always ensure that the `--flash-offset` value in your configuration file is block-aligned.
+
 ## Getting ready to flash the application
 
 - A quick recap of steps done so far that are needed for the flashing to work

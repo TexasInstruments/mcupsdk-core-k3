@@ -93,7 +93,7 @@ ${APP_BINARY}    `appBinary`
 
 *** Test Cases ***
 `testCaseName`
-	[Tags]    core:`coreName`    component:`componentName`    app_name:`project.name`	`testCaseIds`
+	[Tags]    core:`coreName`    component:`componentName`    app_name:`project.name`    `testCaseIds`
 	[Timeout]    `timeout`
 	DUT ON
 	CHANGE BOOT MODE    ${UART_BOOT_MODE}

@@ -178,6 +178,185 @@ ROM_CHECKSUM     |  R5F           | No
 </table>
 
 
+## Errata
+<table>
+<tr>
+    <th> ID
+    <th> Head Line
+    <th> Module
+    <th> SDK Status
+    <th> Remarks
+</tr>
+<tr>
+    <td> i2310
+    <td> USART: Erroneous clear/trigger of timeout interrupt
+    <td> UART
+    <td> Implemented
+    <td> Workaround implemented in UART_i2310WA() in the UART driver
+</tr>
+<tr>
+    <td> i2311
+    <td> USART: Spurious DMA Interrupts
+    <td> UART
+    <td> Implemented
+    <td> FIFO trigger levels are always set to power-of-2 values via SysConfig
+</tr>
+<tr>
+    <td> i2189
+    <td> OSPI: Controller PHY Tuning Algorithm
+    <td> OSPI
+    <td> Implemented
+    <td> PHY tuning algorithm implemented in OSPI driver per SPRACT2
+</tr>
+<tr>
+    <td> i2249
+    <td> OSPI: Internal PHY Loopback and Internal Pad Loopback clocking modes with DDR timing inoperable
+    <td> OSPI
+    <td> Implemented
+    <td> SDK uses only unaffected clocking modes (DQS with PHY or No PHY mode)
+</tr>
+<tr>
+    <td> i2383
+    <td> OSPI: 2-byte address is not supported in PHY DDR mode
+    <td> OSPI
+    <td> Application Related
+    <td> Application must configure 3-byte or 4-byte addressing mode for OSPI flash
+</tr>
+<tr>
+    <td> i2431
+    <td> BCDMA: RX Channel can lockup in certain scenarios
+    <td> BCDMA
+    <td> Implemented
+    <td> SDK drivers set TR EOP flag (TR_FLAGS_EOP=1) and PDMA Z parameter (fifoCnt) to non-zero per workaround
+</tr>
+<tr>
+    <td> i2436
+    <td> BCDMA: BCDMA RX_IGNORE_LONG setting in RX CHAN CFG register doesn't work
+    <td> BCDMA
+    <td> N/A
+    <td> RX_IGNORE_LONG is not used in SDK (ignoreLongPkts defaults to FALSE); errata condition cannot be triggered
+</tr>
+<tr>
+    <td> i2049
+    <td> ECC_AGGR: Potential IP Clockstop/Reset Sequence Hang due to Pending ECC Aggregator Interrupts
+    <td> ECC_AGGR
+    <td> N/A
+    <td> Not applicable for FreeRTOS SDK; relevant only for functional safety (FuSA) use cases
+</tr>
+<tr>
+    <td> i2062
+    <td> RAT: Error Interrupt Triggered Even When Error Logging Disable Is Set
+    <td> RAT
+    <td> N/A
+    <td> SDK RAT driver does not use error interrupts or error logging
+</tr>
+<tr>
+    <td> i2120
+    <td> C71x: SE Hangs on Non-Parity Error Detection in Transposed Streams with LEZR
+    <td> C71x
+    <td> N/A
+    <td> SDK does not use stream templates with both LEZR and transposed mode enabled
+</tr>
+<tr>
+    <td> i2137
+    <td> PSIL: Clock stop operation can result in undefined behavior
+    <td> PSIL
+    <td> Implemented
+    <td> SDK UDMA driver provides ChDisable/ChEnable APIs for proper channel teardown before clock stop
+</tr>
+<tr>
+    <td> i2196
+    <td> IA: Potential deadlock scenarios in IA
+    <td> Interrupt Aggregator
+    <td> N/A
+    <td> SDK does not use IA multicast block functionality; not applicable
+</tr>
+<tr>
+    <td> i2199
+    <td> C71x: SE returning incorrect data when non-aligned transposed stream crosses AM1 circular buffer boundary
+    <td> C71x
+    <td> N/A
+    <td> SDK does not use non-aligned transposed streams that cross AM1 circular buffer boundary
+</tr>
+<tr>
+    <td> i2253
+    <td> PRG: CTRL_MMR STAT registers are unreliable indicators of POK threshold failure
+    <td> PRG
+    <td> Implemented
+    <td> POK driver clears ESM flags on initialization as per workaround
+</tr>
+<tr>
+    <td> i2278
+    <td> MCAN: Message Transmit order not guaranteed from dedicated Tx Buffers configured with same Message ID
+    <td> MCAN
+    <td> Application Related
+    <td> Customer must use Tx FIFO instead of dedicated Tx Buffers with same Message ID
+</tr>
+<tr>
+    <td> i2279
+    <td> MCAN: Specification Update for dedicated Tx Buffers and Tx Queues configured with same Message ID
+    <td> MCAN
+    <td> N/A
+    <td> Documentation erratum only; no code change required
+</tr>
+<tr>
+    <td> i2312
+    <td> MMCSD: HS200 and SDR104 Command Timeout Window Too Small
+    <td> MMCSD
+    <td> N/A
+    <td> No SDK command requires a timeout longer than 700ms; not applicable
+</tr>
+<tr>
+    <td> i2377
+    <td> RAT input signals rbytecnt and wbytecnt calculation is wrong
+    <td> RAT
+    <td> Implemented
+    <td> SysConfig enforces minimum RAT region size of 32 bytes; region boundaries smaller than 32 bytes are not configurable
+</tr>
+<tr>
+    <td> i2401
+    <td> CPSW: Host Timestamps Cause CPSW Port to Lock up
+    <td> CPSW
+    <td> Open
+    <td> SDK enables CPTS host Rx timestamps by default (hostRxTsEn=true); workaround requires disabling host timestamps
+</tr>
+<tr>
+    <td> i2427
+    <td> Safety: RAM SEC can cause Spurious RAM writes resulting in L2 and MBOX memory corruption
+    <td> C71x
+    <td> N/A
+    <td> C75 L2SRAM is configured as write-back cacheable (MAIR7) in example SysConfig files; CPU performs only full line writes making the partial write condition not applicable
+</tr>
+<tr>
+    <td> i2435
+    <td> Boot: ROM timeout for eMMC boot too long
+    <td> Boot
+    <td> Application Related
+    <td> Application must use an alternate boot mode to initially program eMMC
+</tr>
+<tr>
+    <td> i2438
+    <td> CPSW: Host to Ethernet Checksum Generation with VLAN ADD/Remove
+    <td> CPSW
+    <td> Open
+    <td> SDK enables TX checksum offload by default; VLAN tag add/remove on egress must not be used simultaneously with checksum generation
+</tr>
+<tr>
+    <td> i2449
+    <td> Pulsars do not have RAT MMR Parity - Mismatch with Diagnostic RAT5
+    <td> Pulsar
+    <td> Implemented
+    <td> Software readback of RAT MMR values implemented in SDK 12.01.00 (SITSW-11362)
+</tr>
+<tr>
+    <td> i2455
+    <td> PWM: The eint interrupt from all three PWM are not routed to main Pulsar
+    <td> PWM
+    <td> Open
+    <td> Workaround requires routing PWM eint via DM R5 to Main Pulsar; not feasible directly from Main Pulsar Core
+</tr>
+</table>
+
 ## Limitations
 
 <table>

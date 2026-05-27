@@ -55,6 +55,7 @@ Test Teardown    INFRA_TEST_TEARDOWN
 
 *** Variables ***
 
+${DEVICE_TYPE}    ${{ 'hs' if 'hsse' in '${PLATFORM}' else 'hs_fs' }}
 ${CFG_FILE}    `cfgFile`
 
 

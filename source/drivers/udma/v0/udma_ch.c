@@ -2132,11 +2132,16 @@ int32_t Udma_chDecStats(Udma_ChHandle chHandle, Udma_ChStats *chStats)
                     /* Add offset to chNum, so that BCDMA can identify it as Rx channel*/
                     chNum       = chHandleInt->rxChNum + drvHandle->rxChOffset;
                     bcdmaChDir = CSL_BCDMA_CHAN_DIR_RX;
+
+                    bcdmaChanStats.rxPayloadByteCnt = chStats->completedByteCnt;
+                    bcdmaChanStats.rxStartedByteCnt = chStats->startedByteCnt;
                 }
             }
             bcdmaChanStats.packetCnt = chStats->packetCnt;
             bcdmaChanStats.completedByteCnt = chStats->completedByteCnt;
             bcdmaChanStats.startedByteCnt = chStats->startedByteCnt;
+            bcdmaChanStats.txPayloadByteCnt = chStats->completedByteCnt;
+            bcdmaChanStats.txStartedByteCnt = chStats->startedByteCnt;
             CSL_bcdmaDecChanStats(&drvHandle->bcdmaRegs, chNum, bcdmaChDir, &bcdmaChanStats);
 
         }

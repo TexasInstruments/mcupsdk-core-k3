@@ -99,7 +99,7 @@ const robot_template = {
     input: ".project/templates/am275x/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
-        componentName: "SBL,UART",
+        componentName: "SBL",
         testCaseName: "Bootloader: UART bootloader",
         testCaseIds: "SITSW-1634",
         expectedString: "Hello World!",

@@ -66,7 +66,7 @@ const robot_template = {
     input: ".project/templates/am275x/astra/tests_uniflash.robot.xdt",
     output: "../tests.robot",
     options: {
-        componentName: "SBL,UART",
+        componentName: "SBL",
         testCaseName: "Bootloader: UART Uniflash bootloader",
         testCaseIds: "SITSW-1633",
         cfgPath: "tools/boot/sbl_prebuilt/{board}/sbl_null_${DEVICE_TYPE}.cfg",

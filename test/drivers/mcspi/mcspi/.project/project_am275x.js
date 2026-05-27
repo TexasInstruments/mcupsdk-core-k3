@@ -88,7 +88,7 @@ const robot_template = {
     input: ".project/templates/am275x/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
-        componentName: "MCSPI,UDMA",
+        componentName: "MCSPI",
         testCaseName: "MCSPI Test Application",
         testCaseIds: "SITSW-2894 SITSW-2895 SITSW-2901 SITSW-2902 SITSW-2903 SITSW-2904 SITSW-2905 SITSW-2906 SITSW-2908 SITSW-2910 " +
              "SITSW-2911 SITSW-2912 SITSW-2914 SITSW-2915 SITSW-2916 SITSW-2917 SITSW-2918 SITSW-2919 SITSW-2920 SITSW-2921 " +

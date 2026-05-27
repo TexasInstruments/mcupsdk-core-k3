@@ -112,7 +112,7 @@ const robot_template = {
     input: ".project/templates/am275x/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
-        componentName: "MCSPI,UDMA",
+        componentName: "MCSPI",
         testCaseName: "McSPI Internal Loopback DMA Mode Sample Application",
         testCaseIds: "SITSW-2969",
     },

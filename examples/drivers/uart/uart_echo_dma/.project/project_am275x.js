@@ -113,7 +113,7 @@ const robot_template = {
     input: ".project/templates/am275x/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
-        componentName: "UART,UDMA",
+        componentName: "UART",
         testCaseName: "UART Echo DMA Mode Sample Application",
         testCaseIds: "SITSW-5133",
         interactPrompt: "Receives 8 characters then echo's back. Please input..",

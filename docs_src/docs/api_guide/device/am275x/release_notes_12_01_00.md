@@ -1,4 +1,4 @@
-# Release Notes 12.00.00 {#RELEASE_NOTES_12_00_00_PAGE}
+# Release Notes 12.01.00 {#RELEASE_NOTES_12_01_00_PAGE}
 
 [TOC]
 
@@ -15,24 +15,11 @@ AM275x | R5F, C75                    | @VAR_BOARD_NAME (referred to as am275x-ev
 
 ## Features Added in This Release
 
-\note Update of OSPI tuning algorithm on this SDK causes increase in tuning time. Refer \ref OSPI_DATA_SHEET
 
 Feature                                                                                      | Module
 ---------------------------------------------------------------------------------------------|-----------------------------------
- PADCFG drive strength adjustment through SYSCFG                                             | Pinmux
- Support de-interleave of data on MCASP                                                      | MCASP
- LBIST/PBIST initiated in SBL EMMC                                                           | SBL
- Enable WKUP-R5F ATCM                                                                        | SBL
- Support PMIC driver for TPS6522X                                                            | PMIC
- Watchdog support for DM R5/WKUP-R5F                                                         | WDT
- Example for Memory latency benchmarking on R5F and C7x                                      | Becnhmarks
- MMCSD drive strength as a configurable option                                               | MMCSD
- Add 8S-8S-8S protocol support                                                               | OSPI
- Route SecProxy event for MCU cores                                                          | DM
- Interrupt mode in SCIClient                                                                 | SCI Client
- Move task stack allocation to application layer                                             | SCI Server
- Ethernet based uniflash support                                                             | Uniflash, Ethernet
- C7x example for HyperRAM                                                                    | Hyper RAM
+         |      
+
 
 ## Dependent Tools and Compiler Information
 
@@ -63,7 +50,7 @@ FreeRTOS Kernel         | R5F, C75                 | 11.1.0
     </tr>
 </table>
 
-### Experimental Features {#EXPERIMENTAL_FEATURES_12_00_00}
+### Experimental Features {#EXPERIMENTAL_FEATURES}
 \attention Features listed below are early versions and should be considered as "experimental".
 \attention Users can evaluate the feature, however the feature is not fully tested at TI side.
 \attention TI would not support these feature on public e2e.
@@ -195,109 +182,9 @@ ROM_CHECKSUM     |  R5F           | No
     <th> Module
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-308, EXT_SITMPUSW-308}
-    <td> AASRC sysconfig bug: Example code build fails when Tx/Rx loopjob buffer is disabled
-    <td> ASRC
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-285, EXT_SITMPUSW-285}
-    <td> AASRC driver bug: AASRC_MAX_OUT_FIFO_THRESHOLD set to 16U
-    <td> ASRC
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-290, EXT_SITMPUSW-290}
-    <td> TX macro (AASRC_TX_DMA_TR_COUNT) used inside AASRC_udmaIsrRx (RX function)
-    <td> ASRC
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-286, EXT_SITMPUSW-286}
-    <td> AM275: RM boardcfg changes are not taking effect
-    <td> Build
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-312, EXT_SITMPUSW-312}
-    <td> Incorrect context description of SCICLIENT_CONTEXT_DM2TIFS
-    <td> DM
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-251, EXT_SITMPUSW-251}
-    <td> MCU+ SDK Example Projects using incorrect ARMv7 MPU Attributes for Peripheral Register Region
-    <td> Examples
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-301, EXT_SITMPUSW-301}
-    <td> OSPI_norFlashInit1s1s1s has an implementation of wait for 500 milliseconds instead of microseconds
-    <td> Flash
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-282, EXT_SITMPUSW-282}
-    <td> Sysconfig not generating code for GPIO Trigger
-    <td> GPIO
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-311, EXT_SITMPUSW-311}
-    <td> AM275x: Not able to add instance for wkup-r5 core
-    <td> I2C
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-279, EXT_SITMPUSW-279}
-    <td> I2C close is not working properly during error conditions
-    <td> I2C
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-277, EXT_SITMPUSW-277}
-    <td> MCASP: tx.evtCtl Used Instead of rx.evtCtl for REVTCTL Configuration
-    <td> MCASP
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-276, EXT_SITMPUSW-276}
-    <td> MCASP: intCfgTx.intrNum Used Instead of intCfgRx.intrNum in Interrupt Check
-    <td> MCASP
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-249, EXT_SITMPUSW-249}
-    <td> 2 C7x cores ( c7x_0 and c7x_1 ) in AM275 are not able to run 2 different McASP instances
-    <td> MCASP
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-295, EXT_SITMPUSW-295}
-    <td> Flash Close Logic Requires OSPI Handle to be reset to 1S-1S-1S
-    <td> OSPI
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-280, EXT_SITMPUSW-280}
-    <td> OSPI Indac Mode Should Check for odd bytes
-    <td> OSPI
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-296, EXT_SITMPUSW-296}
-    <td> Fix issues with log in sbl_jtag_uniflash
-    <td> SBL
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-292, EXT_SITMPUSW-292}
-    <td> Bootloader_socOpenFirewalls is called before System_init in the SBLs
-    <td> SBL
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-281, EXT_SITMPUSW-281}
-    <td> UART: UART_open fails when NULL argument is passed as UART_Params argument
-    <td> UART
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-289, EXT_SITMPUSW-289}
-    <td> Uniflash script fails when trying to erase sector or size 4MB
-    <td> Uniflash
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-214, EXT_SITMPUSW-214}
-    <td> WDT: Hang due to no valid argument check in APIs
-    <td> Watchdog
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13267, EXT_EP-13267}
-    <td> SDL ESM: Wrong instance argument in SDL_ESM_loInterruptHandler causing misidentification of ESM0 interrupts
-    <td> SDL-ESM
+    <td>
+    <td>
+    <td>
 </tr>
 </table>
 
@@ -312,69 +199,9 @@ ROM_CHECKSUM     |  R5F           | No
     <th> Module
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-326, EXT_SITMPUSW-326}
-    <td> AASRC - AASRC channel data gets shifted when c7x workload is high and multiple mcasp instances are used
-    <td> AASRC
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-153, EXT_SITMPUSW-153}
-    <td> MCU+ SDK CCS Project Build Generates Invalid/Redundant Boot Image Files
-    <td> Build
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-120, EXT_SITMPUSW-120}
-    <td> AM62A/AM275x: C7x task size/alignment should be 8KB (not 16KB)
-    <td> C7X
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-261, EXT_SITMPUSW-261}
-    <td> AM275x FreeRTOS SDK: The CycleCounterP_getCount32 for R5F_0_0 is not accurate
-    <td> DPL
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-219, EXT_SITMPUSW-219}
-    <td> AM62D/A/275: C7x `portGET_RUN_TIME_COUNTER_VALUE` API uses hard coded CPU Freq
-    <td> FreeRTOS
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-224, EXT_SITMPUSW-224}
-    <td> Mcasp :  Not working on interrupt mode
-    <td> MCASP
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-222, EXT_SITMPUSW-222}
-    <td> MMCSD field Card Type is not ordered logically in the Sysconfig
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-214, EXT_SITMPUSW-214}
-    <td> Spinlock: Hang in multithread test cases due to HW interrupt config
-    <td> Spinlock
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-214, EXT_SITMPUSW-214}
-    <td> Spinlock: Missing NULL Pointer Validation for Base Address Parameter in Spinlock APIs
-    <td> Spinlock
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-324, EXT_SITMPUSW-324}
-    <td> UART_udmaIsrTx does not handles continuous Callbacks properly
-    <td> UART
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12276, EXT_EP-12276}
-    <td> ECC: Firewall related aggregators failures
-    <td> SDL-ECC
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12282, EXT_EP-12282}
-    <td> AM275x: ECC: Some of the aggregators are failing on AM275x
-    <td> SDL-ECC
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12280, EXT_EP-12280}
-    <td> Running MCU LBIST on SBL causes JTAG connection issues to MCU R5F
-    <td> SDL-LBIST
+    <td>
+    <td>
+    <td>
 </tr>
 </table>
 
@@ -466,4 +293,3 @@ newer version listed on the table below.
           include path `<tsn_combase/tilld/cb_lld_ethernet.h>` in the file that uses `cb_lld_notify_linkchange`.
 </tr>
 </table>
-

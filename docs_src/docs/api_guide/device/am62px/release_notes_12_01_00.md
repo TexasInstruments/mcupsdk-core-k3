@@ -1,4 +1,4 @@
-# Release Notes 12.00.00 {#RELEASE_NOTES_12_00_00_PAGE}
+# Release Notes 12.01.00 {#RELEASE_NOTES_12_01_00_PAGE}
 
 [TOC]
 
@@ -15,33 +15,19 @@ AM62P  | MCU R5F, WKUP R5F           | @VAR_BOARD_NAME EVM (referred to as am62p
 
 ## Features Added in This Release
 
-\note Update of OSPI tuning algorithm on this SDK causes increase in tuning time. Refer \ref OSPI_DATA_SHEET
 
 Feature                                                                                      | Module
 ---------------------------------------------------------------------------------------------|-----------------------------------
- PADCFG drive strength adjustment through SYSCFG                                             | Pinmux
- LBIST/PBIST initiated in SBL EMMC                                                           | SBL
- Enable WKUP-R5F ATCM                                                                        | SBL
- Watchdog support for DM R5/WKUP-R5F                                                         | WDT
- Save/Restore of FPU registers on context switch enabled by default on A53                   | FreeRTOS
- MMCSD drive strength as a configurable option                                               | MMCSD
- Add 8S-8S-8S protocol support                                                               | OSPI
- Route SecProxy event for MCU cores                                                          | DM
- Interrupt mode in SCIClient                                                                 | SCI Client
- Move task stack allocation to application layer                                             | SCI Server
- Add WFI in MCU only mode to save power                                                      | LPM
+         |      
 
-### Experimental Features {#EXPERIMENTAL_FEATURES_12_00_00}
 
-\attention Features listed below are early versions and should be considered as "experimental".
-\attention Users can evaluate the feature, however the feature is not fully tested at TI side.
-\attention TI would not support these feature on public e2e.
-\attention Experimental features will be enabled with limited examples and SW modules.
+### Experimental Features {#EXPERIMENTAL_FEATURES}
+
 
 Feature                                                                             | Module
 ------------------------------------------------------------------------------------|--------------------------
-Ethernet traffic sharing accross multiple cores, called Ethernet Firmware           | Networking
-C++ SUpport                                                                         | NA
+         |      
+
 
 ## Dependent Tools and Compiler Information
 \attention It is recommended to use the TIFS version provided with the release for ensuring compatibility between TIFS and device manager. Using the TIFS from different MCU+SDK release is not recommended and may cause TIFS/ DM functionality to break.
@@ -341,94 +327,9 @@ PMIC          | MCU-R5F               | Yes
     <th> Module
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-245, EXT_SITMPUSW-245}
-    <td> MCU+ SDK LPDDR4 Driver starts DDR Training/Leveling Sequence twice
-    <td> DDR
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-293, EXT_SITMPUSW-293}
-    <td> Sciclient driver uses incorrect context for the TISCI_MSG_KEYRING_IMPORT
-    <td> DM
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-309, EXT_SITMPUSW-309}
-    <td> LPM: Spurious wake up on MCU only mode
-    <td> DM
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-312, EXT_SITMPUSW-312}
-    <td> Incorrect context description of SCICLIENT_CONTEXT_DM2TIFS
-    <td> DM
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-288, EXT_SITMPUSW-288}
-    <td> LPM: Unable to enter LPM in Interrupt Mode
-    <td> DM
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-302, EXT_SITMPUSW-302}
-    <td> Compilation Errors when disabling DebugP logs.
-    <td> DPL
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-251, EXT_SITMPUSW-251}
-    <td> MCU+ SDK Example Projects using incorrect ARMv7 MPU Attributes for Peripheral Register Region
-    <td> Examples
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-301, EXT_SITMPUSW-301}
-    <td> OSPI_norFlashInit1s1s1s has an implementation of wait for 500 milliseconds instead of microseconds
-    <td> Flash
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-282, EXT_SITMPUSW-282}
-    <td> Sysconfig not generating code for GPIO Trigger
-    <td> GPIO
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-279, EXT_SITMPUSW-279}
-    <td> I2C close is not working properly during error conditions
-    <td> I2C
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-310, EXT_SITMPUSW-310}
-    <td> Incorrect handling of the timeout for the CMD6 command
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-114, EXT_SITMPUSW-114}
-    <td> MMCSD_enableBootPartition implements two mutually exclusive concepts as one function
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-295, EXT_SITMPUSW-295}
-    <td> Flash Close Logic Requires OSPI Handle to be reset to 1S-1S-1S
-    <td> OSPI
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-280, EXT_SITMPUSW-280}
-    <td> OSPI Indac Mode Should Check for odd bytes
-    <td> OSPI
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-256, EXT_SITMPUSW-256}
-    <td> Incorrect calculation of rowColEnd in the ext_otp_writeMmr
-    <td> OTP
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-292, EXT_SITMPUSW-292}
-    <td> Bootloader_socOpenFirewalls is called before System_init in the SBLs
-    <td> SBL
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-214, EXT_SITMPUSW-214}
-    <td> WDT: Hang due to no valid argument check in APIs
-    <td> Watchdog
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13267, EXT_EP-13267}
-    <td> SDL ESM: Wrong instance argument in SDL_ESM_loInterruptHandler causing misidentification of ESM0 interrupts
-    <td> SDL-ESM
+    <td>
+    <td>
+    <td>
 </tr>
 </table>
 
@@ -443,69 +344,9 @@ PMIC          | MCU-R5F               | Yes
     <th> Module
 </tr>
 <tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-153, EXT_SITMPUSW-153}
-    <td> MCU+ SDK CCS Project Build Generates Invalid/Redundant Boot Image Files
-    <td> Build
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-28, EXT_SITMPUSW-28}
-    <td> Outstanding mailbox messages prevent suspend
-    <td> IPC
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-259, EXT_SITMPUSW-259}
-    <td> eMMC retuning may be attempted during the initialization sequence
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-222, EXT_SITMPUSW-222}
-    <td> MMCSD field Card Type is not ordered logically in the Sysconfig
-    <td> MMCSD
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-135, EXT_SITMPUSW-135}
-    <td> RTC Test application failing intermittently.
-    <td> RTC
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-220, EXT_SITMPUSW-220}
-    <td> SBL_SD bootloaders report incorrect boot image size
-    <td> SBL
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-324, EXT_SITMPUSW-324}
-    <td> UART_udmaIsrTx does not handles continuous Callbacks properly
-    <td> UART
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-258, EXT_SITMPUSW-258}
-    <td> WKUP UART0 is not working in CallBack mode
-    <td> UART
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12276, EXT_EP-12276}
-    <td> ECC: Firewall related aggregators failures
-    <td> SDL-ECC
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12277, EXT_EP-12277}
-    <td> AM62Px: ECC: SDL_MCAN1_MCANSS_MSGMEM_WRAP_ECC_AGGR aggregator is failing
-    <td> SDL-ECC
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12279, EXT_EP-12279}
-    <td> CSI RX ECC aggregators are failing on AM62P/AM62X
-    <td> SDL-ECC
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-13265, EXT_EP-13265}
-    <td> MCU R5 ECC Aggr init fails when MCU LBIST is enabled in bootloader
-    <td> SDL-LBIST
-</tr>
-<tr>
-    <td> \htmllink{https://sir.ext.ti.com/jira/browse/EXT_EP-12280, EXT_EP-12280}
-    <td> Running MCU LBIST on SBL causes JTAG connection issues to MCU R5F
-    <td> SDL-LBIST
+    <td>
+    <td>
+    <td>
 </tr>
 </table>
 

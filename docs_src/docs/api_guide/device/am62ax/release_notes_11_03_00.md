@@ -290,8 +290,8 @@ ROM Checksum |MCU-R5F         | No
     <td> i2190
     <td> CSI: CSI_RX_IF may enter unknown state following an incomplete frame
     <td> CSI_RX
-    <td> N/A
-    <td> CSI_RX is not supported in AM62Ax MCU+SDK
+    <td> Open
+    <td> CSI_RX driver does not reset CSI_RX_IF module on CRC/incomplete frame error as required by the workaround
 </tr>
 <tr>
     <td> i2196

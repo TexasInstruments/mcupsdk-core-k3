@@ -285,6 +285,8 @@ static int32_t SDL_POK_Thres_config_seq(SDL_POK_Inst instance, SDL_POK_config *p
                     programming ESM_INTR_EN_SET register(s) else report to MCU_ESM0*/
         if (retVal == SDL_PASS)
         {
+            /* Errata i2253: PRG CTRL_MMR STAT registers unreliable for POK threshold
+             * failure - clear ESM flags on POK init so ESM flags can be used reliably. */
             SDL_ESM_clearIntrStatus(esmBaseAddr, esm_err_sig_ov);
             SDL_ESM_clearIntrStatus(esmBaseAddr, esm_err_sig_uv);
 

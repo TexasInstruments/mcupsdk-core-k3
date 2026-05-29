@@ -1029,6 +1029,8 @@ static void UART_configInstance(UART_Config *config)
     /* Reset module */
     UART_resetModule(baseAddr);
 
+    /* Errata i2311: USART Spurious DMA Interrupts - FIFO trigger levels must be
+     * power-of-2 values (1, 2, 4, 8, 16, 32). Enforced via SysConfig. */
     /* Set up the TX and RX FIFO Trigger levels. */
     if(UART_CONFIG_MODE_DMA == prms->transferMode)
     {

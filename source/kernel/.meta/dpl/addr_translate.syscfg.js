@@ -34,6 +34,8 @@ let addr_translate_module = {
             displayName: "Region Size",
             description: "Size of region(in bytes) that is to be translated",
             default: 29,
+            /* Errata i2377: RAT input signals rbytecnt/wbytecnt calculation wrong for
+             * region boundaries < 32 bytes. Minimum allowed size is 32 B. */
             options: [
                 {
                     name: 5,

@@ -140,6 +140,8 @@ dispatch_return:
 ;
     .sect ".text:Hwi_refreshNLC"
     .clink
+; Errata i2399: C7x CPU NLC Module Not Clearing State on Interrupt -
+; issue NLCINIT in ISRs as part of context saving to prevent NLC state corruption.
 Hwi_refreshNLC:
         MVKU32 .L1  0x1, A0
         NLCINIT .S1 A0, 0x1, 0

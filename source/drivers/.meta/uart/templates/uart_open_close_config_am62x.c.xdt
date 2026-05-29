@@ -81,6 +81,8 @@ UART_Params gUartParams[CONFIG_UART_NUM_INSTANCES] =
         .intrPriority       = `config.intrPriority`U,
         .operMode           = UART_OPER_MODE_`config.operMode`,
         %if(config.intrEnable == "DMA") {
+        /* Errata i2311: USART Spurious DMA Interrupts - trigger levels hardcoded
+         * to power-of-2 values in DMA mode to prevent spurious DMA interrupts. */
         .rxTrigLvl          = UART_RXTRIGLVL_1,
         .txTrigLvl          = UART_TXTRIGLVL_1,
         %}

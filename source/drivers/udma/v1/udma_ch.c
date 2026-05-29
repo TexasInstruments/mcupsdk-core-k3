@@ -558,6 +558,8 @@ int32_t Udma_chEnable(Udma_ChHandle chHandle)
     return (retVal);
 }
 
+/* Errata i2137: PSIL Clock stop operation can result in undefined behavior -
+ * all active channels must be torn down via this API before attempting clock stop. */
 int32_t Udma_chDisable(Udma_ChHandle chHandle, uint32_t timeout)
 {
     int32_t             retVal = UDMA_SOK;

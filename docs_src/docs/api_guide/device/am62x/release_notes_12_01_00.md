@@ -282,8 +282,8 @@ ROM Checksum | R5F            | No
     <td> i2232
     <td> DDR: Controller postpones more than allowed refreshes after frequency change
     <td> DDR
-    <td> Implemented
-    <td> DFS_ENABLE=0 in SDK DDR configuration; dynamic frequency change is disabled per workaround option 1
+    <td> N/A
+    <td> SDK does not perform dynamic DDR frequency switching; errata condition cannot be triggered
 </tr>
 <tr>
     <td> i2244

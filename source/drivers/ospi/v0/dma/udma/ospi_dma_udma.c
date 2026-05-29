@@ -119,7 +119,7 @@ static int32_t OspiDma_udmaOpen(void* ospiDmaArgs)
     pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_CMD_ID, 0x25U);  /* This will come back in TR response */
     pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_SA_INDIRECT, 0U);
     pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_DA_INDIRECT, 0U);
-    pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_EOP, 1U);
+    pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_EOP, 1U);  /* Errata i2431: EOP flag required to prevent BCDMA RX channel lockup */
     pTr->icnt0    = 0U;
     pTr->icnt1    = 1U;
     pTr->icnt2    = 1U;

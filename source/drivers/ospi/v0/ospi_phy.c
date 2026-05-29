@@ -718,6 +718,8 @@ int32_t OSPI_phyFindOTP3(OSPI_Handle handle, uint32_t flashOffset, OSPI_PhyConfi
     return status;
 }
 
+/* Errata i2189: OSPI Controller PHY Tuning Algorithm - special tuning sequence
+ * required to select robust TX, RX and Read Delay values across PVT conditions. */
 int32_t OSPI_phyTuneDDR(OSPI_Handle handle, uint32_t flashOffset)
 {
 

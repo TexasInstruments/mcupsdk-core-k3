@@ -426,7 +426,7 @@ static void UART_udmaTrInit(Udma_ChHandle chHandle,
     /* Setup TR */
     pTr = UdmaUtils_getTrpdTr3Pointer(trpdMem, 0U);
     pTr->flags = CSL_FMK(UDMAP_TR_FLAGS_TYPE, CSL_UDMAP_TR_FLAGS_TYPE_4D_DATA_MOVE);
-    pTr->flags |= CSL_FMK(UDMAP_TR_FLAGS_EOP, 1U);
+    pTr->flags |= CSL_FMK(UDMAP_TR_FLAGS_EOP, 1U);  /* Errata i2431: EOP flag required to prevent BCDMA RX channel lockup */
     pTr->icnt0    = length;
     pTr->icnt1    = 1U;
     pTr->icnt2    = 1U;

@@ -2463,6 +2463,8 @@ void OSPI_phyWriteTunedVal(OSPI_Handle handle)
         uint32_t dtrEnable = CSL_REG32_FEXT(&pReg->CONFIG_REG,
                              OSPI_FLASH_CFG_CONFIG_REG_ENABLE_DTR_PROTOCOL_FLD);
 
+        /* Errata i2249: OSPI Internal PHY Loopback clocking modes with DDR timing
+         * inoperable - use only DQS with PHY or No PHY (No Loopback) modes. */
         /* If DTR is enabled, enable DQS */
         CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG,
                        OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_DQS_ENABLE_FLD,

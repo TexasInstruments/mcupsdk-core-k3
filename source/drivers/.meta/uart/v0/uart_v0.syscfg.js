@@ -413,6 +413,9 @@ function getConfigurables()
                     ui.writeMode.hidden = false;
                     ui.readCallbackFxn.hidden = false;
                     ui.writeCallbackFxn.hidden = false;
+                    /* Errata i2311: USART Spurious DMA Interrupts - trigger levels hidden
+                     * in DMA mode; generated code hardcodes UART_RXTRIGLVL_1 and
+                     * UART_TXTRIGLVL_1 (power-of-2) to prevent spurious DMA interrupts. */
                     ui.rxTrigLvl.hidden = true;
                     ui.txTrigLvl.hidden = true;
                     ui.readReturnMode.hidden = true;

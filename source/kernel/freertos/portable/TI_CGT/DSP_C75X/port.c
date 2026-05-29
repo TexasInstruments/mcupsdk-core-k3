@@ -504,7 +504,8 @@ void vPortYieldAsyncFromISR( void )
     /* Enable interrupts if task was preempted outside critical section */
     portDISABLE_INTERRUPTS();
 
-    /* If the Interrupt occured while NLCINIT was being executed,
+    /* Errata i2399: C7x CPU NLC Module Not Clearing State on Interrupt -
+     * If the Interrupt occured while NLCINIT was being executed,
      * The NLC state might get corrupted when re-entering the interrupted task.
      * Refer the issue: DOCU-470.
      * Workaround is to execute a dummy NLCINIT that refreshes the NLC hardware state.

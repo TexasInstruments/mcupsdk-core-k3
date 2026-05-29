@@ -518,7 +518,7 @@ static int32_t MCASP_primeTxTrpd(MCASP_Config *config)
                 pTr = UdmaUtils_getTrpdTr3Pointer((uint8_t *)obj->dmaChCfg->txTrpdMem, i);
 
                 pTr->flags = CSL_FMK(UDMAP_TR_FLAGS_TYPE, CSL_UDMAP_TR_FLAGS_TYPE_4D_DATA_MOVE);
-                pTr->flags |= CSL_FMK(UDMAP_TR_FLAGS_EOP, 1U);
+                pTr->flags |= CSL_FMK(UDMAP_TR_FLAGS_EOP, 1U);  /* Errata i2431: EOP flag required to prevent BCDMA RX channel lockup */
 
                 pTr->addr = (uint64_t)Udma_virtToPhyFxn(obj->XmtObj.txnLoopjob.buf, drvHandle, txChHandle);
 
@@ -944,7 +944,7 @@ static int32_t MCASP_primeRxTrpd(MCASP_Config *config)
                 pTr = UdmaUtils_getTrpdTr3Pointer((uint8_t *)obj->dmaChCfg->rxTrpdMem, i);
 
                 pTr->flags = CSL_FMK(UDMAP_TR_FLAGS_TYPE, CSL_UDMAP_TR_FLAGS_TYPE_4D_DATA_MOVE);
-                pTr->flags |= CSL_FMK(UDMAP_TR_FLAGS_EOP, 1U);
+                pTr->flags |= CSL_FMK(UDMAP_TR_FLAGS_EOP, 1U);  /* Errata i2431: EOP flag required to prevent BCDMA RX channel lockup */
                 pTr->addr = (uint64_t)Udma_virtToPhyFxn(obj->RcvObj.txnLoopjob.buf, drvHandle, rxChHandle);
 
                 status = MCASP_prepareDmaIcnts((MCASP_Handle)config, ((uint64_t)obj->RcvObj.txnLoopjob.count * (uint64_t)WORD_BYTE_COUNT),

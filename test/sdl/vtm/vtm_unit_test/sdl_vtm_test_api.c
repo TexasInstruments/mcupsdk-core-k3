@@ -48,7 +48,7 @@ extern int32_t gNumCoreVoltageDomains;
 
 int32_t sdlVTM_apiTest(void)
 {
-    uint32_t                         	tempVal;
+    int32_t                         	tempVal;
     int32_t                            	i, sdlResult;
     SDL_VTM_configTs                 	tsConfig;
     SDL_VTM_configVd                 	vdConfig;

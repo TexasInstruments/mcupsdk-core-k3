@@ -276,6 +276,12 @@ newer version listed on the table below.
     <td> <= 11.02.00
     <td> >= 12.00.00
 </tr>
+<tr>
+    <td> VTM (SDL)
+    <td> SDL_VTM_getTemp API now takes int32_t pointer instead of uint32_t
+    <td> <= 12.00.00
+    <td> >= 12.01.00
+</tr>
 </table>
 
 ### Networking

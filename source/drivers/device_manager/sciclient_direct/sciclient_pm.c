@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2025, Texas Instruments Incorporated
+ * Copyright (c) 2018-2026 Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -525,8 +525,10 @@ int32_t Sciclient_pmQueryModuleClkFreq(uint32_t moduleId,
     request.min_freq_hz    = (uint64_t) reqFreqHz;
     request.target_freq_hz = (uint64_t) reqFreqHz;
     request.max_freq_hz    = (uint64_t) reqFreqHz;
+#if !defined (CONFIG_PM_FREQ_DIV)
     /* This is required in cases of fractional clocks with a recurring decimal */
     if((reqFreqHz%10U) != 0U)
+#endif
     {
         request.min_freq_hz = (uint64_t)(reqFreqHz-(reqFreqHz%10U));
         request.max_freq_hz = (uint64_t)(request.min_freq_hz + 10UL);

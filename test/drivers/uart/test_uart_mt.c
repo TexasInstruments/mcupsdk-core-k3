@@ -162,7 +162,7 @@ static void TestUart_uartReadCancelPostsSem(void *args);
  */
 void TestUart_mtTestcase(void)
 {
-    TEST_EXECUTE_TEST_CASE(TestUart_uartReadCancelPostsSem, 10121, NULL);
+    TEST_EXECUTE_TEST_CASE(TestUart_uartReadCancelPostsSem, 11636, NULL);
     TEST_EXECUTE_TEST_CASE(TestUart_uartWriteCancelFromOtherThread, 8928, NULL);
     TEST_EXECUTE_TEST_CASE(TestUart_uartReadCancelWriteReadLoopbackMT, 9971, NULL);
 #if !(defined(CPU_C7X) || defined(SOC_AM62DX) || defined(SOC_AM275X))
@@ -651,58 +651,63 @@ static void TestUart_writerWithCancelableTx(void *args)
     if (uartHandle == NULL)
     {
         TestUart_finalStatus |= (1U << 4);
-        goto writer_exit_post;
     }
-
-    /* Prepare buffer */
-    for ( count = 0; count < sizeof(txBuf); count++)
+    else
     {
-         txBuf[count] = (uint8_t)(count & 0xFF);
+        uint8_t semOK = 0U;
+
+        /* Prepare buffer */
+        for ( count = 0; count < sizeof(txBuf); count++)
+        {
+             txBuf[count] = (uint8_t)(count & 0xFF);
+        }
+
+        /* Write-done semaphore (posted by callback) */
+        status = SemaphoreP_constructBinary(&writeDoneSem, 0);
+        if (status != SystemP_SUCCESS)
+        {
+            TestUart_finalStatus |= (1U << 5);
+        }
+        else
+        {
+            semOK = 1U;
+
+            /* Prepare transaction */
+            UART_Transaction_init(&trans);
+            trans.buf     = txBuf;
+            trans.count   = sizeof(txBuf);
+            trans.timeout = SystemP_WAIT_FOREVER;
+            trans.args    = (void *)&writeDoneSem;
+
+            /* Start async write */
+            status = UART_write(uartHandle, &trans);
+            if (status != SystemP_SUCCESS)
+            {
+                TestUart_finalStatus |= (1U << 6);
+            }
+            else
+            {
+                /* Publish handle and trans for canceller, then allow cancel thread to run */
+                TestUart_cancelCtx.handle = uartHandle;
+                TestUart_cancelCtx.wTrans = &trans;
+                SemaphoreP_post(&TestUart_cancelCtx.canCancelSem);
+                TaskP_yield();
+
+                /* Wait for callback (expected: CANCELLED) */
+                (void)SemaphoreP_pend(&writeDoneSem, SystemP_WAIT_FOREVER);
+
+                if (trans.status != UART_TRANSFER_STATUS_CANCELLED)
+                {
+                    TestUart_finalStatus |= (1U << 7);
+                }
+                ClockP_usleep(1000);
+            }
+        }
+
+        if (semOK) { SemaphoreP_destruct(&writeDoneSem); }
+        UART_close(uartHandle);
     }
 
-    /* Write-done semaphore (posted by callback) */
-    status = SemaphoreP_constructBinary(&writeDoneSem, 0);
-    if (status != SystemP_SUCCESS)
-    {
-        TestUart_finalStatus |= (1U << 5);
-        goto writer_close;
-    }
-
-    /* Prepare transaction */
-    UART_Transaction_init(&trans);
-    trans.buf     = txBuf;
-    trans.count   = sizeof(txBuf);
-    trans.timeout = SystemP_WAIT_FOREVER;
-    trans.args    = (void *)&writeDoneSem;
-
-    /* Start async write */
-    status = UART_write(uartHandle, &trans);
-    if (status != SystemP_SUCCESS)
-    {
-        TestUart_finalStatus |= (1U << 6);
-        goto writer_sem_cleanup;
-    }
-
-    /* Publish handle and trans for canceller, then allow cancel thread to run */
-    TestUart_cancelCtx.handle = uartHandle;
-    TestUart_cancelCtx.wTrans = &trans;
-    SemaphoreP_post(&TestUart_cancelCtx.canCancelSem);
-    TaskP_yield();
-
-    /* Wait for callback (expected: CANCELLED) */
-    (void)SemaphoreP_pend(&writeDoneSem, SystemP_WAIT_FOREVER);
-
-    if (trans.status != UART_TRANSFER_STATUS_CANCELLED)
-    {
-        TestUart_finalStatus |= (1U << 7);
-    }
-    ClockP_usleep(1000);
-
-writer_sem_cleanup:
-    SemaphoreP_destruct(&writeDoneSem);
-writer_close:
-    UART_close(uartHandle);
-writer_exit_post:
     SemaphoreP_post(allDone);
     TaskP_exit();
 }
@@ -737,17 +742,17 @@ static void TestUart_cancellerThread(void *args)
     if ((TestUart_cancelCtx.handle == NULL) || (TestUart_cancelCtx.wTrans == NULL))
     {
         TestUart_finalStatus |= (1U << 8);
-        goto cancel_exit_post;
     }
-
-    /* Issue cancel; driver will invoke write callback */
-    status = UART_writeCancel(TestUart_cancelCtx.handle, TestUart_cancelCtx.wTrans);
-    if (status != SystemP_SUCCESS)
+    else
     {
-        TestUart_finalStatus |= (1U << 9);
+        /* Issue cancel; driver will invoke write callback */
+        status = UART_writeCancel(TestUart_cancelCtx.handle, TestUart_cancelCtx.wTrans);
+        if (status != SystemP_SUCCESS)
+        {
+            TestUart_finalStatus |= (1U << 9);
+        }
     }
 
-cancel_exit_post:
     SemaphoreP_post(allDone);
     TaskP_exit();
 }
@@ -927,7 +932,7 @@ static void TestUart_uartReadCancelWriteReadLoopbackMT(void *args)
     UART_Transaction transUartRead = {0};
     UART_Params uartParams;
     uint32_t baseAddr = 0U;
-    int32_t status;
+    int32_t status = 0;
     SemaphoreP_Object writeDoneSem;
     SemaphoreP_Object readDoneSem;
     SemaphoreP_Object cancelDoneSem;
@@ -987,123 +992,150 @@ static void TestUart_uartReadCancelWriteReadLoopbackMT(void *args)
     if (uartHandle == NULL)
     {
         TestUart_finalStatus |= (1U << 22);
-        goto test_end;
     }
-
-    /* Enable loopback */
-    baseAddr = UART_getBaseAddr(uartHandle);
-    UART_enableLoopbackMode(baseAddr);
-
-    /* Semaphores */
-    status = SemaphoreP_constructBinary(&writeDoneSem, 0);
-    if (status != SystemP_SUCCESS)
+    else
     {
-        TestUart_finalStatus |= (1U << 23);
-        goto cleanup_loopback;
+        uint8_t writeSemOK = 0U, readSemOK = 0U, cancelSemOK = 0U, ctxSemOK = 0U;
+        uint8_t cancelTaskOK = 0U;
+
+        /* Enable loopback */
+        baseAddr = UART_getBaseAddr(uartHandle);
+        UART_enableLoopbackMode(baseAddr);
+
+        /* Semaphores */
+        status = SemaphoreP_constructBinary(&writeDoneSem, 0);
+        if (status != SystemP_SUCCESS)
+        {
+            TestUart_finalStatus |= (1U << 23);
+        }
+        else
+        {
+            writeSemOK = 1U;
+        }
+
+        if (writeSemOK)
+        {
+            status = SemaphoreP_constructBinary(&readDoneSem, 0);
+            if (status != SystemP_SUCCESS)
+            {
+                TestUart_finalStatus |= (1U << 24);
+            }
+            else
+            {
+                readSemOK = 1U;
+            }
+        }
+
+        if (readSemOK)
+        {
+            status = SemaphoreP_constructBinary(&cancelDoneSem, 0);
+            if (status != SystemP_SUCCESS)
+            {
+                TestUart_finalStatus |= (1U << 25);
+            }
+            else
+            {
+                cancelSemOK = 1U;
+            }
+        }
+
+        if (cancelSemOK)
+        {
+            status = SemaphoreP_constructBinary(&TestUart_cancelCtx.canCancelSem, 0);
+            if (status != SystemP_SUCCESS)
+            {
+                TestUart_finalStatus |= (1U << 26);
+            }
+            else
+            {
+                ctxSemOK = 1U;
+            }
+        }
+
+        if (ctxSemOK)
+        {
+            /* Construct cancel task */
+            TaskP_Params_init(&cancelParams);
+            cancelParams.priority  = 3U;
+            cancelParams.stack     = TestUart_threadStack2;
+            cancelParams.stackSize = sizeof(TestUart_threadStack2);
+            cancelParams.args      = (void *)&cancelDoneSem;
+            cancelParams.name      = "UART_ReadCanceller_MT";
+            cancelParams.taskMain  = TestUart_readCancellerLoopbackMT;
+            status = TaskP_construct(&cancelTask, &cancelParams);
+            if (status != SystemP_SUCCESS)
+            {
+                TestUart_finalStatus |= (1U << 29);
+            }
+            else
+            {
+                cancelTaskOK = 1U;
+
+                /* Prepare RX (large count so it stays pending until cancel) */
+                UART_Transaction_init(&transUartRead);
+                transUartRead.buf     = rxBuf;
+                transUartRead.count   = sizeof(rxBuf);
+                transUartRead.timeout = SystemP_WAIT_FOREVER;
+                transUartRead.args    = (void *)&readDoneSem;
+                status = UART_read(uartHandle, &transUartRead);
+                if (status != SystemP_SUCCESS)
+                {
+                    TestUart_finalStatus |= (1U << 27);
+                }
+                else
+                {
+                    /* Prepare TX buffer and transaction */
+                    for (count = 0U; count < sizeof(txBuf); count++)
+                    {
+                        txBuf[count] = (uint8_t)(count & 0xFF);
+                    }
+
+                    UART_Transaction_init(&testUartTrans);
+                    testUartTrans.buf     = txBuf;
+                    testUartTrans.count   = sizeof(txBuf);
+                    testUartTrans.timeout = SystemP_WAIT_FOREVER;
+                    testUartTrans.args    = (void *)&writeDoneSem;
+                    status = UART_write(uartHandle, &testUartTrans);
+                    if (status != SystemP_SUCCESS)
+                    {
+                        TestUart_finalStatus |= (1U << 28);
+                    }
+                    else
+                    {
+                        /* Publish reader ctx and spawn canceller */
+                        TestUart_cancelCtx.handle = uartHandle;
+                        TestUart_cancelCtx.wTrans = &transUartRead;
+                        SemaphoreP_post(&TestUart_cancelCtx.canCancelSem);
+
+                        /* Wait for cancel and write completion */
+                        (void)SemaphoreP_pend(&cancelDoneSem, SystemP_WAIT_FOREVER);
+                        (void)SemaphoreP_pend(&readDoneSem, SystemP_WAIT_FOREVER);
+                        (void)SemaphoreP_pend(&writeDoneSem, SystemP_WAIT_FOREVER);
+
+                        /* Validate statuses */
+                        if (transUartRead.status != UART_TRANSFER_STATUS_CANCELLED)
+                        {
+                            TestUart_finalStatus |= (1U << 30);
+                        }
+                        if (testUartTrans.status != UART_TRANSFER_STATUS_SUCCESS)
+                        {
+                            TestUart_finalStatus |= (1U << 31);
+                        }
+                    }
+                }
+
+                if (cancelTaskOK) { TaskP_destruct(&cancelTask); }
+            }
+        }
+
+        if (ctxSemOK)    { SemaphoreP_destruct(&TestUart_cancelCtx.canCancelSem); }
+        if (cancelSemOK) { SemaphoreP_destruct(&cancelDoneSem); }
+        if (readSemOK)   { SemaphoreP_destruct(&readDoneSem); }
+        if (writeSemOK)  { SemaphoreP_destruct(&writeDoneSem); }
+
+        UART_disableLoopbackMode(baseAddr);
+        UART_close(uartHandle);
     }
-
-    status = SemaphoreP_constructBinary(&readDoneSem, 0);
-    if (status != SystemP_SUCCESS)
-    {
-        TestUart_finalStatus |= (1U << 24);
-        goto cleanup_write_sem;
-    }
-
-    status = SemaphoreP_constructBinary(&cancelDoneSem, 0);
-    if (status != SystemP_SUCCESS)
-    {
-        TestUart_finalStatus |= (1U << 25);
-        goto cleanup_read_sem;
-    }
-
-    status = SemaphoreP_constructBinary(&TestUart_cancelCtx.canCancelSem, 0);
-    if (status != SystemP_SUCCESS)
-    {
-        TestUart_finalStatus |= (1U << 26);
-        goto cleanup_cancel_sem;
-    }
-
-    /* Construct cancel task */
-    TaskP_Params_init(&cancelParams);
-    cancelParams.priority  = 3U;
-    cancelParams.stack     = TestUart_threadStack2;
-    cancelParams.stackSize = sizeof(TestUart_threadStack2);
-    cancelParams.args      = (void *)&cancelDoneSem;
-    cancelParams.name      = "UART_ReadCanceller_MT";
-    cancelParams.taskMain  = TestUart_readCancellerLoopbackMT;
-    status = TaskP_construct(&cancelTask, &cancelParams);
-    if (status != SystemP_SUCCESS)
-    {
-        TestUart_finalStatus |= (1U << 29);
-        goto cleanup_ctx_sem;
-    }
-
-    /* Prepare RX (large count so it stays pending until cancel) */
-    UART_Transaction_init(&transUartRead);
-    transUartRead.buf     = rxBuf;
-    transUartRead.count   = sizeof(rxBuf);
-    transUartRead.timeout = SystemP_WAIT_FOREVER;
-    transUartRead.args    = (void *)&readDoneSem;
-    status = UART_read(uartHandle, &transUartRead);
-    if (status != SystemP_SUCCESS)
-    {
-        TestUart_finalStatus |= (1U << 27);
-        goto cleanup_ctx_sem;
-    }
-
-    /* Prepare TX buffer and transaction */
-    for (count = 0U; count < sizeof(txBuf); count++)
-    {
-        txBuf[count] = (uint8_t)(count & 0xFF);
-    }
-
-    UART_Transaction_init(&testUartTrans);
-    testUartTrans.buf     = txBuf;
-    testUartTrans.count   = sizeof(txBuf);
-    testUartTrans.timeout = SystemP_WAIT_FOREVER;
-    testUartTrans.args    = (void *)&writeDoneSem;
-    status = UART_write(uartHandle, &testUartTrans);
-    if (status != SystemP_SUCCESS)
-    {
-        TestUart_finalStatus |= (1U << 28);
-        goto cleanup_ctx_sem;
-    }
-
-    /* Publish reader ctx and spawn canceller */
-    TestUart_cancelCtx.handle = uartHandle;
-    TestUart_cancelCtx.wTrans = &transUartRead;
-    SemaphoreP_post(&TestUart_cancelCtx.canCancelSem);
-
-    /* Wait for cancel and write completion */
-    (void)SemaphoreP_pend(&cancelDoneSem, SystemP_WAIT_FOREVER);
-    (void)SemaphoreP_pend(&readDoneSem, SystemP_WAIT_FOREVER);
-    (void)SemaphoreP_pend(&writeDoneSem, SystemP_WAIT_FOREVER);
-
-    /* Validate statuses */
-    if (transUartRead.status != UART_TRANSFER_STATUS_CANCELLED)
-    {
-        TestUart_finalStatus |= (1U << 30);
-    }
-    if (testUartTrans.status != UART_TRANSFER_STATUS_SUCCESS)
-    {
-        TestUart_finalStatus |= (1U << 31);
-    }
-
-    TaskP_destruct(&cancelTask);
-
-cleanup_ctx_sem:
-    SemaphoreP_destruct(&TestUart_cancelCtx.canCancelSem);
-cleanup_cancel_sem:
-    SemaphoreP_destruct(&cancelDoneSem);
-cleanup_read_sem:
-    SemaphoreP_destruct(&readDoneSem);
-cleanup_write_sem:
-    SemaphoreP_destruct(&writeDoneSem);
-cleanup_loopback:
-    UART_disableLoopbackMode(baseAddr);
-    UART_close(uartHandle);
-
-test_end:
     TestUart_openDebugUart();
     TEST_ASSERT_EQUAL(0, TestUart_finalStatus);
 }
@@ -1696,7 +1728,8 @@ static void TestUart_rxThread_Uart1_Partial(void *args)
  */
 static void TestUart_uartTxRxTwoInstancesWriteCancelCompare(void *args)
 {
-    TaskP_Object txTask, rxTask;
+    TaskP_Object txTask;
+    TaskP_Object rxTask;
     TaskP_Params txParams = {0};
     TaskP_Params rxParams = {0};
     TestUart_CancelCtx ctx;
@@ -2017,6 +2050,7 @@ static void TestUart_uartTxRxTwoInstDiffBaudListCallback(void *args)
     TaskP_Params rxParams = {0};
     TestUart_CancelCtx ctx;
     UART_Handle uartHandle;
+    int32_t status;
 
     /* Iterate over baud rates */
     for (baud_count = 0; baud_count < (sizeof(baudList)/sizeof(baudList[0])); baud_count++)
@@ -2043,12 +2077,14 @@ static void TestUart_uartTxRxTwoInstDiffBaudListCallback(void *args)
         }
 
         /* Initialize semaphores */
-        if (SemaphoreP_constructCounting(&ctx.bothDone, 0, 2) != SystemP_SUCCESS)
+        status = SemaphoreP_constructCounting(&ctx.bothDone, 0, 2);
+        if (status != SystemP_SUCCESS)
         {
             TestUart_finalStatus |= (1U << 20);
             break;
         }
-        if (SemaphoreP_constructBinary(&ctx.canCancelSem, 0) != SystemP_SUCCESS)
+        status = SemaphoreP_constructBinary(&ctx.canCancelSem, 0);
+        if (status != SystemP_SUCCESS)
         {
             TestUart_finalStatus |= (1U << 21);
             SemaphoreP_destruct(&ctx.bothDone);
@@ -2172,43 +2208,48 @@ static void TestUart_txUart2DmaCbThread(void *args)
     if (uartHandle == NULL)
     {
         TestUart_finalStatus |= (1U << 9);
-        goto tx_exit_post;
     }
-
-    /* Construct local semaphore to be posted from callback */
-    if (SemaphoreP_constructBinary(&writeDoneSem, 0) != SystemP_SUCCESS)
+    else
     {
-        TestUart_finalStatus |= (1U << 10);
-        goto tx_close;
+        uint8_t semOK = 0U;
+
+        /* Construct local semaphore to be posted from callback */
+        if (SemaphoreP_constructBinary(&writeDoneSem, 0) != SystemP_SUCCESS)
+        {
+            TestUart_finalStatus |= (1U << 10);
+        }
+        else
+        {
+            semOK = 1U;
+
+            /* Setup transaction */
+            UART_Transaction_init(&trans);
+            trans.buf     = &TestUart_txBufferDma[0U];
+            trans.count   = len;
+            trans.timeout = SystemP_WAIT_FOREVER;
+            trans.args    = (void *)&writeDoneSem;
+
+            /* Start async write */
+            CacheP_wb((void*)TestUart_txBufferDma, len, CacheP_TYPE_ALL);
+            transferOK = UART_write(uartHandle, &trans);
+            if (transferOK != SystemP_SUCCESS)
+            {
+                TestUart_finalStatus |= (1U << 11);
+            }
+            else
+            {
+                /* Wait for callback to post */
+                SemaphoreP_pend(&writeDoneSem, SystemP_WAIT_FOREVER);
+
+                /* Record TX count from completed transaction */
+                TestUart_mtTxCount = trans.count;
+            }
+        }
+
+        if (semOK) { SemaphoreP_destruct(&writeDoneSem); }
+        UART_close(uartHandle);
     }
 
-    /* Setup transaction */
-    UART_Transaction_init(&trans);
-    trans.buf     = &TestUart_txBufferDma[0U];
-    trans.count   = len;
-    trans.timeout = SystemP_WAIT_FOREVER;
-    trans.args    = (void *)&writeDoneSem;
-
-    /* Start async write */
-    CacheP_wb((void*)TestUart_txBufferDma, len, CacheP_TYPE_ALL);
-    transferOK = UART_write(uartHandle, &trans);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        TestUart_finalStatus |= (1U << 11);
-        goto tx_sem_cleanup;
-    }
-
-    /* Wait for callback to post */
-    SemaphoreP_pend(&writeDoneSem, SystemP_WAIT_FOREVER);
-
-    /* Record TX count from completed transaction */
-    TestUart_mtTxCount = trans.count;
-
-tx_sem_cleanup:
-    SemaphoreP_destruct(&writeDoneSem);
-tx_close:
-    UART_close(uartHandle);
-tx_exit_post:
     /* Signal test body that TX thread finished */
     SemaphoreP_post((SemaphoreP_Object *)args);
     TaskP_exit();
@@ -2265,42 +2306,47 @@ static void TestUart_rxUart1DmaCbThread(void *args)
     if (uartHandle == NULL)
     {
         TestUart_finalStatus |= (1U << 6);
-        goto rx_exit_post;
     }
-
-    /* Construct local semaphore to be posted from callback */
-    if (SemaphoreP_constructBinary(&readDoneSem, 0) != SystemP_SUCCESS)
+    else
     {
-        TestUart_finalStatus |= (1U << 7);
-        goto rx_close;
+        uint8_t semOK = 0U;
+
+        /* Construct local semaphore to be posted from callback */
+        if (SemaphoreP_constructBinary(&readDoneSem, 0) != SystemP_SUCCESS)
+        {
+            TestUart_finalStatus |= (1U << 7);
+        }
+        else
+        {
+            semOK = 1U;
+
+            /* Setup transaction */
+            UART_Transaction_init(&trans);
+            trans.buf     = &gUartRxBuffer[0U];
+            trans.count   = len;
+            trans.timeout = SystemP_WAIT_FOREVER;
+            trans.args    = (void *)&readDoneSem;
+
+            /* Start async read */
+            transferOK = UART_read(uartHandle, &trans);
+            if (transferOK != SystemP_SUCCESS)
+            {
+                TestUart_finalStatus |= (1U << 8);
+            }
+            else
+            {
+                /* Wait for callback to post */
+                SemaphoreP_pend(&readDoneSem, SystemP_WAIT_FOREVER);
+
+                /* Record RX count from completed transaction */
+                TestUart_mtRxCount = trans.count;
+            }
+        }
+
+        if (semOK) { SemaphoreP_destruct(&readDoneSem); }
+        UART_close(uartHandle);
     }
 
-    /* Setup transaction */
-    UART_Transaction_init(&trans);
-    trans.buf     = &gUartRxBuffer[0U];
-    trans.count   = len;
-    trans.timeout = SystemP_WAIT_FOREVER;
-    trans.args    = (void *)&readDoneSem;
-
-    /* Start async read */
-    transferOK = UART_read(uartHandle, &trans);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        TestUart_finalStatus |= (1U << 8);
-        goto rx_sem_cleanup;
-    }
-
-    /* Wait for callback to post */
-    SemaphoreP_pend(&readDoneSem, SystemP_WAIT_FOREVER);
-
-    /* Record RX count from completed transaction */
-    TestUart_mtRxCount = trans.count;
-
-rx_sem_cleanup:
-    SemaphoreP_destruct(&readDoneSem);
-rx_close:
-    UART_close(uartHandle);
-rx_exit_post:
     /* Signal test body that RX thread finished */
     SemaphoreP_post((SemaphoreP_Object *)args);
     TaskP_exit();
@@ -2341,8 +2387,9 @@ void TestUart_uartTxDmaCallback(void *args)
     TaskP_Object rxTask;
     TaskP_Params taskParams;
     UART_Handle uartHandle;
-    TestUart_finalStatus = 0;
     uint32_t len = 512U;
+
+    TestUart_finalStatus = 0;
 
     /* Ensure clean state */
     uartHandle = UART_getHandle(CONFIG_UART0);
@@ -2361,70 +2408,80 @@ void TestUart_uartTxDmaCallback(void *args)
     if (SemaphoreP_constructBinary(&txDoneSem, 0) != SystemP_SUCCESS)
     {
         TestUart_finalStatus |= (1U << 0);
-        goto test_cleanup;
     }
-    if (SemaphoreP_constructBinary(&rxDoneSem, 0) != SystemP_SUCCESS)
+    else
     {
-        TestUart_finalStatus |= (1U << 1);
-        goto cleanup_tx_sem;
+        uint8_t rxDoneSemOK = 0U, rxTaskOK = 0U, txTaskOK = 0U;
+
+        if (SemaphoreP_constructBinary(&rxDoneSem, 0) != SystemP_SUCCESS)
+        {
+            TestUart_finalStatus |= (1U << 1);
+        }
+        else
+        {
+            rxDoneSemOK = 1U;
+
+            /* Spawn RX first to arm read */
+            TaskP_Params_init(&taskParams);
+            taskParams.name      = (char *)"uart_rx_dma_cb_uart1";
+            taskParams.stack     = TestUart_threadStack1;
+            taskParams.stackSize = sizeof(TestUart_threadStack1);
+            taskParams.priority  = 4;
+            taskParams.taskMain  = TestUart_rxUart1DmaCbThread;
+            taskParams.args       = (void *)&rxDoneSem;
+            status = TaskP_construct(&rxTask, &taskParams);
+            if (status != SystemP_SUCCESS)
+            {
+                TestUart_finalStatus |= (1U << 2);
+            }
+            else
+            {
+                rxTaskOK = 1U;
+
+                /* Spawn TX */
+                TaskP_Params_init(&taskParams);
+                taskParams.name      = (char *)"uart_tx_dma_cb_uart2";
+                taskParams.stack     = TestUart_threadStack2;
+                taskParams.stackSize = sizeof(TestUart_threadStack2);
+                taskParams.priority  = 4;
+                taskParams.taskMain  = TestUart_txUart2DmaCbThread;
+                taskParams.args       = (void *)&txDoneSem;
+                status = TaskP_construct(&txTask, &taskParams);
+                if (status != SystemP_SUCCESS)
+                {
+                    TestUart_finalStatus |= (1U << 3);
+                }
+                else
+                {
+                    txTaskOK = 1U;
+
+                    /* Wait for both threads to finish */
+                    SemaphoreP_pend(&rxDoneSem, SystemP_WAIT_FOREVER);
+                    SemaphoreP_pend(&txDoneSem, SystemP_WAIT_FOREVER);
+
+                    /* Validate counts and data equality */
+                    if (0 != memcmp(TestUart_txBufferDma, gUartRxBuffer, len))
+                    {
+                            TestUart_finalStatus |= (1U << 4);
+                    }
+
+                    if ((TestUart_mtTxCount != len) || (TestUart_mtRxCount != len))
+                    {
+                        TestUart_finalStatus |= (1U << 5);
+                    }
+
+                    /*Wait for any pending UART operations to complete */
+                    ClockP_usleep(10000);
+                }
+            }
+        }
+
+        if (txTaskOK)    { TaskP_destruct(&txTask); }
+        if (rxTaskOK)    { TaskP_destruct(&rxTask); }
+        if (rxDoneSemOK) { SemaphoreP_destruct(&rxDoneSem); }
+        SemaphoreP_destruct(&txDoneSem);
     }
-
-    /* Spawn RX first to arm read */
-    TaskP_Params_init(&taskParams);
-    taskParams.name      = (char *)"uart_rx_dma_cb_uart1";
-    taskParams.stack     = TestUart_threadStack1;
-    taskParams.stackSize = sizeof(TestUart_threadStack1);
-    taskParams.priority  = 4;
-    taskParams.taskMain  = TestUart_rxUart1DmaCbThread;
-    taskParams.args       = (void *)&rxDoneSem;
-    status = TaskP_construct(&rxTask, &taskParams);
-    if (status != SystemP_SUCCESS)
-    {
-        TestUart_finalStatus |= (1U << 2);
-        goto cleanup_tx_task;
-    }
-
-    /* Spawn TX */
-    TaskP_Params_init(&taskParams);
-    taskParams.name      = (char *)"uart_tx_dma_cb_uart2";
-    taskParams.stack     = TestUart_threadStack2;
-    taskParams.stackSize = sizeof(TestUart_threadStack2);
-    taskParams.priority  = 4;
-    taskParams.taskMain  = TestUart_txUart2DmaCbThread;
-    taskParams.args       = (void *)&txDoneSem;
-    status = TaskP_construct(&txTask, &taskParams);
-    if (status != SystemP_SUCCESS)
-    {
-        TestUart_finalStatus |= (1U << 3);
-        goto cleanup_rx_task;
-    }
-
-    /* Wait for both threads to finish */
-    SemaphoreP_pend(&rxDoneSem, SystemP_WAIT_FOREVER);
-    SemaphoreP_pend(&txDoneSem, SystemP_WAIT_FOREVER);
-
-    /* Validate counts and data equality */
-    if (0 != memcmp(TestUart_txBufferDma, gUartRxBuffer, len))
-    {
-            TestUart_finalStatus |= (1U << 4);
-    }
-
-    if ((TestUart_mtTxCount != len) || (TestUart_mtRxCount != len))
-    {
-        TestUart_finalStatus |= (1U << 5);
-    }
-
-    /*Wait for any pending UART operations to complete */
-    ClockP_usleep(10000);
-
-cleanup_tx_task:
-    TaskP_destruct(&txTask);
-cleanup_rx_task:
-    TaskP_destruct(&rxTask);
-cleanup_tx_sem:
-    SemaphoreP_destruct(&txDoneSem);
-    SemaphoreP_destruct(&rxDoneSem);
-test_cleanup:
+    /* test_cleanup: */
 
     TestUart_openDebugUart();
     TEST_ASSERT_EQUAL(0, TestUart_finalStatus);
@@ -2493,43 +2550,48 @@ static void TestUart_rxUart1DmaThread(void *args)
     if (uartHandle == NULL)
     {
         TestUart_finalStatus |= (1U << 9);
-        goto tx_exit_post;
     }
-
-    /* Construct local semaphore to be posted from callback */
-    if (SemaphoreP_constructBinary(&readDoneSem, 0) != SystemP_SUCCESS)
+    else
     {
-        TestUart_finalStatus |= (1U << 10);
-        goto tx_close;
+        uint8_t semOK = 0U;
+
+        /* Construct local semaphore to be posted from callback */
+        if (SemaphoreP_constructBinary(&readDoneSem, 0) != SystemP_SUCCESS)
+        {
+            TestUart_finalStatus |= (1U << 10);
+        }
+        else
+        {
+            semOK = 1U;
+
+            /* Setup transaction */
+            UART_Transaction_init(&trans);
+            trans.buf     = &TestUart_txBufferDma[0U];
+            trans.count   = len;
+            trans.timeout = SystemP_WAIT_FOREVER;
+            trans.args    = (void *)&readDoneSem;
+
+            /* Start async write */
+            CacheP_wbInv((void*)TestUart_txBufferDma, len, CacheP_TYPE_ALL);
+            transferOK = UART_read(uartHandle, &trans);
+            if (transferOK != SystemP_SUCCESS)
+            {
+                TestUart_finalStatus |= (1U << 11);
+            }
+            else
+            {
+                /* Wait for callback to post */
+                SemaphoreP_pend(&readDoneSem, SystemP_WAIT_FOREVER);
+
+                /* Record RX count from completed transaction */
+                TestUart_mtRxCount = trans.count;
+            }
+        }
+
+        if (semOK) { SemaphoreP_destruct(&readDoneSem); }
+        UART_close(uartHandle);
     }
 
-    /* Setup transaction */
-    UART_Transaction_init(&trans);
-    trans.buf     = &TestUart_txBufferDma[0U];
-    trans.count   = len;
-    trans.timeout = SystemP_WAIT_FOREVER;
-    trans.args    = (void *)&readDoneSem;
-
-    /* Start async write */
-    CacheP_wbInv((void*)TestUart_txBufferDma, len, CacheP_TYPE_ALL);
-    transferOK = UART_read(uartHandle, &trans);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        TestUart_finalStatus |= (1U << 11);
-        goto tx_sem_cleanup;
-    }
-
-    /* Wait for callback to post */
-    SemaphoreP_pend(&readDoneSem, SystemP_WAIT_FOREVER);
-
-    /* Record RX count from completed transaction */
-    TestUart_mtRxCount = trans.count;
-
-tx_sem_cleanup:
-    SemaphoreP_destruct(&readDoneSem);
-tx_close:
-    UART_close(uartHandle);
-tx_exit_post:
     /* Signal test body that TX thread finished */
     SemaphoreP_post((SemaphoreP_Object *)args);
     TaskP_exit();
@@ -2593,42 +2655,47 @@ static void TestUart_txUart2DmaThread(void *args)
     if (uartHandle == NULL)
     {
         TestUart_finalStatus |= (1U << 6);
-        goto rx_exit_post;
     }
-
-    /* Construct local semaphore to be posted from callback */
-    if (SemaphoreP_constructBinary(&writeDoneSem, 0) != SystemP_SUCCESS)
+    else
     {
-        TestUart_finalStatus |= (1U << 7);
-        goto rx_close;
+        uint8_t semOK = 0U;
+
+        /* Construct local semaphore to be posted from callback */
+        if (SemaphoreP_constructBinary(&writeDoneSem, 0) != SystemP_SUCCESS)
+        {
+            TestUart_finalStatus |= (1U << 7);
+        }
+        else
+        {
+            semOK = 1U;
+
+            /* Setup transaction */
+            UART_Transaction_init(&trans);
+            trans.buf     = &gUartTxBuffer[0U];
+            trans.count   = len;
+            trans.timeout = SystemP_WAIT_FOREVER;
+            trans.args    = (void *)&writeDoneSem;
+
+            /* Start async write */
+            transferOK = UART_write(uartHandle, &trans);
+            if (transferOK != SystemP_SUCCESS)
+            {
+                TestUart_finalStatus |= (1U << 8);
+            }
+            else
+            {
+                /* Wait for callback to post */
+                SemaphoreP_pend(&writeDoneSem, SystemP_WAIT_FOREVER);
+
+                /* Record TX count from completed transaction */
+                TestUart_mtTxCount = trans.count;
+            }
+        }
+
+        if (semOK) { SemaphoreP_destruct(&writeDoneSem); }
+        UART_close(uartHandle);
     }
 
-    /* Setup transaction */
-    UART_Transaction_init(&trans);
-    trans.buf     = &gUartTxBuffer[0U];
-    trans.count   = len;
-    trans.timeout = SystemP_WAIT_FOREVER;
-    trans.args    = (void *)&writeDoneSem;
-
-    /* Start async write */
-    transferOK = UART_write(uartHandle, &trans);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        TestUart_finalStatus |= (1U << 8);
-        goto rx_sem_cleanup;
-    }
-
-    /* Wait for callback to post */
-    SemaphoreP_pend(&writeDoneSem, SystemP_WAIT_FOREVER);
-
-    /* Record TX count from completed transaction */
-    TestUart_mtTxCount = trans.count;
-
-rx_sem_cleanup:
-    SemaphoreP_destruct(&writeDoneSem);
-rx_close:
-    UART_close(uartHandle);
-rx_exit_post:
     /* Signal test body that RX thread finished */
     SemaphoreP_post((SemaphoreP_Object *)args);
     TaskP_exit();
@@ -2670,8 +2737,9 @@ void TestUart_uartRxDmaCallback(void *args)
     TaskP_Object rxTask;
     TaskP_Params taskParams;
     UART_Handle uartHandle;
-    TestUart_finalStatus = 0;
     uint32_t len = 512U;
+
+    TestUart_finalStatus = 0;
 
     /* Ensure clean state */
     uartHandle = UART_getHandle(CONFIG_UART0);
@@ -2690,69 +2758,79 @@ void TestUart_uartRxDmaCallback(void *args)
     if (SemaphoreP_constructBinary(&txDoneSem, 0) != SystemP_SUCCESS)
     {
         TestUart_finalStatus |= (1U << 0);
-        goto test_cleanup;
     }
-    if (SemaphoreP_constructBinary(&rxDoneSem, 0) != SystemP_SUCCESS)
+    else
     {
-        TestUart_finalStatus |= (1U << 1);
-        goto cleanup_tx_sem;
+        uint8_t rxDoneSemOK = 0U, rxTaskOK = 0U, txTaskOK = 0U;
+
+        if (SemaphoreP_constructBinary(&rxDoneSem, 0) != SystemP_SUCCESS)
+        {
+            TestUart_finalStatus |= (1U << 1);
+        }
+        else
+        {
+            rxDoneSemOK = 1U;
+
+            /* Spawn RX first to arm read */
+            TaskP_Params_init(&taskParams);
+            taskParams.name      = (char *)"uart_rx_dma_cb_uart1";
+            taskParams.stack     = TestUart_threadStack1;
+            taskParams.stackSize = sizeof(TestUart_threadStack1);
+            taskParams.priority  = 4;
+            taskParams.taskMain  = TestUart_rxUart1DmaThread;
+            taskParams.args       = (void *)&rxDoneSem;
+            status = TaskP_construct(&rxTask, &taskParams);
+            if (status != SystemP_SUCCESS)
+            {
+                TestUart_finalStatus |= (1U << 2);
+            }
+            else
+            {
+                rxTaskOK = 1U;
+
+                /* Spawn TX */
+                TaskP_Params_init(&taskParams);
+                taskParams.name      = (char *)"uart_tx_dma_cb_uart2";
+                taskParams.stack     = TestUart_threadStack2;
+                taskParams.stackSize = sizeof(TestUart_threadStack2);
+                taskParams.priority  = 4;
+                taskParams.taskMain  = TestUart_txUart2DmaThread;
+                taskParams.args       = (void *)&txDoneSem;
+                status = TaskP_construct(&txTask, &taskParams);
+                if (status != SystemP_SUCCESS)
+                {
+                    TestUart_finalStatus |= (1U << 3);
+                }
+                else
+                {
+                    txTaskOK = 1U;
+
+                    /* Wait for both threads to finish */
+                    SemaphoreP_pend(&rxDoneSem, SystemP_WAIT_FOREVER);
+                    SemaphoreP_pend(&txDoneSem, SystemP_WAIT_FOREVER);
+
+                    /* Validate counts and data equality */
+                    if (0 != memcmp(TestUart_txBufferDma, gUartTxBuffer, len))
+                    {
+                            TestUart_finalStatus |= (1U << 4);
+                    }
+
+                    if ((TestUart_mtTxCount != len) || (TestUart_mtRxCount != len))
+                    {
+                        TestUart_finalStatus |= (1U << 5);
+                    }
+
+                    ClockP_usleep(10000);
+                }
+            }
+        }
+
+        if (txTaskOK)    { TaskP_destruct(&txTask); }
+        if (rxTaskOK)    { TaskP_destruct(&rxTask); }
+        if (rxDoneSemOK) { SemaphoreP_destruct(&rxDoneSem); }
+        SemaphoreP_destruct(&txDoneSem);
     }
-
-    /* Spawn RX first to arm read */
-    TaskP_Params_init(&taskParams);
-    taskParams.name      = (char *)"uart_rx_dma_cb_uart1";
-    taskParams.stack     = TestUart_threadStack1;
-    taskParams.stackSize = sizeof(TestUart_threadStack1);
-    taskParams.priority  = 4;
-    taskParams.taskMain  = TestUart_rxUart1DmaThread;
-    taskParams.args       = (void *)&rxDoneSem;
-    status = TaskP_construct(&rxTask, &taskParams);
-    if (status != SystemP_SUCCESS)
-    {
-        TestUart_finalStatus |= (1U << 2);
-        goto cleanup_tx_task;
-    }
-
-    /* Spawn TX */
-    TaskP_Params_init(&taskParams);
-    taskParams.name      = (char *)"uart_tx_dma_cb_uart2";
-    taskParams.stack     = TestUart_threadStack2;
-    taskParams.stackSize = sizeof(TestUart_threadStack2);
-    taskParams.priority  = 4;
-    taskParams.taskMain  = TestUart_txUart2DmaThread;
-    taskParams.args       = (void *)&txDoneSem;
-    status = TaskP_construct(&txTask, &taskParams);
-    if (status != SystemP_SUCCESS)
-    {
-        TestUart_finalStatus |= (1U << 3);
-        goto cleanup_rx_task;
-    }
-
-    /* Wait for both threads to finish */
-    SemaphoreP_pend(&rxDoneSem, SystemP_WAIT_FOREVER);
-    SemaphoreP_pend(&txDoneSem, SystemP_WAIT_FOREVER);
-
-    /* Validate counts and data equality */
-    if (0 != memcmp(TestUart_txBufferDma, gUartTxBuffer, len))
-    {
-            TestUart_finalStatus |= (1U << 4);
-    }
-
-    if ((TestUart_mtTxCount != len) || (TestUart_mtRxCount != len))
-    {
-        TestUart_finalStatus |= (1U << 5);
-    }
-
-    ClockP_usleep(10000);
-
-cleanup_tx_task:
-    TaskP_destruct(&txTask);
-cleanup_rx_task:
-    TaskP_destruct(&rxTask);
-cleanup_tx_sem:
-    SemaphoreP_destruct(&txDoneSem);
-    SemaphoreP_destruct(&rxDoneSem);
-test_cleanup:
+    /* test_cleanup: */
 
     TestUart_openDebugUart();
     TEST_ASSERT_EQUAL(0, TestUart_finalStatus);
@@ -3237,6 +3315,18 @@ static void TestUart_externalLoopbackUartTxRxCtsHigh(void *args)
 }
 
 
+/**
+ * @brief Helper task to cancel a blocking UART read operation.
+ *
+ * This task waits for a short delay to ensure the main thread's UART_read
+ * has started and is blocking, then calls UART_readCancel to cancel the
+ * pending read operation. The task exits immediately after cancellation.
+ *
+ * @param[in] arg Pointer to TestUart_CancelCtx containing the UART handle
+ *                and transaction pointer.
+ *
+ * @return void
+ */
 static void TestUart_cancelReadTask(void *arg)
 {
     TestUart_CancelCtx *ptr = (TestUart_CancelCtx *)arg;
@@ -3245,10 +3335,41 @@ static void TestUart_cancelReadTask(void *arg)
     ClockP_usleep(2000);
 
     (void)UART_readCancel(ptr->handle, ptr->wTrans);
-    /* Task exits */
+
+    /* Signal the main task that UART_readCancel (and readTrans = NULL) is complete,
+     * then exit.  Without this, the main task's TaskP_destruct would kill this task
+     * before it clears readTrans, leaving stale state in the UART driver object. */
+    SemaphoreP_post(&ptr->canCancelSem);
+    TaskP_exit();
 }
 
-/* Cover SemaphoreP_post(&object->readTransferSemObj) in UART_readCancel (blocking mode) */
+/**
+ * @brief Test UART_readCancel posts the read transfer semaphore in blocking mode.
+ *
+ * Opens CONFIG_UART2 in interrupt mode with blocking reads, enables internal loopback,
+ * and spawns a helper task that cancels a pending blocking UART_read. The test validates
+ * that UART_readCancel properly posts the internal readTransferSemObj semaphore, allowing
+ * the blocking read to return with UART_TRANSFER_STATUS_CANCELLED. Verifies proper cleanup
+ * and asserts final status.
+ *
+ * Test Steps:
+ * 1. Open CONFIG_UART2 in interrupt mode with blocking read mode.
+ * 2. Enable internal loopback mode.
+ * 3. Prepare a read transaction requesting 8 bytes with infinite timeout (blocking).
+ * 4. Spawn helper task (TestUart_cancelReadTask) to cancel the read after a short delay.
+ * 5. Start blocking UART_read (will be cancelled by helper task).
+ * 6. Wait for read to return due to cancellation.
+ * 7. Destroy helper task.
+ * 8. Validate read status is SystemP_FAILURE and transaction status is UART_TRANSFER_STATUS_CANCELLED.
+ * 9. Cleanup: disable loopback, close UART; log and assert final status.
+ *
+ * @param[in] args Optional argument (unused).
+ *
+ * @note This test covers the SemaphoreP_post(&object->readTransferSemObj) code path
+ *       in UART_readCancel for blocking mode.
+ *
+ * @return void
+ */
 static void TestUart_uartReadCancelPostsSem(void *args)
 {
     UART_Params uartParams;
@@ -3260,7 +3381,6 @@ static void TestUart_uartReadCancelPostsSem(void *args)
     uint32_t         base    = 0U;
     uint8_t          finalStatus = 0;
     static TaskP_Object cancelTaskObj;
-    static uint8_t cancelTaskStack[1024] __attribute__((aligned(32)));
     TaskP_Params tparms;
     TestUart_CancelCtx argsCancel;
 
@@ -3307,52 +3427,76 @@ static void TestUart_uartReadCancelPostsSem(void *args)
     if (handle == NULL)
     {
         finalStatus |= 1U;
-        goto test_end;
     }
-
-    base = UART_getBaseAddr(handle);
-    UART_enableLoopbackMode(base);
-
-    /* Prepare a pending read that will block (no data provided) */
-    UART_Transaction_init(&trans);
-    trans.buf     = &gUartRxBuffer[0];
-    trans.count   = 8U;                      /* request some bytes */
-    trans.timeout = SystemP_WAIT_FOREVER;    /* block until completion */
-
-    /* Spawn a helper task that will cancel the read and post the semaphore */
-    argsCancel.handle = handle;
-    argsCancel.wTrans = &trans;
-    TaskP_Params_init(&tparms);
-    tparms.name      = "uart_read_cancel_task";
-    tparms.stack     = cancelTaskStack;
-    tparms.stackSize = sizeof(cancelTaskStack);
-    tparms.priority  = 3;
-    tparms.taskMain  = TestUart_cancelReadTask;
-    tparms.args = &argsCancel;
-
-    if (TaskP_construct(&cancelTaskObj, &tparms) != SystemP_SUCCESS)
+    else
     {
-        finalStatus |= 2U;
-        goto cleanup;
+        base = UART_getBaseAddr(handle);
+        UART_enableLoopbackMode(base);
+
+        /* Prepare a pending read that will block (no data provided) */
+        UART_Transaction_init(&trans);
+        trans.buf     = &gUartRxBuffer[0];
+        trans.count   = 8U;                      /* request some bytes */
+        trans.timeout = SystemP_WAIT_FOREVER;    /* block until completion */
+
+        /* Spawn a helper task that will cancel the read and post the semaphore */
+        argsCancel.handle = handle;
+        argsCancel.wTrans = &trans;
+
+        /* canCancelSem: "task done" semaphore — cancel task posts it after readTrans=NULL */
+        uint8_t semOK = 0U;
+        if (SemaphoreP_constructBinary(&argsCancel.canCancelSem, 0U) == SystemP_SUCCESS)
+        {
+            semOK = 1U;
+        }
+        else
+        {
+            finalStatus |= 8U;
+        }
+
+        if (semOK)
+        {
+            TaskP_Params_init(&tparms);
+            tparms.name      = "uart_read_cancel_task";
+            tparms.stack     = TestUart_threadStack2;
+            tparms.stackSize = sizeof(TestUart_threadStack2);
+            tparms.priority  = 3;
+            tparms.taskMain  = TestUart_cancelReadTask;
+            tparms.args      = &argsCancel;
+
+            if (TaskP_construct(&cancelTaskObj, &tparms) != SystemP_SUCCESS)
+            {
+                finalStatus |= 2U;
+            }
+            else
+            {
+                /* Start blocking read; helper task will call UART_readCancel and post the sem */
+                readStatus = UART_read(handle, &trans);
+
+                /* Wait for the cancel task to fully finish (including object->readTrans=NULL).
+                 * Without this, the higher-priority main task preempts the cancel task the
+                 * instant it posts readTransferSemObj, and TaskP_destruct kills it before it
+                 * clears readTrans — leaving a stale pointer that breaks the next test. */
+                (void)SemaphoreP_pend(&argsCancel.canCancelSem, SystemP_WAIT_FOREVER);
+
+                /* Destroy helper task after it has signalled completion */
+                TaskP_destruct(&cancelTaskObj);
+
+                /* Validate: read should complete due to cancel */
+                if (!(readStatus == SystemP_FAILURE && trans.status == UART_TRANSFER_STATUS_CANCELLED))
+                {
+                    finalStatus |= 4U;
+                }
+            }
+
+            SemaphoreP_destruct(&argsCancel.canCancelSem);
+        }
+
+        UART_disableLoopbackMode(base);
+        UART_close(handle);
     }
 
-    /* Start blocking read; helper task will call UART_readCancel and post the sem */
-    readStatus = UART_read(handle, &trans);
-
-    /* Destroy helper task after read returns */
-    TaskP_destruct(&cancelTaskObj);
-
-    /* Validate: read should complete due to cancel; status must be FAILURE and trans.status CANCELLED */
-    if (!(readStatus == SystemP_FAILURE && trans.status == UART_TRANSFER_STATUS_CANCELLED))
-    {
-        finalStatus |= 4U;
-    }
-
-cleanup:
-    UART_disableLoopbackMode(base);
-    UART_close(handle);
-
-test_end:
+    /* test_end: */
     TestUart_openDebugUart();
     TEST_ASSERT_EQUAL(0, finalStatus);
 }

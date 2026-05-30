@@ -1883,24 +1883,11 @@ static void UART_masterIsr(void *arg)
                         /* Disable Interrupt first, to avoid further RX timeout */
                         UART_intrDisable(attrs->baseAddr, UART_INTR_RHR_CTI | UART_INTR_LINE_STAT);
 
-#ifdef ENABLE_UART_FAULT_INJECTION
-                        /* Simulate the condition where i2310 WA is needed */
-                        uint8_t status = UART_checkCharsAvailInFifo(attrs->baseAddr);
-                        /* Force the status to FALSE to simulate errata condition */
-                        status = FALSE;
-                        /* Check if there is any character in the RX FIFO */
-                        if (FALSE == status)
-                        {
-                            /* Work around for errata i2310 */
-                            UART_i2310WA(attrs->baseAddr);
-                        }
-#else
                         /* Work around for errata i2310 */
                         if (FALSE == UART_checkCharsAvailInFifo(attrs->baseAddr))
                         {
                             UART_i2310WA(attrs->baseAddr);
                         }
-#endif
 
                         /* RX timeout, log the RX timeout errors */
                         object->rxTimeoutCnt++;

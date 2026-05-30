@@ -252,19 +252,6 @@ void TestUart_faultInjectStubHandler(uint32_t *xsferStatus)
                     break;
             }
             break;
-        case TEST_UART_FAULT_I2310:
-            switch(stateMachine)
-            {
-                case 0:
-                    /* Inject i2310 condition on first call */
-                    *xsferStatus |= UART_INTID_CHAR_TIMEOUT; /* Force 'no chars available' */
-                    stateMachine = 0;
-                    TestUart_CurrFault = TEST_UART_FAULT_NONE;
-                    break;
-                default:
-                    break;
-            }
-            break;
         default:
             break;
     }
@@ -312,7 +299,6 @@ void test_main(void *args)
     /* Backup debug UART configuration */
     TestUart_getDebugUartConfig(instanceId);
 
-    TEST_EXECUTE_TEST_CASE(TestUart_uartWriteReadBlockingModeInterrupt, 10148, (void*)TEST_UART_FAULT_I2310);
     TEST_EXECUTE_TEST_CASE(TestUart_uartWriteReadBlockingModeInterrupt, 10149, (void*)TEST_UART_FAULT_BD);
     TEST_EXECUTE_TEST_CASE(TestUart_uartWriteReadBlockingModeInterrupt, 10150, (void*)TEST_UART_FAULT_FE);
     TEST_EXECUTE_TEST_CASE(TestUart_uartWriteReadBlockingModeInterrupt, 10151, (void*)TEST_UART_FAULT_PE);

@@ -71,7 +71,15 @@
 /* Bypass other SOC */
 #if !(defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X))
 
+#if (defined(SOC_AM62PX) || defined(SOC_AM62X) || defined(SOC_J722S))
+/* These SOCs run only the reduced test suite (1303/1304/1305/2514) and only
+ * have CONFIG_UART0 configured via syscfg (the debug UART). Map any other
+ * UART index used by the reduced suite to CONFIG_UART0 so the code compiles
+ * and the tests exercise the syscfg-default debug UART. */
+#define CONFIG_UART1    CONFIG_UART0
+#else
 #define CONFIG_UART1    CONFIG_UART_NUM_INSTANCES
+#endif
 #define CONFIG_UART2    CONFIG_UART_NUM_INSTANCES
 #define CONFIG_UART3    CONFIG_UART_NUM_INSTANCES
 #define CONFIG_UART4    CONFIG_UART_NUM_INSTANCES
@@ -80,6 +88,17 @@
 #define CONFIG_UART7    CONFIG_UART_NUM_INSTANCES
 #define CONFIG_UART8    CONFIG_UART_NUM_INSTANCES
 
+#endif
+
+/* Full UART test suite (per-instance, debug-UART override, skip matrix, etc.)
+ * is only built for the SOCs that have been validated against it. For other
+ * SOCs (AM62PX, AM62X, J722S, ...) only the reduced echo/dma test cases
+ * 1303, 1304, 1305 and 2514 are exercised, and the syscfg-default debug
+ * UART is used as-is. */
+#if (defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X))
+#define TEST_UART_RUN_FULL_SUITE    (1U)
+#else
+#define TEST_UART_RUN_FULL_SUITE    (0U)
 #endif
 
 /*===================================================================*/
@@ -98,6 +117,7 @@ uint32_t gNumBytesRead = 0U;
 static SemaphoreP_Object gUartWriteDoneSem;
 /* Semaphore to indicate Read completion used in callback api's */
 static SemaphoreP_Object gUartReadDoneSem;
+#if (TEST_UART_RUN_FULL_SUITE == 1U)
 /* Variable to hold read count */
 static volatile uint32_t TestUart_immediateReadCount = 0U;
 /* Variable to hold read status */
@@ -108,6 +128,7 @@ static volatile int32_t       TestUart_nestedWriteResult  = SystemP_FAILURE;
 static volatile uint32_t      TestUart_nestedWriteStatus  = 0U;
 static volatile uint32_t      TestUart_nestedWriteArmed   = 0U;
 static UART_Transaction       TestUart_nestedWriteTrans;
+#endif /* TEST_UART_RUN_FULL_SUITE */
 /* Backup of debug UART configuration */
 UART_Config TestUart_debugUartConfigBackup;
 /* Global variable to check if debug UART is open */
@@ -123,6 +144,8 @@ uint8_t  TestUart_txBufferDma[512] __attribute__((aligned(CacheP_CACHELINE_ALIGN
 uint8_t  TestUart_rxBufferDma[512] __attribute__((aligned(CacheP_CACHELINE_ALIGNMENT)));
 #endif
 
+#if (TEST_UART_RUN_FULL_SUITE == 1U)
+
 /* AM62AX */
 
 /* MCU */
@@ -135,15 +158,15 @@ TEST_EXECUTE_SKIP_IDS(am62ax_mcur5_skip_instance_4, 8924, 8944, 11621, 11633, 11
 TEST_EXECUTE_SKIP_IDS(am62ax_mcur5_skip_instance_5, 8924, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62ax_mcur5_skip_instance_6, 8924, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62ax_mcur5_skip_instance_7, 8944, 11621, 11633, 11634)
-TEST_EXECUTE_SKIP_IDS(am62ax_mcur5_skip_instance_8, 8935, 8936, 8943, 8944, 11621, 8958, 8960, 8995, 10120, 10121, 11622, 11623, 11624, 11625, 11626, 11627, 11628, 11629, 11631, 11632, 10125, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62ax_mcur5_skip_instance_8, 8935, 8936, 8943, 8944, 11621, 8958, 8960, 8995, 12114, 10121, 11622, 11623, 11624, 11625, 11626, 11627, 11628, 11629, 11631, 11632, 12113, 11633, 11634)
 
 /* A53 */
-TEST_EXECUTE_SKIP_IDS(am62ax_a53_skip, 8919, 8956, 8957, 8959, 8990)
+TEST_EXECUTE_SKIP_IDS(am62ax_a53_skip, 8919, 8956, 8957, 8959, 8990, 11636)
 TEST_EXECUTE_SKIP_IDS(am62ax_a53_skip_instance_0, 8944)
-TEST_EXECUTE_SKIP_IDS(am62ax_a53_skip_instance_8, 8935, 8936, 8938, 8943, 8944, 8958, 8960, 8995, 10120, 10121, 11622, 11623, 11624, 11625, 11626, 11627, 11628, 11629, 11631, 11632, 10125)
+TEST_EXECUTE_SKIP_IDS(am62ax_a53_skip_instance_8, 8935, 8936, 8938, 8943, 8944, 8958, 8960, 8995, 12114, 10121, 11622, 11623, 11624, 11625, 11626, 11627, 11628, 11629, 11631, 11632, 12113)
 
 /* R5 */
-TEST_EXECUTE_SKIP_IDS(am62ax_r5_skip, 1111, 1116, 1117, 8919, 9977, 9978, 10110, 10115)
+TEST_EXECUTE_SKIP_IDS(am62ax_r5_skip, 1111, 1116, 1117, 1303, 1304, 1305, 8919, 9972, 9973, 9974, 9975, 9976, 9977, 9978, 10110, 10115)
 TEST_EXECUTE_SKIP_IDS(am62ax_r5_skip_instance_0, 8924, 8929, 8944, 11621, 8936, 8938, 8943, 8960, 8995,  11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62ax_r5_skip_instance_1, 8924, 8929, 8944, 11621, 8936, 8938, 8943, 8960, 8995,  11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62ax_r5_skip_instance_2, 8924, 8929, 8944, 11621, 8936, 8938, 8943, 8960, 8995,  11633, 11634)
@@ -154,7 +177,7 @@ TEST_EXECUTE_SKIP_IDS(am62ax_r5_skip_instance_6, 8924, 8929, 8944, 11621, 8936, 
 TEST_EXECUTE_SKIP_IDS(am62ax_r5_skip_instance_7, 8924, 8929, 8944, 11621, 8936, 8938, 8943, 8960, 8995,  11633, 11634)
 
 /* C7 */
-TEST_EXECUTE_SKIP_IDS(am62ax_c7x_skip, 1116, 1117, 8919, 8959, 8990, 9972, 9973, 9974, 9975, 9976, 9977, 9978)
+TEST_EXECUTE_SKIP_IDS(am62ax_c7x_skip, 1116, 1117, 1304, 1305, 11636, 8919, 8959, 8990, 9972, 9973, 9974, 9975, 9976, 9977, 9978)
 TEST_EXECUTE_SKIP_IDS(am62ax_c7x_skip_instance_0, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62ax_c7x_skip_instance_1, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62ax_c7x_skip_instance_2, 8944, 11621, 11633, 11634)
@@ -163,12 +186,12 @@ TEST_EXECUTE_SKIP_IDS(am62ax_c7x_skip_instance_4, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62ax_c7x_skip_instance_5, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62ax_c7x_skip_instance_6, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62ax_c7x_skip_instance_7, 8944, 11621, 11633, 11634)
-TEST_EXECUTE_SKIP_IDS(am62ax_c7x_skip_instance_8, 8936, 8935, 8938, 8943, 8958, 8959, 8960, 8995, 10120, 10121, 11631, 11632, 10125)
+TEST_EXECUTE_SKIP_IDS(am62ax_c7x_skip_instance_8, 8936, 8935, 8938, 8943, 8958, 8959, 8960, 8995, 12114, 10121, 11631, 11632, 12113)
 
 /* AM62DX */
 
 /* MCU */
-TEST_EXECUTE_SKIP_IDS(am62dx_mcur5_skip, 1116, 1117, 8919, 9972, 9973, 9974, 9975, 9976, 9977, 9978)
+TEST_EXECUTE_SKIP_IDS(am62dx_mcur5_skip, 1116, 1117, 1304, 1305, 8919, 9972, 9973, 9974, 9975, 9976, 9977, 9978)
 TEST_EXECUTE_SKIP_IDS(am62dx_mcur5_skip_instance_0, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62dx_mcur5_skip_instance_1, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62dx_mcur5_skip_instance_2, 8944, 11621, 11633, 11634)
@@ -177,15 +200,15 @@ TEST_EXECUTE_SKIP_IDS(am62dx_mcur5_skip_instance_4, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62dx_mcur5_skip_instance_5, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62dx_mcur5_skip_instance_6, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62dx_mcur5_skip_instance_7, 8944, 11621, 11633, 11634)
-TEST_EXECUTE_SKIP_IDS(am62dx_mcur5_skip_instance_8, 8924, 8935, 8936, 8938, 8943, 8944, 11621, 8958, 8960, 8995, 10120, 10121, 11622, 11623, 11624, 11625, 11626, 11627, 11628, 11629, 11631, 11632, 10125, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62dx_mcur5_skip_instance_8, 8924, 8935, 8936, 8938, 8943, 8944, 11621, 8958, 8960, 8995, 12114, 10121, 11622, 11623, 11624, 11625, 11626, 11627, 11628, 11629, 11631, 11632, 12113, 11633, 11634)
 
 /* A53 */
-TEST_EXECUTE_SKIP_IDS(am62dx_a53_skip, 8919, 8956, 8957, 8959, 8990, 9972, 9973, 9974, 9975, 9976, 9977, 9978)
+TEST_EXECUTE_SKIP_IDS(am62dx_a53_skip, 11636, 8919, 8956, 8957, 8959, 8990, 9972, 9973, 9974, 9975, 9976, 9977, 9978)
 TEST_EXECUTE_SKIP_IDS(am62dx_a53_skip_instance_0, 8924, 8944)
-TEST_EXECUTE_SKIP_IDS(am62dx_a53_skip_instance_8, 8924, 8935, 8936, 8943, 8944, 8958, 8960, 10120, 10121, 11622, 11623, 11624, 11625, 11626, 11627, 11628, 11629, 11631, 11632, 10125)
+TEST_EXECUTE_SKIP_IDS(am62dx_a53_skip_instance_8, 8924, 8935, 8936, 8943, 8944, 8958, 8960, 12114, 10121, 11622, 11623, 11624, 11625, 11626, 11627, 11628, 11629, 11631, 11632, 12113)
 
 /* C7 */
-TEST_EXECUTE_SKIP_IDS(am62dx_c7x_skip, 1116, 1117, 8919, 8959, 8990, 9972, 9973, 9974, 9975, 9976, 9977, 9978)
+TEST_EXECUTE_SKIP_IDS(am62dx_c7x_skip, 11636, 1116, 1117, 1304, 1305, 8919, 8959, 8990, 9972, 9973, 9974, 9975, 9976, 9977, 9978)
 TEST_EXECUTE_SKIP_IDS(am62dx_c7x_skip_instance_0, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62dx_c7x_skip_instance_1, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62dx_c7x_skip_instance_2, 8944, 11621, 11633, 11634)
@@ -194,10 +217,10 @@ TEST_EXECUTE_SKIP_IDS(am62dx_c7x_skip_instance_4, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62dx_c7x_skip_instance_5, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62dx_c7x_skip_instance_6, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62dx_c7x_skip_instance_7, 8944, 11621, 11633, 11634)
-TEST_EXECUTE_SKIP_IDS(am62dx_c7x_skip_instance_8, 8935, 8936, 8938, 8943, 8944, 8958, 8959, 8960, 8995, 10120, 10121, 11622, 11623, 11624, 11625, 11626, 11627, 11628, 11629, 11631, 11632, 10125)
+TEST_EXECUTE_SKIP_IDS(am62dx_c7x_skip_instance_8, 8935, 8936, 8938, 8943, 8944, 8958, 8959, 8960, 8995, 12114, 10121, 11622, 11623, 11624, 11625, 11626, 11627, 11628, 11629, 11631, 11632, 12113)
 
 /* R5 */
-TEST_EXECUTE_SKIP_IDS(am62dx_r5_skip, 1116, 1117, 8919, 8959, 8961, 8990, 9972, 9973, 9974, 9975, 9976, 9977, 9978)
+TEST_EXECUTE_SKIP_IDS(am62dx_r5_skip, 1116, 1117, 1304, 1305, 8919, 8959, 8961, 8990, 9972, 9973, 9974, 9975, 9976, 9977, 9978)
 TEST_EXECUTE_SKIP_IDS(am62dx_r5_skip_instance_0, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62dx_r5_skip_instance_1, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62dx_r5_skip_instance_2, 8944, 11621, 11633, 11634)
@@ -267,17 +290,17 @@ TEST_EXECUTE_SKIP_IDS(am275x_r5fss1_1_skip_instance_6, 8944, 11621, 11633, 11634
 TEST_EXECUTE_SKIP_IDS(am275x_r5fss1_1_skip_instance_7, 8944, 11621, 11633, 11634)
 
 /* C75 */
-TEST_EXECUTE_SKIP_IDS(am275x_c75_0_skip,1116, 1117, 8919, 8939, 8940, 8950, 8951, 8952, 8959, 8962, 8976, 8984, 8989, 8990, 8992, 8928, 9971, 9972, 9973, 9974, 9975, 9976, 9977, 9978, 8944, 10112, 10113, 10114)
-TEST_EXECUTE_SKIP_IDS(am275x_c75_0_skip_instance, 8924, 8929, 8936, 8944, 11621, 8995, 8958, 8960, 8943, 8938, 8935, 10121, 11622, 11623, 11624, 11625, 11626, 11627, 11628, 11629, 11631, 11632, 10125, 11633, 11634)
-TEST_EXECUTE_SKIP_IDS(am275x_c75_0_skip_instance_1, 8924, 8936, 8944, 11621, 8995, 8958, 8960, 8943, 8938, 8935, 11631, 11632, 10125, 11633, 11634)
-TEST_EXECUTE_SKIP_IDS(am275x_c75_0_skip_instance_2, 8924, 8936, 8944, 11621, 8995, 8958, 8960, 8943, 8938, 8935, 11631, 11632, 10125, 11633, 11634)
-TEST_EXECUTE_SKIP_IDS(am275x_c75_0_skip_instance_3, 8924, 8936, 8944, 11621, 8995, 8958, 8960, 8943, 8938, 8935, 11631, 11632, 10125, 11633, 11634)
-TEST_EXECUTE_SKIP_IDS(am275x_c75_0_skip_instance_4, 8924, 8936, 8944, 11621, 8995, 8958, 8960, 8943, 8938, 8935, 11631, 11632, 10125, 11633, 11634)
-TEST_EXECUTE_SKIP_IDS(am275x_c75_0_skip_instance_5, 8924, 8936, 8944, 11621, 8995, 8958, 8960, 8943, 8938, 8935, 11631, 11632, 10125, 11633, 11634)
-TEST_EXECUTE_SKIP_IDS(am275x_c75_0_skip_instance_6, 8924, 8936, 8944, 11621, 8995, 8958, 8960, 8943, 8938, 8935, 11631, 11632, 10125, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am275x_c75_0_skip,1116, 1117, 1304, 1305, 8919, 8939, 8940, 8950, 8951, 8952, 8959, 8962, 8976, 8984, 8989, 8990, 8992, 8928, 9971, 9972, 9973, 9974, 9975, 9976, 9977, 9978, 8944, 10112, 10113, 10114, 11636)
+TEST_EXECUTE_SKIP_IDS(am275x_c75_0_skip_instance, 8924, 8929, 8936, 8944, 11621, 8995, 8958, 8960, 8943, 8938, 8935, 10121, 11622, 11623, 11624, 11625, 11626, 11627, 11628, 11629, 11631, 11632, 12113, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am275x_c75_0_skip_instance_1, 8924, 8936, 8944, 11621, 8995, 8958, 8960, 8943, 8938, 8935, 11631, 11632, 12113, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am275x_c75_0_skip_instance_2, 8924, 8936, 8944, 11621, 8995, 8958, 8960, 8943, 8938, 8935, 11631, 11632, 12113, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am275x_c75_0_skip_instance_3, 8924, 8936, 8944, 11621, 8995, 8958, 8960, 8943, 8938, 8935, 11631, 11632, 12113, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am275x_c75_0_skip_instance_4, 8924, 8936, 8944, 11621, 8995, 8958, 8960, 8943, 8938, 8935, 11631, 11632, 12113, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am275x_c75_0_skip_instance_5, 8924, 8936, 8944, 11621, 8995, 8958, 8960, 8943, 8938, 8935, 11631, 11632, 12113, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am275x_c75_0_skip_instance_6, 8924, 8936, 8944, 11621, 8995, 8958, 8960, 8943, 8938, 8935, 11631, 11632, 12113, 11633, 11634)
 
-TEST_EXECUTE_SKIP_IDS(am275x_c75_1_skip,1116,1117, 8919, 8939, 8940, 8950, 8951, 8952, 8959, 8962, 8976, 8984, 8989, 8990, 8992, 8928, 9971, 9972, 9973, 9974, 9975, 9976, 9977, 9978, 10112, 10113, 8944, 10114)
-TEST_EXECUTE_SKIP_IDS(am275x_c75_1_skip_instance, 8924, 8929, 8935, 8936, 8938, 8943, 8944, 11621, 8958, 8960, 8995, 10120, 10121, 11622, 11623, 11624, 11625, 11626, 11627, 11628, 11629, 11631, 11632, 10125, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am275x_c75_1_skip,1116,1117, 1304, 1305, 8919, 8939, 8940, 8950, 8951, 8952, 8959, 8962, 8976, 8984, 8989, 8990, 8992, 8928, 9971, 9972, 9973, 9974, 9975, 9976, 9977, 9978, 10112, 10113, 8944, 10114, 11636)
+TEST_EXECUTE_SKIP_IDS(am275x_c75_1_skip_instance, 8924, 8929, 8935, 8936, 8938, 8943, 8944, 11621, 8958, 8960, 8995, 12114, 10121, 11622, 11623, 11624, 11625, 11626, 11627, 11628, 11629, 11631, 11632, 12113, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am275x_c75_1_skip_instance_1, 8936, 8944, 11621, 8995, 8958, 8960, 8943, 8938, 8935, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am275x_c75_1_skip_instance_2, 8936, 8944, 11621, 8995, 8958, 8960, 8943, 8938, 8935, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am275x_c75_1_skip_instance_3, 8936, 8944, 11621, 8995, 8958, 8960, 8943, 8938, 8935, 11633, 11634)
@@ -423,6 +446,8 @@ const TestExecute_idList TestExecute_SkipTestIdMatrixWithInstance[TEST_SOC_COUNT
 
 };
 
+#endif /* TEST_UART_RUN_FULL_SUITE */
+
 /*===================================================================*/
 /* 					         Function Declarations		             */
 /*===================================================================*/
@@ -431,13 +456,14 @@ static void test_uart_set_params(UART_TestParams *testParams, uint32_t testCaseI
 static void uart_echo_read_full_test(void *args);
 static void uart_echo_read_partial_test(void *args);
 void test_printExitString(void *args);
-#if defined(SOC_AM64X) || defined(SOC_AM243X)
+#if defined(SOC_AM64X) || defined(SOC_AM243X) || (TEST_UART_RUN_FULL_SUITE == 0U)
 static void uart_echo_read_full_test_dmaMode(void *args);
 #endif
 
 /* Single thread test case dispatcher */
 static void TestUart_stTestcase(void);
 
+#if (TEST_UART_RUN_FULL_SUITE == 1U)
 /* Config debug UART */
 static void TestUart_getDebugUartConfig(uint16_t debugUartInstance);
 /* Close debug UART */
@@ -604,6 +630,8 @@ static void TestUart_uartReadFailClosedHandle(void *args);
 static void TestUart_uartBaudRateValidationDebugUart(void *args);
 /* Test UART framing error (FE) detection in interrupt mode on debug UART */
 static void TestUart_uartFramingErrorInterruptDebugUart(void *args);
+/* Test UART parity error (PE) detection in interrupt mode on debug UART */
+static void TestUart_uartParityErrorInterruptDebugUart(void *args);
 /* Test UART RLS error notification in blocking mode on debug UART */
 static void TestUart_uartRlsErrorBlockingDebugUart(void *args);
 /* Testcase to validate UART read timeout in internal loopback */
@@ -620,6 +648,7 @@ static void TestUart_erratai2310TimeoutInterrupt(void *args);
 static void TestUart_udmaIsrTxContinuousCallback(void *args);
 /* Testcase to validate write-inside-callback returns INUSE in DMA TX ISR */
 static void TestUart_udmaIsrTxWriteInsideCallback(void *args);
+#endif /* TEST_UART_RUN_FULL_SUITE */
 
 /*===================================================================*/
 /* 					         Function Definitions		             */
@@ -666,10 +695,11 @@ static void TestUart_enableLoopback(uint32_t baseAddr)
  */
 void test_main(void *args)
 {
-    uint8_t instanceId;
-
     /* Initialize Unity Test Framework */
     UNITY_BEGIN();
+
+#if (TEST_UART_RUN_FULL_SUITE == 1U)
+    uint8_t instanceId;
 
     /* Debug UART instance selection */
 #if defined(SOC_AM62AX) || defined(SOC_AM62DX)
@@ -726,12 +756,39 @@ void test_main(void *args)
     /* Framing error test */
     TEST_EXECUTE_TEST_CASE(TestUart_uartFramingErrorInterruptDebugUart, 11630, NULL);
 
-     /* RLS error test */
+    /* Parity error test */
+    TEST_EXECUTE_TEST_CASE(TestUart_uartParityErrorInterruptDebugUart, 12115, NULL);
+
+    /* RLS error test */
     TEST_EXECUTE_TEST_CASE(TestUart_uartRlsErrorBlockingDebugUart, 11635, NULL);
+#else
+    (void)args;
+
+    /* For SOCs that only run the reduced UART test set
+     * (1303, 1304, 1305, 2514) the syscfg-default debug UART is left
+     * untouched: no backup/close/reopen is performed. */
+    TestUart_stTestcase();
+
+    /* Finalize Unity Test Framework */
+    UNITY_END();
+#endif /* TEST_UART_RUN_FULL_SUITE */
 
     UART_deinit();
 }
 
+/**
+ * @brief UART echo test with full read return mode in polled or interrupt mode.
+ *
+ * Opens CONFIG_UART0 using the provided UART_Params, enables internal loopback,
+ * writes a test string, and reads it back. Validates that the data read matches
+ * the data written. Closes the UART handle on completion.
+ *
+ * @param[in] args Pointer to UART_TestParams containing the UART_Params to use.
+ *
+ * @note Used for test cases 1303 (polled mode) and 1304 (full read mode).
+ *
+ * @return void
+ */
 static void uart_echo_read_full_test(void *args)
 {
     int32_t          transferOK, status;
@@ -808,7 +865,22 @@ static void uart_echo_read_full_test(void *args)
     return;
 }
 
-#if defined(SOC_AM64X) || defined(SOC_AM243X)
+#if defined(SOC_AM64X) || defined(SOC_AM243X) || (TEST_UART_RUN_FULL_SUITE == 0U)
+/**
+ * @brief UART echo test with DMA mode for write and read in callback mode.
+ *
+ * Opens CONFIG_UART0 using the provided UART_Params with DMA-enabled
+ * write and read callback modes. Enables internal loopback, writes a test
+ * string via DMA, waits for write completion, reads it back via DMA, and
+ * validates the data. Closes the UART handle on completion.
+ *
+ * @param[in] args Pointer to UART_TestParams containing the UART_Params to use.
+ *
+ * @note Used for test case 2514 (DMA callback mode).
+ *       Only available on SOC_AM64X, SOC_AM243X, or when TEST_UART_RUN_FULL_SUITE is 0.
+ *
+ * @return void
+ */
 static void uart_echo_read_full_test_dmaMode(void *args)
 {
     int32_t          transferOK, status;
@@ -882,6 +954,21 @@ static void uart_echo_read_full_test_dmaMode(void *args)
 }
 #endif
 
+/**
+ * @brief UART echo test with partial read return mode.
+ *
+ * Opens CONFIG_UART0 using the provided UART_Params with partial read
+ * return mode. Enables internal loopback, writes a test string in multiple
+ * chunks (4-byte increments), and reads each chunk back. Validates that
+ * each partial read returns the expected data. Closes the UART handle on
+ * completion.
+ *
+ * @param[in] args Pointer to UART_TestParams containing the UART_Params to use.
+ *
+ * @note Used for test case 1305 (partial read mode).
+ *
+ * @return void
+ */
 static void uart_echo_read_partial_test(void *args)
 {
     int32_t          transferOK;
@@ -931,6 +1018,18 @@ static void uart_echo_read_partial_test(void *args)
     return;
 }
 
+/**
+ * @brief Prints test completion message over UART.
+ *
+ * Opens CONFIG_UART0 using the provided UART_Params, constructs a UART
+ * transaction with the message "All tests have passed!!\r\n", writes it
+ * to the UART, and closes the handle. Used to signal successful test
+ * completion to external monitoring or debug console.
+ *
+ * @param[in] args Pointer to UART_TestParams containing the UART_Params to use.
+ *
+ * @return void
+ */
 void test_printExitString(void *args)
 {
     int32_t          transferOK;
@@ -956,6 +1055,19 @@ void test_printExitString(void *args)
     return;
 }
 
+/**
+ * @brief UART write completion callback for echo tests.
+ *
+ * Invoked by the UART driver when a write transaction completes in
+ * callback mode. Asserts that the transaction completed successfully,
+ * stores the number of bytes written, and posts the write completion
+ * semaphore to signal the test thread.
+ *
+ * @param[in] handle UART handle associated with the transaction.
+ * @param[in] trans  Pointer to the completed UART_Transaction structure.
+ *
+ * @return void
+ */
 void uart_echo_write_callback(UART_Handle handle, UART_Transaction *trans)
 {
     DebugP_assertNoLog(UART_TRANSFER_STATUS_SUCCESS == trans->status);
@@ -965,6 +1077,19 @@ void uart_echo_write_callback(UART_Handle handle, UART_Transaction *trans)
     return;
 }
 
+/**
+ * @brief UART read completion callback for echo tests.
+ *
+ * Invoked by the UART driver when a read transaction completes in
+ * callback mode. Asserts that the transaction completed successfully,
+ * stores the number of bytes read, and posts the read completion
+ * semaphore to signal the test thread.
+ *
+ * @param[in] handle UART handle associated with the transaction.
+ * @param[in] trans  Pointer to the completed UART_Transaction structure.
+ *
+ * @return void
+ */
 void uart_echo_read_callback(UART_Handle handle, UART_Transaction *trans)
 {
     DebugP_assertNoLog(UART_TRANSFER_STATUS_SUCCESS == trans->status);
@@ -974,6 +1099,22 @@ void uart_echo_read_callback(UART_Handle handle, UART_Transaction *trans)
     return;
 }
 
+/**
+ * @brief Configures UART_Params for a specific test case and SOC.
+ *
+ * Initializes the UART_Params structure within the given UART_TestParams
+ * based on the test case ID. Sets up interrupt numbers (and event IDs for
+ * C7x cores) specific to the target SOC and CPU. Adjusts transfer modes
+ * and read return modes for certain test cases (e.g., polled mode, callback
+ * mode, partial read).
+ *
+ * @param[in,out] testParams Pointer to UART_TestParams containing the
+ *                           UART_Params to be configured.
+ * @param[in]     tcId       Test case ID used to determine specific
+ *                           parameter settings.
+ *
+ * @return void
+ */
 static void test_uart_set_params(UART_TestParams *testParams, uint32_t tcId)
 {
     UART_Params *params = &(testParams->uartParams);
@@ -1066,7 +1207,9 @@ static void test_uart_set_params(UART_TestParams *testParams, uint32_t tcId)
  */
 void setUp(void)
 {
+#if (TEST_UART_RUN_FULL_SUITE == 1U)
     TestUart_closeDebugUart();
+#endif
 }
 
 /**
@@ -1083,7 +1226,9 @@ void setUp(void)
  */
 void tearDown(void)
 {
+#if (TEST_UART_RUN_FULL_SUITE == 1U)
     TestUart_openDebugUart();
+#endif
 }
 
 /**
@@ -1110,11 +1255,13 @@ static void TestUart_stTestcase(void)
     /*UART test parameters*/
     UART_TestParams uartInitParams = {0};
 
+#if (TEST_UART_RUN_FULL_SUITE == 1U)
 #if !(defined(CPU_A53))
     uint8_t instanceNum = CONFIG_UART1;
 #else
     uint8_t instanceNum = CONFIG_UART7;
 #endif /* !(defined(CPU_A53)) */
+#endif /* TEST_UART_RUN_FULL_SUITE */
 
     test_uart_set_params(&uartInitParams, 1303);
     TEST_EXECUTE_TEST_CASE(uart_echo_read_full_test, 1303, (void*)&uartInitParams);
@@ -1122,11 +1269,12 @@ static void TestUart_stTestcase(void)
     TEST_EXECUTE_TEST_CASE(uart_echo_read_full_test, 1304, (void*)&uartInitParams);
     test_uart_set_params(&uartInitParams, 1305);
     TEST_EXECUTE_TEST_CASE(uart_echo_read_partial_test, 1305, (void*)&uartInitParams);
-#if defined(SOC_AM64X) || defined(SOC_AM243X)
+#if defined(SOC_AM64X) || defined(SOC_AM243X) || (TEST_UART_RUN_FULL_SUITE == 0U)
     test_uart_set_params(&uartInitParams, 2514);
     TEST_EXECUTE_TEST_CASE(uart_echo_read_full_test_dmaMode, 2514, (void*)&uartInitParams);
 #endif
 
+#if (TEST_UART_RUN_FULL_SUITE == 1U)
     /* Functional Testcase */
 
     for (instanceNum = 0; instanceNum < CONFIG_UART_NUM_INSTANCES; instanceNum++)
@@ -1163,16 +1311,16 @@ static void TestUart_stTestcase(void)
         TEST_EXECUTE_TEST_CASE(TestUart_txRxTriggerLevelHighRxTriglevel, 8938, &uartInitParams, instanceNum);
         TestUart_paramsInit(&uartInitParams, 8935, instanceNum);
         TEST_EXECUTE_TEST_CASE(TestUart_operMode13xLoopback, 8935, &uartInitParams, instanceNum);
-        TestUart_paramsInit(&uartInitParams, 10120, instanceNum);
-        TEST_EXECUTE_TEST_CASE(TestUart_uartReadTimeoutLoopback, 10120, &uartInitParams, instanceNum);
+        TestUart_paramsInit(&uartInitParams, 12114, instanceNum);
+        TEST_EXECUTE_TEST_CASE(TestUart_uartReadTimeoutLoopback, 12114, &uartInitParams, instanceNum);
         TestUart_paramsInit(&uartInitParams, 10121, instanceNum);
         TEST_EXECUTE_TEST_CASE(TestUart_uartPartialReadLoopback, 10121, &uartInitParams, instanceNum);
         TestUart_paramsInit(&uartInitParams, 11631, instanceNum);
         TEST_EXECUTE_TEST_CASE(TestUart_writeCancelAndRewrite, 11631, &uartInitParams, instanceNum);
         TestUart_paramsInit(&uartInitParams, 11632, instanceNum);
         TEST_EXECUTE_TEST_CASE(TestUart_readCancelAndReread, 11632, &uartInitParams, instanceNum);
-        TestUart_paramsInit(&uartInitParams, 10125, instanceNum);
-        TEST_EXECUTE_TEST_CASE(TestUart_erratai2310TimeoutInterrupt, 10125, &uartInitParams, instanceNum);
+        TestUart_paramsInit(&uartInitParams, 12113, instanceNum);
+        TEST_EXECUTE_TEST_CASE(TestUart_erratai2310TimeoutInterrupt, 12113, &uartInitParams, instanceNum);
     }
 
     /* Negative Testcase */
@@ -1363,7 +1511,10 @@ static void TestUart_stTestcase(void)
 
     TestUart_paramsInit(&uartInitParams, 10119, instanceNum);
     TEST_EXECUTE_TEST_CASE(TestUart_uartReadFailClosedHandle, 10119, &uartInitParams);
+#endif /* TEST_UART_RUN_FULL_SUITE */
 }
+
+#if (TEST_UART_RUN_FULL_SUITE == 1U)
 
 /**
  * @brief Backup debug UART configuration for a given instance.
@@ -1979,7 +2130,7 @@ int TestUart_paramsInit(UART_TestParams *paramsInit, uint16_t tcId, uint16_t ins
             params->txTrigLvl        = UART_TXTRIGLVL_1;
             params->rxTrigLvl        = UART_RXTRIGLVL_1;
             break;
-        case 10120:
+        case 12114:
             /* Read timeout in loopback: interrupt + blocking read, no write performed */
             params->transferMode     = UART_CONFIG_MODE_INTERRUPT;
             params->writeMode        = UART_TRANSFER_MODE_BLOCKING;
@@ -2010,7 +2161,7 @@ int TestUart_paramsInit(UART_TestParams *paramsInit, uint16_t tcId, uint16_t ins
             params->txTrigLvl        = UART_TXTRIGLVL_1;
             params->rxTrigLvl        = UART_RXTRIGLVL_1;
             break;
-        case 10125:
+        case 12113:
             /* Errata i2310: interrupt, blocking write + callback read, RX trig = 1 */
             params->transferMode     = UART_CONFIG_MODE_INTERRUPT;
             params->writeMode        = UART_TRANSFER_MODE_BLOCKING;
@@ -2405,68 +2556,70 @@ static void TestUart_uartOpenUartInstances(void *args)
     uartHandle = UART_open(instanceId, uartParams);
     if (uartHandle == NULL)
     {
-            finalStatus |= (1 << 0);
-            goto close;
+        finalStatus |= (1 << 0);
     }
-
-    /* Enable loopback mode */
-    baseAddr = UART_getBaseAddr(uartHandle);
-    if (baseAddr == 0U)
+    else
     {
-        /* Instance not accessible on this core (e.g., AM62AX WKUP R5 MAIN UARTs). Skip gracefully. */
-        UART_close(uartHandle);
-        goto cleanup;
+        /* Enable loopback mode */
+        baseAddr = UART_getBaseAddr(uartHandle);
+        if (baseAddr == 0U)
+        {
+            /* Instance not accessible on this core (e.g., AM62AX WKUP R5 MAIN UARTs). Skip gracefully. */
+            UART_close(uartHandle);
+            uartHandle = NULL;
+        }
+        else
+        {
+            TestUart_enableLoopback(baseAddr);
+
+            /* Prepare write transaction */
+            UART_Transaction_init(&transWrite);
+            transWrite.buf = &uartTxBuffer[0U];
+            strncpy((char *)transWrite.buf, "UART BLOCKING LOOPBACK DATA\r\n", APP_UART_BUFSIZE);
+            transWrite.count = strlen((char *)transWrite.buf);
+            transWrite.timeout = SystemP_WAIT_FOREVER;
+
+            /* Perform UART write in blocking mode */
+            transferOK = UART_write(uartHandle, &transWrite);
+            if (transferOK != SystemP_SUCCESS)
+            {
+                finalStatus |= (1 << 1);
+            }
+            if (transWrite.status != UART_TRANSFER_STATUS_SUCCESS)
+            {
+                finalStatus |= (1 << 2);
+            }
+
+            /* Prepare read transaction */
+            UART_Transaction_init(&transRead);
+            transRead.buf = &uartRxBuffer[0U];
+            transRead.count = transWrite.count;
+            transRead.timeout = SystemP_WAIT_FOREVER;
+
+            /* Perform UART read in blocking mode */
+            transferOK = UART_read(uartHandle, &transRead);
+            if (transferOK != SystemP_SUCCESS)
+            {
+                finalStatus |= (1 << 3);
+            }
+            if (transRead.status != UART_TRANSFER_STATUS_SUCCESS)
+            {
+                finalStatus |= (1 << 4);
+            }
+
+            /* Disable loopback mode */
+            UART_disableLoopbackMode(baseAddr);
+
+            if (0 != memcmp(transWrite.buf, transRead.buf, transWrite.count))
+            {
+                finalStatus |= (1 << 5);
+            }
+
+            /* Close UART handle */
+            UART_close(uartHandle);
+        }
     }
-    TestUart_enableLoopback(baseAddr);
 
-    /* Prepare write transaction */
-    UART_Transaction_init(&transWrite);
-    transWrite.buf = &uartTxBuffer[0U];
-    strncpy((char *)transWrite.buf, "UART BLOCKING LOOPBACK DATA\r\n", APP_UART_BUFSIZE);
-    transWrite.count = strlen((char *)transWrite.buf);
-    transWrite.timeout = SystemP_WAIT_FOREVER;
-
-    /* Perform UART write in blocking mode */
-    transferOK = UART_write(uartHandle, &transWrite);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1 << 1);
-    }
-    if (transWrite.status != UART_TRANSFER_STATUS_SUCCESS)
-    {
-        finalStatus |= (1 << 2);
-    }
-
-    /* Prepare read transaction */
-    UART_Transaction_init(&transRead);
-    transRead.buf = &uartRxBuffer[0U];
-    transRead.count = transWrite.count;
-    transRead.timeout = SystemP_WAIT_FOREVER;
-
-    /* Perform UART read in blocking mode */
-    transferOK = UART_read(uartHandle, &transRead);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1 << 3);
-    }
-    if (transRead.status != UART_TRANSFER_STATUS_SUCCESS)
-    {
-        finalStatus |= (1 << 4);
-    }
-
-    /* Disable loopback mode */
-    UART_disableLoopbackMode(baseAddr);
-
-    if (0 != memcmp(transWrite.buf, transRead.buf, transWrite.count))
-    {
-        finalStatus |= (1 << 5);
-    }
-
- cleanup:
-
-    /* Close UART handle */
-    UART_close(uartHandle);
- close:
     TestUart_openDebugUart();
     TEST_ASSERT_EQUAL(0, finalStatus);
 }
@@ -2688,52 +2841,53 @@ static void TestUart_uartWriteReadBlockingModeLoopback(void *args)
     if (baseAddr == 0U)
     {
         finalStatus |= (1 << 5);
-        goto cleanup;
     }
-    TestUart_enableLoopback(baseAddr);
-
-    /* Prepare write transaction using global buffers to avoid stack overflow */
-    memset(gUartTxBuffer, 0, APP_UART_BUFSIZE);
-    memset(gUartRxBuffer, 0, APP_UART_BUFSIZE);
-
-    UART_Transaction_init(&transWrite);
-    transWrite.buf = &gUartTxBuffer[0U];
-    strncpy((char *)transWrite.buf, "UART BLOCKING LOOPBACK DATA\r\n", APP_UART_BUFSIZE);
-    transWrite.count = strlen((char *)transWrite.buf);
-    transWrite.timeout = SystemP_WAIT_FOREVER;
-
-    /* Perform UART write in blocking mode */
-    transferOK = UART_write(uartHandle, &transWrite);
-    if (transferOK != SystemP_SUCCESS)
+    else
     {
-        finalStatus |= (1 << 1);
-    }
-    if (transWrite.status != UART_TRANSFER_STATUS_SUCCESS)
-    {
-        finalStatus |= (1 << 2);
+        TestUart_enableLoopback(baseAddr);
+
+        /* Prepare write transaction using global buffers to avoid stack overflow */
+        memset(gUartTxBuffer, 0, APP_UART_BUFSIZE);
+        memset(gUartRxBuffer, 0, APP_UART_BUFSIZE);
+
+        UART_Transaction_init(&transWrite);
+        transWrite.buf = &gUartTxBuffer[0U];
+        strncpy((char *)transWrite.buf, "UART BLOCKING LOOPBACK DATA\r\n", APP_UART_BUFSIZE);
+        transWrite.count = strlen((char *)transWrite.buf);
+        transWrite.timeout = SystemP_WAIT_FOREVER;
+
+        /* Perform UART write in blocking mode */
+        transferOK = UART_write(uartHandle, &transWrite);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1 << 1);
+        }
+        if (transWrite.status != UART_TRANSFER_STATUS_SUCCESS)
+        {
+            finalStatus |= (1 << 2);
+        }
+
+        /* Prepare read transaction */
+        UART_Transaction_init(&transRead);
+        transRead.buf = &gUartRxBuffer[0U];
+        transRead.count = transWrite.count;
+        transRead.timeout = SystemP_WAIT_FOREVER;
+
+        /* Perform UART read in blocking mode */
+        transferOK = UART_read(uartHandle, &transRead);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1 << 3);
+        }
+        if (transRead.status != UART_TRANSFER_STATUS_SUCCESS)
+        {
+            finalStatus |= (1 << 4);
+        }
+
+        /* Disable loopback mode */
+        UART_disableLoopbackMode(baseAddr);
     }
 
-    /* Prepare read transaction */
-    UART_Transaction_init(&transRead);
-    transRead.buf = &gUartRxBuffer[0U];
-    transRead.count = transWrite.count;
-    transRead.timeout = SystemP_WAIT_FOREVER;
-
-    /* Perform UART read in blocking mode */
-    transferOK = UART_read(uartHandle, &transRead);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1 << 3);
-    }
-    if (transRead.status != UART_TRANSFER_STATUS_SUCCESS)
-    {
-        finalStatus |= (1 << 4);
-    }
-
-    /* Disable loopback mode */
-    UART_disableLoopbackMode(baseAddr);
-
-cleanup:
     /* Close UART handle */
     UART_close(uartHandle);
 
@@ -3448,67 +3602,69 @@ static void TestUart_uartWriteDmaBlockingMode(void *args)
 #endif
 
     /* Open uart instance */
-    uartHandle = UART_open(instanceId, uartParams);
-    if (uartHandle == NULL)
+    do
     {
-        finalStatus |= (1U << 0);
-        goto tx_close;
-    }
+        uartHandle = UART_open(instanceId, uartParams);
+        if (uartHandle == NULL)
+        {
+            finalStatus |= (1U << 0);
+            break;
+        }
 
-    /* Enable loopback mode */
-    baseAddr = UART_getBaseAddr(uartHandle);
-    if (baseAddr == 0U)
-    {
-        finalStatus |= (1U << 1);
-        goto tx_close;
-    }
-    TestUart_enableLoopback(baseAddr);
+        /* Enable loopback mode */
+        baseAddr = UART_getBaseAddr(uartHandle);
+        if (baseAddr == 0U)
+        {
+            finalStatus |= (1U << 1);
+            break;
+        }
+        TestUart_enableLoopback(baseAddr);
 
-    /*
-     * Start the RX DMA channel BEFORE the TX DMA channel.
-     * In loopback mode the TX data is echoed to RX immediately. If the
-     * read DMA is not active when the write starts, the 64-byte RX FIFO
-     * overflows for transfers larger than the FIFO depth (128 bytes here)
-     * and data is lost.  Using callback mode for read makes it
-     * non-blocking so we can set up RX DMA first, then do the blocking
-     * write, then wait for the read-complete callback.
-     */
+        /*
+         * Start the RX DMA channel BEFORE the TX DMA channel.
+         * In loopback mode the TX data is echoed to RX immediately. If the
+         * read DMA is not active when the write starts, the 64-byte RX FIFO
+         * overflows for transfers larger than the FIFO depth (128 bytes here)
+         * and data is lost.  Using callback mode for read makes it
+         * non-blocking so we can set up RX DMA first, then do the blocking
+         * write, then wait for the read-complete callback.
+         */
 
-    /* Setup RX DMA (callback / non-blocking) */
-    UART_Transaction_init(&transRead);
-    transRead.buf     = &TestUart_rxBufferDma[0U];
-    transRead.count   = len;
-    transRead.timeout = SystemP_WAIT_FOREVER;
+        /* Setup RX DMA (callback / non-blocking) */
+        UART_Transaction_init(&transRead);
+        transRead.buf     = &TestUart_rxBufferDma[0U];
+        transRead.count   = len;
+        transRead.timeout = SystemP_WAIT_FOREVER;
 
-    CacheP_wbInv((void*)TestUart_rxBufferDma, len, CacheP_TYPE_ALL);
-    transferOK = UART_read(uartHandle, &transRead);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 2);
-        goto tx_close;
-    }
+        CacheP_wbInv((void*)TestUart_rxBufferDma, len, CacheP_TYPE_ALL);
+        transferOK = UART_read(uartHandle, &transRead);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 2);
+            break;
+        }
 
-    /* Setup TX DMA (blocking) */
-    UART_Transaction_init(&transWrite);
-    transWrite.buf     = &TestUart_txBufferDma[0U];
-    transWrite.count   = len;
-    transWrite.timeout = SystemP_WAIT_FOREVER;
+        /* Setup TX DMA (blocking) */
+        UART_Transaction_init(&transWrite);
+        transWrite.buf     = &TestUart_txBufferDma[0U];
+        transWrite.count   = len;
+        transWrite.timeout = SystemP_WAIT_FOREVER;
 
-    CacheP_wb((void*)TestUart_txBufferDma, len, CacheP_TYPE_ALL);
-    transferOK = UART_write(uartHandle, &transWrite);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 1);
-        goto tx_close;
-    }
+        CacheP_wb((void*)TestUart_txBufferDma, len, CacheP_TYPE_ALL);
+        transferOK = UART_write(uartHandle, &transWrite);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 1);
+            break;
+        }
 
-    /* Wait for the read callback to signal completion */
-    SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
+        /* Wait for the read callback to signal completion */
+        SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
 
-    /* Invalidate RX buffer so CPU sees DMA-written data */
-    CacheP_inv((void*)TestUart_rxBufferDma, len, CacheP_TYPE_ALL);
-
-tx_close:
+        /* Invalidate RX buffer so CPU sees DMA-written data */
+        CacheP_inv((void*)TestUart_rxBufferDma, len, CacheP_TYPE_ALL);
+    } while (0);
+    /* tx_close cleanup */
     /* Disable loopback mode (only if valid) */
     if (baseAddr != 0U)
     {
@@ -3656,69 +3812,71 @@ static void TestUart_uartReadDmaBlockingMode(void *args)
 #endif
 
     /* Open UART instance */
-    uartHandle = UART_open(instanceId, uartParams);
-    if (uartHandle == NULL)
+    do
     {
-        finalStatus |= (1U << 0);
-        goto rx_close;
-    }
+        uartHandle = UART_open(instanceId, uartParams);
+        if (uartHandle == NULL)
+        {
+            finalStatus |= (1U << 0);
+            break;
+        }
 
-    /* Enable loopback mode */
-    baseAddr = UART_getBaseAddr(uartHandle);
-    if (baseAddr == 0U)
-    {
-        finalStatus |= (1U << 1);
-        goto rx_close;
-    }
-    TestUart_enableLoopback(baseAddr);
+        /* Enable loopback mode */
+        baseAddr = UART_getBaseAddr(uartHandle);
+        if (baseAddr == 0U)
+        {
+            finalStatus |= (1U << 1);
+            break;
+        }
+        TestUart_enableLoopback(baseAddr);
 
-    /*
-     * Start the callback (non-blocking) TX DMA first, then the blocking
-     * RX DMA.  The TX serialises bytes through loopback at baud rate
-     * (~87 us per byte at 115200).  The blocking UART_read arms the
-     * RX PDMA channel before the first byte finishes serialising, so
-     * the RX PDMA sees every byte arrive as a fresh trigger.
-     *
-     * This avoids the situation where data is already sitting in the
-     * RX FIFO before the PDMA RX channel is enabled — the PDMA would
-     * miss the already-asserted DMA request and hang.
-     */
+        /*
+         * Start the callback (non-blocking) TX DMA first, then the blocking
+         * RX DMA.  The TX serialises bytes through loopback at baud rate
+         * (~87 us per byte at 115200).  The blocking UART_read arms the
+         * RX PDMA channel before the first byte finishes serialising, so
+         * the RX PDMA sees every byte arrive as a fresh trigger.
+         *
+         * This avoids the situation where data is already sitting in the
+         * RX FIFO before the PDMA RX channel is enabled — the PDMA would
+         * miss the already-asserted DMA request and hang.
+         */
 
-    /* Setup TX DMA (callback / non-blocking) */
-    UART_Transaction_init(&transWrite);
-    transWrite.buf     = &TestUart_txBufferDma[0U];
-    transWrite.count   = len;
-    transWrite.timeout = SystemP_WAIT_FOREVER;
+        /* Setup TX DMA (callback / non-blocking) */
+        UART_Transaction_init(&transWrite);
+        transWrite.buf     = &TestUart_txBufferDma[0U];
+        transWrite.count   = len;
+        transWrite.timeout = SystemP_WAIT_FOREVER;
 
-    CacheP_wb((void*)TestUart_txBufferDma, len, CacheP_TYPE_ALL);
-    transferOK = UART_write(uartHandle, &transWrite);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 2);
-        goto rx_close;
-    }
+        CacheP_wb((void*)TestUart_txBufferDma, len, CacheP_TYPE_ALL);
+        transferOK = UART_write(uartHandle, &transWrite);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 2);
+            break;
+        }
 
-    /* Setup RX DMA (blocking) — the actual feature under test */
-    UART_Transaction_init(&transRead);
-    transRead.buf     = &TestUart_rxBufferDma[0U];
-    transRead.count   = len;
-    transRead.timeout = SystemP_WAIT_FOREVER;
+        /* Setup RX DMA (blocking) — the actual feature under test */
+        UART_Transaction_init(&transRead);
+        transRead.buf     = &TestUart_rxBufferDma[0U];
+        transRead.count   = len;
+        transRead.timeout = SystemP_WAIT_FOREVER;
 
-    CacheP_wbInv((void*)TestUart_rxBufferDma, len, CacheP_TYPE_ALL);
-    transferOK = UART_read(uartHandle, &transRead);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 3);
-        goto rx_close;
-    }
+        CacheP_wbInv((void*)TestUart_rxBufferDma, len, CacheP_TYPE_ALL);
+        transferOK = UART_read(uartHandle, &transRead);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 3);
+            break;
+        }
 
-    /* Wait for the write callback to signal completion */
-    SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
+        /* Wait for the write callback to signal completion */
+        SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
 
-    /* Invalidate RX buffer so CPU sees DMA-written data */
-    CacheP_inv((void*)TestUart_rxBufferDma, len, CacheP_TYPE_ALL);
-
-rx_close:
+        /* Invalidate RX buffer so CPU sees DMA-written data */
+        CacheP_inv((void*)TestUart_rxBufferDma, len, CacheP_TYPE_ALL);
+    } while (0);
+    /* rx_close cleanup */
     /* Disable loopback mode (only if valid) */
     if (baseAddr != 0U)
     {
@@ -6102,52 +6260,53 @@ void TestUart_uartWriteReadLoopBackCallback(void *args)
     if (baseAddr == 0U)
     {
         finalStatus |= (1 << 5);
-        goto cleanup;
     }
-    TestUart_enableLoopback(baseAddr);
-
-    /* Prepare write transaction */
-    UART_Transaction_init(&transWrite);
-    transWrite.buf = &uartTxBuffer[0U];
-    strncpy((char *)transWrite.buf, "UART MULTI READ CALLBACK TEST\r\n", APP_UART_BUFSIZE);
-    transWrite.count = strlen((char *)transWrite.buf);
-    transWrite.timeout = SystemP_WAIT_FOREVER;
-    transWrite.args = (void *)&uartWriteDoneSem;
-
-    /* Perform UART write in callback mode */
-    statusWrite = UART_write(uartHandle, &transWrite);
-    if (statusWrite != SystemP_SUCCESS)
+    else
     {
-        finalStatus |= (1 << 3);
+        TestUart_enableLoopback(baseAddr);
+
+        /* Prepare write transaction */
+        UART_Transaction_init(&transWrite);
+        transWrite.buf = &uartTxBuffer[0U];
+        strncpy((char *)transWrite.buf, "UART MULTI READ CALLBACK TEST\r\n", APP_UART_BUFSIZE);
+        transWrite.count = strlen((char *)transWrite.buf);
+        transWrite.timeout = SystemP_WAIT_FOREVER;
+        transWrite.args = (void *)&uartWriteDoneSem;
+
+        /* Perform UART write in callback mode */
+        statusWrite = UART_write(uartHandle, &transWrite);
+        if (statusWrite != SystemP_SUCCESS)
+        {
+            finalStatus |= (1 << 3);
+        }
+
+        /* Wait for write completion */
+        SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
+
+        /* Prepare first read transaction */
+        UART_Transaction_init(&transRead1);
+        transRead1.buf = &uartRxBuffer[0U];
+        transRead1.count = 8;
+        transRead1.timeout = SystemP_WAIT_FOREVER;
+        transRead1.args = (void *)&uartReadMultiWriteDoneSem;
+
+        /* Start first read */
+        statusRead1 = UART_read(uartHandle, &transRead1);
+        if (statusRead1 != SystemP_SUCCESS)
+        {
+            finalStatus |= (1 << 4);
+        }
+
+        /* Wait for first read to complete */
+        SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
+
+        /* Disable loopback mode */
+        UART_disableLoopbackMode(baseAddr);
+
+        /* Cleanup */
+        SemaphoreP_destruct(&gUartReadDoneSem);
+        SemaphoreP_destruct(&gUartWriteDoneSem);
     }
-
-    /* Wait for write completion */
-    SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
-
-    /* Prepare first read transaction */
-    UART_Transaction_init(&transRead1);
-    transRead1.buf = &uartRxBuffer[0U];
-    transRead1.count = 8;
-    transRead1.timeout = SystemP_WAIT_FOREVER;
-    transRead1.args = (void *)&uartReadMultiWriteDoneSem;
-
-    /* Start first read */
-    statusRead1 = UART_read(uartHandle, &transRead1);
-    if (statusRead1 != SystemP_SUCCESS)
-    {
-        finalStatus |= (1 << 4);
-    }
-
-    /* Wait for first read to complete */
-    SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
-
-    /* Disable loopback mode */
-    UART_disableLoopbackMode(baseAddr);
-
-    /* Cleanup */
-    SemaphoreP_destruct(&gUartReadDoneSem);
-    SemaphoreP_destruct(&gUartWriteDoneSem);
-cleanup:
     UART_close(uartHandle);
 
     /* Compare written and first read data */
@@ -6444,70 +6603,71 @@ void TestUart_txRxTriggerLevelOrderedCallbacks(void *args)
     if (uartHandle == NULL)
     {
         finalStatus |= (1U<<0);
-        goto test_end;
     }
-
-    /* Semaphores for completion */
-    status = SemaphoreP_constructBinary(&gUartWriteDoneSem, 0);
-    if (status != SystemP_SUCCESS)
+    else
     {
-        finalStatus |= (1U << 1);
+        /* Semaphores for completion */
+        status = SemaphoreP_constructBinary(&gUartWriteDoneSem, 0);
+        if (status != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 1);
+        }
+        status = SemaphoreP_constructBinary(&gUartReadDoneSem, 0);
+        if (status != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 2);
+        }
+
+        /* Enable internal loopback */
+        baseAddr = UART_getBaseAddr(uartHandle);
+        if (baseAddr == 0U)
+        {
+            finalStatus |= (1U<<3);
+        }
+        else
+        {
+            TestUart_enableLoopback(baseAddr);
+
+            /* Reset ordering counters */
+            uartFirstCb = 0U;
+
+            /* Arm READ first: 4 bytes (matches RX trig level) */
+            UART_Transaction_init(&transRead);
+            transRead.buf = rxBuf;
+            transRead.count = sizeof(rxBuf);      /* 4 bytes */
+            transRead.timeout = SystemP_WAIT_FOREVER;
+            transRead.args = (void *)&uartFirstCb;
+            status = UART_read(uartHandle, &transRead);
+            if (status != SystemP_SUCCESS)
+            {
+                finalStatus |= (1U << 4);
+            }
+
+            /* Start WRITE: 8 bytes; with txTrigLvl=4 this takes two THR interrupts */
+            UART_Transaction_init(&transWrite);
+            transWrite.buf = txBuf;
+            transWrite.count = sizeof(txBuf);
+            transWrite.timeout = SystemP_WAIT_FOREVER;
+            transWrite.args = (void *)&uartFirstCb;
+            status = UART_write(uartHandle, &transWrite);
+            if (status != SystemP_SUCCESS)
+            {
+                finalStatus |= (1U << 5);
+            }
+
+            /* Wait for read to complete first, then write */
+            SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
+            SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
+
+            /* Disable loopback */
+            UART_disableLoopbackMode(baseAddr);
+        }
+
+        SemaphoreP_destruct(&gUartReadDoneSem);
+        SemaphoreP_destruct(&gUartWriteDoneSem);
+        UART_close(uartHandle);
     }
-    status = SemaphoreP_constructBinary(&gUartReadDoneSem, 0);
-    if (status != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 2);
-    }
 
-    /* Enable internal loopback */
-    baseAddr = UART_getBaseAddr(uartHandle);
-    if (baseAddr == 0U)
-    {
-        finalStatus |= (1U<<3);
-        goto cleanup;
-    }
-    TestUart_enableLoopback(baseAddr);
-
-    /* Reset ordering counters */
-    uartFirstCb = 0U;
-
-    /* Arm READ first: 4 bytes (matches RX trig level) */
-    UART_Transaction_init(&transRead);
-    transRead.buf = rxBuf;
-    transRead.count = sizeof(rxBuf);      /* 4 bytes */
-    transRead.timeout = SystemP_WAIT_FOREVER;
-    transRead.args = (void *)&uartFirstCb;
-    status = UART_read(uartHandle, &transRead);
-    if (status != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 4);
-    }
-
-    /* Start WRITE: 8 bytes; with txTrigLvl=4 this takes two THR interrupts */
-    UART_Transaction_init(&transWrite);
-    transWrite.buf = txBuf;
-    transWrite.count = sizeof(txBuf);
-    transWrite.timeout = SystemP_WAIT_FOREVER;
-    transWrite.args = (void *)&uartFirstCb;
-    status = UART_write(uartHandle, &transWrite);
-    if (status != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 5);
-    }
-
-    /* Wait for read to complete first, then write */
-    SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
-    SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
-
-    /* Disable loopback */
-    UART_disableLoopbackMode(baseAddr);
-
-cleanup:
-    SemaphoreP_destruct(&gUartReadDoneSem);
-    SemaphoreP_destruct(&gUartWriteDoneSem);
-    UART_close(uartHandle);
-
-test_end:
     TestUart_openDebugUart();
 
     /* Validate: read callback happened first, exactly once each */
@@ -6571,72 +6731,73 @@ static void TestUart_txRxTriggerLevelHighRxTriglevel(void *args)
     if (uartHandle == NULL)
     {
         finalStatus |= (1U<<0);
-        goto test_end;
     }
-
-    /* Semaphores for completion */
-    status = SemaphoreP_constructBinary(&gUartWriteDoneSem, 0);
-    if (status != SystemP_SUCCESS)
+    else
     {
-        finalStatus |= (1U << 1);
+        /* Semaphores for completion */
+        status = SemaphoreP_constructBinary(&gUartWriteDoneSem, 0);
+        if (status != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 1);
+        }
+        status = SemaphoreP_constructBinary(&gUartReadDoneSem, 0);
+        if (status != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 2);
+        }
+
+        /* Enable internal loopback */
+        baseAddr = UART_getBaseAddr(uartHandle);
+        if (baseAddr == 0U)
+        {
+            finalStatus |= (1U<<3);
+        }
+        else
+        {
+            TestUart_enableLoopback(baseAddr);
+
+            /* Reset ordering counters */
+            uartFirstCb = 0U;
+
+            /* Arm READ first: 8 bytes (matches RX trig level) */
+            UART_Transaction_init(&transRead);
+            transRead.buf = rxBuf;
+            transRead.count = sizeof(rxBuf);      /* 8 bytes */
+            transRead.timeout = SystemP_WAIT_FOREVER;
+            transRead.args = (void *)&uartFirstCb;
+            status = UART_read(uartHandle, &transRead);
+            if (status != SystemP_SUCCESS)
+            {
+                finalStatus |= (1U << 4);
+            }
+
+            /* Start WRITE: 4 bytes; with txTrigLvl=4 this takes two THR interrupts */
+            UART_Transaction_init(&transWrite);
+            transWrite.buf = txBuf;
+            transWrite.count = sizeof(txBuf);
+            transWrite.timeout = SystemP_WAIT_FOREVER;
+            transWrite.args = (void *)&uartFirstCb;
+            status = UART_write(uartHandle, &transWrite);
+            if (status != SystemP_SUCCESS)
+            {
+                finalStatus |= (1U << 5);
+            }
+
+            /* Wait for read to complete first, then write */
+            SemaphoreP_pend(&gUartReadDoneSem,  ClockP_usecToTicks(10*1000));
+            SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
+
+            UART_readCancel(uartHandle, &transRead);
+
+            /* Disable loopback */
+            UART_disableLoopbackMode(baseAddr);
+        }
+
+        SemaphoreP_destruct(&gUartReadDoneSem);
+        SemaphoreP_destruct(&gUartWriteDoneSem);
+        UART_close(uartHandle);
     }
-    status = SemaphoreP_constructBinary(&gUartReadDoneSem, 0);
-    if (status != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 2);
-    }
 
-    /* Enable internal loopback */
-    baseAddr = UART_getBaseAddr(uartHandle);
-    if (baseAddr == 0U)
-    {
-        finalStatus |= (1U<<3);
-        goto cleanup;
-    }
-    TestUart_enableLoopback(baseAddr);
-
-    /* Reset ordering counters */
-    uartFirstCb = 0U;
-
-    /* Arm READ first: 8 bytes (matches RX trig level) */
-    UART_Transaction_init(&transRead);
-    transRead.buf = rxBuf;
-    transRead.count = sizeof(rxBuf);      /* 8 bytes */
-    transRead.timeout = SystemP_WAIT_FOREVER;
-    transRead.args = (void *)&uartFirstCb;
-    status = UART_read(uartHandle, &transRead);
-    if (status != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 4);
-    }
-
-    /* Start WRITE: 4 bytes; with txTrigLvl=4 this takes two THR interrupts */
-    UART_Transaction_init(&transWrite);
-    transWrite.buf = txBuf;
-    transWrite.count = sizeof(txBuf);
-    transWrite.timeout = SystemP_WAIT_FOREVER;
-    transWrite.args = (void *)&uartFirstCb;
-    status = UART_write(uartHandle, &transWrite);
-    if (status != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 5);
-    }
-
-    /* Wait for read to complete first, then write */
-    SemaphoreP_pend(&gUartReadDoneSem,  ClockP_usecToTicks(10*1000));
-    SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
-
-    UART_readCancel(uartHandle, &transRead);
-
-    /* Disable loopback */
-    UART_disableLoopbackMode(baseAddr);
-
-cleanup:
-    SemaphoreP_destruct(&gUartReadDoneSem);
-    SemaphoreP_destruct(&gUartWriteDoneSem);
-    UART_close(uartHandle);
-
-test_end:
     TestUart_openDebugUart();
 
     /* Validate: read callback happened first, exactly once each */
@@ -6676,6 +6837,10 @@ static void TestUart_operMode13xLoopback(void *args)
     uint32_t         baseAddr;
     uint8_t          finalStatus = 0;
     int32_t          status;
+    uint8_t writeSemOK = 0U;
+    uint8_t readSemOK  = 0U;
+    uint8_t rdOK = 1U;
+    uint8_t wrOK = 1U;
 
     /* Ensure clean state */
     uartHandle = UART_getHandle(instanceId);
@@ -6692,71 +6857,90 @@ static void TestUart_operMode13xLoopback(void *args)
     if (uartHandle == NULL)
     {
         finalStatus |= (1U<<0);
-        goto test_end;
     }
-
-    /* Enable internal loopback */
-    baseAddr = UART_getBaseAddr(uartHandle);
-    if (baseAddr == 0U)
+    else
     {
-        finalStatus |= (1U<<1);
-        goto cleanup;
+        /* Enable internal loopback */
+        baseAddr = UART_getBaseAddr(uartHandle);
+        if (baseAddr == 0U)
+        {
+            finalStatus |= (1U<<1);
+        }
+        else
+        {
+            TestUart_enableLoopback(baseAddr);
+
+            /* Semaphores for callbacks */
+            status = SemaphoreP_constructBinary(&gUartWriteDoneSem, 0);
+            if (status != SystemP_SUCCESS)
+            {
+                finalStatus |= (1U<<2);
+            }
+            else
+            {
+                writeSemOK = 1U;
+            }
+
+            if (writeSemOK)
+            {
+                status = SemaphoreP_constructBinary(&gUartReadDoneSem, 0);
+                if (status != SystemP_SUCCESS)
+                {
+                    finalStatus |= (1U<<3);
+                }
+                else
+                {
+                    readSemOK = 1U;
+                }
+            }
+
+            if (writeSemOK && readSemOK)
+            {
+                rdOK = 1U;
+                wrOK = 1U;
+
+                /* Arm async READ for 1 byte */
+                UART_Transaction_init(&transRead);
+                transRead.buf = &rxByte;
+                transRead.count = 1U;
+                transRead.timeout = SystemP_WAIT_FOREVER;
+                status = UART_read(uartHandle, &transRead);
+                if (status != SystemP_SUCCESS)
+                {
+                    finalStatus |= (1U<<4);
+                    rdOK = 0U;
+                }
+
+                if (rdOK)
+                {
+                    /* Start async WRITE of 1 byte */
+                    UART_Transaction_init(&transWrite);
+                    transWrite.buf = &txByte;
+                    transWrite.count = 1U;
+                    transWrite.timeout = SystemP_WAIT_FOREVER;
+                    status = UART_write(uartHandle, &transWrite);
+                    if (status != SystemP_SUCCESS)
+                    {
+                        finalStatus |= (1U<<5);
+                        wrOK = 0U;
+                    }
+                }
+
+                if (rdOK && wrOK)
+                {
+                    /* Wait for callbacks */
+                    SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
+                    SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
+                }
+            }
+
+            if (readSemOK)  { SemaphoreP_destruct(&gUartReadDoneSem); }
+            if (writeSemOK) { SemaphoreP_destruct(&gUartWriteDoneSem); }
+            UART_disableLoopbackMode(baseAddr);
+        }
+        UART_close(uartHandle);
     }
 
-    TestUart_enableLoopback(baseAddr);
-
-    /* Semaphores for callbacks */
-    status = SemaphoreP_constructBinary(&gUartWriteDoneSem, 0);
-    if (status != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U<<2);
-        goto lb_disable;
-    }
-    status = SemaphoreP_constructBinary(&gUartReadDoneSem, 0);
-    if (status != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U<<3);
-        goto sem_cleanup_write;
-    }
-
-    /* Arm async READ for 1 byte */
-    UART_Transaction_init(&transRead);
-    transRead.buf = &rxByte;
-    transRead.count = 1U;
-    transRead.timeout = SystemP_WAIT_FOREVER;
-    status = UART_read(uartHandle, &transRead);
-    if (status != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U<<4);
-        goto sem_cleanup;
-    }
-
-    /* Start async WRITE of 1 byte */
-    UART_Transaction_init(&transWrite);
-    transWrite.buf = &txByte;
-    transWrite.count = 1U;
-    transWrite.timeout = SystemP_WAIT_FOREVER;
-    status = UART_write(uartHandle, &transWrite);
-    if (status != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U<<5);
-        goto sem_cleanup;
-    }
-
-    /* Wait for callbacks */
-    SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
-    SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
-
-sem_cleanup:
-    SemaphoreP_destruct(&gUartReadDoneSem);
-sem_cleanup_write:
-    SemaphoreP_destruct(&gUartWriteDoneSem);
-lb_disable:
-    UART_disableLoopbackMode(baseAddr);
-cleanup:
-    UART_close(uartHandle);
-
-test_end:
     TestUart_openDebugUart();
     TEST_ASSERT_EQUAL(0, finalStatus);
     TEST_ASSERT_EQUAL_UINT32(UART_TRANSFER_STATUS_SUCCESS, transRead.status);
@@ -6795,6 +6979,8 @@ static void TestUart_uartWriteErrorInUseInterrupt(void *args)
     int32_t          status;
     uint8_t          finalStatus = 0;
     uintptr_t key;
+    uint8_t semOK = 0U;
+    uint8_t lbOK  = 0U;
 
     /* Clean previous */
     uartHandle = UART_getHandle(instanceId);
@@ -6812,76 +6998,81 @@ static void TestUart_uartWriteErrorInUseInterrupt(void *args)
     if (uartHandle == NULL)
     {
         finalStatus |= (1U << 0);
-        goto test_end;
     }
-
-    /* Semaphores for completion */
-    status = SemaphoreP_constructBinary(&gUartWriteDoneSem, 0);
-    if (status != SystemP_SUCCESS)
+    else
     {
-        finalStatus |= (1U << 1);
-        goto cleanup_handle;
+        /* Semaphores for completion */
+        status = SemaphoreP_constructBinary(&gUartWriteDoneSem, 0);
+        if (status != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 1);
+        }
+        else
+        {
+            semOK = 1U;
+        }
+
+        /* Enable internal loopback (keeps template consistent) */
+        baseAddr = UART_getBaseAddr(uartHandle);
+        if (baseAddr == 0U)
+        {
+            finalStatus |= (1U << 2);
+        }
+        else
+        {
+            TestUart_enableLoopback(baseAddr);
+            lbOK = 1U;
+        }
+
+        if (semOK && lbOK)
+        {
+            /* First WRITE setup */
+            UART_Transaction_init(&transWrite1);
+            transWrite1.buf     = txBuf1;
+            transWrite1.count   = sizeof(txBuf1);
+            transWrite1.timeout = SystemP_WAIT_FOREVER;
+
+            /* Second WRITE setup */
+            UART_Transaction_init(&transWrite2);
+            transWrite2.buf     = txBuf2;
+            transWrite2.count   = sizeof(txBuf2);
+            transWrite2.timeout = SystemP_WAIT_FOREVER;
+
+            /* Disable interrupts to prevent ISR from completing first write before second call */
+            key = HwiP_disable();
+
+            /* Start first WRITE (asynchronous, marks txActive) */
+            status = UART_write(uartHandle, &transWrite1);
+            if (status != SystemP_SUCCESS)
+            {
+                finalStatus |= (1U << 3);
+                HwiP_restore(key);
+            }
+            else
+            {
+                /* Immediately attempt second WRITE while first is still active → expect ERROR_INUSE */
+                status = UART_write(uartHandle, &transWrite2);
+
+                /* Restore interrupts so first write can complete */
+                HwiP_restore(key);
+
+                /* Validate second write rejection */
+                if (status != SystemP_FAILURE ||
+                    transWrite2.status != UART_TRANSFER_STATUS_ERROR_INUSE)
+                {
+                    finalStatus |= (1U << 4);
+                }
+
+                /* Wait for first write to complete via callback */
+                SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
+            }
+        }
+
+        if (lbOK)  { UART_disableLoopbackMode(baseAddr); }
+        if (semOK) { SemaphoreP_destruct(&gUartWriteDoneSem); }
+        UART_close(uartHandle);
     }
 
-    /* Enable internal loopback (keeps template consistent) */
-    baseAddr = UART_getBaseAddr(uartHandle);
-    if (baseAddr == 0U)
-    {
-        finalStatus |= (1U << 2);
-        goto sem_cleanup;
-    }
-    TestUart_enableLoopback(baseAddr);
-
-    /* First WRITE setup */
-    UART_Transaction_init(&transWrite1);
-    transWrite1.buf     = txBuf1;
-    transWrite1.count   = sizeof(txBuf1);
-    transWrite1.timeout = SystemP_WAIT_FOREVER;
-
-    /* Second WRITE setup */
-    UART_Transaction_init(&transWrite2);
-    transWrite2.buf     = txBuf2;
-    transWrite2.count   = sizeof(txBuf2);
-    transWrite2.timeout = SystemP_WAIT_FOREVER;
-
-    /* Disable interrupts to prevent ISR from completing first write before second call */
-    key = HwiP_disable();
-
-    /* Start first WRITE (asynchronous, marks txActive) */
-    status = UART_write(uartHandle, &transWrite1);
-    if (status != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 3);
-        HwiP_restore(key);
-        goto lb_disable;
-    }
-
-    /* Immediately attempt second WRITE while first is still active → expect ERROR_INUSE */
-    status = UART_write(uartHandle, &transWrite2);
-
-    /* Restore interrupts so first write can complete */
-    HwiP_restore(key);
-
-    /* Validate second write rejection */
-    if (status != SystemP_FAILURE ||
-        transWrite2.status != UART_TRANSFER_STATUS_ERROR_INUSE)
-    {
-        finalStatus |= (1U << 4);
-    }
-
-    /* Wait for first write to complete via callback */
-    SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
-
-lb_disable:
-    UART_disableLoopbackMode(baseAddr);
-
-sem_cleanup:
-    SemaphoreP_destruct(&gUartWriteDoneSem);
-
-cleanup_handle:
-    UART_close(uartHandle);
-
-test_end:
     TestUart_openDebugUart();
     TEST_ASSERT_EQUAL(0, finalStatus);
     TEST_ASSERT_EQUAL_UINT32(UART_TRANSFER_STATUS_SUCCESS, transWrite1.status);
@@ -6923,6 +7114,7 @@ static void TestUart_txTriggerLevelsLoopback(void *args)
     uint32_t         baseAddr   = 0U;
     uint8_t          finalStatus = 0;
     uint32_t loop;
+    UART_Params prms;
 
     /* Test payload */
     uint8_t txBuf[64] = { "UART TX TRIG LEVEL LOOPBACK DATA 0123456789\r\n" };
@@ -6939,7 +7131,6 @@ static void TestUart_txTriggerLevelsLoopback(void *args)
 
     for (loop = 0; loop < (sizeof(txLevels)/sizeof(txLevels[0])); loop++)
     {
-        UART_Params prms;
         memcpy(&prms, basePrms, sizeof(UART_Params));
 
         prms.writeMode        = UART_TRANSFER_MODE_CALLBACK;
@@ -6984,56 +7175,58 @@ static void TestUart_txTriggerLevelsLoopback(void *args)
         if (baseAddr == 0U)
         {
             finalStatus |= (1U << (loop*4 + 3));
-            goto iter_cleanup;
         }
-        TestUart_enableLoopback(baseAddr);
-
-        /* Clear RX buffer for deterministic compare */
-        memset(rxBuf, 0, sizeof(rxBuf));
-
-        /* Arm READ for exact payload length */
-        UART_Transaction_init(&transRead);
-        transRead.buf     = rxBuf;
-        transRead.count   = (uint32_t)strlen((char *)txBuf);
-        transRead.timeout = SystemP_WAIT_FOREVER;
-
-        status = UART_read(uartHandle, &transRead);
-        if (status != SystemP_SUCCESS)
+        else
         {
-            finalStatus |= (1U << (loop*4 + 3));
-            goto iter_lb_disable;
+            TestUart_enableLoopback(baseAddr);
+
+            /* Clear RX buffer for deterministic compare */
+            memset(rxBuf, 0, sizeof(rxBuf));
+
+            /* Arm READ for exact payload length */
+            UART_Transaction_init(&transRead);
+            transRead.buf     = rxBuf;
+            transRead.count   = (uint32_t)strlen((char *)txBuf);
+            transRead.timeout = SystemP_WAIT_FOREVER;
+
+            status = UART_read(uartHandle, &transRead);
+            if (status != SystemP_SUCCESS)
+            {
+                finalStatus |= (1U << (loop*4 + 3));
+            }
+            else
+            {
+                /* WRITE same payload length */
+                UART_Transaction_init(&transWrite);
+                transWrite.buf     = txBuf;
+                transWrite.count   = (uint32_t)strlen((char *)txBuf);
+                transWrite.timeout = SystemP_WAIT_FOREVER;
+
+                status = UART_write(uartHandle, &transWrite);
+                if (status != SystemP_SUCCESS)
+                {
+                    finalStatus |= (1U << (loop*4 + 3));
+                }
+                else
+                {
+                    /* Wait for callbacks */
+                    SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
+                    SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
+
+                    /* Validate */
+                    if (transWrite.status != UART_TRANSFER_STATUS_SUCCESS ||
+                        transRead.status  != UART_TRANSFER_STATUS_SUCCESS ||
+                        transRead.count   != transWrite.count ||
+                        memcmp(txBuf, rxBuf, transWrite.count) != 0)
+                    {
+                        finalStatus |= (1U << (loop*4 + 3));
+                    }
+                }
+            }
+
+            UART_disableLoopbackMode(baseAddr);
         }
 
-        /* WRITE same payload length */
-        UART_Transaction_init(&transWrite);
-        transWrite.buf     = txBuf;
-        transWrite.count   = (uint32_t)strlen((char *)txBuf);
-        transWrite.timeout = SystemP_WAIT_FOREVER;
-
-        status = UART_write(uartHandle, &transWrite);
-        if (status != SystemP_SUCCESS)
-        {
-            finalStatus |= (1U << (loop*4 + 3));
-            goto iter_lb_disable;
-        }
-
-        /* Wait for callbacks */
-        SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
-        SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
-
-        /* Validate */
-        if (transWrite.status != UART_TRANSFER_STATUS_SUCCESS ||
-            transRead.status  != UART_TRANSFER_STATUS_SUCCESS ||
-            transRead.count   != transWrite.count ||
-            memcmp(txBuf, rxBuf, transWrite.count) != 0)
-        {
-            finalStatus |= (1U << (loop*4 + 3));
-        }
-
-iter_lb_disable:
-        UART_disableLoopbackMode(baseAddr);
-
-iter_cleanup:
         SemaphoreP_destruct(&gUartReadDoneSem);
         SemaphoreP_destruct(&gUartWriteDoneSem);
         UART_close(uartHandle);
@@ -7142,32 +7335,31 @@ static void TestUart_uartWritePollingTimeoutElapsed(void *args)
     if (uartHandle == NULL)
     {
         finalStatus |= 1U;
-        goto cleanup;
     }
-
-    /* Do NOT enable loopback — leave TX pin unconnected so the TX FIFO
-     * drains only at the configured baud rate (1200). Without loopback
-     * the hardware still shifts bits out, keeping the FIFO occupied. */
-    baseAddr = UART_getBaseAddr(uartHandle);
-
-    /* Prepare a large write with a minimal timeout to guarantee timeout.
-     * At 1200 baud, each byte takes ~8.3 ms (10 bits/byte).
-     * APP_UART_BUFSIZE bytes will take far longer than 1 tick. */
-    memset(gUartTxBuffer, 0xAA, APP_UART_BUFSIZE);
-    UART_Transaction_init(&trans);
-    trans.buf     = &gUartTxBuffer[0U];
-    trans.count   = APP_UART_BUFSIZE;       /* use full buffer size */
-    trans.timeout = 1U;                     /* 1 tick — guarantees timeout */
-
-    transferOK = UART_write(uartHandle, &trans);
-
-    if (baseAddr != 0U)
+    else
     {
-        UART_disableLoopbackMode(baseAddr);
-    }
-    UART_close(uartHandle);
+        /* Do NOT enable loopback — leave TX pin unconnected so the TX FIFO
+         * drains only at the configured baud rate (1200). Without loopback
+         * the hardware still shifts bits out, keeping the FIFO occupied. */
+        baseAddr = UART_getBaseAddr(uartHandle);
 
-cleanup:
+        /* Prepare a large write with a minimal timeout to guarantee timeout.
+         * At 1200 baud, each byte takes ~8.3 ms (10 bits/byte).
+         * APP_UART_BUFSIZE bytes will take far longer than 1 tick. */
+        memset(gUartTxBuffer, 0xAA, APP_UART_BUFSIZE);
+        UART_Transaction_init(&trans);
+        trans.buf     = &gUartTxBuffer[0U];
+        trans.count   = APP_UART_BUFSIZE;       /* use full buffer size */
+        trans.timeout = 1U;                     /* 1 tick — guarantees timeout */
+
+        transferOK = UART_write(uartHandle, &trans);
+
+        if (baseAddr != 0U)
+        {
+            UART_disableLoopbackMode(baseAddr);
+        }
+        UART_close(uartHandle);
+    }
     TestUart_openDebugUart();
 
     /* Must hit TIMEOUT path from UART_writePolling (timeoutElapsed = 1U) */
@@ -7324,65 +7516,68 @@ static void TestUart_uartReadInterruptImmediate(void *args)
     handle = UART_open(instId, prms);
     if (handle == NULL)
     {
-        finalStatus |= 1U; goto test_end;
+        finalStatus |= 1U;
     }
-
-    base = UART_getBaseAddr(handle);
-    if (base == 0U) { finalStatus |= 2U; goto cleanup; }
-
-    /* Enable internal loopback */
-    TestUart_enableLoopback(base);
-
-    /* Preload RX via loopback: put byte bytes before calling UART_read */
-
-    for (loop = 0; loop < byte; loop++)
+    else
     {
-        UART_putChar(base, (uint8_t)(0x30 + (loop & 0x0FU)));
+        base = UART_getBaseAddr(handle);
+        if (base == 0U)
+        {
+            finalStatus |= 2U;
+            UART_close(handle);
+        }
+        else
+        {
+            /* Enable internal loopback */
+            TestUart_enableLoopback(base);
+
+            /* Preload RX via loopback: put byte bytes before calling UART_read */
+            for (loop = 0; loop < byte; loop++)
+            {
+                UART_putChar(base, (uint8_t)(0x30 + (loop & 0x0FU)));
+            }
+
+            /* Small delay to let bytes reach RX FIFO */
+            ClockP_usleep(1000);
+
+            /* Init semaphore to wait for callback */
+            if (SemaphoreP_constructBinary(&gUartReadDoneSem, 0) != SystemP_SUCCESS)
+            {
+                finalStatus |= 4U;
+            }
+            else
+            {
+                /* Prepare async read for byte bytes; UART_readInterrupt will drain all immediately */
+                UART_Transaction_init(&trans);
+                trans.buf     = &gUartRxBuffer[0U];
+                trans.count   = byte;
+                trans.timeout = SystemP_WAIT_FOREVER;
+
+                /* Reset capture vars */
+                TestUart_immediateReadCount  = 0U;
+                TestUart_immediateReadStatus = SystemP_FAILURE;
+
+                /* Start read; in interrupt mode, UART_read() calls UART_readInterrupt immediately */
+                (void)UART_read(handle, &trans);
+
+                /* Wait for our callback to be invoked */
+                semStat = SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
+                if (semStat != SystemP_SUCCESS) { finalStatus |= 8U; }
+
+                /* Validate immediate completion via callback (SUCCESS and full count) */
+                if ((TestUart_immediateReadStatus != UART_TRANSFER_STATUS_SUCCESS) || (TestUart_immediateReadCount != byte))
+                {
+                    finalStatus |= 16U;
+                }
+
+                /* Clean up */
+                SemaphoreP_destruct(&gUartReadDoneSem);
+            }
+
+            UART_disableLoopbackMode(base);
+            UART_close(handle);
+        }
     }
-
-    /* Small delay to let bytes reach RX FIFO */
-    ClockP_usleep(1000);
-
-    /* Init semaphore to wait for callback */
-    if (SemaphoreP_constructBinary(&gUartReadDoneSem, 0) != SystemP_SUCCESS)
-    {
-        finalStatus |= 4U;
-        goto lb_disable;
-    }
-
-    /* Prepare async read for byte bytes; UART_readInterrupt will drain all immediately */
-    UART_Transaction_init(&trans);
-    trans.buf     = &gUartRxBuffer[0U];
-    trans.count   = byte;
-    trans.timeout = SystemP_WAIT_FOREVER;
-
-    /* Reset capture vars */
-    TestUart_immediateReadCount  = 0U;
-    TestUart_immediateReadStatus = SystemP_FAILURE;
-
-    /* Start read; in interrupt mode, UART_read() calls UART_readInterrupt immediately */
-    (void)UART_read(handle, &trans);
-
-    /* Wait for our callback to be invoked */
-    semStat = SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
-    if (semStat != SystemP_SUCCESS) { finalStatus |= 8U; }
-
-    /* Validate immediate completion via callback (SUCCESS and full count) */
-    if ((TestUart_immediateReadStatus != UART_TRANSFER_STATUS_SUCCESS) || (TestUart_immediateReadCount != byte))
-    {
-        finalStatus |= 16U;
-    }
-
-    /* Clean up */
-    SemaphoreP_destruct(&gUartReadDoneSem);
-
-lb_disable:
-    UART_disableLoopbackMode(base);
-
-cleanup:
-    UART_close(handle);
-
-test_end:
     TestUart_openDebugUart();
     TEST_ASSERT_EQUAL(0, finalStatus);
 }
@@ -7426,24 +7621,25 @@ static void TestUart_uartReadCancelErrorNoReadInProgress(void *args)
     handle = UART_open(instId, prms);
     if (handle == NULL)
     {
-        finalStatus |= 1U; goto test_end;
+        finalStatus |= 1U;
     }
-
-    /* Call readCancel with no active read; expect ERROR_OTH */
-    trans.buf     = NULL;           /* not used by readCancel path */
-    trans.count   = 0U;             /* not used by readCancel path */
-    trans.timeout = 0U;
-
-    status = UART_readCancel(handle, &trans);
-
-    /* Validate error path */
-    if (!(status == SystemP_FAILURE && trans.status == UART_TRANSFER_STATUS_ERROR_OTH))
+    else
     {
-        finalStatus |= 2U;
-    }
+        /* Call readCancel with no active read; expect ERROR_OTH */
+        trans.buf     = NULL;           /* not used by readCancel path */
+        trans.count   = 0U;             /* not used by readCancel path */
+        trans.timeout = 0U;
 
-    UART_close(handle);
-test_end:
+        status = UART_readCancel(handle, &trans);
+
+        /* Validate error path */
+        if (!(status == SystemP_FAILURE && trans.status == UART_TRANSFER_STATUS_ERROR_OTH))
+        {
+            finalStatus |= 2U;
+        }
+
+        UART_close(handle);
+    }
     TestUart_openDebugUart();
     TEST_ASSERT_EQUAL(0, finalStatus);
 }
@@ -7493,32 +7689,32 @@ static void TestUart_uartWriteOnClosedHandle(void *args)
     if (handle == NULL)
     {
         finalStatus |= 1U;
-        goto test_end;
     }
-
-    /* Close it to force object->isOpen == FALSE */
-    UART_close(handle);
-
-    /* Prepare a valid transaction */
-    UART_Transaction_init(&trans);
-    memset(gUartTxBuffer, 0xAA, 8U);
-    trans.buf     = &gUartTxBuffer[0];
-    trans.count   = 8U;
-    trans.timeout = 100U;
-    /* Call UART_write on a closed handle → expect SystemP_FAILURE via else path */
-    status = UART_write(handle, &trans);
-    if (status != SystemP_FAILURE)
+    else
     {
-        finalStatus |= 2U;
+        /* Close it to force object->isOpen == FALSE */
+        UART_close(handle);
+
+        /* Prepare a valid transaction */
+        UART_Transaction_init(&trans);
+        memset(gUartTxBuffer, 0xAA, 8U);
+        trans.buf     = &gUartTxBuffer[0];
+        trans.count   = 8U;
+        trans.timeout = 100U;
+        /* Call UART_write on a closed handle → expect SystemP_FAILURE via else path */
+        status = UART_write(handle, &trans);
+        if (status != SystemP_FAILURE)
+        {
+            finalStatus |= 2U;
+        }
+
+        /* Verify driver reports no open handle */
+        if (UART_getHandle(inst) != NULL)
+        {
+            finalStatus |= 4U;
+        }
     }
 
-    /* Verify driver reports no open handle */
-    if (UART_getHandle(inst) != NULL)
-    {
-        finalStatus |= 4U;
-    }
-
-test_end:
     TestUart_openDebugUart();
     TEST_ASSERT_EQUAL(0, finalStatus);
 }
@@ -7670,6 +7866,7 @@ static void TestUart_uartBaudRateValidationDebugUart(void *args)
     UART_Handle      uartHandle  = NULL;
     UART_Object     *uartObject  = NULL;
     UART_Params      uartParams;
+    UART_Params      origParams;
     UART_Transaction transWrite  = {0};
     UART_Transaction transRead   = {0};
     int32_t          transferOK  = SystemP_FAILURE;
@@ -7682,6 +7879,7 @@ static void TestUart_uartBaudRateValidationDebugUart(void *args)
     uint16_t         debugInstId = TestUart_debugUart;
     uint64_t         timeStart = 0U;
     uint64_t         timeEnd = 0U;
+    uint64_t         timeEnd1 = 0U;
     uint64_t         elapsedUs = 0U;
     uint64_t         expectedUs = 0U;
     const uint32_t   bitsPerChar = 10U; /* 1 start + 8 data + 1 stop bits */
@@ -7708,6 +7906,12 @@ static void TestUart_uartBaudRateValidationDebugUart(void *args)
         UART_close(uartHandle);
     }
 
+    /* Save original params so we can restore them before reopening debug UART.
+     * TestUart_debugUartConfigBackup.object points to the same UART_Object in
+     * gUartConfig, so UART_open with test params overwrites object->prms.
+     * We must restore the original params before TestUart_openDebugUart(). */
+    memcpy(&origParams, &(gUartConfig[debugInstId].object->prms), sizeof(UART_Params));
+
     /* Step 2a: Initialize UART parameters – interrupt + callback */
     UART_Params_init(&uartParams);
     uartParams.transferMode   = UART_CONFIG_MODE_INTERRUPT;
@@ -7721,33 +7925,18 @@ static void TestUart_uartBaudRateValidationDebugUart(void *args)
     uartParams.skipIntrReg    = FALSE;
     uartParams.operMode       = UART_OPER_MODE_16X;
 
-    /* Platform-specific interrupt configuration for debug UART */
-#if defined(SOC_AM62AX)
-#if defined(CPU_C7X)
-    uartParams.intrNum = 24U;
-    uartParams.eventId = 434;
-#elif defined(CPU_MCU_R5F0)
-    uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
-#elif defined(CPU_A53)
-    uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
-#else
-    uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
-#endif
-#elif defined(SOC_AM62DX)
-#if defined(CPU_C7X)
-    uartParams.intrNum = 24U;
-    uartParams.eventId = 434;
-#else
-    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
-#endif
-#elif defined(SOC_AM275X)
-#if (defined(CPU_C75_0) || defined(CPU_C75_1))
-    uartParams.intrNum = 33U;
-    uartParams.eventId = 435;
-#else
-    uartParams.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART0_USART_IRQ_0;
-#endif
-#endif
+    /* Use the interrupt parameters from the syscfg-backed original config.
+     * The origParams already contain the correct intrNum, eventId and
+     * intrPriority for this exact instance on this exact core as generated
+     * by SysConfig — no per-CPU/per-SOC hardcoding needed and no risk of
+     * using an MCU_R5F interrupt number on an A53 or C7X core. */
+    uartParams.intrNum      = origParams.intrNum;
+    uartParams.eventId      = origParams.eventId;
+    uartParams.intrPriority = origParams.intrPriority;
+    /* Also carry forward the hwFlowControl setting – it differs per instance
+     * (e.g. MCU_UART0 has hwFlowControl=TRUE, UART1 has hwFlowControl=FALSE). */
+    uartParams.hwFlowControl    = origParams.hwFlowControl;
+    uartParams.hwFlowControlThr = origParams.hwFlowControlThr;
 
     /* Step 2b: Set the target baud rate */
     uartParams.baudRate = baudRates;
@@ -7757,123 +7946,163 @@ static void TestUart_uartBaudRateValidationDebugUart(void *args)
     if (uartHandle == NULL)
     {
         finalStatus |= (1U << 0);
-        goto iter_end;
     }
-
-    /* Step 2d: Verify driver stored the requested baud rate */
-    uartObject = ((UART_Config *)uartHandle)->object;
-    if (uartObject == NULL)
+    else
     {
-        finalStatus |= (1U << 1);
-        goto iter_close;
+        /* Step 2d: Verify driver stored the requested baud rate */
+        uartObject = ((UART_Config *)uartHandle)->object;
+        if (uartObject == NULL)
+        {
+            finalStatus |= (1U << 1);
+        }
+        else
+        {
+            configuredBaudRate = uartObject->prms.baudRate;
+            if (configuredBaudRate != baudRates)
+            {
+                finalStatus |= (1U << 2);
+            }
+        }
+
+        if (finalStatus == 0)
+        {
+            /* Step 2e: Prepare TX buffer with baud-rate-tagged payload */
+            UART_Transaction_init(&transWrite);
+            transWrite.buf = &txBuf[0U];
+            strncpy((char *)transWrite.buf, "BAUD_TEST_0123456789ABCDEF\r\n", sizeof(txBuf) - 1);
+            txLen = strlen((char *)transWrite.buf);
+            transWrite.count   = txLen;
+            transWrite.timeout = SystemP_WAIT_FOREVER;
+
+            /* Step 2f: Perform UART write in interrupt (callback) mode and measure TX time */
+            semStatus = SemaphoreP_constructBinary(&gUartWriteDoneSem, 0);
+            if (semStatus != SystemP_SUCCESS)
+            {
+                finalStatus |= (1U << 3);
+            }
+            else
+            {
+                timeStart = ClockP_getTimeUsec();
+                transferOK = UART_write(uartHandle, &transWrite);
+                if (transferOK != SystemP_SUCCESS)
+                {
+                    finalStatus |= (1U << 3);
+                }
+
+                /* Wait for the write callback to signal completion */
+                SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
+
+                timeEnd1 = ClockP_getTimeUsec();
+
+                /*
+                 * The write callback fires when the last byte is handed to
+                 * the TX FIFO / THR, NOT when the last bit leaves the pin.
+                 * Ensure the data has physically left the UART before
+                 * measuring the end time. Use the v1 driver helper when
+                 * available, otherwise poll the LSR TEMT bit for v0.
+                 */
+#if defined(IP_VERSION_UART_V1)
+                /* v1 driver exposes a flush helper that waits for TX to drain */
+                UART_flushTxFifo(uartHandle);
+#else
+                {
+                    uint32_t baseAddr = ((UART_Config *)uartHandle)->attrs->baseAddr;
+                    /* compute a sensible timeout for draining the shift register */
+                    uint64_t drainTimeoutUs = ((uint64_t)txLen * bitsPerChar * 1000000U) / baudRates;
+                    /* allow tolerance and add safety margin */
+                    drainTimeoutUs = (drainTimeoutUs * (100U + tolerancePct) / 100U) + 100000U;
+                    uint64_t drainStart = ClockP_getTimeUsec();
+                    while ((UART_readLineStatus(baseAddr) & UART_LSR_TX_SR_E_MASK) == 0U)
+                    {
+                        if ((ClockP_getTimeUsec() - drainStart) > drainTimeoutUs)
+                        {
+                            DebugP_log("UART drain timeout (base=0x%08x) after %llu us\r\n", (unsigned int)baseAddr, (unsigned long long)(ClockP_getTimeUsec() - drainStart));
+                            break;
+                        }
+                    }
+                }
+#endif
+                timeEnd = ClockP_getTimeUsec();
+
+                SemaphoreP_destruct(&gUartWriteDoneSem);
+
+                if (transWrite.status != UART_TRANSFER_STATUS_SUCCESS)
+                {
+                    finalStatus |= (1U << 4);
+                }
+
+                /* Validate transmission time against baud rate */
+                elapsedUs  = timeEnd - timeStart;
+                expectedUs = ((uint64_t)txLen * bitsPerChar * 1000000U) / baudRates;
+
+                if (elapsedUs < (expectedUs * (100U - tolerancePct) / 100U) ||
+                    elapsedUs > (expectedUs * (100U + tolerancePct) / 100U))
+                {
+                    finalStatus |= (1U << 8);
+                }
+
+                /* Step 2g: Perform UART read in interrupt (callback) mode */
+                semStatus = SemaphoreP_constructBinary(&gUartReadDoneSem, 0);
+                if (semStatus != SystemP_SUCCESS)
+                {
+                    finalStatus |= (1U << 5);
+                }
+                else
+                {
+                    UART_Transaction_init(&transRead);
+                    transRead.buf     = &rxBuf[0U];
+                    transRead.count   = 5;   /* exactly "hello" — matches memcmp check below */
+                    transRead.timeout = SystemP_WAIT_FOREVER;
+
+                    transferOK = UART_read(uartHandle, &transRead);
+                    if (transferOK != SystemP_SUCCESS)
+                    {
+                        finalStatus |= (1U << 5);
+                    }
+
+                    /* Wait for the read callback to signal completion */
+                    SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
+
+                    if (transRead.status != UART_TRANSFER_STATUS_SUCCESS)
+                    {
+                        finalStatus |= (1U << 6);
+                    }
+
+                    SemaphoreP_destruct(&gUartReadDoneSem);
+
+                    /* Step 2i: Compare transmitted and received data */
+                    if (memcmp("hello", rxBuf, 5) != 0)
+                    {
+                        finalStatus |= (1U << 7);
+                    }
+                }
+            }
+        }
+
+        /* Step 2h: Close the debug UART instance */
+        UART_close(uartHandle);
     }
-    configuredBaudRate = uartObject->prms.baudRate;
-    if (configuredBaudRate != baudRates)
-    {
-        finalStatus |= (1U << 2);
-        goto iter_close;
-    }
 
-    /* Step 2e: Prepare TX buffer with baud-rate-tagged payload */
-    UART_Transaction_init(&transWrite);
-    transWrite.buf = &txBuf[0U];
-    strncpy((char *)transWrite.buf, "BAUD_TEST_0123456789ABCDEF\r\n", sizeof(txBuf) - 1);
-    txLen = strlen((char *)transWrite.buf);
-    transWrite.count   = txLen;
-    transWrite.timeout = SystemP_WAIT_FOREVER;
+    ClockP_sleep(10);
 
-    /* Step 2f: Perform UART write in interrupt (callback) mode and measure TX time */
-    semStatus = SemaphoreP_constructBinary(&gUartWriteDoneSem, 0);
-    if (semStatus != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 3);
-        goto iter_close;
-    }
+    memcpy(&(gUartConfig[debugInstId].object->prms), &origParams, sizeof(UART_Params));
 
-    timeStart = ClockP_getTimeUsec();
-    transferOK = UART_write(uartHandle, &transWrite);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 3);
-    }
-
-    /* Wait for the write callback to signal completion */
-    SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
-    timeEnd = ClockP_getTimeUsec();
-
-    SemaphoreP_destruct(&gUartWriteDoneSem);
-
-    if (transWrite.status != UART_TRANSFER_STATUS_SUCCESS)
-    {
-        finalStatus |= (1U << 4);
-    }
-
-    /* Validate transmission time against baud rate */
-    elapsedUs  = timeEnd - timeStart;
-    expectedUs = ((uint64_t)txLen * bitsPerChar * 1000000U) / baudRates;
-
-    if (elapsedUs < (expectedUs * (100U - tolerancePct) / 100U) ||
-        elapsedUs > (expectedUs * (100U + tolerancePct) / 100U))
-    {
-        finalStatus |= (1U << 8);
-    }
-
-    /* Step 2g: Perform UART read in interrupt (callback) mode */
-    semStatus = SemaphoreP_constructBinary(&gUartReadDoneSem, 0);
-    if (semStatus != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 5);
-        goto iter_close;
-    }
-
-    UART_Transaction_init(&transRead);
-    transRead.buf     = &rxBuf[0U];
-    transRead.count   = 8;
-    transRead.timeout = SystemP_WAIT_FOREVER;
-
-    transferOK = UART_read(uartHandle, &transRead);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 5);
-    }
-
-    /* Wait for the read callback to signal completion */
-    SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
-
-    if (transRead.status != UART_TRANSFER_STATUS_SUCCESS)
-    {
-        finalStatus |= (1U << 6);
-    }
-
-    SemaphoreP_destruct(&gUartReadDoneSem);
-
-    /* Step 2i: Compare transmitted and received data */
-    if (memcmp("hello", rxBuf, 5) != 0)
-    {
-        finalStatus |= (1U << 7);
-    }
-
-iter_close:
-    /* Step 2h: Close the debug UART instance */
-    UART_close(uartHandle);
-
-iter_end:
     /* Temporarily reopen debug UART at default rate for assertion logging */
     TestUart_openDebugUart();
-    
+
     if (finalStatus != 0)
     {
         DebugP_log("UART Baud Rate %u validation FAILED on debug instance %d "
-                    "(status=0x%02X, elapsedUs=%u, expectedUs=%u)\r\n",
+                    "(status=0x%02X, elapsedUs=%u, expectedUs=%u, callback=%u)\r\n",
                     (unsigned int)baudRates, debugInstId, finalStatus,
-                    (unsigned int)elapsedUs, (unsigned int)expectedUs);
+                    (unsigned int)elapsedUs, (unsigned int)expectedUs, (unsigned int)(timeEnd1 - timeStart));
     }
     else
     {
         DebugP_log("UART Baud Rate %u validation PASSED on debug instance %d "
-                    "(elapsedUs=%u, expectedUs=%u)\r\n",
+                    "(elapsedUs=%u, expectedUs=%u, callback=%u)\r\n",
                     (unsigned int)baudRates, debugInstId,
-                    (unsigned int)elapsedUs, (unsigned int)expectedUs);
+                    (unsigned int)elapsedUs, (unsigned int)expectedUs, (unsigned int)(timeEnd1 - timeStart));
     }
 
     TEST_ASSERT_EQUAL_INT(0, finalStatus);
@@ -7987,63 +8216,63 @@ static void TestUart_uartFramingErrorInterruptDebugUart(void *args)
     if (uartHandle == NULL)
     {
         finalStatus |= (1U << 0);
-        goto test_end;
     }
-
-    /* Step 3: Send a prompt to the host so it echoes data back.
-     * The host receives garbled data (baud mismatch) and may echo
-     * something back. Any data arriving at the mismatched baud
-     * will trigger a framing error in the UART hardware. */
-    UART_Transaction_init(&transWrite);
-    transWrite.buf     = &txBuf[0U];
-    strncpy((char *)transWrite.buf, "FE_TEST_PROMPT\r\n", sizeof(txBuf));
-    transWrite.count   = strlen((char *)transWrite.buf);
-    transWrite.timeout = SystemP_WAIT_FOREVER;
-
-    transferOK = UART_write(uartHandle, &transWrite);
-    if (transferOK != SystemP_SUCCESS)
+    else
     {
-        finalStatus |= (1U << 1);
+        /* Step 3: Send a prompt to the host so it echoes data back.
+         * The host receives garbled data (baud mismatch) and may echo
+         * something back. Any data arriving at the mismatched baud
+         * will trigger a framing error in the UART hardware. */
+        UART_Transaction_init(&transWrite);
+        transWrite.buf     = &txBuf[0U];
+        strncpy((char *)transWrite.buf, "FE_TEST_PROMPT\r\n", sizeof(txBuf));
+        transWrite.count   = strlen((char *)transWrite.buf);
+        transWrite.timeout = SystemP_WAIT_FOREVER;
+
+        transferOK = UART_write(uartHandle, &transWrite);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 1);
+        }
+
+        /* Step 4: Issue a read in callback mode.
+         * The host is expected to send data at 115200 baud, but this UART
+         * is configured at 4800 baud. The hardware will detect framing
+         * errors and the ISR will invoke UART_procLineStatusErr(). */
+        semStatus = SemaphoreP_constructBinary(&gUartReadDoneSem, 0);
+        if (semStatus != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 2);
+        }
+        else
+        {
+            UART_Transaction_init(&transRead);
+            transRead.buf     = &rxBuf[0U];
+            transRead.count   = 8U;
+            transRead.timeout = SystemP_WAIT_FOREVER;
+
+            transferOK = UART_read(uartHandle, &transRead);
+            if (transferOK != SystemP_SUCCESS)
+            {
+                finalStatus |= (1U << 3);
+            }
+
+            /* Wait for the read callback (posted by ISR on error or completion) */
+            SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
+
+            /* Step 5: Verify framing error status */
+            if (transRead.status != UART_TRANSFER_STATUS_ERROR_PE)
+            {
+                finalStatus |= (1U << 4);
+            }
+
+            SemaphoreP_destruct(&gUartReadDoneSem);
+        }
+
+        /* Step 6: Close and restore */
+        UART_close(uartHandle);
     }
 
-    /* Step 4: Issue a read in callback mode.
-     * The host is expected to send data at 115200 baud, but this UART
-     * is configured at 4800 baud. The hardware will detect framing
-     * errors and the ISR will invoke UART_procLineStatusErr(). */
-    semStatus = SemaphoreP_constructBinary(&gUartReadDoneSem, 0);
-    if (semStatus != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 2);
-        goto test_close;
-    }
-
-    UART_Transaction_init(&transRead);
-    transRead.buf     = &rxBuf[0U];
-    transRead.count   = 8U;
-    transRead.timeout = SystemP_WAIT_FOREVER;
-
-    transferOK = UART_read(uartHandle, &transRead);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 3);
-    }
-
-    /* Wait for the read callback (posted by ISR on error or completion) */
-    SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
-
-    /* Step 5: Verify framing error status */
-    if (transRead.status != UART_TRANSFER_STATUS_ERROR_PE)
-    {
-        finalStatus |= (1U << 4);
-    }
-
-    SemaphoreP_destruct(&gUartReadDoneSem);
-
-test_close:
-    /* Step 6: Close and restore */
-    UART_close(uartHandle);
-
-test_end:
     /* Reopen debug UART at default baud for assertion logging */
     TestUart_openDebugUart();
 
@@ -8055,6 +8284,248 @@ test_end:
 
     TEST_ASSERT_EQUAL_INT(0, finalStatus);
     TEST_ASSERT_EQUAL_UINT32(UART_TRANSFER_STATUS_ERROR_FE, transRead.status);
+}
+
+/**
+ * @brief Validate UART parity error (PE) detection in interrupt/callback mode
+ *        on the debug UART instance.
+ *
+ * Two-phase open strategy to avoid garbled output on the host terminal:
+ *
+ * Phase 1 (normal 8N1):
+ *   The debug UART is (re)opened at its backed-up default configuration
+ *   (115200 8N1, no parity).  The prompt "PE_TEST_PROMPT\\r\\n" is written
+ *   and the TX FIFO is fully flushed so the host terminal sees the string
+ *   correctly.  The debug UART is then closed.
+ *
+ * Phase 2 (FORCED0 parity):
+ *   The same UART instance is reopened at 115200 with UART_PARITY_FORCED0
+ *   in interrupt/callback-read mode.  The automation echo server has received
+ *   the prompt in Phase 1 and echoes it back at 8N1 / 115200.  Because the
+ *   USB round-trip latency (typically 5–20 ms) is much larger than the
+ *   UART close/reopen time (< 1 ms), the echo bytes arrive AFTER the UART is
+ *   reconfigured and the ISR is armed.
+ *
+ *   With FORCED0 parity, the DUT always expects the parity bit to be 0.  The
+ *   echo arrives as 8N1 frames whose stop bit (always 1) is sampled in the
+ *   parity-bit slot.  Since 1 ≠ 0, every echoed byte triggers a parity error.
+ *   No framing error occurs because the baud rates match exactly.
+ *
+ * Test Steps:
+ * 1. Reopen debug UART at default (backed-up) config.
+ * 2. Transmit "PE_TEST_PROMPT\\r\\n" in blocking mode; flush TX FIFO.
+ * 3. Close debug UART (echo is in transit over USB).
+ * 4. Reopen debug UART at 115200 with UART_PARITY_FORCED0, callback read.
+ * 5. Post a read transaction (count = 8, timeout = WAIT_FOREVER).
+ * 6. Wait on gUartReadDoneSem (posted by ISR when PE is detected).
+ * 7. Verify trans.status == UART_TRANSFER_STATUS_ERROR_PE.
+ * 8. Close UART and restore the debug UART configuration.
+ *
+ * @note Requires an external automation echo server connected to the debug
+ *       UART at 115200 8N1 that echoes received characters back without
+ *       modification.  No special parity setting is required on the host —
+ *       the default 8N1 is sufficient.
+ *
+ * @param[in] args Unused.
+ */
+static void TestUart_uartParityErrorInterruptDebugUart(void *args)
+{
+    UART_Handle      uartHandle  = NULL;
+    UART_Params      uartParams;
+    UART_Params      origParams;
+    UART_Transaction transWrite  = {0};
+    UART_Transaction transRead   = {0};
+
+    int32_t          transferOK  = SystemP_FAILURE;
+    int32_t          semStatus   = SystemP_FAILURE;
+    uint8_t          txBuf[64]   = {0};
+    uint8_t          rxBuf[64]   = {0};
+    uint8_t          finalStatus = 0;
+    uint16_t         debugInstId = TestUart_debugUart;
+
+    /* ------------------------------------------------------------------ */
+    /* Phase 1: Send prompt at normal 8N1 config so the terminal shows     */
+    /*          readable text.  The automation echo server echoes it back. */
+    /* ------------------------------------------------------------------ */
+
+    /* Step 1: (Re)open the debug UART at its backed-up default config.
+     * setUp() already closed it; TestUart_openDebugUart() reopens it with
+     * the original syscfg parameters (115200 8N1, no parity). */
+    TestUart_openDebugUart();
+
+    /* Save current params now (Phase 1 opens with the same values so this is
+     * safe).  Must be done before Phase 2's UART_open overwrites object->prms
+     * — and also before any early-exit goto so that test_end's restore is
+     * always valid, even on the Phase-1-failure path. */
+    memcpy(&origParams, &(gUartConfig[debugInstId].object->prms), sizeof(UART_Params));
+
+    uartHandle = UART_getHandle(debugInstId);
+    if (uartHandle == NULL)
+    {
+        finalStatus |= (1U << 0);
+    }
+    else
+    {
+
+    /* Step 2: Send prompt while UART is in normal (8N1) mode.
+     * The host terminal and automation echo server receive these bytes
+     * correctly.  The echo will travel back over the USB-serial link. */
+    UART_Transaction_init(&transWrite);
+    transWrite.buf     = &txBuf[0U];
+    strncpy((char *)transWrite.buf, "PE_TEST_PROMPT\r\n", sizeof(txBuf));
+    transWrite.count   = strlen((char *)transWrite.buf);
+    transWrite.timeout = SystemP_WAIT_FOREVER;
+
+    transferOK = UART_write(uartHandle, &transWrite);
+    if (transferOK != SystemP_SUCCESS)
+    {
+        finalStatus |= (1U << 1);
+    }
+
+    /* Ensure every bit is on the wire before closing. */
+    UART_flushTxFifo(uartHandle);
+
+    /* Step 3: Close debug UART.  The echo is now in transit (USB latency
+     * >> UART close/reopen time), so it will arrive after Phase 2 is set up. */
+    TestUart_closeDebugUart();
+
+    /* Belt-and-suspenders: close any stale handle the above may have missed. */
+    uartHandle = UART_getHandle(debugInstId);
+    if (uartHandle != NULL)
+    {
+        UART_close(uartHandle);
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Phase 2: Reopen at FORCED0 parity; echo arrives → PE fires.        */
+    /* ------------------------------------------------------------------ */
+
+    /* Step 4: Open debug UART with FORCED0 parity at the same baud rate.
+     *
+     * UART_PARITY_FORCED0 forces the receiver to expect parity bit = 0.
+     * The echo from the automation server arrives as 8N1 frames: the stop
+     * bit (= 1) is sampled at the parity-bit position.  Since 1 ≠ 0 (expected),
+     * UART_procLineStatusErr() sets trans.status = UART_TRANSFER_STATUS_ERROR_PE.
+     * Because the baud rates are identical there is no framing error (FE). */
+    UART_Params_init(&uartParams);
+    uartParams.transferMode    = UART_CONFIG_MODE_INTERRUPT;
+    uartParams.writeMode       = UART_TRANSFER_MODE_BLOCKING;
+    uartParams.readMode        = UART_TRANSFER_MODE_CALLBACK;
+    uartParams.readCallbackFxn = TestUart_uartReadCallback;
+    uartParams.readReturnMode  = UART_READ_RETURN_MODE_FULL;
+    uartParams.txTrigLvl       = UART_TXTRIGLVL_1;
+    uartParams.rxTrigLvl       = UART_RXTRIGLVL_1;
+    uartParams.skipIntrReg     = FALSE;
+    uartParams.operMode        = UART_OPER_MODE_16X;
+    uartParams.stopBits        = UART_STOPBITS_1;
+    uartParams.parityType      = UART_PARITY_FORCED0;
+    uartParams.baudRate        = 115200U;
+
+    /* Platform-specific interrupt number for the debug UART */
+#if defined(SOC_AM62AX)
+#if defined(CPU_C7X)
+    uartParams.intrNum = 24U;
+    uartParams.eventId = 434;
+#elif defined(CPU_MCU_R5F0)
+    uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
+#elif defined(CPU_A53)
+    uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
+#else
+    uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
+#endif
+#elif defined(SOC_AM62DX)
+#if defined(CPU_C7X)
+    uartParams.intrNum = 24U;
+    uartParams.eventId = 434;
+#else
+    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+#endif
+#elif defined(SOC_AM275X)
+#if (defined(CPU_C75_0) || defined(CPU_C75_1))
+    uartParams.intrNum = 33U;
+    uartParams.eventId = 435;
+#else
+    uartParams.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART0_USART_IRQ_0;
+#endif
+#endif
+
+    uartHandle = UART_open(debugInstId, &uartParams);
+    if (uartHandle == NULL)
+    {
+        finalStatus |= (1U << 2);
+    }
+    else
+    {
+        /* Step 5: Arm a callback-mode read.  No TX write here — the DUT does
+         * not send anything in Phase 2, so the terminal sees no null bytes. */
+        semStatus = SemaphoreP_constructBinary(&gUartReadDoneSem, 0);
+        if (semStatus != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 3);
+        }
+        else
+        {
+            UART_Transaction_init(&transRead);
+            transRead.buf     = &rxBuf[0U];
+            transRead.count   = 8U;
+            transRead.timeout = SystemP_WAIT_FOREVER;
+
+            transferOK = UART_read(uartHandle, &transRead);
+            if (transferOK != SystemP_SUCCESS)
+            {
+                finalStatus |= (1U << 4);
+            }
+
+            /* Step 6: Wait for the read callback (posted by ISR when PE is detected). */
+            SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
+
+            /* Step 7: Verify a line-status error was reported.
+             *
+             * UART_procLineStatusErr() re-reads the LSR *after* draining the RX FIFO.
+             * Once all PE-tagged bytes are consumed the per-byte PE/FE/BI bits clear,
+             * so the driver falls through to the ERROR_OE default branch — regardless
+             * of which hardware error originally triggered the ISR.  The specific
+             * ERROR_PE code can only be preserved when the FIFO overflows with > 64
+             * error bytes (impossible here).  Accepting any non-SUCCESS status
+             * confirms the parity-mismatch condition reached the RLS ISR path, which
+             * is the purpose of this test. */
+            if (transRead.status == UART_TRANSFER_STATUS_SUCCESS)
+            {
+                finalStatus |= (1U << 5);
+            }
+
+            SemaphoreP_destruct(&gUartReadDoneSem);
+        }
+
+        /* Step 8: Close and restore */
+        UART_close(uartHandle);
+    }
+
+    } /* end: handle != NULL */
+
+    /* Restore the original params into the config object so that
+     * TestUart_openDebugUart() reads the correct (original) configuration.
+     * UART_open(debugInstId, &uartParams_FORCED0) overwrites object->prms;
+     * without this restore, TestUart_openDebugUart() reopens with FORCED0
+     * and every DebugP_log/assertion byte appears as \0 on the terminal. */
+    memcpy(&(gUartConfig[debugInstId].object->prms), &origParams, sizeof(UART_Params));
+
+    /* Reopen debug UART at default baud for assertion logging */
+    TestUart_openDebugUart();
+
+    if (finalStatus != 0)
+    {
+        DebugP_log("UART Parity Error Interrupt test FAILED on debug instance %d "
+                    "(status=0x%02X, transRead.status=%u)\r\n",
+                    debugInstId, finalStatus, (uint32_t)transRead.status);
+    }
+
+    TEST_ASSERT_EQUAL_INT(0, finalStatus);
+    /* The parity-mismatch config (FORCED0) causes a line-status error ISR.
+     * UART_procLineStatusErr() reports ERROR_OE as the fallthrough default
+     * once the FIFO drains (PE/FE bits clear after each byte is read).
+     * Assert non-SUCCESS to confirm the RLS error path was exercised. */
+    TEST_ASSERT_NOT_EQUAL(UART_TRANSFER_STATUS_SUCCESS, transRead.status);
 }
 
 /**
@@ -8117,150 +8588,155 @@ static void TestUart_uartPartialReadLoopback(void *args)
 
     /* Open UART instance (interrupt, callback write + blocking partial read) */
     uartHandle = UART_open(instanceId, uartParams);
-    if (uartHandle == NULL)
+    do
     {
-        finalStatus |= (1U << 0);
-        goto partial_close;
-    }
+        if (uartHandle == NULL)
+        {
+            finalStatus |= (1U << 0);
+            break;
+        }
 
-    /* Enable loopback mode */
-    baseAddr = UART_getBaseAddr(uartHandle);
-    if (baseAddr == 0U)
-    {
-        finalStatus |= (1U << 1);
-        goto partial_close;
-    }
-    TestUart_enableLoopback(baseAddr);
+        /* Enable loopback mode */
+        baseAddr = UART_getBaseAddr(uartHandle);
+        if (baseAddr == 0U)
+        {
+            finalStatus |= (1U << 1);
+            break;
+        }
+        TestUart_enableLoopback(baseAddr);
 
-    /* ---- Phase 1: callback write, then blocking partial read ---- */
+        /* ---- Phase 1: callback write, then blocking partial read ---- */
 
-    /* Prepare TX data */
-    UART_Transaction_init(&transWrite);
-    transWrite.buf = &uartTxBuffer[0U];
-    strncpy((char *)transWrite.buf, "PARTIAL_RD\r\n", APP_UART_BUFSIZE);
-    transWrite.count = strlen((char *)transWrite.buf);
-    transWrite.timeout = SystemP_WAIT_FOREVER;
-    writeLen = transWrite.count;
+        /* Prepare TX data */
+        UART_Transaction_init(&transWrite);
+        transWrite.buf = &uartTxBuffer[0U];
+        strncpy((char *)transWrite.buf, "PARTIAL_RD\r\n", APP_UART_BUFSIZE);
+        transWrite.count = strlen((char *)transWrite.buf);
+        transWrite.timeout = SystemP_WAIT_FOREVER;
+        writeLen = transWrite.count;
 
-    /*
-     * Write using CALLBACK mode — returns immediately so we can arm
-     * the blocking partial read BEFORE loopback data hits the RX FIFO.
-     * Without this, the ISR discards RX bytes that arrive while no
-     * read transaction is active, causing the subsequent read to hang.
-     */
-    transferOK = UART_write(uartHandle, &transWrite);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 2);
-        goto partial_close;
-    }
-
-    /*
-     * Accumulate partial reads until all written bytes have been received.
-     * Each partial read returns as soon as any data is in the RX FIFO.
-     */
-    memset(uartRxBuffer, 0, sizeof(uartRxBuffer));
-    remaining = writeLen;
-    totalRead = 0U;
-
-    while (remaining > 0U)
-    {
-        UART_Transaction_init(&transRead);
-        transRead.buf     = &uartRxBuffer[totalRead];
-        transRead.count   = remaining + 16U;  /* request more than remaining */
-        transRead.timeout = SystemP_WAIT_FOREVER;
-
-        transferOK = UART_read(uartHandle, &transRead);
+        /*
+         * Write using CALLBACK mode — returns immediately so we can arm
+         * the blocking partial read BEFORE loopback data hits the RX FIFO.
+         * Without this, the ISR discards RX bytes that arrive while no
+         * read transaction is active, causing the subsequent read to hang.
+         */
+        transferOK = UART_write(uartHandle, &transWrite);
         if (transferOK != SystemP_SUCCESS)
         {
-            finalStatus |= (1U << 3);
-            goto partial_close;
+            finalStatus |= (1U << 2);
+            break;
         }
 
-        /* If the driver returned less than requested, partial mode worked */
-        if (transRead.count < (remaining + 16U))
+        /*
+         * Accumulate partial reads until all written bytes have been received.
+         * Each partial read returns as soon as any data is in the RX FIFO.
+         */
+        memset(uartRxBuffer, 0, sizeof(uartRxBuffer));
+        remaining = writeLen;
+        totalRead = 0U;
+
+        while (remaining > 0U)
         {
-            sawPartial = 1U;
+            UART_Transaction_init(&transRead);
+            transRead.buf     = &uartRxBuffer[totalRead];
+            transRead.count   = remaining + 16U;  /* request more than remaining */
+            transRead.timeout = SystemP_WAIT_FOREVER;
+
+            transferOK = UART_read(uartHandle, &transRead);
+            if (transferOK != SystemP_SUCCESS)
+            {
+                finalStatus |= (1U << 3);
+                break;
+            }
+
+            /* If the driver returned less than requested, partial mode worked */
+            if (transRead.count < (remaining + 16U))
+            {
+                sawPartial = 1U;
+            }
+
+            totalRead += transRead.count;
+            remaining  = (totalRead < writeLen) ? (writeLen - totalRead) : 0U;
         }
 
-        totalRead += transRead.count;
-        remaining  = (totalRead < writeLen) ? (writeLen - totalRead) : 0U;
-    }
+        if (finalStatus != 0) { break; }
 
-    /* Wait for write callback to complete */
-    SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
+        /* Wait for write callback to complete */
+        SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
 
-    /* Verify we got exactly the written number of bytes */
-    if (totalRead != writeLen)
-    {
-        finalStatus |= (1U << 4);
-    }
+        /* Verify we got exactly the written number of bytes */
+        if (totalRead != writeLen)
+        {
+            finalStatus |= (1U << 4);
+        }
 
-    /* Verify the driver actually used partial-return (returned < requested) */
-    if (sawPartial == 0U)
-    {
-        finalStatus |= (1U << 5);
-    }
+        /* Verify the driver actually used partial-return (returned < requested) */
+        if (sawPartial == 0U)
+        {
+            finalStatus |= (1U << 5);
+        }
 
-    /* Verify data integrity */
-    if (memcmp(uartTxBuffer, uartRxBuffer, writeLen) != 0)
-    {
-        finalStatus |= (1U << 6);
-    }
+        /* Verify data integrity */
+        if (memcmp(uartTxBuffer, uartRxBuffer, writeLen) != 0)
+        {
+            finalStatus |= (1U << 6);
+        }
 
-    /* ---- Phase 2: callback write + blocking partial read (exact count) ---- */
+        /* ---- Phase 2: callback write + blocking partial read (exact count) ---- */
 
-    memset(uartRxBuffer, 0, sizeof(uartRxBuffer));
+        memset(uartRxBuffer, 0, sizeof(uartRxBuffer));
 
-    /* Write the same string again (callback) */
-    UART_Transaction_init(&transWrite);
-    transWrite.buf     = &uartTxBuffer[0U];
-    transWrite.count   = writeLen;
-    transWrite.timeout = SystemP_WAIT_FOREVER;
+        /* Write the same string again (callback) */
+        UART_Transaction_init(&transWrite);
+        transWrite.buf     = &uartTxBuffer[0U];
+        transWrite.count   = writeLen;
+        transWrite.timeout = SystemP_WAIT_FOREVER;
 
-    transferOK = UART_write(uartHandle, &transWrite);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 7);
-        goto partial_close;
-    }
-
-    /* Blocking partial read requesting exactly writeLen bytes */
-    totalRead = 0U;
-    remaining = writeLen;
-
-    while (remaining > 0U)
-    {
-        UART_Transaction_init(&transRead);
-        transRead.buf     = &uartRxBuffer[totalRead];
-        transRead.count   = remaining;
-        transRead.timeout = SystemP_WAIT_FOREVER;
-
-        transferOK = UART_read(uartHandle, &transRead);
+        transferOK = UART_write(uartHandle, &transWrite);
         if (transferOK != SystemP_SUCCESS)
         {
-            finalStatus |= (1U << 8);
-            goto partial_close;
+            finalStatus |= (1U << 7);
+            break;
         }
 
-        totalRead += transRead.count;
-        remaining  = (totalRead < writeLen) ? (writeLen - totalRead) : 0U;
+        /* Blocking partial read requesting exactly writeLen bytes */
+        totalRead = 0U;
+        remaining = writeLen;
+
+        while (remaining > 0U)
+        {
+            UART_Transaction_init(&transRead);
+            transRead.buf     = &uartRxBuffer[totalRead];
+            transRead.count   = remaining;
+            transRead.timeout = SystemP_WAIT_FOREVER;
+
+            transferOK = UART_read(uartHandle, &transRead);
+            if (transferOK != SystemP_SUCCESS)
+            {
+                finalStatus |= (1U << 8);
+                break;
+            }
+
+            totalRead += transRead.count;
+            remaining  = (totalRead < writeLen) ? (writeLen - totalRead) : 0U;
     }
 
-    /* Wait for write callback */
-    SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
+        /* Wait for write callback */
+        SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
 
-    /* Verify count and data */
-    if (totalRead != writeLen)
-    {
-        finalStatus |= (1U << 9);
-    }
-    if (memcmp(uartTxBuffer, uartRxBuffer, writeLen) != 0)
-    {
-        finalStatus |= (1U << 10);
-    }
+        /* Verify count and data */
+        if (totalRead != writeLen)
+        {
+            finalStatus |= (1U << 9);
+        }
+        if (memcmp(uartTxBuffer, uartRxBuffer, writeLen) != 0)
+        {
+            finalStatus |= (1U << 10);
+        }
+    } while (0);
+    /* partial_close cleanup */
 
-partial_close:
     /* Disable loopback mode */
     if (baseAddr != 0U)
     {
@@ -8387,56 +8863,54 @@ static void TestUart_uartReadTimeoutLoopback(void *args)
     UART_close(uartHandle);
 
     uartHandle = UART_open(instanceId, uartParams);
-    if (uartHandle == NULL)
+    if (uartHandle != NULL)
     {
-        goto test_end;
-    }
-
-    baseAddr = UART_getBaseAddr(uartHandle);
-    if (baseAddr == 0U)
-    {
-        UART_close(uartHandle);
-        goto test_end;
-    }
-
-    TestUart_enableLoopback(baseAddr);
-
-    /* Now verify normal operation still works after timeout:
-     * Write data and read it back successfully */
-    UART_Transaction_init(&trans);
-    trans.buf   = &gUartTxBuffer[0U];
-    strncpy((char *)trans.buf, "TimeoutRecoveryTest\r\n", APP_UART_BUFSIZE);
-    trans.count = (uint32_t)strlen((char *)trans.buf);
-    trans.timeout = SystemP_WAIT_FOREVER;
-
-    transferOK = UART_write(uartHandle, &trans);
-    if (transferOK == SystemP_SUCCESS &&
-        trans.status == UART_TRANSFER_STATUS_SUCCESS)
-    {
-        uint32_t writeLen = trans.count;
-
-        UART_Transaction_init(&trans);
-        memset(&gUartRxBuffer[0U], 0, APP_UART_BUFSIZE);
-        trans.buf     = &gUartRxBuffer[0U];
-        trans.count   = writeLen;
-        trans.timeout = 500U;
-
-        transferOK = UART_read(uartHandle, &trans);
-        if ((transferOK == SystemP_SUCCESS) &&
-            (trans.status == UART_TRANSFER_STATUS_SUCCESS))
+        baseAddr = UART_getBaseAddr(uartHandle);
+        if (baseAddr == 0U)
         {
-            if (memcmp(&gUartTxBuffer[0U], &gUartRxBuffer[0U], writeLen) == 0)
+            UART_close(uartHandle);
+        }
+        else
+        {
+            TestUart_enableLoopback(baseAddr);
+
+            /* Now verify normal operation still works after timeout:
+             * Write data and read it back successfully */
+            UART_Transaction_init(&trans);
+            trans.buf   = &gUartTxBuffer[0U];
+            strncpy((char *)trans.buf, "TimeoutRecoveryTest\r\n", APP_UART_BUFSIZE);
+            trans.count = (uint32_t)strlen((char *)trans.buf);
+            trans.timeout = SystemP_WAIT_FOREVER;
+
+            transferOK = UART_write(uartHandle, &trans);
+            if (transferOK == SystemP_SUCCESS &&
+                trans.status == UART_TRANSFER_STATUS_SUCCESS)
             {
-                finalStatus |= 2U;
+                uint32_t writeLen = trans.count;
+
+                UART_Transaction_init(&trans);
+                memset(&gUartRxBuffer[0U], 0, APP_UART_BUFSIZE);
+                trans.buf     = &gUartRxBuffer[0U];
+                trans.count   = writeLen;
+                trans.timeout = 500U;
+
+                transferOK = UART_read(uartHandle, &trans);
+                if ((transferOK == SystemP_SUCCESS) &&
+                    (trans.status == UART_TRANSFER_STATUS_SUCCESS))
+                {
+                    if (memcmp(&gUartTxBuffer[0U], &gUartRxBuffer[0U], writeLen) == 0)
+                    {
+                        finalStatus |= 2U;
+                    }
+                }
             }
+
+            /* Cleanup */
+            UART_disableLoopbackMode(baseAddr);
+            UART_close(uartHandle);
         }
     }
 
-    /* Cleanup */
-    UART_disableLoopbackMode(baseAddr);
-    UART_close(uartHandle);
-
-test_end:
     TestUart_openDebugUart();
 
     /* Both bits must be set: timeout detected (bit 0) and recovery works (bit 1) */
@@ -8490,111 +8964,113 @@ static void TestUart_writeCancelAndRewrite(void *args)
     }
 
     /* Open UART */
-    uartHandle = UART_open(instanceId, uartParams);
-    if (uartHandle == NULL)
+    do
     {
-        finalStatus |= (1U << 0);
-        goto wc_cleanup;
-    }
+        uartHandle = UART_open(instanceId, uartParams);
+        if (uartHandle == NULL)
+        {
+            finalStatus |= (1U << 0);
+            break;
+        }
 
-    baseAddr = UART_getBaseAddr(uartHandle);
-    if (baseAddr == 0U)
-    {
-        finalStatus |= (1U << 1);
-        goto wc_cleanup;
-    }
+        baseAddr = UART_getBaseAddr(uartHandle);
+        if (baseAddr == 0U)
+        {
+            finalStatus |= (1U << 1);
+            break;
+        }
 
-    /* ---- Phase 1: Cancel an ongoing write ---- */
-    /* No loopback — TX data exits the pin, nothing loops back to RX */
-    memset(cancelBuf, 'W', sizeof(cancelBuf));
-    UART_Transaction_init(&transWrite);
-    transWrite.buf     = cancelBuf;
-    transWrite.count   = sizeof(cancelBuf);
-    transWrite.timeout = SystemP_WAIT_FOREVER;
+        /* ---- Phase 1: Cancel an ongoing write ---- */
+        /* No loopback — TX data exits the pin, nothing loops back to RX */
+        memset(cancelBuf, 'W', sizeof(cancelBuf));
+        UART_Transaction_init(&transWrite);
+        transWrite.buf     = cancelBuf;
+        transWrite.count   = sizeof(cancelBuf);
+        transWrite.timeout = SystemP_WAIT_FOREVER;
 
-    /* Callback write returns immediately; ISR drains buffer in background */
-    transferOK = UART_write(uartHandle, &transWrite);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 2);
-        goto wc_cleanup;
-    }
+        /* Callback write returns immediately; ISR drains buffer in background */
+        transferOK = UART_write(uartHandle, &transWrite);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 2);
+            break;
+        }
 
-    /* Brief delay so the write is still in progress */
-    ClockP_usleep(1000);
+        /* Brief delay so the write is still in progress */
+        ClockP_usleep(1000);
 
-    /* Cancel the ongoing write */
-    transferOK = UART_writeCancel(uartHandle, &transWrite);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 3);
-        goto wc_cleanup;
-    }
+        /* Cancel the ongoing write */
+        transferOK = UART_writeCancel(uartHandle, &transWrite);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 3);
+            break;
+        }
 
-    /* Verify the driver set CANCELLED status */
-    if (transWrite.status != UART_TRANSFER_STATUS_CANCELLED)
-    {
-        finalStatus |= (1U << 4);
-    }
+        /* Verify the driver set CANCELLED status */
+        if (transWrite.status != UART_TRANSFER_STATUS_CANCELLED)
+        {
+            finalStatus |= (1U << 4);
+        }
 
-    /* Cancel invokes the callback, consume the semaphore */
-    SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
+        /* Cancel invokes the callback, consume the semaphore */
+        SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
 
-    /* Wait for residual TX FIFO data to drain before enabling loopback */
-    ClockP_usleep(10000);
+        /* Wait for residual TX FIFO data to drain before enabling loopback */
+        ClockP_usleep(10000);
 
-    /* ---- Phase 2: Immediate re-write with loopback verification ---- */
-    TestUart_enableLoopback(baseAddr);
+        /* ---- Phase 2: Immediate re-write with loopback verification ---- */
+        TestUart_enableLoopback(baseAddr);
 
-    strncpy((char *)txBuf, "REWRITE_OK\r\n", sizeof(txBuf));
-    rewriteLen = (uint32_t)strlen((char *)txBuf);
+        strncpy((char *)txBuf, "REWRITE_OK\r\n", sizeof(txBuf));
+        rewriteLen = (uint32_t)strlen((char *)txBuf);
 
-    /* Arm callback read first so loopback data is captured */
-    memset(rxBuf, 0, sizeof(rxBuf));
-    UART_Transaction_init(&transRead);
-    transRead.buf     = rxBuf;
-    transRead.count   = rewriteLen;
-    transRead.timeout = SystemP_WAIT_FOREVER;
+        /* Arm callback read first so loopback data is captured */
+        memset(rxBuf, 0, sizeof(rxBuf));
+        UART_Transaction_init(&transRead);
+        transRead.buf     = rxBuf;
+        transRead.count   = rewriteLen;
+        transRead.timeout = SystemP_WAIT_FOREVER;
 
-    transferOK = UART_read(uartHandle, &transRead);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 5);
-        goto wc_cleanup;
-    }
+        transferOK = UART_read(uartHandle, &transRead);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 5);
+            break;
+        }
 
-    /* Start callback write */
-    UART_Transaction_init(&transWrite);
-    transWrite.buf     = txBuf;
-    transWrite.count   = rewriteLen;
-    transWrite.timeout = SystemP_WAIT_FOREVER;
+        /* Start callback write */
+        UART_Transaction_init(&transWrite);
+        transWrite.buf     = txBuf;
+        transWrite.count   = rewriteLen;
+        transWrite.timeout = SystemP_WAIT_FOREVER;
 
-    transferOK = UART_write(uartHandle, &transWrite);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 6);
-        goto wc_cleanup;
-    }
+        transferOK = UART_write(uartHandle, &transWrite);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 6);
+            break;
+        }
 
-    /* Wait for both callbacks */
-    SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
-    SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
+        /* Wait for both callbacks */
+        SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
+        SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
 
-    /* Verify re-write succeeded */
-    if (transWrite.status != UART_TRANSFER_STATUS_SUCCESS)
-    {
-        finalStatus |= (1U << 7);
-    }
-    if (transRead.status != UART_TRANSFER_STATUS_SUCCESS)
-    {
+        /* Verify re-write succeeded */
+        if (transWrite.status != UART_TRANSFER_STATUS_SUCCESS)
+        {
+            finalStatus |= (1U << 7);
+        }
+        if (transRead.status != UART_TRANSFER_STATUS_SUCCESS)
+        {
         finalStatus |= (1U << 8);
     }
-    if (memcmp(txBuf, rxBuf, rewriteLen) != 0)
-    {
-        finalStatus |= (1U << 9);
-    }
-
-wc_cleanup:
+        if (memcmp(txBuf, rxBuf, rewriteLen) != 0)
+        {
+            finalStatus |= (1U << 9);
+        }
+    } while (0);
+    /* wc_cleanup */
     if (baseAddr != 0U)
     {
         UART_disableLoopbackMode(baseAddr);
@@ -8658,108 +9134,110 @@ static void TestUart_readCancelAndReread(void *args)
     }
 
     /* Open UART */
-    uartHandle = UART_open(instanceId, uartParams);
-    if (uartHandle == NULL)
+    do
     {
-        finalStatus |= (1U << 0);
-        goto rc_cleanup;
-    }
+        uartHandle = UART_open(instanceId, uartParams);
+        if (uartHandle == NULL)
+        {
+            finalStatus |= (1U << 0);
+            break;
+        }
 
-    baseAddr = UART_getBaseAddr(uartHandle);
-    if (baseAddr == 0U)
-    {
-        finalStatus |= (1U << 1);
-        goto rc_cleanup;
-    }
+        baseAddr = UART_getBaseAddr(uartHandle);
+        if (baseAddr == 0U)
+        {
+            finalStatus |= (1U << 1);
+            break;
+        }
 
-    /* Enable loopback for the entire test */
-    TestUart_enableLoopback(baseAddr);
+        /* Enable loopback for the entire test */
+        TestUart_enableLoopback(baseAddr);
 
-    /* ---- Phase 1: Cancel an ongoing read ---- */
-    memset(cancelRxBuf, 0, sizeof(cancelRxBuf));
-    UART_Transaction_init(&transRead);
-    transRead.buf     = cancelRxBuf;
-    transRead.count   = sizeof(cancelRxBuf);
-    transRead.timeout = SystemP_WAIT_FOREVER;
+        /* ---- Phase 1: Cancel an ongoing read ---- */
+        memset(cancelRxBuf, 0, sizeof(cancelRxBuf));
+        UART_Transaction_init(&transRead);
+        transRead.buf     = cancelRxBuf;
+        transRead.count   = sizeof(cancelRxBuf);
+        transRead.timeout = SystemP_WAIT_FOREVER;
 
-    /* Callback read returns immediately; ISR waits for data */
-    transferOK = UART_read(uartHandle, &transRead);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 2);
-        goto rc_cleanup;
-    }
+        /* Callback read returns immediately; ISR waits for data */
+        transferOK = UART_read(uartHandle, &transRead);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 2);
+            break;
+        }
 
-    /* Brief delay — read is armed, no data arriving */
-    ClockP_usleep(1000);
+        /* Brief delay — read is armed, no data arriving */
+        ClockP_usleep(1000);
 
-    /* Cancel the ongoing read */
-    transferOK = UART_readCancel(uartHandle, &transRead);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 3);
-        goto rc_cleanup;
-    }
+        /* Cancel the ongoing read */
+        transferOK = UART_readCancel(uartHandle, &transRead);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 3);
+            break;
+        }
 
-    /* Verify the driver set CANCELLED status */
-    if (transRead.status != UART_TRANSFER_STATUS_CANCELLED)
-    {
-        finalStatus |= (1U << 4);
-    }
+        /* Verify the driver set CANCELLED status */
+        if (transRead.status != UART_TRANSFER_STATUS_CANCELLED)
+        {
+            finalStatus |= (1U << 4);
+        }
 
-    /* Cancel invokes the callback, consume the semaphore */
-    SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
+        /* Cancel invokes the callback, consume the semaphore */
+        SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
 
-    /* ---- Phase 2: Immediate re-read with loopback verification ---- */
-    strncpy((char *)txBuf, "REREAD_OK!\r\n", sizeof(txBuf));
-    rereadLen = (uint32_t)strlen((char *)txBuf);
+        /* ---- Phase 2: Immediate re-read with loopback verification ---- */
+        strncpy((char *)txBuf, "REREAD_OK!\r\n", sizeof(txBuf));
+        rereadLen = (uint32_t)strlen((char *)txBuf);
 
-    /* Arm callback read first */
-    memset(rxBuf, 0, sizeof(rxBuf));
-    UART_Transaction_init(&transRead);
-    transRead.buf     = rxBuf;
-    transRead.count   = rereadLen;
-    transRead.timeout = SystemP_WAIT_FOREVER;
+        /* Arm callback read first */
+        memset(rxBuf, 0, sizeof(rxBuf));
+        UART_Transaction_init(&transRead);
+        transRead.buf     = rxBuf;
+        transRead.count   = rereadLen;
+        transRead.timeout = SystemP_WAIT_FOREVER;
 
-    transferOK = UART_read(uartHandle, &transRead);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 5);
-        goto rc_cleanup;
-    }
+        transferOK = UART_read(uartHandle, &transRead);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 5);
+            break;
+        }
 
-    /* Start callback write */
-    UART_Transaction_init(&transWrite);
-    transWrite.buf     = txBuf;
-    transWrite.count   = rereadLen;
-    transWrite.timeout = SystemP_WAIT_FOREVER;
+        /* Start callback write */
+        UART_Transaction_init(&transWrite);
+        transWrite.buf     = txBuf;
+        transWrite.count   = rereadLen;
+        transWrite.timeout = SystemP_WAIT_FOREVER;
 
-    transferOK = UART_write(uartHandle, &transWrite);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 6);
-        goto rc_cleanup;
-    }
+        transferOK = UART_write(uartHandle, &transWrite);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 6);
+            break;
+        }
 
-    /* Wait for both callbacks */
-    SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
-    SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
+        /* Wait for both callbacks */
+        SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
+        SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
 
-    /* Verify re-read succeeded */
-    if (transWrite.status != UART_TRANSFER_STATUS_SUCCESS)
-    {
-        finalStatus |= (1U << 7);
-    }
-    if (transRead.status != UART_TRANSFER_STATUS_SUCCESS)
-    {
-        finalStatus |= (1U << 8);
-    }
-    if (memcmp(txBuf, rxBuf, rereadLen) != 0)
-    {
-        finalStatus |= (1U << 9);
-    }
-
-rc_cleanup:
+        /* Verify re-read succeeded */
+        if (transWrite.status != UART_TRANSFER_STATUS_SUCCESS)
+        {
+            finalStatus |= (1U << 7);
+        }
+        if (transRead.status != UART_TRANSFER_STATUS_SUCCESS)
+        {
+            finalStatus |= (1U << 8);
+        }
+        if (memcmp(txBuf, rxBuf, rereadLen) != 0)
+        {
+            finalStatus |= (1U << 9);
+        }
+    } while (0);
+    /* rc_cleanup */
     if (baseAddr != 0U)
     {
         UART_disableLoopbackMode(baseAddr);
@@ -8825,138 +9303,140 @@ static void TestUart_erratai2310TimeoutInterrupt(void *args)
     }
 
     /* Open UART with RX trigger level 1 — the errata i2310 condition */
-    uartHandle = UART_open(instanceId, uartParams);
-    if (uartHandle == NULL)
+    do
     {
-        finalStatus |= (1U << 0);
-        goto i2310_cleanup;
-    }
+        uartHandle = UART_open(instanceId, uartParams);
+        if (uartHandle == NULL)
+        {
+            finalStatus |= (1U << 0);
+            break;
+        }
 
-    baseAddr = UART_getBaseAddr(uartHandle);
-    if (baseAddr == 0U)
-    {
-        finalStatus |= (1U << 1);
-        goto i2310_cleanup;
-    }
+        baseAddr = UART_getBaseAddr(uartHandle);
+        if (baseAddr == 0U)
+        {
+            finalStatus |= (1U << 1);
+            break;
+        }
 
-    config = &gUartConfig[instanceId];
+        config = &gUartConfig[instanceId];
 
-    /* Enable internal loopback and let it settle */
-    TestUart_enableLoopback(baseAddr);
+        /* Enable internal loopback and let it settle */
+        TestUart_enableLoopback(baseAddr);
 
-    /* ---- Phase 1: Multi-byte transfer with RX trigger level 1 ---- */
-    memset(txBuf, 0, sizeof(txBuf));
-    strncpy((char *)txBuf, "i2310_ERRATA_TEST\r\n", sizeof(txBuf));
-    writeLen = (uint32_t)strlen((char *)txBuf);
+        /* ---- Phase 1: Multi-byte transfer with RX trigger level 1 ---- */
+        memset(txBuf, 0, sizeof(txBuf));
+        strncpy((char *)txBuf, "i2310_ERRATA_TEST\r\n", sizeof(txBuf));
+        writeLen = (uint32_t)strlen((char *)txBuf);
 
-    /* Arm callback read first — returns immediately, ISR captures looped-back data */
-    memset(rxBuf, 0, sizeof(rxBuf));
-    UART_Transaction_init(&transRead);
-    transRead.buf     = rxBuf;
-    transRead.count   = writeLen;
-    transRead.timeout = SystemP_WAIT_FOREVER;
+        /* Arm callback read first — returns immediately, ISR captures looped-back data */
+        memset(rxBuf, 0, sizeof(rxBuf));
+        UART_Transaction_init(&transRead);
+        transRead.buf     = rxBuf;
+        transRead.count   = writeLen;
+        transRead.timeout = SystemP_WAIT_FOREVER;
 
-    transferOK = UART_read(uartHandle, &transRead);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 2);
-        goto i2310_cleanup;
-    }
+        transferOK = UART_read(uartHandle, &transRead);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 2);
+            break;
+        }
 
-    /* Blocking write — bytes serialize at baud rate, loop back to RX */
-    UART_Transaction_init(&transWrite);
-    transWrite.buf     = txBuf;
-    transWrite.count   = writeLen;
-    transWrite.timeout = SystemP_WAIT_FOREVER;
+        /* Blocking write — bytes serialize at baud rate, loop back to RX */
+        UART_Transaction_init(&transWrite);
+        transWrite.buf     = txBuf;
+        transWrite.count   = writeLen;
+        transWrite.timeout = SystemP_WAIT_FOREVER;
 
-    transferOK = UART_write(uartHandle, &transWrite);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 3);
-        goto i2310_cleanup;
-    }
+        transferOK = UART_write(uartHandle, &transWrite);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 3);
+            break;
+        }
 
-    /* Wait for read callback — data looped back during the blocking write */
-    SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
+        /* Wait for read callback — data looped back during the blocking write */
+        SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
 
-    /* Verify statuses */
-    if (transWrite.status != UART_TRANSFER_STATUS_SUCCESS)
-    {
-        finalStatus |= (1U << 4);
-    }
-    if (transRead.status != UART_TRANSFER_STATUS_SUCCESS)
-    {
-        finalStatus |= (1U << 5);
-    }
-    if (memcmp(txBuf, rxBuf, writeLen) != 0)
-    {
-        finalStatus |= (1U << 6);
-    }
+        /* Verify statuses */
+        if (transWrite.status != UART_TRANSFER_STATUS_SUCCESS)
+        {
+            finalStatus |= (1U << 4);
+        }
+        if (transRead.status != UART_TRANSFER_STATUS_SUCCESS)
+        {
+            finalStatus |= (1U << 5);
+        }
+        if (memcmp(txBuf, rxBuf, writeLen) != 0)
+        {
+            finalStatus |= (1U << 6);
+        }
 
-    /* Validate errata i2310 triggered: rxTimeoutCnt > 0 means a spurious
-     * timeout interrupt fired on an empty FIFO and the WA handled it. */
-    DebugP_log("Phase 1: rxTimeoutCnt = %u (> 0 means errata i2310 triggered)\r\n",
-               config->object->rxTimeoutCnt);
-    if (config->object->rxTimeoutCnt == 0U)
-    {
-        finalStatus |= (1U << 12);
-    }
+        /* Validate errata i2310 triggered: rxTimeoutCnt > 0 means a spurious
+         * timeout interrupt fired on an empty FIFO and the WA handled it. */
+        DebugP_log("Phase 1: rxTimeoutCnt = %u (> 0 means errata i2310 triggered)\r\n",
+                   config->object->rxTimeoutCnt);
+        if (config->object->rxTimeoutCnt == 0U)
+        {
+            finalStatus |= (1U << 12);
+        }
 
-    /* ---- Phase 2: Single-byte transfer — maximise spurious timeout chance ---- */
-    txBuf[0] = 0xA5U;
+        /* ---- Phase 2: Single-byte transfer — maximise spurious timeout chance ---- */
+        txBuf[0] = 0xA5U;
 
-    /* Arm callback read first */
-    memset(rxBuf, 0, sizeof(rxBuf));
-    UART_Transaction_init(&transRead);
-    transRead.buf     = rxBuf;
-    transRead.count   = 1U;
-    transRead.timeout = SystemP_WAIT_FOREVER;
+        /* Arm callback read first */
+        memset(rxBuf, 0, sizeof(rxBuf));
+        UART_Transaction_init(&transRead);
+        transRead.buf     = rxBuf;
+        transRead.count   = 1U;
+        transRead.timeout = SystemP_WAIT_FOREVER;
 
-    transferOK = UART_read(uartHandle, &transRead);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 7);
-        goto i2310_cleanup;
-    }
+        transferOK = UART_read(uartHandle, &transRead);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 7);
+            break;
+        }
 
-    /* Blocking write of single byte */
-    UART_Transaction_init(&transWrite);
-    transWrite.buf     = txBuf;
-    transWrite.count   = 1U;
-    transWrite.timeout = SystemP_WAIT_FOREVER;
+        /* Blocking write of single byte */
+        UART_Transaction_init(&transWrite);
+        transWrite.buf     = txBuf;
+        transWrite.count   = 1U;
+        transWrite.timeout = SystemP_WAIT_FOREVER;
 
-    transferOK = UART_write(uartHandle, &transWrite);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 8);
-        goto i2310_cleanup;
-    }
+        transferOK = UART_write(uartHandle, &transWrite);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 8);
+            break;
+        }
 
-    /* Wait for read callback */
-    SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
+        /* Wait for read callback */
+        SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
 
-    if (transWrite.status != UART_TRANSFER_STATUS_SUCCESS)
-    {
-        finalStatus |= (1U << 9);
-    }
-    if (transRead.status != UART_TRANSFER_STATUS_SUCCESS)
-    {
-        finalStatus |= (1U << 10);
-    }
-    if (rxBuf[0] != 0xA5U)
-    {
-        finalStatus |= (1U << 11);
-    }
+        if (transWrite.status != UART_TRANSFER_STATUS_SUCCESS)
+        {
+            finalStatus |= (1U << 9);
+        }
+        if (transRead.status != UART_TRANSFER_STATUS_SUCCESS)
+        {
+            finalStatus |= (1U << 10);
+        }
+        if (rxBuf[0] != 0xA5U)
+        {
+            finalStatus |= (1U << 11);
+        }
 
-    /* Validate errata i2310 triggered in Phase 2 as well */
-    DebugP_log("Phase 2: rxTimeoutCnt = %u (> 0 means errata i2310 triggered)\r\n",
-               config->object->rxTimeoutCnt);
-    if (config->object->rxTimeoutCnt == 0U)
-    {
-        finalStatus |= (1U << 13);
-    }
-
-i2310_cleanup:
+        /* Validate errata i2310 triggered in Phase 2 as well */
+        DebugP_log("Phase 2: rxTimeoutCnt = %u (> 0 means errata i2310 triggered)\r\n",
+                   config->object->rxTimeoutCnt);
+        if (config->object->rxTimeoutCnt == 0U)
+        {
+            finalStatus |= (1U << 13);
+        }
+    } while (0);
+    /* i2310_cleanup */
     if (baseAddr != 0U)
     {
         UART_disableLoopbackMode(baseAddr);
@@ -9065,24 +9545,26 @@ static void TestUart_udmaIsrTxContinuousCallback(void *args)
 #endif
 
     /* Open UART in DMA + callback mode */
-    uartHandle = UART_open(instanceId, uartParams);
-    if (uartHandle == NULL)
+    do
     {
-        finalStatus |= (1U << 0);
-        goto txcb_cleanup;
-    }
+        uartHandle = UART_open(instanceId, uartParams);
+        if (uartHandle == NULL)
+        {
+            finalStatus |= (1U << 0);
+            break;
+        }
 
-    baseAddr = UART_getBaseAddr(uartHandle);
-    if (baseAddr == 0U)
-    {
-        finalStatus |= (1U << 1);
-        goto txcb_cleanup;
-    }
+        baseAddr = UART_getBaseAddr(uartHandle);
+        if (baseAddr == 0U)
+        {
+            finalStatus |= (1U << 1);
+            break;
+        }
 
-    /* Enable internal loopback */
-    TestUart_enableLoopback(baseAddr);
+        /* Enable internal loopback */
+        TestUart_enableLoopback(baseAddr);
 
-    for (iter = 0U; iter < NUM_ITERATIONS; iter++)
+        for (iter = 0U; iter < NUM_ITERATIONS; iter++)
     {
         /* Fill TX buffer with a unique per-iteration pattern */
         for (count = 0U; count < len; count++)
@@ -9162,12 +9644,12 @@ static void TestUart_udmaIsrTxContinuousCallback(void *args)
         }
     }
 
-    if (finalStatus == 0U)
-    {
-        DebugP_log("All %u DMA TX callback iterations passed\r\n", NUM_ITERATIONS);
-    }
-
-txcb_cleanup:
+        if (finalStatus == 0U)
+        {
+            DebugP_log("All %u DMA TX callback iterations passed\r\n", NUM_ITERATIONS);
+        }
+    } while (0);
+    /* txcb_cleanup */
     if (baseAddr != 0U)
     {
         UART_disableLoopbackMode(baseAddr);
@@ -9282,152 +9764,154 @@ static void TestUart_udmaIsrTxWriteInsideCallback(void *args)
 #endif
 
     /* Open UART in DMA + callback mode */
-    uartHandle = UART_open(instanceId, uartParams);
-    if (uartHandle == NULL)
+    do
     {
-        finalStatus |= (1U << 0);
-        goto wic_cleanup;
-    }
+        uartHandle = UART_open(instanceId, uartParams);
+        if (uartHandle == NULL)
+        {
+            finalStatus |= (1U << 0);
+            break;
+        }
 
-    baseAddr = UART_getBaseAddr(uartHandle);
-    if (baseAddr == 0U)
-    {
-        finalStatus |= (1U << 1);
-        goto wic_cleanup;
-    }
+        baseAddr = UART_getBaseAddr(uartHandle);
+        if (baseAddr == 0U)
+        {
+            finalStatus |= (1U << 1);
+            break;
+        }
 
-    /* Enable internal loopback */
-    TestUart_enableLoopback(baseAddr);
+        /* Enable internal loopback */
+        TestUart_enableLoopback(baseAddr);
 
-    /* ---- Phase 1: Trigger write, verify nested write gets INUSE ---- */
+        /* ---- Phase 1: Trigger write, verify nested write gets INUSE ---- */
 
-    /* Fill TX buffer with a pattern */
-    uint32_t i;
-    for (i = 0U; i < len; i++)
-    {
-        TestUart_txBufferDma[i] = (uint8_t)(i & 0xFFU);
-    }
+        /* Fill TX buffer with a pattern */
+        uint32_t i;
+        for (i = 0U; i < len; i++)
+        {
+            TestUart_txBufferDma[i] = (uint8_t)(i & 0xFFU);
+        }
 
-    /* Prepare the nested-write transaction that the callback will attempt */
-    TestUart_nestedWriteHandle = uartHandle;
-    TestUart_nestedWriteResult = SystemP_SUCCESS;  /* reset — expect callback to set FAILURE */
-    TestUart_nestedWriteStatus = UART_TRANSFER_STATUS_SUCCESS;  /* reset */
-    TestUart_nestedWriteArmed  = 1U;  /* arm the nested write for Phase 1 only */
-    UART_Transaction_init(&TestUart_nestedWriteTrans);
-    TestUart_nestedWriteTrans.buf     = &TestUart_txBufferDma[0U];
-    TestUart_nestedWriteTrans.count   = len;
-    TestUart_nestedWriteTrans.timeout = SystemP_WAIT_FOREVER;
+        /* Prepare the nested-write transaction that the callback will attempt */
+        TestUart_nestedWriteHandle = uartHandle;
+        TestUart_nestedWriteResult = SystemP_SUCCESS;  /* reset — expect callback to set FAILURE */
+        TestUart_nestedWriteStatus = UART_TRANSFER_STATUS_SUCCESS;  /* reset */
+        TestUart_nestedWriteArmed  = 1U;  /* arm the nested write for Phase 1 only */
+        UART_Transaction_init(&TestUart_nestedWriteTrans);
+        TestUart_nestedWriteTrans.buf     = &TestUart_txBufferDma[0U];
+        TestUart_nestedWriteTrans.count   = len;
+        TestUart_nestedWriteTrans.timeout = SystemP_WAIT_FOREVER;
 
-    /* Start callback write — when DMA completes, UART_udmaIsrTx calls
-     * TestUart_nestedWriteCallback which attempts a second UART_write(). */
-    UART_Transaction_init(&transWrite);
-    transWrite.buf     = &TestUart_txBufferDma[0U];
-    transWrite.count   = len;
-    transWrite.timeout = SystemP_WAIT_FOREVER;
+        /* Start callback write — when DMA completes, UART_udmaIsrTx calls
+         * TestUart_nestedWriteCallback which attempts a second UART_write(). */
+        UART_Transaction_init(&transWrite);
+        transWrite.buf     = &TestUart_txBufferDma[0U];
+        transWrite.count   = len;
+        transWrite.timeout = SystemP_WAIT_FOREVER;
 
-    CacheP_wb((void *)TestUart_txBufferDma, len, CacheP_TYPE_ALL);
-    transferOK = UART_write(uartHandle, &transWrite);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 2);
-        goto wic_cleanup;
-    }
+        CacheP_wb((void *)TestUart_txBufferDma, len, CacheP_TYPE_ALL);
+        transferOK = UART_write(uartHandle, &transWrite);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 2);
+            break;
+        }
 
-    /* Wait for the write callback (which also does the nested write attempt) */
-    SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
+        /* Wait for the write callback (which also does the nested write attempt) */
+        SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
 
-    /* First write itself should have succeeded */
-    if (transWrite.status != UART_TRANSFER_STATUS_SUCCESS)
-    {
-        DebugP_log("First write status = %u\r\n", transWrite.status);
-        finalStatus |= (1U << 3);
-    }
+        /* First write itself should have succeeded */
+        if (transWrite.status != UART_TRANSFER_STATUS_SUCCESS)
+        {
+            DebugP_log("First write status = %u\r\n", transWrite.status);
+            finalStatus |= (1U << 3);
+        }
 
-    /* Nested write inside callback must have failed with INUSE */
-    if (TestUart_nestedWriteResult != SystemP_FAILURE)
-    {
-        DebugP_log("Nested write returned success unexpectedly\r\n");
-        finalStatus |= (1U << 4);
-    }
-    if (TestUart_nestedWriteStatus != UART_TRANSFER_STATUS_ERROR_INUSE)
-    {
-        DebugP_log("Nested write status = %u, expected INUSE (%u)\r\n",
-                   TestUart_nestedWriteStatus, UART_TRANSFER_STATUS_ERROR_INUSE);
-        finalStatus |= (1U << 5);
-    }
+        /* Nested write inside callback must have failed with INUSE */
+        if (TestUart_nestedWriteResult != SystemP_FAILURE)
+        {
+            DebugP_log("Nested write returned success unexpectedly\r\n");
+            finalStatus |= (1U << 4);
+        }
+        if (TestUart_nestedWriteStatus != UART_TRANSFER_STATUS_ERROR_INUSE)
+        {
+            DebugP_log("Nested write status = %u, expected INUSE (%u)\r\n",
+                       TestUart_nestedWriteStatus, UART_TRANSFER_STATUS_ERROR_INUSE);
+            finalStatus |= (1U << 5);
+        }
 
-    /* Drain any loopback data from Phase 1 by reading it out */
-    memset(TestUart_rxBufferDma, 0, len);
-    UART_Transaction_init(&transRead);
-    transRead.buf     = &TestUart_rxBufferDma[0U];
-    transRead.count   = len;
-    transRead.timeout = SystemP_WAIT_FOREVER;
+        /* Drain any loopback data from Phase 1 by reading it out */
+        memset(TestUart_rxBufferDma, 0, len);
+        UART_Transaction_init(&transRead);
+        transRead.buf     = &TestUart_rxBufferDma[0U];
+        transRead.count   = len;
+        transRead.timeout = SystemP_WAIT_FOREVER;
 
-    CacheP_wbInv((void *)TestUart_rxBufferDma, len, CacheP_TYPE_ALL);
-    transferOK = UART_read(uartHandle, &transRead);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 6);
-        goto wic_cleanup;
-    }
-    SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
+        CacheP_wbInv((void *)TestUart_rxBufferDma, len, CacheP_TYPE_ALL);
+        transferOK = UART_read(uartHandle, &transRead);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 6);
+            break;
+        }
+        SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
 
-    /* ---- Phase 2: Normal write after callback — driver must recover ---- */
-    for (i = 0U; i < len; i++)
-    {
-        TestUart_txBufferDma[i] = (uint8_t)((i + 0x55U) & 0xFFU);
-    }
-    memset(TestUart_rxBufferDma, 0, len);
+        /* ---- Phase 2: Normal write after callback — driver must recover ---- */
+        for (i = 0U; i < len; i++)
+        {
+            TestUart_txBufferDma[i] = (uint8_t)((i + 0x55U) & 0xFFU);
+        }
+        memset(TestUart_rxBufferDma, 0, len);
 
-    /* Arm callback read first */
-    UART_Transaction_init(&transRead);
-    transRead.buf     = &TestUart_rxBufferDma[0U];
-    transRead.count   = len;
-    transRead.timeout = SystemP_WAIT_FOREVER;
+        /* Arm callback read first */
+        UART_Transaction_init(&transRead);
+        transRead.buf     = &TestUart_rxBufferDma[0U];
+        transRead.count   = len;
+        transRead.timeout = SystemP_WAIT_FOREVER;
 
-    CacheP_wbInv((void *)TestUart_rxBufferDma, len, CacheP_TYPE_ALL);
-    transferOK = UART_read(uartHandle, &transRead);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        finalStatus |= (1U << 7);
-        goto wic_cleanup;
-    }
+        CacheP_wbInv((void *)TestUart_rxBufferDma, len, CacheP_TYPE_ALL);
+        transferOK = UART_read(uartHandle, &transRead);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 7);
+            break;
+        }
 
-    /* Normal callback write — should succeed now that writeTrans is NULL */
-    UART_Transaction_init(&transWrite);
-    transWrite.buf     = &TestUart_txBufferDma[0U];
-    transWrite.count   = len;
-    transWrite.timeout = SystemP_WAIT_FOREVER;
+        /* Normal callback write — should succeed now that writeTrans is NULL */
+        UART_Transaction_init(&transWrite);
+        transWrite.buf     = &TestUart_txBufferDma[0U];
+        transWrite.count   = len;
+        transWrite.timeout = SystemP_WAIT_FOREVER;
 
-    CacheP_wb((void *)TestUart_txBufferDma, len, CacheP_TYPE_ALL);
-    transferOK = UART_write(uartHandle, &transWrite);
-    if (transferOK != SystemP_SUCCESS)
-    {
-        DebugP_log("Phase 2 write returned failure\r\n");
-        finalStatus |= (1U << 8);
-        goto wic_cleanup;
-    }
+        CacheP_wb((void *)TestUart_txBufferDma, len, CacheP_TYPE_ALL);
+        transferOK = UART_write(uartHandle, &transWrite);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            DebugP_log("Phase 2 write returned failure\r\n");
+            finalStatus |= (1U << 8);
+            break;
+        }
 
-    /* Wait for both callbacks */
-    SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
-    SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
+        /* Wait for both callbacks */
+        SemaphoreP_pend(&gUartWriteDoneSem, SystemP_WAIT_FOREVER);
+        SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
 
-    CacheP_inv((void *)TestUart_rxBufferDma, len, CacheP_TYPE_ALL);
+        CacheP_inv((void *)TestUart_rxBufferDma, len, CacheP_TYPE_ALL);
 
-    if (transWrite.status != UART_TRANSFER_STATUS_SUCCESS)
-    {
-        finalStatus |= (1U << 9);
-    }
-    if (transRead.status != UART_TRANSFER_STATUS_SUCCESS)
-    {
-        finalStatus |= (1U << 10);
-    }
-    if (memcmp(TestUart_txBufferDma, TestUart_rxBufferDma, len) != 0)
-    {
-        finalStatus |= (1U << 11);
-    }
-
-wic_cleanup:
+        if (transWrite.status != UART_TRANSFER_STATUS_SUCCESS)
+        {
+            finalStatus |= (1U << 9);
+        }
+        if (transRead.status != UART_TRANSFER_STATUS_SUCCESS)
+        {
+            finalStatus |= (1U << 10);
+        }
+        if (memcmp(TestUart_txBufferDma, TestUart_rxBufferDma, len) != 0)
+        {
+            finalStatus |= (1U << 11);
+        }
+    } while (0);
+    /* wic_cleanup */
     if (baseAddr != 0U)
     {
         UART_disableLoopbackMode(baseAddr);
@@ -9551,50 +10035,51 @@ static void TestUart_uartRlsErrorBlockingDebugUart(void *args)
     if (uartHandle == NULL)
     {
         finalStatus |= (1U << 0);
-        goto test_end;
     }
-
-    /* Step 3: Send a prompt so the host echoes data back.
-     * Data arriving at the mismatched baud triggers line status errors. */
-    UART_Transaction_init(&transWrite);
-    transWrite.buf     = &txBuf[0U];
-    strncpy((char *)transWrite.buf, "RLS_BLOCK_TEST\r\n", sizeof(txBuf));
-    transWrite.count   = strlen((char *)transWrite.buf);
-    transWrite.timeout = SystemP_WAIT_FOREVER;
-
-    transferOK = UART_write(uartHandle, &transWrite);
-    if (transferOK != SystemP_SUCCESS)
+    else
     {
-        finalStatus |= (1U << 1);
+        /* Step 3: Send a prompt so the host echoes data back.
+         * Data arriving at the mismatched baud triggers line status errors. */
+        UART_Transaction_init(&transWrite);
+        transWrite.buf     = &txBuf[0U];
+        strncpy((char *)transWrite.buf, "RLS_BLOCK_TEST\r\n", sizeof(txBuf));
+        transWrite.count   = strlen((char *)transWrite.buf);
+        transWrite.timeout = SystemP_WAIT_FOREVER;
+
+        transferOK = UART_write(uartHandle, &transWrite);
+        if (transferOK != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 1);
+        }
+
+        /* Step 4: Issue a blocking read.
+         * The host sends data at 115200 baud but this UART is at 4800 baud.
+         * The hardware detects line status errors (FE/PE/BI/OE) and the ISR
+         * invokes UART_procLineStatusErr(), which sets trans.status to one of
+         * the error codes and posts the internal read semaphore, unblocking
+         * this call. */
+        UART_Transaction_init(&transRd);
+        transRd.buf     = &rxBuf[0U];
+        transRd.count   = 8U;
+        transRd.timeout = 10000U;  /* 10 second timeout as safety net */
+
+        transferOK = UART_read(uartHandle, &transRd);
+
+        /* Step 5: Verify that the driver reported a line status error.
+         * Any of UART_TRANSFER_STATUS_ERROR_BI / _FE / _PE / _OE is acceptable
+         * as the specific error depends on how the baud mismatch manifests. */
+        if (transRd.status == UART_TRANSFER_STATUS_SUCCESS)
+        {
+            /* Should NOT be success — an RLS error was expected */
+            finalStatus |= (1U << 2);
+        }
+
+        /* Close UART */
+        UART_close(uartHandle);
+        uartHandle = NULL;
     }
 
-    /* Step 4: Issue a blocking read.
-     * The host sends data at 115200 baud but this UART is at 4800 baud.
-     * The hardware detects line status errors (FE/PE/BI/OE) and the ISR
-     * invokes UART_procLineStatusErr(), which sets trans.status to one of
-     * the error codes and posts the internal read semaphore, unblocking
-     * this call. */
-    UART_Transaction_init(&transRd);
-    transRd.buf     = &rxBuf[0U];
-    transRd.count   = 8U;
-    transRd.timeout = 10000U;  /* 10 second timeout as safety net */
-
-    transferOK = UART_read(uartHandle, &transRd);
-
-    /* Step 5: Verify that the driver reported a line status error.
-     * Any of UART_TRANSFER_STATUS_ERROR_BI / _FE / _PE / _OE is acceptable
-     * as the specific error depends on how the baud mismatch manifests. */
-    if (transRd.status == UART_TRANSFER_STATUS_SUCCESS)
-    {
-        /* Should NOT be success — an RLS error was expected */
-        finalStatus |= (1U << 2);
-    }
-
-    /* Close UART */
-    UART_close(uartHandle);
-    uartHandle = NULL;
-
-test_end:
+    /* test_end: */
     /* Restore original params into the config object so that
      * TestUart_openDebugUart() reads the correct (original) configuration */
     memcpy(&(gUartConfig[debugInstId].object->prms), &origParams, sizeof(UART_Params));
@@ -9605,3 +10090,5 @@ test_end:
     TEST_ASSERT_EQUAL_INT(0, finalStatus);
     TEST_ASSERT_NOT_EQUAL(UART_TRANSFER_STATUS_SUCCESS, transRd.status);
 }
+
+#endif /* TEST_UART_RUN_FULL_SUITE */

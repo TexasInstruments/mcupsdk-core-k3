@@ -1,0 +1,36 @@
+board_name: am62ax-sk
+soc_model:  am62a7
+
+
+fb_buffer_addr: "0x82000000"
+fb_buffer_size:  "0x7000000"
+
+usb_ids:
+  vid: "0451"
+  pid: "6165"
+
+usb-path: ~  
+
+recovery_firmware:
+  tiboot3:
+    path: "am62ax-sk/tiboot3.bin"
+  tispl:
+    path: "am62ax-sk/tispl.bin"
+  u-boot:
+    path: "am62ax-sk/u-boot.img"
+
+targets:
+  emmc:
+    target_device:    mmc0
+    hwpart:           1
+    eraseblk_size:    ~
+    operation_filter: flash-emmc
+    pre_flash_tasks:
+      - task: reset
+
+  ospi-nand:
+    target_device:    spi-nand0
+    hwpart:           ~
+    eraseblk_size:    "0x40000"
+    operation_filter: flash
+    pre_flash_tasks:  []

@@ -449,6 +449,16 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "I2C",
+        testCaseName: "SCL stuck with default and 1Mhz frequency using systest reg",
+        testCaseIds: "SITSW-1311 SITSW-1312 SITSW-1313 SITSW-1314 SITSW-1315 SITSW-1316 SITSW-1317 SITSW-1318 SITSW-1319 SITSW-1320 SITSW-6248 SITSW-6849 SITSW-8318 SITSW-8319 SITSW-8322 SITSW-8334 SITSW-8338 SITSW-8623 SITSW-8624 SITSW-8625 SITSW-8626 SITSW-8628 SITSW-8630 SITSW-8702 SITSW-8703 SITSW-8704 SITSW-8705 SITSW-8720 SITSW-8721 SITSW-8878 SITSW-8883 SITSW-9012",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -536,6 +546,8 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

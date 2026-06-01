@@ -425,6 +425,31 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DPL",
+        testCaseName: "DPL: User Exception Handlers",
+        testCaseIds: "SITSW-1235 SITSW-1262 SITSW-1263 SITSW-1264 SITSW-1265 SITSW-1266 SITSW-1267 SITSW-1268 SITSW-1269 SITSW-1270 SITSW-1271 SITSW-1272 SITSW-1273 SITSW-1274 SITSW-1277 SITSW-1278 SITSW-1455 SITSW-4735 SITSW-7111",
+    },
+};
+
+const robot_template_amp = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests_amp.robot",
+    options: {
+        componentName: "AMP",
+        testCaseName: "DPL test FreeRTOS-AMP",
+        appName: "test_dpl(amp)",
+        testCaseIds: "SITSW-5784",
+        timeout: 600,
+        expectTimeout: 240,
+        withCfg: true,
+        cfgPath: "test/kernel/dpl/{board}/dpl_test_freertos-amp_sbl_uart_${DEVICE_TYPE}.cfg",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -522,6 +547,11 @@ function getComponentBuildProperty(buildOption) {
 
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.cpu.match(/a53ss/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_amp];
+    }
     return build_property;
 }
 

@@ -255,6 +255,16 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "IPC",
+        testCaseName: "ipc_rpmsg_a53 test application",
+        testCaseIds: "SITSW-9813 SITSW-9814 SITSW-9815 SITSW-9816 SITSW-9817 SITSW-9818 SITSW-9819 SITSW-9820 SITSW-9821 SITSW-9822 SITSW-9823 SITSW-9824",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -295,6 +305,8 @@ function getComponentBuildProperty(buildOption) {
 
 
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

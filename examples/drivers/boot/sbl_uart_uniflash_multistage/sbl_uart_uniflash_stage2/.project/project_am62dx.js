@@ -76,6 +76,23 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: UART Uniflash bootloader",
+        testCaseIds: "SITSW-1633",
+        cfgFileName: "default_sbl_null_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        expectTimeout: 100,
+        expectations: [
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+            { port: "USB1", string: "All done, jumping self" },
+        ],
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -92,6 +109,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.libsprebuild = libs_prebuild_nortos_r5f;
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

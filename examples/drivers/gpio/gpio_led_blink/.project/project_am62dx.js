@@ -295,6 +295,16 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "GPIO",
+        testCaseName: "GPIO LED Blink Sample Application",
+        testCaseIds: "SITSW-3005",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -356,6 +366,8 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

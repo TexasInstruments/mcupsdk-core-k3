@@ -95,6 +95,7 @@ function getComponentProperty() {
     return property;
 }
 
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
     build_property.files = files;

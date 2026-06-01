@@ -303,6 +303,37 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "IPC",
+        testCaseName: "IPC Notify Sample Application",
+        testCaseIds: "SITSW-1940",
+        timeout: 1200,
+        expectTimeout: 600,
+        withCfg: true,
+        appName: "ipc_notify_echo",
+        cfgPath: "examples/drivers/ipc/ipc_notify_echo/{board}/ipc_notify_echo_sbl_uart_${DEVICE_TYPE}.cfg",
+    },
+};
+
+const robot_template_smp = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests_smp.robot",
+    options: {
+        componentName: "IPC",
+        testCaseName: "ipc notify echo(smp)",
+        appName: "ipc_notify_echo(smp)",
+        testCaseIds: "SITSW-3688",
+        timeout: 1200,
+        expectTimeout: 600,
+        logPort: "USB2",
+        withCfg: true,
+        cfgPath: "examples/drivers/ipc/ipc_notify_echo/{board}/ipc_notify_echo_freertos-smp_sbl_uart_${DEVICE_TYPE}.cfg",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -357,6 +388,13 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+
+    if (buildOption.cpu === "r5fss0-0") {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
+    if (buildOption.cpu.match(/a53ss/) && buildOption.os === 'freertos-smp') {
+        build_property.templates = [...(build_property.templates || []), robot_template_smp];
+    }
     return build_property;
 }
 

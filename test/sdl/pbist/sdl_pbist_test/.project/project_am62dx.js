@@ -266,6 +266,7 @@ function getComponentProperty() {
     return property;
 }
 
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -311,8 +312,6 @@ function getComponentBuildProperty(buildOption) {
             build_property.defines = mcu_pbist;
         }
     }
-
-
     return build_property;
 }
 

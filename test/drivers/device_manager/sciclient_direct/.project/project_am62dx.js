@@ -124,6 +124,16 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DM",
+        testCaseName: "Test the Device Manager by cfg file",
+        testCaseIds: "SITSW-3641",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -140,6 +150,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_dm_r5;
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

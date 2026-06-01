@@ -238,6 +238,21 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "IPC",
+        testCaseName: "IPC RPMSG test application",
+        testCaseIds: "SITSW-2456 SITSW-2458 SITSW-2463 SITSW-2464 SITSW-2711 SITSW-2712 SITSW-2713 SITSW-2714 SITSW-2732 SITSW-2733 SITSW-2734 SITSW-9726 SITSW-9727 SITSW-9728 SITSW-9729 SITSW-9730 SITSW-9731",
+        timeout: 900,
+        expectTimeout: 500,
+        withCfg: true,
+        appName: "test_ipc_rpmsg",
+        cfgPath: "test/drivers/ipc_rpmsg/{board}/ipc_rpmsg_test_sbl_uart_${DEVICE_TYPE}.cfg",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -277,6 +292,10 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_freertos;
         build_property.templates = templates_freertos_a53;
         build_property.defines = defines_common;
+    }
+
+    if (buildOption.cpu === "r5fss0-0") {
+        build_property.templates = [...(build_property.templates || []), robot_template];
     }
     return build_property;
 }

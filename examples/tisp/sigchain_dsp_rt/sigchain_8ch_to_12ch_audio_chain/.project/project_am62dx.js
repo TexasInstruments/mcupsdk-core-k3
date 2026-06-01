@@ -207,6 +207,16 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "TISP",
+        testCaseName: "sigchain_8ch_to_12ch_audio_chain application",
+        testCaseIds: "SITSW-9117",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -236,6 +246,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_r5f;
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

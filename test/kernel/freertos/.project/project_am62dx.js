@@ -294,6 +294,31 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "FreeRTOS",
+        testCaseName: "FreeRTOS: test floating point with interrupts",
+        testCaseIds: "SITSW-1251 SITSW-1252 SITSW-1253 SITSW-1254 SITSW-1255 SITSW-1256 SITSW-1257 SITSW-1259 SITSW-1260 SITSW-1261 SITSW-1275 SITSW-1276 SITSW-1279 SITSW-1457 SITSW-3074",
+    },
+};
+
+const robot_template_amp = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests_amp.robot",
+    options: {
+        componentName: "AMP",
+        testCaseName: "FreeRTOS test FreeRTOS-AMP",
+        appName: "test_freertos(amp)",
+        testCaseIds: "SITSW-5785",
+        timeout: 600,
+        expectTimeout: 240,
+        withCfg: true,
+        cfgPath: "test/kernel/freertos/{board}/freertos_test_amp_sbl_uart_${DEVICE_TYPE}.cfg",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -351,6 +376,11 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_c75;
         build_property.templates = templates_c75;
         build_property.defines = defines_common;
+    }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.cpu.match(/a53ss/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_amp];
     }
     return build_property;
 }

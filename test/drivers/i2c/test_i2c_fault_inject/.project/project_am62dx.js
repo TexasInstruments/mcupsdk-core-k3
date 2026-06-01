@@ -391,6 +391,17 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "I2C",
+        testCaseName: "I2C : fault injection test case: bus access error polling mode",
+        testCaseIds: "SITSW-8316 SITSW-8337",
+        timeout: 660,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -461,6 +472,8 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

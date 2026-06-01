@@ -321,6 +321,31 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SCICLIENT",
+        testCaseName: "SCICLIENT Get Version Sample Application",
+        testCaseIds: "SITSW-1294",
+    },
+};
+
+const robot_template_amp = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests_amp.robot",
+    options: {
+        componentName: "AMP",
+        testCaseName: "SCICLIENT Get Version:FreeRTOS-AMP",
+        appName: "sciclient_get_version(amp)",
+        testCaseIds: "SITSW-5878",
+        timeout: 600,
+        expectTimeout: 240,
+        withCfg: true,
+        cfgPath: "examples/drivers/sciclient/sciclient_get_version/{board}/sciclient_get_version_freertos-amp_sbl_uart_${DEVICE_TYPE}.cfg",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -393,6 +418,13 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_dm_r5f;
     }
 
+
+    if (!buildOption.cpu.match(/a53ss0-1|a53ss1-/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
+    if (buildOption.cpu.match(/a53ss0-0/) && buildOption.os.match(/^freertos$/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_amp];
+    }
     return build_property;
 }
 

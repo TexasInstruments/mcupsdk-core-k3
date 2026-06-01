@@ -123,6 +123,66 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL OSPI NOR",
+        appName: "sbl_ospi_multistage",
+        testCaseIds: "SITSW-4498",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        expectTimeout: 100,
+        expectations: [
+            { port: "USB1", string: "Starting 2nd stage bootloader" },
+            { port: "USB1", string: "Starting RTOS/Baremetal applications" },
+            { port: "USB2", string: "All tests have passed!!" },
+        ],
+    },
+};
+
+const robot_template_mcu_bist = {
+    input: ".project/templates/am62dx/astra/tests_sbl.robot.xdt",
+    output: "../tests_mcu_bist.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL OSPI NOR MCU BIST",
+        appName: "sbl_ospi_multistage(mcu_bist)",
+        testCaseIds: "SITSW-7350",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_mcu_bist_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        timeout: 700,
+        expectTimeout: 100,
+        expectations: [
+            { port: "USB1", string: "App_waitForMcuPbist" },
+            { port: "USB1", string: "Starting 2nd stage bootloader" },
+            { port: "USB1", string: "App_waitForMcuLbist" },
+            { port: "USB1", string: "Starting RTOS/Baremetal applications" },
+            { port: "USB3", string: "All tests have passed!!" },
+        ],
+    },
+};
+
+const robot_template_sw_version = {
+    input: ".project/templates/am62dx/astra/tests_sbl.robot.xdt",
+    output: "../tests_sw_version.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader Check appImage sw version",
+        appName: "sbl_ospi_multistage(sw_version_check)",
+        testCaseIds: "SITSW-5111",
+        cfgPath: "test/drivers/boot/sbl_sw_version_test/{board}/default_sbl_ospi_sw_version_test_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        timeout: 660,
+        expectTimeout: 200,
+        expectations: [
+            { port: "USB1", string: "Starting 2nd stage bootloader" },
+            { port: "USB1", string: "Stage 2 booting failed!!" },
+        ],
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -137,6 +197,10 @@ function getComponentBuildProperty(buildOption) {
     build_property.libs = libs_freertos_dm_r5f;
     build_property.templates = templates_freertos_wkup_r5f;
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
+    build_property.templates = [...build_property.templates, robot_template_mcu_bist];
+    build_property.templates = [...build_property.templates, robot_template_sw_version];
     return build_property;
 }
 

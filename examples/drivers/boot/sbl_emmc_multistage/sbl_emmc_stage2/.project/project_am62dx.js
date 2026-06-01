@@ -116,6 +116,47 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL EMMC",
+        appName: "sbl_emmc_multistage",
+        testCaseIds: "SITSW-2730",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_emmc_${DEVICE_TYPE}.cfg",
+        bootMode: "EMMC_BOOT_MODE",
+        expectTimeout: 100,
+        timeout: 700,
+        expectations: [
+            { port: "USB1", string: "Starting 2nd stage bootloader" },
+            { port: "USB1", string: "Starting RTOS/Baremetal applications" },
+            { port: "USB2", string: "All tests have passed!!" },
+        ],
+    },
+};
+
+const robot_template_smp = {
+    input: ".project/templates/am62dx/astra/tests_sbl.robot.xdt",
+    output: "../tests_smp.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL EMMC FreeRTOS-SMP",
+        appName: "sbl_emmc_multistage(smp)",
+        testCaseIds: "SITSW-3650",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_emmc_freertos-smp_${DEVICE_TYPE}.cfg",
+        bootMode: "EMMC_BOOT_MODE",
+        timeout: 800,
+        expectTimeout: 200,
+        expectations: [
+            { port: "USB1", string: "Starting 2nd stage bootloader" },
+            { port: "USB1", string: "Starting RTOS/Baremetal applications" },
+            { port: "USB2", string: "Hello World!" },
+            { port: "USB1", string: "All tests have passed!!" },
+        ],
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -130,6 +171,9 @@ function getComponentBuildProperty(buildOption) {
     build_property.libs = libs_freertos_dm_r5f;
     build_property.templates = templates_freertos_wkup_r5f;
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
+    build_property.templates = [...build_property.templates, robot_template_smp];
     return build_property;
 }
 

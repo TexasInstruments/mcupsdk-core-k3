@@ -224,6 +224,16 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MCSPI",
+        testCaseName: "McSPI Low Latency Sample Application 8bit",
+        testCaseIds: "SITSW-1437",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -273,6 +283,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_c75;
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

@@ -283,6 +283,16 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "OSPI",
+        testCaseName: "OSPI: Odd Bytes Read Write",
+        testCaseIds: "SITSW-3174 SITSW-3175 SITSW-3176 SITSW-3825 SITSW-6893 SITSW-7105 SITSW-8012 SITSW-8493 SITSW-8494 SITSW-8724 SITSW-9211 SITSW-10134",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -334,6 +344,8 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

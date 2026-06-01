@@ -285,6 +285,16 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MMCSD",
+        testCaseName: "test_mmcsd_system test application",
+        testCaseIds: "SITSW-1942 SITSW-3017 SITSW-8306 SITSW-8308 SITSW-8309 SITSW-8310 SITSW-8313 SITSW-8315 SITSW-8339 SITSW-8579 SITSW-8580 SITSW-8582 SITSW-8583 SITSW-8584 SITSW-8689 SITSW-8690 SITSW-8691 SITSW-8692 SITSW-9031 SITSW-9032 SITSW-9034 SITSW-9036",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -331,6 +341,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_common;
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

@@ -250,6 +250,17 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "IPC",
+        testCaseName: "IPC notify benchmark test application",
+        testCaseIds: "SITSW-4561",
+        expectedString: "All tests passed",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -290,6 +301,10 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_common;
     }
 
+
+    if (buildOption.cpu.match(/mcu-r5fss/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

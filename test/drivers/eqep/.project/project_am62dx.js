@@ -97,6 +97,16 @@ function getComponentProperty(device) {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "EQEP",
+        testCaseName: "eqep test application",
+        testCaseIds: "SITSW-6988 SITSW-7263 SITSW-7264 SITSW-7265 SITSW-7266 SITSW-7267 SITSW-7268 SITSW-7270 SITSW-7271 SITSW-7272 SITSW-7314",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -117,6 +127,8 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

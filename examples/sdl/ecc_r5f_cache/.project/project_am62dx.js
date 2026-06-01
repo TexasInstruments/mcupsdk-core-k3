@@ -104,6 +104,7 @@ function getComponentProperty() {
     return property;
 }
 
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -121,7 +122,6 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = r5_macro;
 		build_property.asmfiles = asmfiles_r5f;
     }
-
     return build_property;
 }
 

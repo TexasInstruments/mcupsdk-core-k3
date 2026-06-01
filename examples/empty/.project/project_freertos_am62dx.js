@@ -283,6 +283,29 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "FreeRTOS",
+        testCaseName: "Empty FreeRTOS Sample Application",
+        testCaseIds: "SITSW-1247",
+    },
+};
+
+const robot_template_amp = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests_amp.robot",
+    options: {
+        componentName: "AMP",
+        testCaseName: "Empty Example:FreeRTOS-AMP",
+        appName: "empty(amp)",
+        testCaseIds: "SITSW-5781",
+        withCfg: true,
+        cfgPath: "examples/empty/{board}/empty_freertos-amp_sbl_uart_${DEVICE_TYPE}.cfg",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -338,6 +361,11 @@ function getComponentBuildProperty(buildOption) {
         {
             build_property.templates = templates_freertos_a53ss00;
         }
+    }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.cpu.match(/a53ss/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_amp];
     }
     return build_property;
 }

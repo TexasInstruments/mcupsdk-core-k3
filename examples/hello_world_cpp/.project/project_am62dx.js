@@ -245,6 +245,17 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Hello-World",
+        testCaseName: "Hello world cpp application",
+        testCaseIds: "SITSW-1462",
+        expectedString: "Hello World",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -292,6 +303,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.cflags = cflags_a53;
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

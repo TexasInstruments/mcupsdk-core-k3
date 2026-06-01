@@ -4,12 +4,513 @@
 
 ## Introduction
 
-Flashing tools allow to flash binaries to the flash on a EVM.
+Flashing tools allow flashing binaries to the flash on an EVM.
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
+- \ref TOOLS_SNAGFACTORY
+\endcond
 \cond !SOC_AM62LX
 - \ref TOOLS_FLASH_UART_UNIFLASH
 \cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX && !SOC_AM275X && !SOC_AM62LX && !SOC_J722S
 - \ref TOOLS_FLASH_JTAG_UNIFLASH
 \endcond
+
+\note
+It is recommended to flash using snagfactory for AM62x, AM62Ax, AM62Px, AM62Dx.
+
+
+## Snagfactory {#TOOLS_SNAGFACTORY}
+
+Snagfactory is an open-source tool developed by [Bootlin](https://github.com/bootlin/snagboot) for flashing and recovery using the fastboot protocol over USB. It is based on Snagboot — a fully open-source and vendor-agnostic recovery and flashing tool. It is designed to simplify the process of flashing non-volatile storage devices and recovering target boards during development and production environments.
+
+Snagfactory is composed of two components:
+- `Snagrecover` — Loads recovery firmware binaries (tiboot3, tispl, u-boot) to the board over USB DFU, initializes the SOC, and enables Fastboot mode for subsequent flashing.
+- `Snagflash` — Flashes binaries to the on-board memory using the Fastboot protocol over USB.
+
+
+### Important files and folders
+
+<table>
+<tr>
+    <th>Folder/Files</th>
+    <th>Description</th>
+</tr>
+<tr><td colspan="2" bgcolor=#F0F0F0> ${SDK_INSTALL_PATH}/tools/boot/snagfactory/</td></tr>
+<tr>
+    <td>snagfactory_flash.py</td>
+    <td>Main flash utility script. Wraps `snagrecover` and `snagflash` for AM62x family boards. Accepts a `.cfg` file and board name to generate snagflash `.cmd` files and snagrecover YAML files.</td>
+</tr>
+<tr><td colspan="2" bgcolor=#F0F0F0> ${SDK_INSTALL_PATH}/tools/boot/snagfactory/{board}/</td></tr>
+<tr>
+    <td>params.yaml</td>
+    <td>Per-board configuration file. Defines USB IDs, SOC model, framebuffer settings, recovery firmware paths, and flash targets (`emmc`, `ospi-nor`, `ospi-nand`).</td>
+</tr>
+<tr>
+    <td>{board}_{target}_{sec}.cmd</td>
+    <td>Generated snagflash command file. Contains `set target`, `set fb-addr`, `set fb-size`, `set eraseblk-size` (OSPI only), and `flash` commands with offsets and `hwpart` (eMMC only).</td>
+</tr>
+<tr>
+    <td>{board}_{target}_{sec}.yaml</td>
+    <td>Generated snagrecover YAML file. Contains board USB ID mapping, SOC firmware paths, and flash task definitions with offsets and partition settings.</td>
+</tr>
+<tr><td colspan="2" bgcolor=#F0F0F0> ${SDK_INSTALL_PATH}/tools/boot/snagfactory/logs/</td></tr>
+<tr>
+    <td>flash_{board}_{target}_{timestamp}.log</td>
+    <td>Timestamped log file generated per flash run. Contains output from `snagrecover`, `snagflash`, validation results, and error messages.</td>
+</tr>
+</table>
+
+
+### Tool requirements on host PC
+
+- The tool is implemented using Python and needs Python version 3.x. Refer to \ref INSTALL_PYTHON3 to install Python and the required Python packages on your PC.
+\
+- `Snagboot` — provides `Snagrecover` and `Snagflash`.
+  - Snagfactory tool is hosted here [Snagfactory](https://github.com/bootlin/snagfactory).
+  - More info about installation can be found in [Snagfactory Readme](https://github.com/bootlin/snagfactory/blob/main/README.md).
+  - Snagfactory is also available on pip.
+
+        $ python3 -m pip install --user snagboot
+        $ python3 -m pip install --user snagboot[gui]
+
+### Flash configuration file
+
+- Create a flash configuration file using a default configuration file as reference:
+
+        ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_linux_hs_fs.cfg
+
+- In this configuration file, specify only the application binaries to flash with their offsets:
+
+        --file={path to application .appimage.hs_fs} --operation=flash --flash-offset=0x80000
+
+\note Recovery binaries (tiboot3, tispl, u-boot) are specified separately in `params.yaml` under the board-specific directory. Snagfactory automatically loads these during the recovery phase via `snagrecover`.
+
+- The `.cfg` file is processed by `snagfactory_flash.py` script which generates:
+  - `.cmd` file — Contains Fastboot commands for `snagflash`
+  - `.yaml` file — Contains board configuration and USB parameters for `snagrecover`
+
+- These generated files are used directly by the Snagfactory GUI or CLI for flashing.
+
+#### Example .cmd file
+
+The `.cmd` file contains Fastboot commands that `snagflash` executes in sequence:
+
+        set target mmc0
+        set fb-addr 0x82000000
+        set fb-size 0x7000000
+
+        flash "/path/to/sbl_emmc_linux_stage1.release.hs_fs.tiimage" 0x0 hwpart 1
+        flash "/path/to/sbl_emmc_linux_stage2.release.appimage.hs_fs" 0x80000 hwpart 1
+        flash "/path/to/hsm.appimage.hs_fs" 0x240000 hwpart 1
+        flash "/path/to/hello_world.release.appimage.hs_fs" 0x800000 hwpart 1
+        flash "/path/to/linux.appimage.hs_fs" 0x1200000 hwpart 1
+        flash "/path/to/u-boot.img" 0x280000 hwpart 1
+
+        exit
+
+#### Example .yaml file
+
+The `.yaml` file contains board configuration and recovery firmware paths for `snagrecover`.
+
+        boards:
+          "0451:6165": "<soc-model>"
+        soc-models:
+          <soc-model>-firmware:
+            tiboot3:
+              path: <board-directory>/tiboot3.bin
+            tispl:
+              path: <board-directory>/tispl.bin
+            u-boot:
+              path: <board-directory>/u-boot.img
+          <soc-model>-tasks:
+          - target-device: mmc0
+            fb-buffer-addr: 0x82000000
+            fb-buffer-size: 0x7000000
+          - task: reset
+          - task: flash
+            args:
+            - image: /path/to/sbl_emmc_linux_stage1.release.hs_fs.tiimage
+              image-offset: 0x0
+              part: "hwpart 1"
+            - image: /path/to/sbl_emmc_linux_stage2.release.appimage.hs_fs
+              image-offset: 0x80000
+              part: "hwpart 1"
+            - image: /path/to/hsm.appimage.hs_fs
+              image-offset: 0x240000
+              part: "hwpart 1"
+            - image: /path/to/hello_world.release.appimage.hs_fs
+              image-offset: 0x800000
+              part: "hwpart 1"
+            - image: /path/to/linux.appimage.hs_fs
+              image-offset: 0x1200000
+              part: "hwpart 1"
+            - image: /path/to/u-boot.img
+              image-offset: 0x280000
+              part: "hwpart 1"
+
+### Basic steps to flash files
+
+
+#### Getting ready to flash {#TOOLS_SNAGFACTORY_GETTING_READY}
+- Make sure the required bootloader binaries are built for the EVM. For Snagrecover, bootloader images must support DFU boot and fastboot download.
+  In addition to USB DFU fragment config (which enables DFU boot) for the u-boot build, an additional fragment config **am6x_a53_snagfactory.config** needs to be used, which enables fastboot support in U-Boot and other required configs for snagfactory.
+
+  To build bootloader images for recovery using SDK, following change is needed in **Rules.make** file present in the top
+  level of Linux SDK Installer.
+
+\cond SOC_AM62X
+
+        # For AM62X 
+
+        UBOOT_MACHINE_R5=am62x_evm_r5_defconfig am62x_r5_usbdfu.config
+        UBOOT_MACHINE_A53=am62x_evm_r5_defconfig am62x_a53_usbdfu.config am6x_a53_snagfactory.config
+
+        # For AM62X LP
+
+        UBOOT_MACHINE_R5=am62x_lpsk_r5_defconfig am62x_r5_usbdfu.config
+        UBOOT_MACHINE_A53=am62x_lpsk_a53_defconfig am62x_a53_usbdfu.config am6x_a53_snagfactory.config
+
+        # For AM62X SIP
+
+        UBOOT_MACHINE_R5=am62xsip_evm_r5_defconfig am62x_r5_usbdfu.config
+        UBOOT_MACHINE_A53=am62xsip_evm_a53_defconfig am62x_a53_usbdfu.config am6x_a53_snagfactory.config
+
+\endcond
+\cond SOC_AM62PX
+
+        UBOOT_MACHINE_R5=am62px_evm_r5_defconfig am62px_r5_usbdfu.config
+        UBOOT_MACHINE_A53=am62px_evm_a53_defconfig am62px_a53_usbdfu.config am6x_a53_snagfactory.config
+
+\endcond
+\cond SOC_AM62AX
+
+        UBOOT_MACHINE_R5=am62ax_evm_r5_defconfig am62ax_r5_usbdfu.config
+        UBOOT_MACHINE_A53=am62ax_evm_a53_defconfig am62ax_a53_usbdfu.config am6x_a53_snagfactory.config
+
+\endcond
+\cond SOC_AM62DX
+
+        UBOOT_MACHINE_R5=am62dx_evm_r5_defconfig am62dx_r5_usbdfu.config
+        UBOOT_MACHINE_A53=am62dx_evm_a53_defconfig am62dx_a53_usbdfu.config am6x_a53_snagfactory.config
+
+\endcond
+
+  Generate the bootloader images using top-level makefile by running following commands on the terminal from the
+  top-level of the Linux SDK installer.
+
+        $ make u-boot_clean
+        $ make u-boot
+        $ make u-boot_stage
+
+  Save the bootloader binaries generated in a separate directory. These bootloader images will be used for recovery and
+  to start flashing the images. The bootloader images after make can be found in **board-support/built-images**. **Copy**  the generated binaries to the board-specific snagfactory directory:
+
+        $ cp board-support/built-images/tiboot3.bin  $(MCU_PLUS_SDK_PATH)/tools/boot/snagfactory/<board>/
+        $ cp board-support/built-images/tispl.bin    $(MCU_PLUS_SDK_PATH)/tools/boot/snagfactory/<board>/
+        $ cp board-support/built-images/u-boot.img   $(MCU_PLUS_SDK_PATH)/tools/boot/snagfactory/<board>/
+
+  \note **CONFIG_FASTBOOT_BUF_SIZE** is defined in **am6x_a53_snagfactory.config** and specifies the maximum buffer size
+  for flashing files. Its value must be equal or greater than the largest file size being flashed. If smaller,
+  non-sparse images will not flash correctly due to issues with chunked processing.
+
+- Make sure you have **Snagfactory** installed on your host machine.
+
+\cond SOC_AM62X
+- Make sure you have identified the correct **USB DFU** interface on the EVM.
+  \imageStyle{boot_pins_dfu_boot_mode.png,width:30%}
+  \image html boot_pins_dfu_boot_mode.png "USB DFU BOOT MODE"
+\endcond
+\cond SOC_AM62PX
+- Make sure you have identified the correct **USB DFU** interface on the EVM.
+  \imageStyle{boot_pins_dfu_boot_mode.png,width:30%}
+  \image html am62px/boot_pins_dfu_boot_mode.png "USB DFU BOOT MODE"
+\endcond
+\cond SOC_AM62AX
+- Make sure you have identified the correct **USB DFU** interface on the EVM.
+  \imageStyle{boot_pins_dfu_boot_mode.png,width:30%}
+  \image html am62ax/boot_pins_dfu_boot_mode.png "USB DFU BOOT MODE"
+\endcond
+\cond SOC_AM62DX
+- Make sure you have identified the correct **USB DFU** interface on the EVM.
+  \imageStyle{boot_pins_dfu_boot_mode.png,width:30%}
+  \image html am62dx/boot_pins_dfu_boot_mode.png "USB DFU BOOT MODE"
+\endcond
+
+- Create a flash configuration file, refer to the \ref BASIC_STEPS_TO_FLASH_FILES section for more details.
+
+
+### Flash tool options
+- Type below to see all the possible options with the flashing tool:
+
+        cd ${SDK_INSTALL_PATH}/tools/boot/snagfactory
+        python3 snagfactory_flash.py --help
+
+
+#### Flashing using GUI
+
+\cond SOC_AM62X || SOC_AM62PX || SOC_AM62AX || SOC_AM62DX
+- Set EVM in **USB DFU** boot mode (see \ref TOOLS_SNAGFACTORY_GETTING_READY) and power on the EVM.
+\endcond
+
+- Run the below command to generate the configuration files (`.cmd` and `.yaml`) required by Snagfactory GUI,
+  replacing `<boot-media>` with the appropriate target and `<path-to-edited-cfg-file>` with the path to your
+  edited flash configuration file.
+
+\cond SOC_AM62X
+
+        cd ${SDK_INSTALL_PATH}/tools/boot/snagfactory
+        python3 snagfactory_flash.py --board am62x-sk --target <boot-media> --cfg-file <path-to-edited-cfg-file> --gen-cfg
+
+\endcond
+\cond SOC_AM62PX
+
+        cd ${SDK_INSTALL_PATH}/tools/boot/snagfactory
+        python3 snagfactory_flash.py --board am62px-sk --target <boot-media> --cfg-file <path-to-edited-cfg-file> --gen-cfg
+
+\endcond
+\cond SOC_AM62AX
+
+        cd ${SDK_INSTALL_PATH}/tools/boot/snagfactory
+        python3 snagfactory_flash.py --board am62ax-sk --target <boot-media> --cfg-file <path-to-edited-cfg-file> --gen-cfg
+
+\endcond
+\cond SOC_AM62DX
+
+        cd ${SDK_INSTALL_PATH}/tools/boot/snagfactory
+        python3 snagfactory_flash.py --board am62dx-evm --target <boot-media> --cfg-file <path-to-edited-cfg-file> --gen-cfg
+
+\endcond
+
+
+**Step 1: Launch SnagFactory GUI Tool**
+- Launch the SnagFactory GUI tool to begin the configuration and device flashing process.
+
+
+The following steps outline the process for configuring and flashing a device by using the SnagFactory GUI tool.
+
+\cond SOC_AM62X
+\imageStyle{snagfactory_gui.png,width:50%}
+\image html am62x/snagfactory_gui.png "SnagFactory GUI"
+\endcond
+
+\cond SOC_AM62PX
+\imageStyle{snagfactory_gui.png,width:50%}
+\image html am62px/snagfactory_gui.png "SnagFactory GUI"
+\endcond
+
+\cond SOC_AM62AX
+\imageStyle{snagfactory_gui.png,width:50%}
+\image html am62ax/snagfactory_gui.png "SnagFactory GUI"
+\endcond
+
+\cond SOC_AM62DX
+\imageStyle{snagfactory_gui.png,width:50%}
+\image html am62dx/snagfactory_gui.png "SnagFactory GUI"
+\endcond
+
+**Step 2: Select Configuration File Option**
+- Upon launch, the SnagFactory GUI tool will present the option to add a configuration file.
+  Select the **conf** option to proceed with loading the configuration file.
+
+**Step 3: Load YAML Configuration File**
+- Load the **Generated YAML configuration file** for the platform. The YAML file follows the naming pattern: `{board}_{target}_{security}.yaml` (e.g., `am62px-sk_emmc_hs_fs.yaml`, `am62x-sk_ospi-nor_hs_fs.yaml`).
+- This file contains the platform-specific settings and parameters required for device flashing, including:
+  - **Board USB Device Mapping:** Maps the USB device ID (vendor:product code) to the corresponding SOC model name
+  - **Recovery Firmware Paths:** Specifies locations of tiboot3.bin, tispl.bin, and u-boot.img for ROM-level bootloader initialization
+  - **Flash Target Configuration:** Defines the target storage medium (eMMC, OSPI-NOR, or OSPI-NAND) and its associated parameters
+  - **Memory Buffer Settings:** Provides framebuffer address and size for recovery operations
+  - **Flash Task Definitions:** Contains detailed flash commands with image file offsets, partition information (hwpart), and execution sequence
+
+\cond SOC_AM62X
+\imageStyle{snagfactory_load.png,width:50%}
+\image html am62x/snagfactory_load.png 
+\endcond
+
+\cond SOC_AM62PX
+\imageStyle{snagfactory_load.png,width:50%}
+\image html am62px/snagfactory_load.png 
+\endcond
+
+\cond SOC_AM62AX
+\imageStyle{snagfactory_load.png,width:50%}
+\image html am62ax/snagfactory_load.png 
+\endcond
+
+\cond SOC_AM62DX
+\imageStyle{snagfactory_load.png,width:50%}
+\image html am62dx/snagfactory_load.png 
+\endcond
+- The board name mapping for the params.yaml file is as follows. This mapping defines the SOC model name used in the generated YAML configuration file for Snagfactory, which must match the board being flashed:
+
+  Evaluation Board | Family | Board
+  -----------------|--------|------
+  am62pxx-evm      | am6x   | am62p
+  am62xx-evm       | am6x   | am625
+  am62xx-lp-evm    | am6x   | am625
+  am62sip-evm      | am6x   | am625
+  am62ax-evm       | am6x   | am62a7
+  am62dxx-evm      | am6x   | am62d2
+
+**Step 4: Flash the Device**
+- Once you load the generated YAML configuration file (`.yaml` file with format `{board}_{target}_{security}.yaml`), the SnagFactory GUI tool will execute the flashing sequence.
+- The tool automatically runs `snagrecover` to load recovery firmware and then `snagflash` to flash application images at their specified offsets.
+- Monitor the progress display and wait for the flashing to complete successfully.
+
+\cond SOC_AM62X
+\imageStyle{snagfactory_flash.png,width:50%}
+\image html am62x/snagfactory_flash.png 
+\endcond
+
+\cond SOC_AM62PX
+\imageStyle{snagfactory_flash.png,width:50%}
+\image html am62px/snagfactory_flash.png 
+\endcond
+
+\cond SOC_AM62AX
+\imageStyle{snagfactory_flash.png,width:50%}
+\image html am62ax/snagfactory_flash.png 
+\endcond
+
+\cond SOC_AM62DX
+\imageStyle{snagfactory_flash.png,width:50%}
+\image html am62dx/snagfactory_flash.png 
+\endcond 
+
+- If flashing fails at any point, check the **Show Logs** option in the GUI for more details.
+
+
+#### Flashing using CLI
+
+\cond SOC_AM62X || SOC_AM62PX || SOC_AM62AX || SOC_AM62DX
+- Set EVM in **USB DFU** boot mode (see \ref TOOLS_SNAGFACTORY_GETTING_READY) and power on the EVM.
+\endcond
+- If the USB ID has changed, update the `usb-path` parameter in the `params.yaml` file of the
+  respective board (it is `null` by default). You can find the correct USB path by running:
+
+        dfu-util -l
+
+
+- Run the below command to flash the files, replacing `<boot-media>` with the appropriate target and `<path-to-edited-cfg-file>` with the path to your edited flash configuration file.
+
+\cond SOC_AM62X
+        cd ${SDK_INSTALL_PATH}/tools/boot/snagfactory
+        python3 snagfactory_flash.py --board am62x-sk --target <boot-media> --cfg-file <path-to-edited-cfg-file>
+\endcond
+\cond SOC_AM62PX
+        cd ${SDK_INSTALL_PATH}/tools/boot/snagfactory
+        python3 snagfactory_flash.py --board am62px-sk --target <boot-media> --cfg-file <path-to-edited-cfg-file>
+\endcond
+\cond SOC_AM62AX
+        cd ${SDK_INSTALL_PATH}/tools/boot/snagfactory
+        python3 snagfactory_flash.py --board am62ax-sk --target <boot-media> --cfg-file <path-to-edited-cfg-file>
+\endcond
+\cond SOC_AM62DX
+        cd ${SDK_INSTALL_PATH}/tools/boot/snagfactory
+        python3 snagfactory_flash.py --board am62dx-evm --target <boot-media> --cfg-file <path-to-edited-cfg-file>
+\endcond
+
+- At each step of the flashing you will see success or error messages, including progress as the
+  file is being transferred.
+- If flashing is not successful, then check the error messages and take appropriate action
+  (See \ref TOOLS_SNAGFACTORY_ERROR_MESSAGES).
+- Detailed logs for each flashing session are also saved to:
+
+        ${SDK_INSTALL_PATH}/tools/boot/snagfactory/logs
+
+  Review the log files in this directory for a full trace of the flashing process, which can be
+  helpful for diagnosing failures.
+
+### Error messages and solutions {#TOOLS_SNAGFACTORY_ERROR_MESSAGES}
+
+If the tool fails, the error message will give a hint as to why it failed.
+Some common error messages, reasons and potential solutions are listed below.
+
+<table>
+<tr>
+    <th>Error</th>
+    <th>Possible Reason</th>
+    <th>Solution</th>
+</tr>
+<tr>
+    <td>Unknown board 'BOARD'. Available: [...]</td>
+    <td>The board name passed to <code>--board</code> is not defined in <code>BOARD_CONFIGS</code>.</td>
+    <td>Check the supported board names using <code>--help</code> and pass a valid <code>--board</code> value.</td>
+</tr>
+<tr>
+    <td>Unknown target 'TARGET' for board 'BOARD'. Available: [...]</td>
+    <td>The flash target passed to <code>--target</code> is not defined for the selected board in <code>BOARD_CONFIGS</code>.</td>
+    <td>Run the script with <code>--help</code> to see supported targets, or check <code>board_configs.py</code> for valid targets for your board.</td>
+</tr>
+<tr>
+    <td>Config generation failed: ...</td>
+    <td><code>generate_cmd()</code> raised a <code>ValueError</code> or <code>FileNotFoundError</code> — either a bad configuration or a missing input file.</td>
+    <td>Check the error detail printed below the message. Verify board config entries and ensure all referenced files exist.</td>
+</tr>
+<tr>
+    <td>snagrecover not found in PATH. Is snagboot installed?</td>
+    <td>The <code>snagrecover</code> utility is not installed or not available in the system PATH.</td>
+    <td>Install snagboot using: <code>pip install snagboot</code></td>
+</tr>
+<tr>
+    <td>Recovery firmware not found: FILE_PATH</td>
+    <td>One or more recovery firmware binaries defined in <code>board_configs.py</code> under <code>recovery_fw</code> are missing from the Processor SDK path.</td>
+    <td>Verify the <code>--proc-sdk-path</code> argument points to a valid Processor SDK installation and that all recovery firmware binaries are present at the expected paths.</td>
+</tr>
+<tr>
+    <td>snagrecover failed (exit code CODE). Aborting.</td>
+    <td>The <code>snagrecover</code> tool exited with a non-zero return code during ROM-level firmware upload over USB DFU.</td>
+    <td>Check USB connection and ensure the board is powered on in <code>BOOTMODE_USB_DFU</code> mode. Verify that the recovery firmware binaries are correct for the SOC and Processor SDK version.</td>
+</tr>
+<tr>
+    <td>snagflash not found in PATH. Is snagboot installed?</td>
+    <td>The <code>snagflash</code> utility is not installed or not available in the system PATH.</td>
+    <td>Install snagboot using: <code>pip install snagboot</code></td>
+</tr>
+<tr>
+    <td>snagflash failed (exit code CODE).</td>
+    <td>The <code>snagflash</code> tool exited with a non-zero return code during Fastboot image flashing.</td>
+    <td>Review the generated <code>.cmd</code> file under the <code>configs/</code> directory. Verify flash offsets and image paths are correct, and ensure the board enumerated successfully as a Fastboot device after <code>snagrecover</code> completed.</td>
+</tr>
+<tr>
+    <td>eMMC target requires a GPT image.</td>
+    <td>The <code>--target emmc</code> was selected but no <code>--gpt-image</code> argument was provided.</td>
+    <td>Generate a GPT binary and pass it using <code>--gpt-image /path/to/gpt.bin</code>. Refer to the error output for the exact <code>sgdisk</code> and <code>dd</code> commands to generate the GPT image.</td>
+</tr>
+<tr>
+    <td>SDK path not found: PATH</td>
+    <td>The path passed to <code>--sdk-path</code> does not exist on the host machine.</td>
+    <td>Verify the MCU+ SDK installation path and pass the correct value to <code>--sdk-path</code>.</td>
+</tr>
+<tr>
+    <td>Processor SDK path not found: PATH</td>
+    <td>The path passed to <code>--proc-sdk-path</code> does not exist on the host machine.</td>
+    <td>Verify the TI Processor SDK installation path and pass the correct value to <code>--proc-sdk-path</code>.</td>
+</tr>
+</table>
+
+### Detailed sequence of steps that happen when flashing files
+
+
+\note
+This section has more detailed sequence of steps that happen underneath the tool and on the EVM for reference.
+
+
+\cond SOC_AM62X || SOC_AM62PX || SOC_AM62AX || SOC_AM62DX
+- Set EVM in **USB DFU** boot mode (see \ref TOOLS_SNAGFACTORY_GETTING_READY) and power on the EVM.
+\endcond
+- The host PC runs `snagrecover`, which loads the recovery firmware binaries over USB DFU.
+- U-Boot initializes and enumerates the board as a **USB Fastboot device** on the host PC.
+- The host PC detects the Fastboot device and runs `snagflash`, which sends one or more of the
+  below commands with the file data, one after the other, until it is done:
+    - Flash a file at a given offset in the flash memory
+    - Verify a previously flashed file at a given offset in the flash memory
+    - Erase a region of flash memory
+- The flashing application does not care what the file contains — it will simply flash it at
+  the user specified location.
+- On successful completion, the tool logs `Flash complete!` and exits. If any step fails,
+  an error message is logged with the exit code and the script exits immediately
+  (See \ref TOOLS_SNAGFACTORY_ERROR_MESSAGES).- The flashing application does not care what the file contains — it will simply flash it at
+  the user specified location.
+
 
 ## UART Uniflash {#TOOLS_FLASH_UART_UNIFLASH}
 
@@ -22,7 +523,7 @@ UART is used as the transport or interface to send the file to flash to the EVM.
   - pyserial for UART access on PC
   - xmodem for the file transfer protocol
   - tqdm for progress bar when the tool is run
-- Refer to the page, \ref INSTALL_PYTHON3 , to install python and the required python packages on your PC.
+- Refer to \ref INSTALL_PYTHON3 to install Python and the required Python packages on your PC.
 
 ### Important files and folders
 
@@ -69,7 +570,7 @@ UART is used as the transport or interface to send the file to flash to the EVM.
 
 \cond SOC_AM64X || SOC_AM243X || SOC_AM62X || SOC_AM62AX || SOC_AM62PX || SOC_AM62DX
 
-#### Getting ready to flash
+#### Getting ready to flash 
 
 \cond SOC_AM64X || SOC_AM243X
 - Make sure the flashing application (`sbl_uart_uniflash`), OSPI bootloader (`sbl_ospi`), and the user application (`*.appimage`) you want to flash is built for the EVM.
@@ -120,7 +621,7 @@ UART is used as the transport or interface to send the file to flash to the EVM.
 
 - Make sure you have identified the UART port on the EVM as mentioned in \ref EVM_SETUP_PAGE
 
-#### Flash configuration file
+#### Flash configuration file {#FLASH_CONFIG_FILES}
 
 \cond !SOC_AM62X && !SOC_AM62AX && !SOC_AM62PX && !SOC_AM62DX
 - Create a flash configuration file, using the default flash configuration file present at below as reference
@@ -180,7 +681,7 @@ UART is used as the transport or interface to send the file to flash to the EVM.
 
         ${SDK_INSTALL_PATH}/examples/drivers/boot/sbl_emmc_linux/am64x-evm/r5fss0-0_nortos/default_sbl_emmc_linux.cfg
 
-- The flashing application and the eMMC bootloader needs to be specified in this file as
+- The flashing application and the eMMC bootloader need to be specified in this file as
 
         --flash-writer={path to flash application .tiimage}
         --file={path to eMMC bootloader .tiimage} --operation=flash-emmc --flash-offset=0x0
@@ -203,7 +704,7 @@ UART is used as the transport or interface to send the file to flash to the EVM.
 \note For HS-FS device, use default_sbl_emmc_linux_hs_fs.cfg as the cfg file.
 
 
-- The flashing application and the eMMC bootloader needs to be specified in this file as
+- The flashing application and the eMMC bootloader need to be specified in this file as
 
         --flash-writer={path to flash application .tiimage}
         --file={path to eMMC bootloader .tiimage} --operation=flash-emmc --flash-offset=0x0
@@ -225,7 +726,7 @@ UART is used as the transport or interface to send the file to flash to the EVM.
 \note For HS-FS device, use default_sbl_emmc_hs_fs.cfg as the cfg file.
 
 
-- The flashing application and the eMMC bootloader needs to be specified in this file as
+- The flashing application and the eMMC bootloader need to be specified in this file as
 
         --flash-writer={path to flash application .tiimage}
         --file={path to eMMC bootloader .tiimage} --operation=flash-emmc --flash-offset=0x0
@@ -261,7 +762,7 @@ UART is used as the transport or interface to send the file to flash to the EVM.
 
 - Make sure you have identified the UART port on the EVM as mentioned in \ref EVM_SETUP_PAGE
 
-#### Flash configuration file
+#### Flash configuration file 
 
 - Create a flash configuration file, using the default flash configuration file present at below as reference
 
@@ -444,7 +945,7 @@ At the top there is a drop down to select the UART COM port which will be used f
 
 - **Manual Config** : Manual configuration of the files to be flashed. There will be drop down file browse options to select the various files you will need to flash/send to the target. It provides options / slots to select below:
 
-  - **Flash writer binary** : This is the sbl_uart_uniflash binary. This needs to be send first for the ROM to receive and boot. Once this boots up you can send any number of files arbitrarily for flashing.
+  - **Flash writer binary** : This is the sbl_uart_uniflash binary. This needs to be sent first for the ROM to receive and boot. Once this boots up you can send any number of files arbitrarily for flashing.
 
   - **Bootloader binary** : It is assumed that the eventual goal of the flashing process is to boot your application from the flash device. For this a bootloader capable of reading an image from flash device needs to be flashed at offset 0 (generally) of the flash. This would be the `sbl_ospi` or `sbl_qspi`. Although this is no different than flashing any other file to a particular offset, we have decided to keep it a separate option for better clarity. Although the offset is almost always 0, we have provided an offset edit box as well if there is any change whatsoever.
 
@@ -508,3 +1009,4 @@ JTAG is used as the transport or interface to send the file to flash to the EVM.
 Refer the example \ref EXAMPLES_DRIVERS_SBL_JTAG_UNIFLASH
 \endcond
 \endcond
+

@@ -1,0 +1,35 @@
+board_name: am62x-sip-sk
+soc_model:  am625
+
+fb_buffer_addr: "0x82000000"
+fb_buffer_size:  "0x7000000"
+
+usb_ids:
+  vid: "0451"
+  pid: "6165"
+
+usb_path: ~
+
+recovery_firmware:
+  tiboot3:
+    path: "am62x-sip-sk/tiboot3.bin"
+  tispl:
+    path: "am62x-sip-sk/tispl.bin"
+  u-boot:
+    path: "am62x-sip-sk/u-boot.img"
+
+targets:
+  emmc:
+    target_device:    mmc0
+    hwpart:           1
+    eraseblk_size:    ~
+    operation_filter: flash-emmc
+    pre_flash_tasks:
+      - task: reset
+
+  ospi-nor:
+    target_device:    nor0
+    hwpart:           ~
+    eraseblk_size:    "0x40000"
+    operation_filter: flash
+    pre_flash_tasks:  []

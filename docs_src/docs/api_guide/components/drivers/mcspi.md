@@ -208,7 +208,6 @@ status and reinitiate transfers again.
 - In case of DMA mode, as R5F core is not Cache Coherent, Cache Writeback is required if R5F writes to the buffers.
   And before reading the buffers, application needs to invalidate those. Please refer \ref EXAMPLES_DRIVERS_MCSPI_LOOPBACK_DMA.
 \endcond
-
 ## Timeout
 
 The MCSPI driver uses `SystemP_WAIT_FOREVER` (0xFFFFFFFFU) as the default timeout for blocking transfers.
@@ -233,6 +232,33 @@ handle = MCSPI_open(instance, &openPrms);
 The following operations always use `SystemP_WAIT_FOREVER` and cannot be overridden by the application:
 
 - **Internal driver lock** — A mutex protecting driver state, acquired at the start of every transfer. This waits forever if another transfer is already in progress on the same instance.
+
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX || SOC_AM275X
+## DMA Transfer Size Limitation (AM62x/AM62Ax/AM275x Series)
+
+### Overview
+
+A discrepancy exists between the maximum transfer sizes supported by the Peripheral DMA (PDMA) hardware and the Data Movement Subsystem (DMSS) packet descriptors. While the hardware Transfer Request (TR) mechanism supports payloads up to 16 MB, the practical maximum DMA transfer size per single transaction is limited to 4,194,303 bytes (approximately 4 MB) due to software descriptor constraints.
+
+### Architectural Constraint Analysis
+
+**Hardware Capability (16 MB):**
+The MCSPI PDMA operates in X-Y FIFO Mode Static TR configuration. The PSI-L (Packet Streaming Interface Link) data management utilizes a 24-bit Z-field to define the transfer count.
+- Field Range: Bits [23:0]
+- Theoretical Maximum: 2^24 - 1 = 16,777,215 bytes (approximately 16 MB)
+- Driver Implementation: Configured via udma_ch.c channel configuration
+
+**Descriptor Bottleneck (4 MB):**
+The DMSS manages these transactions using the CPPI5 Host Packet Descriptor structure. Within Word 0 of this descriptor, the Packet Length (PKTLEN) field is constrained to a 22-bit width.
+- Field Range: Bits [21:0]
+- Practical Maximum: 2^22 - 1 = 4,194,303 bytes (approximately 4 MB)
+- Driver Implementation: Defined by the CPPI5 macro layer within csl_udmap_cppi5.h
+
+### Conclusion
+
+Because all MCSPI DMA packet transactions must be wrapped by the CPPI5 Host Packet Descriptor, the 22-bit PKTLEN restriction overrides the 24-bit hardware capability. For data transfers exceeding the 4 MB limit, applications must split the transfer into multiple consecutive MCSPI transactions.
+
+\endcond
 
 ## Example Usage
 

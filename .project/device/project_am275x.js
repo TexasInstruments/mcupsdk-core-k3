@@ -38,12 +38,6 @@ const component_file_list = [
 // List of components where makefile is not generated.
 // Linux-only components (not built on Windows)
 const component_file_list_with_makefile_linux_only = [
-    "source/fftlib/.project/project.js",
-    "source/mathlib/.project/project.js",
-    "source/vxlib/.project/project.js",
-    "source/dsplib/.project/project.js",
-    "source/audiolib/.project/project.js",
-    "source/tisp/.project/project.js",
 ];
 
 const component_file_list_with_makefile = [
@@ -265,6 +259,7 @@ const example_file_list = [
     "test/drivers/ipc_rpmsg_mcal_Announce_Test/.project/project.js",
     "test/drivers/ipc_rpmsg_mcal_Diagnostic_Test/.project/project.js",
     "test/drivers/ipc_rpmsg_mcal_Different_Vring_Test/.project/project.js",
+    "test/drivers/ipc_rpmsg_mcal_Vring_2_Test/.project/project.js",
     "test/drivers/ipc_rpmsg_mcal_Example_Test/.project/project.js",
     "test/drivers/ipc_rpmsg_mcal_Multiple_End_Point_Test/.project/project.js",
     "test/drivers/mcasp/mcasp_300Hz/.project/project.js",

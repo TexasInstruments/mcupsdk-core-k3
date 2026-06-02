@@ -295,9 +295,17 @@ help:
 	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_c7x/am62ax-sk/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal_Announce_Test/am62ax-sk/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal_Diagnostic_Test/am62ax-sk/system_freertos [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal_Different_Vring_Test/am62ax-sk/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal_Example_Test/am62ax-sk/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal_Multiple_End_Point_Test/am62ax-sk/system_freertos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal_Vring_1_Test/am62ax-sk/system_freertos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal_Vring_2_Test/am62ax-sk/system_freertos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal_Vring_4_Test/am62ax-sk/system_freertos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal_Vring_8_Test/am62ax-sk/system_freertos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal_Vring_16_Test/am62ax-sk/system_freertos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal_Vring_32_Test/am62ax-sk/system_freertos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal_Vring_64_Test/am62ax-sk/system_freertos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal_Vring_128_Test/am62ax-sk/system_freertos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal_Vring_256_Test/am62ax-sk/system_freertos [all clean syscfg-gui syscfg]
 	@echo  .
 
 # Various Component Targets
@@ -840,9 +848,17 @@ BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_am62ax-sk_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_c7x_am62ax-sk_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_announce_am62ax-sk_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_diagnostic_am62ax-sk_system_freertos
-BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_am62ax-sk_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_example_am62ax-sk_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_end_point_am62ax-sk_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_1_am62ax-sk_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_2_am62ax-sk_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_4_am62ax-sk_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_8_am62ax-sk_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_16_am62ax-sk_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_32_am62ax-sk_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_64_am62ax-sk_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_128_am62ax-sk_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_256_am62ax-sk_system_freertos
 
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
 # Various Private Example Targets
@@ -1478,14 +1494,38 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_ipc_rpmsg_diagnostic_am62ax-sk_system_freertos:
 	$(MAKE) -C drivers/ipc_rpmsg_mcal_Diagnostic_Test/am62ax-sk/system_freertos -f makefile all
 
- test_ipc_rpmsg_vring_am62ax-sk_system_freertos:
-	$(MAKE) -C drivers/ipc_rpmsg_mcal_Different_Vring_Test/am62ax-sk/system_freertos -f makefile all
-
  test_ipc_rpmsg_example_am62ax-sk_system_freertos:
 	$(MAKE) -C drivers/ipc_rpmsg_mcal_Example_Test/am62ax-sk/system_freertos -f makefile all
 
  test_ipc_rpmsg_end_point_am62ax-sk_system_freertos:
 	$(MAKE) -C drivers/ipc_rpmsg_mcal_Multiple_End_Point_Test/am62ax-sk/system_freertos -f makefile all
+
+ test_ipc_rpmsg_vring_1_am62ax-sk_system_freertos:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_1_Test/am62ax-sk/system_freertos -f makefile all
+
+ test_ipc_rpmsg_vring_2_am62ax-sk_system_freertos:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_2_Test/am62ax-sk/system_freertos -f makefile all
+
+ test_ipc_rpmsg_vring_4_am62ax-sk_system_freertos:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_4_Test/am62ax-sk/system_freertos -f makefile all
+
+ test_ipc_rpmsg_vring_8_am62ax-sk_system_freertos:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_8_Test/am62ax-sk/system_freertos -f makefile all
+
+ test_ipc_rpmsg_vring_16_am62ax-sk_system_freertos:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_16_Test/am62ax-sk/system_freertos -f makefile all
+
+ test_ipc_rpmsg_vring_32_am62ax-sk_system_freertos:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_32_Test/am62ax-sk/system_freertos -f makefile all
+
+ test_ipc_rpmsg_vring_64_am62ax-sk_system_freertos:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_64_Test/am62ax-sk/system_freertos -f makefile all
+
+ test_ipc_rpmsg_vring_128_am62ax-sk_system_freertos:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_128_Test/am62ax-sk/system_freertos -f makefile all
+
+ test_ipc_rpmsg_vring_256_am62ax-sk_system_freertos:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_256_Test/am62ax-sk/system_freertos -f makefile all
 
 
 BUILD_COMBO_EXAMPLE_CLEAN_ALL =
@@ -1694,9 +1734,17 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_am62ax-sk_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_c7x_am62ax-sk_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_announce_am62ax-sk_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_diagnostic_am62ax-sk_system_freertos_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_am62ax-sk_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_example_am62ax-sk_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_end_point_am62ax-sk_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_1_am62ax-sk_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_2_am62ax-sk_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_4_am62ax-sk_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_8_am62ax-sk_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_16_am62ax-sk_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_32_am62ax-sk_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_64_am62ax-sk_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_128_am62ax-sk_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_256_am62ax-sk_system_freertos_clean
 
 BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL =
 # Various Private Example Targets
@@ -2332,14 +2380,38 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_ipc_rpmsg_diagnostic_am62ax-sk_system_freertos_clean:
 	$(MAKE) -C drivers/ipc_rpmsg_mcal_Diagnostic_Test/am62ax-sk/system_freertos -f makefile clean
 
- test_ipc_rpmsg_vring_am62ax-sk_system_freertos_clean:
-	$(MAKE) -C drivers/ipc_rpmsg_mcal_Different_Vring_Test/am62ax-sk/system_freertos -f makefile clean
-
  test_ipc_rpmsg_example_am62ax-sk_system_freertos_clean:
 	$(MAKE) -C drivers/ipc_rpmsg_mcal_Example_Test/am62ax-sk/system_freertos -f makefile clean
 
  test_ipc_rpmsg_end_point_am62ax-sk_system_freertos_clean:
 	$(MAKE) -C drivers/ipc_rpmsg_mcal_Multiple_End_Point_Test/am62ax-sk/system_freertos -f makefile clean
+
+ test_ipc_rpmsg_vring_1_am62ax-sk_system_freertos_clean:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_1_Test/am62ax-sk/system_freertos -f makefile clean
+
+ test_ipc_rpmsg_vring_2_am62ax-sk_system_freertos_clean:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_2_Test/am62ax-sk/system_freertos -f makefile clean
+
+ test_ipc_rpmsg_vring_4_am62ax-sk_system_freertos_clean:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_4_Test/am62ax-sk/system_freertos -f makefile clean
+
+ test_ipc_rpmsg_vring_8_am62ax-sk_system_freertos_clean:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_8_Test/am62ax-sk/system_freertos -f makefile clean
+
+ test_ipc_rpmsg_vring_16_am62ax-sk_system_freertos_clean:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_16_Test/am62ax-sk/system_freertos -f makefile clean
+
+ test_ipc_rpmsg_vring_32_am62ax-sk_system_freertos_clean:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_32_Test/am62ax-sk/system_freertos -f makefile clean
+
+ test_ipc_rpmsg_vring_64_am62ax-sk_system_freertos_clean:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_64_Test/am62ax-sk/system_freertos -f makefile clean
+
+ test_ipc_rpmsg_vring_128_am62ax-sk_system_freertos_clean:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_128_Test/am62ax-sk/system_freertos -f makefile clean
+
+ test_ipc_rpmsg_vring_256_am62ax-sk_system_freertos_clean:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_256_Test/am62ax-sk/system_freertos -f makefile clean
 
 
 BUILD_COMBO_EXAMPLE_SCRUB_ALL =
@@ -2548,9 +2620,17 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_am62ax-sk_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_c7x_am62ax-sk_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_announce_am62ax-sk_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_diagnostic_am62ax-sk_system_freertos_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_am62ax-sk_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_example_am62ax-sk_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_end_point_am62ax-sk_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_1_am62ax-sk_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_2_am62ax-sk_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_4_am62ax-sk_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_8_am62ax-sk_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_16_am62ax-sk_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_32_am62ax-sk_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_64_am62ax-sk_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_128_am62ax-sk_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_256_am62ax-sk_system_freertos_scrub
 
 BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL =
 # Various Private Example Targets
@@ -3186,14 +3266,38 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  test_ipc_rpmsg_diagnostic_am62ax-sk_system_freertos_scrub:
 	$(MAKE) -C drivers/ipc_rpmsg_mcal_Diagnostic_Test/am62ax-sk/system_freertos -f makefile scrub
 
- test_ipc_rpmsg_vring_am62ax-sk_system_freertos_scrub:
-	$(MAKE) -C drivers/ipc_rpmsg_mcal_Different_Vring_Test/am62ax-sk/system_freertos -f makefile scrub
-
  test_ipc_rpmsg_example_am62ax-sk_system_freertos_scrub:
 	$(MAKE) -C drivers/ipc_rpmsg_mcal_Example_Test/am62ax-sk/system_freertos -f makefile scrub
 
  test_ipc_rpmsg_end_point_am62ax-sk_system_freertos_scrub:
 	$(MAKE) -C drivers/ipc_rpmsg_mcal_Multiple_End_Point_Test/am62ax-sk/system_freertos -f makefile scrub
+
+ test_ipc_rpmsg_vring_1_am62ax-sk_system_freertos_scrub:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_1_Test/am62ax-sk/system_freertos -f makefile scrub
+
+ test_ipc_rpmsg_vring_2_am62ax-sk_system_freertos_scrub:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_2_Test/am62ax-sk/system_freertos -f makefile scrub
+
+ test_ipc_rpmsg_vring_4_am62ax-sk_system_freertos_scrub:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_4_Test/am62ax-sk/system_freertos -f makefile scrub
+
+ test_ipc_rpmsg_vring_8_am62ax-sk_system_freertos_scrub:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_8_Test/am62ax-sk/system_freertos -f makefile scrub
+
+ test_ipc_rpmsg_vring_16_am62ax-sk_system_freertos_scrub:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_16_Test/am62ax-sk/system_freertos -f makefile scrub
+
+ test_ipc_rpmsg_vring_32_am62ax-sk_system_freertos_scrub:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_32_Test/am62ax-sk/system_freertos -f makefile scrub
+
+ test_ipc_rpmsg_vring_64_am62ax-sk_system_freertos_scrub:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_64_Test/am62ax-sk/system_freertos -f makefile scrub
+
+ test_ipc_rpmsg_vring_128_am62ax-sk_system_freertos_scrub:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_128_Test/am62ax-sk/system_freertos -f makefile scrub
+
+ test_ipc_rpmsg_vring_256_am62ax-sk_system_freertos_scrub:
+	$(MAKE) -C drivers/ipc_rpmsg_mcal_Vring_256_Test/am62ax-sk/system_freertos -f makefile scrub
 
 
 sbl: libs

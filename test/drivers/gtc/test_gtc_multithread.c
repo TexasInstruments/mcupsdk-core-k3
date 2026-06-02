@@ -49,7 +49,7 @@
 /* 					         Global Variables			             */
 /*===================================================================*/
 
-#if (defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)) && !(defined(SOC_AM62X) && defined(__aarch64__))
+#if (defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM275X)) && !(defined(SOC_AM62X) && defined(__aarch64__))
 
 #if defined(SOC_AM275X) && (defined(CPU_C75_0) || defined(CPU_C75_1))
 /* Stack for GTC test thread 1 */
@@ -73,7 +73,7 @@ int TestGtc_status2 = 0;
 /* 					         Function Declarations		             */
 /*===================================================================*/
 
-#if (defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)) && !(defined(SOC_AM62X) && defined(__aarch64__))
+#if (defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM275X)) && !(defined(SOC_AM62X) && defined(__aarch64__))
 /* Test case to validate counter values in multiple threads */
 static void TestGtc_counterValueInThreads(void *args);
 #endif
@@ -82,7 +82,7 @@ static void TestGtc_counterValueInThreads(void *args);
 /* 					         Function Definitions		             */
 /*===================================================================*/
 
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM275X)
 /**
  * @brief Main GTC multithreaded unit test entry point.
  *
@@ -98,12 +98,12 @@ static void TestGtc_counterValueInThreads(void *args);
  */
 void TestGtc_mtTestcase(void)
 {
-#if (defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)) && !(defined(SOC_AM62X) && defined(__aarch64__))
+#if (defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM275X)) && !(defined(SOC_AM62X) && defined(__aarch64__))
     RUN_TEST(TestGtc_counterValueInThreads,  9401, NULL);
 #endif
 }
 
-#if (defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)) && !(defined(SOC_AM62X) && defined(__aarch64__))
+#if (defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM275X)) && !(defined(SOC_AM62X) && defined(__aarch64__))
 
 /**
  * @brief Thread function to validate GTC counter increments in a multithreaded test.
@@ -297,5 +297,5 @@ static void TestGtc_counterValueInThreads(void *args)
     TEST_ASSERT_EQUAL(TestGtc_status1, 0);
     TEST_ASSERT_EQUAL(TestGtc_status2, 0);
 }
-#endif /* (SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM275X) && !((SOC_AM62X) && (__aarch64__)) */
-#endif /* SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM275X */
+#endif /* (SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX || SOC_AM275X) && !((SOC_AM62X) && (__aarch64__)) */
+#endif /* SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM62PX || SOC_AM275X */

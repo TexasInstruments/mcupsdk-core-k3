@@ -50,7 +50,7 @@ static void TestGtc_stTestcase(void);
 
 /* Testcase to verify GTC count functionality */
 static void test_gtc_count(void *args);
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM275X)
 /* Testcase to verify long duration jitter */
 static void TestGtc_longDurationJitter(void *args);
 #endif
@@ -114,7 +114,7 @@ void tearDown(void)
 static void TestGtc_stTestcase(void)
 {
     RUN_TEST(test_gtc_count, 2096, NULL);
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM275X)
     RUN_TEST(TestGtc_longDurationJitter, 9400, NULL);
 #endif
 }
@@ -162,7 +162,7 @@ static void test_gtc_count(void *args)
     TEST_ASSERT_UINT32_WITHIN( 1000000, clkRate, gtccount2 - gtccount1);
 }
 
-#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM275X)
 /**
  * @brief Single-threaded GTC long duration jitter test.
  *

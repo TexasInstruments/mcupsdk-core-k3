@@ -53,13 +53,13 @@
 /* 					         Function Declarations		             */
 /*===================================================================*/
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
 #if defined(ENABLE_MT_TESTS)
 
 /* Main function running the multithread test case */
 void TestGtc_mtTestcase(void);
 
 #endif /* ENABLE_MT_TESTS */
-#endif /* SOC_AM62AX || SOC_AM62DX || SOC_AM275X */
+#endif /* SOC_AM62X || SOC_AM62AX || SOC_AM62DX || SOC_AM275X */
 
 #endif /* TEST_GTC_H_ */

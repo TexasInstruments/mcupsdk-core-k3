@@ -48,6 +48,7 @@
             -Wno-unused-but-set-variable
             -fdata-sections
             -ffunction-sections
+            -DIPC_NOTIFY_MULTITHREAD_TEST
             -DSOC_AM62X
             -DAMP_FREERTOS_A53
         "
@@ -97,7 +98,9 @@
             "
         ></configuration>
         <pathVariable name="MCU_PLUS_SDK_PATH" path="${COM_TI_MCU_PLUS_SDK_AMXXX_INSTALL_DIR}" scope="project" />
-        <file path="../../../test_ipc_notify.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        <file path="../../../../ipc_notify/test_ipc_notify.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../ipc_notify/test_ipcNotify_multithread.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
         <file path="../main.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>

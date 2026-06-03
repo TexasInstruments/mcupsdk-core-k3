@@ -203,6 +203,8 @@ const example_file_list = [
     "test/drivers/sciclient/sciclient_get_version/.project/project.js",
     "test/drivers/sciclient/sciclient_interrupt_mode/.project/project.js",
     "test/drivers/ipc_notify/.project/project.js",
+    "test/drivers/ipc_notify_a53/.project/project.js",
+    "test/drivers/ipc_notify_m4f/.project/project.js",
     "test/drivers/ipc_rpmsg/.project/project.js",
     "test/drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Announce_Test/.project/project.js",
     "test/drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Diagnostic_Test/.project/project.js",

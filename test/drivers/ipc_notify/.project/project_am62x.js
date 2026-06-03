@@ -9,6 +9,13 @@ const files = {
         "main.c",
     ],
 };
+const files_with_multithread = {
+    common: [
+        "test_ipc_notify.c",
+        "test_ipcNotify_multithread.c",
+        "main.c",
+    ],
+};
 
 /* Relative to where the makefile will be generated
  * Typically at <example_folder>/<BOARD>/<core_os_combo>/<compiler>
@@ -16,10 +23,16 @@ const files = {
 const filedirs = {
     common: [
         "..",       /* core_os_combo base */
-        "../../..", /* Example base */
+        "../../../../ipc_notify",
     ],
 };
 
+const filedirs_with_multithread = {
+    common: [
+        "..",       /* core_os_combo base */
+        "../../../../ipc_notify",
+    ],
+};
 
 const libdirs_nortos = {
     common: [
@@ -122,6 +135,12 @@ const libs_freertos_a53 = {
         "freertos.am62x.a53.gcc-aarch64.${ConfigName}.lib",
         "drivers.am62x.a53.gcc-aarch64.${ConfigName}.lib",
         "unity.am62x.a53.gcc-aarch64.${ConfigName}.lib",
+    ],
+};
+
+const cflags_free_rtos = {
+    common: [
+        "-DIPC_NOTIFY_MULTITHREAD_TEST",
     ],
 };
 
@@ -351,6 +370,12 @@ function getComponentBuildProperty(buildOption) {
     build_property.libdirs = libdirs_nortos;
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
+
+    if (buildOption.board === "am62x-sk" && buildOption.os.match(/freertos*/)) {
+        build_property.files = files_with_multithread;
+        build_property.filedirs = filedirs_with_multithread;
+        build_property.cflags = cflags_free_rtos;
+    }
 
     if(buildOption.cpu.match(/r5f*/)) {
         if(buildOption.os.match(/freertos*/) )

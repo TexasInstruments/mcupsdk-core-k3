@@ -5,6 +5,7 @@ let device = "am62ax";
 const files = {
     common: [
         "test_ipc_notify.c",
+        "test_ipcNotify_multithread.c",
         "main.c",
     ],
 };
@@ -118,6 +119,12 @@ const libs_freertos_c75 = {
         "freertos.am62ax.c75x.ti-c7000.${ConfigName}.lib",
         "drivers.am62ax.c75x.ti-c7000.${ConfigName}.lib",
         "unity.am62ax.c75x.ti-c7000.${ConfigName}.lib",
+    ],
+};
+
+const cflags_free_rtos = {
+    common: [
+        "-DIPC_NOTIFY_MULTITHREAD_TEST",
     ],
 };
 
@@ -299,7 +306,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_freertos_mcu_r5f;
         build_property.libs = libs_freertos_mcu_r5f;
         build_property.templates = templates_freertos_mcu_r5f;
-	build_property.defines = defines_r5;
+        build_property.defines = defines_r5;
+        build_property.cflags = cflags_free_rtos;
     }
     else if(buildOption.cpu.match(/r5f*/))
     {
@@ -308,12 +316,13 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_dm_r5f;
         build_property.templates = templates_freertos_dm_r5f;
         build_property.defines = defines_dm_r5f;
+        build_property.cflags = cflags_free_rtos;
     }
     else if(buildOption.cpu.match(/a53*/)) {
         build_property.libs = libs_nortos_a53;
         build_property.templates = templates_nortos_a53;
         build_property.includes  = includes_a53;
-	build_property.defines = defines_a53;
+        build_property.defines = defines_a53;
     }
     else if(buildOption.cpu.match(/c75*/))
     {
@@ -321,7 +330,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_freertos_c75;
         build_property.libs = libs_freertos_c75;
         build_property.templates = templates_freertos_c75;
-	build_property.defines = defines_c7;
+        build_property.defines = defines_c7;
+        build_property.cflags = cflags_free_rtos;
     }
     
     if (buildOption.cpu === "c75ss0-0") {

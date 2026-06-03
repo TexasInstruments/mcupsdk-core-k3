@@ -5,6 +5,7 @@ let device = "am62px";
 const files = {
     common: [
         "test_ipc_notify.c",
+        "test_ipcNotify_multithread.c",
         "main.c",
     ],
 };
@@ -91,6 +92,12 @@ const defines_dm_r5f = {
         "ENABLE_SCICLIENT_DIRECT",
     ]
 }
+
+const cflags_free_rtos = {
+    common: [
+        "-DIPC_NOTIFY_MULTITHREAD_TEST",
+    ],
+};
 
 const syscfgfile = "../example.syscfg";
 
@@ -196,6 +203,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_freertos_mcu_r5f;
         build_property.libs = libs_freertos_mcu_r5f;
         build_property.templates = templates_freertos_mcu_r5f;
+        build_property.cflags = cflags_free_rtos;
     }
     else if(buildOption.cpu.match(/wkup-r5f*/))
     {
@@ -204,6 +212,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_dm_r5f;
         build_property.templates = templates_freertos_wkup_r5f;
         build_property.defines = defines_dm_r5f;
+        build_property.cflags = cflags_free_rtos;
     }
 
 

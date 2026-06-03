@@ -50,7 +50,7 @@ FILES_common := \
 
 FILES_PATH_common = \
 	.. \
-	../../.. \
+	../../../../ipc_notify \
 	generated \
 
 INCLUDES_common := \

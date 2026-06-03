@@ -47,6 +47,7 @@ ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/lib/soc/am62x
 
 FILES_common := \
 	test_ipc_notify.c \
+	test_ipcNotify_multithread.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -58,7 +59,7 @@ FILES_common := \
 
 FILES_PATH_common = \
 	.. \
-	../../.. \
+	../../../../ipc_notify \
 	generated \
 
 INCLUDES_common := \
@@ -88,6 +89,7 @@ CFLAGS_common := \
 	-Wno-unused-but-set-variable \
 	-fdata-sections \
 	-ffunction-sections \
+	-DIPC_NOTIFY_MULTITHREAD_TEST \
 
 CFLAGS_debug := \
 	-D_DEBUG_=1 \

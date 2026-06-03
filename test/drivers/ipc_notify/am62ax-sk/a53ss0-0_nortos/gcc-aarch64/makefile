@@ -40,6 +40,7 @@ endif
 
 FILES_common := \
 	test_ipc_notify.c \
+	test_ipcNotify_multithread.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \

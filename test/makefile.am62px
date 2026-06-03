@@ -143,6 +143,7 @@ help:
 	@echo  System Example build targets,
 	@echo  =============================
 	@echo  $(MAKE) -s -C drivers/ipc_notify/am62px-sk/system_freertos_nortos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ipc_notify_mcu_r5/am62px-sk/system_freertos_nortos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ipc_rpmsg/am62px-sk/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Announce_Test/am62px-sk/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Diagnostic_Test/am62px-sk/system_freertos [all clean syscfg-gui syscfg]
@@ -357,6 +358,7 @@ BUILD_COMBO_EXAMPLE_ALL += test_freertos_am62px-sk_wkup-r5fss0-0_freertos_ti-arm
 BUILD_COMBO_EXAMPLE_ALL += test_rov_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 # Various System Example Targets
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_notify_am62px-sk_system_freertos_nortos
+BUILD_COMBO_EXAMPLE_ALL += test_ipc_notify_mcu_r5_am62px-sk_system_freertos_nortos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_am62px-sk_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_announce_am62px-sk_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_diagnostic_am62px-sk_system_freertos
@@ -657,6 +659,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_ipc_notify_am62px-sk_system_freertos_nortos:
 	$(MAKE) -C drivers/ipc_notify/am62px-sk/system_freertos_nortos -f makefile all
 
+ test_ipc_notify_mcu_r5_am62px-sk_system_freertos_nortos:
+	$(MAKE) -C drivers/ipc_notify_mcu_r5/am62px-sk/system_freertos_nortos -f makefile all
+
  test_ipc_rpmsg_am62px-sk_system_freertos:
 	$(MAKE) -C drivers/ipc_rpmsg/am62px-sk/system_freertos -f makefile all
 
@@ -790,6 +795,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_freertos_am62px-sk_wkup-r5fss0-0_freertos_
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_rov_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 # Various System Example Clean Targets
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_notify_am62px-sk_system_freertos_nortos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_notify_mcu_r5_am62px-sk_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_am62px-sk_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_announce_am62px-sk_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_diagnostic_am62px-sk_system_freertos_clean
@@ -1090,6 +1096,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_ipc_notify_am62px-sk_system_freertos_nortos_clean:
 	$(MAKE) -C drivers/ipc_notify/am62px-sk/system_freertos_nortos -f makefile clean
 
+ test_ipc_notify_mcu_r5_am62px-sk_system_freertos_nortos_clean:
+	$(MAKE) -C drivers/ipc_notify_mcu_r5/am62px-sk/system_freertos_nortos -f makefile clean
+
  test_ipc_rpmsg_am62px-sk_system_freertos_clean:
 	$(MAKE) -C drivers/ipc_rpmsg/am62px-sk/system_freertos -f makefile clean
 
@@ -1223,6 +1232,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_freertos_am62px-sk_wkup-r5fss0-0_freertos_
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_rov_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 # Various System Example Scrub Targets
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_notify_am62px-sk_system_freertos_nortos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_notify_mcu_r5_am62px-sk_system_freertos_nortos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_am62px-sk_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_announce_am62px-sk_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_diagnostic_am62px-sk_system_freertos_scrub
@@ -1522,6 +1532,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_ipc_notify_am62px-sk_system_freertos_nortos_scrub:
 	$(MAKE) -C drivers/ipc_notify/am62px-sk/system_freertos_nortos -f makefile scrub
+
+ test_ipc_notify_mcu_r5_am62px-sk_system_freertos_nortos_scrub:
+	$(MAKE) -C drivers/ipc_notify_mcu_r5/am62px-sk/system_freertos_nortos -f makefile scrub
 
  test_ipc_rpmsg_am62px-sk_system_freertos_scrub:
 	$(MAKE) -C drivers/ipc_rpmsg/am62px-sk/system_freertos -f makefile scrub

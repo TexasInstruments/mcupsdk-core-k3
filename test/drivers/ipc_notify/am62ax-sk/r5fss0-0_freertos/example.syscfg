@@ -40,7 +40,6 @@ debug_log.enableSharedMemLogReader = true;
 debug_log.enableCssLog             = false;
 debug_log.uartTrace                = true;
 debug_log.uartLog.$name            = "CONFIG_UART0";
-debug_log.uartLog.intrEnable       = "DISABLE";
 
 mpu_armv71.accessPermissions = "Supervisor RD+WR, User RD";
 mpu_armv71.allowExecute      = false;

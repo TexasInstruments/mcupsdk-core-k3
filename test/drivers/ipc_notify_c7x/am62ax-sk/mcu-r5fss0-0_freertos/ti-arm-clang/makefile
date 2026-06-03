@@ -39,6 +39,7 @@ endif
 
 FILES_common := \
 	test_ipc_notify.c \
+	test_ipcNotify_multithread.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -77,6 +78,7 @@ CFLAGS_common := \
 	-g \
 	-Wno-gnu-variable-sized-type-not-at-end \
 	-Wno-unused-function \
+	-DIPC_NOTIFY_MULTITHREAD_TEST \
 
 CFLAGS_cpp_common := \
 	-Wno-c99-designator \

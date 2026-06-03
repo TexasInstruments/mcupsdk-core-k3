@@ -136,20 +136,32 @@ uint32_t gRemoteCoreId[] = {
 
 #if defined(SOC_AM62X)
 /* main core that checks the test pass/fail */
-uint32_t gMainCoreId = CSL_CORE_ID_R5FSS0_0;
+#if defined(BUILD_A53_AS_MASTER)
+    uint32_t gMainCoreId = CSL_CORE_ID_A53SS0_0;
+#elif defined(BUILD_M4F_AS_MASTER)
+    uint32_t gMainCoreId = CSL_CORE_ID_M4FSS0_0;
+#else
+    uint32_t gMainCoreId = CSL_CORE_ID_R5FSS0_0;
+#endif
 /* All cores that participate in the IPC */
 uint32_t gRemoteCoreId[] = {
     CSL_CORE_ID_R5FSS0_0,
     CSL_CORE_ID_M4FSS0_0,
     CSL_CORE_ID_A53SS0_0,
+#if !defined(BUILD_A53_AS_MASTER)
     CSL_CORE_ID_A53SS0_1,
+#endif
     CSL_CORE_ID_MAX /* this value indicates the end of the array */
 };
 #endif
 
 #if defined(SOC_AM62PX)
 /* main core that checks the test pass/fail */
+#if defined(BUILD_MCU_R5_AS_MASTER)
+uint32_t gMainCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+#else
 uint32_t gMainCoreId = CSL_CORE_ID_WKUP_R5FSS0_0;
+#endif
 /* All cores that participate in the IPC */
 uint32_t gRemoteCoreId[] = {
     CSL_CORE_ID_WKUP_R5FSS0_0,
@@ -922,8 +934,8 @@ void test_ipc_remote_core_start()
     DebugP_assert(status==SystemP_SUCCESS);
 
     /* Send message to main core ID, No handler to invoke in main core ID when message is received */
-    status = IpcNotify_sendMsg(gRemoteCoreId[0], gNullClientId , 0x35, 1);
-
+    status = IpcNotify_sendMsg(gMainCoreId, gNullClientId , 0x35, 1);
+    /*gMainCoreId should be dynamic - adapts to whoever is the master:*/
     test_notifyAnyToAny(NULL);
     /* wait for ever at remote core, now onwards main core will initaite all requests
      * to the server handler
@@ -1125,26 +1137,158 @@ void test_ipc_main_core_start()
     RUN_TEST(TestIpcNotify_nullParamInit, 9500, NULL);
     #endif
     #if defined(SOC_AM62X)
-    RUN_TEST(test_notifyOneToOne, 0, (void*)CSL_CORE_ID_M4FSS0_0);
-    RUN_TEST(test_notifyOneToOne, 0, (void*)CSL_CORE_ID_A53SS0_0);
-    RUN_TEST(test_notifyOneToOne, 0, (void*)CSL_CORE_ID_A53SS0_1);
-    RUN_TEST(test_notifyOneToOneBackToBack, 0, (void*)CSL_CORE_ID_M4FSS0_0);
-    RUN_TEST(test_notifyOneToOneBackToBack, 0, (void*)CSL_CORE_ID_A53SS0_0);
-    RUN_TEST(test_notifyOneToOneBackToBack, 0, (void*)CSL_CORE_ID_A53SS0_1);
-    RUN_TEST(test_notifyErrorChecks, 0, (void*)CSL_CORE_ID_M4FSS0_0);
-    RUN_TEST(test_notifyErrorChecks, 0, (void*)CSL_CORE_ID_A53SS0_0);
-    RUN_TEST(test_notifyErrorChecks, 0, (void*)CSL_CORE_ID_A53SS0_1);
-    RUN_TEST(test_notifyInitErrorCheck,  0, NULL);
-    RUN_TEST(test_notifySendErrorCheck, 0, (void*)CSL_CORE_ID_M4FSS0_0);
-    RUN_TEST(test_notifyInitUnusedCore, 0, NULL);
+    /* R5F as Master*/
+    #if !defined(BUILD_A53_AS_MASTER) && !defined(BUILD_M4F_AS_MASTER)
+    RUN_TEST(test_notifyOneToOne, 2470, (void*)CSL_CORE_ID_M4FSS0_0);
+    RUN_TEST(test_notifyOneToOne, 9361, (void*)CSL_CORE_ID_A53SS0_0);
+    RUN_TEST(test_notifyOneToOne, 12318, (void*)CSL_CORE_ID_A53SS0_1);
+
+    RUN_TEST(test_notifyOneToOneBackToBack, 2471, (void*)CSL_CORE_ID_M4FSS0_0);
+    RUN_TEST(test_notifyOneToOneBackToBack, 2710, (void*)CSL_CORE_ID_A53SS0_0);
+    RUN_TEST(test_notifyOneToOneBackToBack, 12319, (void*)CSL_CORE_ID_A53SS0_1);
+
+    RUN_TEST(TestIpcNotify_oneToManyEndpoint, 12320, (void*)CSL_CORE_ID_M4FSS0_0);
+    RUN_TEST(TestIpcNotify_oneToManyEndpoint, 9490, (void*)CSL_CORE_ID_A53SS0_0);
+    RUN_TEST(TestIpcNotify_oneToManyEndpoint, 12321, (void*)CSL_CORE_ID_A53SS0_1);
+
+    #ifdef IPC_NOTIFY_MULTITHREAD_TEST
+    RUN_TEST(TestIpcNotify_multithreadManyToOne, 12322, (void*)CSL_CORE_ID_M4FSS0_0);
+    RUN_TEST(TestIpcNotify_multithreadManyToOne, 9497, (void*)CSL_CORE_ID_A53SS0_0);
+    RUN_TEST(TestIpcNotify_multithreadManyToOne, 12323, (void*)CSL_CORE_ID_A53SS0_1);
+
+    RUN_TEST(TestIpcNotify_multithreadOneToOne, 12324, (void*)CSL_CORE_ID_M4FSS0_0);
+    RUN_TEST(TestIpcNotify_multithreadOneToOne, 9493, (void*)CSL_CORE_ID_A53SS0_0);
+    RUN_TEST(TestIpcNotify_multithreadOneToOne, 12325, (void*)CSL_CORE_ID_A53SS0_1);
+
+    RUN_TEST(TestIpcNotify_multithreadOneToManyEndpoint, 12327, (void*)CSL_CORE_ID_M4FSS0_0);
+    RUN_TEST(TestIpcNotify_multithreadOneToManyEndpoint, 9508, (void*)CSL_CORE_ID_A53SS0_0);
+    RUN_TEST(TestIpcNotify_multithreadOneToManyEndpoint, 12326, (void*)CSL_CORE_ID_A53SS0_1);
+
+    RUN_TEST(TestIpcNotify_multithreadBackToBack, 12329,  (void*)CSL_CORE_ID_M4FSS0_0);
+    RUN_TEST(TestIpcNotify_multithreadBackToBack, 9617,  (void*)CSL_CORE_ID_A53SS0_0);
+    RUN_TEST(TestIpcNotify_multithreadBackToBack, 12328,  (void*)CSL_CORE_ID_A53SS0_1);
     #endif
+    
+    RUN_TEST(test_notifyErrorChecks, 12331, (void*)CSL_CORE_ID_M4FSS0_0);
+    RUN_TEST(test_notifyErrorChecks, 9368, (void*)CSL_CORE_ID_A53SS0_0);
+    RUN_TEST(test_notifyErrorChecks, 12330, (void*)CSL_CORE_ID_A53SS0_1);
+  
+    /* Self-check error for default master (R5F) */
+    RUN_TEST(test_notifySendErrorCheck, 9388, (void*)CSL_CORE_ID_R5FSS0_0);
+    #endif
+    /* A53 BLOCK: A53 as Master */
+    #if defined(BUILD_A53_AS_MASTER)
+    RUN_TEST(test_notifyOneToOne, 9660, (void*)CSL_CORE_ID_R5FSS0_0);
+    RUN_TEST(test_notifyOneToOne, 12334, (void*)CSL_CORE_ID_M4FSS0_0);
+
+    RUN_TEST(test_notifyOneToOneBackToBack, 9663, (void*)CSL_CORE_ID_R5FSS0_0);
+    RUN_TEST(test_notifyOneToOneBackToBack, 12336, (void*)CSL_CORE_ID_M4FSS0_0);
+
+    RUN_TEST(TestIpcNotify_oneToManyEndpoint, 9666, (void*)CSL_CORE_ID_R5FSS0_0);
+    RUN_TEST(TestIpcNotify_oneToManyEndpoint, 12339, (void*)CSL_CORE_ID_M4FSS0_0);
+
+    #ifdef IPC_NOTIFY_MULTITHREAD_TEST
+    RUN_TEST(TestIpcNotify_multithreadManyToOne, 9669, (void*)CSL_CORE_ID_R5FSS0_0);
+    RUN_TEST(TestIpcNotify_multithreadManyToOne, 12340, (void*)CSL_CORE_ID_M4FSS0_0);
+
+    RUN_TEST(TestIpcNotify_multithreadOneToOne, 9672, (void*)CSL_CORE_ID_R5FSS0_0);
+    RUN_TEST(TestIpcNotify_multithreadOneToOne, 12341, (void*)CSL_CORE_ID_M4FSS0_0);
+
+    RUN_TEST(TestIpcNotify_multithreadOneToManyEndpoint, 9675, (void*)CSL_CORE_ID_R5FSS0_0);
+    RUN_TEST(TestIpcNotify_multithreadOneToManyEndpoint, 12342, (void*)CSL_CORE_ID_M4FSS0_0);
+
+    RUN_TEST(TestIpcNotify_multithreadBackToBack, 9678,  (void*)CSL_CORE_ID_R5FSS0_0);
+    RUN_TEST(TestIpcNotify_multithreadBackToBack, 12343,  (void*)CSL_CORE_ID_M4FSS0_0);
+    #endif
+    
+    RUN_TEST(test_notifyErrorChecks, 9681, (void*)CSL_CORE_ID_R5FSS0_0);
+    RUN_TEST(test_notifyErrorChecks, 12344, (void*)CSL_CORE_ID_M4FSS0_0);
+
+    /* Self-check error for A53 */
+    RUN_TEST(test_notifySendErrorCheck, 9684, (void*)CSL_CORE_ID_A53SS0_0);
+    #endif
+
+    /* M4F BLOCK: M4F as Master */
+    #if defined(BUILD_M4F_AS_MASTER)
+    RUN_TEST(test_notifyOneToOne, 12351, (void*)CSL_CORE_ID_R5FSS0_0);
+    RUN_TEST(test_notifyOneToOne, 12352, (void*)CSL_CORE_ID_A53SS0_0);
+    RUN_TEST(test_notifyOneToOne, 12353, (void*)CSL_CORE_ID_A53SS0_1);
+
+    RUN_TEST(test_notifyOneToOneBackToBack, 12359, (void*)CSL_CORE_ID_R5FSS0_0);
+    RUN_TEST(test_notifyOneToOneBackToBack, 12361, (void*)CSL_CORE_ID_A53SS0_0);
+    RUN_TEST(test_notifyOneToOneBackToBack, 12362, (void*)CSL_CORE_ID_A53SS0_1);
+
+    RUN_TEST(TestIpcNotify_oneToManyEndpoint, 12363, (void*)CSL_CORE_ID_R5FSS0_0);
+    RUN_TEST(TestIpcNotify_oneToManyEndpoint, 12364, (void*)CSL_CORE_ID_A53SS0_0);
+    RUN_TEST(TestIpcNotify_oneToManyEndpoint, 12365, (void*)CSL_CORE_ID_A53SS0_1);
+
+    #ifdef IPC_NOTIFY_MULTITHREAD_TEST
+    RUN_TEST(TestIpcNotify_multithreadManyToOne, 12366, (void*)CSL_CORE_ID_R5FSS0_0);
+    RUN_TEST(TestIpcNotify_multithreadManyToOne, 12367, (void*)CSL_CORE_ID_A53SS0_0);
+    RUN_TEST(TestIpcNotify_multithreadManyToOne, 12368, (void*)CSL_CORE_ID_A53SS0_1);
+
+    RUN_TEST(TestIpcNotify_multithreadOneToOne, 12369, (void*)CSL_CORE_ID_R5FSS0_0);
+    RUN_TEST(TestIpcNotify_multithreadOneToOne, 12370, (void*)CSL_CORE_ID_A53SS0_0);
+    RUN_TEST(TestIpcNotify_multithreadOneToOne, 12371, (void*)CSL_CORE_ID_A53SS0_1);
+
+    RUN_TEST(TestIpcNotify_multithreadOneToManyEndpoint, 12372, (void*)CSL_CORE_ID_R5FSS0_0);
+    RUN_TEST(TestIpcNotify_multithreadOneToManyEndpoint, 12373, (void*)CSL_CORE_ID_A53SS0_0);
+    RUN_TEST(TestIpcNotify_multithreadOneToManyEndpoint, 12374, (void*)CSL_CORE_ID_A53SS0_1);
+
+    RUN_TEST(TestIpcNotify_multithreadBackToBack, 12375,  (void*)CSL_CORE_ID_R5FSS0_0);
+    RUN_TEST(TestIpcNotify_multithreadBackToBack, 12376,  (void*)CSL_CORE_ID_A53SS0_0);
+    RUN_TEST(TestIpcNotify_multithreadBackToBack, 12377,  (void*)CSL_CORE_ID_A53SS0_1);
+
+    #endif
+    
+    RUN_TEST(test_notifyErrorChecks, 12378, (void*)CSL_CORE_ID_R5FSS0_0);
+    RUN_TEST(test_notifyErrorChecks, 12379, (void*)CSL_CORE_ID_A53SS0_0);
+    RUN_TEST(test_notifyErrorChecks, 12380, (void*)CSL_CORE_ID_A53SS0_1);
+
+    /* Self-check error for M4F */
+    RUN_TEST(test_notifySendErrorCheck, 12381, (void*)CSL_CORE_ID_M4FSS0_0);
+    #endif
+    /* Common standalone initialization and configuration tests */
+    RUN_TEST(test_notifyInitErrorCheck,  9370, NULL);
+    RUN_TEST(test_notifyInitUnusedCore, 9373, NULL);
+    RUN_TEST(TestIpcNotify_msgValueMax, 9499, NULL);
+    RUN_TEST(TestIpcNotify_repeatedSyncAll, 9860, NULL);
+    RUN_TEST(Test_notifyInvalidSelfCoreIdMailbox, 9900, NULL);
+    RUN_TEST(TestIpcNotify_nullParamInit, 9500, NULL);
+    #endif
+
     #if defined(SOC_AM62PX)
-    RUN_TEST(test_notifyOneToOne, 0, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
-    RUN_TEST(test_notifyOneToOneBackToBack, 0, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
-    RUN_TEST(test_notifyErrorChecks, 0, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
-    RUN_TEST(test_notifyInitErrorCheck,  0, NULL);
-    RUN_TEST(test_notifySendErrorCheck, 0, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
-    RUN_TEST(test_notifyInitUnusedCore, 0, NULL);
+    /* IPC Notify: MCU_R5FSS0_0 to WKUP_R5FSS0_0 (MCU_R5 AS MASTER) */
+    #if defined(BUILD_MCU_R5_AS_MASTER)
+    RUN_TEST(test_notifyOneToOne, 12130, (void*)CSL_CORE_ID_WKUP_R5FSS0_0);
+    RUN_TEST(test_notifyOneToOneBackToBack, 12131, (void*)CSL_CORE_ID_WKUP_R5FSS0_0);
+    RUN_TEST(TestIpcNotify_oneToManyEndpoint, 12132, (void*)CSL_CORE_ID_WKUP_R5FSS0_0);
+
+    #ifdef IPC_NOTIFY_MULTITHREAD_TEST
+    RUN_TEST(TestIpcNotify_multithreadManyToOne, 12133, (void*)CSL_CORE_ID_WKUP_R5FSS0_0);
+    RUN_TEST(TestIpcNotify_multithreadOneToOne, 12134, (void*)CSL_CORE_ID_WKUP_R5FSS0_0);
+    RUN_TEST(TestIpcNotify_multithreadOneToManyEndpoint, 12135, (void*)CSL_CORE_ID_WKUP_R5FSS0_0);
+    /* Test Case SITSW-12195 hangs on AM62PX */
+    #if !defined(SOC_AM62PX)
+    RUN_TEST(TestIpcNotify_multithreadBackToBack, 12195, (void*)CSL_CORE_ID_WKUP_R5FSS0_0);
+    #endif
+    #endif
+    RUN_TEST(test_notifyErrorChecks, 12136, (void*)CSL_CORE_ID_WKUP_R5FSS0_0);
+    RUN_TEST(test_notifySendErrorCheck, 12137, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
+    /* IPC Notify: WKUP_R5FSS0_0 to MCU_R5FSS0_0 (WKUP_R5 AS MASTER) */
+    #else
+    RUN_TEST(test_notifyOneToOne, 12138, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
+    RUN_TEST(test_notifyOneToOneBackToBack, 12139, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
+    RUN_TEST(TestIpcNotify_oneToManyEndpoint, 12140, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
+    RUN_TEST(test_notifyErrorChecks, 12145, (void*)CSL_CORE_ID_MCU_R5FSS0_0);
+    RUN_TEST(test_notifySendErrorCheck, 12146, (void*)CSL_CORE_ID_WKUP_R5FSS0_0);
+    #endif
+    RUN_TEST(test_notifyInitErrorCheck,  9370, NULL);
+    RUN_TEST(test_notifyInitUnusedCore, 9373, NULL);
+    RUN_TEST(TestIpcNotify_msgValueMax, 9499, NULL);
+    RUN_TEST(TestIpcNotify_repeatedSyncAll, 9860, NULL);
+    RUN_TEST(Test_notifyInvalidSelfCoreIdMailbox, 9900, NULL);
+    RUN_TEST(TestIpcNotify_nullParamInit, 9500, NULL);
     #endif
     #if defined(SOC_AM275X)
     #if !defined(BUILD_C7X_AS_MASTER)

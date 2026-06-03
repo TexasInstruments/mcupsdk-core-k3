@@ -31,7 +31,7 @@ const mmu_armv813 = mmu_armv8.addInstance();
  */
 ipc.enableLinuxIpc = false;
 ipc.a53ss0_0       = "notify_rpmsg";
-ipc.vringSize      = 14680064;
+ipc.vringSize      = 3145728;
 
 debug_log.enableSharedMemLog = true;
 

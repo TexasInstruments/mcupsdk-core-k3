@@ -72,8 +72,10 @@ extern "C" {
 #define WATCHDOG_INST_ID_3               (3U)
 /** \brief WDT instance - 4*/
 #define WATCHDOG_INST_ID_4               (4U)
+/** \brief WDT instance - 5*/
+#define WATCHDOG_INST_ID_5               (5U)
 /** \brief Maximum number of WATCHDOG instance */
-#define WATCHDOG_INST_ID_MAX                 (WATCHDOG_INST_ID_4)
+#define WATCHDOG_INST_ID_MAX                 (WATCHDOG_INST_ID_5)
 /** \brief Total number of WATCHDOG instances */
 #define WATCHDOG_NUM_INST_ID                 (WATCHDOG_INST_ID_MAX - WATCHDOG_INST_ID_0 + 1U)
 

@@ -25,6 +25,9 @@ to setup and initiate DMA transfers.
 \cond SOC_AM62LX
 - Event and interrupt management like DMA completion, channel chaining, interrupt sharing, Resources management across instances and cores for DMA channels, RX flow is handled.
 \endcond
+\cond SOC_AM62AX || SOC_AM62DX || SOC_AM275X
+- Supports direct TR mode for DRU
+\endcond
 
 ## SysConfig Features
 
@@ -48,6 +51,9 @@ to setup and initiate DMA transfers.
 - UDMA driver is not supported for M4F core as the DMSS is present only in the main domain
 \endcond
 - LEVI and MCMAP features are not supported in UDMA driver. 
+\cond SOC_AM62AX || SOC_AM62DX || SOC_AM275X
+- UDMA driver does not support UDMA-C channel type for DRU
+\endcond
 
 ## Failure Prevention Guidelines for Applications
 

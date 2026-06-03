@@ -104,9 +104,6 @@
 /*                            Global Variables                                */
 /* ========================================================================== */
 
-static uint8_t TestUdma_TrpdMemUdmac[TEST_UDMA_APP_TRPD_SIZE_ALIGN] TEST_UDMA_BUF_ATTR;
-static uint8_t TestUdma_DruRingMem[TEST_UDMA_APP_RING_MEM_SIZE_ALIGN] TEST_UDMA_BUF_ATTR;
-static uint8_t TestUdma_DruCompRingMem[TEST_UDMA_APP_RING_MEM_SIZE_ALIGN] TEST_UDMA_BUF_ATTR;
 /* Application Buffers */
 static uint8_t TestUdma_SrcBuf[UDMA_ALIGN_SIZE(TEST_UDMA_NUM_BYTES)] TEST_UDMA_BUF_ATTR;
 static uint8_t TestUdma_DestBuf[UDMA_ALIGN_SIZE(TEST_UDMA_NUM_BYTES)] TEST_UDMA_BUF_ATTR;
@@ -135,11 +132,6 @@ static SemaphoreP_Object TestUdma_DmaDruSem;
 
 static void TestUdma_appUdmaInitBuf(uint8_t *srcBuf, uint8_t *destBuf, uint32_t length);
 static int32_t TestUdma_appUdmaCompareBuf(uint8_t *srcBuf, uint8_t *destBuf, uint32_t length);
-static void TestUdma_utcTrpdInit(Udma_ChHandle chHandle,
-                             uint8_t *pTrpdMem,
-                             const void *destBuf,
-                             const void *srcBuf,
-                             uint32_t length);
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -191,62 +183,6 @@ static int32_t TestUdma_appUdmaCompareBuf(uint8_t *srcBuf, uint8_t *destBuf, uin
     }
 
     return UDMA_SOK;
-}
-
-/* Helper: Initialize a TR15 transfer record packet descriptor (TRPD) for a
- * simple 1D block move. Fills source/destination addressing, element counts,
- * dimensions, and completion event configuration, then performs cache
- * writeback so hardware sees updated descriptor contents. Expects an already
- * opened/allocated channel handle. */
-static void TestUdma_utcTrpdInit(Udma_ChHandle chHandle,
-                             uint8_t *pTrpdMem,
-                             const void *destBuf,
-                             const void *srcBuf,
-                             uint32_t length)
-{
-    /* TR area starts after the TRPD header */
-    CSL_UdmapTR15 *pTr = (CSL_UdmapTR15 *)(pTrpdMem + sizeof(CSL_UdmapTR15));
-    /* Place the TR response word at the last 4 bytes within the
-     * allocated TRPD buffer */
-    uint32_t *pTrResp = (uint32_t *)(pTrpdMem + (TEST_UDMA_TRPD_SIZE - sizeof(uint32_t)));
-    uint32_t cqRingNum = Udma_chGetCqRingNum(chHandle);
-    /* Make TRPD with TR15 TR type */
-    UdmaUtils_makeTrpdTr15((uint8_t *)pTrpdMem, 1U, cqRingNum);
-    /* Setup TR */
-    pTr->flags    = CSL_FMK(UDMAP_TR_FLAGS_TYPE, CSL_UDMAP_TR_FLAGS_TYPE_4D_BLOCK_MOVE)         |
-                    CSL_FMK(UDMAP_TR_FLAGS_STATIC, 0U)                                          |
-                    CSL_FMK(UDMAP_TR_FLAGS_EOL, 0U)                                             |
-                    CSL_FMK(UDMAP_TR_FLAGS_EVENT_SIZE, CSL_UDMAP_TR_FLAGS_EVENT_SIZE_COMPLETION)|
-                    CSL_FMK(UDMAP_TR_FLAGS_TRIGGER0, CSL_UDMAP_TR_FLAGS_TRIGGER_NONE)           |
-                    CSL_FMK(UDMAP_TR_FLAGS_TRIGGER0_TYPE, CSL_UDMAP_TR_FLAGS_TRIGGER_TYPE_ALL)  |
-                    CSL_FMK(UDMAP_TR_FLAGS_TRIGGER1, CSL_UDMAP_TR_FLAGS_TRIGGER_NONE)           |
-                    CSL_FMK(UDMAP_TR_FLAGS_TRIGGER1_TYPE, CSL_UDMAP_TR_FLAGS_TRIGGER_TYPE_ALL)  |
-                    CSL_FMK(UDMAP_TR_FLAGS_CMD_ID, 0x25U)                                       |
-                    CSL_FMK(UDMAP_TR_FLAGS_SA_INDIRECT, 0U)                                     |
-                    CSL_FMK(UDMAP_TR_FLAGS_DA_INDIRECT, 0U)                                     |
-                    CSL_FMK(UDMAP_TR_FLAGS_EOP, 1U);
-    pTr->icnt0    = length;
-    pTr->icnt1    = 1U;
-    pTr->icnt2    = 1U;
-    pTr->icnt3    = 1U;
-    pTr->dim1     = pTr->icnt0;
-    pTr->dim2     = (pTr->icnt0 * pTr->icnt1);
-    pTr->dim3     = (pTr->icnt0 * pTr->icnt1 * pTr->icnt2);
-    pTr->addr     = (uint64_t) srcBuf;
-    pTr->fmtflags = 0x00000000U;
-    pTr->dicnt0   = length;
-    pTr->dicnt1   = 1U;
-    pTr->dicnt2   = 1U;
-    pTr->dicnt3   = 1U;
-    pTr->ddim1    = pTr->dicnt0;
-    pTr->ddim2    = (pTr->dicnt0 * pTr->dicnt1);
-    pTr->ddim3    = (pTr->dicnt0 * pTr->dicnt1 * pTr->dicnt2);
-    pTr->daddr    = (uint64_t) destBuf;
-    /* Clear TR response memory */
-    *pTrResp = 0xFFFFFFFFU;
-    /* Writeback cache */
-    CacheP_wb(pTrpdMem, TEST_UDMA_TRPD_SIZE, CacheP_TYPE_ALLD);
-    return;
 }
 
 void TestUdma_appdmautilsClecInitDru(void)

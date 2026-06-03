@@ -898,14 +898,16 @@ static uint32_t MCSPI_continueTxRx(const MCSPI_Object *obj,
                     }while ((chStat & CSL_MCSPI_CH0STAT_EOT_MASK) == 0U);
 
                     /* read the last data if any from Rx FIFO. */
-                    if ((MCSPI_TR_MODE_TX_ONLY != chObj->chCfg.trMode) &&
-                        (transaction->count != chObj->curRxWords))
+                    /* Read transmitted data pending in RX FIFO by comparing curTxWords and
+                     * curRxWords. This prevents data corruption due to Tx/Rx timing mismatch.
+                     */
+                    if (MCSPI_TR_MODE_TX_ONLY != chObj->chCfg.trMode)
                     {
-                        /* This is a corner case. EOW is set at the end of transmission.
-                            * the reception is not complete by the time we are processing EOW.
-                            * Read the remaining bytes.
-                            */
-                        MCSPI_fifoRead(baseAddr, chObj, (transaction->count - chObj->curRxWords));
+                        if (chObj->curTxWords > chObj->curRxWords)
+                        {
+                            uint32_t remainingRxWords = chObj->curTxWords - chObj->curRxWords;
+                            MCSPI_fifoRead(baseAddr, chObj, remainingRxWords);
+                        }
                     }
                     /* Clear all interrupts. */
                     MCSPI_intrStatusClear(chObj, baseAddr, chObj->intrMask);

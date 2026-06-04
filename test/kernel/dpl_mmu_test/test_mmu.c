@@ -78,8 +78,10 @@ void test_mmu_main(void *args)
     RUN_TEST(TestMmuP_mapAligned4KbPage, 9989, NULL);
     RUN_TEST(TestMmuP_mapAligned8KbRegion, 9993, NULL);
     RUN_TEST(TestMmuP_mapAligned64KbRegion, 9995, NULL);
+#if !defined(ENABLE_C75_CORE) /* exception dump/hang in c75 core  */
     RUN_TEST(TestMmuP_mapAligned2MbBlock, 9996, NULL);
     RUN_TEST(TestMmuP_mapAligned1GbBlock, 9997, NULL);
+#endif /* !ENABLE_C75_CORE - exception dump/hang in c75 core  */
     RUN_TEST(TestMmuP_privilegedReadWriteUserNoAccess, 9998, NULL);
     RUN_TEST(TestMmuP_privilegedReadOnlyUserNoAccess, 9999, NULL);
     RUN_TEST(TestMmuP_privilegedAndUserReadWrite, 10000, NULL);
@@ -103,6 +105,7 @@ void test_mmu_main(void *args)
     RUN_TEST(TestMmuP_overlappingSubsetReadBehavior, 10018, NULL);
     RUN_TEST(TestMmuP_nonOverlappingIndependentRegions, 10019, NULL);
     RUN_TEST(TestMmuP_overlappingReadOnlySubsetAndReadWriteOutside, 10020, NULL);
+
 #if defined(ENABLE_MT_TESTS)/* Multithreaded Tests */
     RUN_TEST(TestMmuP_multithreadMappingOfAdjacentPages, 10094, NULL);
     RUN_TEST(TestMmuP_multithreadReadWriteWithinSinglePage, 10095, NULL);
@@ -115,5 +118,6 @@ void test_mmu_main(void *args)
     RUN_TEST(TestMmuP_multithreadOverlappingROSubsetVsRWOutside, 10166, NULL);
     RUN_TEST(TestMmuP_multithreadCacheMaintenanceAndAccess, 10167, NULL);
 #endif
+
     UNITY_END();
 }

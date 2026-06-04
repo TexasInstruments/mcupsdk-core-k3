@@ -82,6 +82,7 @@ const robot_template = {
         componentName: "SCICLIENT",
         testCaseName: "SCICLIENT Interrupt Mode Test Application",
         testCaseIds: "SITSW-10496",
+        expectedString: "Total failures: 0",
     },
 };
 

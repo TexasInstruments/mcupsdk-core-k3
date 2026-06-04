@@ -49,6 +49,9 @@ const files_c75x = {
     common: [
         "eeprom.c",
         "eeprom_at24c512c.c",
+        "flash.c",
+        "flash_nand_ospi.c",
+        "flash_nor_ospi.c",
         "led.c",
         "led_gpio.c",
         "led_ioexp.c",

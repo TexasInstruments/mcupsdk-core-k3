@@ -109,6 +109,7 @@ const topModules_c75 = [
     "/drivers/mcasp/mcasp",
     "/drivers/mcspi/mcspi",
     "/drivers/mmcsd/mmcsd",
+    "/drivers/ospi/ospi",
     "/drivers/uart/uart",
     "/drivers/udma/udma",
 ];

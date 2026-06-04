@@ -43,6 +43,12 @@ FILES_common := \
     mmcsd_v0.c \
     mmcsd_priv.c \
     mmcsd_soc.c \
+    ospi_dma.c \
+    ospi_dma_udma.c \
+    ospi_nor_flash.c \
+    ospi_phy.c \
+    ospi_phy_tuning.c \
+    ospi_v0.c \
     pinmux.c \
     sciclient.c \
     sciclient_lpm.c \
@@ -71,6 +77,7 @@ FILES_common := \
     udma_rmcfg.c \
     udma_soc.c \
     utils.c \
+    vtm.c \
 
 FILES_PATH_common = \
     ddr/v1 \
@@ -97,6 +104,11 @@ FILES_PATH_common = \
     mmcsd/v0 \
     mmcsd/soc \
     mmcsd/soc/am62dx \
+    ospi \
+    ospi/v0 \
+    ospi/v0/dma \
+    ospi/v0/dma/udma \
+    ospi/v0/ospi_tuning/ospi_tuning_algo/algo_v1 \
     pinmux/am62dx \
     sciclient \
     sciclient/soc/am62dx \

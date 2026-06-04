@@ -38,6 +38,7 @@ const topModules_a53 = [
 const topModules_c75x = [
     "/board/led/led",
     "/board/eeprom/eeprom",
+    "/board/flash/flash",
     "/board/ethphy_cpsw_icssg/ethphy_cpsw_icssg",
 ];
 

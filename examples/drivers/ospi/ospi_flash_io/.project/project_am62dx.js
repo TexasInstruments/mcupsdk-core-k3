@@ -51,6 +51,14 @@ const includes_freertos_a53 = {
     ],
 };
 
+const includes_freertos_c75 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/c75x",
+    ],
+};
+
 const libs_nortos_dm_r5f = {
     common: [
         "rm_pm_hal.am62dx.r5f.ti-arm-clang.${ConfigName}.lib",
@@ -78,6 +86,15 @@ const libs_freertos_a53 = {
     ],
 };
 
+const libs_freertos_c75 = {
+    common: [
+        "freertos.am62dx.c75x.ti-c7000.${ConfigName}.lib",
+        "drivers.am62dx.c75x.ti-c7000.${ConfigName}.lib",
+        "board.am62dx.c75x.ti-c7000.${ConfigName}.lib",
+        "udma.am62dx.c75x.ti-c7000.${ConfigName}.lib",
+    ],
+};
+
 const libdirs_freertos = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
@@ -88,6 +105,15 @@ const libdirs_freertos = {
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
+    ],
+};
+
+const libdirs_freertos_c75 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/udma/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
     ],
 };
 
@@ -142,6 +168,13 @@ const defines_common = {
         "SOC_AM62DX",
     ]
 };
+
+const defines_c75 = {
+    common:[
+        "BUILD_C7X",
+        "SOC_AM62DX",
+    ]
+}
 
 const syscfgfile = "../example.syscfg"
 
@@ -242,11 +275,28 @@ const templates_freertos_r5f =
     }
 ];
 
+const templates_freertos_c75 =
+[
+    {
+        input: ".project/templates/am62dx/common/linker_c75.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62dx/freertos/main_freertos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "ospi_flash_io_main",
+            stackSize: 16*1024,
+        },
+    }
+];
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62dx-evm", os: "nortos"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62dx-evm", os: "freertos"},
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang",  board: "am62dx-evm", os: "freertos"},
+    { device: device, cpu: "c75ss0-0",     cgt: "ti-c7000",     board: "am62dx-evm", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -319,6 +369,13 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_nortos_a53;
             build_property.templates = templates_nortos_a53;
         }
+    }
+    else if(buildOption.cpu.match(/c75*/)) {
+        build_property.includes = includes_freertos_c75;
+        build_property.libdirs = libdirs_freertos_c75;
+        build_property.libs = libs_freertos_c75;
+        build_property.templates = templates_freertos_c75;
+        build_property.defines = defines_c75;
     }
 
 

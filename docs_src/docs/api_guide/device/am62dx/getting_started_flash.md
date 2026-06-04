@@ -2,22 +2,246 @@
 
 [TOC]
 
-\attention Flashing a application will overwrite the SOC init application that was flashed earlier.
+\attention Flashing an application will overwrite the SOC init application that was flashed earlier.
            So if you want to load and run from CCS again, you will need to do the SOC init steps again.
            See \ref EVM_FLASH_SOC_INIT for more details.
 
 
 
-\attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL.
+\attention As the wake-up R5 is the device manager, it needs to be started by the SBL. So it cannot be loaded through CCS. It should be flashed and booted through SBL.
 
 \note See also \ref TOOLS_FLASH for more details on the flashing tools.
 
 ## Introduction
 
-In this step we will flash the application that we have build and run using CCS to the EVM flash.
+In this step, we will flash the application that we have built and run using CCS to the EVM flash.
 We can then boot this application without being connected to CCS via JTAG.
 
-## Getting ready to flash the application
+## Flashing the application using Snagfactory Tool 
+
+- Make sure you have **Snagboot** installed on your host PC. Snagfactory is available on pip
+  and can be installed using:
+
+        $ python3 -m pip install --user snagboot
+        $ python3 -m pip install --user snagboot[gui]
+        
+- Build all the binaries. Refer to \ref TOOLS_SNAGFACTORY_GETTING_READY for more details.
+
+- **POWER-OFF** the EVM.
+
+- Set boot mode to **USB DFU BOOTMODE** as shown in the image below:
+
+
+  \imageStyle{boot_pins_dfu_boot_mode.png,width:30%}
+  \image html boot_pins_dfu_boot_mode.png "USB DFU BOOT MODE"
+
+- **POWER-ON** the EVM. The board will enumerate as a USB DFU device on the host PC.
+
+### Flashing using the GUI 
+
+- Open a command prompt and run the below command to generate the .cmd file and yaml configuration file.
+
+        cd ${SDK_INSTALL_PATH}/tools/boot/snagfactory
+        python3 snagfactory_flash.py --board am62dx-evm --target <boot-media> --cfg-file <path-to-edited-cfg-file> --gen-cfg
+
+- Launch the Snagfactory GUI by running the below command:
+
+        snagfactory
+
+- In the GUI, load the generated `.yaml` file to proceed with flashing.
+
+- When the flashing is in progress, you will see something like below:
+
+\imageStyle{snagfactory_flashing.png,width:40%}
+\image html am62dx/snagfactory_flashing.png 
+
+
+- After all the flashing is done, you will see something like below:
+
+\imageStyle{snagfactory_flash.png,width:40%}
+\image html am62dx/snagfactory_flash.png 
+
+### Flashing using the CLI 
+
+- Open a command prompt and run the below command to flash:
+
+        cd ${SDK_INSTALL_PATH}/tools/boot/snagfactory
+
+        python3 snagfactory_flash.py --board am62dx-evm --target <boot-media> --cfg-file <path-to-edited-cfg-file>
+
+- When the flashing is in progress, you will see something like below
+
+\imageStyle{snagfactory_cli.png,width:50%}
+\image html am62dx/snagfactory_cli.png 
+
+- After all the flashing is done, you will see something like below:
+
+        [INFO] Running snagrecover: snagrecover -s am62d -F {'tiboot3': {'path': 'am62dx-evm/tiboot3.bin'}} -F {'tispl': {'path': 'am62dx-evm/tispl.bin'}} -F {'u-boot': {'path': 'am62dx-evm/u-boot.img'}}
+        [INFO] [INFO] Starting recovery of am62d board
+        [INFO] Installing firmware tiboot3
+        [INFO] Searching for partition id...
+        [INFO] Found DFU Functional descriptor: wTransferSize = 512
+        [INFO] Downloading file...
+        [INFO] Could not read status after end of manifest-sync phase
+        [INFO] Done
+        [INFO] Done installing firmware tiboot3
+        [INFO] Installing firmware tispl
+        [INFO] Searching for partition id...
+        [INFO] Found DFU Functional descriptor: wTransferSize = 4096
+        [INFO] Downloading file...
+        [INFO] Done manifesting firmware
+        [INFO] Done
+        [INFO] Done installing firmware tispl
+        [INFO] Installing firmware u-boot
+        [INFO] Searching for partition id...
+        [INFO] Found DFU Functional descriptor: wTransferSize = 4096
+        [INFO] Downloading file...
+        [INFO] Done manifesting firmware
+        [INFO] Done
+        [INFO] Sending detach command...
+        [INFO] Sending DFU_DETACH...
+        [INFO] Done installing firmware u-boot
+        [INFO] Installing firmware u-boot
+        [INFO] Searching for partition id...
+        [INFO] Found DFU Functional descriptor: wTransferSize = 4096
+        [INFO] Downloading file...
+        [INFO] Done manifesting firmware
+        [INFO] Done
+        [INFO] Sending detach command...
+        [INFO] Sending DFU_DETACH...
+        [INFO] Done installing firmware u-boot
+        [INFO] Done recovering am62d board
+        [INFO] snagrecover completed successfully.
+        [INFO] Waiting for fastboot device 0451:6165 ...
+        [INFO] Fastboot device detected.
+        [INFO] Running snagflash: snagflash -P fastboot-uboot -p 0451:6165 -I /mcu_plus_sdk/tools/boot/snagfactory/am62dx-evm/am62dx-evm_emmc_hs_fs.cmd
+        [INFO] [INFO] Running snagflash using protocol fastboot-uboot
+        [INFO] Waiting for USB 0451:6165
+        [INFO] []
+        [INFO] Done
+        [INFO] running commands from file /mcu_plus_sdk/tools/boot/snagfactory/am62dx-evm/am62dx-evm_emmc_hs_fs.cmd
+        [INFO] running command set target mmc0
+        setting 'target' to 'mmc0'
+        [INFO] running command set fb-addr 0x82000000
+        setting 'fb-addr' to '0x82000000'
+        [INFO] running command set fb-size 0x7000000
+        setting 'fb-size' to '0x7000000'
+        [INFO] running command flash "/mcu_plus_sdk/tools/boot/sbl_prebuilt/am62dx-evm/sbl_emmc_stage1.release.hs_fs.tiimage" 0x0 hwpart 1
+        [INFO] Running pre-flash checks...
+        [INFO] fastboot OKAY
+        [INFO] (bootloader) downloadsize value b'0x07000000'
+        [INFO] Flashing file /mcu_plus_sdk/tools/boot/sbl_prebuilt/am62dx-evm/sbl_emmc_stage1.release.hs_fs.tiimage
+        [INFO] Flashing to MMC device...
+        [INFO] fastboot OKAY
+        [INFO] flashed 295559/295559 bytes
+        [INFO] running command flash "/mcu_plus_sdk/examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo.release.appimage.hs_fs" 0x80000 hwpart 1
+        [INFO] (bootloader) downloadsize value b'0x07000000'
+        [INFO] Flashing file /mcu_plus_sdk/examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo.release.appimage.hs_fs
+        [INFO] Flashing to MMC device...
+        [INFO] fastboot OKAY
+        [INFO] flashed 277382/277382 bytes
+        [INFO] running command flash "/mcu_plus_sdk/tools/boot/HSMAppimageGen/board/am62dx-evm/hsm.appimage.hs_fs" 0x240000 hwpart 1
+        [INFO] (bootloader) downloadsize value b'0x07000000'
+        [INFO] Flashing file /mcu_plus_sdk/tools/boot/HSMAppimageGen/board/am62dx-evm/hsm.appimage.hs_fs
+        [INFO] Flashing to MMC device...
+        [INFO] fastboot OKAY
+        [INFO] flashed 9677/9677 bytes
+        [INFO] running command flash "/mcu_plus_sdk/examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo.release.appimage.hs_fs" 0x800000 hwpart 1
+        [INFO] (bootloader) downloadsize value b'0x07000000'
+        [INFO] Flashing file /mcu_plus_sdk/examples/hello_world/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/hello_world.release.appimage.hs_fs
+        [INFO] Flashing to MMC device...
+        [INFO] fastboot OKAY
+        [INFO] flashed 42082/42082 bytes
+        [INFO] running command flash "/mcu_plus_sdk/examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/c75ss0-0_freertos/ti-c7000/ipc_rpmsg_echo.release.appimage.hs_fs" 0xA00000 hwpart 1
+        [INFO] (bootloader) downloadsize value b'0x07000000'
+        [INFO] Flashing file /mcu_plus_sdk/examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/c75ss0-0_freertos/ti-c7000/ipc_rpmsg_echo.release.appimage.hs_fs
+        [INFO] Flashing to MMC device...
+        [INFO] fastboot OKAY
+        [INFO] flashed 153022/153022 bytes
+        [INFO] running command flash "/mcu_plus_sdk/examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/ipc_rpmsg_echo.release.appimage.hs_fs" 0x1200000 hwpart 1
+        [INFO] (bootloader) downloadsize value b'0x07000000'
+        [INFO] Flashing file /mcu_plus_sdk/examples/drivers/ipc/ipc_rpmsg_echo/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/ipc_rpmsg_echo.release.appimage.hs_fs
+        [INFO] Flashing to MMC device...
+        [INFO] fastboot OKAY
+        [INFO] flashed 79294/79294 bytes
+        [INFO] running command exit
+        Leaving interactive snagflash session...
+        [INFO] snagflash completed successfully.
+        [INFO] Flash complete!
+
+
+- If flashing has failed, see \ref TOOLS_SNAGFACTORY_ERROR_MESSAGES and solutions, and resolve the errors.
+- If flashing is successful, do the next steps ...
+
+## Running the flashed application
+
+- **POWER-OFF** the EVM
+- Switch the EVM boot mode to appropriate target Boot Mode. As shown in \ref EVM_SETUP_PAGE
+- Re-connect the UART terminal in CCS window.
+- **POWER-ON** the EVM
+- You should see the application output in MCU UART terminal as below:
+
+        Hello World!
+
+- You should see the application output in WKUP UART terminal as below:
+
+        Sciserver Testapp Built On: Jun 30 2026 11:38:29
+        Sciserver Version: v2023.11.0.0REL.MCUSDK.MM.NN.PP.bb
+        RM_PM_HAL Version: vMM.NN.PP
+        Starting Sciserver..... PASSED
+
+        Hello World!
+
+- You should see the following SBL output on the main UART terminal as below. 
+      
+      SYSFW ABI: 4.0 (firmware rev 0x000b '11.2.10--v11.02.10 (Fancy Rat)')
+      [BOOTLOADER_PROFILE] Boot Media       : eMMC 
+      [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz 
+      [BOOTLOADER_PROFILE] Boot Image Size  : 191 KB 
+      [BOOTLOADER_PROFILE] Cores present    : 
+      mcu-r5f0-0
+      r5f0-0
+      [BOOTLOADER PROFILE] System_init                      :      32924us 
+      [BOOTLOADER PROFILE] Board_init                       :         94us 
+      [BOOTLOADER PROFILE] Drivers_open                     :      21690us 
+      [BOOTLOADER PROFILE] Board_driversOpen                :          0us 
+      [BOOTLOADER PROFILE] Sciclient Get Version            :       6798us 
+      [BOOTLOADER PROFILE] PBIST Positive Tests             :        214us 
+      [BOOTLOADER PROFILE] PBIST Negative Tests             :        612us 
+      [BOOTLOADER PROFILE] MCU R5 Image Load                :       4541us 
+      [BOOTLOADER PROFILE] DM R5 Image Load                 :       5513us 
+      [BOOTLOADER_PROFILE] SBL Total Time Taken             :      72390us 
+
+      Image loading done, switching to application ...
+      Starting MCU-r5f and 2nd stage bootloader
+
+      SYSFW ABI: 4.0 (firmware rev 0x000b '11.2.10--v11.02.10 (Fancy Rat)')
+      [BOOTLOADER_PROFILE] Boot Media       : eMMC 
+      [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz 
+      [BOOTLOADER_PROFILE] Boot Image Size  : 1380 KB 
+      [BOOTLOADER_PROFILE] Cores present    : 
+      hsm-m4f0-0
+      r5f0-0
+      a530-0
+      c75ss0
+      [BOOTLOADER PROFILE] System_init                      :       1791us 
+      [BOOTLOADER PROFILE] Board_init                       :          0us 
+      [BOOTLOADER PROFILE] Drivers_open                     :      21515us 
+      [BOOTLOADER PROFILE] Board_driversOpen                :          0us 
+      [BOOTLOADER PROFILE] Sciclient Get Version            :       6796us 
+      [BOOTLOADER PROFILE] HSM Image Load                   :       3830us 
+      [BOOTLOADER PROFILE] DM R5 Image Load                 :       6358us 
+      [BOOTLOADER PROFILE] A53 Image Load                   :      17071us 
+      [BOOTLOADER PROFILE] DSP Image Load                   :       5594us 
+      [BOOTLOADER_PROFILE] SBL Total Time Taken             :      62959us 
+
+      Image loading done, switching to application ...
+      Starting linux and RTOS/Baremetal applications
+      
+- Congratulations now the EVM is flashed with your application and you don't need CCS anymore to run the application.
+
+
+## Getting ready to flash the application 
 
 - A quick recap of steps done so far that are needed for the flashing to work
   - Make sure the UART port used for terminal is identified as mentioned in \ref CCS_UART_TERMINAL
@@ -113,7 +337,7 @@ The HSM app image is to be generated to flash along with your application for MC
     \endcode
 
 
-## Flashing the application
+## Flashing the application 
 
 - Build all the binaries
     - For Linux
@@ -302,3 +526,8 @@ The HSM app image is to be generated to flash along with your application for MC
 
 
 - Congratulations now the EVM is flashed with your application and you don't need CCS anymore to run the application.
+
+
+\note
+It is recommended to flash using snagfactory for AM62x, AM62Ax, am62dx, AM62Dx.
+

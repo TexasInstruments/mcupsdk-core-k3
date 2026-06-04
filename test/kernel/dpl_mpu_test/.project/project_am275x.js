@@ -5,6 +5,7 @@ let device = "am275x";
 const files_rtos = {
     common: [
         "test_core_r5_mpu.c",
+        "test_mpu_multi_thread.c",
         "main.c",
     ],
 };
@@ -120,26 +121,36 @@ const defines_wkup_r5f = {
     ],
 };
 
+const cflags_free_rtos = {
+    common: [
+        "-DENABLE_MT_TESTS",
+    ],
+};
+
 const cflags_freertos_r5f0_0 = {
     common: [
+        "-DENABLE_MT_TESTS",
         "-DR5FSS0_0",
     ],
 };
 
 const cflags_freertos_r5f0_1 = {
     common: [
+        "-DENABLE_MT_TESTS",
         "-DR5FSS0_1",
     ],
 };
 
 const cflags_freertos_r5f1_0 = {
     common: [
+        "-DENABLE_MT_TESTS",
         "-DR5FSS1_0",
     ],
 };
 
 const cflags_freertos_r5f1_1 = {
     common: [
+        "-DENABLE_MT_TESTS",
         "-DR5FSS1_1",
     ],
 };
@@ -265,6 +276,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_wkup_r5f;
         build_property.templates = templates_freertos_wkup_r5f;
         build_property.defines = defines_wkup_r5f;
+        build_property.cflags = cflags_free_rtos;
     }
     else if(buildOption.cpu.match(/r5f*/)) {
         build_property.defines = defines_common;
@@ -274,6 +286,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos;
             build_property.libs = libs_freertos_r5f;
             build_property.templates = templates_freertos_r5f;
+            build_property.cflags = cflags_free_rtos;
             if (buildOption.cpu.match("r5fss0-0"))
             {
                 build_property.cflags = cflags_freertos_r5f0_0;

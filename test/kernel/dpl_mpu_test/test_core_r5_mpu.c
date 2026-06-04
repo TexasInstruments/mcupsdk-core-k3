@@ -243,6 +243,10 @@ void test_main(void *args)
     RUN_TEST(TestMpu_normalMemoryType, 10070, NULL);
     #if !defined (DM_R5FSS)
     RUN_TEST(TestMpu_regionPriorityOverlap, 10078, NULL);
+
+    #if defined (ENABLE_MT_TESTS)
+    run_multi_threaded_tests(NULL);
+    #endif
     #endif
 
     UNITY_END();

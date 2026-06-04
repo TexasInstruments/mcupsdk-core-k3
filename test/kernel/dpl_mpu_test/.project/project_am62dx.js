@@ -5,6 +5,7 @@ let device = "am62dx";
 const files_rtos = {
     common: [
         "test_core_r5_mpu.c",
+        "test_mpu_multi_thread.c",
         "main.c",
     ],
 };
@@ -170,6 +171,12 @@ const defines_dm_r5f = {
     ],
 }
 
+const cflags_free_rtos = {
+    common: [
+        "-DENABLE_MT_TESTS",
+    ],
+};
+
 const syscfgfile = "../example.syscfg";
 
 
@@ -292,6 +299,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos;
             build_property.libs = libs_freertos_r5f;
             build_property.templates = templates_freertos_mcu_r5f;
+            build_property.cflags =  cflags_free_rtos;
         }
         else
         {
@@ -310,6 +318,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_dm_r5f;
             build_property.templates = templates_freertos_dm_r5f;
             build_property.defines = defines_dm_r5f;
+            build_property.cflags =  cflags_free_rtos;
         }
         else
         {

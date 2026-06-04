@@ -93,6 +93,7 @@ extern int32_t core_r5_pmuTest(void);
 extern int32_t core_r5_cacheTest();
 extern int32_t core_r5_hardErrTest(void);
 extern int32_t core_r5_Test_mpu_init(void);
+void run_multi_threaded_tests(void *args);
 void *TestMpu_getExecBase(void);
 
 #endif /* CSL_CORE_R5_TEST_H */

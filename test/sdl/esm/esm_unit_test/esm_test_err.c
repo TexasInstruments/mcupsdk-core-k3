@@ -40,6 +40,7 @@
 
 #include "esm_test_main.h"
 #include <sdl/sdl_esm.h>
+#include <sdl/dpl/sdl_dpl.h>
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/AddrTranslateP.h>
 #if defined (SOC_AM64X)
@@ -553,6 +554,20 @@ int32_t SDL_ESM_runNegativeTests(void)
     }
 
 
+
+    if (testStatus == SDL_APP_TEST_PASS)
+    {
+        instance = SDL_ESM_INSTANCE_MAX;
+        if ((SDL_ESM_init(instance, NULL, SDL_ESM_applicationCallbackFunction, &apparg)) != SDL_EBADARGS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+        }
+    }
+    if (testStatus != SDL_APP_TEST_PASS)
+    {
+        DebugP_log("SDLEsm_negTest: failure on line no. %d \r\n", __LINE__);
+        return (testStatus);
+    }
 
     if (testStatus == SDL_APP_TEST_PASS)
     {
@@ -1286,6 +1301,36 @@ int32_t SDL_ESM_runNegativeTests(void)
 
 /* sdl_ip_esm.c APIs end     */
 
+/* Test for SDL_ESM_init Hi interrupt register failure (line 344 false branch coverage) */
+    if (testStatus == SDL_APP_TEST_PASS)
+    {
+        extern SDL_DPL_Interface *gSDL_DPL_Interface;
+        SDL_DPL_Interface savedInterface;
+        instance = APP_ESM_TEST_INST;
+
+        /* Save current DPL interface */
+        if (gSDL_DPL_Interface != NULL)
+        {
+            savedInterface = *gSDL_DPL_Interface;
+
+            /* Replace registerInterrupt with NULL to force failure */
+            gSDL_DPL_Interface->registerInterrupt = NULL;
+
+            /* Try ESM init - should fail at line 344 when registering Hi interrupt */
+            pCofnig.enableBitmap[0] = 0x1u;
+            pCofnig.priorityBitmap[0] = 0x1u;
+            pCofnig.errorpinBitmap[0] = 0x1u;
+
+            if (SDL_ESM_init(instance, &pCofnig, SDL_ESM_applicationCallbackFunction, &apparg) == SDL_PASS)
+            {
+                testStatus = SDL_APP_TEST_FAILED;
+                DebugP_log("SDLEsm_negTest: failure on line no. %d (ESM init should fail with NULL register)\r\n", __LINE__);
+            }
+
+            /* Restore original interface */
+            *gSDL_DPL_Interface = savedInterface;
+        }
+    }
 
     return (testStatus);
 }

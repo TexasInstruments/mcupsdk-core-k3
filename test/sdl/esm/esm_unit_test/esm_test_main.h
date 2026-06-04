@@ -68,6 +68,7 @@ typedef struct sdlEsmTest_s
 extern volatile uint32_t ESM_callbackInvokedInInterrupt;
 extern volatile uint32_t ESM_callbackInst;
 extern volatile uint32_t ESM_callbackInterruptNum;
+extern volatile SDL_ESM_IntType ESM_callbackInterruptPri;
 
 /*===========================================================================*/
 /*                         Macros                                            */

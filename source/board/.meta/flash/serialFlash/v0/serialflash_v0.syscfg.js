@@ -114,8 +114,8 @@ Here 'x' can be 0 or 1.
 
 `
 let seq888Description = `
-Sequence to enable 4-4-4 mode from 1-1-1 mode changes from flash to flash. According to the JEDEC standards,
-these are the different sequences  for enabling 4-4-4 mode. This is an array of 5 binary flags.
+Sequence to enable 8-8-8 mode from 1-1-1 mode changes from flash to flash. According to the JEDEC standards,
+these are the different sequences  for enabling 8-8-8 mode. This is an array of 5 binary flags.
 Each flag denotes an operation. Depending on which flag is set, that operation needs to be done.
 
 Here 'x' can be 0 or 1.

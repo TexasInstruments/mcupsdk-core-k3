@@ -148,37 +148,41 @@ static void SDL_ESM_processInterruptSource(uint32_t esmInstBaseAddr,
 
     SDL_ESM_selectEsmInst(esmInstType,&SDL_ESM_instance);
 
-    if (intSrc != NO_EVENT_VALUE) {
-        if (intSrc < (BITS_PER_WORD*SDL_ESM_MAX_EVENT_MAP_NUM_WORDS)) {
-            SDL_ESM_getGroupNumberIndex(intSrc, &groupNumber, &intIndex);
-            if((SDL_ESM_instance->esmInitConfig.enableBitmap[groupNumber]
-               & (((uint32_t)MASK_BIT)<<intIndex)) != INVALID_BIT) {
-                /* Check if this is due to self test */
-                if((groupNumber
-                    == SDL_ESM_instance->esmInitConfig.esmErrorConfig.groupNumber) &&
-                   (intIndex ==  SDL_ESM_instance->esmInitConfig.esmErrorConfig.bitNumber)){
-                    SDL_ESM_selfTestCallback(SDL_ESM_instance);
-                    isHandled = (int32_t)FLAG_YES;
-                }
-                else if((SDL_ESM_instance->eccenableBitmap[groupNumber]
-                        & (((uint32_t)MASK_BIT)<<intIndex)) != INVALID_BIT) {
-                    isHandled = SDL_ESM_instance->eccCallBackFunction(esmInstType, esmIntType,
-                                                                      groupNumber, intIndex,
-                                                                      intSrc, SDL_ESM_instance->eccCallBackFunctionArg);
-                }
-                else
-                {
-                    isHandled = (int32_t)FLAG_NO;
-                }
+    if (intSrc < (BITS_PER_WORD*SDL_ESM_MAX_EVENT_MAP_NUM_WORDS)) {
+        SDL_ESM_getGroupNumberIndex(intSrc, &groupNumber, &intIndex);
+        /**
+         * TI_COVERAGE_GAP_START [Branch Coverage] The branch condition is dependent on hardware failure or intermittent interrupt enabling/disabling. This cannot be covered in normal test flow
+         * TI_COVERAGE_UNIT_EFFECT In normal behaviour it is expected that this branch is not covered
+         */
+        if((SDL_ESM_instance->esmInitConfig.enableBitmap[groupNumber]
+        /* TI_COVERAGE_GAP_STOP */
+            & (((uint32_t)MASK_BIT)<<intIndex)) != INVALID_BIT) 
+        {
+            /* Check if this is due to self test */
+            if((groupNumber
+                == SDL_ESM_instance->esmInitConfig.esmErrorConfig.groupNumber) &&
+                (intIndex ==  SDL_ESM_instance->esmInitConfig.esmErrorConfig.bitNumber)){
+                SDL_ESM_selfTestCallback(SDL_ESM_instance);
+                isHandled = (int32_t)FLAG_YES;
             }
-            if (isHandled != (int32_t)FLAG_YES)
+            else if((SDL_ESM_instance->eccenableBitmap[groupNumber]
+                    & (((uint32_t)MASK_BIT)<<intIndex)) != INVALID_BIT) {
+                isHandled = SDL_ESM_instance->eccCallBackFunction(esmInstType, esmIntType,
+                                                                    groupNumber, intIndex,
+                                                                    intSrc, SDL_ESM_instance->eccCallBackFunctionArg);
+            }
+            else
             {
-                (void)SDL_ESM_instance->callback(esmInstType, esmIntType,
-                                                 groupNumber, intIndex,
-                                                 intSrc, SDL_ESM_instance->arg);
+                isHandled = (int32_t)FLAG_NO;
             }
-            (void)SDL_ESM_clearIntrStatus(esmInstBaseAddr, intSrc);
         }
+        if (isHandled != (int32_t)FLAG_YES)
+        {
+            (void)SDL_ESM_instance->callback(esmInstType, esmIntType,
+                                                groupNumber, intIndex,
+                                                intSrc, SDL_ESM_instance->arg);
+        }
+        (void)SDL_ESM_clearIntrStatus(esmInstBaseAddr, intSrc);
     }
     return;
 }
@@ -224,10 +228,20 @@ static void SDL_ESM_interruptHandler (uint32_t esmInstBaseAddr,
 
         SDL_ESM_processInterruptSource((uint32_t)esmInstBaseAddr, esmIntType, intSrc2, arg);
 
+        /**
+         * TI_COVERAGE_GAP_START [Branch Coverage] The branch condition is dependent on intermittent special interrupt being triggered. This cannot be covered during normal test flow
+         * TI_COVERAGE_UNIT_EFFECT In normal behaviour it is expected that this branch is not covered
+         */
         if (SDL_ESM_checkSpecialEvent(esmInstBaseAddr, (uint32_t)esmIntrPriorityLvlType, &base_addr,
                                       &esm_inst, &isCfgIntr) == true)
+        /* TI_COVERAGE_GAP_STOP */
         {
+            /**
+             * TI_COVERAGE_GAP_START [Statement Coverage] Statement coverage here is dependent on branch coverage at line 235
+             * TI_COVERAGE_UNIT_EFFECT In normal behaviour it is expected that this statement is not covered
+             */
             break;
+            /* TI_COVERAGE_GAP_STOP */
         }
     } while ((intSrc1 != (uint32_t)(NO_EVENT_VALUE)) || (intSrc2 != (uint32_t)(NO_EVENT_VALUE)));
 

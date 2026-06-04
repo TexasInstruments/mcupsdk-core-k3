@@ -172,7 +172,7 @@ int32_t SDL_ESM_verifyConfig(SDL_ESM_Inst instance, const SDL_ESM_config *pCofni
     {
         SDL_ESM_getMaxNumEvents(instance, &esmMaxNumevents);
         /* ESM reset and configure */
-        for (i=0; i < (esmMaxNumevents/BITS_PER_WORD); i++)
+        for (i=0; i <= (esmMaxNumevents/BITS_PER_WORD); i++)
         {
             uint32_t remainingBits = esmMaxNumevents - (i*BITS_PER_WORD);
 
@@ -259,10 +259,15 @@ int32_t SDL_ESM_clrNError(SDL_ESM_Inst esmInstType)
         result = SDL_ESM_resetErrPin((uint32_t)esmInstBaseAddr);
         (void)SDL_ESM_getErrPinStatus((uint32_t)esmInstBaseAddr, &status);
 
+        /**
+         * TI_COVERAGE_GAP_START [Branch/Statement Coverage] The branch condition is dependent on hardware failure
+         * TI_COVERAGE_UNIT_EFFECT This is the expected behaviour
+         */
         if (status != ((uint32_t)1U))
         {
             result = SDL_EFAIL;
         }
+        /* TI_COVERAGE_GAP_STOP */
     }
 
     return result;
@@ -351,30 +356,29 @@ static SDL_Result Esmhandlerinit(SDL_ESM_Inst esmInstType)
 
         /* Register call back function for ESM Lo Interrupt */
         result = SDL_DPL_registerInterrupt(&intrParams, &SDL_ESM_LoHwiPHandle);
+    }
+    if (result == SDL_PASS)
+    {
+        intrParams.intNum = intNumCfg;
+        intrParams.callback = (*pConfigInterruptHandler);
+        intrParams.callbackArg = esmInstType;
 
-        if (result == SDL_PASS)
-        {
-            intrParams.intNum = intNumCfg;
-            intrParams.callback = (*pConfigInterruptHandler);
-            intrParams.callbackArg = esmInstType;
-
-            /* Register call back function for ESM Config Interrupt */
-            result = SDL_DPL_registerInterrupt(&intrParams, &SDL_ESM_CfgHwiPHandle);
-        }
+        /* Register call back function for ESM Config Interrupt */
+        result = SDL_DPL_registerInterrupt(&intrParams, &SDL_ESM_CfgHwiPHandle);
     }
 
     /* Enable all ESM Interrupts */
     if (result == SDL_PASS)
     {
         result = SDL_DPL_enableInterrupt(intNumHi);
-        if (result == SDL_PASS)
-        {
-            result = SDL_DPL_enableInterrupt(intNumLo);
-            if (result == SDL_PASS)
-            {
-                result = SDL_DPL_enableInterrupt(intNumCfg);
-            }
-        }
+    }
+    if (result == SDL_PASS)
+    {
+        result = SDL_DPL_enableInterrupt(intNumLo);
+    }
+    if (result == SDL_PASS)
+    {
+        result = SDL_DPL_enableInterrupt(intNumCfg);
     }
 
     return result;
@@ -396,7 +400,7 @@ static SDL_Result ESM_init (const SDL_ESM_Inst esmInstType,
                             void *arg)
 {
     SDL_Result result = SDL_PASS;
-    int32_t SDLRet;
+    int32_t SDLRet = SDL_PASS;
     uint32_t intNum;
     uint32_t i,j;
     uint32_t intStatus;
@@ -440,26 +444,32 @@ static SDL_Result ESM_init (const SDL_ESM_Inst esmInstType,
         {
             uint32_t remainingBits = esmMaxNumevents - (i*BITS_PER_WORD);
 
-            /* Enable the configuration interrupt for this group */
-            SDLRet = SDL_ESM_clearCfgIntrStatus(esmInstBaseAddr, i);
-            if (SDLRet == SDL_PASS)
+            /*
+             * Enable the configuration interrupt for this group.
+             * We discard the return values because it is guaranteed
+             * to succeed, due to prior checks of the parameters
+             */
+            SDL_ESM_clearCfgIntrStatus(esmInstBaseAddr, i);
+            SDL_ESM_getCfgIntrStatus(esmInstBaseAddr, i, &intStatus);
+            /**
+             * TI_COVERAGE_GAP_START [Branch/Statement Coverage] The branch condition is dependent on hardware failure
+             * TI_COVERAGE_UNIT_EFFECT This is the expected behaviour
+             */
+            if (intStatus != ((uint32_t)0))
             {
-                SDLRet = SDL_ESM_getCfgIntrStatus(esmInstBaseAddr, i, &intStatus);
+                SDLRet = SDL_EFAIL;
             }
+            /* TI_COVERAGE_GAP_STOP */
+            /**
+             * TI_COVERAGE_GAP_START [Branch Coverage] The branch condition is dependent on previous branch condition 
+             * TI_COVERAGE_UNIT_EFFECT Previous condition is dependent on hardware failure. This is the expected behaviour
+             */
             if (SDLRet == SDL_PASS)
+            /* TI_COVERAGE_GAP_STOP */
             {
-                if (intStatus != ((uint32_t)0))
-                {
-                    SDLRet = SDL_EFAIL;
-                }
-            }
-            if (SDLRet == SDL_PASS)
-            {
-                SDLRet = SDL_ESM_enableCfgIntr(esmInstBaseAddr, i);
-                if (SDLRet == SDL_PASS)
-                {
-                    SDLRet = SDL_ESM_isEnableCfgIntr(esmInstBaseAddr, i, &intStatus);
-                }
+                /* Return values are discarded for same reasons as above */
+                SDL_ESM_enableCfgIntr(esmInstBaseAddr, i);
+                SDL_ESM_isEnableCfgIntr(esmInstBaseAddr, i, &intStatus);
             }
 
             if (remainingBits > BITS_PER_WORD){
@@ -483,89 +493,120 @@ static SDL_Result ESM_init (const SDL_ESM_Inst esmInstType,
 
                     (void)SDL_ESM_enableIntr(esmInstBaseAddr, intNum);
 
-                    SDLRet = SDL_ESM_isEnableIntr(esmInstBaseAddr, intNum, &intStatus);
+                    /* Previous checks ensure API success, so return value is discarded */
+                    SDL_ESM_isEnableIntr(esmInstBaseAddr, intNum, &intStatus);
 
+                    /**
+                     * TI_COVERAGE_GAP_START [Branch/Statement Coverage] The branch condition is dependent on hardware failure
+                     * TI_COVERAGE_UNIT_EFFECT This is the expected behaviour
+                     */
                     if (intStatus != ((uint32_t)STATUS_NUM))
                     {
                         SDLRet = SDL_EFAIL;
                     }
+                    /* TI_COVERAGE_GAP_STOP */
 
                     /* Set interrupt priority level and verifiy if priority level is set */
+                    /**
+                     * TI_COVERAGE_GAP_START [Branch Coverage] The branch condition is dependent on previous branch condition
+                     * TI_COVERAGE_UNIT_EFFECT Previous condition is dependent on hardware failure. This is the expected behaviour
+                     */
                     if (SDLRet == SDL_PASS)
+                    /* TI_COVERAGE_GAP_STOP */
                     {
                         intrPriorityLvlWr = ((esmInitConfig->priorityBitmap[i]
                                             & (((uint32_t)1u)<<j)) != 0u)?1u:0u;
-                        SDLRet = SDL_ESM_setIntrPriorityLvl(esmInstBaseAddr,
-                                                            intNum,
-                                                            intrPriorityLvlWr);
-                    }
-                    if (SDLRet == SDL_PASS)
-                    {
-                        SDLRet = SDL_ESM_getIntrPriorityLvl(esmInstBaseAddr,
-                                                            intNum,
-                                                            &intrPriorityLvlRd);
-                    }
-                    if (SDLRet == SDL_PASS)
-                    {
+                        /* Previous checks ensure API success, so return values are discarded */
+                        SDL_ESM_setIntrPriorityLvl(esmInstBaseAddr,
+                                                   intNum,
+                                                   intrPriorityLvlWr);
+                        SDL_ESM_getIntrPriorityLvl(esmInstBaseAddr,
+                                                   intNum,
+                                                   &intrPriorityLvlRd);
+                        /**
+                         * TI_COVERAGE_GAP_START [Branch/Statement Coverage] The branch condition is dependent on hardware failure
+                         * TI_COVERAGE_UNIT_EFFECT This is the expected behaviour
+                         */
                         if (intrPriorityLvlWr != intrPriorityLvlRd)
                         {
                             SDLRet = SDL_EFAIL;
                         }
+                        /* TI_COVERAGE_GAP_STOP */
                     }
                 }
 
                 /*
                  * Depending on the bitmap configuration set error output
                  * and verify if error output is set */
+                /**
+                 * TI_COVERAGE_GAP_START [Branch Coverage] The branch condition is dependent on previous branch condition
+                 * TI_COVERAGE_UNIT_EFFECT Previous condition is dependent on hardware failure. This is the expected behaviour
+                 */
                 if (SDLRet == SDL_PASS)
+                /* TI_COVERAGE_GAP_STOP */
                 {
                     enableWr = ((esmInitConfig->errorpinBitmap[i]
                                  & (((uint32_t)MASK_BIT)<<j)) != 0u)?(bool)true:(bool)false;
-                    SDLRet = SDL_ESM_setInfluenceOnErrPin(esmInstBaseAddr,
-                                                          intNum,
-                                                          enableWr);
-                }
-                if (SDLRet == SDL_PASS)
-                {
-                    SDLRet = SDL_ESM_getInfluenceOnErrPin(esmInstBaseAddr,
-                                                          intNum,
-                                                          &influence);
-                }
-                if (SDLRet == SDL_PASS)
-                {
+                    /* Previous checks ensure API success, so return values are discarded */
+                    SDL_ESM_setInfluenceOnErrPin(esmInstBaseAddr,
+                                                 intNum,
+                                                 enableWr);
+                    SDL_ESM_getInfluenceOnErrPin(esmInstBaseAddr,
+                                                 intNum,
+                                                 &influence);
                     enableRd = (influence != 0u)?(bool)true:(bool)false;
+                    /**
+                     * TI_COVERAGE_GAP_START [Branch/Statement Coverage] The branch condition is dependent on hardware failure
+                     * TI_COVERAGE_UNIT_EFFECT This is the expected behaviour
+                     */
                     if (enableWr != enableRd)
                     {
                         SDLRet = SDL_EFAIL;
                     }
+                    /* TI_COVERAGE_GAP_STOP */
                 }
+                /**
+                 * TI_COVERAGE_GAP_START [Branch/Statement Coverage] The branch condition is dependent on previous branch condition
+                 * TI_COVERAGE_UNIT_EFFECT Previous condition is dependent on hardware failure. This is the expected behaviour
+                 */
                 if (SDLRet != SDL_PASS)
                 {
                     break;
                 }
+                /* TI_COVERAGE_GAP_STOP */
             }
         }
 
         /* Enable Global interrupt and verify if global interrupt is enabled for ESM */
+        /**
+         * TI_COVERAGE_GAP_START [Branch Coverage] The branch condition is dependent on previous branch condition
+         * TI_COVERAGE_UNIT_EFFECT These conditions are dependent on hardware failure. This is the expected behaviour
+         */
         if (SDLRet == SDL_PASS)
+        /* TI_COVERAGE_GAP_STOP */
         {
-            SDLRet = SDL_ESM_enableGlobalIntr(esmInstBaseAddr);
-        }
-        if (SDLRet == SDL_PASS)
-        {
-            SDLRet = SDL_ESM_getGlobalIntrEnabledStatus(esmInstBaseAddr, &intStatus);
-        }
-        if (SDLRet == SDL_PASS)
-        {
+            /* Previous checks ensure API success, so return values are discarded */
+            SDL_ESM_enableGlobalIntr(esmInstBaseAddr);
+            SDL_ESM_getGlobalIntrEnabledStatus(esmInstBaseAddr, &intStatus);
+            /**
+             * TI_COVERAGE_GAP_START [Branch/Statement Coverage] The branch condition is dependent on hardware failure
+             * TI_COVERAGE_UNIT_EFFECT This is the expected behaviour
+             */
             if (intStatus != SDL_ESM_EN_KEY_ENBALE_VAL)
             {
                 SDLRet = SDL_EFAIL;
             }
+            /* TI_COVERAGE_GAP_STOP */
         }
+        /**
+         * TI_COVERAGE_GAP_START [Branch/Statement Coverage] The branch condition is dependent on prior failures
+         * TI_COVERAGE_UNIT_EFFECT These prior failures are dependent on hardware failure. This is the expected behaviour
+         */
         if (SDLRet != SDL_PASS)
         {
             result = SDL_EFAIL;
         }
+        /* TI_COVERAGE_GAP_STOP */
     }
     return result;
 }
@@ -644,91 +685,78 @@ int32_t SDL_ESM_setPinOutMode(SDL_ESM_Inst instance, esmErrOutMode_t pinOutMode)
         /* In SDL_ESM_init API, global interrupt are enabled so here
            it should get disabled before change outPut mode.
         */
-        /* Disable global interrupt */
-        sdlRet = SDL_ESM_disableGlobalIntr(baseAddr);
+        /* Disable global interrupt, return value is discarded because previous check guarantees API to pass */
+        SDL_ESM_disableGlobalIntr(baseAddr);
 
-        if (sdlRet == SDL_PASS)
+        if (pinOutMode == SDL_ESM_PWM_PINOUT)
         {
-            if (pinOutMode == SDL_ESM_PWM_PINOUT)
-            {
-                /* Enable PWM error Ouptput */
-                HW_WR_FIELD32(baseAddr + SDL_ESM_PIN_CTRL, SDL_ESM_PIN_CTRL_PWM_EN, SDL_ESM_PWM_PINOUT);
-                /* Verify PWM error Ouptput */
-                pinOutVal = HW_RD_FIELD32(baseAddr + SDL_ESM_PIN_CTRL, SDL_ESM_PIN_CTRL_PWM_EN);
-
-                /**
-                 * TI_COVERAGE_GAP_START [Branch Coverage] The branch condition is dependent on hardware failure,which is not possible to force in testing
-                 * TI_COVERAGE_UNIT_EFFECT Since we can not force the condition in testing, pinOutVal == SDL_ESM_PWM_PINOUT will always be true.This is expected behaviour
-                 */
-                if (pinOutVal == SDL_ESM_PWM_PINOUT)
-                /* TI_COVERAGE_GAP_STOP */
-                {
-                    retVal = SDL_PASS;
-                }
-            }
-            else if(pinOutMode == SDL_ESM_LVL_PINOUT)
-            {
-                /* Enable LVL error Ouptput */
-                HW_WR_FIELD32(baseAddr + SDL_ESM_PIN_CTRL, SDL_ESM_PIN_CTRL_PWM_EN, SDL_ESM_LVL_PINOUT);
-                /* Verify PWM error Ouptput */
-                pinOutVal = HW_RD_FIELD32(baseAddr + SDL_ESM_PIN_CTRL, SDL_ESM_PIN_CTRL_PWM_EN);
-
-                /**
-                 * TI_COVERAGE_GAP_START [Branch Coverage] The branch condition is dependent on hardware failure,which is not possible to force in testing
-                 * TI_COVERAGE_UNIT_EFFECT Since we can not force the condition in testing, pinOutVal == SDL_ESM_LVL_PINOUT will always be true.This is expected behaviour
-                 */
-                if (pinOutVal == SDL_ESM_LVL_PINOUT)
-                /* TI_COVERAGE_GAP_STOP */
-                {
-                    retVal = SDL_PASS;
-                }
-            }
-            else
-            {
-                /*else condition has been added for satisfying misra compliance, MISRA.IF.NO_ELSE */
-            }
-            /* global interrupt are disabled, enable again global interrupt */
-            sdlRet = SDL_ESM_enableGlobalIntr(baseAddr);
+            /* Enable PWM error Ouptput */
+            HW_WR_FIELD32(baseAddr + SDL_ESM_PIN_CTRL, SDL_ESM_PIN_CTRL_PWM_EN, SDL_ESM_PWM_PINOUT);
+            /* Verify PWM error Ouptput */
+            pinOutVal = HW_RD_FIELD32(baseAddr + SDL_ESM_PIN_CTRL, SDL_ESM_PIN_CTRL_PWM_EN);
 
             /**
              * TI_COVERAGE_GAP_START [Branch Coverage] The branch condition is dependent on hardware failure,which is not possible to force in testing
-             * TI_COVERAGE_UNIT_EFFECT Since we can not force the condition in testing, sdlRet == SDL_PASS will always be true.This is expected behaviour
+             * TI_COVERAGE_UNIT_EFFECT Since we can not force the condition in testing, pinOutVal == SDL_ESM_PWM_PINOUT will always be true.This is expected behaviour
              */
-            if (sdlRet == SDL_PASS)
+            if (pinOutVal == SDL_ESM_PWM_PINOUT)
             /* TI_COVERAGE_GAP_STOP */
             {
-                sdlRet = SDL_ESM_getGlobalIntrEnabledStatus(baseAddr, &intStatus);
+                retVal = SDL_PASS;
             }
+        }
+        else if(pinOutMode == SDL_ESM_LVL_PINOUT)
+        {
+            /* Enable LVL error Ouptput */
+            HW_WR_FIELD32(baseAddr + SDL_ESM_PIN_CTRL, SDL_ESM_PIN_CTRL_PWM_EN, SDL_ESM_LVL_PINOUT);
+            /* Verify PWM error Ouptput */
+            pinOutVal = HW_RD_FIELD32(baseAddr + SDL_ESM_PIN_CTRL, SDL_ESM_PIN_CTRL_PWM_EN);
 
             /**
              * TI_COVERAGE_GAP_START [Branch Coverage] The branch condition is dependent on hardware failure,which is not possible to force in testing
-             * TI_COVERAGE_UNIT_EFFECT Since we can not force the condition in testing, sdlRet == SDL_PASS will always be true.This is expected behaviour
+             * TI_COVERAGE_UNIT_EFFECT Since we can not force the condition in testing, pinOutVal == SDL_ESM_LVL_PINOUT will always be true.This is expected behaviour
              */
-            if (sdlRet == SDL_PASS)
+            if (pinOutVal == SDL_ESM_LVL_PINOUT)
             /* TI_COVERAGE_GAP_STOP */
             {
+                retVal = SDL_PASS;
+            }
+        }
+        else
+        {
+            /*else condition has been added for satisfying misra compliance, MISRA.IF.NO_ELSE */
+        }
+        /* global interrupt are disabled, enable again global interrupt */
+        sdlRet = SDL_ESM_enableGlobalIntr(baseAddr);
 
-                /**
-                 * TI_COVERAGE_GAP_START [Statement Coverage] The branch condition is dependent on hardware failure,which is not possible to force in testing
-                 * TI_COVERAGE_UNIT_EFFECT Since we can not force the condition in testing, intStatus will always be SDL_ESM_EN_KEY_ENBALE_VAL.This is expected behaviour
-                 */
-                if (intStatus != SDL_ESM_EN_KEY_ENBALE_VAL)
-                {
-                    sdlRet = SDL_EFAIL;
-                }
-            }
-            if (sdlRet != SDL_PASS)
-            {
-                retVal = SDL_EFAIL;
-            }
-            /* TI_COVERAGE_GAP_STOP */
+        /**
+         * TI_COVERAGE_GAP_START [Branch Coverage] The branch condition is dependent on hardware failure,which is not possible to force in testing
+         * TI_COVERAGE_UNIT_EFFECT Since we can not force the condition in testing, sdlRet == SDL_PASS will always be true.This is expected behaviour
+         */
+        if (sdlRet == SDL_PASS)
+        /* TI_COVERAGE_GAP_STOP */
+        {
+            sdlRet = SDL_ESM_getGlobalIntrEnabledStatus(baseAddr, &intStatus);
         }
 
         /**
-         * TI_COVERAGE_GAP_START [Statement Coverage] The branch condition is dependent on SDL_ESM_disableGlobalIntr hardware failure,which is not possible to force in testing
+         * TI_COVERAGE_GAP_START [Branch Coverage] The branch condition is dependent on hardware failure,which is not possible to force in testing
          * TI_COVERAGE_UNIT_EFFECT Since we can not force the condition in testing, sdlRet == SDL_PASS will always be true.This is expected behaviour
          */
-        else
+        if (sdlRet == SDL_PASS)
+        /* TI_COVERAGE_GAP_STOP */
+        {
+
+        /**
+         * TI_COVERAGE_GAP_START [Branch/Statement Coverage] The branch condition is dependent on hardware failure,which is not possible to force in testing
+         * TI_COVERAGE_UNIT_EFFECT Since we can not force the condition in testing, intStatus will always be SDL_ESM_EN_KEY_ENBALE_VAL.This is expected behaviour
+         */
+            if (intStatus != SDL_ESM_EN_KEY_ENBALE_VAL)
+            {
+                sdlRet = SDL_EFAIL;
+            }
+        }
+        if (sdlRet != SDL_PASS)
         {
             retVal = SDL_EFAIL;
         }

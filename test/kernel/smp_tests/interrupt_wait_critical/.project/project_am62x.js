@@ -75,7 +75,7 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "FreeRTOS",
-        testCaseName: "FreeRTOS-SMP : Interrupt Wait Critical",
+        testCaseName: "FreeRTOS-SMP: Interrupt Wait Critical",
         testCaseIds: "SITSW-7522",
         expectTimeout: 120,
     },

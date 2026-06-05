@@ -171,17 +171,26 @@ function getComponentProperty() {
     return property;
 }
 
-const robot_template = {
-    input: ".project/templates/am62x/astra/tests.robot.xdt",
+const robot_template_common_options = {
+    componentName: "RTC",
+    testCaseName: "RTC Test Application",
+    appName: "test_rtc",
+    testCaseIds: "SITSW-5822 SITSW-5823 SITSW-5824",
+    withCfg: true,
+    cfgPath: "test/drivers/rtc/{board}/{coreName}/default_test_rtc_${DEVICE_TYPE}.cfg",
+    expectTimeout: 120,
+};
+
+const robot_template_nor = {
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
-    options: {
-        componentName: "RTC",
-        testCaseName: "RTC Time Validation Test",
-        appName: "test_rtc",
-        testCaseIds: "SITSW-5822 SITSW-5823 SITSW-5824",
-        withCfg: true,
-        cfgPath: "test/drivers/rtc/{board}/{coreName}/default_test_rtc_${DEVICE_TYPE}.cfg",
-    },
+    options: { ...robot_template_common_options, bootMode: "OSPI_NOR_BOOT_MODE" },
+};
+
+const robot_template_nand = {
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: { ...robot_template_common_options, bootMode: "OSPI_NAND_BOOT_MODE" },
 };
 
 function getComponentBuildProperty(buildOption) {
@@ -209,6 +218,7 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
+    const robot_template = (buildOption.board === "am62x-sk-lp") ? robot_template_nand : robot_template_nor;
     build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }

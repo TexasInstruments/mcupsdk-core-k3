@@ -114,6 +114,7 @@ const robot_template = {
         componentName: "DM",
         testCaseName: "Test All logs from DM to be enabled/disabled based on boardconfig",
         testCaseIds: "SITSW-8788",
+        expectedString: "Success",
         timeout: 660,
     },
 };

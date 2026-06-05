@@ -154,7 +154,10 @@ const robot_template = {
         componentName: "RTC",
         testCaseName: "RTC Led Blink Example",
         testCaseIds: "SITSW-6021",
+        withCfg: true,
+        cfgPath: "examples/drivers/rtc/rtc_led_blink/{board}/{coreName}/default_rtc_led_blink_${DEVICE_TYPE}.cfg",
         expectedString: "RTC LED blink test passed!!",
+        timeout: 300,
     },
 };
 

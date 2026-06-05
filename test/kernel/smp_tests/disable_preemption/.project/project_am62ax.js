@@ -100,7 +100,7 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "FreeRTOS",
-        testCaseName: "FreeRTOS-SMP : Disable Preemption",
+        testCaseName: "FreeRTOS-SMP: Disable Preemption",
         testCaseIds: "SITSW-7516",
         expectTimeout: 120,
     },

@@ -105,6 +105,10 @@ const robot_template = {
         testCaseIds: "SITSW-5669",
         cfgPath: "tools/boot/sbl_prebuilt/am275x-evm/sbl_ospi_${DEVICE_TYPE}.cfg",
         bootMode: "XSPI_1S_BOOT_MODE",
+        expectations: [
+            { port: "USB2", string: "Image loading done" },
+            { port: "ACM0", string: "All tests have passed!!" },
+        ],
     },
 };
 

@@ -75,7 +75,7 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "FreeRTOS",
-        testCaseName: "FreeRTOS-SMP : Disable Multiple Priorities",
+        testCaseName: "FreeRTOS-SMP: Disable Multiple Priorities",
         testCaseIds: "SITSW-7490",
         expectTimeout: 120,
     },

@@ -315,7 +315,7 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "MMCSD",
-        testCaseName: "MMCSD: Test SD incorrect CSD  version as 3  fault injection",
+        testCaseName: "MMCSD: Test SD incorrect CSD version as 3 fault injection",
         testCaseIds: "SITSW-8307 SITSW-8320 SITSW-8321 SITSW-8327 SITSW-8693 SITSW-8694 SITSW-8695 SITSW-8696 SITSW-8697 SITSW-8698 SITSW-8699 SITSW-8868 SITSW-8869 SITSW-9246 SITSW-9247 SITSW-9248 SITSW-9249",
     },
 };

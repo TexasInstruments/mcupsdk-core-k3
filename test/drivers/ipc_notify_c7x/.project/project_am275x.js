@@ -231,6 +231,27 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_freertos_c75_1;
         }
     }
+
+    const robot_template = {
+        input: ".project/templates/am275x/astra/tests.robot.xdt",
+        output: "../tests.robot",
+        options: {
+            componentName: "IPC",
+            testCaseName: "test_ipc_notify_c7x test application",
+            appName: "test_ipc_notify_c7x",
+            testCaseIds: "SITSW-9372 SITSW-9390 SITSW-9532 SITSW-9533 SITSW-9534 SITSW-9535 SITSW-9536 SITSW-9537 SITSW-9618 SITSW-9639 " +
+                 "SITSW-9640 SITSW-9642 SITSW-9643 SITSW-9644 SITSW-9645 SITSW-9646 SITSW-9647 SITSW-9648 SITSW-9649 SITSW-9650 " +
+                 "SITSW-9651 SITSW-9652 SITSW-9653 SITSW-9654 SITSW-9655 SITSW-9656 SITSW-9657 SITSW-9761 SITSW-9777 SITSW-9778 " +
+                 "SITSW-9779 SITSW-9780 SITSW-9781 SITSW-9782 SITSW-9784 SITSW-9785 SITSW-9786 SITSW-9787 SITSW-9788 SITSW-9789 " +
+                 "SITSW-9790 SITSW-9791 SITSW-9792 SITSW-9793 SITSW-9794 SITSW-9795 SITSW-9796 SITSW-9797 SITSW-9798 SITSW-9799 " +
+                 "SITSW-9800 SITSW-9801 SITSW-9802 SITSW-9803 SITSW-9804 SITSW-9805 SITSW-9806 SITSW-9807 SITSW-9808 SITSW-9809",
+            withCfg: true,
+            cfgPath: "test/drivers/ipc_notify_c7x/{board}/ipc_notify_test_sbl_uart_${DEVICE_TYPE}.cfg",
+            expectTimeout: 30,
+        },
+    };
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

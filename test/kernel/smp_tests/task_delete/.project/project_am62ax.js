@@ -100,7 +100,7 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "FreeRTOS",
-        testCaseName: "FreeRTOS-SMP : Task Delete",
+        testCaseName: "FreeRTOS-SMP: Task Delete",
         testCaseIds: "SITSW-7540",
         expectTimeout: 120,
     },

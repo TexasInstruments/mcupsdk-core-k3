@@ -267,6 +267,7 @@ const robot_template = {
     options: {
         componentName: "UDMA",
         testCaseName: "UDMA System Test for BlockCopy Transfer",
+        expectTimeout: 360,
         testCaseIds: "SITSW-9520",
         withCfg: true,
         cfgPath: "test/drivers/udma/test_udma_system/{board}/test_udma_system_sbl_uart_${DEVICE_TYPE}.cfg",

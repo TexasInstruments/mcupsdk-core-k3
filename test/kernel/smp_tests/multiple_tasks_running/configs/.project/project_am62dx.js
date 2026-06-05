@@ -71,15 +71,6 @@ function getComponentProperty() {
     return property;
 }
 
-const robot_template = {
-    input: ".project/templates/am62dx/astra/tests.robot.xdt",
-    output: "../tests.robot",
-    options: {
-        componentName: "FreeRTOS",
-        testCaseName: "configs test application",
-        testCaseIds: "SITSW-8376",
-    },
-};
 
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
@@ -90,9 +81,6 @@ function getComponentBuildProperty(buildOption) {
     build_property.filedirs = filedirs;
     build_property.cflags   = cflags;
     build_property.defines = defines;
-
-
-    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

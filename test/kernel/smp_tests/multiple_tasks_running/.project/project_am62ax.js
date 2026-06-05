@@ -100,7 +100,7 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "FreeRTOS",
-        testCaseName: "FreeRTOS-SMP : Test multiple tasks running",
+        testCaseName: "FreeRTOS-SMP: Test multiple tasks running",
         testCaseIds: "SITSW-8382",
     },
 };

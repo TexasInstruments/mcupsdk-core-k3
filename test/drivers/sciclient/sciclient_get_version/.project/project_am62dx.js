@@ -285,7 +285,7 @@ const robot_template = {
     options: {
         componentName: "SCICLIENT",
         testCaseName: "SCICLIENT Get Version Sample Application",
-        testCaseIds: "SITSW-1294",
+        testCaseIds: "SITSW-1296 SITSW-1297 SITSW-1298 SITSW-3075",
     },
 };
 

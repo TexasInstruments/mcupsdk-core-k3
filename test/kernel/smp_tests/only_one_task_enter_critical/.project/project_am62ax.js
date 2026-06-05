@@ -100,7 +100,7 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "FreeRTOS",
-        testCaseName: "FreeRTOS-SMP : Only One Task Enter Critical",
+        testCaseName: "FreeRTOS-SMP: Only One Task Enter Critical",
         testCaseIds: "SITSW-7530",
         expectTimeout: 120,
     },

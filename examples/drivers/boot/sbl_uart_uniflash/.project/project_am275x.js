@@ -71,9 +71,12 @@ const robot_template = {
         testCaseIds: "SITSW-1633",
         cfgPath: "tools/boot/sbl_prebuilt/{board}/sbl_null_${DEVICE_TYPE}.cfg",
         bootMode: "XSPI_1S_BOOT_MODE",
-        expectedString: "SBL Total Time Taken",
         expectTimeout: 300,
         timeout: 400,
+        expectations: [
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+            { port: "USB2", string: "SBL Total Time Taken" },
+        ],
     },
 };
 

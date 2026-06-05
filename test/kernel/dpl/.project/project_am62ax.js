@@ -566,7 +566,8 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (!buildOption.os.match(/threadx/))
+        build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

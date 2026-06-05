@@ -75,7 +75,7 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "FreeRTOS",
-        testCaseName: "FreeRTOS-SMP : Schedule Equal Priority",
+        testCaseName: "FreeRTOS-SMP: Schedule Equal Priority",
         testCaseIds: "SITSW-7536",
         expectTimeout: 120,
     },

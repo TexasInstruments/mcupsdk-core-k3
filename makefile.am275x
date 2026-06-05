@@ -534,10 +534,10 @@ $(BUILD_COMBO_VXLIB_C7524):
 $(BUILD_COMBO_DSPLIB_C7524):
 	$(MAKE) -C source/dsplib -f makefile.am275x.$(subst DSPLIB_C7524_,,$@) all
 
-$(BUILD_COMBO_AUDIOLIB_C7524): $(BUILD_COMBO_DSPLIB_C7524)
+$(BUILD_COMBO_AUDIOLIB_C7524):
 	$(MAKE) -C source/audiolib -f makefile.am275x.$(subst AUDIOLIB_C7524_,,$@) all
 
-$(BUILD_COMBO_TISP_C7524): $(BUILD_COMBO_AUDIOLIB_C7524)
+$(BUILD_COMBO_TISP_C7524):
 	$(MAKE) -C source/tisp -f makefile.am275x.$(subst TISP_C7524_,,$@) all
 
 $(BUILD_COMBO_rm_pm_hal):

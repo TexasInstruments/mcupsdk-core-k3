@@ -101,7 +101,7 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "FreeRTOS",
-        testCaseName: "FreeRTOS-SMP : Only One Task Enter Suspend All",
+        testCaseName: "FreeRTOS-SMP: Only One Task Enter Suspend All",
         testCaseIds: "SITSW-7531",
     },
 };

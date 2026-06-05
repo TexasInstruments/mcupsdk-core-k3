@@ -286,8 +286,9 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "UART",
-        testCaseName: "UART0_RX_TO_TX_Interrupt_115200Baudrate_Default_ReadMode_Partial Test",
-        testCaseIds: "SITSW-1303 SITSW-1304 SITSW-1305",
+        testCaseName: "UART Test Application",
+        testCaseIds: "SITSW-1303 SITSW-1304 SITSW-1305 SITSW-10109 SITSW-10110 SITSW-10111 SITSW-10112 SITSW-10113 SITSW-10114 SITSW-10115 " +
+             "SITSW-10116 SITSW-10117 SITSW-10118 SITSW-10119 SITSW-10121 SITSW-10148 SITSW-10149 SITSW-10150 SITSW-10151 SITSW-10152",
     },
 };
 

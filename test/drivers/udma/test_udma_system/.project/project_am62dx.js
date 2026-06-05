@@ -298,6 +298,7 @@ const robot_template = {
     options: {
         componentName: "UDMA",
         testCaseName: "UDMA System Test for BlockCopy Transfer",
+        expectTimeout: 360,
         testCaseIds: "SITSW-9520",
     },
 };

@@ -104,8 +104,9 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "SCICLIENT",
-        testCaseName: "SCICLIENT test application",
-        testCaseIds: "SITSW-1296 SITSW-1297 SITSW-1298 SITSW-3075",
+        testCaseName: "SCICLIENT Interrupt Mode Test Application",
+        testCaseIds: "SITSW-10496",
+        expectedString: "Total failures: 0",
     },
 };
 

@@ -99,7 +99,7 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "SMP",
-        testCaseName: "FreeRTOS-SMP : Schedule Affinity",
+        testCaseName: "FreeRTOS-SMP: Schedule Affinity",
         testCaseIds: "SITSW-7535",
         expectTimeout: 120,
     },

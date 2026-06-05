@@ -147,15 +147,16 @@ function getComponentProperty() {
 }
 
 const robot_template = {
-    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "RTC",
-        testCaseName: "RTC Off_On Timer Multiple Interrupts Test",
+        testCaseName: "RTC Test Application",
         testCaseIds: "SITSW-5822 SITSW-5823 SITSW-5824",
         withCfg: true,
         cfgPath: "test/drivers/rtc/{board}/{coreName}/default_test_rtc_${DEVICE_TYPE}.cfg",
         appName: "test_rtc",
+        expectTimeout: 120,
     },
 };
 

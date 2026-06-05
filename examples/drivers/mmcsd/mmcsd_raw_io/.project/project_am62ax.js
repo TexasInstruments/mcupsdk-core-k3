@@ -188,7 +188,7 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "MMCSD",
-        testCaseName: "MMCSD :  Validate EMMC boot partition write read fails",
+        testCaseName: "MMCSD: Raw Write/Read example for eMMC",
         testCaseIds: "SITSW-2174",
         expectTimeout: 300,
     },

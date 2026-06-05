@@ -463,6 +463,7 @@ const robot_template = {
     options: {
         componentName: "UDMA",
         testCaseName: "UDMA Channel Forced Teardown Fault Injection Test",
+        expectTimeout: 360,
         testCaseIds: "SITSW-9598",
     },
 };

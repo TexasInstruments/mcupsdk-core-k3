@@ -147,7 +147,7 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "Crypto",
-        testCaseName: "Crypto  AES  CBC test",
+        testCaseName: "Crypto AES CBC test",
         testCaseIds: "SITSW-3123",
     },
 };

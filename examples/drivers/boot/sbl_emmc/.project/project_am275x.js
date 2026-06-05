@@ -106,6 +106,10 @@ const robot_template = {
         testCaseIds: "SITSW-2730",
         cfgPath: "tools/boot/sbl_prebuilt/am275x-evm/sbl_emmc_${DEVICE_TYPE}.cfg",
         bootMode: "EMMC_BOOT_MODE",
+        expectations: [
+            { port: "USB2", string: "Image loading done" },
+            { port: "ACM0", string: "All tests have passed!!" },
+        ],
     },
 };
 

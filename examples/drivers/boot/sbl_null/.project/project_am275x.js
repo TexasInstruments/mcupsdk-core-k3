@@ -82,6 +82,10 @@ const robot_template = {
         testCaseName: "Bootloader: Null bootloader",
         testCaseIds: "SITSW-1630",
         cfgPath: "tools/boot/sbl_prebuilt/am275x-evm/sbl_null_${DEVICE_TYPE}.cfg",
+        expectations: [
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+            { port: "USB2", string: "SBL Total Time Taken" },
+        ],
     },
 };
 

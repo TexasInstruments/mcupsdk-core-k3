@@ -477,7 +477,7 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "MMCSD",
-        testCaseName: "MMCSD :  Test SD card large file transfer",
+        testCaseName: "MMCSD: Test SD card large file transfer",
         testCaseIds: "SITSW-1944 SITSW-6630 SITSW-8312 SITSW-8317 SITSW-8323 SITSW-8329 SITSW-8340 SITSW-8341 SITSW-8342",
     },
 };

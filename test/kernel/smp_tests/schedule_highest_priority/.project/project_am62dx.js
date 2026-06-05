@@ -101,7 +101,7 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "FreeRTOS",
-        testCaseName: "FreeRTOS-SMP : Schedule Highest Priority",
+        testCaseName: "FreeRTOS-SMP: Schedule Highest Priority",
         testCaseIds: "SITSW-7537",
     },
 };

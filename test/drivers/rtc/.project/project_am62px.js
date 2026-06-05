@@ -147,15 +147,17 @@ function getComponentProperty() {
 }
 
 const robot_template = {
-    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "RTC",
-        testCaseName: "RTC Time Validation Test",
+        testCaseName: "RTC Test Application",
         testCaseIds: "SITSW-5822 SITSW-5823 SITSW-5824",
         withCfg: true,
         cfgPath: "test/drivers/rtc/{board}/{coreName}/default_test_rtc_${DEVICE_TYPE}.cfg",
         appName: "test_rtc",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        expectTimeout: 120,
     },
 };
 

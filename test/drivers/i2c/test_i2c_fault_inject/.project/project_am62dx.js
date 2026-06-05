@@ -396,7 +396,7 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "I2C",
-        testCaseName: "I2C : fault injection test case: bus access error polling mode",
+        testCaseName: "I2C: fault injection test case: bus access error polling mode",
         testCaseIds: "SITSW-8316 SITSW-8337",
         timeout: 660,
     },

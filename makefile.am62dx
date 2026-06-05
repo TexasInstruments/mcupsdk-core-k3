@@ -653,10 +653,10 @@ $(BUILD_COMBO_VXLIB_C7504):
 $(BUILD_COMBO_DSPLIB_C7504):
 	$(MAKE) -C source/dsplib -f makefile.am62dx.$(subst DSPLIB_C7504_,,$@) all
 
-$(BUILD_COMBO_AUDIOLIB_C7504): $(BUILD_COMBO_DSPLIB_C7504)
+$(BUILD_COMBO_AUDIOLIB_C7504):
 	$(MAKE) -C source/audiolib -f makefile.am62dx.$(subst AUDIOLIB_C7504_,,$@) all
 
-$(BUILD_COMBO_TISP_C7504): $(BUILD_COMBO_AUDIOLIB_C7504)
+$(BUILD_COMBO_TISP_C7504):
 	$(MAKE) -C source/tisp -f makefile.am62dx.$(subst TISP_C7504_,,$@) all
 
 $(BUILD_COMBO_dm_stub):

@@ -101,7 +101,7 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "FreeRTOS",
-        testCaseName: "FreeRTOS-SMP : Suspend Scheduler",
+        testCaseName: "FreeRTOS-SMP: Suspend Scheduler",
         testCaseIds: "SITSW-7539",
     },
 };

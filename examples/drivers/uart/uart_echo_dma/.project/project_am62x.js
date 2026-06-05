@@ -73,6 +73,8 @@ const robot_template = {
         componentName: "UART",
         testCaseName: "UART Echo DMA Mode Sample Application",
         testCaseIds: "SITSW-5133",
+        interactPrompt: "Receives 8 characters then echo's back. Please input..",
+        interactSend: ["12345678\\r\\n"],
         expectTimeout: 60,
     },
 };

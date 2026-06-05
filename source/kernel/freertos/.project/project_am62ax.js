@@ -501,6 +501,7 @@ function getComponentProperty() {
     return property;
 }
 
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -541,7 +542,6 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_a53_smp;
         build_property.defines = defines_a53_smp;
     }
-
     return build_property;
 }
 

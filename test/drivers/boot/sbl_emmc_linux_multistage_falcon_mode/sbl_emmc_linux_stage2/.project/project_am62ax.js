@@ -90,6 +90,20 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Skip A53 SPL and U-boot for fastboot - eMMC",
+        testCaseIds: "SITSW-8221",
+        cfgPath: "test/drivers/boot/sbl_emmc_linux_multistage_falcon_mode/{board}/default_sbl_emmc_linux_falcon_${DEVICE_TYPE}.cfg",
+        timeout: 3600,
+        appName: "sbl_emmc_multistage_falcon_mode",
+        bootMode: "EMMC_BOOT_MODE",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -106,6 +120,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.libsprebuild = libs_prebuild_nortos_r5f;
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

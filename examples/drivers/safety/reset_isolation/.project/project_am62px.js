@@ -80,6 +80,18 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Safety",
+        testCaseName: "MCU Reset Isolation test",
+        testCaseIds: "SITSW-2394",
+        expectTimeout: 60,
+        timeout: 620,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -95,6 +107,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_nortos_mcu_r5f;
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

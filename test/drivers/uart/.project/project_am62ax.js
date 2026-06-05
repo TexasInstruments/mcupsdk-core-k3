@@ -124,6 +124,18 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "UART",
+        testCaseName: "UART0_RX_TO_TX_Interrupt_115200Baudrate_Default_ReadMode_Partial Test",
+        testCaseIds: "SITSW-1303 SITSW-1304 SITSW-1305",
+        expectTimeout: 60,
+        timeout: 720,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -145,6 +157,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_nortos_a53;
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

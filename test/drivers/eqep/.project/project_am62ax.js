@@ -161,6 +161,7 @@ function getComponentProperty(device) {
     return property;
 }
 
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -187,7 +188,6 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_nortos_a53;
         build_property.templates = templates_nortos_a53;
     }
-
     return build_property;
 }
 

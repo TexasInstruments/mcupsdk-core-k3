@@ -456,6 +456,7 @@ function getComponentProperty() {
     return property;
 }
 
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -475,7 +476,6 @@ function getComponentBuildProperty(buildOption) {
         build_property.files = files_a53;
         build_property.defines = defines_a53;
     }
-
     return build_property;
 }
 

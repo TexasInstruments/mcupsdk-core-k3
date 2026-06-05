@@ -70,6 +70,17 @@ const templates_a53 =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SMP",
+        testCaseName: "FreeRTOS-SMP : Schedule Affinity",
+        testCaseIds: "SITSW-7535",
+        expectTimeout: 120,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sk", os: "freertos-smp"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sip-sk", os: "freertos-smp"},
@@ -104,6 +115,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_a53;
         build_property.defines = defines_a53_smp;
     }
+    build_property.templates = [...(build_property.templates || []), robot_template];
+
     return build_property;
 }
 

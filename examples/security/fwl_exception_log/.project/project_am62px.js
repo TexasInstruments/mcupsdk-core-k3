@@ -112,6 +112,29 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Security",
+        testCaseName: "Security: Combined firewall example log test",
+        testCaseIds: "SITSW-3925",
+        expectTimeout: 60,
+        timeout: 660,
+    },
+};
+
+const robot_template_sysfw = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests_sysfw.robot",
+    options: {
+        componentName: "Security",
+        testCaseName: "Security: Sysfw firewall example log test",
+        testCaseIds: "SITSW-3924",
+        appName: "fwl_exception_log",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -133,6 +156,10 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
+
+    build_property.templates = [...build_property.templates, robot_template_sysfw];
     return build_property;
 }
 

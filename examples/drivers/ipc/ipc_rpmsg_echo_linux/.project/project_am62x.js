@@ -161,6 +161,31 @@ function getComponentProperty() {
     return property;
 }
 
+
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests_sbl_linux.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "IPC",
+        testCaseName: "IPC RpMsg Linux Sample Application",
+        appName: "ipc_rpmsg_echo_linux(emmc)",
+        testCaseIds: "SITSW-1361",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_emmc_linux_${DEVICE_TYPE}.cfg",
+        bootMode: "EMMC_BOOT_MODE",
+        expectTimeout: 300,
+        timeout: 900,
+        useNFS: true,
+        expectations: [
+            { port: "USB0", string: "Arago Project" },
+            { port: "USB0", send: "\\n", string: "login:" },
+            { port: "USB0", send: "root", string: "root@" },
+            { port: "USB0", send: "rpmsg_char_simple -r15", string: "TEST STATUS: PASSED" },
+            { port: "USB0", send: "rpmsg_char_simple -r9", string: "TEST STATUS: PASSED" },
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+        ],
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -190,6 +215,8 @@ function getComponentBuildProperty(buildOption) {
             build_property.filedirs = filedirs_r5f;
         }
     }
+    build_property.templates = [...(build_property.templates || []), robot_template];
+
     return build_property;
 }
 

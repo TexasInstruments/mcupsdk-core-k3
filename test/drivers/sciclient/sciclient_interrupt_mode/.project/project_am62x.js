@@ -96,6 +96,19 @@ function getComponentProperty() {
     return property;
 }
 
+
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SCICLIENT",
+        testCaseName: "SCICLIENT Interrupt Mode Test Application",
+        testCaseIds: "SITSW-10496",
+        expectedString: "Total failures: 0",
+        timeout: 660,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -110,6 +123,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_m4f;
         build_property.templates = templates_nortos_m4f;
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

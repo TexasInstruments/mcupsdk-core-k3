@@ -95,6 +95,17 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "FreeRTOS",
+        testCaseName: "FreeRTOS-SMP : Task Delete",
+        testCaseIds: "SITSW-7540",
+        expectTimeout: 120,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -110,6 +121,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_a53;
         build_property.defines = defines_a53_smp;
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

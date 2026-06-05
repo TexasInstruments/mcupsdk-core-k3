@@ -53,6 +53,43 @@ const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_SBL_UART_UNIFLASH_MULTISTAGE";
 
+// am62x-sk-lp supports OSPI NAND; am62x-sk and am62x-sip-sk support OSPI NOR only
+const robot_template_nand = {
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: UART Uniflash bootloader",
+        appName: "sbl_uart_uniflash_multistage",
+        testCaseIds: "SITSW-1633",
+        bootMode: "OSPI_NAND_BOOT_MODE",
+        expectTimeout: 100,
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_null_${DEVICE_TYPE}.cfg",
+        timeout: 800,
+        expectations: [
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+        ],
+    },
+};
+
+const robot_template_nor = {
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: UART Uniflash bootloader",
+        appName: "sbl_uart_uniflash_multistage",
+        testCaseIds: "SITSW-1633",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        expectTimeout: 100,
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_null_${DEVICE_TYPE}.cfg",
+        timeout: 800,
+        expectations: [
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+        ],
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "nortos"},
@@ -85,6 +122,13 @@ function getComponentBuildProperty(buildOption) {
     if(buildOption.cpu.match(/r5f*/)) {
         build_property.libs = libs_nortos_r5f;
         build_property.libsprebuild = libs_prebuild_nortos_r5f;
+    }
+
+    // Use NAND boot mode for sk-lp, NOR for sk and sip-sk
+    if(buildOption.board.match(/sk-lp/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_nand];
+    } else {
+        build_property.templates = [...(build_property.templates || []), robot_template_nor];
     }
 
     return build_property;

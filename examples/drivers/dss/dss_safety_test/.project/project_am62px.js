@@ -188,6 +188,19 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DSS",
+        testCaseName: "dss_safety_test application",
+        testCaseIds: "SITSW-6076",
+        expectTimeout: 60,
+        timeout: 660,
+        expectedString: "DSS Safety Test Passed!!",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -215,6 +228,8 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_nortos_wkup_r5f;
         }
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

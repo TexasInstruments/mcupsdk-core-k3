@@ -101,6 +101,19 @@ const templates_nortos_a53 =
     },
 ];
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Spinlock",
+        testCaseName: "Spinlock Example application",
+        testCaseIds: "SITSW-4836",
+        expectTimeout: 120,
+        withCfg: true,
+        cfgPath: "examples/drivers/spinlock/spinlock_example/{board}/spinlock_example_sbl_uart_${DEVICE_TYPE}.cfg",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sk", os: "nortos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
@@ -144,6 +157,12 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_freertos;
         build_property.libs = libs_freertos_r5f;
         build_property.templates = templates_freertos_r5f;
+    }
+
+    // cfg boots all cores simultaneously; only a53ss0-0 (master) needs the robot test
+    if(buildOption.cpu.match("a53ss0-0"))
+    {
+        build_property.templates = [...(build_property.templates || []), robot_template];
     }
 
     return build_property;

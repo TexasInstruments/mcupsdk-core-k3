@@ -271,6 +271,35 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "IPC",
+        testCaseName: "ipc_rpmsg_echo application",
+        testCaseIds: "SITSW-1889",
+        withCfg: true,
+        timeout: 1200,
+        appName: "ipc_rpmsg_echo",
+        cfgPath: "examples/drivers/ipc/ipc_rpmsg_echo/{board}/ipc_rpmsg_echo_sbl_uart_${DEVICE_TYPE}.cfg",
+        withCfg: true,
+    },
+};
+
+const robot_template_smp = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests_smp.robot",
+    options: {
+        componentName: "IPC",
+        testCaseName: "IPC RpMsg Sample Application-FreeRTOS-SMP",
+        appName: "ipc_rpmsg_echo(smp)",
+        testCaseIds: "SITSW-3687",
+        logPort: "USB2",
+        withCfg: true,
+        cfgPath: "examples/drivers/ipc/ipc_rpmsg_echo/{board}/ipc_rpmsg_echo_freertos-smp_sbl_uart_${DEVICE_TYPE}.cfg",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -320,6 +349,15 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+
+
+    // cfg boots all cores; only r5fss0-0 (master) needs robot test
+    if (buildOption.cpu === "r5fss0-0") {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
+    if (buildOption.cpu.match("a53ss0-0") && buildOption.os === "freertos-smp") {
+        build_property.templates = [...(build_property.templates || []), robot_template_smp];
+    }
     return build_property;
 }
 

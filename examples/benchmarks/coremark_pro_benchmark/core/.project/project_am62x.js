@@ -120,6 +120,19 @@ const templates_freertos_a53ss00 =
     },
 ];
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Benchmark",
+        testCaseName: "Benchmark: Coremark Pro: core",
+        testCaseIds: "SITSW-7406",
+        expectTimeout: 360,
+        expectedString: "Done:core",
+        timeout: 960,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sk", os: "freertos"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sip-sk", os: "freertos"},
@@ -167,6 +180,7 @@ function getComponentBuildProperty(buildOption) {
             }
         }
     }
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

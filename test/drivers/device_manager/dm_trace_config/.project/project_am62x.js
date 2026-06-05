@@ -95,6 +95,17 @@ const templates_freertos_dm_r5f =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DM",
+        testCaseName: "Test All logs from DM to be enabled/disabled based on boardconfig",
+        testCaseIds: "SITSW-8788",
+        timeout: 660,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
 ];
@@ -127,6 +138,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_dm_r5f;
         build_property.defines = defines_dm_r5;
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

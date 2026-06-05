@@ -190,6 +190,19 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MMCSD",
+        testCaseName: "test_mmcsd_system test application",
+        appName: "test_mmcsd_system",
+        testCaseIds: "SITSW-8871",
+        withCfg: true,
+        cfgPath: "test/drivers/mmcsd/test_mmcsd_system/{board}/test_mmcsd_system_sbl_uart_${DEVICE_TYPE}.cfg",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -216,6 +229,10 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_a53;
     }
 
+    // r5fss0-0 is master core (USB2); robot only for master
+    if (buildOption.cpu.match(/^r5fss0-0$/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

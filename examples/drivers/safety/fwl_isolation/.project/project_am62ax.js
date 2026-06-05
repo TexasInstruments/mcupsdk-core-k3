@@ -152,6 +152,18 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Safety",
+        testCaseName: "Safety: Test firewall isolation",
+        testCaseIds: "SITSW-3325",
+        withCfg: true,
+        cfgPath: "examples/drivers/safety/fwl_isolation/{board}/default_firewall_isolation_${DEVICE_TYPE}.cfg",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -175,6 +187,11 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_dm_r5;
     }
 
+
+    // mcu-r5fss0-0 is master core (USB3); robot only for master
+    if (buildOption.cpu.match(/mcu-r5fss/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

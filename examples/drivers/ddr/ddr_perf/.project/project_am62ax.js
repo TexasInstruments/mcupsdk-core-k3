@@ -346,6 +346,19 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DDR",
+        testCaseName: "ddr_perf application",
+        testCaseIds: "SITSW-3722",
+        appName: "ddr_perf_app",
+        expectTimeout: 800,
+        timeout: 1400,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -413,6 +426,8 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

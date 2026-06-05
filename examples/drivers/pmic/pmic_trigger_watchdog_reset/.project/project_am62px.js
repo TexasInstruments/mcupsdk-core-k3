@@ -126,6 +126,17 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "PMIC",
+        testCaseName: "PMIC Trigger Watchdog Reset Mode Example",
+        testCaseIds: "SITSW-4634",
+        appName: "pmic_trigger_watchdog_reset",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -151,6 +162,8 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

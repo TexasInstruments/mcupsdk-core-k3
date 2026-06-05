@@ -70,6 +70,23 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "sbl_uart_uniflash_stage2 application",
+        testCaseIds: "SITSW-1633",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_null_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        timeout: 800,
+        expectTimeout: 100,
+        expectations: [
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+        ],
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -82,6 +99,8 @@ function getComponentBuildProperty(buildOption) {
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
     build_property.libs = libs_nortos_r5f;
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

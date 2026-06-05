@@ -113,6 +113,17 @@ const templates_freertos_a53 =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MMCSD",
+        testCaseName: "MMCSD: File Write/Read example for SD Card",
+        testCaseIds: "SITSW-6626 SITSW-1943",
+        expectTimeout: 1000,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sk", os: "nortos"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sip-sk", os: "nortos"},
@@ -158,6 +169,8 @@ function getComponentBuildProperty(buildOption) {
         }
 
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

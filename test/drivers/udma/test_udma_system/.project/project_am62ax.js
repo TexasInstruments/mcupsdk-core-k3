@@ -261,6 +261,18 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "UDMA",
+        testCaseName: "UDMA System Test for BlockCopy Transfer",
+        testCaseIds: "SITSW-9520",
+        withCfg: true,
+        cfgPath: "test/drivers/udma/test_udma_system/{board}/test_udma_system_sbl_uart_${DEVICE_TYPE}.cfg",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -304,6 +316,11 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_c75;
     }
 
+
+    // r5fss0-0 is master core (USB2); robot only for master
+    if (buildOption.cpu.match(/^r5fss0-0$/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

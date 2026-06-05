@@ -277,6 +277,19 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MCSPI",
+        testCaseName: "mcspi_master_slave_dma test application",
+        appName: "test_mcspi_master_slave_dma",
+        testCaseIds: "SITSW-9016 SITSW-9015",
+        withCfg: true,
+        cfgPath: "test/drivers/mcspi/mcspi_master_slave_dma/{board}/test_mcspi_master_slave_dma_sbl_uart_${DEVICE_TYPE}.cfg",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -320,6 +333,11 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_c75;
     }
 
+
+    // r5fss0-0 is master core (USB2); robot only for master
+    if (buildOption.cpu.match(/^r5fss0-0$/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

@@ -143,6 +143,18 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "FreeRTOS",
+        testCaseName: "FreeRTOS: test floating point with interrupts",
+        testCaseIds: "SITSW-1251 SITSW-1252 SITSW-1253 SITSW-1254 SITSW-1255 SITSW-1256 SITSW-1257 SITSW-1259 SITSW-1260 SITSW-1261 SITSW-1275 SITSW-1276 SITSW-1279 SITSW-1457 SITSW-3074",
+        expectTimeout: 60,
+        timeout: 1200,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -168,6 +180,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_wkup_r5f;
         build_property.defines = defines_dm_r5;
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

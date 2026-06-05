@@ -457,6 +457,16 @@ function getComponentProperty() {
 }
 
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "UDMA",
+        testCaseName: "UDMA Channel Forced Teardown Fault Injection Test",
+        testCaseIds: "SITSW-9598",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
     build_property.files = files;
@@ -519,6 +529,8 @@ function getComponentBuildProperty(buildOption) {
             build_property.cflags = cflags_a53;
         }
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

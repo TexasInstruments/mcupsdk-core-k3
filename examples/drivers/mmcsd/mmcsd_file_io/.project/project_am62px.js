@@ -163,6 +163,17 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MMCSD",
+        testCaseName: "MMCSD: File Write/Read example for SD Card: Automated",
+        testCaseIds: "SITSW-6626",
+        expectTimeout: 1000,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -192,6 +203,8 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_freertos_wkup_r5f;
         }
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

@@ -383,6 +383,31 @@ const templates_a53_smp =
     },
 ];
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Hello-World",
+        testCaseName: "Hello world application",
+        testCaseIds: "SITSW-1250",
+        expectedString: "Hello World",
+    },
+};
+
+const robot_template_amp = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests_amp.robot",
+    options: {
+        componentName: "AMP",
+        testCaseName: "Hello World:FreeRTOS-AMP",
+        appName: "hello_world(amp)",
+        testCaseIds: "SITSW-5778",
+        expectedString: "Hello World",
+        withCfg: true,
+        cfgPath: "examples/hello_world/{board}/hello_world_freertos-amp_sbl_uart_${DEVICE_TYPE}.cfg",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos"},
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
@@ -537,6 +562,11 @@ function getComponentBuildProperty(buildOption) {
                 build_property.templates = templates_nortos_a53ss00;
             }
         }
+    }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.cpu.match(/a53ss/)) {
+        build_property.templates = [...build_property.templates, robot_template_amp];
     }
 
     return build_property;

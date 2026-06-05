@@ -99,6 +99,22 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Safety",
+        testCaseName: "Integrated Safety Application",
+        testCaseIds: "SITSW-4279",
+        withCfg: true,
+        cfgPath: "test/safety/safety_app/{board}/default_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectedString: "No register mismatch with golden reference.",
+        expectTimeout: 120,
+        timeout: 720,
+        appName: "SafetyApp",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -118,6 +134,8 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

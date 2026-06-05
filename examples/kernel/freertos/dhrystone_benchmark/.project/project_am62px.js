@@ -149,6 +149,18 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "FreeRTOS",
+        testCaseName: "Dhrystone benchmarking demo for FreeRTOS",
+        testCaseIds: "SITSW-3671",
+        expectTimeout: 600,
+        timeout: 1200,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -170,6 +182,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_wkup_r5f;
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

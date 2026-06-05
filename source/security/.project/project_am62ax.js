@@ -53,6 +53,7 @@ function getComponentProperty() {
     return property;
 }
 
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -60,7 +61,6 @@ function getComponentBuildProperty(buildOption) {
     build_property.files = files;
     build_property.cflags = cflags;
     build_property.defines = defines;
-
     return build_property;
 }
 

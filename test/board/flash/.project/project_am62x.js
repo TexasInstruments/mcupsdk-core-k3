@@ -110,6 +110,18 @@ function getComponentProperty() {
     return property;
 }
 
+
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Flash test application",
+        testCaseIds: "SITSW-4852",
+        timeout: 1200,
+        expectTimeout: 600
+    },
+};
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -126,6 +138,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_r5f;
         build_property.templates = templates_freertos_r5f;
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

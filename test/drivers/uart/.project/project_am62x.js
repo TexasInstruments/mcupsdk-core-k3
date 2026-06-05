@@ -135,6 +135,19 @@ function getComponentProperty() {
     return property;
 }
 
+
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "UART",
+        testCaseName: "UART test application",
+        testCaseIds: "SITSW-1303 SITSW-1304 SITSW-1305",
+        expectTimeout: 60,
+        timeout: 720,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -156,6 +169,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_freertos_a53;
         build_property.defines = defines_a53;
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

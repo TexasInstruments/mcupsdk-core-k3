@@ -142,6 +142,17 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "EPWM",
+        testCaseName: "EPWM Duty Cycle Sample Application",
+        testCaseIds: "SITSW-3007",
+        expectTimeout: 90,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -170,6 +181,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_dm_r5;
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

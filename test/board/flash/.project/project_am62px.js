@@ -113,6 +113,18 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Flash",
+        testCaseName: "Flash: Split Hybrid Cfg",
+        testCaseIds: "SITSW-3177 SITSW-6340 SITSW-8884 SITSW-8885 SITSW-8886",
+        expectTimeout: 600,
+        timeout: 1200,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -126,6 +138,8 @@ function getComponentBuildProperty(buildOption) {
     build_property.templates = templates_freertos_wkup_r5f;
     build_property.defines = defines_dm_r5;
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

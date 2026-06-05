@@ -175,6 +175,18 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "IPC",
+        testCaseName: "ipc_rpmsg_echo application",
+        testCaseIds: "SITSW-1889",
+        withCfg: true,
+        cfgPath: "examples/drivers/ipc/ipc_rpmsg_echo/{board}/ipc_rpmsg_echo_sbl_uart_${DEVICE_TYPE}.cfg",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -203,6 +215,10 @@ function getComponentBuildProperty(buildOption) {
         build_property.cflags = cflags;
     }
 
+
+    if (buildOption.cpu.match(/wkup-r5f/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

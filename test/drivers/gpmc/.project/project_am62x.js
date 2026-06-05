@@ -247,6 +247,19 @@ function getComponentProperty() {
     return property;
 }
 
+
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "GPMC",
+        testCaseName: "GPMC test application",
+        testCaseIds: "SITSW-3755 SITSW-3756 SITSW-3757 SITSW-3758",
+        expectTimeout: 180,
+        timeout: 780,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -292,6 +305,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_a53;
         build_property.libdirs = libdirs_freertos_a53;
     }
+    build_property.templates = [...(build_property.templates || []), robot_template];
+
     return build_property;
 }
 

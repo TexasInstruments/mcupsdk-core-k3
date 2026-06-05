@@ -120,6 +120,7 @@ function getComponentProperty() {
     return property;
 }
 
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -144,7 +145,6 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_nortos_mcu_r5f;
         }
     }
-
     return build_property;
 }
 

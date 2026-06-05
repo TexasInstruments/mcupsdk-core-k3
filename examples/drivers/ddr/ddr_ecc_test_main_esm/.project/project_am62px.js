@@ -85,6 +85,17 @@ const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "freertos"},
 ];
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DDR",
+        testCaseName: "DDR Inline ECC Test - Main ESM",
+        testCaseIds: "SITSW-2392",
+        appName: "ddr_ecc_test_main_esm",
+    },
+};
+
 function getComponentProperty() {
     let property = {};
 
@@ -113,6 +124,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.includes = includes_r5f;
     build_property.templates = templates_freertos_mcu_r5f;
 
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

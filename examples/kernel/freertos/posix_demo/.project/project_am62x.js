@@ -148,6 +148,17 @@ const templates_a53_smp =
     },
 ];
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "FreeRTOS",
+        testCaseName: "FreeRTOS Posix Demo Application",
+        testCaseIds: "SITSW-1463",
+        expectTimeout: 60,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk",      os: "freertos"},
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk",  os: "freertos"},
@@ -199,7 +210,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.defines = defines_a53_smp;
         }
     }
-
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

@@ -52,6 +52,60 @@ const syscfgfile = "../example.syscfg";
 
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_SBL_EMMC_LINUX_MULTISTAGE";
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests_sbl_linux.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL EMMC Linux",
+        appName: "sbl_emmc_linux_multistage",
+        testCaseIds: "SITSW-1755",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_emmc_linux_${DEVICE_TYPE}.cfg",
+        bootMode: "EMMC_BOOT_MODE",
+        expectTimeout: 300,
+        timeout: 900,
+        useNFS: true,
+        expectations: [
+            { port: "USB0", string: "Arago Project" },
+            { port: "USB0", send: "\\n", string: "login:" },
+            { port: "USB0", send: "root", string: "root@" },
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+        ],
+    },
+};
+
+const robot_template_falcon = {
+    input: ".project/templates/am62x/astra/tests_sbl_linux.robot.xdt",
+    output: "../tests_falcon.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Skip A53 SPL and U-boot for fastboot - eMMC",
+        appName: "sbl_emmc_linux_multistage(falcon_boot)",
+        testCaseIds: "SITSW-8221",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_emmc_linux_falcon_${DEVICE_TYPE}.cfg",
+        bootMode: "EMMC_BOOT_MODE",
+        expectTimeout: 300,
+        timeout: 3600,
+        expectations: [
+            { port: "USB0", string: "login:" },
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+        ],
+    },
+};
+
+const robot_template_qnx = {
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
+    output: "../tests_qnx.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL EMMC QNX",
+        testCaseIds: "SITSW-4745",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_emmc_qnx_${DEVICE_TYPE}.cfg",
+        expectTimeout: 300,
+        timeout: 700,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "nortos"},
@@ -85,6 +139,10 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_nortos_r5f;
         build_property.libsprebuild = libs_prebuild_nortos_r5f;
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
+    build_property.templates = [...(build_property.templates || []), robot_template_falcon];
+        build_property.templates = [...(build_property.templates || []), robot_template_qnx];
 
     return build_property;
 }

@@ -100,6 +100,20 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SCICLIENT",
+        testCaseName: "SCICLIENT: Dynamic Analysis",
+        testCaseIds: "SITSW-4830",
+        withCfg: true,
+        cfgPath: "test/drivers/sciclient/sciclient_dynamic_analysis/{board}/default_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectedString: "Overall test status: All testcases are passed successfully",
+        expectTimeout: 120,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -115,6 +129,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_nortos_r5f;
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

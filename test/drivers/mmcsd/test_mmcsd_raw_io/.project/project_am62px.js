@@ -207,6 +207,18 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MMCSD",
+        testCaseName: "MMCSD: Raw I/O test for eMMC",
+        testCaseIds: "SITSW-3017 SITSW-1942",
+        expectTimeout: 1000,
+        timeout: 1600,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -236,6 +248,8 @@ function getComponentBuildProperty(buildOption) {
 	    }
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

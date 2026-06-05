@@ -276,6 +276,17 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MCASP",
+        testCaseName: "test_mcasp_fault_injection test application",
+        appName: "test_mcasp_fault_inject",
+        testCaseIds: "SITSW-9255 SITSW-9256 SITSW-9257 SITSW-9254 SITSW-9253 SITSW-9262 SITSW-9259 SITSW-9258 SITSW-9261 SITSW-9260",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -320,6 +331,8 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

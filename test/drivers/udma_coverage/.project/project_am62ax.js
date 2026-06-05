@@ -238,6 +238,7 @@ function getComponentProperty() {
     return property;
 }
 
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -281,7 +282,6 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_freertos_dm_r5f;
         }
     }
-
     return build_property;
 }
 

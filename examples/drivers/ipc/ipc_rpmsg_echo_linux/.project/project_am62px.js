@@ -175,6 +175,21 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "IPC",
+        testCaseName: "IPC RpMsg Linux Sample Application",
+        testCaseIds: "SITSW-1361",
+        withCfg: true,
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_emmc_linux_${DEVICE_TYPE}.cfg",
+        expectTimeout: 300,
+        timeout: 900,
+        appName: "ipc_rpmsg_echo_linux(emmc)",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -208,6 +223,8 @@ function getComponentBuildProperty(buildOption) {
             build_property.cflags = cflags;
         }
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

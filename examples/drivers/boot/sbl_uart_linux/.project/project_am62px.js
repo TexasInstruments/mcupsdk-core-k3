@@ -90,6 +90,19 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: UART Linux SBL",
+        testCaseIds: "SITSW-1758",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_uart_linux_${DEVICE_TYPE}.cfg",
+        expectTimeout: 120,
+        timeout: 900,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -103,6 +116,8 @@ function getComponentBuildProperty(buildOption) {
     build_property.defines = defines;
     build_property.templates = templates_bootloader;
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

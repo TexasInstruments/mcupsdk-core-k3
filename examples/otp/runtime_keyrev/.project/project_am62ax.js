@@ -84,6 +84,7 @@ function getComponentProperty() {
     return property;
 }
 
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -100,7 +101,6 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines;
         build_property.includes = includes_r5f;
     }
-
     return build_property;
 }
 

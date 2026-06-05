@@ -73,6 +73,18 @@ const templates_freertos_a53 =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DSS",
+        testCaseName: "AM62x DSS display test",
+        testCaseIds: "SITSW-6080",
+        expectedString: "DSS display test Passed!!",
+        timeout: 620,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sk", os: "freertos"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sip-sk", os: "freertos"},
@@ -109,6 +121,7 @@ function getComponentBuildProperty(buildOption) {
 
     }
 
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

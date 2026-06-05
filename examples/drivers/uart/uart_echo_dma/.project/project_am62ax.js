@@ -137,6 +137,17 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "UART",
+        testCaseName: "UART Echo DMA Mode Sample Application",
+        testCaseIds: "SITSW-5133",
+        expectTimeout: 60,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -168,6 +179,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_nortos_a53;
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

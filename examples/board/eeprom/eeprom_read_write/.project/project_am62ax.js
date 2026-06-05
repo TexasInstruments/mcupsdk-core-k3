@@ -184,6 +184,16 @@ function getComponentProperty(device) {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "EEPROM",
+        testCaseName: "EEPROM Read/Write Example",
+        testCaseIds: "SITSW-3061",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -224,6 +234,8 @@ function getComponentBuildProperty(buildOption) {
 
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

@@ -94,6 +94,109 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests_sbl_linux.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL OSPI NAND Linux",
+        testCaseIds: "SITSW-1757",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_nand_linux_${DEVICE_TYPE}.cfg",
+        appName: "sbl_ospi_nand_linux_multistage",
+        bootMode: "OSPI_NAND_BOOT_MODE",
+        expectTimeout: 300,
+        timeout: 900,
+        useNFS: true,
+        expectations: [
+            { port: "USB0", string: "Arago Project" },
+            { port: "USB0", send: "\\n", string: "login:" },
+            { port: "USB0", send: "root", string: "root@" },
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+            { port: "USB3", string: "Remote Core waiting for messages at end point" },
+        ],
+    },
+};
+
+const robot_template_sw_version = {
+    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
+    output: "../tests_sw_version.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader Check appImage sw version",
+        appName: "sbl_ospi_nand_linux_multistage(sw_version_check)",
+        testCaseIds: "SITSW-5111",
+        cfgPath: "test/drivers/boot/sbl_sw_version_test/{board}/default_sbl_ospi_sw_version_test_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NAND_BOOT_MODE",
+        timeout: 660,
+        expectTimeout: 200,
+        expectations: [
+            { port: "USB0", string: "WARNING: Bootloader_rprcImageLoad:233: Software version mismatch" },
+        ],
+    },
+};
+
+const robot_template_falcon = {
+    input: ".project/templates/am62ax/astra/tests_sbl_linux.robot.xdt",
+    output: "../tests_falcon.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Skip A53 SPL and U-boot for fastboot",
+        appName: "sbl_ospi_nand_linux_multistage(falcon_boot)",
+        testCaseIds: "SITSW-3281",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_nand_linux_falcon_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NAND_BOOT_MODE",
+        expectTimeout: 300,
+        timeout: 800,
+        expectations: [
+            { port: "USB0", string: "login:" },
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+        ],
+    },
+};
+
+const robot_template_core_absent = {
+    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
+    output: "../tests_core_absent.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL Core Appimage Absent",
+        appName: "sbl_ospi_nand_linux_multistage(app_image_absent)",
+        testCaseIds: "SITSW-4848",
+        cfgPath: "test/drivers/boot/sbl_core_appImage_not_present/{board}/default_sbl_ospi_core_appImage_not_present_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NAND_BOOT_MODE",
+        timeout: 660,
+        expectTimeout: 200,
+        expectations: [
+            { port: "USB0", string: "Starting linux and RTOS/Baremetal applications" },
+        ],
+    },
+};
+
+const robot_template_vision_apps = {
+    input: ".project/templates/am62ax/astra/tests_sbl_linux.robot.xdt",
+    output: "../tests_vision_apps.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Test SBL with C7x and DM R5 firmware from vision apps",
+        appName: "sbl_ospi_nand_linux_multistage(vision_apps)",
+        testCaseIds: "SITSW-2516",
+        cfgPath: "tools/boot/remoteCoreAppimageGen/board/{board}/vision_apps_sbl_ospi_nand_linux_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NAND_BOOT_MODE",
+        expectTimeout: 300,
+        timeout: 1000,
+        useNFS: true,
+        expectations: [
+            { port: "USB0", string: "Arago Project" },
+            { port: "USB0", send: "\\n", string: "login:" },
+            { port: "USB0", send: "root", string: "root@" },
+            { port: "USB0", send: "cd /opt/vision_apps/", string: "root@" },
+            { port: "USB0", send: "rpmsg_char_simple -r0", string: "Communicated 100 messages successfully" },
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+            { port: "USB3", string: "Remote Core waiting for messages at end point" },
+        ],
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -111,6 +214,12 @@ function getComponentBuildProperty(buildOption) {
         build_property.libsprebuild = libs_prebuild_nortos_r5f;
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
+    build_property.templates = [...build_property.templates, robot_template_sw_version];
+    build_property.templates = [...build_property.templates, robot_template_falcon];
+    build_property.templates = [...build_property.templates, robot_template_core_absent];
+    build_property.templates = [...build_property.templates, robot_template_vision_apps];
     return build_property;
 }
 

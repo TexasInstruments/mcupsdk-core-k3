@@ -509,6 +509,45 @@ function getComponentProperty() {
     return property;
 }
 
+
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DPL",
+        testCaseName: "DPL test application",
+        testCaseIds: "SITSW-1235 SITSW-1262 SITSW-1263 SITSW-1264 SITSW-1265 SITSW-1266 SITSW-1267 SITSW-1268 SITSW-1269 SITSW-1270 SITSW-1271 SITSW-1272 SITSW-1273 SITSW-1274 SITSW-1277 SITSW-1278 SITSW-1455 SITSW-4735 SITSW-7111",
+        timeout: 630,
+    },
+};
+
+
+const robot_template_noatf = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests_noatf.robot",
+    options: {
+        componentName: "DPL",
+        testCaseName: "DPL test without ATF",
+        appName: "test_dpl(noatf)",
+        appBinaryName: "test_dpl_noatf",
+        testCaseIds: "SITSW-5893 SITSW-5894 SITSW-5895 SITSW-5896 SITSW-5897 SITSW-5898 SITSW-5900 SITSW-5901 SITSW-5902 SITSW-5903 SITSW-5904 SITSW-5906 SITSW-5907 SITSW-5908 SITSW-5909 SITSW-5910 SITSW-5911 SITSW-5912 SITSW-5913 SITSW-5914 SITSW-5915 SITSW-5916 SITSW-5917",
+    },
+};
+
+const robot_template_amp = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests_amp.robot",
+    options: {
+        componentName: "AMP",
+        testCaseName: "DPL test FreeRTOS-AMP",
+        appName: "test_dpl(amp)",
+        testCaseIds: "SITSW-5784",
+        withCfg: true,
+        cfgPath: "test/kernel/dpl/{board}/dpl_test_freertos-amp_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectTimeout: 240,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -619,6 +658,14 @@ function getComponentBuildProperty(buildOption) {
 
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
+
+    build_property.templates = [...(build_property.templates || []), robot_template_noatf];
+
+    if (buildOption.cpu.match(/a53ss/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_amp];
+    }
 
     return build_property;
 }

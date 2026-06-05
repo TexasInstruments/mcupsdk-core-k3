@@ -328,6 +328,21 @@ function getComponentProperty() {
     return property;
 }
 
+
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "IPC",
+        testCaseName: "IPC Notify test application",
+        appName: "test_ipc_notify",
+        testCaseIds: "SITSW-2457 SITSW-2469 SITSW-2470 SITSW-2471",
+        withCfg: true,
+        cfgPath: "test/drivers/ipc_notify/{board}/ipc_notify_test_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectTimeout: 60,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -382,6 +397,12 @@ function getComponentBuildProperty(buildOption) {
         {
             build_property.templates = templates_freertos_a53ss01;
         }
+    }
+
+    // cfg boots all cores simultaneously; only r5fss0-0 (master) needs the robot test
+    if(buildOption.cpu.match("r5fss0-0"))
+    {
+        build_property.templates = [...(build_property.templates || []), robot_template];
     }
 
     return build_property;

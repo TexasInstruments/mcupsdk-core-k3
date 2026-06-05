@@ -101,6 +101,17 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DDR",
+        testCaseName: "DDR Inline ECC Test - Main ESM",
+        appName: "ddr_ecc_test_main_esm",
+        testCaseIds: "SITSW-2392",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -116,6 +127,8 @@ function getComponentBuildProperty(buildOption) {
     build_property.defines = r5_macro;
     build_property.includes = includes_r5f;
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

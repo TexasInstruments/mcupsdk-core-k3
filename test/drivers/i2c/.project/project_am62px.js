@@ -154,6 +154,30 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "I2C",
+        testCaseName: "I2C: Dynamic Coverage Test, to improve the statement and branch coverages.",
+        testCaseIds: "SITSW-3178",
+        expectTimeout: 60,
+        timeout: 660,
+    },
+};
+
+const robot_template_i2c = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests_i2c.robot",
+    options: {
+        componentName: "I2C",
+        testCaseName: "I2C: Dynamic Coverage Test, to improve the statement and branch coverages.",
+        testCaseIds: "SITSW-1311 SITSW-1312 SITSW-1313 SITSW-1314 SITSW-1315 SITSW-1316 SITSW-1317 SITSW-1318 SITSW-1319 SITSW-1320 SITSW-6605 SITSW-6849",
+        appName: "test_i2c",
+        expectTimeout: 60,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -176,6 +200,10 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_dm_r5;
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
+
+    build_property.templates = [...build_property.templates, robot_template_i2c];
     return build_property;
 }
 

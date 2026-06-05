@@ -251,6 +251,19 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "IPC",
+        testCaseName: "ipc_rpmsg_c7x test application",
+        appName: "test_ipc_rpmsg_c7x",
+        testCaseIds: "SITSW-6129 SITSW-6137",
+        withCfg: true,
+        cfgPath: "test/drivers/ipc_rpmsg_c7x/{board}/ipc_rpmsg_test_sbl_uart_${DEVICE_TYPE}.cfg",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -291,6 +304,11 @@ function getComponentBuildProperty(buildOption) {
 
 
 
+
+    // a53ss0-0 is master core (USB0/mpu); robot only for master
+    if (buildOption.cpu.match(/a53ss0-0/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

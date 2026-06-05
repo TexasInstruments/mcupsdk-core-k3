@@ -78,6 +78,23 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Security",
+        testCaseName: "ext_otp writer for USB VID/PID",
+        testCaseIds: "SITSW-2167",
+        cfgPath: "examples/otp/ext_otp/{board}/wkup-r5fss0-0_nortos/default_ext_otp_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        expectTimeout: 60,
+        appName: "ext_otp",
+        expectations: [
+            { port: "USB2", string: "All tests have passed" },
+        ],
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -94,6 +111,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines;
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

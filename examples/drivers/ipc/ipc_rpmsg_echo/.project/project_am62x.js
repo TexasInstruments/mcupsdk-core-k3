@@ -239,6 +239,18 @@ const templates_freertos_a53ss01 =
     },
 ];
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "IPC",
+        testCaseName: "IPC RpMsg Sample Application",
+        testCaseIds: "SITSW-1889",
+        withCfg: true,
+        cfgPath: "examples/drivers/ipc/ipc_rpmsg_echo/{board}/ipc_rpmsg_echo_sbl_uart_${DEVICE_TYPE}.cfg",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos", isPartOfSystemProject: true},
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "nortos", isPartOfSystemProject: true},
@@ -377,6 +389,11 @@ function getComponentBuildProperty(buildOption) {
         {
             build_property.templates = templates_freertos_a53ss01;
         }
+    }
+
+    // r5fss0-0 is master core (USB2); robot only for master
+    if (buildOption.cpu.match(/^r5fss0-0$/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
     }
 
     return build_property;

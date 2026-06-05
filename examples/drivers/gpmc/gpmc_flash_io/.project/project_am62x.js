@@ -238,6 +238,18 @@ function getComponentProperty()
     return property;
 }
 
+
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "GPMC",
+        testCaseName: "GPMC Flash IO Sample Application",
+        appName: "gpmc_flash_io",
+        testCaseIds: "SITSW-3712",
+        expectTimeout: 60
+    },
+};
 function getComponentBuildProperty(buildOption)
 {
     let build_property = {};
@@ -280,6 +292,8 @@ function getComponentBuildProperty(buildOption)
         }
 
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

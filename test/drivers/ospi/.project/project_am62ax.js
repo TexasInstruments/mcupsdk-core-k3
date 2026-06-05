@@ -252,6 +252,18 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "OSPI",
+        testCaseName: "OSPI: Read write perf test",
+        testCaseIds: "SITSW-3174 SITSW-3175 SITSW-3176 SITSW-3825 SITSW-6893 SITSW-7105 SITSW-8012 SITSW-8724",
+        expectTimeout: 3600,
+        timeout: 4200,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -300,6 +312,8 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

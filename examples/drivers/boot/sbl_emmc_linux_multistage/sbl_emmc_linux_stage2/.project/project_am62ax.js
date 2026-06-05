@@ -92,6 +92,21 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL EMMC Linux",
+        testCaseIds: "SITSW-1755",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_emmc_linux_${DEVICE_TYPE}.cfg",
+        expectTimeout: 300,
+        timeout: 900,
+        appName: "sbl_emmc_linux_multistage",
+        bootMode: "EMMC_BOOT_MODE",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -109,6 +124,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.libsprebuild = libs_prebuild_nortos_r5f;
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

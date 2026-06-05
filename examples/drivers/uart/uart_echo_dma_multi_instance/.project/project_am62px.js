@@ -118,6 +118,21 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "UART",
+        testCaseName: "UART Echo DMA Multi Instance Mode Sample Application",
+        testCaseIds: "SITSW-8008",
+        expectTimeout: 30,
+        interactPrompt: "Receives 8 characters then echo's back. Please input..",
+        interactSend: ["12345678\\r\\n"],
+        secondPort: "USB1",
+        secondPortSend: ["12345678\\r\\n"],
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -136,6 +151,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_dm_r5;
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

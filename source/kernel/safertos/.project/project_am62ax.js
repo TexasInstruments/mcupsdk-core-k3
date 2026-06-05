@@ -273,6 +273,7 @@ function getComponentProperty() {
     return property;
 }
 
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -293,7 +294,6 @@ function getComponentBuildProperty(buildOption) {
         build_property.cflags = cflags_r5f;
         build_property.defines = defines_r5_safertos;
     }
-
     return build_property;
 }
 

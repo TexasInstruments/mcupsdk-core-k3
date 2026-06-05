@@ -78,6 +78,18 @@ const templates_a53_smp =
     },
 ];
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "FreeRTOS",
+        testCaseName: "FreeRTOS SMP Task Switch Application",
+        testCaseIds: "SITSW-1916",
+        expectTimeout: 120,
+        timeout: 720,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sk", os: "freertos-smp"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sip-sk", os: "freertos-smp"},
@@ -112,6 +124,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_a53_smp;
         build_property.defines = defines_a53_smp;
     }
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

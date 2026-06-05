@@ -161,6 +161,19 @@ function getComponentProperty() {
     return property;
 }
 
+
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Benchmark",
+        testCaseName: "Dhrystone benchmarking demo for FreeRTOS",
+        testCaseIds: "SITSW-3671",
+        timeout: 1200,
+        expectTimeout: 600,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -185,6 +198,8 @@ function getComponentBuildProperty(buildOption) {
             build_property.defines = defines_a53_smp;
         }
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

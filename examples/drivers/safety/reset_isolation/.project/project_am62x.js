@@ -128,6 +128,18 @@ const templates_nortos_m4f =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Safety",
+        testCaseName: "MCU Reset Isolation test",
+        testCaseIds: "SITSW-2394",
+        expectTimeout: 60,
+        timeout: 620,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
@@ -195,6 +207,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_nortos_m4f;
     }
 
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

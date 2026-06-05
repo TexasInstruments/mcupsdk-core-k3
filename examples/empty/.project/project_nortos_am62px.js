@@ -58,6 +58,16 @@ const templates_nortos_mcu_r5f =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Empty",
+        testCaseName: "Empty Nortos Sample Application",
+        testCaseIds: "SITSW-1246",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "nortos", isPartOfSystemProject: true},
 ];
@@ -103,6 +113,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_nortos_mcu_r5f;
     }
 
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

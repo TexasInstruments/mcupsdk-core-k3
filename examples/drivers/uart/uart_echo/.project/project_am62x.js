@@ -203,6 +203,17 @@ const templates_freertos_a53 =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "UART",
+        testCaseName: "UART Echo Sample Application",
+        testCaseIds: "SITSW-1306",
+        expectTimeout: 120,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos"},
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "nortos"},
@@ -284,6 +295,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_a53;
         build_property.libdirs = libdirs_freertos_a53;
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

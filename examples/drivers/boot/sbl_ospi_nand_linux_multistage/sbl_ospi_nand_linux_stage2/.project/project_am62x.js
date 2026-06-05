@@ -70,6 +70,83 @@ function getComponentProperty() {
     return property;
 }
 
+
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests_sbl_linux.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL OSPI NAND Linux",
+        appName: "sbl_ospi_nand_linux_multistage",
+        testCaseIds: "SITSW-1757",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_nand_linux_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NAND_BOOT_MODE",
+        expectTimeout: 300,
+        timeout: 900,
+        useNFS: true,
+        expectations: [
+            { port: "USB0", string: "Arago Project" },
+            { port: "USB0", send: "\\n", string: "login:" },
+            { port: "USB0", send: "root", string: "root@" },
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+        ],
+    },
+};
+
+
+const robot_template_falcon = {
+    input: ".project/templates/am62x/astra/tests_sbl_linux.robot.xdt",
+    output: "../tests_falcon.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Skip A53 SPL and U-boot for fastboot",
+        appName: "sbl_ospi_nand_linux_multistage(falcon_boot)",
+        testCaseIds: "SITSW-3281",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_nand_linux_falcon_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NAND_BOOT_MODE",
+        expectTimeout: 300,
+        timeout: 3600,
+        expectations: [
+            { port: "USB0", string: "am62xx-evm login:" },
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+        ],
+    },
+};
+
+
+const robot_template_sw_ver = {
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
+    output: "../tests_sw_ver.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader Check appImage sw version",
+        appName: "sbl_ospi_nand_linux_multistage(sw_version_check)",
+        testCaseIds: "SITSW-5111",
+        cfgPath: "test/drivers/boot/sbl_sw_version_test/{board}/default_sbl_ospi_sw_version_test_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NAND_BOOT_MODE",
+        timeout: 660,
+        expectTimeout: 200,
+        expectations: [
+            { port: "USB0", string: "Some tests have failed" },
+        ],
+    },
+};
+
+
+const robot_template_ddr_ecc = {
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
+    output: "../tests_ddr_ecc.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL OSPI NAND Linux with DDR ECC enabled",
+        appName: "sbl_ospi_nand_linux_multistage(ddr_ecc)",
+        testCaseIds: "SITSW-3207",
+        cfgPath: "test/drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/{board}/default_sbl_ospi_nand_linux_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NAND_BOOT_MODE",
+        expectTimeout: 300,
+        timeout: 900,
+    },
+};
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -84,6 +161,11 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_nortos_r5f;
         build_property.libsprebuild = libs_prebuild_nortos_r5f;
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
+    build_property.templates = [...(build_property.templates || []), robot_template_falcon];
+    build_property.templates = [...(build_property.templates || []), robot_template_sw_ver];
+    build_property.templates = [...build_property.templates, robot_template_ddr_ecc];
 
     return build_property;
 }

@@ -205,6 +205,7 @@ function getComponentProperty() {
     return property;
 }
 
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -237,7 +238,6 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_a53;
         build_property.libs = libs_a53;
     }
-
     return build_property;
 }
 

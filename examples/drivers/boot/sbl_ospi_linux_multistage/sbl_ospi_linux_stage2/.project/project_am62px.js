@@ -105,6 +105,170 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests_sbl_linux.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL OSPI NOR Linux",
+        appName: "sbl_ospi_linux_multistage",
+        testCaseIds: "SITSW-1632",
+        cfgPath: "examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage2/{board}/wkup-r5fss0-0_freertos/sbl_ospi_linux_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        expectTimeout: 300,
+        timeout: 900,
+        useNFS: true,
+        expectations: [
+            { port: "USB0", string: "Arago Project" },
+            { port: "USB0", send: "\\n", string: "login:" },
+            { port: "USB0", send: "root", string: "root@" },
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+            { port: "USB3", string: "Remote Core waiting for messages at end point" },
+        ],
+    },
+};
+
+
+const robot_template_ecdsa = {
+    input: ".project/templates/am62px/astra/tests_sbl_linux.robot.xdt",
+    output: "../tests_ecdsa.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL OSPI Linux ECDSA",
+        appName: "sbl_ospi_linux_multistage(ecdsa)",
+        testCaseIds: "SITSW-8747",
+        cfgPath: "test/drivers/boot/sbl_ecdsa/{board}/default_sbl_ospi_linux_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        expectTimeout: 300,
+        timeout: 900,
+        useNFS: true,
+        expectations: [
+            { port: "USB0", string: "Arago Project" },
+            { port: "USB0", send: "\\n", string: "login:" },
+            { port: "USB0", send: "root", string: "root@" },
+            { port: "USB0", send: "rpmsg_char_simple -r15", string: "TEST STATUS: PASSED" },
+            { port: "USB0", send: "rpmsg_char_simple -r1", string: "TEST STATUS: PASSED" },
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+            { port: "USB3", string: "Remote Core waiting for messages at end point" },
+        ],
+    },
+};
+
+const robot_template_ipc = {
+    input: ".project/templates/am62px/astra/tests_sbl_linux.robot.xdt",
+    output: "../tests_ipc.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL OSPI Linux with IPC",
+        appName: "sbl_ospi_linux_multistage(ipc)",
+        testCaseIds: "SITSW-3469",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_linux_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        expectTimeout: 300,
+        timeout: 900,
+        useNFS: true,
+        expectations: [
+            { port: "USB0", string: "Arago Project" },
+            { port: "USB0", send: "\\n", string: "login:" },
+            { port: "USB0", send: "root", string: "root@" },
+            { port: "USB0", send: "rpmsg_char_simple -r15", string: "TEST STATUS: PASSED" },
+            { port: "USB0", send: "rpmsg_char_simple -r1", string: "TEST STATUS: PASSED" },
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+            { port: "USB3", string: "Remote Core waiting for messages at end point" },
+        ],
+    },
+};
+
+const robot_template_incase_auth_fail = {
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
+    output: "../test_ddr_copy.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: Test DDR copy if in place authentication fails",
+        appName: "sbl_ospi_linux_multistage(ddr_copy)",
+        testCaseIds: "SITSW-5788",
+        cfgPath: "test/drivers/boot/sbl_test_ddr_copy/{board}/default_sbl_test_ddr_copy_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        expectTimeout: 300,
+        timeout: 900,
+    },
+};
+
+const robot_template_app_image_absent = {
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
+    output: "../test_app_image_absent.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: AM62P SBL Core AppImage Absent",
+        appName: "sbl_ospi_linux_multistage(app_image_absent)",
+        testCaseIds: "SITSW-5058",
+        cfgPath: "test/drivers/boot/sbl_core_appImage_not_present/{board}/default_sbl_ospi_core_appImage_not_present_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        expectTimeout: 300,
+        expectations: [
+            { port: "USB0", string: "Starting 2nd stage bootloader" },
+            { port: "USB0", string: "Starting linux and RTOS/Baremetal application" },
+            { port: "USB0", string: "switch to partitions #0, OK" },
+        ],
+        timeout: 900,
+    },
+};
+
+const robot_template_falcon = {
+    input: ".project/templates/am62px/astra/tests_sbl_linux.robot.xdt",
+    output: "../tests_falcon.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Skip A53 SPL and U-boot for fastboot",
+        appName: "sbl_ospi_linux_multistage(falcon_boot)",
+        testCaseIds: "SITSW-3281",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_linux_falcon_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        expectTimeout: 300,
+        timeout: 800,
+        expectations: [
+            { port: "USB0", string: "login:" },
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+        ],
+    },
+};
+
+const robot_template_qnx = {
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
+    output: "../tests_qnx.robot",
+    options: {
+        componentName: "SBL",
+        appName: "sbl_ospi_linux_multistage(qnx)",
+        testCaseName: "Bootloader: SBL OSPI NOR QNX",
+        testCaseIds: "SITSW-4458",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_qnx_${DEVICE_TYPE}.cfg",
+        expectTimeout: 300,
+        timeout: 900,
+        expectations: [
+            { port: "USB0", string: "AM62PXEVM#" },
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+        ],
+    },
+};
+
+const robot_template_sw_version = {
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
+    output: "../tests_sw_version.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader Check appImage sw version",
+        appName: "sbl_ospi_linux_multistage(sw_version_check)",
+        testCaseIds: "SITSW-5111",
+        cfgPath: "test/drivers/boot/sbl_sw_version_test/{board}/default_sbl_ospi_sw_version_test_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        timeout: 660,
+        expectTimeout: 200,
+        expectations: [
+            { port: "USB0", string: "Starting linux and RTOS/Baremetal applications" },
+        ],
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -118,6 +282,16 @@ function getComponentBuildProperty(buildOption) {
     build_property.libdirs = libdirs_freertos;
     build_property.libs = libs_freertos_dm_r5f;
     build_property.templates = templates_freertos_wkup_r5f;
+
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
+    build_property.templates = [...build_property.templates, robot_template_ecdsa];
+    build_property.templates = [...build_property.templates, robot_template_ipc];
+    build_property.templates = [...build_property.templates, robot_template_incase_auth_fail];
+    build_property.templates = [...build_property.templates, robot_template_app_image_absent];    
+    build_property.templates = [...build_property.templates, robot_template_falcon];
+    build_property.templates = [...build_property.templates, robot_template_qnx];
+    build_property.templates = [...build_property.templates, robot_template_sw_version];
 
     return build_property;
 }

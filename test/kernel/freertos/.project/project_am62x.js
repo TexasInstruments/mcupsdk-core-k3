@@ -270,6 +270,46 @@ function getComponentProperty() {
     return property;
 }
 
+
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "FreeRTOS",
+        testCaseName: "FreeRTOS test application",
+        testCaseIds: "SITSW-1251 SITSW-1252 SITSW-1253 SITSW-1254 SITSW-1255 SITSW-1256 SITSW-1257 SITSW-1259 SITSW-1260 SITSW-1261 SITSW-1275 SITSW-1276 SITSW-1279 SITSW-3074",
+        expectTimeout: 60,
+        timeout: 1200,
+    },
+};
+
+
+const robot_template_noatf = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests_noatf.robot",
+    options: {
+        componentName: "FreeRTOS",
+        testCaseName: "FreeRTOS test without ATF",
+        appName: "test_freertos(noatf)",
+        appBinaryName: "test_freertos_noatf",
+        testCaseIds: "SITSW-5918 SITSW-5919 SITSW-5920 SITSW-5921 SITSW-5922 SITSW-5923 SITSW-5924 SITSW-5925 SITSW-5926 SITSW-5927 SITSW-5928 SITSW-5929 SITSW-5930",
+    },
+};
+
+const robot_template_amp = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests_amp.robot",
+    options: {
+        componentName: "AMP",
+        testCaseName: "FreeRTOS test FreeRTOS-AMP",
+        appName: "test_freertos(amp)",
+        testCaseIds: "SITSW-5785",
+        withCfg: true,
+        cfgPath: "test/kernel/freertos/{board}/freertos_test_amp_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectTimeout: 240,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -318,6 +358,14 @@ function getComponentBuildProperty(buildOption) {
         {
             build_property.templates = templates_freertos_a53ss11;
         }
+    }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
+
+    build_property.templates = [...(build_property.templates || []), robot_template_noatf];
+
+    if (buildOption.cpu.match(/a53ss/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_amp];
     }
 
     return build_property;

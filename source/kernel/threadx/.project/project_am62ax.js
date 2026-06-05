@@ -522,6 +522,7 @@ function getComponentProperty() {
     return property;
 }
 
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -553,7 +554,6 @@ function getComponentBuildProperty(buildOption) {
         build_property.filedirs = filedirs_a53_smp;
         build_property.cflags   = cflags_a53;
     }
-
     return build_property;
 }
 

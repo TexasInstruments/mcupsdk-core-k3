@@ -187,6 +187,18 @@ const templates_freertos_m4f =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DDR",
+        testCaseName: "Utility: DDR load measurement",
+        testCaseIds: "SITSW-3722",
+        expectTimeout: 800,
+        timeout: 1400,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "freertos"},
@@ -250,6 +262,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_nortos_m4f;
         }
     }
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

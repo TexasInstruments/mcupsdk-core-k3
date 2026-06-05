@@ -278,6 +278,7 @@ function getComponentProperty() {
     return property;
 }
 
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -293,7 +294,6 @@ function getComponentBuildProperty(buildOption) {
     else if(buildOption.cpu == "a53") {
         build_property.includes = includes_a53;
     }
-
     return build_property;
 }
 

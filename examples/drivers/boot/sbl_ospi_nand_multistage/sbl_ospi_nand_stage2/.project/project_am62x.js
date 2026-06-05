@@ -70,6 +70,45 @@ function getComponentProperty() {
     return property;
 }
 
+
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL OSPI NAND",
+        appName: "sbl_ospi_nand_multistage",
+        testCaseIds: "SITSW-2729",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_nand_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NAND_BOOT_MODE",
+        timeout: 660,
+        expectTimeout: 100,
+        expectations: [
+            { port: "USB2", string: "All tests have passed!!" },
+        ],
+    },
+};
+
+
+const robot_template_smp = {
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
+    output: "../tests_smp.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL OSPI NAND FreeRTOS-SMP",
+        appName: "sbl_ospi_nand_multistage(smp)",
+        testCaseIds: "SITSW-3651",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_nand_freertos-smp_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NAND_BOOT_MODE",
+        timeout: 720,
+        expectTimeout: 100,
+        expectations: [
+            { port: "USB2", string: "Hello World!" },
+            { port: "USB0", string: "All tests have passed!!" },
+        ],
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -85,6 +124,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.libsprebuild = libs_prebuild_nortos_r5f;
     }
 
+    build_property.templates = [...(build_property.templates || []), robot_template];
+    build_property.templates = [...(build_property.templates || []), robot_template_smp];
     return build_property;
 }
 

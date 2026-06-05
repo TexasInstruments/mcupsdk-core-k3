@@ -66,6 +66,21 @@ const templates_freertos_a53 =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "UART",
+        testCaseName: "UART Echo DMA Multi Instance Mode Sample Application",
+        testCaseIds: "SITSW-8008",
+        interactPrompt: "Receives 8 characters then echo's back. Please input..",
+        interactSend: ["12345678\\r\\n"],
+        secondPort: "USB1",
+        secondPortSend: ["12345678\\r\\n"],
+        expectTimeout: 30,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sk", os: "freertos"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sip-sk", os: "freertos"},
@@ -99,6 +114,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_a53;
         build_property.libdirs = libdirs_freertos_a53;
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

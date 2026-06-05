@@ -171,6 +171,19 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "RTC",
+        testCaseName: "RTC Time Validation Test",
+        appName: "test_rtc",
+        testCaseIds: "SITSW-5822 SITSW-5823 SITSW-5824",
+        withCfg: true,
+        cfgPath: "test/drivers/rtc/{board}/{coreName}/default_test_rtc_${DEVICE_TYPE}.cfg",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -195,6 +208,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.cflags = cflags_a53;
     }
 
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

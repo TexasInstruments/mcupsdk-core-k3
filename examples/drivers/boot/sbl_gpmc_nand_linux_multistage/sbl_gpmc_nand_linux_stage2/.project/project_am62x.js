@@ -70,6 +70,21 @@ function getComponentProperty() {
     return property;
 }
 
+
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL GPMC NAND Linux",
+        appName: "sbl_gpmc_nand_linux_multistage",
+        testCaseIds: "SITSW-2707",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_gpmc_nand_linux_${DEVICE_TYPE}.cfg",
+        bootMode: "GPMC_NAND_BOOT_MODE",
+        expectTimeout: 300,
+        timeout: 900,
+    },
+};
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -85,6 +100,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libsprebuild = libs_prebuild_nortos_r5f;
     }
 
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

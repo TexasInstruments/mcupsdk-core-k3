@@ -106,6 +106,17 @@ const templates_freertos_m4f =
 ];
 
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Hello-World",
+        testCaseName: "Hello world CPP application",
+        testCaseIds: "SITSW-1462",
+        expectedString: "Hello World",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos"},
     { device: device, cpu: "m4fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
@@ -153,6 +164,8 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_nortos_m4f;
         }
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

@@ -85,6 +85,19 @@ function getComponentProperty() {
     return property;
 }
 
+
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "GTC",
+        testCaseName: "GTC test application",
+        testCaseIds: "SITSW-2096",
+        timeout: 630,
+        expectTimeout: 500,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -99,6 +112,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_nortos_a53;
         build_property.templates = templates_nortos_a53;
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

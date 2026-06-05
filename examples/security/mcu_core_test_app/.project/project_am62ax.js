@@ -102,6 +102,7 @@ const templates_freertos_mcu_r5f =
 ];
 
 
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 

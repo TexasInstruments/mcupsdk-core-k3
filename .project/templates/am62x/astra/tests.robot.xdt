@@ -1,0 +1,121 @@
+%%{
+/*
+ * Template: tests.robot.xdt (am62x)
+ *
+ * Use this template for am62x examples using the standard UartBootloader
+ * WITH ARGS (default) or WITH CFG (withCfg: true) boot flow.
+ *
+ * Port mapping (sblPort is always USB0 on am62x):
+ *   - a53ss*  → logPort: USB0
+ *   - r5fss*  → logPort: USB2
+ *   - m4fss*  → logPort: USB3
+ *
+ * For withCfg: true, cfgFile is auto-derived as:
+ *   ${SDK_PATH}/{relpath}/{board}/{name}_sbl_uart_hs_fs.cfg
+ * Override with options.cfgPath if needed.
+ *
+ * Supports interactPrompt/interactSend for interactive UART tests.
+ */
+    let options  = args.options;
+    let project  = args.project;
+
+    let sblPort = "USB0";
+    let logPort = "USB0";
+    if (project.cpu.match(/r5fss/))      logPort = "USB2";
+    else if (project.cpu.match(/m4fss/)) logPort = "USB3";
+    if (options && options.logPort)      logPort = options.logPort;
+
+    let expectedString = (options && options.expectedString) ? options.expectedString : "All tests have passed";
+    let timeout        = (options && options.timeout)        ? options.timeout        : 630;
+    let expectTimeout  = (options && options.expectTimeout)  ? options.expectTimeout  : 30;
+    let componentName  = (options && options.componentName)  ? options.componentName  : project.name;
+    let testCaseIds    = (options && options.testCaseIds)    ? options.testCaseIds.trim().split(/\s+/).join("    ") : "SITSW-XXXXX";
+    let testCaseName   = (options && options.testCaseName)   ? options.testCaseName   : componentName + " application";
+    let interactPrompt        = (options && options.interactPrompt)        ? options.interactPrompt        : null;
+    let interactSend          = (options && options.interactSend)          ? options.interactSend          : [];
+    let interactPromptTimeout = (options && options.interactPromptTimeout) ? options.interactPromptTimeout : 20;
+    let secondPort            = (options && options.secondPort)            ? options.secondPort            : null;
+    let secondPortSend        = (options && options.secondPortSend)        ? options.secondPortSend        : [];
+    let withCfg                   = (options && options.withCfg)                   ? true  : false;
+    let additionalExpectedStrings = (options && options.additionalExpectedStrings) ? options.additionalExpectedStrings : [];
+    // DM binary — auto-added for A53/M4F cores; not used for R5F (R5F is the DM)
+    let isA53orM4 = project.cpu.match(/a53ss|m4fss/);
+    let appBinaryDM = isA53orM4
+        ? "examples/hello_world/" + project.board + "/r5fss0-0_freertos/ti-arm-clang/hello_world.release.appimage.${DEVICE_TYPE}"
+        : null;
+
+    let coreName  = project.cpu + "_" + project.os;
+    let sbl       = "sbl_prebuilt/" + project.board + "/sbl_uart.release.${DEVICE_TYPE}.tiimage";
+    let appName      = (options && options.appName)      ? options.appName      : project.name;
+    let appBinaryName = (options && options.appBinaryName) ? options.appBinaryName : project.name;
+    let appBinaryExt = (options && options.appBinaryExt) ? options.appBinaryExt : "appimage.${DEVICE_TYPE}";
+    let appBinary = "../../" + project.relpath + "/" + project.board + "/" + coreName + "/" + project.cgt + "/" + appBinaryName + ".release." + appBinaryExt;
+    let cfgFile   = options.cfgPath
+                   ? "${SDK_PATH}/" + options.cfgPath.replace("{board}", project.board).replace("{coreName}", project.cpu + "_" + project.os)
+                   : null;
+%%}
+*** Comments ***
+`componentName` `coreName` TEST FILE
+
+*** Settings ***
+Documentation    Suite for `componentName` `coreName` TESTING
+
+# ------------- Resource Files ---------------------
+Resource    test_infra.resource
+
+# ------------- Setup and Teardown ---------------------
+Test Setup    INFRA_TEST_SETUP
+Test Teardown    INFRA_TEST_TEARDOWN
+
+*** Variables ***
+
+${SOC}    `project.device`
+${DEVICE_TYPE}    ${{ 'hs' if 'hsse' in '${PLATFORM}' else 'hs_fs' }}
+% if (withCfg) {
+${CFG_FILE}    `cfgFile`
+% } else {
+${SBL}    `sbl`
+${APP_BINARY}    `appBinary`
+% if (appBinaryDM) {
+${DM_BINARY}    ../../`appBinaryDM`
+% }
+% }
+
+*** Test Cases ***
+`testCaseName`
+	[Tags]    board:`project.board`    core:`coreName`    component:`componentName`    app_name:`appName`    `testCaseIds`
+	[Timeout]    `timeout`
+	DUT ON
+	CHANGE BOOT MODE    ${UART_BOOT_MODE}
+	DUT OFF
+	DUT ON
+	Sleep    2s
+	DUT`sblPort`.CONNECT TO UART PORT    ${`sblPort`}
+	DUT`sblPort`.EXPECT STRING AT UART PORT    CCC
+% if (withCfg) {
+	UartBootloader.WITH CFG    ${`sblPort`}    ${UartBootloaderPath}    ${CFG_FILE}
+% } else {
+% if (appBinaryDM) {
+	UartBootloader.WITH ARGS    ${`sblPort`}    ${UartBootloaderPath}    --bootloader=${SBL} --file=${APP_BINARY} --file=${DM_BINARY}
+% } else {
+	UartBootloader.WITH ARGS    ${`sblPort`}    ${UartBootloaderPath}    --soc=${SOC} --bootloader=${SBL} --file=${APP_BINARY}
+% }
+% }
+	DUT`logPort`.CONNECT TO UART PORT    ${`logPort`}
+% if (secondPort) {
+	DUT`secondPort`.CONNECT TO UART PORT    ${`secondPort`}
+% }
+% if (interactPrompt) {
+	DUT`logPort`.EXPECT STRING AT UART PORT    `interactPrompt`    `interactPromptTimeout`
+% for (let cmd of interactSend) {
+	DUT`logPort`.SEND COMMAND AND VERIFY    `cmd`
+% }
+% }
+% for (let cmd of secondPortSend) {
+	DUT`secondPort`.SEND COMMAND AND VERIFY    `cmd`
+% }
+	DUT`logPort`.EXPECT STRING AT UART PORT    `expectedString`     `expectTimeout`
+% for (let s of additionalExpectedStrings) {
+	DUT`s.port`.CONNECT TO UART PORT    ${`s.port`}
+	DUT`s.port`.EXPECT STRING AT UART PORT    `s.string`     `expectTimeout`
+% }

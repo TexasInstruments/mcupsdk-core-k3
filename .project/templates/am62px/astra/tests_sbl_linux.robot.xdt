@@ -1,0 +1,83 @@
+%%{
+/*
+ * Template: tests_sbl_linux.robot.xdt (am62px)
+ *
+ * Port mapping:
+ *   USB0 — A53 Linux console (UART0/ttyUSB0)
+ *   USB2 — wkup-r5fss0-0 (WKUP_UART/ttyUSB2)
+ *   USB3 — mcu-r5fss0-0 (MCU_UART/ttyUSB3)
+ *
+ * Options:
+ *   cfgPath / cfgFileName — cfg file to flash
+ *   bootMode              — boot mode after flash (default: EMMC_BOOT_MODE)
+ *   timeout               — test timeout (default: 1000)
+ *   expectTimeout         — per-string timeout (default: 100)
+ *   useNFS                — if true, call NFS.SETUP NFS USING UBOOT AND BOOT before expectations
+ *   expectations: [{port, string, send?}]
+ *     - {port, string}         → DUT{port}.EXPECT STRING AT UART PORT
+ *     - {port, send, string}   → DUT{port}.SEND COMMAND AND VERIFY {send} {string}
+ */
+    let options  = args.options;
+    let project  = args.project;
+
+    let componentName  = (options && options.componentName)  ? options.componentName  : "SBL";
+    let testCaseName   = (options && options.testCaseName)   ? options.testCaseName   : componentName + " Linux application";
+    let appName        = (options && options.appName)        ? options.appName        : project.name;
+    let testCaseIds    = (options && options.testCaseIds)    ? options.testCaseIds.trim().split(/\s+/).join("    ") : "SITSW-XXXXX";
+    let bootMode       = (options && options.hasOwnProperty('bootMode')) ? options.bootMode : "EMMC_BOOT_MODE";
+    let timeout        = (options && options.timeout)        ? options.timeout        : 1000;
+    let expectTimeout  = (options && options.expectTimeout)  ? options.expectTimeout  : 100;
+    let useNFS         = (options && options.useNFS)         ? true                   : false;
+    let expectations   = (options && options.expectations)  ? options.expectations   : [];
+
+    let coreName = project.cpu + "_" + project.os;
+    let cfgFile  = options.cfgPath
+                   ? "${SDK_PATH}/" + options.cfgPath.replace("{board}", project.board).replace("{coreName}", project.cpu + "_" + project.os)
+                   : "${SDK_PATH}/tools/boot/sbl_prebuilt/" + project.board + "/" + options.cfgFileName;
+%%}
+*** Comments ***
+`componentName` `coreName` TEST FILE
+
+*** Settings ***
+Documentation    Suite for `componentName` `coreName` TESTING
+
+# ------------- Resource Files ---------------------
+Resource    test_infra.resource
+
+# ------------- Setup and Teardown ---------------------
+Test Setup    INFRA_TEST_SETUP
+Test Teardown    INFRA_TEST_TEARDOWN
+
+*** Variables ***
+
+${DEVICE_TYPE}    ${{ 'hs' if 'hsse' in '${PLATFORM}' else 'hs_fs' }}
+${CFG_FILE}    `cfgFile`
+
+*** Test Cases ***
+`testCaseName`
+	[Tags]    core:`coreName`    component:`componentName`    app_name:`appName`    `testCaseIds`
+	[Timeout]    `timeout`
+	DUT ON
+	CHANGE BOOT MODE    ${UART_BOOT_MODE}
+	DUT OFF
+	DUT ON
+	Sleep    2s
+	UartUniFlash.WITH CFG    ${USB0}    ${UartUniFlashPath}    ${CFG_FILE}
+% if (bootMode) {
+% { const seenPorts = [...new Set(expectations.map(e => e.port))]; for (let p of seenPorts) {
+	DUT`p`.CONNECT TO UART PORT    ${`p`}
+% } }
+	CHANGE BOOT MODE    ${`bootMode`}
+	DUT OFF
+	DUT ON
+% }
+% if (useNFS) {
+	NFS.SETUP NFS USING UBOOT AND BOOT    USB0
+% }
+% for (let exp of expectations) {
+% if (exp.send !== undefined) {
+	DUT`exp.port`.SEND COMMAND AND VERIFY    `exp.send`    `exp.string`    `expectTimeout`
+% } else {
+	DUT`exp.port`.EXPECT STRING AT UART PORT    `exp.string`    `expectTimeout`
+% }
+% }

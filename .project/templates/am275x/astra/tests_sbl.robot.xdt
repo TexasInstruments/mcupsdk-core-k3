@@ -1,22 +1,19 @@
 %%{
 /*
- * Template: tests_sbl.robot.xdt
+ * Template: tests_sbl.robot.xdt (am275x)
  *
- * Use this template for SBL (Secondary Bootloader) examples that flash
- * a bootloader image to non-volatile storage using UartUniFlash, then
- * optionally reboot the board from that storage. Requires cfgPath pointing
- * to a .cfg file under tools/boot/sbl_prebuilt/.
+ * Port mapping:
+ *   sblPort = ACM0 (UART0/ttyACM0 — MAIN R5F and bootloader)
+ *   logPort = USB2 (WKUP_UART/ttyUSB2) for wkup-r5fss0-0
+ *           = USB0 (UART2/ttyUSB0)     for c75
+ *           = ACM0                     for all other cores
  *
- * Supported examples: sbl_ospi, sbl_null, sbl_emmc
- *
- * Flow:
- *   1. Flash via UartUniFlash.WITH CFG
- *   2. Connect to logPort (USB2 for wkup-r5fss0-0)
- *   3. If bootMode set: CHANGE BOOT MODE -> DUT OFF/ON -> EXPECT
- *      "Image loading done" on logPort -> EXPECT expectedString on sblPort (ACM0)
- *   4. If bootMode not set (sbl_null): EXPECT expectedString on logPort directly
- *
- * Key options: cfgPath (required), bootMode (optional, e.g. XSPI_1S_BOOT_MODE)
+ * Options:
+ *   cfgPath      — path to uniflash .cfg (required)
+ *   bootMode     — boot mode after flash (e.g. XSPI_1S_BOOT_MODE); null = no reboot
+ *   timeout, expectTimeout
+ *   expectations: [{port, string}] — sequential port/string checks after flash/boot
+ *   expectedString, finalPort      — fallback single-string check (backward compat)
  */
     let options  = args.options;
     let project  = args.project;
@@ -34,8 +31,10 @@
     let componentName  = (options && options.componentName)  ? options.componentName  : "SBL";
     let testCaseIds    = (options && options.testCaseIds)    ? options.testCaseIds    : "SITSW-XXXXX";
     let testCaseName   = (options && options.testCaseName)   ? options.testCaseName   : componentName + " application";
-    let bootMode       = (options && options.bootMode)       ? options.bootMode       : null;
+    let bootMode       = (options && options.hasOwnProperty('bootMode')) ? options.bootMode : null;
     let finalPort      = bootMode ? sblPort : logPort;
+    // expectations: [{port, string}] — overrides expectedString/finalPort when set
+    let expectations   = (options && options.expectations)  ? options.expectations   : null;
 
     let coreName = project.cpu + "_" + project.os;
     let cfgFile  = "${SDK_PATH}/" + options.cfgPath;
@@ -71,11 +70,24 @@ ${CFG_FILE}    `cfgFile`
 	DUT`sblPort`.CONNECT TO UART PORT    ${`sblPort`}
 	DUT`sblPort`.EXPECT STRING AT UART PORT    CCC
 	UartUniFlash.WITH CFG    ${`sblPort`}    ${UartUniFlashPath}    ${CFG_FILE}
-	DUT`logPort`.CONNECT TO UART PORT    ${`logPort`}
 % if (bootMode) {
 	CHANGE BOOT MODE    ${`bootMode`}
 	DUT OFF
-	DUT ON
-	DUT`logPort`.EXPECT STRING AT UART PORT    Image loading done    300
+% if (expectations) {
+% { const seenPorts = [...new Set(expectations.map(e => e.port))].filter(p => p !== sblPort); for (let p of seenPorts) {
+	DUT`p`.CONNECT TO UART PORT    ${`p`}
+% } }
+% } else {
+	DUT`logPort`.CONNECT TO UART PORT    ${`logPort`}
 % }
+	DUT ON
+% } else {
+	DUT`logPort`.CONNECT TO UART PORT    ${`logPort`}
+% }
+% if (expectations) {
+% for (let exp of expectations) {
+	DUT`exp.port`.EXPECT STRING AT UART PORT    `exp.string`    `expectTimeout`
+% }
+% } else {
 	DUT`finalPort`.EXPECT STRING AT UART PORT    `expectedString`    `expectTimeout`
+% }

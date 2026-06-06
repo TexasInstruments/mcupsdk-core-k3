@@ -103,7 +103,8 @@ const robot_template = {
     options: {
         componentName: "EQEP",
         testCaseName: "eqep test application",
-        testCaseIds: "SITSW-6988 SITSW-7263 SITSW-7264 SITSW-7265 SITSW-7266 SITSW-7267 SITSW-7268 SITSW-7270 SITSW-7271 SITSW-7272 SITSW-7314",
+        testCaseIds: "SITSW-6988 SITSW-7263 SITSW-7264 SITSW-7265 SITSW-7266 SITSW-7267 SITSW-7268 SITSW-7270 SITSW-7271 SITSW-7272" +
+                     " SITSW-7314",
     },
 };
 

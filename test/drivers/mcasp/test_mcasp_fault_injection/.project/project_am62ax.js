@@ -283,7 +283,7 @@ const robot_template = {
         componentName: "MCASP",
         testCaseName: "test_mcasp_fault_injection test application",
         appName: "test_mcasp_fault_inject",
-        testCaseIds: "SITSW-9255 SITSW-9256 SITSW-9257 SITSW-9254 SITSW-9253 SITSW-9262 SITSW-9259 SITSW-9258 SITSW-9261 SITSW-9260",
+        testCaseIds: "SITSW-9253 SITSW-9254 SITSW-9255 SITSW-9256 SITSW-9257 SITSW-9258 SITSW-9259 SITSW-9260 SITSW-9261 SITSW-9262",
     },
 };
 

@@ -198,7 +198,7 @@ const robot_template = {
     options: {
         componentName: "MMCSD",
         testCaseName: "MMCSD: File Write/Read example for SD Card",
-        testCaseIds: "SITSW-6626 SITSW-1943",
+        testCaseIds: "SITSW-1943 SITSW-6626",
     },
 };
 

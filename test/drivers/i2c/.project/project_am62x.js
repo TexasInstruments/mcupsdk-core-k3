@@ -139,7 +139,8 @@ const robot_template = {
     options: {
         componentName: "I2C",
         testCaseName: "I2C test application",
-        testCaseIds: "SITSW-1311 SITSW-1312 SITSW-1313 SITSW-1314 SITSW-1315 SITSW-1316 SITSW-1317 SITSW-1318 SITSW-1319 SITSW-1320 SITSW-6849",
+        testCaseIds: "SITSW-1311 SITSW-1312 SITSW-1313 SITSW-1314 SITSW-1315 SITSW-1316 SITSW-1317 SITSW-1318 SITSW-1319 SITSW-1320" +
+                     " SITSW-6849",
         expectTimeout: 60,
         timeout: 660,
     },

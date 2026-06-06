@@ -120,7 +120,8 @@ const robot_template = {
     options: {
         componentName: "OSPI",
         testCaseName: "OSPI: TEST OSPI FALLBACK To 1s1s1s",
-        testCaseIds: "SITSW-3174 SITSW-3175 SITSW-3176 SITSW-3825 SITSW-6893 SITSW-7105 SITSW-8012 SITSW-8493 SITSW-8494 SITSW-8724 SITSW-9211 SITSW-10134",
+        testCaseIds: "SITSW-3174 SITSW-3175 SITSW-3176 SITSW-3825 SITSW-6893 SITSW-7105 SITSW-8012 SITSW-8493 SITSW-8494 SITSW-8724" +
+                     " SITSW-9211 SITSW-10134",
         expectTimeout: 3600,
         timeout: 4200,
     },

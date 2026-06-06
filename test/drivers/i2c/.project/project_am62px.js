@@ -172,7 +172,8 @@ const robot_template_i2c = {
     options: {
         componentName: "I2C",
         testCaseName: "I2C: Dynamic Coverage Test, to improve the statement and branch coverages.",
-        testCaseIds: "SITSW-1311 SITSW-1312 SITSW-1313 SITSW-1314 SITSW-1315 SITSW-1316 SITSW-1317 SITSW-1318 SITSW-1319 SITSW-1320 SITSW-6605 SITSW-6849",
+        testCaseIds: "SITSW-1311 SITSW-1312 SITSW-1313 SITSW-1314 SITSW-1315 SITSW-1316 SITSW-1317 SITSW-1318 SITSW-1319 SITSW-1320" +
+                     " SITSW-6605 SITSW-6849",
         appName: "test_i2c",
         expectTimeout: 60,
     },

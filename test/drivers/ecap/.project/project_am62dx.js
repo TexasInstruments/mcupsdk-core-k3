@@ -171,7 +171,8 @@ const robot_template = {
     options: {
         componentName: "ECAP",
         testCaseName: "ecap test application",
-        testCaseIds: "SITSW-6990 SITSW-7274 SITSW-7275 SITSW-7276 SITSW-7277 SITSW-7278 SITSW-7279 SITSW-7280 SITSW-7281 SITSW-7282 SITSW-7283 SITSW-7312 SITSW-7313",
+        testCaseIds: "SITSW-6990 SITSW-7274 SITSW-7275 SITSW-7276 SITSW-7277 SITSW-7278 SITSW-7279 SITSW-7280 SITSW-7281 SITSW-7282" +
+                     " SITSW-7283 SITSW-7312 SITSW-7313",
     },
 };
 

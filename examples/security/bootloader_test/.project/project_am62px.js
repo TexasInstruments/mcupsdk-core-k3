@@ -93,6 +93,25 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Security: Bootloader test",
+        appName: "security_bootloader_test",
+        testCaseIds: "SITSW-6011",
+        cfgPath: "examples/security/bootloader_test/{board}/default_security_bootloader_test_hs.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        timeout: 600,
+        expectTimeout: 300,
+        expectations: [
+            { port: "USB0", string: "Image size" },
+            { port: "USB0", string: "All tests have passed!!" },
+        ],
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -106,6 +125,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.libs = libs_nortos_r5f;
     build_property.templates = templates_bootloader;
     build_property.cflags = cflags;
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

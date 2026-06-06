@@ -284,7 +284,7 @@ const robot_template = {
         componentName: "MCSPI",
         testCaseName: "mcspi_master_slave_dma test application",
         appName: "test_mcspi_master_slave_dma",
-        testCaseIds: "SITSW-9016 SITSW-9015",
+        testCaseIds: "SITSW-9015 SITSW-9016",
         withCfg: true,
         cfgPath: "test/drivers/mcspi/mcspi_master_slave_dma/{board}/test_mcspi_master_slave_dma_sbl_uart_${DEVICE_TYPE}.cfg",
     },

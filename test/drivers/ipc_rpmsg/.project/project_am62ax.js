@@ -237,7 +237,9 @@ const robot_template = {
     options: {
         componentName: "IPC",
         testCaseName: "ipc_rpmsg test application",
-        testCaseIds: "SITSW-2456 SITSW-2458 SITSW-2463 SITSW-2464 SITSW-2465 SITSW-2466 SITSW-2467 SITSW-2468 SITSW-2711 SITSW-2712 SITSW-2713 SITSW-2714 SITSW-2732 SITSW-2733 SITSW-2734 SITSW-5649 SITSW-5671 SITSW-9726 SITSW-9727 SITSW-9728 SITSW-9729 SITSW-9730 SITSW-9731",
+        testCaseIds: "SITSW-2456 SITSW-2458 SITSW-2463 SITSW-2464 SITSW-2465 SITSW-2466 SITSW-2467 SITSW-2468 SITSW-2711 SITSW-2712" +
+                     " SITSW-2713 SITSW-2714 SITSW-2732 SITSW-2733 SITSW-2734 SITSW-5649 SITSW-5671 SITSW-9726 SITSW-9727 SITSW-9728" +
+                     " SITSW-9729 SITSW-9730 SITSW-9731",
         withCfg: true,
         appName: "test_ipc_rpmsg",
         cfgPath: "test/drivers/ipc_rpmsg/{board}/ipc_rpmsg_test_sbl_uart_${DEVICE_TYPE}.cfg",

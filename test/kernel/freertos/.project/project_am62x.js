@@ -277,7 +277,8 @@ const robot_template = {
     options: {
         componentName: "FreeRTOS",
         testCaseName: "FreeRTOS test application",
-        testCaseIds: "SITSW-1251 SITSW-1252 SITSW-1253 SITSW-1254 SITSW-1255 SITSW-1256 SITSW-1257 SITSW-1259 SITSW-1260 SITSW-1261 SITSW-1275 SITSW-1276 SITSW-1279 SITSW-3074",
+        testCaseIds: "SITSW-1251 SITSW-1252 SITSW-1253 SITSW-1254 SITSW-1255 SITSW-1256 SITSW-1257 SITSW-1259 SITSW-1260 SITSW-1261" +
+                     " SITSW-1275 SITSW-1276 SITSW-1279 SITSW-3074",
         expectTimeout: 60,
         timeout: 1200,
     },
@@ -292,7 +293,8 @@ const robot_template_noatf = {
         testCaseName: "FreeRTOS test without ATF",
         appName: "test_freertos(noatf)",
         appBinaryName: "test_freertos_noatf",
-        testCaseIds: "SITSW-5918 SITSW-5919 SITSW-5920 SITSW-5921 SITSW-5922 SITSW-5923 SITSW-5924 SITSW-5925 SITSW-5926 SITSW-5927 SITSW-5928 SITSW-5929 SITSW-5930",
+        testCaseIds: "SITSW-5918 SITSW-5919 SITSW-5920 SITSW-5921 SITSW-5922 SITSW-5923 SITSW-5924 SITSW-5925 SITSW-5926 SITSW-5927" +
+                     " SITSW-5928 SITSW-5929 SITSW-5930",
     },
 };
 

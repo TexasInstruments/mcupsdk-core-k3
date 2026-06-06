@@ -223,7 +223,7 @@ const buildOptionCombos = [
 
 const systemProjects =[
     {
-        name: "test_ipc_rpmsg_mcu_r5f",
+        name: "test_ipc_rpmsg_a53",
         tag: "freertos",
         skipProjectSpec: true,
         board: "am62ax-sk",
@@ -241,7 +241,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "test_ipc_rpmsg_mcu_r5f";
+    property.name = "test_ipc_rpmsg_a53";
     property.isInternal = true;
     property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;
@@ -259,7 +259,7 @@ const robot_template = {
         testCaseName: "IPC RPMSG: A53SS0_0 to R5FSS0_0 with varying messages sizes",
         testCaseIds: "SITSW-9813 SITSW-9814 SITSW-9815",
         withCfg: true,
-        appName: "test_ipc_rpmsg_mcu_r5f",
+        appName: "test_ipc_rpmsg_a53",
         cfgPath: "test/drivers/ipc_rpmsg_a53/{board}/ipc_rpmsg_test_sbl_uart_${DEVICE_TYPE}.cfg",
         expectTimeout: 500,
     },

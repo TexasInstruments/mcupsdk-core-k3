@@ -300,7 +300,8 @@ const robot_template = {
     options: {
         componentName: "FreeRTOS",
         testCaseName: "FreeRTOS: test floating point with interrupts",
-        testCaseIds: "SITSW-1251 SITSW-1252 SITSW-1253 SITSW-1254 SITSW-1255 SITSW-1256 SITSW-1257 SITSW-1259 SITSW-1260 SITSW-1261 SITSW-1275 SITSW-1276 SITSW-1279 SITSW-1457 SITSW-3074",
+        testCaseIds: "SITSW-1251 SITSW-1252 SITSW-1253 SITSW-1254 SITSW-1255 SITSW-1256 SITSW-1257 SITSW-1259 SITSW-1260 SITSW-1261" +
+                     " SITSW-1275 SITSW-1276 SITSW-1279 SITSW-1457 SITSW-3074",
     },
 };
 

@@ -213,7 +213,7 @@ const robot_template = {
     options: {
         componentName: "MMCSD",
         testCaseName: "MMCSD: Raw I/O test for eMMC",
-        testCaseIds: "SITSW-3017 SITSW-1942",
+        testCaseIds: "SITSW-1942 SITSW-3017",
         expectTimeout: 1000,
         timeout: 1600,
     },

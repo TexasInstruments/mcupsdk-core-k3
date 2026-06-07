@@ -186,6 +186,17 @@ const robot_template = {
     },
 };
 
+const robot_template_c75 = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SafeRTOS",
+        testCaseName: "FreeRTOS Task Switch Application",
+        testCaseIds: "SITSW-10831",
+        logPort: "USB1",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -217,7 +228,11 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.cpu.match(/c75/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_c75];
+    } else {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

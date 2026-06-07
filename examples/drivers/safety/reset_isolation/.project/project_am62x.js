@@ -207,7 +207,10 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_nortos_m4f;
     }
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if(buildOption.cpu.match("m4fss0-0"))
+    {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

@@ -80,6 +80,7 @@ const robot_template_falcon = {
     options: {
         componentName: "SBL",
         testCaseName: "Bootloader: SBL OSPI NOR Linux Falcon",
+        appName: "sbl_ospi_linux_multistage(falcon_boot)",
         testCaseIds: "SITSW-3281",
         cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_linux_falcon_${DEVICE_TYPE}.cfg",
         bootMode: "OSPI_NAND_BOOT_MODE",

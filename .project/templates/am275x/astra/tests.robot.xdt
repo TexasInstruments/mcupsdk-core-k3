@@ -61,7 +61,9 @@
     let binaryExt = isWkupR5f ? "${DEVICE_TYPE}.tiimage" : "mcelf.${DEVICE_TYPE}";
     let sbl       = "sbl_prebuilt/" + project.board + "/sbl_uart.release.${DEVICE_TYPE}.tiimage";
     let appBinary = "../../" + project.relpath + "/" + project.board + "/" + coreName + "/" + project.cgt + "/" + project.name + ".release." + binaryExt;
-    let cfgFile   = "${SDK_PATH}/" + options.cfgPath;
+    let cfgFile   = options.cfgPath
+                  ? "${SDK_PATH}/" + options.cfgPath.replace("{board}", project.board).replace("{coreName}", project.cpu + "_" + project.os)
+                  : "${SDK_PATH}/sbl_prebuilt/" + project.board + "/sbl_uart.release.${DEVICE_TYPE}.tiimage";
 %%}
 *** Comments ***
 `componentName` `coreName` TEST FILE

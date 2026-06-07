@@ -505,8 +505,9 @@ function getComponentBuildProperty(buildOption) {
         build_property.cflags = cflags_free_rtos;
     }
 
-
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.cpu === "c75ss0-0") {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

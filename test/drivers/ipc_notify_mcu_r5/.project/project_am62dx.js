@@ -497,9 +497,10 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_c7;
         build_property.cflags = cflags_free_rtos;
     }
-
-
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if(buildOption.cpu.match("mcu-r5fss0-0"))
+    {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

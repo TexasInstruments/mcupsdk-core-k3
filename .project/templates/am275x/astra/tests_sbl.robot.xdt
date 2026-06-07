@@ -37,7 +37,9 @@
     let expectations   = (options && options.expectations)  ? options.expectations   : null;
 
     let coreName = project.cpu + "_" + project.os;
-    let cfgFile  = "${SDK_PATH}/" + options.cfgPath;
+    let cfgFile  = options.cfgPath
+                 ? "${SDK_PATH}/" + options.cfgPath.replace("{board}", project.board).replace("{coreName}", project.cpu + "_" + project.os)
+                 : "${SDK_PATH}/sbl_prebuilt/" + project.board + "/sbl_uart.release.${DEVICE_TYPE}.tiimage";
 %%}
 *** Comments ***
 `componentName` `coreName` TEST FILE

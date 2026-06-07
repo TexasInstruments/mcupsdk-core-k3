@@ -287,7 +287,7 @@ const robot_template = {
         testCaseIds: "SITSW-8650 SITSW-8651 SITSW-8652 SITSW-8653 SITSW-8654 SITSW-8655 SITSW-8656 SITSW-8657 SITSW-8658 SITSW-8659" +
                      " SITSW-8660 SITSW-8661 SITSW-8662 SITSW-8663 SITSW-8664 SITSW-8665 SITSW-8666 SITSW-8667 SITSW-8668 SITSW-8669" +
                      " SITSW-8670 SITSW-8671 SITSW-8673 SITSW-8674 SITSW-8675 SITSW-8676 SITSW-8677 SITSW-8678 SITSW-8679 SITSW-8680" +
-                     " SITSW-8681 SITSW-9015 SITSW-9016",
+                     " SITSW-8681",
         withCfg: true,
         cfgPath: "test/drivers/mcspi/mcspi_master_slave/{board}/test_mcspi_master_slave_sbl_uart_${DEVICE_TYPE}.cfg",
     },

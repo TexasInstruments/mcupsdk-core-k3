@@ -322,6 +322,11 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_c75;
 	build_property.defines = defines_c7;
     }
+    
+    if (buildOption.cpu === "c75ss0-0") {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
+    
     return build_property;
 }
 

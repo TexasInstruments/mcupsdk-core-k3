@@ -302,11 +302,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_a53;
     }
 
-
-
-
-    // a53ss0-0 is master core (USB0/mpu); robot only for master
-    if (buildOption.cpu.match(/a53ss0-0/)) {
+    if (buildOption.cpu.match(/c75ss0-0/)) {
         build_property.templates = [...(build_property.templates || []), robot_template];
     }
     return build_property;

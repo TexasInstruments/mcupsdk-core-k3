@@ -96,13 +96,14 @@ function getComponentProperty() {
 }
 
 const robot_template = {
-    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "SBL",
         testCaseName: "Bootloader: UART Linux SBL",
         testCaseIds: "SITSW-1758",
         cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_uart_linux_${DEVICE_TYPE}.cfg",
+        withCfg: true,
         expectTimeout: 120,
         timeout: 900,
     },

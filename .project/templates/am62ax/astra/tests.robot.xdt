@@ -6,7 +6,7 @@
  *   - r5fss0-0   → logPort: USB2 (DM R5F, no DM binary)
  *   - mcu-r5fss0-0 → logPort: USB3
  *   - a53ss0-0   → logPort: USB0
- *   - c75ss0-0   → logPort: USB0 (DSP, outputs via A53 UART)
+ *   - c75ss0-0   → logPort: USB3 (DSP, outputs via MCU_UART)
  */
     let options  = args.options;
     let project  = args.project;
@@ -15,7 +15,7 @@
     let logPort = "USB2";
     if (project.cpu.match(/mcu-r5fss/))    logPort = "USB3";
     else if (project.cpu.match(/a53ss/))   logPort = "USB0";
-    else if (project.cpu.match(/c75ss/))   logPort = "USB0";
+    else if (project.cpu.match(/c75ss/))   logPort = "USB3";
     if (options && options.logPort)         logPort = options.logPort;
 
     let expectedString = (options && options.expectedString) ? options.expectedString : "All tests have passed";

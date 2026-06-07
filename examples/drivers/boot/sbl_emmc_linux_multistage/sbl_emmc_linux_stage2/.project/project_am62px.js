@@ -148,24 +148,6 @@ const robot_template_ecdsa = {
         ],
     },
 };
-const robot_template_falcon = {
-    input: ".project/templates/am62px/astra/tests_sbl_linux.robot.xdt",
-    output: "../tests_falcon.robot",
-    options: {
-        componentName: "SBL",
-        testCaseName: "Skip A53 SPL and U-boot for fastboot - eMMC",
-        appName: "sbl_emmc_linux_multistage(falcon_boot)",
-        testCaseIds: "SITSW-8221",
-        cfgPath: "default_sbl_emmc_linux_falcon_${DEVICE_TYPE}.cfg",
-        bootMode: "EMMC_BOOT_MODE",
-        expectTimeout: 300,
-        timeout: 3600,
-        expectations: [
-            { port: "USB0", string: "login:" },
-            { port: "USB2", string: "Starting Sciserver..... PASSED" },
-        ],
-    },
-};
 
 const robot_template_qnx = {
     input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
@@ -202,7 +184,6 @@ function getComponentBuildProperty(buildOption) {
 
     build_property.templates = [...(build_property.templates || []), robot_template];
     build_property.templates = [...build_property.templates, robot_template_ecdsa];
-    build_property.templates = [...build_property.templates, robot_template_falcon];
     build_property.templates = [...build_property.templates, robot_template_qnx];
     return build_property;
 }

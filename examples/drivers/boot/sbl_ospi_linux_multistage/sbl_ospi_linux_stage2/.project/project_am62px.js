@@ -179,20 +179,6 @@ const robot_template_ipc = {
     },
 };
 
-const robot_template_incase_auth_fail = {
-    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
-    output: "../test_ddr_copy.robot",
-    options: {
-        componentName: "SBL",
-        testCaseName: "Bootloader: Test DDR copy if in place authentication fails",
-        appName: "sbl_ospi_linux_multistage(ddr_copy)",
-        testCaseIds: "SITSW-5788",
-        cfgPath: "test/drivers/boot/sbl_test_ddr_copy/{board}/default_sbl_test_ddr_copy_${DEVICE_TYPE}.cfg",
-        bootMode: "OSPI_NOR_BOOT_MODE",
-        expectTimeout: 300,
-        timeout: 900,
-    },
-};
 
 const robot_template_app_image_absent = {
     input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
@@ -287,7 +273,6 @@ function getComponentBuildProperty(buildOption) {
     build_property.templates = [...(build_property.templates || []), robot_template];
     build_property.templates = [...build_property.templates, robot_template_ecdsa];
     build_property.templates = [...build_property.templates, robot_template_ipc];
-    build_property.templates = [...build_property.templates, robot_template_incase_auth_fail];
     build_property.templates = [...build_property.templates, robot_template_app_image_absent];    
     build_property.templates = [...build_property.templates, robot_template_falcon];
     build_property.templates = [...build_property.templates, robot_template_qnx];

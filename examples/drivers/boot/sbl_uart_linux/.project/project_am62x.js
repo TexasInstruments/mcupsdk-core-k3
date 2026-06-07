@@ -54,7 +54,7 @@ const syscfgfile = "../example.syscfg";
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_SBL_UART_LINUX";
 
 const robot_template = {
-    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "SBL",
@@ -62,6 +62,7 @@ const robot_template = {
         testCaseIds: "SITSW-1758",
         timeout: 900,
         cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_uart_linux_${DEVICE_TYPE}.cfg",
+        withCfg: true,
         expectTimeout: 120,
     },
 };

@@ -213,11 +213,13 @@ cfgPath: "test/drivers/ipc/{board}/{coreName}/ipc_test_sbl_uart_${DEVICE_TYPE}.c
 
 ### am62ax / am62dx
 
-| Port | Physical UART | Core |
-|------|--------------|------|
-| USB0 | UART0 / ttyUSB0 | A53 (bootloader log) |
-| USB2 | WKUP_UART / ttyUSB2 | r5fss0-0 (DM core) |
-| USB3 | MCU_UART / ttyUSB3 | mcu-r5fss0-0 |
+| Port | Physical UART | Core | Default logPort |
+|------|--------------|------|-----------------|
+| USB0 | UART0 / ttyUSB0 | A53 (bootloader log) | a53ss0-0 |
+| USB2 | WKUP_UART / ttyUSB2 | r5fss0-0 (DM core) | r5fss0-0 |
+| USB3 | MCU_UART / ttyUSB3 | mcu-r5fss0-0, c75ss0-0 | mcu-r5fss0-0, c75ss0-0 |
+
+> **Note:** c75ss0-0 uses MCU_UART (USB3) when `useMcuDomainPeripherals = true` in syscfg (most cases). Use `logPort: "USB0"` override only for apps using UART0 directly.
 
 ### am62px
 

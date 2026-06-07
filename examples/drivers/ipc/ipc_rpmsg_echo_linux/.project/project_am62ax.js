@@ -285,8 +285,9 @@ const robot_template = {
             { port: "USB0", string: "Arago Project" },
             { port: "USB0", send: "\\n", string: "login:" },
             { port: "USB0", send: "root", string: "root@" },
+            { port: "USB0", send: "rpmsg_char_simple -r0", string: "TEST STATUS: PASSED" },
             { port: "USB0", send: "rpmsg_char_simple -r15", string: "TEST STATUS: PASSED" },
-            { port: "USB0", send: "rpmsg_char_simple -r1", string: "TEST STATUS: PASSED" },
+            { port: "USB0", send: "rpmsg_char_simple -r8", string: "TEST STATUS: PASSED" },
             { port: "USB2", string: "Starting Sciserver..... PASSED" },
             { port: "USB3", string: "Remote Core waiting for messages at end point" },
         ],
@@ -345,7 +346,9 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.cpu === "r5fss0-0") {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

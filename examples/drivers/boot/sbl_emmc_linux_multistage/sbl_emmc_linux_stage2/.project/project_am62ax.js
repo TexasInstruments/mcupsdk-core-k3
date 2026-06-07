@@ -91,19 +91,26 @@ function getComponentProperty() {
 
     return property;
 }
-
 const robot_template = {
-    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
+    input: ".project/templates/am62ax/astra/tests_sbl_linux.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "SBL",
         testCaseName: "Bootloader: SBL EMMC Linux",
+        appName: "sbl_emmc_linux_multistage",
         testCaseIds: "SITSW-1755",
         cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_emmc_linux_${DEVICE_TYPE}.cfg",
+        bootMode: "EMMC_BOOT_MODE",
         expectTimeout: 300,
         timeout: 900,
-        appName: "sbl_emmc_linux_multistage",
-        bootMode: "EMMC_BOOT_MODE",
+        useNFS: true,
+        expectations: [
+            { port: "USB0", string: "Arago Project" },
+            { port: "USB0", send: "\\n", string: "login:" },
+            { port: "USB0", send: "root", string: "root@" },
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+            { port: "USB3", string: "Remote Core waiting for messages at end point" },
+        ],
     },
 };
 

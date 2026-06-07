@@ -140,7 +140,7 @@ function getComponentProperty() {
 }
 
 const robot_template = {
-    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "RTC",

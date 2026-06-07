@@ -196,6 +196,7 @@ const robot_template = {
         componentName: "FreeRTOS",
         testCaseName: "Empty FreeRTOS Sample Application",
         testCaseIds: "SITSW-1247",
+        logPort: "USB0",
     },
 };
 

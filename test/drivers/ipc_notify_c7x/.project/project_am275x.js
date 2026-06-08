@@ -206,6 +206,7 @@ const robot_template = {
         componentName: "IPC",
         testCaseName: "test_ipc_notify_c7x test application",
         appName: "test_ipc_notify_c7x",
+        logPort: "ACM0",
         testCaseIds: "SITSW-9372 SITSW-9390 SITSW-9532 SITSW-9533 SITSW-9534 SITSW-9535 SITSW-9536 SITSW-9537 SITSW-9618 SITSW-9639" +
                     " SITSW-9640 SITSW-9642 SITSW-9643 SITSW-9644 SITSW-9645 SITSW-9646 SITSW-9647 SITSW-9648 SITSW-9649 SITSW-9650" +
                     " SITSW-9651 SITSW-9652 SITSW-9653 SITSW-9654 SITSW-9655 SITSW-9656 SITSW-9657 SITSW-9761 SITSW-9777 SITSW-9778" +

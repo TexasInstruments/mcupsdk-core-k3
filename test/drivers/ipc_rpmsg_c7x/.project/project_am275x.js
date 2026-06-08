@@ -120,6 +120,7 @@ const robot_template = {
     options: {
         componentName: "IPC",
         testCaseName: "IPC RPMSG C7x Test Application",
+        logPort: "ACM0",
         testCaseIds: "SITSW-9830 SITSW-9831 SITSW-9832 SITSW-9833 SITSW-9834 " +
              "SITSW-9835 SITSW-9836 SITSW-9837 SITSW-9838 SITSW-9839 " +
              "SITSW-9840 SITSW-9841 SITSW-9842 SITSW-9843 SITSW-9844 " +

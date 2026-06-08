@@ -63,7 +63,7 @@ const syscfgfile = "../example.syscfg";
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_SBL_UART_UNIFLASH";
 
 const robot_template = {
-    input: ".project/templates/am275x/astra/tests_uniflash.robot.xdt",
+    input: ".project/templates/am275x/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "SBL",

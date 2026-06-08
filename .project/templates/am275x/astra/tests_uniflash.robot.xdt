@@ -38,7 +38,7 @@
 
     let coreName = project.cpu + "_" + project.os;
     let cfgFile  = options.cfgPath
-                 ? "${SDK_PATH}/" + options.cfgPath.replace("{board}", project.board)
+                 ? "${SDK_PATH}/" + options.cfgPath.replace("{board}", project.board).replace("{coreName}", coreName)
                  : "${SDK_PATH}/" + project.relpath + "/" + project.board + "/" + coreName + "/" + options.cfgFileName;
 %%}
 *** Comments ***

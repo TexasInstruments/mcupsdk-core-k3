@@ -144,6 +144,13 @@ typedef struct
 int32_t TestAdc_parser(void);
 int32_t TestAdc_cpuMode_main(test_adc_testcaseParams_t *testParams);
 int32_t TestAdc_pollingMode_main(test_adc_testcaseParams_t *testParams);
+#ifdef SOC_AM275X
+int32_t TestAdc_powerInit_main(test_adc_testcaseParams_t *testParams);
+int32_t TestAdc_stepControl_main(test_adc_testcaseParams_t *testParams);
+int32_t TestAdc_fifoDma_main(test_adc_testcaseParams_t *testParams);
+int32_t TestAdc_intrEoi_main(test_adc_testcaseParams_t *testParams);
+int32_t TestAdc_rangeStatus_main(test_adc_testcaseParams_t *testParams);
+#endif
 int32_t TestAdc_validateFifoData(test_adc_testcaseParams_t *testParams, uint32_t *adcDataBuff, uint32_t numSamples);
 int32_t TestAdc_stepConfig(test_adc_testcaseParams_t *testParams);
 void TestAdc_moduleInit(uint32_t adcModule);

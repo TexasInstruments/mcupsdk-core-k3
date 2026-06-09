@@ -39,6 +39,11 @@ FILES_common := \
 	test_adc_common.c \
 	test_adc_cpuMode.c \
 	test_adc_pollingMode.c \
+	test_adc_powerInit.c \
+	test_adc_stepControl.c \
+	test_adc_fifoDma.c \
+	test_adc_intrEoi.c \
+	test_adc_rangeStatus.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \

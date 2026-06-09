@@ -138,6 +138,71 @@ void TestAdc_runTestcase(void *args)
     {
         TestAdc_cpuMode_main(TestAdc_testParams);
     }
+    else if(TestAdc_testParams->adcConfigParams.testMode == ADC_TEST_MODE_POLLING)
+    {
+        TestAdc_pollingMode_main(TestAdc_testParams);
+    }
+#ifdef SOC_AM275X
+    else if(TestAdc_testParams->adcConfigParams.testMode == ADC_TEST_MODE_API)
+    {
+        /* Route API tests based on test name */
+        if (strstr(TestAdc_testParams->testCaseName, "setStepParams") != NULL ||
+            strstr(TestAdc_testParams->testCaseName, "stepEnable") != NULL ||
+            strstr(TestAdc_testParams->testCaseName, "clearAllSteps") != NULL ||
+            strstr(TestAdc_testParams->testCaseName, "ADC start EN=") != NULL ||
+            strstr(TestAdc_testParams->testCaseName, "stepIdTagEnable") != NULL ||
+            strstr(TestAdc_testParams->testCaseName, "change step params while active") != NULL)
+        {
+            TestAdc_testParams->testResult = TestAdc_stepControl_main(TestAdc_testParams);
+        }
+        else if (strstr(TestAdc_testParams->testCaseName, "getFIFOData") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "getFIFOWordCount") != NULL ||
+                 (strstr(TestAdc_testParams->testCaseName, "threshold") != NULL &&
+                  strstr(TestAdc_testParams->testCaseName, "below minimum") == NULL &&
+                  strstr(TestAdc_testParams->testCaseName, "above maximum") == NULL) ||
+                 strstr(TestAdc_testParams->testCaseName, "DMA access") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "change threshold while active") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "CPU poll overflow") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "CPU poll underflow") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "DMA overflow") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "DMA underflow") != NULL)
+        {
+            TestAdc_testParams->testResult = TestAdc_fifoDma_main(TestAdc_testParams);
+        }
+        else if (strstr(TestAdc_testParams->testCaseName, "enableIntr") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "disableIntr") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "getIntrStatus") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "clearIntrStatus") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "writeEOI") != NULL)
+        {
+            TestAdc_testParams->testResult = TestAdc_intrEoi_main(TestAdc_testParams);
+        }
+        else if (strstr(TestAdc_testParams->testCaseName, "setGetRange") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "setRange") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "range violation") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "getSequencerStatus") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "change range while active") != NULL)
+        {
+            TestAdc_testParams->testResult = TestAdc_rangeStatus_main(TestAdc_testParams);
+        }
+        else if (strstr(TestAdc_testParams->testCaseName, "get CPU FIFO threshold") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "get DMA FIFO threshold") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "DMA line config") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "FIFO data read sequential") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "DMA transfer completion") != NULL)
+        {
+            TestAdc_testParams->testResult = TestAdc_fifoDma_main(TestAdc_testParams);
+        }
+        else if (strstr(TestAdc_testParams->testCaseName, "idle mode") != NULL)
+        {
+            TestAdc_testParams->testResult = TestAdc_powerInit_main(TestAdc_testParams);
+        }
+        else
+        {
+            TestAdc_testParams->testResult = TestAdc_powerInit_main(TestAdc_testParams);
+        }
+    }
+#endif /* #ifdef SOC_AM275X */
     else
     {
         TestAdc_pollingMode_main(TestAdc_testParams);

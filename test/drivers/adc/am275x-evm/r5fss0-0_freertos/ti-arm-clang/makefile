@@ -45,6 +45,7 @@ FILES_common := \
 	test_adc_intrEoi.c \
 	test_adc_rangeStatus.c \
 	test_adc_negative.c \
+	test_adc_multiThread.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \

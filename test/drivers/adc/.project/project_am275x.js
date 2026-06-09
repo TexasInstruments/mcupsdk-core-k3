@@ -30,6 +30,7 @@ const files_freertos = {
         "test_adc_intrEoi.c",
         "test_adc_rangeStatus.c",
         "test_adc_negative.c",
+        "test_adc_multiThread.c",
         "main.c",
     ],
 };
@@ -146,6 +147,28 @@ const templates_freertos_r5f =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "ADC",
+        testCaseName: "ADC Test Application",
+        testCaseIds: "SWITS-6697 SWITS-6698 SWITS-6699 SWITS-6700 SWITS-6701 SWITS-6702 SWITS-6703" +
+        "SWITS-6704 SWITS-6705 SWITS-10573 SWITS-10574 SWITS-10575 SWITS-10576 SWITS-10577" +
+        "SWITS-10578 SWITS-10581 SWITS-10732 SWITS-10733 SWITS-10734 SWITS-10735 SWITS-10736" +
+        "SWITS-10737 SWITS-10738 SWITS-10739 SWITS-10740 SWITS-10741 SWITS-10742 SWITS-10743" +
+        "SWITS-10744 SWITS-10745 SWITS-10746 SWITS-10747 SWITS-10748 SWITS-10749 SWITS-10750" +
+        "SWITS-10751 SWITS-10752 SWITS-10753 SWITS-10754 SWITS-10755 SWITS-10756 SWITS-10757" +
+        "SWITS-10758 SWITS-10759 SWITS-10760 SWITS-10761 SWITS-10762 SWITS-10763 SWITS-10764" +
+        "SWITS-10765 SWITS-10766 SWITS-10767 SWITS-10769 SWITS-10771 SWITS-10772 SWITS-10773" +
+        "SWITS-10774 SWITS-10775 SWITS-10776 SWITS-10777 SWITS-10778 SWITS-10779 SWITS-10780" +
+        "SWITS-10781 SWITS-10782 SWITS-10783 SWITS-10784 SWITS-10785 SWITS-10786 SWITS-10787" +
+        "SWITS-10788 SWITS-10789 SWITS-10790 SWITS-10791 SWITS-10792 SWITS-10793 SWITS-10794" +
+        "SWITS-10795 SWITS-10796 SWITS-10797 SWITS-10798 SWITS-10799 SWITS-10800 SWITS-10856" +
+        "SWITS-10857 SWITS-10858 SWITS-10859 SWITS-10860",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
@@ -191,6 +214,8 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_nortos_r5f;
         }
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

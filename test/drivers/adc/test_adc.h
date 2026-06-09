@@ -151,6 +151,9 @@ int32_t TestAdc_fifoDma_main(test_adc_testcaseParams_t *testParams);
 int32_t TestAdc_intrEoi_main(test_adc_testcaseParams_t *testParams);
 int32_t TestAdc_rangeStatus_main(test_adc_testcaseParams_t *testParams);
 int32_t TestAdc_negative_main(test_adc_testcaseParams_t *testParams);
+#ifdef ADC_TEST_FREERTOS
+int32_t TestAdc_multiThread_main(test_adc_testcaseParams_t *testParams);
+#endif
 #endif
 int32_t TestAdc_validateFifoData(test_adc_testcaseParams_t *testParams, uint32_t *adcDataBuff, uint32_t numSamples);
 int32_t TestAdc_stepConfig(test_adc_testcaseParams_t *testParams);

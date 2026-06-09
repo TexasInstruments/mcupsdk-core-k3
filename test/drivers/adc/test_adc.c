@@ -216,6 +216,12 @@ void TestAdc_runTestcase(void *args)
             TestAdc_testParams->testResult = TestAdc_powerInit_main(TestAdc_testParams);
         }
     }
+#ifdef ADC_TEST_FREERTOS
+    else if(TestAdc_testParams->adcConfigParams.testMode == ADC_TEST_MODE_MULTITHREAD)
+    {
+        TestAdc_testParams->testResult = TestAdc_multiThread_main(TestAdc_testParams);
+    }
+#endif
 #endif /* #ifdef SOC_AM275X */
     else
     {

@@ -185,6 +185,20 @@ void TestAdc_runTestcase(void *args)
         {
             TestAdc_testParams->testResult = TestAdc_rangeStatus_main(TestAdc_testParams);
         }
+        else if (strstr(TestAdc_testParams->testCaseName, "below minimum") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "above maximum") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "low greater than high") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "high above maximum") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "start before power-up") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "start before init") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "power-down while active") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "re-enable after stop") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "simultaneous sources") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "clear then EOI") != NULL ||
+                 strstr(TestAdc_testParams->testCaseName, "EOI then clear") != NULL)
+        {
+            TestAdc_testParams->testResult = TestAdc_negative_main(TestAdc_testParams);
+        }
         else if (strstr(TestAdc_testParams->testCaseName, "get CPU FIFO threshold") != NULL ||
                  strstr(TestAdc_testParams->testCaseName, "get DMA FIFO threshold") != NULL ||
                  strstr(TestAdc_testParams->testCaseName, "DMA line config") != NULL ||

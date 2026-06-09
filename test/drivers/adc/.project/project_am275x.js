@@ -13,6 +13,7 @@ const files = {
         "test_adc_fifoDma.c",
         "test_adc_intrEoi.c",
         "test_adc_rangeStatus.c",
+        "test_adc_negative.c",
         "main.c",
     ],
 };
@@ -28,6 +29,7 @@ const files_freertos = {
         "test_adc_fifoDma.c",
         "test_adc_intrEoi.c",
         "test_adc_rangeStatus.c",
+        "test_adc_negative.c",
         "main.c",
     ],
 };

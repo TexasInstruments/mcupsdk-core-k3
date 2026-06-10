@@ -558,11 +558,21 @@ int32_t MCSPI_transfer(MCSPI_Handle handle, MCSPI_Transaction *transaction)
                             }
                             else
                             {
-                                /* Stop MCSPI Channel */
-                                MCSPI_stop(obj, attrs, chObj, chNum);
-                                status = SystemP_FAILURE;
-                                transaction->status = MCSPI_TRANSFER_TIMEOUT;
-                                obj->currTransaction = NULL;
+                                /* Stop MCSPI Channel on timeout */
+                                if(MCSPI_OPER_MODE_DMA == attrs->operMode)
+                                {
+                                    MCSPI_dmaStop(obj, attrs, chObj, chNum);
+                                    status = SystemP_FAILURE;
+                                    transaction->status = MCSPI_TRANSFER_TIMEOUT;
+                                    obj->currTransaction = NULL;
+                                }
+                                else
+                                {
+                                    MCSPI_stop(obj, attrs, chObj, chNum);
+                                    status = SystemP_FAILURE;
+                                    transaction->status = MCSPI_TRANSFER_TIMEOUT;
+                                    obj->currTransaction = NULL;
+                                }
                             }
                         }
                     }
@@ -614,11 +624,21 @@ int32_t MCSPI_transfer(MCSPI_Handle handle, MCSPI_Transaction *transaction)
                             }
                             else
                             {
-                                /* Stop MCSPI Channel */
-                                MCSPI_stop(obj, attrs, chObj, chNum);
-                                status = SystemP_FAILURE;
-                                transaction->status = MCSPI_TRANSFER_TIMEOUT;
-                                obj->currTransaction = NULL;
+                                /* Stop MCSPI Channel on timeout */
+                                if(MCSPI_OPER_MODE_DMA == attrs->operMode)
+                                {
+                                    MCSPI_dmaStop(obj, attrs, chObj, chNum);
+                                    status = SystemP_FAILURE;
+                                    transaction->status = MCSPI_TRANSFER_TIMEOUT;
+                                    obj->currTransaction = NULL;
+                                }
+                                else
+                                {
+                                    MCSPI_stop(obj, attrs, chObj, chNum);
+                                    status = SystemP_FAILURE;
+                                    transaction->status = MCSPI_TRANSFER_TIMEOUT;
+                                    obj->currTransaction = NULL;
+                                }
                             }
                         }
                     }

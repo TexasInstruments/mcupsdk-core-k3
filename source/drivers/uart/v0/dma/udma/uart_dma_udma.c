@@ -454,26 +454,30 @@ static int32_t UART_udmaDeInitCh(Udma_ChHandle chHandle,
     {
         /* Disable Channel */
         status = Udma_chDisable(chHandle, UDMA_DEFAULT_CH_DISABLE_TIMEOUT);
-        DebugP_assert(UDMA_SOK == status);
     }
 
-    /* UnRegister Event */
-    status = Udma_eventUnRegister(eventHandle);
-    DebugP_assert(UDMA_SOK == status);
-
-    /* Flush any pending request from the free queue */
-    while(1)
+    while(TRUE)
     {
-        uint64_t pDesc;
         int32_t  tempRetVal;
+        uint64_t pDesc;
 
-        tempRetVal = Udma_ringFlushRaw(
-                         Udma_chGetFqRingHandle(chHandle), &pDesc);
+        tempRetVal = Udma_ringFlushRaw(Udma_chGetFqRingHandle(chHandle), &pDesc);
         if(UDMA_ETIMEOUT == tempRetVal)
         {
             break;
         }
     }
+
+    /* Reset the channel if channel teardown fails */
+    if(UDMA_SOK != status)
+    {
+        status = Udma_chReset(chHandle);
+    }
+    DebugP_assert(UDMA_SOK == status);
+
+    /* UnRegister Event */
+    status = Udma_eventUnRegister(eventHandle);
+    DebugP_assert(UDMA_SOK == status);
 
     /* Close channel */
     status = Udma_chClose(chHandle);

@@ -47,16 +47,18 @@ gpio4.$name        = "GPIO_MCAN";
 gpio4.pinDir       = "OUTPUT";
 gpio4.trigType     = "BOTH_EDGE";
 gpio4.rx           = true;
-gpio4.GPIO.$assign = "MCAN0_RX";
+gpio4.GPIO.$assign = "MCASP0_AXR0";
 
 gpio5.$name        = "GPIO_OSPI_D1";
 gpio5.pinDir       = "OUTPUT";
 gpio5.trigType     = "RISE_EDGE";
+gpio5.rx           = true;
 gpio5.GPIO.$assign = "OSPI0_D1";
 
 gpio6.$name        = "GPIO_OSPI_D2";
 gpio6.pinDir       = "OUTPUT";
 gpio6.trigType     = "FALL_EDGE";
+gpio6.rx           = true;
 gpio6.GPIO.$assign = "OSPI0_D2";
 
 gpio7.$name        = "GPIO_INPUT";

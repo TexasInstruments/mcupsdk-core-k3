@@ -736,8 +736,6 @@ static void TestGpio_sameBankDiffPin(void *arg)
     uint32_t pinNumA = GPIO_OSPI_D1_PIN;           /* First pin in the bank */
     uint32_t pinNumB = GPIO_OSPI_D2_PIN;            /* Next pin in the same bank */
     uint32_t bankNum = GPIO_GET_BANK_INDEX(pinNumA);
-    uint32_t pinMaskA = GPIO_GET_BANK_BIT_MASK(pinNumA);
-    uint32_t pinMaskB = GPIO_GET_BANK_BIT_MASK(pinNumB);
     uint32_t intrStatus;
 
     /* Assert both pins are in the same bank */
@@ -771,7 +769,7 @@ static void TestGpio_sameBankDiffPin(void *arg)
 
     /* Check interrupt status for pin A - verify rising edge triggered */
     intrStatus = GPIO_getIntrStatus(baseAddr1, pinNumA);
-    TEST_ASSERT_NOT_EQUAL(0U, (intrStatus & pinMaskA));
+    TEST_ASSERT_EQUAL(1U, intrStatus);
     GPIO_clearIntrStatus(baseAddr1, pinNumA);
 
     /* Drive pin A low again (should not trigger interrupt) */
@@ -780,11 +778,11 @@ static void TestGpio_sameBankDiffPin(void *arg)
 
     /* Confirm no interrupt on falling edge for pin A */
     intrStatus = GPIO_getIntrStatus(baseAddr1, pinNumA);
-    TEST_ASSERT_EQUAL_UINT32(0, (intrStatus & pinMaskA));
+   TEST_ASSERT_EQUAL(0U, intrStatus);
 
     /* Check interrupt status for pin B - verify falling edge triggered */
     intrStatus = GPIO_getIntrStatus(baseAddr2, pinNumB);
-    TEST_ASSERT_NOT_EQUAL(0U, (intrStatus & pinMaskB));
+    TEST_ASSERT_EQUAL(1U, intrStatus);
     GPIO_clearIntrStatus(baseAddr2, pinNumB);
 
     /* Drive pin B High again (should not trigger interrupt) */
@@ -793,7 +791,7 @@ static void TestGpio_sameBankDiffPin(void *arg)
 
     /* Confirm no interrupt on falling edge for pin A */
     intrStatus = GPIO_getIntrStatus(baseAddr2, pinNumB);
-    TEST_ASSERT_EQUAL_UINT32(0, (intrStatus & pinMaskB));
+    TEST_ASSERT_EQUAL(0U, intrStatus);
 
     /* --- Cleanup --- */
     GPIO_setTrigType(baseAddr1, pinNumA, GPIO_TRIG_TYPE_NONE);

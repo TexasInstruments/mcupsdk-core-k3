@@ -90,13 +90,11 @@
 /* Semaphore for synchronizing multithreaded GPIO tests */
 static SemaphoreP_Object        TestGpio_semObj;
 
-/* Task objects and stack memory for WriteReadPins test */
-static TaskP_Object             TestGpio_MtWriteReadTaskObj[TEST_GPIO_MT_THREADS];
-static uint8_t                  TestGpio_MtWriteReadStack[TEST_GPIO_MT_THREADS][TEST_GPIO_STACK_SIZE];
+/* Task objects for multithreaded GPIO test threads */
+static TaskP_Object             TestGpio_MtThreadTaskObj[TEST_GPIO_MT_TRIGTYPE];
 
-/* Task objects and stack memory for TrigType test */
-static TaskP_Object             TestGpio_MtTrigTypeTaskObj[TEST_GPIO_MT_TRIGTYPE];
-static uint8_t                  TestGpio_MtTrigTypeStack[TEST_GPIO_MT_TRIGTYPE][TEST_GPIO_STACK_SIZE];
+/* Stack memory for each multithreaded GPIO test thread */
+static uint8_t                  TestGpio_MtTaskStack[TEST_GPIO_MT_TRIGTYPE][TEST_GPIO_STACK_SIZE];
 
 /* ========================================================================== */
 /*                     Internal Function Declaration                          */
@@ -233,7 +231,7 @@ static void TestGpio_multithreadWriteReadPins(void *args)
         TaskP_Params_init(&taskParams);
         taskParams.name         = "GPIO_MT_BLOCK";
         taskParams.stackSize    = TEST_GPIO_STACK_SIZE;
-        taskParams.stack        = TestGpio_MtWriteReadStack[i];
+        taskParams.stack        = TestGpio_MtTaskStack[i];
         taskParams.priority     = TEST_GPIO_TASK_PRIORITY;
         taskParams.args         = (void *)(uintptr_t)i;
         /* Assign task function based on thread index */
@@ -241,7 +239,7 @@ static void TestGpio_multithreadWriteReadPins(void *args)
             taskParams.taskMain = TestGpio_multithreadWrite;
         else
             taskParams.taskMain = TestGpio_multithreadRead;
-        status = TaskP_construct(&TestGpio_MtWriteReadTaskObj[i], &taskParams);
+        status = TaskP_construct(&TestGpio_MtThreadTaskObj[i], &taskParams);
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     }
 
@@ -258,7 +256,7 @@ static void TestGpio_multithreadWriteReadPins(void *args)
     /* Destroy thread objects */
     for (i = 0; i < TEST_GPIO_MT_THREADS; i++)
     {
-        TaskP_destruct(&TestGpio_MtWriteReadTaskObj[i]);
+        TaskP_destruct(&TestGpio_MtThreadTaskObj[i]);
     }
 }
 
@@ -355,7 +353,7 @@ static void TestGpio_multithreadFallingEdge(void *arg)
 
     /* Set pin high to prepare for falling edge */
     GPIO_pinWriteHigh(baseAddr, pinNum);
-    ClockP_usleep(100);
+    ClockP_usleep(1000);
 
     /* Configure falling edge trigger and enable bank interrupt */
     GPIO_setTrigType(baseAddr, pinNum, GPIO_TRIG_TYPE_FALL_EDGE);
@@ -365,7 +363,7 @@ static void TestGpio_multithreadFallingEdge(void *arg)
     {
         /* Drive pin low to generate falling edge */
         GPIO_pinWriteLow(baseAddr, pinNum);
-        ClockP_usleep(100);
+        ClockP_usleep(1000);
 
         /* Check for interrupt status */
         intrStatus = GPIO_getBankIntrStatus(baseAddr, bankNum);
@@ -377,10 +375,11 @@ static void TestGpio_multithreadFallingEdge(void *arg)
 
         /* Drive pin high, should not trigger interrupt */
         GPIO_pinWriteHigh(baseAddr, pinNum);
-        ClockP_usleep(100);
+        ClockP_usleep(1000);
 
         /* Check for interrupt status - should not occur */
         intrStatus = GPIO_getBankIntrStatus(baseAddr, bankNum);
+        ClockP_usleep(1000);
         TEST_ASSERT_EQUAL_UINT32(0, (intrStatus & pinMask));
         count++;
     }
@@ -458,6 +457,8 @@ static void TestGpio_multithreadBothTrigType(void *arg)
         count++;
     }
 
+    ClockP_usleep(1000);
+
     /* Check all edges triggered interrupts */
     TEST_ASSERT_EQUAL_INT32(loopcnt, intrcnt);
 
@@ -497,7 +498,7 @@ static void TestGpio_multithreadTrigType(void *args)
         TaskP_Params_init(&taskParams);
         taskParams.name      = "GPIO_MT_BLOCK";
         taskParams.stackSize = TEST_GPIO_STACK_SIZE;
-        taskParams.stack     = TestGpio_MtTrigTypeStack[i];
+        taskParams.stack     = TestGpio_MtTaskStack[i];
         taskParams.priority  = TEST_GPIO_TASK_PRIORITY;
         taskParams.args      = (void *)(uintptr_t)i;
 
@@ -507,7 +508,7 @@ static void TestGpio_multithreadTrigType(void *args)
             taskParams.taskMain = TestGpio_multithreadFallingEdge;
         else
             taskParams.taskMain = TestGpio_multithreadBothTrigType;
-        status = TaskP_construct(&TestGpio_MtTrigTypeTaskObj[i], &taskParams);
+        status = TaskP_construct(&TestGpio_MtThreadTaskObj[i], &taskParams);
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     }
 
@@ -523,7 +524,7 @@ static void TestGpio_multithreadTrigType(void *args)
     /* Destroy thread objects */
     for (i = 0; i < TEST_GPIO_MT_TRIGTYPE; i++)
     {
-        TaskP_destruct(&TestGpio_MtTrigTypeTaskObj[i]);
+        TaskP_destruct(&TestGpio_MtThreadTaskObj[i]);
     }
 }
 

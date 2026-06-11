@@ -11,20 +11,12 @@ const files = {
 
 const files_rtos = {
     common: [
-        "board.c",
         "test_gpio.c",
         "test_gpio_multi_thread.c",
         "main.c",
     ],
 };
 
-const files_multi = {
-    common: [
-        "test_gpio.c",
-        "test_gpio_multi_thread.c",
-        "main.c",
-    ],
-};
 
 const files_wkup = {
     common: [
@@ -154,7 +146,6 @@ const lnkfiles = {
 const defines_wkup_r5f = {
     common:[
         "ENABLE_SCICLIENT_DIRECT",
-        "SOC_AM275X",
     ]
 }
 
@@ -384,7 +375,6 @@ function getComponentBuildProperty(buildOption) {
         }
         else if (buildOption.cpu.match("c75ss1-0"))
         {
-            build_property.files = files_multi;
             build_property.templates = templates_freertos_c75_1;
         }
     }

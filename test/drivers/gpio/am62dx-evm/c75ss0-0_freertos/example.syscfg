@@ -9,15 +9,15 @@
 /**
  * Import the modules used in this configuration.
  */
-const gpio        = scripting.addModule("/drivers/gpio/gpio", {}, false);
-const gpio1       = gpio.addInstance();
-const gpio2       = gpio.addInstance();
-const gpio3       = gpio.addInstance();
-const gpio4       = gpio.addInstance();
-const gpio5       = gpio.addInstance();
-const gpio6       = gpio.addInstance();
-const gpio7       = gpio.addInstance();
-const gpio8       = gpio.addInstance();
+const gpio       = scripting.addModule("/drivers/gpio/gpio", {}, false);
+const gpio1      = gpio.addInstance();
+const gpio2      = gpio.addInstance();
+const gpio3      = gpio.addInstance();
+const gpio4      = gpio.addInstance();
+const gpio5      = gpio.addInstance();
+const gpio6      = gpio.addInstance();
+const gpio7      = gpio.addInstance();
+const gpio8      = gpio.addInstance();
 const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
 const mmu_armv8   = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
 const mmu_armv81  = mmu_armv8.addInstance();
@@ -55,20 +55,23 @@ gpio4.$name        = "GPIO_MCAN";
 gpio4.pinDir       = "OUTPUT";
 gpio4.trigType     = "BOTH_EDGE";
 gpio4.rx           = true;
-gpio4.GPIO.$assign = "MCAN0_RX";
+gpio4.GPIO.$assign = "MCASP0_AXR0";
 
 gpio5.$name        = "GPIO_OSPI_D1";
 gpio5.pinDir       = "OUTPUT";
 gpio5.trigType     = "RISE_EDGE";
+gpio5.rx           = true;
 gpio5.GPIO.$assign = "OSPI0_D1";
 
 gpio6.$name        = "GPIO_OSPI_D2";
 gpio6.pinDir       = "OUTPUT";
 gpio6.trigType     = "FALL_EDGE";
+gpio6.rx           = true;
 gpio6.GPIO.$assign = "OSPI0_D2";
 
 gpio7.$name        = "GPIO_INPUT";
 gpio7.trigType     = "RISE_EDGE";
+gpio7.rx           = true;
 gpio7.GPIO.$assign = "GPIO0_57";
 
 gpio8.$name        = "GPIO_OUTPUT";

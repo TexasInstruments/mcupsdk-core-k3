@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM62Dx" --part "AM62D24-G" --package "ANF" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM62D-Q1" --package "FCBGA (ANF)" --variant "AM62D24-G" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.24.2+4234"}
+ * @versions {"tool":"1.26.2+4477"}
  */
 
 /**
@@ -47,16 +47,18 @@ gpio4.$name        = "GPIO_MCAN";
 gpio4.pinDir       = "OUTPUT";
 gpio4.trigType     = "BOTH_EDGE";
 gpio4.rx           = true;
-gpio4.GPIO.$assign = "MCAN0_RX";
+gpio4.GPIO.$assign = "MCASP0_AXR0";
 
 gpio5.$name        = "GPIO_OSPI_D1";
 gpio5.pinDir       = "OUTPUT";
 gpio5.trigType     = "RISE_EDGE";
+gpio5.rx           = true;
 gpio5.GPIO.$assign = "OSPI0_D1";
 
 gpio6.$name        = "GPIO_OSPI_D2";
 gpio6.pinDir       = "OUTPUT";
 gpio6.trigType     = "FALL_EDGE";
+gpio6.rx           = true;
 gpio6.GPIO.$assign = "OSPI0_D2";
 
 gpio7.$name        = "GPIO_INPUT";

@@ -35,7 +35,6 @@ ifeq ($(DEVICE_TYPE), HS)
 endif
 
 FILES_common := \
-	board.c \
 	test_gpio.c \
 	test_gpio_multi_thread.c \
 	main.c \

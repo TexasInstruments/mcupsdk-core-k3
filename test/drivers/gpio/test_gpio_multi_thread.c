@@ -122,6 +122,42 @@ void run_multi_threaded_tests(void *args)
     return;
 }
 
+#ifdef SMP_FREERTOS
+void test_main(void *args)
+{
+
+    UNITY_BEGIN();
+
+    RUN_TEST(TestGpio_multithreadWriteReadPins,  9637, NULL);
+    #if !defined (SOC_AM62DX)
+    RUN_TEST(TestGpio_multithreadTrigType,  9757, NULL);
+    #endif
+
+    UNITY_END();
+
+}
+
+/**
+ * @brief Unity test setup hook.
+ *
+ * Called before each Unity test. Left empty because tests perform their own
+ * per-test setup and teardown.
+ */
+void setUp(void)
+{
+}
+
+/**
+ * @brief Unity test teardown hook.
+ *
+ * Called after each Unity test. Left empty because tests perform their own
+ * per-test cleanup.
+ */
+void tearDown(void)
+{
+}
+#endif
+
 /* ========================================================================== */
 /*                     Internal Function Definitions                          */
 /* ========================================================================== */
@@ -239,6 +275,9 @@ static void TestGpio_multithreadWriteReadPins(void *args)
             taskParams.taskMain = TestGpio_multithreadWrite;
         else
             taskParams.taskMain = TestGpio_multithreadRead;
+        #ifdef SMP_FREERTOS
+        taskParams.coreAffinity = 1 << i;
+        #endif
         status = TaskP_construct(&TestGpio_MtThreadTaskObj[i], &taskParams);
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     }
@@ -508,6 +547,9 @@ static void TestGpio_multithreadTrigType(void *args)
             taskParams.taskMain = TestGpio_multithreadFallingEdge;
         else
             taskParams.taskMain = TestGpio_multithreadBothTrigType;
+        #ifdef SMP_FREERTOS
+        taskParams.coreAffinity = 1 << i;
+        #endif
         status = TaskP_construct(&TestGpio_MtThreadTaskObj[i], &taskParams);
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     }

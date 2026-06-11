@@ -34,6 +34,13 @@ const files_rtos = {
     ],
 };
 
+const files_smp = {
+    common: [
+        "test_gpio_multi_thread.c",
+        "main.c",
+    ],
+};
+
 /* Relative to where the makefile will be generated
  * Typically at <example_folder>/<BOARD>/<core_os_combo>/<compiler>
  */
@@ -223,6 +230,29 @@ const libs_nortos_dm_r5f = {
     ],
 };
 
+const libs_a53_smp = {
+    common: [
+        "freertos.am62dx.a53-smp.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
+        "board.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
+        "unity.am62dx.a53.gcc-aarch64.${ConfigName}.lib",
+    ],
+};
+
+const includes_a53_smp = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable_smp/GCC/ARM_CA53",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/a53-smp",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include/private",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include/portable",
+        "${MCU_PLUS_SDK_PATH}/test/unity/",
+        "${MCU_PLUS_SDK_PATH}/source/",
+    ],
+};
+
 const lnkfiles = {
     common: [
         "linker.cmd",
@@ -253,6 +283,16 @@ const defines_c7 = {
 const cflags_free_rtos = {
     common: [
         "-DENABLE_MT_TESTS",
+    ],
+};
+
+const defines_a53_smp = {
+    common: [
+        "SOC_AM62DX",
+        "OS_FREERTOS",
+        "SMP_FREERTOS",
+        "SMP_QUADCORE_FREERTOS",
+        "A53_CORE"
     ],
 };
 
@@ -369,6 +409,21 @@ const templates_freertos_c75 =
     }
 ];
 
+const templates_a53_smp =
+[
+    {
+        input: ".project/templates/am62dx/common/linker_a53_smp.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62dx/freertos/main_freertos_smp.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "test_main",
+        },
+    },
+];
+
 const templates_freertos_dm_r5f =
 [
     {
@@ -427,6 +482,7 @@ const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "nortos"},
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "nortos"},
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62dx-evm", os: "freertos-smp"},
 ];
 
 function getComponentProperty() {
@@ -481,7 +537,17 @@ function getComponentBuildProperty(buildOption) {
     }
 
     else if(buildOption.cpu.match(/a53*/)) {
-        if(buildOption.os.match(/nortos/))
+        if(buildOption.os.match("freertos-smp"))
+        {
+            build_property.files = files_smp;
+            build_property.templates = templates_a53_smp;
+            build_property.includes = includes_a53_smp;
+            build_property.libs = libs_a53_smp;
+            build_property.defines = defines_a53_smp;
+            build_property.libdirs = libdirs_freertos;
+            build_property.cflags =  cflags_free_rtos;
+        }
+        else if(buildOption.os.match(/nortos/))
         {
             build_property.includes = includes;
             build_property.libdirs = libdirs_nortos;

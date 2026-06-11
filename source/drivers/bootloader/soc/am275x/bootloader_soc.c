@@ -799,6 +799,8 @@ void Bootloader_socInitHSMM4fIram()
     *(volatile uint32_t *)(m4f_iram_base_addr + 0) = 0x1000; /* stack size */
     *(volatile uint32_t *)(m4f_iram_base_addr + 4) = 0x400 + 1; /* reset vector */
     *(volatile uint32_t *)(m4f_iram_base_addr + 0x400) = 0xBF30BF30; /* WFI instruction */
+
+    CacheP_wbInv((void*) CSL_SMS0_HSM_SRAM0_0_BASE, CSL_SMS0_HSM_SRAM0_0_SIZE, CacheP_TYPE_ALL);
 }
 
 /*init c7x L2SRAM with valid wait instruction*/

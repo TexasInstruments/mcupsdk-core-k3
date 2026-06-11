@@ -1,0 +1,108 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.26.2+4477"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const gpio       = scripting.addModule("/drivers/gpio/gpio", {}, false);
+const gpio1      = gpio.addInstance();
+const gpio2      = gpio.addInstance();
+const gpio3      = gpio.addInstance();
+const gpio4      = gpio.addInstance();
+const gpio5      = gpio.addInstance();
+const gpio6      = gpio.addInstance();
+const ipc        = scripting.addModule("/drivers/ipc/ipc");
+const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
+const mpu_armv7  = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
+const mpu_armv71 = mpu_armv7.addInstance();
+const mpu_armv72 = mpu_armv7.addInstance();
+const mpu_armv73 = mpu_armv7.addInstance();
+const mpu_armv74 = mpu_armv7.addInstance();
+const mpu_armv75 = mpu_armv7.addInstance();
+const mpu_armv76 = mpu_armv7.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+gpio1.$name        = "GPIO_LED";
+gpio1.pinDir       = "OUTPUT";
+gpio1.rx           = true;
+gpio1.trigType     = "RISE_EDGE";
+gpio1.GPIO.$assign = "MMC0_CLK";
+
+gpio2.$name        = "GPIO_PUSH_BUTTON";
+gpio2.trigType     = "RISE_EDGE";
+gpio2.rx           = true;
+gpio2.GPIO.$assign = "UART0_RTSn";
+
+gpio3.$name        = "GPIO_I2C";
+gpio3.pinDir       = "OUTPUT";
+gpio3.trigType     = "FALL_EDGE";
+gpio3.GPIO.$assign = "I2C0_SCL";
+
+gpio4.$name        = "GPIO_MCAN";
+gpio4.rx           = true;
+gpio4.pinDir       = "OUTPUT";
+gpio4.GPIO.$assign = "MCAN0_RX";
+
+gpio5.pinDir       = "OUTPUT";
+gpio5.trigType     = "RISE_EDGE";
+gpio5.$name        = "GPIO_OSPI_D1";
+gpio5.GPIO.$assign = "OSPI0_D3";
+
+gpio6.$name        = "GPIO_OSPI_D2";
+gpio6.pinDir       = "OUTPUT";
+gpio6.trigType     = "FALL_EDGE";
+gpio6.GPIO.$assign = "OSPI0_D1";
+
+ipc.wkup_r5fss0_0 = "NONE";
+ipc.c75ss1_0      = "notify";
+ipc.r5fss0_1      = "notify";
+ipc.r5fss1_0      = "notify";
+ipc.r5fss1_1      = "notify";
+ipc.c75ss0_0      = "notify";
+
+debug_log.enableUartLog            = true;
+debug_log.enableSharedMemLogReader = true;
+debug_log.enableCssLog             = false;
+debug_log.uartLog.$name            = "CONFIG_UART0";
+debug_log.uartLog.UART.$assign     = "UART0";
+
+mpu_armv71.size         = 31;
+mpu_armv71.attributes   = "Device";
+mpu_armv71.allowExecute = false;
+mpu_armv71.$name        = "CONFIG_MPU_REGISTER";
+
+mpu_armv72.size       = 15;
+mpu_armv72.$name      = "CONFIG_MPU_TCMA";
+mpu_armv72.attributes = "NonCached";
+
+mpu_armv73.baseAddr   = 0x41010000;
+mpu_armv73.size       = 15;
+mpu_armv73.$name      = "CONFIG_MPU_TCMB";
+mpu_armv73.attributes = "NonCached";
+
+mpu_armv74.$name    = "CONFIG_MPU_MCU_MSRAM";
+mpu_armv74.baseAddr = 0x72000000;
+mpu_armv74.size     = 22;
+
+mpu_armv75.baseAddr = 0x80000000;
+mpu_armv75.size     = 31;
+mpu_armv75.$name    = "CONFIG_MPU_DDR";
+
+mpu_armv76.baseAddr = 0x60000000;
+mpu_armv76.size     = 26;
+mpu_armv76.$name    = "CONFIG_MPU_FLASH";
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+debug_log.uartLog.UART.RXD.$suggestSolution = "MCASP4_AXR0";
+debug_log.uartLog.UART.TXD.$suggestSolution = "MLB0_MLBCLK";

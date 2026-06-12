@@ -190,6 +190,45 @@ void run_multi_threaded_tests(void *args)
     return;
 }
 
+#ifdef SMP_FREERTOS
+void test_main(void *args)
+{
+
+    UNITY_BEGIN();
+
+    ECAP_TestParams testParams;
+    #if !defined(SOC_AM62DX)
+    test_ecap_init_test_params(&testParams, 10661);
+    RUN_TEST(TestEcap_CaptureAPWMmode, 10963, (void*)&testParams);
+    #endif
+    test_ecap_init_test_params(&testParams, 10662);
+    RUN_TEST(TestEcap_OneshotContinuous, 10964, (void*)&testParams);
+    
+    UNITY_END();
+
+}
+
+/**
+ * @brief Unity test setup hook.
+ *
+ * Called before each Unity test. Left empty because tests perform their own
+ * per-test setup and teardown.
+ */
+void setUp(void)
+{
+}
+
+/**
+ * @brief Unity test teardown hook.
+ *
+ * Called after each Unity test. Left empty because tests perform their own
+ * per-test cleanup.
+ */
+void tearDown(void)
+{
+}
+#endif
+
 /* ========================================================================== */
 /*                     Internal Function Definitions                          */
 /* ========================================================================== */
@@ -349,6 +388,9 @@ static void TestEcap_OneshotContinuous(void *args)
         taskParams.stack        = gEcapMtTaskStack[i];
         taskParams.priority     = TEST_ECAP_TASK_PRIORITY;
         taskParams.args         = (void *)(uintptr_t)i;
+        #ifdef SMP_FREERTOS
+            taskParams.coreAffinity = 1 << i;
+        #endif
         if (i == 0)
             taskParams.taskMain = TestEcap_Continuous;
         else
@@ -522,6 +564,9 @@ static void TestEcap_CaptureAPWMmode(void *args)
         taskParams.stack     = gEcapMtTaskStack[i];
         taskParams.priority  = TEST_ECAP_TASK_PRIORITY;
         taskParams.args      = (void *)(uintptr_t)i;
+        #ifdef SMP_FREERTOS
+            taskParams.coreAffinity = 1 << i;
+        #endif
 
         if (i == 1)
             taskParams.taskMain = TestEcap_MTCaptureMode;

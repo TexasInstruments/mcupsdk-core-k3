@@ -273,6 +273,7 @@ const example_file_list = [
     "test/drivers/i2c/.project/project_am275x_wkupr5.js",
     "test/drivers/i2c/test_i2c_fault_inject/.project/project.js",
     "test/drivers/i2c/test_i2c_fault_inject/.project/project_am275x_wkupr5.js",
+    "test/drivers/ecap/.project/project.js",
     "test/drivers/ipc_notify/.project/project.js",
     "test/drivers/ipc_notify_c7x/.project/project.js",
     "test/drivers/ipc_notify_benchmark/.project/project.js",

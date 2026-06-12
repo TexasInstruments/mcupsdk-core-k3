@@ -54,7 +54,6 @@ epwm2.EPWM.SYNCO.$used = false;
 epwm2.EPWM.SYNCI.$used = false;
 
 debug_log.enableUartLog            = true;
-debug_log.enableSharedMemLogReader = true;
 debug_log.uartLog.$name            = "CONFIG_UART0";
 debug_log.uartLog.UART.$assign     = "UART0";
 debug_log.uartLog.UART.RXD.$assign = "UART0_RXD";

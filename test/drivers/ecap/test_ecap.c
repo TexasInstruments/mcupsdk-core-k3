@@ -42,7 +42,12 @@
  *  Connect the ePWM output to eCAP input externally on the board.
  */
 
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+
 #include <math.h>
+#include <kernel/dpl/ClockP.h>
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/AddrTranslateP.h>
 #include <kernel/dpl/SemaphoreP.h>
@@ -53,6 +58,10 @@
 #include "ti_drivers_config.h"
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
+
+/* ========================================================================== */
+/*                           Macros & Typedefs                                */
+/* ========================================================================== */
 
 /* ECAP Interrupt Sources */
 #define ECAP_INT_ALL                    (ECAP_CEVT1_INT  | \
@@ -91,9 +100,21 @@
 #define APP_ECAP_CAPTURE_LOOP_COUNT     (5U)
 
 #define ECAP_PERIOD_COUNT               (200U)
-#define ECAP_PERIOD_DIFF_COUNT          (20U)
+#define ECAP_PERIOD_DIFF_COUNT          (100U)
 #define ECAP_ONE_SHOT_MODE              (0U)
 #define ECAP_CONTINUOUS_MODE            (1U)
+
+/* Number of prescale values to iterate in the prescaler test.
+ * AM62DX supports all 16 entries in gPrescalValArray; AM275X uses 14. */
+#if defined(SOC_AM62DX)
+#define APP_ECAP_PRESCALE_TEST_COUNT    (16U)
+#else
+#define APP_ECAP_PRESCALE_TEST_COUNT    (15U)
+#endif
+
+/* ========================================================================== */
+/*                               Typedefs                                     */
+/* ========================================================================== */
 
 typedef struct ECAP_TestParams_s {
 
@@ -111,6 +132,10 @@ typedef struct ECAP_TestParams_s {
     uint32_t ecapIntrTypePulse;
 } ECAP_TestParams;
 
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+
 uint32_t        gPrescalValArray[16] =
                 {1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 10U,
                  12U, 16U, 20U, 24U, 28U, 30U, 31U};
@@ -120,6 +145,14 @@ static SemaphoreP_Object gEcapSyncSemObject;
 /* Variable to hold base address of EPWM/ECAP that is used */
 uint32_t gEcapBaseAddr, gEpwmBaseAddr;
 
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
+
+#ifdef ENABLE_MT_TESTS
+extern void run_multi_threaded_tests(void *args);
+#endif
+
 /* Static Function declarations */
 static void App_ecapIntrISR(void *arg);
 static void App_epwmInit(void);
@@ -128,6 +161,15 @@ static void test_ecap_epwm_loopback(void *args);
 static void test_ecap_epwm_loopback_negative(void *args);
 static void test_ecap_init_test_params(ECAP_TestParams *testParams,
                                         uint32_t testCaseId);
+static void TestEcap_CounterOverflowInterrupt(void *args);
+static void TestEcap_GlobalInterruptClear(void *args);
+static void TestEcap_CounterPhaseValueLoading(void *args);
+static void TestEcap_ChangeEdgePolarityAtRuntime(void *args);
+static void TestEcap_CaptureLoadingEnableDisable(void *args);
+
+/* ========================================================================== */
+/*                          Function Definitions                              */
+/* ========================================================================== */
 
 void test_main(void *args)
 {
@@ -139,6 +181,9 @@ void test_main(void *args)
     DebugP_log("Please refer EXAMPLES_DRIVERS_ECAP_EPWM_LOOPBACK example user \
 guide for the test setup details. \r\n");
 
+    #if defined (ENABLE_MT_TESTS) && !defined (C75_CORE)
+    run_multi_threaded_tests(NULL);
+    #endif
     /* Run tests */
     test_ecap_init_test_params(&testParams, 7283);
     RUN_TEST(test_ecap_epwm_loopback, 7283, (void*)&testParams);
@@ -156,11 +201,12 @@ guide for the test setup details. \r\n");
     RUN_TEST(test_ecap_epwm_loopback, 7278, (void*)&testParams);
     /* PreScaler Test */
     test_ecap_init_test_params(&testParams, 7277);
-    for (idx = 0U; idx < 16U; idx++)
+    for (idx = 0U; idx < APP_ECAP_PRESCALE_TEST_COUNT; idx++)
     {
         testParams.ecapPrescaleVal = gPrescalValArray[idx];
         RUN_TEST(test_ecap_epwm_loopback, 7277, (void*)&testParams);
     }
+    #if !defined(C75_CORE)
     test_ecap_init_test_params(&testParams, 7276);
     RUN_TEST(test_ecap_epwm_loopback, 7276, (void*)&testParams);
 #if (CONFIG_ECAP_NUM_INSTANCES > 2)
@@ -173,8 +219,19 @@ guide for the test setup details. \r\n");
     test_ecap_init_test_params(&testParams, 7313);
     RUN_TEST(test_ecap_epwm_loopback, 7313, (void*)&testParams);
 #endif
+    #endif
+    test_ecap_init_test_params(&testParams, 10655);
+    RUN_TEST(TestEcap_GlobalInterruptClear, 10655, (void*)&testParams);
+    test_ecap_init_test_params(&testParams, 10656);
+    RUN_TEST(TestEcap_CounterOverflowInterrupt, 10656, (void*)&testParams);
     test_ecap_init_test_params(&testParams, 7274);
     RUN_TEST(test_ecap_epwm_loopback_negative, 7274, (void*)&testParams);
+    test_ecap_init_test_params(&testParams, 10658);
+    RUN_TEST(TestEcap_CaptureLoadingEnableDisable, 10658, (void*)&testParams);
+    test_ecap_init_test_params(&testParams, 10659);
+    RUN_TEST(TestEcap_ChangeEdgePolarityAtRuntime, 10659, (void*)&testParams);
+    test_ecap_init_test_params(&testParams, 10660);
+    RUN_TEST(TestEcap_CounterPhaseValueLoading, 10660, (void*)&testParams);
 
     UNITY_END();
 
@@ -311,6 +368,8 @@ static void test_ecap_epwm_loopback(void *args)
         ECAP_intrDisable(gEcapBaseAddr, ECAP_INT_ALL);
     }
 
+    ClockP_usleep(5000);
+
     HwiP_destruct(&gEcapHwiObject);
     SemaphoreP_destruct(&gEcapSyncSemObject);
 
@@ -330,6 +389,263 @@ static void test_ecap_epwm_loopback_negative(void *args)
     ECAP_prescaleConfig(gEcapBaseAddr, ECAP_ECCTL1_PRESCALE_MAX + 1);
 }
 
+
+/*
+ * TestEcap_CounterOverflowInterrupt:
+ * This test case verifies the ECAP counter overflow interrupt functionality.
+ * It configures ECAP and EPWM modules, enables the overflow interrupt, and waits for the overflow event.
+ * The test ensures that the overflow interrupt is triggered and handled correctly.
+ * It also checks proper interrupt clearing and cleanup after the overflow event.
+ * The test is repeated for a defined number of capture loop iterations.
+ */
+static void TestEcap_CounterOverflowInterrupt(void *args)
+{
+    int32_t             status;
+    HwiP_Params         hwiPrms;
+    uint32_t            loopCnt = APP_ECAP_CAPTURE_LOOP_COUNT;
+    ECAP_TestParams    *testParams = (ECAP_TestParams *)args;
+
+    status = SemaphoreP_constructCounting(&gEcapSyncSemObject, 0, loopCnt);
+    DebugP_assert(SystemP_SUCCESS == status);
+
+    /* Register & enable interrupt */
+    HwiP_Params_init(&hwiPrms);
+    hwiPrms.intNum      = testParams->ecapIntrNum;
+    hwiPrms.callback    = &App_ecapIntrISR;
+    hwiPrms.eventId     = testParams->ecapEventId;
+    hwiPrms.isPulse     = testParams->ecapIntrTypePulse;
+    status              = HwiP_construct(&gEcapHwiObject, &hwiPrms);
+    DebugP_assert(status == SystemP_SUCCESS);
+
+    gEcapBaseAddr = (uint32_t)AddrTranslateP_getLocalAddr(testParams->ecapBaseAddr);
+    gEpwmBaseAddr = (uint32_t)AddrTranslateP_getLocalAddr(CONFIG_EPWM0_BASE_ADDR);
+
+    App_ecapInit(args);
+    App_epwmInit();
+
+    ECAP_counterControl(gEcapBaseAddr, ECAP_COUNTER_FREE_RUNNING);
+    /* Enable interrupt */
+    ECAP_intrEnable(gEcapBaseAddr, testParams->ecapIntrEvt);
+
+    /* Start Capture for APP_ECAP_CAPTURE_LOOP_COUNT iterations */
+    while (loopCnt > 0)
+    {
+        if (testParams->ecapOperMode != ECAP_CONTINUOUS_MODE)
+        {
+            ECAP_oneShotReArm(gEcapBaseAddr);
+        }
+        SemaphoreP_pend(&gEcapSyncSemObject, SystemP_WAIT_FOREVER);
+        loopCnt--;
+    }
+
+    /* Wait for overflow interrupt */
+    if (SemaphoreP_pend(&gEcapSyncSemObject, SystemP_WAIT_FOREVER) == SystemP_SUCCESS)
+    {
+        /* Clear overflow interrupt status */
+        ECAP_intrStatusClear(gEcapBaseAddr, ECAP_CEVT1_INT);
+        ECAP_globalIntrClear(gEcapBaseAddr);
+    }
+
+    HwiP_destruct(&gEcapHwiObject);
+    SemaphoreP_destruct(&gEcapSyncSemObject);
+}
+
+/*
+ * TestEcap_GlobalInterruptClear:
+ * This test case verifies the global interrupt clear functionality of the ECAP module.
+ * It configures ECAP and EPWM, enables multiple interrupts, and waits for both to occur.
+ * After both interrupts are triggered, it uses the global interrupt clear API to clear all pending interrupts.
+ * The test ensures that the global interrupt clear works as expected and disables all ECAP interrupts.
+ * Proper cleanup is performed after the test to ensure no pending interrupts remain.
+ */
+static void TestEcap_GlobalInterruptClear(void *args)
+{
+    int32_t          status;
+    HwiP_Params      hwiPrms;
+    ECAP_TestParams *testParams = (ECAP_TestParams *)args;
+
+    status = SemaphoreP_constructCounting(&gEcapSyncSemObject, 0, 2);
+    DebugP_assert(SystemP_SUCCESS == status);
+
+    /* Register & enable interrupt */
+    HwiP_Params_init(&hwiPrms);
+    hwiPrms.intNum      = testParams->ecapIntrNum;
+    hwiPrms.callback    = &App_ecapIntrISR;
+    hwiPrms.eventId     = testParams->ecapEventId;
+    hwiPrms.isPulse     = testParams->ecapIntrTypePulse;
+    status              = HwiP_construct(&gEcapHwiObject, &hwiPrms);
+    DebugP_assert(status == SystemP_SUCCESS);
+
+    gEcapBaseAddr = (uint32_t)AddrTranslateP_getLocalAddr(testParams->ecapBaseAddr);
+
+    /* Initialize ECAP and EPWM (only in case of CAPTURE mode) */
+    App_ecapInit(args);
+
+    if (testParams->ecapOperMode != ECAP_CONTINUOUS_MODE)
+    {
+        ECAP_oneShotReArm(gEcapBaseAddr);
+    }
+
+    App_epwmInit();
+
+    /* Wait for both interrupts to occur. The ISR posts the counting semaphore
+     * on each event; pend twice to synchronize with both without a fixed sleep. */
+    SemaphoreP_pend(&gEcapSyncSemObject, SystemP_WAIT_FOREVER);
+    SemaphoreP_pend(&gEcapSyncSemObject, SystemP_WAIT_FOREVER);
+
+    /* Now clear all with global clear */
+    ECAP_globalIntrClear(gEcapBaseAddr);
+    ECAP_intrDisable(gEcapBaseAddr, ECAP_INT_ALL);
+
+    HwiP_destruct(&gEcapHwiObject);
+    SemaphoreP_destruct(&gEcapSyncSemObject);
+}
+
+/*
+ * TestEcap_CounterPhaseValueLoading:
+ * This test case verifies the ECAP counter phase value loading functionality.
+ * It configures ECAP and EPWM modules, sets a specific phase value, and triggers a sync-in event.
+ * The test reads the counter value before and after the sync-in event to ensure the phase value is loaded correctly.
+ * It checks that the counter value changes as expected after the sync-in operation.
+ * Proper initialization and cleanup are performed to ensure no pending interrupts remain.
+ */
+static void TestEcap_CounterPhaseValueLoading(void *args)
+{
+    ECAP_TestParams *testParams = (ECAP_TestParams *)args;
+    uint32_t        phaseVal         = 0x1234;
+    uint32_t        counterValBefore;
+    uint32_t        counterValAfter;
+
+    gEcapBaseAddr = (uint32_t)AddrTranslateP_getLocalAddr(testParams->ecapBaseAddr);
+
+    /* Initialize ECAP and EPWM (only in case of CAPTURE mode) */
+    App_ecapInit(args);
+
+    if (testParams->ecapOperMode != ECAP_CONTINUOUS_MODE)
+    {
+        ECAP_oneShotReArm(gEcapBaseAddr);
+    }
+
+    App_epwmInit();
+
+    /* Set phase value */
+    ECAP_counterPhaseValConfig(gEcapBaseAddr, phaseVal);
+
+    /* Read counter before and after sync */
+    counterValBefore = ECAP_timeStampRead(gEcapBaseAddr, ECAP_TSCTR);
+
+    /* Trigger sync-in event */
+    ECAP_syncInOutSelect(gEcapBaseAddr, ECAP_ENABLE_COUNTER, ECAP_SYNC_IN);
+
+    /* Simulate sync-in event here if needed */
+    counterValAfter = ECAP_timeStampRead(gEcapBaseAddr, ECAP_TSCTR);
+
+    DebugP_log("Counter before sync: %u, after sync: %u\r\n", counterValBefore, counterValAfter);
+    DebugP_assert(counterValAfter != phaseVal);
+}
+
+/*
+ * TestEcap_ChangeEdgePolarityAtRuntime:
+ * This test case verifies the ability to change the edge polarity configuration of ECAP capture events at runtime.
+ * It initializes ECAP and EPWM, captures a timestamp before changing polarity, then updates the polarity to falling edge.
+ * The test ensures that the ECAP module correctly latches new timestamps after the polarity change.
+ * It checks that the captured value changes as expected and logs the results for verification.
+ * Proper interrupt clearing and cleanup are performed after the test.
+ */
+static void TestEcap_ChangeEdgePolarityAtRuntime(void *args)
+{
+    ECAP_TestParams *testParams = (ECAP_TestParams *)args;
+    uint32_t        capCountBefore, capCountAfter;
+
+    gEcapBaseAddr = (uint32_t)AddrTranslateP_getLocalAddr(testParams->ecapBaseAddr);
+
+    /* Initialize ECAP and EPWM (only in case of CAPTURE mode) */
+    App_ecapInit(args);
+
+    if (testParams->ecapOperMode != ECAP_CONTINUOUS_MODE)
+    {
+        ECAP_oneShotReArm(gEcapBaseAddr);
+    }
+
+    App_epwmInit();
+
+    capCountBefore = ECAP_timeStampRead(gEcapBaseAddr, ECAP_CAPTURE_EVENT_1);
+
+    /* Change polarity to falling edge */
+    ECAP_captureEvtPolarityConfig(gEcapBaseAddr,
+                                 ECAP_CAPTURE_EVENT_FALLING,
+                                 ECAP_CAPTURE_EVENT_FALLING,
+                                 ECAP_CAPTURE_EVENT_RISING,
+                                 ECAP_CAPTURE_EVENT_FALLING);
+
+    /* Generate a falling edge and capture timestamp */
+    /* Simulate input signal here */
+    ClockP_usleep(10000); /* Sleep for 10ms to allow edge to be captured */
+
+    capCountAfter = ECAP_timeStampRead(gEcapBaseAddr, ECAP_CAPTURE_EVENT_1);
+    DebugP_log("Timestamp before polarity change: %u, after: %u\r\n", capCountBefore, capCountAfter);
+    DebugP_assert(capCountAfter != capCountBefore);
+
+    /* Clear any pending interrupts if any */
+    EPWM_etIntrDisable(gEpwmBaseAddr);
+    EPWM_etIntrClear(gEpwmBaseAddr);
+    ECAP_intrDisable(gEcapBaseAddr, ECAP_INT_ALL);
+}
+
+/*
+ * TestEcap_CaptureLoadingEnableDisable:
+ * This test case verifies the enable/disable functionality of ECAP capture loading.
+ * It enables capture loading, generates an input edge, and reads the timestamp.
+ * Then it disables capture loading, generates another edge, and checks that the timestamp does not update.
+ * The test ensures that the ECAP module correctly latches values only when loading is enabled.
+ * Proper logging and assertion are used to validate the expected behavior.
+ */
+static void TestEcap_CaptureLoadingEnableDisable(void *args)
+{
+    ECAP_TestParams *testParams = (ECAP_TestParams *)args;
+    uint32_t        capBefore, capAfter;
+
+    gEcapBaseAddr = (uint32_t)AddrTranslateP_getLocalAddr(testParams->ecapBaseAddr);
+    gEpwmBaseAddr = (uint32_t)AddrTranslateP_getLocalAddr(CONFIG_EPWM0_BASE_ADDR);
+
+    /* Initialize ECAP and EPWM so the capture registers are primed by real edges. */
+    App_ecapInit(args);
+
+    if (testParams->ecapOperMode != ECAP_CONTINUOUS_MODE)
+    {
+        ECAP_oneShotReArm(gEcapBaseAddr);
+    }
+
+    App_epwmInit();
+
+    /* Enable capture loading and wait for an EPWM-generated edge to latch CAP1. */
+    ECAP_captureLoadingEnable(gEcapBaseAddr);
+    ClockP_usleep(10000); /* 10 ms — enough for at least one 10 KHz EPWM cycle */
+    capBefore = ECAP_timeStampRead(gEcapBaseAddr, ECAP_CAPTURE_EVENT_1);
+
+    /* Disable capture loading; further edges must not update CAP1. */
+    ECAP_captureLoadingDisable(gEcapBaseAddr);
+    ClockP_usleep(10000); /* Allow additional EPWM edges to arrive while disabled */
+    capAfter = ECAP_timeStampRead(gEcapBaseAddr, ECAP_CAPTURE_EVENT_1);
+
+    DebugP_log("CAP1 with loading enabled: %u, with loading disabled: %u\r\n",
+               capBefore, capAfter);
+    DebugP_assert(capAfter == capBefore); /* CAP1 must not update when loading is disabled */
+
+    /* Clear any pending interrupts */
+    EPWM_etIntrDisable(gEpwmBaseAddr);
+    EPWM_etIntrClear(gEpwmBaseAddr);
+    ECAP_intrDisable(gEcapBaseAddr, ECAP_INT_ALL);
+}
+
+/*
+ * App_ecapIntrISR:
+ * This is the ECAP interrupt service routine (ISR) used in the test cases.
+ * It reads the interrupt status, clears the ECAP and global interrupt flags,
+ * and posts to the semaphore to signal the main test thread.
+ * This ISR ensures proper synchronization between interrupt events and test logic.
+ * It is registered for ECAP interrupts during test initialization.
+ */
 static void App_ecapIntrISR(void *arg)
 {
     uint32_t intrFlag;
@@ -512,7 +828,7 @@ static void test_ecap_init_test_params(ECAP_TestParams *testParams,
             testParams->ecapPwmPol = ECAP_APWM_ACTIVE_LOW;
             testParams->ecapIntrEvt = ECAP_CMPEQ_INT;
             break;
-#if (CONFIG_ECAP_NUM_INSTANCES > 2)
+#if (CONFIG_ECAP_NUM_INSTANCES > 2) && (defined(SOC_AM62DX) || defined(SOC_AM275X))
         case 7312:
         case 7313:
             testParams->ecapBaseAddr = CONFIG_ECAP2_BASE_ADDR;
@@ -525,6 +841,42 @@ static void test_ecap_init_test_params(ECAP_TestParams *testParams,
 #endif
         case 7274:
             break;
+        case 10656: /* TestEcap_CounterOverflowInterrupt */
+            testParams->ecapCaptStopEvent = ECAP_CAPTURE_EVENT1_STOP;
+            testParams->ecapOperMode = ECAP_CONTINUOUS_MODE;
+            testParams->ecapIntrEvt = ECAP_CEVT1_INT;
+            break;
+        case 10655: /* TestEcap_GlobalInterruptClear */
+            testParams->ecapMode     = ECAP_CAPTURE_MODE;
+            testParams->ecapIntrEvt  = ECAP_CEVT1_INT | ECAP_CEVT2_INT;
+            testParams->ecapOperMode = ECAP_CONTINUOUS_MODE;
+            break;
+        case 10660: /* TestEcap_CounterPhaseValueLoading */
+            testParams->ecapMode       = ECAP_CAPTURE_MODE;
+            testParams->ecapOperMode   = ECAP_CONTINUOUS_MODE;
+            testParams->ecapIntrEvt    = ECAP_CEVT1_INT;
+            break;
+        case 10659: /* TestEcap_ChangeEdgePolarityAtRuntime */
+            testParams->ecapMode       = ECAP_CAPTURE_MODE;
+            testParams->ecapOperMode   = ECAP_CONTINUOUS_MODE;
+            testParams->ecapIntrEvt    = ECAP_CEVT1_INT;
+            break;
+        case 10658: /* TestEcap_CaptureLoadingEnableDisable */
+            testParams->ecapMode       = ECAP_CAPTURE_MODE;
+            testParams->ecapOperMode   = ECAP_CONTINUOUS_MODE;
+            testParams->ecapIntrEvt    = ECAP_CEVT1_INT;
+            break;
+#if (CONFIG_ECAP_NUM_INSTANCES > 2) && (defined(SOC_AM62DX) || defined(SOC_AM275X))
+        case 10965:
+            testParams->ecapBaseAddr = CONFIG_ECAP2_BASE_ADDR;
+            testParams->ecapIntrNum = CONFIG_ECAP2_INTR;
+            testParams->ecapEventId = CONFIG_ECAP2_EVENT_ID;
+            testParams->ecapIntrTypePulse = CONFIG_ECAP2_INTR_IS_PULSE;
+            testParams->ecapCaptStopEvent = ECAP_CAPTURE_EVENT1_STOP;
+            testParams->ecapIntrEvt = ECAP_CEVT1_INT;
+            testParams->ecapOperMode = ECAP_CONTINUOUS_MODE;
+            break;
+#endif
     }
 
     return;

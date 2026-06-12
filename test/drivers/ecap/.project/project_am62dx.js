@@ -9,6 +9,14 @@ const files = {
     ],
 };
 
+const files_rtos = {
+    common: [
+        "test_ecap_multi_thread.c",
+        "test_ecap.c",
+        "main.c",
+    ],
+};
+
 /* Relative to where the makefile will be generated
  * Typically at <example_folder>/<BOARD>/<core_os_combo>/<compiler>
  */
@@ -98,6 +106,19 @@ const defines_common = {
     ]
 };
 
+const cflags_free_rtos = {
+    common: [
+        "-DENABLE_MT_TESTS",
+    ],
+};
+
+const defines_c7x = {
+    common: [
+        "SOC_AM62DX",
+        "C75_CORE"
+    ],
+};
+
 const syscfgfile = "../example.syscfg"
 
 const templates_nortos_a53 =
@@ -141,7 +162,7 @@ const templates_freertos_c75 =
         output: "../main.c",
         options: {
             entryFunction: "test_main",
-            stackSize: 16*1024,
+            stackSize: 32*1024,
         },
     }
 ];
@@ -196,14 +217,17 @@ function getComponentBuildProperty(buildOption) {
         }
         else if(buildOption.os.match(/freertos*/))
         {
+            build_property.files = files_rtos;
             build_property.includes = includes_freertos_a53;
             build_property.libdirs = libdirs_freertos;
             build_property.libs = libs_freertos_a53;
             build_property.templates = templates_freertos_a53;
+            build_property.cflags =  cflags_free_rtos;
         }
     }
 
     if(buildOption.cpu.match(/c75*/)) {
+        build_property.defines = defines_c7x;
         build_property.includes = includes_freertos_c75;
         build_property.libdirs = libdirs_freertos;
         build_property.libs = libs_freertos_c75;

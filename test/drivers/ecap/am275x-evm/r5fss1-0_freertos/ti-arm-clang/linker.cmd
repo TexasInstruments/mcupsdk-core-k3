@@ -39,7 +39,7 @@ SECTIONS
     .vectors:{} palign(16) > R5F_VECS
 
     /* This has the R5F boot code until MPU is enabled,  this MUST be at a address < 0x80000000
-     * i.e this cannot be placed in R50_0_OCRAM
+     * i.e this cannot be placed in R51_0_OCRAM
      */
     GROUP {
         .text.hwi: palign(16)
@@ -50,35 +50,35 @@ SECTIONS
     } > R5F_TCMA
 
     /* LOADABLE SECTIONS */
-    /* This is rest of code. This can be placed in R50_0_OCRAM if R50_0_OCRAM is available and needed */
+    /* This is rest of code. This can be placed in R51_0_OCRAM if R51_0_OCRAM is available and needed */
     GROUP {
         .text:   {} palign(16)   /* This is where code resides */
         .rodata: {} palign(16)   /* This is where const's go */
-    } > R50_0_OCRAM
+    } > R51_0_OCRAM
 
-    /* This is rest of initialized data. This can be placed in R50_0_OCRAM if R50_0_OCRAM is available and needed */
+    /* This is rest of initialized data. This can be placed in R51_0_OCRAM if R51_0_OCRAM is available and needed */
     GROUP {
         .data:   {} palign(16)   /* This is where initialized globals and static go */
-    } > R50_0_OCRAM
+    } > R51_0_OCRAM
 
     /* Sections needed for C++ projects */
     GROUP {
         .ARM.exidx:  {} palign(16)   /* Needed for C++ exception handling */
         .init_array: {} palign(16)   /* Contains function pointers called before main */
         .fini_array: {} palign(16)   /* Contains function pointers called after main */
-    } > R50_0_OCRAM
+    } > R51_0_OCRAM
 
 
     /* NON-LOADABLE SECTIONS */
 
-    /* This is rest of uninitialized data. This can be placed in R50_0_OCRAM if R50_0_OCRAM is available and needed */
+    /* This is rest of uninitialized data. This can be placed in R51_0_OCRAM if R51_0_OCRAM is available and needed */
     GROUP {
         .bss:    {} palign(8)   /* This is where uninitialized globals go */
         RUN_START(__BSS_START)
         RUN_END(__BSS_END)
         .sysmem: {} palign(8)   /* This is where the malloc heap goes */
         .stack:  {} palign(8)   /* This is where the main() stack goes */
-    } > R50_0_OCRAM
+    } > R51_0_OCRAM
 
     /* This is where the stacks for different R5F modes go */
     GROUP {
@@ -97,7 +97,7 @@ SECTIONS
         .undefinedstack: {. = . + __UNDEFINED_STACK_SIZE;} align(8)
         RUN_START(__UNDEFINED_STACK_START)
         RUN_END(__UNDEFINED_STACK_END)
-    } > R50_0_OCRAM
+    } > R51_0_OCRAM
 
 }
 

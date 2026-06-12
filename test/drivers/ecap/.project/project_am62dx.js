@@ -242,14 +242,41 @@ function getComponentProperty(device) {
     return property;
 }
 
-const robot_template = {
+const robot_template_nortos = {
     input: ".project/templates/am62dx/astra/tests.robot.xdt",
-    output: "../tests.robot",
+    output: "../tests_nortos.robot",
     options: {
         componentName: "ECAP",
-        testCaseName: "ecap test application",
+        testCaseName: "ecap test application (nortos)",
+        appName: "test_ecap(nortos)",
         testCaseIds: "SITSW-6990 SITSW-7274 SITSW-7275 SITSW-7276 SITSW-7277 SITSW-7278 SITSW-7279 SITSW-7280 SITSW-7281 SITSW-7282" +
-                     " SITSW-7283 SITSW-7312 SITSW-7313",
+                     " SITSW-7283 SITSW-7312 SITSW-7313 SITSW-10655 SITSW-10656 SITSW-10658 SITSW-10659 SITSW-10660",
+        timeout: 300,
+    },
+};
+
+const robot_template_freertos = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests_freertos.robot",
+    options: {
+        componentName: "ECAP",
+        testCaseName: "ecap test application (freertos)",
+        appName: "test_ecap(freertos)",
+        testCaseIds: "SITSW-6990 SITSW-7274 SITSW-7275 SITSW-7276 SITSW-7277 SITSW-7278 SITSW-7279 SITSW-7280 SITSW-7281 SITSW-7282" +
+                     " SITSW-7283 SITSW-7312 SITSW-7313 SITSW-10655 SITSW-10656 SITSW-10658 SITSW-10659 SITSW-10660 SITSW-10661 SITSW-10662",
+        timeout: 300,
+    },
+};
+
+const robot_template_freertos_smp = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests_smp.robot",
+    options: {
+        componentName: "ECAP",
+        testCaseName: "ecap test application (freertos-smp)",
+        appName: "test_ecap(freertos-smp)",
+        testCaseIds: "SITSW-10964",
+        timeout: 300,
     },
 };
 
@@ -301,7 +328,13 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.os.match("freertos-smp")) {
+        build_property.templates = [...(build_property.templates || []), robot_template_freertos_smp];
+    } else if (buildOption.os.match(/nortos/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_nortos];
+    } else if (buildOption.os.match(/freertos/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_freertos];
+    }
     return build_property;
 }
 

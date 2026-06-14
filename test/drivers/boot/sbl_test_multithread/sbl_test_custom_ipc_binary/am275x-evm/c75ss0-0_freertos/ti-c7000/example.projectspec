@@ -10,8 +10,8 @@
     </applicability>
 
     <project
-        title="Ipc Rpmsg Echo"
-        name = "ipc_rpmsg_echo_am275x-evm_c75ss0-0_freertos_ti-c7000"
+        title="Sbl Test Custom Ipc Binary"
+        name = "sbl_test_custom_ipc_binary_am275x-evm_c75ss0-0_freertos_ti-c7000"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -55,7 +55,7 @@
             -i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib
             -i${MCU_PLUS_SDK_PATH}/source/drivers/lib
             -i${CG_TOOL_ROOT}/lib
-            -m=ipc_rpmsg_echo.${ConfigName}.map
+            -m=sbl_test_custom_ipc_binary.${ConfigName}.map
             -z
             --emit_warnings_as_errors
             --diag_suppress=10063
@@ -71,7 +71,7 @@
             --context c75ss0-0 --part AM2754 --package ANJ
         "
 
-        description="A Ipc Rpmsg Echo FREERTOS project">
+        description="A Sbl Test Custom Ipc Binary FREERTOS project">
 
         <configuration name="Debug"
             compilerBuildOptions="

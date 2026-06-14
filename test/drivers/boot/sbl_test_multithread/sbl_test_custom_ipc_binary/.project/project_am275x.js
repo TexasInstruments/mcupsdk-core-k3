@@ -183,7 +183,7 @@ const buildOptionCombosWkup = [
 
 const systemProjects =[
     {
-        name: "ipc_rpmsg_echo",
+        name: "sbl_test_custom_ipc_binary",
         tag: "freertos",
         skipProjectSpec: false,
         readmeDoxygenPageTag: readmeDoxygenPageTag,
@@ -204,7 +204,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "ipc_rpmsg_echo";
+    property.name = "sbl_test_custom_ipc_binary";
     property.isInternal = true;
     property.description ="A IPC rpmsg echo example"
     property.buildOptionCombos = buildOptionCombos;
@@ -219,7 +219,7 @@ function getComponentPropertyWkup() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "ipc_rpmsg_echo";
+    property.name = "sbl_test_custom_ipc_binary";
     property.isInternal = true;
     property.description ="A IPC rpmsg echo example"
     property.buildOptionCombos = buildOptionCombosWkup;

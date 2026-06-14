@@ -131,6 +131,9 @@ function getComponentProperty() {
     property.skipProjectSpec = true;
     property.isBootLoader = true;
     property.buildOptionCombos = buildOptionCombos;
+    property.dependentApps = [
+        { name: "sbl_test_custom_ipc_binary", board: "am275x-evm", tag: "freertos", isSystemProject: true },
+    ];
 
     return property;
 }

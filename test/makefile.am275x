@@ -1013,7 +1013,7 @@ BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_1_am275x-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_2_am275x-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_4_am275x-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_8_am275x-evm_system_freertos
-BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += sbl_test_custom_ipc_binary_am275x-evm_system_freertos
 
 BUILD_COMBO_EXAMPLE_XLIBS_ALL =
 # Various xlibs Example Targets
@@ -2252,7 +2252,7 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_sbl_uart_boot_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/boot/sbl_test_uart_boot/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
- sbl_test_multithread_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
+ sbl_test_multithread_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang: sbl_test_custom_ipc_binary_am275x-evm_system_freertos
 	$(MAKE) -C drivers/boot/sbl_test_multithread/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
  test_sbl_uniflash_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
@@ -2303,7 +2303,7 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_ipc_rpmsg_vring_8_am275x-evm_system_freertos:
 	$(MAKE) -C drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Vring_8_Test/am275x-evm/system_freertos -f makefile all
 
- ipc_rpmsg_echo_am275x-evm_system_freertos:
+ sbl_test_custom_ipc_binary_am275x-evm_system_freertos:
 	$(MAKE) -C drivers/boot/sbl_test_multithread/sbl_test_custom_ipc_binary/am275x-evm/system_freertos -f makefile all
 
 
@@ -2692,7 +2692,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_1_am275x-evm_system_freert
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_2_am275x-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_4_am275x-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_8_am275x-evm_system_freertos_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sbl_test_custom_ipc_binary_am275x-evm_system_freertos_clean
 
 BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL =
 # Various xlibs Example Clean Targets
@@ -3978,7 +3978,7 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_ipc_rpmsg_vring_8_am275x-evm_system_freertos_clean:
 	$(MAKE) -C drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Vring_8_Test/am275x-evm/system_freertos -f makefile clean
 
- ipc_rpmsg_echo_am275x-evm_system_freertos_clean:
+ sbl_test_custom_ipc_binary_am275x-evm_system_freertos_clean:
 	$(MAKE) -C drivers/boot/sbl_test_multithread/sbl_test_custom_ipc_binary/am275x-evm/system_freertos -f makefile clean
 
 
@@ -4367,7 +4367,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_1_am275x-evm_system_freert
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_2_am275x-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_4_am275x-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_8_am275x-evm_system_freertos_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sbl_test_custom_ipc_binary_am275x-evm_system_freertos_scrub
 
 BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL =
 # Various xlibs Example Scrub Targets
@@ -5653,7 +5653,7 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  test_ipc_rpmsg_vring_8_am275x-evm_system_freertos_scrub:
 	$(MAKE) -C drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Vring_8_Test/am275x-evm/system_freertos -f makefile scrub
 
- ipc_rpmsg_echo_am275x-evm_system_freertos_scrub:
+ sbl_test_custom_ipc_binary_am275x-evm_system_freertos_scrub:
 	$(MAKE) -C drivers/boot/sbl_test_multithread/sbl_test_custom_ipc_binary/am275x-evm/system_freertos -f makefile scrub
 
 

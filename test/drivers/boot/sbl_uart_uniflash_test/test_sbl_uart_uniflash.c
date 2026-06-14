@@ -163,14 +163,15 @@ void tearDown(void) { /* nothing */ }
  *
  * @return void
  */
-void test_uniflashServer(void *args)
+void TestSblUartUniflash_uniflashServer(void *args)
 {
     int32_t  status   = SystemP_SUCCESS;
+    int32_t  txStatus = SystemP_SUCCESS;
     uint32_t done     = 0U;
-    uint32_t fileSize;
-    Bootloader_UniflashConfig         uniflashConfig;
-    Bootloader_UniflashResponseHeader respHeader;
-    Bootloader_UniflashFileHeader     fileHeader;
+    uint32_t fileSize = 0U;
+    Bootloader_UniflashConfig         uniflashConfig = {0};
+    Bootloader_UniflashResponseHeader respHeader     = {0};
+    Bootloader_UniflashFileHeader     fileHeader     = {0};
 
     DebugP_log("\r\n[SBL UART UNIFLASH TEST] Uniflash server test started.\r\n");
     DebugP_log("[SBL UART UNIFLASH TEST] Waiting for files on UART0 (XMODEM)...\r\n");
@@ -200,7 +201,7 @@ void test_uniflashServer(void *args)
             break;
         }
 
-        /* Check for end-of-test signal (sent by uart_bootloader.py as EOFT magic) */
+        /* Check for end-of-test signal (sent by uart_uniflash.py as EOFT magic) */
         if(memcmp(gUniflashFileBuf - sizeof(Bootloader_UniflashResponseHeader),
                   gEndOfFilesTransferWord,
                   BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH) == 0)
@@ -220,8 +221,9 @@ void test_uniflashServer(void *args)
             respHeader.magicNumber = BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER;
             respHeader.statusCode  = BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR;
 
-            Bootloader_xmodemTransmit(CONFIG_UART0,
+            txStatus = Bootloader_xmodemTransmit(CONFIG_UART0,
                 (uint8_t *)&respHeader, sizeof(Bootloader_UniflashResponseHeader));
+            TEST_ASSERT_EQUAL(SystemP_SUCCESS, txStatus);
 
             TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status,
                 "Received file exceeded max buffer size");
@@ -240,11 +242,14 @@ void test_uniflashServer(void *args)
             uniflashConfig.verifyBufSize = 0;
 
             /* Process the flash command */
-            Bootloader_uniflashProcessFlashCommands(&uniflashConfig, &respHeader);
+            status = Bootloader_uniflashProcessFlashCommands(&uniflashConfig, &respHeader);
 
             /* Response magic MUST always be set regardless of outcome */
             TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER,
                                      respHeader.magicNumber);
+
+            TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status,
+                "Bootloader_uniflashProcessFlashCommands failed");
 
             DebugP_log("[SBL UART UNIFLASH TEST] Command result: 0x%08x\r\n",
                        respHeader.statusCode);
@@ -277,7 +282,7 @@ void test_main(void *args)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(test_uniflashServer, 11472, NULL);
+    RUN_TEST(TestSblUartUniflash_uniflashServer, 11472, NULL);
 
     UNITY_END();
 }

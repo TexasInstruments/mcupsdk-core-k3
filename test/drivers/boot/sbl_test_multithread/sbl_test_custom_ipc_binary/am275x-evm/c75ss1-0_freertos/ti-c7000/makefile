@@ -21,14 +21,14 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=ipc_rpmsg_echo.$(PROFILE).out
+OUTNAME:=sbl_test_custom_ipc_binary.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=ipc_rpmsg_echo.$(PROFILE).mcelf
-BOOTIMAGE_NAME_XIP:=ipc_rpmsg_echo.$(PROFILE).mcelf_xip
-BOOTIMAGE_NAME_SIGNED:=ipc_rpmsg_echo.$(PROFILE).mcelf.signed
-BOOTIMAGE_NAME_HS:=ipc_rpmsg_echo.$(PROFILE).mcelf.hs
-BOOTIMAGE_NAME_HS_FS:=ipc_rpmsg_echo.$(PROFILE).mcelf.hs_fs
+BOOTIMAGE_NAME:=sbl_test_custom_ipc_binary.$(PROFILE).mcelf
+BOOTIMAGE_NAME_XIP:=sbl_test_custom_ipc_binary.$(PROFILE).mcelf_xip
+BOOTIMAGE_NAME_SIGNED:=sbl_test_custom_ipc_binary.$(PROFILE).mcelf.signed
+BOOTIMAGE_NAME_HS:=sbl_test_custom_ipc_binary.$(PROFILE).mcelf.hs
+BOOTIMAGE_NAME_HS_FS:=sbl_test_custom_ipc_binary.$(PROFILE).mcelf.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -179,7 +179,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am275x:c75ss1-0:freertos:ti-c7000 ipc_rpmsg_echo ...
+	@echo  Scrubing: am275x:c75ss1-0:freertos:ti-c7000 sbl_test_custom_ipc_binary ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

@@ -217,10 +217,11 @@ void tearDown(void)
  */
 void TestUniflash_invalidMagicNumber(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
 
-    TestUniflash_prepareHeader(0xDEADBEEFU, BOOTLOADER_UNIFLASH_OPTYPE_FLASH, 0U, 0U, 64U);
+    (void)TestUniflash_prepareHeader(0xDEADBEEFU, BOOTLOADER_UNIFLASH_OPTYPE_FLASH, 0U, 0U, 64U);
 
     config.flashIndex   = CONFIG_FLASH0;
     config.buf          = gTestBuf;
@@ -228,59 +229,11 @@ void TestUniflash_invalidMagicNumber(void *args)
     config.verifyBuf    = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_MAGIC_ERROR, respHeader.statusCode);
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER, respHeader.magicNumber);
-}
-
-/**
- * @brief Valid magic, OPTYPE_FLASH with valid flash index and block-aligned offset.
- *
- * Covers: OPTYPE_FLASH case, Bootloader_uniflashFlashFile, Bootloader_uniflashFlashVerifyFile.
- *
- * @param[in] args Optional user argument (unused).
- *
- * @return void
- */
-void TestUniflash_flashOpType(void *args)
-{
-    Bootloader_UniflashConfig config;
-    Bootloader_UniflashResponseHeader respHeader;
-
-    uint8_t *payload = TestUniflash_prepareHeader(
-        BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
-        BOOTLOADER_UNIFLASH_OPTYPE_FLASH,
-        0U,  /* offset = 0, block-aligned */
-        0U,
-        64U  /* 64 bytes, already 16B aligned */
-    );
-
-    /* Fill payload with a known pattern */
-    memset(payload, 0xAA, 64U);
-
-    config.flashIndex    = CONFIG_FLASH0;
-    config.buf           = gTestBuf;
-    config.bufSize       = TEST_BUF_SIZE;
-    config.verifyBuf     = gVerifyBuf;
-    config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
-
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
-
-    if(status == SystemP_SUCCESS)
-    {
-        TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER, respHeader.magicNumber);
-        TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_SUCCESS, respHeader.statusCode);
-    }
-    else
-    {
-        /* Flash operation may fail if no real flash is present; verify error code is set */
-        TEST_ASSERT_TRUE(
-            (respHeader.statusCode == BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR) ||
-            (respHeader.statusCode == BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_VERIFY_ERROR)
-        );
-    }
 }
 
 /**
@@ -294,10 +247,11 @@ void TestUniflash_flashOpType(void *args)
  */
 void TestUniflash_flashVerifyOpType(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
 
-    TestUniflash_prepareHeader(
+    (void)TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         BOOTLOADER_UNIFLASH_OPTYPE_FLASH_VERIFY,
         0U,
@@ -311,11 +265,15 @@ void TestUniflash_flashVerifyOpType(void *args)
     config.verifyBuf     = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER, respHeader.magicNumber);
 
-    if(status != SystemP_SUCCESS)
+    if(status == SystemP_SUCCESS)
+    {
+        TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_SUCCESS, respHeader.statusCode);
+    }
+    else
     {
         TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_VERIFY_ERROR, respHeader.statusCode);
     }
@@ -332,10 +290,12 @@ void TestUniflash_flashVerifyOpType(void *args)
  */
 void TestUniflash_flashEraseOpType(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
+    Bootloader_UniflashFileHeader *hdr;
 
-    TestUniflash_prepareHeader(
+    (void)TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         BOOTLOADER_UNIFLASH_OPTYPE_FLASH_ERASE,
         0U,     /* block-aligned offset */
@@ -343,17 +303,29 @@ void TestUniflash_flashEraseOpType(void *args)
         0U
     );
 
+    hdr = (Bootloader_UniflashFileHeader *)gTestBuf;
+    TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_OPTYPE_FLASH_ERASE,       hdr->operationTypeAndFlags);
+    TEST_ASSERT_NOT_EQUAL(BOOTLOADER_UNIFLASH_OPTYPE_FLASH,                hdr->operationTypeAndFlags);
+    TEST_ASSERT_NOT_EQUAL(BOOTLOADER_UNIFLASH_OPTYPE_FLASH_VERIFY,         hdr->operationTypeAndFlags);
+    TEST_ASSERT_NOT_EQUAL(BOOTLOADER_UNIFLASH_OPTYPE_FLASH_XIP,            hdr->operationTypeAndFlags);
+    TEST_ASSERT_NOT_EQUAL(BOOTLOADER_UNIFLASH_OPTYPE_FLASH_VERIFY_XIP,     hdr->operationTypeAndFlags);
+    TEST_ASSERT_NOT_EQUAL(BOOTLOADER_UNIFLASH_OPTYPE_FLASH_TUNING_DATA,    hdr->operationTypeAndFlags);
+
     config.flashIndex    = CONFIG_FLASH0;
     config.buf           = gTestBuf;
     config.bufSize       = TEST_BUF_SIZE;
     config.verifyBuf     = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER, respHeader.magicNumber);
 
-    if(status != SystemP_SUCCESS)
+    if(status == SystemP_SUCCESS)
+    {
+        TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_SUCCESS, respHeader.statusCode);
+    }
+    else
     {
         TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERASE_ERROR, respHeader.statusCode);
     }
@@ -372,12 +344,13 @@ void TestUniflash_flashEraseOpType(void *args)
  */
 void TestUniflash_flashXipOpType(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
+    uint32_t xipSize;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
     Bootloader_UniflashFileHeader *hdr;
     uint8_t sectionData[64];
     uint8_t *payload;
-    uint32_t xipSize;
 
     memset(sectionData, 0xBB, sizeof(sectionData));
 
@@ -402,11 +375,15 @@ void TestUniflash_flashXipOpType(void *args)
     config.verifyBuf     = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER, respHeader.magicNumber);
 
-    if(status != SystemP_SUCCESS)
+    if(status == SystemP_SUCCESS)
+    {
+        TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_SUCCESS, respHeader.statusCode);
+    }
+    else
     {
         TEST_ASSERT_TRUE(
             (respHeader.statusCode == BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR) ||
@@ -426,12 +403,13 @@ void TestUniflash_flashXipOpType(void *args)
  */
 void TestUniflash_flashVerifyXipOpType(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
+    uint32_t xipSize;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
     Bootloader_UniflashFileHeader *hdr;
     uint8_t sectionData[64];
     uint8_t *payload;
-    uint32_t xipSize;
 
     memset(sectionData, 0xCC, sizeof(sectionData));
 
@@ -454,11 +432,15 @@ void TestUniflash_flashVerifyXipOpType(void *args)
     config.verifyBuf     = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER, respHeader.magicNumber);
 
-    if(status != SystemP_SUCCESS)
+    if(status == SystemP_SUCCESS)
+    {
+        TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_SUCCESS, respHeader.statusCode);
+    }
+    else
     {
         TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_VERIFY_ERROR, respHeader.statusCode);
     }
@@ -475,10 +457,11 @@ void TestUniflash_flashVerifyXipOpType(void *args)
  */
 void TestUniflash_flashTuningDataOpType(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
 
-    TestUniflash_prepareHeader(
+    (void)TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         BOOTLOADER_UNIFLASH_OPTYPE_FLASH_TUNING_DATA,
         0U,
@@ -492,11 +475,15 @@ void TestUniflash_flashTuningDataOpType(void *args)
     config.verifyBuf     = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER, respHeader.magicNumber);
 
-    if(status != SystemP_SUCCESS)
+    if(status == SystemP_SUCCESS)
+    {
+        TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_SUCCESS, respHeader.statusCode);
+    }
+    else
     {
         TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR, respHeader.statusCode);
     }
@@ -513,10 +500,11 @@ void TestUniflash_flashTuningDataOpType(void *args)
  */
 void TestUniflash_unknownOpType(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
 
-    TestUniflash_prepareHeader(
+    (void)TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         0x00U,  /* invalid optype */
         0U,
@@ -530,10 +518,10 @@ void TestUniflash_unknownOpType(void *args)
     config.verifyBuf     = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
     /* The function returns success but sets error in resp header for unknown optype */
-    (void)status;
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_OPTYPE_ERROR, respHeader.statusCode);
 }
 
@@ -548,10 +536,13 @@ void TestUniflash_unknownOpType(void *args)
  */
 void TestUniflash_fileSizeNotAligned(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
+    uint8_t *payload;
+    uint32_t i;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
 
-    uint8_t *payload = TestUniflash_prepareHeader(
+    payload = TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         BOOTLOADER_UNIFLASH_OPTYPE_FLASH,
         0U,
@@ -567,11 +558,37 @@ void TestUniflash_fileSizeNotAligned(void *args)
     config.verifyBuf     = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER, respHeader.magicNumber);
-    /* The file should be padded to 64 bytes (50 -> 64). Just verify no crash. */
-    (void)status;
+
+    /*
+     * The test validates the in-memory padding logic: a 50-byte (unaligned) file
+     * must be zero-padded to 64 bytes before the flash call. The padding is
+     * applied inside Bootloader_uniflashProcessFlashCommands *before* any
+     * hardware I/O, so the buffer assertion below holds regardless of flash outcome.
+     *
+     * The flash write itself targets offset 0 (block 0), which is write-protected
+     * on some platforms (e.g. am62dx). Accept success or a flash/verify error.
+     */
+    if(status == SystemP_SUCCESS)
+    {
+        TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_SUCCESS, respHeader.statusCode);
+    }
+    else
+    {
+        TEST_ASSERT_TRUE(
+            (respHeader.statusCode == BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR) ||
+            (respHeader.statusCode == BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_VERIFY_ERROR)
+        );
+    }
+
+    /* Verify that the file was padded from 50 bytes to 64 bytes (16B aligned).
+     * The padding bytes should be zeros added to the original 50 bytes of 0xDD. */
+    for(i = 50U; i < 64U; i++)
+    {
+        TEST_ASSERT_EQUAL_UINT8(0x00, payload[i]);
+    }
 }
 
 /**
@@ -585,15 +602,18 @@ void TestUniflash_fileSizeNotAligned(void *args)
  */
 void TestUniflash_fileSizeAligned(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
+    uint8_t *payload;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
 
-    TestUniflash_prepareHeader(
+    /* First erase the flash to ensure known state (all 0xFF) */
+    (void)TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
-        BOOTLOADER_UNIFLASH_OPTYPE_FLASH,
+        BOOTLOADER_UNIFLASH_OPTYPE_FLASH_ERASE,
         0U,
-        0U,
-        64U  /* 64 is 16B aligned */
+        0x1000U,  /* erase 4KB */
+        0U
     );
 
     config.flashIndex    = CONFIG_FLASH0;
@@ -602,10 +622,52 @@ void TestUniflash_fileSizeAligned(void *args)
     config.verifyBuf     = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
+    /*
+     * Erase targets offset 0 (block 0), which is write-protected on some
+     * platforms (e.g. am62dx). Accept success or an erase error.
+     */
+    if(status == SystemP_SUCCESS)
+    {
+        TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_SUCCESS, respHeader.statusCode);
+    }
+    else
+    {
+        TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERASE_ERROR, respHeader.statusCode);
+    }
+
+    /* Now write known data with 16B aligned size */
+    payload = TestUniflash_prepareHeader(
+        BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
+        BOOTLOADER_UNIFLASH_OPTYPE_FLASH,
+        0U,
+        0U,
+        64U  /* 64 is 16B aligned */
+    );
+
+    memset(payload, 0xAA, 64U);
+
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+
+    /*
+     * The test covers the no-padding branch (bufSize % 16 == 0, remainder == 0).
+     * That branch is in-memory logic executed before any hardware I/O. The flash
+     * write targets offset 0 (block 0), which may be write-protected. Accept
+     * success or a flash/verify error.
+     */
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER, respHeader.magicNumber);
-    (void)status;
+    if(status == SystemP_SUCCESS)
+    {
+        TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_SUCCESS, respHeader.statusCode);
+    }
+    else
+    {
+        TEST_ASSERT_TRUE(
+            (respHeader.statusCode == BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR) ||
+            (respHeader.statusCode == BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_VERIFY_ERROR)
+        );
+    }
 }
 
 /**
@@ -619,10 +681,12 @@ void TestUniflash_fileSizeAligned(void *args)
  */
 void TestUniflash_flashNonAlignedOffset(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
+    uint8_t *payload;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
 
-    uint8_t *payload = TestUniflash_prepareHeader(
+    payload = TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         BOOTLOADER_UNIFLASH_OPTYPE_FLASH,
         0x123U,  /* Non-block-aligned offset */
@@ -638,7 +702,7 @@ void TestUniflash_flashNonAlignedOffset(void *args)
     config.verifyBuf     = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR, respHeader.statusCode);
@@ -655,10 +719,11 @@ void TestUniflash_flashNonAlignedOffset(void *args)
  */
 void TestUniflash_eraseNonAlignedOffset(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
 
-    TestUniflash_prepareHeader(
+    (void)TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         BOOTLOADER_UNIFLASH_OPTYPE_FLASH_ERASE,
         0x123U,  /* Non-block-aligned offset */
@@ -672,7 +737,7 @@ void TestUniflash_eraseNonAlignedOffset(void *args)
     config.verifyBuf     = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERASE_ERROR, respHeader.statusCode);
@@ -689,10 +754,11 @@ void TestUniflash_eraseNonAlignedOffset(void *args)
  */
 void TestUniflash_eraseExceedsFlashSize(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
 
-    TestUniflash_prepareHeader(
+    (void)TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         BOOTLOADER_UNIFLASH_OPTYPE_FLASH_ERASE,
         0U,
@@ -706,7 +772,7 @@ void TestUniflash_eraseExceedsFlashSize(void *args)
     config.verifyBuf     = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERASE_ERROR, respHeader.statusCode);
@@ -724,6 +790,7 @@ void TestUniflash_eraseExceedsFlashSize(void *args)
  */
 void TestUniflash_xipInvalidMetaHeaderMagic(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
     Bootloader_MetaHeaderStart mHdrStr;
@@ -753,7 +820,7 @@ void TestUniflash_xipInvalidMetaHeaderMagic(void *args)
     config.verifyBuf     = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR, respHeader.statusCode);
@@ -771,6 +838,9 @@ void TestUniflash_xipInvalidMetaHeaderMagic(void *args)
  */
 void TestUniflash_xipInvalidRprcMagic(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
+    uint32_t offset;
+    uint32_t rprcOffset;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
     Bootloader_MetaHeaderStart mHdrStr;
@@ -778,9 +848,8 @@ void TestUniflash_xipInvalidRprcMagic(void *args)
     Bootloader_RprcFileHeader rprcHdr;
     Bootloader_UniflashFileHeader *hdr;
     uint8_t *payload;
-    uint32_t offset = 0U;
-    uint32_t rprcOffset;
 
+    offset = 0U;
     payload = TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         BOOTLOADER_UNIFLASH_OPTYPE_FLASH_XIP,
@@ -819,7 +888,7 @@ void TestUniflash_xipInvalidRprcMagic(void *args)
     config.verifyBuf     = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR, respHeader.statusCode);
@@ -837,14 +906,16 @@ void TestUniflash_xipInvalidRprcMagic(void *args)
  */
 void TestUniflash_xipSkippedCore(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
+    uint32_t offset;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
     Bootloader_MetaHeaderStart mHdrStr;
     Bootloader_MetaHeaderCore mHdrCore;
     Bootloader_UniflashFileHeader *hdr;
     uint8_t *payload;
-    uint32_t offset = 0U;
 
+    offset = 0U;
     payload = TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         BOOTLOADER_UNIFLASH_OPTYPE_FLASH_XIP,
@@ -874,7 +945,7 @@ void TestUniflash_xipSkippedCore(void *args)
     config.verifyBuf     = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
     /* All cores skipped, so the operation should succeed */
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
@@ -882,12 +953,12 @@ void TestUniflash_xipSkippedCore(void *args)
 }
 
 /**
- * @brief Resp header init with NULL pointer.
+ * @brief Resp header init with non-NULL pointer.
  *
- * Covers: respHeader == 0 branch in Bootloader_uniflashInitRespHeader.
- * Note: Bootloader_uniflashInitRespHeader is static, but calling
- * Bootloader_uniflashProcessFlashCommands exercises it with a valid pointer.
- * This test verifies the non-NULL path works correctly.
+ * Covers: respHeader != 0 branch in Bootloader_uniflashInitRespHeader.
+ * Note: Bootloader_uniflashInitRespHeader is static; it is exercised via
+ * Bootloader_uniflashProcessFlashCommands with a valid respHeader pointer.
+ * Verifies that magicNumber, rsv0, and rsv1 are set to their sentinel values.
  *
  * @param[in] args Optional user argument (unused).
  *
@@ -895,12 +966,13 @@ void TestUniflash_xipSkippedCore(void *args)
  */
 void TestUniflash_respHeaderInit(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
 
     memset(&respHeader, 0, sizeof(respHeader));
 
-    TestUniflash_prepareHeader(
+    (void)TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         0x00U,
         0U,
@@ -914,11 +986,12 @@ void TestUniflash_respHeaderInit(void *args)
     config.verifyBuf     = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    (void)Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER, respHeader.magicNumber);
     TEST_ASSERT_EQUAL_UINT32(0xDEADBABE, respHeader.rsv0);
     TEST_ASSERT_EQUAL_UINT32(0xDEADBABE, respHeader.rsv1);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 }
 
 /**
@@ -933,10 +1006,12 @@ void TestUniflash_respHeaderInit(void *args)
  */
 void TestUniflash_flashInvalidFlashIndex(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
+    uint8_t *payload;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
 
-    uint8_t *payload = TestUniflash_prepareHeader(
+    payload = TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         BOOTLOADER_UNIFLASH_OPTYPE_FLASH,
         0U,
@@ -952,7 +1027,7 @@ void TestUniflash_flashInvalidFlashIndex(void *args)
     config.verifyBuf     = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR, respHeader.statusCode);
@@ -970,10 +1045,11 @@ void TestUniflash_flashInvalidFlashIndex(void *args)
  */
 void TestUniflash_verifyInvalidFlashIndex(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
 
-    TestUniflash_prepareHeader(
+    (void)TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         BOOTLOADER_UNIFLASH_OPTYPE_FLASH_VERIFY,
         0U,
@@ -987,10 +1063,80 @@ void TestUniflash_verifyInvalidFlashIndex(void *args)
     config.verifyBuf     = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_VERIFY_ERROR, respHeader.statusCode);
+}
+
+/**
+ * @brief Flash known pattern then verify it (OPTYPE_FLASH followed by OPTYPE_FLASH_VERIFY).
+ *
+ * Writes a known pattern to flash using OPTYPE_FLASH, then verifies the written
+ * data using OPTYPE_FLASH_VERIFY. This tests the write-then-verify sequence.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
+void TestUniflash_flashThenVerify(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+    uint8_t *payload;
+    Bootloader_UniflashConfig config;
+    Bootloader_UniflashResponseHeader respHeader;
+
+    /* Step 1: Flash the known pattern */
+    payload = TestUniflash_prepareHeader(
+        BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
+        BOOTLOADER_UNIFLASH_OPTYPE_FLASH,
+        0U,  /* offset = 0, block-aligned */
+        0U,
+        64U  /* 64 bytes, already 16B aligned */
+    );
+
+    /* Fill payload with a known pattern */
+    memset(payload, 0xAA, 64U);
+
+    config.flashIndex    = CONFIG_FLASH0;
+    config.buf           = gTestBuf;
+    config.bufSize       = TEST_BUF_SIZE;
+    config.verifyBuf     = gVerifyBuf;
+    config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
+
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+
+    if(status != SystemP_SUCCESS)
+    {
+        /* Flash operation failed; verify error code is set */
+        TEST_ASSERT_TRUE(
+            (respHeader.statusCode == BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR) ||
+            (respHeader.statusCode == BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_VERIFY_ERROR)
+        );
+    }
+    else
+    {
+    /* Step 2: Verify the flashed data */
+    payload = TestUniflash_prepareHeader(
+        BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
+        BOOTLOADER_UNIFLASH_OPTYPE_FLASH_VERIFY,
+        0U,
+        0U,
+        64U
+    );
+
+    config.flashIndex    = CONFIG_FLASH0;
+    config.buf           = gTestBuf;
+    config.bufSize       = TEST_BUF_SIZE;
+    config.verifyBuf     = gVerifyBuf;
+    config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
+
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+
+    TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER, respHeader.magicNumber);
+    TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
+    TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_SUCCESS, respHeader.statusCode);
+    } /* end else (step 2: flash write succeeded) */
 }
 
 /**
@@ -1005,10 +1151,11 @@ void TestUniflash_verifyInvalidFlashIndex(void *args)
  */
 void TestUniflash_eraseInvalidFlashIndex(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
 
-    TestUniflash_prepareHeader(
+    (void)TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         BOOTLOADER_UNIFLASH_OPTYPE_FLASH_ERASE,
         0U,
@@ -1022,7 +1169,7 @@ void TestUniflash_eraseInvalidFlashIndex(void *args)
     config.verifyBuf     = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERASE_ERROR, respHeader.statusCode);
@@ -1040,10 +1187,11 @@ void TestUniflash_eraseInvalidFlashIndex(void *args)
  */
 void TestUniflash_tuningDataInvalidFlashIndex(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
 
-    TestUniflash_prepareHeader(
+    (void)TestUniflash_prepareHeader(
         BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
         BOOTLOADER_UNIFLASH_OPTYPE_FLASH_TUNING_DATA,
         0U,
@@ -1057,7 +1205,7 @@ void TestUniflash_tuningDataInvalidFlashIndex(void *args)
     config.verifyBuf     = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR, respHeader.statusCode);
@@ -1074,6 +1222,9 @@ void TestUniflash_tuningDataInvalidFlashIndex(void *args)
  */
 void TestUniflash_xipMultipleCoresMixed(void *args)
 {
+    int32_t status = SystemP_SUCCESS;
+    uint32_t offset;
+    uint32_t rprcStart;
     Bootloader_UniflashConfig config;
     Bootloader_UniflashResponseHeader respHeader;
     Bootloader_MetaHeaderStart mHdrStr;
@@ -1081,9 +1232,8 @@ void TestUniflash_xipMultipleCoresMixed(void *args)
     Bootloader_UniflashFileHeader *hdr;
     uint8_t sectionData[64];
     uint8_t *payload;
-    uint32_t offset = 0U;
-    uint32_t rprcStart;
 
+    offset = 0U;
     memset(sectionData, 0xAA, sizeof(sectionData));
 
     payload = TestUniflash_prepareHeader(
@@ -1128,11 +1278,277 @@ void TestUniflash_xipMultipleCoresMixed(void *args)
     config.verifyBuf     = gVerifyBuf;
     config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
 
-    int32_t status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+
+    /*
+     * The test verifies that the loop correctly skips the invalid core
+     * (coreId=0xFFFFFFFF) and processes the valid core. The actual flash
+     * write (section.addr=0, block 0) may fail on platforms where block 0
+     * is write-protected. Accept either outcome: if flash succeeded the
+     * status code must be SUCCESS; if it failed it must be a flash error.
+     */
+    TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER, respHeader.magicNumber);
+    if(status == SystemP_SUCCESS)
+    {
+        TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_SUCCESS, respHeader.statusCode);
+    }
+    else
+    {
+        TEST_ASSERT_TRUE(
+            (respHeader.statusCode == BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR) ||
+            (respHeader.statusCode == BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_VERIFY_ERROR)
+        );
+    }
+}
+
+#if defined(DRV_VERSION_MMCSD_V0) || defined(DRV_VERSION_MMCSD_V1)
+/**
+ * @brief OPTYPE_EMMC_FLASH with valid eMMC config.
+ *
+ * Covers: BOOTLOADER_UNIFLASH_OPTYPE_EMMC_FLASH case,
+ *         Bootloader_uniflashFlashFileMMCSDRaw followed by
+ *         Bootloader_uniflashFlashVerifyFileMMCSDRaw.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
+void TestUniflash_emmcFlashOpType(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+    uint8_t *payload;
+    Bootloader_UniflashConfig config;
+    Bootloader_UniflashResponseHeader respHeader;
+
+    payload = TestUniflash_prepareHeader(
+        BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
+        BOOTLOADER_UNIFLASH_OPTYPE_EMMC_FLASH,
+        0U,
+        0U,
+        64U
+    );
+
+    memset(payload, 0xABU, 64U);
+
+    config.flashIndex    = CONFIG_MMCSD0;
+    config.buf           = gTestBuf;
+    config.bufSize       = TEST_BUF_SIZE;
+    config.verifyBuf     = gVerifyBuf;
+    config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
+
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
 
     TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER, respHeader.magicNumber);
-    (void)status;
+
+    if(status == SystemP_SUCCESS)
+    {
+        TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_SUCCESS, respHeader.statusCode);
+    }
+    else
+    {
+        TEST_ASSERT_TRUE(
+            (respHeader.statusCode == BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR) ||
+            (respHeader.statusCode == BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_VERIFY_ERROR)
+        );
+    }
 }
+
+/**
+ * @brief OPTYPE_EMMC_VERIFY with valid eMMC config.
+ *
+ * Covers: BOOTLOADER_UNIFLASH_OPTYPE_EMMC_VERIFY case,
+ *         Bootloader_uniflashFlashVerifyFileMMCSDRaw.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
+void TestUniflash_emmcVerifyOpType(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+    uint8_t *payload;
+    Bootloader_UniflashConfig config;
+    Bootloader_UniflashResponseHeader respHeader;
+
+    payload = TestUniflash_prepareHeader(
+        BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
+        BOOTLOADER_UNIFLASH_OPTYPE_EMMC_VERIFY,
+        0U,
+        0U,
+        64U
+    );
+
+    memset(payload, 0xCDU, 64U);
+
+    config.flashIndex    = CONFIG_MMCSD0;
+    config.buf           = gTestBuf;
+    config.bufSize       = TEST_BUF_SIZE;
+    config.verifyBuf     = gVerifyBuf;
+    config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
+
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+
+    TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER, respHeader.magicNumber);
+
+    if(status == SystemP_SUCCESS)
+    {
+        TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_SUCCESS, respHeader.statusCode);
+    }
+    else
+    {
+        TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_VERIFY_ERROR, respHeader.statusCode);
+    }
+}
+
+/**
+ * @brief OPTYPE_EMMC_FLASH with an invalid MMCSD index.
+ *
+ * Covers: MMCSD_getHandle returning NULL in Bootloader_uniflashFlashFileMMCSDRaw.
+ * Expected: SystemP_FAILURE and BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
+void TestUniflash_emmcFlashInvalidIndex(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+    uint8_t *payload;
+    Bootloader_UniflashConfig config;
+    Bootloader_UniflashResponseHeader respHeader;
+
+    payload = TestUniflash_prepareHeader(
+        BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
+        BOOTLOADER_UNIFLASH_OPTYPE_EMMC_FLASH,
+        0U,
+        0U,
+        64U
+    );
+
+    memset(payload, 0xFFU, 64U);
+
+    config.flashIndex    = 0xFFU; /* Invalid MMCSD index */
+    config.buf           = gTestBuf;
+    config.bufSize       = TEST_BUF_SIZE;
+    config.verifyBuf     = gVerifyBuf;
+    config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
+
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+    TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR, respHeader.statusCode);
+}
+
+/**
+ * @brief OPTYPE_EMMC_VERIFY with an invalid MMCSD index.
+ *
+ * Covers: MMCSD_getHandle returning NULL in Bootloader_uniflashFlashVerifyFileMMCSDRaw.
+ * Expected: SystemP_FAILURE and BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_VERIFY_ERROR.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
+void TestUniflash_emmcVerifyInvalidIndex(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+    Bootloader_UniflashConfig config;
+    Bootloader_UniflashResponseHeader respHeader;
+
+    (void)TestUniflash_prepareHeader(
+        BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
+        BOOTLOADER_UNIFLASH_OPTYPE_EMMC_VERIFY,
+        0U,
+        0U,
+        64U
+    );
+
+    config.flashIndex    = 0xFFU; /* Invalid MMCSD index */
+    config.buf           = gTestBuf;
+    config.bufSize       = TEST_BUF_SIZE;
+    config.verifyBuf     = gVerifyBuf;
+    config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
+
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
+    TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_VERIFY_ERROR, respHeader.statusCode);
+}
+
+/**
+ * @brief eMMC write then explicit verify (OPTYPE_EMMC_FLASH followed by OPTYPE_EMMC_VERIFY).
+ *
+ * Writes a known pattern to eMMC using OPTYPE_EMMC_FLASH, then issues a
+ * separate OPTYPE_EMMC_VERIFY command for the same offset and data.
+ * Tests the two-command sequential write+verify flow.
+ *
+ * @param[in] args Optional user argument (unused).
+ *
+ * @return void
+ */
+void TestUniflash_emmcFlashThenVerify(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+    uint8_t *payload;
+    Bootloader_UniflashConfig config;
+    Bootloader_UniflashResponseHeader respHeader;
+
+    /* Step 1: Write to eMMC */
+    payload = TestUniflash_prepareHeader(
+        BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
+        BOOTLOADER_UNIFLASH_OPTYPE_EMMC_FLASH,
+        0U,
+        0U,
+        64U
+    );
+
+    memset(payload, 0x55U, 64U);
+
+    config.flashIndex    = CONFIG_MMCSD0;
+    config.buf           = gTestBuf;
+    config.bufSize       = TEST_BUF_SIZE;
+    config.verifyBuf     = gVerifyBuf;
+    config.verifyBufSize = TEST_VERIFY_BUF_SIZE;
+
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+
+    TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER, respHeader.magicNumber);
+
+    if(status != SystemP_SUCCESS)
+    {
+        TEST_ASSERT_TRUE(
+            (respHeader.statusCode == BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_ERROR) ||
+            (respHeader.statusCode == BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_VERIFY_ERROR)
+        );
+    }
+    else
+    {
+    /* Step 2: Verify the written data with a separate EMMC_VERIFY command */
+    payload = TestUniflash_prepareHeader(
+        BOOTLOADER_UNIFLASH_FILE_HEADER_MAGIC_NUMBER,
+        BOOTLOADER_UNIFLASH_OPTYPE_EMMC_VERIFY,
+        0U,
+        0U,
+        64U
+    );
+
+    memset(payload, 0x55U, 64U);
+
+    status = Bootloader_uniflashProcessFlashCommands(&config, &respHeader);
+
+    TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_RESP_HEADER_MAGIC_NUMBER, respHeader.magicNumber);
+
+    if(status == SystemP_SUCCESS)
+    {
+        TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_SUCCESS, respHeader.statusCode);
+    }
+    else
+    {
+        TEST_ASSERT_EQUAL_UINT32(BOOTLOADER_UNIFLASH_STATUSCODE_FLASH_VERIFY_ERROR, respHeader.statusCode);
+    }
+    } /* end else (step 2: eMMC write succeeded) */
+}
+#endif /* DRV_VERSION_MMCSD_V0 || DRV_VERSION_MMCSD_V1 */
 
 /**
  * @brief Main SBL uniflash unit test entry point.
@@ -1150,7 +1566,7 @@ void test_main(void *args)
     UNITY_BEGIN();
 
     RUN_TEST(TestUniflash_invalidMagicNumber,           11450, NULL);
-    RUN_TEST(TestUniflash_flashOpType,                  11451, NULL);
+    RUN_TEST(TestUniflash_flashThenVerify,              11451, NULL);
     RUN_TEST(TestUniflash_flashVerifyOpType,            11452, NULL);
     RUN_TEST(TestUniflash_flashEraseOpType,             11453, NULL);
     RUN_TEST(TestUniflash_flashXipOpType,               11454, NULL);
@@ -1171,6 +1587,14 @@ void test_main(void *args)
     RUN_TEST(TestUniflash_eraseInvalidFlashIndex,       11469, NULL);
     RUN_TEST(TestUniflash_tuningDataInvalidFlashIndex,  11470, NULL);
     RUN_TEST(TestUniflash_xipMultipleCoresMixed,        11471, NULL);
+
+#if defined(DRV_VERSION_MMCSD_V0) || defined(DRV_VERSION_MMCSD_V1)
+    RUN_TEST(TestUniflash_emmcFlashOpType,              12651, NULL);
+    RUN_TEST(TestUniflash_emmcVerifyOpType,             12652, NULL);
+    RUN_TEST(TestUniflash_emmcFlashInvalidIndex,        12653, NULL);
+    RUN_TEST(TestUniflash_emmcVerifyInvalidIndex,       12654, NULL);
+    RUN_TEST(TestUniflash_emmcFlashThenVerify,          12655, NULL);
+#endif
 
     UNITY_END();
 }

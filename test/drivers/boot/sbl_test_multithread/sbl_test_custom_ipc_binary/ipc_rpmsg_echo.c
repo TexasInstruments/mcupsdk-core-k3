@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021 Texas Instruments Incorporated
+ *  Copyright (C) 2025-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -145,13 +145,15 @@ uint32_t gRemoteCoreId[] = {
 #if defined(SOC_AM275X)
 /* main core that starts the message exchange */
 uint32_t gMainCoreId = CSL_CORE_ID_R5FSS0_0;
-/* remote cores that echo messages from main core, make sure to NOT list main core in this list */
+/*
+ * Remote cores booted by TestSbl_multiThreadBoot.
+ * Only list the cores actually started in the test; the IPC notify peer list
+ * in each binary's syscfg must match (WKUP_R5FSS0_0 added, unbooted cores
+ * R5FSS0_1/R5FSS1_1/C75SS1_0 removed).
+ */
 uint32_t gRemoteCoreId[] = {
-    CSL_CORE_ID_R5FSS0_1,
     CSL_CORE_ID_R5FSS1_0,
-    CSL_CORE_ID_R5FSS1_1,
     CSL_CORE_ID_C75SS0_0,
-    CSL_CORE_ID_C75SS1_0,
     CSL_CORE_ID_MAX /* this value indicates the end of the array */
 };
 #endif
@@ -328,6 +330,24 @@ void ipc_rpmsg_echo_remote_core_start()
 
 void ipc_rpmsg_echo_main(void *args)
 {
+#if defined(SOC_AM275X)
+    /*
+     * Write a "running" stamp to a NonCached MSRAM scratch region.
+     * WKUP-R5FSS0_0 polls this region to confirm each core has started,
+     * bypassing the mailbox interrupt chain that gets corrupted when
+     * C75SS0_0's CLEC routes are configured by TIFS/Sciserver.
+     *
+     * Address 0x723C2000 is inside the IPC_VRING_RTOS NonCached window
+     * (0x723C0000 + 64 KB) and well past the actual VRING data (~4800 B).
+     * All booted cores map this region as NonCached so no cache flush needed.
+     */
+    {
+        volatile uint32_t *stamp =
+            (volatile uint32_t *)(0x723C2000U +
+                                  IpcNotify_getSelfCoreId() * sizeof(uint32_t));
+        *stamp = 0xABCD0000U | IpcNotify_getSelfCoreId();
+    }
+#endif
 
     if(IpcNotify_getSelfCoreId()==gMainCoreId)
     {

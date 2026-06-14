@@ -7,7 +7,7 @@
     <import spec="../r5fss1-0_freertos/ti-arm-clang/example.projectspec"/>
     <import spec="../r5fss1-1_freertos/ti-arm-clang/example.projectspec"/>
     <project
-        name="ipc_rpmsg_echo_am275x-evm_system_freertos"
+        name="sbl_test_custom_ipc_binary_am275x-evm_system_freertos"
         products="com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,

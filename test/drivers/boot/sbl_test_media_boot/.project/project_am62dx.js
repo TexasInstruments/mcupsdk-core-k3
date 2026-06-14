@@ -110,6 +110,9 @@ function getComponentProperty() {
     property.isInternal = true;
     property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;
+    property.dependentApps = [
+        { name: "sbl_test_custom_ipc_binary", board: "am62dx-evm", tag: "freertos_nortos", isSystemProject: true },
+    ];
 
     return property;
 }

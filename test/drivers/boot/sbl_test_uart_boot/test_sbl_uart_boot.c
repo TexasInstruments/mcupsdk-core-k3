@@ -101,9 +101,70 @@ uint8_t socCpuCores[CSL_CORE_ID_MAX]    = {0};
 
 void TestSbl_uartBoot(void *args);
 void TestSbl_uartSmpBoot(void *args);
+static void TestSbl_uartBootImpl(bool isSmpBoot);
 
 int32_t TestSbl_loadCpu();
 int32_t TestSbl_runCpus();
+
+
+/**
+ * @brief Safe imgReadFxn that writes only 32-bit words to the destination.
+ *
+ * Utils_memcpyWord (the default) can generate byte-level STRB instructions when
+ * the source and destination have different alignments or the length is not a
+ * multiple of 4.  On ECC-protected AXI-connected SRAM (e.g. C75 L2 SRAM) a STRB
+ * triggers a read-modify-write that reads an uninitialised ECC word, causing a
+ * data abort.  Using only 32-bit word writes (STR) avoids this entirely, so the
+ * SDK's Bootloader_socInitC7xL2Sram does not need to pre-initialise the full SRAM.
+ *
+ * Bytes are assembled word-by-word from the (possibly unaligned) source buffer
+ * using byte loads — which are safe because the source lives in normal OCRAM.
+ * Any sub-word tail is zero-padded; the extra zero bytes are beyond the ELF
+ * segment boundary and have no effect on execution.
+ *
+ * This function is installed as a temporary override of imgReadFxn in
+ * TestSbl_loadCpu() so the fix is fully contained within the test without
+ * modifying any SDK library source.
+ */
+static int32_t TestSbl_safeImgRead(void *dst, uint32_t len, void *args)
+{
+    Bootloader_MemArgs *memArgs  = (Bootloader_MemArgs *)args;
+    const uint8_t      *src8    = (const uint8_t *)(memArgs->appImageBaseAddr +
+                                                     memArgs->curOffset);
+    volatile uint32_t  *dst32   = (volatile uint32_t *)dst;
+    uint32_t            i;
+    uint32_t            fullWords = len >> 2U;
+    uint32_t            remBytes  = len & 3U;
+
+    /* Assemble each word from individual byte reads (handles unaligned source)
+     * and write it as a single 32-bit store to avoid STRB on ECC SRAM. */
+    for(i = 0U; i < fullWords; i++)
+    {
+        uint32_t w;
+        w  = (uint32_t)src8[0];
+        w |= (uint32_t)src8[1] << 8U;
+        w |= (uint32_t)src8[2] << 16U;
+        w |= (uint32_t)src8[3] << 24U;
+        *dst32 = w;
+        src8  += 4U;
+        dst32++;
+    }
+
+    if(remBytes > 0U)
+    {
+        /* Tail bytes: zero-pad the unused bits and write one final 32-bit word. */
+        uint32_t w = 0U;
+        for(i = 0U; i < remBytes; i++)
+        {
+            w |= (uint32_t)src8[i] << (i * 8U);
+        }
+        *dst32 = w;
+    }
+
+    CacheP_wbInv(dst, len, CacheP_TYPE_ALL);
+    memArgs->curOffset += len;
+    return SystemP_SUCCESS;
+}
 
 /*===================================================================*/
 /* 				  Function Definitions				         */
@@ -158,27 +219,87 @@ void test_main(void * args)
 
     UNITY_BEGIN();
 
-    //RUN_TEST(TestSbl_uartBoot,    11448, NULL);
+    /* Enable one test at a time due to SOC reset issue */
+    /* RUN_TEST(TestSbl_uartBoot,    11448, NULL); */
     RUN_TEST(TestSbl_uartSmpBoot, 11449, NULL);
 
     UNITY_END();
 }
 
 /**
- * @brief UART single-image boot test.
+ * @brief Common UART boot implementation for both SMP and non-SMP modes.
  *
  * Receives appimages over XMODEM, loads and boots the embedded cores,
- * waits for IPC sync, then resets CPUs. Validates the end-to-end UART
- * boot flow for individual appimages.
+ * waits for IPC sync, then resets CPUs.
  *
- * Test Steps:
- * 1. Receive appimage via Bootloader_xmodemReceive on CONFIG_UART0.
- * 2. Detect EOFT end-of-transfer marker to exit the loop.
- * 3. Check for buffer overflow; send error response if exceeded.
- * 4. Call TestSbl_loadCpu to parse and load the appimage to cores.
- * 5. Send status response via Bootloader_xmodemTransmit.
- * 6. After all images received, call TestSbl_runCpus to boot all loaded cores.
- * 7. Wait for IPC sync from each booted core and reset CPUs.
+ * @param[in] isSmpBoot true to run as SMP boot, false for single-image boot.
+ *
+ * @return void
+ */
+static void TestSbl_uartBootImpl(bool isSmpBoot)
+{
+    int32_t     status        = SystemP_SUCCESS;
+    int32_t     txStatus      = SystemP_SUCCESS;
+    int32_t     xmitStatus    = SystemP_SUCCESS;
+    bool        bEndOfTransfer;
+    uint32_t    fileSize;
+    uint32_t    response;
+    const char *testName      = isSmpBoot ? "TestSbl_uartSmpBoot" : "TestSbl_uartBoot";
+
+    bEndOfTransfer = false;
+    response = BOOTLOADER_UART_STATUS_LOAD_SUCCESS;
+
+    Bootloader_profileReset();
+
+    while(bEndOfTransfer == false)
+    {
+        status = Bootloader_xmodemReceive(CONFIG_UART0, gAppimage, BOOTLOADER_APPIMAGE_MAX_FILE_SIZE, &fileSize);
+        TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+
+        if(memcmp(gAppimage, gEndOfFilesTransferWord, BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH) == 0)
+        {
+            bEndOfTransfer = true;
+            DebugP_log("Starting %s: All images received, running CPUs...\r\n", testName);
+            Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_UART, 0);
+            Bootloader_profileAddProfilePoint("Running CPUs");
+            ClockP_sleep(BOOTLOADER_UART_CPU_RUN_WAIT_SECONDS);
+            status = TestSbl_runCpus();
+            TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+            Bootloader_profilePrintProfileLog();
+            DebugP_log("%s: All CPUs booted and IPC sync done successfully!\r\n", testName);
+        }
+        else
+        {
+            if(SystemP_SUCCESS == status && fileSize == BOOTLOADER_APPIMAGE_MAX_FILE_SIZE)
+            {
+                status = SystemP_FAILURE;
+                response = BOOTLOADER_UART_STATUS_APPIMAGE_SIZE_EXCEEDED;
+                txStatus = Bootloader_xmodemTransmit(CONFIG_UART0, (uint8_t *)&response, 4);
+                TEST_ASSERT_EQUAL(SystemP_SUCCESS, txStatus);
+            }
+
+            if(SystemP_SUCCESS == status)
+            {
+                status = TestSbl_loadCpu();
+
+                if(status != SystemP_SUCCESS)
+                {
+                    response = BOOTLOADER_UART_STATUS_LOAD_CPU_FAIL;
+                }
+                else
+                {
+                    Bootloader_profileAddProfilePoint("UART Image Load");
+                }
+                xmitStatus = Bootloader_xmodemTransmit(CONFIG_UART0, (uint8_t *)&response, 4);
+                TEST_ASSERT_EQUAL(SystemP_SUCCESS, xmitStatus);
+                TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+            }
+        }
+    }
+}
+
+/**
+ * @brief UART single-image boot test.
  *
  * @param[in] args Optional user argument (unused).
  *
@@ -186,73 +307,11 @@ void test_main(void * args)
  */
 void TestSbl_uartBoot(void *args)
 {
-    int32_t status;
-    bool bEndOfTransfer = false;
-    uint32_t fileSize;
-    uint32_t response = BOOTLOADER_UART_STATUS_LOAD_SUCCESS;
-
-    Bootloader_profileReset();
-
-    while(bEndOfTransfer == false)
-    {
-        status = Bootloader_xmodemReceive(CONFIG_UART0, gAppimage, BOOTLOADER_APPIMAGE_MAX_FILE_SIZE, &fileSize);
-        TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-
-        if(memcmp(gAppimage, gEndOfFilesTransferWord, BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH) == 0)
-        {
-            bEndOfTransfer = true;
-            DebugP_log("Starting TestSbl_uartBoot: All images received, running CPUs...\r\n");
-            Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_UART, 0);
-            Bootloader_profileAddProfilePoint("Running CPUs");
-            ClockP_sleep(BOOTLOADER_UART_CPU_RUN_WAIT_SECONDS);
-            status = TestSbl_runCpus();
-            TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-            Bootloader_profilePrintProfileLog();
-            DebugP_log("TestSbl_uartBoot: All CPUs booted and IPC sync done successfully!\r\n");
-        }
-        else
-        {
-            if(SystemP_SUCCESS == status && fileSize == BOOTLOADER_APPIMAGE_MAX_FILE_SIZE)
-            {
-                status = SystemP_FAILURE;
-                response = BOOTLOADER_UART_STATUS_APPIMAGE_SIZE_EXCEEDED;
-                Bootloader_xmodemTransmit(CONFIG_UART0, (uint8_t *)&response, 4);
-            }
-
-            if(SystemP_SUCCESS == status)
-            {
-                status = TestSbl_loadCpu();
-
-                if(status != SystemP_SUCCESS)
-                {
-                    response = BOOTLOADER_UART_STATUS_LOAD_CPU_FAIL;
-                }
-                else
-                {
-                    Bootloader_profileAddProfilePoint("UART Image Load");
-                }
-                Bootloader_xmodemTransmit(CONFIG_UART0, (uint8_t *)&response, 4);
-                TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-            }
-        }
-    }
+    TestSbl_uartBootImpl(false);
 }
 
 /**
  * @brief UART SMP boot test.
- *
- * Receives appimages over XMODEM, loads and boots the embedded cores
- * including SMP A53 configurations, waits for IPC sync, then resets CPUs.
- * Validates the end-to-end UART boot flow with SMP support.
- *
- * Test Steps:
- * 1. Receive appimage via Bootloader_xmodemReceive on CONFIG_UART0.
- * 2. Detect EOFT end-of-transfer marker to exit the loop.
- * 3. Check for buffer overflow; send error response if exceeded.
- * 4. Call TestSbl_loadCpu to parse and load the appimage (handles SMP).
- * 5. Send status response via Bootloader_xmodemTransmit.
- * 6. After all images received, call TestSbl_runCpus to boot all loaded cores.
- * 7. Wait for IPC sync from each booted core and reset CPUs.
  *
  * @param[in] args Optional user argument (unused).
  *
@@ -260,56 +319,7 @@ void TestSbl_uartBoot(void *args)
  */
 void TestSbl_uartSmpBoot(void *args)
 {
-    int32_t status;
-    bool bEndOfTransfer = false;
-    uint32_t fileSize;
-    uint32_t response = BOOTLOADER_UART_STATUS_LOAD_SUCCESS;
-
-    Bootloader_profileReset();
-
-    while(bEndOfTransfer == false)
-    {
-        status = Bootloader_xmodemReceive(CONFIG_UART0, gAppimage, BOOTLOADER_APPIMAGE_MAX_FILE_SIZE, &fileSize);
-        TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-
-        if(memcmp(gAppimage, gEndOfFilesTransferWord, BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH) == 0)
-        {
-            bEndOfTransfer = true;
-            DebugP_log("Starting TestSbl_uartSmpBoot: All images received, running CPUs...\r\n");
-            Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_UART, 0);
-            Bootloader_profileAddProfilePoint("Running CPUs");
-            ClockP_sleep(BOOTLOADER_UART_CPU_RUN_WAIT_SECONDS);
-            status = TestSbl_runCpus();
-            TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-            Bootloader_profilePrintProfileLog();
-            DebugP_log("TestSbl_uartSmpBoot: All CPUs booted and IPC sync done successfully!\r\n");
-        }
-        else
-        {
-            if(SystemP_SUCCESS == status && fileSize == BOOTLOADER_APPIMAGE_MAX_FILE_SIZE)
-            {
-                status = SystemP_FAILURE;
-                response = BOOTLOADER_UART_STATUS_APPIMAGE_SIZE_EXCEEDED;
-                Bootloader_xmodemTransmit(CONFIG_UART0, (uint8_t *)&response, 4);
-            }
-
-            if(SystemP_SUCCESS == status)
-            {
-                status = TestSbl_loadCpu();
-
-                if(status != SystemP_SUCCESS)
-                {
-                    response = BOOTLOADER_UART_STATUS_LOAD_CPU_FAIL;
-                }
-                else
-                {
-                    Bootloader_profileAddProfilePoint("UART Image Load");
-                }
-                Bootloader_xmodemTransmit(CONFIG_UART0, (uint8_t *)&response, 4);
-                TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-            }
-        }
-    }
+    TestSbl_uartBootImpl(true);
 }
 
 /**
@@ -322,8 +332,10 @@ void TestSbl_uartSmpBoot(void *args)
  */
 int32_t TestSbl_runCpus()
 {
-    int32_t status = SystemP_FAILURE;
+    int32_t status = SystemP_SUCCESS;
     uint8_t cpuId;
+
+    status = SystemP_FAILURE;
 
     for(cpuId = 0; cpuId < CSL_CORE_ID_MAX; cpuId++)
     {
@@ -387,9 +399,10 @@ int32_t TestSbl_runCpus()
  */
 int32_t TestSbl_loadCpu()
 {
-    int32_t status = SystemP_SUCCESS;
+    int32_t                status = SystemP_SUCCESS;
     Bootloader_BootImageInfo bootImageInfo;
     Bootloader_Params        bootParams;
+    
 
     /* The test executable to be booted is ipc_rpmsg
      * system project for AM62DX which has the following
@@ -414,22 +427,36 @@ int32_t TestSbl_loadCpu()
          * path (seek+read+authUpdate).  The underlying imgReadFxn/imgSeekFxn
          * still read from the memory buffer.
          */
+        
+        static Bootloader_Fxns   sCustomFxns;
+        Bootloader_Config       *bootConfig = NULL;
         {
-            Bootloader_Config *bootConfig = (Bootloader_Config *)bootHandle;
+            bootConfig = (Bootloader_Config *)bootHandle;
             bootConfig->coresPresentMap = 0;
             bootConfig->bootMedia       = BOOTLOADER_MEDIA_EMMC;
             bootConfig->scratchMemPtr   = gScratchBuf;
+
+            /* Install a safe imgReadFxn that uses memcpy so all segment sizes
+             * work correctly.  Utils_memcpyWord (the default) aligns the source
+             * before doing 32-bit word stores; when source and destination have
+             * different initial alignments and the length is not a multiple of 4
+             * the destination ends up misaligned for those stores.  A misaligned
+             * 32-bit STR to AXI-connected SRAM (e.g. C75 L2 SRAM) causes a bus
+             * fault.  We create a local copy of the Fxns struct so the global
+             * default is not modified. */
+            sCustomFxns              = *bootConfig->fxns;
+            sCustomFxns.imgReadFxn   = TestSbl_safeImgRead;
+            bootConfig->fxns         = &sCustomFxns;
         }
 
         status = Bootloader_parseAndLoadMultiCoreELF(bootHandle, &bootImageInfo);
         if(status != SystemP_SUCCESS)
         {
             DebugP_log("Bootloader_parseAndLoadMultiCoreELF failed, status = %d\r\n", status);
-            return status;
         }
-
-        /* Record which cores were loaded so TestSbl_runCpus can run them */
+        else
         {
+            /* Record which cores were loaded so TestSbl_runCpus can run them */
             Bootloader_Config *config = (Bootloader_Config *)bootHandle;
             uint8_t cpuId;
             for(cpuId = 0U; cpuId < CSL_CORE_ID_MAX; cpuId++)
@@ -448,11 +475,10 @@ int32_t TestSbl_loadCpu()
         if(status != SystemP_SUCCESS)
         {
             DebugP_log("Bootloader_parseMultiCoreAppImage failed with status = %d\r\n", status);
-            return status;
         }
 
         /* Load CPUs */
-        if (!Bootloader_socIsMCUResetIsoEnabled())
+        if ((status == SystemP_SUCCESS) && !Bootloader_socIsMCUResetIsoEnabled())
         {
             if((TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_MCU_R5FSS0_0)))
             {

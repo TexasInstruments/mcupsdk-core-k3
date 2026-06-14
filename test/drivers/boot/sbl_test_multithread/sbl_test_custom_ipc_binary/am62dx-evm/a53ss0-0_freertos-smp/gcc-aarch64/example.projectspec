@@ -10,8 +10,8 @@
     </applicability>
 
     <project
-        title="Ipc Rpmsg Echo"
-        name = "ipc_rpmsg_echo_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64"
+        title="Sbl Test Custom Ipc Binary"
+        name = "sbl_test_custom_ipc_binary_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -61,7 +61,7 @@
             -L${MCU_PLUS_SDK_PATH}/source/drivers/lib
             -L${MCU_PLUS_SDK_PATH}/source/board/lib
             -L$(CGT_GCC_AARCH64_PATH)/lib
-            -Wl,-Map=ipc_rpmsg_echo.${ConfigName}.map
+            -Wl,-Map=sbl_test_custom_ipc_binary.${ConfigName}.map
             -Wl,-static
             -Wl,--gc-sections
             -Wl,--build-id=none
@@ -79,7 +79,7 @@
             --context a53ss0-0 --part AM62D24-G --package ANF
         "
 
-        description="A Ipc Rpmsg Echo FREERTOS-SMP project">
+        description="A Sbl Test Custom Ipc Binary FREERTOS-SMP project">
 
         <configuration name="Debug"
             compilerBuildOptions="

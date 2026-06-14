@@ -15,7 +15,7 @@
     .global gAppImageBuf0
     .type gAppImageBuf0, %object
 gAppImageBuf0:
-    .incbin "../../../sbl_test_custom_ipc_binary/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo.release.appimage.hs_fs"
+    .incbin "../../../sbl_test_custom_ipc_binary/am62dx-evm/mcu-r5fss0-0_freertos/ti-arm-clang/sbl_test_custom_ipc_binary.release.appimage.hs_fs"
     .size gAppImageBuf0, . - gAppImageBuf0
 
     .section .data.appimage_buf1,"aw"
@@ -23,7 +23,7 @@ gAppImageBuf0:
     .global gAppImageBuf1
     .type gAppImageBuf1, %object
 gAppImageBuf1:
-    .incbin "../../../sbl_test_custom_ipc_binary/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/ipc_rpmsg_echo.release.appimage.hs_fs"
+    .incbin "../../../sbl_test_custom_ipc_binary/am62dx-evm/a53ss0-0_nortos/gcc-aarch64/sbl_test_custom_ipc_binary.release.appimage.hs_fs"
     .size gAppImageBuf1, . - gAppImageBuf1
 
     .section .data.appimage_buf2,"aw"
@@ -31,5 +31,5 @@ gAppImageBuf1:
     .global gAppImageBuf2
     .type gAppImageBuf2, %object
 gAppImageBuf2:
-    .incbin "../../../sbl_test_custom_ipc_binary/am62dx-evm/c75ss0-0_freertos/ti-c7000/ipc_rpmsg_echo.release.appimage.hs_fs"
+    .incbin "../../../sbl_test_custom_ipc_binary/am62dx-evm/c75ss0-0_freertos/ti-c7000/sbl_test_custom_ipc_binary.release.appimage.hs_fs"
     .size gAppImageBuf2, . - gAppImageBuf2

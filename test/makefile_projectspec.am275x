@@ -38,7 +38,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += test_dpl_timer_am275x-evm_r5fss1-1_
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += test_dpl_timer_am275x-evm_c75ss0-0_freertos_ti-c7000_build
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += test_dpl_timer_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_build
 # Various System Example Projectspec Build Targets
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos_build
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_ALL += sbl_test_custom_ipc_binary_am275x-evm_system_freertos_build
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL =
 # Various Private Example Projectspec Build Targets
@@ -147,7 +147,7 @@ all-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_BUILD_PRIVATE_ALL)
  test_dpl_timer_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_build:
 	$(MAKE) -C kernel/dpl_timer/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec all
 
- ipc_rpmsg_echo_am275x-evm_system_freertos_build:
+ sbl_test_custom_ipc_binary_am275x-evm_system_freertos_build:
 	$(MAKE) -C drivers/boot/sbl_test_multithread/sbl_test_custom_ipc_binary/am275x-evm/system_freertos -f makefile_projectspec all
 
 
@@ -188,7 +188,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += test_dpl_timer_am275x-evm_r5fss1-1_
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += test_dpl_timer_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += test_dpl_timer_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 # Various System Example Projectspec Clean Targets
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos_clean
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_ALL += sbl_test_custom_ipc_binary_am275x-evm_system_freertos_clean
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL =
 # Various Private Example Projectspec Clean Targets
@@ -297,7 +297,7 @@ clean-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_CLEAN_PRIVATE_ALL)
  test_dpl_timer_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C kernel/dpl_timer/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec clean
 
- ipc_rpmsg_echo_am275x-evm_system_freertos_clean:
+ sbl_test_custom_ipc_binary_am275x-evm_system_freertos_clean:
 	$(MAKE) -C drivers/boot/sbl_test_multithread/sbl_test_custom_ipc_binary/am275x-evm/system_freertos -f makefile_projectspec clean
 
 
@@ -338,7 +338,7 @@ BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += test_dpl_timer_am275x-evm_r5fss1-1
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += test_dpl_timer_am275x-evm_c75ss0-0_freertos_ti-c7000_export
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += test_dpl_timer_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_export
 # Various System Example Projectspec Export Targets
-BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos_export
+BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_ALL += sbl_test_custom_ipc_binary_am275x-evm_system_freertos_export
 
 BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL =
 # Various Private Example Projectspec Export Targets
@@ -447,7 +447,7 @@ export-private: $(BUILD_COMBO_EXAMPLE_PROJECTSPEC_EXPORT_PRIVATE_ALL)
  test_dpl_timer_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_export:
 	$(MAKE) -C kernel/dpl_timer/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile_projectspec export
 
- ipc_rpmsg_echo_am275x-evm_system_freertos_export:
+ sbl_test_custom_ipc_binary_am275x-evm_system_freertos_export:
 	$(MAKE) -C drivers/boot/sbl_test_multithread/sbl_test_custom_ipc_binary/am275x-evm/system_freertos -f makefile_projectspec export
 
 

@@ -89,10 +89,11 @@ ipc.r5fss0_0 = "notify_rpmsg";
 ipc.r5fss1_0 = "notify_rpmsg";
 ipc.c75ss0_0 = "notify_rpmsg";
 
-bootloader1.MMCSDDriver = mmcsd1;
-mmcsd1.$name            = "CONFIG_MMCSD_SBL";
-bootloader4.MMCSDDriver = mmcsd1;
-bootloader9.MMCSDDriver = mmcsd1;
+bootloader1.MMCSDDriver       = mmcsd1;
+mmcsd1.$name                  = "CONFIG_MMCSD_SBL";
+mmcsd1.addedByBootloader      = true;
+bootloader4.MMCSDDriver       = mmcsd1;
+bootloader9.MMCSDDriver       = mmcsd1;
 
 const udma             = scripting.addModule("/drivers/udma/udma", {}, false);
 const udma1            = udma.addInstance({}, false);

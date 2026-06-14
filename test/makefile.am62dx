@@ -771,7 +771,7 @@ BUILD_COMBO_EXAMPLE_ALL += test_sbl_negative_test_am62dx-evm_r5fss0-0_freertos_t
 BUILD_COMBO_EXAMPLE_ALL += test_sbl_media_boot_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_sbl_uart_boot_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += sbl_test_multithread_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
-BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += sbl_test_custom_ipc_binary_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_sbl_uniflash_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += sbl_uart_uniflash_test_am62dx-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += sbl_uart_uniflash_test_am62dx-evm_r5fss0-0_freertos_ti-arm-clang
@@ -1083,7 +1083,7 @@ BUILD_COMBO_EXAMPLE_ALL += test_ddr_system_am62dx-evm_c75ss0-0_freertos_ti-c7000
 # Various System Example Targets
 BUILD_COMBO_EXAMPLE_ALL += avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app
 BUILD_COMBO_EXAMPLE_ALL += avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app
-BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos
+BUILD_COMBO_EXAMPLE_ALL += sbl_test_custom_ipc_binary_am62dx-evm_system_freertos_nortos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_notify_am62dx-evm_system_freertos_nortos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_notify_c7x_am62dx-evm_system_freertos_nortos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_notify_a53_am62dx-evm_system_freertos
@@ -1169,7 +1169,7 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_sbl_negative_test_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/boot/sbl_negative_tests/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
 
- test_sbl_media_boot_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
+ test_sbl_media_boot_am62dx-evm_r5fss0-0_freertos_ti-arm-clang: sbl_test_custom_ipc_binary_am62dx-evm_system_freertos_nortos
 	$(MAKE) -C drivers/boot/sbl_test_media_boot/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
 
  test_sbl_uart_boot_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
@@ -1178,10 +1178,10 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  sbl_uart_custom_boardconfig_am62dx-evm_r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C drivers/boot/sbl_uart_custom_boardconfig/am62dx-evm/r5fss0-0_nortos/ti-arm-clang -f makefile all
 
- sbl_test_multithread_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
+ sbl_test_multithread_am62dx-evm_r5fss0-0_freertos_ti-arm-clang: sbl_test_custom_ipc_binary_am62dx-evm_system_freertos_nortos
 	$(MAKE) -C drivers/boot/sbl_test_multithread/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
 
- ipc_rpmsg_echo_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64:
+ sbl_test_custom_ipc_binary_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64:
 	$(MAKE) -C drivers/boot/sbl_test_multithread/sbl_test_custom_ipc_binary/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile all
 
  test_sbl_uniflash_am62dx-evm_r5fss0-0_freertos_ti-arm-clang:
@@ -2114,7 +2114,7 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app:
 	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_talker/am62dx-evm-dp83867/am62dx-evm/system_avbtalker_app -f makefile all
 
- ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos:
+ sbl_test_custom_ipc_binary_am62dx-evm_system_freertos_nortos:
 	$(MAKE) -C drivers/boot/sbl_test_multithread/sbl_test_custom_ipc_binary/am62dx-evm/system_freertos_nortos -f makefile all
 
  test_ipc_notify_am62dx-evm_system_freertos_nortos:
@@ -2204,7 +2204,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sbl_negative_test_am62dx-evm_r5fss0-0_free
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sbl_media_boot_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sbl_uart_boot_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += sbl_test_multithread_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sbl_test_custom_ipc_binary_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_sbl_uniflash_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += sbl_uart_uniflash_test_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += sbl_uart_uniflash_test_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean
@@ -2516,7 +2516,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ddr_system_am62dx-evm_c75ss0-0_freertos_ti
 # Various System Example Clean Targets
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += sbl_test_custom_ipc_binary_am62dx-evm_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_notify_am62dx-evm_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_notify_c7x_am62dx-evm_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_notify_a53_am62dx-evm_system_freertos_clean
@@ -2610,7 +2610,7 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  sbl_test_multithread_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/boot/sbl_test_multithread/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
- ipc_rpmsg_echo_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean:
+ sbl_test_custom_ipc_binary_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_clean:
 	$(MAKE) -C drivers/boot/sbl_test_multithread/sbl_test_custom_ipc_binary/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile clean
 
  test_sbl_uniflash_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_clean:
@@ -3543,7 +3543,7 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app_clean:
 	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_talker/am62dx-evm-dp83867/am62dx-evm/system_avbtalker_app -f makefile clean
 
- ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos_clean:
+ sbl_test_custom_ipc_binary_am62dx-evm_system_freertos_nortos_clean:
 	$(MAKE) -C drivers/boot/sbl_test_multithread/sbl_test_custom_ipc_binary/am62dx-evm/system_freertos_nortos -f makefile clean
 
  test_ipc_notify_am62dx-evm_system_freertos_nortos_clean:
@@ -3633,7 +3633,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sbl_negative_test_am62dx-evm_r5fss0-0_free
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sbl_media_boot_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sbl_uart_boot_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += sbl_test_multithread_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sbl_test_custom_ipc_binary_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_sbl_uniflash_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += sbl_uart_uniflash_test_am62dx-evm_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += sbl_uart_uniflash_test_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub
@@ -3945,7 +3945,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ddr_system_am62dx-evm_c75ss0-0_freertos_ti
 # Various System Example Scrub Targets
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += avblistener_app_am62dx-evm-dp83867/am62dx-evm_system_avblistener_app_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += sbl_test_custom_ipc_binary_am62dx-evm_system_freertos_nortos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_notify_am62dx-evm_system_freertos_nortos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_notify_c7x_am62dx-evm_system_freertos_nortos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_notify_a53_am62dx-evm_system_freertos_scrub
@@ -4039,7 +4039,7 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  sbl_test_multithread_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/boot/sbl_test_multithread/am62dx-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
- ipc_rpmsg_echo_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub:
+ sbl_test_custom_ipc_binary_am62dx-evm_a53ss0-0_freertos-smp_gcc-aarch64_scrub:
 	$(MAKE) -C drivers/boot/sbl_test_multithread/sbl_test_custom_ipc_binary/am62dx-evm/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile scrub
 
  test_sbl_uniflash_am62dx-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
@@ -4972,7 +4972,7 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  avbtalker_app_am62dx-evm-dp83867/am62dx-evm_system_avbtalker_app_scrub:
 	$(MAKE) -C ../source/networking/enet/core/examples/tsn/avb_cpsw_app/avb_talker/am62dx-evm-dp83867/am62dx-evm/system_avbtalker_app -f makefile scrub
 
- ipc_rpmsg_echo_am62dx-evm_system_freertos_nortos_scrub:
+ sbl_test_custom_ipc_binary_am62dx-evm_system_freertos_nortos_scrub:
 	$(MAKE) -C drivers/boot/sbl_test_multithread/sbl_test_custom_ipc_binary/am62dx-evm/system_freertos_nortos -f makefile scrub
 
  test_ipc_notify_am62dx-evm_system_freertos_nortos_scrub:

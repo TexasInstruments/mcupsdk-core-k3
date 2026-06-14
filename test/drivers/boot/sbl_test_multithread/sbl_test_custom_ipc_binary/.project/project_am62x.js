@@ -261,7 +261,7 @@ const buildOptionCombos_dm_r5 = [
 
 const systemProject = [
     {
-        name: "ipc_rpmsg_echo",
+        name: "sbl_test_custom_ipc_binary",
         tag: "freertos_nortos",
         skipProjectSpec: false,
         readmeDoxygenPageTag: readmeDoxygenPageTag,
@@ -274,7 +274,7 @@ const systemProject = [
         ],
     },
     {
-        name: "ipc_rpmsg_echo",
+        name: "sbl_test_custom_ipc_binary",
         tag: "freertos_nortos",
         skipProjectSpec: false,
         readmeDoxygenPageTag: readmeDoxygenPageTag,
@@ -287,7 +287,7 @@ const systemProject = [
         ],
     },
     {
-        name: "ipc_rpmsg_echo",
+        name: "sbl_test_custom_ipc_binary",
         tag: "freertos_nortos",
         skipProjectSpec: false,
         readmeDoxygenPageTag: readmeDoxygenPageTag,
@@ -306,7 +306,7 @@ function getComponentProperty() {
 
     property.dirPath = path.resolve(__dirname, "..");
     property.type = "executable";
-    property.name = "ipc_rpmsg_echo";
+    property.name = "sbl_test_custom_ipc_binary";
     property.isInternal = true;
     property.isLinuxFwGen = true;
 

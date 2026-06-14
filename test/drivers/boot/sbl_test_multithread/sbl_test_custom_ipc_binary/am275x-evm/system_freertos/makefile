@@ -17,9 +17,9 @@ PROFILE?=release
 LD=$(CGT_GCC_AARCH64_PATH)/bin/aarch64-none-elf-ld
 
 MULTI_CORE_BOOTIMAGE_PATH=$(abspath .)
-MULTI_CORE_BOOTIMAGE_NAME:=ipc_rpmsg_echo_system.$(PROFILE).mcelf
+MULTI_CORE_BOOTIMAGE_NAME:=sbl_test_custom_ipc_binary_system.$(PROFILE).mcelf
 MULTI_CORE_BOOTIMAGE_NAME_SIGNED:=$(MULTI_CORE_BOOTIMAGE_NAME).signed
-MULTI_CORE_BOOTIMAGE_NAME_XIP:=ipc_rpmsg_echo_system.$(PROFILE).mcelf_xip
+MULTI_CORE_BOOTIMAGE_NAME_XIP:=sbl_test_custom_ipc_binary_system.$(PROFILE).mcelf_xip
 MULTI_CORE_BOOTIMAGE_NAME_HS:=$(MULTI_CORE_BOOTIMAGE_NAME).hs
 MULTI_CORE_BOOTIMAGE_NAME_HS_FS:=$(MULTI_CORE_BOOTIMAGE_NAME).hs_fs
 CORE_5=--script ../c75ss0-0_freertos/example.syscfg --context c75ss0-0 --output ../c75ss0-0_freertos/ti-c7000/generated
@@ -129,22 +129,22 @@ MCELF_IMAGE_GEN = $(MCU_PLUS_SDK_PATH)/tools/boot/multicoreELFImageGen/genimage.
 APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_gen.py
 
 MULTI_CORE_APP_PARAMS = \
-    --core-img=$(BOOTIMAGE_CORE_ID_c75ss0-0):../c75ss0-0_freertos/ti-c7000/ipc_rpmsg_echo.$(PROFILE).out \
-    --core-img=$(BOOTIMAGE_CORE_ID_c75ss1-0):../c75ss1-0_freertos/ti-c7000/ipc_rpmsg_echo.$(PROFILE).out \
-    --core-img=$(BOOTIMAGE_CORE_ID_r5fss0-0):../r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo.$(PROFILE).out \
-    --core-img=$(BOOTIMAGE_CORE_ID_r5fss0-1):../r5fss0-1_freertos/ti-arm-clang/ipc_rpmsg_echo.$(PROFILE).out \
-    --core-img=$(BOOTIMAGE_CORE_ID_r5fss1-0):../r5fss1-0_freertos/ti-arm-clang/ipc_rpmsg_echo.$(PROFILE).out \
-    --core-img=$(BOOTIMAGE_CORE_ID_r5fss1-1):../r5fss1-1_freertos/ti-arm-clang/ipc_rpmsg_echo.$(PROFILE).out \
+    --core-img=$(BOOTIMAGE_CORE_ID_c75ss0-0):../c75ss0-0_freertos/ti-c7000/sbl_test_custom_ipc_binary.$(PROFILE).out \
+    --core-img=$(BOOTIMAGE_CORE_ID_c75ss1-0):../c75ss1-0_freertos/ti-c7000/sbl_test_custom_ipc_binary.$(PROFILE).out \
+    --core-img=$(BOOTIMAGE_CORE_ID_r5fss0-0):../r5fss0-0_freertos/ti-arm-clang/sbl_test_custom_ipc_binary.$(PROFILE).out \
+    --core-img=$(BOOTIMAGE_CORE_ID_r5fss0-1):../r5fss0-1_freertos/ti-arm-clang/sbl_test_custom_ipc_binary.$(PROFILE).out \
+    --core-img=$(BOOTIMAGE_CORE_ID_r5fss1-0):../r5fss1-0_freertos/ti-arm-clang/sbl_test_custom_ipc_binary.$(PROFILE).out \
+    --core-img=$(BOOTIMAGE_CORE_ID_r5fss1-1):../r5fss1-1_freertos/ti-arm-clang/sbl_test_custom_ipc_binary.$(PROFILE).out \
 
 MCELF_XIP_RANGE?=0x60100000:0x60200000
 
 MULTI_CORE_BOOTIMAGE_DEPENDENCY = \
-    ../c75ss0-0_freertos/ti-c7000/ipc_rpmsg_echo.$(PROFILE).out \
-    ../c75ss1-0_freertos/ti-c7000/ipc_rpmsg_echo.$(PROFILE).out \
-    ../r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo.$(PROFILE).out \
-    ../r5fss0-1_freertos/ti-arm-clang/ipc_rpmsg_echo.$(PROFILE).out \
-    ../r5fss1-0_freertos/ti-arm-clang/ipc_rpmsg_echo.$(PROFILE).out \
-    ../r5fss1-1_freertos/ti-arm-clang/ipc_rpmsg_echo.$(PROFILE).out \
+    ../c75ss0-0_freertos/ti-c7000/sbl_test_custom_ipc_binary.$(PROFILE).out \
+    ../c75ss1-0_freertos/ti-c7000/sbl_test_custom_ipc_binary.$(PROFILE).out \
+    ../r5fss0-0_freertos/ti-arm-clang/sbl_test_custom_ipc_binary.$(PROFILE).out \
+    ../r5fss0-1_freertos/ti-arm-clang/sbl_test_custom_ipc_binary.$(PROFILE).out \
+    ../r5fss1-0_freertos/ti-arm-clang/sbl_test_custom_ipc_binary.$(PROFILE).out \
+    ../r5fss1-1_freertos/ti-arm-clang/sbl_test_custom_ipc_binary.$(PROFILE).out \
 
 $(MULTI_CORE_BOOTIMAGE_DEPENDENCY):
 

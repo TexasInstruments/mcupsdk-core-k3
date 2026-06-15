@@ -29,6 +29,7 @@
     let interactPromptTimeout = (options && options.interactPromptTimeout) ? options.interactPromptTimeout : 20;
     let secondPort            = (options && options.secondPort)            ? options.secondPort            : null;
     let secondPortSend        = (options && options.secondPortSend)        ? options.secondPortSend        : [];
+    let expectations          = (options && options.expectations)          ? options.expectations          : null;
     let withCfg        = (options && options.withCfg)        ? true                   : false;
     // DM binary — auto-added for mcu-r5fss / a53ss / c75ss; r5fss0-0 is the DM core
     let needsDM = project.cpu.match(/mcu-r5fss|a53ss|c75ss/);
@@ -93,10 +94,31 @@ ${DM_BINARY}    ../../`appBinaryDM`
 	UartBootloader.WITH ARGS    ${`sblPort`}    ${UartBootloaderPath}    --soc=${SOC} --bootloader=${SBL} --file=${APP_BINARY}
 % }
 % }
+% if (expectations) {
+%   const expPorts = [...new Set(expectations.filter(e => e.port).map(e => e.port))];
+%   for (let p of expPorts) {
+	DUT`p`.CONNECT TO UART PORT    ${`p`}
+%   }
+% } else {
 	DUT`logPort`.CONNECT TO UART PORT    ${`logPort`}
 % if (secondPort) {
 	DUT`secondPort`.CONNECT TO UART PORT    ${`secondPort`}
 % }
+% }
+% if (expectations) {
+%   for (let exp of expectations) {
+%     if (exp.send !== undefined && !Array.isArray(exp.send) && exp.string !== undefined) {
+	DUT`exp.port`.SEND COMMAND AND VERIFY    `exp.send`    `exp.string`    `exp.timeout !== undefined ? exp.timeout : expectTimeout`
+%     } else if (exp.string !== undefined) {
+	DUT`exp.port`.EXPECT STRING AT UART PORT    `exp.string`    `exp.timeout !== undefined ? exp.timeout : expectTimeout`
+%     }
+%     if (exp.send !== undefined && Array.isArray(exp.send)) {
+%       for (let cmd of exp.send) {
+	DUT`exp.port`.SEND COMMAND AND VERIFY    `cmd`
+%       }
+%     }
+%   }
+% } else {
 % if (interactPrompt) {
 	DUT`logPort`.EXPECT STRING AT UART PORT    `interactPrompt`    `interactPromptTimeout`
 % for (let cmd of interactSend) {
@@ -107,3 +129,4 @@ ${DM_BINARY}    ../../`appBinaryDM`
 	DUT`secondPort`.SEND COMMAND AND VERIFY    `cmd`
 % }
 	DUT`logPort`.EXPECT STRING AT UART PORT    `expectedString`     `expectTimeout`
+% }

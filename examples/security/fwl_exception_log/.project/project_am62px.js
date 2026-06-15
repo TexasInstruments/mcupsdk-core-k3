@@ -119,8 +119,15 @@ const robot_template = {
         componentName: "Security",
         testCaseName: "Security: Combined firewall example log test",
         testCaseIds: "SITSW-3925",
-        expectTimeout: 60,
         timeout: 660,
+        withCfg: true,
+        cfgPath: "examples/security/fwl_exception_log/{board}/{coreName}/default_fwl_exception_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectations: [
+            { port: "USB2", string: "Waiting for CMBN firewall exceptions", timeout: 120 },
+            { port: "USB3", string: "to trigger CMBN firewall exception", timeout: 120 },
+            { port: "USB3", send: ["C", "\\r"] },
+            { port: "USB2", string: "All tests have passed", timeout: 60 },
+        ],
     },
 };
 

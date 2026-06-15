@@ -96,16 +96,27 @@ function getComponentProperty() {
 }
 
 const robot_template = {
-    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    input: ".project/templates/am62ax/astra/tests_sbl_linux.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "SBL",
         testCaseName: "Bootloader: UART Linux SBL",
         testCaseIds: "SITSW-1758",
         cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_uart_linux_${DEVICE_TYPE}.cfg",
-        withCfg: true,
-        expectTimeout: 120,
+        useBootloader: true,
+        useNFS: true,
+        bootMode: null,
         timeout: 900,
+        expectTimeout: 30,
+        expectations: [
+            { port: "USB0", string: "Arago Project", timeout: 300 },
+            { port: "USB0", string: "am62axx-evm login:", timeout: 300 },
+            { port: "USB0", send: "root", string: "root@am62axx-evm" },
+            { port: "USB0", send: "rpmsg_char_simple -r0", string: "TEST STATUS: PASSED" },
+            { port: "USB0", send: "rpmsg_char_simple -r15", string: "TEST STATUS: PASSED" },
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+            { port: "USB3", string: "Remote Core waiting for messages at end point" },
+        ],
     },
 };
 

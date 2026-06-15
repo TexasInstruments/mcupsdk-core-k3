@@ -14,7 +14,8 @@
  *   timeout               — test timeout (default: 1000)
  *   expectTimeout         — per-string timeout (default: 100)
  *   useNFS                — if true, call NFS.SETUP NFS USING UBOOT AND BOOT before expectations
- *   expectations: [{port, string, send?}]
+ *   useBootloader         — if true, use UartBootloader (UART boot) instead of UartUniFlash (OSPI flash)
+ *   expectations: [{port, string, send?, timeout?}]
  *     - {port, string}         → DUT{port}.EXPECT STRING AT UART PORT
  *     - {port, send, string}   → DUT{port}.SEND COMMAND AND VERIFY {send} {string}
  */
@@ -29,6 +30,7 @@
     let timeout        = (options && options.timeout)        ? options.timeout        : 1000;
     let expectTimeout  = (options && options.expectTimeout)  ? options.expectTimeout  : 100;
     let useNFS         = (options && options.useNFS)         ? true                   : false;
+    let useBootloader  = (options && options.useBootloader)  ? true                   : false;
     let expectations   = (options && options.expectations)  ? options.expectations   : [];
 
     let coreName = project.cpu + "_" + project.os;
@@ -63,6 +65,14 @@ ${CFG_FILE}    `cfgFile`
 	DUT OFF
 	DUT ON
 	Sleep    2s
+% if (useBootloader) {
+	DUTUSB0.CONNECT TO UART PORT    ${USB0}
+	DUTUSB0.EXPECT STRING AT UART PORT    CCC
+	UartBootloader.WITH CFG    ${USB0}    ${UartBootloaderPath}    ${CFG_FILE}
+% { const seenPorts = [...new Set(expectations.map(e => e.port))]; for (let p of seenPorts) {
+	DUT`p`.CONNECT TO UART PORT    ${`p`}
+% } }
+% } else {
 	UartUniFlash.WITH CFG    ${USB0}    ${UartUniFlashPath}    ${CFG_FILE}
 % if (bootMode) {
 % { const seenPorts = [...new Set(expectations.map(e => e.port))]; for (let p of seenPorts) {
@@ -72,13 +82,14 @@ ${CFG_FILE}    `cfgFile`
 	DUT OFF
 	DUT ON
 % }
+% }
 % if (useNFS) {
 	NFS.SETUP NFS USING UBOOT AND BOOT    USB0
 % }
 % for (let exp of expectations) {
 % if (exp.send !== undefined) {
-	DUT`exp.port`.SEND COMMAND AND VERIFY    `exp.send`    `exp.string`    `expectTimeout`
+	DUT`exp.port`.SEND COMMAND AND VERIFY    `exp.send`    `exp.string`    `exp.timeout !== undefined ? exp.timeout : expectTimeout`
 % } else {
-	DUT`exp.port`.EXPECT STRING AT UART PORT    `exp.string`    `expectTimeout`
+	DUT`exp.port`.EXPECT STRING AT UART PORT    `exp.string`    `exp.timeout !== undefined ? exp.timeout : expectTimeout`
 % }
 % }

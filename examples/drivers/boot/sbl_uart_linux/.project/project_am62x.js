@@ -54,16 +54,47 @@ const syscfgfile = "../example.syscfg";
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_SBL_UART_LINUX";
 
 const robot_template = {
-    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    input: ".project/templates/am62x/astra/tests_sbl_linux.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "SBL",
-        testCaseName: "Bootloader: UART Linux bootloader",
+        testCaseName: "Bootloader: UART Linux SBL",
         testCaseIds: "SITSW-1758",
-        timeout: 900,
         cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_uart_linux_${DEVICE_TYPE}.cfg",
-        withCfg: true,
-        expectTimeout: 120,
+        useBootloader: true,
+        useNFS: true,
+        bootMode: null,
+        timeout: 900,
+        expectTimeout: 30,
+        boardExpectations: {
+            "am62x-sk": [
+                { port: "USB0", string: "Arago Project", timeout: 300 },
+                { port: "USB0", string: "am62xx-evm login:", timeout: 300 },
+                { port: "USB0", send: "root", string: "root@am62xx-evm" },
+                { port: "USB0", send: "rpmsg_char_simple -r15", string: "TEST STATUS: PASSED" },
+                { port: "USB0", send: "rpmsg_char_simple -r9", string: "TEST STATUS: PASSED" },
+                { port: "USB2", string: "Starting Sciserver..... PASSED" },
+                { port: "USB3", string: "Remote Core waiting for messages at end point" },
+            ],
+            "am62x-sip-sk": [
+                { port: "USB0", string: "Arago Project", timeout: 300 },
+                { port: "USB0", string: "am62xxsip-evm login:", timeout: 300 },
+                { port: "USB0", send: "root", string: "root@am62xxsip-evm" },
+                { port: "USB0", send: "rpmsg_char_simple -r15", string: "TEST STATUS: PASSED" },
+                { port: "USB0", send: "rpmsg_char_simple -r9", string: "TEST STATUS: PASSED" },
+                { port: "USB2", string: "Starting Sciserver..... PASSED" },
+                { port: "USB3", string: "Remote Core waiting for messages at end point" },
+            ],
+            "am62x-sk-lp": [
+                { port: "USB0", string: "Arago Project", timeout: 300 },
+                { port: "USB0", string: "am62xx-lp-evm login:", timeout: 300 },
+                { port: "USB0", send: "root", string: "root@am62xx-lp-evm" },
+                { port: "USB0", send: "rpmsg_char_simple -r15", string: "TEST STATUS: PASSED" },
+                { port: "USB0", send: "rpmsg_char_simple -r9", string: "TEST STATUS: PASSED" },
+                { port: "USB2", string: "Starting Sciserver..... PASSED" },
+                { port: "USB3", string: "Remote Core waiting for messages at end point" },
+            ],
+        },
     },
 };
 

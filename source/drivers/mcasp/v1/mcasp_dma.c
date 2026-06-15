@@ -37,6 +37,7 @@
 #include <drivers/mcasp.h>
 #include <drivers/mcasp/v1/mcasp_priv.h>
 #include <drivers/mcasp/v1/mcasp_drv_configs/mcasp_drv_config.h>
+#include <drivers/udma/udma_priv.h>
 
 /* ========================================================================== */
 /*                             Macro Definitions                              */
@@ -85,14 +86,6 @@ static void MCASP_udmaIsrRx(Udma_EventHandle eventHandle, uint32_t eventType,
 static int32_t MCASP_primeTxTrpd(MCASP_Config *config);
 
 static int32_t MCASP_primeRxTrpd(MCASP_Config *config);
-
-extern uint64_t Udma_virtToPhyFxn(const void *virtAddr,
-                           Udma_DrvHandle drvHandle,
-                           Udma_ChHandle chHandle);
-
-extern void *Udma_phyToVirtFxn(uint64_t phyAddr,
-                        Udma_DrvHandle drvHandle,
-                        Udma_ChHandle chHandle);
 
 /* ========================================================================== */
 /*                          Function Definitions                              */

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2016-2024 Texas Instruments Incorporated.
+ *  Copyright (C) 2016-2026 Texas Instruments Incorporated.
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -295,7 +295,7 @@ static inline void      CSL_udmapCppi5MonoSetDataOffset( CSL_UdmapCppi5MMPD *pDe
 static inline void      CSL_udmapCppi5TrGetReload( const CSL_UdmapCppi5TRPD *pDesc, uint32_t *pReloadEnable, uint32_t *pReloadIdx );
 static inline void      CSL_udmapCppi5TrSetReload( CSL_UdmapCppi5TRPD *pDesc, uint32_t reloadEnable, uint32_t reloadIdx );
 static inline uint32_t  CSL_udmapCppi5TrGetEntryStride( const CSL_UdmapCppi5TRPD *pDesc );
-static inline void      CSL_udmapCppi5TrSetEntryStride( CSL_UdmapCppi5TRPD *pDesc, uint32_t nomElSz );
+static inline void      CSL_udmapCppi5TrSetEntryStride( CSL_UdmapCppi5TRPD *pDesc, uint32_t entryStride );
 
 /**
  *  \brief Get the descriptor type

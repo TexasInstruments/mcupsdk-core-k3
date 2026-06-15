@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -117,18 +117,26 @@ int32_t Udma_ringAlloc(Udma_DrvHandle drvHandle,
                 ringHandleInt->ringNum = Udma_rmAllocFreeRing(drvHandleInt);
             }
 #if((UDMA_NUM_MAPPED_TX_GROUP + UDMA_NUM_MAPPED_RX_GROUP) > 0)
-            else
+            else if(ringPrms->mappedRingGrp < (UDMA_NUM_MAPPED_TX_GROUP + UDMA_NUM_MAPPED_RX_GROUP))
             {
                 ringHandleInt->ringNum = (uint16_t)Udma_rmAllocMappedRing(drvHandleInt, ringPrms->mappedRingGrp, ringPrms->mappedChNum);
             }
-#endif
-            if(UDMA_RING_INVALID == ringHandleInt->ringNum)
-            {
-                retVal = UDMA_EALLOC;
-            }
             else
             {
-                allocDone = (uint32_t) TRUE;
+                retVal = UDMA_EINVALID_PARAMS;
+                allocDone = (uint32_t) FALSE;
+            }
+#endif
+            if(UDMA_SOK == retVal)
+            {
+                if(UDMA_RING_INVALID == ringHandleInt->ringNum)
+                {
+                    retVal = UDMA_EALLOC;
+                }
+                else
+                {
+                    allocDone = (uint32_t) TRUE;
+                }
             }
         }
         else
@@ -252,13 +260,17 @@ int32_t Udma_ringFree(Udma_RingHandle ringHandle)
             Udma_rmFreeFreeRing(ringHandleInt->ringNum, drvHandle);
         }
 #if((UDMA_NUM_MAPPED_TX_GROUP + UDMA_NUM_MAPPED_RX_GROUP) > 0)
-        else
+        else if(ringHandleInt->mappedRingGrp < (UDMA_NUM_MAPPED_TX_GROUP + UDMA_NUM_MAPPED_RX_GROUP))
         {
             Udma_rmFreeMappedRing(
                 ringHandleInt->ringNum,
                 drvHandle,
                 ringHandleInt->mappedRingGrp,
                 ringHandleInt->mappedChNum);
+        }
+        else
+        {
+            retVal = UDMA_EBADARGS;
         }
 #endif
         ringHandleInt->ringNum         = UDMA_RING_INVALID;

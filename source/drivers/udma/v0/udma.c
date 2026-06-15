@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -91,7 +91,7 @@ int32_t Udma_init(Udma_DrvHandle drvHandle, const Udma_InitPrms *initPrms)
     if(UDMA_SOK == retVal)
     {
         drvHandleInt = (Udma_DrvHandleInt) drvHandle;
-        (void) memset(drvHandleInt, 0, sizeof(*drvHandleInt));
+        (void) memset(drvHandleInt, 0, sizeof(Udma_DrvObjectInt));
         (void) memcpy(&drvHandleInt->initPrms, initPrms, sizeof(Udma_InitPrms));
         if(initPrms->enableUtc != TRUE)
         {
@@ -182,7 +182,7 @@ int32_t Udma_deinit(Udma_DrvHandle drvHandle)
             SemaphoreP_destruct(&drvHandleInt->rmLockObj);
             drvHandleInt->rmLock = NULL_PTR;
         }
-        (void) memset(drvHandleInt, 0, sizeof(*drvHandleInt));
+        (void) memset(drvHandleInt, 0, sizeof(Udma_DrvObjectInt));
         drvHandleInt->drvInitDone = UDMA_DEINIT_DONE;
     }
 

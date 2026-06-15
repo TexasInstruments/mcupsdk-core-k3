@@ -8,7 +8,7 @@
  *
  *  \par
  *  ============================================================================
- *  @n   (C) Copyright 2019-2020, Texas Instruments, Inc.
+ *  @n   (C) Copyright 2019-2026, Texas Instruments, Inc.
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -130,21 +130,21 @@ static bool CSL_bcdmaChanOpIsValidChanIdx( CSL_BcdmaCfg *pCfg, CSL_BcdmaChanType
 
     if( chanType == CSL_BCDMA_CHAN_TYPE_BLOCK_COPY )
     {
-        if( chanIdx > pCfg->bcChanCnt )
+        if( chanIdx >= pCfg->bcChanCnt )
         {
             retVal = (bool)false;
         }
     }
     else if( chanType == CSL_BCDMA_CHAN_TYPE_SPLIT_RX )
     {
-        if( chanIdx > pCfg->splitRxChanCnt )
+        if( chanIdx >= pCfg->splitRxChanCnt )
         {
             retVal = (bool)false;
         }
     }
     else if( chanType == CSL_BCDMA_CHAN_TYPE_SPLIT_TX )
     {
-        if( chanIdx > pCfg->splitTxChanCnt )
+        if( chanIdx >= pCfg->splitTxChanCnt )
         {
             retVal = (bool)false;
         }

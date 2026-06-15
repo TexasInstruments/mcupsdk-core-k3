@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -34,14 +34,11 @@
 #include <drivers/ospi/v0/dma/udma/ospi_dma_udma.h>
 #include <drivers/udma.h>
 #include <kernel/dpl/CacheP.h>
+#include <drivers/udma/udma_priv.h>
 
 static int32_t OspiDma_udmaOpen(void* ospiDmaArgs);
 static int32_t OspiDma_udmaClose(OSPI_DmaHandle handle, void* ospiDmaArgs);
 static int32_t OspiDma_udmaCopy(void* ospiDmaArgs, void* dst, void* src, uint32_t length);
-
-extern uint64_t Udma_virtToPhyFxn(const void *virtAddr,
-    Udma_DrvHandle drvHandle,
-    Udma_ChHandle chHandle); 
 
 OSPI_DmaFxns gOspiDmaUdmaFxns =
 {

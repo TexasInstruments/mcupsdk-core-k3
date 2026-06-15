@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -170,12 +170,19 @@ int32_t Udma_flowFree(Udma_FlowHandle flowHandle)
             /* Free Mapped Ring in devices like AM64x */
 #if((UDMA_NUM_MAPPED_TX_GROUP + UDMA_NUM_MAPPED_RX_GROUP) > 0)
             DebugP_assert(flowHandleInt->flowCnt == 1U);
-            /* Add RX Ring Number Offset */
-            Udma_rmFreeMappedRing(
-                flowHandleInt->flowStart + drvHandle->rxChOffset,
-                drvHandle,
-                flowHandleInt->mappedFlowGrp,
-                flowHandleInt->mappedChNum);
+            if(flowHandleInt->mappedFlowGrp < (UDMA_NUM_MAPPED_TX_GROUP + UDMA_NUM_MAPPED_RX_GROUP))
+            {
+                /* Add RX Ring Number Offset */
+                Udma_rmFreeMappedRing(
+                    flowHandleInt->flowStart + drvHandle->rxChOffset,
+                    drvHandle,
+                    flowHandleInt->mappedFlowGrp,
+                    flowHandleInt->mappedChNum);
+            }
+            else
+            {
+                retVal = UDMA_EFAIL;
+            }
 #else
             retVal = UDMA_EFAIL;
 #endif

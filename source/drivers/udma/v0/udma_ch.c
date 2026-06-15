@@ -1,5 +1,5 @@
 /*
- *  Copyright (C)2018-2025 Texas Instruments Incorporated
+ *  Copyright (C)2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -303,7 +303,7 @@ int32_t Udma_chClose(Udma_ChHandle chHandle)
             DebugP_logError("[UDMA] Free resource failed!!!\r\n");
         }
 
-        (void) memset(chHandleInt, 0, sizeof(*chHandleInt));
+        (void) memset((void *)chHandleInt, 0, sizeof(Udma_ChObjectInt));
         chHandleInt->chInitDone = UDMA_DEINIT_DONE;
     }
 
@@ -1943,26 +1943,33 @@ static int32_t Udma_utcChRingCfg(Udma_ChHandleInt chHandle)
         pUtcRegs = chHandle->utcInfo->druRegs;
         chNum = chHandle->extChNum - chHandle->utcInfo->startCh;
 
-        pUtcChNrt = &pUtcRegs->CHNRT[chNum];
-
-        if (CSL_DRU_CHNRT_SIZE_ELCNT_MAX <= chHandle->chPrms.fqRingPrms.elemCnt)
+        if (chNum < chHandle->utcInfo->numCh)
         {
-            retVal = UDMA_EBADARGS;
+            pUtcChNrt = &pUtcRegs->CHNRT[chNum];
+
+            if (CSL_DRU_CHNRT_SIZE_ELCNT_MAX <= chHandle->chPrms.fqRingPrms.elemCnt)
+            {
+                retVal = UDMA_EBADARGS;
+            }
+            else
+            {
+
+                CSL_REG32_FINS(&pUtcChNrt->CHRING_ADDR,
+                                DRU_CHNRT_CHRING_ADDR_ADDR,
+                                chHandle->chPrms.fqRingPrms.ringMem);
+
+                CSL_REG32_FINS(&pUtcChNrt->SIZE,
+                                DRU_CHNRT_SIZE_ELCNT,
+                                chHandle->chPrms.fqRingPrms.elemCnt);
+
+                chHandle->chPrms.fqRingPrms.currWrLoc = 0U;
+                chHandle->chPrms.fqRingPrms.currRdLoc =
+                                        (uint64_t)(chHandle->chPrms.fqRingPrms.elemCnt) - (uint64_t)1UL;
+            }
         }
         else
         {
-
-            CSL_REG32_FINS(&pUtcChNrt->CHRING_ADDR,
-                            DRU_CHNRT_CHRING_ADDR_ADDR,
-                            chHandle->chPrms.fqRingPrms.ringMem);
-
-            CSL_REG32_FINS(&pUtcChNrt->SIZE,
-                            DRU_CHNRT_SIZE_ELCNT,
-                            chHandle->chPrms.fqRingPrms.elemCnt);
-
-            chHandle->chPrms.fqRingPrms.currWrLoc = 0U;
-            chHandle->chPrms.fqRingPrms.currRdLoc =
-                                    (uint64_t)(chHandle->chPrms.fqRingPrms.elemCnt) - (uint64_t)1UL;
+            retVal = (int32_t)UDMA_DMA_CH_INVALID;
         }
     }
 
@@ -2593,35 +2600,47 @@ static int32_t Udma_chAllocResource(Udma_ChHandleInt chHandle)
             #if (UDMA_NUM_UTC_INSTANCE > 0)
                 if((chHandle->chType & UDMA_CH_FLAG_UTC) == UDMA_CH_FLAG_UTC)
                 {
-                    retVal = Udma_utcChRingCfg(chHandle);
+                    if((chHandle->extChNum != UDMA_DMA_CH_INVALID) &&
+                       (chHandle->extChNum >= chHandle->utcInfo->startCh) &&
+                       (chHandle->extChNum < (chHandle->utcInfo->startCh + chHandle->utcInfo->numCh)))
+                    {
+                        retVal = Udma_utcChRingCfg(chHandle);
+                    }
+                    else
+                    {
+                        retVal = (int32_t)UDMA_DMA_CH_INVALID;
+                    }
                 }
             #endif
             }
-            if( UDMA_CH_FLAG_UTC != (chHandle->chType & UDMA_CH_FLAG_UTC))
+            if(UDMA_SOK == retVal)
             {
-                chHandle->fqRing = &chHandle->fqRingObj;
-                retVal = Udma_ringAlloc(
-                            drvHandle,
-                            chHandle->fqRing,
-                            ringNum,
-                            &chHandle->chPrms.fqRingPrms);
-                if(UDMA_SOK != retVal)
+                if( UDMA_CH_FLAG_UTC != (chHandle->chType & UDMA_CH_FLAG_UTC))
                 {
-                    chHandle->fqRing = (Udma_RingHandleInt) NULL_PTR;
-                    DebugP_logError("[UDMA] FQ ring alloc failed!!!\r\n");
-                }
-                else if(((chHandle->chType & UDMA_CH_FLAG_MAPPED) == UDMA_CH_FLAG_MAPPED) &&
-                        ((chHandle->chType & UDMA_CH_FLAG_RX) == UDMA_CH_FLAG_RX))
-                {
-                    /* Assign the default flow start id as the allocated default ring num(without offset) for mapped RX channels.
-                    * This is because the default flow start idx is not equal to rxChNum,
-                    * since there may be 1 to many mapping between RX Channels and dedicated flows */
-                    DebugP_assert(chHandle->fqRing->ringNum >= drvHandle->rxChOffset);
-                    chHandle->defaultFlow->flowStart    = chHandle->fqRing->ringNum - drvHandle->rxChOffset;
-                }
-                else
-                {
-                /* Do Nothing */
+                    chHandle->fqRing = &chHandle->fqRingObj;
+                    retVal = Udma_ringAlloc(
+                                drvHandle,
+                                chHandle->fqRing,
+                                ringNum,
+                                &chHandle->chPrms.fqRingPrms);
+                    if(UDMA_SOK != retVal)
+                    {
+                        chHandle->fqRing = (Udma_RingHandleInt) NULL_PTR;
+                        DebugP_logError("[UDMA] FQ ring alloc failed!!!\r\n");
+                    }
+                    else if(((chHandle->chType & UDMA_CH_FLAG_MAPPED) == UDMA_CH_FLAG_MAPPED) &&
+                            ((chHandle->chType & UDMA_CH_FLAG_RX) == UDMA_CH_FLAG_RX))
+                    {
+                        /* Assign the default flow start id as the allocated default ring num(without offset) for mapped RX channels.
+                        * This is because the default flow start idx is not equal to rxChNum,
+                        * since there may be 1 to many mapping between RX Channels and dedicated flows */
+                        DebugP_assert(chHandle->fqRing->ringNum >= drvHandle->rxChOffset);
+                        chHandle->defaultFlow->flowStart    = chHandle->fqRing->ringNum - drvHandle->rxChOffset;
+                    }
+                    else
+                    {
+                    /* Do Nothing */
+                    }
                 }
             }
         }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -292,13 +292,13 @@ int32_t UdmaUtils_mapLocaltoGlobalEvent(Udma_DrvHandle drvHandle, Udma_ChHandle 
 }
 
 int32_t UdmaUtils_setTrpdReload(uint8_t *trpdMem,
-                                uint32_t relaodEnable, uint32_t reloadIdx)
+                                uint32_t reloadEnable, uint32_t reloadIdx)
 {
     int32_t status = SystemP_SUCCESS;
 
     if(NULL != trpdMem)
     {
-        CSL_udmapCppi5TrSetReload((CSL_UdmapCppi5TRPD *)trpdMem, relaodEnable, reloadIdx);
+        CSL_udmapCppi5TrSetReload((CSL_UdmapCppi5TRPD *)trpdMem, reloadEnable, reloadIdx);
     }
     else
     {

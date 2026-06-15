@@ -81,7 +81,7 @@ extern "C" {
  *
  * \return VRING size in bytes
  */
-#define RPMESSAGE_VRING_SIZE(numBuf, bufSize)       (((numBuf)*(uint16_t)((bufSize) + 32U)) + 32U)
+#define RPMESSAGE_VRING_SIZE(numBuf, bufSize)       (((numBuf)*(uint16_t)(((bufSize)) + 32U)) + 32U)
 
 /**
  * \brief Returns the size needed for each VRING
@@ -97,7 +97,7 @@ extern "C" {
  *
  * \return VRING size in bytes
  */
-#define RPMESSAGE_VRING_SIZE_PDK(numBuf, bufSize)       (2 * ((numBuf)*((bufSize))))
+#define RPMESSAGE_VRING_SIZE_PDK(numBuf, bufSize)       ((2U) * (((numBuf)) * ((bufSize))))
 
 /**
  * \brief Size of \ref RPMessage_Object
@@ -120,14 +120,14 @@ typedef struct RPMessage_Object_s {
  *       When callback returns the message buffer is released back to the sender.
  *       If the message contents are needed for deferred processing then take a copy of the message contents
  *
- * \param obj   [in] RPMessage end point object created with \ref RPMessage_construct
+ * \param handle   [in] RPMessage end point object created with \ref RPMessage_construct
  * \param arg  [in] Arguments specified by user during \ref RPMessage_construct
  * \param data  [in] Pointer to message
  * \param dataLen [in] Length of message
  * \param remoteCoreId [in] Core ID of sender
  * \param remoteEndPt [in] End point of sender
  */
-typedef void (*RPMessage_RecvCallback)(RPMessage_Object *obj, void *arg,
+typedef void (*RPMessage_RecvCallback)(RPMessage_Object *handle, void *arg,
     void *data, uint16_t dataLen,
     uint16_t remoteCoreId, uint16_t remoteEndPt);
 
@@ -141,10 +141,10 @@ typedef void (*RPMessage_RecvCallback)(RPMessage_Object *obj, void *arg,
  *
  * \note If \ref RPMessage_RecvCallback is set, then \ref RPMessage_RecvNotifyCallback callback is not used.
  *
- * \param obj   [in] RPMessage end point object created with \ref RPMessage_construct
+ * \param handle   [in] RPMessage end point object created with \ref RPMessage_construct
  * \param arg  [in] Arguments specified by user during \ref RPMessage_construct
  */
-typedef void (*RPMessage_RecvNotifyCallback)(RPMessage_Object *obj, void *arg);
+typedef void (*RPMessage_RecvNotifyCallback)(RPMessage_Object *handle, void *arg);
 
 
 /**
@@ -271,38 +271,38 @@ void RPMessage_controlEndPtCallback(RPMessage_ControlEndPtCallback controlEndPtC
  * \note User MUST choose a value and `ANY` is not supported
  * \note When callback is registered in \ref RPMessage_CreateParams, \ref RPMessage_recv MUST not be used.
  *
- * \param obj [out] Created object
+ * \param handle [out] Created object
  * \param createParams [in] parameters
  *
  * \return SystemP_SUCCESS on success, else failure.
  */
-int32_t  RPMessage_construct(RPMessage_Object *obj, const RPMessage_CreateParams *createParams);
+int32_t  RPMessage_construct(RPMessage_Object *handle, const RPMessage_CreateParams *createParams);
 
 /**
  * \brief Delete a previously created RPMessage object
  *
- * \param obj [in] object
+ * \param handle [in] object
  */
-void     RPMessage_destruct(RPMessage_Object *obj);
+void     RPMessage_destruct(RPMessage_Object *handle);
 
 /**
  * \brief Unblocks \ref RPMessage_recv, for the input object,
  *        if it is blocked waiting on messages and users want to exit that task
  *
- * \param obj [in] object
+ * \param handle [in] object
  */
-void     RPMessage_unblock(RPMessage_Object *obj);
+void     RPMessage_unblock(RPMessage_Object *handle);
 
 /**
  * \brief Return local end point of a \ref RPMessage_Object
  *
  * The value will be same as that was used to create the object earlier.
  *
- * \param obj [in] object
+ * \param handle [in] object
  *
  * \return local end point of input object
  */
-uint16_t RPMessage_getLocalEndPt(const RPMessage_Object *obj);
+uint16_t RPMessage_getLocalEndPt(const RPMessage_Object *handle);
 
 /**
  * \brief Announce a local end point at which a `service` is created to a remote core
@@ -316,13 +316,13 @@ uint16_t RPMessage_getLocalEndPt(const RPMessage_Object *obj);
  * \note It is upto the end user to use the callback to signal or wait until a remote service is
  *       announced.
  *
- * \param remoteProcId [in] The remote core to annouce to.
+ * \param remoteCoreId [in] The remote core to annouce to.
  * \param localEndPt [in] Local end point of the service that is being announced
  * \param name  [in] Name of the service that is being announced
  *
  * \return SystemP_SUCCESS, when the annouce message was sent, else failure
  */
-int32_t  RPMessage_announce(uint16_t remoteProcId, uint16_t localEndPt, const char* name);
+int32_t  RPMessage_announce(uint16_t remoteCoreId, uint16_t localEndPt, const char* name);
 
 /**
  * \brief Send a message to a remote core at a specified remote end point
@@ -365,7 +365,7 @@ int32_t  RPMessage_send( void   *data,
  *       If received message size is <= *dataLen then all received bytes are copied to `data` and
  *       *dataLen indicates the size of valid bytes in `data`
  *
- * \param obj   [in] RPMessage end point object created with \ref RPMessage_construct
+ * \param handle [in] RPMessage end point object created with \ref RPMessage_construct
  * \param data  [in] Pointer to received message contents
  * \param dataLen [in] Length of user message buffer, in bytes \n [out] Size of received message, in bytes
  * \param remoteCoreId [out] Core ID of sender
@@ -375,7 +375,7 @@ int32_t  RPMessage_send( void   *data,
  * \return SystemP_SUCCESS, new message received, all output parameters are valid
  * \return SystemP_TIMEOUT, API unblocked due to timeout and output parameters should not be used.
  */
-int32_t  RPMessage_recv(RPMessage_Object *obj, void* data, uint16_t *dataLen,
+int32_t  RPMessage_recv(RPMessage_Object *handle, void* data, uint16_t *dataLen,
                       uint16_t *remoteCoreId, uint32_t *remoteEndPt, uint32_t timeout);
 
 

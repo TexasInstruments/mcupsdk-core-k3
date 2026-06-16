@@ -101,6 +101,10 @@ const robot_template = {
         timeout: 3600,
         appName: "sbl_emmc_multistage_falcon_mode",
         bootMode: "EMMC_BOOT_MODE",
+        expectations: [
+            { port: "USB0", string: "login:", timeout: 200 },
+            { port: "USB2", string: "Starting Sciserver..... PASSED", timeout: 100 },
+        ],
     },
 };
 

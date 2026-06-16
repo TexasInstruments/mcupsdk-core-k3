@@ -80,19 +80,7 @@ const libdirs_freertos_dm_r5f = {
         "${MCU_PLUS_SDK_PATH}/test/unity/lib",
     ],
 };
-const libdirs_nortos_dm_r5f = {
-    common: [
-        "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
-        "${MCU_PLUS_SDK_PATH}/source/board/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
-        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
-    ],
-};
+
 const libdirs_freertos_r5f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
@@ -169,19 +157,7 @@ const libs_freertos_r5f = {
     ],
 };
 
-const libs_nortos_dm_r5f = {
-	common: [
-        "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-		"nortos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-		"drivers.am62ax.dm-r5f.ti-arm-clang.${ConfigName}.lib",
-		"board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-		"unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
-	],
-};
+
 
 const libs_freertos_dm_r5f = {
 	common: [
@@ -359,30 +335,6 @@ const templates_nortos_mcu_r5f =
 	}
 ];
 
-const templates_nortos_dm_r5f =
-[
-	{
-		input: ".project/templates/am62ax/common/linker_dm_r5f.cmd.xdt",
-		output: "linker.cmd",
-		options: {
-			heapSize: 0x8000,
-			stackSize: 0x4000,
-			irqStackSize: 0x1000,
-			svcStackSize: 0x0100,
-			fiqStackSize: 0x0100,
-			abortStackSize: 0x0100,
-			undefinedStackSize: 0x0100,
-			dmStubstacksize: 0x0400,
-		},
-	},
-	{
-		input: ".project/templates/am62ax/nortos/main_nortos.c.xdt",
-		output: "../main.c",
-		options: {
-			entryFunction: "test_main",
-		},
-	}
-];
 
 const templates_a53_smp =
 [
@@ -405,7 +357,7 @@ const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62ax-sk", os: "nortos"},
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos"},
-    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos"},
+
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "freertos-smp"},
 ];
 
@@ -422,7 +374,7 @@ function getComponentProperty() {
     return property;
 }
 
-const robot_template = {
+const robot_template_freertos = {
     input: ".project/templates/am62ax/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
@@ -435,9 +387,37 @@ const robot_template = {
                      " SITSW-8055 SITSW-8056 SITSW-8057 SITSW-8373 SITSW-8397 SITSW-8398 SITSW-8399 SITSW-8402 SITSW-8403 SITSW-8404" +
                      " SITSW-8405 SITSW-8406 SITSW-8407 SITSW-8408 SITSW-8409 SITSW-8410 SITSW-8411 SITSW-8412 SITSW-8413 SITSW-8414" +
                      " SITSW-8421 SITSW-8422 SITSW-8424 SITSW-8425 SITSW-8428 SITSW-8430 SITSW-8431 SITSW-8433 SITSW-8434 SITSW-8435" +
-                     " SITSW-8440 SITSW-8441 SITSW-8785 SITSW-9090 SITSW-9091 SITSW-9227 SITSW-9233 SITSW-9234 SITSW-9235 SITSW-9236" +
-                     " SITSW-9237 SITSW-9238 SITSW-9239 SITSW-9240 SITSW-9241 SITSW-9271 SITSW-9272 SITSW-9274 SITSW-9355 SITSW-10719" +
-                     " SITSW-10720 SITSW-10721 SITSW-10722 SITSW-10723 SITSW-10724",
+                     " SITSW-8440 SITSW-8441 SITSW-8785 SITSW-9227 SITSW-9233 SITSW-9234 SITSW-9235 SITSW-9236 SITSW-9237 SITSW-9238" +
+                     " SITSW-9239 SITSW-9240 SITSW-9241 SITSW-9271 SITSW-9272 SITSW-9274 SITSW-9355 SITSW-10719 SITSW-10720 SITSW-10721" +
+                     " SITSW-10722 SITSW-10723 SITSW-10724",
+        expectTimeout: 500,
+        timeout: 2400,
+    },
+};
+
+const robot_template_nortos = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MCSPI",
+        testCaseName: "MCSPI Test Application",
+        testCaseIds: "SITSW-8397 SITSW-8398 SITSW-8399 SITSW-8402 SITSW-8403 SITSW-8404 SITSW-8405 SITSW-8406 SITSW-8407 SITSW-8408" +
+                     " SITSW-8409 SITSW-8410 SITSW-8411 SITSW-8412 SITSW-8413 SITSW-8414 SITSW-8424 SITSW-8425 SITSW-8428 SITSW-8430" +
+                     " SITSW-8431 SITSW-8433 SITSW-8434 SITSW-8435 SITSW-8440 SITSW-8441 SITSW-9227 SITSW-9233 SITSW-9234 SITSW-9235" +
+                     " SITSW-9236 SITSW-9237 SITSW-9238 SITSW-9239 SITSW-9240 SITSW-9241 SITSW-9271 SITSW-9272 SITSW-9274 SITSW-9355" +
+                     " SITSW-10721 SITSW-10722 SITSW-10723 SITSW-10724",
+        expectTimeout: 500,
+        timeout: 2400,
+    },
+};
+
+const robot_template_freertos_smp = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MCSPI",
+        testCaseName: "MCSPI Test Application",
+        testCaseIds: "SITSW-9090 SITSW-9091",
         expectTimeout: 500,
         timeout: 2400,
     },
@@ -461,6 +441,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_r5f;
             build_property.templates = templates_freertos_mcu_r5f;
             build_property.cflags = cflags_free_rtos;
+            build_property.templates = [...build_property.templates, robot_template_freertos];
         }
         else
         {
@@ -468,6 +449,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_nortos;
             build_property.libs = libs_nortos_r5f;
             build_property.templates = templates_nortos_mcu_r5f;
+            build_property.templates = [...build_property.templates, robot_template_nortos];
         }
     }
     else if(buildOption.cpu.match(/r5f*/)) {
@@ -480,18 +462,12 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_dm_r5f;
             build_property.templates = templates_freertos_dm_r5f;
             build_property.cflags =  cflags_free_rtos;
+            build_property.templates = [...build_property.templates, robot_template_freertos];
         }
-        else
-        {
-            build_property.includes = includes_nortos;
-            build_property.libdirs = libdirs_nortos_dm_r5f;
-            build_property.libs = libs_nortos_dm_r5f;
-            build_property.templates = templates_nortos_dm_r5f;
-        }
+
     }
     else if(buildOption.cpu.match(/a53*/)) {
         build_property.defines = defines_a53;
-
 
         if(buildOption.os.match("freertos-smp"))
         {
@@ -502,6 +478,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.defines = defines_a53_smp;
             build_property.libdirs = libdirs_freertos;
             build_property.cflags =  cflags_free_rtos;
+            build_property.templates = [...build_property.templates, robot_template_freertos_smp];
         }
 	    else if(buildOption.os.match(/freertos*/) )
 	    {
@@ -512,6 +489,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_a53;
             build_property.templates = templates_freertos_a53;
             build_property.cflags =  cflags_free_rtos;
+            build_property.templates = [...build_property.templates, robot_template_freertos];
 	    }
 	    else
 		{
@@ -520,10 +498,10 @@ function getComponentBuildProperty(buildOption) {
 		    build_property.libdirs = libdirs_nortos_a53;
 		    build_property.libs = libs_nortos_a53;
 		    build_property.templates = templates_nortos_a53;
+            build_property.templates = [...build_property.templates, robot_template_nortos];
 		}
     }
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

@@ -239,6 +239,17 @@ function getComponentProperty() {
 }
 
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "UDMA",
+        testCaseName: "UDMA Coverage Test Application",
+        expectTimeout: 360,
+        testCaseIds: "SITSW-7253 SITSW-7254",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -266,6 +277,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos_r5;
             build_property.libs = libs_freertos_r5f;
             build_property.templates = templates_freertos_r5f;
+            build_property.templates = [...build_property.templates, robot_template];
         }
         else {
             build_property.libdirsprebuild = libdirs_prebuild_nortos;
@@ -280,6 +292,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos_dm_r5;
             build_property.libs = libs_freertos_dm_r5f;
             build_property.templates = templates_freertos_dm_r5f;
+            build_property.templates = [...build_property.templates, robot_template];
         }
     }
     return build_property;

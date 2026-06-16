@@ -146,7 +146,7 @@ function getComponentProperty() {
     return property;
 }
 
-const robot_template = {
+const robot_template_mcu_r5f = {
     input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
@@ -157,6 +157,22 @@ const robot_template = {
         cfgPath: "test/drivers/rtc/{board}/{coreName}/default_test_rtc_${DEVICE_TYPE}.cfg",
         appName: "test_rtc",
         expectTimeout: 120,
+        expectPort: "USB3",
+    },
+};
+
+const robot_template_r5f = {
+    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "RTC",
+        testCaseName: "RTC Test Application",
+        testCaseIds: "SITSW-5822 SITSW-5823 SITSW-5824",
+        withCfg: true,
+        cfgPath: "test/drivers/rtc/{board}/{coreName}/default_test_rtc_${DEVICE_TYPE}.cfg",
+        appName: "test_rtc",
+        expectTimeout: 120,
+        expectPort: "USB2",
     },
 };
 
@@ -175,6 +191,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_r5f;
             build_property.templates = templates_freertos_r5f;
         }
+        build_property.templates = [...(build_property.templates || []), robot_template_mcu_r5f];
     }
     else if(buildOption.cpu.match(/r5f*/)) {
         build_property.includes = includes_freertos_r5f;
@@ -182,9 +199,9 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_dm_r5f;
         build_property.templates = templates_freertos_dm_r5f;
         build_property.defines = defines_dm_r5f;
+        build_property.templates = [...(build_property.templates || []), robot_template_r5f];
     }
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

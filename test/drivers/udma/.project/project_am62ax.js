@@ -633,24 +633,106 @@ function getComponentProperty() {
 }
 
 
-const robot_template = {
+/* a53ss0-0_nortos + mcu-r5fss0-0_nortos: 90 IDs */
+const robot_template_nortos = {
     input: ".project/templates/am62ax/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "UDMA",
-        testCaseName: "UDMA SMP Block Copy Channel Open/Close Race Test",
+        testCaseName: "UDMA Test Application",
         expectTimeout: 360,
-        testCaseIds: "SITSW-7253 SITSW-7254 SITSW-8237 SITSW-8238 SITSW-8239 SITSW-8240 SITSW-8242 SITSW-8243 SITSW-8244 SITSW-8245" +
-                     " SITSW-8246 SITSW-8247 SITSW-8248 SITSW-8249 SITSW-8250 SITSW-8251 SITSW-8252 SITSW-8274 SITSW-8275 SITSW-8276" +
-                     " SITSW-8277 SITSW-8278 SITSW-8279 SITSW-8280 SITSW-8282 SITSW-8283 SITSW-8284 SITSW-8285 SITSW-8286 SITSW-8287" +
-                     " SITSW-8288 SITSW-8289 SITSW-8291 SITSW-8292 SITSW-8293 SITSW-8294 SITSW-8295 SITSW-8296 SITSW-8297 SITSW-8298" +
-                     " SITSW-8300 SITSW-8301 SITSW-8302 SITSW-8303 SITSW-8304 SITSW-8595 SITSW-8596 SITSW-8597 SITSW-8598 SITSW-8599" +
-                     " SITSW-8600 SITSW-8601 SITSW-8602 SITSW-8603 SITSW-8604 SITSW-8605 SITSW-8606 SITSW-8607 SITSW-8609 SITSW-8610" +
-                     " SITSW-8611 SITSW-8612 SITSW-8613 SITSW-8614 SITSW-8615 SITSW-8616 SITSW-8617 SITSW-8618 SITSW-8765 SITSW-8766" +
-                     " SITSW-8767 SITSW-8768 SITSW-8769 SITSW-8770 SITSW-8771 SITSW-8772 SITSW-8773 SITSW-8774 SITSW-8775 SITSW-8776" +
-                     " SITSW-8777 SITSW-8778 SITSW-9135 SITSW-9137 SITSW-9138 SITSW-9139 SITSW-9140 SITSW-9141 SITSW-9142 SITSW-9143" +
-                     " SITSW-9154 SITSW-9250 SITSW-9251 SITSW-9252 SITSW-9405 SITSW-9406 SITSW-9407 SITSW-9408 SITSW-9409 SITSW-9594" +
+        testCaseIds: "SITSW-7253 SITSW-8237 SITSW-8238 SITSW-8239 SITSW-8240 SITSW-8242 SITSW-8243 SITSW-8244 SITSW-8245 SITSW-8246" +
+                     " SITSW-8247 SITSW-8248 SITSW-8249 SITSW-8250 SITSW-8251 SITSW-8252 SITSW-8274 SITSW-8275 SITSW-8276 SITSW-8278" +
+                     " SITSW-8279 SITSW-8280 SITSW-8282 SITSW-8283 SITSW-8284 SITSW-8285 SITSW-8286 SITSW-8287 SITSW-8288 SITSW-8289" +
+                     " SITSW-8291 SITSW-8292 SITSW-8293 SITSW-8295 SITSW-8296 SITSW-8297 SITSW-8298 SITSW-8300 SITSW-8301 SITSW-8302" +
+                     " SITSW-8303 SITSW-8304 SITSW-8595 SITSW-8596 SITSW-8597 SITSW-8598 SITSW-8599 SITSW-8600 SITSW-8601 SITSW-8603" +
+                     " SITSW-8604 SITSW-8605 SITSW-8606 SITSW-8607 SITSW-8609 SITSW-8610 SITSW-8611 SITSW-8612 SITSW-8613 SITSW-8614" +
+                     " SITSW-8615 SITSW-8616 SITSW-8617 SITSW-8618 SITSW-8765 SITSW-8766 SITSW-8767 SITSW-8768 SITSW-8769 SITSW-8770" +
+                     " SITSW-8771 SITSW-8772 SITSW-8773 SITSW-8774 SITSW-8775 SITSW-8776 SITSW-8777 SITSW-8778 SITSW-9135 SITSW-9137" +
+                     " SITSW-9138 SITSW-9139 SITSW-9140 SITSW-9141 SITSW-9142 SITSW-9143 SITSW-9154 SITSW-9601 SITSW-9603 SITSW-11070",
+    },
+};
+
+/* a53ss0-0_freertos: 97 IDs */
+const robot_template_a53_freertos = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "UDMA",
+        testCaseName: "UDMA Test Application",
+        expectTimeout: 360,
+        testCaseIds: "SITSW-8237 SITSW-8238 SITSW-8239 SITSW-8240 SITSW-8242 SITSW-8243 SITSW-8244 SITSW-8245 SITSW-8246 SITSW-8247" +
+                     " SITSW-8248 SITSW-8249 SITSW-8250 SITSW-8251 SITSW-8252 SITSW-8274 SITSW-8275 SITSW-8276 SITSW-8278 SITSW-8279" +
+                     " SITSW-8280 SITSW-8282 SITSW-8283 SITSW-8284 SITSW-8285 SITSW-8286 SITSW-8287 SITSW-8288 SITSW-8289 SITSW-8291" +
+                     " SITSW-8292 SITSW-8293 SITSW-8295 SITSW-8296 SITSW-8297 SITSW-8298 SITSW-8300 SITSW-8301 SITSW-8302 SITSW-8303" +
+                     " SITSW-8304 SITSW-8595 SITSW-8596 SITSW-8597 SITSW-8598 SITSW-8599 SITSW-8600 SITSW-8601 SITSW-8603 SITSW-8604" +
+                     " SITSW-8605 SITSW-8606 SITSW-8607 SITSW-8609 SITSW-8610 SITSW-8611 SITSW-8612 SITSW-8613 SITSW-8614 SITSW-8615" +
+                     " SITSW-8616 SITSW-8617 SITSW-8618 SITSW-8765 SITSW-8766 SITSW-8767 SITSW-8768 SITSW-8769 SITSW-8770 SITSW-8771" +
+                     " SITSW-8772 SITSW-8773 SITSW-8774 SITSW-8775 SITSW-8776 SITSW-8777 SITSW-8778 SITSW-9135 SITSW-9137 SITSW-9138" +
+                     " SITSW-9139 SITSW-9140 SITSW-9141 SITSW-9142 SITSW-9143 SITSW-9154 SITSW-9250 SITSW-9251 SITSW-9252 SITSW-9594" +
                      " SITSW-9595 SITSW-9596 SITSW-9597 SITSW-9601 SITSW-9603 SITSW-9631 SITSW-11070",
+    },
+};
+
+/* mcu-r5fss0-0_freertos + r5fss0-0_freertos: 92 IDs */
+const robot_template_freertos = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "UDMA",
+        testCaseName: "UDMA Test Application",
+        expectTimeout: 360,
+        testCaseIds: "SITSW-8237 SITSW-8238 SITSW-8239 SITSW-8240 SITSW-8242 SITSW-8243 SITSW-8244 SITSW-8245 SITSW-8246 SITSW-8247" +
+                     " SITSW-8248 SITSW-8249 SITSW-8250 SITSW-8251 SITSW-8252 SITSW-8274 SITSW-8275 SITSW-8276 SITSW-8278 SITSW-8279" +
+                     " SITSW-8280 SITSW-8282 SITSW-8283 SITSW-8284 SITSW-8285 SITSW-8286 SITSW-8287 SITSW-8288 SITSW-8289 SITSW-8291" +
+                     " SITSW-8292 SITSW-8293 SITSW-8295 SITSW-8296 SITSW-8297 SITSW-8298 SITSW-8300 SITSW-8301 SITSW-8302 SITSW-8303" +
+                     " SITSW-8304 SITSW-8595 SITSW-8596 SITSW-8597 SITSW-8598 SITSW-8599 SITSW-8600 SITSW-8601 SITSW-8603 SITSW-8604" +
+                     " SITSW-8605 SITSW-8606 SITSW-8607 SITSW-8609 SITSW-8610 SITSW-8611 SITSW-8612 SITSW-8613 SITSW-8614 SITSW-8615" +
+                     " SITSW-8616 SITSW-8617 SITSW-8618 SITSW-8765 SITSW-8766 SITSW-8767 SITSW-8768 SITSW-8769 SITSW-8770 SITSW-8771" +
+                     " SITSW-8772 SITSW-8773 SITSW-8774 SITSW-8775 SITSW-8776 SITSW-8777 SITSW-8778 SITSW-9135 SITSW-9137 SITSW-9138" +
+                     " SITSW-9139 SITSW-9140 SITSW-9141 SITSW-9142 SITSW-9143 SITSW-9154 SITSW-9250 SITSW-9251 SITSW-9252 SITSW-9601" +
+                     " SITSW-9603 SITSW-11070",
+    },
+};
+
+/* r5fss0-0_nortos: 89 IDs */
+const robot_template_r5f_nortos = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "UDMA",
+        testCaseName: "UDMA Test Application",
+        expectTimeout: 360,
+        testCaseIds: "SITSW-8237 SITSW-8238 SITSW-8239 SITSW-8240 SITSW-8242 SITSW-8243 SITSW-8244 SITSW-8245 SITSW-8246 SITSW-8247" +
+                     " SITSW-8248 SITSW-8249 SITSW-8250 SITSW-8251 SITSW-8252 SITSW-8274 SITSW-8275 SITSW-8276 SITSW-8278 SITSW-8279" +
+                     " SITSW-8280 SITSW-8282 SITSW-8283 SITSW-8284 SITSW-8285 SITSW-8286 SITSW-8287 SITSW-8288 SITSW-8289 SITSW-8291" +
+                     " SITSW-8292 SITSW-8293 SITSW-8295 SITSW-8296 SITSW-8297 SITSW-8298 SITSW-8300 SITSW-8301 SITSW-8302 SITSW-8303" +
+                     " SITSW-8304 SITSW-8595 SITSW-8596 SITSW-8597 SITSW-8598 SITSW-8599 SITSW-8600 SITSW-8601 SITSW-8603 SITSW-8604" +
+                     " SITSW-8605 SITSW-8606 SITSW-8607 SITSW-8609 SITSW-8610 SITSW-8611 SITSW-8612 SITSW-8613 SITSW-8614 SITSW-8615" +
+                     " SITSW-8616 SITSW-8617 SITSW-8618 SITSW-8765 SITSW-8766 SITSW-8767 SITSW-8768 SITSW-8769 SITSW-8770 SITSW-8771" +
+                     " SITSW-8772 SITSW-8773 SITSW-8774 SITSW-8775 SITSW-8776 SITSW-8777 SITSW-8778 SITSW-9135 SITSW-9137 SITSW-9138" +
+                     " SITSW-9139 SITSW-9140 SITSW-9141 SITSW-9142 SITSW-9143 SITSW-9154 SITSW-9601 SITSW-9603 SITSW-11070",
+    },
+};
+
+/* c75ss0-0_freertos: 100 IDs */
+const robot_template_c75_freertos = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "UDMA",
+        testCaseName: "UDMA Test Application",
+        expectTimeout: 360,
+        testCaseIds: "SITSW-8237 SITSW-8238 SITSW-8239 SITSW-8240 SITSW-8242 SITSW-8243 SITSW-8244 SITSW-8245 SITSW-8246 SITSW-8247" +
+                     " SITSW-8248 SITSW-8249 SITSW-8250 SITSW-8251 SITSW-8252 SITSW-8274 SITSW-8275 SITSW-8276 SITSW-8277 SITSW-8278" +
+                     " SITSW-8279 SITSW-8280 SITSW-8282 SITSW-8283 SITSW-8284 SITSW-8285 SITSW-8286 SITSW-8287 SITSW-8288 SITSW-8289" +
+                     " SITSW-8291 SITSW-8292 SITSW-8293 SITSW-8294 SITSW-8295 SITSW-8296 SITSW-8297 SITSW-8298 SITSW-8300 SITSW-8301" +
+                     " SITSW-8302 SITSW-8303 SITSW-8304 SITSW-8595 SITSW-8596 SITSW-8597 SITSW-8598 SITSW-8599 SITSW-8600 SITSW-8601" +
+                     " SITSW-8602 SITSW-8603 SITSW-8604 SITSW-8605 SITSW-8606 SITSW-8607 SITSW-8609 SITSW-8610 SITSW-8611 SITSW-8612" +
+                     " SITSW-8613 SITSW-8614 SITSW-8615 SITSW-8616 SITSW-8617 SITSW-8618 SITSW-8765 SITSW-8766 SITSW-8767 SITSW-8768" +
+                     " SITSW-8769 SITSW-8770 SITSW-8771 SITSW-8772 SITSW-8773 SITSW-8774 SITSW-8775 SITSW-8776 SITSW-8777 SITSW-8778" +
+                     " SITSW-9135 SITSW-9137 SITSW-9138 SITSW-9139 SITSW-9140 SITSW-9141 SITSW-9142 SITSW-9143 SITSW-9154 SITSW-9250" +
+                     " SITSW-9251 SITSW-9252 SITSW-9405 SITSW-9406 SITSW-9407 SITSW-9408 SITSW-9409 SITSW-9601 SITSW-9603 SITSW-11070",
     },
 };
 
@@ -669,6 +751,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos_mcu_r5;
             build_property.libs = libs_freertos_mcu_r5f;
             build_property.templates = templates_freertos_mcu_r5f;
+            build_property.templates = [...build_property.templates, robot_template_freertos];
         }
         else {
             build_property.includes = includes;
@@ -678,6 +761,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_nortos_mcu_r5f;
             build_property.libsprebuild = libs_prebuild_nortos_r5f;
             build_property.templates = templates_nortos_mcu_r5f;
+            build_property.templates = [...build_property.templates, robot_template_nortos];
         }
 
     }else if(buildOption.cpu.match(/r5f*/)) {
@@ -687,6 +771,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos_dm_r5;
             build_property.libs = libs_freertos_dm_r5f;
             build_property.templates = templates_freertos_dm_r5f;
+            build_property.templates = [...build_property.templates, robot_template_freertos];
         }
         else
         {
@@ -697,6 +782,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_nortos_r5f;
             build_property.libsprebuild = libs_prebuild_nortos_r5f;
             build_property.templates = templates_nortos_dm_r5f;
+            build_property.templates = [...build_property.templates, robot_template_r5f_nortos];
         }
     }else if(buildOption.cpu.match(/a53*/)){
         if ((buildOption.os.match(/freertos-smp*/)))
@@ -707,6 +793,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos_a53;
             build_property.libs = libs_a53_smp;
             build_property.defines = defines_a53_smp;
+            /* no robot_template for freertos-smp: 0 applicable test IDs */
         }
         else if(buildOption.os.match(/freertos*/) )
         {
@@ -716,6 +803,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_a53;
             build_property.templates = templates_freertos_a53;
             build_property.cflags = cflags_a53;
+            build_property.templates = [...build_property.templates, robot_template_a53_freertos];
         }
         else
         {
@@ -725,6 +813,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_nortos_a53;
             build_property.templates = templates_nortos_a53;
             build_property.cflags = cflags_a53;
+            build_property.templates = [...build_property.templates, robot_template_nortos];
         }
     }else if(buildOption.cpu.match(/c75*/)) {
         build_property.defines = defines_c75_freertos
@@ -739,10 +828,9 @@ function getComponentBuildProperty(buildOption) {
             mergedFiles.common = mergedFiles.common.concat(files_c75.common);
             build_property.files = mergedFiles;
         }
+        build_property.templates = [...build_property.templates, robot_template_c75_freertos];
     }
 
-
-    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

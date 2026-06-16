@@ -231,6 +231,8 @@ const example_file_list = [
     "test/drivers/pinmux_coverage/.project/project.js",
     "test/drivers/soc_coverage/.project/project.js",
     "test/drivers/uart/.project/project.js",
+    "test/drivers/watchdog/.project/project.js",
+    "test/drivers/watchdog/test_watchdog_system/.project/project.js",
     "test/kernel/dpl/.project/project.js",
     "test/kernel/dpl_mmu_test/.project/project.js",
     "test/kernel/freertos/.project/project.js",

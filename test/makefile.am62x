@@ -229,6 +229,13 @@ help:
 	@echo  $(MAKE) -s -C drivers/uart/am62x-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/uart/am62x-sip-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/uart/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/watchdog/am62x-sk/a53ss0-0_nortos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/watchdog/am62x-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/watchdog/am62x-sk/a53ss0-0_freertos-smp/gcc-aarch64 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/watchdog/am62x-sk/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/watchdog/am62x-sk/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/watchdog/test_watchdog_system/am62x-sk/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/watchdog/test_watchdog_system/am62x-sk/a53ss0-0_freertos/gcc-aarch64 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl/am62x-sk/m4fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl/am62x-sk/m4fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl/am62x-sk/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -772,6 +779,13 @@ BUILD_COMBO_EXAMPLE_ALL += test_uart_am62x-sk-lp_m4fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_uart_am62x-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_uart_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_uart_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_watchdog_am62x-sk_a53ss0-0_nortos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_watchdog_am62x-sk_a53ss0-0_freertos_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_watchdog_am62x-sk_a53ss0-0_freertos-smp_gcc-aarch64
+BUILD_COMBO_EXAMPLE_ALL += test_watchdog_am62x-sk_r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_watchdog_am62x-sk_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_watchdog_system_am62x-sk_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_watchdog_system_am62x-sk_a53ss0-0_freertos_gcc-aarch64
 BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62x-sk_m4fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62x-sk_m4fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62x-sk_r5fss0-0_freertos_ti-arm-clang
@@ -1422,6 +1436,27 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_uart_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64:
 	$(MAKE) -C drivers/uart/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile all
 
+ test_watchdog_am62x-sk_a53ss0-0_nortos_gcc-aarch64:
+	$(MAKE) -C drivers/watchdog/am62x-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile all
+
+ test_watchdog_am62x-sk_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C drivers/watchdog/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
+ test_watchdog_am62x-sk_a53ss0-0_freertos-smp_gcc-aarch64:
+	$(MAKE) -C drivers/watchdog/am62x-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile all
+
+ test_watchdog_am62x-sk_r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/watchdog/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ test_watchdog_am62x-sk_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/watchdog/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_watchdog_system_am62x-sk_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/watchdog/test_watchdog_system/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_watchdog_system_am62x-sk_a53ss0-0_freertos_gcc-aarch64:
+	$(MAKE) -C drivers/watchdog/test_watchdog_system/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile all
+
  test_dpl_am62x-sk_m4fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C kernel/dpl/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile all
 
@@ -2045,6 +2080,13 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_uart_am62x-sk-lp_m4fss0-0_freertos_ti-arm-
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_uart_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_uart_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_uart_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_watchdog_am62x-sk_a53ss0-0_nortos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_watchdog_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_watchdog_am62x-sk_a53ss0-0_freertos-smp_gcc-aarch64_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_watchdog_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_watchdog_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_watchdog_system_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_watchdog_system_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62x-sk_m4fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean
@@ -2695,6 +2737,27 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_uart_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_clean:
 	$(MAKE) -C drivers/uart/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
 
+ test_watchdog_am62x-sk_a53ss0-0_nortos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/watchdog/am62x-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile clean
+
+ test_watchdog_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/watchdog/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
+ test_watchdog_am62x-sk_a53ss0-0_freertos-smp_gcc-aarch64_clean:
+	$(MAKE) -C drivers/watchdog/am62x-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile clean
+
+ test_watchdog_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/watchdog/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ test_watchdog_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/watchdog/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_watchdog_system_am62x-sk_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/watchdog/test_watchdog_system/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_watchdog_system_am62x-sk_a53ss0-0_freertos_gcc-aarch64_clean:
+	$(MAKE) -C drivers/watchdog/test_watchdog_system/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile clean
+
  test_dpl_am62x-sk_m4fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C kernel/dpl/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile clean
 
@@ -3318,6 +3381,13 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_uart_am62x-sk-lp_m4fss0-0_freertos_ti-arm-
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_uart_am62x-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_uart_am62x-sip-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_uart_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_watchdog_am62x-sk_a53ss0-0_nortos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_watchdog_am62x-sk_a53ss0-0_freertos_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_watchdog_am62x-sk_a53ss0-0_freertos-smp_gcc-aarch64_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_watchdog_am62x-sk_r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_watchdog_am62x-sk_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_watchdog_system_am62x-sk_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_watchdog_system_am62x-sk_a53ss0-0_freertos_gcc-aarch64_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62x-sk_m4fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62x-sk_m4fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62x-sk_r5fss0-0_freertos_ti-arm-clang_scrub
@@ -3967,6 +4037,27 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_uart_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64_scrub:
 	$(MAKE) -C drivers/uart/am62x-sk-lp/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ test_watchdog_am62x-sk_a53ss0-0_nortos_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/watchdog/am62x-sk/a53ss0-0_nortos/gcc-aarch64 -f makefile scrub
+
+ test_watchdog_am62x-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/watchdog/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
+
+ test_watchdog_am62x-sk_a53ss0-0_freertos-smp_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/watchdog/am62x-sk/a53ss0-0_freertos-smp/gcc-aarch64 -f makefile scrub
+
+ test_watchdog_am62x-sk_r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/watchdog/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_watchdog_am62x-sk_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/watchdog/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_watchdog_system_am62x-sk_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/watchdog/test_watchdog_system/am62x-sk/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_watchdog_system_am62x-sk_a53ss0-0_freertos_gcc-aarch64_scrub:
+	$(MAKE) -C drivers/watchdog/test_watchdog_system/am62x-sk/a53ss0-0_freertos/gcc-aarch64 -f makefile scrub
 
  test_dpl_am62x-sk_m4fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C kernel/dpl/am62x-sk/m4fss0-0_nortos/ti-arm-clang -f makefile scrub

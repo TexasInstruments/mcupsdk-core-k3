@@ -126,35 +126,7 @@ Ethernet driver (ENET)      | R5F       | YES               | FreeRTOS    | Ethe
 
 ### SOC Device Drivers
 
-\note See the updated MCASP usage guidelines in \ref DRIVERS_MCASP_PAGE for changes in
-MCASP driver
-
-Peripheral | Supported CPUs          | SysConfig Support
------------|-------------------------|-------------------
-ADC        | R5F                     | YES
-AASRC      | R5F, C7X                | YES
-ECAP       | R5F, C7X                | YES
-EPWM       | R5F, C7X                | YES
-FLC        | R5F                     | YES
-GPIO       | R5F, C7X                | YES
-I2C        | R5F, C7X                | YES
-IPC        | R5F, C7X                | YES
-MCAN       | R5F                     | YES
-MCASP      | R5F, C7X                | YES
-MCSPI      | R5F, C7X                | YES
-MMCSD      | R5F, WKUP-R5F, C7X      | YES
-OSPI       | R5F, WKUP-R5F, C7X      | YES
-Pinmux     | R5F, C7X                | YES
-PMU        | R5F, WKUP-R5F           | YES
-RL2        | R5F                     | YES
-RTC        | R5F, C7X                | YES
-SOC        | R5F, C7X                | YES
-SCI Client | R5F, C7X                | YES
-Spinlock   | R5F, C7X                | YES
-UART       | R5F, C7X                | YES
-UDMA       | R5F, C7X                | YES
-WDT        | R5F, WKUP-R5F, C7X      | YES
-
+For SOC device driver support information per CPU, refer to \ref BUILDSHEET.
 
 ### Board Device Drivers
 

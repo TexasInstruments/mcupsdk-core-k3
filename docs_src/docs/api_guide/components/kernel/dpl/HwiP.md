@@ -67,7 +67,7 @@ See also \ref KERNEL_FREERTOS_PAGE, \ref KERNEL_NORTOS_PAGE for list of unsuppor
     ----------|--------------------------|---------------------------
     R5F       | 0  .. 511                | 0 (highest) .. 15 (lowest)
     M4F       | 15 ..  79                | 0 (highest) ..  7 (lowest)
-    A53       | 0 ..  255                | 0 (highest) ..  15 (lowest)
+    A53       | 0 ..  255                | 0 (highest) .. 14 (lowest)
 \endcond
 
 \cond SOC_AM62X
@@ -76,7 +76,7 @@ See also \ref KERNEL_FREERTOS_PAGE, \ref KERNEL_NORTOS_PAGE for list of unsuppor
     ----------|--------------------------|---------------------------
     R5F       | 0  .. 511                | 0 (highest) .. 15 (lowest)
     M4F       | 15 ..  79                | 0 (highest) ..  7 (lowest)
-    A53       | 0 ..  255                | 0 (highest) ..  15 (lowest)
+    A53       | 0 ..  255                | 0 (highest) .. 14 (lowest)
 \endcond
 
 \cond SOC_AM62AX || SOC_AM62DX
@@ -84,7 +84,7 @@ See also \ref KERNEL_FREERTOS_PAGE, \ref KERNEL_NORTOS_PAGE for list of unsuppor
     CPU type  | Valid interrupt numbers  | Valid interrupt priorities
     ----------|--------------------------|---------------------------
     R5F       | 0  .. 511                | 0 (highest) .. 15 (lowest)
-    A53       | 0 ..  255                | 0 (highest) ..  15 (lowest)
+    A53       | 0 ..  255                | 0 (highest) .. 14 (lowest)
 
 - On C75,
   - The C75 CPU supports 64 interrupts.

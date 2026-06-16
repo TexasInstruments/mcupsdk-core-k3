@@ -124,6 +124,20 @@ The application callback corresponding to the re programmed buffers is not calle
 - If loopjob is disabled at least 2 buffers should be queued before starting the mcasp transfer.
 New buffer will be programmed in the interrupt callback corresponding to current transfer. the application is expected to submit the new buffer before that else the same buffer is re programmed, so it is recommended to start the transfer with at least 3 buffers queued.
 
+## Timeout
+
+The McASP driver does not expose a user-configurable timeout for data transfers. All timeout handling is done internally using fixed-duration polling loops.
+
+### Non-Configurable Timeouts
+
+The following operations use fixed internal timeouts and cannot be changed by the application:
+
+- **GBLCTL register setup** — Waits for global control register bits to take effect using an internal loop bounded by `MCASP_GBLCTL_TIMEOUT`. If this times out, the driver returns an error.
+- **Data transfer loop** — Waits for DIT/DMA completion using an internal loop bounded by `MCASP_DATA_TIMEOUT`. If this times out, the driver returns an error.
+- **Internal driver lock** — A mutex protecting driver open/close state, always using `SystemP_WAIT_FOREVER`.
+
+**When to act:** If `MCASP_open` or a data transfer API returns an error indicating a timeout, it typically means the hardware is not responding — check clocking, pin configuration, and external codec connectivity.
+
 ## Example Usage
 
 Include the below file to access the APIs

@@ -166,6 +166,29 @@ the exact number of bytes to be read is not known.
 - In case of DMA mode, as R5F core is not Cache Coherent, Cache Writeback is required if R5F writes to the buffers.
   And before reading the buffers, application needs to invalidate those. Please refer \ref EXAMPLES_DRIVERS_UART_ECHO_DMA.
 \endcond
+
+## Timeout
+
+The UART driver uses `SystemP_WAIT_FOREVER` (0xFFFFFFFFU) as the default timeout for blocking transfers.
+
+### Configurable Timeout
+
+The transfer timeout is configurable per-transaction via the `timeout` field in \ref UART_Transaction, as shown below:
+
+```c
+UART_Transaction txn;
+UART_Transaction_init(&txn);   /* default: txn.timeout = SystemP_WAIT_FOREVER */
+txn.timeout = 2000;            /* override: 2000 OS ticks */
+```
+
+**When to change:** Set a finite timeout in applications where the remote UART sender or receiver may become unresponsive. A finite timeout allows the application to detect a communication failure and take corrective action rather than blocking indefinitely.
+
+### Non-Configurable Timeouts
+
+The following operations always use `SystemP_WAIT_FOREVER` and cannot be overridden by the application:
+
+- **Internal driver lock** — A mutex protecting driver state, acquired at the start of every transfer. This waits forever if another transfer is already in progress on the same instance.
+
 ## Example Usage
 
 Include the below file to access the APIs

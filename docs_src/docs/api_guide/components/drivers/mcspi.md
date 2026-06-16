@@ -208,6 +208,32 @@ status and reinitiate transfers again.
 - In case of DMA mode, as R5F core is not Cache Coherent, Cache Writeback is required if R5F writes to the buffers.
   And before reading the buffers, application needs to invalidate those. Please refer \ref EXAMPLES_DRIVERS_MCSPI_LOOPBACK_DMA.
 \endcond
+
+## Timeout
+
+The MCSPI driver uses `SystemP_WAIT_FOREVER` (0xFFFFFFFFU) as the default timeout for blocking transfers.
+
+### Configurable Timeout
+
+The transfer timeout is configurable per driver instance via the `transferTimeout` field in \ref MCSPI_OpenParams, as shown below:
+
+```c
+MCSPI_OpenParams openPrms;
+MCSPI_OpenParams_init(&openPrms);    /* default: openPrms.transferTimeout = SystemP_WAIT_FOREVER */
+openPrms.transferTimeout = 5000;     /* override: 5000 OS ticks */
+handle = MCSPI_open(instance, &openPrms);
+```
+
+**When to change:** Set a finite timeout when the application must detect a stalled SPI slave or a missing clock signal, for example in a system that requires graceful error recovery instead of hanging indefinitely.
+
+**Note:** This timeout applies to interrupt and DMA transfer modes. In polled mode, a fixed internal loop timeout (`MCSPI_MAX_TIMEOUT_VALUE`) is used and is not configurable by the application.
+
+### Non-Configurable Timeouts
+
+The following operations always use `SystemP_WAIT_FOREVER` and cannot be overridden by the application:
+
+- **Internal driver lock** — A mutex protecting driver state, acquired at the start of every transfer. This waits forever if another transfer is already in progress on the same instance.
+
 ## Example Usage
 
 Include the below file to access the APIs

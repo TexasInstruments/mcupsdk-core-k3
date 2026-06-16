@@ -61,6 +61,31 @@ J20 header pins needs to be shorted for having the write protect disabled for th
 J22 header pins needs to be shorted for having the write protect disabled for the EEPROM
 \endcond
 
+## Timeout
+
+The I2C driver uses `SystemP_WAIT_FOREVER` (0xFFFFFFFFU) as the default timeout for blocking transfers.
+
+### Configurable Timeout
+
+The transfer timeout is configurable per-transaction via the `timeout` field in \ref I2C_Transaction, as shown below:
+
+```c
+I2C_Transaction txn;
+I2C_Transaction_init(&txn);   /* default: txn.timeout = SystemP_WAIT_FOREVER */
+txn.timeout = 1000;           /* override: 1000 OS ticks */
+```
+
+**When to change:** Set a finite timeout in applications that require fault detection or cannot hang indefinitely if the I2C bus stalls due to a misbehaving slave or bus contention.
+
+**Note:** A timeout value of `0` is not supported and is internally treated as `SystemP_WAIT_FOREVER`.
+
+### Non-Configurable Timeouts
+
+The following operations always use `SystemP_WAIT_FOREVER` and cannot be overridden by the application:
+
+- **Internal driver lock** — A mutex protecting driver state, acquired at the start of every transfer. This waits forever if another transfer is already in progress on the same instance.
+- **Bus busy check** — Verifies the I2C bus is free before starting a transfer. This waits forever if the bus is permanently stuck busy (e.g., due to a hardware fault or missing pull-ups).
+
 ## Example Usage
 
 Include the below file to access the APIs

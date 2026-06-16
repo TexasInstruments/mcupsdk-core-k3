@@ -153,6 +153,31 @@ Below diagram shows the UDMA transfer API flow
 
 \endcond
 
+## Timeout
+
+The UDMA driver provides configurable timeout for channel disable and uses `SystemP_WAIT_FOREVER` for internal resource management.
+
+### Configurable Timeout
+
+The channel disable timeout is configurable via the `timeout` parameter of \ref Udma_chDisable, as shown below:
+
+```c
+/* Disable channel with a 1000 OS tick timeout */
+retVal = Udma_chDisable(chHandle, 1000U);
+
+/* Disable channel with no timeout (wait forever) */
+retVal = Udma_chDisable(chHandle, SystemP_WAIT_FOREVER);
+```
+
+**When to change:** Set a finite timeout when disabling a channel as part of error recovery or cleanup. If a DMA transfer is stalled due to a bus hang or misconfigured descriptor, `SystemP_WAIT_FOREVER` will block the calling task indefinitely.
+
+### Non-Configurable Timeouts
+
+The following operations always use `SystemP_WAIT_FOREVER` and cannot be overridden by the application:
+
+- **Resource manager locks** — Mutexes protecting channel and ring resource allocation. These wait forever if another task is currently allocating or freeing UDMA resources.
+- **SciClient communications** — TISCI messages to the DMSS firmware always use `SystemP_WAIT_FOREVER`.
+
 ## Example Usage
 
 Include the below file to access the APIs

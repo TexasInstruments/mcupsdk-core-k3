@@ -205,6 +205,28 @@ The OSPI Non-DQS tuning algorithm works as follows:
 
 - XIP mode is not supported yet.
 
+## Timeout
+
+The OSPI driver uses `SystemP_WAIT_FOREVER` (0xFFFFFFFFU) as the default timeout for blocking transfers.
+
+### Configurable Timeout
+
+The transfer timeout is configurable per-transaction via the `transferTimeout` field in \ref OSPI_Transaction, as shown below:
+
+```c
+OSPI_Transaction txn;
+OSPI_Transaction_init(&txn);    /* default: txn.transferTimeout = SystemP_WAIT_FOREVER */
+txn.transferTimeout = 10000;    /* override: 10000 OS ticks */
+```
+
+**When to change:** Set a finite timeout if the flash device may become unresponsive during a write or erase operation. Flash erase operations can take tens to hundreds of milliseconds; a reasonable timeout prevents an indefinite hang if the device malfunctions.
+
+### Non-Configurable Timeouts
+
+The following operations always use `SystemP_WAIT_FOREVER` and cannot be overridden by the application:
+
+- **Internal driver lock** — A mutex protecting driver state, acquired at the start of every transfer.
+
 ## Example Usage
 
 Include the below file to access the APIs

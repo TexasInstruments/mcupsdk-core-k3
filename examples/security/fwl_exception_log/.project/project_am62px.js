@@ -125,7 +125,7 @@ const robot_template = {
         expectations: [
             { port: "USB2", string: "Waiting for CMBN firewall exceptions", timeout: 120 },
             { port: "USB3", string: "to trigger CMBN firewall exception", timeout: 120 },
-            { port: "USB3", send: ["C", "\\r"] },
+            { port: "USB3", send: ["C", "\\r"], sendEnterFalse: true },
             { port: "USB2", string: "All tests have passed", timeout: 60 },
         ],
     },
@@ -137,8 +137,17 @@ const robot_template_sysfw = {
     options: {
         componentName: "Security",
         testCaseName: "Security: Sysfw firewall example log test",
+        appName: "fwl_exception_sysfw_log",
         testCaseIds: "SITSW-3924",
-        appName: "fwl_exception_log",
+        timeout: 660,
+        withCfg: true,
+        cfgPath: "examples/security/fwl_exception_log/{board}/{coreName}/default_fwl_exception_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectations: [
+            { port: "USB2", string: "Waiting for CMBN firewall exceptions", timeout: 120 },
+            { port: "USB3", string: "to trigger CMBN firewall exception", timeout: 120 },
+            { port: "USB3", send: ["D", "\\r"], sendEnterFalse: true },
+            { port: "USB2", string: "All tests have passed", timeout: 60 },
+        ],
     },
 };
 

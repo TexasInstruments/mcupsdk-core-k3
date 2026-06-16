@@ -633,7 +633,7 @@ function getComponentProperty() {
 }
 
 
-/* a53ss0-0_nortos + mcu-r5fss0-0_nortos: 90 IDs */
+/* a53ss0-0_nortos + mcu-r5fss0-0_nortos: 91 IDs */
 const robot_template_nortos = {
     input: ".project/templates/am62ax/astra/tests.robot.xdt",
     output: "../tests.robot",
@@ -649,11 +649,12 @@ const robot_template_nortos = {
                      " SITSW-8604 SITSW-8605 SITSW-8606 SITSW-8607 SITSW-8609 SITSW-8610 SITSW-8611 SITSW-8612 SITSW-8613 SITSW-8614" +
                      " SITSW-8615 SITSW-8616 SITSW-8617 SITSW-8618 SITSW-8765 SITSW-8766 SITSW-8767 SITSW-8768 SITSW-8769 SITSW-8770" +
                      " SITSW-8771 SITSW-8772 SITSW-8773 SITSW-8774 SITSW-8775 SITSW-8776 SITSW-8777 SITSW-8778 SITSW-9135 SITSW-9137" +
-                     " SITSW-9138 SITSW-9139 SITSW-9140 SITSW-9141 SITSW-9142 SITSW-9143 SITSW-9154 SITSW-9601 SITSW-9603 SITSW-11070",
+                     " SITSW-9138 SITSW-9139 SITSW-9140 SITSW-9141 SITSW-9142 SITSW-9143 SITSW-9154 SITSW-9601 SITSW-9603 SITSW-11069" +
+                     " SITSW-11070",
     },
 };
 
-/* a53ss0-0_freertos: 97 IDs */
+/* a53ss0-0_freertos: 98 IDs */
 const robot_template_a53_freertos = {
     input: ".project/templates/am62ax/astra/tests.robot.xdt",
     output: "../tests.robot",
@@ -670,11 +671,11 @@ const robot_template_a53_freertos = {
                      " SITSW-8616 SITSW-8617 SITSW-8618 SITSW-8765 SITSW-8766 SITSW-8767 SITSW-8768 SITSW-8769 SITSW-8770 SITSW-8771" +
                      " SITSW-8772 SITSW-8773 SITSW-8774 SITSW-8775 SITSW-8776 SITSW-8777 SITSW-8778 SITSW-9135 SITSW-9137 SITSW-9138" +
                      " SITSW-9139 SITSW-9140 SITSW-9141 SITSW-9142 SITSW-9143 SITSW-9154 SITSW-9250 SITSW-9251 SITSW-9252 SITSW-9594" +
-                     " SITSW-9595 SITSW-9596 SITSW-9597 SITSW-9601 SITSW-9603 SITSW-9631 SITSW-11070",
+                     " SITSW-9595 SITSW-9596 SITSW-9597 SITSW-9601 SITSW-9603 SITSW-9631 SITSW-11069 SITSW-11070",
     },
 };
 
-/* mcu-r5fss0-0_freertos + r5fss0-0_freertos: 92 IDs */
+/* mcu-r5fss0-0_freertos + r5fss0-0_freertos: 93 IDs */
 const robot_template_freertos = {
     input: ".project/templates/am62ax/astra/tests.robot.xdt",
     output: "../tests.robot",
@@ -691,11 +692,11 @@ const robot_template_freertos = {
                      " SITSW-8616 SITSW-8617 SITSW-8618 SITSW-8765 SITSW-8766 SITSW-8767 SITSW-8768 SITSW-8769 SITSW-8770 SITSW-8771" +
                      " SITSW-8772 SITSW-8773 SITSW-8774 SITSW-8775 SITSW-8776 SITSW-8777 SITSW-8778 SITSW-9135 SITSW-9137 SITSW-9138" +
                      " SITSW-9139 SITSW-9140 SITSW-9141 SITSW-9142 SITSW-9143 SITSW-9154 SITSW-9250 SITSW-9251 SITSW-9252 SITSW-9601" +
-                     " SITSW-9603 SITSW-11070",
+                     " SITSW-9603 SITSW-11069 SITSW-11070",
     },
 };
 
-/* r5fss0-0_nortos: 89 IDs */
+/* r5fss0-0_nortos: 90 IDs */
 const robot_template_r5f_nortos = {
     input: ".project/templates/am62ax/astra/tests.robot.xdt",
     output: "../tests.robot",
@@ -711,11 +712,11 @@ const robot_template_r5f_nortos = {
                      " SITSW-8605 SITSW-8606 SITSW-8607 SITSW-8609 SITSW-8610 SITSW-8611 SITSW-8612 SITSW-8613 SITSW-8614 SITSW-8615" +
                      " SITSW-8616 SITSW-8617 SITSW-8618 SITSW-8765 SITSW-8766 SITSW-8767 SITSW-8768 SITSW-8769 SITSW-8770 SITSW-8771" +
                      " SITSW-8772 SITSW-8773 SITSW-8774 SITSW-8775 SITSW-8776 SITSW-8777 SITSW-8778 SITSW-9135 SITSW-9137 SITSW-9138" +
-                     " SITSW-9139 SITSW-9140 SITSW-9141 SITSW-9142 SITSW-9143 SITSW-9154 SITSW-9601 SITSW-9603 SITSW-11070",
+                     " SITSW-9139 SITSW-9140 SITSW-9141 SITSW-9142 SITSW-9143 SITSW-9154 SITSW-9601 SITSW-9603 SITSW-11069 SITSW-11070",
     },
 };
 
-/* c75ss0-0_freertos: 100 IDs */
+/* c75ss0-0_freertos: 101 IDs */
 const robot_template_c75_freertos = {
     input: ".project/templates/am62ax/astra/tests.robot.xdt",
     output: "../tests.robot",
@@ -732,7 +733,8 @@ const robot_template_c75_freertos = {
                      " SITSW-8613 SITSW-8614 SITSW-8615 SITSW-8616 SITSW-8617 SITSW-8618 SITSW-8765 SITSW-8766 SITSW-8767 SITSW-8768" +
                      " SITSW-8769 SITSW-8770 SITSW-8771 SITSW-8772 SITSW-8773 SITSW-8774 SITSW-8775 SITSW-8776 SITSW-8777 SITSW-8778" +
                      " SITSW-9135 SITSW-9137 SITSW-9138 SITSW-9139 SITSW-9140 SITSW-9141 SITSW-9142 SITSW-9143 SITSW-9154 SITSW-9250" +
-                     " SITSW-9251 SITSW-9252 SITSW-9405 SITSW-9406 SITSW-9407 SITSW-9408 SITSW-9409 SITSW-9601 SITSW-9603 SITSW-11070",
+                     " SITSW-9251 SITSW-9252 SITSW-9405 SITSW-9406 SITSW-9407 SITSW-9408 SITSW-9409 SITSW-9601 SITSW-9603 SITSW-11069" +
+                     " SITSW-11070",
     },
 };
 

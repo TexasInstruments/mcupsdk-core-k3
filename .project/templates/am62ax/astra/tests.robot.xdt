@@ -114,7 +114,11 @@ ${DM_BINARY}    ../../`appBinaryDM`
 %     }
 %     if (exp.send !== undefined && Array.isArray(exp.send)) {
 %       for (let cmd of exp.send) {
+%         if (exp.sendEnterFalse) {
+	DUT`exp.port`.SEND COMMAND AND VERIFY    `cmd`    send_enter=${False}
+%         } else {
 	DUT`exp.port`.SEND COMMAND AND VERIFY    `cmd`
+%         }
 %       }
 %     }
 %   }

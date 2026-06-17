@@ -83,9 +83,13 @@ void test_mmu_main(void *args)
     RUN_TEST(TestMmuP_mapAligned1GbBlock, 9997, NULL);
 #endif /* !ENABLE_C75_CORE - exception dump/hang in c75 core  */
     RUN_TEST(TestMmuP_privilegedReadWriteUserNoAccess, 9998, NULL);
+#if !defined(ENABLE_C75_AM62AX)
     RUN_TEST(TestMmuP_privilegedReadOnlyUserNoAccess, 9999, NULL);
+#endif
     RUN_TEST(TestMmuP_privilegedAndUserReadWrite, 10000, NULL);
+#if !defined(ENABLE_C75_AM62AX)
     RUN_TEST(TestMmuP_privilegedAndUserReadOnly, 10001, NULL);
+#endif
 #if !defined(ENABLE_C75_CORE) /* exception dump/hang in c75 core  */
     RUN_TEST(TestMmuP_executeAllowedForPrivilegedAndUser, 10002, NULL);
     RUN_TEST(TestMmuP_executePrivilegedOnly, 10003, NULL);

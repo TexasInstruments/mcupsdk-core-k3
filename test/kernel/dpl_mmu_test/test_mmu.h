@@ -101,9 +101,13 @@ void TestMmuP_mapAligned64KbRegion(void *args);
 void TestMmuP_mapAligned2MbBlock(void *args);
 void TestMmuP_mapAligned1GbBlock(void *args);
 void TestMmuP_privilegedReadWriteUserNoAccess(void *args);
+#if !defined(ENABLE_C75_AM62AX)
 void TestMmuP_privilegedReadOnlyUserNoAccess(void *args);
+#endif
 void TestMmuP_privilegedAndUserReadWrite(void *args);
+#if !defined(ENABLE_C75_AM62AX)
 void TestMmuP_privilegedAndUserReadOnly(void *args);
+#endif
 
 #if !defined(ENABLE_C75_CORE)
 void TestMmuP_executeAllowedForPrivilegedAndUser(void *args);

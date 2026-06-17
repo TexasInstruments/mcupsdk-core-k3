@@ -232,6 +232,7 @@ const example_file_list = [
     "test/drivers/soc_coverage/.project/project.js",
     "test/drivers/uart/.project/project.js",
     "test/kernel/dpl/.project/project.js",
+    "test/kernel/dpl_mmu_test/.project/project.js",
     "test/kernel/freertos/.project/project.js",
     "test/kernel/freertos_smp/.project/project.js",
     "test/kernel/test_smp_kernel/.project/project.js",

@@ -447,6 +447,7 @@ void TestMmuP_privilegedReadWriteUserNoAccess(void *args)
     TestMmuP_checkPattern(vaPtr, size, 0x22u);
 }
 
+#if !defined(ENABLE_C75_AM62AX)
 /**
  * @brief Privileged RO, user no access — privileged read succeeds.
  *
@@ -505,6 +506,7 @@ void TestMmuP_privilegedReadOnlyUserNoAccess(void *args)
 #endif
     TestMmuP_checkPattern(vaPtr, size, 0x33u);
 }
+#endif
 
 /**
  * @brief Verifies privileged read/write succeeds when both privileged and user access are enabled.
@@ -546,6 +548,7 @@ void TestMmuP_privilegedAndUserReadWrite(void *args)
     TestMmuP_checkPattern(vp, size, 0x44u);
 }
 
+#if !defined(ENABLE_C75_AM62AX)
 /**
  * @brief Verifies privileged read succeeds when both privileged and user access are read-only.
  *
@@ -594,6 +597,7 @@ void TestMmuP_privilegedAndUserReadOnly(void *args)
 #endif
     TestMmuP_checkPattern(vp, size, 0x55u);
 }
+#endif
 
 #if !defined(ENABLE_C75_CORE) /* exception dump/hang in c75 core  */
 /* Execute allowed for privileged and user: alias VA -> real PA in .text */

@@ -2576,6 +2576,16 @@ static int32_t MMCSD_switchEmmcMode(MMCSD_Handle handle, uint32_t mode)
                 status = MMCSD_phyConfigure(attrs->ssBaseAddr, attrs->phyType, phyMode, MMCSD_REFERENCE_CLOCK_200M, attrs->phyDriverType, tunedItap, attrs->cardType, attrs->vddCoreVoltage);
             }
 
+            if(SystemP_SUCCESS == status)
+            {
+                status = MMCSD_halSetUHSMode(attrs->ctrlBaseAddr, MMCSD_UHS_MODE_SDR50);
+                if(SystemP_SUCCESS == status)
+                {
+                    status = MMCSD_halSetUHSMode(attrs->ctrlBaseAddr, MMCSD_UHS_MODE_HS400);
+                    ClockP_usleep(1U);
+                }
+            }
+
         }
     }
 

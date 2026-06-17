@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Kernel V10.4.1
+ * FreeRTOS Kernel V10.4.2
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -136,13 +136,31 @@ void * pvHeapMalloc( StaticHeap_t *heap, size_t xWantedSize )
             {
                 wantedSize += xHeapStructSize;
 
+                /* Check for integer overflow. */
+                if( wantedSize < xHeapStructSize )
+                {
+                    /* Overflow detected, set wantedSize to 0 to fail allocation. */
+                    wantedSize = 0U;
+                }
+
                 /* Ensure that blocks are always aligned to the required number
                  * of bytes. */
-                if( ( wantedSize & heapBYTE_ALIGNMENT_MASK ) != 0x00U )
+                if( ( wantedSize > 0U ) && ( ( wantedSize & heapBYTE_ALIGNMENT_MASK ) != 0x00U ) )
                 {
                     /* Byte alignment required. */
-                    wantedSize += ( heapBYTE_ALIGNMENT - (size_t)( wantedSize & heapBYTE_ALIGNMENT_MASK ) );
-                    DebugP_assert( ( wantedSize &  heapBYTE_ALIGNMENT_MASK) == 0U );
+                    size_t xAlignmentAmount = heapBYTE_ALIGNMENT - (size_t)( wantedSize & heapBYTE_ALIGNMENT_MASK );
+
+                    /* Check for overflow. */
+                    if( wantedSize + xAlignmentAmount < wantedSize )
+                    {
+                        /* Overflow detected, set wantedSize to 0 to fail allocation. */
+                        wantedSize = 0U;
+                    }
+                    else
+                    {
+                        wantedSize += xAlignmentAmount;
+                        DebugP_assert( ( wantedSize &  heapBYTE_ALIGNMENT_MASK) == 0U );
+                    }
                 }
             }
 

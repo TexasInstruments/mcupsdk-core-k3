@@ -334,6 +334,10 @@ const templates_nortos_a53 =
     {
         input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
         output: "linker.cmd",
+        options: {
+            globalScratchBuf: "true",
+            globalScratchBufSize: 0x8000000,
+        },
     },
     {
         input: ".project/templates/am62ax/nortos/main_nortos.c.xdt",

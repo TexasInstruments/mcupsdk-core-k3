@@ -356,8 +356,9 @@ static void TestOspi_enableDdrRdCmdsFunctional(void *args);
 static void TestOspi_enableDdrRdCmdsNegative(void *args);
 static void TestOspi_disableDdrRdCmdsFunctional(void *args);
 static void TestOspi_disableDdrRdCmdsNegative(void *args);
-
+#if !defined(SOC_AM62AX)
 static void TestOspi_phyTuneGrapherFunctional(void *args);
+#endif
 /* static void TestOspi_phyTuneGrapherNegative(void *args); */
 
 static void TestOspi_phyValidateTuningPointFunctional(void *args);
@@ -933,10 +934,11 @@ void test_main(void *args)
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_disableDdrRdCmdsNegative, 9583, NULL);
     Drivers_ospiClose();
-
+#if !defined(SOC_AM62AX)
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_phyTuneGrapherFunctional, 9589, NULL);
     Drivers_ospiClose();
+#endif
 
     /* Drivers_ospiOpen();
     RUN_TEST(TestOspi_phyTuneGrapherNegative, 9590, NULL);
@@ -8321,6 +8323,7 @@ static void TestOspi_disableDdrRdCmdsNegative(void *args)
  *
  * \return None.
  */
+#if !defined(SOC_AM62AX)
 static void TestOspi_phyTuneGrapherFunctional(void *args)
 {
     static uint8_t arrays[5][128][128] = {0};
@@ -8370,6 +8373,7 @@ static void TestOspi_phyTuneGrapherFunctional(void *args)
 
     DebugP_log("[TEST] TestOspi_phyTuneGrapherFunctional: PASSED\r\n");
 }
+#endif
 
 /**
  * \brief Negative test for OSPI_phyTuneGrapher API

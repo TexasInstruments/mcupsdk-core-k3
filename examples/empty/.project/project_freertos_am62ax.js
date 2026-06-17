@@ -155,25 +155,10 @@ const templates_freertos_dm_r5f =
 ];
 
 const buildOptionCombos = [
-    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
-    { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
-    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
+    { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62ax-sk", os: "freertos"},
+    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
 ];
-
-const systemProjects =[
-    {
-        name: "empty",
-        tag: "freertos",
-        skipProjectSpec: false,
-        readmeDoxygenPageTag: readmeDoxygenPageTag,
-        board: "am62ax-sk",
-        projects: [
-            { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
-            { device: device, cpu: "c75ss0-0",     cgt: "ti-c7000",     board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
-            { device: device, cpu: "r5fss0-0",     cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos", isPartOfSystemProject: true},
-        ],
-    },
-]
 
 function getComponentProperty() {
     let property = {};
@@ -236,7 +221,7 @@ function getComponentBuildProperty(buildOption) {
 
 function getSystemProjects(device)
 {
-    return systemProjects;
+    return [];
 }
 
 module.exports = {

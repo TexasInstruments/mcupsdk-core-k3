@@ -7471,62 +7471,6 @@
         ]
     },
     {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.gettingstarted"
-        ],
-        "description": "An Empty Example. This example is intended to be a starting point for new development System project.",
-        "name": "empty",
-        "location": "../../examples/empty/am62ax-sk/system_freertos/system.projectspec",
-        "devtools": [
-            "SK-AM62A-LP"
-        ],
-        "kernel": [
-            "freertos"
-        ],
-        "subCategories": [
-            "empty",
-            "system_freertos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
-        "resourceType": "project.ccs",
-        "resourceClass": [
-            "example"
-        ],
-        "resourceSubClass": [
-            "example.gettingstarted"
-        ],
-        "description": "An Empty Example. This example is intended to be a starting point for new development System project.",
-        "name": "empty",
-        "location": "../../examples/empty/am62ax-sk/system_nortos/system.projectspec",
-        "devtools": [
-            "SK-AM62A-LP"
-        ],
-        "kernel": [
-            "nortos"
-        ],
-        "subCategories": [
-            "empty",
-            "system_nortos"
-        ],
-        "mainCategories": [
-            [
-                "Examples",
-                "Development Tools"
-            ]
-        ]
-    },
-    {
         "resourceType": "web.page",
         "resourceClass": [
             "document"

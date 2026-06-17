@@ -81,23 +81,9 @@ const templates_nortos_a53 =
 ];
 
 const buildOptionCombos = [
-    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos", isPartOfSystemProject: true},
-    { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62ax-sk", os: "nortos", isPartOfSystemProject: true},
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos"},
+    { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62ax-sk", os: "nortos"},
 ];
-
-const systemProjects = [
-    {
-        name: "empty",
-        tag: "nortos",
-        skipProjectSpec: false,
-        readmeDoxygenPageTag: readmeDoxygenPageTag,
-        board: "am62ax-sk",
-        projects: [
-            { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos", isPartOfSystemProject: true},
-            { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62ax-sk", os: "nortos", isPartOfSystemProject: true},
-        ],
-    },
-]
 
 function getComponentProperty() {
     let property = {};
@@ -148,7 +134,7 @@ function getComponentBuildProperty(buildOption) {
 
 function getSystemProjects(device)
 {
-    return systemProjects;
+    return [];
 }
 
 module.exports = {

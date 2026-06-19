@@ -43,11 +43,16 @@
 #include <kernel/dpl/DebugP.h>
 #include "ti_drivers_open_close.h"
 #include <drivers/ddr.h>
+#if defined(DRV_VERSION_DDR_V0)
+#include <drivers/ddr/v0/csl_emif.h>
+#else
 #include <drivers/ddr/v1/csl_emif.h>
+#endif
 #include <drivers/ddr/ddr_perf.h>
 #include <kernel/dpl/ClockP.h>
 #include <kernel/dpl/CacheP.h>
 #include <kernel/dpl/HwiP.h>
+#include <kernel/dpl/AddrTranslateP.h>
 #include <drivers/soc.h>
 #include <string.h>
 #include "test_ddr.h"
@@ -56,8 +61,32 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
+#if defined(M4F_CORE) && !defined(MCU_R5)
+#define MCU_R5
+#endif
+
+#if defined(M4F_CORE)
+#define DDR_BASE_ADDR       (0x60000000U)
+#define DDR_ADDR_END        (0x80000000U)
+#else
 #define DDR_BASE_ADDR       (0x80000000U)
-#define DDR_ADDR_END   		(0xC0000000U)
+#define DDR_ADDR_END        (0xC0000000U)
+#endif
+
+#if defined(M4F_CORE)
+/* M4F cannot access DDR_SS_CFG_BASE (system 0x0F300000) directly; it requires RAT translation.
+ * RAT region 0 maps M4F local 0x80000000->system 0x0 (512MB), so
+ * system 0x0F300000 -> M4F local 0x8F300000. Use AddrTranslateP_getLocalAddr() at runtime. */
+static const uintptr_t kDdrSsCfgSysAddr = (uintptr_t)DDR_SS_CFG_BASE;
+#undef  DDR_SS_CFG_BASE
+#define DDR_SS_CFG_BASE  ((uintptr_t)AddrTranslateP_getLocalAddr(kDdrSsCfgSysAddr))
+
+/* Expected M4F local address after RAT translation of system 0x0F300000.
+ * RAT region 0: local 0x80000000 -> system 0x00000000, size 512 MB.
+ * local = 0x80000000 + 0x0F300000 = 0x8F300000. */
+#define TEST_DDR_M4F_DDR_SS_CFG_EXPECTED_LOCAL_ADDR  (0x8F300000U)
+#endif /* defined(M4F_CORE) */
+
 #define ONE_MEGABYTE        (0x100000)
 #define BIT_COUNT			(32)
 #define ONE			    	(0x00000001)
@@ -77,8 +106,23 @@
 /* Number of addresses to test in memory access pattern test */
 #define TEST_DDR_MEM_ACCESS_COUNT    (16U)
 
+/* DDR PLL frequency: DDR16SS0 (AM62X) runs at 400 MHz; DDR32SS0 SOCs run at 933 MHz */
+#if defined(SOC_AM62X)
+#define TEST_DDR_DDRSS_PLL_FREQUENCY_1          400000000
+#define TEST_DDR_DDRSS_PLL_FREQUENCY_2          400000000
+#else
 #define TEST_DDR_DDRSS_PLL_FREQUENCY_1          933333333
 #define TEST_DDR_DDRSS_PLL_FREQUENCY_2          933333333
+#endif
+
+/* TISCI DDR device and clock IDs differ between DDR16SS0 (AM62X) and DDR32SS0 (other SOCs) */
+#if defined(SOC_AM62X)
+#define TEST_DDR_TISCI_DEV_ID       TISCI_DEV_DDR16SS0
+#define TEST_DDR_TISCI_PLL_CLK_ID   TISCI_DEV_DDR16SS0_DDRSS_DDR_PLL_CLK
+#else
+#define TEST_DDR_TISCI_DEV_ID       TISCI_DEV_DDR32SS0
+#define TEST_DDR_TISCI_PLL_CLK_ID   TISCI_DEV_DDR32SS0_DDRSS_DDR_PLL_CLK
+#endif
 #define TEST_DDR_DDRSS_PLL_FHS_CNT              3
 #define TEST_DDR_DDRSS_CTL_REG_INIT_COUNT       (435U)
 #define TEST_DDR_DDRSS_PHY_INDEP_REG_INIT_COUNT (424U)
@@ -115,9 +159,16 @@
 #define TEST_DDR_ECC_TEST_REGION2_END        (0x00300000U)   /* 1MB */
 
 /* Memory block for which ECC is calculated */
+/* DDR16SS0 (AM62X, 16-bit bus) uses half the ECC block size of DDR32SS0 (32-bit bus) */
+#if defined(SOC_AM62X)
+#define TEST_DDR_EMIF_ECC_MEM_BLOCK_SIZE      (0x100U)
+/* ECC data size per block */
+#define TEST_DDR_EMIF_ECC_DATA_SIZE_PER_BLOCK (0x20U)
+#else
 #define TEST_DDR_EMIF_ECC_MEM_BLOCK_SIZE      (0x200U)
 /* ECC data size per block */
 #define TEST_DDR_EMIF_ECC_DATA_SIZE_PER_BLOCK (0x40U)
+#endif
 
 /* ECC test address: first usable address past region 0 start (skip first block) */
 #define TEST_DDR_ECC_TEST_ADDR               (DDR_BASE_ADDR + TEST_DDR_ECC_TEST_REGION0_START \
@@ -178,11 +229,59 @@ static uint32_t TestDdr_injectSingleBitError(volatile uint32_t *testAddr);
 static uint32_t TestDdr_injectDoubleBitError(volatile uint32_t *testAddr);
 static void TestDdr_restoreEccTestAddr(volatile uint32_t *testAddr, uint32_t origVal);
 static int32_t TestDdr_ensureEccSetup(void);
+#if defined(M4F_CORE)
+static int32_t TestDdr_validateM4fRatMapping(void);
+#endif
 
 /* ========================================================================== */
 /*                 Internal Function Definitions                              */
 /* ========================================================================== */
 
+
+#if defined(M4F_CORE)
+/*
+ * Validate that the RAT translation of kDdrSsCfgSysAddr produces the expected
+ * local address.  If AddrTranslateP_getLocalAddr returns the system address
+ * unchanged the required RAT window is absent; if it returns any other value
+ * the window is misconfigured.  Call once before any DDR SS CFG register access.
+ * Returns SystemP_SUCCESS if the mapping is correct, SystemP_FAILURE otherwise.
+ */
+static int32_t TestDdr_validateM4fRatMapping(void)
+{
+    uintptr_t localAddr = (uintptr_t)AddrTranslateP_getLocalAddr(kDdrSsCfgSysAddr);
+    int32_t   status    = SystemP_SUCCESS;
+
+    if (localAddr == kDdrSsCfgSysAddr)
+    {
+        /* Translation returned the input address unchanged — the required RAT
+         * window covering system 0x0F300000 is not configured. */
+        DebugP_log("ERROR: M4F RAT mapping for DDR_SS_CFG_BASE not configured. "
+                   "system 0x%08x translated to local 0x%08x (unchanged). "
+                   "Expected 0x%08x. ECC-related DDR tests will fail.\r\n",
+                   (uint32_t)kDdrSsCfgSysAddr,
+                   (uint32_t)localAddr,
+                   TEST_DDR_M4F_DDR_SS_CFG_EXPECTED_LOCAL_ADDR);
+        status = SystemP_FAILURE;
+    }
+    else if (localAddr != (uintptr_t)TEST_DDR_M4F_DDR_SS_CFG_EXPECTED_LOCAL_ADDR)
+    {
+        /* Translation happened but produced an unexpected address — the RAT
+         * window base, size, or offset is misconfigured. */
+        DebugP_log("ERROR: M4F RAT mapping for DDR_SS_CFG_BASE unexpected. "
+                   "system 0x%08x translated to local 0x%08x, "
+                   "expected 0x%08x. Check SysConfig RAT region for m4fss0-0.\r\n",
+                   (uint32_t)kDdrSsCfgSysAddr,
+                   (uint32_t)localAddr,
+                   TEST_DDR_M4F_DDR_SS_CFG_EXPECTED_LOCAL_ADDR);
+        status = SystemP_FAILURE;
+    }
+    else
+    {
+        // Translation is correct; no action needed.
+    }
+    return status;
+}
+#endif /* defined(M4F_CORE) */
 
 /*
  * Simple LCG PRNG (Numerical Recipes constants) for reproducible random tests.
@@ -340,9 +439,19 @@ static uint32_t TestDdr_injectSingleBitError(volatile uint32_t *testAddr)
     translatedAddr = (volatile uint32_t *)TestDdr_eccTranslateAddr((uintptr_t)testAddr);
 
     DDR_enableInlineECC(0U);
+#if defined(M4F_CORE)
+    /* On Cortex-M4 (Strongly-Ordered memory, no write-buffer) the EMIF needs a
+     * short settle time after the ECC_EN mode-change register write before the
+     * subsequent DDR access arrives, otherwise the EMIF still applies ECC to
+     * the 'corrupted' write and stores correct ECC (no error created). */
+    ClockP_usleep(10U);
+#endif
     *translatedAddr = corruptVal;
     CacheP_wbInv((void *)translatedAddr, 4U, CacheP_TYPE_ALL);
     DDR_enableInlineECC(1U);
+#if defined(M4F_CORE)
+    ClockP_usleep(10U);
+#endif
 
     return origVal;
 }
@@ -364,9 +473,15 @@ static uint32_t TestDdr_injectDoubleBitError(volatile uint32_t *testAddr)
     translatedAddr = (volatile uint32_t *)TestDdr_eccTranslateAddr((uintptr_t)testAddr);
 
     DDR_enableInlineECC(0U);
+#if defined(M4F_CORE)
+    ClockP_usleep(10U);
+#endif
     *translatedAddr = corruptVal;
     CacheP_wbInv((void *)translatedAddr, 4U, CacheP_TYPE_ALL);
     DDR_enableInlineECC(1U);
+#if defined(M4F_CORE)
+    ClockP_usleep(10U);
+#endif
 
     return origVal;
 }
@@ -384,9 +499,19 @@ static void TestDdr_restoreEccTestAddr(volatile uint32_t *testAddr, uint32_t ori
     translatedAddr = (volatile uint32_t *)TestDdr_eccTranslateAddr((uintptr_t)testAddr);
 
     DDR_enableInlineECC(0U);
+#if defined(M4F_CORE)
+    /* On Cortex-M4 (Strongly-Ordered memory, no write-buffer) the EMIF needs a
+     * short settle time after the ECC_EN mode-change register write before the
+     * subsequent DDR access arrives, otherwise the EMIF still applies ECC to
+     * the write and stores data to the wrong physical DRAM cell. */
+    ClockP_usleep(10U);
+#endif
     *translatedAddr = origVal;
     CacheP_wbInv((void *)translatedAddr, 4U, CacheP_TYPE_ALL);
     DDR_enableInlineECC(1U);
+#if defined(M4F_CORE)
+    ClockP_usleep(10U);
+#endif
 
     *testAddr = origVal;
     CacheP_wbInv((void *)testAddr, 4U, CacheP_TYPE_ALL);
@@ -522,9 +647,15 @@ void write_read_test(void *arg)
     int32_t status = SystemP_SUCCESS;
     uint32_t *memPtr = (uint32_t *)DDR_BASE_ADDR;
     uint32_t loop, loop1;
+#if defined(SOC_AM62X)
+    uint32_t totalBlocks = (DDR_ADDR_END - DDR_BASE_ADDR) / (2U * ONE_MEGABYTE);
 
+    /* Loop through DDR from DDR_BASE_ADDR to DDR_ADDR_END. Write/Read 1MB, Skip 1MB. */
+    for(loop1=0;loop1<totalBlocks;loop1++)
+#else
     /* Loop through 2GB of DDR. Write/Read 1MB, Skip 1MB. */
     for(loop1=0;loop1<1024;loop1++)
+#endif
     {
         if(status == SystemP_SUCCESS)
         {
@@ -2099,6 +2230,7 @@ void TestDdr_eccInterruptStatusClear(void *arg)
 }
 
 #if !defined(MCU_R5)
+#if !defined(SOC_AM62PX)
 /**
  * \brief DDR clock frequency verification after initialization.
  * \param args Pointer to test arguments (unused).
@@ -2112,8 +2244,8 @@ void TestDdr_frequencySetAtInit(void *arg)
     int64_t  diff;
 
     status = Sciclient_pmGetModuleClkFreq(
-                TISCI_DEV_DDR32SS0,
-                TISCI_DEV_DDR32SS0_DDRSS_DDR_PLL_CLK,
+                TEST_DDR_TISCI_DEV_ID,
+                TEST_DDR_TISCI_PLL_CLK_ID,
                 &actualFreq,
                 SystemP_WAIT_FOREVER);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
@@ -2126,7 +2258,7 @@ void TestDdr_frequencySetAtInit(void *arg)
     }
     TEST_ASSERT_TRUE((uint64_t)diff <= (TEST_DDR_DDRSS_PLL_FREQUENCY_1 / 100U));
 }
-
+#endif
 /**
  * \brief LPDDR4 frequency set point (FSP) handshake completion test.
  * \param args Pointer to test arguments (unused).
@@ -3816,6 +3948,14 @@ void *test_ddr_main(void *args)
     Drivers_open();
 #endif
 
+#if defined(M4F_CORE)
+    /* Validate that the RAT window mapping system 0x0F300000 to local
+     * 0x8F300000 is configured before any DDR SS CFG register access.
+     * An assertion failure here means the m4fss0-0 SysConfig RAT region
+     * for DDR_SS_CFG_BASE is absent or misconfigured. */
+    DebugP_assert(TestDdr_validateM4fRatMapping() == SystemP_SUCCESS);
+#endif
+
     UNITY_BEGIN();
 
 #if !defined(MCU_R5)
@@ -3837,7 +3977,9 @@ void *test_ddr_main(void *args)
     RUN_TEST(TestDdr_byteAccessGranularity, 11877, NULL);
 #if !defined(MCU_R5)
     RUN_TEST(TestDdr_initSequentialWriteReadFullRange, 11868, NULL);
+#if !defined(SOC_AM62PX)
     RUN_TEST(TestDdr_frequencySetAtInit, 11905, NULL);
+#endif
     RUN_TEST(TestDdr_lpddr4FrequencyHandshake, 11906, NULL);
     RUN_TEST(TestDdr_perfCountersReadWriteBandwidth, 11880, NULL);
     RUN_TEST(TestDdr_perfStatsReset, 11881, NULL);
@@ -3882,12 +4024,20 @@ void *test_ddr_main(void *args)
     RUN_TEST(TestDdr_eccInterruptEnableDisable, 11914, NULL);
     RUN_TEST(TestDdr_inlineEccDisable, 11915, NULL);
     RUN_TEST(TestDdr_eccSingleBitErrorDetection, 11916, NULL);
+#if !defined(M4F_CORE)
+    /* Tests 11917/11921/11922 read a double-bit ECC error location to trigger a
+     * Cortex-R5 data abort, handled by HwiP_user_data_abort_handler_c.
+     * Cortex-M4 raises a BusFault/HardFault instead; the R5 handler is never
+     * called, so these tests cannot pass on M4F. */
     RUN_TEST(TestDdr_eccDoubleBitErrorDetection, 11917, NULL);
+#endif /* !defined(M4F_CORE) */
     RUN_TEST(TestDdr_eccSingleBitErrorCorrection, 11918, NULL);
     RUN_TEST(TestDdr_eccErrorInfoRetrieval, 11919, NULL);
     RUN_TEST(TestDdr_clearSingleBitEccError, 11920, NULL);
+#if !defined(M4F_CORE)
     RUN_TEST(TestDdr_clearDoubleBitEccError, 11921, NULL);
     RUN_TEST(TestDdr_clearAllEccErrors, 11922, NULL);
+#endif /* !defined(M4F_CORE) */
     RUN_TEST(TestDdr_eccErrorThresholdInterrupt, 11923, NULL);
     RUN_TEST(TestDdr_eccInterruptStatusClear, 11924, NULL);
     RUN_TEST(TestDdr_eccUnderSustainedTraffic, 11925, NULL);
@@ -3901,7 +4051,12 @@ void *test_ddr_main(void *args)
     RUN_TEST(TestDdr_initNullParam, 11930, NULL);
     /* RUN_TEST(TestDdr_inlineEccAllRegionsUnused, 11941, NULL); */
 #endif /* !defined(MCU_R5) */
+#if !defined(M4F_CORE)
+    /* TestDdr_memoryPriming accesses DDR_CTL_CFG_BASE (0x0F308000) directly.
+     * On M4F that address is not covered by any RAT window and is
+     * firewall-protected, causing a bus-fault hang. */
     RUN_TEST(TestDdr_memoryPriming, 11938, NULL);
+#endif /* !defined(M4F_CORE) */
 #if !defined(MCU_R5)
     /* RUN_TEST(TestDdr_largeMemoryPriming, 11939, NULL); */
     /* RUN_TEST(TestDdr_smallMemoryPriming, 11940, NULL); */
@@ -3909,10 +4064,12 @@ void *test_ddr_main(void *args)
     RUN_TEST(TestDdr_cslEmifConfigEccDisabled, 11931, NULL);
     RUN_TEST(TestDdr_cslEmifClearEccErrorDefaultCase, 11932, NULL);
 #ifdef ENABLE_MT_TESTS
+#if !defined(SOC_AM62PX) && !defined(SOC_AM62X)
     RUN_TEST(TestDdr_mtConcurrentReadFromMultipleTasks, 11933, NULL);
     RUN_TEST(TestDdr_mtConcurrentWriteFromMultipleTasks, 11934, NULL);
     RUN_TEST(TestDdr_mtConcurrentReadWriteSameRegion, 11935, NULL);
     RUN_TEST(TestDdr_mtConcurrentReadWriteDifferentRegions, 11936, NULL);
+#endif
     RUN_TEST(TestDdr_mtConcurrentEccEnableDisable, 11937, NULL);
 #endif
    

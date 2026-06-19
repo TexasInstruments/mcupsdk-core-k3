@@ -203,6 +203,7 @@ const example_file_list = [
     "test/drivers/device_manager/sciclient_tisci_msg/.project/project.js",
     "test/drivers/device_manager/dm_trace_config/.project/project.js",
     "test/drivers/ddr/.project/project.js",
+    "test/drivers/ddr/test_ddr_system/.project/project.js",
     "test/drivers/dss/dss_dpi_interface/.project/project.js",
     "test/drivers/dss/dss_oldi_interface/.project/project.js",
     "test/drivers/gpio/.project/project.js",

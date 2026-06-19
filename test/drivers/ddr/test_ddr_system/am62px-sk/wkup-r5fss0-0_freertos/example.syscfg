@@ -11,6 +11,7 @@
  */
 const ddr        = scripting.addModule("/drivers/ddr/ddr", {}, false);
 const ddr1       = ddr.addInstance();
+const ipc        = scripting.addModule("/drivers/ipc/ipc");
 const clock      = scripting.addModule("/kernel/dpl/clock");
 const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
 const mpu_armv7  = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
@@ -27,9 +28,12 @@ const mpu_armv77 = mpu_armv7.addInstance();
  */
 ddr1.$name = "CONFIG_DDR0";
 
-debug_log.enableUartLog      = true;
-debug_log.uartLog.$name      = "CONFIG_UART0";
-debug_log.uartLog.intrEnable = "DISABLE";
+ipc.mcu_r5fss0_0       = "notify";
+ipc.enableLinuxIpc     = false;
+ipc.vringAllocationPDK = false;
+
+debug_log.enableUartLog = true;
+debug_log.uartLog.$name = "CONFIG_UART0";
 
 mpu_armv71.accessPermissions = "Supervisor RD+WR, User RD";
 mpu_armv71.allowExecute      = false;

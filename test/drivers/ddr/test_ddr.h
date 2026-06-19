@@ -103,7 +103,9 @@ void TestDdr_eccInterruptEnableDisable(void *arg);
 
 /* Frequency tests */
 #if !defined(MCU_R5)
+#if !defined(SOC_AM62PX)
 void TestDdr_frequencySetAtInit(void *arg);
+#endif
 void TestDdr_lpddr4FrequencyHandshake(void *arg);
 #endif
 

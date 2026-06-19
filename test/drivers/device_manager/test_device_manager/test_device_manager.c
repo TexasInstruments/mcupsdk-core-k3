@@ -67,6 +67,7 @@
 #include "test_device_manager_lpm.h"
 #include "test_device_manager_sec.h"
 #include "test_device_manager_procboot.h"
+#include "test_device_manager_intr_polling.h"
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/ClockP.h>
 #include "ti_drivers_open_close.h"
@@ -133,6 +134,10 @@ void test_main(void *args)
     RUN_TEST(testDM_firewallMgmt, 12094, NULL);
     RUN_TEST(testDM_procBoot, 12095, NULL);
     RUN_TEST(testDM_sysControl, 17, NULL);
+    ClockP_usleep(10000);
+    RUN_TEST(testDM_interruptModeValidation, 12218, NULL);
+    ClockP_usleep(10000);
+    RUN_TEST(testDM_pollModeValidation, 12219, NULL);
 
     UNITY_END();
 }
@@ -946,9 +951,7 @@ static int32_t test_msgBoardConfigSecurity(void *args)
     return failCount;
 }
 
-
 /**
- * TC_04: RM Ring Messages
  *
  * DRIVER FLOW ANALYSIS:
  *   TISCI_MSG_RM_RING_CFG (0x1110):

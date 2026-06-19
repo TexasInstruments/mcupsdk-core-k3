@@ -178,5 +178,35 @@ static const uint8_t r5_cl0_c0_binary_hs[] = {
  * access to fwl_id=0 on AM275X, so firewall positive tests for that ID
  * must be compiled in only when this flag is defined. */
 #define DM_TEST_FWL_ID0_SUPPORTED
+#define TEST_DM_OTP_WKUP_HOST_RESTRICTED
+/* ========================================================================== */
+/*                         Wrapper test resource indices                      */
+/* ========================================================================== */
+
+#define WRAP_RM_NAV_BCDMA_DEV_ID    TISCI_DEV_DMASS0_BCDMA_0      /* 26U */
+#define WRAP_RM_NAV_PKTDMA_DEV_ID   TISCI_DEV_DMASS0_PKTDMA_0     /* 30U */
+#define WRAP_RM_NAV_INTAGGR_DEV_ID  TISCI_DEV_DMASS0_INTAGGR_0    /* 28U */
+#define WRAP_RM_BCDMA_RING_IDX      (18U)
+#define WRAP_RM_PKTDMA_TX_CH_IDX    (10U)
+#define WRAP_RM_PKTDMA_RX_CH_IDX    (10U)
+#define WRAP_RM_PKTDMA_FLOW_IDX     (10U)
+#define WRAP_RM_IRQ_SRC_DEV_ID      TISCI_DEV_MAIN_GPIOMUX_INTROUTER0  /* 3U */
+#define WRAP_RM_IRQ_SRC_INDEX       (10U)
+#define WRAP_RM_IRQ_DST_DEV_ID      TISCI_DEV_MAIN_GPIOMUX_INTROUTER0  /* 3U */
+#define WRAP_RM_IRQ_DST_HOST_IRQ    (0U)
+#define WRAP_RM_IRQ_SECONDARY_HOST  TISCI_HOST_ID_A53_2                 /* 12U */
+#define WRAP_RM_PSIL_NAV_ID         TISCI_DEV_DMASS0                    /* 25U */
+#define WRAP_RM_PSIL_SRC_THREAD     (0x100BU)
+#define WRAP_RM_PSIL_DST_THREAD     (0x900BU)
+#define WRAP_RM_PSIL_TADDR          (0x0002U)
+#define WRAP_RM_PSIL_WRITE_DATA     (0x80000000U)
+
+/* Co-processor for proc-boot ownership tests (request/release/handover).
+ * A53SS0_CORE_1 is in the free pool on AM62DX at test time. */
+#define WRAP_PROC_ID_COPROCESSOR    SCICLIENT_PROC_ID_A53SS0_CORE_1
+
+/* Host ID used as handover target in proc-boot handover tests.
+ * On AM62DX the handover target is the A53 cluster non-secure context 2. */
+#define WRAP_PROC_HANDOVER_HOST     TISCI_HOST_ID_A53_2                 /* 12U */
 
 #endif /* AM62DX_EVM_TEST_DEVICE_MANAGER_VAL_H_ */

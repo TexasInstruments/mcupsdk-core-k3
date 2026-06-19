@@ -10,6 +10,7 @@ const files = {
         "test_device_manager_lpm.c",
         "test_device_manager_procboot.c",
         "test_device_manager_sec.c",
+        "test_device_manager_intr_polling.c",
         "main.c",
     ],
 };
@@ -83,7 +84,8 @@ const robot_template = {
         componentName: "Device Manager",
         testCaseName: "Device Manager Test Application",
         testCaseIds: "SWITS-12079 SWITS-12080 SWITS-12081 SWITS-12082 SWITS-12083 SWITS-12084 SWITS-12085 SWITS-12086 SWITS-12087 " +
-        "SWITS-12088 SWITS-12089 SWITS-12090 SWITS-12091 SWITS-12093 SWITS-12094 SWITS-12095 SWITS-17",
+        "SWITS-12088 SWITS-12089 SWITS-12090 SWITS-12091 SWITS-12093 SWITS-12094 SWITS-12095 SWITS-17 SWITS-12218 " +
+        "SWITS-12219",
     },
 };
 

@@ -10,6 +10,7 @@ const files = {
         "test_device_manager_lpm.c",
         "test_device_manager_procboot.c",
         "test_device_manager_sec.c",
+        "test_device_manager_intr_polling.c",
         "main.c",
     ],
 };

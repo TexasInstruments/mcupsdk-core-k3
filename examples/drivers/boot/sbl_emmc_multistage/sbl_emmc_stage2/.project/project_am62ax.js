@@ -125,9 +125,9 @@ const robot_template_smp = {
         timeout: 800,
         expectTimeout: 200,
         expectations: [
-            { port: "USB0", string: "Starting 2nd stage bootloader" },
+            { port: "USB0", string: "Starting MCU-r5f and 2nd stage bootloader" },
             { port: "USB0", string: "Starting RTOS/Baremetal applications" },
-            { port: "USB2", string: "Hello World!" },
+            { port: "USB3", string: "Hello World!" },
             { port: "USB0", string: "All tests have passed!!" },
         ],
     },

@@ -271,6 +271,9 @@ const robot_template = {
         componentName: "UART",
         testCaseName: "UART Echo Non-Blocking Sample Application",
         testCaseIds: "SITSW-1307",
+        interactPrompt: "Receives 8 characters then echo's back. Please input..",
+        interactSend: ["12345678"],
+        expectTimeout: 60,
     },
 };
 

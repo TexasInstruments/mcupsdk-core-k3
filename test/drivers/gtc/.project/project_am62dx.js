@@ -391,6 +391,8 @@ const robot_template = {
         componentName: "GTC",
         testCaseName: "Test GTC counter",
         testCaseIds: "SITSW-2096",
+        timeout: 630,
+        expectTimeout: 500,
     },
 };
 

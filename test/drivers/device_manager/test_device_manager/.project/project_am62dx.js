@@ -11,6 +11,7 @@ const files = {
         "test_device_manager_procboot.c",
         "test_device_manager_sec.c",
         "test_device_manager_intr_polling.c",
+        "test_device_manager_wrapper.c",
         "main.c",
     ],
 };

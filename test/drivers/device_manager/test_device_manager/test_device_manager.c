@@ -68,6 +68,7 @@
 #include "test_device_manager_sec.h"
 #include "test_device_manager_procboot.h"
 #include "test_device_manager_intr_polling.h"
+#include "test_device_manager_wrapper.h"
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/ClockP.h>
 #include "ti_drivers_open_close.h"
@@ -138,6 +139,16 @@ void test_main(void *args)
     RUN_TEST(testDM_interruptModeValidation, 12218, NULL);
     ClockP_usleep(10000);
     RUN_TEST(testDM_pollModeValidation, 12219, NULL);
+
+    RUN_TEST(testDM_powerManagement, 12211, NULL);
+    RUN_TEST(testDM_firewallApis, 12210, NULL);
+    RUN_TEST(testDM_coreVersion, 12212, NULL);
+    RUN_TEST(testDM_resourceManagementSciclient, 12213, NULL);
+    RUN_TEST(testDM_procBootSciclient, 12215, NULL);
+    ClockP_usleep(10000);
+    RUN_TEST(testDM_boardCfgApis, 12216, NULL);
+    RUN_TEST(testDM_dkekApis, 12217, NULL);
+    RUN_TEST(testDM_uartPrintf, 12214, NULL);
 
     UNITY_END();
 }

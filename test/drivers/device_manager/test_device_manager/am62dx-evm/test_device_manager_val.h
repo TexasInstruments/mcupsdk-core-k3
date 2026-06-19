@@ -179,6 +179,7 @@ static const uint8_t r5_cl0_c0_binary_hs[] = {
  * must be compiled in only when this flag is defined. */
 #define DM_TEST_FWL_ID0_SUPPORTED
 #define TEST_DM_OTP_WKUP_HOST_RESTRICTED
+
 /* ========================================================================== */
 /*                         Wrapper test resource indices                      */
 /* ========================================================================== */

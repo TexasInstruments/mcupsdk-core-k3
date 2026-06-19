@@ -171,4 +171,39 @@ static const uint8_t r5_cl0_c0_binary_hs[] = {
 #include "test_sciclient_r5_cl0_c0_image.h"
 };
 
+
+/* Alias for C7X256V1 using the SCICLIENT_ prefix convention */
+#define SCICLIENT_PROC_ID_C7X256V1_C7XV_CORE_0  (PROC_ID_C7X256V1_C7XV_CORE_0)
+
+/* ========================================================================== */
+/*                         Wrapper test resource indices                      */
+/* ========================================================================== */
+
+#define WRAP_RM_NAV_BCDMA_DEV_ID    TISCI_DEV_DMASS0_BCDMA_0      /* 26U */
+#define WRAP_RM_NAV_PKTDMA_DEV_ID   TISCI_DEV_DMASS0_PKTDMA_0     /* 30U */
+#define WRAP_RM_NAV_INTAGGR_DEV_ID  TISCI_DEV_DMASS0_INTAGGR_0    /* 28U */
+#define WRAP_RM_BCDMA_RING_IDX      (15U)
+#define WRAP_RM_PKTDMA_TX_CH_IDX    (10U)
+#define WRAP_RM_PKTDMA_RX_CH_IDX    (10U)
+#define WRAP_RM_PKTDMA_FLOW_IDX     (10U)
+#define WRAP_RM_IRQ_SRC_DEV_ID      TISCI_DEV_MAIN_GPIOMUX_INTROUTER0  /* 3U */
+#define WRAP_RM_IRQ_SRC_INDEX       (10U)
+#define WRAP_RM_IRQ_DST_DEV_ID      TISCI_DEV_MAIN_GPIOMUX_INTROUTER0  /* 3U */
+#define WRAP_RM_IRQ_DST_HOST_IRQ    (0U)
+#define WRAP_RM_IRQ_SECONDARY_HOST  TISCI_HOST_ID_A53_2                 /* = C7X_1_0 via alias */
+#define WRAP_RM_PSIL_NAV_ID         TISCI_DEV_DMASS0                    /* 25U */
+#define WRAP_RM_PSIL_SRC_THREAD     (0x100BU)
+#define WRAP_RM_PSIL_DST_THREAD     (0x900BU)
+#define WRAP_RM_PSIL_TADDR          (0x0002U)
+#define WRAP_RM_PSIL_WRITE_DATA     (0x80000000U)
+
+/* Co-processor for proc-boot ownership tests (request/release/handover).
+ * C7X256V0 is claimed by testDM_procBoot; use C7X256V1 which is free. */
+#define WRAP_PROC_ID_COPROCESSOR    SCICLIENT_PROC_ID_C7X256V1_C7XV_CORE_0
+
+/* Host ID used as handover target in proc-boot handover tests.
+ * On AM275X there is no A53 cluster; C7X_1_0 serves as the handover target
+ * (aliased to TISCI_HOST_ID_A53_2 above for RM test compatibility). */
+#define WRAP_PROC_HANDOVER_HOST     TISCI_HOST_ID_C7X_1_0
+
 #endif /* AM275X_EVM_TEST_DEVICE_MANAGER_VAL_H_ */

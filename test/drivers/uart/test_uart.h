@@ -53,6 +53,7 @@
 
 #include <string.h>
 #include <unity.h>
+#include <kernel/dpl/CacheP.h>
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/TaskP.h>
 #include <drivers/hw_include/cslr_uart.h>

@@ -491,3 +491,33 @@ For Ethernet AVB performance, refer to the page \ref EAVB_PERFORMANCE
 - [64-BIT READ] L2RAM Access Average Latency Per Byte: 1.187500 ns
 - [64-BIT READ] MSRAM Access Average Latency Per Byte: 1.375000 ns
 
+### UART callback latency
+UART callback latency is measured by measuring how long it takes to physically transmit a known-length string at the configured baud rate. This timing measurement is done when a 28bytes of data is send over different baud.
+
+Core          | Baud         | Transmssion          | Transmission         |Callback
+              |              | Expected Latency (us)| Measured Latency (us)|Latency (us)
+--------------|--------------|----------------------|----------------------|-------------- 
+ r5fss*       | 1200         | 233434               | 233333               | 45
+ r5fss*       | 2400         | 116717               | 116666               | 45
+ r5fss*       | 4800         | 58367                | 58333                | 45
+ r5fss*       | 9600         | 29229                | 29166                | 45
+ r5fss*       | 19200        | 14575                | 14583                | 45
+ r5fss*       | 38400        | 7290                 | 7291                 | 45
+ r5fss*       | 57600        | 4857                 | 4861                 | 45
+ r5fss*       | 115200       | 2429                 | 2430                 | 45
+ c75ss*       | 1200         | 233434               | 233333               | 41
+ c75ss*       | 2400         | 116717               | 116666               | 41
+ c75ss*       | 4800         | 58367                | 58333                | 41
+ c75ss*       | 9600         | 29229                | 29166                | 41
+ c75ss*       | 19200        | 14575                | 14583                | 41
+ c75ss*       | 38400        | 7290                 | 7291                 | 41
+ c75ss*       | 57600        | 4857                 | 4861                 | 41
+ c75ss*       | 115200       | 2429                 | 2430                 | 41
+ wkup-r5fss   | 1200         | 233434               | 233333               | 27
+ wkup-r5fss   | 2400         | 116717               | 116666               | 27
+ wkup-r5fss   | 4800         | 58367                | 58333                | 27
+ wkup-r5fss   | 9600         | 29229                | 29166                | 27
+ wkup-r5fss   | 19200        | 14575                | 14583                | 27
+ wkup-r5fss   | 38400        | 7290                 | 7291                 | 27
+ wkup-r5fss   | 57600        | 4857                 | 4861                 | 27
+ wkup-r5fss   | 115200       | 2429                 | 2430                 | 27

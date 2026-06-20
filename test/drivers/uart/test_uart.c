@@ -77,7 +77,7 @@
  * UART index used by the reduced suite to CONFIG_UART0 so the code compiles
  * and the tests exercise the syscfg-default debug UART. */
 #define CONFIG_UART1    CONFIG_UART0
-#else
+#elif !(defined(SOC_AM62LX))
 #define CONFIG_UART1    CONFIG_UART_NUM_INSTANCES
 #endif
 #define CONFIG_UART2    CONFIG_UART_NUM_INSTANCES
@@ -446,7 +446,10 @@ const TestExecute_idList TestExecute_SkipTestIdMatrixWithInstance[TEST_SOC_COUNT
 
 };
 
-#endif /* TEST_UART_RUN_FULL_SUITE */
+#else /* TEST_UART_RUN_FULL_SUITE */
+const TestExecute_idList TestExecute_SkipTestIdMatrix[TEST_SOC_COUNT][TEST_CORE_COUNT] = {};
+#endif
+
 
 /*===================================================================*/
 /* 					         Function Declarations		             */

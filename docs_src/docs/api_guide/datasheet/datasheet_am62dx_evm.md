@@ -646,3 +646,41 @@ Fast Tuning Window          |          7.75 ms
  - Includes DAC configuration time
  - 151 ms
 
+### UART callback latency
+UART callback latency is measured by measuring how long it takes to physically transmit a known-length string at the configured baud rate. This timing measurement is done when a 28bytes of data is send over different baud.
+
+Core          | Baud         | Transmssion          | Transmission         |Callback
+              |              | Expected Latency (us)| Measured Latency (us)|Latency (us)
+--------------|--------------|----------------------|----------------------|-------------- 
+ mcu-r5f      | 1200         | 233434               | 233333               | 19
+ mcu-r5f      | 2400         | 116717               | 116666               | 19
+ mcu-r5f      | 4800         | 58367                | 58333                | 19
+ mcu-r5f      | 9600         | 29229                | 29166                | 19
+ mcu-r5f      | 19200        | 14575                | 14583                | 19
+ mcu-r5f      | 38400        | 7290                 | 7291                 | 19
+ mcu-r5f      | 57600        | 4857                 | 4861                 | 19
+ mcu-r5f      | 115200       | 2429                 | 2430                 | 19
+ a53ss0-0     | 1200         | 233434               | 233333               | 53
+ a53ss0-0     | 2400         | 116717               | 116666               | 53
+ a53ss0-0     | 4800         | 58367                | 58333                | 53
+ a53ss0-0     | 9600         | 29229                | 29166                | 53
+ a53ss0-0     | 19200        | 14575                | 14583                | 53
+ a53ss0-0     | 38400        | 7290                 | 7291                 | 53
+ a53ss0-0     | 57600        | 4857                 | 4861                 | 53
+ a53ss0-0     | 115200       | 2429                 | 2430                 | 53
+ c75ss0       | 1200         | 233434               | 233333               | 50
+ c75ss0       | 2400         | 116717               | 116666               | 50
+ c75ss0       | 4800         | 58367                | 58333                | 50
+ c75ss0       | 9600         | 29229                | 29166                | 50
+ c75ss0       | 19200        | 14575                | 14583                | 50
+ c75ss0       | 38400        | 7290                 | 7291                 | 50
+ c75ss0       | 57600        | 4857                 | 4861                 | 50
+ c75ss0       | 115200       | 2429                 | 2430                 | 50
+ r5f0-0       | 1200         | 233434               | 233333               | 34
+ r5f0-0       | 2400         | 116717               | 116666               | 34
+ r5f0-0       | 4800         | 58367                | 58333                | 34
+ r5f0-0       | 9600         | 29229                | 29166                | 34
+ r5f0-0       | 19200        | 14575                | 14583                | 34
+ r5f0-0       | 38400        | 7290                 | 7291                 | 34
+ r5f0-0       | 57600        | 4857                 | 4861                 | 34
+ r5f0-0       | 115200       | 2429                 | 2430                 | 34

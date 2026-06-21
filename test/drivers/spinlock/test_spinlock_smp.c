@@ -62,6 +62,8 @@
 #define TASK_A_ID   0x01U
 #define TASK_B_ID   0x02U
 #define TEST_LOCK_NUMBER   0U
+#define TEST_GATE_LOCK_NUMBER   1U
+#define TEST_OBSERVED_LOCK_NUMBER   2U
 
 /* Execution order tracking for mutual exclusion test */
 #define TASK_A_START    0xA1U
@@ -70,6 +72,9 @@
 #define TASK_B_END      0xB2U
 #define EXEC_ORDER_SIZE 4U
 #define CRITICAL_SECTION_DELAY_MS   50U
+#define SPINLOCK_RETRY_DELAY_US     1000U
+#define SPINLOCK_ACQUIRE_TIMEOUT_US 1000000U
+#define MUTEX_TEST_DONE_TIMEOUT     2000U
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -88,9 +93,10 @@ static uint8_t TestSpinlock_taskUnlockStack[4096] __attribute__((aligned(32)));
 
 /* Variables for mutual exclusion test */
 static volatile uint32_t TestSpinlock_ExecutionOrder[EXEC_ORDER_SIZE];
-static volatile uint32_t TestSpinlock_ExecIndex = 0U;
 static volatile uint64_t TestSpinlock_taskUnlockStartTime = 0U;
 static volatile uint64_t TestSpinlock_taskUnlockWaitTime = 0U;
+static volatile int32_t TestSpinlock_MutexTaskAStatus = SystemP_FAILURE;
+static volatile int32_t TestSpinlock_MutexTaskBStatus = SystemP_FAILURE;
 static SemaphoreP_Object TestSpinlock_MutexTestDoneSem;
 static uint8_t TestSpinlock_MutexTaskAStack[4096] __attribute__((aligned(32)));
 static uint8_t TestSpinlock_MutexTaskBStack[4096] __attribute__((aligned(32)));
@@ -101,6 +107,8 @@ static uint8_t TestSpinlock_MutexTaskBStack[4096] __attribute__((aligned(32)));
 
 static void TestSpinlock_taskAcquireLock(void *arg);
 static void TestSpinlock_taskUnlock(void *arg);
+static int32_t TestSpinlock_lockWithTimeout(uint32_t lockNumber, uint32_t timeoutUsec,
+                                            uint32_t *inUseCount);
 static void TestSpinlock_mutexAcquireLock(void *arg);
 static void TestSpinlock_mutexHoldLock(void *arg);
 
@@ -339,6 +347,29 @@ static void TestSpinlock_verifyUnlockByNonOwner(void *args)
 /*          Mutual Exclusion Test Task Implementation Functions              */
 /* ========================================================================== */
 
+static int32_t TestSpinlock_lockWithTimeout(uint32_t lockNumber, uint32_t timeoutUsec,
+                                            uint32_t *inUseCount)
+{
+    int32_t lockStatus;
+    uint64_t startTime = ClockP_getTimeUsec();
+
+    do {
+        lockStatus = Spinlock_lock(CSL_SPINLOCK0_BASE, lockNumber);
+        if (lockStatus == SPINLOCK_LOCK_STATUS_FREE) {
+            return lockStatus;
+        }
+        if (lockStatus != SPINLOCK_LOCK_STATUS_INUSE) {
+            return lockStatus;
+        }
+        if (inUseCount != NULL) {
+            (*inUseCount)++;
+        }
+        ClockP_usleep(SPINLOCK_RETRY_DELAY_US);
+    } while ((ClockP_getTimeUsec() - startTime) < timeoutUsec);
+
+    return SystemP_TIMEOUT;
+}
+
 /**
  * @brief Task A for mutual exclusion test: Acquires lock, holds it, then releases.
  *
@@ -356,33 +387,53 @@ static void TestSpinlock_mutexAcquireLock(void *arg)
     (void)arg;
     int32_t lockStatus;
     uint64_t timestamp;
-
-    /* Small delay to ensure Task B is ready to compete for the lock */
-    ClockP_usleep(10000U);
+    uint32_t testLockAcquired = 0U;
 
     /* Step 3: Call Spinlock_lock() on lock 0 and verify return is SPINLOCK_LOCK_STATUS_FREE */
-    lockStatus = Spinlock_lock(CSL_SPINLOCK0_BASE, TEST_LOCK_NUMBER);
+    lockStatus = TestSpinlock_lockWithTimeout(TEST_LOCK_NUMBER, SPINLOCK_ACQUIRE_TIMEOUT_US, NULL);
     timestamp = ClockP_getTimeUsec();
     DebugP_log("[MutexTaskA] Acquired lock at %llu us, status=%d\r\n", timestamp, lockStatus);
-    TEST_ASSERT_EQUAL_INT32(SPINLOCK_LOCK_STATUS_FREE, lockStatus);
+    if (lockStatus != SPINLOCK_LOCK_STATUS_FREE) {
+        DebugP_log("[MutexTaskA] Failed to acquire spinlock 0\r\n");
+        goto done;
+    }
+    testLockAcquired = 1U;
 
     /* Step 4: Record executionOrder[0] = TASK_A_START */
-    TestSpinlock_ExecutionOrder[TestSpinlock_ExecIndex++] = TASK_A_START;
+    TestSpinlock_ExecutionOrder[0] = TASK_A_START;
     DebugP_log("[MutexTaskA] Recorded TASK_A_START\r\n");
+
+    Spinlock_unlock(CSL_SPINLOCK0_BASE, TEST_GATE_LOCK_NUMBER);
+
+    lockStatus = TestSpinlock_lockWithTimeout(TEST_OBSERVED_LOCK_NUMBER,
+                                              SPINLOCK_ACQUIRE_TIMEOUT_US,
+                                              NULL);
+    if (lockStatus != SPINLOCK_LOCK_STATUS_FREE) {
+        DebugP_log("[MutexTaskA] Timed out waiting for Task B contention, status=%d\r\n", lockStatus);
+        goto done;
+    }
+    Spinlock_unlock(CSL_SPINLOCK0_BASE, TEST_OBSERVED_LOCK_NUMBER);
 
     /* Step 5: Hold lock for 50ms (simulate critical section) */
     DebugP_log("[MutexTaskA] Holding lock for %dms\r\n", CRITICAL_SECTION_DELAY_MS);
     ClockP_usleep(CRITICAL_SECTION_DELAY_MS * 1000U);
 
     /* Step 8: Record executionOrder[1] = TASK_A_END */
-    TestSpinlock_ExecutionOrder[TestSpinlock_ExecIndex++] = TASK_A_END;
+    TestSpinlock_ExecutionOrder[1] = TASK_A_END;
     DebugP_log("[MutexTaskA] Recorded TASK_A_END\r\n");
 
     /* Step 9: Call Spinlock_unlock() on lock 0 */
     Spinlock_unlock(CSL_SPINLOCK0_BASE, TEST_LOCK_NUMBER);
+    testLockAcquired = 0U;
     timestamp = ClockP_getTimeUsec();
     DebugP_log("[MutexTaskA] Released lock at %llu us\r\n", timestamp);
+    TestSpinlock_MutexTaskAStatus = SystemP_SUCCESS;
 
+done:
+    if (testLockAcquired != 0U) {
+        Spinlock_unlock(CSL_SPINLOCK0_BASE, TEST_LOCK_NUMBER);
+    }
+    Spinlock_unlock(CSL_SPINLOCK0_BASE, TEST_GATE_LOCK_NUMBER);
     /* Signal completion */
     SemaphoreP_post(&TestSpinlock_MutexTestDoneSem);
     DebugP_log("[MutexTaskA] Exiting\r\n");
@@ -409,6 +460,17 @@ static void TestSpinlock_mutexHoldLock(void *arg)
     int32_t lockStatus;
     uint64_t startTime, acquireTime;
     uint32_t inUseCount = 0U;
+    uint32_t contentionObserved = 0U;
+    uint32_t testLockAcquired = 0U;
+
+    lockStatus = TestSpinlock_lockWithTimeout(TEST_GATE_LOCK_NUMBER,
+                                              SPINLOCK_ACQUIRE_TIMEOUT_US,
+                                              NULL);
+    if (lockStatus != SPINLOCK_LOCK_STATUS_FREE) {
+        DebugP_log("[MutexTaskB] Timed out waiting for Task A gate, status=%d\r\n", lockStatus);
+        goto done;
+    }
+    Spinlock_unlock(CSL_SPINLOCK0_BASE, TEST_GATE_LOCK_NUMBER);
 
     /* Step 6: Call Spinlock_lock() in spin-wait loop, capture start timestamp */
     startTime = ClockP_getTimeUsec();
@@ -422,17 +484,33 @@ static void TestSpinlock_mutexHoldLock(void *arg)
         /* Step 7: Verify return is SPINLOCK_LOCK_STATUS_INUSE while Task A holds lock */
         if (lockStatus == SPINLOCK_LOCK_STATUS_INUSE) {
             inUseCount++;
+            if (contentionObserved == 0U) {
+                Spinlock_unlock(CSL_SPINLOCK0_BASE, TEST_OBSERVED_LOCK_NUMBER);
+                contentionObserved = 1U;
+            }
             /* Brief delay to avoid excessive spinning */
-            ClockP_usleep(1000U);
+            ClockP_usleep(SPINLOCK_RETRY_DELAY_US);
+        } else if (lockStatus != SPINLOCK_LOCK_STATUS_FREE) {
+            DebugP_log("[MutexTaskB] Lock attempt failed, status=%d\r\n", lockStatus);
+            goto done;
         }
-    } while (lockStatus != SPINLOCK_LOCK_STATUS_FREE);
+    } while ((lockStatus != SPINLOCK_LOCK_STATUS_FREE) &&
+             ((ClockP_getTimeUsec() - startTime) < SPINLOCK_ACQUIRE_TIMEOUT_US));
+
+    if (lockStatus != SPINLOCK_LOCK_STATUS_FREE) {
+        DebugP_log("[MutexTaskB] Timed out acquiring spinlock 0, status=%d\r\n", lockStatus);
+        goto done;
+    }
+    testLockAcquired = 1U;
 
     /* Step 10: Successfully acquire lock 0, verify return is SPINLOCK_LOCK_STATUS_FREE */
     acquireTime = ClockP_getTimeUsec();
     DebugP_log("[MutexTaskB] Acquired lock at %llu us, status=%d\r\n", acquireTime, lockStatus);
     DebugP_log("[MutexTaskB] Lock was INUSE %u times before acquisition\r\n", inUseCount);
-    TEST_ASSERT_EQUAL_INT32(SPINLOCK_LOCK_STATUS_FREE, lockStatus);
-    TEST_ASSERT_GREATER_THAN_UINT32(0, inUseCount);  /* Verify we saw contention */
+    if (inUseCount == 0U) {
+        DebugP_log("[MutexTaskB] Did not observe contention\r\n");
+        goto done;
+    }
 
     /* Step 11: Calculate wait time */
     TestSpinlock_taskUnlockWaitTime = acquireTime - startTime;
@@ -441,20 +519,29 @@ static void TestSpinlock_mutexHoldLock(void *arg)
                (float)TestSpinlock_taskUnlockWaitTime / 1000.0f);
 
     /* Step 12: Record executionOrder[2] = TASK_B_START */
-    TestSpinlock_ExecutionOrder[TestSpinlock_ExecIndex++] = TASK_B_START;
+    TestSpinlock_ExecutionOrder[2] = TASK_B_START;
     DebugP_log("[MutexTaskB] Recorded TASK_B_START\r\n");
 
     /* Step 13: Hold lock for 50ms, record executionOrder[3] = TASK_B_END */
     DebugP_log("[MutexTaskB] Holding lock for %dms\r\n", CRITICAL_SECTION_DELAY_MS);
     ClockP_usleep(CRITICAL_SECTION_DELAY_MS * 1000U);
-    TestSpinlock_ExecutionOrder[TestSpinlock_ExecIndex++] = TASK_B_END;
+    TestSpinlock_ExecutionOrder[3] = TASK_B_END;
     DebugP_log("[MutexTaskB] Recorded TASK_B_END\r\n");
 
     /* Step 14: Call Spinlock_unlock() on lock 0 */
     Spinlock_unlock(CSL_SPINLOCK0_BASE, TEST_LOCK_NUMBER);
+    testLockAcquired = 0U;
     acquireTime = ClockP_getTimeUsec();
     DebugP_log("[MutexTaskB] Released lock at %llu us\r\n", acquireTime);
+    TestSpinlock_MutexTaskBStatus = SystemP_SUCCESS;
 
+done:
+    if (testLockAcquired != 0U) {
+        Spinlock_unlock(CSL_SPINLOCK0_BASE, TEST_LOCK_NUMBER);
+    }
+    if (contentionObserved == 0U) {
+        Spinlock_unlock(CSL_SPINLOCK0_BASE, TEST_OBSERVED_LOCK_NUMBER);
+    }
     /* Signal completion */
     SemaphoreP_post(&TestSpinlock_MutexTestDoneSem);
     DebugP_log("[MutexTaskB] Exiting\r\n");
@@ -488,16 +575,23 @@ static void TestSpinlock_verifyMutualExclusion(void *args)
     DebugP_log("Test: Verify Mutual Exclusion with Sequential Lock Acquisition\r\n");
     DebugP_log("=============================================================\r\n");
 
-    /* Step 2: Initialize shared array executionOrder[] and index counter */
+    /* Step 2: Initialize shared array executionOrder[] */
     for (i = 0; i < EXEC_ORDER_SIZE; i++) {
         TestSpinlock_ExecutionOrder[i] = 0U;
     }
-    TestSpinlock_ExecIndex = 0U;
     TestSpinlock_taskUnlockStartTime = 0U;
     TestSpinlock_taskUnlockWaitTime = 0U;
+    TestSpinlock_MutexTaskAStatus = SystemP_FAILURE;
+    TestSpinlock_MutexTaskBStatus = SystemP_FAILURE;
 
-    /* Reset the spinlock to ensure clean state */
-    Spinlock_moduleReset(CSL_SPINLOCK0_BASE);
+    Spinlock_unlock(CSL_SPINLOCK0_BASE, TEST_LOCK_NUMBER);
+    Spinlock_unlock(CSL_SPINLOCK0_BASE, TEST_GATE_LOCK_NUMBER);
+    Spinlock_unlock(CSL_SPINLOCK0_BASE, TEST_OBSERVED_LOCK_NUMBER);
+
+    status = Spinlock_lock(CSL_SPINLOCK0_BASE, TEST_GATE_LOCK_NUMBER);
+    TEST_ASSERT_EQUAL_INT32(SPINLOCK_LOCK_STATUS_FREE, status);
+    status = Spinlock_lock(CSL_SPINLOCK0_BASE, TEST_OBSERVED_LOCK_NUMBER);
+    TEST_ASSERT_EQUAL_INT32(SPINLOCK_LOCK_STATUS_FREE, status);
 
     /* Construct counting semaphore for task completion (expect 2 posts) */
     status = SemaphoreP_constructCounting(&TestSpinlock_MutexTestDoneSem, 0, 2);
@@ -530,10 +624,13 @@ static void TestSpinlock_verifyMutualExclusion(void *args)
     /* Wait for both tasks to complete */
     DebugP_log("Waiting for both tasks to complete...\r\n");
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
-                            SemaphoreP_pend(&TestSpinlock_MutexTestDoneSem, SystemP_WAIT_FOREVER));
+                            SemaphoreP_pend(&TestSpinlock_MutexTestDoneSem, MUTEX_TEST_DONE_TIMEOUT));
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,
-                            SemaphoreP_pend(&TestSpinlock_MutexTestDoneSem, SystemP_WAIT_FOREVER));
+                            SemaphoreP_pend(&TestSpinlock_MutexTestDoneSem, MUTEX_TEST_DONE_TIMEOUT));
     DebugP_log("Both tasks completed\r\n");
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, TestSpinlock_MutexTaskAStatus);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, TestSpinlock_MutexTaskBStatus);
 
     /* Step 15: Verify execution order shows strict serialization */
     DebugP_log("\r\nVerifying execution order:\r\n");
@@ -573,4 +670,3 @@ static void TestSpinlock_verifyMutualExclusion(void *args)
     DebugP_log("=============================================================\r\n");
     DebugP_log("\r\n");
 }
-

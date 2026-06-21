@@ -277,10 +277,11 @@ static void TestSpinlock_isrA(void *args)
     /* Acquire spinlock to protect shared data */
     status = Spinlock_lock(CSL_SPINLOCK0_BASE, ISR_TEST_LOCK_NUMBER);
 
-    /* Critical section: increment shared counter, release only if acquired */
+    /* Critical section: increment shared counter only if lock was acquired */
     if (status == SPINLOCK_LOCK_STATUS_FREE)
     {
         gIsrSharedCounter++;
+        /* Release spinlock only if successfully acquired */
         Spinlock_unlock(CSL_SPINLOCK0_BASE, ISR_TEST_LOCK_NUMBER);
     }
 
@@ -301,10 +302,11 @@ static void TestSpinlock_isrB(void *args)
     /* Acquire spinlock to protect shared data */
     status = Spinlock_lock(CSL_SPINLOCK0_BASE, ISR_TEST_LOCK_NUMBER);
 
-    /* Critical section: increment shared counter, release only if acquired */
+    /* Critical section: increment shared counter only if lock was acquired */
     if (status == SPINLOCK_LOCK_STATUS_FREE)
     {
         gIsrSharedCounter++;
+        /* Release spinlock only if successfully acquired */
         Spinlock_unlock(CSL_SPINLOCK0_BASE, ISR_TEST_LOCK_NUMBER);
     }
 
@@ -350,18 +352,19 @@ static void TestSpinlock_acquireRelease(void *args)
  *
  * This test case validates:
  * 1. Calls Spinlock_getNumLocks() to query available locks
- * 2. Verifies the returned number is positive and non-zero
- * 3. Stores the number for use in range validation in other tests
+ * 2. Verifies the returned number matches the expected value for the SoC (256 locks)
+ * 3. Expected lock count: 256 for AM62DX, AM62AX, and AM275X
  */
 static void TestSpinlock_getNumLocks(void *args)
 {
     uint32_t numLocks;
+    uint32_t expectedNumLocks = 256U;
 
     /* Step 1: Call Spinlock_getNumLocks() */
     numLocks = Spinlock_getNumLocks(CSL_SPINLOCK0_BASE);
 
-    /* Step 2: Verify returned number is a positive, non-zero value */
-    TEST_ASSERT_GREATER_THAN_UINT32(0, numLocks);
+    /* Step 2: Verify returned number matches expected value */
+    TEST_ASSERT_EQUAL_UINT32(expectedNumLocks, numLocks);
 }
 
 /**

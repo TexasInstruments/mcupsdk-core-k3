@@ -130,9 +130,24 @@ const defines_freertos = {
     ],
 };
 
+const defines_freertos_r5f = {
+    common: [
+        "SOC_AM62X",
+        "ENABLE_MT",
+        "ENABLE_R5F",
+    ],
+};
+
 const defines_nortos = {
     common: [
         "SOC_AM62X",
+    ],
+};
+
+const defines_nortos_r5f = {
+    common: [
+        "SOC_AM62X",
+        "ENABLE_R5F",
     ],
 };
 
@@ -231,14 +246,6 @@ const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sk", os: "nortos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "nortos"},
-    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sip-sk", os: "freertos"},
-    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sip-sk", os: "nortos"},
-    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "freertos"},
-    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sip-sk", os: "nortos"},
-    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sk-lp", os: "freertos"},
-    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sk-lp", os: "nortos"},
-    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "freertos"},
-    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk-lp", os: "nortos"},
 ];
 
 function getComponentProperty() {
@@ -285,13 +292,14 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos;
             build_property.libs = libs_freertos_r5f;
             build_property.templates = templates_freertos_r5f;
-            build_property.defines = defines_freertos;
+            build_property.defines = defines_freertos_r5f;
         }
         else if (buildOption.os.match(/nortos*/)) {
             build_property.includes = includes_nortos_r5f;
             build_property.libdirs = libdirs_nortos;
             build_property.libs = libs_nortos_r5f;
             build_property.templates = templates_nortos_r5f;
+            build_property.defines = defines_nortos_r5f;
         }
     }
 

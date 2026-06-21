@@ -71,6 +71,8 @@ INCLUDES_common := \
 
 DEFINES_common := \
 	-DSOC_AM62X \
+	-DSOC_AM62X \
+	-DENABLE_MT \
 
 CFLAGS_common := \
 	-mcpu=cortex-a53+fp+simd \
@@ -238,7 +240,7 @@ syscfg: ../example.syscfg
 	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM62x --context a53ss0-0 --part Default --package ALW --output generated/ ../example.syscfg
 
 syscfg-gui:
-	$(SYSCFG_NWJS) $(SYSCFG_PATH) --product $(SYSCFG_SDKPRODUCT) --device AM62x --context a53ss0-0 --part Default --package ALW --output generated/  ../example.syscfg
+	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device AM62x --context a53ss0-0 --part Default --package ALW --output generated/  ../example.syscfg
 
 #
 # Generation of boot image which can be loaded by Secondary Boot Loader (SBL)

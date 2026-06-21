@@ -33,6 +33,7 @@ MEMORY
 
     C75_1_OCRAM   (RWIX)         : ORIGIN = 0x80400000 LENGTH = 0x00080000          /* 512 KB for c75ss1-0 core */
 
+    LOG_SHM_MEM                  : ORIGIN = 0x80380000, LENGTH = 0x40000
 
 }
 
@@ -69,4 +70,6 @@ SECTIONS
 
     .benchmark_buffer:     > C75_0_OCRAM ALIGN (32)
 
+    /* this is used when Debug log's to shared memory is enabled, else this is not used */
+    .bss.log_shared_mem  (NOLOAD) : {} > LOG_SHM_MEM
 }

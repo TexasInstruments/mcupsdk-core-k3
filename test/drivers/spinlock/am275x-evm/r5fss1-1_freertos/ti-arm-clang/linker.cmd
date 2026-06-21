@@ -39,7 +39,7 @@ SECTIONS
     .vectors:{} palign(8) > R5F_VECS
 
     /* This has the R5F boot code until MPU is enabled,  this MUST be at a address < 0x80000000
-     * i.e this cannot be placed in R50_0_OCRAM
+     * i.e this cannot be placed in R51_1_OCRAM
      */
     GROUP {
         .text.hwi: palign(8)
@@ -49,27 +49,27 @@ SECTIONS
         .text:abort: palign(8) /* this helps in loading symbols when using XIP mode */
     } > R5F_TCMA
 
-    /* This is rest of code. This can be placed in R50_0_OCRAM if R50_0_OCRAM is available and needed */
+    /* This is rest of code. This can be placed in R51_1_OCRAM if R51_1_OCRAM is available and needed */
     GROUP {
         .text:   {} palign(8)   /* This is where code resides */
         .rodata: {} palign(8)   /* This is where const's go */
-    } > R50_0_OCRAM
+    } > R51_1_OCRAM
 
     /* this is used when Debug log's to shared memory is enabled, else this is not used */
     .bss.log_shared_mem  (NOLOAD) : {} > LOG_SHM_MEM
-    /* This is rest of initialized data. This can be placed in R50_0_OCRAM if R50_0_OCRAM is available and needed */
+    /* This is rest of initialized data. This can be placed in R51_1_OCRAM if R51_1_OCRAM is available and needed */
     GROUP {
         .data:   {} palign(8)   /* This is where initialized globals and static go */
-    } > R50_0_OCRAM
+    } > R51_1_OCRAM
 
-    /* This is rest of uninitialized data. This can be placed in R50_0_OCRAM if R50_0_OCRAM is available and needed */
+    /* This is rest of uninitialized data. This can be placed in R51_1_OCRAM if R51_1_OCRAM is available and needed */
     GROUP {
         .bss:    {} palign(8)   /* This is where uninitialized globals go */
         RUN_START(__BSS_START)
         RUN_END(__BSS_END)
         .sysmem: {} palign(8)   /* This is where the malloc heap goes */
         .stack:  {} palign(8)   /* This is where the main() stack goes */
-    } > R50_0_OCRAM
+    } > R51_1_OCRAM
 
     /* This is where the stacks for different R5F modes go */
     GROUP {
@@ -88,14 +88,14 @@ SECTIONS
         .undefinedstack: {. = . + __UNDEFINED_STACK_SIZE;} align(8)
         RUN_START(__UNDEFINED_STACK_START)
         RUN_END(__UNDEFINED_STACK_END)
-    } > R50_0_OCRAM
+    } > R51_1_OCRAM
 
     /* Sections needed for C++ projects */
     GROUP {
         .ARM.exidx:  {} palign(8)   /* Needed for C++ exception handling */
         .init_array: {} palign(8)   /* Contains function pointers called before main */
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
-    } > R50_0_OCRAM
+    } > R51_1_OCRAM
 }
 
 MEMORY

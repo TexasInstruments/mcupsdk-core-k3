@@ -228,6 +228,16 @@ help:
 	@echo  $(MAKE) -s -C drivers/watchdog/am275x-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/watchdog/am275x-evm/c75ss1-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/uart/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/spinlock/am275x-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/spinlock/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/spinlock/am275x-evm/r5fss0-1_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/spinlock/am275x-evm/r5fss0-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/spinlock/am275x-evm/r5fss1-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/spinlock/am275x-evm/r5fss1-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/spinlock/am275x-evm/r5fss1-1_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/spinlock/am275x-evm/r5fss1-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/spinlock/am275x-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/spinlock/am275x-evm/c75ss1-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C fileio/am275x-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl/am275x-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -570,6 +580,16 @@ BUILD_COMBO_EXAMPLE_ALL += test_watchdog_am275x-evm_r5fss1-0_freertos_ti-arm-cla
 BUILD_COMBO_EXAMPLE_ALL += test_watchdog_am275x-evm_r5fss1-1_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_watchdog_am275x-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += test_watchdog_am275x-evm_c75ss1-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += test_spinlock_am275x-evm_r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_spinlock_am275x-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_spinlock_am275x-evm_r5fss0-1_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_spinlock_am275x-evm_r5fss0-1_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_spinlock_am275x-evm_r5fss1-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_spinlock_am275x-evm_r5fss1-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_spinlock_am275x-evm_r5fss1-1_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_spinlock_am275x-evm_r5fss1-1_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_spinlock_am275x-evm_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += test_spinlock_am275x-evm_c75ss1-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += test_fileio_am275x-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += test_dpl_am275x-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_dpl_am275x-evm_r5fss0-0_freertos_ti-arm-clang
@@ -1165,6 +1185,35 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  test_uart_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/uart/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+ test_spinlock_am275x-evm_r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ test_spinlock_am275x-evm_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_spinlock_am275x-evm_r5fss0-1_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss0-1_nortos/ti-arm-clang -f makefile all
+
+ test_spinlock_am275x-evm_r5fss0-1_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile all
+
+ test_spinlock_am275x-evm_r5fss1-0_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss1-0_nortos/ti-arm-clang -f makefile all
+
+ test_spinlock_am275x-evm_r5fss1-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile all
+
+ test_spinlock_am275x-evm_r5fss1-1_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss1-1_nortos/ti-arm-clang -f makefile all
+
+ test_spinlock_am275x-evm_r5fss1-1_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile all
+
+ test_spinlock_am275x-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C drivers/spinlock/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
+
+ test_spinlock_am275x-evm_c75ss1-0_freertos_ti-c7000:
+	$(MAKE) -C drivers/spinlock/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile all
 
  test_fileio_am275x-evm_c75ss0-0_freertos_ti-c7000:
 	$(MAKE) -C fileio/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
@@ -1470,6 +1519,16 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_watchdog_am275x-evm_r5fss1-0_freertos_ti-a
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_watchdog_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_watchdog_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_watchdog_am275x-evm_c75ss1-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_spinlock_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_spinlock_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_spinlock_am275x-evm_r5fss0-1_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_spinlock_am275x-evm_r5fss0-1_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_spinlock_am275x-evm_r5fss1-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_spinlock_am275x-evm_r5fss1-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_spinlock_am275x-evm_r5fss1-1_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_spinlock_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_spinlock_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_spinlock_am275x-evm_c75ss1-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_fileio_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
@@ -2061,6 +2120,35 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  test_uart_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/uart/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+ test_spinlock_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ test_spinlock_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_spinlock_am275x-evm_r5fss0-1_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss0-1_nortos/ti-arm-clang -f makefile clean
+
+ test_spinlock_am275x-evm_r5fss0-1_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile clean
+
+ test_spinlock_am275x-evm_r5fss1-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss1-0_nortos/ti-arm-clang -f makefile clean
+
+ test_spinlock_am275x-evm_r5fss1-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile clean
+
+ test_spinlock_am275x-evm_r5fss1-1_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss1-1_nortos/ti-arm-clang -f makefile clean
+
+ test_spinlock_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile clean
+
+ test_spinlock_am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C drivers/spinlock/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
+ test_spinlock_am275x-evm_c75ss1-0_freertos_ti-c7000_clean:
+	$(MAKE) -C drivers/spinlock/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile clean
 
  test_fileio_am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
 	$(MAKE) -C fileio/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
@@ -2366,6 +2454,16 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_watchdog_am275x-evm_r5fss1-0_freertos_ti-a
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_watchdog_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_watchdog_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_watchdog_am275x-evm_c75ss1-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_spinlock_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_spinlock_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_spinlock_am275x-evm_r5fss0-1_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_spinlock_am275x-evm_r5fss0-1_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_spinlock_am275x-evm_r5fss1-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_spinlock_am275x-evm_r5fss1-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_spinlock_am275x-evm_r5fss1-1_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_spinlock_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_spinlock_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_spinlock_am275x-evm_c75ss1-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_fileio_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub
@@ -2957,6 +3055,35 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_uart_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/uart/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+ test_spinlock_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_spinlock_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_spinlock_am275x-evm_r5fss0-1_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss0-1_nortos/ti-arm-clang -f makefile scrub
+
+ test_spinlock_am275x-evm_r5fss0-1_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile scrub
+
+ test_spinlock_am275x-evm_r5fss1-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss1-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_spinlock_am275x-evm_r5fss1-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_spinlock_am275x-evm_r5fss1-1_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss1-1_nortos/ti-arm-clang -f makefile scrub
+
+ test_spinlock_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/spinlock/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile scrub
+
+ test_spinlock_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C drivers/spinlock/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
+ test_spinlock_am275x-evm_c75ss1-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C drivers/spinlock/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile scrub
 
  test_fileio_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub:
 	$(MAKE) -C fileio/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub

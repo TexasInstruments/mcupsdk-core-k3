@@ -55,6 +55,8 @@ SECTIONS
         .rodata: {} palign(8)   /* This is where const's go */
     } > R50_0_OCRAM
 
+    /* this is used when Debug log's to shared memory is enabled, else this is not used */
+    .bss.log_shared_mem  (NOLOAD) : {} > LOG_SHM_MEM
     /* This is rest of initialized data. This can be placed in R50_0_OCRAM if R50_0_OCRAM is available and needed */
     GROUP {
         .data:   {} palign(8)   /* This is where initialized globals and static go */
@@ -112,6 +114,7 @@ MEMORY
     C75_0_OCRAM   (RWIX)         : ORIGIN = 0x72200000 LENGTH = 0x00080000 // 512 KB for c75ss0-0 core
     C75_1_OCRAM   (RWIX)         : ORIGIN = 0x72400000 LENGTH = 0x00080000 // 512 KB for c75ss1-0 core
 
+    LOG_SHM_MEM                  : ORIGIN = 0x72380000, LENGTH = 0x40000
 
 
 

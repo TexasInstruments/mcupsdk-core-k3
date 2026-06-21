@@ -143,7 +143,7 @@ const templates_nortos_r5f =
     },
 ];
 
-const templates_freertos_c750 =
+const templates_freertos_c75_0 =
 [
     {
         input: ".project/templates/am275x/common/linker_c75ss0.cmd.xdt",
@@ -159,10 +159,33 @@ const templates_freertos_c750 =
     },
 ];
 
+const templates_freertos_c75_1 =
+[
+	{
+        input: ".project/templates/am275x/common/linker_c75ss1.cmd.xdt",
+		output: "linker.cmd",
+	},
+	{
+		input: ".project/templates/am275x/freertos/main_freertos.c.xdt",
+		output: "../main.c",
+        options: {
+            entryFunction: "test_spinlock_main",
+            stackSize: 64*1024,
+        },
+    },
+];
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
+    { device: device, cpu: "r5fss0-1", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
+    { device: device, cpu: "r5fss0-1", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
+    { device: device, cpu: "r5fss1-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
+    { device: device, cpu: "r5fss1-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
+    { device: device, cpu: "r5fss1-1", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
+    { device: device, cpu: "r5fss1-1", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000",     board: "am275x-evm", os: "freertos"},
+    { device: device, cpu: "c75ss1-0", cgt: "ti-c7000",     board: "am275x-evm", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -174,6 +197,7 @@ function getComponentProperty() {
     property.isInternal = true;
     property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;
+    property.isLogSHM = true;
 
     return property;
 }
@@ -211,7 +235,14 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_freertos;
         build_property.libs = libs_freertos_c75;
         build_property.defines = defines_freertos;
-        build_property.templates = templates_freertos_c750;
+        if(buildOption.cpu.match("c75ss0-0"))
+        {
+            build_property.templates = templates_freertos_c75_0;
+        }
+        else if (buildOption.cpu.match("c75ss1-0"))
+        {
+            build_property.templates = templates_freertos_c75_1;
+        }
     }
 
     return build_property;

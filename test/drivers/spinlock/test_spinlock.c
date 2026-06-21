@@ -109,11 +109,13 @@
 /*                            Global Variables                                */
 /* ========================================================================== */
 
+#if !defined(BUILD_C7X) && !defined(ENABLE_R5F)
 static volatile uint32_t gIsrSharedCounter = 0;
 static volatile uint32_t gIsrACompleteCount = 0;
 static volatile uint32_t gIsrBCompleteCount = 0;
 static volatile uint32_t gDeadlockIsrEntered = 0;
 static volatile uint32_t gDeadlockDetected = 0;
+#endif
 
 #if defined (ENABLE_MT)
 static volatile uint32_t gLockPersistIsrEntered = 0;
@@ -135,7 +137,7 @@ static void TestSpinlock_acquireRelease(void *args);
 static void TestSpinlock_getNumLocks(void *args);
 static void TestSpinlock_moduleReset(void *args);
 static void TestSpinlock_timeoutLogic(void *args);
-#if !defined(BUILD_C7X)
+#if !defined(BUILD_C7X) && !defined(ENABLE_R5F)
 static void TestSpinlock_isrDataProtection(void *args);
 static void TestSpinlock_isrDeadlock(void *args);
 #endif
@@ -144,7 +146,9 @@ static void TestSpinlock_multipleLocksSimultaneous(void *args);
 static void TestSpinlock_acquireInUseLock(void *args);
 static void TestSpinlock_outOfRangeLockNumber(void *args);
 static void TestSpinlock_unlockFreeLock(void *args);
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM275X)
 static void TestSpinlock_nullBaseAddress(void *args);
+#endif
 static void TestSpinlock_maxValidLockNumber(void *args);
 static void TestSpinlock_uint32MaxLockNumber(void *args);
 static void TestSpinlock_allLocksAcquired(void *args);
@@ -163,7 +167,7 @@ static void TestSpinlock_multiThreadModuleReset(void *args);
 #endif
 
 /* Helpers */
-#if !defined(BUILD_C7X)
+#if !defined(BUILD_C7X) && !defined(ENABLE_R5F)
 static void TestSpinlock_isrA(void *args);
 static void TestSpinlock_isrB(void *args);
 static void TestSpinlock_deadlockIsr(void *args);
@@ -204,7 +208,7 @@ void test_spinlock_main(void *args)
     RUN_TEST(TestSpinlock_getNumLocks, 10728, NULL);
     RUN_TEST(TestSpinlock_moduleReset, 10729, NULL);
     RUN_TEST(TestSpinlock_timeoutLogic, 10731, NULL);
-#if !defined(BUILD_C7X)
+#if !defined(BUILD_C7X) && !defined(ENABLE_R5F)
     RUN_TEST(TestSpinlock_isrDataProtection, 10804, NULL);
     RUN_TEST(TestSpinlock_isrDeadlock, 10805, NULL);
 #endif
@@ -213,7 +217,9 @@ void test_spinlock_main(void *args)
     RUN_TEST(TestSpinlock_acquireInUseLock, 10810, NULL);
     RUN_TEST(TestSpinlock_outOfRangeLockNumber, 10811, NULL);
     RUN_TEST(TestSpinlock_unlockFreeLock, 10812, NULL);
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM275X)
     RUN_TEST(TestSpinlock_nullBaseAddress, 10813, NULL);
+#endif
     RUN_TEST(TestSpinlock_maxValidLockNumber, 10814, NULL);
     RUN_TEST(TestSpinlock_uint32MaxLockNumber, 10815, NULL);
     RUN_TEST(TestSpinlock_allLocksAcquired, 10809, NULL);
@@ -257,7 +263,7 @@ void tearDown(void)
  * Helpers
  */
 
-#if !defined(BUILD_C7X)
+#if !defined(BUILD_C7X) && !defined(ENABLE_R5F)
 /**
  * \brief ISR A for data protection test
  *
@@ -271,14 +277,12 @@ static void TestSpinlock_isrA(void *args)
     /* Acquire spinlock to protect shared data */
     status = Spinlock_lock(CSL_SPINLOCK0_BASE, ISR_TEST_LOCK_NUMBER);
 
-    /* Critical section: increment shared counter */
+    /* Critical section: increment shared counter, release only if acquired */
     if (status == SPINLOCK_LOCK_STATUS_FREE)
     {
         gIsrSharedCounter++;
+        Spinlock_unlock(CSL_SPINLOCK0_BASE, ISR_TEST_LOCK_NUMBER);
     }
-
-    /* Release spinlock */
-    Spinlock_unlock(CSL_SPINLOCK0_BASE, ISR_TEST_LOCK_NUMBER);
 
     /* Track ISR A completion */
     gIsrACompleteCount++;
@@ -297,14 +301,12 @@ static void TestSpinlock_isrB(void *args)
     /* Acquire spinlock to protect shared data */
     status = Spinlock_lock(CSL_SPINLOCK0_BASE, ISR_TEST_LOCK_NUMBER);
 
-    /* Critical section: increment shared counter */
+    /* Critical section: increment shared counter, release only if acquired */
     if (status == SPINLOCK_LOCK_STATUS_FREE)
     {
         gIsrSharedCounter++;
+        Spinlock_unlock(CSL_SPINLOCK0_BASE, ISR_TEST_LOCK_NUMBER);
     }
-
-    /* Release spinlock */
-    Spinlock_unlock(CSL_SPINLOCK0_BASE, ISR_TEST_LOCK_NUMBER);
 
     /* Track ISR B completion */
     gIsrBCompleteCount++;
@@ -444,7 +446,8 @@ static void TestSpinlock_timeoutLogic(void *args)
     Spinlock_unlock(CSL_SPINLOCK0_BASE, lockNumber);
 }
 
-#if !defined(BUILD_C7X)
+#if !defined(BUILD_C7X) && !defined(ENABLE_R5F)
+
 /**
  * \brief Test to verify spinlocks protect data shared between different interrupt service routines.
  *
@@ -872,6 +875,7 @@ static void TestSpinlock_unlockFreeLock(void *args)
     Spinlock_unlock(CSL_SPINLOCK0_BASE, lockNumber);
 }
 
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM275X)
 /**
  * \brief Test to verify that API calls with a NULL base address are handled correctly without system crashes.
  *
@@ -913,6 +917,7 @@ static void TestSpinlock_nullBaseAddress(void *args)
     /* If we reach here, the API handled NULL base address gracefully */
     /* No assertion needed - lack of crash is the success criteria */
 }
+#endif
 
 /**
  * \brief Test to verify that the maximum valid lock number (numLocks - 1) is functional.

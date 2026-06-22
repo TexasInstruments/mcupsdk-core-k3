@@ -81,12 +81,18 @@ function getComponentProperty() {
 }
 
 const robot_template = {
-    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "DDR",
         testCaseName: "DDR: Test walking 1's.",
         testCaseIds: "SITSW-3246 SITSW-3247 SITSW-3248",
+        cfgPath: "test/drivers/ddr/{board}/{coreName}/default_test_ddr_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        expectPort: "USB2",
+        appName: "test_ddr",
+        timeout: 900,
+        expectTimeout: 600,
     },
 };
 

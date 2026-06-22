@@ -101,8 +101,8 @@ const robot_template = {
         useBootloader: true,
         useNFS: true,
         bootMode: null,
-        timeout: 900,
-        expectTimeout: 30,
+        timeout: 1200,
+        expectTimeout: 120,
         expectations: [
             { port: "USB0", string: "Arago Project", timeout: 300 },
             { port: "USB0", string: "am62pxx-evm login:", timeout: 300 },

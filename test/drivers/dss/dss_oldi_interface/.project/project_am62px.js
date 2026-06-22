@@ -186,6 +186,8 @@ const robot_template = {
         componentName: "DSS",
         testCaseName: "dss_oldi_interface test application",
         testCaseIds: "SITSW-4560 SITSW-6069 SITSW-6070 SITSW-6071 SITSW-7529",
+        expectTimeout: 600,
+        timeout: 900,
     },
 };
 

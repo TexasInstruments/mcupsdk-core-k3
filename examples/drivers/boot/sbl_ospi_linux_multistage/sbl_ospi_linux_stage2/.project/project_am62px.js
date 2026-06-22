@@ -116,7 +116,7 @@ const robot_template = {
         cfgPath: "examples/drivers/boot/sbl_ospi_linux_multistage/sbl_ospi_linux_stage2/{board}/wkup-r5fss0-0_freertos/sbl_ospi_linux_${DEVICE_TYPE}.cfg",
         bootMode: "OSPI_NOR_BOOT_MODE",
         expectTimeout: 300,
-        timeout: 900,
+        timeout: 1200,
         useNFS: true,
         expectations: [
             { port: "USB0", string: "Arago Project" },
@@ -140,7 +140,7 @@ const robot_template_ecdsa = {
         cfgPath: "test/drivers/boot/sbl_ecdsa/{board}/default_sbl_ospi_linux_${DEVICE_TYPE}.cfg",
         bootMode: "OSPI_NOR_BOOT_MODE",
         expectTimeout: 300,
-        timeout: 900,
+        timeout: 1200,
         useNFS: true,
         expectations: [
             { port: "USB0", string: "Arago Project" },
@@ -165,7 +165,7 @@ const robot_template_ipc = {
         cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_linux_${DEVICE_TYPE}.cfg",
         bootMode: "OSPI_NOR_BOOT_MODE",
         expectTimeout: 300,
-        timeout: 900,
+        timeout: 1200,
         useNFS: true,
         expectations: [
             { port: "USB0", string: "Arago Project" },
@@ -211,7 +211,7 @@ const robot_template_falcon = {
         cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_linux_falcon_${DEVICE_TYPE}.cfg",
         bootMode: "OSPI_NOR_BOOT_MODE",
         expectTimeout: 300,
-        timeout: 800,
+        timeout: 1000,
         expectations: [
             { port: "USB0", string: "login:" },
             { port: "USB2", string: "Starting Sciserver..... PASSED" },

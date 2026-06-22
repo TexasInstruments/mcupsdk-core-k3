@@ -181,17 +181,14 @@ const robot_template_common_options = {
     expectTimeout: 120,
 };
 
-const robot_template_nor = {
-    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
-    output: "../tests.robot",
-    options: { ...robot_template_common_options, bootMode: "OSPI_NOR_BOOT_MODE" },
-};
-
-const robot_template_nand = {
-    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
-    output: "../tests.robot",
-    options: { ...robot_template_common_options, bootMode: "OSPI_NAND_BOOT_MODE" },
-};
+const robot_template_nor      = { input: ".project/templates/am62x/astra/tests_sbl.robot.xdt", output: "../tests.robot",
+    options: { ...robot_template_common_options, bootMode: "OSPI_NOR_BOOT_MODE",  expectPort: "USB2" } };
+const robot_template_nand     = { input: ".project/templates/am62x/astra/tests_sbl.robot.xdt", output: "../tests.robot",
+    options: { ...robot_template_common_options, bootMode: "OSPI_NAND_BOOT_MODE", expectPort: "USB2" } };
+const robot_template_a53_nor  = { input: ".project/templates/am62x/astra/tests_sbl.robot.xdt", output: "../tests.robot",
+    options: { ...robot_template_common_options, bootMode: "OSPI_NOR_BOOT_MODE",  expectPort: "USB0" } };
+const robot_template_a53_nand = { input: ".project/templates/am62x/astra/tests_sbl.robot.xdt", output: "../tests.robot",
+    options: { ...robot_template_common_options, bootMode: "OSPI_NAND_BOOT_MODE", expectPort: "USB0" } };
 
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
@@ -218,7 +215,13 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    const robot_template = (buildOption.board === "am62x-sk-lp") ? robot_template_nand : robot_template_nor;
+    const isLP  = buildOption.board === "am62x-sk-lp";
+    const isA53 = buildOption.cpu.match(/a53*/);
+    let robot_template;
+    if      (isA53 && isLP)  robot_template = robot_template_a53_nand;
+    else if (isA53)          robot_template = robot_template_a53_nor;
+    else if (isLP)           robot_template = robot_template_nand;
+    else                     robot_template = robot_template_nor;
     build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }

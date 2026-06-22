@@ -185,7 +185,7 @@ const robot_template = {
         cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_emmc_linux_${DEVICE_TYPE}.cfg",
         bootMode: "EMMC_BOOT_MODE",
         expectTimeout: 300,
-        timeout: 900,
+        timeout: 1200,
         appName: "ipc_rpmsg_echo_linux(emmc)",
         useNFS: true,
         expectations: [

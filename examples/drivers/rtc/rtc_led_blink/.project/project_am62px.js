@@ -139,7 +139,7 @@ function getComponentProperty() {
     return property;
 }
 
-const robot_template = {
+const robot_template_mcu_r5f = {
     input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
@@ -150,6 +150,24 @@ const robot_template = {
         cfgPath: "examples/drivers/rtc/rtc_led_blink/{board}/{coreName}/default_rtc_led_blink_${DEVICE_TYPE}.cfg",
         expectedString: "RTC LED blink test passed!!",
         appName: "rtc_led_blink",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        expectPort: "USB3",
+    },
+};
+
+const robot_template_wkup_r5f = {
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "RTC",
+        testCaseName: "RTC Led Blink Example",
+        testCaseIds: "SITSW-6021",
+        withCfg: true,
+        cfgPath: "examples/drivers/rtc/rtc_led_blink/{board}/{coreName}/default_rtc_led_blink_${DEVICE_TYPE}.cfg",
+        expectedString: "RTC LED blink test passed!!",
+        appName: "rtc_led_blink",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        expectPort: "USB2",
     },
 };
 
@@ -179,7 +197,11 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if(buildOption.cpu.match(/mcu-r5f*/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_mcu_r5f];
+    } else {
+        build_property.templates = [...(build_property.templates || []), robot_template_wkup_r5f];
+    }
     return build_property;
 }
 

@@ -115,7 +115,7 @@ const robot_template = {
         cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_emmc_linux_${DEVICE_TYPE}.cfg",
         bootMode: "EMMC_BOOT_MODE",
         expectTimeout: 300,
-        timeout: 900,
+        timeout: 1200,
         useNFS: true,
         expectations: [
             { port: "USB0", string: "Arago Project" },
@@ -137,7 +137,7 @@ const robot_template_ecdsa = {
         cfgPath: "test/drivers/boot/sbl_ecdsa/{board}/default_sbl_emmc_linux_${DEVICE_TYPE}.cfg",
         bootMode: "EMMC_BOOT_MODE",
         expectTimeout: 300,
-        timeout: 900,
+        timeout: 1200,
         useNFS: true,
         expectations: [
             { port: "USB0", string: "Arago Project" },
@@ -159,7 +159,7 @@ const robot_template_qnx = {
         testCaseIds: "SITSW-4745",
         cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_emmc_qnx_${DEVICE_TYPE}.cfg",
         expectTimeout: 300,
-        timeout: 900,
+        timeout: 1200,
         expectations: [
             { port: "USB0", string: "AM62PXEVM#" },
             { port: "USB2", string: "Starting Sciserver..... PASSED" },

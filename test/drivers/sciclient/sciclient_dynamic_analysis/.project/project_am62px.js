@@ -107,6 +107,8 @@ const robot_template = {
         componentName: "SCICLIENT",
         testCaseName: "SCICLIENT: Dynamic Analysis",
         testCaseIds: "SITSW-4830",
+        expectTimeout: 120,
+        timeout: 300,
     },
 };
 

@@ -122,6 +122,7 @@ const robot_template = {
         interactPrompt: "Receives 8 characters then echo's back and exits..",
         interactSend: ["12345678\\r\\n"],
         expectTimeout: 120,
+        timeout: 300,
     },
 };
 

@@ -166,6 +166,10 @@ const robot_template = {
         componentName: "Safety",
         testCaseName: "Safety: Test firewall isolation",
         testCaseIds: "SITSW-3325",
+        withCfg: true,
+        cfgPath: "examples/drivers/safety/fwl_isolation/{board}/default_firewall_isolation_${DEVICE_TYPE}.cfg",
+        expectTimeout: 30,
+        timeout: 630,
     },
 };
 
@@ -194,7 +198,10 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    // Only mcu-r5fss0-0 is the test master; r5fss0-0 is loaded by the cfg as DM core
+    if (buildOption.cpu.match(/mcu-r5fss/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

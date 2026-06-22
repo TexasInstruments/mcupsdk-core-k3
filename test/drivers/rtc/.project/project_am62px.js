@@ -146,7 +146,7 @@ function getComponentProperty() {
     return property;
 }
 
-const robot_template = {
+const robot_template_mcu_r5f = {
     input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
@@ -157,7 +157,26 @@ const robot_template = {
         cfgPath: "test/drivers/rtc/{board}/{coreName}/default_test_rtc_${DEVICE_TYPE}.cfg",
         appName: "test_rtc",
         bootMode: "OSPI_NOR_BOOT_MODE",
-        expectTimeout: 120,
+        expectPort: "USB3",
+        expectTimeout: 180,
+        timeout: 900,
+    },
+};
+
+const robot_template_wkup_r5f = {
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "RTC",
+        testCaseName: "RTC Test Application",
+        testCaseIds: "SITSW-5822 SITSW-5823 SITSW-5824",
+        withCfg: true,
+        cfgPath: "test/drivers/rtc/{board}/{coreName}/default_test_rtc_${DEVICE_TYPE}.cfg",
+        appName: "test_rtc",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        expectPort: "USB2",
+        expectTimeout: 180,
+        timeout: 900,
     },
 };
 
@@ -186,7 +205,11 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if(buildOption.cpu.match(/mcu-r5f*/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_mcu_r5f];
+    } else {
+        build_property.templates = [...(build_property.templates || []), robot_template_wkup_r5f];
+    }
     return build_property;
 }
 

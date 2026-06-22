@@ -166,4 +166,14 @@ uint32_t uiPortGetRunTimeCounterValue();
 #define INCLUDE_xTaskGetIdleTaskHandle  (1)
 #define INCLUDE_xSemaphoreGetMutexHolder (1)
 
+/*
+ * This is not a FreeRTOS defined config and is defined by TI to create
+ * tasks with a floating point context. In this case save/restore of
+ * R5 FPU Registers will be performed during each task switch.
+ */
+#if (configOPTIMIZE_FOR_LATENCY==0)
+#define configFLOATING_POINT_CONTEXT     (1)
+#else
+#define configFLOATING_POINT_CONTEXT     (0)
+#endif
 #endif /* TI_FREERTOS_CONFIG_H */

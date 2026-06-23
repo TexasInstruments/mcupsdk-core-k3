@@ -72,8 +72,8 @@ profile_list=`echo ${profile_list} | sed -e "s|\,| |g"`
 #########################################################################
 #                               Log files                               #
 #########################################################################
-log_dir=$GITHUB_WORKSPACE/logs
-build_dir=$GITHUB_WORKSPACE/mcu_plus_sdk
+log_dir=$GITHUB_WORKSPACE/workarea/logs
+build_dir=$GITHUB_WORKSPACE/workarea/mcu_plus_sdk
 pr_checkout_dir=$GITHUB_WORKSPACE/pr_checkout
 build_log=${log_dir}/build.log
 build_error_log=${log_dir}/build_error.log
@@ -102,22 +102,29 @@ make_folders() {
 }
 
 proc=`nproc`
-repo_init() {
+west_init() {
     mkdir workarea 
-    cd workaread
-    echo "Doing repo init and sync ..."
+    cd workarea
+    echo "Doing west init and sync ..."
     local start_time=`date +%s`
     sudo apt-get update
-    sudo apt-get -y install repo
     
-    repo init -u https://github.com/TexasInstruments/mcupsdk-manifests.git -m ${device}/dev.xml -b k3_main  --depth=1
-    repo sync -j${proc} -q
+    #Install west if not already present
+    if ! command -v west &> /dev/null; then
+        if ! command -v pip3 &> /dev/null; then
+            sudo apt --assume-yes install python3-pip
+        fi
+        python3 -m pip install --user --upgrade pip setuptools wheel west
+    fi
 
+    west init -m https://github.com/TexasInstruments/mcupsdk-manifests.git --mr k3_main --mf ${device}/dev.yml
+    west update --fetch=smart 2>&1 | grep -vE '^\s*\*\s+\[new (tag|branch)\]' || true
+    
     #Show the current branch/git status
-    repo forall -c "pwd;git branch -vv | cut -d ' ' -f 1-4"
+    west -q forall -c 'git checkout -b dev 2>/dev/null || git checkout dev'
 
     print_time_diff $start_time "Repo Init Time"
-    echo "Doing repo init and sync ... Done"
+    echo "Doing west init and sync ... Done"
     echo " "
 
     #Checkout the PR
@@ -138,7 +145,7 @@ download_components() {
     mkdir ${HOME}/ti
 
     find ./mcupsdk_setup -name "*.sh" -execdir chmod u+x {} +
-    ./mcupsdk_setup/${device}/download_components.sh
+    ./mcupsdk_setup/${device}/download_components.sh --skip_ccs=true
     pip3 install pyserial xmodem tqdm pyelftools construct
 
     print_time_diff $start_time "Download Components Time"
@@ -208,10 +215,31 @@ build_sdk() {
     echo "Build SDK ... Done"
 }
 
+cleanup() {
+    echo "Cleanup ..."
+    local start_time=`date +%s`
+
+    echo "    Removing mcu_plus_sdk folder ..."
+    rm -rf ${build_dir}
+
+    echo "    Removing workarea folder ..."
+    rm -rf ${GITHUB_WORKSPACE}/workarea
+
+    echo "    Removing downloaded tools ..."
+    rm -rf ${HOME}/ti
+
+    echo "    Removing pip packages ..."
+    pip3 uninstall -y pyserial xmodem tqdm pyelftools construct 2>/dev/null || true
+
+    print_time_diff $start_time "Cleanup Time"
+    echo "Cleanup ... Done"
+}
+
 #########################################################################
 #                           Script run                                  #
 #########################################################################
 make_folders
-repo_init
+west_init
 download_components
 build_sdk
+cleanup

@@ -51,7 +51,7 @@
 #define AM275X_EVM_TEST_DEVICE_MANAGER_VAL_H_
 
 /* ========================================================================== */
-/*                             RM Navigator Subsystem device IDs              */
+/*                     RM Navigator Subsystem device IDs                      */
 /* ========================================================================== */
 
 #define TEST_RM_NAV_BCDMA_DEV_ID     TISCI_DEV_DMASS0_BCDMA_0      /* 26U */
@@ -59,7 +59,7 @@
 #define TEST_RM_NAV_INTAGGR_DEV_ID   TISCI_DEV_DMASS0_INTAGGR_0    /* 28U */
 
 /* ========================================================================== */
-/*                             BCDMA ring / channel indices                   */
+/*                        BCDMA ring / channel indices                        */
 /* ========================================================================== */
 
 /* sciclient_defaultBoardcfg_rm.c:
@@ -70,7 +70,7 @@
 #define TEST_RM_BCDMA_RX_CH_IDX      (15U)
 
 /* ========================================================================== */
-/*                             PKTDMA channel / flow indices                  */
+/*                       PKTDMA channel / flow indices                        */
 /* ========================================================================== */
 
 /* sciclient_defaultBoardcfg_rm.c:
@@ -82,7 +82,7 @@
 #define TEST_RM_PKTDMA_FLOW_IDX      (10U)
 
 /* ========================================================================== */
-/*                             INTAGGR (interrupt aggregator) indices         */
+/*                   INTAGGR (interrupt aggregator) indices                   */
 /* ========================================================================== */
 
 /* sciclient_defaultBoardcfg_rm.c:
@@ -92,7 +92,7 @@
 #define TEST_RM_GLOBAL_SEVT_IDX      (1171U)
 
 /* ========================================================================== */
-/*                             BCDMA OES event trigger index                  */
+/*                       BCDMA OES event trigger index                        */
 /* ========================================================================== */
 
 /* OES event ID for block-copy channel N data completion:
@@ -100,7 +100,7 @@
 #define TEST_RM_BCDMA_EVT_TRIG_IDX   (8719U)
 
 /* ========================================================================== */
-/*                             PSI-L thread IDs                               */
+/*                              PSI-L thread IDs                              */
 /* ========================================================================== */
 
 /* PKTDMA PSI-L: TX channel 11 = 0x100B, RX channel 11 = 0x900B
@@ -112,7 +112,7 @@
 #define TEST_RM_PSIL_WRITE_DATA      (0x80000000U)
 
 /* ========================================================================== */
-/*                             IRQ routing parameters                         */
+/*                           IRQ routing parameters                           */
 /* ========================================================================== */
 
 /* MAIN_GPIOMUX_INTROUTER0; C7X_1_0 (= TISCI_HOST_ID_A53_2 alias) owns [0..7].
@@ -126,7 +126,7 @@
 #define TISCI_HOST_ID_A53_2          TISCI_HOST_ID_C7X_1_0
 
 /* ========================================================================== */
-/*                             PM / Clock test constants                      */
+/*                         PM / Clock test constants                          */
 /* ========================================================================== */
 
 /* Device and clock IDs for PM clock/device management tests.
@@ -136,7 +136,7 @@
 #define TEST_DEVICE_CLK_ID      TISCI_DEV_WKUP_UART0_FCLK_CLK
 
 /* ========================================================================== */
-/*                             Processor boot / host ID                       */
+/*                          Processor boot / host ID                          */
 /* ========================================================================== */
 
 /* AM275X uses PROC_ID_* names (no SCICLIENT_ prefix); alias them to the
@@ -159,7 +159,7 @@
 #define TEST_CLK_PARENT_CLK_ID  TISCI_DEV_TIMER0_TIMER_TCLK_CLK /* 2U */
 
 /* ========================================================================== */
-/*                             Pre-signed R5 boot certificate                 */
+/*                       Pre-signed R5 boot certificate                       */
 /* ========================================================================== */
 
 /* Pre-signed R5 boot certificate for PROC_AUTH_BOOT positive test.
@@ -176,7 +176,7 @@ static const uint8_t r5_cl0_c0_binary_hs[] = {
 #define SCICLIENT_PROC_ID_C7X256V1_C7XV_CORE_0  (PROC_ID_C7X256V1_C7XV_CORE_0)
 
 /* ========================================================================== */
-/*                         Wrapper test resource indices                      */
+/*                       Wrapper test resource indices                        */
 /* ========================================================================== */
 
 #define WRAP_RM_NAV_BCDMA_DEV_ID    TISCI_DEV_DMASS0_BCDMA_0      /* 26U */

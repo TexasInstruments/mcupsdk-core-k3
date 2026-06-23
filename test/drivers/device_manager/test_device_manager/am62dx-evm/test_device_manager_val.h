@@ -48,7 +48,7 @@
 #define AM62DX_EVM_TEST_DEVICE_MANAGER_VAL_H_
 
 /* ========================================================================== */
-/*                             RM Navigator Subsystem device IDs              */
+/*                     RM Navigator Subsystem device IDs                      */
 /* ========================================================================== */
 
 #define TEST_RM_NAV_BCDMA_DEV_ID     TISCI_DEV_DMASS0_BCDMA_0      /* 26U */
@@ -56,7 +56,7 @@
 #define TEST_RM_NAV_INTAGGR_DEV_ID   TISCI_DEV_DMASS0_INTAGGR_0    /* 28U */
 
 /* ========================================================================== */
-/*                             BCDMA ring / channel indices                   */
+/*                        BCDMA ring / channel indices                        */
 /* ========================================================================== */
 
 /* sciclient_defaultBoardcfg_rm.c:
@@ -70,7 +70,7 @@
 #define TEST_RM_BCDMA_RX_CH_IDX      (18U)
 
 /* ========================================================================== */
-/*                             PKTDMA channel / flow indices                  */
+/*                       PKTDMA channel / flow indices                        */
 /* ========================================================================== */
 
 /* sciclient_defaultBoardcfg_rm.c:
@@ -82,7 +82,7 @@
 #define TEST_RM_PKTDMA_FLOW_IDX      (10U)
 
 /* ========================================================================== */
-/*                             INTAGGR (interrupt aggregator) indices         */
+/*                   INTAGGR (interrupt aggregator) indices                   */
 /* ========================================================================== */
 
 /* sciclient_defaultBoardcfg_rm.c:
@@ -92,7 +92,7 @@
 #define TEST_RM_GLOBAL_SEVT_IDX      (526U)
 
 /* ========================================================================== */
-/*                             BCDMA OES event trigger index                  */
+/*                       BCDMA OES event trigger index                        */
 /* ========================================================================== */
 
 /* OES event ID for block-copy channel N data completion:
@@ -102,7 +102,7 @@
 #define TEST_RM_BCDMA_EVT_TRIG_IDX   (8722U)
 
 /* ========================================================================== */
-/*                             PSI-L thread IDs                               */
+/*                              PSI-L thread IDs                              */
 /* ========================================================================== */
 
 /* DMASS0 PKTDMA PSI-L system thread map (from test_sciclient_rm_irq.c):
@@ -115,7 +115,7 @@
 #define TEST_RM_PSIL_WRITE_DATA      (0x80000000U)                   /* Thread enable bit pattern */
 
 /* ========================================================================== */
-/*                             IRQ routing parameters                         */
+/*                           IRQ routing parameters                           */
 /* ========================================================================== */
 
 /* Board cfg: MAIN_GPIOMUX_INTROUTER0 IR_OUTPUT[0..15] allocated to
@@ -130,7 +130,7 @@
 #define TEST_RM_IRQ_SECONDARY_HOST   TISCI_HOST_ID_A53_2                 /* 12U */
 
 /* ========================================================================== */
-/*                             PM / Clock test constants                      */
+/*                         PM / Clock test constants                          */
 /* ========================================================================== */
 
 /* Device and clock IDs for PM clock/device management tests.
@@ -146,7 +146,7 @@
 #define TEST_DM_CLK_SSC         1
 
 /* ========================================================================== */
-/*                             Processor boot / host ID                       */
+/*                          Processor boot / host ID                          */
 /* ========================================================================== */
 
 /* Host ID used for processor handover in LPM and procboot tests.
@@ -158,7 +158,7 @@
 #define TEST_PROC_ID_COPROCESSOR    SCICLIENT_PROC_ID_C7X256V0_C7XV_CORE_0
 
 /* ========================================================================== */
-/*                             Pre-signed R5 boot certificate                 */
+/*                       Pre-signed R5 boot certificate                       */
 /* ========================================================================== */
 
 /* Pre-signed R5 boot certificate for PROC_AUTH_BOOT positive test.
@@ -171,7 +171,7 @@ static const uint8_t r5_cl0_c0_binary_hs[] = {
 };
 
 /* ========================================================================== */
-/*                             Firewall capability flags                      */
+/*                         Firewall capability flags                          */
 /* ========================================================================== */
 
 /* fwl_id=0 is a valid, accessible firewall on AM62DX.  TIFS restricts
@@ -181,7 +181,7 @@ static const uint8_t r5_cl0_c0_binary_hs[] = {
 #define TEST_DM_OTP_WKUP_HOST_RESTRICTED
 
 /* ========================================================================== */
-/*                         Wrapper test resource indices                      */
+/*                       Wrapper test resource indices                        */
 /* ========================================================================== */
 
 #define WRAP_RM_NAV_BCDMA_DEV_ID    TISCI_DEV_DMASS0_BCDMA_0      /* 26U */

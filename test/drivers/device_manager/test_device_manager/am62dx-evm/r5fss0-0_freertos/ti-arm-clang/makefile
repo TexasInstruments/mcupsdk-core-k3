@@ -46,6 +46,7 @@ FILES_common := \
 	test_device_manager_sec.c \
 	test_device_manager_intr_polling.c \
 	test_device_manager_wrapper.c \
+	test_device_manager_multithread.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \

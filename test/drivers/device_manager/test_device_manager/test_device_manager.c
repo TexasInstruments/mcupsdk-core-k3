@@ -73,6 +73,7 @@
 #include <kernel/dpl/ClockP.h>
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
+#include "test_device_manager_multithread.h"
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -149,6 +150,16 @@ void test_main(void *args)
     RUN_TEST(testDM_boardCfgApis, 12216, NULL);
     RUN_TEST(testDM_dkekApis, 12217, NULL);
     RUN_TEST(testDM_uartPrintf, 12214, NULL);
+    RUN_TEST(testDM_boardCfgApis, 12216, NULL);
+    RUN_TEST(testDM_dkekApis, 12217, NULL);
+    RUN_TEST(testDM_uartPrintf, 12214, NULL);
+    RUN_TEST(testDM_multithreadConcurrentVersion, 12385, NULL);
+    RUN_TEST(testDM_multithreadConcurrentMultiApi, 12386, NULL);
+    RUN_TEST(testDM_pmSetStateHighPriVsGetStateLowPri, 12387, NULL);
+    RUN_TEST(testDM_allServicesSimultaneous, 12388, NULL);
+    RUN_TEST(testDM_concurrentSetClock, 12389, NULL);
+    RUN_TEST(testDM_pmClkSetHighPriVsGetLowPri, 12390, NULL);
+    RUN_TEST(testDM_concurrentSetDevice, 12391, NULL);
 
     UNITY_END();
 }

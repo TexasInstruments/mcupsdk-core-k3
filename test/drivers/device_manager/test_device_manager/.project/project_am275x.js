@@ -12,6 +12,7 @@ const files = {
         "test_device_manager_sec.c",
         "test_device_manager_intr_polling.c",
         "test_device_manager_wrapper.c",
+        "test_device_manager_multithread.c",
         "main.c",
     ],
 };
@@ -84,9 +85,10 @@ const robot_template = {
     options: {
         componentName: "Device Manager",
         testCaseName: "Device Manager Test Application",
-        testCaseIds: "SITSW-12079 SITSW-12080 SITSW-12081 SITSW-12082 SITSW-12083 SITSW-12084 SITSW-12085 SITSW-12086 SITSW-12087 " +
+        testCaseIds: "SITSW-12079 SITSW-12080 SITSW-12081 SITSW-12082 SITSW-12083 SITSW-12084 SITSW-12085 SITSW-12086 " +
         "SITSW-12088 SITSW-12089 SITSW-12090 SITSW-12091 SITSW-12093 SITSW-12094 SITSW-12095 SITSW-17 SITSW-12218 " +
-        "SITSW-12219 SITSW-12211 SITSW-12210 SITSW-12212 SITSW-12213 SITSW-12215 SITSW-12216 SITSW-12214",
+        " SITSW-12219 SITSW-12211 SITSW-12210 SITSW-12212 SITSW-12213 SITSW-12215 SITSW-12216 SITSW-12214 SITSW-12217 SITSW-12385 " +
+        " SITSW-12386 SITSW-12387 SITSW-12388 SITSW-12389 SITSW-12390 SITSW-12391",
     },
 };
 

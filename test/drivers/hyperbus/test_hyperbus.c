@@ -193,6 +193,10 @@ static void TestHyperBus_ECCRegionExceedsDeviceSize(void *args);
 static void TestHyperBus_ECCNullRegionFailure(void *args);
 static void TestHyperBus_ECCIntrRegistration(void *args);
 
+#ifdef ENABLE_MT_TESTS
+extern void run_multi_threaded_tests(void *args);
+#endif
+
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -291,6 +295,10 @@ void test_hyperbus_main(void *args)
     RUN_TEST(TestHyperBus_ECCRegionExceedsDeviceSize,   12278, NULL);
     RUN_TEST(TestHyperBus_ECCNullRegionFailure,          12279, NULL);
     RUN_TEST(TestHyperBus_ECCIntrRegistration,           12280, NULL);
+
+    #if defined (ENABLE_MT_TESTS)
+    run_multi_threaded_tests(NULL);
+    #endif
 
     HYPERBUS_deinit();
 

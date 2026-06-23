@@ -12,6 +12,7 @@ const files = {
 const files_rtos = {
     common: [
         "test_hyperbus.c",
+        "test_hyperbus_multi_thread.c",
         "main.c",
     ],
 };
@@ -120,6 +121,12 @@ const lnkfiles = {
     common: [
         "linker.cmd",
     ]
+};
+
+const cflags_free_rtos = {
+    common: [
+        "-DENABLE_MT_TESTS",
+    ],
 };
 
 const syscfgfile = "../example.syscfg";
@@ -242,6 +249,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_wkup_r5f;
             build_property.templates = templates_freertos_wkup_r5f;
             build_property.defines = defines_wkup_r5f;
+            build_property.cflags =  cflags_free_rtos;
         }
     }
     else if(buildOption.cpu.match(/r5f*/)) {
@@ -251,6 +259,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos;
             build_property.libs = libs_freertos_r5f;
             build_property.templates = templates_freertos_r5f;
+            build_property.cflags =  cflags_free_rtos;
         }
         else if(buildOption.os.match(/nortos/)) {
             build_property.includes = includes_nortos_r5f;

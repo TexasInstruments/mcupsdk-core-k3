@@ -12,3 +12,7 @@ This page lists all the examples related to extended OTP.
 -# \subpage EXAMPLES_EXT_OTP
 -# \subpage EXAMPLES_RUNTIME_KEYREV
 \endcond
+
+\cond SOC_AM275X
+-# \subpage EXAMPLES_EXT_OTP
+\endcond

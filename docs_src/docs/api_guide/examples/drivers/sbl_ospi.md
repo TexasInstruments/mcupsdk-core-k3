@@ -61,9 +61,17 @@ Since this is a bootloader, the example will be run every time you boot an appli
 \note Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate HSM Appimage for HS-SE device.
 \endcond
 
+\cond SOC_AM275X
+- Create a HSM MCELF Image
+- This can be done by running the makefile at {SDK_INSTALL_PATH}/tools/boot/HSMMCELFImageGen
+- Refer \ref HSM_MCELF_IMAGE_GEN_TOOL for more details
+\endcond
+
+\cond !SOC_AM275X
 - Create a HSM Appimage
 - This can be done by running the makefile at {SDK_INSTALL_PATH}/tools/boot/HSMAppimageGen
 - Refer \ref HSM_APPIMAGE_GEN_TOOL for more details
+\endcond
 
 ## Run the example
 

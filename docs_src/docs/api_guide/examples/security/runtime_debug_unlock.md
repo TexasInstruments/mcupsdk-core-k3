@@ -25,6 +25,13 @@ in the "source/drivers/sciclient/sciclient_default_boardcfg/@VAR_SOC_NAME_LOWER/
         .jtag_unlock_hosts = {TISCI_HOST_ID_WKUP_0_R5_0, 0, 0, 0},
 \endcode
 \endcond
+\cond SOC_AM275X
+\code
+        .allow_jtag_unlock = 0x5A,
+        .allow_wildcard_unlock = 0x5A,
+        .jtag_unlock_hosts = {TISCI_HOST_ID_MAIN_0_R5_0, 0, 0, 0},
+\endcode
+\endcond
 
 # Supported Combinations {#EXAMPLES_RUNTIME_DEBUG_UNLOCK_COMBOS}
 
@@ -44,6 +51,17 @@ in the "source/drivers/sciclient/sciclient_default_boardcfg/@VAR_SOC_NAME_LOWER/
  Parameter      | Value
  ---------------|-----------
  CPU + OS       | wkup-r5fss0-0 freertos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/security/runtime_debug_unlock
+
+\endcond
+
+\cond SOC_AM275X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0 freertos
  Toolchain      | ti-arm-clang
  Boards         | @VAR_BOARD_NAME_LOWER
  Example folder | examples/security/runtime_debug_unlock

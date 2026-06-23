@@ -289,7 +289,5 @@ from a valid host to the TIFS core via the TISCI message.
         C:\> cd ${SDK_INSTALL_PATH}/tools/sysfw/secure_debug
         C:\> python debug_unlock_x509_cert_gen.py --soc=am62ax
 \endcode
-\cond !SOC_AM275X
 - Also check the SDK example, @ref EXAMPLES_RUNTIME_DEBUG_UNLOCK
-\endcond
 \endcond

@@ -1132,6 +1132,8 @@ uint32_t Sciclient_getCurrentContext(uint16_t messageType)
         case TISCI_MSG_DISABLE_JTAG_UNLOCK:
         case TISCI_MSG_DISABLE_JTAG_UNLOCK_CHECK:
         case TISCI_MSG_KEYRING_IMPORT:
+        case TISCI_MSG_ALLOW_FWL_CTRL_READ:
+        case TISCI_MSG_FORBID_FWL_CTRL_READ:
             retVal = Sciclient_handle.secureContextId;
             break;
 

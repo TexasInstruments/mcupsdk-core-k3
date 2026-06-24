@@ -1028,7 +1028,7 @@ int8_t test_sciclient(void)
     int32_t retVal = SystemP_SUCCESS;
     int8_t failCount = 0;
     uint32_t testCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
-    uint32_t tempMaxSize = gSciclientSecProxyCfg.pSecProxyRegs->CONFIG;
+    uint32_t tempMaxSize;
 
     retVal = Sciclient_getCurrentContext(0x1000U);
     if(retVal == SystemP_SUCCESS)

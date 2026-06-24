@@ -67,7 +67,7 @@ void sciclient_get_version_main(void *args)
     };
 
     retVal = Sciclient_service(&reqPrm, &respPrm);
-    DebugP_assert(SystemP_SUCCESS == retVal && respPrm.flags == TISCI_MSG_FLAG_ACK);
+    DebugP_assert((SystemP_SUCCESS == retVal) && (respPrm.flags == TISCI_MSG_FLAG_ACK));
 
     DebugP_log("SYSFW Firmware Version %s\r\n",(char *) response.str);
     DebugP_log("Firmware revision 0x%x\r\n", response.version);

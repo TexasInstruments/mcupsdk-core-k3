@@ -35,7 +35,6 @@
 
 #include <stdint.h>
 #include <string.h>
-#include <c7x.h>
 #include "MmuP_c75.h"
 
 extern char __TI_STACK_END[];
@@ -99,14 +98,6 @@ int _system_pre_init(void)
 
 void _system_post_cinit(void)
 {
-    /* MMA power-on workaround (ErrataID:i2087): initialize internal MMA state
-     * before first use to prevent spurious HWA_STATUS.FirstErrorCode/LastErrorCode errors.
-     * Placed here (not in _c_int00_secure) to avoid overflowing the OCRAM entry section. */
-    __HWA_CONFIG_REG_v1 mmaConfig = __gen_HWA_CONFIG_REG_v1();
-    __HWA_OFFSET_REG    mmaOffset = {0};
-    __HWAOPEN(mmaConfig, mmaOffset, __MMA_OPEN_FSM_RESET);
-    __HWACLOSE(0);
-
     extern void c7x_startup_init(void);
     c7x_startup_init();
 }

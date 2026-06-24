@@ -142,7 +142,7 @@ int8_t test_csl_sec_proxy(void)
         failCount++;
     }
 
-    retVal = CSL_secProxyCfgThread(&secProxyCfg, 0xFFFFFFFF, &threadCfg);
+    retVal = CSL_secProxyCfgThread(&secProxyCfg, 0xFFFFFFFFU, &threadCfg);
     if(retVal == SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);

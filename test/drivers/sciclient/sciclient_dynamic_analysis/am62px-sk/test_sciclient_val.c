@@ -236,7 +236,7 @@ struct tisci_msg_prepare_sleep_resp prepSleepPassResp = {0};
 struct tisci_msg_prepare_sleep_req prepSleepPassCfg =
 {
     .mode = 0,
-    .ctx_lo = 0x9B700000,
+    .ctx_lo = 0x9B700000U,
 };
 
 Sciclient_RespPrm_t prepSleepPassRespParam =

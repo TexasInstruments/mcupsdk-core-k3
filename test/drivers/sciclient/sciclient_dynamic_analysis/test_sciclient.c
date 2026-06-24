@@ -54,6 +54,7 @@
 
 void sciclient_testMessageType(void *args);
 void test_sciclient_coverage(void *args);
+void test_main(void *args);
 
 /* ========================================================================== */
 /*                          Function Definitions                              */

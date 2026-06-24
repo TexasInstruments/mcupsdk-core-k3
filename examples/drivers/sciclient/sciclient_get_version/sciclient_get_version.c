@@ -41,6 +41,8 @@
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 
+void sciclient_get_version_main(void *args);
+
 void sciclient_get_version_main(void *args)
 {
     int32_t         retVal = SystemP_SUCCESS;

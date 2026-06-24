@@ -66,6 +66,7 @@ static void test_sciclient_version(void *args);
 static void test_sciclient_timeout(void *args);
 static void test_sciclient_invalid_params(void *args);
 static void test_sciclient_rm_ir_output(void *args);
+void test_main(void *args);
 
 /* ========================================================================== */
 /*                            Global Variables                                */

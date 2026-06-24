@@ -197,7 +197,7 @@ void test_sciclient_coverage(void *args)
         DebugP_log("\r\n test_sciclient_lpm: All testcase passed successfully \r\n");
     }
 
-   if(sumFailure > 0)
+   if(sumFailure > 0U)
     {
         DebugP_log("\r\n\r\n Overall test status: %d testcase failed \r\n", sumFailure);
     }

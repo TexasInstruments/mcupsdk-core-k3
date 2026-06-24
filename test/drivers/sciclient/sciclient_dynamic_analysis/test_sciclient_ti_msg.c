@@ -135,8 +135,8 @@ void sciclient_testMessageType(void *args);
 
 void sciclient_testMessageType(void *args)
 {
-    int32_t         retVal = SystemP_SUCCESS;
-    int32_t msgCnt = 0;
+    int32_t retVal = SystemP_SUCCESS;
+    uint32_t msgCnt = 0U;
     struct tisci_msg_sys_reset_req resetRequest;
     resetRequest.domain = 1;
     const Sciclient_ReqPrm_t resetReqPrm =
@@ -155,7 +155,7 @@ void sciclient_testMessageType(void *args)
         sizeof (resetResponse)
     };
 
-    for(msgCnt = 0; msgCnt < TEST_SCICLIENT_APP_TISCI_MSG_COUNT; msgCnt++)
+    for(msgCnt = 0U; msgCnt < TEST_SCICLIENT_APP_TISCI_MSG_COUNT; msgCnt++)
     {
         /* Check for the SYSFW version by sending a request */
         struct tisci_msg_version_req verRequest;

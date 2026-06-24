@@ -98,7 +98,7 @@ int8_t test_sciclient_rm_irq(void)
     if(retVal == SystemP_SUCCESS)
     {
         startingRange = rmGetResResp.range_start;
-        endingRange   = (startingRange + rmGetResResp.range_num) -1;
+        endingRange   = (startingRange + rmGetResResp.range_num) - 1U;
 
         for(dst_host_irq = startingRange; dst_host_irq <= endingRange; dst_host_irq++)
         {

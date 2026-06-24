@@ -175,7 +175,7 @@ int32_t Sciclient_procBootHandoverProcessor(uint8_t  processorId,
 }
 
 int32_t Sciclient_procBootSetProcessorCfg (
-            const struct tisci_msg_proc_set_config_req * configReq,
+            const struct tisci_msg_proc_set_config_req * pSetConfigReq,
             uint32_t timeout)
 {
     int32_t retVal = SystemP_SUCCESS;
@@ -183,7 +183,7 @@ int32_t Sciclient_procBootSetProcessorCfg (
     Sciclient_ReqPrm_t reqParam = {0};
     reqParam.messageType    = (uint16_t) TISCI_MSG_PROC_SET_CONFIG;
     reqParam.flags          = (uint32_t) TISCI_MSG_FLAG_AOP;
-    reqParam.pReqPayload    = (const uint8_t *) configReq;
+    reqParam.pReqPayload    = (const uint8_t *) pSetConfigReq;
     reqParam.reqPayloadSize = (uint32_t) sizeof (struct tisci_msg_proc_set_config_req);
     reqParam.timeout        = (uint32_t) timeout;
 
@@ -246,7 +246,7 @@ int32_t Sciclient_procBootSetSequenceCtrl(uint8_t  processorId,
 
 int32_t Sciclient_procBootAuthAndStart(
             const struct tisci_msg_proc_auth_boot_req * authBootCfg,
-            struct tisci_msg_proc_auth_boot_resp * response,
+            struct tisci_msg_proc_auth_boot_resp * pAuthBootResp,
             uint32_t timeout)
 {
     int32_t retVal = SystemP_SUCCESS;
@@ -260,7 +260,7 @@ int32_t Sciclient_procBootAuthAndStart(
 
     Sciclient_RespPrm_t respParam = {0};
     respParam.flags           = (uint32_t) 0;   /* Populated by the API */
-    respParam.pRespPayload    = (uint8_t *) response;
+    respParam.pRespPayload    = (uint8_t *) pAuthBootResp;
     respParam.respPayloadSize = (uint32_t) sizeof (struct tisci_msg_proc_auth_boot_resp);
 
     retVal = Sciclient_service(&reqParam, &respParam);

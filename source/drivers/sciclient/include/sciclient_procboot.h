@@ -158,7 +158,7 @@ int32_t Sciclient_procBootHandoverProcessor(uint8_t  processorId,
  *  \return SystemP_SUCCESS on success, else failure
  */
 int32_t Sciclient_procBootSetProcessorCfg (
-            const struct tisci_msg_proc_set_config_req * configReq,
+            const struct tisci_msg_proc_set_config_req * pSetConfigReq,
             uint32_t timeout);
 
 /**
@@ -209,7 +209,7 @@ int32_t Sciclient_procBootSetSequenceCtrl(uint8_t  processorId,
  */
 int32_t Sciclient_procBootAuthAndStart(
             const struct tisci_msg_proc_auth_boot_req * authBootCfg,
-            struct tisci_msg_proc_auth_boot_resp * response,
+            struct tisci_msg_proc_auth_boot_resp * pAuthBootResp,
             uint32_t timeout);
 
 /**

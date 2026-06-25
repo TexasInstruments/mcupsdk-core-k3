@@ -260,6 +260,7 @@ const example_file_list = [
     "test/drivers/aasrc/.project/project.js",
     "test/drivers/adc/.project/project.js",
     "test/drivers/device_manager/test_device_manager/.project/project_am275x_wkupr5.js",
+    "test/drivers/device_manager/test_device_manager_system/.project/project.js",
     "test/board/eeprom/.project/project.js",
     "test/board/hyperRam/.project/project.js",
     "test/drivers/gpio/.project/project.js",

@@ -172,6 +172,12 @@ const lnkfiles = {
     ]
 };
 
+const cflags_common = {
+    common: [
+        "-DENABLE_MT_TESTS",
+    ]
+}
+
 const defines_dm_r5f = {
     common: [
         "ENABLE_SCICLIENT_DIRECT",
@@ -347,6 +353,7 @@ function getComponentBuildProperty(buildOption) {
 
             build_property.libs = libs_freertos_r5f;
             build_property.templates = templates_freertos_r5f;
+            build_property.cflags = cflags_common;
             build_property.defines = defines_dm_r5f;
         }
         else {
@@ -375,6 +382,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_a53;
             build_property.templates = templates_freertos_a53;
             build_property.libdirs = libdirs_freertos_a53;
+            build_property.cflags = cflags_common;
         }
         else if (buildOption.os.match(/nortos*/)) {
             build_property.includes = includes_nortos_a53;

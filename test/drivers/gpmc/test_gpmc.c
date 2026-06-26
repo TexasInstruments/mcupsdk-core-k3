@@ -180,6 +180,23 @@ static Test_FlashModeSettings modeParams;
 
 extern GPMC_Params gGpmcParams[CONFIG_GPMC_NUM_INSTANCES];
 
+#ifdef ENABLE_MT_TESTS
+static TaskP_Object TestGpmc_mtTask1;
+static TaskP_Object TestGpmc_mtTask2;
+static uint8_t TestGpmc_mtTaskStack1[TEST_GPMC_TASK_STACK_SIZE] __attribute__((aligned(128)));
+static uint8_t TestGpmc_mtTaskStack2[TEST_GPMC_TASK_STACK_SIZE] __attribute__((aligned(128)));
+
+static SemaphoreP_Object TestGpmc_mtStartSem;
+static SemaphoreP_Object TestGpmc_mtDoneSem;
+static SemaphoreP_Object TestGpmc_mtExitSem;
+static SemaphoreP_Object TestGpmc_mtTeardownSem;
+
+static GPMC_MtTaskArgs TestGpmc_mtArgs1;
+static GPMC_MtTaskArgs TestGpmc_mtArgs2;
+static uint8_t TestGpmc_mtBuf1[TEST_GPMC_1KB_SIZE] __attribute__((aligned(128)));
+static uint8_t TestGpmc_mtBuf2[TEST_GPMC_1KB_SIZE] __attribute__((aligned(128)));
+#endif
+
 /* ========================================================================== */
 /*                 Internal Function Declarations                             */
 /* ========================================================================== */
@@ -225,6 +242,11 @@ static void TestGpmc_negativeDmaOpenFailure(void *args);
 static void TestGpmc_negativeCallbackMode(void *args);
 static void TestGpmc_negativeResetTimeout(void *args);
 static void TestGpmc_negativeWaitPinPollingTimeout(void *args);
+#ifdef ENABLE_MT_TESTS
+static void TestGpmc_openContention(void *args);
+static void TestGpmc_concurrentReads(void *args);
+static void TestGpmc_interleavedWriteRead(void *args);
+#endif
 
 /* Helper Funtions */
 static void AppTest_setFlashType(void);
@@ -473,6 +495,17 @@ void test_main(void *args)
 
     DebugP_log("GPMC Polling Wait Pin Timeout path validation\r\n");
     RUN_TEST(TestGpmc_negativeWaitPinPollingTimeout, 12438, NULL);
+
+#ifdef ENABLE_MT_TESTS
+    DebugP_log("GPMC_open Contention\r\n");
+    RUN_TEST(TestGpmc_openContention, 12439, NULL);
+
+    DebugP_log("Concurrent NAND reads\r\n");
+    RUN_TEST(TestGpmc_concurrentReads, 12440, NULL);
+
+    DebugP_log("Interleaved NAND write and read\r\n");
+    RUN_TEST(TestGpmc_interleavedWriteRead, 12441, NULL);
+#endif
 
     UNITY_END();
 
@@ -3440,3 +3473,412 @@ static void TestGpmc_negativeDmaOpenFailure(void *args)
         gGpmcDmaConfig[0] = origConfig;
     }
 }
+
+#ifdef ENABLE_MT_TESTS
+/**
+ * \brief Task helper function for GPMC_open contention race condition testing.
+ *
+ * This is a worker task that participates in the GPMC_open contention test. It waits
+ * at a synchronization barrier, then calls GPMC_open concurrently with another task
+ * to verify that only one task can successfully acquire the GPMC hardware resource.
+ *
+ * Test Category: Multithreading
+ *
+ * \param args Pointer to GPMC_MtTaskArgs containing task-specific context.
+ *
+ * \return None (task loops forever for safe OS teardown).
+ */
+static void test_gpmcOpenTaskFunc(void *args) 
+{
+    GPMC_MtTaskArgs *pArgs = (GPMC_MtTaskArgs *)args;
+    
+    ClockP_usleep(1000);
+    
+    /* Wait at the starting line */
+    SemaphoreP_pend(&TestGpmc_mtStartSem, SystemP_WAIT_FOREVER);
+    
+    ClockP_usleep(1000);
+    
+    /* FIRE! Both tasks try to grab the GPMC hardware at the same time */
+    pArgs->handle = GPMC_open(CONFIG_GPMC0, NULL);
+    
+    ClockP_usleep(1000);
+    
+    /* Cross the finish line */
+    SemaphoreP_post(&TestGpmc_mtDoneSem);
+    
+    /* Park safely for teardown */
+    SemaphoreP_pend(&TestGpmc_mtExitSem, SystemP_WAIT_FOREVER);
+    SemaphoreP_post(&TestGpmc_mtTeardownSem);
+
+    while(1)
+    {
+        TaskP_yield();
+    }
+}
+
+/**
+ * \brief Multithreading test for GPMC_open hardware resource contention between two tasks.
+ *
+ * This test verifies that the GPMC driver enforces exclusive access to the hardware resource.
+ * It creates two tasks that race to call GPMC_open simultaneously. Exactly one task must
+ * succeed while the other receives NULL, demonstrating proper mutual exclusion and resource
+ * locking in a multithreaded environment.
+ *
+ * Test Category: Multithreading
+ *
+ * \param args Unused.
+ *
+ * \return None.
+ */
+static void TestGpmc_openContention(void *args)
+{
+    TaskP_Params taskParams;
+
+    /* Start with a clean slate for the GPMC driver */
+    Drivers_gpmcClose(); 
+    
+    TestGpmc_mtArgs1.handle = NULL; 
+    TestGpmc_mtArgs1.taskName = "mt_task1";
+    TestGpmc_mtArgs2.handle = NULL;
+    TestGpmc_mtArgs2.taskName = "mt_task2";
+
+    SemaphoreP_constructCounting(&TestGpmc_mtStartSem, 0, 2); 
+    SemaphoreP_constructCounting(&TestGpmc_mtDoneSem, 0, 2); 
+    SemaphoreP_constructCounting(&TestGpmc_mtExitSem, 0, 2);
+    SemaphoreP_constructCounting(&TestGpmc_mtTeardownSem, 0, 2);
+
+    /* Construct Task 1 */
+    TaskP_Params_init(&taskParams); 
+    taskParams.priority = 4; 
+    taskParams.taskMain = test_gpmcOpenTaskFunc;
+    
+    taskParams.name = "mt_task1"; 
+    taskParams.stackSize = sizeof(TestGpmc_mtTaskStack1); 
+    taskParams.stack = TestGpmc_mtTaskStack1; 
+    taskParams.args = &TestGpmc_mtArgs1;
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, TaskP_construct(&TestGpmc_mtTask1, &taskParams));
+
+    /* Construct Task 2 */
+    taskParams.name = "mt_task2"; 
+    taskParams.stackSize = sizeof(TestGpmc_mtTaskStack2); 
+    taskParams.stack = TestGpmc_mtTaskStack2; 
+    taskParams.args = &TestGpmc_mtArgs2;
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, TaskP_construct(&TestGpmc_mtTask2, &taskParams));
+
+    /* Start both tasks simultaneously */
+    SemaphoreP_post(&TestGpmc_mtStartSem); 
+    SemaphoreP_post(&TestGpmc_mtStartSem);
+    
+    /* Wait for both tasks to finish opening */
+    int32_t pend1 = SemaphoreP_pend(&TestGpmc_mtDoneSem, 10000); 
+    int32_t pend2 = SemaphoreP_pend(&TestGpmc_mtDoneSem, 10000); 
+    
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, pend1);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, pend2);
+
+    /* Verify exactly one succeeded */
+    if (TestGpmc_mtArgs1.handle != NULL) 
+    {
+        DebugP_log("Main: Task 1 WON the race!\r\n");
+        TEST_ASSERT_NULL(TestGpmc_mtArgs2.handle); 
+        GPMC_close(TestGpmc_mtArgs1.handle);
+    } 
+    else 
+    {
+        DebugP_log("Main: Task 2 WON the race!\r\n");
+        TEST_ASSERT_NOT_NULL(TestGpmc_mtArgs2.handle); 
+        GPMC_close(TestGpmc_mtArgs2.handle);
+    }
+
+    /* Clean up OS objects safely */
+    SemaphoreP_post(&TestGpmc_mtExitSem); 
+    SemaphoreP_post(&TestGpmc_mtExitSem); 
+    
+    SemaphoreP_pend(&TestGpmc_mtTeardownSem, SystemP_WAIT_FOREVER);
+    SemaphoreP_pend(&TestGpmc_mtTeardownSem, SystemP_WAIT_FOREVER);
+    
+    TaskP_destruct(&TestGpmc_mtTask1); 
+    TaskP_destruct(&TestGpmc_mtTask2);
+    SemaphoreP_destruct(&TestGpmc_mtStartSem); 
+    SemaphoreP_destruct(&TestGpmc_mtDoneSem); 
+    SemaphoreP_destruct(&TestGpmc_mtExitSem);
+    SemaphoreP_destruct(&TestGpmc_mtTeardownSem);
+
+    /* Restore for the next tests */
+    Drivers_gpmcOpen(); 
+}
+/**
+ * \brief Task helper function for concurrent NAND read operations.
+ *
+ * This is a worker task that performs repeated read operations on NAND flash from a
+ * designated offset and buffer, yielding between iterations to allow task preemption.
+ * It is used to test concurrent read access patterns from multiple tasks.
+ *
+ * Test Category: Multithreading
+ *
+ * \param args Pointer to GPMC_MtTaskArgs containing offset, buffer, size, and iteration count.
+ *
+ * \return None (task loops forever for safe OS teardown).
+ */
+static void test_gpmcConcurrentReadTask(void *args) 
+{
+    GPMC_MtTaskArgs *taskArgs = (GPMC_MtTaskArgs *)args;
+    SemaphoreP_pend(&TestGpmc_mtStartSem, SystemP_WAIT_FOREVER);
+    
+    for (uint32_t i = 0; i < taskArgs->iterations; i++) 
+    {
+        Flash_read(gFlashHandle[CONFIG_FLASH0], taskArgs->offset, taskArgs->buffer, taskArgs->size);
+        TaskP_yield(); 
+    }
+    
+    SemaphoreP_post(&TestGpmc_mtDoneSem);
+    SemaphoreP_pend(&TestGpmc_mtExitSem, SystemP_WAIT_FOREVER);
+    SemaphoreP_post(&TestGpmc_mtTeardownSem);
+    
+    /* CRITICAL FIX: Prevent OS crash on task teardown */
+    while(1) 
+    {
+        TaskP_yield();
+    }
+}
+
+/**
+ * \brief Multithreading test for concurrent NAND flash read operations from two tasks.
+ *
+ * This test verifies that the GPMC driver safely handles simultaneous read operations
+ * from multiple tasks accessing different NAND flash blocks. It pre-writes distinct data
+ * patterns to two blocks, then spawns two reader tasks that concurrently read and verify
+ * data integrity. Ensures proper serialization and data coherency under concurrent access.
+ *
+ * Test Category: Multithreading
+ *
+ * \param args Unused.
+ *
+ * \return None.
+ */
+static void TestGpmc_concurrentReads(void *args)
+{
+    TaskP_Params taskParams;
+    int32_t status;
+    uint32_t offset1 = TEST_GPMC_FLASH_OFFSET_BASE;
+    uint32_t offset2 = TEST_GPMC_FLASH_OFFSET_BASE + TEST_GPMC_BLOCK_SIZE;
+    uint32_t blk, page;
+
+    Board_driversClose();
+    status = Board_driversOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Pre-write patterns */
+    memset(TestGpmc_mtBuf1, 0xAA, TEST_GPMC_1KB_SIZE); 
+    memset(TestGpmc_mtBuf2, 0xBB, TEST_GPMC_1KB_SIZE);
+    
+    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset1, &blk, &page); 
+    status = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset2, &blk, &page); 
+    status = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    
+    status = Flash_write(gFlashHandle[CONFIG_FLASH0], offset1, TestGpmc_mtBuf1, TEST_GPMC_1KB_SIZE); 
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = Flash_write(gFlashHandle[CONFIG_FLASH0], offset2, TestGpmc_mtBuf2, TEST_GPMC_1KB_SIZE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Clear buffers for the actual test read */
+    memset(TestGpmc_mtBuf1, 0, TEST_GPMC_1KB_SIZE); 
+    memset(TestGpmc_mtBuf2, 0, TEST_GPMC_1KB_SIZE);
+    
+    SemaphoreP_constructCounting(&TestGpmc_mtStartSem, 0, 2); 
+    SemaphoreP_constructCounting(&TestGpmc_mtDoneSem, 0, 2); 
+    SemaphoreP_constructCounting(&TestGpmc_mtExitSem, 0, 2);
+    SemaphoreP_constructCounting(&TestGpmc_mtTeardownSem, 0, 2);
+
+    TestGpmc_mtArgs1.offset = offset1; TestGpmc_mtArgs1.buffer = TestGpmc_mtBuf1; 
+    TestGpmc_mtArgs1.size = TEST_GPMC_1KB_SIZE; TestGpmc_mtArgs1.iterations = 10;
+    
+    TestGpmc_mtArgs2.offset = offset2; TestGpmc_mtArgs2.buffer = TestGpmc_mtBuf2; 
+    TestGpmc_mtArgs2.size = TEST_GPMC_1KB_SIZE; TestGpmc_mtArgs2.iterations = 10;
+
+    TaskP_Params_init(&taskParams); 
+    taskParams.priority = 4; 
+    taskParams.taskMain = test_gpmcConcurrentReadTask;
+    
+    taskParams.name = "mt_r1"; 
+    taskParams.stackSize = sizeof(TestGpmc_mtTaskStack1); 
+    taskParams.stack = TestGpmc_mtTaskStack1; 
+    taskParams.args = &TestGpmc_mtArgs1;
+    TaskP_construct(&TestGpmc_mtTask1, &taskParams);
+    
+    taskParams.name = "mt_r2"; 
+    taskParams.stackSize = sizeof(TestGpmc_mtTaskStack2); 
+    taskParams.stack = TestGpmc_mtTaskStack2; 
+    taskParams.args = &TestGpmc_mtArgs2;
+    TaskP_construct(&TestGpmc_mtTask2, &taskParams);
+
+    SemaphoreP_post(&TestGpmc_mtStartSem); 
+    SemaphoreP_post(&TestGpmc_mtStartSem);
+    
+    SemaphoreP_pend(&TestGpmc_mtDoneSem, SystemP_WAIT_FOREVER); 
+    SemaphoreP_pend(&TestGpmc_mtDoneSem, SystemP_WAIT_FOREVER);
+
+    /* Verify correctness */
+    for (uint32_t i = 0; i < TEST_GPMC_1KB_SIZE; i++) 
+    {
+        TEST_ASSERT_EQUAL_UINT8(0xAA, TestGpmc_mtBuf1[i]);
+        TEST_ASSERT_EQUAL_UINT8(0xBB, TestGpmc_mtBuf2[i]);
+    }
+
+    SemaphoreP_post(&TestGpmc_mtExitSem); 
+    SemaphoreP_post(&TestGpmc_mtExitSem); 
+    
+    SemaphoreP_pend(&TestGpmc_mtTeardownSem, SystemP_WAIT_FOREVER);
+    SemaphoreP_pend(&TestGpmc_mtTeardownSem, SystemP_WAIT_FOREVER);
+    
+    TaskP_destruct(&TestGpmc_mtTask1); 
+    TaskP_destruct(&TestGpmc_mtTask2);
+    SemaphoreP_destruct(&TestGpmc_mtStartSem); 
+    SemaphoreP_destruct(&TestGpmc_mtDoneSem); 
+    SemaphoreP_destruct(&TestGpmc_mtExitSem);
+    SemaphoreP_destruct(&TestGpmc_mtTeardownSem);
+}
+
+/**
+ * \brief Helper task that performs concurrent write operations to flash memory.
+ *
+ * This is a helper task designed for multithreaded testing that performs repeated
+ * write operations to flash while another task performs concurrent reads on a
+ * different block, verifying GPMC handles interleaved operations without corruption.
+ *
+ * Test Category: Multithreading
+ *
+ * \param args Pointer to GPMC_MtTaskArgs structure with offset, buffer, size, and iterations.
+ *
+ * \return None.
+ */
+static void test_gpmcInterleavedWriteTask(void *args) 
+{
+    GPMC_MtTaskArgs *taskArgs = (GPMC_MtTaskArgs *)args;
+    SemaphoreP_pend(&TestGpmc_mtStartSem, SystemP_WAIT_FOREVER);
+    
+    for (uint32_t i = 0; i < taskArgs->iterations; i++) 
+    {
+        Flash_write(gFlashHandle[CONFIG_FLASH0], taskArgs->offset, taskArgs->buffer, taskArgs->size);
+        TaskP_yield(); 
+    }
+    
+    SemaphoreP_post(&TestGpmc_mtDoneSem);
+    SemaphoreP_pend(&TestGpmc_mtExitSem, SystemP_WAIT_FOREVER);
+    SemaphoreP_post(&TestGpmc_mtTeardownSem);
+    
+    /* CRITICAL FIX: Prevent OS crash on task teardown */
+    while(1) 
+    {
+        TaskP_yield();
+    }
+}
+
+/**
+ * \brief Functionality test for interleaved NAND read and write operations.
+ *
+ * This test creates two concurrent tasks that perform interleaved read and write
+ * operations on different flash blocks. One task continuously reads from a block
+ * while another task continuously writes to a different block. The test verifies
+ * that data read by the first task is not corrupted by the concurrent write operations.
+ *
+ * Test Category: Multithreading
+ *
+ * \param args Unused.
+ *
+ * \return None.
+ */
+static void TestGpmc_interleavedWriteRead(void *args) 
+{
+    TaskP_Params taskParams;
+    int32_t status;
+    uint32_t readOffset = TEST_GPMC_FLASH_OFFSET_BASE;
+    uint32_t writeOffset = TEST_GPMC_FLASH_OFFSET_BASE + TEST_GPMC_BLOCK_SIZE;
+    uint32_t blk, page;
+
+    /* Refresh Flash Driver state just to be safe */
+    Board_driversClose();
+    status = Board_driversOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    memset(TestGpmc_mtBuf1, 0xCC, TEST_GPMC_1KB_SIZE);
+    
+    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], readOffset, &blk, &page); 
+    status = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    status = Flash_write(gFlashHandle[CONFIG_FLASH0], readOffset, TestGpmc_mtBuf1, TEST_GPMC_1KB_SIZE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+    
+    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], writeOffset, &blk, &page); 
+    status = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+
+    /* Clear read buffer, prep write buffer */
+    memset(TestGpmc_mtBuf1, 0, TEST_GPMC_1KB_SIZE); 
+    memset(TestGpmc_mtBuf2, 0xDD, TEST_GPMC_1KB_SIZE); 
+    
+    SemaphoreP_constructCounting(&TestGpmc_mtStartSem, 0, 2); 
+    SemaphoreP_constructCounting(&TestGpmc_mtDoneSem, 0, 2); 
+    SemaphoreP_constructCounting(&TestGpmc_mtExitSem, 0, 2);
+    SemaphoreP_constructCounting(&TestGpmc_mtTeardownSem, 0, 2);
+
+    TestGpmc_mtArgs1.offset = readOffset; 
+    TestGpmc_mtArgs1.buffer = TestGpmc_mtBuf1; 
+    TestGpmc_mtArgs1.size = TEST_GPMC_1KB_SIZE; 
+    TestGpmc_mtArgs1.iterations = 10;
+    
+    TestGpmc_mtArgs2.offset = writeOffset; 
+    TestGpmc_mtArgs2.buffer = TestGpmc_mtBuf2; 
+    TestGpmc_mtArgs2.size = TEST_GPMC_1KB_SIZE; 
+    TestGpmc_mtArgs2.iterations = 10;
+
+    TaskP_Params_init(&taskParams); 
+    taskParams.priority = 4;
+    
+    taskParams.name = "mt_read"; 
+    taskParams.stackSize = sizeof(TestGpmc_mtTaskStack1); 
+    taskParams.stack = TestGpmc_mtTaskStack1; 
+    taskParams.taskMain = test_gpmcConcurrentReadTask; 
+    taskParams.args = &TestGpmc_mtArgs1;
+    TaskP_construct(&TestGpmc_mtTask1, &taskParams);
+    
+    taskParams.name = "mt_write"; 
+    taskParams.stackSize = sizeof(TestGpmc_mtTaskStack2); 
+    taskParams.stack = TestGpmc_mtTaskStack2; 
+    taskParams.taskMain = test_gpmcInterleavedWriteTask; 
+    taskParams.args = &TestGpmc_mtArgs2;
+    TaskP_construct(&TestGpmc_mtTask2, &taskParams);
+
+    SemaphoreP_post(&TestGpmc_mtStartSem); 
+    SemaphoreP_post(&TestGpmc_mtStartSem);
+    
+    SemaphoreP_pend(&TestGpmc_mtDoneSem, SystemP_WAIT_FOREVER); 
+    SemaphoreP_pend(&TestGpmc_mtDoneSem, SystemP_WAIT_FOREVER);
+
+    /* Verify read task was never corrupted by the interleaved writes */
+    for (uint32_t i = 0; i < TEST_GPMC_1KB_SIZE; i++) 
+    {
+        TEST_ASSERT_EQUAL_UINT8(0xCC, TestGpmc_mtBuf1[i]);
+    }
+
+    SemaphoreP_post(&TestGpmc_mtExitSem); 
+    SemaphoreP_post(&TestGpmc_mtExitSem); 
+    
+    SemaphoreP_pend(&TestGpmc_mtTeardownSem, SystemP_WAIT_FOREVER);
+    SemaphoreP_pend(&TestGpmc_mtTeardownSem, SystemP_WAIT_FOREVER);
+    
+    TaskP_destruct(&TestGpmc_mtTask1); 
+    TaskP_destruct(&TestGpmc_mtTask2);
+    SemaphoreP_destruct(&TestGpmc_mtStartSem); 
+    SemaphoreP_destruct(&TestGpmc_mtDoneSem); 
+    SemaphoreP_destruct(&TestGpmc_mtExitSem);
+    SemaphoreP_destruct(&TestGpmc_mtTeardownSem);
+}
+#endif

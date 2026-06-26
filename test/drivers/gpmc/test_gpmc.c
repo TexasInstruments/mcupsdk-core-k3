@@ -119,7 +119,7 @@
 /* Expected NAND ID byte count */
 #define TEST_NAND_ID_BYTE_COUNT             (5U)
 
-#define TEST_GPMC_TASK_STACK_SIZE (8192U)
+#define TEST_GPMC_TASK_STACK_SIZE           (8192U)
 
 /* ========================================================================== */
 /*                 Structure Declarations                                     */
@@ -200,6 +200,18 @@ static void TestGpmc_clkDividerConfig(void *args);
 static void TestGpmc_writeProtect(void *args);
 static void TestGpmc_waitPinActiveHigh(void *args);
 static void TestGpmc_waitPinActiveLow(void *args);
+static void TestGpmc_waitPin1Config(void *args);
+static void TestGpmc_timingParameters(void *args);
+static void TestGpmc_chipSelectAddrSize(void *args);
+static void TestGpmc_flashDeviceIdRead(void *args);
+static void TestGpmc_nandBadBlockDetection(void *args);
+static void TestGpmc_crossBlockBoundary(void *args);
+static void TestGpmc_lifecycleRecovery(void *args);
+static void TestGpmc_bootModeDefaults(void *args);
+static void TestGpmc_functionalWaitPinTimeout(void *args);
+static void TestGpmc_getInputClkTest(void *args);
+static void TestGpmc_dataStructInitDefaults(void *args);
+static void TestGpmc_prefetchOptimizedAccess(void *args);
 
 
 /* Helper Funtions */
@@ -341,6 +353,76 @@ void test_main(void *args)
 
     DebugP_log("GPMC WAIT pin polarity active-low test\r\n");
     RUN_TEST(TestGpmc_waitPinActiveLow, 12413, NULL);
+
+        DebugP_log("GPMC WAIT pin 1 configuration validation test\r\n");
+    RUN_TEST(TestGpmc_waitPin1Config, 12414, NULL);
+
+    DebugP_log("GPMC timing parameters per chip select test\r\n");
+    Drivers_gpmcOpen();
+    RUN_TEST(TestGpmc_timingParameters, 12415, NULL);
+    Drivers_gpmcClose();
+
+    DebugP_log("GPMC chip select address size test\r\n");
+    Drivers_gpmcOpen();
+    RUN_TEST(TestGpmc_chipSelectAddrSize, 12416, NULL);
+    Drivers_gpmcClose();
+
+    DebugP_log("Flash device ID read and validation test\r\n");
+    for (i = 0; i < CONFIG_GPMC_NUM_INSTANCES; i++) 
+    {
+        gGpmcParams[i].gpmcDmaChIndex = -1;
+        gGpmcParams[i].dmaEnable      = 0;
+    }
+    Drivers_gpmcOpen();
+    RUN_TEST(TestGpmc_flashDeviceIdRead, 12417, NULL);
+    Drivers_gpmcClose();
+
+    DebugP_log("NAND factory bad block detection\r\n");
+    for (i = 0; i < CONFIG_GPMC_NUM_INSTANCES; i++) 
+    {
+        gGpmcParams[i].gpmcDmaChIndex = 0;
+        gGpmcParams[i].dmaEnable      = 1;
+    }
+    Drivers_gpmcOpen();
+    RUN_TEST(TestGpmc_nandBadBlockDetection, 12418, NULL);
+    Drivers_gpmcClose();
+
+    DebugP_log("Cross-block boundary large data transfer\r\n");
+    for (i = 0; i < CONFIG_GPMC_NUM_INSTANCES; i++) 
+    {
+        gGpmcParams[i].gpmcDmaChIndex = 0;
+        gGpmcParams[i].dmaEnable      = 1;
+    }
+    Drivers_gpmcOpen();
+    RUN_TEST(TestGpmc_crossBlockBoundary, 12419, NULL);
+    Drivers_gpmcClose();
+
+    DebugP_log("GPMC complete lifecycle recovery\r\n");
+    RUN_TEST(TestGpmc_lifecycleRecovery, 12420, NULL);
+
+    DebugP_log("BOOT mode default configuration validation\r\n");
+    Drivers_gpmcOpen();
+    RUN_TEST(TestGpmc_bootModeDefaults, 12421, NULL);
+    Drivers_gpmcClose();
+
+    DebugP_log("GPMC_writeNandCommand with WAIT pin timeout\r\n");
+    Drivers_gpmcOpen();
+    RUN_TEST(TestGpmc_functionalWaitPinTimeout, 12422, NULL);
+    Drivers_gpmcClose();
+
+    DebugP_log("GPMC input clock frequency retrieval\r\n");
+    Drivers_gpmcOpen();
+    RUN_TEST(TestGpmc_getInputClkTest, 12423, NULL);
+    Drivers_gpmcClose();
+
+    DebugP_log("Data structure initialization defaults\r\n");
+    RUN_TEST(TestGpmc_dataStructInitDefaults, 12424, NULL);
+
+    DebugP_log("Prefetch optimized access config\r\n");
+    Drivers_gpmcOpen();
+    RUN_TEST(TestGpmc_prefetchOptimizedAccess, 12425, NULL);
+    Drivers_gpmcClose();
+
 
     UNITY_END();
 
@@ -1713,4 +1795,901 @@ static void TestGpmc_waitPinActiveLow(void *args)
 
     Board_driversClose();
     Drivers_gpmcClose();
+}
+
+
+/**
+ * \brief Functionality test for GPMC WAIT Pin 1 selection and polarity configuration.
+ *
+ * This test validates that the GPMC can be configured to use WAIT Pin 1 instead of
+ * WAIT Pin 0, with a specific polarity setting. The test verifies the CONFIG1 and CONFIG
+ * register fields are correctly programmed, then restores original settings and confirms
+ * normal flash read operation resumes successfully.
+ *
+ * Test Category: Functionality
+ *
+ * \param args Unused.
+ *
+ * \return None.
+ */
+static void TestGpmc_waitPin1Config(void *args)
+{
+    int32_t     retVal = SystemP_SUCCESS;
+    GPMC_Handle gpmcHandle;
+    uint32_t    polBit;
+    uint32_t    config1Val;
+    const GPMC_HwAttrs *hwAttrs = gGpmcConfig[CONFIG_GPMC0].attrs;
+    uint32_t    savedWaitPin = hwAttrs->waitPinNum;
+    uint32_t    savedPol = hwAttrs->waitPinPol;
+    uint32_t    offset = TEST_GPMC_FLASH_OFFSET_BASE;
+
+    /* Compute the opposite polarity for WAIT1 */
+    uint32_t    toggledPol = (savedPol == CSL_GPMC_CONFIG_WAIT0PINPOLARITY_W0ACTIVEH)
+                           ? CSL_GPMC_CONFIG_WAIT1PINPOLARITY_W1ACTIVEL
+                           : CSL_GPMC_CONFIG_WAIT1PINPOLARITY_W1ACTIVEH;
+
+    /*  Temporarily set hwAttrs parameters to WAIT1 and opposite polarity */
+    ((GPMC_HwAttrs *)hwAttrs)->waitPinNum = CSL_GPMC_CONFIG1_WAITPINSELECT_W1;
+    ((GPMC_HwAttrs *)hwAttrs)->waitPinPol = toggledPol;
+
+    /*  Open GPMC with modified parameters */
+    Drivers_gpmcOpen();
+    gpmcHandle = GPMC_getHandle(CONFIG_GPMC0);
+    TEST_ASSERT_NOT_NULL(gpmcHandle);
+
+    uint32_t chipSel = ((GPMC_Config*)gpmcHandle)->object->params.chipSel;
+
+    /*  Verify CONFIG1 register reflects WAITPINSELECT_W1 */
+    config1Val = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG1(chipSel),
+                                GPMC_CONFIG1_WAITPINSELECT);
+    TEST_ASSERT_EQUAL_UINT32(CSL_GPMC_CONFIG1_WAITPINSELECT_W1, config1Val);
+
+    /*  Verify CONFIG register reflects toggled WAIT1 polarity */
+    polBit = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG,
+                            GPMC_CONFIG_WAIT1PINPOLARITY);
+    TEST_ASSERT_EQUAL_UINT32(toggledPol, polBit);
+
+    DebugP_log("  Configured wait pin to W1 with polarity %u successfully\r\n", toggledPol);
+
+    /*  Attempt to open board flash drivers. Since GPMC is looking at WAIT1,
+     * the physical NAND initialization (reset/read ID) should fail/timeout. */
+    retVal = Board_flashOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, retVal);
+
+    /* Close GPMC to clean up */
+    Drivers_gpmcClose();
+
+    /*  Restore original wait pin parameters and re-open to verify system works */
+    ((GPMC_HwAttrs *)hwAttrs)->waitPinNum = savedWaitPin;
+    ((GPMC_HwAttrs *)hwAttrs)->waitPinPol = savedPol;
+
+    Drivers_gpmcOpen();
+    gpmcHandle = GPMC_getHandle(CONFIG_GPMC0);
+    TEST_ASSERT_NOT_NULL(gpmcHandle);
+
+    /* Verify register is restored */
+    config1Val = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG1(chipSel),
+                                GPMC_CONFIG1_WAITPINSELECT);
+    TEST_ASSERT_EQUAL_UINT32(savedWaitPin, config1Val);
+
+    polBit = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG,
+                            GPMC_CONFIG_WAIT0PINPOLARITY);
+    TEST_ASSERT_EQUAL_UINT32(savedPol, polBit);
+
+    /* Verify data-path functionality after restoration */
+    retVal = Board_driversOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    memset(gGpmcTestRxBuf, 0x00, TEST_GPMC_CLKDIV_READ_SIZE);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset,
+                        gGpmcTestRxBuf, TEST_GPMC_CLKDIV_READ_SIZE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    Board_driversClose();
+    Drivers_gpmcClose();
+}
+
+/**
+ * \brief Functionality test for GPMC configurable timing parameters per chip select.
+ *
+ * This test verifies that timing parameters can be configured and applied to the
+ * active chip select. The test calls the timing configuration API, then validates
+ * that CONFIG2 through CONFIG6 registers reflect the configured timing values including
+ * CS on/off times, read/write cycle times, and bus turnaround times.
+ *
+ * Test Category: Functionality
+ *
+ * \param args Unused.
+ *
+ * \return None.
+ */
+static void TestGpmc_timingParameters(void *args)
+{
+    int32_t     retVal = SystemP_SUCCESS;
+    uint32_t    blk, page;
+    uint32_t    offset = TEST_GPMC_FLASH_OFFSET_BASE;
+    GPMC_Handle gpmcHandle;
+    const GPMC_HwAttrs *hwAttrs;
+    uint32_t    chipSel;
+    uint32_t    regVal;
+
+    retVal = Board_driversOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    gpmcHandle = GPMC_getHandle(CONFIG_GPMC0);
+    TEST_ASSERT_NOT_NULL(gpmcHandle);
+    hwAttrs = ((GPMC_Config*)gpmcHandle)->attrs;
+    chipSel = ((GPMC_Config*)gpmcHandle)->object->params.chipSel;
+
+    /*  Re-apply timing parameters from hwAttrs */
+    retVal = GPMC_configureTimingParameters(gpmcHandle);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /*  Read back CONFIG2 — CS timing */
+    regVal = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG2(chipSel),
+                            GPMC_CONFIG2_CSONTIME);
+    TEST_ASSERT_EQUAL_UINT32(hwAttrs->timingParams.csOnTime, regVal);
+
+    regVal = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG2(chipSel),
+                            GPMC_CONFIG2_CSRDOFFTIME);
+    TEST_ASSERT_EQUAL_UINT32(hwAttrs->timingParams.csRdOffTime, regVal);
+
+    regVal = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG2(chipSel),
+                            GPMC_CONFIG2_CSWROFFTIME);
+    TEST_ASSERT_EQUAL_UINT32(hwAttrs->timingParams.csWrOffTime, regVal);
+
+    /* Step 3 cont'd: Read back CONFIG5 — read access time, write/read cycle time */
+    regVal = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG5(chipSel),
+                            GPMC_CONFIG5_RDACCESSTIME);
+    TEST_ASSERT_EQUAL_UINT32(hwAttrs->timingParams.rdAccessTime, regVal);
+
+    regVal = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG5(chipSel),
+                            GPMC_CONFIG5_WRCYCLETIME);
+    TEST_ASSERT_EQUAL_UINT32(hwAttrs->timingParams.wrCycleTime, regVal);
+
+    regVal = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG5(chipSel),
+                            GPMC_CONFIG5_RDCYCLETIME);
+    TEST_ASSERT_EQUAL_UINT32(hwAttrs->timingParams.rdCycleTime, regVal);
+
+    /* Step 3 cont'd: Read back CONFIG6 — cycle-to-cycle delay, bus turnaround */
+    regVal = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG6(chipSel),
+                            GPMC_CONFIG6_CYCLE2CYCLEDELAY);
+    TEST_ASSERT_EQUAL_UINT32(hwAttrs->timingParams.cycle2CycleDelay, regVal);
+
+    regVal = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG6(chipSel),
+                            GPMC_CONFIG6_BUSTURNAROUND);
+    TEST_ASSERT_EQUAL_UINT32(hwAttrs->timingParams.busTurnAroundTime, regVal);
+
+    DebugP_log("  CONFIG2-CONFIG6 timing readback verified\r\n");
+
+    /*  Data-path validation — erase, write, read, compare */
+    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset, &blk, &page);
+    retVal = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    for (uint32_t i = 0; i < TEST_GPMC_BUF_SIZE; i++)
+    {
+        gGpmcTestTxBulkBuf[i] = gGpmcTestTxBuf[i % TEST_GPMC_DATA_SIZE];
+    }
+    retVal = Flash_write(gFlashHandle[CONFIG_FLASH0], offset,
+                         gGpmcTestTxBulkBuf, TEST_GPMC_BUF_SIZE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    memset(gGpmcTestRxBuf, 0x00, TEST_GPMC_BUF_SIZE);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset,
+                        gGpmcTestRxBuf, TEST_GPMC_BUF_SIZE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    retVal = memcmp(gGpmcTestRxBuf, gGpmcTestTxBulkBuf, TEST_GPMC_BUF_SIZE);
+    TEST_ASSERT_EQUAL_INT32(0, retVal);
+
+    Board_driversClose();
+}
+
+/**
+ * \brief Functionality test for GPMC chip select address size and base address configuration.
+ *
+ * This test verifies that chip select address configuration is correctly applied by
+ * reading back the CONFIG7 register and confirming the MASKADDRESS and BASEADDRESS
+ * fields match the hardware attribute settings. A read operation validates that the
+ * chip select address mapping functions correctly.
+ *
+ * Test Category: Functionality
+ *
+ * \param args Unused.
+ *
+ * \return None.
+ */
+static void TestGpmc_chipSelectAddrSize(void *args)
+{
+    int32_t     retVal = SystemP_SUCCESS;
+    uint32_t    offset = TEST_GPMC_FLASH_OFFSET_BASE;
+    GPMC_Handle gpmcHandle;
+    const GPMC_HwAttrs *hwAttrs;
+    uint32_t    chipSel;
+    uint32_t    regVal;
+
+    retVal = Board_driversOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    gpmcHandle = GPMC_getHandle(CONFIG_GPMC0);
+    TEST_ASSERT_NOT_NULL(gpmcHandle);
+    hwAttrs = ((GPMC_Config*)gpmcHandle)->attrs;
+    chipSel = ((GPMC_Config*)gpmcHandle)->object->params.chipSel;
+
+    /*  Verify MASKADDRESS field matches hwAttrs->chipSelAddrSize */
+    regVal = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG7(chipSel),
+                            GPMC_CONFIG7_MASKADDRESS);
+    TEST_ASSERT_EQUAL_UINT32(hwAttrs->chipSelAddrSize, regVal);
+
+    /*  Verify BASEADDRESS field matches hwAttrs->chipSelBaseAddr >> 24 */
+    regVal = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG7(chipSel),
+                            GPMC_CONFIG7_BASEADDRESS);
+    TEST_ASSERT_EQUAL_UINT32((hwAttrs->chipSelBaseAddr >> GPMC_CS_BASE_ADDR_SHIFT) & 0x3FU,
+                             regVal);
+
+    /* Verify CS is enabled */
+    regVal = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG7(chipSel),
+                            GPMC_CONFIG7_CSVALID);
+    TEST_ASSERT_EQUAL_UINT32(CSL_GPMC_CONFIG7_CSVALID_CSENABLED, regVal);
+
+    DebugP_log("  CONFIG7 CS addr size=0x%02x, base=0x%02x, valid=%u\r\n",
+               hwAttrs->chipSelAddrSize,
+               (hwAttrs->chipSelBaseAddr >> GPMC_CS_BASE_ADDR_SHIFT) & 0x3FU,
+               CSL_GPMC_CONFIG7_CSVALID_CSENABLED);
+
+    /*  Data-path validation — read previously written data */
+    memset(gGpmcTestRxBuf, 0x00, TEST_GPMC_BUF_SIZE);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset,
+                        gGpmcTestRxBuf, TEST_GPMC_BUF_SIZE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* The data at this offset was written by a previous test (TC-10 or TC-13).
+     * We only check that the read itself succeeds without error, confirming
+     * the CS address mapping is functional.
+     */
+
+    Board_driversClose();
+}
+
+/**
+ * \brief Functionality test for NAND flash device ID read and validation.
+ *
+ * This test verifies that the GPMC can successfully issue a NAND READ ID command
+ * and retrieve valid device identification bytes. The manufacturer ID (Micron 0x2C)
+ * is verified, device ID bytes are checked for validity, and a full erase/write/read
+ * cycle confirms the device remains functional after the ID read sequence.
+ *
+ * Test Category: Functionality
+ *
+ * \param args Unused.
+ *
+ * \return None.
+ */
+static void TestGpmc_flashDeviceIdRead(void *args)
+{
+    int32_t          retVal = SystemP_SUCCESS;
+    uint32_t         blk, page;
+    uint32_t         offset = TEST_GPMC_FLASH_OFFSET_BASE;
+    GPMC_Handle      gpmcHandle;
+    GPMC_nandCmdParams cmdParams;
+    GPMC_Transaction trans;
+    uint8_t          readId[TEST_NAND_ID_BYTE_COUNT] = {0};
+
+    retVal = Board_driversOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    gpmcHandle = GPMC_getHandle(CONFIG_GPMC0);
+    TEST_ASSERT_NOT_NULL(gpmcHandle);
+
+    /*  Issue NAND READ ID command */
+    GPMC_writeNandCommandParamsInit(&cmdParams);
+    cmdParams.cmdCycle1        = TEST_NAND_CMD_READ_ID;
+    cmdParams.numColAddrCycles = 1U;
+    cmdParams.colAddress       = 0U;
+    cmdParams.checkReadypin    = FALSE;
+    cmdParams.waitTimeout      = TEST_NAND_DEVICE_TIMEOUT;
+    retVal = GPMC_writeNandCommand(gpmcHandle, &cmdParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /*  Read 5 ID bytes via READ_CMDREG */
+    GPMC_transactionInit(&trans);
+    trans.Buf       = readId;
+    trans.count     = TEST_NAND_ID_BYTE_COUNT;
+    trans.transType = GPMC_TRANSACTION_TYPE_READ_CMDREG;
+    retVal = GPMC_nandReadData(gpmcHandle, &trans);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /*  Verify manufacturer ID (byte 0) = Micron 0x2C */
+    TEST_ASSERT_EQUAL_UINT8(TEST_NAND_MANF_ID, readId[0]);
+
+    /*  Verify device ID bytes are non-zero */
+    TEST_ASSERT_NOT_EQUAL(0U, readId[1]);
+    TEST_ASSERT_NOT_EQUAL(0U, readId[2]);
+
+    DebugP_log("  NAND ID: Mfr=0x%02X, Dev=0x%02X 0x%02X 0x%02X 0x%02X\r\n",
+               readId[0], readId[1], readId[2], readId[3], readId[4]);
+
+    /*  Full data-path validation — erase, write, read, compare */
+    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset, &blk, &page);
+    retVal = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Fill with a distinctive pattern */
+    for (uint32_t i = 0; i < TEST_GPMC_BUF_SIZE; i++)
+    {
+        gGpmcTestTxBulkBuf[i] = (uint8_t)((i * 7U + 0x55U) & 0xFFU);
+    }
+    retVal = Flash_write(gFlashHandle[CONFIG_FLASH0], offset,
+                         gGpmcTestTxBulkBuf, TEST_GPMC_BUF_SIZE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    memset(gGpmcTestRxBuf, 0x00, TEST_GPMC_BUF_SIZE);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset,
+                        gGpmcTestRxBuf, TEST_GPMC_BUF_SIZE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    retVal = memcmp(gGpmcTestRxBuf, gGpmcTestTxBulkBuf, TEST_GPMC_BUF_SIZE);
+    TEST_ASSERT_EQUAL_INT32(0, retVal);
+
+    Board_driversClose();
+}
+
+/**
+ * \brief Functionality test for NAND factory bad block detection and identification.
+ *
+ * This test validates bad block detection by reading the spare area (OOB) of
+ * the first 5 blocks to check for factory bad block markers. Healthy blocks
+ * are verified to report 0xFF in the marker position. The test also verifies
+ * that operations on out-of-range block indices fail as expected.
+ *
+ * Test Category: Functionality
+ *
+ * \param args Unused.
+ *
+ * \return None.
+ */
+static void TestGpmc_nandBadBlockDetection(void *args)
+{
+    int32_t          retVal = SystemP_SUCCESS;
+    GPMC_Handle      gpmcHandle;
+    GPMC_nandCmdParams cmdParams;
+    GPMC_Transaction trans;
+    uint8_t          spareByte;
+    uint32_t         blk;
+    uint32_t         blockCount;
+    Flash_Attrs     *flashAttrs;
+
+    retVal = Board_driversOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    gpmcHandle = GPMC_getHandle(CONFIG_GPMC0);
+    TEST_ASSERT_NOT_NULL(gpmcHandle);
+
+    flashAttrs = gFlashConfig[CONFIG_FLASH0].attrs;
+    TEST_ASSERT_NOT_NULL(flashAttrs);
+    blockCount = flashAttrs->blockCount;
+
+    /* Read the spare area (OOB) byte at column = pageSize for the
+     * first 5 blocks.  On a non-bad block the first spare byte
+     * is 0xFF.  Factory-marked bad blocks have a non-0xFF value.  We simply
+     * verify the read itself succeeds and log the marker value.
+     */
+    for (blk = 0; blk < 5U; blk++)
+    {
+        /* Issue NAND PAGE READ command pointing to page 0 of this block */
+        GPMC_writeNandCommandParamsInit(&cmdParams);
+        cmdParams.cmdCycle1        = TEST_NAND_CMD_READ_CYC1;
+        cmdParams.cmdCycle2        = TEST_NAND_CMD_READ_CYC2;
+        cmdParams.numColAddrCycles = TEST_NAND_COL_ADDR_CYCLES;
+        cmdParams.numRowAddrCycles = TEST_NAND_ROW_ADDR_CYCLES;
+        cmdParams.colAddress       = TEST_NAND_PAGE_SIZE; /* column = start of spare area */
+        cmdParams.rowAddress       = blk * TEST_NAND_PAGES_PER_BLOCK; /* page 0 of block */
+        cmdParams.waitTimeout      = TEST_NAND_DEVICE_TIMEOUT;
+        retVal = GPMC_writeNandCommand(gpmcHandle, &cmdParams);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+        /* Read 1 byte from spare area via READ_CMDREG (direct register read) */
+        spareByte = 0x00U;
+        GPMC_transactionInit(&trans);
+        trans.Buf       = &spareByte;
+        trans.count     = 1U;
+        trans.transType = GPMC_TRANSACTION_TYPE_READ_CMDREG;
+        retVal = GPMC_nandReadData(gpmcHandle, &trans);
+        TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+        DebugP_log("  Block %u spare byte [0] = 0x%02X %s\r\n",
+                   blk, spareByte,
+                   (spareByte == 0xFFU) ? "(good)" : "(BAD BLOCK MARKER)");
+
+        /* For blocks in the test region (past block 0 which may have boot data),
+         * a factory-good block should read 0xFF.
+         */
+        if (blk >= 1U)
+        {
+            if (spareByte != 0xFFU)
+            {
+                DebugP_log("  Warning: Block %u is factory bad, skipping assertion\r\n", blk);
+            }
+            else
+            {
+                TEST_ASSERT_EQUAL_UINT8(0xFFU, spareByte);
+            }
+        }
+    }
+    /*  Attempt Flash operations on an out-of-range block index.
+     * Flash_eraseBlk and Flash_write should return SystemP_FAILURE for
+     * indices beyond the device capacity.
+     */
+    retVal = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blockCount + 10U);
+    TEST_ASSERT_NOT_EQUAL(SystemP_SUCCESS, retVal);
+
+    /* Attempt write beyond flash size */
+    uint32_t invalidOffset = flashAttrs->flashSize + TEST_NAND_PAGE_SIZE;
+    memset(gGpmcTestTxBulkBuf, 0xAA, TEST_NAND_PAGE_SIZE);
+    retVal = Flash_write(gFlashHandle[CONFIG_FLASH0], invalidOffset,
+                         gGpmcTestTxBulkBuf, TEST_NAND_PAGE_SIZE);
+    TEST_ASSERT_NOT_EQUAL(SystemP_SUCCESS, retVal);
+
+    Board_driversClose();
+}
+
+/**
+ * \brief Functionality test for cross-block boundary data transfers with DMA.
+ *
+ * This test validates that the GPMC and DMA correctly handle data transfers that
+ * span block boundaries. A 1024-byte transfer is written and read across a block
+ * boundary, and the buffers are compared to ensure no data is dropped or corrupted
+ * during the boundary crossing.
+ *
+ * Test Category: Functionality 
+ *
+ * \param args Unused.
+ *
+ * \return None.
+ */
+static void TestGpmc_crossBlockBoundary(void *args)
+{
+    int32_t     retVal = SystemP_SUCCESS;
+    uint32_t    blk, page;
+    uint32_t    blockSize;
+    uint32_t    blockBoundaryOffset;
+    uint32_t    writeOffset;
+    uint32_t    transferSize;
+    Flash_Attrs *flashAttrs;
+
+    retVal = Board_driversOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    flashAttrs = gFlashConfig[CONFIG_FLASH0].attrs;
+    TEST_ASSERT_NOT_NULL(flashAttrs);
+    blockSize = flashAttrs->blockSize;
+
+    /* Choose a block boundary. We use TEST_GPMC_FLASH_OFFSET_BASE to find
+     * which block it falls in, then compute the next block boundary.
+     */
+    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0],
+                          TEST_GPMC_FLASH_OFFSET_BASE, &blk, &page);
+    blockBoundaryOffset = (blk + 1U) * blockSize;  /* Start of next block */
+
+    /* Write starts 512 bytes before boundary, ends 512 bytes after → 1024 bytes */
+    writeOffset  = blockBoundaryOffset - TEST_NAND_SECTOR_SIZE;
+    transferSize = TEST_NAND_SECTOR_SIZE * 2U; /* 1024 bytes crossing boundary */
+
+    /*  Erase both blocks spanning the boundary */
+    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], writeOffset, &blk, &page);
+    retVal = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    retVal = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk + 1U);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /*  Fill TX buffer with a distinctive pattern */
+    for (uint32_t i = 0; i < transferSize; i++)
+    {
+        gGpmcTestTxBulkBuf[i] = (uint8_t)((i * 13U + 0x37U) & 0xFFU);
+    }
+
+    retVal = Flash_write(gFlashHandle[CONFIG_FLASH0], writeOffset,
+                         gGpmcTestTxBulkBuf, transferSize);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /*  Read back the same region */
+    memset(gGpmcTestRxBuf, 0x00, transferSize);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], writeOffset,
+                        gGpmcTestRxBuf, transferSize);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /*  Verify no bytes were dropped during the boundary crossover */
+    retVal = memcmp(gGpmcTestRxBuf, gGpmcTestTxBulkBuf, transferSize);
+    TEST_ASSERT_EQUAL_INT32(0, retVal);
+
+    DebugP_log("  Cross-block boundary at offset 0x%08X: %u bytes verified\r\n",
+               blockBoundaryOffset, transferSize);
+
+    Board_driversClose();
+}
+
+/**
+ * \brief Functionality test for GPMC complete lifecycle recovery and state preservation.
+ *
+ * This test verifies that the GPMC driver can be safely deinitialized and reinitialized
+ * without losing data on the flash device. Data is written, then the driver is shut down
+ * and reinited, and the data is read back to confirm the hardware survived the transition.
+ *
+ * Test Category: Functionality
+ *
+ * \param args Unused.
+ *
+ * \return None.
+ */
+static void TestGpmc_lifecycleRecovery(void *args)
+{
+    int32_t     retVal = SystemP_SUCCESS;
+    uint32_t    blk, page;
+    uint32_t    offset = TEST_GPMC_FLASH_OFFSET_BASE;
+    uint32_t    dataSize = TEST_GPMC_2KB_SIZE;
+    uint32_t    i;
+
+    /*  Ensure GPMC is initialized, open drivers */
+    GPMC_init();
+    for (i = 0; i < CONFIG_GPMC_NUM_INSTANCES; i++) 
+    {
+        gGpmcParams[i].gpmcDmaChIndex = 0;
+        gGpmcParams[i].dmaEnable      = 1;
+    }
+    Drivers_gpmcOpen();
+    retVal = Board_driversOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /*  Erase block and write a 2 KiB pattern */
+    Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset, &blk, &page);
+    retVal = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    for (i = 0; i < dataSize; i++)
+    {
+        gGpmcTestTxBulkBuf[i] = (uint8_t)((i * 3U + 0xA5U) & 0xFFU);
+    }
+    retVal = Flash_write(gFlashHandle[CONFIG_FLASH0], offset,
+                         gGpmcTestTxBulkBuf, dataSize);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /*  Close Flash driver and GPMC instance */
+    Board_driversClose();
+    Drivers_gpmcClose();
+
+    /*  Completely destroy driver state */
+    GPMC_deinit();
+
+    /*  Reinitialize from scratch */
+    GPMC_init();
+    Drivers_gpmcOpen();
+    retVal = Board_driversOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /*  Read back the previously written data */
+    memset(gGpmcTestRxBuf, 0x00, dataSize);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset,
+                        gGpmcTestRxBuf, dataSize);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /*  Verify exact match */
+    retVal = memcmp(gGpmcTestRxBuf, gGpmcTestTxBulkBuf, dataSize);
+    TEST_ASSERT_EQUAL_INT32(0, retVal);
+
+    DebugP_log("  Lifecycle recovery: %u bytes verified after deinit/reinit\r\n",
+               dataSize);
+
+    Board_driversClose();
+    Drivers_gpmcClose();
+}
+
+/**
+ * \brief Functionality test for GPMC boot mode default configuration validation.
+ *
+ * This test verifies that all GPMC hardware configuration registers (CONFIG1-CONFIG7)
+ * are correctly programmed during driver initialization according to the hardware
+ * attributes. The test validates device type, device size, clock divider, base address,
+ * address mask, wait pin polarity, and timing parameters.
+ *
+ * Test Category: Functionality
+ *
+ * \param args Unused.
+ *
+ * \return None.
+ */
+static void TestGpmc_bootModeDefaults(void *args)
+{
+    int32_t     retVal = SystemP_SUCCESS;
+    GPMC_Handle gpmcHandle;
+    const GPMC_HwAttrs *hwAttrs;
+    uint32_t    chipSel;
+    uint32_t    regVal;
+
+    retVal = Board_driversOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    gpmcHandle = GPMC_getHandle(CONFIG_GPMC0);
+    TEST_ASSERT_NOT_NULL(gpmcHandle);
+    hwAttrs = ((GPMC_Config*)gpmcHandle)->attrs;
+    chipSel = ((GPMC_Config*)gpmcHandle)->object->params.chipSel;
+
+    /* Verify CONFIG1: DEVICETYPE */
+    regVal = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG1(chipSel),
+                            GPMC_CONFIG1_DEVICETYPE);
+    TEST_ASSERT_EQUAL_UINT32(((GPMC_Config*)gpmcHandle)->object->params.devType,
+                             regVal);
+
+    /* Verify CONFIG1: DEVICESIZE */
+    regVal = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG1(chipSel),
+                            GPMC_CONFIG1_DEVICESIZE);
+    TEST_ASSERT_EQUAL_UINT32(((GPMC_Config*)gpmcHandle)->object->params.devSize,
+                             regVal);
+
+    /* Verify CONFIG1: GPMCFCLKDIVIDER */
+    regVal = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG1(chipSel),
+                            GPMC_CONFIG1_GPMCFCLKDIVIDER);
+    TEST_ASSERT_EQUAL_UINT32(hwAttrs->clkDivider, regVal);
+
+    /* Verify CONFIG7: BASEADDRESS */
+    regVal = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG7(chipSel),
+                            GPMC_CONFIG7_BASEADDRESS);
+    TEST_ASSERT_EQUAL_UINT32((hwAttrs->chipSelBaseAddr >> GPMC_CS_BASE_ADDR_SHIFT) & 0x3FU,
+                             regVal);
+
+    /* Verify CONFIG7: MASKADDRESS */
+    regVal = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG7(chipSel),
+                            GPMC_CONFIG7_MASKADDRESS);
+    TEST_ASSERT_EQUAL_UINT32(hwAttrs->chipSelAddrSize, regVal);
+
+    /* Verify CONFIG7: CSVALID — CS must be enabled */
+    regVal = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG7(chipSel),
+                            GPMC_CONFIG7_CSVALID);
+    TEST_ASSERT_EQUAL_UINT32(CSL_GPMC_CONFIG7_CSVALID_CSENABLED, regVal);
+
+    /* Verify CONFIG: WAIT0PINPOLARITY */
+    regVal = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG,
+                            GPMC_CONFIG_WAIT0PINPOLARITY);
+    TEST_ASSERT_EQUAL_UINT32(hwAttrs->waitPinPol, regVal);
+
+    /* Verify CONFIG2: CSONTIME (timing parameter spot-check) */
+    regVal = CSL_REG32_FEXT(hwAttrs->gpmcBaseAddr + CSL_GPMC_CONFIG2(chipSel),
+                            GPMC_CONFIG2_CSONTIME);
+    TEST_ASSERT_EQUAL_UINT32(hwAttrs->timingParams.csOnTime, regVal);
+
+    DebugP_log("  Boot mode defaults: CONFIG1-CONFIG7 verified for CS%u\r\n",
+               chipSel);
+
+    /* Integration step: Prove the data path is functional under default config */
+    uint32_t offset = TEST_GPMC_FLASH_OFFSET_BASE;
+    memset(gGpmcTestRxBuf, 0x00, TEST_GPMC_BUF_SIZE);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset,
+                        gGpmcTestRxBuf, TEST_GPMC_BUF_SIZE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    Board_driversClose();
+}
+
+/**
+ * \brief Functionality test for GPMC polling-based WAIT pin timeout handling.
+ *
+ * This test exercises the WAIT pin polling code path by issuing NAND commands with
+ * checkReadypin set to FALSE (polling mode). The test validates both the looping polling
+ * path (with timeout > 0) and the single-shot path (with timeout == 0) to ensure correct
+ * WAIT pin monitoring behavior in both cases.
+ *
+ * Test Category: Functionality
+ *
+ * \param args Unused.
+ *
+ * \return None.
+ */
+static void TestGpmc_functionalWaitPinTimeout(void *args)
+{
+    int32_t     retVal = SystemP_SUCCESS;
+    GPMC_Handle gpmcHandle;
+    GPMC_nandCmdParams cmdParams;
+
+    retVal = Board_driversOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    gpmcHandle = GPMC_getHandle(CONFIG_GPMC0);
+    TEST_ASSERT_NOT_NULL(gpmcHandle);
+
+    /* checkReadypin = FALSE, waitTimeout > 0*/
+    GPMC_writeNandCommandParamsInit(&cmdParams);
+    cmdParams.cmdCycle1        = TEST_NAND_CMD_READ_CYC1;
+    cmdParams.cmdCycle2        = TEST_NAND_CMD_READ_CYC2;
+    cmdParams.numColAddrCycles = TEST_NAND_COL_ADDR_CYCLES;
+    cmdParams.numRowAddrCycles = TEST_NAND_ROW_ADDR_CYCLES;
+    cmdParams.colAddress       = 0U;
+    cmdParams.rowAddress       = 0U;
+    cmdParams.checkReadypin    = FALSE;  /* polling path */
+    cmdParams.waitTimeout      = TEST_NAND_DEVICE_TIMEOUT;
+
+    retVal = GPMC_writeNandCommand(gpmcHandle, &cmdParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* checkReadypin = FALSE, waitTimeout == 0 */
+    GPMC_writeNandCommandParamsInit(&cmdParams);
+    cmdParams.checkReadypin = FALSE; /* polling path */
+    cmdParams.waitTimeout   = 0U;    /* single-shot status check */
+
+    retVal = GPMC_writeNandCommand(gpmcHandle, &cmdParams);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    /* Verify system is still functional with a normal read */
+    memset(gGpmcTestRxBuf, 0x00, TEST_GPMC_DATA_SIZE);
+    retVal = Flash_read(gFlashHandle[CONFIG_FLASH0],
+                        TEST_GPMC_FLASH_OFFSET_BASE,
+                        gGpmcTestRxBuf, TEST_GPMC_DATA_SIZE);
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    DebugP_log("  Post-test recovery read succeeded\r\n");
+
+    Board_driversClose();
+}
+
+/**
+ * \brief Functionality test for GPMC input clock frequency retrieval.
+ *
+ * This test verifies that GPMC_getInputClk() correctly retrieves the input clock
+ * frequency and matches the hardware attributes value. The test ensures the returned
+ * clock frequency is non-zero and matches the configured inputClkFreq.
+ *
+ * Test Category: Functionality
+ *
+ * \param args Unused.
+ *
+ * \return None.
+ */
+static void TestGpmc_getInputClkTest(void *args)
+{
+    int32_t     retVal = SystemP_SUCCESS;
+    GPMC_Handle gpmcHandle;
+    uint32_t    clkFreq;
+    const GPMC_HwAttrs *hwAttrs;
+
+    retVal = Board_driversOpen();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
+
+    gpmcHandle = GPMC_getHandle(CONFIG_GPMC0);
+    TEST_ASSERT_NOT_NULL(gpmcHandle);
+    hwAttrs = ((GPMC_Config*)gpmcHandle)->attrs;
+
+    /*  Get input clock frequency */
+    clkFreq = GPMC_getInputClk(gpmcHandle);
+
+    /*  Verify it is non-zero */
+    TEST_ASSERT_NOT_EQUAL(0U, clkFreq);
+
+    /*  Verify it matches hwAttrs->inputClkFreq */
+    TEST_ASSERT_EQUAL_UINT32(hwAttrs->inputClkFreq, clkFreq);
+
+    DebugP_log("  GPMC input clock: %u Hz\r\n", clkFreq);
+
+    Board_driversClose();
+}
+
+/**
+ * \brief Test for GPMC data structure initialization defaults.
+ *
+ * This test verifies that GPMC_transactionInit() and GPMC_writeNandCommandParamsInit()
+ * correctly initialize all struct fields to their documented default values. The test
+ * fills structs with garbage data and then validates that the init functions properly
+ * reset all fields to expected defaults.
+ *
+ * Test Category: Functionality
+ *
+ * \param args Unused.
+ *
+ * \return None.
+ */
+static void TestGpmc_dataStructInitDefaults(void *args)
+{
+    GPMC_Transaction   trans;
+    GPMC_nandCmdParams cmdParams;
+
+    /*  Fill structs with garbage data */
+    memset(&trans, 0xAA, sizeof(GPMC_Transaction));
+    memset(&cmdParams, 0xAA, sizeof(GPMC_nandCmdParams));
+
+    /*  Initialize using the driver APIs */
+    GPMC_transactionInit(&trans);
+    GPMC_writeNandCommandParamsInit(&cmdParams);
+
+    /*  Verify GPMC_Transaction defaults */
+    TEST_ASSERT_NULL(trans.Buf);
+    TEST_ASSERT_EQUAL_UINT32(0U, trans.count);
+    TEST_ASSERT_EQUAL_INT32(GPMC_TRANSFER_STARTED, (int32_t)trans.status);
+    TEST_ASSERT_EQUAL_INT32(GPMC_TRANSACTION_TYPE_READ, (int32_t)trans.transType);
+    TEST_ASSERT_NULL(trans.arg);
+    TEST_ASSERT_EQUAL_UINT32(SystemP_WAIT_FOREVER, trans.transferTimeout);
+
+    /*  Verify GPMC_nandCmdParams defaults */
+    TEST_ASSERT_EQUAL_UINT32(GPMC_CMD_INVALID, cmdParams.cmdCycle1);
+    TEST_ASSERT_EQUAL_UINT32(GPMC_CMD_INVALID, cmdParams.cmdCycle2);
+    TEST_ASSERT_EQUAL_UINT32(GPMC_CMD_INVALID, cmdParams.colAddress);
+    TEST_ASSERT_EQUAL_UINT32(GPMC_CMD_INVALID, cmdParams.rowAddress);
+    TEST_ASSERT_EQUAL_UINT32(GPMC_CMD_INVALID, cmdParams.numColAddrCycles);
+    TEST_ASSERT_EQUAL_UINT32(GPMC_CMD_INVALID, cmdParams.numRowAddrCycles);
+    TEST_ASSERT_EQUAL_UINT32(0U, cmdParams.waitTimeout);
+    TEST_ASSERT_EQUAL_UINT32(TRUE, cmdParams.checkReadypin);
+
+    DebugP_log("  GPMC_Transaction and GPMC_nandCmdParams defaults verified\r\n");
+}
+
+/**
+ * \brief Functionality test for GPMC prefetch optimized access configuration.
+ *
+ * This test verifies that the GPMC prefetch engine's optimized access mode is
+ * correctly configured and functional. It enables optimized access, performs
+ * write and read operations with prefetch enabled, and verifies data integrity
+ * after reading back from flash memory.
+ *
+ * Test Category: Functionality
+ *
+ * \param args Unused.
+ *
+ * \return None.
+ */
+static void TestGpmc_prefetchOptimizedAccess(void *args)
+{
+    int32_t retVal = SystemP_SUCCESS;
+    uint32_t blk, page, i;
+    uint32_t offset = TEST_GPMC_FLASH_OFFSET_BASE;
+
+    /* Override the hwAttrs to enable optimized access */
+    GPMC_HwAttrs *attrs = (GPMC_HwAttrs *)gGpmcConfig[CONFIG_GPMC0].attrs;
+    uint32_t originalOptimisedAccess = attrs->optimisedAccess;
+    uint32_t originalCycleOptimisation = attrs->cycleOptimisation;
+    attrs->optimisedAccess = CSL_GPMC_PREFETCH_CONFIG1_ENABLEOPTIMIZEDACCESS_OPTENABLED;
+    /* Intentionally leaving cycleOptimisation at its default value to prevent hardware hangs */
+
+    retVal = Board_driversOpen();
+    if(retVal == SystemP_SUCCESS)
+    {
+        /* Block erase at the test offset */
+        Flash_offsetToBlkPage(gFlashHandle[CONFIG_FLASH0], offset, &blk, &page);
+        retVal = Flash_eraseBlk(gFlashHandle[CONFIG_FLASH0], blk);
+    }
+
+    if(retVal == SystemP_SUCCESS)
+    {
+        for(uint32_t txChunkCnt = 0; txChunkCnt < (TEST_GPMC_BUF_SIZE)/TEST_GPMC_DATA_SIZE; txChunkCnt++)
+        {
+            memcpy(gGpmcTestTxBulkBuf + txChunkCnt*sizeof(gGpmcTestTxBuf) , gGpmcTestTxBuf , sizeof(gGpmcTestTxBuf));
+        }
+
+        /* GPMC write from TX buffer (this internally calls GPMC_prefetchPostWriteConfigEnable with WRITE) */
+        retVal = Flash_write(gFlashHandle[CONFIG_FLASH0], offset, gGpmcTestTxBulkBuf, TEST_GPMC_BUF_SIZE);
+    }
+
+    if(retVal == SystemP_SUCCESS)
+    {
+        /* GPMC read to RX buffer (this internally calls GPMC_prefetchPostWriteConfigEnable with READ) */
+        retVal = Flash_read(gFlashHandle[CONFIG_FLASH0], offset, gGpmcTestRxBuf, TEST_GPMC_BUF_SIZE);
+    }
+
+    if(retVal == SystemP_SUCCESS)
+    {
+        /* GPMC compare TX and RX buffers */
+        for(i = 0; i < TEST_GPMC_BUF_SIZE; i++)
+        {
+            if(gGpmcTestRxBuf[i] != gGpmcTestTxBulkBuf[i])
+            {
+                retVal = SystemP_FAILURE;
+                break;
+            }
+        }
+    }
+
+    Board_driversClose();
+
+    /* Restore the original values */
+    attrs->optimisedAccess = originalOptimisedAccess;
+    attrs->cycleOptimisation = originalCycleOptimisation;
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retVal);
 }

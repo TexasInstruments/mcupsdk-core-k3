@@ -620,6 +620,11 @@ int32_t App_mcanNegativeTest(st_mcanTestcaseParams_t *testParams)
     MCAN_ECCErrStatus eccErr;
     MCAN_ECCAggrRevisionId eccAggrRevId;
     MCAN_ECCWrapRevisionId eccWrapRevId;
+    MCAN_TxBufElementNoCpy txElem = {0U};
+#if !defined(R5_FREERTOS_CORE)
+    MCAN_RxBufElement rxMsg;
+    MCAN_RxBufElementNoCpy rxMsgNoCpy;
+#endif
 
     /* Reset MCAN Module */
     MCAN_reset(gMcanBaseAddr);
@@ -641,12 +646,19 @@ int32_t App_mcanNegativeTest(st_mcanTestcaseParams_t *testParams)
     DebugP_assert(configStatus == CSL_EFAIL);
     configStatus = MCAN_init(gMcanBaseAddr, &canFDInitParams[3U]);
     DebugP_assert(configStatus == CSL_EFAIL);
+    configStatus = MCAN_init(gMcanBaseAddr, NULL);
+    DebugP_assert(configStatus == CSL_EFAIL);
 
     /* Configure MCAN module */
     configStatus = MCAN_config(gMcanBaseAddr, testParams->mcanConfigParams.configParams);
     DebugP_assert(configStatus == CSL_EFAIL);
     configStatus = MCAN_config(gMcanBaseAddr, &canFDConfigParams[6U]);
     DebugP_assert(configStatus == CSL_EFAIL);
+    configStatus = MCAN_config(gMcanBaseAddr, NULL);
+    DebugP_assert(configStatus == CSL_EFAIL);
+
+    /* Configure MCAN ECC */
+    MCAN_eccConfig(gMcanBaseAddr, NULL);
 
     /* Configure Bit timings */
     configStatus = MCAN_setBitTime(gMcanBaseAddr, testParams->mcanConfigParams.bitTimings);
@@ -664,8 +676,12 @@ int32_t App_mcanNegativeTest(st_mcanTestcaseParams_t *testParams)
     DebugP_assert(configStatus == CSL_EFAIL);
     configStatus = MCAN_setBitTime(gMcanBaseAddr, &canFDBitTimings[11U]);
     DebugP_assert(configStatus == CSL_EFAIL);
+    configStatus = MCAN_setBitTime(gMcanBaseAddr, NULL);
+    DebugP_assert(configStatus == CSL_EFAIL);
 
     configStatus = MCAN_msgRAMConfig(gMcanBaseAddr, &canFDRAMConfigParams[4U]);
+    DebugP_assert(configStatus == CSL_EFAIL);
+    configStatus = MCAN_msgRAMConfig(gMcanBaseAddr, NULL);
     DebugP_assert(configStatus == CSL_EFAIL);
 
     /* Set Extended ID Mask */
@@ -673,39 +689,91 @@ int32_t App_mcanNegativeTest(st_mcanTestcaseParams_t *testParams)
     DebugP_assert(configStatus == CSL_EFAIL);
 
     MCAN_writeMsgRam(gMcanBaseAddr,
-                     MCAN_MEM_TYPE_FIFO + 1,
+                     MCAN_MEM_TYPE_FIFO,
                      0,
                      NULL);
+    MCAN_writeMsgRam(gMcanBaseAddr,
+                     MCAN_MEM_TYPE_FIFO + 1,
+                     0,
+                     &testParams->mcanConfigParams.txMsg[0].txElem);
+                     
+    MCAN_writeMsgRamNoCpy(gMcanBaseAddr,
+                     MCAN_MEM_TYPE_FIFO,
+                     0,
+                     NULL);
+    App_mcanInitTxElem(&txElem);
     MCAN_writeMsgRamNoCpy(gMcanBaseAddr,
                      MCAN_MEM_TYPE_FIFO + 1,
                      0,
-                     NULL);
+                     &txElem);
+
+    MCAN_getNewDataStatus(gMcanBaseAddr, NULL);
+    MCAN_clearNewDataStatus(gMcanBaseAddr, NULL);
 #if !defined(R5_FREERTOS_CORE)
     MCAN_readMsgRam(gMcanBaseAddr,
                     MCAN_MEM_TYPE_BUF,
                     0U,
                     MCAN_RX_FIFO_NUM_1 + 1,
-                    NULL);
+                    &rxMsg);
     MCAN_readMsgRam(gMcanBaseAddr,
                     MCAN_MEM_TYPE_FIFO,
                     0U,
                     MCAN_RX_FIFO_NUM_1 + 1,
+                    &rxMsg);
+    MCAN_readMsgRam(gMcanBaseAddr,
+                    MCAN_MEM_TYPE_FIFO,
+                    0U,
+                    MCAN_RX_FIFO_NUM_1,
                     NULL);
     MCAN_readMsgRamNoCpy(gMcanBaseAddr,
                     MCAN_MEM_TYPE_BUF,
                     0U,
                     MCAN_RX_FIFO_NUM_1 + 1,
-                    NULL);
+                    &rxMsgNoCpy);
     MCAN_readMsgRamNoCpy(gMcanBaseAddr,
                     MCAN_MEM_TYPE_FIFO,
                     0U,
                     MCAN_RX_FIFO_NUM_1 + 1,
+                    &rxMsgNoCpy);
+    MCAN_readMsgRamNoCpy(gMcanBaseAddr,
+                    MCAN_MEM_TYPE_FIFO,
+                    0U,
+                    MCAN_RX_FIFO_NUM_1,
                     NULL);
 #endif
+    MCAN_readTxEventFIFO(gMcanBaseAddr, NULL);
+
+    MCAN_addStdMsgIDFilter(gMcanBaseAddr, 0U, NULL);
+
+    MCAN_addExtMsgIDFilter(gMcanBaseAddr, 0U, NULL);
+
+    MCAN_getErrCounters(gMcanBaseAddr, NULL);
+
+    MCAN_getProtocolStatus(gMcanBaseAddr, NULL);
+
+    MCAN_getHighPriorityMsgStatus(gMcanBaseAddr, NULL);
+
     MCAN_txBufAddReq(gMcanBaseAddr,
                      MCAN_TX_BUFFER_MAX_NUM + 1);
     fifoStatus.num = (uint32_t)MCAN_RX_FIFO_NUM_1 + 1;
     MCAN_getRxFIFOStatus(gMcanBaseAddr, &fifoStatus);
+
+    MCAN_getRxFIFOStatus(gMcanBaseAddr, NULL);
+
+    MCAN_getTxFIFOQueStatus(gMcanBaseAddr, NULL);
+
+    MCAN_getTxEventFIFOStatus(gMcanBaseAddr, NULL);
+
+    MCAN_eccForceError(gMcanBaseAddr, NULL);
+
+    MCAN_eccGetErrorStatus(gMcanBaseAddr, NULL);
+
+    MCAN_getRevisionId(gMcanBaseAddr, NULL);
+
+    MCAN_getBitTime(gMcanBaseAddr, NULL);
+
+    MCAN_eccAggrGetRevisionId(gMcanBaseAddr, NULL);
+
     MCAN_writeRxFIFOAck(gMcanBaseAddr, MCAN_RX_FIFO_NUM_1 + 1, 0U);
     MCAN_writeRxFIFOAck(gMcanBaseAddr, MCAN_RX_FIFO_NUM_0, MCAN_RX_FIFO_0_MAX_NUM + 1);
     MCAN_writeRxFIFOAck(gMcanBaseAddr, MCAN_RX_FIFO_NUM_1, MCAN_RX_FIFO_1_MAX_NUM + 1);

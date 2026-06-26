@@ -492,67 +492,76 @@ int32_t MCAN_init(uint32_t baseAddr, const MCAN_InitParams *initParams)
     int32_t  status;
     uint32_t regVal;
 
-    /* Configure MCAN wakeup and clock stop controls */
-    regVal = HW_RD_REG32(MCAN_SsAddr(baseAddr) + MCAN_MCANSS_CTRL);
-    HW_SET_FIELD32(regVal,
-                   MCAN_MCANSS_CTRL_WAKEUPREQEN,
-                   initParams->wkupReqEnable);
-    HW_SET_FIELD32(regVal,
-                   MCAN_MCANSS_CTRL_AUTOWAKEUP,
-                   initParams->autoWkupEnable);
-    HW_WR_REG32(MCAN_SsAddr(baseAddr) + MCAN_MCANSS_CTRL, regVal);
-
-    MCAN_writeProtectedRegAccessUnlock(baseAddr);
-
-    /* Configure MCAN mode(FD vs Classic CAN operation) and controls */
-    regVal = HW_RD_REG32(MCAN_CfgAddr(baseAddr) + MCAN_CCCR);
-    HW_SET_FIELD32(regVal,
-                   MCAN_CCCR_FDOE,
-                   initParams->fdMode);
-    HW_SET_FIELD32(regVal,
-                   MCAN_CCCR_BRSE,
-                   initParams->brsEnable);
-    HW_SET_FIELD32(regVal,
-                   MCAN_CCCR_TXP,
-                   initParams->txpEnable);
-    HW_SET_FIELD32(regVal,
-                   MCAN_CCCR_EFBI,
-                   initParams->efbi);
-    HW_SET_FIELD32(regVal,
-                   MCAN_CCCR_PXHD,
-                   initParams->pxhddisable);
-    HW_SET_FIELD32(regVal,
-                   MCAN_CCCR_DAR,
-                   initParams->darEnable);
-    HW_WR_REG32(MCAN_CfgAddr(baseAddr) + MCAN_CCCR, regVal);
-
-    if ((MCAN_TDCR_TDCF_MAX >= initParams->tdcConfig.tdcf) &&
-        (MCAN_TDCR_TDCO_MAX >= initParams->tdcConfig.tdco) &&
-        (MCAN_RWD_WDC_MAX >= initParams->wdcPreload))
-    {
-        /* Configure Transceiver Delay Compensation */
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TDCR,
-                      MCAN_TDCR_TDCF,
-                      initParams->tdcConfig.tdcf);
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TDCR,
-                      MCAN_TDCR_TDCO,
-                      initParams->tdcConfig.tdco);
-        /* Configure MSG RAM watchdog counter preload value */
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RWD,
-                      MCAN_RWD_WDC,
-                      initParams->wdcPreload);
-        /* Enable/Disable Transceiver Delay Compensation */
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_DBTP,
-                      MCAN_DBTP_TDC,
-                      initParams->tdcEnable);
-        status = CSL_PASS;
-    }
-    else
+    /* Validate input parameters */
+    if (NULL == initParams)
     {
         status = CSL_EFAIL;
     }
+    else
+    {
+        /* Configure MCAN wakeup and clock stop controls */
+        regVal = HW_RD_REG32(MCAN_SsAddr(baseAddr) + MCAN_MCANSS_CTRL);
+        HW_SET_FIELD32(regVal,
+                    MCAN_MCANSS_CTRL_WAKEUPREQEN,
+                    initParams->wkupReqEnable);
+        HW_SET_FIELD32(regVal,
+                    MCAN_MCANSS_CTRL_AUTOWAKEUP,
+                    initParams->autoWkupEnable);
+        HW_WR_REG32(MCAN_SsAddr(baseAddr) + MCAN_MCANSS_CTRL, regVal);
 
-    MCAN_writeProtectedRegAccessLock(baseAddr);
+        MCAN_writeProtectedRegAccessUnlock(baseAddr);
+
+        /* Configure MCAN mode(FD vs Classic CAN operation) and controls */
+        regVal = HW_RD_REG32(MCAN_CfgAddr(baseAddr) + MCAN_CCCR);
+        HW_SET_FIELD32(regVal,
+                    MCAN_CCCR_FDOE,
+                    initParams->fdMode);
+        HW_SET_FIELD32(regVal,
+                    MCAN_CCCR_BRSE,
+                    initParams->brsEnable);
+        HW_SET_FIELD32(regVal,
+                    MCAN_CCCR_TXP,
+                    initParams->txpEnable);
+        HW_SET_FIELD32(regVal,
+                    MCAN_CCCR_EFBI,
+                    initParams->efbi);
+        HW_SET_FIELD32(regVal,
+                    MCAN_CCCR_PXHD,
+                    initParams->pxhddisable);
+        HW_SET_FIELD32(regVal,
+                    MCAN_CCCR_DAR,
+                    initParams->darEnable);
+        HW_WR_REG32(MCAN_CfgAddr(baseAddr) + MCAN_CCCR, regVal);
+
+        if ((MCAN_TDCR_TDCF_MAX >= initParams->tdcConfig.tdcf) &&
+            (MCAN_TDCR_TDCO_MAX >= initParams->tdcConfig.tdco) &&
+            (MCAN_RWD_WDC_MAX >= initParams->wdcPreload))
+        {
+            /* Configure Transceiver Delay Compensation */
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TDCR,
+                        MCAN_TDCR_TDCF,
+                        initParams->tdcConfig.tdcf);
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TDCR,
+                        MCAN_TDCR_TDCO,
+                        initParams->tdcConfig.tdco);
+            /* Configure MSG RAM watchdog counter preload value */
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RWD,
+                        MCAN_RWD_WDC,
+                        initParams->wdcPreload);
+            /* Enable/Disable Transceiver Delay Compensation */
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_DBTP,
+                        MCAN_DBTP_TDC,
+                        initParams->tdcEnable);
+            status = CSL_PASS;
+        }
+        else
+        {
+            status = CSL_EFAIL;
+        }
+
+        MCAN_writeProtectedRegAccessLock(baseAddr);
+
+    }
 
     return status;
 }
@@ -561,58 +570,67 @@ int32_t MCAN_config(uint32_t baseAddr, const MCAN_ConfigParams *configParams)
 {
     int32_t status;
 
-    MCAN_writeProtectedRegAccessUnlock(baseAddr);
-
-    /* Configure MCAN control registers */
-    HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_CCCR,
-                  MCAN_CCCR_MON,
-                  configParams->monEnable);
-    HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_CCCR,
-                  MCAN_CCCR_ASM,
-                  configParams->asmEnable);
-    /* Configure Global Filter */
-    HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_GFC,
-                  MCAN_GFC_RRFE,
-                  configParams->filterConfig.rrfe);
-    HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_GFC,
-                  MCAN_GFC_RRFS,
-                  configParams->filterConfig.rrfs);
-    HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_GFC,
-                  MCAN_GFC_ANFE,
-                  configParams->filterConfig.anfe);
-    HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_GFC,
-                  MCAN_GFC_ANFS,
-                  configParams->filterConfig.anfs);
-
-    if ((MCAN_TSCC_TCP_MAX >= configParams->tsPrescalar) &&
-        (MCAN_TOCC_TOP_MAX >= configParams->timeoutPreload))
-    {
-        /* Configure Time-stamp counter */
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TSCC,
-                      MCAN_TSCC_TSS,
-                      configParams->tsSelect);
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TSCC,
-                      MCAN_TSCC_TCP,
-                      (configParams->tsPrescalar - 1U));
-        /* Configure Time-out counter */
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TOCC,
-                      MCAN_TOCC_TOS,
-                      configParams->timeoutSelect);
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TOCC,
-                      MCAN_TOCC_TOP,
-                      configParams->timeoutPreload);
-        /* Enable Time-out counter */
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TOCC,
-                      MCAN_TOCC_ETOC,
-                      configParams->timeoutCntEnable);
-        status = CSL_PASS;
-    }
-    else
+    /* Validate input parameters */
+    if (NULL == configParams)
     {
         status = CSL_EFAIL;
     }
+    else
+    {
+        MCAN_writeProtectedRegAccessUnlock(baseAddr);
 
-    MCAN_writeProtectedRegAccessLock(baseAddr);
+        /* Configure MCAN control registers */
+        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_CCCR,
+                    MCAN_CCCR_MON,
+                    configParams->monEnable);
+        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_CCCR,
+                    MCAN_CCCR_ASM,
+                    configParams->asmEnable);
+        /* Configure Global Filter */
+        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_GFC,
+                    MCAN_GFC_RRFE,
+                    configParams->filterConfig.rrfe);
+        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_GFC,
+                    MCAN_GFC_RRFS,
+                    configParams->filterConfig.rrfs);
+        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_GFC,
+                    MCAN_GFC_ANFE,
+                    configParams->filterConfig.anfe);
+        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_GFC,
+                    MCAN_GFC_ANFS,
+                    configParams->filterConfig.anfs);
+
+        if ((MCAN_TSCC_TCP_MAX >= configParams->tsPrescalar) &&
+            (MCAN_TOCC_TOP_MAX >= configParams->timeoutPreload))
+        {
+            /* Configure Time-stamp counter */
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TSCC,
+                        MCAN_TSCC_TSS,
+                        configParams->tsSelect);
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TSCC,
+                        MCAN_TSCC_TCP,
+                        (configParams->tsPrescalar - 1U));
+            /* Configure Time-out counter */
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TOCC,
+                        MCAN_TOCC_TOS,
+                        configParams->timeoutSelect);
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TOCC,
+                        MCAN_TOCC_TOP,
+                        configParams->timeoutPreload);
+            /* Enable Time-out counter */
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TOCC,
+                        MCAN_TOCC_ETOC,
+                        configParams->timeoutCntEnable);
+            status = CSL_PASS;
+        }
+        else
+        {
+            status = CSL_EFAIL;
+        }
+
+        MCAN_writeProtectedRegAccessLock(baseAddr);
+
+    }
 
     return status;
 }
@@ -623,21 +641,23 @@ void MCAN_eccConfig(uint32_t                    baseAddr,
 {
     uint32_t regVal;
     uint32_t eccAggrBaseAddr;
+    if(NULL != configParams)
+    {
+        eccAggrBaseAddr = MCAN_getECCRegionAddr (baseAddr);
 
-    eccAggrBaseAddr = MCAN_getECCRegionAddr (baseAddr);
-
-    MCAN_eccLoadRegister(baseAddr, MCAN_ECC_AGGR_CONTROL);
-    regVal = HW_RD_REG32(eccAggrBaseAddr + MCAN_ECC_AGGR_CONTROL);
-    HW_SET_FIELD32(regVal,
-                   MCAN_ECC_AGGR_CONTROL_ECC_CHECK,
-                   configParams->enableChk);
-    HW_SET_FIELD32(regVal,
-                   MCAN_ECC_AGGR_CONTROL_ECC_ENABLE,
-                   configParams->enable);
-    HW_SET_FIELD32(regVal,
-                   MCAN_ECC_AGGR_CONTROL_ENABLE_RMW,
-                   configParams->enableRdModWr);
-    HW_WR_REG32(eccAggrBaseAddr + MCAN_ECC_AGGR_CONTROL, regVal);
+        MCAN_eccLoadRegister(baseAddr, MCAN_ECC_AGGR_CONTROL);
+        regVal = HW_RD_REG32(eccAggrBaseAddr + MCAN_ECC_AGGR_CONTROL);
+        HW_SET_FIELD32(regVal,
+                    MCAN_ECC_AGGR_CONTROL_ECC_CHECK,
+                    configParams->enableChk);
+        HW_SET_FIELD32(regVal,
+                    MCAN_ECC_AGGR_CONTROL_ECC_ENABLE,
+                    configParams->enable);
+        HW_SET_FIELD32(regVal,
+                    MCAN_ECC_AGGR_CONTROL_ENABLE_RMW,
+                    configParams->enableRdModWr);
+        HW_WR_REG32(eccAggrBaseAddr + MCAN_ECC_AGGR_CONTROL, regVal);
+    }
 }
 #endif /* #ifdef MCAN_ECC_SUPPORTED*/
 
@@ -645,61 +665,69 @@ int32_t MCAN_setBitTime(uint32_t                    baseAddr,
                         const MCAN_BitTimingParams *configParams)
 {
     int32_t status;
-
-    MCAN_writeProtectedRegAccessUnlock(baseAddr);
-
-    if ((MCAN_NBTP_NSJW_MAX >= configParams->nomSynchJumpWidth) &&
-        (MCAN_NBTP_NTSEG2_MAX >= configParams->nomTimeSeg2) &&
-        (MCAN_NBTP_NTSEG1_MIN <= configParams->nomTimeSeg1) &&
-        (MCAN_NBTP_NTSEG1_MAX >= configParams->nomTimeSeg1) &&
-        (MCAN_NBTP_NBRP_MAX >= configParams->nomRatePrescalar))
-    {
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_NBTP,
-                      MCAN_NBTP_NSJW,
-                      configParams->nomSynchJumpWidth);
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_NBTP,
-                      MCAN_NBTP_NTSEG2,
-                      configParams->nomTimeSeg2);
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_NBTP,
-                      MCAN_NBTP_NTSEG1,
-                      configParams->nomTimeSeg1);
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_NBTP,
-                      MCAN_NBTP_NBRP,
-                      configParams->nomRatePrescalar);
-        status = CSL_PASS;
-    }
-    else
+    /* Validate input parameters */
+    if (NULL == configParams)
     {
         status = CSL_EFAIL;
     }
-    if (CSL_PASS == status)
+    else
     {
-        if ((MCAN_DBTP_DSJW_MAX >= configParams->dataSynchJumpWidth) &&
-            (MCAN_DBTP_DTSEG2_MAX >= configParams->dataTimeSeg2) &&
-            (MCAN_DBTP_DTSEG1_MAX >= configParams->dataTimeSeg1) &&
-            (MCAN_DBTP_DBRP_MAX >= configParams->dataRatePrescalar))
+        MCAN_writeProtectedRegAccessUnlock(baseAddr);
+
+        if ((MCAN_NBTP_NSJW_MAX >= configParams->nomSynchJumpWidth) &&
+            (MCAN_NBTP_NTSEG2_MAX >= configParams->nomTimeSeg2) &&
+            (MCAN_NBTP_NTSEG1_MIN <= configParams->nomTimeSeg1) &&
+            (MCAN_NBTP_NTSEG1_MAX >= configParams->nomTimeSeg1) &&
+            (MCAN_NBTP_NBRP_MAX >= configParams->nomRatePrescalar))
         {
-            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_DBTP,
-                          MCAN_DBTP_DSJW,
-                          configParams->dataSynchJumpWidth);
-            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_DBTP,
-                          MCAN_DBTP_DTSEG2,
-                          configParams->dataTimeSeg2);
-            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_DBTP,
-                          MCAN_DBTP_DTSEG1,
-                          configParams->dataTimeSeg1);
-            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_DBTP,
-                          MCAN_DBTP_DBRP,
-                          configParams->dataRatePrescalar);
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_NBTP,
+                        MCAN_NBTP_NSJW,
+                        configParams->nomSynchJumpWidth);
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_NBTP,
+                        MCAN_NBTP_NTSEG2,
+                        configParams->nomTimeSeg2);
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_NBTP,
+                        MCAN_NBTP_NTSEG1,
+                        configParams->nomTimeSeg1);
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_NBTP,
+                        MCAN_NBTP_NBRP,
+                        configParams->nomRatePrescalar);
             status = CSL_PASS;
         }
         else
         {
             status = CSL_EFAIL;
         }
+        if (CSL_PASS == status)
+        {
+            if ((MCAN_DBTP_DSJW_MAX >= configParams->dataSynchJumpWidth) &&
+                (MCAN_DBTP_DTSEG2_MAX >= configParams->dataTimeSeg2) &&
+                (MCAN_DBTP_DTSEG1_MAX >= configParams->dataTimeSeg1) &&
+                (MCAN_DBTP_DBRP_MAX >= configParams->dataRatePrescalar))
+            {
+                HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_DBTP,
+                            MCAN_DBTP_DSJW,
+                            configParams->dataSynchJumpWidth);
+                HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_DBTP,
+                            MCAN_DBTP_DTSEG2,
+                            configParams->dataTimeSeg2);
+                HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_DBTP,
+                            MCAN_DBTP_DTSEG1,
+                            configParams->dataTimeSeg1);
+                HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_DBTP,
+                            MCAN_DBTP_DBRP,
+                            configParams->dataRatePrescalar);
+                status = CSL_PASS;
+            }
+            else
+            {
+                status = CSL_EFAIL;
+            }
+        }
+
+        MCAN_writeProtectedRegAccessLock(baseAddr);
     }
 
-    MCAN_writeProtectedRegAccessLock(baseAddr);
     return status;
 }
 
@@ -709,118 +737,126 @@ int32_t MCAN_msgRAMConfig(uint32_t                       baseAddr,
     int32_t  status;
     uint32_t elemNum = 0U;
 
-    MCAN_writeProtectedRegAccessUnlock(baseAddr);
-
-    /* Configure Message Filters section */
-    if (0U != msgRAMConfigParams->lss)
-    {
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_SIDFC,
-                      MCAN_SIDFC_FLSSA,
-                      (msgRAMConfigParams->flssa >> 2U));
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_SIDFC,
-                      MCAN_SIDFC_LSS,
-                      msgRAMConfigParams->lss);
-    }
-    if (0U != msgRAMConfigParams->lse)
-    {
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_XIDFC,
-                      MCAN_XIDFC_FLESA,
-                      (msgRAMConfigParams->flesa >> 2U));
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_XIDFC,
-                      MCAN_XIDFC_LSE,
-                      msgRAMConfigParams->lse);
-    }
-    /* Configure Rx FIFO 0 section */
-    if (0U != msgRAMConfigParams->rxFIFO0Cnt)
-    {
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF0C,
-                      MCAN_RXF0C_F0SA,
-                      (msgRAMConfigParams->rxFIFO0StartAddr >> 2U));
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF0C,
-                      MCAN_RXF0C_F0S,
-                      msgRAMConfigParams->rxFIFO0Cnt);
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF0C,
-                      MCAN_RXF0C_F0WM,
-                      msgRAMConfigParams->rxFIFO0WaterMark);
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF0C,
-                      MCAN_RXF0C_F0OM,
-                      msgRAMConfigParams->rxFIFO0OpMode);
-        /* Configure Rx FIFO0 elements size */
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXESC,
-                      MCAN_RXESC_F0DS,
-                      msgRAMConfigParams->rxFIFO0ElemSize);
-    }
-    /* Configure Rx FIFO 1 section */
-    if (0U != msgRAMConfigParams->rxFIFO1Cnt)
-    {
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF1C,
-                      MCAN_RXF1C_F1SA,
-                      (msgRAMConfigParams->rxFIFO1StartAddr >> 2U));
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF1C,
-                      MCAN_RXF1C_F1S,
-                      msgRAMConfigParams->rxFIFO1Cnt);
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF1C,
-                      MCAN_RXF1C_F1WM,
-                      msgRAMConfigParams->rxFIFO1WaterMark);
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF1C,
-                      MCAN_RXF1C_F1OM,
-                      msgRAMConfigParams->rxFIFO1OpMode);
-        /* Configure Rx FIFO1 elements size */
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXESC,
-                      MCAN_RXESC_F1DS,
-                      msgRAMConfigParams->rxFIFO1ElemSize);
-    }
-    /* Configure Rx Buffer Start Address */
-    HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXBC,
-                  MCAN_RXBC_RBSA,
-                  (msgRAMConfigParams->rxBufStartAddr >> 2U));
-    /* Configure Rx Buffer elements size */
-    HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXESC,
-                  MCAN_RXESC_RBDS,
-                  msgRAMConfigParams->rxBufElemSize);
-    /* Configure Tx Event FIFO section */
-    if (0U != msgRAMConfigParams->txEventFIFOCnt)
-    {
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXEFC,
-                      MCAN_TXEFC_EFSA,
-                      (msgRAMConfigParams->txEventFIFOStartAddr >> 2U));
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXEFC,
-                      MCAN_TXEFC_EFS,
-                      msgRAMConfigParams->txEventFIFOCnt);
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXEFC,
-                      MCAN_TXEFC_EFWM,
-                      msgRAMConfigParams->txEventFIFOWaterMark);
-    }
-    /* Configure Tx Buffer and FIFO/Q section */
-    elemNum = msgRAMConfigParams->txBufCnt + msgRAMConfigParams->txFIFOCnt;
-    if ((MCANSS_TX_BUFFER_MAX >= elemNum) &&
-        ((0U != msgRAMConfigParams->txBufCnt) ||
-         (0U != msgRAMConfigParams->txFIFOCnt)))
-    {
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXBC,
-                      MCAN_TXBC_TBSA,
-                      (msgRAMConfigParams->txStartAddr >> 2U));
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXBC,
-                      MCAN_TXBC_NDTB,
-                      msgRAMConfigParams->txBufCnt);
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXBC,
-                      MCAN_TXBC_TFQS,
-                      msgRAMConfigParams->txFIFOCnt);
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXBC,
-                      MCAN_TXBC_TFQM,
-                      msgRAMConfigParams->txBufMode);
-        /* Configure Tx Buffer/FIFO0/FIFO1 elements size */
-        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXESC,
-                      MCAN_TXESC_TBDS,
-                      msgRAMConfigParams->txBufElemSize);
-        status = CSL_PASS;
-    }
-    else
+    /* Validate input parameters */
+    if (NULL == msgRAMConfigParams)
     {
         status = CSL_EFAIL;
     }
+    else
+    {
+        MCAN_writeProtectedRegAccessUnlock(baseAddr);
 
-    MCAN_writeProtectedRegAccessLock(baseAddr);
+        /* Configure Message Filters section */
+        if (0U != msgRAMConfigParams->lss)
+        {
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_SIDFC,
+                        MCAN_SIDFC_FLSSA,
+                        (msgRAMConfigParams->flssa >> 2U));
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_SIDFC,
+                        MCAN_SIDFC_LSS,
+                        msgRAMConfigParams->lss);
+        }
+        if (0U != msgRAMConfigParams->lse)
+        {
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_XIDFC,
+                        MCAN_XIDFC_FLESA,
+                        (msgRAMConfigParams->flesa >> 2U));
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_XIDFC,
+                        MCAN_XIDFC_LSE,
+                        msgRAMConfigParams->lse);
+        }
+        /* Configure Rx FIFO 0 section */
+        if (0U != msgRAMConfigParams->rxFIFO0Cnt)
+        {
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF0C,
+                        MCAN_RXF0C_F0SA,
+                        (msgRAMConfigParams->rxFIFO0StartAddr >> 2U));
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF0C,
+                        MCAN_RXF0C_F0S,
+                        msgRAMConfigParams->rxFIFO0Cnt);
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF0C,
+                        MCAN_RXF0C_F0WM,
+                        msgRAMConfigParams->rxFIFO0WaterMark);
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF0C,
+                        MCAN_RXF0C_F0OM,
+                        msgRAMConfigParams->rxFIFO0OpMode);
+            /* Configure Rx FIFO0 elements size */
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXESC,
+                        MCAN_RXESC_F0DS,
+                        msgRAMConfigParams->rxFIFO0ElemSize);
+        }
+        /* Configure Rx FIFO 1 section */
+        if (0U != msgRAMConfigParams->rxFIFO1Cnt)
+        {
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF1C,
+                        MCAN_RXF1C_F1SA,
+                        (msgRAMConfigParams->rxFIFO1StartAddr >> 2U));
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF1C,
+                        MCAN_RXF1C_F1S,
+                        msgRAMConfigParams->rxFIFO1Cnt);
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF1C,
+                        MCAN_RXF1C_F1WM,
+                        msgRAMConfigParams->rxFIFO1WaterMark);
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF1C,
+                        MCAN_RXF1C_F1OM,
+                        msgRAMConfigParams->rxFIFO1OpMode);
+            /* Configure Rx FIFO1 elements size */
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXESC,
+                        MCAN_RXESC_F1DS,
+                        msgRAMConfigParams->rxFIFO1ElemSize);
+        }
+        /* Configure Rx Buffer Start Address */
+        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXBC,
+                    MCAN_RXBC_RBSA,
+                    (msgRAMConfigParams->rxBufStartAddr >> 2U));
+        /* Configure Rx Buffer elements size */
+        HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXESC,
+                    MCAN_RXESC_RBDS,
+                    msgRAMConfigParams->rxBufElemSize);
+        /* Configure Tx Event FIFO section */
+        if (0U != msgRAMConfigParams->txEventFIFOCnt)
+        {
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXEFC,
+                        MCAN_TXEFC_EFSA,
+                        (msgRAMConfigParams->txEventFIFOStartAddr >> 2U));
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXEFC,
+                        MCAN_TXEFC_EFS,
+                        msgRAMConfigParams->txEventFIFOCnt);
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXEFC,
+                        MCAN_TXEFC_EFWM,
+                        msgRAMConfigParams->txEventFIFOWaterMark);
+        }
+        /* Configure Tx Buffer and FIFO/Q section */
+        elemNum = msgRAMConfigParams->txBufCnt + msgRAMConfigParams->txFIFOCnt;
+        if ((MCANSS_TX_BUFFER_MAX >= elemNum) &&
+            ((0U != msgRAMConfigParams->txBufCnt) ||
+            (0U != msgRAMConfigParams->txFIFOCnt)))
+        {
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXBC,
+                        MCAN_TXBC_TBSA,
+                        (msgRAMConfigParams->txStartAddr >> 2U));
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXBC,
+                        MCAN_TXBC_NDTB,
+                        msgRAMConfigParams->txBufCnt);
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXBC,
+                        MCAN_TXBC_TFQS,
+                        msgRAMConfigParams->txFIFOCnt);
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXBC,
+                        MCAN_TXBC_TFQM,
+                        msgRAMConfigParams->txBufMode);
+            /* Configure Tx Buffer/FIFO0/FIFO1 elements size */
+            HW_WR_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXESC,
+                        MCAN_TXESC_TBDS,
+                        msgRAMConfigParams->txBufElemSize);
+            status = CSL_PASS;
+        }
+        else
+        {
+            status = CSL_EFAIL;
+        }
+
+        MCAN_writeProtectedRegAccessLock(baseAddr);
+    }
 
     return status;
 }
@@ -855,28 +891,31 @@ void MCAN_writeMsgRam(uint32_t                 baseAddr,
     uint32_t startAddr = 0U, elemSize = 0U, elemAddr = 0U;
     uint32_t idx       = 0U, enableMod = 0U;
 
-    if (MCAN_MEM_TYPE_BUF == memType)
+    if(NULL != elem)
     {
-        idx       = bufNum;
-        enableMod = 1U;
-    }
-    if (MCAN_MEM_TYPE_FIFO == memType)
-    {
-        idx       = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXFQS, MCAN_TXFQS_TFQPI);
-        enableMod = 1U;
-    }
-    if (1U == enableMod)
-    {
-        startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXBC,
-                                  MCAN_TXBC_TBSA);
-        elemSize = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXESC,
-                                 MCAN_TXESC_TBDS);
-        startAddr = (uint32_t) (startAddr << 2U);
-        elemSize  = gMsgObjSize[elemSize];
-        elemSize *= 4U;
-        elemAddr  = startAddr + (elemSize * idx);
-        elemAddr += MCAN_MCAN_MSG_MEM;
-        MCAN_writeMsg(baseAddr, elemAddr, elem);
+        if (MCAN_MEM_TYPE_BUF == memType)
+        {
+            idx       = bufNum;
+            enableMod = 1U;
+        }
+        if (MCAN_MEM_TYPE_FIFO == memType)
+        {
+            idx       = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXFQS, MCAN_TXFQS_TFQPI);
+            enableMod = 1U;
+        }
+        if (1U == enableMod)
+        {
+            startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXBC,
+                                    MCAN_TXBC_TBSA);
+            elemSize = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXESC,
+                                    MCAN_TXESC_TBDS);
+            startAddr = (uint32_t) (startAddr << 2U);
+            elemSize  = gMsgObjSize[elemSize];
+            elemSize *= 4U;
+            elemAddr  = startAddr + (elemSize * idx);
+            elemAddr += MCAN_MCAN_MSG_MEM;
+            MCAN_writeMsg(baseAddr, elemAddr, elem);
+        }
     }
 }
 
@@ -888,28 +927,31 @@ void MCAN_writeMsgRamNoCpy(uint32_t                 baseAddr,
     uint32_t startAddr = 0U, elemSize = 0U, elemAddr = 0U;
     uint32_t idx       = 0U, enableMod = 0U;
 
-    if (MCAN_MEM_TYPE_BUF == memType)
+    if(NULL != elem)
     {
-        idx       = bufNum;
-        enableMod = 1U;
-    }
-    if (MCAN_MEM_TYPE_FIFO == memType)
-    {
-        idx       = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXFQS, MCAN_TXFQS_TFQPI);
-        enableMod = 1U;
-    }
-    if (1U == enableMod)
-    {
-        startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXBC,
-                                  MCAN_TXBC_TBSA);
-        elemSize = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXESC,
-                                 MCAN_TXESC_TBDS);
-        startAddr = (uint32_t) (startAddr << 2U);
-        elemSize  = gMsgObjSize[elemSize];
-        elemSize *= 4U;
-        elemAddr  = startAddr + (elemSize * idx);
-        elemAddr += MCAN_MCAN_MSG_MEM;
-        MCAN_writeMsgNoCpy(baseAddr, elemAddr, elem);
+        if (MCAN_MEM_TYPE_BUF == memType)
+        {
+            idx       = bufNum;
+            enableMod = 1U;
+        }
+        if (MCAN_MEM_TYPE_FIFO == memType)
+        {
+            idx       = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXFQS, MCAN_TXFQS_TFQPI);
+            enableMod = 1U;
+        }
+        if (1U == enableMod)
+        {
+            startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXBC,
+                                    MCAN_TXBC_TBSA);
+            elemSize = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXESC,
+                                    MCAN_TXESC_TBDS);
+            startAddr = (uint32_t) (startAddr << 2U);
+            elemSize  = gMsgObjSize[elemSize];
+            elemSize *= 4U;
+            elemAddr  = startAddr + (elemSize * idx);
+            elemAddr += MCAN_MCAN_MSG_MEM;
+            MCAN_writeMsgNoCpy(baseAddr, elemAddr, elem);
+        }
     }
 }
 
@@ -935,17 +977,21 @@ int32_t MCAN_txBufAddReq(uint32_t baseAddr, uint32_t bufNum)
 void  MCAN_getNewDataStatus(uint32_t              baseAddr,
                             MCAN_RxNewDataStatus *newDataStatus)
 {
-
-    newDataStatus->statusLow  = HW_RD_REG32(MCAN_CfgAddr(baseAddr) + MCAN_NDAT1);
-    newDataStatus->statusHigh = HW_RD_REG32(MCAN_CfgAddr(baseAddr) + MCAN_NDAT2);
+    if(NULL != newDataStatus)
+    {
+        newDataStatus->statusLow  = HW_RD_REG32(MCAN_CfgAddr(baseAddr) + MCAN_NDAT1);
+        newDataStatus->statusHigh = HW_RD_REG32(MCAN_CfgAddr(baseAddr) + MCAN_NDAT2);
+    }
 }
 
 void  MCAN_clearNewDataStatus(uint32_t                    baseAddr,
                               const MCAN_RxNewDataStatus *newDataStatus)
 {
-
-    HW_WR_REG32(MCAN_CfgAddr(baseAddr) + MCAN_NDAT1, newDataStatus->statusLow);
-    HW_WR_REG32(MCAN_CfgAddr(baseAddr) + MCAN_NDAT2, newDataStatus->statusHigh);
+    if(NULL != newDataStatus)
+    {
+        HW_WR_REG32(MCAN_CfgAddr(baseAddr) + MCAN_NDAT1, newDataStatus->statusLow);
+        HW_WR_REG32(MCAN_CfgAddr(baseAddr) + MCAN_NDAT2, newDataStatus->statusHigh);
+    }
 }
 
 void MCAN_readMsgRam(uint32_t           baseAddr,
@@ -957,50 +1003,53 @@ void MCAN_readMsgRam(uint32_t           baseAddr,
     uint32_t startAddr = 0U, elemSize = 0U, elemAddr = 0U;
     uint32_t enableMod = 0U, idx = 0U;
 
-    if ((MCAN_MEM_TYPE_BUF == memType) && (MCAN_RX_BUFFER_MAX_NUM > bufNum))
+    if(NULL != elem)
     {
-        startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXBC,
-                                  MCAN_RXBC_RBSA);
-        elemSize = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXESC,
-                                 MCAN_RXESC_RBDS);
-        idx       = bufNum;
-        enableMod = 1U;
-    }
-    if (MCAN_MEM_TYPE_FIFO == memType)
-    {
-        switch (fifoNum)
+        if ((MCAN_MEM_TYPE_BUF == memType) && (MCAN_RX_BUFFER_MAX_NUM > bufNum))
         {
-            case MCAN_RX_FIFO_NUM_0:
-                startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF0C,
-                                          MCAN_RXF0C_F0SA);
-                elemSize = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXESC,
-                                         MCAN_RXESC_F0DS);
-                idx = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF0S,
-                                    MCAN_RXF0S_F0GI);
-                enableMod = 1U;
-                break;
-            case MCAN_RX_FIFO_NUM_1:
-                startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF1C,
-                                          MCAN_RXF1C_F1SA);
-                elemSize = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXESC,
-                                         MCAN_RXESC_F1DS);
-                idx = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF1S,
-                                    MCAN_RXF1S_F1GI);
-                enableMod = 1U;
-                break;
-            default:
-                /* Invalid option */
-                break;
+            startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXBC,
+                                    MCAN_RXBC_RBSA);
+            elemSize = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXESC,
+                                    MCAN_RXESC_RBDS);
+            idx       = bufNum;
+            enableMod = 1U;
         }
-    }
-    if (1U == enableMod)
-    {
-        startAddr = (uint32_t) (startAddr << 2U);
-        elemSize  = gMsgObjSize[elemSize];
-        elemSize *= 4U;
-        elemAddr  = startAddr + (elemSize * idx);
-        elemAddr += MCAN_MCAN_MSG_MEM;
-        MCAN_readMsg(baseAddr, elemAddr, elem);
+        if (MCAN_MEM_TYPE_FIFO == memType)
+        {
+            switch (fifoNum)
+            {
+                case MCAN_RX_FIFO_NUM_0:
+                    startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF0C,
+                                            MCAN_RXF0C_F0SA);
+                    elemSize = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXESC,
+                                            MCAN_RXESC_F0DS);
+                    idx = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF0S,
+                                        MCAN_RXF0S_F0GI);
+                    enableMod = 1U;
+                    break;
+                case MCAN_RX_FIFO_NUM_1:
+                    startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF1C,
+                                            MCAN_RXF1C_F1SA);
+                    elemSize = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXESC,
+                                            MCAN_RXESC_F1DS);
+                    idx = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF1S,
+                                        MCAN_RXF1S_F1GI);
+                    enableMod = 1U;
+                    break;
+                default:
+                    /* Invalid option */
+                    break;
+            }
+        }
+        if (1U == enableMod)
+        {
+            startAddr = (uint32_t) (startAddr << 2U);
+            elemSize  = gMsgObjSize[elemSize];
+            elemSize *= 4U;
+            elemAddr  = startAddr + (elemSize * idx);
+            elemAddr += MCAN_MCAN_MSG_MEM;
+            MCAN_readMsg(baseAddr, elemAddr, elem);
+        }
     }
 }
 
@@ -1013,50 +1062,53 @@ void MCAN_readMsgRamNoCpy(uint32_t           baseAddr,
     uint32_t startAddr = 0U, elemSize = 0U, elemAddr = 0U;
     uint32_t enableMod = 0U, idx = 0U;
 
-    if ((MCAN_MEM_TYPE_BUF == memType) && (MCAN_RX_BUFFER_MAX_NUM > bufNum))
+    if(NULL != elem)
     {
-        startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXBC,
-                                  MCAN_RXBC_RBSA);
-        elemSize = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXESC,
-                                 MCAN_RXESC_RBDS);
-        idx       = bufNum;
-        enableMod = 1U;
-    }
-    if (MCAN_MEM_TYPE_FIFO == memType)
-    {
-        switch (fifoNum)
+        if ((MCAN_MEM_TYPE_BUF == memType) && (MCAN_RX_BUFFER_MAX_NUM > bufNum))
         {
-            case MCAN_RX_FIFO_NUM_0:
-                startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF0C,
-                                          MCAN_RXF0C_F0SA);
-                elemSize = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXESC,
-                                         MCAN_RXESC_F0DS);
-                idx = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF0S,
-                                    MCAN_RXF0S_F0GI);
-                enableMod = 1U;
-                break;
-            case MCAN_RX_FIFO_NUM_1:
-                startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF1C,
-                                          MCAN_RXF1C_F1SA);
-                elemSize = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXESC,
-                                         MCAN_RXESC_F1DS);
-                idx = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF1S,
-                                    MCAN_RXF1S_F1GI);
-                enableMod = 1U;
-                break;
-            default:
-                /* Invalid option */
-                break;
+            startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXBC,
+                                    MCAN_RXBC_RBSA);
+            elemSize = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXESC,
+                                    MCAN_RXESC_RBDS);
+            idx       = bufNum;
+            enableMod = 1U;
         }
-    }
-    if (1U == enableMod)
-    {
-        startAddr = (uint32_t) (startAddr << 2U);
-        elemSize  = gMsgObjSize[elemSize];
-        elemSize *= 4U;
-        elemAddr  = startAddr + (elemSize * idx);
-        elemAddr += MCAN_MCAN_MSG_MEM;
-        MCAN_readMsgNoCpy(baseAddr, elemAddr, elem);
+        if (MCAN_MEM_TYPE_FIFO == memType)
+        {
+            switch (fifoNum)
+            {
+                case MCAN_RX_FIFO_NUM_0:
+                    startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF0C,
+                                            MCAN_RXF0C_F0SA);
+                    elemSize = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXESC,
+                                            MCAN_RXESC_F0DS);
+                    idx = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF0S,
+                                        MCAN_RXF0S_F0GI);
+                    enableMod = 1U;
+                    break;
+                case MCAN_RX_FIFO_NUM_1:
+                    startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF1C,
+                                            MCAN_RXF1C_F1SA);
+                    elemSize = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXESC,
+                                            MCAN_RXESC_F1DS);
+                    idx = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_RXF1S,
+                                        MCAN_RXF1S_F1GI);
+                    enableMod = 1U;
+                    break;
+                default:
+                    /* Invalid option */
+                    break;
+            }
+        }
+        if (1U == enableMod)
+        {
+            startAddr = (uint32_t) (startAddr << 2U);
+            elemSize  = gMsgObjSize[elemSize];
+            elemSize *= 4U;
+            elemAddr  = startAddr + (elemSize * idx);
+            elemAddr += MCAN_MCAN_MSG_MEM;
+            MCAN_readMsgNoCpy(baseAddr, elemAddr, elem);
+        }
     }
 }
 
@@ -1066,40 +1118,44 @@ void MCAN_readTxEventFIFO(uint32_t           baseAddr,
     uint32_t startAddr = 0U, elemSize = 0U, elemAddr = 0U;
     uint32_t idx = 0U, regVal;
 
-    startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXEFC,
-                              MCAN_TXEFC_EFSA);
-    elemSize = MCANSS_TX_EVENT_FIFO_SIZE_WORDS;
-    idx = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXEFS,
-                        MCAN_TXEFS_EFGI);
+    if(NULL != txEventElem)
+    {
+        startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXEFC,
+                                MCAN_TXEFC_EFSA);
+        elemSize = MCANSS_TX_EVENT_FIFO_SIZE_WORDS;
+        idx = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_TXEFS,
+                            MCAN_TXEFS_EFGI);
 
-    startAddr = (uint32_t) (startAddr << 2U);
-    elemSize *= 4U;
-    elemAddr  = startAddr + (elemSize * idx);
-    elemAddr += MCAN_MCAN_MSG_MEM;
+        startAddr = (uint32_t) (startAddr << 2U);
+        elemSize *= 4U;
+        elemAddr  = startAddr + (elemSize * idx);
+        elemAddr += MCAN_MCAN_MSG_MEM;
 
-    regVal   = HW_RD_REG32(baseAddr + elemAddr);
-    txEventElem->id = (uint32_t) ((regVal & MCANSS_TX_EVENT_FIFO_ELEM_ID_MASK)
-                           >> MCANSS_TX_EVENT_FIFO_ELEM_ID_SHIFT);
-    txEventElem->rtr = (uint32_t) ((regVal & MCANSS_TX_EVENT_FIFO_ELEM_RTR_MASK)
-                            >> MCANSS_TX_EVENT_FIFO_ELEM_RTR_SHIFT);
-    txEventElem->xtd = (uint32_t) ((regVal & MCANSS_TX_EVENT_FIFO_ELEM_XTD_MASK)
-                            >> MCANSS_TX_EVENT_FIFO_ELEM_XTD_SHIFT);
-    txEventElem->esi = (uint32_t) ((regVal & MCANSS_TX_EVENT_FIFO_ELEM_ESI_MASK)
-                            >> MCANSS_TX_EVENT_FIFO_ELEM_ESI_SHIFT);
-    elemAddr  += 4U;
-    regVal     = HW_RD_REG32(baseAddr + elemAddr);
-    txEventElem->txts = (uint32_t) ((regVal & MCANSS_TX_EVENT_FIFO_ELEM_TXTS_MASK)
-                             >> MCANSS_TX_EVENT_FIFO_ELEM_TXTS_SHIFT);
-    txEventElem->dlc = (uint32_t) ((regVal & MCANSS_TX_EVENT_FIFO_ELEM_DLC_MASK)
-                            >> MCANSS_TX_EVENT_FIFO_ELEM_DLC_SHIFT);
-    txEventElem->brs = (uint32_t) ((regVal & MCANSS_TX_EVENT_FIFO_ELEM_BRS_MASK)
-                            >> MCANSS_TX_EVENT_FIFO_ELEM_BRS_SHIFT);
-    txEventElem->fdf = (uint32_t) ((regVal & MCANSS_TX_EVENT_FIFO_ELEM_FDF_MASK)
-                            >> MCANSS_TX_EVENT_FIFO_ELEM_FDF_SHIFT);
-    txEventElem->et = (uint32_t) ((regVal & MCANSS_TX_EVENT_FIFO_ELEM_ET_MASK)
-                             >> MCANSS_TX_EVENT_FIFO_ELEM_ET_SHIFT);
-    txEventElem->mm = (uint32_t) ((regVal & MCANSS_TX_EVENT_FIFO_ELEM_MM_MASK)
-                             >> MCANSS_TX_EVENT_FIFO_ELEM_MM_SHIFT);
+        regVal   = HW_RD_REG32(baseAddr + elemAddr);
+        txEventElem->id = (uint32_t) ((regVal & MCANSS_TX_EVENT_FIFO_ELEM_ID_MASK)
+                            >> MCANSS_TX_EVENT_FIFO_ELEM_ID_SHIFT);
+        txEventElem->rtr = (uint32_t) ((regVal & MCANSS_TX_EVENT_FIFO_ELEM_RTR_MASK)
+                                >> MCANSS_TX_EVENT_FIFO_ELEM_RTR_SHIFT);
+        txEventElem->xtd = (uint32_t) ((regVal & MCANSS_TX_EVENT_FIFO_ELEM_XTD_MASK)
+                                >> MCANSS_TX_EVENT_FIFO_ELEM_XTD_SHIFT);
+        txEventElem->esi = (uint32_t) ((regVal & MCANSS_TX_EVENT_FIFO_ELEM_ESI_MASK)
+                                >> MCANSS_TX_EVENT_FIFO_ELEM_ESI_SHIFT);
+        elemAddr  += 4U;
+        regVal     = HW_RD_REG32(baseAddr + elemAddr);
+        txEventElem->txts = (uint32_t) ((regVal & MCANSS_TX_EVENT_FIFO_ELEM_TXTS_MASK)
+                                >> MCANSS_TX_EVENT_FIFO_ELEM_TXTS_SHIFT);
+        txEventElem->dlc = (uint32_t) ((regVal & MCANSS_TX_EVENT_FIFO_ELEM_DLC_MASK)
+                                >> MCANSS_TX_EVENT_FIFO_ELEM_DLC_SHIFT);
+        txEventElem->brs = (uint32_t) ((regVal & MCANSS_TX_EVENT_FIFO_ELEM_BRS_MASK)
+                                >> MCANSS_TX_EVENT_FIFO_ELEM_BRS_SHIFT);
+        txEventElem->fdf = (uint32_t) ((regVal & MCANSS_TX_EVENT_FIFO_ELEM_FDF_MASK)
+                                >> MCANSS_TX_EVENT_FIFO_ELEM_FDF_SHIFT);
+        txEventElem->et = (uint32_t) ((regVal & MCANSS_TX_EVENT_FIFO_ELEM_ET_MASK)
+                                >> MCANSS_TX_EVENT_FIFO_ELEM_ET_SHIFT);
+        txEventElem->mm = (uint32_t) ((regVal & MCANSS_TX_EVENT_FIFO_ELEM_MM_MASK)
+                                >> MCANSS_TX_EVENT_FIFO_ELEM_MM_SHIFT);
+    }
+
 }
 
 void MCAN_addStdMsgIDFilter(uint32_t                          baseAddr,
@@ -1108,18 +1164,21 @@ void MCAN_addStdMsgIDFilter(uint32_t                          baseAddr,
 {
     uint32_t startAddr, elemAddr, regVal;
 
-    startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_SIDFC,
-                              MCAN_SIDFC_FLSSA);
-    startAddr = (uint32_t) (startAddr << 2U);
-    elemAddr  = startAddr + (filtNum * MCANSS_STD_ID_FILTER_SIZE_WORDS * 4U);
-    elemAddr += MCAN_MCAN_MSG_MEM;
+    if(NULL != elem)
+    {
+        startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_SIDFC,
+                                MCAN_SIDFC_FLSSA);
+        startAddr = (uint32_t) (startAddr << 2U);
+        elemAddr  = startAddr + (filtNum * MCANSS_STD_ID_FILTER_SIZE_WORDS * 4U);
+        elemAddr += MCAN_MCAN_MSG_MEM;
 
-    regVal  = 0U;
-    regVal |= (uint32_t) ((elem->sfid2 << MCANSS_STD_ID_FILTER_SFID2_SHIFT) & MCANSS_STD_ID_FILTER_SFID2_MASK);
-    regVal |= (uint32_t) ((elem->sfid1 << MCANSS_STD_ID_FILTER_SFID1_SHIFT) & MCANSS_STD_ID_FILTER_SFID1_MASK);
-    regVal |= (uint32_t) ((elem->sfec << MCANSS_STD_ID_FILTER_SFEC_SHIFT) & MCANSS_STD_ID_FILTER_SFEC_MASK);
-    regVal |= (uint32_t) ((elem->sft << MCANSS_STD_ID_FILTER_SFT_SHIFT) & MCANSS_STD_ID_FILTER_SFT_MASK);
-    HW_WR_REG32(baseAddr + elemAddr, regVal);
+        regVal  = 0U;
+        regVal |= (uint32_t) ((elem->sfid2 << MCANSS_STD_ID_FILTER_SFID2_SHIFT) & MCANSS_STD_ID_FILTER_SFID2_MASK);
+        regVal |= (uint32_t) ((elem->sfid1 << MCANSS_STD_ID_FILTER_SFID1_SHIFT) & MCANSS_STD_ID_FILTER_SFID1_MASK);
+        regVal |= (uint32_t) ((elem->sfec << MCANSS_STD_ID_FILTER_SFEC_SHIFT) & MCANSS_STD_ID_FILTER_SFEC_MASK);
+        regVal |= (uint32_t) ((elem->sft << MCANSS_STD_ID_FILTER_SFT_SHIFT) & MCANSS_STD_ID_FILTER_SFT_MASK);
+        HW_WR_REG32(baseAddr + elemAddr, regVal);
+    }
 }
 
 void MCAN_addExtMsgIDFilter(uint32_t                          baseAddr,
@@ -1128,22 +1187,25 @@ void MCAN_addExtMsgIDFilter(uint32_t                          baseAddr,
 {
     uint32_t startAddr, elemAddr, regVal;
 
-    startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_XIDFC,
-                              MCAN_XIDFC_FLESA);
-    startAddr = (uint32_t) (startAddr << 2U);
-    elemAddr  = startAddr + (filtNum * MCANSS_EXT_ID_FILTER_SIZE_WORDS * 4U);
-    elemAddr += MCAN_MCAN_MSG_MEM;
+    if(NULL != elem)
+    {
+        startAddr = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_XIDFC,
+                                MCAN_XIDFC_FLESA);
+        startAddr = (uint32_t) (startAddr << 2U);
+        elemAddr  = startAddr + (filtNum * MCANSS_EXT_ID_FILTER_SIZE_WORDS * 4U);
+        elemAddr += MCAN_MCAN_MSG_MEM;
 
-    regVal  = 0U;
-    regVal |= (uint32_t) ((elem->efid1 << MCANSS_EXT_ID_FILTER_EFID1_SHIFT) & MCANSS_EXT_ID_FILTER_EFID1_MASK);
-    regVal |= (uint32_t) ((elem->efec << MCANSS_EXT_ID_FILTER_EFEC_SHIFT) & MCANSS_EXT_ID_FILTER_EFEC_MASK);
-    HW_WR_REG32(baseAddr + elemAddr, regVal);
+        regVal  = 0U;
+        regVal |= (uint32_t) ((elem->efid1 << MCANSS_EXT_ID_FILTER_EFID1_SHIFT) & MCANSS_EXT_ID_FILTER_EFID1_MASK);
+        regVal |= (uint32_t) ((elem->efec << MCANSS_EXT_ID_FILTER_EFEC_SHIFT) & MCANSS_EXT_ID_FILTER_EFEC_MASK);
+        HW_WR_REG32(baseAddr + elemAddr, regVal);
 
-    elemAddr += 4U;
-    regVal    = 0U;
-    regVal   |= (uint32_t) ((elem->efid2 << MCANSS_EXT_ID_FILTER_EFID2_SHIFT) & MCANSS_EXT_ID_FILTER_EFID2_MASK);
-    regVal   |= (uint32_t) ((elem->eft << MCANSS_EXT_ID_FILTER_EFT_SHIFT) & MCANSS_EXT_ID_FILTER_EFT_MASK);
-    HW_WR_REG32(baseAddr + elemAddr, regVal);
+        elemAddr += 4U;
+        regVal    = 0U;
+        regVal   |= (uint32_t) ((elem->efid2 << MCANSS_EXT_ID_FILTER_EFID2_SHIFT) & MCANSS_EXT_ID_FILTER_EFID2_MASK);
+        regVal   |= (uint32_t) ((elem->eft << MCANSS_EXT_ID_FILTER_EFT_SHIFT) & MCANSS_EXT_ID_FILTER_EFT_MASK);
+        HW_WR_REG32(baseAddr + elemAddr, regVal);
+    }
 }
 
 void MCAN_lpbkModeEnable(uint32_t baseAddr,
@@ -1185,14 +1247,17 @@ void  MCAN_getErrCounters(uint32_t           baseAddr,
                           MCAN_ErrCntStatus *errCounter)
 {
 
-    errCounter->transErrLogCnt = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_ECR,
-                                               MCAN_ECR_TEC);
-    errCounter->recErrCnt = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_ECR,
-                                          MCAN_ECR_REC);
-    errCounter->rpStatus = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_ECR,
-                                         MCAN_ECR_RP);
-    errCounter->canErrLogCnt = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_ECR,
-                                             MCAN_ECR_CEL);
+    if(NULL != errCounter)
+    {
+        errCounter->transErrLogCnt = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_ECR,
+                                                MCAN_ECR_TEC);
+        errCounter->recErrCnt = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_ECR,
+                                            MCAN_ECR_REC);
+        errCounter->rpStatus = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_ECR,
+                                            MCAN_ECR_RP);
+        errCounter->canErrLogCnt = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_ECR,
+                                                MCAN_ECR_CEL);
+    }
 }
 
 void  MCAN_getProtocolStatus(uint32_t             baseAddr,
@@ -1200,18 +1265,21 @@ void  MCAN_getProtocolStatus(uint32_t             baseAddr,
 {
     uint32_t regVal;
 
-    regVal = HW_RD_REG32(MCAN_CfgAddr(baseAddr) + MCAN_PSR);
-    protStatus->lastErrCode   = HW_GET_FIELD(regVal, MCAN_PSR_LEC);
-    protStatus->act           = HW_GET_FIELD(regVal, MCAN_PSR_ACT);
-    protStatus->errPassive    = HW_GET_FIELD(regVal, MCAN_PSR_EP);
-    protStatus->warningStatus = HW_GET_FIELD(regVal, MCAN_PSR_EW);
-    protStatus->busOffStatus  = HW_GET_FIELD(regVal, MCAN_PSR_BO);
-    protStatus->dlec          = HW_GET_FIELD(regVal, MCAN_PSR_DLEC);
-    protStatus->resi          = HW_GET_FIELD(regVal, MCAN_PSR_RESI);
-    protStatus->rbrs          = HW_GET_FIELD(regVal, MCAN_PSR_RBRS);
-    protStatus->rfdf          = HW_GET_FIELD(regVal, MCAN_PSR_RFDF);
-    protStatus->pxe           = HW_GET_FIELD(regVal, MCAN_PSR_PXE);
-    protStatus->tdcv          = HW_GET_FIELD(regVal, MCAN_PSR_TDCV);
+    if(NULL != protStatus)
+    {
+        regVal = HW_RD_REG32(MCAN_CfgAddr(baseAddr) + MCAN_PSR);
+        protStatus->lastErrCode   = HW_GET_FIELD(regVal, MCAN_PSR_LEC);
+        protStatus->act           = HW_GET_FIELD(regVal, MCAN_PSR_ACT);
+        protStatus->errPassive    = HW_GET_FIELD(regVal, MCAN_PSR_EP);
+        protStatus->warningStatus = HW_GET_FIELD(regVal, MCAN_PSR_EW);
+        protStatus->busOffStatus  = HW_GET_FIELD(regVal, MCAN_PSR_BO);
+        protStatus->dlec          = HW_GET_FIELD(regVal, MCAN_PSR_DLEC);
+        protStatus->resi          = HW_GET_FIELD(regVal, MCAN_PSR_RESI);
+        protStatus->rbrs          = HW_GET_FIELD(regVal, MCAN_PSR_RBRS);
+        protStatus->rfdf          = HW_GET_FIELD(regVal, MCAN_PSR_RFDF);
+        protStatus->pxe           = HW_GET_FIELD(regVal, MCAN_PSR_PXE);
+        protStatus->tdcv          = HW_GET_FIELD(regVal, MCAN_PSR_TDCV);
+    }
 }
 
 void MCAN_enableIntr(uint32_t baseAddr, uint32_t intrMask, uint32_t enable)
@@ -1283,46 +1351,52 @@ void MCAN_clearIntrStatus(uint32_t baseAddr, uint32_t intrMask)
     HW_WR_REG32(MCAN_CfgAddr(baseAddr) + MCAN_IR, intrMask);
 }
 
-void  MCAN_getHighPriorityMsgStatus(uint32_t                  baseAddr,
+void MCAN_getHighPriorityMsgStatus(uint32_t                  baseAddr,
                                     MCAN_HighPriorityMsgInfo *hpm)
 {
 
-    hpm->bufIdx = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_HPMS,
-                                MCAN_HPMS_BIDX);
-    hpm->msi = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_HPMS,
-                             MCAN_HPMS_MSI);
-    hpm->filterIdx = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_HPMS,
-                                   MCAN_HPMS_FIDX);
-    hpm->filterList = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_HPMS,
-                                    MCAN_HPMS_FLST);
+    if(NULL != hpm)
+    {
+        hpm->bufIdx = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_HPMS,
+                                    MCAN_HPMS_BIDX);
+        hpm->msi = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_HPMS,
+                                MCAN_HPMS_MSI);
+        hpm->filterIdx = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_HPMS,
+                                    MCAN_HPMS_FIDX);
+        hpm->filterList = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_HPMS,
+                                        MCAN_HPMS_FLST);
+    }
 }
 
 void MCAN_getRxFIFOStatus(uint32_t           baseAddr,
                           MCAN_RxFIFOStatus *fifoStatus)
 {
     uint32_t regVal;
-
-    switch (fifoStatus->num)
+    
+    if(NULL != fifoStatus)
     {
-        case MCAN_RX_FIFO_NUM_0:
-            regVal = HW_RD_REG32(MCAN_CfgAddr(baseAddr) + MCAN_RXF0S);
-            fifoStatus->fillLvl  = HW_GET_FIELD(regVal, MCAN_RXF0S_F0FL);
-            fifoStatus->getIdx   = HW_GET_FIELD(regVal, MCAN_RXF0S_F0GI);
-            fifoStatus->putIdx   = HW_GET_FIELD(regVal, MCAN_RXF0S_F0PI);
-            fifoStatus->fifoFull = HW_GET_FIELD(regVal, MCAN_RXF0S_F0F);
-            fifoStatus->msgLost  = HW_GET_FIELD(regVal, MCAN_RXF0S_RF0L);
-            break;
-        case MCAN_RX_FIFO_NUM_1:
-            regVal = HW_RD_REG32(MCAN_CfgAddr(baseAddr) + MCAN_RXF1S);
-            fifoStatus->fillLvl  = HW_GET_FIELD(regVal, MCAN_RXF1S_F1FL);
-            fifoStatus->getIdx   = HW_GET_FIELD(regVal, MCAN_RXF1S_F1GI);
-            fifoStatus->putIdx   = HW_GET_FIELD(regVal, MCAN_RXF1S_F1PI);
-            fifoStatus->fifoFull = HW_GET_FIELD(regVal, MCAN_RXF1S_F1F);
-            fifoStatus->msgLost  = HW_GET_FIELD(regVal, MCAN_RXF1S_RF1L);
-            break;
-        default:
-            /* Invalid option */
-            break;
+        switch (fifoStatus->num)
+        {
+            case MCAN_RX_FIFO_NUM_0:
+                regVal = HW_RD_REG32(MCAN_CfgAddr(baseAddr) + MCAN_RXF0S);
+                fifoStatus->fillLvl  = HW_GET_FIELD(regVal, MCAN_RXF0S_F0FL);
+                fifoStatus->getIdx   = HW_GET_FIELD(regVal, MCAN_RXF0S_F0GI);
+                fifoStatus->putIdx   = HW_GET_FIELD(regVal, MCAN_RXF0S_F0PI);
+                fifoStatus->fifoFull = HW_GET_FIELD(regVal, MCAN_RXF0S_F0F);
+                fifoStatus->msgLost  = HW_GET_FIELD(regVal, MCAN_RXF0S_RF0L);
+                break;
+            case MCAN_RX_FIFO_NUM_1:
+                regVal = HW_RD_REG32(MCAN_CfgAddr(baseAddr) + MCAN_RXF1S);
+                fifoStatus->fillLvl  = HW_GET_FIELD(regVal, MCAN_RXF1S_F1FL);
+                fifoStatus->getIdx   = HW_GET_FIELD(regVal, MCAN_RXF1S_F1GI);
+                fifoStatus->putIdx   = HW_GET_FIELD(regVal, MCAN_RXF1S_F1PI);
+                fifoStatus->fifoFull = HW_GET_FIELD(regVal, MCAN_RXF1S_F1F);
+                fifoStatus->msgLost  = HW_GET_FIELD(regVal, MCAN_RXF1S_RF1L);
+                break;
+            default:
+                /* Invalid option */
+                break;
+        }
     }
 }
 
@@ -1378,11 +1452,15 @@ void MCAN_getTxFIFOQueStatus(uint32_t           baseAddr,
 {
     uint32_t regVal;
 
-    regVal = HW_RD_REG32(MCAN_CfgAddr(baseAddr) + MCAN_TXFQS);
-    fifoStatus->freeLvl  = HW_GET_FIELD(regVal, MCAN_TXFQS_TFFL);
-    fifoStatus->getIdx   = HW_GET_FIELD(regVal, MCAN_TXFQS_TFGI);
-    fifoStatus->putIdx   = HW_GET_FIELD(regVal, MCAN_TXFQS_TFQPI);
-    fifoStatus->fifoFull = HW_GET_FIELD(regVal, MCAN_TXFQS_TFQF);
+    if(NULL != fifoStatus)
+    {
+        regVal = HW_RD_REG32(MCAN_CfgAddr(baseAddr) + MCAN_TXFQS);
+        fifoStatus->freeLvl  = HW_GET_FIELD(regVal, MCAN_TXFQS_TFFL);
+        fifoStatus->getIdx   = HW_GET_FIELD(regVal, MCAN_TXFQS_TFGI);
+        fifoStatus->putIdx   = HW_GET_FIELD(regVal, MCAN_TXFQS_TFQPI);
+        fifoStatus->fifoFull = HW_GET_FIELD(regVal, MCAN_TXFQS_TFQF);
+    }
+
 }
 
 uint32_t MCAN_getTxBufReqPend(uint32_t baseAddr)
@@ -1487,12 +1565,15 @@ void MCAN_getTxEventFIFOStatus(uint32_t                baseAddr,
 {
     uint32_t regVal;
 
-    regVal = HW_RD_REG32(MCAN_CfgAddr(baseAddr) + MCAN_TXEFS);
-    fifoStatus->fillLvl  = HW_GET_FIELD(regVal, MCAN_TXEFS_EFFL);
-    fifoStatus->getIdx   = HW_GET_FIELD(regVal, MCAN_TXEFS_EFGI);
-    fifoStatus->putIdx   = HW_GET_FIELD(regVal, MCAN_TXEFS_EFPI);
-    fifoStatus->fifoFull = HW_GET_FIELD(regVal, MCAN_TXEFS_EFF);
-    fifoStatus->eleLost  = HW_GET_FIELD(regVal, MCAN_TXEFS_TEFL);
+    if(NULL != fifoStatus)
+    {
+        regVal = HW_RD_REG32(MCAN_CfgAddr(baseAddr) + MCAN_TXEFS);
+        fifoStatus->fillLvl  = HW_GET_FIELD(regVal, MCAN_TXEFS_EFFL);
+        fifoStatus->getIdx   = HW_GET_FIELD(regVal, MCAN_TXEFS_EFGI);
+        fifoStatus->putIdx   = HW_GET_FIELD(regVal, MCAN_TXEFS_EFPI);
+        fifoStatus->fifoFull = HW_GET_FIELD(regVal, MCAN_TXEFS_EFF);
+        fifoStatus->eleLost  = HW_GET_FIELD(regVal, MCAN_TXEFS_TEFL);
+    }
 }
 
 void MCAN_addClockStopRequest(uint32_t baseAddr, uint32_t enable)
@@ -1537,42 +1618,44 @@ void MCAN_eccForceError(uint32_t                      baseAddr,
     uint32_t regVal;
     uint32_t eccAggrBaseAddr;
 
-    eccAggrBaseAddr = MCAN_getECCRegionAddr (baseAddr);
-    if((eccErr->errType == MCAN_ECC_ERR_TYPE_SEC) ||
-       (eccErr->errType == MCAN_ECC_ERR_TYPE_DED))
+    if(NULL != eccErr)
     {
-        MCAN_eccLoadRegister(baseAddr, MCAN_ECC_AGGR_ERROR_CTRL1);
-        regVal = HW_RD_REG32(eccAggrBaseAddr + MCAN_ECC_AGGR_ERROR_CTRL1);
-        HW_SET_FIELD32(regVal,
-                       MCAN_ECC_AGGR_ERROR_CTRL1_ECC_ROW,
-                       eccErr->rowNum);
-
-        HW_WR_REG32(eccAggrBaseAddr + MCAN_ECC_AGGR_ERROR_CTRL1, regVal);
-        MCAN_eccLoadRegister(baseAddr, MCAN_ECC_AGGR_CONTROL);
-        regVal = HW_RD_REG32(eccAggrBaseAddr + MCAN_ECC_AGGR_CONTROL);
-        HW_SET_FIELD32(regVal,
-                       MCAN_ECC_AGGR_CONTROL_FORCE_N_ROW,
-                       eccErr->errForce);
-        HW_SET_FIELD32(regVal,
-                       MCAN_ECC_AGGR_CONTROL_ERROR_ONCE,
-                       eccErr->errOnce);
-        if(eccErr->errType == MCAN_ECC_ERR_TYPE_SEC)
+        eccAggrBaseAddr = MCAN_getECCRegionAddr (baseAddr);
+        if((eccErr->errType == MCAN_ECC_ERR_TYPE_SEC) ||
+        (eccErr->errType == MCAN_ECC_ERR_TYPE_DED))
         {
+            MCAN_eccLoadRegister(baseAddr, MCAN_ECC_AGGR_ERROR_CTRL1);
+            regVal = HW_RD_REG32(eccAggrBaseAddr + MCAN_ECC_AGGR_ERROR_CTRL1);
             HW_SET_FIELD32(regVal,
-                           MCAN_ECC_AGGR_CONTROL_FORCE_SEC,
-                           0x1U);
-        }
-        else
-        {
-            HW_SET_FIELD32(regVal,
-                           MCAN_ECC_AGGR_CONTROL_FORCE_DED,
-                           0x1U);
-        }
+                        MCAN_ECC_AGGR_ERROR_CTRL1_ECC_ROW,
+                        eccErr->rowNum);
 
-        HW_WR_REG32(eccAggrBaseAddr + MCAN_ECC_AGGR_CONTROL, regVal);
+            HW_WR_REG32(eccAggrBaseAddr + MCAN_ECC_AGGR_ERROR_CTRL1, regVal);
+            MCAN_eccLoadRegister(baseAddr, MCAN_ECC_AGGR_CONTROL);
+            regVal = HW_RD_REG32(eccAggrBaseAddr + MCAN_ECC_AGGR_CONTROL);
+            HW_SET_FIELD32(regVal,
+                        MCAN_ECC_AGGR_CONTROL_FORCE_N_ROW,
+                        eccErr->errForce);
+            HW_SET_FIELD32(regVal,
+                        MCAN_ECC_AGGR_CONTROL_ERROR_ONCE,
+                        eccErr->errOnce);
+            if(eccErr->errType == MCAN_ECC_ERR_TYPE_SEC)
+            {
+                HW_SET_FIELD32(regVal,
+                            MCAN_ECC_AGGR_CONTROL_FORCE_SEC,
+                            0x1U);
+            }
+            else
+            {
+                HW_SET_FIELD32(regVal,
+                            MCAN_ECC_AGGR_CONTROL_FORCE_DED,
+                            0x1U);
+            }
+
+            HW_WR_REG32(eccAggrBaseAddr + MCAN_ECC_AGGR_CONTROL, regVal);
+        }
     }
 }
-
 
 void MCAN_eccGetErrorStatus(uint32_t           baseAddr,
                             MCAN_ECCErrStatus *eccErr)
@@ -1580,13 +1663,16 @@ void MCAN_eccGetErrorStatus(uint32_t           baseAddr,
     uint32_t regVal;
     uint32_t eccAggrBaseAddr;
 
-    eccAggrBaseAddr = MCAN_getECCRegionAddr (baseAddr);
-    MCAN_eccLoadRegister(baseAddr, MCAN_ECC_AGGR_ERROR_STATUS1);
-    regVal = HW_RD_REG32(eccAggrBaseAddr + MCAN_ECC_AGGR_ERROR_STATUS1);
-    eccErr->secErr = HW_GET_FIELD(regVal,
-                                  MCAN_ECC_AGGR_ERROR_STATUS1_ECC_SEC);
-    eccErr->dedErr = HW_GET_FIELD(regVal,
-                                  MCAN_ECC_AGGR_ERROR_STATUS1_ECC_DED);
+    if(NULL != eccErr)
+    {
+        eccAggrBaseAddr = MCAN_getECCRegionAddr (baseAddr);
+        MCAN_eccLoadRegister(baseAddr, MCAN_ECC_AGGR_ERROR_STATUS1);
+        regVal = HW_RD_REG32(eccAggrBaseAddr + MCAN_ECC_AGGR_ERROR_STATUS1);
+        eccErr->secErr = HW_GET_FIELD(regVal,
+                                    MCAN_ECC_AGGR_ERROR_STATUS1_ECC_SEC);
+        eccErr->dedErr = HW_GET_FIELD(regVal,
+                                    MCAN_ECC_AGGR_ERROR_STATUS1_ECC_DED);
+    }
 }
 
 void MCAN_eccClearErrorStatus(uint32_t baseAddr, uint32_t errType)
@@ -1785,22 +1871,25 @@ void MCAN_getRevisionId(uint32_t baseAddr, MCAN_RevisionId *revId)
 {
     uint32_t regVal;
 
-    regVal        = HW_RD_REG32(MCAN_SsAddr(baseAddr) + MCAN_MCANSS_PID);
-    revId->minor  = HW_GET_FIELD(regVal, MCAN_MCANSS_PID_MINOR);
-    revId->custom = HW_GET_FIELD(regVal, MCAN_MCANSS_PID_CUSTOM);
-    revId->major  = HW_GET_FIELD(regVal, MCAN_MCANSS_PID_MAJOR);
-    revId->rtlRev = HW_GET_FIELD(regVal, MCAN_MCANSS_PID_RTL);
-    revId->modId  = HW_GET_FIELD(regVal, MCAN_MCANSS_PID_MODULE_ID);
-    revId->bu     = HW_GET_FIELD(regVal, MCAN_MCANSS_PID_BU);
-    revId->scheme = HW_GET_FIELD(regVal, MCAN_MCANSS_PID_SCHEME);
+    if(NULL != revId)
+    {
+        regVal        = HW_RD_REG32(MCAN_SsAddr(baseAddr) + MCAN_MCANSS_PID);
+        revId->minor  = HW_GET_FIELD(regVal, MCAN_MCANSS_PID_MINOR);
+        revId->custom = HW_GET_FIELD(regVal, MCAN_MCANSS_PID_CUSTOM);
+        revId->major  = HW_GET_FIELD(regVal, MCAN_MCANSS_PID_MAJOR);
+        revId->rtlRev = HW_GET_FIELD(regVal, MCAN_MCANSS_PID_RTL);
+        revId->modId  = HW_GET_FIELD(regVal, MCAN_MCANSS_PID_MODULE_ID);
+        revId->bu     = HW_GET_FIELD(regVal, MCAN_MCANSS_PID_BU);
+        revId->scheme = HW_GET_FIELD(regVal, MCAN_MCANSS_PID_SCHEME);
 
-    regVal         = HW_RD_REG32(MCAN_CfgAddr(baseAddr) + MCAN_CREL);
-    revId->day     = HW_GET_FIELD(regVal, MCAN_CREL_DAY);
-    revId->mon     = HW_GET_FIELD(regVal, MCAN_CREL_MON);
-    revId->year    = HW_GET_FIELD(regVal, MCAN_CREL_YEAR);
-    revId->subStep = HW_GET_FIELD(regVal, MCAN_CREL_SUBSTEP);
-    revId->step    = HW_GET_FIELD(regVal, MCAN_CREL_STEP);
-    revId->rel     = HW_GET_FIELD(regVal, MCAN_CREL_REL);
+        regVal         = HW_RD_REG32(MCAN_CfgAddr(baseAddr) + MCAN_CREL);
+        revId->day     = HW_GET_FIELD(regVal, MCAN_CREL_DAY);
+        revId->mon     = HW_GET_FIELD(regVal, MCAN_CREL_MON);
+        revId->year    = HW_GET_FIELD(regVal, MCAN_CREL_YEAR);
+        revId->subStep = HW_GET_FIELD(regVal, MCAN_CREL_SUBSTEP);
+        revId->step    = HW_GET_FIELD(regVal, MCAN_CREL_STEP);
+        revId->rel     = HW_GET_FIELD(regVal, MCAN_CREL_REL);
+    }
 }
 
 uint32_t MCAN_getClockStopAck(uint32_t baseAddr)
@@ -1865,24 +1954,26 @@ uint32_t MCAN_getClkStopAck(uint32_t baseAddr)
 void MCAN_getBitTime(uint32_t              baseAddr,
                      MCAN_BitTimingParams *configParams)
 {
+    if(NULL != configParams)
+    {
+        configParams->nomSynchJumpWidth = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_NBTP,
+                                                        MCAN_NBTP_NSJW);
+        configParams->nomTimeSeg2 = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_NBTP,
+                                                MCAN_NBTP_NTSEG2);
+        configParams->nomTimeSeg1 = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_NBTP,
+                                                MCAN_NBTP_NTSEG1);
+        configParams->nomRatePrescalar = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_NBTP,
+                                                    MCAN_NBTP_NBRP);
 
-    configParams->nomSynchJumpWidth = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_NBTP,
-                                                    MCAN_NBTP_NSJW);
-    configParams->nomTimeSeg2 = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_NBTP,
-                                              MCAN_NBTP_NTSEG2);
-    configParams->nomTimeSeg1 = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_NBTP,
-                                              MCAN_NBTP_NTSEG1);
-    configParams->nomRatePrescalar = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_NBTP,
-                                                   MCAN_NBTP_NBRP);
-
-    configParams->dataSynchJumpWidth = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_DBTP,
-                                                     MCAN_DBTP_DSJW);
-    configParams->dataTimeSeg2 = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_DBTP,
-                                               MCAN_DBTP_DTSEG2);
-    configParams->dataTimeSeg1 = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_DBTP,
-                                               MCAN_DBTP_DTSEG1);
-    configParams->dataRatePrescalar = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_DBTP,
-                                                    MCAN_DBTP_DBRP);
+        configParams->dataSynchJumpWidth = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_DBTP,
+                                                        MCAN_DBTP_DSJW);
+        configParams->dataTimeSeg2 = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_DBTP,
+                                                MCAN_DBTP_DTSEG2);
+        configParams->dataTimeSeg1 = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_DBTP,
+                                                MCAN_DBTP_DTSEG1);
+        configParams->dataRatePrescalar = HW_RD_FIELD32(MCAN_CfgAddr(baseAddr) + MCAN_DBTP,
+                                                        MCAN_DBTP_DBRP);
+    }
 }
 
 void MCAN_resetTSCounter(uint32_t baseAddr)
@@ -1903,15 +1994,18 @@ void MCAN_eccAggrGetRevisionId(uint32_t baseAddr, MCAN_ECCAggrRevisionId *revId)
     uint32_t regVal;
     uint32_t eccAggrBaseAddr;
 
-    eccAggrBaseAddr = MCAN_getECCRegionAddr (baseAddr);
-    regVal        = HW_RD_REG32(eccAggrBaseAddr + MCAN_ECC_AGGR_REVISION);
-    revId->minor  = HW_GET_FIELD(regVal, MCAN_ECC_AGGR_REVISION_REVMIN);
-    revId->custom = HW_GET_FIELD(regVal, MCAN_ECC_AGGR_REVISION_CUSTOM);
-    revId->major  = HW_GET_FIELD(regVal, MCAN_ECC_AGGR_REVISION_REVMAJ);
-    revId->rtlRev = HW_GET_FIELD(regVal, MCAN_ECC_AGGR_REVISION_REVRTL);
-    revId->modId  = HW_GET_FIELD(regVal, MCAN_ECC_AGGR_REVISION_MODULE_ID);
-    revId->bu     = HW_GET_FIELD(regVal, MCAN_ECC_AGGR_REVISION_BU);
-    revId->scheme = HW_GET_FIELD(regVal, MCAN_ECC_AGGR_REVISION_SCHEME);
+    if(NULL != revId)
+    {
+        eccAggrBaseAddr = MCAN_getECCRegionAddr (baseAddr);
+        regVal        = HW_RD_REG32(eccAggrBaseAddr + MCAN_ECC_AGGR_REVISION);
+        revId->minor  = HW_GET_FIELD(regVal, MCAN_ECC_AGGR_REVISION_REVMIN);
+        revId->custom = HW_GET_FIELD(regVal, MCAN_ECC_AGGR_REVISION_CUSTOM);
+        revId->major  = HW_GET_FIELD(regVal, MCAN_ECC_AGGR_REVISION_REVMAJ);
+        revId->rtlRev = HW_GET_FIELD(regVal, MCAN_ECC_AGGR_REVISION_REVRTL);
+        revId->modId  = HW_GET_FIELD(regVal, MCAN_ECC_AGGR_REVISION_MODULE_ID);
+        revId->bu     = HW_GET_FIELD(regVal, MCAN_ECC_AGGR_REVISION_BU);
+        revId->scheme = HW_GET_FIELD(regVal, MCAN_ECC_AGGR_REVISION_SCHEME);
+    }
 }
 
 void MCAN_eccWrapGetRevisionId(uint32_t baseAddr, MCAN_ECCWrapRevisionId *revId)

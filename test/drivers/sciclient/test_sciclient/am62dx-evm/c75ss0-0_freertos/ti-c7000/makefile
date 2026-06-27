@@ -45,6 +45,7 @@ FILES_common := \
 	test_sciclient_sec.c \
 	test_sciclient_wrapper.c \
 	test_sciclient_procboot.c \
+	test_sciclient_multithread.c \
 	test_sciclient.c \
 	main.c \
 	ti_drivers_config.c \
@@ -91,6 +92,7 @@ CFLAGS_common := \
 	--diag_suppress=70 \
 	-DBUILD_C7X \
 	-DBUILD_C7X_1 \
+	-DSCICLIENT_MULTITHREAD \
 	-DSKIP_SCICLIENT \
 
 CFLAGS_debug := \

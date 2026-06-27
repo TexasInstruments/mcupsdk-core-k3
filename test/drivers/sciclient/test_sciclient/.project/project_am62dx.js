@@ -25,6 +25,7 @@ const files_freertos = {
         "test_sciclient_sec.c",
         "test_sciclient_wrapper.c",
         "test_sciclient_procboot.c",
+        "test_sciclient_multithread.c",
         "test_sciclient.c",
         "main.c",
     ],
@@ -63,6 +64,7 @@ const defines_dm_r5 = {
 
 const freertos_cflags = {
     common: [
+        "-DSCICLIENT_MULTITHREAD",
         "-DSKIP_SCICLIENT",
     ],
 };
@@ -349,16 +351,30 @@ function getComponentProperty() {
     return property;
 }
 
-const robot_template = {
+/* SITSW-12080/12216/12217/12214 never run (SKIP_SCICLIENT always defined for this device).
+ * SITSW-1245x multithread IDs only run under SCICLIENT_MULTITHREAD (freertos only). */
+const robot_template_nortos = {
     input: ".project/templates/am62dx/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "Sciclient",
-        testCaseIds: "SITSW-12478 SITSW-12080 SITSW-12476 SITSW-12475 SITSW-12474 SITSW-12473 SITSW-12472 SITSW-12471" +
-                     " SITSW-12470 SITSW-12469 SITSW-12468 SITSW-12467 SITSW-12466 SITSW-12464 SITSW-12463 SITSW-12462" +
-                     " SITSW-12454 SITSW-12453 SITSW-12452 SITSW-12486 SITSW-12460 SITSW-12461 SITSW-12459 SITSW-12477" +
-                     " SITSW-12458 SITSW-12457 SITSW-12456 SITSW-12216 SITSW-12217 SITSW-12214 SITSW-12451 SITSW-12450" +
-                     " SITSW-12449 SITSW-12448 SITSW-12447 SITSW-12446 SITSW-12481",
+        testCaseIds: "SITSW-12478 SITSW-12476 SITSW-12475 SITSW-12474 SITSW-12473 SITSW-12472 SITSW-12471 SITSW-12470" +
+                     " SITSW-12469 SITSW-12468 SITSW-12467 SITSW-12466 SITSW-12464 SITSW-12463 SITSW-12462 SITSW-12454" +
+                     " SITSW-12453 SITSW-12452 SITSW-12486 SITSW-12460 SITSW-12461 SITSW-12459 SITSW-12477 SITSW-12458" +
+                     " SITSW-12457 SITSW-12456",
+    },
+};
+
+const robot_template_freertos = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Sciclient",
+        testCaseIds: "SITSW-12478 SITSW-12476 SITSW-12475 SITSW-12474 SITSW-12473 SITSW-12472 SITSW-12471 SITSW-12470" +
+                     " SITSW-12469 SITSW-12468 SITSW-12467 SITSW-12466 SITSW-12464 SITSW-12463 SITSW-12462 SITSW-12454" +
+                     " SITSW-12453 SITSW-12452 SITSW-12486 SITSW-12460 SITSW-12461 SITSW-12459 SITSW-12477 SITSW-12458" +
+                     " SITSW-12457 SITSW-12456 SITSW-12451 SITSW-12450 SITSW-12449 SITSW-12448 SITSW-12447 SITSW-12446" +
+                     " SITSW-12481",
     },
 };
 
@@ -420,6 +436,7 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+    const robot_template = buildOption.os.match(/nortos/) ? robot_template_nortos : robot_template_freertos;
     build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }

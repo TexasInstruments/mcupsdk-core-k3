@@ -46,6 +46,7 @@ FILES_common := \
 	test_sciclient_sec.c \
 	test_sciclient_wrapper.c \
 	test_sciclient_procboot.c \
+	test_sciclient_multithread.c \
 	test_sciclient.c \
 	main.c \
 	ti_drivers_config.c \
@@ -90,6 +91,7 @@ CFLAGS_common := \
 	-Wno-unused-but-set-variable \
 	-fdata-sections \
 	-ffunction-sections \
+	-DSCICLIENT_MULTITHREAD \
 	-DSKIP_SCICLIENT \
 
 CFLAGS_debug := \

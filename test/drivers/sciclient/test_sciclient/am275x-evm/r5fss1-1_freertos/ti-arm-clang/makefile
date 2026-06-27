@@ -42,6 +42,7 @@ FILES_common := \
 	test_sciclient_sec.c \
 	test_sciclient_wrapper.c \
 	test_sciclient_procboot.c \
+	test_sciclient_multithread.c \
 	test_sciclient.c \
 	main.c \
 	ti_drivers_config.c \
@@ -82,6 +83,7 @@ CFLAGS_common := \
 	-g \
 	-Wno-gnu-variable-sized-type-not-at-end \
 	-Wno-unused-function \
+	-DSCICLIENT_MULTITHREAD \
 	-DSKIP_SCICLIENT \
 
 CFLAGS_cpp_common := \

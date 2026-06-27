@@ -73,6 +73,7 @@
 #include <kernel/dpl/ClockP.h>
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
+#include "test_sciclient_multithread.h"
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -184,6 +185,21 @@ void test_main(void *args)
     RUN_TEST(testSciclient_boardCfgApis, 12216, NULL);
     RUN_TEST(testSciclient_dkekApis, 12217, NULL);
     RUN_TEST(testSciclient_uartPrintf, 12214, NULL);
+#endif
+
+#if defined(SCICLIENT_MULTITHREAD)
+
+    RUN_TEST(testSciclient_multithreadConcurrentVersion, 12451, NULL);
+    RUN_TEST(testSciclient_multithreadConcurrentMultiApi, 12450, NULL);
+    RUN_TEST(testSciclient_pmSetStateHighPriVsGetStateLowPri, 12449, NULL);
+    RUN_TEST(testSciclient_allServicesSimultaneous, 12448, NULL);
+    ClockP_usleep(10000);
+    RUN_TEST(testSciclient_concurrentSetClock, 12447, NULL);
+    ClockP_usleep(10000);
+    RUN_TEST(testSciclient_pmClkSetHighPriVsGetLowPri, 12446, NULL);
+    ClockP_usleep(10000);
+    RUN_TEST(testSciclient_concurrentSetDevice, 12481, NULL);
+
 #endif
 
     UNITY_END();
@@ -1529,3 +1545,4 @@ static int32_t test_msgGetTraceConfig(void *args)
 
     return failCount;
 }
+

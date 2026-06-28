@@ -50,7 +50,8 @@
 #define TEST_UART_CONFIG_INDEX_INVALID                  CONFIG_UART_NUM_INSTANCES
 /* Macro to compare two values and return 0 if equal else 1 */
 #define TEST_UART_ASSERT_EQUAL(value1, value2)          ((value1 == value2) ? 0 : 1)
-
+/* Macro to enable manual test */
+#define ENABLE_MANUAL_TEST                              1
 /*===================================================================*/
 /* 					         Typedefs 					             */
 /*===================================================================*/
@@ -72,21 +73,40 @@
 #if !(defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X))
 
 #if (defined(SOC_AM62PX) || defined(SOC_AM62X) || defined(SOC_J722S))
-/* These SOCs run only the reduced test suite (1303/1304/1305/2514) and only
- * have CONFIG_UART0 configured via syscfg (the debug UART). Map any other
- * UART index used by the reduced suite to CONFIG_UART0 so the code compiles
- * and the tests exercise the syscfg-default debug UART. */
+/* These SOCs run only the reduced test suite (1303/1304/1305/2514). Map any
+ * UART index not already defined by the generated syscfg header to CONFIG_UART0
+ * so the code compiles and the tests exercise the syscfg-configured debug UART.
+ * Guard with #ifndef because the generated ti_drivers_config.h may already
+ * define CONFIG_UART1 (e.g. when the debug_log UART is a second syscfg instance). */
+#ifndef CONFIG_UART1
 #define CONFIG_UART1    CONFIG_UART0
+#endif
 #elif !(defined(SOC_AM62LX))
+#ifndef CONFIG_UART1
 #define CONFIG_UART1    CONFIG_UART_NUM_INSTANCES
 #endif
+#endif
+#ifndef CONFIG_UART2
 #define CONFIG_UART2    CONFIG_UART_NUM_INSTANCES
+#endif
+#ifndef CONFIG_UART3
 #define CONFIG_UART3    CONFIG_UART_NUM_INSTANCES
+#endif
+#ifndef CONFIG_UART4
 #define CONFIG_UART4    CONFIG_UART_NUM_INSTANCES
+#endif
+#ifndef CONFIG_UART5
 #define CONFIG_UART5    CONFIG_UART_NUM_INSTANCES
+#endif
+#ifndef CONFIG_UART6
 #define CONFIG_UART6    CONFIG_UART_NUM_INSTANCES
+#endif
+#ifndef CONFIG_UART7
 #define CONFIG_UART7    CONFIG_UART_NUM_INSTANCES
+#endif
+#ifndef CONFIG_UART8
 #define CONFIG_UART8    CONFIG_UART_NUM_INSTANCES
+#endif
 
 #endif
 
@@ -629,6 +649,8 @@ static void TestUart_uartWriteOnClosedHandle(void *args);
 static void TestUart_uartWriteSkipIntrElsePath(void *args);
 /* Testcase to validate UART_read on closed handle */
 static void TestUart_uartReadFailClosedHandle(void *args);
+
+#if defined(ENABLE_MANUAL_TEST) && (ENABLE_MANUAL_TEST == 1)
 /* Test to validate baud rate on debug UART with external loopback */
 static void TestUart_uartBaudRateValidationDebugUart(void *args);
 /* Test UART framing error (FE) detection in interrupt mode on debug UART */
@@ -637,6 +659,8 @@ static void TestUart_uartFramingErrorInterruptDebugUart(void *args);
 static void TestUart_uartParityErrorInterruptDebugUart(void *args);
 /* Test UART RLS error notification in blocking mode on debug UART */
 static void TestUart_uartRlsErrorBlockingDebugUart(void *args);
+#endif
+
 /* Testcase to validate UART read timeout in internal loopback */
 static void TestUart_uartReadTimeoutLoopback(void *args);
 /* Testcase to validate UART partial read in internal loopback */
@@ -736,6 +760,8 @@ void test_main(void *args)
     /* Finalize Unity Test Framework */
     UNITY_END();
 
+#if defined(ENABLE_MANUAL_TEST) && (ENABLE_MANUAL_TEST == 1)
+
     /* Baud rate validation via BTT method */
     uint32_t  baudRate;
 
@@ -764,6 +790,9 @@ void test_main(void *args)
 
     /* RLS error test */
     TEST_EXECUTE_TEST_CASE(TestUart_uartRlsErrorBlockingDebugUart, 11635, NULL);
+
+#endif
+
 #else
     (void)args;
 
@@ -7834,6 +7863,8 @@ static void TestUart_uartReadFailClosedHandle(void *args)
     TEST_ASSERT_EQUAL(0U, finalStatus);
 }
 
+#if defined(ENABLE_MANUAL_TEST) && (ENABLE_MANUAL_TEST == 1)
+
 /**
  * @brief Testcase to validate UART baud rate on the debug UART instance using external loopback.
  *
@@ -8141,197 +8172,21 @@ static void TestUart_uartBaudRateValidationDebugUart(void *args)
  * 5. Verify transRead.status == UART_TRANSFER_STATUS_ERROR_FE.
  * 6. Close and restore debug UART.
  *
+ * @note Manual test procedure (HyperTerminal / minicom):
+ *       1. Connect the debug UART to HyperTerminal or minicom configured for
+ *          115200 8N1 (no parity, 1 stop bit).
+ *       2. Run the test.  When the firmware prints "FE_TEST_PROMPT", the debug
+ *          UART has been reopened at 4800 baud and is waiting for data.
+ *       3. Type "hello" in the terminal (still at 115200 8N1).  The bytes
+ *          arrive at the DUT at 115200 baud while the UART is configured for
+ *          4800 baud, causing every received byte to trigger a framing error.
+ *       4. Observe the test result printed on the terminal: the firmware should
+ *          report a framing error (FE) detected on the received bytes, and the
+ *          test should PASS.
+ *
  * @param[in] args Unused.
  */
-UART_Transaction transRead   = {0};
 static void TestUart_uartFramingErrorInterruptDebugUart(void *args)
-{
-    UART_Handle      uartHandle  = NULL;
-    UART_Params      uartParams;
-    UART_Transaction transWrite  = {0};
-
-    int32_t          transferOK  = SystemP_FAILURE;
-    int32_t          semStatus   = SystemP_FAILURE;
-    uint8_t          txBuf[64]   = {0};
-    uint8_t          rxBuf[64]   = {0};
-    uint8_t          finalStatus = 0;
-    uint16_t         debugInstId = TestUart_debugUart;
-
-    /* Step 1: Close debug UART so we can reopen with test params */
-    TestUart_closeDebugUart();
-
-    /* Ensure the instance is fully closed */
-    uartHandle = UART_getHandle(debugInstId);
-    if (uartHandle != NULL)
-    {
-        UART_close(uartHandle);
-    }
-
-    /* Step 2: Open debug UART at a mismatched baud rate (4800)
-     * The external host is expected to communicate at 115200.
-     * This baud mismatch will cause framing errors on received data. */
-    UART_Params_init(&uartParams);
-    uartParams.transferMode    = UART_CONFIG_MODE_INTERRUPT;
-    uartParams.writeMode       = UART_TRANSFER_MODE_BLOCKING;
-    uartParams.readMode        = UART_TRANSFER_MODE_CALLBACK;
-    uartParams.readCallbackFxn = TestUart_uartReadCallback;
-    uartParams.readReturnMode  = UART_READ_RETURN_MODE_FULL;
-    uartParams.txTrigLvl       = UART_TXTRIGLVL_1;
-    uartParams.rxTrigLvl       = UART_RXTRIGLVL_1;
-    uartParams.skipIntrReg     = FALSE;
-    uartParams.operMode        = UART_OPER_MODE_16X;
-    uartParams.parityType      = UART_PARITY_ODD;
-    uartParams.stopBits        = UART_STOPBITS_2;
-
-    /* Use a mismatched baud rate to induce framing errors */
-    uartParams.baudRate = 4800U;
-
-    /* Platform-specific interrupt configuration for debug UART */
-#if defined(SOC_AM62AX)
-#if defined(CPU_C7X)
-    uartParams.intrNum = 24U;
-    uartParams.eventId = 434;
-#elif defined(CPU_MCU_R5F0)
-    uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
-#elif defined(CPU_A53)
-    uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
-#else
-    uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
-#endif
-#elif defined(SOC_AM62DX)
-#if defined(CPU_C7X)
-    uartParams.intrNum = 24U;
-    uartParams.eventId = 434;
-#else
-    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
-#endif
-#elif defined(SOC_AM275X)
-#if (defined(CPU_C75_0) || defined(CPU_C75_1))
-    uartParams.intrNum = 33U;
-    uartParams.eventId = 435;
-#else
-    uartParams.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART0_USART_IRQ_0;
-#endif
-#endif
-
-    /* Step 2c: Open debug UART instance */
-    uartHandle = UART_open(debugInstId, &uartParams);
-    if (uartHandle == NULL)
-    {
-        finalStatus |= (1U << 0);
-    }
-    else
-    {
-        /* Step 3: Send a prompt to the host so it echoes data back.
-         * The host receives garbled data (baud mismatch) and may echo
-         * something back. Any data arriving at the mismatched baud
-         * will trigger a framing error in the UART hardware. */
-        UART_Transaction_init(&transWrite);
-        transWrite.buf     = &txBuf[0U];
-        strncpy((char *)transWrite.buf, "FE_TEST_PROMPT\r\n", sizeof(txBuf));
-        transWrite.count   = strlen((char *)transWrite.buf);
-        transWrite.timeout = SystemP_WAIT_FOREVER;
-
-        transferOK = UART_write(uartHandle, &transWrite);
-        if (transferOK != SystemP_SUCCESS)
-        {
-            finalStatus |= (1U << 1);
-        }
-
-        /* Step 4: Issue a read in callback mode.
-         * The host is expected to send data at 115200 baud, but this UART
-         * is configured at 4800 baud. The hardware will detect framing
-         * errors and the ISR will invoke UART_procLineStatusErr(). */
-        semStatus = SemaphoreP_constructBinary(&gUartReadDoneSem, 0);
-        if (semStatus != SystemP_SUCCESS)
-        {
-            finalStatus |= (1U << 2);
-        }
-        else
-        {
-            UART_Transaction_init(&transRead);
-            transRead.buf     = &rxBuf[0U];
-            transRead.count   = 8U;
-            transRead.timeout = SystemP_WAIT_FOREVER;
-
-            transferOK = UART_read(uartHandle, &transRead);
-            if (transferOK != SystemP_SUCCESS)
-            {
-                finalStatus |= (1U << 3);
-            }
-
-            /* Wait for the read callback (posted by ISR on error or completion) */
-            SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
-
-            /* Step 5: Verify framing error status */
-            if (transRead.status != UART_TRANSFER_STATUS_ERROR_PE)
-            {
-                finalStatus |= (1U << 4);
-            }
-
-            SemaphoreP_destruct(&gUartReadDoneSem);
-        }
-
-        /* Step 6: Close and restore */
-        UART_close(uartHandle);
-    }
-
-    /* Reopen debug UART at default baud for assertion logging */
-    TestUart_openDebugUart();
-
-    if (finalStatus != 0)
-    {
-        DebugP_log("UART Framing Error Interrupt test FAILED on debug instance %d "
-                    "(status=0x%02X)\r\n", debugInstId, finalStatus);
-    }
-
-    TEST_ASSERT_EQUAL_INT(0, finalStatus);
-    TEST_ASSERT_EQUAL_UINT32(UART_TRANSFER_STATUS_ERROR_FE, transRead.status);
-}
-
-/**
- * @brief Validate UART parity error (PE) detection in interrupt/callback mode
- *        on the debug UART instance.
- *
- * Two-phase open strategy to avoid garbled output on the host terminal:
- *
- * Phase 1 (normal 8N1):
- *   The debug UART is (re)opened at its backed-up default configuration
- *   (115200 8N1, no parity).  The prompt "PE_TEST_PROMPT\\r\\n" is written
- *   and the TX FIFO is fully flushed so the host terminal sees the string
- *   correctly.  The debug UART is then closed.
- *
- * Phase 2 (FORCED0 parity):
- *   The same UART instance is reopened at 115200 with UART_PARITY_FORCED0
- *   in interrupt/callback-read mode.  The automation echo server has received
- *   the prompt in Phase 1 and echoes it back at 8N1 / 115200.  Because the
- *   USB round-trip latency (typically 5–20 ms) is much larger than the
- *   UART close/reopen time (< 1 ms), the echo bytes arrive AFTER the UART is
- *   reconfigured and the ISR is armed.
- *
- *   With FORCED0 parity, the DUT always expects the parity bit to be 0.  The
- *   echo arrives as 8N1 frames whose stop bit (always 1) is sampled in the
- *   parity-bit slot.  Since 1 ≠ 0, every echoed byte triggers a parity error.
- *   No framing error occurs because the baud rates match exactly.
- *
- * Test Steps:
- * 1. Reopen debug UART at default (backed-up) config.
- * 2. Transmit "PE_TEST_PROMPT\\r\\n" in blocking mode; flush TX FIFO.
- * 3. Close debug UART (echo is in transit over USB).
- * 4. Reopen debug UART at 115200 with UART_PARITY_FORCED0, callback read.
- * 5. Post a read transaction (count = 8, timeout = WAIT_FOREVER).
- * 6. Wait on gUartReadDoneSem (posted by ISR when PE is detected).
- * 7. Verify trans.status == UART_TRANSFER_STATUS_ERROR_PE.
- * 8. Close UART and restore the debug UART configuration.
- *
- * @note Requires an external automation echo server connected to the debug
- *       UART at 115200 8N1 that echoes received characters back without
- *       modification.  No special parity setting is required on the host —
- *       the default 8N1 is sufficient.
- *
- * @param[in] args Unused.
- */
-static void TestUart_uartParityErrorInterruptDebugUart(void *args)
 {
     UART_Handle      uartHandle  = NULL;
     UART_Params      uartParams;
@@ -8525,11 +8380,263 @@ static void TestUart_uartParityErrorInterruptDebugUart(void *args)
 
     TEST_ASSERT_EQUAL_INT(0, finalStatus);
     /* The parity-mismatch config (FORCED0) causes a line-status error ISR.
-     * UART_procLineStatusErr() reports ERROR_OE as the fallthrough default
-     * once the FIFO drains (PE/FE bits clear after each byte is read).
-     * Assert non-SUCCESS to confirm the RLS error path was exercised. */
-    TEST_ASSERT_NOT_EQUAL(UART_TRANSFER_STATUS_SUCCESS, transRead.status);
+     */
+    TEST_ASSERT_EQUAL(UART_TRANSFER_STATUS_ERROR_FE, transRead.status);
 }
+
+/**
+ * @brief Validate UART parity error (PE) detection in interrupt/callback mode
+ *        on the debug UART instance.
+ *
+ * Two-phase open strategy to avoid garbled output on the host terminal:
+ *
+ * Phase 1 (normal 8N1):
+ *   The debug UART is (re)opened at its backed-up default configuration
+ *   (115200 8N1, no parity).  The prompt "PE_TEST_PROMPT\\r\\n" is written
+ *   and the TX FIFO is fully flushed so the host terminal sees the string
+ *   correctly.  The debug UART is then closed.
+ *
+ * Phase 2 (FORCED0 parity):
+ *   The same UART instance is reopened at 115200 with UART_PARITY_FORCED0
+ *   in interrupt/callback-read mode.  The automation echo server has received
+ *   the prompt in Phase 1 and echoes it back at 8N1 / 115200.  Because the
+ *   USB round-trip latency (typically 5–20 ms) is much larger than the
+ *   UART close/reopen time (< 1 ms), the echo bytes arrive AFTER the UART is
+ *   reconfigured and the ISR is armed.
+ *
+ *   With FORCED0 parity, the DUT always expects the parity bit to be 0.  The
+ *   echo arrives as 8N1 frames whose stop bit (always 1) is sampled in the
+ *   parity-bit slot.  Since 1 ≠ 0, every echoed byte triggers a parity error.
+ *   No framing error occurs because the baud rates match exactly.
+ *
+ * Test Steps:
+ * 1. Reopen debug UART at default (backed-up) config.
+ * 2. Transmit "PE_TEST_PROMPT\\r\\n" in blocking mode; flush TX FIFO.
+ * 3. Close debug UART (echo is in transit over USB).
+ * 4. Reopen debug UART at 115200 with UART_PARITY_FORCED0, callback read.
+ * 5. Post a read transaction (count = 8, timeout = WAIT_FOREVER).
+ * 6. Wait on gUartReadDoneSem (posted by ISR when PE is detected).
+ * 7. Verify trans.status == UART_TRANSFER_STATUS_ERROR_PE.
+ * 8. Close UART and restore the debug UART configuration.
+ *
+ * @note Manual test procedure (HyperTerminal / minicom):
+ *       1. Connect the debug UART to HyperTerminal or minicom configured for
+ *          115200 8N1 (no parity, 1 stop bit).
+ *       2. Run the test.  When the firmware prints "PE_TEST_PROMPT", the debug
+ *          UART is about to close and reopen in parity-error detection mode.
+ *       3. Immediately change the terminal configuration to 115200 8E1 (even
+ *          parity, 1 stop bit) and type "hello" to send it back to the DUT.
+ *          The firmware waits up to 10 s for the response, so there is time
+ *          to switch the terminal settings before typing.
+ *       4. After sending the response, change the terminal back to 115200 8N1
+ *          so that subsequent console output from the DUT is readable.
+ *       5. Observe the test result printed on the terminal: the firmware should
+ *          report a parity error (PE) detected on the received bytes, and the
+ *          test should PASS.
+ *
+ * @param[in] args Unused.
+ */
+static void TestUart_uartParityErrorInterruptDebugUart(void *args)
+{
+    UART_Handle      uartHandle  = NULL;
+    UART_Params      uartParams;
+    UART_Params      origParams;
+    UART_Transaction transWrite  = {0};
+    UART_Transaction transRead   = {0};
+
+    int32_t          transferOK  = SystemP_FAILURE;
+    int32_t          semStatus   = SystemP_FAILURE;
+    uint8_t          txBuf[64]   = {0};
+    uint8_t          rxBuf[64]   = {0};
+    uint8_t          finalStatus = 0;
+    uint16_t         debugInstId = TestUart_debugUart;
+
+    /* ------------------------------------------------------------------ */
+    /* Phase 1: Send prompt at normal 8N1 config so the terminal shows     */
+    /*          readable text.  The automation echo server echoes it back. */
+    /* ------------------------------------------------------------------ */
+
+    /* Step 1: (Re)open the debug UART at its backed-up default config.
+     * setUp() already closed it; TestUart_openDebugUart() reopens it with
+     * the original syscfg parameters (115200 8N1, no parity). */
+    TestUart_openDebugUart();
+
+    /* Save current params now (Phase 1 opens with the same values so this is
+     * safe).  Must be done before Phase 2's UART_open overwrites object->prms
+     * — and also before any early-exit goto so that test_end's restore is
+     * always valid, even on the Phase-1-failure path. */
+    memcpy(&origParams, &(gUartConfig[debugInstId].object->prms), sizeof(UART_Params));
+
+    uartHandle = UART_getHandle(debugInstId);
+    if (uartHandle == NULL)
+    {
+        finalStatus |= (1U << 0);
+    }
+    else
+    {
+
+    /* Step 2: Send prompt while UART is in normal (8N1) mode.
+     * The host terminal and automation echo server receive these bytes
+     * correctly.  The echo will travel back over the USB-serial link. */
+    UART_Transaction_init(&transWrite);
+    transWrite.buf     = &txBuf[0U];
+    strncpy((char *)transWrite.buf, "PE_TEST_PROMPT\r\n", sizeof(txBuf));
+    transWrite.count   = strlen((char *)transWrite.buf);
+    transWrite.timeout = SystemP_WAIT_FOREVER;
+
+    transferOK = UART_write(uartHandle, &transWrite);
+    if (transferOK != SystemP_SUCCESS)
+    {
+        finalStatus |= (1U << 1);
+    }
+
+    /* Ensure every bit is on the wire before closing. */
+    UART_flushTxFifo(uartHandle);
+
+    /* Step 3: Close debug UART.  The echo is now in transit (USB latency
+     * >> UART close/reopen time), so it will arrive after Phase 2 is set up. */
+    TestUart_closeDebugUart();
+
+    /* Belt-and-suspenders: close any stale handle the above may have missed. */
+    uartHandle = UART_getHandle(debugInstId);
+    if (uartHandle != NULL)
+    {
+        UART_close(uartHandle);
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Phase 2: Reopen at FORCED0 parity; echo arrives → PE fires.        */
+    /* ------------------------------------------------------------------ */
+
+    /* Step 4: Open debug UART with FORCED0 parity at the same baud rate.
+     *
+     * UART_PARITY_FORCED0 forces the receiver to expect parity bit = 0.
+     * The echo from the automation server arrives as 8N1 frames: the stop
+     * bit (= 1) is sampled at the parity-bit position.  Since 1 ≠ 0 (expected),
+     * UART_procLineStatusErr() sets trans.status = UART_TRANSFER_STATUS_ERROR_PE.
+     * Because the baud rates are identical there is no framing error (FE). */
+    UART_Params_init(&uartParams);
+    uartParams.transferMode    = UART_CONFIG_MODE_INTERRUPT;
+    uartParams.writeMode       = UART_TRANSFER_MODE_BLOCKING;
+    uartParams.readMode        = UART_TRANSFER_MODE_CALLBACK;
+    uartParams.readCallbackFxn = TestUart_uartReadCallback;
+    uartParams.readReturnMode  = UART_READ_RETURN_MODE_FULL;
+    uartParams.txTrigLvl       = UART_TXTRIGLVL_1;
+    uartParams.rxTrigLvl       = UART_RXTRIGLVL_1;
+    uartParams.skipIntrReg     = FALSE;
+    uartParams.operMode        = UART_OPER_MODE_16X;
+    uartParams.stopBits        = UART_STOPBITS_1;
+    uartParams.parityType      = UART_PARITY_FORCED0;
+    uartParams.baudRate        = 115200U;
+
+    /* Platform-specific interrupt number for the debug UART */
+#if defined(SOC_AM62AX)
+#if defined(CPU_C7X)
+    uartParams.intrNum = 24U;
+    uartParams.eventId = 434;
+#elif defined(CPU_MCU_R5F0)
+    uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
+#elif defined(CPU_A53)
+    uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
+#else
+    uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
+#endif
+#elif defined(SOC_AM62DX)
+#if defined(CPU_C7X)
+    uartParams.intrNum = 24U;
+    uartParams.eventId = 434;
+#else
+    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+#endif
+#elif defined(SOC_AM275X)
+#if (defined(CPU_C75_0) || defined(CPU_C75_1))
+    uartParams.intrNum = 33U;
+    uartParams.eventId = 435;
+#else
+    uartParams.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART0_USART_IRQ_0;
+#endif
+#endif
+
+    uartHandle = UART_open(debugInstId, &uartParams);
+    if (uartHandle == NULL)
+    {
+        finalStatus |= (1U << 2);
+    }
+    else
+    {
+        /* Step 5: Arm a callback-mode read.  No TX write here — the DUT does
+         * not send anything in Phase 2, so the terminal sees no null bytes. */
+        semStatus = SemaphoreP_constructBinary(&gUartReadDoneSem, 0);
+        if (semStatus != SystemP_SUCCESS)
+        {
+            finalStatus |= (1U << 3);
+        }
+        else
+        {
+            UART_Transaction_init(&transRead);
+            transRead.buf     = &rxBuf[0U];
+            transRead.count   = 8U;
+            transRead.timeout = SystemP_WAIT_FOREVER;
+
+            transferOK = UART_read(uartHandle, &transRead);
+            if (transferOK != SystemP_SUCCESS)
+            {
+                finalStatus |= (1U << 4);
+            }
+
+            /* Step 6: Wait for the read callback (posted by ISR when PE is detected). */
+            SemaphoreP_pend(&gUartReadDoneSem, SystemP_WAIT_FOREVER);
+
+            /* Step 7: Verify a line-status error was reported.
+             *
+             * UART_procLineStatusErr() re-reads the LSR *after* draining the RX FIFO.
+             * Once all PE-tagged bytes are consumed the per-byte PE/FE/BI bits clear,
+             * so the driver falls through to the ERROR_OE default branch — regardless
+             * of which hardware error originally triggered the ISR.  The specific
+             * ERROR_PE code can only be preserved when the FIFO overflows with > 64
+             * error bytes (impossible here).  Accepting any non-SUCCESS status
+             * confirms the parity-mismatch condition reached the RLS ISR path, which
+             * is the purpose of this test. */
+            if (transRead.status == UART_TRANSFER_STATUS_SUCCESS)
+            {
+                finalStatus |= (1U << 5);
+            }
+
+            SemaphoreP_destruct(&gUartReadDoneSem);
+        }
+
+        /* Step 8: Close and restore */
+        UART_close(uartHandle);
+    }
+
+    } /* end: handle != NULL */
+
+    ClockP_sleep(10);
+
+    /* Restore the original params into the config object so that
+     * TestUart_openDebugUart() reads the correct (original) configuration.
+     * UART_open(debugInstId, &uartParams_FORCED0) overwrites object->prms;
+     * without this restore, TestUart_openDebugUart() reopens with FORCED0
+     * and every DebugP_log/assertion byte appears as \0 on the terminal. */
+    memcpy(&(gUartConfig[debugInstId].object->prms), &origParams, sizeof(UART_Params));
+
+    /* Reopen debug UART at default baud for assertion logging */
+    TestUart_openDebugUart();
+
+    if (finalStatus != 0)
+    {
+        DebugP_log("UART Parity Error Interrupt test FAILED on debug instance %d "
+                    "(status=0x%02X, transRead.status=%u)\r\n",
+                    debugInstId, finalStatus, (uint32_t)transRead.status);
+    }
+
+    TEST_ASSERT_EQUAL_INT(0, finalStatus);
+    /* The parity-mismatch config (FORCED0) causes a line-status error ISR.
+     */
+    TEST_ASSERT_EQUAL(UART_TRANSFER_STATUS_ERROR_PE, transRead.status);
+}
+
+#endif
 
 /**
  * @brief Validate UART partial read in internal loopback mode.
@@ -9936,6 +10043,8 @@ static void TestUart_udmaIsrTxWriteInsideCallback(void *args)
     TEST_ASSERT_EQUAL(0, finalStatus);
 }
 
+#if defined(ENABLE_MANUAL_TEST) && (ENABLE_MANUAL_TEST == 1)
+
 /**
  * @brief Testcase to verify Read Line Status errors are notified in blocking mode.
  *
@@ -10093,5 +10202,7 @@ static void TestUart_uartRlsErrorBlockingDebugUart(void *args)
     TEST_ASSERT_EQUAL_INT(0, finalStatus);
     TEST_ASSERT_NOT_EQUAL(UART_TRANSFER_STATUS_SUCCESS, transRd.status);
 }
+
+#endif
 
 #endif /* TEST_UART_RUN_FULL_SUITE */

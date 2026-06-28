@@ -2328,16 +2328,16 @@ static inline void UART_procLineStatusErr(UART_Config *config)
 {
     UART_Object      *object = (UART_Object*)config->object;
     UART_Attrs const *attrs  = (UART_Attrs const *)config->attrs;
-    uint32_t          lineStatus, iteration = 0U;
+    uint32_t          lineStatus = 0 , lineStatusCheck = 0, iteration = 0U;
 
-    lineStatus = UART_readLineStatus(attrs->baseAddr);
+    lineStatusCheck = UART_readLineStatus(attrs->baseAddr);
 
 #ifdef ENABLE_UART_FAULT_INJECTION
-    TestUart_faultInjectStubHandler(&lineStatus);
+    TestUart_faultInjectStubHandler(&lineStatusCheck);
 #endif
 
-    if (((lineStatus & UART_FIFO_PE_FE_BI_DETECTED) == UART_FIFO_PE_FE_BI_DETECTED)
-            || ((lineStatus & UART_OVERRUN_ERROR) == UART_OVERRUN_ERROR))
+    if (((lineStatusCheck & UART_FIFO_PE_FE_BI_DETECTED) == UART_FIFO_PE_FE_BI_DETECTED)
+            || ((lineStatusCheck & UART_OVERRUN_ERROR) == UART_OVERRUN_ERROR))
     {
         /* empty the RX FIFO which contains data with errors */
         if (object->readTrans != NULL)
@@ -2367,7 +2367,7 @@ static inline void UART_procLineStatusErr(UART_Config *config)
         while ((lineStatus != 0U) && (iteration != 0U));
 
 #ifdef ENABLE_UART_FAULT_INJECTION
-        TestUart_faultInjectStubHandler(&lineStatus);
+        TestUart_faultInjectStubHandler(&lineStatusCheck);
 #endif
 
         UART_intrDisable(attrs->baseAddr, UART_INTR_RHR_CTI | UART_INTR_LINE_STAT);
@@ -2377,17 +2377,17 @@ static inline void UART_procLineStatusErr(UART_Config *config)
 
         if (object->readTrans != NULL)
         {
-            if ((lineStatus & UART_BREAK_DETECTED_ERROR) != 0U)
+            if ((lineStatusCheck & UART_BREAK_DETECTED_ERROR) != 0U)
             {
                 object->readTrans->status = UART_TRANSFER_STATUS_ERROR_BI;
                 object->readErrorCnt++;
             }
-            else if ((lineStatus & UART_FRAMING_ERROR) != 0U)
+            else if ((lineStatusCheck & UART_FRAMING_ERROR) != 0U)
             {
                 object->readTrans->status = UART_TRANSFER_STATUS_ERROR_FE;
                 object->readErrorCnt++;
             }
-            else if ((lineStatus & UART_PARITY_ERROR) != 0U)
+            else if ((lineStatusCheck & UART_PARITY_ERROR) != 0U)
             {
                 object->readTrans->status = UART_TRANSFER_STATUS_ERROR_PE;
                 object->readErrorCnt++;

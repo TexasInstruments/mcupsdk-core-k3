@@ -207,6 +207,7 @@ const example_file_list = [
     "test/drivers/device_manager/sciclient_tisci_msg/.project/project.js",
     "test/drivers/device_manager/dm_trace_config/.project/project.js",
     "test/drivers/epwm/.project/project.js",
+    "test/drivers/epwm/test_epwm_system/.project/project.js",
     "test/drivers/ecap/.project/project.js",
     "test/drivers/eqep/.project/project.js",
     "test/drivers/eqep/test_eqep_system/.project/project.js",

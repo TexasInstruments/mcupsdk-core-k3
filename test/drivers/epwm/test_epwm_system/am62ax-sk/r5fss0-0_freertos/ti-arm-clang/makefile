@@ -2,7 +2,7 @@
 # Auto generated makefile
 #
 
-export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../..)
+export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
@@ -21,25 +21,26 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_epwm.$(PROFILE).out
+OUTNAME:=test_epwm_system.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_epwm.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=test_epwm.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=test_epwm.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=test_epwm.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=test_epwm.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=test_epwm.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=test_epwm.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=test_epwm.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=test_epwm_system.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=test_epwm_system.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=test_epwm_system.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=test_epwm_system.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=test_epwm_system.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=test_epwm_system.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=test_epwm_system.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=test_epwm_system.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
 endif
 
 FILES_common := \
-	test_epwm_multi_thread.c \
-	test_epwm.c \
+	system_test_utils.c \
+	test_epwm_system.c \
+	test_case_mapping.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -52,17 +53,18 @@ FILES_common := \
 FILES_PATH_common = \
 	.. \
 	../../.. \
+	../../../../../utils \
 	generated \
 
 INCLUDES_common := \
 	-I${CG_TOOL_ROOT}/include/c \
 	-I${MCU_PLUS_SDK_PATH}/source \
-	-I../../../soc/am62ax \
-	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
-	-I${MCU_PLUS_SDK_PATH}/test/drivers/epwm \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/r5f \
+	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
+	-I../../../../../utils \
+	-I../../.. \
 	-Igenerated \
 
 DEFINES_common := \
@@ -79,7 +81,6 @@ CFLAGS_common := \
 	-g \
 	-Wno-gnu-variable-sized-type-not-at-end \
 	-Wno-unused-function \
-	-DENABLE_MT_TESTS \
 
 CFLAGS_cpp_common := \
 	-Wno-c99-designator \
@@ -103,27 +104,25 @@ LNK_FILES_common = \
 	linker.cmd \
 
 LIBS_PATH_common = \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/test/unity/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/board/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
-	-lrm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lsciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lself_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lsciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-	-ldm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lfreertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldrivers.am62ax.dm-r5f.ti-arm-clang.${ConfigName}.lib \
-	-lboard.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lunity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lsciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lself_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lrm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	-ldm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
 	-llibsysbm.a \
 
@@ -135,30 +134,28 @@ LFLAGS_common = \
 
 
 LIBS_NAME = \
-	rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-	self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-	sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
-	dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	drivers.am62ax.dm-r5f.ti-arm-clang.${ConfigName}.lib \
-	board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
 	libsysbm.a \
 
 LIBS_PREBUILD_NAME = \
 
 LIBS_PATH_NAME = \
+	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	${MCU_PLUS_SDK_PATH}/test/unity/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
-	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	${MCU_PLUS_SDK_PATH}/source/board/lib \
-	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	${CG_TOOL_ROOT}/lib \
 
 LIBS_PREBUILD_PATH_NAME = \
@@ -226,7 +223,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62ax:r5fss0-0:freertos:ti-arm-clang test_epwm ...
+	@echo  Scrubing: am62ax:r5fss0-0:freertos:ti-arm-clang test_epwm_system ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

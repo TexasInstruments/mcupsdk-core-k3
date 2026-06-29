@@ -53,6 +53,8 @@ This page lists all the examples related to Security.
 \endcond
 
 \cond SOC_AM275X
+-# \subpage EXAMPLES_FWL_EXCPT_LOG
+-# \subpage EXAMPLES_FWL_EXCPT_TRIGGER
 -# \subpage EXAMPLES_TISCI_MSG
 -# \subpage EXAMPLES_RUNTIME_DEBUG_UNLOCK
 \endcond

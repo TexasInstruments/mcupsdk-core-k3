@@ -49,8 +49,13 @@
  * must be an alias of the CSLR MACRO which represents the combined fwl exception
  * interrupt number for the core on which this example is to be executed.
  */
+#if defined(SOC_AM275X)
+#define FWL_EXCEPTION_NOTIFY_SYSFW_FWL_EXCEPTION (CSLR_R5FSS0_CORE0_INTR_SMS0_TIFS_CBASS_0_FW_EXCEPTION_INTR_0)
+#define FWL_EXCEPTION_NOTIFY_CMBN_FWL_EXCEPTION (CSLR_R5FSS0_CORE0_INTR_SMS0_COMMON_0_COMBINED_SEC_IN_0)
+#else
 #define FWL_EXCEPTION_NOTIFY_SYSFW_FWL_EXCEPTION (CSLR_WKUP_R5FSS0_CORE0_INTR_SMS0_TIFS_CBASS_0_FW_EXCEPTION_INTR_0)
 #define FWL_EXCEPTION_NOTIFY_CMBN_FWL_EXCEPTION (CSLR_WKUP_R5FSS0_CORE0_INTR_SMS0_COMMON_0_COMBINED_SEC_IN_0)
+#endif
 
 /* Priority for firewall exception notify tasks */
 #define FWL_EXCPT_NOTIFY_TASK_PRI         (configMAX_PRIORITIES-2U)
@@ -183,6 +188,12 @@ void fwl_exception_log_main(void *args)
             DebugP_log("Could not create task for CMBN firewall exceptions!\r\n");
         }
     }
+
+#if defined(SOC_AM275X)
+    /* Suspend instead of returning so drivers stay open; notification
+     * tasks at lower priority can still run to log exceptions */
+    vTaskSuspend(NULL);
+#endif
 
 }
 

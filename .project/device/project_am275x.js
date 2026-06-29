@@ -171,6 +171,8 @@ const example_file_list = [
     "examples/kernel/nortos/basic_smart_placement/.project/project.js",
     "examples/lpm/lpm_partial_io/.project/project.js",
     "examples/security/runtime_debug_unlock/.project/project_am275x.js",
+    "examples/security/fwl_exception_log/.project/project.js",
+    "examples/security/fwl_exception_trigger/.project/project.js",
     "examples/security/tisci_msg/.project/project_am275x.js",
     "source/networking/enet/core/examples/enet_cpsw_est/.project/project_am275x.js",
     "source/networking/enet/core/examples/enet_cpsw_fast_startup/.project/project.js",

@@ -38,6 +38,17 @@ exceptions, the latter one responds to exception events as and when they take pl
 
 \endcond
 
+\cond SOC_AM275X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-1 freertos
+ Toolchain      | ti-arm-clang
+ Boards         | @VAR_BOARD_NAME_LOWER
+ Example folder | examples/security/fwl_exception_trigger
+
+\endcond
+
 # Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination
@@ -45,6 +56,9 @@ exceptions, the latter one responds to exception events as and when they take pl
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
 - Launch a CCS debug session and run the executable, see \ref CCS_LAUNCH_PAGE
+\cond SOC_AM275X
+- The example selects UART3 in the sysconfig for logging purposes so the logs should appear on UART3.
+\endcond
 
 # Sample Output
 

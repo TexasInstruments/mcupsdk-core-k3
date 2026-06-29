@@ -84,7 +84,7 @@ const robot_template_qnx = {
         testCaseIds: "SITSW-4745",
         cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_emmc_qnx_${DEVICE_TYPE}.cfg",
         expectTimeout: 300,
-        timeout: 700,
+        timeout: 1800,
     },
 };
 

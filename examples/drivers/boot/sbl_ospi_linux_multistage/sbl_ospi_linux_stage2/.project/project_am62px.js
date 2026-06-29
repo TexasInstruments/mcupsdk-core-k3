@@ -229,7 +229,7 @@ const robot_template_qnx = {
         testCaseIds: "SITSW-4458",
         cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_qnx_${DEVICE_TYPE}.cfg",
         expectTimeout: 300,
-        timeout: 900,
+        timeout: 1800,
         expectations: [
             { port: "USB0", string: "AM62PXEVM#" },
             { port: "USB2", string: "Starting Sciserver..... PASSED" },

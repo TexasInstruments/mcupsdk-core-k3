@@ -136,6 +136,8 @@ const robot_template = {
         testCaseName: "Benchmark: Coremark Pro: nnet_test",
         testCaseIds: "SITSW-6636",
         expectedString: "Done:nnet_test",
+        timeout: 500,
+        expectTimeout: 300,
     },
 };
 

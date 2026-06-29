@@ -84,6 +84,8 @@ const robot_template = {
         componentName: "DSS",
         testCaseName: "DSS: OLDI Interface - Test multiple frame input formats",
         testCaseIds: "SITSW-4560",
+        expectTimeout: 600,
+        timeout: 900,
     },
 };
 

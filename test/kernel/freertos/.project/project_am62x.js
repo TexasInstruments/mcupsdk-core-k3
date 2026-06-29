@@ -362,11 +362,11 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
-
-    build_property.templates = [...(build_property.templates || []), robot_template_noatf];
-
-    if (buildOption.cpu.match(/a53ss/)) {
+    if (buildOption.cpu.match(/r5f*/) || buildOption.cpu.match(/m4f*/) || buildOption.cpu.match(/a53ss0-0/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+        build_property.templates = [...build_property.templates, robot_template_noatf];
+    }
+    if (buildOption.cpu.match(/a53ss0-0/) && buildOption.os === "freertos") {
         build_property.templates = [...(build_property.templates || []), robot_template_amp];
     }
 

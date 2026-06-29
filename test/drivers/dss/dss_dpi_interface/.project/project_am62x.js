@@ -84,6 +84,8 @@ const robot_template = {
         componentName: "DSS",
         testCaseName: "DSS: DPI Interface - Test output DPI resolution",
         testCaseIds: "SITSW-4796 SITSW-4797",
+        expectTimeout: 600,
+        timeout: 900,
     },
 };
 

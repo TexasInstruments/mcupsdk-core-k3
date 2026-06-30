@@ -45,12 +45,6 @@
 #include <sdl/esm/sdl_esm_priv.h>
 #include <sdl/dpl/sdl_dpl.h>
 
-/*
- * Design: PROC_SDL-1068
- */
-static SDL_ESM_Instance_t SDL_ESM_instance_WKUP;
-static SDL_ESM_Instance_t SDL_ESM_instance_MAIN;
-
 /** ================================================================================
  *
  * \brief        Check that ESM instance type is valid for this device, and fill the
@@ -61,7 +55,7 @@ static SDL_ESM_Instance_t SDL_ESM_instance_MAIN;
  *
  * \return       true: if valid instance type; false if not valid instance type
  */
-bool SDL_ESM_getBaseAddr(const SDL_ESM_Inst esmInstType, uint32_t *esmBaseAddr)
+bool SDL_ESM_getBaseAddr(SDL_ESM_Inst esmInstType, uint32_t *esmBaseAddr)
 {
     bool instValid = ((bool)false);
     uint32_t size = 0u;
@@ -138,9 +132,14 @@ bool SDL_ESM_getMaxNumEvents(const SDL_ESM_Inst esmInstType,
  *
  * \return       true: if valid instance type; false if not valid instance type
  */
-bool SDL_ESM_selectEsmInst(const SDL_ESM_Inst esmInstType,
+bool SDL_ESM_selectEsmInst(SDL_ESM_Inst esmInstType,
                            SDL_ESM_Instance_t **pEsmInstancePtr)
 {
+    /*
+    * Design: PROC_SDL-1068
+    */
+    static SDL_ESM_Instance_t SDL_ESM_instance_WKUP;
+    static SDL_ESM_Instance_t SDL_ESM_instance_MAIN;
     bool instValid = ((bool)true);
 
     switch(esmInstType)
@@ -173,7 +172,7 @@ bool SDL_ESM_selectEsmInst(const SDL_ESM_Inst esmInstType,
  * \return  Interrupt Number, SDL_ESM_INST_INVALID,
  *          or SDL_ESM_INTNUMBER_INVALID error
  */
-int32_t SDL_ESM_getIntNumber(const SDL_ESM_Inst esmInstType,
+int32_t SDL_ESM_getIntNumber(SDL_ESM_Inst esmInstType,
                               SDL_ESM_IntType esmIntType)
 {
     uint32_t intNum = SDL_ESM_INST_INVALID;

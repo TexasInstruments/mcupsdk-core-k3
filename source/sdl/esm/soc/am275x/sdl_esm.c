@@ -52,9 +52,6 @@
 #define MASK_BIT (1u)
 #define STATUS_NUM (1u)
 
-static pSDL_DPL_HwipHandle SDL_ESM_HiHwiPHandle;
-static pSDL_DPL_HwipHandle SDL_ESM_LoHwiPHandle;
-static pSDL_DPL_HwipHandle SDL_ESM_CfgHwiPHandle;
 /**
  * Design: PROC_SDL-1058,PROC_SDL-1059
  */
@@ -137,7 +134,7 @@ int32_t SDL_ESM_getStaticRegisters(SDL_ESM_Inst instance, SDL_ESM_staticRegs *pS
  * Design: PROC_SDL-1062,PROC_SDL-1063
  */
 /* Verifies the written config against the provided configuration */
-int32_t SDL_ESM_verifyConfig(SDL_ESM_Inst instance, const SDL_ESM_config *pCofnig)
+int32_t SDL_ESM_verifyConfig(SDL_ESM_Inst instance, const SDL_ESM_config *pConfig)
 {
     uint32_t intStatus;
     uint32_t esmMaxNumevents;
@@ -181,11 +178,11 @@ int32_t SDL_ESM_verifyConfig(SDL_ESM_Inst instance, const SDL_ESM_config *pCofni
 
                 SDLRet = SDL_ESM_isEnableIntr(esmInstBaseAddr, intNum, &intStatus);
 
-                enableWr = ((pCofnig->enableBitmap[i] & (((uint32_t)MASK_BIT) << j)) != 0u) ? 1u : 0u;
+                enableWr = ((pConfig->enableBitmap[i] & (((uint32_t)MASK_BIT) << j)) != 0u) ? 1u : 0u;
 
                 if (intStatus == enableWr)
                 {
-                    intrPriorityLvlWr = ((pCofnig->priorityBitmap[i] & (((uint32_t)1u) << j)) != 0u) ? 1u : 0u;
+                    intrPriorityLvlWr = ((pConfig->priorityBitmap[i] & (((uint32_t)1u) << j)) != 0u) ? 1u : 0u;
                     (void)SDL_ESM_getIntrPriorityLvl(esmInstBaseAddr,
                                                      intNum,
                                                      &intrPriorityLvlRd);
@@ -202,7 +199,7 @@ int32_t SDL_ESM_verifyConfig(SDL_ESM_Inst instance, const SDL_ESM_config *pCofni
 
                 if (SDLRet == SDL_PASS)
                 {
-                    enableWr = ((pCofnig->errorpinBitmap[i] & (((uint32_t)MASK_BIT) << j)) != 0u) ? 1u : 0u;
+                    enableWr = ((pConfig->errorpinBitmap[i] & (((uint32_t)MASK_BIT) << j)) != 0u) ? 1u : 0u;
                     SDLRet = SDL_ESM_getInfluenceOnErrPin(esmInstBaseAddr,
                                                           intNum,
                                                           &influence);
@@ -300,6 +297,9 @@ int32_t SDL_ESM_setNError(SDL_ESM_Inst esmInstType)
 
 static SDL_Result Esmhandlerinit(SDL_ESM_Inst esmInstType)
 {
+    static pSDL_DPL_HwipHandle SDL_ESM_HiHwiPHandle;
+    static pSDL_DPL_HwipHandle SDL_ESM_LoHwiPHandle;
+    static pSDL_DPL_HwipHandle SDL_ESM_CfgHwiPHandle;
     SDL_Result result = SDL_EBADARGS;
     int32_t intNumHi, intNumLo, intNumCfg;
     SDL_DPL_HwipParams intrParams;
@@ -330,6 +330,23 @@ static SDL_Result Esmhandlerinit(SDL_ESM_Inst esmInstType)
     (void)SDL_DPL_disableInterrupt(intNumHi);
     (void)SDL_DPL_disableInterrupt(intNumLo);
     (void)SDL_DPL_disableInterrupt(intNumCfg);
+
+    /* Deregister existing handlers to prevent resource leak on re-initialization */
+    if (SDL_ESM_HiHwiPHandle != NULL)
+    {
+        (void)SDL_DPL_deregisterInterrupt(SDL_ESM_HiHwiPHandle);
+        SDL_ESM_HiHwiPHandle = NULL;
+    }
+    if (SDL_ESM_LoHwiPHandle != NULL)
+    {
+        (void)SDL_DPL_deregisterInterrupt(SDL_ESM_LoHwiPHandle);
+        SDL_ESM_LoHwiPHandle = NULL;
+    }
+    if (SDL_ESM_CfgHwiPHandle != NULL)
+    {
+        (void)SDL_DPL_deregisterInterrupt(SDL_ESM_CfgHwiPHandle);
+        SDL_ESM_CfgHwiPHandle = NULL;
+    }
 
     intrParams.intNum = intNumHi;
     intrParams.callback = (*pHiInterruptHandler);

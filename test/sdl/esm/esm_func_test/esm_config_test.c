@@ -146,10 +146,10 @@ extern int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInstType,
                                          uint32_t intSrc,
                                          void *arg);
 
-static uint32_t arg;
+static uint32_t gArg;
 void  esm_init(SDL_ESM_Inst esmType)
 {
-    void *ptr = (void *)&arg;
+    void *ptr = (void *)&gArg;
     SDL_ErrType_t result;
     /* Initialize MAIN ESM module */
     if(esmType == APP_ESM_INSTANCE)

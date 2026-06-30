@@ -105,23 +105,23 @@ int32_t SDL_ESM_verifyConfig(SDL_ESM_Inst instance, const SDL_ESM_config *pConfi
  *
  * \brief   SDL ESM API to clear the nError pin for the specified ESM instance
  *
- * \param   instance: ESM Instance
+ * \param   esmInstType: ESM Instance
  *
  * \return  SDL_PASS if nError pin status is successfully cleared.
  *          SDL_EBADARGS if instance is invalid.
  */
-int32_t SDL_ESM_clrNError(SDL_ESM_Inst instance);
+int32_t SDL_ESM_clrNError(SDL_ESM_Inst esmInstType);
 
 /** ============================================================================
  *
  * \brief   SDL ESM API to set the nError pin for the specified ESM instance
  *
- * \param   instance: ESM Instance
+ * \param   esmInstType: ESM Instance
  *
  * \return  SDL_PASS if nError pin status is successfully set.
  *          SDL_EBADARGS if instance is invalid.
  */
-int32_t SDL_ESM_setNError(SDL_ESM_Inst instance);
+int32_t SDL_ESM_setNError(SDL_ESM_Inst esmInstType);
 
 /** ============================================================================
  * \brief   This API is use to set error pin out mode(LEVEL or PWM).
@@ -151,11 +151,11 @@ int32_t SDL_ESM_setPinOutMode(SDL_ESM_Inst instance, esmErrOutMode_t pinOutMode)
  *         following APIs allow registration of a callback for specific events.
  *         This API is used by other SDL modules and not by the application
  *
- * \param   instance: ESM Instance
- * \param   eventBitMap: Bitmap for ESM error event of interest for this callback.
+ * \param   esmInstType: ESM Instance
+ * \param   eventBitmap: Bitmap for ESM error event of interest for this callback.
  *                       Array of uint32_t type with each bit representing one
  *                       ESM error event.
- * \param   eccCallback: Pointer to the callback to be called by the ESM Handler
+ * \param   callBack: Pointer to the callback to be called by the ESM Handler
  *                       to notify the ECC module of an ESM error event
  * \param   callbackArg: Argument that will be passed along with the callback.
  *
@@ -163,8 +163,8 @@ int32_t SDL_ESM_setPinOutMode(SDL_ESM_Inst instance, esmErrOutMode_t pinOutMode)
  *          SDL_EBADARGS if invalid argument is passed.
  *          SDL_EFAIL if other failure.
  */
-int32_t SDL_ESM_registerECCCallback(SDL_ESM_Inst instance, uint32_t eventBitMap[],
-                                    SDL_ESM_applicationCallback eccCallback,
+int32_t SDL_ESM_registerECCCallback(SDL_ESM_Inst esmInstType, uint32_t eventBitmap[],
+                                    SDL_ESM_applicationCallback callBack,
                                     void *callbackArg);
 
 /** ============================================================================

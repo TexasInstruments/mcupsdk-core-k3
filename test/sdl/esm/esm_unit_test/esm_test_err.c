@@ -41,6 +41,7 @@
 #include "esm_test_main.h"
 #include <sdl/sdl_esm.h>
 #include <sdl/dpl/sdl_dpl.h>
+#include <sdl/dpl/sdl_dpl_priv.h>
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/AddrTranslateP.h>
 #if defined (SOC_AM64X)
@@ -1304,7 +1305,6 @@ int32_t SDL_ESM_runNegativeTests(void)
 /* Test for SDL_ESM_init Hi interrupt register failure (line 344 false branch coverage) */
     if (testStatus == SDL_APP_TEST_PASS)
     {
-        extern SDL_DPL_Interface *gSDL_DPL_Interface;
         SDL_DPL_Interface savedInterface;
         instance = APP_ESM_TEST_INST;
 

@@ -40,6 +40,7 @@
 
 #include <stdint.h>
 #include "sdl_dpl.h"
+#include "sdl_dpl_priv.h"
 #include <sdl/include/sdl_types.h>
 #include <kernel/dpl/HwiP.h>
 

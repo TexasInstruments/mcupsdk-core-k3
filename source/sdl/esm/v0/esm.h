@@ -846,7 +846,7 @@ int32_t SDL_ESM_isEnableIntr(uint32_t baseAddr, uint32_t intrSrc, uint32_t *pEnS
  *
  * \param   baseAddr        Base Address of the ESM Registers.
  *
- * \param   intrNum         Interrupt Number to diable
+ * \param   group           Group Interrupt Number to diable
  *
  * \return                  SDL_PASS - success
  * @n                       SDL_EBADARGS - API fails due to bad input arguments
@@ -864,12 +864,12 @@ int32_t SDL_ESM_isEnableIntr(uint32_t baseAddr, uint32_t intrSrc, uint32_t *pEnS
        uint32_t            baseAddr = SDL_MCU_ESM0_CFG_BASE;
        uint32_t            intrNum = 0u;
        int32_t             sdlRet;
-       sdlRet = SDL_ESM_disableCfgIntr (baseAddr, intrNum);
+       sdlRet = SDL_ESM_disableCfgIntr (baseAddr, group);
 
    @endverbatim
  *
  */
-int32_t SDL_ESM_disableCfgIntr(uint32_t baseAddr, uint32_t intrNum);
+int32_t SDL_ESM_disableCfgIntr(uint32_t baseAddr, uint32_t group);
 
 /**
  * \brief   This API is used to enable the configuration interrupt.
@@ -1046,7 +1046,7 @@ int32_t SDL_ESM_getIntrPriorityLvl(uint32_t baseAddr, uint32_t intrSrc,
  *
  * \param   group           Group for which status to return.
  *
- * \param   pStaus          pointer to interrupt status
+ * \param   pStatus          pointer to interrupt status
  *
  * \return                  SDL_PASS - success
  * @n                       SDL_EBADARGS - API fails due to bad input arguments
@@ -1073,7 +1073,7 @@ int32_t SDL_ESM_getIntrPriorityLvl(uint32_t baseAddr, uint32_t intrSrc,
    @endverbatim
  *
  */
-int32_t SDL_ESM_getCfgIntrStatus(uint32_t baseAddr, uint32_t group, uint32_t *pStaus);
+int32_t SDL_ESM_getCfgIntrStatus(uint32_t baseAddr, uint32_t group, uint32_t *pStatus);
 
 /**
  * \brief   This API is used to get the interrupt status.
@@ -1082,7 +1082,7 @@ int32_t SDL_ESM_getCfgIntrStatus(uint32_t baseAddr, uint32_t group, uint32_t *pS
  *
  * \param   intrSrc         Interrupt for which status to return.
  *
- * \param   pStaus          pointer to interrupt status
+ * \param   pStatus          pointer to interrupt status
  *
  * \return                  SDL_PASS - success
  * @n                       SDL_EBADARGS - API fails due to bad input arguments
@@ -1109,7 +1109,7 @@ int32_t SDL_ESM_getCfgIntrStatus(uint32_t baseAddr, uint32_t group, uint32_t *pS
    @endverbatim
  *
  */
-int32_t SDL_ESM_getIntrStatus(uint32_t baseAddr, uint32_t intrSrc, uint32_t *pStaus);
+int32_t SDL_ESM_getIntrStatus(uint32_t baseAddr, uint32_t intrSrc, uint32_t *pStatus);
 
 /**
  * \brief   This API is used to set the configuration interrupt RAW status for a group.

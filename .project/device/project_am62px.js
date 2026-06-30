@@ -243,6 +243,7 @@ const example_file_list = [
     "test/kernel/dpl/.project/project.js",
     "test/kernel/freertos/.project/project.js",
     "test/kernel/rov/.project/project.js",
+    "test/kernel/dpl_timer/.project/project.js",
 
     // Safety checkers Examples
     "source/safety_checkers/examples/pm_checkers_app/.project/project.js",

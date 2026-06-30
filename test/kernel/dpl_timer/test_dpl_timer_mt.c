@@ -41,7 +41,7 @@
 #include "test_execute.h"
 #undef TestExecute_SkipTestIdMatrix
 
-#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM275X)
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM275X) || defined(SOC_AM62PX) || defined(SOC_AM62X)
 
 /*===================================================================*/
 /* 					      Macro defines 					         */

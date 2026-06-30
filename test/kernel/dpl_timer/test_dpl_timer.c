@@ -41,7 +41,7 @@
 #include "test_execute.h"
 #undef TestExecute_SkipTestIdMatrix
 
-#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM275X)
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM275X) || defined(SOC_AM62PX) || defined(SOC_AM62X)
 
 /*===================================================================*/
 /* 					      Macro defines 					         */
@@ -109,6 +109,25 @@ TEST_EXECUTE_SKIP_IDS(TestDplTimer_am275_c7x_0_skip, 10360, 10372)
 /* Wkp-R5*/
 TEST_EXECUTE_SKIP_IDS(TestDplTimer_am275_wkp_r5_skip, 10360, 10372, 10377, 10379, 10382)
 
+/* AM62PX */
+
+/* mcu-r5f */
+TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62px_mcur5_skip, 10360, 10372, 10377)
+
+/* wkup-r5f */
+TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62px_wkupr5_skip, 10360, 10372, 10377)
+
+/* AM62X*/
+
+/* R5F */
+TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62x_r5f_skip, 10360, 10364, 10365, 10372, 10377, 10380, 10382, 10383)
+
+/* M4F */
+TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62x_m4f_skip, 10360, 10372, 10373, 10374, 10377)
+
+/* A53 */
+TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62x_a53_skip, 10360, 10372, 10382, 10383)
+
 /* Testcase execution list */
 const TestExecute_idList TestExecute_SkipTestIdMatrix[TEST_SOC_COUNT][TEST_CORE_COUNT] = {
     TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62DX, TEST_CORE_IDX_MCU_R5F0, TestDplTimer_am62dx_mcur5_skip),
@@ -127,6 +146,13 @@ const TestExecute_idList TestExecute_SkipTestIdMatrix[TEST_SOC_COUNT][TEST_CORE_
     TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM275X, TEST_CORE_IDX_R5F1_1, TestDplTimer_am275_r5f_skip),
     TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM275X, TEST_CORE_IDX_C75_0, TestDplTimer_am275_c7x_0_skip),
     TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM275X, TEST_CORE_IDX_R5F0, TestDplTimer_am275_wkp_r5_skip),
+
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62PX, TEST_CORE_IDX_MCU_R5F0, TestDplTimer_am62px_mcur5_skip),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62PX, TEST_CORE_IDX_R5F0, TestDplTimer_am62px_wkupr5_skip),
+
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_R5F0, TestDplTimer_am62x_r5f_skip),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_M4F0, TestDplTimer_am62x_m4f_skip),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_A53, TestDplTimer_am62x_a53_skip),
 };
 
 static volatile bool TestDplTimer_timerCallbackCalled = false;

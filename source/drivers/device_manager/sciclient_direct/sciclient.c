@@ -1148,7 +1148,8 @@ static void Sciclient_ISR(uintptr_t arg)
                                                 pSciclient_secProxyCfg,rxThread,0U)
                                         + ((uintptr_t) secHeaderSizeWords * (uintptr_t) 4U));
         uint8_t seqId = pLocalRespHdr->seq;
-        if ((gSciclientHandle.semStatus[seqId] == 0) && (seqId != 0U))
+        if ((seqId != 0U) && (seqId < SCICLIENT_MAX_QUEUE_SIZE) &&
+            (gSciclientHandle.semStatus[seqId] == 0))
         {
             HwiP_disableInt( (uint32_t) gSciclientMap[contextId].respIntrNum);
             (void) SemaphoreP_post(gSciclientHandle.semHandles[seqId]);
@@ -1160,7 +1161,10 @@ static void Sciclient_ISR(uintptr_t arg)
             *  So, we need to flush this message.*/
             (void) Sciclient_readThread32(rxThread,
                                 (uint8_t)((gSciclient_maxMsgSizeBytes/4U) - 1U));
-            gSciclientHandle.semStatus[seqId] = 0;
+            if ((seqId != 0U) && (seqId < SCICLIENT_MAX_QUEUE_SIZE))
+            {
+                gSciclientHandle.semStatus[seqId] = 0;
+            }
             HwiP_clearInt( (uint32_t) gSciclientMap[contextId].respIntrNum);
         }
     }

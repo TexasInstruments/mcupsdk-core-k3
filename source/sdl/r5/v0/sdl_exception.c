@@ -57,12 +57,6 @@
 #endif
 
 void SDL_EXCEPTION_registerECCHandler(SDL_EXCEPTION_ECCCallback_t ECCCallBackFunctionPtr);
-void SDL_EXCEPTION_undefInstructionExptnHandler(void *param);
-void SDL_EXCEPTION_swIntrExptnHandler(void *param);
-void SDL_EXCEPTION_prefetchAbortExptnHandler(void *param);
-void SDL_EXCEPTION_dataAbortExptnHandler(void *param);
-void SDL_EXCEPTION_irqExptnHandler(void *param);
-void SDL_EXCEPTION_fiqExptnHandler(void *param);
 
 static SDL_EXCEPTION_Instance_t SDL_EXCEPTION_instance;
 

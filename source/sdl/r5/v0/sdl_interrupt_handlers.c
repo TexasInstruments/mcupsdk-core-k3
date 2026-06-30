@@ -55,7 +55,7 @@
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
-void undefInstructionExptnHandler(void)
+__attribute__((interrupt("UNDEF"), section(".text.hwi"), aligned(32))) void undefInstructionExptnHandler(void)
 {
     /* Call registered call back */
     if (gExptnHandlers.udefExptnHandler != (exptnHandlerPtr)NULL)
@@ -73,7 +73,7 @@ void undefInstructionExptnHandler(void)
     }
 }
 
-void swIntrExptnHandler(void)
+__attribute__((interrupt("SWI"), section(".text.hwi"), aligned(32))) void swIntrExptnHandler(void)
 {
     /* Call registered call back */
     if (gExptnHandlers.swiExptnHandler != (exptnHandlerPtr)NULL)
@@ -109,7 +109,7 @@ void prefetchAbortExptnHandler(void)
     }
 }
 
-void dataAbortExptnHandler(void)
+__attribute__((interrupt("ABORT"), section(".text.hwi"), aligned(32))) void dataAbortExptnHandler(void)
 {
     /* Call registered call back */
     if (gExptnHandlers.dabtExptnHandler != (exptnHandlerPtr)NULL)
@@ -127,7 +127,7 @@ void dataAbortExptnHandler(void)
     }
 }
 
-void irqExptnHandler(void)
+__attribute__((interrupt("IRQ"), section(".text.hwi"), aligned(32))) void irqExptnHandler(void)
 {
     /* Call registered call back */
     if (gExptnHandlers.irqExptnHandler != (exptnHandlerPtr)NULL)
@@ -145,7 +145,7 @@ void irqExptnHandler(void)
     }
 }
 
-void fiqExptnHandler(void)
+__attribute__((interrupt("FIQ"), section(".text.hwi"), aligned(32))) void fiqExptnHandler(void)
 {
     /* Call registered call back */
     if (gExptnHandlers.fiqExptnHandler != (exptnHandlerPtr)NULL)

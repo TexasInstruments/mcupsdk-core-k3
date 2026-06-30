@@ -325,6 +325,7 @@ int32_t SDL_ECC_clearNIntrPending(SDL_ECC_MemType eccMemType, SDL_ECC_MemSubType
                                   SDL_Ecc_AggrIntrSrc intrSrc,
                                   SDL_Ecc_AggrEDCErrorSubType subType, uint32_t numEvents);
 
+#if defined (SOC_J722S)
 /** ============================================================================
  *
  * \brief   Application provided external callback function for ECC handling
@@ -347,6 +348,7 @@ void SDL_ECC_applicationCallbackFunction(SDL_ECC_MemType eccMemType,
                                          uint32_t ramId,
                                          uint64_t bitErrorOffset,
                                          uint32_t bitErrorGroup);
+#endif
 
 /** @} */
 

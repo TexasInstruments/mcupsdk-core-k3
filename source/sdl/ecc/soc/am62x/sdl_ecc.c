@@ -64,61 +64,6 @@
 
 SDL_ecc_aggrRegs * SDL_ECC_aggrTransBaseAddressTable[SDL_ECC_MEMTYPE_MAX];
 
-#if defined (M4F_CORE)
-/* Event BitMap for ECC ESM callback for MAIN */
-uint32_t eventBitMapMAIN[SDL_ESM_MAX_EVENT_MAP_NUM_WORDS] =
-{
-  0x7705be0eu, 0x3fc3e01cu, 0xef017c0eu, 0x03c08000u,
-  0x06cc0000u, 0x00000000u, 0x00000000u, 0x00000000u,
-  0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-  0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-  0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-  0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-  0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-  0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-};
-
-/* Event BitMap for ECC ESM callback for WKUP */
-uint32_t eventBitMapWKUP[SDL_ESM_MAX_EVENT_MAP_NUM_WORDS] =
-{
-    0x01bfd837u, 0x00000000u, 0x00000000u, 0x00000000u,
-    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-};
-#endif
-
-#if defined (R5F_CORE)
-/* Event BitMap for ECC ESM callback for MAIN */
-uint32_t eventBitMapMAIN[SDL_ESM_MAX_EVENT_MAP_NUM_WORDS] =
-{
-  0x7705be0eu, 0x3fc3e0fcu, 0xef017c0eu, 0x03c08000u,
-  0x06cc0000u, 0x00000000u, 0x00000000u, 0x00000000u,
-  0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-  0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-  0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-  0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-  0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-  0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-};
-
-/* Event BitMap for ECC ESM callback for WKUP */
-uint32_t eventBitMapWKUP[SDL_ESM_MAX_EVENT_MAP_NUM_WORDS] =
-{
-    0x01bfd830u, 0x00000000u, 0x00000000u, 0x00000000u,
-    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
-};
-#endif
 /** ---------------------------------------------------------------------------
  * @brief This enumerator defines the values for ecc self test flag
  * ----------------------------------------------------------------------------
@@ -159,7 +104,7 @@ typedef struct SDL_ECC_Instance_s
 static SDL_ECC_Instance_t SDL_ECC_instance[SDL_ECC_Base_Address_TOTAL_ENTRIES];
 /* Local functions */
 static int32_t SDL_ECC_getRamId(SDL_ECC_MemType eccMemType, SDL_ECC_MemSubType memSubType,
-                           uint32_t *ramIdP, uint32_t *pRAMIdType);
+                           uint32_t *pRAMId, uint32_t *pRAMIdType);
 static int32_t SDL_ECC_getAggregatorType(SDL_ECC_MemType eccMemType,
                            SDL_ECC_MemSubType memSubType, uint32_t *pIinjectOnly);
 static int32_t SDL_ECC_getAggrBaseAddr(SDL_ECC_MemType eccMemType, SDL_ecc_aggrRegs **pEccAggr);
@@ -191,7 +136,7 @@ static int32_t SDL_ECC_checkMemoryType(SDL_ECC_MemType eccMemType, SDL_ECC_MemSu
 static int32_t SDL_ECC_searchMemEntryTable(SDL_ECC_MemSubType memSubType,
                                               const SDL_MemConfig_t memEntryTable[],
                                               uint32_t tableSize,
-                                              SDL_MemConfig_t *pMemConfig);
+                                              SDL_MemConfig_t *memConfig);
 
 /** ============================================================================*
  *
@@ -271,6 +216,52 @@ static int32_t SDL_ECC_mapRatEccAggrBaseAddress(SDL_ecc_aggrRegs * const eccAggr
 /* Returns index >= 0 if successful, otherwise returns -1 if failure */
 static int32_t SDL_ECC_mapEccAggrReg(SDL_ECC_MemType eccMemType, SDL_ecc_aggrRegs **ppEccAggr)
 {
+    static SDL_ecc_aggrRegs * const SDL_ECC_aggrBaseAddressTable[SDL_ECC_Base_Address_TOTAL_ENTRIES] =
+    {
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_COMPUTE_CLUSTER0_CORE0_ECC_AGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_COMPUTE_CLUSTER0_CORE1_ECC_AGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_COMPUTE_CLUSTER0_CORE2_ECC_AGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_COMPUTE_CLUSTER0_CORE3_ECC_AGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_COMPUTE_CLUSTER0_SS_ECC_AGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_CSI_RX_IF0_ECC_AGGR_CFG_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_DMASS0_ECCAGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_ECC_AGGR0_ECC_AGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_FSS0_OSPI0_ECC_AGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_GICSS0_REGS_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_ICSSM0_ECC_AGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MCAN0_ECC_AGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MCU_ECC_AGGR0_ECC_AGGR_BASE)),
+    #if defined (R5F_CORE)
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MAIN_MCU_M4FSS0_ECC_AGGR_BASE)),
+    #endif
+    #if defined (M4F_CORE)
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MCU_M4FSS0_ECC_AGGR_BASE)),
+    #endif
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MCU_MCAN0_ECC_AGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MCU_MCAN1_ECC_AGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MMCSD0_ECC_AGGR_RXMEM_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MMCSD0_ECC_AGGR_TXMEM_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MMCSD1_ECC_AGGR_RXMEM_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MMCSD1_ECC_AGGR_TXMEM_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MMCSD2_ECC_AGGR_RXMEM_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MMCSD2_ECC_AGGR_TXMEM_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_PDMA0_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_PDMA1_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_PSRAMECC_16K0_ECC_AGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_PSRAMECC0_ECC_AGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_SA3_SS0_REGS_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_SA3_SS0_ECC_AGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_SMS0_HSM_SRAM0_0_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_SMS0_ECC_AGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_USB0_ECC_AGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_USB1_ECC_AGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_WKUP_ECC_AGGR0_ECC_AGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_WKUP_R5FSS0_CORE0_ECC_AGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_WKUP_SAFE_ECC_AGGR0_ECC_AGGR_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_WKUP_VTM0_ECCAGGR_CFG_BASE)),
+        ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_CPSW0_ECC_BASE)),
+
+    };
     int32_t retVal = SDL_PASS;
     SDL_ecc_aggrRegs *eccAggrRegs;
     int32_t mapIdx;
@@ -714,14 +705,14 @@ int32_t SDL_ECC_getErrorInfo(SDL_ECC_MemType eccMemType, SDL_Ecc_AggrIntrSrc int
  *
  * \return  SDL_PASS : Success; SDL_EFAIL for failures
  */
-int32_t SDL_ECC_ackIntr(SDL_ECC_MemType eccMemType, SDL_Ecc_AggrIntrSrc errorSrc)
+int32_t SDL_ECC_ackIntr(SDL_ECC_MemType eccMemType, SDL_Ecc_AggrIntrSrc intrSrc)
 {
     int32_t retVal = SDL_PASS;
     SDL_ecc_aggrRegs *eccAggrRegs;
 
     (void)SDL_ECC_getAggrBaseAddr(eccMemType, &eccAggrRegs);
 
-    retVal = SDL_ecc_aggrAckIntr(eccAggrRegs, errorSrc);
+    retVal = SDL_ecc_aggrAckIntr(eccAggrRegs, intrSrc);
 
     return retVal;
 }
@@ -784,6 +775,59 @@ int32_t SDL_ECC_clearNIntrPending(SDL_ECC_MemType eccMemType, SDL_ECC_MemSubType
  */
 int32_t SDL_ECC_initEsm (const SDL_ESM_Inst esmInstType)
 {
+#if defined (M4F_CORE)
+    /* Event BitMap for ECC ESM callback for MAIN */
+    static uint32_t eventBitMapMAIN[SDL_ESM_MAX_EVENT_MAP_NUM_WORDS] =
+    {
+    0x7705be0eu, 0x3fc3e01cu, 0xef017c0eu, 0x03c08000u,
+    0x06cc0000u, 0x00000000u, 0x00000000u, 0x00000000u,
+    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+    };
+
+    /* Event BitMap for ECC ESM callback for WKUP */
+    static uint32_t eventBitMapWKUP[SDL_ESM_MAX_EVENT_MAP_NUM_WORDS] =
+    {
+        0x01bfd837u, 0x00000000u, 0x00000000u, 0x00000000u,
+        0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+        0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+        0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+        0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+        0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+        0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+        0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+    };
+#elif defined (R5F_CORE)
+    /* Event BitMap for ECC ESM callback for MAIN */
+    static uint32_t eventBitMapMAIN[SDL_ESM_MAX_EVENT_MAP_NUM_WORDS] =
+    {
+    0x7705be0eu, 0x3fc3e0fcu, 0xef017c0eu, 0x03c08000u,
+    0x06cc0000u, 0x00000000u, 0x00000000u, 0x00000000u,
+    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+    0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+    };
+
+    /* Event BitMap for ECC ESM callback for WKUP */
+    static uint32_t eventBitMapWKUP[SDL_ESM_MAX_EVENT_MAP_NUM_WORDS] =
+    {
+        0x01bfd830u, 0x00000000u, 0x00000000u, 0x00000000u,
+        0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+        0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+        0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+        0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+        0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+        0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+        0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
+    };
+#endif
 
     if (esmInstType == SDL_ESM_INST_MAIN_ESM0)
     {
@@ -1007,12 +1051,13 @@ int32_t SDL_ECC_initMemory (SDL_ECC_MemType eccMemType,
  * @return  None
 
  */
-   /* Read value to trigger ECC error injection */
-volatile uint32_t testLocationValue;
 
-static void SDL_ECC_triggerAccessForEcc(const uint32_t *pMemoryAccessAddr)
+static void SDL_ECC_triggerAccessForEcc(const uint32_t *memoryAccessAddr)
 {
-   testLocationValue = *(pMemoryAccessAddr);
+    /* Read value to trigger ECC error injection */
+    static volatile uint32_t testLocationValue;
+    testLocationValue = *(memoryAccessAddr);
+    (void)testLocationValue;
 }
 
 /** ============================================================================
@@ -1172,7 +1217,7 @@ int32_t SDL_ECC_selfTest(SDL_ECC_MemType eccMemType,
  */
 static int32_t SDL_ECC_getBitLocation(uint32_t bitMask,
                                          uint32_t startBitLocation,
-                                         uint32_t *pPbitLocation)
+                                         uint32_t *bitLocation)
 {
     int32_t result = SDL_PASS;
     uint32_t bitCount;
@@ -1184,7 +1229,7 @@ static int32_t SDL_ECC_getBitLocation(uint32_t bitMask,
          for (bitCount=startBitLocation; bitCount < BITS_PER_WORD; bitCount++) {
              if ((bitMask
                  & (((uint32_t)1u) << bitCount)) != 0u  ) {
-                 *pPbitLocation = bitCount;
+                 *bitLocation = bitCount;
                  break;
              }
          }
@@ -1593,7 +1638,7 @@ static int32_t SDL_ECC_getAggregatorType(SDL_ECC_MemType eccMemType,
  *                         for a particular memType (i.e. ECC aggregator).
  * \param3  tableSize: Size of the memory configuration table to search
 
- * \param4  pMemConfig: pointer to memory configuration structure that will be
+ * \param4  memConfig: pointer to memory configuration structure that will be
  *                      filled upon successful retrieval.
  *
  * @return  SDL_PASS : Success; SDL_EFAIL for failures
@@ -1601,7 +1646,7 @@ static int32_t SDL_ECC_getAggregatorType(SDL_ECC_MemType eccMemType,
 static int32_t SDL_ECC_searchMemEntryTable(SDL_ECC_MemSubType memSubType,
                                               const SDL_MemConfig_t memEntryTable[],
                                               uint32_t tableSize,
-                                              SDL_MemConfig_t *pMemConfig)
+                                              SDL_MemConfig_t *memConfig)
 {
     int32_t retVal = SDL_EFAIL;
     uint32_t length = tableSize;
@@ -1618,7 +1663,7 @@ static int32_t SDL_ECC_searchMemEntryTable(SDL_ECC_MemSubType memSubType,
             first = middle + ((uint32_t)1U);
         } else if (memEntryTable[middle].memSubType == memSubType) {
             /* Fill the memory configuration structure */
-            *pMemConfig = memEntryTable[middle];
+            *memConfig = memEntryTable[middle];
             retVal = SDL_PASS;
             break;
         } else {
@@ -1636,12 +1681,12 @@ static int32_t SDL_ECC_searchMemEntryTable(SDL_ECC_MemSubType memSubType,
  *
  * \param1  eccMemType: Memory type for self test
  * \param2  memSubType: Memory subtype for self test
- * \param3  pMemConfig: pointer to return memory configuration
+ * \param3  memConfig: pointer to return memory configuration
  *
  * \return  SDL_PASS : Success; SDL_EFAIL for failures
  */
 static int32_t SDL_ECC_getMemConfig(SDL_ECC_MemType eccMemType, SDL_ECC_MemSubType memSubType,
-                              SDL_MemConfig_t *pMemConfig)
+                              SDL_MemConfig_t *memConfig)
 {
     int32_t retVal = SDL_PASS;
     uint32_t tableSize;
@@ -1654,7 +1699,7 @@ static int32_t SDL_ECC_getMemConfig(SDL_ECC_MemType eccMemType, SDL_ECC_MemSubTy
         retVal = SDL_ECC_searchMemEntryTable(memSubType,
                                              memEntryTable,
                                              tableSize,
-                                             pMemConfig);
+                                             memConfig);
     }
 
    return retVal;

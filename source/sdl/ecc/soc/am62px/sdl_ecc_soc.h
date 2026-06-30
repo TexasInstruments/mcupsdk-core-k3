@@ -101,54 +101,6 @@
 #define SDL_MCU_MCAN0_MCANSS_MSGMEM_WRAP_ECC_AGGR_RAM_IDS_TOTAL_ENTRIES (1U)
 #define SDL_ECC_Base_Address_TOTAL_ENTRIES 																									(44U)
 
-static SDL_ecc_aggrRegs * const SDL_ECC_aggrBaseAddressTable[SDL_ECC_Base_Address_TOTAL_ENTRIES] =
-{
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_WKUP_R5FSS0_CORE0_ECC_AGGR_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_DSS_DSI0_DSI_TOP_ECC_AGGR_SYS_CFG_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_PSRAMECC0_ECC_AGGR_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_PSRAMECC1_ECC_AGGR_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MSRAM_64K0_ECC_AGGR_REGS_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_WKUP_ECC_AGGR2_ECC_AGGR_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_ECC_AGGR0_ECC_AGGR_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_DMASS1_ECCAGGR_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MCU_MSRAM_256K1_ECC_AGGR_REGS_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_WKUP_VTM0_ECCAGGR_CFG_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_WKUP_ECC_AGGR1_ECC_AGGR_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_FSS0_OSPI0_ECC_AGGR_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MCU_R5FSS0_CORE0_ECC_AGGR_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_GICSS0_REGS_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_CPSW0_ECC_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_CSI_RX_IF0_ECC_AGGR_CFG_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_PSCSS0_REGS_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MMCSD2_ECC_AGGR_RXMEM_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MMCSD2_ECC_AGGR_TXMEM_BASE )),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_SMS0_ECC_AGGR_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_SA3_SS0_ECCAGGR_CFG_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MCU_MCAN1_ECC_AGGR_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_WKUP_ECC_AGGR0_ECC_AGGR_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_DMASS0_ECCAGGR_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_PDMA0_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MCU_ECC_AGGR1_ECC_AGGR_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_USB1_ECC_AGGR_BASE )),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_USB0_ECC_AGGR_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MCU_MSRAM_256K0_ECC_AGGR_REGS_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MMCSD1_ECC_AGGR_RXMEM_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MMCSD1_ECC_AGGR_TXMEM_BASE)),
-	((SDL_ecc_aggrRegs *)((uintptr_t)SDL_WKUP_PSRAMECC_8K0_REGS_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_PDMA1_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MCU_ECC_AGGR0_ECC_AGGR_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MCAN1_ECC_AGGR_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MCAN0_ECC_AGGR_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MMCSD0_ECC_AGGR_TXMEM_BASE)),
-    ((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MMCSD0_ECC_AGGR_RXMEM_BASE)),
-	((SDL_ecc_aggrRegs *)((uintptr_t)SDL_COMPUTE_CLUSTER0_CORE0_ECC_AGGR_BASE)),
-	((SDL_ecc_aggrRegs *)((uintptr_t)SDL_COMPUTE_CLUSTER0_CORE1_ECC_AGGR_BASE  )),
-	((SDL_ecc_aggrRegs *)((uintptr_t)SDL_COMPUTE_CLUSTER0_CORE2_ECC_AGGR_BASE )),
-	((SDL_ecc_aggrRegs *)((uintptr_t)SDL_COMPUTE_CLUSTER0_CORE3_ECC_AGGR_BASE)),
-	((SDL_ecc_aggrRegs *)((uintptr_t)SDL_COMPUTE_CLUSTER0_SS_ECC_AGGR_BASE)),
-	((SDL_ecc_aggrRegs *)((uintptr_t)SDL_MCU_MCAN0_ECC_AGGR_BASE  )),
-};
-
 extern SDL_ecc_aggrRegs * SDL_ECC_aggrTransBaseAddressTable[SDL_ECC_MEMTYPE_MAX];
 
 /** ----------------------------------------------------------------------------------

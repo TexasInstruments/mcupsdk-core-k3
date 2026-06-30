@@ -1144,7 +1144,7 @@ void ECC_Test_exceptionInit(void)
 }
 #endif
 
-static uint32_t arg;
+static uint32_t gArg;
 /*********************************************************************
 * @fn      ECC_Test_init
 *
@@ -1157,7 +1157,7 @@ static uint32_t arg;
 int32_t ECC_Test_init (void)
 {
     int32_t retValue=0;
-    void *ptr = (void *)&arg;
+    void *ptr = (void *)&gArg;
     SDL_ErrType_t result;
     SDL_ECC_staticRegs staticRegs;
 

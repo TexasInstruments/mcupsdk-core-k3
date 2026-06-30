@@ -71,8 +71,11 @@ int32_t Sciserver_tirtosInitPrms_Init(Sciserver_TirtosCfgPrms_t *pPrms)
         pPrms->taskPriority[SCISERVER_TASK_USER_LO] = 30U;
         pPrms->taskPriority[SCISERVER_TASK_USER_HI] = 31U;
 #elif defined (SOC_J722S)
-        pPrms->taskPriority[SCISERVER_TASK_USER_LO] = 13U;
-        pPrms->taskPriority[SCISERVER_TASK_USER_HI] = 14U;
+        if (pPrms->taskPriority[SCISERVER_TASK_USER_LO] == 0U && pPrms->taskPriority[SCISERVER_TASK_USER_HI] == 0U)
+        {
+            pPrms->taskPriority[SCISERVER_TASK_USER_LO] = 29U;
+            pPrms->taskPriority[SCISERVER_TASK_USER_HI] = 30U;
+        }
 #else
         pPrms->taskPriority[SCISERVER_TASK_USER_LO] = 1U;
         pPrms->taskPriority[SCISERVER_TASK_USER_HI] = 3U;

@@ -51,6 +51,7 @@
 /* ========================================================================== */
 
 #include <stdlib.h>
+#include <string.h>
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/ClockP.h>
 #include "ti_drivers_config.h"
@@ -108,10 +109,13 @@ void main_thread(void *args)
     int32_t status;
 
     /* Configure sciserver task parameters */
-    Sciserver_TirtosCfgPrms_t sciserverCfg = {0};
+    Sciserver_TirtosCfgPrms_t sciserverCfg;
+    memset(&sciserverCfg, 0U, sizeof(Sciserver_TirtosCfgPrms_t));
     sciserverCfg.hiTaskStack    =   gUserHiTaskStack;
     sciserverCfg.loTaskStack    =   gUserLoTaskStack;
     sciserverCfg.taskStackSize  =   SCISERVER_TASK_STACK_SIZE;
+    sciserverCfg.taskPriority[SCISERVER_TASK_USER_HI] = 30U;
+    sciserverCfg.taskPriority[SCISERVER_TASK_USER_LO] = 29U;
 
     /* Open drivers, including UART for SysFW logs */
     Drivers_open();

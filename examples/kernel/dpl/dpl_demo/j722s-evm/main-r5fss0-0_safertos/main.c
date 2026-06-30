@@ -62,10 +62,11 @@ void dpl_demo_main(void *args);
 
 void safertos_main(void *args)
 {
+    /* Open drivers, including UART for SysFW logs */
+    Drivers_open();
 
-#if defined(OS_SAFERTOS)
-    System_lateInit();
-#endif
+    /* Open board drivers */
+    DebugP_assert(SystemP_SUCCESS==Board_driversOpen());
 
     dpl_demo_main(NULL);
 
@@ -82,11 +83,6 @@ int main()
 
     /* Do Board init */
     Board_init();
-
-    /* Open drivers to open the UART driver for Console */
-    Drivers_open();
-    /* Open board drivers */
-    Board_driversOpen();
 
     xTaskParameters xTaskPParams =
     {

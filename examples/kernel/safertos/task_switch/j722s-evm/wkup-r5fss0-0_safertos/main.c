@@ -35,6 +35,7 @@
 /* ========================================================================== */
 
 #include <stdlib.h>
+#include <string.h>
 #include <kernel/dpl/DebugP.h>
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
@@ -68,10 +69,6 @@
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
-#if defined(OS_SAFERTOS)
-void System_lateInit(void);
-#endif
-
 void task_switch_main(void *args);
 
 /* ========================================================================== */
@@ -93,14 +90,13 @@ uint8_t __attribute__((aligned(SCISERVER_TASK_STACK_ALIGNMENT))) gUserLoTaskStac
 void main_thread(void *args)
 {
     /* Configure sciserver task parameters */
-    Sciserver_TirtosCfgPrms_t sciserverCfg = {0};
+    Sciserver_TirtosCfgPrms_t sciserverCfg;
+    memset(&sciserverCfg, 0U, sizeof(Sciserver_TirtosCfgPrms_t));
     sciserverCfg.hiTaskStack    =   gUserHiTaskStack;
     sciserverCfg.loTaskStack    =   gUserLoTaskStack;
     sciserverCfg.taskStackSize  =   SCISERVER_TASK_STACK_SIZE;
-
-#if defined(OS_SAFERTOS)
-    System_lateInit();
-#endif
+    sciserverCfg.taskPriority[SCISERVER_TASK_USER_HI] = 14U;
+    sciserverCfg.taskPriority[SCISERVER_TASK_USER_LO] = 13U;
 
     /* Open drivers, including UART for SysFW logs */
     Drivers_open();

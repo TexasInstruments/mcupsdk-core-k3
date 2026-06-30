@@ -666,7 +666,7 @@ int32_t sdl_pok_posTest(void)
 	pConfig.trim = 127U;
 	pConfig.trimOV = 127U;
 	pConfig.deglitch = 3U;
-	pConfig.hystCtrl =  4U;
+	pConfig.hystCtrl =  1U;
 	pConfig.hystCtrlOV = 1U;
 	pConfig.detectionCtrl = 1U;
 	pConfig.pokEnSelSrcCtrl = 1U;
@@ -679,7 +679,7 @@ int32_t sdl_pok_posTest(void)
 	pConfig.trim = 127U;
 	pConfig.trimOV = 127U;
 	pConfig.deglitch = 3U;
-	pConfig.hystCtrl =  4U;
+	pConfig.hystCtrl =  1U;
 	pConfig.hystCtrlOV = 1U;
 	pConfig.detectionCtrl = 1U;
 	pConfig.pokEnSelSrcCtrl = 1U;

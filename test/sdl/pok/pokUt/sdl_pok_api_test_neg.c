@@ -614,5 +614,31 @@ int32_t sdl_pok_negTest(void)
         return (testStatus);
     }
 
+    /* Test SDL_POK_init with invalid hystCtrl value that passes init validation but fails in SDL_pokSetControl */
+    if (testStatus == SDL_APP_TEST_PASS)
+    {
+        i = SDL_POK_VDDA_PMIC_IN_ID;
+
+        pConfig.hystCtrl         = (SDL_pwrss_hysteresis)4;  /* Invalid: > SDL_PWRSS_HYSTERESIS_NO_ACTION (3) */
+        pConfig.hystCtrlOV       = SDL_PWRSS_HYSTERESIS_NO_ACTION;
+        pConfig.voltDetMode      = SDL_PWRSS_SET_UNDER_VOLTAGE_DET_ENABLE;
+        pConfig.trim             = SDL_PWRSS_TRIM_NO_ACTION;
+        pConfig.trimOV           = SDL_PWRSS_TRIM_NO_ACTION;
+        pConfig.detectionCtrl    = SDL_POK_DETECTION_NO_ACTION;
+        pConfig.pokEnSelSrcCtrl  = SDL_POK_ENSEL_NO_ACTION;
+        pConfig.deglitch         = SDL_PWRSS_DEGLITCH_NO_ACTION;
+
+        if (SDL_POK_init(i, &pConfig) != SDL_EBADARGS)
+        {
+            testStatus = SDL_APP_TEST_FAILED;
+        }
+    }
+
+    if (testStatus != SDL_APP_TEST_PASS)
+    {
+        DebugP_log("SDLPok_api_Neg_Test: failure on line no. %d \r\n", __LINE__);
+        return (testStatus);
+    }
+
     return (testStatus);
 }

@@ -46,10 +46,11 @@
 #include <sdl/pok/v1/sdl_pok.h>
 #include <sdl/pok/v1/sdl_ip_pok.h>
 #include <sdl/include/sdlr.h>
+#include <kernel/dpl/ClockP.h>
 
 
 /* delay for 1us*/
-#define DELAY 0
+#define DELAY 100
 
 /**
  * Design: PROC_SDL-1349,PROC_SDL-1162
@@ -62,6 +63,7 @@ int32_t SDL_POK_getStaticRegisters(SDL_POK_Inst instance,SDL_POK_staticRegs *pSt
     int32_t    retVal = SDL_EBADARGS;
     SDL_pokShiftsAndMasks_t    shiftsNMasks;
     uint32_t pbaseAddress;
+    /* Return value is discarded because hardcoded value guarantees API success */
     SDL_POK_getBaseaddr(SDL_POK_MCU_CTRL_MMR0, &pbaseAddress);
     SDL_mcuCtrlRegsBase_t    *pBaseAddr = (SDL_mcuCtrlRegsBase_t *) pbaseAddress;
 
@@ -132,6 +134,7 @@ static void SDL_pokDisableAll(void)
 {
     SDL_POK_config             pokCfg;
     uint32_t pbaseAddress;
+    /* Return value is discarded because hardcoded value guarantees API success */
     SDL_POK_getBaseaddr(SDL_POK_MCU_CTRL_MMR0, &pbaseAddress);
     SDL_mcuCtrlRegsBase_t    *pBaseAddr = (SDL_mcuCtrlRegsBase_t *) pbaseAddress;
     SDL_POK_Inst instance;
@@ -149,6 +152,7 @@ static void SDL_pokDisableAll(void)
         pokCfg.trimOV    = SDL_PWRSS_TRIM_NO_ACTION;
         pokCfg.detectionCtrl = SDL_POK_DETECTION_DISABLE;
         pokCfg.deglitch      = SDL_PWRSS_DEGLITCH_NO_ACTION;
+        /* Return value is discarded because previous checks guarantee API success */
         (void)SDL_pokSetControl(pBaseAddr,&pokCfg,instance);
     }
 }
@@ -157,6 +161,7 @@ static bool SDL_pokIsPPEnabled(SDL_POK_Inst instance)
 {
     SDL_pokShiftsAndMasks_t    shiftsNMasks;
     uint32_t pbaseAddress;
+    /* Return value is discarded because hardcoded value guarantees API success */
     SDL_POK_getBaseaddr(SDL_POK_MCU_CTRL_MMR0, &pbaseAddress);
     SDL_mcuCtrlRegsBase_t    *pBaseAddr = (SDL_mcuCtrlRegsBase_t *) pbaseAddress;
     bool isPPEnabled = (bool)FALSE;
@@ -177,16 +182,18 @@ static bool SDL_pokIsPPEnabled(SDL_POK_Inst instance)
 /**
  * Design: PROC_SDL-1163
  */
-static int32_t SDL_POK_Thres_config_seq(SDL_POK_Inst instance, SDL_POK_config *pInitCfg, uint32_t esm_err_sig_uv, uint32_t esm_err_sig_ov)
+static int32_t SDL_POK_Thres_config_seq(SDL_POK_Inst instance, const SDL_POK_config *pInitCfg, uint32_t esm_err_sig_uv, uint32_t esm_err_sig_ov)
 {
     SDL_POK_config          pokCfg;
     SDL_pokVal_t            pokVal;
     SDL_pokPorCfg_t         porCfg;
     int32_t                 retVal = SDL_EFAIL;
     uint32_t pbaseAddress;
+    /* Return value is discarded because hardcoded value guarantees API success */
     SDL_POK_getBaseaddr(SDL_POK_MCU_CTRL_MMR0, &pbaseAddress);
     SDL_mcuCtrlRegsBase_t    *pBaseAddr = (SDL_mcuCtrlRegsBase_t *) pbaseAddress;
 	uint32_t     esmBaseAddr;
+    /* Return value is discarded because hardcoded value guarantees API success */
 	SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0,&esmBaseAddr);
     uint32_t                influenceUV = 0U;
     uint32_t                influenceOV = 0U;
@@ -218,14 +225,14 @@ static int32_t SDL_POK_Thres_config_seq(SDL_POK_Inst instance, SDL_POK_config *p
         (void)SDL_ESM_getInfluenceOnErrPin(esmBaseAddr, esm_err_sig_uv, &influenceUV);
         if (influenceUV == 1U)
         {
-            /* Disable the error pin temporarily */
+            /* Disable the error pin temporarily, return value is discarded because previous checks guarantee API success */
             SDL_ESM_setInfluenceOnErrPin(esmBaseAddr, esm_err_sig_uv, (bool)false);
         }
         (void)SDL_ESM_disableIntr(ESM_INSTANCE, esm_err_sig_ov);
         (void)SDL_ESM_getInfluenceOnErrPin(esmBaseAddr, esm_err_sig_ov, &influenceOV);
         if (influenceOV == 1U)
         {
-            /* Disable the error pin temporarily */
+            /* Disable the error pin temporarily, return value is discarded because previous checks guarantee API success */
             SDL_ESM_setInfluenceOnErrPin(esmBaseAddr, esm_err_sig_ov, (bool)false);
         }
 
@@ -238,14 +245,16 @@ static int32_t SDL_POK_Thres_config_seq(SDL_POK_Inst instance, SDL_POK_config *p
         pokCfg.trimOV    = SDL_PWRSS_TRIM_NO_ACTION;
         pokCfg.detectionCtrl = SDL_POK_GET_DETECTION_VALUE;
         pokCfg.deglitch  = SDL_PWRSS_DEGLITCH_NO_ACTION;
-        retVal = SDL_pokGetControl (pBaseAddr, &pokCfg, &pokVal, instance);
+        /* Return value is discarded because previous checks guarantee API success */
+        SDL_pokGetControl (pBaseAddr, &pokCfg, &pokVal, instance);
 
         if (pokVal.detectionStatus == SDL_POK_DETECTION_ENABLED)
         {
             /* Disable the detection control */
             pokCfg.pokEnSelSrcCtrl = SDL_POK_ENSEL_NO_ACTION;
             pokCfg.detectionCtrl = SDL_POK_DETECTION_DISABLE;
-            retVal = SDL_pokSetControl(pBaseAddr,&pokCfg,instance);
+            /* Return value is discarded because previous checks guarantee API success */
+            SDL_pokSetControl(pBaseAddr,&pokCfg,instance);
         }
 
         if (POK_firstTime == (bool)true)
@@ -257,7 +266,8 @@ static int32_t SDL_POK_Thres_config_seq(SDL_POK_Inst instance, SDL_POK_config *p
         /* Set to MMR control for POK */
         pokCfg.pokEnSelSrcCtrl = SDL_POK_ENSEL_PRG_CTRL;
         pokCfg.detectionCtrl = SDL_POK_DETECTION_NO_ACTION;
-        retVal = SDL_pokSetControl(pBaseAddr, &pokCfg, instance);
+        /* Return value is discarded because previous checks guarantee API success */
+        SDL_pokSetControl(pBaseAddr, &pokCfg, instance);
 
         /* Step 3: Program the appropriate threshold settings and hyst in POK_CTRL reg */
         pokCfg.hystCtrl      = pInitCfg->hystCtrl;
@@ -267,7 +277,8 @@ static int32_t SDL_POK_Thres_config_seq(SDL_POK_Inst instance, SDL_POK_config *p
         pokCfg.trim      = pInitCfg->trim;
         pokCfg.trimOV    = pInitCfg->trimOV;
         pokCfg.deglitch  = pInitCfg->deglitch;
-        retVal = SDL_pokSetControl(pBaseAddr,&pokCfg,instance);
+        /* Return value is discarded because previous checks guarantee API success */
+        SDL_pokSetControl(pBaseAddr,&pokCfg,instance);
 
         /* Step 4: Enable the desired POK */
         pokCfg.hystCtrl      = SDL_PWRSS_HYSTERESIS_NO_ACTION;
@@ -279,14 +290,17 @@ static int32_t SDL_POK_Thres_config_seq(SDL_POK_Inst instance, SDL_POK_config *p
         retVal = SDL_pokSetControl(pBaseAddr,&pokCfg,instance);
 
         /* Step 5: Wait for 100 us for the POK to settle */
-        SDL_DPL_delay(DELAY);
+        ClockP_usleep(DELAY);
 
         /* Step 7: If Power Good == Yes, unmask POK to ESM event propagation by
                     programming ESM_INTR_EN_SET register(s) else report to MCU_ESM0*/
         if (retVal == SDL_PASS)
         {
-            /* Errata i2253: PRG CTRL_MMR STAT registers unreliable for POK threshold
-             * failure - clear ESM flags on POK init so ESM flags can be used reliably. */
+            /* 
+             * Errata i2253: PRG CTRL_MMR STAT registers unreliable for POK threshold
+             * failure - clear ESM flags on POK init so ESM flags can be used reliably. 
+             * Return values are discarded because previous checks guarantee API success
+             */
             SDL_ESM_clearIntrStatus(esmBaseAddr, esm_err_sig_ov);
             SDL_ESM_clearIntrStatus(esmBaseAddr, esm_err_sig_uv);
 
@@ -310,12 +324,14 @@ static int32_t SDL_POK_Thres_config_seq(SDL_POK_Inst instance, SDL_POK_config *p
 /**
  * Design: PROC_SDL-1163
  */
-static int32_t SDL_POR_Thres_config_seq(SDL_POK_Inst instance, SDL_POK_config *pInitCfg, uint32_t esm_err_sig)
+static int32_t SDL_POR_Thres_config_seq(SDL_POK_Inst instance, const SDL_POK_config *pInitCfg, uint32_t esm_err_sig)
 {
-   uint32_t pbaseAddress;
+    uint32_t pbaseAddress;
+    /* Return value is discarded because hardcoded value guarantees API success */
     SDL_POK_getBaseaddr(SDL_POK_MCU_CTRL_MMR0, &pbaseAddress);
     SDL_mcuCtrlRegsBase_t    *pBaseAddr = (SDL_mcuCtrlRegsBase_t *) pbaseAddress;
 	uint32_t     esmBaseAddr;
+    /* Return value is discarded because hardcoded value guarantees API success */
 	SDL_ESM_getBaseAddr(SDL_ESM_INST_WKUP_ESM0,&esmBaseAddr);
     SDL_pokPorCfg_t              porCfg;
     SDL_pokVal_t                 pokVal;
@@ -329,8 +345,8 @@ static int32_t SDL_POR_Thres_config_seq(SDL_POK_Inst instance, SDL_POK_config *p
 
     /* Step 2: TRIM Mux selection is set to 1 */
     porCfg.trim_select                         = SDL_POR_TRIM_SELECTION_FROM_CTRL_REGS;
-
-    retVal = SDL_porSetControl(pBaseAddr,&porCfg);
+    /* Return value is discarded because previous checks guarantee API success */
+    SDL_porSetControl(pBaseAddr,&porCfg);
 
     /* Step 3: Is POK Disabled, if not disable it */
     pokCfg.hystCtrl      = SDL_PWRSS_HYSTERESIS_NO_ACTION;
@@ -341,7 +357,8 @@ static int32_t SDL_POR_Thres_config_seq(SDL_POK_Inst instance, SDL_POK_config *p
     pokCfg.trimOV    = SDL_PWRSS_TRIM_NO_ACTION;
     pokCfg.detectionCtrl = SDL_POK_GET_DETECTION_VALUE;
     pokCfg.deglitch  = SDL_PWRSS_DEGLITCH_NO_ACTION;
-    retVal = SDL_pokGetControl (pBaseAddr, &pokCfg, &pokVal, instance);
+    /* Return value is discarded because previous checks guarantee API success */
+    SDL_pokGetControl (pBaseAddr, &pokCfg, &pokVal, instance);
 
 
     if (pokVal.detectionStatus == SDL_POK_DETECTION_ENABLED)
@@ -349,7 +366,8 @@ static int32_t SDL_POR_Thres_config_seq(SDL_POK_Inst instance, SDL_POK_config *p
         /* Disable the detection control */
         pokCfg.pokEnSelSrcCtrl = SDL_POK_ENSEL_NO_ACTION;
         pokCfg.detectionCtrl = SDL_POK_DETECTION_DISABLE;
-        retVal = SDL_pokSetControl(pBaseAddr,&pokCfg,instance);
+        /* Return value is discarded because previous checks guarantee API success */
+        SDL_pokSetControl(pBaseAddr,&pokCfg,instance);
     }
 
     /**
@@ -366,7 +384,8 @@ static int32_t SDL_POR_Thres_config_seq(SDL_POK_Inst instance, SDL_POK_config *p
     /* Set to MMR control for POK */
     pokCfg.pokEnSelSrcCtrl = SDL_POK_ENSEL_PRG_CTRL;
     pokCfg.detectionCtrl = SDL_POK_DETECTION_NO_ACTION;
-    retVal = SDL_pokSetControl(pBaseAddr, &pokCfg, instance);
+    /* Return value is discarded because previous checks guarantee API success */
+    SDL_pokSetControl(pBaseAddr, &pokCfg, instance);
 
     /* Step 4: Pending: Mask POK to ESM event propagation by
                     programming ESM_INTR_EN_CLR register(s)
@@ -400,7 +419,7 @@ static int32_t SDL_POR_Thres_config_seq(SDL_POK_Inst instance, SDL_POK_config *p
     }
 
     /* Step 7: Wait for 100 us for the POK to settle */
-    SDL_DPL_delay(DELAY); /* has 1000 micro seconds delay, more than needed */
+    ClockP_usleep(DELAY);
 
     /* Step 8: If Power Good == Yes, unmask POK to ESM event propagation by
                     programming ESM_INTR_EN_SET register(s) else report to MCU_ESM0*/
@@ -426,6 +445,7 @@ int32_t SDL_POK_enablePP(SDL_PRG_Inst instance, bool enable)
     int32_t retVal = SDL_PASS;
     /* Check PRG range */
     uint32_t pbaseAddress;
+    /* Return value is discarded because hardcoded value guarantees API success */
     SDL_POK_getBaseaddr(SDL_POK_MCU_CTRL_MMR0, &pbaseAddress);
     SDL_mcuCtrlRegsBase_t    *pBaseAddr = (SDL_mcuCtrlRegsBase_t *) pbaseAddress;
     SDL_pokPRGInfo_t prgInfo;
@@ -487,6 +507,7 @@ int32_t SDL_POK_init(SDL_POK_Inst instance,  SDL_POK_config *pPokCfg)
                  (pPokCfg->deglitch == SDL_PWRSS_DEGLITCH_GET_VALUE) ||
                  (pPokCfg->deglitch > SDL_PWRSS_DEGLITCH_NO_ACTION) ||
                  (pPokCfg->hystCtrl == SDL_PWRSS_GET_HYSTERESIS_VALUE) ||
+                 (pPokCfg->hystCtrl > SDL_PWRSS_HYSTERESIS_NO_ACTION) ||
                  (pPokCfg->hystCtrlOV > SDL_PWRSS_HYSTERESIS_NO_ACTION) ||
                  (pPokCfg->voltDetMode == SDL_PWRSS_GET_VOLTAGE_DET_MODE) ||
                  (pPokCfg->voltDetMode > SDL_PWRSS_VOLTAGE_DET_NO_ACTION) ||
@@ -535,6 +556,7 @@ int32_t SDL_POK_verifyConfig(SDL_POK_Inst instance, SDL_POK_config *pPokCfg )
     bool                 compare_deglitch = false;
 
     uint32_t pbaseAddress;
+    /* Return value is discarded because hardcoded value guarantees API success */
     SDL_POK_getBaseaddr(SDL_POK_MCU_CTRL_MMR0, &pbaseAddress);
     SDL_mcuCtrlRegsBase_t    *pBaseAddr = (SDL_mcuCtrlRegsBase_t *) pbaseAddress;
 

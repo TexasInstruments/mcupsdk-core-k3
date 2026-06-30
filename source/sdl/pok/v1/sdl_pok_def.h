@@ -397,7 +397,7 @@ typedef   uint8_t               SDL_por_module_status ;
  *  @{
  *
  */
-typedef enum SDL_mcu_ctrl_mmr_cfg0Regs SDL_mcuCtrlRegsBase_t;
+typedef SDL_mcu_ctrl_mmr_cfg0Regs SDL_mcuCtrlRegsBase_t;
 
 /** @} */
 
@@ -502,7 +502,7 @@ int32_t SDL_pok_getPRGInfo(SDL_mcuCtrlRegsBase_t     *pBaseAddress,
 
 
 /* Function to get the error signal wrt given POKID for v1 of IP */
-void sdlGetErrSig(uint32_t id, SDL_POK_Inst *instance, uint32_t *esm_err_sig_ov, uint32_t *esm_err_sig_uv, bool *usePorCfgFlag);
+void sdlGetErrSig(uint32_t id, SDL_POK_Inst *instance, uint32_t *esm_err_sig_uv, uint32_t *esm_err_sig_ov, bool *usePorCfgFlag);
 
 
 #ifdef __cplusplus

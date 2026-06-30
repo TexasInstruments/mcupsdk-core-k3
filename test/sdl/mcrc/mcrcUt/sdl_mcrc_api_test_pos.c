@@ -157,7 +157,7 @@ int32_t sdl_mcrc_posTest(void)
             }
             else
             {
-                DebugP_log(" Calculated and Expected CRC values match for 256KB \r\n");
+                DebugP_log(" CRC matches for 256KB\r\n");
             }
         }
         if (testStatus == SDL_PASS)
@@ -184,7 +184,7 @@ int32_t sdl_mcrc_posTest(void)
             }
             else
             {
-                DebugP_log(" Calculated and Expected CRC values match for 128KB \r\n");
+                DebugP_log(" CRC matches for 128KB\r\n");
             }
         }
         if (testStatus == SDL_PASS)
@@ -210,7 +210,7 @@ int32_t sdl_mcrc_posTest(void)
             }
             else
             {
-                DebugP_log(" Calculated and Expected CRC values match for 1KB \r\n");
+                DebugP_log(" CRC matches for 1KB\r\n");
             }
         }
         if (testStatus == SDL_PASS)

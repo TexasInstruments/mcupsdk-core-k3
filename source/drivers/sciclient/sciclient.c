@@ -844,7 +844,7 @@ int32_t Sciclient_service(const Sciclient_ReqPrm_t *pReqPrm,
     key = HwiP_disable();
 
     /* Continue with interrupts disabled for message operations */
-    if (SystemP_SUCCESS == status)
+    if ((SystemP_SUCCESS == status) && (contextId < SCICLIENT_CONTEXT_MAX_NUM))
     {
         /* Construct header */
 

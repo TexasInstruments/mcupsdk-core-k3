@@ -624,7 +624,7 @@ int32_t Sciclient_servicePrepareHeader(const Sciclient_ReqPrm_t *pReqPrm,
     int32_t  status    = CSL_PASS;
     struct tisci_header *dummyHdr;
     /* Run all error checks */
-    if((pReqPrm == NULL) || (contextId == SCICLIENT_CONTEXT_MAX_NUM))
+    if((pReqPrm == NULL) || (contextId >= SCICLIENT_CONTEXT_MAX_NUM))
     {
         status = CSL_EBADARGS;
     }
@@ -658,7 +658,8 @@ int32_t Sciclient_servicePrepareHeader(const Sciclient_ReqPrm_t *pReqPrm,
          * If the message is to be forwarded, do not override the host id
          * already present in the header.
          */
-        if (pReqPrm->forwardStatus != SCISERVER_FORWARD_MSG)
+        if ((pReqPrm->forwardStatus != SCISERVER_FORWARD_MSG) &&
+            (contextId < SCICLIENT_CONTEXT_MAX_NUM))
         {
             /* Set host if this is not a forwarded message */
             (*header)->host = (uint8_t) gSciclientMap[contextId].hostId;
@@ -955,7 +956,7 @@ int32_t Sciclient_serviceSecureProxy(const Sciclient_ReqPrm_t *pReqPrm,
 
     if ((status == CSL_PASS) &&
         (gSciclientHandle.opModeFlag == SCICLIENT_SERVICE_OPERATION_MODE_INTERRUPT) &&
-        (contextId != SCICLIENT_CONTEXT_MAX_NUM)
+        (contextId < SCICLIENT_CONTEXT_MAX_NUM)
        )
     {
         (void)HwiP_clearInt( gSciclientMap[contextId].respIntrNum);

@@ -72,7 +72,7 @@ typedef struct
 
 SDL_pbistInstInfo * SDL_PBIST_getInstInfo(SDL_PBIST_inst instance);
 
-void SDL_PBIST_eventHandler(uint32_t coreIndex);
+void SDL_PBIST_eventHandler(uint32_t instanceId);
 
 void SDL_PBIST_checkDone(SDL_pbistInstInfo *pInfo);
 

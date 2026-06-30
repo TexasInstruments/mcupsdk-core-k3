@@ -86,7 +86,7 @@ int32_t SDL_PBIST_softReset(SDL_pbistRegs *pPBISTRegs)
  * Design: PROC_SDL-961,PROC_SDL-967,PROC_SDL-962
  */
 int32_t SDL_PBIST_start(SDL_pbistRegs *pPBISTRegs,
-                        const SDL_PBIST_config * const pConfig)
+                        const SDL_PBIST_config *pConfig)
 {
     int32_t sdlResult= SDL_PASS;
 
@@ -109,7 +109,6 @@ int32_t SDL_PBIST_start(SDL_pbistRegs *pPBISTRegs,
         pPBISTRegs->ALGO = pConfig->algorithmsBitMap;
 
         /* Set Memory group bitmap */
-        // DebugP_log("%x\n", pConfig->memoryGroupsBitMap); 
         pPBISTRegs->RINFO = pConfig->memoryGroupsBitMap;
 
         /* Zero out override register */
@@ -130,7 +129,7 @@ int32_t SDL_PBIST_start(SDL_pbistRegs *pPBISTRegs,
  * Design: PROC_SDL-975,PROC_SDL-976,PROC_SDL-977
  */
 int32_t SDL_PBIST_startNeg(SDL_pbistRegs *pPBISTRegs,
-                           const SDL_PBIST_configNeg * const pConfig)
+                           const SDL_PBIST_configNeg * pConfig)
 {
     int32_t sdlResult = SDL_PASS;
 

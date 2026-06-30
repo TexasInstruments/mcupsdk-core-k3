@@ -156,7 +156,7 @@ extern int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInstType,
                                                    uint32_t index,
                                                    uint32_t intSrc,
                                                    void *arg);
-static uint32_t arg;
+static uint32_t gArg;
 /*===========================================================================*/
 /*                   Local Function definitions                              */
 /*===========================================================================*/
@@ -224,7 +224,7 @@ void test_sdl_rti_baremetal_test_app (void)
     /* Declarations of variables */
     int32_t    testResult = SDL_APP_TEST_PASS;
     int32_t    i, result;
-    void *ptr = (void *)&arg;
+    void *ptr = (void *)&gArg;
     DebugP_log("\r\n RTI Example Test Application\r\n");
 
 	/* Init dpl */

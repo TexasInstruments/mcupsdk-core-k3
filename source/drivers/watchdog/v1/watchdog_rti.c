@@ -344,6 +344,7 @@ Watchdog_Handle Watchdog_open(uint8_t index, Watchdog_Params* params)
             if (preloadValueTmp > preloadMaxValue)
             {
                 retVal = -1;
+                handle = NULL;
             }
 
             if (retVal >= 0)

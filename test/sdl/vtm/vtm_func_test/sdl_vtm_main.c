@@ -47,7 +47,7 @@
 /* For Timer functions */
 #include <kernel/dpl/DebugP.h>
 #include <dpl_interface.h>
-#include <sdl/esm/sdl_esm_priv.c>
+#include <sdl/esm/sdl_esm_priv.h>
 #include "event_trig.h"
 #include <sdl/sdl_esm.h>
 #include <sdl/include/sdl_types.h>

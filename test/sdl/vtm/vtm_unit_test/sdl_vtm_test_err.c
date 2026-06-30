@@ -38,9 +38,8 @@
  **/
 
 #include "sdl_vtm_test_main.h"
-
-extern int32_t gNumTempSensors;
-extern int32_t gNumCoreVoltageDomains;
+#include <sdl/vtm/v0/sdl_ip_vtm_priv.h>
+#include <sdl/vtm/v0/sdl_vtm_pvt_sensor.h>
 
 int32_t sdlVTM_errTest(void)
 {

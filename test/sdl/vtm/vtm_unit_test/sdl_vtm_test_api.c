@@ -39,12 +39,11 @@
  **/
 
 #include "sdl_vtm_test_main.h"
+#include <sdl/vtm/v0/sdl_ip_vtm_priv.h>
+
 #define LT_THR0_DEFAULT          (95000)
 #define GT_THR1_DEFAULT          (105000)
 #define GT_THR2_DEFAULT          (115000)
-
-extern int32_t gNumTempSensors;
-extern int32_t gNumCoreVoltageDomains;
 
 int32_t sdlVTM_apiTest(void)
 {

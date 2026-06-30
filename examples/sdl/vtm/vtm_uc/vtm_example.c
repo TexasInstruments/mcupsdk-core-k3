@@ -51,6 +51,7 @@
 #include <drivers/sciclient.h>
 #include <sdl/dpl/sdl_dpl.h>
 #include <sdl/sdl_vtm.h>
+#include <sdl/vtm/v0/sdl_vtm_pvt_sensor.h>
 #include <sdl/sdl_esm.h>
 
 /* ========================================================================== */
@@ -94,7 +95,6 @@ extern volatile uint32_t    vtmEventInputTrig[2];
 extern volatile uint8_t     currTestCase;
 /* Flag to indicate callback triggered */
 extern volatile bool        VTM_intrDone;
-uint32_t                    pStatus;
 SDL_ESM_Inst                currEsmInstance;
 
 

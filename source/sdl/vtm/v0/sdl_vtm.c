@@ -46,6 +46,9 @@
 
 #include <stdint.h>
 #include <sdl/sdl_vtm.h>
+#include <sdl/vtm/v0/sdl_ip_vtm.h>
+#include <sdl/vtm/v0/sdl_ip_vtm_priv.h>
+#include <sdl/vtm/v0/sdl_vtm_pvt_sensor.h>
 #include <sdl/include/sdl_types.h>
 #include <kernel/dpl/ClockP.h>
 
@@ -73,8 +76,7 @@
 /*                            Global Variables                                */
 /* ========================================================================== */
 
-extern int32_t gNumTempSensors;
-extern int32_t gNumCoreVoltageDomains;
+/* None */
 
 /* ========================================================================== */
 /*                          Function Definitions                              */

@@ -70,30 +70,31 @@
 /*                            Global Variables                                */
 /* ========================================================================== */
 
-SDL_lbistInstInfo SDL_LBIST_InstInfoArray[SDL_LBIST_NUM_INSTANCES] =
-{
- /* WKUP */
- {
-  .pLBISTRegs             = (SDL_lbistRegs *)(SDL_MCU_WKUP0_LBIST_BASE),
-  .pLBISTSig              = NULL,
-  .expectedMISR           = WKUP_MISR_EXP_VAL,         /* Expected signature for main R5 0*/
-  .handler                = NULL,                     /* LBIST event handler */
-  .doneFlag               = LBIST_NOT_DONE,           /* Initialize done flag */
-  .LBISTConfig = {
-      .dc_def        = LBIST_DC_DEF,
-      .divide_ratio  = LBIST_DIVIDE_RATIO,
-      .static_pc_def = LBIST_WKUP_STATIC_PC_DEF,
-      .set_pc_def    = LBIST_SET_PC_DEF,
-      .reset_pc_def  = LBIST_RESET_PC_DEF,
-      .scan_pc_def   = LBIST_SCAN_PC_DEF,
-      .prpg_def      = LBIST_PRPG_DEF,
-  },
- },
-
-};
-
 SDL_lbistInstInfo * SDL_LBIST_getInstInfo(uint32_t index)
 {
+
+    static SDL_lbistInstInfo SDL_LBIST_InstInfoArray[SDL_LBIST_NUM_INSTANCES] =
+    {
+        /* WKUP */
+        {
+            .pLBISTRegs             = (SDL_lbistRegs *)(SDL_MCU_WKUP0_LBIST_BASE),
+            .pLBISTSig              = NULL,
+            .expectedMISR           = WKUP_MISR_EXP_VAL,         /* Expected signature for main R5 0*/
+            .handler                = NULL,                     /* LBIST event handler */
+            .doneFlag               = LBIST_NOT_DONE,           /* Initialize done flag */
+            .LBISTConfig = 
+            {
+                .dc_def        = LBIST_DC_DEF,
+                .divide_ratio  = LBIST_DIVIDE_RATIO,
+                .static_pc_def = LBIST_WKUP_STATIC_PC_DEF,
+                .set_pc_def    = LBIST_SET_PC_DEF,
+                .reset_pc_def  = LBIST_RESET_PC_DEF,
+                .scan_pc_def   = LBIST_SCAN_PC_DEF,
+                .prpg_def      = LBIST_PRPG_DEF,
+            },
+        },
+    };
+
     SDL_lbistInstInfo *handle;
     SDL_lbistInstInfo *pInfo = NULL;
 

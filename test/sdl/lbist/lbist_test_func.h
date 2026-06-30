@@ -54,13 +54,12 @@ extern "C"
 
 #include <sdl/include/sdl_types.h>
 #include <sdl/lbist/soc/sdl_soc_lbist.h>
+#include <sdl/lbist/sdl_lbist_priv.h>
 
 
 /* ========================================================================== */
 /*                                Data Structures                             */
 /* ========================================================================== */
-
-typedef void (*LBIST_handlerPtr)(uint32_t coreIndex);
 
 typedef struct LBIST_PSC_s
 {

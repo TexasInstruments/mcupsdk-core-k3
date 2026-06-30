@@ -296,6 +296,12 @@ int32_t Sciserver_processtask(Sciserver_taskData *utd)
                 &respMsgSize,
                 utd->user_msg_data[utd->state->current_buffer_idx]->host);
         respMsg = utd->hw_msg_buffer_list[utd->state->current_buffer_idx];
+        if (utd->user_msg_data[utd->state->current_buffer_idx]->host == TISCI_HOST_ID_TIFS2DM)
+        {
+            /* DMSC2DM is processed by DM. Need to update response message value
+             * so the host verification on TIFS can succeed */
+            Sciserver_SetMsgHostId(respMsg, TISCI_HOST_ID_DM);
+        }
     }
     else
     {
@@ -305,12 +311,7 @@ int32_t Sciserver_processtask(Sciserver_taskData *utd)
     if (ret == CSL_PASS)
     {
         respHost = utd->user_msg_data[utd->state->current_buffer_idx]->host;
-        if (respHost == TISCI_HOST_ID_TIFS2DM)
-        {
-            /* DMSC2DM is processed by DM. Need to update response message value
-             * so the host verification on TIFS can succeed */
-            Sciserver_SetMsgHostId(respMsg, TISCI_HOST_ID_DM);
-        }
+
         /* Check AOP flag before sending a response back */
         if((tisci_flags & TISCI_MSG_FLAG_AOP) == TISCI_MSG_FLAG_AOP){
             ret = Sciserver_TisciMsgResponse(respHost, respMsg, respMsgSize);

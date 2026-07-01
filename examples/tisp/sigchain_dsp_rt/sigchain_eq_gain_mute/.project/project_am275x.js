@@ -22,6 +22,7 @@ const files_c7x = {
     ],
     cpp_common: [
     	"TISP_eq_gain_mute.cpp",
+    	"TISP_app_arena_default_config.cpp",
     ],
 };
 

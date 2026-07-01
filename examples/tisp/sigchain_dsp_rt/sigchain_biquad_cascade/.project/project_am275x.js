@@ -22,6 +22,7 @@ const files_c7x = {
     ],
     cpp_common: [
     	"TISP_parametericEq_test.cpp",
+    	"TISP_app_arena_default_config.cpp",
     ],
 };
 

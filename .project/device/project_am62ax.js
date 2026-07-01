@@ -239,6 +239,8 @@ const example_file_list = [
     "test/drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Vring_64_Test/.project/project.js",
     "test/drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Vring_128_Test/.project/project.js",
     "test/drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Vring_256_Test/.project/project.js",
+    "test/drivers/mcan/.project/project.js",
+    "test/drivers/mcan/test_mcan_system/.project/project.js",
     "test/drivers/mcasp/mcasp_auxclk_sel/.project/project.js",
     "test/drivers/mcasp/mcasp_low_latency/.project/project.js",
     "test/drivers/mcasp/mcasp_multiinst_loopback/.project/project.js",

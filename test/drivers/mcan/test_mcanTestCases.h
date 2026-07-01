@@ -1115,6 +1115,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         PRINT_ENABLE,
         (ST_TT_SANITY),
     },
+    
     {
         TEST_ENABLE, 10253U,
         "None",

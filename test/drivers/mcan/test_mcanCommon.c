@@ -163,10 +163,8 @@
 #define CONFIG_MCAN_TS_INTRNUM                      (CSLR_MCU_M4FSS0_CORE0_NVIC_MCU_MCAN0_COMMON_0_MCANSS_EXT_TS_ROLLOVER_LVL_INT_0)
 #elif defined (SOC_AM275X)
 #define CONFIG_MCAN_TS_INTRNUM                      (CSLR_R5FSS0_CORE0_INTR_MCAN0_MCANSS_EXT_TS_ROLLOVER_LVL_INT_0)
-#elif defined (SOC_AM62DX)
+#elif defined (SOC_AM62DX) || defined (SOC_AM62AX)
 #define CONFIG_MCAN_TS_INTRNUM                      (CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_MCAN0_MCANSS_EXT_TS_ROLLOVER_LVL_INT_0)
-#else
-#define CONFIG_MCAN_TS_INTRNUM                      (CSLR_R5FSS0_CORE0_INTR_MCAN0_MCANSS_EXT_TS_ROLLOVER_LVL_INT_0)
 #endif
 
 /* ========================================================================== */

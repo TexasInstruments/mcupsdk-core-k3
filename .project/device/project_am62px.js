@@ -207,6 +207,8 @@ const example_file_list = [
     "test/drivers/dss/dss_oldi_interface/.project/project.js",
     "test/drivers/gpio/.project/project.js",
     "test/drivers/gtc/.project/project.js",
+    "test/drivers/epwm/.project/project.js",
+    "test/drivers/epwm/test_epwm_system/.project/project.js",
     "test/drivers/pinmux_coverage/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_raw_io/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_fs_io/.project/project.js",

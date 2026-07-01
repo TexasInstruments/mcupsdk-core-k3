@@ -278,10 +278,12 @@ const robot_template = {
         testCaseName: "IPC RPMSG test application",
         appName: "test_ipc_rpmsg",
         testCaseIds: "SITSW-2456 SITSW-2458 SITSW-2463 SITSW-2465 SITSW-2466 " +
-             "SITSW-2467 SITSW-2468",
+             "SITSW-2467 SITSW-2468 " +
+             "SITSW-12757 SITSW-12758 SITSW-12759 SITSW-12760 SITSW-12761",
         withCfg: true,
         cfgPath: "test/drivers/ipc_rpmsg/{board}/ipc_rpmsg_test_sbl_uart_${DEVICE_TYPE}.cfg",
         expectTimeout: 500,
+        timeout: 900,
     },
 };
 
@@ -328,6 +330,18 @@ function getComponentBuildProperty(buildOption) {
     if(buildOption.cpu.match("r5fss0-0"))
     {
         build_property.templates = [...(build_property.templates || []), robot_template];
+    }
+
+    if (buildOption.board === "am62x-sk" && (buildOption.cpu.match(/r5f*/) || buildOption.cpu.match(/a53*/))) {
+        if (build_property.defines) {
+            build_property.defines = {
+                common: [...build_property.defines.common, "BUILD_R5_AS_MASTER"]
+            };
+        } else {
+            build_property.defines = {
+                common: ["BUILD_R5_AS_MASTER"]
+            };
+        }
     }
 
     return build_property;

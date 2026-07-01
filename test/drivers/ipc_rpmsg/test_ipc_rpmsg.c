@@ -105,13 +105,21 @@ uint32_t gRemoteCoreId[] = {
 
 #if defined (SOC_AM62X)
 /* main core that checks the test pass/fail */
+#if defined(BUILD_A53_AS_MASTER)
+uint32_t gMainCoreId = CSL_CORE_ID_A53SS0_0;
+#elif defined(BUILD_M4F_AS_MASTER)
+uint32_t gMainCoreId = CSL_CORE_ID_M4FSS0_0;
+#else
 uint32_t gMainCoreId = CSL_CORE_ID_R5FSS0_0;
+#endif
 /* All cores that participate in the IPC */
 uint32_t gRemoteCoreId[] = {
     CSL_CORE_ID_R5FSS0_0,
     CSL_CORE_ID_M4FSS0_0,
     CSL_CORE_ID_A53SS0_0,
+#if !defined(BUILD_A53_AS_MASTER)
     CSL_CORE_ID_A53SS0_1,
+#endif
     CSL_CORE_ID_MAX /* this value indicates the end of the array */
 };
 #endif
@@ -140,7 +148,11 @@ uint32_t gRemoteCoreId[] = {
 
 #if defined (SOC_AM62PX)
 /* main core that checks the test pass/fail */
+#if defined(BUILD_MCU_R5F_AS_MASTER)
+uint32_t gMainCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+#else
 uint32_t gMainCoreId = CSL_CORE_ID_WKUP_R5FSS0_0;
+#endif
 /* All cores that participate in the IPC */
 uint32_t gRemoteCoreId[] = {
     CSL_CORE_ID_WKUP_R5FSS0_0,
@@ -211,7 +223,7 @@ SemaphoreP_Object gAckDoneSem;
 /* semaphore that is set from callback handler when all sent messages in rx notify callback mode are ack'ed */
 SemaphoreP_Object gRxNotifyAckDoneSem;
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM275X) || defined(SOC_AM62X)
 
 /* Semaphore usesd to indicate that all the variable messages are ack'ed in the receive callback */
 SemaphoreP_Object TestIpcRPMsg_varMsgDoneSem;
@@ -238,8 +250,9 @@ StackType_t  gServerTaskStack[SERVER_TASK_SIZE] __attribute__((aligned(32)));
 StaticTask_t gServerTaskObj;
 TaskHandle_t gServerTask;
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM275X) || defined(SOC_AM62X)
 
+#if !defined(SOC_AM62X) || (!defined(BUILD_M4F) && (defined(BUILD_R5_AS_MASTER) || defined(BUILD_A53_AS_MASTER)))
 /* Stack for receive tasks */
 uint8_t TestIpcRPMsg_recvTasksStack[2][8*1024U] __attribute__((aligned(32)));
 
@@ -251,6 +264,7 @@ TaskP_Object TestIpcRPMsg_recvTasks[2];
 
 /* Task handle for sender tasks spawning */
 TaskP_Object TestIpcRPMsg_sndTasks[2];
+#endif
 #endif
 
 /* RPMessage objects to receive messages */
@@ -268,7 +282,7 @@ RPMessage_Object gSendErrorCheckMsgObject;
 /* RPMessage objects for recv error check messages */
 RPMessage_Object gRecvErrorCheckMsgObject;
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM275X) || defined(SOC_AM62X)
 
 /* RPMessage objects for mutiple endpoints test case */
 RPMessage_Object TestIpcRPMsg_multipleEndptRcvObject1;
@@ -292,7 +306,7 @@ uint16_t gNullEndPt   = 13; /* this end point is not created is used for error t
 uint16_t gRxNotifyAckEndPt = 14;
 uint16_t gSendErrorCheckEndPt = 15;
 uint16_t gRecvErrorCheckEndPt = 16;
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM275X) || defined(SOC_AM62X)
 
 uint16_t TestIpcRPMsg_varMsgRcvEndPt = 17;
 uint16_t TestIpcRPMsg_multipleEndpt1 = 18;
@@ -322,7 +336,7 @@ typedef struct {
 
 } Msg_BackToBack;
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM275X) || defined(SOC_AM62X)
 
 /* Structure used to send variable size message  */
 typedef struct 
@@ -387,7 +401,7 @@ void test_rpmsgRxNotifyHandler(RPMessage_Object *obj, void *arg);
 static void test_rpmsgValidParams(void *args);
 #endif
 
-#if defined(SOC_AM275X) || defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM275X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
 void TestIpcRpmsg_multiplEndPointRecvTask(void *arg);
 void TestIpcRPMsg_varMsgRxNotifyHandler(RPMessage_Object *obj, void *arg);
 void TestIpcRPMsg_multipleEndptRxNotifyHandler1(RPMessage_Object *obj, void *arg);
@@ -462,14 +476,16 @@ void test_rpmsgCreateObjects()
     int32_t status;
     RPMessage_CreateParams createParams;
 
-#if defined(SOC_AM275X) || defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM275X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
 
+#if !defined(SOC_AM62X) || (!defined(BUILD_M4F) && (defined(BUILD_R5_AS_MASTER) || defined(BUILD_A53_AS_MASTER)))
     /* Create two tasks to receive messages */
     TaskP_Params taskParams1;
     TaskP_Params taskParams2;
 
     RPMessage_CreateParams createTaskParams1;
     RPMessage_CreateParams createTaskParams2;
+#endif
 
     status = SemaphoreP_constructBinary(&TestIpcRPMsg_multipleEndptDoneSem1, 0);
     DebugP_assert(status==SystemP_SUCCESS);
@@ -510,7 +526,7 @@ void test_rpmsgCreateObjects()
     status = RPMessage_construct(&gRxNotifyAckMsgObject, &createParams);
     DebugP_assert(status==SystemP_SUCCESS);
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if (defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM275X) || defined(SOC_AM62X)) && (!defined(SOC_AM62X) || (!defined(BUILD_M4F) && (defined(BUILD_R5_AS_MASTER) || defined(BUILD_A53_AS_MASTER))))
     RPMessage_CreateParams_init(&createParams);
     createParams.localEndPt = TestIpcRPMsg_varMsgRcvEndPt;
     createParams.recvNotifyCallback = TestIpcRPMsg_varMsgRxNotifyHandler;
@@ -567,13 +583,16 @@ void test_rpmsgCreateObjects()
                                   &gServerTaskObj);
     configASSERT(gServerTask != NULL);
 
-#if defined(SOC_AM275X) || defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM275X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
 
+#if !defined(SOC_AM62X) || (!defined(BUILD_M4F) && (defined(BUILD_R5_AS_MASTER) || defined(BUILD_A53_AS_MASTER)))
     /* Create the  receiver tasks with two endpoints */
 #if defined (SOC_AM275X)
     if ((IpcNotify_getSelfCoreId() != CSL_CORE_ID_C75SS0_0) && ((IpcNotify_getSelfCoreId() != CSL_CORE_ID_C75SS1_0)))
-#else
+#elif defined(SOC_AM62AX) || defined(SOC_AM62DX)
     if ((IpcNotify_getSelfCoreId() != CSL_CORE_ID_C75SS0_0))
+#else
+    if (1)
 #endif
     {
         RPMessage_CreateParams_init(&createTaskParams1);
@@ -612,6 +631,7 @@ void test_rpmsgCreateObjects()
         TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
     }
 #endif
+#endif
     /* wait for all cores to be ready */
     IpcNotify_syncAll(SystemP_WAIT_FOREVER);
 
@@ -631,7 +651,7 @@ void test_rpmsgDestructObjects()
     RPMessage_destruct(&gSendErrorCheckMsgObject);
     RPMessage_destruct(&gRecvErrorCheckMsgObject);
 
-#if defined(SOC_AM275X) || defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if (defined(SOC_AM275X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)) && (!defined(SOC_AM62X) || (!defined(BUILD_M4F) && (defined(BUILD_R5_AS_MASTER) || defined(BUILD_A53_AS_MASTER))))
     RPMessage_destruct(&TestIpcRPMsg_varMsgRcvObject);
     RPMessage_destruct(&TestIpcRPMsg_recvTaskObjects[0]);
     RPMessage_destruct(&TestIpcRPMsg_recvTaskObjects[1]);
@@ -643,8 +663,10 @@ void test_rpmsgDestructObjects()
     SemaphoreP_destruct(&TestIpcRPMsg_multipleEndptDoneSem2);
     SemaphoreP_destruct(&TestIpcRPMsg_multipleEndptDoneSem3);
 
+#if !defined(SOC_AM62X) || (!defined(BUILD_M4F) && (defined(BUILD_R5_AS_MASTER) || defined(BUILD_A53_AS_MASTER)))
     TaskP_destruct(&TestIpcRPMsg_recvTasks[0]);
     TaskP_destruct(&TestIpcRPMsg_recvTasks[1]);
+#endif
 #endif
 
 }
@@ -1122,7 +1144,9 @@ void test_rpmsgRxNotifyCallback(void *args)
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 }
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM275X) || defined(SOC_AM62X)
+
+#if !defined(SOC_AM62X) || (!defined(BUILD_M4F) && (defined(BUILD_R5_AS_MASTER) || defined(BUILD_A53_AS_MASTER)))
 
 /* Sender Task 1 for multi threaded test */
 void TestIpcRpmsg_multipleEndPtSndTask1(void *args)
@@ -1147,8 +1171,10 @@ void TestIpcRpmsg_multipleEndPtSndTask1(void *args)
 
         if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0) &&
             (gRemoteCoreId[i] != CSL_CORE_ID_C75SS1_0))
-#else
+#elif defined(SOC_AM62AX) || defined(SOC_AM62DX)
         if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+#else
+        if(gRemoteCoreId[i] != IpcNotify_getSelfCoreId())
 #endif
         {
             status = RPMessage_send(
@@ -1165,8 +1191,10 @@ void TestIpcRpmsg_multipleEndPtSndTask1(void *args)
 #if defined(SOC_AM275X)
         if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0) &&
             (gRemoteCoreId[i] != CSL_CORE_ID_C75SS1_0))
-#else
+#elif defined(SOC_AM62AX) || defined(SOC_AM62DX)
         if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+#else
+        if(gRemoteCoreId[i] != IpcNotify_getSelfCoreId())
 #endif
         {
             ackMsgSize = sizeof(ackMsgBuf);
@@ -1206,8 +1234,10 @@ void TestIpcRpmsg_multipleEndPtSndTask2(void *args)
 #if defined(SOC_AM275X)
         if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0) &&
             (gRemoteCoreId[i] != CSL_CORE_ID_C75SS1_0))
-#else
+#elif defined(SOC_AM62AX) || defined(SOC_AM62DX)
         if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+#else
+        if(gRemoteCoreId[i] != IpcNotify_getSelfCoreId())
 #endif
         {
             status = RPMessage_send(
@@ -1224,8 +1254,10 @@ void TestIpcRpmsg_multipleEndPtSndTask2(void *args)
 #if defined(SOC_AM275X)
         if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0) &&
             (gRemoteCoreId[i] != CSL_CORE_ID_C75SS1_0))
-#else
+#elif defined(SOC_AM62AX) || defined(SOC_AM62DX)
         if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+#else
+        if(gRemoteCoreId[i] != IpcNotify_getSelfCoreId())
 #endif
         {
             ackMsgSize = sizeof(ackMsgBuf);
@@ -1476,8 +1508,10 @@ void TestIpcRPMsg_sndMsgToTasks(void *args)
 #if defined(SOC_AM275X)
         if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0) &&
             (gRemoteCoreId[i] != CSL_CORE_ID_C75SS1_0))
-#else
+#elif defined(SOC_AM62AX) || defined(SOC_AM62DX)
         if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+#else
+        if(gRemoteCoreId[i] != IpcNotify_getSelfCoreId())
 #endif
         {
             status = RPMessage_send(
@@ -1494,8 +1528,10 @@ void TestIpcRPMsg_sndMsgToTasks(void *args)
 #if defined(SOC_AM275X)
         if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0) &&
             (gRemoteCoreId[i] != CSL_CORE_ID_C75SS1_0))
-#else
+#elif defined(SOC_AM62AX) || defined(SOC_AM62DX)
         if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+#else
+        if(gRemoteCoreId[i] != IpcNotify_getSelfCoreId())
 #endif
         {
             ackMsgSize = sizeof(ackMsgBuf[0]);
@@ -1520,8 +1556,10 @@ void TestIpcRPMsg_sndMsgToTasks(void *args)
 #if defined(SOC_AM275X)
         if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0) &&
             (gRemoteCoreId[i] != CSL_CORE_ID_C75SS1_0))
-#else
+#elif defined(SOC_AM62AX) || defined(SOC_AM62DX)
         if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+#else
+        if(gRemoteCoreId[i] != IpcNotify_getSelfCoreId())
 #endif
         {
             status = RPMessage_send(
@@ -1539,8 +1577,10 @@ void TestIpcRPMsg_sndMsgToTasks(void *args)
 #if defined(SOC_AM275X)
         if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0) &&
             (gRemoteCoreId[i] != CSL_CORE_ID_C75SS1_0))
-#else
+#elif defined(SOC_AM62AX) || defined(SOC_AM62DX)
         if((gRemoteCoreId[i] != IpcNotify_getSelfCoreId()) && (gRemoteCoreId[i] != CSL_CORE_ID_C75SS0_0))
+#else
+        if(gRemoteCoreId[i] != IpcNotify_getSelfCoreId())
 #endif
         {
             ackMsgSize = sizeof(ackMsgBuf[1]);
@@ -1686,6 +1726,7 @@ void TestIpcRpmsg_variableMsgSizeSnd(void *args)
     DebugP_logZoneRestore(oldDebugLogZone);
 }
 #endif
+#endif
 #if !defined(SOC_AM62X) &&  !defined(SOC_AM62PX) && !defined(SOC_J722S)
 void test_rpmsgErrorChecks(void *args)
 {
@@ -1820,23 +1861,23 @@ void test_rpmsgErrorChecks(void *args)
     TEST_ASSERT_GREATER_OR_EQUAL_UINT32(0, fifoFullCount);
     #elif defined(SOC_AM62PX)
     /* send with NULL data */
-    status = RPMessage_send(NULL, sizeof(msgObj), CSL_CORE_ID_MCU_R5FSS0_0,
+    status = RPMessage_send(NULL, sizeof(msgObj), remoteCoreId,
                     gServerEndPt, gAckEndPt, SystemP_WAIT_FOREVER);
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
 
     /* send with zero size data  */
-    status = RPMessage_send(&msgObj, 0, CSL_CORE_ID_MCU_R5FSS0_0,
+    status = RPMessage_send(&msgObj, 0, remoteCoreId,
                     gServerEndPt, gAckEndPt, SystemP_WAIT_FOREVER);
     TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
 
     /* send to end pt that is not created on remote,
        this is allowed, recevied message is dropped */
-    status = RPMessage_send(&msgObj, sizeof(msgObj), CSL_CORE_ID_MCU_R5FSS0_0,
+    status = RPMessage_send(&msgObj, sizeof(msgObj), remoteCoreId,
                     gNullEndPt, gAckEndPt, SystemP_WAIT_FOREVER);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     /* set reply to end pt that is not created on local,
        this is allowed, ack message is dropped */
-    status = RPMessage_send(&msgObj, sizeof(msgObj), CSL_CORE_ID_MCU_R5FSS0_0,
+    status = RPMessage_send(&msgObj, sizeof(msgObj), remoteCoreId,
                     gServerEndPt, gNullEndPt, SystemP_WAIT_FOREVER);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -1847,7 +1888,7 @@ void test_rpmsgErrorChecks(void *args)
     msgCount = 1000;
     for(msg=0; msg<msgCount; msg++)
     {
-        status = RPMessage_send(&msgObj, sizeof(msgObj), CSL_CORE_ID_MCU_R5FSS0_0,
+        status = RPMessage_send(&msgObj, sizeof(msgObj), remoteCoreId,
                         gServerEndPt, gAckEndPt, SystemP_NO_WAIT);
         if(status == SystemP_TIMEOUT)
         {
@@ -1855,7 +1896,7 @@ void test_rpmsgErrorChecks(void *args)
         }
     }
     /* send one message waiting for space in FIFO just to check a success case after failure */
-    status = RPMessage_send(&msgObj, sizeof(msgObj), CSL_CORE_ID_MCU_R5FSS0_0,
+    status = RPMessage_send(&msgObj, sizeof(msgObj), remoteCoreId,
                         gServerEndPt, gAckEndPt, SystemP_WAIT_FOREVER);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -2070,8 +2111,10 @@ void test_ipc_main_core_start()
     #endif
 
     #if defined(SOC_AM64X) || defined(SOC_AM243X) || defined(SOC_AM62X)
+#if !defined(BUILD_M4F_AS_MASTER)
     testArgs.remoteCoreId = CSL_CORE_ID_M4FSS0_0;
     RUN_TEST(test_rpmsgOneToOne, 2465, &testArgs);
+#endif
     #endif
 
     #if defined(SOC_AM64X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62X)
@@ -2081,7 +2124,7 @@ void test_ipc_main_core_start()
 #endif
     #endif
 
-    #if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
     testArgs.echoMsgCount = 3;
 #if !defined(SOC_AM275X)
 
@@ -2181,15 +2224,74 @@ void test_ipc_main_core_start()
     RUN_TEST(TestIpcRpmsg_multipleEndpointsSnd, 9729, &testArgs);
 #endif
 #endif
-
-    /* concurrent endpoint transfer */
+#if !defined(SOC_AM62DX) && !defined(SOC_AM275X)
+#if !defined(SOC_AM62AX) || (!defined(BUILD_A53_AS_MASTER) && !defined(BUILD_C7X_AS_MASTER) && !defined(BUILD_MCU_R5F_AS_MASTER))
     RUN_TEST(TestIpcRpmsg_concurrentEndptXfer, 9731, &testArgs);
+#endif
+#endif
+#endif
 
-    #endif
+#if defined(SOC_AM62X) && (!defined(BUILD_M4F) && (defined(BUILD_R5_AS_MASTER) || defined(BUILD_A53_AS_MASTER)))
+    testArgs.echoMsgCount = 3;
+
+#if defined(BUILD_R5_AS_MASTER)
+    /* Variable Message send test for AM62X with R5F as master */
+    testArgs.remoteCoreId = CSL_CORE_ID_M4FSS0_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 12757, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 12758, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_1;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 12759, &testArgs);
+
+    /* Multiple endpoint test on A53 */
+    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
+    RUN_TEST(TestIpcRpmsg_multipleEndpointsSnd, 12760, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_1;
+    RUN_TEST(TestIpcRpmsg_multipleEndpointsSnd, 12761, &testArgs);
+#elif defined(BUILD_A53_AS_MASTER)
+    /* Variable Message send test for AM62X with A53 as master */
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 12714, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_M4FSS0_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 12762, &testArgs);
+
+    /* Multiple endpoint test on A53 */
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    RUN_TEST(TestIpcRpmsg_multipleEndpointsSnd, 12763, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_M4FSS0_0;
+    RUN_TEST(TestIpcRpmsg_multipleEndpointsSnd, 12764, &testArgs);
+#endif
+#endif
+
+#if defined(SOC_AM62PX)
+#if !defined(BUILD_MCU_R5F_AS_MASTER)
+    testArgs.echoMsgCount = 3;
+    /* Variable message send test with WKUP R5F as master */
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 12666, &testArgs);
+    testArgs.echoMsgCount = 1000;
+    testArgs.msgSize = 4;
+
+#elif defined(BUILD_MCU_R5F_AS_MASTER)
+    testArgs.echoMsgCount = 3;
+    /* Variable message send test with MCU R5F as master */
+    testArgs.remoteCoreId = CSL_CORE_ID_WKUP_R5FSS0_0;
+    RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 12668, &testArgs);
+    testArgs.echoMsgCount = 1000;
+    testArgs.msgSize = 4;
+#endif
+#endif
 
     #if defined(SOC_AM62X)
+#if !defined(BUILD_A53_AS_MASTER)
     testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_1;
     RUN_TEST(test_rpmsgOneToOne, 1870, &testArgs);
+#endif
     #endif
 
     #if defined(SOC_AM273X) || defined(SOC_AWR294X)
@@ -2212,6 +2314,7 @@ void test_ipc_main_core_start()
 
     #if defined(SOC_AM64X) || defined(SOC_AM243X) || defined(SOC_AM62X)
     /* performance test with varying payload size */
+#if !defined(BUILD_M4F_AS_MASTER)
     testArgs.remoteCoreId = CSL_CORE_ID_M4FSS0_0;
     testArgs.msgSize = 32;
     RUN_TEST(test_rpmsgOneToOne, 2466, &testArgs);
@@ -2221,7 +2324,13 @@ void test_ipc_main_core_start()
     testArgs.remoteCoreId = CSL_CORE_ID_M4FSS0_0;
     testArgs.msgSize = 112;
     RUN_TEST(test_rpmsgOneToOne, 2468, &testArgs);
+#endif
     #endif
+
+#if defined(SOC_AM62X) && defined(BUILD_M4F_AS_MASTER)
+    testArgs.echoMsgCount = 3;
+    testArgs.msgSize = 4;
+#endif
 
     #if defined(SOC_AM64X) || defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62X)
     /* performance test with varying payload size */
@@ -2242,6 +2351,7 @@ void test_ipc_main_core_start()
 
     #if defined(SOC_AM62X)
     /* performance test with varying payload size */
+#if !defined(BUILD_A53_AS_MASTER)
     testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_1;
     testArgs.msgSize = 32;
     RUN_TEST(test_rpmsgOneToOne, 2464, &testArgs);
@@ -2251,6 +2361,35 @@ void test_ipc_main_core_start()
     testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_1;
     testArgs.msgSize = 112;
     RUN_TEST(test_rpmsgOneToOne, 2734, &testArgs);
+#endif
+    
+#if defined(BUILD_A53_AS_MASTER)
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    testArgs.msgSize = 4;
+    RUN_TEST(test_rpmsgOneToOne, 12765, &testArgs);
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    testArgs.msgSize = 32;
+    RUN_TEST(test_rpmsgOneToOne, 12766, &testArgs);
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    testArgs.msgSize = 64;
+    RUN_TEST(test_rpmsgOneToOne, 12767, &testArgs);
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    testArgs.msgSize = 112;
+    RUN_TEST(test_rpmsgOneToOne, 12768, &testArgs);
+#elif defined(BUILD_M4F_AS_MASTER)
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    testArgs.msgSize = 4;
+    RUN_TEST(test_rpmsgOneToOne, 12769, &testArgs);
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    testArgs.msgSize = 32;
+    RUN_TEST(test_rpmsgOneToOne, 12770, &testArgs);
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    testArgs.msgSize = 64;
+    RUN_TEST(test_rpmsgOneToOne, 12771, &testArgs);
+    testArgs.remoteCoreId = CSL_CORE_ID_R5FSS0_0;
+    testArgs.msgSize = 112;
+    RUN_TEST(test_rpmsgOneToOne, 12772, &testArgs);
+#endif    
     #endif
 
     #if defined(SOC_AM62AX) || defined(SOC_AM62DX)
@@ -2392,20 +2531,44 @@ void test_ipc_main_core_start()
     #endif
 
     #if defined(SOC_AM62PX)
+    #if !defined(BUILD_MCU_R5F_AS_MASTER)
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    testArgs.msgSize = 4;
+    RUN_TEST(test_rpmsgOneToOne, 12656, &testArgs);
+
     testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     testArgs.msgSize = 32;
-    RUN_TEST(test_rpmsgOneToOne, 2713, &testArgs);
+    RUN_TEST(test_rpmsgOneToOne, 12657, &testArgs);
 
     testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     testArgs.msgSize = 64;
-    RUN_TEST(test_rpmsgOneToOne, 2712, &testArgs);
+    RUN_TEST(test_rpmsgOneToOne, 12658, &testArgs);
 
     testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     testArgs.msgSize = 112;
-    RUN_TEST(test_rpmsgOneToOne, 2711, &testArgs);
+    RUN_TEST(test_rpmsgOneToOne, 12659, &testArgs);
+    #elif defined(BUILD_MCU_R5F_AS_MASTER)
+
+    /* MCU R5F as master and WKUP R5F as remote */
+    testArgs.remoteCoreId = CSL_CORE_ID_WKUP_R5FSS0_0;
+    testArgs.msgSize = 4;
+    RUN_TEST(test_rpmsgOneToOne, 12660, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_WKUP_R5FSS0_0;
+    testArgs.msgSize = 32;
+    RUN_TEST(test_rpmsgOneToOne, 12661, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_WKUP_R5FSS0_0;
+    testArgs.msgSize = 64;
+    RUN_TEST(test_rpmsgOneToOne, 12662, &testArgs);
+
+    testArgs.remoteCoreId = CSL_CORE_ID_WKUP_R5FSS0_0;
+    testArgs.msgSize = 112;
+    RUN_TEST(test_rpmsgOneToOne, 12663, &testArgs);
+    #endif
     #endif
 
-    #if defined(SOC_AM62AX) || defined(SOC_AM62PX)
+    #if defined(SOC_AM62AX)
     testArgs.msgSize = 128;
     testArgs.echoMsgCount = 1;
 #if defined(BUILD_MCU_R5F_AS_MASTER)
@@ -2419,6 +2582,20 @@ void test_ipc_main_core_start()
     testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     RUN_TEST(test_rpmsgRecvErrorChecks, 5671, &testArgs);
 #endif
+    #endif
+
+    #if defined(SOC_AM62PX)
+    #if !defined(BUILD_MCU_R5F_AS_MASTER)
+    testArgs.msgSize = 128;
+    testArgs.echoMsgCount = 1;
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    RUN_TEST(test_rpmsgRecvErrorChecks, 12665, &testArgs);
+    #elif defined(BUILD_MCU_R5F_AS_MASTER)
+    testArgs.msgSize = 128;
+    testArgs.echoMsgCount = 1;
+    testArgs.remoteCoreId = CSL_CORE_ID_WKUP_R5FSS0_0;
+    RUN_TEST(test_rpmsgRecvErrorChecks, 12669, &testArgs);
+    #endif
     #endif
 
     #if defined(SOC_J722S)
@@ -2597,10 +2774,26 @@ void test_ipc_main_core_start()
     /* back to back message send and handler mode rx tests */
     testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     testArgs.msgSize = 4;
-    //RUN_TEST(test_rpmsgOneToOneBackToBack, 1874, &testArgs);
+    /*RUN_TEST(test_rpmsgOneToOneBackToBack, 1874, &testArgs);*/
     testArgs.remoteCoreId = CSL_CORE_ID_C75SS0_0;
     testArgs.msgSize = 4;
-    //RUN_TEST(test_rpmsgOneToOneBackToBack, 1874, &testArgs);
+    /*RUN_TEST(test_rpmsgOneToOneBackToBack, 1874, &testArgs);*/
+    #endif
+
+    #if defined(SOC_AM62PX)
+    #if !defined(BUILD_MCU_R5F_AS_MASTER)
+    /* back to back message send and handler mode rx tests */
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    testArgs.msgSize = 4;
+    testArgs.echoMsgCount = 1000;
+    /*RUN_TEST(test_rpmsgOneToOneBackToBack, 1874, &testArgs);*/
+    #elif defined(BUILD_MCU_R5F_AS_MASTER)
+    /* back to back message send and handler mode rx tests with MCU R5F as master */
+    testArgs.remoteCoreId = CSL_CORE_ID_WKUP_R5FSS0_0;
+    testArgs.msgSize = 4;
+    testArgs.echoMsgCount = 1000;
+    RUN_TEST(test_rpmsgOneToOneBackToBack, 12670, &testArgs);
+    #endif
     #endif
 
     #if !defined(SOC_AM62AX) && !defined(SOC_AM62DX) && !defined(SOC_AM62X) && !defined(SOC_AM62PX) && !defined(SOC_AM275X) && !defined(SOC_J722S)
@@ -2621,6 +2814,14 @@ void test_ipc_main_core_start()
 #endif
     #endif
 
+    #if defined(SOC_AM62PX) && defined(BUILD_MCU_R5F_AS_MASTER)
+    /* rx notify callback test with MCU R5F as master */
+    testArgs.msgSize = 4;
+    testArgs.echoMsgCount = 1;
+    testArgs.remoteCoreId = CSL_CORE_ID_WKUP_R5FSS0_0;
+    RUN_TEST(test_rpmsgRxNotifyCallback, 12775, &testArgs);
+    #endif
+
     #if defined(SOC_AM62X)
     /* rx notify callback tests */
     testArgs.remoteCoreId = CSL_CORE_ID_M4FSS0_0;
@@ -2629,7 +2830,7 @@ void test_ipc_main_core_start()
     //RUN_TEST(test_rpmsgRxNotifyCallback, 2464, &testArgs);
     #endif
 
-    #if defined(SOC_AM62AX) || defined(SOC_AM62PX)
+    #if defined(SOC_AM62AX)
     testArgs.msgSize = INVALID_MSG_SIZE;
     testArgs.echoMsgCount = 512;
 #if defined(BUILD_MCU_R5F_AS_MASTER)
@@ -2639,6 +2840,20 @@ void test_ipc_main_core_start()
     testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     RUN_TEST(test_rpmsgSendErrorChecks, 5649, &testArgs);
 #endif
+    #endif
+
+    #if defined(SOC_AM62PX)
+    #if !defined(BUILD_MCU_R5F_AS_MASTER)
+    testArgs.msgSize = INVALID_MSG_SIZE;
+    testArgs.echoMsgCount = 512;
+    testArgs.remoteCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
+    RUN_TEST(test_rpmsgSendErrorChecks, 12664, &testArgs);
+    #elif defined(BUILD_MCU_R5F_AS_MASTER)
+    testArgs.msgSize = INVALID_MSG_SIZE;
+    testArgs.echoMsgCount = 512;
+    testArgs.remoteCoreId = CSL_CORE_ID_WKUP_R5FSS0_0;
+    RUN_TEST(test_rpmsgSendErrorChecks, 12776, &testArgs);
+    #endif
     #endif
 
     #if defined(SOC_J722S)

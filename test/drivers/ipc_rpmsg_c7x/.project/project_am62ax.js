@@ -258,9 +258,13 @@ const robot_template = {
         componentName: "IPC",
         testCaseName: "ipc_rpmsg_c7x test application",
         appName: "test_ipc_rpmsg_c7x",
-        testCaseIds: "SITSW-6129 SITSW-6137",
+        testCaseIds: "SITSW-1870 SITSW-2456 SITSW-2458 SITSW-2463 SITSW-2464 SITSW-2732 SITSW-2734 SITSW-5649 SITSW-5671" +
+                     " SITSW-9730 SITSW-9733 SITSW-9734 SITSW-9735 SITSW-9748 SITSW-9749 SITSW-9750 SITSW-9751 SITSW-9752 SITSW-9753" +
+                     " SITSW-9754 SITSW-9755 SITSW-9756",
         withCfg: true,
         cfgPath: "test/drivers/ipc_rpmsg_c7x/{board}/ipc_rpmsg_test_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectTimeout: 500,
+        timeout: 900,
     },
 };
 

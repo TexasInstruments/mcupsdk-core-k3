@@ -192,25 +192,25 @@ const templates_freertos_a53 =
 const defines_dm_r5f = {
     common:[
         "ENABLE_SCICLIENT_DIRECT",
-        "BUILD_MCU_R5F_AS_MASTER",
+        "BUILD_A53_AS_MASTER",
     ]
 }
 
 const defines_r5 = {
     common:[
-        "BUILD_MCU_R5F_AS_MASTER",
+        "BUILD_A53_AS_MASTER",
     ]
 }
 
 const defines_a53 = {
     common:[
-        "BUILD_MCU_R5F_AS_MASTER",
+        "BUILD_A53_AS_MASTER",
     ]
 }
 
 const defines_c7 = {
     common:[
-        "BUILD_MCU_R5F_AS_MASTER",
+        "BUILD_A53_AS_MASTER",
     ]
 }
 
@@ -257,11 +257,13 @@ const robot_template = {
     options: {
         componentName: "IPC",
         testCaseName: "IPC RPMSG: A53SS0_0 to R5FSS0_0 with varying messages sizes",
-        testCaseIds: "SITSW-9813 SITSW-9814 SITSW-9815 SITSW-9824",
+        testCaseIds: "SITSW-2458 SITSW-2463 SITSW-2464 SITSW-5649 SITSW-5671 SITSW-9730 SITSW-9813 SITSW-9814 SITSW-9815" +
+                     " SITSW-9816 SITSW-9817 SITSW-9818 SITSW-9819 SITSW-9820 SITSW-9821 SITSW-9822 SITSW-9823 SITSW-9824",
         withCfg: true,
         appName: "test_ipc_rpmsg_a53",
         cfgPath: "test/drivers/ipc_rpmsg_a53/{board}/ipc_rpmsg_test_sbl_uart_${DEVICE_TYPE}.cfg",
         expectTimeout: 500,
+        timeout: 900,
     },
 };
 

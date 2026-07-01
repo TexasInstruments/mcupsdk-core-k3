@@ -213,6 +213,8 @@ const example_file_list = [
     "test/drivers/ipc_notify_a53/.project/project.js",
     "test/drivers/ipc_notify_m4f/.project/project.js",
     "test/drivers/ipc_rpmsg/.project/project.js",
+    "test/drivers/ipc_rpmsg_a53/.project/project.js",
+    "test/drivers/ipc_rpmsg_m4f/.project/project.js",
     "test/drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Announce_Test/.project/project.js",
     "test/drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Diagnostic_Test/.project/project.js",
     "test/drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Example_Test/.project/project.js",

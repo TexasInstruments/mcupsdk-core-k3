@@ -86,6 +86,11 @@ const defines_dm_r5f = {
     ]
 }
 
+const defines_mcu_r5f = {
+    common: [
+    ],
+}
+
 const syscfgfile = "../example.syscfg";
 
 const templates_freertos_wkup_r5f =
@@ -166,12 +171,13 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "IPC",
-        testCaseName: "ipc_rpmsg test application",
-        testCaseIds: "SITSW-2456 SITSW-2458 SITSW-2463 SITSW-2712 SITSW-2713 SITSW-2714 SITSW-5649 SITSW-5671",
+        testCaseName: "IPC RPMSG test application",
+        appName: "test_ipc_rpmsg",
+        testCaseIds: "SITSW-2458 SITSW-2463 SITSW-2464 SITSW-12656 SITSW-12657 SITSW-12658 SITSW-12659 SITSW-12664 SITSW-12665 SITSW-12666",
         withCfg: true,
         cfgPath: "test/drivers/ipc_rpmsg/{board}/ipc_rpmsg_test_sbl_uart_${DEVICE_TYPE}.cfg",
         expectTimeout: 500,
-        appName: "test_ipc_rpmsg",
+        timeout: 900,
     },
 };
 
@@ -189,6 +195,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.includes = includes_freertos_r5f;
         build_property.libs = libs_freertos_mcu_r5f;
         build_property.templates = templates_freertos_mcu_r5f;
+        build_property.defines = defines_mcu_r5f;
     }
     else if(buildOption.cpu.match(/wkup-r5f*/))
     {

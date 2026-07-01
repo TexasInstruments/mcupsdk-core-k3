@@ -798,32 +798,32 @@ int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags, void *tx_msg)
             ret = sys_reset_handler((uint32_t*)tx_msg); break;
 #ifdef CONFIG_LPM_DM
         case TISCI_MSG_PREPARE_SLEEP             :
-            ret = dm_prepare_sleep_handler((uint32_t*)tx_msg); break;
+            ret = lpm_prepare_sleep_handler((uint32_t*)tx_msg); break;
         case TISCI_MSG_ENTER_SLEEP               :
-            ret = dm_enter_sleep_handler((uint32_t*)tx_msg); break;
+            ret = lpm_enter_sleep_handler((uint32_t*)tx_msg); break;
         case TISCI_MSG_LPM_WAKE_REASON               :
-            ret = dm_lpm_wake_reason_handler((uint32_t*)tx_msg); break;
+            ret = lpm_wake_reason_handler((uint32_t*)tx_msg); break;
         case TISCI_MSG_SET_IO_ISOLATION          :
-            ret = dm_set_io_isolation_handler((uint32_t*)tx_msg); break;
+            ret = lpm_set_io_isolation_handler((uint32_t*)tx_msg); break;
         case TISCI_MSG_LPM_SET_DEVICE_CONSTRAINT:
-            ret = dm_lpm_set_device_constraint((uint32_t*)tx_msg); break;
+            ret = lpm_set_device_constraint((uint32_t*)tx_msg); break;
         case TISCI_MSG_LPM_SET_LATENCY_CONSTRAINT:
-            ret = dm_lpm_set_latency_constraint((uint32_t*)tx_msg); break;
+            ret = lpm_set_latency_constraint((uint32_t*)tx_msg); break;
         case TISCI_MSG_LPM_GET_DEVICE_CONSTRAINT:
-            ret = dm_lpm_get_device_constraint((uint32_t*)tx_msg); break;
+            ret = lpm_get_device_constraint((uint32_t*)tx_msg); break;
         case TISCI_MSG_LPM_GET_LATENCY_CONSTRAINT:
-            ret = dm_lpm_get_latency_constraint((uint32_t*)tx_msg); break;
+            ret = lpm_get_latency_constraint((uint32_t*)tx_msg); break;
         case TISCI_MSG_LPM_GET_NEXT_SYS_MODE:
-            ret = dm_lpm_get_next_sys_mode((uint32_t*)tx_msg); break;
+            ret = lpm_get_next_sys_mode((uint32_t*)tx_msg); break;
         case TISCI_MSG_LPM_GET_NEXT_HOST_STATE:
-            ret = dm_lpm_get_next_host_state((uint32_t*)tx_msg); break;
+            ret = lpm_get_next_host_state((uint32_t*)tx_msg); break;
         case TISCI_MSG_LPM_ABORT:
-            ret = dm_lpm_abort((uint32_t*)tx_msg); break;
+            ret = lpm_abort((uint32_t*)tx_msg); break;
 #elif defined(CONFIG_LPM_MIN)
         case TISCI_MSG_PREPARE_SLEEP             :
-            ret = dm_prepare_sleep_handler((uint32_t*)tx_msg); break;
+            ret = lpm_prepare_sleep_handler((uint32_t*)tx_msg); break;
         case TISCI_MSG_LPM_WAKE_REASON               :
-            ret = dm_lpm_wake_reason_handler((uint32_t*)tx_msg); break;
+            ret = lpm_wake_reason_handler((uint32_t*)tx_msg); break;
 #endif
         default:
             ret = CSL_EFAIL; msg_inval = 1U;

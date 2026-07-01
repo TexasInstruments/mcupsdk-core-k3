@@ -43,6 +43,8 @@
 #include <stdlib.h>
 #include <tisp.hpp>
 #include <vector>
+#include <kernel/dpl/DebugP.h>
+#include <TISP_ErrorCtxt.hpp>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -95,6 +97,10 @@ void *create_graph(int32_t *pIn, uint32_t *outStride)
         pCascade0FilterVar[i] = 0;
     }
 
+    /* Create operation vector and add all operations */
+    auto myOpVec = new TISP::opVec();
+    TISP::ErrorCtxt errorCtx;
+
     /* Create the signal chain */
     /* 1. TypeConversion: int32_t to float */
     auto k0 =
@@ -102,34 +108,47 @@ void *create_graph(int32_t *pIn, uint32_t *outStride)
             (int32_t *) pIn, (float *) pIntToFloat, NUM_CHANNELS,
             BLOCK_SIZE, NUM_CHANNELS * sizeof(int32_t),
             NUM_CHANNELS * sizeof(float), true,
-            "TyperConversion: IntToFloat", nodeId++);
+            "TyperConversion: IntToFloat", nodeId++, errorCtx);
+    if (errorCtx.isSuccess()) {
+        myOpVec->push_back(std::move(k0)); /* typeconversion (int32_t to float) */
+    } else {
+        DebugP_log("Error: Failed to create TypeConversion Node (k0): %s\n", errorCtx.getMessage());
+    }
 
     /* 2. CascadeBiquad: Apply parametric EQ */
-    auto k1 = std::make_unique<TISP::DSPLIB::CascadeBiquad<float>>(
-        (float *) pIntToFloat, (float *) pCascade0Coeff,
-        (float *) pCascade0FilterVar, (float *) pCascade0Out, BLOCK_SIZE,
-        NUM_CHANNELS, CASCADE_NUM_STAGES, DSPLIB_BIQUAD_DF1,
-        (NUM_CHANNELS) * sizeof(float), (NUM_CHANNELS) * sizeof(float),
-        NUM_CHANNELS * sizeof(float), false, "CascadeBiquad0", nodeId++);
+    if (errorCtx.isSuccess()) {
+        auto k1 = std::make_unique<TISP::DSPLIB::CascadeBiquad<float>>(
+            (float *) pIntToFloat, (float *) pCascade0Coeff,
+            (float *) pCascade0FilterVar, (float *) pCascade0Out, BLOCK_SIZE,
+            NUM_CHANNELS, CASCADE_NUM_STAGES, DSPLIB_BIQUAD_DF1,
+            (NUM_CHANNELS) * sizeof(float), (NUM_CHANNELS) * sizeof(float),
+            NUM_CHANNELS * sizeof(float), false, "CascadeBiquad0", nodeId++, errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec->push_back(std::move(k1)); /* cascadebiquad */
+        } else {
+            DebugP_log("Error: Failed to create CascadeBiquad Node (k1): %s\n", errorCtx.getMessage());
+        }
+    }
 
     /* 3. TypeConversion: float to int32_t */
-    auto k2 =
-        std::make_unique<TISP::AUDIOLIB::TypeConversion<float, int32_t>>(
-            (float *) pCascade0Out, (int32_t *) pIn, NUM_CHANNELS,
-            BLOCK_SIZE, NUM_CHANNELS * sizeof(float),
-            NUM_CHANNELS * sizeof(int32_t), true,
-            "TyperConversion: IntToFloat", nodeId++);
+    if (errorCtx.isSuccess()) {
+        auto k2 =
+            std::make_unique<TISP::AUDIOLIB::TypeConversion<float, int32_t>>(
+                (float *) pCascade0Out, (int32_t *) pIn, NUM_CHANNELS,
+                BLOCK_SIZE, NUM_CHANNELS * sizeof(float),
+                NUM_CHANNELS * sizeof(int32_t), true,
+                "TyperConversion: FloatToInt", nodeId++, errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec->push_back(std::move(k2)); /* typeconversion (float to int32_t) */
+        } else {
+            DebugP_log("Error: Failed to create TypeConversion Node (k2): %s\n", errorCtx.getMessage());
+        }
+    }
 
-    /* Create operation vector and add all operations */
-    auto myOpVec = new TISP::opVec();
-
-    /* Create the signal chain in the specified order: */
-    /* typeconversion (int32_t to float) --> cascadebiquad (parametric EQ) --> typeconversion (float to int32_t) */
-    myOpVec->push_back(
-        std::move(k0)); /* typeconversion (int32_t to float) */
-    myOpVec->push_back(std::move(k1)); /* cascadebiquad */
-    myOpVec->push_back(
-        std::move(k2)); /* typeconversion (float to int32_t) */
+    if (!errorCtx.isSuccess()) {
+        delete myOpVec;
+        return nullptr;
+    }
 
     void *myGraph = myOpVec;
     *outStride = NUM_CHANNELS;
@@ -180,7 +199,7 @@ int32_t getNodeInfo(void *myGraph, uint32_t nodeIndex, uint32_t *nodeId,
     if (myOpVec)
     {
         strcpy(name, (*myOpVec)[nodeIndex]->getNodeName());
-        strcpy(param, (*myOpVec)[nodeIndex]->getParams());
+        strcpy(param, (*myOpVec)[nodeIndex]->getNodeParams());
         *nodeId = (*myOpVec)[nodeIndex]->getNodeId();
         retVal = 0;
     }

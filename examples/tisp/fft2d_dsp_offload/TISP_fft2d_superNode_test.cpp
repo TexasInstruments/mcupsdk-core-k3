@@ -46,6 +46,7 @@
 #include <kernel/dpl/DebugP.h>
 #include "dsp_offload.h"
 #include <vector>
+#include <TISP_ErrorCtxt.hpp>
 
 using namespace std;
 
@@ -107,27 +108,51 @@ void *create_graph(void *input_ptr)
     blockWidth = numPoints << 1;
     blockHeight = BLOCK_HEIGHT;
 
-    auto k0 = std::make_unique<TISP::FFTLIB::FFT1dBatched<float>>(pInputBlock, pTempBlock, numPoints, blockHeight);
+    TISP::ErrorCtxt errorCtx;
+    auto myOpVec0 = std::make_unique<TISP::opVec>();
 
-    auto k1 = std::make_unique<TISP::DSPLIB::MatTrans<double>>(
-        (double *)pTempBlock, (double *)pOutputBlock, blockWidth >> 1, blockHeight, blockWidth * sizeof(double) >> 1,
-        blockHeight * sizeof(double));
+    auto k0 = std::make_unique<TISP::FFTLIB::FFT1dBatched<float>>(pInputBlock, pTempBlock, numPoints, blockHeight, errorCtx);
+    if (errorCtx.isSuccess()) {
+        myOpVec0->push_back(std::move(k0));
+    } else {
+        DebugP_log("Error: Failed to create FFT1dBatched Node (k0): %s\n", errorCtx.getMessage());
+    }
 
-    auto myOpVec0 = make_unique<TISP::opVec>();
+    if (errorCtx.isSuccess()) {
+        auto k1 = std::make_unique<TISP::DSPLIB::MatTrans<double>>(
+            (double *)pTempBlock, (double *)pOutputBlock, blockWidth >> 1, blockHeight, blockWidth * sizeof(double) >> 1,
+            blockHeight * sizeof(double), errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec0->push_back(std::move(k1));
+        } else {
+            DebugP_log("Error: Failed to create MatTrans Node (k1): %s\n", errorCtx.getMessage());
+        }
+    }
 
-    myOpVec0->push_back(std::move(k0));
-    myOpVec0->push_back(std::move(k1));
+    if (!errorCtx.isSuccess()) {
+        return nullptr;
+    }
 
     auto s0 = std::make_unique<TISP::SuperNode::I2dToO2dTranspose<double, double>>(
         std::move(myOpVec0), (double *)input, (double *)tempOut, (double *)pInputBlock, (double *)pOutputBlock,
         numPoints, numChannels, blockWidth >> 1, blockHeight, (numPoints) * sizeof(double), numChannels * sizeof(double),
         (TOTAL_DMA_CHANNELS));
 
-    auto k2 = std::make_unique<TISP::FFTLIB::FFT1dBatched<float>>(pInputBlock, pOutputBlock, numChannels, blockHeight);
 
     auto myOpVec1 = std::make_unique<TISP::opVec>();
 
-    myOpVec1->push_back(std::move(k2));
+    if (errorCtx.isSuccess()) {
+        auto k2 = std::make_unique<TISP::FFTLIB::FFT1dBatched<float>>(pInputBlock, pOutputBlock, numChannels, blockHeight, errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec1->push_back(std::move(k2));
+        } else {
+            DebugP_log("Error: Failed to create FFT1dBatched Node (k2): %s\n", errorCtx.getMessage());
+        }
+    }
+
+    if (!errorCtx.isSuccess()) {
+        return nullptr;
+    }
 
     auto s1 = std::make_unique<TISP::SuperNode::I2dToO2d<float, float>>(
         std::move(myOpVec1), tempOut, input, pInputBlock, pOutputBlock, numChannels << 1, numPoints, numChannels << 1,

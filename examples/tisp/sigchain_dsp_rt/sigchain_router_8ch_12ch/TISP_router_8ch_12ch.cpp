@@ -41,6 +41,8 @@
 #include <stdlib.h>
 #include <tisp.hpp>
 #include <vector>
+#include <kernel/dpl/DebugP.h>
+#include <TISP_ErrorCtxt.hpp>
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -197,6 +199,10 @@ void *create_graph(int32_t *pIn, uint32_t *outStride)
         pCascade1FilterVar[i] = 0;
     }
 
+    /* Create operation vector and add all operations */
+    auto myOpVec = new TISP::opVec();
+    TISP::ErrorCtxt errorCtx;
+
     /* Create the signal chain */
     /* 1. TypeConversion: int32_t to float */
     auto k0 =
@@ -204,88 +210,143 @@ void *create_graph(int32_t *pIn, uint32_t *outStride)
             (int32_t *) pIn, (float *) pIntToFloat, NUM_CHANNELS,
             BLOCK_SIZE, NUM_CHANNELS * sizeof(int32_t),
             NUM_CHANNELS * sizeof(float), true,
-            "TyperConversion: IntToFloat", 0);
+            "TyperConversion: IntToFloat", 0, errorCtx);
+    if (errorCtx.isSuccess()) {
+        myOpVec->push_back(std::move(k0));
+    } else {
+        DebugP_log("Error: Failed to create TypeConversion Node (k0): %s\n", errorCtx.getMessage());
+    }
 
     /* 2. CascadeBiquad0: First biquad filter */
-    auto k1 = std::make_unique<TISP::DSPLIB::CascadeBiquad<float>>(
-        (float *) pIntToFloat, (float *) pCascade0Coeff,
-        (float *) pCascade0FilterVar, (float *) pCascade0Out, BLOCK_SIZE,
-        NUM_CHANNELS, CASCADE_NUM_STAGES, DSPLIB_BIQUAD_DF1,
-        (NUM_CHANNELS) * sizeof(float), (NUM_CHANNELS) * sizeof(float),
-        NUM_CHANNELS * sizeof(float), false, "CascadeBiquad0", 1);
+    if (errorCtx.isSuccess()) {
+        auto k1 = std::make_unique<TISP::DSPLIB::CascadeBiquad<float>>(
+            (float *) pIntToFloat, (float *) pCascade0Coeff,
+            (float *) pCascade0FilterVar, (float *) pCascade0Out, BLOCK_SIZE,
+            NUM_CHANNELS, CASCADE_NUM_STAGES, DSPLIB_BIQUAD_DF1,
+            (NUM_CHANNELS) * sizeof(float), (NUM_CHANNELS) * sizeof(float),
+            NUM_CHANNELS * sizeof(float), false, "CascadeBiquad0", 1, errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec->push_back(std::move(k1));
+        } else {
+            DebugP_log("Error: Failed to create CascadeBiquad Node (k1): %s\n", errorCtx.getMessage());
+        }
+    }
 
     /* 3. CascadeBiquad1: Second biquad filter */
-    auto k2 = std::make_unique<TISP::DSPLIB::CascadeBiquad<float>>(
-        (float *) pCascade0Out, (float *) pCascade1Coeff,
-        (float *) pCascade1FilterVar, (float *) pCascade1Out, BLOCK_SIZE,
-        NUM_CHANNELS, CASCADE_NUM_STAGES, DSPLIB_BIQUAD_DF1,
-        (NUM_CHANNELS) * sizeof(float), (NUM_CHANNELS) * sizeof(float),
-        NUM_CHANNELS * sizeof(float), false, "CascadeBiquad1", 2);
+    if (errorCtx.isSuccess()) {
+        auto k2 = std::make_unique<TISP::DSPLIB::CascadeBiquad<float>>(
+            (float *) pCascade0Out, (float *) pCascade1Coeff,
+            (float *) pCascade1FilterVar, (float *) pCascade1Out, BLOCK_SIZE,
+            NUM_CHANNELS, CASCADE_NUM_STAGES, DSPLIB_BIQUAD_DF1,
+            (NUM_CHANNELS) * sizeof(float), (NUM_CHANNELS) * sizeof(float),
+            NUM_CHANNELS * sizeof(float), false, "CascadeBiquad1", 2, errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec->push_back(std::move(k2));
+        } else {
+            DebugP_log("Error: Failed to create CascadeBiquad Node (k2): %s\n", errorCtx.getMessage());
+        }
+    }
 
     /* 4. MatrixTranspose: Transpose for FIR processing */
-    auto k3 = std::make_unique<TISP::DSPLIB::MatTrans<float>>(
-        pCascade1Out, pMatTransOut1, NUM_CHANNELS, BLOCK_SIZE,
-        NUM_CHANNELS * sizeof(float), BLOCK_SIZE * sizeof(float),
-        "MatTrans0", 3);
+    if (errorCtx.isSuccess()) {
+        auto k3 = std::make_unique<TISP::DSPLIB::MatTrans<float>>(
+            pCascade1Out, pMatTransOut1, NUM_CHANNELS, BLOCK_SIZE,
+            NUM_CHANNELS * sizeof(float), BLOCK_SIZE * sizeof(float),
+            "MatTrans0", 3, errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec->push_back(std::move(k3));
+        } else {
+            DebugP_log("Error: Failed to create MatTrans Node (k3): %s\n", errorCtx.getMessage());
+        }
+    }
 
     /* 5. FIR: Apply FIR filter */
-    auto k4 = std::make_unique<TISP::DSPLIB::Fir<float>>(
-        (float *) pMatTransOut1, (float *) pFIRState, (float *) pFIRCoeff,
-        (float *) pFIROut, BLOCK_SIZE, NUM_FIR_TAPS,
-        (BLOCK_SIZE + NUM_FIR_TAPS - 1), NUM_CHANNELS,
-        BLOCK_SIZE * sizeof(float),
-        (BLOCK_SIZE + NUM_FIR_TAPS - 1) * sizeof(float),
-        NUM_FIR_TAPS * sizeof(float), BLOCK_SIZE * sizeof(float), false,
-        false, false, 0, "FIR", 4);
+    if (errorCtx.isSuccess()) {
+        auto k4 = std::make_unique<TISP::DSPLIB::Fir<float>>(
+            (float *) pMatTransOut1, (float *) pFIRState, (float *) pFIRCoeff,
+            (float *) pFIROut, BLOCK_SIZE, NUM_FIR_TAPS,
+            (BLOCK_SIZE + NUM_FIR_TAPS - 1), NUM_CHANNELS,
+            BLOCK_SIZE * sizeof(float),
+            (BLOCK_SIZE + NUM_FIR_TAPS - 1) * sizeof(float),
+            NUM_FIR_TAPS * sizeof(float), BLOCK_SIZE * sizeof(float), false,
+            false, false, 0, "FIR", 4, errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec->push_back(std::move(k4));
+        } else {
+            DebugP_log("Error: Failed to create FIR Node (k4): %s\n", errorCtx.getMessage());
+        }
+    }
 
     /* 6. RFFT: Real FFT (1D batched) */
-    auto k5 = std::make_unique<TISP::FFTLIB::RFFT1dBatched<float>>(
-        pFIROut, pFFT_temp, pOutFFT, BLOCK_SIZE, NUM_CHANNELS, 1, "RFFT",
-        5);
+    if (errorCtx.isSuccess()) {
+        auto k5 = std::make_unique<TISP::FFTLIB::RFFT1dBatched<float>>(
+            pFIROut, pFFT_temp, pOutFFT, BLOCK_SIZE, NUM_CHANNELS, 1, "RFFT",
+            5, errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec->push_back(std::move(k5));
+        } else {
+            DebugP_log("Error: Failed to create RFFT1dBatched Node (k5): %s\n", errorCtx.getMessage());
+        }
+    }
 
     /* 7. IFFTR: Inverse real FFT (1D batched) */
-    auto k6 = std::make_unique<TISP::FFTLIB::IFFTR1dBatched<float>>(
-        pOutFFT, pIFFT_temp, pOutIFFT, BLOCK_SIZE, NUM_CHANNELS, 1,
-        "IFFTR", 6);
+    if (errorCtx.isSuccess()) {
+        auto k6 = std::make_unique<TISP::FFTLIB::IFFTR1dBatched<float>>(
+            pOutFFT, pIFFT_temp, pOutIFFT, BLOCK_SIZE, NUM_CHANNELS, 1,
+            "IFFTR", 6, errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec->push_back(std::move(k6));
+        } else {
+            DebugP_log("Error: Failed to create IFFTR1dBatched Node (k6): %s\n", errorCtx.getMessage());
+        }
+    }
 
     /* 8. MatrixTranspose: Transpose back after IFFT */
-    auto k7 = std::make_unique<TISP::DSPLIB::MatTrans<float>>(
-        pOutIFFT, pMatTransOut0, BLOCK_SIZE, NUM_CHANNELS,
-        BLOCK_SIZE * sizeof(float), NUM_CHANNELS * sizeof(float),
-        "MatTrans1", 7);
+    if (errorCtx.isSuccess()) {
+        auto k7 = std::make_unique<TISP::DSPLIB::MatTrans<float>>(
+            pOutIFFT, pMatTransOut0, BLOCK_SIZE, NUM_CHANNELS,
+            BLOCK_SIZE * sizeof(float), NUM_CHANNELS * sizeof(float),
+            "MatTrans1", 7, errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec->push_back(std::move(k7));
+        } else {
+            DebugP_log("Error: Failed to create MatTrans Node (k7): %s\n", errorCtx.getMessage());
+        }
+    }
 
     /* 9. Router: Route 8 channels to 12 channels */
-    auto k8 = std::make_unique<TISP::AUDIOLIB::Router<float>>(
-        pMatTransOut0, (float *) pConfigRouter, (float *) pScratchRouter,
-        (float *) pOutRouter, NUM_CHANNELS, BLOCK_SIZE, NUM_CHANNELS_OUT,
-        NUM_CHANNELS * sizeof(float), NUM_CHANNELS_OUT * sizeof(float),
-        true, "Router", 8);
+    if (errorCtx.isSuccess()) {
+        auto k8 = std::make_unique<TISP::AUDIOLIB::Router<float>>(
+            pMatTransOut0, (float *) pConfigRouter, (float *) pScratchRouter,
+            (float *) pOutRouter, NUM_CHANNELS, BLOCK_SIZE, NUM_CHANNELS_OUT,
+            NUM_CHANNELS * sizeof(float), NUM_CHANNELS_OUT * sizeof(float),
+            true, "Router", 8, errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec->push_back(std::move(k8));
+        } else {
+            DebugP_log("Error: Failed to create Router Node (k8): %s\n", errorCtx.getMessage());
+        }
+    }
 
     /* 10. TypeConversion: float to int32_t */
-    auto k9 =
-        std::make_unique<TISP::AUDIOLIB::TypeConversion<float, int32_t>>(
-            pOutRouter, pIn, NUM_CHANNELS_OUT, BLOCK_SIZE,
-            (NUM_CHANNELS_OUT * sizeof(float)),
-            (NUM_CHANNELS_OUT * sizeof(int32_t)), true,
-            "TyperConversion: FloatToInt", 9);
+    if (errorCtx.isSuccess()) {
+        auto k9 =
+            std::make_unique<TISP::AUDIOLIB::TypeConversion<float, int32_t>>(
+                pOutRouter, pIn, NUM_CHANNELS_OUT, BLOCK_SIZE,
+                (NUM_CHANNELS_OUT * sizeof(float)),
+                (NUM_CHANNELS_OUT * sizeof(int32_t)), true,
+                "TyperConversion: FloatToInt", 9, errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec->push_back(std::move(k9));
+        } else {
+            DebugP_log("Error: Failed to create TypeConversion Node (k9): %s\n", errorCtx.getMessage());
+        }
+    }
 
-    /* Create operation vector and add all operations */
-    auto myOpVec = new TISP::opVec();
-
-    /* Create the signal chain in the specified order: */
-    /* typeconversion --> cascadebiquad0 --> cascadebiquad1 --> mattrans0 --> fir --> rfft --> ifftr --> mattrans1 --> router --> typeconversion */
-    myOpVec->push_back(
-        std::move(k0)); /* typeconversion (int32_t to float) */
-    myOpVec->push_back(std::move(k1)); /* cascadebiquad0 */
-    myOpVec->push_back(std::move(k2)); /* cascadebiquad1 */
-    myOpVec->push_back(std::move(k3)); /* mattrans0 */
-    myOpVec->push_back(std::move(k4)); /* fir */
-    myOpVec->push_back(std::move(k5)); /* rfft */
-    myOpVec->push_back(std::move(k6)); /* ifftr */
-    myOpVec->push_back(std::move(k7)); /* mattrans1 */
-    myOpVec->push_back(std::move(k8)); /* router */
-    myOpVec->push_back(
-        std::move(k9)); /* typeconversion (float to int32_t) */
+    if (!errorCtx.isSuccess()) {
+        delete myOpVec;
+        return nullptr;
+    }
 
     void *myGraph = myOpVec;
     *outStride = NUM_CHANNELS_OUT;
@@ -336,7 +397,7 @@ int32_t getNodeInfo(void *myGraph, uint32_t nodeIndex, uint32_t *nodeId,
     if (myOpVec)
     {
         strcpy(name, (*myOpVec)[nodeIndex]->getNodeName());
-        strcpy(param, (*myOpVec)[nodeIndex]->getParams());
+        strcpy(param, (*myOpVec)[nodeIndex]->getNodeParams());
         *nodeId = (*myOpVec)[nodeIndex]->getNodeId();
         retVal = 0;
     }

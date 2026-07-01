@@ -41,6 +41,7 @@
 #include <stdlib.h>
 #include <tisp.hpp>
 #include <vector>
+#include <TISP_ErrorCtxt.hpp>
 #include "dsp_offload.hpp"
 #include "TISP_cascadeBiquad_FIR_memory_map.hpp"
 
@@ -131,51 +132,108 @@ void *CascadeBiquadFIR::create_graph(int16_t* pIn)
             "RFFT->FFTLIB_IFFTR->floatToShort-->L2\n");
 #endif
 
-    auto k0 = std::make_unique<TISP::misc::DataConvert<int16_t, float>>(
-        pIn, pIntToFloat, NUM_CHANNELS, BLOCK_SIZE, (NUM_CHANNELS * sizeof(int16_t)), (NUM_CHANNELS * sizeof(float)));
-
-    auto k1 = std::make_unique<TISP::DSPLIB::CascadeBiquad<float>>(
-        (float *) pIntToFloat, (float *) pCascade0Coeff, (float *) pCascade0FilterVar, (float *) pCascade0Out,
-        BLOCK_SIZE, NUM_CHANNELS, CASCADE_NUM_STAGES, DSPLIB_BIQUAD_DF1, (NUM_CHANNELS) * sizeof(float),
-        (NUM_CHANNELS) * sizeof(float), NUM_CHANNELS * sizeof(float), false);
-
-    auto k2 = std::make_unique<TISP::DSPLIB::CascadeBiquad<float>>(
-        (float *) pCascade0Out, (float *) pCascade1Coeff, (float *) pCascade1FilterVar, (float *) pCascade1Out,
-        BLOCK_SIZE, NUM_CHANNELS, CASCADE_NUM_STAGES, DSPLIB_BIQUAD_DF1, (NUM_CHANNELS) * sizeof(float),
-        (NUM_CHANNELS) * sizeof(float), NUM_CHANNELS * sizeof(float), false);
-
-    auto k3 = std::make_unique<TISP::DSPLIB::MatTrans<float>>(pCascade1Out, pMatTransOut0, NUM_CHANNELS, BLOCK_SIZE,
-                                                             NUM_CHANNELS * sizeof(float), BLOCK_SIZE * sizeof(float));
-
-    auto k4 = std::make_unique<TISP::DSPLIB::Fir<float>>(
-        (float *) pMatTransOut0, (float *) pFIRState, (float *) pFIRCoeff, (float *) pFIROut, BLOCK_SIZE, NUM_FIR_TAPS,
-        (BLOCK_SIZE + NUM_FIR_TAPS - 1), NUM_CHANNELS, BLOCK_SIZE * sizeof(float),
-        (BLOCK_SIZE + NUM_FIR_TAPS - 1) * sizeof(float), NUM_FIR_TAPS * sizeof(float), BLOCK_SIZE * sizeof(float), false,
-        false, false, 0);
-
-    auto k5 =
-        std::make_unique<TISP::FFTLIB::RFFT1dBatched<float>>(pFIROut, pFFT_temp, pOutFFT, BLOCK_SIZE, NUM_CHANNELS, 1);
-
-    auto k6 =
-      std::make_unique<TISP::FFTLIB::IFFTR1dBatched<float>>(pOutFFT, pIFFT_temp, pOutIFFT, BLOCK_SIZE, NUM_CHANNELS,1);
-
-    auto k7 = std::make_unique<TISP::DSPLIB::MatTrans<float>>(pOutIFFT, pMatTransOut1, BLOCK_SIZE, NUM_CHANNELS,
-                                                             BLOCK_SIZE * sizeof(float), NUM_CHANNELS * sizeof(float));
-
-    auto k8 = std::make_unique<TISP::misc::DataConvert<float, int16_t>>(
-        pMatTransOut1, pIn, NUM_CHANNELS, BLOCK_SIZE, (NUM_CHANNELS * sizeof(float)), (NUM_CHANNELS * sizeof(int16_t)));
-
     auto myOpVec = new TISP::opVec();
+    TISP::ErrorCtxt errorCtx;
 
-    myOpVec->push_back(std::move(k0));
-    myOpVec->push_back(std::move(k1));
-    myOpVec->push_back(std::move(k2));
-    myOpVec->push_back(std::move(k3));
-    myOpVec->push_back(std::move(k4));
-    myOpVec->push_back(std::move(k5));
-    myOpVec->push_back(std::move(k6));
-    myOpVec->push_back(std::move(k7));
-    myOpVec->push_back(std::move(k8));
+    auto k0 = std::make_unique<TISP::misc::DataConvert<int16_t, float>>(
+        pIn, pIntToFloat, NUM_CHANNELS, BLOCK_SIZE, (NUM_CHANNELS * sizeof(int16_t)), (NUM_CHANNELS * sizeof(float)), errorCtx);
+    if (errorCtx.isSuccess()) {
+        myOpVec->push_back(std::move(k0));
+    } else {
+        DebugP_log("Error: Failed to create DataConvert Node (k0): %s\n", errorCtx.getMessage());
+    }
+
+    if (errorCtx.isSuccess()) {
+        auto k1 = std::make_unique<TISP::DSPLIB::CascadeBiquad<float>>(
+            (float *) pIntToFloat, (float *) pCascade0Coeff, (float *) pCascade0FilterVar, (float *) pCascade0Out,
+            BLOCK_SIZE, NUM_CHANNELS, CASCADE_NUM_STAGES, DSPLIB_BIQUAD_DF1, (NUM_CHANNELS) * sizeof(float),
+            (NUM_CHANNELS) * sizeof(float), NUM_CHANNELS * sizeof(float), false, "CascadeBiquad0", 1, errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec->push_back(std::move(k1));
+        } else {
+            DebugP_log("Error: Failed to create CascadeBiquad Node (k1): %s\n", errorCtx.getMessage());
+        }
+    }
+
+    if (errorCtx.isSuccess()) {
+        auto k2 = std::make_unique<TISP::DSPLIB::CascadeBiquad<float>>(
+            (float *) pCascade0Out, (float *) pCascade1Coeff, (float *) pCascade1FilterVar, (float *) pCascade1Out,
+            BLOCK_SIZE, NUM_CHANNELS, CASCADE_NUM_STAGES, DSPLIB_BIQUAD_DF1, (NUM_CHANNELS) * sizeof(float),
+            (NUM_CHANNELS) * sizeof(float), NUM_CHANNELS * sizeof(float), false, "CascadeBiquad1", 2, errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec->push_back(std::move(k2));
+        } else {
+            DebugP_log("Error: Failed to create CascadeBiquad Node (k2): %s\n", errorCtx.getMessage());
+        }
+    }
+
+    if (errorCtx.isSuccess()) {
+        auto k3 = std::make_unique<TISP::DSPLIB::MatTrans<float>>(pCascade1Out, pMatTransOut0, NUM_CHANNELS, BLOCK_SIZE,
+                                                                 NUM_CHANNELS * sizeof(float), BLOCK_SIZE * sizeof(float), "MatTrans0", 3, errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec->push_back(std::move(k3));
+        } else {
+            DebugP_log("Error: Failed to create MatTrans Node (k3): %s\n", errorCtx.getMessage());
+        }
+    }
+
+    if (errorCtx.isSuccess()) {
+        auto k4 = std::make_unique<TISP::DSPLIB::Fir<float>>(
+            (float *) pMatTransOut0, (float *) pFIRState, (float *) pFIRCoeff, (float *) pFIROut, BLOCK_SIZE, NUM_FIR_TAPS,
+            (BLOCK_SIZE + NUM_FIR_TAPS - 1), NUM_CHANNELS, BLOCK_SIZE * sizeof(float),
+            (BLOCK_SIZE + NUM_FIR_TAPS - 1) * sizeof(float), NUM_FIR_TAPS * sizeof(float), BLOCK_SIZE * sizeof(float), false,
+            false, false, 0, "FIR", 4, errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec->push_back(std::move(k4));
+        } else {
+            DebugP_log("Error: Failed to create FIR Node (k4): %s\n", errorCtx.getMessage());
+        }
+    }
+
+    if (errorCtx.isSuccess()) {
+        auto k5 =
+            std::make_unique<TISP::FFTLIB::RFFT1dBatched<float>>(pFIROut, pFFT_temp, pOutFFT, BLOCK_SIZE, NUM_CHANNELS, 1, "RFFT", 5, errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec->push_back(std::move(k5));
+        } else {
+            DebugP_log("Error: Failed to create RFFT1dBatched Node (k5): %s\n", errorCtx.getMessage());
+        }
+    }
+
+    if (errorCtx.isSuccess()) {
+        auto k6 =
+          std::make_unique<TISP::FFTLIB::IFFTR1dBatched<float>>(pOutFFT, pIFFT_temp, pOutIFFT, BLOCK_SIZE, NUM_CHANNELS,1, "IFFTR", 6, errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec->push_back(std::move(k6));
+        } else {
+            DebugP_log("Error: Failed to create IFFTR1dBatched Node (k6): %s\n", errorCtx.getMessage());
+        }
+    }
+
+    if (errorCtx.isSuccess()) {
+        auto k7 = std::make_unique<TISP::DSPLIB::MatTrans<float>>(pOutIFFT, pMatTransOut1, BLOCK_SIZE, NUM_CHANNELS,
+                                                                 BLOCK_SIZE * sizeof(float), NUM_CHANNELS * sizeof(float), "MatTrans1", 7, errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec->push_back(std::move(k7));
+        } else {
+            DebugP_log("Error: Failed to create MatTrans Node (k7): %s\n", errorCtx.getMessage());
+        }
+    }
+
+    if (errorCtx.isSuccess()) {
+        auto k8 = std::make_unique<TISP::misc::DataConvert<float, int16_t>>(
+            pMatTransOut1, pIn, NUM_CHANNELS, BLOCK_SIZE, (NUM_CHANNELS * sizeof(float)), (NUM_CHANNELS * sizeof(int16_t)), errorCtx);
+        if (errorCtx.isSuccess()) {
+            myOpVec->push_back(std::move(k8));
+        } else {
+            DebugP_log("Error: Failed to create DataConvert Node (k8): %s\n", errorCtx.getMessage());
+        }
+    }
+
+    if (!errorCtx.isSuccess()) {
+        delete myOpVec;
+        return nullptr;
+    }
 
     void *myGraph = myOpVec;
 

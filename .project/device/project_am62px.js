@@ -226,6 +226,8 @@ const example_file_list = [
     "test/drivers/i2c/.project/project.js",
     "test/drivers/i2c/test_i2c_fault_inject/.project/project.js",
     "test/drivers/i2c/test_i2c_system/.project/project.js",
+    "test/drivers/mcan/.project/project.js",
+    "test/drivers/mcan/test_mcan_system/.project/project.js",
     "test/drivers/ipc_notify/.project/project.js",
     "test/drivers/ipc_notify_mcu_r5/.project/project.js",
     "test/drivers/ipc_rpmsg/.project/project.js",

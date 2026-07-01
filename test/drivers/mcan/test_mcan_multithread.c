@@ -1671,28 +1671,59 @@ int32_t TestMcan_multiInstanceTest(st_mcanTestcaseParams_t *testParams)
  */
 static int32_t TestMcan_validateTxEvent(MCAN_TxBufElement *txMsg, MCAN_TxEventFIFOElement *txEventMsg, uint32_t threadId)
 {
-    int32_t retStatus = CSL_PASS;
+    int32_t  retStatus = CSL_PASS;
+    uint32_t expectedId;
+    uint32_t expectedBrs;
+    uint32_t expectedFdf;
 
-    if ((txMsg->id != txEventMsg->id) ||
-        (txMsg->rtr != txEventMsg->rtr) ||
-        (txMsg->xtd != txEventMsg->xtd) ||
-        (txMsg->esi != txEventMsg->esi) ||
-        (txMsg->dlc != txEventMsg->dlc) ||
-        (txMsg->brs != txEventMsg->brs) ||
-        (txMsg->fdf != txEventMsg->fdf) ||
-        (txMsg->mm != txEventMsg->mm))
+    /*
+     * The TxEvent FIFO is shared between TestMcan_classicCanTxThread (MM=0xCC)
+     * and TestMcan_canFdTxThread (MM=0xFD).  Because both threads access the
+     * FIFO concurrently without synchronisation, a thread may read the other
+     * thread's event entry.  Validate by the MM actually recorded in the event
+     * (not txMsg->mm) so that either thread can correctly validate either entry.
+     */
+    if (txEventMsg->mm == 0xCCU)        /* Classic CAN thread: ID=0x100, no BRS/FDF */
     {
-        DebugP_log("[Thread %d] ERROR: TxEvent mismatch!\r\n", threadId);
-        DebugP_log("  Expected: ID=0x%X, RTR=%d, XTD=%d, ESI=%d, DLC=%d, BRS=%d, FDF=%d, MM=0x%02X\r\n",
-                   txMsg->id, txMsg->rtr, txMsg->xtd, txMsg->esi, txMsg->dlc, txMsg->brs, txMsg->fdf, txMsg->mm);
+        expectedId  = (0x100U << 18U);
+        expectedBrs = 0U;
+        expectedFdf = 0U;
+    }
+    else if (txEventMsg->mm == 0xFDU)   /* CAN FD thread: ID=0x200, BRS+FDF */
+    {
+        expectedId  = (0x200U << 18U);
+        expectedBrs = 1U;
+        expectedFdf = 1U;
+    }
+    else
+    {
+        /* Unexpected MM – indicates hardware corruption or a stale entry */
+        DebugP_log("[Thread %d] ERROR: Unknown MM=0x%02X in TxEvent (corruption?)\r\n",
+                   threadId, txEventMsg->mm);
+        return CSL_EFAIL;
+    }
+
+    if ((txEventMsg->id  != expectedId)   ||
+        (txEventMsg->brs != expectedBrs)  ||
+        (txEventMsg->fdf != expectedFdf)  ||
+        (txEventMsg->dlc != txMsg->dlc)   ||
+        (txEventMsg->rtr != txMsg->rtr)   ||
+        (txEventMsg->xtd != txMsg->xtd)   ||
+        (txEventMsg->esi != txMsg->esi))
+    {
+        DebugP_log("[Thread %d] ERROR: TxEvent fields corrupted for MM=0x%02X!\r\n",
+                   threadId, txEventMsg->mm);
+        DebugP_log("  Expected: ID=0x%X, BRS=%d, FDF=%d, DLC=%d\r\n",
+                   expectedId, expectedBrs, expectedFdf, txMsg->dlc);
         DebugP_log("  Received: ID=0x%X, RTR=%d, XTD=%d, ESI=%d, DLC=%d, BRS=%d, FDF=%d, MM=0x%02X\r\n",
-                   txEventMsg->id, txEventMsg->rtr, txEventMsg->xtd, txEventMsg->esi, txEventMsg->dlc, 
-                   txEventMsg->brs, txEventMsg->fdf, txEventMsg->mm);
+                   txEventMsg->id, txEventMsg->rtr, txEventMsg->xtd, txEventMsg->esi,
+                   txEventMsg->dlc, txEventMsg->brs, txEventMsg->fdf, txEventMsg->mm);
         retStatus = CSL_EFAIL;
     }
     else
     {
-        DebugP_log("[Thread %d] TxEvent validated successfully (MM=0x%02X)\r\n", threadId, txEventMsg->mm);
+        DebugP_log("[Thread %d] TxEvent validated successfully (MM=0x%02X)\r\n",
+                   threadId, txEventMsg->mm);
     }
 
     return retStatus;

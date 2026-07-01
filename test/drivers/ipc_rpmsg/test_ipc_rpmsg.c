@@ -1181,6 +1181,7 @@ void TestIpcRpmsg_multipleEndPtSndTask1(void *args)
         }
     }
     SemaphoreP_post(&TestIpcRPMsg_sem);
+    TaskP_exit();
 }
 
 /* Sender Task2 for multi threaded test */
@@ -1239,6 +1240,7 @@ void TestIpcRpmsg_multipleEndPtSndTask2(void *args)
         }
     }
     SemaphoreP_post(&TestIpcRPMsg_sem);
+    TaskP_exit();
 }
 
 /* This is the receiver task to echo back the data for mutiple enpoint tests */
@@ -1423,12 +1425,11 @@ void TestIpcRpmsg_concurrentEndptXfer(void *args)
     {
         status = SemaphoreP_pend(&TestIpcRPMsg_sem, SystemP_WAIT_FOREVER);
         TEST_ASSERT_EQUAL_INT32(status, SystemP_SUCCESS);
-        
     }
 
     SemaphoreP_destruct(&TestIpcRPMsg_sem);
-    TaskP_destruct(&TestIpcRPMsg_sndTasks[0]);
-    TaskP_destruct(&TestIpcRPMsg_sndTasks[1]);
+    RPMessage_destruct(&TestIpcRPMsg_sndTaskObjects[0]);
+    RPMessage_destruct(&TestIpcRPMsg_sndTaskObjects[1]);
 }
 
 /**
@@ -2130,6 +2131,10 @@ void test_ipc_main_core_start()
     testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
     RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 9728, &testArgs);
 #endif
+
+    /* Multiple endpoint test on A53 */
+    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
+    RUN_TEST(TestIpcRpmsg_multipleEndpointsSnd, 9729, &testArgs);
 #else
     
     /* Test cases for AM275X */
@@ -2170,20 +2175,14 @@ void test_ipc_main_core_start()
 #endif
 #endif
 
-    /* The following test cases works in AM62AX but fails in AM62DX 
-     * and AM275X
-     */
+    /* The following test case fails in AM275X */
 #if !defined(SOC_AM275X)
     RUN_TEST(TestIpcRPMsg_sndMsgToTasks, 9730, &testArgs);
 #endif
-#if !defined(SOC_AM62DX) && !defined(SOC_AM275X)
-    RUN_TEST(TestIpcRpmsg_concurrentEndptXfer, 9731, &testArgs);
-#endif
 
-    /* This test case hangs when executed
-    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
-    RUN_TEST(TestIpcRpmsg_multipleEndpointsSnd, 9729, &testArgs);
-    */
+    /* concurrent endpoint transfer */
+    RUN_TEST(TestIpcRpmsg_concurrentEndptXfer, 9731, &testArgs);
+
     #endif
 
     #if defined(SOC_AM62X)

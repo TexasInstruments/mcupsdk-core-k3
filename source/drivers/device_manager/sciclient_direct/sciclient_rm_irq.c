@@ -1026,9 +1026,11 @@ int32_t Sciclient_rmTranslateIntOutput(uint16_t  src_dev_id,
     uint16_t i;
     bool translated = false;
 
+    if (dst_input == NULL) {
+        r = CSL_EBADARGS;
     /* Only attempt to translate to destination input if an IR/IA is passed */
-    if ((Sciclient_rmIrIsIr(src_dev_id) == true)||
-        (Sciclient_rmIaIsIa(src_dev_id) == true)) {
+    } else if ((Sciclient_rmIrIsIr(src_dev_id) == true)||
+               (Sciclient_rmIaIsIa(src_dev_id) == true)) {
         /*
          * Translate the specified IR/IA output to the destination processor
          * IRQ input
@@ -1076,9 +1078,11 @@ int32_t Sciclient_rmTranslateIrqInput(uint16_t  dst_dev_id,
     uint16_t i;
     bool translated = false;
 
+    if (src_output == NULL) {
+        r = CSL_EBADARGS;
     /* Only attempt to translate to IR/IA output if an IR/IA is passed */
-    if ((Sciclient_rmIrIsIr(src_dev_id) == true) ||
-        (Sciclient_rmIaIsIa(src_dev_id) == true)) {
+    } else if ((Sciclient_rmIrIsIr(src_dev_id) == true) ||
+               (Sciclient_rmIaIsIa(src_dev_id) == true)) {
         /*
          * Translate the specified destination processor IRQ input to the
          * IR/IA output

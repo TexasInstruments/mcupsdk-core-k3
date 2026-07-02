@@ -36,6 +36,7 @@
 #include <stdint.h>
 #include <string.h>
 #include "MmuP_c75.h"
+#include <c7x.h>
 
 extern char __TI_STACK_END[];
 register volatile uint64_t __SP;
@@ -99,5 +100,16 @@ int _system_pre_init(void)
 void _system_post_cinit(void)
 {
     extern void c7x_startup_init(void);
-    c7x_startup_init();
+    c7x_startup_init();  /* Switch to Unprotected mode first */
+
+    /* Check if MMA hardware is present on THIS core before accessing it */
+    uint64_t tsr = __TSR;  /* Read Task State Register via __cregister (MVC instruction) */
+    if (tsr & ((uint64_t)1U << 52U))  /* TSR.HWA_PRESENT (bit 52) */
+    {
+        /* MMA power-on workaround (ErrataID:i2087) */
+        __HWA_CONFIG_REG_v1 mmaConfig = __gen_HWA_CONFIG_REG_v1();
+        __HWA_OFFSET_REG    mmaOffset = {0};
+        __HWAOPEN(mmaConfig, mmaOffset, __MMA_OPEN_FSM_RESET);
+        __HWACLOSE(0);
+    }
 }

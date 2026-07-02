@@ -1007,6 +1007,20 @@ int8_t test_sciclient(void)
         failCount++;
     }
 
+    retVal = Sciclient_getCurrentContext(0x902CU);
+    if(retVal != 0)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
+    retVal = Sciclient_getCurrentContext(0x902DU);
+    if(retVal != 0)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+
     gSciclientHandle.initCount = 1U;
     retVal = Sciclient_deinit();
     if(retVal != SystemP_SUCCESS)

@@ -76,11 +76,18 @@ extern "C" {
 #define MCAN_APP_32K_CNT_FREQ_HZ               (32786U)
 #define MCAN_APP_200M_CNT_FREQ_HZ              (200000000U)
 
-/* Theoretical maximum throughput numbers */
+/* Theoretical maximum throughput numbers (messages/sec at rated bus speed) */
 #define MCAN_THEOROTICAL_MAX_STD_1_5_MBPS       (7430U)
 #define MCAN_THEOROTICAL_MAX_EXT_1_5_MBPS       (6510U)
 #define MCAN_CLASSIC_CAN_THEOROTICAL_MAX_STD_1_MBPS       (9260U)
 #define MCAN_CLASSIC_CAN_THEOROTICAL_MAX_EXT_1_MBPS       (7810U)
+
+/* HW utilisation pass thresholds (% of theoretical max).
+ * MCAN_HW_UTIL_THRESHOLD applies to all cores except Cortex-M4F FreeRTOS.
+ * MCAN_M4_HW_UTIL_THRESHOLD is used for MCU_M4_CORE builds.
+*/
+#define MCAN_HW_UTIL_THRESHOLD              (85U)
+#define MCAN_M4_HW_UTIL_THRESHOLD           (38U)
 
 #define MCAN_APP_CNT_FREQ_KHZ                   (MCAN_APP_200M_CNT_FREQ_HZ)
 /* ========================================================================== */

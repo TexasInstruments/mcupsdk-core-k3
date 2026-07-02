@@ -160,7 +160,15 @@
 #if defined (SOC_AM263X)
 #define CONFIG_MCAN_TS_INTRNUM                      (CSLR_R5FSS0_CORE0_INTR_MCAN0_EXT_TS_ROLLOVER_LVL_INT_0)
 #elif defined (SOC_AM62X)
-#define CONFIG_MCAN_TS_INTRNUM                      (CSLR_MCU_M4FSS0_CORE0_NVIC_MCU_MCAN0_COMMON_0_MCANSS_EXT_TS_ROLLOVER_LVL_INT_0)
+#if defined (ENABLE_SCICLIENT_DIRECT)
+/* r5fss0-0 (DM R5F): MAIN MCAN0 EXT_TS rollover routes to WKUP R5F VIM */
+#define CONFIG_MCAN_TS_INTRNUM                      (CSLR_WKUP_R5FSS0_CORE0_INTR_MCAN0_MCANSS_EXT_TS_ROLLOVER_LVL_INT_0)
+#else
+/* m4fss0-0: MCU_MCAN0 EXT_TS rollover via M4F NVIC.
+ * HwiP_construct on Cortex-M4 expects ARM exception number (NVIC_IRQ + 16).
+ * CSLR header gives raw NVIC IRQ 42; add 16 to match exception vector 58. */
+#define CONFIG_MCAN_TS_INTRNUM                      (CSLR_MCU_M4FSS0_CORE0_NVIC_MCU_MCAN0_MCANSS_EXT_TS_ROLLOVER_LVL_INT_0 + 16U)
+#endif
 #elif defined (SOC_AM275X)
 #define CONFIG_MCAN_TS_INTRNUM                      (CSLR_R5FSS0_CORE0_INTR_MCAN0_MCANSS_EXT_TS_ROLLOVER_LVL_INT_0)
 #elif defined (SOC_AM62DX) || defined (SOC_AM62AX)
@@ -356,7 +364,7 @@ int32_t App_mcanRegisterInterrupt(void)
     hwiPrms.priority = 4;
     status              = HwiP_construct(&gMcanHwiObject3, &hwiPrms);
     DebugP_assert(status == SystemP_SUCCESS);
-#if !defined (A53_CORE)
+#if !defined (A53_CORE) && !defined(WKUP_R5_CORE)
     /* Register MCAN1 interrupt */
     HwiP_Params_init(&hwiPrms);
     hwiPrms.intNum      = CONFIG_MCAN1_INTR;
@@ -402,7 +410,7 @@ int32_t App_mcanUnRegisterInterrupt(void)
 
     /* De-Construct Tx/Rx Semaphore objects */
     HwiP_destruct(&gMcanHwiObject);
-#if !defined (A53_CORE)
+#if !defined (A53_CORE) && !defined (WKUP_R5_CORE)
     HwiP_destruct(&gMcanHwiObject1);
 #endif
     HwiP_destruct(&gMcanHwiObject3);

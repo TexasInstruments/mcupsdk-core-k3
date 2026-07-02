@@ -1146,18 +1146,19 @@ static void TestMcan_mcanInstance0ISR(void *arg)
 /**
  * \brief    ISR for MCAN Instance 1
  */
+#if !defined (A53_CORE) && !defined (WKUP_R5_CORE)
 static void TestMcan_mcanInstance1ISR(void *arg)
 {
     uint32_t intrStatus;
-    
+
     intrStatus = MCAN_getIntrStatus(gMcanMtInstBaseAddr[1]);
     MCAN_clearIntrStatus(gMcanMtInstBaseAddr[1], intrStatus);
-    
+
     if ((intrStatus & MCAN_INTR_SRC_TRANS_COMPLETE) == MCAN_INTR_SRC_TRANS_COMPLETE)
     {
         SemaphoreP_post(&gMcanMtPerThreadTxSem[1]);
     }
-    
+
     uint32_t rxIntrMask = MCAN_INTR_SRC_DEDICATED_RX_BUFF_MSG |
                           MCAN_INTR_SRC_RX_FIFO0_NEW_MSG |
                           MCAN_INTR_SRC_RX_FIFO1_NEW_MSG |
@@ -1167,6 +1168,7 @@ static void TestMcan_mcanInstance1ISR(void *arg)
         SemaphoreP_post(&gMcanMtPerThreadRxSem[1]);
     }
 }
+#endif
 
 /**
  * \brief    Helper function to configure MCAN with specific base address
@@ -1429,12 +1431,14 @@ int32_t TestMcan_multiInstanceTest(st_mcanTestcaseParams_t *testParams)
     
     /* Get base addresses for both instances */
     gMcanMtInstBaseAddr[0] = CONFIG_MCAN0_BASE_ADDR;
-    #if !defined (A53_CORE)
+    #if !defined (A53_CORE) && !defined (WKUP_R5_CORE)
     gMcanMtInstBaseAddr[1] = CONFIG_MCAN1_BASE_ADDR;
     #endif
     /* Translate addresses */
     gMcanMtInstBaseAddr[0] = (uint32_t)AddrTranslateP_getLocalAddr(gMcanMtInstBaseAddr[0]);
+    #if !defined (A53_CORE) && !defined (WKUP_R5_CORE)
     gMcanMtInstBaseAddr[1] = (uint32_t)AddrTranslateP_getLocalAddr(gMcanMtInstBaseAddr[1]);
+    #endif
     
     /* Reset both MCAN instances */
     MCAN_reset(gMcanMtInstBaseAddr[0]);
@@ -1442,10 +1446,12 @@ int32_t TestMcan_multiInstanceTest(st_mcanTestcaseParams_t *testParams)
     while (MCAN_isInReset(gMcanMtInstBaseAddr[0]) == (uint32_t)TRUE)
     {}
     
+    #if !defined (A53_CORE) && !defined (WKUP_R5_CORE)
     MCAN_reset(gMcanMtInstBaseAddr[1]);
     MCAN_lpbkModeEnable(gMcanMtInstBaseAddr[1], MCAN_LPBK_MODE_INTERNAL, FALSE);
     while (MCAN_isInReset(gMcanMtInstBaseAddr[1]) == (uint32_t)TRUE)
     {}
+    #endif
     
     /* Configure MCAN Instance 0 */
     configStatus = TestMcan_mcanConfigInstance(gMcanMtInstBaseAddr[0], testParams);
@@ -1456,12 +1462,14 @@ int32_t TestMcan_multiInstanceTest(st_mcanTestcaseParams_t *testParams)
     }
     
     /* Configure MCAN Instance 1 */
+    #if !defined (A53_CORE) && !defined (WKUP_R5_CORE)
     configStatus = TestMcan_mcanConfigInstance(gMcanMtInstBaseAddr[1], testParams);
     if(configStatus != CSL_PASS)
     {
         DebugP_log("\r\nError in MCAN1 Configuration\r\n");
         return configStatus;
     }
+    #endif
     
     /* Create binary semaphores for TX/RX done signaling */
     status = SemaphoreP_constructBinary(&gMcanMtPerThreadTxSem[0], 0);
@@ -1488,13 +1496,12 @@ int32_t TestMcan_multiInstanceTest(st_mcanTestcaseParams_t *testParams)
         configStatus = CSL_EFAIL;
     }
 
+    #if !defined (A53_CORE) && !defined (WKUP_R5_CORE)
     if(configStatus == CSL_PASS)
     {
         /* Register MCAN1 Interrupt */
         HwiP_Params_init(&hwiPrms);
-        #if !defined (A53_CORE)
         hwiPrms.intNum      = CONFIG_MCAN1_INTR;
-        #endif
         hwiPrms.callback    = &TestMcan_mcanInstance1ISR;
         hwiPrms.isPulse     = FALSE;
         status = HwiP_construct(&gMcanMtHwiObj[1], &hwiPrms);
@@ -1504,6 +1511,7 @@ int32_t TestMcan_multiInstanceTest(st_mcanTestcaseParams_t *testParams)
             configStatus = CSL_EFAIL;
         }
     }
+    #endif
 
     if(configStatus == CSL_PASS)
     {
@@ -1660,8 +1668,10 @@ int32_t TestMcan_multiInstanceTest(st_mcanTestcaseParams_t *testParams)
     /* Disable TX buffer interrupts for both instances */
     MCAN_txBufTransIntrEnable(gMcanMtInstBaseAddr[0], 0U, (uint32_t)FALSE);
     MCAN_txBufTransIntrEnable(gMcanMtInstBaseAddr[0], 1U, (uint32_t)FALSE);
+    #if !defined (A53_CORE) && !defined (WKUP_R5_CORE)
     MCAN_txBufTransIntrEnable(gMcanMtInstBaseAddr[1], 0U, (uint32_t)FALSE);
     MCAN_txBufTransIntrEnable(gMcanMtInstBaseAddr[1], 1U, (uint32_t)FALSE);
+    #endif
     
     return configStatus;
 }

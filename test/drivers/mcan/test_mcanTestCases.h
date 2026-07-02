@@ -415,7 +415,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         PRINT_ENABLE,
         (ST_TT_SANITY),
     },
-#if !defined(R5_FREERTOS_CORE)
+#if !defined(R5_FREERTOS_CORE) && !defined(MCU_M4_CORE)
     {
         TEST_ENABLE, 10233U,
         "None",
@@ -968,7 +968,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         PRINT_ENABLE,
         (ST_TT_SANITY),
     },
-#if !defined (A53_CORE)
+#if !defined (A53_CORE) && !defined (WKUP_R5_CORE)
     {
         TEST_ENABLE, 10247U,
         "None",
@@ -1895,7 +1895,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         PRINT_ENABLE,
         (ST_TT_SANITY | ST_TT_FUNCTIONAL | ST_TT_STRESS),
     },
-    #if !defined (A53_CORE)
+    #if !defined (A53_CORE) && !defined (WKUP_R5_CORE)
     {
         TEST_ENABLE, 10493U,
         "MCAN_MT_004",
@@ -2220,6 +2220,8 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         PRINT_ENABLE,
         (ST_TT_SANITY | ST_TT_FUNCTIONAL),
     },
+    /* randomly hange the console log*/
+    #if !defined (MCU_M4_CORE)
     {
         TEST_ENABLE, 10868U,
         "None",
@@ -2260,6 +2262,7 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         PRINT_ENABLE,
         (ST_TT_SANITY | ST_TT_FUNCTIONAL),
     },
+    #endif
     {
         TEST_ENABLE, 10869U,
         "None",

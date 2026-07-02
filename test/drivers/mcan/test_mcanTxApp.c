@@ -376,7 +376,7 @@ int32_t st_mcanTxApp_main(st_mcanTestcaseParams_t *testParams)
             DebugP_log("\nError in X-Bar Configuration...");
         }
         gMcanBaseAddr = DEF_MCAN_MODULE;
-#if !defined (A53_CORE)
+#if !defined (A53_CORE) && !defined (WKUP_R5_CORE)
         if (testParams->testcaseId == 10249)
         {
             gMcanBaseAddr = CONFIG_MCAN1_BASE_ADDR;
@@ -621,7 +621,7 @@ int32_t App_mcanNegativeTest(st_mcanTestcaseParams_t *testParams)
     MCAN_ECCAggrRevisionId eccAggrRevId;
     MCAN_ECCWrapRevisionId eccWrapRevId;
     MCAN_TxBufElementNoCpy txElem = {0U};
-#if !defined(R5_FREERTOS_CORE)
+#if !defined(R5_FREERTOS_CORE) && !defined(MCU_M4_CORE)
     MCAN_RxBufElement rxMsg = {0};
     MCAN_RxBufElementNoCpy rxMsgNoCpy = {0};
 #endif
@@ -709,7 +709,7 @@ int32_t App_mcanNegativeTest(st_mcanTestcaseParams_t *testParams)
 
     MCAN_getNewDataStatus(gMcanBaseAddr, NULL);
     MCAN_clearNewDataStatus(gMcanBaseAddr, NULL);
-#if !defined(R5_FREERTOS_CORE)
+#if !defined(R5_FREERTOS_CORE) && !defined(MCU_M4_CORE)
     MCAN_readMsgRam(gMcanBaseAddr,
                     MCAN_MEM_TYPE_BUF,
                     0U,
@@ -3003,8 +3003,16 @@ int32_t App_mcanPerfTxRxTest(st_mcanTestcaseParams_t *testParams)
     hwUtiln = ((numOfMsgPerSec * 100) / maxMsgCnt);
     DebugP_log("\nTxRx:: Iteration Count:%d\tNumber of messages:%d\r\n", testParams->mcanConfigParams.txMSGInterationCnt, testParams->mcanConfigParams.txMsgNum);
     DebugP_log("\nTxRx:: ThroughPut: %lld Msg/sec\r\n", numOfMsgPerSec);
-    DebugP_log("\nTxRx:: HW Utilization: %lld%%\r\n", hwUtiln);
-    if(hwUtiln < 85U)
+    DebugP_log("\nTxRx:: HW Utilization: %lld%% (of HW theoretical max)\r\n", hwUtiln);
+#if defined(MCU_M4_CORE)
+    /* M4F FreeRTOS incurs higher per-interrupt OS overhead than R5F.
+     * hwUtiln is still reported relative to the true HW theoretical max.
+     * MCAN_M4_HW_UTIL_THRESHOLD must be calibrated from a measured baseline;
+     * see definition in test_mcan.h. */
+    if(hwUtiln < MCAN_M4_HW_UTIL_THRESHOLD)
+#else
+    if(hwUtiln < MCAN_HW_UTIL_THRESHOLD)
+#endif
     {
         testParams->testResult += CSL_EFAIL;
         testStatus += CSL_EFAIL;

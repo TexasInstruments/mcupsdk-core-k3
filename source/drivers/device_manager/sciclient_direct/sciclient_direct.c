@@ -347,8 +347,22 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
                 /* If RM boardcfg has a certificate, find the length */
                 adjSize = boardcfgRmFindCertSize((uint32_t *)pReqPrm->pReqPayload);
 
+                /*
+                 * Flush boardcfg to DDR before TIFS reads it via DMA. Without
+                 * this, a dirty write-back cache line may not yet be in DDR when
+                 * TIFS DMAs the buffer, and the subsequent CacheP_inv in
+                 * boardcfg_RmAdjustReq will discard the stale cached copy,
+                 * causing boardcfgRmFindCertSize to read wrong DDR data.
+                 */
+                {
+                    struct tisci_msg_board_config_rm_req *rmReq =
+                        (struct tisci_msg_board_config_rm_req *)pReqPrm->pReqPayload;
+                    CacheP_wb((void *)rmReq->tisci_boardcfg_rmp_low,
+                              rmReq->tisci_boardcfg_rm_size, CacheP_TYPE_ALL);
+                }
+
                 /* Send to TIFS */
-               *fwdStatus = SCISERVER_FORWARD_MSG;
+                *fwdStatus = SCISERVER_FORWARD_MSG;
                 ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);
                 if ((ret == CSL_PASS) &&
                         ((pRespPrm->flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK))

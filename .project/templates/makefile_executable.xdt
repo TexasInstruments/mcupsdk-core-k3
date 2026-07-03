@@ -1259,6 +1259,9 @@ ifeq ($(DEVICE_TYPE), HS)
 # Sign the appimage using appimage signing script
 ifeq ($(ENC_ENABLED),no)
 	@echo Boot image signing: Encryption is disabled.
+% if (imageFormat == "mcelf") {
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
+% } else {
     % if ((args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62dx") || (args.project.device == "am62px") || (args.project.device == "am275x") || (args.project.device == "am62lx") || (args.project.device == "j722s")) {
     % if ((args.project.enableauthtype2 == true)){
     #
@@ -1275,8 +1278,13 @@ ifeq ($(ENC_ENABLED),no)
 	% else{
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS)
     % }
+% }
 else
 	@echo Boot image signing: Encryption is enabled.
+% if (imageFormat == "mcelf") {
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
+	$(RM) $(BOOTIMAGE_NAME)-enc
+% } else {
     % if ((args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62dx") || (args.project.device == "am62px") || (args.project.device == "am275x") || (args.project.device == "am62lx")|| (args.project.device == "j722s")){
     % if ((args.project.enableauthtype2 == true)){
     #
@@ -1294,6 +1302,7 @@ else
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 1 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS)
     % }
 	$(RM) $(BOOTIMAGE_NAME)-enc
+% }
 endif
 	% if (args.project.isBootLoaderStage2) {
 	$(COPY) $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) $(MCU_PLUS_SDK_PATH)/tools/boot/sbl_prebuilt/`args.project.board`/

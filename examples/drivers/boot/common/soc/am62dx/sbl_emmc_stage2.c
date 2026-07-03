@@ -53,7 +53,7 @@
  * image authentication.
  * The size of the buffer should be large enough to accomodate the appimage
  */
-extern uint8_t gAppimage[0x1900000] __attribute__ ((section (".bss.app"), aligned (128)));
+extern uint8_t gAppimage[0x1900000] __attribute__ ((section (".bss.app"), aligned (4096)));
 
 /*  In this sample bootloader, we load appimages for RTOS/Baremetal at different offset
     i.e the appimage for RTOS/Baremetal (for R5, MCU R5, A53) is flashed at different offset in eMMC

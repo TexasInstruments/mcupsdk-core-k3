@@ -1213,7 +1213,16 @@ static int32_t Flash_nandOspiReadId(Flash_Config *config)
     {
         obj = (Flash_NandOspiObject *)(config->object);
         devCfg = config->devConfig;
-        idCfg = &(devCfg->idCfg);
+
+        /* Validate Level 2 - Check for NULL secondary pointers */
+        if((config->attrs == NULL) || (devCfg == NULL) || (obj == NULL))
+        {
+            status = SystemP_FAILURE;
+        }
+        else
+        {
+            idCfg = &(devCfg->idCfg);
+        }
     }
     else
     {

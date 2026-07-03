@@ -437,87 +437,112 @@ static int32_t SDL_DCCAppWaitForCompletion();
 #if defined (M4F_CORE)
 SDL_ESM_config DCC_Test_esmInitConfig_Inst =
 {
-    .esmErrorConfig = {0u, 3u}, /* Self test error config - not used in this test*/
-    .enableBitmap = {0x00000007u, 0x00000020u, 0x00000000u,
-                },
+    .esmErrorConfig = {32u, 0u}, /* Self test error config - not used in this test*/
+    .enableBitmap = {0x00000000u, 0x00000020u, 0x00000000u,
+                    },
      /**< Enabling Main domain ESM output and MCU Domain DCC events */
-    .priorityBitmap = {0x0000003u, 0x00000020u, 0x00000000u,
-                        },
+    .priorityBitmap = {0x00000000u, 0x00000020u, 0x00000000u,
+                      },
     /**< All events high priority: except low-priority Main ESM output */
-    .errorpinBitmap = {0x00000003u, 0x00000020u, 0x00000000,
+    .errorpinBitmap = {0x00000000u, 0x00000020u, 0x00000000u,
                       },
     /**< All high priority events to error pin */
 };
+
+/* Main ESM is not active in M4 (AM62x) so we do not enable anything here */
 SDL_ESM_config DCC_Test_esmInitConfig_Main =
 {
-    .esmErrorConfig = {0u, 3u}, /* Self test error config - not used in this test*/
-    .enableBitmap = {0x00000000u, 0x00000000u, 0x00000000u, 0x0003f000u,
+    .esmErrorConfig = {32u, 0u}, /* Self test error config - not used in this test*/
+    .enableBitmap = {0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
                      0x00000000u, 0x00000000u,
-                },
+                    },
      /**< Enabling Main domain ESM output and MCU Domain DCC events */
-    .priorityBitmap = {0x0000000u, 0x00000000u, 0x00000000u, 0x0003f000u,
+    .priorityBitmap = {0x0000000u, 0x00000000u, 0x00000000u, 0x00000000u,
                        0x0000000u, 0x00000000u,
-                        },
+                      },
     /**< All events high priority: except low-priority Main ESM output */
-    .errorpinBitmap = {0x00000000u, 0x00000000u, 0x00000000, 0x0003f000u,
+    .errorpinBitmap = {0x00000000u, 0x00000000u, 0x00000000u, 0x00000000u,
                        0x00000000u, 0x00000000u,
                       },
     /**< All high priority events to error pin */
 };
 #endif
 #if defined (R5F_CORE)
+#if defined (SOC_AM62X)
 SDL_ESM_config DCC_Test_esmInitConfig_Inst =
 {
-
-     /**< All high priority events to error pin */
-        .esmErrorConfig = {1u, 8u}, /* Self test error config */
-    .enableBitmap = {0x00000000u, 0x00000006bu, 0x00000000u, 0x00003000u,
-                 0x00000000u, 0x00000380u,
-
-                },
+    .esmErrorConfig = {32u, 0u}, /* Self test error config - not used in this test*/
+    .enableBitmap = {0x00000000u, 0x00000020u, 0x00000000u, 0x00000000u,
+                     0x00000000u, 0x00000000u,
+                    },
      /**< All events enable: except clkstop events for unused clocks
       *   and PCIE events */
-    .priorityBitmap = {0x00000000u, 0x00000006bu, 0x0000000u, 0x00003000u,
-                 0x00000000u, 0x00000380u,
-
-                        },
+    .priorityBitmap = {0x00000000u, 0x00000020u, 0x00000000u, 0x00000000u,
+                       0x00000000u, 0x00000000u,
+                      },
     /**< All events high priority: except clkstop events for unused clocks
      *   and PCIE events */
-    .errorpinBitmap = {0x00000000u, 0x00000006bu, 0x00000000u, 0x00003000u,
-                 0x00000000u, 0x00000380u,
-
+    .errorpinBitmap = {0x00000000u, 0x00000020u, 0x00000000u, 0x00000000u,
+                       0x00000000u, 0x00000000u,
                       },
-    /**< All events high priority: except clkstop for unused clocks
-     *   and PCIE events */
-
-
+    /**< All high priority events to error pin */
 };
 SDL_ESM_config DCC_Test_esmInitConfig_Main =
 {
-
-
-  /**< All high priority events to error pin */
-        .esmErrorConfig = {1u, 8u}, /* Self test error config */
-    .enableBitmap = {0x00000000u, 0x000000078u, 0x00008000u,0x003f3000u,
-                 0x00000000u, 0x00000380u,
-
-                },
-     /**< All events enable: except clkstop events for unused clocks
+    .esmErrorConfig = {32u, 0u}, /* Self test error config - not used in this test*/
+    .enableBitmap = {0x00000000u, 0x00000040u, 0x00000000u, 0x00010000u,
+                     0x00000000u, 0x00000000u,
+                    },
+    /**< All events enable: except clkstop events for unused clocks
       *   and PCIE events */
-    .priorityBitmap = {0x00000000u, 0x000000078u, 0x00008000u,0x003f3000u,
-                 0x00000000u, 0x00000380u,
-                        },
+    .priorityBitmap = {0x00000000u, 0x00000040u, 0x00000000u, 0x00010000u,
+                       0x00000000u, 0x00000000u,
+                      },
     /**< All events high priority: except clkstop events for unused clocks
      *   and PCIE events */
-    .errorpinBitmap = {0x00000000u, 0x000000078u, 0x00008000u,0x003f3000u,
-                 0x00000000u, 0x00000380u,
-
+    .errorpinBitmap = {0x00000000u, 0x00000040u, 0x00000000u, 0x00010000u,
+                       0x00000000u, 0x00000000u,
                       },
-    /**< All events high priority: except clkstop for unused clocks
+    /**< All high priority events to error pin */
+};
+#else
+SDL_ESM_config DCC_Test_esmInitConfig_Inst =
+{
+    .esmErrorConfig = {32u, 0u}, /* Self test error config - not used in this test*/
+    .enableBitmap = {0x00000000u, 0x00000020u, 0x00000000u, 0x00000000u,
+                     0x00000000u, 0x00000000u,
+                    },
+     /**< All events enable: except clkstop events for unused clocks
+      *   and PCIE events */
+    .priorityBitmap = {0x00000000u, 0x00000020u, 0x00000000u, 0x00000000u,
+                       0x00000000u, 0x00000000u,
+                      },
+    /**< All events high priority: except clkstop events for unused clocks
      *   and PCIE events */
-
-
- };
+    .errorpinBitmap = {0x00000000u, 0x00000020u, 0x00000000u, 0x00000000u,
+                       0x00000000u, 0x00000000u,
+                      },
+    /**< All high priority events to error pin */
+};
+SDL_ESM_config DCC_Test_esmInitConfig_Main =
+{
+    .esmErrorConfig = {32u, 0u}, /* Self test error config - not used in this test*/
+    .enableBitmap = {0x00000000u, 0x00000040u, 0x00000000u, 0x00000000u,
+                     0x00000000u, 0x00000000u,
+                    },
+    /**< All events enable: except clkstop events for unused clocks
+      *   and PCIE events */
+    .priorityBitmap = {0x00000000u, 0x00000040u, 0x00000000u, 0x00000000u,
+                       0x00000000u, 0x00000000u,
+                      },
+    /**< All events high priority: except clkstop events for unused clocks
+     *   and PCIE events */
+    .errorpinBitmap = {0x00000000u, 0x00000040u, 0x00000000u, 0x00000000u,
+                       0x00000000u, 0x00000000u,
+                      },
+    /**< All high priority events to error pin */
+};
+#endif
 #endif
 #endif
 

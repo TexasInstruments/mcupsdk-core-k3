@@ -56,15 +56,15 @@ SDL_ESM_config ECC_Test_esmInitConfig_MAIN =
 {
     .esmErrorConfig = {0u, 8u}, /* Self test error config */
     .enableBitmap = { 0x00000000u, 0x00000000u, 0x00000000u,0x00000000u,
-                      0x00000000u, 0x00000300u, 0x00180000u,0x00000000u,
+                      0x00000000u, 0x00000000u, 0x00180000u,0x00000000u,
                     },
      /**< All events enable: except clkstop events for unused clocks */
     .priorityBitmap = { 0x00000000u, 0x00000000u, 0x00000000u,0x00000000u,
-                        0x00000000u, 0x00000300u, 0x00180000u,0x00000000u,
+                        0x00000000u, 0x00000000u, 0x00180000u,0x00000000u,
                       },
     /**< All events high priority: except clkstop events for unused clocks */
     .errorpinBitmap = { 0x00000000u, 0x00000000u, 0x00000000u,0x00000000u,
-                        0x00000000u, 0x00000300u, 0x00180000u,0x00000000u,
+                        0x00000000u, 0x00000000u, 0x00180000u,0x00000000u,
                       },
     /**< All events high priority: except clkstop for unused clocks
      *   and selftest error events */

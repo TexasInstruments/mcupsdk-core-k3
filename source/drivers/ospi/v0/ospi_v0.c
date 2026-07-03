@@ -847,11 +847,15 @@ void OSPI_setReadDummyCycles(OSPI_Handle handle, uint32_t dummyCycles)
         const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
         OSPI_Object *obj = ((OSPI_Config *)handle)->object;
 
-        /* Set read dummy cycles */
-        CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD, dummyCycles);
+        /* Validate that dummyCycles is within register field max (5-bit range 0-31) */
+        if(dummyCycles <= CSL_OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD_MAX)
+        {
+            /* Set read dummy cycles */
+            CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD, dummyCycles);
 
-        /* Update book-keeping variable in OSPI object */
-        obj->rdDummyCycles = dummyCycles;
+            /* Update book-keeping variable in OSPI object */
+            obj->rdDummyCycles = dummyCycles;
+        }
     }
     else
     {
@@ -877,11 +881,15 @@ void OSPI_setCmdDummyCycles(OSPI_Handle handle, uint32_t dummyCycles)
         const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
         OSPI_Object *obj = ((OSPI_Config *)handle)->object;
 
-        /* Set command dummy cycles */
-        CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_DUMMY_CYCLES_FLD, dummyCycles);
+        /* Validate that dummyCycles is within register field max (5-bit range 0-31) */
+        if(dummyCycles <= CSL_OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_DUMMY_CYCLES_FLD_MAX)
+        {
+            /* Set command dummy cycles */
+            CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_DUMMY_CYCLES_FLD, dummyCycles);
 
-        /* Update book-keeping variable in OSPI object */
-        obj->cmdDummyCycles = dummyCycles;
+            /* Update book-keeping variable in OSPI object */
+            obj->cmdDummyCycles = dummyCycles;
+        }
     }
     else
     {
@@ -977,13 +985,22 @@ int32_t OSPI_enableDacMode(OSPI_Handle handle)
     if(NULL != handle)
     {
         const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-        const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
         OSPI_Object *obj = ((OSPI_Config *)handle)->object;
 
-        CSL_REG32_FINS(&pReg->CONFIG_REG,
-                       OSPI_FLASH_CFG_CONFIG_REG_ENB_DIR_ACC_CTLR_FLD,
-                       1);
-        CSL_REG32_WR(&pReg->IND_AHB_ADDR_TRIGGER_REG, obj->deviceSize);
+        /* Validate Level 2 - Check for NULL attributes and object */
+        if((attrs == NULL) || (obj == NULL))
+        {
+            status = SystemP_FAILURE;
+        }
+        else
+        {
+            const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+
+            CSL_REG32_FINS(&pReg->CONFIG_REG,
+                           OSPI_FLASH_CFG_CONFIG_REG_ENB_DIR_ACC_CTLR_FLD,
+                           1);
+            CSL_REG32_WR(&pReg->IND_AHB_ADDR_TRIGGER_REG, obj->deviceSize);
+        }
     }
     else
     {
@@ -1000,12 +1017,21 @@ int32_t OSPI_disableDacMode(OSPI_Handle handle)
     if(NULL != handle)
     {
         const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-        const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
 
-        CSL_REG32_FINS(&pReg->CONFIG_REG,
-                       OSPI_FLASH_CFG_CONFIG_REG_ENB_DIR_ACC_CTLR_FLD,
-                       0U);
-        CSL_REG32_WR(&pReg->IND_AHB_ADDR_TRIGGER_REG, 0);
+        /* Validate Level 2 - Check for NULL attributes */
+        if(attrs == NULL)
+        {
+            status = SystemP_FAILURE;
+        }
+        else
+        {
+            const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+
+            CSL_REG32_FINS(&pReg->CONFIG_REG,
+                           OSPI_FLASH_CFG_CONFIG_REG_ENB_DIR_ACC_CTLR_FLD,
+                           0U);
+            CSL_REG32_WR(&pReg->IND_AHB_ADDR_TRIGGER_REG, 0);
+        }
     }
     else
     {
@@ -1022,12 +1048,21 @@ int32_t OSPI_enablePhyPipeline(OSPI_Handle handle)
     if(NULL != handle)
     {
         const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-        const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
 
-        /* Enable PHY pipeline */
+        /* Validate Level 2 - Check for NULL attributes */
+        if(attrs == NULL)
+        {
+            status = SystemP_FAILURE;
+        }
+        else
+        {
+            const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+
+            /* Enable PHY pipeline */
             CSL_REG32_FINS(&pReg->CONFIG_REG,
                    OSPI_FLASH_CFG_CONFIG_REG_PIPELINE_PHY_FLD,
                    TRUE);
+        }
     }
     else
     {
@@ -1044,12 +1079,21 @@ int32_t OSPI_disablePhyPipeline(OSPI_Handle handle)
     if(NULL != handle)
     {
         const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-        const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
 
-        /* Disable PHY pipeline */
+        /* Validate Level 2 - Check for NULL attributes */
+        if(attrs == NULL)
+        {
+            status = SystemP_FAILURE;
+        }
+        else
+        {
+            const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+
+            /* Disable PHY pipeline */
             CSL_REG32_FINS(&pReg->CONFIG_REG,
                    OSPI_FLASH_CFG_CONFIG_REG_PIPELINE_PHY_FLD,
                    FALSE);
+        }
     }
     else
     {
@@ -1068,40 +1112,55 @@ int32_t OSPI_enablePhy(OSPI_Handle handle)
         uint32_t dummyClks;
         const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
         OSPI_Object *obj = ((OSPI_Config *)handle)->object;
-        const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
 
-        uint32_t phyEnable = CSL_REG32_FEXT(&pReg->CONFIG_REG,
-                                            OSPI_FLASH_CFG_CONFIG_REG_PHY_MODE_ENABLE_FLD);
-        if(phyEnable == FALSE)
+        /* Validate Level 2 - Check for NULL attributes and object */
+        if((attrs == NULL) || (obj == NULL))
         {
-            if(obj->phyDummyCycles != 0x00)
+            status = SystemP_FAILURE;
+        }
+        else
+        {
+            const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+
+            uint32_t phyEnable = CSL_REG32_FEXT(&pReg->CONFIG_REG,
+                                                OSPI_FLASH_CFG_CONFIG_REG_PHY_MODE_ENABLE_FLD);
+            if(phyEnable == FALSE)
             {
-                dummyClks = obj->phyDummyCycles;
+                if(obj->phyDummyCycles != 0x00)
+                {
+                    dummyClks = obj->phyDummyCycles;
+                }
+                else
+                {
+                    if(obj->rdDummyCycles >= obj->rdDummyValPhyMode) 
+                    { 
+                        dummyClks = obj->rdDummyCycles - obj->rdDummyValPhyMode; 
+                    } 
+                    else 
+                    { 
+                        dummyClks = 0U; 
+                    }
+                }
+
+                /* Set new dummyClk */
+                CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG,
+                                OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD,
+                                dummyClks);
+
+                if(obj->phyRdDataCapDelay != 0xFF)
+                {
+                    /* Tuning is already done, set read capture delay */
+                    CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG,
+                               OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_DELAY_FLD,
+                               obj->phyRdDataCapDelay);
+
+                }
+
+                /* Enable PHY mode */
+                CSL_REG32_FINS(&pReg->CONFIG_REG,
+                       OSPI_FLASH_CFG_CONFIG_REG_PHY_MODE_ENABLE_FLD,
+                       TRUE);
             }
-            else
-            {
-                /* Set dummyClks 1 less */
-                dummyClks = obj->rdDummyCycles - obj->rdDummyValPhyMode;
-            }
-
-            /* Set new dummyClk */
-            CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG,
-                            OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD,
-                            dummyClks);
-
-            if(obj->phyRdDataCapDelay != 0xFF)
-            {
-                /* Tuning is already done, set read capture delay */
-                CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG,
-                           OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_DELAY_FLD,
-                           obj->phyRdDataCapDelay);
-
-            }
-
-            /* Enable PHY mode */
-            CSL_REG32_FINS(&pReg->CONFIG_REG,
-                   OSPI_FLASH_CFG_CONFIG_REG_PHY_MODE_ENABLE_FLD,
-                   TRUE);
         }
     }
     else
@@ -1120,30 +1179,39 @@ int32_t OSPI_disablePhy(OSPI_Handle handle)
     {
         const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
         OSPI_Object *obj = ((OSPI_Config *)handle)->object;
-        const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
 
-        uint32_t phyEnable = CSL_REG32_FEXT(&pReg->CONFIG_REG,
-                                            OSPI_FLASH_CFG_CONFIG_REG_PHY_MODE_ENABLE_FLD);
-
-        if(phyEnable == TRUE)
+        /* Validate Level 2 - Check for NULL attributes and object */
+        if((attrs == NULL) || (obj == NULL))
         {
-            uint32_t dummyClks = obj->rdDummyCycles;
+            status = SystemP_FAILURE;
+        }
+        else
+        {
+            const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
 
-            /* Set new dummyClk */
-            CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG,
-                            OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD,
-                            dummyClks);
+            uint32_t phyEnable = CSL_REG32_FEXT(&pReg->CONFIG_REG,
+                                                OSPI_FLASH_CFG_CONFIG_REG_PHY_MODE_ENABLE_FLD);
 
-            /* Set the non-PHY read delay */
-            CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG,
-                       OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_DELAY_FLD,
-                       obj->rdDataCapDelay);
+            if(phyEnable == TRUE)
+            {
+                uint32_t dummyClks = obj->rdDummyCycles;
 
-            /* Disable PHY mode */
-            CSL_REG32_FINS(&pReg->CONFIG_REG,
-               OSPI_FLASH_CFG_CONFIG_REG_PHY_MODE_ENABLE_FLD,
-               FALSE);
+                /* Set new dummyClk */
+                CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG,
+                                OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD,
+                                dummyClks);
 
+                /* Set the non-PHY read delay */
+                CSL_REG32_FINS(&pReg->RD_DATA_CAPTURE_REG,
+                           OSPI_FLASH_CFG_RD_DATA_CAPTURE_REG_DELAY_FLD,
+                           obj->rdDataCapDelay);
+
+                /* Disable PHY mode */
+                CSL_REG32_FINS(&pReg->CONFIG_REG,
+                   OSPI_FLASH_CFG_CONFIG_REG_PHY_MODE_ENABLE_FLD,
+                   FALSE);
+
+            }
         }
     }
     else
@@ -1161,7 +1229,12 @@ uint32_t OSPI_getFlashDataBaseAddr(OSPI_Handle handle)
     if(NULL != handle)
     {
         const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-        dataBaseAddr = attrs->dataBaseAddr;
+
+        /* Validate Level 2 - Check for NULL attributes */
+        if(attrs != NULL)
+        {
+            dataBaseAddr = attrs->dataBaseAddr;
+        }
     }
 
     return dataBaseAddr;
@@ -1176,77 +1249,96 @@ int32_t OSPI_readCmd(OSPI_Handle handle, OSPI_ReadCmdParams *rdParams)
     if((handle != NULL) && (rdParams != NULL))
     {
         const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-        const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
         OSPI_Object *obj = ((OSPI_Config *)handle)->object;
-        uint8_t *pBuf = (uint8_t *) rdParams->rxDataBuf;
-        uint32_t rxLen = rdParams->rxDataLen;
 
-        /* Clear flash command control register */
-        CSL_REG32_WR(&pReg->FLASH_CMD_CTRL_REG, 0U);
-
-        /* Set command opcode */
-        CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_CMD_OPCODE_FLD, rdParams->cmd);
-
-        /* Enable read data in command control register */
-        CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_ENB_READ_DATA_FLD, TRUE);
-
-        /* Set number of read data bytes */
-        CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_RD_DATA_BYTES_FLD, rxLen - 1);
-
-        /* Set dummyCycles for the command */
-        if(rdParams->dummyBits != OSPI_CMD_INVALID_DUMMY)
+        /* Validate Level 2 - Check for NULL attributes and object */
+        if((attrs == NULL) || (obj == NULL))
         {
-            CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_DUMMY_CYCLES_FLD, rdParams->dummyBits);
+            status = SystemP_FAILURE;
+        }
+        /* Validate opcode is not invalid */
+        else if(rdParams->cmd == OSPI_CMD_INVALID_OPCODE)
+        {
+            status = SystemP_FAILURE;
+        }
+        /* Validate transaction buffer - must not be NULL */
+        else if(rdParams->rxDataBuf == NULL)
+        {
+            status = SystemP_FAILURE;
         }
         else
         {
-            CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_DUMMY_CYCLES_FLD, obj->cmdDummyCycles);
-        }
+            const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+            uint8_t *pBuf = (uint8_t *) rdParams->rxDataBuf;
+            uint32_t rxLen = rdParams->rxDataLen;
 
-        uint32_t dualOpCode = CSL_REG32_FEXT(&pReg->CONFIG_REG,
-                                    OSPI_FLASH_CFG_CONFIG_REG_DUAL_BYTE_OPCODE_EN_FLD);
+            /* Clear flash command control register */
+            CSL_REG32_WR(&pReg->FLASH_CMD_CTRL_REG, 0U);
 
-        if(dualOpCode == 1)
-        {
-            uint8_t cmdExt = OSPI_getCmdExt(handle, rdParams->cmd);
-            /* Set extended STIG opcode */
-            CSL_REG32_FINS(&pReg->OPCODE_EXT_LOWER_REG, OSPI_FLASH_CFG_OPCODE_EXT_LOWER_REG_EXT_STIG_OPCODE_FLD, cmdExt);
-        }
-        else
-        {
-            /* do nothing */
-        }
-
-        if(rdParams->cmdAddr != OSPI_CMD_INVALID_ADDR)
-        {
-            /* Enable Command address in command control register */
-            CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_ENB_COMD_ADDR_FLD, TRUE);
-
-            /* Set number of address bytes */
-            CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_ADDR_BYTES_FLD, rdParams->numAddrBytes - 1);
-
-            /* Update the flash cmd address register */
-            CSL_REG32_WR(&pReg->FLASH_CMD_ADDR_REG, rdParams->cmdAddr);
-        }
-        else
-        {
-            /* do nothing */
-        }
-
-        status = OSPI_flashExecCmd(pReg);
-
-        if(status == 0)
-        {
-            uint32_t regVal = CSL_REG32_RD(&pReg->FLASH_RD_DATA_LOWER_REG);
-            uint32_t rdLen = (rxLen > 4U) ? 4U : rxLen;
-            (void)memcpy((void *)pBuf, (void *)(&regVal), rdLen);
-            pBuf += rdLen;
-
-            if(rxLen > 4U)
+            /* Set command opcode */
+            CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_CMD_OPCODE_FLD, rdParams->cmd);
+            
+            /* Enable read data in command control register */
+            CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_ENB_READ_DATA_FLD, TRUE);
+            
+            /* Set number of read data bytes */
+            CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_RD_DATA_BYTES_FLD, rxLen - 1);
+            
+            /* Set dummyCycles for the command */
+            if(rdParams->dummyBits != OSPI_CMD_INVALID_DUMMY)
             {
-                regVal = CSL_REG32_RD(&pReg->FLASH_RD_DATA_UPPER_REG);
-                rdLen = rxLen - rdLen;
+                CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_DUMMY_CYCLES_FLD, rdParams->dummyBits);
+            }
+            else
+            {
+                CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_DUMMY_CYCLES_FLD, obj->cmdDummyCycles);
+            }
+        
+            uint32_t dualOpCode = CSL_REG32_FEXT(&pReg->CONFIG_REG,
+                                        OSPI_FLASH_CFG_CONFIG_REG_DUAL_BYTE_OPCODE_EN_FLD);
+            
+            if(dualOpCode == 1)
+            {
+                uint8_t cmdExt = OSPI_getCmdExt(handle, rdParams->cmd);
+                /* Set extended STIG opcode */
+                CSL_REG32_FINS(&pReg->OPCODE_EXT_LOWER_REG, OSPI_FLASH_CFG_OPCODE_EXT_LOWER_REG_EXT_STIG_OPCODE_FLD, cmdExt);
+            }
+            else
+            {
+                /* do nothing */
+            }
+        
+            if(rdParams->cmdAddr != OSPI_CMD_INVALID_ADDR)
+            {
+                /* Enable Command address in command control register */
+                CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_ENB_COMD_ADDR_FLD, TRUE);
+            
+                /* Set number of address bytes */
+                CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_ADDR_BYTES_FLD, rdParams->numAddrBytes - 1);
+            
+                /* Update the flash cmd address register */
+                CSL_REG32_WR(&pReg->FLASH_CMD_ADDR_REG, rdParams->cmdAddr);
+            }
+            else
+            {
+                /* do nothing */
+            }
+        
+            status = OSPI_flashExecCmd(pReg);
+        
+            if(status == 0)
+            {
+                uint32_t regVal = CSL_REG32_RD(&pReg->FLASH_RD_DATA_LOWER_REG);
+                uint32_t rdLen = (rxLen > 4U) ? 4U : rxLen;
                 (void)memcpy((void *)pBuf, (void *)(&regVal), rdLen);
+                pBuf += rdLen;
+            
+                if(rxLen > 4U)
+                {
+                    regVal = CSL_REG32_RD(&pReg->FLASH_RD_DATA_UPPER_REG);
+                    rdLen = rxLen - rdLen;
+                    (void)memcpy((void *)pBuf, (void *)(&regVal), rdLen);
+                }
             }
         }
     }
@@ -1267,20 +1359,33 @@ int32_t OSPI_readDirect(OSPI_Handle handle, OSPI_Transaction *trans)
     {
         const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
         OSPI_Object *obj = ((OSPI_Config *)handle)->object;
-        const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
 
-        uint8_t *pSrc;
-        uint8_t *pDst;
-        uint32_t addrOffset;
+        /* Validate Level 2 - Check for NULL attributes and object */
+        if((attrs == NULL) || (obj == NULL))
+        {
+            status = SystemP_FAILURE;
+        }
+        /* Validate transaction buffer - must not be NULL */
+        else if(trans->buf == NULL)
+        {
+            status = SystemP_FAILURE;
+        }
+        else
+        {
+            const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
 
-        addrOffset = trans->addrOffset;
-        pDst = (uint8_t *) trans->buf;
+            uint8_t *pSrc;
+            uint8_t *pDst;
+            uint32_t addrOffset;
 
-        /* Enable Direct Access Mode */
-        CSL_REG32_FINS(&pReg->CONFIG_REG,
-                       OSPI_FLASH_CFG_CONFIG_REG_ENB_DIR_ACC_CTLR_FLD,
-                       1);
-        CSL_REG32_WR(&pReg->IND_AHB_ADDR_TRIGGER_REG, obj->deviceSize);
+            addrOffset = trans->addrOffset;
+            pDst = (uint8_t *) trans->buf;
+
+            /* Enable Direct Access Mode */
+            CSL_REG32_FINS(&pReg->CONFIG_REG,
+                           OSPI_FLASH_CFG_CONFIG_REG_ENB_DIR_ACC_CTLR_FLD,
+                           1);
+            CSL_REG32_WR(&pReg->IND_AHB_ADDR_TRIGGER_REG, obj->deviceSize);
 
         pSrc = (uint8_t *)(attrs->dataBaseAddr + addrOffset);
 
@@ -1368,6 +1473,7 @@ int32_t OSPI_readDirect(OSPI_Handle handle, OSPI_Transaction *trans)
             }
             #endif
         }
+        }
     }
     else
     {
@@ -1386,140 +1492,148 @@ int32_t OSPI_readIndirect(OSPI_Handle handle, OSPI_Transaction *trans)
     {
         const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
         OSPI_Object *obj = ((OSPI_Config *)handle)->object;
-        const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
-        uint8_t *pDst;
-        uint32_t addrOffset;
-        uint32_t remainingSize;
-        uint32_t readFlag = 0U;
-        uint32_t sramLevel = 0, readBytes = 0;
-        uint32_t addrAlignOffset = 0U;
-        uint32_t rxCount = trans->count;
-        uint8_t *tempBuf = NULL;
-        uint8_t usesTempBuf = 0U;
-        uint32_t tempBufSize = 0U;
-        uint32_t bytesRead = 0U;
-        uint8_t needsAlignment = 0U;
 
-        addrOffset = trans->addrOffset;
-        pDst = (uint8_t *) trans->buf;
-
-        /* Check if protocol is 8d8d8d (DDR Octal mode) */
-        if(obj->protocol == OSPI_FLASH_PROTOCOL(8,8,8,1))
+        /* Validate Level 2 - Check for NULL attributes and object */
+        if((attrs == NULL) || (obj == NULL))
         {
-            /* Handle odd address offset - align to even address */
-            if((addrOffset & 1U) != 0U)
-            {
-                addrAlignOffset = 1U;
-                addrOffset &= ~1U; /* Align to even address */
-                rxCount += 1U;     /* Read one extra byte at the start */
-                needsAlignment = 1U;
-            }
-
-            /* Handle odd byte count - read even number of bytes */
-            if((rxCount & 1U) != 0U)
-            {
-                rxCount += 1U; /* Read one extra byte at the end */
-                needsAlignment = 1U;
-            }
-
-            /* Use pre-allocated temporary buffer if needed for alignment */
-            if(needsAlignment == 1U)
-            {
-                /* Use pre-allocated buffer in OSPI_Object */
-                /* NOTE: Caller must hold obj->lockObj to ensure thread-safe access to tempBuf */
-                tempBufSize = obj->pageSize;
-                tempBuf = obj->tempBuf;
-                if(tempBufSize > sizeof(obj->tempBuf))
-                {
-                    /* Page size exceeds buffer capacity - cannot proceed */
-                    status = SystemP_FAILURE;
-                    trans->status = OSPI_TRANSFER_FAILED;
-                }
-                usesTempBuf = 1U;
-            }
+            status = SystemP_FAILURE;
         }
-
-        /* Disable DAC Mode */
-        CSL_REG32_FINS(&pReg->CONFIG_REG,
-                       OSPI_FLASH_CFG_CONFIG_REG_ENB_DIR_ACC_CTLR_FLD,
-                       0U);
-
-        /* Config the Indirect Read Transfer Start Address Register */
-        CSL_REG32_WR(&pReg->INDIRECT_READ_XFER_START_REG, addrOffset);
-
-        /* Set the Indirect Write Transfer Start Address Register */
-        CSL_REG32_WR(&pReg->INDIRECT_READ_XFER_NUM_BYTES_REG, rxCount);
-
-        /* Set the Indirect Write Transfer Watermark Register */
-        CSL_REG32_WR(&pReg->INDIRECT_READ_XFER_WATERMARK_REG,
-                     CSL_OSPI_SRAM_WARERMARK_RD_LVL);
-
-        /* Start the indirect read transfer */
-        CSL_REG32_FINS(&pReg->INDIRECT_READ_XFER_CTRL_REG,
-                       OSPI_FLASH_CFG_INDIRECT_READ_XFER_CTRL_REG_START_FLD,
-                       1);
-
-        if((OSPI_TRANSFER_MODE_POLLING == obj->transferMode) &&
-           (status == SystemP_SUCCESS))
+        /* Validate transaction buffer - must not be NULL */
+        else if(trans->buf == NULL)
         {
-            remainingSize = rxCount;
+            status = SystemP_FAILURE;
+        }
+        else
+        {
+            const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+            uint8_t *pDst;
+            uint32_t addrOffset;
+            uint32_t remainingSize;
+            uint32_t readFlag = 0U;
+            uint32_t sramLevel = 0, readBytes = 0;
+            uint32_t addrAlignOffset = 0U;
+            uint32_t rxCount = trans->count;
+            uint8_t *tempBuf = NULL;
+            uint8_t usesTempBuf = 0U;
+            uint32_t tempBufSize = 0U;
+            uint32_t bytesRead = 0U;
+            uint8_t needsAlignment = 0U;
 
-            while(remainingSize > 0U)
+            addrOffset = trans->addrOffset;
+            pDst = (uint8_t *) trans->buf;
+
+            /* Check if protocol is 8d8d8d (DDR Octal mode) */
+            if(obj->protocol == OSPI_FLASH_PROTOCOL(8,8,8,1))
             {
-                if(OSPI_waitReadSRAMLevel(pReg, &sramLevel) != 0)
+                /* Handle odd address offset - align to even address */
+                if((addrOffset & 1U) != 0U)
                 {
-                    /* SRAM FIFO has no data, failure */
-                    readFlag = 1U;
-                    status = SystemP_FAILURE;
-                    trans->status = OSPI_TRANSFER_FAILED;
-                    break;
+                    addrAlignOffset = 1U;
+                    addrOffset &= ~1U; /* Align to even address */
+                    rxCount += 1U;     /* Read one extra byte at the start */
+                    needsAlignment = 1U;
                 }
-
-                readBytes = sramLevel * CSL_OSPI_FIFO_WIDTH;
-                readBytes = (readBytes > remainingSize) ? remainingSize : readBytes;
-
-                if(usesTempBuf == 1U)
+            
+                /* Handle odd byte count - read even number of bytes */
+                if((rxCount & 1U) != 0U)
                 {
-                    /* Read into temporary buffer in chunks */
-                    readBytes = (readBytes > tempBufSize) ? tempBufSize : readBytes;
+                    rxCount += 1U; /* Read one extra byte at the end */
+                    needsAlignment = 1U;
+                }
+            
+                /* Use pre-allocated temporary buffer if needed for alignment */
+                if(needsAlignment == 1U)
+                {
+                    /* Use pre-allocated buffer in OSPI_Object */
+                    /* NOTE: Caller must hold obj->lockObj to ensure thread-safe access to tempBuf */
+                    tempBufSize = sizeof(obj->tempBuf);
+                    tempBuf = obj->tempBuf;
+                    usesTempBuf = 1U;
+                }
+            }
+        
+            /* Disable DAC Mode */
+            CSL_REG32_FINS(&pReg->CONFIG_REG,
+                           OSPI_FLASH_CFG_CONFIG_REG_ENB_DIR_ACC_CTLR_FLD,
+                           0U);
+            
+            /* Config the Indirect Read Transfer Start Address Register */
+            CSL_REG32_WR(&pReg->INDIRECT_READ_XFER_START_REG, addrOffset);
+            
+            /* Set the Indirect Write Transfer Start Address Register */
+            CSL_REG32_WR(&pReg->INDIRECT_READ_XFER_NUM_BYTES_REG, rxCount);
+            
+            /* Set the Indirect Write Transfer Watermark Register */
+            CSL_REG32_WR(&pReg->INDIRECT_READ_XFER_WATERMARK_REG,
+                         CSL_OSPI_SRAM_WARERMARK_RD_LVL);
+            
+            /* Start the indirect read transfer */
+            CSL_REG32_FINS(&pReg->INDIRECT_READ_XFER_CTRL_REG,
+                           OSPI_FLASH_CFG_INDIRECT_READ_XFER_CTRL_REG_START_FLD,
+                           1);
 
-                    /* Read data from FIFO into temp buffer */
-                        OSPI_readFifoData(attrs->dataBaseAddr, tempBuf, readBytes);
+            if((OSPI_TRANSFER_MODE_POLLING == obj->transferMode) &&
+               (status == SystemP_SUCCESS))
+            {
+                remainingSize = rxCount;
 
-                    /* Copy valid data to destination, skipping alignment offset for first chunk */
-                    if(bytesRead == 0U)
+                while(remainingSize > 0U)
+                {
+                    if(OSPI_waitReadSRAMLevel(pReg, &sramLevel) != 0)
                     {
-                        /* First chunk - skip alignment offset */
-                        uint32_t validBytes = (readBytes > addrAlignOffset) ? (readBytes - addrAlignOffset) : 0U;
-                        validBytes = (validBytes > trans->count) ? trans->count : validBytes;
-                        memcpy(pDst, tempBuf + addrAlignOffset, validBytes);
-                        pDst += validBytes;
-                        bytesRead += validBytes;
+                        /* SRAM FIFO has no data, failure */
+                        readFlag = 1U;
+                        status = SystemP_FAILURE;
+                        trans->status = OSPI_TRANSFER_FAILED;
+                        break;
+                    }
+
+                    readBytes = sramLevel * CSL_OSPI_FIFO_WIDTH;
+                    readBytes = (readBytes > remainingSize) ? remainingSize : readBytes;
+
+                    if(usesTempBuf == 1U)
+                    {
+                        /* Read into temporary buffer in chunks */
+                        readBytes = (readBytes > tempBufSize) ? tempBufSize : readBytes;
+
+                        /* Read data from FIFO into temp buffer */
+                            OSPI_readFifoData(attrs->dataBaseAddr, tempBuf, readBytes);
+
+                        /* Copy valid data to destination, skipping alignment offset for first chunk */
+                        if(bytesRead == 0U)
+                        {
+                            /* First chunk - skip alignment offset */
+                            uint32_t validBytes = (readBytes > addrAlignOffset) ? (readBytes - addrAlignOffset) : 0U;
+                            validBytes = (validBytes > trans->count) ? trans->count : validBytes;
+                            memcpy(pDst, tempBuf + addrAlignOffset, validBytes);
+                            pDst += validBytes;
+                            bytesRead += validBytes;
+                        }
+                        else
+                        {
+                            /* Subsequent chunks - copy all valid bytes */
+                            uint32_t validBytes = ((bytesRead + readBytes) > trans->count) ?
+                                                 (trans->count - bytesRead) : readBytes;
+                            memcpy(pDst, tempBuf, validBytes);
+                            pDst += validBytes;
+                            bytesRead += validBytes;
+                        }
                     }
                     else
                     {
-                        /* Subsequent chunks - copy all valid bytes */
-                        uint32_t validBytes = ((bytesRead + readBytes) > trans->count) ?
-                                             (trans->count - bytesRead) : readBytes;
-                        memcpy(pDst, tempBuf, validBytes);
-                        pDst += validBytes;
-                        bytesRead += validBytes;
+                        /* Direct read without alignment - read directly to destination */
+                        OSPI_readFifoData(attrs->dataBaseAddr, pDst, readBytes);
+                            pDst += readBytes;
                     }
+                    remainingSize -= readBytes;
                 }
-                else
+                /* Wait for completion of INDAC Read */
+                if(readFlag == 0U && OSPI_waitIndReadComplete(pReg) != 0)
                 {
-                    /* Direct read without alignment - read directly to destination */
-                    OSPI_readFifoData(attrs->dataBaseAddr, pDst, readBytes);
-                        pDst += readBytes;
+                    readFlag = 1U;
+                    status = SystemP_FAILURE;
+                    trans->status = OSPI_TRANSFER_FAILED;
                 }
-                remainingSize -= readBytes;
-            }
-            /* Wait for completion of INDAC Read */
-            if(readFlag == 0U && OSPI_waitIndReadComplete(pReg) != 0)
-            {
-                readFlag = 1U;
-                status = SystemP_FAILURE;
-                trans->status = OSPI_TRANSFER_FAILED;
             }
         }
     }
@@ -1540,77 +1654,91 @@ int32_t OSPI_writeCmd(OSPI_Handle handle, OSPI_WriteCmdParams *wrParams)
     if((handle != NULL) && (wrParams != NULL))
     {
         const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-        const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
 
-        uint8_t *txBuf = (uint8_t *) wrParams->txDataBuf;
-        uint32_t txLen = wrParams->txDataLen;
-
-        /* Clear the flash command control register */
-        CSL_REG32_WR(&pReg->FLASH_CMD_CTRL_REG, 0U);
-
-        /* Set command opcode */
-        CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_CMD_OPCODE_FLD, wrParams->cmd);
-
-        /* Set command address if needed */
-        if(wrParams->cmdAddr != OSPI_CMD_INVALID_ADDR)
+        /* Validate Level 2 - Check for NULL attributes */
+        if(attrs == NULL)
         {
-            /* Enable Command address in command control register */
-            CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_ENB_COMD_ADDR_FLD, TRUE);
-
-            /* Set number of address bytes */
-            CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_ADDR_BYTES_FLD, wrParams->numAddrBytes - 1);
-
-            /* Update the flash cmd address register */
-            CSL_REG32_WR(&pReg->FLASH_CMD_ADDR_REG, wrParams->cmdAddr);
+            status = SystemP_FAILURE;
+        }
+        /* Validate opcode is not invalid */
+        else if(wrParams->cmd == OSPI_CMD_INVALID_OPCODE)
+        {
+            status = SystemP_FAILURE;
         }
         else
         {
-            /* do nothing */
-        }
+            const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
 
-        uint32_t dualOpCode = CSL_REG32_FEXT(&pReg->CONFIG_REG,
-                                    OSPI_FLASH_CFG_CONFIG_REG_DUAL_BYTE_OPCODE_EN_FLD);
+            uint8_t *txBuf = (uint8_t *) wrParams->txDataBuf;
+            uint32_t txLen = wrParams->txDataLen;
 
-        if(dualOpCode == 1)
-        {
-            uint8_t cmdExt = OSPI_getCmdExt(handle, wrParams->cmd);
-            /* Set extended STIG opcode */
-            CSL_REG32_FINS(&pReg->OPCODE_EXT_LOWER_REG, OSPI_FLASH_CFG_OPCODE_EXT_LOWER_REG_EXT_STIG_OPCODE_FLD, cmdExt);
-        }
-        else
-        {
-            /* do nothing */
-        }
+            /* Clear the flash command control register */
+            CSL_REG32_WR(&pReg->FLASH_CMD_CTRL_REG, 0U);
 
-        if (txLen != 0U)
-        {
-            uint32_t wrLen = 0;
-            uint32_t wrData = 0;
-
-            /* Enable write data in command control register */
-            CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_ENB_WRITE_DATA_FLD, TRUE);
-
-            /* Set number of data bytes to write */
-            CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_WR_DATA_BYTES_FLD, txLen-1);
-
-            wrLen = txLen > 4U ? 4U : txLen;
-            memcpy(&wrData, txBuf, wrLen);
-            CSL_REG32_WR(&pReg->FLASH_WR_DATA_LOWER_REG, wrData);
-
-            if (txLen > 4U)
+            /* Set command opcode */
+            CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_CMD_OPCODE_FLD, wrParams->cmd);
+            
+            /* Set command address if needed */
+            if(wrParams->cmdAddr != OSPI_CMD_INVALID_ADDR)
             {
-                txBuf += wrLen;
-                wrLen = txLen - wrLen;
-                memcpy(&wrData, txBuf, wrLen);
-                CSL_REG32_WR(&pReg->FLASH_WR_DATA_UPPER_REG, wrData);
+                /* Enable Command address in command control register */
+                CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_ENB_COMD_ADDR_FLD, TRUE);
+            
+                /* Set number of address bytes */
+                CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_ADDR_BYTES_FLD, wrParams->numAddrBytes - 1);
+            
+                /* Update the flash cmd address register */
+                CSL_REG32_WR(&pReg->FLASH_CMD_ADDR_REG, wrParams->cmdAddr);
             }
+            else
+            {
+                /* do nothing */
+            }
+        
+            uint32_t dualOpCode = CSL_REG32_FEXT(&pReg->CONFIG_REG,
+                                        OSPI_FLASH_CFG_CONFIG_REG_DUAL_BYTE_OPCODE_EN_FLD);
+            
+            if(dualOpCode == 1)
+            {
+                uint8_t cmdExt = OSPI_getCmdExt(handle, wrParams->cmd);
+                /* Set extended STIG opcode */
+                CSL_REG32_FINS(&pReg->OPCODE_EXT_LOWER_REG, OSPI_FLASH_CFG_OPCODE_EXT_LOWER_REG_EXT_STIG_OPCODE_FLD, cmdExt);
+            }
+            else
+            {
+                /* do nothing */
+            }
+        
+            if (txLen != 0U)
+            {
+                uint32_t wrLen = 0;
+                uint32_t wrData = 0;
+            
+                /* Enable write data in command control register */
+                CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_ENB_WRITE_DATA_FLD, TRUE);
+            
+                /* Set number of data bytes to write */
+                CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_WR_DATA_BYTES_FLD, txLen-1);
+            
+                wrLen = txLen > 4U ? 4U : txLen;
+                memcpy(&wrData, txBuf, wrLen);
+                CSL_REG32_WR(&pReg->FLASH_WR_DATA_LOWER_REG, wrData);
+            
+                if (txLen > 4U)
+                {
+                    txBuf += wrLen;
+                    wrLen = txLen - wrLen;
+                    memcpy(&wrData, txBuf, wrLen);
+                    CSL_REG32_WR(&pReg->FLASH_WR_DATA_UPPER_REG, wrData);
+                }
+            }
+            else
+            {
+                /* do nothing */
+            }
+        
+            status = OSPI_flashExecCmd(pReg);
         }
-        else
-        {
-            /* do nothing */
-        }
-
-        status = OSPI_flashExecCmd(pReg);
     }
     else
     {
@@ -1630,85 +1758,98 @@ int32_t OSPI_writeDirect(OSPI_Handle handle, OSPI_Transaction *trans)
         const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
         OSPI_Object *obj = ((OSPI_Config *)handle)->object;
 
-        /* Enable DAC Mode */
-        OSPI_enableDacMode(handle);
-
-        /* Disable PHY pipeline mode */
-        OSPI_disablePhyPipeline(handle);
-
-        uint8_t *pSrc;
-        uint8_t *pDst;
-        uint32_t addrOffset;
-
-        addrOffset = trans->addrOffset;
-        pSrc = (uint8_t *) trans->buf;
-
-        pDst = (uint8_t *)(attrs->dataBaseAddr + addrOffset);
-
-        /* DMA Copy fails when copying to to certain memory regions. So in this case we switch to normal memcpy
-           for copying even if dmaEnable is true. Also do DMA copy only if size > 1KB*/
-        uint32_t isDmaCopy = (attrs->dmaEnable == TRUE) &&
-                             (OSPI_isDmaRestrictedRegion(handle, (uint32_t)pDst) == FALSE) &&
-                             (trans->count > trans->dmaCopyLowerLimit);
-
-        if(isDmaCopy == 1U)
+        /* Validate Level 2 - Check for NULL attributes and object */
+        if((attrs == NULL) || (obj == NULL))
         {
-            uint8_t *tempSrc = pSrc;
-            uint8_t *tempDst = pDst;
-            uint32_t remainingBytes = trans->count;
-
-            /* Check for 32B alignment of source address */
-            if(((uint32_t)pSrc % OSPI_DMA_COPY_SRC_ALIGNMENT) != 0U)
-            {
-                uint32_t initResidualBytes = OSPI_DMA_COPY_SRC_ALIGNMENT - (((uint32_t)pSrc) % OSPI_DMA_COPY_SRC_ALIGNMENT);
-
-                /* Do CPU copy for the initial residual bytes */
-                Utils_memcpyWord(pSrc, pDst, initResidualBytes);
-                CacheP_wb((void*)(pDst), initResidualBytes, CacheP_TYPE_ALLD);
-
-                tempDst = (uint8_t *)((uint32_t)pDst + initResidualBytes);
-                tempSrc = (uint8_t *)((uint32_t)pSrc + initResidualBytes);
-                remainingBytes -= initResidualBytes;
-            }
-
-            /* Do DMA copy for 32B-aligned bytes */
-            uint32_t unalignedBytes = (remainingBytes % OSPI_DMA_COPY_SIZE_ALIGNMENT);
-            CacheP_wb((void*)(tempSrc), remainingBytes - unalignedBytes, CacheP_TYPE_ALLD);
-
-            OSPI_dmaCopy(obj->ospiDmaHandle, tempDst, tempSrc, remainingBytes - unalignedBytes);
-
-            /* Do a CPU copy of unaligned bytes if any */
-            if(unalignedBytes > 0U)
-            {
-                tempDst += (remainingBytes - unalignedBytes);
-                tempSrc += (remainingBytes - unalignedBytes);
-                Utils_memcpyWord(tempSrc, tempDst, unalignedBytes);
-                CacheP_wb((void*)(tempDst), unalignedBytes, CacheP_TYPE_ALLD);
-            }
+            status = SystemP_FAILURE;
+        }
+        /* Validate transaction buffer - must not be NULL */
+        else if(trans->buf == NULL)
+        {
+            status = SystemP_FAILURE;
         }
         else
         {
-            uint32_t i = 0;
-            uint32_t remainingSize = trans->count & 3U;
-            uint32_t size = trans->count - remainingSize;
-            uint32_t wrWord;
-            uint8_t wrByte;
+            /* Enable DAC Mode */
+            OSPI_enableDacMode(handle);
 
-            for(i = 0U; i < size; i += 4U)
+            /* Disable PHY pipeline mode */
+            OSPI_disablePhyPipeline(handle);
+            
+            uint8_t *pSrc;
+            uint8_t *pDst;
+            uint32_t addrOffset;
+            
+            addrOffset = trans->addrOffset;
+            pSrc = (uint8_t *) trans->buf;
+            
+            pDst = (uint8_t *)(attrs->dataBaseAddr + addrOffset);
+            
+            /* DMA Copy fails when copying to to certain memory regions. So in this case we switch to normal memcpy
+               for copying even if dmaEnable is true. Also do DMA copy only if size > 1KB*/
+            uint32_t isDmaCopy = (attrs->dmaEnable == TRUE) &&
+                             (OSPI_isDmaRestrictedRegion(handle, (uint32_t)pDst) == FALSE) &&
+                             (trans->count > trans->dmaCopyLowerLimit);
+
+            if(isDmaCopy == 1U)
             {
-                wrWord = CSL_REG32_RD(pSrc + i);
-                CSL_REG32_WR(pDst + i, wrWord);
-                OSPI_waitIdle(handle, 1000u);
-            }
+                uint8_t *tempSrc = pSrc;
+                uint8_t *tempDst = pDst;
+                uint32_t remainingBytes = trans->count;
 
-            for(i = 0; i < remainingSize; i++)
+                /* Check for 32B alignment of source address */
+                if(((uint32_t)pSrc % OSPI_DMA_COPY_SRC_ALIGNMENT) != 0U)
+                {
+                    uint32_t initResidualBytes = OSPI_DMA_COPY_SRC_ALIGNMENT - (((uint32_t)pSrc) % OSPI_DMA_COPY_SRC_ALIGNMENT);
+
+                    /* Do CPU copy for the initial residual bytes */
+                    Utils_memcpyWord(pSrc, pDst, initResidualBytes);
+                    CacheP_wb((void*)(pDst), initResidualBytes, CacheP_TYPE_ALLD);
+
+                    tempDst = (uint8_t *)((uint32_t)pDst + initResidualBytes);
+                    tempSrc = (uint8_t *)((uint32_t)pSrc + initResidualBytes);
+                    remainingBytes -= initResidualBytes;
+                }
+
+                /* Do DMA copy for 32B-aligned bytes */
+                uint32_t unalignedBytes = (remainingBytes % OSPI_DMA_COPY_SIZE_ALIGNMENT);
+                CacheP_wb((void*)(tempSrc), remainingBytes - unalignedBytes, CacheP_TYPE_ALLD);
+
+                OSPI_dmaCopy(obj->ospiDmaHandle, tempDst, tempSrc, remainingBytes - unalignedBytes);
+
+                /* Do a CPU copy of unaligned bytes if any */
+                if(unalignedBytes > 0U)
+                {
+                    tempDst += (remainingBytes - unalignedBytes);
+                    tempSrc += (remainingBytes - unalignedBytes);
+                    Utils_memcpyWord(tempSrc, tempDst, unalignedBytes);
+                    CacheP_wb((void*)(tempDst), unalignedBytes, CacheP_TYPE_ALLD);
+                }
+            }
+            else
             {
-                wrByte = CSL_REG8_RD(pSrc + size + i);
-                CSL_REG8_WR(pDst + size + i, wrByte);
-                OSPI_waitIdle(handle, 1000u);
-            }
+                uint32_t i = 0;
+                uint32_t remainingSize = trans->count & 3U;
+                uint32_t size = trans->count - remainingSize;
+                uint32_t wrWord;
+                uint8_t wrByte;
 
-            CacheP_wbInv((void*)(attrs->dataBaseAddr + addrOffset), trans->count, CacheP_TYPE_ALL);
+                for(i = 0U; i < size; i += 4U)
+                {
+                    wrWord = CSL_REG32_RD(pSrc + i);
+                    CSL_REG32_WR(pDst + i, wrWord);
+                    OSPI_waitIdle(handle, 1000u);
+                }
+
+                for(i = 0; i < remainingSize; i++)
+                {
+                    wrByte = CSL_REG8_RD(pSrc + size + i);
+                    CSL_REG8_WR(pDst + size + i, wrByte);
+                    OSPI_waitIdle(handle, 1000u);
+                }
+
+                CacheP_wbInv((void*)(attrs->dataBaseAddr + addrOffset), trans->count, CacheP_TYPE_ALL);
+            }
         }
     }
     else
@@ -1753,14 +1894,8 @@ int32_t OSPI_writeIndirect(OSPI_Handle handle, OSPI_Transaction *trans)
 
                 /* Use pre-allocated temporary buffer for padding */
                 /* NOTE: Caller must hold obj->lockObj to ensure thread-safe access to tempBuf */
-                tempBufSize = obj->pageSize;
+                tempBufSize = sizeof(obj->tempBuf);
                 tmpBuf = obj->tempBuf;
-                if(tempBufSize > sizeof(obj->tempBuf))
-                {
-                    /* Page size exceeds buffer capacity - cannot proceed */
-                    status = SystemP_FAILURE;
-                    trans->status = OSPI_TRANSFER_FAILED;
-                }
                 usesTempBuf = 1U;
             }
         }
@@ -1992,6 +2127,19 @@ static int32_t OSPI_programInstance(OSPI_Config *config)
 
         /* Disable dual byte opcode. If OSPI boot mode was used, ROM would have set this. This can cause 1s mode applications to fail */
         CSL_REG32_FINS(&pReg->CONFIG_REG, OSPI_FLASH_CFG_CONFIG_REG_DUAL_BYTE_OPCODE_EN_FLD, FALSE);
+
+        /* Clear mode bits register and disable mode bits in cmd/read paths.
+         * Tests like TestOspi_setModeBitsFunctional may leave these set, which
+         * corrupts subsequent PHY tuning pattern reads if not reset here. */
+        CSL_REG32_FINS(&pReg->MODE_BIT_CONFIG_REG,
+                       OSPI_FLASH_CFG_MODE_BIT_CONFIG_REG_MODE_FLD,
+                       0U);
+        CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG,
+                       OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_ENB_MODE_BIT_FLD,
+                       0U);
+        CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG,
+                       OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_MODE_BIT_ENABLE_FLD,
+                       0U);
 
         /* Set SRAM partition configuration */
         CSL_REG32_WR(&pReg->SRAM_PARTITION_CFG_REG, CSL_OSPI_SRAM_PARTITION_DEFAULT);

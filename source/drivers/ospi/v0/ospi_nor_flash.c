@@ -267,7 +267,7 @@ int32_t OSPI_norFlashWrite(OSPI_Handle handle, uint32_t offset, uint8_t *buf, ui
 {
     int32_t status = SystemP_SUCCESS;
 
-    if((handle == NULL) || (buf == NULL) || (0 != (offset % 256)))
+    if((handle == NULL) || (buf == NULL) || (0 != (offset % 256)) || (len == 0U))
     {
         status = SystemP_FAILURE;
     }
@@ -335,7 +335,7 @@ int32_t OSPI_norFlashRead(OSPI_Handle handle, uint32_t offset, uint8_t *buf, uin
 {
     int32_t status = SystemP_SUCCESS;
 
-    if((handle != NULL) && (buf != NULL))
+    if((handle != NULL) && (buf != NULL) && (len != 0U))
     {
         const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
 
@@ -371,22 +371,38 @@ int32_t OSPI_norFlashReadSfdp(OSPI_Handle handle, uint32_t offset, uint8_t *buf,
     if((handle != NULL) && (buf != NULL))
     {
         const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
-        const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+        const OSPI_Object *obj = ((OSPI_Config *)handle)->object;
 
-        /* Save the current command and dummy cycles */
-        uint8_t cmd = CSL_REG32_FEXT(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_RD_OPCODE_NON_XIP_FLD);
-        uint8_t dummyClks = CSL_REG32_FEXT(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD);
+        /* Validate Level 2 - Check for NULL attributes and object */
+        if((attrs == NULL) || (obj == NULL))
+        {
+            status = SystemP_FAILURE;
+        }
+        else
+        {
+            const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
+            OSPI_Transaction transaction;
 
-        /* Set read command and dummyClks for reading sfdp table */
-        CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_RD_OPCODE_NON_XIP_FLD, OSPI_NOR_CMD_RDSFDP);
-        CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD, OSPI_NOR_SFDP_DC);
+            /* Save the current command and dummy cycles */
+            uint8_t cmd = CSL_REG32_FEXT(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_RD_OPCODE_NON_XIP_FLD);
+            uint8_t dummyClks = CSL_REG32_FEXT(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD);
 
-        /* Perform SFDP read */
-        status = OSPI_norFlashRead(handle, offset, buf, len);
+            /* Set read command and dummyClks for reading sfdp table */
+            CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_RD_OPCODE_NON_XIP_FLD, OSPI_NOR_CMD_RDSFDP);
+            CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD, OSPI_NOR_SFDP_DC);
 
-        /* Set back to old read command and dummy clocks */
-        CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_RD_OPCODE_NON_XIP_FLD, cmd);
-        CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD, dummyClks);
+            /* Perform SFDP read using indirect mode only */
+            OSPI_Transaction_init(&transaction);
+            transaction.addrOffset = offset;
+            transaction.buf = (void *)buf;
+            transaction.count = len;
+            transaction.dmaCopyLowerLimit = OSPI_NOR_DMA_COPY_LOWER_LIMIT;
+            status = OSPI_readIndirect(handle, &transaction);
+
+            /* Set back to old read command and dummy clocks */
+            CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_RD_OPCODE_NON_XIP_FLD, cmd);
+            CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_DUMMY_RD_CLK_CYCLES_FLD, dummyClks);
+        }
     }
     else
     {
@@ -400,7 +416,19 @@ int32_t OSPI_norFlashErase(OSPI_Handle handle, uint32_t address)
 {
     int32_t status = SystemP_SUCCESS;
 
+    /* Get flash attributes to validate block alignment */
     if(handle != NULL)
+    {
+        const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
+        const OSPI_Object *obj = ((OSPI_Config *)handle)->object;
+
+        if((attrs == NULL) || (obj == NULL))
+        {
+            status = SystemP_FAILURE;
+        }
+    }
+
+    if((status == SystemP_SUCCESS) && (handle != NULL))
     {
         status = OSPI_norFlashWaitReady(handle, OSPI_NOR_WRR_WRITE_TIMEOUT);
 

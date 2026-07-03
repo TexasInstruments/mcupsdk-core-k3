@@ -622,8 +622,8 @@ int32_t App_mcanNegativeTest(st_mcanTestcaseParams_t *testParams)
     MCAN_ECCWrapRevisionId eccWrapRevId;
     MCAN_TxBufElementNoCpy txElem = {0U};
 #if !defined(R5_FREERTOS_CORE)
-    MCAN_RxBufElement rxMsg;
-    MCAN_RxBufElementNoCpy rxMsgNoCpy;
+    MCAN_RxBufElement rxMsg = {0};
+    MCAN_RxBufElementNoCpy rxMsgNoCpy = {0};
 #endif
 
     /* Reset MCAN Module */

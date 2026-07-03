@@ -257,7 +257,20 @@ function getComponentPropertyWkup()
     return property;
 }
 
-const robot_template = {
+const robot_template_nortos = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MPU",
+        testCaseName: "test_mpu test application",
+        appName: "test_mpu",
+        testCaseIds: "SITSW-10057 SITSW-10058 SITSW-10060 SITSW-10062 SITSW-10064 SITSW-10066 SITSW-10067 SITSW-10070 SITSW-10076 " +
+             "SITSW-10078 SITSW-10080 SITSW-10081 SITSW-10082 SITSW-10083 SITSW-10085 SITSW-10086 SITSW-10087",
+        expectTimeout: 120,
+    },
+};
+
+const robot_template_freertos = {
     input: ".project/templates/am275x/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
@@ -341,7 +354,11 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.os.match(/freertos*/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_freertos];
+    } else {
+        build_property.templates = [...(build_property.templates || []), robot_template_nortos];
+    }
 
     return build_property;
 }

@@ -31,9 +31,9 @@
  */
 
 /**
- *  \file test_mpu_multi_thread.c
+ *  \file test_m4_mpu_multi_thread.c
  *
- *  \brief File containing MPU Driver test cases for multi-threaded
+ *  \brief File containing M4F MPU Driver test cases for multi-threaded
  *         usecases.
  *
  */
@@ -46,7 +46,7 @@
 #include <string.h>
 #include <inttypes.h>
 #include <unity.h>
-#include "core_r5_test.h"
+#include "core_m4_test.h"
 #include <kernel/dpl/CacheP.h>
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/ClockP.h>
@@ -97,6 +97,9 @@ static TaskP_Object             TestMpu_MtThreadTaskObj[TEST_MPU_MT_TRIGTYPE];
 /* Stack memory for each multithreaded MPU test thread */
 static uint8_t                  TestMpu_MtTaskStack[TEST_MPU_MT_TRIGTYPE][TEST_MPU_STACK_SIZE];
 
+/* SysConfig style MPU config, defined in test_core_m4_mpu.c */
+extern MpuP_Config              gMpuConfig;
+
 /* ========================================================================== */
 /*                     Internal Function Declaration                          */
 /* ========================================================================== */
@@ -120,64 +123,43 @@ void run_multi_threaded_tests(void *args)
 /* ========================================================================== */
 
 /**
- * @brief Thread A: MPU enable/disable flapper with cache state tracking.
+ * @brief Thread A: MPU enable/disable flapper.
  *
- * This thread repeatedly toggles MPU enable/disable state while monitoring
- * cache state before and after each operation. It exercises the critical
- * sections and cache gating logic in MpuP_enable() and MpuP_disable().
- * Introduces small delays between toggles to allow Thread B to observe
- * state transitions and perform memory operations.
+ * This thread repeatedly toggles MPU enable/disable state. It exercises
+ * the critical sections in MpuP_enable() and MpuP_disable(). Introduces
+ * small delays between toggles to allow Thread B to observe state
+ * transitions and perform memory operations. The M4F has no hardware
+ * caches, so no cache state tracking is required.
  */
 static void TestMpu_multithreadEnableDisableFlapper(void *args)
 {
     uint32_t iterations = 5;
-    uint32_t cacheStatePre, cacheStatePost;
     uint32_t mpuState;
     uint32_t i;
 
     for (i = 0; i < iterations; i++)
     {
-
+        /* Enable MPU (background region PRIVDEFENA is set by the test entry) */
         MpuP_enable();
-        /* Verify MPU is enabled after MpuP_enable() */
         mpuState = MpuP_isEnable();
-        DebugP_log("TestMpu_enableDisableFlow: MPU state after enable = %u\r\n", mpuState);
+        TEST_ASSERT_NOT_EQUAL(0, mpuState);
+        DebugP_log("  Iter %u: MPU enabled, state = %u\r\n", i, mpuState);
 
-        /* Snapshot cache state before disable */
-        cacheStatePre = CacheP_getEnabled();
+        /* Small delay for Thread B to observe enabled state */
+        ClockP_usleep(100);
 
         /* Disable MPU */
         MpuP_disable();
         mpuState = MpuP_isEnable();
         TEST_ASSERT_EQUAL_UINT32(0, mpuState);
-
-        /* Verify MPU is disabled after MpuP_disable() */
-        mpuState = MpuP_isEnable();
-        DebugP_log("TestMpu_enableDisableFlow: MPU state after disable = %u\r\n", mpuState);
-        /* Snapshot cache state after disable */
-        cacheStatePost = CacheP_getEnabled();
-        DebugP_log("  Iter %u: Disabled - Cache pre=0x%x post=0x%x\r\n",
-                   i, cacheStatePre, cacheStatePost);
+        DebugP_log("  Iter %u: MPU disabled, state = %u\r\n", i, mpuState);
 
         /* Small delay for Thread B to observe disabled state */
         ClockP_usleep(100);
-
-        /* Snapshot cache state before enable */
-        cacheStatePre = CacheP_getEnabled();
-
-        /* Enable MPU */
-        MpuP_enable();
-        mpuState = MpuP_isEnable();
-        TEST_ASSERT_NOT_EQUAL(0, mpuState);
-
-        /* Snapshot cache state after enable */
-        cacheStatePost = CacheP_getEnabled();
-        DebugP_log("  Iter %u: Enabled - Cache pre=0x%x post=0x%x\r\n",
-                   i, cacheStatePre, cacheStatePost);
-
-        /* Small delay for Thread B to observe enabled state */
-        ClockP_usleep(100);
     }
+
+    /* Leave the MPU enabled */
+    MpuP_enable();
 
     DebugP_log("Thread A: Completed %u enable/disable cycles\r\n", iterations);
 
@@ -190,15 +172,16 @@ static void TestMpu_multithreadEnableDisableFlapper(void *args)
  * @brief Thread B: MPU state poller with continuous memory I/O.
  *
  * This thread continuously polls MPU enabled state and performs read/write
- * operations in a stable MSRAM region. It verifies that memory access remains
- * functional across MPU state transitions and validates data integrity.
- * Monitors state changes triggered by Thread A and ensures no faults occur.
+ * operations in a stable RAM test buffer. It verifies that memory access
+ * remains functional across MPU state transitions and validates data
+ * integrity. Monitors state changes triggered by Thread A and ensures no
+ * faults occur.
  */
 static void TestMpu_multithreadStatePoller(void *args)
 {
     uint32_t iterations = 5;
     uint32_t mpuState, prevMpuState;
-    volatile uint32_t *testPtr = (volatile uint32_t *)TestMpu_getExecBase(); /* MSRAM */
+    volatile uint32_t *testPtr = (volatile uint32_t *)TestMpu_getExecBase(); /* RAM test buffer */
     uint32_t testValue;
     uint32_t i;
     uint32_t stateTransitions = 0;
@@ -222,11 +205,13 @@ static void TestMpu_multithreadStatePoller(void *args)
         }
 
         /*
-         * Perform memory I/O in MSRAM region (returned by TestMpu_getExecBase()).
-         * This region is safe to access in both MPU states:
-         * - When MPU is disabled, R5F uses a flat map with no access restrictions.
-         * - When MPU is enabled, this region is covered by an existing MPU region
-         *   configured during MpuP_init(), so access is still permitted.
+         * Perform memory I/O in the RAM test buffer. This is safe in both
+         * MPU states:
+         * - When the MPU is disabled, ARMv7-M uses the default memory map
+         *   with no access restrictions for privileged code.
+         * - When the MPU is enabled, the background region (PRIVDEFENA)
+         *   provides default map access for addresses not covered by any
+         *   foreground region.
          */
         testValue = 0xA5000000U | i;
         *testPtr = testValue;
@@ -266,6 +251,11 @@ static void TestMpu_multithreadEnableDisableWithStatePolling(void *args)
     TaskP_Params taskParams;
 
     DebugP_log("TestMpu_multithreadEnableDisableWithStatePolling: Starting test\r\n");
+
+    /* Ensure the background region (PRIVDEFENA) is used when the MPU is
+     * enabled so that code/data not covered by a foreground region keeps
+     * default memory map access while Thread A toggles the MPU */
+    gMpuConfig.enableBackgroundRegion = 1;
 
     /* Create counting semaphore for 2 threads */
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS,

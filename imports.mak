@@ -1,6 +1,9 @@
 
 DEVICE ?= am62px
 
+# Include device configuration
+-include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
+
 GCC_ARCH64_VERSION=9.2-2019.12
 CGT_C6X_VERSION=8.3.12
 C6X_DSPLIB_VERSION=3_4_0_0

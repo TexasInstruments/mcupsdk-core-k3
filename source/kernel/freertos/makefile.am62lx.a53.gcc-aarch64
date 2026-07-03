@@ -96,6 +96,11 @@ DEFINES_common := \
     -DAMP_FREERTOS_A53 \
     -DSW_VERSION=$(SW_VERSION)
 
+# Add WFI disable flag if configured (controlled via devconfig.mak or command line)
+ifeq ($(DISABLE_IDLE_WFI_ON_A53),yes)
+DEFINES_common += -DDISABLE_IDLE_WFI_ON_A53
+endif
+
 CFLAGS_common := \
     -mcpu=cortex-a53+fp+simd \
     -mabi=lp64 \

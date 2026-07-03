@@ -433,7 +433,9 @@ void vApplicationIdleHook( void )
 
     vApplicationLoadHook();
 
+#ifndef DISABLE_IDLE_WFI_ON_A53
     __asm__ volatile ("wfi");
+#endif
 }
 
 /* initialize high resolution timer for CPU and task load calculation */

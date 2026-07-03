@@ -82,6 +82,13 @@ DEFINES_`prop` := \
 
     % }
 % }
+% if (args.project.cpu.match(/a53*/) && args.project.name == "freertos" && ((args.project.device == "am62x") || (args.project.device == "am62ax") || (args.project.device == "am62dx") || (args.project.device == "am62lx"))) {
+# Add WFI disable flag if configured (controlled via devconfig.mak or command line)
+ifeq ($(DISABLE_IDLE_WFI_ON_A53),yes)
+DEFINES_common += -DDISABLE_IDLE_WFI_ON_A53
+endif
+
+% }
 % for (prop in obj) {
     % if ( obj.hasOwnProperty(prop) && Array.isArray(obj[prop]) && prop == "common" && args.project.name == "drivers" && (args.project.device == "am243x" || args.project.device == "am64x") ) {
 # Remove later with combined boot

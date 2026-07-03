@@ -50,3 +50,8 @@ endif
 else
 	APP_SIGNING_KEY=$(APP_DEGENERATE_KEY)
 endif
+
+# WFI (Wait For Interrupt) control for FreeRTOS idle hook
+# Set to "yes" to disable WFI in idle hook
+# Set to "no" (default) to keep WFI enabled
+DISABLE_IDLE_WFI_ON_A53?=no

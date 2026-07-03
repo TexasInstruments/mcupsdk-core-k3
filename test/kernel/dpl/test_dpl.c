@@ -695,6 +695,54 @@ void test_heap(void *args)
     HeapP_destruct(&gMyHeap);
 }
 
+void test_heap_integer_overflow(void *args)
+{
+    void *ptr;
+    uint32_t freeSize;
+
+    /* create heap */
+    HeapP_construct(&gMyHeap, gMyHeapMem, MY_HEAP_MEM_SIZE);
+
+    freeSize = HeapP_getFreeHeapSize(&gMyHeap);
+
+    /* Test Case 1: Overflow on heap structure addition
+     * Request SIZE_MAX - xHeapStructSize + 1
+     * This causes wantedSize to wrap around during: wantedSize += xHeapStructSize
+     * The fix checks if (wantedSize < xHeapStructSize) and fails the allocation
+     */
+    ptr = HeapP_alloc(&gMyHeap, (size_t)-32U);  /* SIZE_MAX - 32 + 1 */
+    TEST_ASSERT_NULL(ptr);
+
+    /* Test Case 2: Valid large allocation should still work
+     * Allocate close to heap size (with safety margin)
+     * This ensures the fix doesn't break legitimate allocations
+     */
+    ptr = HeapP_alloc(&gMyHeap, MY_HEAP_MEM_SIZE - 200U);
+    TEST_ASSERT_NOT_NULL(ptr);
+    HeapP_free(&gMyHeap, ptr);
+
+    /* Test Case 3: Overflow on alignment padding addition
+     * Request SIZE_MAX - 63 to trigger overflow during alignment calculation
+     * After heap struct overhead, adding alignment padding wraps around
+     * The fix checks if (wantedSize + xAlignmentAmount < wantedSize)
+     */
+    ptr = HeapP_alloc(&gMyHeap, (size_t)-63U);  /* SIZE_MAX - 63 */
+    TEST_ASSERT_NULL(ptr);
+
+    /* Test Case 4: Verify heap is still usable after failed allocations
+     * Free heap size should be unchanged after overflow protection kicks in
+     */
+    uint32_t finalFreeSize = HeapP_getFreeHeapSize(&gMyHeap);
+    TEST_ASSERT_EQUAL_UINT32(freeSize, finalFreeSize);
+
+    /* Verify normal allocation still works after overflow attempts */
+    ptr = HeapP_alloc(&gMyHeap, 128U);
+    TEST_ASSERT_NOT_NULL(ptr);
+    HeapP_free(&gMyHeap, ptr);
+
+    HeapP_destruct(&gMyHeap);
+}
+
 void test_cycleCounter(void *args)
 {
     uint32_t cycleCount1, cycleCount10, cycleCount100;
@@ -1546,6 +1594,7 @@ void test_main(void *args)
     RUN_TEST(test_clockMode, 1235, (void *)1);
     RUN_TEST(test_clock, 1268, NULL);
     RUN_TEST(test_heap, 1269, NULL);
+    RUN_TEST(test_heap_integer_overflow, 1269, NULL);
     RUN_TEST(test_cycleCounter, 1270, NULL);
     RUN_TEST(test_debugLog, 1271, NULL);
     RUN_TEST(test_hwiProfile, 1272, NULL);

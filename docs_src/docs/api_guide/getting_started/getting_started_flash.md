@@ -544,11 +544,11 @@ We can then boot this application without being connected to CCS via JTAG.
 - You should see output like below on the UART terminal
 
         Starting QSPI Bootloader ...
-        [BOOTLOADER PROFILE] System_init                      :        483us
-        [BOOTLOADER PROFILE] Drivers_open                     :         12us
-        [BOOTLOADER PROFILE] Board_driversOpen                :       2715us
-        [BOOTLOADER PROFILE] CPU load                         :      49459us
-        [BOOTLOADER_PROFILE] SBL Total Time Taken             :      52670us
+        [KPI] System_init                      :        483us
+        [KPI] Drivers_open                     :         12us
+        [KPI] Board_driversOpen                :       2715us
+        [KPI] CPU load                         :      49459us
+        [KPI] SBL Total Time Taken             :      52670us
 
         Image loading done, switching to application ...
         [DPL] Hwi post ...
@@ -625,11 +625,11 @@ We can then boot this application without being connected to CCS via JTAG.
 - You should see output like below on the UART terminal
 
         Starting QSPI Bootloader ...
-        [BOOTLOADER PROFILE] System_init                      :        162us
-        [BOOTLOADER PROFILE] Drivers_open                     :         28us
-        [BOOTLOADER PROFILE] Board_driversOpen                :        193us
-        [BOOTLOADER PROFILE] CPU load                         :      26252us
-        [BOOTLOADER_PROFILE] SBL Total Time Taken             :      26637us
+        [KPI] System_init                      :        162us
+        [KPI] Drivers_open                     :         28us
+        [KPI] Board_driversOpen                :        193us
+        [KPI] CPU load                         :      26252us
+        [KPI] SBL Total Time Taken             :      26637us
 
         Image loading done, switching to application ...
         Hello World!

@@ -251,21 +251,21 @@ After flashing and booting the EVM, you will see below output on the UART consol
     SYSFW revision 0x9
     DMSC ABI revision 3.1
 
-    [BOOTLOADER_PROFILE] Boot Media       : FLASH
-    [BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
-    [BOOTLOADER_PROFILE] Boot Image Size  : 184 KB
-    [BOOTLOADER_PROFILE] Cores present    :
+    [KPI] Boot Media       : FLASH
+    [KPI] Boot Media Clock : 166.667 MHz
+    [KPI] Boot Image Size  : 184 KB
+    [KPI] Cores present    :
     m4f0-0
     r5f0-0
-    [BOOTLOADER PROFILE] System_init                      :       6411us
-    [BOOTLOADER PROFILE] Drivers_open                     :        208us
-    [BOOTLOADER PROFILE] Board_driversOpen                :      27571us
-    [BOOTLOADER PROFILE] Sciclient Get Version            :       9927us
-    [BOOTLOADER PROFILE] App_waitForMcuPbist              :          5us
-    [BOOTLOADER PROFILE] App_waitForMcuLbist              :       7689us
-    [BOOTLOADER PROFILE] App_loadImages                   :       3535us
-    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       6279us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :      61628us
+    [KPI] System_init                      :       6411us
+    [KPI] Drivers_open                     :        208us
+    [KPI] Board_driversOpen                :      27571us
+    [KPI] Sciclient Get Version            :       9927us
+    [KPI] App_waitForMcuPbist              :          5us
+    [KPI] App_waitForMcuLbist              :       7689us
+    [KPI] App_loadImages                   :       3535us
+    [KPI] App_loadSelfcoreImage            :       6279us
+    [KPI] SBL Total Time Taken             :      61628us
 
     Image loading done, switching to application ...
     Starting MCU-m4f and 2nd stage bootloader
@@ -274,21 +274,21 @@ After flashing and booting the EVM, you will see below output on the UART consol
     SYSFW revision 0x9
     DMSC ABI revision 3.1
 
-    [BOOTLOADER_PROFILE] Boot Media       : FLASH
-    [BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
-    [BOOTLOADER_PROFILE] Boot Image Size  : 940 KB
-    [BOOTLOADER_PROFILE] Cores present    :
+    [KPI] Boot Media       : FLASH
+    [KPI] Boot Media Clock : 166.667 MHz
+    [KPI] Boot Image Size  : 940 KB
+    [KPI] Cores present    :
     hsm-m4f0-0
     r5f0-0
     a530-0
-    [BOOTLOADER PROFILE] System_init                      :       2825us
-    [BOOTLOADER PROFILE] Drivers_open                     :        266us
-    [BOOTLOADER PROFILE] Board_driversOpen                :      27055us
-    [BOOTLOADER PROFILE] Sciclient Get Version            :       9967us
-    [BOOTLOADER PROFILE] App_loadImages                   :       1961us
-    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       6557us
-    [BOOTLOADER PROFILE] App_loadLinuxImages              :      29163us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :      77797us
+    [KPI] System_init                      :       2825us
+    [KPI] Drivers_open                     :        266us
+    [KPI] Board_driversOpen                :      27055us
+    [KPI] Sciclient Get Version            :       9967us
+    [KPI] App_loadImages                   :       1961us
+    [KPI] App_loadSelfcoreImage            :       6557us
+    [KPI] App_loadLinuxImages              :      29163us
+    [KPI] SBL Total Time Taken             :      77797us
 
     Image loading done, switching to application ...
     Starting linux and RTOS/Baremetal applications
@@ -335,37 +335,37 @@ After flashing and booting the EVM, you will see below output on the UART consol
 \cond SOC_AM62PX
 
 
-    [BOOTLOADER_PROFILE] Boot Media       : FLASH
-    [BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
-    [BOOTLOADER_PROFILE] Boot Image Size  : 180 KB
-    [BOOTLOADER_PROFILE] Cores present    :
+    [KPI] Boot Media       : FLASH
+    [KPI] Boot Media Clock : 166.667 MHz
+    [KPI] Boot Image Size  : 180 KB
+    [KPI] Cores present    :
     wkup-r5f0-0
-    [BOOTLOADER PROFILE] System_init                      :      38923us
-    [BOOTLOADER PROFILE] Drivers_open                     :          0us
-    [BOOTLOADER PROFILE] SBL Drivers_open                 :        150us
-    [BOOTLOADER PROFILE] Board_driversOpen                :         10us
-    [BOOTLOADER PROFILE] SBL Board_driversOpen            :      21978us
-    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       5611us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :      66674us
+    [KPI] System_init                      :      38923us
+    [KPI] Drivers_open                     :          0us
+    [KPI] SBL Drivers_open                 :        150us
+    [KPI] Board_driversOpen                :         10us
+    [KPI] SBL Board_driversOpen            :      21978us
+    [KPI] App_loadSelfcoreImage            :       5611us
+    [KPI] SBL Total Time Taken             :      66674us
 
     Image loading done, switching to application ...
     Starting 2nd stage bootloader
-    [BOOTLOADER_PROFILE] Boot Media       : FLASH
-    [BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
-    [BOOTLOADER_PROFILE] Boot Image Size  : 853 KB
-    [BOOTLOADER_PROFILE] Cores present    :
+    [KPI] Boot Media       : FLASH
+    [KPI] Boot Media Clock : 166.667 MHz
+    [KPI] Boot Image Size  : 853 KB
+    [KPI] Cores present    :
     hsm-m4f0-0
     mcu-r5f0-0
     a530-0
-    [BOOTLOADER PROFILE] System_init                      :       2305us
-    [BOOTLOADER PROFILE] Board_init                       :          0us
-    [BOOTLOADER PROFILE] SciserverInit                    :      16144us
-    [BOOTLOADER PROFILE] SBL Drivers_open                 :        359us
-    [BOOTLOADER PROFILE] SBL Board_driversOpen            :      22009us
-    [BOOTLOADER PROFILE] App_loadImages                   :       1829us
-    [BOOTLOADER PROFILE] App_loadMCUImages                :       3521us
-    [BOOTLOADER PROFILE] App_loadLinuxImages              :      19311us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :      65479us
+    [KPI] System_init                      :       2305us
+    [KPI] Board_init                       :          0us
+    [KPI] SciserverInit                    :      16144us
+    [KPI] SBL Drivers_open                 :        359us
+    [KPI] SBL Board_driversOpen            :      22009us
+    [KPI] App_loadImages                   :       1829us
+    [KPI] App_loadMCUImages                :       3521us
+    [KPI] App_loadLinuxImages              :      19311us
+    [KPI] SBL Total Time Taken             :      65479us
 
     Image loading done, switching to application ...
     Starting linux and RTOS/Baremetal applications

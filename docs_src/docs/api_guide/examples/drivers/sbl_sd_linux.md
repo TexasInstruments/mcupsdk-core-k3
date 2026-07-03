@@ -104,19 +104,19 @@ File names for respective applications
     DMSC Firmware revision 0x9
     DMSC ABI revision 3.1
 
-    [BOOTLOADER_PROFILE] Boot Media       : SD Card
-    [BOOTLOADER_PROFILE] Boot Image Size  : 198 KB
-    [BOOTLOADER_PROFILE] Cores present    :
+    [KPI] Boot Media       : SD Card
+    [KPI] Boot Image Size  : 198 KB
+    [KPI] Cores present    :
     mcu-r5f0-0
     r5f0-0
     a530-0
-    [BOOTLOADER PROFILE] System_init                      :      38563us
-    [BOOTLOADER PROFILE] Drivers_open                     :     125747us
-    [BOOTLOADER PROFILE] Board_driversOpen                :          0us
-    [BOOTLOADER PROFILE] Sciclient Get Version            :       9814us
-    [BOOTLOADER PROFILE] App_loadImages(CSL_CORE_ID_R5FSS0_0) :     150395us
-    [BOOTLOADER PROFILE] App_loadLinuxImages              :     145879us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :     470400us
+    [KPI] System_init                      :      38563us
+    [KPI] Drivers_open                     :     125747us
+    [KPI] Board_driversOpen                :          0us
+    [KPI] Sciclient Get Version            :       9814us
+    [KPI] App_loadImages(CSL_CORE_ID_R5FSS0_0) :     150395us
+    [KPI] App_loadLinuxImages              :     145879us
+    [KPI] SBL Total Time Taken             :     470400us
 
     Image loading done, switching to application ...
     Starting linux and RTOS/Baremetal applications
@@ -179,19 +179,19 @@ File names for respective applications
     DMSC Firmware revision 0x9
     DMSC ABI revision 3.1
 
-    [BOOTLOADER_PROFILE] Boot Media       : SD Card
-    [BOOTLOADER_PROFILE] Boot Image Size  : 190 KB
-    [BOOTLOADER_PROFILE] Cores present    :
+    [KPI] Boot Media       : SD Card
+    [KPI] Boot Image Size  : 190 KB
+    [KPI] Cores present    :
     mcu-r5f0-0
     wkup-r5f0-0
     a530-0
-    [BOOTLOADER PROFILE] System_init                      :      38931us
-    [BOOTLOADER PROFILE] Drivers_open                     :     107950us
-    [BOOTLOADER PROFILE] Board_driversOpen                :          0us
-    [BOOTLOADER PROFILE] Sciclient Get Version            :       9776us
-    [BOOTLOADER PROFILE] App_loadImages(CSL_CORE_ID_WKUP_R5FSS0_0) :     151451us
-    [BOOTLOADER PROFILE] App_loadLinuxImages              :     147606us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :     455716us
+    [KPI] System_init                      :      38931us
+    [KPI] Drivers_open                     :     107950us
+    [KPI] Board_driversOpen                :          0us
+    [KPI] Sciclient Get Version            :       9776us
+    [KPI] App_loadImages(CSL_CORE_ID_WKUP_R5FSS0_0) :     151451us
+    [KPI] App_loadLinuxImages              :     147606us
+    [KPI] SBL Total Time Taken             :     455716us
 
     Image loading done, switching to application ...
     Starting linux and RTOS/Baremetal applications

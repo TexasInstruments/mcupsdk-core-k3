@@ -39,27 +39,27 @@ SYSFW Firmware Version 11.0.7--v11.00.07 (Fancy Rat)
 SYSFW Firmware revision 0xb
 SYSFW ABI revision 4.0
 
-[BOOTLOADER_PROFILE] Boot Media       : FLASH 
-[BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz 
-[BOOTLOADER_PROFILE] Boot Image Size  : 441 KB 
-[BOOTLOADER_PROFILE] Cores present    : 
-[BOOTLOADER PROFILE] TIFS init                        :        750us 
-[BOOTLOADER PROFILE] System_init                      :       1895us 
-[BOOTLOADER PROFILE] Board_init                       :          2us 
-[BOOTLOADER PROFILE] FreeRtosTask Create              :        255us 
-[BOOTLOADER PROFILE] Drivers_open                     :         98us 
-[BOOTLOADER PROFILE] Board_driversOpen                :          0us 
-[BOOTLOADER PROFILE] sciServer_init                   :      15068us 
-[BOOTLOADER PROFILE] SBL Drivers_open                 :       3168us 
-[BOOTLOADER PROFILE] SBL Board_driversOpen            :       2917us 
-[BOOTLOADER PROFILE] Sciclient Get Version            :      10023us 
-[BOOTLOADER PROFILE] R5FSS0_0 Image Load              :       1674us 
-[BOOTLOADER PROFILE] R5FSS0_1 Image Load              :       1564us 
-[BOOTLOADER PROFILE] R5FSS1_0 Image Load              :       1568us 
-[BOOTLOADER PROFILE] R5FSS1_1 Image Load              :       1552us 
-[BOOTLOADER PROFILE] DSP 0 Image Load                 :       6963us 
-[BOOTLOADER PROFILE] DSP 1 Image Load                 :       6821us 
-[BOOTLOADER_PROFILE] SBL Total Time Taken             :      54325us 
+[KPI] Boot Media       : FLASH 
+[KPI] Boot Media Clock : 166.667 MHz 
+[KPI] Boot Image Size  : 441 KB 
+[KPI] Cores present    : 
+[KPI] TIFS init                        :        750us 
+[KPI] System_init                      :       1895us 
+[KPI] Board_init                       :          2us 
+[KPI] FreeRtosTask Create              :        255us 
+[KPI] Drivers_open                     :         98us 
+[KPI] Board_driversOpen                :          0us 
+[KPI] sciServer_init                   :      15068us 
+[KPI] SBL Drivers_open                 :       3168us 
+[KPI] SBL Board_driversOpen            :       2917us 
+[KPI] Sciclient Get Version            :      10023us 
+[KPI] R5FSS0_0 Image Load              :       1674us 
+[KPI] R5FSS0_1 Image Load              :       1564us 
+[KPI] R5FSS1_0 Image Load              :       1568us 
+[KPI] R5FSS1_1 Image Load              :       1552us 
+[KPI] DSP 0 Image Load                 :       6963us 
+[KPI] DSP 1 Image Load                 :       6821us 
+[KPI] SBL Total Time Taken             :      54325us 
 
 Image loading done...
 Starting RTOS/Baremetal applications

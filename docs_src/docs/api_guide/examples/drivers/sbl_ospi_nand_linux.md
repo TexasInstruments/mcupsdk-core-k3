@@ -78,21 +78,21 @@ After flashing and booting the EVM, you will see below output on the UART consol
     SYSFW revision 0x8
     DMSC ABI revision 3.1
 
-    [BOOTLOADER_PROFILE] Boot Media       : SPI FLASH
-    [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz
-    [BOOTLOADER_PROFILE] Boot Image Size  : 957 KB
-    [BOOTLOADER_PROFILE] Cores present    :
+    [KPI] Boot Media       : SPI FLASH
+    [KPI] Boot Media Clock : 200.000 MHz
+    [KPI] Boot Image Size  : 957 KB
+    [KPI] Cores present    :
     mcu-r5f0-0
     r5f0-0
     a530-0
-    [BOOTLOADER PROFILE] System_init                      :      38236us
-    [BOOTLOADER PROFILE] Drivers_open                     :         94us
-    [BOOTLOADER PROFILE] Board_driversOpen                :         75us
-    [BOOTLOADER PROFILE] Sciclient Get Version            :      10112us
-    [BOOTLOADER PROFILE] App_loadImages                   :      26335us
-    [BOOTLOADER PROFILE] App_loadSelfcoreImage            :      84645us
-    [BOOTLOADER PROFILE] App_loadLinuxImages              :     522175us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :     681675us
+    [KPI] System_init                      :      38236us
+    [KPI] Drivers_open                     :         94us
+    [KPI] Board_driversOpen                :         75us
+    [KPI] Sciclient Get Version            :      10112us
+    [KPI] App_loadImages                   :      26335us
+    [KPI] App_loadSelfcoreImage            :      84645us
+    [KPI] App_loadLinuxImages              :     522175us
+    [KPI] SBL Total Time Taken             :     681675us
 
     Image loading done, switching to application ...
     Starting linux and RTOS/Baremetal applications

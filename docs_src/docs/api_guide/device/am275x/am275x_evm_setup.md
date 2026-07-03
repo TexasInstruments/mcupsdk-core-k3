@@ -169,11 +169,11 @@ The figure below shows some important cable connections, ports and switches.
         SYSFW Firmware revision 0xa
         SYSFW ABI revision 4.0
 
-        [BOOTLOADER_PROFILE] Boot Media       : undefined
-        [BOOTLOADER_PROFILE] Boot Image Size  : 0 KB
-        [BOOTLOADER_PROFILE] Cores present    :
-        [BOOTLOADER PROFILE] Sciclient Get Version            :      13224us
-        [BOOTLOADER_PROFILE] SBL Total Time Taken             :      13224us
+        [KPI] Boot Media       : undefined
+        [KPI] Boot Image Size  : 0 KB
+        [KPI] Cores present    :
+        [KPI] Sciclient Get Version            :      13224us
+        [KPI] SBL Total Time Taken             :      13224us
 
 
 

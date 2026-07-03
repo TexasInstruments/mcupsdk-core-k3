@@ -263,39 +263,39 @@ The HSM app image is to be generated to flash along with your application for MC
         SYSFW Firmware revision 0xa
         SYSFW ABI revision 4.0
 
-        [BOOTLOADER_PROFILE] Boot Media       : FLASH
-        [BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
-        [BOOTLOADER_PROFILE] Boot Image Size  : 180 KB
-        [BOOTLOADER_PROFILE] Cores present    :
+        [KPI] Boot Media       : FLASH
+        [KPI] Boot Media Clock : 166.667 MHz
+        [KPI] Boot Image Size  : 180 KB
+        [KPI] Cores present    :
         mcu-r5f0-0
         r5f0-0
-        [BOOTLOADER PROFILE] System_init                      :      35159us
-        [BOOTLOADER PROFILE] Board_init                       :          0us
-        [BOOTLOADER PROFILE] Drivers_open                     :        196us
-        [BOOTLOADER PROFILE] Board_driversOpen                :       1341us
-        [BOOTLOADER PROFILE] Sciclient Get Version            :      10183us
-        [BOOTLOADER PROFILE] App_loadImages                   :       3198us
-        [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       5031us
-        [BOOTLOADER_PROFILE] SBL Total Time Taken             :      55111us
+        [KPI] System_init                      :      35159us
+        [KPI] Board_init                       :          0us
+        [KPI] Drivers_open                     :        196us
+        [KPI] Board_driversOpen                :       1341us
+        [KPI] Sciclient Get Version            :      10183us
+        [KPI] App_loadImages                   :       3198us
+        [KPI] App_loadSelfcoreImage            :       5031us
+        [KPI] SBL Total Time Taken             :      55111us
 
         Image loading done, switching to application ...
         Starting MCU-r5f and 2nd stage bootloader
-        [BOOTLOADER_PROFILE] Boot Media       : FLASH
-        [BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
-        [BOOTLOADER_PROFILE] Boot Image Size  : 381 KB
-        [BOOTLOADER_PROFILE] Cores present    :
+        [KPI] Boot Media       : FLASH
+        [KPI] Boot Media Clock : 166.667 MHz
+        [KPI] Boot Image Size  : 381 KB
+        [KPI] Cores present    :
         hsm-m4f0-0
         r5f0-0
         a530-0
         c75ss0
-        [BOOTLOADER PROFILE] System_init                      :       1917us
-        [BOOTLOADER PROFILE] Board_init                       :          1us
-        [BOOTLOADER PROFILE] Drivers_open                     :        242us
-        [BOOTLOADER PROFILE] App_loadImages                   :       2863us
-        [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       5075us
-        [BOOTLOADER PROFILE] App_loadA53Images                :       4091us
-        [BOOTLOADER PROFILE] App_loadDSPImages                :      11400us
-        [BOOTLOADER_PROFILE] SBL Total Time Taken             :      25591us
+        [KPI] System_init                      :       1917us
+        [KPI] Board_init                       :          1us
+        [KPI] Drivers_open                     :        242us
+        [KPI] App_loadImages                   :       2863us
+        [KPI] App_loadSelfcoreImage            :       5075us
+        [KPI] App_loadA53Images                :       4091us
+        [KPI] App_loadDSPImages                :      11400us
+        [KPI] SBL Total Time Taken             :      25591us
 
         Image loading done, switching to application ...
         Starting RTOS/Baremetal applications

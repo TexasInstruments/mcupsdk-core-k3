@@ -214,22 +214,22 @@ SYSFW Firmware Version 9.2.7--v09.02.07 (Kool Koala)
 SYSFW Firmware revision 0x9
 SYSFW ABI revision 3.1
 
-[BOOTLOADER_PROFILE] Boot Media       : FLASH
-[BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
-[BOOTLOADER_PROFILE] Boot Image Size  : 165 KB
-[BOOTLOADER_PROFILE] Cores present    :
+[KPI] Boot Media       : FLASH
+[KPI] Boot Media Clock : 166.667 MHz
+[KPI] Boot Image Size  : 165 KB
+[KPI] Cores present    :
 m4f0-0
 r5f0-0
-[BOOTLOADER PROFILE] System_init                      :      23124us
-[BOOTLOADER PROFILE] Board_init                       :          0us
-[BOOTLOADER PROFILE] Drivers_open                     :        295us
-[BOOTLOADER PROFILE] Board_driversOpen                :       6786us
-[BOOTLOADER PROFILE] Sciclient Get Version            :      10204us
-[BOOTLOADER PROFILE] App_waitForMcuPbist              :       4990us
-[BOOTLOADER PROFILE] App_waitForMcuLbist              :       7689us
-[BOOTLOADER PROFILE] App_loadImages                   :       3262us
-[BOOTLOADER PROFILE] App_loadSelfcoreImage            :       3972us
-[BOOTLOADER_PROFILE] SBL Total Time Taken             :      60326us
+[KPI] System_init                      :      23124us
+[KPI] Board_init                       :          0us
+[KPI] Drivers_open                     :        295us
+[KPI] Board_driversOpen                :       6786us
+[KPI] Sciclient Get Version            :      10204us
+[KPI] App_waitForMcuPbist              :       4990us
+[KPI] App_waitForMcuLbist              :       7689us
+[KPI] App_loadImages                   :       3262us
+[KPI] App_loadSelfcoreImage            :       3972us
+[KPI] SBL Total Time Taken             :      60326us
 
 Image loading done, switching to application ...
 Starting MCU-m4f and 2nd stage bootloader
@@ -238,22 +238,22 @@ SYSFW Firmware Version 9.2.7--v09.02.07 (Kool Koala)
 SYSFW Firmware revision 0x9
 SYSFW ABI revision 3.1
 
-[BOOTLOADER_PROFILE] Boot Media       : FLASH
-[BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
-[BOOTLOADER_PROFILE] Boot Image Size  : 242 KB
-[BOOTLOADER_PROFILE] Cores present    :
+[KPI] Boot Media       : FLASH
+[KPI] Boot Media Clock : 166.667 MHz
+[KPI] Boot Image Size  : 242 KB
+[KPI] Cores present    :
 hsm-m4f0-0
 r5f0-0
 a530-0
-[BOOTLOADER PROFILE] System_init                      :       2812us
-[BOOTLOADER PROFILE] Board_init                       :          0us
-[BOOTLOADER PROFILE] Drivers_open                     :        361us
-[BOOTLOADER PROFILE] Board_driversOpen                :      28043us
-[BOOTLOADER PROFILE] Sciclient Get Version            :      10265us
-[BOOTLOADER PROFILE] App_loadImages                   :       2680us
-[BOOTLOADER PROFILE] App_loadSelfcoreImage            :       4064us
-[BOOTLOADER PROFILE] App_loadA53Images                :       3675us
-[BOOTLOADER_PROFILE] SBL Total Time Taken             :      51904us
+[KPI] System_init                      :       2812us
+[KPI] Board_init                       :          0us
+[KPI] Drivers_open                     :        361us
+[KPI] Board_driversOpen                :      28043us
+[KPI] Sciclient Get Version            :      10265us
+[KPI] App_loadImages                   :       2680us
+[KPI] App_loadSelfcoreImage            :       4064us
+[KPI] App_loadA53Images                :       3675us
+[KPI] SBL Total Time Taken             :      51904us
 
 Image loading done, switching to application ...
 Starting RTOS/Baremetal applications
@@ -268,17 +268,17 @@ All tests have passed!!
 \code
 
 INFO: Bootloader_loadSelfCpu:127: CPU wkup-r5f is initialized to 800000000 Hz !!!
-[BOOTLOADER_PROFILE] Boot Media       : FLASH
-[BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
-[BOOTLOADER_PROFILE] Boot Image Size  : 170 KB
-[BOOTLOADER_PROFILE] Cores present    :
+[KPI] Boot Media       : FLASH
+[KPI] Boot Media Clock : 166.667 MHz
+[KPI] Boot Image Size  : 170 KB
+[KPI] Cores present    :
 wkup-r5f0-0
-[BOOTLOADER PROFILE] System_init                      :      35452us
-[BOOTLOADER PROFILE] Board_init                       :          0us
-[BOOTLOADER PROFILE] Drivers_open                     :        146us
-[BOOTLOADER PROFILE] Board_driversOpen                :       9736us
-[BOOTLOADER PROFILE] App_loadSelfcoreImage            :      13054us
-[BOOTLOADER_PROFILE] SBL Total Time Taken             :      58391us
+[KPI] System_init                      :      35452us
+[KPI] Board_init                       :          0us
+[KPI] Drivers_open                     :        146us
+[KPI] Board_driversOpen                :       9736us
+[KPI] App_loadSelfcoreImage            :      13054us
+[KPI] SBL Total Time Taken             :      58391us
 
 Image loading done, switching to application ...
 Starting 2nd stage bootloader
@@ -286,18 +286,18 @@ Sciserver Testapp Built On: Feb 18 2026 12:26:58
 Sciserver Version: v2023.11.0.0REL.MCUSDK.MM.NN.PP.bb
 RM_PM_HAL Version: vMM.NN.PP
 Starting Sciserver..... PASSED
-[BOOTLOADER_PROFILE] Boot Media       : FLASH
-[BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
-[BOOTLOADER_PROFILE] Boot Image Size  : 39 KB
-[BOOTLOADER_PROFILE] Cores present    :
+[KPI] Boot Media       : FLASH
+[KPI] Boot Media Clock : 166.667 MHz
+[KPI] Boot Image Size  : 39 KB
+[KPI] Cores present    :
 main-r5f0-0
-[BOOTLOADER PROFILE] System_init                      :       2657us
-[BOOTLOADER PROFILE] Board_init                       :          3us
-[BOOTLOADER PROFILE] FreeRTOS Task Created            :        258us
-[BOOTLOADER PROFILE] SBL Drivers_open                 :      25862us
-[BOOTLOADER PROFILE] SBL Board_driversOpen            :       9854us
-[BOOTLOADER PROFILE] App_loadImages                   :       4553us
-[BOOTLOADER_PROFILE] SBL Total Time Taken             :      43188us
+[KPI] System_init                      :       2657us
+[KPI] Board_init                       :          3us
+[KPI] FreeRTOS Task Created            :        258us
+[KPI] SBL Drivers_open                 :      25862us
+[KPI] SBL Board_driversOpen            :       9854us
+[KPI] App_loadImages                   :       4553us
+[KPI] SBL Total Time Taken             :      43188us
 
 Image loading done, switching to application ...
 Starting RTOS/Baremetal applications

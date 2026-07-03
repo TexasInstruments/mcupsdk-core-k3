@@ -130,21 +130,21 @@ Since this is a bootloader, the example will be run every time you boot an appli
 # Sample Output
 \if (SOC_AM62AX || SOC_AM62DX)
 \code
-[BOOTLOADER_PROFILE] Boot Media       : SD Card
-[BOOTLOADER_PROFILE] Boot Image Size  : 198 KB
-[BOOTLOADER_PROFILE] Cores present    :
+[KPI] Boot Media       : SD Card
+[KPI] Boot Image Size  : 198 KB
+[KPI] Cores present    :
 mcu-r5f0-0
 r5f0-0
 a530-0
-[BOOTLOADER PROFILE] System_init                                :      38668us
-[BOOTLOADER PROFILE] Drivers_open                               :      97508us
-[BOOTLOADER PROFILE] Board_driversOpen                          :          0us
-[BOOTLOADER PROFILE] File read from SD card                     :       9813us
-[BOOTLOADER PROFILE] App_loadImages(CSL_CORE_ID_MCU_R5FSS0_0)   :      69261us
-[BOOTLOADER PROFILE] App_loadImages(CSL_CORE_ID_R5FSS0_0)       :      75471us
-[BOOTLOADER PROFILE] App_loadImages(CSL_CORE_ID_A53SS0_0)       :      70009us
-[BOOTLOADER PROFILE] SBL End                                    :        156us
-[BOOTLOADER_PROFILE] SBL Total Time Taken                       :     360890us
+[KPI] System_init                                :      38668us
+[KPI] Drivers_open                               :      97508us
+[KPI] Board_driversOpen                          :          0us
+[KPI] File read from SD card                     :       9813us
+[KPI] App_loadImages(CSL_CORE_ID_MCU_R5FSS0_0)   :      69261us
+[KPI] App_loadImages(CSL_CORE_ID_R5FSS0_0)       :      75471us
+[KPI] App_loadImages(CSL_CORE_ID_A53SS0_0)       :      70009us
+[KPI] SBL End                                    :        156us
+[KPI] SBL Total Time Taken                       :     360890us
 
 Image loading done, switching to application ...
 \endcode
@@ -155,22 +155,22 @@ SYSFW Firmware Version 9.2.7--v09.02.07 (Kool Koala)
 SYSFW Firmware revision 0x9
 SYSFW ABI revision 3.1
 
-[BOOTLOADER_PROFILE] Boot Media       : SD Card
-[BOOTLOADER_PROFILE] Boot Image Size  : 198 KB
-[BOOTLOADER_PROFILE] Cores present    :
+[KPI] Boot Media       : SD Card
+[KPI] Boot Image Size  : 198 KB
+[KPI] Cores present    :
 m4f0-0
 r5f0-0
 a530-0
-[BOOTLOADER PROFILE] System_init                      :      33665us
-[BOOTLOADER PROFILE] Board_init                       :          0us
-[BOOTLOADER PROFILE] Drivers_open                     :     108146us
-[BOOTLOADER PROFILE] Board_driversOpen                :          0us
-[BOOTLOADER PROFILE] File read from SD card           :      10341us
-[BOOTLOADER PROFILE] App_loadImages(CSL_CORE_ID_M4FSS0_0) :     152950us
-[BOOTLOADER PROFILE] App_loadImages(CSL_CORE_ID_R5FSS0_0) :     141854us
-[BOOTLOADER PROFILE] App_loadImages(CSL_CORE_ID_A53SS0_0) :     138552us
-[BOOTLOADER PROFILE] SBL End                          :        150us
-[BOOTLOADER_PROFILE] SBL Total Time Taken             :     585663us
+[KPI] System_init                      :      33665us
+[KPI] Board_init                       :          0us
+[KPI] Drivers_open                     :     108146us
+[KPI] Board_driversOpen                :          0us
+[KPI] File read from SD card           :      10341us
+[KPI] App_loadImages(CSL_CORE_ID_M4FSS0_0) :     152950us
+[KPI] App_loadImages(CSL_CORE_ID_R5FSS0_0) :     141854us
+[KPI] App_loadImages(CSL_CORE_ID_A53SS0_0) :     138552us
+[KPI] SBL End                          :        150us
+[KPI] SBL Total Time Taken             :     585663us
 
 Image loading done, switching to application ...
 [IPC RPMSG ECHO] Remote Core waiting for messages from main core ... !!!
@@ -181,22 +181,22 @@ SYSFW Firmware Version 9.2.7--v09.02.07 (Kool Koala)
 SYSFW Firmware revision 0x9
 SYSFW ABI revision 3.1
 
-[BOOTLOADER_PROFILE] Boot Media       : SD Card
-[BOOTLOADER_PROFILE] Boot Image Size  : 198 KB
-[BOOTLOADER_PROFILE] Cores present    :
+[KPI] Boot Media       : SD Card
+[KPI] Boot Image Size  : 198 KB
+[KPI] Cores present    :
 m4f0-0
 r5f0-0
 a530-0
-[BOOTLOADER PROFILE] System_init                      :      33597us
-[BOOTLOADER PROFILE] Board_init                       :          0us
-[BOOTLOADER PROFILE] Drivers_open                     :     108073us
-[BOOTLOADER PROFILE] Board_driversOpen                :          0us
-[BOOTLOADER PROFILE] File read from SD card           :      10335us
-[BOOTLOADER PROFILE] App_loadImages(CSL_CORE_ID_M4FSS0_0) :     152960us
-[BOOTLOADER PROFILE] App_loadImages(CSL_CORE_ID_R5FSS0_0) :     162888us
-[BOOTLOADER PROFILE] App_loadImages(CSL_CORE_ID_A53SS0_0) :     159556us
-[BOOTLOADER PROFILE] SBL End                          :        150us
-[BOOTLOADER_PROFILE] SBL Total Time Taken             :     627564us
+[KPI] System_init                      :      33597us
+[KPI] Board_init                       :          0us
+[KPI] Drivers_open                     :     108073us
+[KPI] Board_driversOpen                :          0us
+[KPI] File read from SD card           :      10335us
+[KPI] App_loadImages(CSL_CORE_ID_M4FSS0_0) :     152960us
+[KPI] App_loadImages(CSL_CORE_ID_R5FSS0_0) :     162888us
+[KPI] App_loadImages(CSL_CORE_ID_A53SS0_0) :     159556us
+[KPI] SBL End                          :        150us
+[KPI] SBL Total Time Taken             :     627564us
 
 Image loading done, switching to application ...
 [IPC RPMSG ECHO] Remote Core waiting for messages from main core ... !!!
@@ -206,13 +206,13 @@ All tests have passed!!
 
 \else
 \code
-[BOOTLOADER PROFILE] SYSFW Load                       :      17632us
-[BOOTLOADER PROFILE] System_init                      :      12246us
-[BOOTLOADER PROFILE] Drivers_open                     :      82499us
-[BOOTLOADER PROFILE] Board_driversOpen                :          0us
-[BOOTLOADER PROFILE] File read from SD card           :       6843us
-[BOOTLOADER PROFILE] CPU load                         :       9501us
-[BOOTLOADER_PROFILE] SBL Total Time Taken             :     129399us
+[KPI] SYSFW Load                       :      17632us
+[KPI] System_init                      :      12246us
+[KPI] Drivers_open                     :      82499us
+[KPI] Board_driversOpen                :          0us
+[KPI] File read from SD card           :       6843us
+[KPI] CPU load                         :       9501us
+[KPI] SBL Total Time Taken             :     129399us
 
 Image loading done, switching to application ...
 \endcode

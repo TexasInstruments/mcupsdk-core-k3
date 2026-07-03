@@ -233,11 +233,11 @@ SYSFW Firmware Version 10.0.8--w2024.02-am275x (Fiery
 SYSFW Firmware revision 0xa
 SYSFW ABI revision 4.0
 
-[BOOTLOADER_PROFILE] Boot Media       : undefined
-[BOOTLOADER_PROFILE] Boot Image Size  : 0 KB
-[BOOTLOADER_PROFILE] Cores present    :
-[BOOTLOADER PROFILE] Sciclient Get Version            :      13390us
-[BOOTLOADER_PROFILE] SBL Total Time Taken             :      13390us
+[KPI] Boot Media       : undefined
+[KPI] Boot Image Size  : 0 KB
+[KPI] Cores present    :
+[KPI] Sciclient Get Version            :      13390us
+[KPI] SBL Total Time Taken             :      13390us
 
 \endcode
 \endcond

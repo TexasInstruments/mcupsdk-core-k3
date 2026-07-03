@@ -82,12 +82,12 @@ For booting Linux, SBL parses the Linux appimage present at 0xA00000 in eMMC boo
 
 After flashing and booting the EVM, you will see below output on the UART console (Complete log is not shown)
 
-    [BOOTLOADER PROFILE] SYSFW Load                       :      17592us
-    [BOOTLOADER PROFILE] System_init                      :      18177us
-    [BOOTLOADER PROFILE] Drivers_open                     :     764669us
-    [BOOTLOADER PROFILE] Board_driversOpen                :          0us
-    [BOOTLOADER PROFILE] App_loadImages                   :     479465us
-    [BOOTLOADER_PROFILE] SBL Total Time Taken             :    1431232us
+    [KPI] SYSFW Load                       :      17592us
+    [KPI] System_init                      :      18177us
+    [KPI] Drivers_open                     :     764669us
+    [KPI] Board_driversOpen                :          0us
+    [KPI] App_loadImages                   :     479465us
+    [KPI] SBL Total Time Taken             :    1431232us
 
     Image loading done, switching to application ...
     Starting linux and RTOS/Baremetal applications

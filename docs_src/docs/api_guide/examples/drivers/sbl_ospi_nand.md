@@ -42,20 +42,20 @@ Since this is a bootloader, the example will be run every time you boot an appli
 # Sample Output
 
 \code
-[BOOTLOADER_PROFILE] Boot Media       : FLASH
-[BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
-[BOOTLOADER_PROFILE] Boot Image Size  : 435 KB
-[BOOTLOADER_PROFILE] Cores present    :
+[KPI] Boot Media       : FLASH
+[KPI] Boot Media Clock : 166.667 MHz
+[KPI] Boot Image Size  : 435 KB
+[KPI] Cores present    :
 mcu-r5f0-0
 wkup-r5f0-0
 main-r5f0-0
 c75ss0
 c75ss1
-[BOOTLOADER PROFILE] System_init                      :      36445us
-[BOOTLOADER PROFILE] Drivers_open                     :         52us
-[BOOTLOADER PROFILE] Board_driversOpen                :         74us
-[BOOTLOADER PROFILE] App_loadImages                   :      91264us
-[BOOTLOADER_PROFILE] SBL Total Time Taken             :     127836us
+[KPI] System_init                      :      36445us
+[KPI] Drivers_open                     :         52us
+[KPI] Board_driversOpen                :         74us
+[KPI] App_loadImages                   :      91264us
+[KPI] SBL Total Time Taken             :     127836us
 
 Image loading done, switching to application ...
 Starting RTOS/Baremetal applications

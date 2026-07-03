@@ -42,15 +42,15 @@ DMSC Firmware Version 10.0.8--v10.00.08 (Fiery Fox)
 DMSC Firmware revision 0xa
 DMSC ABI revision 4.0
 
-[BOOTLOADER_PROFILE] Boot Media      : SD Card
-[BOOTLOADER_PROFILE] Boot Image Size : 105 KB
-[BOOTLOADER_PROFILE] Cores present   :
+[KPI] Boot Media      : SD Card
+[KPI] Boot Image Size : 105 KB
+[KPI] Cores present   :
 wkup-r5f0-0
-[BOOTLOADER PROFILE] System_init                     :     35388us
-[BOOTLOADER PROFILE] Drivers_open                    :    162986us
-[BOOTLOADER PROFILE] Board_driversOpen               :         0us
-[BOOTLOADER PROFILE] Sciclient Get Version           :      9766us
-[BOOTLOADER_PROFILE] SBL Total Time Taken            :    208141us
+[KPI] System_init                     :     35388us
+[KPI] Drivers_open                    :    162986us
+[KPI] Board_driversOpen               :         0us
+[KPI] Sciclient Get Version           :      9766us
+[KPI] SBL Total Time Taken            :    208141us
 
 Image loading done, switching to application ...
 Starting RTOS/Baremetal applications

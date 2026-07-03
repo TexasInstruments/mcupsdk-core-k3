@@ -244,18 +244,18 @@ The linux and HSM app images are to be generated to flash along with your applic
         SYSFW revision 0x9
         DMSC ABI revision 3.1
 
-        [BOOTLOADER_PROFILE] Boot Media       : FLASH
-        [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz
-        [BOOTLOADER_PROFILE] Boot Image Size  : 184 KB
-        [BOOTLOADER_PROFILE] Cores present    :
+        [KPI] Boot Media       : FLASH
+        [KPI] Boot Media Clock : 200.000 MHz
+        [KPI] Boot Image Size  : 184 KB
+        [KPI] Cores present    :
         wkup-r5f0-0
-        [BOOTLOADER PROFILE] System_init                      :      39175us
-        [BOOTLOADER PROFILE] Drivers_open                     :        191us
-        [BOOTLOADER PROFILE] Board_driversOpen                :         87us
-        [BOOTLOADER PROFILE] Sciclient Get Version            :       9893us
-        [BOOTLOADER PROFILE] App_loadImages                   :       4541us
-        [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       9288us
-        [BOOTLOADER_PROFILE] SBL Total Time Taken             :      70975us
+        [KPI] System_init                      :      39175us
+        [KPI] Drivers_open                     :        191us
+        [KPI] Board_driversOpen                :         87us
+        [KPI] Sciclient Get Version            :       9893us
+        [KPI] App_loadImages                   :       4541us
+        [KPI] App_loadSelfcoreImage            :       9288us
+        [KPI] SBL Total Time Taken             :      70975us
 
         Image loading done, switching to application ...
         Starting MCU-r5f and 2nd stage bootloader
@@ -264,23 +264,23 @@ The linux and HSM app images are to be generated to flash along with your applic
         SYSFW revision 0x9
         DMSC ABI revision 3.1
 
-        [BOOTLOADER_PROFILE] Boot Media       : FLASH
-        [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz
-        [BOOTLOADER_PROFILE] Boot Image Size  : 1001 KB
-        [BOOTLOADER_PROFILE] Cores present    :
+        [KPI] Boot Media       : FLASH
+        [KPI] Boot Media Clock : 200.000 MHz
+        [KPI] Boot Image Size  : 1001 KB
+        [KPI] Cores present    :
         mcu-r5f0-0
         hsm-m4f0-0
         wkup-r5f0-0
         a530-0
-        [BOOTLOADER PROFILE] System_init                      :       1801us
-        [BOOTLOADER PROFILE] Drivers_open                     :        224us
-        [BOOTLOADER PROFILE] Board_driversOpen                :         86us
-        [BOOTLOADER PROFILE] Sciclient Get Version            :       9910us
-        [BOOTLOADER PROFILE] App_loadImages                   :       2289us
-        [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       9051us
-        [BOOTLOADER PROFILE] App_loadLinuxImages              :      40933us
-        [BOOTLOADER PROFILE] App_loadDSPImages                :       9623us
-        [BOOTLOADER_PROFILE] SBL Total Time Taken             :      73921us
+        [KPI] System_init                      :       1801us
+        [KPI] Drivers_open                     :        224us
+        [KPI] Board_driversOpen                :         86us
+        [KPI] Sciclient Get Version            :       9910us
+        [KPI] App_loadImages                   :       2289us
+        [KPI] App_loadSelfcoreImage            :       9051us
+        [KPI] App_loadLinuxImages              :      40933us
+        [KPI] App_loadDSPImages                :       9623us
+        [KPI] SBL Total Time Taken             :      73921us
 
         Image loading done, switching to application ...
         Starting linux and RTOS/Baremetal applications

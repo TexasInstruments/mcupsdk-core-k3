@@ -121,19 +121,19 @@ SYSFW Version 8.5.1--v08.05.01 (Chill Capybar
 SYSFW revision 0x8
 DMSC ABI revision 3.1
 
-[BOOTLOADER_PROFILE] Boot Media       : NOR SPI FLASH
-[BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
-[BOOTLOADER_PROFILE] Boot Image Size  : 54 KB
-[BOOTLOADER_PROFILE] Cores present    :
+[KPI] Boot Media       : NOR SPI FLASH
+[KPI] Boot Media Clock : 166.667 MHz
+[KPI] Boot Image Size  : 54 KB
+[KPI] Cores present    :
 m4f0-0
 r5f0-0
-[BOOTLOADER PROFILE] SYSFW init                       :      12234us
-[BOOTLOADER PROFILE] System_init                      :      39699us
-[BOOTLOADER PROFILE] Drivers_open                     :        268us
-[BOOTLOADER PROFILE] Board_driversOpen                :      21928us
-[BOOTLOADER PROFILE] Sciclient Get Version            :      10023us
-[BOOTLOADER PROFILE] CPU Load                         :     108445us
-[BOOTLOADER_PROFILE] SBL Total Time Taken             :     192602us
+[KPI] SYSFW init                       :      12234us
+[KPI] System_init                      :      39699us
+[KPI] Drivers_open                     :        268us
+[KPI] Board_driversOpen                :      21928us
+[KPI] Sciclient Get Version            :      10023us
+[KPI] CPU Load                         :     108445us
+[KPI] SBL Total Time Taken             :     192602us
 
 Image loading done, switching to application ...
 Starting R5
@@ -155,18 +155,18 @@ SYSFW Version 8.5.1--v08.05.01 (Chill Capybar
 SYSFW revision 0x8
 DMSC ABI revision 3.1
 
-[BOOTLOADER_PROFILE] Boot Media       : NOR SPI FLASH
-[BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
-[BOOTLOADER_PROFILE] Boot Image Size  : 30 KB
-[BOOTLOADER_PROFILE] Cores present    :
+[KPI] Boot Media       : NOR SPI FLASH
+[KPI] Boot Media Clock : 166.667 MHz
+[KPI] Boot Image Size  : 30 KB
+[KPI] Cores present    :
 r5f0-0
-[BOOTLOADER PROFILE] SYSFW init                       :      33157us
-[BOOTLOADER PROFILE] System_init                      :      40541us
-[BOOTLOADER PROFILE] Drivers_open                     :        268us
-[BOOTLOADER PROFILE] Board_driversOpen                :      21928us
-[BOOTLOADER PROFILE] Sciclient Get Version            :      10028us
-[BOOTLOADER PROFILE] CPU Load                         :      90278us
-[BOOTLOADER_PROFILE] SBL Total Time Taken             :     196205us
+[KPI] SYSFW init                       :      33157us
+[KPI] System_init                      :      40541us
+[KPI] Drivers_open                     :        268us
+[KPI] Board_driversOpen                :      21928us
+[KPI] Sciclient Get Version            :      10028us
+[KPI] CPU Load                         :      90278us
+[KPI] SBL Total Time Taken             :     196205us
 
 Image loading done, switching to application ...
 Starting R5

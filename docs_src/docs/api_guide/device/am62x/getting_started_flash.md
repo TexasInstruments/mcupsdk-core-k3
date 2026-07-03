@@ -395,22 +395,22 @@ The linux and HSM app images are to be generated to flash along with your applic
         SYSFW Firmware revision 0x9
         SYSFW ABI revision 3.1
 
-        [BOOTLOADER_PROFILE] Boot Media       : FLASH
-        [BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
-        [BOOTLOADER_PROFILE] Boot Image Size  : 169 KB
-        [BOOTLOADER_PROFILE] Cores present    :
+        [KPI] Boot Media       : FLASH
+        [KPI] Boot Media Clock : 166.667 MHz
+        [KPI] Boot Image Size  : 169 KB
+        [KPI] Cores present    :
         m4f0-0
         r5f0-0
-        [BOOTLOADER PROFILE] System_init                      :       5506us
-        [BOOTLOADER PROFILE] Board_init                       :          0us
-        [BOOTLOADER PROFILE] Drivers_open                     :        297us
-        [BOOTLOADER PROFILE] Board_driversOpen                :       6784us
-        [BOOTLOADER PROFILE] Sciclient Get Version            :      10205us
-        [BOOTLOADER PROFILE] App_waitForMcuPbist              :       4989us
-        [BOOTLOADER PROFILE] App_waitForMcuLbist              :       7689us
-        [BOOTLOADER PROFILE] App_loadImages                   :       3330us
-        [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       3944us
-        [BOOTLOADER_PROFILE] SBL Total Time Taken             :      42748us
+        [KPI] System_init                      :       5506us
+        [KPI] Board_init                       :          0us
+        [KPI] Drivers_open                     :        297us
+        [KPI] Board_driversOpen                :       6784us
+        [KPI] Sciclient Get Version            :      10205us
+        [KPI] App_waitForMcuPbist              :       4989us
+        [KPI] App_waitForMcuLbist              :       7689us
+        [KPI] App_loadImages                   :       3330us
+        [KPI] App_loadSelfcoreImage            :       3944us
+        [KPI] SBL Total Time Taken             :      42748us
 
         Image loading done, switching to application ...
         Starting MCU-m4f and 2nd stage bootloader
@@ -419,22 +419,22 @@ The linux and HSM app images are to be generated to flash along with your applic
         SYSFW Firmware revision 0x9
         SYSFW ABI revision 3.1
 
-        [BOOTLOADER_PROFILE] Boot Media       : FLASH
-        [BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz
-        [BOOTLOADER_PROFILE] Boot Image Size  : 193 KB
-        [BOOTLOADER_PROFILE] Cores present    :
+        [KPI] Boot Media       : FLASH
+        [KPI] Boot Media Clock : 166.667 MHz
+        [KPI] Boot Image Size  : 193 KB
+        [KPI] Cores present    :
         hsm-m4f0-0
         r5f0-0
         a530-0
-        [BOOTLOADER PROFILE] System_init                      :       2823us
-        [BOOTLOADER PROFILE] Board_init                       :          1us
-        [BOOTLOADER PROFILE] Drivers_open                     :        368us
-        [BOOTLOADER PROFILE] Board_driversOpen                :        106us
-        [BOOTLOADER PROFILE] Sciclient Get Version            :      10253us
-        [BOOTLOADER PROFILE] App_loadImages                   :       2684us
-        [BOOTLOADER PROFILE] App_loadSelfcoreImage            :       3932us
-        [BOOTLOADER PROFILE] App_loadA53Images                :       3781us
-        [BOOTLOADER_PROFILE] SBL Total Time Taken             :      23952us
+        [KPI] System_init                      :       2823us
+        [KPI] Board_init                       :          1us
+        [KPI] Drivers_open                     :        368us
+        [KPI] Board_driversOpen                :        106us
+        [KPI] Sciclient Get Version            :      10253us
+        [KPI] App_loadImages                   :       2684us
+        [KPI] App_loadSelfcoreImage            :       3932us
+        [KPI] App_loadA53Images                :       3781us
+        [KPI] SBL Total Time Taken             :      23952us
 
         Image loading done, switching to application ...
         Starting RTOS/Baremetal applications

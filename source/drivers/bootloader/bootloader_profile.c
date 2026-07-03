@@ -180,14 +180,14 @@ void Bootloader_profilePrintProfileLog(void)
     }
     uint32_t clk = gProfileObj.bootMediaClk;
 
-    DebugP_log("[BOOTLOADER_PROFILE] Boot Media       : %s \r\n", bootMediaName);
+    DebugP_log("[KPI] Boot Media       : %s \r\n", bootMediaName);
     /* If boot media clock is not given don't print that information */
     if(clk != (uint32_t)0)
     {
-        DebugP_log("[BOOTLOADER_PROFILE] Boot Media Clock : %.3f MHz \r\n", (double)clk/1000000.0);
+        DebugP_log("[KPI] Boot Media Clock : %.3f MHz \r\n", (double)clk/1000000.0);
     }
-    DebugP_log("[BOOTLOADER_PROFILE] Boot Image Size  : %d KB \r\n", gProfileObj.appimageSize/(uint32_t)1024);
-    DebugP_log("[BOOTLOADER_PROFILE] Cores present    : \r\n");
+    DebugP_log("[KPI] Boot Image Size  : %d KB \r\n", gProfileObj.appimageSize/(uint32_t)1024);
+    DebugP_log("[KPI] Cores present    : \r\n");
 
     for(i = 0; i < gProfileObj.numCores; i++)
     {
@@ -197,12 +197,12 @@ void Bootloader_profilePrintProfileLog(void)
     for(i = 1; i < gProfileObj.logIndex; i++)
     {
         uint32_t timeDiff = (gProfileObj.info[i].cycleCount - gProfileObj.info[i-(uint32_t)1].cycleCount)/cpuMHz;
-        DebugP_log("[BOOTLOADER PROFILE] %-32s : %10uus \r\n", gProfileObj.info[i].pName, timeDiff);
+        DebugP_log("[KPI] %-32s : %10uus \r\n", gProfileObj.info[i].pName, timeDiff);
     }
 
     uint32_t sblTotalTime = (gProfileObj.info[gProfileObj.logIndex-(uint32_t)1].cycleCount - gProfileObj.info[0].cycleCount)/cpuMHz;
 
-    DebugP_log("[BOOTLOADER_PROFILE] %-32s : %10uus \r\n", "SBL Total Time Taken", sblTotalTime);
+    DebugP_log("[KPI] %-32s : %10uus \r\n", "SBL Total Time Taken", sblTotalTime);
     DebugP_log("\r\n");
 #endif
 }

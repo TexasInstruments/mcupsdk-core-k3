@@ -391,20 +391,20 @@ SYSFW Firmware Version 11.1.5--v11.01.05 (Fancy Rat)
 SYSFW Firmware revision 0xb
 SYSFW ABI revision 4.0
 
-[BOOTLOADER_PROFILE] Boot Media       : eMMC 
-[BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz 
-[BOOTLOADER_PROFILE] Boot Image Size  : 183 KB 
-[BOOTLOADER_PROFILE] Cores present    : 
+[KPI] Boot Media       : eMMC 
+[KPI] Boot Media Clock : 200.000 MHz 
+[KPI] Boot Image Size  : 183 KB 
+[KPI] Cores present    : 
 m4f0-0
 r5f0-0
-[BOOTLOADER PROFILE] System_init                      :       5513us 
-[BOOTLOADER PROFILE] Board_init                       :          0us 
-[BOOTLOADER PROFILE] Drivers_open                     :      82210us 
-[BOOTLOADER PROFILE] Board_driversOpen                :          0us 
-[BOOTLOADER PROFILE] Sciclient Get Version            :      10200us 
-[BOOTLOADER PROFILE] App_loadImages                   :       6977us 
-[BOOTLOADER PROFILE] App_loadSelfcoreImage            :       7571us 
-[BOOTLOADER_PROFILE] SBL Total Time Taken             :     112474us 
+[KPI] System_init                      :       5513us 
+[KPI] Board_init                       :          0us 
+[KPI] Drivers_open                     :      82210us 
+[KPI] Board_driversOpen                :          0us 
+[KPI] Sciclient Get Version            :      10200us 
+[KPI] App_loadImages                   :       6977us 
+[KPI] App_loadSelfcoreImage            :       7571us 
+[KPI] SBL Total Time Taken             :     112474us 
 
 Image loading done, switching to application ...
 Starting MCU-m4f and 2nd stage bootloader
@@ -413,22 +413,22 @@ SYSFW Firmware Version 11.1.5--v11.01.05 (Fancy Rat)
 SYSFW Firmware revision 0xb
 SYSFW ABI revision 4.0
 
-[BOOTLOADER_PROFILE] Boot Media       : eMMC 
-[BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz 
-[BOOTLOADER_PROFILE] Boot Image Size  : 22446 KB 
-[BOOTLOADER_PROFILE] Cores present    : 
+[KPI] Boot Media       : eMMC 
+[KPI] Boot Media Clock : 200.000 MHz 
+[KPI] Boot Image Size  : 22446 KB 
+[KPI] Cores present    : 
 hsm-m4f0-0
 r5f0-0
 a530-0
-[BOOTLOADER PROFILE] System_init                      :       2833us 
-[BOOTLOADER PROFILE] Board_init                       :          0us 
-[BOOTLOADER PROFILE] Drivers_open                     :      20820us 
-[BOOTLOADER PROFILE] Board_driversOpen                :          0us 
-[BOOTLOADER PROFILE] Sciclient Get Version            :      10240us 
-[BOOTLOADER PROFILE] App_loadImages                   :       5684us 
-[BOOTLOADER PROFILE] App_loadSelfcoreImage            :       8419us 
-[BOOTLOADER PROFILE] App_loadLinuxImages              :     366136us 
-[BOOTLOADER_PROFILE] SBL Total Time Taken             :     414135us 
+[KPI] System_init                      :       2833us 
+[KPI] Board_init                       :          0us 
+[KPI] Drivers_open                     :      20820us 
+[KPI] Board_driversOpen                :          0us 
+[KPI] Sciclient Get Version            :      10240us 
+[KPI] App_loadImages                   :       5684us 
+[KPI] App_loadSelfcoreImage            :       8419us 
+[KPI] App_loadLinuxImages              :     366136us 
+[KPI] SBL Total Time Taken             :     414135us 
 
 Image loading done, switching to application ...
 Starting linux and RTOS/Baremetal applications
@@ -452,22 +452,22 @@ SYSFW Firmware Version 11.1.5--v11.01.05 (Fancy Rat)
 SYSFW Firmware revision 0xb
 SYSFW ABI revision 4.0
 
-[BOOTLOADER_PROFILE] Boot Media       : FLASH 
-[BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz 
-[BOOTLOADER_PROFILE] Boot Image Size  : 192 KB 
-[BOOTLOADER_PROFILE] Cores present    : 
+[KPI] Boot Media       : FLASH 
+[KPI] Boot Media Clock : 166.667 MHz 
+[KPI] Boot Image Size  : 192 KB 
+[KPI] Cores present    : 
 m4f0-0
 r5f0-0
-[BOOTLOADER PROFILE] System_init                      :      23591us 
-[BOOTLOADER PROFILE] Board_init                       :          0us 
-[BOOTLOADER PROFILE] Drivers_open                     :        208us 
-[BOOTLOADER PROFILE] Board_driversOpen                :       1360us 
-[BOOTLOADER PROFILE] Sciclient Get Version            :      10206us 
-[BOOTLOADER PROFILE] App_waitForMcuPbist              :        106us 
-[BOOTLOADER PROFILE] App_waitForMcuLbist              :       7689us 
-[BOOTLOADER PROFILE] App_loadImages                   :       3678us 
-[BOOTLOADER PROFILE] App_loadSelfcoreImage            :       4157us 
-[BOOTLOADER_PROFILE] SBL Total Time Taken             :      50999us 
+[KPI] System_init                      :      23591us 
+[KPI] Board_init                       :          0us 
+[KPI] Drivers_open                     :        208us 
+[KPI] Board_driversOpen                :       1360us 
+[KPI] Sciclient Get Version            :      10206us 
+[KPI] App_waitForMcuPbist              :        106us 
+[KPI] App_waitForMcuLbist              :       7689us 
+[KPI] App_loadImages                   :       3678us 
+[KPI] App_loadSelfcoreImage            :       4157us 
+[KPI] SBL Total Time Taken             :      50999us 
 
 Image loading done, switching to application ...
 Starting MCU-m4f and 2nd stage bootloader
@@ -476,22 +476,22 @@ SYSFW Firmware Version 11.1.5--v11.01.05 (Fancy Rat)
 SYSFW Firmware revision 0xb
 SYSFW ABI revision 4.0
 
-[BOOTLOADER_PROFILE] Boot Media       : FLASH 
-[BOOTLOADER_PROFILE] Boot Media Clock : 166.667 MHz 
-[BOOTLOADER_PROFILE] Boot Image Size  : 22445 KB 
-[BOOTLOADER_PROFILE] Cores present    : 
+[KPI] Boot Media       : FLASH 
+[KPI] Boot Media Clock : 166.667 MHz 
+[KPI] Boot Image Size  : 22445 KB 
+[KPI] Cores present    : 
 hsm-m4f0-0
 r5f0-0
 a530-0
-[BOOTLOADER PROFILE] System_init                      :       2768us 
-[BOOTLOADER PROFILE] Board_init                       :          0us 
-[BOOTLOADER PROFILE] Drivers_open                     :        259us 
-[BOOTLOADER PROFILE] Board_driversOpen                :        250us 
-[BOOTLOADER PROFILE] Sciclient Get Version            :      10259us 
-[BOOTLOADER PROFILE] App_loadImages                   :       2882us 
-[BOOTLOADER PROFILE] App_loadSelfcoreImage            :       4699us 
-[BOOTLOADER PROFILE] App_loadLinuxImages              :     235223us 
-[BOOTLOADER_PROFILE] SBL Total Time Taken             :     256345us 
+[KPI] System_init                      :       2768us 
+[KPI] Board_init                       :          0us 
+[KPI] Drivers_open                     :        259us 
+[KPI] Board_driversOpen                :        250us 
+[KPI] Sciclient Get Version            :      10259us 
+[KPI] App_loadImages                   :       2882us 
+[KPI] App_loadSelfcoreImage            :       4699us 
+[KPI] App_loadLinuxImages              :     235223us 
+[KPI] SBL Total Time Taken             :     256345us 
 
 Image loading done, switching to application ...
 Starting linux and RTOS/Baremetal applications

@@ -60,6 +60,13 @@ debug_log.uartTrace                          = true;
 debug_log.uartLog.useWakeupDomainPeripherals = true;
 debug_log.uartLog.intrEnable                 = "DISABLE";
 debug_log.uartLog.$name                      = "CONFIG_UART_APP";
+debug_log.sysfwUartTrace                     = true;
+debug_log.sysfwUartLog.$name                 = "CONFIG_UART_TRACE0";
+debug_log.sysfwUartLog.UART.$assign          = "UART3";
+debug_log.sysfwUartLog.UART.RXD.$suggestSolution = "MCASP0_AXR8";
+debug_log.sysfwUartLog.UART.TXD.$suggestSolution = "GPIO1_47";
+debug_log.sysfwUartLog.UART.RTSn.$suggestSolution = "GPIO1_48";
+debug_log.sysfwUartLog.UART.CTSn.$suggestSolution = "GPIO1_49";
 
 mpu_armv71.size         = 31;
 mpu_armv71.attributes   = "Device";

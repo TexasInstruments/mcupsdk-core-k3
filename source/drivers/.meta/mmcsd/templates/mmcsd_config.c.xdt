@@ -24,6 +24,7 @@ MMCSD_Attrs gMmcsdAttrs[CONFIG_MMCSD_NUM_INSTANCES] =
         .busWidth             = `config.busWidth`,
         .supportedModes       = `operatingMode`,
         .tuningType           = `config.tuningType`,
+        .vddCoreVoltage       = `config.vddCore`,
     },
 % }
 };

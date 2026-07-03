@@ -388,6 +388,22 @@ function getConfigurables()
             default: soc.getDefaultOperatingModeEMMC().name,
             options: soc.getOperatingModesEMMC(),
             hidden : false,
+            onChange: function(inst, ui) {
+                if(soc.getVddCoreVoltageOptions) {
+                    ui.vddCore.hidden = (inst.modeSelectEMMC !== "HS400");
+                }
+            },
+        },
+        {
+            name: "vddCore",
+            displayName: "VDD Core Voltage",
+            description: "Select VDD core voltage of the board. Affects OTAPDLYSEL for HS400 mode.",
+            default: soc.getVddCoreVoltageOptions ?
+                soc.getDefaultVddCoreVoltage().name : "MMCSD_VDD_CORE_0_85V",
+            options: soc.getVddCoreVoltageOptions ?
+                soc.getVddCoreVoltageOptions() :
+                [{ name: "MMCSD_VDD_CORE_0_85V", displayName: "0.85V" }],
+            hidden: !soc.getVddCoreVoltageOptions,
         },
         {
             name: "modeSelectSD",

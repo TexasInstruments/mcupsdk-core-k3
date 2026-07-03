@@ -82,7 +82,8 @@ bool MMCSD_socIsHS400Supported(void)
 }
 
 void MMCSD_phyGetTapValues(uint32_t *outputTapDelaySel, uint32_t *outputTapDelayVal,
-    uint32_t *inputTapDelaySel, uint32_t *inputTapDelayVal, uint32_t phyMode, uint8_t tunedItap, uint32_t cardType)
+    uint32_t *inputTapDelaySel, uint32_t *inputTapDelayVal, uint32_t phyMode, uint8_t tunedItap,
+    uint32_t cardType, uint32_t vddCoreVoltage)
 {
     if(cardType == MMCSD_CARD_TYPE_SD)
     {

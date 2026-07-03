@@ -167,6 +167,12 @@ extern "C" {
 #define MMCSD_OTAPDLYSEL_MMC_HS400_0_85V   (0x5U)
 
 /*
+* \brief Macros for selecting VDD core voltage for HS400 OTAPDLYSEL (AM62Px)
+*/
+#define MMCSD_VDD_CORE_0_75V    (0U)
+#define MMCSD_VDD_CORE_0_85V    (1U)
+
+/*
 * \brief Macros that can be used for selecting supported SD modes
 */
 #define MMCSD_SUPPORT_SD_DS       (0x01U)
@@ -451,6 +457,10 @@ typedef struct
 
     uint32_t tuningType;
     /**< Manual SW tuning or auto HW tuning for SDR104/HS200/HS400 modes */
+
+    uint32_t vddCoreVoltage;
+    /**< VDD core voltage of the board. Affects OTAPDLYSEL for HS400 mode on AM62Px.
+     *   Use MMCSD_VDD_CORE_0_75V or MMCSD_VDD_CORE_0_85V */
 
 } MMCSD_Attrs;
 

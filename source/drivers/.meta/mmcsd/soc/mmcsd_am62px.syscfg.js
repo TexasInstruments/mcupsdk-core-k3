@@ -98,6 +98,19 @@ function getDefaultDriveStrengthEMMC() {
     return { name : "DRIVER_TYPE_0", displayName : "Driver type 0 (50 ohms)"};
 }
 
+const vdd_core_voltage_options = [
+    { name : "MMCSD_VDD_CORE_0_75V", displayName : "0.75V" },
+    { name : "MMCSD_VDD_CORE_0_85V", displayName : "0.85V" },
+];
+
+function getVddCoreVoltageOptions() {
+    return vdd_core_voltage_options;
+}
+
+function getDefaultVddCoreVoltage() {
+    return { name : "MMCSD_VDD_CORE_0_85V", displayName : "0.85V" };
+}
+
 function getDefaultConfig() {
 	return mmcsd_config_r5fss[0];
 }
@@ -117,4 +130,6 @@ exports = {
     getDefaultOperatingModeSD,
     getDefaultDriveStrengthController,
     getDefaultDriveStrengthEMMC,
+    getVddCoreVoltageOptions,
+    getDefaultVddCoreVoltage,
 };

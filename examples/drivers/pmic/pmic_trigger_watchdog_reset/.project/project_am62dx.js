@@ -139,6 +139,8 @@ const robot_template = {
         componentName: "PMIC",
         testCaseName: "PMIC: Trigger watchdog reset mode example",
         testCaseIds: "SITSW-4634",
+        withCfg: true,
+        cfgPath: "examples/drivers/pmic/pmic_trigger_watchdog_reset/{board}/default_pmic_trigger_watchdog_reset_${DEVICE_TYPE}.cfg",
     },
 };
 

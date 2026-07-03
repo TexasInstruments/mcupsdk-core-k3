@@ -161,6 +161,21 @@ const robot_template = {
     },
 };
 
+const robot_template_mcu = {
+    input: ".project/templates/am62dx/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "RTC",
+        testCaseName: "RTC Led Blink Example",
+        testCaseIds: "SITSW-6021",
+        withCfg: true,
+        cfgPath: "examples/drivers/rtc/rtc_led_blink/{board}/{coreName}/default_rtc_led_blink_${DEVICE_TYPE}.cfg",
+        expectedString: "RTC LED blink test passed!!",
+        timeout: 300,
+        expectPort: "USB3",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -187,7 +202,11 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_dm_r5f;
     }
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.cpu.match(/mcu-r5f/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_mcu];
+    } else {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

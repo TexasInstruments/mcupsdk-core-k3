@@ -3,11 +3,16 @@
  * Template: tests.robot.xdt (am62dx)
  *
  * Port mapping (confirmed from Confluence + syscfg):
+ *   USB0 = UART4/USART4/ttyUSB0  — MAIN_UART4 (general purpose; use logPort: "USB0" override)
+ *   USB1 = UART0/USART0/ttyUSB1  — MAIN_UART0 (SBL boot port)
+ *   USB2 = WKUP_UART/ttyUSB2     — WKUP_UART0
+ *   USB3 = MCU_UART/ttyUSB3      — MCU_UART0
+ *
  *   sblPort         = USB1 (UART0/ttyUSB1 — am62dx-specific)
  *   r5fss0-0        → USB2 (WKUP_UART/ttyUSB2) — DM core, no DM binary
  *   mcu-r5fss0-0    → USB3 (MCU_UART0/ttyUSB3) — needs DM binary
  *   a53ss*          → USB1 (UART0/ttyUSB1)      — needs DM binary
- *   c75ss0-0        → USB3 (MCU_UART0/ttyUSB3)  — needs DM binary
+ *   c75ss0-0        → USB3 (MCU_UART0/ttyUSB3)  — needs DM binary (or USB0 if syscfg uses USART4)
  */
     let options  = args.options;
     let project  = args.project;

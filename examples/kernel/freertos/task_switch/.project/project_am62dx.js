@@ -282,6 +282,7 @@ const robot_template = {
         componentName: "FreeRTOS",
         testCaseName: "FreeRTOS Task Switch Application",
         testCaseIds: "SITSW-1461",
+        expectTimeout: 60,
     },
 };
 

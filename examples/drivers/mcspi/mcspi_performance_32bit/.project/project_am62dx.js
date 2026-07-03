@@ -231,6 +231,7 @@ const robot_template = {
         componentName: "MCSPI",
         testCaseName: "McSPI Low Latency Sample Application 32bit",
         testCaseIds: "SITSW-1436",
+        expectTimeout: 120,
     },
 };
 

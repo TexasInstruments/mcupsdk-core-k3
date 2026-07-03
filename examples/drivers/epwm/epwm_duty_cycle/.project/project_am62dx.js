@@ -166,6 +166,7 @@ const robot_template = {
         testCaseName: "EPWM Duty Cycle Sample Application",
         testCaseIds: "SITSW-3007",
         timeout: 700,
+        expectTimeout: 90,
     },
 };
 

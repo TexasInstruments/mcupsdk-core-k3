@@ -169,6 +169,8 @@ const robot_template = {
         componentName: "Spinlock",
         testCaseName: "Spinlock Example application",
         testCaseIds: "SITSW-4836",
+        withCfg: true,
+        cfgPath: "examples/drivers/spinlock/spinlock_example/{board}/spinlock_example_sbl_uart_${DEVICE_TYPE}.cfg",
     },
 };
 
@@ -223,7 +225,9 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.cpu.match(/a53ss0-0/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

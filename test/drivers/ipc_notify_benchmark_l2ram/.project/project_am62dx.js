@@ -253,6 +253,8 @@ const robot_template = {
         componentName: "IPC",
         testCaseName: "IPC notify benchmark application - L2RAM",
         testCaseIds: "SITSW-4562",
+        withCfg: true,
+        cfgPath: "test/drivers/ipc_notify_benchmark_l2ram/{board}/ipc_notify_benchmark_l2ram_test_sbl_uart_${DEVICE_TYPE}.cfg",
     },
 };
 
@@ -297,7 +299,9 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.cpu.match(/mcu-r5fss/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

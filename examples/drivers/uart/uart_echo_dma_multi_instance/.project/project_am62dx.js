@@ -134,6 +134,12 @@ const robot_template = {
         componentName: "UART",
         testCaseName: "UART Echo DMA Multi Instance Mode Sample Application",
         testCaseIds: "SITSW-8008",
+        logPort: "USB0",
+        expectTimeout: 30,
+        interactPrompt: "Receives 8 characters then echo's back. Please input..",
+        interactSend: ["12345678\\r\\n"],
+        secondPort: "USB1",
+        secondPortSend: ["12345678\\r\\n"],
     },
 };
 

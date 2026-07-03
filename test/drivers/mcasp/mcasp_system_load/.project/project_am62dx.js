@@ -155,6 +155,8 @@ const robot_template = {
         componentName: "MCASP",
         testCaseName: "MCASP: Validate mcasp Tx operation with system load",
         testCaseIds: "SITSW-9019",
+        withCfg: true,
+        cfgPath: "test/drivers/mcasp/mcasp_system_load/{board}/mcasp_system_load_sbl_uart_${DEVICE_TYPE}.cfg",
     },
 };
 

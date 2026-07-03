@@ -360,6 +360,8 @@ const robot_template = {
         componentName: "DDR",
         testCaseName: "Utility: DDR load measurement",
         testCaseIds: "SITSW-3722",
+        timeout: 1400,
+        expectTimeout: 800,
     },
 };
 

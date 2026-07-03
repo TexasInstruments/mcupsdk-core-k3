@@ -231,6 +231,7 @@ const robot_template = {
         componentName: "MCSPI",
         testCaseName: "McSPI Internal Loopback DMA Mode Sample Application",
         testCaseIds: "SITSW-2969",
+        expectTimeout: 120,
     },
 };
 

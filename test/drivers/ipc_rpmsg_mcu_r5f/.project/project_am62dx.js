@@ -263,6 +263,8 @@ const robot_template = {
         testCaseName: "ipc_rpmsg_mcu_r5f test application",
         testCaseIds: "SITSW-9736 SITSW-9737 SITSW-9738 SITSW-9739 SITSW-9740 SITSW-9741 SITSW-9742 SITSW-9743 SITSW-9744 SITSW-9745" +
                      " SITSW-9746 SITSW-9747",
+        withCfg: true,
+        cfgPath: "test/drivers/ipc_rpmsg_mcu_r5f/{board}/ipc_rpmsg_test_sbl_uart_${DEVICE_TYPE}.cfg",
     },
 };
 
@@ -307,7 +309,9 @@ function getComponentBuildProperty(buildOption) {
 
 
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.cpu.match(/mcu-r5f/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

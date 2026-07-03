@@ -211,7 +211,7 @@ cfgPath: "test/drivers/ipc/{board}/{coreName}/ipc_test_sbl_uart_${DEVICE_TYPE}.c
 
 ## Step 5: Port Mapping Reference
 
-### am62ax / am62dx
+### am62ax
 
 | Port | Physical UART | Core | Default logPort |
 |------|--------------|------|-----------------|
@@ -219,7 +219,16 @@ cfgPath: "test/drivers/ipc/{board}/{coreName}/ipc_test_sbl_uart_${DEVICE_TYPE}.c
 | USB2 | WKUP_UART / ttyUSB2 | r5fss0-0 (DM core) | r5fss0-0 |
 | USB3 | MCU_UART / ttyUSB3 | mcu-r5fss0-0, c75ss0-0 | mcu-r5fss0-0, c75ss0-0 |
 
-> **Note:** c75ss0-0 uses MCU_UART (USB3) when `useMcuDomainPeripherals = true` in syscfg (most cases). Use `logPort: "USB0"` override only for apps using UART0 directly.
+### am62dx
+
+| Port | Physical UART | Core | Default logPort |
+|------|--------------|------|-----------------|
+| USB0 | UART4 / USART4 / ttyUSB0 | Apps using MAIN_UART4 | use `logPort: "USB0"` override |
+| USB1 | UART0 / USART0 / ttyUSB1 | SBL boot port + a53ss* app log | a53ss0-0 |
+| USB2 | WKUP_UART / ttyUSB2 | r5fss0-0 (DM core) | r5fss0-0 |
+| USB3 | MCU_UART / ttyUSB3 | mcu-r5fss0-0, c75ss0-0 | mcu-r5fss0-0, c75ss0-0 |
+
+> **Note:** On AM62DX, USB0 (MAIN_UART4) is a general-purpose UART, not the SBL/boot port. USB1 (MAIN_UART0) serves as both the SBL boot port and the default A53 app log. c75ss0-0 uses MCU_UART (USB3) when `useMcuDomainPeripherals = true` in syscfg; if the syscfg assigns UART4 instead, use `logPort: "USB0"`.
 
 ### am62px
 

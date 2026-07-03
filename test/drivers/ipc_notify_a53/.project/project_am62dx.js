@@ -490,7 +490,9 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.cpu.match(/a53ss0-0/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

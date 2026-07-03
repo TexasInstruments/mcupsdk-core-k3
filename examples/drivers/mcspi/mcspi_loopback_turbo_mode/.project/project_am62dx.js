@@ -229,6 +229,7 @@ const robot_template = {
         componentName: "MCSPI",
         testCaseName: "McSPI Example: McSPI internal Loopback Sample Application in turbo mode",
         testCaseIds: "SITSW-5132",
+        expectTimeout: 120,
     },
 };
 

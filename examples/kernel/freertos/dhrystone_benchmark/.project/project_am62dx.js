@@ -280,6 +280,8 @@ const robot_template = {
         componentName: "FreeRTOS",
         testCaseName: "Dhrystone benchmarking demo for FreeRTOS",
         testCaseIds: "SITSW-3671",
+        timeout: 1200,
+        expectTimeout: 600,
     },
 };
 

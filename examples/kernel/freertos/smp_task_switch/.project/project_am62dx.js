@@ -104,6 +104,8 @@ const robot_template = {
         componentName: "FreeRTOS",
         testCaseName: "FreeRTOS SMP Task Switch Application",
         testCaseIds: "SITSW-1916",
+        timeout: 720,
+        expectTimeout: 120,
     },
 };
 

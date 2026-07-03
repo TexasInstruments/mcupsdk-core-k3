@@ -418,6 +418,8 @@ const robot_template = {
         testCaseIds: "SITSW-9685 SITSW-9686 SITSW-9687 SITSW-9688 SITSW-9689 SITSW-9690 SITSW-9691 SITSW-9692 SITSW-9693 SITSW-9694" +
                      " SITSW-9695 SITSW-9696 SITSW-9697 SITSW-9698 SITSW-9699 SITSW-9700 SITSW-9701 SITSW-9702 SITSW-9703 SITSW-9704" +
                      " SITSW-9705 SITSW-9706",
+        withCfg: true,
+        cfgPath: "test/drivers/ipc_notify_mcu_r5/{board}/ipc_notify_test_sbl_uart_${DEVICE_TYPE}.cfg",
     },
 };
 

@@ -258,6 +258,8 @@ const robot_template = {
         testCaseName: "IPC notify benchmark test application",
         testCaseIds: "SITSW-4561",
         expectedString: "All tests passed",
+        withCfg: true,
+        cfgPath: "test/drivers/ipc_notify_benchmark/{board}/ipc_notify_benchmark_test_sbl_uart_${DEVICE_TYPE}.cfg",
     },
 };
 

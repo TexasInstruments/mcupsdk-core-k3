@@ -174,6 +174,7 @@ const robot_template = {
         componentName: "EPWM",
         testCaseName: "epwm_duty_cycle_sync application",
         testCaseIds: "SITSW-3008",
+        expectTimeout: 90,
     },
 };
 

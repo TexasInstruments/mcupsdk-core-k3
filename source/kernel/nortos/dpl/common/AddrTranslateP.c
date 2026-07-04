@@ -43,7 +43,7 @@ AddrTranslateP_Params gAddrTranslateConfig = {
     .regionConfig = NULL,
 };
 
-static void AddrTranslateP_setRegion(uint32_t ratBaseAddr, uint16_t regionNum,
+void AddrTranslateP_setRegion(uint32_t ratBaseAddr, uint16_t regionNum,
         uint64_t systemAddr, uint32_t localAddr,
         uint32_t size, uint32_t enable)
 {

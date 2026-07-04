@@ -132,6 +132,20 @@ void AddrTranslateP_Params_init(AddrTranslateP_Params *params);
 void AddrTranslateP_init(AddrTranslateP_Params *params);
 
 /**
+ * \brief Configure a single RAT region at runtime
+ *
+ * \param ratBaseAddr   [in] Base address of the RAT HW module
+ * \param regionNum     [in] RAT region number to configure
+ * \param systemAddr    [in] 48b system (SOC) address, aligned to region size
+ * \param localAddr     [in] CPU local address, aligned to region size
+ * \param size          [in] Region size, see \ref AddrTranslateP_RegionSize
+ * \param enable        [in] 1 to enable the region, 0 to disable
+ */
+void AddrTranslateP_setRegion(uint32_t ratBaseAddr, uint16_t regionNum,
+        uint64_t systemAddr, uint32_t localAddr,
+        uint32_t size, uint32_t enable);
+
+/**
  * \brief Translate from 48b system address to a CPU address as seen via the RAT module
  *
  * \note If no mapping is found then lower 32b are returned as the local address,

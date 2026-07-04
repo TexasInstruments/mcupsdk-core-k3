@@ -33,6 +33,7 @@
 #include <kernel/dpl/TimerP.h>
 #include <kernel/dpl/CacheP.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 /* GP timer implementation for clock tick */
 
@@ -195,31 +196,59 @@ int32_t TimerP_setup(uint32_t baseAddr, TimerP_Params *params)
     return status;
 }
 
-void TimerP_start(uint32_t baseAddr)
+int32_t TimerP_start(uint32_t baseAddr)
 {
-    volatile uint32_t *addr = (uint32_t *)(baseAddr + TIMER_TCLR);
-    volatile uint32_t *twps_addr = (uint32_t *)(baseAddr + TIMER_TWPS);
+    volatile uint32_t *addr;
+    volatile uint32_t *twps_addr;
+    int32_t status = SystemP_SUCCESS;
 
-    while((*twps_addr & TIMER_TCLR_PEND_MASK) == TIMER_TCLR_PEND_MASK)
-    {}
-    /* start timer */
-    *addr |= (0x1U << 0);
-    while((*twps_addr & TIMER_TCLR_PEND_MASK) == TIMER_TCLR_PEND_MASK)
-    {}
+    if(baseAddr == 0U)
+    {
+        DebugP_logError("TimerP_start: invalid baseAddr\r\n");
+        status = SystemP_FAILURE;
+    }
+    else
+    {
+        addr = (uint32_t *)(baseAddr + TIMER_TCLR);
+        twps_addr = (uint32_t *)(baseAddr + TIMER_TWPS);
+
+        while((*twps_addr & TIMER_TCLR_PEND_MASK) == TIMER_TCLR_PEND_MASK)
+        {}
+        /* start timer */
+        *addr |= (0x1U << 0);
+        while((*twps_addr & TIMER_TCLR_PEND_MASK) == TIMER_TCLR_PEND_MASK)
+        {}
+    }
+
+    return status;
 }
 
-void TimerP_stop(uint32_t baseAddr)
+int32_t TimerP_stop(uint32_t baseAddr)
 {
-    volatile uint32_t *addr = (volatile uint32_t *)(baseAddr + TIMER_TCLR);
-    volatile uint32_t *twps_addr = (uint32_t *)(baseAddr + TIMER_TWPS);
+    volatile uint32_t *addr;
+    volatile uint32_t *twps_addr;
+    int32_t status = SystemP_SUCCESS;
 
-    while((*twps_addr & TIMER_TCLR_PEND_MASK) == TIMER_TCLR_PEND_MASK)
-    {}
-    /* stop timer */
-    *addr &= ~(0x1U << 0);
+    if(baseAddr == 0U)
+    {
+        DebugP_logError("TimerP_stop: invalid baseAddr\r\n");
+        status = SystemP_FAILURE;
+    }
+    else
+    {
+        addr = (volatile uint32_t *)(baseAddr + TIMER_TCLR);
+        twps_addr = (uint32_t *)(baseAddr + TIMER_TWPS);
 
-    while((*twps_addr & TIMER_TCLR_PEND_MASK) == TIMER_TCLR_PEND_MASK)
-    {}
+        while((*twps_addr & TIMER_TCLR_PEND_MASK) == TIMER_TCLR_PEND_MASK)
+        {}
+        /* stop timer */
+        *addr &= ~(0x1U << 0);
+
+        while((*twps_addr & TIMER_TCLR_PEND_MASK) == TIMER_TCLR_PEND_MASK)
+        {}
+    }
+
+    return status;
 }
 
 uint32_t TimerP_getCount(uint32_t baseAddr)
@@ -236,28 +265,38 @@ uint32_t TimerP_getReloadCount(uint32_t baseAddr)
     return *addr;
 }
 
-void TimerP_clearOverflowInt(uint32_t baseAddr)
+int32_t TimerP_clearOverflowInt(uint32_t baseAddr)
 {
     volatile uint32_t *addr;
     uint32_t value = (0x1U << TIMER_OVF_INT_SHIFT);
+    int32_t status = SystemP_SUCCESS;
 
-    /* clear status for overflow interrupt */
-    addr = (volatile uint32_t *)(baseAddr + TIMER_IRQ_STATUS);
-    *addr = value;
-
-    /* [MCUSDK-177] read back and make sure interrupt was indeed cleared, if not clear it again
-     */
-    if((bool)(*addr & value) == true)
+    if(baseAddr == 0U)
     {
+        DebugP_logError("TimerP_clearOverflowInt: invalid baseAddr\r\n");
+        status = SystemP_FAILURE;
+    }
+    else
+    {
+        /* clear status for overflow interrupt */
+        addr = (volatile uint32_t *)(baseAddr + TIMER_IRQ_STATUS);
         *addr = value;
+
+        /* [MCUSDK-177] read back and make sure interrupt was indeed cleared, if not clear it again
+         */
+        if((bool)(*addr & value) == true)
+        {
+            *addr = value;
+        }
+
+        #if 0 /* should not be used for level interrupts */
+        /* apply SW EOI */
+        addr = (volatile uint32_t *)(baseAddr + TIMER_IRQ_EOI);
+        *addr = 0;
+        #endif
     }
 
-    #if 0 /* should not be used for level interrupts */
-    /* apply SW EOI */
-    addr = (volatile uint32_t *)(baseAddr + TIMER_IRQ_EOI);
-    *addr = 0;
-    #endif
-
+    return status;
 }
 
 uint32_t TimerP_isOverflowed(uint32_t baseAddr)

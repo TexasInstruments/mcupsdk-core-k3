@@ -150,20 +150,44 @@ int32_t TimerP_setup(uint32_t baseAddr, TimerP_Params *params)
     return status;
 }
 
-void TimerP_start(uint32_t baseAddr)
+int32_t TimerP_start(uint32_t baseAddr)
 {
-    volatile uint32_t *addr = (uint32_t *)(baseAddr + RTI_RTIGCTRL);
+    volatile uint32_t *addr;
+    int32_t status = SystemP_SUCCESS;
 
-    /* start timer */
-    *addr |= ((uint32_t)0x1 << 0U);
+    if(baseAddr == 0U)
+    {
+        DebugP_logError("TimerP_start: invalid baseAddr\r\n");
+        status = SystemP_FAILURE;
+    }
+    else
+    {
+        addr = (uint32_t *)(baseAddr + RTI_RTIGCTRL);
+        /* start timer */
+        *addr |= ((uint32_t)0x1 << 0U);
+    }
+
+    return status;
 }
 
-void TimerP_stop(uint32_t baseAddr)
+int32_t TimerP_stop(uint32_t baseAddr)
 {
-    volatile uint32_t *addr = (volatile uint32_t *)(baseAddr + RTI_RTIGCTRL);
+    volatile uint32_t *addr;
+    int32_t status = SystemP_SUCCESS;
 
-    /* stop timer */
-    *addr &= ~((uint32_t)0x1 << 0U);
+    if(baseAddr == 0U)
+    {
+        DebugP_logError("TimerP_stop: invalid baseAddr\r\n");
+        status = SystemP_FAILURE;
+    }
+    else
+    {
+        addr = (volatile uint32_t *)(baseAddr + RTI_RTIGCTRL);
+        /* stop timer */
+        *addr &= ~((uint32_t)0x1 << 0U);
+    }
+
+    return status;
 }
 
 uint32_t TimerP_getCount(uint32_t baseAddr)
@@ -195,14 +219,24 @@ uint32_t TimerP_getReloadCount(uint32_t baseAddr)
     return MAX_TIMER_COUNT_VALUE - (*cpuc_addr) - 1UL;
 }
 
-void TimerP_clearOverflowInt(uint32_t baseAddr)
+int32_t TimerP_clearOverflowInt(uint32_t baseAddr)
 {
     volatile uint32_t *addr;
+    int32_t status = SystemP_SUCCESS;
 
-    /* clear status for interrupt */
-    addr = (volatile uint32_t *)(baseAddr + RTI_RTIINTFLAG);
-    *addr = (0x1);
+    if(baseAddr == 0U)
+    {
+        DebugP_logError("TimerP_clearOverflowInt: invalid baseAddr\r\n");
+        status = SystemP_FAILURE;
+    }
+    else
+    {
+        /* clear status for interrupt */
+        addr = (volatile uint32_t *)(baseAddr + RTI_RTIINTFLAG);
+        *addr = (0x1);
+    }
 
+    return status;
 }
 
 uint32_t TimerP_isOverflowed(uint32_t baseAddr)

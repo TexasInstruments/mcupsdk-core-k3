@@ -149,14 +149,14 @@ int32_t TimerP_setup(uint32_t baseAddr, TimerP_Params *params);
  *
  * \param baseAddr [in] HW timer base addresss
  */
-void TimerP_start(uint32_t baseAddr);
+int32_t TimerP_start(uint32_t baseAddr);
 
 /**
  * \brief Stop timer
  *
  * \param baseAddr [in] HW timer base addresss
  */
-void TimerP_stop(uint32_t baseAddr);
+int32_t TimerP_stop(uint32_t baseAddr);
 
 /**
  * \brief Get timer current count
@@ -181,7 +181,7 @@ uint32_t TimerP_getReloadCount(uint32_t baseAddr);
  *
  * \param baseAddr [in] HW timer base addresss
  */
-void TimerP_clearOverflowInt(uint32_t baseAddr);
+int32_t TimerP_clearOverflowInt(uint32_t baseAddr);
 
 
 /**

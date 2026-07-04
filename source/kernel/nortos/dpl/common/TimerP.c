@@ -65,7 +65,7 @@ void TimerP_Params_init(TimerP_Params *params)
     params->enableDmaTrigger = 0; /* NOT USED */
 }
 
-void TimerP_setup(uint32_t baseAddr, TimerP_Params *params)
+int32_t TimerP_setup(uint32_t baseAddr, TimerP_Params *params)
 {
     volatile uint32_t *addr;
 
@@ -78,105 +78,115 @@ void TimerP_setup(uint32_t baseAddr, TimerP_Params *params)
     uint32_t ctrlVal;
     uint32_t countVal, reloadVal;
     uint64_t timeInNsec, inputClkHz, timerCycles;
+    int32_t  status = SystemP_SUCCESS;
 
-    DebugP_assert( baseAddr!=0U);
-    DebugP_assert( params->inputPreScaler != 0U);
-    DebugP_assert( params->inputClkHz != 0U);
-    DebugP_assert( (params->periodInUsec != 0U) || (params->periodInNsec != 0U) );
-    /* pre scaler MUST be <= 256 */
-    DebugP_assert( params->inputPreScaler <= 256U);
-    /* pre scaler MUST divide input clock in integer units */
-    DebugP_assert( (params->inputClkHz % params->inputPreScaler) == 0U);
-
-    /* stop timer and clear pending interrupts */
-    TimerP_stop(baseAddr);
-    TimerP_clearOverflowInt(baseAddr);
-
-    timeInNsec = (uint64_t)params->periodInNsec;
-    if(timeInNsec == 0U)
+    if((baseAddr == 0U) || (params == NULL))
     {
-        timeInNsec = params->periodInUsec*1000U;
+        DebugP_logError("TimerP_setup: invalid baseAddr or NULL params\r\n");
+        status = SystemP_FAILURE;
     }
-
-    inputClkHz = params->inputClkHz / params->inputPreScaler;
-    timerCycles =  ( inputClkHz * timeInNsec ) / 1000000000U;
-
-    /* if timerCycles > 32b then we cannot give accurate timing */
-    DebugP_assert( timerCycles < 0xFFFFFFFFU );
-
-    /* calculate count and reload value register value */
-    countVal = 0xFFFFFFFFu - (uint32_t)timerCycles - 1U;
-
-    /* keep reload value as 0, later if is auto-reload is enabled, it will be set a value > 0 */
-    reloadVal = 0;
-
-    /* calculate control register value, keep timer disabled */
-    ctrlVal = 0;
-    if(params->inputPreScaler>1U)
+    else if((params->inputPreScaler == 0U) || (params->inputClkHz == 0U) ||
+            ((params->periodInUsec == 0U) && (params->periodInNsec == 0U)) ||
+            (params->inputPreScaler > 256U) ||
+            ((params->inputClkHz % params->inputPreScaler) != 0U))
     {
-        uint32_t preScaleVal;
-
-        for(preScaleVal=8; preScaleVal>=1U; preScaleVal--)
-        {
-            if( (params->inputPreScaler & (0x1U << preScaleVal)) != 0U )
-            {
-                break;
-            }
-        }
-
-        /* enable pre-scaler */
-        ctrlVal |= (0x1U << 5);
-        /* set pre-scaler value */
-        ctrlVal |= ( ((preScaleVal - 1U) & 0x7U) << 2);
-    }
-    if(params->oneshotMode==0U)
-    {
-        /* autoreload timer */
-        ctrlVal |= (0x1U << 1);
-        reloadVal = countVal;
-    }
-    twps_addr = (volatile uint32_t *)(baseAddr + TIMER_TWPS);
-    /* set timer control value */
-    addr = (volatile uint32_t *)(baseAddr + TIMER_TCLR);
-    while((*twps_addr & TIMER_TCLR_PEND_MASK) == TIMER_TCLR_PEND_MASK)
-    {}
-
-    *addr = ctrlVal;
-
-    while((*twps_addr & TIMER_TCLR_PEND_MASK) == TIMER_TCLR_PEND_MASK)
-    {}
-
-    /* set timer count value */
-    addr = (volatile uint32_t *)(baseAddr + TIMER_TCRR);
-    while((*twps_addr & TIMER_TCRR_PEND_MASK) == TIMER_TCRR_PEND_MASK)
-    {}
-
-    *addr = countVal;
-    while((*twps_addr & TIMER_TCRR_PEND_MASK) == TIMER_TCRR_PEND_MASK)
-    {}
-
-    /* set reload value */
-    addr = (volatile uint32_t *)(baseAddr + TIMER_TLDR);
-    while((*twps_addr & TIMER_TLDR_PEND_MASK) == TIMER_TLDR_PEND_MASK)
-    {}
-    *addr = reloadVal;
-
-    while((*twps_addr & TIMER_TLDR_PEND_MASK) == TIMER_TLDR_PEND_MASK)
-    {}
-
-    /* enable/disable interrupts */
-    if((bool)params->enableOverflowInt == true)
-    {
-        /* enable interrupt */
-        addr = (volatile uint32_t *)(baseAddr + TIMER_IRQ_INT_ENABLE);
-        *addr = (0x1U << TIMER_OVF_INT_SHIFT);
+        DebugP_logError("TimerP_setup: invalid params\r\n");
+        status = SystemP_FAILURE;
     }
     else
     {
-        /* disable interrupt */
-        addr = (volatile uint32_t *)(baseAddr + TIMER_IRQ_INT_DISABLE);
-        *addr = (0x1U << TIMER_OVF_INT_SHIFT);
+        /* stop timer and clear pending interrupts */
+        TimerP_stop(baseAddr);
+        TimerP_clearOverflowInt(baseAddr);
+
+        timeInNsec = (uint64_t)params->periodInNsec;
+        if(timeInNsec == 0U)
+        {
+            timeInNsec = params->periodInUsec*1000U;
+        }
+
+        inputClkHz = params->inputClkHz / params->inputPreScaler;
+        timerCycles =  ( inputClkHz * timeInNsec ) / 1000000000U;
+
+        /* if timerCycles > 32b then we cannot give accurate timing */
+        DebugP_assert( timerCycles < 0xFFFFFFFFU );
+
+        /* calculate count and reload value register value */
+        countVal = 0xFFFFFFFFu - (uint32_t)timerCycles - 1U;
+
+        /* keep reload value as 0, later if is auto-reload is enabled, it will be set a value > 0 */
+        reloadVal = 0;
+
+        /* calculate control register value, keep timer disabled */
+        ctrlVal = 0;
+        if(params->inputPreScaler>1U)
+        {
+            uint32_t preScaleVal;
+
+            for(preScaleVal=8; preScaleVal>=1U; preScaleVal--)
+            {
+                if( (params->inputPreScaler & (0x1U << preScaleVal)) != 0U )
+                {
+                    break;
+                }
+            }
+
+            /* enable pre-scaler */
+            ctrlVal |= (0x1U << 5);
+            /* set pre-scaler value */
+            ctrlVal |= ( ((preScaleVal - 1U) & 0x7U) << 2);
+        }
+        if(params->oneshotMode==0U)
+        {
+            /* autoreload timer */
+            ctrlVal |= (0x1U << 1);
+            reloadVal = countVal;
+        }
+        twps_addr = (volatile uint32_t *)(baseAddr + TIMER_TWPS);
+        /* set timer control value */
+        addr = (volatile uint32_t *)(baseAddr + TIMER_TCLR);
+        while((*twps_addr & TIMER_TCLR_PEND_MASK) == TIMER_TCLR_PEND_MASK)
+        {}
+
+        *addr = ctrlVal;
+
+        while((*twps_addr & TIMER_TCLR_PEND_MASK) == TIMER_TCLR_PEND_MASK)
+        {}
+
+        /* set timer count value */
+        addr = (volatile uint32_t *)(baseAddr + TIMER_TCRR);
+        while((*twps_addr & TIMER_TCRR_PEND_MASK) == TIMER_TCRR_PEND_MASK)
+        {}
+
+        *addr = countVal;
+        while((*twps_addr & TIMER_TCRR_PEND_MASK) == TIMER_TCRR_PEND_MASK)
+        {}
+
+        /* set reload value */
+        addr = (volatile uint32_t *)(baseAddr + TIMER_TLDR);
+        while((*twps_addr & TIMER_TLDR_PEND_MASK) == TIMER_TLDR_PEND_MASK)
+        {}
+        *addr = reloadVal;
+
+        while((*twps_addr & TIMER_TLDR_PEND_MASK) == TIMER_TLDR_PEND_MASK)
+        {}
+
+        /* enable/disable interrupts */
+        if((bool)params->enableOverflowInt == true)
+        {
+            /* enable interrupt */
+            addr = (volatile uint32_t *)(baseAddr + TIMER_IRQ_INT_ENABLE);
+            *addr = (0x1U << TIMER_OVF_INT_SHIFT);
+        }
+        else
+        {
+            /* disable interrupt */
+            addr = (volatile uint32_t *)(baseAddr + TIMER_IRQ_INT_DISABLE);
+            *addr = (0x1U << TIMER_OVF_INT_SHIFT);
+        }
     }
+
+    return status;
 }
 
 void TimerP_start(uint32_t baseAddr)

@@ -138,8 +138,11 @@ void TimerP_Params_init(TimerP_Params *params);
  *
  * \param baseAddr [in] HW timer base addresss
  * \param params [in] timer parameters
+ *
+ * \return \ref SystemP_SUCCESS on success, \ref SystemP_FAILURE if baseAddr
+ *         is 0, params is NULL, or any parameter value is invalid
  */
-void TimerP_setup(uint32_t baseAddr, TimerP_Params *params);
+int32_t TimerP_setup(uint32_t baseAddr, TimerP_Params *params);
 
 /**
  * \brief Start timer

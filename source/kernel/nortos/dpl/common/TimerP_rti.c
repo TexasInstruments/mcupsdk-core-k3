@@ -56,87 +56,98 @@ void TimerP_Params_init(TimerP_Params *params)
     params->enableDmaTrigger = 0;
 }
 
-void TimerP_setup(uint32_t baseAddr, TimerP_Params *params)
+int32_t TimerP_setup(uint32_t baseAddr, TimerP_Params *params)
 {
     volatile uint32_t *addr;
     uint32_t reloadVal;
     uint64_t timeInNsec, timerCycles;
+    int32_t  status = SystemP_SUCCESS;
 
-    DebugP_assert( baseAddr!=0U);
-    /* pre scaler MUST be 1 for RTI when used as tick timer */
-    DebugP_assert( params->inputPreScaler == 1U);
-    DebugP_assert( params->inputClkHz != 0U);
-    DebugP_assert( (params->periodInUsec != 0U) || (params->periodInNsec != 0U) );
-
-    /* stop timer and clear pending interrupts */
-    TimerP_stop(baseAddr);
-    TimerP_clearOverflowInt(baseAddr);
-
-    timeInNsec = (uint64_t)params->periodInNsec;
-    if(timeInNsec == 0U)
+    if((baseAddr == 0U) || (params == NULL))
     {
-        timeInNsec = ((uint64_t)params->periodInUsec*TIME_IN_MILLI_SECONDS);
+        DebugP_logError("TimerP_setup: invalid baseAddr or NULL params\r\n");
+        status = SystemP_FAILURE;
     }
-
-    timerCycles =  ( (uint64_t)params->inputClkHz * timeInNsec ) / TIME_IN_NANO_SECONDS;
-
-    /* if timerCycles > 32b then we cannot give accurate timing */
-    DebugP_assert( timerCycles <= (0xFFFFFFFFU) );
-
-    /* calculate count and reload value register value */
-    reloadVal = (uint32_t)timerCycles;
-
-    /* reset up counter (UC) value  0 */
-    addr = (volatile uint32_t *)(baseAddr + RTI_RTIUC0);
-    *addr = 0;
-
-    /* reset free running counter (FRC) to 0 */
-    addr = (volatile uint32_t *)(baseAddr + RTI_RTIFRC0);
-    *addr = 0;
-
-    /* set reload value in compare upcounter, when this value is reach FRC is incremented by 1 */
-    addr = (volatile uint32_t *)(baseAddr + RTI_RTICPUC0);
-    *addr = reloadVal;
-
-    /* Program compare 0 (COMP0) to trigger interrupt when FRC increments by 1 */
-    addr = (volatile uint32_t *)(baseAddr + RTI_RTICOMP0);
-    *addr = 1;
-
-    /* Add 1 to COMP0 so we will again trigger a interrupt when each time FRC increments by 1 */
-    addr = (volatile uint32_t *)(baseAddr + RTI_RTIUDCP0);
-    *addr = 1;
-
-    /* Select counter block 0 */
-    addr = (volatile uint32_t *)(baseAddr + RTI_RTICOMPCTRL);
-    *addr = 0;
-
-    /* enable/disable interrupts */
-    if(params->enableOverflowInt != 0U)
+    else if((params->inputPreScaler != 1U) || (params->inputClkHz == 0U) ||
+            ((params->periodInUsec == 0U) && (params->periodInNsec == 0U)))
     {
-        /* enable interrupt */
-        addr = (volatile uint32_t *)(baseAddr + RTI_RTISETINT);
-        *addr = (0x1);
+        DebugP_logError("TimerP_setup: invalid params\r\n");
+        status = SystemP_FAILURE;
     }
     else
     {
-        /* disable interrupt */
-        addr = (volatile uint32_t *)(baseAddr + RTI_RTICLEARINT);
-        *addr = (0x1);
+        /* stop timer and clear pending interrupts */
+        TimerP_stop(baseAddr);
+        TimerP_clearOverflowInt(baseAddr);
+
+        timeInNsec = (uint64_t)params->periodInNsec;
+        if(timeInNsec == 0U)
+        {
+            timeInNsec = ((uint64_t)params->periodInUsec*TIME_IN_MILLI_SECONDS);
+        }
+
+        timerCycles = ( (uint64_t)params->inputClkHz * timeInNsec ) / TIME_IN_NANO_SECONDS;
+
+        /* if timerCycles > 32b then we cannot give accurate timing */
+        DebugP_assert( timerCycles <= (0xFFFFFFFFU) );
+
+        /* calculate count and reload value register value */
+        reloadVal = (uint32_t)timerCycles;
+
+        /* reset up counter (UC) value  0 */
+        addr = (volatile uint32_t *)(baseAddr + RTI_RTIUC0);
+        *addr = 0;
+
+        /* reset free running counter (FRC) to 0 */
+        addr = (volatile uint32_t *)(baseAddr + RTI_RTIFRC0);
+        *addr = 0;
+
+        /* set reload value in compare upcounter, when this value is reach FRC is incremented by 1 */
+        addr = (volatile uint32_t *)(baseAddr + RTI_RTICPUC0);
+        *addr = reloadVal;
+
+        /* Program compare 0 (COMP0) to trigger interrupt when FRC increments by 1 */
+        addr = (volatile uint32_t *)(baseAddr + RTI_RTICOMP0);
+        *addr = 1;
+
+        /* Add 1 to COMP0 so we will again trigger a interrupt when each time FRC increments by 1 */
+        addr = (volatile uint32_t *)(baseAddr + RTI_RTIUDCP0);
+        *addr = 1;
+
+        /* Select counter block 0 */
+        addr = (volatile uint32_t *)(baseAddr + RTI_RTICOMPCTRL);
+        *addr = 0;
+
+        /* enable/disable interrupts */
+        if(params->enableOverflowInt != 0U)
+        {
+            /* enable interrupt */
+            addr = (volatile uint32_t *)(baseAddr + RTI_RTISETINT);
+            *addr = (0x1);
+        }
+        else
+        {
+            /* disable interrupt */
+            addr = (volatile uint32_t *)(baseAddr + RTI_RTICLEARINT);
+            *addr = (0x1);
+        }
+
+        /* enable/disable DMA trigger */
+        if(params->enableDmaTrigger != 0U)
+        {
+            /* enable interrupt */
+            addr = (volatile uint32_t *)(baseAddr + RTI_RTISETINT);
+            *addr = ((uint32_t)0x1 << TIMERP_SHIFT_BY_EIGHT);
+        }
+        else
+        {
+            /* disable interrupt */
+            addr = (volatile uint32_t *)(baseAddr + RTI_RTICLEARINT);
+            *addr = ((uint32_t)0x1 << TIMERP_SHIFT_BY_EIGHT);
+        }
     }
 
-    /* enable/disable interrupts */
-    if(params->enableDmaTrigger != 0U)
-    {
-        /* enable interrupt */
-        addr = (volatile uint32_t *)(baseAddr + RTI_RTISETINT);
-        *addr = ((uint32_t)0x1 << TIMERP_SHIFT_BY_EIGHT);
-    }
-    else
-    {
-        /* disable interrupt */
-        addr = (volatile uint32_t *)(baseAddr + RTI_RTICLEARINT);
-        *addr = ((uint32_t)0x1 << TIMERP_SHIFT_BY_EIGHT );
-    }
+    return status;
 }
 
 void TimerP_start(uint32_t baseAddr)

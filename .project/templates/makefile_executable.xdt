@@ -30,7 +30,7 @@ CC=$(CG_TOOL_ROOT)/bin/`args.cgtOptions.cc`
 LNK=$(CG_TOOL_ROOT)/bin/`args.cgtOptions.lnk`
 STRIP=$(CG_TOOL_ROOT)/bin/`args.cgtOptions.strip`
 OBJCOPY=$(CG_TOOL_ROOT)/bin/`args.cgtOptions.objcopy`
-% if ((args.isInstrumentationMode) && (args.cgtOptions.cov)) {
+% if (((args.isInstrumentationMode) || (args.isSmartPlacement)) && (args.cgtOptions.cov)) {
 COV=$(CG_TOOL_ROOT)/bin/`args.cgtOptions.cov`
 PROFDATA=$(CG_TOOL_ROOT)/bin/`args.cgtOptions.profdata`
 COVERAGE_PATH=$(abspath .)
@@ -210,6 +210,10 @@ FILES_`prop` := \
 	% }
 % }
 % obj = args.project.asmfiles;
+% if (args.isSmartPlacement) {
+ENABLE_SMART_PLACEMENT?=yes
+ifeq ($(ENABLE_SMART_PLACEMENT), yes)
+% }
 % for (prop in obj) {
 	% if ( obj.hasOwnProperty(prop) && Array.isArray(obj[prop]) ) {
 ASMFILES_`prop` := \
@@ -218,6 +222,9 @@ ASMFILES_`prop` := \
 		% }
 
 	% }
+% }
+% if (args.isSmartPlacement) {
+endif
 % }
 % obj = args.project.filedirs;
 % for (prop in obj) {
@@ -430,6 +437,11 @@ CPPFILES := $(FILES_cpp_common) $(FILES_cpp_$(PROFILE))
 ASMFILES := $(ASMFILES_common) $(ASMFILES_$(PROFILE))
 FILES_PATH := $(FILES_PATH_common) $(FILES_PATH_$(PROFILE))
 CFLAGS := $(CFLAGS_common) $(CFLAGS_$(PROFILE))
+% if (args.isSmartPlacement) {
+ifeq ($(INSTRUMENTATION_MODE), yes)
+CFLAGS += -fprofile-instr-generate -fcoverage-mapping
+endif
+% }
 % if(args.project.files["cpp_common"] != undefined) {
 CPPFILES_PATH := $(FILES_PATH_cpp_common) $(FILES_PATH_$(PROFILE))
 CPPFLAGS := $(CFLAGS_common) $(CFLAGS_$(PROFILE)) $(CFLAGS_cpp_common)
@@ -1395,6 +1407,17 @@ merge-coverage-%:
 	$(COV) export --format=csv --object=$(OUTNAME) --instr-profile=$(MERGED_PROFDATA) --sources $(SOURCE_FILES) > $(MERGED_CSV)
 	python3 $(COV_REPORT_GEN_SCRIPT_PATH) -mod $* -csv $(MERGED_CSV_FILE) -dev `args.project.device` -rep $(CONSOLIDATED_REPORT_PATH);
 	@echo Merged coverage report generated at $(MERGED_CSV) !!!
+% }
+% if (args.isSmartPlacement && args.project.cgt == "ti-arm-clang") {
+.PHONY: coverage
+coverage:
+	@echo Creating Coverage Report for `args.project.name`.$(PROFILE) ...
+	$(MKDIR) coverage
+	$(PROFDATA) merge -sparse -obj-file=$(OUTNAME) $(OUTNAME).cnt -o `args.project.name`.$(PROFILE).profdata
+	$(COV) show --format=html --show-expansions --show-instantiations --show-branches=count --object=$(OUTNAME) -instr-profile=`args.project.name`.$(PROFILE).profdata --output-dir=$(COVERAGE_PATH)/coverage --ignore-filename-regex=build_jenkins
+	$(COV) export --format=text --object=$(OUTNAME) --instr-profile=`args.project.name`.$(PROFILE).profdata > coverage/`args.project.name`.$(PROFILE).profdata.json
+	node $(MCU_PLUS_SDK_PATH)/tools/smart_placement/clang_coverage_analyse.js --input=coverage/`args.project.name`.$(PROFILE).profdata.json --output-json=coverage/`args.project.name`.$(PROFILE).analysis.json --output=../annotations.S --top-function-count=500
+	@echo Coverage Report Generated at $(COVERAGE_PATH)/coverage folder !!!
 % }
 % if ((args.project.device == "j722s") && (args.project.cpu != "wkup-r5fss0-0")) {
 $(SCISERVER_BOOTIMAGE_RPRC_NAME):

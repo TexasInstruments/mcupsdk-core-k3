@@ -303,6 +303,7 @@ function genMakefileExample(example_file_list, device) {
                 },
                 linuxFwName: require(`./device/project_${device}`).getLinuxFwName(project.cpu),
                 isInstrumentationMode: isInstrumentationMode,
+                isSmartPlacement: project.isSmartPlacement || false,
                 flashAddr: require(`./device/project_${device}.js`).getFlashAddr(),
             };
 

@@ -124,7 +124,7 @@ int main()
 
     gBootTask = xTaskCreateStatic( sbl_stage2_main,   /* Pointer to the function that implements the task. */
                                   "boot_thread", /* Text name for the task.  This is to facilitate debugging only. */
-                                  TASK_SIZE,  /* Stack depth in units of StackType_t typically uint32_t on 32b CPUs */
+                                  TASK_BOOTLOADER_SIZE,  /* Stack depth in units of StackType_t typically uint32_t on 32b CPUs */
                                   NULL,            /* We are not using the task parameter. */
                                   TASK_PRI_BOOT_THREAD,   /* task priority, 0 is lowest priority, configMAX_PRIORITIES-1 is highest */
                                   gBootTaskStack,  /* pointer to stack base */

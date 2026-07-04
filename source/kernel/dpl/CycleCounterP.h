@@ -61,6 +61,13 @@ void CycleCounterP_init(const uint64_t cpuFreqHz);
  * For A53 and C75 CPUs, this API typecast a 64-bit register to 32-bit value.
  * It is recommended to use CycleCounterP_getCount64() for A53 and C75 cores.
  *
+ * \note **R5F + FreeRTOS limitation**: On R5F cores running FreeRTOS, the
+ * underlying ARM PMU cycle counter (PMCCNTR) stops incrementing while the
+ * core is in the WFI (Wait For Interrupt) low-power state that the FreeRTOS
+ * idle task executes. As a result, this API under-counts wall-clock elapsed
+ * time whenever the CPU is idle. It accurately reflects only the cycles
+ * during which the core is actively executing code.
+ * Use ClockP_getTimeUsec() for wall-clock time measurement on R5F FreeRTOS.
  *
  * Make sure to handle overflow condition in your application.
  *

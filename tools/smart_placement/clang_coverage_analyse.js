@@ -1,3 +1,34 @@
+/*
+ * Copyright (c) 2026, Texas Instruments Incorporated
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * *  Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * *  Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * *  Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 const fs = require('fs');
 const yargs = require('yargs');
@@ -19,11 +50,11 @@ const argv = yargs
         default: "coverage-output.json",
         array: false
     })
-    .option('output-lnk', {
+    .option('output', {
         alias: 'o',
-        description: 'Output code placement linker command file',
+        description: 'Output code that would contains annotations.',
         type: 'string',
-        default: "linker_code_placement.cmd",
+        default: "annotations.S",
         array: false
     })
     .option('top-function-count', {
@@ -36,17 +67,6 @@ const argv = yargs
     .help()
     .alias('help', 'h')
     .argv;
-
-
-let template =
-`
-SECTIONS
-{
-    GROUP {
-
-    } > FLASH
-}
-`
 
 
 function getSortedFunctionList(covdataJSON) {
@@ -138,6 +158,15 @@ function getTopFunctions(functionList, count) {
 
     let i = 0 ;
     let linkerCmdList = [];
+    let maxFuncCount = 0
+
+    for( func of functionList )
+    {
+        if(maxFuncCount < func.count)
+        {
+            maxFuncCount = func.count;
+        }
+    }
 
     for( func of functionList )
     {
@@ -148,27 +177,29 @@ function getTopFunctions(functionList, count) {
         if(wordList.length > 1)
             functionName = wordList[1];
 
-        linkerCmdList.push( { name: functionName, priority: findFuncPriority(func.count) } );
+        linkerCmdList.push( { name: functionName, priority: maxFuncCount - func.count } );
         i++;
         if(i>=count)
             break;
     }
+
     return linkerCmdList;
 }
 
-let linkerCommandFileTemplate =
+
+let AnnotationsFileTemplate =
 `
-SECTIONS
-{    <% for( func of topFunctionsList) { %>
-    .text.<%= func.name %>: {} palign(8) > MSRAM_NON_XIP | FLASH, priority( <%= func.priority %> ) <% } %>
-}
+<% for( func of topFunctionsList) { %>
+.global <%= func.name %>
+.sym_meta_info <%= func.name %> , "of_placement", "local", <%= func.priority %>
+<% } %>
 `;
 
-function outputLinkerCommandFile(linkerCommandFileName, topFunctionsList)
+function outputAnnotationFile(FileName, topFunctionsList)
 {
-    let linkerCommandFileContents = _.template( linkerCommandFileTemplate )( { topFunctionsList: topFunctionsList})
+    let FileContent = _.template( AnnotationsFileTemplate )( { topFunctionsList: topFunctionsList})
 
-    fs.writeFileSync(linkerCommandFileName, linkerCommandFileContents,
+    fs.writeFileSync(FileName, FileContent,
         function (err) {
             if (err) throw err;
         }
@@ -195,6 +226,5 @@ let sortedFunctions = getSortedFunctionList(covdataJSON);
 let topFunctionsList = getTopFunctions(sortedFunctions, argv["top-function-count"]);
 
 outputJSONFile(argv["output-json"], sortedFunctions);
-outputLinkerCommandFile(argv["output-lnk"], topFunctionsList);
-
+outputAnnotationFile(argv["output"], topFunctionsList);
 

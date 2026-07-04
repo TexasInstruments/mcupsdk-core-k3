@@ -151,7 +151,7 @@ int32_t Sciclient_procBootHandoverProcessor(uint8_t  processorId,
  *  \n<b>Request</b>:    #tisci_msg_proc_set_config_req
  *  \n<b>Response</b>:   #tisci_msg_proc_set_config_resp
  *
- *  \param  configReq       Configuration parameters for the processor.
+ *  \param  pSetConfigReq   Configuration parameters for the processor.
  *                          Refer #tisci_msg_proc_set_config_req
  *  \param  timeout         Gives a sense of how long to wait for the operation.
  *                          Refer \ref SystemP_Timeout.
@@ -202,7 +202,7 @@ int32_t Sciclient_procBootSetSequenceCtrl(uint8_t  processorId,
  *  \n<b>Response</b>:   #tisci_msg_proc_auth_boot_resp
  *
  *  \param  authBootCfg     Configuration Structure for the Authentication and boot
- *  \param  response        Image hdr, image addr, image size are returned as a response
+ *  \param  pAuthBootResp   Image hdr, image addr, image size are returned as a response
  *  \param  timeout         Gives a sense of how long to wait for the operation.
  *                          Refer \ref SystemP_Timeout.
  *  \return SystemP_SUCCESS on success, else failure

@@ -75,6 +75,47 @@ void AddrTranslateP_Params_init(AddrTranslateP_Params *params)
     params->regionConfig = NULL;
 }
 
+#if defined(__ARM_ARCH_7R__)
+int32_t AddrTranslateP_readbackVerify(void)
+{
+    uint32_t i;
+    int32_t  status = SystemP_SUCCESS;
+
+    DebugP_assertNoLog(gAddrTranslateConfig.numRegions < AddrTranslateP_MAX_REGIONS);
+
+    for(i = 0U; i < gAddrTranslateConfig.numRegions; i++)
+    {
+        uint32_t expCtrl, expBase, expTransL, expTransH;
+        uint32_t rdCtrl, rdBase, rdTransL, rdTransH;
+        uint32_t ratBase  = gAddrTranslateConfig.ratBaseAddr;
+        uint32_t size     = gAddrTranslateConfig.regionConfig[i].size;
+        uint32_t sizeMask = (uint32_t)(((uint64_t)1U << size) - 1U);
+
+        /* Reconstruct expected register values (mirrors AddrTranslateP_setRegion logic) */
+        expBase   = gAddrTranslateConfig.regionConfig[i].localAddr  & ~sizeMask;
+        expTransL = (uint32_t)(gAddrTranslateConfig.regionConfig[i].systemAddr & (uint64_t)(~(uint64_t)sizeMask));
+        expTransH = (uint32_t)((gAddrTranslateConfig.regionConfig[i].systemAddr >> 32U) & 0xFFFFU);
+        expCtrl   = (1U << 31U) | (size & 0x3FU);
+
+        /* Read back from hardware */
+        rdCtrl   = *RAT_CTRL(ratBase, i);
+        rdBase   = *RAT_BASE(ratBase, i);
+        rdTransL = *RAT_TRANS_L(ratBase, i);
+        rdTransH = *RAT_TRANS_H(ratBase, i);
+
+        if((rdCtrl   != expCtrl)   ||
+           (rdBase   != expBase)   ||
+           (rdTransL != expTransL) ||
+           (rdTransH != expTransH))
+        {
+            status = SystemP_FAILURE;
+        }
+    }
+
+    return status;
+}
+#endif /* __ARM_ARCH_7R__ */
+
 void AddrTranslateP_init(AddrTranslateP_Params *params)
 {
     uint32_t i;
@@ -101,6 +142,13 @@ void AddrTranslateP_init(AddrTranslateP_Params *params)
             1
             );
     }
+
+#if defined(__ARM_ARCH_7R__)
+    /* Errata i2449: RAT MMRs are not parity protected. Verify the MMR values
+     * written above match the intended configuration as a post-write readback check.
+     */
+    DebugP_assertNoLog(AddrTranslateP_readbackVerify() == SystemP_SUCCESS);
+#endif /* __ARM_ARCH_7R__ */
 }
 
 void *AddrTranslateP_getLocalAddr(uint64_t systemAddr)

@@ -507,6 +507,8 @@ Watchdog     |  \ref WATCHDOG_12_0_MIGRATION  &zwj;         |   <= 11.02.00  | >
 SCI Server   |  \ref SCISERVER_12_0_MIGRATION  &zwj;        |   <= 11.02.00  | >= 12.00.00
 SBL Linker   |  \ref SBL_LINKER_12_0_MIGRATION  &zwj;      |   <= 11.02.00  | >= 12.00.00
 VTM (SDL)    |  SDL_VTM_getTemp API now takes int32_t pointer instead of uint32_t   |   <= 12.00.00  | >= 12.01.00
+DPL          |  TimerP_start, TimerP_stop, TimerP_clearOverflowInt return type changed from void to int32_t   |   <= 12.00.00  | >= 12.01.00
+DPL          |  AddrTranslateP_setRegion promoted to public API; AddrTranslateP_readbackVerify added as new API   |   <= 12.00.00  | >= 12.01.00
 UART         |  `UART_enableLoopbackMode` and `UART_disableLoopbackMode` return type changed from `void` to `int32_t`. Check the return value; `SystemP_FAILURE` is returned if the base address is invalid.  |   <= 12.00.00  | >= 12.01.00
 
 ### Networking

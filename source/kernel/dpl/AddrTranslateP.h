@@ -145,6 +145,27 @@ void AddrTranslateP_setRegion(uint32_t ratBaseAddr, uint16_t regionNum,
         uint64_t systemAddr, uint32_t localAddr,
         uint32_t size, uint32_t enable);
 
+#if defined(__ARM_ARCH_7R__)
+/**
+ * \brief Readback and verify all configured RAT regions against the stored configuration
+ *
+ * Errata i2449: Values stored in Pulsar RAT MMRs are not parity protected while stored,
+ * so a bit flip in the MMR would not be detected by hardware. This API implements the
+ * software workaround by reading back CTRL, BASE, TRANS_L and TRANS_H for every configured
+ * region and comparing them against the values in \c gAddrTranslateConfig.
+ *
+ * This API is called automatically at the end of \ref AddrTranslateP_init as a post-write
+ * check. Applications should also call this API periodically at runtime (e.g. from a
+ * timer task) to detect any transient or permanent bit flip that occurs after initialization.
+ *
+ * \note This API is applicable only for R5F cores on devices with a Pulsar RAT.
+ *
+ * \return \ref SystemP_SUCCESS if all regions match the expected configuration,
+ *         \ref SystemP_FAILURE if any mismatch is detected
+ */
+int32_t AddrTranslateP_readbackVerify(void);
+#endif /* __ARM_ARCH_7R__ */
+
 /**
  * \brief Translate from 48b system address to a CPU address as seen via the RAT module
  *

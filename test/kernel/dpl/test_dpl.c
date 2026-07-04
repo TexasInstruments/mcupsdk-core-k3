@@ -44,6 +44,7 @@
 #include <kernel/dpl/EventP.h>
 #include <kernel/dpl/QueueP.h>
 #include <kernel/dpl/MailboxP.h>
+#include <kernel/dpl/AddrTranslateP.h>
 #include <drivers/soc.h>
 #include <unity.h>
 #include "ti_drivers_open_close.h"
@@ -1258,6 +1259,16 @@ void test_mainToIsrWithFloatOperations(void *args)
     TEST_ASSERT_UINT32_WITHIN(1, 10 + (numInterrupts / 10), (uint32_t)gFloat);
 }
 
+#if defined(__ARM_ARCH_7R__)
+void test_addrTranslateReadbackVerify(void *args)
+{
+    int32_t status;
+
+    status = AddrTranslateP_readbackVerify();
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
+}
+#endif /* #if defined(__ARM_ARCH_7R__) */
+
 void test_addrconversion(void *args)
 {
 #if defined (SOC_AM273X) || defined (SOC_AWR294X)
@@ -1576,6 +1587,9 @@ void test_main(void *args)
     test_c66x();
 #endif
 
+#if defined(__ARM_ARCH_7R__)
+    RUN_TEST(test_addrTranslateReadbackVerify, 12504, NULL);
+#endif /* #if defined(__ARM_ARCH_7R__) */
     RUN_TEST(test_addrconversion, 1278, NULL);
 #if defined(AMP_FREERTOS_A53)
     RUN_TEST(test_spiInterrupt, 1455, NULL);

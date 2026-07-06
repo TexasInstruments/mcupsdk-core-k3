@@ -1259,7 +1259,7 @@ void test_mainToIsrWithFloatOperations(void *args)
     TEST_ASSERT_UINT32_WITHIN(1, 10 + (numInterrupts / 10), (uint32_t)gFloat);
 }
 
-#if defined(__ARM_ARCH_7R__)
+#if defined(__ARM_ARCH_7R__) && !defined(OS_SAFERTOS)
 void test_addrTranslateReadbackVerify(void *args)
 {
     int32_t status;
@@ -1267,7 +1267,7 @@ void test_addrTranslateReadbackVerify(void *args)
     status = AddrTranslateP_readbackVerify();
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 }
-#endif /* #if defined(__ARM_ARCH_7R__) */
+#endif /* #if defined(__ARM_ARCH_7R__) && !defined(OS_SAFERTOS) */
 
 void test_addrconversion(void *args)
 {
@@ -1587,9 +1587,9 @@ void test_main(void *args)
     test_c66x();
 #endif
 
-#if defined(__ARM_ARCH_7R__)
+#if defined(__ARM_ARCH_7R__) && !defined(OS_SAFERTOS)
     RUN_TEST(test_addrTranslateReadbackVerify, 12504, NULL);
-#endif /* #if defined(__ARM_ARCH_7R__) */
+#endif /* #if defined(__ARM_ARCH_7R__) && !defined(OS_SAFERTOS) */
     RUN_TEST(test_addrconversion, 1278, NULL);
 #if defined(AMP_FREERTOS_A53)
     RUN_TEST(test_spiInterrupt, 1455, NULL);

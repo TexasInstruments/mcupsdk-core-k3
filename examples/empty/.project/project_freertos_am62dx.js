@@ -330,6 +330,11 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_c75;
         build_property.templates = templates_freertos_c75;
         build_property.defines = defines_common;
+        // Override logPort for c75ss0-0 - syscfg uses USART4 -> USB0, not USB3
+        if (buildOption.cpu.match(/c75ss0-0/)) {
+            build_property.templates = [...(build_property.templates || []), {...robot_template, options: {...robot_template.options, logPort: "USB0"}}];
+            build_property.robotTemplateAdded = true;
+        }
     }
     else if(buildOption.cpu.match(/r5f*/)) {
         build_property.includes = includes_freertos_r5f;
@@ -363,8 +368,10 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
-    if (buildOption.cpu.match(/a53ss/)) {
+    if (!build_property.robotTemplateAdded && !buildOption.cpu.match(/a53ss0-1|a53ss1/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
+    if (buildOption.cpu.match(/a53ss0-0/)) {
         build_property.templates = [...(build_property.templates || []), robot_template_amp];
     }
     return build_property;

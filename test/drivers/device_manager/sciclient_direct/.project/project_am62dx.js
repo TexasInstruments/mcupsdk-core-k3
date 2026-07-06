@@ -131,6 +131,7 @@ const robot_template = {
         componentName: "DM",
         testCaseName: "Test the Device Manager by cfg file",
         testCaseIds: "SITSW-3641",
+        expectTimeout: 100,
     },
 };
 

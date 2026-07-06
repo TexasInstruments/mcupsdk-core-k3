@@ -45,7 +45,7 @@
 void CacheP_Module_startup(void)
 {
     CacheP_enable(CacheP_TYPE_L1D);
-#if (defined (SOC_AM62DX) || defined (SOC_AM275X))
+#if (defined (SOC_AM62DX))
     CacheP_enableWT(CacheP_TYPE_L1D);
 #else 
     CacheP_enableWB(CacheP_TYPE_L1D);

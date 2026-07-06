@@ -140,6 +140,7 @@ const robot_template = {
         testCaseName: "PMIC: Q&A watchdog reset mode example",
         testCaseIds: "SITSW-4633",
         cfgPath: "examples/drivers/pmic/pmic_qa_watchdog_reset/{board}/default_pmic_qa_watchdog_reset_${DEVICE_TYPE}.cfg",
+        expectTimeout: 100,
     },
 };
 

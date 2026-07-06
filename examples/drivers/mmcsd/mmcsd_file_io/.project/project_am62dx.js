@@ -260,6 +260,7 @@ const robot_template = {
         componentName: "MMCSD",
         testCaseName: "MMCSD: File Write/Read example for SD Card: Automated",
         testCaseIds: "SITSW-6626",
+        expectTimeout: 100,
     },
 };
 

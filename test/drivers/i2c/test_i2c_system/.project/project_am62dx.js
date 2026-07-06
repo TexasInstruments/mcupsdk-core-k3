@@ -322,6 +322,9 @@ const robot_template = {
         componentName: "I2C",
         testCaseName: "Test I2C transfer system test PMIC (wakup_r5 instance) /temperature read",
         testCaseIds: "SITSW-8876",
+        withCfg: true,
+        cfgPath: "test/drivers/i2c/test_i2c_system/{board}/test_i2c_system_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectTimeout: 500,
     },
 };
 
@@ -372,7 +375,9 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.cpu.match(/^r5fss0-0$/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

@@ -281,6 +281,7 @@ const robot_template = {
         testCaseIds: "SITSW-9008",
         withCfg: true,
         cfgPath: "test/drivers/mcasp/test_mcasp_system/{board}/test_mcasp_system_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectTimeout: 100,
     },
 };
 

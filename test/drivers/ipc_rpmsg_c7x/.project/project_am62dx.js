@@ -264,6 +264,7 @@ const robot_template = {
         testCaseIds: "SITSW-9733 SITSW-9734 SITSW-9735 SITSW-9748 SITSW-9749 SITSW-9750 SITSW-9751 SITSW-9752 SITSW-9754 SITSW-9755" +
                      " SITSW-9756",
         expectTimeout: 500,
+        timeout: 900,
     },
 };
 

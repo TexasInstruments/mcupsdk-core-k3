@@ -171,6 +171,7 @@ const robot_template = {
         testCaseIds: "SITSW-4836",
         withCfg: true,
         cfgPath: "examples/drivers/spinlock/spinlock_example/{board}/spinlock_example_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectTimeout: 100,
     },
 };
 

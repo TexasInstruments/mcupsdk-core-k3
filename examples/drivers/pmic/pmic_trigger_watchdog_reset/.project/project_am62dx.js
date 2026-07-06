@@ -141,6 +141,7 @@ const robot_template = {
         testCaseIds: "SITSW-4634",
         withCfg: true,
         cfgPath: "examples/drivers/pmic/pmic_trigger_watchdog_reset/{board}/default_pmic_trigger_watchdog_reset_${DEVICE_TYPE}.cfg",
+        expectTimeout: 100,
     },
 };
 

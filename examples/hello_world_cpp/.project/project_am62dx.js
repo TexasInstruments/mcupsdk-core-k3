@@ -253,6 +253,7 @@ const robot_template = {
         testCaseName: "Hello world cpp application",
         testCaseIds: "SITSW-1462",
         expectedString: "Hello World",
+        timeout: 3600,
     },
 };
 

@@ -158,6 +158,7 @@ const robot_template = {
         cfgPath: "examples/drivers/rtc/rtc_led_blink/{board}/{coreName}/default_rtc_led_blink_${DEVICE_TYPE}.cfg",
         expectedString: "RTC LED blink test passed!!",
         timeout: 300,
+        expectTimeout: 200,
     },
 };
 

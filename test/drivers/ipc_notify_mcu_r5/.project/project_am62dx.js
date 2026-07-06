@@ -420,6 +420,7 @@ const robot_template = {
                      " SITSW-9705 SITSW-9706",
         withCfg: true,
         cfgPath: "test/drivers/ipc_notify_mcu_r5/{board}/ipc_notify_test_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectTimeout: 100,
     },
 };
 

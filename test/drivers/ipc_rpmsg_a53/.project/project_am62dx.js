@@ -263,6 +263,7 @@ const robot_template = {
         testCaseName: "ipc_rpmsg_a53 test application",
         testCaseIds: "SITSW-9813 SITSW-9814 SITSW-9815 SITSW-9816 SITSW-9817 SITSW-9818 SITSW-9819 SITSW-9820 SITSW-9821 SITSW-9822" +
                      " SITSW-9823 SITSW-9824",
+        expectTimeout: 100,
     },
 };
 

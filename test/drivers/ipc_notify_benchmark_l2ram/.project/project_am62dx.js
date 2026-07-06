@@ -255,6 +255,7 @@ const robot_template = {
         testCaseIds: "SITSW-4562",
         withCfg: true,
         cfgPath: "test/drivers/ipc_notify_benchmark_l2ram/{board}/ipc_notify_benchmark_l2ram_test_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectTimeout: 100,
     },
 };
 

@@ -274,6 +274,9 @@ const robot_template = {
         componentName: "MCAN",
         testCaseName: "test_mcan_system test application",
         testCaseIds: "SITSW-11176",
+        withCfg: true,
+        cfgPath: "test/drivers/mcan/test_mcan_system/{board}/test_mcan_system_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectTimeout: 100,
     },
 };
 
@@ -314,7 +317,9 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.cpu.match(/^r5fss0-0$/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

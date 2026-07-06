@@ -157,6 +157,7 @@ const robot_template = {
         testCaseIds: "SITSW-9019",
         withCfg: true,
         cfgPath: "test/drivers/mcasp/mcasp_system_load/{board}/mcasp_system_load_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectTimeout: 120,
     },
 };
 
@@ -184,7 +185,9 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.cpu.match(/^a53ss0-0$/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

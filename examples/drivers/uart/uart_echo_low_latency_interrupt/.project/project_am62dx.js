@@ -270,6 +270,7 @@ const robot_template = {
         testCaseName: "UART Low Latency Sample Application Interrupt",
         testCaseIds: "SITSW-1308",
         interactPrompt: "Receives 8 characters then echo's back and exits..",
+        interactPromptTimeout: 60,
         interactSend: ["12345678\\r\\n"],
         expectTimeout: 120,
     },

@@ -85,6 +85,10 @@
 /* AM275x has limited SRAM — use a smaller buffer that fits in the APPIMAGE region */
 uint8_t gAppimage[0x200000] __attribute__ ((section (".bss.app"), aligned (128)));
 #else
+/* AM62DX/AM62AX: placed in the dedicated APPIMAGE memory region at 0x84000000
+ * (see linker.cmd) — the fixed loadaddr baked into every signed appimage's
+ * x509 cert, which TIFS DMAs the authenticated payload to after
+ * Bootloader_socAuthImage() succeeds. */
 uint8_t gAppimage[0x1900000] __attribute__ ((section (".bss.app"), aligned (128)));
 #endif
 float TestSbl_sdImageSz = 0.0;
@@ -2080,7 +2084,7 @@ int32_t TestSbl_openBootDriverFlash()
     {
         DebugP_logError("OSPI open failed for instance %d !!!\r\n", CONFIG_OSPI_SBL);
         status = SystemP_FAILURE;
-    }   
+    }
     return status;
 }
 
@@ -2829,9 +2833,9 @@ void TestSbl_uniflashFlashAndVerify(void *args)
 
     /* Open OSPI and Flash for this test */
     status = TestSbl_openBootDriverFlash();
-    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+    TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
     status = TestSbl_openBootBoardFlash();
-    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+    TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
 
     flashHandle = Flash_getHandle(CONFIG_FLASH_SBL);
     TEST_ASSERT_NOT_NULL(flashHandle);

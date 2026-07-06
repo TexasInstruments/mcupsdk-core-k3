@@ -2,6 +2,14 @@
     let options = args.options;
     let globalScratchBuf = "false";
 
+    let dmWithBootloader = "false";
+    if(options && options.dmWithBootloader)
+        dmWithBootloader = options.dmWithBootloader;
+
+    let enableFileBuf = false;
+    if(options && options.enableFileBuf)
+        enableFileBuf = options.enableFileBuf;
+
     let vringBaseAddr = 0xA0400000;
     let vringSize = 0x300000;
 
@@ -225,6 +233,13 @@ SECTIONS
         .udma_buffer_internal (NOLOAD) : { *(.udma_buffer_internal) }
     } > OCRAM
     % }
+    % if(dmWithBootloader == "true"){
+    .bss.app(NOLOAD) : {} > APPIMAGE
+    % }
+    % if(enableFileBuf) {
+    /* Large file receive / verify buffers — placed in dedicated DDR1 window */
+    .bss.filebuf (NOLOAD) : {} > DDR1
+    % }
 }
 
 
@@ -268,5 +283,13 @@ MEMORY
 
     /* global scratch buffer region in DDR (`globalScratchBufSizeInMB` MB) */
     DDR2           (RWIX)      : ORIGIN = 0xA8000000 LENGTH = 0x0`(globalScratchBufSize).toString(16).toUpperCase()`
+    % }
+    % if(dmWithBootloader == "true"){
+    /* This section is used by the SBL to temporarily load the appimage for authentication */
+    APPIMAGE  : ORIGIN = 0x84000000 , LENGTH = 0x1900000
+    % }
+    % if(enableFileBuf) {
+    /* DDR1 for file receive/verify buffers [ size 64 MB ] */
+    DDR1            (RWIX)      : ORIGIN = 0x84000000 LENGTH = 0x4000000
     % }
 }

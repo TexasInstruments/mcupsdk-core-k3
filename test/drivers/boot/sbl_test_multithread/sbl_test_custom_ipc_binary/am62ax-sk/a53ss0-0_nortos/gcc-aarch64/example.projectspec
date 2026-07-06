@@ -10,8 +10,8 @@
     </applicability>
 
     <project
-        title="Ipc Rpmsg Echo"
-        name = "ipc_rpmsg_echo_am62ax-sk_a53ss0-0_nortos_gcc-aarch64"
+        title="Sbl Test Custom Ipc Binary"
+        name = "sbl_test_custom_ipc_binary_am62ax-sk_a53ss0-0_nortos_gcc-aarch64"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -51,7 +51,7 @@
             -L${MCU_PLUS_SDK_PATH}/source/drivers/lib
             -L${MCU_PLUS_SDK_PATH}/source/board/lib
             -L$(CGT_GCC_AARCH64_PATH)/lib
-            -Wl,-Map=ipc_rpmsg_echo.${ConfigName}.map
+            -Wl,-Map=sbl_test_custom_ipc_binary.${ConfigName}.map
             -Wl,-static
             -Wl,--gc-sections
             -Wl,--build-id=none
@@ -69,7 +69,7 @@
             --context a53ss0-0 --part Default --package AMB
         "
 
-        description="A Ipc Rpmsg Echo NORTOS project">
+        description="A Sbl Test Custom Ipc Binary NORTOS project">
 
         <configuration name="Debug"
             compilerBuildOptions="

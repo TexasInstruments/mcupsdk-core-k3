@@ -179,6 +179,7 @@ static int32_t OSPI_programInstance(OSPI_Config *config);
 static int32_t OSPI_isDmaRestrictedRegion(OSPI_Handle handle, uint32_t addr);
 static uint32_t OSPI_utilLog2(uint32_t num);
 static uint8_t OSPI_getCmdExt(OSPI_Handle handle, uint8_t cmd);
+static int32_t OSPI_validateCmdOpCode(OSPI_Handle handle, uint8_t cmdOpcode);
 
 /* ========================================================================== */
 /*                            Global Variables                                */
@@ -933,9 +934,14 @@ void OSPI_setXferOpCodes(OSPI_Handle handle, uint8_t readCmd, uint8_t pageProgCm
 {
     if(handle != NULL)
     {
+        OSPI_Object *obj = ((OSPI_Config*)handle)->object;
         const OSPI_Attrs *attrs = ((OSPI_Config *)handle)->attrs;
         const CSL_ospi_flash_cfgRegs *pReg = (const CSL_ospi_flash_cfgRegs *)(attrs->baseAddr);
         uint8_t cmdExt = OSPI_CMD_INVALID_OPCODE;
+
+         /* Store xfer opcodes in handle for validation */
+        obj->xferReadOpcode = readCmd;
+        obj->xferWriteOpcode = pageProgCmd;
 
         /* Set opcode for read */
         CSL_REG32_FINS(&pReg->DEV_INSTR_RD_CONFIG_REG, OSPI_FLASH_CFG_DEV_INSTR_RD_CONFIG_REG_RD_OPCODE_NON_XIP_FLD, readCmd);
@@ -1272,72 +1278,77 @@ int32_t OSPI_readCmd(OSPI_Handle handle, OSPI_ReadCmdParams *rdParams)
             uint8_t *pBuf = (uint8_t *) rdParams->rxDataBuf;
             uint32_t rxLen = rdParams->rxDataLen;
 
-            /* Clear flash command control register */
-            CSL_REG32_WR(&pReg->FLASH_CMD_CTRL_REG, 0U);
+            status = OSPI_validateCmdOpCode(handle, rdParams->cmd);
+            
+            if(status == SystemP_SUCCESS)
+            {
+                /* Clear flash command control register */
+                CSL_REG32_WR(&pReg->FLASH_CMD_CTRL_REG, 0U);
 
-            /* Set command opcode */
-            CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_CMD_OPCODE_FLD, rdParams->cmd);
+                /* Set command opcode */
+                CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_CMD_OPCODE_FLD, rdParams->cmd);
             
-            /* Enable read data in command control register */
-            CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_ENB_READ_DATA_FLD, TRUE);
+                /* Enable read data in command control register */
+                CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_ENB_READ_DATA_FLD, TRUE);
             
-            /* Set number of read data bytes */
-            CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_RD_DATA_BYTES_FLD, rxLen - 1);
+                /* Set number of read data bytes */
+                CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_RD_DATA_BYTES_FLD, rxLen - 1);
             
-            /* Set dummyCycles for the command */
-            if(rdParams->dummyBits != OSPI_CMD_INVALID_DUMMY)
-            {
-                CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_DUMMY_CYCLES_FLD, rdParams->dummyBits);
-            }
-            else
-            {
-                CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_DUMMY_CYCLES_FLD, obj->cmdDummyCycles);
-            }
-        
-            uint32_t dualOpCode = CSL_REG32_FEXT(&pReg->CONFIG_REG,
-                                        OSPI_FLASH_CFG_CONFIG_REG_DUAL_BYTE_OPCODE_EN_FLD);
-            
-            if(dualOpCode == 1)
-            {
-                uint8_t cmdExt = OSPI_getCmdExt(handle, rdParams->cmd);
-                /* Set extended STIG opcode */
-                CSL_REG32_FINS(&pReg->OPCODE_EXT_LOWER_REG, OSPI_FLASH_CFG_OPCODE_EXT_LOWER_REG_EXT_STIG_OPCODE_FLD, cmdExt);
-            }
-            else
-            {
-                /* do nothing */
-            }
-        
-            if(rdParams->cmdAddr != OSPI_CMD_INVALID_ADDR)
-            {
-                /* Enable Command address in command control register */
-                CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_ENB_COMD_ADDR_FLD, TRUE);
-            
-                /* Set number of address bytes */
-                CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_ADDR_BYTES_FLD, rdParams->numAddrBytes - 1);
-            
-                /* Update the flash cmd address register */
-                CSL_REG32_WR(&pReg->FLASH_CMD_ADDR_REG, rdParams->cmdAddr);
-            }
-            else
-            {
-                /* do nothing */
-            }
-        
-            status = OSPI_flashExecCmd(pReg);
-        
-            if(status == 0)
-            {
-                uint32_t regVal = CSL_REG32_RD(&pReg->FLASH_RD_DATA_LOWER_REG);
-                uint32_t rdLen = (rxLen > 4U) ? 4U : rxLen;
-                (void)memcpy((void *)pBuf, (void *)(&regVal), rdLen);
-                pBuf += rdLen;
-            
-                if(rxLen > 4U)
+                /* Set dummyCycles for the command */
+                if(rdParams->dummyBits != OSPI_CMD_INVALID_DUMMY)
                 {
-                    regVal = CSL_REG32_RD(&pReg->FLASH_RD_DATA_UPPER_REG);
-                    rdLen = rxLen - rdLen;
+                    CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_DUMMY_CYCLES_FLD, rdParams->dummyBits);
+                }
+                else
+                {
+                    CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_DUMMY_CYCLES_FLD, obj->cmdDummyCycles);
+                }
+        
+                uint32_t dualOpCode = CSL_REG32_FEXT(&pReg->CONFIG_REG,
+                                            OSPI_FLASH_CFG_CONFIG_REG_DUAL_BYTE_OPCODE_EN_FLD);
+            
+                if(dualOpCode == 1)
+                {
+                    uint8_t cmdExt = OSPI_getCmdExt(handle, rdParams->cmd);
+                    /* Set extended STIG opcode */
+                    CSL_REG32_FINS(&pReg->OPCODE_EXT_LOWER_REG, OSPI_FLASH_CFG_OPCODE_EXT_LOWER_REG_EXT_STIG_OPCODE_FLD, cmdExt);
+                }
+                else
+                {
+                    /* do nothing */
+                }
+        
+                if(rdParams->cmdAddr != OSPI_CMD_INVALID_ADDR)
+                {
+                    /* Enable Command address in command control register */
+                    CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_ENB_COMD_ADDR_FLD, TRUE);
+            
+                    /* Set number of address bytes */
+                    CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_ADDR_BYTES_FLD, rdParams->numAddrBytes - 1);
+            
+                    /* Update the flash cmd address register */
+                    CSL_REG32_WR(&pReg->FLASH_CMD_ADDR_REG, rdParams->cmdAddr);
+                }
+                else
+                {
+                    /* do nothing */
+                }
+        
+                status = OSPI_flashExecCmd(pReg);
+        
+                if(status == 0)
+                {
+                    uint32_t regVal = CSL_REG32_RD(&pReg->FLASH_RD_DATA_LOWER_REG);
+                    uint32_t rdLen = (rxLen > 4U) ? 4U : rxLen;
                     (void)memcpy((void *)pBuf, (void *)(&regVal), rdLen);
+                    pBuf += rdLen;
+            
+                    if(rxLen > 4U)
+                    {
+                        regVal = CSL_REG32_RD(&pReg->FLASH_RD_DATA_UPPER_REG);
+                        rdLen = rxLen - rdLen;
+                        (void)memcpy((void *)pBuf, (void *)(&regVal), rdLen);
+                    }
                 }
             }
         }
@@ -1672,72 +1683,77 @@ int32_t OSPI_writeCmd(OSPI_Handle handle, OSPI_WriteCmdParams *wrParams)
             uint8_t *txBuf = (uint8_t *) wrParams->txDataBuf;
             uint32_t txLen = wrParams->txDataLen;
 
-            /* Clear the flash command control register */
-            CSL_REG32_WR(&pReg->FLASH_CMD_CTRL_REG, 0U);
+            status = OSPI_validateCmdOpCode(handle, wrParams->cmd);
 
-            /* Set command opcode */
-            CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_CMD_OPCODE_FLD, wrParams->cmd);
-            
-            /* Set command address if needed */
-            if(wrParams->cmdAddr != OSPI_CMD_INVALID_ADDR)
+            if(status == SystemP_SUCCESS)
             {
-                /* Enable Command address in command control register */
-                CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_ENB_COMD_ADDR_FLD, TRUE);
+                /* Clear the flash command control register */
+                CSL_REG32_WR(&pReg->FLASH_CMD_CTRL_REG, 0U);
+
+                /* Set command opcode */
+                CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_CMD_OPCODE_FLD, wrParams->cmd);
             
-                /* Set number of address bytes */
-                CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_ADDR_BYTES_FLD, wrParams->numAddrBytes - 1);
-            
-                /* Update the flash cmd address register */
-                CSL_REG32_WR(&pReg->FLASH_CMD_ADDR_REG, wrParams->cmdAddr);
-            }
-            else
-            {
-                /* do nothing */
-            }
-        
-            uint32_t dualOpCode = CSL_REG32_FEXT(&pReg->CONFIG_REG,
-                                        OSPI_FLASH_CFG_CONFIG_REG_DUAL_BYTE_OPCODE_EN_FLD);
-            
-            if(dualOpCode == 1)
-            {
-                uint8_t cmdExt = OSPI_getCmdExt(handle, wrParams->cmd);
-                /* Set extended STIG opcode */
-                CSL_REG32_FINS(&pReg->OPCODE_EXT_LOWER_REG, OSPI_FLASH_CFG_OPCODE_EXT_LOWER_REG_EXT_STIG_OPCODE_FLD, cmdExt);
-            }
-            else
-            {
-                /* do nothing */
-            }
-        
-            if (txLen != 0U)
-            {
-                uint32_t wrLen = 0;
-                uint32_t wrData = 0;
-            
-                /* Enable write data in command control register */
-                CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_ENB_WRITE_DATA_FLD, TRUE);
-            
-                /* Set number of data bytes to write */
-                CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_WR_DATA_BYTES_FLD, txLen-1);
-            
-                wrLen = txLen > 4U ? 4U : txLen;
-                memcpy(&wrData, txBuf, wrLen);
-                CSL_REG32_WR(&pReg->FLASH_WR_DATA_LOWER_REG, wrData);
-            
-                if (txLen > 4U)
+                /* Set command address if needed */
+                if(wrParams->cmdAddr != OSPI_CMD_INVALID_ADDR)
                 {
-                    txBuf += wrLen;
-                    wrLen = txLen - wrLen;
-                    memcpy(&wrData, txBuf, wrLen);
-                    CSL_REG32_WR(&pReg->FLASH_WR_DATA_UPPER_REG, wrData);
+                    /* Enable Command address in command control register */
+                    CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_ENB_COMD_ADDR_FLD, TRUE);
+            
+                    /* Set number of address bytes */
+                    CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_ADDR_BYTES_FLD, wrParams->numAddrBytes - 1);
+            
+                    /* Update the flash cmd address register */
+                    CSL_REG32_WR(&pReg->FLASH_CMD_ADDR_REG, wrParams->cmdAddr);
                 }
-            }
-            else
-            {
-                /* do nothing */
-            }
+                else
+                {
+                    /* do nothing */
+                }
         
-            status = OSPI_flashExecCmd(pReg);
+                uint32_t dualOpCode = CSL_REG32_FEXT(&pReg->CONFIG_REG,
+                                            OSPI_FLASH_CFG_CONFIG_REG_DUAL_BYTE_OPCODE_EN_FLD);
+            
+                if(dualOpCode == 1)
+                {
+                    uint8_t cmdExt = OSPI_getCmdExt(handle, wrParams->cmd);
+                    /* Set extended STIG opcode */
+                    CSL_REG32_FINS(&pReg->OPCODE_EXT_LOWER_REG, OSPI_FLASH_CFG_OPCODE_EXT_LOWER_REG_EXT_STIG_OPCODE_FLD, cmdExt);
+                }
+                else
+                {
+                    /* do nothing */
+                }
+        
+                if (txLen != 0U)
+                {
+                    uint32_t wrLen = 0;
+                    uint32_t wrData = 0;
+            
+                    /* Enable write data in command control register */
+                    CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_ENB_WRITE_DATA_FLD, TRUE);
+            
+                    /* Set number of data bytes to write */
+                    CSL_REG32_FINS(&pReg->FLASH_CMD_CTRL_REG, OSPI_FLASH_CFG_FLASH_CMD_CTRL_REG_NUM_WR_DATA_BYTES_FLD, txLen-1);
+            
+                    wrLen = txLen > 4U ? 4U : txLen;
+                    memcpy(&wrData, txBuf, wrLen);
+                    CSL_REG32_WR(&pReg->FLASH_WR_DATA_LOWER_REG, wrData);
+            
+                    if (txLen > 4U)
+                    {
+                        txBuf += wrLen;
+                        wrLen = txLen - wrLen;
+                        memcpy(&wrData, txBuf, wrLen);
+                        CSL_REG32_WR(&pReg->FLASH_WR_DATA_UPPER_REG, wrData);
+                    }
+                }
+                else
+                {
+                    /* do nothing */
+                }
+        
+                status = OSPI_flashExecCmd(pReg);
+            }
         }
     }
     else
@@ -2068,6 +2084,11 @@ static int32_t OSPI_programInstance(OSPI_Config *config)
         {
             obj->transferMode = OSPI_TRANSFER_MODE_POLLING;
         }
+
+        /* Initialize xfer opcodes to invalid - will be set by setXferOpCodes */
+        obj->xferReadOpcode = OSPI_CMD_INVALID_OPCODE;
+        obj->xferWriteOpcode = OSPI_CMD_INVALID_OPCODE;
+
         /* Chip Select */
         regVal = CSL_REG32_RD(&pReg->CONFIG_REG);
         uint32_t chipSelect = OSPI_CHIP_SELECT(attrs->chipSelect);
@@ -2723,4 +2744,37 @@ void OSPI_set1sProtocol(OSPI_Handle handle)
         OSPI_setProtocol(handle, OSPI_FLASH_PROTOCOL(1,1,1,0));
         OSPI_setXferOpCodes(handle, 0x03, 0x02);
     }
+}
+
+static int32_t OSPI_validateCmdOpCode(OSPI_Handle handle, uint8_t cmdOpcode)
+{
+    int32_t status = SystemP_SUCCESS;
+
+    if(handle != NULL)
+    {
+        OSPI_Object *obj = ((OSPI_Config *)handle)->object;
+        
+        /* Validate that CMD_OPCODE in FLASH_CMD_CTRL_REG does not match:
+         * - RD_OPCODE in DEV_INSTR_RD_CONFIG_REG (xferReadOpcode)
+         * - WR_OPCODE in DEV_INSTR_WR_CONFIG_REG (xferWriteOpcode)
+         * - OPCODE in WRITE_COMPLETION_CTRL_REG (typically set to OSPI_CMD_INVALID_OPCODE)
+         */
+
+        if(cmdOpcode == obj->xferReadOpcode)
+        {
+            DebugP_logError("OSPI: CMD_OPCODE 0x%02x matches RD_OPCODE. Opcodes must be different.\r\n", cmdOpcode);
+            status = SystemP_FAILURE;
+        }
+        else if(cmdOpcode == obj->xferWriteOpcode)
+        {
+            DebugP_logError("OSPI: CMD_OPCODE 0x%02x matches WR_OPCODE. Opcodes must be different.\r\n", cmdOpcode);
+            status = SystemP_FAILURE;
+        }
+    }
+    else
+    {
+        status = SystemP_FAILURE;
+    }
+
+    return status;
 }

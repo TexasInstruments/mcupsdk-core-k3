@@ -526,6 +526,10 @@ typedef struct
     uint32_t cmdExtType;
     /**< In dual byte opcode mode, the extended opcode can vary depending on flash
     This variable should be populated from the flash driver using the \ref OSPI_setCmdExtType API */
+    uint8_t xferReadOpcode;
+    /**< Transfer (XIP) read opcode set via setXferOpCodes */
+    uint8_t xferWriteOpcode;
+    /**< Transfer (XIP) write opcode set via setXferOpCodes */
     /*
      * State variables
      */

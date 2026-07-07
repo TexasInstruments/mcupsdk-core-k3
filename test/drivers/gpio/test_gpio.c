@@ -82,7 +82,7 @@ static void test_gpio_toggle_loop(Test_GpioPrms_t *testPrms);
 static void test_gpio_read_loop(Test_GpioPrms_t *testPrms);
 static void test_gpio_trigger_loop(Test_GpioPrms_t *testPrms);
 
-#if defined(SOC_AM275X) || defined(SOC_AM62DX)
+#if defined(SOC_AM275X) || defined(SOC_AM62DX) || defined(SOC_AM62PX)
 static void TestGpio_interruptAllBanks(void *args);
 static void TestGpio_trigLevelNegTc(void *arg);
 static void TestGpio_sameBankDiffPin(void *arg);
@@ -126,7 +126,7 @@ void test_main(void *args)
     RUN_TEST(test_gpio_read,    9543, NULL);
     RUN_TEST(test_gpio_trigger, 9544, NULL);
     RUN_TEST(test_gpio_macros,  9545, NULL);
-    #if defined(SOC_AM275X) || defined(SOC_AM62DX)
+    #if defined(SOC_AM275X) || defined(SOC_AM62DX) || defined(SOC_AM62PX)
     RUN_TEST(TestGpio_trigLevelNegTc,  9550, NULL);
     RUN_TEST(TestGpio_interruptAllBanks,  9546, NULL);
     RUN_TEST(TestGpio_sameBankDiffPin,  9916, NULL);
@@ -516,7 +516,7 @@ static void test_gpio_trigger_loop(Test_GpioPrms_t *testPrms)
 
     return;
 }
-#if defined(SOC_AM275X) || defined(SOC_AM62DX)
+#if defined(SOC_AM275X) || defined(SOC_AM62DX) || defined(SOC_AM62PX)
 #if (defined(SOC_AM62DX) && !(defined(DM_R5F_CORE) || defined(C75_CORE)))
 /**
  * @brief Handles GPIO input interrupt in a multi-threaded test scenario.

@@ -20,7 +20,6 @@ const gpio7      = gpio.addInstance();
 const gpio8      = gpio.addInstance();
 const gpio9      = gpio.addInstance();
 const gpio10     = gpio.addInstance();
-const clock      = scripting.addModule("/kernel/dpl/clock");
 const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
 const mpu_armv7  = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
 const mpu_armv71 = mpu_armv7.addInstance();

@@ -93,6 +93,7 @@ function getComponentProperty() {
     property.tirexResourceSubClass = [ "example.gettingstarted" ];
     property.description = "This example verifies SWASRC Mulichannel playback"
     property.buildOptionCombos = buildOptionCombos;
+    property.isXlibs = true;
 
     return property;
 }

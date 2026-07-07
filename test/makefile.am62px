@@ -176,18 +176,8 @@ BUILD_COMBO_PREBUILT_ALL =
 # Combine all Private Components
 BUILD_COMBO_PRIVATE_ALL =
 
-# Linux-only Components (not built on Windows)
-ifneq ($(OS),Windows_NT)
-BUILD_COMBO_LINUX_ONLY_ALL =
-BUILD_COMBO_LINUX_ONLY_CLEAN_ALL =
-BUILD_COMBO_LINUX_ONLY_SCRUB_ALL =
-else
-BUILD_COMBO_LINUX_ONLY_ALL =
-BUILD_COMBO_LINUX_ONLY_CLEAN_ALL =
-BUILD_COMBO_LINUX_ONLY_SCRUB_ALL =
-endif
 
-libs: $(BUILD_COMBO_ALL) $(BUILD_COMBO_LINUX_ONLY_ALL)
+libs: $(BUILD_COMBO_ALL)
 
 libs-external: $(BUILD_COMBO_EXTERNAL_ALL)
 
@@ -223,7 +213,7 @@ BUILD_COMBO_EXTERNAL_CLEAN_ALL =
 # Combine all Pre-built Components Clean
 BUILD_COMBO_PREBUILT_CLEAN_ALL =
 
-libs-clean: $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_LINUX_ONLY_CLEAN_ALL)
+libs-clean: $(BUILD_COMBO_CLEAN_ALL)
 
 libs-external-clean: $(BUILD_COMBO_EXTERNAL_CLEAN_ALL)
 
@@ -257,7 +247,7 @@ BUILD_COMBO_EXTERNAL_SCRUB_ALL =
 # Combine all Pre-built Components Scrub Targets
 BUILD_COMBO_PREBUILT_SCRUB_ALL =
 
-libs-scrub: $(BUILD_COMBO_SCRUB_ALL) $(BUILD_COMBO_LINUX_ONLY_SCRUB_ALL)
+libs-scrub: $(BUILD_COMBO_SCRUB_ALL)
 
 libs-external-scrub: $(BUILD_COMBO_EXTERNAL_SCRUB_ALL)
 
@@ -379,6 +369,7 @@ BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_32_am62px-sk_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_64_am62px-sk_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_128_am62px-sk_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_256_am62px-sk_system_freertos
+
 
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
 # Various Private Example Targets
@@ -808,6 +799,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_64_am62px-sk_system_freert
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_128_am62px-sk_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_256_am62px-sk_system_freertos_clean
 
+
 BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL =
 # Various Private Example Targets
 # Various Private System Example Targets
@@ -1236,6 +1228,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_64_am62px-sk_system_freert
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_128_am62px-sk_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_256_am62px-sk_system_freertos_scrub
 
+
 BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL =
 # Various Private Example Targets
 # Various Private System Example Targets
@@ -1615,6 +1608,5 @@ sdl-unit-tests: $(BUILD_COMBO_SDL_ALL)
 .PHONY: examples-private examples-private-clean examples-private-scrub
 .PHONY: sbl sbl-clean sbl-scrub
 .PHONY: $(BUILD_COMBO_ALL) $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_SCRUB_ALL)
-.PHONY: $(BUILD_COMBO_LINUX_ONLY_ALL) $(BUILD_COMBO_LINUX_ONLY_CLEAN_ALL) $(BUILD_COMBO_LINUX_ONLY_SCRUB_ALL)
 .PHONY: $(BUILD_COMBO_EXAMPLE_ALL) $(BUILD_COMBO_EXAMPLE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
 .PHONY: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL) $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)

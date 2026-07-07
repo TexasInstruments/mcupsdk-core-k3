@@ -2,6 +2,8 @@
 # Auto generated makefile
 #
 
+BUILD_XLIBS ?= no
+
 all:
 	$(MAKE) -f makefile.am62dx libs
 	$(MAKE) -f makefile.am62dx libs-external
@@ -373,18 +375,24 @@ BUILD_COMBO_PREBUILT_ALL =
 # Combine all Private Components
 BUILD_COMBO_PRIVATE_ALL =
 
-# Linux-only Components (not built on Windows)
+# xlibs Components (not built on Windows)
 ifneq ($(OS),Windows_NT)
-BUILD_COMBO_LINUX_ONLY_ALL =
-BUILD_COMBO_LINUX_ONLY_CLEAN_ALL =
-BUILD_COMBO_LINUX_ONLY_SCRUB_ALL =
+ifeq ($(BUILD_XLIBS),yes)
+BUILD_COMBO_XLIBS_ALL =
+BUILD_COMBO_XLIBS_CLEAN_ALL =
+BUILD_COMBO_XLIBS_SCRUB_ALL =
 else
-BUILD_COMBO_LINUX_ONLY_ALL =
-BUILD_COMBO_LINUX_ONLY_CLEAN_ALL =
-BUILD_COMBO_LINUX_ONLY_SCRUB_ALL =
+BUILD_COMBO_XLIBS_ALL =
+BUILD_COMBO_XLIBS_CLEAN_ALL =
+BUILD_COMBO_XLIBS_SCRUB_ALL =
+endif
+else
+BUILD_COMBO_XLIBS_ALL =
+BUILD_COMBO_XLIBS_CLEAN_ALL =
+BUILD_COMBO_XLIBS_SCRUB_ALL =
 endif
 
-libs: $(BUILD_COMBO_ALL) $(BUILD_COMBO_LINUX_ONLY_ALL)
+libs: $(BUILD_COMBO_ALL) $(BUILD_COMBO_XLIBS_ALL)
 
 libs-external: $(BUILD_COMBO_EXTERNAL_ALL)
 
@@ -472,7 +480,7 @@ BUILD_COMBO_EXTERNAL_CLEAN_ALL =
 # Combine all Pre-built Components Clean
 BUILD_COMBO_PREBUILT_CLEAN_ALL =
 
-libs-clean: $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_LINUX_ONLY_CLEAN_ALL)
+libs-clean: $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_XLIBS_CLEAN_ALL)
 
 libs-external-clean: $(BUILD_COMBO_EXTERNAL_CLEAN_ALL)
 
@@ -558,7 +566,7 @@ BUILD_COMBO_EXTERNAL_SCRUB_ALL =
 # Combine all Pre-built Components Scrub Targets
 BUILD_COMBO_PREBUILT_SCRUB_ALL =
 
-libs-scrub: $(BUILD_COMBO_SCRUB_ALL) $(BUILD_COMBO_LINUX_ONLY_SCRUB_ALL)
+libs-scrub: $(BUILD_COMBO_SCRUB_ALL) $(BUILD_COMBO_XLIBS_SCRUB_ALL)
 
 libs-external-scrub: $(BUILD_COMBO_EXTERNAL_SCRUB_ALL)
 
@@ -880,11 +888,21 @@ BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_128_am62dx-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_ipc_rpmsg_vring_256_am62dx-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += test_mcasp_system_load_am62dx-evm_system_freertos
 
+BUILD_COMBO_EXAMPLE_XLIBS_ALL =
+# Various xlibs Example Targets
+# Various xlibs System Example Targets
+
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
 # Various Private Example Targets
 # Various Private System Example Targets
 
+ifeq ($(BUILD_XLIBS),yes)
+examples: $(BUILD_COMBO_EXAMPLE_ALL) $(BUILD_COMBO_EXAMPLE_XLIBS_ALL)
+else
 examples: $(BUILD_COMBO_EXAMPLE_ALL)
+endif
+
+examples-xlibs: $(BUILD_COMBO_EXAMPLE_XLIBS_ALL)
 
 examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
@@ -1942,11 +1960,17 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_128_am62dx-evm_system_free
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ipc_rpmsg_vring_256_am62dx-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcasp_system_load_am62dx-evm_system_freertos_clean
 
+BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL =
+# Various xlibs Example Clean Targets
+# Various xlibs System Example Clean Targets
+
 BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL =
 # Various Private Example Targets
 # Various Private System Example Targets
 
-examples-clean: $(BUILD_COMBO_EXAMPLE_CLEAN_ALL)
+examples-clean: $(BUILD_COMBO_EXAMPLE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL)
+
+examples-xlibs-clean: $(BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL)
 
 examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
@@ -3004,11 +3028,17 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_128_am62dx-evm_system_free
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ipc_rpmsg_vring_256_am62dx-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcasp_system_load_am62dx-evm_system_freertos_scrub
 
+BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL =
+# Various xlibs Example Scrub Targets
+# Various xlibs System Example Scrub Targets
+
 BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL =
 # Various Private Example Targets
 # Various Private System Example Targets
 
-examples-scrub: $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
+examples-scrub: $(BUILD_COMBO_EXAMPLE_SCRUB_ALL) $(BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL)
+
+examples-xlibs-scrub: $(BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL)
 
 examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
@@ -3848,9 +3878,11 @@ sdl-unit-tests: $(BUILD_COMBO_SDL_ALL)
 .PHONY: libs-private
 .PHONY: libs-prebuilt libs-prebuilt-clean libs-prebuilt-scrub
 .PHONY: examples examples-clean examples-scrub
+.PHONY: examples-xlibs examples-xlibs-clean examples-xlibs-scrub
 .PHONY: examples-private examples-private-clean examples-private-scrub
 .PHONY: sbl sbl-clean sbl-scrub
 .PHONY: $(BUILD_COMBO_ALL) $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_SCRUB_ALL)
-.PHONY: $(BUILD_COMBO_LINUX_ONLY_ALL) $(BUILD_COMBO_LINUX_ONLY_CLEAN_ALL) $(BUILD_COMBO_LINUX_ONLY_SCRUB_ALL)
+.PHONY: $(BUILD_COMBO_XLIBS_ALL) $(BUILD_COMBO_XLIBS_CLEAN_ALL) $(BUILD_COMBO_XLIBS_SCRUB_ALL)
 .PHONY: $(BUILD_COMBO_EXAMPLE_ALL) $(BUILD_COMBO_EXAMPLE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
+.PHONY: $(BUILD_COMBO_EXAMPLE_XLIBS_ALL) $(BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL)
 .PHONY: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL) $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)

@@ -9,16 +9,17 @@
     let component_target_external_scrub_list_string = [];
     let component_target_prebuilt_clean_list_string = [];
     let component_target_prebuilt_scrub_list_string = [];
-    let component_target_linux_only_list_string = [];
-    let component_target_linux_only_clean_list_string = [];
-    let component_target_linux_only_scrub_list_string = [];
+    let component_target_xlibs_list_string = [];
+    let component_target_xlibs_clean_list_string = [];
+    let component_target_xlibs_scrub_list_string = [];
 	let component_target_clean_private_list_string = [];
 	let component_target_scrub_private_list_string = [];
+    let xlibSupported = (args.device == "am62dx" || args.device == "am275x");
     for (component of args.component_list) {
-        if(component.isLinuxOnly) {
-            component_target_linux_only_list_string +=` \$(BUILD_COMBO_${component.name})`
-            component_target_linux_only_clean_list_string +=` \$(BUILD_COMBO_CLEAN_${component.name})`
-            component_target_linux_only_scrub_list_string +=` \$(BUILD_COMBO_SCRUB_${component.name})`
+        if(component.isXlibs) {
+            component_target_xlibs_list_string +=` \$(BUILD_COMBO_${component.name})`
+            component_target_xlibs_clean_list_string +=` \$(BUILD_COMBO_CLEAN_${component.name})`
+            component_target_xlibs_scrub_list_string +=` \$(BUILD_COMBO_SCRUB_${component.name})`
         }
         else if(component.isExternalLibrary) {
             component_target_external_list_string +=` \$(BUILD_COMBO_${component.name})`
@@ -52,6 +53,10 @@
 # Auto generated makefile
 #
 
+% if (xlibSupported) {
+BUILD_XLIBS ?= no
+
+% }
 all:
 	$(MAKE) -f makefile.`device` libs
 	$(MAKE) -f makefile.`device` libs-external
@@ -131,18 +136,30 @@ BUILD_COMBO_PREBUILT_ALL =`component_target_prebuilt_list_string`
 # Combine all Private Components
 BUILD_COMBO_PRIVATE_ALL =`component_target_private_list_string`
 
-# Linux-only Components (not built on Windows)
+% if (xlibSupported) {
+# xlibs Components (not built on Windows)
 ifneq ($(OS),Windows_NT)
-BUILD_COMBO_LINUX_ONLY_ALL =`component_target_linux_only_list_string`
-BUILD_COMBO_LINUX_ONLY_CLEAN_ALL =`component_target_linux_only_clean_list_string`
-BUILD_COMBO_LINUX_ONLY_SCRUB_ALL =`component_target_linux_only_scrub_list_string`
+ifeq ($(BUILD_XLIBS),yes)
+BUILD_COMBO_XLIBS_ALL =`component_target_xlibs_list_string`
+BUILD_COMBO_XLIBS_CLEAN_ALL =`component_target_xlibs_clean_list_string`
+BUILD_COMBO_XLIBS_SCRUB_ALL =`component_target_xlibs_scrub_list_string`
 else
-BUILD_COMBO_LINUX_ONLY_ALL =
-BUILD_COMBO_LINUX_ONLY_CLEAN_ALL =
-BUILD_COMBO_LINUX_ONLY_SCRUB_ALL =
+BUILD_COMBO_XLIBS_ALL =
+BUILD_COMBO_XLIBS_CLEAN_ALL =
+BUILD_COMBO_XLIBS_SCRUB_ALL =
 endif
+else
+BUILD_COMBO_XLIBS_ALL =
+BUILD_COMBO_XLIBS_CLEAN_ALL =
+BUILD_COMBO_XLIBS_SCRUB_ALL =
+endif
+% }
 
-libs: $(BUILD_COMBO_ALL) $(BUILD_COMBO_LINUX_ONLY_ALL)
+% if (xlibSupported) {
+libs: $(BUILD_COMBO_ALL) $(BUILD_COMBO_XLIBS_ALL)
+% } else {
+libs: $(BUILD_COMBO_ALL)
+% }
 
 libs-external: $(BUILD_COMBO_EXTERNAL_ALL)
 
@@ -181,7 +198,11 @@ BUILD_COMBO_PREBUILT_CLEAN_ALL =`component_target_prebuilt_clean_list_string`
 BUILD_COMBO_PRIVATE_CLEAN_ALL =`component_target_clean_private_list_string`
 
 % }
-libs-clean: $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_LINUX_ONLY_CLEAN_ALL)
+% if (xlibSupported) {
+libs-clean: $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_XLIBS_CLEAN_ALL)
+% } else {
+libs-clean: $(BUILD_COMBO_CLEAN_ALL)
+% }
 
 libs-external-clean: $(BUILD_COMBO_EXTERNAL_CLEAN_ALL)
 
@@ -216,7 +237,11 @@ BUILD_COMBO_PREBUILT_SCRUB_ALL =`component_target_prebuilt_scrub_list_string`
 BUILD_COMBO_PRIVATE_SCRUB_ALL =`component_target_scrub_private_list_string`
 
 % }
-libs-scrub: $(BUILD_COMBO_SCRUB_ALL) $(BUILD_COMBO_LINUX_ONLY_SCRUB_ALL)
+% if (xlibSupported) {
+libs-scrub: $(BUILD_COMBO_SCRUB_ALL) $(BUILD_COMBO_XLIBS_SCRUB_ALL)
+% } else {
+libs-scrub: $(BUILD_COMBO_SCRUB_ALL)
+% }
 
 libs-external-scrub: $(BUILD_COMBO_EXTERNAL_SCRUB_ALL)
 
@@ -235,15 +260,31 @@ $(BUILD_COMBO_SCRUB_`component.name`):
 BUILD_COMBO_EXAMPLE_ALL =
 # Various Example Targets
 % for (example of args.example_list) {
-%   if(!example.isSkipTopLevelBuild && !example.isBootLoader) {
+%   if(!example.isSkipTopLevelBuild && !example.isBootLoader && !example.isXlibs) {
 BUILD_COMBO_EXAMPLE_ALL +=`example.buildTarget`
 %   }
 % }
 # Various System Example Targets
 % for (example of args.system_example_list) {
-%   if(!example.isSkipTopLevelBuild) {
+%   if(!example.isSkipTopLevelBuild && !example.isXlibs) {
 BUILD_COMBO_EXAMPLE_ALL +=`example.buildTarget`
 %   }
+% }
+
+% if (xlibSupported) {
+BUILD_COMBO_EXAMPLE_XLIBS_ALL =
+# Various xlibs Example Targets
+% for (example of args.example_list) {
+%   if(example.isXlibs && !example.isBootLoader) {
+BUILD_COMBO_EXAMPLE_XLIBS_ALL +=`example.buildTarget`
+%   }
+% }
+# Various xlibs System Example Targets
+% for (example of args.system_example_list) {
+%   if(example.isXlibs) {
+BUILD_COMBO_EXAMPLE_XLIBS_ALL +=`example.buildTarget`
+%   }
+% }
 % }
 
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
@@ -273,8 +314,19 @@ examples-private: dm_app
 % }
 % else {
 
+% if (xlibSupported) {
+ifeq ($(BUILD_XLIBS),yes)
+examples: $(BUILD_COMBO_EXAMPLE_ALL) $(BUILD_COMBO_EXAMPLE_XLIBS_ALL)
+else
+examples: $(BUILD_COMBO_EXAMPLE_ALL)
+endif
+
+examples-xlibs: $(BUILD_COMBO_EXAMPLE_XLIBS_ALL)
+
+% } else {
 examples: $(BUILD_COMBO_EXAMPLE_ALL)
 
+% }
 examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 % }
 
@@ -292,15 +344,31 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 BUILD_COMBO_EXAMPLE_CLEAN_ALL =
 # Various Example Clean Targets
 % for (example of args.example_list) {
-%   if(!example.isSkipTopLevelBuild && !example.isBootLoader) {
+%   if(!example.isSkipTopLevelBuild && !example.isBootLoader && !example.isXlibs) {
 BUILD_COMBO_EXAMPLE_CLEAN_ALL +=`example.buildTargetClean`
 %   }
 % }
 # Various System Example Clean Targets
 % for (example of args.system_example_list) {
-%   if(!example.isSkipTopLevelBuild) {
+%   if(!example.isSkipTopLevelBuild && !example.isXlibs) {
 BUILD_COMBO_EXAMPLE_CLEAN_ALL +=`example.buildTargetClean`
 %   }
+% }
+
+% if (xlibSupported) {
+BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL =
+# Various xlibs Example Clean Targets
+% for (example of args.example_list) {
+%   if(example.isXlibs && !example.isBootLoader) {
+BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL +=`example.buildTargetClean`
+%   }
+% }
+# Various xlibs System Example Clean Targets
+% for (example of args.system_example_list) {
+%   if(example.isXlibs) {
+BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL +=`example.buildTargetClean`
+%   }
+% }
 % }
 
 BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL =
@@ -317,7 +385,13 @@ BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL +=`example.buildTargetClean`
 %   }
 % }
 
+% if (xlibSupported) {
+examples-clean: $(BUILD_COMBO_EXAMPLE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL)
+
+examples-xlibs-clean: $(BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL)
+% } else {
 examples-clean: $(BUILD_COMBO_EXAMPLE_CLEAN_ALL)
+% }
 
 examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
@@ -335,15 +409,31 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 BUILD_COMBO_EXAMPLE_SCRUB_ALL =
 # Various Example Scrub Targets
 % for (example of args.example_list) {
-%   if(!example.isSkipTopLevelBuild && !example.isBootLoader) {
+%   if(!example.isSkipTopLevelBuild && !example.isBootLoader && !example.isXlibs) {
 BUILD_COMBO_EXAMPLE_SCRUB_ALL +=`example.buildTargetScrub`
 %   }
 % }
 # Various System Example Scrub Targets
 % for (example of args.system_example_list) {
-%   if(!example.isSkipTopLevelBuild) {
+%   if(!example.isSkipTopLevelBuild && !example.isXlibs) {
 BUILD_COMBO_EXAMPLE_SCRUB_ALL +=`example.buildTargetScrub`
 %   }
+% }
+
+% if (xlibSupported) {
+BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL =
+# Various xlibs Example Scrub Targets
+% for (example of args.example_list) {
+%   if(example.isXlibs && !example.isBootLoader) {
+BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL +=`example.buildTargetScrub`
+%   }
+% }
+# Various xlibs System Example Scrub Targets
+% for (example of args.system_example_list) {
+%   if(example.isXlibs) {
+BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL +=`example.buildTargetScrub`
+%   }
+% }
 % }
 
 BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL =
@@ -360,7 +450,13 @@ BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL +=`example.buildTargetScrub`
 %   }
 % }
 
+% if (xlibSupported) {
+examples-scrub: $(BUILD_COMBO_EXAMPLE_SCRUB_ALL) $(BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL)
+
+examples-xlibs-scrub: $(BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL)
+% } else {
 examples-scrub: $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
+% }
 
 examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
@@ -466,9 +562,17 @@ sdl-unit-tests: $(BUILD_COMBO_SDL_ALL)
 .PHONY: libs-private
 .PHONY: libs-prebuilt libs-prebuilt-clean libs-prebuilt-scrub
 .PHONY: examples examples-clean examples-scrub
+% if (xlibSupported) {
+.PHONY: examples-xlibs examples-xlibs-clean examples-xlibs-scrub
+% }
 .PHONY: examples-private examples-private-clean examples-private-scrub
 .PHONY: sbl sbl-clean sbl-scrub
 .PHONY: $(BUILD_COMBO_ALL) $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_SCRUB_ALL)
-.PHONY: $(BUILD_COMBO_LINUX_ONLY_ALL) $(BUILD_COMBO_LINUX_ONLY_CLEAN_ALL) $(BUILD_COMBO_LINUX_ONLY_SCRUB_ALL)
+% if (xlibSupported) {
+.PHONY: $(BUILD_COMBO_XLIBS_ALL) $(BUILD_COMBO_XLIBS_CLEAN_ALL) $(BUILD_COMBO_XLIBS_SCRUB_ALL)
+% }
 .PHONY: $(BUILD_COMBO_EXAMPLE_ALL) $(BUILD_COMBO_EXAMPLE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
+% if (xlibSupported) {
+.PHONY: $(BUILD_COMBO_EXAMPLE_XLIBS_ALL) $(BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL)
+% }
 .PHONY: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL) $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)

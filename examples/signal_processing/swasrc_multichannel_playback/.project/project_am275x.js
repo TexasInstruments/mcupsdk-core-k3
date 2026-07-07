@@ -96,6 +96,7 @@ function getComponentProperty() {
     property.tirexResourceSubClass = [ "example.gettingstarted" ];
     property.description = "This example verifies MCASP stereo playback"
     property.buildOptionCombos = buildOptionCombos;
+    property.isXlibs = true;
 
     return property;
 }

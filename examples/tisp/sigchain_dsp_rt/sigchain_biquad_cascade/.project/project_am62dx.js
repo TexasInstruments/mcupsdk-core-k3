@@ -222,6 +222,7 @@ function getComponentProperty() {
     property.buildOptionCombos = buildOptionCombos;
     property.ipcVringRTOS = true;
     property.isLogSHM = true;
+    property.isXlibs = true;
 
     return property;
 }

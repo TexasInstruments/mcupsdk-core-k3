@@ -125,6 +125,7 @@ function getComponentProperty() {
     property.isLinuxFwGen = true;
     property.ipcVringRTOS = true;
     property.isLogSHM = true;
+    property.isXlibs = true;
 
     return property;
 }

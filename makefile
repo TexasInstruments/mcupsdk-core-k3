@@ -7,6 +7,9 @@ DEVICE?=am62px
 # debug, release
 PROFILE?=release
 
+# yes = build fftlib/mathlib/vxlib/dsplib/audiolib/tisp and their examples
+BUILD_XLIBS ?= no
+
 # GP, HS, HS_FS
 ifeq ($(DEVICE),$(filter $(DEVICE), j722s))
 DEVICE_TYPE?=HS_FS
@@ -165,6 +168,7 @@ docs:
 	@echo "</script>" >> ./docs/api_guide_$(DEVICE)/search.html
 
 ifneq ($(OS),Windows_NT)
+ifeq ($(BUILD_XLIBS),yes)
 ifeq ($(filter $(DEVICE),am62dx am275x),$(DEVICE))
 	$(MAKE) -C source/fftlib -f makefile.$(DEVICE).c75x.ti-c7000 docs
 	mkdir -p docs/api_guide_$(DEVICE)/fftlib_docs
@@ -190,6 +194,7 @@ ifeq ($(filter $(DEVICE),am62dx am275x),$(DEVICE))
 	mkdir -p docs/api_guide_$(DEVICE)/tisp_docs
 	$(COPY) -r source/tisp/docs/user_guide/ ./docs/api_guide_$(DEVICE)/tisp_docs
 endif
+endif # ifeq ($(BUILD_XLIBS),yes)
 endif # ifneq ($(OS),Windows_NT)
 
 docs-clean:

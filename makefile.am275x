@@ -2,6 +2,8 @@
 # Auto generated makefile
 #
 
+BUILD_XLIBS ?= no
+
 all:
 	$(MAKE) -f makefile.am275x libs
 	$(MAKE) -f makefile.am275x libs-external
@@ -424,18 +426,24 @@ BUILD_COMBO_PREBUILT_ALL =
 # Combine all Private Components
 BUILD_COMBO_PRIVATE_ALL =
 
-# Linux-only Components (not built on Windows)
+# xlibs Components (not built on Windows)
 ifneq ($(OS),Windows_NT)
-BUILD_COMBO_LINUX_ONLY_ALL = $(BUILD_COMBO_FFTLIB_C7524) $(BUILD_COMBO_MATHLIB_C7524) $(BUILD_COMBO_VXLIB_C7524) $(BUILD_COMBO_DSPLIB_C7524) $(BUILD_COMBO_AUDIOLIB_C7524) $(BUILD_COMBO_TISP_C7524)
-BUILD_COMBO_LINUX_ONLY_CLEAN_ALL = $(BUILD_COMBO_CLEAN_FFTLIB_C7524) $(BUILD_COMBO_CLEAN_MATHLIB_C7524) $(BUILD_COMBO_CLEAN_VXLIB_C7524) $(BUILD_COMBO_CLEAN_DSPLIB_C7524) $(BUILD_COMBO_CLEAN_AUDIOLIB_C7524) $(BUILD_COMBO_CLEAN_TISP_C7524)
-BUILD_COMBO_LINUX_ONLY_SCRUB_ALL = $(BUILD_COMBO_SCRUB_FFTLIB_C7524) $(BUILD_COMBO_SCRUB_MATHLIB_C7524) $(BUILD_COMBO_SCRUB_VXLIB_C7524) $(BUILD_COMBO_SCRUB_DSPLIB_C7524) $(BUILD_COMBO_SCRUB_AUDIOLIB_C7524) $(BUILD_COMBO_SCRUB_TISP_C7524)
+ifeq ($(BUILD_XLIBS),yes)
+BUILD_COMBO_XLIBS_ALL = $(BUILD_COMBO_FFTLIB_C7524) $(BUILD_COMBO_MATHLIB_C7524) $(BUILD_COMBO_VXLIB_C7524) $(BUILD_COMBO_DSPLIB_C7524) $(BUILD_COMBO_AUDIOLIB_C7524) $(BUILD_COMBO_TISP_C7524)
+BUILD_COMBO_XLIBS_CLEAN_ALL = $(BUILD_COMBO_CLEAN_FFTLIB_C7524) $(BUILD_COMBO_CLEAN_MATHLIB_C7524) $(BUILD_COMBO_CLEAN_VXLIB_C7524) $(BUILD_COMBO_CLEAN_DSPLIB_C7524) $(BUILD_COMBO_CLEAN_AUDIOLIB_C7524) $(BUILD_COMBO_CLEAN_TISP_C7524)
+BUILD_COMBO_XLIBS_SCRUB_ALL = $(BUILD_COMBO_SCRUB_FFTLIB_C7524) $(BUILD_COMBO_SCRUB_MATHLIB_C7524) $(BUILD_COMBO_SCRUB_VXLIB_C7524) $(BUILD_COMBO_SCRUB_DSPLIB_C7524) $(BUILD_COMBO_SCRUB_AUDIOLIB_C7524) $(BUILD_COMBO_SCRUB_TISP_C7524)
 else
-BUILD_COMBO_LINUX_ONLY_ALL =
-BUILD_COMBO_LINUX_ONLY_CLEAN_ALL =
-BUILD_COMBO_LINUX_ONLY_SCRUB_ALL =
+BUILD_COMBO_XLIBS_ALL =
+BUILD_COMBO_XLIBS_CLEAN_ALL =
+BUILD_COMBO_XLIBS_SCRUB_ALL =
+endif
+else
+BUILD_COMBO_XLIBS_ALL =
+BUILD_COMBO_XLIBS_CLEAN_ALL =
+BUILD_COMBO_XLIBS_SCRUB_ALL =
 endif
 
-libs: $(BUILD_COMBO_ALL) $(BUILD_COMBO_LINUX_ONLY_ALL)
+libs: $(BUILD_COMBO_ALL) $(BUILD_COMBO_XLIBS_ALL)
 
 libs-external: $(BUILD_COMBO_EXTERNAL_ALL)
 
@@ -591,7 +599,7 @@ BUILD_COMBO_EXTERNAL_CLEAN_ALL =
 # Combine all Pre-built Components Clean
 BUILD_COMBO_PREBUILT_CLEAN_ALL =
 
-libs-clean: $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_LINUX_ONLY_CLEAN_ALL)
+libs-clean: $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_XLIBS_CLEAN_ALL)
 
 libs-external-clean: $(BUILD_COMBO_EXTERNAL_CLEAN_ALL)
 
@@ -745,7 +753,7 @@ BUILD_COMBO_EXTERNAL_SCRUB_ALL =
 # Combine all Pre-built Components Scrub Targets
 BUILD_COMBO_PREBUILT_SCRUB_ALL =
 
-libs-scrub: $(BUILD_COMBO_SCRUB_ALL) $(BUILD_COMBO_LINUX_ONLY_SCRUB_ALL)
+libs-scrub: $(BUILD_COMBO_SCRUB_ALL) $(BUILD_COMBO_XLIBS_SCRUB_ALL)
 
 libs-external-scrub: $(BUILD_COMBO_EXTERNAL_SCRUB_ALL)
 
@@ -1085,22 +1093,32 @@ BUILD_COMBO_EXAMPLE_ALL += rti_app_uc4_am275x-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += vtm_reset_example_am275x-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += vtm_example_am275x-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += mcasp_calcratio_am275x-evm_c75ss0-0_freertos_ti-c7000
-BUILD_COMBO_EXAMPLE_ALL += swasrc_multichannel_playback_am275x-evm_c75ss0-0_freertos_ti-c7000
 # Various System Example Targets
 BUILD_COMBO_EXAMPLE_ALL += ipc_notify_echo_am275x-evm_system_freertos
 BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos
-BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_rtos_audio_am275x-evm_system_freertos_nortos
-BUILD_COMBO_EXAMPLE_ALL += fft2d_rtos_dsp_offload_am275x-evm_system_freertos_nortos
-BUILD_COMBO_EXAMPLE_ALL += sigchain_biquad_cascade_am275x-evm_system_freertos_nortos
-BUILD_COMBO_EXAMPLE_ALL += sigchain_router_8ch_12ch_am275x-evm_system_freertos_nortos
-BUILD_COMBO_EXAMPLE_ALL += sigchain_eq_gain_mute_am275x-evm_system_freertos_nortos
-BUILD_COMBO_EXAMPLE_ALL += sigchain_8ch_to_12ch_audio_chain_am275x-evm_system_freertos_nortos
+
+BUILD_COMBO_EXAMPLE_XLIBS_ALL =
+# Various xlibs Example Targets
+BUILD_COMBO_EXAMPLE_XLIBS_ALL += swasrc_multichannel_playback_am275x-evm_c75ss0-0_freertos_ti-c7000
+# Various xlibs System Example Targets
+BUILD_COMBO_EXAMPLE_XLIBS_ALL += ipc_rpmsg_rtos_audio_am275x-evm_system_freertos_nortos
+BUILD_COMBO_EXAMPLE_XLIBS_ALL += fft2d_rtos_dsp_offload_am275x-evm_system_freertos_nortos
+BUILD_COMBO_EXAMPLE_XLIBS_ALL += sigchain_biquad_cascade_am275x-evm_system_freertos_nortos
+BUILD_COMBO_EXAMPLE_XLIBS_ALL += sigchain_router_8ch_12ch_am275x-evm_system_freertos_nortos
+BUILD_COMBO_EXAMPLE_XLIBS_ALL += sigchain_eq_gain_mute_am275x-evm_system_freertos_nortos
+BUILD_COMBO_EXAMPLE_XLIBS_ALL += sigchain_8ch_to_12ch_audio_chain_am275x-evm_system_freertos_nortos
 
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
 # Various Private Example Targets
 # Various Private System Example Targets
 
+ifeq ($(BUILD_XLIBS),yes)
+examples: $(BUILD_COMBO_EXAMPLE_ALL) $(BUILD_COMBO_EXAMPLE_XLIBS_ALL)
+else
 examples: $(BUILD_COMBO_EXAMPLE_ALL)
+endif
+
+examples-xlibs: $(BUILD_COMBO_EXAMPLE_XLIBS_ALL)
 
 examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
@@ -2125,22 +2143,28 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += rti_app_uc4_am275x-evm_r5fss0-0_nortos_ti-arm-c
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += vtm_reset_example_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += vtm_example_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += mcasp_calcratio_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += swasrc_multichannel_playback_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
 # Various System Example Clean Targets
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_notify_echo_am275x-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_rtos_audio_am275x-evm_system_freertos_nortos_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += fft2d_rtos_dsp_offload_am275x-evm_system_freertos_nortos_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += sigchain_biquad_cascade_am275x-evm_system_freertos_nortos_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += sigchain_router_8ch_12ch_am275x-evm_system_freertos_nortos_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += sigchain_eq_gain_mute_am275x-evm_system_freertos_nortos_clean
-BUILD_COMBO_EXAMPLE_CLEAN_ALL += sigchain_8ch_to_12ch_audio_chain_am275x-evm_system_freertos_nortos_clean
+
+BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL =
+# Various xlibs Example Clean Targets
+BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL += swasrc_multichannel_playback_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
+# Various xlibs System Example Clean Targets
+BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL += ipc_rpmsg_rtos_audio_am275x-evm_system_freertos_nortos_clean
+BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL += fft2d_rtos_dsp_offload_am275x-evm_system_freertos_nortos_clean
+BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL += sigchain_biquad_cascade_am275x-evm_system_freertos_nortos_clean
+BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL += sigchain_router_8ch_12ch_am275x-evm_system_freertos_nortos_clean
+BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL += sigchain_eq_gain_mute_am275x-evm_system_freertos_nortos_clean
+BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL += sigchain_8ch_to_12ch_audio_chain_am275x-evm_system_freertos_nortos_clean
 
 BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL =
 # Various Private Example Targets
 # Various Private System Example Targets
 
-examples-clean: $(BUILD_COMBO_EXAMPLE_CLEAN_ALL)
+examples-clean: $(BUILD_COMBO_EXAMPLE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL)
+
+examples-xlibs-clean: $(BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL)
 
 examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
@@ -3165,22 +3189,28 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += rti_app_uc4_am275x-evm_r5fss0-0_nortos_ti-arm-c
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += vtm_reset_example_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += vtm_example_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += mcasp_calcratio_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += swasrc_multichannel_playback_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub
 # Various System Example Scrub Targets
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_notify_echo_am275x-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_am275x-evm_system_freertos_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_rtos_audio_am275x-evm_system_freertos_nortos_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += fft2d_rtos_dsp_offload_am275x-evm_system_freertos_nortos_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += sigchain_biquad_cascade_am275x-evm_system_freertos_nortos_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += sigchain_router_8ch_12ch_am275x-evm_system_freertos_nortos_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += sigchain_eq_gain_mute_am275x-evm_system_freertos_nortos_scrub
-BUILD_COMBO_EXAMPLE_SCRUB_ALL += sigchain_8ch_to_12ch_audio_chain_am275x-evm_system_freertos_nortos_scrub
+
+BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL =
+# Various xlibs Example Scrub Targets
+BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL += swasrc_multichannel_playback_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub
+# Various xlibs System Example Scrub Targets
+BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL += ipc_rpmsg_rtos_audio_am275x-evm_system_freertos_nortos_scrub
+BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL += fft2d_rtos_dsp_offload_am275x-evm_system_freertos_nortos_scrub
+BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL += sigchain_biquad_cascade_am275x-evm_system_freertos_nortos_scrub
+BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL += sigchain_router_8ch_12ch_am275x-evm_system_freertos_nortos_scrub
+BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL += sigchain_eq_gain_mute_am275x-evm_system_freertos_nortos_scrub
+BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL += sigchain_8ch_to_12ch_audio_chain_am275x-evm_system_freertos_nortos_scrub
 
 BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL =
 # Various Private Example Targets
 # Various Private System Example Targets
 
-examples-scrub: $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
+examples-scrub: $(BUILD_COMBO_EXAMPLE_SCRUB_ALL) $(BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL)
+
+examples-xlibs-scrub: $(BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL)
 
 examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
@@ -4063,9 +4093,11 @@ sbl-scrub:
 .PHONY: libs-private
 .PHONY: libs-prebuilt libs-prebuilt-clean libs-prebuilt-scrub
 .PHONY: examples examples-clean examples-scrub
+.PHONY: examples-xlibs examples-xlibs-clean examples-xlibs-scrub
 .PHONY: examples-private examples-private-clean examples-private-scrub
 .PHONY: sbl sbl-clean sbl-scrub
 .PHONY: $(BUILD_COMBO_ALL) $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_SCRUB_ALL)
-.PHONY: $(BUILD_COMBO_LINUX_ONLY_ALL) $(BUILD_COMBO_LINUX_ONLY_CLEAN_ALL) $(BUILD_COMBO_LINUX_ONLY_SCRUB_ALL)
+.PHONY: $(BUILD_COMBO_XLIBS_ALL) $(BUILD_COMBO_XLIBS_CLEAN_ALL) $(BUILD_COMBO_XLIBS_SCRUB_ALL)
 .PHONY: $(BUILD_COMBO_EXAMPLE_ALL) $(BUILD_COMBO_EXAMPLE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
+.PHONY: $(BUILD_COMBO_EXAMPLE_XLIBS_ALL) $(BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL)
 .PHONY: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL) $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)

@@ -304,18 +304,8 @@ BUILD_COMBO_PREBUILT_ALL =
 # Combine all Private Components
 BUILD_COMBO_PRIVATE_ALL = $(BUILD_COMBO_safertos)
 
-# Linux-only Components (not built on Windows)
-ifneq ($(OS),Windows_NT)
-BUILD_COMBO_LINUX_ONLY_ALL =
-BUILD_COMBO_LINUX_ONLY_CLEAN_ALL =
-BUILD_COMBO_LINUX_ONLY_SCRUB_ALL =
-else
-BUILD_COMBO_LINUX_ONLY_ALL =
-BUILD_COMBO_LINUX_ONLY_CLEAN_ALL =
-BUILD_COMBO_LINUX_ONLY_SCRUB_ALL =
-endif
 
-libs: $(BUILD_COMBO_ALL) $(BUILD_COMBO_LINUX_ONLY_ALL)
+libs: $(BUILD_COMBO_ALL)
 
 libs-external: $(BUILD_COMBO_EXTERNAL_ALL)
 
@@ -406,7 +396,7 @@ BUILD_COMBO_PREBUILT_CLEAN_ALL =
 # Combine all Private Components Clean
 BUILD_COMBO_PRIVATE_CLEAN_ALL = $(BUILD_COMBO_CLEAN_safertos)
 
-libs-clean: $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_LINUX_ONLY_CLEAN_ALL)
+libs-clean: $(BUILD_COMBO_CLEAN_ALL)
 
 libs-external-clean: $(BUILD_COMBO_EXTERNAL_CLEAN_ALL)
 
@@ -497,7 +487,7 @@ BUILD_COMBO_PREBUILT_SCRUB_ALL =
 # Combine all Private Components Scrub Targets
 BUILD_COMBO_PRIVATE_SCRUB_ALL = $(BUILD_COMBO_SCRUB_safertos)
 
-libs-scrub: $(BUILD_COMBO_SCRUB_ALL) $(BUILD_COMBO_LINUX_ONLY_SCRUB_ALL)
+libs-scrub: $(BUILD_COMBO_SCRUB_ALL)
 
 libs-external-scrub: $(BUILD_COMBO_EXTERNAL_SCRUB_ALL)
 
@@ -736,6 +726,7 @@ BUILD_COMBO_EXAMPLE_ALL += csirx_ut_j722s-evm_main-r5fss0-0_freertos_ti-arm-clan
 BUILD_COMBO_EXAMPLE_ALL += ipc_notify_echo_j722s-evm_system_freertos_nortos
 BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_j722s-evm_system_freertos_nortos
 BUILD_COMBO_EXAMPLE_ALL += empty_j722s-evm_system_freertos
+
 
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
 # Various Private Example Targets
@@ -1507,6 +1498,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_notify_echo_j722s-evm_system_freertos_norto
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_j722s-evm_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += empty_j722s-evm_system_freertos_clean
 
+
 BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL =
 # Various Private Example Targets
 BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL += dpl_demo_j722s-evm_mcu-r5fss0-0_safertos_ti-arm-clang_clean
@@ -2271,6 +2263,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_notify_echo_j722s-evm_system_freertos_norto
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_j722s-evm_system_freertos_nortos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += empty_j722s-evm_system_freertos_scrub
 
+
 BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL =
 # Various Private Example Targets
 BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL += dpl_demo_j722s-evm_mcu-r5fss0-0_safertos_ti-arm-clang_scrub
@@ -2895,6 +2888,5 @@ host-emu-scrub:
 .PHONY: examples-private examples-private-clean examples-private-scrub
 .PHONY: sbl sbl-clean sbl-scrub
 .PHONY: $(BUILD_COMBO_ALL) $(BUILD_COMBO_CLEAN_ALL) $(BUILD_COMBO_SCRUB_ALL)
-.PHONY: $(BUILD_COMBO_LINUX_ONLY_ALL) $(BUILD_COMBO_LINUX_ONLY_CLEAN_ALL) $(BUILD_COMBO_LINUX_ONLY_SCRUB_ALL)
 .PHONY: $(BUILD_COMBO_EXAMPLE_ALL) $(BUILD_COMBO_EXAMPLE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_SCRUB_ALL)
 .PHONY: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL) $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL) $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)

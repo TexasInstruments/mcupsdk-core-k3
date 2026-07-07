@@ -93,6 +93,7 @@ help:
 	@echo  $(MAKE) -s -C drivers/aasrc/am275x-evm/r5fss1-1_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/adc/am275x-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/adc/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/device_manager/test_device_manager/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C board/eeprom/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C board/hyperRam/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/gpio/am275x-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -960,6 +961,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  test_adc_am275x-evm_r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/adc/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_sciclient_direct_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/device_manager/test_device_manager/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
  test_eeprom_am275x-evm_r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C board/eeprom/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
@@ -2259,6 +2263,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_adc_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/adc/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
+ test_sciclient_direct_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/device_manager/test_device_manager/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
  test_eeprom_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C board/eeprom/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
@@ -3557,6 +3564,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  test_adc_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/adc/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
+ test_sciclient_direct_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/device_manager/test_device_manager/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
  test_eeprom_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C board/eeprom/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
@@ -4402,6 +4412,7 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
 
 sbl: libs
+	$(MAKE) -C drivers/device_manager/test_device_manager/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 	$(MAKE) -C drivers/gpio/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 	$(MAKE) -C drivers/gtc/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 	$(MAKE) -C drivers/pinmux_coverage/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
@@ -4421,6 +4432,7 @@ sbl: libs
 	$(MAKE) -C drivers/hyperbus/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
 sbl-clean:
+	$(MAKE) -C drivers/device_manager/test_device_manager/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 	$(MAKE) -C drivers/gpio/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 	$(MAKE) -C drivers/gtc/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 	$(MAKE) -C drivers/pinmux_coverage/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
@@ -4440,6 +4452,7 @@ sbl-clean:
 	$(MAKE) -C drivers/hyperbus/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
 sbl-scrub:
+	$(MAKE) -C drivers/device_manager/test_device_manager/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C drivers/gpio/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C drivers/gtc/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C drivers/pinmux_coverage/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub

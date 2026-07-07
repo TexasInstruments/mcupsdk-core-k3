@@ -278,6 +278,18 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "RTC",
+        testCaseName: "Test RTC system test",
+        testCaseIds: "SITSW-12014 SITSW-12015 SITSW-12016 SITSW-12017",
+        withCfg: true,
+        cfgPath: "test/drivers/rtc/test_rtc_system/{board}/test_rtc_system_sbl_uart_${DEVICE_TYPE}.cfg",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -322,6 +334,11 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_c75;
         build_property.templates = templates_freertos_c75;
         build_property.defines = defines_common;
+    }
+
+    // r5fss0-0 is master core; robot only for master
+    if (buildOption.cpu.match(/^r5fss0-0$/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
     }
 
     return build_property;

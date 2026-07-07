@@ -247,6 +247,7 @@ const example_file_list = [
     "test/drivers/mcasp/test_mcasp_system/.project/project.js",
     "test/drivers/pinmux_coverage/.project/project.js",
     "test/drivers/rtc/.project/project.js",
+    "test/drivers/rtc/test_rtc_system/.project/project.js",
     "test/drivers/sciclient/sciclient_dynamic_analysis/.project/project.js",
     "test/drivers/sciclient/sciclient_get_version/.project/project.js",
     "test/drivers/sciclient/sciclient_interrupt_mode/.project/project.js",

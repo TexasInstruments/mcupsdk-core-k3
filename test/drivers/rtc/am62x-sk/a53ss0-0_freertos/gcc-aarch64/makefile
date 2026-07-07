@@ -72,6 +72,7 @@ INCLUDES_common := \
 
 DEFINES_common := \
 	-DSOC_AM62X \
+	-DENABLE_MT_TESTS \
 
 CFLAGS_common := \
 	-mcpu=cortex-a53+fp+simd \

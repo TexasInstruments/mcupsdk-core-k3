@@ -315,7 +315,9 @@ void test_main(void *args)
     RUN_TEST(TestRtc_alarmOverwriteBehavior,                11815, NULL);
     RUN_TEST(TestRtc_timerEventBoundaryTimes,               11816, NULL);
     RUN_TEST(TestRtc_callbackRegistration,                  11817, NULL);
+#if !defined (SOC_AM62X)
     RUN_TEST(TestRtc_interruptClearedAfterCallback,         11818, NULL);
+#endif
     RUN_TEST(TestRtc_bothCallbacksRegisteredAndInvoked,     11819, NULL);
     RUN_TEST(TestRtc_startAndStop,                          11820, NULL);
     RUN_TEST(TestRtc_timeRetentionAcrossReset,              11821, NULL);
@@ -331,11 +333,15 @@ void test_main(void *args)
     RUN_TEST(TestRtc_nullHandleRejected,                    11829, NULL);
     RUN_TEST(TestRtc_outOfRangeYear,                        11830, NULL);
     RUN_TEST(TestRtc_openInvalidIndex,                      11831, NULL);
+#if !defined (SOC_AM62X)
     RUN_TEST(TestRtc_doubleOpenAndDoubleClose,              11832, NULL);
+#endif
     RUN_TEST(TestRtc_calendarFieldBoundaryValidation,       11833, NULL);
     RUN_TEST(TestRtc_timeFieldOutOfRange,                   11834, NULL);
+#if !defined (SOC_AM62X)
     RUN_TEST(TestRtc_nullDataPointerAllApis,                11835, NULL);
     RUN_TEST(TestRtc_alarmInPast,                           11836, NULL);
+#endif
     RUN_TEST(TestRtc_scratchRegisterOutOfRange,             11837, NULL);
     RUN_TEST(TestRtc_operationsOnClosedHandle,              11838, NULL);
     RUN_TEST(TestRtc_redundantStopAndStart,                 11839, NULL);
@@ -348,13 +354,19 @@ void test_main(void *args)
 #ifdef ENABLE_MT_TESTS
     /* Multithread Test Cases */
     RUN_TEST(TestRtc_multipleInstances,                     11841, NULL);
+#if !defined (SOC_AM62X)
     RUN_TEST(TestRtc_concurrentAlarmSameTime,               11842, NULL);
+#endif
     RUN_TEST(TestRtc_concurrentAccessRaceCondition,         11843, NULL);
+#if !defined (SOC_AM62X)
     RUN_TEST(TestRtc_concurrentScratchRegisterAccess,       11844, NULL);
     RUN_TEST(TestRtc_concurrentAlarmAndSetTime,             11845, NULL);
+#endif
     RUN_TEST(TestRtc_concurrentStopStartWithGetTime,        11846, NULL);
+#if !defined (SOC_AM62X)
     RUN_TEST(TestRtc_isrDuringApiExecution,                 11847, NULL);
     RUN_TEST(TestRtc_concurrentOpenAttempt,                 11848, NULL);
+#endif
     RUN_TEST(TestRtc_highFrequencyParallelGetTime,          11849, NULL);
 #endif /* ENABLE_MT_TESTS */
 

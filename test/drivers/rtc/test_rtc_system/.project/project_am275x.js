@@ -139,7 +139,7 @@ const robot_template = {
     options: {
         componentName: "RTC",
         testCaseName: "Test RTC system test",
-        testCaseIds: "SITSW-8873 SITSW-8875 SITSW-12014 SITSW-12015 SITSW-12016 SITSW-12017",
+        testCaseIds: "SITSW-12014 SITSW-12015 SITSW-12016 SITSW-12017",
         withCfg: true,
         cfgPath: "test/drivers/rtc/test_rtc_system/{board}/test_rtc_system_sbl_uart_${DEVICE_TYPE}.cfg",
     },

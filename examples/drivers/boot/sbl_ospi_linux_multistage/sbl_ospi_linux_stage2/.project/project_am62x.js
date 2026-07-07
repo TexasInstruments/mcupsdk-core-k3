@@ -168,6 +168,28 @@ const robot_template_ddr_ecc = {
         ],
     },
 };
+const robot_template_stress = {
+    input: ".project/templates/am62x/astra/tests_sbl_linux.robot.xdt",
+    output: "../tests_stress.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL OSPI NOR Linux - Stress",
+        appName: "sbl_ospi_linux_multistage(stress)",
+        testCaseIds: "SITSW-2783",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_linux_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        timeout: 36000,
+        expectTimeout: 300,
+        stressIterations: 100,
+        expectations: [
+            { port: "USB0", string: "login:", timeout: 300 },
+            { port: "USB0", send: "root", string: "root@", timeout: 300 },
+            { port: "USB2", string: "Starting Sciserver..... PASSED", timeout: 300 },
+            { port: "USB3", string: "Remote Core waiting for messages at end point", timeout: 300 },
+        ],
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -190,6 +212,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = [...(build_property.templates || []), robot_template_qnx];
     build_property.templates = [...build_property.templates, robot_template_sw_version];
     build_property.templates = [...build_property.templates, robot_template_ddr_ecc];
+    build_property.templates = [...build_property.templates, robot_template_stress];
 
     return build_property;
 }

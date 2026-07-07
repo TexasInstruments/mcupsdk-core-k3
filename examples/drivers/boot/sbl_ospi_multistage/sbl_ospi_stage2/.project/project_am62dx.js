@@ -142,6 +142,27 @@ const robot_template = {
     },
 };
 
+const robot_template_stress = {
+    input: ".project/templates/am62dx/astra/tests_sbl.robot.xdt",
+    output: "../tests_stress.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL OSPI NOR Stress",
+        appName: "sbl_ospi_multistage(stress)",
+        testCaseIds: "SITSW-7725",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        timeout: 700,
+        expectTimeout: 100,
+        stressIterations: 100,
+        expectations: [
+            { port: "USB1", string: "Starting 2nd stage bootloader" },
+            { port: "USB1", string: "Starting RTOS/Baremetal applications" },
+            { port: "USB2", string: "All tests have passed!!" },
+        ],
+    },
+};
+
 const robot_template_mcu_bist = {
     input: ".project/templates/am62dx/astra/tests_sbl.robot.xdt",
     output: "../tests_mcu_bist.robot",
@@ -199,6 +220,7 @@ function getComponentBuildProperty(buildOption) {
 
 
     build_property.templates = [...(build_property.templates || []), robot_template];
+    build_property.templates = [...build_property.templates, robot_template_stress];
     build_property.templates = [...build_property.templates, robot_template_mcu_bist];
     build_property.templates = [...build_property.templates, robot_template_sw_version];
     return build_property;

@@ -112,6 +112,22 @@ const robot_template = {
     },
 };
 
+const robot_template_stress = {
+    input: ".project/templates/am275x/astra/tests_sbl.robot.xdt",
+    output: "../tests_stress.robot",
+    options: {
+        testCaseName: "Bootloader: SBL OSPI - Stress",
+        testCaseIds: "SITSW-7725",
+        cfgPath: "tools/boot/sbl_prebuilt/am275x-evm/sbl_ospi_${DEVICE_TYPE}.cfg",
+        bootMode: "XSPI_1S_BOOT_MODE",
+        stressIterations: 100,
+        expectations: [
+            { port: "USB2", string: "Image loading done" },
+            { port: "ACM0", string: "All tests have passed!!" },
+        ],
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
 ];
@@ -151,6 +167,7 @@ function getComponentBuildProperty(buildOption) {
     }
 
     build_property.templates = [...(build_property.templates || []), robot_template];
+    build_property.templates = [...build_property.templates, robot_template_stress];
 
     return build_property;
 }

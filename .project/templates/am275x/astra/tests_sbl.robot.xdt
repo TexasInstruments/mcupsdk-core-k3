@@ -35,6 +35,7 @@
     let finalPort      = bootMode ? sblPort : logPort;
     // expectations: [{port, string}] — overrides expectedString/finalPort when set
     let expectations   = (options && options.expectations)  ? options.expectations   : null;
+    let stressIterations = (options && options.stressIterations != null) ? options.stressIterations : null;
 
     let coreName = project.cpu + "_" + project.os;
     let cfgFile  = options.cfgPath
@@ -74,22 +75,52 @@ ${CFG_FILE}    `cfgFile`
 	UartUniFlash.WITH CFG    ${`sblPort`}    ${UartUniFlashPath}    ${CFG_FILE}
 % if (bootMode) {
 	CHANGE BOOT MODE    ${`bootMode`}
+%     if (stressIterations !== null) {
+	FOR    ${index}     IN RANGE    `stressIterations`
+	    Log To Console    This is iteration number: ${index}
+	    DUT OFF
+%         if (expectations) {
+%             { const allPorts = [...new Set(expectations.map(e => e.port))]; for (let p of allPorts) {
+	    DUT`p`.CONNECT TO UART PORT    ${`p`}
+%             } } // end allPorts for
+%         } else { // single logPort + sblPort
+	    DUT`logPort`.CONNECT TO UART PORT    ${`logPort`}
+	    DUT`sblPort`.CONNECT TO UART PORT    ${`sblPort`}
+%         } // end if (expectations)
+	    DUT ON
+%         if (expectations) {
+%             for (let exp of expectations) {
+	    DUT`exp.port`.EXPECT STRING AT UART PORT    `exp.string`    `expectTimeout`
+%             } // end for expectations
+%         } else { // single expectedString
+	    DUT`finalPort`.EXPECT STRING AT UART PORT    `expectedString`    `expectTimeout`
+%         } // end if (expectations)
+	END
+%     } else { // stressIterations === null — single boot
 	DUT OFF
-% if (expectations) {
-% { const seenPorts = [...new Set(expectations.map(e => e.port))].filter(p => p !== sblPort); for (let p of seenPorts) {
+%         if (expectations) {
+%             { const seenPorts = [...new Set(expectations.map(e => e.port))].filter(p => p !== sblPort); for (let p of seenPorts) {
 	DUT`p`.CONNECT TO UART PORT    ${`p`}
-% } }
-% } else {
+%             } } // end seenPorts for (non-sblPort only)
+%         } else { // single logPort
 	DUT`logPort`.CONNECT TO UART PORT    ${`logPort`}
-% }
+%         } // end if (expectations)
 	DUT ON
-% } else {
-	DUT`logPort`.CONNECT TO UART PORT    ${`logPort`}
-% }
-% if (expectations) {
-% for (let exp of expectations) {
+%         if (expectations) {
+%             for (let exp of expectations) {
 	DUT`exp.port`.EXPECT STRING AT UART PORT    `exp.string`    `expectTimeout`
-% }
-% } else {
+%             } // end for expectations
+%         } else { // single expectedString
 	DUT`finalPort`.EXPECT STRING AT UART PORT    `expectedString`    `expectTimeout`
-% }
+%         } // end if (expectations)
+%     } // end if (stressIterations)
+% } else { // !bootMode
+	DUT`logPort`.CONNECT TO UART PORT    ${`logPort`}
+%     if (expectations) {
+%         for (let exp of expectations) {
+	DUT`exp.port`.EXPECT STRING AT UART PORT    `exp.string`    `expectTimeout`
+%         } // end for expectations
+%     } else { // single expectedString
+	DUT`finalPort`.EXPECT STRING AT UART PORT    `expectedString`    `expectTimeout`
+%     } // end if (expectations)
+% } // end if (bootMode)

@@ -136,6 +136,27 @@ const robot_template = {
     },
 };
 
+const robot_template_stress = {
+    input: ".project/templates/am62dx/astra/tests_sbl.robot.xdt",
+    output: "../tests_stress.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL EMMC - Stress",
+        appName: "sbl_emmc_multistage(stress)",
+        testCaseIds: "SITSW-7724",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_emmc_${DEVICE_TYPE}.cfg",
+        bootMode: "EMMC_BOOT_MODE",
+        timeout: 700,
+        expectTimeout: 100,
+        stressIterations: 100,
+        expectations: [
+            { port: "USB1", string: "Starting 2nd stage bootloader" },
+            { port: "USB1", string: "Starting RTOS/Baremetal applications" },
+            { port: "USB2", string: "All tests have passed!!" },
+        ],
+    },
+};
+
 const robot_template_smp = {
     input: ".project/templates/am62dx/astra/tests_sbl.robot.xdt",
     output: "../tests_smp.robot",
@@ -173,6 +194,7 @@ function getComponentBuildProperty(buildOption) {
 
 
     build_property.templates = [...(build_property.templates || []), robot_template];
+    build_property.templates = [...build_property.templates, robot_template_stress];
     build_property.templates = [...build_property.templates, robot_template_smp];
     return build_property;
 }

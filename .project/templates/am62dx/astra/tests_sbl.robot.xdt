@@ -25,6 +25,7 @@
     let expectPort     = (options && options.expectPort)     ? options.expectPort     : "USB2";
     // expectations: [{port, string}] — for multi-port sequential checks; overrides expectedString/expectPort
     let expectations   = (options && options.expectations)  ? options.expectations   : null;
+    let stressIterations = (options && options.stressIterations != null) ? options.stressIterations : null;
 
     let coreName = project.cpu + "_" + project.os;
     let cfgFile  = options.cfgPath
@@ -62,27 +63,56 @@ ${CFG_FILE}    `cfgFile`
 	DUTUSB1.EXPECT STRING AT UART PORT    CCC
 % if (useBootloader) {
 	UartBootloader.WITH CFG    ${USB1}    ${UartBootloaderPath}    ${CFG_FILE}
-% } else {
+% } else { // UartUniFlash
 	UartUniFlash.WITH CFG    ${USB1}    ${UartUniFlashPath}    ${CFG_FILE}
-% }
+% } // end if (useBootloader)
 % if (bootMode) {
 	CHANGE BOOT MODE    ${`bootMode`}
+%     if (stressIterations !== null) {
+	FOR    ${index}     IN RANGE    `stressIterations`
+	    Log To Console    This is iteration number: ${index}
+	    DUT OFF
+%         if (expectations) {
+%             { const seenPorts = [...new Set(expectations.map(e => e.port))]; for (let p of seenPorts) {
+	    DUT`p`.CONNECT TO UART PORT    ${`p`}
+%             } } // end seenPorts for
+%         } else { // single expectPort
+	    DUT`expectPort`.CONNECT TO UART PORT    ${`expectPort`}
+%         } // end if (expectations)
+	    DUT ON
+%         if (expectations) {
+%             for (let exp of expectations) {
+	    DUT`exp.port`.EXPECT STRING AT UART PORT    `exp.string`    `expectTimeout`
+%             } // end for expectations
+%         } else { // single expectedString
+	    DUT`expectPort`.EXPECT STRING AT UART PORT    `expectedString`    `expectTimeout`
+%         } // end if (expectations)
+	END
+%     } else { // stressIterations === null — single boot
 	DUT OFF
-% if (expectations) {
-% { const seenPorts = [...new Set(expectations.map(e => e.port))]; for (let p of seenPorts) {
+%         if (expectations) {
+%             { const seenPorts = [...new Set(expectations.map(e => e.port))]; for (let p of seenPorts) {
 	DUT`p`.CONNECT TO UART PORT    ${`p`}
-% } }
-% } else {
+%             } } // end seenPorts for
+%         } else { // single expectPort
 	DUT`expectPort`.CONNECT TO UART PORT    ${`expectPort`}
-% }
+%         } // end if (expectations)
 	DUT ON
-% } else {
-	DUTUSB2.CONNECT TO UART PORT    ${USB2}
-% }
-% if (expectations) {
-% for (let exp of expectations) {
+%         if (expectations) {
+%             for (let exp of expectations) {
 	DUT`exp.port`.EXPECT STRING AT UART PORT    `exp.string`    `expectTimeout`
-% }
-% } else {
+%             } // end for expectations
+%         } else { // single expectedString
 	DUT`expectPort`.EXPECT STRING AT UART PORT    `expectedString`    `expectTimeout`
-% }
+%         } // end if (expectations)
+%     } // end if (stressIterations)
+% } else { // !bootMode
+	DUTUSB2.CONNECT TO UART PORT    ${USB2}
+%     if (expectations) {
+%         for (let exp of expectations) {
+	DUT`exp.port`.EXPECT STRING AT UART PORT    `exp.string`    `expectTimeout`
+%         } // end for expectations
+%     } else { // single expectedString
+	DUT`expectPort`.EXPECT STRING AT UART PORT    `expectedString`    `expectTimeout`
+%     } // end if (expectations)
+% } // end if (bootMode)

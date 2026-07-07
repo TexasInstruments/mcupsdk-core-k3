@@ -34,6 +34,7 @@
     let expectations   = (options && options.boardExpectations && options.boardExpectations[project.board])
                          ? options.boardExpectations[project.board]
                          : (options && options.expectations) ? options.expectations : [];
+    let stressIterations = (options && options.stressIterations != null) ? options.stressIterations : null;
 
     let coreName = project.cpu + "_" + project.os;
     let cfgFile  = options.cfgPath
@@ -71,27 +72,58 @@ ${CFG_FILE}    `cfgFile`
 	DUTUSB0.CONNECT TO UART PORT    ${USB0}
 	DUTUSB0.EXPECT STRING AT UART PORT    CCC
 	UartBootloader.WITH CFG    ${USB0}    ${UartBootloaderPath}    ${CFG_FILE}
-% { const seenPorts = [...new Set(expectations.map(e => e.port))]; for (let p of seenPorts) {
+%     { const seenPorts = [...new Set(expectations.map(e => e.port))]; for (let p of seenPorts) {
 	DUT`p`.CONNECT TO UART PORT    ${`p`}
-% } }
-% } else {
+%     } } // end seenPorts for
+%     if (useNFS) {
+	NFS.SETUP NFS USING UBOOT AND BOOT    USB0
+%     } // end if (useNFS)
+%     for (let exp of expectations) {
+%         if (exp.send !== undefined) {
+	DUT`exp.port`.SEND COMMAND AND VERIFY    `exp.send`    `exp.string`    `exp.timeout !== undefined ? exp.timeout : expectTimeout`
+%         } else { // exp.send === undefined
+	DUT`exp.port`.EXPECT STRING AT UART PORT    `exp.string`    `exp.timeout !== undefined ? exp.timeout : expectTimeout`
+%         } // end if (exp.send)
+%     } // end for expectations
+% } else { // !useBootloader — UartUniFlash path
 	UartUniFlash.WITH CFG    ${USB0}    ${UartUniFlashPath}    ${CFG_FILE}
-% if (bootMode) {
-% { const seenPorts = [...new Set(expectations.map(e => e.port))]; for (let p of seenPorts) {
+%     if (bootMode) {
+%         { const seenPorts = [...new Set(expectations.map(e => e.port))]; for (let p of seenPorts) {
 	DUT`p`.CONNECT TO UART PORT    ${`p`}
-% } }
+%         } } // end seenPorts for
 	CHANGE BOOT MODE    ${`bootMode`}
+%         if (stressIterations !== null) {
+	FOR    ${index}     IN RANGE    `stressIterations`
+	    Log To Console    This is iteration number: ${index}
+	    DUT OFF
+%             { const seenPorts = [...new Set(expectations.map(e => e.port))]; for (let p of seenPorts) {
+	    DUT`p`.CONNECT TO UART PORT    ${`p`}
+%             } } // end seenPorts for
+	    DUT ON
+%             if (useNFS) {
+	    NFS.SETUP NFS USING UBOOT AND BOOT    USB0
+%             } // end if (useNFS)
+%             for (let exp of expectations) {
+%                 if (exp.send !== undefined) {
+	    DUT`exp.port`.SEND COMMAND AND VERIFY    `exp.send`    `exp.string`    `exp.timeout !== undefined ? exp.timeout : expectTimeout`
+%                 } else { // exp.send === undefined
+	    DUT`exp.port`.EXPECT STRING AT UART PORT    `exp.string`    `exp.timeout !== undefined ? exp.timeout : expectTimeout`
+%                 } // end if (exp.send)
+%             } // end for expectations
+	END
+%         } else { // stressIterations === null — single boot
 	DUT OFF
 	DUT ON
-% }
-% }
-% if (useNFS) {
+%             if (useNFS) {
 	NFS.SETUP NFS USING UBOOT AND BOOT    USB0
-% }
-% for (let exp of expectations) {
-% if (exp.send !== undefined) {
+%             } // end if (useNFS)
+%             for (let exp of expectations) {
+%                 if (exp.send !== undefined) {
 	DUT`exp.port`.SEND COMMAND AND VERIFY    `exp.send`    `exp.string`    `exp.timeout !== undefined ? exp.timeout : expectTimeout`
-% } else {
+%                 } else { // exp.send === undefined
 	DUT`exp.port`.EXPECT STRING AT UART PORT    `exp.string`    `exp.timeout !== undefined ? exp.timeout : expectTimeout`
-% }
-% }
+%                 } // end if (exp.send)
+%             } // end for expectations
+%         } // end if (stressIterations)
+%     } // end if (bootMode)
+% } // end if (useBootloader)

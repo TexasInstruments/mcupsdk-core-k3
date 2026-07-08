@@ -238,6 +238,13 @@ let protoToCfgMap = {
     "custom"   : "pCustom",
 }
 
+let autoCfgFlashFromFileDescription = `
+All required parameters must be present in the JSON file. 
+If any required field is missing, an error will be reported. 
+For SERIAL_NOR reference, see source/board/.meta/flash/serialFlash/S28HS512T.json. 
+For SERIAL_NAND reference, see source/board/.meta/flash/serialFlash/W35N01JWTBAG.json.",
+`
+
 function getDriver(drvName) {
     return system.getScript(`/drivers/${drvName}/${drvName}`);
 }
@@ -1481,6 +1488,7 @@ function getConfigurables()
         {
             name: "autoCfgFlashGroup",
             displayName: "Automatically Configure Flash",
+            longDescription: autoCfgFlashFromFileDescription,
             collapsed: false,
             config: [
                 {

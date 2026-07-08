@@ -96,6 +96,10 @@ static TaskP_Object             TestEpwm_MtThreadTaskObj[TEST_EPWM_MT_SUBMODULE_
 static uint8_t                  TestEpwm_MtTaskStack[TEST_EPWM_MT_SUBMODULE_THREADS][TEST_EPWM_STACK_SIZE]
                                 __attribute__((aligned(32)));
 
+/* Shared base address */
+#ifdef SMP_FREERTOS
+uint32_t gEpwmBaseAddr;
+#else
 /* set by test_main in test_epwm.c before calling multi-thread tests */
 extern uint32_t gEpwmBaseAddr;
 #endif
@@ -130,6 +134,43 @@ void run_epwm_multi_threaded_tests(void *args)
 
     return;
 }
+
+#ifdef SMP_FREERTOS
+void test_main(void *args)
+{
+    /* Initialize the shared EPWM base address */
+    gEpwmBaseAddr = (uint32_t)AddrTranslateP_getLocalAddr(CONFIG_EPWM0_BASE_ADDR);
+
+    UNITY_BEGIN();
+
+    RUN_TEST(TestEpwm_mtConcurrentRegisterAccess, 11604, NULL);
+    RUN_TEST(TestEpwm_mtStressConcurrentReconfigure, 11605, NULL);
+    RUN_TEST(TestEpwm_mtConcurrentTzEtOperations, 11606, NULL);
+
+    UNITY_END();
+
+}
+
+/**
+ * @brief Unity test setup hook.
+ *
+ * Called before each Unity test. Left empty because tests perform their own
+ * per-test setup and teardown.
+ */
+void setUp(void)
+{
+}
+
+/**
+ * @brief Unity test teardown hook.
+ *
+ * Called after each Unity test. Left empty because tests perform their own
+ * per-test cleanup.
+ */
+void tearDown(void)
+{
+}
+#endif
 
 /* ========================================================================== */
 /*                     Thread Worker Functions                                */
@@ -390,7 +431,9 @@ static void TestEpwm_mtConcurrentRegisterAccess(void *args)
             taskParams.taskMain = TestEpwm_mtWorkerTbConfig;
         else
             taskParams.taskMain = TestEpwm_mtWorkerCcConfig;
-
+        #ifdef SMP_FREERTOS
+        taskParams.coreAffinity = 1 << i;
+        #endif
         status = TaskP_construct(&TestEpwm_MtThreadTaskObj[i], &taskParams);
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     }
@@ -445,7 +488,9 @@ static void TestEpwm_mtConcurrentSubmoduleCfg(void *args)
             taskParams.taskMain = TestEpwm_mtWorkerAqConfig;
         else
             taskParams.taskMain = TestEpwm_mtWorkerDbConfig;
-
+        #ifdef SMP_FREERTOS
+        taskParams.coreAffinity = 1 << i;
+        #endif
         status = TaskP_construct(&TestEpwm_MtThreadTaskObj[i], &taskParams);
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     }
@@ -496,7 +541,9 @@ static void TestEpwm_mtStressConcurrentReconfigure(void *args)
             taskParams.taskMain = TestEpwm_mtWorkerTbConfig;
         else
             taskParams.taskMain = TestEpwm_mtWorkerDbConfig;
-
+        #ifdef SMP_FREERTOS
+        taskParams.coreAffinity = 1 << i;
+        #endif
         status = TaskP_construct(&TestEpwm_MtThreadTaskObj[i], &taskParams);
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     }
@@ -549,7 +596,9 @@ static void TestEpwm_mtConcurrentTzEtOperations(void *args)
             taskParams.taskMain = TestEpwm_mtWorkerTzConfig;
         else
             taskParams.taskMain = TestEpwm_mtWorkerEtConfig;
-
+        #ifdef SMP_FREERTOS
+        taskParams.coreAffinity = 1 << i;
+        #endif
         status = TaskP_construct(&TestEpwm_MtThreadTaskObj[i], &taskParams);
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     }

@@ -116,6 +116,12 @@ help:
 	@echo  $(MAKE) -s -C drivers/epwm/am275x-evm/r5fss1-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/epwm/am275x-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/epwm/am275x-evm/c75ss1-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/epwm/test_epwm_system/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/epwm/test_epwm_system/am275x-evm/r5fss0-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/epwm/test_epwm_system/am275x-evm/r5fss1-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/epwm/test_epwm_system/am275x-evm/r5fss1-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/epwm/test_epwm_system/am275x-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/epwm/test_epwm_system/am275x-evm/c75ss1-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/gpio/test_gpio_system/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/gpio/test_gpio_system/am275x-evm/r5fss0-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/gpio/test_gpio_system/am275x-evm/r5fss1-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -542,6 +548,12 @@ BUILD_COMBO_EXAMPLE_ALL += test_epwm_am275x-evm_r5fss1-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_epwm_am275x-evm_r5fss1-1_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_epwm_am275x-evm_c75ss0-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += test_epwm_am275x-evm_c75ss1-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += test_epwm_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_epwm_system_am275x-evm_r5fss0-1_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_epwm_system_am275x-evm_r5fss1-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_epwm_system_am275x-evm_r5fss1-1_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_epwm_system_am275x-evm_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += test_epwm_system_am275x-evm_c75ss1-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += test_gpio_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_gpio_system_am275x-evm_r5fss0-1_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_gpio_system_am275x-evm_r5fss1-0_freertos_ti-arm-clang
@@ -993,6 +1005,24 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 
  test_epwm_am275x-evm_c75ss1-0_freertos_ti-c7000:
 	$(MAKE) -C drivers/epwm/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile all
+
+ test_epwm_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/epwm/test_epwm_system/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_epwm_system_am275x-evm_r5fss0-1_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/epwm/test_epwm_system/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile all
+
+ test_epwm_system_am275x-evm_r5fss1-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/epwm/test_epwm_system/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile all
+
+ test_epwm_system_am275x-evm_r5fss1-1_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/epwm/test_epwm_system/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile all
+
+ test_epwm_system_am275x-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C drivers/epwm/test_epwm_system/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
+
+ test_epwm_system_am275x-evm_c75ss1-0_freertos_ti-c7000:
+	$(MAKE) -C drivers/epwm/test_epwm_system/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile all
 
  test_gpio_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/gpio/test_gpio_system/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
@@ -1772,6 +1802,12 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_epwm_am275x-evm_r5fss1-0_freertos_ti-arm-c
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_epwm_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_epwm_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_epwm_am275x-evm_c75ss1-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_epwm_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_epwm_system_am275x-evm_r5fss0-1_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_epwm_system_am275x-evm_r5fss1-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_epwm_system_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_epwm_system_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_epwm_system_am275x-evm_c75ss1-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_gpio_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_gpio_system_am275x-evm_r5fss0-1_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_gpio_system_am275x-evm_r5fss1-0_freertos_ti-arm-clang_clean
@@ -2219,6 +2255,24 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  test_epwm_am275x-evm_c75ss1-0_freertos_ti-c7000_clean:
 	$(MAKE) -C drivers/epwm/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile clean
+
+ test_epwm_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/epwm/test_epwm_system/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_epwm_system_am275x-evm_r5fss0-1_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/epwm/test_epwm_system/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile clean
+
+ test_epwm_system_am275x-evm_r5fss1-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/epwm/test_epwm_system/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile clean
+
+ test_epwm_system_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/epwm/test_epwm_system/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile clean
+
+ test_epwm_system_am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C drivers/epwm/test_epwm_system/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
+ test_epwm_system_am275x-evm_c75ss1-0_freertos_ti-c7000_clean:
+	$(MAKE) -C drivers/epwm/test_epwm_system/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile clean
 
  test_gpio_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/gpio/test_gpio_system/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
@@ -2998,6 +3052,12 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_epwm_am275x-evm_r5fss1-0_freertos_ti-arm-c
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_epwm_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_epwm_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_epwm_am275x-evm_c75ss1-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_epwm_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_epwm_system_am275x-evm_r5fss0-1_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_epwm_system_am275x-evm_r5fss1-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_epwm_system_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_epwm_system_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_epwm_system_am275x-evm_c75ss1-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_gpio_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_gpio_system_am275x-evm_r5fss0-1_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_gpio_system_am275x-evm_r5fss1-0_freertos_ti-arm-clang_scrub
@@ -3445,6 +3505,24 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_epwm_am275x-evm_c75ss1-0_freertos_ti-c7000_scrub:
 	$(MAKE) -C drivers/epwm/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile scrub
+
+ test_epwm_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/epwm/test_epwm_system/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_epwm_system_am275x-evm_r5fss0-1_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/epwm/test_epwm_system/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile scrub
+
+ test_epwm_system_am275x-evm_r5fss1-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/epwm/test_epwm_system/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_epwm_system_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/epwm/test_epwm_system/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile scrub
+
+ test_epwm_system_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C drivers/epwm/test_epwm_system/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
+ test_epwm_system_am275x-evm_c75ss1-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C drivers/epwm/test_epwm_system/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile scrub
 
  test_gpio_system_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/gpio/test_gpio_system/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub

@@ -244,13 +244,49 @@ function getComponentProperty() {
     return property;
 }
 
-const robot_template = {
+const robot_template_nortos = {
     input: ".project/templates/am62dx/astra/tests.robot.xdt",
-    output: "../tests.robot",
+    output: "../tests_nortos.robot",
     options: {
         componentName: "EPWM",
-        testCaseName: "EPWM Epwm_counterComparatorCfg API test",
-        testCaseIds: "SITSW-3016",
+        testCaseName: "epwm test application (nortos)",
+        appName: "test_epwm(nortos)",
+        testCaseIds: "SITSW-3010 SITSW-3013 SITSW-3014 SITSW-3015 SITSW-3016 SITSW-4825 SITSW-4826 SITSW-11561 SITSW-11562 SITSW-11563" +
+                     " SITSW-11564 SITSW-11565 SITSW-11566 SITSW-11567 SITSW-11568 SITSW-11570 SITSW-11571 SITSW-11572 SITSW-11573 SITSW-11574" +
+                     " SITSW-11575 SITSW-11576 SITSW-11577 SITSW-11578 SITSW-11579 SITSW-11580 SITSW-11581 SITSW-11582 SITSW-11583 SITSW-11584" +
+                     " SITSW-11585 SITSW-11586 SITSW-11587 SITSW-11589 SITSW-11590 SITSW-11591 SITSW-11592 SITSW-11593 SITSW-11594 SITSW-11595" +
+                     " SITSW-11596 SITSW-11597 SITSW-11599 SITSW-11797 SITSW-11798 SITSW-11799 SITSW-11855 SITSW-11856 SITSW-11857 SITSW-12058" +
+                     " SITSW-12059",
+        timeout: 300,
+    },
+};
+
+const robot_template_freertos = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests_freertos.robot",
+    options: {
+        componentName: "EPWM",
+        testCaseName: "epwm test application (freertos)",
+        appName: "test_epwm(freertos)",
+        testCaseIds: "SITSW-3010 SITSW-3013 SITSW-3014 SITSW-3015 SITSW-3016 SITSW-4825 SITSW-4826 SITSW-11561 SITSW-11562 SITSW-11563" +
+                     " SITSW-11564 SITSW-11565 SITSW-11566 SITSW-11567 SITSW-11568 SITSW-11570 SITSW-11571 SITSW-11572 SITSW-11573 SITSW-11574" +
+                     " SITSW-11575 SITSW-11576 SITSW-11577 SITSW-11578 SITSW-11579 SITSW-11580 SITSW-11581 SITSW-11582 SITSW-11583 SITSW-11584" +
+                     " SITSW-11585 SITSW-11586 SITSW-11587 SITSW-11589 SITSW-11590 SITSW-11591 SITSW-11592 SITSW-11593 SITSW-11594 SITSW-11595" +
+                     " SITSW-11596 SITSW-11597 SITSW-11599 SITSW-11600 SITSW-11601 SITSW-11602 SITSW-11603 SITSW-11797 SITSW-11798 SITSW-11799" +
+                     " SITSW-11855 SITSW-11856 SITSW-11857 SITSW-12058 SITSW-12059",
+        timeout: 300,
+    },
+};
+
+const robot_template_freertos_smp = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests_smp.robot",
+    options: {
+        componentName: "EPWM",
+        testCaseName: "epwm test application (freertos-smp)",
+        appName: "test_epwm(freertos-smp)",
+        testCaseIds: "SITSW-11604 SITSW-11605 SITSW-11606",
+        timeout: 300,
     },
 };
 
@@ -303,7 +339,13 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.os.match("freertos-smp")) {
+        build_property.templates = [...(build_property.templates || []), robot_template_freertos_smp];
+    } else if (buildOption.os.match(/nortos/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_nortos];
+    } else if (buildOption.os.match(/freertos/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_freertos];
+    }
     return build_property;
 }
 

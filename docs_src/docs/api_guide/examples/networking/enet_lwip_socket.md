@@ -328,65 +328,69 @@ to a network which has a DHCP server running.
 \code
 
 ==========================
-  CPSW LWIP SIMPLE SOCKET
+  CPSW LWIP SIMPLE SOCKET 
 ==========================
 Enabling clocks!
-EnetAppUtils_reduceCoreMacAllocation: Reduced Mac Address Allocation for CoreId:1 From 4 To 2
-Mdio_open:282
-EnetPhy_bindDriver:1718
+EnetAppUtils_reduceCoreMacAllocation: Reduced Mac Address Allocation for CoreId:0 From 4 To 1 
+Open MAC port 1
+EnetPhy_bindDriver:1942 
+Open MAC port 2
+EnetPhy_bindDriver:1942 
 PHY 0 is alive
+PHY 3 is alive
 Starting lwIP, local interface IP is dhcp-enabled
-Host MAC address: f4:84:4c:fd:a6:00
-[LWIPIF_LWIP] Enet has been started successfully
 [LWIPIF_LWIP] NETIF INIT SUCCESS
+Host MAC address-0 : 04:25:e8:65:11:21
 Enet IF UP Event. Local interface IP:0.0.0.0
+[LWIPIF_LWIP] Enet has been started successfully
 Waiting for network UP ...
-Cpsw_handleLinkUp:1369
+Waiting for network UP ...
+Waiting for network UP ...
+Cpsw_handleLinkUp:1423 
 MAC Port 1: link up
 Network Link UP Event
 Waiting for network UP ...
-Enet IF UP Event. Local interface IP:192.168.1.10
+Waiting for network UP ...
+Waiting for network UP ...
+Waiting for network UP ...
+Enet IF UP Event. Local interface IP:192.168.0.150
 Network is UP ...
- UDP socket Menu:
+ TCP socket Menu: 
  Enter server IPv4 address:(example: 192.168.101.100)
-192.168.1.20
-<<< Iteration 1 >>>>
- Connecting to: 192.168.1.20:8888
+192.168.0.136
+<<< Iteration 1 >>>> 
+ Connecting to: 192.168.0.136:8888 
 Connected to host
 Message to host: Greetings from Texas Instruments!
 Message from host: Greetings from Texas Instruments!
-Message to host: This is a sample message
 Closed Socket connection
-<<< Iteration 2 >>>>
- Connecting to: 192.168.1.20:8888
+<<< Iteration 2 >>>> 
+ Connecting to: 192.168.0.136:8888 
 Connected to host
 Message to host: Greetings from Texas Instruments!
 Message from host: Greetings from Texas Instruments!
-Message to host: This is a sample message
 Closed Socket connection
-     43.914s : CPU load =   1.17 %
-<<< Iteration 3 >>>>
- Connecting to: 192.168.1.20:8888
+<<< Iteration 3 >>>> 
+ Connecting to: 192.168.0.136:8888 
 Connected to host
 Message to host: Greetings from Texas Instruments!
 Message from host: Greetings from Texas Instruments!
-Message to host: This is a sample message
 Closed Socket connection
-<<< Iteration 4 >>>>
- Connecting to: 192.168.1.20:8888
+     45.498s : CPU load =   1.63 %
+<<< Iteration 4 >>>> 
+ Connecting to: 192.168.0.136:8888 
 Connected to host
 Message to host: Greetings from Texas Instruments!
 Message from host: Greetings from Texas Instruments!
-Message to host: This is a sample message
 Closed Socket connection
-<<< Iteration 5 >>>>
- Connecting to: 192.168.1.20:8888
+<<< Iteration 5 >>>> 
+ Connecting to: 192.168.0.136:8888 
 Connected to host
 Message to host: Greetings from Texas Instruments!
 Message from host: Greetings from Texas Instruments!
-Message to host: This is a sample message
 Closed Socket connection
-     48.915s : CPU load =   1.49 %
+     50.499s : CPU load =   1.76 %
+
 
 \endcode
 

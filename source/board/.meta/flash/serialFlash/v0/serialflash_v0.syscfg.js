@@ -1,10 +1,12 @@
 let common = system.getScript("/common");
 let soc = system.getScript(`/board/flash/serialFlash/soc/serialflash_${common.getSocName()}`);
 let copyCmd = "cp";
+let copyArgs = ["$browsedFile", "$comFile"];
 
 if(system.getOS() == "win")
 {
-    copyCmd = "copy";
+    copyCmd = "cmd";
+    copyArgs = ["/c", "copy", "$browsedFile", "$comFile"];
 }
 
 let regDataDescription = `
@@ -1491,7 +1493,7 @@ function getConfigurables()
                     onLaunch: (inst) => {
                         return {
                             command: copyCmd,
-                            args: ["$browsedFile", "$comFile"],
+                            args: copyArgs,
                             initialData: "initialData",
                             inSystemPath: true,
                         };
@@ -1662,7 +1664,17 @@ function fillConfigs(inst, cfg) {
 
     if(inst.flashType == "SERIAL_NOR")
     {
-        /* Basic Config */
+        /* Basic Config - validate presence */
+        let basicFields = ["flashSize", "flashPageSize", "flashManfId", "flashDeviceId", "flashBlockSize",
+                           "flashSectorSize", "cmdBlockErase3B", "cmdBlockErase4B", "cmdSectorErase3B", "cmdSectorErase4B"];
+        let missing = [];
+        for(let field of basicFields) {
+            if(cfg[field] === undefined) missing.push(field);
+        }
+        if(missing.length > 0) {
+            throw new Error("Missing required JSON fields: " + missing.join(", "));
+        }
+
         inst.flashSize = cfg.flashSize;
         inst.flashPageSize = cfg.flashPageSize;
         inst.flashManfId = cfg.flashManfId;
@@ -1674,62 +1686,113 @@ function fillConfigs(inst, cfg) {
         inst.cmdSectorErase3B = cfg.cmdSectorErase3B;
         inst.cmdSectorErase4B = cfg.cmdSectorErase4B;
 
+        if(cfg.protos === undefined) {
+            throw new Error("Missing required JSON field: protos");
+        }
         let pCfg = cfg.protos[protoToCfgMap[inst.protocol]];
-
-        if(pCfg != null)
-        {
-            inst.cmdRd = pCfg.cmdRd;
-            inst.cmdWr = pCfg.cmdWr;
-            inst.modeClksCmd = pCfg.modeClksCmd;
-            inst.modeClksRd = pCfg.modeClksRd;
-            inst.dummyClksCmd = pCfg.dummyClksCmd;
-            inst.dummyClksRd = pCfg.dummyClksRd;
-            /* QE and OE bits */
-            if(inst.protocol.includes("4")) {
-                inst.flashQeType = pCfg.enableType;
-            } else if (inst.protocol.includes("8")) {
-                inst.flashOeType = pCfg.enableType;
-            }
-            /* 4-4-4 and 8-8-8 sequences */
-            if(["4s_4s_4s", "4s_4d_4d"].includes(inst.protocol)) {
-                inst.flash444Seq = pCfg.enableSeq;
-            } else if(["8s_8s_8s", "8d_8d_8d"].includes(inst.protocol)) {
-                inst.flash888Seq = pCfg.enableSeq;
-            }
-            /* Custom */
-            if(inst.protocol == "custom") {
-                if(cfg.protos.pCustom != null) {
-                    if(cfg.protos.pCustom != null) {
-                        inst.customProtoFxn = cfg.protos.pCustom.fxn;
-                    } else {
-                        inst.customProtoFxn = "NULL";
-                    }
-                } else {
-                    inst.customProtoFxn = "NULL";
-                }
-            }
+        if(pCfg === undefined) {
+            throw new Error("Missing protocol configuration in protos for: " + inst.protocol);
         }
 
-        inst.resetType = cfg.resetType;
-        inst.deviceBusyType = cfg.deviceBusyType;
-        inst.cmdExtType = cfg.cmdExtType;
-        inst.addressByteSupport = cfg.addrByteSupport;
-        inst.cmdWren = cfg.cmdWren;
-        inst.cmdRdsr = cfg.cmdRdsr;
-        inst.srWip = cfg.srWip;
-        inst.srWel = cfg.srWel;
-        inst.xspiWipBit = cfg.xspiWipBit;
-        inst.xspiWipRdCmd = cfg.xspiWipRdCmd;
-        inst.xspiWipReg = cfg.xspiWipReg;
-        inst.cmdChipErase = cfg.cmdChipErase;
-        inst.cmdRdId = cfg.rdIdSettings.cmd;
-        inst.idNumBytes = cfg.rdIdSettings.numBytes;
-        inst.dummyId4 = cfg.rdIdSettings.dummy4;
-        inst.dummyId8 = cfg.rdIdSettings.dummy8;
+        /* Validate protocol config fields */
+        let protoFields = ["cmdRd", "cmdWr", "modeClksCmd", "modeClksRd", "dummyClksCmd", "dummyClksRd"];
+        let protoMissing = [];
+        for(let field of protoFields) {
+            if(pCfg[field] === undefined) protoMissing.push("protos[]." + field);
+        }
+        if(protoMissing.length > 0) {
+            throw new Error("Missing required JSON fields: " + protoMissing.join(", "));
+        }
+
+        inst.cmdRd = pCfg.cmdRd;
+        inst.cmdWr = pCfg.cmdWr;
+        inst.modeClksCmd = pCfg.modeClksCmd;
+        inst.modeClksRd = pCfg.modeClksRd;
+        inst.dummyClksCmd = pCfg.dummyClksCmd;
+        inst.dummyClksRd = pCfg.dummyClksRd;
+
+        /* QE and OE bits */
+        if(inst.protocol.includes("4")) {
+            if(pCfg.enableType === undefined) throw new Error("Missing required field: protos[].enableType");
+            inst.flashQeType = pCfg.enableType;
+        } else if (inst.protocol.includes("8")) {
+            if(pCfg.enableType === undefined) throw new Error("Missing required field: protos[].enableType");
+            inst.flashOeType = pCfg.enableType;
+        }
+        /* 4-4-4 and 8-8-8 sequences */
+        if(["4s_4s_4s", "4s_4d_4d"].includes(inst.protocol)) {
+            if(pCfg.enableSeq === undefined) throw new Error("Missing required field: protos[].enableSeq");
+            inst.flash444Seq = pCfg.enableSeq;
+        } else if(["8s_8s_8s", "8d_8d_8d"].includes(inst.protocol)) {
+            if(pCfg.enableSeq === undefined) throw new Error("Missing required field: protos[].enableSeq");
+            inst.flash888Seq = pCfg.enableSeq;
+        }
+        /* Custom */
+        if(inst.protocol == "custom") {
+            if(cfg.protos.pCustom === undefined || cfg.protos.pCustom === null) {
+                throw new Error("Missing required field: protos.pCustom for custom protocol");
+            }
+            if(cfg.protos.pCustom.fxn === undefined) {
+                throw new Error("Missing required field: protos.pCustom.fxn");
+            }
+            inst.customProtoFxn = cfg.protos.pCustom.fxn;
+        }
+
+        /* Validate all required fields are present before assignment */
+        let missingFields = [];
+        if(cfg.resetType === undefined) missingFields.push("resetType");
+        if(cfg.deviceBusyType === undefined) missingFields.push("deviceBusyType");
+        if(cfg.cmdExtType === undefined) missingFields.push("cmdExtType");
+        if(cfg.addrByteSupport === undefined) missingFields.push("addrByteSupport");
+        if(cfg.cmdWren === undefined) missingFields.push("cmdWren");
+        if(cfg.cmdRdsr === undefined) missingFields.push("cmdRdsr");
+        if(cfg.srWip === undefined) missingFields.push("srWip");
+        if(cfg.srWel === undefined) missingFields.push("srWel");
+        if(cfg.xspiWipBit === undefined) missingFields.push("xspiWipBit");
+        if(cfg.xspiWipRdCmd === undefined) missingFields.push("xspiWipRdCmd");
+        if(cfg.xspiWipReg === undefined) missingFields.push("xspiWipReg");
+        if(cfg.cmdChipErase === undefined) missingFields.push("cmdChipErase");
+        if(cfg.rdIdSettings === undefined || cfg.rdIdSettings.cmd === undefined) missingFields.push("rdIdSettings.cmd");
+        if(cfg.rdIdSettings === undefined || cfg.rdIdSettings.numBytes === undefined) missingFields.push("rdIdSettings.numBytes");
+        if(cfg.rdIdSettings === undefined || cfg.rdIdSettings.dummy4 === undefined) missingFields.push("rdIdSettings.dummy4");
+        if(cfg.rdIdSettings === undefined || cfg.rdIdSettings.dummy8 === undefined) missingFields.push("rdIdSettings.dummy8");
+
+        if(missingFields.length > 0) {
+            throw new Error("Missing required JSON fields for SERIAL_NOR: " + missingFields.join(", "));
+        }
+
+        if(cfg.resetType !== undefined) inst.resetType = cfg.resetType;
+        if(cfg.deviceBusyType !== undefined) inst.deviceBusyType = cfg.deviceBusyType;
+        if(cfg.cmdExtType !== undefined) inst.cmdExtType = cfg.cmdExtType;
+        if(cfg.addrByteSupport !== undefined) inst.addressByteSupport = cfg.addrByteSupport;
+        if(cfg.cmdWren !== undefined) inst.cmdWren = cfg.cmdWren;
+        if(cfg.cmdRdsr !== undefined) inst.cmdRdsr = cfg.cmdRdsr;
+        if(cfg.srWip !== undefined) inst.srWip = cfg.srWip;
+        if(cfg.srWel !== undefined) inst.srWel = cfg.srWel;
+        if(cfg.xspiWipBit !== undefined) inst.xspiWipBit = cfg.xspiWipBit;
+        if(cfg.xspiWipRdCmd !== undefined) inst.xspiWipRdCmd = cfg.xspiWipRdCmd;
+        if(cfg.xspiWipReg !== undefined) inst.xspiWipReg = cfg.xspiWipReg;
+        if(cfg.cmdChipErase !== undefined) inst.cmdChipErase = cfg.cmdChipErase;
+        if(cfg.rdIdSettings != null) {
+            if(cfg.rdIdSettings.cmd !== undefined) inst.cmdRdId = cfg.rdIdSettings.cmd;
+            if(cfg.rdIdSettings.numBytes !== undefined) inst.idNumBytes = cfg.rdIdSettings.numBytes;
+            if(cfg.rdIdSettings.dummy4 !== undefined) inst.dummyId4 = cfg.rdIdSettings.dummy4;
+            if(cfg.rdIdSettings.dummy8 !== undefined) inst.dummyId8 = cfg.rdIdSettings.dummy8;
+        }
     }
     else if(inst.flashType == "SERIAL_NAND")
     {
-        /* Basic Config */
+        /* Basic Config - validate presence */
+        let basicFieldsNand = ["flashSize", "flashPageSize", "flashManfId", "flashDeviceId", "flashBlockSize",
+                               "cmdBlockErase", "cmdPageLoad", "cmdPageProg"];
+        let missingNand = [];
+        for(let field of basicFieldsNand) {
+            if(cfg[field] === undefined) missingNand.push(field);
+        }
+        if(missingNand.length > 0) {
+            throw new Error("Missing required JSON fields: " + missingNand.join(", "));
+        }
+
         inst.flashSize = cfg.flashSize;
         inst.flashPageSize = cfg.flashPageSize;
         inst.flashManfId = cfg.flashManfId;
@@ -1739,56 +1802,97 @@ function fillConfigs(inst, cfg) {
         inst.cmdPageLoad = cfg.cmdPageLoad;
         inst.cmdPageProg = cfg.cmdPageProg;
 
-        let pCfg = cfg.protos[protoToCfgMap[inst.protocol]];
-
-        if(pCfg != null)
-        {
-            inst.cmdRd = pCfg.cmdRd;
-            inst.cmdWr = pCfg.cmdWr;
-            inst.dummyClksCmd = pCfg.dummyClksCmd;
-            inst.dummyClksRd = pCfg.dummyClksRd;
+        if(cfg.protos === undefined) {
+            throw new Error("Missing required JSON field: protos");
         }
+        let pCfg = cfg.protos[protoToCfgMap[inst.protocol]];
+        if(pCfg === undefined) {
+            throw new Error("Missing protocol configuration in protos for: " + inst.protocol);
+        }
+
+        /* Validate protocol config fields for NAND */
+        let protoFieldsNand = ["cmdRd", "cmdWr", "dummyClksCmd", "dummyClksRd"];
+        let protoMissingNand = [];
+        for(let field of protoFieldsNand) {
+            if(pCfg[field] === undefined) protoMissingNand.push("protos[]." + field);
+        }
+        if(protoMissingNand.length > 0) {
+            throw new Error("Missing required JSON fields: " + protoMissingNand.join(", "));
+        }
+
+        inst.cmdRd = pCfg.cmdRd;
+        inst.cmdWr = pCfg.cmdWr;
+        inst.dummyClksCmd = pCfg.dummyClksCmd;
+        inst.dummyClksRd = pCfg.dummyClksRd;
 
         /* Custom */
         if(inst.protocol == "custom") {
-            if(cfg.protos.pCustom != null) {
-                if(cfg.protos.pCustom != null) {
-                    inst.customProtoFxn = cfg.protos.pCustom.fxn;
-                } else {
-                    inst.customProtoFxn = "NULL";
-                }
-            } else {
-                inst.customProtoFxn = "NULL";
+            if(cfg.protos.pCustom === undefined || cfg.protos.pCustom === null) {
+                throw new Error("Missing required field: protos.pCustom for custom protocol");
             }
+            if(cfg.protos.pCustom.fxn === undefined) {
+                throw new Error("Missing required field: protos.pCustom.fxn");
+            }
+            inst.customProtoFxn = cfg.protos.pCustom.fxn;
         }
 
-        inst.cmdExtType = cfg.cmdExtType;
-        inst.cmdWren = cfg.cmdWren;
-        inst.cmdRdsr = cfg.cmdRdsr;
-        inst.cmdWrsr = cfg.cmdWrsr;
+        /* Validate remaining required fields for NAND */
+        let nandMissingFields = [];
+        if(cfg.cmdExtType === undefined) nandMissingFields.push("cmdExtType");
+        if(cfg.cmdWren === undefined) nandMissingFields.push("cmdWren");
+        if(cfg.cmdRdsr === undefined) nandMissingFields.push("cmdRdsr");
+        if(cfg.cmdWrsr === undefined) nandMissingFields.push("cmdWrsr");
+        if(cfg.srWip === undefined) nandMissingFields.push("srWip");
+        if(cfg.srWipReg === undefined) nandMissingFields.push("srWipReg");
+        if(cfg.xspiWipRdCmd === undefined) nandMissingFields.push("xspiWipRdCmd");
+        if(cfg.xspiWipReg === undefined) nandMissingFields.push("xspiWipReg");
+        if(cfg.xspiRdsrDummy === undefined) nandMissingFields.push("xspiRdsrDummy");
+        if(cfg.srWriteProtectReg === undefined) nandMissingFields.push("srWriteProtectReg");
+        if(cfg.srWriteProtectMask === undefined) nandMissingFields.push("srWriteProtectMask");
+        if(cfg.progStatusReg === undefined) nandMissingFields.push("progStatusReg");
+        if(cfg.xspiProgStatusReg === undefined) nandMissingFields.push("xspiProgStatusReg");
+        if(cfg.eraseStatusReg === undefined) nandMissingFields.push("eraseStatusReg");
+        if(cfg.xspiEraseStatusReg === undefined) nandMissingFields.push("xspiEraseStatusReg");
+        if(cfg.srProgStatus === undefined) nandMissingFields.push("srProgStatus");
+        if(cfg.srEraseStatus === undefined) nandMissingFields.push("srEraseStatus");
+        if(cfg.rdIdSettings === undefined || cfg.rdIdSettings.cmd === undefined) nandMissingFields.push("rdIdSettings.cmd");
+        if(cfg.rdIdSettings === undefined || cfg.rdIdSettings.numBytes === undefined) nandMissingFields.push("rdIdSettings.numBytes");
+        if(cfg.rdIdSettings === undefined || cfg.rdIdSettings.dummy4 === undefined) nandMissingFields.push("rdIdSettings.dummy4");
+        if(cfg.rdIdSettings === undefined || cfg.rdIdSettings.dummy8 === undefined) nandMissingFields.push("rdIdSettings.dummy8");
 
-        inst.srWip = cfg.srWip;
-        inst.srWipReg = cfg.srWipReg;
-        inst.xspiWipRdCmd = cfg.xspiWipRdCmd;
-        inst.xspiWipReg = cfg.xspiWipReg;
-        inst.xspiRdsrDummy = cfg.xspiRdsrDummy;
+        if(nandMissingFields.length > 0) {
+            throw new Error("Missing required JSON fields for SERIAL_NAND: " + nandMissingFields.join(", "));
+        }
 
-        inst.srWriteProtectReg = cfg.srWriteProtectReg;
-        inst.srWriteProtectMask = cfg.srWriteProtectMask;
+        if(cfg.cmdExtType !== undefined) inst.cmdExtType = cfg.cmdExtType;
+        if(cfg.cmdWren !== undefined) inst.cmdWren = cfg.cmdWren;
+        if(cfg.cmdRdsr !== undefined) inst.cmdRdsr = cfg.cmdRdsr;
+        if(cfg.cmdWrsr !== undefined) inst.cmdWrsr = cfg.cmdWrsr;
 
-        inst.progStatusReg = cfg.progStatusReg;
-        inst.xspiProgStatusReg = cfg.xspiProgStatusReg;
+        if(cfg.srWip !== undefined) inst.srWip = cfg.srWip;
+        if(cfg.srWipReg !== undefined) inst.srWipReg = cfg.srWipReg;
+        if(cfg.xspiWipRdCmd !== undefined) inst.xspiWipRdCmd = cfg.xspiWipRdCmd;
+        if(cfg.xspiWipReg !== undefined) inst.xspiWipReg = cfg.xspiWipReg;
+        if(cfg.xspiRdsrDummy !== undefined) inst.xspiRdsrDummy = cfg.xspiRdsrDummy;
 
-        inst.eraseStatusReg = cfg.eraseStatusReg;
-        inst.xspiEraseStatusReg = cfg.xspiEraseStatusReg;
+        if(cfg.srWriteProtectReg !== undefined) inst.srWriteProtectReg = cfg.srWriteProtectReg;
+        if(cfg.srWriteProtectMask !== undefined) inst.srWriteProtectMask = cfg.srWriteProtectMask;
 
-        inst.srProgStatus = cfg.srProgStatus;
-        inst.srEraseStatus = cfg.srEraseStatus;
+        if(cfg.progStatusReg !== undefined) inst.progStatusReg = cfg.progStatusReg;
+        if(cfg.xspiProgStatusReg !== undefined) inst.xspiProgStatusReg = cfg.xspiProgStatusReg;
 
-        inst.cmdRdId = cfg.rdIdSettings.cmd;
-        inst.idNumBytes = cfg.rdIdSettings.numBytes;
-        inst.dummyId4 = cfg.rdIdSettings.dummy4;
-        inst.dummyId8 = cfg.rdIdSettings.dummy8;
+        if(cfg.eraseStatusReg !== undefined) inst.eraseStatusReg = cfg.eraseStatusReg;
+        if(cfg.xspiEraseStatusReg !== undefined) inst.xspiEraseStatusReg = cfg.xspiEraseStatusReg;
+
+        if(cfg.srProgStatus !== undefined) inst.srProgStatus = cfg.srProgStatus;
+        if(cfg.srEraseStatus !== undefined) inst.srEraseStatus = cfg.srEraseStatus;
+
+        if(cfg.rdIdSettings != null) {
+            if(cfg.rdIdSettings.cmd !== undefined) inst.cmdRdId = cfg.rdIdSettings.cmd;
+            if(cfg.rdIdSettings.numBytes !== undefined) inst.idNumBytes = cfg.rdIdSettings.numBytes;
+            if(cfg.rdIdSettings.dummy4 !== undefined) inst.dummyId4 = cfg.rdIdSettings.dummy4;
+            if(cfg.rdIdSettings.dummy8 !== undefined) inst.dummyId8 = cfg.rdIdSettings.dummy8;
+        }
     }
 }
 

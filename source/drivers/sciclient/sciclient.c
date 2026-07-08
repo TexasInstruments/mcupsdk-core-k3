@@ -1134,6 +1134,8 @@ uint32_t Sciclient_getCurrentContext(uint16_t messageType)
         case TISCI_MSG_KEYRING_IMPORT:
         case TISCI_MSG_ALLOW_FWL_CTRL_READ:
         case TISCI_MSG_FORBID_FWL_CTRL_READ:
+        case TISCI_MSG_GET_KEY_WRITER_TYPE:
+        case TISCI_MSG_SET_KEY_WRITER_TYPE:
             retVal = Sciclient_handle.secureContextId;
             break;
 

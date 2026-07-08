@@ -151,6 +151,42 @@ void run_pinmux_multi_threaded_tests(void *args)
     return;
 }
 
+#ifdef SMP_FREERTOS
+void test_main(void *args)
+{
+
+    UNITY_BEGIN();
+
+    RUN_TEST(TestPinmux_multithreadMainMcuConcurrent, 11245, NULL);
+    RUN_TEST(TestPinmux_multithreadSameDomainConfig, 11247, NULL);
+    RUN_TEST(TestPinmux_multithreadConfigAndReadback, 11249, NULL);
+
+    UNITY_END();
+
+}
+
+/**
+ * @brief Unity test setup hook.
+ *
+ * Called before each Unity test. Left empty because tests perform their own
+ * per-test setup and teardown.
+ */
+void setUp(void)
+{
+}
+
+/**
+ * @brief Unity test teardown hook.
+ *
+ * Called after each Unity test. Left empty because tests perform their own
+ * per-test cleanup.
+ */
+void tearDown(void)
+{
+}
+#endif
+
+
 /* ========================================================================== */
 /*                     Internal Function Definitions                          */
 /* ========================================================================== */
@@ -245,6 +281,9 @@ static void TestPinmux_multithreadMainMcuConcurrent(void *args)
             taskParams.taskMain = TestPinmux_threadConfigMain;
         else
             taskParams.taskMain = TestPinmux_threadConfigMcu;
+        #ifdef SMP_FREERTOS
+            taskParams.coreAffinity = 1 << i;
+        #endif
 
         status = TaskP_construct(&TestPinmux_MtThreadTaskObj[i], &taskParams);
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
@@ -492,7 +531,9 @@ static void TestPinmux_multithreadSameDomainConfig(void *args)
             taskParams.taskMain = TestPinmux_threadConfigPin1;
         else
             taskParams.taskMain = TestPinmux_threadConfigPin2;
-
+        #ifdef SMP_FREERTOS
+            taskParams.coreAffinity = 1 << i;
+        #endif
         status = TaskP_construct(&TestPinmux_MtThreadTaskObj[i], &taskParams);
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     }
@@ -624,7 +665,9 @@ static void TestPinmux_multithreadConfigAndReadback(void *args)
             taskParams.taskMain = TestPinmux_threadWriter;
         else
             taskParams.taskMain = TestPinmux_threadReader;
-        
+        #ifdef SMP_FREERTOS
+            taskParams.coreAffinity = 1 << i;
+        #endif
         status = TaskP_construct(&TestPinmux_MtThreadTaskObj[i], &taskParams);
         TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
     }

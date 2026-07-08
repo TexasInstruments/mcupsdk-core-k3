@@ -460,6 +460,45 @@ function getComponentProperty() {
     return property;
 }
 
+/* Robot templates — separate sequences for nortos, freertos (with MT tests),
+ * and freertos-smp (SMP-only multi-thread tests).
+ * Each is attached to exactly one canonical core to avoid duplicate ASTRA entries. */
+const robot_template_nortos = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Pinmux",
+        testCaseName: "Pinmux Coverage (nortos)",
+        appName: "pinmux_coverage_nortos",
+        testCaseIds: "SITSW-8070 SITSW-11232 SITSW-11233 SITSW-11234 SITSW-11235 SITSW-11236 SITSW-11237 SITSW-11238 SITSW-11239 SITSW-11240 SITSW-11241 SITSW-11242 SITSW-11243",
+        timeout: 120,
+    },
+};
+
+const robot_template_freertos = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Pinmux",
+        testCaseName: "Pinmux Coverage (freertos)",
+        appName: "pinmux_coverage_freertos",
+        testCaseIds: "SITSW-8070 SITSW-11232 SITSW-11233 SITSW-11234 SITSW-11235 SITSW-11236 SITSW-11237 SITSW-11238 SITSW-11239 SITSW-11240 SITSW-11241 SITSW-11242 SITSW-11243 SITSW-11244 SITSW-11246 SITSW-11248 SITSW-11250",
+        timeout: 120,
+    },
+};
+
+const robot_template_freertos_smp = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Pinmux",
+        testCaseName: "Pinmux Coverage (freertos-smp)",
+        appName: "pinmux_coverage_freertos_smp",
+        testCaseIds: "SITSW-11245 SITSW-11247 SITSW-11249",
+        timeout: 120,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -548,6 +587,17 @@ function getComponentBuildProperty(buildOption) {
             build_property.defines = defines_dm_r5;
         }
     }
+
+        if (buildOption.os.match(/freertos-smp*/)) {
+          build_property.templates = [...(build_property.templates || []), robot_template_freertos_smp];
+        }
+        else if (buildOption.os.match(/freertos*/)) {
+          build_property.templates = [...(build_property.templates || []), robot_template_freertos];
+        }
+       else {
+          build_property.templates = [...(build_property.templates || []), robot_template_nortos];
+        }
+
 
     return build_property;
 }

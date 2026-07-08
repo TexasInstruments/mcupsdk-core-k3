@@ -269,6 +269,7 @@ const example_file_list = [
     "test/drivers/i2c/.project/project.js",
     "test/drivers/pinmux_coverage/.project/project.js",
     "test/drivers/pinmux_coverage/.project/project_am275x_wkupr5.js",
+    "test/drivers/pinmux_coverage/test_pinmux_system/.project/project.js",
     "test/drivers/i2c/.project/project_am275x_wkupr5.js",
     "test/drivers/i2c/test_i2c_fault_inject/.project/project.js",
     "test/drivers/i2c/test_i2c_fault_inject/.project/project_am275x_wkupr5.js",

@@ -272,7 +272,32 @@ function getComponentProperty() {
 
     return property;
 }
+/* Robot templates — separate sequences for nortos and freertos (with MT tests).
+ * Each is attached to exactly one canonical core (r5fss0-0) to avoid duplicate
+ * ASTRA entries across the four r5f instances. */
+const robot_template_nortos = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Pinmux",
+        testCaseName: "Pinmux Coverage (nortos)",
+        appName: "pinmux_coverage_nortos",
+        testCaseIds: "SITSW-8070 SITSW-11232 SITSW-11233 SITSW-11234 SITSW-11235 SITSW-11236 SITSW-11237 SITSW-11238 SITSW-11239 SITSW-11240 SITSW-11241 SITSW-11242 SITSW-11243",
+        timeout: 120,
+    },
+};
 
+const robot_template_freertos = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Pinmux",
+        testCaseName: "Pinmux Coverage (freertos)",
+        appName: "pinmux_coverage_freertos",
+        testCaseIds: "SITSW-8070 SITSW-11232 SITSW-11233 SITSW-11234 SITSW-11235 SITSW-11236 SITSW-11237 SITSW-11238 SITSW-11239 SITSW-11240 SITSW-11241 SITSW-11242 SITSW-11243 SITSW-11244 SITSW-11246 SITSW-11248 SITSW-11250",
+        timeout: 120,
+    },
+};
 function getComponentPropertyWkup() {
     let property = {};
 
@@ -338,6 +363,15 @@ function getComponentBuildProperty(buildOption) {
             build_property.templates = templates_freertos_c75_1;
         }
     }
+
+
+        if (buildOption.os.match(/freertos*/)) {
+          build_property.templates = [...(build_property.templates || []), robot_template_freertos];
+        }
+       else {
+          build_property.templates = [...(build_property.templates || []), robot_template_nortos];
+        }
+
 
     return build_property;
 }

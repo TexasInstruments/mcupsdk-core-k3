@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.26.2+4477"}
+ * @versions {"tool":"1.21.0+3721"}
  */
 
 /**
@@ -23,6 +23,7 @@ const mpu_armv75 = mpu_armv7.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
+
 epwm1.$name            = "CONFIG_EPWM0";
 epwm1.EPWM.$assign     = "EPWM0";
 epwm1.EPWM.A.$assign   = "SPI2_CS0";
@@ -36,10 +37,9 @@ epwm2.EPWM.SYNCO.$used = false;
 epwm2.EPWM.SYNCI.$used = false;
 
 debug_log.enableUartLog            = true;
+debug_log.enableSharedMemLogReader = true;
 debug_log.uartLog.$name            = "CONFIG_UART0";
 debug_log.uartLog.UART.$assign     = "UART0";
-debug_log.uartLog.UART.RXD.$assign = "UART0_RXD";
-debug_log.uartLog.UART.TXD.$assign = "UART0_TXD";
 
 mpu_armv71.size         = 31;
 mpu_armv71.attributes   = "Device";
@@ -68,3 +68,5 @@ mpu_armv75.$name    = "MSRAM_BANK4_TO_BANK5";
  */
 epwm2.EPWM.$suggestSolution   = "EPWM1";
 epwm2.EPWM.A.$suggestSolution = "MMC0_DAT2";
+debug_log.uartLog.UART.RXD.$suggestSolution = "MCASP4_AXR0";
+debug_log.uartLog.UART.TXD.$suggestSolution = "MLB0_MLBCLK";

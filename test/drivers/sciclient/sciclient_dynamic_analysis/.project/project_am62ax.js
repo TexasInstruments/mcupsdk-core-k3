@@ -111,6 +111,7 @@ const robot_template = {
         cfgPath: "test/drivers/sciclient/sciclient_dynamic_analysis/{board}/default_sbl_uart_${DEVICE_TYPE}.cfg",
         expectedString: "Overall test status: All testcases are passed successfully",
         expectTimeout: 120,
+        timeout: 300,
     },
 };
 

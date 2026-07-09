@@ -421,6 +421,17 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "UART",
+        testCaseName: "UART Fault Inject Test Application",
+        testCaseIds: "SITSW-10149 SITSW-10150 SITSW-10151 SITSW-10152",
+        expectTimeout: 60,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -481,6 +492,7 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

@@ -231,6 +231,22 @@ function getComponentPropertyWkup() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "HyperBus",
+        testCaseName: "HyperBus Test Application",
+        testCaseIds: "SITSW-12244 SITSW-12245 SITSW-12246 SITSW-12247 SITSW-12248 SITSW-12249 " +
+             "SITSW-12251 SITSW-12252 SITSW-12253 SITSW-12254 SITSW-12255 SITSW-12256 SITSW-12257 " +
+             "SITSW-12258 SITSW-12259 SITSW-12260 SITSW-12261 SITSW-12262 SITSW-12263 SITSW-12264 " +
+             "SITSW-12265 SITSW-12266 SITSW-12267 SITSW-12268 SITSW-12269 SITSW-12270 SITSW-12271 " +
+             "SITSW-12272 SITSW-12273 SITSW-12274 SITSW-12275 SITSW-12276 SITSW-12277 SITSW-12278 " +
+             "SITSW-12279 SITSW-12280 SITSW-12281 SITSW-12282 SITSW-12283",
+        expectTimeout: 120,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -269,6 +285,7 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

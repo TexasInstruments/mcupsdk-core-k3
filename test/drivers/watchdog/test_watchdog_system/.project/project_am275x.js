@@ -165,6 +165,19 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "WDT",
+        testCaseName: "Watchdog System Test",
+        testCaseIds: "SITSW-11099",
+        withCfg: true,
+        cfgPath: "test/drivers/watchdog/test_watchdog_system/am275x-evm/test_watchdog_system_sbl_uart_hs_fs.cfg",
+        expectTimeout: 120,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -197,6 +210,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_c75ss1;
     }
 
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

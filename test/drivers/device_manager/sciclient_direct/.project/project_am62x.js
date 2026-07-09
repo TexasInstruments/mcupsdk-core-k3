@@ -106,21 +106,6 @@ const templates_dm_r5f =
     }
 ];
 
-const robot_template = {
-    input: ".project/templates/am62x/astra/tests.robot.xdt",
-    output: "../tests.robot",
-    options: {
-        componentName: "DM",
-        testCaseName: "Test the Device Manager by cfg file",
-        testCaseIds: "SITSW-3641",
-        withCfg: true,
-        cfgPath: "test/drivers/device_manager/sciclient_direct/{board}/default_sbl_uart_${DEVICE_TYPE}.cfg",
-        expectedString: "Overall test status: All testcases are passed successfully",
-        expectTimeout: 100,
-        timeout: 700,
-    },
-};
-
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
 ];
@@ -137,6 +122,21 @@ function getComponentProperty() {
 
     return property;
 }
+
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DM",
+        testCaseName: "Test the Device Manager by cfg file",
+        testCaseIds: "SITSW-3641",
+        withCfg: true,
+        cfgPath: "test/drivers/device_manager/sciclient_direct/{board}/default_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectedString: "Overall test status: All testcases are passed successfully",
+        expectTimeout: 100,
+        timeout: 700,
+    },
+};
 
 function getComponentBuildProperty(buildOption) {
     let build_property = {};

@@ -127,8 +127,8 @@ const robot_template = {
     input: ".project/templates/am62ax/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
-        componentName: "SCICLIENT",
-        testCaseName: "sciclient_direct test application",
+        componentName: "DM",
+        testCaseName: "Test the Device Manager by cfg file",
         testCaseIds: "SITSW-3641",
         withCfg: true,
         cfgPath: "test/drivers/device_manager/sciclient_direct/{board}/default_sbl_uart_${DEVICE_TYPE}.cfg",

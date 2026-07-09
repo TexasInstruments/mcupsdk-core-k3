@@ -131,7 +131,11 @@ const robot_template = {
         componentName: "DM",
         testCaseName: "Test the Device Manager by cfg file",
         testCaseIds: "SITSW-3641",
+        withCfg: true,
+        cfgPath: "test/drivers/device_manager/sciclient_direct/{board}/default_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectedString: "Overall test status: All testcases are passed successfully",
         expectTimeout: 100,
+        timeout: 700,
     },
 };
 

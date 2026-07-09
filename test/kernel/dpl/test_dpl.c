@@ -1594,7 +1594,7 @@ void test_main(void *args)
     RUN_TEST(test_clockMode, 1235, (void *)1);
     RUN_TEST(test_clock, 1268, NULL);
     RUN_TEST(test_heap, 1269, NULL);
-    RUN_TEST(test_heap_integer_overflow, 1269, NULL);
+    RUN_TEST(test_heap_integer_overflow, 12625, NULL);
     RUN_TEST(test_cycleCounter, 1270, NULL);
     RUN_TEST(test_debugLog, 1271, NULL);
     RUN_TEST(test_hwiProfile, 1272, NULL);

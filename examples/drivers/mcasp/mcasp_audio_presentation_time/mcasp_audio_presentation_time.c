@@ -228,5 +228,5 @@ void mcasp_audio_presentation_time_main(void *args)
 
     MCASP_stopTransferTx(mcaspHandle);
 
-    DebugP_log("Done.\r\n");
+    DebugP_log("All tests have passed!!\r\n");
 }

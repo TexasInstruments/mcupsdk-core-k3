@@ -119,6 +119,16 @@ const templates_freertos_c75_1 =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MCASP",
+        testCaseName: "mcasp audio presentation time",
+        testCaseIds: "SITSW-12290",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000",    board: "am275x-evm", os: "freertos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
@@ -173,6 +183,7 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

@@ -70,6 +70,19 @@ const templates_freertos_r5f =
     }
 ];
 
+const robot_sbl_template = {
+    input: ".project/templates/am275x/astra/tests_uniflash.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "IPC",
+        testCaseName: "IPC Notify Sample Application",
+        testCaseIds: "SITSW-12620",
+        timeout: 1200,
+        cfgPath: "examples/drivers/ipc/ipc_notify_echo_optishare/am275x-evm/sbl_ospi_${DEVICE_TYPE}.cfg",
+        bootMode: "XSPI_1S_BOOT_MODE",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos", isPartOfSystemProject: true},
     { device: device, cpu: "r5fss0-1", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos", isPartOfSystemProject: true},
@@ -124,6 +137,12 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_r5f;
             build_property.templates = templates_freertos_r5f;
         }
+    }
+    // As cfg file is used to flash all cores. No need to test all cores seperately
+    // cfg boots all cores simultaneously; only r5fss0-0 (master) needs the robot test
+    if(buildOption.cpu.match("r5fss0-0"))
+    {
+        build_property.templates = [...build_property.templates, robot_sbl_template];
     }
     return build_property;
 }

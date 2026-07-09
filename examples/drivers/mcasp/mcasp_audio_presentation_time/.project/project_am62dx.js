@@ -142,6 +142,16 @@ const templates_nortos_a53 =
     },
 ];
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MCASP",
+        testCaseName: "mcasp audio presentation time",
+        testCaseIds: "SITSW-12290",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000",    board: "am62dx-evm", os: "freertos"},
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62dx-evm", os: "freertos"},
@@ -197,6 +207,7 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

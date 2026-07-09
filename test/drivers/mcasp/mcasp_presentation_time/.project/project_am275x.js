@@ -116,6 +116,16 @@ const templates_freertos_r5f =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MCASP",
+        testCaseName: "Test Mcasp presentation time",
+        testCaseIds: "SITSW-12292 SITSW-12293 SITSW-12294 SITSW-12295 SITSW-12296 SITSW-12297 SITSW-12298 SITSW-12299 SITSW-12300 SITSW-12301 SITSW-12302 SITSW-12303 SITSW-12311 SITSW-12312 SITSW-12313 SITSW-12314 SITSW-12315 SITSW-12316 SITSW-12317",
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000",     board: "am275x-evm", os: "freertos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
@@ -161,6 +171,7 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

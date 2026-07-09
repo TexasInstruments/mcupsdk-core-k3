@@ -2,7 +2,7 @@
 # Auto generated makefile
 #
 
-export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../..)
+export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
@@ -24,17 +24,17 @@ ATF_INTEGRATED_BOOT?=yes
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_gpio.$(PROFILE).out
+OUTNAME:=test_gpio_system.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_gpio.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=test_gpio.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=test_gpio.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=test_gpio.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=test_gpio.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=test_gpio.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=test_gpio.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=test_gpio.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=test_gpio_system.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=test_gpio_system.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=test_gpio_system.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=test_gpio_system.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=test_gpio_system.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=test_gpio_system.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=test_gpio_system.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=test_gpio_system.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -46,8 +46,9 @@ ATF_BIN_NAME:=bl31.a53ss0-0.$(PROFILE).bin
 ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/lib/soc/am62x
 
 FILES_common := \
-	test_gpio.c \
-	test_gpio_multi_thread.c \
+	system_test_utils.c \
+	test_case_mapping.c \
+	test_gpio_system.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -59,8 +60,8 @@ FILES_common := \
 
 FILES_PATH_common = \
 	.. \
-	../.. \
 	../../.. \
+	../../../../../utils \
 	generated \
 
 INCLUDES_common := \
@@ -69,9 +70,12 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53 \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53 \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
+	-I../../../../../utils \
+	-I../../.. \
 	-Igenerated \
 
 DEFINES_common := \
+	-DSOC_AM62X \
 	-DSOC_AM62X \
 
 CFLAGS_common := \
@@ -89,8 +93,6 @@ CFLAGS_common := \
 	-Wno-unused-but-set-variable \
 	-fdata-sections \
 	-ffunction-sections \
-	-DAM62X_SK \
-	-DENABLE_MT_TESTS \
 
 CFLAGS_debug := \
 	-D_DEBUG_=1 \
@@ -104,14 +106,12 @@ LNK_FILES_common = \
 LIBS_PATH_common = \
 	-L${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-L${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	-L${MCU_PLUS_SDK_PATH}/source/board/lib \
 	-L${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	-L$(CGT_GCC_AARCH64_PATH)/lib \
 
 LIBS_common = \
 	-l:freertos.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 	-l:drivers.am62x.a53.gcc-aarch64.${ConfigName}.lib \
-	-l:board.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 	-l:unity.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 
 LFLAGS_common = \
@@ -128,13 +128,11 @@ LFLAGS_common = \
 LIBS_NAME = \
 	freertos.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 	drivers.am62x.a53.gcc-aarch64.${ConfigName}.lib \
-	board.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 	unity.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 
 LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	$(CGT_GCC_AARCH64_PATH)/lib \
 
@@ -198,7 +196,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62x:a53ss0-0:freertos:gcc-aarch64 test_gpio ...
+	@echo  Scrubing: am62x:a53ss0-0:freertos:gcc-aarch64 test_gpio_system ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

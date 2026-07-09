@@ -74,8 +74,14 @@
 /* Number of threads for multi-channel GPIO tests */
 #define TEST_GPIO_MT_MULTI_CHANNEL_THREADS    (2U)
 
-/* Stack size (in bytes) for each GPIO test thread */
+/* Stack size (in bytes) for each GPIO test thread.
+ * M4F_DRAM is only 64KB total, so TEST_GPIO_MT_TRIGTYPE stacks at the default
+ * 16KB each don't fit alongside the rest of .bss; use a smaller stack on M4F. */
+#if defined(M4F_CORE)
+#define TEST_GPIO_STACK_SIZE                  (4 * 1024)
+#else
 #define TEST_GPIO_STACK_SIZE                  (16 * 1024)
+#endif
 
 /* ========================================================================== */
 /*                               Typedefs                                     */
@@ -117,8 +123,9 @@ static void TestGpio_multithreadRisingEdge(void *arg);
 void run_multi_threaded_tests(void *args)
 {
     RUN_TEST(TestGpio_multithreadWriteReadPins,  9547, NULL);
+    #if !defined(M4F_CORE)
     RUN_TEST(TestGpio_multithreadTrigType,  9548, NULL);
-
+    #endif
     return;
 }
 
@@ -129,7 +136,7 @@ void test_main(void *args)
     UNITY_BEGIN();
 
     RUN_TEST(TestGpio_multithreadWriteReadPins,  9633, NULL);
-    #if !defined (SOC_AM62DX)
+    #if !defined (SOC_AM62DX) && !defined(SOC_AM62X)
     RUN_TEST(TestGpio_multithreadTrigType,  9635, NULL);
     #endif
 

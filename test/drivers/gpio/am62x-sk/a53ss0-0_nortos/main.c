@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2025 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,58 +30,36 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <stdlib.h>
+#include "ti_drivers_config.h"
+#include "ti_board_config.h"
+#include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
 
-ENTRY(_c_int00)
+void test_main(void *args);
 
-	__TI_STACK_SIZE = 65536;
-	__TI_HEAP_SIZE = 131072;
+int main()
+{
+    int32_t status = SystemP_SUCCESS;
 
-MEMORY {
+    System_init();
+    Board_init();
 
-	DDR : ORIGIN =  0x80080000, LENGTH = 0x2000000
-}
+    /* Open drivers */
+    Drivers_open();
+    /* Open flash and board drivers */
+    status = Board_driversOpen();
+    DebugP_assert(status==SystemP_SUCCESS);
 
-SECTIONS {
+    test_main(NULL);
 
+    /* Close board and flash drivers */
+    Board_driversClose();
+    /* Close drivers */
+    Drivers_close();
 
-    /* Keeping the .text.boot:_c_int00 section of the code at the ATF Jump address to ensure the code entry point is from this address. */
-    .text.boot:_c_int00 : AT (0x80080000) {} > DDR
-    .vecs : {} > DDR
-		.text : {} > DDR
-		.rodata : {} > DDR
+    Board_deinit();
+    System_deinit();
 
-		.data : ALIGN (8) {
-			__data_load__ = LOADADDR (.data);
-			__data_start__ = .;
-			*(.data)
-				*(.data*)
-				. = ALIGN (8);
-			__data_end__ = .;
-		} > DDR
-
-    /* General purpose user shared memory, used in some examples */
-    .bss.user_shared_mem (NOLOAD) : { KEEP(*(.bss.user_shared_mem)) } > DDR
-
-    .bss : {
-        __bss_start__ = .;
-        *(.bss)
-        *(.bss.*)
-        . = ALIGN (8);
-        *(COMMON)
-      __bss_end__ = .;
-        . = ALIGN (8);
-    } > DDR
-
-    .heap (NOLOAD) : {
-        __heap_start__ = .;
-        KEEP(*(.heap))
-        . = . + __TI_HEAP_SIZE;
-        __heap_end__ = .;
-    } > DDR
-
-    .stack (NOLOAD) : ALIGN(16) {
-        __TI_STACK_BASE = .;
-        KEEP(*(.stack))
-        . = . + __TI_STACK_SIZE;
-    } > DDR
+    return 0;
 }

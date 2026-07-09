@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -30,58 +30,34 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+ /**
+ *  \file test_case_mapping.c
+ *
+ *  \brief This file contains mapping of test case IDs to test functions
+ *
+ */
 
-ENTRY(_c_int00)
-
-	__TI_STACK_SIZE = 65536;
-	__TI_HEAP_SIZE = 131072;
-
-MEMORY {
-
-	DDR : ORIGIN =  0x80080000, LENGTH = 0x2000000
-}
-
-SECTIONS {
+/* ========================================================================== */
+/*                             Include Files                                  */
+/* ========================================================================== */
+#include "system_test_utils.h"
+/* ========================================================================== */
+/*                 Internal Function Declarations                             */
+/* ========================================================================== */
 
 
-    /* Keeping the .text.boot:_c_int00 section of the code at the ATF Jump address to ensure the code entry point is from this address. */
-    .text.boot:_c_int00 : AT (0x80080000) {} > DDR
-    .vecs : {} > DDR
-		.text : {} > DDR
-		.rodata : {} > DDR
+/* ========================================================================== */
+/*                            Global Variables                                */
+/* ========================================================================== */
+testCase_t gTestCase[] =
+{
+    {TestUtils_dummyTestCase, 9757},
+    {TestUtils_dummyTestCase, 9634},
+    {NULL, 0}
+};
 
-		.data : ALIGN (8) {
-			__data_load__ = LOADADDR (.data);
-			__data_start__ = .;
-			*(.data)
-				*(.data*)
-				. = ALIGN (8);
-			__data_end__ = .;
-		} > DDR
 
-    /* General purpose user shared memory, used in some examples */
-    .bss.user_shared_mem (NOLOAD) : { KEEP(*(.bss.user_shared_mem)) } > DDR
 
-    .bss : {
-        __bss_start__ = .;
-        *(.bss)
-        *(.bss.*)
-        . = ALIGN (8);
-        *(COMMON)
-      __bss_end__ = .;
-        . = ALIGN (8);
-    } > DDR
 
-    .heap (NOLOAD) : {
-        __heap_start__ = .;
-        KEEP(*(.heap))
-        . = . + __TI_HEAP_SIZE;
-        __heap_end__ = .;
-    } > DDR
 
-    .stack (NOLOAD) : ALIGN(16) {
-        __TI_STACK_BASE = .;
-        KEEP(*(.stack))
-        . = . + __TI_STACK_SIZE;
-    } > DDR
-}
+

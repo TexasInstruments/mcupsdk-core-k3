@@ -52,6 +52,7 @@
 #include <rm.h>
 #include <lpm_handler.h>
 #include <fw_caps.h>
+#include <soc/host_idx_mapping.h>
 /* Sciclient APIs are kept in the end of the include list to make sure the
  * RM and PM HAL typedefs are used.
  */
@@ -216,6 +217,14 @@ const uint8_t gcSciclientDirectExtBootX509MagicWord[
     { 'E', 'X', 'T', 'B', 'O', 'O', 'T', 0 };
 
 extern Sciclient_ServiceHandle_t gSciclientHandle;
+
+#ifdef CONFIG_LPM_DM
+/**
+ * \def BOARD0 device status bitmap tracking per-host active state.
+ * Each bit represents one host's active state.
+ */
+static volatile uint32_t gboardDevStat = 0U;
+#endif
 
 /* ========================================================================== */
 /*                          Function Definitions                              */
@@ -811,6 +820,38 @@ int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags, void *tx_msg)
                                 SCICLIENT_DEV_WKUP_R5FSS0_CORE1_PROCID);
                     break;
 #endif
+#ifdef CONFIG_LPM_DM
+                    case SCICLIENT_DEV_BOARD0:
+                    {
+                        /* Use host_idx_lookup() to get sequential index */
+                        uint8_t host_idx = host_idx_lookup(req->hdr.host);
+
+                        if (host_idx == HOST_IDX_NONE)
+                        {
+                            /* Invalid host ID */
+                            ret = -EINVAL;
+                        }
+                        else 
+                        {
+                            if (req->state == (uint8_t)TISCI_MSG_VALUE_DEVICE_SW_STATE_ON)
+                            {
+                                /* Set the corresponding bit in the bitmap */
+                                gboardDevStat |= 1U << host_idx;
+                            }
+                            else if (req->state == (uint8_t)TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF)
+                            {
+                                /* Clear the corresponding bit in the bitmap */
+                                gboardDevStat &= ~(1U << host_idx);
+                            }
+                            else
+                            {
+                                /* Reject unrecognized state values */
+                                ret = -EINVAL;
+                            }
+                        }  
+                    }
+                    break;
+#endif
                     default:
                         ret = set_device_handler((uint32_t*)tx_msg);
                     break;
@@ -818,7 +859,30 @@ int32_t Sciclient_ProcessPmMessage(const uint32_t reqFlags, void *tx_msg)
             }
             break;
         case TISCI_MSG_GET_DEVICE              :
-            ret = get_device_handler((uint32_t*)tx_msg); break;
+            {
+#ifdef CONFIG_LPM_DM
+                struct tisci_msg_get_device_req *req = (struct tisci_msg_get_device_req *) tx_msg;
+                if (req->id == SCICLIENT_DEV_BOARD0)
+                {
+                    struct tisci_msg_get_device_resp *resp = (struct tisci_msg_get_device_resp *) tx_msg;
+
+                    /* Check if any host has the device active */
+                    if (gboardDevStat == 0U) 
+                    {
+                        resp->current_state = TISCI_MSG_VALUE_DEVICE_HW_STATE_OFF;
+                        resp->programmed_state = TISCI_MSG_VALUE_DEVICE_SW_STATE_AUTO_OFF;
+                    }
+                    else
+                    {
+                        resp->current_state = TISCI_MSG_VALUE_DEVICE_HW_STATE_ON;
+                        resp->programmed_state = TISCI_MSG_VALUE_DEVICE_SW_STATE_ON;
+                    }
+                }
+                else
+#endif
+                    ret = get_device_handler((uint32_t*)tx_msg);
+            }
+            break;
 #ifdef CONFIG_GET_DEVICE_MULTIPLE
         case TISCI_MSG_GET_DEVICE_MULTIPLE         :
             ret = get_device_multiple_handler((uint32_t*)tx_msg); break;

@@ -250,7 +250,7 @@ const robot_template = {
         testCaseName: "Watchdog System Test",
         testCaseIds: "SITSW-11099",
         withCfg: true,
-        cfgPath: "test/drivers/watchdog/test_watchdog_system/am62x-sk/test_watchdog_system_sbl_uart_hs_fs.cfg",
+        cfgPath: "test/drivers/watchdog/test_watchdog_system/am62x-sk/test_watchdog_system_sbl_uart_${DEVICE_TYPE}.cfg",
         expectTimeout: 120,
     },
 };

@@ -133,6 +133,32 @@ const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "freertos"},
 ];
 
+const robot_template_nortos_a53 = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "WDT",
+        testCaseName: "Watchdog Reset Test (A53 NoRTOS)",
+        testCaseIds: "SITSW-12123 SITSW-12124",
+        withCfg: true,
+        cfgPath: "test/drivers/watchdog/test_watchdog_reset/{board}/{coreName}/test_watchdog_reset_sbl_ospi_${DEVICE_TYPE}.cfg",
+        expectTimeout: 60,
+    },
+};
+
+const robot_template_freertos_a53 = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "WDT",
+        testCaseName: "Watchdog Reset Test (A53 FreeRTOS)",
+        testCaseIds: "SITSW-12123 SITSW-12124",
+        withCfg: true,
+        cfgPath: "test/drivers/watchdog/test_watchdog_reset/{board}/{coreName}/test_watchdog_reset_sbl_ospi_${DEVICE_TYPE}.cfg",
+        expectTimeout: 60,
+    },
+};
+
 function getComponentProperty() {
     let property = {};
     property.dirPath = path.resolve(__dirname, "..");
@@ -160,6 +186,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_nortos_a53;
             build_property.templates = templates_nortos_a53;
             build_property.defines = defines_nortos_a53;
+            build_property.templates = [...(build_property.templates || []), robot_template_nortos_a53];
         }
         else if(buildOption.os.match(/freertos/))
         {
@@ -168,6 +195,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_a53;
             build_property.templates = templates_freertos_a53;
             build_property.defines = defines_freertos_a53;
+            build_property.templates = [...(build_property.templates || []), robot_template_freertos_a53];
         }
     }
 

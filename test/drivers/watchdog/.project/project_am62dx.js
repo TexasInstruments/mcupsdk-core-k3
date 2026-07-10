@@ -282,6 +282,78 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template_nortos = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "WDT",
+        testCaseName: "Watchdog Test NoRTOS",
+        appName: "test_watchdog(nortos)",
+        testCaseIds: "SITSW-9986 SITSW-9987 SITSW-9991 SITSW-9992 SITSW-9994 SITSW-10028 SITSW-10029 SITSW-10030 SITSW-10032 SITSW-10033" +
+                     " SITSW-10034 SITSW-10035 SITSW-10036 SITSW-10037 SITSW-10038 SITSW-10041 SITSW-10042 SITSW-10043" +
+                     " SITSW-10044 SITSW-10045 SITSW-10046 SITSW-10047 SITSW-10048 SITSW-10049 SITSW-10050 SITSW-10051 SITSW-10052 SITSW-10053" +
+                     " SITSW-10054 SITSW-10055 SITSW-10063 SITSW-10128",
+        expectTimeout: 300,
+    },
+};
+
+const robot_template_freertos = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "WDT",
+        testCaseName: "Watchdog Test FreeRTOS",
+        appName: "test_watchdog(freertos)",
+        testCaseIds: "SITSW-9986 SITSW-9987 SITSW-9991 SITSW-9992 SITSW-9994 SITSW-10028 SITSW-10029 SITSW-10030 SITSW-10032 SITSW-10033" +
+                     " SITSW-10034 SITSW-10035 SITSW-10036 SITSW-10037 SITSW-10038 SITSW-10039 SITSW-10040 SITSW-10041 SITSW-10042 SITSW-10043" +
+                     " SITSW-10044 SITSW-10045 SITSW-10046 SITSW-10047 SITSW-10048 SITSW-10049 SITSW-10050 SITSW-10051 SITSW-10052 SITSW-10053" +
+                     " SITSW-10054 SITSW-10055 SITSW-10056 SITSW-10128",
+        expectTimeout: 300,
+    },
+};
+
+const robot_template_a53_nortos = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "WDT",
+        testCaseName: "Watchdog Test A53 NoRTOS",
+        appName: "test_watchdog(a53_nortos)",
+        testCaseIds: "SITSW-9986 SITSW-9987 SITSW-9988 SITSW-9990 SITSW-9991 SITSW-9992 SITSW-9994 SITSW-10028 SITSW-10029 SITSW-10030" +
+                     " SITSW-10032 SITSW-10033 SITSW-10034 SITSW-10035 SITSW-10036 SITSW-10037 SITSW-10038 SITSW-10041 SITSW-10042 SITSW-10043" +
+                     " SITSW-10044 SITSW-10045 SITSW-10046 SITSW-10047 SITSW-10048 SITSW-10049 SITSW-10050 SITSW-10051 SITSW-10052 SITSW-10053" +
+                     " SITSW-10054 SITSW-10055 SITSW-10063 SITSW-10128",
+        expectTimeout: 300,
+    },
+};
+
+const robot_template_a53_freertos = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "WDT",
+        testCaseName: "Watchdog Test A53 FreeRTOS",
+        appName: "test_watchdog(a53_freertos)",
+        testCaseIds: "SITSW-9986 SITSW-9987 SITSW-9988 SITSW-9990 SITSW-9991 SITSW-9992 SITSW-9994 SITSW-10028 SITSW-10029 SITSW-10030" +
+                     " SITSW-10032 SITSW-10033 SITSW-10034 SITSW-10035 SITSW-10036 SITSW-10037 SITSW-10038 SITSW-10039 SITSW-10040 SITSW-10041" +
+                     " SITSW-10042 SITSW-10043 SITSW-10044 SITSW-10045 SITSW-10046 SITSW-10047 SITSW-10048 SITSW-10049 SITSW-10050 SITSW-10051" +
+                     " SITSW-10052 SITSW-10053 SITSW-10054 SITSW-10055 SITSW-10056 SITSW-10128",
+        expectTimeout: 300,
+    },
+};
+
+const robot_template_a53_smp = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "WDT",
+        testCaseName: "Watchdog Test A53 SMP",
+        appName: "test_watchdog(a53_smp)",
+        testCaseIds: "SITSW-10120",
+        expectTimeout: 300,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
     build_property.files = files;
@@ -299,6 +371,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_nortos_mcu_r5f;
             build_property.templates = templates_nortos_mcu_r5f;
             build_property.defines = defines_common;
+            build_property.templates = [...(build_property.templates || []), robot_template_nortos];
         }
         else if(buildOption.os.match(/freertos/))
         {
@@ -308,6 +381,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_mcu_r5f;
             build_property.templates = templates_freertos_mcu_r5f;
             build_property.defines = defines_freertos_mcu_r5f;
+            build_property.templates = [...(build_property.templates || []), robot_template_freertos];
         }
     }
     else if(buildOption.cpu.match(/a53*/)){
@@ -319,6 +393,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos;
             build_property.libs = libs_a53_smp;
             build_property.defines = defines_a53_smp;
+            build_property.templates = [...(build_property.templates || []), robot_template_a53_smp];
         }
         else if(buildOption.os.match(/nortos/))
         {
@@ -327,6 +402,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_nortos_a53;
             build_property.templates = templates_nortos_a53;
             build_property.defines = defines_nortos_a53;
+            build_property.templates = [...(build_property.templates || []), robot_template_a53_nortos];
         }
         else if(buildOption.os.match(/freertos/))
         {
@@ -336,6 +412,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_a53;
             build_property.templates = templates_freertos_a53;
             build_property.defines = defines_freertos_a53;
+            build_property.templates = [...(build_property.templates || []), robot_template_a53_freertos];
         }
     }
 

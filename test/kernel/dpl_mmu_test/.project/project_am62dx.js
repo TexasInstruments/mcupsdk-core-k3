@@ -247,6 +247,56 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template_nortos = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DPL",
+        testCaseName: "DPL MMU NoRTOS application",
+        appName: "test_mmu(nortos)",
+        testCaseIds: "SITSW-9984 SITSW-9989 SITSW-9993 SITSW-9995 SITSW-9996 SITSW-9997 SITSW-9998 SITSW-9999 SITSW-10000 SITSW-10001" +
+                     " SITSW-10002 SITSW-10003 SITSW-10004 SITSW-10005 SITSW-10006 SITSW-10007 SITSW-10008 SITSW-10009 SITSW-10010 SITSW-10011" +
+                     " SITSW-10012 SITSW-10013 SITSW-10014 SITSW-10017 SITSW-10018 SITSW-10019 SITSW-10020",
+        timeout: 300,
+        expectTimeout: 60,
+    },
+};
+
+const robot_template_freertos = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DPL",
+        testCaseName: "DPL MMU FreeRTOS application",
+        appName: "test_mmu(freertos)",
+        testCaseIds: "SITSW-9984 SITSW-9989 SITSW-9993 SITSW-9995 SITSW-9996 SITSW-9997 SITSW-9998 SITSW-9999 SITSW-10000 SITSW-10001" +
+                     " SITSW-10002 SITSW-10003 SITSW-10004 SITSW-10005 SITSW-10006 SITSW-10007 SITSW-10008 SITSW-10009 SITSW-10010 SITSW-10011" +
+                     " SITSW-10012 SITSW-10013 SITSW-10014 SITSW-10017 SITSW-10018 SITSW-10019 SITSW-10020 SITSW-10094 SITSW-10095 SITSW-10096" +
+                     " SITSW-10097 SITSW-10098 SITSW-10099 SITSW-10100 SITSW-10165 SITSW-10166 SITSW-10167",
+        timeout: 400,
+        expectTimeout: 60,
+    },
+};
+
+/* am62dx c75ss0-0 test app uses MAIN_UART4 (not MCU_UART), so the log port must
+ * be overridden to USB0 instead of the template's C75 default of USB3. */
+const robot_template_freertos_c75 = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DPL",
+        testCaseName: "DPL MMU FreeRTOS application",
+        appName: "test_mmu(freertos)",
+        testCaseIds: "SITSW-9984 SITSW-9989 SITSW-9993 SITSW-9995 SITSW-9996 SITSW-9997 SITSW-9998 SITSW-9999 SITSW-10000 SITSW-10001" +
+                     " SITSW-10002 SITSW-10003 SITSW-10004 SITSW-10005 SITSW-10006 SITSW-10007 SITSW-10008 SITSW-10009 SITSW-10010 SITSW-10011" +
+                     " SITSW-10012 SITSW-10013 SITSW-10014 SITSW-10017 SITSW-10018 SITSW-10019 SITSW-10020 SITSW-10094 SITSW-10095 SITSW-10096" +
+                     " SITSW-10097 SITSW-10098 SITSW-10099 SITSW-10100 SITSW-10165 SITSW-10166 SITSW-10167",
+        timeout: 400,
+        expectTimeout: 60,
+        logPort: "USB0",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -262,6 +312,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_c75;
         build_property.templates = templates_freertos_c75;
         build_property.defines = defines_c75_freertos;
+        build_property.templates = [...(build_property.templates || []), robot_template_freertos_c75];
     }
     else if(buildOption.cpu.match(/a53*/)) {
         if(buildOption.os.match("freertos-smp"))
@@ -281,6 +332,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.isLogSHM = true;
             build_property.templates = templates_freertos_a53;
             build_property.defines = defines_a53_freertos;
+            build_property.templates = [...(build_property.templates || []), robot_template_freertos];
         }
         else
         {
@@ -288,6 +340,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_nortos_a53;
             build_property.templates = templates_nortos_a53;
             build_property.defines = defines_a53_nortos;
+            build_property.templates = [...(build_property.templates || []), robot_template_nortos];
         }
     }
 

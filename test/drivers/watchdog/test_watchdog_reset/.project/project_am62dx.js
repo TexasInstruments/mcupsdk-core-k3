@@ -207,6 +207,58 @@ const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos"},
 ];
 
+const robot_template_nortos_a53 = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "WDT",
+        testCaseName: "Watchdog Reset Test (A53 NoRTOS)",
+        testCaseIds: "SITSW-12123 SITSW-12124",
+        withCfg: true,
+        cfgPath: "test/drivers/watchdog/test_watchdog_reset/{board}/{coreName}/test_watchdog_reset_sbl_ospi_${DEVICE_TYPE}.cfg",
+        expectTimeout: 60,
+    },
+};
+
+const robot_template_freertos_a53 = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "WDT",
+        testCaseName: "Watchdog Reset Test (A53 FreeRTOS)",
+        testCaseIds: "SITSW-12123 SITSW-12124",
+        withCfg: true,
+        cfgPath: "test/drivers/watchdog/test_watchdog_reset/{board}/{coreName}/test_watchdog_reset_sbl_ospi_${DEVICE_TYPE}.cfg",
+        expectTimeout: 60,
+    },
+};
+
+const robot_template_nortos_r5f = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "WDT",
+        testCaseName: "Watchdog Reset Test (MCU-R5F NoRTOS)",
+        testCaseIds: "SITSW-12123 SITSW-12124",
+        withCfg: true,
+        cfgPath: "test/drivers/watchdog/test_watchdog_reset/{board}/{coreName}/test_watchdog_reset_sbl_ospi_${DEVICE_TYPE}.cfg",
+        expectTimeout: 60,
+    },
+};
+
+const robot_template_freertos_r5f = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "WDT",
+        testCaseName: "Watchdog Reset Test (MCU-R5F FreeRTOS)",
+        testCaseIds: "SITSW-12123 SITSW-12124",
+        withCfg: true,
+        cfgPath: "test/drivers/watchdog/test_watchdog_reset/{board}/{coreName}/test_watchdog_reset_sbl_ospi_${DEVICE_TYPE}.cfg",
+        expectTimeout: 60,
+    },
+};
+
 function getComponentProperty() {
     let property = {};
     property.dirPath = path.resolve(__dirname, "..");
@@ -234,6 +286,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_nortos;
             build_property.libs = libs_nortos_mcu_r5f;
             build_property.templates = templates_nortos_mcu_r5f;
+            build_property.templates = [...(build_property.templates || []), robot_template_nortos_r5f];
         }
         else if(buildOption.os.match(/freertos/))
         {
@@ -241,6 +294,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos;
             build_property.libs = libs_freertos_mcu_r5f;
             build_property.templates = templates_freertos_mcu_r5f;
+            build_property.templates = [...(build_property.templates || []), robot_template_freertos_r5f];
         }
     }
     else if(buildOption.cpu.match(/a53*/)){
@@ -251,6 +305,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_nortos_a53;
             build_property.templates = templates_nortos_a53;
             build_property.defines = defines_a53;
+            build_property.templates = [...(build_property.templates || []), robot_template_nortos_a53];
         }
         else if(buildOption.os.match(/freertos/))
         {
@@ -259,6 +314,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_freertos_a53;
             build_property.templates = templates_freertos_a53;
             build_property.defines = defines_a53;
+            build_property.templates = [...(build_property.templates || []), robot_template_freertos_a53];
         }
     }
 

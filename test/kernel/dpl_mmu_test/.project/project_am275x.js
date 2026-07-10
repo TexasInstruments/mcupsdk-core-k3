@@ -98,6 +98,21 @@ const cflags_c75_freertos = {
     ]
 }
 
+const robot_template_freertos = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DPL",
+        testCaseName: "DPL MMU FreeRTOS application",
+        testCaseIds: "SITSW-9984 SITSW-9989 SITSW-9993 SITSW-9995 SITSW-9996 SITSW-9997 SITSW-9998 SITSW-9999 SITSW-10000 SITSW-10001" +
+                     " SITSW-10002 SITSW-10003 SITSW-10004 SITSW-10005 SITSW-10006 SITSW-10007 SITSW-10008 SITSW-10009 SITSW-10010 SITSW-10011" +
+                     " SITSW-10012 SITSW-10013 SITSW-10014 SITSW-10017 SITSW-10018 SITSW-10019 SITSW-10020 SITSW-10094 SITSW-10095 SITSW-10096" +
+                     " SITSW-10097 SITSW-10098 SITSW-10099 SITSW-10100 SITSW-10165 SITSW-10166 SITSW-10167",
+        timeout: 400,
+        expectTimeout: 60,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000",    board: "am275x-evm", os: "freertos"},
     { device: device, cpu: "c75ss1-0", cgt: "ti-c7000",     board: "am275x-evm", os: "freertos"},
@@ -154,6 +169,8 @@ function getComponentBuildProperty(buildOption) {
         {
             build_property.templates = templates_freertos_c75_1;
         }
+
+        build_property.templates = [...(build_property.templates || []), robot_template_freertos];
     }
 
     return build_property;

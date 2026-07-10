@@ -293,13 +293,17 @@ def get_cert(args):
 		else:
 			g_signopt = ""
 
-	# Auth type has to be one of 0,1,2
-	if(args.authtype not in g_valid_auth_types):
-		# Not a valid auth type. But don't exit, go with default
-		print("[WARNING]{} is not a valid authentication type. Valid types are : {}. Using 1 by default".format(args.authtype, ','.join(g_valid_auth_types)))
-		v_AUTH_TYPE = '1'
+	if is_mcelf:
+		if args.authtype is not None:
+			print("[INFO] --authtype is not applicable for MCELF images and will be ignored.")
 	else:
-		v_AUTH_TYPE = args.authtype
+		# Auth type has to be one of 0,1,2
+		if(args.authtype not in g_valid_auth_types):
+			# Not a valid auth type. But don't exit, go with default
+			print("[WARNING]{} is not a valid authentication type. Valid types are : {}. Using 1 by default".format(args.authtype, ','.join(g_valid_auth_types)))
+			v_AUTH_TYPE = '1'
+		else:
+			v_AUTH_TYPE = args.authtype
 
 	# Core has to belong to valid cores
 	if(args.core is not None):

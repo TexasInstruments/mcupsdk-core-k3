@@ -2,17 +2,16 @@
 # Auto generated makefile
 #
 
-export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../..)
+export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
-CG_TOOL_ROOT=$(CGT_GCC_AARCH64_PATH)
+CG_TOOL_ROOT=$(CGT_TI_ARM_CLANG_PATH)
 
-LD=$(CG_TOOL_ROOT)/bin/aarch64-none-elf-ld
-CC=$(CG_TOOL_ROOT)/bin/aarch64-none-elf-gcc
-LNK=$(CG_TOOL_ROOT)/bin/aarch64-none-elf-gcc
-STRIP=$(CG_TOOL_ROOT)/bin/aarch64-none-elf-strip
-OBJCOPY=$(CG_TOOL_ROOT)/bin/aarch64-none-elf-objcopy
+CC=$(CG_TOOL_ROOT)/bin/tiarmclang
+LNK=$(CG_TOOL_ROOT)/bin/tiarmclang
+STRIP=$(CG_TOOL_ROOT)/bin/tiarmstrip
+OBJCOPY=$(CG_TOOL_ROOT)/bin/tiarmobjcopy
 ifeq ($(OS), Windows_NT)
 	PYTHON=python
 else
@@ -22,24 +21,26 @@ endif
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_gpio.$(PROFILE).out
+OUTNAME:=test_gpio_system.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_gpio.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=test_gpio.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=test_gpio.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=test_gpio.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=test_gpio.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=test_gpio.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=test_gpio.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=test_gpio.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=test_gpio_system.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=test_gpio_system.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=test_gpio_system.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=test_gpio_system.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=test_gpio_system.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=test_gpio_system.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=test_gpio_system.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=test_gpio_system.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
 endif
 
 FILES_common := \
-	test_gpio.c \
+	system_test_utils.c \
+	test_case_mapping.c \
+	test_gpio_system.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -51,82 +52,89 @@ FILES_common := \
 
 FILES_PATH_common = \
 	.. \
-	../.. \
 	../../.. \
+	../../../../../utils \
 	generated \
 
 INCLUDES_common := \
+	-I${CG_TOOL_ROOT}/include/c \
 	-I${MCU_PLUS_SDK_PATH}/source \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/r5f \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
-	-I${MCU_PLUS_SDK_PATH}/test/drivers/gpio/am62ax-sk \
+	-I../../../../../utils \
+	-I../../.. \
 	-Igenerated \
 
 DEFINES_common := \
 	-DSOC_AM62AX \
+	-DSOC_AM62AX \
 
 CFLAGS_common := \
-	-mcpu=cortex-a53+fp+simd \
-	-mabi=lp64 \
-	-mcmodel=large \
-	-mstrict-align \
-	-mfix-cortex-a53-835769 \
-	-mfix-cortex-a53-843419 \
+	-mcpu=cortex-r5 \
+	-mfloat-abi=hard \
+	-mfpu=vfpv3-d16 \
+	-mthumb \
 	-Wall \
 	-Werror \
 	-g \
-	-Wno-int-to-pointer-cast \
-	-Wno-pointer-to-int-cast \
-	-Wno-unused-but-set-variable \
-	-fdata-sections \
-	-ffunction-sections \
+	-Wno-gnu-variable-sized-type-not-at-end \
+	-Wno-unused-function \
+
+CFLAGS_cpp_common := \
+	-Wno-c99-designator \
+	-Wno-extern-c-compat \
+	-Wno-c++11-narrowing \
+	-Wno-reorder-init-list \
+	-Wno-deprecated-register \
+	-Wno-writable-strings \
+	-Wno-enum-compare \
+	-Wno-reserved-user-defined-literal \
+	-Wno-unused-const-variable \
+	-x c++ \
 
 CFLAGS_debug := \
 	-D_DEBUG_=1 \
 
 CFLAGS_release := \
-	-O2 \
+	-Os \
 
 LNK_FILES_common = \
 	linker.cmd \
 
 LIBS_PATH_common = \
-	-L${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
-	-L${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	-L${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
-	-L${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
-	-L${MCU_PLUS_SDK_PATH}/source/board/lib \
-	-L${MCU_PLUS_SDK_PATH}/test/unity/lib \
-	-L$(CGT_GCC_AARCH64_PATH)/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/test/unity/lib \
+	-Wl,-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
-	-l:nortos.am62ax.a53.gcc-aarch64.${ConfigName}.lib \
-	-l:drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib \
-	-l:unity.am62ax.a53.gcc-aarch64.${ConfigName}.lib \
+	-lfreertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	-ldrivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lunity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	-llibc.a \
+	-llibsysbm.a \
 
 LFLAGS_common = \
-	-Wl,-static \
-	-Wl,--gc-sections \
-	-Wl,--build-id=none \
-	-lstdc++ \
-	-lgcc \
-	-lm \
-	-lc \
-	-lrdimon \
+	-Wl,--diag_suppress=10063 \
+	-Wl,--priority \
+	-Wl,--ram_model \
+	-Wl,--reread_libs \
 
 
 LIBS_NAME = \
-	nortos.am62ax.a53.gcc-aarch64.${ConfigName}.lib \
-	drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib \
-	unity.am62ax.a53.gcc-aarch64.${ConfigName}.lib \
+	freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	drivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	libc.a \
+	libsysbm.a \
 
 LIBS_PATH_NAME = \
-	${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
+	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
-	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
-	$(CGT_GCC_AARCH64_PATH)/lib \
+	${CG_TOOL_ROOT}/lib \
 
 FILES := $(FILES_common) $(FILES_$(PROFILE))
 ASMFILES := $(ASMFILES_common) $(ASMFILES_$(PROFILE))
@@ -137,6 +145,7 @@ INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
 LIBS := $(LIBS_common) $(LIBS_$(PROFILE))
 LIBS_PATH := $(LIBS_PATH_common) $(LIBS_PATH_$(PROFILE))
 LFLAGS := $(LFLAGS_common) $(LFLAGS_$(PROFILE))
+LNKOPTFLAGS := $(LNKOPTFLAGS_common) $(LNKOPTFLAGS_$(PROFILE))
 LNK_FILES := $(LNK_FILES_common) $(LNK_FILES_$(PROFILE))
 
 OBJDIR := obj/$(PROFILE)/
@@ -151,12 +160,12 @@ vpath %.lib $(LIBS_PATH_NAME)
 vpath %.a $(LIBS_PATH_NAME)
 
 $(OBJDIR)/%.obj %.obj: %.c
-	@echo  Compiling: am62ax:a53ss0-0:nortos:gcc-aarch64 $(OUTNAME): $<
-	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -MT $@ -o $(OBJDIR)/$@ $<
+	@echo  Compiling: am62ax:mcu-r5fss0-0:freertos:ti-arm-clang $(OUTNAME): $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -o $(OBJDIR)/$@ $<
 
 $(OBJDIR)/%.obj %.obj: %.S
-	@echo  Compiling: am62ax:a53ss0-0:nortos:gcc-aarch64 $(LIBNAME): $<
-	$(CC) -c -x assembler-with-cpp $(CFLAGS) $(INCLUDES) $(DEFINES) -o $(OBJDIR)$@ $<
+	@echo  Compiling: am62ax:mcu-r5fss0-0:freertos:ti-arm-clang $(LIBNAME): $<
+	$(CC) -c $(CFLAGS) -o $(OBJDIR)/$@ $<
 
 all: $(TARGETS)
 
@@ -169,13 +178,13 @@ SYSCFG_GEN_FILES+=generated/ti_board_open_close.c generated/ti_board_open_close.
 
 $(OUTNAME): syscfg $(SYSCFG_GEN_FILES) $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 	@echo  .
-	@echo  Linking: am62ax:a53ss0-0:nortos:gcc-aarch64 $@ ...
-	$(LNK) $(LIBS_PATH) -Wl,-Map=$(OUTNAME:%.out=%.map) -o $@ -Wl,--start-group $(LFLAGS) $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) -Wl,--end-group -Wl,-T,$(LNK_FILES)
-	@echo  Linking: am62ax:a53ss0-0:nortos:gcc-aarch64 $@ Done !!!
+	@echo  Linking: am62ax:mcu-r5fss0-0:freertos:ti-arm-clang $@ ...
+	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PATH) -Wl,-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) $(LNK_FILES)
+	@echo  Linking: am62ax:mcu-r5fss0-0:freertos:ti-arm-clang $@ Done !!!
 	@echo  .
 
 clean:
-	@echo  Cleaning: am62ax:a53ss0-0:nortos:gcc-aarch64 $(OUTNAME) ...
+	@echo  Cleaning: am62ax:mcu-r5fss0-0:freertos:ti-arm-clang $(OUTNAME) ...
 	$(RMDIR) $(OBJDIR)
 	$(RM) $(OUTNAME)
 	$(RM) $(BOOTIMAGE_NAME)
@@ -188,7 +197,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62ax:a53ss0-0:nortos:gcc-aarch64 test_gpio ...
+	@echo  Scrubing: am62ax:mcu-r5fss0-0:freertos:ti-arm-clang test_gpio_system ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
@@ -219,10 +228,10 @@ $(SYSCFG_GEN_FILES): syscfg
 
 syscfg: ../example.syscfg
 	@echo Generating SysConfig files ...
-	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM62Ax --context a53ss0-0 --part Default --package AMB --output generated/ ../example.syscfg
+	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM62Ax --context mcu-r5fss0-0 --part Default --package AMB --output generated/ ../example.syscfg
 
 syscfg-gui:
-	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device AM62Ax --context a53ss0-0 --part Default --package AMB --output generated/  ../example.syscfg
+	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device AM62Ax --context mcu-r5fss0-0 --part Default --package AMB --output generated/  ../example.syscfg
 
 #
 # Generation of boot image which can be loaded by Secondary Boot Loader (SBL)
@@ -261,13 +270,13 @@ else
 endif
 
 MULTI_CORE_IMAGE_PARAMS = \
-	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
+	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
 
 MULTI_CORE_IMAGE_PARAMS_XIP = \
-	$(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
+	$(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
 
 $(BOOTIMAGE_NAME): $(OUTNAME)
-	@echo  Boot image: am62ax:a53ss0-0:nortos:gcc-aarch64 $(BOOTIMAGE_PATH)/$@ ...
+	@echo  Boot image: am62ax:mcu-r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ ...
 ifneq ($(OS),Windows_NT)
 	$(CHMOD) a+x $(XIPGEN_CMD)
 endif
@@ -284,9 +293,9 @@ endif
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
-	@echo  Boot image: am62ax:a53ss0-0:nortos:gcc-aarch64 $(BOOTIMAGE_PATH)/$@ Done !!!
+	@echo  Boot image: am62ax:mcu-r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ Done !!!
 	@echo  .
-	@echo  Boot image: am62ax:a53ss0-0:nortos:gcc-aarch64 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
+	@echo  Boot image: am62ax:mcu-r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
 	@echo  .
 
 $(BOOTIMAGE_NAME_HS): $(BOOTIMAGE_NAME)
@@ -306,7 +315,7 @@ else
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_NAME)-enc
 endif
-	@echo  Boot image: am62ax:a53ss0-0:nortos:gcc-aarch64 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
+	@echo  Boot image: am62ax:mcu-r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
 	@echo  .
 endif
 -include $(addprefix $(OBJDIR)/, $(DEPS))

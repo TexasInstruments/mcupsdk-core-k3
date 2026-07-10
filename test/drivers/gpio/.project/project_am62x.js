@@ -413,13 +413,37 @@ function getComponentProperty() {
 }
 
 
-const robot_template = {
+const robot_template_nortos = {
     input: ".project/templates/am62x/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "GPIO",
-        testCaseName: "GPIO test application",
-        testCaseIds: "SITSW-1348 SITSW-1349 SITSW-1350 SITSW-1351 SITSW-9542 SITSW-9543 SITSW-9544 SITSW-9545 SITSW-9637 SITSW-9757",
+        testCaseName: "GPIO NoRTOS test application",
+        testCaseIds: "SITSW-9542 SITSW-9543 SITSW-9544 SITSW-9545 SITSW-9550 SITSW-9546 SITSW-9916",
+        expectTimeout: 60,
+        timeout: 660,
+    },
+};
+
+const robot_template_freertos = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "GPIO",
+        testCaseName: "GPIO FreeRTOS test application",
+        testCaseIds: "SITSW-9542 SITSW-9543 SITSW-9544 SITSW-9545 SITSW-9550 SITSW-9546 SITSW-9916 SITSW-9547 SITSW-9548",
+        expectTimeout: 60,
+        timeout: 660,
+    },
+};
+
+const robot_template_freertos_smp = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "GPIO",
+        testCaseName: "GPIO FreeRTOS SMP test application",
+        testCaseIds: "SITSW-9637",
         expectTimeout: 60,
         timeout: 660,
     },
@@ -519,6 +543,13 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+    let robot_template = robot_template_nortos;
+    if (buildOption.os.match(/freertos-smp/)) {
+        robot_template = robot_template_freertos_smp;
+    }
+    else if (buildOption.os.match(/freertos/)) {
+        robot_template = robot_template_freertos;
+    }
     build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;

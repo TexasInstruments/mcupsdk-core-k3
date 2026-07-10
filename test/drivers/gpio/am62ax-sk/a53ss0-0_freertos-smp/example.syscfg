@@ -24,7 +24,6 @@ const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
 const mmu_armv8  = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
 const mmu_armv81 = mmu_armv8.addInstance();
 const mmu_armv82 = mmu_armv8.addInstance();
-const mmu_armv83 = mmu_armv8.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -44,15 +43,13 @@ gpio4.$name    = "GPIO_MCAN";
 gpio4.pinDir   = "OUTPUT";
 gpio4.trigType = "BOTH_EDGE";
 
-gpio5.$name                = "GPIO_OSPI_D1";
-gpio5.pinDir               = "OUTPUT";
-gpio5.trigType             = "RISE_EDGE";
-gpio5.GPIO.gpioPin.$assign = "MCASP0_AXR0";
+gpio5.$name    = "GPIO_OSPI_D1";
+gpio5.pinDir   = "OUTPUT";
+gpio5.trigType = "RISE_EDGE";
 
-gpio6.$name                = "GPIO_OSPI_D2";
-gpio6.pinDir               = "OUTPUT";
-gpio6.trigType             = "FALL_EDGE";
-gpio6.GPIO.gpioPin.$assign = "MCASP0_AXR1";
+gpio6.$name    = "GPIO_OSPI_D2";
+gpio6.pinDir   = "OUTPUT";
+gpio6.trigType = "FALL_EDGE";
 
 gpio7.$name    = "GPIO_INPUT";
 gpio7.trigType = "RISE_EDGE";
@@ -72,17 +69,11 @@ debug_log.uartLog.UART.$assign = "USART0";
 mmu_armv81.size  = 0x80000000;
 mmu_armv81.$name = "SOC_MEM_REGION";
 
-mmu_armv82.vAddr     = 0x70000000;
-mmu_armv82.pAddr     = 0x70000000;
-mmu_armv82.size      = 0x200000;
+mmu_armv82.vAddr     = 0x80000000;
+mmu_armv82.pAddr     = 0x80000000;
+mmu_armv82.size      = 0x80000000;
 mmu_armv82.attribute = "MAIR7";
-mmu_armv82.$name     = "SHM_MEM_REGION";
-
-mmu_armv83.vAddr     = 0x80000000;
-mmu_armv83.pAddr     = 0x80000000;
-mmu_armv83.size      = 0x80000000;
-mmu_armv83.attribute = "MAIR7";
-mmu_armv83.$name     = "DDR_REGION";
+mmu_armv82.$name     = "DDR_REGION";
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
@@ -91,20 +82,22 @@ mmu_armv83.$name     = "DDR_REGION";
  */
 gpio1.GPIO.$suggestSolution                 = "GPIO1";
 gpio2.GPIO.$suggestSolution                 = "GPIO1";
-gpio2.GPIO.gpioPin.$suggestSolution         = "USB1_DRVVBUS";
+gpio2.GPIO.gpioPin.$suggestSolution         = "RGMII2_RD2";
 gpio3.GPIO.$suggestSolution                 = "GPIO1";
-gpio3.GPIO.gpioPin.$suggestSolution         = "RGMII2_RD0";
+gpio3.GPIO.gpioPin.$suggestSolution         = "USB1_DRVVBUS";
 gpio4.GPIO.$suggestSolution                 = "GPIO1";
-gpio4.GPIO.gpioPin.$suggestSolution         = "MCASP0_ACLKX";
+gpio4.GPIO.gpioPin.$suggestSolution         = "USB0_DRVVBUS";
 gpio5.GPIO.$suggestSolution                 = "GPIO1";
+gpio5.GPIO.gpioPin.$suggestSolution         = "MMC1_SDCD";
 gpio6.GPIO.$suggestSolution                 = "GPIO1";
+gpio6.GPIO.gpioPin.$suggestSolution         = "MMC1_CMD";
 gpio7.GPIO.$suggestSolution                 = "GPIO1";
-gpio7.GPIO.gpioPin.$suggestSolution         = "MMC1_SDCD";
+gpio7.GPIO.gpioPin.$suggestSolution         = "MMC1_CLK";
 gpio8.GPIO.$suggestSolution                 = "GPIO1";
-gpio8.GPIO.gpioPin.$suggestSolution         = "RGMII2_RX_CTL";
+gpio8.GPIO.gpioPin.$suggestSolution         = "MMC1_DAT0";
 gpio9.GPIO.$suggestSolution                 = "GPIO1";
-gpio9.GPIO.gpioPin.$suggestSolution         = "MMC0_DAT3";
+gpio9.GPIO.gpioPin.$suggestSolution         = "MMC1_DAT1";
 gpio10.GPIO.$suggestSolution                = "GPIO1";
-gpio10.GPIO.gpioPin.$suggestSolution        = "USB0_DRVVBUS";
+gpio10.GPIO.gpioPin.$suggestSolution        = "MMC1_DAT2";
 debug_log.uartLog.UART.RXD.$suggestSolution = "UART0_RXD";
 debug_log.uartLog.UART.TXD.$suggestSolution = "UART0_TXD";

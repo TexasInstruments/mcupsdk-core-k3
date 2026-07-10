@@ -99,12 +99,17 @@ LNK_FILES_common = \
 LIBS_PATH_common = \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/board/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
 	-lnortos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	-ldrivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lboard.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lsciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	-lunity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
 	-llibsysbm.a \
@@ -119,6 +124,8 @@ LFLAGS_common = \
 LIBS_NAME = \
 	nortos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	drivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
+	sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
 	libsysbm.a \
@@ -126,6 +133,9 @@ LIBS_NAME = \
 LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
+	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	${CG_TOOL_ROOT}/lib \
 

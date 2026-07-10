@@ -178,6 +178,19 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "GPIO",
+        testCaseName: "GPIO system test application",
+        testCaseIds: "SITSW-9757 SITSW-9634",
+        appName: "test_gpio_system",
+        withCfg: true,
+        cfgPath: "test/drivers/gpio/test_gpio_system/{board}/test_gpio_system_sbl_uart_hs_fs.cfg",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -203,6 +216,10 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_wkup_r5f;
         build_property.templates = templates_freertos_wkup_r5f;
         build_property.defines = defines_wkup_r5f;
+    }
+
+    if (buildOption.cpu.match(/^wkup-r5fss0-0$/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
     }
 
     return build_property;

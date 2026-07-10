@@ -1,6 +1,6 @@
 let path = require('path');
 
-let device = "am62x";
+let device = "am62ax";
 
 const files_r5 = {
     common: [
@@ -10,11 +10,19 @@ const files_r5 = {
     ],
 };
 
-const files_m4f = {
+const files_mcur5 = {
     common: [
         "system_test_utils.c",
         "test_case_mapping.c",
         "test_gpio_system.c",
+        "main.c",
+    ],
+};
+
+const files_c7 = {
+    common: [
+        "system_test_utils.c",
+        "test_case_mapping.c",
         "main.c",
     ],
 };
@@ -40,6 +48,14 @@ const filedirs = {
 };
 
 
+const libdirs_nortos = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+    ],
+};
+
 const libdirs_freertos_a53 = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
@@ -48,16 +64,10 @@ const libdirs_freertos_a53 = {
     ],
 };
 
-const libdirs_freertos = {
+const libdirs_freertos_mcu_r5f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
-        "${MCU_PLUS_SDK_PATH}/source/board/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
         "${MCU_PLUS_SDK_PATH}/test/unity/lib",
     ],
 };
@@ -75,11 +85,19 @@ const libdirs_freertos_dm_r5f = {
     ],
 };
 
+const libdirs_freertos_c75 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+    ],
+};
+
 const includes_freertos_r5f = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/r5f",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/r5f",
         "${MCU_PLUS_SDK_PATH}/test/unity/",
         "../../../../../utils",
         "../../..",
@@ -92,55 +110,71 @@ const includes_a53 = {
     ],
 };
 
-const includes_freertos_m4f = {
-    common: [
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CM4F",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/m4f",
-        "${MCU_PLUS_SDK_PATH}/test/unity/",
-        "../../../../../utils",
-        "../../..",
-    ],
-};
-
 const includes_freertos_a53 = {
     common: [
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
         "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/a53",
         "${MCU_PLUS_SDK_PATH}/test/unity/",
         "../../../../../utils",
         "../../..",
     ],
 };
 
+const includes_freertos_c75 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/c75x",
+        "${MCU_PLUS_SDK_PATH}/test/unity/",
+        "../../../../../utils",
+        "../../..",
+    ],
+};
+
+const libs_freertos_mcu_r5f = {
+    common: [
+        "freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
+
 const libs_freertos_dm_r5f = {
     common: [
-        "sciclient_direct.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
-        "freertos.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
-        "drivers.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
-        "unity.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciserver.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
-        "self_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
-        "rm_pm_hal.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
-        "dm_stub.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62ax.dm-r5f.ti-arm-clang.${ConfigName}.lib",
+        "unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 
 const libs_freertos_a53 = {
     common: [
-        "freertos.am62x.a53.gcc-aarch64.${ConfigName}.lib",
-        "drivers.am62x.a53.gcc-aarch64.${ConfigName}.lib",
-        "unity.am62x.a53.gcc-aarch64.${ConfigName}.lib",
+        "freertos.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "unity.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
 
-const libs_freertos_m4f = {
+const libs_nortos_a53 = {
     common: [
-        "freertos.am62x.m4f.ti-arm-clang.${ConfigName}.lib",
-        "drivers.am62x.m4f.ti-arm-clang.${ConfigName}.lib",
-        "board.am62x.m4f.ti-arm-clang.${ConfigName}.lib",
-        "unity.am62x.m4f.ti-arm-clang.${ConfigName}.lib",
+        "nortos.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "unity.am62ax.a53.gcc-aarch64.${ConfigName}.lib"
+    ],
+};
+
+const libs_freertos_c75 = {
+    common: [
+        "freertos.am62ax.c75x.ti-c7000.${ConfigName}.lib",
+        "drivers.am62ax.c75x.ti-c7000.${ConfigName}.lib",
+        "unity.am62ax.c75x.ti-c7000.${ConfigName}.lib",
     ],
 };
 
@@ -152,17 +186,14 @@ const lnkfiles = {
 
 const syscfgfile = "../example.syscfg";
 
-const templates_freertos_m4f =
+const templates_freertos_mcu_r5f =
 [
     {
-        input: ".project/templates/am62x/common/linker_m4f.cmd.xdt",
+        input: ".project/templates/am62ax/common/linker_mcu-r5f.cmd.xdt",
         output: "linker.cmd",
-        options: {
-            enableIram: true,
-        },
     },
     {
-        input: ".project/templates/am62x/freertos/main_freertos.c.xdt",
+        input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {
             entryFunction: "test_main",
@@ -173,7 +204,7 @@ const templates_freertos_m4f =
 const templates_freertos_dm_r5f =
 [
     {
-        input: ".project/templates/am62x/common/linker_dm_r5f.cmd.xdt",
+        input: ".project/templates/am62ax/common/linker_dm_r5f.cmd.xdt",
         output: "linker.cmd",
         options: {
             heapSize: 0x8000,
@@ -187,7 +218,7 @@ const templates_freertos_dm_r5f =
         },
     },
     {
-        input: ".project/templates/am62x/freertos/main_freertos_dm.c.xdt",
+        input: ".project/templates/am62ax/freertos/main_freertos_dm.c.xdt",
         output: "../main.c",
         options: {
             entryFunction: "test_main",
@@ -198,11 +229,11 @@ const templates_freertos_dm_r5f =
 const templates_freertos_a53 =
 [
     {
-        input: ".project/templates/am62x/common/linker_a53.cmd.xdt",
+        input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
         output: "linker.cmd",
     },
     {
-        input: ".project/templates/am62x/freertos/main_freertos.c.xdt",
+        input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {
             entryFunction: "test_main",
@@ -213,11 +244,11 @@ const templates_freertos_a53 =
 const templates_nortos_a53 =
 [
     {
-        input: ".project/templates/am62x/common/linker_a53.cmd.xdt",
+        input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
         output: "linker.cmd",
     },
     {
-        input: ".project/templates/am62x/nortos/main_nortos.c.xdt",
+        input: ".project/templates/am62ax/nortos/main_nortos.c.xdt",
         output: "../main.c",
         options: {
             entryFunction: "test_main",
@@ -225,23 +256,40 @@ const templates_nortos_a53 =
     },
 ];
 
+const templates_freertos_c75 =
+[
+    {
+        input: ".project/templates/am62ax/common/linker_c75.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "test_main",
+            stackSize: 16*1024,
+        },
+    }
+];
+
 const defines_dm_r5f = {
     common:[
-        "SOC_AM62X",
+        "SOC_AM62AX",
         "ENABLE_SCICLIENT_DIRECT",
-    ],
-};
+    ]
+}
 
 const defines_common = {
     common:[
-        "SOC_AM62X",
-    ],
+        "SOC_AM62AX",
+    ]
 };
 
 const buildOptionCombos = [
-    { device: device, cpu: "r5fss0-0",     cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
-    { device: device, cpu: "m4fss0-0",     cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
-    { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62x-sk", os: "freertos"},
+    { device: device, cpu: "r5fss0-0",     cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
+    { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62ax-sk", os: "freertos"},
+    { device: device, cpu: "c75ss0-0",     cgt: "ti-c7000",     board: "am62ax-sk", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -261,7 +309,7 @@ function getComponentProperty() {
 }
 
 const robot_template = {
-    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "GPIO",
@@ -277,10 +325,20 @@ function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
     build_property.filedirs = filedirs;
+    build_property.libdirs = libdirs_nortos;
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
 
-    if(buildOption.cpu.match(/r5f*/))
+    if(buildOption.cpu.match(/mcu-r5f*/))
+    {
+        build_property.files = files_mcur5;
+        build_property.includes = includes_freertos_r5f;
+        build_property.libdirs = libdirs_freertos_mcu_r5f;
+        build_property.libs = libs_freertos_mcu_r5f;
+        build_property.templates = templates_freertos_mcu_r5f;
+        build_property.defines = defines_common;
+    }
+    else if(buildOption.cpu.match(/r5f*/))
     {
         build_property.files = files_r5;
         build_property.includes = includes_freertos_r5f;
@@ -298,13 +356,13 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_a53;
         build_property.defines = defines_common;
     }
-    else if(buildOption.cpu.match(/m4f*/))
+    else if(buildOption.cpu.match(/c75*/))
     {
-        build_property.files = files_m4f;
-        build_property.includes = includes_freertos_m4f;
-        build_property.libdirs = libdirs_freertos;
-        build_property.libs = libs_freertos_m4f;
-        build_property.templates = templates_freertos_m4f;
+        build_property.files = files_c7;
+        build_property.includes = includes_freertos_c75;
+        build_property.libdirs = libdirs_freertos_c75;
+        build_property.libs = libs_freertos_c75;
+        build_property.templates = templates_freertos_c75;
         build_property.defines = defines_common;
     }
 

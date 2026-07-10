@@ -1,0 +1,82 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM62Ax" --part "Default" --package "AMB" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @v2CliArgs --device "AM62A7-Q1" --package "FCBGA (AMB)" --variant "AM62A74-M" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.24.0+4150"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const gpio       = scripting.addModule("/drivers/gpio/gpio", {}, false);
+const gpio1      = gpio.addInstance();
+const gpio2      = gpio.addInstance();
+const gpio3      = gpio.addInstance();
+const gpio4      = gpio.addInstance();
+
+const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
+const mmu_armv8  = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
+const mmu_armv81 = mmu_armv8.addInstance();
+const mmu_armv82 = mmu_armv8.addInstance();
+const mmu_armv83 = mmu_armv8.addInstance();
+const mmu_armv84 = mmu_armv8.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+ gpio1.$name        = "GPIO_LED";
+gpio1.pinDir       = "OUTPUT";
+gpio1.trigType     = "RISE_EDGE";
+
+
+gpio2.$name        = "GPIO_PUSH_BUTTON";
+gpio2.trigType     = "RISE_EDGE";
+
+
+gpio3.$name        = "GPIO_I2C";
+gpio3.pinDir       = "OUTPUT";
+gpio3.trigType     = "FALL_EDGE";
+
+
+gpio4.$name        = "GPIO_MCAN";
+gpio4.pinDir       = "OUTPUT";
+gpio4.trigType     = "BOTH_EDGE";
+
+const ipc        = scripting.addModule("/drivers/ipc/ipc");
+
+ipc.enableLinuxIpc = false;
+ipc.r5fss0_0       = "notify";
+ipc.mcu_r5fss0_0   = "notify";
+ipc.c75ss0_0       = "notify";
+
+
+debug_log.enableSharedMemLog = true;
+
+mmu_armv81.$name = "CONFIG_MMU_REGION0";
+mmu_armv81.size  = 0x80000000;
+
+mmu_armv82.$name     = "CONFIG_MMU_REGION1";
+mmu_armv82.vAddr     = 0x70000000;
+mmu_armv82.pAddr     = 0x70000000;
+mmu_armv82.size      = 0x200000;
+mmu_armv82.attribute = "MAIR7";
+
+mmu_armv83.$name     = "CONFIG_MMU_REGION2";
+mmu_armv83.vAddr     = 0x80000000;
+mmu_armv83.pAddr     = 0x80000000;
+mmu_armv83.size      = 0x80000000;
+mmu_armv83.attribute = "MAIR7";
+
+mmu_armv84.$name     = "CONFIG_MMU_REGION3";
+mmu_armv84.vAddr     = 0xA1000000;
+mmu_armv84.pAddr     = 0xA1000000;
+mmu_armv84.size      = 0x40000;
+mmu_armv84.attribute = "MAIR4";
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+

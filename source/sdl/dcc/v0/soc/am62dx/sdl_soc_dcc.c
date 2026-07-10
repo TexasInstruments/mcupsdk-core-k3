@@ -49,11 +49,12 @@
 int32_t SDL_DCC_getBaseaddr(SDL_DCC_Inst instance,
                             uint32_t *baseAddr)
 {
-    static const uint32_t SDL_DCC_baseAddress[SDL_DCC_MAX_INSTANCE] = {SDL_DCC0_BASE, SDL_DCC1_BASE, SDL_DCC2_BASE, SDL_DCC3_BASE, SDL_DCC4_BASE, \
-                                                                 SDL_DCC5_BASE, SDL_DCC6_BASE, \
-                                                                 SDL_MCU_DCC0_BASE,SDL_MCU_DCC1_BASE};
+    static const uint64_t SDL_DCC_baseAddress[SDL_DCC_MAX_INSTANCE] = {SDL_DCC0_BASE, SDL_DCC1_BASE, SDL_DCC2_BASE, SDL_DCC3_BASE, SDL_DCC4_BASE, \
+                                                                       SDL_DCC5_BASE, SDL_DCC6_BASE, \
+                                                                       SDL_MCU_DCC0_BASE,SDL_MCU_DCC1_BASE};
     int32_t status = SDL_PASS;
     uint32_t size = 0;
+    uint64_t addr64;
 
     if (baseAddr == NULL)
     {
@@ -61,12 +62,12 @@ int32_t SDL_DCC_getBaseaddr(SDL_DCC_Inst instance,
     }
     else
     {
-        *baseAddr = SDL_DCC_baseAddress[instance];
+        addr64 = SDL_DCC_baseAddress[instance];
     }
 
     if (status == SDL_PASS)
     {
-        *baseAddr = (uint32_t)SDL_DPL_addrTranslate((uint64_t)*baseAddr, size);
+        *baseAddr = (uint32_t)SDL_DPL_addrTranslate(addr64, size);
     }
 
     return (status);

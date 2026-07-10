@@ -277,6 +277,7 @@ const robot_template = {
     options: {
         componentName: "FreeRTOS",
         testCaseName: "FreeRTOS test application",
+        appName: "test_freertos",
         testCaseIds: "SITSW-1251 SITSW-1252 SITSW-1253 SITSW-1254 SITSW-1255 SITSW-1256 SITSW-1257 SITSW-1259 SITSW-1260 SITSW-1261" +
                      " SITSW-1275 SITSW-1276 SITSW-1279 SITSW-3074",
         expectTimeout: 60,
@@ -364,10 +365,12 @@ function getComponentBuildProperty(buildOption) {
 
     if (buildOption.cpu.match(/r5f*/) || buildOption.cpu.match(/m4f*/) || buildOption.cpu.match(/a53ss0-0/)) {
         build_property.templates = [...(build_property.templates || []), robot_template];
+    }
+    if (buildOption.cpu.match(/a53ss0-0/) && buildOption.os === "freertos") {
         build_property.templates = [...build_property.templates, robot_template_noatf];
     }
     if (buildOption.cpu.match(/a53ss0-0/) && buildOption.os === "freertos") {
-        build_property.templates = [...(build_property.templates || []), robot_template_amp];
+        build_property.templates = [...build_property.templates, robot_template_amp];
     }
 
     return build_property;

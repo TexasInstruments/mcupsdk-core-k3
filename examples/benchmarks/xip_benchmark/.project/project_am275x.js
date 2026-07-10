@@ -121,14 +121,14 @@ const templates_freertos_r5f =
 ];
 
 const robot_template = {
-    input: ".project/templates/am275x/astra/tests_uniflash.robot.xdt",
+    input: ".project/templates/am275x/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "XIP",
         testCaseName: "XIP: example for XIP Benchmark",
         testCaseIds: "SITSW-6362",
         timeout: 780,
-        cfgFileName: "xip_benchmark_sbl_ospi_${DEVICE_TYPE}.cfg",
+        cfgPath: "examples/benchmarks/xip_benchmark/{board}/{coreName}/xip_benchmark_sbl_ospi_${DEVICE_TYPE}.cfg",
         bootMode: "XSPI_1S_BOOT_MODE",
     },
 };

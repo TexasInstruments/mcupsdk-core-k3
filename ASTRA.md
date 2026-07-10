@@ -8,11 +8,11 @@ ASTRA robot file generation is supported for:
 
 | SoC | Templates Available |
 |-----|---------------------|
-| am62x | `tests.robot.xdt`, `tests_sbl.robot.xdt`, `tests_sbl_linux.robot.xdt` |
-| am62ax | `tests.robot.xdt`, `tests_sbl.robot.xdt`, `tests_sbl_linux.robot.xdt` |
-| am62px | `tests.robot.xdt`, `tests_sbl.robot.xdt`, `tests_sbl_linux.robot.xdt` |
+| am62x | `tests.robot.xdt`, `tests_sbl.robot.xdt` |
+| am62ax | `tests.robot.xdt`, `tests_sbl.robot.xdt` |
+| am62px | `tests.robot.xdt`, `tests_sbl.robot.xdt` |
 | am62dx | `tests.robot.xdt`, `tests_sbl.robot.xdt` |
-| am275x | `tests.robot.xdt`, `tests_sbl.robot.xdt`, `tests_uniflash.robot.xdt` |
+| am275x | `tests.robot.xdt`, `tests_sbl.robot.xdt` |
 
 > **Note:** am62lx and j722s do not have ASTRA support. Do not add robot templates for these SoCs.
 
@@ -54,10 +54,8 @@ Select the template based on what the test does:
 
 | Template | When to Use |
 |----------|-------------|
-| `tests.robot.xdt` | Standard application boot (bare-metal or RTOS, no SBL flashing) |
-| `tests_sbl.robot.xdt` | Bootloader/SBL tests that flash an image to OSPI/eMMC and reboot |
-| `tests_sbl_linux.robot.xdt` | SBL tests that boot a full Linux stack (requires Linux login sequence) |
-| `tests_uniflash.robot.xdt` | am275x UartUniFlash-based boot (HyperFlash/OSPI XIP) |
+| `tests.robot.xdt` | Standard application boot via UART bootloader (bare-metal or RTOS, no SBL flashing) |
+| `tests_sbl.robot.xdt` | SBL-based tests: flash an image to OSPI/eMMC/HyperFlash via UartUniFlash (or UartBootloader), reboot, and verify output. Covers both bare-metal SBL and Linux SBL boot flows. |
 
 Template files are located at:
 ```
@@ -108,7 +106,7 @@ const robot_template = {
 };
 ```
 
-### SBL example (`tests_sbl.robot.xdt`):
+### SBL example — non-Linux boot (`tests_sbl.robot.xdt`):
 
 ```javascript
 const robot_template = {
@@ -122,9 +120,30 @@ const robot_template = {
         cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_nand_${DEVICE_TYPE}.cfg",
         bootMode: "OSPI_NAND_BOOT_MODE",
         timeout: 660,
-        expectTimeout: 200,
         expectations: [
-            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+            { port: "USB2", string: "Starting Sciserver..... PASSED", timeout: 30 },
+        ],
+    },
+};
+```
+
+### SBL example — Linux boot (`tests_sbl.robot.xdt`):
+
+```javascript
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "MCU BIST result after SBL Linux boot",
+        appName: "bist_check_result_main",
+        testCaseIds: "SITSW-2706",
+        cfgPath: "examples/drivers/safety/mcu_bist_result/{board}/{coreName}/mcu_bist_result_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NAND_BOOT_MODE",
+        timeout: 700,
+        expectations: [
+            { port: "USB2", string: "Starting Sciserver..... PASSED", timeout: 30 },
+            { port: "USB3", string: "All tests have passed", timeout: 30 },
         ],
     },
 };
@@ -186,7 +205,7 @@ For example: `sbl_linux_multistage(qnx)`, `sbl_linux_multistage(freertos)`.
 ```javascript
 // Sequence 1 — Linux boot
 const robot_template_linux = {
-    input: ".project/templates/am62ax/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
     output: "../tests_linux.robot",
     options: {
         componentName: "SBL",
@@ -199,7 +218,7 @@ const robot_template_linux = {
 
 // Sequence 2 — QNX boot (different sequence, same binary)
 const robot_template_qnx = {
-    input: ".project/templates/am62ax/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
     output: "../tests_qnx.robot",
     options: {
         componentName: "SBL",
@@ -269,28 +288,86 @@ ASTRA reports a separate result for each ID. Because all IDs share the same robo
 | `testCaseName` | string | `componentName + " application"` | Human-readable test case name. **No consecutive spaces allowed.** |
 | `appName` | string | `property.name` | ASTRA `app_name` tag. Must match JIRA Test Application Name exactly. |
 | `testCaseIds` | string | `"SITSW-XXXXX"` | Space-separated JIRA test case IDs. See formatting rules below. |
-| `timeout` | number | `700` | Total test timeout in seconds |
-| `expectTimeout` | number | `100` | Per-string wait timeout in seconds |
-| `expectedString` | string | `"All tests have passed"` | Expected UART output string (single-string mode) |
-| `expectPort` | string | varies by core | UART port for expected string (e.g., `"USB2"`, `"USB3"`) |
-| `expectations` | array | `null` | Sequential multi-port checks: `[{ port, string, send? }]` |
+| `timeout` | number | varies | Total test timeout in seconds |
+| `expectTimeout` | number | varies | Per-string wait timeout in seconds (can be overridden per element in `expectations`) |
 
 ### `tests.robot.xdt` additional options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `withCfg` | boolean | `false` | Use `WITH CFG` boot (requires `cfgPath`) instead of `WITH ARGS` |
-| `cfgPath` | string | — | Path to `.cfg` file relative to SDK root. Use `{board}` and `${DEVICE_TYPE}` as placeholders. |
-| `logPort` | string | auto | Override computed log port |
+| `cfgPath` | string | — | Path to `.cfg` file relative to SDK root. Required when `withCfg: true`. Supports `{board}` and `${DEVICE_TYPE}` placeholders. |
+| `logPort` | string | auto | Override the computed log port (normally derived from CPU type, see Port Mapping) |
+| `expectedString` | string | `"All tests have passed"` | Expected string on `logPort` — used when `expectations` is not set |
+| `expectPort` | string | auto | Override the port for `expectedString` |
+| `expectations` | array | `null` | Sequential multi-port checks. When set, overrides `expectedString`/`expectPort`. See below. |
+| `interactPrompt` | string | `null` | Wait for this string on `logPort`, then send `interactSend` commands |
+| `interactSend` | array | `[]` | Commands to send when `interactPrompt` is matched |
+| `secondPort` | string | `null` | A second UART port to monitor alongside `logPort` |
 
-### `tests_sbl.robot.xdt` / `tests_sbl_linux.robot.xdt` additional options
+### `tests_sbl.robot.xdt` additional options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `cfgPath` | string | — | Path to flash config file relative to SDK root |
-| `bootMode` | string | varies | Boot mode after flashing (e.g., `"OSPI_NAND_BOOT_MODE"`, `"OSPI_NOR_BOOT_MODE"`, `"EMMC_BOOT_MODE"`) |
-| `useBootloader` | boolean | `false` | Use `UartBootloader` instead of `UartUniFlash` |
-| `useNFS` | boolean | `false` | Enable NFS setup before Linux boot (`tests_sbl_linux` only) |
+| `cfgPath` | string | **required** | Path to flash config file, SDK-relative. Supports `{board}`, `{coreName}`, `${DEVICE_TYPE}`. |
+| `bootMode` | string | varies by SoC | Boot mode after flashing (e.g., `"OSPI_NAND_BOOT_MODE"`, `"OSPI_NOR_BOOT_MODE"`, `"EMMC_BOOT_MODE"`, `"XSPI_1S_BOOT_MODE"`). Pass `null` to skip reboot. |
+| `useBootloader` | boolean | `false` | Use `UartBootloader` instead of `UartUniFlash` for flashing |
+| `useNFS` | boolean | `false` | Call NFS setup before boot expectations (Linux boot flows) |
+| `expectations` | array | `[]` | Sequential port/string checks after boot. See below. |
+| `boardExpectations` | object | — | Per-board `expectations` map: `{ "<board>": [{...}] }`. When set, the entry matching the current build's board is used; falls back to `expectations` if the board has no entry. |
+| `stressIterations` | number | `null` | Repeat the boot+check cycle N times (stress test mode) |
+
+> **Note:** `cfgFileName` is no longer supported. Always use `cfgPath` with the full SDK-relative path and `{board}` / `{coreName}` / `${DEVICE_TYPE}` placeholders as needed.
+
+---
+
+### `expectations` array
+
+`expectations` defines an ordered list of UART checks to perform after the application boots. Each element specifies a port and either a string to wait for or a command to send and verify.
+
+**Element fields:**
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `port` | yes | UART port variable name: `"USB0"`, `"USB2"`, `"USB3"`, `"ACM0"` |
+| `string` | yes | String to expect on the port (or the expected response after `send`) |
+| `send` | no | If set, sends this command on `port` and verifies `string` is returned |
+| `timeout` | no | Per-element wait timeout in seconds. Overrides global `expectTimeout` (supported on am62x/ax/dx/px `tests_sbl`). |
+
+The robot connects to each distinct port in the list before rebooting, then checks them in order after boot.
+
+**Example — expect on two ports after Linux SBL boot:**
+
+```javascript
+expectations: [
+    { port: "USB2", string: "Starting Sciserver..... PASSED", timeout: 30 },
+    { port: "USB3", string: "All tests have passed", timeout: 30 },
+],
+```
+
+**Example — send a command and verify the response:**
+
+```javascript
+expectations: [
+    { port: "USB0", string: "login:" },
+    { port: "USB0", send: "root", string: "#" },
+    { port: "USB0", send: "cat /proc/version", string: "Linux" },
+],
+```
+
+**Example — per-board expectations using `boardExpectations`:**
+
+Use when different boards have different port assignments or expected strings for the same test.
+
+```javascript
+boardExpectations: {
+    "am62x-sk":     [{ port: "USB2", string: "All tests have passed" }],
+    "am62x-sip-sk": [{ port: "USB2", string: "All tests have passed" }],
+    "am62x-sk-lp":  [{ port: "USB2", string: "All tests have passed" }],
+},
+```
+
+When `boardExpectations` is set, the template picks the entry matching the current board. If no entry matches, it falls back to the `expectations` array (if set).
 
 ### Path Placeholders in `cfgPath`
 
@@ -321,48 +398,50 @@ cfgPath: "test/drivers/ipc/{board}/{coreName}/ipc_test_sbl_uart_${DEVICE_TYPE}.c
 
 ## Step 5: Port Mapping Reference
 
+The template derives `logPort` automatically from the CPU name. Use `logPort: "<port>"` in options only when you need to override the default.
+
 ### am62ax
 
-| Port | Physical UART | Core | Default logPort |
-|------|--------------|------|-----------------|
-| USB0 | UART0 / ttyUSB0 | A53 (bootloader log) | a53ss0-0 |
-| USB2 | WKUP_UART / ttyUSB2 | r5fss0-0 (DM core) | r5fss0-0 |
-| USB3 | MCU_UART / ttyUSB3 | mcu-r5fss0-0, c75ss0-0 | mcu-r5fss0-0, c75ss0-0 |
+| Port | UART | Cores (auto logPort) |
+|------|------|----------------------|
+| USB0 | UART0 | a53ss0-0 |
+| USB2 | WKUP_UART | r5fss0-0 (DM) |
+| USB3 | MCU_UART | mcu-r5fss0-0, c75ss0-0 |
 
 ### am62dx
 
-| Port | Physical UART | Core | Default logPort |
-|------|--------------|------|-----------------|
-| USB0 | UART4 / USART4 / ttyUSB0 | Apps using MAIN_UART4 | use `logPort: "USB0"` override |
-| USB1 | UART0 / USART0 / ttyUSB1 | SBL boot port + a53ss* app log | a53ss0-0 |
-| USB2 | WKUP_UART / ttyUSB2 | r5fss0-0 (DM core) | r5fss0-0 |
-| USB3 | MCU_UART / ttyUSB3 | mcu-r5fss0-0, c75ss0-0 | mcu-r5fss0-0, c75ss0-0 |
+| Port | UART | Cores (auto logPort) |
+|------|------|----------------------|
+| USB0 | UART4 | — (override only: `logPort: "USB0"`) |
+| USB1 | UART0 | a53ss0-0 (SBL + A53 app log) |
+| USB2 | WKUP_UART | r5fss0-0 (DM) |
+| USB3 | MCU_UART | mcu-r5fss0-0, c75ss0-0 |
 
-> **Note:** On AM62DX, USB0 (MAIN_UART4) is a general-purpose UART, not the SBL/boot port. USB1 (MAIN_UART0) serves as both the SBL boot port and the default A53 app log. c75ss0-0 uses MCU_UART (USB3) when `useMcuDomainPeripherals = true` in syscfg; if the syscfg assigns UART4 instead, use `logPort: "USB0"`.
+> **Note:** USB0 (MAIN_UART4) is not the SBL boot port. USB1 (MAIN_UART0) is both the SBL boot port and default A53 app log. Use `logPort: "USB0"` only when syscfg assigns UART4 to c75ss0-0.
 
 ### am62px
 
-| Port | Physical UART | Core |
-|------|--------------|------|
-| USB0 | UART0 / ttyUSB0 | A53 / bootloader |
-| USB2 | WKUP_UART / ttyUSB2 | wkup-r5fss0-0 |
-| USB3 | MCU_UART / ttyUSB3 | mcu-r5fss0-0 |
+| Port | UART | Cores (auto logPort) |
+|------|------|----------------------|
+| USB0 | UART0 | a53ss0-0 |
+| USB2 | WKUP_UART | wkup-r5fss0-0 |
+| USB3 | MCU_UART | mcu-r5fss0-0 |
 
 ### am62x
 
-| Port | Physical UART | Core |
-|------|--------------|------|
-| USB0 | UART0 / ttyUSB0 | A53 / bootloader |
-| USB2 | WKUP_UART / ttyUSB2 | r5fss0-0 |
-| USB3 | MCU_UART / ttyUSB3 | m4fss0-0 |
+| Port | UART | Cores (auto logPort) |
+|------|------|----------------------|
+| USB0 | UART0 | a53ss0-0 |
+| USB2 | WKUP_UART | r5fss0-0 |
+| USB3 | MCU_UART | m4fss0-0 |
 
 ### am275x
 
-| Port | Physical UART | Core |
-|------|--------------|------|
-| ACM0 | UART0 / ttyACM0 | Main R5F / bootloader |
-| USB2 | WKUP_UART / ttyUSB2 | wkup-r5fss0-0 |
-| USB0 | UART2 / ttyUSB0 | c75ss0-0 |
+| Port | UART | Cores (auto logPort) |
+|------|------|----------------------|
+| ACM0 | UART0 | r5fss0-0, r5fss0-1, r5fss1-0 (all R5F cores) |
+| USB2 | WKUP_UART | wkup-r5fss0-0 |
+| USB0 | UART2 | c75ss0-0 |
 
 ---
 

@@ -130,14 +130,14 @@ const templates_nortos_r5f =
 ];
 
 const robot_template = {
-    input: ".project/templates/am275x/astra/tests_uniflash.robot.xdt",
+    input: ".project/templates/am275x/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "RTC",
         testCaseName: "RTC Test Application",
         testCaseIds: "SITSW-5822 SITSW-5823 SITSW-5824",
         bootMode: "XSPI_1S_BOOT_MODE",
-        cfgFileName: "default_test_rtc_${DEVICE_TYPE}.cfg",
+        cfgPath: "test/drivers/rtc/{board}/{coreName}/default_test_rtc_${DEVICE_TYPE}.cfg",
     },
 };
 

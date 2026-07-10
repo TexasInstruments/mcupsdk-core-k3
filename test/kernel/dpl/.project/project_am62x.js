@@ -516,6 +516,7 @@ const robot_template = {
     options: {
         componentName: "DPL",
         testCaseName: "DPL test application",
+        appName: "test_dpl",
         testCaseIds: "SITSW-1235 SITSW-1262 SITSW-1263 SITSW-1264 SITSW-1265 SITSW-1266 SITSW-1267 SITSW-1268 SITSW-1269 SITSW-1270" +
                      " SITSW-1271 SITSW-1272 SITSW-1273 SITSW-1274 SITSW-1277 SITSW-1278 SITSW-1455 SITSW-4735 SITSW-7111 SITSW-12504",
         timeout: 630,
@@ -664,10 +665,12 @@ function getComponentBuildProperty(buildOption) {
 
     if (buildOption.cpu.match(/r5f*/) || buildOption.cpu.match(/m4f*/) || buildOption.cpu.match(/a53ss0-0/)) {
         build_property.templates = [...(build_property.templates || []), robot_template];
+    }
+    if (buildOption.cpu.match(/a53ss0-0/) && (buildOption.os === "freertos" || buildOption.os === "nortos")) {
         build_property.templates = [...build_property.templates, robot_template_noatf];
     }
     if (buildOption.cpu.match(/a53ss0-0/) && buildOption.os === "freertos") {
-        build_property.templates = [...(build_property.templates || []), robot_template_amp];
+        build_property.templates = [...build_property.templates, robot_template_amp];
     }
 
     return build_property;

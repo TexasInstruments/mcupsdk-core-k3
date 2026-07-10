@@ -104,12 +104,20 @@ function getComponentProperty() {
 }
 
 const robot_template = {
-    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    input: ".project/templates/am62dx/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "SBL",
         testCaseName: "Test LBIST and PBIST results on MCU core after SBL started the BISTs.",
         testCaseIds: "SITSW-2706",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_mcu_bist_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        appName: "bist_check_result_main",
+        timeout: 630,
+        expectTimeout: 30,
+        expectations: [
+            {port: "USB3", string: "All tests have passed", timeout: 30},
+        ],
     },
 };
 

@@ -121,7 +121,7 @@ const templates_nortos_r5f =
 
 
 const robot_template = {
-    input: ".project/templates/am275x/astra/tests_uniflash.robot.xdt",
+    input: ".project/templates/am275x/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "RTC",
@@ -129,7 +129,7 @@ const robot_template = {
         testCaseIds: "SITSW-6021",
         expectedString: "RTC LED blink test passed!!",
         timeout: 300,
-        cfgFileName: "default_rtc_led_blink_${DEVICE_TYPE}.cfg",
+        cfgPath: "examples/drivers/rtc/rtc_led_blink/{board}/{coreName}/default_rtc_led_blink_${DEVICE_TYPE}.cfg",
         bootMode: "XSPI_1S_BOOT_MODE",
     },
 };

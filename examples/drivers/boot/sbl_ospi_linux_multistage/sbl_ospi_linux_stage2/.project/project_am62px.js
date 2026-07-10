@@ -106,7 +106,7 @@ function getComponentProperty() {
 }
 
 const robot_template = {
-    input: ".project/templates/am62px/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "SBL",
@@ -130,7 +130,7 @@ const robot_template = {
 
 
 const robot_template_ecdsa = {
-    input: ".project/templates/am62px/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
     output: "../tests_ecdsa.robot",
     options: {
         componentName: "SBL",
@@ -155,7 +155,7 @@ const robot_template_ecdsa = {
 };
 
 const robot_template_ipc = {
-    input: ".project/templates/am62px/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
     output: "../tests_ipc.robot",
     options: {
         componentName: "SBL",
@@ -201,7 +201,7 @@ const robot_template_app_image_absent = {
 };
 
 const robot_template_falcon = {
-    input: ".project/templates/am62px/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
     output: "../tests_falcon.robot",
     options: {
         componentName: "SBL",
@@ -256,7 +256,7 @@ const robot_template_sw_version = {
 };
 
 const robot_template_stress = {
-    input: ".project/templates/am62px/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
     output: "../tests_stress.robot",
     options: {
         componentName: "SBL",

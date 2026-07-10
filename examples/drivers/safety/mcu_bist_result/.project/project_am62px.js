@@ -98,6 +98,24 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Test LBIST and PBIST results on MCU core after SBL started the BISTs.",
+        testCaseIds: "SITSW-2706",
+        cfgPath: "examples/drivers/safety/mcu_bist_result/{board}/{coreName}/mcu_bist_result_${DEVICE_TYPE}.cfg",
+        bootMode: "EMMC_BOOT_MODE",
+        appName: "bist_check_result_main",
+        timeout: 700,
+        expectations: [
+            {port: "USB2", string: "Starting Sciserver..... PASSED", timeout: 30},
+            {port: "USB3", string: "All tests have passed", timeout: 30},
+        ],
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -115,6 +133,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_freertos_r5f;
     }
 
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

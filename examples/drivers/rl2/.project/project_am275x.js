@@ -66,7 +66,7 @@ const templates_nortos_r5f =
 ];
 
 const robot_template = {
-    input: ".project/templates/am275x/astra/tests_uniflash.robot.xdt",
+    input: ".project/templates/am275x/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "RL2",
@@ -75,7 +75,7 @@ const robot_template = {
         timeout: 700,
         expectTimeout: 60,
         bootMode: "XSPI_1S_BOOT_MODE",
-        cfgFileName: "rl2_sbl_ospi_${DEVICE_TYPE}.cfg",
+        cfgPath: "examples/drivers/rl2/{board}/{coreName}/rl2_sbl_ospi_${DEVICE_TYPE}.cfg",
     },
 };
 

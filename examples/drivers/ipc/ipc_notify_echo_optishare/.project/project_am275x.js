@@ -71,7 +71,7 @@ const templates_freertos_r5f =
 ];
 
 const robot_sbl_template = {
-    input: ".project/templates/am275x/astra/tests_uniflash.robot.xdt",
+    input: ".project/templates/am275x/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "IPC",

@@ -83,9 +83,11 @@ const robot_template = {
         testCaseName: "ext OTP writer for USB VID/PID",
         appName: "ext_otp",
         testCaseIds: "SITSW-2167",
-        withCfg: true,
         cfgPath: "examples/otp/ext_otp/{board}/r5fss0-0_nortos/default_ext_otp_${DEVICE_TYPE}.cfg",
-        expectTimeout: 60,
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        expectations: [
+            {port: "USB2", string: "All tests have passed", timeout: 60},
+        ],
     },
 };
 

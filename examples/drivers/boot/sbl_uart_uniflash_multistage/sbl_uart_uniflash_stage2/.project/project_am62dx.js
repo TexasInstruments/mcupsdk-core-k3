@@ -83,7 +83,7 @@ const robot_template = {
         componentName: "SBL",
         testCaseName: "Bootloader: UART Uniflash bootloader",
         testCaseIds: "SITSW-1633",
-        cfgFileName: "default_sbl_null_${DEVICE_TYPE}.cfg",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_null_${DEVICE_TYPE}.cfg",
         bootMode: "OSPI_NOR_BOOT_MODE",
         expectTimeout: 100,
         expectations: [

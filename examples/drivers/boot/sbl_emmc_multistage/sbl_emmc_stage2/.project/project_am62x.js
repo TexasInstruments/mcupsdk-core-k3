@@ -81,6 +81,7 @@ const robot_template_smp = {
         appName: "sbl_emmc_multistage(smp)",
         testCaseIds: "SITSW-3650",
         cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_emmc_freertos-smp_${DEVICE_TYPE}.cfg",
+        bootMode: "EMMC_BOOT_MODE",
         expectTimeout: 100,
         timeout: 700,
         expectations: [

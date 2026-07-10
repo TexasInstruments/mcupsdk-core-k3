@@ -105,7 +105,7 @@ function getComponentProperty() {
 }
 
 const robot_template = {
-    input: ".project/templates/am62px/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "SBL",
@@ -127,7 +127,7 @@ const robot_template = {
     },
 };
 const robot_template_ecdsa = {
-    input: ".project/templates/am62px/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
     output: "../tests_ecdsa.robot",
     options: {
         componentName: "SBL",
@@ -168,7 +168,7 @@ const robot_template_qnx = {
 };
 
 const robot_template_stress = {
-    input: ".project/templates/am62px/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
     output: "../tests_stress.robot",
     options: {
         componentName: "SBL",
@@ -191,7 +191,7 @@ const robot_template_stress = {
 };
 
 const robot_template_memtester = {
-    input: ".project/templates/am62px/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
     output: "../tests_memtester.robot",
     options: {
         componentName: "SBL",

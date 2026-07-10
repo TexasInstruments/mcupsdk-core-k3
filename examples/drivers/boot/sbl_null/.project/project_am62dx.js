@@ -90,7 +90,7 @@ const robot_template = {
         componentName: "SBL",
         testCaseName: "Bootloader: Null bootloader",
         testCaseIds: "SITSW-1630",
-        cfgFileName: "default_sbl_null_${DEVICE_TYPE}.cfg",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_null_${DEVICE_TYPE}.cfg",
         expectations: [
             { port: "USB2", string: "Starting Sciserver..... PASSED" },
         ],

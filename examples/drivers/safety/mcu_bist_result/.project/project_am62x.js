@@ -106,13 +106,13 @@ const robot_template = {
         testCaseName: "Test LBIST and PBIST results on MCU core after SBL started the BISTs.",
         appName: "bist_check_result_main",
         testCaseIds: "SITSW-2706",
-        withCfg: true,
-        logPort: "USB2",
         cfgPath: "examples/drivers/safety/mcu_bist_result/{board}/{coreName}/mcu_bist_result_${DEVICE_TYPE}.cfg",
-        expectedString: "Starting Sciserver..... PASSED",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        timeout: 700,
         expectTimeout: 30,
-        additionalExpectedStrings: [
-            { port: "USB3", string: "All tests have passed" },
+        expectations: [
+            {port: "USB2", string: "Starting Sciserver..... PASSED", timeout: 30},
+            {port: "USB3", string: "All tests have passed", timeout: 30},
         ],
     },
 };

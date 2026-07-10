@@ -101,6 +101,7 @@ const robot_template = {
         componentName: "SBL",
         testCaseName: "Bootloader: UART Uniflash bootloader",
         testCaseIds: "SITSW-1633",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_null_${DEVICE_TYPE}.cfg",
         bootMode: "OSPI_NAND_BOOT_MODE",
         expectations: [
             { port: "USB2", string: "Starting Sciserver..... PASSED" },

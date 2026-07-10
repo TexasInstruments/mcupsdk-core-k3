@@ -92,7 +92,7 @@ function getComponentProperty() {
     return property;
 }
 const robot_template = {
-    input: ".project/templates/am62ax/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "SBL",
@@ -115,7 +115,7 @@ const robot_template = {
 };
 
 const robot_template_stress = {
-    input: ".project/templates/am62ax/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
     output: "../tests_stress.robot",
     options: {
         componentName: "SBL",
@@ -138,7 +138,7 @@ const robot_template_stress = {
 };
 
 const robot_template_memtester = {
-    input: ".project/templates/am62ax/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
     output: "../tests_memtester.robot",
     options: {
         componentName: "SBL",
@@ -154,6 +154,25 @@ const robot_template_memtester = {
             { port: "USB0", string: "login:", timeout: 300 },
             { port: "USB0", send: "root", string: "root@", timeout: 300 },
             { port: "USB0", send: "memtester 500M 10", string: "Done.", timeout: 27000 },
+        ],
+    },
+};
+
+const robot_template_qnx = {
+    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
+    output: "../tests_qnx.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: SBL EMMC QNX",
+        testCaseIds: "SITSW-4745",
+        appName: "sbl_emmc_linux_multistage(qnx)",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_emmc_qnx_${DEVICE_TYPE}.cfg",
+        bootMode: "EMMC_BOOT_MODE",
+        expectTimeout: 300,
+        timeout: 1800,
+        expectations: [
+            { port: "USB0", string: "AM62AXEVM#" },
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
         ],
     },
 };
@@ -179,6 +198,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.templates = [...(build_property.templates || []), robot_template];
     build_property.templates = [...build_property.templates, robot_template_stress];
     build_property.templates = [...build_property.templates, robot_template_memtester];
+    build_property.templates = [...build_property.templates, robot_template_qnx];
     return build_property;
 }
 

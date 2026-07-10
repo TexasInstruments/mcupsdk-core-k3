@@ -38,9 +38,7 @@
     let stressIterations = (options && options.stressIterations != null) ? options.stressIterations : null;
 
     let coreName = project.cpu + "_" + project.os;
-    let cfgFile  = options.cfgPath
-                 ? "${SDK_PATH}/" + options.cfgPath.replace("{board}", project.board).replace("{coreName}", project.cpu + "_" + project.os)
-                 : "${SDK_PATH}/sbl_prebuilt/" + project.board + "/sbl_uart.release.${DEVICE_TYPE}.tiimage";
+    let cfgFile  = "${SDK_PATH}/" + options.cfgPath.replace("{board}", project.board).replace("{coreName}", project.cpu + "_" + project.os);
 %%}
 *** Comments ***
 `componentName` `coreName` TEST FILE

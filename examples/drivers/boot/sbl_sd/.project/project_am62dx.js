@@ -89,6 +89,7 @@ const robot_template = {
         componentName: "SBL",
         testCaseName: "sbl_sd application",
         testCaseIds: "SITSW-11439",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_sd_${DEVICE_TYPE}.cfg",
     },
 };
 

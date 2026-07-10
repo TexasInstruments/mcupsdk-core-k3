@@ -269,7 +269,7 @@ function getComponentProperty() {
 }
 
 const robot_template = {
-    input: ".project/templates/am62ax/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "IPC",

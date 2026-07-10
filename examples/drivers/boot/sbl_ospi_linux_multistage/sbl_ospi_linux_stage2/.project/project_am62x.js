@@ -54,7 +54,7 @@ const syscfgfile = "../example.syscfg";
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_SBL_OSPI_LINUX_MULTISTAGE";
 
 const robot_template = {
-    input: ".project/templates/am62x/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "SBL",
@@ -75,7 +75,7 @@ const robot_template = {
 };
 
 const robot_template_falcon = {
-    input: ".project/templates/am62x/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
     output: "../tests_falcon.robot",
     options: {
         componentName: "SBL",
@@ -101,6 +101,7 @@ const robot_template_qnx = {
         testCaseName: "Bootloader: SBL OSPI NOR QNX",
         testCaseIds: "SITSW-4458",
         cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_ospi_qnx_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
         expectTimeout: 300,
         timeout: 1800,
         expectations: [
@@ -148,7 +149,7 @@ function getComponentProperty() {
 
 
 const robot_template_ddr_ecc = {
-    input: ".project/templates/am62x/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
     output: "../tests_ddr_ecc.robot",
     options: {
         componentName: "SBL",
@@ -169,7 +170,7 @@ const robot_template_ddr_ecc = {
     },
 };
 const robot_template_stress = {
-    input: ".project/templates/am62x/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
     output: "../tests_stress.robot",
     options: {
         componentName: "SBL",

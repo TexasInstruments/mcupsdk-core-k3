@@ -80,7 +80,7 @@ const robot_template = {
         componentName: "SBL,UART",
         testCaseName: "Bootloader: UART bootloader",
         testCaseIds: "SITSW-1634",
-        cfgFileName: "default_sbl_uart_${DEVICE_TYPE}.cfg",
+        cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_uart_${DEVICE_TYPE}.cfg",
         useBootloader: true,
         bootMode: null,
         expectations: [

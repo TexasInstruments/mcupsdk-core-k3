@@ -28,9 +28,7 @@
     let stressIterations = (options && options.stressIterations != null) ? options.stressIterations : null;
 
     let coreName = project.cpu + "_" + project.os;
-    let cfgFile  = options.cfgPath
-                   ? "${SDK_PATH}/" + options.cfgPath.replace("{board}", project.board).replace("{coreName}", project.cpu + "_" + project.os)
-                   : "${SDK_PATH}/tools/boot/sbl_prebuilt/" + project.board + "/" + options.cfgFileName;
+    let cfgFile  = "${SDK_PATH}/" + options.cfgPath.replace("{board}", project.board).replace("{coreName}", project.cpu + "_" + project.os);
 %%}
 *** Comments ***
 `componentName` `coreName` TEST FILE

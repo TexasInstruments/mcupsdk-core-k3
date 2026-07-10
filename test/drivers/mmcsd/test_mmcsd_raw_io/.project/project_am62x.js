@@ -312,7 +312,7 @@ const robot_template = {
     options: {
         componentName: "MMCSD",
         testCaseName: "MMCSD raw IO test application",
-        testCaseIds: "SITSW-3017",
+        testCaseIds: "SITSW-3017 SITSW-9036",
         expectTimeout: 1000,
         timeout: 1600,
     },

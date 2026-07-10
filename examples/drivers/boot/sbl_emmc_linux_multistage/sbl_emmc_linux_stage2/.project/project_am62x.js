@@ -53,7 +53,7 @@ const syscfgfile = "../example.syscfg";
 const readmeDoxygenPageTag = "EXAMPLES_DRIVERS_SBL_EMMC_LINUX_MULTISTAGE";
 
 const robot_template = {
-    input: ".project/templates/am62x/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "SBL",
@@ -82,9 +82,15 @@ const robot_template_qnx = {
         componentName: "SBL",
         testCaseName: "Bootloader: SBL EMMC QNX",
         testCaseIds: "SITSW-4745",
+        appName: "sbl_emmc_linux_multistage(qnx)",
         cfgPath: "tools/boot/sbl_prebuilt/{board}/default_sbl_emmc_qnx_${DEVICE_TYPE}.cfg",
+        bootMode: "EMMC_BOOT_MODE",
         expectTimeout: 300,
         timeout: 1800,
+        expectations: [
+            { port: "USB0", string: "AM62XEVM#" },
+            { port: "USB2", string: "Starting Sciserver..... PASSED" },
+        ],
     },
 };
 
@@ -108,7 +114,7 @@ function getComponentProperty() {
 }
 
 const robot_template_stress = {
-    input: ".project/templates/am62x/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
     output: "../tests_stress.robot",
     options: {
         componentName: "SBL",
@@ -131,7 +137,7 @@ const robot_template_stress = {
 };
 
 const robot_template_memtester = {
-    input: ".project/templates/am62x/astra/tests_sbl_linux.robot.xdt",
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
     output: "../tests_memtester.robot",
     options: {
         componentName: "SBL",

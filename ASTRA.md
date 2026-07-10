@@ -149,6 +149,116 @@ function getComponentBuildProperty(buildOption) {
 
 ---
 
+## Multiple Test Cases in single application
+
+A single application binary can be linked to multiple JIRA test cases. This is common when:
+- One application validates several independent features, each tracked as a separate JIRA ticket.
+- Different platforms (HS-FS vs HS-SE) use the same binary but need separate test case IDs.
+
+### JIRA setup
+
+Every test case ID listed in `testCaseIds` **must** have `skip_execution: true` in its **Test Script** field. This tells the test farm to execute the application only once and attribute the result to all listed IDs.
+
+```json
+{
+    "skip_execution": true
+}
+```
+
+If any ID is missing `skip_execution: true`, the farm will attempt a separate execution for that ID, causing duplicate or conflicting runs.
+
+### When to consolidate into one robot file
+
+If the application binary and the test execution sequence are identical for all test cases, add all JIRA IDs to the **same** `testCaseIds` field in one robot template. Do not create separate robot templates for the same app/sequence combination — this causes redundant executions on the test farm.
+
+### When sequences differ — use separate robot files with different `appName`
+
+If the same application binary is used but the test sequences differ (different expected output, different commands sent, different ports checked), create a **separate robot template for each sequence** and give each a **unique `appName`**.
+
+ASTRA uses `app_name` as a deduplication key. If two robot files share the same `app_name`, ASTRA will execute only one and skip the other.
+
+Use a parenthetical qualifier to distinguish variants while keeping the base name recognisable:
+```
+<app_name>(<qualifier>)
+```
+For example: `sbl_linux_multistage(qnx)`, `sbl_linux_multistage(freertos)`.
+
+```javascript
+// Sequence 1 — Linux boot
+const robot_template_linux = {
+    input: ".project/templates/am62ax/astra/tests_sbl_linux.robot.xdt",
+    output: "../tests_linux.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "SBL Linux Multistage",
+        appName: "sbl_linux_multistage",         // base app name
+        testCaseIds: "SITSW-2001",
+        timeout: 660,
+    },
+};
+
+// Sequence 2 — QNX boot (different sequence, same binary)
+const robot_template_qnx = {
+    input: ".project/templates/am62ax/astra/tests_sbl_linux.robot.xdt",
+    output: "../tests_qnx.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "SBL Linux Multistage QNX",
+        appName: "sbl_linux_multistage(qnx)",    // qualifier in parentheses — ASTRA runs this separately
+        testCaseIds: "SITSW-2002",
+        timeout: 660,
+    },
+};
+
+function getComponentBuildProperty(buildOption) {
+    let build_property = {};
+    // ...
+    if (buildOption.cpu === "r5fss0-0") {
+        build_property.templates = [
+            ...(build_property.templates || []),
+            robot_template_echo,
+            robot_template_dma,
+        ];
+    }
+    return build_property;
+}
+```
+
+Each template generates its own robot file. ASTRA treats them as independent tests because their `app_name` tags differ.
+
+### JavaScript configuration
+
+List all IDs space-separated in `testCaseIds`:
+- **Max 10 IDs per line.** Use JavaScript `+` string concatenation to split longer lists. The continuation string must start with a space to preserve the separator.
+- **IDs must be in ascending numerical order.**
+
+```javascript
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "UART",
+        testCaseName: "UART Echo Test",
+        appName: "uart_echo",
+        testCaseIds: "SITSW-2001 SITSW-2002 SITSW-2003 SITSW-2004 SITSW-2005 SITSW-2006 SITSW-2007 SITSW-2008 SITSW-2009 SITSW-2010" +
+                     " SITSW-2011 SITSW-2012",
+        timeout: 300,
+    },
+};
+```
+
+### Generated robot file
+
+All IDs appear on the `[Tags]` line:
+
+```
+[Tags]    core:r5fss0-0_freertos    component:UART    app_name:uart_echo    SITSW-2001    SITSW-2002    ...
+```
+
+ASTRA reports a separate result for each ID. Because all IDs share the same robot test execution, they pass or fail together.
+
+---
+
 ## Step 4: Template Options Reference
 
 ### Common options (all templates)

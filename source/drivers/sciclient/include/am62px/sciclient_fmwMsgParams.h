@@ -214,6 +214,16 @@ extern "C" {
 /** @} */
 
 /**
+ *  \anchor Sciclient_BoardDeviceIds
+ *  \name Board Device IDs
+ *  @{
+ *  Board-level device IDs for power management.
+ */
+/** Board device ID for board-level power management and I/O control */
+#define SCICLIENT_DEV_BOARD0             (TISCI_DEV_BOARD0)
+/** @} */
+
+/**
  * \brief Special ISC ID to refer to compute cluster privid registers
  */
 #define TISCI_ISC_CC_ID                (160U)

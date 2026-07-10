@@ -244,7 +244,7 @@ TaskHandle_t gServerTask;
 uint8_t TestIpcRPMsg_recvTasksStack[2][8*1024U] __attribute__((aligned(32)));
 
 /* Stack for send tasks */
-uint8_t TestIpcRPMsg_sndTasksStack[2][8*1024U] __attribute__((aligned(32)));
+uint8_t TestIpcRPMsg_sndTasksStack[2][32*1024U] __attribute__((aligned(32)));
 
 /* Task handle for receiver tasks spawning */
 TaskP_Object TestIpcRPMsg_recvTasks[2];
@@ -1390,7 +1390,7 @@ void TestIpcRpmsg_concurrentEndptXfer(void *args)
 
     TaskP_Params_init(&taskParams1);
     taskParams1.name = "MT_SEND_TASK1";
-    taskParams1.stackSize = 8 * 1024;
+    taskParams1.stackSize = 32 * 1024;
     taskParams1.stack = TestIpcRPMsg_sndTasksStack[0];
     taskParams1.priority = 8U;
     taskParams1.args = &TestIpcRPMsg_sndTaskObjects[0];
@@ -1407,7 +1407,7 @@ void TestIpcRpmsg_concurrentEndptXfer(void *args)
 
     TaskP_Params_init(&taskParams2);
     taskParams2.name = "MT_SEND_TASK2";
-    taskParams2.stackSize = 8 * 1024;
+    taskParams2.stackSize = 32 * 1024;
     taskParams2.stack = TestIpcRPMsg_sndTasksStack[1];
     taskParams2.priority = 8U;
     taskParams2.args = &TestIpcRPMsg_sndTaskObjects[1];
@@ -2131,10 +2131,6 @@ void test_ipc_main_core_start()
     testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
     RUN_TEST(TestIpcRpmsg_variableMsgSizeSnd, 9728, &testArgs);
 #endif
-
-    /* Multiple endpoint test on A53 */
-    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
-    RUN_TEST(TestIpcRpmsg_multipleEndpointsSnd, 9729, &testArgs);
 #else
     
     /* Test cases for AM275X */
@@ -2178,6 +2174,12 @@ void test_ipc_main_core_start()
     /* The following test case fails in AM275X */
 #if !defined(SOC_AM275X)
     RUN_TEST(TestIpcRPMsg_sndMsgToTasks, 9730, &testArgs);
+
+#if !defined(BUILD_A53_AS_MASTER)
+    /* Multiple endpoint test on A53 */
+    testArgs.remoteCoreId = CSL_CORE_ID_A53SS0_0;
+    RUN_TEST(TestIpcRpmsg_multipleEndpointsSnd, 9729, &testArgs);
+#endif
 #endif
 
     /* concurrent endpoint transfer */

@@ -110,6 +110,25 @@ SECTIONS
         .text:abort: palign(8) /* this helps in loading symbols when using XIP mode */
     } load = R5F_TCMB, run = R5F_TCMA
 
+    /* LOADABLE SECTIONS */
+    .text            : {} palign(8)      > `memoryReg`
+    .const           : {} palign(8)      > `memoryReg`
+    .rodata          : {} palign(8)      > `memoryReg`
+    .cinit           : {} palign(8)      > `memoryReg`
+    .far             : {} align(4)       > `memoryReg`
+    .data            : {} palign(128)    > `memoryReg`
+    .data_buffer     : {} palign(128)    > `memoryReg`
+    .const.devgroup  : { *(.const.devgroup*) } align(4) > `memoryReg`
+    .boardcfg_data   : {} align(4)       > `memoryReg`
+
+    /* Sections needed for C++ projects */
+    GROUP {
+        .ARM.exidx:  {} palign(8)   /* Needed for C++ exception handling */
+        .init_array: {} palign(8)   /* Contains function pointers called before main */
+        .fini_array: {} palign(8)   /* Contains function pointers called after main */
+    } > `memoryReg`
+
+    /* NON-LOADABLE SECTIONS */
     % if(args.project.ipcVringRTOS === true){
     /* this is used only when IPC RPMessage is enabled, else this is not used */
     .bss.ipc_vring_mem   (NOLOAD) : {} > IPC_VRING_RTOS
@@ -123,16 +142,6 @@ SECTIONS
     .bss.debug_mem_trace_buf    : {} palign(128)    > IPC_TRACE_LINUX
 
     % }
-    .text            : {} palign(8)      > `memoryReg`
-    .const           : {} palign(8)      > `memoryReg`
-    .rodata          : {} palign(8)      > `memoryReg`
-    .cinit           : {} palign(8)      > `memoryReg`
-    .far             : {} align(4)       > `memoryReg`
-    .data            : {} palign(128)    > `memoryReg`
-    .sysmem          : {}                > `memoryReg`
-    .data_buffer     : {} palign(128)    > `memoryReg`
-    .const.devgroup  : { *(.const.devgroup*) } align(4) > `memoryReg`
-    .boardcfg_data   : {} align(4)       > `memoryReg`
 
     GROUP {
         .bss.devgroup : { *(.bss.devgroup*) } align(4)
@@ -141,10 +150,11 @@ SECTIONS
         RUN_END(__BSS_END)
     } > `memoryReg`
 
+    .sysmem          : {}                > `memoryReg`
+    .stack      : {} align(4) > `memoryReg`  (HIGH)
+
     /* USB or any other LLD buffer for benchmarking */
     .benchmark_buffer (NOLOAD) {} ALIGN (8) > `memoryReg`
-
-    .stack      : {} align(4) > `memoryReg`  (HIGH)
 
     /* This is where the stacks for different R5F modes go */
     GROUP {
@@ -164,13 +174,6 @@ SECTIONS
         RUN_START(__UNDEFINED_STACK_START)
         RUN_END(__UNDEFINED_STACK_END)
     } > `memoryReg` (HIGH)
-
-    /* Sections needed for C++ projects */
-    GROUP {
-        .ARM.exidx:  {} palign(8)   /* Needed for C++ exception handling */
-        .init_array: {} palign(8)   /* Contains function pointers called before main */
-        .fini_array: {} palign(8)   /* Contains function pointers called after main */
-    } > `memoryReg`
     % if(dssFrameBuf == "true") {
 
     /* DSS frame buffer region */

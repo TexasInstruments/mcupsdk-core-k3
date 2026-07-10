@@ -146,6 +146,7 @@ SECTIONS
         .text:abort: palign(16) /* this helps in loading symbols when using XIP mode */
     } > R5F_TCMA
 
+    /* LOADABLE SECTIONS */
     /* This is rest of code. This can be placed in `memoryReg` if `memoryReg` is available and needed */
     GROUP {
         .text:   {} palign(16)   /* This is where code resides */
@@ -158,18 +159,23 @@ SECTIONS
     } > `memoryReg`
     % }
 
-    % if(args.project.ipcVringRTOS === true){
-    /* this is used only when IPC RPMessage is enabled, else this is not used */
-    .bss.ipc_vring_mem   (NOLOAD) : {} > IPC_VRING_RTOS
-    % }
-    % if(args.project.isLogSHM === true){
-    /* this is used when Debug log's to shared memory is enabled, else this is not used */
-    .bss.log_shared_mem  (NOLOAD) : {} > LOG_SHM_MEM
-    % }
     /* This is rest of initialized data. This can be placed in `memoryReg` if `memoryReg` is available and needed */
     GROUP {
         .data:   {} palign(16)   /* This is where initialized globals and static go */
     % if(useHyperRam) {
+    } > HYPERRAM
+    % } else {
+    } > `memoryReg`
+    % }
+
+    /* Sections needed for C++ projects */
+    GROUP {
+        .ARM.exidx:  {} palign(16)   /* Needed for C++ exception handling */
+        .init_array: {} palign(16)   /* Contains function pointers called before main */
+        .fini_array: {} palign(16)   /* Contains function pointers called after main */
+    % if(useFlash) {
+    } > FLASH
+    %} else if(useHyperRam) {
     } > HYPERRAM
     % } else {
     } > `memoryReg`
@@ -182,6 +188,17 @@ SECTIONS
     } > `memoryReg`
 
     % }
+
+    /* NON-LOADABLE SECTIONS */
+    % if(args.project.ipcVringRTOS === true){
+    /* this is used only when IPC RPMessage is enabled, else this is not used */
+    .bss.ipc_vring_mem   (NOLOAD) : {} > IPC_VRING_RTOS
+    % }
+    % if(args.project.isLogSHM === true){
+    /* this is used when Debug log's to shared memory is enabled, else this is not used */
+    .bss.log_shared_mem  (NOLOAD) : {} > LOG_SHM_MEM
+    % }
+
     /* This is rest of uninitialized data. This can be placed in `memoryReg` if `memoryReg` is available and needed */
     GROUP {
         .bss:    {} palign(8)   /* This is where uninitialized globals go */
@@ -221,18 +238,6 @@ SECTIONS
     % if(dssFrameBuf == "true") {
     /* DSS frame buffer region */
     .dssFrameBuffer (NOLOAD) : {} > `memoryReg`
-    % }
-    /* Sections needed for C++ projects */
-    GROUP {
-        .ARM.exidx:  {} palign(16)   /* Needed for C++ exception handling */
-        .init_array: {} palign(16)   /* Contains function pointers called before main */
-        .fini_array: {} palign(16)   /* Contains function pointers called after main */
-    % if(useFlash) {
-    } > FLASH
-    %} else if(useHyperRam) {
-    } > HYPERRAM
-    % } else {
-    } > `memoryReg`
     % }
     % if(flcScratchBuffer == "true") {
     /* flc scratch buffer region */

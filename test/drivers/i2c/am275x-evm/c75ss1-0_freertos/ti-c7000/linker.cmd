@@ -38,25 +38,27 @@ MEMORY
 
 SECTIONS
 {
+    /* LOADABLE SECTIONS */
     .vecs       >       C75_1_L2SRAM ALIGN(0x200000)
-
     .text:_c_int00_secure > C75_1_OCRAM_ENTRY ALIGN(0x100000)
     .text       >       C75_1_OCRAM PALIGN(16)
+    .data       >       C75_1_L2SRAM PALIGN(16) /* Initialized data */
+    .cinit      >       C75_1_OCRAM PALIGN(16) /* could be part of const */
+    .init_array >       C75_1_OCRAM PALIGN(16) /* C++ initializations */
+    .const      >       C75_1_OCRAM PALIGN(16)
+
+    /* NON-LOADABLE SECTIONS */
+    /* this is used when Debug log's to shared memory is enabled, else this is not used */
+    .bss.log_shared_mem  (NOLOAD) : {} > LOG_SHM_MEM
 
     .bss        >       C75_1_L2SRAM  /* Zero-initialized data */
     RUN_START(__BSS_START)
     RUN_END(__BSS_END)
-
-    .data       >       C75_1_L2SRAM PALIGN(16) /* Initialized data */
-
-    .cinit      >       C75_1_OCRAM PALIGN(16) /* could be part of const */
-    .init_array >       C75_1_OCRAM PALIGN(16) /* C++ initializations */
-    .stack      >       C75_1_L2SRAM ALIGN(0x2000)
+    .sysmem     >       C75_1_OCRAM /* heap */
+    .stack      >       C75_1_L2SRAM
     .args       >       C75_1_L2SRAM
     .cio        >       C75_1_CIO_MEM
-    .const      >       C75_1_OCRAM PALIGN(16)
     .switch     >       C75_1_OCRAM /* For exception handling. */
-    .sysmem     >       C75_1_OCRAM /* heap */
 
     GROUP:              >  C75_1_OCRAM
     {
@@ -69,7 +71,4 @@ SECTIONS
     }
 
     .benchmark_buffer:     > C75_1_OCRAM ALIGN (32)
-
-    /* this is used when Debug log's to shared memory is enabled, else this is not used */
-    .bss.log_shared_mem  (NOLOAD) : {} > LOG_SHM_MEM
 }

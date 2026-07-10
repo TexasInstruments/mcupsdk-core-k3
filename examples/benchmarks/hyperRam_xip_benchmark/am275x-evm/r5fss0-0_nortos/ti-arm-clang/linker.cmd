@@ -59,22 +59,33 @@ SECTIONS
         .text:abort: palign(16) /* this helps in loading symbols when using XIP mode */
     } > R5F_TCMA
 
-
+    /* LOADABLE SECTIONS */
     .text            : {} palign(16)      > HYPERRAM
     .const           : {} palign(16)      > HYPERRAM
     .rodata          : {} palign(16)      > HYPERRAM
     .cinit           : {} palign(16)      > HYPERRAM
     .far             : {} palign(16)       > HYPERRAM
     .data            : {} palign(128)    > HYPERRAM
-    .sysmem          : {}                > HYPERRAM
     .data_buffer     : {} palign(128)    > HYPERRAM
     .boardcfg_data   : {} palign(16)       > HYPERRAM
+
+    /* Sections needed for C++ projects */
+    GROUP {
+        .ARM.exidx:  {} palign(16)   /* Needed for C++ exception handling */
+        .init_array: {} palign(16)   /* Contains function pointers called before main */
+        .fini_array: {} palign(16)   /* Contains function pointers called after main */
+    } > HYPERRAM
+
+
+    /* NON-LOADABLE SECTIONS */
 
     GROUP {
         .bss:    {} palign(4)   /* This is where uninitialized globals go */
         RUN_START(__BSS_START)
         RUN_END(__BSS_END)
     } > HYPERRAM
+
+    .sysmem          : {}                > HYPERRAM
 
     /* USB or any other LLD buffer for benchmarking */
     .benchmark_buffer (NOLOAD) {} ALIGN (8) > HYPERRAM
@@ -100,12 +111,6 @@ SECTIONS
         RUN_END(__UNDEFINED_STACK_END)
     } > HYPERRAM 
 
-    /* Sections needed for C++ projects */
-    GROUP {
-        .ARM.exidx:  {} palign(16)   /* Needed for C++ exception handling */
-        .init_array: {} palign(16)   /* Contains function pointers called before main */
-        .fini_array: {} palign(16)   /* Contains function pointers called after main */
-    } > HYPERRAM
 
 }
 

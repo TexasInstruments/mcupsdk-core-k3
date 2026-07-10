@@ -64,21 +64,31 @@ SECTIONS
         .text:abort: palign(8) /* this helps in loading symbols when using XIP mode */
     } > WKUP_R5_MSRAM
 
+    /* LOADABLE SECTIONS */
+    GROUP {
+        .text:           {} palign(8)
+        .const:          {} palign(8)
+        .rodata:         {} palign(8)
+        .cinit:          {} palign(8)
+        .far:            {} align(8)
+    } > WKUP_R5_MSRAM
+    GROUP {
+        .data:           {} palign(128)
+        .data_buffer:    {} palign(128)
+        .boardcfg_data:  {} align(8)
+        .ARM.exidx:      {} palign(8)   /* Needed for C++ exception handling */
+        .init_array:     {} palign(8)   /* Contains function pointers called before main */
+        .fini_array:     {} palign(8)   /* Contains function pointers called after main */
+    } > WKUP_R5_MSRAM
 
-    .text            : {} palign(8)      > WKUP_R5_MSRAM
-    .const           : {} palign(8)      > WKUP_R5_MSRAM
-    .rodata          : {} palign(8)      > WKUP_R5_MSRAM
-    .cinit           : {} palign(8)      > WKUP_R5_MSRAM
-    .far             : {} align(8)       > WKUP_R5_MSRAM
-    .data            : {} palign(128)    > WKUP_R5_MSRAM
-    .sysmem          : {} palign(8)      > WKUP_R5_MSRAM
-    .data_buffer     : {} palign(128)    > WKUP_R5_MSRAM
-    .boardcfg_data   : {} align(8)       > WKUP_R5_MSRAM
+    /* NON-LOADABLE SECTIONS */
 
     GROUP {
         .bss:    {} palign(8)   /* This is where uninitialized globals go */
         RUN_START(__BSS_START)
         RUN_END(__BSS_END)
+        .sysmem: {} palign(8)   /* This is where the malloc heap goes */
+        .stack:  {} align(8)    /* This is where the main() stack goes */
     } > WKUP_R5_MSRAM
 
     /* DM RM/PM HAL trace buffer at fixed MSRAM location */
@@ -86,8 +96,6 @@ SECTIONS
 
     /* USB or any other LLD buffer for benchmarking */
     .benchmark_buffer (NOLOAD) {} ALIGN (8) > WKUP_R5_MSRAM
-
-    .stack      : {} align(8) > WKUP_R5_MSRAM
 
     /* This is where the stacks for different R5F modes go */
     GROUP {
@@ -111,12 +119,6 @@ SECTIONS
         RUN_END(__UNDEFINED_STACK_END)
     } > WKUP_R5_MSRAM
 
-    /* Sections needed for C++ projects */
-    GROUP {
-        .ARM.exidx:  {} palign(8)   /* Needed for C++ exception handling */
-        .init_array: {} palign(8)   /* Contains function pointers called before main */
-        .fini_array: {} palign(8)   /* Contains function pointers called after main */
-    } > WKUP_R5_MSRAM
 }
 
 MEMORY

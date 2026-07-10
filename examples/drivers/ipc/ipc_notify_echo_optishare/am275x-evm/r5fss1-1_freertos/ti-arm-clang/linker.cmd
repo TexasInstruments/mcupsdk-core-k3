@@ -49,18 +49,29 @@ SECTIONS
         .text:abort: palign(16) /* this helps in loading symbols when using XIP mode */
     } > R5F_TCMA
 
+    /* LOADABLE SECTIONS */
     /* This is rest of code. This can be placed in OCRAM if OCRAM is available and needed */
     GROUP {
         .text:   {} palign(16)   /* This is where code resides */
         .rodata: {} palign(16)   /* This is where const's go */
     } > OCRAM
 
-    /* this is used when Debug log's to shared memory is enabled, else this is not used */
-    .bss.log_shared_mem  (NOLOAD) : {} > LOG_SHM_MEM
     /* This is rest of initialized data. This can be placed in OCRAM if OCRAM is available and needed */
     GROUP {
         .data:   {} palign(16)   /* This is where initialized globals and static go */
     } > OCRAM
+
+    /* Sections needed for C++ projects */
+    GROUP {
+        .ARM.exidx:  {} palign(16)   /* Needed for C++ exception handling */
+        .init_array: {} palign(16)   /* Contains function pointers called before main */
+        .fini_array: {} palign(16)   /* Contains function pointers called after main */
+    } > OCRAM
+
+
+    /* NON-LOADABLE SECTIONS */
+    /* this is used when Debug log's to shared memory is enabled, else this is not used */
+    .bss.log_shared_mem  (NOLOAD) : {} > LOG_SHM_MEM
 
     /* This is rest of uninitialized data. This can be placed in OCRAM if OCRAM is available and needed */
     GROUP {
@@ -90,12 +101,6 @@ SECTIONS
         RUN_END(__UNDEFINED_STACK_END)
     } > OCRAM
 
-    /* Sections needed for C++ projects */
-    GROUP {
-        .ARM.exidx:  {} palign(16)   /* Needed for C++ exception handling */
-        .init_array: {} palign(16)   /* Contains function pointers called before main */
-        .fini_array: {} palign(16)   /* Contains function pointers called after main */
-    } > OCRAM
 
     .bss.user_shared_mem (NOLOAD) : {
     } > USER_SHM   , palign(8) 

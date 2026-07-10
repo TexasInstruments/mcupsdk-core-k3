@@ -59,22 +59,33 @@ SECTIONS
         .text:abort: palign(16) /* this helps in loading symbols when using XIP mode */
     } > R5F_TCMA
 
-
+    /* LOADABLE SECTIONS */
     .text            : {} palign(16)      > R51_0_OCRAM
     .const           : {} palign(16)      > R51_0_OCRAM
     .rodata          : {} palign(16)      > R51_0_OCRAM
     .cinit           : {} palign(16)      > R51_0_OCRAM
     .far             : {} palign(16)       > R51_0_OCRAM
     .data            : {} palign(128)    > R51_0_OCRAM
-    .sysmem          : {}                > R51_0_OCRAM
     .data_buffer     : {} palign(128)    > R51_0_OCRAM
     .boardcfg_data   : {} palign(16)       > R51_0_OCRAM
+
+    /* Sections needed for C++ projects */
+    GROUP {
+        .ARM.exidx:  {} palign(16)   /* Needed for C++ exception handling */
+        .init_array: {} palign(16)   /* Contains function pointers called before main */
+        .fini_array: {} palign(16)   /* Contains function pointers called after main */
+    } > R51_0_OCRAM
+
+
+    /* NON-LOADABLE SECTIONS */
 
     GROUP {
         .bss:    {} palign(4)   /* This is where uninitialized globals go */
         RUN_START(__BSS_START)
         RUN_END(__BSS_END)
     } > R51_0_OCRAM
+
+    .sysmem          : {}                > R51_0_OCRAM
 
     /* USB or any other LLD buffer for benchmarking */
     .benchmark_buffer (NOLOAD) {} ALIGN (8) > R51_0_OCRAM
@@ -100,12 +111,6 @@ SECTIONS
         RUN_END(__UNDEFINED_STACK_END)
     } > R51_0_OCRAM (HIGH)
 
-    /* Sections needed for C++ projects */
-    GROUP {
-        .ARM.exidx:  {} palign(16)   /* Needed for C++ exception handling */
-        .init_array: {} palign(16)   /* Contains function pointers called before main */
-        .fini_array: {} palign(16)   /* Contains function pointers called after main */
-    } > R51_0_OCRAM
 
     /* rl2 region */
     GROUP (NOLOAD) :   {

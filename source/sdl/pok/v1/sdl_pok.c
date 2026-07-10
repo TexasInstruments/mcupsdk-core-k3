@@ -483,7 +483,7 @@ int32_t SDL_POK_enablePP(SDL_PRG_Inst instance, bool enable)
  * Design: PROC_SDL-1344,PROC_SDL-1345,PROC_SDL-1346
  */
 /*set POK and POR_POK module configurations*/
-int32_t SDL_POK_init(SDL_POK_Inst instance,  SDL_POK_config *pPokCfg)
+int32_t SDL_POK_init(SDL_POK_Inst instance,  const SDL_POK_config *pPokCfg)
 {
     int32_t                 retVal = SDL_PASS;
     SDL_POK_Inst            esm_inst;

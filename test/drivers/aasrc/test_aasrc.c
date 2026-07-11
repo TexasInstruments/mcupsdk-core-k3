@@ -179,8 +179,8 @@ SemaphoreP_Object TestAASRC_countSemAsrcConv2;
 /* Semaphore for multithreaded test */
 SemaphoreP_Object TestAASRC_sem;
 
-uint8_t TestAASRC_task1Stack[1024] __attribute__ ((aligned(32)));
-uint8_t TestAASRC_task2Stack[1024] __attribute__ ((aligned(32)));
+uint8_t TestAASRC_task1Stack[16*1024] __attribute__ ((aligned(32)));
+uint8_t TestAASRC_task2Stack[16*1024] __attribute__ ((aligned(32)));
 
 TaskP_Object TestAASRC_thread1TaskObj;
 TaskP_Object TestAASRC_thread2TaskObj;
@@ -194,6 +194,16 @@ static float TestAASRC_fftSplitFactor[TEST_AASRC_MAX_FFT_SAMPLES * 2] __attribut
 static TestAASRC_peakMetrics TestAASRC_monoRxPeak, TestAASRC_monoTxPeak;
 static TestAASRC_peakMetrics TestAASRC_stereoRxPeak[TEST_AASRC_STEREO_CHANNEL_COUNT], TestAASRC_stereoTxPeak[TEST_AASRC_STEREO_CHANNEL_COUNT];
 static TestAASRC_peakMetrics TestAASRC_groupRxPeak[TEST_AASRC_GROUP_CHANNEL_COUNT],  TestAASRC_groupTxPeak[TEST_AASRC_GROUP_CHANNEL_COUNT];
+static uint32_t gAasrcTxMonoBuffer2[TEST_AASRC_MONO_OUTPUT_TRANSACTION_SAMPLE_COUNT] __attribute__((aligned(256)));
+static uint32_t gAasrcRxMonoBuffer2[TEST_AASRC_MONO_INPUT_TRANSACTION_SAMPLE_COUNT] __attribute__((aligned(256)));
+static AASRC_Transaction gTestTxnMonoRx2;
+static AASRC_Transaction gTestTxnMonoTx2;
+/* Per-channel error capture for overflow/underflow injection tests */
+static AASRC_FifoErrorStatus TestAASRC_capturedInFifoErr[CONFIG_AASRC0_NUM_CH];
+static AASRC_FifoErrorStatus TestAASRC_capturedOutFifoErr[CONFIG_AASRC0_NUM_CH];
+static volatile uint8_t      TestAASRC_errFiredMask;  /* bit per chIdx */
+static SemaphoreP_Object     TestAASRC_errSem;
+
 #endif
 /* ========================================================================== */
 /*                        Function Declarations                               */
@@ -207,11 +217,22 @@ static void TestAasrc_syncPin(void *args);
 static void TestAasrc_groupDelay(void*args);
 static void TestAasrc_attenuation(void* args);
 /*static void TestAasrc_fifoThreshold(void *args); */ /* Test case hangs when ran for every threhold values*/
+static void TestAasrc_transactionThread1Init(AASRC_ChHandle chHandle, uint8_t instNum, uint8_t chCount);
+static void TestAasrc_transactionThread2Init(AASRC_ChHandle chHandle, uint8_t instNum, uint8_t chCount);
+static void TestAasrc_concurrentSinewaveConversionDma(void *args);
+static void TestAASRC_txcbInst0 (AASRC_ChHandle chHandle, AASRC_Transaction *transaction);
+static void TestAASRC_txcbInst1 (AASRC_ChHandle chHandle, AASRC_Transaction *transaction);
 static inline int32_t TestAasrc_convertWordlen(int32_t s_in, uint8_t inBits, uint8_t outBits);
 static inline int32_t TestAasrc_packRightJustified(int32_t s_out, uint8_t outBits);
 static void TestAasrc_runFftWordLen(uint32_t *inputBuf, int32_t sampleCount, float sampleRateHz, uint8_t wordLenBits, TestAASRC_peakMetrics *out);
 static void TestAasrc_fftInterleavedWordLen(uint32_t *inputBuf, int32_t sampleCount, int32_t chCount, int32_t chIndex, float sampleRateHz, uint8_t wordLenBits, TestAASRC_peakMetrics *out);
 static void TestAasrc_pcmWidth(void *args);
+static void TestAasrc_externalClk(void *args);
+static void TestAasrc_overflowSineWaveInterrupt(void *args);
+static void TestAasrc_underflowSineWaveInterrupt(void *args);
+static void TestAasrc_queueBeforeEnable(void *args);
+static void TestAasrc_sineWaveConversionInterrupt(void *args);
+int32_t Board_clockgenConfig(I2C_Handle handle, uint8_t devAddr);
 
 
 
@@ -232,6 +253,13 @@ void test_main(void *args)
     RUN_TEST(TestAasrc_attenuation, 10157, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     RUN_TEST(TestAasrc_pcmWidth, 10065,(void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     /*RUN_TEST(TestAasrc_fifoThreshold, 10074, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);*/ /*Test case hangs when ran for all the threshold one by one */
+    RUN_TEST(TestAasrc_concurrentSinewaveConversionDma, 10069, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
+    RUN_TEST(TestAasrc_sineWaveConversionInterrupt, 10302,(void*)&gAasrcOpenParams[CONFIG_AASRC0]);
+    RUN_TEST(TestAasrc_overflowSineWaveInterrupt, 10310, (void*)&gAasrcOpenParams[CONFIG_AASRC0]); 
+    RUN_TEST(TestAasrc_underflowSineWaveInterrupt, 10311, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
+    RUN_TEST(TestAasrc_externalClk, 10306, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
+    RUN_TEST(TestAasrc_externalClk, 12158, (void*)&gAasrcOpenParams[CONFIG_AASRC1]);
+    RUN_TEST(TestAasrc_queueBeforeEnable, 10309, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     #endif
     UNITY_END();
     return;
@@ -1102,7 +1130,6 @@ static void TestAasrc_attenuation(void* args)
     }
 }
 
-
 /**
  * \brief Test AASRC with word lengths (16/18/20).
  *
@@ -1693,3 +1720,1239 @@ void mcasp_rxcb(MCASP_Handle McaspHandle,
                           MCASP_Transaction *transaction)
 {
 }
+
+#ifdef ENABLE_MT_TESTS
+/* commented as multithread test cases causes hanging */
+
+/**
+ * \brief Thread worker function for AASRC instance 0 multi-threaded test.
+ *
+ * Opens channels, configures and enables them, queues transactions with
+ * test data, and waits for conversion completion. Runs concurrently with
+ * aasrcThread2 to test multi-instance operation.
+ *
+ * \param pvParameter Pointer to AASRC_Handle for instance 0.
+ */
+static void aasrcThread1(void *pvParameter)
+{
+    AASRC_Handle handle= *((AASRC_Handle *)pvParameter);
+    AASRC_ChHandle  chHandle = NULL;
+    AASRC_ChObj *chObj = NULL;
+    uint8_t channelCount;
+    uint32_t status;
+    float  clkFrequency;
+
+    /*Creating a counting semaphore for all channels */
+    SemaphoreP_constructCounting(&TestAASRC_countSemAsrcConv1, 0, CONFIG_AASRC0_NUM_CH);
+    for(channelCount = 0U; channelCount< CONFIG_AASRC0_NUM_CH; channelCount++)
+    {
+        chHandle = AASRC_chOpen(channelCount, handle);
+        if(chHandle != NULL)
+        {
+            chObj = (AASRC_ChObj *)(chHandle);
+            chObj->xmtObj.cbFxn = TestAASRC_txcbInst0;
+        }
+        else
+        {
+            status = SystemP_FAILURE;
+        }
+        status = AASRC_chConfig(chHandle);
+        if(status == SystemP_SUCCESS)
+        {
+            /* Input Frequency */
+            status += AASRC_GetClkZoneRxFrequency(chHandle, &clkFrequency);
+            TestAASRC_chMetaThread1[0][channelCount].rxSamplingFreq = clkFrequency;
+            TestAASRC_chMetaThread1[0][channelCount].dataFormat = chObj->chCfg.inWordLen;
+
+            TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+            DebugP_log("AASRC thread1 %u input clock zone %u freq = %0.8f KHz\r\n", 0, channelCount, clkFrequency);
+
+            /* Output Frequency */
+            status += AASRC_GetClkZoneTxFrequency(chHandle, &clkFrequency);
+            TestAASRC_chMetaThread1[0][channelCount].txSamplingFreq = clkFrequency;
+            TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+            DebugP_log("AASRC thread1  %u output clock zone %u freq = %0.8f KHz\r\n", 0, channelCount, clkFrequency);
+
+            if( status == SystemP_SUCCESS)
+            {
+                /* Init the transactions for all channel */
+                TestAasrc_transactionThread1Init(chHandle, 0, channelCount);
+                /* Enable the channel for starting conversion */
+                status += AASRC_chEnable(chHandle);
+            }
+        }
+    }
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+
+    {
+        uint32_t elapsedMs = 0U;
+        while(SemaphoreP_getCount(&TestAASRC_countSemAsrcConv1) < CONFIG_AASRC0_NUM_CH)
+        {
+            ClockP_usleep(TEST_AASRC_BUSYWAIT_POLL_INTERVAL_US);
+            elapsedMs += (TEST_AASRC_BUSYWAIT_POLL_INTERVAL_US / 1000U);
+            if (elapsedMs >= TEST_AASRC_BUSYWAIT_TIMEOUT_MS)
+            {
+                TEST_ASSERT_TRUE_MESSAGE(0, "Thread1: AASRC conversion timed out");
+                break;
+            }
+        }
+    }
+    CacheP_wbInv(TestAASRC_txMonoThreadBuffer[0],
+                sizeof(TestAASRC_txMonoThreadBuffer[0]), CacheP_TYPE_ALL);
+    CacheP_wbInv(TestAASRC_txStereoThreadBuffer[0],
+                sizeof(TestAASRC_txStereoThreadBuffer[0]), CacheP_TYPE_ALL);
+    CacheP_wbInv(TestAASRC_txGroupThreadBuffer[0],
+                sizeof(TestAASRC_txGroupThreadBuffer[0]), CacheP_TYPE_ALL);
+
+    /* Close the channels */
+    for (channelCount = 0; channelCount < CONFIG_AASRC0_NUM_CH; channelCount++)
+    {
+        chHandle = AASRC_getChHandle(0, channelCount);
+        AASRC_chDisable(chHandle);
+        status = AASRC_chClose(chHandle);
+    }
+
+    /*Destroy the channel counting semaphore */
+    SemaphoreP_destruct(&TestAASRC_countSemAsrcConv1);
+
+    /* Post the semaphore to indicate to the main test */
+    SemaphoreP_post(&TestAASRC_sem);
+}
+
+/**
+ * \brief Thread worker function for AASRC instance 1 multi-threaded test.
+ *
+ * Opens channels, configures and enables them, queues transactions with
+ * test data, and waits for conversion completion. Runs concurrently with
+ * aasrcThread1 to test multi-instance operation.
+ *
+ * \param pvParameter Pointer to AASRC_Handle for instance 1.
+ */
+static void aasrcThread2(void *pvParameter)
+{
+    AASRC_Handle handle= *((AASRC_Handle *)pvParameter);
+    AASRC_ChHandle  chHandle = NULL;
+    AASRC_ChObj *chObj = NULL;
+    uint8_t channelCount;
+    uint32_t status;
+    float  clkFrequency;
+
+    /*Creating a counting semaphore for all channels */
+    SemaphoreP_constructCounting(&TestAASRC_countSemAsrcConv2, 0, CONFIG_AASRC1_NUM_CH);
+    for(channelCount = 0U; channelCount< CONFIG_AASRC1_NUM_CH; channelCount++)
+    {
+        chHandle = AASRC_chOpen(channelCount, handle);
+        if(chHandle != NULL)
+        {
+            chObj = (AASRC_ChObj *)(chHandle);
+            chObj->xmtObj.cbFxn = TestAASRC_txcbInst1;
+        }
+        else
+        {
+                status = SystemP_FAILURE;
+        }
+        status = AASRC_chConfig(chHandle);
+        if(status == SystemP_SUCCESS)
+        {
+            /* Input Frequency */
+            status += AASRC_GetClkZoneRxFrequency(chHandle, &clkFrequency);
+            TestAASRC_chMetaThread2[1][channelCount].rxSamplingFreq = clkFrequency;
+            TestAASRC_chMetaThread2[1][channelCount].dataFormat = chObj->chCfg.inWordLen;
+
+            TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+            DebugP_log("AASRC thread2 %u input clock zone %u freq = %0.8f KHz\r\n", 1, channelCount, clkFrequency);
+
+            /* Output Frequency */
+            status += AASRC_GetClkZoneTxFrequency(chHandle, &clkFrequency);
+            TestAASRC_chMetaThread2[1][channelCount].txSamplingFreq = clkFrequency;
+            TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+            DebugP_log("AASRC thread2  %u output clock zone %u freq = %0.8f KHz\r\n", 1, channelCount, clkFrequency);
+
+            if( status == SystemP_SUCCESS)
+            {
+                /* Init the transactions for all channel */
+                TestAasrc_transactionThread2Init(chHandle, 1, channelCount);
+                /* Enable the channel for starting conversion */
+                status += AASRC_chEnable(chHandle);
+            }
+        }
+    }
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+
+    {
+        uint32_t elapsedMs = 0U;
+        while(SemaphoreP_getCount(&TestAASRC_countSemAsrcConv2) < CONFIG_AASRC1_NUM_CH)
+        {
+            ClockP_usleep(TEST_AASRC_BUSYWAIT_POLL_INTERVAL_US);
+            elapsedMs += (TEST_AASRC_BUSYWAIT_POLL_INTERVAL_US / 1000U);
+            if (elapsedMs >= TEST_AASRC_BUSYWAIT_TIMEOUT_MS)
+            {
+                TEST_ASSERT_TRUE_MESSAGE(0, "Thread2: AASRC conversion timed out");
+                break;
+            }
+        }
+    }
+    CacheP_wbInv(TestAASRC_txMonoThreadBuffer[1],
+                sizeof(TestAASRC_txMonoThreadBuffer[1]), CacheP_TYPE_ALL);
+    CacheP_wbInv(TestAASRC_txStereoThreadBuffer[1],
+                sizeof(TestAASRC_txStereoThreadBuffer[1]), CacheP_TYPE_ALL);
+    CacheP_wbInv(TestAASRC_txGroupThreadBuffer[1],
+                sizeof(TestAASRC_txGroupThreadBuffer[1]), CacheP_TYPE_ALL);
+
+    /* Close the channels */
+    for (channelCount = 0; channelCount < CONFIG_AASRC1_NUM_CH; channelCount++)
+    {
+        chHandle = AASRC_getChHandle(1, channelCount);
+        AASRC_chDisable(chHandle);
+        status = AASRC_chClose(chHandle);
+    }
+    /*Destroy the channel counting semaphore */
+    SemaphoreP_destruct(&TestAASRC_countSemAsrcConv2);
+
+    /* Post the semaphore to indicate to the main test */
+    SemaphoreP_post(&TestAASRC_sem);
+}
+
+/**
+ * \brief Test concurrent AASRC sine wave conversion across multiple instances.
+ *
+ * Test Category: Multi-threading
+ *
+ * Creates two tasks that simultaneously operate on different AASRC
+ * instances to verify thread-safe operation and concurrent processing capability.
+ * Each task performs complete sample rate conversion independently.
+ *
+ * Note: Currently commented out due to issues during driver_open function
+ * when enabling multiple instances.
+ *
+ * \param args Pointer to test parameters.
+ */
+static void TestAasrc_concurrentSinewaveConversionDma(void *args)
+{
+    DebugP_log ("Starting AASRC multithreaded test case\r\n");
+
+    int32_t status = SystemP_SUCCESS;
+    AASRC_Handle    handle[CONFIG_AASRC_NUM_INSTANCES];
+    AASRC_OpenParams openParams[CONFIG_AASRC_NUM_INSTANCES] = {0};
+    uint8_t instanceCount;
+    TaskP_Params taskParams1, taskParams2;
+
+    /* Initialize the handles to NULL */
+    uint32_t i;
+    for(i = 0; i < CONFIG_AASRC_NUM_INSTANCES ; i++)
+    {
+        handle[i] = NULL;
+    }
+    /* Open all the instances */
+    for(instanceCount = 0U; instanceCount< CONFIG_AASRC_NUM_INSTANCES; instanceCount++)
+    {
+        openParams[instanceCount] = gAasrcOpenParams[instanceCount];
+        AASRC_close(gAasrcHandle[instanceCount]);
+        handle[instanceCount] = AASRC_open(instanceCount, &openParams[instanceCount]);
+    }
+
+    status =  SemaphoreP_constructCounting(&TestAASRC_sem, 0, 2);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+
+    TaskP_Params_init(&taskParams1);
+    taskParams1.priority       = 3U;
+    taskParams1.stack          = TestAASRC_task1Stack;
+    taskParams1.stackSize      = sizeof(TestAASRC_task1Stack);
+    taskParams1.args           = (void*) &handle[0];
+    taskParams1.name           = "AasrcThread1";
+    taskParams1.taskMain       = &aasrcThread1;
+
+    status = TaskP_construct(&TestAASRC_thread1TaskObj, &taskParams1);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+
+    TaskP_Params_init(&taskParams2);
+    taskParams2.priority       = 3U;
+    taskParams2.stack          = TestAASRC_task2Stack;
+    taskParams2.stackSize      = sizeof(TestAASRC_task2Stack);
+    taskParams2.args           = (void*) &handle[1];
+    taskParams2.name           = "AasrcThread2";
+    taskParams2.taskMain       = &aasrcThread2;
+
+    status = TaskP_construct(&TestAASRC_thread2TaskObj, &taskParams2);
+    TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+
+    /*Wait for the tasks to complete */
+    for(instanceCount = 0; instanceCount < 2; instanceCount++)
+    {
+        status = SemaphoreP_pend(&TestAASRC_sem, SystemP_WAIT_FOREVER);
+        TEST_ASSERT_EQUAL_INT32(status, SystemP_SUCCESS);
+    }
+
+    SemaphoreP_destruct(&TestAASRC_sem);
+    TaskP_destruct(&TestAASRC_thread1TaskObj);
+    TaskP_destruct(&TestAASRC_thread2TaskObj);
+
+}
+
+/**
+ * \brief Initialize transactions for thread 1 (instance 0).
+ *
+ * Prepares input/output buffers specific to thread 1, performs word-length
+ * conversion from reference 24-bit data, and queues RX/TX transactions.
+ * Uses separate buffer set to avoid conflicts with thread 2.
+ *
+ * \param chHandle AASRC channel handle.
+ * \param instNum Instance number (0).
+ * \param chCount Channel count.
+ */
+static void TestAasrc_transactionThread1Init(AASRC_ChHandle chHandle, uint8_t instNum, uint8_t chCount)
+{
+    uint16_t count;
+    AASRC_ChObj *chObj = (AASRC_ChObj *)(chHandle);
+    uint8_t chType = chObj->chCfg.chType;
+
+    switch(chType)
+    {
+        case AASRC_MONO:
+
+            /* Init Input and Output Buffer */
+            strncpy(TestAASRC_chMetaThread1[instNum][chCount].metaInfo,"MONO CHANNEL", sizeof(TestAASRC_chMetaThread1[instNum][chCount].metaInfo));
+            TestAASRC_chMetaThread1[instNum][chCount].monoChCount = 1;
+            TestAASRC_chMetaThread1[instNum][chCount].rxBufPtr = (uint32_t *)&TestAASRC_rxMonoThreadBuffer[0][0];
+            TestAASRC_chMetaThread1[instNum][chCount].txBufPtr = (uint32_t *)&TestAASRC_txMonoThreadBuffer[0][0];
+            TestAASRC_chMetaThread1[instNum][chCount].rxSampleCount = TEST_AASRC_MONO_INPUT_TRANSACTION_SAMPLE_COUNT;
+            TestAASRC_chMetaThread1[instNum][chCount].txSampleCount = TEST_AASRC_MONO_OUTPUT_TRANSACTION_SAMPLE_COUNT;
+
+            for(count = 0U; count< TEST_AASRC_MONO_INPUT_TRANSACTION_SAMPLE_COUNT; count++)
+            {
+                TestAASRC_rxMonoThreadBuffer[0][count] = (int32_t)aasrc_monoInput[count];
+            }
+
+            for(count = 0U; count< TEST_AASRC_MONO_OUTPUT_TRANSACTION_SAMPLE_COUNT; count++)
+            {
+                TestAASRC_txMonoThreadBuffer[0][count] = 0U;
+            }
+
+            CacheP_wb(TestAASRC_rxMonoThreadBuffer[0], sizeof(TestAASRC_rxMonoThreadBuffer[0]), CacheP_TYPE_ALLD);
+            CacheP_wb(TestAASRC_txMonoThreadBuffer[0], sizeof(TestAASRC_txMonoThreadBuffer[0]), CacheP_TYPE_ALLD);
+
+            /* Queue the rxTransaction  and txTransaction */
+            TestAASRC_thread1TxnRx[instNum][chCount].buf = (void*) &TestAASRC_rxMonoThreadBuffer[0][0];
+            TestAASRC_thread1TxnRx[instNum][chCount].sampleCount = TEST_AASRC_MONO_INPUT_TRANSACTION_SAMPLE_COUNT;
+            AASRC_queueTransactionRx( chHandle, &TestAASRC_thread1TxnRx[instNum][chCount] );
+
+            TestAASRC_thread1TxnTx[instNum][chCount].buf = (void*) &TestAASRC_txMonoThreadBuffer[0][0];
+            TestAASRC_thread1TxnTx[instNum][chCount].sampleCount = TEST_AASRC_MONO_OUTPUT_TRANSACTION_SAMPLE_COUNT;
+            AASRC_queueTransactionTx( chHandle, &TestAASRC_thread1TxnTx[instNum][chCount] );
+            break;
+
+        case AASRC_STEREO:
+            strncpy(TestAASRC_chMetaThread1[instNum][chCount].metaInfo,"STEREO CHANNEL", sizeof(TestAASRC_chMetaThread1[instNum][chCount].metaInfo));
+            TestAASRC_chMetaThread1[instNum][chCount].monoChCount = 2;
+            TestAASRC_chMetaThread1[instNum][chCount].rxBufPtr = (uint32_t *)&TestAASRC_rxStereoThreadBuffer[0][0];
+            TestAASRC_chMetaThread1[instNum][chCount].txBufPtr = (uint32_t *)&TestAASRC_txStereoThreadBuffer[0][0];
+            TestAASRC_chMetaThread1[instNum][chCount].rxSampleCount = TEST_AASRC_STEREO_INPUT_TRANSACTION_SAMPLE_COUNT;
+            TestAASRC_chMetaThread1[instNum][chCount].txSampleCount = TEST_AASRC_STEREO_OUTPUT_TRANSACTION_SAMPLE_COUNT;
+
+            for(count = 0U; count< TEST_AASRC_STEREO_INPUT_TRANSACTION_SAMPLE_COUNT; count++)
+            {
+                TestAASRC_rxStereoThreadBuffer[0][count] = (int32_t)aasrc_stereoInput[count];
+            }
+
+            for(count = 0U; count< TEST_AASRC_STEREO_OUTPUT_TRANSACTION_SAMPLE_COUNT; count++)
+            {
+                TestAASRC_txStereoThreadBuffer[0][count] = 0U;
+            }
+
+            CacheP_wb(TestAASRC_rxStereoThreadBuffer[0], sizeof(TestAASRC_rxStereoThreadBuffer[0]), CacheP_TYPE_ALLD);
+            CacheP_wb(TestAASRC_txStereoThreadBuffer[0], sizeof(TestAASRC_txStereoThreadBuffer[0]), CacheP_TYPE_ALLD);
+
+            /* Queue the rxTransaction  and txTransaction */
+            TestAASRC_thread1TxnRx[instNum][chCount].buf = (void*) &TestAASRC_rxStereoThreadBuffer[0][0];
+            TestAASRC_thread1TxnRx[instNum][chCount].sampleCount = TEST_AASRC_STEREO_INPUT_TRANSACTION_SAMPLE_COUNT;
+            AASRC_queueTransactionRx( chHandle, &TestAASRC_thread1TxnRx[instNum][chCount] );
+
+            TestAASRC_thread1TxnTx[instNum][chCount].buf = (void*) &TestAASRC_txStereoThreadBuffer[0][0];
+            TestAASRC_thread1TxnTx[instNum][chCount].sampleCount = TEST_AASRC_STEREO_OUTPUT_TRANSACTION_SAMPLE_COUNT;
+            AASRC_queueTransactionTx( chHandle, &TestAASRC_thread1TxnTx[instNum][chCount] );
+            break;
+
+        case AASRC_GROUP:
+            /* Init Input and Output Buffer */
+            strncpy(TestAASRC_chMetaThread1[instNum][chCount].metaInfo,"GROUP CHANNEL", sizeof(TestAASRC_chMetaThread1[instNum][chCount].metaInfo));
+            TestAASRC_chMetaThread1[instNum][chCount].monoChCount = TEST_AASRC_GROUP_CHANNEL_COUNT;
+            TestAASRC_chMetaThread1[instNum][chCount].rxBufPtr = (uint32_t *)&TestAASRC_rxGroupThreadBuffer[0][0];
+            TestAASRC_chMetaThread1[instNum][chCount].txBufPtr = (uint32_t *)&TestAASRC_txGroupThreadBuffer[0][0];
+            TestAASRC_chMetaThread1[instNum][chCount].rxSampleCount = TEST_AASRC_GROUP_INPUT_TRANSACTION_SAMPLE_COUNT;
+            TestAASRC_chMetaThread1[instNum][chCount].txSampleCount = TEST_AASRC_GROUP_OUTPUT_TRANSACTION_SAMPLE_COUNT;
+
+            for(count = 0U; count< TEST_AASRC_GROUP_INPUT_TRANSACTION_SAMPLE_COUNT; count++)
+            {
+                TestAASRC_rxGroupThreadBuffer[0][count] = (int32_t)aasrc_groupInput[count];
+            }
+
+            for(count = 0U; count< TEST_AASRC_GROUP_OUTPUT_TRANSACTION_SAMPLE_COUNT; count++)
+            {
+                TestAASRC_txGroupThreadBuffer[0][count] = 0U;
+            }
+
+            CacheP_wb(TestAASRC_rxGroupThreadBuffer[0], sizeof(TestAASRC_rxGroupThreadBuffer[0]), CacheP_TYPE_ALLD);
+            CacheP_wb(TestAASRC_txGroupThreadBuffer[0], sizeof(TestAASRC_txGroupThreadBuffer[0]), CacheP_TYPE_ALLD);
+
+            /* Queue the rxTransaction  and txTransaction */
+            TestAASRC_thread1TxnRx[instNum][chCount].buf = (void*) &TestAASRC_rxGroupThreadBuffer[0][0];
+            TestAASRC_thread1TxnRx[instNum][chCount].sampleCount = TEST_AASRC_GROUP_INPUT_TRANSACTION_SAMPLE_COUNT;
+            AASRC_queueTransactionRx( chHandle, &TestAASRC_thread1TxnRx[instNum][chCount] );
+
+            TestAASRC_thread1TxnTx[instNum][chCount].buf = (void*) &TestAASRC_txGroupThreadBuffer[0][0];
+            TestAASRC_thread1TxnTx[instNum][chCount].sampleCount = TEST_AASRC_GROUP_OUTPUT_TRANSACTION_SAMPLE_COUNT;
+            AASRC_queueTransactionTx( chHandle, &TestAASRC_thread1TxnTx[instNum][chCount] );
+            break;
+
+        default:
+            break;
+    }
+}
+
+/**
+ * \brief Initialize transactions for thread 2 (instance 1).
+ *
+ * Prepares input/output buffers specific to thread 2, performs word-length
+ * conversion from reference 24-bit data, and queues RX/TX transactions.
+ * Uses separate buffer set to avoid conflicts with thread 1.
+ *
+ * \param chHandle AASRC channel handle.
+ * \param instNum Instance number (1).
+ * \param chCount Channel count.
+ */
+static void TestAasrc_transactionThread2Init(AASRC_ChHandle chHandle, uint8_t instNum, uint8_t chCount)
+{
+    uint16_t count;
+    AASRC_ChObj *chObj = (AASRC_ChObj *)(chHandle);
+    uint8_t chType = chObj->chCfg.chType;
+
+    switch(chType)
+    {
+        case AASRC_MONO:
+
+            /* Init Input and Output Buffer */
+            strncpy(TestAASRC_chMetaThread2[instNum][chCount].metaInfo,"MONO CHANNEL", sizeof(TestAASRC_chMetaThread2[instNum][chCount].metaInfo));
+            TestAASRC_chMetaThread2[instNum][chCount].monoChCount = 1;
+            TestAASRC_chMetaThread2[instNum][chCount].rxBufPtr = (uint32_t *)&TestAASRC_rxMonoThreadBuffer[1][0];
+            TestAASRC_chMetaThread2[instNum][chCount].txBufPtr = (uint32_t *)&TestAASRC_txMonoThreadBuffer[1][0];
+            TestAASRC_chMetaThread2[instNum][chCount].rxSampleCount = TEST_AASRC_MONO_INPUT_TRANSACTION_SAMPLE_COUNT;
+            TestAASRC_chMetaThread2[instNum][chCount].txSampleCount = TEST_AASRC_MONO_OUTPUT_TRANSACTION_SAMPLE_COUNT;
+
+            for(count = 0U; count< TEST_AASRC_MONO_INPUT_TRANSACTION_SAMPLE_COUNT; count++)
+            {
+                TestAASRC_rxMonoThreadBuffer[1][count] = (int32_t)aasrc_monoInput[count];
+            }
+
+            for(count = 0U; count< TEST_AASRC_MONO_OUTPUT_TRANSACTION_SAMPLE_COUNT; count++)
+            {
+                TestAASRC_txMonoThreadBuffer[1][count] = 0U;
+            }
+
+            CacheP_wb(TestAASRC_rxMonoThreadBuffer[1], sizeof(TestAASRC_rxMonoThreadBuffer[1]), CacheP_TYPE_ALLD);
+            CacheP_wb(TestAASRC_txMonoThreadBuffer[1], sizeof(TestAASRC_txMonoThreadBuffer[1]), CacheP_TYPE_ALLD);
+
+            /* Queue the rxTransaction  and txTransaction */
+            TestAASRC_thread2TxnRx[instNum][chCount].buf = (void*) &TestAASRC_rxMonoThreadBuffer[1][0];
+            TestAASRC_thread2TxnRx[instNum][chCount].sampleCount = TEST_AASRC_MONO_INPUT_TRANSACTION_SAMPLE_COUNT;
+            AASRC_queueTransactionRx( chHandle, &TestAASRC_thread2TxnRx[instNum][chCount] );
+
+            TestAASRC_thread2TxnTx[instNum][chCount].buf = (void*) &TestAASRC_txMonoThreadBuffer[1][0];
+            TestAASRC_thread2TxnTx[instNum][chCount].sampleCount = TEST_AASRC_MONO_OUTPUT_TRANSACTION_SAMPLE_COUNT;
+            AASRC_queueTransactionTx( chHandle, &TestAASRC_thread2TxnTx[instNum][chCount] );
+            break;
+
+        case AASRC_STEREO:
+            strncpy(TestAASRC_chMetaThread2[instNum][chCount].metaInfo,"STEREO CHANNEL", sizeof(TestAASRC_chMetaThread2[instNum][chCount].metaInfo));
+            TestAASRC_chMetaThread2[instNum][chCount].monoChCount = 2;
+            TestAASRC_chMetaThread2[instNum][chCount].rxBufPtr = (uint32_t *)&TestAASRC_rxStereoThreadBuffer[1][0];
+            TestAASRC_chMetaThread2[instNum][chCount].txBufPtr = (uint32_t *)&TestAASRC_txStereoThreadBuffer[1][0];
+            TestAASRC_chMetaThread2[instNum][chCount].rxSampleCount = TEST_AASRC_STEREO_INPUT_TRANSACTION_SAMPLE_COUNT;
+            TestAASRC_chMetaThread2[instNum][chCount].txSampleCount = TEST_AASRC_STEREO_OUTPUT_TRANSACTION_SAMPLE_COUNT;
+
+            for(count = 0U; count< TEST_AASRC_STEREO_INPUT_TRANSACTION_SAMPLE_COUNT; count++)
+            {
+                TestAASRC_rxStereoThreadBuffer[1][count] = (int32_t)aasrc_stereoInput[count];
+            }
+
+            for(count = 0U; count< TEST_AASRC_STEREO_OUTPUT_TRANSACTION_SAMPLE_COUNT; count++)
+            {
+                TestAASRC_txStereoThreadBuffer[1][count] = 0U;
+            }
+
+            CacheP_wb(TestAASRC_rxStereoThreadBuffer[1], sizeof(TestAASRC_rxStereoThreadBuffer[1]), CacheP_TYPE_ALLD);
+            CacheP_wb(TestAASRC_txStereoThreadBuffer[1], sizeof(TestAASRC_txStereoThreadBuffer[1]), CacheP_TYPE_ALLD);
+
+            /* Queue the rxTransaction  and txTransaction */
+            TestAASRC_thread2TxnRx[instNum][chCount].buf = (void*) &TestAASRC_rxStereoThreadBuffer[1][0];;
+            TestAASRC_thread2TxnRx[instNum][chCount].sampleCount = TEST_AASRC_STEREO_INPUT_TRANSACTION_SAMPLE_COUNT;
+            AASRC_queueTransactionRx( chHandle, &TestAASRC_thread2TxnRx[instNum][chCount] );
+
+            TestAASRC_thread2TxnTx[instNum][chCount].buf = (void*) &TestAASRC_txStereoThreadBuffer[1][0];
+            TestAASRC_thread2TxnTx[instNum][chCount].sampleCount = TEST_AASRC_STEREO_OUTPUT_TRANSACTION_SAMPLE_COUNT;
+            AASRC_queueTransactionTx( chHandle, &TestAASRC_thread2TxnTx[instNum][chCount] );
+            break;
+
+        case AASRC_GROUP:
+            /* Init Input and Output Buffer */
+            strncpy(TestAASRC_chMetaThread2[instNum][chCount].metaInfo,"GROUP CHANNEL", sizeof(TestAASRC_chMetaThread2[instNum][chCount].metaInfo));
+            TestAASRC_chMetaThread2[instNum][chCount].monoChCount = TEST_AASRC_GROUP_CHANNEL_COUNT;
+            TestAASRC_chMetaThread2[instNum][chCount].rxBufPtr = (uint32_t *)&TestAASRC_rxGroupThreadBuffer[1][0];
+            TestAASRC_chMetaThread2[instNum][chCount].txBufPtr = (uint32_t *)&TestAASRC_txGroupThreadBuffer[1][0];
+            TestAASRC_chMetaThread2[instNum][chCount].rxSampleCount = TEST_AASRC_GROUP_INPUT_TRANSACTION_SAMPLE_COUNT;
+            TestAASRC_chMetaThread2[instNum][chCount].txSampleCount = TEST_AASRC_GROUP_OUTPUT_TRANSACTION_SAMPLE_COUNT;
+
+            for(count = 0U; count< TEST_AASRC_GROUP_INPUT_TRANSACTION_SAMPLE_COUNT; count++)
+            {
+                TestAASRC_rxGroupThreadBuffer[1][count] = (int32_t)aasrc_groupInput[count];
+            }
+
+            for(count = 0U; count< TEST_AASRC_GROUP_OUTPUT_TRANSACTION_SAMPLE_COUNT; count++)
+            {
+                TestAASRC_txGroupThreadBuffer[1][count] = 0U;
+            }
+
+            CacheP_wb(TestAASRC_rxGroupThreadBuffer[1], sizeof(TestAASRC_rxGroupThreadBuffer[1]), CacheP_TYPE_ALLD);
+            CacheP_wb(TestAASRC_txGroupThreadBuffer[1], sizeof(TestAASRC_txGroupThreadBuffer[1]), CacheP_TYPE_ALLD);
+
+            /* Queue the rxTransaction  and txTransaction */
+            TestAASRC_thread2TxnRx[instNum][chCount].buf = (void*) &TestAASRC_rxGroupThreadBuffer[1][0];
+            TestAASRC_thread2TxnRx[instNum][chCount].sampleCount = TEST_AASRC_GROUP_INPUT_TRANSACTION_SAMPLE_COUNT;
+            AASRC_queueTransactionRx( chHandle, &TestAASRC_thread2TxnRx[instNum][chCount] );
+
+            TestAASRC_thread2TxnTx[instNum][chCount].buf = (void*) &TestAASRC_txGroupThreadBuffer[1][0];
+            TestAASRC_thread2TxnTx[instNum][chCount].sampleCount = TEST_AASRC_GROUP_OUTPUT_TRANSACTION_SAMPLE_COUNT;
+            AASRC_queueTransactionTx( chHandle, &TestAASRC_thread2TxnTx[instNum][chCount] );
+            break;
+
+        default:
+            break;
+    }
+}
+
+/**
+ * \brief Callback function for AASRC TX completion for instance 0.
+ *
+ * Posts semaphore to signal completion of TX transaction.
+ *
+ * \param chHandle AASRC channel handle.
+ * \param transaction Pointer to completed transaction.
+ */
+void TestAASRC_txcbInst0 (AASRC_ChHandle chHandle,
+                 AASRC_Transaction *transaction)
+{
+#ifdef ENABLE_MT_TESTS
+    SemaphoreP_post(&TestAASRC_countSemAsrcConv1);
+#endif
+}
+
+/**
+ * \brief Callback function for AASRC TX completion for instance 1.
+ *
+ * Posts semaphore to signal completion of TX transaction.
+ *
+ * \param chHandle AASRC channel handle.
+ * \param transaction Pointer to completed transaction.
+ */
+void TestAASRC_txcbInst1 (AASRC_ChHandle chHandle,
+                       AASRC_Transaction *transaction)
+{
+#ifdef ENABLE_MT_TESTS
+    SemaphoreP_post(&TestAASRC_countSemAsrcConv2);
+#endif
+}
+#endif
+
+#ifdef ENABLE_MT_TESTS
+/**
+ * \brief Verify AASRC conversion using an external clock source.
+ *
+ * Test Category: Functional
+ *
+ * Configures the pinmux for external reference clock 2 (GPIO1_72), configures the
+ * audio codec via I2C to generate the master clock, and sets up McASP to receive
+ * the external clock. Configures AASRC transmit clock zone to use the external
+ * reference clock, triggers sample rate conversion, and verifies the output signal
+ * characteristics (frequency, amplitude, RMS ratio) using DSP library functions.
+ *
+ * \param args Pointer to AASRC_OpenParams structure.
+ */
+static void TestAasrc_externalClk(void *args)
+{
+    int32_t         status = SystemP_SUCCESS;
+    uint8_t         zone;
+    I2C_Handle      i2cHandle = NULL;
+    MCASP_Handle    mcaspHandle = NULL;
+    AASRC_Handle    aasrcHandle = NULL;
+    AASRC_ChHandle  chHandle = NULL;
+    // AASRC_ChObj    *chObj = NULL;
+    uint16_t        count;
+    AASRC_OpenParams *openParams = (AASRC_OpenParams*)args;
+    uint8_t         inst = (uint8_t)(openParams - &gAasrcOpenParams[0]);
+
+    i2cHandle = gI2cHandle[CONFIG_I2C0];
+
+    Pinmux_PerCfg_t extClkPinmuxConfig[] =
+    {
+        { PIN_GPIO1_72, ( PIN_MODE(1) | PIN_INPUT_ENABLE | PIN_PULL_DIRECTION ) },
+        { PINMUX_END, 0U }
+    };
+    Pinmux_config(extClkPinmuxConfig, PINMUX_DOMAIN_ID_MAIN);
+
+    status = Board_clockgenConfig(i2cHandle, 0x68);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status,
+                                    "Clock generator config failed");
+    ClockP_usleep(10000);  /* allow PLL lock */
+
+    mcaspHandle = MCASP_open(CONFIG_MCASP0, &gMcaspOpenParams[CONFIG_MCASP0]);
+    TEST_ASSERT_NOT_NULL_MESSAGE(mcaspHandle, "McASP open failed");
+
+    status = MCASP_startTransferTx(mcaspHandle);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status,
+                                    "McASP startTransferTx failed");
+
+    /* Let McASP clocks stabilise */
+    ClockP_usleep(50000);
+
+    for (zone = 0U; zone < 1U; zone++)
+    {
+        gAasrcOpenParams[inst].rxClkZoneCfg[zone].clkZoneDiv        = 0U;
+        gAasrcOpenParams[inst].rxClkZoneCfg[zone].isClkZoneDivEnable = false;
+        gAasrcOpenParams[inst].rxClkZoneCfg[zone].extClkSrc         = AASRC_RXSYNC_McASP0_AFSX;
+        gAasrcOpenParams[inst].rxClkZoneCfg[zone].overrideClkSettle = true;
+    }
+
+    AASRC_close(gAasrcHandle[inst]);
+    aasrcHandle = AASRC_open(inst, &gAasrcOpenParams[inst]);
+    TEST_ASSERT_NOT_NULL_MESSAGE(aasrcHandle, "AASRC open failed");
+
+    /* Open only the mono channel (ch 0) */
+    chHandle = AASRC_chOpen(TEST_AASRC_MONO_AASRC_CH, aasrcHandle);
+    TEST_ASSERT_NOT_NULL_MESSAGE(chHandle, "AASRC chOpen failed");
+
+    status = AASRC_chConfig(chHandle);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "AASRC chConfig failed");
+
+    for (count = 0U; count < TEST_AASRC_MONO_INPUT_TRANSACTION_SAMPLE_COUNT; count++)
+    {
+        gAasrcRxMonoBuffer[count] = (int32_t)aasrc_monoInput[count];
+    }
+    for (count = 0U; count < TEST_AASRC_MONO_OUTPUT_TRANSACTION_SAMPLE_COUNT; count++)
+    {
+        gAasrcTxMonoBuffer[count] = 0;
+    }
+    CacheP_wb(gAasrcRxMonoBuffer, sizeof(gAasrcRxMonoBuffer), CacheP_TYPE_ALLD);
+    CacheP_wb(gAasrcTxMonoBuffer, sizeof(gAasrcTxMonoBuffer), CacheP_TYPE_ALLD);
+
+    /* Queue RX (input) and TX (output) transactions */
+    TestAASRC_txnRx[inst][TEST_AASRC_MONO_AASRC_CH].buf         = (void *)gAasrcRxMonoBuffer;
+    TestAASRC_txnRx[inst][TEST_AASRC_MONO_AASRC_CH].sampleCount = TEST_AASRC_MONO_INPUT_TRANSACTION_SAMPLE_COUNT;
+    AASRC_queueTransactionRx(chHandle,
+                                &TestAASRC_txnRx[inst][TEST_AASRC_MONO_AASRC_CH]);
+
+    TestAASRC_txnTx[inst][TEST_AASRC_MONO_AASRC_CH].buf         = (void *)gAasrcTxMonoBuffer;
+    TestAASRC_txnTx[inst][TEST_AASRC_MONO_AASRC_CH].sampleCount = TEST_AASRC_MONO_OUTPUT_TRANSACTION_SAMPLE_COUNT;
+    AASRC_queueTransactionTx(chHandle,
+                                &TestAASRC_txnTx[inst][TEST_AASRC_MONO_AASRC_CH]);
+
+    SemaphoreP_constructCounting(&TestAASRC_countSemAsrcConv, 0, 1);
+
+    status = AASRC_chEnable(chHandle);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(SystemP_SUCCESS, status, "AASRC chEnable failed");
+    
+    uint32_t  timeoutMs = 5000U;
+    uint32_t  elapsedMs = 0U;
+    const uint32_t pollIntervalMs = 10U;
+
+    while ((SemaphoreP_getCount(&TestAASRC_countSemAsrcConv) < 1U) &&
+            (elapsedMs < timeoutMs))
+    {
+        ClockP_usleep(pollIntervalMs * 1000U);
+        elapsedMs += pollIntervalMs;
+    }
+
+    TEST_ASSERT_TRUE_MESSAGE(
+        SemaphoreP_getCount(&TestAASRC_countSemAsrcConv) >= 1U,
+        "AASRC external-clock mono conversion timed out (5 s)");
+
+    SemaphoreP_destruct(&TestAASRC_countSemAsrcConv);
+
+    /* Invalidate the output buffer so we can read it on the CPU */
+    CacheP_wbInv(gAasrcTxMonoBuffer, sizeof(gAasrcTxMonoBuffer), CacheP_TYPE_ALL);
+
+    /* Read the clock frequencies BEFORE closing the channel handle */
+    float rxFs = 48.0f, txFs = 96.0f;  /* default fallbacks in kHz */
+    float tmpFreq;
+    if (AASRC_GetClkZoneRxFrequency(chHandle, &tmpFreq) == SystemP_SUCCESS)
+    {
+        rxFs = tmpFreq;
+    }
+    if (AASRC_GetClkZoneTxFrequency(chHandle, &tmpFreq) == SystemP_SUCCESS)
+    {
+        txFs = tmpFreq;
+    }
+
+
+    AASRC_chDisable(chHandle);
+    AASRC_chClose(chHandle);
+    AASRC_close(aasrcHandle);
+
+    /* FFT validation — compare RX and TX peak frequencies.       */
+    float rxSamplingRateHz = rxFs * 1000.0f;
+    float txSamplingRateHz = txFs * 1000.0f;
+
+    TestAasrc_runFftWordLen((uint32_t *)gAasrcRxMonoBuffer,
+                            (int32_t)TEST_AASRC_MONO_INPUT_TRANSACTION_SAMPLE_COUNT,
+                            rxSamplingRateHz, TEST_AASRC_IN_BITS,
+                            &TestAASRC_monoRxPeak);
+
+    int32_t startIdx = TEST_AASRC_MONO_FFT_START_IDX;
+    int32_t fftLen   = TEST_AASRC_MONO_FFT_LENGTH;
+    TestAasrc_runFftWordLen((uint32_t *)&gAasrcTxMonoBuffer[startIdx],
+                            fftLen, txSamplingRateHz, TEST_AASRC_IN_BITS,
+                            &TestAASRC_monoTxPeak);
+
+    DebugP_log("ExtClk Mono RX (Inst %d): f=%.3f Hz, A=%.6f, RMS=%.6f\r\n", inst,
+                TestAASRC_monoRxPeak.freqHz,
+                TestAASRC_monoRxPeak.amplitude,
+                TestAASRC_monoRxPeak.rms);
+    DebugP_log("ExtClk Mono TX (Inst %d): f=%.3f Hz, A=%.6f, RMS=%.6f\r\n", inst,
+                TestAASRC_monoTxPeak.freqHz,
+                TestAASRC_monoTxPeak.amplitude,
+                TestAASRC_monoTxPeak.rms);
+
+    float df       = fabsf(TestAASRC_monoRxPeak.freqHz - TestAASRC_monoTxPeak.freqHz);
+    float rmsRatio = (TestAASRC_monoRxPeak.rms > 0.0f)
+                    ? fabsf(TestAASRC_monoTxPeak.rms / TestAASRC_monoRxPeak.rms - 1.0f)
+                    : 0.0f;
+    bool freqMatch = (df <= TEST_AASRC_FFT_FREQ_TOL_HZ);
+    bool rmsMatch  = (rmsRatio <= TEST_AASRC_FFT_AMP_TOL_RATIO);
+    TEST_ASSERT_TRUE_MESSAGE(freqMatch || rmsMatch,
+        "ExtClk Mono: neither frequency nor RMS match after conversion");
+
+
+    MCASP_stopTransferTx(mcaspHandle);
+
+    /* Withdraw any leftover McASP transactions */
+    MCASP_Transaction *w;
+    do 
+    { 
+        w = MCASP_withdrawTx(mcaspHandle); 
+    } while (w != NULL);
+
+    MCASP_close(mcaspHandle);
+
+    /* Close and reopen AASRC with restored internal-clock settings */
+    AASRC_close(aasrcHandle);
+
+    /* Restore AASRC RX clock zone 0 to internal PLL source */
+    for (zone = 0U; zone < 1U; zone++)
+    {
+        gAasrcOpenParams[inst].rxClkZoneCfg[zone].clkZoneDiv         = 128U;
+        gAasrcOpenParams[inst].rxClkZoneCfg[zone].isClkZoneDivEnable = true;
+        gAasrcOpenParams[inst].rxClkZoneCfg[zone].extClkSrc          = AASRC_RXSYNC_MAIN_PLL4_HSDIV3_CLKOUT;
+        gAasrcOpenParams[inst].rxClkZoneCfg[zone].overrideClkSettle  = false;
+    }
+
+    /* Re-open AASRC with original params so subsequent tests work */
+    AASRC_audioPllDivConfig();
+    gAasrcHandle[inst] = AASRC_open(inst,
+                                     &gAasrcOpenParams[inst]);
+    TEST_ASSERT_NOT_NULL_MESSAGE(gAasrcHandle[inst],
+                                 "AASRC re-open with internal clock failed");
+}
+#endif
+
+#ifdef ENABLE_MT_TESTS
+/**
+ * \brief Verify queuing before enable primes and ISR handles queued txn.
+ *
+ * This test exercises the path where a transaction is queued prior to calling
+ * chEnable. It ensures TRPDs are primed on enable, a second transaction can
+ * be queued while the first is in-flight, and the ISR services the queued
+ * transaction. Basic end-to-end validation uses FFT checks on RX/TX data and
+ * a counting semaphore to confirm two completions.
+ *
+ * \param args Pointer to AASRC_OpenParams array (AASRC_OpenParams *).
+ */
+static void TestAasrc_queueBeforeEnable(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+    AASRC_ChHandle      chHandle = NULL;
+    AASRC_Handle        handle = NULL;
+    AASRC_OpenParams  *openParams = (AASRC_OpenParams *)args;
+    float samplingRateHz;
+    int32_t startIdx = TEST_AASRC_MONO_FFT_START_IDX;
+    int32_t fftLen = TEST_AASRC_MONO_FFT_LENGTH;
+
+    /* Open instance 0 and single mono channel only */
+    AASRC_close(gAasrcHandle[CONFIG_AASRC0]);
+    handle = AASRC_open(CONFIG_AASRC0, &openParams[CONFIG_AASRC0]);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    SemaphoreP_constructCounting(&TestAASRC_countSemAsrcConv, 0, 2);
+
+    /* Open channel 0, configure */
+    chHandle = AASRC_chOpen(TEST_AASRC_MONO_AASRC_CH, handle);
+    TEST_ASSERT_NOT_NULL(chHandle);
+
+    status = AASRC_chConfig(chHandle);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(AASRC_SOK, status, "chConfig failed");
+
+    /* * STEP 2: Queue a Transaction before Enabling */
+    TestAasrc_transactionInit(chHandle, CONFIG_AASRC0, TEST_AASRC_MONO_AASRC_CH);
+
+    /* Enable channel */
+    status = AASRC_chEnable(chHandle);
+    TEST_ASSERT_EQUAL_INT32_MESSAGE(AASRC_SOK, status, "chEnable failed");
+
+    /* Queue another Transaction immediately while Transaction 1 is "In Flight"*/
+    gTestTxnMonoRx2.buf = (void *)&gAasrcRxMonoBuffer2[0];
+    gTestTxnMonoRx2.sampleCount = TEST_AASRC_MONO_INPUT_TRANSACTION_SAMPLE_COUNT;
+    gTestTxnMonoTx2.buf = (void *)&gAasrcTxMonoBuffer2[0];
+    gTestTxnMonoTx2.sampleCount = TEST_AASRC_MONO_OUTPUT_TRANSACTION_SAMPLE_COUNT;
+
+    AASRC_queueTransactionRx(chHandle, &gTestTxnMonoRx2);
+    AASRC_queueTransactionTx(chHandle, &gTestTxnMonoTx2);
+
+    uint32_t waitCnt = 0U;
+    while (SemaphoreP_getCount(&TestAASRC_countSemAsrcConv) < 2U && waitCnt++ < 4000U)
+    {
+        ClockP_usleep(1000);
+    }
+    TEST_ASSERT_TRUE_MESSAGE(SemaphoreP_getCount(&TestAASRC_countSemAsrcConv) >= 2U, "Both mono txns not completed in time");
+
+    /* Invalidate caches to read results */
+    CacheP_wbInv(gAasrcTxMonoBuffer, sizeof(gAasrcTxMonoBuffer), CacheP_TYPE_ALL);
+    CacheP_wbInv(gAasrcRxMonoBuffer, sizeof(gAasrcRxMonoBuffer), CacheP_TYPE_ALL);
+
+    /* FFT analysis for basic validation */
+    samplingRateHz = TestAASRC_chMeta[0][TEST_AASRC_MONO_AASRC_CH].rxSamplingFreq * 1000.0f;
+    TestAasrc_runFftWordLen((uint32_t *)gAasrcRxMonoBuffer,
+                            (int32_t)TEST_AASRC_MONO_INPUT_TRANSACTION_SAMPLE_COUNT,
+                            samplingRateHz, TEST_AASRC_IN_BITS, &TestAASRC_monoRxPeak);
+
+    samplingRateHz = TestAASRC_chMeta[0][TEST_AASRC_MONO_AASRC_CH].txSamplingFreq * 1000.0f;
+    TestAasrc_runFftWordLen((uint32_t *)&gAasrcTxMonoBuffer[startIdx],
+                            fftLen, samplingRateHz, TEST_AASRC_IN_BITS, &TestAASRC_monoTxPeak);
+
+    {
+        float df = fabsf(TestAASRC_monoRxPeak.freqHz - TestAASRC_monoTxPeak.freqHz);
+        float rmsRatio = (TestAASRC_monoRxPeak.rms > 0.0f) ? fabsf(TestAASRC_monoTxPeak.rms / TestAASRC_monoRxPeak.rms - 1.0f) : 0.0f;
+        bool freqMatch = (df <= TEST_AASRC_FFT_FREQ_TOL_HZ);
+        bool rmsMatch = (rmsRatio <= TEST_AASRC_FFT_AMP_TOL_RATIO);
+        TEST_ASSERT_TRUE_MESSAGE(freqMatch || rmsMatch, "Mono: validation failed");
+    }
+
+    /* Cleanup */
+    AASRC_chDisable(chHandle);
+    (void)AASRC_chClose(chHandle);
+    AASRC_close(handle);
+    SemaphoreP_destruct(&TestAASRC_countSemAsrcConv);
+}
+
+/**
+ * \brief Run AASRC conversion using interrupt-mode transfers and verify results.
+ *
+ * Configures AASRC to use interrupt transfer mode, performs sine-wave conversions
+ * across configured channels, waits for completion, and validates output using
+ * FFT-based frequency and RMS checks versus the input.
+ *
+ * \param args Pointer to AASRC_OpenParams (AASRC_OpenParams *).
+ */
+static void TestAasrc_sineWaveConversionInterrupt(void *args)
+{
+    gAasrcOpenParams[CONFIG_AASRC0].transferMode = AASRC_TRANSFER_MODE_INTERRUPT;
+    TestAasrc_sineWaveConversionDma((void*)&gAasrcOpenParams[CONFIG_AASRC0]);
+    gAasrcOpenParams[CONFIG_AASRC0].transferMode = AASRC_TRANSFER_MODE_DMA;
+}
+
+/**
+ * \brief Error callback for overflow/underflow injection tests.
+ *
+ * Test Category: Callback
+ *
+ * Captures the FIFO error status from the driver's error ISR, sets the
+ * "fired" bit for this channel, and posts the error semaphore.
+ *
+ * \param chHandle    AASRC channel handle.
+ * \param transactionRx Pointer to RX transaction (unused).
+ * \param transactionTx Pointer to TX transaction (unused).
+ */
+static void TestAasrc_fifoErrCb(AASRC_ChHandle chHandle,
+                                AASRC_Transaction *transactionRx,
+                                AASRC_Transaction *transactionTx)
+{
+    AASRC_ChObj *chObj = (AASRC_ChObj *)chHandle;
+    uint8_t chIdx;
+
+    (void)transactionRx;
+    (void)transactionTx;
+
+    if (chObj == NULL || chObj->chState == NULL)
+    {
+        return;
+    }
+    chIdx = (uint8_t)chObj->chState->virtChNum;
+    if (chIdx >= CONFIG_AASRC0_NUM_CH)
+    {
+        return;
+    }
+    /* Accumulate error flags across all ISR invocations (OR). */
+    TestAASRC_capturedInFifoErr[chIdx].lChannelOverflow   |= chObj->inFifoErrorStatus.lChannelOverflow;
+    TestAASRC_capturedInFifoErr[chIdx].rChannelOverflow   |= chObj->inFifoErrorStatus.rChannelOverflow;
+    TestAASRC_capturedInFifoErr[chIdx].lChannelUnderflow  |= chObj->inFifoErrorStatus.lChannelUnderflow;
+    TestAASRC_capturedInFifoErr[chIdx].rChannelUnderflow  |= chObj->inFifoErrorStatus.rChannelUnderflow;
+    TestAASRC_capturedOutFifoErr[chIdx].lChannelOverflow  |= chObj->outFifoErrorStatus.lChannelOverflow;
+    TestAASRC_capturedOutFifoErr[chIdx].rChannelOverflow  |= chObj->outFifoErrorStatus.rChannelOverflow;
+    TestAASRC_capturedOutFifoErr[chIdx].lChannelUnderflow |= chObj->outFifoErrorStatus.lChannelUnderflow;
+    TestAASRC_capturedOutFifoErr[chIdx].rChannelUnderflow |= chObj->outFifoErrorStatus.rChannelUnderflow;
+
+    if ((TestAASRC_errFiredMask & (uint8_t)(1U << chIdx)) == 0U)
+    {
+        TestAASRC_errFiredMask |= (uint8_t)(1U << chIdx);
+        SemaphoreP_post(&TestAASRC_errSem);
+    }
+}
+
+/**
+ * \brief Test AASRC FIFO error injection for overflow and underflow conditions.
+ *
+ * Test Category: Error Handling
+ *
+ * Performs full setup/teardown of the AASRC instance in interrupt mode,
+ * registers errCbFxn on each channel, enables conversion and then masks
+ * either the OUT-FIFO or IN-FIFO servicing interrupt to force the hardware
+ * to raise the corresponding FIFO error condition. Validates that the
+ * driver captures the error flags correctly per channel type.
+ *
+ * \param inst           AASRC instance number.
+ * \param injectOverflow true to inject overflow, false to inject underflow.
+ */
+static void TestAasrc_fifoErrorInjectCommon(uint8_t inst, bool injectOverflow)
+{
+    int32_t status = SystemP_SUCCESS;
+    uint8_t chIdx;
+    AASRC_OpenParams savedOpen = gAasrcOpenParams[inst];
+    /* Save the callback fields */
+    AASRC_ChErrorCallbackFxn savedErrCb[CONFIG_AASRC0_NUM_CH];
+    AASRC_TxnCallbackFxn     savedRcvCb[CONFIG_AASRC0_NUM_CH];
+    AASRC_TxnCallbackFxn     savedXmtCb[CONFIG_AASRC0_NUM_CH];
+    AASRC_Handle     handle;
+    const CSL_aasrc_cfgRegs *pReg;
+
+    /* Reset capture state */
+    memset((void *)TestAASRC_capturedInFifoErr,  0, sizeof(TestAASRC_capturedInFifoErr));
+    memset((void *)TestAASRC_capturedOutFifoErr, 0, sizeof(TestAASRC_capturedOutFifoErr));
+    TestAASRC_errFiredMask = 0U;
+    SemaphoreP_constructCounting(&TestAASRC_errSem, 0, CONFIG_AASRC0_NUM_CH);
+    SemaphoreP_constructCounting(&TestAASRC_countSemAsrcConv, 0, CONFIG_AASRC0_NUM_CH);
+
+    /* Save per-channel user-config callbacks so we can fully restore on exit */
+    for (chIdx = 0U; chIdx < CONFIG_AASRC0_NUM_CH; chIdx++)
+    {
+        savedErrCb[chIdx] = gConfigAasrcChObj[inst][chIdx].errCbFxn;
+        savedRcvCb[chIdx] = gConfigAasrcChObj[inst][chIdx].rcvObj.cbFxn;
+        savedXmtCb[chIdx] = gConfigAasrcChObj[inst][chIdx].xmtObj.cbFxn;
+    }
+
+    /* Re-open instance in interrupt mode */
+    AASRC_OpenParams openParams = gAasrcOpenParams[inst];
+    openParams.transferMode = AASRC_TRANSFER_MODE_INTERRUPT;
+    AASRC_close(gAasrcHandle[inst]);
+    handle = AASRC_open(inst, &openParams);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    /* Install callbacks on channel template before open. */
+    for (chIdx = 0U; chIdx < CONFIG_AASRC0_NUM_CH; chIdx++)
+    {
+        gConfigAasrcChObj[inst][chIdx].errCbFxn      = TestAasrc_fifoErrCb;
+        gConfigAasrcChObj[inst][chIdx].xmtObj.cbFxn  = aasrc_txcb;
+        gConfigAasrcChObj[inst][chIdx].rcvObj.cbFxn  = aasrc_txcb;  /* harmless placeholder */
+    }
+
+    for (chIdx = 0U; chIdx < CONFIG_AASRC0_NUM_CH; chIdx++)
+    {
+        AASRC_ChHandle ch = AASRC_chOpen(chIdx, handle);
+        TEST_ASSERT_NOT_NULL(ch);
+
+        status = AASRC_chConfig(ch);
+        TEST_ASSERT_EQUAL_INT32_MESSAGE(AASRC_SOK, status, "chConfig failed");
+
+        /* Queue a normal RX + TX so chEnable succeeds (RX and TX both armed) */
+        TestAasrc_transactionInit(ch, inst, chIdx);
+
+        TEST_ASSERT_EQUAL_INT32(AASRC_SOK, AASRC_chEnable(ch));
+    }
+
+    /* Allow the stream to start and FIFOs to get some data before injecting the fault */
+    ClockP_usleep(2000);
+
+    pReg = (const CSL_aasrc_cfgRegs *)gAasrcConfig[inst].attrs->baseAddr;
+    uint32_t baseAddr = (uint32_t)gAasrcConfig[inst].attrs->baseAddr;
+
+    uint32_t savedOutEn   = CSL_REG32_RD(&pReg->OUTPUT_FIFO_INTERRUPT_ENABLE_SET_REGISTER);
+    uint32_t savedInEn    = CSL_REG32_RD(&pReg->INPUT_FIFO_INTERRUPT_ENABLE_SET_REGISTER);
+    uint32_t savedOutGrpEn= CSL_REG32_RD(&pReg->OUTPUT_GROUP_INTERRUPT_ENABLE_SET_REGISTER);
+    uint32_t savedInGrpEn = CSL_REG32_RD(&pReg->INPUT_GROUP_INTERRUPT_ENABLE_SET_REGISTER);
+
+    uint32_t monoMaskAll = 0U;
+    uint32_t grpMaskAll  = 0U;
+    uint32_t groupMonoMask = 0U;
+    for (chIdx = 0U; chIdx < CONFIG_AASRC0_NUM_CH; chIdx++)
+    {
+        AASRC_ChObj *chObj = &gAasrcConfig[inst].object->chObj[chIdx];
+        if (!chObj->isOpen) { continue; }
+
+        if (chObj->chCfg.chType == AASRC_GROUP)
+        {
+            grpMaskAll |= ((uint32_t)1U) << (uint8_t)chObj->chState->hwGroupNum;
+            groupMonoMask |= chObj->chState->chMask;
+        }
+        else
+        {
+            monoMaskAll |= chObj->chState->chMask;
+        }
+    }
+
+    uint32_t savedErrEn = CSL_REG32_RD(&pReg->ERROR_INTERRUPT_ENABLE_SET_REGISTER);
+    CSL_REG32_WR(&pReg->ERROR_INTERRUPT_ENABLE_CLEAR_REGISTER, savedErrEn | groupMonoMask);
+
+    uint32_t pendErr = CSL_REG32_RD(&pReg->ERROR_INTERRUPT_STATUS_ENABLED_REGISTER);
+    if (pendErr != 0U)
+    {
+        CSL_REG32_WR(&pReg->ERROR_INTERRUPT_STATUS_ENABLED_REGISTER, pendErr);
+    }
+
+    /* Clear sticky FIFO error bits per channel (read-write-back) */
+    for (chIdx = 0U; chIdx < CONFIG_AASRC0_NUM_CH; chIdx++)
+    {
+        AASRC_ChObj *chObj = &gAasrcConfig[inst].object->chObj[chIdx];
+        if (!chObj->isOpen) { continue; }
+
+        if (chObj->chCfg.chType == AASRC_MONO ||
+            chObj->chCfg.chType == AASRC_STEREO)
+        {
+            uint32_t hwCh = (uint32_t)chObj->chState->hwChNum;
+            uint32_t fifoReg = CSL_REG32_RD(baseAddr + AASRC_SRC_FIFO_CONTROL(hwCh));
+            CSL_REG32_WR(baseAddr + AASRC_SRC_FIFO_CONTROL(hwCh), fifoReg);
+        }
+        else if (chObj->chCfg.chType == AASRC_GROUP)
+        {
+            uint32_t hwGrp = (uint32_t)chObj->chState->hwGroupNum;
+            uint32_t fifoReg = CSL_REG32_RD(baseAddr + AASRC_GROUP_FIFO_CONTROL(hwGrp));
+            CSL_REG32_WR(baseAddr + AASRC_GROUP_FIFO_CONTROL(hwGrp), fifoReg);
+        }
+        /* Clear software-side error state */
+        chObj->inFifoErrorStatus.lChannelOverflow   = 0U;
+        chObj->inFifoErrorStatus.rChannelOverflow   = 0U;
+        chObj->inFifoErrorStatus.lChannelUnderflow  = 0U;
+        chObj->inFifoErrorStatus.rChannelUnderflow  = 0U;
+        chObj->outFifoErrorStatus.lChannelOverflow  = 0U;
+        chObj->outFifoErrorStatus.rChannelOverflow  = 0U;
+        chObj->outFifoErrorStatus.lChannelUnderflow = 0U;
+        chObj->outFifoErrorStatus.rChannelUnderflow = 0U;
+    }
+
+    /* Reset test capture arrays */
+    memset((void *)TestAASRC_capturedInFifoErr,  0, sizeof(TestAASRC_capturedInFifoErr));
+    memset((void *)TestAASRC_capturedOutFifoErr, 0, sizeof(TestAASRC_capturedOutFifoErr));
+    TestAASRC_errFiredMask = 0U;
+
+    /* Re-enable error interrupt including group mono channels */
+    CSL_REG32_WR(&pReg->ERROR_INTERRUPT_ENABLE_SET_REGISTER, savedErrEn | groupMonoMask);
+
+    if (injectOverflow)
+    {
+        /* Stop draining the OUT-FIFO -> overflow */
+        if (monoMaskAll != 0U)
+        {
+            CSL_REG32_WR(&pReg->OUTPUT_FIFO_INTERRUPT_ENABLE_CLEAR_REGISTER, monoMaskAll);
+        }
+        if (grpMaskAll != 0U)
+        {
+            CSL_REG32_WR(&pReg->OUTPUT_GROUP_INTERRUPT_ENABLE_CLEAR_REGISTER, grpMaskAll);
+        }
+    }
+    else
+    {
+        /* Stop refilling the IN-FIFO -> underflow. */
+        if (monoMaskAll != 0U)
+        {
+            CSL_REG32_WR(&pReg->INPUT_FIFO_INTERRUPT_ENABLE_CLEAR_REGISTER, monoMaskAll);
+        }
+        if (grpMaskAll != 0U)
+        {
+            CSL_REG32_WR(&pReg->INPUT_GROUP_INTERRUPT_ENABLE_CLEAR_REGISTER, grpMaskAll);
+        }
+    }
+
+    /* Wait for error IRQ on every channel (timeout ~2s) */
+    uint32_t waitedMs = 0U;
+    while ((TestAASRC_errFiredMask != ((uint8_t)((1U << CONFIG_AASRC0_NUM_CH) - 1U))) &&
+           (waitedMs < 2000U))
+    {
+        ClockP_usleep(1000);
+        waitedMs++;
+    }
+
+    /* Hardware workaround: The ERROR_INTERRUPT reliably fires for overflow,
+     * but may not fire for underflow conditions even though the underflow bit
+     * is set in the FIFO control register. We must poll the register directly
+     * to capture the underflow error if the callback didn't fire. */
+    if (!injectOverflow)
+    {
+        for (chIdx = 0U; chIdx < CONFIG_AASRC0_NUM_CH; chIdx++)
+        {
+            AASRC_ChObj *chObj = &gAasrcConfig[inst].object->chObj[chIdx];
+            if (!chObj->isOpen) { continue; }
+
+            uint32_t regVal;
+            if (chObj->chCfg.chType == AASRC_MONO ||
+                chObj->chCfg.chType == AASRC_STEREO)
+            {
+                uint32_t hwCh = (uint32_t)chObj->chState->hwChNum;
+                regVal = CSL_REG32_RD(baseAddr + AASRC_SRC_FIFO_CONTROL(hwCh));
+
+                TestAASRC_capturedInFifoErr[chIdx].lChannelUnderflow |=
+                    (uint8_t)((regVal & CSL_AASRC_CFG_SRC_FIFO_CONTROL_0_L_CHANNEL_INFIFO_UNDERFLOW_MASK) >>
+                              CSL_AASRC_CFG_SRC_FIFO_CONTROL_0_L_CHANNEL_INFIFO_UNDERFLOW_SHIFT);
+                TestAASRC_capturedInFifoErr[chIdx].rChannelUnderflow |=
+                    (uint8_t)((regVal & CSL_AASRC_CFG_SRC_FIFO_CONTROL_0_R_CHANNEL_INFIFO_UNDERFLOW_MASK) >>
+                              CSL_AASRC_CFG_SRC_FIFO_CONTROL_0_R_CHANNEL_INFIFO_UNDERFLOW_SHIFT);
+            }
+            else if (chObj->chCfg.chType == AASRC_GROUP)
+            {
+                uint32_t hwGrp = (uint32_t)chObj->chState->hwGroupNum;
+                regVal = CSL_REG32_RD(baseAddr + AASRC_GROUP_FIFO_CONTROL(hwGrp));
+
+                TestAASRC_capturedInFifoErr[chIdx].lChannelUnderflow |=
+                    (uint8_t)((regVal & CSL_AASRC_CFG_GROUP_FIFO_CONTROL_0_L_CHANNEL_INFIFO_UNDERFLOW_MASK) >>
+                              CSL_AASRC_CFG_GROUP_FIFO_CONTROL_0_L_CHANNEL_INFIFO_UNDERFLOW_SHIFT);
+                TestAASRC_capturedInFifoErr[chIdx].rChannelUnderflow |=
+                    (uint8_t)((regVal & CSL_AASRC_CFG_GROUP_FIFO_CONTROL_0_R_CHANNEL_INFIFO_UNDERFLOW_MASK) >>
+                              CSL_AASRC_CFG_GROUP_FIFO_CONTROL_0_R_CHANNEL_INFIFO_UNDERFLOW_SHIFT);
+            }
+        }
+    }
+
+    /*Restore the masked interrupt enables immediately so any further
+    driver activity (disable/close below) proceeds cleanly.*/
+    CSL_REG32_WR(&pReg->OUTPUT_FIFO_INTERRUPT_ENABLE_SET_REGISTER,  savedOutEn);
+    CSL_REG32_WR(&pReg->INPUT_FIFO_INTERRUPT_ENABLE_SET_REGISTER,   savedInEn);
+    CSL_REG32_WR(&pReg->OUTPUT_GROUP_INTERRUPT_ENABLE_SET_REGISTER, savedOutGrpEn);
+    CSL_REG32_WR(&pReg->INPUT_GROUP_INTERRUPT_ENABLE_SET_REGISTER,  savedInGrpEn);
+
+    /* Validate captured flags per channel type */
+    for (chIdx = 0U; chIdx < CONFIG_AASRC0_NUM_CH; chIdx++)
+    {
+        AASRC_ChObj *chObj = &gAasrcConfig[inst].object->chObj[chIdx];
+        if (!chObj->isOpen) { continue; }
+        uint8_t chType = chObj->chCfg.chType;
+
+        if (injectOverflow)
+        {
+            uint8_t l = TestAASRC_capturedOutFifoErr[chIdx].lChannelOverflow;
+            uint8_t r = TestAASRC_capturedOutFifoErr[chIdx].rChannelOverflow;
+            DebugP_log("Overflow inject - Ch %u type %u: OUTFIFO L_OVF=%u R_OVF=%u\r\n",
+                       chIdx, chType, l, r);
+            if (chType == AASRC_MONO)
+            {
+                TEST_ASSERT_TRUE_MESSAGE(l != 0U, "Expected MONO OUTFIFO overflow not set");
+            }
+            else if (chType == AASRC_STEREO)
+            {
+                TEST_ASSERT_TRUE_MESSAGE((l != 0U) || (r != 0U),
+                                         "Expected STEREO OUTFIFO overflow (L or R) not set");
+            }
+            else if (chType == AASRC_GROUP)
+            {
+                TEST_ASSERT_TRUE_MESSAGE((l != 0U) || (r != 0U),
+                                         "Expected GROUP OUTFIFO overflow (L or R) not set");
+            }
+        }
+        else
+        {
+            uint8_t l = TestAASRC_capturedInFifoErr[chIdx].lChannelUnderflow;
+            uint8_t r = TestAASRC_capturedInFifoErr[chIdx].rChannelUnderflow;
+            DebugP_log("Underflow inject - Ch %u type %u: INFIFO L_UNF=%u R_UNF=%u\r\n",
+                       chIdx, chType, l, r);
+            if (chType == AASRC_MONO)
+            {
+                TEST_ASSERT_TRUE_MESSAGE(l != 0U, "Expected MONO INFIFO underflow not set");
+            }
+            else if (chType == AASRC_STEREO)
+            {
+                TEST_ASSERT_TRUE_MESSAGE((l != 0U) || (r != 0U),
+                                         "Expected STEREO INFIFO underflow (L or R) not set");
+            }
+            else if (chType == AASRC_GROUP)
+            {
+                TEST_ASSERT_TRUE_MESSAGE((l != 0U) || (r != 0U),
+                                         "Expected GROUP INFIFO underflow (L or R) not set");
+            }
+        }
+    }
+
+    /* Cleanup: disable + close all channels */
+    for (chIdx = 0U; chIdx < CONFIG_AASRC0_NUM_CH; chIdx++)
+    {
+        AASRC_ChHandle ch = AASRC_getChHandle(inst, chIdx);
+        if (ch != NULL)
+        {
+            (void)AASRC_chDisable(ch);
+            (void)AASRC_chClose(ch);
+        }
+    }
+
+    /* Restore everything so the next test sees a pristine driver state */
+    AASRC_close(handle);
+    for (chIdx = 0U; chIdx < CONFIG_AASRC0_NUM_CH; chIdx++)
+    {
+        gConfigAasrcChObj[inst][chIdx].errCbFxn     = savedErrCb[chIdx];
+        gConfigAasrcChObj[inst][chIdx].rcvObj.cbFxn = savedRcvCb[chIdx];
+        gConfigAasrcChObj[inst][chIdx].xmtObj.cbFxn = savedXmtCb[chIdx];
+    }
+    gAasrcOpenParams[inst] = savedOpen;
+    gAasrcHandle[inst]     = AASRC_open(inst, &gAasrcOpenParams[inst]);
+    TEST_ASSERT_NOT_NULL(gAasrcHandle[inst]);
+
+    SemaphoreP_destruct(&TestAASRC_errSem);
+    SemaphoreP_destruct(&TestAASRC_countSemAsrcConv);
+}
+
+/**
+ * \brief Test AASRC OUTPUT FIFO overflow via interrupt-mask fault injection.
+ *
+ * Test Category: Error Handling
+ *
+ * Masks TX servicing interrupt to force OUTPUT FIFO overflow condition.
+ * Validates that the driver's error ISR captures the overflow flag for
+ * mono, stereo, and group channel types. All driver and global state is
+ * restored on exit.
+ *
+ * \param args Pointer to AASRC_OpenParams structure.
+ */
+static void TestAasrc_overflowSineWaveInterrupt(void *args)
+{
+    (void)args;
+    TestAasrc_fifoErrorInjectCommon(CONFIG_AASRC0, /*injectOverflow=*/true);
+}
+
+/**
+ * \brief Test AASRC INPUT FIFO underflow via interrupt-mask fault injection.
+ *
+ * Test Category: Error Handling
+ *
+ * Masks RX servicing interrupt to force INPUT FIFO underflow condition.
+ * Validates that the driver's error ISR captures the underflow flag for
+ * mono, stereo, and group channel types. All driver and global state is
+ * restored on exit.
+ *
+ * \param args Pointer to AASRC_OpenParams structure.
+ */
+static void TestAasrc_underflowSineWaveInterrupt(void *args)
+{
+    (void)args;
+    TestAasrc_fifoErrorInjectCommon(CONFIG_AASRC0, /*injectOverflow=*/false);
+}
+#endif

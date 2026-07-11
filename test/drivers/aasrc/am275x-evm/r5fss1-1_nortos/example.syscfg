@@ -173,7 +173,7 @@ mcasp1.bcDmaDriver = udma1;
 aasrc2.udmaDriver  = udma1;
 
 debug_log.enableUartLog            = true;
-debug_log.enableSharedMemLogReader = true;
+debug_log.enableSharedMemLogReader = false;
 debug_log.enableCssLog             = false;
 debug_log.uartLog.$name            = "CONFIG_UART0";
 debug_log.uartLog.UART.$assign     = "UART0";

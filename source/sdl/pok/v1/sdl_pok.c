@@ -541,7 +541,7 @@ int32_t SDL_POK_init(SDL_POK_Inst instance,  const SDL_POK_config *pPokCfg)
  */
 
 /*Verify POK module configurations*/
-int32_t SDL_POK_verifyConfig(SDL_POK_Inst instance, SDL_POK_config *pPokCfg )
+int32_t SDL_POK_verifyConfig(SDL_POK_Inst instance, const SDL_POK_config *pPokCfg )
 {
     int32_t              retVal= SDL_EFAIL;
     SDL_POK_config       pokCfg;

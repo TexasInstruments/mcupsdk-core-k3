@@ -174,6 +174,21 @@ const robot_template = {
     },
 };
 
+// c75 syscfg uses USART0 (USB1), not MCU_UART0 (USB3) — override logPort
+const robot_template_c75 = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "UART",
+        testCaseName: "UART Echo DMA Mode Sample Application",
+        testCaseIds: "SITSW-5133",
+        interactPrompt: "Receives 8 characters then echo's back. Please input..",
+        interactSend: ["12345678\\r\\n"],
+        expectTimeout: 100,
+        logPort: "USB1",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -207,7 +222,8 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    const rt = buildOption.cpu.match(/c75/) ? robot_template_c75 : robot_template;
+    build_property.templates = [...(build_property.templates || []), rt];
     return build_property;
 }
 

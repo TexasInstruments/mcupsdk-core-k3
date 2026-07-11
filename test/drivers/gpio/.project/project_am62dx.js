@@ -504,7 +504,9 @@ const robot_template = {
     options: {
         componentName: "GPIO",
         testCaseName: "GPIO Macro Test",
-        testCaseIds: "SITSW-1348 SITSW-1349 SITSW-1350 SITSW-1351",
+        testCaseIds: "SITSW-1348 SITSW-1349 SITSW-1350 SITSW-1351 SITSW-9542 SITSW-9543 SITSW-9544 SITSW-9545 SITSW-9546 SITSW-9549 " +
+            "SITSW-9550 SITSW-9637 SITSW-9916",
+        expectTimeout: 120,
     },
 };
 

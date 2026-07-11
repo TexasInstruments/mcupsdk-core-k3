@@ -271,7 +271,7 @@ const robot_template = {
         testCaseIds: "SITSW-1308",
         interactPrompt: "Receives 8 characters then echo's back and exits..",
         interactPromptTimeout: 60,
-        interactSend: ["12345678\\r\\n"],
+        interactSend: ["1\\r\\n", "2\\r\\n", "3\\r\\n", "4\\r\\n", "5\\r\\n", "6\\r\\n", "7\\r\\n", "8\\r\\n"],
         expectTimeout: 120,
     },
 };

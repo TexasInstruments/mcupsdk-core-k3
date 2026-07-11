@@ -265,6 +265,8 @@ const robot_template = {
                      " SITSW-9756",
         expectTimeout: 500,
         timeout: 900,
+        withCfg: true,
+        cfgPath: "test/drivers/ipc_rpmsg_c7x/{board}/ipc_rpmsg_test_sbl_uart_${DEVICE_TYPE}.cfg",
     },
 };
 

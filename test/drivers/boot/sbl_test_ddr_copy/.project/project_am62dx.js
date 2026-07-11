@@ -90,6 +90,8 @@ const robot_template = {
         testCaseName: "Bootloader: Test DDR copy if in place authentication fails",
         testCaseIds: "SITSW-5788",
         cfgPath: "test/drivers/boot/sbl_test_ddr_copy/{board}/default_sbl_test_ddr_copy_${DEVICE_TYPE}.cfg",
+        expectations: [{ port: "USB2", string: "Starting 2nd stage bootloader" }],
+        expectTimeout: 60,
     },
 };
 

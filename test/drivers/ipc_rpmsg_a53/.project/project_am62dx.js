@@ -264,6 +264,8 @@ const robot_template = {
         testCaseIds: "SITSW-9813 SITSW-9814 SITSW-9815 SITSW-9816 SITSW-9817 SITSW-9818 SITSW-9819 SITSW-9820 SITSW-9821 SITSW-9822" +
                      " SITSW-9823 SITSW-9824",
         expectTimeout: 100,
+        withCfg: true,
+        cfgPath: "test/drivers/ipc_rpmsg_a53/{board}/ipc_rpmsg_test_sbl_uart_${DEVICE_TYPE}.cfg",
     },
 };
 
@@ -308,7 +310,7 @@ function getComponentBuildProperty(buildOption) {
 
 
 
-    if (buildOption.cpu.match(/a53ss0-0/)) {
+    if (buildOption.cpu.match(/r5fss0-0/)) {
         build_property.templates = [...(build_property.templates || []), robot_template];
     }
     return build_property;

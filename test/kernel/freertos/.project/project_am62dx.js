@@ -379,8 +379,10 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_common;
     }
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
-    if (buildOption.cpu.match(/a53ss/)) {
+    if (buildOption.cpu.match(/r5f/) || buildOption.cpu.match(/a53ss0-0/) || buildOption.cpu.match(/c75/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
+    if (buildOption.cpu.match(/a53ss0-0/)) {
         build_property.templates = [...(build_property.templates || []), robot_template_amp];
     }
     return build_property;

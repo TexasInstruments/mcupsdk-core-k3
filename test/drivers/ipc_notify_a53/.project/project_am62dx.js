@@ -410,6 +410,8 @@ const robot_template = {
                      " SITSW-9670 SITSW-9671 SITSW-9672 SITSW-9673 SITSW-9674 SITSW-9675 SITSW-9676 SITSW-9677 SITSW-9678 SITSW-9679" +
                      " SITSW-9680 SITSW-9681 SITSW-9682 SITSW-9683 SITSW-9684",
         expectTimeout: 100,
+        withCfg: true,
+        cfgPath: "test/drivers/ipc_notify_a53/{board}/ipc_notify_test_sbl_uart_${DEVICE_TYPE}.cfg",
     },
 };
 

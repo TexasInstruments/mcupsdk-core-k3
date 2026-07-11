@@ -220,6 +220,38 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template_freertos = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "AASRC",
+        testCaseName: "AASRC FreeRTOS test cases",
+        appName: "test_aasrc",
+        testCaseIds: "SITSW-10062 SITSW-10065 SITSW-10069 SITSW-10071 SITSW-10072 SITSW-10073 SITSW-10157 " +
+            "SITSW-10158 SITSW-10159 SITSW-10160 SITSW-10161 SITSW-10162 SITSW-10300 SITSW-10301 SITSW-10302 " +
+            "SITSW-10306 SITSW-10307 SITSW-10308 SITSW-10309 SITSW-10310 SITSW-10311 SITSW-12151 SITSW-12152 " +
+            "SITSW-12153 SITSW-12154 SITSW-12155 SITSW-12156 SITSW-12157 SITSW-12158 SITSW-12159 SITSW-12160",
+        expectTimeout: 60,
+        timeout: 660,
+    },
+};
+
+const robot_template_nortos = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "AASRC",
+        testCaseName: "AASRC NoRTOS test cases",
+        appName: "test_aasrc",
+        testCaseIds: "SITSW-10158 SITSW-10159 SITSW-10160 SITSW-10161 SITSW-10162 " +
+            "SITSW-10300 SITSW-10301 SITSW-10307 SITSW-10308 SITSW-12151 SITSW-12152 " +
+            "SITSW-12153 SITSW-12154 SITSW-12155 SITSW-12156 SITSW-12157 SITSW-12158 " +
+            "SITSW-12159 SITSW-12160",
+        expectTimeout: 60,
+        timeout: 660,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -259,6 +291,12 @@ function getComponentBuildProperty(buildOption) {
             }
 
         }
+    }
+
+    if (buildOption.os.match(/freertos*/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_freertos];
+    } else {
+        build_property.templates = [...(build_property.templates || []), robot_template_nortos];
     }
 
     return build_property;

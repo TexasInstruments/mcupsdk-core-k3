@@ -66,7 +66,7 @@
 #ifdef ENABLE_MT_TESTS
 #include <kernel/dpl/TaskP.h>
 #include <drivers/i2c.h>
- #endif
+#endif
 
 /* ========================================================================== */
 /*                           Macro Defines                                    */
@@ -250,6 +250,9 @@ static void TestAasrc_chConfigCfgValidation(void *args);
 static void TestAasrc_clkZoneConfigInvalid(void *args);
 static void TestAasrc_chEnableStatusStereoGroup(void *args);
 static void TestAasrc_clockingNegativeAdvanced(void *args);
+static void TestAasrc_extClkSrcInvalid(void *args);
+static void TestAasrc_apiNullArgs(void *args);
+static void TestAasrc_dmaPrepareIcntsFunctional(void *args);
 
 
 
@@ -262,7 +265,6 @@ void test_main(void *args)
 {
     UNITY_BEGIN();
     #ifdef ENABLE_MT_TESTS
-     RUN_TEST(TestAasrc_prepareDmaIcntsNegative, 10308, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     RUN_TEST(TestAasrc_sineWaveConversionDma, 10062,(void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     RUN_TEST(TestAasrc_muteChannel, 10073, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     RUN_TEST(TestAasrc_syncPin, 0, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
@@ -278,6 +280,7 @@ void test_main(void *args)
     RUN_TEST(TestAasrc_queueBeforeEnable, 10309, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     RUN_TEST(TestAasrc_externalClk, 10306, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     RUN_TEST(TestAasrc_externalClk, 12158, (void*)&gAasrcOpenParams[CONFIG_AASRC1]);
+    #endif
     RUN_TEST(TestAasrc_rxSyncPinConflict, 10307, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     RUN_TEST(TestAasrc_getHandleReset, 10159, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     RUN_TEST(TestAasrc_negativeClocking, 10158, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
@@ -295,8 +298,9 @@ void test_main(void *args)
     RUN_TEST(TestAasrc_clkZoneConfigInvalid, 12156, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     RUN_TEST(TestAasrc_chEnableStatusStereoGroup, 12158, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     RUN_TEST(TestAasrc_clockingNegativeAdvanced, 12159, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
-
-    #endif
+    RUN_TEST(TestAasrc_extClkSrcInvalid, 12157, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
+    RUN_TEST(TestAasrc_apiNullArgs, 12151, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
+    RUN_TEST(TestAasrc_dmaPrepareIcntsFunctional, 12160, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     UNITY_END();
     return;
 }
@@ -3996,3 +4000,631 @@ static void TestAasrc_clockingNegativeAdvanced(void *args)
     st = AASRC_GetClkZoneTxFrequency((AASRC_ChHandle)&mockChObj, &dummyFreq);
     TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
 }
+
+static void TestAasrc_extClkSrcInvalid(void *args)
+{
+    int32_t st;
+
+    /* clk_source out of range */
+    st = AASRC_extClkSrcRxConfig(AASRC0, AASRC_RXSYNC0_IDX, AASRC_EXTERNAL_CLOCK_SRC_MAX_VAL + 1U);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "RX clk_source out of range");
+
+    st = AASRC_extClkSrcTxConfig(AASRC0, AASRC_TXSYNC0_IDX, AASRC_EXTERNAL_CLOCK_SRC_MAX_VAL + 1U);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "TX clk_source out of range");
+
+    st = AASRC_extClkSrcRxConfig(AASRC1, AASRC_RXSYNC0_IDX, AASRC_EXTERNAL_CLOCK_SRC_MAX_VAL + 1U);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "RX clk_source out of range (AASRC1)");
+
+    st = AASRC_extClkSrcTxConfig(AASRC1, AASRC_TXSYNC0_IDX, AASRC_EXTERNAL_CLOCK_SRC_MAX_VAL + 1U);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "TX clk_source out of range (AASRC1)");
+
+    /* Invalid sync index */
+    st = AASRC_extClkSrcRxConfig(AASRC0, 0xFFU, 0U);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "RX bad sync index");
+
+    st = AASRC_extClkSrcTxConfig(AASRC0, 0xFFU, 0U);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "TX bad sync index");
+
+    st = AASRC_extClkSrcRxConfig(AASRC1, 0xFFU, 0U);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "RX bad sync index (AASRC1)");
+
+    st = AASRC_extClkSrcTxConfig(AASRC1, 0xFFU, 0U);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "TX bad sync index (AASRC1)");
+
+    /* Invalid instance number */
+    st = AASRC_extClkSrcRxConfig(0xFFU, AASRC_RXSYNC0_IDX, 0U);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "RX bad instNum");
+
+    st = AASRC_extClkSrcTxConfig(0xFFU, AASRC_TXSYNC0_IDX, 0U);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "TX bad instNum");
+
+    /* Re-open to restore canonical sync routing */
+    AASRC_close(gAasrcHandle[CONFIG_AASRC0]);
+    gAasrcHandle[CONFIG_AASRC0] = AASRC_open(CONFIG_AASRC0, &gAasrcOpenParams[CONFIG_AASRC0]);
+    TEST_ASSERT_NOT_NULL(gAasrcHandle[CONFIG_AASRC0]);
+}
+
+static void TestAasrc_apiNullArgs(void *args)
+{
+    int32_t st;
+    uint32_t isEnabled = 0xFFU;
+    float dummyFreq = 0.0f;
+    bool dummySettled = false;
+    AASRC_Object mockObj;
+    AASRC_Config mockCfg;
+    AASRC_ChHandle chMock;
+    int8_t savedMonoUsg[AASRC_MAX_NUM_MONO_CHANNELS];
+    int8_t savedGrpUsgAll[AASRC_MAX_NUM_GROUP_CHANNELS];
+    uint32_t loopIdx;
+    void *savedLock;
+    int8_t savedUsg;
+    AASRC_ChObj mockChObj;
+    AASRC_ChState mockChState;
+    AASRC_Object mockDrvObj;
+    AASRC_Config mockDrvCfg;
+    QueueP_Object dummyQueueRx;
+    QueueP_Object dummyQueueTx;
+    uint32_t dummyRegs[1024];
+    AASRC_Attrs mockAttrs;
+    mockChObj.chCfg.chType = AASRC_MONO;
+    mockChObj.chCfg.chCount = 1U;
+ 
+    /* AASRC_close with NULL must not crash and should be a no-op */
+    AASRC_close(NULL);
+ 
+    /* AASRC_chOpen with NULL driver handle */
+    AASRC_ChHandle ch = AASRC_chOpen(0U, NULL);
+    TEST_ASSERT_NULL_MESSAGE(ch, "chOpen(NULL drv) should return NULL");
+ 
+    /* AASRC_chOpen with closed driver object */
+    mockObj.isOpen = false;
+    mockCfg.object = &mockObj;
+    mockCfg.attrs = gAasrcConfig[CONFIG_AASRC0].attrs;
+    chMock = AASRC_chOpen(0U, (AASRC_Handle)&mockCfg);
+    TEST_ASSERT_NULL_MESSAGE(chMock, "chOpen with closed driver obj should return NULL");
+ 
+    /* AASRC_chOpen with NULL driver object */
+    mockCfg.object = NULL;
+    mockCfg.attrs = gAasrcConfig[CONFIG_AASRC0].attrs;
+    chMock = AASRC_chOpen(0U, (AASRC_Handle)&mockCfg);
+    TEST_ASSERT_NULL_MESSAGE(chMock, "chOpen with NULL driver obj should return NULL");
+ 
+    /* AASRC_chOpen with NULL attrs */
+    mockObj.isOpen = true;
+    mockCfg.object = &mockObj;
+    mockCfg.attrs = NULL;
+    chMock = AASRC_chOpen(0U, (AASRC_Handle)&mockCfg);
+    TEST_ASSERT_NULL_MESSAGE(chMock, "chOpen with NULL attrs should return NULL");
+ 
+    /* AASRC_chOpen with NULL lock object */
+    savedLock = gAasrcChLockObj.lock;
+    gAasrcChLockObj.lock = NULL;
+    chMock = AASRC_chOpen(0U, gAasrcHandle[CONFIG_AASRC0]);
+    gAasrcChLockObj.lock = savedLock;
+    TEST_ASSERT_NULL_MESSAGE(chMock, "chOpen with NULL lock should return NULL");
+ 
+    /* AASRC_chOpen with invalid monoChUsageArray value */
+    savedUsg = gAasrcDrvState[CONFIG_AASRC0].monoChUsageArray[0];
+    gAasrcDrvState[CONFIG_AASRC0].monoChUsageArray[0] = -2;
+    chMock = AASRC_chOpen(0U, gAasrcHandle[CONFIG_AASRC0]);
+    gAasrcDrvState[CONFIG_AASRC0].monoChUsageArray[0] = savedUsg;
+    TEST_ASSERT_NULL_MESSAGE(chMock, "chOpen with invalid usage element should return NULL");
+ 
+    /* AASRC_chOpen when not enough contiguous mono channels are available */
+    for (loopIdx = 0; loopIdx < AASRC_MAX_NUM_MONO_CHANNELS; loopIdx++) {
+        savedMonoUsg[loopIdx] = gAasrcDrvState[CONFIG_AASRC0].monoChUsageArray[loopIdx];
+        gAasrcDrvState[CONFIG_AASRC0].monoChUsageArray[loopIdx] = 0;
+    }
+    chMock = AASRC_chOpen(0U, gAasrcHandle[CONFIG_AASRC0]);
+    for (loopIdx = 0; loopIdx < AASRC_MAX_NUM_MONO_CHANNELS; loopIdx++) {
+        gAasrcDrvState[CONFIG_AASRC0].monoChUsageArray[loopIdx] = savedMonoUsg[loopIdx];
+    }
+    TEST_ASSERT_NULL_MESSAGE(chMock, "chOpen with no contiguous channels available should return NULL");
+ 
+    /* AASRC_chOpen with invalid grpUsageArray value */
+    savedUsg = gAasrcDrvState[CONFIG_AASRC0].grpUsageArray[0];
+    gAasrcDrvState[CONFIG_AASRC0].grpUsageArray[0] = -2;
+    chMock = AASRC_chOpen(2U, gAasrcHandle[CONFIG_AASRC0]);
+    gAasrcDrvState[CONFIG_AASRC0].grpUsageArray[0] = savedUsg;
+    TEST_ASSERT_NULL_MESSAGE(chMock, "chOpen with invalid group usage element should return NULL");
+ 
+    /* AASRC_chOpen when not enough hardware groups are available */
+    for (loopIdx = 0; loopIdx < AASRC_MAX_NUM_GROUP_CHANNELS; loopIdx++) {
+        savedGrpUsgAll[loopIdx] = gAasrcDrvState[CONFIG_AASRC0].grpUsageArray[loopIdx];
+        gAasrcDrvState[CONFIG_AASRC0].grpUsageArray[loopIdx] = 0;
+    }
+    chMock = AASRC_chOpen(2U, gAasrcHandle[CONFIG_AASRC0]);
+    for (loopIdx = 0; loopIdx < AASRC_MAX_NUM_GROUP_CHANNELS; loopIdx++) {
+        gAasrcDrvState[CONFIG_AASRC0].grpUsageArray[loopIdx] = savedGrpUsgAll[loopIdx];
+    }
+    TEST_ASSERT_NULL_MESSAGE(chMock, "chOpen with no groups available should return NULL");
+ 
+    /* AASRC_chConfigInit with NULL chState */
+    mockChObj.chState = NULL;
+    st = AASRC_chConfigInit((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EBADARGS, st);
+ 
+    /* AASRC_chConfigInit with closed channel object */
+    mockChObj.chState = &mockChState;
+    mockChObj.isOpen = false;
+    st = AASRC_chConfigInit((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_chConfigInit with NULL drvHandle */
+    mockChObj.isOpen = true;
+    mockChObj.drvHandle = NULL;
+    st = AASRC_chConfigInit((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EBADARGS, st);
+ 
+    /* AASRC_chConfigInit with closed driver object */
+    mockDrvObj.isOpen = false;
+    mockDrvCfg.object = &mockDrvObj;
+    mockChObj.drvHandle = &mockDrvCfg;
+    st = AASRC_chConfigInit((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_chConfigInit with NULL driver object */
+    mockDrvCfg.object = NULL;
+    st = AASRC_chConfigInit((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_chConfig with NULL chState */
+    mockChObj.chState = NULL;
+    st = AASRC_chConfig((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EBADARGS, st);
+ 
+    /* AASRC_chConfig with closed channel object */
+    mockChObj.chState = &mockChState;
+    mockChObj.isOpen = false;
+    st = AASRC_chConfig((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_chConfig with NULL drvHandle */
+    mockChObj.isOpen = true;
+    mockChObj.drvHandle = NULL;
+    st = AASRC_chConfig((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EBADARGS, st);
+ 
+    /* AASRC_chConfig with NULL attrs */
+    mockDrvCfg.object = &mockDrvObj;
+    mockDrvCfg.attrs = NULL;
+    mockChObj.drvHandle = &mockDrvCfg;
+    st = AASRC_chConfig((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EBADARGS, st);
+ 
+    /* AASRC_chConfig with closed driver object */
+    mockDrvCfg.attrs = gAasrcConfig[CONFIG_AASRC0].attrs;
+    mockDrvObj.isOpen = false;
+    mockDrvCfg.object = &mockDrvObj;
+    st = AASRC_chConfig((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_chConfig with NULL driver object */
+    mockDrvCfg.object = NULL;
+    st = AASRC_chConfig((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_chEnable with NULL chState */
+    mockChObj.chState = NULL;
+    st = AASRC_chEnable((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EBADARGS, st);
+ 
+    /* AASRC_chEnable with closed channel */
+    mockChObj.chState = &mockChState;
+    mockChObj.isOpen = false;
+    st = AASRC_chEnable((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_chEnable with NULL drvCfg */
+    mockChObj.isOpen = true;
+    mockChObj.drvHandle = NULL;
+    st = AASRC_chEnable((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EBADARGS, st);
+ 
+    /* AASRC_chEnable with NULL attrs */
+    mockDrvCfg.object = &mockDrvObj;
+    mockDrvCfg.attrs = NULL;
+    mockChObj.drvHandle = &mockDrvCfg;
+    st = AASRC_chEnable((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EBADARGS, st);
+ 
+    /* AASRC_chEnable with closed driver */
+    mockDrvCfg.attrs = gAasrcConfig[CONFIG_AASRC0].attrs;
+    mockDrvObj.isOpen = false;
+    mockDrvCfg.object = &mockDrvObj;
+    st = AASRC_chEnable((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_chEnable with invalid inClkZone */
+    mockDrvObj.isOpen = true;
+    mockChObj.chCfg.inClkZone = AASRC_INPUT_CLOCK_ZONE_COUNT;
+    mockChObj.chCfg.outClkZone = 0U;
+    st = AASRC_chEnable((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EINVALID_PARAMS, st);
+ 
+    /* AASRC_chEnable with NULL drvObj */
+    mockDrvCfg.object = NULL;
+    st = AASRC_chEnable((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_chEnable with empty Rx queue and loopjob disabled */
+    mockChObj.reqQueueHandleRx = QueueP_create(&dummyQueueRx);
+    mockChObj.reqQueueHandleTx = QueueP_create(&dummyQueueTx);
+    mockChObj.rcvObj.loopjobEnable = false;
+    mockChObj.xmtObj.loopjobEnable = false;
+    mockDrvCfg.object = &mockDrvObj;
+    mockDrvObj.transferMode = AASRC_TRANSFER_MODE_INTERRUPT;
+    mockChObj.chCfg.inClkZone = 0U;
+    mockChObj.chCfg.outClkZone = 0U;
+    st = AASRC_chEnable((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_chEnable with empty Tx queue and loopjob disabled */
+    mockChObj.rcvObj.loopjobEnable = true;
+    mockChObj.xmtObj.loopjobEnable = false;
+    st = AASRC_chEnable((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_chEnable with invalid transfer mode */
+    mockDrvObj.transferMode = 0xFFU;
+    st = AASRC_chEnable((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_chDisable with NULL chState */
+    mockChObj.chState = NULL;
+    st = AASRC_chDisable((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EBADARGS, st);
+ 
+    /* AASRC_chDisable with closed channel */
+    mockChObj.chState = &mockChState;
+    mockChObj.isOpen = false;
+    st = AASRC_chDisable((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_chDisable with NULL drvCfg */
+    mockChObj.isOpen = true;
+    mockChObj.drvHandle = NULL;
+    st = AASRC_chDisable((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EBADARGS, st);
+ 
+    /* AASRC_chDisable with NULL attrs */
+    mockDrvCfg.object = &mockDrvObj;
+    mockDrvCfg.attrs = NULL;
+    mockChObj.drvHandle = &mockDrvCfg;
+    st = AASRC_chDisable((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EBADARGS, st);
+ 
+    /* AASRC_chDisable with closed driver */
+    mockDrvCfg.attrs = gAasrcConfig[CONFIG_AASRC0].attrs;
+    mockDrvObj.isOpen = false;
+    mockDrvCfg.object = &mockDrvObj;
+    st = AASRC_chDisable((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_chDisable with NULL drvObj */
+    mockDrvCfg.object = NULL;
+    st = AASRC_chDisable((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_isChEnabled with NULL chState */
+    mockChObj.chState = NULL;
+    st = AASRC_isChEnabled((AASRC_ChHandle)&mockChObj, &isEnabled);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EBADARGS, st);
+ 
+    /* AASRC_isChEnabled with closed channel */
+    mockChObj.chState = &mockChState;
+    mockChObj.isOpen = false;
+    st = AASRC_isChEnabled((AASRC_ChHandle)&mockChObj, &isEnabled);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_isChEnabled with NULL drvCfg */
+    mockChObj.isOpen = true;
+    mockChObj.drvHandle = NULL;
+    st = AASRC_isChEnabled((AASRC_ChHandle)&mockChObj, &isEnabled);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EBADARGS, st);
+ 
+    /* AASRC_isChEnabled with NULL attrs */
+    mockDrvCfg.object = &mockDrvObj;
+    mockDrvCfg.attrs = NULL;
+    mockChObj.drvHandle = &mockDrvCfg;
+    st = AASRC_isChEnabled((AASRC_ChHandle)&mockChObj, &isEnabled);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EBADARGS, st);
+ 
+    /* AASRC_isChEnabled with closed driver */
+    mockDrvCfg.attrs = gAasrcConfig[CONFIG_AASRC0].attrs;
+    mockDrvObj.isOpen = false;
+    mockDrvCfg.object = &mockDrvObj;
+    st = AASRC_isChEnabled((AASRC_ChHandle)&mockChObj, &isEnabled);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* Channel-handle NULL paths */
+    st = AASRC_chConfig(NULL);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "chConfig(NULL) must fail");
+ 
+    st = AASRC_chEnable(NULL);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "chEnable(NULL) must fail");
+ 
+    st = AASRC_chDisable(NULL);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "chDisable(NULL) must fail");
+ 
+    st = AASRC_chClose(NULL);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "chClose(NULL) must fail");
+ 
+    st = AASRC_isChEnabled(NULL, &isEnabled);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "isChEnabled(NULL) must fail");
+ 
+    st = AASRC_chConfigInit(NULL);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "chConfigInit(NULL) must fail");
+ 
+    /* Clocking APIs with NULL channel handle */
+    st = AASRC_GetClkZoneRxFrequency(NULL, &dummyFreq);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "GetClkZoneRxFrequency(NULL) must fail");
+ 
+    st = AASRC_GetClkZoneTxFrequency(NULL, &dummyFreq);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "GetClkZoneTxFrequency(NULL) must fail");
+ 
+    st = AASRC_IsClockZoneRxSettled(NULL, &dummySettled);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "IsClockZoneRxSettled(NULL) must fail");
+ 
+    st = AASRC_IsClockZoneTxSettled(NULL, &dummySettled);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "IsClockZoneTxSettled(NULL) must fail");
+ 
+    /* TxnCount setters: NULL handle and zero count */
+    st = AASRC_setTxTxnCount(NULL, 1024U);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, st);
+    st = AASRC_setRxTxnCount(NULL, 1024U);
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, st);
+ 
+    /* Transactions with NULL channel handle */
+    AASRC_Transaction txn = {0};
+    txn.buf = (void *)gAasrcRxMonoBuffer;
+    txn.sampleCount = 16U;
+    st = AASRC_queueTransactionRx(NULL, &txn);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "queueTransactionRx(NULL ch) must fail");
+    st = AASRC_queueTransactionTx(NULL, &txn);
+    TEST_ASSERT_TRUE_MESSAGE(st != AASRC_SOK, "queueTransactionTx(NULL ch) must fail");
+ 
+    /* AASRC_chClose with NULL chState */
+    mockChObj.chState = NULL;
+    st = AASRC_chClose((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EBADARGS, st);
+ 
+    /* AASRC_chClose with NULL drvCfg */
+    mockChObj.chState = &mockChState;
+    mockChObj.isOpen = true;
+    mockChObj.drvHandle = NULL;
+    st = AASRC_chClose((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EBADARGS, st);
+ 
+    /* AASRC_chClose with NULL attrs */
+    mockDrvCfg.object = &mockDrvObj;
+    mockDrvCfg.attrs = NULL;
+    mockChObj.drvHandle = &mockDrvCfg;
+    st = AASRC_chClose((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EBADARGS, st);
+ 
+    /* AASRC_chClose with closed driver */
+    mockDrvCfg.attrs = gAasrcConfig[CONFIG_AASRC0].attrs;
+    mockDrvObj.isOpen = false;
+    mockDrvCfg.object = &mockDrvObj;
+    st = AASRC_chClose((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_chClose with NULL driver object */
+    mockDrvCfg.object = NULL;
+    st = AASRC_chClose((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_chClose with NULL lock object */
+    savedLock = gAasrcChLockObj.lock;
+    gAasrcChLockObj.lock = NULL;
+    mockDrvObj.isOpen = true;
+    mockDrvCfg.object = &mockDrvObj;
+    mockDrvCfg.attrs = gAasrcConfig[CONFIG_AASRC0].attrs;
+    mockChObj.drvHandle = &mockDrvCfg;
+    st = AASRC_chClose((AASRC_ChHandle)&mockChObj);
+    gAasrcChLockObj.lock = savedLock;
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_validateChOpenConfig for MONO with chCount != 1 */
+    gConfigAasrcChObj[CONFIG_AASRC0][0].chCfg.chCount = 2U;
+    chMock = AASRC_chOpen(0U, gAasrcHandle[CONFIG_AASRC0]);
+    gConfigAasrcChObj[CONFIG_AASRC0][0].chCfg.chCount = 1U;
+    TEST_ASSERT_NULL(chMock);
+ 
+    /* AASRC_validateChOpenConfig for STEREO with chCount != 2 */
+    loopIdx = gConfigAasrcChObj[CONFIG_AASRC0][0].chCfg.chType;
+    savedUsg = gConfigAasrcChObj[CONFIG_AASRC0][0].chCfg.chCount;
+    gConfigAasrcChObj[CONFIG_AASRC0][0].chCfg.chType = AASRC_STEREO;
+    gConfigAasrcChObj[CONFIG_AASRC0][0].chCfg.chCount = 1U;
+    chMock = AASRC_chOpen(0U, gAasrcHandle[CONFIG_AASRC0]);
+    gConfigAasrcChObj[CONFIG_AASRC0][0].chCfg.chType = loopIdx;
+    gConfigAasrcChObj[CONFIG_AASRC0][0].chCfg.chCount = savedUsg;
+    TEST_ASSERT_NULL(chMock);
+ 
+    /* AASRC_validateChOpenConfig for GROUP with chCount < 2 */
+    gConfigAasrcChObj[CONFIG_AASRC0][0].chCfg.chType = AASRC_GROUP;
+    gConfigAasrcChObj[CONFIG_AASRC0][0].chCfg.chCount = 1U;
+    chMock = AASRC_chOpen(0U, gAasrcHandle[CONFIG_AASRC0]);
+    gConfigAasrcChObj[CONFIG_AASRC0][0].chCfg.chType = loopIdx;
+    gConfigAasrcChObj[CONFIG_AASRC0][0].chCfg.chCount = savedUsg;
+    TEST_ASSERT_NULL(chMock);
+ 
+    /* AASRC_validateChOpenConfig for GROUP with chCount > MAX */
+    gConfigAasrcChObj[CONFIG_AASRC0][0].chCfg.chType = AASRC_GROUP;
+    gConfigAasrcChObj[CONFIG_AASRC0][0].chCfg.chCount = AASRC_MAX_NUM_MONO_CHANNELS + 1U;
+    chMock = AASRC_chOpen(0U, gAasrcHandle[CONFIG_AASRC0]);
+    gConfigAasrcChObj[CONFIG_AASRC0][0].chCfg.chType = loopIdx;
+    gConfigAasrcChObj[CONFIG_AASRC0][0].chCfg.chCount = savedUsg;
+    TEST_ASSERT_NULL(chMock);
+ 
+    /* AASRC_validateChOpenConfig with invalid chType (default case) */
+    gConfigAasrcChObj[CONFIG_AASRC0][0].chCfg.chType = 0xFFU;
+    chMock = AASRC_chOpen(0U, gAasrcHandle[CONFIG_AASRC0]);
+    gConfigAasrcChObj[CONFIG_AASRC0][0].chCfg.chType = loopIdx;
+    TEST_ASSERT_NULL(chMock);
+ 
+    /* AASRC_validateChConfig: invalid input word length */
+    mockChObj.chState = &mockChState;
+    mockChObj.isOpen = true;
+    mockDrvObj.isOpen = true;
+    mockDrvCfg.object = &mockDrvObj;
+    mockDrvCfg.attrs = gAasrcConfig[CONFIG_AASRC0].attrs;
+    mockChObj.drvHandle = &mockDrvCfg;
+    mockChObj.chCfg.inWordLen = 0xFFU;
+    st = AASRC_chConfig((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EINVALID_PARAMS, st);
+ 
+    /* AASRC_validateChConfig: directDownSample > 1 */
+    mockChObj.chCfg.inWordLen = AASRC_SAMPLE_WORD_LENGTH_24;
+    mockChObj.chCfg.directDownSample = 2U;
+    st = AASRC_chConfig((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EINVALID_PARAMS, st);
+ 
+    /* AASRC_validateChConfig: attenuation > max */
+    mockChObj.chCfg.directDownSample = 0U;
+    mockChObj.chCfg.attenuation = AASRC_MAX_ATTENUATION + 1U;
+    st = AASRC_chConfig((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EINVALID_PARAMS, st);
+ 
+    /* AASRC_validateChConfig: deEmphasisMode > max */
+    mockChObj.chCfg.attenuation = 0U;
+    mockChObj.chCfg.deEmphasisMode = AASRC_MAX_DEEMPHASIS_MODES;
+    st = AASRC_chConfig((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EINVALID_PARAMS, st);
+ 
+    /* AASRC_validateChConfig: groupDelay invalid */
+    mockChObj.chCfg.deEmphasisMode = 0U;
+    mockChObj.chCfg.groupDelay = 0xFFU;
+    st = AASRC_chConfig((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EINVALID_PARAMS, st);
+ 
+    /* Clear and prepare dummy register space for clock ratio tests */
+    memset(dummyRegs, 0, sizeof(dummyRegs));
+    dummyRegs[CSL_AASRC_CFG_INPUT_CLOCKZONE_CONTROL_0 / 4] = 0x00000100;
+    dummyRegs[CSL_AASRC_CFG_OUTPUT_CLOCKZONE_CONTROL_0 / 4] = 0x00000100;
+    mockAttrs.baseAddr = (uint32_t)dummyRegs;
+    mockAttrs.instNum = AASRC0;
+    mockDrvCfg.attrs = &mockAttrs;
+    mockDrvCfg.object = &mockDrvObj;
+    memset(&mockDrvObj, 0, sizeof(mockDrvObj));
+    mockDrvObj.isOpen = true;
+    mockDrvObj.transferMode = AASRC_TRANSFER_MODE_DMA;
+    mockChObj.drvHandle = &mockDrvCfg;
+    mockChObj.isOpen = true;
+    mockChObj.chState = &mockChState;
+    mockChObj.chCfg.inClkZone = 0U;
+    mockChObj.chCfg.outClkZone = 0U;
+    mockChObj.chCfg.chType = AASRC_MONO;
+ 
+    /* AASRC_chValidateClockRatios: clkRxFreq > MAX (set up rx = 300kHz) */
+    dummyRegs[CSL_AASRC_CFG_INPUT_CLOCK_RECOVERY_LOOP_RATE_LO_0 / 4] = (154U << 24);
+    dummyRegs[CSL_AASRC_CFG_INPUT_CLOCK_RECOVERY_LOOP_RATE_HI_0 / 4] = 2U;
+    dummyRegs[CSL_AASRC_CFG_OUTPUT_CLOCK_RECOVERY_LOOP_RATE_LO_0 / 4] = (70U << 24);
+    dummyRegs[CSL_AASRC_CFG_OUTPUT_CLOCK_RECOVERY_LOOP_RATE_HI_0 / 4] = 16U;
+    st = AASRC_chEnable((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_chValidateClockRatios: invalid ratio (> 16, e.g., rx = 8kHz, tx = 192kHz) */
+    dummyRegs[CSL_AASRC_CFG_INPUT_CLOCK_RECOVERY_LOOP_RATE_LO_0 / 4] = (168U << 24);
+    dummyRegs[CSL_AASRC_CFG_INPUT_CLOCK_RECOVERY_LOOP_RATE_HI_0 / 4] = 97U;
+    dummyRegs[CSL_AASRC_CFG_OUTPUT_CLOCK_RECOVERY_LOOP_RATE_LO_0 / 4] = (17U << 24);
+    dummyRegs[CSL_AASRC_CFG_OUTPUT_CLOCK_RECOVERY_LOOP_RATE_HI_0 / 4] = 4U;
+    st = AASRC_chEnable((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_chValidateClockRatios: input divider frequency > MAX */
+    dummyRegs[CSL_AASRC_CFG_INPUT_CLOCK_RECOVERY_LOOP_RATE_LO_0 / 4] = (13U << 24);
+    dummyRegs[CSL_AASRC_CFG_INPUT_CLOCK_RECOVERY_LOOP_RATE_HI_0 / 4] = 8U;
+    dummyRegs[CSL_AASRC_CFG_OUTPUT_CLOCK_RECOVERY_LOOP_RATE_LO_0 / 4] = (13U << 24);
+    dummyRegs[CSL_AASRC_CFG_OUTPUT_CLOCK_RECOVERY_LOOP_RATE_HI_0 / 4] = 8U;
+    mockDrvObj.rxClkZoneCfg[0].isClkZoneDivEnable = true;
+    mockDrvObj.rxClkZoneCfg[0].clkZoneDiv = 1000U;
+    st = AASRC_chEnable((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_chValidateClockRatios: output divider frequency > MAX */
+    mockDrvObj.rxClkZoneCfg[0].isClkZoneDivEnable = false;
+    mockDrvObj.txClkZoneCfg[0].isClkZoneDivEnable = true;
+    mockDrvObj.txClkZoneCfg[0].clkZoneDiv = 1000U;
+    st = AASRC_chEnable((AASRC_ChHandle)&mockChObj);
+    TEST_ASSERT_EQUAL_INT32(AASRC_EFAIL, st);
+ 
+    /* AASRC_getHandle with out-of-range instance index */
+    AASRC_Handle h = AASRC_getHandle(gAasrcInstNum + 5U);
+    TEST_ASSERT_NULL(h);
+}
+
+/**
+ * \brief Test AASRC DMA split loop count (icnt) computation functionality.
+ *
+ * Test Category: Functionality
+ *
+ * This test validates the buffer-splitting logic in the internal DMA helper
+ * function by specifying a large sample count (e.g., 65540 samples) exceeding
+ * the 16-bit icnt limits. It verifies that the computed 4D UDMA transfer
+ * loop counts (icnt2 and icnt3) match the mathematically expected split values
+ * for both RX and TX paths.
+ *
+ * \param args Pointer to test parameters.
+ */
+static void TestAasrc_dmaPrepareIcntsFunctional(void *args)
+{
+    int32_t st;
+    AASRC_Handle handle;
+    AASRC_ChHandle chHandle;
+    AASRC_ChObj *chObj;
+    uint32_t saved_inThresh;
+    uint32_t saved_outThresh;
+    uint32_t saved_tx_loopCount;
+    uint32_t saved_rx_loopCount;
+
+    AASRC_close(gAasrcHandle[CONFIG_AASRC0]);
+    handle = AASRC_open(CONFIG_AASRC0, &gAasrcOpenParams[CONFIG_AASRC0]);
+    TEST_ASSERT_NOT_NULL(handle);
+
+    chHandle = AASRC_chOpen(0, handle);
+    TEST_ASSERT_NOT_NULL(chHandle);
+
+    st = AASRC_chConfig(chHandle);
+    TEST_ASSERT_EQUAL_INT32(AASRC_SOK, st);
+
+    chObj = (AASRC_ChObj *)chHandle;
+    saved_inThresh = chObj->chCfg.fifoControl.inFifoThreshold;
+    saved_outThresh = chObj->chCfg.fifoControl.outFifoThreshold;
+    saved_tx_loopCount = chObj->rcvObj.txnLoopjob.sampleCount;
+    saved_rx_loopCount = chObj->xmtObj.txnLoopjob.sampleCount;
+
+    /* Set up large valid sample counts to hit the split blocks (else path) */
+    chObj->txDmaIcnt.initDone = 0U;
+    chObj->rxDmaIcnt.initDone = 0U;
+    chObj->chCfg.fifoControl.inFifoThreshold = 1U;
+    chObj->chCfg.fifoControl.outFifoThreshold = 1U;
+    chObj->rcvObj.txnLoopjob.sampleCount = 65540U;
+    chObj->xmtObj.txnLoopjob.sampleCount = 65540U;
+
+    st = AASRC_dmaChEnable(chHandle);
+    TEST_ASSERT_EQUAL_INT32(AASRC_SOK, st);
+
+    /* Verify the split values computed by AASRC_prepareDmaIcnts */
+    TEST_ASSERT_EQUAL_UINT16(4U, chObj->txDmaIcnt.icnt2);
+    TEST_ASSERT_EQUAL_UINT16(16385U, chObj->txDmaIcnt.icnt3);
+    TEST_ASSERT_EQUAL_UINT16(4U, chObj->rxDmaIcnt.icnt2);
+    TEST_ASSERT_EQUAL_UINT16(16385U, chObj->rxDmaIcnt.icnt3);
+
+    (void)AASRC_chDisable(chHandle);
+
+    /* Restore and Cleanup */
+    chObj->chCfg.fifoControl.inFifoThreshold = saved_inThresh;
+    chObj->chCfg.fifoControl.outFifoThreshold = saved_outThresh;
+    chObj->rcvObj.txnLoopjob.sampleCount = saved_tx_loopCount;
+    chObj->xmtObj.txnLoopjob.sampleCount = saved_rx_loopCount;
+    chObj->txDmaIcnt.initDone = 0U;
+    chObj->rxDmaIcnt.initDone = 0U;
+
+    AASRC_chClose(chHandle);
+    AASRC_close(handle);
+    gAasrcHandle[CONFIG_AASRC0] = AASRC_open(CONFIG_AASRC0, &gAasrcOpenParams[CONFIG_AASRC0]);
+    TEST_ASSERT_NOT_NULL(gAasrcHandle[CONFIG_AASRC0]);
+}
+

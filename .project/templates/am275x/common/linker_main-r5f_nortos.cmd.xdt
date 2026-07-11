@@ -56,14 +56,26 @@
     
     if(options && options.isOptishare)
         isOptishareEnabled = options.isOptishare;
-    
+
+    let enableAasrcBuffers = "false";
+    if(options && options.enableAasrcBuffers)
+        enableAasrcBuffers = options.enableAasrcBuffers;
+
     let memoryReg = ""
 
 
     if(isOptishareEnabled == "true") {
             memoryReg = "OCRAM"
     }
-    else 
+    else if(enableAasrcBuffers == "true")
+    {
+        if(args.project.cpu == "r5fss0-0") {
+            memoryReg = "R50_0_OCRAM"
+        } else {
+            memoryReg = "AASRC_OCRAM"
+        }
+    }
+    else
     {
         if(args.project.cpu == "wkup-r5fss0-0") {
             memoryReg = "WKUP_R5_OCRAM"
@@ -391,7 +403,7 @@ MEMORY
     %}
     %if(args.project.cpu == "r5fss0-1" && isOptishareEnabled == "true") {
     OCRAM         (RWIX)         : ORIGIN = 0x72180000 LENGTH = 0x00080000 // 512 KB for r5fss0-1 core
-    %} else{
+    %} else if(!(enableAasrcBuffers == "true" && args.project.cpu != "r5fss0-0" && args.project.cpu != "wkup-r5fss0-0")) {
     R50_1_OCRAM   (RWIX)         : ORIGIN = 0x72180000 LENGTH = 0x00080000 // 512 KB for r5fss0-1 core
     %}
     %if(args.project.cpu == "r5fss1-0" && isOptishareEnabled == "true") {
@@ -405,7 +417,13 @@ MEMORY
     R51_1_OCRAM   (RWIX)         : ORIGIN = 0x72300000 LENGTH = 0x00080000 // 512 KB for r5fss1-1 core
     %}
 
+    %if(enableAasrcBuffers == "true" && args.project.cpu != "r5fss0-0" && args.project.cpu != "wkup-r5fss0-0") {
+    /* WARNING: Shared 1MB AASRC_OCRAM at 0x72180000. Do NOT run AASRC tests on multiple non-primary cores concurrently. */
+    AASRC_OCRAM   (RWIX)         : ORIGIN = 0x72180000 LENGTH = 0x00100000 // 1 MB for non-primary R5 aasrc (shared, tested one at a time)
+    %}
+    %if(!(enableAasrcBuffers == "true" && args.project.cpu != "r5fss0-0" && args.project.cpu != "wkup-r5fss0-0")) {
     C75_0_OCRAM   (RWIX)         : ORIGIN = 0x72200000 LENGTH = 0x00080000 // 512 KB for c75ss0-0 core
+    %}
     C75_1_OCRAM   (RWIX)         : ORIGIN = 0x72400000 LENGTH = 0x00080000 // 512 KB for c75ss1-0 core
     %if(isOptishareEnabled == "true"){ // 512 KB for optishare core
         

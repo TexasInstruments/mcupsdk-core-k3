@@ -1,0 +1,216 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.26.2+4477"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const aasrc      = scripting.addModule("/drivers/aasrc/aasrc", {}, false);
+const aasrc1     = aasrc.addInstance();
+const aasrc2     = aasrc.addInstance();
+const i2c        = scripting.addModule("/drivers/i2c/i2c", {}, false);
+const i2c1       = i2c.addInstance();
+const mcasp      = scripting.addModule("/drivers/mcasp/mcasp", {}, false);
+const mcasp1     = mcasp.addInstance();
+const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
+const mpu_armv7  = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
+const mpu_armv71 = mpu_armv7.addInstance();
+const mpu_armv72 = mpu_armv7.addInstance();
+const mpu_armv73 = mpu_armv7.addInstance();
+const mpu_armv74 = mpu_armv7.addInstance();
+const mpu_armv75 = mpu_armv7.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+aasrc1.$name                                        = "CONFIG_AASRC0";
+aasrc1.aasrcChannel.create(3);
+aasrc1.aasrcChannel[0].$name                        = "CONFIG_AASRC_CH0";
+aasrc1.aasrcChannel[0].txCallbackFxn                = "aasrc_txcb";
+aasrc1.aasrcChannel[0].rxCallbackFxn                = "aasrc_rxcb";
+aasrc1.aasrcChannel[0].errorCallbackFxn             = "aasrc_ch_error_handler";
+aasrc1.aasrcChannel[0].txLoopjobBufLength           = 1024;
+aasrc1.aasrcChannel[0].rxLoopjobBufLength           = 1024;
+aasrc1.aasrcChannel[1].$name                        = "CONFIG_AASRC_CH1";
+aasrc1.aasrcChannel[1].channelType                  = "STEREO";
+aasrc1.aasrcChannel[1].errorCallbackFxn             = "aasrc_ch_error_handler";
+aasrc1.aasrcChannel[1].txCallbackFxn                = "aasrc_txcb";
+aasrc1.aasrcChannel[1].rxCallbackFxn                = "aasrc_rxcb";
+aasrc1.aasrcChannel[1].txLoopjobBuf                 = "gStereoTxLoopjobBuf0";
+aasrc1.aasrcChannel[1].rxLoopjobBuf                 = "gStereoRxLoopjobBuf0";
+aasrc1.aasrcChannel[1].txLoopjobBufLength           = 4096;
+aasrc1.aasrcChannel[1].rxLoopjobBufLength           = 2048;
+aasrc1.aasrcChannel[1].outClockZone                 = "1";
+aasrc1.aasrcChannel[2].$name                        = "CONFIG_AASRC_CH2";
+aasrc1.aasrcChannel[2].channelType                  = "GROUP";
+aasrc1.aasrcChannel[2].channelCount                 = "5";
+aasrc1.aasrcChannel[2].errorCallbackFxn             = "aasrc_ch_error_handler";
+aasrc1.aasrcChannel[2].txCallbackFxn                = "aasrc_txcb";
+aasrc1.aasrcChannel[2].rxCallbackFxn                = "aasrc_rxcb";
+aasrc1.aasrcChannel[2].txLoopjobBuf                 = "gGroupTxLoopjobBuf0";
+aasrc1.aasrcChannel[2].rxLoopjobBuf                 = "gGroupRxLoopjobBuf0";
+aasrc1.aasrcChannel[2].txLoopjobBufLength           = 5120;
+aasrc1.aasrcChannel[2].rxLoopjobBufLength           = 5120;
+aasrc1.aasrcReceiveClockZone.create(4);
+aasrc1.aasrcReceiveClockZone[0].$name               = "CONFIG_AASRC_CLOCKZONE0";
+aasrc1.aasrcReceiveClockZone[0].clkZoneDiv          = 128;
+aasrc1.aasrcReceiveClockZone[0].isClkZoneDivEnable  = true;
+aasrc1.aasrcReceiveClockZone[1].$name               = "CONFIG_AASRC_CLOCKZONE3";
+aasrc1.aasrcReceiveClockZone[1].clkZoneDiv          = 128;
+aasrc1.aasrcReceiveClockZone[1].isClkZoneDivEnable  = true;
+aasrc1.aasrcReceiveClockZone[1].syncPin             = "1";
+aasrc1.aasrcReceiveClockZone[2].$name               = "CONFIG_AASRC_CLOCKZONE4";
+aasrc1.aasrcReceiveClockZone[2].syncPin             = "2";
+aasrc1.aasrcReceiveClockZone[3].$name               = "CONFIG_AASRC_CLOCKZONE5";
+aasrc1.aasrcReceiveClockZone[3].syncPin             = "3";
+aasrc1.aasrcTransmitClockZone.create(4);
+aasrc1.aasrcTransmitClockZone[0].$name              = "CONFIG_AASRC_CLOCKZONE1";
+aasrc1.aasrcTransmitClockZone[0].clkZoneDiv         = 256;
+aasrc1.aasrcTransmitClockZone[0].isClkZoneDivEnable = true;
+aasrc1.aasrcTransmitClockZone[1].$name              = "CONFIG_AASRC_CLOCKZONE2";
+aasrc1.aasrcTransmitClockZone[1].syncPin            = "1";
+aasrc1.aasrcTransmitClockZone[1].clkZoneDiv         = 120;
+aasrc1.aasrcTransmitClockZone[1].isClkZoneDivEnable = true;
+aasrc1.aasrcTransmitClockZone[1].extClkSrc          = "ADC0_CLK";
+aasrc1.aasrcTransmitClockZone[2].$name              = "CONFIG_AASRC_CLOCKZONE6";
+aasrc1.aasrcTransmitClockZone[2].syncPin            = "2";
+aasrc1.aasrcTransmitClockZone[3].$name              = "CONFIG_AASRC_CLOCKZONE7";
+aasrc1.aasrcTransmitClockZone[3].syncPin            = "3";
+
+aasrc2.$name                                        = "CONFIG_AASRC1";
+aasrc2.aasrcChannel.create(3);
+aasrc2.aasrcChannel[0].$name                        = "CONFIG_AASRC_CH3";
+aasrc2.aasrcChannel[0].txCallbackFxn                = "aasrc_txcb";
+aasrc2.aasrcChannel[0].rxCallbackFxn                = "aasrc_rxcb";
+aasrc2.aasrcChannel[0].errorCallbackFxn             = "aasrc_ch_error_handler";
+aasrc2.aasrcChannel[0].txLoopjobBufLength           = 1024;
+aasrc2.aasrcChannel[0].rxLoopjobBufLength           = 1024;
+aasrc2.aasrcChannel[0].txLoopjobBuf                 = "gTxLoopjobBuf1";
+aasrc2.aasrcChannel[0].rxLoopjobBuf                 = "gRxLoopjobBuf1";
+aasrc2.aasrcChannel[1].$name                        = "CONFIG_AASRC_CH4";
+aasrc2.aasrcChannel[1].channelType                  = "STEREO";
+aasrc2.aasrcChannel[1].errorCallbackFxn             = "aasrc_ch_error_handler";
+aasrc2.aasrcChannel[1].txCallbackFxn                = "aasrc_txcb";
+aasrc2.aasrcChannel[1].rxCallbackFxn                = "aasrc_rxcb";
+aasrc2.aasrcChannel[1].txLoopjobBufLength           = 4096;
+aasrc2.aasrcChannel[1].rxLoopjobBufLength           = 2048;
+aasrc2.aasrcChannel[1].outClockZone                 = "1";
+aasrc2.aasrcChannel[1].txLoopjobBuf                 = "gStereoTxLoopjobBuf1";
+aasrc2.aasrcChannel[1].rxLoopjobBuf                 = "gStereoRxLoopjobBuf1";
+aasrc2.aasrcChannel[2].$name                        = "CONFIG_AASRC_CH5";
+aasrc2.aasrcChannel[2].channelType                  = "GROUP";
+aasrc2.aasrcChannel[2].channelCount                 = "5";
+aasrc2.aasrcChannel[2].errorCallbackFxn             = "aasrc_ch_error_handler";
+aasrc2.aasrcChannel[2].txCallbackFxn                = "aasrc_txcb";
+aasrc2.aasrcChannel[2].rxCallbackFxn                = "aasrc_rxcb";
+aasrc2.aasrcChannel[2].txLoopjobBufLength           = 5120;
+aasrc2.aasrcChannel[2].rxLoopjobBufLength           = 5120;
+aasrc2.aasrcChannel[2].txLoopjobBuf                 = "gGroupTxLoopjobBuf1";
+aasrc2.aasrcChannel[2].rxLoopjobBuf                 = "gGroupRxLoopjobBuf1";
+aasrc2.aasrcReceiveClockZone.create(4);
+aasrc2.aasrcReceiveClockZone[0].$name               = "CONFIG_AASRC_CLOCKZONE8";
+aasrc2.aasrcReceiveClockZone[0].clkZoneDiv          = 128;
+aasrc2.aasrcReceiveClockZone[0].isClkZoneDivEnable  = true;
+aasrc2.aasrcReceiveClockZone[1].$name               = "CONFIG_AASRC_CLOCKZONE10";
+aasrc2.aasrcReceiveClockZone[1].clkZoneDiv          = 128;
+aasrc2.aasrcReceiveClockZone[1].isClkZoneDivEnable  = true;
+aasrc2.aasrcReceiveClockZone[1].syncPin             = "1";
+aasrc2.aasrcReceiveClockZone[2].$name               = "CONFIG_AASRC_CLOCKZONE11";
+aasrc2.aasrcReceiveClockZone[2].syncPin             = "2";
+aasrc2.aasrcReceiveClockZone[3].$name               = "CONFIG_AASRC_CLOCKZONE12";
+aasrc2.aasrcReceiveClockZone[3].syncPin             = "3";
+aasrc2.aasrcTransmitClockZone.create(4);
+aasrc2.aasrcTransmitClockZone[0].$name              = "CONFIG_AASRC_CLOCKZONE9";
+aasrc2.aasrcTransmitClockZone[0].clkZoneDiv         = 256;
+aasrc2.aasrcTransmitClockZone[0].isClkZoneDivEnable = true;
+aasrc2.aasrcTransmitClockZone[1].$name              = "CONFIG_AASRC_CLOCKZONE13";
+aasrc2.aasrcTransmitClockZone[1].syncPin            = "1";
+aasrc2.aasrcTransmitClockZone[1].clkZoneDiv         = 120;
+aasrc2.aasrcTransmitClockZone[1].isClkZoneDivEnable = true;
+aasrc2.aasrcTransmitClockZone[1].extClkSrc          = "ADC0_CLK";
+aasrc2.aasrcTransmitClockZone[2].$name              = "CONFIG_AASRC_CLOCKZONE14";
+aasrc2.aasrcTransmitClockZone[2].syncPin            = "2";
+aasrc2.aasrcTransmitClockZone[3].$name              = "CONFIG_AASRC_CLOCKZONE15";
+aasrc2.aasrcTransmitClockZone[3].syncPin            = "3";
+
+i2c1.$name           = "CONFIG_I2C0";
+i2c1.I2C.$assign     = "I2C0";
+i2c1.I2C_child.$name = "drivers_i2c_v0_i2c_v0_template0";
+
+mcasp1.$name                                   = "CONFIG_MCASP0";
+mcasp1.txCallbackFxn                           = "mcasp_txcb";
+mcasp1.rxCallbackFxn                           = "mcasp_rxcb";
+mcasp1.skipDriverOpen                          = true;
+mcasp1.txLoopjobBufLength                      = 1024;
+mcasp1.rxLoopjobBufLength                      = 1024;
+mcasp1.enableLoopback                          = false;
+mcasp1.txHclkSource                            = 0;
+mcasp1.txHclkSourceMux                         = 4;
+mcasp1.txHclkExpected                          = 24576000;
+mcasp1.txClkApplyAlert                         = false;
+mcasp1.rxHclkSource                            = 0;
+mcasp1.rxHclkSourceMux                         = 4;
+mcasp1.rxHclkExpected                          = 24576000;
+mcasp1.rxClkApplyAlert                         = false;
+mcasp1.txLoopjobBuf                            = "gTxLoopjobBuf";
+mcasp1.rxLoopjobBuf                            = "gRxLoopjobBuf";
+mcasp1.MCASP.$assignAllowConflicts             = "MCASP0";
+mcasp1.mcaspSer.create(1);
+mcasp1.mcaspSer[0].$name                       = "CONFIG_MCASP_SER0";
+mcasp1.mcaspSer[0].MCASP.$assignAllowConflicts = "MCASP0";
+scripting.suppress("Resource conflict,MCASP0 is also in use by @@@.+?@@@", mcasp1.MCASP, "$assign");
+scripting.suppress("Resource conflict,MCASP0 is also in use by @@@.+?@@@", mcasp1.mcaspSer[0].MCASP, "$assign");
+
+const udma         = scripting.addModule("/drivers/udma/udma", {}, false);
+const udma1        = udma.addInstance({}, false);
+udma1.$name        = "CONFIG_UDMA0";
+aasrc1.udmaDriver  = udma1;
+mcasp1.bcDmaDriver = udma1;
+aasrc2.udmaDriver  = udma1;
+
+debug_log.enableUartLog            = true;
+debug_log.enableSharedMemLogReader = true;
+debug_log.enableCssLog             = false;
+debug_log.uartLog.$name            = "CONFIG_UART0";
+debug_log.uartLog.UART.$assign     = "UART0";
+debug_log.uartLog.UART.RXD.$assign = "UART0_RXD";
+debug_log.uartLog.UART.TXD.$assign = "UART0_TXD";
+
+mpu_armv71.size         = 31;
+mpu_armv71.attributes   = "Device";
+mpu_armv71.allowExecute = false;
+mpu_armv71.$name        = "REGISTERS";
+
+mpu_armv72.size  = 15;
+mpu_armv72.$name = "TCMA";
+
+mpu_armv73.baseAddr = 0x41010000;
+mpu_armv73.size     = 15;
+mpu_armv73.$name    = "TCMB";
+
+mpu_armv74.size     = 22;
+mpu_armv74.baseAddr = 0x72000000;
+mpu_armv74.$name    = "MSRAM_BANK0_TO_BANK3";
+
+mpu_armv75.baseAddr = 0x72400000;
+mpu_armv75.size     = 21;
+mpu_armv75.$name    = "MSRAM_BANK4_TO_BANK5";
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+i2c1.I2C.SCL.$suggestSolution                      = "I2C0_SCL";
+i2c1.I2C.SDA.$suggestSolution                      = "I2C0_SDA";
+mcasp1.MCASP.AFSX.$suggestSolution                 = "MCASP0_AFSX";
+mcasp1.MCASP.ACLKX.$suggestSolution                = "MCASP0_ACLKX";
+mcasp1.MCASP.AFSR.$suggestSolution                 = "MCASP0_AXR13";
+mcasp1.MCASP.ACLKR.$suggestSolution                = "MCASP0_AXR12";
+mcasp1.mcaspSer[0].MCASP.AXR0.$suggestSolution     = "MCASP0_AXR0";
+mcasp1.CLOCKING.$suggestSolution                   = "CLOCKING";
+mcasp1.CLOCKING.AUDIO_EXT_REFCLK2.$suggestSolution = "GPIO1_72";

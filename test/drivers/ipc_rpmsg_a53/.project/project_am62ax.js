@@ -257,7 +257,7 @@ const robot_template = {
     options: {
         componentName: "IPC",
         testCaseName: "IPC RPMSG: A53SS0_0 to R5FSS0_0 with varying messages sizes",
-        testCaseIds: "SITSW-9813 SITSW-9814 SITSW-9815",
+        testCaseIds: "SITSW-9813 SITSW-9814 SITSW-9815 SITSW-9824",
         withCfg: true,
         appName: "test_ipc_rpmsg_a53",
         cfgPath: "test/drivers/ipc_rpmsg_a53/{board}/ipc_rpmsg_test_sbl_uart_${DEVICE_TYPE}.cfg",

@@ -133,7 +133,7 @@ const robot_template = {
     options: {
         componentName: "SCICLIENT",
         testCaseName: "Sciclient test application",
-        testCaseIds: "SITSW-3075",
+        testCaseIds: "SITSW-1296 SITSW-1297 SITSW-1298 SITSW-3075",
         expectTimeout: 60,
     },
 };

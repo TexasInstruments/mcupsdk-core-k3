@@ -133,13 +133,12 @@ function getComponentProperty() {
 }
 
 const robot_template = {
-    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    input: ".project/templates/am62dx/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "PMIC",
         testCaseName: "PMIC: Trigger watchdog reset mode example",
         testCaseIds: "SITSW-4634",
-        withCfg: true,
         cfgPath: "examples/drivers/pmic/pmic_trigger_watchdog_reset/{board}/default_pmic_trigger_watchdog_reset_${DEVICE_TYPE}.cfg",
         expectTimeout: 100,
     },

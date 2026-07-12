@@ -127,13 +127,15 @@ function getComponentProperty() {
 }
 
 const robot_template = {
-    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "PMIC",
         testCaseName: "PMIC Trigger Watchdog Reset Mode Example",
         testCaseIds: "SITSW-4634",
         appName: "pmic_trigger_watchdog_reset",
+        cfgPath: "examples/drivers/pmic/pmic_trigger_watchdog_reset/{board}/default_pmic_trigger_watchdog_reset_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
     },
 };
 

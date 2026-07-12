@@ -8,8 +8,6 @@
 /**
  * Import the modules used in this configuration.
  */
-const uart            = scripting.addModule("/drivers/uart/uart", {}, false);
-const uart1           = uart.addInstance();
 const addr_translate  = scripting.addModule("/kernel/dpl/addr_translate", {}, false);
 const addr_translate1 = addr_translate.addInstance();
 const addr_translate2 = addr_translate.addInstance();
@@ -24,10 +22,9 @@ const mpu_armv72      = mpu_armv7.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
-uart1.$name                = "CONFIG_UART0";
-uart1.MCU_UART.$assign     = "MCU_USART0";
-uart1.MCU_UART.RXD.$assign = "MCU_UART0_RXD";
-uart1.MCU_UART.TXD.$assign = "MCU_UART0_TXD";
+debug_log.enableUartLog = true;
+debug_log.uartTrace     = true;
+debug_log.uartLog.$name = "CONFIG_UART0";
 
 addr_translate1.$name     = "CONFIG_ADDR_TRANSLATE_REGION0";
 addr_translate1.localAddr = 0x80000000;
@@ -50,3 +47,7 @@ mpu_armv71.allowExecute = false;
 
 mpu_armv72.$name = "CONFIG_MPU_REGION1";
 mpu_armv72.size  = 18;
+
+debug_log.uartLog.MCU_UART.$suggestSolution     = "MCU_USART0";
+debug_log.uartLog.MCU_UART.RXD.$suggestSolution = "MCU_UART0_RXD";
+debug_log.uartLog.MCU_UART.TXD.$suggestSolution = "MCU_UART0_TXD";

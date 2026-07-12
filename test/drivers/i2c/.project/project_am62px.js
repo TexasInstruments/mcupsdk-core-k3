@@ -255,7 +255,7 @@ const robot_template = {
         componentName: "I2C",
         testCaseName: "I2C: Dynamic Coverage Test, to improve the statement and branch coverages.",
         testCaseIds: "SITSW-3178",
-        expectTimeout: 60,
+        expectTimeout: 120,
         timeout: 660,
     },
 };

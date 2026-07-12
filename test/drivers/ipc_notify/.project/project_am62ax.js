@@ -249,7 +249,7 @@ const robot_template = {
     options: {
         componentName: "IPC",
         testCaseName: "ipc_notify test application",
-        testCaseIds: "SITSW-2457 SITSW-2469 SITSW-2710 SITSW-2715 SITSW-9532 SITSW-9668 SITSW-9685",
+        testCaseIds: "SITSW-2457 SITSW-2469 SITSW-2710 SITSW-2715 SITSW-9532 SITSW-9619 SITSW-9668 SITSW-9685",
         withCfg: true,
         appName: "test_ipc_notify",
         cfgPath: "test/drivers/ipc_notify/{board}/ipc_notify_test_sbl_uart_${DEVICE_TYPE}.cfg",

@@ -310,7 +310,7 @@ function getComponentBuildProperty(buildOption) {
 
 
 
-    if (buildOption.cpu.match(/r5fss0-0/)) {
+    if (buildOption.cpu === "r5fss0-0") {
         build_property.templates = [...(build_property.templates || []), robot_template];
     }
     return build_property;

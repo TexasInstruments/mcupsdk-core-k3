@@ -136,6 +136,7 @@ const robot_template = {
         appName: "pmic_trigger_watchdog_reset",
         cfgPath: "examples/drivers/pmic/pmic_trigger_watchdog_reset/{board}/default_pmic_trigger_watchdog_reset_${DEVICE_TYPE}.cfg",
         bootMode: "OSPI_NOR_BOOT_MODE",
+        expectPort: "USB3",
     },
 };
 

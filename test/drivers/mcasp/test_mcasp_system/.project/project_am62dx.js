@@ -278,7 +278,7 @@ const robot_template = {
     options: {
         componentName: "MCASP",
         testCaseName: "MCASP system loopback test A53/c75",
-        testCaseIds: "SITSW-9008",
+        testCaseIds: "SITSW-9008 SITSW-9009",
         withCfg: true,
         cfgPath: "test/drivers/mcasp/test_mcasp_system/{board}/test_mcasp_system_sbl_uart_${DEVICE_TYPE}.cfg",
         expectTimeout: 100,

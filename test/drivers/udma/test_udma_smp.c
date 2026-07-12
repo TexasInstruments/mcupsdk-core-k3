@@ -1065,8 +1065,12 @@ static void TestUdma_ringOverflowProducerTask(void *arg)
         /* Backpressure: wait until FQ has space; producer NEVER drains CQ */
         while ((TestUdma_RingOverflowRingQueued - TestUdma_RingOverflowRingCompleted) >= TEST_UDMA_RING_OVERFLOW_ELEMENT_COUNT)
         {
+            if (TestUdma_RingOverflowRingConsumerDone)
+                break;
             ClockP_usleep(50);
         }
+        if (TestUdma_RingOverflowRingConsumerDone)
+            break;
 
         TestUdma_initBuffer(TestUdma_RingOverflowSrc[idx], TestUdma_RingOverflowDst[idx], TEST_UDMA_NUM_BYTES);
         TestUdma_trpdInit(chHndl,

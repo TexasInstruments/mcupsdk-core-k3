@@ -140,6 +140,8 @@ const robot_template = {
         testCaseName: "PMIC: Trigger watchdog reset mode example",
         testCaseIds: "SITSW-4634",
         cfgPath: "examples/drivers/pmic/pmic_trigger_watchdog_reset/{board}/default_pmic_trigger_watchdog_reset_${DEVICE_TYPE}.cfg",
+        bootMode: "OSPI_NOR_BOOT_MODE",
+        expectPort: "USB3",
         expectTimeout: 100,
     },
 };

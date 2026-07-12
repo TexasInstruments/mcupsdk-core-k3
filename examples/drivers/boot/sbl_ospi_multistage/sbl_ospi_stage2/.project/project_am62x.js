@@ -64,7 +64,7 @@ const robot_template = {
         bootMode: "OSPI_NOR_BOOT_MODE",
         expectTimeout: 100,
         expectations: [
-            { port: "USB0", string: "Starting 2nd stage bootloader" },
+            { port: "USB0", string: "Starting MCU-m4f and 2nd stage bootloader" },
             { port: "USB0", string: "Starting RTOS/Baremetal applications" },
             { port: "USB2", string: "All tests have passed!!" },
         ],

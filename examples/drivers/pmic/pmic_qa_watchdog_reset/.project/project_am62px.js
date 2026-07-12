@@ -135,6 +135,7 @@ const robot_template = {
         testCaseIds: "SITSW-4633",
         cfgPath: "examples/drivers/pmic/pmic_qa_watchdog_reset/{board}/default_pmic_qa_watchdog_reset_${DEVICE_TYPE}.cfg",
         bootMode: "OSPI_NOR_BOOT_MODE",
+        expectPort: "USB3",
     },
 };
 

@@ -483,7 +483,7 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    if (!buildOption.cpu.match(/a53ss0-1|a53ss1-0|a53ss1-1/)) {
+    if (!buildOption.cpu.match(/a53ss0-1|a53ss1-0|a53ss1-1/) && !(buildOption.cpu.match(/a53/) && buildOption.os.match(/freertos/))) {
         build_property.templates = [...(build_property.templates || []), robot_template];
     }
     return build_property;

@@ -161,7 +161,7 @@ SDL_VTM_adc_code SDL_VTM_getAdcCode(const SDL_VTM_cfg1Regs_TMPSENS    *p_sensor)
     i = 0;
     while (i < SDL_VTM_DOUT_REG_READ_DELAY)
     {
-        i++;
+        i = i + 1;
     }
     s0 = (SDL_VTM_adc_code)SDL_REG32_FEXT(&p_sensor->STAT, \
                 VTM_CFG1_TMPSENS_STAT_DATA_OUT);
@@ -170,7 +170,7 @@ SDL_VTM_adc_code SDL_VTM_getAdcCode(const SDL_VTM_cfg1Regs_TMPSENS    *p_sensor)
     i = 0;
     while (i < SDL_VTM_DOUT_REG_READ_DELAY)
     {
-        i++;
+        i = i + 1;
     }
     s1 = (SDL_VTM_adc_code)SDL_REG32_FEXT(&p_sensor->STAT, \
                 VTM_CFG1_TMPSENS_STAT_DATA_OUT);
@@ -179,7 +179,7 @@ SDL_VTM_adc_code SDL_VTM_getAdcCode(const SDL_VTM_cfg1Regs_TMPSENS    *p_sensor)
     i = 0;
     while (i < SDL_VTM_DOUT_REG_READ_DELAY)
     {
-        i++;
+        i = i + 1;
     }
     s2 = (SDL_VTM_adc_code)SDL_REG32_FEXT(&p_sensor->STAT, \
                 VTM_CFG1_TMPSENS_STAT_DATA_OUT);

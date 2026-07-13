@@ -503,6 +503,19 @@ const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62dx-evm", os: "freertos-smp"},
 ];
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DPL",
+        testCaseName: "DPL Timer test application",
+        appName: "test_dpl_timer",
+        testCaseIds: "SITSW-10359 SITSW-10361 SITSW-10362 SITSW-10363 SITSW-10364 SITSW-10365 SITSW-10366 SITSW-10367 SITSW-10368 SITSW-10369" +
+                     " SITSW-10371 SITSW-10373 SITSW-10374 SITSW-10375 SITSW-10376 SITSW-10378 SITSW-10379 SITSW-10380 SITSW-10382 SITSW-10383 SITSW-11963",
+        timeout: 300,
+    },
+};
+
 function getComponentProperty() {
     let property = {};
 
@@ -619,6 +632,7 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

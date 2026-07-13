@@ -175,6 +175,21 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "IPC",
+        testCaseName: "test_ipc_notify_mcu_r5 test application",
+        appName: "test_ipc_notify_mcu_r5",
+        testCaseIds: "SITSW-2469 SITSW-9360 SITSW-9370 SITSW-9373 SITSW-9499 SITSW-9500 SITSW-9860 SITSW-9900 SITSW-12130 SITSW-12131 " +
+             "SITSW-12132 SITSW-12133 SITSW-12134 SITSW-12135 SITSW-12136 SITSW-12137",
+        withCfg: true,
+        cfgPath: "test/drivers/ipc_notify_mcu_r5/{board}/ipc_notify_test_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectTimeout: 120,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -201,6 +216,10 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_wkup_r5f;
         build_property.defines = defines_dm_r5f;
         build_property.cflags = cflags_free_rtos;
+    }
+
+    if (buildOption.cpu.match(/mcu-r5f/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
     }
 
     return build_property;

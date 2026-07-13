@@ -355,10 +355,11 @@ const robot_template = {
         componentName: "IPC",
         testCaseName: "IPC Notify test application",
         appName: "test_ipc_notify",
-        testCaseIds: "SITSW-2457 SITSW-2469 SITSW-2470 SITSW-2471",
+        testCaseIds: "SITSW-2457 SITSW-2469 SITSW-2470 SITSW-2471 SITSW-2710 SITSW-9360 SITSW-9361 SITSW-9368 SITSW-9370 SITSW-9373 " +
+             "SITSW-9388 SITSW-9490 SITSW-9493 SITSW-9497 SITSW-9499 SITSW-9500 SITSW-9508 SITSW-9617 SITSW-9860 SITSW-9900",
         withCfg: true,
         cfgPath: "test/drivers/ipc_notify/{board}/ipc_notify_test_sbl_uart_${DEVICE_TYPE}.cfg",
-        expectTimeout: 60,
+        expectTimeout: 120,
     },
 };
 

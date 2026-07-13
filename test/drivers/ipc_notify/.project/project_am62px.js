@@ -180,10 +180,11 @@ const robot_template = {
     options: {
         componentName: "IPC",
         testCaseName: "ipc_notify test application",
-        testCaseIds: "SITSW-2457 SITSW-2469 SITSW-2715",
+        testCaseIds: "SITSW-2457 SITSW-2469 SITSW-2715 SITSW-9360 SITSW-9370 SITSW-9373 SITSW-9499 SITSW-9500 SITSW-9860 SITSW-9900 " +
+             "SITSW-12138 SITSW-12139 SITSW-12140 SITSW-12145 SITSW-12146",
         withCfg: true,
         cfgPath: "test/drivers/ipc_notify/{board}/ipc_notify_test_sbl_uart_${DEVICE_TYPE}.cfg",
-        expectTimeout: 60,
+        expectTimeout: 120,
         appName: "test_ipc_notify",
     },
 };

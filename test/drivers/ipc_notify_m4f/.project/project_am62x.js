@@ -276,6 +276,20 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "IPC",
+        testCaseName: "test_ipc_notify_m4f test application",
+        appName: "test_ipc_notify_m4f",
+        testCaseIds: "SITSW-2469 SITSW-9360 SITSW-9370 SITSW-9373 SITSW-9499 SITSW-9500 SITSW-9860 SITSW-9900",
+        withCfg: true,
+        cfgPath: "test/drivers/ipc_notify_m4f/{board}/ipc_notify_test_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectTimeout: 120,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -324,6 +338,10 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_a53_amp;
         build_property.isAmpSHM = true;
         build_property.cflags = cflags_free_rtos;
+    }
+
+    if (buildOption.cpu.match(/m4f*/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
     }
 
     return build_property;

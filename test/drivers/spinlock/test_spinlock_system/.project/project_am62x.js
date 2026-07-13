@@ -166,6 +166,21 @@ const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62x-sk", os: "freertos"},
 ];
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SPINLOCK",
+        testCaseName: "Spinlock driver system test application",
+        appName: "test_spinlock_system",
+        testCaseIds: "SITSW-10876 SITSW-10877 SITSW-10878 SITSW-10879",
+        withCfg: true,
+        cfgPath: "test/drivers/spinlock/test_spinlock_system/{board}/test_spinlock_sys_sbl_uart_${DEVICE_TYPE}.cfg",
+        timeout: 660,
+        expectTimeout: 120,
+    },
+};
+
 function getComponentProperty() {
     let property = {};
 
@@ -194,6 +209,9 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_dm_r5f;
         build_property.templates = templates_freertos_dm_r5f;
         build_property.defines = defines_dm_r5f;
+
+        /* Only attach robot template to the master/driver core */
+        build_property.templates = [...(build_property.templates || []), robot_template];
     }
 
     else if (buildOption.cpu.match(/a53*/)) {

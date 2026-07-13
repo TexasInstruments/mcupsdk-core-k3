@@ -6,17 +6,18 @@
 
 \cond SOC_AM275X
 
-This is a bootloader example, which shows an example of booting  RTOS/NORTOS applications on R5 and C7x cores.
+This is a bootloader example, which shows an example of booting  RTOS/NORTOS applications on R5, C7x and HSM cores.
 
 The booting is done in single stage
- - The stage is multithreaded with one thread runs the sciServer and the other thread runs the SBL which boots the RTOS/NORTOS applications to R5/C7x cores
+ - The stage is multithreaded with one thread runs the sciServer and the other thread runs the SBL which boots the RTOS/NORTOS applications to R5/C7x/HSM cores
 
 SBL reads the CANUART_WAKE_STAT1 MMR in wakeup control MMR to detect partial IO (or IO retention) mode exit. If exit is detected, then SBL will save the wake reason, that is the pad number that triggered the wakeup in BACKUP MMR0 of wakeup control MMR and clear isolation from the pins. Then, it continues the boot.
 
-The SBL uses 4 appimages
+The SBL uses 5 appimages
 - tiboot3.bin with **SBL, TIFS, BoardConfig**
 - mcelf for **R5**
 - mcelf for **C7x**
+- mcelf for **HSM**
 \endcond
 
 # Supported Combinations

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2012-2025
+ *  Copyright (c) Texas Instruments Incorporated 2012-2026
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -1428,7 +1428,7 @@ int32_t Fvid2_getModeInfo(Fvid2_ModeInfo *modeInfo);
  *  \return Returns a const pointer to the string. If the data format is not
  *  known, then it return the string as "UNKNOWN".
  */
-const Char *Fvid2_getDataFmtString(uint32_t dataFmt);
+const char *Fvid2_getDataFmtString(uint32_t dataFmt);
 
 /**
  *  \brief Function to get the name of the standard in printable string.
@@ -1439,7 +1439,7 @@ const Char *Fvid2_getDataFmtString(uint32_t dataFmt);
  *  \return Returns a const pointer to the string. If the standard is not
  *  known, then it return the string as "UNKNOWN".
  */
-const Char *Fvid2_getStandardString(uint32_t standard);
+const char *Fvid2_getStandardString(uint32_t standard);
 
 /**
  *  \brief Function to check whether a data format is YUV422.

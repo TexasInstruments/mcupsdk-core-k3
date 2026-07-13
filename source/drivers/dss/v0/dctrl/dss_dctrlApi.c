@@ -1124,7 +1124,10 @@ static int32_t Dss_dctrlDrvSetOverlayParamsIoctl(
         else
         {
             CSL_dssOverlayColorBarEnable(overlayRegs, TRUE);
-            Dss_dctrlVpSetGoBit(vpId);
+            if(vpId < CSL_DSS_VP_ID_MAX)
+            {
+                Dss_dctrlVpSetGoBit(vpId);
+            }
         }
     }
 
@@ -1785,94 +1788,101 @@ static void Dss_dctrlFuncCbFxn(const uint32_t *event,
     uint32_t eventGroup = pClientObj->eventGroup;
     Dss_convEventGrouptoModule(eventGroup, &vpId);
     GT_assert(DssTrace, (CSL_DSS_MODULE_INVALID != vpId));
-
-    for(i=0U; i<numEvents; i++)
+    
+    if(vpId < CSL_DSS_VP_ID_MAX)
     {
-        currEvent = event[i];
-        if(DSS_VP_EVENT_LINE_NUM == currEvent)
+        for(i=0U; i<numEvents; i++)
         {
-            gDss_DctrlDrvInfo.isPushSafe[vpId] = FALSE;
-            if(NULL != gDss_DctrlDrvInfo.lineNumCbParams[vpId].lineNumCbFxn)
+            currEvent = event[i];
+            if(DSS_VP_EVENT_LINE_NUM == currEvent)
             {
-                gDss_DctrlDrvInfo.lineNumCbParams[vpId].lineNumCbFxn(
-                            vpId,
-                            gDss_DctrlDrvInfo.lineNumCbParams[vpId].appData);
-            }
-        }
-        else if(DSS_VP_EVENT_VSYNC == currEvent)
-        {
-            /* Post crate sync semaphore */
-            /* Post the instance semaphore */
-            (void) SemaphoreP_post(&gDssStartSyncSem);
-            activePipeNum = 0U;
-            for(j=0U; j<gDss_DctrlDrvInfo.numValidPipes; j++)
-            {
-                if(gDss_DctrlDrvInfo.pipeInfo[j].vpId == vpId)
+                gDss_DctrlDrvInfo.isPushSafe[vpId] = FALSE;
+                if(NULL != gDss_DctrlDrvInfo.lineNumCbParams[vpId].lineNumCbFxn)
                 {
-                    if((gDss_DctrlDrvInfo.pipeInfo[j].pipeState ==
-                                                DSS_DCTRL_PIPE_STARTING)     ||
-                       (gDss_DctrlDrvInfo.pipeInfo[j].pipeState ==
-                                                DSS_DCTRL_PIPE_STARTED)      ||
-                       (gDss_DctrlDrvInfo.pipeInfo[j].pipeState ==
-                                                DSS_DCTRL_PIPE_RUNNING)      ||
-                       (gDss_DctrlDrvInfo.pipeInfo[j].pipeState ==
-                                                DSS_DCTRL_PIPE_STOPPING))
-                    {
-                        activePipeNum++;
-                        if(gDss_DctrlDrvInfo.pipeInfo[j].pipeState ==
-                                                    DSS_DCTRL_PIPE_STARTING)
-                        {
-                            /* This is the first VSync for dummy start i.e.
-                             * either start is synchronous or start was called
-                             * close to VSYNC */
-                            gDss_DctrlDrvInfo.pipeInfo[j].pipeState =
-                                                        DSS_DCTRL_PIPE_STARTED;
-                        }
-                        if(gDss_DctrlDrvInfo.pipeInfo[j].pipeState ==
-                                                    DSS_DCTRL_PIPE_STARTED)
-                        {
-                            /* This is the first actual VSync where the buffer
-                             * B1's display has started */
-                            gDss_DctrlDrvInfo.pipeInfo[j].pipeState =
-                                                        DSS_DCTRL_PIPE_RUNNING;
-                        }
-                        if(gDss_DctrlDrvInfo.pipeInfo[j].pipeState ==
-                                                    DSS_DCTRL_PIPE_STOPPING)
-                        {
-                            /* This is the VSYNC before synchronous stop */
-                            gDss_DctrlDrvInfo.pipeInfo[j].pipeState =
-                                                        DSS_DCTRL_PIPE_STOPPED;
-                        }
-                        gDss_DctrlDrvInfo.isPushSafe[vpId] = TRUE;
-                        GT_assert(DssTrace,
-                                  (NULL !=
-                                   gDss_DctrlDrvInfo.pipeInfo[j].gClientInfo.cbFxn));
-                        gDss_DctrlDrvInfo.pipeInfo[j].gClientInfo.cbFxn(
-                            gDss_DctrlDrvInfo.pipeInfo[j].gClientInfo.arg);
-                    }
-                    else if(gDss_DctrlDrvInfo.pipeInfo[j].pipeState ==
-                                                    DSS_DCTRL_PIPE_STOPPED)
-                    {
-                        /* This is the actual stop */
-                        gDss_DctrlDrvInfo.pipeInfo[j].pipeState =
-                                                        DSS_DCTRL_PIPE_OPENED;
-                        (void) SemaphoreP_post(&gDss_DctrlDrvInfo.pipeInfo[j].stopSem);
-                    }
-                    else {
-                        /* To fix MISRAC issue - this is a valid else - do nothing */
-                    }
+                    gDss_DctrlDrvInfo.lineNumCbParams[vpId].lineNumCbFxn(
+                                vpId,
+                                gDss_DctrlDrvInfo.lineNumCbParams[vpId].appData);
                 }
             }
-
-            if(activePipeNum > 0U)
+            else if(DSS_VP_EVENT_VSYNC == currEvent)
             {
-                Dss_dctrlVpSetGoBit(vpId);
+                /* Post crate sync semaphore */
+                /* Post the instance semaphore */
+                (void) SemaphoreP_post(&gDssStartSyncSem);
+                activePipeNum = 0U;
+                for(j=0U; j<gDss_DctrlDrvInfo.numValidPipes; j++)
+                {
+                    if(gDss_DctrlDrvInfo.pipeInfo[j].vpId == vpId)
+                    {
+                        if((gDss_DctrlDrvInfo.pipeInfo[j].pipeState ==
+                                                    DSS_DCTRL_PIPE_STARTING)     ||
+                        (gDss_DctrlDrvInfo.pipeInfo[j].pipeState ==
+                                                    DSS_DCTRL_PIPE_STARTED)      ||
+                        (gDss_DctrlDrvInfo.pipeInfo[j].pipeState ==
+                                                    DSS_DCTRL_PIPE_RUNNING)      ||
+                        (gDss_DctrlDrvInfo.pipeInfo[j].pipeState ==
+                                                    DSS_DCTRL_PIPE_STOPPING))
+                        {
+                            activePipeNum++;
+                            if(gDss_DctrlDrvInfo.pipeInfo[j].pipeState ==
+                                                        DSS_DCTRL_PIPE_STARTING)
+                            {
+                                /* This is the first VSync for dummy start i.e.
+                                * either start is synchronous or start was called
+                                * close to VSYNC */
+                                gDss_DctrlDrvInfo.pipeInfo[j].pipeState =
+                                                            DSS_DCTRL_PIPE_STARTED;
+                            }
+                            if(gDss_DctrlDrvInfo.pipeInfo[j].pipeState ==
+                                                        DSS_DCTRL_PIPE_STARTED)
+                            {
+                                /* This is the first actual VSync where the buffer
+                                * B1's display has started */
+                                gDss_DctrlDrvInfo.pipeInfo[j].pipeState =
+                                                            DSS_DCTRL_PIPE_RUNNING;
+                            }
+                            if(gDss_DctrlDrvInfo.pipeInfo[j].pipeState ==
+                                                        DSS_DCTRL_PIPE_STOPPING)
+                            {
+                                /* This is the VSYNC before synchronous stop */
+                                gDss_DctrlDrvInfo.pipeInfo[j].pipeState =
+                                                            DSS_DCTRL_PIPE_STOPPED;
+                            }
+                            gDss_DctrlDrvInfo.isPushSafe[vpId] = TRUE;
+                            GT_assert(DssTrace,
+                                    (NULL !=
+                                    gDss_DctrlDrvInfo.pipeInfo[j].gClientInfo.cbFxn));
+                            gDss_DctrlDrvInfo.pipeInfo[j].gClientInfo.cbFxn(
+                                gDss_DctrlDrvInfo.pipeInfo[j].gClientInfo.arg);
+                        }
+                        else if(gDss_DctrlDrvInfo.pipeInfo[j].pipeState ==
+                                                        DSS_DCTRL_PIPE_STOPPED)
+                        {
+                            /* This is the actual stop */
+                            gDss_DctrlDrvInfo.pipeInfo[j].pipeState =
+                                                            DSS_DCTRL_PIPE_OPENED;
+                            (void) SemaphoreP_post(&gDss_DctrlDrvInfo.pipeInfo[j].stopSem);
+                        }
+                        else {
+                            /* To fix MISRAC issue - this is a valid else - do nothing */
+                        }
+                    }
+                }
+
+                if(activePipeNum > 0U)
+                {
+                    Dss_dctrlVpSetGoBit(vpId);
+                }
+            }
+            else
+            {
+                GT_assert(DssTrace, (bool)FALSE);
             }
         }
-        else
-        {
-            GT_assert(DssTrace, (bool)FALSE);
-        }
+    }
+    else
+    {
+        GT_assert(DssTrace, (bool)FALSE);
     }
 
     return;
@@ -1891,23 +1901,30 @@ static void Dss_dctrlErrCbFxn(const uint32_t *event,
     Dss_convEventGrouptoModule(eventGroup, &vpId);
     GT_assert(DssTrace, (CSL_DSS_MODULE_INVALID != vpId));
 
-    for(i=0U; i<numEvents; i++)
+    if(vpId < CSL_DSS_VP_ID_MAX)
     {
-        currEvent = event[i];
-        if(DSS_VP_EVENT_SYNC_LOST == currEvent)
+        for(i=0U; i<numEvents; i++)
         {
-           pErrorCnt->vpsyncLost[vpId]++;
-           if(NULL != gDss_DctrlDrvInfo.syncLostCbParams[vpId].syncLostCbFxn)
-           {
-               gDss_DctrlDrvInfo.syncLostCbParams[vpId].syncLostCbFxn(
-                            vpId,
-                            gDss_DctrlDrvInfo.syncLostCbParams[vpId].appData);
-           }
+            currEvent = event[i];
+            if(DSS_VP_EVENT_SYNC_LOST == currEvent)
+            {
+            pErrorCnt->vpsyncLost[vpId]++;
+            if(NULL != gDss_DctrlDrvInfo.syncLostCbParams[vpId].syncLostCbFxn)
+            {
+                gDss_DctrlDrvInfo.syncLostCbParams[vpId].syncLostCbFxn(
+                                vpId,
+                                gDss_DctrlDrvInfo.syncLostCbParams[vpId].appData);
+            }
+            }
+            else
+            {
+                GT_assert(DssTrace, (bool)FALSE);
+            }
         }
-        else
-        {
-            GT_assert(DssTrace, (bool)FALSE);
-        }
+    }
+    else
+    {
+        GT_assert(DssTrace, (bool)FALSE);
     }
 
     return;
@@ -1928,6 +1945,7 @@ static void Dss_dctrlSafetyErrCbFxn(const uint32_t *event,
     pErrorCnt = &gDss_DctrlDrvInfo.errorCnt;
     Dss_convEventGrouptoModule(eventGroup, &vpId);
     GT_assert(DssTrace, (CSL_DSS_MODULE_INVALID != vpId));
+    GT_assert(DssTrace, (vpId < CSL_DSS_VP_ID_MAX));
 
     /* Get video port registers */
     socInfo = Dss_getSocInfo();
@@ -1941,17 +1959,19 @@ static void Dss_dctrlSafetyErrCbFxn(const uint32_t *event,
         {
             regionId = Dss_dctrlGetVpSafetyRegionId(currEvent);
             GT_assert(DssTrace, (CSL_DSS_VP_SAFETY_REGION_INVALID != regionId));
+            GT_assert(DssTrace, (regionId < CSL_DSS_VP_SAFETY_REGION_MAX));
+
             pErrorCnt->vpSafetyViolation[regionId][vpId]++;
             pSafetyChkParams = &gDss_DctrlDrvInfo.safetyChkParams[regionId][vpId];
             pSafetyChkParams->safetyCbData.regionId = regionId;
             pSafetyChkParams->safetyCbData.capturedSign =
-                                    CSL_dssVpGetSafetySign(vpRegs, regionId);
+            CSL_dssVpGetSafetySign(vpRegs, regionId);
 
             if(NULL != pSafetyChkParams->safetyErrCbFxn)
             {
                 pSafetyChkParams->safetyErrCbFxn(vpId,
-                                                 pSafetyChkParams->safetyCbData,
-                                                 pSafetyChkParams->appData);
+                                                pSafetyChkParams->safetyCbData,
+                                                pSafetyChkParams->appData);
             }
         }
         else

@@ -115,7 +115,7 @@ void DebugP_memTraceLogWriterPutLine(uint8_t *buf, uint16_t num_bytes)
 void DebugP_memLogWriterPutChar(char character)
 {
 #define DEBUGP_MEM_TRACE_LOG_WRITER_LINE_BUF_SIZE (120u)
-static uint8_t lineBuf[DEBUGP_MEM_TRACE_LOG_WRITER_LINE_BUF_SIZE+UNSIGNED_INTEGERVAL_TWO]; /* +2 to add \r\n char at end of string in worst case */
+static uint8_t lineBuf[DEBUGP_MEM_TRACE_LOG_WRITER_LINE_BUF_SIZE + UNSIGNED_INTEGERVAL_TWO]; /* +2 to add \r\n char at end of string in worst case */
 static uint32_t lineBufIndex = 0;
 
     if(lineBufIndex==0U)
@@ -128,7 +128,11 @@ static uint32_t lineBufIndex = 0;
                             (uint32_t)(curTime%TIME_IN_MICRO_SECONDS)
                             );
     }
-    lineBuf[lineBufIndex]=(uint8_t)character;
+    if(lineBufIndex < (DEBUGP_MEM_TRACE_LOG_WRITER_LINE_BUF_SIZE + UNSIGNED_INTEGERVAL_TWO))
+    {
+        lineBuf[lineBufIndex]=(uint8_t)character;
+    }
+    
 	lineBufIndex = lineBufIndex + 1U;
     if( (character == '\n') ||
         (lineBufIndex >= (DEBUGP_MEM_TRACE_LOG_WRITER_LINE_BUF_SIZE)))
@@ -136,16 +140,25 @@ static uint32_t lineBufIndex = 0;
         if(lineBufIndex >= (DEBUGP_MEM_TRACE_LOG_WRITER_LINE_BUF_SIZE))
         {
             /* add EOL */
-            lineBuf[lineBufIndex]=(uint8_t)'\r';
+            if(lineBufIndex < (DEBUGP_MEM_TRACE_LOG_WRITER_LINE_BUF_SIZE + UNSIGNED_INTEGERVAL_TWO))
+            {
+                lineBuf[lineBufIndex]=(uint8_t)'\r';
+            }
 			lineBufIndex = lineBufIndex + 1U;
-            lineBuf[lineBufIndex]=(uint8_t)'\n';
+            if(lineBufIndex < (DEBUGP_MEM_TRACE_LOG_WRITER_LINE_BUF_SIZE + UNSIGNED_INTEGERVAL_TWO))
+            {
+                lineBuf[lineBufIndex]=(uint8_t)'\n';
+            }
 			lineBufIndex = lineBufIndex + 1U;
         }
         if(lineBuf[lineBufIndex-UNSIGNED_INTEGERVAL_TWO]!=(uint8_t)'\r')
         {
             /* if line did not terminate with \r followed by \n, then add the \r */
-            lineBuf[lineBufIndex-1U]=(uint8_t)'\r';
-            lineBuf[lineBufIndex]=(uint8_t)'\n';
+            if(lineBufIndex < (DEBUGP_MEM_TRACE_LOG_WRITER_LINE_BUF_SIZE + UNSIGNED_INTEGERVAL_TWO))
+            {
+                lineBuf[lineBufIndex-1U]=(uint8_t)'\r';
+                lineBuf[lineBufIndex]=(uint8_t)'\n';
+            }
 			lineBufIndex = lineBufIndex + 1U;
         }
         /* flush line to shared memory */

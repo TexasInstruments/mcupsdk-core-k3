@@ -130,6 +130,7 @@ int32_t SemaphoreP_pend(SemaphoreP_Object *obj, uint32_t timeout)
     SemaphoreP_Struct *pSemaphore = (SemaphoreP_Struct *)obj;
     uint32_t isSemTaken = 0U;
     int32_t status;
+    DebugP_assert(pSemaphore->semHndl != NULL);
 
     if(pSemaphore->isRecursiveMutex != 0U)
     {
@@ -173,6 +174,7 @@ int32_t SemaphoreP_pend(SemaphoreP_Object *obj, uint32_t timeout)
 void SemaphoreP_post(SemaphoreP_Object *obj)
 {
     SemaphoreP_Struct *pSemaphore = (SemaphoreP_Struct *)obj;
+    DebugP_assert(pSemaphore->semHndl != NULL);
 
     if(pSemaphore->isRecursiveMutex != 0U)
     {

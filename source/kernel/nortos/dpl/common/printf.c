@@ -341,6 +341,7 @@ static size_t _ftoa(out_fct_type out, char* buffer, size_t idx, size_t maxlen, d
 {
   char buf[PRINTF_FTOA_BUFFER_SIZE];
   size_t len  = 0U;
+  size_t ret = 0U;
   double diff = 0.0;
 
   // powers of 10
@@ -491,7 +492,13 @@ static size_t _ftoa(out_fct_type out, char* buffer, size_t idx, size_t maxlen, d
     }
   }
 
-  return _out_rev(out, buffer, idx, maxlen, buf, len, width, flags);
+  if(len < PRINTF_FTOA_BUFFER_SIZE)
+  {
+    ret = _out_rev(out, buffer, idx, maxlen, buf, (size_t)len, width, flags);
+  }
+  
+  return ret;
+
 }
 
 

@@ -75,10 +75,13 @@ void DebugP_uartLogWriterPutChar(char character)
 void DebugP_uartLogWriterPutCharBuffered(char character)
 {
 #define DebugP_UART_LOG_WRITER_LINE_BUF_SIZE (128u)
-static uint8_t lineBuf[DebugP_UART_LOG_WRITER_LINE_BUF_SIZE+UNSIGNED_INTEGERVAL_TWO]; /* +2 to add \r\n char at end of string in worst case */
+static uint8_t lineBuf[DebugP_UART_LOG_WRITER_LINE_BUF_SIZE + UNSIGNED_INTEGERVAL_TWO]; /* +2 to add \r\n char at end of string in worst case */
 static uint32_t lineBufIndex = 0;
 
-    lineBuf[lineBufIndex] = (uint8_t)character;
+    if(lineBufIndex < (DebugP_UART_LOG_WRITER_LINE_BUF_SIZE + UNSIGNED_INTEGERVAL_TWO))
+    {
+        lineBuf[lineBufIndex] = (uint8_t)character;
+    }
 	lineBufIndex = lineBufIndex + 1U;
     if( (character == '\n') ||
         (lineBufIndex >= (DebugP_UART_LOG_WRITER_LINE_BUF_SIZE)))
@@ -86,9 +89,15 @@ static uint32_t lineBufIndex = 0;
         if(lineBufIndex >= (DebugP_UART_LOG_WRITER_LINE_BUF_SIZE))
         {
             /* add EOL */
-            lineBuf[lineBufIndex]=(uint8_t)'\r';
+            if(lineBufIndex < (DebugP_UART_LOG_WRITER_LINE_BUF_SIZE + UNSIGNED_INTEGERVAL_TWO))
+            {
+                lineBuf[lineBufIndex]=(uint8_t)'\r';
+            }
 			lineBufIndex = lineBufIndex + 1U;
-            lineBuf[lineBufIndex]=(uint8_t)'\n';
+            if(lineBufIndex < (DebugP_UART_LOG_WRITER_LINE_BUF_SIZE + UNSIGNED_INTEGERVAL_TWO))
+            {
+                lineBuf[lineBufIndex]=(uint8_t)'\n';
+            }
 			lineBufIndex = lineBufIndex + 1U;
         }
         if(lineBufIndex < UNSIGNED_INTEGERVAL_TWO)
@@ -102,8 +111,11 @@ static uint32_t lineBufIndex = 0;
         if(lineBuf[lineBufIndex-UNSIGNED_INTEGERVAL_TWO]!=(uint8_t)'\r')
         {
             /* if line did not terminate with \r followed by \n, then add the \r */
-            lineBuf[lineBufIndex-1U] = (uint8_t)'\r';
-            lineBuf[lineBufIndex] = (uint8_t)'\n';
+            if(lineBufIndex < (DebugP_UART_LOG_WRITER_LINE_BUF_SIZE + UNSIGNED_INTEGERVAL_TWO))
+            {
+                lineBuf[lineBufIndex-1U] = (uint8_t)'\r';
+                lineBuf[lineBufIndex] = (uint8_t)'\n';
+            }
 			lineBufIndex = lineBufIndex + 1U;
         }
         /* flush line to UART */

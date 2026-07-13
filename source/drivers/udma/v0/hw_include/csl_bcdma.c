@@ -115,7 +115,8 @@ static int32_t CSL_bcdmaDoChanOp( CSL_BcdmaCfg *pCfg, CSL_BcdmaChanOp chanOp, ui
             CSL_bcdmaGetCfg( pCfg );
         }
         base0chanIdx = CSL_bcdmaMapChanIdx( pCfg, chanIdx, &chanType );
-        if( base0chanIdx != CSL_BCDMA_INVALID_CHANNEL_INDEX )
+        if((base0chanIdx != CSL_BCDMA_INVALID_CHANNEL_INDEX) &&
+           (CSL_bcdmaChanOpIsValidChanIdx( pCfg, chanType, base0chanIdx )))
         {
             retVal = CSL_bcdmaChanOp( pCfg, chanOp, chanType, base0chanIdx, pOpData );
         }

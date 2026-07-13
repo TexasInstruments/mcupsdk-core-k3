@@ -6,12 +6,11 @@ This page lists all the examples related to Ethernet Communication.
 ### Layer 2 Examples on FreeRTOS
 -# \subpage EXAMPLES_ENET_CPSW_LOOPBACK
 -# \subpage EXAMPLES_ENET_LAYER2_CPSW_SWITCH
-### TCP/IP Examples using LwIP Stack on FreeRTOS
--# \subpage EXAMPLES_ENET_LWIP_CPSW
 -# \subpage ENET_LWIP_CPSW_OPERATING_MODES
--# \subpage EXAMPLES_ENET_LWIP_CPSW_TCPSERVER
+### TCP/IP Examples using LwIP Stack on FreeRTOS
+-# \subpage EXAMPLES_NETWORKING_LWIP
 ### Time-Sensitive Networking (TSN) Examples on FreeRTOS
--# \subpage EXAMPLES_ENET_CPSW_TSN_LWIP_GPTP
+-# \subpage EXAMPLES_NETWORKING_GPTP
 ### Ethernet Firmware
 -# \subpage ETHFW_SERVER_AND_CLIENT
 \endcond
@@ -27,20 +26,11 @@ This page lists all the examples related to Ethernet Communication.
 -# \subpage EXAMPLES_ENET_LAYER2_CPSW
 -# \subpage EXAMPLES_ENET_LAYER2_CPSW_SWITCH
 -# \subpage EXAMPLES_ENET_CPSW_EST
-### TCP/IP Examples using LwIP Stack on FreeRTOS
--# \subpage EXAMPLES_CPSW_LWIP_HTTPS
--# \subpage EXAMPLES_ENET_LWIP_CPSW
 -# \subpage ENET_LWIP_CPSW_OPERATING_MODES
--# \subpage EXAMPLES_ENET_LWIP_CPSW_SOCKET
--# \subpage EXAMPLES_ENET_LWIP_CPSW_TCPCLIENT
--# \subpage EXAMPLES_ENET_LWIP_CPSW_TCPSERVER
--# \subpage EXAMPLES_ENET_LWIP_CPSW_UDP_IGMP
--# \subpage EXAMPLES_ENET_LWIP_CPSW_UDPCLIENT
+### TCP/IP Examples using LwIP Stack on FreeRTOS
+-# \subpage EXAMPLES_NETWORKING_LWIP
 ### Time-Sensitive Networking (TSN) Examples on FreeRTOS
--# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_TR
--# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_TT
--# \subpage EXAMPLES_ENET_CPSW_TSN_LWIP_GPTP
--# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_BRIDGE
+-# \subpage EXAMPLES_NETWORKING_GPTP
 \endcond
 
 
@@ -51,22 +41,13 @@ This page lists all the examples related to Ethernet Communication.
 -# \subpage EXAMPLES_ENET_LAYER2_CPSW_SWITCH
 -# \subpage EXAMPLES_ENET_CPSW_LOOPBACK
 -# \subpage EXAMPLES_ENET_LAYER2_CPSW_FAST_STARTUP_AUTOPHY
-### TCP/IP Examples using LwIP Stack on FreeRTOS
--# \subpage EXAMPLES_ENET_LWIP_CPSW
 -# \subpage ENET_LWIP_CPSW_OPERATING_MODES
--# \subpage EXAMPLES_ENET_LWIP_CPSW_TCPSERVER
+### TCP/IP Examples using LwIP Stack on FreeRTOS
+-# \subpage EXAMPLES_NETWORKING_LWIP
+### Audio Video Bridging (TSN) Examples on FreeRTOS
+-# \subpage EXAMPLES_NETWORKING_AVB
 ### Time-Sensitive Networking (TSN) Examples on FreeRTOS
--# \subpage EXAMPLES_ENET_AVB_AUDIO_ETHERRING_DEMO
--# \subpage EXAMPLES_ENET_CPSW_AVB_AUDIO_DEMO
--# \subpage EXAMPLES_ENET_AVB_MULTISTREAM_MCR
--# \subpage EXAMPLES_ENET_CPSW_AVTP
--# \subpage EXAMPLES_ENET_CPSW_TSN_AES3_AAF_APP
--# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_TR
--# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_TT
--# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_BRIDGE
--# \subpage EXAMPLES_ENET_CPSW_TSN_CRF_MASTER
--# \subpage EXAMPLES_ENET_CPSW_TSN_CRF_AVTP
--# \subpage EXAMPLES_ENET_CPSW_TSN_CRF_AUTOAMP_DEMO
+-# \subpage EXAMPLES_NETWORKING_GPTP
 \endcond
 
 \cond SOC_AM62DX
@@ -76,28 +57,13 @@ This page lists all the examples related to Ethernet Communication.
 -# \subpage EXAMPLES_ENET_LAYER2_CPSW_SWITCH
 -# \subpage EXAMPLES_ENET_CPSW_EST
 -# \subpage EXAMPLES_ENET_LAYER2_CPSW_FAST_STARTUP_AUTOPHY
-### TCP/IP Examples using LwIP Stack on FreeRTOS
--# \subpage EXAMPLES_ENET_LWIP_CPSW
 -# \subpage ENET_LWIP_CPSW_OPERATING_MODES
--# \subpage EXAMPLES_ENET_LWIP_CPSW_SOCKET
--# \subpage EXAMPLES_ENET_LWIP_CPSW_TCPCLIENT
--# \subpage EXAMPLES_ENET_LWIP_CPSW_TCPSERVER
--# \subpage EXAMPLES_ENET_LWIP_CPSW_UDP_IGMP
--# \subpage EXAMPLES_ENET_LWIP_CPSW_UDPCLIENT
--# \subpage EXAMPLES_CPSW_LWIP_HTTPS
--# \subpage EXAMPLES_CPSW_LWIP_MQTT
-### TCP/IP Examples using LwIP Stack on Baremetal (NoRTOS)
--# \subpage EXAMPLES_ENET_LWIP_CPSW_HTTPSERVER
+### TCP/IP Examples using LwIP Stack
+-# \subpage EXAMPLES_NETWORKING_LWIP
+### Audio Video Bridging (TSN) Examples on FreeRTOS
+-# \subpage EXAMPLES_NETWORKING_AVB
 ### Time-Sensitive Networking (TSN) Examples on FreeRTOS
--# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_TR
--# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_TT
--# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_BRIDGE
--# \subpage EXAMPLES_ENET_CPSW_TSN_LWIP_GPTP
--# \subpage EXAMPLES_ENET_CPSW_TSN_AES3_AAF_APP
--# \subpage EXAMPLES_ENET_CPSW_AVTP
--# \subpage EXAMPLES_ENET_CPSW_TSN_CRF_MASTER
--# \subpage EXAMPLES_ENET_CPSW_TSN_CRF_AVTP
--# \subpage EXAMPLES_ENET_CPSW_TSN_CRF_AUTOAMP_DEMO
+-# \subpage EXAMPLES_NETWORKING_GPTP
 ### LLDP Example on FreeRTOS
 -# \subpage EXAMPLES_ENET_CPSW_LLDP
 ### Ethernet Firmware
@@ -108,19 +74,10 @@ This page lists all the examples related to Ethernet Communication.
 ### Layer 2 Examples on FreeRTOS
 -# \subpage EXAMPLES_ENET_CPSW_LOOPBACK
 -# \subpage EXAMPLES_ENET_LAYER2_CPSW_SWITCH
-
-### TCP/IP Examples using LwIP Stack on FreeRTOS
--# \subpage EXAMPLES_CPSW_LWIP_HTTPS
--# \subpage EXAMPLES_ENET_LWIP_CPSW
 -# \subpage ENET_LWIP_CPSW_OPERATING_MODES
--# \subpage EXAMPLES_ENET_LWIP_CPSW_SOCKET
--# \subpage EXAMPLES_ENET_LWIP_CPSW_TCPCLIENT
--# \subpage EXAMPLES_ENET_LWIP_CPSW_TCPSERVER
--# \subpage EXAMPLES_ENET_LWIP_CPSW_UDP_IGMP
--# \subpage EXAMPLES_ENET_LWIP_CPSW_UDPCLIENT
+### TCP/IP Examples using LwIP Stack on FreeRTOS
+-# \subpage EXAMPLES_NETWORKING_LWIP
 
 ### Time-Sensitive Networking (TSN) Examples on FreeRTOS
--# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_TR
--# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_TT
--# \subpage EXAMPLES_ENET_CPSW_TSN_LWIP_GPTP
+-# \subpage EXAMPLES_NETWORKING_GPTP
 \endcond

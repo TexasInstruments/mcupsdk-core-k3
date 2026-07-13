@@ -1,0 +1,21 @@
+#  gPTP Examples using TSN Stack {#EXAMPLES_NETWORKING_GPTP}
+
+This page lists all the examples related to TSN and gPTP
+
+\cond SOC_AM62PX
+-# \subpage EXAMPLES_ENET_CPSW_TSN_LWIP_GPTP
+\endcond
+
+\cond SOC_AM62X || SOC_AM62DX
+-# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_TR
+-# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_TT
+-# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_BRIDGE
+-# \subpage EXAMPLES_ENET_CPSW_TSN_LWIP_GPTP
+\endcond
+
+\cond SOC_AM275X  || SOC_AM62LX
+-# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_TR
+-# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_TT
+-# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_BRIDGE
+\endcond
+

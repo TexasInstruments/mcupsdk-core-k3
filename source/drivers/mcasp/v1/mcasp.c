@@ -510,7 +510,7 @@ static int32_t MCASP_validateTransaction (MCASP_Handle handle, MCASP_Transaction
 
         if(object->transferMode == MCASP_TRANSFER_MODE_DMA)
         {
-            status = MCASP_prepareDmaIcnts(handle, (uint64_t)(txn->count*WORD_BYTE_COUNT), isTx);
+            status = MCASP_prepareDmaIcnts(handle, (uint64_t)(txn->count)*WORD_BYTE_COUNT, isTx);
         }
     }
     return status;

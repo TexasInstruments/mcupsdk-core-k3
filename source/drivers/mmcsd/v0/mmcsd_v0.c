@@ -3055,7 +3055,7 @@ static void MMCSD_xferStatusPollingFxn(MMCSD_Handle handle, MMCSD_Transaction *t
         {
             if(trans->dir == MMCSD_CMD_XFER_TYPE_READ)
             {
-                uint8_t *endResidualAddr = (uint8_t *)((uint64_t)trans->dataBuf + (uint64_t)((trans->blockSize * trans->blockCount) - (trans->endResidualBytes)));
+                uint8_t *endResidualAddr = (uint8_t *)((uint64_t)trans->dataBuf + (((uint64_t)(trans->blockSize) * trans->blockCount) - (uint64_t)(trans->endResidualBytes)));
                 (void) memcpy(trans->dataBuf, trans->startResidual, trans->startResidualBytes);
                 (void) memcpy(endResidualAddr, trans->endResidual, trans->endResidualBytes);
             }

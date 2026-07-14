@@ -1,6 +1,6 @@
 let path = require('path');
 
-let device = "am62px";
+let device = "am62ax";
 
 const files = {
 	common: [
@@ -19,9 +19,12 @@ const filedirs = {
 	],
 };
 
-const includes_nortos = {
+const includes_freertos_dm_r5f = {
 	common: [
-		"${MCU_PLUS_SDK_PATH}/test/unity",
+		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
+		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/r5f",
+        "${MCU_PLUS_SDK_PATH}/test/unity",
 	],
 };
 
@@ -29,96 +32,110 @@ const includes_freertos_mcu_r5f = {
 	common: [
 		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
 		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
-		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62px/r5f",
-		"${MCU_PLUS_SDK_PATH}/test/unity",
+		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/r5f",
+        "${MCU_PLUS_SDK_PATH}/test/unity",
 	],
 };
 
-const includes_freertos_wkup_r5f = {
+const includes_nortos = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/test/unity",
+    ],
+};
+
+const libdirs_nortos = {
 	common: [
-		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
-		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
-		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62px/r5f",
-		"${MCU_PLUS_SDK_PATH}/test/unity",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
 	],
 };
 
-const libdirs_nortos_mcu_r5f = {
-	common: [
-		"${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
-		"${MCU_PLUS_SDK_PATH}/source/drivers/lib",
-		"${MCU_PLUS_SDK_PATH}/source/board/lib",
-		"${MCU_PLUS_SDK_PATH}/test/unity/lib",
-	],
+const libdirs_freertos_dm_r5f = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+    ],
 };
 
 const libdirs_freertos_mcu_r5f = {
-	common: [
-		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
-		"${MCU_PLUS_SDK_PATH}/source/drivers/lib",
-		"${MCU_PLUS_SDK_PATH}/source/board/lib",
-		"${MCU_PLUS_SDK_PATH}/test/unity/lib",
-	],
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+    ],
 };
 
-const libdirs_wkup_r5f = {
-	common: [
-		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
-		"${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
-		"${MCU_PLUS_SDK_PATH}/source/drivers/lib",
-		"${MCU_PLUS_SDK_PATH}/source/board/lib",
-		"${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
-		"${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
-		"${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
-		"${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
-		"${MCU_PLUS_SDK_PATH}/test/unity/lib",
-		"${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
-	],
+const libdirs_prebuild_nortos = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
+    ],
 };
 
-const libs_nortos_mcu_r5f = {
+const libdirs_prebuild_freertos = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
+    ],
+};
+
+const libs_prebuild_nortos = {
+    common: [
+        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+    ]
+};
+
+const libs_prebuild_freertos = {
+    common: [
+        "rm_pm_hal.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+    ]
+};
+
+const libs_nortos = {
 	common: [
-		"nortos.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
-		"drivers.am62px.mcu-r5f.ti-arm-clang.${ConfigName}.lib",
-		"board.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
-		"unity.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+		"nortos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+		"drivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
 	],
 };
 
 const libs_freertos_mcu_r5f = {
 	common: [
-		"freertos.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
-		"drivers.am62px.mcu-r5f.ti-arm-clang.${ConfigName}.lib",
-		"board.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
-		"unity.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
+		"freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+		"drivers.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
 	],
 };
 
-const libs_nortos_wkup_r5f = {
+const libs_freertos_dm_r5f = {
 	common: [
-		"nortos.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
-		"drivers.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
-		"board.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
-		"sciserver.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
-		"sciclient_direct.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
-		"rm_pm_hal.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
-		"self_reset.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
-		"unity.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
-		"dm_stub.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
-	],
-};
-
-const libs_freertos_wkup_r5f = {
-	common: [
-		"freertos.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
-		"drivers.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
-		"board.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
-		"sciserver.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
-		"sciclient_direct.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
-		"rm_pm_hal.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
-		"self_reset.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
-		"unity.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
-		"dm_stub.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
+        "freertos.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62ax.dm-r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
+        "unity.am62ax.r5f.ti-arm-clang.${ConfigName}.lib",
 	],
 };
 
@@ -128,23 +145,32 @@ const lnkfiles = {
 	]
 };
 
+const defines_dm_r5f_freertos = {
+    common:[
+        "SOC_AM62AX",
+        "ENABLE_SCICLIENT_DIRECT",
+        "ENABLE_MT_TESTS",
+    ]
+}
+
+const defines_dm_r5f_nortos = {
+    common:[
+        "SOC_AM62AX",
+        "ENABLE_SCICLIENT_DIRECT",
+    ]
+}
+
 const defines_mcu_r5f_freertos = {
-	common: [
-		"ENABLE_MT_TESTS",
-	],
+    common:[
+        "SOC_AM62AX",
+        "ENABLE_MT_TESTS",
+    ]
 };
 
-const defines_wkup_r5f_nortos = {
-	common: [
-		"ENABLE_SCICLIENT_DIRECT",
-	],
-};
-
-const defines_wkup_r5f_freertos = {
-	common: [
-		"ENABLE_SCICLIENT_DIRECT",
-		"ENABLE_MT_TESTS",
-	],
+const defines_mcu_r5f_nortos = {
+    common:[
+        "SOC_AM62AX",
+    ]
 };
 
 const syscfgfile = "../example.syscfg";
@@ -152,11 +178,11 @@ const syscfgfile = "../example.syscfg";
 const templates_nortos_mcu_r5f =
 [
 	{
-		input: ".project/templates/am62px/common/linker_mcu-r5f.cmd.xdt",
+		input: ".project/templates/am62ax/common/linker_mcu-r5f.cmd.xdt",
 		output: "linker.cmd",
 	},
 	{
-		input: ".project/templates/am62px/nortos/main_nortos.c.xdt",
+		input: ".project/templates/am62ax/nortos/main_nortos.c.xdt",
 		output: "../main.c",
 		options: {
 			entryFunction: "test_pmu_main",
@@ -167,11 +193,11 @@ const templates_nortos_mcu_r5f =
 const templates_freertos_mcu_r5f =
 [
 	{
-		input: ".project/templates/am62px/common/linker_mcu-r5f.cmd.xdt",
+		input: ".project/templates/am62ax/common/linker_mcu-r5f.cmd.xdt",
 		output: "linker.cmd",
 	},
 	{
-		input: ".project/templates/am62px/freertos/main_freertos.c.xdt",
+		input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
 		output: "../main.c",
 		options: {
 			entryFunction: "test_pmu_main",
@@ -179,10 +205,10 @@ const templates_freertos_mcu_r5f =
 	}
 ];
 
-const templates_nortos_wkup_r5f =
+const templates_nortos_dm_r5f =
 [
 	{
-		input: ".project/templates/am62px/common/linker_wkup-r5f.cmd.xdt",
+		input: ".project/templates/am62ax/common/linker_dm_r5f.cmd.xdt",
 		output: "linker.cmd",
 		options: {
 			heapSize: 0x8000,
@@ -196,7 +222,7 @@ const templates_nortos_wkup_r5f =
 		},
 	},
 	{
-		input: ".project/templates/am62px/nortos/main_nortos.c.xdt",
+		input: ".project/templates/am62ax/nortos/main_nortos.c.xdt",
 		output: "../main.c",
 		options: {
 			entryFunction: "test_pmu_main",
@@ -204,13 +230,13 @@ const templates_nortos_wkup_r5f =
 	}
 ];
 
-const templates_freertos_wkup_r5f =
+const templates_freertos_dm_r5f =
 [
 	{
-		input: ".project/templates/am62px/common/linker_wkup-r5f.cmd.xdt",
+		input: ".project/templates/am62ax/common/linker_dm_r5f.cmd.xdt",
 		output: "linker.cmd",
 		options: {
-			dmWithBootloader: "true",
+            dmWithBootloader: "true",
 			heapSize: 0x8000,
 			stackSize: 0x4000,
 			irqStackSize: 0x1000,
@@ -222,7 +248,7 @@ const templates_freertos_wkup_r5f =
 		},
 	},
 	{
-		input: ".project/templates/am62px/freertos/main_freertos_dm.c.xdt",
+		input: ".project/templates/am62ax/freertos/main_freertos_dm.c.xdt",
 		output: "../main.c",
 		options: {
 			entryFunction: "test_pmu_main",
@@ -231,7 +257,7 @@ const templates_freertos_wkup_r5f =
 ];
 
 const robot_template_mcu_nortos = {
-    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "PMU",
@@ -247,7 +273,7 @@ const robot_template_mcu_nortos = {
 };
 
 const robot_template_mcu_freertos = {
-    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "PMU",
@@ -263,13 +289,13 @@ const robot_template_mcu_freertos = {
     },
 };
 
-const robot_template_wkup_nortos = {
-    input: ".project/templates/am62px/astra/tests.robot.xdt",
+const robot_template_dm_nortos = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "PMU",
         testCaseName: "PMU Driver Test nortos",
-        appName: "test_pmu_wkup(nortos)",
+        appName: "test_pmu_dm(nortos)",
         testCaseIds: "SITSW-10428 SITSW-10429 SITSW-10430 SITSW-10431 SITSW-10432 SITSW-10433 SITSW-10434 SITSW-10435 SITSW-10436 SITSW-10437" +
                      " SITSW-10438 SITSW-10439 SITSW-10440 SITSW-10441 SITSW-10442 SITSW-10444 SITSW-10445 SITSW-10446 SITSW-10447 SITSW-10448" +
                      " SITSW-10449 SITSW-10450 SITSW-10451 SITSW-10452 SITSW-10453 SITSW-10454 SITSW-10455 SITSW-10456 SITSW-10457 SITSW-10458" +
@@ -279,13 +305,13 @@ const robot_template_wkup_nortos = {
     },
 };
 
-const robot_template_wkup_freertos = {
-    input: ".project/templates/am62px/astra/tests.robot.xdt",
+const robot_template_dm_freertos = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "PMU",
         testCaseName: "PMU Driver Test freertos",
-        appName: "test_pmu_wkup(freertos)",
+        appName: "test_pmu_dm(freertos)",
         testCaseIds: "SITSW-10428 SITSW-10429 SITSW-10430 SITSW-10431 SITSW-10432 SITSW-10433 SITSW-10434 SITSW-10435 SITSW-10436 SITSW-10437" +
                      " SITSW-10438 SITSW-10439 SITSW-10440 SITSW-10441 SITSW-10442 SITSW-10444 SITSW-10445 SITSW-10446 SITSW-10447 SITSW-10448" +
                      " SITSW-10449 SITSW-10450 SITSW-10451 SITSW-10452 SITSW-10453 SITSW-10454 SITSW-10455 SITSW-10456 SITSW-10457 SITSW-10458" +
@@ -297,10 +323,10 @@ const robot_template_wkup_freertos = {
 };
 
 const buildOptionCombos = [
-    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "nortos"},
-    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "freertos"},
-    { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "nortos"},
-    { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "freertos"},
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos"},
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
+    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos"},
+    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -325,7 +351,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.syscfgfile = syscfgfile;
 
     if(buildOption.cpu.match(/mcu-r5f*/)) {
-        if(buildOption.os.match(/freertos*/))
+        if(buildOption.os.match(/freertos*/) )
         {
             build_property.includes = includes_freertos_mcu_r5f;
             build_property.libdirs = libdirs_freertos_mcu_r5f;
@@ -336,27 +362,32 @@ function getComponentBuildProperty(buildOption) {
         else
         {
             build_property.includes = includes_nortos;
-            build_property.libdirs = libdirs_nortos_mcu_r5f;
-            build_property.libs = libs_nortos_mcu_r5f;
+            build_property.libdirs = libdirs_nortos;
+            build_property.libs = libs_nortos;
             build_property.templates = templates_nortos_mcu_r5f;
+            build_property.defines = defines_mcu_r5f_nortos;
         }
     }
-    else if(buildOption.cpu.match(/wkup-r5f*/)) {
-        if(buildOption.os.match(/freertos*/))
+    else if(buildOption.cpu.match(/r5f*/)) {
+        if(buildOption.os.match(/freertos*/) )
         {
-            build_property.includes = includes_freertos_wkup_r5f;
-            build_property.libdirs = libdirs_wkup_r5f;
-            build_property.libs = libs_freertos_wkup_r5f;
-            build_property.templates = templates_freertos_wkup_r5f;
-            build_property.defines = defines_wkup_r5f_freertos;
+            build_property.includes = includes_freertos_dm_r5f;
+            build_property.libdirs = libdirs_freertos_dm_r5f;
+            build_property.libs = libs_freertos_dm_r5f;
+            build_property.libdirsprebuild = libdirs_prebuild_freertos;
+            build_property.libsprebuild = libs_prebuild_freertos;
+            build_property.templates = templates_freertos_dm_r5f;
+            build_property.defines = defines_dm_r5f_freertos;
         }
         else
         {
             build_property.includes = includes_nortos;
-            build_property.libdirs = libdirs_wkup_r5f;
-            build_property.libs = libs_nortos_wkup_r5f;
-            build_property.templates = templates_nortos_wkup_r5f;
-            build_property.defines = defines_wkup_r5f_nortos;
+            build_property.libdirs = libdirs_nortos;
+            build_property.libs = libs_nortos;
+            build_property.libdirsprebuild = libdirs_prebuild_nortos;
+            build_property.libsprebuild = libs_prebuild_nortos;
+            build_property.templates = templates_nortos_dm_r5f;
+            build_property.defines = defines_dm_r5f_nortos;
         }
     }
 
@@ -366,11 +397,11 @@ function getComponentBuildProperty(buildOption) {
         } else {
             build_property.templates = [...(build_property.templates || []), robot_template_mcu_nortos];
         }
-    } else if(buildOption.cpu.match(/wkup-r5f*/)) {
+    } else if(buildOption.cpu.match(/r5f*/)) {
         if(buildOption.os.match(/freertos*/)) {
-            build_property.templates = [...(build_property.templates || []), robot_template_wkup_freertos];
+            build_property.templates = [...(build_property.templates || []), robot_template_dm_freertos];
         } else {
-            build_property.templates = [...(build_property.templates || []), robot_template_wkup_nortos];
+            build_property.templates = [...(build_property.templates || []), robot_template_dm_nortos];
         }
     }
 

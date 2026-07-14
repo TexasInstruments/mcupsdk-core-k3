@@ -84,6 +84,28 @@ clean:
 scrub:
 	$(MAKE) -C . -f makefile.$(DEVICE) scrub PROFILE=$(PROFILE)
 
+ifeq ($(DEVICE),$(filter $(DEVICE), am62x am62ax am62dx am62px am275x))
+hsm:
+	$(MAKE) -C . -f makefile.$(DEVICE) hsm PROFILE=$(PROFILE)
+
+hsm-clean:
+	$(MAKE) -C . -f makefile.$(DEVICE) hsm-clean PROFILE=$(PROFILE)
+
+hsm-scrub:
+	$(MAKE) -C . -f makefile.$(DEVICE) hsm-scrub PROFILE=$(PROFILE)
+endif
+
+ifeq ($(DEVICE),$(filter $(DEVICE), am62x am62ax am62px))
+linux: 
+	$(MAKE) -C . -f makefile.$(DEVICE) linux PROFILE=$(PROFILE)
+
+linux-clean: 
+	$(MAKE) -C . -f makefile.$(DEVICE) linux-clean PROFILE=$(PROFILE)
+
+linux-scrub: 
+	$(MAKE) -C . -f makefile.$(DEVICE) linux-scrub PROFILE=$(PROFILE)
+endif
+
 libs:
 	$(MAKE) -C . -f makefile.$(DEVICE) libs PROFILE=$(PROFILE) DEVICE_TYPE=$(DEVICE_TYPE)
 

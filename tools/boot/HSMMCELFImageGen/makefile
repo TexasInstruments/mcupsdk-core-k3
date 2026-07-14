@@ -92,3 +92,5 @@ clean:
 	$(RM) $(HSM_APPIMAGE)*
 	$(RM) $(HSM_TMP_ELF)
 	$(RM) *.elf
+
+scrub: clean

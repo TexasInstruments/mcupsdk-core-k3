@@ -177,3 +177,5 @@ clean:
 	$(RM) $(LINUX_BOOTIMAGE)*
 	$(RM) *.rprc
 	$(RM) *.img
+
+scrub: clean

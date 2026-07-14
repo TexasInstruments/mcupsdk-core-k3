@@ -98,3 +98,5 @@ clean:
 	$(RM) $(HSM_APPIMAGE)*
 	$(RM) $(HSM_RPRC)
 	$(RM) *.elf
+
+scrub: clean

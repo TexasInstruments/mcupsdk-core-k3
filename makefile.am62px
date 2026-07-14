@@ -7,9 +7,28 @@ all:
 	$(MAKE) -f makefile.am62px libs-external
 	$(MAKE) -f makefile.am62px sbl
 	$(MAKE) -f makefile.am62px examples
+	$(MAKE) -f makefile.am62px hsm
 
-clean: libs-clean libs-external-clean sbl-clean examples-clean
-scrub: libs-scrub libs-external-scrub sbl-scrub examples-scrub
+clean: libs-clean libs-external-clean sbl-clean examples-clean hsm-clean
+scrub: libs-scrub libs-external-scrub sbl-scrub examples-scrub hsm-scrub
+
+hsm:
+	$(MAKE) -C tools/boot/HSMAppimageGen DEVICE=am62px all
+
+hsm-clean:
+	$(MAKE) -C tools/boot/HSMAppimageGen DEVICE=am62px clean
+
+hsm-scrub:
+	$(MAKE) -C tools/boot/HSMAppimageGen DEVICE=am62px clean
+
+linux:
+	$(MAKE) -C tools/boot/linuxAppimageGen DEVICE=am62px all
+
+linux-clean:
+	$(MAKE) -C tools/boot/linuxAppimageGen DEVICE=am62px clean
+
+linux-scrub:
+	$(MAKE) -C tools/boot/linuxAppimageGen DEVICE=am62px clean
 
 help:
 	@echo  Notes,
@@ -2630,6 +2649,8 @@ sbl-scrub:
 
 
 .PHONY: all clean scrub help
+.PHONY: hsm hsm-clean hsm-scrub
+.PHONY: linux linux-clean linux-scrub
 .PHONY: libs libs-clean libs-scrub
 .PHONY: libs-external libs-external-clean libs-external-scrub
 .PHONY: libs-private

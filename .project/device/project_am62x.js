@@ -234,6 +234,7 @@ const example_file_list = [
     "test/drivers/mmcsd/test_mmcsd_fault_inject/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_system/.project/project.js",
     "test/drivers/ospi/.project/project.js",
+    "test/drivers/pmu/.project/project.js",
     "test/drivers/pinmux_coverage/.project/project.js",
     "test/drivers/soc_coverage/.project/project.js",
     "test/drivers/uart/.project/project.js",

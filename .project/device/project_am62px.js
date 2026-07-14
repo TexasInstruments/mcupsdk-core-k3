@@ -236,6 +236,7 @@ const example_file_list = [
     "test/drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Vring_64_Test/.project/project.js",
     "test/drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Vring_128_Test/.project/project.js",
     "test/drivers/ipc_rpmsg_mcal/ipc_rpmsg_mcal_Vring_256_Test/.project/project.js",
+    "test/drivers/pmu/.project/project.js",
     "test/drivers/fvid2/.project/project.js",
     "test/drivers/ospi/.project/project.js",
     "test/drivers/soc_coverage/.project/project.js",

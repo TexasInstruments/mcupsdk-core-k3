@@ -240,23 +240,26 @@ int32_t UdmaRmInitPrms_init(uint32_t instId, Udma_RmInitPrms *rmInitPrms)
                                                 &startInstVintStart,
                                                 &num);
 #endif
-        /* Global Event */
-        /* Shared resource - Split based on instance */
-        retVal += Udma_rmSetSharedResRmInitPrms(Udma_rmGetSharedResPrms(instId, UDMA_RM_RES_ID_GLOBAL_EVENT),
-                                               instId,
-                                               rmDefBoardCfgResp[UDMA_RM_RES_ID_GLOBAL_EVENT].rangeStart,
-                                               rmDefBoardCfgResp[UDMA_RM_RES_ID_GLOBAL_EVENT].rangeNum,
-                                               &rmInitPrms->startGlobalEvent,
-                                               &rmInitPrms->numGlobalEvent);
+        if(Udma_isValidInstance(instId) == TRUE)
+        {
+            /* Global Event */
+            /* Shared resource - Split based on instance */
+            retVal += Udma_rmSetSharedResRmInitPrms(Udma_rmGetSharedResPrms(instId, UDMA_RM_RES_ID_GLOBAL_EVENT),
+                                                instId,
+                                                rmDefBoardCfgResp[UDMA_RM_RES_ID_GLOBAL_EVENT].rangeStart,
+                                                rmDefBoardCfgResp[UDMA_RM_RES_ID_GLOBAL_EVENT].rangeNum,
+                                                &rmInitPrms->startGlobalEvent,
+                                                &rmInitPrms->numGlobalEvent);
 
-        /* Virtual Interrupts */
-        /* Shared resource - Split based on instance */
-        retVal += Udma_rmSetSharedResRmInitPrms(Udma_rmGetSharedResPrms(instId, UDMA_RM_RES_ID_VINTR),
-                                               instId,
-                                               rmDefBoardCfgResp[UDMA_RM_RES_ID_VINTR].rangeStart,
-                                               rmDefBoardCfgResp[UDMA_RM_RES_ID_VINTR].rangeNum,
-                                               &rmInitPrms->startVintr,
-                                               &rmInitPrms->numVintr);
+            /* Virtual Interrupts */
+            /* Shared resource - Split based on instance */
+            retVal += Udma_rmSetSharedResRmInitPrms(Udma_rmGetSharedResPrms(instId, UDMA_RM_RES_ID_VINTR),
+                                                instId,
+                                                rmDefBoardCfgResp[UDMA_RM_RES_ID_VINTR].rangeStart,
+                                                rmDefBoardCfgResp[UDMA_RM_RES_ID_VINTR].rangeNum,
+                                                &rmInitPrms->startVintr,
+                                                &rmInitPrms->numVintr);
+        }
 #if defined(BUILD_C7X)
         rmInitPrms->startC7xCoreIntr = (UDMA_C7X_CORE_INTR_OFFSET + (rmInitPrms->startVintr - startInstVintStart));
 #endif

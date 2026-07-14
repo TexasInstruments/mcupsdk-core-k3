@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -156,7 +156,7 @@ int32_t Dss_dispDrvPrivInit(uint32_t numInst,
                             Dss_evtMgrRegister(
                                 evtMgrId,
                                 eventGroup,
-                                (const uint32_t *)&enabledEvents[0U],
+                                (const uint32_t *)enabledEvents,
                                 numEvents,
                                 Dss_dispErrCbFxn,
                                 (void *)&gDss_DispEvtMgrClientInfo[(instObj->drvInstId*DSS_DISP_INST_EVT_MGR_MAX_CLIENTS) + numHandle]);//todo: Check for this, one more place like this exists.

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -157,12 +157,12 @@ static uint32_t Dss_dispIsFarFromVsync(const Dss_DispDrvInstObj *instObj);
 /* ========================================================================== */
 
 int32_t Dss_dispDrvInit(uint32_t numInst,
-                        const Dss_DispDrvInitParams *initParams)
+                        const Dss_DispDrvInitParams *drvInitParams)
 {
     int32_t retVal = FVID2_SOK;
     Dss_DispDrvCommonObj *pObj;
 
-    retVal = Dss_dispDrvPrivInit(numInst, initParams);
+    retVal = Dss_dispDrvPrivInit(numInst, drvInitParams);
     if(FVID2_SOK == retVal)
     {
         pObj = &gDss_DispDrvCommonObj;
@@ -1562,7 +1562,8 @@ static int32_t Dss_dispDrvSetPipeSafetyParamsIoctl(
                             const Dss_DispPipeSafetyChkParams *safetyChkParams)
 {
     int32_t retVal = FVID2_SOK;
-    uint32_t eventGroup, numHandle, evtMgrId, safetyEvt;
+    uint32_t eventGroup, numHandle, evtMgrId;
+    uint32_t safetyEvt[1];
     CSL_dss_pipeRegs *pipeRegs;
     const Dss_SocInfo *socInfo;
     const CSL_DssSafetyChkCfg *safetyChkCfg;
@@ -1595,14 +1596,14 @@ static int32_t Dss_dispDrvSetPipeSafetyParamsIoctl(
                                    instObj->drvInstId,
                                    DSS_EVENT_GROUP_TYPE_PIPE);
         GT_assert(DssTrace, (DSS_EVENT_GROUP_INVALID != eventGroup));
-        safetyEvt = DSS_PIPE_EVENT_SAFETY_VIOLATION;
+        safetyEvt[0] = DSS_PIPE_EVENT_SAFETY_VIOLATION;
         numHandle = instObj->numRegEvtHandle;
         evtMgrId = Dss_getEvtMgrSafetyIntrId();
         instObj->evtGroupHandle[instObj->numRegEvtHandle] =
                             Dss_evtMgrRegister(
                                 evtMgrId,
                                 eventGroup,
-                                (const uint32_t *)&safetyEvt,
+                                (const uint32_t *)safetyEvt,
                                 1U,
                                 Dss_dispSafetyErrCbFxn,
                                 (void *)&gDss_DispEvtMgrClientInfo[(instObj->drvInstId*DSS_DISP_INST_EVT_MGR_MAX_CLIENTS) + numHandle]);

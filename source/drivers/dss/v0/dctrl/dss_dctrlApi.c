@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -257,7 +257,7 @@ int32_t Dss_dctrlDrvInit(const Dss_DctrlDrvInitParams *drvInitParams)
                             Dss_evtMgrRegister(
                                 evtMgrId,
                                 eventGroup,
-                                (const uint32_t *)&enabledEvents[0U],
+                                (const uint32_t *)enabledEvents,
                                 numEvents,
                                 Dss_dctrlFuncCbFxn,
                                 (void *)&gDss_DctrlEvtMgrClientInfo[numHandle]);
@@ -270,7 +270,7 @@ int32_t Dss_dctrlDrvInit(const Dss_DctrlDrvInitParams *drvInitParams)
                             Dss_evtMgrRegister(
                                 evtMgrId,
                                 eventGroup,
-                                (const uint32_t *)&enabledEvents[0U],
+                                (const uint32_t *)enabledEvents,
                                 numEvents,
                                 Dss_dctrlErrCbFxn,
                                 (void *)&gDss_DctrlEvtMgrClientInfo[numHandle]);
@@ -1359,7 +1359,8 @@ static int32_t Dss_dctrlDrvSetVpSafetyChkParamsIoctl(
                             const Dss_DctrlVpSafetyChkParams *safetyChkParams)
 {
     int32_t retVal = FVID2_SOK;
-    uint32_t vpId, regionId, eventGroup, numHandle, evtMgrId, safetyEvt;
+    uint32_t vpId, regionId, eventGroup, numHandle, evtMgrId;
+    uint32_t safetyEvt[1];
     Dss_DctrlDrvCommonObj *pObj;
     CSL_dss_vpRegs *vpRegs;
     const Dss_SocInfo *socInfo;
@@ -1404,13 +1405,13 @@ static int32_t Dss_dctrlDrvSetVpSafetyChkParamsIoctl(
         GT_assert(DssTrace, (DSS_EVENT_GROUP_INVALID != eventGroup));
         numHandle = pObj->instObj->numRegEvtHandle;
         evtMgrId = Dss_getEvtMgrSafetyIntrId();
-        safetyEvt = Dss_dctrlGetVpSafetyEvtId(regionId);
-        GT_assert(DssTrace, (DSS_VP_EVENT_INVALID != safetyEvt));
+        safetyEvt[0] = Dss_dctrlGetVpSafetyEvtId(regionId);
+        GT_assert(DssTrace, (DSS_VP_EVENT_INVALID != safetyEvt[0]));
         pObj->instObj->evtGroupHandle[pObj->instObj->numRegEvtHandle] =
                             Dss_evtMgrRegister(
                                 evtMgrId,
                                 eventGroup,
-                                (const uint32_t *)(&safetyEvt),
+                                (const uint32_t *)safetyEvt,
                                 1U,
                                 Dss_dctrlSafetyErrCbFxn,
                                 (void *)&gDss_DctrlEvtMgrClientInfo[numHandle]);

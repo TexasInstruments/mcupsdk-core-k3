@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -173,7 +173,7 @@ static inline void Dss_evtMgrInitParamsInit(Dss_EvtMgrInitParams *evtMgrParams);
 /*                          Function Declarations                             */
 /* ========================================================================== */
 
-int32_t Dss_evtMgrInit(const Dss_EvtMgrInitParams *initPrms);
+int32_t Dss_evtMgrInit(const Dss_EvtMgrInitParams *initParams);
 
 int32_t Dss_evtMgrDeInit(void);
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) Texas Instruments Incorporated 2023-24
+ *  Copyright (c) Texas Instruments Incorporated 2023-2026
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -865,7 +865,7 @@ static void CSL_dssVidPipeSetOutputRes(CSL_dss_pipeRegs *pipeRegs,
 
 static void CSL_dssVidPipeSetClutConfig(
                             CSL_dss_pipeRegs *pipeRegs,
-                            const uint32_t clutData[CSL_DSS_NUM_LUT_ENTRIES])
+                            const uint32_t *clutData)
 {
     uint32_t index;
 

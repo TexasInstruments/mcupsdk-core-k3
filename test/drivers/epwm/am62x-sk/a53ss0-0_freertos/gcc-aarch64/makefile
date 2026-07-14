@@ -46,6 +46,7 @@ ATF_BIN_NAME:=bl31.a53ss0-0.$(PROFILE).bin
 ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/lib/soc/am62x
 
 FILES_common := \
+	test_epwm_multi_thread.c \
 	test_epwm.c \
 	main.c \
 	ti_drivers_config.c \
@@ -67,6 +68,7 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53 \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53 \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
+	-I${MCU_PLUS_SDK_PATH}/test/drivers/epwm \
 	-Igenerated \
 
 DEFINES_common := \
@@ -87,6 +89,7 @@ CFLAGS_common := \
 	-Wno-unused-but-set-variable \
 	-fdata-sections \
 	-ffunction-sections \
+	-DENABLE_MT_TESTS \
 
 CFLAGS_debug := \
 	-D_DEBUG_=1 \

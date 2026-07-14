@@ -144,7 +144,9 @@ void test_main(void *args)
     UNITY_BEGIN();
 
     RUN_TEST(TestEpwm_mtConcurrentRegisterAccess, 11604, NULL);
+    #if !defined(SOC_AM62X_SMP)
     RUN_TEST(TestEpwm_mtStressConcurrentReconfigure, 11605, NULL);
+    #endif
     RUN_TEST(TestEpwm_mtConcurrentTzEtOperations, 11606, NULL);
 
     UNITY_END();

@@ -154,7 +154,7 @@ static void TestEpwm_chopperEnableDisable(void *args);
 static void TestEpwm_chopperFreqClamp(void *args);
 static void TestEpwm_chopperAllDutyCycles(void *args);
 
-#if !defined(C75_CORE) && defined(SOC_AM62DX) || defined(SOC_AM275X)
+ #if !defined(C75_CORE) && !defined(M4F_CORE) && !defined(SOC_AM62LX)
 /* Trip Zone tests */
 static void TestEpwm_tzTriggerTripActionChA(void *args);
 static void TestEpwm_tzTriggerTripActionChB(void *args);
@@ -192,7 +192,7 @@ static void TestEpwm_etGetEventCountVerify(void *args);
 /* Negative tests - invalid parameter else branch coverage */
 static void TestEpwm_negCcInvalidCmpType(void *args);
 static void TestEpwm_negAqInvalidPwmOutputCh(void *args);
-#if !defined(C75_CORE) && defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if !defined(C75_CORE) && !defined(M4F_CORE) && !defined(SOC_AM62LX)
 static void TestEpwm_negTzInvalidParams(void *args);
 #endif
 
@@ -217,7 +217,7 @@ static void App_epwmConfigTest4(uint32_t epwmBaseAddr, uint32_t epwmCh,
 static HwiP_Object       gEpwmHwiObject;
 static SemaphoreP_Object gEpwmSyncSemObject;
 #endif
-#if !defined(C75_CORE) && defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if !defined(C75_CORE) && !defined(M4F_CORE) && !defined(SOC_AM62LX)
 static HwiP_Object       gEpwmTzHwiObject;
 static SemaphoreP_Object gEpwmTzSyncSemObject;
 static volatile uint32_t gEpwmTzIntCount;
@@ -281,7 +281,7 @@ void test_main(void *args)
     RUN_TEST(TestEpwm_chopperFreqClamp, 11583, NULL);
     RUN_TEST(TestEpwm_chopperAllDutyCycles, 11584, NULL);
 
-    #if !defined(C75_CORE) && defined(SOC_AM62DX) || defined(SOC_AM275X)
+    #if !defined(C75_CORE) && !defined(M4F_CORE) && !defined(SOC_AM62LX)
     /* Trip Zone tests */
     RUN_TEST(TestEpwm_tzTriggerTripActionChA, 12058, NULL);
     RUN_TEST(TestEpwm_tzTriggerTripActionChB, 12059, NULL);
@@ -318,7 +318,7 @@ void test_main(void *args)
     /* Negative tests - invalid parameter else branch coverage */
     RUN_TEST(TestEpwm_negCcInvalidCmpType, 11855, NULL);
     RUN_TEST(TestEpwm_negAqInvalidPwmOutputCh, 11856, NULL);
-    #if !defined(C75_CORE) && defined(SOC_AM62DX) || defined(SOC_AM275X)
+    #if !defined(C75_CORE) && !defined(M4F_CORE) && !defined(SOC_AM62LX)
     RUN_TEST(TestEpwm_negTzInvalidParams, 11857, NULL);
     #endif
 
@@ -2405,7 +2405,7 @@ static void TestEpwm_negAqInvalidPwmOutputCh(void *args)
     return;
 }
 
-#if !defined(C75_CORE) && defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if !defined(C75_CORE) && !defined(M4F_CORE) && !defined(SOC_AM62LX)
 
 /**
  * @brief Test case to validate the behavior of EPWM Trip Zone APIs when provided
@@ -2662,7 +2662,7 @@ static void App_epwmConfigTest4(uint32_t epwmBaseAddr,
 }
 #endif
 
-#if !defined(C75_CORE) && defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if !defined(C75_CORE) && !defined(M4F_CORE) && !defined(SOC_AM62LX)
 /**
  * \brief Enable/Disable EALLOW for EPWM Trip Zone register writes.
  *

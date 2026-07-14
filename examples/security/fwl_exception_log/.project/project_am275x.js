@@ -84,6 +84,45 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "Security",
+        testCaseName: "Security: Combined firewall example log test",
+        testCaseIds: "SITSW-3925",
+        timeout: 660,
+        bootMode: "XSPI_1S_BOOT_MODE",
+        cfgPath: "examples/security/fwl_exception_log/{board}/{coreName}/default_fwl_exception_log_${DEVICE_TYPE}.cfg",
+        expectations: [
+            { port: "ACM0", string: "Waiting for CMBN firewall exceptions", timeout: 120 },
+            { port: "USB1", string: "to trigger CMBN firewall exception", timeout: 120 },
+            { port: "USB1", send: ["C", "\\r"], sendEnterFalse: true },
+            { port: "ACM0", string: "All tests have passed", timeout: 60 },
+        ],
+    },
+};
+
+const robot_template_sysfw = {
+    input: ".project/templates/am275x/astra/tests_sbl.robot.xdt",
+    output: "../tests_sysfw.robot",
+    options: {
+        componentName: "Security",
+        testCaseName: "Security: Sysfw firewall example log test",
+        appName: "fwl_exception_sysfw_log",
+        testCaseIds: "SITSW-3924",
+        timeout: 660,
+        bootMode: "XSPI_1S_BOOT_MODE",
+        cfgPath: "examples/security/fwl_exception_log/{board}/{coreName}/default_fwl_exception_log_${DEVICE_TYPE}.cfg",
+        expectations: [
+            { port: "ACM0", string: "Waiting for CMBN firewall exceptions", timeout: 120 },
+            { port: "USB1", string: "to trigger CMBN firewall exception", timeout: 120 },
+            { port: "USB1", send: ["D", "\\r"], sendEnterFalse: true },
+            { port: "ACM0", string: "All tests have passed", timeout: 60 },
+        ],
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -103,6 +142,9 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+    build_property.templates = [...(build_property.templates || []), robot_template];
+
+    build_property.templates = [...build_property.templates, robot_template_sysfw];
     return build_property;
 }
 

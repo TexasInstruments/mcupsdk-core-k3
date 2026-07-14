@@ -69,7 +69,7 @@ bootloader6.EMMCAppImageOffset = "0x1800000";
 
 bootloader7.$name              = "CONFIG_BOOTLOADER_HSM";
 bootloader7.bootMedia          = "EMMC";
-bootloader7.EMMCAppImageOffset = "0x1C00000";
+bootloader7.EMMCAppImageOffset = "0x1D00000";
 
 mcu_bist1.$name                        = "CONFIG_BIST0";
 mcu_bist1.SDL_PBIST_INST_MAIN_PULSAR_0 = true;

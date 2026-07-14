@@ -2,6 +2,24 @@ export MCU_PLUS_SDK_PATH?=$(abspath ../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
+# am62x has multiple boards (am62x-sk, am62x-sk-lp, am62x-sip-sk); build all
+# of them when BOARD is not explicitly passed on the command line.
+ifeq ($(origin BOARD), undefined)
+ifeq ($(DEVICE),am62x)
+BOARD_LIST = am62x-sk am62x-sk-lp am62x-sip-sk
+endif
+endif
+
+ifdef BOARD_LIST
+
+.PHONY: all clean scrub
+all clean scrub:
+	@for b in $(BOARD_LIST); do \
+		$(MAKE) --no-print-directory BOARD=$$b $@ || exit 1; \
+	done
+
+else
+
 ifeq ($(DEVICE),$(filter $(DEVICE), am62x am62ax am62px))
 BOARD?=$(DEVICE)-sk
 endif
@@ -179,3 +197,5 @@ clean:
 	$(RM) *.img
 
 scrub: clean
+
+endif

@@ -21,6 +21,7 @@ const bootloader4 = bootloader.addInstance();
 const bootloader5 = bootloader.addInstance();
 const bootloader6 = bootloader.addInstance();
 const bootloader7 = bootloader.addInstance();
+const bootloader8 = bootloader.addInstance();
 const gtc         = scripting.addModule("/drivers/gtc/gtc");
 const qos         = scripting.addModule("/drivers/qos/qos", {}, false);
 const qos1        = qos.addInstance();
@@ -64,8 +65,8 @@ bootloader6.appImageOffset = "0x1400000";
 bootloader7.$name          = "CONFIG_BOOTLOADER_C751";
 bootloader7.appImageOffset = "0x1800000";
 
-bootloader7.$name          = "CONFIG_BOOTLOADER_HSM";
-bootloader7.appImageOffset = "0x1D00000";
+bootloader8.$name          = "CONFIG_BOOTLOADER_HSM";
+bootloader8.appImageOffset = "0x1D00000";
 
 bootloader1.flashDriver                                = flash1;
 flash1.$name                                           = "CONFIG_FLASH_SBL";
@@ -75,6 +76,7 @@ bootloader4.flashDriver                                = flash1;
 bootloader5.flashDriver                                = flash1;
 bootloader6.flashDriver                                = flash1;
 bootloader7.flashDriver                                = flash1;
+bootloader8.flashDriver                                = flash1;
 flash1.serialFlashDriver.$name                         = "board_flash_serialFlash_serialflash0";
 flash1.serialFlashDriver.peripheralDriver.$name        = "CONFIG_OSPI_SBL";
 flash1.serialFlashDriver.peripheralDriver.dmaEnable    = true;
@@ -94,6 +96,7 @@ bootloader4.udmaDriver                               = udma1;
 bootloader5.udmaDriver                               = udma1;
 bootloader6.udmaDriver                               = udma1;
 bootloader7.udmaDriver                               = udma1;
+bootloader8.udmaDriver                               = udma1;
 
 const udma_blkcopy_channel                                   = scripting.addModule("/drivers/udma/udma_blkcopy_channel", {}, false);
 const udma_blkcopy_channel1                                  = udma_blkcopy_channel.addInstance({}, false);
@@ -106,6 +109,7 @@ bootloader4.udmaBlkCopyChannel                               = udma_blkcopy_chan
 bootloader5.udmaBlkCopyChannel                               = udma_blkcopy_channel1;
 bootloader6.udmaBlkCopyChannel                               = udma_blkcopy_channel1;
 bootloader7.udmaBlkCopyChannel                               = udma_blkcopy_channel1;
+bootloader8.udmaBlkCopyChannel                               = udma_blkcopy_channel1;
 
 debug_log.enableUartLog                      = true;
 debug_log.enableCssLog                       = false;

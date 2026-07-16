@@ -39,10 +39,6 @@
 
 #include "CacheP_c75.h"
 
-#if (defined (SOC_AM62AX)) || (defined (SOC_AM62DX))
-#define C7x_EL2_SNOOP_CFG_REG (0x7C00000Cu)
-#endif
-
 /*
  *  ======== CacheP_Module_startup ========
  */
@@ -54,14 +50,6 @@ void CacheP_Module_startup(void)
 #else 
     CacheP_enableWB(CacheP_TYPE_L1D);
 #endif    
-#if (defined (SOC_AM62AX)) || (defined (SOC_AM62DX))
-    /* Workaround for errata: "The C7x L1D Cache May Stall Indefinitely Due to
-     * Premature Clock Gating on Delayed Snoop Responses" */
-    volatile uint32_t *pReg = (uint32_t *)C7x_EL2_SNOOP_CFG_REG;
-
-    /* This operation disables the cache snoop as per the workaorund for the errata */
-    *pReg = (uint32_t)(0u);
-#endif
 }
 
 /*

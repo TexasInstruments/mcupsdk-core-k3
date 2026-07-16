@@ -11,8 +11,6 @@ Security on this device is ensured via the following features:
 - Cryptography Services
     - \subpage SECURITY_SA2UL_MODULE_PAGE (Ultra lite Security Accelerator)
         - Description of SA2UL architecture and APIs available to use AES, SHA and RNG engine.
-    - \subpage SECURITY_PKA_MODULE_PAGE (Public key accelerator)
-        - Description of PKA engine and APIs available to use it.
 \endcond
 \cond SOC_AM62AX || SOC_AM62DX || SOC_AM275X
 - Cryptography Services

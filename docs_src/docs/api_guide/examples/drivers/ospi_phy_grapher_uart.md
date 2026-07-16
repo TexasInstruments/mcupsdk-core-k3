@@ -86,14 +86,14 @@ The host-side Python scripts (receiver and plotter) are provided to:
 - **When using makefiles to build**, note the required combination and build using
   make command (see \ref MAKEFILE_BUILD_PAGE)
 
-\cond SOC_AM62X || SOC_AM62AX || SOC_AM62DX
+\cond SOC_AM275X || SOC_AM62X || SOC_AM62AX || SOC_AM62DX
 \attention As the R5 runs as device manager on these SOCs, it needs to be started by the SBL.
 It should be flashed and booted through SBL.
 
 - Refer \ref GETTING_STARTED_FLASH for flashing the application.
 \endcond
 
-\cond SOC_AM275X || SOC_AM62PX
+\cond SOC_AM62PX
 \attention As the wake-up R5 is the device manager, it needs to be started by the SBL.
 It should be flashed and booted through SBL.
 
@@ -114,7 +114,7 @@ pip install pyserial numpy matplotlib
 - CONFIG_UART0 → Debug console (optional monitoring)
 - CONFIG_UART1 → Binary data transfer (required)
 
-\\warning **DO NOT OPEN A TERMINAL ON CONFIG_UART1** while the receiver script is running. Opening a serial monitor on the binary data port will corrupt the XMODEM transfer and cause CRC errors. Use CONFIG_UART0 for debug monitoring only.
+\warning **DO NOT OPEN A TERMINAL ON CONFIG_UART1** while the receiver script is running. Opening a serial monitor on the binary data port will corrupt the XMODEM transfer and cause CRC errors. Use CONFIG_UART0 for debug monitoring only.
 
 ### Run Receiver and Plotter
 
@@ -124,16 +124,27 @@ Navigate to tools directory and receive data from CONFIG_UART1 port (the binary 
 cd tools/boot/grapher/
 ```
 
-#### AM275X / AM62PX
+\cond SOC_AM275X
 ```bash
 # These SoCs use MCU domain UARTs
-# CONFIG_UART0: /dev/ttyUSB2 (debug)
+# CONFIG_UART0: /dev/ttyACM0 (debug)
 # CONFIG_UART1: /dev/ttyUSB0 (binary) ← Use this for receiver
 python3 ospi_phy_grapher_receiver.py /dev/ttyUSB0 -o data.bin
 python3 ospi_phy_grapher_plotter.py data.bin
 ```
+\endcond
 
-#### AM62AX / AM62DX / AM62X
+\cond SOC_AM62DX
+```bash
+# These SoCs use MCU domain UARTs
+# CONFIG_UART0: /dev/ttyUSB2 (debug)
+# CONFIG_UART1: /dev/ttyUSB1 (binary) ← Use this for receiver
+python3 ospi_phy_grapher_receiver.py /dev/ttyUSB1 -o data.bin
+python3 ospi_phy_grapher_plotter.py data.bin
+```
+\endcond
+
+\cond SOC_AM62X || SOC_AM62AX || SOC_AM62PX
 ```bash
 # These SoCs use mixed domain UARTs (MCU debug, Main data)
 # CONFIG_UART0: /dev/ttyUSB2 (debug on MCU domain)
@@ -141,6 +152,7 @@ python3 ospi_phy_grapher_plotter.py data.bin
 python3 ospi_phy_grapher_receiver.py /dev/ttyUSB0 -o data.bin
 python3 ospi_phy_grapher_plotter.py data.bin
 ```
+\endcond
 
 **Example output:**
 ```
@@ -170,57 +182,48 @@ python3 ospi_phy_grapher_plotter.py data.bin 50 60 65 70
 
 Flash the device, receive PHY data, and visualize results using the following command chain (run from MCU+SDK root):
 
+\cond SOC_AM275X
 ```bash
-cd tools/boot && \
-python3 uart_bootloader.py -p /dev/ttyUSB0 \
-  --bootloader=sbl_prebuilt/am6x-sk/sbl_uart.release.hs_fs.tiimage \
-  --file=../../examples/drivers/ospi/ospi_phy_grapher_uart/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/ospi_phy_grapher_uart.release.appimage.hs_fs ; \
-python3 grapher/ospi_phy_grapher_receiver.py /dev/ttyUSB0 -o plot.bin && \
-python3 grapher/ospi_phy_grapher_plotter.py plot.bin
+cd tools/boot
+python3 uart_bootloader.py -p /dev/ttyACM0 --bootloader=sbl_prebuilt/{board}/sbl_uart.release.hs_fs.tiimage 
+  --file=../../examples/drivers/ospi/ospi_phy_grapher_uart/{board}/r5fss0-0_freertos/ti-arm-clang/ospi_phy_grapher_uart.release.appimage.hs_fs; python3 grapher/ospi_phy_grapher_receiver.py /dev/ttyUSB2 -o am275x.bin; python3 grapher/ospi_phy_grapher_plotter.py am275x.bin
 ```
+
+\note Before running this command, update `sbl_prebuilt/am275x-evm/sbl_uart_hs_fs.cfg` to include the OSPI PHY Grapher application binary file path in the configuration.
+\endcond
+
+\cond SOC_AM62AX
+```bash
+cd tools/boot
+python3 uart_bootloader.py -p /dev/ttyUSB0 --bootloader=sbl_prebuilt/am62ax-sk/sbl_uart.release.hs_fs.tiimage --file=../../examples/drivers/ospi/ospi_phy_grapher_uart/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/ospi_phy_grapher_uart.release.appimage.hs_fs; python3 grapher/ospi_phy_grapher_receiver.py /dev/ttyUSB0 -o am62a.bin; python3 grapher/ospi_phy_grapher_plotter.py am62a.bin
+```
+\endcond
+
+\cond SOC_AM62DX
+```bash
+cd tools/boot
+python3 uart_bootloader.py -p /dev/ttyUSB1 --bootloader=sbl_prebuilt/am62dx-evm/sbl_uart.release.hs_fs.tiimage --file=../../examples/drivers/ospi/ospi_phy_grapher_uart/am62dx-evm/r5fss0-0_freertos/ti-arm-clang/ospi_phy_grapher_uart.release.appimage.hs_fs; python3 grapher/ospi_phy_grapher_receiver.py /dev/ttyUSB1 -o am62dx.bin; python3 grapher/ospi_phy_grapher_plotter.py am62dx.bin
+```
+\endcond
+
+\cond SOC_AM62PX
+```bash
+cd tools/boot
+python3 uart_bootloader.py -p /dev/ttyUSB0 --bootloader=sbl_prebuilt/am62px-sk/sbl_uart.release.hs_fs.tiimage --file=../../examples/drivers/ospi/ospi_phy_grapher_uart/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang/ospi_phy_grapher_uart.release.appimage.hs_fs; python3 grapher/ospi_phy_grapher_receiver.py /dev/ttyUSB0 -o am62p_plot.bin; python3 grapher/ospi_phy_grapher_plotter.py am62p_plot.bin
+```
+\endcond
+
+\cond SOC_AM62X
+```bash
+cd tools/boot
+python3 uart_bootloader.py -p /dev/ttyUSB0 --bootloader=sbl_prebuilt/am62x-sk/sbl_uart.release.hs_fs.tiimage --file=../../examples/drivers/ospi/ospi_phy_grapher_uart/am62x-sk/r5fss0-0_freertos/ti-arm-clang/ospi_phy_grapher_uart.release.appimage.hs_fs; python3 grapher/ospi_phy_grapher_receiver.py /dev/ttyUSB0 -o am62x.bin; python3 grapher/ospi_phy_grapher_plotter.py am62x.bin
+```
+\endcond
 
 This workflow:
 1. Flashes device via uart_bootloader.py on CONFIG_UART0
 2. Receives PHY data via XMODEM1k
 3. Visualizes results in matplotlib scatter plot
-
-**Note**: Adjust SoC-specific paths (am62ax-sk, r5fss0-0_freertos, ti-arm-clang) based on your device and toolchain.
-
-## Complete Workflow Commands by SoC
-
-Use the appropriate command for your device (run from `tools/boot` directory):
-
-### AM275X
-```bash
-cd tools/boot
-python3 uart_bootloader.py -p /dev/ttyACM0 --cfg=sbl_prebuilt/am275x-evm/sbl_uart_hs_fs.cfg; python3 grapher/ospi_phy_grapher_receiver.py /dev/ttyUSB2 -o am275x.bin; python3 grapher/ospi_phy_grapher_plotter.py am275x.bin
-```
-
-\\note Before running this command, update `sbl_prebuilt/am275x-evm/sbl_uart_hs_fs.cfg` to include the OSPI PHY Grapher application binary file path in the configuration.
-
-### AM62AX
-```bash
-cd tools/boot
-python3 uart_bootloader.py -p /dev/ttyUSB0 --bootloader=sbl_prebuilt/am62ax-sk/sbl_uart.release.hs_fs.tiimage --file=../../examples/drivers/ospi/ospi_phy_grapher_uart/am62ax-sk/r5fss0-0_freertos/ti-arm-clang/ospi_phy_grapher_uart.release.appimage.hs_fs; python3 grapher/ospi_phy_grapher_receiver.py /dev/ttyUSB0 -o am62a.bin; python3 grapher/ospi_phy_grapher_plotter.py am62a.bin
-```
-
-### AM62DX
-```bash
-cd tools/boot
-python3 uart_bootloader.py -p /dev/ttyUSB1 --bootloader=sbl_prebuilt/am62dx-evm/sbl_uart.release.hs_fs.tiimage --file=../../examples/drivers/ospi/ospi_phy_grapher_uart/am62dx-evm/r5fss0-0_freertos/ti-arm-clang/ospi_phy_grapher_uart.release.appimage.hs_fs; python3 grapher/ospi_phy_grapher_receiver.py /dev/ttyUSB1 -o am62dx.bin; python3 grapher/ospi_phy_grapher_plotter.py am62dx.bin
-```
-
-### AM62PX
-```bash
-cd tools/boot
-python3 uart_bootloader.py -p /dev/ttyUSB0 --bootloader=sbl_prebuilt/am62px-sk/sbl_uart.release.hs_fs.tiimage --file=../../examples/drivers/ospi/ospi_phy_grapher_uart/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang/ospi_phy_grapher_uart.release.appimage.hs_fs; python3 grapher/ospi_phy_grapher_receiver.py /dev/ttyUSB0 -o am62p_plot.bin; python3 grapher/ospi_phy_grapher_plotter.py am62p_plot.bin
-```
-
-### AM62X
-```bash
-cd tools/boot
-python3 uart_bootloader.py -p /dev/ttyUSB0 --bootloader=sbl_prebuilt/am62x-sk/sbl_uart.release.hs_fs.tiimage --file=../../examples/drivers/ospi/ospi_phy_grapher_uart/am62x-sk/r5fss0-0_freertos/ti-arm-clang/ospi_phy_grapher_uart.release.appimage.hs_fs; python3 grapher/ospi_phy_grapher_receiver.py /dev/ttyUSB0 -o am62x.bin; python3 grapher/ospi_phy_grapher_plotter.py am62x.bin
-```
 
 # Application Design
 
@@ -230,12 +233,12 @@ python3 uart_bootloader.py -p /dev/ttyUSB0 --bootloader=sbl_prebuilt/am62x-sk/sb
 ┌────────────────────────────────────────────────────┐
 │           HOST SIDE (Linux/PC)                     │
 │                                                    │
-│  ┌──────────────────────────────────────────────┐ │
-│  │ Host Scripts                                 │ │
-│  │ - ospi_phy_grapher_receiver.py              │ │
-│  │ - ospi_phy_grapher_plotter.py               │ │
-│  │ - grapher_full_flow.py                      │ │
-│  └──────────────┬───────────────────────────────┘ │
+│  ┌──────────────────────────────────────────────┐  │
+│  │ Host Scripts                                 │  │
+│  │ - ospi_phy_grapher_receiver.py               │  │
+│  │ - ospi_phy_grapher_plotter.py                │  │
+│  │ - grapher_full_flow.py                       │  │
+│  └──────────────┬───────────────────────────────┘  │
 │                 │                                  │
 └─────────────────┼──────────────────────────────────┘
                   │ UART (115200 bps, dual port)
@@ -243,25 +246,25 @@ python3 uart_bootloader.py -p /dev/ttyUSB0 --bootloader=sbl_prebuilt/am62x-sk/sb
                   └─ CONFIG_UART1: Binary XMODEM data
                   │
 ┌─────────────────┼──────────────────────────────────┐
-│  ┌──────────────▼───────────────────────────────┐ │
-│  │ Device Application                           │ │
-│  │                                              │ │
-│  │ 1. Initialize OSPI + Dual UART              │ │
-│  │ 2. Send "READY_FOR_SWEEP\r\n" signal       │ │
-│  │ 3. Receive 32-byte command header           │ │
-│  │ 4. Run OSPI_phyTuneGrapher() (~30 sec)     │ │
-│  │    └─ Collect [5][128][128] tuning data    │ │
-│  │ 5. Send 80 XMODEM1k blocks (81,920 bytes)  │ │
-│  │ 6. Send 16-byte status response             │ │
-│  │ 7. Idle/Loop                                │ │
-│  └──────────────────────────────────────────────┘ │
+│  ┌──────────────▼───────────────────────────────┐  │
+│  │ Device Application                           │  │
+│  │                                              │  │
+│  │ 1. Initialize OSPI + Dual UART               │  │
+│  │ 2. Send "READY_FOR_SWEEP\r\n" signal         │  │
+│  │ 3. Receive 32-byte command header            │  │
+│  │ 4. Run OSPI_phyTuneGrapher() (~30 sec)       │  │
+│  │    └─ Collect [5][128][128] tuning data      │  │
+│  │ 5. Send 80 XMODEM1k blocks (81,920 bytes)    │  │
+│  │ 6. Send 16-byte status response              │  │
+│  │ 7. Idle/Loop                                 │  │
+│  └──────────────────────────────────────────────┘  │
 │                                                    │
-│  ┌──────────────────────────────────────────────┐ │
-│  │ OSPI PHY Tuning                              │ │
-│  │ - 128 TX DLL values × 128 RX DLL values     │ │
-│  │ - 5 read delay values                        │ │
-│  │ - 1 byte per point (0=fail, >0=pass)        │ │
-│  └──────────────────────────────────────────────┘ │
+│  ┌──────────────────────────────────────────────┐  │
+│  │ OSPI PHY Tuning                              │  │
+│  │ - 128 TX DLL values × 128 RX DLL values      │  │
+│  │ - 5 read delay values                        │  │
+│  │ - 1 byte per point (0=fail, >0=pass)         │  │
+│  └──────────────────────────────────────────────┘  │
 │                                                    │
 │        DEVICE SIDE (MCU+SDK)                       │
 └────────────────────────────────────────────────────┘
@@ -272,32 +275,32 @@ python3 uart_bootloader.py -p /dev/ttyUSB0 --bootloader=sbl_prebuilt/am62x-sk/sb
 ```
 Host                                Device
  │                                     │
- │←─── "READY_FOR_SWEEP\r\n" ────────┤
+ │←─── "READY_FOR_SWEEP\r\n" ──────────┤
  │                                     │
- │─── Send command header (32B) ─────→│
- │    Magic: 0x47524150 ("PRAG")      │
- │    OpType: 0xFD                    │
- │    Size: 81920                     │
+ │─── Send command header (32B) ──────→│
+ │    Magic: 0x47524150 ("PRAG")       │
+ │    OpType: 0xFD                     │
+ │    Size: 81920                      │
  │                                     │
  │                      ┌─── PHY Sweep (~30 sec) ───┐
- │                      │ OSPI_phyTuneGrapher()      │
- │                      └──────────────────────────┬─┘
- │                                                  │
- │←─ XMODEM1k Block #1 ──────────────────────────┤
+ │                      │ OSPI_phyTuneGrapher()     │
+ │                      └─────────────────────────┬─┘
+ │                                                │
+ │←─ XMODEM1k Block #1 ───────────────────────────┤
  │  ├─ STX (0x02)
  │  ├─ Block#1 + Complement
  │  ├─ 1024 bytes data
  │  └─ CRC16 (CCITT)
  │
- │ ─ ACK (0x06) ───────────────────────────────→
+ │ ─ ACK (0x06) ─────────────────────────────────→|
  │
  │  (repeat 80 blocks = 81,920 bytes)
  │
- │←─ XMODEM EOT (0x04) ──────────────────────────┤
+ │←─ XMODEM EOT (0x04) ───────────────────────────┤
  │
- │ ─ ACK (0x06) ───────────────────────────────→
+ │ ─ ACK (0x06) ─────────────────────────────────→|
  │
- │←─ Status response (16B) ──────────────────────┤
+ │←─ Status response (16B) ───────────────────────┤
  │   Magic: 0x47524152 ("RARG")
  │   Status: 0x00000000 (success)
  │
@@ -438,9 +441,9 @@ Host                                Device
  │←─────────────────────────────────────┤
  │                        + CRC16
  │
- ├─ Validate CRC ──────────┐           │
- │ ├─ Pass: Send ACK ────→ │           │
- │ └─ Fail: Send NAK ────→ │ Retry    │
+ ├─ Validate CRC ───────────┐           │
+ │ ├─ Pass: Send ACK ────→  │           │
+ │ └─ Fail: Send NAK ────→  │ Retry     │
  │        (up to 20 times)  │           │
  │                        ◄─┼───────────┤
  │                        Send STX+Block2
@@ -450,7 +453,7 @@ Host                                Device
  │                        ◄─────────────┤
  │                        Send EOT (0x04)
  │
- ├─ Send ACK (0x06) ────────────────────→
+ ├─ Send ACK (0x06) ───────────────────→|
 ```
 
 **Retry Strategy**:

@@ -626,7 +626,7 @@ int32_t sdl_pok_posTest(void)
 	pConfig.voltDetMode = 1U;
 	pConfig.pokEnSelSrcCtrl = 1U;
 	pConfig.detectionCtrl =1U;
-	if (SDL_POK_init(SDL_POK_VDDSHV_MAIN_1P8_ID, &pConfig) != SDL_EFAIL)
+	if (SDL_POK_init(SDL_POK_VDDSHV_MAIN_1P8_ID, &pConfig) != SDL_EBADARGS)
     {
         testStatus = SDL_APP_TEST_FAILED;
         DebugP_log("SDLPok_api_Pos_Test: failure on line no. %d \r\n", __LINE__);

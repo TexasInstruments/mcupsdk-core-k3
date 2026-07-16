@@ -50,7 +50,7 @@
 
 
 /* delay for 1us*/
-#define DELAY 100
+#define DELAY 0
 
 /**
  * Design: PROC_SDL-1349,PROC_SDL-1162
@@ -290,7 +290,10 @@ static int32_t SDL_POK_Thres_config_seq(SDL_POK_Inst instance, const SDL_POK_con
         retVal = SDL_pokSetControl(pBaseAddr,&pokCfg,instance);
 
         /* Step 5: Wait for 100 us for the POK to settle */
-        ClockP_usleep(DELAY);
+        if (retVal == SDL_PASS)
+        {
+            retVal = SDL_DPL_delay(DELAY);
+        }
 
         /* Step 7: If Power Good == Yes, unmask POK to ESM event propagation by
                     programming ESM_INTR_EN_SET register(s) else report to MCU_ESM0*/
@@ -419,7 +422,10 @@ static int32_t SDL_POR_Thres_config_seq(SDL_POK_Inst instance, const SDL_POK_con
     }
 
     /* Step 7: Wait for 100 us for the POK to settle */
-    ClockP_usleep(DELAY);
+    if (retVal == SDL_PASS)
+    {
+        retVal = SDL_DPL_delay(DELAY);
+    }
 
     /* Step 8: If Power Good == Yes, unmask POK to ESM event propagation by
                     programming ESM_INTR_EN_SET register(s) else report to MCU_ESM0*/

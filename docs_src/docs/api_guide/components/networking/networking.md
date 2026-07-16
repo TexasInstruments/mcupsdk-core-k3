@@ -59,6 +59,9 @@ You can find out-of-box examples and demos **[here](\ref EXAMPLES_NETWORKING)**.
 You can find ethernet performance data **[here](\ref enetlld_performance)**.
 \endcond
 
+### Networking Features
+- \subpage NETWORKING_FEATURES
+
 ### Ethernet Driver
 
 Ethernet Low-Level Driver (\ref ENET_LLD) is a driver that aims at providing the interface for standard Ethernet MAC and switch using CPSW Peripheral.
@@ -107,6 +110,9 @@ You can find out-of-box examples and demos **[here](\ref EXAMPLES_NETWORKING)**.
 
 ### Performance
 You can find ethernet performance data **[here](\ref enetlld_performance)**.
+
+### Networking Features
+- \subpage NETWORKING_FEATURES
 
 ### Driver
 

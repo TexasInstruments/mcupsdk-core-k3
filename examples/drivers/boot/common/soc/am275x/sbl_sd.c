@@ -141,6 +141,10 @@ int32_t App_runCpus(Bootloader_Handle bootHandle,Bootloader_BootImageInfo *bootI
 {
     int32_t status = SystemP_SUCCESS;
     uint8_t cpuId;
+    uint32_t *selfCpuList = Bootloader_socGetSelfCpuList();
+
+    Bootloader_Params bootParams;
+    Bootloader_Handle resetBootHandle;
 
     for(cpuId = 0; cpuId < CSL_CORE_ID_MAX; cpuId++)
     {
@@ -154,9 +158,18 @@ int32_t App_runCpus(Bootloader_Handle bootHandle,Bootloader_BootImageInfo *bootI
                 DebugP_logError("App_runCpus failed for %s !!!\r\n", Bootloader_socGetCoreName(cpuId));
             }
         }
-        else
+        else if(cpuId != selfCpuList[0U])
         {
-            Bootloader_powerOffCpu(bootHandle, &bootCpuInfo[cpuId]);
+            /* Reset release cores to idle state if appimage is not present in the SD card */
+            Bootloader_Params_init(&bootParams);
+            resetBootHandle = Bootloader_open(CONFIG_BOOTLOADER_RESET, &bootParams);
+            bootCpuInfo[cpuId] = bootImageInfo->cpuInfo[cpuId];
+            
+            if(resetBootHandle != NULL)
+            {
+                Bootloader_bootCpu(resetBootHandle, &bootCpuInfo[cpuId]);
+                Bootloader_close(resetBootHandle);
+            }
         }
     }
 

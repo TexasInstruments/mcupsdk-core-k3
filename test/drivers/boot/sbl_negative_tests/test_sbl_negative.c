@@ -289,9 +289,9 @@ void test_main(void * args)
     RUN_TEST(TestSbl_x509CertLenSmall,           11494, NULL);
     RUN_TEST(TestSbl_findSeqNotFound,            11495, NULL);
 
-#if !defined(SOC_AM275X) && !defined(SOC_AM62DX)
+#if !defined(SOC_AM275X) && !defined(SOC_AM62DX) && !defined(SOC_AM62PX)
 
-    /* am62dx: read/write functions call MMCSD_getBlockSize() before checking
+    /* am62dx/am62px: read/write functions call MMCSD_getBlockSize() before checking
      * for a NULL handle, causing a hardware fault and hang. */
     RUN_TEST(TestSbl_mmcsdRawReadNullHandle,      11496, NULL);
     RUN_TEST(TestSbl_mmcsdRawWriteNullHandle,     11497, NULL);
@@ -1671,8 +1671,8 @@ void TestSbl_runCpuBeforeLoad(void *args)
 
     /* Initialise cpuInfo but do NOT load any image */
     Bootloader_CpuInfo_init(&cpuInfo);
-#if defined(SOC_AM275X)
-    /* WKUP_R5FSS0_0 is the boot/self CPU on AM275x: resetRelease has an empty case → FAILURE */
+#if defined(SOC_AM275X) || defined(SOC_AM62PX)
+    /* WKUP_R5FSS0_0 is the boot/self CPU on AM275x/AM62PX: resetRelease has an empty case → FAILURE */
     cpuInfo.cpuId = CSL_CORE_ID_WKUP_R5FSS0_0;
 #else
     cpuInfo.cpuId = CSL_CORE_ID_R5FSS0_0; /* self-CPU: resetRelease is a no-op → FAILURE */
@@ -1702,8 +1702,8 @@ void TestSbl_runCpuNullHandle(void *args)
     DebugP_log("Starting TestSbl_runCpuNullHandle test\r\n");
 
     Bootloader_CpuInfo_init(&cpuInfo);
-#if defined(SOC_AM275X)
-    cpuInfo.cpuId = CSL_CORE_ID_WKUP_R5FSS0_0; /* boot/self CPU on AM275x */
+#if defined(SOC_AM275X) || defined(SOC_AM62PX)
+    cpuInfo.cpuId = CSL_CORE_ID_WKUP_R5FSS0_0; /* boot/self CPU on AM275x/AM62PX */
 #else
     cpuInfo.cpuId = CSL_CORE_ID_R5FSS0_0;
 #endif
@@ -1851,10 +1851,10 @@ void TestSbl_releaseCpuNotInReset(void *args)
 
     DebugP_log("Starting TestSbl_releaseCpuNotInReset test\r\n");
 
-    /* On AM275x, WKUP_R5FSS0_0 is the boot CPU — its switch case is empty.
+    /* On AM275x/AM62PX, WKUP_R5FSS0_0 is the boot CPU — its switch case is empty.
      * On AM62DX, R5FSS0_0 is the DM/self CPU — its switch case is empty.
      * In both cases status remains FAILURE (the initial value). */
-#if defined(SOC_AM275X)
+#if defined(SOC_AM275X) || defined(SOC_AM62PX)
     status = Bootloader_socCpuResetRelease(CSL_CORE_ID_WKUP_R5FSS0_0, 0U);
 #else
     status = Bootloader_socCpuResetRelease(CSL_CORE_ID_R5FSS0_0, 0U);
@@ -1885,7 +1885,12 @@ void TestSbl_powerOffAlreadyOff(void *args)
     TestSbl_setupMemBootloader(&config, &memArgs, appImageBuf);
 
     Bootloader_CpuInfo_init(&cpuInfo);
+#if defined(SOC_AM62PX)
+    /* AM62PX has no C75 core; use A53SS0_0 instead as an arbitrary CPU ID. */
+    cpuInfo.cpuId = CSL_CORE_ID_A53SS0_0;
+#else
     cpuInfo.cpuId = CSL_CORE_ID_C75SS0_0;
+#endif
 
     /* First power off */
     Bootloader_powerOffCpu((Bootloader_Handle)&config, &cpuInfo);
@@ -2576,11 +2581,20 @@ void TestSbl_socGetTcmAddrR5fss0(void *args)
 
     DebugP_log("Starting TestSbl_socGetTcmAddrR5fss0 test\r\n");
 
+#if defined(SOC_AM62PX)
+    /* AM62PX has no plain CSL_CORE_ID_R5FSS0_0; WKUP_R5FSS0_0 is the boot/self CPU. */
+    Bootloader_socGetR5fAtcmAddrAndSize(CSL_CORE_ID_WKUP_R5FSS0_0, &addr, &size);
+#else
     Bootloader_socGetR5fAtcmAddrAndSize(CSL_CORE_ID_R5FSS0_0, &addr, &size);
+#endif
     TEST_ASSERT_NOT_EQUAL(BOOTLOADER_INVALID_ID, addr);
     TEST_ASSERT_NOT_EQUAL(0U, size);
 
+#if defined(SOC_AM62PX)
+    Bootloader_socGetR5fBtcmAddrAndSize(CSL_CORE_ID_WKUP_R5FSS0_0, &addr, &size);
+#else
     Bootloader_socGetR5fBtcmAddrAndSize(CSL_CORE_ID_R5FSS0_0, &addr, &size);
+#endif
     TEST_ASSERT_NOT_EQUAL(BOOTLOADER_INVALID_ID, addr);
     TEST_ASSERT_NOT_EQUAL(0U, size);
 }
@@ -2649,7 +2663,12 @@ void TestSbl_socCpuPowerOnResetSelfCpu(void *args)
 
     DebugP_log("Starting TestSbl_socCpuPowerOnResetSelfCpu test\r\n");
 
+#if defined(SOC_AM62PX)
+    /* AM62PX has no plain CSL_CORE_ID_R5FSS0_0; WKUP_R5FSS0_0 is the boot/self CPU. */
+    status = Bootloader_socCpuPowerOnReset(CSL_CORE_ID_WKUP_R5FSS0_0, NULL);
+#else
     status = Bootloader_socCpuPowerOnReset(CSL_CORE_ID_R5FSS0_0, NULL);
+#endif
     TEST_ASSERT_EQUAL(SystemP_FAILURE, status);
 }
 

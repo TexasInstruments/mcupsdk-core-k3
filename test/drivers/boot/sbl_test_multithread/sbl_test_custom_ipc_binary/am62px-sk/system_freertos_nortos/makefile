@@ -2,7 +2,7 @@
 # Auto generated makefile
 #
 
-export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../..)
+export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
@@ -17,9 +17,9 @@ PROFILE?=release
 LD=$(CGT_GCC_AARCH64_PATH)/bin/aarch64-none-elf-ld
 
 MULTI_CORE_BOOTIMAGE_PATH=$(abspath .)
-MULTI_CORE_BOOTIMAGE_NAME:=ipc_rpmsg_echo_system.$(PROFILE).appimage
+MULTI_CORE_BOOTIMAGE_NAME:=sbl_test_custom_ipc_binary_system.$(PROFILE).appimage
 MULTI_CORE_BOOTIMAGE_NAME_SIGNED:=$(MULTI_CORE_BOOTIMAGE_NAME).signed
-MULTI_CORE_BOOTIMAGE_NAME_XIP:=ipc_rpmsg_echo_system.$(PROFILE).appimage_xip
+MULTI_CORE_BOOTIMAGE_NAME_XIP:=sbl_test_custom_ipc_binary_system.$(PROFILE).appimage_xip
 MULTI_CORE_BOOTIMAGE_NAME_HS:=$(MULTI_CORE_BOOTIMAGE_NAME).hs
 
 CORE_0=--script ../wkup-r5fss0-0_freertos/example.syscfg --context wkup-r5fss0-0 --output ../wkup-r5fss0-0_freertos/ti-arm-clang/generated
@@ -88,16 +88,16 @@ OUTRPRC_CMD = $(SYSCFG_NODE) $(MCU_PLUS_SDK_PATH)/tools/boot/out2rprc/elf2rprc.j
 APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_gen.py
 
 MULTI_CORE_APP_PARAMS = \
-    ../wkup-r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_wkup-r5fss0-0) \
-    ../mcu-r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
+    ../wkup-r5fss0-0_freertos/ti-arm-clang/sbl_test_custom_ipc_binary.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_wkup-r5fss0-0) \
+    ../mcu-r5fss0-0_freertos/ti-arm-clang/sbl_test_custom_ipc_binary.$(PROFILE).rprc@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
 
 MULTI_CORE_APP_PARAMS_XIP = \
-    ../wkup-r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_wkup-r5fss0-0) \
-    ../mcu-r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
+    ../wkup-r5fss0-0_freertos/ti-arm-clang/sbl_test_custom_ipc_binary.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_wkup-r5fss0-0) \
+    ../mcu-r5fss0-0_freertos/ti-arm-clang/sbl_test_custom_ipc_binary.$(PROFILE).rprc_xip@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
 
 MULTI_CORE_BOOTIMAGE_DEPENDENCY = \
-    ../wkup-r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo.$(PROFILE).rprc \
-    ../mcu-r5fss0-0_freertos/ti-arm-clang/ipc_rpmsg_echo.$(PROFILE).rprc \
+    ../wkup-r5fss0-0_freertos/ti-arm-clang/sbl_test_custom_ipc_binary.$(PROFILE).rprc \
+    ../mcu-r5fss0-0_freertos/ti-arm-clang/sbl_test_custom_ipc_binary.$(PROFILE).rprc \
 
 $(MULTI_CORE_BOOTIMAGE_DEPENDENCY):
 

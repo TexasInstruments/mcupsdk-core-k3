@@ -57,6 +57,53 @@
 #define TEST_SBL_SD_A53_SMP_FILENAME                     ("/sd0/app_smp")
 #define TEST_SBL_SD_A53_INVALID_IMGNAME                  ("/sd0/app_inv")
 #define TEST_SBL_SD_MULTICORE_IMG                        ("/sd0/app_sys")
+#define TEST_SBL_SD_R5_APPIMAGE_FILENAME                 ("/sd0/app_r5")
+
+/*
+ * SOC abstraction for the media boot tests.
+ *
+ * AM62Px silicon has A53 cores but this SDK checkout has no A53 (or C75)
+ * example board support for am62px-sk, so no A53/C75 appimage can be built.
+ * On AM62Px the generic boot tests therefore use the MCU R5F image
+ * (/sd0/app_r5, built from ipc_rpmsg_echo mcu-r5fss0-0) instead of the A53
+ * image, and WKUP R5F instead of C75 where only image parsing is exercised.
+ *
+ * For every other SOC these macros expand to the original A53/C75 values,
+ * so behaviour there is unchanged.
+ */
+#if defined(SOC_AM62PX)
+/* Image file and core booted by the generic SD boot tests */
+#define TEST_SBL_SD_BOOT_APPIMAGE            TEST_SBL_SD_R5_APPIMAGE_FILENAME
+#define TEST_SBL_SD_BOOT_CORE_ID             (CSL_CORE_ID_MCU_R5FSS0_0)
+/* TISCI device queried by TestSbl_powerOffAfterLoadSuccess */
+#define TEST_SBL_SD_BOOT_CORE_TISCI_DEV_ID   (TISCI_DEV_MCU_R5FSS0_CORE0)
+/* A core that exists but is never loaded by the SD image — used by the
+ * "run an un-loaded core must fail" negative test */
+#define TEST_SBL_UNLOADED_CORE_ID            (CSL_CORE_ID_A53SS0_0)
+/* Core booted by TestSbl_singleCoreImageOspiBoot (image flashed at 0xA00000,
+ * CONFIG_BOOTLOADER_FLASH_DSP) */
+#define TEST_SBL_OSPI_BOOT_CORE_ID           (CSL_CORE_ID_MCU_R5FSS0_0)
+/* Third core of the multicore/parse tests (app_sys on am62px-sk contains
+ * WKUP-R5F + MCU-R5F; WKUP R5F RPRC core id is 4) */
+#define TEST_SBL_MULTICORE_CORE2_ID          (CSL_CORE_ID_WKUP_R5FSS0_0)
+#define TEST_SBL_MULTICORE_CORE2_RPRC_ID     (4U)
+#else
+#define TEST_SBL_SD_BOOT_APPIMAGE            TEST_SBL_SD_A53_APPIMAGE_FILENAME
+#define TEST_SBL_SD_BOOT_CORE_ID             (CSL_CORE_ID_A53SS0_0)
+#define TEST_SBL_SD_BOOT_CORE_TISCI_DEV_ID   (TISCI_DEV_A53SS0)
+#define TEST_SBL_UNLOADED_CORE_ID            (CSL_CORE_ID_C75SS0_0)
+#define TEST_SBL_OSPI_BOOT_CORE_ID           (CSL_CORE_ID_C75SS0_0)
+#define TEST_SBL_MULTICORE_CORE2_ID          (CSL_CORE_ID_C75SS0_0)
+#define TEST_SBL_MULTICORE_CORE2_RPRC_ID     (7U)
+#endif
+
+/* MCU-equivalent core ID per SOC — used for enabledCores[] arrays and
+ * bootImageInfo indexing in functions that boot the non-A53 secondary core. */
+#if defined(SOC_AM62X)
+#define TEST_SBL_MCU_CORE_ID  (CSL_CORE_ID_M4FSS0_0)
+#else
+#define TEST_SBL_MCU_CORE_ID  (CSL_CORE_ID_MCU_R5FSS0_0)
+#endif
 
 #define TEST_SBL_APPIMAGE_MAX_FILE_SIZE                  (0x800000)
 #define TEST_SBL_SECOND_STAGE_RESERVED_MEMORY_START      (0x9CA00000)
@@ -108,9 +155,11 @@ void TestSbl_singleCoreImageSdBoot(void *args);
 #if defined(SOC_AM275X)
 void TestSbl_ospiBootloaderOpenClose(void *args);
 #else
+/* On AM62Px boots the MCU R5F core instead of C75 (see TEST_SBL_OSPI_BOOT_CORE_ID). */
 void TestSbl_singleCoreImageOspiBoot(void *args);
 #endif
 void TestSbl_validateGetMultiCoreImageSz(void *args);
+/* On AM62Px checks WKUP R5F instead of C75 (see TEST_SBL_MULTICORE_CORE2_ID). */
 void TestSbl_validateMultiCorePresent(void *args);
 void TestSbl_validateSingleCorePresent(void *args);
 void TestSbl_powerOffAfterLoadSuccess(void *args);
@@ -121,6 +170,8 @@ void TestSbl_runInvalidCore(void *args);
 void TestSbl_sdSmpBoot(void *args);
 void TestSbl_emmcSmpBoot(void *args);
 void TestSbl_ospiSmpBoot(void *args);
+/* On AM62Px the multicore image contains WKUP-R5F (self) + MCU-R5F only;
+ * the tests boot only the MCU R5F core (see enabledCores[] in each test). */
 void TestSbl_multiCoreImageSdBoot(void *args);
 void TestSbl_multiCoreImageEmmcBoot(void *args);
 void TestSbl_multiCoreImageOspiBoot(void *args);
@@ -141,6 +192,8 @@ void TestSbl_jumpSelfCpuSdBoot(void *args);
 void TestSbl_parseAppImageSdBoot(void *args);
 void TestSbl_parseAppImageNullHandle(void *args);
 void TestSbl_parseAppImageInvalidMagic(void *args);
+/* On AM62Px the synthetic multicore header uses a WKUP R5F entry instead of
+ * C75 (see TEST_SBL_MULTICORE_CORE2_RPRC_ID). */
 void TestSbl_parseAppImageMultiCore(void *args);
 void TestSbl_parseAppImageSingleCorePresent(void *args);
 #if !defined(SOC_AM275X)
@@ -218,10 +271,17 @@ void test_main(void * args)
 #endif
 #if defined(SOC_AM275X)
     RUN_TEST(TestSbl_ospiBootloaderOpenClose,     11411, NULL);
+#endif
+
+#if defined(SOC_AM275X)
+    RUN_TEST(TestSbl_ospiBootloaderOpenClose,     11411, NULL);
 #else
+    /* On AM62Px boots the MCU R5F image from OSPI @ 0xA00000 instead of C75
+     * (see TEST_SBL_OSPI_BOOT_CORE_ID). */
     RUN_TEST(TestSbl_singleCoreImageOspiBoot,     11411, NULL);
 #endif
 #if !defined(SOC_AM275X)
+    /* On AM62Px uses /sd0/app_r5 + MCU R5F (see TEST_SBL_SD_BOOT_*). */
     RUN_TEST(TestSbl_singleCoreImageSdBoot,       11412, NULL);
 #endif
     RUN_TEST(TestSbl_validateSingleCorePresent,   11415, NULL);
@@ -268,14 +328,14 @@ void test_main(void * args)
 
     RUN_TEST(TestSbl_multiCoreImageEmmcBoot,      11440, NULL);
 
-    RUN_TEST(TestSbl_multiCoreImageOspiBoot,      11441, NULL); 
+    RUN_TEST(TestSbl_multiCoreImageOspiBoot,      11441, NULL);
 
     RUN_TEST(TestSbl_runSelfCpuSetup,               11442, NULL);
 
     RUN_TEST(TestSbl_jumpSelfCpuSetup,              11443, NULL);
 
     RUN_TEST(TestSbl_runSelfCpuSdBoot,            11444, NULL);
-    
+
     /* The test will not return */
     /* RUN_TEST(TestSbl_jumpSelfCpuSdBoot,           11445, NULL); */
 
@@ -284,16 +344,55 @@ void test_main(void * args)
 /* The following test cases have to enabled one by one
  * due to failure in powering off the CPU */
 
-    RUN_TEST(TestSbl_sdSmpBoot,                   11436, NULL);
-    
-    RUN_TEST(TestSbl_emmcSmpBoot,                 11437, NULL);
-    
-    RUN_TEST(TestSbl_ospiSmpBoot,                 11438, NULL);
+#if !defined(SOC_AM275X)
+    RUN_TEST(TestSbl_parseInvalidEntryPoint,        11392, NULL);
+#endif
+    /* AM275x: same eMMC MMCSD_open hang — reads signed image from eMMC before
+     * corruption; skip until PHY+clock-domain reset is available in the driver. */
+#if !defined(SOC_AM275X)
+    RUN_TEST(TestSbl_authFailCorruptedImage,        11455, NULL);
+#endif
+    RUN_TEST(TestSbl_loadTimeBenchmark,             11456, NULL);
+
+#if defined(SOC_AM275X)
+    RUN_TEST(TestSbl_multiCoreImageSdBoot,        11439, NULL);
 
     RUN_TEST(TestSbl_multiCoreImageEmmcBoot,      11440, NULL);
 
-    RUN_TEST(TestSbl_multiCoreImageOspiBoot,      11441, NULL); 
+    RUN_TEST(TestSbl_multiCoreImageOspiBoot,      11441, NULL);
 
+    RUN_TEST(TestSbl_runSelfCpuSetup,               11442, NULL);
+
+    RUN_TEST(TestSbl_jumpSelfCpuSetup,              11443, NULL);
+
+    RUN_TEST(TestSbl_runSelfCpuSdBoot,            11444, NULL);
+
+    /* The test will not return */
+    /* RUN_TEST(TestSbl_jumpSelfCpuSdBoot,           11445, NULL); */
+
+#else
+
+/* The following test cases have to enabled one by one
+ * due to failure in powering off the CPU */
+
+#if !defined(SOC_AM62PX)
+    /* SMP boot requires a 4-core A53 SMP image (/sd0/app_smp) — no A53
+     * example board exists for am62px-sk in this SDK checkout, so the SMP
+     * image cannot be built. Not a macro/core-ID limitation. */
+    RUN_TEST(TestSbl_sdSmpBoot,                   11436, NULL);
+
+    RUN_TEST(TestSbl_emmcSmpBoot,                 11437, NULL);
+
+    RUN_TEST(TestSbl_ospiSmpBoot,                 11438, NULL);
+#endif
+
+    /* On AM62Px the multicore image contains only WKUP-R5F (self) + MCU-R5F;
+     * the tests boot only the MCU R5F core (see enabledCores[]). */
+    RUN_TEST(TestSbl_multiCoreImageEmmcBoot,      11440, NULL);
+
+    RUN_TEST(TestSbl_multiCoreImageOspiBoot,      11441, NULL);
+
+    /* On AM62Px uses /sd0/app_r5 + MCU R5F (see TEST_SBL_SD_BOOT_*). */
     RUN_TEST(TestSbl_runSelfCpuSetup,               11442, NULL);
 
     RUN_TEST(TestSbl_jumpSelfCpuSetup,              11443, NULL);
@@ -304,6 +403,8 @@ void test_main(void * args)
 
     RUN_TEST(TestSbl_parseAppImageSdBoot,           11421, NULL);
 
+    /* On AM62Px the synthetic header uses WKUP R5F instead of C75
+     * (see TEST_SBL_MULTICORE_CORE2_RPRC_ID). */
     RUN_TEST(TestSbl_parseAppImageMultiCore,        11425, NULL);
 
     RUN_TEST(TestSbl_parseAppImageSingleCorePresent, 11426, NULL);
@@ -312,9 +413,17 @@ void test_main(void * args)
        Run in isolation or as the final test in a sequence.
        Requires hsm.appimage.hs_fs flashed to eMMC at 0x1400000 (see steps below).
      */
-    
+
     RUN_TEST(TestSbl_hsmAppimageBoot,                11454, NULL);
 
+    /* media_HSM — must run last: Bootloader_runCpu replaces TIFS in HSM SRAM.
+       Run in isolation or as the final test in a sequence.
+       Requires hsm.appimage.hs_fs flashed to eMMC at 0x1400000 (see steps below).
+     */
+
+    RUN_TEST(TestSbl_hsmAppimageBoot,                11454, NULL);
+
+    /* On AM62Px uses /sd0/app_r5 + MCU R5F (see TEST_SBL_SD_BOOT_*). */
     RUN_TEST(TestSbl_powerOffAfterLoadSuccess,    12207, NULL);
 
 #endif
@@ -399,44 +508,54 @@ void TestSbl_singleCoreImageEmmcBoot(void *args)
      * not opened in the generated files
      */
     status = TestSbl_openBootEMMC();
+    DebugP_log("[DIAG] TestSbl_openBootEMMC done, status=%d\r\n", status);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
     Bootloader_openDma();
+    DebugP_log("[DIAG] Bootloader_openDma done\r\n");
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
 
     Bootloader_Params_init(&bootParamsMCU);
     Bootloader_BootImageInfo_init(&bootImageInfoMCU);
 
     bootHandleMCU = Bootloader_open(CONFIG_BOOTLOADER_EMMC_MCU, &bootParamsMCU);
+    DebugP_log("[DIAG] Bootloader_open done, handle=%p\r\n", bootHandleMCU);
     TEST_ASSERT_NOT_NULL(bootHandleMCU);
 
     Bootloader_ReservedMemInit(TEST_SBL_SECOND_STAGE_RESERVED_MEMORY_START, \
                                     TEST_SBL_SECOND_STAGE_RESERVED_MEMORY_LENGTH);
-    
+    DebugP_log("[DIAG] Bootloader_ReservedMemInit done\r\n");
+
     ((Bootloader_Config *)bootHandleMCU)->scratchMemPtr = gAppimage;
+    DebugP_log("[DIAG] Bootloader_socIsMCUResetIsoEnabled=%u\r\n", (unsigned)Bootloader_socIsMCUResetIsoEnabled());
     if (!Bootloader_socIsMCUResetIsoEnabled())
     {
         status = Bootloader_parseMultiCoreAppImage(bootHandleMCU, &bootImageInfoMCU);
+        DebugP_log("[DIAG] Bootloader_parseMultiCoreAppImage done, status=%d\r\n", status);
         TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
         bootImageInfoMCU.cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_MCU_R5FSS0_0);
         Bootloader_profileAddCore(CSL_CORE_ID_MCU_R5FSS0_0);
 
         status = Bootloader_loadCpu(bootHandleMCU, &(bootImageInfoMCU.cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
+        DebugP_log("[DIAG] Bootloader_loadCpu done, status=%d\r\n", status);
         TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
     }
     Bootloader_profileAddProfilePoint("App_loadMCUImage");
-    
+
     if (!Bootloader_socIsMCUResetIsoEnabled())
     {
         runStatus = Bootloader_runCpu(bootHandleMCU, &(bootImageInfoMCU.cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
+        DebugP_log("[DIAG] Bootloader_runCpu done, runStatus=%d\r\n", runStatus);
     }
     Bootloader_closeDma();
     Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootHandleMCU));
     Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_EMMC, MMCSD_getInputClk(gMmcsdHandle[CONFIG_MMCSD_SBL]));
     Bootloader_profilePrintProfileLog();
+    DebugP_log("[DIAG] about to call IpcNotify_waitSync\r\n");
 
     /* Wait for sync from MCU R5F core using IPC */
     status = IpcNotify_waitSync(CSL_CORE_ID_MCU_R5FSS0_0, 10000);
+    DebugP_log("[DIAG] IpcNotify_waitSync done, status=%d\r\n", status);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Reset the CPU to the original state for the rest of the tests */
@@ -456,8 +575,10 @@ void TestSbl_singleCoreImageEmmcBoot(void *args)
 /**
  * @brief Single-core image boot from OSPI flash.
  *
- * Opens the OSPI bootloader, parses and loads a single-core C75 DSP image,
-  * boots the core, waits for IPC sync, and resets the CPU.
+ * Opens the OSPI bootloader, parses and loads a single-core image
+ * (C75 DSP on am62ax/am62dx, MCU R5F on am62px — see
+ * TEST_SBL_OSPI_BOOT_CORE_ID), boots the core, waits for IPC sync,
+ * and resets the CPU.
  *
  * @param[in] args Optional user argument (unused).
  *
@@ -504,30 +625,30 @@ void TestSbl_singleCoreImageOspiBoot(void *args)
     status = Bootloader_parseMultiCoreAppImage(bootHandleDSP, &bootImageInfoDSP);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
-    bootImageInfoDSP.cpuInfo[CSL_CORE_ID_C75SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_C75SS0_0);
-    Bootloader_profileAddCore(CSL_CORE_ID_C75SS0_0);
+    bootImageInfoDSP.cpuInfo[TEST_SBL_OSPI_BOOT_CORE_ID].clkHz = Bootloader_socCpuGetClkDefault(TEST_SBL_OSPI_BOOT_CORE_ID);
+    Bootloader_profileAddCore(TEST_SBL_OSPI_BOOT_CORE_ID);
 
-    status = Bootloader_loadCpu(bootHandleDSP, &(bootImageInfoDSP.cpuInfo[CSL_CORE_ID_C75SS0_0]));
+    status = Bootloader_loadCpu(bootHandleDSP, &(bootImageInfoDSP.cpuInfo[TEST_SBL_OSPI_BOOT_CORE_ID]));
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
      
     Bootloader_profileAddProfilePoint("App_loadDSPImage");
 
-    runStatus = Bootloader_runCpu(bootHandleDSP, &(bootImageInfoDSP.cpuInfo[CSL_CORE_ID_C75SS0_0]));
+    runStatus = Bootloader_runCpu(bootHandleDSP, &(bootImageInfoDSP.cpuInfo[TEST_SBL_OSPI_BOOT_CORE_ID]));
     Bootloader_closeDma();
 
     Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootHandleDSP));
     Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_FLASH, OSPI_getInputClk(gOspiHandle[CONFIG_OSPI_SBL]));
     Bootloader_profilePrintProfileLog();
 
-    /* Wait for sync from MCU R5F core using IPC */
-    status = IpcNotify_waitSync(CSL_CORE_ID_C75SS0_0, 10000);
+    /* Wait for sync from the booted core using IPC */
+    status = IpcNotify_waitSync(TEST_SBL_OSPI_BOOT_CORE_ID, 10000);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Reset the CPU to the original state for rest of the  tests */
-    status = Bootloader_socCpuRequest(bootImageInfoDSP.cpuInfo[CSL_CORE_ID_C75SS0_0].cpuId);
+    status = Bootloader_socCpuRequest(bootImageInfoDSP.cpuInfo[TEST_SBL_OSPI_BOOT_CORE_ID].cpuId);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-    Bootloader_socCpuPowerOff(bootImageInfoDSP.cpuInfo[CSL_CORE_ID_C75SS0_0].cpuId);
-    status = Bootloader_socCpuRelease(bootImageInfoDSP.cpuInfo[CSL_CORE_ID_C75SS0_0].cpuId);
+    Bootloader_socCpuPowerOff(bootImageInfoDSP.cpuInfo[TEST_SBL_OSPI_BOOT_CORE_ID].cpuId);
+    status = Bootloader_socCpuRelease(bootImageInfoDSP.cpuInfo[TEST_SBL_OSPI_BOOT_CORE_ID].cpuId);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Close Flash and OSPI and boootloader instances */
@@ -566,37 +687,37 @@ void TestSbl_singleCoreImageSdBoot(void *args)
 
     Bootloader_openDma();
     status = TestSbl_openBootloaderAndParse(CONFIG_BOOTLOADER_SD_A53,
-                                            TEST_SBL_SD_A53_APPIMAGE_FILENAME,
+                                            TEST_SBL_SD_BOOT_APPIMAGE,
                                             &bootHandleA53,
                                             &bootImageInfoA53);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
-    status = Bootloader_isCorePresent(bootHandleA53, CSL_CORE_ID_A53SS0_0);
+    status = Bootloader_isCorePresent(bootHandleA53, TEST_SBL_SD_BOOT_CORE_ID);
     TEST_ASSERT_EQUAL(status, 1);
 
-    bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
-    status = Bootloader_loadCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0]));
+    bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].clkHz = Bootloader_socCpuGetClkDefault(TEST_SBL_SD_BOOT_CORE_ID);
+    status = Bootloader_loadCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID]));
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
-    Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
-    Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_A53SS0_0)");
+    Bootloader_profileAddCore(TEST_SBL_SD_BOOT_CORE_ID);
+    Bootloader_profileAddProfilePoint("App_loadImages(TEST_SBL_SD_BOOT_CORE_ID)");
 
-    runStatus = Bootloader_runCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0]));
+    runStatus = Bootloader_runCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID]));
 
     Bootloader_closeDma();
     Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootHandleA53));
     Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_SD, 0);
     Bootloader_profilePrintProfileLog();
 
-    /* Wait for sync from MCU R5F core using IPC */
-    status = IpcNotify_waitSync(CSL_CORE_ID_A53SS0_0, 10000);
+    /* Wait for sync from the booted core using IPC */
+    status = IpcNotify_waitSync(TEST_SBL_SD_BOOT_CORE_ID, 10000);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Reset the CPU to the original state for rest of tests tests */
-    status = Bootloader_socCpuRequest(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].cpuId);
+    status = Bootloader_socCpuRequest(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].cpuId);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-    Bootloader_socCpuPowerOff(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].cpuId);
-    status = Bootloader_socCpuRelease(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].cpuId);
+    Bootloader_socCpuPowerOff(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].cpuId);
+    status = Bootloader_socCpuRelease(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].cpuId);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Close the bootloader instance */
@@ -639,12 +760,12 @@ void TestSbl_runFail(void *args)
 
     Bootloader_openDma();
     status = TestSbl_openBootloaderAndParse(CONFIG_BOOTLOADER_SD_A53,
-                                            TEST_SBL_SD_A53_APPIMAGE_FILENAME,
+                                            TEST_SBL_SD_BOOT_APPIMAGE,
                                             &bootHandleA53,
                                             &bootImageInfoA53);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
-    status = Bootloader_isCorePresent(bootHandleA53, CSL_CORE_ID_A53SS0_0);
+    status = Bootloader_isCorePresent(bootHandleA53, TEST_SBL_SD_BOOT_CORE_ID);
     TEST_ASSERT_EQUAL(status, 1);
 
     /*
@@ -652,7 +773,7 @@ void TestSbl_runFail(void *args)
      * Bootloader_socCpuRequest, so Bootloader_socCpuResetRelease inside
      * Bootloader_runCpu returns a TIFS permission error → FAILURE.
      */
-    status = Bootloader_runCpu(NULL, &(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0]));
+    status = Bootloader_runCpu(NULL, &(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID]));
     TEST_ASSERT_EQUAL(status, SystemP_FAILURE);
 
     Bootloader_closeDma();
@@ -686,13 +807,13 @@ void TestSbl_isCorePresentFail(void *args)
 
     Bootloader_openDma();
     status = TestSbl_openBootloaderAndParse(CONFIG_BOOTLOADER_SD_A53,
-                                            TEST_SBL_SD_A53_APPIMAGE_FILENAME,
+                                            TEST_SBL_SD_BOOT_APPIMAGE,
                                             &bootHandleA53,
                                             &bootImageInfoA53);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Use an invalid core ID */
-    status = Bootloader_isCorePresent(bootHandleA53, CSL_CORE_ID_A53SS0_0 + 20);
+    status = Bootloader_isCorePresent(bootHandleA53, CSL_CORE_ID_MAX + 20);
     TEST_ASSERT_EQUAL(status, 0);
 
     Bootloader_closeDma();
@@ -733,25 +854,25 @@ void TestSbl_setInvalidClkFreqFail(void *args)
 
     Bootloader_openDma();
     status = TestSbl_openBootloaderAndParse(CONFIG_BOOTLOADER_SD_A53,
-                                            TEST_SBL_SD_A53_APPIMAGE_FILENAME,
+                                            TEST_SBL_SD_BOOT_APPIMAGE,
                                             &bootHandleA53,
                                             &bootImageInfoA53);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
-    status = Bootloader_isCorePresent(bootHandleA53, CSL_CORE_ID_A53SS0_0);
+    status = Bootloader_isCorePresent(bootHandleA53, TEST_SBL_SD_BOOT_CORE_ID);
     TEST_ASSERT_EQUAL(status, 1);
 
     /* Set the CPU frequency to zero which should fail */
-    bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = 0;
-    status = Bootloader_loadCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0]));
+    bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].clkHz = 0;
+    status = Bootloader_loadCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID]));
     TEST_ASSERT_EQUAL(status, SystemP_FAILURE);
     Bootloader_closeDma();
 
     /* Reset the CPU to the original state for rest of tests tests */
-    status = Bootloader_socCpuRequest(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].cpuId);
+    status = Bootloader_socCpuRequest(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].cpuId);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-    Bootloader_socCpuPowerOff(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].cpuId);
-    status = Bootloader_socCpuRelease(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].cpuId);
+    Bootloader_socCpuPowerOff(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].cpuId);
+    status = Bootloader_socCpuRelease(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].cpuId);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Close the bootloader instance */
@@ -784,32 +905,34 @@ void TestSbl_runInvalidCore(void *args)
 
     Bootloader_openDma();
     status = TestSbl_openBootloaderAndParse(CONFIG_BOOTLOADER_SD_A53,
-                                            TEST_SBL_SD_A53_APPIMAGE_FILENAME,
+                                            TEST_SBL_SD_BOOT_APPIMAGE,
                                             &bootHandleA53,
                                             &bootImageInfoA53);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
-    status = Bootloader_isCorePresent(bootHandleA53, CSL_CORE_ID_A53SS0_0);
+    status = Bootloader_isCorePresent(bootHandleA53, TEST_SBL_SD_BOOT_CORE_ID);
     TEST_ASSERT_EQUAL(status, 1);
 
-    bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
-    status = Bootloader_loadCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0]));
+    bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].clkHz = Bootloader_socCpuGetClkDefault(TEST_SBL_SD_BOOT_CORE_ID);
+    status = Bootloader_loadCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID]));
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
-    Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
-    Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_A53SS0_0)");
+    Bootloader_profileAddCore(TEST_SBL_SD_BOOT_CORE_ID);
+    Bootloader_profileAddProfilePoint("App_loadImages(TEST_SBL_SD_BOOT_CORE_ID)");
 
-    /* The image is loaded to A53 core but we are trying to run C75X core which should fail */
-    status = Bootloader_runCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[CSL_CORE_ID_C75SS0_0]));
+    /* The image is loaded to one core but we try to run a different,
+     * never-loaded core (C75 on am62ax/am62dx, A53 on am62px — see
+     * TEST_SBL_UNLOADED_CORE_ID) which should fail. */
+    status = Bootloader_runCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[TEST_SBL_UNLOADED_CORE_ID]));
     TEST_ASSERT_EQUAL(status, SystemP_FAILURE);
 
     Bootloader_closeDma();
 
     /* Reset the CPU to the original state for rest of tests tests */
-    status = Bootloader_socCpuRequest(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].cpuId);
+    status = Bootloader_socCpuRequest(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].cpuId);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-    Bootloader_socCpuPowerOff(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].cpuId);
-    status = Bootloader_socCpuRelease(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].cpuId);
+    Bootloader_socCpuPowerOff(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].cpuId);
+    status = Bootloader_socCpuRelease(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].cpuId);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Close the bootloader instance */
@@ -912,11 +1035,16 @@ void TestSbl_sdSmpBoot(void *args)
     Bootloader_close(bootHandleA53);
 }
 
+#if !defined(SOC_AM62PX)
 /**
  * @brief Multi-core image boot from SD card.
  *
  * Boots MCU R5, A53, and C75 cores simultaneously from a multicore
   * SD appimage, waits for IPC sync from each, and resets all cores.
+ *
+ * Registered only on AM275x (see test_main). AM62Px has no C75 core and
+ * this definition is unused on non-AM275x SOCs, so it stays excluded
+ * there to avoid an unused-image dependency.
  *
  * @param[in] args Optional user argument (unused).
  *
@@ -993,6 +1121,7 @@ void TestSbl_multiCoreImageSdBoot(void *args)
 
     TEST_ASSERT_EQUAL(runStatus, SystemP_SUCCESS);
 }
+#endif /* !defined(SOC_AM62PX) */
 
 /**
  * @brief SMP A53 boot from eMMC.
@@ -1072,8 +1201,10 @@ void TestSbl_emmcSmpBoot(void *args)
 /**
  * @brief Multi-core image boot from eMMC.
  *
- * Boots MCU R5, A53, and C75 cores simultaneously from a multicore
-  * eMMC appimage, waits for IPC sync from each, and resets all cores.
+ * Boots the secondary cores of the multicore system appimage from eMMC,
+ * waits for IPC sync from each, and resets all cores. On am62ax/am62dx
+ * the image contains MCU R5 + A53 + C75; on am62px it contains
+ * WKUP-R5F (self, skipped) + MCU-R5F, so only the MCU R5F is booted.
  *
  * @param[in] args Optional user argument (unused).
  *
@@ -1088,13 +1219,14 @@ void TestSbl_multiCoreImageEmmcBoot(void *args)
     Bootloader_BootImageInfo bootImageInfo;
     Bootloader_Params        bootParams;
     Bootloader_Handle        bootHandle = NULL;
-    /* The test executable to be booted is ipc_rpmsg
-     * system project for AM62DX which has the following
-     * cores enabled
+    /* The test executable to be booted is the ipc_rpmsg system project
+     * which has the following bootable (non-self) cores enabled
      */
     uint32_t enabledCores[] = { CSL_CORE_ID_MCU_R5FSS0_0,
+#if !defined(SOC_AM62PX)
                                 CSL_CORE_ID_A53SS0_0,
                                 CSL_CORE_ID_C75SS0_0,
+#endif
                               };
     numCores = sizeof(enabledCores)/sizeof(enabledCores[0]);
 
@@ -1255,8 +1387,11 @@ void TestSbl_ospiSmpBoot(void *args)
 /**
  * @brief Multi-core image boot from OSPI flash.
  *
- * Boots MCU R5, A53, and C75 cores simultaneously from a multicore
-  * OSPI flash appimage, waits for IPC sync from each, and resets all cores.
+ * Boots the secondary cores of the multicore system appimage from OSPI
+ * flash, waits for IPC sync from each, and resets all cores. On
+ * am62ax/am62dx the image contains MCU R5 + A53 + C75; on am62px it
+ * contains WKUP-R5F (self, skipped) + MCU-R5F, so only the MCU R5F is
+ * booted.
  *
  * @param[in] args Optional user argument (unused).
  *
@@ -1271,13 +1406,14 @@ void TestSbl_multiCoreImageOspiBoot(void *args)
     Bootloader_BootImageInfo bootImageInfo;
     Bootloader_Params        bootParams;
     Bootloader_Handle        bootHandle = NULL;
-    /* The test executable to be booted is ipc_rpmsg
-     * system project for AM62DX which has the following
-     * cores enabled
+    /* The test executable to be booted is the ipc_rpmsg system project
+     * which has the following bootable (non-self) cores enabled
      */
     uint32_t enabledCores[] = { CSL_CORE_ID_MCU_R5FSS0_0,
+#if !defined(SOC_AM62PX)
                                 CSL_CORE_ID_A53SS0_0,
                                 CSL_CORE_ID_C75SS0_0,
+#endif
                               };
     numCores = sizeof(enabledCores)/sizeof(enabledCores[0]);
 
@@ -1382,19 +1518,19 @@ void TestSbl_runwithoutLoad(void *args)
 
     Bootloader_openDma();
     status = TestSbl_openBootloaderAndParse(CONFIG_BOOTLOADER_SD_A53,
-                                            TEST_SBL_SD_A53_APPIMAGE_FILENAME,
+                                            TEST_SBL_SD_BOOT_APPIMAGE,
                                             &bootHandleA53,
                                             &bootImageInfoA53);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
-    status = Bootloader_isCorePresent(bootHandleA53, CSL_CORE_ID_A53SS0_0);
+    status = Bootloader_isCorePresent(bootHandleA53, TEST_SBL_SD_BOOT_CORE_ID);
     TEST_ASSERT_EQUAL(status, 1);
 
     /* Skip load and run the appimage which
      * should fail
      */
-    Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
-    status = Bootloader_runCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0]));
+    Bootloader_profileAddCore(TEST_SBL_SD_BOOT_CORE_ID);
+    status = Bootloader_runCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID]));
     TEST_ASSERT_EQUAL(status, SystemP_FAILURE);
 
     Bootloader_closeDma();
@@ -1402,7 +1538,7 @@ void TestSbl_runwithoutLoad(void *args)
     Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_SD, 0);
     Bootloader_profilePrintProfileLog();
 
-    Bootloader_powerOffCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0]));
+    Bootloader_powerOffCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID]));
     Bootloader_close(bootHandleA53);
 }
 
@@ -1434,41 +1570,41 @@ void TestSbl_powerOffAfterLoadSuccess(void *args)
 
     Bootloader_openDma();
     status = TestSbl_openBootloaderAndParse(CONFIG_BOOTLOADER_SD_A53,
-                                            TEST_SBL_SD_A53_APPIMAGE_FILENAME,
+                                            TEST_SBL_SD_BOOT_APPIMAGE,
                                             &bootHandleA53,
                                             &bootImageInfoA53);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
-    status = Bootloader_isCorePresent(bootHandleA53, CSL_CORE_ID_A53SS0_0);
+    status = Bootloader_isCorePresent(bootHandleA53, TEST_SBL_SD_BOOT_CORE_ID);
     TEST_ASSERT_EQUAL(status, 1);
 
-    bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
-    status = Bootloader_loadCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0]));
+    bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].clkHz = Bootloader_socCpuGetClkDefault(TEST_SBL_SD_BOOT_CORE_ID);
+    status = Bootloader_loadCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID]));
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
-    Bootloader_profileAddCore(CSL_CORE_ID_A53SS0_0);
-    Bootloader_profileAddProfilePoint("App_loadImages(CSL_CORE_ID_A53SS0_0)");
+    Bootloader_profileAddCore(TEST_SBL_SD_BOOT_CORE_ID);
+    Bootloader_profileAddProfilePoint("App_loadImages(TEST_SBL_SD_BOOT_CORE_ID)");
 
-    runStatus = Bootloader_runCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0]));
+    runStatus = Bootloader_runCpu(bootHandleA53, &(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID]));
 
     Bootloader_closeDma();
     Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootHandleA53));
     Bootloader_profileUpdateMediaAndClk(BOOTLOADER_MEDIA_SD, 0);
     Bootloader_profilePrintProfileLog();
 
-    /* Wait for sync from MCU R5F core using IPC */
-    status = IpcNotify_waitSync(CSL_CORE_ID_A53SS0_0, 10000);
+    /* Wait for sync from the booted core using IPC */
+    status = IpcNotify_waitSync(TEST_SBL_SD_BOOT_CORE_ID, 10000);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Reset the CPU to the original state for the rest of the tests */
-    status = Bootloader_socCpuRequest(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].cpuId);
+    status = Bootloader_socCpuRequest(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].cpuId);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-    Bootloader_socCpuPowerOff(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].cpuId);
-    status = Bootloader_socCpuRelease(bootImageInfoA53.cpuInfo[CSL_CORE_ID_A53SS0_0].cpuId);
+    Bootloader_socCpuPowerOff(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].cpuId);
+    status = Bootloader_socCpuRelease(bootImageInfoA53.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].cpuId);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Check if the Core has actually shut down by querying TIFS */
-    status = Sciclient_pmGetModuleState(TISCI_DEV_A53SS0,
+    status = Sciclient_pmGetModuleState(TEST_SBL_SD_BOOT_CORE_TISCI_DEV_ID,
                                         &moduleState,
                                         &resetState,
                                         &contextLossState,
@@ -1484,7 +1620,9 @@ void TestSbl_powerOffAfterLoadSuccess(void *args)
  * @brief Validate multicore presence bitmap after parsing.
  *
  * Parses a multicore SD appimage and verifies that all expected cores
-  * (MCU R5, A53, C75) are reported as present via Bootloader_isCorePresent.
+ * are reported as present via Bootloader_isCorePresent. On am62ax/am62dx
+ * these are MCU R5 + A53 + C75; on am62px they are MCU R5 + WKUP R5
+ * (see TEST_SBL_MULTICORE_CORE2_ID).
  *
  * @param[in] args Optional user argument (unused).
  *
@@ -1505,15 +1643,17 @@ void TestSbl_validateMultiCorePresent(void *args)
                                             &bootHandle,
                                             &bootImageInfo);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-   
-    /* Check if all the cores are present in image */ 
+
+    /* Check if all the cores are present in image */
     status = Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_MCU_R5FSS0_0);
     TEST_ASSERT_EQUAL(status, 1);
 
+#if !defined(SOC_AM62PX)
     status = Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_A53SS0_0);
     TEST_ASSERT_EQUAL(status, 1);
+#endif
 
-    status = Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_C75SS0_0);
+    status = Bootloader_isCorePresent(bootHandle, TEST_SBL_MULTICORE_CORE2_ID);
     TEST_ASSERT_EQUAL(status, 1);
 
     Bootloader_closeDma();
@@ -1538,9 +1678,9 @@ void TestSbl_validateGetMultiCoreImageSz(void *args)
     Bootloader_BootImageInfo bootImageInfo;
     Bootloader_Handle        bootHandle = NULL;
 
-    /* For this test case the A53 NORTOS
-     * example of ipc_rpmsg_echo is to be
-     * renamed as app_a53 and present in
+    /* For this test case the single-core
+     * ipc_rpmsg_echo appimage (A53 NORTOS, or MCU R5F on am62px) is to be
+     * renamed as the TEST_SBL_SD_BOOT_APPIMAGE file and present in
      * the SD card.
      */
     DebugP_log("Starting TestSbl_validateGetMultiCoreImageSz... \r\n");
@@ -1548,7 +1688,7 @@ void TestSbl_validateGetMultiCoreImageSz(void *args)
 
     Bootloader_openDma();
     status = TestSbl_openBootloaderAndParse(CONFIG_BOOTLOADER_SD_A53,
-                                            TEST_SBL_SD_A53_APPIMAGE_FILENAME,
+                                            TEST_SBL_SD_BOOT_APPIMAGE,
                                             &bootHandle,
                                             &bootImageInfo);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
@@ -1585,16 +1725,16 @@ void TestSbl_validateSingleCorePresent(void *args)
 
     Bootloader_openDma();
     status = TestSbl_openBootloaderAndParse(CONFIG_BOOTLOADER_SD_A53,
-                                            TEST_SBL_SD_A53_APPIMAGE_FILENAME,
+                                            TEST_SBL_SD_BOOT_APPIMAGE,
                                             &bootHandle,
                                             &bootImageInfo);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
     
-    /* Only A53 core should be present in the image */
+    /* Only the boot core should be present in the image */
     for(loopVar = 0; loopVar < CSL_CORE_ID_MAX; loopVar++)
     {
         status = Bootloader_isCorePresent(bootHandle, loopVar);
-        if(loopVar == CSL_CORE_ID_A53SS0_0)
+        if(loopVar == TEST_SBL_SD_BOOT_CORE_ID)
         {
             TEST_ASSERT_EQUAL(status, 1);
         }
@@ -2056,6 +2196,20 @@ int32_t TestSbl_openBootEMMC()
 {
     int32_t status = SystemP_SUCCESS;
 
+#if defined(SOC_AM62PX)
+    /* AM62PX: MMCSD_halSoftReset does not fully reset the eMMC PHY/clock
+     * domain, so a second MMCSD_open() after a close hangs (same class of
+     * bug already documented for AM275X — see the uniflash eMMC test
+     * exclusions above). If the instance is already open (e.g. carried
+     * over from Board_init() or a prior test that left it open on
+     * purpose, see TestSbl_closeBootEMMC), just reuse the existing handle
+     * instead of closing+reopening. */
+    if (gMmcsdHandle[CONFIG_MMCSD_SBL] != NULL)
+    {
+        return status;
+    }
+#endif
+
     gMmcsdHandle[CONFIG_MMCSD_SBL] = NULL;
 
     gMmcsdHandle[CONFIG_MMCSD_SBL] = MMCSD_open(CONFIG_MMCSD_SBL, &gMmcsdParams[CONFIG_MMCSD_SBL]);
@@ -2122,8 +2276,16 @@ int32_t TestSbl_openBootBoardFlash()
  */
 void TestSbl_closeBootEMMC()
 {
+#if defined(SOC_AM62PX)
+    /* AM62PX: deliberately leave the instance open — MMCSD_halSoftReset
+     * does not fully reset the eMMC PHY/clock domain, so re-opening it
+     * later (from TestSbl_openBootEMMC, by a subsequent test) would hang.
+     * This is a one-shot UART-loaded test binary, so nothing downstream
+     * needs the handle closed; just skip it. */
+#else
     MMCSD_close(gMmcsdHandle[CONFIG_MMCSD_SBL]);
     gMmcsdHandle[CONFIG_MMCSD_SBL] = NULL;
+#endif
 }
 
 /**
@@ -2324,8 +2486,9 @@ void TestSbl_parseAppImageInvalidMagic(void *args)
 /**
  * @brief Parse synthetic multi-core appimage.
  *
- * Constructs a synthetic 3-core appimage (MCU R5, A53, C75) and verifies
-  * all cores are present after Bootloader_parseAppImage.
+ * Constructs a synthetic 3-core appimage (MCU R5, A53, plus C75 on
+ * am62ax/am62dx or WKUP R5 on am62px — see TEST_SBL_MULTICORE_CORE2_*)
+ * and verifies all cores are present after Bootloader_parseAppImage.
  *
  * @param[in] args Optional user argument (unused).
  *
@@ -2346,7 +2509,8 @@ void TestSbl_parseAppImageMultiCore(void *args)
     bootParams.memArgsAppImageBaseAddr = (uintptr_t)gAppimage;
 
     /*
-     * Construct a synthetic multi-core appimage header (MCU-R5, A53, C75).
+     * Construct a synthetic multi-core appimage header (MCU-R5, A53, and
+     * C75 on am62ax/am62dx or WKUP-R5 on am62px).
      * Meta header (16 bytes) + 3 core headers (8 bytes each) = 40 bytes total.
      */
     memset(gAppimage, 0, 64);
@@ -2360,8 +2524,9 @@ void TestSbl_parseAppImageMultiCore(void *args)
     /* Core 1: A53SS0_0 (rprcCoreId = 0) */
     hdr[6] = 0U;            /* coreId            */
     hdr[7] = 40U;           /* imageOffset       */
-    /* Core 2: C75SS0_0 (rprcCoreId = 7) */
-    hdr[8] = 7U;            /* coreId            */
+    /* Core 2: C75SS0_0 (rprcCoreId = 7) or WKUP-R5FSS0_0 (rprcCoreId = 4)
+     * on am62px — see TEST_SBL_MULTICORE_CORE2_RPRC_ID */
+    hdr[8] = TEST_SBL_MULTICORE_CORE2_RPRC_ID; /* coreId */
     hdr[9] = 40U;           /* imageOffset       */
     memcpy(gAppimage, hdr, sizeof(hdr));
 
@@ -2380,12 +2545,12 @@ void TestSbl_parseAppImageMultiCore(void *args)
     status = Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_A53SS0_0);
     TEST_ASSERT_EQUAL(status, 1);
 
-    status = Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_C75SS0_0);
+    status = Bootloader_isCorePresent(bootHandle, TEST_SBL_MULTICORE_CORE2_ID);
     TEST_ASSERT_EQUAL(status, 1);
 
     TEST_ASSERT_NOT_EQUAL(bootImageInfo.cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0].rprcOffset, BOOTLOADER_INVALID_ID);
     TEST_ASSERT_NOT_EQUAL(bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0].rprcOffset, BOOTLOADER_INVALID_ID);
-    TEST_ASSERT_NOT_EQUAL(bootImageInfo.cpuInfo[CSL_CORE_ID_C75SS0_0].rprcOffset, BOOTLOADER_INVALID_ID);
+    TEST_ASSERT_NOT_EQUAL(bootImageInfo.cpuInfo[TEST_SBL_MULTICORE_CORE2_ID].rprcOffset, BOOTLOADER_INVALID_ID);
 
     Bootloader_close(bootHandle);
 }
@@ -3726,16 +3891,16 @@ void TestSbl_runSelfCpuSetup(void *args)
      */
     Bootloader_openDma();
     status = TestSbl_openBootloaderAndParse(CONFIG_BOOTLOADER_SD_A53,
-                                            TEST_SBL_SD_A53_APPIMAGE_FILENAME,
+                                            TEST_SBL_SD_BOOT_APPIMAGE,
                                             &bootHandle,
                                             &bootImageInfo);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
-    status = Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_A53SS0_0);
+    status = Bootloader_isCorePresent(bootHandle, TEST_SBL_SD_BOOT_CORE_ID);
     TEST_ASSERT_EQUAL(status, 1);
 
-    bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
-    status = Bootloader_loadCpu(bootHandle, &(bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0]));
+    bootImageInfo.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].clkHz = Bootloader_socCpuGetClkDefault(TEST_SBL_SD_BOOT_CORE_ID);
+    status = Bootloader_loadCpu(bootHandle, &(bootImageInfo.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID]));
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /*
@@ -3746,18 +3911,18 @@ void TestSbl_runSelfCpuSetup(void *args)
     TEST_ASSERT_NOT_NULL(bootHandle);
 
     /* Clean up: power off the loaded CPU and close */
-    status = Bootloader_runCpu(bootHandle, &(bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0]));
+    status = Bootloader_runCpu(bootHandle, &(bootImageInfo.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID]));
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     Bootloader_closeDma();
 
-    status = IpcNotify_waitSync(CSL_CORE_ID_A53SS0_0, 10000);
+    status = IpcNotify_waitSync(TEST_SBL_SD_BOOT_CORE_ID, 10000);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
-    status = Bootloader_socCpuRequest(bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0].cpuId);
+    status = Bootloader_socCpuRequest(bootImageInfo.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].cpuId);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-    Bootloader_socCpuPowerOff(bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0].cpuId);
-    status = Bootloader_socCpuRelease(bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0].cpuId);
+    Bootloader_socCpuPowerOff(bootImageInfo.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].cpuId);
+    status = Bootloader_socCpuRelease(bootImageInfo.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].cpuId);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     Bootloader_close(bootHandle);
@@ -3790,21 +3955,21 @@ void TestSbl_jumpSelfCpuSetup(void *args)
      */
     Bootloader_openDma();
     status = TestSbl_openBootloaderAndParse(CONFIG_BOOTLOADER_SD_A53,
-                                            TEST_SBL_SD_A53_APPIMAGE_FILENAME,
+                                            TEST_SBL_SD_BOOT_APPIMAGE,
                                             &bootHandle,
                                             &bootImageInfo);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
-    status = Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_A53SS0_0);
+    status = Bootloader_isCorePresent(bootHandle, TEST_SBL_SD_BOOT_CORE_ID);
     TEST_ASSERT_EQUAL(status, 1);
 
-    bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
-    status = Bootloader_loadCpu(bootHandle, &(bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0]));
+    bootImageInfo.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].clkHz = Bootloader_socCpuGetClkDefault(TEST_SBL_SD_BOOT_CORE_ID);
+    status = Bootloader_loadCpu(bootHandle, &(bootImageInfo.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID]));
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Validate that setting the self CPU entry point succeeds */
-    entryPoint = bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0].entryPoint;
-    status = Bootloader_socCpuSetEntryPoint(CSL_CORE_ID_A53SS0_0, entryPoint);
+    entryPoint = bootImageInfo.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].entryPoint;
+    status = Bootloader_socCpuSetEntryPoint(TEST_SBL_SD_BOOT_CORE_ID, entryPoint);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /*
@@ -3813,18 +3978,18 @@ void TestSbl_jumpSelfCpuSetup(void *args)
      */
 
     /* Clean up: run the loaded CPU, wait for sync, then power off */
-    status = Bootloader_runCpu(bootHandle, &(bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0]));
+    status = Bootloader_runCpu(bootHandle, &(bootImageInfo.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID]));
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     Bootloader_closeDma();
 
-    status = IpcNotify_waitSync(CSL_CORE_ID_A53SS0_0, 10000);
+    status = IpcNotify_waitSync(TEST_SBL_SD_BOOT_CORE_ID, 10000);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
-    status = Bootloader_socCpuRequest(bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0].cpuId);
+    status = Bootloader_socCpuRequest(bootImageInfo.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].cpuId);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-    Bootloader_socCpuPowerOff(bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0].cpuId);
-    status = Bootloader_socCpuRelease(bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0].cpuId);
+    Bootloader_socCpuPowerOff(bootImageInfo.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].cpuId);
+    status = Bootloader_socCpuRelease(bootImageInfo.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].cpuId);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     Bootloader_close(bootHandle);
@@ -3856,13 +4021,13 @@ void TestSbl_runSelfCpuSdBoot(void *args)
      */
     Bootloader_openDma();
     status = TestSbl_openBootloaderAndParse(CONFIG_BOOTLOADER_SD_A53,
-                                            TEST_SBL_SD_A53_APPIMAGE_FILENAME,
+                                            TEST_SBL_SD_BOOT_APPIMAGE,
                                             &bootHandle,
                                             &bootImageInfo);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
-    bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
-    status = Bootloader_loadCpu(bootHandle, &(bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0]));
+    bootImageInfo.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].clkHz = Bootloader_socCpuGetClkDefault(TEST_SBL_SD_BOOT_CORE_ID);
+    status = Bootloader_loadCpu(bootHandle, &(bootImageInfo.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID]));
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     Bootloader_closeDma();
@@ -3903,18 +4068,18 @@ void TestSbl_jumpSelfCpuSdBoot(void *args)
      */
     Bootloader_openDma();
     status = TestSbl_openBootloaderAndParse(CONFIG_BOOTLOADER_SD_A53,
-                                            TEST_SBL_SD_A53_APPIMAGE_FILENAME,
+                                            TEST_SBL_SD_BOOT_APPIMAGE,
                                             &bootHandle,
                                             &bootImageInfo);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
-    bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_A53SS0_0);
-    status = Bootloader_loadCpu(bootHandle, &(bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0]));
+    bootImageInfo.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].clkHz = Bootloader_socCpuGetClkDefault(TEST_SBL_SD_BOOT_CORE_ID);
+    status = Bootloader_loadCpu(bootHandle, &(bootImageInfo.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID]));
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Set the self CPU entry point */
-    entryPoint = bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0].entryPoint;
-    status = Bootloader_socCpuSetEntryPoint(CSL_CORE_ID_A53SS0_0, entryPoint);
+    entryPoint = bootImageInfo.cpuInfo[TEST_SBL_SD_BOOT_CORE_ID].entryPoint;
+    status = Bootloader_socCpuSetEntryPoint(TEST_SBL_SD_BOOT_CORE_ID, entryPoint);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     Bootloader_closeDma();

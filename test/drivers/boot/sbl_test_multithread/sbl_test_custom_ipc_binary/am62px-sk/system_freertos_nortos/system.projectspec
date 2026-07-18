@@ -3,7 +3,7 @@
     <import spec="../wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec"/>
     <import spec="../mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec"/>
     <project
-        name="ipc_rpmsg_echo_am62px-sk_system_freertos_nortos"
+        name="sbl_test_custom_ipc_binary_am62px-sk_system_freertos_nortos"
         products="com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,

@@ -1,0 +1,158 @@
+/*
+ *  Copyright (C) 2024 Texas Instruments Incorporated
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions
+ *  are met:
+ *
+ *    Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ *    Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the
+ *    distribution.
+ *
+ *    Neither the name of Texas Instruments Incorporated nor the names of
+ *    its contributors may be used to endorse or promote products derived
+ *    from this software without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ *  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ *  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ *  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ *  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ *  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ *  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+#include <stdlib.h>
+#include <kernel/dpl/DebugP.h>
+#include <kernel/dpl/ClockP.h>
+#include "ti_drivers_config.h"
+#include "ti_board_config.h"
+#include "ti_drivers_open_close.h"
+#include "ti_board_open_close.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include <drivers/device_manager/sciserver/sciserver_init.h>
+
+#define TASK_PRI_MAIN_THREAD  (configMAX_PRIORITIES-1)
+#define TASK_PRI_BOOT_THREAD  (configMAX_PRIORITIES-1)
+
+
+#define TASK_SIZE (16384U/sizeof(configSTACK_DEPTH_TYPE))
+
+/* Stack size allocated for the sciserver task */
+#define SCISERVER_TASK_STACK_SIZE                   (2U*1024U)
+
+/* Stack memory alignment requirement for the sciserver task */
+#define SCISERVER_TASK_STACK_ALIGNMENT              (32)
+
+StackType_t gMainTaskStack[TASK_SIZE] __attribute__((aligned(32)));
+
+/* Stack buffers for user high and low priority tasks */
+uint8_t __attribute__((aligned(SCISERVER_TASK_STACK_ALIGNMENT))) gUserHiTaskStack[SCISERVER_TASK_STACK_SIZE];
+uint8_t __attribute__((aligned(SCISERVER_TASK_STACK_ALIGNMENT))) gUserLoTaskStack[SCISERVER_TASK_STACK_SIZE];
+StaticTask_t gMainTaskObj;
+TaskHandle_t gMainTask;
+
+void test_main(void *args);
+
+void main_thread(void *args)
+{
+    int32_t status = SystemP_SUCCESS;
+
+    /* Open drivers */
+    Drivers_open();
+    /* Open flash and board drivers */
+    status = Board_driversOpen();
+    DebugP_assert(status==SystemP_SUCCESS);
+
+    /* Configure sciserver task parameters */
+    Sciserver_TirtosCfgPrms_t sciserverCfg = {0};
+    sciserverCfg.hiTaskStack    =   gUserHiTaskStack;
+    sciserverCfg.loTaskStack    =   gUserLoTaskStack;
+    sciserverCfg.taskStackSize  =   SCISERVER_TASK_STACK_SIZE;
+
+    sciServer_init(&sciserverCfg);
+
+    /* Close board-level Flash, OSPI, and eMMC before tests.
+     * Tests manage these drivers themselves via TestSbl_openBoot*()
+     * helpers, and re-opening an already-open instance fails.
+     * SD card (CONFIG_MMCSD0, instance 1) and FatFS stay open
+     * for SD boot tests.
+     *
+     * AM62PX: do NOT close the eMMC (CONFIG_MMCSD_SBL) instance here.
+     * MMCSD_halSoftReset does not fully reset the eMMC PHY/clock domain,
+     * so a later re-open (TestSbl_openBootEMMC) would hang. Leave the
+     * handle opened by Board_init() in place; TestSbl_openBootEMMC/
+     * TestSbl_closeBootEMMC on AM62PX reuse it instead of closing+
+     * reopening. */
+    Board_driversClose();
+    Drivers_ospiClose();
+#if !defined(SOC_AM62PX)
+    MMCSD_close(gMmcsdHandle[CONFIG_MMCSD_SBL]);
+    gMmcsdHandle[CONFIG_MMCSD_SBL] = NULL;
+#endif
+
+    test_main(NULL);
+
+    /* Close board and flash drivers */
+    Board_driversClose();
+    /* Close drivers */
+    Drivers_close();
+
+    vTaskDelete(NULL);
+}
+
+
+int main()
+{
+    int32_t status;
+    Bootloader_profileReset();
+
+    status = Bootloader_socOpenFirewalls();
+
+    DebugP_assertNoLog(status == SystemP_SUCCESS);
+
+    /* init SOC specific modules */
+    System_init();
+    /* AM62Px is a DM-with-boot SOC: modules owned by the bootloader
+     * (eMMC MMCSD0, OSPI) are generated into gSocSBLModules and are NOT
+     * enabled by PowerClock_init()/Drivers_open(). Enable them explicitly,
+     * else MMCSD_open() hangs on the unclocked eMMC controller in the
+     * eMMC boot/uniflash tests. Same as the am62dx-evm test main.c. */
+    Module_clockSBLEnable();
+    Module_clockSBLSetFrequency();
+
+    Bootloader_profileAddProfilePoint("System_init");
+    Board_init();
+    Bootloader_profileAddProfilePoint("Board_init");
+
+    Bootloader_profileAddProfilePoint("FreeRtosTask Create");
+
+    gMainTask = xTaskCreateStatic( main_thread,   /* Pointer to the function that implements the task. */
+                                  "main_thread", /* Text name for the task.  This is to facilitate debugging only. */
+                                  TASK_SIZE,  /* Stack depth in units of StackType_t typically uint32_t on 32b CPUs */
+                                  NULL,            /* We are not using the task parameter. */
+                                  TASK_PRI_MAIN_THREAD,   /* task priority, 0 is lowest priority, configMAX_PRIORITIES-1 is highest */
+                                  gMainTaskStack,  /* pointer to stack base */
+                                  &gMainTaskObj ); /* pointer to statically allocated task object memory */
+    configASSERT(gMainTask != NULL);
+
+    /* Start the scheduler to start the tasks executing. */
+    vTaskStartScheduler();
+
+    /* The following line should never be reached because vTaskStartScheduler()
+    will only return if there was not enough FreeRTOS heap memory available to
+    create the Idle and (if configured) Timer tasks.  Heap management, and
+    techniques for trapping heap exhaustion, are described in the book text. */
+    DebugP_assertNoLog(0);
+
+    return 0;
+}

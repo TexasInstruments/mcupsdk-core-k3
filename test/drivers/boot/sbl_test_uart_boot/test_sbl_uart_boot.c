@@ -58,7 +58,14 @@
 #define BOOTLOADER_UART_STATUS_APPIMAGE_SIZE_EXCEEDED (0x45584344) 
 
 #define BOOTLOADER_UART_CPU_RUN_WAIT_SECONDS          (5)
-#define BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH  (4) 
+#define BOOTLOADER_END_OF_FILES_TRANSFER_WORD_LENGTH  (4)
+
+/* MCU-equivalent core ID per SOC */
+#if defined(SOC_AM62X)
+#define TEST_SBL_MCU_CORE_ID  (CSL_CORE_ID_M4FSS0_0)
+#else
+#define TEST_SBL_MCU_CORE_ID  (CSL_CORE_ID_MCU_R5FSS0_0)
+#endif
 #if defined(SOC_AM275X)
 /* AM275x uses MCELF format.  The full MCELF file is received via XMODEM
  * and then parsed + loaded from memory. */
@@ -522,6 +529,8 @@ int32_t TestSbl_loadCpu()
 
             }
         }
+#if !defined(SOC_AM62PX)
+        /* AM62PX has no C75 core; CSL_CORE_ID_C75SS0_0 is not defined for it. */
         if(((status == SystemP_SUCCESS) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_C75SS0_0))))
         {
             bootImageInfo.cpuInfo[CSL_CORE_ID_C75SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_C75SS0_0);
@@ -530,6 +539,7 @@ int32_t TestSbl_loadCpu()
             bootCpuInfo[CSL_CORE_ID_C75SS0_0] = bootImageInfo.cpuInfo[CSL_CORE_ID_C75SS0_0];
             Bootloader_profileAddCore(CSL_CORE_ID_C75SS0_0);
         }
+#endif
 #endif
         Bootloader_profileUpdateAppimageSize(Bootloader_getMulticoreImageSize(bootHandle));
     }

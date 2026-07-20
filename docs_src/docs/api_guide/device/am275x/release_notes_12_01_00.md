@@ -27,7 +27,7 @@ Tools/ Component        | Supported CPUs           | Version
 ------------------------|--------------------------|-----------------------
 Code Composer Studio    | R5F, C75                 | 20.3.1
 SysConfig               | R5F, C75                 | 1.24.2, build 4234
-TI ARM CLANG            | R5F                      | 4.0.1.LTS
+TI ARM CLANG            | R5F                      | 4.0.5.LTS
 C7000-CGT               | C75                      | 5.0.0.LTS
 FreeRTOS Kernel         | R5F, C75                 | 11.1.0
 

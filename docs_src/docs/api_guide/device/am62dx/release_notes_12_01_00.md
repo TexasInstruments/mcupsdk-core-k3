@@ -37,7 +37,7 @@ Tools                   | Supported CPUs             | Version
 ------------------------|----------------------------|-----------------------
 Code Composer Studio    | MCU-R5F, C75               | 20.3.1
 SysConfig               | MCU-R5F, DM-R5F, C75       | 1.24.2, build 4234
-TI ARM CLANG            | MCU-R5F, WKUP-R5F          | 4.0.1.LTS
+TI ARM CLANG            | MCU-R5F, WKUP-R5F          | 4.0.5.LTS
 GCC AARCH64             | A53                        | 9.2-2019.12
 C7000-CGT               | C75                        | 5.0.0.LTS
 FreeRTOS Kernel         | MCU-R5F, WKUP-R5F, C75, A53| 11.1.0

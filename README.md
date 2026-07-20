@@ -172,7 +172,7 @@ Download and install PSDK Linux on **${HOME}/ti** directory corresponding to the
 2. Download and install SysConfig 1.26.2 from [here](https://www.ti.com/tool/download/SYSCONFIG "SYSCONFIG")
    - Install at default folder, $HOMEC/ti
 
-3. Download and install ARM-CGT-CLANG 4.0.1 from [here](https://www.ti.com/tool/download/ARM-CGT-CLANG "ARM-CGT-CLANG")
+3. Download and install ARM-CGT-CLANG 4.0.5 from [here](https://www.ti.com/tool/download/ARM-CGT-CLANG "ARM-CGT-CLANG")
    - Install at default folder, $HOMEC/ti
 
 4. Download and install C7000-CGT 5.0.0 from [here](https://www.ti.com/tool/download/C7000-CGT "C7000-CGT")

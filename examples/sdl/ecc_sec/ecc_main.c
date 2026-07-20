@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) Texas Instruments Incorporated 2025
+ *   Copyright (C) Texas Instruments Incorporated 2025-2026
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -110,6 +110,7 @@
 
 volatile bool esmError = false;
 int32_t status = SDL_PASS;
+volatile SDL_ECC_ESMCallbackInfo_t esmEccInfo = {0};
 
 /*
  *  ======== Unity set up and tear down ========
@@ -137,16 +138,22 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
     SDL_Ecc_AggrIntrSrc eccIntrSrc;
     SDL_ECC_ErrorInfo_t eccErrorInfo;
     int32_t retVal = 0u;
+    /* If this event was already reported, do not process it again */
+    bool alreadyReportedThisEvent = (esmEccInfo.eccInfoValid == true) &&
+                                     (esmEccInfo.intSrc == intSrc);
 
-    DebugP_log("\r\nESM Call back function called : instType 0x%x, intType 0x%x, " \
-                "grpChannel 0x%x, index 0x%x, intSrc 0x%x \r\n",
-                esmInst, esmIntrType, grpChannel, index, intSrc);
-    DebugP_log("\r\nTake action\r\n");
-
-    if(esmIntrType == 1u)
-        DebugP_log("\r\nHigh Priority Interrupt Executed\r\n");
-    else
-        DebugP_log("\r\nLow Priority Interrupt Executed\r\n");
+    esmEccInfo.invoked++;
+    esmEccInfo.esmInst = (uint32_t)esmInst;
+    esmEccInfo.esmIntrType = (uint32_t)esmIntrType;
+    esmEccInfo.grpChannel = grpChannel;
+    esmEccInfo.index = index;
+    esmEccInfo.intSrc = intSrc;
+    if (!alreadyReportedThisEvent)
+    {
+        /* Cleared here; only the non-FATAL ECC path below sets this back to true */
+        esmEccInfo.eccInfoValid = false;
+    }
+    esmEccInfo.eccFatalPath = false;
 
     #if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined(SOC_AM62DX) || defined (SOC_AM62PX)
     #if defined (SOC_AM62X) || defined (SOC_AM62AX) || defined(SOC_AM62DX)
@@ -157,6 +164,13 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
     #endif
     {
         uint32_t regVal;
+
+        /*
+         * The peripheral's checker asserts this error directly, not through
+         * the SEC/DED aggregator, so no per-RAM detail is available.
+         */
+        esmEccInfo.eccFatalPath = true;
+
         if (intSrc == CSI_ESM_FATAL_ERROR)
         {
             /*
@@ -197,21 +211,36 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
         /* Any additional customer specific actions can be added here */
         retVal = SDL_ECC_getErrorInfo(eccmemtype, eccIntrSrc, &eccErrorInfo);
 
-        DebugP_log("\r\nECC Error Call back function called : eccMemType %d, errorSrc 0x%x, " \
-                "ramId %d, bitErrorOffset 0x%04x%04x, bitErrorGroup %d\r\n",
-                eccmemtype, eccIntrSrc, eccErrorInfo.memSubType, (uint32_t)(eccErrorInfo.bitErrorOffset >> 32),
-                (uint32_t)(eccErrorInfo.bitErrorOffset & 0x00000000FFFFFFFF), eccErrorInfo.bitErrorGroup);
+        if (retVal == SDL_PASS)
+        {
+            /* eccErrorInfo is only valid when getErrorInfo returns SDL_PASS */
+            esmEccInfo.eccInfoValid    = true;
+            esmEccInfo.eccMemType      = (uint32_t)eccmemtype;
+            esmEccInfo.eccIntrSrc      = (uint32_t)eccIntrSrc;
+            esmEccInfo.eccMemSubType   = eccErrorInfo.memSubType;
+            esmEccInfo.bitErrCnt       = eccErrorInfo.bitErrCnt;
+            esmEccInfo.injectBitErrCnt = eccErrorInfo.injectBitErrCnt;
+            esmEccInfo.bitErrorOffset  = eccErrorInfo.bitErrorOffset;
+            esmEccInfo.bitErrorGroup   = eccErrorInfo.bitErrorGroup;
 
-        if (eccErrorInfo.injectBitErrCnt != 0)
-        {
-            SDL_ECC_clearNIntrPending(eccmemtype, eccErrorInfo.memSubType, eccIntrSrc, SDL_ECC_AGGR_ERROR_SUBTYPE_INJECT, eccErrorInfo.injectBitErrCnt);
+            if (eccErrorInfo.injectBitErrCnt != 0)
+            {
+                SDL_ECC_clearNIntrPending(eccmemtype, eccErrorInfo.memSubType, eccIntrSrc, SDL_ECC_AGGR_ERROR_SUBTYPE_INJECT, eccErrorInfo.injectBitErrCnt);
+            }
+            else
+            {
+                SDL_ECC_clearNIntrPending(eccmemtype, eccErrorInfo.memSubType, eccIntrSrc, SDL_ECC_AGGR_ERROR_SUBTYPE_NORMAL, eccErrorInfo.bitErrCnt);
+            }
         }
-        else
+        else if (!alreadyReportedThisEvent)
         {
-            SDL_ECC_clearNIntrPending(eccmemtype, eccErrorInfo.memSubType, eccIntrSrc, SDL_ECC_AGGR_ERROR_SUBTYPE_NORMAL, eccErrorInfo.bitErrCnt);
+            /* No RAM had a pending status bit - already consumed for this event */
+            esmEccInfo.eccInfoValid = false;
         }
+        /* else: duplicate dispatch of an already-reported event - keep the prior result */
 
         retVal = SDL_ECC_ackIntr(eccmemtype, eccIntrSrc);
+        esmEccInfo.ackRetVal = retVal;
 
     }
 
@@ -222,6 +251,46 @@ int32_t SDL_ESM_applicationCallbackFunction(SDL_ESM_Inst esmInst,
     esmError = true;
     return retVal;
 
+}
+
+/* Prints esmEccInfo from non-ISR context */
+void ECC_reportEsmEccInfo(void)
+{
+    DebugP_log("\r\nESM Call back function called : instType 0x%x, intType 0x%x, "
+                "grpChannel 0x%x, index 0x%x, intSrc 0x%x \r\n",
+                esmEccInfo.esmInst, esmEccInfo.esmIntrType, esmEccInfo.grpChannel,
+                esmEccInfo.index, esmEccInfo.intSrc);
+
+    if (esmEccInfo.esmIntrType == 1u)
+    {
+        DebugP_log("\r\nHigh Priority Interrupt Executed\r\n");
+    }
+    else
+    {
+        DebugP_log("\r\nLow Priority Interrupt Executed\r\n");
+    }
+
+    if (esmEccInfo.eccInfoValid == true)
+    {
+        DebugP_log("\r\nECC Error Call back function called : eccMemType %d, errorSrc 0x%x, "
+                    "ramId %d, bitErrorOffset 0x%04x%04x, bitErrorGroup %d\r\n",
+                    esmEccInfo.eccMemType, esmEccInfo.eccIntrSrc, esmEccInfo.eccMemSubType,
+                    (uint32_t)(esmEccInfo.bitErrorOffset >> 32),
+                    (uint32_t)(esmEccInfo.bitErrorOffset & 0x00000000FFFFFFFFu), esmEccInfo.bitErrorGroup);
+    }
+    else if (esmEccInfo.eccFatalPath == true)
+    {
+        /* CSI/DSI error handled directly at the peripheral; no per-RAM detail available */
+        DebugP_log("\r\nECC Error Call back function called : FATAL/uncorrectable error "
+                    "detected (intSrc 0x%x) - handled via direct register clear at the "
+                    "peripheral, no per-RAM detail available\r\n",
+                    esmEccInfo.intSrc);
+    }
+    else
+    {
+        /* getErrorInfo returns SDL_EFAIL when the event was already consumed */
+        DebugP_log("\r\nECC Error Call back function called : no ECC info for this event\r\n");
+    }
 }
 
 /* SDL_ECC_applicationCallbackFunction is expected to be defined by the application. It is

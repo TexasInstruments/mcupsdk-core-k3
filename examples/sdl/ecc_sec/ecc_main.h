@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2025
+ *   Copyright (c) Texas Instruments Incorporated 2025-2026
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -45,6 +45,8 @@ extern "C"
 #include <stdint.h>
 #include <string.h>
 #include <sdl/include/sdl_types.h>
+#include <sdl/sdl_ecc.h>
+#include <sdl/sdl_esm.h>
 
 /* ========================================================================== */
 /*                                Macros                                      */
@@ -56,6 +58,31 @@ extern "C"
 #define  ECC_FUNC_TEST_ID         (0U)
 #define  ECC_ERROR_TEST_ID        (1U)
 #define  ECC_TOTAL_NUM_TESTS      (2U)
+
+/* Captures ESM/ECC callback data for logging outside ISR context */
+typedef struct {
+    uint32_t invoked;           /* Callback invocation count */
+    uint32_t esmInst;           /* ESM instance */
+    uint32_t esmIntrType;       /* ESM interrupt type (PLS/LVL) */
+    uint32_t grpChannel;        /* ESM group/channel */
+    uint32_t index;             /* ESM index within group */
+    uint32_t intSrc;            /* ESM event source */
+    bool eccInfoValid;          /* True when the ECC fields below are valid */
+    bool eccFatalPath;          /* True when handled via the CSI/DSI FATAL path */
+    uint32_t eccMemType;        /* ECC memory type */
+    uint32_t eccIntrSrc;        /* SEC/DED source */
+    uint32_t eccMemSubType;     /* RAM ID */
+    uint32_t bitErrCnt;         /* Natural error count */
+    uint32_t injectBitErrCnt;   /* Injected error count */
+    uint64_t bitErrorOffset;    /* Error bit offset */
+    uint32_t bitErrorGroup;     /* Error group */
+    int32_t ackRetVal;          /* SDL_ECC_ackIntr result */
+} SDL_ECC_ESMCallbackInfo_t;
+
+extern volatile SDL_ECC_ESMCallbackInfo_t esmEccInfo;
+
+/* Logs esmEccInfo from normal, non-ISR context */
+extern void ECC_reportEsmEccInfo(void);
 
 /* ========================================================================== */
 /*                 External Function Declarations                             */

@@ -622,6 +622,17 @@ int32_t ecc_aggr_test(void)
 		}
 		for (i=0; i< SDL_ECC_aggrTable[mainMem].numRams; i++)
 		{
+            #if defined (SOC_AM62AX) || defined (SOC_AM62DX)
+            /* Skip CPSW EST_RAM: hardware CTRL register non-injectable */
+            if ((mainMem == SDL_CPSW0_CPSW_3GUSS_CORE_ECC_CPSW_ECC_AGGR) &&
+                (SDL_ECC_aggrTable[mainMem].ramTable[i].RAMId == SDL_CPSW0_CPSW_3GUSS_CORE_ECC_CPSW_ECC_AGGR_EST_RAM_RAM_ID))
+            {
+                DebugP_log("\r\necc_aggr_test: [%d] %s: skipping RamId %d (EST_RAM) - CTRL reg non-injectable, real HW DED only\r\n",
+                    mainMem, ECC_Test_config[mainMem].aggrName, SDL_CPSW0_CPSW_3GUSS_CORE_ECC_CPSW_ECC_AGGR_EST_RAM_RAM_ID);
+                continue;
+            }
+            #endif
+
 			if ((SDL_ECC_aggrTable[mainMem].ramTable[i].RAMId) != SDL_ECC_RAMID_INVALID)
 			{
 				if ((SDL_ECC_aggrTable[mainMem].ramTable[i].ramIdType) != SDL_ECC_AGGR_ECC_TYPE_ECC_WRAPPER)
@@ -630,6 +641,23 @@ int32_t ecc_aggr_test(void)
 					/* This for loop provide interconnect checkers group */
 					for (j=0; j< SDL_ECC_aggrTable[mainMem].ramTable[i].numCheckers; j++)
 					{
+                        #if defined (SOC_AM62AX) || defined (SOC_AM62PX) || defined (SOC_AM62X)
+                        /*
+                         * Skip CSI_RX_IF0 EDC_CTRL_0's 2nd checker group: this harness has no
+                         * traffic write-back support for chkGrp 1, so an injected error would
+                         * never propagate and the test would time out instead of skip cleanly.
+                         */
+                        if ((mainMem == SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR) &&
+                            (SDL_ECC_aggrTable[mainMem].ramTable[i].RAMId == SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR_CSI_RX_IF_EDC_CTRL_0_RAM_ID) &&
+                            (j == SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR_CSI_RX_IF_EDC_CTRL_0_GROUP_1_ID))
+                        {
+                            DebugP_log("\r\necc_aggr_test: [%d] %s: skipping RamId %d checker group %d (2nd interconnect) - no write-back support, would time out\r\n",
+                                mainMem, ECC_Test_config[mainMem].aggrName,
+                                SDL_CSI_RX_IF0_CSI_RX_IF_ECC_AGGR_CSI_RX_IF_EDC_CTRL_0_RAM_ID, j);
+                            continue;
+                        }
+                        #endif
+
 						injectErrorConfig.chkGrp = j;
 						injectErrorConfig.pErrMem =((uint32_t *)SDL_ECC_aggrTable[mainMem].memConfigTable[j].memStartAddr);
 						if(SDL_ECC_aggrTable[mainMem].esmIntSEC != 0u)
@@ -653,6 +681,11 @@ int32_t ecc_aggr_test(void)
 												  intsrc,
 												  &injectErrorConfig,
 												  100000u);
+                        if (result == SDL_PASS)
+                        {
+                            /* Callback ran for this injection - report its captured state now, in normal context */
+                            ECC_reportEsmEccInfo();
+                        }
 
                         #if (defined (SOC_AM62X) || defined (SOC_AM62AX) || defined (SOC_AM62PX)) && defined (R5F_CORE)
 						}
@@ -716,6 +749,11 @@ int32_t ecc_aggr_test(void)
 									break;
 								}
 							} while (esmError == false);
+                            if (esmError == true)
+                            {
+                                /* Callback ran for this injection - report its captured state now, in normal context */
+                                ECC_reportEsmEccInfo();
+                            }
 							/* Reset esmError */
 							esmError = false;
 						}
@@ -773,6 +811,11 @@ int32_t ecc_aggr_test(void)
 										break;
 									}
 								} while (esmError == false);
+                                if (esmError == true)
+                                {
+                                    /* Callback ran for this injection - report its captured state now, in normal context */
+                                    ECC_reportEsmEccInfo();
+                                }
 								timeOutCnt = 0u;
 								esmError = false;
 								DebugP_log("\r\n...skipped because this is Inject Only type\r\n");
@@ -796,6 +839,8 @@ int32_t ecc_aggr_test(void)
 							else
 							{
 								DebugP_log("\r\nSelf Test completed for accessable RamId %d\r\n",i);
+                                /* Callback ran for this injection - report its captured state now, in normal context */
+                                ECC_reportEsmEccInfo();
 							}
 						}
 					}
@@ -835,6 +880,8 @@ int32_t ecc_aggr_test(void)
 								if (result == SDL_PASS)
 								{
 									DebugP_log("\r\nInjected ECC error and got ESM Interrupt\r\n");
+                                    /* Callback ran for this injection - report its captured state now, in normal context */
+                                    ECC_reportEsmEccInfo();
 								}
 								else
 								{
@@ -852,6 +899,11 @@ int32_t ecc_aggr_test(void)
 										break;
 									}
 								} while (esmError == false);
+                                if (esmError == true)
+                                {
+                                    /* Callback ran for this injection - report its captured state now, in normal context */
+                                    ECC_reportEsmEccInfo();
+                                }
 								timeOutCnt = 0u;
 								esmError = false;
 								DebugP_log("\r\n...skipped because this is Inject Only type\r\n");

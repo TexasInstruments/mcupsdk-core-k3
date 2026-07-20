@@ -49,15 +49,15 @@ FreeRTOS Kernel         | MCU-R5F, WKUP-R5F, C75, A53| 11.1.0
 <table>
     <tr>
         <td>Version</td>
-        <td>12.00.02</td>
+        <td>12.01.02</td>
     </tr>
     <tr>
         <td>Release Notes</td>
-        <td>[LINK](https://software-dl.ti.com/tisci/esd/12_00_02/release_notes/release_notes.html)</td>
+        <td>[LINK](https://software-dl.ti.com/tisci/esd/12_01_02/release_notes/release_notes.html)</td>
     </tr>
     <tr>
         <td>User Guide</td>
-        <td>[LINK](https://software-dl.ti.com/tisci/esd/12_00_02/1_intro/TISCI.html)</td>
+        <td>[LINK](https://software-dl.ti.com/tisci/esd/12_01_02/1_intro/TISCI.html)</td>
     </tr>
 </table>
 

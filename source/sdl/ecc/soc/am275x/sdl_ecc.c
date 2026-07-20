@@ -93,6 +93,10 @@ typedef struct SDL_ECC_Instance_s
     /**< Ram id used in self test in progress */
     uint32_t *eccSelfTestAddr;
     /**< Address used in self test in progress */
+    bool eccLastErrorInfoValid;
+    /**< True when eccLastErrorInfo holds a fresh, unconsumed result */
+    SDL_ECC_ErrorInfo_t eccLastErrorInfo;
+    /**< Error detail captured for the last handled ECC event */
 }  SDL_ECC_Instance_t;
 
 /* Global objects */
@@ -310,6 +314,7 @@ static int32_t SDL_ECC_handleEccAggrEvent (SDL_ECC_MemType eccMemType, uint32_t 
     SDL_ECC_MemSubType memSubType;
     uint32_t i;
     bool eventFound1;
+    bool statusPending;
     int32_t sdlResult;
     uint32_t selfTestErrorSrc;
     int32_t handledResult = 0;
@@ -328,13 +333,20 @@ static int32_t SDL_ECC_handleEccAggrEvent (SDL_ECC_MemType eccMemType, uint32_t 
         memSubType = SDL_ECC_instance[eccMemType].eccInitConfig.pMemSubTypeList[i];
         (void)SDL_ECC_getRamId(eccMemType, memSubType, &ramId, &ramIdType);
 
-        /* Check if this event is triggered, by reading the ECC aggregator status
-         * register */
+        /* Pre-check STATUS directly to avoid hanging when SVBUS is busy */
+        eventFound1 = (bool)false;
+        sdlResult   = SDL_PASS;
         if ((uint32_t)ramIdType == (uint32_t)SDL_ECC_RAM_ID_TYPE_WRAPPER) {
-            sdlResult = SDL_ecc_aggrIsEccRamIntrPending(eccAggrRegs,
-                                                        ramId,
-                                                        errorSrc,
-                                                        &eventFound1);
+            statusPending = (bool)false;
+            (void)SDL_ecc_aggrIsIntrPending(eccAggrRegs, ramId, errorSrc, &statusPending);
+            if (statusPending) {
+                /* STATUS bit set: proceed with SVBUS read for full details */
+                sdlResult = SDL_ecc_aggrIsEccRamIntrPending(eccAggrRegs,
+                                                            ramId,
+                                                            errorSrc,
+                                                            &eventFound1);
+            }
+            /* STATUS bit=0: no pending for this RAM, skip SVBUS read entirely */
         } else  {
             sdlResult = SDL_ecc_aggrIsEDCInterconnectIntrPending(eccAggrRegs,
                                                                  ramId,
@@ -369,6 +381,51 @@ static int32_t SDL_ECC_handleEccAggrEvent (SDL_ECC_MemType eccMemType, uint32_t 
                 } else {
                     bitErrCnt = eccErrorStatusInterconn.injectDoubleBitErrorCount;
                 }
+            }
+
+            /*
+             * Cache the decoded error - the SVBUS read above clears the
+             * STATUS bit, so getErrorInfo can no longer detect it on its own.
+             */
+            {
+                SDL_ECC_ErrorInfo_t *pLastErr = &SDL_ECC_instance[eccMemType].eccLastErrorInfo;
+
+                pLastErr->eccMemType = eccMemType;
+                pLastErr->memSubType = memSubType;
+                pLastErr->intrSrc    = errorSrc;
+
+                if ((uint32_t)ramIdType == (uint32_t)SDL_ECC_RAM_ID_TYPE_WRAPPER) {
+                    SDL_MemConfig_t lastErrMemConfig;
+
+                    /* Match getErrorInfo's field formulas so a cache hit looks the same */
+                    if (errorSrc == SDL_ECC_AGGR_INTR_SRC_SINGLE_BIT) {
+                        pLastErr->bitErrCnt = eccErrorStatusWrap.singleBitErrorCount;
+                    } else {
+                        pLastErr->bitErrCnt = eccErrorStatusWrap.doubleBitErrorCount;
+                    }
+                    pLastErr->injectBitErrCnt = 0;
+                    pLastErr->bitErrorGroup   = ((uint32_t)0);
+                    if (SDL_ECC_getMemConfig(eccMemType, ramId, &lastErrMemConfig) == SDL_PASS) {
+                        if (errorSrc == SDL_ECC_AGGR_INTR_SRC_SINGLE_BIT) {
+                            pLastErr->bitErrorOffset = (((uint64_t)eccErrorStatusWrap.eccRow * (uint64_t)lastErrMemConfig.rowSize) +
+                                                         ((uint64_t)eccErrorStatusWrap.eccBit1));
+                        } else {
+                            pLastErr->bitErrorOffset = (uint64_t)eccErrorStatusWrap.eccRow * (uint64_t)lastErrMemConfig.rowSize;
+                        }
+                    }
+                } else {
+                    pLastErr->bitErrorGroup = eccErrorStatusInterconn.eccGroup;
+                    if (errorSrc == SDL_ECC_AGGR_INTR_SRC_SINGLE_BIT) {
+                        pLastErr->bitErrCnt       = eccErrorStatusInterconn.singleBitErrorCount;
+                        pLastErr->injectBitErrCnt = eccErrorStatusInterconn.injectSingleBitErrorCount;
+                        pLastErr->bitErrorOffset  = (uint64_t)eccErrorStatusInterconn.eccBit1;
+                    } else {
+                        pLastErr->bitErrCnt       = eccErrorStatusInterconn.doubleBitErrorCount;
+                        pLastErr->injectBitErrCnt = eccErrorStatusInterconn.injectDoubleBitErrorCount;
+                        pLastErr->bitErrorOffset  = ((uint64_t)0);
+                    }
+                }
+                SDL_ECC_instance[eccMemType].eccLastErrorInfoValid = (bool)true;
             }
 
             /* Check If it matches self test set flag.
@@ -589,7 +646,9 @@ int32_t SDL_ECC_getErrorInfo(SDL_ECC_MemType eccMemType, SDL_Ecc_AggrIntrSrc int
     uint32_t ramIdType=0;
     int32_t sdlResult;
     bool eventFound1 = (bool)false;
+    bool statusPending;
     SDL_MemConfig_t memConfig;
+    SDL_ECC_MemSubType candidateMemSubType;
 
     eccErrorStatusWrap.singleBitErrorCount = 0x0u;
     eccErrorStatusWrap.doubleBitErrorCount = 0x0u;
@@ -606,6 +665,19 @@ int32_t SDL_ECC_getErrorInfo(SDL_ECC_MemType eccMemType, SDL_Ecc_AggrIntrSrc int
     {
         retVal = SDL_EFAIL;
     }
+    else if ((SDL_ECC_instance[eccMemType].eccLastErrorInfoValid == (bool)true) &&
+             (SDL_ECC_instance[eccMemType].eccLastErrorInfo.intrSrc == intrSrc))
+    {
+        /*
+         * Consume the cached result from SDL_ECC_handleEccAggrEvent instead
+         * of re-detecting - one-shot, so it can't be replayed for a later
+         * event.
+         */
+        *pErrorInfo = SDL_ECC_instance[eccMemType].eccLastErrorInfo;
+        SDL_ECC_instance[eccMemType].eccLastErrorInfoValid = (bool)false;
+        /* Marks this as a successful detection for the check below */
+        eventFound1 = (bool)true;
+    }
     else
     {
         pErrorInfo->eccMemType = eccMemType;
@@ -615,21 +687,30 @@ int32_t SDL_ECC_getErrorInfo(SDL_ECC_MemType eccMemType, SDL_Ecc_AggrIntrSrc int
         for (i = ((uint32_t)0U);
              i < SDL_ECC_instance[eccMemType].eccInitConfig.numRams;
              i++) {
-            /* Get corresponding ram Id */
-            pErrorInfo->memSubType = SDL_ECC_instance[eccMemType].eccInitConfig.pMemSubTypeList[i];
-            retVal = SDL_ECC_getRamId(eccMemType, pErrorInfo->memSubType, &ramId, &ramIdType);
+            /*
+             * Kept local until a match is confirmed below, so a no-match
+             * doesn't leave memSubType pointing at the wrong RAM.
+             */
+            candidateMemSubType = SDL_ECC_instance[eccMemType].eccInitConfig.pMemSubTypeList[i];
+            retVal = SDL_ECC_getRamId(eccMemType, candidateMemSubType, &ramId, &ramIdType);
             if (retVal != SDL_PASS) {
                 continue;
             }
 
-            /* Check if this event is triggered, by reading the ECC aggregator status
-             * register */
+            /* Same STATUS pre-check as SDL_ECC_handleEccAggrEvent - the cache
+             * above is what satisfies most callers here. */
+            eventFound1 = (bool)false;
+            sdlResult   = SDL_PASS;
             if ((uint32_t)ramIdType == (uint32_t)SDL_ECC_RAM_ID_TYPE_WRAPPER) {
-                sdlResult = SDL_ecc_aggrIsEccRamIntrPending(eccAggrRegs,
-                                                            ramId,
-                                                            intrSrc,
-                                                            &eventFound1);
-            } else  {
+                statusPending = (bool)false;
+                (void)SDL_ecc_aggrIsIntrPending(eccAggrRegs, ramId, intrSrc, &statusPending);
+                if (statusPending) {
+                    sdlResult = SDL_ecc_aggrIsEccRamIntrPending(eccAggrRegs,
+                                                                ramId,
+                                                                intrSrc,
+                                                                &eventFound1);
+                }
+            } else {
                 sdlResult = SDL_ecc_aggrIsEDCInterconnectIntrPending(eccAggrRegs,
                                                                      ramId,
                                                                      intrSrc,
@@ -637,6 +718,9 @@ int32_t SDL_ECC_getErrorInfo(SDL_ECC_MemType eccMemType, SDL_Ecc_AggrIntrSrc int
             }
 
             if((sdlResult == SDL_PASS)  && (eventFound1)) {
+                /* Only report memSubType once this RAM is confirmed as the match */
+                pErrorInfo->memSubType = candidateMemSubType;
+
                 /* Read the locations of the bit errors */
                 if ((uint32_t)ramIdType == (uint32_t)SDL_ECC_RAM_ID_TYPE_WRAPPER) {
                     /* Get the error status information for Wrapper type */
@@ -856,7 +940,11 @@ int32_t SDL_ECC_init (SDL_ECC_MemType eccMemType,
     if (retVal == SDL_PASS) {
 
         retVal = SDL_ECC_mapEccAggrReg(eccMemType, &eccAggrRegs);
-        eccAggrRegs = (SDL_ECC_aggrTransBaseAddressTable[eccMemType]);
+        if (retVal == SDL_PASS)
+        {
+            /* Only use the translated address if mapping succeeded */
+            eccAggrRegs = (SDL_ECC_aggrTransBaseAddressTable[eccMemType]);
+        }
 
         /* Disable all interrupts to start clean */
         (void)SDL_ecc_aggrDisableAllIntrs(eccAggrRegs);
@@ -869,35 +957,8 @@ int32_t SDL_ECC_init (SDL_ECC_MemType eccMemType,
     }
 
     if (retVal == SDL_PASS) {
-        /* Record the Init configuration */
-        SDL_ECC_instance[eccMemType].eccInitConfig = *pECCInitConfig;
-
-        /* Enable the parity ECC interrupts */
-        memParityCtrl.validCfg               = SDL_ECC_AGGR_VALID_PARITY_ERR | SDL_ECC_AGGR_VALID_TIMEOUT_ERR;
-        memParityCtrl.intrEnableParityErr    = TRUE;
-          memParityCtrl.intrEnableTimeoutErr    = TRUE;
-        retVal = SDL_ecc_aggrIntrEnableCtrl(eccAggrRegs,
-                                &memParityCtrl);
-
-        /* Enable the single bit ECC interrupts */
-        /* Note: The following statement enables interrupts for all RAMs */
-        sdlResult = SDL_ecc_aggrEnableIntrs(eccAggrRegs,
-                                SDL_ECC_AGGR_INTR_SRC_SINGLE_BIT);
-        if (sdlResult != SDL_PASS) {
-            retVal = SDL_EFAIL;
-        }
-    }
-
-    if (retVal == SDL_PASS) {
-            /* Enable the Double bit ECC Interrupts */
-            sdlResult = SDL_ecc_aggrEnableIntrs(eccAggrRegs,
-                                SDL_ECC_AGGR_INTR_SRC_DOUBLE_BIT);
-            if (sdlResult != SDL_PASS) {
-                retVal = SDL_EFAIL;
-            }
-    }
-    if (retVal == SDL_PASS) {
-        /* Enable ECC */
+        /* Configure and clear every RAM before enabling interrupts below,
+         * to avoid asserting ESM on residual state mid-init */
         for ( i = ((uint32_t)0U); i < pECCInitConfig->numRams; i++) {
 
             /* Get memory Sub type to be configured */
@@ -938,16 +999,74 @@ int32_t SDL_ECC_init (SDL_ECC_MemType eccMemType,
                      }
                  }
              }
+
+            /* Clear SEC+DED pending right after configuring, before SEC_ENABLE is set below */
+            if (retVal == SDL_PASS) {
+                if ((uint32_t)ramIdType == (uint32_t)SDL_ECC_RAM_ID_TYPE_INTERCONNECT) {
+                    retVal = SDL_ecc_aggrClrEDCInterconnectNIntrPending(eccAggrRegs, ramId,
+                                SDL_ECC_AGGR_INTR_SRC_SINGLE_BIT,
+                                SDL_ECC_AGGR_ERROR_SUBTYPE_NORMAL, 3u);
+                } else {
+                    retVal = SDL_ecc_aggrClrEccRamNIntrPending(eccAggrRegs, ramId,
+                                SDL_ECC_AGGR_INTR_SRC_SINGLE_BIT, 3u);
+                }
+            }
+            if (retVal == SDL_PASS) {
+                if ((uint32_t)ramIdType == (uint32_t)SDL_ECC_RAM_ID_TYPE_INTERCONNECT) {
+                    retVal = SDL_ecc_aggrClrEDCInterconnectNIntrPending(eccAggrRegs, ramId,
+                                SDL_ECC_AGGR_INTR_SRC_DOUBLE_BIT,
+                                SDL_ECC_AGGR_ERROR_SUBTYPE_NORMAL, 3u);
+                } else {
+                    retVal = SDL_ecc_aggrClrEccRamNIntrPending(eccAggrRegs, ramId,
+                                SDL_ECC_AGGR_INTR_SRC_DOUBLE_BIT, 3u);
+                }
+            }
+
              if (retVal != SDL_PASS) {
                  break;
              }
         }
 
-        /* Initialize object for self test */
-        SDL_ECC_instance[eccMemType].eccErrorFlag = SDL_ECC_ERROR_FLAG_NONE;
+        /* Initialize self-test tracking fields (done after config loop, before enabling) */
+        SDL_ECC_instance[eccMemType].eccErrorFlag        = SDL_ECC_ERROR_FLAG_NONE;
         SDL_ECC_instance[eccMemType].eccSelfTestErrorType = SDL_INJECT_ECC_NO_ERROR;
-        SDL_ECC_instance[eccMemType].eccSelfTestRamId = (SDL_ECC_INVALID_SELF_TEST_RAM_ID);
-        SDL_ECC_instance[eccMemType].eccSelfTestAddr = NULL;
+        SDL_ECC_instance[eccMemType].eccSelfTestRamId    = (SDL_ECC_INVALID_SELF_TEST_RAM_ID);
+        SDL_ECC_instance[eccMemType].eccSelfTestAddr     = NULL;
+        SDL_ECC_instance[eccMemType].eccLastErrorInfoValid = (bool)false;
+    }
+
+    if (retVal == SDL_PASS) {
+        /* Record the init configuration */
+        SDL_ECC_instance[eccMemType].eccInitConfig = *pECCInitConfig;
+
+        /* Enable parity + timeout interrupts only after RAM configs/clears above */
+        memParityCtrl.validCfg            = SDL_ECC_AGGR_VALID_PARITY_ERR | SDL_ECC_AGGR_VALID_TIMEOUT_ERR;
+        memParityCtrl.intrEnableParityErr  = TRUE;
+        memParityCtrl.intrEnableTimeoutErr = TRUE;
+        retVal = SDL_ecc_aggrIntrEnableCtrl(eccAggrRegs, &memParityCtrl);
+    }
+
+    if (retVal == SDL_PASS) {
+        /* Enable SEC/DED per configured RAM only, not via SDL_ecc_aggrEnableIntrs()
+         * which enables every hardware RAM */
+        for (i = ((uint32_t)0U); i < pECCInitConfig->numRams; i++) {
+            memSubType = pECCInitConfig->pMemSubTypeList[i];
+            sdlResult = SDL_ECC_getRamId(eccMemType, memSubType, &ramId, &ramIdType);
+            if (sdlResult == SDL_PASS) {
+                /* Enable SEC (single-bit) interrupt for this RAM */
+                sdlResult = SDL_ecc_aggrEnableIntr(eccAggrRegs, ramId,
+                                SDL_ECC_AGGR_INTR_SRC_SINGLE_BIT);
+            }
+            if (sdlResult == SDL_PASS) {
+                /* Enable DED (double-bit) interrupt for this RAM */
+                sdlResult = SDL_ecc_aggrEnableIntr(eccAggrRegs, ramId,
+                                SDL_ECC_AGGR_INTR_SRC_DOUBLE_BIT);
+            }
+            if (sdlResult != SDL_PASS) {
+                retVal = SDL_EFAIL;
+                break;
+            }
+        }
     }
 
     return retVal;

@@ -18995,15 +18995,15 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "This example verifies ECC inject operations for single bit error CPU is R5FSS0-0 running FREERTOS.",
+        "description": "This example verifies ECC inject operations for single bit error CPU is R5FSS0-0 running NORTOS.",
         "name": "ecc_sec_app",
-        "location": "../../examples/sdl/ecc_sec/am62x-sk/r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "location": "../../examples/sdl/ecc_sec/am62x-sk/r5fss0-0_nortos/ti-arm-clang/example.projectspec",
         "devtools": [
             "SK-AM62B",
             "SK-AM62B-P1"
         ],
         "kernel": [
-            "freertos"
+            "nortos"
         ],
         "compiler": [
             "ticlang"
@@ -19011,7 +19011,7 @@
         "subCategories": [
             "sdl",
             "ecc_sec",
-            "r5fss0-0_freertos"
+            "r5fss0-0_nortos"
         ],
         "mainCategories": [
             [

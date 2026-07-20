@@ -10,8 +10,8 @@
     </applicability>
 
     <project
-        title="Ipc Rpmsg Echo"
-        name = "ipc_rpmsg_echo_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang"
+        title="Sbl Test Custom Ipc Binary"
+        name = "sbl_test_custom_ipc_binary_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -19,7 +19,7 @@
         "
         connection="TIXDS110_Connection.xml"
         toolChain="TICLANG"
-        cgtVersion="4.0.1"
+        cgtVersion="4.0.5"
         device="Cortex R.AM62x"
         deviceCore="MAIN_PULSAR_Cortex_R5_0_0"
         ignoreDefaultDeviceSettings="true"
@@ -55,7 +55,7 @@
             -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib
             -i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib
             -i${CG_TOOL_ROOT}/lib
-            -m=ipc_rpmsg_echo.${ConfigName}.map
+            -m=sbl_test_custom_ipc_binary.${ConfigName}.map
             --diag_suppress=10063
             --priority
             --ram_model
@@ -69,7 +69,7 @@
             --context r5fss0-0 --part Default --package AMC
         "
 
-        description="A Ipc Rpmsg Echo FREERTOS project">
+        description="A Sbl Test Custom Ipc Binary FREERTOS project">
 
         <configuration name="Debug"
             compilerBuildOptions="

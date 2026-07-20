@@ -58,12 +58,12 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F \
-	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62px/r5f \
+	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/r5f \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
 	-Igenerated \
 
 DEFINES_common := \
-	-DSOC_AM62PX \
+	-DSOC_AM62X \
 	-DENABLE_SCICLIENT_DIRECT \
 
 CFLAGS_common := \
@@ -111,15 +111,15 @@ LIBS_PATH_common = \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
-	-lrm_pm_hal.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
-	-lsciclient_direct.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
-	-lself_reset.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
-	-lsciserver.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
-	-lfreertos.am62px.r5f.ti-arm-clang.${ConfigName}.lib \
-	-ldrivers.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
-	-lboard.am62px.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lunity.am62px.r5f.ti-arm-clang.${ConfigName}.lib \
-	-ldm_stub.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
+	-lrm_pm_hal.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lsciclient_direct.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lself_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lsciserver.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lfreertos.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	-ldrivers.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lboard.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lunity.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	-ldm_stub.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
 	-llibsysbm.a \
 
@@ -131,17 +131,19 @@ LFLAGS_common = \
 
 
 LIBS_NAME = \
-	rm_pm_hal.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
-	sciclient_direct.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
-	self_reset.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
-	sciserver.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
-	freertos.am62px.r5f.ti-arm-clang.${ConfigName}.lib \
-	drivers.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
-	board.am62px.r5f.ti-arm-clang.${ConfigName}.lib \
-	unity.am62px.r5f.ti-arm-clang.${ConfigName}.lib \
-	dm_stub.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib \
+	rm_pm_hal.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	sciclient_direct.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	self_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	sciserver.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	freertos.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	drivers.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	board.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	unity.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
+	dm_stub.am62x.r5f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
 	libsysbm.a \
+
+LIBS_PREBUILD_NAME = \
 
 LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
@@ -155,6 +157,8 @@ LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
 	${CG_TOOL_ROOT}/lib \
 
+LIBS_PREBUILD_PATH_NAME = \
+
 FILES := $(FILES_common) $(FILES_$(PROFILE))
 ASMFILES := $(ASMFILES_common) $(ASMFILES_$(PROFILE))
 FILES_PATH := $(FILES_PATH_common) $(FILES_PATH_$(PROFILE))
@@ -162,7 +166,9 @@ CFLAGS := $(CFLAGS_common) $(CFLAGS_$(PROFILE))
 DEFINES := $(DEFINES_common) $(DEFINES_$(PROFILE))
 INCLUDES := $(INCLUDES_common) $(INCLUDE_$(PROFILE))
 LIBS := $(LIBS_common) $(LIBS_$(PROFILE))
+LIBS_PREBUILD := $(LIBS_PREBUILD_common) $(LIBS_PREBUILD_$(PROFILE))
 LIBS_PATH := $(LIBS_PATH_common) $(LIBS_PATH_$(PROFILE))
+LIBS_PREBUILD_PATH := $(LIBS_PREBUILD_PATH_common) $(LIBS_PREBUILD_PATH_$(PROFILE))
 LFLAGS := $(LFLAGS_common) $(LFLAGS_$(PROFILE))
 LNKOPTFLAGS := $(LNKOPTFLAGS_common) $(LNKOPTFLAGS_$(PROFILE))
 LNK_FILES := $(LNK_FILES_common) $(LNK_FILES_$(PROFILE))
@@ -179,11 +185,11 @@ vpath %.lib $(LIBS_PATH_NAME)
 vpath %.a $(LIBS_PATH_NAME)
 
 $(OBJDIR)/%.obj %.obj: %.c
-	@echo  Compiling: am62px:wkup-r5fss0-0:freertos:ti-arm-clang $(OUTNAME): $<
+	@echo  Compiling: am62x:r5fss0-0:freertos:ti-arm-clang $(OUTNAME): $<
 	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -o $(OBJDIR)/$@ $<
 
 $(OBJDIR)/%.obj %.obj: %.S
-	@echo  Compiling: am62px:wkup-r5fss0-0:freertos:ti-arm-clang $(LIBNAME): $<
+	@echo  Compiling: am62x:r5fss0-0:freertos:ti-arm-clang $(LIBNAME): $<
 	$(CC) -c $(CFLAGS) -o $(OBJDIR)/$@ $<
 
 all: $(TARGETS)
@@ -197,13 +203,13 @@ SYSCFG_GEN_FILES+=generated/ti_board_open_close.c generated/ti_board_open_close.
 
 $(OUTNAME): syscfg $(SYSCFG_GEN_FILES) $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 	@echo  .
-	@echo  Linking: am62px:wkup-r5fss0-0:freertos:ti-arm-clang $@ ...
-	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PATH) -Wl,-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) $(LNK_FILES)
-	@echo  Linking: am62px:wkup-r5fss0-0:freertos:ti-arm-clang $@ Done !!!
+	@echo  Linking: am62x:r5fss0-0:freertos:ti-arm-clang $@ ...
+	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PREBUILD_PATH) $(LIBS_PATH) -Wl,-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS_PREBUILD) $(LIBS) $(LNK_FILES)
+	@echo  Linking: am62x:r5fss0-0:freertos:ti-arm-clang $@ Done !!!
 	@echo  .
 
 clean:
-	@echo  Cleaning: am62px:wkup-r5fss0-0:freertos:ti-arm-clang $(OUTNAME) ...
+	@echo  Cleaning: am62x:r5fss0-0:freertos:ti-arm-clang $(OUTNAME) ...
 	$(RMDIR) $(OBJDIR)
 	$(RM) $(OUTNAME)
 	$(RM) $(BOOTIMAGE_NAME)
@@ -216,7 +222,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62px:wkup-r5fss0-0:freertos:ti-arm-clang sbl_uart_uniflash_test ...
+	@echo  Scrubing: am62x:r5fss0-0:freertos:ti-arm-clang sbl_uart_uniflash_test ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
@@ -247,10 +253,10 @@ $(SYSCFG_GEN_FILES): syscfg
 
 syscfg: ../example.syscfg
 	@echo Generating SysConfig files ...
-	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM62Px --context wkup-r5fss0-0 --part Default --package AMH --output generated/ ../example.syscfg
+	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM62x --context r5fss0-0 --part Default --package ALW --output generated/ ../example.syscfg
 
 syscfg-gui:
-	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device AM62Px --context wkup-r5fss0-0 --part Default --package AMH --output generated/  ../example.syscfg
+	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device AM62x --context r5fss0-0 --part Default --package ALW --output generated/  ../example.syscfg
 
 #
 # Generation of boot image which can be loaded by Secondary Boot Loader (SBL)
@@ -271,9 +277,10 @@ BOOTIMAGE_CORE_ID_a53ss0-0 = 0
 BOOTIMAGE_CORE_ID_a53ss0-1 = 1
 BOOTIMAGE_CORE_ID_a53ss1-0 = 2
 BOOTIMAGE_CORE_ID_a53ss1-1 = 3
-BOOTIMAGE_CORE_ID_wkup-r5fss0-0 = 4
-BOOTIMAGE_CORE_ID_mcu-r5fss0-0 = 5
+BOOTIMAGE_CORE_ID_r5fss0-0 = 4
+BOOTIMAGE_CORE_ID_m4fss0-0 = 5
 BOOTIMAGE_CORE_ID_hsm-m4fss0-0 = 6
+BOOTIMAGE_CORE_ID_load_only = 21
 SBL_RUN_ADDRESS=0x43C00000
 SBL_DEV_ID=55
 
@@ -288,13 +295,13 @@ else
 endif
 
 MULTI_CORE_IMAGE_PARAMS = \
-	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_wkup-r5fss0-0) \
+	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
 
 MULTI_CORE_IMAGE_PARAMS_XIP = \
-	$(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_wkup-r5fss0-0) \
+	$(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
 
 $(BOOTIMAGE_NAME): $(OUTNAME)
-	@echo  Boot image: am62px:wkup-r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ ...
+	@echo  Boot image: am62x:r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ ...
 ifneq ($(OS),Windows_NT)
 	$(CHMOD) a+x $(XIPGEN_CMD)
 endif
@@ -311,10 +318,10 @@ endif
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
-	@echo  Boot image: am62px:wkup-r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ Done !!!
+	@echo  Boot image: am62x:r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ Done !!!
 	@echo  .
-	$(COPY) $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) $(MCU_PLUS_SDK_PATH)/tools/boot/sbl_prebuilt/am62px-sk/
-	@echo  Boot image: am62px:wkup-r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
+	$(COPY) $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) $(MCU_PLUS_SDK_PATH)/tools/boot/sbl_prebuilt/am62x-sk/
+	@echo  Boot image: am62x:r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
 	@echo  .
 
 $(BOOTIMAGE_NAME_HS): $(BOOTIMAGE_NAME)
@@ -334,8 +341,8 @@ else
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_NAME)-enc
 endif
-	$(COPY) $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) $(MCU_PLUS_SDK_PATH)/tools/boot/sbl_prebuilt/am62px-sk/
-	@echo  Boot image: am62px:wkup-r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
+	$(COPY) $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) $(MCU_PLUS_SDK_PATH)/tools/boot/sbl_prebuilt/am62x-sk/
+	@echo  Boot image: am62x:r5fss0-0:freertos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
 	@echo  .
 endif
 -include $(addprefix $(OBJDIR)/, $(DEPS))

@@ -10,8 +10,8 @@
     </applicability>
 
     <project
-        title="Ipc Rpmsg Echo"
-        name = "ipc_rpmsg_echo_am62x-sip-sk_a53ss0-1_freertos_gcc-aarch64"
+        title="Sbl Test Custom Ipc Binary"
+        name = "sbl_test_custom_ipc_binary_am62x-sip-sk_a53ss0-1_freertos_gcc-aarch64"
         products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
         configurations="
             Debug,
@@ -54,7 +54,7 @@
             -L${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib
             -L${MCU_PLUS_SDK_PATH}/source/drivers/lib
             -L$(CGT_GCC_AARCH64_PATH)/lib
-            -Wl,-Map=ipc_rpmsg_echo.${ConfigName}.map
+            -Wl,-Map=sbl_test_custom_ipc_binary.${ConfigName}.map
             -Wl,-static
             -Wl,--gc-sections
             -Wl,--build-id=none
@@ -72,7 +72,7 @@
             --context a53ss0-1 --part Default --package AMK
         "
 
-        description="A Ipc Rpmsg Echo FREERTOS project">
+        description="A Sbl Test Custom Ipc Binary FREERTOS project">
 
         <configuration name="Debug"
             compilerBuildOptions="

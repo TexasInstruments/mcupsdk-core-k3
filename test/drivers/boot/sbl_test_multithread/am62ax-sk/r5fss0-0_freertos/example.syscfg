@@ -79,7 +79,7 @@ flash1.serialFlashDriver.flashType                       = "SERIAL_NAND";
 flash1.serialFlashDriver.protocol                        = "1s_8s_8s";
 flash1.serialFlashDriver.badBlockCheck                   = "Yes";
 flash1.serialFlashDriver.peripheralDriver.$name          = "CONFIG_OSPI_SBL";
-flash1.serialFlashDriver.peripheralDriver.dmaEnable      = true;
+flash1.serialFlashDriver.peripheralDriver.dmaEnable      = false;
 flash1.serialFlashDriver.peripheralDriver.phyEnable      = true;
 
 bootloader9.$name              = "CONFIG_BOOTLOADER_EMMC_MULTICORE";
@@ -131,11 +131,10 @@ bootloader8.udmaBlkCopyChannel  = udma_blkcopy_channel1;
 bootloader9.udmaBlkCopyChannel  = udma_blkcopy_channel1;
 bootloader10.udmaBlkCopyChannel = udma_blkcopy_channel1;
 bootloader11.udmaBlkCopyChannel = udma_blkcopy_channel1;
-flash1.serialFlashDriver.peripheralDriver.udmaDriver         = udma1;
-flash1.serialFlashDriver.peripheralDriver.udmaBlkCopyChannel = udma_blkcopy_channel1;
 
 freertos_fat1.$name                  = "CONFIG_FREERTOS_FAT0";
 freertos_fat1.peripheralDriver.$name = "CONFIG_MMCSD0";
+freertos_fat1.peripheralDriver.dmaEnable = false;
 
 debug_log.enableUartLog            = true;
 debug_log.enableSharedMemLog       = true;

@@ -1,0 +1,155 @@
+let path = require('path');
+
+let device = "am62x";
+
+const files = {
+    common: [
+        "test_sbl_multithread.c",
+        "main.c",
+    ],
+};
+
+const filedirs = {
+    common: [
+        "..",
+        "../../..",
+    ],
+};
+
+const libdirs_freertos = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
+    ],
+};
+
+const includes_freertos_r5f = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/r5f",
+        "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/FreeRTOS-FAT/include/",
+        "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/portable/",
+        "${MCU_PLUS_SDK_PATH}/source/fs/freertos_fat/config/",
+        "${MCU_PLUS_SDK_PATH}/test/unity/",
+    ],
+};
+
+const libs_freertos_r5f = {
+    common: [
+        "rm_pm_hal.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciclient_direct.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "self_reset.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "sciserver.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "freertos.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "freertos_fat.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "unity.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.am62x.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
+const asmfiles = {
+    common: [
+        "appimage_data.S",
+    ],
+};
+
+const lnkfiles = {
+    common: [
+        "linker.cmd",
+    ]
+};
+
+const defines = {
+    common:[
+        "ENABLE_SCICLIENT_DIRECT",
+    ]
+};
+
+const syscfgfile = "../example.syscfg";
+
+const templates_freertos_r5f =
+[
+    {
+        input: ".project/templates/am62x/common/linker_dm_r5f.cmd.xdt",
+        output: "linker.cmd",
+        options: {
+            enableAppimageMem: true,
+            heapSize: 0x10000,
+            stackSize: 0x8000,
+            irqStackSize: 0x1000,
+            svcStackSize: 0x0100,
+            fiqStackSize: 0x0100,
+            abortStackSize: 0x0100,
+            undefinedStackSize: 0x0100,
+            dmStubstacksize: 0x0400,
+        }
+    },
+];
+
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: Multithread boot test",
+        testCaseIds: "SITSW-11446 SITSW-11447 SITSW-11448 SITSW-11449 SITSW-11450 SITSW-11451 SITSW-11452 SITSW-11453",
+        cfgPath: "test/drivers/boot/sbl_test_multithread/{board}/test_sbl_uart_boot_${DEVICE_TYPE}.cfg",
+        useBootloader: true,
+        expectTimeout: 60,
+        timeout: 660,
+    },
+};
+
+const buildOptionCombos = [
+    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62x-sk", os: "freertos"},
+];
+
+function getComponentProperty() {
+    let property = {};
+
+    property.dirPath = path.resolve(__dirname, "..");
+    property.type = "executable";
+    property.name = "sbl_test_multithread";
+    property.isInternal = true;
+    property.skipProjectSpec = true;
+    property.buildOptionCombos = buildOptionCombos;
+    property.dependentApps = [
+        { name: "sbl_test_custom_ipc_binary", board: "am62x-sk", tag: "freertos_nortos", isSystemProject: true },
+    ];
+
+    return property;
+}
+
+function getComponentBuildProperty(buildOption) {
+    let build_property = {};
+
+    build_property.files = files;
+    build_property.filedirs = filedirs;
+    build_property.asmfiles = asmfiles;
+    build_property.lnkfiles = lnkfiles;
+    build_property.syscfgfile = syscfgfile;
+    build_property.defines = defines;
+    build_property.includes = includes_freertos_r5f;
+    build_property.libdirs = libdirs_freertos;
+    build_property.libs = libs_freertos_r5f;
+    build_property.templates = templates_freertos_r5f;
+    build_property.templates = [...(build_property.templates || []), robot_template];
+
+    return build_property;
+}
+
+module.exports = {
+    getComponentProperty,
+    getComponentBuildProperty,
+};

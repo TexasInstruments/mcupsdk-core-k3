@@ -97,6 +97,21 @@ const templates_freertos_r5f =
     },
 ];
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: UART boot test",
+        testCaseIds: "SITSW-11449",
+        cfgPath: "test/drivers/boot/sbl_test_uart_boot/{board}/test_sbl_uart_boot_${DEVICE_TYPE}.cfg",
+        useBootloader: true,
+        bootMode: null,
+        expectTimeout: 60,
+        timeout: 660,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos"},
 ];
@@ -126,6 +141,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.libdirs = libdirs_freertos;
     build_property.libs = libs_freertos_dm_r5f;
     build_property.templates = templates_freertos_r5f;
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

@@ -63,25 +63,25 @@ APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_
 ifeq ($(ATF_INTEGRATED_BOOT), yes)
 MULTI_CORE_APP_PARAMS = \
 	$(ATF_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
-    ../ipc_rpmsg_echo_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang/$(PROFILE)/ipc_rpmsg_echo_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang.rprc@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
-    ../ipc_rpmsg_echo_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang/$(PROFILE)/ipc_rpmsg_echo_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang.rprc@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
-    ../ipc_rpmsg_echo_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64/$(PROFILE)/ipc_rpmsg_echo_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64.rprc@$(BOOTIMAGE_CORE_ID_load_only) \
-    ../ipc_rpmsg_echo_am62x-sk-lp_a53ss0-1_freertos_gcc-aarch64/$(PROFILE)/ipc_rpmsg_echo_am62x-sk-lp_a53ss0-1_freertos_gcc-aarch64.rprc@$(BOOTIMAGE_CORE_ID_load_only) \
+    ../sbl_test_custom_ipc_binary_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang/$(PROFILE)/sbl_test_custom_ipc_binary_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang.rprc@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
+    ../sbl_test_custom_ipc_binary_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang/$(PROFILE)/sbl_test_custom_ipc_binary_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang.rprc@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
+    ../sbl_test_custom_ipc_binary_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64/$(PROFILE)/sbl_test_custom_ipc_binary_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64.rprc@$(BOOTIMAGE_CORE_ID_load_only) \
+    ../sbl_test_custom_ipc_binary_am62x-sk-lp_a53ss0-1_freertos_gcc-aarch64/$(PROFILE)/sbl_test_custom_ipc_binary_am62x-sk-lp_a53ss0-1_freertos_gcc-aarch64.rprc@$(BOOTIMAGE_CORE_ID_load_only) \
 
 else
 MULTI_CORE_APP_PARAMS = \
-    ../ipc_rpmsg_echo_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang/$(PROFILE)/ipc_rpmsg_echo_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang.rprc@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
-    ../ipc_rpmsg_echo_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang/$(PROFILE)/ipc_rpmsg_echo_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang.rprc@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
-    ../ipc_rpmsg_echo_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64/$(PROFILE)/ipc_rpmsg_echo_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64.rprc@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
-    ../ipc_rpmsg_echo_am62x-sk-lp_a53ss0-1_freertos_gcc-aarch64/$(PROFILE)/ipc_rpmsg_echo_am62x-sk-lp_a53ss0-1_freertos_gcc-aarch64.rprc@$(BOOTIMAGE_CORE_ID_a53ss0-1) \
+    ../sbl_test_custom_ipc_binary_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang/$(PROFILE)/sbl_test_custom_ipc_binary_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang.rprc@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
+    ../sbl_test_custom_ipc_binary_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang/$(PROFILE)/sbl_test_custom_ipc_binary_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang.rprc@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
+    ../sbl_test_custom_ipc_binary_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64/$(PROFILE)/sbl_test_custom_ipc_binary_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64.rprc@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
+    ../sbl_test_custom_ipc_binary_am62x-sk-lp_a53ss0-1_freertos_gcc-aarch64/$(PROFILE)/sbl_test_custom_ipc_binary_am62x-sk-lp_a53ss0-1_freertos_gcc-aarch64.rprc@$(BOOTIMAGE_CORE_ID_a53ss0-1) \
 
 endif
 
 MULTI_CORE_APP_PARAMS_XIP = \
-    ../ipc_rpmsg_echo_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang/$(PROFILE)/ipc_rpmsg_echo_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang.rprc_xip@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
-    ../ipc_rpmsg_echo_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang/$(PROFILE)/ipc_rpmsg_echo_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang.rprc_xip@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
-    ../ipc_rpmsg_echo_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64/$(PROFILE)/ipc_rpmsg_echo_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64.rprc_xip@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
-    ../ipc_rpmsg_echo_am62x-sk-lp_a53ss0-1_freertos_gcc-aarch64/$(PROFILE)/ipc_rpmsg_echo_am62x-sk-lp_a53ss0-1_freertos_gcc-aarch64.rprc_xip@$(BOOTIMAGE_CORE_ID_a53ss0-1) \
+    ../sbl_test_custom_ipc_binary_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang/$(PROFILE)/sbl_test_custom_ipc_binary_am62x-sk-lp_r5fss0-0_freertos_ti-arm-clang.rprc_xip@$(BOOTIMAGE_CORE_ID_r5fss0-0) \
+    ../sbl_test_custom_ipc_binary_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang/$(PROFILE)/sbl_test_custom_ipc_binary_am62x-sk-lp_m4fss0-0_nortos_ti-arm-clang.rprc_xip@$(BOOTIMAGE_CORE_ID_m4fss0-0) \
+    ../sbl_test_custom_ipc_binary_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64/$(PROFILE)/sbl_test_custom_ipc_binary_am62x-sk-lp_a53ss0-0_freertos_gcc-aarch64.rprc_xip@$(BOOTIMAGE_CORE_ID_a53ss0-0) \
+    ../sbl_test_custom_ipc_binary_am62x-sk-lp_a53ss0-1_freertos_gcc-aarch64/$(PROFILE)/sbl_test_custom_ipc_binary_am62x-sk-lp_a53ss0-1_freertos_gcc-aarch64.rprc_xip@$(BOOTIMAGE_CORE_ID_a53ss0-1) \
 
 all:
 ifeq ($(CCS_IDE_MODE),cloud)

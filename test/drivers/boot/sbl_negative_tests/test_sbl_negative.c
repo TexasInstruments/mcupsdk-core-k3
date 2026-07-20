@@ -896,6 +896,8 @@ void TestSbl_parseInvalidRprcMagic(void *args)
     cpuInfo.rprcOffset = rprcOffset;
 #if defined(SOC_AM275X)
     cpuInfo.cpuId      = CSL_CORE_ID_R5FSS0_0;
+#elif defined(SOC_AM62X)
+    cpuInfo.cpuId      = CSL_CORE_ID_M4FSS0_0;
 #else
     cpuInfo.cpuId      = CSL_CORE_ID_MCU_R5FSS0_0;
 #endif
@@ -1043,6 +1045,8 @@ void TestSbl_parseInvalidSectionCount(void *args)
     cpuInfo.rprcOffset = rprcOffset;
 #if defined(SOC_AM275X)
     cpuInfo.cpuId      = CSL_CORE_ID_R5FSS0_0;
+#elif defined(SOC_AM62X)
+    cpuInfo.cpuId      = CSL_CORE_ID_M4FSS0_0;
 #else
     cpuInfo.cpuId      = CSL_CORE_ID_MCU_R5FSS0_0;
 #endif
@@ -1250,6 +1254,8 @@ void TestSbl_loadImageToProtectedMemory(void *args)
     cpuInfo.rprcOffset = 0U;
 #if defined(SOC_AM275X)
     cpuInfo.cpuId      = CSL_CORE_ID_R5FSS0_0;
+#elif defined(SOC_AM62X)
+    cpuInfo.cpuId      = CSL_CORE_ID_M4FSS0_0;
 #else
     cpuInfo.cpuId      = CSL_CORE_ID_MCU_R5FSS0_0;
 #endif
@@ -1302,6 +1308,8 @@ void TestSbl_loadImageInsufficientMemory(void *args)
     cpuInfo.rprcOffset = 0U;
 #if defined(SOC_AM275X)
     cpuInfo.cpuId      = CSL_CORE_ID_R5FSS0_0;
+#elif defined(SOC_AM62X)
+    cpuInfo.cpuId      = CSL_CORE_ID_M4FSS0_0;
 #else
     cpuInfo.cpuId      = CSL_CORE_ID_MCU_R5FSS0_0;
 #endif
@@ -1375,6 +1383,8 @@ void TestSbl_loadRprcCorruptedSectionHdr(void *args)
     cpuInfo.rprcOffset = 0U;
 #if defined(SOC_AM275X)
     cpuInfo.cpuId      = CSL_CORE_ID_R5FSS0_0;
+#elif defined(SOC_AM62X)
+    cpuInfo.cpuId      = CSL_CORE_ID_M4FSS0_0;
 #else
     cpuInfo.cpuId      = CSL_CORE_ID_MCU_R5FSS0_0;
 #endif
@@ -1420,6 +1430,8 @@ void TestSbl_loadImageReadFails(void *args)
     cpuInfo.rprcOffset = 0U;
 #if defined(SOC_AM275X)
     cpuInfo.cpuId      = CSL_CORE_ID_R5FSS0_0;
+#elif defined(SOC_AM62X)
+    cpuInfo.cpuId      = CSL_CORE_ID_M4FSS0_0;
 #else
     cpuInfo.cpuId      = CSL_CORE_ID_MCU_R5FSS0_0;
 #endif
@@ -1461,6 +1473,8 @@ void TestSbl_loadImageInvalidRprcOffset(void *args)
     cpuInfo.rprcOffset = BOOTLOADER_INVALID_ID;
 #if defined(SOC_AM275X)
     cpuInfo.cpuId      = CSL_CORE_ID_R5FSS0_0;
+#elif defined(SOC_AM62X)
+    cpuInfo.cpuId      = CSL_CORE_ID_M4FSS0_0;
 #else
     cpuInfo.cpuId      = CSL_CORE_ID_MCU_R5FSS0_0;
 #endif
@@ -1511,6 +1525,8 @@ void TestSbl_loadSelfCpuInvalidClockFreq(void *args)
     cpuInfo.rprcOffset = 0U;
 #if defined(SOC_AM275X)
     cpuInfo.cpuId      = CSL_CORE_ID_WKUP_R5FSS0_0;
+#elif defined(SOC_AM62X)
+    cpuInfo.cpuId      = CSL_CORE_ID_M4FSS0_0;
 #else
     cpuInfo.cpuId      = CSL_CORE_ID_MCU_R5FSS0_0;
 #endif
@@ -1563,6 +1579,8 @@ void TestSbl_loadImageExceedsReservedBounds(void *args)
     cpuInfo.rprcOffset = 0U;
 #if defined(SOC_AM275X)
     cpuInfo.cpuId      = CSL_CORE_ID_R5FSS0_0;
+#elif defined(SOC_AM62X)
+    cpuInfo.cpuId      = CSL_CORE_ID_M4FSS0_0;
 #else
     cpuInfo.cpuId      = CSL_CORE_ID_MCU_R5FSS0_0;
 #endif
@@ -1829,6 +1847,8 @@ void TestSbl_setCpuClockInvalidFreq(void *args)
     /* Set clock to 0 Hz — firmware should reject this */
 #if defined(SOC_AM275X)
     status = Bootloader_socCpuSetClock(CSL_CORE_ID_R5FSS0_0, 0U);
+#elif defined(SOC_AM62X)
+    status = Bootloader_socCpuSetClock(CSL_CORE_ID_M4FSS0_0, 0U);
 #else
     status = Bootloader_socCpuSetClock(CSL_CORE_ID_MCU_R5FSS0_0, 0U);
 #endif
@@ -1885,8 +1905,8 @@ void TestSbl_powerOffAlreadyOff(void *args)
     TestSbl_setupMemBootloader(&config, &memArgs, appImageBuf);
 
     Bootloader_CpuInfo_init(&cpuInfo);
-#if defined(SOC_AM62PX)
-    /* AM62PX has no C75 core; use A53SS0_0 instead as an arbitrary CPU ID. */
+#if defined(SOC_AM62PX) || defined(SOC_AM62X)
+    /* AM62PX/AM62X has no C75 core; use A53SS0_0 instead as an arbitrary CPU ID. */
     cpuInfo.cpuId = CSL_CORE_ID_A53SS0_0;
 #else
     cpuInfo.cpuId = CSL_CORE_ID_C75SS0_0;

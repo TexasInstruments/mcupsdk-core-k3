@@ -97,8 +97,8 @@ else
 endif
 endif
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
-	$(RM) $(PROFILE)/ipc_rpmsg_echo.mcu-m4f0_0.strip.out
-	$(STRIP) -p -o=$(PROFILE)/ipc_rpmsg_echo.mcu-m4f0_0.strip.out $(OUTFILE)
+	$(RM) $(PROFILE)/sbl_test_custom_ipc_binary.mcu-m4f0_0.strip.out
+	$(STRIP) -p -o=$(PROFILE)/sbl_test_custom_ipc_binary.mcu-m4f0_0.strip.out $(OUTFILE)
 	@echo  Boot image: am62x:m4fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_NAME) Done !!!
 	@echo  .
 ifeq ($(DEVICE_TYPE),HS)

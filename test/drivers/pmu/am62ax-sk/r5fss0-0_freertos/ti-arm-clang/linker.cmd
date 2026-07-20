@@ -146,6 +146,7 @@ SECTIONS
         .fini_array: {} palign(8)   /* Contains function pointers called after main */
     } > DDR
 
+    .bss.app(NOLOAD) : {} > APPIMAGE
 }
 
 
@@ -166,4 +167,6 @@ MEMORY
     /* DDR for DM R5F code/data [ size 27 MiB + 364 KB ] */
     DDR                         : ORIGIN = 0x9CAA5000 LENGTH = 0x1B5B000
 
+    /* This section is used by the SBL to temporarily load the appimage for authentication */
+    APPIMAGE  : ORIGIN = 0x84000000 , LENGTH = 0x1900000
 }

@@ -82,6 +82,8 @@ SECTIONS
     } > WKUP_R5_MSRAM
 
     /* NON-LOADABLE SECTIONS */
+    /* Place appimage buffers in dedicated OCRAM region, not in WKUP MSRAM */
+    .bss.app (NOLOAD) : {} > APPIMAGE
 
     GROUP {
         .bss:    {} palign(8)   /* This is where uninitialized globals go */

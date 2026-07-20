@@ -351,8 +351,8 @@ int32_t TestSbl_runCpus()
         {
             DebugP_log("CPU %d: Image loaded, running CPU...\r\n", cpuId);
 #if !defined(SOC_AM275X)
-            if (((cpuId == CSL_CORE_ID_MCU_R5FSS0_0) && !Bootloader_socIsMCUResetIsoEnabled()) ||
-                (cpuId != CSL_CORE_ID_MCU_R5FSS0_0))
+            if (((cpuId == TEST_SBL_MCU_CORE_ID) && !Bootloader_socIsMCUResetIsoEnabled()) ||
+                (cpuId != TEST_SBL_MCU_CORE_ID))
 #endif
                 {
                     DebugP_log("CPU %d: Running CPU...\r\n", cpuId);
@@ -368,8 +368,8 @@ int32_t TestSbl_runCpus()
         if(socCpuCores[cpuId] == BOOTLOADER_IMAGE_LOADED)
         {
 #if !defined(SOC_AM275X)
-            if (((cpuId == CSL_CORE_ID_MCU_R5FSS0_0) && !Bootloader_socIsMCUResetIsoEnabled()) ||
-                (cpuId != CSL_CORE_ID_MCU_R5FSS0_0))
+            if (((cpuId == TEST_SBL_MCU_CORE_ID) && !Bootloader_socIsMCUResetIsoEnabled()) ||
+                (cpuId != TEST_SBL_MCU_CORE_ID))
 #endif
             {
                 DebugP_log("CPU %d: Waiting for IPC sync...\r\n", cpuId);
@@ -487,13 +487,13 @@ int32_t TestSbl_loadCpu()
         /* Load CPUs */
         if ((status == SystemP_SUCCESS) && !Bootloader_socIsMCUResetIsoEnabled())
         {
-            if((TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_MCU_R5FSS0_0)))
+            if((TRUE == Bootloader_isCorePresent(bootHandle, TEST_SBL_MCU_CORE_ID)))
             {
-                bootImageInfo.cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_MCU_R5FSS0_0);
-                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo.cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
-                socCpuCores[CSL_CORE_ID_MCU_R5FSS0_0] = BOOTLOADER_IMAGE_LOADED;
-                bootCpuInfo[CSL_CORE_ID_MCU_R5FSS0_0] = bootImageInfo.cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0];
-                Bootloader_profileAddCore(CSL_CORE_ID_MCU_R5FSS0_0);
+                bootImageInfo.cpuInfo[TEST_SBL_MCU_CORE_ID].clkHz = Bootloader_socCpuGetClkDefault(TEST_SBL_MCU_CORE_ID);
+                status = Bootloader_loadCpu(bootHandle, &(bootImageInfo.cpuInfo[TEST_SBL_MCU_CORE_ID]));
+                socCpuCores[TEST_SBL_MCU_CORE_ID] = BOOTLOADER_IMAGE_LOADED;
+                bootCpuInfo[TEST_SBL_MCU_CORE_ID] = bootImageInfo.cpuInfo[TEST_SBL_MCU_CORE_ID];
+                Bootloader_profileAddCore(TEST_SBL_MCU_CORE_ID);
             }
         }
         if(((status == SystemP_SUCCESS) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_A53SS0_0))))
@@ -529,8 +529,8 @@ int32_t TestSbl_loadCpu()
 
             }
         }
-#if !defined(SOC_AM62PX)
-        /* AM62PX has no C75 core; CSL_CORE_ID_C75SS0_0 is not defined for it. */
+#if !defined(SOC_AM62PX) && !defined(SOC_AM62X)
+        /* AM62PX/AM62X has no C75 core; CSL_CORE_ID_C75SS0_0 is not defined for them. */
         if(((status == SystemP_SUCCESS) && (TRUE == Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_C75SS0_0))))
         {
             bootImageInfo.cpuInfo[CSL_CORE_ID_C75SS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_C75SS0_0);

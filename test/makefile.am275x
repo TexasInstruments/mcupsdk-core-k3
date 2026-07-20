@@ -460,7 +460,6 @@ help:
 	@echo  $(MAKE) -s -C drivers/boot/sbl_test_multithread/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/boot/sbl_test_uniflash/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/boot/sbl_uart_uniflash_test/am275x-evm/wkup-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
-	@echo  $(MAKE) -s -C drivers/boot/sbl_uart_uniflash_test/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  .
 	@echo  System Example build targets,
 	@echo  =============================
@@ -2261,9 +2260,6 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  sbl_uart_uniflash_test_am275x-evm_wkup-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C drivers/boot/sbl_uart_uniflash_test/am275x-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
- sbl_uart_uniflash_test_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
-	$(MAKE) -C drivers/boot/sbl_uart_uniflash_test/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-
  test_ipc_notify_am275x-evm_system_freertos:
 	$(MAKE) -C drivers/ipc_notify/am275x-evm/system_freertos -f makefile all
 
@@ -3935,9 +3931,6 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
 
  sbl_uart_uniflash_test_am275x-evm_wkup-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/boot/sbl_uart_uniflash_test/am275x-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
-
- sbl_uart_uniflash_test_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
-	$(MAKE) -C drivers/boot/sbl_uart_uniflash_test/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
  test_ipc_notify_am275x-evm_system_freertos_clean:
 	$(MAKE) -C drivers/ipc_notify/am275x-evm/system_freertos -f makefile clean
@@ -5611,9 +5604,6 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  sbl_uart_uniflash_test_am275x-evm_wkup-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/boot/sbl_uart_uniflash_test/am275x-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
 
- sbl_uart_uniflash_test_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
-	$(MAKE) -C drivers/boot/sbl_uart_uniflash_test/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-
  test_ipc_notify_am275x-evm_system_freertos_scrub:
 	$(MAKE) -C drivers/ipc_notify/am275x-evm/system_freertos -f makefile scrub
 
@@ -5685,7 +5675,6 @@ sbl: libs
 	$(MAKE) -f makefile.am275x  sbl_test_multithread_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
 	$(MAKE) -f makefile.am275x  test_sbl_uniflash_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
 	$(MAKE) -f makefile.am275x  sbl_uart_uniflash_test_am275x-evm_wkup-r5fss0-0_nortos_ti-arm-clang
-	$(MAKE) -f makefile.am275x  sbl_uart_uniflash_test_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
 
 sbl-clean:
 	$(MAKE) -f makefile.am275x  test_sciclient_direct_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
@@ -5715,7 +5704,6 @@ sbl-clean:
 	$(MAKE) -f makefile.am275x  sbl_test_multithread_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 	$(MAKE) -f makefile.am275x  test_sbl_uniflash_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 	$(MAKE) -f makefile.am275x  sbl_uart_uniflash_test_am275x-evm_wkup-r5fss0-0_nortos_ti-arm-clang_clean
-	$(MAKE) -f makefile.am275x  sbl_uart_uniflash_test_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 
 sbl-scrub:
 	$(MAKE) -f makefile.am275x  test_sciclient_direct_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
@@ -5745,7 +5733,6 @@ sbl-scrub:
 	$(MAKE) -f makefile.am275x  sbl_test_multithread_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 	$(MAKE) -f makefile.am275x  test_sbl_uniflash_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 	$(MAKE) -f makefile.am275x  sbl_uart_uniflash_test_am275x-evm_wkup-r5fss0-0_nortos_ti-arm-clang_scrub
-	$(MAKE) -f makefile.am275x  sbl_uart_uniflash_test_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 
 
 

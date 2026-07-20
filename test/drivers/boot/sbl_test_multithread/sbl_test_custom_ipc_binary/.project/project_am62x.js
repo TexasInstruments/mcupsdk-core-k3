@@ -1,5 +1,5 @@
 let path = require('path');
-const device_project = require("../../../../../.project/device/project_am62x.js");
+const device_project = require("../../../../../../.project/device/project_am62x.js");
 
 let device = "am62x";
 

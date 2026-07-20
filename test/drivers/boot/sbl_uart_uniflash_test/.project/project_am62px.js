@@ -13,14 +13,6 @@ const files_nortos = {
     ],
 };
 
-/* FreeRTOS / Unity variant – runs Unity test suite */
-const files_freertos = {
-    common: [
-        "test_sbl_uart_uniflash.c",
-        "main.c",
-    ],
-};
-
 /* Relative to where the makefile will be generated
  * Typically at <example_folder>/<BOARD>/<core_os_combo>/<compiler>
  */
@@ -64,47 +56,6 @@ const libs_nortos_r5f = {
 };
 
 /* -------------------------------------------------------------------------- */
-/* FreeRTOS libs                                                               */
-/* -------------------------------------------------------------------------- */
-
-const libdirs_freertos = {
-    common: [
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
-        "${MCU_PLUS_SDK_PATH}/source/board/lib",
-        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
-    ],
-};
-
-const includes_freertos_r5f = {
-    common: [
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62px/r5f",
-        "${MCU_PLUS_SDK_PATH}/test/unity/",
-    ],
-};
-
-const libs_freertos_wkup_r5f = {
-    common: [
-        "rm_pm_hal.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciclient_direct.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
-        "self_reset.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
-        "sciserver.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
-        "freertos.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
-        "drivers.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
-        "board.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
-        "unity.am62px.r5f.ti-arm-clang.${ConfigName}.lib",
-        "dm_stub.am62px.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
-    ],
-};
-
-/* -------------------------------------------------------------------------- */
 /* Common                                                                      */
 /* -------------------------------------------------------------------------- */
 
@@ -122,27 +73,21 @@ const defines = {
 
 const syscfgfile = "../example.syscfg";
 
-const templates_freertos_r5f =
-[
-    {
-        input: ".project/templates/am62px/common/linker_wkup-r5f.cmd.xdt",
-        output: "linker.cmd",
-        options: {
-            heapSize: 0x8000,
-            stackSize: 0x4000,
-            irqStackSize: 0x1000,
-            svcStackSize: 0x0100,
-            fiqStackSize: 0x0100,
-            abortStackSize: 0x0100,
-            undefinedStackSize: 0x0100,
-            dmStubstacksize: 0x0400,
-        }
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: UART UniFlash server test",
+        testCaseIds: "SITSW-11472",
+        cfgPath: "test/drivers/boot/sbl_uart_uniflash_test/{board}/default_sbl_uart_uniflash_test_${DEVICE_TYPE}.cfg",
+        expectTimeout: 60,
+        timeout: 660,
     },
-];
+};
 
 const buildOptionCombos = [
     { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "nortos"},
-    { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "freertos"},
 ];
 
 function getComponentProperty() {
@@ -167,21 +112,14 @@ function getComponentBuildProperty(buildOption) {
     build_property.syscfgfile = syscfgfile;
     build_property.defines    = defines;
 
-    if(buildOption.os === "freertos")
-    {
-        build_property.files     = files_freertos;
-        build_property.includes  = includes_freertos_r5f;
-        build_property.libdirs   = libdirs_freertos;
-        build_property.libs      = libs_freertos_wkup_r5f;
-        build_property.templates = templates_freertos_r5f;
-    }
-    else
+    if(buildOption.os === "nortos")
     {
         /* nortos — functional XMODEM uniflash server */
         build_property.files         = files_nortos;
         build_property.includes      = includes_nortos_r5f;
         build_property.libdirs       = libdirs_nortos;
         build_property.libs          = libs_nortos_r5f;
+        build_property.templates     = [robot_template];
     }
 
     return build_property;

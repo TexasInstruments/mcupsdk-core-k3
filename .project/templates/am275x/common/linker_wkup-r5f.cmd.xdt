@@ -201,6 +201,10 @@ SECTIONS
     /* this is used only when IPC RPMessage is enabled, else this is not used */
     .bss.ipc_vring_mem   (NOLOAD) : {} > IPC_VRING_RTOS
     % }
+    % if(enableAppimageMem) {
+    /* Place appimage buffers in dedicated OCRAM region, not in WKUP MSRAM */
+    .bss.app (NOLOAD) : {} > APPIMAGE
+    % }
 
     GROUP {
         .bss:    {} palign(8)   /* This is where uninitialized globals go */

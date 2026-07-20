@@ -102,6 +102,20 @@ const templates_freertos_r5f =
     },
 ];
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: Multithread boot test",
+        testCaseIds: "SITSW-11446 SITSW-11447 SITSW-11448 SITSW-11449 SITSW-11450 SITSW-11451 SITSW-11452 SITSW-11453",
+        cfgPath: "test/drivers/boot/sbl_test_multithread/{board}/test_sbl_uart_boot_${DEVICE_TYPE}.cfg",
+        useBootloader: true,
+        expectTimeout: 60,
+        timeout: 660,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "freertos"},
 ];
@@ -135,6 +149,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.libdirs = libdirs_freertos;
     build_property.libs = libs_freertos_wkup_r5f;
     build_property.templates = templates_freertos_r5f;
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

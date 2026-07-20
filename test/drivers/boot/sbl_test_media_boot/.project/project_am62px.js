@@ -96,6 +96,20 @@ const templates_freertos_r5f =
     },
 ];
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: Media boot test",
+        testCaseIds: "SITSW-11392 SITSW-11410 SITSW-11411 SITSW-11412 SITSW-11413 SITSW-11414 SITSW-11415 SITSW-11416 SITSW-11417 SITSW-11418 SITSW-11419 SITSW-11420 SITSW-11421 SITSW-11422 SITSW-11424 SITSW-11425 SITSW-11426 SITSW-11427 SITSW-11428 SITSW-11429 SITSW-11430 SITSW-11431 SITSW-11432 SITSW-11433 SITSW-11434 SITSW-11435 SITSW-11436 SITSW-11437 SITSW-11438 SITSW-11439 SITSW-11440 SITSW-11441 SITSW-11442 SITSW-11443 SITSW-11444 SITSW-11445 SITSW-11454 SITSW-11455 SITSW-11456 SITSW-12207",
+        cfgPath: "test/drivers/boot/sbl_test_media_boot/{board}/test_sbl_uart_boot_${DEVICE_TYPE}.cfg",
+        useBootloader: true,
+        expectTimeout: 60,
+        timeout: 660,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "wkup-r5fss0-0", cgt: "ti-arm-clang", board: "am62px-sk", os: "freertos"},
 ];
@@ -125,6 +139,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.libdirs = libdirs_freertos;
     build_property.libs = libs_freertos_wkup_r5f;
     build_property.templates = templates_freertos_r5f;
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

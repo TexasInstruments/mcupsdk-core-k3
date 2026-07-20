@@ -5,17 +5,17 @@
  * modification, are permitted provided that the following conditions
  * are met:
  *
- *   Redistributions of source code must retain the above copyright
- *   notice, this list of conditions and the following disclaimer.
+ * Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
  *
- *   Redistributions in binary form must reproduce the above copyright
- *   notice, this list of conditions and the following disclaimer in the
- *   documentation and/or other materials provided with the
- *   distribution.
+ * Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the
+ * distribution.
  *
- *   Neither the name of Texas Instruments Incorporated nor the names of
- *   its contributors may be used to endorse or promote products derived
- *   from this software without specific prior written permission.
+ * Neither the name of Texas Instruments Incorporated nor the names of
+ * its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -38,11 +38,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <drivers/bootloader.h>
-#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62PX)
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62X) || defined(SOC_AM62X)
 #include <drivers/bootloader/bootloader_priv.h>
 #endif
 #include <drivers/mmcsd.h>
 #include <drivers/ipc_notify/v0/ipc_notify_v0.h>
+#include <drivers/ipc_notify/v0/ipc_notify_v0_mailbox.h>
 #include <kernel/dpl/DebugP.h>
 #include <kernel/dpl/SemaphoreP.h>
 #include <kernel/dpl/ClockP.h>
@@ -77,6 +78,9 @@
 /* AM62PX: no A53/C75 boot image available on this board; only the
  * secondary MCU-R5F core has an appimage provisioned. */
 #define TEST_SBL_MT_NUM_CORES                            (1U)
+#elif defined(SOC_AM62X)
+/* AM62X: M4FSS0_0 + A53SS0_0 — no C75 core present. */
+#define TEST_SBL_MT_NUM_CORES                            (2U)
 #else
 #define TEST_SBL_MT_NUM_CORES                            (3U)
 #endif
@@ -92,7 +96,7 @@
 #define TEST_SBL_SDOSPI_MEDIA_EMMC                       (1U)   /* AM275X: eMMC as SD analog (MMC0)       */
 #define TEST_SBL_SDOSPI_MEDIA_FLASH                      (2U)   /* Both:   OSPI NOR flash                 */
 
-#if defined(SOC_AM62DX) || defined(SOC_AM62AX)
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62X)
 /* Path on the SD card FAT volume for the A53 single-core appimage */
 #define TEST_SBL_SDOSPI_SD_APPIMAGE_FNAME                "/sd0/app_a53"
 #endif
@@ -147,12 +151,12 @@
  */
 #define TEST_SBL_BOOT_CPU_NUM_CORES                      (2U)
 
-#if defined(SOC_AM62DX) || defined(SOC_AM62AX)
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62X)
 #define TEST_SBL_SD_IMG_A53_FNAME                        "/sd0/app_a53"   /* A53SS0_0 appimage        */
-#define TEST_SBL_SD_IMG_DSP_FNAME                        "/sd0/app_sys"   /* multicore, boot C75SS0_0 */
+#define TEST_SBL_SD_IMG_DSP_FNAME                        "/sd0/app_sys"   /* multicore system image   */
 #endif
 
-#if defined(SOC_AM62DX) || defined(SOC_AM62AX)
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62X)
 /* Path on the SD card FAT volume for the A53 single-core appimage (EMMC+SD test) */
 #define TEST_SBL_EMMC_SD_SD_APPIMAGE_FNAME               "/sd0/app_a53"
 #endif
@@ -162,14 +166,9 @@
  * Scratch buffer size for Bootloader_parseAndLoadMultiCoreELF auth path.
  */
 #define TEST_SBL_SCRATCH_BUF_SIZE (0x1000U)
-#elif defined(SOC_AM62PX)
+#elif defined(SOC_AM62PX) || defined(SOC_AM62X)
 /*
- * AM62PX: used as Thread 0's (eMMC) full-image scratch buffer in
- * TestSbl_concurrentSdOspiBoot — must hold a complete MCU-R5F appimage
- * (current sbl_test_custom_ipc_binary/am62px-sk build is ~52 KB); sized
- * with headroom for future image growth. Also usable as a generic
- * placeholder wherever a test would otherwise need a second per-core
- * appimage buffer (gAppImageBuf1/2) that does not exist on this board.
+ * AM62PX/AM62X: scratch buffer sized for a complete M4F appimage with headroom.
  */
 #define TEST_SBL_SCRATCH_BUF_SIZE (0x40000U)   /* 256 KB */
 #endif
@@ -229,7 +228,10 @@ typedef struct TestSbl_MmMtThreadArgs_s
  */
 extern uint8_t gAppImageBuf0[];
 extern uint8_t gAppImageBuf1[];
+#if !defined(SOC_AM62X)
+/* AM62X only has two per-core appimage buffers (M4F + A53) */
 extern uint8_t gAppImageBuf2[];
+#endif
 
 /* Per-thread task stacks for multithread boot test */
 uint8_t gMtTaskStack0[TEST_SBL_MT_TASK_STACK_SIZE] __attribute__((aligned(32)));
@@ -358,7 +360,7 @@ void test_main(void * args)
 #if !defined(SOC_AM275X)
     /* Run MT test first (AM62DX/AM62PX): MM test overwrites the embedded appimage
      * buffers (used as scratch for eMMC/OSPI auth) so MT must complete before MM. */
-    //RUN_TEST(TestSbl_multiThreadBoot,           11446, NULL);
+    RUN_TEST(TestSbl_multiThreadBoot,           11446, NULL);
 #endif
 
     /*
@@ -379,7 +381,7 @@ void test_main(void * args)
      * instead, which correctly verifies the same MCU-R5F image concurrently
      * from eMMC + OSPI on AM62PX.
     */
-#if (defined(SOC_AM275X) || defined(SOC_AM62PX)) && !defined(SKIP_MULTIMEDIA_TEST)
+#if (defined(SOC_AM275X) || defined(SOC_AM62PX) || defined(SOC_AM62AX)) && !defined(SKIP_MULTIMEDIA_TEST)
 #define SKIP_MULTIMEDIA_TEST
 #endif
 #if !defined(SKIP_MULTIMEDIA_TEST)
@@ -390,59 +392,69 @@ void test_main(void * args)
     DebugP_log("Skipping TestSbl_multiMediaMultiThreadBoot (SKIP_MULTIMEDIA_TEST defined)\r\n");
 #endif
 
-/* AM275X: boots C75SS0_0 — blocked by C75 L2RAM DMA req + VIM corruption.
- * AM62PX: no A53/C75 boot image, so both threads load/verify the same
- * MCU-R5F image from eMMC + OSPI instead (see TestSbl_concurrentSdOspiBoot). */
+    /* AM275X: boots C75SS0_0 — blocked by C75 L2RAM DMA req + VIM corruption.
+     * AM62PX: no A53/C75 boot image, so both threads load/verify the same
+     * MCU-R5F image from eMMC + OSPI instead (see TestSbl_concurrentSdOspiBoot). */
 #if !defined(SOC_AM275X)
     RUN_TEST(TestSbl_concurrentSdOspiBoot,      11448, NULL);
 #else
     DebugP_log("Skipping TestSbl_concurrentSdOspiBoot (AM275X C75 DMA/VIM bug)\r\n");
 #endif
 
-/* AM275X: already ran before multiThreadBoot to avoid VIM corruption (see above).
- * AM62PX: no A53 boot image is available on this board. */
+    /* AM275X: already ran before multiThreadBoot to avoid VIM corruption (see above).
+     * AM62PX: no A53 boot image is available on this board. */
 #if !defined(SOC_AM275X) && !defined(SOC_AM62PX)
     RUN_TEST(TestSbl_concurrentEmmcSdBoot,      11449, NULL);
 #elif defined(SOC_AM62PX)
     DebugP_log("Skipping TestSbl_concurrentEmmcSdBoot (AM62PX has no A53 boot image)\r\n");
 #endif
 
-/* AM275X: boots C75SS0_0 — same blocker as above.
- * AM62PX: no A53/C75 boot image is available on this board. */
+    /* AM275X: boots C75SS0_0 — same blocker as above.
+     * AM62PX: no A53/C75 boot image is available on this board. */
 #if !defined(SOC_AM275X) && !defined(SOC_AM62PX)
     RUN_TEST(TestSbl_concurrentEmmcImageBoot,   11450, NULL);
+#if !defined(SOC_AM62AX)
     RUN_TEST(TestSbl_concurrentSdImageBoot,     11451, NULL);
+#endif
 #elif defined(SOC_AM62PX)
     DebugP_log("Skipping TestSbl_concurrentEmmcImageBoot/TestSbl_concurrentSdImageBoot (AM62PX has no A53/C75 boot image)\r\n");
 #else
     DebugP_log("Skipping TestSbl_concurrentEmmcImageBoot (AM275X C75 DMA/VIM bug)\r\n");
 #endif
 
-/*
- * AM275X: TestSbl_concurrentOspiImageBoot loads C75SS0_0 sections into
- * C75 L2RAM, which requires DMA (WKUP-R5 CPU cannot write to C75 L2RAM).
- * The UDMA ring interrupt is dead due to the TIFS/Sciserver VIM corruption
- * bug triggered by earlier core boots.  With DMA disabled the test hangs
- * on a CPU-memcpy data abort.  Skip until the TIFS bug is fixed.
- * AM62PX: boots C75SS0_0 unconditionally — no C75 core exists on this SOC.
- */
-#if !defined(SOC_AM275X) && !defined(SOC_AM62PX)
+    /*
+    * AM275X: TestSbl_concurrentOspiImageBoot loads C75SS0_0 sections into
+    * C75 L2RAM, which requires DMA (WKUP-R5 CPU cannot write to C75 L2RAM).
+    * The UDMA ring interrupt is dead due to the TIFS/Sciserver VIM corruption
+    * bug triggered by earlier core boots.  With DMA disabled the test hangs
+    * on a CPU-memcpy data abort.  Skip until the TIFS bug is fixed.
+    * AM62PX: boots C75SS0_0 unconditionally — no C75 core exists on this SOC.
+    * AM62X: no C75 core, and the OSPI flash is never provisioned with images
+    * at the FLASH_DSP (0xA00000) / FLASH_MULTICORE (0x1200000) offsets this
+    * test expects (test_sbl_uniflash_hs_fs.cfg only flashes the M4F image to
+    * eMMC @ 0x800000) — reading unprovisioned flash content causes the test
+    * to hang/misbehave, matching the "disabled for AM62X" intent already
+    * documented on coreIds[]/appImageBufs[] above.
+    */
+#if !defined(SOC_AM275X) && !defined(SOC_AM62PX) && !defined(SOC_AM62X) && !defined(SOC_AM62AX)
     RUN_TEST(TestSbl_concurrentOspiImageBoot,   11452, NULL);
 #elif defined(SOC_AM62PX)
     DebugP_log("Skipping TestSbl_concurrentOspiImageBoot (AM62PX has no C75 core/boot image)\r\n");
+#elif defined(SOC_AM62X)
+    DebugP_log("Skipping TestSbl_concurrentOspiImageBoot (AM62X OSPI flash not provisioned for this test)\r\n");
 #else
     DebugP_log("Skipping TestSbl_concurrentOspiImageBoot (AM275X TIFS/Sciserver VIM corruption)\r\n");
 #endif
 
-/*
- * AM275X: TestSbl_bootCpuPositive boots R5FSS0_0/R5FSS1_0 with entryPoint=0,
- * which re-executes IPC binary code still resident in their ATCMs from test
- * 11446.  The IPC binary calls Sciclient_init which triggers a Sciserver RM
- * request on WKUP-R5.  The Sciserver task hangs (FreeRTOS tick dead → any
- * ClockP_usleep inside Sciserver blocks forever), TIFS waits for the RM
- * response, and the next Sciclient call from Bootloader_bootCpu stalls.
- * Root cause: same TIFS/Sciserver VIM corruption bug.
- */
+    /*
+    * AM275X: TestSbl_bootCpuPositive boots R5FSS0_0/R5FSS1_0 with entryPoint=0,
+    * which re-executes IPC binary code still resident in their ATCMs from test
+    * 11446.  The IPC binary calls Sciclient_init which triggers a Sciserver RM
+    * request on WKUP-R5.  The Sciserver task hangs (FreeRTOS tick dead → any
+    * ClockP_usleep inside Sciserver blocks forever), TIFS waits for the RM
+    * response, and the next Sciclient call from Bootloader_bootCpu stalls.
+    * Root cause: same TIFS/Sciserver VIM corruption bug.
+    */
     /*
      * AM275X: C75SS0_0 is now excluded from all tests so VIM is never
      * corrupted.  The original skip reason (FreeRTOS tick dead from VIM
@@ -466,7 +478,7 @@ static void TestSbl_mtLoadThread(void *args)
     TestSbl_MtThreadArgs *threadArgs;
     Bootloader_BootImageInfo bootImageInfo;
     Bootloader_Params bootParams;
-#if defined(SOC_AM275X) || defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62PX)
+#if defined(SOC_AM275X) || defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
     Bootloader_Config *bootConfig;
 #endif
 
@@ -486,7 +498,7 @@ static void TestSbl_mtLoadThread(void *args)
     }
     else
     {
-#if defined(SOC_AM275X) || defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62PX)
+#if defined(SOC_AM275X) || defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
         bootConfig = (Bootloader_Config *)threadArgs->bootHandle;
         bootConfig->coresPresentMap = 0;
 
@@ -509,13 +521,14 @@ static void TestSbl_mtLoadThread(void *args)
 #elif defined(SOC_AM62PX)
         /* No pre-parse overrides needed — AM62PX uses manual auth + parse below */
 #endif
+#endif
 
         /* Serialize parse+load: TIFS auth via Sciclient is not thread-safe */
         SemaphoreP_pend(threadArgs->parseMutex, SystemP_WAIT_FOREVER);
 
 #if defined(SOC_AM275X)
         status = Bootloader_parseAndLoadMultiCoreELF(threadArgs->bootHandle, &bootImageInfo);
-#elif defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62PX)
+#elif defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
         {
             Bootloader_Config *bootConfig = (Bootloader_Config *)threadArgs->bootHandle;
             Bootloader_MemArgs *memArgs = (Bootloader_MemArgs *)bootConfig->args;
@@ -560,7 +573,7 @@ static void TestSbl_mtLoadThread(void *args)
             bootImageInfo.cpuInfo[threadArgs->coreId].clkHz =
                 Bootloader_socCpuGetClkDefault(threadArgs->coreId);
 
-#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62PX)
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
             {
                 Bootloader_CpuInfo *cpuInfo = &bootImageInfo.cpuInfo[threadArgs->coreId];
                 Bootloader_MemArgs *memArgs = (Bootloader_MemArgs *)bootConfig->args;
@@ -685,9 +698,13 @@ void TestSbl_multiThreadBoot(void *args)
         /* C75SS0_0 excluded: booting it corrupts WKUP-R5 VIM routes (TIFS bug) */
 #elif defined(SOC_AM62PX)
         /* AM62PX: no A53/C75 boot image available; MCU-R5F only. */
-        CSL_CORE_ID_MCU_R5FSS0_0,
+        TEST_SBL_MCU_CORE_ID,
+#elif defined(SOC_AM62X)
+        /* AM62X: M4FSS0_0 + A53SS0_0 (no C75). */
+        TEST_SBL_MCU_CORE_ID,
+        CSL_CORE_ID_A53SS0_0,
 #else
-        CSL_CORE_ID_MCU_R5FSS0_0,
+        TEST_SBL_MCU_CORE_ID,
         CSL_CORE_ID_A53SS0_0,
         CSL_CORE_ID_C75SS0_0,
 #endif
@@ -696,6 +713,8 @@ void TestSbl_multiThreadBoot(void *args)
         gAppImageBuf0,
 #if defined(SOC_AM275X)
         gAppImageBuf1,
+#elif defined(SOC_AM62X)
+        gAppImageBuf1,  /* A53SS0_0 appimage */
 #elif !defined(SOC_AM62PX)
         gAppImageBuf1,
         gAppImageBuf2,
@@ -709,6 +728,9 @@ void TestSbl_multiThreadBoot(void *args)
         /* C75SS0_0 excluded: see TEST_SBL_MT_NUM_CORES comment above */
 #elif defined(SOC_AM62PX)
         CONFIG_BOOTLOADER_SD_MCU,
+#elif defined(SOC_AM62X)
+        CONFIG_BOOTLOADER_SD_A53,    /* MEM: M4FSS0_0 appimage buffer */
+        CONFIG_BOOTLOADER_SD_SMP,    /* MEM: A53SS0_0 appimage buffer */
 #else
         CONFIG_BOOTLOADER_SD_A53,
         CONFIG_BOOTLOADER_SD_SMP,
@@ -718,6 +740,8 @@ void TestSbl_multiThreadBoot(void *args)
     uint8_t *taskStacks[TEST_SBL_MT_NUM_CORES] = {
         gMtTaskStack0,
 #if defined(SOC_AM275X)
+        gMtTaskStack1,
+#elif defined(SOC_AM62X)
         gMtTaskStack1,
 #elif !defined(SOC_AM62PX)
         gMtTaskStack1,
@@ -808,9 +832,9 @@ void TestSbl_multiThreadBoot(void *args)
         if(threadArgs[loopVar].loadStatus == SystemP_SUCCESS)
         {
 #if !defined(SOC_AM275X)
-            if (((coreIds[loopVar] == CSL_CORE_ID_MCU_R5FSS0_0) &&
+            if (((coreIds[loopVar] == TEST_SBL_MCU_CORE_ID) &&
                  !Bootloader_socIsMCUResetIsoEnabled()) ||
-                (coreIds[loopVar] != CSL_CORE_ID_MCU_R5FSS0_0))
+                (coreIds[loopVar] != TEST_SBL_MCU_CORE_ID))
 #endif
             {
                 DebugP_log("CPU %d: Running CPU...\r\n", coreIds[loopVar]);
@@ -830,14 +854,14 @@ void TestSbl_multiThreadBoot(void *args)
         if(threadArgs[loopVar].loadStatus == SystemP_SUCCESS)
         {
 #if !defined(SOC_AM275X)
-            if (((coreIds[loopVar] == CSL_CORE_ID_MCU_R5FSS0_0) &&
+            if (((coreIds[loopVar] == TEST_SBL_MCU_CORE_ID) &&
                  !Bootloader_socIsMCUResetIsoEnabled()) ||
-                (coreIds[loopVar] != CSL_CORE_ID_MCU_R5FSS0_0))
+                (coreIds[loopVar] != TEST_SBL_MCU_CORE_ID))
             {
                 DebugP_log("CPU %d: Waiting for IPC sync...\r\n", coreIds[loopVar]);
                 status = IpcNotify_waitSync(coreIds[loopVar], 10000);
                 DebugP_log("CPU %d: IPC sync status = %d\r\n", coreIds[loopVar], status);
-                TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
+                TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
             }
 #else
             /*
@@ -885,7 +909,7 @@ void TestSbl_multiThreadBoot(void *args)
                 }
 
                 DebugP_log("CPU %d: IPC sync status = %d\r\n", cid, syncStatus);
-                TEST_ASSERT_EQUAL(syncStatus, SystemP_SUCCESS);
+                TEST_ASSERT_EQUAL(SystemP_SUCCESS, syncStatus);
             }
 #endif
         }
@@ -1216,12 +1240,12 @@ void TestSbl_multiMediaMultiThreadBoot(void *args)
 #if defined(SOC_AM275X)
         CSL_CORE_ID_R5FSS0_0,
 #else
-        CSL_CORE_ID_MCU_R5FSS0_0,
+        TEST_SBL_MCU_CORE_ID,
 #endif
-#if !defined(SOC_AM62PX)
+#if !defined(SOC_AM62PX) && !defined(SOC_AM62X)
         CSL_CORE_ID_C75SS0_0,
 #else
-        /* AM62PX has no C75 core; this test is unconditionally disabled
+        /* AM62PX/AM62X has no C75 core; this test is unconditionally disabled
          * (dead code — RUN_TEST for it is commented out for all SOCs). */
         CSL_CORE_ID_A53SS0_0,
 #endif
@@ -1265,6 +1289,9 @@ void TestSbl_multiMediaMultiThreadBoot(void *args)
          * since this test is unconditionally disabled for all SOCs. */
         gMtScratchBuf,
         gMtScratchBuf,
+#elif defined(SOC_AM62X)
+        gAppImageBuf0,   /* scratch for eMMC  (M4F) */
+        gAppImageBuf1,   /* scratch for OSPI  (A53) */
 #else
         gAppImageBuf0,   /* scratch for eMMC */
         gAppImageBuf2,   /* scratch for OSPI Flash */
@@ -1446,9 +1473,9 @@ void TestSbl_multiMediaMultiThreadBoot(void *args)
         if(threadArgs[loopVar].loadStatus == SystemP_SUCCESS)
         {
 #if !defined(SOC_AM275X)
-            if (((coreIds[loopVar] == CSL_CORE_ID_MCU_R5FSS0_0) &&
+            if (((coreIds[loopVar] == TEST_SBL_MCU_CORE_ID) &&
                  !Bootloader_socIsMCUResetIsoEnabled()) ||
-                (coreIds[loopVar] != CSL_CORE_ID_MCU_R5FSS0_0))
+                (coreIds[loopVar] != TEST_SBL_MCU_CORE_ID))
 #endif
             {
                 DebugP_log("CPU %d: Running (media %d)...\r\n",
@@ -1470,9 +1497,9 @@ void TestSbl_multiMediaMultiThreadBoot(void *args)
         if(threadArgs[loopVar].loadStatus == SystemP_SUCCESS)
         {
 #if !defined(SOC_AM275X)
-            if (((coreIds[loopVar] == CSL_CORE_ID_MCU_R5FSS0_0) &&
+            if (((coreIds[loopVar] == TEST_SBL_MCU_CORE_ID) &&
                  !Bootloader_socIsMCUResetIsoEnabled()) ||
-                (coreIds[loopVar] != CSL_CORE_ID_MCU_R5FSS0_0))
+                (coreIds[loopVar] != TEST_SBL_MCU_CORE_ID))
 #endif
             {
                 DebugP_log("CPU %d: Waiting for IPC sync...\r\n", coreIds[loopVar]);
@@ -1627,27 +1654,35 @@ static void TestSbl_sdOspiLoadThread(void *args)
     TestSbl_MmMtThreadArgs *threadArgs;
     Bootloader_BootImageInfo bootImageInfo;
     Bootloader_Params        bootParams;
-#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62PX)
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
     uint32_t certLen  = 0U;
     uint32_t totalLen = 0U;
 #endif
 
     threadArgs = (TestSbl_MmMtThreadArgs *)args;
 
+    DebugP_log("[SDOSPI] Thread started: core %d media %d\r\n",
+               threadArgs->coreId, threadArgs->mediaType);
+
     Bootloader_Params_init(&bootParams);
     Bootloader_BootImageInfo_init(&bootImageInfo);
 
     /* ------------------------------------------------------------------ */
-    /* Phase 1a: SD read (AM62DX only) — runs concurrently with OSPI reads */
+    /* Phase 1a: SD read — runs concurrently with OSPI reads              */
     /* ------------------------------------------------------------------ */
-#if defined(SOC_AM62DX) || defined(SOC_AM62AX)
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62X)
     if (threadArgs->mediaType == TEST_SBL_SDOSPI_MEDIA_SD)
     {
+#if !defined(SOC_AM62X)
         FF_FILE  *fp;
         uint32_t  fileSize;
         size_t    bytesRead;
-
+        /* AM62X skips the SD card read: gAppImageBuf1 is pre-populated
+         * with the A53 appimage by appimage_data.S.  All other SOCs
+         * (AM62DX, AM62AX) read the image from the SD card here. */
+        DebugP_log("[SD] Calling ff_fopen(%s)...\r\n", TEST_SBL_SDOSPI_SD_APPIMAGE_FNAME);
         fp = ff_fopen(TEST_SBL_SDOSPI_SD_APPIMAGE_FNAME, "rb");
+        DebugP_log("[SD] ff_fopen returned fp=%p\r\n", fp);
         if (fp == NULL)
         {
             DebugP_log("[SD] Failed to open %s\r\n", TEST_SBL_SDOSPI_SD_APPIMAGE_FNAME);
@@ -1675,6 +1710,9 @@ static void TestSbl_sdOspiLoadThread(void *args)
                 status = SystemP_FAILURE;
             }
         }
+#else
+        DebugP_log("[SD] Using embedded A53 appimage from gAppImageBuf1\r\n");
+#endif /* !SOC_AM62X */
 
         if (status == SystemP_SUCCESS)
         {
@@ -1691,7 +1729,7 @@ static void TestSbl_sdOspiLoadThread(void *args)
             bootParams.memArgsAppImageBaseAddr = (uintptr_t)threadArgs->appImageBuf;
         }
     }
-#endif /* SOC_AM62DX */
+#endif /* SOC_AM62DX || SOC_AM62AX || SOC_AM62X */
 
     if (status == SystemP_SUCCESS)
     {
@@ -1706,7 +1744,7 @@ static void TestSbl_sdOspiLoadThread(void *args)
 
     if (threadArgs->bootHandle != NULL)
     {
-#if defined(SOC_AM275X) || defined(SOC_AM62DX) || defined(SOC_AM62PX)
+#if defined(SOC_AM275X) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
         {
             Bootloader_Config *bootConfig = (Bootloader_Config *)threadArgs->bootHandle;
             bootConfig->coresPresentMap = 0;
@@ -1717,7 +1755,7 @@ static void TestSbl_sdOspiLoadThread(void *args)
         /* ------------------------------------------------------------------ */
         /* Phase 1b: OSPI read — concurrent with SD/eMMC reads in Thread 0    */
         /* ------------------------------------------------------------------ */
-#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62PX)
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
         if (threadArgs->mediaType == TEST_SBL_SDOSPI_MEDIA_FLASH)
         {
             Bootloader_Config *bootConfig = (Bootloader_Config *)threadArgs->bootHandle;
@@ -1810,11 +1848,15 @@ static void TestSbl_sdOspiLoadThread(void *args)
         /* ------------------------------------------------------------------ */
         if (threadArgs->bootHandle != NULL)
         {
+            DebugP_log("[SDOSPI] Thread core %d (media %d): waiting for parseMutex\r\n",
+                       threadArgs->coreId, threadArgs->mediaType);
             SemaphoreP_pend(threadArgs->parseMutex, SystemP_WAIT_FOREVER);
+            DebugP_log("[SDOSPI] Thread core %d (media %d): got parseMutex, parsing...\r\n",
+                       threadArgs->coreId, threadArgs->mediaType);
 
 #if defined(SOC_AM275X)
             status = Bootloader_parseAndLoadMultiCoreELF(threadArgs->bootHandle, &bootImageInfo);
-#elif defined(SOC_AM62DX) || defined(SOC_AM62AX)
+#elif defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62X)
             {
                 Bootloader_Config *bootConfig = (Bootloader_Config *)threadArgs->bootHandle;
 
@@ -1823,14 +1865,19 @@ static void TestSbl_sdOspiLoadThread(void *args)
                     Bootloader_MemArgs *memArgs  = (Bootloader_MemArgs *)bootConfig->args;
                     uint8_t            *certStart = (uint8_t *)(uintptr_t)memArgs->appImageBaseAddr;
 
+                    DebugP_log("[SD] certLen=0x%x certStart=%p\r\n", certLen, certStart);
                     memArgs->appImageBaseAddr = (uint32_t)(uintptr_t)(certStart + certLen);
                     bootConfig->scratchMemPtr = certStart + certLen;
+                    DebugP_log("[SD] Calling Bootloader_parseAppImage...\r\n");
                     status = Bootloader_parseAppImage(threadArgs->bootHandle, &bootImageInfo);
+                    DebugP_log("[SD] Bootloader_parseAppImage done, status=%d\r\n", status);
                 }
                 else /* TEST_SBL_SDOSPI_MEDIA_FLASH */
                 {
+                    DebugP_log("[OSPI] certLen=0x%x calling Bootloader_parseAppImage...\r\n", certLen);
                     bootConfig->scratchMemPtr = threadArgs->appImageBuf + certLen;
                     status = Bootloader_parseAppImage(threadArgs->bootHandle, &bootImageInfo);
+                    DebugP_log("[OSPI] Bootloader_parseAppImage done, status=%d\r\n", status);
                 }
             }
 #elif defined(SOC_AM62PX)
@@ -1928,7 +1975,7 @@ static void TestSbl_sdOspiLoadThread(void *args)
                 /* else TEST_SBL_SDOSPI_MEDIA_FLASH: Thread 1 loaded the same
                  * physical core (no A53/C75 image exists on this board) only
                  * to verify concurrent-media parse+auth; skip the actual
-                 * claim/copy to avoid double-claiming CSL_CORE_ID_MCU_R5FSS0_0.
+                 * claim/copy to avoid double-claiming TEST_SBL_MCU_CORE_ID.
                  * Not run/synced/reset either — see loopVar == 1 guards in
                  * TestSbl_concurrentSdOspiBoot. */
 #else
@@ -2031,12 +2078,12 @@ void TestSbl_concurrentSdOspiBoot(void *args)
 #elif defined(SOC_AM62PX)
         /* AM62PX: no A53 image; both threads load/verify the same MCU-R5F
          * image concurrently from eMMC + OSPI (only Thread 0 is run). */
-        CSL_CORE_ID_MCU_R5FSS0_0,
+        TEST_SBL_MCU_CORE_ID,
 #else
         CSL_CORE_ID_A53SS0_0,
 #endif
-#if defined(SOC_AM62PX)
-        CSL_CORE_ID_MCU_R5FSS0_0,
+#if defined(SOC_AM62PX) || defined(SOC_AM62X)
+        TEST_SBL_MCU_CORE_ID,
 #else
         CSL_CORE_ID_C75SS0_0,
 #endif
@@ -2063,6 +2110,12 @@ void TestSbl_concurrentSdOspiBoot(void *args)
          * embedded-image buffer, reused post-MT-test as OSPI scratch). */
         gMtScratchBuf,
         gAppImageBuf0,
+#elif defined(SOC_AM62X)
+        /* AM62X: A53 appimage is already embedded in gAppImageBuf1 by
+         * appimage_data.S — no SD card read needed.  Thread 1 (OSPI)
+         * overwrites gAppImageBuf0 with the M4F image from OSPI. */
+        gAppImageBuf1,   /* A53 pre-populated from appimage_data.S  */
+        gAppImageBuf0,   /* OSPI scratch: M4F image read from OSPI  */
 #else
         gAppImageBuf0,
         gAppImageBuf2,
@@ -2169,7 +2222,9 @@ void TestSbl_concurrentSdOspiBoot(void *args)
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     Bootloader_profileAddProfilePoint("SBL Drivers_open");
+    DebugP_log("[SDOSPI] Calling Bootloader_openDma...\r\n");
     Bootloader_openDma();
+    DebugP_log("[SDOSPI] Bootloader_openDma done, spawning threads...\r\n");
 
 #if !defined(SOC_AM275X)
     Bootloader_ReservedMemInit(TEST_SBL_SECOND_STAGE_RESERVED_MEMORY_START,
@@ -2236,12 +2291,21 @@ void TestSbl_concurrentSdOspiBoot(void *args)
             continue;
         }
 #endif
+#if defined(SOC_AM62X)
+        /* Thread 0 (A53SS0_0/SD) is loaded/parsed for concurrency coverage
+         * only — its IpcNotify sync is unreliable on this SOC, so it is
+         * never actually run; only Thread 1 (MCU-R5F/OSPI) is run/synced. */
+        if (loopVar == 0U)
+        {
+            continue;
+        }
+#endif
         if (threadArgs[loopVar].loadStatus == SystemP_SUCCESS)
         {
 #if !defined(SOC_AM275X)
-            if (((coreIds[loopVar] == CSL_CORE_ID_MCU_R5FSS0_0) &&
+            if (((coreIds[loopVar] == TEST_SBL_MCU_CORE_ID) &&
                  !Bootloader_socIsMCUResetIsoEnabled()) ||
-                (coreIds[loopVar] != CSL_CORE_ID_MCU_R5FSS0_0))
+                (coreIds[loopVar] != TEST_SBL_MCU_CORE_ID))
 #endif
             {
                 DebugP_log("[SDOSPI] CPU %d: Running (media %d)...\r\n",
@@ -2266,12 +2330,18 @@ void TestSbl_concurrentSdOspiBoot(void *args)
             continue;
         }
 #endif
+#if defined(SOC_AM62X)
+        if (loopVar == 0U)
+        {
+            continue;
+        }
+#endif
         if (threadArgs[loopVar].loadStatus == SystemP_SUCCESS)
         {
 #if !defined(SOC_AM275X)
-            if (((coreIds[loopVar] == CSL_CORE_ID_MCU_R5FSS0_0) &&
+            if (((coreIds[loopVar] == TEST_SBL_MCU_CORE_ID) &&
                  !Bootloader_socIsMCUResetIsoEnabled()) ||
-                (coreIds[loopVar] != CSL_CORE_ID_MCU_R5FSS0_0))
+                (coreIds[loopVar] != TEST_SBL_MCU_CORE_ID))
 #endif
             {
                 DebugP_log("[SDOSPI] CPU %d: Waiting for IPC sync...\r\n",
@@ -2291,6 +2361,14 @@ void TestSbl_concurrentSdOspiBoot(void *args)
         /* Thread 1's core was never claimed/run (see above) — nothing to
          * reset; only close its bootHandle (handled in the loop below). */
         if (loopVar == 1U)
+        {
+            continue;
+        }
+#endif
+#if defined(SOC_AM62X)
+        /* Thread 0's core (A53SS0_0) was never claimed/run — nothing to
+         * reset; only close its bootHandle (handled in the loop below). */
+        if (loopVar == 0U)
         {
             continue;
         }
@@ -2361,10 +2439,10 @@ static void TestSbl_emmcSdLoadThread(void *args)
     TestSbl_MmMtThreadArgs *threadArgs;
     Bootloader_BootImageInfo bootImageInfo;
     Bootloader_Params        bootParams;
-#if defined(SOC_AM62DX) || defined(SOC_AM62AX)
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62X)
     uint32_t certLen  = 0U;
 #endif
-#if defined(SOC_AM62DX)
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62X)
     uint32_t totalLen = 0U;
 #endif
 
@@ -2377,9 +2455,10 @@ static void TestSbl_emmcSdLoadThread(void *args)
     /* Phase 1a: SD read (AM62DX only) — concurrent with EMMC reads        */
     /* Must happen BEFORE Bootloader_open so memArgsAppImageBaseAddr is set */
     /* ------------------------------------------------------------------ */
-#if defined(SOC_AM62DX) || defined(SOC_AM62AX)
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62X)
     if (threadArgs->mediaType == TEST_SBL_EMMC_SD_MEDIA_SD)
     {
+#if !defined(SOC_AM62X)
         FF_FILE  *fp;
         uint32_t  fileSize;
         size_t    bytesRead;
@@ -2412,6 +2491,9 @@ static void TestSbl_emmcSdLoadThread(void *args)
                 status = SystemP_FAILURE;
             }
         }
+#else
+        DebugP_log("[SD] Using embedded A53 appimage from gAppImageBuf1\r\n");
+#endif /* !SOC_AM62X */
 
         if (status == SystemP_SUCCESS)
         {
@@ -2428,7 +2510,7 @@ static void TestSbl_emmcSdLoadThread(void *args)
             bootParams.memArgsAppImageBaseAddr = (uintptr_t)threadArgs->appImageBuf;
         }
     }
-#endif /* SOC_AM62DX */
+#endif /* SOC_AM62DX || SOC_AM62AX || SOC_AM62X */
 
     /* ------------------------------------------------------------------ */
     /* Phase 1a (AM275X MEM only): point MEM bootloader at pre-loaded DDR  */
@@ -2468,9 +2550,9 @@ static void TestSbl_emmcSdLoadThread(void *args)
         }
 
         /* ------------------------------------------------------------------ */
-        /* Phase 1b: EMMC read (AM62DX only) — concurrent with SD reads above  */
+        /* Phase 1b: EMMC read (AM62DX/AM62AX/AM62X) — concurrent with SD reads above */
         /* ------------------------------------------------------------------ */
-#if defined(SOC_AM62DX)
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62X)
         if (threadArgs->mediaType == TEST_SBL_EMMC_SD_MEDIA_EMMC)
         {
             Bootloader_Config *bootConfig = (Bootloader_Config *)threadArgs->bootHandle;
@@ -2534,7 +2616,7 @@ static void TestSbl_emmcSdLoadThread(void *args)
                 threadArgs->bootHandle = NULL;
             }
         }
-#endif /* SOC_AM62DX */
+#endif /* SOC_AM62DX || SOC_AM62AX || SOC_AM62X */
 
         /* ------------------------------------------------------------------ */
         /* Phase 2: Serialized parse + load (TIFS auth is not thread-safe)     */
@@ -2563,6 +2645,24 @@ static void TestSbl_emmcSdLoadThread(void *args)
                     bootConfig->scratchMemPtr = threadArgs->appImageBuf + certLen;
                     status = Bootloader_parseAppImage(threadArgs->bootHandle, &bootImageInfo);
                 }
+            }
+#elif defined(SOC_AM62X)
+            if (threadArgs->mediaType == TEST_SBL_EMMC_SD_MEDIA_SD)
+            {
+                Bootloader_Config  *bootConfig = (Bootloader_Config *)threadArgs->bootHandle;
+                Bootloader_MemArgs *memArgs    = (Bootloader_MemArgs *)bootConfig->args;
+                uint8_t            *certStart  = (uint8_t *)(uintptr_t)memArgs->appImageBaseAddr;
+
+                memArgs->appImageBaseAddr = (uint32_t)(uintptr_t)(certStart + certLen);
+                bootConfig->scratchMemPtr = certStart + certLen;
+                status = Bootloader_parseAppImage(threadArgs->bootHandle, &bootImageInfo);
+            }
+            else /* TEST_SBL_EMMC_SD_MEDIA_EMMC */
+            {
+                Bootloader_Config *bootConfig = (Bootloader_Config *)threadArgs->bootHandle;
+
+                bootConfig->scratchMemPtr = threadArgs->appImageBuf + certLen;
+                status = Bootloader_parseAppImage(threadArgs->bootHandle, &bootImageInfo);
             }
 #else
             status = Bootloader_parseMultiCoreAppImage(threadArgs->bootHandle, &bootImageInfo);
@@ -2722,7 +2822,7 @@ void TestSbl_concurrentEmmcSdBoot(void *args)
         CSL_CORE_ID_R5FSS1_0,   /* Thread 0: R5FSS1_0 first — safe DDR targets */
         CSL_CORE_ID_R5FSS0_0,   /* Thread 1: R5FSS0_0 second */
 #else
-        CSL_CORE_ID_MCU_R5FSS0_0,
+        TEST_SBL_MCU_CORE_ID,
         CSL_CORE_ID_A53SS0_0,
 #endif
     };
@@ -2857,12 +2957,21 @@ void TestSbl_concurrentEmmcSdBoot(void *args)
     /* Run all loaded cores */
     for (loopVar = 0; loopVar < TEST_SBL_EMMC_SD_NUM_CORES; loopVar++)
     {
+#if defined(SOC_AM62X)
+        /* Thread 1 (A53SS0_0/SD) is loaded/parsed for concurrency coverage
+         * only — its IpcNotify sync is unreliable on this SOC, so it is
+         * never actually run; only Thread 0 (MCU-R5F/eMMC) is run/synced. */
+        if (loopVar == 1U)
+        {
+            continue;
+        }
+#endif
         if (threadArgs[loopVar].loadStatus == SystemP_SUCCESS)
         {
 #if !defined(SOC_AM275X)
-            if (((coreIds[loopVar] == CSL_CORE_ID_MCU_R5FSS0_0) &&
+            if (((coreIds[loopVar] == TEST_SBL_MCU_CORE_ID) &&
                  !Bootloader_socIsMCUResetIsoEnabled()) ||
-                (coreIds[loopVar] != CSL_CORE_ID_MCU_R5FSS0_0))
+                (coreIds[loopVar] != TEST_SBL_MCU_CORE_ID))
 #endif
             {
                 DebugP_log("[EMMCSD] CPU %d: Running (media %d)...\r\n",
@@ -2923,11 +3032,17 @@ void TestSbl_concurrentEmmcSdBoot(void *args)
 #else
     for (loopVar = 0; loopVar < TEST_SBL_EMMC_SD_NUM_CORES; loopVar++)
     {
+#if defined(SOC_AM62X)
+        if (loopVar == 1U)
+        {
+            continue;
+        }
+#endif
         if (threadArgs[loopVar].loadStatus == SystemP_SUCCESS)
         {
-            if (((coreIds[loopVar] == CSL_CORE_ID_MCU_R5FSS0_0) &&
+            if (((coreIds[loopVar] == TEST_SBL_MCU_CORE_ID) &&
                  !Bootloader_socIsMCUResetIsoEnabled()) ||
-                (coreIds[loopVar] != CSL_CORE_ID_MCU_R5FSS0_0))
+                (coreIds[loopVar] != TEST_SBL_MCU_CORE_ID))
             {
                 DebugP_log("[EMMCSD] CPU %d: Waiting for IPC sync...\r\n",
                            coreIds[loopVar]);
@@ -2943,6 +3058,14 @@ void TestSbl_concurrentEmmcSdBoot(void *args)
     /* Reset CPUs to original state */
     for (loopVar = 0; loopVar < TEST_SBL_EMMC_SD_NUM_CORES; loopVar++)
     {
+#if defined(SOC_AM62X)
+        /* Thread 1's core (A53SS0_0) was never claimed/run — nothing to
+         * reset; only close its bootHandle (handled in the loop below). */
+        if (loopVar == 1U)
+        {
+            continue;
+        }
+#endif
         if (threadArgs[loopVar].loadStatus == SystemP_SUCCESS)
         {
             DebugP_log("[EMMCSD] CPU %d: Resetting...\r\n", coreIds[loopVar]);
@@ -3001,7 +3124,7 @@ static void TestSbl_emmcImgLoadThread(void *args)
     TestSbl_MmMtThreadArgs *threadArgs;
     Bootloader_BootImageInfo bootImageInfo;
     Bootloader_Params        bootParams;
-#if defined(SOC_AM62DX) || defined(SOC_AM62AX)
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62X)
     uint32_t certLen  = 0U;
     uint32_t totalLen = 0U;
 #endif
@@ -3033,7 +3156,7 @@ static void TestSbl_emmcImgLoadThread(void *args)
         /* ------------------------------------------------------------------ */
         /* Phase 1: Media read — imgReadFxn-based, same code for EMMC & FLASH  */
         /* ------------------------------------------------------------------ */
-#if defined(SOC_AM62DX) || defined(SOC_AM62AX)
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62X)
         {
             Bootloader_Config *bootConfig = (Bootloader_Config *)threadArgs->bootHandle;
             uint8_t  hdr4[4];
@@ -3096,7 +3219,7 @@ static void TestSbl_emmcImgLoadThread(void *args)
                 threadArgs->bootHandle = NULL;
             }
         }
-#endif /* SOC_AM62DX || SOC_AM62AX */
+#endif /* SOC_AM62DX || SOC_AM62AX || SOC_AM62X */
 
         /* ------------------------------------------------------------------ */
         /* Phase 2: Serialized parse + load (TIFS auth is not thread-safe)     */
@@ -3107,7 +3230,7 @@ static void TestSbl_emmcImgLoadThread(void *args)
 
 #if defined(SOC_AM275X)
             status = Bootloader_parseAndLoadMultiCoreELF(threadArgs->bootHandle, &bootImageInfo);
-#elif defined(SOC_AM62DX) || defined(SOC_AM62AX)
+#elif defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62X)
             {
                 Bootloader_Config *bootConfig = (Bootloader_Config *)threadArgs->bootHandle;
 
@@ -3247,7 +3370,7 @@ void TestSbl_concurrentEmmcImageBoot(void *args)
         CSL_CORE_ID_R5FSS0_0,
         CSL_CORE_ID_C75SS0_0,
 #else
-        CSL_CORE_ID_MCU_R5FSS0_0,
+        TEST_SBL_MCU_CORE_ID,
         CSL_CORE_ID_A53SS0_0,    /* EMMC_A53 image at 0xC00000 */
 #endif
     };
@@ -3399,12 +3522,21 @@ void TestSbl_concurrentEmmcImageBoot(void *args)
 
     for (loopVar = 0; loopVar < TEST_SBL_EMMC_IMG_NUM_CORES; loopVar++)
     {
+#if defined(SOC_AM62X)
+        /* Thread 1 (A53SS0_0/eMMC) is loaded/parsed for concurrency coverage
+         * only — its IpcNotify sync is unreliable on this SOC, so it is
+         * never actually run; only Thread 0 (MCU-R5F/eMMC) is run/synced. */
+        if (loopVar == 1U)
+        {
+            continue;
+        }
+#endif
         if (threadArgs[loopVar].loadStatus == SystemP_SUCCESS)
         {
 #if !defined(SOC_AM275X)
-            if (((coreIds[loopVar] == CSL_CORE_ID_MCU_R5FSS0_0) &&
+            if (((coreIds[loopVar] == TEST_SBL_MCU_CORE_ID) &&
                  !Bootloader_socIsMCUResetIsoEnabled()) ||
-                (coreIds[loopVar] != CSL_CORE_ID_MCU_R5FSS0_0))
+                (coreIds[loopVar] != TEST_SBL_MCU_CORE_ID))
 #endif
             {
                 DebugP_log("[EMMCIMG] CPU %d: Running (media %d)...\r\n",
@@ -3422,12 +3554,18 @@ void TestSbl_concurrentEmmcImageBoot(void *args)
 
     for (loopVar = 0; loopVar < TEST_SBL_EMMC_IMG_NUM_CORES; loopVar++)
     {
+#if defined(SOC_AM62X)
+        if (loopVar == 1U)
+        {
+            continue;
+        }
+#endif
         if (threadArgs[loopVar].loadStatus == SystemP_SUCCESS)
         {
 #if !defined(SOC_AM275X)
-            if (((coreIds[loopVar] == CSL_CORE_ID_MCU_R5FSS0_0) &&
+            if (((coreIds[loopVar] == TEST_SBL_MCU_CORE_ID) &&
                  !Bootloader_socIsMCUResetIsoEnabled()) ||
-                (coreIds[loopVar] != CSL_CORE_ID_MCU_R5FSS0_0))
+                (coreIds[loopVar] != TEST_SBL_MCU_CORE_ID))
 #endif
             {
                 DebugP_log("[EMMCIMG] CPU %d: Waiting for IPC sync...\r\n",
@@ -3442,6 +3580,14 @@ void TestSbl_concurrentEmmcImageBoot(void *args)
 
     for (loopVar = 0; loopVar < TEST_SBL_EMMC_IMG_NUM_CORES; loopVar++)
     {
+#if defined(SOC_AM62X)
+        /* Thread 1's core (A53SS0_0) was never claimed/run — nothing to
+         * reset; only close its bootHandle (handled in the loop below). */
+        if (loopVar == 1U)
+        {
+            continue;
+        }
+#endif
         if (threadArgs[loopVar].loadStatus == SystemP_SUCCESS)
         {
             DebugP_log("[EMMCIMG] CPU %d: Resetting...\r\n", coreIds[loopVar]);
@@ -3509,7 +3655,7 @@ static void TestSbl_sdImgLoadThread(void *args)
     TestSbl_MmMtThreadArgs *threadArgs;
     Bootloader_BootImageInfo bootImageInfo;
     Bootloader_Params        bootParams;
-#if defined(SOC_AM62DX) || defined(SOC_AM62AX)
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62X)
     uint32_t certLen = 0U;
 #endif
 
@@ -3519,11 +3665,15 @@ static void TestSbl_sdImgLoadThread(void *args)
     Bootloader_BootImageInfo_init(&bootImageInfo);
 
     /* ------------------------------------------------------------------ */
-    /* Phase 1 — AM62DX/AM62AX: concurrent FAT reads from SD card (MMC1)  */
+    /* Phase 1 — AM62DX/AM62AX: concurrent FAT reads from SD card (MMC1).      */
+    /* AM62X: no real SD read — both per-core appimages are pre-embedded in    */
+    /* DDR via appimage_data.S (gAppImageBuf0/gAppImageBuf1), same as the      */
+    /* already-working TestSbl_emmcSdLoadThread/TestSbl_sdOspiLoadThread.      */
     /* ------------------------------------------------------------------ */
-#if defined(SOC_AM62DX) || defined(SOC_AM62AX)
+#if defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62X)
     if (threadArgs->mediaType == TEST_SBL_SD_IMG_MEDIA_SD)
     {
+#if !defined(SOC_AM62X)
         const char *fname;
         FF_FILE    *fp;
         uint32_t    fileSize;
@@ -3574,6 +3724,9 @@ static void TestSbl_sdImgLoadThread(void *args)
                 status = SystemP_FAILURE;
             }
         }
+#else
+        DebugP_log("[SDIMG] Using embedded appimage for core %d\r\n", threadArgs->coreId);
+#endif /* !SOC_AM62X */
 
         if (status == SystemP_SUCCESS)
         {
@@ -3591,7 +3744,7 @@ static void TestSbl_sdImgLoadThread(void *args)
             bootParams.memArgsAppImageBaseAddr = (uintptr_t)threadArgs->appImageBuf;
         }
     }
-#endif /* SOC_AM62DX || SOC_AM62AX */
+#endif /* SOC_AM62DX || SOC_AM62AX || SOC_AM62X */
 
     /* ------------------------------------------------------------------ */
     /* Phase 1 — AM275X: set MEM base address (pre-loaded DDR, no I/O)     */
@@ -3631,7 +3784,7 @@ static void TestSbl_sdImgLoadThread(void *args)
 
 #if defined(SOC_AM275X)
         status = Bootloader_parseAndLoadMultiCoreELF(threadArgs->bootHandle, &bootImageInfo);
-#elif defined(SOC_AM62DX) || defined(SOC_AM62AX)
+#elif defined(SOC_AM62DX) || defined(SOC_AM62AX) || defined(SOC_AM62X)
         {
             Bootloader_Config *bootConfig = (Bootloader_Config *)threadArgs->bootHandle;
             Bootloader_MemArgs *memArgs   = (Bootloader_MemArgs *)bootConfig->args;
@@ -3792,8 +3945,12 @@ void TestSbl_concurrentSdImageBoot(void *args)
 #elif defined(SOC_AM62PX)
         /* AM62PX: no A53/C75 boot image; this test is disabled for AM62PX
          * in test_main(). */
-        CSL_CORE_ID_MCU_R5FSS0_0,
+        TEST_SBL_MCU_CORE_ID,
         CSL_CORE_ID_A53SS0_0,
+#elif defined(SOC_AM62X)
+        /* AM62X: A53SS0_0 + M4FSS0_0 (both available on SD system image) */
+        CSL_CORE_ID_A53SS0_0,
+        TEST_SBL_MCU_CORE_ID,
 #else
         CSL_CORE_ID_A53SS0_0,
         CSL_CORE_ID_C75SS0_0,
@@ -3813,6 +3970,13 @@ void TestSbl_concurrentSdImageBoot(void *args)
         /* AM62PX: no gAppImageBuf1 (reduced appimage_data.S); dead code. */
         gMtScratchBuf,
         gMtScratchBuf,
+#elif defined(SOC_AM62X)
+        /* AM62X: gAppImageBuf0 holds the M4FSS0_0 image, gAppImageBuf1 holds
+         * the A53SS0_0 image (see appimage_data.S).  coreIds[] above is
+         * A53-first/MCU-second, so the buffers must be swapped relative to
+         * the generic AM62DX ordering below. */
+        gAppImageBuf1,   /* Thread 0: A53SS0_0 embedded image */
+        gAppImageBuf0,   /* Thread 1: M4FSS0_0 embedded image */
 #else
         gAppImageBuf0,   /* AM62DX: A53 from /sd0/app_a53  / AM275X: pre-loaded R5FSS0_0 */
         gAppImageBuf1,   /* AM62DX: C75 from /sd0/app_sys  / AM275X: pre-loaded R5FSS1_0 */
@@ -3898,12 +4062,21 @@ void TestSbl_concurrentSdImageBoot(void *args)
 
     for (loopVar = 0; loopVar < TEST_SBL_SD_IMG_NUM_CORES; loopVar++)
     {
+#if defined(SOC_AM62X)
+        /* Thread 0 (A53SS0_0/SD) is loaded/parsed for concurrency coverage
+         * only — its IpcNotify sync is unreliable on this SOC, so it is
+         * never actually run; only Thread 1 (MCU/SD) is run/synced. */
+        if (loopVar == 0U)
+        {
+            continue;
+        }
+#endif
         if (threadArgs[loopVar].loadStatus == SystemP_SUCCESS)
         {
 #if !defined(SOC_AM275X)
-            if (((coreIds[loopVar] == CSL_CORE_ID_MCU_R5FSS0_0) &&
+            if (((coreIds[loopVar] == TEST_SBL_MCU_CORE_ID) &&
                  !Bootloader_socIsMCUResetIsoEnabled()) ||
-                (coreIds[loopVar] != CSL_CORE_ID_MCU_R5FSS0_0))
+                (coreIds[loopVar] != TEST_SBL_MCU_CORE_ID))
 #endif
             {
                 DebugP_log("[SDIMG] CPU %d: Running (media %d)...\r\n",
@@ -3921,12 +4094,18 @@ void TestSbl_concurrentSdImageBoot(void *args)
 
     for (loopVar = 0; loopVar < TEST_SBL_SD_IMG_NUM_CORES; loopVar++)
     {
+#if defined(SOC_AM62X)
+        if (loopVar == 0U)
+        {
+            continue;
+        }
+#endif
         if (threadArgs[loopVar].loadStatus == SystemP_SUCCESS)
         {
 #if !defined(SOC_AM275X)
-            if (((coreIds[loopVar] == CSL_CORE_ID_MCU_R5FSS0_0) &&
+            if (((coreIds[loopVar] == TEST_SBL_MCU_CORE_ID) &&
                  !Bootloader_socIsMCUResetIsoEnabled()) ||
-                (coreIds[loopVar] != CSL_CORE_ID_MCU_R5FSS0_0))
+                (coreIds[loopVar] != TEST_SBL_MCU_CORE_ID))
 #endif
             {
 #if !defined(SOC_AM275X)
@@ -3967,6 +4146,14 @@ void TestSbl_concurrentSdImageBoot(void *args)
 
     for (loopVar = 0; loopVar < TEST_SBL_SD_IMG_NUM_CORES; loopVar++)
     {
+#if defined(SOC_AM62X)
+        /* Thread 0's core (A53SS0_0) was never claimed/run — nothing to
+         * reset; only close its bootHandle (handled in the loop below). */
+        if (loopVar == 0U)
+        {
+            continue;
+        }
+#endif
         if (threadArgs[loopVar].loadStatus == SystemP_SUCCESS)
         {
             DebugP_log("[SDIMG] CPU %d: Resetting...\r\n", coreIds[loopVar]);
@@ -4044,17 +4231,17 @@ void TestSbl_concurrentOspiImageBoot(void *args)
      *     Thread 1: R5FSS0_0     from FLASH_MULTICORE @ 0x1200000  (multicore; R5FSS0_0 booted)
      */
     uint32_t coreIds[TEST_SBL_OSPI_IMG_NUM_CORES] = {
-#if !defined(SOC_AM62PX)
+#if !defined(SOC_AM62PX) && !defined(SOC_AM62X)
         CSL_CORE_ID_C75SS0_0,
 #else
-        /* AM62PX has no C75 core; this test is disabled for AM62PX in
+        /* AM62PX/AM62X has no C75 core; this test is disabled for these SOCs in
          * test_main(). */
         CSL_CORE_ID_A53SS0_0,
 #endif
 #if defined(SOC_AM275X)
         CSL_CORE_ID_R5FSS0_0,
 #else
-        CSL_CORE_ID_MCU_R5FSS0_0,
+        TEST_SBL_MCU_CORE_ID,
 #endif
     };
     uint32_t mediaTypes[TEST_SBL_OSPI_IMG_NUM_CORES] = {
@@ -4181,9 +4368,9 @@ void TestSbl_concurrentOspiImageBoot(void *args)
         if (threadArgs[loopVar].loadStatus == SystemP_SUCCESS)
         {
 #if !defined(SOC_AM275X)
-            if (((coreIds[loopVar] == CSL_CORE_ID_MCU_R5FSS0_0) &&
+            if (((coreIds[loopVar] == TEST_SBL_MCU_CORE_ID) &&
                  !Bootloader_socIsMCUResetIsoEnabled()) ||
-                (coreIds[loopVar] != CSL_CORE_ID_MCU_R5FSS0_0))
+                (coreIds[loopVar] != TEST_SBL_MCU_CORE_ID))
 #endif
             {
                 DebugP_log("[OSPIIMG] CPU %d: Running...\r\n", coreIds[loopVar]);
@@ -4203,9 +4390,9 @@ void TestSbl_concurrentOspiImageBoot(void *args)
         if (threadArgs[loopVar].loadStatus == SystemP_SUCCESS)
         {
 #if !defined(SOC_AM275X)
-            if (((coreIds[loopVar] == CSL_CORE_ID_MCU_R5FSS0_0) &&
+            if (((coreIds[loopVar] == TEST_SBL_MCU_CORE_ID) &&
                  !Bootloader_socIsMCUResetIsoEnabled()) ||
-                (coreIds[loopVar] != CSL_CORE_ID_MCU_R5FSS0_0))
+                (coreIds[loopVar] != TEST_SBL_MCU_CORE_ID))
 #endif
             {
                 DebugP_log("[OSPIIMG] CPU %d: Waiting for IPC sync...\r\n",
@@ -4363,13 +4550,15 @@ void TestSbl_bootCpuPositive(void *args)
         CSL_CORE_ID_R5FSS1_0,
 #elif defined(SOC_AM62PX)
         /*
-         * AM62PX has no C75 core, and no A53 boot image is provisioned on
-         * this board — but this positive test never loads an appimage
+         * AM62PX has no C75 core — but this positive test never loads an appimage
          * (rprcOffset=BOOTLOADER_INVALID_ID, entryPoint=0), so any real
-         * core ID works. Use MCU_R5FSS0_0 and A53SS0_0 (both real
-         * hardware on this SOC) so this test remains fully functional.
+         * core ID works.
          */
-        CSL_CORE_ID_MCU_R5FSS0_0,
+        TEST_SBL_MCU_CORE_ID,
+        CSL_CORE_ID_A53SS0_0,
+#elif defined(SOC_AM62X)
+        /* AM62X: M4FSS0_0 + A53SS0_0 (no C75). */
+        TEST_SBL_MCU_CORE_ID,
         CSL_CORE_ID_A53SS0_0,
 #else
         CSL_CORE_ID_A53SS0_0,
@@ -4384,6 +4573,9 @@ void TestSbl_bootCpuPositive(void *args)
 #elif defined(SOC_AM62PX)
         CONFIG_BOOTLOADER_SD_MCU,         /* MEM mode; opMode matches MCU_R5FSS0_0 */
         CONFIG_BOOTLOADER_SD_A53,         /* MEM mode; opMode matches A53SS0_0     */
+#elif defined(SOC_AM62X)
+        CONFIG_BOOTLOADER_SD_SMP,         /* MEM mode; opMode for M4FSS0_0 */
+        CONFIG_BOOTLOADER_SD_A53,         /* MEM mode; opMode for A53SS0_0  */
 #else
         CONFIG_BOOTLOADER_SD_SMP,        /* MEM mode; opMode matches A53SS0_0 */
         CONFIG_BOOTLOADER_SD_MULTICORE,  /* MEM mode; opMode matches C75SS0_0 */

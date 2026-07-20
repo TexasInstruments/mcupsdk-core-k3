@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024-2026 Texas Instruments Incorporated
+ *  Copyright (C) 2024 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -40,20 +40,26 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include <drivers/device_manager/sciserver/sciserver_init.h>
-#include <drivers/bootloader.h>
 
 #define TASK_PRI_MAIN_THREAD  (configMAX_PRIORITIES-1)
-#define TASK_SIZE             (16384U/sizeof(configSTACK_DEPTH_TYPE))
+#define TASK_PRI_BOOT_THREAD  (configMAX_PRIORITIES-1)
 
-#define SCISERVER_TASK_STACK_SIZE      (2U*1024U)
-#define SCISERVER_TASK_STACK_ALIGNMENT (32)
 
-StackType_t  gMainTaskStack[TASK_SIZE] __attribute__((aligned(32)));
-StaticTask_t gMainTaskObj;
-TaskHandle_t gMainTask;
+#define TASK_SIZE (16384U/sizeof(configSTACK_DEPTH_TYPE))
 
+/* Stack size allocated for the sciserver task */
+#define SCISERVER_TASK_STACK_SIZE                   (2U*1024U)
+
+/* Stack memory alignment requirement for the sciserver task */
+#define SCISERVER_TASK_STACK_ALIGNMENT              (32)
+
+StackType_t gMainTaskStack[TASK_SIZE] __attribute__((aligned(32)));
+
+/* Stack buffers for user high and low priority tasks */
 uint8_t __attribute__((aligned(SCISERVER_TASK_STACK_ALIGNMENT))) gUserHiTaskStack[SCISERVER_TASK_STACK_SIZE];
 uint8_t __attribute__((aligned(SCISERVER_TASK_STACK_ALIGNMENT))) gUserLoTaskStack[SCISERVER_TASK_STACK_SIZE];
+StaticTask_t gMainTaskObj;
+TaskHandle_t gMainTask;
 
 void test_main(void *args);
 
@@ -63,57 +69,73 @@ void main_thread(void *args)
 
     /* Open drivers */
     Drivers_open();
-
     /* Open flash and board drivers */
     status = Board_driversOpen();
-    DebugP_assert(status == SystemP_SUCCESS);
+    DebugP_assert(status==SystemP_SUCCESS);
 
+    /* Configure sciserver task parameters */
     Sciserver_TirtosCfgPrms_t sciserverCfg = {0};
-    sciserverCfg.hiTaskStack   = gUserHiTaskStack;
-    sciserverCfg.loTaskStack   = gUserLoTaskStack;
-    sciserverCfg.taskStackSize = SCISERVER_TASK_STACK_SIZE;
+    sciserverCfg.hiTaskStack    =   gUserHiTaskStack;
+    sciserverCfg.loTaskStack    =   gUserLoTaskStack;
+    sciserverCfg.taskStackSize  =   SCISERVER_TASK_STACK_SIZE;
 
     sciServer_init(&sciserverCfg);
 
+    /* Close board-level Flash, OSPI, and eMMC before tests.
+     * Tests manage these drivers themselves via TestSbl_openBoot*()
+     * helpers, and re-opening an already-open instance fails.
+     * SD card (CONFIG_MMCSD0, instance 1) and FatFS stay open
+     * for SD boot tests. */
+    Board_driversClose();
+    Drivers_ospiClose();
+    MMCSD_close(gMmcsdHandle[CONFIG_MMCSD_SBL]);
+    gMmcsdHandle[CONFIG_MMCSD_SBL] = NULL;
+
     test_main(NULL);
 
+    /* Close board and flash drivers */
     Board_driversClose();
+    /* Close drivers */
     Drivers_close();
 
     vTaskDelete(NULL);
 }
+
 
 int main()
 {
     int32_t status;
     Bootloader_profileReset();
 
-#if !defined(SOC_AM62AX) && !defined(SOC_AM62PX)
-    /* LPM-exit IO isolation clearing is not yet ported to AM62AX/AM62PX
-     * (Bootloader_socClrIOIsolationOnLPMExit does not exist for this SoC). */
-    status = Bootloader_socClrIOIsolationOnLPMExit();
-    DebugP_assertNoLog(status == SystemP_SUCCESS);
-#endif
-
     status = Bootloader_socOpenFirewalls();
+
     DebugP_assertNoLog(status == SystemP_SUCCESS);
 
     /* init SOC specific modules */
     System_init();
-    Board_init();
 
-    gMainTask = xTaskCreateStatic( main_thread,
-                                   "main_thread",
-                                   TASK_SIZE,
-                                   NULL,
-                                   TASK_PRI_MAIN_THREAD,
-                                   gMainTaskStack,
-                                   &gMainTaskObj );
+    Bootloader_profileAddProfilePoint("System_init");
+    Board_init();
+    Bootloader_profileAddProfilePoint("Board_init");
+
+    Bootloader_profileAddProfilePoint("FreeRtosTask Create");
+
+    gMainTask = xTaskCreateStatic( main_thread,   /* Pointer to the function that implements the task. */
+                                  "main_thread", /* Text name for the task.  This is to facilitate debugging only. */
+                                  TASK_SIZE,  /* Stack depth in units of StackType_t typically uint32_t on 32b CPUs */
+                                  NULL,            /* We are not using the task parameter. */
+                                  TASK_PRI_MAIN_THREAD,   /* task priority, 0 is lowest priority, configMAX_PRIORITIES-1 is highest */
+                                  gMainTaskStack,  /* pointer to stack base */
+                                  &gMainTaskObj ); /* pointer to statically allocated task object memory */
     configASSERT(gMainTask != NULL);
 
+    /* Start the scheduler to start the tasks executing. */
     vTaskStartScheduler();
 
-    /* Should never reach here */
+    /* The following line should never be reached because vTaskStartScheduler()
+    will only return if there was not enough FreeRTOS heap memory available to
+    create the Idle and (if configured) Timer tasks.  Heap management, and
+    techniques for trapping heap exhaustion, are described in the book text. */
     DebugP_assertNoLog(0);
 
     return 0;

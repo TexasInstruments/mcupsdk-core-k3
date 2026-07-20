@@ -89,6 +89,21 @@ const templates_freertos_r5f =
     },
 ];
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: UniFlash boot test",
+        testCaseIds: "SITSW-11450 SITSW-11451 SITSW-11452 SITSW-11453 SITSW-11454 SITSW-11455 SITSW-11456 SITSW-11457 SITSW-11458 SITSW-11459 SITSW-11460 SITSW-11461 SITSW-11462 SITSW-11463 SITSW-11464 SITSW-11465 SITSW-11466 SITSW-11467 SITSW-11468 SITSW-11469 SITSW-11470 SITSW-11471 SITSW-12651 SITSW-12652 SITSW-12653 SITSW-12654 SITSW-12655",
+        cfgPath: "test/drivers/boot/sbl_test_uniflash/{board}/default_sbl_uniflash_test_${DEVICE_TYPE}.cfg",
+        useBootloader: true,
+        bootMode: null,
+        expectTimeout: 60,
+        timeout: 660,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos"},
 ];
@@ -118,6 +133,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.libdirs = libdirs_freertos;
     build_property.libs = libs_freertos_dm_r5f;
     build_property.templates = templates_freertos_r5f;
+    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

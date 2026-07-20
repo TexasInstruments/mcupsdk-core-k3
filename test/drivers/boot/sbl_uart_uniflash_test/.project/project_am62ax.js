@@ -146,6 +146,19 @@ const templates_freertos_r5f =
     },
 ];
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "SBL",
+        testCaseName: "Bootloader: UART UniFlash server test",
+        testCaseIds: "SITSW-11472",
+        cfgPath: "test/drivers/boot/sbl_uart_uniflash_test/{board}/default_sbl_uart_uniflash_test_${DEVICE_TYPE}.cfg",
+        expectTimeout: 60,
+        timeout: 660,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos"},
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
@@ -189,6 +202,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs       = libdirs_nortos;
         build_property.libs          = libs_nortos_r5f;
         build_property.libsprebuild  = libs_prebuild_nortos_r5f;
+        build_property.templates     = [robot_template];
     }
 
     return build_property;

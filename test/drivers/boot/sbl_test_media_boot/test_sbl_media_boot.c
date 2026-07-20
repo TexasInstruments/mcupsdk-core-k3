@@ -74,7 +74,7 @@
 #if defined(SOC_AM62PX)
 /* Image file and core booted by the generic SD boot tests */
 #define TEST_SBL_SD_BOOT_APPIMAGE            TEST_SBL_SD_R5_APPIMAGE_FILENAME
-#define TEST_SBL_SD_BOOT_CORE_ID             (CSL_CORE_ID_MCU_R5FSS0_0)
+#define TEST_SBL_SD_BOOT_CORE_ID             (TEST_SBL_MCU_CORE_ID)
 /* TISCI device queried by TestSbl_powerOffAfterLoadSuccess */
 #define TEST_SBL_SD_BOOT_CORE_TISCI_DEV_ID   (TISCI_DEV_MCU_R5FSS0_CORE0)
 /* A core that exists but is never loaded by the SD image — used by the
@@ -82,11 +82,24 @@
 #define TEST_SBL_UNLOADED_CORE_ID            (CSL_CORE_ID_A53SS0_0)
 /* Core booted by TestSbl_singleCoreImageOspiBoot (image flashed at 0xA00000,
  * CONFIG_BOOTLOADER_FLASH_DSP) */
-#define TEST_SBL_OSPI_BOOT_CORE_ID           (CSL_CORE_ID_MCU_R5FSS0_0)
+#define TEST_SBL_OSPI_BOOT_CORE_ID           (TEST_SBL_MCU_CORE_ID)
 /* Third core of the multicore/parse tests (app_sys on am62px-sk contains
  * WKUP-R5F + MCU-R5F; WKUP R5F RPRC core id is 4) */
 #define TEST_SBL_MULTICORE_CORE2_ID          (CSL_CORE_ID_WKUP_R5FSS0_0)
 #define TEST_SBL_MULTICORE_CORE2_RPRC_ID     (4U)
+#elif defined(SOC_AM62X)
+/* Image file and core booted by the generic SD boot tests */
+#define TEST_SBL_SD_BOOT_APPIMAGE            TEST_SBL_SD_A53_APPIMAGE_FILENAME
+#define TEST_SBL_SD_BOOT_CORE_ID             (CSL_CORE_ID_A53SS0_0)
+#define TEST_SBL_SD_BOOT_CORE_TISCI_DEV_ID   (TISCI_DEV_A53SS0)
+/* A core that exists but is not loaded by the single-core A53 SD image */
+#define TEST_SBL_UNLOADED_CORE_ID            (CSL_CORE_ID_M4FSS0_0)
+/* Core booted by TestSbl_singleCoreImageOspiBoot (M4F on AM62x, offset 0xA00000,
+ * CONFIG_BOOTLOADER_FLASH_DSP) */
+#define TEST_SBL_OSPI_BOOT_CORE_ID           (CSL_CORE_ID_M4FSS0_0)
+/* Third core of multicore/parse tests (M4FSS0_0 RPRC core id is 5 on AM62x) */
+#define TEST_SBL_MULTICORE_CORE2_ID          (CSL_CORE_ID_M4FSS0_0)
+#define TEST_SBL_MULTICORE_CORE2_RPRC_ID     (5U)
 #else
 #define TEST_SBL_SD_BOOT_APPIMAGE            TEST_SBL_SD_A53_APPIMAGE_FILENAME
 #define TEST_SBL_SD_BOOT_CORE_ID             (CSL_CORE_ID_A53SS0_0)
@@ -271,10 +284,6 @@ void test_main(void * args)
 #endif
 #if defined(SOC_AM275X)
     RUN_TEST(TestSbl_ospiBootloaderOpenClose,     11411, NULL);
-#endif
-
-#if defined(SOC_AM275X)
-    RUN_TEST(TestSbl_ospiBootloaderOpenClose,     11411, NULL);
 #else
     /* On AM62Px boots the MCU R5F image from OSPI @ 0xA00000 instead of C75
      * (see TEST_SBL_OSPI_BOOT_CORE_ID). */
@@ -344,37 +353,6 @@ void test_main(void * args)
 /* The following test cases have to enabled one by one
  * due to failure in powering off the CPU */
 
-#if !defined(SOC_AM275X)
-    RUN_TEST(TestSbl_parseInvalidEntryPoint,        11392, NULL);
-#endif
-    /* AM275x: same eMMC MMCSD_open hang — reads signed image from eMMC before
-     * corruption; skip until PHY+clock-domain reset is available in the driver. */
-#if !defined(SOC_AM275X)
-    RUN_TEST(TestSbl_authFailCorruptedImage,        11455, NULL);
-#endif
-    RUN_TEST(TestSbl_loadTimeBenchmark,             11456, NULL);
-
-#if defined(SOC_AM275X)
-    RUN_TEST(TestSbl_multiCoreImageSdBoot,        11439, NULL);
-
-    RUN_TEST(TestSbl_multiCoreImageEmmcBoot,      11440, NULL);
-
-    RUN_TEST(TestSbl_multiCoreImageOspiBoot,      11441, NULL);
-
-    RUN_TEST(TestSbl_runSelfCpuSetup,               11442, NULL);
-
-    RUN_TEST(TestSbl_jumpSelfCpuSetup,              11443, NULL);
-
-    RUN_TEST(TestSbl_runSelfCpuSdBoot,            11444, NULL);
-
-    /* The test will not return */
-    /* RUN_TEST(TestSbl_jumpSelfCpuSdBoot,           11445, NULL); */
-
-#else
-
-/* The following test cases have to enabled one by one
- * due to failure in powering off the CPU */
-
 #if !defined(SOC_AM62PX)
     /* SMP boot requires a 4-core A53 SMP image (/sd0/app_smp) — no A53
      * example board exists for am62px-sk in this SDK checkout, so the SMP
@@ -408,13 +386,6 @@ void test_main(void * args)
     RUN_TEST(TestSbl_parseAppImageMultiCore,        11425, NULL);
 
     RUN_TEST(TestSbl_parseAppImageSingleCorePresent, 11426, NULL);
-
-    /* media_HSM — must run last: Bootloader_runCpu replaces TIFS in HSM SRAM.
-       Run in isolation or as the final test in a sequence.
-       Requires hsm.appimage.hs_fs flashed to eMMC at 0x1400000 (see steps below).
-     */
-
-    RUN_TEST(TestSbl_hsmAppimageBoot,                11454, NULL);
 
     /* media_HSM — must run last: Bootloader_runCpu replaces TIFS in HSM SRAM.
        Run in isolation or as the final test in a sequence.
@@ -533,10 +504,10 @@ void TestSbl_singleCoreImageEmmcBoot(void *args)
         DebugP_log("[DIAG] Bootloader_parseMultiCoreAppImage done, status=%d\r\n", status);
         TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
-        bootImageInfoMCU.cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_MCU_R5FSS0_0);
-        Bootloader_profileAddCore(CSL_CORE_ID_MCU_R5FSS0_0);
+        bootImageInfoMCU.cpuInfo[TEST_SBL_MCU_CORE_ID].clkHz = Bootloader_socCpuGetClkDefault(TEST_SBL_MCU_CORE_ID);
+        Bootloader_profileAddCore(TEST_SBL_MCU_CORE_ID);
 
-        status = Bootloader_loadCpu(bootHandleMCU, &(bootImageInfoMCU.cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
+        status = Bootloader_loadCpu(bootHandleMCU, &(bootImageInfoMCU.cpuInfo[TEST_SBL_MCU_CORE_ID]));
         DebugP_log("[DIAG] Bootloader_loadCpu done, status=%d\r\n", status);
         TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
     }
@@ -544,7 +515,7 @@ void TestSbl_singleCoreImageEmmcBoot(void *args)
 
     if (!Bootloader_socIsMCUResetIsoEnabled())
     {
-        runStatus = Bootloader_runCpu(bootHandleMCU, &(bootImageInfoMCU.cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0]));
+        runStatus = Bootloader_runCpu(bootHandleMCU, &(bootImageInfoMCU.cpuInfo[TEST_SBL_MCU_CORE_ID]));
         DebugP_log("[DIAG] Bootloader_runCpu done, runStatus=%d\r\n", runStatus);
     }
     Bootloader_closeDma();
@@ -554,15 +525,15 @@ void TestSbl_singleCoreImageEmmcBoot(void *args)
     DebugP_log("[DIAG] about to call IpcNotify_waitSync\r\n");
 
     /* Wait for sync from MCU R5F core using IPC */
-    status = IpcNotify_waitSync(CSL_CORE_ID_MCU_R5FSS0_0, 10000);
+    status = IpcNotify_waitSync(TEST_SBL_MCU_CORE_ID, 10000);
     DebugP_log("[DIAG] IpcNotify_waitSync done, status=%d\r\n", status);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Reset the CPU to the original state for the rest of the tests */
-    status = Bootloader_socCpuRequest(bootImageInfoMCU.cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0].cpuId);
+    status = Bootloader_socCpuRequest(bootImageInfoMCU.cpuInfo[TEST_SBL_MCU_CORE_ID].cpuId);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
-    Bootloader_socCpuPowerOff(bootImageInfoMCU.cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0].cpuId);
-    status = Bootloader_socCpuRelease(bootImageInfoMCU.cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0].cpuId);
+    Bootloader_socCpuPowerOff(bootImageInfoMCU.cpuInfo[TEST_SBL_MCU_CORE_ID].cpuId);
+    status = Bootloader_socCpuRelease(bootImageInfoMCU.cpuInfo[TEST_SBL_MCU_CORE_ID].cpuId);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Close the booloader instance and inderlying media */
@@ -1062,9 +1033,11 @@ void TestSbl_multiCoreImageSdBoot(void *args)
      * system project for AM62DX which has the following
      * cores enabled
      */
-    uint32_t enabledCores[] = { CSL_CORE_ID_MCU_R5FSS0_0,
+    uint32_t enabledCores[] = { TEST_SBL_MCU_CORE_ID,
                                 CSL_CORE_ID_A53SS0_0,
+#if !defined(SOC_AM62X)
                                 CSL_CORE_ID_C75SS0_0,
+#endif
                               };
     numCores = sizeof(enabledCores)/sizeof(enabledCores[0]);
 
@@ -1084,7 +1057,7 @@ void TestSbl_multiCoreImageSdBoot(void *args)
         status = Bootloader_isCorePresent(bootHandle, enabledCores[loopVar]);
         TEST_ASSERT_EQUAL(status, 1);
 
-        if ((enabledCores[loopVar] == CSL_CORE_ID_MCU_R5FSS0_0) && Bootloader_socIsMCUResetIsoEnabled())
+        if ((enabledCores[loopVar] == TEST_SBL_MCU_CORE_ID) && Bootloader_socIsMCUResetIsoEnabled())
         {
             continue;
         }
@@ -1097,8 +1070,8 @@ void TestSbl_multiCoreImageSdBoot(void *args)
     /* Run the cores */
     for(loopVar = 0; loopVar < numCores; loopVar++)
     {
-        if (((enabledCores[loopVar] == CSL_CORE_ID_MCU_R5FSS0_0) && !Bootloader_socIsMCUResetIsoEnabled()) ||
-            (enabledCores[loopVar] != CSL_CORE_ID_MCU_R5FSS0_0))
+        if (((enabledCores[loopVar] == TEST_SBL_MCU_CORE_ID) && !Bootloader_socIsMCUResetIsoEnabled()) ||
+            (enabledCores[loopVar] != TEST_SBL_MCU_CORE_ID))
         {
             status = Bootloader_runCpu(bootHandle, &(bootImageInfo.cpuInfo[enabledCores[loopVar]]));
             if (status != SystemP_SUCCESS)
@@ -1222,10 +1195,12 @@ void TestSbl_multiCoreImageEmmcBoot(void *args)
     /* The test executable to be booted is the ipc_rpmsg system project
      * which has the following bootable (non-self) cores enabled
      */
-    uint32_t enabledCores[] = { CSL_CORE_ID_MCU_R5FSS0_0,
+    uint32_t enabledCores[] = { TEST_SBL_MCU_CORE_ID,
 #if !defined(SOC_AM62PX)
                                 CSL_CORE_ID_A53SS0_0,
+#if !defined(SOC_AM62X)
                                 CSL_CORE_ID_C75SS0_0,
+#endif
 #endif
                               };
     numCores = sizeof(enabledCores)/sizeof(enabledCores[0]);
@@ -1255,7 +1230,7 @@ void TestSbl_multiCoreImageEmmcBoot(void *args)
         status = Bootloader_isCorePresent(bootHandle, enabledCores[loopVar]);
         TEST_ASSERT_EQUAL(status, 1);
 
-        if ((enabledCores[loopVar] == CSL_CORE_ID_MCU_R5FSS0_0) && Bootloader_socIsMCUResetIsoEnabled())
+        if ((enabledCores[loopVar] == TEST_SBL_MCU_CORE_ID) && Bootloader_socIsMCUResetIsoEnabled())
         {
             continue;
         }
@@ -1268,8 +1243,8 @@ void TestSbl_multiCoreImageEmmcBoot(void *args)
     /* Run the cores */
     for(loopVar = 0; loopVar < numCores; loopVar++)
     {
-        if (((enabledCores[loopVar] == CSL_CORE_ID_MCU_R5FSS0_0) && !Bootloader_socIsMCUResetIsoEnabled()) ||
-            (enabledCores[loopVar] != CSL_CORE_ID_MCU_R5FSS0_0))
+        if (((enabledCores[loopVar] == TEST_SBL_MCU_CORE_ID) && !Bootloader_socIsMCUResetIsoEnabled()) ||
+            (enabledCores[loopVar] != TEST_SBL_MCU_CORE_ID))
         {
             status = Bootloader_runCpu(bootHandle, &(bootImageInfo.cpuInfo[enabledCores[loopVar]]));
             if (status != SystemP_SUCCESS)
@@ -1409,10 +1384,12 @@ void TestSbl_multiCoreImageOspiBoot(void *args)
     /* The test executable to be booted is the ipc_rpmsg system project
      * which has the following bootable (non-self) cores enabled
      */
-    uint32_t enabledCores[] = { CSL_CORE_ID_MCU_R5FSS0_0,
+    uint32_t enabledCores[] = { TEST_SBL_MCU_CORE_ID,
 #if !defined(SOC_AM62PX)
                                 CSL_CORE_ID_A53SS0_0,
+#if !defined(SOC_AM62X)
                                 CSL_CORE_ID_C75SS0_0,
+#endif
 #endif
                               };
     numCores = sizeof(enabledCores)/sizeof(enabledCores[0]);
@@ -1449,7 +1426,7 @@ void TestSbl_multiCoreImageOspiBoot(void *args)
         status = Bootloader_isCorePresent(bootHandle, enabledCores[loopVar]);
         TEST_ASSERT_EQUAL(status, 1);
 
-        if ((enabledCores[loopVar] == CSL_CORE_ID_MCU_R5FSS0_0) && Bootloader_socIsMCUResetIsoEnabled())
+        if ((enabledCores[loopVar] == TEST_SBL_MCU_CORE_ID) && Bootloader_socIsMCUResetIsoEnabled())
         {
             continue;
         }
@@ -1462,8 +1439,8 @@ void TestSbl_multiCoreImageOspiBoot(void *args)
     /* Run the cores */
     for(loopVar = 0; loopVar < numCores; loopVar++)
     {
-        if (((enabledCores[loopVar] == CSL_CORE_ID_MCU_R5FSS0_0) && !Bootloader_socIsMCUResetIsoEnabled()) ||
-            (enabledCores[loopVar] != CSL_CORE_ID_MCU_R5FSS0_0))
+        if (((enabledCores[loopVar] == TEST_SBL_MCU_CORE_ID) && !Bootloader_socIsMCUResetIsoEnabled()) ||
+            (enabledCores[loopVar] != TEST_SBL_MCU_CORE_ID))
         {
             status = Bootloader_runCpu(bootHandle, &(bootImageInfo.cpuInfo[enabledCores[loopVar]]));
             if (status != SystemP_SUCCESS)
@@ -1645,7 +1622,7 @@ void TestSbl_validateMultiCorePresent(void *args)
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
     /* Check if all the cores are present in image */
-    status = Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_MCU_R5FSS0_0);
+    status = Bootloader_isCorePresent(bootHandle, TEST_SBL_MCU_CORE_ID);
     TEST_ASSERT_EQUAL(status, 1);
 
 #if !defined(SOC_AM62PX)
@@ -2539,7 +2516,7 @@ void TestSbl_parseAppImageMultiCore(void *args)
     status = Bootloader_parseAppImage(bootHandle, &bootImageInfo);
     TEST_ASSERT_EQUAL(status, SystemP_SUCCESS);
 
-    status = Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_MCU_R5FSS0_0);
+    status = Bootloader_isCorePresent(bootHandle, TEST_SBL_MCU_CORE_ID);
     TEST_ASSERT_EQUAL(status, 1);
 
     status = Bootloader_isCorePresent(bootHandle, CSL_CORE_ID_A53SS0_0);
@@ -2548,7 +2525,7 @@ void TestSbl_parseAppImageMultiCore(void *args)
     status = Bootloader_isCorePresent(bootHandle, TEST_SBL_MULTICORE_CORE2_ID);
     TEST_ASSERT_EQUAL(status, 1);
 
-    TEST_ASSERT_NOT_EQUAL(bootImageInfo.cpuInfo[CSL_CORE_ID_MCU_R5FSS0_0].rprcOffset, BOOTLOADER_INVALID_ID);
+    TEST_ASSERT_NOT_EQUAL(bootImageInfo.cpuInfo[TEST_SBL_MCU_CORE_ID].rprcOffset, BOOTLOADER_INVALID_ID);
     TEST_ASSERT_NOT_EQUAL(bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS0_0].rprcOffset, BOOTLOADER_INVALID_ID);
     TEST_ASSERT_NOT_EQUAL(bootImageInfo.cpuInfo[TEST_SBL_MULTICORE_CORE2_ID].rprcOffset, BOOTLOADER_INVALID_ID);
 
@@ -2883,7 +2860,7 @@ void TestSbl_parseInvalidEntryPoint(void *args)
     Bootloader_CpuInfo_init(&cpuInfo);
     cpuInfo.rprcOffset = 0U;
 
-    cpuInfo.cpuId      = CSL_CORE_ID_MCU_R5FSS0_0;
+    cpuInfo.cpuId      = TEST_SBL_MCU_CORE_ID;
 
     status = Bootloader_rprcImageParseEntryPoint((Bootloader_Handle)&config, &cpuInfo);
     TEST_ASSERT_EQUAL(SystemP_SUCCESS, status);
@@ -4425,6 +4402,7 @@ void TestSbl_hsmAppimageBoot(void *args)
  */
 void TestSbl_authFailCorruptedImage(void *args)
 {
+#if !defined(SOC_AM275X)
     int32_t            status     = SystemP_SUCCESS;
     Bootloader_BootImageInfo bootImageInfo;
     Bootloader_Params  bootParams;
@@ -4435,6 +4413,7 @@ void TestSbl_authFailCorruptedImage(void *args)
     uint32_t           totalLen    = 0U;
     uint8_t            hdr4[4];
     int32_t            ioSt        = SystemP_SUCCESS;
+#endif
 
     DebugP_log("Starting TestSbl_authFailCorruptedImage test...\r\n");
 
@@ -4587,6 +4566,7 @@ void TestSbl_loadTimeBenchmark(void *args)
     Bootloader_Params  bootParams;
     Bootloader_Handle  bootHandle  = NULL;
     Bootloader_Config *bc          = NULL;
+#if !defined(SOC_AM275X)
     FF_FILE           *fp          = NULL;
     uint32_t           fileSize    = 0U;
     uint64_t           t0          = 0U;
@@ -4594,6 +4574,7 @@ void TestSbl_loadTimeBenchmark(void *args)
     uint64_t           elapsed     = 0U;
     float              throughput  = 0.0f;
     size_t             nread       = 0U;
+#endif
 
     DebugP_log("Starting TestSbl_loadTimeBenchmark test...\r\n");
     DebugP_log("[BENCH] %-18s %s\r\n", "Label", "Time / Throughput");

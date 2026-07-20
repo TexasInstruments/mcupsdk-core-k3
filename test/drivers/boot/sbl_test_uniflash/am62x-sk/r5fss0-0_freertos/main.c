@@ -40,15 +40,15 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include <drivers/device_manager/sciserver/sciserver_init.h>
-#include <drivers/bootloader.h>
 
 #define TASK_PRI_MAIN_THREAD  (configMAX_PRIORITIES-1)
-#define TASK_SIZE             (16384U/sizeof(configSTACK_DEPTH_TYPE))
 
-#define SCISERVER_TASK_STACK_SIZE      (2U*1024U)
-#define SCISERVER_TASK_STACK_ALIGNMENT (32)
+#define TASK_SIZE (16384U/sizeof(configSTACK_DEPTH_TYPE))
 
-StackType_t  gMainTaskStack[TASK_SIZE] __attribute__((aligned(32)));
+#define SCISERVER_TASK_STACK_SIZE       (2U*1024U)
+#define SCISERVER_TASK_STACK_ALIGNMENT  (32)
+
+StackType_t gMainTaskStack[TASK_SIZE] __attribute__((aligned(32)));
 StaticTask_t gMainTaskObj;
 TaskHandle_t gMainTask;
 
@@ -61,61 +61,61 @@ void main_thread(void *args)
 {
     int32_t status = SystemP_SUCCESS;
 
-    Sciserver_TirtosCfgPrms_t sciserverCfg = {0};
-    sciserverCfg.hiTaskStack   = gUserHiTaskStack;
-    sciserverCfg.loTaskStack   = gUserLoTaskStack;
-    sciserverCfg.taskStackSize = SCISERVER_TASK_STACK_SIZE;
-
     /* Open drivers */
     Drivers_open();
-    Bootloader_profileAddProfilePoint("Drivers_open");
-
     /* Open flash and board drivers */
     status = Board_driversOpen();
-    DebugP_assert(status == SystemP_SUCCESS);
-    Bootloader_profileAddProfilePoint("Board_driversOpen");
+    DebugP_assert(status==SystemP_SUCCESS);
+
+    Sciserver_TirtosCfgPrms_t sciserverCfg = {0};
+    sciserverCfg.hiTaskStack    = gUserHiTaskStack;
+    sciserverCfg.loTaskStack    = gUserLoTaskStack;
+    sciserverCfg.taskStackSize  = SCISERVER_TASK_STACK_SIZE;
 
     sciServer_init(&sciserverCfg);
-    Bootloader_profileAddProfilePoint("sciServer_init");
 
     test_main(NULL);
 
+    /* Close board and flash drivers */
     Board_driversClose();
+    /* Close drivers */
     Drivers_close();
 
     vTaskDelete(NULL);
 }
+
 
 int main()
 {
     int32_t status;
     Bootloader_profileReset();
 
-    Bootloader_socWaitForFWBoot();
+#if !defined(SOC_AM62AX) && !defined(SOC_AM62X)
+    /* LPM-exit IO isolation clearing is not yet ported to AM62AX
+     * (Bootloader_socClrIOIsolationOnLPMExit does not exist for this SoC). */
+    status = Bootloader_socClrIOIsolationOnLPMExit();
+    DebugP_assertNoLog(status == SystemP_SUCCESS);
+#endif
+
+    status = Bootloader_socOpenFirewalls();
+
+    DebugP_assertNoLog(status == SystemP_SUCCESS);
 
     /* init SOC specific modules */
     System_init();
-    Bootloader_profileAddProfilePoint("System_init");
-
-    status = Bootloader_socOpenFirewalls();
-    Bootloader_profileAddProfilePoint("TIFS init");
-    DebugP_assertNoLog(status == SystemP_SUCCESS);
-
     Board_init();
-    Bootloader_profileAddProfilePoint("Board_init");
 
     gMainTask = xTaskCreateStatic( main_thread,
-                                   "main_thread",
-                                   TASK_SIZE,
-                                   NULL,
-                                   TASK_PRI_MAIN_THREAD,
-                                   gMainTaskStack,
-                                   &gMainTaskObj );
+                                  "main_thread",
+                                  TASK_SIZE,
+                                  NULL,
+                                  TASK_PRI_MAIN_THREAD,
+                                  gMainTaskStack,
+                                  &gMainTaskObj );
     configASSERT(gMainTask != NULL);
 
     vTaskStartScheduler();
 
-    /* Should never reach here */
     DebugP_assertNoLog(0);
 
     return 0;

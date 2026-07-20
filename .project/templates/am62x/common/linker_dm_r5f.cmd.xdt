@@ -18,6 +18,7 @@
     let dmStubstacksize = 0x0400;
     let dssFrameBuf = "false";
     let globalScratchBuf = "false";
+    let enableAppimageMem = false;
 
     /* if no options given use defaults */
     if(options && options.stackSize)
@@ -40,6 +41,8 @@
         dssFrameBuf = options.dssFrameBuf;
     if(options && options.globalScratchBuf)
         globalScratchBuf = options.globalScratchBuf;
+    if(options && options.enableAppimageMem)
+        enableAppimageMem = options.enableAppimageMem;
 
     let globalScratchBufSize = 0x2000000;
     if(options && options.globalScratchBufSize)
@@ -138,6 +141,11 @@ SECTIONS
     .data_buffer            : {} palign(128)    > DDR
     .const.devgroup         : { *(.const.devgroup*) } align(4) > DDR
     .boardcfg_data          : {} align(4)       > DDR
+    % if(enableAppimageMem) {
+    /* Large appimage scratch buffer — must be placed BEFORE generic .bss to
+     * prevent capture by the BSS GROUP below. NOLOAD: not stored in binary. */
+    .bss.app (NOLOAD) : {} > APPIMAGE
+    % }
 
     GROUP {
         .bss.devgroup : { *(.bss.devgroup*) } align(4)
@@ -278,5 +286,10 @@ MEMORY
     % }
     % if(enableUdmaBuffers) {
     DDR_UDMA       (RWIX)      : ORIGIN = 0x`(codeDataAddrDdrUdma).toString(16).toUpperCase()`, LENGTH = 0x`(codeDataSizeDdrUdma).toString(16).toUpperCase()`
+    % }
+    % if(enableAppimageMem) {
+
+    /* Appimage scratch buffer (25 MB) for bootloader authentication tests */
+    APPIMAGE       (RWIX)      : ORIGIN = 0x84000000 LENGTH = 0x1900000
     % }
 }

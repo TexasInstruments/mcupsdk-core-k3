@@ -2,7 +2,7 @@
 # Auto generated makefile
 #
 
-export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../../..)
+export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
@@ -24,17 +24,17 @@ ATF_INTEGRATED_BOOT?=yes
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=ipc_rpmsg_echo.$(PROFILE).out
+OUTNAME:=sbl_test_custom_ipc_binary.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=ipc_rpmsg_echo.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=ipc_rpmsg_echo.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=ipc_rpmsg_echo.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=ipc_rpmsg_echo.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=ipc_rpmsg_echo.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=ipc_rpmsg_echo.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=ipc_rpmsg_echo.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=ipc_rpmsg_echo.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=sbl_test_custom_ipc_binary.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=sbl_test_custom_ipc_binary.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=sbl_test_custom_ipc_binary.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=sbl_test_custom_ipc_binary.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=sbl_test_custom_ipc_binary.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=sbl_test_custom_ipc_binary.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=sbl_test_custom_ipc_binary.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=sbl_test_custom_ipc_binary.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -176,7 +176,7 @@ clean:
 	@echo  Cleaning: am62x:a53ss0-1:freertos:gcc-aarch64 $(OUTNAME) ...
 	$(RMDIR) $(OBJDIR)
 	$(RM) $(OUTNAME)
-	$(RM) ipc_rpmsg_echo..${ConfigName}.strip.out
+	$(RM) sbl_test_custom_ipc_binary..${ConfigName}.strip.out
 	$(RM) $(BOOTIMAGE_NAME)
 	$(RM) $(BOOTIMAGE_NAME_XIP)
 	$(RM) $(BOOTIMAGE_NAME_SIGNED)
@@ -187,7 +187,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62x:a53ss0-1:freertos:gcc-aarch64 ipc_rpmsg_echo ...
+	@echo  Scrubing: am62x:a53ss0-1:freertos:gcc-aarch64 sbl_test_custom_ipc_binary ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

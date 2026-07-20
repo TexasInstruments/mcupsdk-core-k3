@@ -250,6 +250,7 @@ const example_file_list = [
     "test/drivers/pmu/.project/project.js",
     "test/drivers/ospi/test_ospi_system/.project/project.js",
     "test/drivers/pinmux_coverage/.project/project.js",
+    "test/drivers/pinmux_coverage/test_pinmux_system/.project/project.js",
     "test/drivers/soc_coverage/.project/project.js",
     "test/drivers/uart/.project/project.js",
     "test/drivers/watchdog/.project/project.js",

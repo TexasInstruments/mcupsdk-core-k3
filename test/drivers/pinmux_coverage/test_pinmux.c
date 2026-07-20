@@ -51,7 +51,18 @@
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62X) || defined(SOC_AM62DX)
+#if defined(SOC_AM62PX)
+/* PIN_VOUT0_DATA0 is at offset 0x00B8, equivalent to PIN_GPIO0_45 on AM62DX.
+ * AM62PX uses CSL_MCU_PADCFG_CTRL0_CFG0_BASE for the MCU/wakeup pad domain. */
+#define TEST_PINMUX_SOC_SPI_CS0         PIN_MCU_SPI0_CS0
+#define TEST_PINMUX_SOC_OSPI0_CLK       PIN_OSPI0_CLK
+#define TEST_PINMUX_SOC_OSPI0_D0        PIN_OSPI0_D0
+#define TEST_PINMUX_SOC_OSPI0_CSN0      PIN_OSPI0_CSN0
+#define TEST_PINMUX_SOC_GPIO_PIN        PIN_VOUT0_DATA0
+#define TEST_PINMUX_SOC_MAIN_LAST_PIN   PIN_USB1_DRVVBUS
+#define TEST_PINMUX_MAIN_BASE           CSL_PADCFG_CTRL0_CFG0_BASE
+#define TEST_PINMUX_MCU_BASE            CSL_MCU_PADCFG_CTRL0_CFG0_BASE
+#elif defined(SOC_AM62DX)
 #define TEST_PINMUX_SOC_SPI_CS0         PIN_MCU_SPI0_CS0
 #define TEST_PINMUX_SOC_OSPI0_CLK       PIN_OSPI0_CLK
 #define TEST_PINMUX_SOC_OSPI0_D0        PIN_OSPI0_D0
@@ -60,6 +71,27 @@
 #define TEST_PINMUX_SOC_MAIN_LAST_PIN   PIN_USB1_DRVVBUS
 #define TEST_PINMUX_MAIN_BASE           CSL_PADCFG_CTRL0_CFG0_BASE
 #define TEST_PINMUX_MCU_BASE            CSL_WKUP_PADCFG_CTRL0_CFG0_BASE
+#elif defined(SOC_AM62AX)
+/* PIN_VOUT0_DATA0 is at offset 0x00B8, same physical address as PIN_GPIO0_45 on AM62DX/AM62PX */
+#define TEST_PINMUX_SOC_SPI_CS0         PIN_MCU_SPI0_CS0
+#define TEST_PINMUX_SOC_OSPI0_CLK       PIN_OSPI0_CLK
+#define TEST_PINMUX_SOC_OSPI0_D0        PIN_OSPI0_D0
+#define TEST_PINMUX_SOC_OSPI0_CSN0      PIN_OSPI0_CSN0
+#define TEST_PINMUX_SOC_GPIO_PIN        PIN_VOUT0_DATA0
+#define TEST_PINMUX_SOC_MAIN_LAST_PIN   PIN_USB1_DRVVBUS
+#define TEST_PINMUX_MAIN_BASE           CSL_PADCFG_CTRL0_CFG0_BASE
+#define TEST_PINMUX_MCU_BASE            CSL_WKUP_PADCFG_CTRL0_CFG0_BASE
+#elif defined(SOC_AM62X)
+/* AM62X: MCU pad uses CSL_MCU_PADCFG_CTRL0_CFG0_BASE;
+ * PIN_VOUT0_DATA0 is at offset 0x00B8 (equivalent to PIN_GPIO0_45 on AM62DX) */
+#define TEST_PINMUX_SOC_SPI_CS0         PIN_MCU_SPI0_CS0
+#define TEST_PINMUX_SOC_OSPI0_CLK       PIN_OSPI0_CLK
+#define TEST_PINMUX_SOC_OSPI0_D0        PIN_OSPI0_D0
+#define TEST_PINMUX_SOC_OSPI0_CSN0      PIN_OSPI0_CSN0
+#define TEST_PINMUX_SOC_GPIO_PIN        PIN_VOUT0_DATA0
+#define TEST_PINMUX_SOC_MAIN_LAST_PIN   PIN_USB1_DRVVBUS
+#define TEST_PINMUX_MAIN_BASE           CSL_PADCFG_CTRL0_CFG0_BASE
+#define TEST_PINMUX_MCU_BASE            CSL_MCU_PADCFG_CTRL0_CFG0_BASE
 #elif defined(SOC_AM275X) || defined(SOC_AM62DX)
 #define TEST_PINMUX_SOC_SPI_CS0         PIN_SPI0_CS0
 #define TEST_PINMUX_SOC_OSPI0_CLK       PIN_OSPI0_CLK
@@ -86,7 +118,7 @@
 
 /* Testcases */
 static void test_pinmux_coverage(void *args);
-#if defined(SOC_AM275X) || defined(SOC_AM62DX)
+#if defined(SOC_AM275X) || defined(SOC_AM62DX) || defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62PX)
 static void TestPinmux_configMultiplePins(void *args);
 static void TestPinmux_configVerifyModeChange(void *args);
 static void TestPinmux_configAllSettingsBits(void *args);
@@ -128,7 +160,7 @@ void test_pinmux_main(void *args)
 
     RUN_TEST(test_pinmux_coverage, 8070, NULL);
 
-    #if defined(SOC_AM275X) || defined(SOC_AM62DX)
+    #if defined(SOC_AM275X) || defined(SOC_AM62DX) || defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62PX)
     /* Functional Tests */
     RUN_TEST(TestPinmux_configMultiplePins, 11232, NULL);
     RUN_TEST(TestPinmux_configVerifyModeChange, 11233, NULL);
@@ -211,7 +243,7 @@ static void test_pinmux_coverage(void *args)
     DebugP_log("\r\n pinumux dynamic coverage test: PASS \r\n");
 }
 
-#if defined(SOC_AM275X) || defined(SOC_AM62DX)
+#if defined(SOC_AM275X) || defined(SOC_AM62DX) || defined(SOC_AM62X) || defined(SOC_AM62AX) || defined(SOC_AM62PX)
 /*
  * Test case: TestPinmux_configMultiplePins
  * This test verifies that the Pinmux_config function can correctly configure

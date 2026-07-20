@@ -219,6 +219,7 @@ const example_file_list = [
     "test/drivers/pinmux_coverage/.project/project.js",
     "test/drivers/mcasp/mcasp/.project/project.js",
     "test/drivers/mcasp/test_mcasp_fault_injection/.project/project.js",
+    "test/drivers/pinmux_coverage/test_pinmux_system/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_raw_io/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_fs_io/.project/project.js",
     "test/drivers/mmcsd/test_mmcsd_fault_inject/.project/project.js",

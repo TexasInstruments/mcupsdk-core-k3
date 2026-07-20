@@ -39,6 +39,7 @@ endif
 
 FILES_common := \
 	test_pinmux.c \
+	test_pinmux_multi_thread.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -50,6 +51,7 @@ FILES_common := \
 
 FILES_PATH_common = \
 	.. \
+	../.. \
 	../../.. \
 	generated \
 
@@ -59,7 +61,7 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62ax/r5f \
-	-I${MCU_PLUS_SDK_PATH}/test/unity \
+	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
 	-Igenerated \
 
 DEFINES_common := \
@@ -75,6 +77,7 @@ CFLAGS_common := \
 	-g \
 	-Wno-gnu-variable-sized-type-not-at-end \
 	-Wno-unused-function \
+	-DENABLE_MT_TESTS \
 
 CFLAGS_cpp_common := \
 	-Wno-c99-designator \
@@ -98,11 +101,6 @@ LNK_FILES_common = \
 	linker.cmd \
 
 LIBS_PATH_common = \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/board/lib \
@@ -133,11 +131,6 @@ LIBS_NAME = \
 	libsysbm.a \
 
 LIBS_PATH_NAME = \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
-	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
 	${MCU_PLUS_SDK_PATH}/source/board/lib \

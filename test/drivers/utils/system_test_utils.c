@@ -83,8 +83,11 @@
 
 #elif defined(SOC_AM62PX)
 
-/** \brief  Macro to define main core ID */
-#define MAIN_CORE_ID CSL_CORE_ID_WKUP_R5FSS0_0
+/** \brief  Macro to define main core ID.
+ *  On AM62PX the ASTRA test framework monitors MCU UART (MCU R5F), so
+ *  MCU R5F must be the main orchestrator core whose Unity output is
+ *  captured.  WKUP R5F is the DM/remote core. */
+#define MAIN_CORE_ID CSL_CORE_ID_MCU_R5FSS0_0
 
 #else
 #error "Unsupported SOC"

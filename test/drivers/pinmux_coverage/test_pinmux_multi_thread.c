@@ -65,13 +65,39 @@
 /* ========================================================================== */
 
 /* SOC-specific pin and base address definitions */
-#if defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62X) || defined(SOC_AM62DX)
+#if defined(SOC_AM62PX)
+/* PIN_VOUT0_DATA0 is at offset 0x00B8, equivalent to PIN_GPIO0_45 on AM62DX.
+ * AM62PX uses CSL_MCU_PADCFG_CTRL0_CFG0_BASE for the MCU/wakeup pad domain. */
+#define TEST_PINMUX_MT_SPI_CS0          PIN_MCU_SPI0_CS0
+#define TEST_PINMUX_MT_OSPI0_CLK        PIN_OSPI0_CLK
+#define TEST_PINMUX_MT_OSPI0_D0         PIN_OSPI0_D0
+#define TEST_PINMUX_MT_GPIO_PIN         PIN_VOUT0_DATA0
+#define TEST_PINMUX_MT_MAIN_BASE        CSL_PADCFG_CTRL0_CFG0_BASE
+#define TEST_PINMUX_MT_MCU_BASE         CSL_MCU_PADCFG_CTRL0_CFG0_BASE
+#elif defined(SOC_AM62DX)
 #define TEST_PINMUX_MT_SPI_CS0          PIN_MCU_SPI0_CS0
 #define TEST_PINMUX_MT_OSPI0_CLK        PIN_OSPI0_CLK
 #define TEST_PINMUX_MT_OSPI0_D0         PIN_OSPI0_D0
 #define TEST_PINMUX_MT_GPIO_PIN         PIN_GPIO0_45
 #define TEST_PINMUX_MT_MAIN_BASE        CSL_PADCFG_CTRL0_CFG0_BASE
 #define TEST_PINMUX_MT_MCU_BASE         CSL_WKUP_PADCFG_CTRL0_CFG0_BASE
+#elif defined(SOC_AM62AX)
+/* PIN_VOUT0_DATA0 is at offset 0x00B8, same physical address as PIN_GPIO0_45 on AM62DX/AM62PX */
+#define TEST_PINMUX_MT_SPI_CS0          PIN_MCU_SPI0_CS0
+#define TEST_PINMUX_MT_OSPI0_CLK        PIN_OSPI0_CLK
+#define TEST_PINMUX_MT_OSPI0_D0         PIN_OSPI0_D0
+#define TEST_PINMUX_MT_GPIO_PIN         PIN_VOUT0_DATA0
+#define TEST_PINMUX_MT_MAIN_BASE        CSL_PADCFG_CTRL0_CFG0_BASE
+#define TEST_PINMUX_MT_MCU_BASE         CSL_WKUP_PADCFG_CTRL0_CFG0_BASE
+#elif defined(SOC_AM62X)
+/* AM62X: MCU pad config uses CSL_MCU_PADCFG_CTRL0_CFG0_BASE;
+ * PIN_VOUT0_DATA0 is at offset 0x00B8 (same as PIN_GPIO0_45 on AM62DX) */
+#define TEST_PINMUX_MT_SPI_CS0          PIN_MCU_SPI0_CS0
+#define TEST_PINMUX_MT_OSPI0_CLK        PIN_OSPI0_CLK
+#define TEST_PINMUX_MT_OSPI0_D0         PIN_OSPI0_D0
+#define TEST_PINMUX_MT_GPIO_PIN         PIN_VOUT0_DATA0
+#define TEST_PINMUX_MT_MAIN_BASE        CSL_PADCFG_CTRL0_CFG0_BASE
+#define TEST_PINMUX_MT_MCU_BASE         CSL_MCU_PADCFG_CTRL0_CFG0_BASE
 #elif defined(SOC_AM275X)
 #define TEST_PINMUX_MT_SPI_CS0          PIN_SPI0_CS0
 #define TEST_PINMUX_MT_OSPI0_CLK        PIN_OSPI0_CLK
@@ -624,7 +650,12 @@ static void TestPinmux_threadReader(void *args)
         {
             TestPinmux_readerErrorCount++;
         }
-        ClockP_usleep(10);
+        /* Use 1000 us (>= usecPerTick) so ClockP_sleepTicks(1)/vTaskDelay(1)
+         * is used instead of a busy-wait. The busy-wait path (< usecPerTick)
+         * spins on gClockCtrl.ticks inside a do-while loop; under
+         * configUSE_TIME_SLICING=1 (AM62PX) the tick ISR can fire repeatedly
+         * between the two reads causing an infinite retry. */
+        ClockP_usleep(1000);
     }
 
     SemaphoreP_post(&TestPinmux_semObj);

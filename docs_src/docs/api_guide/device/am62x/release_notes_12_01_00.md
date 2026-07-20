@@ -34,7 +34,7 @@ Tools/Components        | Supported CPUs | Version
 ------------------------|----------------|-----------------------
 Code Composer Studio    | M4F, R5F, A53  | 20.3.1
 SysConfig               | M4F, R5F, A53  | 1.24.2, build 4234
-TI ARM CLANG            | M4F, R5F       | 4.0.1.LTS
+TI ARM CLANG            | M4F, R5F       | 4.0.5.LTS
 GCC AARCH64             | A53            | 9.2-2019.12
 FreeRTOS Kernel         | M4F, R5F, A53  | 11.1.0
 

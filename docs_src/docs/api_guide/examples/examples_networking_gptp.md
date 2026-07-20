@@ -3,6 +3,9 @@
 This page lists all the examples related to TSN and gPTP
 
 \cond SOC_AM62PX
+-# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_TR
+-# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_TT
+-# \subpage EXAMPLES_ENET_CPSW_TSN_GPTP_BRIDGE
 -# \subpage EXAMPLES_ENET_CPSW_TSN_LWIP_GPTP
 \endcond
 

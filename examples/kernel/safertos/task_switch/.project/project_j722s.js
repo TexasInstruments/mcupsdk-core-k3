@@ -60,6 +60,7 @@ const libdirs_safertos_wkup_r5f = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/safertos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/dm_stub/lib",
     ],
 };
 
@@ -119,6 +120,7 @@ const libs_safertos_wkup_r5f = {
         "drivers.j722s.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
         "board.j722s.r5f.ti-arm-clang.${ConfigName}.lib",
         "sciserver.j722s.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
+        "dm_stub.j722s.wkup-r5f.ti-arm-clang.${ConfigName}.lib",
     ],
 };
 

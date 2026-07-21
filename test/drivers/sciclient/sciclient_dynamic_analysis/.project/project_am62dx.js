@@ -18,6 +18,10 @@ const defines_dm_r5f = {
     common:[
         "SOC_AM62DX",
         "SCICLIENT_INTERRUPT_MODE",
+        "TEST_SCICLIENT_INTERRUPT_MODE",
+        "CONFIG_LPM_DM",
+        "CONFIG_PM_CLK_SSC",
+        "CONFIG_GET_DEVICE_MULTIPLE",
     ]
 }
 
@@ -50,6 +54,7 @@ const includes = {
         "${MCU_PLUS_SDK_PATH}/test/unity/",
         "${MCU_PLUS_SDK_PATH}/source/kernel/",
         "${MCU_PLUS_SDK_PATH}/source/kernel/dpl/",
+        "${MCU_PLUS_SDK_PATH}/test/drivers/sciclient/sciclient_dynamic_analysis/am62dx-evm/"
     ],
 };
 

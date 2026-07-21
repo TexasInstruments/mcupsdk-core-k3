@@ -68,11 +68,16 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/ \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/dpl/ \
+	-I${MCU_PLUS_SDK_PATH}/test/drivers/sciclient/sciclient_dynamic_analysis/am62dx-evm/ \
 	-Igenerated \
 
 DEFINES_common := \
 	-DSOC_AM62DX \
 	-DSCICLIENT_INTERRUPT_MODE \
+	-DTEST_SCICLIENT_INTERRUPT_MODE \
+	-DCONFIG_LPM_DM \
+	-DCONFIG_PM_CLK_SSC \
+	-DCONFIG_GET_DEVICE_MULTIPLE \
 
 CFLAGS_common := \
 	-mcpu=cortex-r5 \

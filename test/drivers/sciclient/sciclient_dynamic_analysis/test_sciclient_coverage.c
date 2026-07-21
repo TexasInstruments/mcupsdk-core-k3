@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Texas Instruments Incorporated
+ * Copyright (C) 2026 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -36,6 +36,7 @@
 
 #include <string.h>
 #include "test_sciclient.h"
+#include "test_sciclient_context.h"
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
@@ -65,6 +66,7 @@ int8_t test_csl_sec_proxy(void)
     uint32_t numBytes=1;
     uint32_t errNumBytes = 0xFFFF;
     uint32_t checkThreadRead=0;
+    int threadNum;
 
     retVal = CSL_secProxyGetRevision(&secProxyCfg);
     if(retVal == SystemP_SUCCESS)
@@ -169,7 +171,7 @@ int8_t test_csl_sec_proxy(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
-    for(int threadNum=0; threadNum<100;threadNum++)
+    for(threadNum=0; threadNum<100;threadNum++)
     {
         retVal = CSL_secProxyGetThreadStatus(&secProxyCfg, threadNum, &threadStatus);
         if(retVal != SystemP_SUCCESS)
@@ -200,89 +202,39 @@ int8_t test_sciclient_soc_priv(void)
 {
     int32_t retVal = SystemP_SUCCESS;
     int8_t failCount = 0;
+    uint8_t i;
 
-    retVal = Sciclient_getContext(SCICLIENT_SECURE_CONTEXT, CSL_CORE_ID_1);
-    if(retVal != SystemP_SUCCESS)
+    /* Verify secure context mapping */
+    for (i=0; i<sizeof(core_id_list)/sizeof(core_id_list[0]); i++)
     {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        failCount++;
+        retVal = Sciclient_getContext(SCICLIENT_SECURE_CONTEXT, core_id_list[i][0]);
+        if(retVal != core_id_list[i][1])
+        {
+            DebugP_log("\r\n Testcase failed in %d and retVal is %d for core ID %d", __LINE__, retVal,core_id_list[i][0]);
+            failCount++;
+        }
     }
 
-    retVal = Sciclient_getContext(SCICLIENT_NON_SECURE_CONTEXT, CSL_CORE_ID_1);
-    if(retVal == SystemP_SUCCESS)
+    /* Verify non-secure context mapping */
+    for (i=0; i<sizeof(core_id_list)/sizeof(core_id_list[0]); i++)
     {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        failCount++;
+        retVal = Sciclient_getContext(SCICLIENT_NON_SECURE_CONTEXT, core_id_list[i][0]);
+        if(retVal != core_id_list[i][2])
+        {
+            DebugP_log("\r\n Testcase failed in %d and retVal is %d for core ID %d", __LINE__, retVal,core_id_list[i][0]);
+            failCount++;
+        }
     }
 
-    retVal = Sciclient_getContext(SCICLIENT_NON_SECURE_CONTEXT, CSL_CORE_ID_MCU_R5FSS0_0);
-    if(retVal == SystemP_SUCCESS)
+    /* Verify device ID mapping */
+    for (i=0; i<sizeof(core_id_list)/sizeof(core_id_list[0]); i++)
     {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        failCount++;
-    }
-
-    retVal = Sciclient_getContext(SCICLIENT_SECURE_CONTEXT, CSL_CORE_ID_A53SS0_0);
-    if(retVal == SystemP_SUCCESS)
-    {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        failCount++;
-    }
-
-    retVal = Sciclient_getContext(SCICLIENT_NON_SECURE_CONTEXT, CSL_CORE_ID_A53SS0_0);
-    if(retVal == SystemP_SUCCESS)
-    {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        failCount++;
-    }
-
-    retVal = Sciclient_getContext(SCICLIENT_NON_SECURE_CONTEXT, CSL_CORE_ID_2);
-    if(retVal == SystemP_SUCCESS)
-    {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        failCount++;
-    }
-
-    retVal = Sciclient_getContext(SCICLIENT_NON_SECURE_CONTEXT, CSL_CORE_ID_INVALID);
-    if(retVal == SystemP_SUCCESS)
-    {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        failCount++;
-    }
-
-    retVal = Sciclient_getDevId(CSL_CORE_ID_MCU_R5FSS0_0);
-    if(retVal == SystemP_SUCCESS)
-    {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        failCount++;
-    }
-
-    retVal = Sciclient_getDevId(CSL_CORE_ID_1);
-    if(retVal == SystemP_SUCCESS)
-    {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        failCount++;
-    }
-
-    retVal = Sciclient_getDevId(CSL_CORE_ID_A53SS0_0);
-    if(retVal == SystemP_SUCCESS)
-    {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        failCount++;
-    }
-
-    retVal = Sciclient_getDevId(CSL_CORE_ID_2);
-    if(retVal == SystemP_SUCCESS)
-    {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        failCount++;
-    }
-
-    retVal = Sciclient_getDevId(CSL_CORE_ID_INVALID);
-    if(retVal == SystemP_SUCCESS)
-    {
-        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
-        failCount++;
+        retVal = Sciclient_getDevId(core_id_list[i][0]);
+        if(retVal != core_id_list[i][3])
+        {
+            DebugP_log("\r\n Testcase failed in %d and retVal is %d for core ID %d", __LINE__, retVal,core_id_list[i][0]);
+            failCount++;
+        }
     }
 
     return failCount;
@@ -1029,6 +981,7 @@ int8_t test_sciclient(void)
     int8_t failCount = 0;
     uint32_t testCoreId = CSL_CORE_ID_MCU_R5FSS0_0;
     uint32_t tempMaxSize;
+    int repeat;
 
     retVal = Sciclient_getCurrentContext(0x1000U);
     if(retVal == SystemP_SUCCESS)
@@ -1528,7 +1481,7 @@ int8_t test_sciclient(void)
     }
     reqParam3.reqPayloadSize = (uint32_t) sizeof (request3);
 
-    for(int repeat = 0; repeat<50; repeat++)
+    for(repeat = 0; repeat<50; repeat++)
     {
         retVal = Sciclient_service(&reqParam3, &respParam3);
         if(retVal == SystemP_SUCCESS)
@@ -1849,6 +1802,7 @@ int8_t test_sciclient_pm(void)
     uint32_t reqFlag     = TISCI_MSG_FLAG_AOP;
     uint32_t moduleId    = TISCI_DEV_TIMER0;
     uint32_t deviceState = TISCI_MSG_FLAG_DEVICE_WAKE_ENABLED;
+#if defined(CONFIG_PM_CLK_SSC)
     uint32_t moduleId1   = TISCI_DEV_DSS0;
     uint32_t modfreq_hz = 100000;
     uint32_t mod_depth = 10;
@@ -1858,6 +1812,7 @@ int8_t test_sciclient_pm(void)
     uint32_t respMod_depth;
     uint8_t respSpread_type;
     uint8_t respEnable;
+#endif
 
     retVal = Sciclient_pmSetModuleState(moduleId, deviceState, reqFlag, 0xFFFFFFFFU);
     if(retVal != SystemP_SUCCESS)
@@ -2138,7 +2093,7 @@ int8_t test_sciclient_pm(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
-
+#if defined(CONFIG_PM_CLK_SSC)
     retVal = Sciclient_pmSetModuleClkSSC(moduleId1, TISCI_DEV_DSS0_DPI_1_IN_CLK, modfreq_hz, mod_depth, spread_type, enable, reqFlag, SystemP_WAIT_FOREVER);
     if(retVal != SystemP_SUCCESS)
     {
@@ -2234,7 +2189,7 @@ int8_t test_sciclient_pm(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
-
+#endif
     return failCount;
 }
 
@@ -2397,6 +2352,7 @@ int8_t test_sciclient_modes(void)
         failCount++;
     }
 
+#if defined(TEST_SCICLIENT_INTERRUPT_MODE)
     /* Test updateOperModeToInterrupt when sciclient is not initialized.
      * This should fail since sciclient is not initialized.
      */
@@ -2406,6 +2362,7 @@ int8_t test_sciclient_modes(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
+#endif
 
     /* Test updateOperModeToPolled when sciclient is not initialized. */
     Sciclient_updateOperModeToPolled();
@@ -2499,7 +2456,7 @@ int8_t test_sciclient_modes(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
-
+#if defined(TEST_SCICLIENT_INTERRUPT_MODE)
     /* Test updating operation mode to Interrupt. */
     retVal = Sciclient_updateOperModeToInterrupt();
     if(retVal != SystemP_SUCCESS)
@@ -2521,10 +2478,12 @@ int8_t test_sciclient_modes(void)
 
     /* Test enableIntr to re-enable interrupts. */
     Sciclient_enableIntr();
+#endif
 
     /* Test Sciclient_updateOperModeToPolled when in interrupt mode. */
     Sciclient_updateOperModeToPolled();
 
+#if defined(TEST_SCICLIENT_INTERRUPT_MODE)
     /* Switch back to interrupt mode for subsequent interrupt mode tests. */
     retVal = Sciclient_updateOperModeToInterrupt();
     if(retVal != SystemP_SUCCESS)
@@ -2532,6 +2491,7 @@ int8_t test_sciclient_modes(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
+#endif
 
     /* Test sciclient message types in interrupt mode. */
     // Calling Sciclient Service for messages which are forwarded to TIFS and with AOP flag set.
@@ -2582,6 +2542,7 @@ int8_t test_sciclient_modes(void)
         failCount++;
     }
 
+#if defined(TEST_SCICLIENT_INTERRUPT_MODE)
     /* Test updateOperModeToInterrupt when already in interrupt mode.
      * All interrupts should already be setup.
      */
@@ -2591,6 +2552,7 @@ int8_t test_sciclient_modes(void)
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;
     }
+#endif
 
     /* Test deinit while in interrupt mode to trigger interrupt unregister path. */
     retVal = Sciclient_deinit();
@@ -2619,11 +2581,13 @@ int8_t test_sciclient_modes(void)
     /* Test Sciclient_updateOperModeToPolled when already in polled mode. */
     Sciclient_updateOperModeToPolled();
 
+#if defined(TEST_SCICLIENT_INTERRUPT_MODE)
     /* Test Sciclient_disableIntr when in polled mode. */
     Sciclient_disableIntr();
 
     /* Test Sciclient_enableIntr when in polled mode. */
     Sciclient_enableIntr();
+#endif
 
     /* Test deinit again. */
     retVal = Sciclient_deinit();
@@ -2684,11 +2648,13 @@ int8_t test_sciclient_modes(void)
     /* Test Sciclient_updateOperModeToPolled when not initialized. */
     Sciclient_updateOperModeToPolled();
 
+#if defined(TEST_SCICLIENT_INTERRUPT_MODE)
     /* Test Sciclient_disableIntr when not initialized. */
     Sciclient_disableIntr();
 
     /* Test Sciclient_enableIntr when not initialized. */
     Sciclient_enableIntr();
+#endif
 
     /* Re-initialize sciclient with CSL_CORE_ID_1 for RM tests in polled mode.
      * Polling mode can run with any core ID, so we use CSL_CORE_ID_1 here
@@ -2706,6 +2672,7 @@ int8_t test_sciclient_modes(void)
      */
     Sciclient_updateOperModeToPolled();
 
+#if defined(TEST_SCICLIENT_INTERRUPT_MODE)
     /* Test Sciclient_disableIntr when in polled mode.
      * This covers line 488 FALSE branch.
      */
@@ -2715,6 +2682,7 @@ int8_t test_sciclient_modes(void)
      * This covers line 513 FALSE branch.
      */
     Sciclient_enableIntr();
+#endif
 
     return failCount;
 }

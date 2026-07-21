@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -57,6 +57,8 @@ extern "C" {
 
 #define CSL_CORE_ID_1         CSL_CORE_ID_R5FSS0_0
 #define CSL_CORE_ID_2         CSL_CORE_ID_C75SS0_0
+#define CSL_CORE_ID_3         CSL_CORE_ID_MCU_R5FSS0_0
+#define CSL_CORE_ID_4         CSL_CORE_ID_A53SS0_0
 #define SCICLIENT_PROC_ID_1   SCICLIENT_PROC_ID_R5FSS0_CORE0
 
 /* ========================================================================== */

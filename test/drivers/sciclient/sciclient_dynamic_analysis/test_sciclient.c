@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Texas Instruments Incorporated
+ * Copyright (C) 2026 Texas Instruments Incorporated
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -186,6 +186,7 @@ void test_sciclient_coverage(void *args)
         DebugP_log("\r\n test_sciclient_soc_priv: All testcase passed successfully \r\n");
     }
 
+#if defined (CONFIG_LPM_DM)
     failCount = test_sciclient_lpm();
     if(failCount > 0)
     {
@@ -196,8 +197,22 @@ void test_sciclient_coverage(void *args)
     {
         DebugP_log("\r\n test_sciclient_lpm: All testcase passed successfully \r\n");
     }
+#endif
 
-   if(sumFailure > 0U)
+#if defined (SOC_J722S)
+    failCount = test_csl_sec_proxy();
+    if(failCount > 0)
+    {
+        DebugP_log("\r\n test_csl_sec_proxy: %d testcase failed \r\n", failCount);
+        sumFailure += (uint32_t)failCount;
+    }
+    else
+    {
+        DebugP_log("\r\n test_csl_sec_proxy: All testcase passed successfully \r\n");
+    }
+#endif
+
+    if(sumFailure > 0U)
     {
         DebugP_log("\r\n\r\n Overall test status: %d testcase failed \r\n", sumFailure);
     }

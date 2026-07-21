@@ -36,6 +36,8 @@ TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
 endif
+SCISERVER_IMAGE_PATH:=$(MCU_PLUS_SDK_PATH)/examples/drivers/sciclient/sciclient_get_version/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang
+SCISERVER_BOOTIMAGE_RPRC_NAME:=$(SCISERVER_IMAGE_PATH)/sciclient_get_version.$(PROFILE).rprc
 
 FILES_common := \
 	test_sciclient.c \
@@ -57,29 +59,20 @@ FILES_PATH_common = \
 	.. \
 	../.. \
 	../../.. \
-	../../../.. \
 	generated \
 
 INCLUDES_common := \
 	-I${CG_TOOL_ROOT}/include/c \
 	-I${MCU_PLUS_SDK_PATH}/source \
-	-I${MCU_PLUS_SDK_PATH}/source/drivers/ \
-	-I${MCU_PLUS_SDK_PATH}/source/ \
 	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
-	-I${MCU_PLUS_SDK_PATH}/source/kernel/ \
-	-I${MCU_PLUS_SDK_PATH}/source/kernel/dpl/ \
-	-I${MCU_PLUS_SDK_PATH}/test/drivers/sciclient/sciclient_dynamic_analysis/am62px-sk/ \
+	-I${MCU_PLUS_SDK_PATH}/test/drivers/sciclient/sciclient_dynamic_analysis/j722s-evm/ \
 	-Igenerated \
 
 DEFINES_common := \
-	-DSOC_AM62PX \
-	-DSCICLIENT_INTERRUPT_MODE \
-	-DTEST_SCICLIENT_INTERRUPT_MODE \
-	-DCONFIG_LPM_DM \
-	-DCONFIG_PM_CLK_SSC \
-	-DCONFIG_GET_DEVICE_MULTIPLE \
+	-DSOC_J722S \
 
 CFLAGS_common := \
+	-DBUILD_MAIN_R5 \
 	-mcpu=cortex-r5 \
 	-mfloat-abi=hard \
 	-mfpu=vfpv3-d16 \
@@ -113,17 +106,14 @@ LNK_FILES_common = \
 
 LIBS_PATH_common = \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	-Wl,-i${MCU_PLUS_SDK_PATH}/source/board/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
 LIBS_common = \
-	-lnortos.am62px.r5f.ti-arm-clang.${ConfigName}.lib \
-	-ldrivers.am62px.mcu-r5f.ti-arm-clang.${ConfigName}.lib \
-	-lboard.am62px.r5f.ti-arm-clang.${ConfigName}.lib \
-	-lunity.am62px.r5f.ti-arm-clang.${ConfigName}.lib \
+	-lnortos.j722s.r5f.ti-arm-clang.${ConfigName}.lib \
+	-ldrivers.j722s.main-r5f.ti-arm-clang.${ConfigName}.lib \
+	-lunity.j722s.r5f.ti-arm-clang.${ConfigName}.lib \
 	-llibc.a \
 	-llibsysbm.a \
 
@@ -135,18 +125,15 @@ LFLAGS_common = \
 
 
 LIBS_NAME = \
-	nortos.am62px.r5f.ti-arm-clang.${ConfigName}.lib \
-	drivers.am62px.mcu-r5f.ti-arm-clang.${ConfigName}.lib \
-	board.am62px.r5f.ti-arm-clang.${ConfigName}.lib \
-	unity.am62px.r5f.ti-arm-clang.${ConfigName}.lib \
+	nortos.j722s.r5f.ti-arm-clang.${ConfigName}.lib \
+	drivers.j722s.main-r5f.ti-arm-clang.${ConfigName}.lib \
+	unity.j722s.r5f.ti-arm-clang.${ConfigName}.lib \
 	libc.a \
 	libsysbm.a \
 
 LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib \
-	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	${CG_TOOL_ROOT}/lib \
 
@@ -174,11 +161,11 @@ vpath %.lib $(LIBS_PATH_NAME)
 vpath %.a $(LIBS_PATH_NAME)
 
 $(OBJDIR)/%.obj %.obj: %.c
-	@echo  Compiling: am62px:mcu-r5fss0-0:nortos:ti-arm-clang $(OUTNAME): $<
+	@echo  Compiling: j722s:main-r5fss0-0:nortos:ti-arm-clang $(OUTNAME): $<
 	$(CC) -c $(CFLAGS) $(INCLUDES) $(DEFINES) -MMD -o $(OBJDIR)/$@ $<
 
 $(OBJDIR)/%.obj %.obj: %.S
-	@echo  Compiling: am62px:mcu-r5fss0-0:nortos:ti-arm-clang $(LIBNAME): $<
+	@echo  Compiling: j722s:main-r5fss0-0:nortos:ti-arm-clang $(LIBNAME): $<
 	$(CC) -c $(CFLAGS) -o $(OBJDIR)/$@ $<
 
 all: $(TARGETS)
@@ -192,18 +179,15 @@ SYSCFG_GEN_FILES+=generated/ti_board_open_close.c generated/ti_board_open_close.
 
 $(OUTNAME): syscfg $(SYSCFG_GEN_FILES) $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 	@echo  .
-	@echo  Linking: am62px:mcu-r5fss0-0:nortos:ti-arm-clang $@ ...
+	@echo  Linking: j722s:main-r5fss0-0:nortos:ti-arm-clang $@ ...
 	$(LNK) $(LNKOPTFLAGS) $(LFLAGS) $(LIBS_PATH) -Wl,-m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) $(LNK_FILES)
-	$(RM) test_sciclient_dynamic_analysis.mcu-r5f0_0.${ConfigName}.strip.out
-	$(STRIP) -p $@ -o=test_sciclient_dynamic_analysis.mcu-r5f0_0.${ConfigName}.strip.out
-	@echo  Linking: am62px:mcu-r5fss0-0:nortos:ti-arm-clang $@ Done !!!
+	@echo  Linking: j722s:main-r5fss0-0:nortos:ti-arm-clang $@ Done !!!
 	@echo  .
 
 clean:
-	@echo  Cleaning: am62px:mcu-r5fss0-0:nortos:ti-arm-clang $(OUTNAME) ...
+	@echo  Cleaning: j722s:main-r5fss0-0:nortos:ti-arm-clang $(OUTNAME) ...
 	$(RMDIR) $(OBJDIR)
 	$(RM) $(OUTNAME)
-	$(RM) test_sciclient_dynamic_analysis.mcu-r5f0_0.${ConfigName}.strip.out
 	$(RM) $(BOOTIMAGE_NAME)
 	$(RM) $(BOOTIMAGE_NAME_XIP)
 	$(RM) $(BOOTIMAGE_NAME_SIGNED)
@@ -214,7 +198,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62px:mcu-r5fss0-0:nortos:ti-arm-clang test_sciclient_dynamic_analysis ...
+	@echo  Scrubing: j722s:main-r5fss0-0:nortos:ti-arm-clang test_sciclient_dynamic_analysis ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
@@ -245,10 +229,10 @@ $(SYSCFG_GEN_FILES): syscfg
 
 syscfg: ../example.syscfg
 	@echo Generating SysConfig files ...
-	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM62Px --context mcu-r5fss0-0 --part Default --package AMH --output generated/ ../example.syscfg
+	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device J722S_TDA4VEN_TDA4AEN_AM67 --context main-r5fss0-0 --part Default --package AMW --output generated/ ../example.syscfg
 
 syscfg-gui:
-	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device AM62Px --context mcu-r5fss0-0 --part Default --package AMH --output generated/  ../example.syscfg
+	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device J722S_TDA4VEN_TDA4AEN_AM67 --context main-r5fss0-0 --part Default --package AMW --output generated/  ../example.syscfg
 
 #
 # Generation of boot image which can be loaded by Secondary Boot Loader (SBL)
@@ -265,13 +249,16 @@ BOOTIMAGE_TEMP_OUT_FILE=temp_stdout_$(PROFILE).txt
 
 BOOTIMAGE_CERT_KEY=$(APP_SIGNING_KEY)
 
-BOOTIMAGE_CORE_ID_a53ss0-0 = 0
-BOOTIMAGE_CORE_ID_a53ss0-1 = 1
-BOOTIMAGE_CORE_ID_a53ss1-0 = 2
-BOOTIMAGE_CORE_ID_a53ss1-1 = 3
-BOOTIMAGE_CORE_ID_wkup-r5fss0-0 = 4
-BOOTIMAGE_CORE_ID_mcu-r5fss0-0 = 5
-BOOTIMAGE_CORE_ID_hsm-m4fss0-0 = 6
+BOOTIMAGE_CORE_ID_mcu-r5fss0-0  = 0
+BOOTIMAGE_CORE_ID_wkup-r5fss0-0 = 1
+BOOTIMAGE_CORE_ID_main-r5fss0-0 = 2
+BOOTIMAGE_CORE_ID_c75ss0-0      = 3
+BOOTIMAGE_CORE_ID_c75ss1-0      = 4
+BOOTIMAGE_CORE_ID_a53ss0-0      = 5
+BOOTIMAGE_CORE_ID_a53ss0-1      = 6
+BOOTIMAGE_CORE_ID_a53ss1-0      = 7
+BOOTIMAGE_CORE_ID_a53ss1-1      = 8
+BOOTIMAGE_CORE_ID_hsm-m4fss0-0  = 9
 SBL_RUN_ADDRESS=0x43C00000
 SBL_DEV_ID=55
 
@@ -286,13 +273,14 @@ else
 endif
 
 MULTI_CORE_IMAGE_PARAMS = \
-	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
+	$(SCISERVER_BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_wkup-r5fss0-0) \
+	$(BOOTIMAGE_RPRC_NAME)@$(BOOTIMAGE_CORE_ID_main-r5fss0-0) \
 
 MULTI_CORE_IMAGE_PARAMS_XIP = \
-	$(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
+	$(BOOTIMAGE_RPRC_NAME_XIP)@$(BOOTIMAGE_CORE_ID_main-r5fss0-0) \
 
-$(BOOTIMAGE_NAME): $(OUTNAME)
-	@echo  Boot image: am62px:mcu-r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ ...
+$(BOOTIMAGE_NAME): $(OUTNAME) $(SCISERVER_BOOTIMAGE_RPRC_NAME)
+	@echo  Boot image: j722s:main-r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ ...
 ifneq ($(OS),Windows_NT)
 	$(CHMOD) a+x $(XIPGEN_CMD)
 endif
@@ -304,14 +292,14 @@ endif
 	$(MULTI_CORE_IMAGE_GEN) --devID $(SBL_DEV_ID) --out $(BOOTIMAGE_NAME_XIP) $(MULTI_CORE_IMAGE_PARAMS_XIP) >> $(BOOTIMAGE_TEMP_OUT_FILE)
 # Sign the appimage for HS-FS using appimage signing script
     #
-    #   Authentication type 0 with load address 0x84000000
+    #   Authentication type 0 with load address 0xC2000000
     #
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS) --keyversion $(VERSION)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr C2000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_RPRC_NAME_TMP)
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
-	@echo  Boot image: am62px:mcu-r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ Done !!!
+	@echo  Boot image: j722s:main-r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$@ Done !!!
 	@echo  .
-	@echo  Boot image: am62px:mcu-r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
+	@echo  Boot image: j722s:main-r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
 	@echo  .
 
 $(BOOTIMAGE_NAME_HS): $(BOOTIMAGE_NAME)
@@ -320,18 +308,20 @@ ifeq ($(DEVICE_TYPE), HS)
 ifeq ($(ENC_ENABLED),no)
 	@echo Boot image signing: Encryption is disabled.
     #
-    #   Authentication type 0 with load address 0x84000000
+    #   Authentication type 0 with load address 0xC2000000
     #
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr C2000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
 else
 	@echo Boot image signing: Encryption is enabled.
     #
-    #   Authentication type 0 with load address 0x84000000
+    #   Authentication type 0 with load address 0xC2000000
     #
-	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr C2000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_NAME)-enc
 endif
-	@echo  Boot image: am62px:mcu-r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
+	@echo  Boot image: j722s:main-r5fss0-0:nortos:ti-arm-clang $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
 	@echo  .
 endif
+$(SCISERVER_BOOTIMAGE_RPRC_NAME):
+	$(MAKE) -C $(MCU_PLUS_SDK_PATH)/examples/drivers/sciclient/sciclient_get_version/j722s-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile PROFILE=$(PROFILE) all
 -include $(addprefix $(OBJDIR)/, $(DEPS))

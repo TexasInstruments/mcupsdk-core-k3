@@ -55,11 +55,13 @@ extern "C" {
 /*                                    Macros                                 */
 /*===========================================================================*/
 
-#define CSL_CORE_ID_1         CSL_CORE_ID_R5FSS0_0
-#define CSL_CORE_ID_2         CSL_CORE_ID_C75SS0_0
+#define CSL_CORE_ID_1         CSL_CORE_ID_WKUP_R5FSS0_0
+#define CSL_CORE_ID_2         CSL_CORE_ID_A53SS0_0
 #define CSL_CORE_ID_3         CSL_CORE_ID_MCU_R5FSS0_0
-#define CSL_CORE_ID_4         CSL_CORE_ID_A53SS0_0
-#define SCICLIENT_PROC_ID_1   SCICLIENT_PROC_ID_R5FSS0_CORE0
+#define CSL_CORE_ID_4         CSL_CORE_ID_MAIN_R5FSS0_0
+#define CSL_CORE_ID_5         CSL_CORE_ID_C75SS0_0
+#define CSL_CORE_ID_6         CSL_CORE_ID_C75SS1_0
+#define SCICLIENT_PROC_ID_1   SCICLIENT_PROC_ID_WKUP_R5FSS0_CORE0
 
 /* ========================================================================== */
 /*                             Internal Variables                             */

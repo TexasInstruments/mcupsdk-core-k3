@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024-2025 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -57,14 +57,18 @@ const int32_t gTestMessageType[] =
     TISCI_MSG_SET_CLOCK_PARENT,
     TISCI_MSG_GET_CLOCK_PARENT,
     TISCI_MSG_GET_NUM_CLOCK_PARENTS,
+#if defined(CONFIG_PM_CLK_SSC)
     TISCI_MSG_SET_CLOCK_SSC,
     TISCI_MSG_GET_CLOCK_SSC,
+#endif
     TISCI_MSG_SET_FREQ,
     TISCI_MSG_QUERY_FREQ,
     TISCI_MSG_GET_FREQ,
     TISCI_MSG_SET_DEVICE,
     TISCI_MSG_GET_DEVICE,
+#if defined(CONFIG_GET_DEVICE_MULTIPLE)
     TISCI_MSG_GET_DEVICE_MULTIPLE,
+#endif
     TISCI_MSG_SET_DEVICE_RESETS,
     TISCI_MSG_RM_GET_RESOURCE_RANGE,
     TISCI_MSG_RM_UDMAP_FLOW_CFG,
@@ -79,6 +83,7 @@ const int32_t gTestMessageType[] =
     TISCI_MSG_RM_UDMAP_RX_CH_CFG,
     TISCI_MSG_RM_PROXY_CFG,
     TISCI_MSG_BOARD_CONFIG_PM,
+#if defined(CONFIG_LPM_DM)
     TISCI_MSG_PREPARE_SLEEP,
     TISCI_MSG_LPM_WAKE_REASON,
     TISCI_MSG_SET_IO_ISOLATION,
@@ -89,6 +94,7 @@ const int32_t gTestMessageType[] =
     TISCI_MSG_LPM_GET_NEXT_SYS_MODE,
     TISCI_MSG_LPM_GET_NEXT_HOST_STATE,
     TISCI_MSG_LPM_ABORT,
+#endif
     TISCI_MSG_QUERY_FW_CAPS,
     TISCI_MSG_KEY_WRITER,
     TISCI_MSG_WRITE_OTP_ROW,

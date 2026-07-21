@@ -32,70 +32,59 @@
  */
 
 /**
- *  \file test_sciclient.h
+ *  \file test_sciclient_context.h
  *
  *  \brief This file contains all the structures, macros, enums
- *  functions used by the device manager UT applications.
+ *  used by the sciclient UT applications.
  */
 
-#ifndef TEST_SCICLIENT_H_
-#define TEST_SCICLIENT_H_
+#ifndef TEST_SCICLIENT_CONTEXT_H_
+#define TEST_SCICLIENT_CONTEXT_H_
 
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
 
-#include "../../../unity/unity.h"
-#include "../../../../source/drivers/sciclient.h"
-#include "../../../../source/drivers/sciclient/sciclient_priv.h"
-#include "../../../../source/drivers/sciclient/sciclient_rm_priv.h"
-#include <drivers/sciclient/include/tisci/security/tisci_ext_otp.h>
-#include <drivers/sciclient/include/tisci/security/tisci_otp_revision.h>
-#include <drivers/sciclient/include/tisci/lpm/tisci_lpm.h>
-#if defined (SOC_AM62AX)
-#include "am62ax-sk/test_sciclient_val.h"
-#include <drivers/sciclient/soc/am62ax/sciclient_soc_priv.h>
-#include <drivers/sciclient/include/tisci/am62ax/tisci_clocks.h>
-#elif defined (SOC_AM62PX)
-#include "am62px-sk/test_sciclient_val.h"
-#include <drivers/sciclient/soc/am62px/sciclient_soc_priv.h>
-#include <drivers/sciclient/include/tisci/am62px/tisci_clocks.h>
-#elif defined (SOC_AM62DX)
-#include "am62dx-evm/test_sciclient_val.h"
-#include <drivers/sciclient/soc/am62dx/sciclient_soc_priv.h>
-#include <drivers/sciclient/include/tisci/am62dx/tisci_clocks.h>
-#elif defined (SOC_J722S)
-#include "j722s-evm/test_sciclient_val.h"
-#include <drivers/sciclient/soc/sciclient_soc_priv.h>
-#include <drivers/sciclient/include/tisci/j722s/tisci_clocks.h>
-#endif
+#include "test_sciclient_val.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* ========================================================================== */
-/*                           Function Declarations                            */
+/*                             Internal Variables                             */
 /* ========================================================================== */
 
-int8_t test_sciclient(void);
-int8_t test_sciclient_message_passing(void);
-int8_t test_sciclient_modes(void);
-int8_t test_sciclient_rm(void);
-int8_t test_sciclient_pm(void);
-int8_t test_sciclient_lpm(void);
-int8_t test_sciclient_rm_irq(void);
-int8_t test_sciclient_firewall(void);
-int8_t test_sciclient_procboot(void);
-int8_t test_sciclient_soc_priv(void);
-int8_t test_csl_sec_proxy(void);
+uint32_t core_id_list[][4]={{CSL_CORE_ID_1,       SCICLIENT_CONTEXT_R5_SEC_0,            SCICLIENT_CONTEXT_R5_NONSEC_0,         TISCI_DEV_WKUP_R5FSS0_CORE0},
+                            {CSL_CORE_ID_2,       SCICLIENT_CONTEXT_C7_NONSEC_0,         SCICLIENT_CONTEXT_C7_NONSEC_0,         TISCI_DEV_C7X256V0_C7XV_CORE_0},
+                            {CSL_CORE_ID_3,       SCICLIENT_CONTEXT_MCU_R5_0_NONSEC_0,   SCICLIENT_CONTEXT_MCU_R5_0_NONSEC_0,   TISCI_DEV_MCU_R5FSS0_CORE0},
+                            {CSL_CORE_ID_4,       SCICLIENT_CONTEXT_A53_SEC_0,           SCICLIENT_CONTEXT_A53_NONSEC_1,        TISCI_DEV_A53SS0_CORE_0},
+                            {CSL_CORE_ID_INVALID, SCICLIENT_CONTEXT_MAX_NUM,             SCICLIENT_CONTEXT_MAX_NUM,             SCICLIENT_DEV_ID_MAX},
+                            };
 
 /* ========================================================================== */
-/*                           External Function                                */
+/*                             External Variables                             */
 /* ========================================================================== */
 
-extern void localFpMemAccess( uintptr_t addr, uint8_t *pData, uint32_t elemSizeBytes, uint32_t elemCnt );
+/*None*/
 
+/* ========================================================================== */
+/*                                 Macros                                     */
+/* ========================================================================== */
+
+/*None*/
+
+/* ========================================================================== */
+/*                         Structures and Enums                               */
+/* ========================================================================== */
+
+/*None*/
+
+/* ========================================================================== */
+/*                          Function Declarations                             */
+/* ========================================================================== */
+
+/*None*/
 
 #ifdef __cplusplus
 }

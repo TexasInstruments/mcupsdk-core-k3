@@ -25,6 +25,7 @@ const includes_r5f = {
         "../rm_pm_hal/rm_pm_hal_src/common/fw_caps",
         "../rm_pm_hal/rm_pm_hal_src/pm",
         "../rm_pm_hal/rm_pm_hal_src/pm/include",
+        "../rm_pm_hal/rm_pm_hal_src/pm/soc/am62ax/include/soc/am62ax",
         "../rm_pm_hal/rm_pm_hal_src/rm",
         "../rm_pm_hal/rm_pm_hal_src/rm/include",
         "../rm_pm_hal/rm_pm_hal_src/include/soc/am62ax",

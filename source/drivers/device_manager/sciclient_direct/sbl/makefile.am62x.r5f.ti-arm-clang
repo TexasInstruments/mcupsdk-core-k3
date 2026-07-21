@@ -42,6 +42,7 @@ INCLUDES_common := \
     -I../../rm_pm_hal/rm_pm_hal_src/common/fw_caps \
     -I../../rm_pm_hal/rm_pm_hal_src/pm \
     -I../../rm_pm_hal/rm_pm_hal_src/pm/include \
+    -I../../rm_pm_hal/rm_pm_hal_src/pm/soc/am62x/include/soc/am62x \
     -I../../rm_pm_hal/rm_pm_hal_src/rm \
     -I../../rm_pm_hal/rm_pm_hal_src/rm/include \
     -I../../rm_pm_hal/rm_pm_hal_src/include/soc/am62x \

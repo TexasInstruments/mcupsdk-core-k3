@@ -198,12 +198,29 @@ int32_t App_runCpus(Bootloader_Handle bootHandle)
 {
     int32_t status = SystemP_SUCCESS;
     uint8_t cpuId;
+    Bootloader_Handle resetHandle;
+    Bootloader_Params bootParams;  
+    Bootloader_BootImageInfo bootImageInfo;
+    uint32_t *selfCpuList = Bootloader_socGetSelfCpuList();
 
     for(cpuId = 0; cpuId < CSL_CORE_ID_MAX; cpuId++)
     {
         if(socCpuCores[cpuId] == BOOTLOADER_SD_APP_IMAGE_LOADED)
         {
             status = Bootloader_runCpu(bootHandle, &bootCpuInfo[cpuId]);
+        }
+        else if(cpuId != selfCpuList[0U])
+        {
+            Bootloader_Params_init(&bootParams);
+            Bootloader_BootImageInfo_init(&bootImageInfo);
+            resetHandle = Bootloader_open(CONFIG_BOOTLOADER_RESET, &bootParams);
+            bootCpuInfo[cpuId] = bootImageInfo.cpuInfo[cpuId];
+
+            if(resetHandle != NULL)
+            {
+                status = Bootloader_bootCpu(resetHandle, &bootCpuInfo[cpuId]);
+                Bootloader_close(resetHandle);
+            }
         }
     }
 

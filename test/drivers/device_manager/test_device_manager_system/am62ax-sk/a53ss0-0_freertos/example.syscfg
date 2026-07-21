@@ -1,0 +1,45 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM62Ax" --part "Default" --package "AMB" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @v2CliArgs --device "AM62A7-Q1" --package "FCBGA (AMB)" --variant "AM62A74-M" --context "a53ss0-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.26.2+4477"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const ipc        = scripting.addModule("/drivers/ipc/ipc");
+const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
+const mmu_armv8  = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
+const mmu_armv81 = mmu_armv8.addInstance();
+const mmu_armv82 = mmu_armv8.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+ipc.mcu_r5fss0_0   = "notify";
+ipc.r5fss0_0       = "notify";
+ipc.c75ss0_0       = "notify";
+ipc.enableLinuxIpc = false;
+
+debug_log.enableUartLog        = true;
+debug_log.uartLog.$name        = "CONFIG_UART_CONSOLE";
+debug_log.uartLog.UART.$assign = "USART0";
+
+mmu_armv81.size  = 0x80000000;
+mmu_armv81.$name = "SOC_MEM_REGION";
+
+mmu_armv82.vAddr     = 0x80000000;
+mmu_armv82.pAddr     = 0x80000000;
+mmu_armv82.size      = 0x80000000;
+mmu_armv82.attribute = "MAIR7";
+mmu_armv82.$name     = "DDR_REGION";
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+debug_log.uartLog.UART.RXD.$suggestSolution = "UART0_RXD";
+debug_log.uartLog.UART.TXD.$suggestSolution = "UART0_TXD";

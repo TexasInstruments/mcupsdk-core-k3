@@ -48,6 +48,8 @@
  * TISCI_HOST_ID_A53_2 on AM275X) are defined in per-device header files. */
 #if defined(SOC_AM62DX)
 #include "am62dx-evm/test_device_manager_val.h"
+#elif defined(SOC_AM62AX)
+#include "am62ax-sk/test_device_manager_val.h"
 #elif defined(SOC_AM275X)
 #include "am275x-evm/test_device_manager_val.h"
 #endif

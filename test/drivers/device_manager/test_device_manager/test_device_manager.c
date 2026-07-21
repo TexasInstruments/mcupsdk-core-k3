@@ -150,9 +150,6 @@ void test_main(void *args)
     RUN_TEST(testDM_boardCfgApis, 12216, NULL);
     RUN_TEST(testDM_dkekApis, 12217, NULL);
     RUN_TEST(testDM_uartPrintf, 12214, NULL);
-    RUN_TEST(testDM_boardCfgApis, 12216, NULL);
-    RUN_TEST(testDM_dkekApis, 12217, NULL);
-    RUN_TEST(testDM_uartPrintf, 12214, NULL);
     RUN_TEST(testDM_multithreadConcurrentVersion, 12385, NULL);
     RUN_TEST(testDM_multithreadConcurrentMultiApi, 12386, NULL);
     RUN_TEST(testDM_pmSetStateHighPriVsGetStateLowPri, 12387, NULL);

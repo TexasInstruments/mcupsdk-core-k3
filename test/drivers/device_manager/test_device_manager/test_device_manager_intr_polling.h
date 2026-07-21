@@ -64,6 +64,8 @@
  * following the same pattern as the other test_device_manager_*.h headers. */
 #if defined(SOC_AM62DX)
 #include "am62dx-evm/test_device_manager_val.h"
+#elif defined(SOC_AM62AX)
+#include "am62ax-sk/test_device_manager_val.h"
 #elif defined(SOC_AM275X)
 #include "am275x-evm/test_device_manager_val.h"
 #endif

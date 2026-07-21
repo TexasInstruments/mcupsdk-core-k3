@@ -57,6 +57,8 @@
  * following the same pattern as test/drivers/device_manager/sciclient_direct. */
 #if defined(SOC_AM62DX)
 #include "am62dx-evm/test_device_manager_val.h"
+#elif defined(SOC_AM62AX)
+#include "am62ax-sk/test_device_manager_val.h"
 #elif defined(SOC_AM275X)
 #include "am275x-evm/test_device_manager_val.h"
 #else

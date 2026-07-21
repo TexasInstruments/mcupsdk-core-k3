@@ -211,6 +211,7 @@ const example_file_list = [
     "test/drivers/epwm/.project/project.js",
     "test/drivers/epwm/test_epwm_system/.project/project.js",
     "test/drivers/ecap/.project/project.js",
+    "test/drivers/ecap/test_ecap_system/.project/project.js",
     "test/drivers/eqep/.project/project.js",
     "test/drivers/eqep/test_eqep_system/.project/project.js",
     "test/board/eeprom/.project/project.js",

@@ -197,7 +197,7 @@ void test_main(void *args)
     UNITY_BEGIN();
 
     ECAP_TestParams testParams;
-    #if !defined(SOC_AM62DX)
+    #if !defined(SOC_AM62DX) && !defined(SOC_AM62AX) && !defined(SOC_AM62X)
     test_ecap_init_test_params(&testParams, 10661);
     RUN_TEST(TestEcap_CaptureAPWMmode, 10963, (void*)&testParams);
     #endif

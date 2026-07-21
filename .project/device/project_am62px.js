@@ -259,6 +259,7 @@ const example_file_list = [
     "test/drivers/udma/test_udma_system/.project/project.js",
     "test/drivers/uart/.project/project.js",
     "test/drivers/watchdog/.project/project.js",
+    "test/drivers/ecap/.project/project.js",
     "test/kernel/dpl/.project/project.js",
     "test/kernel/dpl_mpu_test/.project/project.js",
     "test/kernel/freertos/.project/project.js",

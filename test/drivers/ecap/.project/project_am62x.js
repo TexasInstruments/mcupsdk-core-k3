@@ -9,6 +9,21 @@ const files = {
     ],
 };
 
+const files_rtos = {
+    common: [
+        "test_ecap_multi_thread.c",
+        "test_ecap.c",
+        "main.c",
+    ],
+};
+
+const files_smp = {
+    common: [
+        "test_ecap_multi_thread.c",
+        "main.c",
+    ],
+};
+
 /* Relative to where the makefile will be generated
  * Typically at <example_folder>/<BOARD>/<core_os_combo>/<compiler>
  */
@@ -16,6 +31,29 @@ const filedirs = {
     common: [
         "..",       /* core_os_combo base */
         "../../..", /* Example base */
+    ],
+};
+
+const libdirs_nortos = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+    ],
+};
+
+const libdirs_freertos = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+    ],
+};
+
+const includes_nortos_a53 = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/nortos",
+        "${MCU_PLUS_SDK_PATH}/test/unity/",
     ],
 };
 
@@ -28,11 +66,24 @@ const includes_freertos_a53 = {
     ],
 };
 
-const libdirs_freertos_a53 = {
+const includes_a53_smp = {
     common: [
-        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
-        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
-        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable_smp/GCC/ARM_CA53",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53-smp",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/include/private",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include",
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-POSIX/FreeRTOS-Plus-POSIX/include/portable",
+        "${MCU_PLUS_SDK_PATH}/test/unity/",
+    ],
+};
+
+const libs_nortos_a53 = {
+    common: [
+        "nortos.am62x.a53.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62x.a53.gcc-aarch64.${ConfigName}.lib",
+        "unity.am62x.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
 
@@ -44,16 +95,51 @@ const libs_freertos_a53 = {
     ],
 };
 
+const libs_a53_smp = {
+    common: [
+        "freertos.am62x.a53-smp.gcc-aarch64.${ConfigName}.lib",
+        "drivers.am62x.a53.gcc-aarch64.${ConfigName}.lib",
+        "unity.am62x.a53.gcc-aarch64.${ConfigName}.lib",
+    ],
+};
+
+const defines_a53_smp = {
+    common: [
+        "OS_FREERTOS",
+        "SMP_FREERTOS",
+        "SMP_QUADCORE_FREERTOS",
+    ],
+};
+
+const cflags_free_rtos = {
+    common: [
+        "-DENABLE_MT_TESTS",
+    ],
+};
+
 const lnkfiles = {
     common: [
         "linker.cmd",
-    ]
+    ],
 };
 
-const syscfgfile = "../example.syscfg"
+const syscfgfile = "../example.syscfg";
 
-const templates_freertos_a53 =
-[
+const templates_nortos_a53 = [
+    {
+        input: ".project/templates/am62x/common/linker_a53.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62x/nortos/main_nortos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "test_main",
+        },
+    },
+];
+
+const templates_freertos_a53 = [
     {
         input: ".project/templates/am62x/common/linker_a53.cmd.xdt",
         output: "linker.cmd",
@@ -67,10 +153,26 @@ const templates_freertos_a53 =
     },
 ];
 
+const templates_a53_smp = [
+    {
+        input: ".project/templates/am62x/common/linker_a53_smp.cmd.xdt",
+        output: "linker.cmd",
+    },
+    {
+        input: ".project/templates/am62x/freertos/main_freertos_smp.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "test_main",
+        },
+    },
+];
+
 const buildOptionCombos = [
-    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sk", os: "freertos"},
-    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sip-sk", os: "freertos"},
-    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sk-lp", os: "freertos"},
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sk",     os: "nortos"       },
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sk",     os: "freertos"     },
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sip-sk", os: "freertos"     },
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sk-lp",  os: "freertos"     },
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62x-sk",     os: "freertos-smp" },
 ];
 
 function getComponentProperty(device) {
@@ -86,19 +188,69 @@ function getComponentProperty(device) {
     return property;
 }
 
+const robot_template_nortos = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests_nortos.robot",
+    options: {
+        componentName: "ECAP",
+        testCaseName: "ecap test application (nortos)",
+        appName: "test_ecap(nortos)",
+        testCaseIds: "SITSW-6990 SITSW-7274 SITSW-7275 SITSW-7276 SITSW-7277 SITSW-7278 SITSW-7279 SITSW-7280 SITSW-7281 SITSW-7282" +
+                     " SITSW-7283 SITSW-7312 SITSW-7313 SITSW-10655 SITSW-10656 SITSW-10658 SITSW-10659 SITSW-10660",
+        timeout: 300,
+    },
+};
+
+const robot_template_freertos = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests_freertos.robot",
+    options: {
+        componentName: "ECAP",
+        testCaseName: "ecap test application (freertos)",
+        appName: "test_ecap(freertos)",
+        testCaseIds: "SITSW-6990 SITSW-7274 SITSW-7275 SITSW-7276 SITSW-7277 SITSW-7278 SITSW-7279 SITSW-7280 SITSW-7281 SITSW-7282" +
+                     " SITSW-7283 SITSW-7312 SITSW-7313 SITSW-10655 SITSW-10656 SITSW-10658 SITSW-10659 SITSW-10660 SITSW-10661 SITSW-10662",
+        timeout: 300,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
     build_property.files = files;
     build_property.filedirs = filedirs;
+    build_property.libdirs = libdirs_nortos;
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
 
-    if(buildOption.cpu.match(/a53*/)) {
-        build_property.includes = includes_freertos_a53;
-        build_property.libdirs = libdirs_freertos_a53;
-        build_property.libs = libs_freertos_a53;
-        build_property.templates = templates_freertos_a53;
+    if (buildOption.cpu.match(/a53*/)) {
+        if (buildOption.os.match(/freertos-smp*/)) {
+            build_property.files     = files_smp;
+            build_property.includes  = includes_a53_smp;
+            build_property.libdirs   = libdirs_freertos;
+            build_property.libs      = libs_a53_smp;
+            build_property.templates = templates_a53_smp;
+            build_property.defines   = defines_a53_smp;
+            build_property.cflags    = cflags_free_rtos;
+        } else if (buildOption.os.match(/freertos*/)) {
+            build_property.files     = files_rtos;
+            build_property.includes  = includes_freertos_a53;
+            build_property.libdirs   = libdirs_freertos;
+            build_property.libs      = libs_freertos_a53;
+            build_property.templates = templates_freertos_a53;
+            build_property.cflags    = cflags_free_rtos;
+        } else {
+            build_property.includes  = includes_nortos_a53;
+            build_property.libdirs   = libdirs_nortos;
+            build_property.libs      = libs_nortos_a53;
+            build_property.templates = templates_nortos_a53;
+        }
+    }
+
+    if (buildOption.os.match(/nortos/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_nortos];
+    } else if (buildOption.os.match(/freertos/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_freertos];
     }
 
     return build_property;

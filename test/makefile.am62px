@@ -186,6 +186,8 @@ help:
 	@echo  $(MAKE) -s -C drivers/udma/test_udma_system/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/uart/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/watchdog/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ecap/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/ecap/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -481,6 +483,8 @@ BUILD_COMBO_EXAMPLE_ALL += test_udma_system_am62px-sk_mcu-r5fss0-0_freertos_ti-a
 BUILD_COMBO_EXAMPLE_ALL += test_udma_system_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_uart_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_watchdog_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_ecap_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_ecap_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_dpl_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang
@@ -924,6 +928,12 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_watchdog_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/watchdog/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 
+ test_ecap_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/ecap/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
+
+ test_ecap_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/ecap/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
  test_dpl_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C kernel/dpl/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile all
 
@@ -1143,6 +1153,8 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_udma_system_am62px-sk_mcu-r5fss0-0_freerto
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_udma_system_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_uart_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_watchdog_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ecap_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_ecap_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_dpl_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean
@@ -1586,6 +1598,12 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_watchdog_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/watchdog/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 
+ test_ecap_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/ecap/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
+ test_ecap_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/ecap/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
  test_dpl_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C kernel/dpl/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile clean
 
@@ -1805,6 +1823,8 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_udma_system_am62px-sk_mcu-r5fss0-0_freerto
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_udma_system_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_uart_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_watchdog_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ecap_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_ecap_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_dpl_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
@@ -2247,6 +2267,12 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  test_watchdog_am62px-sk_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/watchdog/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_ecap_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/ecap/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_ecap_am62px-sk_mcu-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/ecap/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 
  test_dpl_am62px-sk_mcu-r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C kernel/dpl/am62px-sk/mcu-r5fss0-0_nortos/ti-arm-clang -f makefile scrub

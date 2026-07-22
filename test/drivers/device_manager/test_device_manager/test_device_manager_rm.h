@@ -61,6 +61,8 @@
 #include "am62ax-sk/test_device_manager_val.h"
 #elif defined(SOC_AM275X)
 #include "am275x-evm/test_device_manager_val.h"
+#elif defined(SOC_AM62PX)
+#include "am62px-sk/test_device_manager_val.h"
 #else
 /* Placeholder defaults for other SoCs — positive RM tests are SOC-specific */
 #define TEST_RM_NAV_BCDMA_DEV_ID     (0xFFFFU)

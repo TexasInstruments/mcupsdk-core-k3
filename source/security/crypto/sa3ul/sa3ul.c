@@ -856,9 +856,6 @@ int32_t SA3UL_contextAlloc(SA3UL_Handle handle, SA3UL_ContextObject *ctxObj, con
     SA3UL_Object *saObj;
     SA3UL_Config  *saCfg;
     SA3UL_Attrs   *saAttrs;
-    saCfg = (SA3UL_Config *) handle;
-    saObj = saCfg->object;
-    saAttrs = saCfg->attrs;
 
     if((NULL == handle) || (NULL == ctxObj) || (NULL == ctxPrms))
     {
@@ -866,6 +863,10 @@ int32_t SA3UL_contextAlloc(SA3UL_Handle handle, SA3UL_ContextObject *ctxObj, con
     }
     else
     {
+        saCfg = (SA3UL_Config *) handle;
+        saObj = saCfg->object;
+        saAttrs = saCfg->attrs;
+
         if(!SA3UL_IS_ALIGNED_PTR(ctxObj, SA3UL_CACHELINE_ALIGNMENT))
         {
             retVal =  SystemP_FAILURE;

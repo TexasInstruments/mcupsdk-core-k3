@@ -234,21 +234,30 @@ int32_t PKA_RSAPrivate(PKA_Handle handle,
     CSL_Eip_29t2_ramRegs *pka_regs;
     PKA_Config      *config;
     PKA_Attrs *attrs;
-    config  = (PKA_Config *) handle;
-    attrs   = config->attrs;
-    size = k->p[0];
 
-    /* check sizes, sizes of s and n must match. */
-	if ((!((size <= 1U) || (size > ((PKA_BIGINT_MAX - 1U) >> 1)) ||
-	       (k->q[0] > size) || (k->dp[0] > size) || (k->dq[0] > size) ||
-	       (k->coefficient[0] > size) || (m[0] > (size * 2U)))))
+    if(NULL == handle)
     {
-        /* Checking handle is opened or not */
-        if((attrs->isOpen) && (NULL != handle))
+        status = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == status)
+    {
+        config  = (PKA_Config *) handle;
+        attrs   = config->attrs;
+        size = k->p[0];
+        /* check sizes, sizes of s and n must match. */
+    	if ((!((size <= 1U) || (size > ((PKA_BIGINT_MAX - 1U) >> 1)) ||
+    	       (k->q[0] > size) || (k->dp[0] > size) || (k->dq[0] > size) ||
+    	       (k->coefficient[0] > size) || (m[0] > (size * 2U)))))
         {
-            status = SystemP_SUCCESS;
-        }
-	}
+            /* Checking handle is opened or not */
+            if(attrs->isOpen)
+            {
+                status = SystemP_SUCCESS;
+            }
+    	}
+    }
+
     if(SystemP_SUCCESS == status)
     {
         pka_regs = (CSL_Eip_29t2_ramRegs *)attrs->pkaBaseAddr;
@@ -402,21 +411,31 @@ int32_t PKA_RSAPublic(PKA_Handle handle,
     CSL_Eip_29t2_ramRegs *pka_regs;
     PKA_Config      *config;
     PKA_Attrs *attrs;
-    config  = (PKA_Config *) handle;
-    attrs   = config->attrs;
 
-	size = k->n[0];
-
-    /* check sizes, sizes of s and n must match. */
-	if ((!((size <= 1U) || (size > (PKA_BIGINT_MAX - 1U)) ||
-	       (m[0] != size) || (k->e[0] > (PKA_BIGINT_MAX - 1U)))))
+    if(NULL == handle)
     {
-		/* Checking handle is opened or not */
-        if((attrs->isOpen) && (NULL != handle))
+        status = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == status)
+    {
+        config  = (PKA_Config *) handle;
+        attrs   = config->attrs;
+
+        size = k->n[0];
+
+        /* check sizes, sizes of s and n must match. */
+        if ((!((size <= 1U) || (size > (PKA_BIGINT_MAX - 1U)) ||
+               (m[0] != size) || (k->e[0] > (PKA_BIGINT_MAX - 1U)))))
         {
-            status = SystemP_SUCCESS;
+            /* Checking handle is opened or not */
+            if(attrs->isOpen)
+            {
+                status = SystemP_SUCCESS;
+            }
         }
-	}
+    }
+
     if(status == SystemP_SUCCESS)
     {
         pka_regs = (CSL_Eip_29t2_ramRegs *)attrs->pkaBaseAddr;
@@ -546,25 +565,35 @@ int32_t PKA_ECDSASign(PKA_Handle handle,
     CSL_Eip_29t2_ramRegs *pka_regs;
     PKA_Config      *config;
     PKA_Attrs *attrs;
-    config  = (PKA_Config *) handle;
-    attrs   = config->attrs;
 
-	size = cp->prime[0];
-
-    /* check sizes */
-    if ((!((size <= 2U) || (size > (PKA_EC_BIGINT_MAX - 1U)) ||
-	       (size != cp->order[0]) || (size < cp->a[0]) ||
-	       (size < cp->b[0]) || (size < cp->g.x[0]) ||
-	       (size < cp->g.y[0]) || (size < priv[0]) ||
-	       (size < h[0]) || (size < k[0]))) &&
-	       (PKA_bigIntBitLen(cp->order) >= PKA_bigIntBitLen(h)))
+    if(NULL == handle)
     {
-        /* Checking handle is opened or not */
-        if((attrs->isOpen) && (NULL != handle))
+        status = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == status)
+    {
+        config  = (PKA_Config *) handle;
+        attrs   = config->attrs;
+
+        size = cp->prime[0];
+
+        /* check sizes */
+        if ((!((size <= 2U) || (size > (PKA_EC_BIGINT_MAX - 1U)) ||
+               (size != cp->order[0]) || (size < cp->a[0]) ||
+               (size < cp->b[0]) || (size < cp->g.x[0]) ||
+               (size < cp->g.y[0]) || (size < priv[0]) ||
+               (size < h[0]) || (size < k[0]))) &&
+               (PKA_bigIntBitLen(cp->order) >= PKA_bigIntBitLen(h)))
         {
-            status = SystemP_SUCCESS;
+            /* Checking handle is opened or not */
+            if(attrs->isOpen)
+            {
+                status = SystemP_SUCCESS;
+            }
         }
-	}
+    }
+
     if(status == SystemP_SUCCESS)
     {
         pka_regs = (CSL_Eip_29t2_ramRegs *)attrs->pkaBaseAddr;
@@ -661,26 +690,36 @@ int32_t PKA_ECDSAVerify(PKA_Handle handle,
     CSL_Eip_29t2_ramRegs *pka_regs;
     PKA_Config      *config;
     PKA_Attrs *attrs;
-    config  = (PKA_Config *) handle;
-    attrs   = config->attrs;
 
-    size = cp->prime[0];
-
-    /* check sizes */
-    if ((!((size <= 2U) || (size > (PKA_EC_BIGINT_MAX - 1U)) ||
-	       (size != cp->order[0]) || (size < cp->a[0]) ||
-	       (size < cp->b[0]) || (size < cp->g.x[0]) ||
-	       (size < cp->g.y[0]) || (size < pub->x[0]) ||
-	       (size < pub->y[0]) || (size < sig->r[0]) ||
-	       (size < sig->s[0]) || (size < h[0]))) &&
-	        (PKA_bigIntBitLen(cp->order) >= PKA_bigIntBitLen(h)) &&
-	        PKA_isBigIntZero(sig->r) && PKA_isBigIntZero(sig->s))
+    if(NULL == handle)
     {
-        /* Checking handle is opened or not */
-        if((attrs->isOpen) && (NULL != handle))
+        status = SystemP_FAILURE;
+    }
+
+    if(SystemP_SUCCESS == status)
+    {
+        config  = (PKA_Config *) handle;
+        attrs   = config->attrs;
+
+        size = cp->prime[0];
+
+        /* check sizes */
+        if ((!((size <= 2U) || (size > (PKA_EC_BIGINT_MAX - 1U)) ||
+               (size != cp->order[0]) || (size < cp->a[0]) ||
+               (size < cp->b[0]) || (size < cp->g.x[0]) ||
+               (size < cp->g.y[0]) || (size < pub->x[0]) ||
+               (size < pub->y[0]) || (size < sig->r[0]) ||
+               (size < sig->s[0]) || (size < h[0]))) &&
+                (PKA_bigIntBitLen(cp->order) >= PKA_bigIntBitLen(h)) &&
+                PKA_isBigIntZero(sig->r) && PKA_isBigIntZero(sig->s))
         {
-            status = SystemP_SUCCESS;
+            /* Checking handle is opened or not */
+            if(attrs->isOpen)
+            {
+                status = SystemP_SUCCESS;
+            }
         }
+
         if(status == SystemP_SUCCESS)
         {
             pka_regs = (CSL_Eip_29t2_ramRegs *)attrs->pkaBaseAddr;

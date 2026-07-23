@@ -383,13 +383,19 @@ int32_t SDL_RTI_negTest()
 /*******************************************************************************************
 *     Coverage test case for SDL_RTI_getWindowSize
 *******************************************************************************************/
-
+    if (testStatus == SDL_APP_TEST_PASS)
+    {
     #if defined (SOC_AM62X) || defined (SOC_AM62PX) || defined (SOC_AM62AX) || defined (SOC_AM62DX) || defined (SOC_J722S)
-    baseAddr = SDL_RTI_baseAddress[SDL_INSTANCE_MCU_RTI0_CFG];
+        testStatus = SDL_RTI_getBaseaddr(SDL_INSTANCE_MCU_RTI0_CFG, &baseAddr);
     #endif
     #if defined (SOC_AM275X)
-    baseAddr = SDL_RTI_baseAddress[SDL_INSTANCE_RTI0];
+        testStatus = SDL_RTI_getBaseaddr(SDL_INSTANCE_RTI0, &baseAddr);
     #endif
+    }
+    if (testStatus != SDL_APP_TEST_PASS)
+    {
+        printf("\r\n  SDL_RTI_getBaseaddr failed on line no: %d \r\n", __LINE__);
+    }
 
     if (testStatus == SDL_APP_TEST_PASS)
     {

@@ -17,6 +17,7 @@ const files_c7x = {
         "TISP_fft2d_superNode_test.cpp",
         "fft2d_dsp.cpp",
         "main.cpp",
+        "TISP_app_arena_default_config.cpp",
     ],
 };
 

@@ -20,7 +20,7 @@ const files_c7x = {
     "sigchain_dsp_mcasp.c",
     "sigchain_dsp_cmdproc.c"
   ],
-  cpp_common: ["TISP_router_8ch_12ch.cpp"]
+  cpp_common: ["TISP_router_8ch_12ch.cpp", "TISP_app_arena_default_config.cpp"]
 };
 
 /* Relative to where the makefile will be generated

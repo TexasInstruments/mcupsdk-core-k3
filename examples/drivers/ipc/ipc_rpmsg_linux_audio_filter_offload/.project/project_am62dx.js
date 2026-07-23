@@ -10,6 +10,7 @@ const files = {
         "ipc_rpmsg_linux_audio.cpp",
         "main.cpp",
         "TISP_cascadeBiquad_FIR_test.cpp",
+        "TISP_app_arena_default_config.cpp",
     ],
 };
 

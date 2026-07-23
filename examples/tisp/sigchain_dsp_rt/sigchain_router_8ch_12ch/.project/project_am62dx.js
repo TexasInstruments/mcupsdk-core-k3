@@ -22,6 +22,7 @@ const files_c7x = {
     ],
     cpp_common: [
     	"TISP_router_8ch_12ch.cpp",
+    	"TISP_app_arena_default_config.cpp",
     ],
 };
 

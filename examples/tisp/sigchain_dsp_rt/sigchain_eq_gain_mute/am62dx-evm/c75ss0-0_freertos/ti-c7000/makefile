@@ -53,6 +53,7 @@ FILES_common := \
 
 FILES_cpp_common := \
 	TISP_eq_gain_mute.cpp \
+	TISP_app_arena_default_config.cpp \
 
 FILES_PATH_common = \
 	.. \

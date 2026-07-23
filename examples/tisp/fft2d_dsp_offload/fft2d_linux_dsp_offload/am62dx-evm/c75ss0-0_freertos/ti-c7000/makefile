@@ -50,6 +50,7 @@ FILES_cpp_common := \
 	TISP_fft2d_superNode_test.cpp \
 	fft2d_dsp_linux.cpp \
 	main.cpp \
+	TISP_app_arena_default_config.cpp \
 
 FILES_PATH_common = \
 	.. \

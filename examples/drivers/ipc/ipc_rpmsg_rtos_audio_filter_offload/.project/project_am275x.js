@@ -21,6 +21,7 @@ const files_c7x = {
         "TISP_cascadeBiquad_FIR_test.cpp",
         "ipc_rpmsg_rtos_audio_remote.cpp",
         "main.cpp",
+        "TISP_app_arena_default_config.cpp",
     ],
 };
 

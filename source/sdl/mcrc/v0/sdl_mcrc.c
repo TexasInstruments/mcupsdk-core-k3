@@ -53,6 +53,7 @@
 #include <sdl/include/hw_types.h>
 #include "sdl_ip_mcrc.h"
 #include "sdl_mcrc.h"
+#include "sdl_mcrc_soc_priv.h"
 
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */

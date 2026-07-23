@@ -40,6 +40,7 @@
  **/
 
 #include "mcrc_main.h"
+#include <sdl/mcrc/v0/sdl_mcrc_soc_priv.h>
 
 int32_t sdl_mcrc_negTest(void)
 {

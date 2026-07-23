@@ -46,6 +46,7 @@
 #include <sdl/mcrc/v0/sdl_ip_mcrc.h>
 #include <sdl/mcrc/v0/sdl_mcrc_hw.h>
 #include <sdl/mcrc/v0/soc/sdl_mcrc_soc.h>
+#include <sdl/mcrc/v0/sdl_mcrc_soc_priv.h>
 
 
 bool SDL_MCRC_64bit_AtomicWriteSupport [SDL_MCRC_INSTANCES] = {TRUE}; /* MCRC64_0 instance supports 64 bit atomic write */ 

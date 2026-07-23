@@ -1,5 +1,5 @@
 /*
- *   Copyright (c) Texas Instruments Incorporated 2023
+ *   Copyright (c) Texas Instruments Incorporated 2026
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -32,62 +32,19 @@
  */
 
 /**
- *  \file     sdl_mcrc_soc.c
+ *  \file     sdl_mcrc_soc_priv.h
  *
- *  \brief    This file contains the soc-specific implementation of the API's present in the
- *            device abstraction layer file of MCRC.
+ *  \brief    Private header for SDL_MCRC_64bit_AtomicWriteSupport.
+ *            Include only in sdl_mcrc.c and MCRC unit tests that manipulate
+ *            this array directly. Do not include in public-facing headers.
  */
 
-#include <stdint.h>
+#ifndef SDL_MCRC_SOC_PRIV_H_
+#define SDL_MCRC_SOC_PRIV_H_
+
 #include <stdbool.h>
-#include <sdl/include/sdl_types.h>
-#include <sdl/include/hw_types.h>
-#include <sdl/dpl/sdl_dpl.h>
-#include <sdl/mcrc/v0/sdl_ip_mcrc.h>
-#include <sdl/mcrc/v0/sdl_mcrc_hw.h>
 #include <sdl/mcrc/v0/soc/sdl_mcrc_soc.h>
-#include <sdl/mcrc/v0/sdl_mcrc_soc_priv.h>
 
+extern bool SDL_MCRC_64bit_AtomicWriteSupport[SDL_MCRC_INSTANCES];
 
-bool SDL_MCRC_64bit_AtomicWriteSupport [SDL_MCRC_INSTANCES] = {TRUE, /* MCU_MCRC64_0 instance supports 64 bit atomic write */
-                                                               TRUE}; /* MCRC64_0 instance supports 64 bit atomic write */
-
-/**
- *  Design: PROC_SDL-2101
- */
-int32_t SDL_MCRC_getBaseaddr(SDL_MCRC_InstType instance,
-                             uint32_t *baseAddr)
-{
-    int32_t status = SDL_PASS;
-    uint32_t size = 0;
-
-    if (baseAddr == NULL)
-    {
-        status = SDL_EBADARGS;
-    }
-    else
-    {
-        if (instance == MCU_MCRC64_0)
-        {
-            *baseAddr = (uint32_t)SDL_MCU_MCRC64_0_REGS_BASE;
-            size = SDL_MCU_MCRC64_0_REGS_SIZE;
-        }
-		else if (instance == MCRC64_0)
-			{
-            *baseAddr = (uint32_t)SDL_MCRC64_0_REGS_BASE;
-            size = SDL_MCRC64_0_REGS_SIZE;
-            }
-        else
-        {
-            status = SDL_EBADARGS;
-        }
-    }
-
-    if (status == SDL_PASS)
-    {
-        *baseAddr = (uint32_t)SDL_DPL_addrTranslate((uint64_t)*baseAddr, size);
-    }
-
-    return (status);
-}
-
+#endif /* SDL_MCRC_SOC_PRIV_H_ */

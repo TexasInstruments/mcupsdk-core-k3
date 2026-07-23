@@ -559,8 +559,6 @@ int32_t Sciclient_service (const Sciclient_ReqPrm_t *pReqPrm,
             case TISCI_MSG_KEYRING_IMPORT :
             case TISCI_MSG_BOARD_CONFIG:
             case TISCI_MSG_BOARD_CONFIG_SECURITY:
-            case TISCI_MSG_ALLOW_FWL_CTRL_READ:
-            case TISCI_MSG_FORBID_FWL_CTRL_READ:
             case TISCI_MSG_GET_KEY_WRITER_TYPE:
             case TISCI_MSG_SET_KEY_WRITER_TYPE:
                 ret = Sciclient_serviceSecureProxy(pReqPrm, pRespPrm);

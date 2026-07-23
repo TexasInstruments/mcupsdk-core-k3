@@ -84,11 +84,6 @@ int32_t SDL_TOG_getBaseaddr(SDL_TOG_Inst instance,
 *   This is global array gives the BASE ADDRESS of TOG modules
 ======================================================================================================*/
 
-static uint32_t SDL_TOG_baseAddress[SDL_TOG_MAX_INSTANCE+1U] =
-{
-	SDL_MCU_TIMEOUT0_CFG_BASE,
-};
-
 /* Properties of TOG instances in: TOG */
 
 #ifdef __cplusplus

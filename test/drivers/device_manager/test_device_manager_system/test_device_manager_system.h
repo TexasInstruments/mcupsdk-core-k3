@@ -47,6 +47,8 @@
 #include "am275x-evm/test_device_manager_system_val.h"
 #elif defined(SOC_AM62AX)
 #include "am62ax-sk/test_device_manager_system_val.h"
+#elif defined(SOC_AM62PX)
+#include "am62px-sk/test_device_manager_system_val.h"
 #endif
 
 #ifdef __cplusplus

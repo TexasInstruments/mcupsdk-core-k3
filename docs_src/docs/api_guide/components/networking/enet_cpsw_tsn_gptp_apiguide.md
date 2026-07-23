@@ -359,4 +359,6 @@ For all parameters related to interval, the minimum interval can be configured f
 
 # See Also
 
+\ref ENET_CPSW_TSN_ARCH_GUIDE — gPTP/AVB design, hardware interaction, and EST/CBS/IET configuration via uniconf
+
 \ref NETWORKING

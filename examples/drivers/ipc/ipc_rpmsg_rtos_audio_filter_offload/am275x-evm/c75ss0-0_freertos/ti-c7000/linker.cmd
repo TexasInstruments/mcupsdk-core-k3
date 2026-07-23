@@ -78,4 +78,8 @@ SECTIONS
     .bss.log_shared_mem  (NOLOAD) : {} > LOG_SHM_MEM
     /* this is used only when IPC RPMessage is enabled */
     .bss.ipc_vring_mem   (NOLOAD) : {} > IPC_VRING_RTOS
+
+    .tisp_node_arena    > C75_0_L2SRAM ALIGN(128)
+    .tisp_twiddle_arena > C75_0_L2SRAM ALIGN(64)
+    .tisp_handle_arena  > C75_0_L2SRAM ALIGN(32)
 }

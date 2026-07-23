@@ -50,6 +50,7 @@ FILES_common := \
 
 FILES_cpp_common := \
 	TISP_8ch_to_12ch_audio_chain.cpp \
+	TISP_app_arena_default_config.cpp \
 
 FILES_PATH_common = \
 	.. \

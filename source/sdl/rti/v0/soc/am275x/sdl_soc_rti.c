@@ -49,6 +49,10 @@
 int32_t SDL_RTI_getBaseaddr(SDL_RTI_InstanceType instance,
                              uint32_t *baseAddr)
 {
+    static uint32_t SDL_RTI_baseAddress[SDL_RTI_MAX_INSTANCE+1U] = {SDL_RTI0_CFG_BASE, SDL_RTI1_CFG_BASE, SDL_RTI2_CFG_BASE, \
+                                                                    SDL_RTI3_CFG_BASE, SDL_RTI4_CFG_BASE,    \
+                                                                    SDL_RTI5_CFG_BASE, SDL_WKUP_RTI0_CFG_BASE,     \
+                                                                    SDL_INSTANCE_INVALID};
     int32_t status = SDL_PASS;
     uint32_t size = 0;
 

@@ -70,8 +70,8 @@
 
 void SDL_memcpy(void *dest, void *src, uint32_t n){
 	/* Copy contents of src[] to dest[] */
-	unsigned char *cdest = (unsigned char *)dest;
-	unsigned char *csrc  = (unsigned char *)src;
+	uint8_t *cdest = (uint8_t *)dest;
+	uint8_t *csrc  = (uint8_t *)src;
 	for (uint32_t i=0; i < n; i++){
     	cdest[i] = csrc[i];
     }
@@ -177,7 +177,7 @@ int32_t SDL_ROM_Checksum_process (SDL_ROM_Checksum_obj * md, uint8_t *in, uint32
 					n = SDL_MIN(inlen1, (SDL_BLOCK_SIZE - md->curlen));
 					SDL_memcpy(md->buf + (md->curlen), (void *)in1, n);
 					md->curlen += n;
-					in1             += (int)n;
+					in1             += n;
 					inlen1          -= n;
 				}
 		}

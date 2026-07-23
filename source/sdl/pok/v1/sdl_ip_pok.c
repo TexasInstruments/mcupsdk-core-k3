@@ -110,7 +110,7 @@ static int32_t  SDL_pokSetOperation(SDL_mcuCtrlRegsBase_t           *pBaseAddres
                     {
                         SDL_REG32_FINS_RAW(shiftsNMasks.pokDetAddr, shiftsNMasks.ovSelMask, shiftsNMasks.ovSelShift, SDL_PWRSS_SET_OVER_VOLTAGE_DET_ENABLE);
                     }
-                    if (shiftsNMasks.pokEnPPAddr != 0x0u)
+                    if (shiftsNMasks.pokEnPPAddr != NULL_PTR)
                     {
                         SDL_REG32_FINS_RAW(shiftsNMasks.pokEnPPAddr, shiftsNMasks.pokEnPPMask, shiftsNMasks.pokEnPPShift, SDL_PWRSS_PP_MODE_DISABLE);
                     }

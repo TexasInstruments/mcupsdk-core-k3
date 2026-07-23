@@ -47,7 +47,7 @@
 /**
  * Design: PROC_SDL-5805
  */
-SDL_DPL_Interface *gSDL_DPL_Interface = (SDL_DPL_Interface *)NULL_PTR;
+SDL_DPL_Interface *gSDL_DPL_Interface = (SDL_DPL_Interface *)NULL;
 
 int32_t SDL_DPL_init(SDL_DPL_Interface *dplInterface)
 {

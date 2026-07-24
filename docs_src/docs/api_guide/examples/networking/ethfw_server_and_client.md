@@ -21,9 +21,9 @@ This demo also showcases the integration of AVB functionality with Ethernet Firm
 
 \endcond
 
-\note This is currently a work-in-progress, and the complete feature list and functionality will be updated as functional validation progresses.
-
-\attention For more information, refer to the [Ethernet Firmware User Guide](https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-j784s4/latest/exports/docs/ethfw/docs/user_guide/ethfw_c_ug_top.html)
+\cond SOC_AM62DX || SOC_AM62PX
+Please refer to \ref NETWORKING_ETHFW for more detailed information about Ethfw features
+\endcond
 
 # Supported Combinations
 
@@ -104,9 +104,20 @@ This demo also showcases the integration of AVB functionality with Ethernet Firm
 ## Build the example
 
 \cond SOC_AM62DX
-\attention The out-of-box CPSW resource allocation needs to be modified to enable ethernet firmware functionality.\n
- Follow the steps mentioned in [CPSW resource partitioning for Ethernet Firmware](https://e2e.ti.com/support/processors-group/processors/f/processors-forum/1591632/faq-am62d-q1-how-to-modify-cpsw-resource-partitioning-for-ethernet-firmware-application) before running the example.
+**Note** The out-of-box CPSW resource allocation needs to be modified to enable ethernet firmware functionality.
+Following table gives the Out of Box  Resource allocation and modified resource allocation needed to enable Ethfw for AM62DX
+
+| Resource | OOB MAIN_R5 | OOB MCU_R5 | OOB A53_2 | Modified MAIN_R5 | Modified MCU_R5 | Modified A53_2 |                                                     
+|----------|----------|----------|----------|----------|----------|----------|                               
+| TX Channels [8] | 0 | 8 (Secondary) | 8 (Primary) | 4 (Primary) | 4 (Primary) | 8 (Secondary) |
+| TX Rings [64] | 0 | 64 (Secondary) | 64 (Primary) | 32 (Primary) | 32 (Primary) | 64 (Secondary) |
+| RX Channels [1] | 0 | 1 (Secondary) | 1 (Primary) | 1 (Primary) | 1 (Secondary) | 0 |
+| RX Flows [16] | 0 | 16 (Secondary) | 16 (Primary) | 6 (Primary) | 10 (Primary) | 16 (Secondary) |
+| RX Rings [16] | 0 | 16 (Secondary) | 16 (Primary) | 6 (Primary) | 10 (Primary) | 16 (Secondary) |
+
+please refer to \ref RESOURCE_ALLOCATION_GUIDE for changing the resource allocation
 \endcond
+
 - When using CCS projects to build, import the CCS project for the required combination
   and build it using the CCS project menu (see \ref CCS_PROJECTS_PAGE).
 - When using makefiles to build, note the required combination and build using

@@ -120,7 +120,10 @@ Ethernet Low-Level Driver (\ref ENET_LLD) is a driver that aims at providing an 
 - \subpage ENET_LLD
 \endcond
 
-
+\cond SOC_AM62PX || SOC_AM62DX
+### Ethernet Firmware
+- \subpage NETWORKING_ETHFW
+\endcond
 ### TCP/IP Stack
 -\subpage NETWORKING_LWIP
 

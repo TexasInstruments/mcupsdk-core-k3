@@ -18,7 +18,7 @@ AM275x | R5F, C75                    | @VAR_BOARD_NAME (referred to as am275x-ev
 
 Feature                                                                                      | Module
 ---------------------------------------------------------------------------------------------|-----------------------------------
-         |      
+ Enhanced documentation for Enet - CPSW                                                      | ENET
 
 
 ## Dependent Tools and Compiler Information

@@ -18,7 +18,7 @@ AM62P  | MCU R5F, WKUP R5F           | @VAR_BOARD_NAME EVM (referred to as am62p
 
 Feature                                                                                      | Module
 ---------------------------------------------------------------------------------------------|-----------------------------------
-         |      
+ Enhanced documentation for Enet - CPSW  and EthFw.                                          | ENET    
 
 
 ### Experimental Features {#EXPERIMENTAL_FEATURES}

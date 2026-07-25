@@ -89,7 +89,7 @@ static uint8_t TestUart_threadStack1[8192] __attribute__ ((aligned(32)));
 /* Stack for UART test thread 2 */
 static uint8_t TestUart_threadStack2[8192] __attribute__ ((aligned(32)));
 #else
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX)
 /* Stack for UART test thread 1 */
 static uint8_t TestUart_threadStack1[65536] __attribute__ ((aligned(32)));
 /* Stack for UART test thread 2 */
@@ -268,7 +268,7 @@ static void TestUart_writeThread1(void *args)
     uartParams.transferMode = UART_CONFIG_MODE_INTERRUPT;
     uartParams.writeMode = UART_TRANSFER_MODE_CALLBACK;
     uartParams.writeCallbackFxn = TestUart_uartWriteCallbackMt;
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62PX)
 #if defined(CPU_C7X)
     uartParams.intrNum = 24U;
     uartParams.eventId = 434;
@@ -380,7 +380,7 @@ static void TestUart_writeThread2(void *args)
     uartParams.readMode = UART_TRANSFER_MODE_CALLBACK;
     uartParams.readReturnMode = UART_READ_RETURN_MODE_FULL;
     uartParams.readCallbackFxn = TestUart_uartReadCallbackMt;
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62PX)
 #if defined(CPU_C7X)
     uartParams.intrNum = 25U;
     uartParams.eventId = 435;
@@ -623,7 +623,7 @@ static void TestUart_writerWithCancelableTx(void *args)
     uartParams.transferMode       = UART_CONFIG_MODE_INTERRUPT;
     uartParams.writeMode          = UART_TRANSFER_MODE_CALLBACK;
     uartParams.writeCallbackFxn   = TestUart_uartWriteCallbackMt;
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62PX)
 #if defined(CPU_C7X)
     uartParams.intrNum = 25U;
     uartParams.eventId = 435;
@@ -964,7 +964,7 @@ static void TestUart_uartReadCancelWriteReadLoopbackMT(void *args)
     uartParams.txTrigLvl          = 4U;
     uartParams.rxTrigLvl          = 4U;
 
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62PX)
 #if defined(CPU_C7X)
     uartParams.intrNum = 25U;
     uartParams.eventId = 435;
@@ -1230,7 +1230,7 @@ static void TestUart_txUart2Thread(void *args)
     uartParams.writeMode          = UART_TRANSFER_MODE_CALLBACK;
     uartParams.writeCallbackFxn   = TestUart_uartWriteCallbackMt;
     uartParams.txTrigLvl          = 4U;
-    #if defined(SOC_AM62AX)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62PX)
     uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
@@ -1336,7 +1336,7 @@ static void TestUart_rxUart1Thread(void *args)
     uartParams.readReturnMode     = UART_READ_RETURN_MODE_FULL;
     uartParams.readCallbackFxn    = TestUart_uartReadCallbackMt;
     uartParams.rxTrigLvl          = 4U;
-    #if defined(SOC_AM62AX)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62PX)
     uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_UART1_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
@@ -1529,7 +1529,7 @@ static void TestUart_txThread_Uart2_Cancel(void *args)
     prms.writeMode          = UART_TRANSFER_MODE_CALLBACK;
     prms.writeCallbackFxn   = TestUart_uartWriteCallbackMt;
     prms.txTrigLvl          = 4U; /* exercise ISR threshold */
-    #if defined(SOC_AM62AX)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62PX)
     prms.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     prms.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
@@ -1641,7 +1641,7 @@ static void TestUart_rxThread_Uart1_Partial(void *args)
     prms.readReturnMode     = UART_READ_RETURN_MODE_PARTIAL;
     prms.readCallbackFxn    = TestUart_uartReadCallbackMt;
     prms.rxTrigLvl          = 4U;
-    #if defined(SOC_AM62AX)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62PX)
     prms.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_UART1_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     prms.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
@@ -1862,7 +1862,7 @@ static void TestUart_txBaudThreadUart0Cb(void *args)
     prms.writeCallbackFxn   = TestUart_uartWriteCallbackMt;
     prms.txTrigLvl          = 4U;
     prms.baudRate           = ctx->baud;
-    #if defined(SOC_AM62AX)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62PX)
     prms.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     prms.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
@@ -1959,7 +1959,7 @@ static void TestUart_rxBaudThreadUart2Cb(void *args)
     prms.readCallbackFxn    = TestUart_uartReadCallbackMt;
     prms.rxTrigLvl          = 4U;
     prms.baudRate           = ctx->baud;
-    #if defined(SOC_AM62AX)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62PX)
     prms.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_UART1_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     prms.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
@@ -2192,13 +2192,13 @@ static void TestUart_txUart2DmaCbThread(void *args)
     uartParams.uartDmaIndex = 0;
     uartParams.txTrigLvl = UART_TXTRIGLVL_1;
     uartParams.rxTrigLvl = UART_RXTRIGLVL_1;
-    #if defined(SOC_AM62AX)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62PX)
     uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_UART1_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
     #endif
 
-    #if ((defined(SOC_AM62AX)) && !((defined(CPU_MCU_R5F0) || defined(CPU_C7X) || defined(CPU_R5F0)) || defined(SOC_AM62DX)))
+    #if ((defined(SOC_AM62AX) || defined(SOC_AM62PX)) && !((defined(CPU_MCU_R5F0) || defined(CPU_C7X) || defined(CPU_R5F0)) || defined(SOC_AM62DX)))
     uartParams.txEvtNum = UDMA_PDMA_CH_MAIN0_UART1_TX;
     uartParams.rxEvtNum = UDMA_PDMA_CH_MAIN0_UART1_RX;
     #endif
@@ -2295,7 +2295,7 @@ static void TestUart_rxUart1DmaCbThread(void *args)
     uartParams.transferMode      = UART_CONFIG_MODE_INTERRUPT;
     uartParams.readMode          = UART_TRANSFER_MODE_CALLBACK;
     uartParams.readCallbackFxn   = TestUart_uartReadCallbackMt;
-    #if defined(SOC_AM62AX)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62PX)
     uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
@@ -2534,13 +2534,13 @@ static void TestUart_rxUart1DmaThread(void *args)
     uartParams.uartDmaIndex = 0;
     uartParams.txTrigLvl = UART_TXTRIGLVL_1;
     uartParams.rxTrigLvl = UART_RXTRIGLVL_1;
-    #if defined(SOC_AM62AX)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62PX)
     uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_UART1_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
     #endif
 
-    #if ((defined(SOC_AM62AX)) && !((defined(CPU_MCU_R5F0) || defined(CPU_C7X) || defined(CPU_R5F0)) || defined(SOC_AM62DX)))
+    #if ((defined(SOC_AM62AX) || defined(SOC_AM62PX)) && !((defined(CPU_MCU_R5F0) || defined(CPU_C7X) || defined(CPU_R5F0)) || defined(SOC_AM62DX)))
     uartParams.txEvtNum = UDMA_PDMA_CH_MAIN0_UART1_TX;
     uartParams.rxEvtNum = UDMA_PDMA_CH_MAIN0_UART1_RX;
     #endif
@@ -2644,7 +2644,7 @@ static void TestUart_txUart2DmaThread(void *args)
     uartParams.transferMode      = UART_CONFIG_MODE_INTERRUPT;
     uartParams.writeMode          = UART_TRANSFER_MODE_CALLBACK;
     uartParams.writeCallbackFxn   = TestUart_uartWriteCallbackMt;
-    #if defined(SOC_AM62AX)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62PX)
     uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
@@ -2874,7 +2874,7 @@ static void TestUart_txUart2ThreadCtrlSignal(void *args)
     uartParams.writeMode          = UART_TRANSFER_MODE_CALLBACK;
     uartParams.writeCallbackFxn   = TestUart_uartWriteCallbackMt;
     uartParams.txTrigLvl          = 4U;
-    #if defined(SOC_AM62AX)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62PX)
     uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
@@ -2984,7 +2984,7 @@ static void TestUart_rxUart1ThreadCtrlSignal(void *args)
     uartParams.readReturnMode     = UART_READ_RETURN_MODE_FULL;
     uartParams.readCallbackFxn    = TestUart_uartReadCallbackMt;
     uartParams.rxTrigLvl          = 4U;
-    #if defined(SOC_AM62AX)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62PX)
     uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_UART1_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
@@ -3171,7 +3171,7 @@ static void TestUart_txUart2ThreadCtsHigh(void *args)
     uartParams.writeMode          = UART_TRANSFER_MODE_CALLBACK;
     uartParams.writeCallbackFxn   = TestUart_uartWriteCallbackMt;
     uartParams.txTrigLvl          = 4U;
-    #if defined(SOC_AM62AX)
+    #if defined(SOC_AM62AX) || defined(SOC_AM62PX)
     uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
@@ -3400,7 +3400,7 @@ static void TestUart_uartReadCancelPostsSem(void *args)
     uartParams.txTrigLvl       = UART_TXTRIGLVL_1;
     uartParams.skipIntrReg     = FALSE;
 
-#if defined(SOC_AM62AX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62PX)
 #if defined(CPU_C7X)
     uartParams.intrNum = 25U;
     uartParams.eventId = 435;

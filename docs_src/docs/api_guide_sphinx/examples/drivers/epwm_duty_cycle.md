@@ -1,0 +1,285 @@
+# EPWM Duty Cycle
+## Introduction
+
+This example generates a signal for a specified time and duty cycle using
+ePWM module. The time and duty cycle can be configured by the user.
+
+The example does the below
+- Configures ePWM0 to generate a 1KHz signal with 25% duty cycle for 60 seconds.
+- Output channel A is used in the example.
+- The parameters frequency, duty cycle and application run time are configurable by the user.
+- Deadband submodule and chopper submodule are entirely bypassed in this example.
+- ISR is used to keep track of keep track of elapsed time.
+- Show usage of ePWM APIs
+
+::::{only} SOC_AM64X
+   - To probe ePWM output you need to have IO breakout board..
+   - Short Pin 2 and 3 of J11 on IO break out board.
+   - Signal can be probed on Pin 7 of J6 on IO break out board.
+::::
+
+
+::::{only} SOC_AM243X
+
+   **AM243X-EVM**
+   - To probe ePWM output you need to have IO breakout board..
+   - Short Pin 2 and 3 of J11 on IO break out board.
+   - Signal can be probed on Pin 7 of J6 on IO break out board.
+
+   **AM243X-LP**
+   - Signal can be probed on Pin 1 of J2 header on am243x-lp board.
+     You need to probe J4 Pin 40 which corresponds to Pin 1 of J2 header.
+
+::::
+
+
+::::{only} SOC_AM273X
+
+   **AM273X-EVM**
+   - Signal can be probed on R81 resistor on am273x board.
+::::
+
+
+::::{only} SOC_AWR294X
+
+   **AWR294X-EVM**
+   - Signal can be probed on R81 resistor on awr294x board.
+::::
+
+
+::::{only} SOC_AM62AX
+
+   **AM62AX-SK**
+   - Signal can be probed on Pin 24 of J3 header on base board.
+   - EPWM Signal: D16/GPIO1_15 (Pin_24)
+::::
+
+
+::::{only} SOC_AM62DX
+
+   **AM62DX-EVM**
+   This example uses the Debug Header 2 (J3) on Audio expansion card 1 for testing on AM62DX-EVM.
+
+   - Signal can be probed on Pin 4 of J3 Header on Audio expansion card 1.
+   - EPWM Signal: B18/MCASP0_AXR1 (Pin_4)
+::::
+
+
+::::{only} SOC_AM62X
+   **AM62X-SK**
+   - Signal can be probed on Pin 24 of User Expansion Connector (J3) on the board.
+   - EPWM Signal: A13/GPIO1_15 (Pin_24)
+
+   **AM62X-SK-LP**
+   - Signal can be probed on Pin 24 of User Expansion Connector (J3) on the board.
+   - EPWM Signal: C11/GPIO1_15 (Pin_24)
+
+   **AM62X-SK-SIP**
+   - Signal can be probed on Pin 24 of User Expansion Connector (J3) on the board.
+   - EPWM Signal: A13/GPIO1_15 (Pin_24)
+
+::::
+
+
+::::{only} SOC_AM62PX
+
+   **AM62P-SK**
+   - Signal can be probed on Pin 24 of User Expansion Connector (J4) on the board.
+   - EPWM Signal: D20/GPIO1_15 (Pin_24)
+::::
+
+
+::::{only} SOC_AM275X
+
+   **AM275X-EVM**
+   This example uses the  Audio Expansion Connector1(AEC1) for testing.
+
+   - Signal can be probed on Pin 3 of AEC1.
+   - EPWM Signal: T2 (Pin_3)
+::::
+
+
+::::{only} SOC_AM62LX
+   **AM62LX-EVM**
+   - This example uses the user expansion connector (J2) in the  board for testing on AM62LX-EVM.
+   - All pin numbers are on the expansion connector in the board.
+   - The pins configured for the example is enabled on user expansion connector based on the FET selection switch(FET_SEL0).
+   - The SOC_VOUT0_DATAn are the input to FET switches. The pins that are configured for the example are pinmuxed with the FET switches.
+   - The S0 select pin decides if the configured pins (which is pinmuxed with SOC_VOUT0_DATAn) map to HDMI or USER EXP connector.
+   - The S0 pin is triggered to a high value in the software. When the S0 is high, the pin that is configured for the example (which is pinmuxed with SOC_VOUT0_DATAn) will be available on the user expansion connector.
+
+   The below diagram depicts the selection:
+
+   | S2 | S1 | S0 |        IP(nA)/OP(nB1 (Or) nB2) |
+|---|---|
+| H | H |
+| H | H |
+
+   **For AM62L EVM PROC181E1**:
+   - The pin FET_SEL0 (S0) is connected to the TCA6424 IO expander, hence it requires the user to write to the IO expander through software to give it a high signal for GPIO Expansion Connector (J2) to work. By default, this has been done through sysconfig for this example.
+
+   **For AM62L EVM PROC181E1-1**:
+   - The pin FET_SEL0 (S0) is connected to the J29 Expansion connector, hence it requires the user to connect the Pin 1 and Pin 2 of J29 to give pin S0 a high signal for GPIO Expansion Connector (J2) to work. This needs to be done by the user to receive signals on the GPIO Expansion Connector (J2).
+
+   Below is the connection details.
+   - Signal can be probed on Pin 18 of User Expansion Connector (J2) on the board.
+   - EPWM Signal: G22/V0UT0_DATA13 (Pin_18)
+
+::::
+
+
+## Supported Combinations
+::::{only} SOC_AM64X
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | r5fss0-0 nortos |
+| CPU + OS | r5fss0-0 freertos |
+| Toolchain | ti-arm-clang |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/epwm/epwm_duty_cycle/ |
+
+::::
+
+
+::::{only} SOC_AM243X
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | r5fss0-0 nortos |
+| CPU + OS | r5fss0-0 freertos |
+| Toolchain | ti-arm-clang |
+| Boards | {{ VAR_BOARD_NAME_LOWER }}, {{ VAR_LP_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/epwm/epwm_duty_cycle/ |
+
+::::
+
+
+::::{only} SOC_AM273X or SOC_AWR294X
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | r5fss0-0 nortos |
+| CPU + OS | r5fss0-0 freertos |
+| Toolchain | ti-arm-clang |
+| Boards | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/epwm/epwm_duty_cycle/ |
+
+::::
+
+
+::::{only} SOC_AM62AX
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | r5fss0-0 freertos |
+| CPU + OS | c75ss0-0 freertos |
+| Toolchain | arm.gnu.aarch64-none |
+| Toolchain | ti-c7000 |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/epwm/epwm_duty_cycle/ |
+
+::::
+
+
+::::{only} SOC_AM62DX
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | a53ss0-0 nortos |
+| CPU + OS | a53ss0-0 freertos |
+| CPU + OS | c75ss0-0 freertos |
+| Toolchain | arm.gnu.aarch64-none |
+| Toolchain | ti-c7000 |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/epwm/epwm_duty_cycle/ |
+
+::::
+
+
+::::{only} SOC_AM62X
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | m4fss0-0 freertos |
+| CPU + OS | a53ss0-0 freertos |
+| Toolchain | ti-arm-clang |
+| Toolchain | arm.gnu.aarch64-none |
+| Board | {{ VAR_BOARD_NAME_LOWER }}, {{ VAR_SK_LP_BOARD_NAME_LOWER }}, {{ VAR_SIP_SK_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/epwm/epwm_duty_cycle/ |
+
+::::
+
+
+::::{only} SOC_AM62PX
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | mcu-r5fss0-0 freertos |
+| CPU + OS | wkup-r5fss0-0 freertos |
+| Toolchain | ti-arm-clang |
+| Boards | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/epwm/epwm_duty_cycle/ |
+
+::::
+
+
+::::{only} SOC_AM275X
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | r5fss0-0 freertos |
+| CPU + OS | c75ss0-0 freertos |
+| Toolchain | ti-arm-clang |
+| Toolchain | ti-c7000 |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/epwm/epwm_duty_cycle_sync/ |
+
+::::
+
+
+::::{only} SOC_AM62LX
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | a53ss0-0 nortos |
+| CPU + OS | a53ss0-0 freertos |
+| Toolchain | arm.gnu.aarch64-none |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/epwm/epwm_duty_cycle/ |
+
+::::
+
+
+## Steps to Run the Example
+
+- **When using CCS projects to build**, import the CCS project for the required combination
+  and build it using the CCS project menu (see [Using SDK with CCS Projects](../../developer_guides/ccs_projects.md)).
+- **When using makefiles to build**, note the required combination and build using
+  make command (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md))
+
+::::{only} SOC_AM62LX
+   - To Load and Run an example (see `DFU_LOAD_CCS_DEBUG`)
+::::
+
+
+::::{only} SOC_AM64X or SOC_AM243X or SOC_AM263X or SOC_AM62X or SOC_AM62AX or SOC_AM62DX or SOC_AM62PX or SOC_AM275X or SOC_AM273X or SOC_AWR294X or SOC_J722S
+   - Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
+::::
+
+- To probe the ePWM output please refer setup details as mentioned above in Introduction section
+
+## See Also
+
+[EPWM](../../components/drivers/epwm.md)
+
+## Sample Output
+
+Shown below is a sample output when the application is run,
+
+```
+EPWM Duty Cycle Test Started ...
+App will wait for 60 seconds (using PWM period ISR) ...
+EPWM Duty Cycle Test Passed!!
+All tests have passed!!
+```

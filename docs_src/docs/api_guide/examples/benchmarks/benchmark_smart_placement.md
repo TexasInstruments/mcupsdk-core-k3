@@ -1,4 +1,4 @@
-# Memory Benchmark with Smart Placement {#BENCHMARK_SMART_PLACEMENT}
+# Memory Benchmark with Smart Placement {#EXAMPLES_BENCHMARK_SMART_PLACEMENT}
 
 [TOC]
 

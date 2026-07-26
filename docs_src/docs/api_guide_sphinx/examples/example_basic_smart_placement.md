@@ -1,0 +1,144 @@
+#  Basic Smart Placement
+
+## Introduction
+
+This example provides a basic overview of applying smart placement and compares run time of functions with smart placement and without smart placement.
+
+The Aim of this example is to:
+1. Showcase the process of smart placement in simple terms
+2. How Smart Placement improves code performance?
+3. How Cache Miss ratio is also improved?
+
+More on smart placement can be read at [Smart Placement](../components/tools/smart_placement.md)
+
+## Supported Combinations
+:::{only} SOC_AM275X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0 nortos
+ Toolchain      | >= ti-arm-clang
+ Boards         | {{ VAR_BOARD_NAME_LOWER }}
+ Example folder | examples/kernel/nortos/basic_smart_placement
+
+:::
+
+#### Building benchmark application
+
+To build this application, compiler ti-cgt-armllvm >= 3.2.0 LTS or later is required. Application can be compiled using make command.
+
+## Steps to Run the Example
+
+- **When using CCS projects to build**, import the CCS project for the required combination
+  and build it using the CCS project menu (see [Using SDK with CCS Projects](../developer_guides/ccs_projects.md)).
+- **When using makefiles to build**, note the required combination and build using
+  make command (see [Using SDK with Makefiles](../developer_guides/makefile_build.md))
+- Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../getting_started/ccs_launch.md)
+
+## Sample Output
+
+Shown below is a sample output when the application is run,
+
+```
+
+Profile Point: Without Smart Placement         
+Cycle Count: 10818
+ICache Miss Count: 232
+Instruction Executed Count: 3665
+ICache Access Count: 971
+
+Profile Point: With Smart Placement            
+Cycle Count: 3822
+ICache Miss Count: 0
+Instruction Executed Count: 3668
+ICache Access Count: 86
+
+
+All tests have passed!!
+
+```
+
+## Description
+
+When the program runs, it first calls `basic_smart_placement_main` function which internally calls `function_f1` and `annotated_function_f1`.
+
+PMU has been used for profiling execution of `function_f1` and `annotated_function_f1`.
+
+### Process of smart placement
+
+Following steps can be followed to apply smart placement:
+
+#### Critical Function Identification
+
+Here, critical functions are manually found using inspection. Because this is manual process, criticality of a function is determined purely based on the knowledge of software/firmware/usecase.
+
+#### Priority Assignment
+
+Following is critical function's priority table.
+
+Function Name           | Priority
+------------------------|------------
+annotated_function_f1   | 1
+annotated_function_f2   | 2
+annotated_function_f3   | 2
+annotated_function_f4   | 2
+
+Here note that from the manual inspection it has been identified that `annotated_function_f1` is more critical than rest of the functions therefore, it has given more a `priority number` which is smaller than other function's `priority number`. Because rest of the critical functions are all relatively not as of same priority so they are clubbed together by given them same `priority number`.
+
+What `priority number` to assign to which critical function is also a manual process which involves a good understanding of firmware.
+
+#### Annotating functions
+
+Once the above table has been formed, each function is annotated as shown:
+
+```
+
+void __attribute__((local(1))) annotated_function_f1(void);
+void __attribute__((local(2))) annotated_function_f2(void);
+void __attribute__((local(2))) annotated_function_f3(void);
+void __attribute__((local(2))) annotated_function_f4(void);
+
+```
+
+<b>Note:</b>
+
+1. Attributes are added in front, and won't work if following is tried:
+```
+void annotated_function_f1(void) __ attribute __((local(1)));
+```
+2. by specifying local, all these functions are indicated to be placed in local memory.
+
+#### Linker change
+
+Here it has to be made sure that following 3 lines are added/present in the SECTIONS of linker.cmd:
+
+:::{only} SOC_AM275X
+```
+
+    .TI.local   : {} >> R5F_TCMA | R5F_TCMB | R50_0_OCRAM | FLASH
+    .TI.onchip  : {} >> R50_0_OCRAM | FLASH
+    .TI.offchip : {} > FLASH
+
+```
+:::
+
+The above lines basically channeling all the functions that are annotated to be in `local` memory into TCM memory and if total size of the functions that are marked `local` is more than the size of R5F_TCMA then all the functions that could be placed in R5F_TCMA will be placed in R5F_TCMA and rest of functions will be moved in R5F_TCMB and even if it still fills R5F_TCMB then remaining function will be moved to MSRAM/OCRAM.
+
+Similar treatment is for all the functions that are marked `onchip`, however, they should never be placed in any TCM otherwise it will be logically wrong.
+
+Also all functions which are marked `offchip`, should be placed in external FLASH.
+
+### How Smart Placement improves code performance?
+
+From the linker, onchip marked functions are routed to TCMA/B and TCM are fastest memories. Therefore, by annotating the critical functions directly from the source, code is placed in faster memory and hence runtime performance has been improved.
+
+This can be seen from the above sample output. For same number of instructions executed, CPU cycles taken to execute functions without smart placement is 3 times more than with smart placement.
+
+### How Cache Miss ratio is also improved?
+
+Again, TCMs are never cached. Therefore, for the critical functions which are not cached well, placing them in TCM will help in improving cache rate and ultimately CPI of function.
+
+
+## Conclusion
+
+This example shows how to manually apply smart placement and shows how it improves code performance with ease-of-use because of it allows placement of function at source level.

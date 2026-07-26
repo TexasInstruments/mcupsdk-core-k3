@@ -145,6 +145,8 @@ uint32_t Bootloader_socCpuGetClkDefault(uint32_t cpuId);
  *
  * \param cpuId [in] The CSL ID of the core
  *
+ * \param socCoreOpMode Lockstep/Dual core mode as per setting in syscfg.
+ *
  * \return SystemP_SUCCESS on success, else failure
  */
 int32_t Bootloader_socCpuPowerOnReset(uint32_t cpuId, void *socCoreOpMode);

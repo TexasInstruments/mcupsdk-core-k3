@@ -1,0 +1,259 @@
+# EQEP Capture
+## Introduction
+
+This example demonstrates eQEP capture test.
+Example configures the eQEP and captures the quadrature input signal
+at index event. Example also configures the eQEP to calculate frequency
+using unit timeout event. Based on the position count values, it calculates the
+frequency of the input signal. EQEP signal is generated using GPIO pin toggling.
+GPIO pins need to be looped back to the EQEP pins that are available in the
+board. Below is the connection details.
+
+::::{only} SOC_AM64X
+   - This example needs IO breakout board for testing on AM64X-EVM.
+   - All pin numbers are on the IO break out board.
+| GPIO                    | EQEP |
+|---|---|
+| Gpio0_26(Pin 3  of J7) | EQEP0_A(Pin 17 of J8) |
+| Gpio0_27(Pin 5  of J7) | EQEP0_B(Pin 19 of J7) |
+| Gpio0_43(Pin 13 of J7) | EQEP0_S(Pin 19 of J8) |
+| Gpio0_44(Pin 15 of J7) | EQEP0_I(Pin 17 of J7) |
+
+::::
+
+
+::::{only} SOC_AM62AX
+   - This example uses the user expansion connector (J3) in the  board for testing on  AM62AX-SK.
+   - All pin numbers are on the expansion connector in the board.
+| GPIO                     | EQEP |
+|---|---|
+| Gpio0_38(Pin 16  of J3) | EQEP2_A(Pin 28 of J3) |
+| Gpio0_39(Pin 18  of J3) | EQEP2_B(Pin 27 of J3) |
+| Gpio0_32(Pin 30 of J3) | EQEP2_S(Pin 8  of J3) |
+| Gpio0_33(Pin 31 of J3) | EQEP2_I(Pin 10 of J3) |
+
+::::
+
+
+::::{only} SOC_AM62DX
+   - This example uses the Debug Header(J3) on Audio expansion card 1 for testing on  AM62DX-EVM.
+   - All pin numbers are on the audio expansion card .
+| GPIO                            | EQEP |
+|---|---|
+| B20/MCASP0_AXR0(Pin 2 of J3) | EQEP1_A(Pin 1 of J3) |
+| B19/MCASP0_AXR2(Pin 6 of J3) | EQEP1_B(Pin 9 of J3) |
+| C19/MCASP0_AXR3(Pin 8 of J3) | EQEP1_S(Pin 13 of J3) |
+| B18/MCASP0_AXR1(Pin 4 of J3) | EQEP1_I(Pin 5 of J3) |
+
+::::
+
+
+::::{only} SOC_AM62X
+   - This example uses the user expansion connector (J3) in the  board for testing on  AM62AX-SK.
+   - All pin numbers are on the expansion connector in the board.
+
+   **AM62X-SK**
+
+| GPIO                     | EQEP |
+|---|---|
+| Gpio0_38(Pin 16  of J3) | EQEP2_A(Pin 28 of J3) |
+| Gpio0_39(Pin 18  of J3) | EQEP2_B(Pin 27 of J3) |
+| Gpio0_32(Pin 15 of J3) | EQEP2_S(Pin 8  of J3) |
+| Gpio0_33(Pin 31 of J3) | EQEP2_I(Pin 10 of J3) |
+
+   **AM62X-SIP-SK**
+
+| GPIO                     | EQEP |
+|---|---|
+| Gpio0_38(Pin 16  of J3) | EQEP2_A(Pin 28 of J3) |
+| Gpio0_39(Pin 18  of J3) | EQEP2_B(Pin 27 of J3) |
+| Gpio0_32(Pin 15 of J3) | EQEP2_S(Pin 8  of J3) |
+| Gpio0_33(Pin 31 of J3) | EQEP2_I(Pin 10 of J3) |
+
+    **AM62X-SK-LP**
+
+| GPIO                     | EQEP |
+|---|---|
+| Gpio0_38(Pin 16  of J3) | EQEP2_A(Pin 28 of J3) |
+| Gpio0_39(Pin 18  of J3) | EQEP2_B(Pin 27 of J3) |
+| Gpio0_32(Pin 30 of J3) | EQEP2_S(Pin 8  of J3) |
+| Gpio0_33(Pin 31 of J3) | EQEP2_I(Pin 10 of J3) |
+
+::::
+
+
+::::{only} SOC_AM62LX
+   **AM62LX-EVM**
+   - This example uses the user expansion connector (J2) in the  board for testing on AM62LX-EVM.
+   - All pin numbers are on the expansion connector in the board.
+   - The pins configured for the example is enabled on user expansion connector based on the FET selection switch(FET_SEL0).
+   - The SOC_VOUT0_DATAn are the input to FET switches. The pins that are configured for the example are pinmuxed with the FET switches.
+   - The S0 select pin decides if the configured pins (which is pinmuxed with SOC_VOUT0_DATAn) map to HDMI or USER EXP connector.
+   - The S0 pin is triggered to a high value in the software. When the S0 is high, the pin that is configured for the example (which is pinmuxed with SOC_VOUT0_DATAn) will be available on the user expansion connector.
+
+   The below diagram depicts the selection:
+
+   | S2 | S1 | S0 |        IP(nA)/OP(nB1 (Or) nB2) |
+|---|---|
+| H | H |
+| H | H |
+
+   **For AM62L EVM PROC181E1**:
+   - The pin FET_SEL0 (S0) is connected to the TCA6424 IO expander, hence it requires the user to write to the IO expander through software to give it a high signal for GPIO Expansion Connector (J2) to work. By default, this has been done through sysconfig for this example.
+
+   **For AM62L EVM PROC181E1-1**:
+   - The pin FET_SEL0 (S0) is connected to the J29 Expansion connector, hence it requires the user to connect the Pin 1 and Pin 2 of J29 to give pin S0 a high signal for GPIO Expansion Connector (J2) to work. This needs to be done by the user to receive signals on the GPIO Expansion Connector (J2).
+
+   Below is the connection details.
+     | GPIO                   | EQEP |
+|---|---|
+| Gpio0_18(Pin 29 of J2) | EQEP0_A(Pin 19 of J2) |
+| Gpio0_19(Pin 30 of J2) | EQEP0_B(Pin 14 of J2) |
+| Gpio0_20(Pin 27 of J2) | EQEP0_S(Pin 12 of J2) |
+| Gpio0_21(Pin 23 of J2) | EQEP0_I(Pin 15 of J2) |
+
+::::
+
+
+::::{only} SOC_AM243X
+
+   **AM243X-EVM**
+   - This example needs IO breakout board for testing on AM243X-EVM.
+   - All pin numbers are on the IO break out board.
+| GPIO                    | EQEP |
+|---|---|
+| Gpio0_26(Pin 3  of J7) | EQEP0_A(Pin 17 of J8) |
+| Gpio0_27(Pin 5  of J7) | EQEP0_B(Pin 19 of J7) |
+| Gpio0_43(Pin 13 of J7) | EQEP0_S(Pin 19 of J8) |
+| Gpio0_44(Pin 15 of J7) | EQEP0_I(Pin 17 of J7) |
+
+   **AM243X-LP**
+   All pin numbers are on the AM243x-LP board.
+| GPIO                    | EQEP |
+|---|---|
+| Gpio1_56(Pin 4 of J13) | EQEP1_A(Pin 1 of J12) |
+| Gpio1_57(Pin 5 of J13) | EQEP1_B(Pin 2 of J12) |
+| Gpio1_58(Pin 6 of J13) | EQEP1_I(Pin 3 of J12) |
+
+::::
+
+
+## Supported Combinations
+::::{only} SOC_AM64X
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | r5fss0-0 nortos |
+| CPU + OS | r5fss0-0 freertos |
+| Toolchain | ti-arm-clang |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/eqep/eqep_capture/ |
+
+::::
+
+
+::::{only} SOC_AM243X
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | r5fss0-0 nortos |
+| CPU + OS | r5fss0-0 freertos |
+| Toolchain | ti-arm-clang |
+| Boards | {{ VAR_BOARD_NAME_LOWER }}, {{ VAR_LP_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/eqep/eqep_capture/ |
+
+::::
+
+
+::::{only} SOC_AM62X
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | a53ss0-0 freertos |
+| Toolchain | arm.gnu.aarch64-none |
+| Board | {{ VAR_BOARD_NAME_LOWER }}, {{ VAR_SK_LP_BOARD_NAME_LOWER }}, {{ VAR_SIP_SK_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/eqep/eqep_capture/ |
+
+::::
+
+
+::::{only} SOC_AM62AX
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | r5fss0-0 freertos |
+| CPU + OS | c75ss0-0 freertos |
+| Toolchain | ti-arm-clang |
+| Toolchain | ti-c7000 |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/eqep/eqep_capture/ |
+
+::::
+
+
+::::{only} SOC_AM62DX
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | a53ss0-0 nortos |
+| CPU + OS | a53ss0-0 freertos |
+| CPU + OS | c75ss0-0 freertos |
+| Toolchain | arm.gnu.aarch64-none |
+| Toolchain | ti-c7000 |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/eqep/eqep_capture/ |
+
+::::
+
+
+::::{only} SOC_AM62LX
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | a53ss0-0 nortos |
+| CPU + OS | a53ss0-0 freertos |
+| Toolchain | arm.gnu.aarch64-none |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/eqep/eqep_capture/ |
+
+::::
+
+
+## Steps to Run the Example
+
+- **When using CCS projects to build**, import the CCS project for the required combination
+  and build it using the CCS project menu (see [Using SDK with CCS Projects](../../developer_guides/ccs_projects.md)).
+- **When using makefiles to build**, note the required combination and build using
+  make command (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md))
+
+::::{only} SOC_AM62LX
+   - To Load and Run an example (see `DFU_LOAD_CCS_DEBUG`)
+::::
+
+
+::::{only} SOC_AM64X or SOC_AM243X or SOC_AM263X or SOC_AM62X or SOC_AM62AX or SOC_AM62DX or SOC_AM62PX or SOC_AM275X or SOC_AM273X or SOC_AWR294X or SOC_J722S
+   - Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
+::::
+
+- Please connect GPIO to EQEP pins as mentioned above in Introduction section
+
+## See Also
+
+[EQEP](../../components/drivers/eqep.md)
+
+## Sample Output
+
+Shown below is a sample output when the application is run,
+
+```
+EQEP Capture application started...
+Sending quadrature wave for 50 cycles in clockwise direction.With index event in between, Captures 4 edges per cycle
+Quadrature input capture test clockwise direction passed
+Sending quadrature wave for 50 cycles in anticlockwise direction.With index event in between, Captures 4 edges per cycle
+Quadrature input capture test anti clockwise direction passed
+Starting Frequency calculation test
+Expected Frequency is 500 Hz
+Average frequency is 500 Hz
+Frequency calculation test passed
+All tests have passed.
+```

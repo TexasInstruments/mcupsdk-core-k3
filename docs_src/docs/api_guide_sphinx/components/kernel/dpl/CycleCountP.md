@@ -1,0 +1,47 @@
+
+# Cycle Counter
+## Features Supported
+
+- API to return CPU cycles executed so far
+- API to reset the CPU cycle counter
+
+## Features NOT Supported
+
+- Additional event counters in the CPU are not supported via this API.
+  Refer to CPU architecture specific technical and architecture reference manuals, to access additional CPU architecture specific counter features.
+
+## Important Usage Guidelines
+
+- Make sure to call CycleCounterP_reset() to enable and reset the CPU cycle counter before using it
+- CycleCounterP_getCount32() uses a CPU architecture specific counter to count every CPU cycle.
+  Since this is a 32b counter, this will typically wraparound and overflow within few seconds.
+  E.g. for 500Mhz CPU, the counter will overflow in ~ 8secs.
+- Application can have logic to handle one wraparound of the counter, as shown in the example usage below.
+  i.e max time duration that can be measured will be limited to 0xFFFFFFFF CPU  cycles, i.e few seconds only.
+- This API is meant to used for very fine, short duration measurements. To measure longer durations
+  use `ClockP_getTimeUsec`() from [Clock](ClockP.md) module.
+- Cortex A53 and TI C75 have 64b counter, so use CycleCounterP_getCount64(). The CycleCounterP_getCount32()
+API typecasts 64b value to 32b value for these cores.
+
+
+## Example Usage
+
+Include the below file to access the APIs,
+
+```{literalinclude} ../../../../../docs/api_guide/doxy_samples/kernel/dpl/CycleCounterP_sample.c
+:language: c
+:lines: 1-10
+```
+
+**Example usage for counting CPU cycles:**
+
+```{literalinclude} ../../../../../docs/api_guide/doxy_samples/kernel/dpl/CycleCounterP_sample.c
+:language: c
+:lines: 12-40
+```
+
+
+## API Reference
+
+```{doxygenfile} CycleCounterP.h
+```

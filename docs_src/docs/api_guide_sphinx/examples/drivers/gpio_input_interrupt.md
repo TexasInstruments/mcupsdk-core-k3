@@ -1,0 +1,578 @@
+# GPIO Input Interrupt
+## Introduction
+
+This example configures a GPIO pin in input mode and configures it to generate interrupt on rising edge.
+The application waits for 5 key presses, prints the number of times the keys are pressed and exits.
+
+::::{only} SOC_AM62X
+   :::{admonition} Note
+   SK-AM62 or SK-AM62-LP-SK-EVM does not contain any push button connected to MCU GPIOs.
+   :::
+
+
+   **M4F**
+   M4F example using MCU_GPIO0_15 pin in the MCU_HEADER(J9) for generating GPIO interrupt.
+   Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin 10 of J9) to ground (Pin 27 of J9) in the SK-AM62 or SK-AM62-LP.
+
+   **A53**
+   A53 Core 0_0 example is using GPIO0_14 pin in the User Expansion Connector(J3) for generating GPIO interrupt.
+   Key presses can be done by connecting followed by disconnecting GPIO0_14(Pin 22 of J3) to ground (Pin 6 of J3) in the {{ VAR_BOARD_NAME_LOWER }}, {{ VAR_SIP_SK_BOARD_NAME_LOWER }}, {{ VAR_SK_LP_BOARD_NAME_LOWER }}.
+
+   In case of AMP, the following pins in the the User Expansion Connector(J3) are used for generating GPIO interrupt:
+
+   | Core     | Pin |
+|---|---|
+| Core 0_0 | GPIO0_14 (Pin 22) |
+| Core 0_1 | GPIO0_38 (Pin 16) |
+| Core 1_0 | GPIO1_22 (Pin 15) |
+| Core 1_1 | GPIO1_10 (Pin 33) |
+   Key presses can be done by connecting followed by disconnecting the above pins to ground (Pin 6 of J3) in the {{ VAR_BOARD_NAME_LOWER }}, {{ VAR_SIP_SK_BOARD_NAME_LOWER }}, {{ VAR_SK_LP_BOARD_NAME_LOWER }}.
+
+   Please note that number of key presses will be higher than actual as we are manualy connecting the ground using jumpers.
+
+   :::{admonition} Note
+   In AMP, Core 0_0 performs initialisation and printing logs for other cores. Load and run Core 0_0 before other cores.
+   :::
+
+
+   :::{admonition} Attention
+   A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to Linux A53 core, the same cannot be routed to other cores (M4/R5).
+   :::
+
+
+   :::{admonition} Attention
+   Before running the GPIO Input interrupt example on a processor with Linux cores, disable any overlapping entries in the Linux devicetree board file. The GPIO can be excluded from the linux device tree by modifying the device tree board file (arch/arm64/boot/dts/ti/k3-am625-sk.dts)
+   :::
+
+
+   :::{admonition} Attention
+   A new linux devicetree blob (dtb) should be generated with this change and placed in the Linux filesystem in the boot folder. For more information, reference the AM62x Linux SDK docs, section Foundational Components > Kernel > Users Guide. The kernel and kernel modules do not need to be rebuilt and reinstalled.
+   :::
+
+
+   A new linux image to be generated with this change and SoC initialization to done following [SOC Initialization Using SPL](../../getting_started/am62px_evm_setup.md) . Without this change in the linux image, this example will not work.
+
+::::
+
+
+::::{only} SOC_AM64X or SOC_AM243X
+
+   :::{admonition} Attention
+   A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to Linux A53 core, the same cannot be routed to other cores (M4/R5).
+   :::
+
+
+   :::{admonition} Attention
+   Before running the GPIO Input interrupt example on a processor with Linux cores, disable any overlapping entries in the Linux devicetree board file. The GPIO can be excluded from the linux device tree by modifying the device tree board file (arch/arm64/boot/dts/ti/k3-am642-evm.dts)
+   :::
+
+
+   :::{admonition} Attention
+   A new linux devicetree blob (dtb) should be generated with this change and placed in the Linux filesystem in the boot folder. For more information, reference the AM64x Linux SDK docs, section Foundational Components > Kernel > Users Guide. The kernel and kernel modules do not need to be rebuilt and reinstalled.
+   :::
+
+
+   :::{admonition} Note
+   The RM board config need to have an entry for the interrupt router for the core if the gpio interrupt is routed to the core through the interrupt router.
+   :::
+::::
+
+
+::::{only} SOC_AM62AX
+   {{ VAR_BOARD_NAME }} does not contain any push button connected to MCU GPIOs.
+
+   MCU-R5 example is using MCU_GPIO0_15 pin in the MCU_HEADER(J9) for generating GPIO interrupt.
+   Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin 10 of J9) to ground (Pin 27 of J9) in the {{ VAR_BOARD_NAME }}. Please note that number of key presses will be higher than actual as we are manualy connecting the ground using jumpers.
+
+   C75 example is using GPIO1_22 pin in the user expansion connector(J3) for generating GPIO interrupt. For this, the interrupt has to be routed thorugh MAIN_GPIOMUX_INTROUTER0 instance 15.
+   But it is allocated to TISCI_HOST_ID_A53_2 in source/drivers/sciclient/sciclient_default_boardcfg/am62ax/sciclient_defaultBoardcfg_rm.c file as,
+      {
+       .num_resource = 16,
+       .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
+       .start_resource = 0,
+       .host_id = TISCI_HOST_ID_A53_2,
+   },
+   
+   So replace the above code with the following lines in source/drivers/sciclient/sciclient_default_boardcfg/am62ax/sciclient_defaultBoardcfg_rm.c file. This will allocate the 15th instance of MAIN_GPIOMUX_INTROUTER0 to c75 core.
+      {
+       .num_resource = 15,
+       .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
+       .start_resource = 0,
+       .host_id = TISCI_HOST_ID_A53_2,
+   },
+   {
+       .num_resource = 1,
+       .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
+       .start_resource = 15,
+       .host_id = TISCI_HOST_ID_C7X_0_0,
+   },
+   
+   Then rebuild the boardconfig and SBL using the steps mentioned in [SYSFW Board Config Generation](../../components/tools/tools_sysfw.md) .
+   Key presses can be done by connecting followed by disconnecting GPIO1_22(Pin 15 of J3) to ground (Pin 27 of MCU_HEADER(J9)) in the {{ VAR_BOARD_NAME }}. Please note that number of key presses will be higher than actual as we are manualy connecting the ground using jumpers.
+
+
+   :::{only} SOC_AM64X or SOC_AM243X or SOC_AM263X or SOC_AM62X or SOC_AM62AX or SOC_AM62PX or SOC_AM275X or SOC_AM273X or SOC_AWR294X or SOC_J722S or SOC_AM62LX and not SOC_AM275X
+      :::{admonition} Attention
+      MCU GPIO and MAIN GPIO interrupt is used by Linux running on A53.
+      :::
+
+
+      :::{admonition} Attention
+      A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to Linux A53 core, the same cannot be routed to other cores (C75/R5).
+      :::
+
+
+      :::{admonition} Attention
+      To run this example, mcu_gpio0, mcu_gpio_intr entries, main_gpio1 and main_gpio_intr has to be removed from /arch/arm64/boot/dts/ti/k3-am62a7-sk.dtsi file of linux kernel source. A new linux image to be generated with this change and SoC initialization to done following [SOC Initialization Using SPL](../../getting_started/am62px_evm_setup.md) . Without this change in the linux image, this example will not work.
+      :::
+    :::
+
+
+   :::{admonition} Attention
+   A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to A53 core, the same cannot be routed to other cores (C75/R5).
+   :::
+
+
+::::
+
+
+::::{only} SOC_AM62DX
+   {{ VAR_BOARD_NAME }} contains a push button(SW5) connected to MCU GPIOs.
+
+   Examples are using SW5 push button for generating GPIO interrupt. For C75, the interrupt has to be routed thorugh MAIN_GPIOMUX_INTROUTER0 instance 15. But it is allocated to TISCI_HOST_ID_A53_2 in source/drivers/sciclient/sciclient_default_boardcfg/am62ax/sciclient_defaultBoardcfg_rm.c file as,
+      {
+       .num_resource = 2,
+       .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
+       .start_resource = 34,
+       .host_id = TISCI_HOST_ID_MCU_0_R5_0,
+   },
+   
+   So replace the above code with the following lines in source/drivers/sciclient/sciclient_default_boardcfg/am62ax/sciclient_defaultBoardcfg_rm.c file. This will allocate the 15th instance of MAIN_GPIOMUX_INTROUTER0 to c75 core.
+      {
+       .num_resource = 1,
+       .type = TISCI_RESASG_UTYPE (TISCI_DEV_MAIN_GPIOMUX_INTROUTER0, TISCI_RESASG_SUBTYPE_IR_OUTPUT),
+       .start_resource = 15,
+       .host_id = TISCI_HOST_ID_C7X_0_0,
+   },
+   
+   Then rebuild the boardconfig and SBL using the steps mentioned in [SYSFW Board Config Generation](../../components/tools/tools_sysfw.md) . Flash the newly built SBL.
+
+   :::{admonition} Attention
+   A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to A53 core, the same cannot be routed to other cores (C75/R5).
+   :::
+::::
+
+
+::::{only} SOC_AM62PX
+   {{ VAR_BOARD_NAME }} does not contain any push button connected to MCU GPIOs. This example is using MCU_GPIO0_15 pin in the MCU_HEADER(J11) for generating GPIO interrupt.
+   Key presses can be done by connecting followed by disconnecting MCU_GPIO0_15(Pin 10 of J11) to ground (Pin 27 of J11) in the {{ VAR_BOARD_NAME }}. Please note that number of key presses will be higher than actual as we are manualy connecting the ground using jumpers.
+
+   :::{admonition} Attention
+   MCU GPIO interrupt is used by Linux running on A53. To run this example, mcu_gpio0 and mcu_gpio_intr entries to be removed from /arch/arm64/boot/dts/ti/k3-am62p-mcu.dtsi file of linux kernel source. A new linux image to be generated with this change and SoC initialization to done following [SOC Initialization Using SPL](../../getting_started/am62px_evm_setup.md) . Without this change in the linux image, this example will not work.
+   :::
+
+
+::::
+
+
+::::{only} SOC_AM62LX
+   A GPIO bank interrupt can be routed to only one core at a time. For example if a gpio interrupt is routed to A53_0 core, the same cannot be routed to A53_1 core.
+   In the case of AMP, currenly both the cores are using pins of different GPIO banks, so that GPIO interrupt can trigger on both the cores. User can change this and can be used different GPIO banks for each a53 core by making changes in the board.c file.
+
+::::
+
+## Supported Combinations
+::::{only} SOC_AM64X
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | r5fss0-0 nortos |
+| Toolchain | ti-arm-clang |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/gpio/gpio_input_interrupt/ |
+
+::::
+
+
+::::{only} SOC_AM62X
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | m4fss0-0 nortos |
+| CPU + OS | a53ss0-0 freertos |
+| CPU + OS | a53ss0-1 freertos |
+| CPU + OS | a53ss1-0 freertos |
+| CPU + OS | a53ss1-1 freertos |
+| Toolchain | ti-arm-clang |
+| Toolchain | arm.gnu.aarch64-none |
+| Board | {{ VAR_BOARD_NAME_LOWER }}, {{ VAR_SIP_SK_BOARD_NAME_LOWER }}, {{ VAR_SK_LP_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/gpio/gpio_input_interrupt/ |
+
+::::
+
+
+::::{only} SOC_AM62AX
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | mcu-r5fss0-0 nortos |
+| Toolchain | ti-arm-clang |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/gpio/gpio_input_interrupt/ |
+
+::::
+
+
+::::{only} SOC_AM62DX
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | a53ss0-0 nortos |
+| CPU + OS | a53ss0-0 freertos |
+| CPU + OS | c75ss0-0 freertos |
+| CPU + OS | mcu-r5fss0-0 nortos |
+| CPU + OS | mcu-r5fss0-0 freertos |
+| CPU + OS | r5fss0-0 freertos |
+| Toolchain | ti-arm-clang |
+| Toolchain | arm.gnu.aarch64-none |
+| Toolchain | ti-c7000 |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/gpio/gpio_input_interrupt/ |
+
+::::
+
+
+::::{only} SOC_AM275X
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | r5fss0-0 freertos |
+| CPU + OS | r5fss0-0 nortos |
+| CPU + OS | c75ss0-0 freertos |
+| Toolchain | ti-arm-clang |
+| Toolchain | ti-c7000 |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/gpio/gpio_input_interrupt/ |
+
+::::
+
+
+::::{only} SOC_AM62PX
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | mcu-r5fss0-0 nortos |
+| CPU + OS | wkup-r5fss0-0 freertos |
+| Toolchain | ti-arm-clang |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/gpio/gpio_input_interrupt/ |
+
+::::
+
+
+::::{only} SOC_AM243X
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | r5fss0-0 nortos |
+| Toolchain | ti-arm-clang |
+| Boards | {{ VAR_BOARD_NAME_LOWER }}, {{ VAR_LP_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/gpio/gpio_input_interrupt/ |
+
+::::
+
+
+::::{only} SOC_AM273X
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | r5fss0-0 nortos |
+| CPU + OS | c66ss0 nortos |
+| Toolchain | ti-arm-clang, ti-c6000 |
+| Boards | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/gpio/gpio_input_interrupt/ |
+
+::::
+
+
+::::{only} SOC_AWR294X
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | r5fss0-0 nortos |
+| Toolchain | ti-arm-clang |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/gpio/gpio_input_interrupt/ |
+
+::::
+
+
+::::{only} SOC_AM263X
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | r5fss0-0 nortos |
+| Toolchain | ti-arm-clang |
+| Board | {{ VAR_BOARD_NAME_LOWER }}, {{ VAR_LP_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/gpio/gpio_input_interrupt/ |
+
+::::
+
+
+::::{only} SOC_AM62LX
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | a53ss0-0 freertos |
+| CPU + OS | a53ss0-0 nortos |
+| CPU + OS | a53ss0-1 freertos |
+| CPU + OS | a53ss0-1 nortos |
+| Toolchain | arm.gnu.aarch64-none |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/gpio/gpio_input_interrupt/ |
+
+::::
+
+
+## Steps to Run the Example
+
+- **When using CCS projects to build**, import the CCS project for the required combination
+  and build it using the CCS project menu (see [Using SDK with CCS Projects](../../developer_guides/ccs_projects.md)).
+- **When using makefiles to build**, note the required combination and build using
+  make command (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md))
+
+::::{only} SOC_AM62LX
+   - To Load and Run an example (see `DFU_LOAD_CCS_DEBUG`)
+::::
+
+
+::::{only} SOC_AM64X or SOC_AM243X or SOC_AM263X or SOC_AM62X or SOC_AM62AX or SOC_AM62DX or SOC_AM62PX or SOC_AM275X or SOC_AM273X or SOC_AWR294X or SOC_J722S
+   - Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
+::::
+
+
+::::{only} SOC_AM62PX
+   :::{admonition} Attention
+   As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL.
+   :::
+
+
+   - Refer [Flash a Hello World example](../../getting_started/getting_started_flash.md) for flashing the application.
+::::
+
+
+::::{only} SOC_AM64X
+   - Press and release SW5 button on the EVM to generate the trigger GPIO interrupt. This button is connected to GPIO1_43.
+::::
+
+
+::::{only} SOC_AM243X
+
+   **AM243X-EVM**
+   - Press and release SW5 button on the EVM to generate the trigger GPIO interrupt. This button is connected to GPIO1_43.
+
+   **AM243X-LP**
+   - Press and release SW5 button on the EVM to generate the trigger GPIO interrupt. This button is connected to GPIO1_54.
+
+::::
+
+
+::::{only} SOC_AM273X
+
+   **AM273X-EVM**
+   - Press and release SW2 button on the EVM to generate the trigger GPIO interrupt. This button is connected to MSS_GPIO_28.
+
+::::
+
+
+::::{only} SOC_AWR294X
+
+   **AWR294X-EVM**
+   - Press and release SW2 button on the EVM to generate the trigger GPIO interrupt. This button is connected to GPIO28.
+
+::::
+
+
+::::{only} SOC_AM263X
+
+   **AM263X-CC**
+   - Press and release SW1 button on the EVM to generate the trigger GPIO interrupt. This button is connected to GPIO21.
+
+   **AM263X-LP**
+   - Press and release SW4 button on the EVM to generate the trigger GPIO interrupt. This button is connected to GPIO123.
+
+::::
+
+
+::::{only} SOC_AM275X
+   **AM275X-EVM**
+   - Press and release SW5 button on the EVM to generate the trigger GPIO interrupt. This button is connected to GPIO0_90.
+
+::::
+
+
+::::{only} SOC_AM62LX
+   **AM62LX-EVM**
+   - This example uses the user expansion connector (J2) in the  board for testing on AM62LX-EVM.
+   - All pin numbers are on the expansion connector in the board.
+   - The pins configured for the example is enabled on user expansion connector based on the FET selection switch(FET_SEL0).
+   - The SOC_VOUT0_DATAn are the input to FET switches. The pins that are configured for the example are pinmuxed with the FET switches.
+   - The S0 select pin decides if the configured pins (which is pinmuxed with SOC_VOUT0_DATAn) map to HDMI or USER EXP connector.
+   - The S0 pin is triggered to a high value in the software. When the S0 is high, the pin that is configured for the example (which is pinmuxed with SOC_VOUT0_DATAn) will be available on the user expansion connector.
+
+   The below diagram depicts the selection:
+
+   | S2 | S1 | S0 |        IP(nA)/OP(nB1 (Or) nB2) |
+|---|---|
+| H | H |
+| H | H |
+
+   **For AM62L EVM PROC181E1**:
+   - The pin FET_SEL0 (S0) is connected to the TCA6424 IO expander, hence it requires the user to write to the IO expander through software to give it a high signal for GPIO Expansion Connector (J2) to work. By default, this has been done through sysconfig for this example.
+
+   **For AM62L EVM PROC181E1-1**:
+   - The pin FET_SEL0 (S0) is connected to the J29 Expansion connector, hence it requires the user to connect the Pin 1 and Pin 2 of J29 to give pin S0 a high signal for GPIO Expansion Connector (J2) to work. This needs to be done by the user to receive signals on the GPIO Expansion Connector (J2).
+
+   Default pins for testing the example:
+   - For getting interrupts on A53 core 0, connect the pin 1 of J2 to pin 3 of J2 (DGND) and release to trigger the GPIO interrupt. This button is connected to GPIO0_34.
+   - For getting interrupts on A53 core 1, press and release SW5 button on the EVM to trigger the GPIO interrupt. This button is connected to GPIO0_90.
+
+::::
+
+
+## See Also
+
+[GPIO](../../components/drivers/gpio.md)
+
+## Sample Output
+
+::::{only} SOC_AM64X or SOC_AM243X or SOC_AM263X or SOC_AM62AX or SOC_AM62DX or SOC_AM62PX or SOC_AM275X or SOC_AM273X or SOC_AWR294X or SOC_J722S or SOC_AM62LX and not SOC_AM62LX
+   Shown below is a sample output when the application is run,
+
+   ```
+   GPIO Input Interrupt Test Started ...
+   GPIO Interrupt Configured for Rising Edge ...
+   Press pushbutton SW5 to trigger a GPIO interrupt
+   Key is pressed 0 times
+   Key is pressed 0 times
+   Key is pressed 0 times
+   Key is pressed 1 times
+   Key is pressed 2 times
+   Key is pressed 3 times
+   Key is pressed 3 times
+   Key is pressed 4 times
+   Key is pressed 5 times
+   GPIO Input Interrupt Test Passed!!
+   All tests have passed!!
+   ```
+::::
+
+
+::::{only} SOC_AM62X
+   :::{admonition} Attention
+   Output from the a53ss0-0, a53ss0-1, a53ss1-0 and a53ss1-1 cores are printed to UART0(/dev/ttyUSB0).
+   :::
+
+   Shown below is a sample output from all the cores when the application is run.
+
+   ```
+   GPIO Input Interrupt Test Started ...
+   GPIO Interrupt Configured for Rising Edge ...
+   Connect the GPIO0_14 pin on EVM to ground and release to trigger GPIO interrupt ...
+   Key is pressed 0 times
+   [a530-1]     0.000227s : GPIO Input Interrupt Test Started ...
+   [a530-1]     0.000240s : GPIO Interrupt Configured for Rising Edge ...
+   [a530-1]     0.000246s : Connect the GPIO0_38 pin on EVM to ground and release to trigger GPIO interrupt ...
+   [a530-1]     0.000252s : Key is pressed 0 times
+   [a531-0]     0.000362s : GPIO Input Interrupt Test Started ...
+   [a531-0]     0.000376s : GPIO Interrupt Configured for Rising Edge ...
+   [a531-0]     0.000383s : Connect the GPIO1_22 pin on EVM to ground and release to trigger GPIO interrupt ...
+   [a531-0]     0.000388s : Key is pressed 0 times
+   [a531-1]     0.000453s : GPIO Input Interrupt Test Started ...
+   [a531-1]     0.000466s : GPIO Interrupt Configured for Rising Edge ...
+   [a531-1]     0.000473s : Connect the GPIO1_10 pin on EVM to ground and release to trigger GPIO interrupt ...
+   [a531-1]     0.000478s : Key is pressed 0 times
+   [a530-1]     1.000003s : Key is pressed 0 times
+   [a531-0]     1.000003s : Key is pressed 0 times
+   [a531-1]    18.000001s : Key is pressed 0 times
+   Key is pressed 0 times
+   [a530-1]    19.000001s : Key is pressed 0 times
+   [a531-0]    19.000001s : Key is pressed 0 times
+   [a531-1]    19.000001s : Key is pressed 0 times
+   Key is pressed 0 times
+   [a530-1]    20.000001s : Key is pressed 0 times
+   [a531-0]    20.000001s : Key is pressed 0 times
+   [a531-1]    20.000001s : Key is pressed 0 times
+   Key is pressed 0 times
+   [a530-1]    21.000001s : Key is pressed 0 times
+   [a531-0]    21.000001s : Key is pressed 0 times
+   [a531-1]    21.000001s : Key is pressed 0 times
+   Key is pressed 0 times
+   [a530-1]    22.000001s : Key is pressed 0 times
+   [a531-0]    22.000001s : Key is pressed 0 times
+   [a531-1]    22.000001s : Key is pressed 0 times
+   Key is pressed 38 times
+   GPIO Input Interrupt Test Passed on a53_core0 !!
+   All tests have passed on a53_core0 !!
+   [a530-1]    23.000001s : Key is pressed 0 times
+   [a531-1]    28.000001s : Key is pressed 0 times
+   [a530-1]    29.000001s : Key is pressed 28 times
+   [a530-1]    29.000006s : GPIO Input Interrupt Test Passed on a53_core1 !!
+   [a530-1]    29.000009s : All tests have passed on a53_core1 !!
+   [a531-0]    29.000001s : Key is pressed 0 times
+   [a531-1]    29.000001s : Key is pressed 0 times
+   [a531-0]    30.000001s : Key is pressed 80 times
+   [a531-0]    30.000006s : GPIO Input Interrupt Test Passed on a53_core2 !!
+   [a531-0]    30.000009s : All tests have passed on a53_core2 !!
+   [a531-1]    30.000001s : Key is pressed 0 times
+   [a531-1]    45.000001s : Key is pressed 42 times
+   [a531-1]    45.000006s : GPIO Input Interrupt Test Passed on a53_core3 !!
+   [a531-1]    45.000009s : All tests have passed on a53_core3 !!
+   ```
+::::
+
+
+::::{only} SOC_AM62LX
+
+   **FreeRTOS-AMP Sample Output**
+
+   Shown below is a sample output on UART0 console (logs for a53ss0-0) when the application is run,
+
+   ```
+   GPIO Input Interrupt Test Started ...
+   GPIO Interrupt Configured for Rising Edge ...
+   Connect the GPIO0_34 pin on EVM to ground and release to trigger GPIO interrupt ...
+   Key is pressed 0 times
+   Key is pressed 0 times
+   Key is pressed 0 times
+   Key is pressed 0 times
+   Key is pressed 0 times
+   Key is pressed 0 times
+   Key is pressed 0 times
+   Key is pressed 27 times
+   GPIO Input Interrupt Test Passed on a53_core0 !!
+   All tests have passed on a53_core0 !!
+   ```
+
+   Shown below is a sample output on UART1 console (logs for a53ss0-1) when the application is run,
+
+   ```
+   GPIO Input Interrupt Test Started ...
+   GPIO Interrupt Configured for Rising Edge ...
+   Connect the GPIO0_90 pin on EVM to ground and release to trigger GPIO interrupt ...
+   Key is pressed 0 times
+   Key is pressed 0 times
+   Key is pressed 0 times
+   Key is pressed 0 times
+   Key is pressed 2 times
+   Key is pressed 2 times
+   Key is pressed 2 times
+   Key is pressed 2 times
+   Key is pressed 4 times
+   Key is pressed 4 times
+   Key is pressed 5 times
+   GPIO Input Interrupt Test Passed on a53_core1 !!
+   All tests have passed on a53_core1 !!
+   ```
+::::
+

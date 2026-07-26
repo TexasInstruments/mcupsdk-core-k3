@@ -84,15 +84,10 @@ extern "C"
  */
 typedef void  *Panel_Handle;
 
-/**
- * \brief Forward declaration of \ref Panel_Config
- */
+/** \cond DOXYGEN_SHOULD_SKIP_THIS */
 typedef struct Panel_Config_s Panel_Config;
-
-/**
- * \brief Forward declaration of \ref Panel_Params
- */
 typedef struct Panel_Params_s Panel_Params;
+/** \endcond */
 
 /**
  * \name Panel driver implementation callbacks

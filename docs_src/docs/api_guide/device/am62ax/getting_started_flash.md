@@ -207,45 +207,45 @@ We can then boot this application without being connected to CCS via JTAG.
 - You should see the following SBL output on the main UART terminal as below. 
       
       SYSFW ABI: 4.0 (firmware rev 0x000b '11.2.10--v11.02.10 (Fancy Rat)')
-      [BOOTLOADER_PROFILE] Boot Media       : eMMC 
-      [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz 
-      [BOOTLOADER_PROFILE] Boot Image Size  : 191 KB 
-      [BOOTLOADER_PROFILE] Cores present    : 
+      [KPI] Boot Media       : eMMC 
+      [KPI] Boot Media Clock : 200.000 MHz 
+      [KPI] Boot Image Size  : 191 KB 
+      [KPI] Cores present    : 
       mcu-r5f0-0
       r5f0-0
-      [BOOTLOADER PROFILE] System_init                      :      32924us 
-      [BOOTLOADER PROFILE] Board_init                       :         94us 
-      [BOOTLOADER PROFILE] Drivers_open                     :      21690us 
-      [BOOTLOADER PROFILE] Board_driversOpen                :          0us 
-      [BOOTLOADER PROFILE] Sciclient Get Version            :       6798us 
-      [BOOTLOADER PROFILE] PBIST Positive Tests             :        214us 
-      [BOOTLOADER PROFILE] PBIST Negative Tests             :        612us 
-      [BOOTLOADER PROFILE] MCU R5 Image Load                :       4541us 
-      [BOOTLOADER PROFILE] DM R5 Image Load                 :       5513us 
-      [BOOTLOADER_PROFILE] SBL Total Time Taken             :      72390us 
+      [KPI] System_init                      :      32924us 
+      [KPI] Board_init                       :         94us 
+      [KPI] Drivers_open                     :      21690us 
+      [KPI] Board_driversOpen                :          0us 
+      [KPI] Sciclient Get Version            :       6798us 
+      [KPI] PBIST Positive Tests             :        214us 
+      [KPI] PBIST Negative Tests             :        612us 
+      [KPI] MCU R5 Image Load                :       4541us 
+      [KPI] DM R5 Image Load                 :       5513us 
+      [KPI] SBL Total Time Taken             :      72390us 
 
       Image loading done, switching to application ...
       Starting MCU-r5f and 2nd stage bootloader
 
       SYSFW ABI: 4.0 (firmware rev 0x000b '11.2.10--v11.02.10 (Fancy Rat)')
-      [BOOTLOADER_PROFILE] Boot Media       : eMMC 
-      [BOOTLOADER_PROFILE] Boot Media Clock : 200.000 MHz 
-      [BOOTLOADER_PROFILE] Boot Image Size  : 1380 KB 
-      [BOOTLOADER_PROFILE] Cores present    : 
+      [KPI] Boot Media       : eMMC 
+      [KPI] Boot Media Clock : 200.000 MHz 
+      [KPI] Boot Image Size  : 1380 KB 
+      [KPI] Cores present    : 
       hsm-m4f0-0
       r5f0-0
       a530-0
       c75ss0
-      [BOOTLOADER PROFILE] System_init                      :       1791us 
-      [BOOTLOADER PROFILE] Board_init                       :          0us 
-      [BOOTLOADER PROFILE] Drivers_open                     :      21515us 
-      [BOOTLOADER PROFILE] Board_driversOpen                :          0us 
-      [BOOTLOADER PROFILE] Sciclient Get Version            :       6796us 
-      [BOOTLOADER PROFILE] HSM Image Load                   :       3830us 
-      [BOOTLOADER PROFILE] DM R5 Image Load                 :       6358us 
-      [BOOTLOADER PROFILE] A53 Image Load                   :      17071us 
-      [BOOTLOADER PROFILE] DSP Image Load                   :       5594us 
-      [BOOTLOADER_PROFILE] SBL Total Time Taken             :      62959us 
+      [KPI] System_init                      :       1791us 
+      [KPI] Board_init                       :          0us 
+      [KPI] Drivers_open                     :      21515us 
+      [KPI] Board_driversOpen                :          0us 
+      [KPI] Sciclient Get Version            :       6796us 
+      [KPI] HSM Image Load                   :       3830us 
+      [KPI] DM R5 Image Load                 :       6358us 
+      [KPI] A53 Image Load                   :      17071us 
+      [KPI] DSP Image Load                   :       5594us 
+      [KPI] SBL Total Time Taken             :      62959us 
 
       Image loading done, switching to application ...
       Starting linux and RTOS/Baremetal applications

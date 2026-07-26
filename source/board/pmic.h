@@ -64,11 +64,13 @@ extern "C" {
 /** \brief Handle to the PMIC driver returned by #PMIC_open() */
 typedef void *PMIC_Handle;
 
+/** \cond DOXYGEN_SHOULD_SKIP_THIS */
 /** \brief Forward declaration of \ref PMIC_Config */
 typedef struct PMIC_Config_s PMIC_Config;
 
 /** \brief Forward declaration of \ref PMIC_Params */
 typedef struct PMIC_Params_s PMIC_Params;
+/** \endcond */
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */

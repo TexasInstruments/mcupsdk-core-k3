@@ -1,0 +1,181 @@
+# IPC RPMessage
+
+```{contents}
+:depth: 2
+:local:
+```
+
+:::{admonition} Note
+These APIs are to be used from NORTOS/RTOS. When working with Linux on A53 refer to Linux documentation for Linux side APIs.
+:::
+
+
+## Features Supported
+
+- RP Message + VRING protocol implementation
+- Uses [IPC Notify](ipc_notify.md) underneath for interrupts and uses shared memory (VRING) for message buffers
+- Uses 'IPC Notify' underneath for interrupts and uses shared memory (VRING) for message buffers
+- Supports message passing between NORTOS, FreeRTOS and Linux based CPUs
+- Logical communication channels can be created using unique "end points". This allows multiple tasks on a CPU to talk to multiple tasks
+  on another CPU using the same underlying HW mailbox and shared memory.
+- Between NORTOS and RTOS, below can be configured in RP Message to control the shared memory size,
+  - Max message size, default is 128 bytes
+  - Number of buffers in a VRING, default is 8 messages. Number of buffers should be powers of 2.
+  - VRING shared memory buffer address can be configured, can be DDR or internal memory address.
+- Between Linux and NORTOS/RTOS, the VRING parameters are fixed as below
+  - Max message is 512B
+  - Number of messages in a VRING is 256
+  - VRING shared memory address is determined by value in Linux device tree and is placed in DDR.
+- APIs to send and receive messages to user specified end points
+- Blocking, as well as non-blocking APIs with time out based blocking.
+- APIs to announce a created end point, needed when talking to Linux
+- API to sync and wait for LInux to be ready, needed when talking to Linux
+- APIs to use callback to receive message notifications instead of blocking, see `RPMessage_CreateParams` for more details.
+- APIs to use callback to receive and handle messages in callback itself, see `RPMessage_CreateParams` for more details.
+- Logging to Linux shared memory when IPC with Linux is enabled. Allows to view logs from RTOS/NORTOS on Linux using Linux debugfs.
+
+## SysConfig Features
+
+:::{admonition} Note
+It is strongly recommend to use SysConfig where it is available instead of using direct SW API calls. This will help simplify the SW application and also catch common mistakes early in the development cycle. - Enable/Disable IPC RPMessage between different CPUs - Enable IPC RPMessage between NORTOS/RTOS and Linux. When enabled, SysConfig generates the resource table that is needed to talk with Linux. - Select RP Message max message size, number of buffer in a VRING - Enable IPC RPMessage between NORTOS/RTOS and Linux. When enabled, SysConfig generates the resource table that is needed to talk with Linux.
+:::
+
+
+## Features NOT Supported
+NA
+
+## Important Usage Guidelines
+
+:::{admonition} Note
+It is strongly recommended to refer to the IPC examples `examples/drivers/ipc` to understand the linker command file setup for IPC applications.
+:::
+
+
+- When Linux runs along side RTOS/NORTOS, do below to make sure NORTOS/RTOS can talk to Linux.
+ - Make sure to call RPMessage_waitForLinuxReady() before starting communication with Linux.
+ - Also for any RPMessage point created on NORTOS/RTOS, make sure to announce it to Linux using RPMessage_announce()
+ - Make sure to assign the shared memory used for VRING between Linux and this CPU as mentioned in the Linux device tree.
+   Also make sure to mark this section as non-cached
+ - If the CPU code will run out of DDR, make sure to setup a MPU entry for the code/data section in DDR. This can be
+   marked as cached.
+ - Again refer to Linux device tree to find out the space in DDR and MSMC where the NORTOS/RTOS applications can execute from.
+
+- Make sure to assign the shared memory used for VRINGs between NORTOS/RTOS in a common memory section in each CPUs linker command file
+  and make sure to mark this section as non-cached in the R5F MPU.
+- Maximum Message size is limited to 1152 Bytes in Syscfg and the maximum number of buffers is limited to 16.
+The recommended approach is to keep the number of buffers and message size within this limit.
+- If larger messages need to be passed, the data should be kept in a shared memory and a pointer to the same should be passed via IPC.
+
+## Example Usage
+
+::::{only} SOC_AM64X or SOC_AM243X or SOC_AM275X
+
+   ### Include the below files to access the APIs
+
+   ```{literalinclude} ../../../../docs/api_guide/doxy_samples/drivers/IpcRPMessage_sample.c
+   :language: c
+   :lines: 3-6
+   ```
+
+   ### Setup VRING shared memory for IPC RPMessage
+
+   ```{literalinclude} ../../../../docs/api_guide/doxy_samples/drivers/IpcRPMessage_sample.c
+   :language: c
+   :lines: 10-31
+   ```
+
+   ### Define `RPMessage_Object` objects for receive and ack endpoints
+
+   ```{literalinclude} ../../../../docs/api_guide/doxy_samples/drivers/IpcRPMessage_sample.c
+   :language: c
+   :lines: 35-39, 43-47
+   ```
+
+   ### Initialize IPC RPMessage
+
+   ```{literalinclude} ../../../../docs/api_guide/doxy_samples/drivers/IpcRPMessage_sample.c
+   :language: c
+   :lines: 54-70, 75-91
+   ```
+
+   ### Create RPMessage end points for receive and ack endpoints
+
+   ```{literalinclude} ../../../../docs/api_guide/doxy_samples/drivers/IpcRPMessage_sample.c
+   :language: c
+   :lines: 96-105, 110-119
+   ```
+
+   ### Send message from Core 0 to Core 1 and wait for reply from Core 1
+
+   ```{literalinclude} ../../../../docs/api_guide/doxy_samples/drivers/IpcRPMessage_sample.c
+   :language: c
+   :lines: 124-145
+   ```
+
+   ### Receive message at Core 1 from Core 0 and send ack to Core 0
+
+   ```{literalinclude} ../../../../docs/api_guide/doxy_samples/drivers/IpcRPMessage_sample.c
+   :language: c
+   :lines: 150-181
+   ```
+
+::::
+
+::::{only} SOC_AM62X or SOC_AM62AX or SOC_AM62DX or SOC_AM62PX
+
+   ### Include the below files to access the APIs
+
+   ```{literalinclude} ../../../../docs/api_guide/doxy_samples/drivers/IpcRPMessage_linux_sample.c
+   :language: c
+   :lines: 3-6
+   ```
+
+   ### Define the following macros
+
+   ```{literalinclude} ../../../../docs/api_guide/doxy_samples/drivers/IpcRPMessage_linux_sample.c
+   :language: c
+   :lines: 10-16
+   ```
+
+   ### Setup resource table to be used by Linux, this snippet is for reference and is generated by SysConfig when SysConfig is used for IPC.
+
+   ```{literalinclude} ../../../../docs/api_guide/doxy_samples/drivers/IpcRPMessage_linux_sample.c
+   :language: c
+   :lines: 20-49
+   ```
+
+   ### Initialize IPC RPMessage, this snippet is for reference and is generated by SysConfig when SysConfig is used for IPC.
+
+   ```{literalinclude} ../../../../docs/api_guide/doxy_samples/drivers/IpcRPMessage_linux_sample.c
+   :language: c
+   :lines: 64-86
+   ```
+
+   ### Define `RPMessage_Object` objects for receive endpoints
+
+   ```{literalinclude} ../../../../docs/api_guide/doxy_samples/drivers/IpcRPMessage_linux_sample.c
+   :language: c
+   :lines: 53-57
+   ```
+
+   ### Create RPMessage end points for receive endpoints
+
+   ```{literalinclude} ../../../../docs/api_guide/doxy_samples/drivers/IpcRPMessage_linux_sample.c
+   :language: c
+   :lines: 91-106
+   ```
+
+   ### Receive message at MCU core from A53 Linux and send ack to A53 Linux
+
+   ```{literalinclude} ../../../../docs/api_guide/doxy_samples/drivers/IpcRPMessage_linux_sample.c
+   :language: c
+   :lines: 111-143
+   ```
+
+::::
+
+
+## API Reference
+
+```{doxygenfile} ipc_rpmsg.h
+```

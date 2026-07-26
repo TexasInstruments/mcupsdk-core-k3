@@ -56,8 +56,7 @@ extern "C" {
 typedef struct
 {
     uint32_t cpuID;
-    /**< CPU/core ID within cluster
-     *   Refer \ref CSL_ArmR5CPUID
+    /**< CPU/core ID within cluster, as defined by the SoC's CSL core ID enumeration
      */
     uint32_t grpId;
     /**< Group Id of the cluster

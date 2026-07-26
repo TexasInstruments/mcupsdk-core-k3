@@ -94,3 +94,5 @@ examples/benchmarks/coremark_pro_benchmark/coremark-pro
 .kwps
 .serena
 *.robot
+docs_src/docs/api_guide_sphinx/doxygen_xml
+docs_src/docs/api_guide_sphinx/images

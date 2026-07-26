@@ -1,0 +1,344 @@
+# Enet Layer 2 CPSW SWITCH Example
+
+## Introduction
+
+
+::::{only} SOC_AM62DX
+   :::{admonition} Note
+   This example supports the AM62D-EVM-PROC180E2. To test with the AM62D-EVM-PROC180E1, change the phy addresses in TI BOARD DRIVERS -> ETHPHY -> CONFIG_ENET_ETHPHY(x) -> phy Address to 15 and 3.
+   :::
+::::
+
+
+The layer 2 cpsw switch example is dedicated to demonstrate usage of Enet CPSW3G peripheral operation as a basic switch.
+
+
+::::{only} SOC_AM62PX or SOC_AM62DX or SOC_AM62X or SOC_AM62LX or SOC_AM275X
+   On {{ VAR_SOC_NAME }}, we can do ethernet based communication using CPSW HW mechanism
+
+   - This is a standard ethernet switch + port HW
+::::
+
+
+This example does the following:
+
+- Target-side application:
+
+::::{only} SOC_AM62DX or SOC_AM62PX or SOC_AM275X
+   - Target-side application running on a Cortex-R5F core.
+::::
+
+
+::::{only} SOC_AM62X or SOC_AM62LX
+   - Target-side application running on a Cortex-A53 core.
+::::
+
+   - Application receives the broadcast packet for switch operation, copies the payload into a new packet which is then sent back out to the source port as well as to all the other ports on the device.
+   - The application has a menu to enable/disable features, such as getting MAC address and stats. This menu along with application logs is implemented via UART.
+- Host-side functionality
+	- Software applications like Colasoft Pkt Builder or packETH tool could be used to generate and send packets, Wireshark can be used to receive and verify packet contents
+
+- The data path enabled in this example is as follows:
+	- Host side (PC) application sends a broadcast packet to MAC port.
+	- Target side application receives the broadcast packet, updates the MAC addresses in the Layer-2 header and sends the packet back out to the source port as well as to all the other ports on the device.
+	- Application like Wireshark (PC) receives the packet and it can be seen in the capture window.
+
+
+::::{only} SOC_AM64X
+
+
+
+   - AM64X-SK CPSW3G RGMII1 RX pins use IOset2 pinmux combination.
+   - The phy address of CPSW ethernet PHY-2 is 0x0001 for AM64X-SK.
+   - Use the default value in the AM64X-SK system configuration file for RX pins and phy addresses.
+
+
+::::
+
+
+::::{only} SOC_AM62PX or SOC_AM62DX or SOC_AM62X
+   **Cut-thru Switching**
+
+   - Cut-through feature allows forwarding packets from one external port to another without being stored in Port FIFOs, thus reducing overall latency for packet forwarding.
+
+   **Limitations:**
+
+   - Cut-through forwarding is only supported between external ports and there is currently no support for Cut-Through to host port.
+   - Cut-Thru is not supported with 10/100 half-duplex.
+   - Cut-Thru is not supported with any form of flow control.
+   - If Intersperced Express Traffic (IET) is enabled, then Cut-through can only be enabled on an express priority queue and not on preemptible queues.
+
+   **Steps to enable Cut-thru switching:**
+
+   - Set cutThruEnable Control register.
+   - Set rxPriCutThruEn(RX priority queue) and txPriCutThruEn(TX priority queue) which represents the priorty queues for which cut-through feature needs to be enabled.
+   - Set portSpeedAutoEn for automatic detection of speed.
+   - Set CPSW frequency in Mhz, which is used in auto speed detection for cut-thru operations.
+::::
+
+
+## Supported Combinations
+
+
+::::{only} SOC_AM62PX
+
+| Parameter | Value |
+|---|---|
+| CPU + OS | wkup-r5fss0-0_freertos |
+| Toolchain | ti-arm-clang |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | source/networking/enet/core/examples/enet_layer2_cpsw_switch/V0 |
+
+
+:::
+
+
+::::{only} SOC_AM62DX
+
+| Parameter | Value |
+|---|---|
+| CPU + OS | mcu-r5fss0-0_freertos |
+| Toolchain | ti-arm-clang |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | source/networking/enet/core/examples/enet_layer2_cpsw_switch/V0 |
+
+
+:::
+
+
+::::{only} SOC_AM62X
+
+| Parameter | Value |
+|---|---|
+| CPU + OS | a53ss0-0_freertos |
+| Toolchain | gcc-arch64 |
+| Boards | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | source/networking/enet/core/examples/enet_layer2_cpsw_switch/V0 |
+
+:::
+
+
+::::{only} SOC_AM275X
+
+| Parameter | Value |
+|---|---|
+| CPU + OS | r5fss0-0_freertos |
+| Toolchain | ti-arm-clang |
+| Boards | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | source/networking/enet/core/examples/enet_layer2_cpsw_switch/V0 |
+
+
+:::
+
+
+## Steps to Run the Example
+
+## Build the example
+
+- When using CCS projects to build, import the CCS project for the required combination
+  and build it using the CCS project menu (see [Using SDK with CCS Projects](../../developer_guides/ccs_projects.md)).
+- When using makefiles to build, note the required combination and build using
+  make command (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md))
+
+## HW Setup
+
+:::{admonition} Note
+Make sure you have setup the EVM with cable connections as shown here, [EVM Setup](../../getting_started/am62px_evm_setup.md). In addition do below steps. \n Since the example runs on wkup R5, we cannot use CCS loading. Use example flashing methods shown in [EVM Setup](../../getting_started/am62px_evm_setup.md).
+:::
+
+
+::::{only} SOC_AM62PX
+   **AM62PX-SK**
+
+   **For CPSW based example**
+
+   - Connect two ethernet cables to the CPSW RGMII 1 and CPSW RGMII 2 ports in AM62PX-SK from host PC as shown below
+
+   ```{figure} ../../images/networking/am62px_sk_cpsw_example.jpg
+   :align: center
+
+   **Ethernet cable for CPSW based ethernet**
+   ```
+::::
+
+
+::::{only} SOC_AM62X
+   **AM62X-SK**
+
+   **For CPSW based example**
+
+   - Connect two ethernet cables to the CPSW RGMII 1 and CPSW RGMII 2 ports in AM62X-SK from host PC as shown below
+
+   ```{figure} ../../images/networking/am62x_sk_cpsw_example.jpg
+   :align: center
+
+   **Ethernet cable for CPSW based ethernet**
+   ```
+::::
+
+
+## Run the example
+
+:::{admonition} Attention
+If you need to reload and run again, a CPU power-cycle is MUST
+:::
+
+
+::::{only} SOC_AM62X or SOC_AM62DX or SOC_AM62PX or SOC_AM275X
+   - Launch a CCS debug session and run the example executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
+   - You will see logs in the UART terminal as shown in the next section.
+::::
+
+
+::::{only} SOC_AM62LX
+   - To Load and Run an example (see `DFU_LOAD_CCS_DEBUG`)
+::::
+
+- We can start sending multicast packets from Colasoft Pkt Builder or packETH tool.
+  - In the Colasoft Pkt Builder, click on Add icon , select any layer2 Packet and click ok.
+  - Edit the source and destination address in the decode editor.
+  - Click on send icon and select the ethernet adapater.
+  - Click start, packets will be send to the target.
+- Capture the packets in Wireshark.
+
+
+```{figure} ../../images/examples/layer2_cpsw_example_packet_builder.png
+:align: center
+
+**Colasoft Pkt Builder to generate and send packets**
+```
+
+## Sample output for Multiport example
+
+```
+==========================
+ Layer 2 CPSW SWITCH Test
+==========================
+
+Init all peripheral clocks
+----------------------------------------------
+Enabling clocks!
+
+Create RX tasks
+----------------------------------------------
+cpsw-3g: Create RX task
+
+Open all peripherals
+----------------------------------------------
+cpsw-3g: Open enet
+EnetAppUtils_reduceCoreMacAllocation: Reduced Mac Address Allocation for CoreId:1 From 4 To 1
+
+Init all configs
+----------------------------------------------
+cpsw-3g: init config
+cpsw-3g: Open port 1
+EnetPhy_bindDriver:1842
+cpsw-3g: Open port 2
+EnetPhy_bindDriver:1842
+PHY 0 is alive
+PHY 1 is alive
+
+Attach core id 1 on all peripherals
+----------------------------------------------
+cpsw-3g: Attach core
+cpsw-3g: Open DMA
+initQs() txFreePktInfoQ initialized with 16 pkts
+cpsw-3g: Waiting for link up...
+Cpsw_handleLinkUp:1450
+MAC Port 2: link up
+Cpsw_handleLinkUp:1450
+MAC Port 1: link up
+cpsw-3g: Port 1 link is up
+cpsw-3g: Port 2 link is up
+cpsw-3g: MAC port addr: 58:a1:5f:b8:8c:e6
+
+Enet L2 cpsw Menu:
+ 's'  -  Print statistics
+ 'r'  -  Reset statistics
+ 'm'  -  Show allocated MAC addresses
+ 'p'  -  Enable Policer for rate limiting
+ 'x'  -  Stop the test
+
+s
+
+Print statistics
+----------------------------------------------
+
+ cpsw-3g - Port 1 statistics
+--------------------------------
+
+
+ cpsw-3g - Port 2 statistics
+--------------------------------
+
+p
+
+Rate limiting Enabled port 1 on Src MAC 02:00:00:00:00:08
+s
+
+Print statistics
+----------------------------------------------
+  rxGoodFrames            = 100000
+  rxOctets                = 101800000
+  txGoodFrames            = 100000
+  txBcastFrames           = 100000
+  txOctets                = 101800000
+  octetsFrames512to1023   = 200000
+  netOctets               = 203600000
+  txPri[0]                = 100000
+  txPriBcnt[0]            = 101800000
+
+ cpsw-3g - Port 1 statistics
+--------------------------------
+  txGoodFrames            = 150000
+  txBcastFrames           = 100000
+  txOctets                = 152700000
+  octetsFrames512to1023   = 150000
+  netOctets               = 152700000
+  txPri[0]                = 150000
+  txPriBcnt[0]            = 152700000
+
+  rxGoodFrames            = 100000
+  rxOctets                = 101800000
+  txGoodFrames            = 100000
+  txBcastFrames           = 100000
+  txOctets                = 101800000
+  octetsFrames512to1023   = 200000
+  netOctets               = 203600000
+  txPri[0]                = 100000
+  txPriBcnt[0]            = 101800000
+
+ cpsw-3g - Port 2 statistics
+--------------------------------
+  rxGoodFrames            = 100000
+  rxBcastFrames           = 100000
+  rxOctets                = 101800000
+  txGoodFrames            = 50000
+  txOctets                = 50900000
+  octetsFrames512to1023   = 150000
+  netOctets               = 152700000
+  aleUnknownBcast         = 1
+  aleUnknownBcastBcnt     = 1018
+  txPri[0]                = 50000
+  txPriBcnt[0]            = 50900000
+```
+- On Wireshark we can see the packets received:
+
+
+  ![Wireshark log for Layer 2 CPSW Example](../../images/examples/layer2_cpsw_example_wireshark_log.png)
+## Testing Switch Policer configuration
+
+- Enable the policer using 'p' option in target UART terminal menu option.
+- Send Layer-2 packets with below configurations
+    - Source MAC address - 02:00:00:00:00:08
+    - ingress port - PORT 1
+    - Destination MAC address - any
+    - Ether_type = 0x8600
+    - Data rate - more than 25 mbps
+
+- Observe that packets are switched by limiting data rate to 25 mpbs.
+- Observe that the dropped packets are marked with 'alePolicyMatchRed' in CPSW statistics print.
+
+## See Also
+
+[Ethernet And Networking](../../components/networking/networking.rst)

@@ -70,7 +70,7 @@ const cflags = {
 
 const syscfgfile = "../example.syscfg";
 
-const readmeDoxygenPageTag = "BENCHMARK_SMART_PLACEMENT";
+const readmeDoxygenPageTag = "EXAMPLES_BENCHMARK_SMART_PLACEMENT";
 
 const templates_freertos_r5f =
 [

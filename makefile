@@ -179,15 +179,23 @@ ifeq ($(DEVICE),$(filter $(DEVICE), am62lx))
   DOC_COMBO = a53.gcc-aarch64
 endif
 
+# Devices migrated to the Sphinx doc pipeline - everything else still uses
+# the legacy Doxygen-HTML pipeline (docs_src/docs/api_guide).
+SPHINX_DEVICES := am62px am62dx am275x am62x am62ax am62lx
+
 projectspec-help:
 	$(MAKE) -C . -f makefile_projectspec.$(DEVICE) -s help PROFILE=$(PROFILE)
 
 docs:
+ifneq ($(filter $(DEVICE),$(SPHINX_DEVICES)),)
+	$(MAKE) -C docs_src/docs/api_guide_sphinx docs DEVICE=$(DEVICE)
+else
 	$(MAKE) -C docs_src/docs/api_guide all DEVICE=$(DEVICE) DOC_COMBO=$(DOC_COMBO)
-	@echo "<script id=\"searchdata\" type=\"text/xmldata\">" >> ./docs/api_guide_$(DEVICE)/search.html
+	@echo "<script id="searchdata" type="text/xmldata">" >> ./docs/api_guide_$(DEVICE)/search.html
 	$(COPY) docs_src/docs/api_guide/search.js ./docs/api_guide_$(DEVICE)/search/search.js
 	$(CAT) ./docs/api_guide_$(DEVICE)/searchdata.xml >> ./docs/api_guide_$(DEVICE)/search.html
 	@echo "</script>" >> ./docs/api_guide_$(DEVICE)/search.html
+endif
 
 ifneq ($(OS),Windows_NT)
 ifeq ($(BUILD_XLIBS),yes)
@@ -219,8 +227,13 @@ endif
 endif # ifeq ($(BUILD_XLIBS),yes)
 endif # ifneq ($(OS),Windows_NT)
 
+ifneq ($(filter $(DEVICE),$(SPHINX_DEVICES)),)
+docs-clean:
+	$(MAKE) -C docs_src/docs/api_guide_sphinx clean DEVICE=$(DEVICE)
+else
 docs-clean:
 	$(MAKE) -C docs_src/docs/api_guide clean DEVICE=$(DEVICE) DOC_COMBO=$(DOC_COMBO)
+endif
 
 gen-buildfiles:
 	$(NODE) ./.project/project.js --device $(DEVICE) --target $(GEN_BUILDFILES_TARGET) --instrumentation $(INSTRUMENTATION_MODE)

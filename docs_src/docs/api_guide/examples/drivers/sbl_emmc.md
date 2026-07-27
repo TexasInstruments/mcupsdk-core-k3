@@ -30,7 +30,7 @@ The SBL uses 5 appimages
  Board          |  @VAR_BOARD_NAME_LOWER
  Example folder | examples/drivers/boot/sbl_emmc
 
-\attention While using device variants, please remove the cores that are not present on the device from the **BOOTLOADER** section of the example Syscfg
+\attention While using device variants, please remove the cores that are not present on the device from the **BOOTLOADER** and **BIST** section of the example Syscfg
 \imageStyle{sbl_emmc_syscfg_subparts.png,width:45%}
 \image html sbl_emmc_syscfg_subparts.png
 

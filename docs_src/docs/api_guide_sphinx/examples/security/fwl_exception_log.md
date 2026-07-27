@@ -20,7 +20,31 @@ This example demonstrates how to handle firewall exceptions.
 ::::
 
 
-::::{only} SOC_AM62AX or SOC_AM62DX or SOC_AM275X
+::::{only} SOC_AM62AX
+
+| Parameter | Value |
+|---|---|
+| CPU + OS | r5fss0-0 freertos |
+| Toolchain | ti-arm-clang |
+| Boards | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/security/fwl_exception_trigger |
+
+::::
+
+
+::::{only} SOC_AM62DX
+
+| Parameter | Value |
+|---|---|
+| CPU + OS | r5fss0-0 freertos |
+| Toolchain | ti-arm-clang |
+| Boards | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/security/fwl_exception_log |
+
+::::
+
+
+::::{only} SOC_AM275X
 
 | Parameter | Value |
 |---|---|

@@ -120,7 +120,14 @@ The application runs with thread number equal to 1, 2, 5 and 10, with iteration 
   and build it using the CCS project menu (see [Using SDK with CCS Projects](../../developer_guides/ccs_projects.md)).
 - **When using makefiles to build**, note the required combination and build using
   make command (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md))
+
+````{only} SOC_AM64X or SOC_AM62DX
+- Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md) and [SMP FreeRTOS Guide](../../developer_guides/smp_freertos_guide.md)
+````
+
+````{only} SOC_AM62AX or SOC_AM275X or SOC_AM62PX or SOC_AM62X
 - Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
+````
 
 ````{only} SOC_AM62LX
 - To Load and Run an example (see `DFU_LOAD_CCS_DEBUG`)

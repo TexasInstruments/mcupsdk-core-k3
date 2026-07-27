@@ -62,16 +62,17 @@ help:
 # directives (which resolve relative to $(SPHINX_SRC)/) can find them.
 # The legacy Doxygen build additionally searched the enet-lld submodule's own
 # internal docs images (via an extra IMAGE_PATH entry) -- Sphinx/MyST has no
-# such search mechanism, so copy the enet-lld images actually referenced from
-# the migrated pages into images/networking/ alongside the rest.
+# such search mechanism, so copy the whole enet-lld internal images directory
+# into images/networking/ alongside the rest, instead of listing individual
+# files one by one (new images added to that submodule folder are then picked
+# up automatically without a Makefile edit).
 # optishare.md's images likewise lived alongside the legacy doc source
 # (developer_guides/optishare/*.png) rather than under api_guide/images/, so
 # copy them in explicitly too.
 copy-images:
 	$(RMDIR) $(SPHINX_SRC)/images
 	$(COPY) -r $(SDK_PATH)/docs_src/docs/api_guide/images $(SPHINX_SRC)/images
-	$(COPY) $(SDK_PATH)/source/networking/enet/core/docs/internal/images/EnetLLD_Diagram.png $(SPHINX_SRC)/images/networking/EnetLLD_Diagram.png
-	$(COPY) $(SDK_PATH)/source/networking/enet/core/docs/internal/images/CPSW_latency_measurement_diagram.bmp $(SPHINX_SRC)/images/networking/CPSW_latency_measurement_diagram.bmp
+	$(COPY) -r $(SDK_PATH)/source/networking/enet/core/docs/internal/images/. $(SPHINX_SRC)/images/networking/
 	$(COPY) $(SDK_PATH)/docs_src/docs/api_guide/developer_guides/optishare/*.png $(SPHINX_SRC)/images/
 
 # Install the Python packages Sphinx needs (sphinx, myst-parser, breathe, etc.)

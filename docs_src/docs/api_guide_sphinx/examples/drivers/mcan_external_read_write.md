@@ -44,10 +44,25 @@ The MCAN module is programmed to transmit a CAN message and wait for the same me
 
 ## Steps to Run the Example
 
-- **Hardware Connectivity**, connect the PCAN-USB module to PC from USB and Serial Port.
+- **Hardware Connectivity**, connect the PCAN-USB module to PC from USB and Serial Port to be connected as mentioned in the image below.
+
+  ::::{only} SOC_AM62DX
+  ![MCAN Hardware Connectivity with PCAN USB.](../../images/am62dx/mcan_external_hw_connect.png)
+  ::::
+
+  ::::{only} SOC_AM275X
+  ![MCAN Hardware Connectivity with PCAN USB.](../../images/am275x/mcan_external_hw_connect.png)
+  ::::
+
 - **Software Setup**, Download and Install the PCAN-View from https://www.peak-system.com/PCAN-View.242.0.html?&L=1
+
 - Click on CAN in the menu bar and connect to PCAN-Usb. Set Mode as ISO CAN FD, Sampling point under Nominal Bit Rate as 85 percent and Sampling Point under Data Bit Rate as 87.5 percent. Leave the rest as default.
-- After successful reception of data, transmit data ten times from PCAN-View in a ping pong fashion for the test to complete.
+
+- When data is received from MCAN instance, it will be visible as shown in the image below in PCAN-View.
+
+  ![Data received as shown in PCAN-View](../../images/examples/pcan_message_received.PNG)
+
+- After successful reception of data, the data has to be transmitted ten times from PCAN-View in a ping pong fashion for test to be completed successfully.
 - **When using CCS projects to build**, import the CCS project for the required combination
   and build it using the CCS project menu (see [Using SDK with CCS Projects](../../developer_guides/ccs_projects.md)).
 - **When using makefiles to build**, note the required combination and build using

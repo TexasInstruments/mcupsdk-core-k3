@@ -238,3 +238,68 @@ MAC ports can be closed using the `ENET_PER_IOCTL_CLOSE_PORT_LINK` IOCTL command
 
 1. Call `Enet_deinit()` to deinitialize the driver. No further Enet LLD APIs should be called from this point.
 2. Close the UDMA driver using `EnetAppUtils_udmaclose()`.
+
+## API Reference
+
+```{doxygenfile} enet_base.h
+```
+
+```{doxygenfile} enet_dma.h
+```
+
+```{doxygenfile} enet_dma_pktutils.h
+```
+
+```{doxygenfile} enet_ioctl.h
+```
+
+```{doxygenfile} enet_mod_fdb.h
+```
+
+```{doxygenfile} enet_mod_hostport.h
+```
+
+```{doxygenfile} enet_mod_macport.h
+```
+
+```{doxygenfile} enet_mod_mdio.h
+```
+
+```{doxygenfile} enet_mod_phy.h
+```
+
+```{doxygenfile} enet_mod_port.h
+```
+
+```{doxygenfile} enet_mod_stats.h
+```
+
+```{doxygenfile} enet_mod_tas.h
+```
+
+```{doxygenfile} enet_mod_timesync.h
+```
+
+```{doxygenfile} enet_osal.h
+```
+
+```{doxygenfile} enet_per.h
+```
+
+```{doxygenfile} enet_queue.h
+```
+
+```{doxygenfile} enet_rm.h
+```
+
+```{doxygenfile} enet_soc.h
+```
+
+```{doxygenfile} enet_trace.h
+```
+
+```{doxygenfile} enet_types.h
+```
+
+```{doxygenfile} enet_utils.h
+```

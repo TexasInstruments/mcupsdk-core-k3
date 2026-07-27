@@ -12,7 +12,7 @@ HCLK source
 - Transfers data on single channel
 
 ## Supported Combinations
-::::{only} SOC_AM62AX
+::::{only} SOC_AM62AX or SOC_AM62DX
 
     | Parameter      | Value |
     |---|---|
@@ -43,7 +43,7 @@ HCLK source
 - **When using makefiles to build**, note the required combination and build using
   make command (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md))
 
-::::{only} SOC_AM62AX or SOC_AM62X
+::::{only} SOC_AM62AX or SOC_AM62DX or SOC_AM62X
    - External HCLK source needs to be supplied to the pin 15 of J3 header. The frequency of
    the supplied source is specified in syscfg
 ::::

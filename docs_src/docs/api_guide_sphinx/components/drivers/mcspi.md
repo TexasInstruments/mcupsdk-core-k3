@@ -232,6 +232,59 @@ status and reinitiate transfers again.
 
 ::::
 
+## Timeout
+
+The MCSPI driver uses `SystemP_WAIT_FOREVER` (0xFFFFFFFFU) as the default timeout for blocking transfers.
+
+### Configurable Timeout
+
+The transfer timeout is configurable per driver instance via the `transferTimeout` field in `MCSPI_OpenParams`, as shown below:
+
+```c
+MCSPI_OpenParams openPrms;
+MCSPI_OpenParams_init(&openPrms);    /* default: openPrms.transferTimeout = SystemP_WAIT_FOREVER */
+openPrms.transferTimeout = 5000;     /* override: 5000 OS ticks */
+handle = MCSPI_open(instance, &openPrms);
+```
+
+**When to change:** Set a finite timeout when the application must detect a stalled SPI slave or a missing clock signal, for example in a system that requires graceful error recovery instead of hanging indefinitely.
+
+**Note:** This timeout applies to interrupt and DMA transfer modes. In polled mode, a fixed internal loop timeout (`MCSPI_MAX_TIMEOUT_VALUE`) is used and is not configurable by the application.
+
+### Non-Configurable Timeouts
+
+The following operations always use `SystemP_WAIT_FOREVER` and cannot be overridden by the application:
+
+- **Internal driver lock** — A mutex protecting driver state, acquired at the start of every transfer. This waits forever if another transfer is already in progress on the same instance.
+
+::::{only} SOC_AM62X or SOC_AM62AX or SOC_AM62DX or SOC_AM62PX or SOC_AM275X
+
+## DMA Transfer Size Limitation (AM62x/AM62Ax/AM275x Series)
+
+### Overview
+
+A discrepancy exists between the maximum transfer sizes supported by the Peripheral DMA (PDMA) hardware and the Data Movement Subsystem (DMSS) packet descriptors. While the hardware Transfer Request (TR) mechanism supports payloads up to 16 MB, the practical maximum DMA transfer size per single transaction is limited to 4,194,303 bytes (approximately 4 MB) due to software descriptor constraints.
+
+### Architectural Constraint Analysis
+
+**Hardware Capability (16 MB):**
+The MCSPI PDMA operates in X-Y FIFO Mode Static TR configuration. The PSI-L (Packet Streaming Interface Link) data management utilizes a 24-bit Z-field to define the transfer count.
+- Field Range: Bits [23:0]
+- Theoretical Maximum: 2^24 - 1 = 16,777,215 bytes (approximately 16 MB)
+- Driver Implementation: Configured via udma_ch.c channel configuration
+
+**Descriptor Bottleneck (4 MB):**
+The DMSS manages these transactions using the CPPI5 Host Packet Descriptor structure. Within Word 0 of this descriptor, the Packet Length (PKTLEN) field is constrained to a 22-bit width.
+- Field Range: Bits [21:0]
+- Practical Maximum: 2^22 - 1 = 4,194,303 bytes (approximately 4 MB)
+- Driver Implementation: Defined by the CPPI5 macro layer within csl_udmap_cppi5.h
+
+### Conclusion
+
+Because all MCSPI DMA packet transactions must be wrapped by the CPPI5 Host Packet Descriptor, the 22-bit PKTLEN restriction overrides the 24-bit hardware capability. For data transfers exceeding the 4 MB limit, applications must split the transfer into multiple consecutive MCSPI transactions.
+
+::::
+
 ## Example Usage
 
 ### Include the below file to access the APIs

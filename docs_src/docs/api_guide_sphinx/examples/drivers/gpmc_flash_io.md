@@ -45,6 +45,8 @@ When both the comparisons match, test result is passed otherwise failed.
 
 ::::{only} SOC_AM62X
 **Attention:** As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL.
+
+- Refer to [Flashing a Hello World example](../../device/am62x/getting_started_flash.md) for flashing the application.
 ::::
 
 ## See Also

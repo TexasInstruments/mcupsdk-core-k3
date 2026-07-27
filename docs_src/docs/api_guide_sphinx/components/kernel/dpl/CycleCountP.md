@@ -22,6 +22,12 @@
   use `ClockP_getTimeUsec`() from [Clock](ClockP.md) module.
 - Cortex A53 and TI C75 have 64b counter, so use CycleCounterP_getCount64(). The CycleCounterP_getCount32()
 API typecasts 64b value to 32b value for these cores.
+- **R5F + FreeRTOS limitation**: On R5F cores running FreeRTOS, the underlying ARM PMU cycle counter
+  (PMCCNTR) stops incrementing while the core is in the WFI (Wait For Interrupt) low-power state
+  executed by the FreeRTOS idle task. As a result, CycleCounterP_getCount32() reflects only the
+  cycles during which the core is actively executing code, and will significantly under-count
+  wall-clock elapsed time during idle periods (e.g. inside ClockP_usleep()).
+  Use `ClockP_getTimeUsec`() for wall-clock time measurement on R5F FreeRTOS.
 
 
 ## Example Usage

@@ -38,13 +38,13 @@ event triggers an interrupt)
    GPIO output can be observed on the EVM J16.P1.
 
 | EPWM   | EPWM Signal   | BB pin |
-|---|---|
-| 0 | EPWM0_A |
-| 0 | EPWM0_B |
-| 1 | EPWM1_A |
-| 1 | EPWM1_B |
-| 2 | EPWM2_A |
-| 2 | EPWM2_B |
+|---|---|---|
+| 0 | EPWM0_A | J6.P7 |
+| 0 | EPWM0_B | J6.P9 |
+| 1 | EPWM1_A | J6.P11 |
+| 1 | EPWM1_B | J6.P13 |
+| 2 | EPWM2_A | J6.P17 |
+| 2 | EPWM2_B | J6.P19 |
 
 ::::
 
@@ -58,13 +58,13 @@ event triggers an interrupt)
    GPIO output can be observed on the EVM J16.P1.
 
 | EPWM   | EPWM Signal   | BB pin |
-|---|---|
-| 0 | EPWM0_A |
-| 0 | EPWM0_B |
-| 1 | EPWM1_A |
-| 1 | EPWM1_B |
-| 2 | EPWM2_A |
-| 2 | EPWM2_B |
+|---|---|---|
+| 0 | EPWM0_A | J6.P7 |
+| 0 | EPWM0_B | J6.P9 |
+| 1 | EPWM1_A | J6.P11 |
+| 1 | EPWM1_B | J6.P13 |
+| 2 | EPWM2_A | J6.P17 |
+| 2 | EPWM2_B | J6.P19 |
 
 ::::
 
@@ -77,13 +77,13 @@ event triggers an interrupt)
    GPIO output can be observed on the base board J3 header.
 
 | EPWM   | EPWM Signal   | Pin Details |
-|---|---|
-| 0 | EPWM0_A |
-| 0 | EPWM0_B |
-| 1 | EPWM1_A |
-| 1 | EPWM1_B |
-| 2 | EPWM2_A |
-| 2 | EPWM2_B |
+|---|---|---|
+| 0 | EPWM0_A | D16/GPIO1_15 (Pin_24) |
+| 0 | EPWM0_B | C16/GPIO1_16 (pin_26) |
+| 1 | EPWM1_A | B18/GPIO1_9  (Pin_36) |
+| 1 | EPWM1_B | B20/GPIO1_10 (pin_33) |
+| 2 | EPWM2_A | C17/GPIO1_28 (TP_49) |
+| 2 | EPWM2_B | E17/GPIO1_29 (TP_50) |
 
 ::::
 
@@ -99,13 +99,13 @@ event triggers an interrupt)
    GPIO output can be observed on Pin1 of J3 Header on Audio expansion card 1
 
 | EPWM   | EPWM Signal   | Pin Details |
-|---|---|
-| 0 | EPWM0_A |
-| 0 | EPWM0_B |
-| 1 | EPWM1_A |
-| 1 | EPWM1_B |
-| 2 | EPWM2_A |
-| 2 | EPWM2_B |
+|---|---|---|
+| 0 | EPWM0_A | B21/MCASP0_AFSR  (AEC1 J3 - Pin_13) |
+| 0 | EPWM0_B | A21/MCASP0_ACLKR (AEC1 J3 - Pin_5) |
+| 1 | EPWM1_A | B18/MCASP0_AXR1  (AEC1 J3 - Pin_4) |
+| 1 | EPWM1_B | B20/MCASP0_AXR0  (AEC1 J3 - Pin_2) |
+| 2 | EPWM2_A | C17/I2C1_SCL     (AEC2 J2 - Pin_16) |
+| 2 | EPWM2_B | E17/I2C1_SDA     (AEC2 J2 - Pin_18) |
 
 ::::
 
@@ -119,29 +119,29 @@ event triggers an interrupt)
    **AM62X-SK**
 
 | EPWM   | EPWM Signal   | Pin Details |
-|---|---|
-| 0 | EPWM0_A |
-| 0 | EPWM0_B |
-| 1 | EPWM1_A |
-| 1 | EPWM1_B |
+|---|---|---|
+| 0 | EPWM0_A | A13/GPIO1_15 (Pin_24) |
+| 0 | EPWM0_B | C13/GPIO1_16 (pin_26) |
+| 1 | EPWM1_A | B18/GPIO1_9  (Pin_36) |
+| 1 | EPWM1_B | E18/GPIO1_10 (pin_33) |
 
    **AM62X-SK-LP**
 
 | EPWM   | EPWM Signal   | Pin Details |
-|---|---|
-| 0 | EPWM0_A |
-| 0 | EPWM0_B |
-| 1 | EPWM1_A |
-| 1 | EPWM1_B |
+|---|---|---|
+| 0 | EPWM0_A | C11/GPIO1_15 (Pin_24) |
+| 0 | EPWM0_B | D13/GPIO1_16 (pin_26) |
+| 1 | EPWM1_A | A18/GPIO1_9  (Pin_36) |
+| 1 | EPWM1_B | D18/GPIO1_10 (pin_33) |
 
    **AM62X-SK-SIP**
 
 | EPWM   | EPWM Signal   | Pin Details |
-|---|---|
-| 0 | EPWM0_A |
-| 0 | EPWM0_B |
-| 1 | EPWM1_A |
-| 1 | EPWM1_B |
+|---|---|---|
+| 0 | EPWM0_A | A13/GPIO1_15 (Pin_24) |
+| 0 | EPWM0_B | C13/GPIO1_16 (pin_26) |
+| 1 | EPWM1_A | B18/GPIO1_9  (Pin_36) |
+| 1 | EPWM1_B | E18/GPIO1_10 (pin_33) |
 
 ::::
 
@@ -153,11 +153,11 @@ event triggers an interrupt)
    GPIO output can be observed on the pins (below mentioned) of User Expansion Connector (J4) in the board.
 
 | EPWM   | EPWM Signal   | Pin Details |
-|---|---|
-| 0 | EPWM0_A |
-| 0 | EPWM0_B |
-| 1 | EPWM1_A |
-| 1 | EPWM1_B |
+|---|---|---|
+| 0 | EPWM0_A | D20/GPIO1_15 (Pin_24) |
+| 0 | EPWM0_B | E20/GPIO1_16 (pin_26) |
+| 1 | EPWM1_A | E24/GPIO1_9  (Pin_36) |
+| 1 | EPWM1_B | F23/GPIO1_10 (pin_33) |
 
 ::::
 
@@ -174,10 +174,10 @@ event triggers an interrupt)
    The below diagram depicts the selection:
 
 
-   | S2 | S1 | S0 |        IP(nA)/OP(nB1 (Or) nB2) |
-|---|---|
-| H | H |
-| H | H |
+   | S2 | S1 | S0 | IP(nA)/OP(nB1 (Or) nB2) |
+   |---|---|---|---|
+   | H | H | L | nA=nB1  ->  SOC - HDMI |
+   | H | H | H | nA=nB2  ->  SOC - GPIO EXP CONN |
 
    **For AM62L EVM PROC181E1**:
    - The pin FET_SEL0 (S0) is connected to the TCA6424 IO expander, hence it requires the user to write to the IO expander through software to give it a high signal for GPIO Expansion Connector (J2) to work. By default, this has been done through sysconfig for this example.
@@ -191,11 +191,11 @@ event triggers an interrupt)
    GPIO output can be observed on the pins (below mentioned) of User Expansion Connector (J2 and J3) in the board.
 
 | EPWM   | EPWM Signal   | Pin Details |
-|---|---|
-| 0 | EPWM0_A |
-| 0 | EPWM0_B |
-| 1 | EPWM1_A |
-| 1 | EPWM1_B |
+|---|---|---|
+| 0 | EPWM0_A | G22/GPIO0_28 (Pin_18 of J2) |
+| 0 | EPWM0_B | F22/GPIO0_29 (Pin_7 of J3) |
+| 1 | EPWM1_A | F23/GPIO0_30 (Pin_10 of J2) |
+| 1 | EPWM1_B | L21/GPIO0_31 (Pin_5 of J2) |
 
 ::::
 
@@ -207,10 +207,10 @@ event triggers an interrupt)
    EPWM output can be observed on the pins (below mentioned) of Audio Expansion Connector (AEC1) in the board.
 
 | EPWM   | EPWM Signal   | Pin Details |
-|---|---|
-| 0 | EPWM0_A |
-| 0 | EPWM0_B |
-| 1 | EPWM1_A |
+|---|---|---|
+| 0 | EPWM0_A | T2 (Pin_3 on AEC1) |
+| 0 | EPWM0_B | R2 (pin_5 on AEC1) |
+| 1 | EPWM1_A | R1 (Pin_3 on AEC2) |
 
 ::::
 

@@ -5,13 +5,14 @@
 This example demonstrates the McSPI RX and TX operation configured in Turbo mode.
 
 Turbo mode improves the throughput of the MCSPI interface when a single channel
-is enabled by allowing transfers until the shift register and the MCSPI_RX register are full.
+is enabled by allowing transfers until the shift register and the MCSPI_RX_0/1/2/3 register are full.
 Turbo mode is time saving when a transfer exceeds two words. When several channels are enabled,
 the TURBO bit has no effect.
 
-This example sends a known data in TX mode and receives the same in RX mode. Internal pad level
-loopback mode is enabled to receive data. When transfer is completed, TX and RX buffer data are
-compared. If data is matched, test result is passed otherwise failed.
+This example sends a known data in the TX mode of length APP_MCSPI_MSGSIZE and receives the same in RX mode.
+Internal pad level loopback mode is enabled to receive data. To enable internal pad level loopback mode,
+D0 pin is configured to both TX Enable as well as RX input pin in the SYSCFG.
+When transfer is completed, TX and RX buffer data are compared. If data is matched, test result is passed otherwise failed.
 
 ## Supported Combinations
 

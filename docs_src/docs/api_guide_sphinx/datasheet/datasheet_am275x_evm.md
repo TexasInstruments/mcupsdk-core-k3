@@ -461,7 +461,7 @@ Code/Data not cached                    |    4358
 Code/Data not cached 1 of 10 iterations |    1844
 
 ### Ethernet Performance
-For Ethernet performance Refer to the page enetlld_performance
+For Ethernet performance refer [Ethernet Performance](../components/networking/enet_lld/enet_cpsw_performance_am275x.md)
 
 ### Ethernet AVB Performance
 For Ethernet AVB performance, refer to the page EAVB_PERFORMANCE

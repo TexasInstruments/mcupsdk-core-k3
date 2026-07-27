@@ -196,7 +196,7 @@ SBL Stage2: Total time taken            |   49.664
 
 ### CPSW Performance
 
-For CPSW performance refer \ref enetlld_performance
+For CPSW performance refer [Ethernet Performance](../components/networking/enet_lld/enet_cpsw_performance_am62px.md)
 
 ### IPC performance
 

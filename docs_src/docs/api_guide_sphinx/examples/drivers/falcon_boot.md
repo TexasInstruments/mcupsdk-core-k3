@@ -47,6 +47,10 @@
 - This may cause the ATF to be loaded at the location specified by the default DTB (0x9e780000).
 - To load the ATF at the correct location, an overlay must be applied to load the ATF at 0x80000000.
 
+::::{only} SOC_AM62AX
+- To use falcon boot mode with an edge AI application, an additional device tree overlay located at `$(PSDK_LINUX_PATH)/board-support/prebuilt-images/am62a-evm/k3-am62a7-sk-edgeai.dtbo` has to be applied on top of the default DTB.
+::::
+
 
 ### Device-Specific Overlay
 

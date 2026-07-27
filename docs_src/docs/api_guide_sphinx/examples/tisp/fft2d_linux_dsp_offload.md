@@ -2,9 +2,29 @@
 
 ## Introduction
 
-This example demonstrates the usage of RP Message APIs to offload 2D FFT processing from the Cortex-A CPU (running Linux) to the DSP Core (C75). The Cortex-A CPU reads input data from an SD card and sends it to the DSP Core. The C75 core performs the 2D FFT on the input data and overwrites the output in the same input buffer.
+This example demonstrates the usage of RP Message APIs to offload 2D FFT processing from the Cortex-A CPU (running Linux) to the DSP Core (C75). The Cortex-A CPU reads input data from an SD card and sends it to the DSP Core. The C75 core performs the 2D FFT on the input data and overwrites the output in the same input buffer. The processed output will be verified by Cortex-A CPU and respective error metric logs are printed over the UART.
 
-This example provides support for graceful shutdown of the core (C7).
+In this example,
+- The DSP core (C75) creates an RPMessage endpoint for message exchange with the Linux userspace application.
+- On startup, after driver initialization, DSP core waits for Linux to be ready.
+- Then the DSP core (C75) announces to Linux the endpoints on which it is waiting for messages.
+- This is needed to be done else Linux cannot initiate message exchange with RTOS/NORTOS CPUs.
+- Once both cores (Linux CPU and DSP) come to synchronization, the DSP will wait for an RPMessage that contains the data buffer pointer and the parameter buffer pointer with their metadata.
+- The sender can be Linux CPU or other RTOS/NORTOS CPUs.
+- On receiving the message, the application triggers the signal chain and performs the 2D FFT. Once the 2D FFT is done, the DSP core sends an acknowledgement to Linux with the CPU task load, total cycles taken to perform 2D FFT and memory throughput.
+- This example provides support for graceful shutdown of the core (C7).
+
+## Signal Chain Details
+
+Figure below shows the signal chain, where, the input is 128x128 floating point numbers in complex (a+ib) form. The output is the processed 128x128 floating point numbers in complex form.
+
+![TISP 2D FFT signal chain](../../images/fft_2d_signal_chain.png)
+
+1. **1D Batched FFT:** The first 1D FFT is performed on the rows.
+2. **Matrix Transpose:** The data matrix is transposed to convert coloumns to rows and vice versa. Because FFTLIB libraries are designed perform FFT on 1D data in rows format.
+3. **1D Batched FFT:** The second 1D FFT is performed on the coloumns data.
+
+During processing, data is moved between L2SRAM (lower latency, lower capacity) and DDR (higher capacity, higher latency) to use memory efficiently.
 
 ## Supported Combinations
 
@@ -26,8 +46,9 @@ This example provides support for graceful shutdown of the core (C7).
 - **When using makefiles to build**, build the system makefile using
   make command (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md)). This will build all the dependent CPU makefiles as well.
 - To run this demo, Linux needs to run on the Cortex A-core. Refer to **Processor SDK Linux** user guide to load and run this example.
-- Copy the application elf file to the SD card path mentioned in `/etc/dsp_offload.cfg` as `C7_NEW_FW_PATH`
-- Trigger the dsp offload application from Linux with the command `fft2d_linux_dsp_offload_example`
+- The application elf file have to be copied to the SD card to the path mentioned in `/etc/dsp_offload.cfg` by the name `C7_NEW_FW_PATH`
+- The dsp offload application can be triggered from Linux with the command `fft2d_linux_dsp_offload_example` from Linux userspace
+- Refer Linux user space application [README](https://github.com/TexasInstruments/rpmsg-dma/blob/main/README.md) for more details on running the application
 
 ## See Also
 

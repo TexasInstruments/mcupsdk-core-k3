@@ -1,5 +1,3 @@
-::::{only} SOC_AM62DX or SOC_AM62X or SOC_AM62AX or SOC_AM275X
-
 # Ethernet LLDP Stack - API and Integration Guide
 
 ## Pre-requisites
@@ -12,6 +10,10 @@ Readers are expected to have basic knowledge on below IEEE specifications:
 ## Introduction
 
 This guide is intended to enhance user's understanding of the LLDP stack and provide guidance on how to seamlessly integrate LLDP modules into their own applications.
+
+## Demo and Examples
+
+Refer to [Ethernet LLDP Example](enet_cpsw_lldp_example.md) for example LLDP applications.
 
 ## TSN Stack
 
@@ -52,7 +54,17 @@ Refer to the TSN/gPTP stack "TSN Deinitialization" section.
 
 ### Licensing library
 
-A licensing library is provided under `<${SDK_INSTALL_PATH}>/source/networking/tsn/tsn-stack/license_lib` which must be added to all `tsn-stack` application's makefile.
+:::{only} SOC_AM62X or SOC_AM62AX or SOC_AM62DX
+
+There is `yangemb-freertos.<soc_name_lower>.r5f.ti-arm-clang.lib` located under `<${SDK_INSTALL_PATH}>/source/networking/tsn/tsn-stack/license_lib`, which must be added to all `tsn-stack` application's makefile.
+
+:::
+
+:::{only} SOC_AM62PX
+
+There is `yangemb-freertos.<soc_name_lower>.wkup-r5f.ti-arm-clang.lib` located under `<${SDK_INSTALL_PATH}>/source/networking/tsn/tsn-stack/license_lib`, which must be added to all `tsn-stack` application's makefile.
+
+:::
 
 Add `<${SDK_INSTALL_PATH}>/source/networking/tsn/tsn-stack/license_lib` to `LIBS_PATH_common` and the yangemb library file to `LIBS_common` flags.
 
@@ -115,9 +127,76 @@ Current LLDP application supports up to 3 destination MAC Addresses per port. Th
 
 To configure per-port/dest-mac information, update the table `gLldpPortCfgData` accordingly. These Destination MAC Addresses are corresponding to below configuration values.
 
+```c
+// In case of any field missing in local portCfgData, global value gLldpGlobalDataInt will be used
+static EnetApp_LldpPortCfg_t gLldpPortCfgData[] =
+{
+    {
+        .destMac = {0x01, 0x80, 0xc2, 0x00, 0x00, 0x0e},
+        .cfgKeyValInt =
+        {
+            {IEEE802_DOT1AB_LLDP_ADMIN_STATUS, 3, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_TLVS_TX_ENABLE, 0x0F, sizeof(uint32_t), YDBI_CONFIG},
+            // If PortId subtype = P_MAC_Address (3), MAC addr will be re-correct follow hw info.
+            {IEEE802_DOT1AB_LLDP_PORT_ID_SUBTYPE, 3, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_MESSAGE_FAST_TX, 2, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_MESSAGE_TX_HOLD_MULTIPLIER, 4, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_MESSAGE_TX_INTERVAL, 30, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_REINIT_DELAY, 2, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_TX_CREDIT_MAX, 5, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_TX_FAST_INIT, 2, sizeof(uint32_t), YDBI_CONFIG},
+        },
+        .cfgKeyValStr = 
+        {
+            {IEEE802_DOT1AB_LLDP_PORT_DESC, "tilld", YDBI_CONFIG},
+        }
+    },
+    {
+        .destMac = {0x01, 0x80, 0xc2, 0x00, 0x00, 0x03},
+        .cfgKeyValInt =
+        {
+            {IEEE802_DOT1AB_LLDP_ADMIN_STATUS, 3, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_TLVS_TX_ENABLE, 0x0F, sizeof(uint32_t), YDBI_CONFIG},
+            // If PortId subtype = P_MAC_Address (3), MAC addr will be re-correct follow hw info.
+            {IEEE802_DOT1AB_LLDP_PORT_ID_SUBTYPE, 3, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_MESSAGE_FAST_TX, 2, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_MESSAGE_TX_HOLD_MULTIPLIER, 4, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_MESSAGE_TX_INTERVAL, 20, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_REINIT_DELAY, 2, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_TX_CREDIT_MAX, 5, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_TX_FAST_INIT, 2, sizeof(uint32_t), YDBI_CONFIG},
+        },
+        .cfgKeyValStr = 
+        {
+            {IEEE802_DOT1AB_LLDP_PORT_DESC, "tilld", YDBI_CONFIG},
+        }
+    },
+    {
+        .destMac = {0x01, 0x80, 0xc2, 0x00, 0x00, 0x00},
+        .cfgKeyValInt =
+        {
+            {IEEE802_DOT1AB_LLDP_ADMIN_STATUS, 3, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_TLVS_TX_ENABLE, 0x0F, sizeof(uint32_t), YDBI_CONFIG},
+            // If PortId subtype = P_MAC_Address (3), MAC addr will be re-correct follow hw info.
+            {IEEE802_DOT1AB_LLDP_PORT_ID_SUBTYPE, 3, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_MESSAGE_FAST_TX, 2, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_MESSAGE_TX_HOLD_MULTIPLIER, 4, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_MESSAGE_TX_INTERVAL, 25, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_REINIT_DELAY, 2, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_TX_CREDIT_MAX, 5, sizeof(uint32_t), YDBI_CONFIG},
+            {IEEE802_DOT1AB_LLDP_TX_FAST_INIT, 2, sizeof(uint32_t), YDBI_CONFIG},
+        },
+        .cfgKeyValStr = 
+        {
+            {IEEE802_DOT1AB_LLDP_PORT_DESC, "tilld", YDBI_CONFIG},
+        }
+    },
+};
+```
+
+In case of user wanting to support only one Destination MAC address, the entry of gLldpPortCfgData can be reduced accordingly.
+
 ## See Also
 
 - [Ethernet TSN and gPTP Stack](enet_cpsw_tsn_gptp_apiguide.md)
 - [Ethernet AVB Stack](enet_cpsw_avtp_apiguide.md)
-
-::::

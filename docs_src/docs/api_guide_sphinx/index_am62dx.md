@@ -7,10 +7,10 @@ device/am62dx/main_page
 getting_started/getting_started_am62dx
 release_notes/am62dx/index
 datasheet/datasheet_am62dx_evm
-buildsheet/buildsheet_am62dx
-developer_guides/developer_guides
 components/index
 examples/examples
 components/tools/tools
+developer_guides/developer_guides
+buildsheet/buildsheet_am62dx
 sbom/sbom_am62dx
 ```

@@ -23,4 +23,8 @@ enet_cpsw_gptp_lwip
 
 ::::{only} SOC_AM243X or SOC_AM64X
    **Enet Time Sync Examples on ICSSG**
+   - Ethernet TSN ICSSG gPTP TimeReceiver (gPTP Slave) Example
+   - Ethernet TSN ICSSG gPTP TimeTransmitter (gPTP Master) Example
+   - Ethernet TSN ICSSG gPTP Bridge Example
+   - Ethernet TSN ICSSG gPTP on ICSSG along with LwIP stack
 ::::

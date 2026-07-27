@@ -228,6 +228,30 @@ IFV:gptp:000369-690810:domainIndex=0, clock_master_sync_receive:the master clock
 IFV:gptp:000369-817439:domainIndex=0, clock_master_sync_receive:the master clock rate to 97486ppb, GMdiff=-44nsec
 IFV:gptp:000369-940807:domainIndex=0, clock_master_sync_receive:the master clock rate to 97839ppb, GMdiff=117nsec
 IFV:gptp:000370-065716:domainIndex=0, clock_master_sync_receive:the master clock rate to 97623ppb, GMdiff=8nsec
+IFV:gptp:000370-191183:domainIndex=0, clock_master_sync_receive:the master clock rate to 97642ppb, GMdiff=16nsec
+IFV:gptp:000370-315754:domainIndex=0, clock_master_sync_receive:the master clock rate to 97846ppb, GMdiff=105nsec
+[RX 00:01:02:03:04:05:00:02] Rp#9 Mbps(1.536211, 1.536745) Delay(-23490, -11303892, -17810) Pkt(2681, 0, 0)
+IFV:gptp:000370-440775:domainIndex=0, clock_master_sync_receive:the master clock rate to 97900ppb, GMdiff=118nsec
+    370.471s : CPU load =   8.20 %
+IFV:gptp:000370-566110:domainIndex=0, clock_master_sync_receive:the master clock rate to 97677ppb, GMdiff=6nsec
+IFV:gptp:000370-690721:domainIndex=0, clock_master_sync_receive:the master clock rate to 97796ppb, GMdiff=59nsec
+domain=0, offset=0nsec, hw-adjrate=97796ppb
+        gmsync=true, last_setts64=0nsec
+IFV:gptp:000370-816837:domainIndex=0, clock_master_sync_receive:the master clock rate to 97877ppb, GMdiff=89nsec
+IFV:gptp:000370-941093:domainIndex=0, clock_master_sync_receive:the master clock rate to 97951ppb, GMdiff=112nsec
+IFV:gptp:000371-065656:domainIndex=0, clock_master_sync_receive:the master clock rate to 97736ppb, GMdiff=4nsec
+IFV:gptp:000371-190631:domainIndex=0, clock_master_sync_receive:the master clock rate to 97719ppb, GMdiff=-4nsec
+IFV:gptp:000371-316052:domainIndex=0, clock_master_sync_receive:the master clock rate to 97921ppb, GMdiff=87nsec
+[RX 00:01:02:03:04:05:00:02] Rp#10 Mbps(1.536044, 1.536681) Delay(-23490, -11303894, -17810) Pkt(2949, 0, 0)
+IFV:gptp:000371-440734:domainIndex=0, clock_master_sync_receive:the master clock rate to 97887ppb, GMdiff=62nsec
+IFV:gptp:000371-566091:domainIndex=0, clock_master_sync_receive:the master clock rate to 97812ppb, GMdiff=22nsec
+IFV:gptp:000371-691026:domainIndex=0, clock_master_sync_receive:the master clock rate to 97839ppb, GMdiff=32nsec
+IFV:gptp:000371-816876:domainIndex=0, clock_master_sync_receive:the master clock rate to 97812ppb, GMdiff=16nsec
+IFV:gptp:000371-940623:domainIndex=0, clock_master_sync_receive:the master clock rate to 97836ppb, GMdiff=25nsec
+IFV:gptp:000372-066382:domainIndex=0, clock_master_sync_receive:the master clock rate to 97957ppb, GMdiff=76nsec
+IFV:gptp:000372-190569:domainIndex=0, clock_master_sync_receive:the master clock rate to 98008ppb, GMdiff=91nsec
+IFV:gptp:000372-315571:domainIndex=0, clock_master_sync_receive:the master clock rate to 98019ppb, GMdiff=86nsec
+[RX 00:01:02:03:04:05:00:02] Rp#11 Mbps(1.536200, 1.536641) Delay(-23490, -11303881, -17810) Pkt(3217, 0, 0)
 ```
 
 ## See Also

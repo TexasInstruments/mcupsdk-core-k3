@@ -37,7 +37,7 @@ This section describes the various tools used in conjunction with System Control
     <td>Python script which decodes SYSFW log file
 </tr>
 
-::::{only} SOC_AM62AX or SOC_AM62PX or SOC_AM62DX
+::::{only} SOC_AM62AX or SOC_AM62PX or SOC_AM62DX or SOC_AM275X
    <tr><td colspan="2" bgcolor=#F0F0F0> ${SDK_INSTALL_PATH}/tools/sysfw/secure_debug/</td></tr>
    <tr>
        <td>debug_unlock_x509_cert_gen.py
@@ -305,8 +305,8 @@ C:\> cd ${SDK_INSTALL_PATH}/tools/sysfw/secure_debug
 C:\> python debug_unlock_x509_cert_gen.py --soc=am62ax
 ```
    
-   ::::{only} SOC_AM62AX or SOC_AM62PX or SOC_AM62DX
-   - Also check the SDK example for Runtime Debug Unlock functionality
+   ::::{only} SOC_AM62AX or SOC_AM62PX or SOC_AM62DX or SOC_AM275X
+   - Also check [EXAMPLES_RUNTIME_DEBUG_UNLOCK](../../examples/security/runtime_debug_unlock.md)
    ::::
 
 ::::

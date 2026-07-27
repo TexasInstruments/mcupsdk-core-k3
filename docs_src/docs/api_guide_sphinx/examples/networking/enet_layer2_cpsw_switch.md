@@ -90,7 +90,7 @@ This example does the following:
 | Example folder | source/networking/enet/core/examples/enet_layer2_cpsw_switch/V0 |
 
 
-:::
+::::
 
 
 ::::{only} SOC_AM62DX
@@ -103,7 +103,7 @@ This example does the following:
 | Example folder | source/networking/enet/core/examples/enet_layer2_cpsw_switch/V0 |
 
 
-:::
+::::
 
 
 ::::{only} SOC_AM62X
@@ -115,7 +115,7 @@ This example does the following:
 | Boards | {{ VAR_BOARD_NAME_LOWER }} |
 | Example folder | source/networking/enet/core/examples/enet_layer2_cpsw_switch/V0 |
 
-:::
+::::
 
 
 ::::{only} SOC_AM275X
@@ -128,7 +128,7 @@ This example does the following:
 | Example folder | source/networking/enet/core/examples/enet_layer2_cpsw_switch/V0 |
 
 
-:::
+::::
 
 
 ## Steps to Run the Example

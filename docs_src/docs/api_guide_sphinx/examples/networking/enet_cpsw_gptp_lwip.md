@@ -200,7 +200,8 @@ Please refer to [NETWORKING_LWIP_STATIC_IP](../../components/networking/enet_lwi
 
 ::::{only} SOC_AM62PX
    :::{admonition} Note
-   Due to EVM limitation of only 1 MAC address available in the EEPROM, manual MAC address entries have been added using Sysconfig.\n To modify them, go to Enet (CPSW) > System integration config, and modify the entries under 'MAC Address List' option. :::
+   Due to EVM limitation of only 1 MAC address available in the EEPROM, manual MAC address entries have been added using Sysconfig.\n To modify them, go to Enet (CPSW) > System integration config, and modify the entries under 'MAC Address List' option.
+   :::
 ::::
 
 
@@ -223,12 +224,12 @@ On the device, PPS is generated on the SYNC_OUT signal pin from CPTS (Common Pla
 Out of box configuration for PPS signal output of this example is as follow:
 
 | EVM | Mapped Signal Name | SOC Pin Name | PPS frequency | Output |
-|---|---|
-| am64x-EVM | PRG0_PRU0_GPO17 |
-| am243x-EVM | PRG0_PRU0_GPO17 |
-| am243x-LP | MMC1_DAT2 |
-| am263x-CC | SFDM0_CLK1 |
-| am263x-LP | SFDM0_CLK1 |
+|---|---|---|---|---|
+| am64x-EVM | PRG0_PRU0_GPO17 | U1 | 3.814 KHz | Pin B8 on J2 (i.e PIN8 on J2B) connector |
+| am243x-EVM | PRG0_PRU0_GPO17 | U1 | 3.814 KHz | Pin B8 on J2 (i.e PIN8 on J2B) connector |
+| am243x-LP | MMC1_DAT2 | K20 | 3.814 KHz | Pin3 on J6 connector |
+| am263x-CC | SFDM0_CLK1 | A16 | 3.814 KHz | Pin4 on J6 connector |
+| am263x-LP | SFDM0_CLK1 | A16 | 3.814 KHz | Pin4 on J6 connector |
 
 To set/modify configuration of PPS signal , you may follow the below steps:
 
@@ -268,12 +269,12 @@ ncat <ip-address-of-evm> 8888
 
 ::::{only} SOC_AM62X or SOC_AM62DX or SOC_AM62PX or SOC_AM275X
    - Launch a CCS debug session and run the example executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
-:::
+::::
 
 
 ::::{only} SOC_AM62LX
    - To Load and Run an example (see `DFU_LOAD_CCS_DEBUG`)
-:::
+::::
 
 - Connect board and PC as mentioned in "HW Setup" above.
 

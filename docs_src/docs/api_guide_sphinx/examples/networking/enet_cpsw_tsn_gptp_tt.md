@@ -24,13 +24,13 @@ Yang based configuration is also supported. Currently File System is not support
 ::::{only} SOC_AM273X
    In this example, We have one Rx and two Tx DMA channel to handle all the traffic, including gPTP. Due to AM273x CPSW limitation, it is not possible to clasify the packets based on ethernet frame type and direct it to different Rx Flow / channel. Hence  a single Rx DMA channel is shared among multiple applications, including gPTP stack.
    Along with PTP traffic, application also handles non-PTP traffic in a separate RTOS task. Received non-PTP packets are sent back by the application, by interchanging source and destination MAC address.
-:::
+::::
 
 
 ::::{only} SOC_AM263X or SOC_AM243X or SOC_AM64x or SOC_AM62DX or SOC_AM62X or SOC_AM62LX
    In this example, We use two Rx and two Tx DMA channel, one Rx and one Tx channel specific to gPTP traffic.
    Along with PTP traffic, application also handles non-PTP traffic in a separate RTOS task and DMA Channel. Received non-PTP packets are sent back by the application, by interchanging source and destination MAC address.
-:::
+::::
 
 
 See also :[Ethernet TSN and gPTP Stack - API and Integration Guide](../../components/networking/enet_cpsw_tsn_gptp_apiguide.md)
@@ -48,7 +48,7 @@ See also :[Ethernet TSN and gPTP Stack - API and Integration Guide](../../compon
 | Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app |
 
 
-:::
+::::
 
 
 ::::{only} SOC_AM62X
@@ -60,7 +60,7 @@ See also :[Ethernet TSN and gPTP Stack - API and Integration Guide](../../compon
 | Boards | {{ VAR_BOARD_NAME_LOWER }} |
 | Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app |
 
-:::
+::::
 
 
 ::::{only} SOC_AM62LX
@@ -72,7 +72,7 @@ See also :[Ethernet TSN and gPTP Stack - API and Integration Guide](../../compon
 | Boards | {{ VAR_BOARD_NAME_LOWER }} |
 | Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app |
 
-:::
+::::
 
 
 ::::{only} SOC_AM243X
@@ -85,7 +85,7 @@ See also :[Ethernet TSN and gPTP Stack - API and Integration Guide](../../compon
 | Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app |
 
 
-:::
+::::
 
 
 ::::{only} SOC_AM263X
@@ -98,7 +98,7 @@ See also :[Ethernet TSN and gPTP Stack - API and Integration Guide](../../compon
 | Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app |
 
 
-:::
+::::
 
 
 ::::{only} SOC_AM273X
@@ -111,7 +111,7 @@ See also :[Ethernet TSN and gPTP Stack - API and Integration Guide](../../compon
 | Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app |
 
 
-:::
+::::
 
 
 ::::{only} SOC_AM62DX
@@ -123,7 +123,7 @@ See also :[Ethernet TSN and gPTP Stack - API and Integration Guide](../../compon
 | Board | {{ VAR_BOARD_NAME_LOWER }} |
 | Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app |
 
-:::
+::::
 
 
 ::::{only} SOC_AM275X
@@ -136,7 +136,7 @@ See also :[Ethernet TSN and gPTP Stack - API and Integration Guide](../../compon
 | Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app |
 
 
-:::
+::::
 
 
 ::::{only} SOC_AM62PX
@@ -149,7 +149,7 @@ See also :[Ethernet TSN and gPTP Stack - API and Integration Guide](../../compon
 | Example folder | source/networking/enet/core/examples/tsn/gptp_cpsw_app |
 
 
-:::
+::::
 
 
 ## Steps to Run the Example
@@ -307,12 +307,12 @@ On the device, PPS is generated on the SYNC_OUT signal pin from CPTS (Common Pla
 Out of box configuration for PPS signal output of this example is as follow:
 
 | EVM | Mapped Signal Name | SOC Pin Name | PPS frequency | Output |
-|---|---|
-| am64x-EVM | PRG0_PRU0_GPO17 |
-| am243x-EVM | PRG0_PRU0_GPO17 |
-| am243x-LP | MMC1_DAT2 |
-| am263x-CC | SFDM0_CLK1 |
-| am263x-LP | SFDM0_CLK1 |
+|---|---|---|---|---|
+| am64x-EVM | PRG0_PRU0_GPO17 | U1 | 3.814 KHz | Pin B8 on J2 (i.e PIN8 on J2B) connector |
+| am243x-EVM | PRG0_PRU0_GPO17 | U1 | 3.814 KHz | Pin B8 on J2 (i.e PIN8 on J2B) connector |
+| am243x-LP | MMC1_DAT2 | K20 | 3.814 KHz | Pin3 on J6 connector |
+| am263x-CC | SFDM0_CLK1 | A16 | 3.814 KHz | Pin4 on J6 connector |
+| am263x-LP | SFDM0_CLK1 | A16 | 3.814 KHz | Pin4 on J6 connector |
 
 To set/modify configuration of PPS signal , you may follow the below steps:
 
@@ -458,8 +458,6 @@ ptp4l[8088.700]: rms    7 max   11 freq -20750 +/-   5 delay   200 +/-   0
 ::::{only} SOC_AM273X
    ## Limitation
    Due to AM273x CPSW limitation, it is not possible to clasify the packets based on ethernet frame type and direct it to different Rx Flow / channel. Hence  a single Rx DMA channel is shared among multiple applications, including gPTP stack.
-::::
-
 ::::
 
 ## See Also

@@ -8,14 +8,16 @@ This example supports the AM62D-EVM-PROC180E2. To test with the AM62D-EVM-PROC18
 :::
 ::::
 
-The Enet CPSW fast startup example demonstrates the fast link up functionality of CPSW3G showing Fast Enet startup with Autophy (DP83TG721).
+The Enet CPSW fast startup example is dedicated to demonstrate the fast link up functionality of CPSW3G showing Fast Enet startup with Autophy (DP83TG721)
 
-On {{ VAR_SOC_NAME }}, ethernet communication uses CPSW as the HW mechanism.
+On {{ VAR_SOC_NAME }}, we can do ethernet based communication using CPSW as HW mechanism:
+- CPSW is a standard ethernet switch + port HW
+- It uses ethernet driver underneath with LwIP TCP/IP networking stack
 
-The example does the following:
+This example does the following:
 - Target-side application running on a Cortex R5F core.
-- The example enables both the ports of CPSW in MAC mode with Fixed link speed, creates a packet and sends it from port 1 to port 2.
-- When the packet is received on port 2, the application prints out the profiling nodes and halts in an infinite loop.
+- The example enables both the ports of CPSW in MAC mode with Fixed link speed, creates a packet and sent it from port 1 to port 2.
+- when the packet is received on port 2, the application prints out the profiling nodes and halts in a infinite loop.
 
 ## Supported Combinations
 
@@ -68,7 +70,7 @@ If you need to reload and run again, a CPU power-cycle is MUST
 - Launch a CCS debug session and run the example executable.
 - You will see logs in the UART terminal as shown below.
 
-### Sample Output
+### Sample output for L2 CPSW Boot example
 
 ```
 =====================================================
@@ -76,9 +78,12 @@ If you need to reload and run again, a CPU power-cycle is MUST
 =====================================================
 Application start time: 1336
 Enet-lld initialisation done time : 6162
-Port 1 Link Up time: 9007
-Port 2 Link Up time: 13739
-Packet received on port 2 time: 14209
+Both ports linked up time: 176265
+Time for First packet sent out from Port 1: 176267
+Time for First packet received on Port 2: 176311
+Application Terminating...
+Cpsw_handleLinkDown:1482
+Cpsw_handleLinkDown:1482
 =====================================================
 ```
 

@@ -133,6 +133,19 @@
 :::
 
 
+## SRAM memory layout for SBL booting Linux
+
+:::{only} SOC_AM64X
+   :::{admonition} Note
+   The memory load address for core applications must not overlap with one other
+   :::
+
+   :::{admonition} Attention
+   The load address for R5 and M4 core applications must be consistant with the memory layout in Linux dts
+   :::
+
+:::
+
 ## EMMC Partitioning
 
 

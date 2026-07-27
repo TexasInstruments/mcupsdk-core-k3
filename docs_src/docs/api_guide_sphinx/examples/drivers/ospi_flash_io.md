@@ -68,6 +68,7 @@ When both the comparisons match, test result is passed otherwise failed.
 | CPU + OS | r5fss0-0 nortos |
 | CPU + OS | r5fss0-0 freertos |
 | CPU + OS | mcu-r5fss0-0 freertos |
+| CPU + OS | c75ss0-0 freertos |
 | Toolchain | ti-arm-clang |
 | Toolchain | arm.gnu.aarch64-none |
 | Board | {{ VAR_BOARD_NAME_LOWER }} |

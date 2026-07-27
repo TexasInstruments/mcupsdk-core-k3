@@ -49,7 +49,7 @@ html_logo = "_static/ti_logo.png"
 html_theme_options = {
     "collapse_navigation": False,
     "sticky_navigation": True,
-    "navigation_depth": 4,
+    "navigation_depth": 5,
     "titles_only": False,
     "logo_only": False,
 }
@@ -171,6 +171,7 @@ def _parse_aliases(device: str) -> dict:
         except FileNotFoundError:
             pass
 
+    _parse_file(_sdk_path / "docs_src" / "docs" / "api_guide_sphinx" / "doxygen_xml.cfg")
     _parse_file(_sdk_path / "docs_src" / "docs" / "api_guide" / "doxygen.cfg")
     _parse_file(
         _sdk_path / "docs_src" / "docs" / "api_guide" / "device" / device / "includes.cfg"
@@ -219,6 +220,11 @@ _EXCLUDE_BY_DEVICE = {
         "components/drivers/dss.md",
         "components/drivers/fvid2.md",
         "components/drivers/gpmc.md",
+        "components/networking/enet_cpsw_tsn_architecture_guide.md",
+        "components/networking/enet_cpsw_tsn_developer_guide.md",
+        "components/networking/enet_cpsw_tsn_landing_page.md",
+        "components/networking/networking_ethfw.md",
+        "components/networking/networking_features.md",
         "components/optiflash/optiflash.md",
         "components/signal_processing/calcratio.md",
         "components/signal_processing/signal_processing.rst",
@@ -235,10 +241,10 @@ _EXCLUDE_BY_DEVICE = {
         "developer_guides/optishare/optishare.md",
         "developer_guides/smp_freertos_guide.md",
         "examples/examples_benchmark.rst",
-        "examples/examples_networking.rst",
         "examples/examples_networking_avb.rst",
         "examples/examples_signal_processing.rst",
         "examples/networking/enet_cpsw_tsn_est_example.md",
+        "examples/networking/enet_cpsw_tsn_gptp.md",
         "examples/signal_processing/calcratio.md",
         "examples/signal_processing/sigchain_8ch_to_12ch_audio_chain.md",
         "examples/signal_processing/sigchain_biquad_cascade.md",
@@ -336,6 +342,7 @@ _EXCLUDE_BY_DEVICE = {
         "components/drivers/ddr.md",
         "components/drivers/gpmc.md",
         "components/drivers/gtc.md",
+        "components/networking/networking_ethfw.md",
         "components/optiflash/optiflash.md",
         "components/safety_checkers/safety_app.md",
         "components/safety_checkers/safety_checkers.md",
@@ -419,6 +426,7 @@ _EXCLUDE_BY_DEVICE = {
         "components/drivers/eqep.md",
         "components/drivers/fvid2.md",
         "components/drivers/gpmc.md",
+        "components/networking/networking_ethfw.md",
         "components/safety_checkers/safety_app.md",
         "components/safety_checkers/safety_checkers.md",
         "components/safety_checkers/safety_checkers.rst",
@@ -471,6 +479,9 @@ _EXCLUDE_BY_DEVICE = {
         "components/drivers/aasrc.md",
         "components/drivers/adc.md",
         "components/drivers/gtc.md",
+        "components/networking/enet_cpsw_avtp_apiguide.md",
+        "components/networking/enet_cpsw_lldp_apiguide.md",
+        "components/networking/networking_ethfw.md",
         "components/optiflash/optiflash.md",
         "components/signal_processing/calcratio.md",
         "components/signal_processing/signal_processing.rst",
@@ -555,7 +566,6 @@ _AM275X_ONLY_PAGES = [
     "components/drivers/hyperbus.md",
     "components/drivers/spinlock.md",
     "components/optiflash/optiflash.md",
-    "components/networking/networking_features.md",
     "components/networking/enet_lld/enet_cpsw_performance_am275x.md",
     "components/networking/enet_lld/eavb_performance.md",
     "components/tools/smart_placement.md",
@@ -590,6 +600,19 @@ _AM275X_ONLY_PAGES = [
 _AM62X_ONLY_PAGES = [
     "developer_guides/sbl_booting_linux_gpmc.md",
     "examples/drivers/ddr_ecc_test_mcu_esm.md",
+    "components/networking/enet_lld/enet_cpsw_performance_am62x.md",
+]
+
+_AM62DX_ONLY_PAGES = [
+    "components/networking/enet_lld/enet_cpsw_performance_am62dx.md",
+]
+
+_AM62LX_ONLY_PAGES = [
+    "components/networking/enet_lld/enet_cpsw_performance_am62lx.md",
+]
+
+_AM62PX_ONLY_PAGES = [
+    "components/networking/enet_lld/enet_cpsw_performance_am62px.md",
 ]
 
 exclude_patterns = list(_BASE_EXCLUDE_PATTERNS)
@@ -597,12 +620,18 @@ if _device != "am275x":
     exclude_patterns += _AM275X_ONLY_PAGES
 if _device != "am62x":
     exclude_patterns += _AM62X_ONLY_PAGES
+if _device != "am62dx":
+    exclude_patterns += _AM62DX_ONLY_PAGES
+if _device != "am62lx":
+    exclude_patterns += _AM62LX_ONLY_PAGES
+if _device != "am62px":
+    exclude_patterns += _AM62PX_ONLY_PAGES
 
 if _device in _DEVICE_SOC_TAG:
     breathe_default_project = _device
     myst_substitutions = _parse_aliases(_device)
     tags.add(_DEVICE_SOC_TAG[_device])  # noqa: F821 (injected by Sphinx)
-    project = f"MCU+SDK for {_soc_display_name(_device)}"
+    project = f"{myst_substitutions.get('VAR_SDK_NAME', 'FreeRTOS SDK')} for {_soc_display_name(_device)}"
 
     # Computed URL substitutions (used where {{ VAR }} can't appear inside href)
     _syscfg_ver = myst_substitutions.get("VAR_SYSCFG_VERSION_FULL", "")
@@ -704,16 +733,21 @@ def _filter_toctree_for_device(app, doctree):
     if device not in _DEVICE_SOC_TAG:
         return
 
-    # Get the active tag for this device
-    active_tag = _DEVICE_SOC_TAG[device]
-
     # Find all 'only' nodes in the doctree (before they're processed)
     only_nodes = list(doctree.traverse(only))
 
     for node in only_nodes:
         expr = node['expr']
-        # If this 'only' block doesn't contain the active tag, remove it
-        if active_tag not in expr:
+        # Evaluate the {only} expression the same way Sphinx's own only-node
+        # resolution does (supports and/or/not). A naive substring check on
+        # the active tag mishandles "not SOC_XXX" conditions, e.g. for device
+        # tag SOC_AM62X, "not SOC_AM62DX" does not contain "SOC_AM62X" as a
+        # substring even though the condition is true and should be kept.
+        try:
+            keep = app.tags.eval_condition(expr)
+        except Exception:
+            continue
+        if not keep:
             node.parent.remove(node)
 
 

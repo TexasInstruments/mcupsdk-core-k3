@@ -11,6 +11,8 @@
 
 IEEE 802.1Qbv [Time-Aware Shaper](https://en.wikipedia.org/wiki/Time-Sensitive_Networking#IEEE_802.1Qbv_Enhancements_to_Traffic_Scheduling:_Time-Aware_Shaper_(TAS)) (TAS), also called *Enhancements for Scheduled Traffic* (EST) in IEEE Std 802.1Q-2018, defines a mechanism to allocate and grant exclusive Ethernet port transmission access on repeating cycles which are divided into slices where traffic of specific traffic class queues can be selected for transmission.
 
+![EST schedule](../../../images/networking/EST_Schedule_Diagram.png)
+
 *Transmission gates* are associated with specific traffic class queues (0-7). When a gate is *open*, frames from the corresponding queue can be selected for transmission. When the gate is *closed*, frames will not be selected for transmission.
 
 The list of all gate states for all slices in the cycle is called *gate control list*. The control list that is programmed is called *administrative list*; when active it is called *operational list*.
@@ -36,6 +38,8 @@ Enet LLD provides support for TAS/EST through the following most important IOCTL
   - `sduTable` - The maximum service data unit (SDU) per queue.
 
 - `ENET_TAS_IOCTL_GET_OPER_LIST_STATUS` - Gets the status of the operational list update.
+
+![TAS IOCTL sequence in Enet LLD](../../../images/networking/Enet_Est.png)
 
 :::{only} SOC_AM263X or SOC_AM263PX
 

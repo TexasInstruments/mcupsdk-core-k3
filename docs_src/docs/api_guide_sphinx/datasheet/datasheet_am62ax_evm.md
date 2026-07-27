@@ -423,3 +423,42 @@ measure the time between writing 1 to GPIO output to rececving the interrupt at 
 Core      | GPIO In      | GPIO Out     | Latency (us)
 ----------|--------------|--------------|-------------
  mcu-r5f  | MCU_GPIO0_15 | MCU_GPIO0_16 |   2
+
+### UART callback latency
+UART callback latency is measured by measuring how long it takes to physically transmit a known-length string at the configured baud rate. This timing measurement is done when a 28bytes of data is send over different baud.
+
+Core          | Baud         | Transmssion          | Transmission         |Callback
+              |              | Expected Latency (us)| Measured Latency (us)|Latency (us)
+--------------|--------------|----------------------|----------------------|-------------- 
+ mcu-r5f      | 1200         | 233438               | 233333               | 19
+ mcu-r5f      | 2400         | 116715               | 116666               | 19
+ mcu-r5f      | 4800         | 58367                | 58333                | 19
+ mcu-r5f      | 9600         | 29227                | 29166                | 19
+ mcu-r5f      | 19200        | 14570                | 14583                | 19
+ mcu-r5f      | 38400        | 7285                 | 7291                 | 19
+ mcu-r5f      | 57600        | 4857                 | 4861                 | 19
+ mcu-r5f      | 115200       | 2429                 | 2430                 | 19
+ a53ss0-0     | 1200         | 233438               | 233333               | 53
+ a53ss0-0     | 2400         | 116715               | 116666               | 53
+ a53ss0-0     | 4800         | 58367                | 58333                | 53
+ a53ss0-0     | 9600         | 29227                | 29166                | 53
+ a53ss0-0     | 19200        | 14570                | 14583                | 53
+ a53ss0-0     | 38400        | 7285                 | 7291                 | 53
+ a53ss0-0     | 57600        | 4857                 | 4861                 | 53
+ a53ss0-0     | 115200       | 2429                 | 2430                 | 53
+ c75ss0       | 1200         | 233438               | 233333               | 43
+ c75ss0       | 2400         | 116715               | 116666               | 43
+ c75ss0       | 4800         | 58367                | 58333                | 43
+ c75ss0       | 9600         | 29227                | 29166                | 43
+ c75ss0       | 19200        | 14570                | 14583                | 43
+ c75ss0       | 38400        | 7285                 | 7291                 | 43
+ c75ss0       | 57600        | 4857                 | 4861                 | 43
+ c75ss0       | 115200       | 2429                 | 2430                 | 43
+ r5f0-0       | 1200         | 233438               | 233333               | 32
+ r5f0-0       | 2400         | 116715               | 116666               | 32
+ r5f0-0       | 4800         | 58367                | 58333                | 32
+ r5f0-0       | 9600         | 29227                | 29166                | 32
+ r5f0-0       | 19200        | 14570                | 14583                | 32
+ r5f0-0       | 38400        | 7285                 | 7291                 | 32
+ r5f0-0       | 57600        | 4857                 | 4861                 | 32
+ r5f0-0       | 115200       | 2429                 | 2430                 | 32

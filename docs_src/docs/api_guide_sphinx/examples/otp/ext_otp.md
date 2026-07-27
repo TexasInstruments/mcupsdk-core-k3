@@ -114,6 +114,11 @@ This example demonstrates how can one read, write and lock the extended OTP eFus
    - Logs should appear at the WKUP_UART0
 ::::
 
+
+::::{only} SOC_AM275X
+   - Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
+::::
+
 ## Sample Output
 
 Shown below is a sample output when the application is run.
@@ -236,6 +241,57 @@ Shown below is a sample output when the application is run.
    USB VID: 0x45a0
    USB PID: 0xe047
    ERROR: ext_otp_lockRow:443: Error locking OTP row 45
+   Lock row failed as expected for invalid row index
+   Success enabling global soft write lock of OTP rows
+   Lock status of row 0 -> global soft lock: 0x5a, hw write lock: 0xa5, hw read lock: 0xa5
+   All tests have passed!!
+   ```
+
+::::
+
+
+::::{only} SOC_AM275X
+
+   ```
+   UART Console:
+      Starting EXT OTP writer
+   Enabled VPP
+   Success programming VID/PID
+   OTP MMR 0: 0x4
+   OTP MMR 1: 0x0
+   OTP MMR 2: 0x0
+   OTP MMR 3: 0x0
+   OTP MMR 4: 0x0
+   OTP MMR 5: 0x0
+   OTP MMR 6: 0x0
+   OTP MMR 7: 0x0
+   OTP MMR 8: 0x0
+   OTP MMR 9: 0x0
+   OTP MMR 10: 0x0
+   OTP MMR 11: 0x0
+   OTP MMR 12: 0x0
+   OTP MMR 13: 0x0
+   OTP MMR 14: 0x0
+   OTP MMR 15: 0x0
+   OTP MMR 16: 0x0
+   OTP MMR 17: 0x0
+   OTP MMR 18: 0x0
+   OTP MMR 19: 0x0
+   OTP MMR 20: 0x0
+   OTP MMR 21: 0x0
+   OTP MMR 22: 0x0
+   OTP MMR 23: 0x0
+   OTP MMR 24: 0x0
+   OTP MMR 25: 0x0
+   OTP MMR 26: 0x0
+   OTP MMR 27: 0x0
+   OTP MMR 28: 0x0
+   OTP MMR 29: 0x0
+   OTP MMR 30: 0x45a0e047
+   OTP MMR 31: 0xebc80021
+   USB VID: 0x45a0
+   USB PID: 0xe047
+   ERROR: ext_otp_lockRow:476: Error locking OTP row 45
    Lock row failed as expected for invalid row index
    Success enabling global soft write lock of OTP rows
    Lock status of row 0 -> global soft lock: 0x5a, hw write lock: 0xa5, hw read lock: 0xa5

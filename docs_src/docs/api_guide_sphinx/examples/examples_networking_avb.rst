@@ -13,6 +13,7 @@ AVB Examples using TSN Stack
    networking/enet_cpsw_tsn_crf_autoamp_demo
    networking/enet_cpsw_avb_audio_playback
    networking/enet_cpsw_avb_audio_etherring_demo
+   networking/enet_cpsw_tsn_media_clock_recovery
 
 This page lists all the examples related to AVB (Audio Video Bridging).
 
@@ -32,4 +33,5 @@ This page lists all the examples related to AVB (Audio Video Bridging).
    - :doc:`Enet CPSW TSN CRF AVTP <networking/enet_cpsw_tsn_crf_avtp>`
    - :doc:`Enet CPSW TSN CRF Autoamp Demo <networking/enet_cpsw_tsn_crf_autoamp_demo>`
    - :doc:`Enet CPSW AVB Audio Demo <networking/enet_cpsw_avb_audio_playback>`
-   - :doc:`Enet AVB Multistream MCR <networking/enet_cpsw_avb_audio_etherring_demo>`
+   - :doc:`Enet AVB Multistream MCR <networking/enet_cpsw_tsn_media_clock_recovery>`
+   - :doc:`Enet AVB Audio Playback and Etherring Demo <networking/enet_cpsw_avb_audio_etherring_demo>`

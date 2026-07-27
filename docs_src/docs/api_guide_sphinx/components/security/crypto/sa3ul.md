@@ -21,8 +21,6 @@ The SA3_UL subsystem is designed to provide a generic cryptographic acceleration
     - <b>CCM</b> (Counter with CBC-MAC)
     - <b>GCM</b> (Galois counter mode)
     - <b>GMAC</b> (Galois Message Authentication Code)
-- <b>Public Key accelerator</b> with Elliptic Curve Cryptography (ECC)
-    - High performance Public Key Accelerator (PKA) for large vector math operation
 - Supports modulus size up to 4096-bits
     - A dual <b>LNME</b> module for Montgomery multiplication and exponentiation
     - Prime field GF(p) <b>ECC</b> point addition, doubling and multiplication for all NIST (FIPS 186-3) recommended prime curves
@@ -67,13 +65,6 @@ The SA3_UL subsystem is designed to provide a generic cryptographic acceleration
     - Private keys for <b>digital signature algorithms</b>
     - Values to be used in <b>entity authentication mechanisms</b>
     - <b>PIN</b> and <b>password</b> generation
-- Supports public-key accelerator(<b>PKA</b>)
-    - Supports up to 4K bit key
-    - Supports Raw operations
-    - Supports PKA <b>RSA encryption and decryption</b>
-    - Supports <b>RSA signing and verification operations</b>
-    - Supports <b>ECDSA signing and verification operations</b>
-        - <b>P-256 and P-384 curves</b>
 
 ## Block diagram
 
@@ -111,9 +102,6 @@ This block diagram referred from Sa3ul functional specification.
 
 ### TRNG
 - TRNG (True Random number generator) used to create initialization vector required for certain encryption modes. The random numbers are accessible to the host in four 32-bit registers allowing 128-bit random number to be read with a single burst read.
-
-### PKA
-- The PKA(Public Key Accelerator) module provides a high-performance public key engine to accelerate the large vector math processing that is required for Public Key computations. It also includes hw acceleration for Elliptic Curve Cryptography such as binary field ECC point addition, inversion, multiplication and ECC prime field point addition, inversion and multiplication.
 
 ## DMA Flow
 - Sa3ul Uses PKTDMA, the PKTDMA module supports the transmission and reception of various packet types. The PKTDMA is architected to facilitate the segmentation and reassembly of KSLC DMA data structure compliant packets to/from smaller data blocks that are natively compatible with the specific requirements of each connected peripheral.
@@ -248,7 +236,6 @@ Folder/Files                                |   Description
 --------------------------------------------|------------------
 source/security/crypto                      | Contains Crypto driver files
 source/security/crypto/sa3ul                | Contains Sa3ul driver files
-source/security/crypto/pka                  | Contains Pka driver files
 examples/security                           | Contains all Security examples
 
 ## API

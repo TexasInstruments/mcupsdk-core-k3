@@ -23,6 +23,21 @@ The audio from the microphone will be played back to both the headset (Left & Ri
 ::::
 
 
+::::{only} SOC_AM62DX
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | c75ss0-0 freertos |
+| CPU + OS | r5fss0-0 nortos |
+| CPU + OS | a53ss0-0 freertos |
+| Toolchain | ti-c7000 |
+| Toolchain | ti-arm-clang |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/mcasp/mcasp_playback_codec_aic32 |
+
+::::
+
+
 ::::{only} SOC_AM62X
 
 | Parameter      | Value |
@@ -55,7 +70,7 @@ The audio from the microphone will be played back to both the headset (Left & Ri
   make command (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md))
 - Connect audio devices as mentioned in the introduction
 
-::::{only} SOC_AM64X or SOC_AM243X or SOC_AM263X or SOC_AM62X or SOC_AM62AX or SOC_AM62PX or SOC_AM275X or SOC_AM273X or SOC_AWR294X or SOC_J722S
+::::{only} not SOC_AM62LX
    - Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
 ::::
 

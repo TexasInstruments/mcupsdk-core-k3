@@ -796,7 +796,9 @@ void testDM_firewallApis(void *args)
     /* Sciclient_firewallGetRegion — TISCI_MSG_GET_FWL_REGION (0x9001)        */
     /* ---------------------------------------------------------------------- */
 
-    /* TC-1: Positive: query fwl_id=7 (FSS0 — owned by DM on AM62DX), region=0 */
+    /* TC-1: Positive: query fwl_id=7 (FSS0 — owned by DM on AM62DX/AX/PX), region=0
+     * Guarded by DM_TEST_FWL_ID0_SUPPORTED: fwl_id=7 is not DM-owned on AM62X or AM275X. */
+#if defined(DM_TEST_FWL_ID0_SUPPORTED)
     {
         struct tisci_msg_fwl_get_firewall_region_req  getReq  = {0};
         struct tisci_msg_fwl_get_firewall_region_resp getResp = {0};
@@ -812,6 +814,7 @@ void testDM_firewallApis(void *args)
             retValFailCnt++;
         }
     }
+#endif /* DM_TEST_FWL_ID0_SUPPORTED */
 
     /* TC-2: Negative: NULL req and resp pointers */
     retVal = Sciclient_firewallGetRegion(NULL, NULL, 0U);
@@ -861,7 +864,9 @@ void testDM_firewallApis(void *args)
 
     /* TC-1: Positive: read-then-restore — GET fwl_id=7 (FSS0, DM-owned) region=0,
      * then SET back the exact same values.  No-op write that safely exercises
-     * the full SET code path without changing permissions or address range. */
+     * the full SET code path without changing permissions or address range.
+     * Guarded by DM_TEST_FWL_ID0_SUPPORTED: fwl_id=7 is not DM-owned on AM62X or AM275X. */
+#if defined(DM_TEST_FWL_ID0_SUPPORTED)
     {
         struct tisci_msg_fwl_get_firewall_region_req  getReq  = {0};
         struct tisci_msg_fwl_get_firewall_region_resp getResp = {0};
@@ -899,6 +904,7 @@ void testDM_firewallApis(void *args)
         }
         }
     }
+#endif /* DM_TEST_FWL_ID0_SUPPORTED */
 
     /* TC-2: Negative: NULL req and resp pointers */
     retVal = Sciclient_firewallSetRegion(NULL, NULL, 0U);
@@ -971,7 +977,9 @@ void testDM_firewallApis(void *args)
 
     /* TC-1: Positive: fwl_id=7 (FSS0, DM-owned), region=0,
      * owner_index=TISCI_HOST_ID_MAIN_0_R5_0 (DM R5F — re-asserting current
-     * ownership is a no-op and always succeeds). */
+     * ownership is a no-op and always succeeds).
+     * Guarded by DM_TEST_FWL_ID0_SUPPORTED: fwl_id=7 is not DM-owned on AM62X or AM275X. */
+#if defined(DM_TEST_FWL_ID0_SUPPORTED)
     {
         struct tisci_msg_fwl_change_owner_info_req  req  = {0};
         struct tisci_msg_fwl_change_owner_info_resp resp = {0};
@@ -987,6 +995,7 @@ void testDM_firewallApis(void *args)
             retValFailCnt++;
         }
     }
+#endif /* DM_TEST_FWL_ID0_SUPPORTED */
 
     /* TC-2: Negative: NULL req and resp pointers */
     retVal = Sciclient_firewallChangeOwnerInfo(NULL, NULL, 0U);

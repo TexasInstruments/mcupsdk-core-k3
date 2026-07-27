@@ -58,6 +58,8 @@
 #include "am275x-evm/test_device_manager_val.h"
 #elif defined(SOC_AM62PX)
 #include "am62px-sk/test_device_manager_val.h"
+#elif defined(SOC_AM62X)
+#include "am62x-sk/test_device_manager_val.h"
 #endif
 /* Multi-device test constants */
 #define TEST_DEVICE_ID_1            TISCI_DEV_MCU_UART0

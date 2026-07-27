@@ -82,35 +82,46 @@ static int32_t test_msgChangeFwlOwner(void *args);
 
 /*
  * TC_09 wrapper — OTP & Key Management (read-only safe queries)
+ * Guarded by DM_TEST_SEC_MSG_SKIP: all OTP messages route via the SEC context
+ * (MAIN_0_R5_0) thread and hang on AM62X from the non-secure test context.
  */
 void testDM_otpKeyMgmt(void *args)
 {
     int32_t testfailcount = 0;
+#ifndef DM_TEST_SEC_MSG_SKIP
     testfailcount += test_msgReadOtpMmr(NULL);
     testfailcount += test_msgGetOtpRowLockStatus(NULL);
     testfailcount += test_msgReadSwrev(NULL);
     testfailcount += test_msgReadKeycntKeyrev(NULL);
+#endif /* DM_TEST_SEC_MSG_SKIP */
     TEST_ASSERT_EQUAL_INT32(0,testfailcount);
 }
 
 /*
  * TC_10 wrapper — Security & Encryption (SEC_HANDOVER, KEY_WRITER, KEYRING_IMPORT)
+ * SEC_HANDOVER is safe (uses DM2TIFS thread).  KEY_WRITER and KEYRING_IMPORT route
+ * via SEC context and hang on AM62X; guarded by DM_TEST_SEC_MSG_SKIP.
  */
 void testDM_securityEncryption(void *args)
 {
     int32_t testfailcount = 0;
     testfailcount += test_msgSecHandover(NULL);
+#ifndef DM_TEST_SEC_MSG_SKIP
     testfailcount += test_msgKeyWriter(NULL);
     testfailcount += test_msgKeyringImport(NULL);
+#endif /* DM_TEST_SEC_MSG_SKIP */
     TEST_ASSERT_EQUAL_INT32(0,testfailcount);
 }
 
 /*
  * TC_11 wrapper — SA2UL Crypto Accelerator (DKEK / DSMEK)
+ * All SA2UL messages route via the SEC context (MAIN_0_R5_0) thread and hang
+ * on AM62X from the non-secure test context.  Guarded by DM_TEST_SEC_MSG_SKIP.
  */
 void testDM_sa2ulCrypto(void *args)
 {
     int32_t testfailcount = 0;
+#ifndef DM_TEST_SEC_MSG_SKIP
     testfailcount += test_msgSa2ulSetDkek(NULL);
     testfailcount += test_msgSa2ulGetDkek(NULL);
     testfailcount += test_msgSa2ulReleaseDkek(NULL);
@@ -118,6 +129,7 @@ void testDM_sa2ulCrypto(void *args)
     testfailcount += test_msgSa2ulGetDsmek(NULL);
     testfailcount += test_msgSa2ulReleaseDsmek(NULL);
     testfailcount += test_msgCryptoGetDkek(NULL);
+#endif /* DM_TEST_SEC_MSG_SKIP */
     TEST_ASSERT_EQUAL_INT32(0,testfailcount);
 }
 
@@ -140,7 +152,7 @@ static int32_t test_msgReadOtpMmr(void *args)
 
     struct tisci_msg_read_otp_mmr_req  request;
     struct tisci_msg_read_otp_mmr_resp response;
-
+#ifndef DM_TEST_SEC_MSG_SKIP
     /* TC-01: Positive – read OTP MMR index 0 (safe read-only operation) */
     {
         memset(&request,  0, sizeof(request));
@@ -170,7 +182,7 @@ static int32_t test_msgReadOtpMmr(void *args)
             failCount++;
         }
     }
-
+#endif /* DM_TEST_SEC_MSG_SKIP */
     /* TC-02: Negative – invalid mmr_idx (0xFF) */
     {
         memset(&request,  0, sizeof(request));
@@ -1705,7 +1717,8 @@ static int32_t test_msgSetFwlRegion(void *args)
 
     /* TC-01: Positive – read current fwl_id=0 region=0 config, then write it
      * back unchanged.  GET first to avoid hardcoding platform-specific values.
-     * Note: fwl_id=0 is valid on AM62DX but not on AM275X; guarded below. */
+     * Note: fwl_id=0 is valid on AM62DX/AM62AX; not on AM275X or AM62X.
+     * DM_TEST_FWL_ID0_SUPPORTED enables tests with fwl_id=0. */
 #if defined(DM_TEST_FWL_ID0_SUPPORTED)
     {
         struct tisci_msg_fwl_get_firewall_region_req  getReq;
@@ -1889,8 +1902,7 @@ static int32_t test_msgGetFwlRegion(void *args)
     struct tisci_msg_fwl_get_firewall_region_req  request;
     struct tisci_msg_fwl_get_firewall_region_resp response;
 
-    /* TC-01: Positive – query fwl_id=0, region=0 */
-    /* Note: fwl_id=0 is valid on AM62DX; TIFS restricts access on AM275X. */
+    /* TC-01: Positive – query fwl_id, region=0 */
 #if defined(DM_TEST_FWL_ID0_SUPPORTED)
     {
         memset(&request,  0, sizeof(request));
@@ -2003,9 +2015,8 @@ static int32_t test_msgChangeFwlOwner(void *args)
     struct tisci_msg_fwl_change_owner_info_req  request;
     struct tisci_msg_fwl_change_owner_info_resp response;
 
-    /* TC-01: Positive – change fwl_id=0 region=0 to owner_index=0
-     * owner_index=0 is always valid; if already owner, this is a no-op.
-     * Note: fwl_id=0 is valid on AM62DX; TIFS restricts access on AM275X. */
+    /* TC-01: Positive – change fwl_id region=0 to owner_index=0
+     * owner_index=0 is always valid; if already owner, this is a no-op.*/
 #if defined(DM_TEST_FWL_ID0_SUPPORTED)
     {
         memset(&request,  0, sizeof(request));

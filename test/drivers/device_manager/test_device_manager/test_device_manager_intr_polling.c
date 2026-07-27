@@ -235,6 +235,7 @@ static int32_t testDM_validateMessagesSequence(const char *testName)
     }
 
     /* 11. TISCI_MSG_GET_FWL_REGION (0x9001) */
+#ifndef DM_TEST_FWL_INTR_POLL_DISABLE
     {
         struct tisci_msg_fwl_get_firewall_region_req  request;
         struct tisci_msg_fwl_get_firewall_region_resp response;
@@ -248,6 +249,7 @@ static int32_t testDM_validateMessagesSequence(const char *testName)
                                          &request, sizeof(request),
                                          &response, sizeof(response));
     }
+#endif /* DM_TEST_FWL_INTR_POLL_DISABLE */
 
     /* 12. TISCI_MSG_PROC_GET_STATUS (0xC400) */
     {

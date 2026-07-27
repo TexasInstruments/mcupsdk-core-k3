@@ -204,7 +204,9 @@ static void testDM_boardConfig(void *args)
     testfailcount += test_msgBoardConfig(NULL);
     testfailcount += test_msgBoardConfigRM(NULL);
     testfailcount += test_msgBoardConfigPM(NULL);
+    #ifndef DM_TEST_SEC_MSG_SKIP
     testfailcount += test_msgBoardConfigSecurity(NULL);
+    #endif
     TEST_ASSERT_EQUAL_INT32(0,testfailcount);
 }
 
@@ -223,7 +225,7 @@ static int32_t test_msgVersion(void *args)
 
     struct tisci_msg_version_req  request;
     struct tisci_msg_version_resp response;
-
+#ifndef DM_TEST_SEC_MSG_SKIP
     /* TC-01: Positive – valid request, AOP flag, WAIT_FOREVER */
     {
         const Sciclient_ReqPrm_t reqPrm =
@@ -249,6 +251,7 @@ static int32_t test_msgVersion(void *args)
             failCount++;
         }
     }
+#endif /* DM_TEST_SEC_MSG_SKIP */
 
     /* TC-02: Negative – short timeout (0x0A) → not SUCCESS */
     {

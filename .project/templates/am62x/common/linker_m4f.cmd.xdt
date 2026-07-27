@@ -9,6 +9,16 @@
         stackSize = options.stackSize;
     if(options && options.heapSize)
         heapSize = options.heapSize;
+
+    /* M4F_DRAM (local DRAM) is only 64KB and is shared by .bss/.data/.rodata.
+     * Some projects with large const data (e.g. Sciclient/TISCI tables) and/or
+     * large .bss usage can run out of M4F_DRAM even though M4F_IRAM has spare
+     * room. Allow such projects to opt-in, via options.rodataInIram, to place
+     * .rodata in M4F_IRAM instead of M4F_DRAM. Defaults to false so all other
+     * M4F projects are unaffected. */
+    let rodataInIram = false;
+    if(options && options.rodataInIram === true)
+        rodataInIram = true;
 %%}
 
 /* make sure below retain is there in your linker command file, it keeps the vector table in the final binary */
@@ -43,7 +53,11 @@ SECTIONS
     RUN_END(__BSS_END)
 
     .data:   {} palign(8) > M4F_DRAM     /* This is where initialized globals and static go */
+    % if(rodataInIram) {
+    .rodata: {} palign(8) > M4F_IRAM     /* This is where const's go (relocated to M4F_IRAM, M4F_DRAM is too small for this project) */
+    % } else {
     .rodata: {} palign(8) > M4F_DRAM     /* This is where const's go */
+    % }
     .sysmem: {} palign(8) > M4F_IRAM     /* This is where the malloc heap goes */
     .stack:  {} palign(8) > M4F_IRAM     /* This is where the main() stack goes */
 

@@ -283,11 +283,44 @@ static int32_t testSciclient_validateMessagesSequence(const char *testName)
         request.fwl_id            = 7U;
         request.region            = 0U;
         request.n_permission_regs = FWL_MAX_PRIVID_SLOTS;
-
+#if defined(SOC_AM62X)
+        /* AM62X's default security boardcfg restricts fwl_id=7's (FSS0)
+         * permission_regs differently than the other AM62-family SoCs: on
+         * AM62X neither m4fss0-0 (TISCI_HOST_ID_M4_0) nor a53ss0-0
+         * (TISCI_HOST_ID_A53_2) are included, whereas on AM62AX/AM62DX/
+         * AM62PX the equivalent MCU-domain/A53 hosts are. TIFS NACKs the
+         * query for both AM62X hosts (retVal=SUCCESS, flags=0x0). Verify
+         * transport success only, matching the same relaxation applied to
+         * the SA2UL DKEK messages (msg 8) above. */
+        {
+            const Sciclient_ReqPrm_t reqPrm =
+            {
+                TISCI_MSG_GET_FWL_REGION,
+                TISCI_MSG_FLAG_AOP,
+                (uint8_t *) &request,
+                sizeof(request),
+                SystemP_WAIT_FOREVER
+            };
+            Sciclient_RespPrm_t respPrm =
+            {
+                0,
+                (uint8_t *) &response,
+                sizeof(response)
+            };
+            retVal = Sciclient_service(&reqPrm, &respPrm);
+            if (retVal != SystemP_SUCCESS)
+            {
+                DebugP_log("FAIL: %s (positive) msg 11 TISCI_MSG_GET_FWL_REGION(0x9001): retVal=%d expected=%d\r\n",
+                           testName, retVal, SystemP_SUCCESS);
+                failCount++;
+            }
+        }
+#else
         failCount += testSciclient_sendAndCheck(testName, "msg 11 TISCI_MSG_GET_FWL_REGION(0x9001)",
                                          TISCI_MSG_GET_FWL_REGION,
                                          &request, sizeof(request),
                                          &response, sizeof(response));
+#endif
     }
 
     /* 12. TISCI_MSG_PROC_GET_STATUS (0xC400) */

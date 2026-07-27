@@ -236,6 +236,7 @@ const example_file_list = [
     "test/drivers/sciclient/sciclient_get_version/.project/project.js",
     "test/drivers/sciclient/sciclient_dynamic_analysis/.project/project.js",
     "test/drivers/sciclient/sciclient_interrupt_mode/.project/project.js",
+    "test/drivers/sciclient/test_sciclient/.project/project.js",
     "test/drivers/i2c/.project/project.js",
     "test/drivers/i2c/test_i2c_fault_inject/.project/project.js",
     "test/drivers/i2c/test_i2c_system/.project/project.js",

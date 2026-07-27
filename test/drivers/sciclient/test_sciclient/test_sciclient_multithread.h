@@ -73,8 +73,17 @@ extern "C" {
  * AM275X WKUP_R5_MSRAM is limited (502 KB), so reduce stack for AM275X builds
  * Sciclient API calls have modest stack depth (~4-6 KB typical)
  * AM62DX has sufficient OCMC RAM (4 MB+) so uses larger stack
- */
+ * AM62X M4F (wkup MCU domain) only has 64 KB of local DRAM total shared
+ * between .bss/.data (.rodata is relocated to M4F_IRAM for this project, see
+ * linker.cmd), so a much smaller stack is required there. 4 threads x stack
+ * must fit alongside other fixed .bss/.data usage within the 64 KB budget. */
+#if defined(TEST_CORE_MCU_M4F)
+#define TEST_SCICLIENT_STACK_SIZE              (8 * 1024)
+#elif defined(SOC_AM275X)
 #define TEST_SCICLIENT_STACK_SIZE              (32 * 1024)
+#else
+#define TEST_SCICLIENT_STACK_SIZE              (32 * 1024)
+#endif
 
 /* Number of repeated API calls per thread per test */
 #define TEST_SCICLIENT_LOOP_COUNT              (1U)

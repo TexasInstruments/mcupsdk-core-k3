@@ -163,9 +163,9 @@ SECTIONS
         .rodata:         {} palign(8)
         .cinit:          {} palign(8)
         .far:            {} align(8)
+        .data:           {} palign(128)
     } > WKUP_R5_MSRAM
     GROUP {
-        .data:           {} palign(128)
         .data_buffer:    {} palign(128)
         .boardcfg_data:  {} align(8)
         .ARM.exidx:      {} palign(8)   /* Needed for C++ exception handling */

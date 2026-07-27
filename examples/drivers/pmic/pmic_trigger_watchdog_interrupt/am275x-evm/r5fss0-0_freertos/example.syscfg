@@ -3,7 +3,7 @@
  * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
  * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
  * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "r5fss0-0" --product "MCU_PLUS_SDK@07.03.01"
- * @versions {"tool":"1.24.2+4234"}
+ * @versions {"tool":"1.26.2+4477"}
  */
 
 /**
@@ -38,6 +38,7 @@ gpio1.MCU_GPIO.gpioPin.$assign = "WKUP_I2C0_SCL";
 
 gpio2.$name        = "GPIO_WDOG_INT";
 gpio2.trigType     = "FALL_EDGE";
+gpio2.rx           = true;
 gpio2.GPIO.$assign = "I2C1_SDA";
 
 pmic1.mainPeripheralDriver = i2c1;

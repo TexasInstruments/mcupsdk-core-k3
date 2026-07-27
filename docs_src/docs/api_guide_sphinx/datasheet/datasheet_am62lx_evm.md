@@ -213,4 +213,4 @@ Fast Tuning Window          |          4.23 ms
 
 ### CPSW Performance
 
-For CPSW performance refer [Ethernet Performance](../components/networking/enet_lld/enet_cpsw_performance_am62x.md)
+For CPSW performance refer [Ethernet Performance](../components/networking/enet_lld/enet_cpsw_performance_am62lx.md)

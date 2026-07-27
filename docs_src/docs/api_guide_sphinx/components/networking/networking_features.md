@@ -57,23 +57,21 @@ ICMP, ARP, DHCP, and HTTP with IPv4.
 The SDK provides a set of default parameters (such as LwIP pbuf memory pool size) for LwIP integration for every SoC that can be configured per requirement. The SDK also provides numerous examples with the LwIP stack; the following table lists a few of them:
 
 :::{only} SOC_AM275X or SOC_AM62PX
-<table>
-<tr><th>Example</th><th>Reference</th></tr>
-<tr><td>TCP server</td><td>[Enet Lwip TCP Server Example on CPSW](../../examples/networking/enet_lwip_tcpserver.md)</td></tr>
-<tr><td>Iperf testing</td><td>[Enet Lwip CPSW Example](../../examples/networking/enet_lwip_cpsw.md)</td></tr>
-</table>
+| Example | Reference |
+|---------|-----------|
+| TCP server | [Enet Lwip TCP Server Example on CPSW](../../examples/networking/enet_lwip_tcpserver.md) |
+| Iperf testing | [Enet Lwip CPSW Example](../../examples/networking/enet_lwip_cpsw.md) |
 :::
 :::{only} SOC_AM62LX or SOC_AM62DX or SOC_AM62X
-<table>
-<tr><th>Example</th><th>Reference</th></tr>
-<tr><td>TCP server</td><td>[Enet Lwip TCP Server Example on CPSW](../../examples/networking/enet_lwip_tcpserver.md)</td></tr>
-<tr><td>TCP Client</td><td>[Enet Lwip TCP Client Example](../../examples/networking/enet_lwip_tcpclient.md)</td></tr>
-<tr><td>UDP Client</td><td>[Enet Lwip UDP Client Example](../../examples/networking/enet_lwip_udpclient.md)</td></tr>
-<tr><td>UDP IGMP</td><td>[Enet Lwip UDP IGMP Server Example](../../examples/networking/enet_lwip_udp_igmp.md)</td></tr>
-<tr><td>Lwip Sockets</td><td>[Enet Lwip Socket Example](../../examples/networking/enet_lwip_socket.md)</td></tr>
-<tr><td>Iperf testing</td><td>[Enet Lwip CPSW Example](../../examples/networking/enet_lwip_cpsw.md)</td></tr>
-<tr><td>HTTPS Server</td><td>[CPSW Lwip HTTPS Server Example](../../examples/networking/cpsw_lwip_https.md)</td></tr>
-</table>
+| Example | Reference |
+|---------|-----------|
+| TCP server | [Enet Lwip TCP Server Example on CPSW](../../examples/networking/enet_lwip_tcpserver.md) |
+| TCP Client | [Enet Lwip TCP Client Example](../../examples/networking/enet_lwip_tcpclient.md) |
+| UDP Client | [Enet Lwip UDP Client Example](../../examples/networking/enet_lwip_udpclient.md) |
+| UDP IGMP | [Enet Lwip UDP IGMP Server Example](../../examples/networking/enet_lwip_udp_igmp.md) |
+| Lwip Sockets | [Enet Lwip Socket Example](../../examples/networking/enet_lwip_socket.md) |
+| Iperf testing | [Enet Lwip CPSW Example](../../examples/networking/enet_lwip_cpsw.md) |
+| HTTPS Server | [CPSW Lwip HTTPS Server Example](../../examples/networking/cpsw_lwip_https.md) |
 :::
 
 TLS support is enabled for examples such as HTTPS using the open-source **MbedTLS** library. This feature provides encryption, authentication, and data integrity protection for network traffic.
@@ -83,17 +81,21 @@ Note: Currently **IPv6 is not supported** by the driver.
 
 For further details please check [Lightweight IP (LwIP)](networking_lwip.md)
 
-:::{only} SOC_AM275X or SOC_AM62DX
-## TSN and AVB support
-:::
+```{eval-rst}
+.. only:: SOC_AM275X or SOC_AM62DX
 
-:::{only} SOC_AM62PX or SOC_AM62LX or SOC_AM62X
-## TSN support
-:::
+   TSN and AVB support
+   ^^^^^^^^^^^^^^^^^^^^
+
+.. only:: SOC_AM62PX or SOC_AM62LX or SOC_AM62X
+
+   TSN support
+   ^^^^^^^^^^^
+```
 
 SDK provides **general Precision Time Protocol(gPTP)** or **IEEE 802.1AS** stack enabled for time synchronization across networked devices. It establishes a common time reference with sub-microsecond accuracy, allowing coordinated operation of distributed systems. Accurate synchronization is critical for scheduled traffic, industrial automation, and time-sensitive networking applications. The protocol continuously compensates for clock drift and network delays to maintain timing precision.
 
-- The **CPTS** submodule of CPSW is used for timestamping packets, and [Time Sync IOCTLs](EnetTimeSync_Ioctl) provide a way to configure it.
+- The **CPTS** submodule of CPSW is used for timestamping packets, and Time Sync IOCTLs (`EnetTimeSync_Ioctl`) provide a way to configure it.
 
 The SDK gives full fledged gPTP example in
 
@@ -108,12 +110,11 @@ The SDK gives full fledged gPTP example in
 :::
 
 :::{only} not SOC_AM62DX
-<table>
-<tr><th>gPTP variant</th><th>Reference</th></tr>
-<tr><td>Master mode</td><td>[Ethernet TSN CPSW gPTP TimeTransmitter (gPTP Master) Example](../../examples/networking/enet_cpsw_tsn_gptp_tt.md)</td></tr>
-<tr><td>Slave mode</td><td>[Ethernet TSN CPSW gPTP TimeReceiver (gPTP Slave) Example](../../examples/networking/enet_cpsw_tsn_gptp_tr.md)</td></tr>
-<tr><td>Bridge mode</td><td>[Ethernet TSN CPSW gPTP Bridge Example](../../examples/networking/enet_cpsw_tsn_gptp_bridge.md)</td></tr>
-</table>
+| gPTP variant | Reference |
+|--------------|-----------|
+| Master mode | [Ethernet TSN CPSW gPTP TimeTransmitter (gPTP Master) Example](../../examples/networking/enet_cpsw_tsn_gptp_tt.md) |
+| Slave mode | [Ethernet TSN CPSW gPTP TimeReceiver (gPTP Slave) Example](../../examples/networking/enet_cpsw_tsn_gptp_tr.md) |
+| Bridge mode | [Ethernet TSN CPSW gPTP Bridge Example](../../examples/networking/enet_cpsw_tsn_gptp_bridge.md) |
 :::
 
 For further details, read [Ethernet TSN and gPTP Stack - API and Integration Guide](enet_cpsw_tsn_gptp_apiguide.md)
@@ -181,4 +182,4 @@ The list of IOCTLs that implement this is provided below:
 - ENET_MACPORT_IOCTL_GET_CUT_THRU_PARAMS
 
 ## See Also
-[Ethernet And Networking](networking.md)
+[Ethernet And Networking](networking.rst)

@@ -8,6 +8,23 @@ This example demonstrates performing the DDR Memory Testing in WKUP R5, MCU R5 a
 
 This example performs read and write tests on the DDR memory space with multiple patterns. If either write is not possible, or there is a mismatch of value after reading from the memory space, the test fails. Ensure DDR Init is performed such that the DDR memory space is initialized and can be accessed in the Application.
 
+## Supported Combinations
+
+::::{only} SOC_AM62DX
+
+| Parameter      | Value |
+|---|---|
+| CPU + OS | mcu-r5fss0-0 nortos |
+| CPU + OS | mcu-r5fss0-0 freertos |
+| CPU + OS | c75ss0-0 freertos |
+| CPU + OS | r5fss0-0 freertos |
+| Toolchain | ti-arm-clang |
+| Toolchain | ti-c7000 |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | examples/drivers/ddr/ddr_memtester/ |
+
+::::
+
 ## Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination

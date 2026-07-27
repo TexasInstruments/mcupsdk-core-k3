@@ -370,4 +370,5 @@ For all parameters related to interval, the minimum interval can be configured f
 
 ## See Also
 
-[Ethernet And Networking](networking.md)
+- [TSN Userguide](enet_cpsw_tsn_architecture_guide.md) — gPTP/AVB design, hardware interaction, and EST/CBS/IET configuration via uniconf
+- [Ethernet And Networking](networking.rst)

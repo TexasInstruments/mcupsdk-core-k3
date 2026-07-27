@@ -6,8 +6,8 @@
 ::::{only} SOC_AM62DX
 ```{note}
 This example supports the AM62D-EVM-PROC180E2. To test with the AM62D-EVM-PROC180E1, change the phy addresses in TI BOARD DRIVERS -> ETHPHY -> CONFIG_ENET_ETHPHY(x) -> phy Address to 15 and 3.
-::::
 ```
+::::
 
 The layer 2 cpsw example is dedicated to demonstrate usage of Enet CPSW3G peripheral operation.
 
@@ -25,12 +25,14 @@ This example also demonstrates Rx Scatter-Gather. Due to the Limitation with LC-
 On {{ VAR_SOC_NAME }}, we can do ethernet based communication using CPSW as HW mechanism
   - CPSW is a standard ethernet switch + port HW
   - It uses ethernet driver underneath with LwIP TCP/IP networking stack
-::::{only} SOC_AM263X
+
+:::::{only} SOC_AM263X
   - The appication as of now works with Port 1 only.
-::::
-::::{only} SOC_AM263PX
+:::::
+
+:::::{only} SOC_AM263PX
   - The appication as of now works with Port 2 only.
-::::
+:::::
 
 This example also demonstrates Rx Scatter-Gather, the buffer size on Rx is kept to 512 bytes. Send packets greater than 512 bytes to exercise scatter-gather on Rx.
 ::::
@@ -185,8 +187,7 @@ Make sure you have setup the EVM with cable connections as shown here, [EVM_SETU
 
 - Connect a ethernet cable to the EVM from host PC as shown below
 
-  \imageStyle{am62x_sk_cpsw_example.jpg,width:40%}
-  \image html am62x_sk_cpsw_example.jpg Ethernet cable for CPSW based ethernet
+![Ethernet cable for CPSW based ethernet](../../images/networking/am62x_sk_cpsw_example.jpg)
 
 ::::
 
@@ -232,8 +233,7 @@ If you need to reload and run again, a CPU power-cycle is MUST
   - Click start, packets will be send to the target.
 - Capture the packets in Wireshark.
 
-  \imageStyle{layer2_cpsw_example_packet_builder.png,width:60%}
-  \image html layer2_cpsw_example_packet_builder.png Colasoft Pkt Builder to generate and send packets.
+![Colasoft Pkt Builder to generate and send packets.](../../images/examples/layer2_cpsw_example_packet_builder.png)
 
 
 ## Sample output for Multiport example
@@ -311,8 +311,7 @@ Print statistics
 
 - On Wireshark we can see the packets received:
 
-  \imageStyle{layer2_cpsw_example_wireshark_log.png,width:50%}
-  \image html layer2_cpsw_example_wireshark_log.png Wireshark log for Layer 2 CPSW Example
+![Wireshark log for Layer 2 CPSW Example](../../images/examples/layer2_cpsw_example_wireshark_log.png)
 
 ## See Also
 

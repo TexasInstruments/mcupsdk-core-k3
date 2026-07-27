@@ -69,14 +69,43 @@ As the wake-up R5 is the device manager, it needs to be started by the SBL. So i
 - Refer [Flash a Hello World example](../../getting_started/getting_started_flash.md) for flashing the application.
 ::::
 
+::::{only} SOC_AM62X
+- Both a53 core and r5f core output through the same UART console
+::::
+
 ## Sample Output
 
 Shown below is a sample output when the application is run,
 
+::::{only} SOC_AM62X
+```
+hello core 1
+hello core 0
+hello core 1
+hello core 0
+hello core 1
+hello core 0
+hello core 1
+hello core 0
+hello core 1
+hello core 0
+All tests have passed!!
+```
+::::
+
+::::{only} SOC_AM62DX or SOC_AM275X
 ```
 [Cortex_R5_0] hello core 0
 [Cortex_R5_1] hello core 1
+[Cortex_R5_0] hello core 0
+[Cortex_R5_1] hello core 1
+[Cortex_R5_0] hello core 0
+[Cortex_R5_1] hello core 1
+'' ''
+'' ''
+'' ''
 [Cortex_R5_0] hello core 0
 [Cortex_R5_1] hello core 1
 [Cortex_R5_0] All Test Cases passed!
 ```
+::::

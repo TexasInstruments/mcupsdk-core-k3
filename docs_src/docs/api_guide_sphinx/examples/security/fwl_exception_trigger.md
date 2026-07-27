@@ -58,6 +58,10 @@ exceptions, the latter one responds to exception events as and when they take pl
   make command (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md))
 - Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
 
+::::{only} SOC_AM275X
+- The example selects UART3 in the sysconfig for logging purposes so the logs should appear on UART3.
+::::
+
 ## Sample Output
 
 Shown below is a sample output when the application is run,

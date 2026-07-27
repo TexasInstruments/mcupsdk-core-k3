@@ -18,6 +18,7 @@ This example shows how to implement a simple HTTP web server on LwIP networking 
 On {{ VAR_SOC_NAME }}, we can do ethernet based communication using CPSW peripheral:
 - CPSW is a IEEE 802.3 standard ethernet switch + port peripheral
 - It uses ethernet driver underneath with LwIP TCP/IP networking stack
+- CPSW can be configured in two modes: Switch or MAC. For more details, see [Enet LwIP CPSW Operating Modes](../../components/networking/enet_lwip_cpsw_operating_modes.md)
 
 The example does the following:
 - Initializes the ethernet driver for the underlying HW
@@ -26,6 +27,61 @@ The example does the following:
 - Web server waits for any HTTP client to send HTTP GET request on default HTTP port and sends the HTML page as a HTTP GET response
 
 ## Supported Combinations
+
+::::{only} SOC_AM64X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0_nortos
+ Toolchain      | ti-arm-clang
+ Board          | {{ VAR_BOARD_NAME_LOWER }}
+ Example folder | source/networking/enet/core/examples/lwip/enet_cpsw_rawhttpserver
+
+::::
+
+::::{only} SOC_AM243X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0_nortos
+ Toolchain      | ti-arm-clang
+ Boards         | {{ VAR_BOARD_NAME_LOWER }}, {{ VAR_LP_BOARD_NAME_LOWER }}
+ Example folder | source/networking/enet/core/examples/lwip/enet_cpsw_rawhttpserver
+
+::::
+
+::::{only} SOC_AM273X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0_nortos
+ Toolchain      | ti-arm-clang
+ Board          | {{ VAR_BOARD_NAME_LOWER }}
+ Example folder | source/networking/enet/core/examples/lwip/enet_cpsw_rawhttpserver
+
+::::
+
+::::{only} SOC_AWR294X
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0_nortos
+ Toolchain      | ti-arm-clang
+ Board          | {{ VAR_BOARD_NAME_LOWER }}
+ Example folder | source/networking/enet/core/examples/lwip/enet_cpsw_rawhttpserver
+
+::::
+
+::::{only} SOC_AM263X or SOC_AM263PX
+
+ Parameter      | Value
+ ---------------|-----------
+ CPU + OS       | r5fss0-0_nortos
+ Toolchain      | ti-arm-clang
+ Boards         | {{ VAR_BOARD_NAME_LOWER }}, {{ VAR_LP_BOARD_NAME_LOWER }}
+ Example folder | source/networking/enet/core/examples/lwip/enet_cpsw_rawhttpserver
+
+::::
 
 ::::{only} SOC_AM62DX
 
@@ -42,13 +98,17 @@ The example does the following:
 
 - Select NoRTOS in 'TI Networking' -> 'CPSW' -> 'System Integration Config' -> 'RTOS Variant'
 
+![NoRTOS selection](../../images/examples/enet_nortos.png)
+
 - Supported Options with default configuration
 
 | Feature | Section | Description | Remarks/Default Setting |
 |---------|---------|-------------|------------------------|
-| Enable Packet Pool Allocation | TI Networking / Enet (CPSW) / Packet Pool Config | Flag to enable packet allocation from enet utils library. | Default is true. |
-| Number of Tx Packet | TI Networking / Enet (CPSW) / DMA channel config | No of Tx packets required for DMA channel | Default is 16. |
-| Number of Rx Packet | TI Networking / Enet (CPSW) / DMA channel config | No of Rx packets required for DMA channel | Default is 32. |
+| Mdio Manual Mode Enable | TI Networking / Enet (CPSW) | Flag to enable MDIO manual mode in example. Driver support for Manual mode is enabled, so this parameter configures manual mode in the example. | Default is true. If your silicon is affected with errata [i2329 — MDIO interface corruption](https://www.ti.com/lit/er/sprz457e/sprz457e.pdf), then TI suggests to use MDIO_MANUAL_MODE as software workaround. |
+| Disable Mac Port1, Disable Mac Port2 | TI Networking / Enet (CPSW) / MAC Port Config | Select which port to disable. | Default is Port1 enabled. If both Port1 and Port 2 are enabled, any port can be used and if operating in switch mode, it enables traffic switching between the two ports. |
+| Enable Packet Pool Allocation | TI Networking / Enet (CPSW) / Packet Pool Config | Flag to enable packet allocation from enet utils library. It should be disabled to avoid utils memory wastage, in case application allots packet via other mechanism. (Ex- Lwip pools) | Default is true. It is disabled for lwip based examples. If enabled size of pkt pool size depends on 'Large Pool Packet Size', 'Large Pool Packet Count', 'Medium Pool Packet Size', 'Medium Pool Packet Count', 'Small Pool Packet Size' and 'Small Pool Packet Count'. |
+| Number of Tx Packet | TI Networking / Enet (CPSW) / DMA channel config | No of Tx packets required for DMA channel | Default is 16. It contributes to the size of Pkt Mem Pool, DMA ring buffer and accessories. |
+| Number of Rx Packet | TI Networking / Enet (CPSW) / DMA channel config | No of Rx packets required for DMA channel | Default is 32. It contributes to the size of Pkt Mem Pool, DMA ring buffer and accessories size. |
 | Netif instance | TI Networking / Enet (CPSW) / LWIP Interface config | No of netifs allocated by the example | Only one netif should be set to default when more than one netif is allocated. |
 
 ## To Configure Static IP
@@ -71,10 +131,50 @@ Please refer to [Ethernet LwIP TCP/IP Static IP](../../components/networking/ene
 Make sure you have setup the EVM with cable connections as shown in [EVM Setup Page](#evm_setup_page). In addition do below steps.
 ```
 
+::::{only} SOC_AM64X
+
+#### AM64X-EVM
+
+##### For CPSW based example
+
+- Connect a ethernet cable to the EVM from host PC as shown below
+
+Ethernet cable for CPSW based ethernet.
+
+::::
+
+::::{only} SOC_AM243X
+
+#### AM243X-EVM
+
+##### For CPSW based example
+
+- Connect a ethernet cable to the EVM from host PC as shown below
+
+Ethernet cable for CPSW based ethernet.
+
+#### AM243X-LP
+
+```{note}
+AM243X-LP has two ethernet Ports which can be configured as both CPSW ports.
+```
+
+##### For CPSW based examples
+
+- Connect a ethernet cable to the AM243X-LP from host PC as shown below
+
+Ethernet cable for CPSW based ethernet.
+
+::::
+
 ### Create a network between EVM and host PC
 
 - The EVM will get an IP address using DHCP, so make sure to connect the other end of the cable to a network which has a DHCP server running.
 - To get started one can create a simple local network between the EVM and the host PC by using a home broadband/wifi router. Most such routers run a DHCP server.
+
+![Local network between PC and EVM](../../images/examples/lwip_example_01.png)
+
+- To check the router connection with host PC, it is recommended to disconnect all other networking connections on the PC. Sometimes you may need to disable firewall SW, and make sure the router is able to assign an IP address to your host PC.
 - After running the example, the EVM will be assigned an IP address, and the host can communicate with the EVM using that address.
 
 ### Run the example
@@ -97,6 +197,7 @@ Starting lwIP, local interface IP is dhcp-enabled
 Host MAC address-0 : f4:84:4c:fc:33:80
 [LWIPIF_LWIP] NETIF INIT SUCCESS
 Enet IF UP Event. Local interface IP:0.0.0.0
+Cpsw_handleLinkUp:1323
 MAC Port 1: link up
 Network Link UP Event
 Enet IF UP Event. Local interface IP:192.168.1.10
@@ -123,6 +224,7 @@ ping 192.168.1.10
 - If you see a valid, non-zero MAC address and continuously seeing "Waiting for network UP..." prints:
    - Make sure you see `Enet IF UP Event.` message, if not check the ethernet cable.
    - Check the local network and check if the DHCP server is indeed running.
+   - When using a home broadband/wifi router, it is possible to check the clients connected to the DHCP server via a web browser. Check your router user manual for more details.
 
 ## See Also
 

@@ -29,6 +29,7 @@
             Drivers (I2C, SPI, UART, CPSW, etc)
             <em>
             <br/>${SDK_INSTALL_PATH}/source/drivers
+            <br/>${SDK_INSTALL_PATH}/source/security
             <br/>${SDK_INSTALL_PATH}/source/networking/enet/core
             </em>
         </td>
@@ -141,6 +142,52 @@
         <td>NA</td>
         <td>TI.com</td>
         <td>Dhrystone CPU benchmarking for A53 core</td>
+    </tr>
+    <tr>
+        <td>Libraries</td>
+        <td>
+            XLibs
+            <em>
+            <br/>${SDK_INSTALL_PATH}/source/dsplib
+            <br/>${SDK_INSTALL_PATH}/source/fftlib
+            <br/>${SDK_INSTALL_PATH}/source/mathlib
+            <br/>${SDK_INSTALL_PATH}/source/vxlib
+            </em>
+        </td>
+        <td>Reference</td>
+        <td>BQ</td>
+        <td>NA</td>
+        <td>TI.com</td>
+        <td>DSP libraries for C7x core</td>
+    </tr>
+    <tr>
+        <td>Libraries</td>
+        <td>
+            XLibs (Audio and Signal Processing)
+            <em>
+            <br/>${SDK_INSTALL_PATH}/source/audiolib
+            <br/>${SDK_INSTALL_PATH}/source/tisp
+            </em>
+        </td>
+        <td>Reference</td>
+        <td>Demo quality</td>
+        <td>NA</td>
+        <td>TI.com</td>
+        <td>Audio and signal processing libraries for C7x core</td>
+    </tr>
+    <tr>
+        <td>Libraries</td>
+        <td>
+            Signal Processing Library
+            <em>
+            <br/>${SDK_INSTALL_PATH}/source/signal_processing
+            </em>
+        </td>
+        <td>Reference</td>
+        <td>Demo quality</td>
+        <td>NA</td>
+        <td>TI.com</td>
+        <td>Signal processing library for C7x core</td>
     </tr>
     <tr>
         <td>OS</td>

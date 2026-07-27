@@ -10,8 +10,8 @@ LwIP and MbedTLS features are made available as is from the public lwIP and Mbed
 ::::{only} SOC_AM62DX
 ```{note}
 This example supports the AM62D-EVM-PROC180E2. To test with the AM62D-EVM-PROC180E1, change the phy addresses in TI BOARD DRIVERS -> ETHPHY -> CONFIG_ENET_ETHPHY(x) -> phy Address to 15 and 3.
-::::
 ```
+::::
 
 This example demonstates how to run a HTTPS server on LwIP networking stack using raw API coupled with ethernet driver (ENET), with MbedTLS providing TLS functionality in the L4 layer.
 
@@ -221,15 +221,12 @@ In this implementation of HTTPS server, we have not enabled the file system supp
 
 ### Sample generated certificate
 
-  \imageStyle{cpsw_lwip_https_cert1.png,width:70%}
-  \image html cpsw_lwip_https_cert1.png
-  \imageStyle{cpsw_lwip_https_cert2.png,width:70%}
-  \image html cpsw_lwip_https_cert2.png
+![](../../images/examples/cpsw_lwip_https_cert1.png)
+![](../../images/examples/cpsw_lwip_https_cert2.png)
 
 ### Sample generated key
 
-  \imageStyle{cpsw_lwip_https_key.png,width:70%}
-  \image html cpsw_lwip_https_key.png
+![](../../images/examples/cpsw_lwip_https_key.png)
 
 ## Steps to Run the Example
 
@@ -255,8 +252,7 @@ to a network which has a DHCP server running.
   between the EVM and the host PC by using a home broadband/wifi router as shown below.
   Most such routers run a DHCP server
 
-  \imageStyle{lwip_example_01.png,width:30%}
-  \image html lwip_example_01.png Local network between PC and EVM
+![Local network between PC and EVM](../../images/examples/lwip_example_01.png)
 
 - To check the router connection with host PC, recommend to disconnect all other networking conenctions
   on the PC, sometimes you may need to disable firewall SW, and make sure the router is able
@@ -320,8 +316,7 @@ Network is UP ...
 
 - Sample output of client (web browser)
 
-  \imageStyle{cpsw_lwip_https_server.png,width:80%}
-  \image html cpsw_lwip_https_server.png Client web browser connected to HTTPS server
+![Client web browser connected to HTTPS server](../../images/examples/cpsw_lwip_https_server.png)
 
 ## Steps to execute
 

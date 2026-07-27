@@ -71,11 +71,102 @@ IFV:gptp:000053-342380:domainIndex=0, clock_master_sync_receive:the master clock
 IFV:gptp:000053-467510:domainIndex=0, clock_master_sync_receive:the master clock rate to 9986ppb, GMdiff=-96nsec
 IFV:gptp:000053-592548:domainIndex=0, clock_master_sync_receive:the master clock rate to 11355ppb, GMdiff=73nsec
 IFV:gptp:000053-717663:domainIndex=0, clock_master_sync_receive:the master clock rate to 10970ppb, GMdiff=24nsec
+IFV:gptp:000053-842801:domainIndex=0, clock_master_sync_receive:the master clock rate to 11156ppb, GMdiff=46nsec
+IFV:gptp:000053-967918:domainIndex=0, clock_master_sync_receive:the master clock rate to 10246ppb, GMdiff=-66nsec
+IFV:gptp:000054-092949:domainIndex=0, clock_master_sync_receive:the master clock rate to 10797ppb, GMdiff=3nsec
+IFV:gptp:000054-218062:domainIndex=0, clock_master_sync_receive:the master clock rate to 11382ppb, GMdiff=74nsec
 INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
 IFV:gptp:000054-343131:domainIndex=0, clock_master_sync_receive:the master clock rate to 10815ppb, GMdiff=3nsec
 IFV:gptp:000054-468230:domainIndex=0, clock_master_sync_receive:the master clock rate to 9893ppb, GMdiff=-109nsec
 IFV:gptp:000054-593345:domainIndex=0, clock_master_sync_receive:the master clock rate to 10977ppb, GMdiff=26nsec
+IFV:gptp:000054-718476:domainIndex=0, clock_master_sync_receive:the master clock rate to 11650ppb, GMdiff=107nsec
+IFV:gptp:000054-843589:domainIndex=0, clock_master_sync_receive:the master clock rate to 10458ppb, GMdiff=-41nsec
+IFV:gptp:000054-968708:domainIndex=0, clock_master_sync_receive:the master clock rate to 9929ppb, GMdiff=-104nsec
+     55. 73s : CPU load =   3.78 %
+IFV:gptp:000055-093807:domainIndex=0, clock_master_sync_receive:the master clock rate to 11486ppb, GMdiff=88nsec
+IFV:gptp:000055-218849:domainIndex=0, clock_master_sync_receive:the master clock rate to 10396ppb, GMdiff=-47nsec
+IFV:gptp:000055-344021:domainIndex=0, clock_master_sync_receive:the master clock rate to 10722ppb, GMdiff=-6nsec
 INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+IFV:gptp:000055-469144:domainIndex=0, clock_master_sync_receive:the master clock rate to 11198ppb, GMdiff=52nsec
+IFV:gptp:000055-594130:domainIndex=0, clock_master_sync_receive:the master clock rate to 10288ppb, GMdiff=-60nsec
+IFV:gptp:000055-719268:domainIndex=0, clock_master_sync_receive:the master clock rate to 10027ppb, GMdiff=-90nsec
+IFV:gptp:000055-844447:domainIndex=0, clock_master_sync_receive:the master clock rate to 10852ppb, GMdiff=13nsec
+IFV:gptp:000055-969518:domainIndex=0, clock_master_sync_receive:the master clock rate to 9966ppb, GMdiff=-95nsec
+IFV:gptp:000056-094725:domainIndex=0, clock_master_sync_receive:the master clock rate to 11615ppb, GMdiff=108nsec
+IFV:gptp:000056-219767:domainIndex=0, clock_master_sync_receive:the master clock rate to 11502ppb, GMdiff=91nsec
+IFV:gptp:000056-344888:domainIndex=0, clock_master_sync_receive:the master clock rate to 9596ppb, GMdiff=-143nsec
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+IFV:gptp:000056-469861:domainIndex=0, clock_master_sync_receive:the master clock rate to 11869ppb, GMdiff=137nsec
+IFV:gptp:000056-594970:domainIndex=0, clock_master_sync_receive:the master clock rate to 10601ppb, GMdiff=-21nsec
+IFV:gptp:000056-720048:domainIndex=0, clock_master_sync_receive:the master clock rate to 10752ppb, GMdiff=-2nsec
+IFV:gptp:000056-845137:domainIndex=0, clock_master_sync_receive:the master clock rate to 11163ppb, GMdiff=48nsec
+IFV:gptp:000056-970177:domainIndex=0, clock_master_sync_receive:the master clock rate to 11093ppb, GMdiff=38nsec
+IFV:gptp:000057-095210:domainIndex=0, clock_master_sync_receive:the master clock rate to 10427ppb, GMdiff=-44nsec
+IFV:gptp:000057-345371:domainIndex=0, clock_master_sync_receive:the master clock rate to 11166ppb, GMdiff=48nsec
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+IFV:gptp:000057-470405:domainIndex=0, clock_master_sync_receive:the master clock rate to 9793ppb, GMdiff=-120nsec
+IFV:gptp:000057-595437:domainIndex=0, clock_master_sync_receive:the master clock rate to 12129ppb, GMdiff=167nsec
+IFV:gptp:000057-720571:domainIndex=0, clock_master_sync_receive:the master clock rate to 8718ppb, GMdiff=-252nsec
+IFV:gptp:000057-845651:domainIndex=0, clock_master_sync_receive:the master clock rate to 11425ppb, GMdiff=84nsec
+IFV:gptp:000057-970661:domainIndex=0, clock_master_sync_receive:the master clock rate to 11001ppb, GMdiff=30nsec
+IFV:gptp:000058-095741:domainIndex=0, clock_master_sync_receive:the master clock rate to 10441ppb, GMdiff=-39nsec
+IFV:gptp:000058-220834:domainIndex=0, clock_master_sync_receive:the master clock rate to 11189ppb, GMdiff=53nsec
+IFV:gptp:000058-345955:domainIndex=0, clock_master_sync_receive:the master clock rate to 10403ppb, GMdiff=-44nsec
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+IFV:gptp:000058-471076:domainIndex=0, clock_master_sync_receive:the master clock rate to 10952ppb, GMdiff=24nsec
+IFV:gptp:000058-596199:domainIndex=0, clock_master_sync_receive:the master clock rate to 10225ppb, GMdiff=-65nsec
+IFV:gptp:000058-721277:domainIndex=0, clock_master_sync_receive:the master clock rate to 11889ppb, GMdiff=139nsec
+IFV:gptp:000058-846439:domainIndex=0, clock_master_sync_receive:the master clock rate to 9716ppb, GMdiff=-129nsec
+IFV:gptp:000058-971538:domainIndex=0, clock_master_sync_receive:the master clock rate to 10952ppb, GMdiff=25nsec
+IFV:gptp:000059-096672:domainIndex=0, clock_master_sync_receive:the master clock rate to 10810ppb, GMdiff=7nsec
+IFV:gptp:000059-221698:domainIndex=0, clock_master_sync_receive:the master clock rate to 11206ppb, GMdiff=55nsec
+IFV:gptp:000059-346827:domainIndex=0, clock_master_sync_receive:the master clock rate to 10330ppb, GMdiff=-53nsec
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+IFV:gptp:000059-596879:domainIndex=0, clock_master_sync_receive:the master clock rate to 10819ppb, GMdiff=10nsec
+IFV:gptp:000059-722012:domainIndex=0, clock_master_sync_receive:the master clock rate to 10748ppb, GMdiff=1nsec
+IFV:gptp:000059-847039:domainIndex=0, clock_master_sync_receive:the master clock rate to 11283ppb, GMdiff=66nsec
+IFV:gptp:000059-972159:domainIndex=0, clock_master_sync_receive:the master clock rate to 10056ppb, GMdiff=-85nsec
+domain=0, offset=0nsec, hw-adjrate=10056ppb
+        gmsync=true, last_setts64=0nsec
+     60. 74s : CPU load =   3.94 %
+IFV:gptp:000060-097292:domainIndex=0, clock_master_sync_receive:the master clock rate to 10348ppb, GMdiff=-47nsec
+IFV:gptp:000060-222401:domainIndex=0, clock_master_sync_receive:the master clock rate to 11786ppb, GMdiff=129nsec
+IFV:gptp:000060-347477:domainIndex=0, clock_master_sync_receive:the master clock rate to 9675ppb, GMdiff=-131nsec
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+IFV:gptp:000060-472484:domainIndex=0, clock_master_sync_receive:the master clock rate to 11184ppb, GMdiff=56nsec
+IFV:gptp:000060-597575:domainIndex=0, clock_master_sync_receive:the master clock rate to 10811ppb, GMdiff=9nsec
+IFV:gptp:000060-722696:domainIndex=0, clock_master_sync_receive:the master clock rate to 11208ppb, GMdiff=57nsec
+IFV:gptp:000060-847819:domainIndex=0, clock_master_sync_receive:the master clock rate to 10967ppb, GMdiff=26nsec
+IFV:gptp:000060-972847:domainIndex=0, clock_master_sync_receive:the master clock rate to 10776ppb, GMdiff=2nsec
+IFV:gptp:000061-097979:domainIndex=0, clock_master_sync_receive:the master clock rate to 9862ppb, GMdiff=-109nsec
+IFV:gptp:000061-223110:domainIndex=0, clock_master_sync_receive:the master clock rate to 11326ppb, GMdiff=72nsec
+IFV:gptp:000061-348245:domainIndex=0, clock_master_sync_receive:the master clock rate to 10891ppb, GMdiff=17nsec
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+IFV:gptp:000061-473359:domainIndex=0, clock_master_sync_receive:the master clock rate to 10740ppb, GMdiff=-2nsec
+IFV:gptp:000061-598392:domainIndex=0, clock_master_sync_receive:the master clock rate to 11175ppb, GMdiff=51nsec
+IFV:gptp:000061-723497:domainIndex=0, clock_master_sync_receive:the master clock rate to 9400ppb, GMdiff=-166nsec
+IFV:gptp:000061-848614:domainIndex=0, clock_master_sync_receive:the master clock rate to 11393ppb, GMdiff=81nsec
+IFV:gptp:000061-973759:domainIndex=0, clock_master_sync_receive:the master clock rate to 10177ppb, GMdiff=-69nsec
+IFV:gptp:000062-098821:domainIndex=0, clock_master_sync_receive:the master clock rate to 10934ppb, GMdiff=25nsec
+IFV:gptp:000062-223951:domainIndex=0, clock_master_sync_receive:the master clock rate to 10972ppb, GMdiff=29nsec
+IFV:gptp:000062-348989:domainIndex=0, clock_master_sync_receive:the master clock rate to 10823ppb, GMdiff=10nsec
+IFV:gptp:000062-474109:domainIndex=0, clock_master_sync_receive:the master clock rate to 11608ppb, GMdiff=105nsec
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+IFV:gptp:000062-599217:domainIndex=0, clock_master_sync_receive:the master clock rate to 10548ppb, GMdiff=-27nsec
+IFV:gptp:000062-724424:domainIndex=0, clock_master_sync_receive:the master clock rate to 10631ppb, GMdiff=-16nsec
+IFV:gptp:000062-849399:domainIndex=0, clock_master_sync_receive:the master clock rate to 9638ppb, GMdiff=-136nsec
+IFV:gptp:000062-974473:domainIndex=0, clock_master_sync_receive:the master clock rate to 11517ppb, GMdiff=96nsec
+IFV:gptp:000063-099501:domainIndex=0, clock_master_sync_receive:the master clock rate to 11228ppb, GMdiff=58nsec
+IFV:gptp:000063-224519:domainIndex=0, clock_master_sync_receive:the master clock rate to 9734ppb, GMdiff=-125nsec
+IFV:gptp:000063-349649:domainIndex=0, clock_master_sync_receive:the master clock rate to 11581ppb, GMdiff=103nsec
+IFV:gptp:000063-474767:domainIndex=0, clock_master_sync_receive:the master clock rate to 10240ppb, GMdiff=-63nsec
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+IFV:gptp:000063-599842:domainIndex=0, clock_master_sync_receive:the master clock rate to 10899ppb, GMdiff=19nsec
+IFV:gptp:000063-724918:domainIndex=0, clock_master_sync_receive:the master clock rate to 10286ppb, GMdiff=-56nsec
+IFV:gptp:000063-849948:domainIndex=0, clock_master_sync_receive:the master clock rate to 11879ppb, GMdiff=139nsec
+IFV:gptp:000063-975066:domainIndex=0, clock_master_sync_receive:the master clock rate to 9954ppb, GMdiff=-99nsec
+IFV:gptp:000064-100236:domainIndex=0, clock_master_sync_receive:the master clock rate to 11461ppb, GMdiff=87nsec
+IFV:gptp:000064-225234:domainIndex=0, clock_master_sync_receive:the master clock rate to 9570ppb, GMdiff=-145nsec
 ```
 
 ## See Also

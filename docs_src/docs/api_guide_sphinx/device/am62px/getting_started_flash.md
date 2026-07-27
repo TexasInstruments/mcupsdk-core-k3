@@ -54,9 +54,23 @@ USB DFU BOOT MODE
 
 - In the GUI, load the generated `.yaml` file to proceed with flashing.
 
-- When the flashing is in progress, you will see flashing status displayed.
+- When the flashing is in progress, you will see flashing status displayed:
 
-- After all the flashing is done, you will see completion message.
+```{figure} ../../images/am62px/snagfactory_flashing.png
+:align: center
+:width: 40%
+
+Flashing in progress
+```
+
+- After all the flashing is done, you will see completion message:
+
+```{figure} ../../images/am62px/snagfactory_flash.png
+:align: center
+:width: 40%
+
+Flashing complete
+```
 
 ### Flashing using the CLI
 
@@ -66,6 +80,15 @@ USB DFU BOOT MODE
         python3 snagfactory_flash.py --board am62px-sk --target <boot-media> --cfg-file <path-to-edited-cfg-file>
 
 - When the flashing is in progress, you will see detailed flashing information displayed:
+
+```{figure} ../../images/am62px/snagfactory_cli.png
+:align: center
+:width: 50%
+
+Flashing via CLI
+```
+
+- After all the flashing is done, you will see something like below:
 
         [INFO] Running snagrecover: snagrecover -s am62p -F {'tiboot3': {'path': '/mcu_plus_sdk/tools/boot/snagfactory/am62px-sk/tiboot3.bin'}} -F {'tispl': {'path': '/mcu_plus_sdk/tools/boot/snagfactory/am62px-sk/tispl.bin'}} -F {'u-boot': {'path': '/mcu_plus_sdk/tools/boot/snagfactory/am62px-sk/u-boot.img'}}
         [INFO] Starting recovery of am62p board
@@ -106,7 +129,59 @@ USB DFU BOOT MODE
         [INFO] Waiting for fastboot device 0451:6165 ...
         [INFO] Fastboot device detected.
         [INFO] Running snagflash: snagflash -P fastboot-uboot -p 0451:6165 -I /mcu_plus_sdk/tools/boot/snagfactory/am62px-sk/am62px-sk_emmc_hs_fs.cmd
-        [INFO] Flashing complete!
+        [INFO] [INFO] Running snagflash using protocol fastboot-uboot
+        [INFO] Waiting for USB 0451:6165
+        [INFO] []
+        [INFO] Done
+        [INFO] running commands from file /mcu_plus_sdk/tools/boot/snagfactory/am62px-sk/am62px-sk_emmc_hs_fs.cmd
+        [INFO] running command set target mmc0
+        setting 'target' to 'mmc0'
+        [INFO] running command set fb-addr 0x82000000
+        setting 'fb-addr' to '0x82000000'
+        [INFO] running command set fb-size 0x7000000
+        setting 'fb-size' to '0x7000000'
+        [INFO] running command flash "/mcu_plus_sdk/tools/boot/sbl_prebuilt/am62px-sk/sbl_emmc_linux_stage1.release.hs_fs.tiimage" 0x0 hwpart 1
+        [INFO] Running pre-flash checks...
+        [INFO] fastboot OKAY
+        [INFO] (bootloader) downloadsize value b'0x07000000'
+        [INFO] Flashing file /mcu_plus_sdk/tools/boot/sbl_prebuilt/am62px-sk/sbl_emmc_linux_stage1.release.hs_fs.tiimage
+        [INFO] Flashing to MMC device...
+        [INFO] fastboot OKAY
+        [INFO] flashed 296679/296679 bytes
+        [INFO] running command flash "/mcu_plus_sdk/examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage2/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang/sbl_emmc_linux_stage2.release.appimage.hs_fs" 0x80000 hwpart 1
+        [INFO] (bootloader) downloadsize value b'0x07000000'
+        [INFO] Flashing file /mcu_plus_sdk/examples/drivers/boot/sbl_emmc_linux_multistage/sbl_emmc_linux_stage2/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang/sbl_emmc_linux_stage2.release.appimage.hs_fs
+        [INFO] Flashing to MMC device...
+        [INFO] fastboot OKAY
+        [INFO] flashed 238934/238934 bytes
+        [INFO] running command flash "/mcu_plus_sdk/tools/boot/HSMAppimageGen/board/am62px-sk/hsm.appimage.hs_fs" 0x240000 hwpart 1
+        [INFO] (bootloader) downloadsize value b'0x07000000'
+        [INFO] Flashing file /mcu_plus_sdk/tools/boot/HSMAppimageGen/board/am62px-sk/hsm.appimage.hs_fs
+        [INFO] Flashing to MMC device...
+        [INFO] fastboot OKAY
+        [INFO] flashed 9677/9677 bytes
+        [INFO] running command flash "/mcu_plus_sdk/examples/hello_world/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang/hello_world.release.appimage.hs_fs" 0x800000 hwpart 1
+        [INFO] (bootloader) downloadsize value b'0x07000000'
+        [INFO] Flashing file /mcu_plus_sdk/examples/hello_world/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang/hello_world.release.appimage.hs_fs
+        [INFO] Flashing to MMC device...
+        [INFO] fastboot OKAY
+        [INFO] flashed 42082/42082 bytes
+        [INFO] running command flash "/mcu_plus_sdk/tools/boot/linuxAppimageGen/board/am62px-sk/linux.appimage.hs_fs" 0x1200000 hwpart 1
+        [INFO] (bootloader) downloadsize value b'0x07000000'
+        [INFO] Flashing file /mcu_plus_sdk/tools/boot/linuxAppimageGen/board/am62px-sk/linux.appimage.hs_fs
+        [INFO] Flashing to MMC device...
+        [INFO] fastboot OKAY
+        [INFO] flashed 1080926/1080926 bytes
+        [INFO] running command flash "/mcu_plus_sdk/tools/boot/linuxAppimageGen/board/am62px-sk/u-boot.img" 0x280000 hwpart 1
+        [INFO] (bootloader) downloadsize value b'0x07000000'
+        [INFO] Flashing file /mcu_plus_sdk/tools/boot/linuxAppimageGen/board/am62px-sk/u-boot.img
+        [INFO] Flashing to MMC device...
+        [INFO] fastboot OKAY
+        [INFO] flashed 1440471/1440471 bytes
+        [INFO] running command exit
+        Leaving interactive snagflash session...
+        [INFO] snagflash completed successfully.
+        [INFO] Flash complete!
 
 - If flashing has failed, see [Flashing Tools](../components/tools/tools_flash.md) for error messages and solutions, and resolve the errors.
 
@@ -141,6 +216,42 @@ USB DFU BOOT MODE
         [KPI] Cores present    :
         mcu-r5f0-0
         r5f0-0
+        [KPI] System_init                      :      32924us
+        [KPI] Board_init                       :         94us
+        [KPI] Drivers_open                     :      21690us
+        [KPI] Board_driversOpen                :          0us
+        [KPI] Sciclient Get Version            :       6798us
+        [KPI] PBIST Positive Tests             :        214us
+        [KPI] PBIST Negative Tests             :        612us
+        [KPI] MCU R5 Image Load                :       4541us
+        [KPI] DM R5 Image Load                 :       5513us
+        [KPI] SBL Total Time Taken             :      72390us
+
+        Image loading done, switching to application ...
+        Starting MCU-r5f and 2nd stage bootloader
+
+        SYSFW ABI: 4.0 (firmware rev 0x000b '11.2.10--v11.02.10 (Fancy Rat)')
+        [KPI] Boot Media       : eMMC
+        [KPI] Boot Media Clock : 200.000 MHz
+        [KPI] Boot Image Size  : 1380 KB
+        [KPI] Cores present    :
+        hsm-m4f0-0
+        r5f0-0
+        a530-0
+        c75ss0
+        [KPI] System_init                      :       1791us
+        [KPI] Board_init                       :          0us
+        [KPI] Drivers_open                     :      21515us
+        [KPI] Board_driversOpen                :          0us
+        [KPI] Sciclient Get Version            :       6796us
+        [KPI] HSM Image Load                   :       3830us
+        [KPI] DM R5 Image Load                 :       6358us
+        [KPI] A53 Image Load                   :      17071us
+        [KPI] DSP Image Load                   :       5594us
+        [KPI] SBL Total Time Taken             :      62959us
+
+        Image loading done, switching to application ...
+        Starting linux and RTOS/Baremetal applications
 
 - Congratulations! Now the EVM is flashed with your application and you don't need CCS anymore to run the application.
 

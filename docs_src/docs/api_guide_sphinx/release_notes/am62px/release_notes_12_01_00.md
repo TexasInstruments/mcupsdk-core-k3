@@ -19,8 +19,9 @@ AM62P  | MCU R5F, WKUP R5F           | {{ VAR_BOARD_NAME }} EVM (referred to as 
 
 ## Features Added in This Release
 
-
-None
+Feature                                                                                      | Module
+---------------------------------------------------------------------------------------------|-----------------------------------
+ Enhanced documentation for Enet - CPSW  and EthFw.                                          | ENET    
 
 ## Experimental Features
 
@@ -36,7 +37,7 @@ Tools/Components        | Supported CPUs           | Version
 ------------------------|--------------------------|-----------------------
 Code Composer Studio    | MCU-R5F, WKUP-R5F        | 20.3.1
 SysConfig               | MCU-R5F, WKUP-R5F        | 1.24.2, build 4234
-TI ARM CLANG            | MCU-R5F, WKUP-R5F        | 4.0.1.LTS
+TI ARM CLANG            | MCU-R5F, WKUP-R5F        | 4.0.5.LTS
 GCC AARCH64             | A53                      | 9.2-2019.12
 FreeRTOS Kernel         | MCU-R5F, WKUP-R5F        | 11.1.0
 
@@ -46,9 +47,9 @@ FreeRTOS Kernel         | MCU-R5F, WKUP-R5F        | 11.1.0
 
 | Item        | Link                                                                                        |
 |-------------|--------------------------------------------------------------------------------------------|
-| Version     | 12.00.02                                                                                    |
-| Release Notes | [LINK](https://software-dl.ti.com/tisci/esd/12_00_02/release_notes/release_notes.html) |
-| User Guide  | [LINK](https://software-dl.ti.com/tisci/esd/12_00_02/1_intro/TISCI.html)                  |
+| Version     | 12.01.02                                                                                    |
+| Release Notes | [LINK](https://software-dl.ti.com/tisci/esd/12_01_02/release_notes/release_notes.html) |
+| User Guide  | [LINK](https://software-dl.ti.com/tisci/esd/12_01_02/1_intro/TISCI.html)                  |
 
 ## Key Features
 

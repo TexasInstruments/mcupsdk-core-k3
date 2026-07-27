@@ -51,10 +51,10 @@ Remove the shunt from the Jumper J10 for the MCU UART to work.
     ![Open New UART Terminal](../images/ccs_uart/ccs_uart_01.png)
 - Select the UART port, keep other options to default, i.e 115200 baud rate - 8 data bits - No parity - 1 stop bit,
 
-  - We use the 1st USB serial port, as seen in the device manager, for below in the SDK
+  - We use the 2nd USB serial port, as seen in the device manager, for below in the SDK
     - Flashing application via UART
     - Booting application via UART
-    - Uboot and Linux terminal
+
   - We use the 3rd USB serial port, as seen in the device manager, as terminal output for examples which run from DM R5F (WKUP R5F)
 
   - We use the 4th USB serial port, as seen in the device manager, as terminal output for examples which run from MCU R5F
@@ -69,7 +69,7 @@ Remove the shunt from the Jumper J10 for the MCU UART to work.
 :::{admonition} Attention
 - This is a recommended one time step that needs to be done before you can load and run programs via CCS.
 - This step needs to be done once unless the OSPI flash has been erased or some other application has been flashed.
-- If this step fails, maybe due to bad flash in EVM, then try one of the other SOC initialization steps mentioned at [SOC Initialization](am62dx_evm_setup.md).
+- These steps are not applicable for HS-SE devices as JTAG can not be connected to HS-SE devices by default. Follow the steps in [Flashing the application](getting_started_flash.md) for flashing the HS-SE device.
 :::
 
 
@@ -115,7 +115,7 @@ For HS-FS device, use default_sbl_null_hs_fs.cfg as the cfg file.
 
   - Here COM<x> is the port name of the identified UART port in Windows.
   - On Linux,
-    - The name for UART port is typically something like `/dev/ttyUSB0`
+    - The name for UART port is typically something like `/dev/ttyUSB1`
     - On some Linux systems, one needs to use `python3` to invoke python3.x, just `python` command may invoke python 2.x which will not work with the flashing script.
 
 - When the flashing is in progress you will see something like below
@@ -184,16 +184,18 @@ All commands from config file are executed !!!
 
         Starting NULL Bootloader ...
 
-        SYSFW Version 9.0.6--w09.00.04-am62p (Kool Ko
-        SYSFW revision 0x9
-        DMSC ABI revision 3.1
+        SYSFW Firmware Version 10.0.7--v10.00.07 (Fiery Fox)
+        SYSFW Firmware revision 0xa
+        SYSFW ABI revision 4.0
 
-        INFO: Bootloader_runCpu:162: CPU mcu-r5f is initialized to 800000000 Hz !!!
-        INFO: Bootloader_runCpu:162: CPU a530-0 is initialized to 1250000000 Hz !!!
-        INFO: Bootloader_runCpu:162: CPU a530-1 is initialized to 1250000000 Hz !!!
-        INFO: Bootloader_runCpu:162: CPU a531-0 is initialized to 1250000000 Hz !!!
-        INFO: Bootloader_runCpu:162: CPU a531-1 is initialized to 1250000000 Hz !!!
-        INFO: Bootloader_loadSelfCpu:215: CPU wkup-r5f  is initialized to 800000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU mcu-r5f is initialized to 800000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU a530-0 is initialized to 1400000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU a530-1 is initialized to 1400000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU a531-0 is initialized to 1400000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU a531-1 is initialized to 1400000000 Hz !!!
+        INFO: Bootloader_runCpu:176: CPU c7x0-0 is initialized to 1000000000 Hz !!!
+        INFO: Bootloader_loadSelfCpu:229: CPU r5f0-0 is initialized to 800000000 Hz !!!
+        INFO: Bootloader_JumpSelfCpu:248: All done, jumping self ...
 
 
 - Congratulations now the EVM is setup for loading and running from CCS !!!
@@ -253,46 +255,46 @@ Before any program can be loaded and run on the EVM, the SOC needs to be initial
 #### UART BOOT MODE
 This mode is used to flash files to the board flash via UART. It can also be used to boot applications via UART.
 
-        BOOTMODE [ 8 : 15 ] (SW5) = 0000 0000
-        BOOTMODE [ 0 :  7 ] (SW4) = 1101 1100
+        BOOTMODE [ 8 : 15 ] (SW3) = 0000 0000
+        BOOTMODE [ 0 :  7 ] (SW2) = 1101 1100
 
   ![UART BOOT MODE](../images/am62dx/boot_pins_uart_boot_mode.png)
 
 #### OSPI NOR BOOT MODE
 This mode is used to boot flashed applications via EVM flash like OSPI NOR flash
 
-        BOOTMODE [ 8 : 15 ] (SW5) = 0100 0000
-        BOOTMODE [ 0 :  7 ] (SW4) = 1100 1110
+        BOOTMODE [ 8 : 15 ] (SW3) = 0100 0000
+        BOOTMODE [ 0 :  7 ] (SW2) = 1100 1110
 
   ![OSPI NOR BOOT MODE](../images/am62dx/boot_pins_ospi_mode.png)
 
 #### OSPI SERIAL NAND BOOT MODE
 This mode is used to boot flashed applications via EVM flash like OSPI Serial NAND flash
 
-        BOOTMODE [ 8 : 15 ] (SW5) = 0000 0000
-        BOOTMODE [ 0 :  7 ] (SW4) = 1100 0000
+        BOOTMODE [ 8 : 15 ] (SW3) = 0000 0000
+        BOOTMODE [ 0 :  7 ] (SW2) = 1100 0000
 
   ![OSPI NAND BOOT MODE](../images/am62dx/boot_pins_ospi_nand_mode.png)
 
 #### SD BOOT MODE
 This mode is used to boot applications via SD card on the EVM.
 
-        BOOTMODE [ 8 : 15 ] (SW5) = 0100 0000
-        BOOTMODE [ 0 :  7 ] (SW4) = 1100 0010
+        BOOTMODE [ 8 : 15 ] (SW3) = 0100 0000
+        BOOTMODE [ 0 :  7 ] (SW2) = 1100 0010
 
   ![SD CARD BOOT MODE](../images/am62dx/boot_pins_sd_card_boot_mode.png)
 
 #### NOBOOT MODE
 
-        BOOTMODE [ 8 : 15 ] (SW5) = 0000 0000
-        BOOTMODE [ 0 :  7 ] (SW4) = 1101 1111
+        BOOTMODE [ 8 : 15 ] (SW3) = 0000 0000
+        BOOTMODE [ 0 :  7 ] (SW2) = 1101 1111
 
   ![NO BOOT MODE](../images/am62dx/boot_pins_noboot_mode.png)
 
 #### EMMC BOOT MODE
 This mode is used to boot applications via eMMC on the EVM.
-        BOOTMODE [ 8 : 15 ] (SW5) = 0000 0000
-    BOOTMODE [ 0 :  7 ] (SW4) = 1101 0011
+        BOOTMODE [ 8 : 15 ] (SW3) = 0000 0000
+    BOOTMODE [ 0 :  7 ] (SW2) = 1101 0011
     
 
   ![EMMC BOOT MODE](../images/am62dx/boot_pins_emmc_mode.png)

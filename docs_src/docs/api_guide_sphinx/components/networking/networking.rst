@@ -6,13 +6,17 @@ Ethernet And Networking
    :titlesonly:
    :hidden:
 
-   networking_lwip
-   enet_cpsw_tsn_gptp_apiguide
-   ../../examples/networking/enet_cpsw_tsn_gptp
+   networking_features
    enet_lld/enet_lld_top
+   networking_ethfw
+   networking_lwip
+   enet_cpsw_tsn_landing_page
+   enet_cpsw_tsn_developer_guide
+   enet_cpsw_tsn_architecture_guide
+   enet_cpsw_tsn_gptp_apiguide
    enet_cpsw_avtp_apiguide
    enet_cpsw_lldp_apiguide
-   networking_features
+   ../../examples/networking/enet_cpsw_tsn_gptp
 
 .. only:: SOC_AM62PX or SOC_AM62DX or SOC_AM62X or SOC_AM275X or SOC_AM62LX
 
@@ -77,18 +81,53 @@ Ethernet And Networking
 
    You can find out-of-box examples and demos :doc:`here <../../examples/examples_networking>`.
 
-   .. only:: SOC_AM263X or SOC_AM263PX or SOC_AM273X or SOC_AM243X or SOC_AM62DX or SOC_AM275X
+   .. only:: SOC_AM62X
 
-      You can find ethernet performance data :doc:`here <enet_lld/enetlld_performance>`.
+      You can find ethernet performance data :doc:`here <enet_lld/enet_cpsw_performance_am62x>`.
+
+   .. only:: SOC_AM62DX
+
+      You can find ethernet performance data :doc:`here <enet_lld/enet_cpsw_performance_am62dx>`.
+
+   .. only:: SOC_AM62LX
+
+      You can find ethernet performance data :doc:`here <enet_lld/enet_cpsw_performance_am62lx>`.
+
+   .. only:: SOC_AM62PX
+
+      You can find ethernet performance data :doc:`here <enet_lld/enet_cpsw_performance_am62px>`.
+
+   .. only:: SOC_AM275X
+
+      You can find ethernet performance data :doc:`here <enet_lld/enet_cpsw_performance_am275x>`.
+
+   Networking Features
+   ---------------------
+
+   - :doc:`Networking Features <networking_features>`
 
    It consists of below sub-modules
 
    - **Ethernet Driver** - :doc:`Enet-LLD <enet_lld/enet_lld_top>` - Ethernet Low-Level Driver providing interface for standard Ethernet MAC and switch using CPSW peripheral
+
+   .. only:: SOC_AM62PX or SOC_AM62DX
+
+      - **Ethernet Firmware** - :doc:`Ethernet Firmware <networking_ethfw>`
+
    - **TCP/IP Stack** - :doc:`Lightweight IP (LwIP) <networking_lwip>`
-   - **TSN Stack** - :doc:`Ethernet TSN and gPTP Stack - API and Integration Guide <enet_cpsw_tsn_gptp_apiguide>`
-   - `Ethernet TSN gPTP Examples <../../examples/networking/enet_cpsw_tsn_gptp.html>`__
 
-   .. only:: SOC_AM62DX or SOC_AM62X or SOC_AM62AX or SOC_AM275X
+   .. only:: SOC_AM62PX or SOC_AM62DX or SOC_AM62X or SOC_AM275X or SOC_AM62LX
 
-      - **AVB Stack** - :doc:`Ethernet CPSW AVTP - API and Integration Guide <enet_cpsw_avtp_apiguide>`
+      - **TSN Stack** - :doc:`Time-Sensitive Networking (TSN) <enet_cpsw_tsn_landing_page>`
+      - :doc:`TSN Developer Guidelines <enet_cpsw_tsn_developer_guide>`
+      - :doc:`TSN Userguide <enet_cpsw_tsn_architecture_guide>`
+      - :doc:`Ethernet TSN and gPTP Stack - API and Integration Guide <enet_cpsw_tsn_gptp_apiguide>`
+      - `Ethernet TSN gPTP Examples <../../examples/networking/enet_cpsw_tsn_gptp.html>`__
+
+      .. only:: SOC_AM62DX or SOC_AM275X
+
+         - **AVB Stack** - :doc:`Ethernet CPSW AVTP - API and Integration Guide <enet_cpsw_avtp_apiguide>`
+
+   .. only:: SOC_AM62DX or SOC_AM62AX or SOC_AM275X
+
       - **LLDP Stack** - :doc:`Ethernet CPSW LLDP - API and Integration Guide <enet_cpsw_lldp_apiguide>`

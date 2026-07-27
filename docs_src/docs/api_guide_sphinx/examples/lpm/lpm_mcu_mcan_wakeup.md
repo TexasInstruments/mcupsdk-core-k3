@@ -25,7 +25,7 @@ In this example,
 :::::
 
 
-::::{only} SOC_AM62AX
+::::{only} SOC_AM62AX or SOC_AM62DX
    - This example provides support for graceful shutdown of the remote core (MCU R5F). Refer [Graceful shutdown of remote cores from Linux](../../developer_guides/graceful_remotecore_shutdown.md)
    - This example provides support for MCU only low power mode support on the MCU core (MCU R5F)
    - This example provides support for Deep Sleep and IO Only plus DDR low power mode (MCU R5F).
@@ -74,7 +74,7 @@ The MCAN module is programmed to receive a CAN message from the external CAN con
 ::::
 
 
-::::{only} SOC_AM62AX
+::::{only} SOC_AM62AX or SOC_AM62DX
 
 | Parameter | Value |
 |---|---|
@@ -118,7 +118,7 @@ The MCAN module is programmed to receive a CAN message from the external CAN con
 - The data can now be sent to MCAN instance using PCAN-View.
 
 
-::::{only} SOC_AM62X or SOC_AM62AX
+::::{only} not SOC_AM62PX
    - **When using CCS projects to build**, import the system CCS project
      and build it using the CCS project menu (see [Using SDK with CCS Projects](../../developer_guides/ccs_projects.md)). This will build all the dependant CPU projects as well
    - **When using makefiles to build**, build the system makefile using
@@ -153,7 +153,7 @@ The MCAN module is programmed to receive a CAN message from the external CAN con
 ::::
 
 
-::::{only} SOC_AM62X or SOC_AM62AX or SOC_AM62PX
+::::{only} SOC_AM62X or SOC_AM62AX or SOC_AM62DX or SOC_AM62PX
    **MCU only LPM**
    :::{admonition} Attention
    Low power mode is supported only on the Linux SPL boot flow. SBL bootflow does not support low power mode (LPM)

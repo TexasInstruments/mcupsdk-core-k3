@@ -82,6 +82,22 @@ Include the below file to access the APIs
 :lines: 39-39
 ```
 
+::::{only} SOC_AM62AX
+(WATCHDOG_11_2_MIGRATION)=
+## Migration Guide 11.01 to 11.02 - AM62A
+
+```{note}
+This section highlights API changes from 11.01 to 11.02 SDK for AM62A.
+```
+
+### Return type change for Watchdog_setReaction and Watchdog_setWindowSize
+
+- `Watchdog_setReaction` and `Watchdog_setWindowSize` return type changed from `void` to `int32_t`.
+- Both functions now return `SystemP_SUCCESS` on success, `SystemP_FAILURE` if handle is NULL.
+- Update callers to handle the return value.
+::::
+
+::::{only} SOC_AM62X or SOC_AM62DX or SOC_AM62LX or SOC_AM275X
 (WATCHDOG_12_0_MIGRATION)=
 ## Migration Guide 11.02 to 12.00
 
@@ -94,6 +110,7 @@ This section highlights API changes from 11.02 to 12.00 SDK.
 - `Watchdog_setReaction` and `Watchdog_setWindowSize` return type changed from `void` to `int32_t`.
 - Both functions now return `SystemP_SUCCESS` on success, `SystemP_FAILURE` if handle is NULL.
 - Update callers to handle the return value.
+::::
 
 ## Examples and Demos
 

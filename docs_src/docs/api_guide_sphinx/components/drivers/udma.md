@@ -45,6 +45,13 @@ to setup and initiate DMA transfers.
 ::::
 
 
+::::{only} SOC_AM62AX or SOC_AM62DX or SOC_AM275X
+
+   - Supports direct TR mode for DRU
+
+::::
+
+
 ## SysConfig Features
 
 :::{admonition} Note
@@ -77,7 +84,6 @@ It is strongly recommend to use SysConfig where it is available instead of using
 
 ::::{only} SOC_AM62AX or SOC_AM62DX or SOC_AM275X
 
-- Supports direct TR mode for DRU
 - UDMA driver does not support UDMA-C channel type for DRU
 
 ::::

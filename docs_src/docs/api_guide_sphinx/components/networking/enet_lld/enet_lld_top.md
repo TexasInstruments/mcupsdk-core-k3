@@ -12,20 +12,15 @@ enet_mac2mac_top
 enet_integration_guide_top
 enetmdio_manualmode
 enet_mcupsdk_update
-enetlld_performance
+enet_cpsw_performance_am62x
+enet_cpsw_performance_am62px
+enet_cpsw_performance_am62dx
+enet_cpsw_performance_am275x
+enet_cpsw_performance_am62lx
+eavb_performance
 enet_tas_top
 enet_migration_guide_top
 ```
-
-````{only} SOC_AM275X
-```{toctree}
-:maxdepth: 1
-:hidden:
-
-enet_cpsw_performance_am275x
-eavb_performance
-```
-````
 
 The Unified Ethernet Low-Level Driver (Enet LLD) is a driver that aims at providing an unified interface for the different Ethernet peripherals found in TI SoCs.
 
@@ -47,6 +42,5 @@ Enet LLD supports CPSW peripheral. Common Port SWitch (CPSW) subsystems is an IP
 - [Enet Integration Guide](enet_integration_guide_top.md)
 - [MDIO Manual Mode Enablement](enetmdio_manualmode.md)
 - [Version Updates from earlier SDKs to Latest](enet_mcupsdk_update.md)
-- [Ethernet Performance on AM62P](enetlld_performance.md)
 - [Enet EST/TAS Support](enet_tas_top.md)
 - [Enet Migration Guide](enet_migration_guide_top.md)

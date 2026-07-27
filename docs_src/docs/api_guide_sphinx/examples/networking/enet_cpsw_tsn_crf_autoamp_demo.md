@@ -87,24 +87,228 @@ The CRF Listener is a sample application that receives the CRF Frames and perfor
 ```
 Enabling clocks!
 EnetAppUtils_reduceCoreMacAllocation: Reduced Mac Address Allocation for CoreId:1 From 4 To 2
+Mdio_open:318
 Open MAC port 1
+EnetPhy_bindDriver:1873
 PHY 10 is alive
 EnetApp_autoAmpAppInit: done
+Uniconf/ModuleInit time= 912/7195 us
+log ovflow!
+uc_dbal_setproc:uniconf is licensed
+INF:uconf:create_semname_with_dbname:null dbname is specified.
 Waiting for PTP clock to be synchronized!
+log ovflow!
+cb_rawsock_open:dmaTxChId=1 numRxChannels=1 dmaRxChId=1 nTxPkts=4 nRxPkts=8 pktSize=1536
+INF:cbase:rxChId 1 has owner dmaRxShared 0
+ERR:cbase:cb_lld_set_txnotify_cb:invalid param
+crf_testclient:listener sid=00:01:02:03:04:05:00:05
 Waiting for GPTP ready!!
 
+crf_testclient: noubinit=true
+INF:avtp:Waiting for tsn_gptpd to be ready...
+INF:cbase:cb_lld_task_create: autoAmpApp_TxclassA stack_size=8192
+Waiting for GPTP ready!!
+
+EnetApp_initTsn:TSN app start done!
+Starting lwIP, local interface IP is dhcp-enabled
+[LWIPIF_LWIP] NETIF INIT SUCCESS
+Host MAC address-0 : 70:ff:76:1d:ec:f3
+[0]Enet IF UP Event. Local interface IP:0.0.0.0
+[LWIPIF_LWIP] Enet has been started successfully
+INF:cbase:cb_lld_task_create: autoAmpApp_TxTask stack_size=16384
+INF:cbase:cb_lld_task_create: autoAmpApp_Rx stack_size=8192
+[0]Waiting for network UP ...
+log ovflow!
+GPTP ready!!
+
+log ovflow!
 GPTP ready!!
 
 CPSW_ALE_IOCTL_ADD_VLAN: 110
 CPSW_ALE_IOCTL_ADD_VLAN: 110
-INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=81312438 avrg=82487600 max=84346805} crftsgap_ns=3333334
+log ovflow!
+INF:avtp:rxethernet_setup:rxethernet_setup is done
+INF:avtp:avtpc_direct_setup:direct is set: tx=0, rx=1
+Cpsw_handleLinkUp:1456
+MAC Port 1: link up
+INF:cbase:000000-538415:cbl_query_response:tilld0: link UP, speed=1000, duplex=1 !!!! (38us since link change event)
+[0]Network Link UP Event
+Cpsw_handleLinkDown:1482
+MAC Port 1: link down
+INF:cbase:cbl_query_response:tilld0 link DOWN !!!!
+Current port-state: 3
+Waiting for PTP clock to be synchronized!
+INF:uconf:create_semname_with_dbname:null dbname is specified.
+[0]Network Link DOWN Event
+Dp83tg721_config:588
+Cpsw_handleLinkUp:1456
+MAC Port 1: link up
+INF:cbase:000001-738416:cbl_query_response:tilld0: link UP, speed=1000, duplex=1 !!!! (39us since link change event)
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=0 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=-124580995 max=-124580995} crftsgap_ns=262791685
+WRN:gptp:000001-874387:waiting_for_pdelay_interval_timer_proc:portIndex=1, sourcePortIdentity=70:FF:76:FF:FE:1D:EC:F2, thisClock=70:FF:76:FF:FE:1D:EC:F3, neighborPropDelay=6793
+Current port-state: 3
+Waiting for PTP clock to be synchronized!
+INF:uconf:create_semname_with_dbname:null dbname is specified.
+[0]Network Link UP Event
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=20 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=-116538249 max=-112971612} crftsgap_ns=3333334
+ptpSync-ed: 9
+EnetApp_enableCBS: succeeded
+
+INF:uconf:create_semname_with_dbname:null dbname is specified.
+INF:uconf:create_semname_with_dbname:null dbname is specified.
+INF:uconf:ydbi_get_item_ifk4vk1:no data
+INF:uconf:get_queue_map_params:netdev=tilld0, num_tc=0
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=28 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=-48312666 max=87257837} crftsgap_ns=3333334
+WRN:gptp:waiting_for_pdelay_interval_timer_proc:portIndex=1, likely erroneous neighborPropDelay, use previous value=6795
+The following AdminList param will be configured for EST:
+GateMask[7..0]=oCCCoCCC (0x88), start=0 ns, end=1999 ns, dur=2000 ns
+GateMask[7..0]=oCCCCoCC (0x84), start=2000 ns, end=124999 ns, dur=123000 ns
+GateMask[7..0]=oCCCoCCC (0x88), start=125000 ns, end=126999 ns, dur=2000 ns
+GateMask[7..0]=oCCCCCCC (0x80), start=127000 ns, end=249999 ns, dur=123000 ns
+GateMask[7..0]=oCCCoCCC (0x88), start=250000 ns, end=251999 ns, dur=2000 ns
+GateMask[7..0]=oCCCCCCC (0x80), start=252000 ns, end=374999 ns, dur=123000 ns
+GateMask[7..0]=oCCCoCCC (0x88), start=375000 ns, end=376999 ns, dur=2000 ns
+GateMask[7..0]=oCCCCCCC (0x80), start=377000 ns, end=499999 ns, dur=123000 ns
+GateMask[7..0]=oCCCoCCC (0x88), start=500000 ns, end=501999 ns, dur=2000 ns
+GateMask[7..0]=oCCCCCCC (0x80), start=502000 ns, end=624999 ns, dur=123000 ns
+GateMask[7..0]=oCCCoCCC (0x88), start=625000 ns, end=626999 ns, dur=2000 ns
+GateMask[7..0]=oCCCCCCC (0x80), start=627000 ns, end=749999 ns, dur=123000 ns
+GateMask[7..0]=oCCCoCCC (0x88), start=750000 ns, end=751999 ns, dur=2000 ns
+GateMask[7..0]=oCCCCCCC (0x80), start=752000 ns, end=874999 ns, dur=123000 ns
+GateMask[7..0]=oCCCoCCC (0x88), start=875000 ns, end=876999 ns, dur=2000 ns
+GateMask[7..0]=oCCCCCCC (0x80), start=877000 ns, end=999999 ns, dur=123000 ns
+Base time=20000000000ns,Cycle time=1000000ns
+EnetEstApp_setAdminControlList: succeeded
+
+Set admin control list succesfully
+[0]Waiting for network UP ...
+INF:uconf:get_queue_map_params:netdev=tilld0, num_tc=8
+INF:cbase:TAS state is set to 2
+INF:cbase:TAS operational list status updated:
+INF:cbase:TAS state is set to 1
+INF:cbase:Successfully configure TAS
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=33 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=-4130077 max=87257837} crftsgap_ns=3333334
+WRN:gptp:waiting_for_pdelay_interval_timer_proc:portIndex=1, likely erroneous neighborPropDelay, use previous value=6795
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=36 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=18059148 max=87257837} crftsgap_ns=3333334
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=38 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=31401497 max=87257837} crftsgap_ns=3333334
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=39 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=40308373 max=87257837} crftsgap_ns=3333334
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=41 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=46567991 max=87257837} crftsgap_ns=3333334
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=42 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=51370527 max=87257837} crftsgap_ns=3333334
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=42 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=55104149 max=87257837} crftsgap_ns=3333334
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=43 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=58089699 max=87257837} crftsgap_ns=3333334
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=43 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=60530737 max=87257837} crftsgap_ns=3333334
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=44 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=62563468 max=87257837} crftsgap_ns=3333334
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=44 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=64282035 max=87257837} crftsgap_ns=3333334
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=45 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=65754394 max=87257837} crftsgap_ns=3333334
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=45 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=67029503 max=87257837} crftsgap_ns=3333334
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=45 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=68144349 max=87257837} crftsgap_ns=3333334
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=45 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=69127219 max=87257837} crftsgap_ns=3333334
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=46 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=69999783 max=87257837} crftsgap_ns=3333334
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=46 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=70762558 max=87257837} crftsgap_ns=3333334
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=46 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=71444930 max=87257837} crftsgap_ns=3333334
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=46 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=72062065 max=87257837} crftsgap_ns=3333334
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=46 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=-124580995 avrg=72622825 max=87257837} crftsgap_ns=3333334
+Waiting EST Setting done
+wait_est_configured: done
+wait_est_configured: done
+INF:avtp:Starting All Talker in one single threads
+[0]Waiting for network UP ...
+INF:avtp:CRF packet: seqn_diff=2
 INF:avtp:[RX=0] Packet Count: 5550
 INF:avtp:[RX=5] Packet Count: 650
+INF:avtp:CRF packet: seqn_diff=2
 INF:avtp:[RX=0] Packet Count: 11787
 INF:avtp:[RX=5] Packet Count: 1500
-INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=81312438 avrg=83304403 max=84370665} crftsgap_ns=3333334
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=81312438 avrg=82487600 max=84346805} crftsgap_ns=3333334
 INF:avtp:[RX=0] Packet Count: 18126
 INF:avtp:[RX=5] Packet Count: 2255
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=81312438 avrg=83304403 max=84370665} crftsgap_ns=3333334
+INF:avtp:[RX=0] Packet Count: 24480
+INF:avtp:[RX=5] Packet Count: 3018
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=81312438 avrg=83578656 max=84377717} crftsgap_ns=3333334
+INF:avtp:[RX=0] Packet Count: 30776
+INF:avtp:[RX=5] Packet Count: 3859
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=81307970 avrg=83716701 max=84377717} crftsgap_ns=3333334
+INF:avtp:[RX=0] Packet Count: 37177
+INF:avtp:[RX=5] Packet Count: 4624
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=81307970 avrg=83801201 max=84378401} crftsgap_ns=3333334
+INF:avtp:[RX=0] Packet Count: 43517
+INF:avtp:[RX=5] Packet Count: 5463
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=81297492 avrg=83855370 max=84378401} crftsgap_ns=3333334
+INF:avtp:[RX=0] Packet Count: 49943
+INF:avtp:[RX=5] Packet Count: 6231
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=81281505 avrg=83892470 max=84378401} crftsgap_ns=3333334
+INF:avtp:[RX=0] Packet Count: 56379
+INF:avtp:[RX=5] Packet Count: 7012
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=81281505 avrg=83921302 max=84378401} crftsgap_ns=3333334
+INF:avtp:[RX=0] Packet Count: 62743
+INF:avtp:[RX=5] Packet Count: 7857
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=81263187 avrg=83942252 max=84378401} crftsgap_ns=3333334
+INF:avtp:[RX=0] Packet Count: 69157
+INF:avtp:[RX=5] Packet Count: 8635
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=81263187 avrg=83955675 max=84378401} crftsgap_ns=3333334
+INF:avtp:[RX=0] Packet Count: 75600
+INF:avtp:[RX=5] Packet Count: 9411
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=81263187 avrg=83969804 max=84378401} crftsgap_ns=3333334
+INF:avtp:CRF packet: seqn_diff=2
+INF:avtp:[RX=0] Packet Count: 81995
+INF:avtp:[RX=5] Packet Count: 10260
+INF:avtp:CRF packet: seqn_diff=2
+INF:avtp:[RX=0] Packet Count: 88451
+INF:avtp:[RX=5] Packet Count: 11040
+[0]Waiting for network UP ...
+INF:avtp:CRF packet: seqn_diff=2
+INF:avtp:[RX=0] Packet Count: 94917
+INF:avtp:[RX=5] Packet Count: 11827
+INF:avtp:CRF packet: seqn_diff=2
+INF:avtp:[RX=0] Packet Count: 101297
+INF:avtp:[RX=5] Packet Count: 12671
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=80334373 avrg=82397398 max=84368728} crftsgap_ns=3333334
+INF:avtp:[RX=0] Packet Count: 107738
+INF:avtp:[RX=5] Packet Count: 13459
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=80316510 avrg=83251016 max=84376833} crftsgap_ns=3333334
+INF:avtp:[RX=0] Packet Count: 114115
+INF:avtp:[RX=5] Packet Count: 14279
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=80316510 avrg=83542858 max=84376833} crftsgap_ns=3333334
+INF:avtp:[RX=0] Packet Count: 120529
+INF:avtp:[RX=5] Packet Count: 15096
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=80316510 avrg=83734155 max=84376833} crftsgap_ns=3333334
+INF:avtp:[RX=0] Packet Count: 126960
+INF:avtp:[RX=5] Packet Count: 15888
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=80316510 avrg=83854736 max=84376833} crftsgap_ns=3333334
+INF:avtp:[RX=0] Packet Count: 133623
+INF:avtp:[RX=5] Packet Count: 16094
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=80316510 avrg=83938599 max=84376833} crftsgap_ns=3333334
+INF:avtp:[RX=0] Packet Count: 140369
+INF:avtp:[RX=5] Packet Count: 16094
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=80316510 avrg=83998454 max=84376833} crftsgap_ns=3333334
+INF:avtp:[RX=0] Packet Count: 147115
+INF:avtp:[RX=5] Packet Count: 16094
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=80316510 avrg=84043294 max=84376833} crftsgap_ns=3333334
+INF:avtp:[RX=0] Packet Count: 153845
+INF:avtp:[RX=5] Packet Count: 16094
+[0]Waiting for network UP ...
+INF:avtp:CRF listener 00:01:02:03:04:05:00:04:pdus/sec=50 freq_Hz=48000 ts_interval=160 tsdiff_ns={min=80316510 avrg=84072655 max=84376833} crftsgap_ns=3333334
 ```
 
 ### Sample Output for Auto-Amplifier Sink
@@ -112,15 +316,140 @@ INF:avtp:[RX=5] Packet Count: 2255
 ```
 Enabling clocks!
 EnetAppUtils_reduceCoreMacAllocation: Reduced Mac Address Allocation for CoreId:1 From 4 To 2
+Mdio_open:318
 Open MAC port 1
+EnetPhy_bindDriver:1873
 PHY 0 is alive
 EnetApp_autoAmpAppInit: done
+Uniconf/ModuleInit time= 915/4638 us
 Waiting for PTP clock to be synchronized!
 Waiting for GPTP ready!!
 
+Waiting for GPTP ready!!
+
+log ovflow!
+INF:uconf:create_semname_with_dbname:null dbname is specified.
+crf_testclient:talker sid=00:01:02:03:04:05:00:04
+EnetApp_initTsn:TSN app start done!
+Starting lwIP, local interface IP is dhcp-enabled
+[LWIPIF_LWIP] NETIF INIT SUCCESS
+EnetPer_ioctl:1372
+Enet_ioctl:1035
+Host MAC address-0 : 70:ff:76:1d:ec:f2
+[0]Enet IF UP Event. Local interface IP:0.0.0.0
+[LWIPIF_LWIP] Enet has been started successfully
+log ovflow!
+	type=1 pull=0 base_freq=48000 tsintv=160 mr_pdus=8
+INF:cbase:cb_rawsock_open:combase-1.1.3
+INF:cbase:cb_rawsock_open:dmaTxChId=2 numRxChannels=1 dmaRxChId=2 nTxPkts=16 nRxPkts=8 pktSize=1536
+INF:avtp:avtpc_direct_setup:direct is set: tx=1, rx=0
+EnetPer_ioctl:1372
+Enet_ioctl:1035
+ERROR: MCC_getTimestamp:107: Failed to get timestamp: -14
 GPTP ready!!
 
+GPTP ready!!
+
+EnetPer_ioctl:1372
+Enet_ioctl:1035
+CPSW_ALE_IOCTL_ADD_VLAN: 110
+CPSW_ALE_IOCTL_ADD_VLAN: 110
+log ovflow!
+INF:cbase:rxChId 2 has owner dmaRxShared 0
+ERROR: MCC_getTimestamp:107: Failed to get timestamp: -14
+EnetPer_ioctl:1372
+Enet_ioctl:1035
+ERROR: MCC_getTimestamp:107: Failed to get timestamp: -14
+log ovflow!
+avtpc_direct_setup:direct is set: tx=0, rx=1
+EnetPer_ioctl:1372
+Enet_ioctl:1035
+ERROR: MCC_getTimestamp:107: Failed to get timestamp: -14
+EnetPer_ioctl:1372
+Enet_ioctl:1035
+ERROR: MCC_getTimestamp:107: Failed to get timestamp: -14
+EnetPer_ioctl:1372
+Enet_ioctl:1035
+Cpsw_handleLinkUp:1456
+MAC Port 1: link up
+INF:cbase:000000-536567:cbl_query_response:tilld0: link UP, speed=1000, duplex=1 !!!! (57us since link change event)
+WRN:gptp:000000-627124:waiting_for_pdelay_interval_timer_proc:portIndex=1, sourcePortIdentity=70:FF:76:FF:FE:1D:EC:F3, thisClock=70:FF:76:FF:FE:1D:EC:F2, neighborPropDelay=6795
+Current port-state: 3
+Waiting for PTP clock to be synchronized!
+INF:uconf:create_semname_with_dbname:null dbname is specified.
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=26 freq_Hz=48000 ts_interval=160
+ptpSync-ed: 6
+EnetApp_enableCBS: succeeded
+
+INF:uconf:create_semname_with_dbname:null dbname is specified.
+INF:uconf:create_semname_with_dbname:null dbname is specified.
+INF:uconf:ydbi_get_item_ifk4vk1:no data
+INF:uconf:get_queue_map_params:netdev=tilld0, num_tc=0
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=38 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+The following AdminList param will be configured for EST:
+GateMask[7..0]=oCCCoCCC (0x88), start=0 ns, end=1999 ns, dur=2000 ns
+GateMask[7..0]=oCCCCoCC (0x84), start=2000 ns, end=124999 ns, dur=123000 ns
+GateMask[7..0]=oCCCoCCC (0x88), start=125000 ns, end=126999 ns, dur=2000 ns
+GateMask[7..0]=oCCCCCCC (0x80), start=127000 ns, end=249999 ns, dur=123000 ns
+GateMask[7..0]=oCCCoCCC (0x88), start=250000 ns, end=251999 ns, dur=2000 ns
+GateMask[7..0]=oCCCCCCC (0x80), start=252000 ns, end=374999 ns, dur=123000 ns
+GateMask[7..0]=oCCCoCCC (0x88), start=375000 ns, end=376999 ns, dur=2000 ns
+GateMask[7..0]=oCCCCCCC (0x80), start=377000 ns, end=499999 ns, dur=123000 ns
+GateMask[7..0]=oCCCoCCC (0x88), start=500000 ns, end=501999 ns, dur=2000 ns
+GateMask[7..0]=oCCCCCCC (0x80), start=502000 ns, end=624999 ns, dur=123000 ns
+GateMask[7..0]=oCCCoCCC (0x88), start=625000 ns, end=626999 ns, dur=2000 ns
+GateMask[7..0]=oCCCCCCC (0x80), start=627000 ns, end=749999 ns, dur=123000 ns
+GateMask[7..0]=oCCCoCCC (0x88), start=750000 ns, end=751999 ns, dur=2000 ns
+GateMask[7..0]=oCCCCCCC (0x80), start=752000 ns, end=874999 ns, dur=123000 ns
+GateMask[7..0]=oCCCoCCC (0x88), start=875000 ns, end=876999 ns, dur=2000 ns
+GateMask[7..0]=oCCCCCCC (0x80), start=877000 ns, end=999999 ns, dur=123000 ns
+Base time=20000000000ns,Cycle time=1000000ns
+EnetEstApp_setAdminControlList: succeeded
+
+Set admin control list succesfully
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=42 freq_Hz=48000 ts_interval=160
+INF:uconf:get_queue_map_params:netdev=tilld0, num_tc=8
+INF:cbase:TAS state is set to 2
+INF:cbase:TAS operational list status updated:
+INF:cbase:TAS state is set to 1
+INF:cbase:Successfully configure TAS
+WRN:gptp:computePropTime: computed PropTime is out of range = -23733, set 0
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=44 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=45 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=46 freq_Hz=48000 ts_interval=160
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=46 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=47 freq_Hz=48000 ts_interval=160
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=47 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=47 freq_Hz=48000 ts_interval=160
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=47 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=48 freq_Hz=48000 ts_interval=160
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=48 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=48 freq_Hz=48000 ts_interval=160
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=48 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=48 freq_Hz=48000 ts_interval=160
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=48 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=48 freq_Hz=48000 ts_interval=160
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=48 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=48 freq_Hz=48000 ts_interval=160
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=48 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=48 freq_Hz=48000 ts_interval=160
+Waiting EST Setting done
+wait_est_configured: done
+wait_est_configured: done
+INF:avtp:Starting All Talker in one single threads
 INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
 INF:avtp:[RX=4] Packet Count: 6389
 INF:avtp:[RX=2] Packet Count: 1130
 INF:avtp:[RX=3] Packet Count: 936
@@ -130,6 +459,122 @@ INF:avtp:[RX=4] Packet Count: 12675
 INF:avtp:[RX=2] Packet Count: 1880
 INF:avtp:[RX=3] Packet Count: 1735
 INF:avtp:[RX=1] Packet Count: 2057
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:[RX=4] Packet Count: 19131
+INF:avtp:[RX=2] Packet Count: 2639
+INF:avtp:[RX=3] Packet Count: 2343
+INF:avtp:[RX=1] Packet Count: 2981
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+INF:avtp:[RX=4] Packet Count: 24625
+INF:avtp:[RX=2] Packet Count: 3639
+INF:avtp:[RX=3] Packet Count: 3276
+INF:avtp:[RX=1] Packet Count: 3981
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:[RX=4] Packet Count: 31025
+INF:avtp:[RX=2] Packet Count: 4401
+INF:avtp:[RX=3] Packet Count: 3954
+INF:avtp:[RX=1] Packet Count: 4906
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+INF:avtp:[RX=4] Packet Count: 37369
+INF:avtp:[RX=2] Packet Count: 5175
+INF:avtp:[RX=3] Packet Count: 4566
+INF:avtp:[RX=1] Packet Count: 5831
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:[RX=4] Packet Count: 42936
+INF:avtp:[RX=2] Packet Count: 6174
+INF:avtp:[RX=3] Packet Count: 5565
+INF:avtp:[RX=1] Packet Count: 6830
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+INF:avtp:[RX=4] Packet Count: 49424
+INF:avtp:[RX=2] Packet Count: 6952
+INF:avtp:[RX=3] Packet Count: 6174
+INF:avtp:[RX=1] Packet Count: 7756
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:[RX=4] Packet Count: 55437
+INF:avtp:[RX=2] Packet Count: 7771
+INF:avtp:[RX=3] Packet Count: 6796
+INF:avtp:[RX=1] Packet Count: 8756
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+INF:avtp:[RX=4] Packet Count: 61338
+INF:avtp:[RX=2] Packet Count: 8735
+INF:avtp:[RX=3] Packet Count: 7777
+INF:avtp:[RX=1] Packet Count: 9681
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:[RX=4] Packet Count: 67779
+INF:avtp:[RX=2] Packet Count: 9494
+INF:avtp:[RX=3] Packet Count: 8382
+INF:avtp:[RX=1] Packet Count: 10599
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+INF:avtp:[RX=4] Packet Count: 73464
+INF:avtp:[RX=2] Packet Count: 10440
+INF:avtp:[RX=3] Packet Count: 9131
+INF:avtp:[RX=1] Packet Count: 11599
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:[RX=4] Packet Count: 79635
+INF:avtp:[RX=2] Packet Count: 11276
+INF:avtp:[RX=3] Packet Count: 9983
+INF:avtp:[RX=1] Packet Count: 12526
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+INF:avtp:[RX=4] Packet Count: 86089
+INF:avtp:[RX=2] Packet Count: 12055
+INF:avtp:[RX=3] Packet Count: 10584
+INF:avtp:[RX=1] Packet Count: 13470
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:[RX=4] Packet Count: 91649
+INF:avtp:[RX=2] Packet Count: 13055
+INF:avtp:[RX=3] Packet Count: 11460
+INF:avtp:[RX=1] Packet Count: 14470
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+INF:avtp:[RX=4] Packet Count: 98010
+INF:avtp:[RX=2] Packet Count: 13834
+INF:avtp:[RX=3] Packet Count: 12184
+INF:avtp:[RX=1] Packet Count: 15420
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:[RX=4] Packet Count: 104487
+INF:avtp:[RX=2] Packet Count: 14613
+INF:avtp:[RX=3] Packet Count: 12785
+INF:avtp:[RX=1] Packet Count: 16372
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+INF:avtp:[RX=4] Packet Count: 109945
+INF:avtp:[RX=2] Packet Count: 15613
+INF:avtp:[RX=3] Packet Count: 13785
+INF:avtp:[RX=1] Packet Count: 17371
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:[RX=4] Packet Count: 116400
+INF:avtp:[RX=2] Packet Count: 16392
+INF:avtp:[RX=3] Packet Count: 14388
+INF:avtp:[RX=1] Packet Count: 18322
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+INF:avtp:[RX=4] Packet Count: 122542
+INF:avtp:[RX=2] Packet Count: 17154
+INF:avtp:[RX=3] Packet Count: 14973
+INF:avtp:[RX=1] Packet Count: 19280
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:[RX=4] Packet Count: 130537
+INF:avtp:[RX=2] Packet Count: 17154
+INF:avtp:[RX=3] Packet Count: 14973
+INF:avtp:[RX=1] Packet Count: 19280
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+INF:avtp:[RX=4] Packet Count: 138532
+INF:avtp:[RX=2] Packet Count: 17154
+INF:avtp:[RX=3] Packet Count: 14973
+INF:avtp:[RX=1] Packet Count: 19280
+INF:avtp:CRF talker 00:01:02:03:04:05:00:04:pdus/sec=49 freq_Hz=48000 ts_interval=160
+[0]Waiting for network UP ...
+INF:avtp:[RX=4] Packet Count: 146527
+INF:avtp:[RX=2] Packet Count: 17154
+INF:avtp:[RX=3] Packet Count: 14973
+INF:avtp:[RX=1] Packet Count: 19280
 ```
 
 ## See Also

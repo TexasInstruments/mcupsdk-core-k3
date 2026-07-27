@@ -133,6 +133,37 @@ See also [FreeRTOS](../os/freertos.md), [NO RTOS](../os/nortos.md) for list of u
 
 ::::
 
+::::{only} SOC_AM62AX or SOC_AM62DX
+
+- On {{ VAR_SOC_NAME }},
+    CPU type  | Valid interrupt numbers  | Valid interrupt priorities
+    ----------|--------------------------|---------------------------
+    R5F       | 0  .. 511                | 0 (highest) .. 15 (lowest)
+
+- On C75,
+  - The C75 CPU supports 64 interrupts.
+  - The CLEC event ID can be mapped to any of C75 interrupts.
+  - If you are configuring software interrupt, then set eventId to HWIP_INVALID_EVENT_ID.
+  - While mapping CLEC event ID to interrupt number, refer the below table and avoid overlapping interrupts.
+    Module    | Interrupt number used    |
+    ----------|--------------------------|
+    TIMER     | 2 .. 6                   |
+    IPC       | 7 .. 11                  |
+    OSPI      | 13                       |
+    MMCSD     | 14                       |
+    I2C       | 15 .. 19                 |
+    MCSPI     | 20 .. 24                 |
+    ECAP      | 25 .. 30                 |
+    UART      | 22, 32 .. 38             |
+    MCASP     | 39 .. 48                 |
+    EPWM      | 49 .. 51                 |
+    UDMA      | 52 .. 61                 |
+    WDT       | 62 .. 63                 |
+    ASRC      | 20 .. 29                 |
+    Not Used  | 12, 31                   |
+
+::::
+
 ::::{only} SOC_AM62PX
 
 - On {{ VAR_SOC_NAME }},

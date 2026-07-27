@@ -360,6 +360,14 @@ After a SBL and application image is flashed, shown below is the high level boot
 ::::{only} SOC_AM275X
    - Depending on the type of SBL loaded, SBL looks for the **multicore elf image** (refer [Booting Tools](../components/tools/tools_boot.md) for more on multicore elf image) of the application binary at a specified location in a boot media.
 
+   ```{eval-rst}
+   .. raw:: html
+
+      <video width="75%" controls>
+         <source src="_static/mcelf_bootflow.mp4" type="video/mp4">
+         Your browser does not support the video tag.
+      </video>
+   ```
 
    **Booting MCELF application**
 

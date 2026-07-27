@@ -313,6 +313,50 @@ This section describes the various tools that are used to create boot images for
 ::::
 
 
+::::{only} SOC_AM275X
+
+## HSM MCELF Image Generator Tool
+
+:::{admonition} Note
+Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate HSM MCELF image for HS-SE device.
+:::
+
+- This tool generates a HSM MCELF image by taking the HSM binary (.bin file) as input and wraps it into a MCELF image that can be booted by the SBL.
+- The input file location can be mentioned in the `config.mak` file located at ${SDK_INSTALL_PATH}/tools/boot/HSMMCELFImageGen/board/{{ VAR_BOARD_NAME_LOWER }}
+- The input file name for HSM bin file can be mentioned in the `config.mak` file.
+    - `#Input binary name`
+       `HSM_BINARY_NAME = HSM_min_sample.bin`
+
+:::{admonition} Note
+If `HSM_BINARY_NAME` is changed, the entry point label in `board/{{ VAR_BOARD_NAME_LOWER }}/linker.cmd` must also be updated. The label is derived from the binary file path by replacing path separators and dots with underscores and prefixing with `_binary_`. For example, `board/am275x-evm/HSM_min_sample.bin` maps to `_binary_board_am275x_evm_HSM_min_sample_bin_start`.
+:::
+
+- The output MCELF image name can be mentioned in the `config.mak` file.
+    - `#Output appimage name`
+      `HSM_APPIMAGE_NAME=hsm.mcelf`
+
+- The HSM core boot ID and load address used by the tool are defined in the `config.mak` file.
+    - `BOOTIMAGE_CORE_ID_HSM = 7`
+    - `HSM_LOAD_ADDR=0x43C00000`
+
+- Run the makefile at ${SDK_INSTALL_PATH}/tools/boot/HSMMCELFImageGen to generate the HSM MCELF image
+    - For Windows
+
+            cd ${SDK_INSTALL_PATH}/tools/boot/HSMMCELFImageGen
+            gmake -s BOARD={{ VAR_BOARD_NAME_LOWER }} all
+
+    - For Linux
+
+            cd ${SDK_INSTALL_PATH}/tools/boot/HSMMCELFImageGen
+            make -s BOARD={{ VAR_BOARD_NAME_LOWER }} all
+
+- The HSM MCELF image will be generated at ${SDK_INSTALL_PATH}/tools/boot/HSMMCELFImageGen/board/{{ VAR_BOARD_NAME_LOWER }} after running the makefile
+    - For GP device: `hsm.mcelf` and `hsm.mcelf.hs_fs`
+    - For HS device: `hsm.mcelf.hs`
+
+::::
+
+
 ## Signing Scripts
 - To run these scripts, one needs `openssl` installed as mentioned here, [OpenSSL](../../getting_started/download_and_install.md)
 

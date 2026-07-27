@@ -160,3 +160,13 @@ Format-Hex <key.bin> | ForEach-Object { $_.Bytes | ForEach-Object { "{0:x2}" -f 
 #### Signing the application image
 
 Depending on the options given in the device configuration file (`devconfig.mak` mentioned above), appimage is generated for HS devices. If encryption is enabled in the configuration file, the binary will be first encrypted with the key specified and then the certificate will be generated using the customer MPK specified. If the device type is set as HS in the configuration file, nothing extra needs to be done for the appimage generation. The final `*.appimage.hs` file generated would be signed with customer MPK (and encrypted with customer MEK if that option is selected). To dig into the details of the process, one can refer to https://software-dl.ti.com/tisci/esd/latest/6_topic_user_guides/secure_boot_signing.html
+
+### Security Handover
+
+Before the SBL boots the application on an HS device, it calls `Bootloader_socSecHandover()`. This triggers SYSFW to relinquish security services — including firewall (FWL) configuration and DMSC resource management — and then self-reset its core.
+
+**Why this is done:** During boot, SYSFW holds exclusive control over security resources. If SYSFW retains ownership after the SBL exits, the application cannot reconfigure firewall regions or other security-sensitive resources. The Security Handover releases this ownership so the application can manage these resources as needed.
+
+**What to expect:** After `Bootloader_socSecHandover()` returns, the SYSFW core is no longer running. Any TISCI calls that depend on SYSFW (such as clock/power management via Sciclient) must be completed **before** calling this API. Calls to Sciclient after handover will fail.
+
+This behaviour is intentional and is not a bug. See `Bootloader_socSecHandover()` in `source/drivers/bootloader/soc/<device>/bootloader_soc.h` for the API reference.

@@ -453,7 +453,6 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 
    **MCASP**
       - :doc:`MCASP Loopback <drivers/mcasp_loopback>`
-      - :doc:`MCASP Playback <drivers/mcasp_playback_codec_aic31>`
 
    **MCSPI**
       - :doc:`MCSPI Loopback <drivers/mcspi_loopback>`

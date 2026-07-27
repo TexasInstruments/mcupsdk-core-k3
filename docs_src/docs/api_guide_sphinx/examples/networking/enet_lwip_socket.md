@@ -6,8 +6,8 @@
 ::::{only} SOC_AM62DX
 ```{note}
 This example supports the AM62D-EVM-PROC180E2. To test with the AM62D-EVM-PROC180E1, change the phy addresses in TI BOARD DRIVERS -> ETHPHY -> CONFIG_ENET_ETHPHY(x) -> phy Address to 15 and 3.
-::::
 ```
+::::
 
 ```{note}
 LwIP features are made available as is from public lwIP project. SDK configuration may only enable and exercise a subset of these features.
@@ -232,8 +232,7 @@ Make sure you have setup the EVM with cable connections as shown here, [EVM_SETU
 
 - Connect a ethernet cable to the EVM from host PC as shown below
 
-  \imageStyle{am62x_sk_cpsw_example.jpg,width:40%}
-  \image html am62x_sk_cpsw_example.jpg Ethernet cable for CPSW based ethernet
+![Ethernet cable for CPSW based ethernet](../../images/networking/am62x_sk_cpsw_example.jpg)
 
 ::::
 
@@ -245,8 +244,7 @@ Make sure you have setup the EVM with cable connections as shown here, [EVM_SETU
 
 - Connect a ethernet cable to the EVM from host PC as shown below
 
-  \imageStyle{am62x_sk_cpsw_example.jpg,width:40%}
-  \image html am62x_sk_cpsw_example.jpg Ethernet cable for CPSW based ethernet
+![Ethernet cable for CPSW based ethernet](../../images/networking/am62x_sk_cpsw_example.jpg)
 
 ::::
 
@@ -285,8 +283,7 @@ to a network which has a DHCP server running.
   between the EVM and the host PC by using a home broadband/wifi router as shown below.
   Most such routers run a DHCP server
 
-  \imageStyle{lwip_example_01.png,width:30%}
-  \image html lwip_example_01.png Local network between PC and EVM
+![Local network between PC and EVM](../../images/examples/lwip_example_01.png)
 
 - To check the router connection with host PC, recommend to disconnect all other networking conenctions
   on the PC, sometimes you may need to disable firewall SW, and make sure the router is able

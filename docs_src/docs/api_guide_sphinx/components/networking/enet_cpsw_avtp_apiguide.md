@@ -1,5 +1,3 @@
-::::{only} SOC_AM62DX or SOC_AM62X or SOC_AM62AX or SOC_AM275X
-
 # Ethernet AVB Stack - API and Integration Guide
 
 ## Pre-requisites
@@ -14,7 +12,7 @@ Readers are expected to have basic knowledge on below IEEE specifications:
 
 ## Introduction
 
-This guide is intended to enhance user's understanding of the AVB stack and provide guidance on how to seamlessly integrate AVB modules into their own applications.
+This guide is intended to enhance user's understanding of the AVB stack and provide guidance on how to seamlessly integrate AVB modules into their own applications.    
 
 ## TSN Stack
 
@@ -62,11 +60,23 @@ Refer to the TSN/gPTP stack uniconf configuration section for details.
 
 ### Licensing library
 
-A licensing library is provided under `<${SDK_INSTALL_PATH}>/source/networking/tsn/tsn-stack/license_lib` which must be added to all `tsn-stack` application's makefile.
+:::{only} SOC_AM62X or SOC_AM62AX or SOC_AM62DX
+There is yangemb-freertos.`{{ VAR_SOC_NAME_LOWER }}`.r5f.ti-arm-clang.lib located under `<${SDK_INSTALL_PATH}>/source/networking/tsn/tsn-stack/license_lib`,
+which must be added to all `tsn-stack` application's makefile.
+:::
+
+:::{only} SOC_AM62PX
+There is yangemb-freertos.`{{ VAR_SOC_NAME_LOWER }}`.wkup-r5f.ti-arm-clang.lib located under `<${SDK_INSTALL_PATH}>/source/networking/tsn/tsn-stack/license_lib`,
+which must be added to all `tsn-stack` application's makefile.
+:::
 
 Add `<${SDK_INSTALL_PATH}>/source/networking/tsn/tsn-stack/license_lib` to `LIBS_PATH_common` and the yangemb library file to `LIBS_common` flags.
 
 The licensing library will prevent all AVTP applications running after 1 hour.
+
+### GPTP configuration parameters
+
+Refer to [ENET_CPSW_TSN_YANG_CONFIG_PARAMS](enet_cpsw_tsn_gptp_apiguide.md) section.
 
 ### AVTP configuration parameters
 
@@ -87,8 +97,10 @@ Refer to `<${SDK_INSTALL_PATH}>/source/networking/enet/core/examples/tsn/avtp_in
 
 By default, aafpcmtalker_app and aafpcmlistener are configured to send and receive one stream with stream ID `00:01:02:03:04:05:00:00`
 
+### Applications Deinitialization
+
+Refer to [ENET_CPSW_TSN_STACK_DEINITIALIZATION](enet_cpsw_tsn_gptp_apiguide.md) section.
+
 ## See Also
 
 - [Ethernet TSN and gPTP Stack](enet_cpsw_tsn_gptp_apiguide.md)
-
-::::

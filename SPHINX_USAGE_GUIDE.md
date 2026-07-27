@@ -342,6 +342,24 @@ def _filter_toctree_for_device(app, doctree):
     # Runs at doctree-read event (after parsing, before build)
 ```
 
+#### 8. Legacy `docs/api_guide/` Dependencies (Migration Blocker)
+
+`conf.py` still reads two things out of the **legacy** `docs_src/docs/api_guide/`
+tree at build time, even though page content itself now comes from
+`docs/api_guide_sphinx/`. Neither has an equivalent yet under the new tree,
+so **deleting `docs/api_guide/` today would silently break the Sphinx build**:
+
+| Function | Reads | Feeds | New-tree equivalent |
+|---|---|---|---|
+| `_parse_aliases()` | `docs/api_guide/doxygen.cfg` + per-device `docs/api_guide/device/<dev>/includes.cfg` (`ALIASES+=` lines) | `myst_substitutions` — every `{{ VAR_XXX }}` in `api_guide_sphinx/*.md` | Partial: a default for `VAR_SDK_NAME` now lives in `doxygen_xml.cfg`, parsed before the legacy files. Per-device overrides (`am62x`/`am62ax`/`am62px`/`j722s` → `"MCU+ SDK"`; `am275x`/`am62dx`/`am62lx` → `"FreeRTOS SDK"`) still live only in the legacy per-device `includes.cfg`. All other aliases (`VAR_CCS_VERSION`, `VAR_SYSCFG_VERSION`, etc.) are legacy-only. |
+| `_get_device_component_subdirs()` | Per-device `docs/api_guide/device/<dev>/includes.cfg` `@INCLUDE` chain | Which `components/<subdir>` and `examples/<subdir>` trees to keep vs. exclude per device | None — the new `doxygen_<device>_xml.cfg` files only list header `.h` files for Breathe, not doc-page/component membership. |
+
+Before `docs/api_guide/` can be removed, both need a home in the new tree:
+alias values (including per-device overrides) and the per-device
+component/example membership mapping. Until then, treat any change to
+`docs/api_guide/doxygen.cfg` or `docs/api_guide/device/*/includes.cfg` as
+live production config for the Sphinx build, not dead legacy code.
+
 ---
 
 ## Common Workflows

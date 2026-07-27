@@ -5,13 +5,19 @@ This Ethernet Firmware example demonstrates ability to perform traffic steering 
 
 Ethernet Firmware server is the application which owns the CPSW peripheral, and controls the behaviour. Ethernet firmware clients are the applications which are running on different cores, which send requests to ethernet firmware server based on their requirements.
 
+::::{only} SOC_AM62PX or SOC_AM62AX
+The demo configures the R5F server to acquire a DHCP address and registers the MCU-R5 client, allocating a MAC address and IP address to it. The client's assigned IP is printed to the UART terminal.
+::::
+
 
 ::::{only} SOC_AM62DX
-   This demo showcases the integration of AVB functionality with Ethernet Firmware. The configuration utilizes two boards in complementary roles, one acting as AVTP Talker and the other as an AVTP Listener, while simultaneously supporting MAC-only mode on port 2 for other network traffic.
+   This demo also showcases the integration of AVB functionality with Ethernet Firmware and the ability to exchange audio data with the DSP core. The configuration utilizes two boards in complementary roles: one acting as an Audio Source (`avb_audio_source`) and the other as an Audio Sink (`avb_audio_sink`). Both boards support MAC-only mode on port 2 for other network traffic. Both boards run talker and listener tasks simultaneously, exchanging PCM audio streams in both directions. See [AVB Audio Streaming Demo](#AVB_AUDIO_STREAMING) for the full stream topology and how to customize it. See [MAC-only port](#MAC_ONLY_PORT) below for the port configuration model.
 
-   **Port Configuration in the example:**\n
-   MAC Port 1: Configured in switch mode, used for AVB audio streaming between boards.\n
-   MAC Port 2: Configured in MAC-only mode, allowing direct traffic to the host port without packet switching.
+   #### Port Configuration
+
+   - MAC Port 1 – Configured in switch mode, used for AVB audio streaming between boards.
+   - MAC Port 2 – Configured in MAC-only mode, allowing direct traffic to the host port without packet switching.
+
 ::::
 
 
@@ -19,6 +25,10 @@ Ethernet Firmware server is the application which owns the CPSW peripheral, and 
 This is in work-in-progress state currently, and complete feature list and functionality will be updates as functional validation progresses.
 :::
 
+
+::::{only} SOC_AM62DX or SOC_AM62PX
+Please refer to [Networking Ethernet Firmware](../../components/networking/networking_ethfw.rst) for more detailed information about Ethfw features
+::::
 
 :::{admonition} Attention
 For more information, please refer to the link ``https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-j784s4/latest/exports/docs/ethfw/docs/user_guide/ethfw_c_ug_top.html``
@@ -34,6 +44,16 @@ For more information, please refer to the link ``https://software-dl.ti.com/jaci
 | Parameter | Value |
 |---|---|
 | CPU + OS | wkup-r5fss0-0_freertos |
+| Toolchain | ti-arm-clang |
+| Board | {{ VAR_BOARD_NAME_LOWER }} |
+| Example folder | source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/ |
+
+::::
+
+::::{only} SOC_AM62AX
+| Parameter | Value |
+|---|---|
+| CPU + OS | r5fss0-0_freertos |
 | Toolchain | ti-arm-clang |
 | Board | {{ VAR_BOARD_NAME_LOWER }} |
 | Example folder | source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/ |
@@ -66,7 +86,7 @@ For more information, please refer to the link ``https://software-dl.ti.com/jaci
 
 ###### Other Clients supported
 
-::::{only} SOC_AM62PX
+::::{only} SOC_AM62PX or SOC_AM62AX
 | Client Env | Supported Core + OS |
 |---|---|
 | MCAL Client | mcu-r5fss0-0_freertos |
@@ -88,7 +108,7 @@ For more information, please refer to the link ``https://software-dl.ti.com/jaci
 
 ####### Prerequisites
 
-::::{only} SOC_AM62PX
+::::{only} SOC_AM62PX or SOC_AM62AX
    - EVM Board
 ::::
 
@@ -104,8 +124,19 @@ For more information, please refer to the link ``https://software-dl.ti.com/jaci
 
 
 ::::{only} SOC_AM62DX
-   :::{admonition} Attention
-   The out-of-box CPSW resource allocation needs to be modified to enable ethernet firmware functionality.\n Follow the steps mentioned in [CPSW resource partitioning for Ethernet Firmware](https://e2e.ti.com/support/processors-group/processors/f/processors-forum/1591632/faq-am62d-q1-how-to-modify-cpsw-resource-partitioning-for-ethernet-firmware-application) before running the example. :::
+   **Note** The out-of-box CPSW resource allocation needs to be modified to enable ethernet firmware functionality.
+   Following table gives the Out of Box Resource allocation and modified resource allocation needed to enable Ethfw for AM62DX
+
+   | Resource | OOB MAIN_R5 | OOB MCU_R5 | OOB A53_2 | Modified MAIN_R5 | Modified MCU_R5 | Modified A53_2 |                                                     
+   |----------|----------|----------|----------|----------|----------|----------|                               
+   | TX Channels [8] | 0 | 8 (Secondary) | 8 (Primary) | 4 (Primary) | 4 (Primary) | 8 (Secondary) |
+   | TX Rings [64] | 0 | 64 (Secondary) | 64 (Primary) | 32 (Primary) | 32 (Primary) | 64 (Secondary) |
+   | RX Channels [1] | 0 | 1 (Secondary) | 1 (Primary) | 1 (Primary) | 1 (Secondary) | 0 |
+   | RX Flows [16] | 0 | 16 (Secondary) | 16 (Primary) | 6 (Primary) | 10 (Primary) | 16 (Secondary) |
+   | RX Rings [16] | 0 | 16 (Secondary) | 16 (Primary) | 6 (Primary) | 10 (Primary) | 16 (Secondary) |
+
+   Please refer to [CPSW Resource Allocation Guide](../../developer_guides/resource_allocation_guide.md) for changing the resource allocation.
+
 ::::
 
 
@@ -116,7 +147,7 @@ For more information, please refer to the link ``https://software-dl.ti.com/jaci
 
 ###### HW Setup
 
-::::{only} SOC_AM62PX
+::::{only} SOC_AM62PX or SOC_AM62AX
    - Connect the One end of the CAT6 cable to the EVM and the other end of the CAT6 cable to network.
 ::::
 
@@ -142,13 +173,13 @@ CCS loading is not supported for any core. Applications are tested with OSPI boo
 :::
 
 
-::::{only} SOC_AM62PX
+::::{only} SOC_AM62PX or SOC_AM62AX
    - Load wkup-r5 Server binary to the evm via OSPI boot mode.
 ::::
 
 
 ::::{only} SOC_AM62DX
-   - Load R5 Server Talker binary to DUT-1 (Talker) and R5 Server Listener binary to DUT-2 via OSPI boot mode.
+   - Load R5 Server Audio Source binary to DUT-1 and R5 Server Audio Sink binary to DUT-2 via OSPI boot mode.
 ::::
 
 - Load other binaries via SBL flow or U-boot flow.
@@ -157,7 +188,7 @@ CCS loading is not supported for any core. Applications are tested with OSPI boo
 
 ###### Sample output
 
-::::{only} SOC_AM62PX
+::::{only} SOC_AM62PX or SOC_AM62AX
    **WKUP-R5 Server Application logs**
 
    ```
@@ -424,9 +455,12 @@ CCS loading is not supported for any core. Applications are tested with OSPI boo
    [RX=0] Packet Count: 5744
    [RX=0] Packet Count: 6744
    [RX=0] Packet Count: 7744
-   
-   ### Sample Ethernet Firmware Server with AVTP Listener logs
-      =======================================================
+   ```
+
+   **Sample Ethernet Firmware Server with AVTP listener logs**
+
+   ```
+   =======================================================
                CPSW Ethernet Firmware
    =======================================================
    Open MAC port 1
@@ -576,9 +610,12 @@ CCS loading is not supported for any core. Applications are tested with OSPI boo
    [RX=1] Packet Count: 814
    [RX=2] Packet Count: 7519
    [RX=1] Packet Count: 939
-   
-   ### MCU-R5 Client Application logs
-      CpswProxy: Local cmd endpt 36, notify endpt 30
+   ```
+
+   **MCU-R5 client application logs**
+
+   ```
+   CpswProxy: Local cmd endpt 36, notify endpt 30
    CpswProxy: ETHFW services found at core 1 endpts 34 (ti.ethfw.ethdevice) and 24 (ti.ethfw.notifyservice)
    Starting lwIP, local interface IP is dhcp-enabled
    [LWIPIF_LWIP] NETIF INIT SUCCESS
@@ -607,14 +644,94 @@ CCS loading is not supported for any core. Applications are tested with OSPI boo
    [0]Network Link UP Event
    [1]Network Link UP Event
    Added interface 'ti1', IP is 192.168.1.48
+   ```
+::::
+
+::::{only} SOC_AM62DX
+
+##### AVB Audio Streaming Demo {#AVB_AUDIO_STREAMING}
+
+The AVB audio demo extends the Ethernet Firmware server with Audio Source and Sink applications that stream PCM audio between two AM62Dx EVMs over MAC port 1. Each board runs two application images:
+
+- **R5F Server** (`avb_audio_source` / `avb_audio_sink`) – owns CPSW, gPTP, and the AVTP control plane. This is the same Ethernet Firmware server used in the switch/client demo, extended with the AVTP audio autoamp application in `ethfw_avtp.c`.
+- **C7x Remote Core** (`remote_main.c`) – a lightweight PCM consumer/producer that exchanges raw audio samples with the R5F AVTP tasks over shared-memory ring buffers (`shm_cirbuf`) at a fixed DDR address (`0xA3000000`), without going through IPC/RPMessage.
+
+:::{figure} ../../images/networking/ethfw_audio_demo.png
+:width: 90%
+
+AVB audio source and sink topology over Ethernet
+:::
+
+Both board roles are built from the same source file `ethfw_avtp.c`. The active role is selected by a compile-time define in each board's R5F makefile/project file.
+
+| Application       | Role                                            | Build define           |
+| ------------------|--------------------------------------------------|------------------------|
+| `avb_audio_source` | Transmits Class A + Class D audio, Receives Class A Audio   | `AVTP_TALKER_MODE`     |
+| `avb_audio_sink`   | Receives Class A + Class D audio, Transmits Class A Audio | `AVTP_LISTENER_MODE`   |
+
+###### Audio Stream Table
+
+AVB streams are identified by an 8-byte Stream ID and a destination multicast MAC address. The last byte of both (referred to as the stream's "App No.", 0–5 in this demo) is what this demo uses to tell streams apart. All 3 default streams use VLAN ID 110 on MAC port 1:
+
+| App No. | Stream ID                | Destination MAC    | Talker (TX)        | Listener (RX)       | AVB Class | PCP | Interval | Channels | Format             | Frame size |
+|---------|---------------------------|---------------------|----------------------|----------------------|-----------|-----|----------|----------|--------------------|------------|
+| 0       | 00:01:02:03:04:05-00:00  | 91:E0:F0:00:FE:00   | `avb_audio_sink`    | `avb_audio_source`  | Class A   | 3   | 125 μs   | 16       | 48 kHz, 16-bit PCM | 192 bytes  |
+| 1       | 00:01:02:03:04:05-00:01  | 91:E0:F0:00:FE:01   | `avb_audio_source`  | `avb_audio_sink`    | Class D1  | 2   | 1000 μs  | 8        | 48 kHz, 16-bit PCM | 768 bytes  |
+| 2       | 00:01:02:03:04:05-00:02  | 91:E0:F0:00:FE:02   | `avb_audio_source`  | `avb_audio_sink`    | Class A   | 3   | 125 μs   | 16       | 48 kHz, 16-bit PCM | 192 bytes  |
+
+In steady state:
+- `avb_audio_source` transmits 2 streams (App No. 1 and 2) to `avb_audio_sink`, and receives 1 stream (App No. 0) sent back by `avb_audio_sink`.
+- `avb_audio_sink` transmits 1 stream (App No. 0) to `avb_audio_source`, and receives 2 streams (App No. 1 and 2) sent by `avb_audio_source`.
+
+On the C7x side, PCM samples are exchanged with the R5F AVTP tasks through fixed-size shared-memory ring buffers:
+
+| Board               | Ring Buffer                     | Base Address              | Block Size | Carries                            |
+|---------------------|---------------------------------|---------------------------|------------|------------------------------------|
+| `avb_audio_sink`    | Class A buffer                  | `0xA3000000`              | 192 bytes  | App No. 2 (Class A from source)    |
+| `avb_audio_sink`    | Class D buffer                  | `0xA3000000 + 0x20000`    | 768 bytes  | App No. 1 (Class D1 from source)   |
+| `avb_audio_source`  | Class A buffer                  | `0xA3000000 + 2*0x20000`  | 192 bytes  | App No. 0 (Class A from sink)      |
+
+###### Adding or Removing Talker Streams {#AVB_ADD_REMOVE_TALKER}
+
+All talker (TX) streams are configured in `/source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/ethfw_avtp.c`.
+
+To **add** a talker stream on a board:
+
+1. Define the stream by adding a new `#define AAF_TX_<name>_APPNO <appno>` (picking a free App No. from 0–5) and its corresponding `init_aaf_pcm_talker("tilld1", AAF_TX_<name>_APPNO, <intervalUs>, <channels>);` call inside `EnetApp_talkerTask()`. Note: `EnetApp_talkerTask()` already has two spare Class D1 slots stubbed out (`AAF_TX_CLASS_D1_2_APPNO`, `AAF_TX_CLASS_D1_3_APPNO`)—to use one, simply uncomment and set the define; no further code change is needed, as the matching `init_aaf_pcm_talker()` call is already guarded by `#ifdef`.
+2. On the peer board, enable a matching listener stream (see below) with the **same App No.** so it knows to expect the new stream.
+3. Rebuild the R5F server app for both boards (`ethfw_avtp.c` is part of the `avb_audio_source` / `avb_audio_sink` R5F build) and the C7x remote app if the new stream needs to reach the DSP.
+
+To **remove** a talker stream:
+
+1. Remove (or comment out) the corresponding `AAF_TX_*_APPNO` define—its `init_aaf_pcm_talker()` call is `#ifdef`-guarded and will be skipped automatically.
+2. Remove the matching `AAF_RX_*_APPNO` define on the peer board so it stops expecting that stream.
+
+###### Adding or Removing Listener Streams {#AVB_ADD_REMOVE_LISTENER}
+
+All listener (RX) streams are also configured in `ethfw_avtp.c`.
+
+To **add** a listener stream:
+
+1. Add a `#define AAF_RX_<n>_APPNO <appno>` for the App No. you want to receive (must match the App No. used by the talker on the peer board), following the pattern of the existing `AAF_RX_1_APPNO` / `AAF_RX_2_APPNO`. `enable_monitor_stream()` automatically starts logging packet counts for any of `AAF_RX_1_APPNO` through `AAF_RX_4_APPNO` that is defined—up to 4 monitored RX streams, no extra code needed for monitoring alone.
+2. Only `AAF_RX_1_APPNO` and `AAF_RX_2_APPNO` have a shared-memory ring buffer wired up in `start_aaf_pcm_listener()` today. If you add `AAF_RX_3_APPNO` / `AAF_RX_4_APPNO` (or repurpose the existing ones) and want that audio delivered to the C7x core, you must also allocate a ring buffer for it there (`aaf_init_shm()` + `gaudioListener.shmHandle[<appno>]`, sized to the stream's frame size), and update `remote_main.c` to read from it. Note: `enable_monitor_stream()` only logs packet counts; it does **not** forward audio to the DSP unless a shared-memory buffer is allocated. `audio_aaf_avtp_push_packet()` unconditionally calls `shm_write()` on whatever handle is registered for an incoming App No., so a stream without a ring buffer allocated for it will fail to be delivered.
+
+To **remove** a listener stream:
+
+1. Remove (or comment out) the corresponding `AAF_RX_*_APPNO` define—`enable_monitor_stream()` and `audio_aaf_avtp_push_packet()` skip App Nos. that aren't defined.
+2. Remove its ring buffer allocation from `start_aaf_pcm_listener()`/`remote_main.c` if one was added, and also delete any corresponding **`shm_write()`** calls if they were added manually.
+
+:::{admonition} Attention
+The App No. (last byte of the Stream ID and multicast MAC) must be unique per stream and identical on both the talker and the listener side of that stream—it is how `audio_aaf_avtp_push_packet()` demultiplexes incoming packets into `gaudioListener.rxstreams[streamId]`.
+:::
+
 ::::
 
 ######  MAC-only port
 
-::::{only} SOC_AM62DX
 Ethernet Firmware enables MAC-only mode on MAC port 2 for AM62Dx, this allows all incoming
 traffic from MAC port 2 to be transferred only to the host port. This effectively excludes the
-MAC port from rest of packet switching in the CPSW switch.\n
+MAC port from rest of packet switching in the CPSW switch.
+
 The key concepts of a system with MAC-only mode enabled are as follows:
 - *Logical switch ports* - Defined based on packet header match criteria, typically created
   based on destination MAC address, VLAN IDs, etc. Two possible types:
@@ -631,9 +748,8 @@ The default port configuration for AM62Dx is shown below:
 
 **Port Configuration**
 ```
-::::
 
-::::{only} SOC_AM62PX
+::::{only} SOC_AM62PX or SOC_AM62AX
    **Enable MAC-only mode on MAC port 2**
 
    1. Add `-DENABLE_MAC_ONLY_PORTS` flag to `DEFINES_common` in the client app, server app and ethfw library makefiles
@@ -677,4 +793,21 @@ The default port configuration for AM62Dx is shown below:
 
 ###### See Also
 
+::::{only} SOC_AM62PX or SOC_AM62DX
 [Ethernet And Networking](../../components/networking/networking.rst)
+::::
+
+# Glossary
+
+- **CPSW:** Common Platform Ethernet Switch
+- **ALE:** Address Lookup Engine
+- **gPTP:** Generalized Precision Time Protocol (IEEE 802.1AS)
+- **AVTP:** Audio Video Transport Protocol
+- **VLAN:** Virtual Local Area Network
+- **MAC-only:** MAC-only port mode
+- **R5F:** ARM Cortex-R5F core
+- **C7x:** TMS320C7x DSP core
+- **MCU-R5:** MCU domain Cortex-R5F core
+- **Device Under Test (DUT):** Physical board being tested
+- **App No.:** Application number (stream identifier)
+- **Class D1:** The first of up to four Class D AVTP streams in the autoamp application. Class D uses a 1000 μs transmit interval; the numeric suffix (D1, D2, …) distinguishes multiple Class D streams within the same demo.

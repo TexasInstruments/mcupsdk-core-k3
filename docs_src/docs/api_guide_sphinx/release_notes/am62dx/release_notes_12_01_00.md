@@ -22,7 +22,7 @@ AM62Dx | MCU R5F, WKUP R5F, A53, C75 | {{ VAR_BOARD_NAME }} EVM (referred to as 
 
 Feature                                                                                      | Module
 ---------------------------------------------------------------------------------------------|-----------------------------------
-         |      
+ Enhanced documentation for Enet - CPSW  and EthFw.                                          | ENET     
 
 ### Experimental Features 
 
@@ -39,7 +39,7 @@ Tools                   | Supported CPUs             | Version
 ------------------------|----------------------------|-----------------------
 Code Composer Studio    | MCU-R5F, C75               | 20.3.1
 SysConfig               | MCU-R5F, DM-R5F, C75       | 1.24.2, build 4234
-TI ARM CLANG            | MCU-R5F, WKUP-R5F          | 4.0.1.LTS
+TI ARM CLANG            | MCU-R5F, WKUP-R5F          | 4.0.5.LTS
 GCC AARCH64             | A53                        | 9.2-2019.12
 C7000-CGT               | C75                        | 5.0.0.LTS
 FreeRTOS Kernel         | MCU-R5F, WKUP-R5F, C75, A53| 11.1.0
@@ -51,15 +51,15 @@ FreeRTOS Kernel         | MCU-R5F, WKUP-R5F, C75, A53| 11.1.0
 <table>
     <tr>
         <td>Version</td>
-        <td>12.00.02</td>
+        <td>12.01.02</td>
     </tr>
     <tr>
         <td>Release Notes</td>
-        <td><a href="https://software-dl.ti.com/tisci/esd/12_00_02/release_notes/release_notes.html">LINK</a></td>
+        <td><a href="https://software-dl.ti.com/tisci/esd/12_01_02/release_notes/release_notes.html">LINK</a></td>
     </tr>
     <tr>
         <td>User Guide</td>
-        <td><a href="https://software-dl.ti.com/tisci/esd/12_00_02/1_intro/TISCI.html">LINK</a></td>
+        <td><a href="https://software-dl.ti.com/tisci/esd/12_01_02/1_intro/TISCI.html">LINK</a></td>
     </tr>
 </table>
 

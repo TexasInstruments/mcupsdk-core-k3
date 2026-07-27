@@ -5,7 +5,7 @@ This example takes an aggregator index as input from the user and performs singl
 
 * Setup of an ESM application callback to receive Single Error Correction (SEC) and setup of ECC Aggregators in general
 * Triggering of ECC events for all the RAM IDs, including Interconnect type and Wrapper type
-* Printing out error information within the ECC callback upon reception of ECC events
+* Capturing ESM interrupt and ECC error details in the application callbacks for subsequent reporting, including the interrupt level, ESM source, RAM ID, and bit error information
 
 ## Aggregators Supported
 
@@ -408,55 +408,48 @@ ECC SDL API tests: starting
 Refer the User Guide for the aggregator information
 
 Select the memory to test...
+11
 
-...selected 4
+...selected 11
 
-ecc_aggrtest: [4] single bit error self test: SDL_MSRAM_64K0_MSRAM2KX256E_ECC_AGGR starting
+ecc_aggrtest: [11] single bit error self test: SDL_FSS0_FSS_UL_OSPI0_OSPI_WRAP_ECC_AGGR starting
 
-ECC_Memory_init: [4] SDL_MSRAM_64K0_MSRAM2KX256E_ECC_AGGR ECC Init complete
 
-Self test started accessable RamId 0  starting
 
-Self Test completed for accessable RamId 0
 
-Select the memory to test...
-10
+ECC_Memory_init: [11] SDL_FSS0_FSS_UL_OSPI0_OSPI_WRAP_ECC_AGGR ECC Init complete
 
-...selected 10
+Inject test started not accessable RamId 0 starting
 
-ecc_aggrtest: [10] single bit error self test: SDL_WKUP_ECC_AGGR1 starting
+Injected ECC error and got ESM Interrupt
 
-ECC_Memory_init: [10] SDL_WKUP_ECC_AGGR1 ECC Init complete
+ESM Call back function called : instType 0x2, intType 0x1, grpChannel 0x0, index 0xb, intSrc 0xb 
 
-Self test started RamId 0  starting
+High Priority Interrupt Executed
 
-Self test started RamId 0  completed
-
-Self test started RamId 1  starting
-
-Self test started RamId 1  completed
-
-Self test started RamId 2  starting
-
-Self test started RamId 2  completed
-
-Self test started RamId 3  starting
-
-Self test started RamId 3  completed
-
-Self test started RamId 4  starting
-
-Self test started RamId 4  completed
-
-Self test started RamId 5  starting
-
-Self test started RamId 5  completed
-
-Self test started RamId 6  starting
-
-Self test started RamId 6  completed
+ECC Error Call back function called : eccMemType 11, errorSrc 0x1, ramId 0, bitErrorOffset 0x00000000, bitErrorGroup 0
 
 Select the memory to test...
+29
+
+...selected 29
+
+ecc_aggrtest: [29] single bit error self test: SDL_MMCSD1_EMMCSD4SS_ECC_AGGR_RXMEM starting
+
+
+
+
+ECC_Memory_init: [29] SDL_MMCSD1_EMMCSD4SS_ECC_AGGR_RXMEM ECC Init complete
+
+Inject test started not accessable RamId 0 starting
+
+Injected ECC error and got ESM Interrupt
+
+ESM Call back function called : instType 0x2, intType 0x1, grpChannel 0x1, index 0x1a, intSrc 0x3a 
+
+High Priority Interrupt Executed
+
+ECC Error Call back function called : eccMemType 29, errorSrc 0x1, ramId 0, bitErrorOffset 0x00000000, bitErrorGroup 0
 ```
 
 ::::
@@ -522,149 +515,208 @@ Select the memory to test...
 
 ::::{only} SOC_AM62DX
 
-   ECC Example Application
+ECC Example Application
 
-   ECC_Test_init: Init MCU ESM complete
+ECC_Test_init: Init MCU ESM complete
 
-   ECC_Test_init: Init MAIN ESM complete
+ECC_Test_init: Init MAIN ESM complete
 
-   ECC_Test_init: ECC Callback Init complete for MCU ESM
+ECC_Test_init: ECC Callback Init complete for MCU ESM
 
-   ECC_Test_init: ECC Callback Init complete for Main ESM
+ECC_Test_init: ECC Callback Init complete for Main ESM
 
-   ECC SDL API tests: starting
+ECC SDL API tests: starting
 
-   Select the memory to test...
+Select the memory to test...
 
-   4
-   ...selected 4
+0
+...selected 0
 
-   ecc_aggrtest: [4] single bit error self test: SDL_WKUP_ECC_AGGR1_SAM62A_DM_MCU_ECC_AGGR starting
-
-
-   ECC_Memory_init: [4] SDL_WKUP_ECC_AGGR1_SAM62A_DM_MCU_ECC_AGGR ECC Init complete
-
-   Self test started RamId 0  starting
-
-   Self test started RamId 0  completed
-
-   Self test started RamId 1  starting
-
-   Self test started RamId 1  completed
-
-   Self test started RamId 2  starting
-
-   Self test started RamId 2  completed
-
-   Self test started RamId 3  starting
-
-   Self test started RamId 3  completed
-
-   Select the memory to test...
-
-   5
-
-   ecc_aggrtest: [5] single bit error self test: SDL_DMASS1_DMSS_CSI_AM62A_ECCAGGR starting
+ecc_aggrtest: [0] single bit error self test: SDL_PSCSS0_SAM62A_MAIN_PSC_WRAP_ECC_AGGR starting
 
 
-   ECC_Memory_init: [5] SDL_DMASS1_DMSS_CSI_AM62A_ECCAGGR ECC Init complete
 
-   Inject test started not accessable RamId 0 starting
 
-   Injected ECC error and got ESM Interrupt
+ECC_Memory_init: [0] SDL_PSCSS0_SAM62A_MAIN_PSC_WRAP_ECC_AGGR ECC Init complete
 
-   Inject test started not accessable RamId 1 starting
+Inject test started not accessable RamId 0 starting
 
-   Injected ECC error and got ESM Interrupt
+Injected ECC error and got ESM Interrupt
 
-   Inject test started not accessable RamId 2 starting
+ESM Call back function called : instType 0x2, intType 0x1, grpChannel 0x0, index 0x16, intSrc 0x16 
 
-   Injected ECC error and got ESM Interrupt
+High Priority Interrupt Executed
 
-   Inject test started not accessable RamId 3 starting
+ECC Error Call back function called : eccMemType 0, errorSrc 0x1, ramId 0, bitErrorOffset 0x00000000, bitErrorGroup 0
 
-   Injected ECC error and got ESM Interrupt
+Select the memory to test...
 
-   Inject test started not accessable RamId 4 starting
+5
+...selected 5
 
-   Injected ECC error and got ESM Interrupt
+ecc_aggrtest: [5] single bit error self test: SDL_DMASS1_DMSS_CSI_AM62A_ECCAGGR starting
 
-   Inject test started not accessable RamId 5 starting
 
-   Injected ECC error and got ESM Interrupt
 
-   Inject test started not accessable RamId 6 starting
 
-   Injected ECC error and got ESM Interrupt
+ECC_Memory_init: [5] SDL_DMASS1_DMSS_CSI_AM62A_ECCAGGR ECC Init complete
 
-   Inject test started not accessable RamId 7 starting
+Inject test started not accessable RamId 0 starting
 
-   Injected ECC error and got ESM Interrupt
+Injected ECC error and got ESM Interrupt
 
-   Inject test started not accessable RamId 8 starting
+ESM Call back function called : instType 0x2, intType 0x1, grpChannel 0x1, index 0x1f, intSrc 0x3f 
 
-   Injected ECC error and got ESM Interrupt
+High Priority Interrupt Executed
 
-   Select the memory to test...
+ECC Error Call back function called : eccMemType 5, errorSrc 0x1, ramId 0, bitErrorOffset 0x00000000, bitErrorGroup 0
+
+Inject test started not accessable RamId 1 starting
+
+Injected ECC error and got ESM Interrupt
+
+ESM Call back function called : instType 0x2, intType 0x1, grpChannel 0x1, index 0x1f, intSrc 0x3f 
+
+High Priority Interrupt Executed
+
+ECC Error Call back function called : eccMemType 5, errorSrc 0x1, ramId 1, bitErrorOffset 0x00000000, bitErrorGroup 0
+
+Inject test started not accessable RamId 2 starting
+
+Injected ECC error and got ESM Interrupt
+
+ESM Call back function called : instType 0x2, intType 0x1, grpChannel 0x1, index 0x1f, intSrc 0x3f 
+
+High Priority Interrupt Executed
+
+ECC Error Call back function called : eccMemType 5, errorSrc 0x1, ramId 2, bitErrorOffset 0x00000000, bitErrorGroup 0
+
+Inject test started not accessable RamId 3 starting
+
+Injected ECC error and got ESM Interrupt
+
+ESM Call back function called : instType 0x2, intType 0x1, grpChannel 0x1, index 0x1f, intSrc 0x3f 
+
+High Priority Interrupt Executed
+
+ECC Error Call back function called : eccMemType 5, errorSrc 0x1, ramId 3, bitErrorOffset 0x00000000, bitErrorGroup 0
+
+Inject test started not accessable RamId 4 starting
+
+Injected ECC error and got ESM Interrupt
+
+ESM Call back function called : instType 0x2, intType 0x1, grpChannel 0x1, index 0x1f, intSrc 0x3f 
+
+High Priority Interrupt Executed
+
+ECC Error Call back function called : eccMemType 5, errorSrc 0x1, ramId 4, bitErrorOffset 0x00000000, bitErrorGroup 0
+
+Inject test started not accessable RamId 5 starting
+
+Injected ECC error and got ESM Interrupt
+
+ESM Call back function called : instType 0x2, intType 0x1, grpChannel 0x1, index 0x1f, intSrc 0x3f 
+
+High Priority Interrupt Executed
+
+ECC Error Call back function called : eccMemType 5, errorSrc 0x1, ramId 5, bitErrorOffset 0x00000000, bitErrorGroup 0
+
+Inject test started not accessable RamId 6 starting
+
+Injected ECC error and got ESM Interrupt
+
+ESM Call back function called : instType 0x2, intType 0x1, grpChannel 0x1, index 0x1f, intSrc 0x3f 
+
+High Priority Interrupt Executed
+
+ECC Error Call back function called : eccMemType 5, errorSrc 0x1, ramId 6, bitErrorOffset 0x00000000, bitErrorGroup 0
+
+Inject test started not accessable RamId 7 starting
+
+Injected ECC error and got ESM Interrupt
+
+ESM Call back function called : instType 0x2, intType 0x1, grpChannel 0x1, index 0x1f, intSrc 0x3f 
+
+High Priority Interrupt Executed
+
+ECC Error Call back function called : eccMemType 5, errorSrc 0x1, ramId 7, bitErrorOffset 0x00000000, bitErrorGroup 0
+
+Inject test started not accessable RamId 8 starting
+
+Injected ECC error and got ESM Interrupt
+
+ESM Call back function called : instType 0x2, intType 0x1, grpChannel 0x1, index 0x1f, intSrc 0x3f 
+
+High Priority Interrupt Executed
+
+ECC Error Call back function called : eccMemType 5, errorSrc 0x1, ramId 8, bitErrorOffset 0x00000000, bitErrorGroup 0
+
+Select the memory to test...
+
 
    ::::
 
 
 ::::{only} SOC_AM275X
 
-   ECC Example Application
+ECC Example Application
 
-   ECC_Test_init: Init MCU ESM complete
+ECC_Test_init: Init MCU ESM complete
 
-   ECC_Test_init: Init MAIN ESM complete
+ECC_Test_init: Init MAIN ESM complete
 
-   ECC_Test_init: ECC Callback Init complete for MCU ESM
+ECC_Test_init: ECC Callback Init complete for MCU ESM
 
-   ECC_Test_init: ECC Callback Init complete for Main ESM
+ECC_Test_init: ECC Callback Init complete for Main ESM
 
-   ECC SDL API tests: starting
+ECC SDL API tests: starting
 
-   Select the memory to test...
+Select the memory to test...
 
-   1
+5
 
-   ...selected 1
+...selected 5
 
-   ecc_aggrtest: [1] single bit error self test: SDL_WKUP_VTM0_K3VTM_N16FFC_ECCAGGR starting
-
-
-   ECC_Memory_init: [1] SDL_WKUP_VTM0_K3VTM_N16FFC_ECCAGGR ECC Init complete
-
-   Self test started RamId 0  starting
-
-   Self test started RamId 0  completed
-
-   Self test started RamId 1  starting
-
-   Self test started RamId 1  completed
-
-   Self test started RamId 2  starting
-
-   Self test started RamId 2  completed
-
-   Self test started RamId 3  starting
-
-   Self test started RamId 3  completed
-
-   Select the memory to test...
-   5
-
-   ...selected 5
-
-   ecc_aggrtest: [5] single bit error self test: SDL_MSRAM_1MB4_MSRAM32KX256E_ECC_AGGR starting
+ecc_aggrtest: [5] single bit error self test: SDL_MSRAM_1MB4_MSRAM32KX256E_ECC_AGGR starting
 
 
-   ECC_Memory_init: [5] SDL_MSRAM_1MB4_MSRAM32KX256E_ECC_AGGR ECC Init complete
 
-   Inject test started not accessable RamId 0 starting
 
-   Injected ECC error and got ESM Interrupt
+ECC_Memory_init: [5] SDL_MSRAM_1MB4_MSRAM32KX256E_ECC_AGGR ECC Init complete
 
-   Select the memory to test...
+Inject test started not accessable RamId 0 starting
+
+Injected ECC error and got ESM Interrupt
+
+ESM Call back function called : instType 0x2, intType 0x1, grpChannel 0x6, index 0x17, intSrc 0xd7 
+
+High Priority Interrupt Executed
+
+ECC Error Call back function called : eccMemType 5, errorSrc 0x1, ramId 0, bitErrorOffset 0x00000000, bitErrorGroup 0
+
+Select the memory to test...
+8
+
+...selected 8
+
+ecc_aggrtest: [8] single bit error self test: SDL_FSS1_FSS_OSPI0_OSPI_WRAP_ECC_AGGR starting
+
+
+
+
+ECC_Memory_init: [8] SDL_FSS1_FSS_OSPI0_OSPI_WRAP_ECC_AGGR ECC Init complete
+
+Inject test started not accessable RamId 0 starting
+
+Injected ECC error and got ESM Interrupt
+
+ESM Call back function called : instType 0x2, intType 0x1, grpChannel 0x0, index 0xc, intSrc 0xc 
+
+High Priority Interrupt Executed
+
+ECC Error Call back function called : eccMemType 8, errorSrc 0x1, ramId 0, bitErrorOffset 0x00000000, bitErrorGroup 0
+
+
+Select the memory to test...
    ::::
 

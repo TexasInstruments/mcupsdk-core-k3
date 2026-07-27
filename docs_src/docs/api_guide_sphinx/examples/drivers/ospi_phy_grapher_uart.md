@@ -615,26 +615,6 @@ Byte Range  Size  Field              Value
 - `numpy`: `pip install numpy`
 - `matplotlib`: `pip install matplotlib`
 
-### Critical Bug Fixes Applied
-
-**UART RX Issue (FIXED ✅)**
-
-Problem: Device couldn't receive command bytes from PC
-Root Cause: Byte-by-byte UART_read() incompatible with polling mode
-Solution: Changed to single 32-byte transaction
-
-**CRC Overflow (FIXED ✅)**
-
-Problem: Receiver crashed with overflow at block 33
-Root Cause: CRC intermediate values exceeded 16 bits
-Solution: Added masking: `crc = ((crc << 8) ^ TABLE[(crc >> 8) ^ byte]) & 0xFFFF`
-
-**Debug Corruption (FIXED ✅)**
-
-Problem: Debug logs corrupted XMODEM binary frames
-Root Cause: DebugP output mixed with binary data on same UART
-Solution: Dual UART architecture separates debug and data
-
 ## See Also
 
 [OSPI](../../components/drivers/ospi.md)

@@ -46,6 +46,7 @@
 #include "task.h"
 #include <kernel/dpl/SystemP.h>
 #include <kernel/dpl/SemaphoreP.h>
+#define C7X
 #include "AUDIOLIB_asrc.h"
 #include "swasrc_config.h"
 #include <dsplib.h>
@@ -590,12 +591,15 @@ void swasrc_init (void *args)
 {
 
     /* SWASRC handle */
+    DSPLIB_kernelHandle    matTransHandle = NULL;
     AUDIOLIB_asrc_InitArgs kerInitArgs  = {0};
     int32_t outFrameLength;
 
     /* Allocate memory for SWASRC handle and matrix transpose handle */
     int32_t handleSize = AUDIOLIB_asrc_getHandleSize(&kerInitArgs);
     handle = malloc(handleSize);
+    int32_t matTransHandleSize = DSPLIB_matTrans_getHandleSize(NULL);
+    matTransHandle   = malloc(matTransHandleSize);
 
     /* Init properties param */
     uint32_t fsin                   = INPUT_SAMPLE_RATE;
@@ -633,6 +637,7 @@ void swasrc_init (void *args)
     kerInitArgs.numChannels            = NUM_CHANNLES;
     kerInitArgs.dataFormat             = dataFormat;
     kerInitArgs.frameModuloFactor      = frameModuloFactor;
+    kerInitArgs.matTransHandle         = matTransHandle;
 
     /* Check init params */
     AUDIOLIB_status = AUDIOLIB_asrc_init_checkParams(handle, &bufParamsIn, &bufParamsOut, &kerInitArgs);

@@ -122,6 +122,8 @@ const int32_t gTestMessageType[] =
     TISCI_MSG_SA2UL_RELEASE_DKEK,
     TISCI_MSG_BOARD_CONFIG_SECURITY,
     TISCI_MSG_BOARD_CONFIG,
+    TISCI_MSG_GET_KEY_WRITER_TYPE,
+    TISCI_MSG_SET_KEY_WRITER_TYPE,
     0xFFFF,  /* Negative test case */
 };
 

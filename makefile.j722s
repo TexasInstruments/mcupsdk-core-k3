@@ -274,6 +274,7 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_notify_echo/j722s-evm/system_freertos_nortos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_echo/j722s-evm/system_freertos_nortos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/empty/j722s-evm/system_freertos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/empty/j722s-evm/system_nortos [all clean syscfg-gui syscfg]
 	@echo  .
 
 # Various Component Targets
@@ -727,6 +728,7 @@ BUILD_COMBO_EXAMPLE_ALL += csirx_ut_j722s-evm_main-r5fss0-0_freertos_ti-arm-clan
 BUILD_COMBO_EXAMPLE_ALL += ipc_notify_echo_j722s-evm_system_freertos_nortos
 BUILD_COMBO_EXAMPLE_ALL += ipc_rpmsg_echo_j722s-evm_system_freertos_nortos
 BUILD_COMBO_EXAMPLE_ALL += empty_j722s-evm_system_freertos
+BUILD_COMBO_EXAMPLE_ALL += empty_j722s-evm_system_nortos
 
 
 BUILD_COMBO_EXAMPLE_PRIVATE_ALL =
@@ -1327,6 +1329,9 @@ examples-private: dm_app
  empty_j722s-evm_system_freertos:
 	$(MAKE) -C examples/empty/j722s-evm/system_freertos -f makefile all
 
+ empty_j722s-evm_system_nortos:
+	$(MAKE) -C examples/empty/j722s-evm/system_nortos -f makefile all
+
 
 BUILD_COMBO_EXAMPLE_CLEAN_ALL =
 # Various Example Clean Targets
@@ -1505,6 +1510,7 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += csirx_ut_j722s-evm_main-r5fss0-0_freertos_ti-ar
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_notify_echo_j722s-evm_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += ipc_rpmsg_echo_j722s-evm_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += empty_j722s-evm_system_freertos_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += empty_j722s-evm_system_nortos_clean
 
 
 BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL =
@@ -2099,6 +2105,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  empty_j722s-evm_system_freertos_clean:
 	$(MAKE) -C examples/empty/j722s-evm/system_freertos -f makefile clean
 
+ empty_j722s-evm_system_nortos_clean:
+	$(MAKE) -C examples/empty/j722s-evm/system_nortos -f makefile clean
+
 
 BUILD_COMBO_EXAMPLE_SCRUB_ALL =
 # Various Example Scrub Targets
@@ -2277,6 +2286,7 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += csirx_ut_j722s-evm_main-r5fss0-0_freertos_ti-ar
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_notify_echo_j722s-evm_system_freertos_nortos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += ipc_rpmsg_echo_j722s-evm_system_freertos_nortos_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += empty_j722s-evm_system_freertos_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += empty_j722s-evm_system_nortos_scrub
 
 
 BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL =
@@ -2870,6 +2880,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  empty_j722s-evm_system_freertos_scrub:
 	$(MAKE) -C examples/empty/j722s-evm/system_freertos -f makefile scrub
+
+ empty_j722s-evm_system_nortos_scrub:
+	$(MAKE) -C examples/empty/j722s-evm/system_nortos -f makefile scrub
 
 
 sbl: libs

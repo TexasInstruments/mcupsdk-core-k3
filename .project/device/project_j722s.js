@@ -81,6 +81,7 @@ const example_file_list = [
     "examples/drivers/udma/udma_memcpy_interrupt/.project/project.js",
     "examples/drivers/udma/udma_memcpy_polling/.project/project.js",
     "examples/empty/.project/project_freertos.js",
+    "examples/empty/.project/project_nortos.js",
     "examples/hello_world/.project/project.js",
     "examples/kernel/dpl/dpl_demo/.project/project.js",
     "examples/kernel/dpl/dpl_demo/.project/project_safertos.js",

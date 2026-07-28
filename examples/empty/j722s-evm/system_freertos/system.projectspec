@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectSpec>
     <import spec="../mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec"/>
+    <import spec="../main-r5fss0-0_freertos/ti-arm-clang/example.projectspec"/>
+    <import spec="../c75ss0-0_freertos/ti-c7000/example.projectspec"/>
+    <import spec="../c75ss1-0_freertos/ti-c7000/example.projectspec"/>
     <project
         name="empty_j722s-evm_system_freertos"
         products="com.ti.MCU_PLUS_SDK_AMXXX"

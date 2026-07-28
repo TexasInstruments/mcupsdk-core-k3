@@ -52,9 +52,15 @@ APP_IMAGE_SIGN_CMD = $(MCU_PLUS_SDK_PATH)/tools/boot/signing/appimage_x509_cert_
 
 MULTI_CORE_APP_PARAMS = \
     ../empty_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang/$(PROFILE)/empty_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang.rprc@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
+    ../empty_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang/$(PROFILE)/empty_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang.rprc@$(BOOTIMAGE_CORE_ID_main-r5fss0-0) \
+    ../empty_j722s-evm_c75ss0-0_freertos_ti-c7000/$(PROFILE)/empty_j722s-evm_c75ss0-0_freertos_ti-c7000.rprc@$(BOOTIMAGE_CORE_ID_c75ss0-0) \
+    ../empty_j722s-evm_c75ss1-0_freertos_ti-c7000/$(PROFILE)/empty_j722s-evm_c75ss1-0_freertos_ti-c7000.rprc@$(BOOTIMAGE_CORE_ID_c75ss1-0) \
 
 MULTI_CORE_APP_PARAMS_XIP = \
     ../empty_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang/$(PROFILE)/empty_j722s-evm_mcu-r5fss0-0_freertos_ti-arm-clang.rprc_xip@$(BOOTIMAGE_CORE_ID_mcu-r5fss0-0) \
+    ../empty_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang/$(PROFILE)/empty_j722s-evm_main-r5fss0-0_freertos_ti-arm-clang.rprc_xip@$(BOOTIMAGE_CORE_ID_main-r5fss0-0) \
+    ../empty_j722s-evm_c75ss0-0_freertos_ti-c7000/$(PROFILE)/empty_j722s-evm_c75ss0-0_freertos_ti-c7000.rprc_xip@$(BOOTIMAGE_CORE_ID_c75ss0-0) \
+    ../empty_j722s-evm_c75ss1-0_freertos_ti-c7000/$(PROFILE)/empty_j722s-evm_c75ss1-0_freertos_ti-c7000.rprc_xip@$(BOOTIMAGE_CORE_ID_c75ss1-0) \
 
 all:
 ifeq ($(CCS_IDE_MODE),cloud)

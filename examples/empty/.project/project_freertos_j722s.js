@@ -105,9 +105,9 @@ const templates_freertos_mcu_r5f =
 
 const buildOptionCombos = [
     { device: device, cpu: "mcu-r5fss0-0",  cgt: "ti-arm-clang", board: "j722s-evm", os: "freertos", isPartOfSystemProject: true},
-    //{ device: device, cpu: "main-r5fss0-0", cgt: "ti-arm-clang", board: "j722s-evm", os: "freertos", isPartOfSystemProject: true},
-    //{ device: device, cpu: "c75ss0-0",      cgt: "ti-c7000",     board: "j722s-evm", os: "freertos", isPartOfSystemProject: true},
-    //{ device: device, cpu: "c75ss1-0",      cgt: "ti-c7000",     board: "j722s-evm", os: "freertos", isPartOfSystemProject: true},
+    { device: device, cpu: "main-r5fss0-0", cgt: "ti-arm-clang", board: "j722s-evm", os: "freertos", isPartOfSystemProject: true},
+    { device: device, cpu: "c75ss0-0",      cgt: "ti-c7000",     board: "j722s-evm", os: "freertos", isPartOfSystemProject: true},
+    { device: device, cpu: "c75ss1-0",      cgt: "ti-c7000",     board: "j722s-evm", os: "freertos", isPartOfSystemProject: true},
 ];
 
 const systemProjects =[
@@ -119,9 +119,9 @@ const systemProjects =[
         board: "j722s-evm",
         projects: [
             { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "j722s-evm", os: "freertos", isPartOfSystemProject: true},
-            // { device: device, cpu: "main-r5fss0-0", cgt: "ti-arm-clang", board: "j722s-evm", os: "freertos", isPartOfSystemProject: true},
-            // { device: device, cpu: "c75ss0-0",      cgt: "ti-c7000",     board: "j722s-evm", os: "freertos", isPartOfSystemProject: true},
-            // { device: device, cpu: "c75ss1-0",      cgt: "ti-c7000",     board: "j722s-evm", os: "freertos", isPartOfSystemProject: true},
+            { device: device, cpu: "main-r5fss0-0", cgt: "ti-arm-clang", board: "j722s-evm", os: "freertos", isPartOfSystemProject: true},
+            { device: device, cpu: "c75ss0-0",      cgt: "ti-c7000",     board: "j722s-evm", os: "freertos", isPartOfSystemProject: true},
+            { device: device, cpu: "c75ss1-0",      cgt: "ti-c7000",     board: "j722s-evm", os: "freertos", isPartOfSystemProject: true},
         ],
     },
 ]

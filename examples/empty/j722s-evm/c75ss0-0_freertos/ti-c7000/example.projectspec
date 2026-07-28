@@ -34,21 +34,23 @@
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F
             -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/j722s/r5f
-            -mv7504
-            --abi=eabi
+            -DBUILD_C75X_1
+            --advice:performance=none
+            -mv7524
             -q
             -mo
             -pden
             -pds=238
             -pds=880
             -pds1110
-            --endian=little
             --disable_inlining
             -ea.se71
             --emit_warnings_as_errors
             --diag_suppress=770
             --diag_suppress=69
             --diag_suppress=70
+            -DBUILD_C7X
+            -DBUILD_C7X_1
             -DSOC_J722S
         "
         linkerBuildOptions="
@@ -57,15 +59,12 @@
             -i${MCU_PLUS_SDK_PATH}/source/board/lib
             -i${CG_TOOL_ROOT}/lib
             -m=empty.${ConfigName}.map
-            --silicon_version=7504
             -z
             --emit_warnings_as_errors
             --diag_suppress=10063
             --ram_model
             --warn_sections
-            -q
             -x
-            
         "
 
         postBuildStep="$(MAKE) -C ${CCS_PROJECT_DIR} -f makefile_ccs_bootimage_gen OUTNAME=${BuildArtifactFileBaseName} PROFILE=${ConfigName} MCU_PLUS_SDK_PATH=${MCU_PLUS_SDK_PATH} CG_TOOL_ROOT=${CG_TOOL_ROOT} CCS_INSTALL_DIR=${CCS_INSTALL_DIR} CCS_IDE_MODE=${CCS_IDE_MODE}"
@@ -83,8 +82,6 @@
                 -D_DEBUG_=1
                 --opt_level=0
                 --symdebug:dwarf
-                -DBUILD_C7X_1
-                -DBUILD_C7X
             "
             linkerBuildOptions="
                 -lfreertos.j722s.c75x.ti-c7000.debug.lib
@@ -96,9 +93,7 @@
             compilerBuildOptions="
                 -Dxdc_target_name__=C71
                 --opt_level=3
-                --symdebug:none
-                -DBUILD_C7X_1
-                -DBUILD_C7X
+                --symdebug:dwarf
             "
             linkerBuildOptions="
                 -lfreertos.j722s.c75x.ti-c7000.release.lib

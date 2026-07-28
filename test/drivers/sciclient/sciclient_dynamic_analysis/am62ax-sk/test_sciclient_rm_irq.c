@@ -54,6 +54,8 @@ int8_t test_sciclient_rm_irq(void)
     uint16_t startingRange =  0;
     uint16_t endingRange   =  1;
     uint32_t dst_host_irq     =  0;
+    uint16_t translateDstInput = 0U;
+    uint16_t translateSrcOutput = 0U;
 
     struct tisci_msg_rm_get_resource_range_resp rmGetResResp;
     struct tisci_msg_rm_get_resource_range_req rmGetResCfg =
@@ -2468,6 +2470,54 @@ int8_t test_sciclient_rm_irq(void)
     }
     retVal = Sciclient_rmIrOutpIsFree(TISCI_DEV_CMP_EVENT_INTROUTER0, 0xFFFF);
     if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    retVal = Sciclient_rmTranslateIntOutput(76U, 0U, 121U, &translateDstInput);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    retVal = Sciclient_rmTranslateIntOutput(28U, 0U, 3U, &translateDstInput);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    retVal = Sciclient_rmTranslateIntOutput(28U, 0U, 76U, &translateDstInput);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    retVal = Sciclient_rmTranslateIntOutput(3U, 5U, 121U, &translateDstInput);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    retVal = Sciclient_rmTranslateIrqInput(121U, 32U, 76U, &translateSrcOutput);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    retVal = Sciclient_rmTranslateIrqInput(3U, 0U, 28U, &translateSrcOutput);
+    if(retVal == SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    retVal = Sciclient_rmTranslateIrqInput(76U, 64U, 28U, &translateSrcOutput);
+    if(retVal != SystemP_SUCCESS)
+    {
+        DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
+        failCount++;
+    }
+    retVal = Sciclient_rmTranslateIrqInput(121U, 37U, 3U, &translateSrcOutput);
+    if(retVal != SystemP_SUCCESS)
     {
         DebugP_log("\r\n Testcase failed in %d and retVal is %d", __LINE__, retVal);
         failCount++;

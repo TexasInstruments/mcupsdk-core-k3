@@ -178,6 +178,54 @@ For example:
 
 This command applies the overlay to the default DTB file and generates a new DTB file with the overlay changes.
 
+## Patching the Default DTS for Root Filesystem
+
+In Falcon Boot mode, U-Boot is bypassed and therefore cannot dynamically set the kernel `bootargs` (e.g., via `bootm`). The kernel command line — including the root filesystem location — must be embedded directly in the DTB. The default DTS from the Processor SDK may not specify the correct `root=` argument for your storage device and partition.
+
+A DTS overlay must be applied to update the `chosen` node's `bootargs` property so that the kernel knows which device and partition to mount as the root filesystem.
+
+### Root Filesystem Overlay
+
+Create a file (e.g., `rootfs-overlay.dtsi`) with the following content, adjusting `root=`, `rootfstype=`, and other boot arguments to match your setup:
+
+\code
+/dts-v1/;
+/plugin/;
+
+/ {
+    fragment@0 {
+        target-path = "/chosen";
+        __overlay__ {
+            bootargs = "console=ttyS2,115200n8 root=/dev/mmcblk0p2 ro rootfstype=ext4 rootwait quiet";
+        };
+    };
+};
+\endcode
+
+\note
+- Replace `root=/dev/mmcblk0p2` with the correct device node for your board and storage (e.g., `/dev/mmcblk1p2` for a different eMMC slot).
+- Use `ro` for a read-only mount or `rw` for a read-write mount.
+- `rootwait` instructs the kernel to wait for the root device to become available before mounting.
+
+### Generating the Root Filesystem DTBO
+
+Compile the overlay:
+\code
+dtc -I dts -O dtb -o rootfs-overlay.dtbo rootfs-overlay.dtsi
+\endcode
+
+### Applying the Root Filesystem Overlay
+
+Apply this overlay (along with the ATF address overlay) to the DTB:
+
+\code
+fdtoverlay -i path-to-actual.dtb -o path-to-new-overlay.dtb tfa-overlay.dtbo rootfs-overlay.dtbo
+\endcode
+
+\attention Both overlays can be chained in a single `fdtoverlay` call. Ensure the output DTB from this step is the one used for generating the Linux Falcon Appimage.
+
+\note Alternatively, the `/chosen` bootargs fragment above can be added directly into the existing `tfa-overlay.dtsi` file (as an additional `fragment@1` for AM62A/AM62P/AM62X-SK, or `fragment@2` for AM62SIP), so that a single overlay file and a single `fdtoverlay` call covers both the ATF address fix and the root filesystem specification.
+
 ## Rebuilding ATF
 
 

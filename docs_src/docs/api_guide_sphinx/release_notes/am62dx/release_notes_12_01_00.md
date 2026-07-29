@@ -22,6 +22,12 @@ AM62Dx | MCU R5F, WKUP R5F, A53, C75 | {{ VAR_BOARD_NAME }} EVM (referred to as 
 
 Feature                                                                                      | Module
 ---------------------------------------------------------------------------------------------|-----------------------------------
+ RTOS DDR Memtester example                                                                  | DDR
+ MCASP API to determine how many samples are queued                                         | MCASP
+ AVB Presentation Time demo                                                                  | MCASP
+ OSPI Access on C7x core                                                                     | OSPI
+ OSPI Example to collect and plot PHY Tuning Points                                          | OSPI
+ SnagFactory flashing method support                                                         | Tools
  Enhanced documentation for Enet - CPSW  and EthFw.                                          | ENET     
 
 ### Experimental Features 
@@ -326,9 +332,39 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <th> Module
 </tr>
 <tr>
-    <td>
-    <td>
-    <td>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-339">EXT_SITMPUSW-339</a>
+    <td> C7x: CPU NLC Module Not Clearing State on Interrupt
+    <td> C7X
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-222">EXT_SITMPUSW-222</a>
+    <td> MMCSD field Card Type is not ordered logically in the Sysconfig
+    <td> MMCSD
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-338">EXT_SITMPUSW-338</a>
+    <td> Flash writes fail if offset / address is not block aligned
+    <td> OSPI
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-220">EXT_SITMPUSW-220</a>
+    <td> SBL_SD bootloaders report incorrect boot image size
+    <td> SBL
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-329">EXT_SITMPUSW-329</a>
+    <td> Incorrect Value of UART_EFR2_TIMEOUT_BEHAVE_MASK
+    <td> UART
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_EP-13265">EXT_EP-13265</a>
+    <td> MCU R5 ECC Aggr init fails when MCU LBIST is enabled in bootloader
+    <td> SDL-LBIST
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_EP-12280">EXT_EP-12280</a>
+    <td> Running MCU LBIST on SBL causes JTAG connection issues to MCU R5F
+    <td> SDL-LBIST
 </tr>
 </table>
 
@@ -341,9 +377,64 @@ ROM_CHECKSUM     |MCU-R5F         | No
     <th> Module
 </tr>
 <tr>
-    <td>
-    <td>
-    <td>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-344">EXT_SITMPUSW-344</a>
+    <td> Alternate samples getting skipped when 16 bit audio samples are transmitted by mcasp
+    <td> -
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-153">EXT_SITMPUSW-153</a>
+    <td> MCU+ SDK CCS Project Build Generates Invalid/Redundant Boot Image Files
+    <td> Build
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-354">EXT_SITMPUSW-354</a>
+    <td> Udma_defaultVirtToPhyFxn does not takes the compiler dependency into account
+    <td> DMA
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-345">EXT_SITMPUSW-345</a>
+    <td> AM62A/AM62D:Cache:DMC Clock Gating Errata
+    <td> DPL
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-221">EXT_SITMPUSW-221</a>
+    <td> DebugP_log does not work when tried from multiple cores in SMP mode.
+    <td> DPL
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-348">EXT_SITMPUSW-348</a>
+    <td> PRIMASK Implementation based critical sections
+    <td> FreeRTOS
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-219">EXT_SITMPUSW-219</a>
+    <td> AM62D/A/275: C7x `portGET_RUN_TIME_COUNTER_VALUE` API uses hard coded CPU Freq
+    <td> FreeRTOS
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-224">EXT_SITMPUSW-224</a>
+    <td> Mcasp :  Not working on interrupt mode
+    <td> MCASP
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-214">EXT_SITMPUSW-214</a>
+    <td> Spinlock: Hang in multithread test cases due to HW interrupt config
+    <td> Spinlock
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-214">EXT_SITMPUSW-214</a>
+    <td> Spinlock: Missing NULL Pointer Validation for Base Address Parameter in Spinlock APIs
+    <td> Spinlock
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_EP-12276">EXT_EP-12276</a>
+    <td> ECC: Firewall related aggregators failures
+    <td> SDL-ECC
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_EP-12283">EXT_EP-12283</a>
+    <td> ECC aggregators CPSW0, CSI RX are failing on AM62A and CPSW0 on AM62D.
+    <td> SDL-ECC
 </tr>
 </table>
 

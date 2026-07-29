@@ -20,8 +20,18 @@ AM275x | R5F, C75                    | {{ VAR_BOARD_NAME }} (referred to as am27
 
 Feature                                                                                      | Module
 ---------------------------------------------------------------------------------------------|-----------------------------------
+ HSM core boot support                                                                       | SBL
+ Optishare support for R5F cores                                                             | Optishare
+ Smart placement tool support                                                                | Smart Placement
+ CMAC and TRNG support                                                                       | Crypto
+ OSPI Example to collect and plot PHY Tuning Points                                          | OSPI
+ Runtime debug unlock using TISCI API                                                        | Security
+ Example to show firewall exception interrupt mechanism                                      | Security
+ Example to show R/W of the Extended OTP                                                     | Security
+ MCELF encrypted boot supporthandling                                                        | SBL
+ Enable FPU context preservation in R5F by default                                           | FreeRTOS
+ MCASP API to determine how many samples are queued                                         | MCASP
  Enhanced documentation for Enet - CPSW                                                      | ENET
-
 
 ## Dependent Tools and Compiler Information
 
@@ -168,9 +178,64 @@ This is BQ release for SDL. FSQ release will be provided in next release.
     <th> Module
 </tr>
 <tr>
-    <td>
-    <td>
-    <td>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-336">EXT_SITMPUSW-336</a>
+    <td> AM275:Cache:Enable WriteBack Mode
+    <td> DPL
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-261">EXT_SITMPUSW-261</a>
+    <td> AM275x FreeRTOS SDK: The CycleCounterP_getCount32 for R5F_0_0 is not accurate
+    <td> DPL
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-222">EXT_SITMPUSW-222</a>
+    <td> MMCSD field Card Type is not ordered logically in the Sysconfig
+    <td> MMCSD
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-338">EXT_SITMPUSW-338</a>
+    <td> Flash writes fail if offset / address is not block aligned
+    <td> OSPI
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-341">EXT_SITMPUSW-341</a>
+    <td> Pulsar* (all variants) do not have RAT MMR Parity - Mismatch w. Diagnostic RAT5
+    <td> RAT
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-340">EXT_SITMPUSW-340</a>
+    <td> Undefined section header string table index in the MCELF images
+    <td> SBL
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-330">EXT_SITMPUSW-330</a>
+    <td> Use of irrelevant arguments in the signing command
+    <td> SBL
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-331">EXT_SITMPUSW-331</a>
+    <td> MCELF application segments sizes are not aligned to 16B
+    <td> SBL
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-327">EXT_SITMPUSW-327</a>
+    <td> Incorrect encrypted boot integration for the MCELF images
+    <td> Security
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-329">EXT_SITMPUSW-329</a>
+    <td> Incorrect Value of UART_EFR2_TIMEOUT_BEHAVE_MASK
+    <td> UART
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_EP-12280">EXT_EP-12280</a>
+    <td> Running MCU LBIST on SBL causes JTAG connection issues to MCU R5F
+    <td> SDL-LBIST
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_EP-13571">EXT_EP-13571</a>
+    <td> pTempVal data type set to unsigned 32 instead of signed in VTM
+    <td> SDL-VTM
 </tr>
 </table>
 
@@ -185,9 +250,54 @@ This is BQ release for SDL. FSQ release will be provided in next release.
     <th> Module
 </tr>
 <tr>
-    <td>
-    <td>
-    <td>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-326">EXT_SITMPUSW-326</a>
+    <td> AASRC - AASRC channel data gets shifted when c7x workload is high and multiple mcasp instances are used
+    <td> AASRC
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-153">EXT_SITMPUSW-153</a>
+    <td> MCU+ SDK CCS Project Build Generates Invalid/Redundant Boot Image Files
+    <td> Build
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-354">EXT_SITMPUSW-354</a>
+    <td> Udma_defaultVirtToPhyFxn does not takes the compiler dependency into account
+    <td> DMA
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-348">EXT_SITMPUSW-348</a>
+    <td> PRIMASK Implementation based critical sections
+    <td> FreeRTOS
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-219">EXT_SITMPUSW-219</a>
+    <td> AM62D/A/275: C7x `portGET_RUN_TIME_COUNTER_VALUE` API uses hard coded CPU Freq
+    <td> FreeRTOS
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-224">EXT_SITMPUSW-224</a>
+    <td> Mcasp :  Not working on interrupt mode
+    <td> MCASP
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-214">EXT_SITMPUSW-214</a>
+    <td> Spinlock: Hang in multithread test cases due to HW interrupt config
+    <td> Spinlock
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-214">EXT_SITMPUSW-214</a>
+    <td> Spinlock: Missing NULL Pointer Validation for Base Address Parameter in Spinlock APIs
+    <td> Spinlock
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_EP-12276">EXT_EP-12276</a>
+    <td> ECC: Firewall related aggregators failures
+    <td> SDL-ECC
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_EP-12282">EXT_EP-12282</a>
+    <td> AM275x: ECC: Some of the aggregators are failing on AM275x
+    <td> SDL-ECC
 </tr>
 </table>
 

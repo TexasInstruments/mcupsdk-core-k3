@@ -21,6 +21,9 @@ AM62P  | MCU R5F, WKUP R5F           | {{ VAR_BOARD_NAME }} EVM (referred to as 
 
 Feature                                                                                      | Module
 ---------------------------------------------------------------------------------------------|-----------------------------------
+ Add VDD core voltage config for HS400 OTAPDLYSEL                                            | MMCSD
+ OSPI Example to collect and plot PHY Tuning Points                                          | OSPI
+ SnagFactory flashing method support                                                         | Tools
  Enhanced documentation for Enet - CPSW  and EthFw.                                          | ENET    
 
 ## Experimental Features
@@ -134,9 +137,49 @@ PMIC          | MCU-R5F               | Yes
     <th> Module
 </tr>
 <tr>
-    <td>
-    <td>
-    <td>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-337">EXT_SITMPUSW-337</a>
+    <td> MCU PLUS SDK AM62P: EMMC HS400 Glitch - IP vendor recommendation
+    <td> -
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-222">EXT_SITMPUSW-222</a>
+    <td> MMCSD field Card Type is not ordered logically in the Sysconfig
+    <td> MMCSD
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-338">EXT_SITMPUSW-338</a>
+    <td> Flash writes fail if offset / address is not block aligned
+    <td> OSPI
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-220">EXT_SITMPUSW-220</a>
+    <td> SBL_SD bootloaders report incorrect boot image size
+    <td> SBL
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-329">EXT_SITMPUSW-329</a>
+    <td> Incorrect Value of UART_EFR2_TIMEOUT_BEHAVE_MASK
+    <td> UART
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_EP-12277">EXT_EP-12277</a>
+    <td> AM62Px: ECC: SDL_MCAN1_MCANSS_MSGMEM_WRAP_ECC_AGGR aggregator is failing
+    <td> SDL-ECC
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_EP-13265">EXT_EP-13265</a>
+    <td> MCU R5 ECC Aggr init fails when MCU LBIST is enabled in bootloader
+    <td> SDL-LBIST
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_EP-12280">EXT_EP-12280</a>
+    <td> Running MCU LBIST on SBL causes JTAG connection issues to MCU R5F
+    <td> SDL-LBIST
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_EP-13576">EXT_EP-13576</a>
+    <td> Need to enable the POK bandgap bit for reference voltage
+    <td> SDL-POK
 </tr>
 </table>
 
@@ -151,9 +194,54 @@ PMIC          | MCU-R5F               | Yes
     <th> Module
 </tr>
 <tr>
-    <td>
-    <td>
-    <td>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-153">EXT_SITMPUSW-153</a>
+    <td> MCU+ SDK CCS Project Build Generates Invalid/Redundant Boot Image Files
+    <td> Build
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-349">EXT_SITMPUSW-349</a>
+    <td> VP_SYNC_LOST IRQ Flood in applications with higher preemptions
+    <td> Display
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-354">EXT_SITMPUSW-354</a>
+    <td> Udma_defaultVirtToPhyFxn does not takes the compiler dependency into account
+    <td> DMA
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-348">EXT_SITMPUSW-348</a>
+    <td> PRIMASK Implementation based critical sections
+    <td> FreeRTOS
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-28">EXT_SITMPUSW-28</a>
+    <td> Outstanding mailbox messages prevent suspend
+    <td> IPC
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-259">EXT_SITMPUSW-259</a>
+    <td> eMMC retuning may be attempted during the initialization sequence
+    <td> MMCSD
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-135">EXT_SITMPUSW-135</a>
+    <td> RTC Test application failing intermittently.
+    <td> RTC
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-258">EXT_SITMPUSW-258</a>
+    <td> WKUP UART0 is not working in CallBack mode
+    <td> UART
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_EP-12276">EXT_EP-12276</a>
+    <td> ECC: Firewall related aggregators failures
+    <td> SDL-ECC
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_EP-12279">EXT_EP-12279</a>
+    <td> CSI RX ECC aggregators are failing on AM62P/AM62X
+    <td> SDL-ECC
 </tr>
 </table>
 

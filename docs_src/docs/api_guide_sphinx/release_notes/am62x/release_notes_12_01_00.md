@@ -31,8 +31,8 @@ AM62x  | M4F, R5F, A53   | SK-AM62 (referred as am62x-sk in code), SK-AM62-LP (r
 
 Feature                                                                                      | Module
 ---------------------------------------------------------------------------------------------|-----------------------------------
-         |
-
+ OSPI Example to collect and plot PHY Tuning Points                                          | OSPI
+ SnagFactory flashing method support                                                         | Tools
 
 ## Dependent Tools and Compiler Information
 
@@ -150,9 +150,44 @@ ROM Checksum | R5F            | No
     <th> Module
 </tr>
 <tr>
-    <td>
-    <td>
-    <td>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-343">EXT_SITMPUSW-343</a>
+    <td> Document list of drivers using WAIT FOREVER
+    <td> Documentation
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-222">EXT_SITMPUSW-222</a>
+    <td> MMCSD field Card Type is not ordered logically in the Sysconfig
+    <td> MMCSD
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-338">EXT_SITMPUSW-338</a>
+    <td> Flash writes fail if offset / address is not block aligned
+    <td> OSPI
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-342">EXT_SITMPUSW-342</a>
+    <td> Import From JSON does not under SysConfig>FLASH section
+    <td> OSPI
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-341">EXT_SITMPUSW-341</a>
+    <td> Pulsar* (all variants) do not have RAT MMR Parity - Mismatch w. Diagnostic RAT5
+    <td> RAT
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-220">EXT_SITMPUSW-220</a>
+    <td> SBL_SD bootloaders report incorrect boot image size
+    <td> SBL
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-329">EXT_SITMPUSW-329</a>
+    <td> Incorrect Value of UART_EFR2_TIMEOUT_BEHAVE_MASK
+    <td> UART
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_EP-13576">EXT_EP-13576</a>
+    <td> Need to enable the POK bandgap bit for reference voltage
+    <td> SDL-POK
 </tr>
 </table>
 
@@ -167,9 +202,64 @@ ROM Checksum | R5F            | No
     <th> Module
 </tr>
 <tr>
-    <td>
-    <td>
-    <td>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-347">EXT_SITMPUSW-347</a>
+    <td> QoS DDR docs are wrong
+    <td> -
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-153">EXT_SITMPUSW-153</a>
+    <td> MCU+ SDK CCS Project Build Generates Invalid/Redundant Boot Image Files
+    <td> Build
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-354">EXT_SITMPUSW-354</a>
+    <td> Udma_defaultVirtToPhyFxn does not takes the compiler dependency into account
+    <td> DMA
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-348">EXT_SITMPUSW-348</a>
+    <td> PRIMASK Implementation based critical sections
+    <td> FreeRTOS
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-87">EXT_SITMPUSW-87</a>
+    <td> Sysconfig crashing when adding large number of GPIO pins
+    <td> GPIO
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-28">EXT_SITMPUSW-28</a>
+    <td> Outstanding mailbox messages prevent suspend
+    <td> IPC
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-352">EXT_SITMPUSW-352</a>
+    <td> [MCASP] dim3 DMA stride computes to zero for MULTISER_MULTISLOT_NON_INTERLEAVED when waterLevel < serCount * slotCount
+    <td> MCASP
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_SITMPUSW-214">EXT_SITMPUSW-214</a>
+    <td> Spinlock: Missing NULL Pointer Validation for Base Address Parameter in Spinlock APIs
+    <td> Spinlock
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_EP-12275">EXT_EP-12275</a>
+    <td> AM62x: ECC: SDL_WKUP_R5FSS0_PULSAR_UL_CPU0_ECC_AGGR and  SDL_DMASS0_DMSS_AM62_ECCAGGR aggregators are failing
+    <td> SDL-ECC
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_EP-12276">EXT_EP-12276</a>
+    <td> ECC: Firewall related aggregators failures
+    <td> SDL-ECC
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_EP-12278">EXT_EP-12278</a>
+    <td> ECC Aggregator SMS0_SMS_HSM_ECC Aggr fails on AM62x
+    <td> SDL-ECC
+</tr>
+<tr>
+    <td> <a href="https://sir.ext.ti.com/jira/browse/EXT_EP-12279">EXT_EP-12279</a>
+    <td> CSI RX ECC aggregators are failing on AM62P/AM62X
+    <td> SDL-ECC
 </tr>
 </table>
 

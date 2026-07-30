@@ -62,6 +62,8 @@ INCLUDES_common := \
 DEFINES_common := \
 	-DSOC_AM275X \
 	-DR5F_CORE \
+	-DSOC_AM275X \
+	-DENABLE_MT_TESTS \
 
 CFLAGS_common := \
 	-mcpu=cortex-r5 \
@@ -96,8 +98,14 @@ LNK_FILES_common = \
 	linker.cmd \
 
 LIBS_PATH_common = \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/board/lib \
+	-Wl,-i${MCU_PLUS_SDK_PATH}/source/drivers/udma/lib \
 	-Wl,-i${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	-Wl,-i${CG_TOOL_ROOT}/lib \
 
@@ -125,8 +133,14 @@ LIBS_NAME = \
 LIBS_PREBUILD_NAME = \
 
 LIBS_PATH_NAME = \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/rm_pm_hal/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciclient_direct/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/sciserver/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/device_manager/self_reset/lib \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
+	${MCU_PLUS_SDK_PATH}/source/board/lib \
+	${MCU_PLUS_SDK_PATH}/source/drivers/udma/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
 	${CG_TOOL_ROOT}/lib \
 

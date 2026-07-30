@@ -235,7 +235,29 @@ help:
 	@echo  $(MAKE) -s -C drivers/mcasp/test_mcasp_fault_injection/am275x-evm/r5fss1-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mcasp/test_mcasp_fault_injection/am275x-evm/r5fss1-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mcasp/test_mcasp_fault_injection/am275x-evm/r5fss1-1_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi/am275x-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C drivers/mcspi/mcspi/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi/am275x-evm/r5fss0-1_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi/am275x-evm/r5fss0-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi/am275x-evm/r5fss1-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi/am275x-evm/r5fss1-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi/am275x-evm/r5fss1-1_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi/am275x-evm/r5fss1-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi/am275x-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi/am275x-evm/c75ss1-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi_master_slave/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi_master_slave/am275x-evm/r5fss0-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi_master_slave/am275x-evm/r5fss1-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi_master_slave/am275x-evm/r5fss1-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi_master_slave/am275x-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi_master_slave/am275x-evm/c75ss1-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/r5fss0-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/r5fss1-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/r5fss1-1_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/c75ss0-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/c75ss1-0_freertos/ti-c7000 [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl_mpu_test/am275x-evm/r5fss0-0_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl_mpu_test/am275x-evm/r5fss0-0_freertos/ti-arm-clang [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C kernel/dpl_mpu_test/am275x-evm/r5fss0-1_nortos/ti-arm-clang [all clean syscfg-gui syscfg]
@@ -738,7 +760,28 @@ BUILD_COMBO_EXAMPLE_ALL += test_mcasp_fault_inject_am275x-evm_r5fss1-0_freertos_
 BUILD_COMBO_EXAMPLE_ALL += test_mcasp_fault_inject_am275x-evm_r5fss1-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_mcasp_fault_inject_am275x-evm_r5fss1-1_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_mcasp_fault_inject_am275x-evm_r5fss1-1_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_am275x-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_mcspi_am275x-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_am275x-evm_r5fss0-1_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_am275x-evm_r5fss0-1_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_am275x-evm_r5fss1-0_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_am275x-evm_r5fss1-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_am275x-evm_r5fss1-1_nortos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_am275x-evm_r5fss1-1_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_am275x-evm_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_am275x-evm_c75ss1-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_master_slave_am275x-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_master_slave_am275x-evm_r5fss0-1_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_master_slave_am275x-evm_r5fss1-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_master_slave_am275x-evm_r5fss1-1_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_master_slave_am275x-evm_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_master_slave_am275x-evm_c75ss1-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_master_slave_dma_am275x-evm_r5fss0-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_master_slave_dma_am275x-evm_r5fss0-1_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_master_slave_dma_am275x-evm_r5fss1-0_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_master_slave_dma_am275x-evm_r5fss1-1_freertos_ti-arm-clang
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_master_slave_dma_am275x-evm_c75ss0-0_freertos_ti-c7000
+BUILD_COMBO_EXAMPLE_ALL += test_mcspi_master_slave_dma_am275x-evm_c75ss1-0_freertos_ti-c7000
 BUILD_COMBO_EXAMPLE_ALL += test_mpu_am275x-evm_r5fss0-0_nortos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_mpu_am275x-evm_r5fss0-0_freertos_ti-arm-clang
 BUILD_COMBO_EXAMPLE_ALL += test_mpu_am275x-evm_r5fss0-1_nortos_ti-arm-clang
@@ -1497,8 +1540,74 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  test_mcasp_fault_inject_am275x-evm_r5fss1-1_nortos_ti-arm-clang:
 	$(MAKE) -C drivers/mcasp/test_mcasp_fault_injection/am275x-evm/r5fss1-1_nortos/ti-arm-clang -f makefile all
 
+ test_mcspi_am275x-evm_r5fss0-0_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile all
+
  test_mcspi_am275x-evm_r5fss0-0_freertos_ti-arm-clang:
 	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_mcspi_am275x-evm_r5fss0-1_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss0-1_nortos/ti-arm-clang -f makefile all
+
+ test_mcspi_am275x-evm_r5fss0-1_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile all
+
+ test_mcspi_am275x-evm_r5fss1-0_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss1-0_nortos/ti-arm-clang -f makefile all
+
+ test_mcspi_am275x-evm_r5fss1-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile all
+
+ test_mcspi_am275x-evm_r5fss1-1_nortos_ti-arm-clang:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss1-1_nortos/ti-arm-clang -f makefile all
+
+ test_mcspi_am275x-evm_r5fss1-1_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile all
+
+ test_mcspi_am275x-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
+
+ test_mcspi_am275x-evm_c75ss1-0_freertos_ti-c7000:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile all
+
+ test_mcspi_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_mcspi_master_slave_am275x-evm_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_mcspi_master_slave_am275x-evm_r5fss0-1_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile all
+
+ test_mcspi_master_slave_am275x-evm_r5fss1-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile all
+
+ test_mcspi_master_slave_am275x-evm_r5fss1-1_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile all
+
+ test_mcspi_master_slave_am275x-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
+
+ test_mcspi_master_slave_am275x-evm_c75ss1-0_freertos_ti-c7000:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile all
+
+ test_mcspi_master_slave_dma_am275x-evm_r5fss0-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile all
+
+ test_mcspi_master_slave_dma_am275x-evm_r5fss0-1_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile all
+
+ test_mcspi_master_slave_dma_am275x-evm_r5fss1-0_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile all
+
+ test_mcspi_master_slave_dma_am275x-evm_r5fss1-1_freertos_ti-arm-clang:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile all
+
+ test_mcspi_master_slave_dma_am275x-evm_c75ss0-0_freertos_ti-c7000:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile all
+
+ test_mcspi_master_slave_dma_am275x-evm_c75ss1-0_freertos_ti-c7000:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile all
 
  test_mpu_am275x-evm_r5fss0-0_nortos_ti-arm-clang:
 	$(MAKE) -C kernel/dpl_mpu_test/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile all
@@ -2246,7 +2355,28 @@ BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcasp_fault_inject_am275x-evm_r5fss1-0_fre
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcasp_fault_inject_am275x-evm_r5fss1-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcasp_fault_inject_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcasp_fault_inject_am275x-evm_r5fss1-1_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_am275x-evm_r5fss0-1_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_am275x-evm_r5fss0-1_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_am275x-evm_r5fss1-0_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_am275x-evm_r5fss1-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_am275x-evm_r5fss1-1_nortos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_am275x-evm_c75ss1-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_master_slave_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_master_slave_am275x-evm_r5fss0-1_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_master_slave_am275x-evm_r5fss1-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_master_slave_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_master_slave_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_master_slave_am275x-evm_c75ss1-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_master_slave_dma_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_master_slave_dma_am275x-evm_r5fss0-1_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_master_slave_dma_am275x-evm_r5fss1-0_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_master_slave_dma_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_master_slave_dma_am275x-evm_c75ss0-0_freertos_ti-c7000_clean
+BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mcspi_master_slave_dma_am275x-evm_c75ss1-0_freertos_ti-c7000_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mpu_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mpu_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean
 BUILD_COMBO_EXAMPLE_CLEAN_ALL += test_mpu_am275x-evm_r5fss0-1_nortos_ti-arm-clang_clean
@@ -3001,8 +3131,74 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  test_mcasp_fault_inject_am275x-evm_r5fss1-1_nortos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/mcasp/test_mcasp_fault_injection/am275x-evm/r5fss1-1_nortos/ti-arm-clang -f makefile clean
 
+ test_mcspi_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+
  test_mcspi_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
 	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_mcspi_am275x-evm_r5fss0-1_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss0-1_nortos/ti-arm-clang -f makefile clean
+
+ test_mcspi_am275x-evm_r5fss0-1_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile clean
+
+ test_mcspi_am275x-evm_r5fss1-0_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss1-0_nortos/ti-arm-clang -f makefile clean
+
+ test_mcspi_am275x-evm_r5fss1-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile clean
+
+ test_mcspi_am275x-evm_r5fss1-1_nortos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss1-1_nortos/ti-arm-clang -f makefile clean
+
+ test_mcspi_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile clean
+
+ test_mcspi_am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
+ test_mcspi_am275x-evm_c75ss1-0_freertos_ti-c7000_clean:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile clean
+
+ test_mcspi_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_mcspi_master_slave_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_mcspi_master_slave_am275x-evm_r5fss0-1_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile clean
+
+ test_mcspi_master_slave_am275x-evm_r5fss1-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile clean
+
+ test_mcspi_master_slave_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile clean
+
+ test_mcspi_master_slave_am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
+ test_mcspi_master_slave_am275x-evm_c75ss1-0_freertos_ti-c7000_clean:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile clean
+
+ test_mcspi_master_slave_dma_am275x-evm_r5fss0-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile clean
+
+ test_mcspi_master_slave_dma_am275x-evm_r5fss0-1_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile clean
+
+ test_mcspi_master_slave_dma_am275x-evm_r5fss1-0_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile clean
+
+ test_mcspi_master_slave_dma_am275x-evm_r5fss1-1_freertos_ti-arm-clang_clean:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile clean
+
+ test_mcspi_master_slave_dma_am275x-evm_c75ss0-0_freertos_ti-c7000_clean:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile clean
+
+ test_mcspi_master_slave_dma_am275x-evm_c75ss1-0_freertos_ti-c7000_clean:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile clean
 
  test_mpu_am275x-evm_r5fss0-0_nortos_ti-arm-clang_clean:
 	$(MAKE) -C kernel/dpl_mpu_test/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile clean
@@ -3750,7 +3946,28 @@ BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcasp_fault_inject_am275x-evm_r5fss1-0_fre
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcasp_fault_inject_am275x-evm_r5fss1-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcasp_fault_inject_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcasp_fault_inject_am275x-evm_r5fss1-1_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_am275x-evm_r5fss0-1_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_am275x-evm_r5fss0-1_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_am275x-evm_r5fss1-0_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_am275x-evm_r5fss1-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_am275x-evm_r5fss1-1_nortos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_am275x-evm_c75ss1-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_master_slave_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_master_slave_am275x-evm_r5fss0-1_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_master_slave_am275x-evm_r5fss1-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_master_slave_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_master_slave_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_master_slave_am275x-evm_c75ss1-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_master_slave_dma_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_master_slave_dma_am275x-evm_r5fss0-1_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_master_slave_dma_am275x-evm_r5fss1-0_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_master_slave_dma_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_master_slave_dma_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub
+BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mcspi_master_slave_dma_am275x-evm_c75ss1-0_freertos_ti-c7000_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mpu_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mpu_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub
 BUILD_COMBO_EXAMPLE_SCRUB_ALL += test_mpu_am275x-evm_r5fss0-1_nortos_ti-arm-clang_scrub
@@ -4505,8 +4722,74 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
  test_mcasp_fault_inject_am275x-evm_r5fss1-1_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/mcasp/test_mcasp_fault_injection/am275x-evm/r5fss1-1_nortos/ti-arm-clang -f makefile scrub
 
+ test_mcspi_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+
  test_mcspi_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
 	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_mcspi_am275x-evm_r5fss0-1_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss0-1_nortos/ti-arm-clang -f makefile scrub
+
+ test_mcspi_am275x-evm_r5fss0-1_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile scrub
+
+ test_mcspi_am275x-evm_r5fss1-0_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss1-0_nortos/ti-arm-clang -f makefile scrub
+
+ test_mcspi_am275x-evm_r5fss1-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_mcspi_am275x-evm_r5fss1-1_nortos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss1-1_nortos/ti-arm-clang -f makefile scrub
+
+ test_mcspi_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile scrub
+
+ test_mcspi_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
+ test_mcspi_am275x-evm_c75ss1-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile scrub
+
+ test_mcspi_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_mcspi_master_slave_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_mcspi_master_slave_am275x-evm_r5fss0-1_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile scrub
+
+ test_mcspi_master_slave_am275x-evm_r5fss1-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_mcspi_master_slave_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile scrub
+
+ test_mcspi_master_slave_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
+ test_mcspi_master_slave_am275x-evm_c75ss1-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile scrub
+
+ test_mcspi_master_slave_dma_am275x-evm_r5fss0-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_mcspi_master_slave_dma_am275x-evm_r5fss0-1_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/r5fss0-1_freertos/ti-arm-clang -f makefile scrub
+
+ test_mcspi_master_slave_dma_am275x-evm_r5fss1-0_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/r5fss1-0_freertos/ti-arm-clang -f makefile scrub
+
+ test_mcspi_master_slave_dma_am275x-evm_r5fss1-1_freertos_ti-arm-clang_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/r5fss1-1_freertos/ti-arm-clang -f makefile scrub
+
+ test_mcspi_master_slave_dma_am275x-evm_c75ss0-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/c75ss0-0_freertos/ti-c7000 -f makefile scrub
+
+ test_mcspi_master_slave_dma_am275x-evm_c75ss1-0_freertos_ti-c7000_scrub:
+	$(MAKE) -C drivers/mcspi/mcspi_master_slave_dma/am275x-evm/c75ss1-0_freertos/ti-c7000 -f makefile scrub
 
  test_mpu_am275x-evm_r5fss0-0_nortos_ti-arm-clang_scrub:
 	$(MAKE) -C kernel/dpl_mpu_test/am275x-evm/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
@@ -5092,6 +5375,7 @@ sbl: libs
 	$(MAKE) -C drivers/pinmux_coverage/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 	$(MAKE) -C drivers/i2c/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 	$(MAKE) -C kernel/dpl_mpu_test/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am275x-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
@@ -5113,6 +5397,7 @@ sbl-clean:
 	$(MAKE) -C drivers/pinmux_coverage/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 	$(MAKE) -C drivers/i2c/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 	$(MAKE) -C kernel/dpl_mpu_test/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am275x-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
@@ -5134,6 +5419,7 @@ sbl-scrub:
 	$(MAKE) -C drivers/pinmux_coverage/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C drivers/i2c/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C kernel/dpl_mpu_test/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
 	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am275x-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub

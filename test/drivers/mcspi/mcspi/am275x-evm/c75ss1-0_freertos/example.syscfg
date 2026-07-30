@@ -1,0 +1,143 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "c75ss1-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "c75ss1-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.26.2+4477"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const mcspi       = scripting.addModule("/drivers/mcspi/mcspi", {}, false);
+const mcspi1      = mcspi.addInstance();
+const mcspi2      = mcspi.addInstance();
+const mcspi3      = mcspi.addInstance();
+const mcspi4      = mcspi.addInstance();
+const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
+const mmu_armv8   = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
+const mmu_armv81  = mmu_armv8.addInstance();
+const mmu_armv82  = mmu_armv8.addInstance();
+const mmu_armv83  = mmu_armv8.addInstance();
+const mmu_armv84  = mmu_armv8.addInstance();
+const mmu_armv85  = mmu_armv8.addInstance();
+const mmu_armv86  = mmu_armv8.addInstance();
+const mmu_armv87  = mmu_armv8.addInstance();
+const mmu_armv88  = mmu_armv8.addInstance();
+const mmu_armv89  = mmu_armv8.addInstance();
+const mmu_armv810 = mmu_armv8.addInstance();
+const mmu_armv811 = mmu_armv8.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+mcspi1.$name                 = "CONFIG_MCSPI0";
+mcspi1.inputSelect           = "0";
+mcspi1.SPI.CLK.$assign       = "SPI0_CLK";
+mcspi1.mcspiChannel[0].$name = "CONFIG_MCSPI_CH0";
+
+mcspi2.$name                 = "CONFIG_MCSPI1";
+mcspi2.SPI.CLK.$assign       = "OSPI0_D5";
+mcspi2.mcspiChannel[0].$name = "CONFIG_MCSPI_CH1";
+
+mcspi3.$name                 = "CONFIG_MCSPI3";
+mcspi3.mode                  = "MULTI_MASTER";
+mcspi3.intrEnable            = "DMA";
+mcspi3.mcspiChannel[0].$name = "CONFIG_MCSPI_CH2";
+
+mcspi4.$name                 = "CONFIG_MCSPI4";
+mcspi4.SPI.$assign           = "SPI3";
+mcspi4.mcspiChannel[0].$name = "CONFIG_MCSPI_CH3";
+
+const udma        = scripting.addModule("/drivers/udma/udma", {}, false);
+const udma1       = udma.addInstance({}, false);
+udma1.$name       = "CONFIG_UDMA0";
+mcspi3.udmaDriver = udma1;
+udma1.instance    = "PKTDMA_0";
+
+debug_log.enableUartLog            = true;
+debug_log.uartLog.$name            = "CONFIG_UART0";
+debug_log.uartLog.UART.$assign     = "UART2";
+debug_log.uartLog.UART.TXD.$assign = "SPI1_CS1";
+
+mmu_armv81.size  = 0x20000000;
+mmu_armv81.$name = "REGISTERS_REGION0";
+
+mmu_armv82.vAddr = 0x20000000;
+mmu_armv82.pAddr = 0x20000000;
+mmu_armv82.size  = 0x20000000;
+mmu_armv82.$name = "REGISTERS_REGION1";
+
+mmu_armv83.vAddr = 0x40000000;
+mmu_armv83.pAddr = 0x40000000;
+mmu_armv83.size  = 0x20000000;
+mmu_armv83.$name = "REGISTERS_REGION2";
+
+mmu_armv84.vAddr = 0x60000000;
+mmu_armv84.pAddr = 0x60000000;
+mmu_armv84.size  = 0x10000000;
+mmu_armv84.$name = "FLASH";
+
+mmu_armv85.vAddr = 0x7D200000;
+mmu_armv85.pAddr = 0x7D200000;
+mmu_armv85.$name = "CLEC";
+mmu_armv85.size  = 0x100000;
+
+mmu_armv86.$name = "DRU";
+mmu_armv86.size  = 0x100000;
+mmu_armv86.vAddr = 0x7D400000;
+mmu_armv86.pAddr = 0x7D400000;
+
+mmu_armv87.$name     = "L2SRAM";
+mmu_armv87.vAddr     = 0x7F000000;
+mmu_armv87.pAddr     = 0x7F000000;
+mmu_armv87.attribute = "MAIR7";
+mmu_armv87.size      = 0x200000;
+
+mmu_armv88.$name     = "L2SRAM_AUX";
+mmu_armv88.vAddr     = 0x7F200000;
+mmu_armv88.pAddr     = 0x7F200000;
+mmu_armv88.size      = 0x40000;
+mmu_armv88.attribute = "MAIR7";
+
+mmu_armv89.$name     = "MSRAM_BANK0_TO_BANK3";
+mmu_armv89.vAddr     = 0x80000000;
+mmu_armv89.pAddr     = 0x80000000;
+mmu_armv89.attribute = "MAIR7";
+mmu_armv89.size      = 0x400000;
+
+mmu_armv810.$name     = "MSRAM_BANK4_TO_BANK5";
+mmu_armv810.vAddr     = 0x80400000;
+mmu_armv810.pAddr     = 0x80400000;
+mmu_armv810.size      = 0x200000;
+mmu_armv810.attribute = "MAIR7";
+
+mmu_armv811.size      = 0x1000;
+mmu_armv811.attribute = "MAIR4";
+mmu_armv811.vAddr     = 0x8047F000;
+mmu_armv811.pAddr     = 0x8047F000;
+mmu_armv811.$name     = "CCS_DEBUG_LOG_MEM";
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+mcspi1.SPI.$suggestSolution                 = "SPI0";
+mcspi1.SPI.D0.$suggestSolution              = "SPI0_D0";
+mcspi1.SPI.D1.$suggestSolution              = "SPI0_D1";
+mcspi1.mcspiChannel[0].CSn.$suggestSolution = "SPI0_CS0";
+mcspi2.SPI.$suggestSolution                 = "SPI1";
+mcspi2.SPI.D0.$suggestSolution              = "OSPI0_D6";
+mcspi2.SPI.D1.$suggestSolution              = "OSPI0_D7";
+mcspi2.mcspiChannel[0].CSn.$suggestSolution = "OSPI0_D4";
+mcspi3.SPI.$suggestSolution                 = "SPI2";
+mcspi3.SPI.CLK.$suggestSolution             = "SPI2_CLK";
+mcspi3.SPI.D0.$suggestSolution              = "SPI2_D0";
+mcspi3.SPI.D1.$suggestSolution              = "SPI2_D1";
+mcspi3.mcspiChannel[0].CSn.$suggestSolution = "SPI2_CS0";
+mcspi4.SPI.CLK.$suggestSolution             = "MMC0_DAT0";
+mcspi4.SPI.D0.$suggestSolution              = "MMC0_DAT5";
+mcspi4.SPI.D1.$suggestSolution              = "MMC0_DAT4";
+mcspi4.mcspiChannel[0].CSn.$suggestSolution = "MMC0_DAT1";
+debug_log.uartLog.UART.RXD.$suggestSolution = "MCASP0_AXR6";

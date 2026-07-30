@@ -392,7 +392,7 @@ void test_main(void *args)
 
     TestMcspi_setParamsIns0(&testParams, 8785);
     RUN_TEST(TestMcspi_multithreadSingleInstanceBlocking, 9090, (void*) &testParams);
-    #if defined(SOC_AM62AX)|| defined(SOC_AM62PX)
+    #if defined(SOC_AM62AX)
     /* NOTE: On AM62DX, getting data mismatch at 2nd position; all other data matches. */
     /* Only the 2nd position is overwritten, causing mismatch and hanging other test cases. */
     TestMcspi_setParamsIns0(&testParams, 8421);

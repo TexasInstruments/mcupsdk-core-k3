@@ -1,0 +1,109 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM275x" --part "AM2754" --package "ANJ" --context "c75ss1-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @v2CliArgs --device "AM2754" --package "FCCSP (ANJ)" --context "c75ss1-0" --product "MCU_PLUS_SDK@07.03.01"
+ * @versions {"tool":"1.22.0+3893"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const ipc         = scripting.addModule("/drivers/ipc/ipc");
+const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
+const mmu_armv8   = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
+const mmu_armv81  = mmu_armv8.addInstance();
+const mmu_armv82  = mmu_armv8.addInstance();
+const mmu_armv83  = mmu_armv8.addInstance();
+const mmu_armv84  = mmu_armv8.addInstance();
+const mmu_armv85  = mmu_armv8.addInstance();
+const mmu_armv86  = mmu_armv8.addInstance();
+const mmu_armv87  = mmu_armv8.addInstance();
+const mmu_armv88  = mmu_armv8.addInstance();
+const mmu_armv89  = mmu_armv8.addInstance();
+const mmu_armv810 = mmu_armv8.addInstance();
+const mmu_armv811 = mmu_armv8.addInstance();
+const mmu_armv812 = mmu_armv8.addInstance();
+const mmu_armv813 = mmu_armv8.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+ipc.wkup_r5fss0_0 = "NONE";
+ipc.r5fss0_0      = "notify";
+ipc.r5fss0_1      = "notify";
+ipc.r5fss1_0      = "notify";
+ipc.r5fss1_1      = "notify";
+ipc.c75ss0_0      = "notify";
+
+debug_log.enableSharedMemLog = true;
+
+mmu_armv81.$name = "CONFIG_MMU_REGION0";
+mmu_armv81.size  = 0x20000000;
+
+mmu_armv82.$name = "CONFIG_MMU_REGION1";
+mmu_armv82.vAddr = 0x20000000;
+mmu_armv82.pAddr = 0x20000000;
+mmu_armv82.size  = 0x20000000;
+
+mmu_armv83.$name = "CONFIG_MMU_REGION2";
+mmu_armv83.vAddr = 0x40000000;
+mmu_armv83.pAddr = 0x40000000;
+mmu_armv83.size  = 0x20000000;
+
+mmu_armv84.$name = "CONFIG_MMU_REGION3";
+mmu_armv84.vAddr = 0x60000000;
+mmu_armv84.pAddr = 0x60000000;
+mmu_armv84.size  = 0x10000000;
+
+mmu_armv85.vAddr = 0x7D200000;
+mmu_armv85.pAddr = 0x7D200000;
+mmu_armv85.$name = "CLEC";
+mmu_armv85.size  = 0x100000;
+
+mmu_armv86.$name = "DRU";
+mmu_armv86.size  = 0x300000;
+mmu_armv86.vAddr = 0x7D400000;
+mmu_armv86.pAddr = 0x7D400000;
+
+mmu_armv87.$name     = "L2SRAM";
+mmu_armv87.vAddr     = 0x7F000000;
+mmu_armv87.pAddr     = 0x7F000000;
+mmu_armv87.attribute = "MAIR7";
+mmu_armv87.size      = 0x200000;
+
+mmu_armv88.$name     = "L2SRAM_AUX";
+mmu_armv88.vAddr     = 0x7F200000;
+mmu_armv88.pAddr     = 0x7F200000;
+mmu_armv88.size      = 0x40000;
+mmu_armv88.attribute = "MAIR7";
+
+mmu_armv89.$name     = "MSRAM_BANK0_TO_BANK3";
+mmu_armv89.vAddr     = 0x80000000;
+mmu_armv89.pAddr     = 0x80000000;
+mmu_armv89.attribute = "MAIR7";
+mmu_armv89.size      = 0x400000;
+
+mmu_armv810.$name     = "MSRAM_BANK4_TO_BANK5";
+mmu_armv810.vAddr     = 0x80400000;
+mmu_armv810.pAddr     = 0x80400000;
+mmu_armv810.size      = 0x200000;
+mmu_armv810.attribute = "MAIR7";
+
+mmu_armv811.size      = 0x1000;
+mmu_armv811.attribute = "MAIR4";
+mmu_armv811.$name     = "CCS_DEBUG_LOG_MEM";
+mmu_armv811.vAddr     = 0x8047F000;
+mmu_armv811.pAddr     = 0x8047F000;
+
+mmu_armv812.vAddr     = 0x80380000;
+mmu_armv812.pAddr     = 0x80380000;
+mmu_armv812.size      = 0x40000;
+mmu_armv812.attribute = "MAIR4";
+mmu_armv812.$name     = "LOG_SHM_MEM";
+
+mmu_armv813.$name     = "IPC_RTOS_VRING";
+mmu_armv813.pAddr     = 0x803C0000;
+mmu_armv813.size      = 0xC000;
+mmu_armv813.attribute = "MAIR4";
+mmu_armv813.vAddr     = 0x723C0000;

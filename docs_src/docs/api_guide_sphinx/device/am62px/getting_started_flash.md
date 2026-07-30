@@ -3,7 +3,7 @@
 :::{admonition} Attention
 Flashing a application will overwrite the SOC init application that was flashed earlier.
 So if you want to load and run from CCS again, you will need to do the SOC init steps again.
-See [SOC Initialization](am62px_evm_setup.md) for more details.
+See [SOC Initialization](../../getting_started/am62px_evm_setup.md) for more details.
 :::
 
 :::{admonition} Attention
@@ -11,7 +11,7 @@ As the wake-up R5 is the device manager, it needs to be started by the SBL. So i
 :::
 
 :::{admonition} Note
-See also [Flashing Tools](../components/tools/tools_flash.md) for more details on the flashing tools.
+See also [Flashing Tools](../../components/tools/tools_flash.md) for more details on the flashing tools.
 :::
 
 ## Introduction
@@ -26,7 +26,7 @@ We can then boot this application without being connected to CCS via JTAG.
         $ python3 -m pip install --user snagboot
         $ python3 -m pip install --user snagboot[gui]
 
-- Build all the binaries. Refer to [Snagfactory Getting Ready](../components/tools/tools_flash.md) for more details.
+- Build all the binaries. Refer to [Snagfactory Getting Ready](../../components/tools/tools_flash.md) for more details.
 
 - **POWER-OFF** the EVM.
 
@@ -183,14 +183,14 @@ Flashing via CLI
         [INFO] snagflash completed successfully.
         [INFO] Flash complete!
 
-- If flashing has failed, see [Flashing Tools](../components/tools/tools_flash.md) for error messages and solutions, and resolve the errors.
+- If flashing has failed, see [Flashing Tools](../../components/tools/tools_flash.md) for error messages and solutions, and resolve the errors.
 
 - If flashing is successful, do the next steps.
 
 ### Running the flashed application (Snagfactory)
 
 - **POWER-OFF** the EVM
-- Switch the EVM boot mode to appropriate target Boot Mode. As shown in [EVM Setup](am62px_evm_setup.md)
+- Switch the EVM boot mode to appropriate target Boot Mode. As shown in [EVM Setup](../../getting_started/am62px_evm_setup.md)
 - Re-connect the UART terminal in CCS window.
 - **POWER-ON** the EVM
 
@@ -258,11 +258,11 @@ Flashing via CLI
 ## Getting ready to flash the application
 
 - A quick recap of steps done so far that are needed for the flashing to work
-  - Make sure the UART port used for terminal is identified as mentioned in [Setup UART Terminal](am62px_evm_setup.md)
-  - Make sure python3 is installed as mentioned in [Python3](download_and_install.md)
-  - Make sure you have the EVM power cable and UART cable connected as shown in [Cable Connections](am62px_evm_setup.md)
+  - Make sure the UART port used for terminal is identified as mentioned in [Setup UART Terminal](../../getting_started/am62px_evm_setup.md)
+  - Make sure python3 is installed as mentioned in [Python3](../../getting_started/download_and_install.md)
+  - Make sure you have the EVM power cable and UART cable connected as shown in [Cable Connections](../../getting_started/am62px_evm_setup.md)
 
-- Build the hello world application as mentioned in [Build a Hello World example](getting_started_build.md)
+- Build the hello world application as mentioned in [Build a Hello World example](../../getting_started/getting_started_build.md)
 
 - As part of the build process in the final step a file with extension `.appimage.hs_fs` is generated for HS-FS devices or `.appimage.hs` for HS-SE devices. This is the file
   we need to flash.
@@ -468,7 +468,7 @@ For am62px-sk HS-FS device, use default_sbl_ospi_linux_hs_fs.cfg as the cfg file
         All commands from config file are executed !!!
 
 
-- If flashing has failed, see [Flash tool error messages and solutions](../components/tools/tools_flash.md), and resolve the errors.
+- If flashing has failed, see [Flash tool error messages and solutions](../../components/tools/tools_flash.md), and resolve the errors.
 
 - If flashing is successful, do the next steps ...
 
@@ -484,7 +484,7 @@ For am62px-sk HS-FS device, use default_sbl_ospi_linux_hs_fs.cfg as the cfg file
 **OSPI BOOT MODE**
 ```
 
-- Re-connect the UART terminal in CCS window as shown in [Setup UART Terminal](am62px_evm_setup.md)
+- Re-connect the UART terminal in CCS window as shown in [Setup UART Terminal](../../getting_started/am62px_evm_setup.md)
 
 - **POWER-ON** the EVM
 

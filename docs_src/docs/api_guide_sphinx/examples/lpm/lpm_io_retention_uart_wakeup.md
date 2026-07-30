@@ -42,7 +42,9 @@ This example can only be tested in SD, EMMC or OSPI boot mode. It should be flas
 
 ## See Also
 
+::::{only} SOC_AM64X or SOC_AM243X or SOC_AM263X or SOC_AM62X or SOC_AM62AX or SOC_AM62DX or SOC_AM62PX or SOC_AM275X or SOC_AM273X or SOC_AWR294X or SOC_J722S or SOC_AM62LX
 [Low Power Mode](../../components/drivers/lpm.md)
+::::
 
 ## Sample Output
 

@@ -304,7 +304,7 @@ CRF slave via CDCE1214 PHY:
 
 | gPTP Parameter    | Value    | Notes                                                                                              |
 |-------------------|----------|----------------------------------------------------------------------------------------------------|
-| Initial time to sync | ~500 ms | Measured from link up with Quick sync enabled. See [gPTP Time-to-Sync Optimization](enet_cpsw_tsn_developer_guide.md#gptp-time-to-sync-optimization) for tuning details. |
+| Initial time to sync | ~500 ms | Measured from link up with Quick sync enabled. See {ref}`gPTP Time-to-Sync Optimization <gptp-time-to-sync-optimization>` for tuning details. |
 | Sync accuracy     | < 100 ns | Tested with Intel I210, I229, and I350 NICs and TI EVM-to-EVM setups.                            |
 
 

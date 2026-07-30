@@ -34,7 +34,7 @@ Underlying drivers catering to FVID2 interfaces may decide to expose the sub-set
 
 ## FVID2 APIs
 
-#### FVID2 Init
+### FVID2 Init
 
 This API should be called before calling any of the FVID2 APIs. This API
 initializes the underlying hardware/software sub-system built on top of
@@ -47,7 +47,7 @@ context.
 ```
 *   **initPrms** - FVID2 Initialization parameters..
 
-#### FVID2 DeInit
+### FVID2 DeInit
 
 This function should be called during the system de-Initialization.
 De-Initializes the hardware/software sub-system built on top of FVID2 APIs.
@@ -58,7 +58,7 @@ This should be called only once from the task context.
 ```
 *   **args** - Not used
 
-####  FVID2 Create
+###  FVID2 Create
 
 This API is used to open the FVID2 driver. drvId and InstanceId pair represents
 the hardware on which driver operates. It initializes the hardware supported
@@ -90,7 +90,7 @@ serialize by the driver and is operated upon the same hardware one by one.
 *   **return** - Returns a non-NULL *Fvid2_Handle* object on success else
     returns *NULL* on error.
 
-####  FVID2 Set Format
+###  FVID2 Set Format
 
 Sets the format information for the already opened driver for a given channel.
 This function should be called from the task context.
@@ -102,7 +102,7 @@ This function should be called from the task context.
 *   **fmt** - [IN] Pointer to the FVID2 Create structure.
 *   **return** - *FVID2_SOK* on success, else appropriate FVID2 Error Code on failure
 
-####  FVID2 Get Format
+###  FVID2 Get Format
 
 Returns the format already set for the opened driver for a given channel.
 This function should be called from the task context.
@@ -114,7 +114,7 @@ This function should be called from the task context.
 *   **fmt** - [OUT] Pointer to the FVID2 Create structure.
 *   **return** - *FVID2_SOK* on success, else appropriate FVID2 Error Code on failure.
 
-####  FVID2 Control
+###  FVID2 Control
 
 Driver exposes the custom control commands specific to the driver and hardware
 through this interface. All the FVID2 control commands are blocking.
@@ -144,7 +144,7 @@ coefficients in case of memory drivers involving scalars.
     whether the actual driver forces it or not.
 *   **return** - *FVID2_SOK* on success, else appropriate FVID2 Error Code on failure.
 
-####  FVID2 Start
+###  FVID2 Start
 
 An application calls FVID2 start to request the video device driver to
 start the video display or capture operation. Most of the control commands
@@ -164,7 +164,7 @@ from the task context.
     FVID2 Error Code on failure.
 
 
-####  FVID2 Stop
+###  FVID2 Stop
 
 An application calls the FVID2 stop to request the video device driver to
 stop the video display or capture operation. FVID2 Stop may be called by
@@ -186,7 +186,7 @@ driver again.
 *   **return** - *FVID2_SOK* on success, else appropriate
     FVID2 Error Code on failure.
 
-####  FVID2 Queue
+###  FVID2 Queue
 
 This is used to submit a video buffer to the video device driver.
 This is used in capture/display drivers. This function should be
@@ -212,7 +212,7 @@ the specific driver specifies otherwise.
 *   **return** - *FVID2_SOK* on success, else appropriate
     FVID2 Error Code on failure.
 
-####  FVID2 De-Queue
+###  FVID2 De-Queue
 
 An application calls Fvid2_dequeue to request the video device driver to
 give ownership of a video buffer. This is used in the capture and display driver.

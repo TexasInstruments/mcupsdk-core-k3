@@ -67,7 +67,7 @@ used to pass gPTP timestamps to application tasks without OS IPC overhead.
 For a single domain (`GPTP_MAX_DOMAINS=1`), 4 entries of 64 bytes suffice on Sitara R5F.
 Adding a second domain requires 5 entries.
 
-
+(gptp-time-to-sync-optimization)=
 ## gPTP Time-to-Sync Optimization
 
 These knobs reduce the time from link-up to steady-state synchronization (`gmsync=true`).

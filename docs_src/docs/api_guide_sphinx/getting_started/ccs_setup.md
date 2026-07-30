@@ -528,7 +528,23 @@ Please follow below steps to add AM275x support
 
 - Click "Save" to save the newly created target configuration.
 
+::::{only} SOC_AM62X
+- Now you can move on to [EVM Setup](am62x_evm_setup.md) to prepare your EVM for running programs.
+::::
+::::{only} SOC_AM62AX
+- Now you can move on to [EVM Setup](am62ax_evm_setup.md) to prepare your EVM for running programs.
+::::
+::::{only} SOC_AM62DX
+- Now you can move on to [EVM Setup](am62dx_evm_setup.md) to prepare your EVM for running programs.
+::::
+::::{only} SOC_AM62PX
 - Now you can move on to [EVM Setup](am62px_evm_setup.md) to prepare your EVM for running programs.
+::::
+::::{only} SOC_AM275X
+- Now you can move on to [EVM Setup](am275x_evm_setup.md) to prepare your EVM for running programs.
+::::
+::::{only} SOC_AM62LX
+- Now you can move on to [EVM Setup](am62lx_evm_setup.md) to prepare your EVM for running programs.
 ::::
 
 ## Known Issues
@@ -541,4 +557,21 @@ CS_DAP_0: Error initializing emulator: (Error -260 @ 0x0) An attempt to connect 
 invalid firmware update, invalid XDS110 serial number, or faulty USB cable. The firmware and serial number may be updated using the xdsdfu utility found in the
 .../ccs_base/common/uscif/xds110 directory of your installation. View the XDS110SupportReadMe.pdf file there for instructions. (Emulation package 9.4.0.00129)
 ```
+::::{only} SOC_AM62X
+- There might be EVM specific issues in which the debugger maybe needs to be connected after the power is turned ON, or other similar issues. For this refer the evm specific setup page at [EVM Setup](am62x_evm_setup.md)
+::::
+::::{only} SOC_AM62AX
+- There might be EVM specific issues in which the debugger maybe needs to be connected after the power is turned ON, or other similar issues. For this refer the evm specific setup page at [EVM Setup](am62ax_evm_setup.md)
+::::
+::::{only} SOC_AM62DX
+- There might be EVM specific issues in which the debugger maybe needs to be connected after the power is turned ON, or other similar issues. For this refer the evm specific setup page at [EVM Setup](am62dx_evm_setup.md)
+::::
+::::{only} SOC_AM62PX
 - There might be EVM specific issues in which the debugger maybe needs to be connected after the power is turned ON, or other similar issues. For this refer the evm specific setup page at [EVM Setup](am62px_evm_setup.md)
+::::
+::::{only} SOC_AM275X
+- There might be EVM specific issues in which the debugger maybe needs to be connected after the power is turned ON, or other similar issues. For this refer the evm specific setup page at [EVM Setup](am275x_evm_setup.md)
+::::
+::::{only} SOC_AM62LX
+- There might be EVM specific issues in which the debugger maybe needs to be connected after the power is turned ON, or other similar issues. For this refer the evm specific setup page at [EVM Setup](am62lx_evm_setup.md)
+::::

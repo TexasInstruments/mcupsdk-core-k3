@@ -137,9 +137,32 @@ This example uses the WDT module in non reset mode to generate NMI Interrupt.
 ::::
 
 
-::::{only} SOC_AM64X or SOC_AM243X or SOC_AM263X or SOC_AM62X or SOC_AM62AX or SOC_AM62DX or SOC_AM62PX or SOC_AM275X or SOC_AM273X or SOC_AWR294X or SOC_J722S
+::::{only} SOC_AM62X
+   - Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
+   - Please select the UART port used for console as mentioned in [Setup UART Terminal](../../getting_started/am62x_evm_setup.md)
+::::
+::::{only} SOC_AM62AX
+   - Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
+   - Please select the UART port used for console as mentioned in [Setup UART Terminal](../../getting_started/am62ax_evm_setup.md)
+::::
+::::{only} SOC_AM62DX
+   - Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
+   - Please select the UART port used for console as mentioned in [Setup UART Terminal](../../getting_started/am62dx_evm_setup.md)
+::::
+::::{only} SOC_AM62PX
    - Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
    - Please select the UART port used for console as mentioned in [Setup UART Terminal](../../getting_started/am62px_evm_setup.md)
+::::
+::::{only} SOC_AM275X
+   - Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
+   - Please select the UART port used for console as mentioned in [Setup UART Terminal](../../getting_started/am275x_evm_setup.md)
+::::
+::::{only} SOC_AM62LX
+   - Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
+   - Please select the UART port used for console as mentioned in [Setup UART Terminal](../../getting_started/am62lx_evm_setup.md)
+::::
+::::{only} SOC_AM64X or SOC_AM243X or SOC_AM263X or SOC_AM273X or SOC_AWR294X or SOC_J722S
+   - Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
 ::::
 
 

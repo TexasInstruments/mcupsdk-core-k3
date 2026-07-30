@@ -222,12 +222,13 @@ Then the EST application will be started when the `EnetApp_startTsn` is called.
 
 ## Build Enet TSN EST Example
 
-Refer [EXAMPLES_ENET_CPSW_TSN_GPTP](#examples_enet_cpsw_tsn_gptp) to build the enet_cpsw_tsn_est_example
+Refer [Ethernet TSN gPTP Examples](enet_cpsw_tsn_gptp.md) to build the enet_cpsw_tsn_est_example
 
 ## HW Setup
 
-Make sure you have setup the EVM with cable connections as shown in [EVM_SETUP_PAGE](#evm_setup_page).
-In addition, follow the steps in the next section.
+Make sure you have setup the EVM with cable connections. In addition, follow the steps in the next section.
+
+For setup details, refer [EVM Setup](../../getting_started/introduction.md).
 
 ```{note}
 Ethernet cable must be connected and link must be up in order for the example application to continue execution.
@@ -255,7 +256,7 @@ Ethernet cable must be connected and link must be up in order for the example ap
     [MCU#1 (talker)]<---------------->[MCU#2 (Listener)]
 ```
 
-- Launch a CCS debug session, load and run the example executable, see [CCS_LAUNCH_PAGE](#ccs_launch_page)
+- Launch a CCS debug session, load and run the example executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
 
 - The talker or listener can be run on GM or Slave, whichever devices you choose.
   However, we recommend running the talker on the Slave device and listener on the GM.

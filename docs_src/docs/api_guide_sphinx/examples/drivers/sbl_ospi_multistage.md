@@ -120,10 +120,10 @@ The default appimages in the SDK are built with authentication type 0  and load 
 Since this is a bootloader, the example will be run every time you boot an application using this example. It is run from a OSPI boot media  unlike other examples which are usually loaded with CCS. Nevertheless, you can build this example like you do for the others using makefile or build it via CCS by importing as a project.
 
 - **When using CCS projects to build**, import the CCS project for the required combination
-  and build it using the CCS project menu (see [CCS_PROJECTS_PAGE](#ccs_projects_page)).
+  and build it using the CCS project menu (see [Using SDK with CCS Projects](../../developer_guides/ccs_projects.md)).
 - **When using makefiles to build**, note the required combination and build using
-  make command (see [MAKEFILE_BUILD_PAGE](#makefile_build_page))
-- Refer to the page [BASIC_STEPS_TO_FLASH_FILES](#basic_steps_to_flash_files) to flash this bootloader along with the application to boot.
+  make command (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md))
+- Refer to the page [Flash a Hello World example](../../getting_started/getting_started_flash.md) to flash this bootloader along with the application to boot.
 
 ### Create HSM Appimage
 ::::{only} SOC_AM62X
@@ -152,9 +152,9 @@ For HS-FS device, use **default_sbl_ospi_hs_fs.cfg** as the cfg file.
 
         ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/{{ VAR_BOARD_NAME_LOWER }}/default_sbl_ospi_hs_fs.cfg
 
-- Make sure IPC rpms echo application is built before running the flash script. (see [EXAMPLES_DRIVERS_IPC_RPMESSAGE_ECHO](#examples_drivers_ipc_rpmessage_echo))
+- Make sure IPC rpms echo application is built before running the flash script. (see [IPC RPMessage Example](../../components/drivers/ipc_rpmsg.md))
 
-- To flash to the EVM, refer to [GETTING_STARTED_FLASH](#getting_started_flash) . Only when giving the flash config file, point to the `default_sbl_ospi_hs_fs.cfg` shown above.
+- To flash to the EVM, refer to [Flash a Hello World example](../../getting_started/getting_started_flash.md) . Only when giving the flash config file, point to the `default_sbl_ospi_hs_fs.cfg` shown above.
 
 - Example, assuming SDK is installed at `${SDK_INSTALL_PATH}` and this example and IPC application is built using makefiles, and RTOS Appimage is already created, in Windows,
 
@@ -206,7 +206,7 @@ For HS-FS device, use **default_sbl_ospi_hs_fs.cfg** as the cfg file.
 
 ## See Also
 
-- [DRIVERS_BOOTLOADER_PAGE](#drivers_bootloader_page)
+- [Bootloader](../../components/drivers/bootloader.md)
 
 ::::{only} SOC_AM62X
 - Refer to \htmllink{https://software-dl.ti.com/processor-sdk-linux/esd/AM62X/latest/exports/docs/linux/How_to_Guides/Target/How_to_boot_quickly.html, **Processor SDK Linux - Boot time Optimizations**} guide to optimize the time taken by bootloader in the boot sequence.

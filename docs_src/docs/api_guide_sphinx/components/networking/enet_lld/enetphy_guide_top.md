@@ -126,6 +126,7 @@ You can find the guide to enable MAC2MAC support [here](enet_mac2mac_top.md).
 
 ## Appendix
 
+(appendix-a)=
 ### Appendix A
 
 Detailed view of the PHY state machine.

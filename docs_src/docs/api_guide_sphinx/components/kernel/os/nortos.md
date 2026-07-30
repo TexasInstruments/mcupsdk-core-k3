@@ -12,7 +12,7 @@ A53 will not be available on all SOCs. All references to A53 should be ignored o
 ## Introduction
 
 NORTOS is a SW module that implements APIs which allow the upper layers of SW to run in no-RTOS mode.
-i.e without any RTOS. The NO RTOS APIs are implemented underneath the [Driver Porting Layer (DPL)](../dpl/index.rst) APIs. This allows
+i.e without any RTOS. The NO RTOS APIs are implemented underneath the [Driver Porting Layer (DPL)](../dpl/dpl.rst) APIs. This allows
 the device drivers to run either in no-RTOS mode or with a RTOS.
 
 ## Features Supported
@@ -269,4 +269,4 @@ features like MPU, MMU, cache and interrupts.
 
 ## See also
 
-[Driver Porting Layer (DPL)](../dpl/index.rst)
+[Driver Porting Layer (DPL)](../dpl/dpl.rst)

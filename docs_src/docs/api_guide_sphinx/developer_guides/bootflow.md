@@ -403,7 +403,25 @@ Depending on the boot media from which we load the application binary, we have m
 
 - The `sbl_null` is a secondary bootloader which doesn't load any application binary, but just does the SOC initialization and puts all the cores in WFI (Wait For Interrupt) mode.
 
-- This is referred to as the SOC initialization binary, refer [Flash SOC Initialization Binary](../getting_started/am62px_evm_setup.md) for more on this.
+- This is referred to as the SOC initialization binary. Refer to the appropriate EVM Setup guide for more on flashing the SOC initialization binary:
+  ::::{only} SOC_AM62X
+  [EVM Setup](../getting_started/am62x_evm_setup.md)
+  ::::
+  ::::{only} SOC_AM62AX
+  [EVM Setup](../getting_started/am62ax_evm_setup.md)
+  ::::
+  ::::{only} SOC_AM62DX
+  [EVM Setup](../getting_started/am62dx_evm_setup.md)
+  ::::
+  ::::{only} SOC_AM62PX
+  [EVM Setup](../getting_started/am62px_evm_setup.md)
+  ::::
+  ::::{only} SOC_AM275X
+  [EVM Setup](../getting_started/am275x_evm_setup.md)
+  ::::
+  ::::{only} SOC_AM62LX
+  [EVM Setup](../getting_started/am62lx_evm_setup.md)
+  ::::
 
 
 ::::{only} SOC_AM64X or SOC_AM243X or SOC_AM275X

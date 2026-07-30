@@ -37,7 +37,7 @@ and audio out can be heard from audio line out jack (J3A).
 
 ## See Also
 
-[MCASP](../../components/drivers/mcasp.md)
+[MCASP](../../components/drivers/mcasp_v1.md)
 
 ## Sample Output
 

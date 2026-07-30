@@ -25,13 +25,13 @@ The Enet LLD provides two sets of APIs: control and DMA.
 
 The control API is an IOCTL-based interface which is used by applications to control the Ethernet peripheral and its submodules.
 
-For further details on the top-level control APIs, refer to the [Enet Main API](../enet_main_api.md).
+For further details on the top-level control APIs, refer to the Enet Main API documentation.
 
 ### Data path (DMA) API
 
 The DMA API is used by applications to perform data movement related operations, such as opening and closing DMA channels, submitting and retrieving packets from the underlying DMA controller.
 
-For further details on the top-level DMA APIs, refer to the [Enet Data Path (DMA)](../enet_data_path.md).
+For further details on the top-level DMA APIs, refer to the Enet Data Path (DMA) documentation.
 
 ### Life cycle of an Enet LLD based application
 

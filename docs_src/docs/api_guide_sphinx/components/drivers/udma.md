@@ -172,13 +172,13 @@ Below diagram shows the UDMA transfer API flow
 ![UDMA API flow](../../images/drivers/udma_api_flow.PNG)
 
 
-:::{only} SOC_AM64X or SOC_AM243X
-   ## Additional Documentation
+::::{only} SOC_AM64X or SOC_AM243X
+   **Additional Documentation**
 
    - [EDMA to UDMA Migration](../am64x_am243x/Migrating_Applications_from_EDMA_to_UDMA_using_TI-RTOS.pdf) document.
    - [UDMA to DMSS Migration](../am64x_am243x/Migrating_Applications_from_NAVSS_UDMA_to_DMSS_using_TI-RTOS.pdf) document.
 
-:::
+::::
 
 
 ## Timeout

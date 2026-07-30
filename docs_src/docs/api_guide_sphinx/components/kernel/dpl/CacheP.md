@@ -32,14 +32,14 @@ NA
 
 ## Important Usage Guidelines
 
-- The region based cache APIs, [CacheP_wb](../../../../../_api/group/group__KERNEL__DPL__CACHE.html), [CacheP_wbInv](../../../../../_api/group/group__KERNEL__DPL__CACHE.html), [CacheP_inv](../../../../../_api/group/group__KERNEL__DPL__CACHE.html), operate on a CPU cache line, hence its strongly recommended to
+- The region based cache APIs, `CacheP_wb`, `CacheP_wbInv`, `CacheP_inv`, operate on a CPU cache line, hence its strongly recommended to
   make sure 'addr' is cache line aliged and 'size` is a multiple of cache line size
   - Start address is calculated as follows, start_addr = floor(addr, CPU_CACHE_LINE)
   - End address is calculated as follows, end_addr = ceil(addr + size, CPU_CACHE_LINE)
   - No error is returned, for unaligned addr and size
 - On R5F,
-  - Valid values for [CacheP_Type](../../../../../_api/group/group__KERNEL__DPL__CACHE.html) for [CacheP_enable](../../../../../_api/group/group__KERNEL__DPL__CACHE.html) and [CacheP_disable](../../../../../_api/group/group__KERNEL__DPL__CACHE.html) are [CacheP_TYPE_L1D](../../../../../_api/group/group__KERNEL__DPL__CACHE.html), [CacheP_TYPE_L1P](../../../../../_api/group/group__KERNEL__DPL__CACHE.html), [CacheP_TYPE_ALL](../../../../../_api/group/group__KERNEL__DPL__CACHE.html)
-  - Valid values for [CacheP_Type](../../../../../_api/group/group__KERNEL__DPL__CACHE.html) for [CacheP_wb](../../../../../_api/group/group__KERNEL__DPL__CACHE.html), [CacheP_wbInv](../../../../../_api/group/group__KERNEL__DPL__CACHE.html), [CacheP_inv](../../../../../_api/group/group__KERNEL__DPL__CACHE.html), [CacheP_wbAll](../../../../../_api/group/group__KERNEL__DPL__CACHE.html), [CacheP_wbInvAll](../../../../../_api/group/group__KERNEL__DPL__CACHE.html)  are [CacheP_TYPE_L1D](../../../../../_api/group/group__KERNEL__DPL__CACHE.html), [CacheP_TYPE_ALL](../../../../../_api/group/group__KERNEL__DPL__CACHE.html)
+  - Valid values for `CacheP_Type` for `CacheP_enable` and `CacheP_disable` are `CacheP_TYPE_L1D`, `CacheP_TYPE_L1P`, `CacheP_TYPE_ALL`
+  - Valid values for `CacheP_Type` for `CacheP_wb`, `CacheP_wbInv`, `CacheP_inv`, `CacheP_wbAll`, `CacheP_wbInvAll`  are `CacheP_TYPE_L1D`, `CacheP_TYPE_ALL`
 - CPU cache lines sizes for reference
   - R5F: 32B
 

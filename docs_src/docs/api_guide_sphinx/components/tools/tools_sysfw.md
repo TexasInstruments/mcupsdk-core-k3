@@ -225,7 +225,7 @@ make -s sbl
       - Reflash the SBL with the updated board configuration
       - The DM firmware will automatically load the new configuration at runtime (no DM firmware rebuild needed - only SBL reflash required)
 
-   #### Viewing Trace Output
+   **Viewing Trace Output**
 
    Depending on the destination flags enabled, logs can be viewed from different locations:
 

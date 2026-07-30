@@ -3,7 +3,7 @@ Welcome to **{{ VAR_SDK_NAME }} for {{ VAR_SOC_NAME }}**. This SDK contains exam
 
 ## Getting Started
 
-To get started, see [Getting Started](../../getting_started/getting_started.md)
+To get started, see [Getting Started](../../getting_started/getting_started_am62dx.md)
 
 ## Block Diagram
 

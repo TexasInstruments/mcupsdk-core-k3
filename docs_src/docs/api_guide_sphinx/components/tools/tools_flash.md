@@ -29,6 +29,8 @@ It is recommended to flash using snagfactory for AM62x, AM62Ax, AM62Px, AM62Dx.
 
 ## Snagfactory
 
+(snagfactory)=
+
 Snagfactory is an open-source tool developed by [Bootlin](https://github.com/bootlin/snagboot) for flashing and recovery using the fastboot protocol over USB. It is based on Snagboot — a fully open-source and vendor-agnostic recovery and flashing tool. It is designed to simplify the process of flashing non-volatile storage devices and recovering target boards during development and production environments.
 
 Snagfactory is composed of two components:
@@ -82,6 +84,8 @@ Snagfactory is composed of two components:
         $ python3 -m pip install --user snagboot[gui]
 
 ### Flash configuration file
+
+(flash-configuration-file)=
 
 - Create a flash configuration file using a default configuration file as reference:
 
@@ -161,6 +165,8 @@ The `.yaml` file contains board configuration and recovery firmware paths for `s
 ### Basic steps to flash files
 
 #### Getting ready to flash
+
+(getting-ready-to-flash)=
 
 - Make sure the required bootloader binaries are built for the EVM. For Snagrecover, bootloader images must support DFU boot and fastboot download.
   In addition to USB DFU fragment config (which enables DFU boot) for the u-boot build, an additional fragment config **am6x_a53_snagfactory.config** needs to be used, which enables fastboot support in U-Boot and other required configs for snagfactory.
@@ -439,6 +445,8 @@ The following steps outline the process for configuring and flashing a device by
 
 ### Error messages and solutions
 
+(error-messages-and-solutions)=
+
 If the tool fails, the error message will give a hint as to why it failed.
 Some common error messages, reasons and potential solutions are listed below.
 
@@ -528,6 +536,9 @@ This section has more detailed sequence of steps that happen underneath the tool
 :::::
 
 ## UART Uniflash
+
+(uart-uniflash)=
+
    UART is used as the transport or interface to send the file to flash to the EVM.
 
    ### Tool requirements on host PC
@@ -642,7 +653,24 @@ This section has more detailed sequence of steps that happen underneath the tool
 
       - Make sure you have installed python as mention in [Python3](../../getting_started/download_and_install.md)
 
+      ::::{only} SOC_AM62X
+      - Make sure you have identified the UART port on the EVM as mentioned in [EVM Setup](../../getting_started/am62x_evm_setup.md)
+      ::::
+      ::::{only} SOC_AM62AX
+      - Make sure you have identified the UART port on the EVM as mentioned in [EVM Setup](../../getting_started/am62ax_evm_setup.md)
+      ::::
+      ::::{only} SOC_AM62DX
+      - Make sure you have identified the UART port on the EVM as mentioned in [EVM Setup](../../getting_started/am62dx_evm_setup.md)
+      ::::
+      ::::{only} SOC_AM62PX
       - Make sure you have identified the UART port on the EVM as mentioned in [EVM Setup](../../getting_started/am62px_evm_setup.md)
+      ::::
+      ::::{only} SOC_AM275X
+      - Make sure you have identified the UART port on the EVM as mentioned in [EVM Setup](../../getting_started/am275x_evm_setup.md)
+      ::::
+      ::::{only} SOC_AM62LX
+      - Make sure you have identified the UART port on the EVM as mentioned in [EVM Setup](../../getting_started/am62lx_evm_setup.md)
+      ::::
 
       #### Flash configuration file
 
@@ -822,7 +850,18 @@ This section has more detailed sequence of steps that happen underneath the tool
 
       - Make sure you have installed python as mention in [Python3](../../getting_started/download_and_install.md)
 
+      ::::{only} SOC_AM62X
+      - Make sure you have identified the UART port on the EVM as mentioned in [EVM Setup](../../getting_started/am62x_evm_setup.md)
+      ::::
+      ::::{only} SOC_AM62AX
+      - Make sure you have identified the UART port on the EVM as mentioned in [EVM Setup](../../getting_started/am62ax_evm_setup.md)
+      ::::
+      ::::{only} SOC_AM62DX
+      - Make sure you have identified the UART port on the EVM as mentioned in [EVM Setup](../../getting_started/am62dx_evm_setup.md)
+      ::::
+      ::::{only} SOC_AM62PX
       - Make sure you have identified the UART port on the EVM as mentioned in [EVM Setup](../../getting_started/am62px_evm_setup.md)
+      ::::
 
       #### Flash configuration file
 
@@ -844,7 +883,24 @@ This section has more detailed sequence of steps that happen underneath the tool
 
    #### Flashing the files
 
+   ::::{only} SOC_AM62X
+   - Set EVM in [UART BOOT MODE](../../getting_started/am62x_evm_setup.md) and power on the EVM
+   ::::
+   ::::{only} SOC_AM62AX
+   - Set EVM in [UART BOOT MODE](../../getting_started/am62ax_evm_setup.md) and power on the EVM
+   ::::
+   ::::{only} SOC_AM62DX
+   - Set EVM in [UART BOOT MODE](../../getting_started/am62dx_evm_setup.md) and power on the EVM
+   ::::
+   ::::{only} SOC_AM62PX
    - Set EVM in [UART BOOT MODE](../../getting_started/am62px_evm_setup.md) and power on the EVM
+   ::::
+   ::::{only} SOC_AM275X
+   - Set EVM in [UART BOOT MODE](../../getting_started/am275x_evm_setup.md) and power on the EVM
+   ::::
+   ::::{only} SOC_AM62LX
+   - Set EVM in [UART BOOT MODE](../../getting_started/am62lx_evm_setup.md) and power on the EVM
+   ::::
 
    - Run below python command on the Windows command prompt (`cmd.exe`) or Linux bash shell to flash the files.
 
@@ -856,7 +912,12 @@ This section has more detailed sequence of steps that happen underneath the tool
 
    ::::{only} SOC_AM243X or SOC_AM64X
 
-      - If flashing is successful, power OFF the EVM, set the EVM to [OSPI NOR BOOT MODE](../../getting_started/am62px_evm_setup.md) and power ON the EVM to run the flashed application.
+      ::::{only} SOC_AM64X
+      - If flashing is successful, power OFF the EVM, set the EVM to [OSPI NOR BOOT MODE](../../getting_started/am62x_evm_setup.md) and power ON the EVM to run the flashed application.
+      ::::
+      ::::{only} SOC_AM243X
+      - If flashing is successful, power OFF the EVM, set the EVM to OSPI NOR BOOT MODE and power ON the EVM to run the flashed application.
+      ::::
    ::::
 
 
@@ -927,7 +988,25 @@ This section has more detailed sequence of steps that happen underneath the tool
    :::
 
 
-   The detailed sequence of steps that happen when flashing files is listed below, refer to the [EVM Setup](../../getting_started/am62px_evm_setup.md) page to see how to setup the EVM in different boot modes that are needed for this sequence of steps.
+   The detailed sequence of steps that happen when flashing files is listed below. Refer to the appropriate EVM Setup guide to setup the EVM in different boot modes that are needed for this sequence of steps:
+   ::::{only} SOC_AM62X
+   [EVM Setup](../../getting_started/am62x_evm_setup.md)
+   ::::
+   ::::{only} SOC_AM62AX
+   [EVM Setup](../../getting_started/am62ax_evm_setup.md)
+   ::::
+   ::::{only} SOC_AM62DX
+   [EVM Setup](../../getting_started/am62dx_evm_setup.md)
+   ::::
+   ::::{only} SOC_AM62PX
+   [EVM Setup](../../getting_started/am62px_evm_setup.md)
+   ::::
+   ::::{only} SOC_AM275X
+   [EVM Setup](../../getting_started/am275x_evm_setup.md)
+   ::::
+   ::::{only} SOC_AM62LX
+   [EVM Setup](../../getting_started/am62lx_evm_setup.md)
+   ::::
 
    - Set EVM in UART boot mode and power it on, the SOC ROM bootloader waits to receive a file using the UART+XMODEM protocol.
 

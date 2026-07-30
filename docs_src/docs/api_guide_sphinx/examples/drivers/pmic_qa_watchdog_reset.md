@@ -59,24 +59,46 @@ This example won't work in the debug mode as the user must not service the watch
 through SBL to get the expected results.
 - Refer [Flash a Hello World example](../../getting_started/getting_started_flash.md) for flashing the application.
 - Or use default_pmic_qa_watchdog_reset_hs_fs.cfg for HS-FS device, default_pmic_qa_watchdog_reset_hs.cfg for HS-SE device
-- Set bootmode to  [UART BOOT MODE](../../getting_started/am62px_evm_setup.md) and flash the binary using the following command from {SDK_INSTALLTION_PATH}/tools/boot
+
+::::{only} SOC_AM62X
+- Refer to [EVM Setup](../../getting_started/am62x_evm_setup.md) for boot mode configuration and flashing procedures.
+::::
+
+::::{only} SOC_AM62AX
+- Refer to [EVM Setup](../../getting_started/am62ax_evm_setup.md) for boot mode configuration and flashing procedures.
+::::
 
 ::::{only} SOC_AM62PX
-             python uart_uniflash.py -p /dev/ttyUSB0 --cfg=../../examples/drivers/pmic/pmic_qa_watchdog_reset/am62px-sk/default_pmic_qa_watchdog_reset_hs_fs.cfg
-::::
+- Set bootmode to [UART BOOT MODE](../../getting_started/am62px_evm_setup.md) and flash the binary using the following command from {SDK_INSTALLTION_PATH}/tools/boot
 
+             python uart_uniflash.py -p /dev/ttyUSB0 --cfg=../../examples/drivers/pmic/pmic_qa_watchdog_reset/am62px-sk/default_pmic_qa_watchdog_reset_hs_fs.cfg
+
+- Power OFF and change the boot mode to [OSPI NOR BOOT MODE](../../getting_started/am62px_evm_setup.md)
+::::
 
 ::::{only} SOC_AM62DX
-           python uart_uniflash.py -p /dev/ttyUSB1 --cfg=../../examples/drivers/pmic/pmic_qa_watchdog_reset/am62dx-evm/default_pmic_qa_watchdog_reset_hs_fs.cfg
-::::
+- Set bootmode to [UART BOOT MODE](../../getting_started/am62dx_evm_setup.md) and flash the binary using the following command from {SDK_INSTALLTION_PATH}/tools/boot
 
+           python uart_uniflash.py -p /dev/ttyUSB1 --cfg=../../examples/drivers/pmic/pmic_qa_watchdog_reset/am62dx-evm/default_pmic_qa_watchdog_reset_hs_fs.cfg
+
+- Power OFF and change the boot mode to [OSPI NOR BOOT MODE](../../getting_started/am62dx_evm_setup.md)
+::::
 
 ::::{only} SOC_AM275X
+- Set bootmode to [UART BOOT MODE](../../getting_started/am275x_evm_setup.md) and flash the binary using the following command from {SDK_INSTALLTION_PATH}/tools/boot
+
            python uart_uniflash.py -p /dev/ttyACM0 --cfg=../../examples/drivers/pmic/pmic_qa_watchdog_reset/am275x-evm/default_pmic_qa_watchdog_reset_hs_fs.cfg
+
+- Power OFF and change the boot mode to [OSPI NOR BOOT MODE](../../getting_started/am275x_evm_setup.md)
 ::::
 
-- Power OFF and change the boot mode to  [OSPI NOR BOOT MODE](../../getting_started/am62px_evm_setup.md)
+::::{only} SOC_AM62LX
+- Refer to [EVM Setup](../../getting_started/am62lx_evm_setup.md) for boot mode configuration and flashing procedures.
+::::
+
+::::{only} SOC_AM62PX or SOC_AM62DX or SOC_AM275X
 - Logs should appear at the MCU_UART0
+::::
 
 ## See Also
 

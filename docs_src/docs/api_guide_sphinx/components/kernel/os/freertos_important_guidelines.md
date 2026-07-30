@@ -13,14 +13,14 @@ https://www.freertos.org/a00110.html
   - Default sizes for task stack, timer task, idle task etc
 - To allow support of pre-built libraries, {{ VAR_SDK_NAME }} has a default predefined `FreeRTOSConfig.h` per SOC and per CPU type
 - In general extreme fine tuning of FreeRTOS config is not needed and a predefined config per SOC and CPU type would meet almost all use-cases and applications.
-- However users can modify this config if needed. When FreeRTOS config is changed, all pre-built libraries have to be recompiled for the changes to take effect (see [Using SDK with Makefiles](../../../../../developer_guides/makefile_build.md))
+- However users can modify this config if needed. When FreeRTOS config is changed, all pre-built libraries have to be recompiled for the changes to take effect (see [Using SDK with Makefiles](../../../developer_guides/makefile_build.md))
 - Also many config options are related to inclusion/exclusion of RTOS modules to save code/data size. However we can rely on compiler to optimize out functions that are not called by applications.
 - The predefined config file per SOC and per CPU can be found at below path
 
         ${SDK_INSALL_PATH}/source/kernel/freertos/config/{soc}/{cpu}/FreeRTOSConfig.h
 
 ## Using and adding FreeRTOS to your project
-- You can start using FreeRTOS using one of the many example projects in the SDK. The [Empty Project](../../../../../examples/examples_empty.md) at
+- You can start using FreeRTOS using one of the many example projects in the SDK. The [Empty Project](../../../examples/examples_empty.md) at
     `${SDK_INSTALL_PATH}/examples/empty` is a good starting point
 
 - Given below are some details to add FreeRTOS to a project if you decide to start from scratch

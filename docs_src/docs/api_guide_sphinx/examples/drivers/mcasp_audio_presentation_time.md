@@ -86,7 +86,7 @@ The oscilloscope capture below shows the measurement. D0 is the GPIO pin (submis
 
 ## See Also
 
-[MCASP](../../components/drivers/mcasp.md)
+[MCASP](../../components/drivers/mcasp_v1.md)
 
 ## Sample Output
 

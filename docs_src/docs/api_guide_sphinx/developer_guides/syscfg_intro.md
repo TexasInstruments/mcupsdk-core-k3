@@ -25,7 +25,7 @@ Refer Sysconfig Application note available on this link https://www.ti.com/lit/a
 
 All the SDK examples can be configured using a GUI tool called SysConfig. Users can choose and configure various modules using this tool. The SysConfig tool will generate the boilerplate code for initializing these modules. Each example will have an example.syscfg file to which the configuration will be saved to. When creating an example for the first time, this can be an empty file.
 
-### SysConfig Features used in the SDK
+## SysConfig Features used in the SDK
 
 In this SDK, SysConfig is used to:
  - Generate configurations for driver modules, board modules and networking modules

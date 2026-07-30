@@ -222,7 +222,26 @@ delay_mechanism         P2P
 ## HW Setup
 
 :::{admonition} Note
-Make sure you have setup the EVM with cable connections as shown here, [EVM Setup](../../getting_started/am62px_evm_setup.md). In addition do below steps.
+Make sure you have setup the EVM with cable connections. In addition do below steps.
+
+::::{only} SOC_AM62PX
+[EVM Setup](../../getting_started/am62px_evm_setup.md)
+::::
+::::{only} SOC_AM62DX
+[EVM Setup](../../getting_started/am62dx_evm_setup.md)
+::::
+::::{only} SOC_AM62X
+[EVM Setup](../../getting_started/am62x_evm_setup.md)
+::::
+::::{only} SOC_AM62AX
+[EVM Setup](../../getting_started/am62ax_evm_setup.md)
+::::
+::::{only} SOC_AM62LX
+[EVM Setup](../../getting_started/am62lx_evm_setup.md)
+::::
+::::{only} SOC_AM275X
+[EVM Setup](../../getting_started/am275x_evm_setup.md)
+::::
 :::
 
 

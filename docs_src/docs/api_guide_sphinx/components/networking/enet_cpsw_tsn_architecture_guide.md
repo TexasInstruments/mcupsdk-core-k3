@@ -1,5 +1,7 @@
 # TSN Userguide
 
+(tsn-userguide)=
+
 ## Introduction
 
 This guide explains how the two core protocols of TSN stack — gPTP (IEEE 802.1AS-2020) and AVB (IEEE 1722-2016 AVTP) — are designed and how they drive CPSW hardware.

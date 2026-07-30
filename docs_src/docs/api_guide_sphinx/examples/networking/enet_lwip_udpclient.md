@@ -18,7 +18,7 @@ This example shows about how to implement a simple UDP Client on LwIP networking
 On {{ VAR_SOC_NAME }}, we can do ethernet based communication using CPSW as HW mechanism
   - CPSW is a standard ethernet switch + port HW
   - It uses ethernet driver underneath with LwIP TCP/IP networking stack
-  - CPSW can be configured in two modes: Switch or MAC. For more details, [ENET_LWIP_CPSW_OPERATING_MODES](#enet_lwip_cpsw_operating_modes)
+  - CPSW can be configured in two modes: Switch or MAC. For more details, {ref}`Basic Layer 2 Switching <enet-lwip-cpsw-operating-modes>`
 
 The example does the following:
 - Initializes the ethernet driver for the underlying HW
@@ -195,21 +195,40 @@ Ncat is a general-purpose command-line tool for reading, writing, redirecting, a
 ## Steps to Run the Example
 
 ## To Configure Static IP
-Please refer to [NETWORKING_LWIP_STATIC_IP](#networking_lwip_static_ip).
+Please refer to {ref}`To Configure Static IP <to-configure-static-ip>`.
 
 ## Build the example
 
 - When using CCS projects to build, import the CCS project for the required combination
-  and build it using the CCS project menu (see [CCS_PROJECTS_PAGE](#ccs_projects_page)).
+  and build it using the CCS project menu (see [Using SDK with CCS Projects](../../developer_guides/ccs_projects.md)).
 - When using makefiles to build, note the required combination and build using
-  make command (see [MAKEFILE_BUILD_PAGE](#makefile_build_page))
+  make command (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md))
 
 Note: For UDP transmission on LwIP based application, application should perform cache coherency operation on payload before submitting the packet for transmission. This is because zero copy is enabled for UDP packet transmission and cache operation in driver are disabled for UDP payload portions. This example application does this using CacheP_wbInv.
 
 ## HW Setup
 
 ```{note}
-Make sure you have setup the EVM with cable connections as shown here, [EVM_SETUP_PAGE](#evm_setup_page). In addition do below steps.
+Make sure you have setup the EVM with cable connections. In addition do below steps.
+
+::::{only} SOC_AM62PX
+[EVM Setup](../../getting_started/am62px_evm_setup.md)
+::::
+::::{only} SOC_AM62DX
+[EVM Setup](../../getting_started/am62dx_evm_setup.md)
+::::
+::::{only} SOC_AM62X
+[EVM Setup](../../getting_started/am62x_evm_setup.md)
+::::
+::::{only} SOC_AM62AX
+[EVM Setup](../../getting_started/am62ax_evm_setup.md)
+::::
+::::{only} SOC_AM62LX
+[EVM Setup](../../getting_started/am62lx_evm_setup.md)
+::::
+::::{only} SOC_AM275X
+[EVM Setup](../../getting_started/am275x_evm_setup.md)
+::::
 ```
 
 ::::{only} SOC_AM64X
@@ -291,7 +310,7 @@ If you need to reload and run again, a CPU power-cycle is MUST
 ```
 
 ::::{only} SOC_AM64X or SOC_AM243X or SOC_AM62DX or SOC_AM62X or SOC_AM62PX
-- Launch a CCS debug session and run the example executable, see [CCS_LAUNCH_PAGE](#ccs_launch_page)
+- Launch a CCS debug session and run the example executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
 ::::
 ::::{only} SOC_AM62LX
 - To Load and Run an example (see [DFU_LOAD_CCS_DEBUG](#dfu_load_ccs_debug))
@@ -386,7 +405,7 @@ Closed Socket connection
         ```
         #define ENET_MAC_ADDR_HACK (TRUE)
         ```
-   - Rebuild the libraries and examples ([MAKEFILE_BUILD_PAGE](#makefile_build_page))
+   - Rebuild the libraries and examples ([Using SDK with Makefiles](../../developer_guides/makefile_build.md))
 ::::
 
 - If you see a valid, non-zero MAC address and continuosly seieing "Waiting for network UP..." prints in UART terminal
@@ -397,5 +416,7 @@ Closed Socket connection
 
 ## See Also
 ::::{only} SOC_AM62DX or SOC_AM62X or SOC_AM62LX
-[NETWORKING](#networking)
+::::{only} not SOC_AM62DX
+[Networking Components](../../components/networking/networking.md)
+::::
 ::::

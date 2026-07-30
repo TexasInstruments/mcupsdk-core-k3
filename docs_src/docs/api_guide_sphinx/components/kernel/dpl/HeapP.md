@@ -6,7 +6,7 @@
 - Alloc and free APIs
 - Detailed heap statistics
 - Thread safe APIs with RTOS
-- Minimum alignment of [HeapP_BYTE_ALIGNMENT](../../../../../_api/group/group__KERNEL__DPL__HEAP.html) for all allocations
+- Minimum alignment of `HeapP_BYTE_ALIGNMENT` for all allocations
 
 ## Features NOT Supported
 

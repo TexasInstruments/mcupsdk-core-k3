@@ -53,10 +53,10 @@ While using device variants, please remove the cores that are not present on the
 Since this is a bootloader, the example will be run every time you boot an application using this example. It is run from an flash unlike other examples which are usually loaded with CCS. Nevertheless, you can build this example like you do for the others using makefile or build it via CCS by importing as a project.
 
 - **When using CCS projects to build**, import the CCS project for the required combination
-  and build it using the CCS project menu (see [CCS_PROJECTS_PAGE](#ccs_projects_page)).
+  and build it using the CCS project menu (see [CCS_PROJECTS_PAGE](../../developer_guides/ccs_projects.md)).
 - **When using makefiles to build**, note the required combination and build using
-  make command (see [MAKEFILE_BUILD_PAGE](#makefile_build_page))
-- Refer to the page [BASIC_STEPS_TO_FLASH_FILES](#basic_steps_to_flash_files) to flash this bootloader along with the application to boot.
+  make command (see [MAKEFILE_BUILD_PAGE](../../developer_guides/makefile_build.md))
+- Refer to the page [BASIC_STEPS_TO_FLASH_FILES](../../getting_started/getting_started_flash.md) to flash this bootloader along with the application to boot.
 
 ### Create HSM Appimage
 ::::{only} SOC_AM275X
@@ -93,9 +93,9 @@ For HS-FS device, use **sbl_ospi_hs_fs.cfg** as the cfg file.
 
         ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/{{ VAR_BOARD_NAME_LOWER }}/sbl_ospi_hs_fs.cfg
 
-- Make sure IPC rpms echo application is built before running the flash script. (see [EXAMPLES_DRIVERS_IPC_RPMESSAGE_ECHO](#examples_drivers_ipc_rpmessage_echo))
+- Make sure IPC rpms echo application is built before running the flash script. (see [EXAMPLES_DRIVERS_IPC_RPMESSAGE_ECHO](../drivers/ipc_rpmessage_echo.md))
 
-- To flash to the EVM, refer to [GETTING_STARTED_FLASH](#getting_started_flash) . Only when giving the flash config file, point to the `sbl_ospi_hs_fs.cfg` shown above.
+- To flash to the EVM, refer to [GETTING_STARTED_FLASH](../../getting_started/getting_started_flash.md) . Only when giving the flash config file, point to the `sbl_ospi_hs_fs.cfg` shown above.
 
 - Example, assuming SDK is installed at `C:/ti/mcu_plus_sdk` and this example and IPC application is built using makefiles, and RTOS Appimage is already created, in Windows,
 
@@ -113,7 +113,7 @@ For HS-FS device, use **sbl_ospi_hs_fs.cfg** as the cfg file.
 
 ## See Also
 
-- [DRIVERS_BOOTLOADER_PAGE](#drivers_bootloader_page)
+- [DRIVERS_BOOTLOADER_PAGE](../../components/drivers/bootloader.md)
 
 ## Sample Output
 

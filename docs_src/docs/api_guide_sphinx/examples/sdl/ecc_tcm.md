@@ -31,14 +31,14 @@ Use Cases
 ## Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination
-  and build it using the CCS project menu (see [CCS_PROJECTS_PAGE](#ccs_projects_page)).
+  and build it using the CCS project menu (see [Using SDK with CCS Projects](../../developer_guides/ccs_projects.md)).
 - **When using makefiles to build**, note the required combination and build using
-  make command (see [MAKEFILE_BUILD_PAGE](#makefile_build_page))
-- Launch a CCS debug session and run the executable, see [CCS_LAUNCH_PAGE](#ccs_launch_page)
+  make command (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md))
+- Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
 
 ## See Also
 
-[SDL_ECC_PAGE](#sdl_ecc_page)
+[ECC](../../components/sdl/ecc.md)
 
 ## Sample Output
 

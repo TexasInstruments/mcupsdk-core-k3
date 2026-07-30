@@ -50,7 +50,7 @@ and audio out can be heard from audio line out jacks (J3A, J3B, J4A, J4B).
 
 ## See Also
 
-[MCASP](../../components/drivers/mcasp.md)
+[MCASP](../../components/drivers/mcasp_v1.md)
 
 ## Sample Output
 

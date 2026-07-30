@@ -13,7 +13,7 @@ This guide is intended to enhance user's understanding of the LLDP stack and pro
 
 ## Demo and Examples
 
-Refer to [Ethernet LLDP Example](enet_cpsw_lldp_example.md) for example LLDP applications.
+Refer to [Ethernet LLDP Example](../../examples/networking/enet_cpsw_lldp_example.md) for example LLDP applications.
 
 ## TSN Stack
 

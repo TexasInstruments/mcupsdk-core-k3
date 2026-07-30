@@ -136,7 +136,7 @@ On PC2, change the value of `priority1` in ~/gptp_config.cfg file to `255`, to e
 For some network cards, there is a bug with internal propagation delay. So, in those cases you might need to increase the `neighborPropDelayThresh` in ptp_config.cfg as below-
 :::
 
-#### On PC1
+## On PC1
 
 ```text
 $ cat ~/gptp_config.cfg
@@ -163,7 +163,7 @@ network_transport       L2
 delay_mechanism         P2P
 ```
 
-#### On PC2
+## On PC2
 
 ```text
 $ cat ~/gptp_config.cfg
@@ -209,7 +209,26 @@ To modify them, go to Enet (CPSW) > System integration config, and modify the en
 ## Hardware Setup
 
 :::{admonition} Note
-Make sure you have setup the EVM with cable connections as shown here, [EVM Setup](../../getting_started/am62px_evm_setup.md). In addition do below steps.
+Make sure you have setup the EVM with cable connections. In addition do below steps.
+
+::::{only} SOC_AM62PX
+[EVM Setup](../../getting_started/am62px_evm_setup.md)
+::::
+::::{only} SOC_AM62DX
+[EVM Setup](../../getting_started/am62dx_evm_setup.md)
+::::
+::::{only} SOC_AM62X
+[EVM Setup](../../getting_started/am62x_evm_setup.md)
+::::
+::::{only} SOC_AM62AX
+[EVM Setup](../../getting_started/am62ax_evm_setup.md)
+::::
+::::{only} SOC_AM62LX
+[EVM Setup](../../getting_started/am62lx_evm_setup.md)
+::::
+::::{only} SOC_AM275X
+[EVM Setup](../../getting_started/am275x_evm_setup.md)
+::::
 :::
 
 :::{only} SOC_AM64X

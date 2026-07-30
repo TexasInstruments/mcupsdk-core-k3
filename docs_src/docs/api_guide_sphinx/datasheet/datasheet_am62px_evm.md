@@ -244,6 +244,7 @@ Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  HS400 | 32	            | 89.85        | 244.33
  HS400 | 40	            | 93.59        | 248.05
 
+(ospi-nor-flash-performance)=
 ### OSPI NOR Flash Performance 
 
  - PHY condition: enabled

@@ -15,7 +15,9 @@ For instance, the CPSW support in the Enet driver consists of several software s
 
 Enet LLD relies on other drivers like UDMA for data transfer to/from the Ethernet peripheral's host port to the other processing cores inside the TI SoC devices. For the lower level access to the hardware registers, Enet LLD relies on the Chip Support Library (CSL).
 
-![Enet LLD Software Architecture Block Diagram](../../../images/networking/EnetLLD_Diagram.png)
+```{image} ../../../images/networking/EnetLLD_Diagram.png
+:alt: Enet LLD Software Architecture Block Diagram
+```
 
 ## Getting Familiar with Enet LLD APIs
 

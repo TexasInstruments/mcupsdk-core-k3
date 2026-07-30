@@ -37,9 +37,15 @@ CCS Cloud is a web-based IDE which can be used to edit, build or even debug (lim
 ## Running an example on the EVM/LaunchPad connected to the PC
 
 
-:::{only} not SOC_AM62X and not SOC_AM62AX and not SOC_AM62LX
-   - EVM should be connected to the PC properly and an SOC initialization binary should be flashed on to the board. Follow the steps in [Flash SOC Initialization Binary](../getting_started/am62px_evm_setup.md) to do this.
-:::
+::::{only} SOC_AM62PX
+- EVM should be connected to the PC properly and an SOC initialization binary should be flashed on to the board. Follow the steps in [Flash SOC Initialization Binary](../getting_started/am62px_evm_setup.md) to do this.
+::::
+::::{only} SOC_AM62DX
+- EVM should be connected to the PC properly and an SOC initialization binary should be flashed on to the board. Follow the steps in [Flash SOC Initialization Binary](../getting_started/am62dx_evm_setup.md) to do this.
+::::
+::::{only} SOC_AM275X
+- EVM should be connected to the PC properly and an SOC initialization binary should be flashed on to the board. Follow the steps in [Flash SOC Initialization Binary](../getting_started/am275x_evm_setup.md) to do this.
+::::
 
 
 - Power on the EVM, this should have ideally started SOC initialization and made the board ready to load application binaries.

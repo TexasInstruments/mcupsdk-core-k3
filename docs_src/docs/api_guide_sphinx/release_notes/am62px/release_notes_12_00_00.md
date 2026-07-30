@@ -18,7 +18,7 @@ AM62P  | MCU R5F, WKUP R5F           | {{ VAR_BOARD_NAME }} EVM (referred to as 
 ## Features Added in This Release
 
 :::{admonition} Note
-Update of OSPI tuning algorithm on this SDK causes increase in tuning time. Refer [OSPI NOR Flash Performance](../../datasheet/datasheet_am62px_evm.md#ospi-nor-flash-performance)
+Update of OSPI tuning algorithm on this SDK causes increase in tuning time. Refer {ref}`OSPI NOR Flash Performance <ospi-nor-flash-performance>`
 :::
 
 

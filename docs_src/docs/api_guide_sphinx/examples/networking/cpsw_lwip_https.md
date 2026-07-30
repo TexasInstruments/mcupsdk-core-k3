@@ -149,7 +149,7 @@ Example folder | source/networking/enet/core/examples/lwip/cpsw_lwip_https
 </table>
 
 ## To Configure Static IP
-Please refer to [NETWORKING_LWIP_STATIC_IP](#networking_lwip_static_ip).
+Please refer to {ref}`To Configure Static IP <to-configure-static-ip>`.
 
 ## mbedTLS
 
@@ -233,15 +233,19 @@ In this implementation of HTTPS server, we have not enabled the file system supp
 ## Build the example
 
 - When using CCS projects to build, import the CCS project for the required combination
-  and build it using the CCS project menu (see [CCS_PROJECTS_PAGE](#ccs_projects_page)).
+  and build it using the CCS project menu (see [Using SDK with CCS Projects](../../developer_guides/ccs_projects.md)).
 - When using makefiles to build, note the required combination and build using
-  make command (see [MAKEFILE_BUILD_PAGE](#makefile_build_page))
+  make command (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md))
 
 ## HW Setup
 
 ```{note}
-Make sure you have setup the EVM with cable connections as shown here, [EVM_SETUP_PAGE](#evm_setup_page). In addition do below steps.
+Make sure you have setup the EVM with cable connections. In addition do below steps.
 ```
+
+::::{only} SOC_AM62PX or SOC_AM62DX or SOC_AM62X or SOC_AM243X
+For EVM setup details refer the device-specific EVM Setup guide.
+::::
 
 ### Create a network between EVM and host PC
 
@@ -271,7 +275,7 @@ If you need to reload and run again, a CPU power-cycle is MUST
 ```
 
 ::::{only} SOC_AM62X or SOC_AM62DX or SOC_AM62PX or SOC_AM275X
-- Launch a CCS debug session and run the example executable, see [CCS_LAUNCH_PAGE](#ccs_launch_page)
+- Launch a CCS debug session and run the example executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
 - You will see logs in the UART terminal as shown in the next section.
 ::::
 ::::{only} SOC_AM62LX
@@ -347,7 +351,7 @@ Network is UP ...
         ```
         #define ENET_MAC_ADDR_HACK (TRUE)
         ```
-   - Rebuild the libraries and examples ([MAKEFILE_BUILD_PAGE](#makefile_build_page))
+   - Rebuild the libraries and examples (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md))
 ::::
 
 - If you see a valid, non-zero MAC address and continuosly getting "Waiting for network UP..." prints in UART terminal
@@ -364,6 +368,6 @@ Network is UP ...
    - Make sure the certificate is valid and the hex dump is loaded correctly for certificate and key in server_certificates.h files
 
 ## See Also
-::::{only} SOC_AM64X or SOC_AM243X or SOC_AM62DX or SOC_AM62X
-[NETWORKING](#networking)
+::::{only} SOC_AM62DX or SOC_AM62X or SOC_AM243X
+[Networking Components](../../components/networking/networking.rst)
 ::::

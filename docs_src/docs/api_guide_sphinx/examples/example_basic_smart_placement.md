@@ -23,7 +23,7 @@ More on smart placement can be read at [Smart Placement](../components/tools/sma
 
 :::
 
-#### Building benchmark application
+### Building benchmark application
 
 To build this application, compiler ti-cgt-armllvm >= 3.2.0 LTS or later is required. Application can be compiled using make command.
 

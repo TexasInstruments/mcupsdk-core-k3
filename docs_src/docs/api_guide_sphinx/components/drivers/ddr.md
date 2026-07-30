@@ -44,6 +44,8 @@ NA
 
 ### Step 1: Generate a DDR config file for your EVM
 
+(step-1-generate-a-ddr-config-file-for-your-evm)=
+
 - Goto https://dev.ti.com/sysconfig
 - Select "Software Product" as "DDR SUBSYSTEM REGISTER CONFIGURATION"
 - Select "Device" of interest, {{ VAR_SOC_NAME }} in this case.
@@ -92,7 +94,7 @@ Add DDR via SysConfig
 
 - Goto https://dev.ti.com/sysconfig
 - Select "Software Product" as "DDR SUBSYSTEM REGISTER CONFIGURATION"
-- Select "Device" of interest, {{ VAR_SOC_NAME }} in this case. The tool UI is the same as shown in [Creating your own DDR config file](#step-1-generate-a-ddr-config-file-for-your-evm).
+- Select "Device" of interest, {{ VAR_SOC_NAME }} in this case. The tool UI is the same as shown in [Step 1: Generate a DDR config file for your EVM](#step-1-generate-a-ddr-config-file-for-your-evm).
 - Configure the LPDDR parameters using the tool
 - Save the generated `board_ddrReginit.h` in your project workspace or work area. Rename the file as "board_lpddrReginit.h".
 ```{figure} ../../images/drivers/lpddr_config_tool_save.png

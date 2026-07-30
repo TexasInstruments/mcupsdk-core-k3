@@ -198,6 +198,7 @@ Rationale for change:
 
 For applications that directly invoke Enet driver packet transmit and receive APIs, the application should set `EnetDma_Pkt.chkSumInfo = 0`. This will ensure the CPSW checksum offload feature is not exercised wrongly.
 
+(custom-board-support)=
 ## Custom Board Support
 
 The MCU+SDK enet driver supports a set of boards for each SoC out of the box.

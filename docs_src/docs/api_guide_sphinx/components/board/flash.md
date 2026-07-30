@@ -56,94 +56,96 @@ The S28HS512T supports four different flash layouts:
 
 ### Flash Layout Configuration
 
-   The S28HS512T NOR flash supports multiple memory layout configurations that affect sector organization
-   and erase operations. The driver automatically configures the flash layout during initialization through
-   the `Flash_quirkSpansionConfigureLayout` function in `flash_nor_ospi.c`.
+The S28HS512T NOR flash supports multiple memory layout configurations that affect sector organization
+and erase operations. The driver automatically configures the flash layout during initialization through
+the `Flash_quirkSpansionConfigureLayout` function in `flash_nor_ospi.c`.
 
-   ### Configuring Flash Layout
+### Configuring Flash Layout
 
-   To customize the flash layout, modify the layout configuration using `Flash_NorOspiHybridLayoutCfg`
-   structure before calling flash open.
+(configuring-flash-layout)=
 
+To customize the flash layout, modify the layout configuration using `Flash_NorOspiHybridLayoutCfg`
+structure before calling flash open.
+
+```c
+typedef struct {
+    uint32_t isHybridLayout;     /* 0: Uniform layout, 1: Hybrid layout */
+    uint32_t hybridLayoutType;   /* Hybrid layout type (see table below) */
+} Flash_NorOspiHybridLayoutCfg;
+```
+
+### Available Layout Options
+
+#### Main Layout Types
+
+| Layout Type | Value | Description |
+|-------------|-------|-------------|
+| Uniform Layout | 0U | Standard uniform sector sizes throughout the entire flash memory |
+| Hybrid Layout | 1U | Mixed sector sizes for more flexible memory management |
+
+#### Hybrid Layout Configurations
+
+When `isHybridLayout` is set to 1, you must specify the hybrid layout type using
+`hybridLayoutType`:
+
+| Hybrid Layout Type | Value | Description |
+|-------------------|-------|-------------|
+| Bottom Hybrid | 0U | Smaller sectors at the bottom (low addresses) of flash memory |
+| Top Hybrid | 1U | Smaller sectors at the top (high addresses) of flash memory |
+| Split Hybrid | 2U | Smaller sectors at both bottom and top of flash memory |
+
+### Example Configuration
+
+For a hybrid layout with smaller sectors at both the bottom and top of memory (Split Hybrid):
+
+```c
+/* Get the layout configuration from flash config */
+Flash_NorOspiHybridLayoutCfg *layoutCfg = (Flash_NorOspiHybridLayoutCfg*)(gFlashConfig[CONFIG_FLASH0].layoutCfg);
+
+/* Configure for split hybrid layout */
+layoutCfg->isHybridLayout = 1U;      /* Hybrid layout */
+layoutCfg->hybridLayoutType = 2U;    /* Split hybrid type */
+```
+
+### Custom Flash Layout Implementation
+
+Developers can implement their own custom configuration function to accommodate
+specific flash layouts according to flash datasheet specifications.
+This is particularly useful when:
+
+- Working with flash devices that have non-standard sector arrangements
+- Implementing custom command sequences
+- Supporting specialized flash memory with unique organization requirements
+
+To add a custom flash configuration function:
+1. Define a layout configuration struct as described in [Configuring Flash Layout](#configuring-flash-layout).
+This struct can be accessed within your quirk function via the `Flash_Config *cfg` parameter.
+The config struct includes a `void* layoutCfg` pointer that references your layout configuration.
+
+2. Implement your quirk function in `flash_nor_ospi.c` following the required signature:
    ```c
-   typedef struct {
-       uint32_t isHybridLayout;     /* 0: Uniform layout, 1: Hybrid layout */
-       uint32_t hybridLayoutType;   /* Hybrid layout type (see table below) */
-   } Flash_NorOspiHybridLayoutCfg;
+   int32_t YourQuirkFunction(Flash_Config *cfg);
    ```
 
-   ### Available Layout Options
+3. Register your quirk function by updating the `quirk_function` field in the flash section of your board configuration.
 
-   #### Main Layout Types
+Example implementation:
 
-   | Layout Type | Value | Description |
-   |-------------|-------|-------------|
-   | Uniform Layout | 0U | Standard uniform sector sizes throughout the entire flash memory |
-   | Hybrid Layout | 1U | Mixed sector sizes for more flexible memory management |
+```c
+/* In flash_nor_ospi.c */
+int32_t myQuirksFxn(Flash_Config *cfg)
+{
+    int32_t status = SystemP_SUCCESS;
 
-   #### Hybrid Layout Configurations
+    /* Access layout configuration if needed */
+    MyFlashLayoutCfg *layoutCfg = (MyFlashLayoutCfg *)cfg->layoutCfg;
 
-   When `isHybridLayout` is set to 1, you must specify the hybrid layout type using
-   `hybridLayoutType`:
+    /* Your code for handling quirks goes here */
+    /* For example: modify flash timing parameters, handle special initialization, etc. */
 
-   | Hybrid Layout Type | Value | Description |
-   |-------------------|-------|-------------|
-   | Bottom Hybrid | 0U | Smaller sectors at the bottom (low addresses) of flash memory |
-   | Top Hybrid | 1U | Smaller sectors at the top (high addresses) of flash memory |
-   | Split Hybrid | 2U | Smaller sectors at both bottom and top of flash memory |
-
-   ### Example Configuration
-
-   For a hybrid layout with smaller sectors at both the bottom and top of memory (Split Hybrid):
-
-   ```c
-   /* Get the layout configuration from flash config */
-   Flash_NorOspiHybridLayoutCfg *layoutCfg = (Flash_NorOspiHybridLayoutCfg*)(gFlashConfig[CONFIG_FLASH0].layoutCfg);
-
-   /* Configure for split hybrid layout */
-   layoutCfg->isHybridLayout = 1U;      /* Hybrid layout */
-   layoutCfg->hybridLayoutType = 2U;    /* Split hybrid type */
-   ```
-
-   ### Custom Flash Layout Implementation
-
-   Developers can implement their own custom configuration function to accommodate
-   specific flash layouts according to flash datasheet specifications.
-   This is particularly useful when:
-
-   - Working with flash devices that have non-standard sector arrangements
-   - Implementing custom command sequences
-   - Supporting specialized flash memory with unique organization requirements
-
-   To add a custom flash configuration function:
-   1. Define a layout configuration struct as described in [Configuring Flash Layout](#configuring-flash-layout).
-   This struct can be accessed within your quirk function via the `Flash_Config *cfg` parameter.
-   The config struct includes a `void* layoutCfg` pointer that references your layout configuration.
-
-   2. Implement your quirk function in `flash_nor_ospi.c` following the required signature:
-      ```c
-      int32_t YourQuirkFunction(Flash_Config *cfg);
-      ```
-
-   3. Register your quirk function by updating the `quirk_function` field in the flash section of your board configuration.
-
-   Example implementation:
-
-   ```c
-   /* In flash_nor_ospi.c */
-   int32_t myQuirksFxn(Flash_Config *cfg)
-   {
-       int32_t status = SystemP_SUCCESS;
-
-       /* Access layout configuration if needed */
-       MyFlashLayoutCfg *layoutCfg = (MyFlashLayoutCfg *)cfg->layoutCfg;
-
-       /* Your code for handling quirks goes here */
-       /* For example: modify flash timing parameters, handle special initialization, etc. */
-
-       return status;
-   }
-   ```
+    return status;
+}
+```
 
 ```{image} ../../images/flash_quirks.png
 :align: center

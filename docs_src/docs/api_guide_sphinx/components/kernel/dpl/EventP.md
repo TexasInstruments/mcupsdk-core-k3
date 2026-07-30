@@ -10,9 +10,9 @@
 
 ## Important Usage Guidelines
 
-- [EventP_waitBits](../../../../../_api/group/group__KERNEL__DPL__EVENT.html) should not be called within ISR context. It can be called from task context.
-- Setting or clearing the Event bits is a non-deterministic operation and [FreeRTOS](../os/freertos.md) does not allow non-deterministic operations to be performed in interrupts or from critical sections. If [EventP_setBits](../../../../../_api/group/group__KERNEL__DPL__EVENT.html) or [EventP_clearBits](../../../../../_api/group/group__KERNEL__DPL__EVENT.html) is called from an ISR, a message is sent to RTOS daemon task to perform the operation in the context of daemon task. If the set or clear operation is required to be completed immediately, then the priority of RTOS daemon task must be higher than the priority of task waiting for the Event bits. The priority of RTOS daemon task is set by the `configTIMER_TASK_PRIORITY` in FreeRTOSConfig.h file.
--  The actual current value of Event bits returned from [EventP_waitBits](../../../../../_api/group/group__KERNEL__DPL__EVENT.html) and [EventP_getBits](../../../../../_api/group/group__KERNEL__DPL__EVENT.html) can be different from returned value if an interrupt or a higher priority task modifies the value between the calling task leaving blocked state and exiting this API.
+- `EventP_waitBits` should not be called within ISR context. It can be called from task context.
+- Setting or clearing the Event bits is a non-deterministic operation and [FreeRTOS](../os/freertos.md) does not allow non-deterministic operations to be performed in interrupts or from critical sections. If `EventP_setBits` or `EventP_clearBits` is called from an ISR, a message is sent to RTOS daemon task to perform the operation in the context of daemon task. If the set or clear operation is required to be completed immediately, then the priority of RTOS daemon task must be higher than the priority of task waiting for the Event bits. The priority of RTOS daemon task is set by the `configTIMER_TASK_PRIORITY` in FreeRTOSConfig.h file.
+-  The actual current value of Event bits returned from `EventP_waitBits` and `EventP_getBits` can be different from returned value if an interrupt or a higher priority task modifies the value between the calling task leaving blocked state and exiting this API.
 
 ## Example Usage
 

@@ -133,7 +133,24 @@ The application ends when the user types 8 characters.
    - Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
 ::::
 
+::::{only} SOC_AM62X
+- Please select the UART port used for console as mentioned in [Setup UART Terminal](../../getting_started/am62x_evm_setup.md)
+::::
+::::{only} SOC_AM62AX
+- Please select the UART port used for console as mentioned in [Setup UART Terminal](../../getting_started/am62ax_evm_setup.md)
+::::
+::::{only} SOC_AM62DX
+- Please select the UART port used for console as mentioned in [Setup UART Terminal](../../getting_started/am62dx_evm_setup.md)
+::::
+::::{only} SOC_AM62PX
 - Please select the UART port used for console as mentioned in [Setup UART Terminal](../../getting_started/am62px_evm_setup.md)
+::::
+::::{only} SOC_AM275X
+- Please select the UART port used for console as mentioned in [Setup UART Terminal](../../getting_started/am275x_evm_setup.md)
+::::
+::::{only} SOC_AM62LX
+- Please select the UART port used for console as mentioned in [Setup UART Terminal](../../getting_started/am62lx_evm_setup.md)
+::::
 
 ## See Also
 

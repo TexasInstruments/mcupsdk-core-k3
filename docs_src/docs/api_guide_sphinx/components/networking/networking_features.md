@@ -29,6 +29,7 @@ This page lists the software features and protocols supported by the MCU Plus SD
 |Cut Through|IEEE 802.1DU compliant Packet forwarding without store and delay supported|
 :::
 
+(enet-lwip-cpsw-operating-modes)=
 ## Basic Layer 2 Switching
 
 Common Platform Switch or CPSW supports Layer 2 Ethernet packet switching on 10M/100M/1G bandwidth in

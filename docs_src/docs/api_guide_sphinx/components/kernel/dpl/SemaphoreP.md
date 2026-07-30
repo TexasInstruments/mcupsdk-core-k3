@@ -12,9 +12,9 @@ NA
 
 ## Important Usage Guidelines
 
-- [SemaphoreP_post](../../../../../_api/group/group__KERNEL__DPL__SEMAPHORE.html) can be called from ISR as well as task context
-- [SemaphoreP_pend](../../../../../_api/group/group__KERNEL__DPL__SEMAPHORE.html) should not be called within ISR context. It can be called from task context.
-- [SemaphoreP_pend](../../../../../_api/group/group__KERNEL__DPL__SEMAPHORE.html) will block until the user specific timeout ticks have expired or semaphore is acquired.
+- `SemaphoreP_post` can be called from ISR as well as task context
+- `SemaphoreP_pend` should not be called within ISR context. It can be called from task context.
+- `SemaphoreP_pend` will block until the user specific timeout ticks have expired or semaphore is acquired.
   - In baremetal case, there is only a single main task and that will block or spin until the ticks have elasped or semaphore acquire is successful
   - In RTOS case, the current executing task will 'pend' and schedular will switch to another ready task until the ticks have elasped or semaphore acquire is successful
   - In both cases ISR's are still active

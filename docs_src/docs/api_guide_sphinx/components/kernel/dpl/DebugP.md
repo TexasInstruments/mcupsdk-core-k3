@@ -41,12 +41,12 @@
   - When SysCfg is used, the array representing this shared memory is generated in the file `ti_dpl_config.c`.
   - Place the section attributed to this array in the linker command file for each core such that all cores point to
     the same memory address for this section.
-  - And this memory section should be marked as non-cache in the [MPU](MpuP_arm_v7.md)/[MMU](MmuP_arm_v8.md) entry for each core.
+  - And this memory section should be marked as non-cache in the MPU/MMU entry for each core (see [MpuP_arm_v7](MpuP_arm_v7.md) and MmuP_arm_v8).
 - It is recommended to enable UART logging and shared memory reader on one "main" core and other core's
   should enable the shared memory writer.
 - The memory used for logging is limited per core. If the writer is faster than reader, then the writer drops the
   characters to be printed.
-- To change the size of the log buffer, change the value of [DebugP_SHM_LOG_SIZE](../../../../../_api/group/group__KERNEL__DPL__DEBUG.html) in `source/kernel/dpl/DebugP.h`.
+- To change the size of the log buffer, change the value of `DebugP_SHM_LOG_SIZE` in `source/kernel/dpl/DebugP.h`.
 
 ::::
 
@@ -56,13 +56,13 @@
   - When enabled via SysCfg, calling the function `Drivers_open` opens and initializes the UART for logging.
 
 
-:::{only} not SOC_AM62X and not SOC_AM62AX and not SOC_AM62DX and not SOC_AM62LX
-   ### Memory logging
-   - When log to memory is enabled, the log can be viewed via ROV (see [Using SDK with Runtime Object View (ROV)](../../../../../developer_guides/ccs_rov.md)) in CCS
+::::{only} SOC_AM64X or SOC_AM243X or SOC_AM275X or SOC_AM62PX or SOC_AM263X or SOC_AM273X or SOC_AWR294X or SOC_J722S
+   **Memory logging**
+   - When log to memory is enabled, the log can be viewed via ROV (see [Using SDK with Runtime Object View (ROV)](../../../developer_guides/ccs_rov.md)) in CCS
    - The memory used for logging is limited. The writer is typically faster than the ROV reader, so here the writer will overwrite
      the older data, i.e the log will have the latest logs up to log buffer size.
-   - To change the size of the log buffer, change the value of [DebugP_MEM_LOG_SIZE](../../../../../_api/group/group__KERNEL__DPL__DEBUG.html) in `source/kernel/dpl/DebugP.h`.
-:::
+   - To change the size of the log buffer, change the value of `DebugP_MEM_LOG_SIZE` in `source/kernel/dpl/DebugP.h`.
+::::
 
 
 ### Other guidelines

@@ -47,7 +47,7 @@ See also [FreeRTOS](../os/freertos.md), [NO RTOS](../os/nortos.md) for list of u
 
 - For ARM R5,
   - TI VIM is the interrupt controller that is supported.
-  - [HwiP_disable](../../../../../_api/group/group__KERNEL__DPL__HWI.html), [HwiP_restore](../../../../../_api/group/group__KERNEL__DPL__HWI.html), [HwiP_enable](../../../../../_api/group/group__KERNEL__DPL__HWI.html) only affect state of IRQ. FIQ state is not changed
+  - `HwiP_disable`, `HwiP_restore`, `HwiP_enable` only affect state of IRQ. FIQ state is not changed
   - Refer ARMv7-R Architecture reference manual and SOC TRM for more details.
 
 ::::{only} SOC_AM62X or SOC_AM64X or SOC_AM243X or SOC_AM62PX or SOC_AM62LX or SOC_AM263X or SOC_AM273X or SOC_AWR294X

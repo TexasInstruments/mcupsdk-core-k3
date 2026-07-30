@@ -45,7 +45,7 @@ Speakers need to be connected to the 8 channel audio out on each card connected 
 
 ## See Also
 
-[MCASP](../../components/drivers/mcasp.md)
+[MCASP](../../components/drivers/mcasp_v1.md)
 
 ## Sample Output
 

@@ -46,19 +46,19 @@ The example does the below
 ## Steps to Run the Example
 
 - **When using CCS projects to build**, import the CCS project for the required combination
-  and build it using the CCS project menu (see [CCS_PROJECTS_PAGE](#ccs_projects_page)).
+  and build it using the CCS project menu (see [CCS_PROJECTS_PAGE](../../developer_guides/ccs_projects.md)).
 - **When using makefiles to build**, note the required combination and build using
-  make command (see [MAKEFILE_BUILD_PAGE](#makefile_build_page))
+  make command (see [MAKEFILE_BUILD_PAGE](../../developer_guides/makefile_build.md))
 ::::{only} SOC_AM62LX
 - To Load and Run an example (see [DFU_LOAD_CCS_DEBUG](#dfu_load_ccs_debug))
 ::::
 ::::{only} not SOC_AM62LX
-- Launch a CCS debug session and run the executable, see [CCS_LAUNCH_PAGE](#ccs_launch_page)
+- Launch a CCS debug session and run the executable, see [CCS_LAUNCH_PAGE](../../getting_started/ccs_launch.md)
 ::::
 
 ## See Also
 
-[DRIVERS_ADC_PAGE](#drivers_adc_page)
+[DRIVERS_ADC_PAGE](../../components/drivers/adc.md)
 
 ## Sample Output
 

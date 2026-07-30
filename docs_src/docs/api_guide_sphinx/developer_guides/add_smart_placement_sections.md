@@ -1,19 +1,18 @@
-:::{only} SOC_AM275X
 # Changes in linker for Smart Placement
-:::
 
+::::{only} SOC_AM275X
 
-## Introduction
+**Introduction**
 
 To make smart placement functional ([Smart Placement](../components/tools/smart_placement.md)), linker script needs to be changed to account new section that compiler generates.
 
 This page will show what changes needs to be done.
 
-## Linker changes
+**Linker changes**
 
 Linker will aggregate all function input sections into designated output sections while sorting the placement of input sections based on the given priority. Following code can be added in the linker file to inorder to do that.
 
-:::{only} SOC_AM275X
+::::{only} SOC_AM275X
 
     SECTIONS
 
@@ -27,7 +26,7 @@ Linker will aggregate all function input sections into designated output section
 
     }
 
-:::
+::::
 
 By default, we should use section splitting as shown above between memory regions to get the full effect of function prioritization.
 
@@ -38,3 +37,4 @@ Similar treatment is for all the functions that are marked `onchip`, however, th
 Also, all functions which are marked `offchip`, should be placed in external FLASH.
 
 It should be noted that although annotating using assembler directive is convenient, one short-coming is that static functions cannot be annotated or if annotated, no effect of it is on its placement. To solve this, C/C++ based annotation has to be used in the definition/declaration of that static function.
+::::

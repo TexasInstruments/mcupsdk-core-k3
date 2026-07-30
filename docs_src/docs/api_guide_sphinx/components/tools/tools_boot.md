@@ -315,7 +315,7 @@ This section describes the various tools that are used to create boot images for
 
 ::::{only} SOC_AM275X
 
-## HSM MCELF Image Generator Tool
+**HSM MCELF Image Generator Tool**
 
 :::{admonition} Note
 Change DEVICE_TYPE to HS in ${SDK_INSTALL_PATH}/devconfig/devconfig.mak and then generate HSM MCELF image for HS-SE device.
@@ -357,7 +357,7 @@ If `HSM_BINARY_NAME` is changed, the entry point label in `board/{{ VAR_BOARD_NA
 ::::
 
 
-## Signing Scripts
+**Signing Scripts**
 - To run these scripts, one needs `openssl` installed as mentioned here, [OpenSSL](../../getting_started/download_and_install.md)
 
 ::::{only} SOC_AM62X or SOC_AM62AX or SOC_AM62DX or SOC_AM62PX or SOC_AM64X or SOC_AM243X or SOC_AM275X or SOC_AM263X or SOC_AM273X or SOC_AWR294X or SOC_J722S
@@ -519,10 +519,55 @@ be ensured that the same is followed as part of the post build steps.
    - This script is used in UART boot mode for sending the SBL and appimage binaries to the EVM via UART using XMODEM protocol
    - Make sure that python3 and its dependent modules are installed in the host machine as mentioned in [Python3](../../getting_started/download_and_install.md)
    - Booting via UART is slow, but is useful if application loading via CCS or OSPI boot is not an option
+   ::::{only} SOC_AM62X
+   - Make sure the UART port used for terminal is identified as mentioned in [Setup UART Terminal](../../getting_started/am62x_evm_setup.md)
+   - Make sure you have the EVM power cable and UART cable connected as shown in [Cable Connections](../../getting_started/am62x_evm_setup.md)
+   ::::
+
+   ::::{only} SOC_AM62AX
+   - Make sure the UART port used for terminal is identified as mentioned in [Setup UART Terminal](../../getting_started/am62ax_evm_setup.md)
+   - Make sure you have the EVM power cable and UART cable connected as shown in [Cable Connections](../../getting_started/am62ax_evm_setup.md)
+   ::::
+
+   ::::{only} SOC_AM62DX
+   - Make sure the UART port used for terminal is identified as mentioned in [Setup UART Terminal](../../getting_started/am62dx_evm_setup.md)
+   - Make sure you have the EVM power cable and UART cable connected as shown in [Cable Connections](../../getting_started/am62dx_evm_setup.md)
+   ::::
+
+   ::::{only} SOC_AM62PX
    - Make sure the UART port used for terminal is identified as mentioned in [Setup UART Terminal](../../getting_started/am62px_evm_setup.md)
    - Make sure you have the EVM power cable and UART cable connected as shown in [Cable Connections](../../getting_started/am62px_evm_setup.md)
+   ::::
+
+   ::::{only} SOC_AM275X
+   - Make sure the UART port used for terminal is identified as mentioned in [Setup UART Terminal](../../getting_started/am275x_evm_setup.md)
+   - Make sure you have the EVM power cable and UART cable connected as shown in [Cable Connections](../../getting_started/am275x_evm_setup.md)
+   ::::
+
+   ::::{only} SOC_AM62LX
+   - Make sure the UART port used for terminal is identified as mentioned in [Setup UART Terminal](../../getting_started/am62lx_evm_setup.md)
+   - Make sure you have the EVM power cable and UART cable connected as shown in [Cable Connections](../../getting_started/am62lx_evm_setup.md)
+   ::::
+
    - To boot applications using this script, **POWER OFF the EVM**
+   ::::{only} SOC_AM62X
+   - Switch to [UART BOOT MODE](../../getting_started/am62x_evm_setup.md).
+   ::::
+   ::::{only} SOC_AM62AX
+   - Switch to [UART BOOT MODE](../../getting_started/am62ax_evm_setup.md).
+   ::::
+   ::::{only} SOC_AM62DX
+   - Switch to [UART BOOT MODE](../../getting_started/am62dx_evm_setup.md).
+   ::::
+   ::::{only} SOC_AM62PX
    - Switch to [UART BOOT MODE](../../getting_started/am62px_evm_setup.md).
+   ::::
+   ::::{only} SOC_AM275X
+   - Switch to [UART BOOT MODE](../../getting_started/am275x_evm_setup.md).
+   ::::
+   ::::{only} SOC_AM62LX
+   - Switch to [UART BOOT MODE](../../getting_started/am62lx_evm_setup.md).
+   ::::
    - **POWER ON the EVM**
    - To confirm that the board is in UART boot mode, open the UART terminal and confirm that you see the character 'C' getting printed on the console every 2-3 seconds.
    - Now close the terminal. This is important as the script won't be able to function properly if the UART terminal is open.

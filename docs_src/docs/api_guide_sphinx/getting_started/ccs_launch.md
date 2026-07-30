@@ -20,11 +20,34 @@ The steps on this page should be done each time EVM is power cycled or when a ne
 ## Prerequisites
 A quick recap of the steps that need to have been done before you proceed
 - Make sure you have installed CCS as mentioned in [Download, Install and Setup CCS](ccs_setup.md)
+
+::::{only} SOC_AM62X
+- Make sure the UART port used for console is identified as mentioned in [Setup UART Terminal](am62x_evm_setup.md)
+- Make sure you have the EVM power cable, JTAG cable, UART cable connected as shown in [Cable Connections](am62x_evm_setup.md)
+::::
+::::{only} SOC_AM62AX
+- Make sure the UART port used for console is identified as mentioned in [Setup UART Terminal](am62ax_evm_setup.md)
+- Make sure you have the EVM power cable, JTAG cable, UART cable connected as shown in [Cable Connections](am62ax_evm_setup.md)
+::::
+::::{only} SOC_AM62DX
+- Make sure the UART port used for console is identified as mentioned in [Setup UART Terminal](am62dx_evm_setup.md)
+- Make sure you have the EVM power cable, JTAG cable, UART cable connected as shown in [Cable Connections](am62dx_evm_setup.md)
+::::
+::::{only} SOC_AM62PX
 - Make sure the UART port used for console is identified as mentioned in [Setup UART Terminal](am62px_evm_setup.md)
 - Make sure you have the EVM power cable, JTAG cable, UART cable connected as shown in [Cable Connections](am62px_evm_setup.md)
+::::
+::::{only} SOC_AM275X
+- Make sure the UART port used for console is identified as mentioned in [Setup UART Terminal](am275x_evm_setup.md)
+- Make sure you have the EVM power cable, JTAG cable, UART cable connected as shown in [Cable Connections](am275x_evm_setup.md)
+::::
+::::{only} SOC_AM62LX
+- Make sure the UART port used for console is identified as mentioned in [Setup UART Terminal](am62lx_evm_setup.md)
+- Make sure you have the EVM power cable, JTAG cable, UART cable connected as shown in [Cable Connections](am62lx_evm_setup.md)
+::::
 
 ::::{only} SOC_AM273X
-- Make sure you have done the steps for a SOC initialization method using [SOC Initialization](am62px_evm_setup.md)
+- Make sure you have done the steps for a SOC initialization method using [SOC Initialization](am275x_evm_setup.md)
 ::::
 
 
@@ -45,24 +68,45 @@ A quick recap of the steps that need to have been done before you proceed
 
 ::::{only} SOC_AWR294X or SOC_AM263X or SOC_AM243X or SOC_AM64X
 - Make sure you have done the steps for a SOC initialization method
-  - **RECOMMENDED** method is [Flash SOC Initialization Binary](am62px_evm_setup.md)
-  - Other options, if recommended method cannot be used, are mentioned in [SOC Initialization](am62px_evm_setup.md)
+  - **RECOMMENDED** method is [Flash SOC Initialization Binary](am62x_evm_setup.md)
+  - Other options, if recommended method cannot be used, are mentioned in [SOC Initialization](am62x_evm_setup.md)
 - Make sure EVM boot mode switch is setup correctly based on the SOC initialization method
 ::::
 
 
 ::::{only} SOC_AWR294X or SOC_AM263X
-- For the **RECOMMENDED** method, [Flash SOC Initialization Binary](am62px_evm_setup.md), the boot mode should be `BOOTMODE_QSPI`
+- For the **RECOMMENDED** method, [Flash SOC Initialization Binary](am62x_evm_setup.md), the boot mode should be `BOOTMODE_QSPI`
 ::::
 
 
 ::::{only} SOC_AM243X or SOC_AM64X
-- For the **RECOMMENDED** method, [Flash SOC Initialization Binary](am62px_evm_setup.md), the boot mode should be [OSPI NOR BOOT MODE](am62px_evm_setup.md)
+- For the **RECOMMENDED** method, [Flash SOC Initialization Binary](am62x_evm_setup.md), the boot mode should be [OSPI NOR BOOT MODE](am62x_evm_setup.md)
 ::::
 
 
-::::{only} SOC_AM62X or SOC_AM62AX or SOC_AM62PX or SOC_AM62DX
+::::{only} SOC_AM62X or SOC_AM62AX
+- Make sure you have done the steps for a SOC initialization method as per [Flash SOC Initialization Binary](am62x_evm_setup.md)
+::::
+
+::::{only} SOC_AM62PX
 - Make sure you have done the steps for a SOC initialization method as per [Flash SOC Initialization Binary](am62px_evm_setup.md)
+::::
+
+::::{only} SOC_AM62DX
+- Make sure you have done the steps for a SOC initialization method as per [Flash SOC Initialization Binary](am62dx_evm_setup.md)
+::::
+::::{only} SOC_AM62AX
+- Make sure you have done the steps for a SOC initialization method as per [Flash SOC Initialization Binary](am62ax_evm_setup.md)
+::::
+::::{only} SOC_AM62PX
+- Make sure you have done the steps for a SOC initialization method as per [Flash SOC Initialization Binary](am62px_evm_setup.md)
+::::
+::::{only} SOC_AM62DX
+- Make sure you have done the steps for a SOC initialization method as per [Flash SOC Initialization Binary](am62dx_evm_setup.md)
+::::
+::::{only} SOC_AM62X
+- Make sure you have done the steps for a SOC initialization method as per [Flash SOC Initialization Binary](am62x_evm_setup.md)
+::::
 ::::
 
 - Make sure the UART or CCS console logs on doing **EVM POWER-ON** indicate that SOC initialization is successful
@@ -91,12 +135,12 @@ A quick recap of the steps that need to have been done before you proceed
 
 
 ::::{only} SOC_AM243X or SOC_AM64X
-- If you dont see the expected SOC initialization logs on UART or CCS console, then recheck your [EVM Setup](am62px_evm_setup.md)
+- If you dont see the expected SOC initialization logs on UART or CCS console, then recheck your [EVM Setup](am62x_evm_setup.md)
 ::::
 
 
 ::::{only} SOC_AM62X
-- If SBL NULL is flashed on the board by following steps in [Flash SOC Initialization Binary](am62px_evm_setup.md), wait for the following messages from UART
+- If SBL NULL is flashed on the board by following steps in [Flash SOC Initialization Binary](am62x_evm_setup.md), wait for the following messages from UART
 
        Starting NULL Bootloader ...
 
@@ -113,7 +157,7 @@ A quick recap of the steps that need to have been done before you proceed
        INFO: Bootloader_loadSelfCpu:229: CPU r5f0-0 is initialized to 400000000 Hz !!!
        INFO: Bootloader_JumpSelfCpu:248: All done, jumping self ...
 
-- If initialization is done by following steps in [SOC Initialization Using SPL](am62px_evm_setup.md), wait for the Linux to be up on the A53 core.
+- If initialization is done by following steps in [SOC Initialization Using SPL](am62x_evm_setup.md), wait for the Linux to be up on the A53 core.
 
    ```{figure} ../images/am62dx/linux_boot_01.png
    :align: center
@@ -124,7 +168,12 @@ A quick recap of the steps that need to have been done before you proceed
 
 
 ::::{only} SOC_AM62AX or SOC_AM62DX
-- If SBL NULL is flashed on the board by following steps in [Flash SOC Initialization Binary](am62px_evm_setup.md), wait for the following messages from UART
+::::{only} SOC_AM62AX
+- If SBL NULL is flashed on the board by following steps in [Flash SOC Initialization Binary](am62ax_evm_setup.md), wait for the following messages from UART
+::::
+::::{only} SOC_AM62DX
+- If SBL NULL is flashed on the board by following steps in [Flash SOC Initialization Binary](am62dx_evm_setup.md), wait for the following messages from UART
+::::
 
        Starting NULL Bootloader ...
 
@@ -142,7 +191,7 @@ A quick recap of the steps that need to have been done before you proceed
        INFO: Bootloader_JumpSelfCpu:248: All done, jumping self ...
 
 ::::{only} SOC_AM62AX
-- If initialization is done by following steps in [SOC Initialization Using SPL](am62px_evm_setup.md), wait for the Linux to be up on the A53 core.
+- If initialization is done by following steps in [SOC Initialization Using SPL](am62ax_evm_setup.md), wait for the Linux to be up on the A53 core.
 
    ```{figure} ../images/am62dx/linux_boot_01.png
    :align: center

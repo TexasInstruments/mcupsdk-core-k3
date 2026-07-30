@@ -39,6 +39,7 @@ static void App_allocateIPAddress()
 }
 ```
 
+(to-configure-static-ip)=
 ### To Configure Static IP
 
 ```c
@@ -77,4 +78,4 @@ static void App_allocateIPAddress()
 
 ## See Also
 
-- [Ethernet And Networking](networking.md)
+- [Ethernet And Networking](networking.rst)

@@ -1,7 +1,25 @@
 # SBL NULL
 ## Introduction
 
-This is a bootloader which does SOC initializations and put all the cores in WFI. This example is what is referred to as the SOC initialization binary in [Flash SOC Initialization Binary](../../getting_started/am62px_evm_setup.md). The SBL NULL does not load any images on the cores. For more information on how this example is being used, refer [Flash SOC Initialization Binary](../../getting_started/am62px_evm_setup.md)
+This is a bootloader which does SOC initializations and put all the cores in WFI. This example is what is referred to as the SOC initialization binary. The SBL NULL does not load any images on the cores. For more information on how this example is being used, refer to the appropriate EVM Setup guide:
+::::{only} SOC_AM62X
+[Flash SOC Initialization Binary](../../getting_started/am62x_evm_setup.md)
+::::
+::::{only} SOC_AM62AX
+[Flash SOC Initialization Binary](../../getting_started/am62ax_evm_setup.md)
+::::
+::::{only} SOC_AM62DX
+[Flash SOC Initialization Binary](../../getting_started/am62dx_evm_setup.md)
+::::
+::::{only} SOC_AM62PX
+[Flash SOC Initialization Binary](../../getting_started/am62px_evm_setup.md)
+::::
+::::{only} SOC_AM275X
+[Flash SOC Initialization Binary](../../getting_started/am275x_evm_setup.md)
+::::
+::::{only} SOC_AM62LX
+[Flash SOC Initialization Binary](../../getting_started/am62lx_evm_setup.md)
+::::
 
 
 ::::{only} SOC_AM62X or SOC_AM62AX or SOC_AM62DX or SOC_AM62PX
@@ -148,7 +166,24 @@ Since this is a bootloader and is used as a SOC initialization binary, the examp
   and build it using the CCS project menu (see [Using SDK with CCS Projects](../../developer_guides/ccs_projects.md)).
 - **When using makefiles to build**, note the required combination and build using
   make command (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md))
+::::{only} SOC_AM62X
+- Flash this bootloader by following steps mentioned in [Flash SOC Initialization Binary](../../getting_started/am62x_evm_setup.md)
+::::
+::::{only} SOC_AM62AX
+- Flash this bootloader by following steps mentioned in [Flash SOC Initialization Binary](../../getting_started/am62ax_evm_setup.md)
+::::
+::::{only} SOC_AM62DX
+- Flash this bootloader by following steps mentioned in [Flash SOC Initialization Binary](../../getting_started/am62dx_evm_setup.md)
+::::
+::::{only} SOC_AM62PX
 - Flash this bootloader by following steps mentioned in [Flash SOC Initialization Binary](../../getting_started/am62px_evm_setup.md)
+::::
+::::{only} SOC_AM275X
+- Flash this bootloader by following steps mentioned in [Flash SOC Initialization Binary](../../getting_started/am275x_evm_setup.md)
+::::
+::::{only} SOC_AM62LX
+- Flash this bootloader by following steps mentioned in [Flash SOC Initialization Binary](../../getting_started/am62lx_evm_setup.md)
+::::
 
 ## See Also
 

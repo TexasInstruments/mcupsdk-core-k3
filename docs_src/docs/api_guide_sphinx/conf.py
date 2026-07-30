@@ -68,14 +68,8 @@ suppress_warnings = [
     "toc.excluded",
     "myst.xref_missing",
     "myst.substitution",
-    "myst.header",          # heading level jumps in source files
     "autosectionlabel",
     "toc.not_readable",
-    "toc.secnum",
-    "toc.not_numbered",     # documents not included in toctree
-    "toc.orphan",           # orphaned documents
-    "misc.highlighting_failure",  # code block highlighting
-    "",                     # untyped warnings (includes "document isn't included in any toctree" in Sphinx 8.x)
     "app.add_config_value",  # Sphinx 8.x compatibility
 ]
 

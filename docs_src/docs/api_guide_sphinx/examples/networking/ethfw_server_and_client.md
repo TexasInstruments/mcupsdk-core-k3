@@ -1,6 +1,6 @@
 # Ethernet Firmware
 
-###### Introduction
+## Introduction
 This Ethernet Firmware example demonstrates ability to perform traffic steering from CPSW to multiple cores. This uses hardware capabilities of CPSW to direct unicast traffic, and a shared memory based layer to send multicast and broadcast traffic.
 
 Ethernet Firmware server is the application which owns the CPSW peripheral, and controls the behaviour. Ethernet firmware clients are the applications which are running on different cores, which send requests to ethernet firmware server based on their requirements.
@@ -11,9 +11,9 @@ The demo configures the R5F server to acquire a DHCP address and registers the M
 
 
 ::::{only} SOC_AM62DX
-   This demo also showcases the integration of AVB functionality with Ethernet Firmware and the ability to exchange audio data with the DSP core. The configuration utilizes two boards in complementary roles: one acting as an Audio Source (`avb_audio_source`) and the other as an Audio Sink (`avb_audio_sink`). Both boards support MAC-only mode on port 2 for other network traffic. Both boards run talker and listener tasks simultaneously, exchanging PCM audio streams in both directions. See [AVB Audio Streaming Demo](#AVB_AUDIO_STREAMING) for the full stream topology and how to customize it. See [MAC-only port](#MAC_ONLY_PORT) below for the port configuration model.
+   This demo also showcases the integration of AVB functionality with Ethernet Firmware and the ability to exchange audio data with the DSP core. The configuration utilizes two boards in complementary roles: one acting as an Audio Source (`avb_audio_source`) and the other as an Audio Sink (`avb_audio_sink`). Both boards support MAC-only mode on port 2 for other network traffic. Both boards run talker and listener tasks simultaneously, exchanging PCM audio streams in both directions. See the AVB Audio Streaming Demo section below for the full stream topology and how to customize it. See the MAC-only port section below for the port configuration model.
 
-   #### Port Configuration
+   **Port Configuration**
 
    - MAC Port 1 – Configured in switch mode, used for AVB audio streaming between boards.
    - MAC Port 2 – Configured in MAC-only mode, allowing direct traffic to the host port without packet switching.
@@ -27,7 +27,7 @@ This is in work-in-progress state currently, and complete feature list and funct
 
 
 ::::{only} SOC_AM62DX or SOC_AM62PX
-Please refer to [Networking Ethernet Firmware](../../components/networking/networking_ethfw.rst) for more detailed information about Ethfw features
+Please refer to [Networking Ethernet Firmware](../../components/networking/networking_ethfw.md) for more detailed information about Ethfw features
 ::::
 
 :::{admonition} Attention
@@ -35,9 +35,9 @@ For more information, please refer to the link ``https://software-dl.ti.com/jaci
 :::
 
 
-###### Supported Combinations
+## Supported Combinations
 
-###### Ethernet Firmware Server
+## Ethernet Firmware Server
 
 
 ::::{only} SOC_AM62PX
@@ -74,7 +74,7 @@ For more information, please refer to the link ``https://software-dl.ti.com/jaci
 ::::
 
 
-###### Ethernet Firmware Client
+## Ethernet Firmware Client
 
 | Parameter | Value |
 |---|---|
@@ -84,7 +84,7 @@ For more information, please refer to the link ``https://software-dl.ti.com/jaci
 | Example folder | source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/ |
 
 
-###### Other Clients supported
+## Other Clients supported
 
 ::::{only} SOC_AM62PX or SOC_AM62AX
 | Client Env | Supported Core + OS |
@@ -104,9 +104,9 @@ For more information, please refer to the link ``https://software-dl.ti.com/jaci
 ::::
 
 
-###### Steps to Run the Example
+## Steps to Run the Example
 
-####### Prerequisites
+### Prerequisites
 
 ::::{only} SOC_AM62PX or SOC_AM62AX
    - EVM Board
@@ -120,7 +120,7 @@ For more information, please refer to the link ``https://software-dl.ti.com/jaci
 
 - CAT6 Ethernet cable
 
-###### Build the example
+## Build the example
 
 
 ::::{only} SOC_AM62DX
@@ -135,7 +135,7 @@ For more information, please refer to the link ``https://software-dl.ti.com/jaci
    | RX Flows [16] | 0 | 16 (Secondary) | 16 (Primary) | 6 (Primary) | 10 (Primary) | 16 (Secondary) |
    | RX Rings [16] | 0 | 16 (Secondary) | 16 (Primary) | 6 (Primary) | 10 (Primary) | 16 (Secondary) |
 
-   Please refer to [CPSW Resource Allocation Guide](../../developer_guides/resource_allocation_guide.md) for changing the resource allocation.
+   Please refer to [CPSW Resource Allocation Guide](../../developer_guides/resource_allocation.md) for changing the resource allocation.
 
 ::::
 
@@ -145,7 +145,7 @@ For more information, please refer to the link ``https://software-dl.ti.com/jaci
 - When using makefiles to build, note the required combination and build using
   make command (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md))
 
-###### HW Setup
+## HW Setup
 
 ::::{only} SOC_AM62PX or SOC_AM62AX
    - Connect the One end of the CAT6 cable to the EVM and the other end of the CAT6 cable to network.
@@ -162,7 +162,7 @@ For more information, please refer to the link ``https://software-dl.ti.com/jaci
    ```
 ::::
 
-###### Run the example
+## Run the example
 :::{admonition} Attention
 If you need to reload and run again, a CPU power-cycle is MUST.
 :::
@@ -186,7 +186,7 @@ CCS loading is not supported for any core. Applications are tested with OSPI boo
 - You will see logs in the UART terminal as shown in the next section.
 - The prints will indicate the IP address acquired by clients against their corresponding MAC addresses
 
-###### Sample output
+## Sample output
 
 ::::{only} SOC_AM62PX or SOC_AM62AX
    **WKUP-R5 Server Application logs**
@@ -649,7 +649,7 @@ CCS loading is not supported for any core. Applications are tested with OSPI boo
 
 ::::{only} SOC_AM62DX
 
-##### AVB Audio Streaming Demo {#AVB_AUDIO_STREAMING}
+**AVB Audio Streaming Demo {#AVB_AUDIO_STREAMING}**
 
 The AVB audio demo extends the Ethernet Firmware server with Audio Source and Sink applications that stream PCM audio between two AM62Dx EVMs over MAC port 1. Each board runs two application images:
 
@@ -669,7 +669,7 @@ Both board roles are built from the same source file `ethfw_avtp.c`. The active 
 | `avb_audio_source` | Transmits Class A + Class D audio, Receives Class A Audio   | `AVTP_TALKER_MODE`     |
 | `avb_audio_sink`   | Receives Class A + Class D audio, Transmits Class A Audio | `AVTP_LISTENER_MODE`   |
 
-###### Audio Stream Table
+## Audio Stream Table
 
 AVB streams are identified by an 8-byte Stream ID and a destination multicast MAC address. The last byte of both (referred to as the stream's "App No.", 0–5 in this demo) is what this demo uses to tell streams apart. All 3 default streams use VLAN ID 110 on MAC port 1:
 
@@ -691,7 +691,7 @@ On the C7x side, PCM samples are exchanged with the R5F AVTP tasks through fixed
 | `avb_audio_sink`    | Class D buffer                  | `0xA3000000 + 0x20000`    | 768 bytes  | App No. 1 (Class D1 from source)   |
 | `avb_audio_source`  | Class A buffer                  | `0xA3000000 + 2*0x20000`  | 192 bytes  | App No. 0 (Class A from sink)      |
 
-###### Adding or Removing Talker Streams {#AVB_ADD_REMOVE_TALKER}
+## Adding or Removing Talker Streams {#AVB_ADD_REMOVE_TALKER}
 
 All talker (TX) streams are configured in `/source/networking/ethfw/apps/app_remoteswitchcfg_server/sitara/ethfw_avtp.c`.
 
@@ -706,7 +706,7 @@ To **remove** a talker stream:
 1. Remove (or comment out) the corresponding `AAF_TX_*_APPNO` define—its `init_aaf_pcm_talker()` call is `#ifdef`-guarded and will be skipped automatically.
 2. Remove the matching `AAF_RX_*_APPNO` define on the peer board so it stops expecting that stream.
 
-###### Adding or Removing Listener Streams {#AVB_ADD_REMOVE_LISTENER}
+## Adding or Removing Listener Streams {#AVB_ADD_REMOVE_LISTENER}
 
 All listener (RX) streams are also configured in `ethfw_avtp.c`.
 
@@ -726,7 +726,7 @@ The App No. (last byte of the Stream ID and multicast MAC) must be unique per st
 
 ::::
 
-######  MAC-only port
+##  MAC-only port
 
 Ethernet Firmware enables MAC-only mode on MAC port 2 for AM62Dx, this allows all incoming
 traffic from MAC port 2 to be transferred only to the host port. This effectively excludes the
@@ -750,7 +750,7 @@ The default port configuration for AM62Dx is shown below:
 ```
 
 ::::{only} SOC_AM62PX or SOC_AM62AX
-   **Enable MAC-only mode on MAC port 2**
+   **Enable MAC-only mode on MAC port 2** {#MAC_ONLY_PORT}
 
    1. Add `-DENABLE_MAC_ONLY_PORTS` flag to `DEFINES_common` in the client app, server app and ethfw library makefiles
        - Client app makefile in `<SDK_INSTALL_PATH>/source/networking/ethfw/apps/app_remoteswitchcfg_client/sitara/<device>/<core_os_combo>/ti-arm-clang/makefile`
@@ -791,7 +791,7 @@ The default port configuration for AM62Dx is shown below:
    5. Rebuild the libraries first, then the apps before loading the binaries.
 ::::
 
-###### See Also
+## See Also
 
 ::::{only} SOC_AM62PX or SOC_AM62DX
 [Ethernet And Networking](../../components/networking/networking.rst)

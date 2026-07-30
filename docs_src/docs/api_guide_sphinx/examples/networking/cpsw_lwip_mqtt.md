@@ -238,14 +238,14 @@ To run the same example without TLS, the mosquitto.conf file should use port 188
 ### Build the example
 
 - When using CCS projects to build, import the CCS project for the required combination
-  and build it using the CCS project menu (see [CCS Projects Page](#ccs_projects_page)).
+  and build it using the CCS project menu (see [Using SDK with CCS Projects](../../developer_guides/ccs_projects.md)).
 - When using makefiles to build, note the required combination and build using
-  make command (see [Makefile Build Page](#makefile_build_page)).
+  make command (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md)).
 
 ### HW Setup
 
 ```{note}
-Make sure you have setup the EVM with cable connections as shown in [EVM Setup Page](#evm_setup_page). In addition do below steps.
+Make sure you have setup the EVM with cable connections as shown in [Getting Started](../../getting_started/introduction.md). In addition do below steps.
 ```
 
 ### Create a network between EVM and host PC

@@ -174,6 +174,8 @@ In this SDK , by default both the Physical MAC port is used as Virtual Switch Po
 
 ## Multicast and Broadcast Support
 
+(multicast-and-broadcast-support)=
+
 Broadcast support is automatically enabled through inter-core virtual Ethernet
 mechanism which allows sending broadcast traffic to all the client cores, provided
 that inter-core virtual Ethernet is enabled on that client.
@@ -185,6 +187,8 @@ Ethfw allows multiple client cores to subscribe and un-subscribe to multicast MA
 - Reserverd Multicast
 
 ### Exclusive Multicast
+
+(exclusive-multicast)=
 
 Exclusive multicast addresses are allocated to only one core at any given time and the
 corresponding multicast traffic is routed to that core directly using a dedicated hardware flow.
@@ -203,6 +207,8 @@ will allow us to change the maximum number of exclusive multicast addresses that
 be added to the table.
 
 ### Shared Multicast
+
+(shared-multicast)=
 
 Shared multicast allows multiple client cores to subscribe to the same multicast address.
 To support this, EthFw maintains a list of pre-defined multicast addresses which are treated as <b>shared</b>.
@@ -295,6 +301,8 @@ in the *ethfw/ethremotecfg/server/include/ethfw_mcast.h* file. By
 default the length is 4.
 
 ## Intercore Ethernet using Shared Memory
+
+(intercore-ethernet-using-shared-memory)=
 
 Inter-core virtual network uses a star topology with the R5F_0 master core (EthFw server)
 acting as the central hub. Each node (core) in the network communicates directly with the

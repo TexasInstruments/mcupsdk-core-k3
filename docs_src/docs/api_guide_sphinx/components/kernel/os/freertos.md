@@ -76,7 +76,7 @@ FreeRTOS is a market-leading real-time operating system (RTOS) for microcontroll
 - FreeRTOS+POSIX
   - Limited POSIX API wrappers on top of FreeRTOS APIs
   - Clock, message queue, pthread, pthread cond, pthread mutex, semaphore, timer
-- In order to keep the device drivers agnostic of FreeRTOS or NORTOS, additionally below [Driver Porting Layer (DPL)](../dpl/index.rst) APIs are implemented to call FreeRTOS APIs underneath,
+- In order to keep the device drivers agnostic of FreeRTOS or NORTOS, additionally below [Driver Porting Layer (DPL)](../dpl/dpl.rst) APIs are implemented to call FreeRTOS APIs underneath,
   - Clock, task, semaphore, heap, cache, MPU, debug logs, HW interrupts, HW timers
 - Floating point save/restore with tasks (make sure to call portTASK_USES_FLOATING_POINT() before using floating point operations )
 
@@ -351,4 +351,4 @@ Given below are some references to learn more about FreeRTOS.
 
 ## See also
 
-[Driver Porting Layer (DPL)](../dpl/index.rst), [NO RTOS](nortos.md)
+[Driver Porting Layer (DPL)](../dpl/dpl.rst), [NO RTOS](nortos.md)

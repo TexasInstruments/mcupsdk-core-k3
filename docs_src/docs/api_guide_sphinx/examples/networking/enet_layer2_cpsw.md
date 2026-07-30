@@ -148,15 +148,35 @@ Example folder  | source/networking/enet/core/examples/enet_layer2_cpsw/V0
 ## Build the example
 
 - When using CCS projects to build, import the CCS project for the required combination
-  and build it using the CCS project menu (see [CCS_PROJECTS_PAGE](#ccs_projects_page)).
+  and build it using the CCS project menu (see [Using SDK with CCS Projects](../../developer_guides/ccs_projects.md)).
 - When using makefiles to build, note the required combination and build using
-  make command (see [MAKEFILE_BUILD_PAGE](#makefile_build_page))
+  make command (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md))
 
 ## HW Setup
 
+::::{only} SOC_AM62X
 ```{note}
-Make sure you have setup the EVM with cable connections as shown here, [EVM_SETUP_PAGE](#evm_setup_page). In addition do below steps.
+Make sure you have setup the EVM with cable connections as shown in [EVM Setup](../../getting_started/am62x_evm_setup.md). In addition do below steps.
 ```
+::::
+
+::::{only} SOC_AM62DX
+```{note}
+Make sure you have setup the EVM with cable connections as shown in [EVM Setup](../../getting_started/am62dx_evm_setup.md). In addition do below steps.
+```
+::::
+
+::::{only} SOC_AM275X
+```{note}
+Make sure you have setup the EVM with cable connections as shown in [EVM Setup](../../getting_started/am275x_evm_setup.md). In addition do below steps.
+```
+::::
+
+::::{only} SOC_AM64X or SOC_AM243X or SOC_AM263X or SOC_AM263PX
+```{note}
+Make sure you have setup the EVM with cable connections. In addition do below steps.
+```
+::::
 
 ::::{only} SOC_AM64X
 
@@ -224,7 +244,7 @@ AM243X-LP has two ethernet Ports which can be configured as both CPSW/ICSS ports
 If you need to reload and run again, a CPU power-cycle is MUST
 ```
 
-- Launch a CCS debug session and run the example executable, see [CCS_LAUNCH_PAGE](#ccs_launch_page)
+- Launch a CCS debug session and run the example executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
 - You will see logs in the UART terminal as shown in the next section.
 - We can start sending unicast packets from Colasoft Pkt Builder or packETH tool.
   - In the Colasoft Pkt Builder, click on Add icon , select any layer2 Packet and click ok.
@@ -315,4 +335,4 @@ Print statistics
 
 ## See Also
 
-[NETWORKING](#networking)
+[Ethernet And Networking](../../components/networking/networking.rst)

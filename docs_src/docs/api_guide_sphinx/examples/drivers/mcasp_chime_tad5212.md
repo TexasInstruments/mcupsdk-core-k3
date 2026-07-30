@@ -33,7 +33,7 @@ A headset needs to be connected to the audio jack J3 Top {{ VAR_BOARD_NAME_LOWER
 
 ## See Also
 
-[MCASP](../../components/drivers/mcasp.md)
+[MCASP](../../components/drivers/mcasp_v1.md)
 
 ## Sample Output
 

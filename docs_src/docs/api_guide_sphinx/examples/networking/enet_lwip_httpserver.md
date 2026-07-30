@@ -18,7 +18,7 @@ This example shows how to implement a simple HTTP web server on LwIP networking 
 On {{ VAR_SOC_NAME }}, we can do ethernet based communication using CPSW peripheral:
 - CPSW is a IEEE 802.3 standard ethernet switch + port peripheral
 - It uses ethernet driver underneath with LwIP TCP/IP networking stack
-- CPSW can be configured in two modes: Switch or MAC. For more details, see [Enet LwIP CPSW Operating Modes](../../components/networking/enet_lwip_cpsw_operating_modes.md)
+- CPSW can be configured in two modes: Switch or MAC. For more details, see [Enet LwIP CPSW Operating Modes](../../components/networking/networking_features.md)
 
 The example does the following:
 - Initializes the ethernet driver for the underlying HW
@@ -120,16 +120,36 @@ Please refer to [Ethernet LwIP TCP/IP Static IP](../../components/networking/ene
 ### Build the example
 
 - When using CCS projects to build, import the CCS project for the required combination
-  and build it using the CCS project menu (see [CCS Projects Page](#ccs_projects_page)).
+  and build it using the CCS project menu (see [Using SDK with CCS Projects](../../developer_guides/ccs_projects.md)).
 - When using makefiles to build, note the required combination and build using make command
-  (see [Makefile Build Page](#makefile_build_page)).
+  (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md)).
 - Note to use the no-rtos variants of libraries for lwipif, lwip, nortos (dpl).
 
 ### HW Setup
 
+::::{only} SOC_AM62X
 ```{note}
-Make sure you have setup the EVM with cable connections as shown in [EVM Setup Page](#evm_setup_page). In addition do below steps.
+Make sure you have setup the EVM with cable connections as shown in [EVM Setup](../../getting_started/am62x_evm_setup.md). In addition do below steps.
 ```
+::::
+
+::::{only} SOC_AM62DX
+```{note}
+Make sure you have setup the EVM with cable connections as shown in [EVM Setup](../../getting_started/am62dx_evm_setup.md). In addition do below steps.
+```
+::::
+
+::::{only} SOC_AM275X
+```{note}
+Make sure you have setup the EVM with cable connections as shown in [EVM Setup](../../getting_started/am275x_evm_setup.md). In addition do below steps.
+```
+::::
+
+::::{only} SOC_AM64X or SOC_AM243X or SOC_AM263X or SOC_AM263PX
+```{note}
+Make sure you have setup the EVM with cable connections. In addition do below steps.
+```
+::::
 
 ::::{only} SOC_AM64X
 
@@ -183,7 +203,7 @@ Ethernet cable for CPSW based ethernet.
 If you need to reload and run again, a CPU power-cycle is MUST.
 ```
 
-- Launch a CCS debug session and run the executable, see [CCS Launch Page](#ccs_launch_page)
+- Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
 - Note the IP address seen in the log.
 
 ### Sample Output

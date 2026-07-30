@@ -187,5 +187,5 @@ gptp Configuration              | Refer to [Ethernet TSN gPTP Examples](../../..
 | 802.1AS Sync Accuracy         | 70ns          | - sync interval = 125ms <br> - pdelay req = 1s                                      |
 
 ## See Also
-[Ethernet And Networking](../networking.md)
+[Ethernet And Networking](../networking.rst)
 [Enet Lwip CPSW Example](../../../examples/networking/enet_lwip_cpsw.md)

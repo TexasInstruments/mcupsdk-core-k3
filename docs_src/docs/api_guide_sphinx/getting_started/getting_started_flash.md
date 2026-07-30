@@ -3,9 +3,36 @@ orphan: true
 ---
 
 #  Flash an example application
+::::{only} SOC_AM62X
+:::{admonition} Attention
+Flashing a application will overwrite the SOC init application that was flashed earlier. So if you want to load and run from CCS again, you will need to do the SOC init steps again. See [SOC Initialization](am62x_evm_setup.md) for more details.
+:::
+::::
+::::{only} SOC_AM62AX
+:::{admonition} Attention
+Flashing a application will overwrite the SOC init application that was flashed earlier. So if you want to load and run from CCS again, you will need to do the SOC init steps again. See [SOC Initialization](am62ax_evm_setup.md) for more details.
+:::
+::::
+::::{only} SOC_AM62DX
+:::{admonition} Attention
+Flashing a application will overwrite the SOC init application that was flashed earlier. So if you want to load and run from CCS again, you will need to do the SOC init steps again. See [SOC Initialization](am62dx_evm_setup.md) for more details.
+:::
+::::
+::::{only} SOC_AM62PX
 :::{admonition} Attention
 Flashing a application will overwrite the SOC init application that was flashed earlier. So if you want to load and run from CCS again, you will need to do the SOC init steps again. See [SOC Initialization](am62px_evm_setup.md) for more details.
 :::
+::::
+::::{only} SOC_AM275X
+:::{admonition} Attention
+Flashing a application will overwrite the SOC init application that was flashed earlier. So if you want to load and run from CCS again, you will need to do the SOC init steps again. See [SOC Initialization](am275x_evm_setup.md) for more details.
+:::
+::::
+::::{only} SOC_AM62LX
+:::{admonition} Attention
+Flashing a application will overwrite the SOC init application that was flashed earlier. So if you want to load and run from CCS again, you will need to do the SOC init steps again. See [SOC Initialization](am62lx_evm_setup.md) for more details.
+:::
+::::
 
 
 :::{admonition} Attention
@@ -197,9 +224,36 @@ We can then boot this application without being connected to CCS via JTAG.
 ## Getting ready to flash the application
 
 - A quick recap of steps done so far that are needed for the flashing to work
+  ::::{only} SOC_AM62X
+  - Make sure the UART port used for terminal is identified as mentioned in [Setup UART Terminal](am62x_evm_setup.md)
+  - Make sure python3 is installed as mentioned in [Python3](download_and_install.md)
+  - Make sure you have the EVM power cable and UART cable connected as shown in [Cable Connections](am62x_evm_setup.md)
+  ::::
+  ::::{only} SOC_AM62AX
+  - Make sure the UART port used for terminal is identified as mentioned in [Setup UART Terminal](am62ax_evm_setup.md)
+  - Make sure python3 is installed as mentioned in [Python3](download_and_install.md)
+  - Make sure you have the EVM power cable and UART cable connected as shown in [Cable Connections](am62ax_evm_setup.md)
+  ::::
+  ::::{only} SOC_AM62DX
+  - Make sure the UART port used for terminal is identified as mentioned in [Setup UART Terminal](am62dx_evm_setup.md)
+  - Make sure python3 is installed as mentioned in [Python3](download_and_install.md)
+  - Make sure you have the EVM power cable and UART cable connected as shown in [Cable Connections](am62dx_evm_setup.md)
+  ::::
+  ::::{only} SOC_AM62PX
   - Make sure the UART port used for terminal is identified as mentioned in [Setup UART Terminal](am62px_evm_setup.md)
   - Make sure python3 is installed as mentioned in [Python3](download_and_install.md)
   - Make sure you have the EVM power cable and UART cable connected as shown in [Cable Connections](am62px_evm_setup.md)
+  ::::
+  ::::{only} SOC_AM275X
+  - Make sure the UART port used for terminal is identified as mentioned in [Setup UART Terminal](am275x_evm_setup.md)
+  - Make sure python3 is installed as mentioned in [Python3](download_and_install.md)
+  - Make sure you have the EVM power cable and UART cable connected as shown in [Cable Connections](am275x_evm_setup.md)
+  ::::
+  ::::{only} SOC_AM62LX
+  - Make sure the UART port used for terminal is identified as mentioned in [Setup UART Terminal](am62lx_evm_setup.md)
+  - Make sure python3 is installed as mentioned in [Python3](download_and_install.md)
+  - Make sure you have the EVM power cable and UART cable connected as shown in [Cable Connections](am62lx_evm_setup.md)
+  ::::
 
 - Build the hello world application as mentioned in [Build a Hello World example](getting_started_build.md)
 
@@ -512,7 +566,24 @@ For HS-FS device, use default_sbl_ospi_nand_linux_hs_fs.cfg as the cfg file.
 **OSPI NAND BOOT MODE**
 ```
 
+::::{only} SOC_AM62X
+- Re-connect the UART terminal in CCS window as shown in [Setup UART Terminal](am62x_evm_setup.md)
+::::
+::::{only} SOC_AM62AX
+- Re-connect the UART terminal in CCS window as shown in [Setup UART Terminal](am62ax_evm_setup.md)
+::::
+::::{only} SOC_AM62DX
+- Re-connect the UART terminal in CCS window as shown in [Setup UART Terminal](am62dx_evm_setup.md)
+::::
+::::{only} SOC_AM62PX
 - Re-connect the UART terminal in CCS window as shown in [Setup UART Terminal](am62px_evm_setup.md)
+::::
+::::{only} SOC_AM275X
+- Re-connect the UART terminal in CCS window as shown in [Setup UART Terminal](am275x_evm_setup.md)
+::::
+::::{only} SOC_AM62LX
+- Re-connect the UART terminal in CCS window as shown in [Setup UART Terminal](am62lx_evm_setup.md)
+::::
 
 - **POWER-ON** the EVM
 

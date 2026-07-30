@@ -63,8 +63,30 @@ If the interrupt is not received the test fails.
 - **When using makefiles to build**, note the required combination and build using
   make command (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md))
 - By default DDR inline ECC is configured in the sysconfig of SBL NULL bootloader.
+::::{only} SOC_AM62X
+- Flash SBL NULL bootloader by following steps mentioned in [Flash SOC Initialization Binary](../../getting_started/am62x_evm_setup.md)
+- Switch to [OSPI NOR BOOT MODE](../../getting_started/am62x_evm_setup.md) and power on the EVM.
+::::
+::::{only} SOC_AM62AX
+- Flash SBL NULL bootloader by following steps mentioned in [Flash SOC Initialization Binary](../../getting_started/am62ax_evm_setup.md)
+- Switch to [OSPI NOR BOOT MODE](../../getting_started/am62ax_evm_setup.md) and power on the EVM.
+::::
+::::{only} SOC_AM62DX
+- Flash SBL NULL bootloader by following steps mentioned in [Flash SOC Initialization Binary](../../getting_started/am62dx_evm_setup.md)
+- Switch to [OSPI NOR BOOT MODE](../../getting_started/am62dx_evm_setup.md) and power on the EVM.
+::::
+::::{only} SOC_AM62PX
 - Flash SBL NULL bootloader by following steps mentioned in [Flash SOC Initialization Binary](../../getting_started/am62px_evm_setup.md)
 - Switch to [OSPI NOR BOOT MODE](../../getting_started/am62px_evm_setup.md) and power on the EVM.
+::::
+::::{only} SOC_AM275X
+- Flash SBL NULL bootloader by following steps mentioned in [Flash SOC Initialization Binary](../../getting_started/am275x_evm_setup.md)
+- Switch to [OSPI NOR BOOT MODE](../../getting_started/am275x_evm_setup.md) and power on the EVM.
+::::
+::::{only} SOC_AM62LX
+- Flash SBL NULL bootloader by following steps mentioned in [Flash SOC Initialization Binary](../../getting_started/am62lx_evm_setup.md)
+- Switch to [OSPI NOR BOOT MODE](../../getting_started/am62lx_evm_setup.md) and power on the EVM.
+::::
 - Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
 
 :::{admonition} Note

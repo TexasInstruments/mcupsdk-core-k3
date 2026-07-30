@@ -411,7 +411,18 @@ Example folder | source/networking/enet/core/examples/enet_cpsw_est/V0
 
 ### HW Setup
 
-Make sure you have setup the EVM with cable connections as shown in [EVM Setup](../../device/am62ax/am62ax_evm_setup.md).
+::::{only} SOC_AM62X
+Make sure you have setup the EVM with cable connections as shown in [EVM Setup](../../getting_started/am62x_evm_setup.md).
+::::
+
+::::{only} SOC_AM62DX
+Make sure you have setup the EVM with cable connections as shown in [EVM Setup](../../getting_started/am62dx_evm_setup.md).
+::::
+
+::::{only} SOC_AM275X
+Make sure you have setup the EVM with cable connections as shown in [EVM Setup](../../getting_started/am275x_evm_setup.md).
+::::
+
 In addition, follow the steps in the next section.
 
 :::{note}

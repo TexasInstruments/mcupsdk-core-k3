@@ -5770,6 +5770,10 @@ void CSL_CPSW_getPortStats (CSL_Xge_cpswRegs *hCpswRegs,
     union CSL_CPSW_STATS*         pCpswStats
 );
 
+void CSL_CPSW_accPortStats (CSL_Xge_cpswRegs *hCpswRegs,
+    Uint32                  portNum,
+    Uint32*                 pCpswStats
+);
 
 /** ============================================================================
  *   @n@b CSL_CPSW_getRawStats

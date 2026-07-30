@@ -4801,6 +4801,43 @@ void CSL_CPSW_getPortStats (CSL_Xge_cpswRegs *hCpswRegs,
     return;
 }
 
+void CSL_CPSW_accPortStats (CSL_Xge_cpswRegs *hCpswRegs,
+    Uint32                  portNum,
+    Uint32*                 pStatAddr
+)
+{
+    Uint32                      numStats;
+    volatile Uint32             *pRegAddr;
+    Uint32                      statval;
+    Uint32                      currStatval;
+
+    if(portNum == 0)
+    {
+        pRegAddr    =   CSL_CPSW_GET_HOSTPORT_STAT_START_ADDRESS(hCpswRegs);
+    }
+    else
+    {
+        pRegAddr    =   CSL_CPSW_GET_MACPORT_STAT_START_ADDRESS(hCpswRegs, portNum - 1);
+    }
+
+    /* Read the entire CPSW HW stats block for the Host/Mac port, save it in pCpswStats reg and
+     * reset the stats block when done.
+     */
+    for (numStats = 0; numStats < sizeof(union CSL_CPSW_STATS)/sizeof(Uint32); numStats++)
+    {
+        statval         =   *pRegAddr;
+        *pRegAddr++     =   statval;
+
+        currStatval     =   *pStatAddr;
+        *pStatAddr++    +=   statval;
+
+        /* Check for Overflow and update if found */
+        *pStatAddr++    +=   ((currStatval + statval) < statval) ? 1U : 0U;
+    }
+
+    return;
+}
+
 /** ============================================================================
  *   @n@b CSL_CPSW_getRawStats
  *

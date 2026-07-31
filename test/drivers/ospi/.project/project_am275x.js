@@ -9,6 +9,22 @@ const files = {
     ],
 };
 
+const files_rtos = {
+    common: [
+        "test_ospi.c",
+        "test_ospi_multithread.c",
+        "main.c",
+    ],
+};
+
+const files_rtos_wkup = {
+    common: [
+        "test_ospi.c",
+        "test_ospi_multithread.c",
+        "main.c",
+    ],
+};
+
 /* Relative to where the makefile will be generated
  * Typically at <example_folder>/<BOARD>/<core_os_combo>/<compiler>
  */
@@ -103,6 +119,98 @@ const defines = {
     ]
 }
 
+const cflags_freertos_c75 = {
+    common: [
+        "-DOSPI_FREERTOS_ONLY_TEST",
+    ],
+}
+
+const cflags_freertos_wkup = {
+    common: [
+        "-DOSPI_FREERTOS_ONLY_TEST",
+        "-DCORE_R5F"
+    ],
+}
+
+const includes_nortos_r5f = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/test/unity/",
+    ],
+};
+
+const libdirs_nortos_r5f = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/udma/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+    ],
+};
+
+const libdirs_freertos_r5f = {
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/udma/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+    ],
+};
+
+const libs_nortos_r5f = {
+    common: [
+        "nortos.am275x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am275x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am275x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "unity.am275x.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
+const libs_freertos_r5f = {
+    common: [
+        "freertos.am275x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "drivers.am275x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "board.am275x.r5f.ti-arm-clang.${ConfigName}.lib",
+        "unity.am275x.r5f.ti-arm-clang.${ConfigName}.lib",
+    ],
+};
+
+const cflags_freertos_r5f = {
+    common: [
+        "-DOSPI_FREERTOS_ONLY_TEST",
+        "-DCORE_R5F",
+    ],
+};
+
+const cflags_nortos_r5f = {
+    common: [
+        "-DCORE_R5F",
+    ],
+};
+
+const templates_nortos_r5f =
+[
+    {
+        input: ".project/templates/am275x/nortos/main_nortos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "test_main",
+        },
+    }
+];
+
+const templates_freertos_r5f =
+[
+    {
+        input: ".project/templates/am275x/freertos/main_freertos.c.xdt",
+        output: "../main.c",
+        options: {
+            entryFunction: "test_main",
+        },
+    }
+];
+
 const syscfgfile = "../example.syscfg"
 
 const readmeDoxygenPageTag = "TEST_DRIVERS_TEST_OSPI";
@@ -144,7 +252,16 @@ const robot_template = {
 };
 
 const buildOptionCombos = [
-    { device: device, cpu: "c75ss0-0", cgt: "ti-c7000",    board: "am275x-evm", os: "freertos"}
+    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
+    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
+    { device: device, cpu: "r5fss0-1", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
+    { device: device, cpu: "r5fss0-1", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
+    { device: device, cpu: "r5fss1-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
+    { device: device, cpu: "r5fss1-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
+    { device: device, cpu: "r5fss1-1", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
+    { device: device, cpu: "r5fss1-1", cgt: "ti-arm-clang", board: "am275x-evm", os: "nortos"},
+    { device: device, cpu: "c75ss0-0", cgt: "ti-c7000",    board: "am275x-evm", os: "freertos"},
+    { device: device, cpu: "c75ss1-0", cgt: "ti-c7000",    board: "am275x-evm", os: "freertos"}
 ];
 
 const buildOptionCombosWkup = [
@@ -191,18 +308,39 @@ function getComponentBuildProperty(buildOption) {
 
         if(buildOption.os.match(/freertos*/) )
         {
+            build_property.files = files_rtos_wkup;
             build_property.includes = includes_freertos_r5f;
             build_property.libdirs = libdirs_freertos_wkup_r5f;
             build_property.libs = libs_freertos_wkup_r5f;
             build_property.templates = templates_freertos_wkup_r5f;
+            build_property.cflags = cflags_freertos_wkup;
+        }
+    }
+    else if(buildOption.cpu.match(/^r5fss/)) {
+        if(buildOption.os.match(/freertos*/)) {
+            build_property.files = files_rtos;
+            build_property.includes = includes_freertos_r5f;
+            build_property.libdirs = libdirs_freertos_r5f;
+            build_property.libs = libs_freertos_r5f;
+            build_property.templates = templates_freertos_r5f;
+            build_property.cflags = cflags_freertos_r5f;
+        }
+        else {
+            build_property.includes = includes_nortos_r5f;
+            build_property.libdirs = libdirs_nortos_r5f;
+            build_property.libs = libs_nortos_r5f;
+            build_property.templates = templates_nortos_r5f;
+            build_property.cflags = cflags_nortos_r5f;
         }
     }
     else if(buildOption.cpu.match(/c75*/)) {
         if(buildOption.os.match(/freertos*/)) {
+            build_property.files = files_rtos;
             build_property.includes = includes_freertos_c75;
             build_property.libdirs = libdirs_freertos;
             build_property.libs = libs_freertos_c75;
             build_property.templates = templates_freertos_c75;
+            build_property.cflags = cflags_freertos_c75;
         }
     }
 

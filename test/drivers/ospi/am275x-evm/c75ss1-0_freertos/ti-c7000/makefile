@@ -159,11 +159,11 @@ vpath %.lib $(LIBS_PATH_NAME)
 vpath %.a $(LIBS_PATH_NAME)
 
 $(OBJDIR)/%.obj %.obj: %.c
-	@echo  Compiling: am275x:c75ss0-0:freertos:ti-c7000 $(OUTNAME): $<
+	@echo  Compiling: am275x:c75ss1-0:freertos:ti-c7000 $(OUTNAME): $<
 	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fc=$<
 
 $(OBJDIR)/%.obj %.obj: %.S
-	@echo  Compiling: am275x:c75ss0-0:freertos:ti-c7000 $(LIBNAME): $<
+	@echo  Compiling: am275x:c75ss1-0:freertos:ti-c7000 $(LIBNAME): $<
 	$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -ppd=$(OBJDIR)/$(basename $@).d -ppa -fr=$(OBJDIR)/ -fa=$<
 
 all: $(TARGETS)
@@ -177,13 +177,13 @@ SYSCFG_GEN_FILES+=generated/ti_board_open_close.c generated/ti_board_open_close.
 
 $(OUTNAME): syscfg $(SYSCFG_GEN_FILES) $(OBJS) $(LNK_FILES) $(LIBS_NAME)
 	@echo  .
-	@echo  Linking: am275x:c75ss0-0:freertos:ti-c7000 $@ ...
+	@echo  Linking: am275x:c75ss1-0:freertos:ti-c7000 $@ ...
 	$(LNK) $(LFLAGS) $(LIBS_PATH) -m=$(basename $@).map -o $@ $(addprefix $(OBJDIR), $(OBJS)) $(LIBS) $(LNK_FILES)
-	@echo  Linking: am275x:c75ss0-0:freertos:ti-c7000 $@ Done !!!
+	@echo  Linking: am275x:c75ss1-0:freertos:ti-c7000 $@ Done !!!
 	@echo  .
 
 clean:
-	@echo  Cleaning: am275x:c75ss0-0:freertos:ti-c7000 $(OUTNAME) ...
+	@echo  Cleaning: am275x:c75ss1-0:freertos:ti-c7000 $(OUTNAME) ...
 	$(RMDIR) $(OBJDIR)
 	$(RM) $(OUTNAME)
 	$(RM) $(BOOTIMAGE_NAME)
@@ -194,7 +194,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am275x:c75ss0-0:freertos:ti-c7000 test_ospi ...
+	@echo  Scrubing: am275x:c75ss1-0:freertos:ti-c7000 test_ospi ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out
@@ -223,10 +223,10 @@ $(SYSCFG_GEN_FILES): syscfg
 
 syscfg: ../example.syscfg
 	@echo Generating SysConfig files ...
-	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM275x --context c75ss0-0 --part AM2754 --package ANJ --output generated/ ../example.syscfg
+	$(SYSCFG_NODE) $(SYSCFG_CLI_PATH)/dist/cli.js --product $(SYSCFG_SDKPRODUCT) --device AM275x --context c75ss1-0 --part AM2754 --package ANJ --output generated/ ../example.syscfg
 
 syscfg-gui:
-	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device AM275x --context c75ss0-0 --part AM2754 --package ANJ --output generated/  ../example.syscfg
+	$(SYSCFG_GUI_SCRIPT) --product $(SYSCFG_SDKPRODUCT) --device AM275x --context c75ss1-0 --part AM2754 --package ANJ --output generated/  ../example.syscfg
 
 #
 # Generation of boot image which can be loaded by Secondary Boot Loader (SBL)
@@ -264,12 +264,12 @@ else
 endif
 
 MULTI_CORE_IMAGE_PARAMS = \
-    $(BOOTIMAGE_CORE_ID_c75ss0-0):$(OUTNAME) \
+    $(BOOTIMAGE_CORE_ID_c75ss1-0):$(OUTNAME) \
 
 MCELF_XIP_RANGE?=0x60100000:0x60200000
 
 $(BOOTIMAGE_NAME): $(OUTNAME)
-	@echo  Boot image: am275x:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$@ ...
+	@echo  Boot image: am275x:c75ss1-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$@ ...
 ifneq ($(OS),Windows_NT)
 	$(CHMOD) a+x $(XIPGEN_CMD)
 endif
@@ -279,9 +279,9 @@ endif
     #   Authentication type 0 with load address 0x84000000
     #
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --authtype 0  --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(BOOTIMAGE_NAME_HS_FS) --keyversion $(VERSION)
-	@echo  Boot image: am275x:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$@ Done !!!
+	@echo  Boot image: am275x:c75ss1-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$@ Done !!!
 	@echo  .
-	@echo  Boot image: am275x:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
+	@echo  Boot image: am275x:c75ss1-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS_FS) Done !!!
 	@echo  .
 
 $(BOOTIMAGE_NAME_HS): $(BOOTIMAGE_NAME)
@@ -295,7 +295,7 @@ else
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(BOOTIMAGE_NAME) --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(BOOTIMAGE_NAME_HS) --keyversion $(VERSION)
 	$(RM) $(BOOTIMAGE_NAME)-enc
 endif
-	@echo  Boot image: am275x:c75ss0-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
+	@echo  Boot image: am275x:c75ss1-0:freertos:ti-c7000 $(BOOTIMAGE_PATH)/$(BOOTIMAGE_NAME_HS) Done !!!
 	@echo  .
 endif
 -include $(addprefix $(OBJDIR)/, $(DEPS))

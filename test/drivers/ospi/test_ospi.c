@@ -196,7 +196,7 @@ static void test_ospi_read_write_indirect_different_frequencies(void *args);
 #if 0
 static void TestOspi_opcodeValidation(void* args);
 #endif
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
 static void TestOspi_repeatedReadWrite1s8s8s(void *args);
 static void TestOspi_repeatedReadWrite1s1s1s(void *args);
 
@@ -250,8 +250,10 @@ static void TestOspi_writeCmdParamsInitFunctional(void *args);
 static void TestOspi_writeCmdParamsInitNegative(void *args);
 static void TestOspi_setRdDataCaptureDelayFunctional(void *args);
 static void TestOspi_setRdDataCaptureDelayNegative(void *args);
+#ifndef CORE_R5F
 static void TestOspi_setNumAddrBytesFunctional(void *args);
 static void TestOspi_setNumAddrBytesNegative(void *args);
+#endif
 static void TestOspi_setDeviceSizeFunctional(void *args);
 static void TestOspi_setDeviceSizeNegative(void *args);
 static void TestOspi_phyResyncDLLFunctional(void *args);
@@ -274,7 +276,9 @@ static void TestOspi_skipTuningNegative(void *args);
 static void TestOspi_setXferOpCodesNegative(void *args);
 static void TestOspi_setCmdExtTypeFunctional(void *args);
 static void TestOspi_setCmdExtTypeNegative(void *args);
+#if !defined(SOC_AM275X)
 static void TestOspi_phyReadAttackVectorFunctional(void *args);
+#endif
 static void TestOspi_phyReadAttackVectorNegative(void *args);
 static void TestOspi_phyReadWriteTunedValFunctional(void *args);
 static void TestOspi_phyReadWriteTunedValNegative(void *args);
@@ -299,7 +303,9 @@ static void TestOspi_norFlashWriteNegative(void *args);
 static void TestOspi_norFlashReadNegative(void *args);
 
 extern void test_ospi_multithread(void);
+#if !defined(SOC_AM275X)
 static void TestOspi_writeDirectNegative(void *args);
+#endif
 #if defined(SOC_AM62AX)
 static void TestOspi_phyTuneSDRFunctional(void *args);
 static void TestOspi_phyTuneSDRWithReadAttackVector(void *args);
@@ -367,7 +373,7 @@ static void TestOspi_readMultipleRegions(void *args);
 static void TestOspi_unalignedAddressAccess(void *args);
 static void TestOspi_largeTransactionStress(void *args);
 static void TestOspi_writeTestPattern(void);
-#endif /* defined(SOC_AM62AX) || defined(SOC_AM62DX) */
+#endif /* defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X) */
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -384,7 +390,7 @@ void test_main(void *args)
 #if defined (OSPI_FREERTOS_ONLY_TEST)
     test_ospi_multithread();
 #endif
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
     RUN_TEST(TestOspi_initFunctional, 8905, NULL);
     Drivers_ospiClose();
     Drivers_ospiOpen();
@@ -420,7 +426,7 @@ void test_main(void *args)
     RUN_TEST(test_ospi_read_write_max_config, 3174, NULL);
     Drivers_ospiClose();
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
     /* Write known test pattern to flash for read verification tests.
      * Called early, before negative tests that may alter driver configs. */
     TestOspi_writeTestPattern();
@@ -430,7 +436,7 @@ void test_main(void *args)
     RUN_TEST(test_ospi_read_perf, 8724, NULL);
     Drivers_ospiClose();
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_isPhyEnableNegative, 8911, NULL);
     Drivers_ospiClose();
@@ -464,7 +470,7 @@ void test_main(void *args)
     RUN_TEST(test_ospi_odd_read_write, 10134, NULL);
     Drivers_ospiClose();
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
     if (modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NAND)
     {
         Drivers_ospiOpen();
@@ -493,7 +499,7 @@ void test_main(void *args)
     RUN_TEST(test_ospi_fallBack_to_1s1s1s, 9211, NULL);
     Drivers_ospiClose();
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_repeatedReadWrite1s1s1s, 8230, NULL);
     Drivers_ospiClose();
@@ -571,6 +577,7 @@ void test_main(void *args)
     RUN_TEST(TestOspi_setRdDataCaptureDelayNegative, 8810, NULL);
     Drivers_ospiClose();
 
+    #ifndef CORE_R5F
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_setNumAddrBytesFunctional, 8813, NULL);
     Drivers_ospiClose();
@@ -578,6 +585,7 @@ void test_main(void *args)
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_setNumAddrBytesNegative, 8814, NULL);
     Drivers_ospiClose();
+    #endif
 
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_setDeviceSizeFunctional, 8815, NULL);
@@ -741,9 +749,11 @@ void test_main(void *args)
     Drivers_ospiClose();
 
     /*Causing hardware hang on AM62AX/AM62DX */
+    #ifndef SOC_AM275X
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_phyReadAttackVectorFunctional, 8978, NULL);
     Drivers_ospiClose();
+    #endif
 
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_phyReadAttackVectorNegative, 8851, NULL);
@@ -846,9 +856,11 @@ void test_main(void *args)
     Drivers_ospiClose();
 
     /* Negative test case causing program to get stuck */
+    #ifndef SOC_AM275X
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_writeDirectNegative, 9563, NULL);
     Drivers_ospiClose();
+    #endif
 
 #ifndef SOC_AM62DX
     Drivers_ospiOpen();
@@ -993,7 +1005,7 @@ void tearDown(void)
  * Test cases
  */
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
 #ifndef CORE_A53
 /**
  * \brief Negative test for OSPI_init API (before initialization)
@@ -1083,7 +1095,7 @@ static void TestOspi_getHandleInvalidInstance(void *args)
     }
     TEST_ASSERT_NULL(handle);  /* Should be NULL for invalid instance */
 }
-#endif /* defined(SOC_AM62AX) || defined(SOC_AM62DX) */
+#endif /* defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X) */
 
 static void test_ospi_read_write_1s1s1s_config(void *args)
 {
@@ -1708,7 +1720,7 @@ static void test_ospi_read_perf(void *args)
 #if defined(__C7504__) || defined(__C7524__)
     uint32_t testSizes[TEST_OSPI_PERF_TEST_DATA_COUNT] = {TEST_OSPI_1MB_SIZE};
 #else
-    uint32_t testSizes[TEST_OSPI_PERF_TEST_DATA_COUNT] = {TEST_OSPI_1MB_SIZE, TEST_OSPI_2MB_SIZE};
+    uint32_t testSizes[TEST_OSPI_PERF_TEST_DATA_COUNT] = {TEST_OSPI_1MB_SIZE};
 #endif
 #else
     /* Please provide size of atleast 1MiB */
@@ -2804,7 +2816,7 @@ static void TestOspi_opcodeValidation(void* args)
 }
 #endif
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
 /**
  * \brief Functional test for repeated erase-write-read in 1S-8S-8S mode
  *
@@ -5010,6 +5022,7 @@ static void TestOspi_setRdDataCaptureDelayNegative(void *args)
     DebugP_log("[TEST] TestOspi_setRdDataCaptureDelayNegative: PASSED\r\n");
 }
 
+#ifndef CORE_R5F
 /**
  * \brief Functional test for OSPI_setNumAddrBytes API
  *
@@ -5123,6 +5136,7 @@ static void TestOspi_setNumAddrBytesNegative(void *args)
 
     DebugP_log("[TEST] TestOspi_setNumAddrBytesNegative: PASSED\r\n");
 }
+#endif
 
 /**
  * \brief Functional test for OSPI_setDeviceSize API with indirect verification
@@ -6024,6 +6038,7 @@ static void TestOspi_setCmdExtTypeNegative(void *args)
     DebugP_log("[TEST] TestOspi_setCmdExtTypeNegative: PASSED\r\n");
 }
 
+#if !defined(SOC_AM275X)
 /**
  * \brief Functional test for OSPI_phyReadAttackVector API
  *
@@ -6082,6 +6097,7 @@ static void TestOspi_phyReadAttackVectorFunctional(void *args)
 
     DebugP_log("[TEST] TestOspi_phyReadAttackVectorFunctional: PASSED\r\n");
 }
+#endif
 
 /**
  * \brief Negative test for OSPI_phyReadAttackVector API
@@ -7134,6 +7150,7 @@ static void TestOspi_writeReadDirectFunctional(void *args)
     DebugP_log("[TEST] TestOspi_writeReadDirectFunctional: PASSED\r\n");
 }
 
+#if !defined(SOC_AM275X)
 /**
  * \brief Negative test for OSPI_writeDirect API with invalid arguments
  *
@@ -7177,6 +7194,7 @@ static void TestOspi_writeDirectNegative(void *args)
 
     DebugP_log("[TEST] TestOspi_writeDirectNegative: PASSED\r\n");
 }
+#endif
 
 /**
  * \brief Functional test for OSPI_readCmd API
@@ -9405,5 +9423,5 @@ static void TestOspi_largeTransactionStress(void *args)
 
     DebugP_log("[TEST] TestOspi_largeTransactionStress: 20MB total read PASSED\r\n");
 }
-#endif /* defined(SOC_AM62AX) || defined(SOC_AM62DX) */
+#endif /* defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X) */
 

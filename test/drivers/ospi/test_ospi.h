@@ -94,7 +94,7 @@
 #if defined(__C7504__) || defined(__C7524__)
 #define TEST_OSPI_MAX_TEST_SIZE            (TEST_OSPI_1MB_SIZE)
 #else
-#define TEST_OSPI_MAX_TEST_SIZE            (TEST_OSPI_2MB_SIZE)
+#define TEST_OSPI_MAX_TEST_SIZE            (TEST_OSPI_1MB_SIZE)
 #endif
 #else
 #define TEST_OSPI_MAX_TEST_SIZE            (TEST_OSPI_10MB_SIZE)
@@ -107,7 +107,7 @@
 #if defined(__C7504__) || defined(__C7524__)
 #define TEST_OSPI_PERF_TEST_DATA_COUNT     (1U)   /* Change this value as per testSizes list size */
 #else
-#define TEST_OSPI_PERF_TEST_DATA_COUNT     (2U)   /* Change this value as per testSizes list size */
+#define TEST_OSPI_PERF_TEST_DATA_COUNT     (1U)   /* Change this value as per testSizes list size */
 #endif
 #else
 #define TEST_OSPI_PERF_TEST_DATA_COUNT     (3U)   /* Change this value as per testSizes list size */

@@ -89,7 +89,7 @@ static uint8_t TestUart_threadStack1[8192] __attribute__ ((aligned(32)));
 /* Stack for UART test thread 2 */
 static uint8_t TestUart_threadStack2[8192] __attribute__ ((aligned(32)));
 #else
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
 /* Stack for UART test thread 1 */
 static uint8_t TestUart_threadStack1[65536] __attribute__ ((aligned(32)));
 /* Stack for UART test thread 2 */
@@ -118,7 +118,7 @@ static volatile uint32_t TestUart_mtTxCount = 0;
 static void TestUart_uartWriteCancelFromOtherThread(void *args);
 /* UART read cancel for multithreaded test */
 static void TestUart_uartReadCancelWriteReadLoopbackMT(void *args);
-#if !(defined(CPU_C7X) || defined(SOC_AM62DX) || defined(SOC_AM275X))
+#if !(defined(CPU_C7X) || defined(CPU_M4F) || defined(SOC_AM62DX) || defined(SOC_AM275X))
 /* Function to enable/disable the Main UART1 to connector */
 static void TestUart_enableDisableUart1ToConnector(uint32_t state);
 #endif
@@ -165,7 +165,8 @@ void TestUart_mtTestcase(void)
     TEST_EXECUTE_TEST_CASE(TestUart_uartReadCancelPostsSem, 11636, NULL);
     TEST_EXECUTE_TEST_CASE(TestUart_uartWriteCancelFromOtherThread, 8928, NULL);
     TEST_EXECUTE_TEST_CASE(TestUart_uartReadCancelWriteReadLoopbackMT, 9971, NULL);
-#if !(defined(CPU_C7X) || defined(SOC_AM62DX) || defined(SOC_AM275X))
+#if !(defined(CPU_C7X) || defined(CPU_M4F) || defined(SOC_AM62DX) || defined(SOC_AM275X))
+    DebugP_log("Enabling UART1 to connector for external loopback tests\n");
     TestUart_enableDisableUart1ToConnector(TCA6424_OUT_STATE_LOW);
 #endif
     TEST_EXECUTE_TEST_CASE(TestUart_externalLoopbackUartTxRx, 9972, NULL);
@@ -175,7 +176,7 @@ void TestUart_mtTestcase(void)
     TEST_EXECUTE_TEST_CASE(TestUart_externalLoopbackUartTxRxCtsHigh, 9976, NULL);
     TEST_EXECUTE_TEST_CASE(TestUart_uartTxDmaCallback, 9977, NULL);
     TEST_EXECUTE_TEST_CASE(TestUart_uartRxDmaCallback, 9978, NULL);
-#if !(defined(CPU_C7X) || defined(SOC_AM62DX) || defined(SOC_AM275X))
+#if !(defined(CPU_C7X) || defined(CPU_M4F) || defined(SOC_AM62DX) || defined(SOC_AM275X))
     TestUart_enableDisableUart1ToConnector(TCA6424_OUT_STATE_HIGH);
 #endif
 }
@@ -279,6 +280,14 @@ static void TestUart_writeThread1(void *args)
 #if defined(CPU_C7X)
     uartParams.intrNum = 24U;
     uartParams.eventId = 434;
+#else
+    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART0_USART_IRQ_0;
+#endif
+#elif defined(SOC_AM62X)
+#if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+    uartParams.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART0_USART_IRQ_0;
+#elif defined(CPU_M4F)
+    uartParams.intrNum = 0xFFFF;
 #else
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART0_USART_IRQ_0;
 #endif
@@ -391,6 +400,14 @@ static void TestUart_writeThread2(void *args)
 #if defined(CPU_C7X)
     uartParams.intrNum = 25U;
     uartParams.eventId = 435;
+#else
+    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
+#endif
+#elif defined(SOC_AM62X)
+#if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+    uartParams.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART1_USART_IRQ_0;
+#elif defined(CPU_M4F)
+    uartParams.intrNum = 0xFFFF;
 #else
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
 #endif
@@ -634,6 +651,14 @@ static void TestUart_writerWithCancelableTx(void *args)
 #if defined(CPU_C7X)
     uartParams.intrNum = 25U;
     uartParams.eventId = 435;
+#else
+    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
+#endif
+#elif defined(SOC_AM62X)
+#if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+    uartParams.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART1_USART_IRQ_0;
+#elif defined(CPU_M4F)
+    uartParams.intrNum = 0xFFFF;
 #else
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
 #endif
@@ -978,6 +1003,14 @@ static void TestUart_uartReadCancelWriteReadLoopbackMT(void *args)
 #else
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
 #endif
+#elif defined(SOC_AM62X)
+#if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+    uartParams.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART1_USART_IRQ_0;
+#elif defined(CPU_M4F)
+    uartParams.intrNum = 0xFFFF;
+#else
+    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
+#endif
 #elif defined(SOC_AM275X)
 #if (defined(CPU_C75_0) || defined(CPU_C75_1))
     uartParams.intrNum = 34U;
@@ -1234,6 +1267,14 @@ static void TestUart_txUart2Thread(void *args)
     uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+    #elif defined(SOC_AM62X)
+    #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+    uartParams.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_MCU_UART0_USART_IRQ_0;
+    #elif defined(CPU_M4F)
+    uartParams.intrNum = CSLR_MCU_M4FSS0_CORE0_NVIC_MCU_UART0_USART_IRQ_0 + 16;
+    #else
+    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+    #endif
     #endif
 
     /* Ensure clean state */
@@ -1340,6 +1381,14 @@ static void TestUart_rxUart1Thread(void *args)
     uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_UART1_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
+    #elif defined(SOC_AM62X)
+    #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+    uartParams.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART1_USART_IRQ_0;
+    #elif defined(CPU_M4F)
+    uartParams.intrNum = 0xFFFF;
+    #else
+    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
+    #endif
     #endif
 
     /* Ensure clean state */
@@ -1533,6 +1582,14 @@ static void TestUart_txThread_Uart2_Cancel(void *args)
     prms.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     prms.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+    #elif defined(SOC_AM62X)
+    #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+    prms.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_MCU_UART0_USART_IRQ_0;
+    #elif defined(CPU_M4F)
+    prms.intrNum = CSLR_MCU_M4FSS0_CORE0_NVIC_MCU_UART0_USART_IRQ_0 + 16;
+    #else
+    prms.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+    #endif
     #endif
 
     /* Clean and open CONFIG_UART2 */
@@ -1645,6 +1702,12 @@ static void TestUart_rxThread_Uart1_Partial(void *args)
     prms.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_UART1_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     prms.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
+    #elif defined(SOC_AM62X)
+    #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+    prms.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART1_USART_IRQ_0;
+    #else
+    prms.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
+    #endif
     #endif
 
     /* Clean and open CONFIG_UART1 */
@@ -1866,6 +1929,14 @@ static void TestUart_txBaudThreadUart0Cb(void *args)
     prms.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     prms.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+    #elif defined(SOC_AM62X)
+    #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+    prms.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_MCU_UART0_USART_IRQ_0;
+    #elif defined(CPU_M4F)
+    prms.intrNum = CSLR_MCU_M4FSS0_CORE0_NVIC_MCU_UART0_USART_IRQ_0 + 16;
+    #else
+    prms.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+    #endif
     #endif
 
     /* Ensure clean state and open CONFIG_UART0 */
@@ -1963,6 +2034,12 @@ static void TestUart_rxBaudThreadUart2Cb(void *args)
     prms.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_UART1_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     prms.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
+    #elif defined(SOC_AM62X)
+    #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+    prms.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART1_USART_IRQ_0;
+    #else
+    prms.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
+    #endif
     #endif
 
     /* Ensure clean state and open CONFIG_UART2 */
@@ -2196,9 +2273,15 @@ static void TestUart_txUart2DmaCbThread(void *args)
     uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_UART1_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
+    #elif defined(SOC_AM62X)
+    #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+    uartParams.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART1_USART_IRQ_0;
+    #else
+    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
+    #endif
     #endif
 
-    #if ((defined(SOC_AM62AX) || defined(SOC_AM62PX)) && !((defined(CPU_MCU_R5F0) || defined(CPU_C7X) || defined(CPU_R5F0)) || defined(SOC_AM62DX)))
+    #if ((defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62X)) && !((defined(CPU_MCU_R5F0) || defined(CPU_C7X) || defined(CPU_R5F0) || defined(CPU_M4F)) || defined(SOC_AM62DX)))
     uartParams.txEvtNum = UDMA_PDMA_CH_MAIN0_UART1_TX;
     uartParams.rxEvtNum = UDMA_PDMA_CH_MAIN0_UART1_RX;
     #endif
@@ -2299,6 +2382,14 @@ static void TestUart_rxUart1DmaCbThread(void *args)
     uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+    #elif defined(SOC_AM62X)
+    #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+    uartParams.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_MCU_UART0_USART_IRQ_0;
+    #elif defined(CPU_M4F)
+    uartParams.intrNum = CSLR_MCU_M4FSS0_CORE0_NVIC_MCU_UART0_USART_IRQ_0 + 16;
+    #else
+    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+    #endif
     #endif
 
     /* Open RX instance (CONFIG_UART0) */
@@ -2538,9 +2629,15 @@ static void TestUart_rxUart1DmaThread(void *args)
     uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_UART1_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
+    #elif defined(SOC_AM62X)
+    #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+    uartParams.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART1_USART_IRQ_0;
+    #else
+    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
+    #endif
     #endif
 
-    #if ((defined(SOC_AM62AX) || defined(SOC_AM62PX)) && !((defined(CPU_MCU_R5F0) || defined(CPU_C7X) || defined(CPU_R5F0)) || defined(SOC_AM62DX)))
+    #if ((defined(SOC_AM62AX) || defined(SOC_AM62PX) || defined(SOC_AM62X)) && !((defined(CPU_MCU_R5F0) || defined(CPU_C7X) || defined(CPU_R5F0) || defined(CPU_M4F)) || defined(SOC_AM62DX)))
     uartParams.txEvtNum = UDMA_PDMA_CH_MAIN0_UART1_TX;
     uartParams.rxEvtNum = UDMA_PDMA_CH_MAIN0_UART1_RX;
     #endif
@@ -2648,6 +2745,14 @@ static void TestUart_txUart2DmaThread(void *args)
     uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+    #elif defined(SOC_AM62X)
+    #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+    uartParams.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_MCU_UART0_USART_IRQ_0;
+    #elif defined(CPU_M4F)
+    uartParams.intrNum = CSLR_MCU_M4FSS0_CORE0_NVIC_MCU_UART0_USART_IRQ_0 + 16;
+    #else
+    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+    #endif
     #endif
 
     /* Open TX instance (CONFIG_UART0) */
@@ -2878,6 +2983,14 @@ static void TestUart_txUart2ThreadCtrlSignal(void *args)
     uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+    #elif defined(SOC_AM62X)
+    #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+    uartParams.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_MCU_UART0_USART_IRQ_0;
+    #elif defined(CPU_M4F)
+    uartParams.intrNum = CSLR_MCU_M4FSS0_CORE0_NVIC_MCU_UART0_USART_IRQ_0 + 16;
+    #else
+    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+    #endif
     #endif
     uartParams.hwFlowControl      = (uint32_t)TRUE;
     uartParams.rxTrigLvl          = 4U;
@@ -2988,6 +3101,12 @@ static void TestUart_rxUart1ThreadCtrlSignal(void *args)
     uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_UART1_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
+    #elif defined(SOC_AM62X)
+    #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+    uartParams.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART1_USART_IRQ_0;
+    #else
+    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
+    #endif
     #endif
     uartParams.hwFlowControl      = (uint32_t)TRUE;
     uartParams.hwFlowControlThr   = 4U;
@@ -3175,6 +3294,14 @@ static void TestUart_txUart2ThreadCtsHigh(void *args)
     uartParams.intrNum = CSLR_MCU_R5FSS0_CORE0_CPU0_INTR_MCU_UART0_USART_IRQ_0;
     #elif defined(SOC_AM62DX)
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+    #elif defined(SOC_AM62X)
+    #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+    uartParams.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_MCU_UART0_USART_IRQ_0;
+    #elif defined(CPU_M4F)
+    uartParams.intrNum = CSLR_MCU_M4FSS0_CORE0_NVIC_MCU_UART0_USART_IRQ_0 + 16;
+    #else
+    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+    #endif
     #endif
     uartParams.hwFlowControl      = (uint32_t)TRUE;
     uartParams.rxTrigLvl          = 4U;
@@ -3411,6 +3538,12 @@ static void TestUart_uartReadCancelPostsSem(void *args)
 #if defined(CPU_C7X)
     uartParams.intrNum = 25U;
     uartParams.eventId = 435;
+#else
+    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
+#endif
+#elif defined(SOC_AM62X)
+#if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+    uartParams.intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART1_USART_IRQ_0;
 #else
     uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
 #endif

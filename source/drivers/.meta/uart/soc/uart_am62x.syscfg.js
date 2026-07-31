@@ -101,8 +101,8 @@ const uart_config_m4f = [
         ],
         udmaPdmaChannels: [
             {
-                txCh    : "UDMA_PDMA_CH_MAIN0_UART2_TX",
-                rxCh    : "UDMA_PDMA_CH_MAIN0_UART2_RX",
+                txCh    : "UDMA_PDMA_CH_MAIN1_UART2_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN1_UART2_RX",
             },
         ],
     },
@@ -121,8 +121,8 @@ const uart_config_m4f = [
         ],
         udmaPdmaChannels: [
             {
-                txCh    : "UDMA_PDMA_CH_MAIN0_UART3_TX",
-                rxCh    : "UDMA_PDMA_CH_MAIN0_UART3_RX",
+                txCh    : "UDMA_PDMA_CH_MAIN1_UART3_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN1_UART3_RX",
             },
         ],
     },
@@ -141,8 +141,8 @@ const uart_config_m4f = [
         ],
         udmaPdmaChannels: [
             {
-                txCh    : "UDMA_PDMA_CH_MAIN0_UART4_TX",
-                rxCh    : "UDMA_PDMA_CH_MAIN0_UART4_RX",
+                txCh    : "UDMA_PDMA_CH_MAIN1_UART4_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN1_UART4_RX",
             },
         ],
     },
@@ -161,8 +161,8 @@ const uart_config_m4f = [
         ],
         udmaPdmaChannels: [
             {
-                txCh    : "UDMA_PDMA_CH_MAIN0_UART5_TX",
-                rxCh    : "UDMA_PDMA_CH_MAIN0_UART5_RX",
+                txCh    : "UDMA_PDMA_CH_MAIN1_UART5_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN1_UART5_RX",
             },
         ],
     },
@@ -181,8 +181,8 @@ const uart_config_m4f = [
         ],
         udmaPdmaChannels: [
             {
-                txCh    : "UDMA_PDMA_CH_MAIN0_UART6_TX",
-                rxCh    : "UDMA_PDMA_CH_MAIN0_UART6_RX",
+                txCh    : "UDMA_PDMA_CH_MAIN1_UART6_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN1_UART6_RX",
             },
         ],
     },
@@ -278,8 +278,8 @@ const uart_config_r5f = [
         ],
         udmaPdmaChannels: [
             {
-                txCh    : "UDMA_PDMA_CH_MAIN0_UART2_TX",
-                rxCh    : "UDMA_PDMA_CH_MAIN0_UART2_RX",
+                txCh    : "UDMA_PDMA_CH_MAIN1_UART2_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN1_UART2_RX",
             },
         ],
     },
@@ -298,8 +298,8 @@ const uart_config_r5f = [
         ],
         udmaPdmaChannels: [
             {
-                txCh    : "UDMA_PDMA_CH_MAIN0_UART3_TX",
-                rxCh    : "UDMA_PDMA_CH_MAIN0_UART3_RX",
+                txCh    : "UDMA_PDMA_CH_MAIN1_UART3_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN1_UART3_RX",
             },
         ],
     },
@@ -318,8 +318,8 @@ const uart_config_r5f = [
         ],
         udmaPdmaChannels: [
             {
-                txCh    : "UDMA_PDMA_CH_MAIN0_UART4_TX",
-                rxCh    : "UDMA_PDMA_CH_MAIN0_UART4_RX",
+                txCh    : "UDMA_PDMA_CH_MAIN1_UART4_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN1_UART4_RX",
             },
         ],
     },
@@ -338,8 +338,8 @@ const uart_config_r5f = [
         ],
         udmaPdmaChannels: [
             {
-                txCh    : "UDMA_PDMA_CH_MAIN0_UART5_TX",
-                rxCh    : "UDMA_PDMA_CH_MAIN0_UART5_RX",
+                txCh    : "UDMA_PDMA_CH_MAIN1_UART5_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN1_UART5_RX",
             },
         ],
     },
@@ -358,8 +358,8 @@ const uart_config_r5f = [
         ],
         udmaPdmaChannels: [
             {
-                txCh    : "UDMA_PDMA_CH_MAIN0_UART6_TX",
-                rxCh    : "UDMA_PDMA_CH_MAIN0_UART6_RX",
+                txCh    : "UDMA_PDMA_CH_MAIN1_UART6_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN1_UART6_RX",
             },
         ],
     },
@@ -455,8 +455,8 @@ const uart_config_a53 = [
         ],
         udmaPdmaChannels: [
             {
-                txCh    : "UDMA_PDMA_CH_MAIN0_UART2_TX",
-                rxCh    : "UDMA_PDMA_CH_MAIN0_UART2_RX",
+                txCh    : "UDMA_PDMA_CH_MAIN1_UART2_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN1_UART2_RX",
             },
         ],
     },
@@ -475,8 +475,8 @@ const uart_config_a53 = [
         ],
         udmaPdmaChannels: [
             {
-                txCh    : "UDMA_PDMA_CH_MAIN0_UART3_TX",
-                rxCh    : "UDMA_PDMA_CH_MAIN0_UART3_RX",
+                txCh    : "UDMA_PDMA_CH_MAIN1_UART3_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN1_UART3_RX",
             },
         ],
     },
@@ -495,8 +495,8 @@ const uart_config_a53 = [
         ],
         udmaPdmaChannels: [
             {
-                txCh    : "UDMA_PDMA_CH_MAIN0_UART4_TX",
-                rxCh    : "UDMA_PDMA_CH_MAIN0_UART4_RX",
+                txCh    : "UDMA_PDMA_CH_MAIN1_UART4_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN1_UART4_RX",
             },
         ],
     },
@@ -515,8 +515,8 @@ const uart_config_a53 = [
         ],
         udmaPdmaChannels: [
             {
-                txCh    : "UDMA_PDMA_CH_MAIN0_UART5_TX",
-                rxCh    : "UDMA_PDMA_CH_MAIN0_UART5_RX",
+                txCh    : "UDMA_PDMA_CH_MAIN1_UART5_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN1_UART5_RX",
             },
         ],
     },
@@ -535,8 +535,8 @@ const uart_config_a53 = [
         ],
         udmaPdmaChannels: [
             {
-                txCh    : "UDMA_PDMA_CH_MAIN0_UART6_TX",
-                rxCh    : "UDMA_PDMA_CH_MAIN0_UART6_RX",
+                txCh    : "UDMA_PDMA_CH_MAIN1_UART6_TX",
+                rxCh    : "UDMA_PDMA_CH_MAIN1_UART6_RX",
             },
         ],
     },

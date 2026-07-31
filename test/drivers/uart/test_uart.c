@@ -69,8 +69,21 @@
 #define CONFIG_UART8    CONFIG_UART_NUM_INSTANCES
 #endif
 
+#if defined(SOC_AM62X)
+#define UDMA_PDMA_CH_MAIN0_UART2_TX    UDMA_PDMA_CH_MAIN1_UART2_TX
+#define UDMA_PDMA_CH_MAIN0_UART2_RX    UDMA_PDMA_CH_MAIN1_UART2_RX
+#define UDMA_PDMA_CH_MAIN0_UART3_TX    UDMA_PDMA_CH_MAIN1_UART3_TX
+#define UDMA_PDMA_CH_MAIN0_UART3_RX    UDMA_PDMA_CH_MAIN1_UART3_RX
+#define UDMA_PDMA_CH_MAIN0_UART4_TX    UDMA_PDMA_CH_MAIN1_UART4_TX
+#define UDMA_PDMA_CH_MAIN0_UART4_RX    UDMA_PDMA_CH_MAIN1_UART4_RX
+#define UDMA_PDMA_CH_MAIN0_UART5_TX    UDMA_PDMA_CH_MAIN1_UART5_TX
+#define UDMA_PDMA_CH_MAIN0_UART5_RX    UDMA_PDMA_CH_MAIN1_UART5_RX
+#define UDMA_PDMA_CH_MAIN0_UART6_TX    UDMA_PDMA_CH_MAIN1_UART6_TX
+#define UDMA_PDMA_CH_MAIN0_UART6_RX    UDMA_PDMA_CH_MAIN1_UART6_RX
+#endif
+
 /* Bypass other SOC */
-#if !(defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X))
+#if !(defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X) || defined(SOC_AM62PX) || defined(SOC_AM62X))
 
 #if (defined(SOC_AM62PX) || defined(SOC_AM62X) || defined(SOC_J722S))
 /* These SOCs run only the reduced test suite (1303/1304/1305/2514). Map any
@@ -115,7 +128,7 @@
  * SOCs (AM62PX, AM62X, J722S, ...) only the reduced echo/dma test cases
  * 1303, 1304, 1305 and 2514 are exercised, and the syscfg-default debug
  * UART is used as-is. */
-#if (defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)) || defined (SOC_AM62PX)
+#if (defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)) || defined (SOC_AM62PX) || defined (SOC_AM62X) 
 #define TEST_UART_RUN_FULL_SUITE    (1U)
 #else
 #define TEST_UART_RUN_FULL_SUITE    (0U)
@@ -157,7 +170,7 @@ uint8_t TestUart_isDebugUartOpen = 0;
 uint16_t TestUart_debugUart = 0;
 
 /* Only for below set of SOCs */
-#if (defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)) || defined(SOC_AM62PX)
+#if (defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)) || defined(SOC_AM62PX) || defined(SOC_AM62X)
 /* Global uart buffer for DMA Tx */
 uint8_t  TestUart_txBufferDma[512] __attribute__((aligned(CacheP_CACHELINE_ALIGNMENT)));
 /* Global uart buffer for DMA Rx */
@@ -221,7 +234,6 @@ TEST_EXECUTE_SKIP_IDS(am62px_r5_skip_instance_5, 8944,11621,11633,11634)
 TEST_EXECUTE_SKIP_IDS(am62px_r5_skip_instance_6, 8944,11621,11633,11634)
 TEST_EXECUTE_SKIP_IDS(am62px_r5_skip_instance_7, 8944,11621,11633,11634)
 
-
 /* C7 */
 TEST_EXECUTE_SKIP_IDS(am62ax_c7x_skip, 1116, 1117, 1304, 1305, 11636, 8919, 8959, 8990, 9972, 9973, 9974, 9975, 9976, 9977, 9978)
 TEST_EXECUTE_SKIP_IDS(am62ax_c7x_skip_instance_0, 8944, 11621, 11633, 11634)
@@ -233,6 +245,46 @@ TEST_EXECUTE_SKIP_IDS(am62ax_c7x_skip_instance_5, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62ax_c7x_skip_instance_6, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62ax_c7x_skip_instance_7, 8944, 11621, 11633, 11634)
 TEST_EXECUTE_SKIP_IDS(am62ax_c7x_skip_instance_8, 8936, 8935, 8938, 8943, 8958, 8959, 8960, 8995, 12114, 10121, 11631, 11632, 12113)
+
+/* AM62X */
+
+/* A53 */
+TEST_EXECUTE_SKIP_IDS(am62x_a53_skip, 8956,8957,8959,8990)
+TEST_EXECUTE_SKIP_IDS(am62x_a53_skip_instance_0, 8924, 8944, 11621, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_a53_skip_instance_1, 8944, 11621, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_a53_skip_instance_2, 8944, 11621, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_a53_skip_instance_3, 8944, 11621, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_a53_skip_instance_4, 8944, 11621, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_a53_skip_instance_5, 8944, 11621, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_a53_skip_instance_6, 8944, 11621, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_a53_skip_instance_7, 8944, 11621, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_a53_skip_instance_8, 8935, 8936, 8943, 8944, 8958, 8960, 8995, 12114, 10121, 11622, 11623, 11624, 11625, 11626, 11627, 11628, 11629, 11631, 11632, 12113)
+
+/* R5 */
+
+TEST_EXECUTE_SKIP_IDS(am62x_r5_skip, 1116, 1117, 1303, 1304, 1305, 8919, 8959, 8961, 8990, 9972, 9973, 9974, 9975, 9976, 9977, 9978, 12113)
+TEST_EXECUTE_SKIP_IDS(am62x_r5_skip_instance_0, 8944, 11621, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_r5_skip_instance_1, 8944, 11621, 11633, 11634, 8936, 8958, 8960, 8943, 8935, 12114, 10121, 11631, 11632, 12113)
+TEST_EXECUTE_SKIP_IDS(am62x_r5_skip_instance_2, 8944, 11621, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_r5_skip_instance_3, 8944, 11621, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_r5_skip_instance_4, 8944, 11621, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_r5_skip_instance_5, 8944, 11621, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_r5_skip_instance_6, 8944, 11621, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_r5_skip_instance_7, 8944, 11621, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_r5_skip_instance_8, 8944, 11621, 11633, 11634)
+
+/* M4F */
+
+TEST_EXECUTE_SKIP_IDS(am62x_m4f_skip, 8939, 8940, 8951, 8952, 8961, 8962, 8976, 8984, 8989, 8990, 8991, 8993, 8994, 9972, 9973, 9974, 9975, 9976, 9977, 9978, 10109, 10110, 10115, 10116, 12113, 11636, 8928, 9971)
+TEST_EXECUTE_SKIP_IDS(am62x_m4f_skip_instance_0, 8944, 8929, 11621, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_m4f_skip_instance_1, 8935, 8936, 8938, 8943, 8944, 8958, 8960, 8995, 10121, 11621, 11631, 11632, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_m4f_skip_instance_2, 8935, 8936, 8938, 8943, 8944, 8958, 8960, 8995, 10121, 11621, 11631, 11632, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_m4f_skip_instance_3, 8935, 8936, 8938, 8943, 8944, 8958, 8960, 8995, 10121, 11621, 11631, 11632, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_m4f_skip_instance_4, 8935, 8936, 8938, 8943, 8944, 8958, 8960, 8995, 10121, 11621, 11631, 11632, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_m4f_skip_instance_5, 8935, 8936, 8938, 8943, 8944, 8958, 8960, 8995, 10121, 11621, 11631, 11632, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_m4f_skip_instance_6, 8935, 8936, 8938, 8943, 8944, 8958, 8960, 8995, 10121, 11621, 11631, 11632, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_m4f_skip_instance_7, 8935, 8936, 8938, 8943, 8944, 8958, 8960, 8995, 10121, 11621, 11631, 11632, 11633, 11634)
+TEST_EXECUTE_SKIP_IDS(am62x_m4f_skip_instance_8, 8935, 8936, 8943, 8944, 11621, 8958, 8960, 8995, 12114, 10121, 11622, 11623, 11624, 11625, 11626, 11627, 11628, 11629, 11631, 11632, 12113, 11633, 11634)
 
 /* AM62DX */
 
@@ -364,6 +416,10 @@ const TestExecute_idList TestExecute_SkipTestIdMatrix[TEST_SOC_COUNT][TEST_CORE_
     TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62PX, TEST_CORE_IDX_MCU_R5F0, am62px_mcur5_skip),
     TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62PX, TEST_CORE_IDX_R5F0, am62px_r5_skip),
 
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_A53, am62x_a53_skip),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_R5F0, am62x_r5_skip),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_M4F, am62x_m4f_skip),
+
     TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62DX, TEST_CORE_IDX_MCU_R5F0, am62dx_mcur5_skip),
     TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62DX, TEST_CORE_IDX_A53, am62dx_a53_skip),
     TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62DX, TEST_CORE_IDX_C7X, am62dx_c7x_skip),
@@ -425,6 +481,34 @@ const TestExecute_idList TestExecute_SkipTestIdMatrixWithInstance[TEST_SOC_COUNT
     TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62PX, TEST_CORE_IDX_R5F0, CONFIG_UART5, am62px_r5_skip_instance_5),
     TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62PX, TEST_CORE_IDX_R5F0, CONFIG_UART6, am62px_r5_skip_instance_6),
     TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62PX, TEST_CORE_IDX_R5F0, CONFIG_UART7, am62px_r5_skip_instance_7),
+
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_A53, CONFIG_UART0, am62x_a53_skip_instance_0),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_A53, CONFIG_UART1, am62x_a53_skip_instance_1),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_A53, CONFIG_UART2, am62x_a53_skip_instance_2),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_A53, CONFIG_UART3, am62x_a53_skip_instance_3),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_A53, CONFIG_UART4, am62x_a53_skip_instance_4),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_A53, CONFIG_UART5, am62x_a53_skip_instance_5),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_A53, CONFIG_UART6, am62x_a53_skip_instance_6),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_A53, CONFIG_UART7, am62x_a53_skip_instance_7),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_A53, CONFIG_UART8, am62x_a53_skip_instance_8),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_R5F0, CONFIG_UART0, am62x_r5_skip_instance_0),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_R5F0, CONFIG_UART1, am62x_r5_skip_instance_1),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_R5F0, CONFIG_UART2, am62x_r5_skip_instance_2),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_R5F0, CONFIG_UART3, am62x_r5_skip_instance_3),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_R5F0, CONFIG_UART4, am62x_r5_skip_instance_4),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_R5F0, CONFIG_UART5, am62x_r5_skip_instance_5),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_R5F0, CONFIG_UART6, am62x_r5_skip_instance_6),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_R5F0, CONFIG_UART7, am62x_r5_skip_instance_7),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_R5F0, CONFIG_UART8, am62x_r5_skip_instance_8),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_M4F, CONFIG_UART0, am62x_m4f_skip_instance_0),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_M4F, CONFIG_UART1, am62x_m4f_skip_instance_1),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_M4F, CONFIG_UART2, am62x_m4f_skip_instance_2),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_M4F, CONFIG_UART3, am62x_m4f_skip_instance_3),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_M4F, CONFIG_UART4, am62x_m4f_skip_instance_4),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_M4F, CONFIG_UART5, am62x_m4f_skip_instance_5),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_M4F, CONFIG_UART6, am62x_m4f_skip_instance_6),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_M4F, CONFIG_UART7, am62x_m4f_skip_instance_7),
+    TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62X, TEST_CORE_IDX_M4F, CONFIG_UART8, am62x_m4f_skip_instance_8),
 
     TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62DX, TEST_CORE_IDX_MCU_R5F0, CONFIG_UART0, am62dx_mcur5_skip_instance_0),
     TEST_EXECUTE_SKIP_ENTRY(TEST_SOC_IDX_AM62DX, TEST_CORE_IDX_MCU_R5F0, CONFIG_UART1, am62dx_mcur5_skip_instance_1),
@@ -526,7 +610,7 @@ static void test_uart_set_params(UART_TestParams *testParams, uint32_t testCaseI
 static void uart_echo_read_full_test(void *args);
 static void uart_echo_read_partial_test(void *args);
 void test_printExitString(void *args);
-#if defined(SOC_AM64X) || defined(SOC_AM243X) || (TEST_UART_RUN_FULL_SUITE == 0U)
+#if defined(SOC_AM64X) || defined(SOC_AM243X)
 static void uart_echo_read_full_test_dmaMode(void *args);
 #endif
 
@@ -776,14 +860,14 @@ void test_main(void *args)
     uint8_t instanceId;
 
     /* Debug UART instance selection */
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX)
-#if defined(CPU_MCU_R5F0)  || defined(CPU_C7X)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
+#if defined(CPU_MCU_R5F0)  || defined(CPU_C7X) || defined(CPU_M4F)
     instanceId = CONFIG_UART0;
 #elif defined(CPU_R5F0)
     instanceId = CONFIG_UART8;
 #elif defined(CPU_A53)
     instanceId = CONFIG_UART1;
-#endif /* CPU_MCU_R5F0 || CPU_C7X || CPU_R5F0 || CPU_A53 */
+#endif /* CPU_MCU_R5F0 || CPU_C7X || CPU_M4F || CPU_R5F0 || CPU_A53 */
 #elif defined(SOC_AM275X)
 #if defined (CPU_WKUP_R5F)
     instanceId = CONFIG_UART7;
@@ -792,7 +876,7 @@ void test_main(void *args)
 #else
     instanceId = CONFIG_UART0;
 #endif
-#endif /* SOC_AM62AX || SOC_AM62DX || SOC_AM275X */
+#endif /* SOC_AM62AX || SOC_AM62DX || SOC_AM275X || SOC_AM62X */
 
     /* Backup debug UART configuration */
     TestUart_getDebugUartConfig(instanceId);
@@ -944,7 +1028,7 @@ static void uart_echo_read_full_test(void *args)
     return;
 }
 
-#if defined(SOC_AM64X) || defined(SOC_AM243X) || (TEST_UART_RUN_FULL_SUITE == 0U)
+#if defined(SOC_AM64X) || defined(SOC_AM243X)
 /**
  * @brief UART echo test with DMA mode for write and read in callback mode.
  *
@@ -1212,8 +1296,10 @@ static void test_uart_set_params(UART_TestParams *testParams, uint32_t tcId)
     params->intrNum = CSLR_R5FSS0_CORE0_INTR_UART0_USART_IRQ_0;
     #endif
     #if defined(SOC_AM62X)
-    #if defined(A53_FREERTOS)
-    params->intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
+    #if defined(CPU_A53)
+    params->intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+    #elif defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+    params->intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_MCU_UART0_USART_IRQ_0;
     #else
     params->intrNum = CSLR_MCU_M4FSS0_CORE0_NVIC_MCU_UART0_USART_IRQ_0 + 16;
     #endif
@@ -1348,7 +1434,7 @@ static void TestUart_stTestcase(void)
     TEST_EXECUTE_TEST_CASE(uart_echo_read_full_test, 1304, (void*)&uartInitParams);
     test_uart_set_params(&uartInitParams, 1305);
     TEST_EXECUTE_TEST_CASE(uart_echo_read_partial_test, 1305, (void*)&uartInitParams);
-#if defined(SOC_AM64X) || defined(SOC_AM243X) || (TEST_UART_RUN_FULL_SUITE == 0U)
+#if defined(SOC_AM64X) || defined(SOC_AM243X)
     test_uart_set_params(&uartInitParams, 2514);
     TEST_EXECUTE_TEST_CASE(uart_echo_read_full_test_dmaMode, 2514, (void*)&uartInitParams);
 #endif
@@ -1894,7 +1980,108 @@ int TestUart_paramsInit(UART_TestParams *paramsInit, uint16_t tcId, uint16_t ins
             break;
 
         default:
-        return -1;
+            return -1;
+    }
+
+    /*For AM62X*/
+#elif defined(SOC_AM62X)
+
+    switch(instanceId)
+    {
+        case CONFIG_UART0:
+        #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+            params->intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_MCU_UART0_USART_IRQ_0;
+        #elif defined(CPU_A53)
+            params->intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+        #else
+            params->intrNum = CSLR_MCU_M4FSS0_CORE0_NVIC_MCU_UART0_USART_IRQ_0 + 16;
+        #endif
+            break;
+
+        case CONFIG_UART8:
+        #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+            params->intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_WKUP_UART0_USART_IRQ_0;
+        #elif defined(CPU_M4F)
+            params->intrNum = 0xFFFF;
+        #else
+            params->intrNum = CSLR_GICSS0_COMMON_0_SPI_WKUP_UART0_USART_IRQ_0;
+        #endif
+            break;
+
+        case CONFIG_UART1:
+        #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+            params->intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART0_USART_IRQ_0;
+        #elif defined(CPU_M4F)
+            params->intrNum = 0xFFFF;
+        #else
+            params->intrNum = CSLR_GICSS0_COMMON_0_SPI_UART0_USART_IRQ_0;
+        #endif
+            params->rxEvtNum = 0;
+            params->txEvtNum = 0;
+            break;
+
+        case CONFIG_UART2:
+        #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+            params->intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART1_USART_IRQ_0;
+        #elif defined(CPU_M4F)
+            params->intrNum = 0xFFFF;
+        #else
+            params->intrNum = CSLR_GICSS0_COMMON_0_SPI_UART1_USART_IRQ_0;
+        #endif
+            break;
+
+        case CONFIG_UART3:
+        #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+            params->intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART2_USART_IRQ_0;
+        #elif defined(CPU_M4F)
+            params->intrNum = 0xFFFF;
+        #else
+            params->intrNum = CSLR_GICSS0_COMMON_0_SPI_UART2_USART_IRQ_0;
+        #endif
+            break;
+
+        case CONFIG_UART4:
+        #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+            params->intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART3_USART_IRQ_0;
+        #elif defined(CPU_M4F)
+            params->intrNum = 0xFFFF;
+        #else
+            params->intrNum = CSLR_GICSS0_COMMON_0_SPI_UART3_USART_IRQ_0;
+        #endif
+            break;
+
+        case CONFIG_UART5:
+        #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+            params->intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART4_USART_IRQ_0;
+        #elif defined(CPU_M4F)
+            params->intrNum = 0xFFFF;
+        #else
+            params->intrNum = CSLR_GICSS0_COMMON_0_SPI_UART4_USART_IRQ_0;
+        #endif
+            break;
+
+        case CONFIG_UART6:
+        #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+            params->intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART5_USART_IRQ_0;
+        #elif defined(CPU_M4F)
+            params->intrNum = 0xFFFF;
+        #else
+            params->intrNum = CSLR_GICSS0_COMMON_0_SPI_UART5_USART_IRQ_0;
+        #endif
+            break;
+
+        case CONFIG_UART7:
+        #if defined(CPU_R5F0) || defined(CPU_WKUP_R5F)
+            params->intrNum = CSLR_WKUP_R5FSS0_CORE0_INTR_UART6_USART_IRQ_0;
+        #elif defined(CPU_M4F)
+            params->intrNum = 0xFFFF;
+        #else
+            params->intrNum = CSLR_GICSS0_COMMON_0_SPI_UART6_USART_IRQ_0;
+        #endif
+            break;
+
+        default:
+            return -1;
     }
     /*For AM62PX*/
 #elif defined(SOC_AM62PX)
@@ -3451,9 +3638,11 @@ static void TestUart_uartWriteCallbackModeInterruptTimeoutCancel(void *args)
     uint16_t instanceId = ((UART_TestParams *)args)->instanceId;
     UART_Handle uartHandle;
     int32_t transferOK = SystemP_FAILURE;
+    int32_t semStatus = SystemP_SUCCESS;
     static UART_Transaction trans;
     static uint8_t uartTxBuffer[APP_UART_BUFSIZE];
     uint8_t finalStatus = 0;
+    uint32_t writeSemOK = 0U;
 
     /* Close to ensure previous state is cleared */
     uartHandle = UART_getHandle(instanceId);
@@ -3468,6 +3657,17 @@ static void TestUart_uartWriteCallbackModeInterruptTimeoutCancel(void *args)
     if(uartHandle == NULL)
     {
         finalStatus |= (1 << 1);
+    }
+
+    /* Construct semaphore for write callback (writeCallbackFxn posts it) */
+    semStatus = SemaphoreP_constructBinary(&gUartWriteDoneSem, 0);
+    if (semStatus != SystemP_SUCCESS)
+    {
+        finalStatus |= (1 << 3);
+    }
+    else
+    {
+        writeSemOK = 1U;
     }
 
     /* Prepare transaction — fill buffer with data larger than TX FIFO (64 bytes)
@@ -3490,6 +3690,7 @@ static void TestUart_uartWriteCallbackModeInterruptTimeoutCancel(void *args)
 
     /* Cleanup */
     UART_close(uartHandle);
+    if (writeSemOK) { SemaphoreP_destruct(&gUartWriteDoneSem); }
 
     /* Assert transfer status is timeout or cancelled */
     TestUart_openDebugUart();
@@ -3687,8 +3888,9 @@ static void TestUart_uartWriteDmaBlockingMode(void *args)
     uint16_t len = 128U;
     uint32_t baseAddr = 0U;
     uint32_t count = 0U;
+    uint32_t readSemOK = 0U;
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
 
     if ((instanceId == CONFIG_UART0) || (instanceId == CONFIG_UART8))
     {
@@ -3704,6 +3906,10 @@ static void TestUart_uartWriteDmaBlockingMode(void *args)
     if (semStatus != SystemP_SUCCESS)
     {
         finalStatus |= (1U << 4);
+    }
+    else
+    {
+        readSemOK = 1U;
     }
 
     /* Close to ensure previous state is cleared */
@@ -3724,7 +3930,7 @@ static void TestUart_uartWriteDmaBlockingMode(void *args)
     }
 
     /* Set PDMA events for MAIN domain UARTs (AM62AX/AM62DX/AM62PX A53) */
-#if (defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX)) && !(defined(CPU_R5F0) || defined(CPU_MCU_R5F0) || defined(CPU_C7X))
+#if (defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)) && !(defined(CPU_R5F0) || defined(CPU_MCU_R5F0) || defined(CPU_C7X) || defined(CPU_M4F))
     switch (instanceId)
     {
         case CONFIG_UART1:
@@ -3849,7 +4055,7 @@ static void TestUart_uartWriteDmaBlockingMode(void *args)
         UART_close(uartHandle);
     }
 
-    SemaphoreP_destruct(&gUartReadDoneSem);
+    if (readSemOK) { SemaphoreP_destruct(&gUartReadDoneSem); }
 
     /* Validate final status and data */
     if (finalStatus == 0 && 0 != memcmp(TestUart_txBufferDma, TestUart_rxBufferDma, len))
@@ -3900,8 +4106,9 @@ static void TestUart_uartReadDmaBlockingMode(void *args)
     uint16_t len = 128U;
     uint32_t baseAddr = 0U;
     uint32_t count = 0U;
+    uint32_t writeSemOK = 0U;
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
     if ((instanceId == CONFIG_UART0) || (instanceId == CONFIG_UART8))
     {
         TestUart_openDebugUart();
@@ -3915,6 +4122,10 @@ static void TestUart_uartReadDmaBlockingMode(void *args)
     if (semStatus != SystemP_SUCCESS)
     {
         finalStatus |= (1U << 5);
+    }
+    else
+    {
+        writeSemOK = 1U;
     }
 
     /* Close to ensure previous state is cleared */
@@ -3935,7 +4146,7 @@ static void TestUart_uartReadDmaBlockingMode(void *args)
     }
 
     /* Set PDMA events for MAIN domain UARTs (AM62AX/AM62DX/AM62PX A53) */
-#if (defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX)) && !(defined(CPU_R5F0) || defined(CPU_MCU_R5F0) || defined(CPU_C7X))
+#if (defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)) && !(defined(CPU_R5F0) || defined(CPU_MCU_R5F0) || defined(CPU_C7X) || defined(CPU_M4F))
     switch (instanceId)
     {
         case CONFIG_UART1:
@@ -4049,7 +4260,7 @@ static void TestUart_uartReadDmaBlockingMode(void *args)
         UART_close(uartHandle);
     }
 
-    SemaphoreP_destruct(&gUartWriteDoneSem);
+    if (writeSemOK) { SemaphoreP_destruct(&gUartWriteDoneSem); }
 
     /* Validate final status and data */
     if (finalStatus == 0 && 0 != memcmp(TestUart_txBufferDma, TestUart_rxBufferDma, len))
@@ -4178,12 +4389,14 @@ static void TestUart_uartGetHandleClosedInstance(void *args)
 static void TestUart_uartFlushTxFifo(void *args)
 {
     int32_t status = SystemP_FAILURE;
+    int32_t semStatus = SystemP_SUCCESS;
     UART_Transaction trans = {0};
     UART_Params *uartParams = (UART_Params *)&(((UART_TestParams *)args)->uartParams);
     uint16_t instanceId = ((UART_TestParams *)args)->instanceId;
     UART_Handle uartHandle = NULL;
     uint8_t uartTxBuffer[UART_FIFO_SIZE];
     uint8_t finalStatus = 0;
+    uint32_t writeSemOK = 0U;
 
     /* Close to ensure previous state is cleared */
     uartHandle = UART_getHandle(instanceId);
@@ -4197,6 +4410,17 @@ static void TestUart_uartFlushTxFifo(void *args)
     if (uartHandle == NULL)
     {
         finalStatus |= (1 << 1);
+    }
+
+    /* Construct semaphore for write callback (writeCallbackFxn posts it) */
+    semStatus = SemaphoreP_constructBinary(&gUartWriteDoneSem, 0);
+    if (semStatus != SystemP_SUCCESS)
+    {
+        finalStatus |= (1 << 3);
+    }
+    else
+    {
+        writeSemOK = 1U;
     }
 
     /* Prepare transaction */
@@ -4219,6 +4443,7 @@ static void TestUart_uartFlushTxFifo(void *args)
 
     /* Close the UART instance */
     UART_close(uartHandle);
+    if (writeSemOK) { SemaphoreP_destruct(&gUartWriteDoneSem); }
 
     /* Verify that TX FIFO is empty */
     TestUart_openDebugUart();
@@ -8428,8 +8653,12 @@ static void TestUart_uartFramingErrorInterruptDebugUart(void *args)
     uartParams.intrNum = 24U;
     uartParams.eventId = 434;
 #else
-    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+    uartParams.intrNum = origParams.intrNum;
+    uartParams.eventId = origParams.eventId;
 #endif
+#elif defined(SOC_AM62X)
+    uartParams.intrNum = origParams.intrNum;
+    uartParams.eventId = origParams.eventId;
 #elif defined(SOC_AM275X)
 #if (defined(CPU_C75_0) || defined(CPU_C75_1))
     uartParams.intrNum = 33U;
@@ -8682,8 +8911,12 @@ static void TestUart_uartParityErrorInterruptDebugUart(void *args)
     uartParams.intrNum = 24U;
     uartParams.eventId = 434;
 #else
-    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+    uartParams.intrNum = origParams.intrNum;
+    uartParams.eventId = origParams.eventId;
 #endif
+#elif defined(SOC_AM62X)
+    uartParams.intrNum = origParams.intrNum;
+    uartParams.eventId = origParams.eventId;
 #elif defined(SOC_AM275X)
 #if (defined(CPU_C75_0) || defined(CPU_C75_1))
     uartParams.intrNum = 33U;
@@ -9731,7 +9964,7 @@ static void TestUart_udmaIsrTxContinuousCallback(void *args)
     /* Transfer size per iteration (must fit in DMA buffers) */
     const uint16_t len = 64U;
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
     if ((instanceId == CONFIG_UART0) || (instanceId == CONFIG_UART8))
     {
         TestUart_openDebugUart();
@@ -9754,7 +9987,7 @@ static void TestUart_udmaIsrTxContinuousCallback(void *args)
     }
 
     /* Set PDMA events for MAIN domain UARTs (AM62AX/AM62DX/AM62PX A53) */
-#if (defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX)) && !(defined(CPU_R5F0) || defined(CPU_MCU_R5F0) || defined(CPU_C7X))
+#if (defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)) && !(defined(CPU_R5F0) || defined(CPU_MCU_R5F0) || defined(CPU_C7X) || defined(CPU_M4F))
     switch (instanceId)
     {
         case CONFIG_UART1:
@@ -9950,7 +10183,7 @@ static void TestUart_udmaIsrTxWriteInsideCallback(void *args)
     uint16_t finalStatus    = 0;
     const uint16_t len      = 32U;
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)
     if ((instanceId == CONFIG_UART0) || (instanceId == CONFIG_UART8))
     {
         TestUart_openDebugUart();
@@ -9973,7 +10206,7 @@ static void TestUart_udmaIsrTxWriteInsideCallback(void *args)
     }
 
     /* Set PDMA events for MAIN domain UARTs (AM62AX/AM62DX/AM62PX A53) */
-#if (defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX)) && !(defined(CPU_R5F0) || defined(CPU_MCU_R5F0) || defined(CPU_C7X))
+#if (defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62PX) || defined(SOC_AM62X)) && !(defined(CPU_R5F0) || defined(CPU_MCU_R5F0) || defined(CPU_C7X) || defined(CPU_M4F))
     switch (instanceId)
     {
         case CONFIG_UART1:
@@ -10271,8 +10504,12 @@ static void TestUart_uartRlsErrorBlockingDebugUart(void *args)
     uartParams.intrNum = 24U;
     uartParams.eventId = 434;
 #else
-    uartParams.intrNum = CSLR_GICSS0_COMMON_0_SPI_MCU_UART0_USART_IRQ_0;
+    uartParams.intrNum = origParams.intrNum;
+    uartParams.eventId = origParams.eventId;
 #endif
+#elif defined(SOC_AM62X)
+    uartParams.intrNum = origParams.intrNum;
+    uartParams.eventId = origParams.eventId;
 #elif defined(SOC_AM275X)
 #if (defined(CPU_C75_0) || defined(CPU_C75_1))
     uartParams.intrNum = 33U;

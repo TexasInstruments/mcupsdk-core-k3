@@ -9,11 +9,11 @@
  *   uses this stack.
  * - After vTaskStartScheduler() each task created in FreeRTOS has its own stack
  */
---stack_size=16384
+--stack_size=8192
 /* This is the heap size for malloc() API in NORTOS and FreeRTOS
  * This is also the heap used by pvPortMalloc in FreeRTOS
  */
---heap_size=32768
+--heap_size=8192
 
 
 SECTIONS
@@ -22,12 +22,12 @@ SECTIONS
     .vectors:{} palign(8) > M4F_VECS
     .text:   {} palign(8) > M4F_IRAM     /* This is where code resides */
 
-    .bss:    {} palign(8) > M4F_DRAM     /* This is where uninitialized globals go */
+    .bss:    {} palign(8) > M4F_IRAM     /* This is where uninitialized globals go */
     RUN_START(__BSS_START)
     RUN_END(__BSS_END)
 
     .data:   {} palign(8) > M4F_DRAM     /* This is where initialized globals and static go */
-    .rodata: {} palign(8) > M4F_DRAM     /* This is where const's go */
+    .rodata: {} palign(8) > M4F_IRAM     /* This is where const's go */
     .sysmem: {} palign(8) > M4F_IRAM     /* This is where the malloc heap goes */
     .stack:  {} palign(8) > M4F_IRAM     /* This is where the main() stack goes */
 

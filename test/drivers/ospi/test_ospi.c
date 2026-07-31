@@ -196,7 +196,7 @@ static void test_ospi_read_write_indirect_different_frequencies(void *args);
 #if 0
 static void TestOspi_opcodeValidation(void* args);
 #endif
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X) || defined(SOC_AM62PX)
 static void TestOspi_repeatedReadWrite1s8s8s(void *args);
 static void TestOspi_repeatedReadWrite1s1s1s(void *args);
 
@@ -390,7 +390,7 @@ void test_main(void *args)
 #if defined (OSPI_FREERTOS_ONLY_TEST)
     test_ospi_multithread();
 #endif
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X) || defined(SOC_AM62PX)
     RUN_TEST(TestOspi_initFunctional, 8905, NULL);
     Drivers_ospiClose();
     Drivers_ospiOpen();
@@ -426,7 +426,7 @@ void test_main(void *args)
     RUN_TEST(test_ospi_read_write_max_config, 3174, NULL);
     Drivers_ospiClose();
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X) || defined(SOC_AM62PX)
     /* Write known test pattern to flash for read verification tests.
      * Called early, before negative tests that may alter driver configs. */
     TestOspi_writeTestPattern();
@@ -436,7 +436,7 @@ void test_main(void *args)
     RUN_TEST(test_ospi_read_perf, 8724, NULL);
     Drivers_ospiClose();
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X) || defined(SOC_AM62PX)
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_isPhyEnableNegative, 8911, NULL);
     Drivers_ospiClose();
@@ -470,7 +470,7 @@ void test_main(void *args)
     RUN_TEST(test_ospi_odd_read_write, 10134, NULL);
     Drivers_ospiClose();
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X) || defined(SOC_AM62PX)
     if (modeParams.cfgflashType == CONFIG_FLASH_TYPE_SERIAL_NAND)
     {
         Drivers_ospiOpen();
@@ -499,7 +499,7 @@ void test_main(void *args)
     RUN_TEST(test_ospi_fallBack_to_1s1s1s, 9211, NULL);
     Drivers_ospiClose();
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X) || defined(SOC_AM62PX)
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_repeatedReadWrite1s1s1s, 8230, NULL);
     Drivers_ospiClose();
@@ -577,7 +577,7 @@ void test_main(void *args)
     RUN_TEST(TestOspi_setRdDataCaptureDelayNegative, 8810, NULL);
     Drivers_ospiClose();
 
-    #ifndef CORE_R5F
+    #if !defined(CORE_R5F) && !defined(SOC_AM62PX)
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_setNumAddrBytesFunctional, 8813, NULL);
     Drivers_ospiClose();
@@ -749,7 +749,7 @@ void test_main(void *args)
     Drivers_ospiClose();
 
     /*Causing hardware hang on AM62AX/AM62DX */
-    #ifndef SOC_AM275X
+    #if !defined(SOC_AM275X) && !defined(SOC_AM62PX)
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_phyReadAttackVectorFunctional, 8978, NULL);
     Drivers_ospiClose();
@@ -856,7 +856,7 @@ void test_main(void *args)
     Drivers_ospiClose();
 
     /* Negative test case causing program to get stuck */
-    #ifndef SOC_AM275X
+    #if !defined(SOC_AM275X) && !defined(SOC_AM62PX)
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_writeDirectNegative, 9563, NULL);
     Drivers_ospiClose();
@@ -953,9 +953,11 @@ void test_main(void *args)
 #ifndef SOC_AM62DX
 #ifndef CORE_MCUR5F
 #ifndef CORE_R5F
+#if !defined(SOC_AM62PX)
     Drivers_ospiOpen();
     RUN_TEST(TestOspi_frequencySwitchingStress, 9887, NULL);
     Drivers_ospiClose();
+#endif
 #endif
 #endif
 #endif
@@ -1005,7 +1007,7 @@ void tearDown(void)
  * Test cases
  */
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X) || defined(SOC_AM62PX)
 #ifndef CORE_A53
 /**
  * \brief Negative test for OSPI_init API (before initialization)
@@ -2816,7 +2818,7 @@ static void TestOspi_opcodeValidation(void* args)
 }
 #endif
 
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM275X) || defined(SOC_AM62PX)
 /**
  * \brief Functional test for repeated erase-write-read in 1S-8S-8S mode
  *

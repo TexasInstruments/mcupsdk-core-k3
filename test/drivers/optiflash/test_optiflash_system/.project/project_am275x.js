@@ -85,7 +85,7 @@ const robot_template = {
         testCaseName: "OptiFlash System Test Application",
         testCaseIds: "SITSW-10994 SITSW-10995 SITSW-10996",
         withCfg: true,
-        cfgPath: "test/drivers/optiflash/test_optiflash_system/{board}/test_optiflash_system_sbl_uart_hs_fs.cfg",
+        cfgPath: "test/drivers/optiflash/test_optiflash_system/{board}/test_optiflash_system_sbl_uart_${DEVICE_TYPE}.cfg",
         logPort: "ACM0",
         timeout: 900,
         expectTimeout: 600,

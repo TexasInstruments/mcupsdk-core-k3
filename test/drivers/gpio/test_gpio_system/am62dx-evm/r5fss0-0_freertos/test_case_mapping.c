@@ -56,8 +56,8 @@
 /* ========================================================================== */
 testCase_t gTestCase[] =
 {
-    {TestGpio_interruptAllBanks, 9757},
-    {TestGpio_trigLevelNegTc, 9634},
+    {TestGpio_interruptAllBanks, 12814},
+    {TestGpio_trigLevelNegTc, 12813},
     {NULL, 0}
 };
 

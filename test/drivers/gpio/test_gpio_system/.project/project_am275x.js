@@ -166,6 +166,19 @@ const buildOptionCombos = [
     { device: device, cpu: "c75ss1-0", cgt: "ti-c7000",     board: "am275x-evm", os: "freertos"},
 ];
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "GPIO",
+        testCaseName: "Test GPIO interrupt and trigger system test",
+        testCaseIds: "SITSW-9634 SITSW-9757",
+        withCfg: true,
+        cfgPath: "test/drivers/gpio/test_gpio_system/{board}/test_gpio_system_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectTimeout: 500,
+    },
+};
+
 function getComponentProperty() {
     let property = {};
 
@@ -219,6 +232,10 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_freertos;
         build_property.libs = libs_freertos_c75;
         build_property.templates = templates_freertos_c75_1;
+    }
+
+    if (buildOption.cpu.match(/^r5fss0-1$/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
     }
 
     return build_property;

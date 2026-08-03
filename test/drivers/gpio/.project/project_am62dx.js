@@ -510,6 +510,18 @@ const robot_template = {
     },
 };
 
+const robot_template_smp = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests_smp.robot",
+    options: {
+        componentName: "GPIO",
+        testCaseName: "GPIO SMP multithread test",
+        appName: "test_gpio(smp)",
+        testCaseIds: "SITSW-9633 SITSW-9635",
+        expectTimeout: 120,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -548,6 +560,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.defines = defines_a53_smp;
             build_property.libdirs = libdirs_freertos;
             build_property.cflags =  cflags_free_rtos;
+            build_property.templates = [...(build_property.templates || []), robot_template_smp];
         }
         else if(buildOption.os.match(/nortos/))
         {

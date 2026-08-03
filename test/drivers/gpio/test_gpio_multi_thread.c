@@ -128,9 +128,9 @@ void test_main(void *args)
 
     UNITY_BEGIN();
 
-    RUN_TEST(TestGpio_multithreadWriteReadPins,  9637, NULL);
+    RUN_TEST(TestGpio_multithreadWriteReadPins,  9633, NULL);
     #if !defined (SOC_AM62DX)
-    RUN_TEST(TestGpio_multithreadTrigType,  9757, NULL);
+    RUN_TEST(TestGpio_multithreadTrigType,  9635, NULL);
     #endif
 
     UNITY_END();

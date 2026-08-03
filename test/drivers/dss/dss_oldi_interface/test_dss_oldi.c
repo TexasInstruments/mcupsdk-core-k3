@@ -333,7 +333,7 @@ void test_main(void *args)
 
     RUN_TEST(TestDss_invalidOldiCfgParamsOldi, 11280, NULL);
 
-    RUN_TEST(TestDss_evtMgrRegisterNotInitOldi, 11298, NULL);
+    RUN_TEST(TestDss_evtMgrRegisterNotInitOldi, 11281, NULL);
 
     RUN_TEST(TestDss_interlacedScanFormatMismatchOldi, 11370, NULL);
     

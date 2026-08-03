@@ -2,7 +2,7 @@
 # Auto generated makefile
 #
 
-export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../..)
+export MCU_PLUS_SDK_PATH?=$(abspath ../../../../../../..)
 include $(MCU_PLUS_SDK_PATH)/imports.mak
 include $(MCU_PLUS_SDK_PATH)/devconfig/devconfig.mak
 
@@ -24,17 +24,17 @@ ATF_INTEGRATED_BOOT?=yes
 PROFILE?=release
 ConfigName:=$(PROFILE)
 
-OUTNAME:=test_ospi.$(PROFILE).out
+OUTNAME:=test_ospi_system.$(PROFILE).out
 
 BOOTIMAGE_PATH=$(abspath .)
-BOOTIMAGE_NAME:=test_ospi.$(PROFILE).appimage
-BOOTIMAGE_NAME_XIP:=test_ospi.$(PROFILE).appimage_xip
-BOOTIMAGE_NAME_SIGNED:=test_ospi.$(PROFILE).appimage.signed
-BOOTIMAGE_RPRC_NAME:=test_ospi.$(PROFILE).rprc
-BOOTIMAGE_RPRC_NAME_XIP:=test_ospi.$(PROFILE).rprc_xip
-BOOTIMAGE_RPRC_NAME_TMP:=test_ospi.$(PROFILE).rprc_tmp
-BOOTIMAGE_NAME_HS:=test_ospi.$(PROFILE).appimage.hs
-BOOTIMAGE_NAME_HS_FS:=test_ospi.$(PROFILE).appimage.hs_fs
+BOOTIMAGE_NAME:=test_ospi_system.$(PROFILE).appimage
+BOOTIMAGE_NAME_XIP:=test_ospi_system.$(PROFILE).appimage_xip
+BOOTIMAGE_NAME_SIGNED:=test_ospi_system.$(PROFILE).appimage.signed
+BOOTIMAGE_RPRC_NAME:=test_ospi_system.$(PROFILE).rprc
+BOOTIMAGE_RPRC_NAME_XIP:=test_ospi_system.$(PROFILE).rprc_xip
+BOOTIMAGE_RPRC_NAME_TMP:=test_ospi_system.$(PROFILE).rprc_tmp
+BOOTIMAGE_NAME_HS:=test_ospi_system.$(PROFILE).appimage.hs
+BOOTIMAGE_NAME_HS_FS:=test_ospi_system.$(PROFILE).appimage.hs_fs
 TARGETS := $(BOOTIMAGE_NAME)
 ifeq ($(DEVICE_TYPE), HS)
    TARGETS += $(BOOTIMAGE_NAME_HS)
@@ -46,8 +46,9 @@ ATF_BIN_NAME:=bl31.a53ss0-0.$(PROFILE).bin
 ATF_BUILD_PATH:=$(MCU_PLUS_SDK_PATH)/source/atf/lib/soc/am62x
 
 FILES_common := \
-	test_ospi.c \
-	test_ospi_multithread.c \
+	system_test_utils.c \
+	test_case_mapping.c \
+	test_ospi_system.c \
 	main.c \
 	ti_drivers_config.c \
 	ti_drivers_open_close.c \
@@ -60,6 +61,7 @@ FILES_common := \
 FILES_PATH_common = \
 	.. \
 	../../.. \
+	../../../../../utils \
 	generated \
 
 INCLUDES_common := \
@@ -67,7 +69,9 @@ INCLUDES_common := \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/GCC/ARM_CA53 \
 	-I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62x/a53 \
-	-I${MCU_PLUS_SDK_PATH}/test/unity/ \
+	-I${MCU_PLUS_SDK_PATH}/test/unity \
+	-I../../.. \
+	-I../../../../../utils \
 	-Igenerated \
 
 DEFINES_common := \
@@ -88,8 +92,6 @@ CFLAGS_common := \
 	-Wno-unused-but-set-variable \
 	-fdata-sections \
 	-ffunction-sections \
-	-DOSPI_FREERTOS_ONLY_TEST \
-	-DCORE_A53_X \
 
 CFLAGS_debug := \
 	-D_DEBUG_=1 \
@@ -103,15 +105,15 @@ LNK_FILES_common = \
 LIBS_PATH_common = \
 	-L${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	-L${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	-L${MCU_PLUS_SDK_PATH}/source/board/lib \
 	-L${MCU_PLUS_SDK_PATH}/test/unity/lib \
+	-L${MCU_PLUS_SDK_PATH}/source/board/lib \
 	-L$(CGT_GCC_AARCH64_PATH)/lib \
 
 LIBS_common = \
 	-l:freertos.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 	-l:drivers.am62x.a53.gcc-aarch64.${ConfigName}.lib \
-	-l:board.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 	-l:unity.am62x.a53.gcc-aarch64.${ConfigName}.lib \
+	-l:board.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 
 LFLAGS_common = \
 	-Wl,-static \
@@ -127,14 +129,14 @@ LFLAGS_common = \
 LIBS_NAME = \
 	freertos.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 	drivers.am62x.a53.gcc-aarch64.${ConfigName}.lib \
-	board.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 	unity.am62x.a53.gcc-aarch64.${ConfigName}.lib \
+	board.am62x.a53.gcc-aarch64.${ConfigName}.lib \
 
 LIBS_PATH_NAME = \
 	${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib \
 	${MCU_PLUS_SDK_PATH}/source/drivers/lib \
-	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	${MCU_PLUS_SDK_PATH}/test/unity/lib \
+	${MCU_PLUS_SDK_PATH}/source/board/lib \
 	$(CGT_GCC_AARCH64_PATH)/lib \
 
 FILES := $(FILES_common) $(FILES_$(PROFILE))
@@ -197,7 +199,7 @@ clean:
 	$(RMDIR) generated/
 
 scrub:
-	@echo  Scrubing: am62x:a53ss0-0:freertos:gcc-aarch64 test_ospi ...
+	@echo  Scrubing: am62x:a53ss0-0:freertos:gcc-aarch64 test_ospi_system ...
 	$(RMDIR) obj
 ifeq ($(OS),Windows_NT)
 	$(RM) \*.out

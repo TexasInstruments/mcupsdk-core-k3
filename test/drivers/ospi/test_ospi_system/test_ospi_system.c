@@ -48,7 +48,7 @@
 /* ========================================================================== */
 /*                           Macro  Defines                                   */
 /* ========================================================================== */
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62X)
 
 /* ========================================================================== */
 /*                           Global Variables                                 */
@@ -80,15 +80,15 @@ uint8_t gOspiTestTxBuf[TEST_OSPI_DATA_SIZE] =
 /* ========================================================================== */
 /*                           Function declarations                            */
 /* ========================================================================== */
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62X)
 int32_t TestOspi_writeReadIndirectFunctional(void *args);
 int32_t TestOspi_getHandle(void *args);
-#endif /* defined(SOC_AM62AX) || defined(SOC_AM62DX) */
+#endif /* defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62X) */
 
 /* ========================================================================== */
 /*                           Function definitions                             */
 /* ========================================================================== */
-#if defined(SOC_AM62AX) || defined(SOC_AM62DX)
+#if defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62X)
 /**
  * \brief Functional test for OSPI_writeIndirect and OSPI_readIndirect APIs
  *
@@ -171,4 +171,4 @@ int32_t TestOspi_getHandle(void *args)
 
     return (handle != NULL) ? SystemP_SUCCESS : SystemP_FAILURE;
 }
-#endif /* defined(SOC_AM62AX) || defined(SOC_AM62DX) */
+#endif /* defined(SOC_AM62AX) || defined(SOC_AM62DX) || defined(SOC_AM62X) */

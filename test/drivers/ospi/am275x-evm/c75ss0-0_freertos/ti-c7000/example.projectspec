@@ -50,6 +50,7 @@
             --diag_suppress=70
             -DBUILD_C7X
             -DBUILD_C7X_1
+            -DOSPI_FREERTOS_ONLY_TEST
             -DSOC_AM275X
         "
         linkerBuildOptions="
@@ -110,6 +111,8 @@
         ></configuration>
         <pathVariable name="MCU_PLUS_SDK_PATH" path="${COM_TI_MCU_PLUS_SDK_AMXXX_INSTALL_DIR}" scope="project" />
         <file path="../../../test_ospi.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../test_ospi_multithread.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
         <file path="../main.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>

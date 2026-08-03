@@ -265,7 +265,7 @@ void test_main(void *args)
 {
     UNITY_BEGIN();
     #ifdef ENABLE_MT_TESTS
-    RUN_TEST(TestAasrc_sineWaveConversionDma, 10062,(void*)&gAasrcOpenParams[CONFIG_AASRC0]);
+    RUN_TEST(TestAasrc_sineWaveConversionDma, 10061,(void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     RUN_TEST(TestAasrc_muteChannel, 10073, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     RUN_TEST(TestAasrc_syncPin, 0, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     RUN_TEST(TestAasrc_clockSettleOverride, 10071, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
@@ -296,11 +296,11 @@ void test_main(void *args)
     RUN_TEST(TestAasrc_transactionSampleCountLimits, 12154, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     RUN_TEST(TestAasrc_chConfigCfgValidation, 12155, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     RUN_TEST(TestAasrc_clkZoneConfigInvalid, 12156, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
-    RUN_TEST(TestAasrc_chEnableStatusStereoGroup, 12158, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
-    RUN_TEST(TestAasrc_clockingNegativeAdvanced, 12159, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
+    RUN_TEST(TestAasrc_chEnableStatusStereoGroup, 12647, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
+    RUN_TEST(TestAasrc_clockingNegativeAdvanced, 12648, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     RUN_TEST(TestAasrc_extClkSrcInvalid, 12157, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     RUN_TEST(TestAasrc_apiNullArgs, 12151, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
-    RUN_TEST(TestAasrc_dmaPrepareIcntsFunctional, 12160, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
+    RUN_TEST(TestAasrc_dmaPrepareIcntsFunctional, 12649, (void*)&gAasrcOpenParams[CONFIG_AASRC0]);
     UNITY_END();
     return;
 }

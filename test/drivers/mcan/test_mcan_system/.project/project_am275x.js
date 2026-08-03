@@ -84,6 +84,19 @@ const templates_freertos_r5f =
     }
 ];
 
+const robot_template = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MCAN",
+        testCaseName: "test_mcan_system test application",
+        testCaseIds: "SITSW-11176",
+        withCfg: true,
+        cfgPath: "test/drivers/mcan/test_mcan_system/{board}/test_mcan_system_sbl_uart_${DEVICE_TYPE}.cfg",
+        expectTimeout: 100,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
     { device: device, cpu: "r5fss0-1", cgt: "ti-arm-clang", board: "am275x-evm", os: "freertos"},
@@ -124,6 +137,10 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
+    // r5fss0-0 is master core (USB2); robot only for master
+    if (buildOption.cpu.match(/^r5fss0-0$/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

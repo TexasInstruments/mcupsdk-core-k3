@@ -243,16 +243,68 @@ function getComponentProperty() {
     return property;
 }
 
-const robot_template = {
+/* nortos r5f: includes !defined(R5_FREERTOS_CORE) tests + 10247, excludes FREERTOS_CORE tests */
+const robot_template_nortos_r5f = {
     input: ".project/templates/am62dx/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "MCAN",
-        testCaseName: "MCAN: Rx FIFO 0 Message Lost Interrupt Test",
+        testCaseName: "MCAN test application",
         testCaseIds: "SITSW-10222 SITSW-10223 SITSW-10224 SITSW-10225 SITSW-10226 SITSW-10227 SITSW-10228 SITSW-10229 SITSW-10230 SITSW-10231" +
                      " SITSW-10232 SITSW-10233 SITSW-10234 SITSW-10235 SITSW-10236 SITSW-10237 SITSW-10238 SITSW-10239 SITSW-10240 SITSW-10241" +
                      " SITSW-10242 SITSW-10243 SITSW-10244 SITSW-10245 SITSW-10246 SITSW-10247 SITSW-10248 SITSW-10249 SITSW-10250 SITSW-10251" +
-                     " SITSW-10253 SITSW-10254 SITSW-10271 SITSW-10272 SITSW-10273 SITSW-10274 SITSW-10275 SITSW-10875 SITSW-11863",
+                     " SITSW-10253 SITSW-10254 SITSW-10271 SITSW-10272 SITSW-10273 SITSW-10274 SITSW-10275 SITSW-10477 SITSW-10478 SITSW-10479" +
+                     " SITSW-10480 SITSW-10481 SITSW-10483 SITSW-10484 SITSW-10485 SITSW-10486 SITSW-10487 SITSW-10488 SITSW-10489 SITSW-10490" +
+                     " SITSW-10868 SITSW-10869 SITSW-10870 SITSW-10871 SITSW-10872 SITSW-11863",
+    },
+};
+
+/* freertos r5f: excludes !defined(R5_FREERTOS_CORE) tests, includes FREERTOS_CORE tests except 10874 (MCU_FREERTOS_CORE defined) */
+const robot_template_freertos_r5f = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MCAN",
+        testCaseName: "MCAN test application",
+        testCaseIds: "SITSW-10222 SITSW-10223 SITSW-10224 SITSW-10225 SITSW-10226 SITSW-10227 SITSW-10228 SITSW-10229 SITSW-10230 SITSW-10231" +
+                     " SITSW-10232 SITSW-10236 SITSW-10237 SITSW-10238 SITSW-10239 SITSW-10240 SITSW-10241 SITSW-10242 SITSW-10243 SITSW-10244" +
+                     " SITSW-10245 SITSW-10246 SITSW-10247 SITSW-10248 SITSW-10249 SITSW-10250 SITSW-10251 SITSW-10253 SITSW-10254 SITSW-10271" +
+                     " SITSW-10272 SITSW-10273 SITSW-10274 SITSW-10275 SITSW-10477 SITSW-10478 SITSW-10479 SITSW-10480 SITSW-10481 SITSW-10483" +
+                     " SITSW-10484 SITSW-10485 SITSW-10486 SITSW-10487 SITSW-10488 SITSW-10489 SITSW-10490 SITSW-10491 SITSW-10492 SITSW-10493" +
+                     " SITSW-10494 SITSW-10495 SITSW-10868 SITSW-10869 SITSW-10870 SITSW-10871 SITSW-10872 SITSW-10875",
+    },
+};
+
+/* nortos a53: excludes 10247 (A53_CORE), includes !defined(R5_FREERTOS_CORE) tests, excludes FREERTOS_CORE tests */
+const robot_template_nortos_a53 = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MCAN",
+        testCaseName: "MCAN test application",
+        testCaseIds: "SITSW-10222 SITSW-10223 SITSW-10224 SITSW-10225 SITSW-10226 SITSW-10227 SITSW-10228 SITSW-10229 SITSW-10230 SITSW-10231" +
+                     " SITSW-10232 SITSW-10233 SITSW-10234 SITSW-10235 SITSW-10236 SITSW-10237 SITSW-10238 SITSW-10239 SITSW-10240 SITSW-10241" +
+                     " SITSW-10242 SITSW-10243 SITSW-10244 SITSW-10245 SITSW-10246 SITSW-10248 SITSW-10249 SITSW-10250 SITSW-10251 SITSW-10253" +
+                     " SITSW-10254 SITSW-10271 SITSW-10272 SITSW-10273 SITSW-10274 SITSW-10275 SITSW-10477 SITSW-10478 SITSW-10479 SITSW-10480" +
+                     " SITSW-10481 SITSW-10483 SITSW-10484 SITSW-10485 SITSW-10486 SITSW-10487 SITSW-10488 SITSW-10489 SITSW-10490 SITSW-10868" +
+                     " SITSW-10869 SITSW-10870 SITSW-10871 SITSW-10872 SITSW-11863",
+    },
+};
+
+/* freertos a53: excludes 10247 (A53_CORE), includes !defined(R5_FREERTOS_CORE) tests, includes FREERTOS_CORE tests except 10493 (A53_CORE), includes 10874 (no MCU_FREERTOS_CORE) */
+const robot_template_freertos_a53 = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MCAN",
+        testCaseName: "MCAN test application",
+        testCaseIds: "SITSW-10222 SITSW-10223 SITSW-10224 SITSW-10225 SITSW-10226 SITSW-10227 SITSW-10228 SITSW-10229 SITSW-10230 SITSW-10231" +
+                     " SITSW-10232 SITSW-10233 SITSW-10234 SITSW-10235 SITSW-10236 SITSW-10237 SITSW-10238 SITSW-10239 SITSW-10240 SITSW-10241" +
+                     " SITSW-10242 SITSW-10243 SITSW-10244 SITSW-10245 SITSW-10246 SITSW-10248 SITSW-10249 SITSW-10250 SITSW-10251 SITSW-10253" +
+                     " SITSW-10254 SITSW-10271 SITSW-10272 SITSW-10273 SITSW-10274 SITSW-10275 SITSW-10477 SITSW-10478 SITSW-10479 SITSW-10480" +
+                     " SITSW-10481 SITSW-10483 SITSW-10484 SITSW-10485 SITSW-10486 SITSW-10487 SITSW-10488 SITSW-10489 SITSW-10490 SITSW-10491" +
+                     " SITSW-10492 SITSW-10494 SITSW-10495 SITSW-10868 SITSW-10869 SITSW-10870 SITSW-10871 SITSW-10872 SITSW-10874 SITSW-10875" +
+                     " SITSW-11863",
     },
 };
 
@@ -271,7 +323,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes_freertos_r5f;
             build_property.libdirs = libdirs_freertos;
             build_property.libs = libs_freertos_r5f;
-            build_property.templates = templates_freertos_r5f;
+            build_property.templates = [...templates_freertos_r5f, robot_template_freertos_r5f];
             build_property.defines = defines_r5_freertos;
         }
         else
@@ -279,7 +331,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes;
             build_property.libdirs = libdirs_nortos;
             build_property.libs = libs_nortos_r5f;
-            build_property.templates = templates_nortos_r5f;
+            build_property.templates = [...templates_nortos_r5f, robot_template_nortos_r5f];
         }
     }
     else if(buildOption.cpu.match(/a53*/))
@@ -290,7 +342,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes_freertos_a53;
             build_property.libdirs = libdirs_freertos_a53;
             build_property.libs = libs_freertos_a53;
-            build_property.templates = templates_freertos_a53;
+            build_property.templates = [...templates_freertos_a53, robot_template_freertos_a53];
             build_property.defines = defines_common_a53_freertos;
         }
         else
@@ -298,14 +350,12 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes;
             build_property.libs = libs_nortos_a53;
             build_property.libdirs = libdirs_nortos_a53;
-            build_property.templates = templates_nortos_a53;
+            build_property.templates = [...templates_nortos_a53, robot_template_nortos_a53];
             build_property.defines = defines_common_a53_nortos;
         }
 
     }
 
-
-    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

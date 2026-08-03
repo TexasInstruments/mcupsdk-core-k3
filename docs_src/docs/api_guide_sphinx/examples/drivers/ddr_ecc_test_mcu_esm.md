@@ -28,8 +28,12 @@ If the interrupt is not received the test fails.
 - **When using makefiles to build**, note the required combination and build using
   make command (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md))
 - By default DDR inline ECC is configured in the sysconfig of SBL NULL bootloader.
-- Flash SBL NULL bootloader by following steps mentioned in [EVM Setup](../../device/am62ax/am62ax_evm_setup.md)
-- Switch to [EVM Setup](../../device/am62ax/am62ax_evm_setup.md) and power on the EVM.
+
+::::{only} SOC_AM62X
+- Flash SBL NULL bootloader by following steps mentioned in [EVM Setup](../../getting_started/am62x_evm_setup.md)
+- Switch to [EVM Setup](../../getting_started/am62x_evm_setup.md) and power on the EVM.
+::::
+
 - Launch a CCS debug session and run the executable, see [CCS Launch, Load and Run](../../getting_started/ccs_launch.md)
 
 :::{note}

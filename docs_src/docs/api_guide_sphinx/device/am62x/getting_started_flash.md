@@ -3,7 +3,7 @@
 :::{admonition} Attention
 Flashing an application will overwrite the SOC init application that was flashed earlier.
 So if you want to load and run from CCS again, you will need to do the SOC init steps again.
-See [SOC Initialization](am62x_evm_setup.md) for more details.
+See [SOC Initialization](../../getting_started/am62x_evm_setup.md) for more details.
 :::
 
 
@@ -187,7 +187,7 @@ USB DFU BOOT MODE
 ## Running the flashed application
 
 - **POWER-OFF** the EVM
-- Switch the EVM boot mode to appropriate target Boot Mode. As shown in [EVM Setup](am62x_evm_setup.md)
+- Switch the EVM boot mode to appropriate target Boot Mode. As shown in [EVM Setup](../../getting_started/am62x_evm_setup.md)
 - Re-connect the UART terminal in CCS window.
 - **POWER-ON** the EVM
 - You should see the application output in MCU UART terminal as below:
@@ -255,11 +255,11 @@ USB DFU BOOT MODE
 ## Getting ready to flash the application
 
 - A quick recap of steps done so far that are needed for the flashing to work
-  - Make sure the UART port used for terminal is identified as mentioned in [Setup UART Terminal](am62x_evm_setup.md)
-  - Make sure python3 is installed as mentioned in [Python3](download_and_install.md)
-  - Make sure you have the EVM power cable and UART cable connected as shown in [Cable Connections](am62x_evm_setup.md)
+  - Make sure the UART port used for terminal is identified as mentioned in [Setup UART Terminal](../../getting_started/am62x_evm_setup.md)
+  - Make sure python3 is installed as mentioned in [Python3](../../getting_started/download_and_install.md)
+  - Make sure you have the EVM power cable and UART cable connected as shown in [Cable Connections](../../getting_started/am62x_evm_setup.md)
 
-- Build the hello world application as mentioned in [Build a Hello World example](getting_started_build.md)
+- Build the hello world application as mentioned in [Build a Hello World example](../../getting_started/getting_started_build.md)
 
 - As part of the build process in the final step a file with extension `.appimage` is generated. This is the file
   we need to flash.
@@ -655,7 +655,7 @@ For am62x-sk-lp HS-FS device, use default_sbl_ospi_nand_hs_fs.cfg as the cfg fil
 **OSPI NAND BOOT MODE (AM62X-SK-LP)**
 ```
 
-- Re-connect the UART terminal in CCS window as shown in [Setup UART Terminal](am62x_evm_setup.md)
+- Re-connect the UART terminal in CCS window as shown in [Setup UART Terminal](../../getting_started/am62x_evm_setup.md)
 
 - **POWER-ON** the EVM
 

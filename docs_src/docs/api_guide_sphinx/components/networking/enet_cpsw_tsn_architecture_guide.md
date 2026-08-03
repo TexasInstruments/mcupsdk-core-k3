@@ -79,7 +79,7 @@ Once a new `offsetGM` is computed, the servo decides *how* to apply it, not just
 
 ##### Tunable Constants
 
-All of the thresholds above are configured via the same non-YANG `gptpgcfg_set_item()` mechanism described in [gPTP Yang Config Parameters](enet_cpsw_tsn_gptp_apiguide.md#gptp-yang-config-parameters) (defaults from `gptp_nonyangconfig.xml`):
+All of the thresholds above are configured via the same non-YANG `gptpgcfg_set_item()` mechanism described in [gPTP Yang Config Parameters](enet_cpsw_tsn_gptp_apiguide.md) (defaults from `gptp_nonyangconfig.xml`):
 
 | Parameter                                    | Default   | Meaning |
 |-----------------------------------------------|-----------|--------|

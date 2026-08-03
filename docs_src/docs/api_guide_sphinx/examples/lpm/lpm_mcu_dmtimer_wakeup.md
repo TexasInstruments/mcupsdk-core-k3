@@ -113,7 +113,17 @@ created, in Windows,
         cd ~/ti/mcu_plus_sdk
         python uart_uniflash.py -p /dev/ttyUSB0 --cfg=~/ti/mcu_plus_sdk/tools/boot/sbl_prebuilt/{{ VAR_BOARD_NAME_LOWER }}/default_sbl_ospi_linux_hs_fs.cfg
 
+::::{only} SOC_AM62X
+- Switch to [OSPI NOR BOOT MODE](../../getting_started/am62x_evm_setup.md) and power on the EVM.
+::::
+
+::::{only} SOC_AM62AX
+- Switch to [OSPI NOR BOOT MODE](../../getting_started/am62ax_evm_setup.md) and power on the EVM.
+::::
+
+::::{only} SOC_AM62PX
 - Switch to [OSPI NOR BOOT MODE](../../getting_started/am62px_evm_setup.md) and power on the EVM.
+::::
 
 :::{admonition} Attention
 As the wake-up R5 is the device manager, it needs to be started by the SBL. So it can not be loaded through CCS. It should be flashed and booted through SBL.

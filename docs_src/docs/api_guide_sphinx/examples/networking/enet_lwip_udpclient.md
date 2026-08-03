@@ -417,6 +417,6 @@ Closed Socket connection
 ## See Also
 ::::{only} SOC_AM62DX or SOC_AM62X or SOC_AM62LX
 ::::{only} not SOC_AM62DX
-[Networking Components](../../components/networking/networking.md)
+[Networking Components](../../components/networking/networking.rst)
 ::::
 ::::

@@ -28,7 +28,7 @@ AM62x  | M4F, R5F, A53   | SK-AM62 (referred as am62x-sk in code), SK-AM62-LP (r
 ## Features Added in This Release
 
 :::{note}
-Update of OSPI tuning algorithm on this SDK causes increase in tuning time. Refer [OSPI NOR Flash Performance](../../datasheet/datasheet_am62x_evm.md#ospi-nor-flash-performance)
+Update of OSPI tuning algorithm on this SDK causes increase in tuning time. Refer [AM62X EVM Datasheet](../../datasheet/datasheet_am62x_evm.md) for OSPI NOR Flash Performance details
 :::
 
 :::{attention}

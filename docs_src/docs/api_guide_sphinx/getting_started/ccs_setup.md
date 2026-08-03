@@ -473,7 +473,7 @@ Please follow below steps to add AM275x support
 
 - Click "Save" to save the newly created target configuration.
 
-- Now you can move on to [EVM Setup](am62px_evm_setup.md) to prepare your EVM for running programs.
+- Now you can move on to [EVM Setup](am62x_evm_setup.md) to prepare your EVM for running programs.
 ::::
 
 

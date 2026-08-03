@@ -489,5 +489,5 @@ Echo pkt completed
 
 ## See Also
 ::::{only} SOC_AM62DX or SOC_AM62X or SOC_AM62LX
-[NETWORKING](#networking)
+[Networking Components](../../components/networking/networking.rst)
 ::::

@@ -1,3 +1,7 @@
+---
+orphan: true
+---
+
 # Ethernet TSN CPSW gPTP TimeTransmitter (gPTP Master) Example
 
 ## Introduction

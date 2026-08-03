@@ -1,3 +1,7 @@
+---
+orphan: true
+---
+
 # Ethernet TSN gPTP on CPSW along with LwIP stack
 
 ## Introduction

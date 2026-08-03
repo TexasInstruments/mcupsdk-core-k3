@@ -1,3 +1,7 @@
+---
+orphan: true
+---
+
 # LPM Suspend to IO Retention mode and Wakeup on UART pin activity
 
 ## Introduction

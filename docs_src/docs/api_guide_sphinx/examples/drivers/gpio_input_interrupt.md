@@ -50,7 +50,7 @@ The application waits for 5 key presses, prints the number of times the keys are
    :::
 
 
-   A new linux image to be generated with this change and SoC initialization to done following [SOC Initialization Using SPL](../../getting_started/am62px_evm_setup.md) . Without this change in the linux image, this example will not work.
+   A new linux image to be generated with this change and SoC initialization to done following [SOC Initialization Using SPL](../../getting_started/am62x_evm_setup.md) . Without this change in the linux image, this example will not work.
 
 ::::
 

@@ -1,3 +1,7 @@
+---
+orphan: true
+---
+
 # Ethernet TSN CPSW gPTP TimeReceiver (gPTP Slave) Example
 
 ## Introduction

@@ -10,7 +10,7 @@ This SDK also contains examples to interface these ARM M4F applications with Pro
 
 ## Getting Started
 
-To get started, see [Getting Started](../../getting_started/getting_started.md)
+To get started, see [Getting Started](../../getting_started/getting_started_am62x.md)
 
 ## Block Diagram
 

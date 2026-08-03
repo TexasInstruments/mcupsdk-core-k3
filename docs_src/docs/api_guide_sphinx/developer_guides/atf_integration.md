@@ -49,7 +49,7 @@ To compile TF-A source independent of the SDK, set the cross compiler paths to t
 host# export CROSS_COMPILE_64="${CGT_GCC_AARCH64_PATH}/bin/aarch64-none-elf-
 ```
 
-Refer to [GCC AARCH64 Compiler](../getting_started/download_and_install.md#gcc-aarch64-compiler) section for more details on usage.
+Refer to the GCC AARCH64 Compiler section in [Download and Install](../getting_started/download_and_install.md) for more details on usage.
 
 ### Building the TF-A binary
 

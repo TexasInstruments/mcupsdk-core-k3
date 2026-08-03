@@ -54,9 +54,9 @@ The default appimages in the SDK are built with authentication type 0  and load 
 ### Build the example
 
 - **When using CCS projects to build**, import the CCS project for the required combination
-  and build it using the CCS project menu (see [CCS_PROJECTS_PAGE](#ccs_projects_page)).
+  and build it using the CCS project menu (see [Using SDK with CCS Projects](../../developer_guides/ccs_projects.md)).
 - **When using makefiles to build**, note the required combination and build using
-  make command (see [MAKEFILE_BUILD_PAGE](#makefile_build_page))
+  make command (see [Using SDK with Makefiles](../../developer_guides/makefile_build.md))
 
 ### Create Linux Appimage
 ::::{only} SOC_AM62X
@@ -95,13 +95,13 @@ The UART uniflash does not have the GPMC flash enabled by default. Enable GPMC b
 
         ${SDK_INSTALL_PATH}/tools/boot/sbl_prebuilt/{{ VAR_SK_LP_BOARD_NAME_LOWER }}/default_sbl_gpmc_linux_hs_fs.cfg
 
-- Make sure IPC rpmsg linux echo application is built before running the flash script. (see [EXAMPLES_DRIVERS_IPC_RPMESSAGE_LINUX_ECHO](#examples_drivers_ipc_rpmessage_linux_echo))
+- Make sure IPC rpmsg linux echo application is built before running the flash script (see [IPC Rpmsg Linux Echo](../drivers/ipc_rpmessage_linux_echo.md))
 
 ```{note}
 For IPC rpmsg linux echo, the resource table entity must be placed at the beginning of remoteproc memory section as mentoined in Linux dts file.
 ```
 
-- To flash to the EVM, refer to [GETTING_STARTED_FLASH](#getting_started_flash) . Only when giving the flash config file, point to the `default_sbl_gpmc_linux_hs_fs.cfg` shown above.
+- To flash to the EVM, refer to [Getting Started Flash](../../device/am62x/getting_started_flash.md) . Only when giving the flash config file, point to the `default_sbl_gpmc_linux_hs_fs.cfg` shown above.
 
 - Example, assuming SDK is installed at `C:/ti/mcu_plus_sdk` and this example and IPC application is built using makefiles, and Linux Appimage is already created, in Windows,
 

@@ -189,7 +189,7 @@ This section has more details on {{ VAR_BOARD_NAME }}. This is mainly for refere
 :::
 
 
-#### SOC Initialization Using SPL
+### SOC Initialization Using SPL
 - Prepare a SD card with Linux image by following the [Processor SDK Linux - Create SD card](https://software-dl.ti.com/processor-sdk-linux/esd/AM62X/latest/exports/docs/linux/Overview/Processor_SDK_Linux_create_SD_card.html) page.
 
 - **POWER-OFF** the EVM

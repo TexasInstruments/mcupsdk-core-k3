@@ -18,7 +18,7 @@ This example shows about how to implement simple TCP Client on LwIP networking s
 On {{ VAR_SOC_NAME }}, we can do ethernet based communication using CPSW as HW mechanism
   - CPSW is a standard ethernet switch + port HW
   - It uses ethernet driver underneath with LwIP TCP/IP networking stack
-  - CPSW can be configured in two modes: Switch or MAC. For more details, {ref}`Basic Layer 2 Switching <enet-lwip-cpsw-operating-modes>`
+  - CPSW can be configured in two modes: Switch or MAC. For more details, see [Basic Layer 2 Switching](../../components/networking/networking_features.md#enet-lwip-cpsw-operating-modes)
 
 The example does the following:
 - Initializes the ethernet driver for the underlying HW
@@ -198,7 +198,8 @@ Ncat is a general-purpose command-line tool for reading, writing, redirecting, a
 ## Steps to Run the Example
 
 ## To Configure Static IP
-Please refer to {ref}`To Configure Static IP <to-configure-static-ip>`.
+
+For IP configuration details, refer to [To Configure Static IP](../../components/networking/enet_lwip_static_ip.md#to-configure-static-ip).
 
 ## Build the example
 

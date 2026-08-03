@@ -1,3 +1,7 @@
+---
+orphan: true
+---
+
 # Ethernet TSN CPSW gPTP Bridge Example
 
 ::::{only} SOC_AM273X

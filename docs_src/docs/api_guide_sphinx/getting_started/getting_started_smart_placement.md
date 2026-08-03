@@ -26,7 +26,7 @@ Use this when
 1. it is not suitable to run the application on the target and collect runtime profiling data.
 2. Developer of the application have knowledge about the criticality of various functions/Tasks.
 
-More on this can be read at [MANUAL_SMART_PLACEMENT](../developer_guides/add_smart_placement_sections.md)
+More on this can be read at [Manual Smart Placement](../developer_guides/add_smart_placement_sections.md)
 
 ### SW Instrumentation implementation
 
@@ -34,4 +34,4 @@ This method gives an automated way of finding critical functions. A more frequen
 1. Application runtime profiling and profiling data extraction is possible.
 2. Higher profiling coverage is required.
 
-More on this can be read at [SW_INSTRUMENT_SMART_PLACEMENT](../developer_guides/add_smart_placement_sections.md)
+More on this can be read at [SW Instrumentation Smart Placement](../developer_guides/add_smart_placement_sections.md)

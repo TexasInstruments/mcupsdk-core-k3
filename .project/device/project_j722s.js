@@ -140,6 +140,8 @@ const example_file_list = [
     "test/kernel/dpl/.project/project.js",
     "test/kernel/dpl_exception_test/.project/project.js",
     "test/kernel/dpl_core_r5_test/.project/project.js",
+    "test/kernel/dpl_dynamic/.project/project.js",
+    "test/kernel/dpl_dynamic/.project/project_safertos.js",
     "test/kernel/freertos/.project/project.js",
     "test/sdl/dcc/dcc_func_test/.project/project.js",
     "test/sdl/dcc/dcc_unit_test/.project/project.js",

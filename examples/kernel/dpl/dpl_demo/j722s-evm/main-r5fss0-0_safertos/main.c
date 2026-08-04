@@ -54,10 +54,6 @@
 portInt8Type gMainTaskStack[MAIN_TASK_SIZE] __attribute__((aligned(MAIN_TASK_SIZE)));
 xTCB gTaskTCB;
 
-#if defined(OS_SAFERTOS)
-void System_lateInit(void);
-#endif
-
 void dpl_demo_main(void *args);
 
 void safertos_main(void *args)

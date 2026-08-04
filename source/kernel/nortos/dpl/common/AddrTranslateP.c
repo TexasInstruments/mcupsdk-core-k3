@@ -43,29 +43,33 @@ AddrTranslateP_Params gAddrTranslateConfig = {
     .regionConfig = NULL,
 };
 
-void AddrTranslateP_setRegion(uint32_t ratBaseAddr, uint16_t regionNum,
+int32_t AddrTranslateP_setRegion(uint32_t ratBaseAddr, uint16_t regionNum,
         uint64_t systemAddr, uint32_t localAddr,
         uint32_t size, uint32_t enable)
 {
     uint32_t systemAddrL, systemAddrH;
-    uint32_t value = size;
     uint32_t localAddress = localAddr;
-	
-    if(value > (uint32_t)AddrTranslateP_RegionSize_4G)
-    {
-        value = AddrTranslateP_RegionSize_4G;
-    }
-    systemAddrL = (uint32_t)(systemAddr & ~( (uint32_t)( ((uint64_t)1U << value) - 1U) ));
-    systemAddrH = (uint32_t)((systemAddr >> 32U ) & 0xFFFFU);
-    localAddress = localAddress   & ~( (uint32_t)( ((uint64_t)1U << value) - 1U) );
+    int32_t status = SystemP_SUCCESS;
 
-    /* disable RAT region first */
-    *RAT_CTRL(ratBaseAddr, regionNum) = 0U;
-    *RAT_BASE(ratBaseAddr, regionNum) = localAddress;
-    *RAT_TRANS_L(ratBaseAddr, regionNum) = systemAddrL;
-    *RAT_TRANS_H(ratBaseAddr, regionNum) = systemAddrH;
-    /* set size and enable the region */
-    *RAT_CTRL(ratBaseAddr, regionNum) = ((enable & 0x1U) << 31U) | (value & 0x3FU);
+    if(ratBaseAddr==0U || size>((uint32_t)AddrTranslateP_RegionSize_4G))
+    {
+        status = SystemP_FAILURE;
+    }
+    if (status==SystemP_SUCCESS)
+    {
+        systemAddrL = (uint32_t)(systemAddr & ~( (uint32_t)( ((uint64_t)1U << size) - 1U) ));
+        systemAddrH = (uint32_t)((systemAddr >> 32U ) & 0xFFFFU);
+        localAddress = localAddress   & ~( (uint32_t)( ((uint64_t)1U << size) - 1U) );
+
+        /* disable RAT region first */
+        *RAT_CTRL(ratBaseAddr, regionNum) = 0U;
+        *RAT_BASE(ratBaseAddr, regionNum) = localAddress;
+        *RAT_TRANS_L(ratBaseAddr, regionNum) = systemAddrL;
+        *RAT_TRANS_H(ratBaseAddr, regionNum) = systemAddrH;
+        /* set size and enable the region */
+        *RAT_CTRL(ratBaseAddr, regionNum) = ((enable & 0x1U) << 31U) | (size & 0x3FU);
+    }
+    return status;
 }
 
 void AddrTranslateP_Params_init(AddrTranslateP_Params *params)
@@ -80,8 +84,6 @@ int32_t AddrTranslateP_readbackVerify(void)
 {
     uint32_t i;
     int32_t  status = SystemP_SUCCESS;
-
-    DebugP_assertNoLog(gAddrTranslateConfig.numRegions < AddrTranslateP_MAX_REGIONS);
 
     for(i = 0U; i < gAddrTranslateConfig.numRegions; i++)
     {
@@ -116,39 +118,57 @@ int32_t AddrTranslateP_readbackVerify(void)
 }
 #endif /* __ARM_ARCH_7R__ */
 
-void AddrTranslateP_init(AddrTranslateP_Params *params)
+int32_t AddrTranslateP_init(AddrTranslateP_Params *params)
 {
     uint32_t i;
+    int32_t  status = SystemP_SUCCESS;
 
-    if(params!=NULL)
+    if(params==NULL)
+    {
+        status = SystemP_FAILURE;
+    }
+    if(status==SystemP_SUCCESS)
     {
         gAddrTranslateConfig = *params;
-    }
 
-    DebugP_assertNoLog(gAddrTranslateConfig.numRegions<AddrTranslateP_MAX_REGIONS);
-
-    for(i=0; i<gAddrTranslateConfig.numRegions; i++)
-    {
-        DebugP_assertNoLog(gAddrTranslateConfig.ratBaseAddr!=0U);
-        DebugP_assertNoLog(gAddrTranslateConfig.regionConfig!=NULL);
-
-        /* enable regions setup by user */
-        AddrTranslateP_setRegion(
-            gAddrTranslateConfig.ratBaseAddr,
-            (uint16_t)i,
-            gAddrTranslateConfig.regionConfig[i].systemAddr,
-            gAddrTranslateConfig.regionConfig[i].localAddr,
-            gAddrTranslateConfig.regionConfig[i].size,
-            1
-            );
+        if(gAddrTranslateConfig.numRegions>AddrTranslateP_MAX_REGIONS)
+        {
+            status = SystemP_FAILURE;
+        }
+        if(status==SystemP_SUCCESS)
+        {
+            for(i=0; i<gAddrTranslateConfig.numRegions; i++)
+            {
+                if ((gAddrTranslateConfig.ratBaseAddr==0U)      ||
+                    (gAddrTranslateConfig.regionConfig==NULL)   ||
+                    (gAddrTranslateConfig.regionConfig[i].size>((uint32_t)AddrTranslateP_RegionSize_4G)))
+                {
+                    status = SystemP_FAILURE;
+                    break;
+                }
+                /* enable regions setup by user */
+                AddrTranslateP_setRegion(
+                    gAddrTranslateConfig.ratBaseAddr,
+                    (uint16_t)i,
+                    gAddrTranslateConfig.regionConfig[i].systemAddr,
+                    gAddrTranslateConfig.regionConfig[i].localAddr,
+                    gAddrTranslateConfig.regionConfig[i].size,
+                    1
+                    );
+            }
+        }
     }
 
 #if defined(__ARM_ARCH_7R__)
     /* Errata i2449: RAT MMRs are not parity protected. Verify the MMR values
      * written above match the intended configuration as a post-write readback check.
      */
-    DebugP_assertNoLog(AddrTranslateP_readbackVerify() == SystemP_SUCCESS);
+    if (status == SystemP_SUCCESS)
+    {
+        status = AddrTranslateP_readbackVerify();
+    }
 #endif /* __ARM_ARCH_7R__ */
+    return status;
 }
 
 void *AddrTranslateP_getLocalAddr(uint64_t systemAddr)

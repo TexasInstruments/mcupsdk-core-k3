@@ -61,7 +61,7 @@ StaticTask_t gMainTaskObj;
 TaskHandle_t gMainTask;
 
 void ipc_notify_echo_main(void *args);
-void __attribute__((do_not_share)) AddrTranslateP_init (AddrTranslateP_Params *params);
+int32_t __attribute__((do_not_share)) AddrTranslateP_init (AddrTranslateP_Params *params);
 void __attribute__((do_not_share)) AddrTranslateP_Params_init (AddrTranslateP_Params *params) ;
 
 

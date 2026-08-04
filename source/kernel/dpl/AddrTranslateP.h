@@ -128,8 +128,11 @@ void AddrTranslateP_Params_init(AddrTranslateP_Params *params);
  * \brief Initialize Address translate sub-system, called by SysConfig, not to be called by end users
  *
  * \param   params  [in] Initialization parameters
+ *
+ * \return \ref SystemP_SUCCESS if all regions match the expected configuration,
+ *         \ref SystemP_FAILURE if any mismatch is detected
  */
-void AddrTranslateP_init(AddrTranslateP_Params *params);
+int32_t AddrTranslateP_init(AddrTranslateP_Params *params);
 
 /**
  * \brief Configure a single RAT region at runtime
@@ -140,8 +143,10 @@ void AddrTranslateP_init(AddrTranslateP_Params *params);
  * \param localAddr     [in] CPU local address, aligned to region size
  * \param size          [in] Region size, see \ref AddrTranslateP_RegionSize
  * \param enable        [in] 1 to enable the region, 0 to disable
+ * \return \ref SystemP_SUCCESS if all regions match the expected configuration,
+ *         \ref SystemP_FAILURE if any mismatch is detected
  */
-void AddrTranslateP_setRegion(uint32_t ratBaseAddr, uint16_t regionNum,
+int32_t AddrTranslateP_setRegion(uint32_t ratBaseAddr, uint16_t regionNum,
         uint64_t systemAddr, uint32_t localAddr,
         uint32_t size, uint32_t enable);
 

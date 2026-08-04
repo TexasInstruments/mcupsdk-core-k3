@@ -45,9 +45,10 @@ void AddrTranslateP_Params_init(AddrTranslateP_Params *params)
     params->regionConfig = NULL;
 }
 
-void AddrTranslateP_init(AddrTranslateP_Params *params)
+int32_t AddrTranslateP_init(AddrTranslateP_Params *params)
 {
     /* nothing to do */
+    return SystemP_SUCCESS;
 }
 
 void *AddrTranslateP_getLocalAddr(uint64_t systemAddr)

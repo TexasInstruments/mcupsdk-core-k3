@@ -87,7 +87,7 @@ TaskHandle_t gMainTask;
 
 void `entryFunction`(void *args);
 %if(isOptishareEnabled == "true") {
-void __attribute__((do_not_share)) AddrTranslateP_init (AddrTranslateP_Params *params);
+int32_t __attribute__((do_not_share)) AddrTranslateP_init (AddrTranslateP_Params *params);
 void __attribute__((do_not_share)) AddrTranslateP_Params_init (AddrTranslateP_Params *params) ;
 
 %}

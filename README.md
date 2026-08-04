@@ -425,6 +425,8 @@ For more details on SDK usage, please refer to the SDK userguide. User guides co
 - Flashing the EVM
 - SBL, ROV and much more.
 
+All devices' documentation is also published on GitHub Pages: [MCU+ SDK/ FreeRTOS SDK Documentation](https://texasinstruments.github.io/mcupsdk-core-k3/).
+
 Note that userguides are specific to a particular device. The links for all the supported devices are given below.
 
 - [AM62X User Guide](https://software-dl.ti.com/mcu-plus-sdk/esd/AM62X/latest/exports/docs/api_guide_am62x/index.html)

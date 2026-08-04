@@ -1,0 +1,122 @@
+name: Publish Sphinx Docs to GitHub Pages
+
+on:
+  push:
+    branches: [ "k3_main" ]
+  workflow_dispatch:
+
+# Avoid two Pages deployments racing each other
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        device: [am62ax, am62px, am62dx, am275x, am62x, am62lx]
+
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      # source/networking/enet/core (and any other per-device sub-repo the
+      # doc build touches) is not a git submodule of mcu_plus_sdk -- it's a
+      # separate repo that the west manifest lays into that nested path, and
+      # it's gitignored inside mcu_plus_sdk's own history. A plain
+      # actions/checkout of mcu_plus_sdk alone leaves it empty, which breaks
+      # docs_src/docs/api_guide_sphinx/Makefile's copy-images target. Same
+      # west init/update mechanism .github/workflows/build-test.sh already
+      # uses to assemble the full source tree for the SoC build jobs.
+      - name: west init + update
+        run: |
+          mkdir workarea
+          cd workarea
+          python3 -m pip install --user --upgrade pip setuptools wheel west
+          west init -m https://github.com/TexasInstruments/mcupsdk-manifests.git --mr k3_main --mf ${{ matrix.device }}/dev.yml
+          west update --fetch=smart
+
+      # The west manifest always pins mcu_plus_sdk's origin to the main repo
+      # at k3_next, regardless of which branch/repo actually triggered this
+      # run -- so plain `git fetch origin <branch>` fails whenever this runs
+      # on a fork (the branch exists there, not on the main repo `origin`
+      # points to). Fetch from github.repository instead, which always
+      # resolves to whichever repo actually triggered the run (fork or main),
+      # then check out that branch so the published docs reflect it, not
+      # k3_next.
+      - name: Check out the triggering branch
+        working-directory: workarea/mcu_plus_sdk
+        run: |
+          git remote add trigger https://github.com/${{ github.repository }}.git
+          git fetch trigger ${{ github.ref_name }}
+          git checkout ${{ github.ref_name }}
+
+      - name: Install doxygen
+        run: sudo apt-get update && sudo apt-get install -y doxygen graphviz
+
+      - name: Build docs for ${{ matrix.device }}
+        run: make -C workarea/mcu_plus_sdk/docs_src/docs/api_guide_sphinx docs DEVICE=${{ matrix.device }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: docs-${{ matrix.device }}
+          path: workarea/mcu_plus_sdk/docs/api_guide_${{ matrix.device }}
+
+  deploy:
+    needs: build
+    # needs: build defaults to requiring every matrix leg to succeed, which
+    # would skip deploy entirely if even one device fails -- run as long as
+    # the job wasn't cancelled, so the devices that did build still publish.
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-22.04
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github/workflows/generate_docs_index.py
+            docs_src/docs/api_guide_sphinx/_static/ti_logo.png
+          sparse-checkout-cone-mode: false
+
+      - name: Download all device docs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: docs-*
+          path: _site
+
+      # download-artifact keeps each artifact's own name as a subdirectory
+      # (_site/docs-am62ax/, _site/docs-am62px/, ...) -- rename to the bare
+      # device name (_site/am62ax/, ...) so links from the landing page are
+      # short and match the device names used elsewhere in the SDK.
+      - name: Flatten per-device directories
+        run: |
+          for d in _site/docs-*; do
+            mv "$d" "_site/$(basename "$d" | sed 's/^docs-//')"
+          done
+
+      - name: Generate landing page
+        run: python3 .github/workflows/generate_docs_index.py _site docs_src/docs/api_guide_sphinx/_static/ti_logo.png
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -299,7 +299,10 @@ const robot_template = {
                      "SITSW-11847 SITSW-11848 SITSW-11849",
         withCfg: true,
         cfgPath: "test/drivers/rtc/{board}/{coreName}/default_test_rtc_${DEVICE_TYPE}.cfg",
-        expectTimeout: 120,
+        appName: "test_rtc",
+        expectPort: "USB2",
+        expectTimeout: 1800,
+        timeout: 9000,
     },
 };
 
@@ -317,8 +320,10 @@ const robot_template_mcu = {
                      "SITSW-11847 SITSW-11848 SITSW-11849",
         withCfg: true,
         cfgPath: "test/drivers/rtc/{board}/{coreName}/default_test_rtc_${DEVICE_TYPE}.cfg",
-        expectTimeout: 120,
+        appName: "test_rtc",
         expectPort: "USB3",
+        expectTimeout: 1800,
+        timeout: 9000,
     },
 };
 

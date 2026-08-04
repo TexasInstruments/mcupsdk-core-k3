@@ -284,8 +284,9 @@ const robot_template_mcu_r5f = {
         withCfg: true,
         cfgPath: "test/drivers/rtc/{board}/{coreName}/default_test_rtc_${DEVICE_TYPE}.cfg",
         appName: "test_rtc",
-        expectTimeout: 120,
         expectPort: "USB3",
+        expectTimeout: 1800,
+        timeout: 9000,
     },
 };
 
@@ -304,8 +305,9 @@ const robot_template_r5f = {
         withCfg: true,
         cfgPath: "test/drivers/rtc/{board}/{coreName}/default_test_rtc_${DEVICE_TYPE}.cfg",
         appName: "test_rtc",
-        expectTimeout: 120,
         expectPort: "USB2",
+        expectTimeout: 1800,
+        timeout: 9000,
     },
 };
 

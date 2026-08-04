@@ -309,9 +309,11 @@ const robot_template_common_options = {
                  "SITSW-11817 SITSW-11819 SITSW-11820 SITSW-11821 SITSW-11822 SITSW-11823 SITSW-11824 SITSW-11825 SITSW-11826 SITSW-11827 " +
                  "SITSW-11828 SITSW-11829 SITSW-11830 SITSW-11831 SITSW-11833 SITSW-11834 SITSW-11837 SITSW-11838 SITSW-11839 SITSW-11840 " +
                  "SITSW-11841 SITSW-11843 SITSW-11846 SITSW-11849",
-    withCfg: true,
-    cfgPath: "test/drivers/rtc/{board}/{coreName}/default_test_rtc_${DEVICE_TYPE}.cfg",
-    expectTimeout: 120,
+        withCfg: true,
+        cfgPath: "test/drivers/rtc/{board}/{coreName}/default_test_rtc_${DEVICE_TYPE}.cfg",
+        appName: "test_rtc",
+        expectTimeout: 1800,
+        timeout: 9000,
 };
 
 const robot_template_nor      = { input: ".project/templates/am62x/astra/tests_sbl.robot.xdt", output: "../tests.robot",

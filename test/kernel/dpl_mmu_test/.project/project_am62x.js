@@ -236,6 +236,19 @@ const robot_template_freertos = {
     },
 };
 
+const robot_template_freertos_smp = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DPL",
+        testCaseName: "DPL MMU FreeRTOS SMP application",
+        appName: "test_mmu(freertos-smp)",
+        testCaseIds: "SITSW-11656 SITSW-11657 SITSW-11658 SITSW-11659",
+        timeout: 400,
+        expectTimeout: 60,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -254,6 +267,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos_a53;
             build_property.libs = libs_a53_smp;
             build_property.defines = defines_a53_smp;
+            build_property.templates = [...(build_property.templates || []), robot_template_freertos_smp];
         }
         else if(buildOption.os.match(/freertos*/) )
         {

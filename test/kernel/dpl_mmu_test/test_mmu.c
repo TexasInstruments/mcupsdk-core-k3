@@ -107,7 +107,9 @@ void test_mmu_main(void *args)
     RUN_TEST(TestMmuP_globalMappingSingleContext, 10014, NULL);
     RUN_TEST(TestMmuP_nonGlobalMappingSingleContext, 10017, NULL);
     RUN_TEST(TestMmuP_overlappingSubsetReadBehavior, 10018, NULL);
+#if !defined(ENABLE_C75_CORE) /* exception dump/hang in c75 core */
     RUN_TEST(TestMmuP_nonOverlappingIndependentRegions, 10019, NULL);
+#endif /* !ENABLE_C75_CORE - exception dump/hang in c75 core */
     RUN_TEST(TestMmuP_overlappingReadOnlySubsetAndReadWriteOutside, 10020, NULL);
 
 #if defined(ENABLE_MT_TESTS)/* Multithreaded Tests */

@@ -181,7 +181,7 @@ const buildOptionCombos = [
 ];
 
 const robot_template_r5f_nortos = {
-    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "DDR",
@@ -203,7 +203,7 @@ const robot_template_r5f_nortos = {
 };
 
 const robot_template_m4f_nortos = {
-    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
     output: "../tests_m4f.robot",
     options: {
         componentName: "DDR",
@@ -222,7 +222,7 @@ const robot_template_m4f_nortos = {
 };
 
 const robot_template_m4f_freertos = {
-    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    input: ".project/templates/am62x/astra/tests_sbl.robot.xdt",
     output: "../tests_m4f_freertos.robot",
     options: {
         componentName: "DDR",

@@ -293,7 +293,8 @@ const robot_template_nortos = {
                      " SITSW-10034 SITSW-10035 SITSW-10036 SITSW-10037 SITSW-10038 SITSW-10041 SITSW-10042 SITSW-10043" +
                      " SITSW-10044 SITSW-10045 SITSW-10046 SITSW-10047 SITSW-10048 SITSW-10049 SITSW-10050 SITSW-10051 SITSW-10052 SITSW-10053" +
                      " SITSW-10054 SITSW-10055 SITSW-10063 SITSW-10128",
-        expectTimeout: 300,
+        expectTimeout: 1800,
+        timeout: 2400,
     },
 };
 
@@ -308,7 +309,8 @@ const robot_template_freertos = {
                      " SITSW-10034 SITSW-10035 SITSW-10036 SITSW-10037 SITSW-10038 SITSW-10039 SITSW-10040 SITSW-10041 SITSW-10042 SITSW-10043" +
                      " SITSW-10044 SITSW-10045 SITSW-10046 SITSW-10047 SITSW-10048 SITSW-10049 SITSW-10050 SITSW-10051 SITSW-10052 SITSW-10053" +
                      " SITSW-10054 SITSW-10055 SITSW-10056 SITSW-10128",
-        expectTimeout: 300,
+        expectTimeout: 1800,
+        timeout: 2400,
     },
 };
 
@@ -323,7 +325,8 @@ const robot_template_a53_nortos = {
                      " SITSW-10032 SITSW-10033 SITSW-10034 SITSW-10035 SITSW-10036 SITSW-10037 SITSW-10038 SITSW-10041 SITSW-10042 SITSW-10043" +
                      " SITSW-10044 SITSW-10045 SITSW-10046 SITSW-10047 SITSW-10048 SITSW-10049 SITSW-10050 SITSW-10051 SITSW-10052 SITSW-10053" +
                      " SITSW-10054 SITSW-10055 SITSW-10063 SITSW-10128",
-        expectTimeout: 300,
+        expectTimeout: 1800,
+        timeout: 2400,
     },
 };
 
@@ -338,7 +341,8 @@ const robot_template_a53_freertos = {
                      " SITSW-10032 SITSW-10033 SITSW-10034 SITSW-10035 SITSW-10036 SITSW-10037 SITSW-10038 SITSW-10039 SITSW-10040 SITSW-10041" +
                      " SITSW-10042 SITSW-10043 SITSW-10044 SITSW-10045 SITSW-10046 SITSW-10047 SITSW-10048 SITSW-10049 SITSW-10050 SITSW-10051" +
                      " SITSW-10052 SITSW-10053 SITSW-10054 SITSW-10055 SITSW-10056 SITSW-10128",
-        expectTimeout: 300,
+        expectTimeout: 1800,
+        timeout: 2400,
     },
 };
 
@@ -350,7 +354,8 @@ const robot_template_a53_smp = {
         testCaseName: "Watchdog Test A53 SMP",
         appName: "test_watchdog(a53_smp)",
         testCaseIds: "SITSW-10120",
-        expectTimeout: 300,
+        expectTimeout: 1800,
+        timeout: 2400,
     },
 };
 

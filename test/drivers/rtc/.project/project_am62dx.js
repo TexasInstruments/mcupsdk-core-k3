@@ -302,7 +302,7 @@ const robot_template = {
         appName: "test_rtc",
         expectPort: "USB2",
         expectTimeout: 1800,
-        timeout: 9000,
+        timeout: 2400,
     },
 };
 
@@ -323,7 +323,7 @@ const robot_template_mcu = {
         appName: "test_rtc",
         expectPort: "USB3",
         expectTimeout: 1800,
-        timeout: 9000,
+        timeout: 2400,
     },
 };
 

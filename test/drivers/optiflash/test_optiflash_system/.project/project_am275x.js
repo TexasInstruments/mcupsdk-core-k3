@@ -130,8 +130,10 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_r5f;
     }
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
-
+    // r5fss0-0 is master core ; robot only for master
+    if (buildOption.cpu.match(/^r5fss0-0$/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
     return build_property;
 }
 

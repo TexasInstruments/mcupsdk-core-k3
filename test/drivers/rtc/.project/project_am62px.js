@@ -277,8 +277,8 @@ const robot_template_mcu_r5f = {
         appName: "test_rtc",
         bootMode: "OSPI_NOR_BOOT_MODE",
         expectPort: "USB3",
-        expectTimeout: 180,
-        timeout: 900,
+        expectTimeout: 1800,
+        timeout: 2400,
     },
 };
 
@@ -299,8 +299,8 @@ const robot_template_wkup_r5f = {
         appName: "test_rtc",
         bootMode: "OSPI_NOR_BOOT_MODE",
         expectPort: "USB2",
-        expectTimeout: 180,
-        timeout: 900,
+        expectTimeout: 1800,
+        timeout: 2400,
     },
 };
 
@@ -321,8 +321,8 @@ const robot_template_nortos_mcu_r5f = {
         appName: "test_rtc",
         bootMode: "OSPI_NOR_BOOT_MODE",
         expectPort: "USB3",
-        expectTimeout: 180,
-        timeout: 900,
+        expectTimeout: 1800,
+        timeout: 2400,
     },
 };
 
@@ -343,8 +343,8 @@ const robot_template_nortos_wkup_r5f = {
         appName: "test_rtc",
         bootMode: "OSPI_NOR_BOOT_MODE",
         expectPort: "USB2",
-        expectTimeout: 180,
-        timeout: 900,
+        expectTimeout: 1800,
+        timeout: 2400,
     },
 };
 

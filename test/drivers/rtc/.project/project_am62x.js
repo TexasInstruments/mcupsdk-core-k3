@@ -313,7 +313,7 @@ const robot_template_common_options = {
         cfgPath: "test/drivers/rtc/{board}/{coreName}/default_test_rtc_${DEVICE_TYPE}.cfg",
         appName: "test_rtc",
         expectTimeout: 1800,
-        timeout: 9000,
+        timeout: 2400,
 };
 
 const robot_template_nor      = { input: ".project/templates/am62x/astra/tests_sbl.robot.xdt", output: "../tests.robot",

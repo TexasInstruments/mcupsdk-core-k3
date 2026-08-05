@@ -192,6 +192,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_freertos;
         build_property.libs = libs_freertos_r5f;
         build_property.templates = templates_freertos_r5f;
+        build_property.templates = [...(build_property.templates || []), robot_template];
     }
     else if(buildOption.cpu.match(/c75ss0-0/))
     {
@@ -210,7 +211,6 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_c75ss1;
     }
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

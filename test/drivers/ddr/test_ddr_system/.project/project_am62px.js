@@ -157,7 +157,7 @@ const robot_template = {
         appName: "test_ddr_system",
         testCaseIds: "SITSW-11950",
         withCfg: true,
-        cfgPath: "test/drivers/ddr/test_ddr_system/{board}/test_ddr_system_sbl_uart_${DEVICE_TYPE}.cfg",
+        cfgPath: "test/drivers/ddr/test_ddr_system/am62px-sk/test_ddr_system_sbl_uart_${DEVICE_TYPE}.cfg",
         timeout: 1200,
     },
 };

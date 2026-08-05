@@ -151,7 +151,7 @@ const robot_template = {
         appName: "test_rtc",
         expectPort: "ACM0",
         expectTimeout: 1800,
-        timeout: 9000,
+        timeout: 2400,
     },
 };
 

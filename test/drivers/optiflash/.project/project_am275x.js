@@ -127,7 +127,7 @@ const templates_nortos_r5f =
 ];
 
 const robot_template = {
-    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    input: ".project/templates/am275x/astra/tests_sbl.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "FLC",

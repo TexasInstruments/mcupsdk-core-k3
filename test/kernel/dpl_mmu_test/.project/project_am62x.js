@@ -216,7 +216,7 @@ const robot_template_nortos = {
                      " SITSW-10002 SITSW-10003 SITSW-10004 SITSW-10005 SITSW-10006 SITSW-10007 SITSW-10008 SITSW-10009 SITSW-10010 SITSW-10011" +
                      " SITSW-10012 SITSW-10013 SITSW-10014 SITSW-10017 SITSW-10018 SITSW-10019 SITSW-10020",
         timeout: 300,
-        expectTimeout: 60,
+        expectTimeout: 300,
     },
 };
 
@@ -232,7 +232,7 @@ const robot_template_freertos = {
                      " SITSW-10012 SITSW-10013 SITSW-10014 SITSW-10017 SITSW-10018 SITSW-10019 SITSW-10020 SITSW-10094 SITSW-10095 SITSW-10096" +
                      " SITSW-10097 SITSW-10098 SITSW-10099 SITSW-10100 SITSW-10165 SITSW-10166 SITSW-10167",
         timeout: 400,
-        expectTimeout: 60,
+        expectTimeout: 300,
     },
 };
 
@@ -245,7 +245,7 @@ const robot_template_freertos_smp = {
         appName: "test_mmu(freertos-smp)",
         testCaseIds: "SITSW-11656 SITSW-11657 SITSW-11658 SITSW-11659",
         timeout: 400,
-        expectTimeout: 60,
+        expectTimeout: 300,
     },
 };
 

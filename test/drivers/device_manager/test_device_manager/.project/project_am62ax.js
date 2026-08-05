@@ -172,6 +172,17 @@ const robot_template = {
     },
 };
 
+const robot_template_smp = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests_smp.robot",
+    options: {
+        componentName: "Device Manager",
+        testCaseName: "Device Manager SMP Test Application",
+        testCaseIds: "SITSW-12392 SITSW-12393 SITSW-12394 SITSW-12395",
+        expectTimeout: 120,
+    },
+};
+
 const buildOptionCombos = [
     { device: device, cpu: "r5fss0-0",  cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
     { device: device, cpu: "a53ss0-0",  cgt: "gcc-aarch64",  board: "am62ax-sk", os: "freertos-smp"},
@@ -217,7 +228,11 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = defines_dm_r5;
     }
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.os.match(/freertos-smp*/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_smp];
+    } else {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
 
     return build_property;
 }

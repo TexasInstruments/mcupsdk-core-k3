@@ -198,6 +198,17 @@ const robot_template = {
     },
 };
 
+const robot_template_smp = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests_smp.robot",
+    options: {
+        componentName: "Device Manager",
+        testCaseName: "Device Manager SMP Test Application",
+        testCaseIds: "SITSW-12392 SITSW-12393 SITSW-12394 SITSW-12395",
+        expectTimeout: 120,
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -226,7 +237,11 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.os.match(/freertos-smp*/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_smp];
+    } else {
+        build_property.templates = [...(build_property.templates || []), robot_template];
+    }
 
     return build_property;
 }

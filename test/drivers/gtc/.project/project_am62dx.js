@@ -389,8 +389,8 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "GTC",
-        testCaseName: "Test GTC counter",
-        testCaseIds: "SITSW-2096",
+        testCaseName: "GTC Test Application",
+        testCaseIds: "SITSW-2096 SITSW-9400 SITSW-9401",
         timeout: 630,
         expectTimeout: 500,
     },
@@ -483,7 +483,7 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    if (!buildOption.cpu.match(/a53ss0-1|a53ss1-0|a53ss1-1/) && !(buildOption.cpu.match(/a53/) && buildOption.os.match(/freertos/))) {
+    if (!buildOption.cpu.match(/a53ss0-1|a53ss1-0|a53ss1-1/)) {
         build_property.templates = [...(build_property.templates || []), robot_template];
     }
     return build_property;

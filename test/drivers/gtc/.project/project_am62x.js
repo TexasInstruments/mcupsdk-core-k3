@@ -275,8 +275,8 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "GTC",
-        testCaseName: "GTC test application",
-        testCaseIds: "SITSW-2096",
+        testCaseName: "GTC Test Application",
+        testCaseIds: "SITSW-2096 SITSW-9400 SITSW-9401",
         timeout: 630,
         expectTimeout: 500,
     },

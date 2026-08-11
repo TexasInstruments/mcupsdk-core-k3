@@ -256,19 +256,68 @@ const templates_freertos_c75_1 =
     }
 ];
 
-const robot_template = {
+/* R5F nortos: no ENABLE_MT_TESTS, no external loopback (SOC_AM275X not in loopback condition)
+ * 6605: !C7X_CORE && !SOC_J722S → included   9012: excluded (#if !defined SOC_AM275X)
+ */
+const robot_template_r5f_nortos = {
     input: ".project/templates/am275x/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "I2C",
-        testCaseName: "I2C Test Application",
+        testCaseName: "I2C Test Application (R5F nortos)",
+        testCaseIds: "SITSW-1311 SITSW-1312 SITSW-1313 SITSW-1314 SITSW-1315 SITSW-1316 SITSW-1317 SITSW-1318 SITSW-1319 SITSW-1320 " +
+             "SITSW-6248 SITSW-6605 SITSW-6849 SITSW-8318 SITSW-8319 SITSW-8322 SITSW-8334 SITSW-8623 SITSW-8624 SITSW-8625 " +
+             "SITSW-8626 SITSW-8627 SITSW-8628 SITSW-8630 SITSW-8702 SITSW-8703 SITSW-8704 SITSW-8705 SITSW-8720 SITSW-8721 " +
+             "SITSW-8883",
+    },
+};
+
+/* R5F freertos: ENABLE_MT_TESTS, no external loopback (SOC_AM275X not in loopback condition)
+ * MT: SOC_AM275X → 8338   6605: included   9012: excluded
+ */
+const robot_template_r5f_freertos = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "I2C",
+        testCaseName: "I2C Test Application (R5F freertos)",
         testCaseIds: "SITSW-1311 SITSW-1312 SITSW-1313 SITSW-1314 SITSW-1315 SITSW-1316 SITSW-1317 SITSW-1318 SITSW-1319 SITSW-1320 " +
              "SITSW-6248 SITSW-6605 SITSW-6849 SITSW-8318 SITSW-8319 SITSW-8322 SITSW-8334 SITSW-8338 SITSW-8623 SITSW-8624 " +
              "SITSW-8625 SITSW-8626 SITSW-8627 SITSW-8628 SITSW-8630 SITSW-8702 SITSW-8703 SITSW-8704 SITSW-8705 SITSW-8720 " +
-             "SITSW-8721 SITSW-8883 SITSW-9012 SITSW-9984 SITSW-9989 SITSW-9993 SITSW-9995 SITSW-9996 SITSW-9997 SITSW-9998 " +
-             "SITSW-9999 SITSW-10000 SITSW-10001 SITSW-10002 SITSW-10003 SITSW-10004 SITSW-10005 SITSW-10006 SITSW-10007 SITSW-10008 " +
-             "SITSW-10009 SITSW-10010 SITSW-10011 SITSW-10012 SITSW-10013 SITSW-10014 SITSW-10017 SITSW-10018 SITSW-10019 SITSW-10020 " +
-             "SITSW-10094 SITSW-10095 SITSW-10096 SITSW-10097 SITSW-10098 SITSW-10099 SITSW-10100",
+             "SITSW-8721 SITSW-8883",
+    },
+};
+
+/* wkup-R5F freertos: ENABLE_MT_TESTS (SOC_AM275X → 8338), no external loopback
+ * 6605: included   9012: excluded
+ */
+const robot_template_wkup_r5f_freertos = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "I2C",
+        testCaseName: "I2C Test Application (wkup-R5F freertos)",
+        testCaseIds: "SITSW-1311 SITSW-1312 SITSW-1313 SITSW-1314 SITSW-1315 SITSW-1316 SITSW-1317 SITSW-1318 SITSW-1319 SITSW-1320 " +
+             "SITSW-6248 SITSW-6605 SITSW-6849 SITSW-8318 SITSW-8319 SITSW-8322 SITSW-8334 SITSW-8338 SITSW-8623 SITSW-8624 " +
+             "SITSW-8625 SITSW-8626 SITSW-8627 SITSW-8628 SITSW-8630 SITSW-8702 SITSW-8703 SITSW-8704 SITSW-8705 SITSW-8720 " +
+             "SITSW-8721 SITSW-8883",
+    },
+};
+
+/* C75 freertos: ENABLE_MT_TESTS + C7X_CORE
+ * C7X_CORE: 6605 (test_i2c_dynamic_coverage) SKIPPED → no 9984-10100
+ * MT: SOC_AM275X → 8338   9012: excluded
+ */
+const robot_template_c75_freertos = {
+    input: ".project/templates/am275x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "I2C",
+        testCaseName: "I2C Test Application (C75 freertos)",
+        testCaseIds: "SITSW-1311 SITSW-1312 SITSW-1313 SITSW-1314 SITSW-1315 SITSW-1316 SITSW-1317 SITSW-1318 SITSW-1319 SITSW-1320 " +
+             "SITSW-6248 SITSW-6849 SITSW-8318 SITSW-8319 SITSW-8322 SITSW-8334 SITSW-8338 SITSW-8623 SITSW-8624 SITSW-8625 " +
+             "SITSW-8626 SITSW-8627 SITSW-8628 SITSW-8630 SITSW-8702 SITSW-8703 SITSW-8704 SITSW-8705 SITSW-8720 SITSW-8721 " +
+             "SITSW-8883",
     },
 };
 
@@ -333,7 +382,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes_freertos_r5f;
             build_property.libdirs = libdirs_freertos;
             build_property.libs = libs_freertos_wkup_r5f;
-            build_property.templates = templates_freertos_wkup_r5f;
+            build_property.templates = [...templates_freertos_wkup_r5f, robot_template_wkup_r5f_freertos];
             build_property.defines = defines_wkup_r5f;
             build_property.cflags = cflags_free_rtos;
         }
@@ -344,7 +393,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes_freertos_r5f;
             build_property.libdirs = libdirs_freertos;
             build_property.libs = libs_freertos_r5f;
-            build_property.templates = templates_freertos_r5f;
+            build_property.templates = [...templates_freertos_r5f, robot_template_r5f_freertos];
             build_property.cflags = cflags_free_rtos_mcu_r5;
         }
         else
@@ -352,7 +401,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes;
             build_property.libdirs = libdirs;
             build_property.libs = libs_nortos_r5f;
-            build_property.templates = templates_nortos_r5f;
+            build_property.templates = [...templates_nortos_r5f, robot_template_r5f_nortos];
             build_property.cflags = cflags_free_rtos_mcu_r5_nortos;
         }
     }
@@ -364,15 +413,13 @@ function getComponentBuildProperty(buildOption) {
 
         if(buildOption.cpu.match("c75ss0-0"))
         {
-            build_property.templates = templates_freertos_c75_0;
+            build_property.templates = [...templates_freertos_c75_0, robot_template_c75_freertos];
         }
         else if (buildOption.cpu.match("c75ss1-0"))
         {
-            build_property.templates = templates_freertos_c75_1;
+            build_property.templates = [...templates_freertos_c75_1, robot_template_c75_freertos];
         }
     }
-
-    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

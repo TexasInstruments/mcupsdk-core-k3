@@ -248,28 +248,81 @@ function getComponentProperty() {
     return property;
 }
 
-const robot_template = {
+/* MCU R5F nortos: ENABLE_TARGET_EXTERNAL_LOOPBACK only (no ENABLE_MT_TESTS)
+ * External loopback: SOC_AM62PX && ENABLE_TARGET_EXTERNAL_LOOPBACK → 8328 8330 8331 8332 8333 8335 8336 8621 8622 8700 8701
+ * 6605: !C7X_CORE && !SOC_J722S → included   9012: !SOC_AM275X → included
+ */
+const robot_template_mcu_r5f_nortos = {
     input: ".project/templates/am62px/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "I2C",
-        testCaseName: "I2C: Dynamic Coverage Test, to improve the statement and branch coverages.",
-        testCaseIds: "SITSW-3178",
+        testCaseName: "I2C test application (MCU R5F nortos)",
+        testCaseIds: "SITSW-1311 SITSW-1312 SITSW-1313 SITSW-1314 SITSW-1315 SITSW-1316 SITSW-1317 SITSW-1318 SITSW-1319 SITSW-1320" +
+                     " SITSW-6248 SITSW-6605 SITSW-6849 SITSW-8318 SITSW-8319 SITSW-8322" +
+                     " SITSW-8328 SITSW-8330 SITSW-8331 SITSW-8332 SITSW-8333 SITSW-8334 SITSW-8335 SITSW-8336" +
+                     " SITSW-8621 SITSW-8622 SITSW-8623 SITSW-8624 SITSW-8625 SITSW-8626 SITSW-8627 SITSW-8628 SITSW-8630" +
+                     " SITSW-8700 SITSW-8701 SITSW-8702 SITSW-8703 SITSW-8704 SITSW-8705 SITSW-8720 SITSW-8721 SITSW-8883 SITSW-9012",
+        appName: "test_i2c",
         expectTimeout: 120,
         timeout: 660,
     },
 };
 
-const robot_template_i2c = {
+/* MCU R5F freertos: ENABLE_TARGET_EXTERNAL_LOOPBACK + ENABLE_MT_TESTS
+ * MT: SOC_AM62PX, not M4F_CORE → 8586 8587 8324 8325 8326
+ */
+const robot_template_mcu_r5f_freertos = {
     input: ".project/templates/am62px/astra/tests.robot.xdt",
-    output: "../tests_i2c.robot",
+    output: "../tests.robot",
     options: {
         componentName: "I2C",
-        testCaseName: "I2C: Dynamic Coverage Test, to improve the statement and branch coverages.",
+        testCaseName: "I2C test application (MCU R5F freertos)",
         testCaseIds: "SITSW-1311 SITSW-1312 SITSW-1313 SITSW-1314 SITSW-1315 SITSW-1316 SITSW-1317 SITSW-1318 SITSW-1319 SITSW-1320" +
-                     " SITSW-6605 SITSW-6849",
+                     " SITSW-6248 SITSW-6605 SITSW-6849 SITSW-8318 SITSW-8319 SITSW-8322" +
+                     " SITSW-8324 SITSW-8325 SITSW-8326" +
+                     " SITSW-8328 SITSW-8330 SITSW-8331 SITSW-8332 SITSW-8333 SITSW-8334 SITSW-8335 SITSW-8336" +
+                     " SITSW-8586 SITSW-8587 SITSW-8621 SITSW-8622 SITSW-8623 SITSW-8624 SITSW-8625 SITSW-8626 SITSW-8627 SITSW-8628" +
+                     " SITSW-8630" +
+                     " SITSW-8700 SITSW-8701 SITSW-8702 SITSW-8703 SITSW-8704 SITSW-8705 SITSW-8720 SITSW-8721 SITSW-8883 SITSW-9012",
         appName: "test_i2c",
-        expectTimeout: 60,
+        expectTimeout: 120,
+        timeout: 660,
+    },
+};
+
+/* wkup-R5F nortos: no ENABLE_TARGET_EXTERNAL_LOOPBACK, no ENABLE_MT_TESTS */
+const robot_template_wkup_r5f_nortos = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "I2C",
+        testCaseName: "I2C test application (wkup-R5F nortos)",
+        testCaseIds: "SITSW-1311 SITSW-1312 SITSW-1313 SITSW-1314 SITSW-1315 SITSW-1316 SITSW-1317 SITSW-1318 SITSW-1319 SITSW-1320" +
+                     " SITSW-6248 SITSW-6605 SITSW-6849 SITSW-8318 SITSW-8319 SITSW-8322" +
+                     " SITSW-8334 SITSW-8623 SITSW-8624 SITSW-8625 SITSW-8626 SITSW-8627 SITSW-8628 SITSW-8630" +
+                     " SITSW-8702 SITSW-8703 SITSW-8704 SITSW-8705 SITSW-8720 SITSW-8721 SITSW-8883 SITSW-9012",
+        appName: "test_i2c",
+        expectTimeout: 120,
+        timeout: 660,
+    },
+};
+
+/* wkup-R5F freertos: ENABLE_MT_TESTS (SOC_AM62PX, not M4F_CORE) → 8586 8587 8324 8325 8326 */
+const robot_template_wkup_r5f_freertos = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "I2C",
+        testCaseName: "I2C test application (wkup-R5F freertos)",
+        testCaseIds: "SITSW-1311 SITSW-1312 SITSW-1313 SITSW-1314 SITSW-1315 SITSW-1316 SITSW-1317 SITSW-1318 SITSW-1319 SITSW-1320" +
+                     " SITSW-6248 SITSW-6605 SITSW-6849 SITSW-8318 SITSW-8319 SITSW-8322" +
+                     " SITSW-8324 SITSW-8325 SITSW-8326" +
+                     " SITSW-8334 SITSW-8586 SITSW-8587 SITSW-8623 SITSW-8624 SITSW-8625 SITSW-8626 SITSW-8627 SITSW-8628 SITSW-8630" +
+                     " SITSW-8702 SITSW-8703 SITSW-8704 SITSW-8705 SITSW-8720 SITSW-8721 SITSW-8883 SITSW-9012",
+        appName: "test_i2c",
+        expectTimeout: 120,
+        timeout: 660,
     },
 };
 
@@ -284,16 +337,17 @@ function getComponentBuildProperty(buildOption) {
     build_property.syscfgfile = syscfgfile;
 
     if(buildOption.cpu.match(/mcu-r5f*/)) {
+        /* MCU R5F: ENABLE_TARGET_EXTERNAL_LOOPBACK tests run only on this core */
         if(buildOption.os.match(/freertos*/)) {
             build_property.includes = includes_freertos_r5f;
             build_property.libdirs = libdirs_freertos_mcu_r5f;
             build_property.libs = libs_freertos_mcu_r5f;
-            build_property.templates = templates_freertos_mcu_r5f;
+            build_property.templates = [...templates_freertos_mcu_r5f, robot_template_mcu_r5f_freertos];
             build_property.cflags = cflags_freertos_mcu_r5;
         }
         else {
             build_property.libs = libs_mcu_r5f;
-            build_property.templates = templates_nortos_mcu_r5f;
+            build_property.templates = [...templates_nortos_mcu_r5f, robot_template_mcu_r5f_nortos];
             build_property.cflags = cflags_nortos_mcu_r5;
         }
     }
@@ -302,22 +356,18 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes_freertos_r5f;
             build_property.libdirs = libdirs_wkup_r5f;
             build_property.libs = libs_freertos_wkup_r5f;
-            build_property.templates = templates_freertos_wkup_r5f;
+            build_property.templates = [...templates_freertos_wkup_r5f, robot_template_wkup_r5f_freertos];
             build_property.defines = defines_dm_r5;
             build_property.cflags = cflags_freertos;
         }
         else {
             build_property.libdirs = libdirs_wkup_r5f;
             build_property.libs = libs_nortos_wkup_r5f;
-            build_property.templates = templates_nortos_wkup_r5f;
+            build_property.templates = [...templates_nortos_wkup_r5f, robot_template_wkup_r5f_nortos];
             build_property.defines = defines_dm_r5;
         }
     }
 
-
-    build_property.templates = [...(build_property.templates || []), robot_template];
-
-    build_property.templates = [...build_property.templates, robot_template_i2c];
     return build_property;
 }
 

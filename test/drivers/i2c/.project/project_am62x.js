@@ -398,14 +398,75 @@ function getComponentProperty() {
 }
 
 
-const robot_template = {
+/* nortos (M4F / R5F / A53): no ENABLE_MT_TESTS, no ENABLE_TARGET_EXTERNAL_LOOPBACK
+ * 6605: !C7X_CORE && !SOC_J722S → included   9012: !SOC_AM275X → included
+ */
+const robot_template_nortos = {
     input: ".project/templates/am62x/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "I2C",
-        testCaseName: "I2C test application",
+        testCaseName: "I2C test application (nortos)",
         testCaseIds: "SITSW-1311 SITSW-1312 SITSW-1313 SITSW-1314 SITSW-1315 SITSW-1316 SITSW-1317 SITSW-1318 SITSW-1319 SITSW-1320" +
-                     " SITSW-6849 SITSW-9012",
+                     " SITSW-6248 SITSW-6605 SITSW-6849 SITSW-8318 SITSW-8319 SITSW-8322" +
+                     " SITSW-8334 SITSW-8623 SITSW-8624 SITSW-8625 SITSW-8626 SITSW-8627 SITSW-8628 SITSW-8630" +
+                     " SITSW-8702 SITSW-8703 SITSW-8704 SITSW-8705 SITSW-8720 SITSW-8721 SITSW-8883 SITSW-9012",
+        expectTimeout: 60,
+        timeout: 660,
+    },
+};
+
+/* M4F freertos: ENABLE_MT_TESTS + M4F_CORE defined
+ * M4F_CORE causes 8587 8324 8326 to be SKIPPED (#if !defined(M4F_CORE))
+ * MT (SOC_AM62X, M4F_CORE): 8586 8325 only
+ * No ENABLE_TARGET_EXTERNAL_LOOPBACK on any am62x core
+ */
+const robot_template_m4f_freertos = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "I2C",
+        testCaseName: "I2C test application (M4F freertos)",
+        testCaseIds: "SITSW-1311 SITSW-1312 SITSW-1313 SITSW-1314 SITSW-1315 SITSW-1316 SITSW-1317 SITSW-1318 SITSW-1319 SITSW-1320" +
+                     " SITSW-6248 SITSW-6605 SITSW-6849 SITSW-8318 SITSW-8319 SITSW-8322" +
+                     " SITSW-8325 SITSW-8334 SITSW-8586" +
+                     " SITSW-8623 SITSW-8624 SITSW-8625 SITSW-8626 SITSW-8627 SITSW-8628 SITSW-8630" +
+                     " SITSW-8702 SITSW-8703 SITSW-8704 SITSW-8705 SITSW-8720 SITSW-8721 SITSW-8883 SITSW-9012",
+        expectTimeout: 60,
+        timeout: 660,
+    },
+};
+
+/* R5F / A53 freertos: ENABLE_MT_TESTS, not M4F_CORE, no ENABLE_TARGET_EXTERNAL_LOOPBACK
+ * MT (SOC_AM62X, not M4F_CORE): 8586 8587 8324 8325 8326
+ */
+const robot_template_freertos = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "I2C",
+        testCaseName: "I2C test application (freertos)",
+        testCaseIds: "SITSW-1311 SITSW-1312 SITSW-1313 SITSW-1314 SITSW-1315 SITSW-1316 SITSW-1317 SITSW-1318 SITSW-1319 SITSW-1320" +
+                     " SITSW-6248 SITSW-6605 SITSW-6849 SITSW-8318 SITSW-8319 SITSW-8322" +
+                     " SITSW-8324 SITSW-8325 SITSW-8326" +
+                     " SITSW-8334 SITSW-8586 SITSW-8587 SITSW-8623 SITSW-8624 SITSW-8625 SITSW-8626 SITSW-8627 SITSW-8628 SITSW-8630" +
+                     " SITSW-8702 SITSW-8703 SITSW-8704 SITSW-8705 SITSW-8720 SITSW-8721 SITSW-8883 SITSW-9012",
+        expectTimeout: 60,
+        timeout: 660,
+    },
+};
+
+/* A53 SMP freertos */
+/* A53 SMP freertos: uses test_i2c_smp.c (not test_i2c.c)
+ * RUN_TEST(Test_I2C_smpMultiInstance, 8877, args) — #if defined(SOC_AM62AX) || defined(SOC_AM62X)
+ */
+const robot_template_a53_smp = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests_smp.robot",
+    options: {
+        componentName: "I2C",
+        testCaseName: "I2C SMP test application (A53 SMP freertos)",
+        testCaseIds: "SITSW-8877",
         expectTimeout: 60,
         timeout: 660,
     },
@@ -427,20 +488,21 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes_freertos_m4f;
             build_property.libdirs = libdirs_freertos_m4f;
             build_property.libs = libs_freertos_m4f;
-            build_property.templates = templates_freertos_m4f;
+            /* M4F_CORE defined: 8587 8324 8326 skipped (#if !defined(M4F_CORE)) */
+            build_property.templates = [...templates_freertos_m4f, robot_template_m4f_freertos];
             build_property.cflags = cflags_freertos;
             build_property.defines = defines_m4f;
         }
         else if(buildOption.board == "am62x-sk")
         {
             build_property.libs = libs_m4f;
-            build_property.templates = templates_nortos_m4f;
+            build_property.templates = [...templates_nortos_m4f, robot_template_nortos];
             build_property.defines = defines_m4f;
         }
         else
         {
             build_property.libs = libs_m4f;
-            build_property.templates = templates_nortos_m4f;
+            build_property.templates = [...templates_nortos_m4f, robot_template_nortos];
         }
     }
     if(buildOption.cpu.match(/r5f*/)) {
@@ -449,7 +511,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes_freertos_r5f;
             build_property.libdirs = libdirs_freertos_r5f;
             build_property.libs = libs_freertos_r5f;
-            build_property.templates = templates_freertos_r5f;
+            build_property.templates = [...templates_freertos_r5f, robot_template_freertos];
             build_property.defines = defines_dm_r5f;
             build_property.cflags = cflags_freertos;
         }
@@ -458,7 +520,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes_freertos_r5f;
             build_property.libdirs = libdirs_nortos_r5f;
             build_property.libs = libs_nortos_r5f;
-            build_property.templates = templates_nortos_r5f;
+            build_property.templates = [...templates_nortos_r5f, robot_template_nortos];
             build_property.defines = defines_dm_r5f;
         }
     }
@@ -470,32 +532,30 @@ function getComponentBuildProperty(buildOption) {
                 build_property.includes = includes_a53_smp;
                 build_property.libdirs = libdirs_freertos_a53;
                 build_property.libs = libs_a53_smp;
-                build_property.templates = templates_a53_smp;
+                build_property.templates = [...templates_a53_smp, robot_template_a53_smp];
                 build_property.defines = defines_a53_smp;
             }
             else if(buildOption.os.match(/freertos*/))
             {
                 build_property.includes = includes_freertos_a53;
                 build_property.libs = libs_freertos_a53;
-                build_property.templates = templates_freertos_a53;
+                build_property.templates = [...templates_freertos_a53, robot_template_freertos];
                 build_property.libdirs = libdirs_freertos_a53;
                 build_property.cflags = cflags_freertos;
             }
             else
             {
                 build_property.libs = libs_nortos_a53;
-                build_property.templates = templates_nortos_a53;
+                build_property.templates = [...templates_nortos_a53, robot_template_nortos];
             }
         }
         else {
             build_property.includes = includes_freertos_a53;
             build_property.libs = libs_freertos_a53;
-            build_property.templates = templates_freertos_a53;
+            build_property.templates = [...templates_freertos_a53, robot_template_freertos];
             build_property.libdirs = libdirs_freertos_a53;
         }
     }
-
-    build_property.templates = [...(build_property.templates || []), robot_template];
 
     return build_property;
 }

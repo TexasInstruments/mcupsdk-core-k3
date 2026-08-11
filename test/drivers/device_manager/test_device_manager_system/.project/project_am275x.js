@@ -169,7 +169,7 @@ const robot_template = {
     input: ".project/templates/am275x/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
-        componentName: "DM",
+        componentName: "Device Manager",
         testCaseName: "Test device manager transfer system test",
         testCaseIds: "SITSW-12396 SITSW-12397 SITSW-12398 SITSW-12399 SITSW-12400",
         withCfg: true,

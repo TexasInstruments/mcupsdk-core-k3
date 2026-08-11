@@ -398,6 +398,18 @@ const buildOptionCombos = [
     { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64",  board: "am62ax-sk", os: "freertos"},
 ];
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DPL",
+        testCaseName: "DPL Timer faultinject application",
+        appName: "test_dpl_timer_fault_inject",
+        testCaseIds: "SITSW-10381",
+        timeout: 300,
+    },
+};
+
 function getComponentProperty() {
     let property = {};
 
@@ -470,7 +482,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.cflags = cflags_nortos_a53;
         }
     }
-
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

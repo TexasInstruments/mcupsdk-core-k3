@@ -139,7 +139,7 @@ const robot_template = {
              "SITSW-10887 SITSW-10888 SITSW-10889 SITSW-10890 SITSW-10891 SITSW-10892 SITSW-10893 SITSW-10894 SITSW-10895 SITSW-10896 " +
              "SITSW-10897 SITSW-10898 SITSW-10899 SITSW-10902",
         withCfg: true,
-        cfgPath: "test/drivers/optiflash/{board}/{coreName}/test_optiflash_sbl_ospi_${DEVICE_TYPE}.cfg",
+        cfgPath: "test/drivers/optiflash/am275x-evm/{coreName}/test_optiflash_sbl_ospi_${DEVICE_TYPE}.cfg",
         bootMode: "OSPI_NOR_BOOT_MODE",
         expectPort: "ACM0",
         appName: "test_optiflash",

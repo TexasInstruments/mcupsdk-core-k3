@@ -392,6 +392,18 @@ const buildOptionCombos = [
     { device: device, cpu: "c75ss0-0", cgt: "ti-c7000",    board: "am62dx-evm", os: "freertos"},
 ];
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "DPL",
+        testCaseName: "DPL Timer faultinject application",
+        appName: "test_dpl_timer_fault_inject",
+        testCaseIds: "SITSW-10381",
+        timeout: 300,
+    },
+};
+
 function getComponentProperty() {
     let property = {};
 
@@ -481,7 +493,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_c75;
         build_property.templates = templates_freertos_c75;
     }
-
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

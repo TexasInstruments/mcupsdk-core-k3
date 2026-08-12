@@ -252,16 +252,46 @@ function getComponentProperty() {
     return property;
 }
 
-const robot_template = {
+const robot_template_freertos = {
     input: ".project/templates/am62dx/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "MCASP",
         testCaseName: "Test Mcasp dma Channel Reset",
-        testCaseIds: "SITSW-8343 SITSW-8344 SITSW-8345 SITSW-8346 SITSW-8347 SITSW-8348 SITSW-8349 SITSW-8350 SITSW-8451 SITSW-8452" +
-                     " SITSW-8453 SITSW-8729 SITSW-8731 SITSW-8732 SITSW-8733 SITSW-8734 SITSW-8735 SITSW-8736 SITSW-8737 SITSW-8739" +
-                     " SITSW-9005 SITSW-9006 SITSW-9075 SITSW-9076 SITSW-9077 SITSW-9078 SITSW-9079 SITSW-9080 SITSW-9081 SITSW-9082" +
-                     " SITSW-9083 SITSW-9084 SITSW-9086 SITSW-9263 SITSW-9264 SITSW-9265 SITSW-9266 SITSW-9267 SITSW-9268 SITSW-9298",
+        appName: "test_mcasp",
+        testCaseIds: "SITSW-8343 SITSW-8344 SITSW-8345 SITSW-8346 SITSW-8347 SITSW-8348 SITSW-8349 SITSW-8350 SITSW-8451 SITSW-8452 SITSW-8453" +
+            " SITSW-8729 SITSW-8730 SITSW-8731 SITSW-8732 SITSW-8733 SITSW-8734 SITSW-8735 SITSW-8736 SITSW-8737 SITSW-8738 SITSW-8739 SITSW-9075" +
+            " SITSW-9076 SITSW-9077 SITSW-9078 SITSW-9079 SITSW-9080 SITSW-9081 SITSW-9082 SITSW-9083 SITSW-9084 SITSW-9086 SITSW-9263" +
+            " SITSW-9264 SITSW-9265 SITSW-9266 SITSW-9267 SITSW-9268 SITSW-9298",
+        timeout: 3600,
+        expectTimeout: 300,
+    },
+};
+
+const robot_template_nortos = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MCASP",
+        testCaseName: "Test Mcasp dma Channel Reset",
+        appName: "test_mcasp",
+        testCaseIds: "SITSW-8343 SITSW-8344 SITSW-8345 SITSW-8347 SITSW-8348 SITSW-8349 SITSW-8350 SITSW-8453 SITSW-8729 SITSW-8730 SITSW-8731" +
+            " SITSW-8732 SITSW-8733 SITSW-8734 SITSW-8735 SITSW-8736 SITSW-8737 SITSW-8738 SITSW-8739 SITSW-9075 SITSW-9076 SITSW-9077 SITSW-9078" +
+            " SITSW-9079 SITSW-9080 SITSW-9081 SITSW-9082 SITSW-9083 SITSW-9084 SITSW-9086 SITSW-9263 SITSW-9264 SITSW-9265 SITSW-9266" +
+            " SITSW-9267 SITSW-9298",
+        timeout: 3600,
+        expectTimeout: 300,
+    },
+};
+
+const robot_template_smp = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MCASP",
+        testCaseName: "MCASP driver SMP test application",
+        appName: "test_mcasp(smp)",
+        testCaseIds: "SITSW-9005 SITSW-9006",
     },
 };
 
@@ -315,7 +345,15 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.os.match(/freertos-smp*/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_smp];
+    }
+    else if (buildOption.os.match(/freertos*/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_freertos];
+    }
+    else {
+        build_property.templates = [...(build_property.templates || []), robot_template_nortos];
+    }
     return build_property;
 }
 

@@ -330,7 +330,6 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_dm_r5f;
         build_property.templates = templates_freertos_dm_r5f;
         build_property.defines = defines_dm_r5f;
-        build_property.templates = [...(build_property.templates || []), robot_template];
     }
     else if(buildOption.cpu.match(/a53*/)) {
 
@@ -350,6 +349,10 @@ function getComponentBuildProperty(buildOption) {
         build_property.libs = libs_freertos_c75;
         build_property.templates = templates_freertos_c75;
         build_property.defines = defines_common;
+    }
+    // r5fss0-0 is master core ; robot only for master
+    if (buildOption.cpu.match(/^r5fss0-0$/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template];
     }
 
     return build_property;

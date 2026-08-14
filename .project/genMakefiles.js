@@ -108,6 +108,18 @@ function genMakefileDeviceTop(component_file_list, example_file_list, device, is
             example_make.buildTarget = buildTarget;
             example_make.buildTargetClean = buildTargetClean;
             example_make.buildTargetScrub = buildTargetScrub;
+
+            if(property.dependentApps)
+            {
+                example_make.dependencies = property.dependentApps.map(dep => {
+                    let board = dep.board || buildOption.board;
+                    if(dep.isSystemProject === true)
+                    {
+                        return `${dep.name}_${board}_system_${dep.tag}`;
+                    }
+                    return `${dep.name}_${board}_${dep.cpu}_${dep.os}_${dep.cgt}`;
+                });
+            }
             if(property.isInternal == isInternal) {
                 let isPartOfSystemProject = false;
                 if(buildOption.isPartOfSystemProject && buildOption.isPartOfSystemProject === true)
@@ -152,6 +164,18 @@ function genMakefileDeviceTop(component_file_list, example_file_list, device, is
             system_example_make.buildTarget = " " + system_example_make.name;
             system_example_make.buildTargetClean = " " + system_example_make.name + "_clean";
             system_example_make.buildTargetScrub = " " + system_example_make.name + "_scrub";
+
+            if(property.dependentApps)
+            {
+                system_example_make.dependencies = property.dependentApps.map(dep => {
+                    let board = dep.board || project.board;
+                    if(dep.isSystemProject === true)
+                    {
+                        return `${dep.name}_${board}_system_${dep.tag}`;
+                    }
+                    return `${dep.name}_${board}_${dep.cpu}_${dep.os}_${dep.cgt}`;
+                });
+            }
 
             if(property.isSkipTopLevelBuild === true)
             {

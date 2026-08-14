@@ -364,12 +364,24 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
 % }
 
 % for (example of args.example_list) {
-`example.buildTarget`:
+%   let depStr = "";
+%   if(example.dependencies) {
+%       for(let dep of example.dependencies) {
+%           depStr += " " + dep;
+%       }
+%   }
+`example.buildTarget`:` depStr `
 	$(MAKE) -C `example.relpath` -f makefile all
 
 % }
 % for (example of args.system_example_list) {
-`example.buildTarget`:
+%   let depStr = "";
+%   if(example.dependencies) {
+%       for(let dep of example.dependencies) {
+%           depStr += " " + dep;
+%       }
+%   }
+`example.buildTarget`:` depStr `
 	$(MAKE) -C `example.relpath` -f makefile all
 
 % }

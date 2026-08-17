@@ -29,7 +29,7 @@
     let timeout        = (options && options.timeout)        ? options.timeout        : 700;
     let expectTimeout  = (options && options.expectTimeout)  ? options.expectTimeout  : 300;
     let componentName  = (options && options.componentName)  ? options.componentName  : "SBL";
-    let testCaseIds    = (options && options.testCaseIds)    ? options.testCaseIds    : "SITSW-XXXXX";
+    let testCaseIds    = (options && options.testCaseIds)    ? options.testCaseIds.trim().split(/\s+/).join("    ") : "SITSW-XXXXX";
     let testCaseName   = (options && options.testCaseName)   ? options.testCaseName   : componentName + " application";
     let bootMode       = (options && options.hasOwnProperty('bootMode')) ? options.bootMode : null;
     let finalPort      = bootMode ? sblPort : logPort;

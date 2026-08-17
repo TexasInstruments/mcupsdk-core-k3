@@ -309,6 +309,7 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "test_ospi";
     property.isInternal = true;
+    property.skipProjectSpec = true;
     property.buildOptionCombos = buildOptionCombos;
 
     return property;

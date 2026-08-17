@@ -507,21 +507,21 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 sbl: libs
 % for (example of args.example_list) {
 % if(example.isBootLoader) {
-	$(MAKE) -C `example.relpath` -f makefile all
+	$(MAKE) -f makefile.`device` `example.buildTarget`
 %}
 %}
 
 sbl-clean:
 % for (example of args.example_list) {
 % if(example.isBootLoader) {
-	$(MAKE) -C `example.relpath` -f makefile clean
+	$(MAKE) -f makefile.`device` `example.buildTargetClean`
 %}
 %}
 
 sbl-scrub:
 % for (example of args.example_list) {
 % if(example.isBootLoader) {
-	$(MAKE) -C `example.relpath` -f makefile scrub
+	$(MAKE) -f makefile.`device` `example.buildTargetScrub`
 %}
 %}
 

@@ -4146,85 +4146,85 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
 
 sbl: libs
-	$(MAKE) -C examples/drivers/boot/sbl_emmc/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/drivers/boot/sbl_eth_uniflash/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/drivers/boot/sbl_null/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/drivers/boot/sbl_ospi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/drivers/boot/sbl_sd/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash/am275x-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/drivers/boot/sbl_uart/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/drivers/boot/sbl_jtag_uniflash/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/board/hyperRam/hyperRam_ecc_esm_test/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/board/hyperRam/hyperRam_ecc_test/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/board/hyperRam/hyperRam_perf/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/drivers/mmcsd/mmcsd_file_io/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/drivers/mmcsd/mmcsd_raw_io/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/drivers/ospi/ospi_flash_diag/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/drivers/ospi/ospi_flash_io/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/drivers/sciclient/sciclient_ccs_init/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/drivers/sciclient/sciclient_get_version/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/drivers/watchdog/watchdog_interrupt/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/empty/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/hello_world/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/kernel/dpl/dpl_demo/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/kernel/freertos/memcpy_benchmark/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C examples/kernel/freertos/task_switch/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+	$(MAKE) -f makefile.am275x  sbl_emmc_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  sbl_eth_uniflash_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  sbl_null_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  sbl_ospi_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  sbl_sd_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  sbl_uart_uniflash_am275x-evm_wkup-r5fss0-0_nortos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  sbl_uart_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  sbl_jtag_uniflash_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  hyperRam_ecc_esm_test_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  hyperRam_ecc_test_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  hyperRam_perf_app_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  mmcsd_file_io_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  mmcsd_raw_io_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  ospi_flash_diag_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  ospi_flash_io_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  pmu_multievent_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  sciclient_ccs_init_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  sciclient_get_version_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  udma_memcpy_polling_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  watchdog_interrupt_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  empty_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  hello_world_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  dpl_demo_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  memcpy_benchmark_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  task_switch_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
 
 sbl-clean:
-	$(MAKE) -C examples/drivers/boot/sbl_emmc/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/drivers/boot/sbl_eth_uniflash/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/drivers/boot/sbl_null/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/drivers/boot/sbl_ospi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/drivers/boot/sbl_sd/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash/am275x-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/drivers/boot/sbl_uart/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/drivers/boot/sbl_jtag_uniflash/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/board/hyperRam/hyperRam_ecc_esm_test/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/board/hyperRam/hyperRam_ecc_test/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/board/hyperRam/hyperRam_perf/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/drivers/mmcsd/mmcsd_file_io/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/drivers/mmcsd/mmcsd_raw_io/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/drivers/ospi/ospi_flash_diag/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/drivers/ospi/ospi_flash_io/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/drivers/sciclient/sciclient_ccs_init/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/drivers/sciclient/sciclient_get_version/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/drivers/watchdog/watchdog_interrupt/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/empty/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/hello_world/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/kernel/dpl/dpl_demo/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/kernel/freertos/memcpy_benchmark/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C examples/kernel/freertos/task_switch/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+	$(MAKE) -f makefile.am275x  sbl_emmc_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  sbl_eth_uniflash_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  sbl_null_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  sbl_ospi_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  sbl_sd_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  sbl_uart_uniflash_am275x-evm_wkup-r5fss0-0_nortos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  sbl_uart_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  sbl_jtag_uniflash_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  hyperRam_ecc_esm_test_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  hyperRam_ecc_test_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  hyperRam_perf_app_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  mmcsd_file_io_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  mmcsd_raw_io_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  ospi_flash_diag_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  ospi_flash_io_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  pmu_multievent_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  sciclient_ccs_init_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  sciclient_get_version_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  udma_memcpy_polling_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  watchdog_interrupt_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  empty_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  hello_world_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  dpl_demo_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  memcpy_benchmark_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  task_switch_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 
 sbl-scrub:
-	$(MAKE) -C examples/drivers/boot/sbl_emmc/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/drivers/boot/sbl_eth_uniflash/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/drivers/boot/sbl_null/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/drivers/boot/sbl_ospi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/drivers/boot/sbl_sd/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/drivers/boot/sbl_uart_uniflash/am275x-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/drivers/boot/sbl_uart/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/drivers/boot/sbl_jtag_uniflash/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/board/hyperRam/hyperRam_ecc_esm_test/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/board/hyperRam/hyperRam_ecc_test/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/board/hyperRam/hyperRam_perf/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/drivers/mmcsd/mmcsd_file_io/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/drivers/mmcsd/mmcsd_raw_io/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/drivers/ospi/ospi_flash_diag/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/drivers/ospi/ospi_flash_io/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/drivers/pmu/pmu_multievent/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/drivers/sciclient/sciclient_ccs_init/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/drivers/sciclient/sciclient_get_version/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/drivers/udma/udma_memcpy_polling/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/drivers/watchdog/watchdog_interrupt/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/empty/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/hello_world/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/kernel/dpl/dpl_demo/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/kernel/freertos/memcpy_benchmark/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C examples/kernel/freertos/task_switch/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+	$(MAKE) -f makefile.am275x  sbl_emmc_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  sbl_eth_uniflash_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  sbl_null_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  sbl_ospi_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  sbl_sd_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  sbl_uart_uniflash_am275x-evm_wkup-r5fss0-0_nortos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  sbl_uart_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  sbl_jtag_uniflash_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  hyperRam_ecc_esm_test_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  hyperRam_ecc_test_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  hyperRam_perf_app_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  mmcsd_file_io_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  mmcsd_raw_io_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  ospi_flash_diag_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  ospi_flash_io_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  pmu_multievent_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  sciclient_ccs_init_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  sciclient_get_version_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  udma_memcpy_polling_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  watchdog_interrupt_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  empty_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  hello_world_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  dpl_demo_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  memcpy_benchmark_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  task_switch_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 
 
 

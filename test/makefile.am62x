@@ -6130,37 +6130,37 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
 
 sbl: libs
-	$(MAKE) -C drivers/boot/sbl_emmc_linux_multistage_falcon_mode/sbl_emmc_linux_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/boot/sbl_emmc_linux_multistage_falcon_mode/sbl_emmc_linux_stage1/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/boot/sbl_emmc_linux_multistage_falcon_mode/sbl_emmc_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/boot/sbl_test_ddr_copy/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/boot/sbl_test_ddr_copy/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/boot/sbl_uart_custom_boardconfig/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/boot/sbl_uart_custom_boardconfig/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile all
+	$(MAKE) -f makefile.am62x  sbl_emmc_linux_stage1_falcon_am62x-sk_r5fss0-0_nortos_ti-arm-clang
+	$(MAKE) -f makefile.am62x  sbl_emmc_linux_stage1_falcon_am62x-sip-sk_r5fss0-0_nortos_ti-arm-clang
+	$(MAKE) -f makefile.am62x  sbl_emmc_linux_stage1_falcon_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang
+	$(MAKE) -f makefile.am62x  sbl_ospi_linux_stage1_ddr_ecc_am62x-sk_r5fss0-0_nortos_ti-arm-clang
+	$(MAKE) -f makefile.am62x  sbl_ospi_nand_linux_stage1_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang
+	$(MAKE) -f makefile.am62x  sbl_test_ddr_copy_am62x-sk_r5fss0-0_nortos_ti-arm-clang
+	$(MAKE) -f makefile.am62x  sbl_test_ddr_copy_am62x-sip-sk_r5fss0-0_nortos_ti-arm-clang
+	$(MAKE) -f makefile.am62x  sbl_uart_custom_boardconfig_am62x-sk_r5fss0-0_nortos_ti-arm-clang
+	$(MAKE) -f makefile.am62x  sbl_uart_custom_boardconfig_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang
 
 sbl-clean:
-	$(MAKE) -C drivers/boot/sbl_emmc_linux_multistage_falcon_mode/sbl_emmc_linux_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/boot/sbl_emmc_linux_multistage_falcon_mode/sbl_emmc_linux_stage1/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/boot/sbl_emmc_linux_multistage_falcon_mode/sbl_emmc_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/boot/sbl_test_ddr_copy/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/boot/sbl_test_ddr_copy/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/boot/sbl_uart_custom_boardconfig/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/boot/sbl_uart_custom_boardconfig/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile clean
+	$(MAKE) -f makefile.am62x  sbl_emmc_linux_stage1_falcon_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am62x  sbl_emmc_linux_stage1_falcon_am62x-sip-sk_r5fss0-0_nortos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am62x  sbl_emmc_linux_stage1_falcon_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am62x  sbl_ospi_linux_stage1_ddr_ecc_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am62x  sbl_ospi_nand_linux_stage1_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am62x  sbl_test_ddr_copy_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am62x  sbl_test_ddr_copy_am62x-sip-sk_r5fss0-0_nortos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am62x  sbl_uart_custom_boardconfig_am62x-sk_r5fss0-0_nortos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am62x  sbl_uart_custom_boardconfig_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_clean
 
 sbl-scrub:
-	$(MAKE) -C drivers/boot/sbl_emmc_linux_multistage_falcon_mode/sbl_emmc_linux_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/boot/sbl_emmc_linux_multistage_falcon_mode/sbl_emmc_linux_stage1/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/boot/sbl_emmc_linux_multistage_falcon_mode/sbl_emmc_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/boot/sbl_ospi_linux_multistage_ddr_ecc/sbl_ospi_linux_stage1/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/boot/sbl_ospi_nand_linux_multistage_ddr_ecc/sbl_ospi_nand_linux_stage1/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/boot/sbl_test_ddr_copy/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/boot/sbl_test_ddr_copy/am62x-sip-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/boot/sbl_uart_custom_boardconfig/am62x-sk/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/boot/sbl_uart_custom_boardconfig/am62x-sk-lp/r5fss0-0_nortos/ti-arm-clang -f makefile scrub
+	$(MAKE) -f makefile.am62x  sbl_emmc_linux_stage1_falcon_am62x-sk_r5fss0-0_nortos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am62x  sbl_emmc_linux_stage1_falcon_am62x-sip-sk_r5fss0-0_nortos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am62x  sbl_emmc_linux_stage1_falcon_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am62x  sbl_ospi_linux_stage1_ddr_ecc_am62x-sk_r5fss0-0_nortos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am62x  sbl_ospi_nand_linux_stage1_ddr_ecc_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am62x  sbl_test_ddr_copy_am62x-sk_r5fss0-0_nortos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am62x  sbl_test_ddr_copy_am62x-sip-sk_r5fss0-0_nortos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am62x  sbl_uart_custom_boardconfig_am62x-sk_r5fss0-0_nortos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am62x  sbl_uart_custom_boardconfig_am62x-sk-lp_r5fss0-0_nortos_ti-arm-clang_scrub
 
 
 

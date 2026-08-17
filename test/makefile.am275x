@@ -5575,73 +5575,73 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
 
 sbl: libs
-	$(MAKE) -C drivers/device_manager/test_device_manager/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/gpio/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/gtc/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/pinmux_coverage/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/i2c/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C kernel/dpl_mpu_test/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am275x-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/mmcsd/test_mmcsd_fs_io/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/ospi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/pmu/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/sciclient/sciclient_get_version/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/uart/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/udma/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C kernel/dpl/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C kernel/freertos/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C kernel/dpl_timer/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
-	$(MAKE) -C drivers/hyperbus/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile all
+	$(MAKE) -f makefile.am275x  test_sciclient_direct_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_gpio_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_gtc_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  pinmux_coverage_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_i2c_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_i2c_fault_inject_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_mcspi_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_mpu_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_mmcsd_raw_io_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_mmcsd_raw_io_am275x-evm_wkup-r5fss0-0_nortos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_mmcsd_fault_inject_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_mmcsd_fs_io_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_ospi_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_pmu_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_sciclient_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_uart_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_udma_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_dpl_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_freertos_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_dpl_timer_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
+	$(MAKE) -f makefile.am275x  test_hyperbus_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang
 
 sbl-clean:
-	$(MAKE) -C drivers/device_manager/test_device_manager/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/gpio/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/gtc/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/pinmux_coverage/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/i2c/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C kernel/dpl_mpu_test/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am275x-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/mmcsd/test_mmcsd_fs_io/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/ospi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/pmu/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/sciclient/sciclient_get_version/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/uart/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/udma/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C kernel/dpl/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C kernel/freertos/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C kernel/dpl_timer/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
-	$(MAKE) -C drivers/hyperbus/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile clean
+	$(MAKE) -f makefile.am275x  test_sciclient_direct_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_gpio_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_gtc_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  pinmux_coverage_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_i2c_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_i2c_fault_inject_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_mcspi_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_mpu_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_mmcsd_raw_io_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_mmcsd_raw_io_am275x-evm_wkup-r5fss0-0_nortos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_mmcsd_fault_inject_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_mmcsd_fs_io_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_ospi_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_pmu_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_sciclient_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_uart_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_udma_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_dpl_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_freertos_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_dpl_timer_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
+	$(MAKE) -f makefile.am275x  test_hyperbus_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_clean
 
 sbl-scrub:
-	$(MAKE) -C drivers/device_manager/test_device_manager/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/gpio/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/gtc/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/pinmux_coverage/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/i2c/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/i2c/test_i2c_fault_inject/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/mcspi/mcspi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C kernel/dpl_mpu_test/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/mmcsd/test_mmcsd_raw_io/am275x-evm/wkup-r5fss0-0_nortos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/mmcsd/test_mmcsd_fault_inject/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/mmcsd/test_mmcsd_fs_io/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/ospi/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/pmu/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/sciclient/sciclient_get_version/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/uart/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/udma/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C kernel/dpl/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C kernel/freertos/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C kernel/dpl_timer/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
-	$(MAKE) -C drivers/hyperbus/am275x-evm/wkup-r5fss0-0_freertos/ti-arm-clang -f makefile scrub
+	$(MAKE) -f makefile.am275x  test_sciclient_direct_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_gpio_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_gtc_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  pinmux_coverage_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_i2c_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_i2c_fault_inject_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_mcspi_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_mpu_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_mmcsd_raw_io_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_mmcsd_raw_io_am275x-evm_wkup-r5fss0-0_nortos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_mmcsd_fault_inject_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_mmcsd_fs_io_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_ospi_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_pmu_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_sciclient_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_uart_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_udma_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_dpl_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_freertos_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_dpl_timer_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
+	$(MAKE) -f makefile.am275x  test_hyperbus_am275x-evm_wkup-r5fss0-0_freertos_ti-arm-clang_scrub
 
 
 

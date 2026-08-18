@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -282,92 +282,94 @@ int32_t IpcNotify_init(const IpcNotify_Params *params)
 
     if (params == NULL)
     {
-        return SystemP_FAILURE;
+        status = SystemP_FAILURE;
     }
 
-    IpcNotify_getConfig(&gIpcNotifyCtrl.interruptConfig, &gIpcNotifyCtrl.interruptConfigNum);
+    if(status == SystemP_SUCCESS)
+    {
+        IpcNotify_getConfig(&gIpcNotifyCtrl.interruptConfig, &gIpcNotifyCtrl.interruptConfigNum);
 
-    DebugP_assert(params->selfCoreId < CSL_CORE_ID_MAX);
-    gIpcNotifyCtrl.selfCoreId = params->selfCoreId;
-    for(i=0; i<IPC_NOTIFY_CLIENT_ID_MAX; i++)
-    {
-        IpcNotify_unregisterClient(i);
-    }
-    for(core=0; core<CSL_CORE_ID_MAX; core++)
-    {
-        gIpcNotifyCtrl.isCoreEnabled[core] = 0;
-        gIpcNotifyCtrl.syncMsgPend[core] = 0;
-        gIpcNotifyCtrl.nonNotifyCoreList[core] = CSL_CORE_ID_MAX;
-    }
-    gIpcNotifyCtrl.nonNotifyCallback = NULL;
-    gIpcNotifyCtrl.nonNotifyNumCores = 0;
-
-    /* check parameters and config and assert if invalid */
-    for(core=0; core<params->numCores; core++)
-    {
-        DebugP_assert(params->coreIdList[core] < CSL_CORE_ID_MAX);
-        DebugP_assert(params->coreIdList[core] != params->selfCoreId);
-        /* mark core as enabled for IPC */
-        gIpcNotifyCtrl.isCoreEnabled[params->coreIdList[core]] = 1;
-    }
-    /* fill list of non notify cores */
-    for(core=0; core<CSL_CORE_ID_MAX; core++)
-    {
-        if(gIpcNotifyCtrl.isCoreEnabled[core]==0 && core != gIpcNotifyCtrl.selfCoreId)
+        DebugP_assert(params->selfCoreId < CSL_CORE_ID_MAX);
+        gIpcNotifyCtrl.selfCoreId = params->selfCoreId;
+        for(i=0; i<IPC_NOTIFY_CLIENT_ID_MAX; i++)
         {
-            gIpcNotifyCtrl.nonNotifyCoreList[gIpcNotifyCtrl.nonNotifyNumCores] = core;
-            gIpcNotifyCtrl.nonNotifyNumCores++;
+            IpcNotify_unregisterClient(i);
         }
-    }
-    for(i=0; i<gIpcNotifyCtrl.interruptConfigNum; i++)
-    {
-        IpcNotify_InterruptConfig *pInterruptConfig;
-
-        pInterruptConfig = &gIpcNotifyCtrl.interruptConfig[i];
-
-        DebugP_assert(pInterruptConfig->numCores > 0 );
-        for(core=0; core<pInterruptConfig->numCores; core++)
+        for(core=0; core<CSL_CORE_ID_MAX; core++)
         {
-            DebugP_assert(pInterruptConfig->coreIdList[core] < CSL_CORE_ID_MAX);
-            DebugP_assert(pInterruptConfig->coreIdList[core] != gIpcNotifyCtrl.selfCoreId);
+            gIpcNotifyCtrl.isCoreEnabled[core] = 0;
+            gIpcNotifyCtrl.syncMsgPend[core] = 0;
+            gIpcNotifyCtrl.nonNotifyCoreList[core] = CSL_CORE_ID_MAX;
         }
-        /* check if mailbox info is valid for this core */
-        IpcNotify_getReadMailbox(&mailboxBaseAddr);
-        DebugP_assert(mailboxBaseAddr!=NULL);
-    }
+        gIpcNotifyCtrl.nonNotifyCallback = NULL;
+        gIpcNotifyCtrl.nonNotifyNumCores = 0;
 
-    IpcNotify_registerClient(IPC_NOTIFY_CLIENT_ID_SYNC, IpcNotify_syncCallback, NULL);
-
-    oldIntState = HwiP_disable();
-
-    for(i=0; i<gIpcNotifyCtrl.interruptConfigNum; i++)
-    {
-        HwiP_Params hwiParams;
-        IpcNotify_InterruptConfig *pInterruptConfig;
-
-        pInterruptConfig = &gIpcNotifyCtrl.interruptConfig[i];
-
-        IpcNotify_getReadMailbox(&mailboxBaseAddr);
-
-        if(pInterruptConfig->clearIntOnInit)
+        /* check parameters and config and assert if invalid */
+        for(core=0; core<params->numCores; core++)
         {
-            IpcNotify_mailboxClearAllInt(mailboxBaseAddr);
+            DebugP_assert(params->coreIdList[core] < CSL_CORE_ID_MAX);
+            DebugP_assert(params->coreIdList[core] != params->selfCoreId);
+            /* mark core as enabled for IPC */
+            gIpcNotifyCtrl.isCoreEnabled[params->coreIdList[core]] = 1;
+        }
+        /* fill list of non notify cores */
+        for(core=0; core<CSL_CORE_ID_MAX; core++)
+        {
+            if(gIpcNotifyCtrl.isCoreEnabled[core]==0 && core != gIpcNotifyCtrl.selfCoreId)
+            {
+                gIpcNotifyCtrl.nonNotifyCoreList[gIpcNotifyCtrl.nonNotifyNumCores] = core;
+                gIpcNotifyCtrl.nonNotifyNumCores++;
+            }
+        }
+        for(i=0; i<gIpcNotifyCtrl.interruptConfigNum; i++)
+        {
+            IpcNotify_InterruptConfig *pInterruptConfig;
+
+            pInterruptConfig = &gIpcNotifyCtrl.interruptConfig[i];
+
+            DebugP_assert(pInterruptConfig->numCores > 0 );
+            for(core=0; core<pInterruptConfig->numCores; core++)
+            {
+                DebugP_assert(pInterruptConfig->coreIdList[core] < CSL_CORE_ID_MAX);
+                DebugP_assert(pInterruptConfig->coreIdList[core] != gIpcNotifyCtrl.selfCoreId);
+            }
+            /* check if mailbox info is valid for this core */
+            IpcNotify_getReadMailbox(&mailboxBaseAddr);
+            DebugP_assert(mailboxBaseAddr!=NULL);
         }
 
-        HwiP_Params_init(&hwiParams);
-        hwiParams.intNum = pInterruptConfig->intNum;
-        hwiParams.callback = IpcNotify_isr;
-        hwiParams.args = (void*)pInterruptConfig;
-        hwiParams.eventId = pInterruptConfig->eventId;
-        hwiParams.isPulse = 0;
+        IpcNotify_registerClient(IPC_NOTIFY_CLIENT_ID_SYNC, IpcNotify_syncCallback, NULL);
 
-        status |= HwiP_construct(
-            &pInterruptConfig->hwiObj,
-            &hwiParams);
+        oldIntState = HwiP_disable();
+
+        for(i=0; i<gIpcNotifyCtrl.interruptConfigNum; i++)
+        {
+            HwiP_Params hwiParams;
+            IpcNotify_InterruptConfig *pInterruptConfig;
+
+            pInterruptConfig = &gIpcNotifyCtrl.interruptConfig[i];
+
+            IpcNotify_getReadMailbox(&mailboxBaseAddr);
+
+            if(pInterruptConfig->clearIntOnInit)
+            {
+                IpcNotify_mailboxClearAllInt(mailboxBaseAddr);
+            }
+
+            HwiP_Params_init(&hwiParams);
+            hwiParams.intNum = pInterruptConfig->intNum;
+            hwiParams.callback = IpcNotify_isr;
+            hwiParams.args = (void*)pInterruptConfig;
+            hwiParams.eventId = pInterruptConfig->eventId;
+            hwiParams.isPulse = 0;
+
+            status |= HwiP_construct(
+                &pInterruptConfig->hwiObj,
+                &hwiParams);
+        }
+
+        HwiP_restore(oldIntState);
     }
-
-    HwiP_restore(oldIntState);
-
     return status;
 }
 

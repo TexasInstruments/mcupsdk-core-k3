@@ -576,8 +576,10 @@ void test_main(void *args)
     RUN_TEST(TestMcspi_chConfig, 8397, (void*) &testParams);
 #endif
 #if !(defined(SOC_AM62PX) && !ENABLE_MT_TESTS) && !(defined(SOC_AM275X) && (!defined(ENABLE_MT_TESTS) || defined(BUILD_C7X)))
+#if !(defined(MCU_NORTOS))
     test_mcspi_set_params(&testParams, 9227);
     RUN_TEST(TestMcspi_loopbackRampUpWordCount,  9227, (void*)&testParams);
+#endif
 #endif
     test_mcspi_set_params(&testParams, 9233);
     RUN_TEST(TestMcspi_transferCountZero, 9233, (void*)&testParams);
@@ -601,8 +603,10 @@ void test_main(void *args)
     RUN_TEST(TestMcspi_SemaphoreTimeout, 10721, (void*)&testParams);
     test_mcspi_set_params(&testParams, 10722);
     RUN_TEST(TestMcspi_MasterCoverageTc, 10722, (void*)&testParams);
+#if !(defined(SOC_AM62DX) && defined(BUILD_C7X))
     test_mcspi_set_params(&testParams, 10723);
     RUN_TEST(TestMcspi_MasterCoverageTc, 10723, (void*)&testParams);
+#endif
 /* AM263X does not support MCU_SPI instance */
 #if !defined(SOC_AM263X) && !defined(SOC_AM62AX) && !defined(SOC_AM62X) && !defined(SOC_AM62DX) && !defined(SOC_AM275X)
 /* AM243 LP we, have only 2 instances available */

@@ -196,6 +196,14 @@ const defines_c75 = {
     ]
 };
 
+const defines_McuNortos = {
+    common:[
+        "SOC_AM62DX",
+        "R5F_CORE",
+        "MCU_NORTOS",
+    ]
+};
+
 const defines_a53_smp = {
     common: [
         "SOC_AM62DX",
@@ -366,6 +374,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_nortos;
             build_property.libs = libs_nortos_r5f;
             build_property.templates = templates_nortos_mcu_r5f;
+            build_property.defines = defines_McuNortos;
         }
     }
     else if(buildOption.cpu.match(/a53*/)) {

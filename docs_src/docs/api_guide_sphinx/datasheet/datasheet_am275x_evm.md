@@ -29,115 +29,102 @@ Code Placement          | MSRAM / L2RAM
 Data Placement          | MSRAM / L2RAM
 
 ## Performance Numbers
-### SBL OSPI NOR performance (HS-FS)
+### EMMC
 
-- Software/Application used        : sbl_ospi, ipc_rpmsg_echo
-- Cores booted by SBL              : r5fss0-0 r5fss0-1 r5fss1-0 r5fss1-1 c75ss0-0 c75ss1-0
-- Size of images loaded            : 479 KB
-- Boot Media Clock                 : 166.667 MHz
-- Mode                             : PHY enabled, DMA enabled
-- Protocol                         : 8D-8D-8D
+Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
+-------|----------------|--------------------|-----------------
+SDR50  |     0.12	      |       11.67        | 38.65
+DDR50  | 	 0.12       |       38.05        | 65.00
+HS200  | 	 0.12       |       49.96        | 107.57
 
-SBL boot time breakdown          |   Time (us)
----------------------------------|--------------
-TIFS init                        |        296
-System_init                      |       2720
-Board_init                       |          7
-FreeRtosTask Create              |        300
-Drivers_open                     |       5794
-Board_driversOpen                |        159
-sciServer_init                   |      15090
-SBL Drivers_open                 |       3217
-SBL Board_driversOpen            |       5815
-Sciclient Get Version            |       6607
-R5FSS0_0 Image Load              |       17496
-R5FSS0_1 Image Load              |       2430
-R5FSS1_0 Image Load              |       2429
-R5FSS1_1 Image Load              |       2414
-DSP 0 Image Load                 |       7767
-DSP 1 Image Load                 |       7656
----------------------------------|--------------
-SBL Total Time Taken             |      82489
+### Ethernet AVB
+For Ethernet AVB performance refer [Ethernet AVB Performance](../components/networking/enet_lld/eavb_performance.md)
 
-### SBL Fast-xSPI NOR performance (HS-FS)
+### Ethernet
+For Ethernet performance refer [Ethernet Performance](../components/networking/enet_lld/enet_cpsw_performance_am275x.md)
 
-- Software/Application used        : sbl_ospi, ipc_rpmsg_echo
-- Cores booted by SBL              : r5fss0-0 r5fss0-1 r5fss1-0 r5fss1-1 c75ss0-0 c75ss1-0
-- Size of images loaded            : 463 KB
-- Boot Media Clock                 : 133.333 MHz
-- Mode                             : PHY enabled, DMA enabled
-- Protocol                         : 8D-8D-8D
+### HYPERRAM with cache enabled
 
-SBL boot time breakdown          |   Time (us)
----------------------------------|--------------
-TIFS init                        |        296
-System_init                      |       2743
-Board_init                       |          7
-FreeRtosTask Create              |        255
-Drivers_open                     |       5789
-Board_driversOpen                |        159
-sciServer_init                   |      15090
-SBL Drivers_open                 |       3212
-SBL Board_driversOpen            |       5810
-Sciclient Get Version            |       6608
-R5FSS0_0 Image Load              |       2188
-R5FSS0_1 Image Load              |       1652
-R5FSS1_0 Image Load              |       1651
-R5FSS1_1 Image Load              |       1633
-DSP 0 Image Load                 |       7020
-DSP 1 Image Load                 |       6908
----------------------------------|--------------
-SBL Total Time Taken             |      61021
+For R5 core:-
 
-#### R5FSS0_0 boot time using Fast-xSPI Bootmode
+ECC         | Transfer Mode  | Write speed(MiBps) | Read speed(MiBps)
+------------|----------------|--------------------|-------------------
+Disabled    |     CPU        |      95.65         |        70.66
+Disabled    |     BCDMA      |      144.68         |        144.46
+enabled     |     CPU        |      79.52         |        68.53
+enabled     |     BCDMA      |      109.11         |        136.58
 
-For how to enable Fast XSPI boot refer FAST_XSPI_BOOTMODE_GUIDE
- - GPIO toggle time from R5FSS0_0 (Measured from PORz)
-   - 53 ms
+For c7x core:-
 
- - Cores booted by SBL : r5fss0-0, r5fss0-1, r5fss1-0, r5fss1-1, c75ss0-0, c75ss1-0
- - R5FSS0-0 image size = ~ 1 MB and remaining cores by default ipc rpmsg images
+ECC         | Transfer Mode  | Write speed(MiBps) | Read speed(MiBps)
+------------|----------------|--------------------|-------------------
+Disabled    |     CPU        |      145.32        |        72.39
+Disabled    |     BCDMA      |      144.04        |        143.82
+enabled     |     CPU        |      109.48        |        70.36
+enabled     |     BCDMA      |      108.63        |        136.01
 
-#### C7x audio chime time using Fast-xSPI Bootmode
+### HYPERRAM XIP benchmark
+- Core :	R5F
+- Core Operating Speed : 800 MHz
 
-For how to enable Fast XSPI boot refer FAST_XSPI_BOOTMODE_GUIDE
- - C7x audio out time (Measured from PORz)
-   - 80 ms
+- Software/Application used : hyperRam_xip_benchmark
 
- - Cores booted by SBL : r5fss0-0, r5fss0-1, r5fss1-0, r5fss1-1, c75ss0-0, c75ss1-0
- - C75SS0-0 image size = ~ 1 MB and remaining cores by default ipc rpmsg images
- - Includes DAC configuration time
+- 1) FIR operation
 
+Caching status                          | Cycles taken
+----------------------------------------|-------------
+Code/Data fully cached                  |    23913
+Code/Data not cached                    |    46640
+Code/Data not cached 1 of 10 iterations |    26187
 
-### SBL EMMC performance (HS-FS)
+- 2) MEMCPY operation
 
-- Software/Application used        : sbl_emmc, ipc_rpmsg_echo
-- Cores booted by SBL              : r5fss0-0 r5fss0-1 r5fss1-0 r5fss1-1 c75ss0-0 c75ss1-0
-- Size of images loaded            : 467 KB
-- Boot Media Clock                 : 200.00 MHz
-- Mode                             : HS200
+Caching status                          | Cycles taken
+----------------------------------------|-------------
+Code/Data fully cached                  |    1563
+Code/Data not cached                    |    5274
+Code/Data not cached 1 of 10 iterations |    1935
 
-SBL boot time breakdown          |   Time (us)
----------------------------------|--------------
-TIFS init                        |        335
-System_init                      |      13534
-Board_init                       |          5
-FreeRtosTask Create              |        260
-Drivers_open                     |       5807
-Board_driversOpen                |        160
-sciServer_init                   |        131
-SBL Drivers_open                 |      53122
-Sciclient Get Version            |       6652
-R5FSS0_0 Image Load              |      18523
-R5FSS0_1 Image Load              |      16666
-R5FSS1_0 Image Load              |      16663
-R5FSS1_1 Image Load              |      16646
-DSP 0 Image Load                 |      18884
-DSP 1 Image Load                 |      18783
----------------------------------|--------------
-SBL Total Time Taken             |     196453
+### I2C
 
-### IPC performance
+- Data write/read throughput measured at 100 kHz and 400 kHz, in polling and interrupt transfer modes
+- MiB/s computed from Data Size / Transfer Time (firmware's floating-point throughput print does not render on this build; transfer time is measured directly)
+
+**r5f0-0:**
+
+Mode      | Freq    | Data Size (B) | Write MiB/s | Write Time (us) | Read MiB/s | Read Time (us)
+----------|---------|---------------|-------------|------------------|------------|---------------
+POLLING   | 100 kHz | 64            | 0.01        | 6063             | 0.01       | 6171
+POLLING   | 100 kHz | 128           | 0.01        | 11823            | 0.01       | 11932
+POLLING   | 100 kHz | 256           | 0.01        | 23342            | 0.01       | 23451
+POLLING   | 400 kHz | 64            | 0.04        | 1570             | 0.04       | 1599
+POLLING   | 400 kHz | 128           | 0.04        | 3058             | 0.04       | 3087
+POLLING   | 400 kHz | 256           | 0.04        | 6034             | 0.04       | 6063
+INTERRUPT | 100 kHz | 64            | 0.01        | 6062             | 0.01       | 6173
+INTERRUPT | 100 kHz | 128           | 0.01        | 11821            | 0.01       | 11932
+INTERRUPT | 100 kHz | 256           | 0.01        | 23340            | 0.01       | 23451
+INTERRUPT | 400 kHz | 64            | 0.04        | 1569             | 0.04       | 1600
+INTERRUPT | 400 kHz | 128           | 0.04        | 3057             | 0.04       | 3088
+INTERRUPT | 400 kHz | 256           | 0.04        | 6033             | 0.04       | 6063
+
+**wkup-r5f0-0:**
+
+Mode      | Freq    | Data Size (B) | Write MiB/s | Write Time (us) | Read MiB/s | Read Time (us)
+----------|---------|---------------|-------------|------------------|------------|---------------
+POLLING   | 100 kHz | 64            | 0.01        | 6065             | 0.01       | 6173
+POLLING   | 100 kHz | 128           | 0.01        | 11824            | 0.01       | 11932
+POLLING   | 100 kHz | 256           | 0.01        | 23344            | 0.01       | 23451
+POLLING   | 400 kHz | 64            | 0.04        | 1570             | 0.04       | 1600
+POLLING   | 400 kHz | 128           | 0.04        | 3059             | 0.04       | 3088
+POLLING   | 400 kHz | 256           | 0.04        | 6034             | 0.04       | 6064
+INTERRUPT | 100 kHz | 64            | 0.01        | 6063             | 0.01       | 6174
+INTERRUPT | 100 kHz | 128           | 0.01        | 11822            | 0.01       | 11933
+INTERRUPT | 100 kHz | 256           | 0.01        | 23341            | 0.01       | 23453
+INTERRUPT | 400 kHz | 64            | 0.04        | 1570             | 0.04       | 1601
+INTERRUPT | 400 kHz | 128           | 0.04        | 3058             | 0.04       | 3089
+INTERRUPT | 400 kHz | 256           | 0.04        | 6034             | 0.04       | 6065
+
+### IPC
 
 #### IPC NOTIFY
 
@@ -173,16 +160,7 @@ c75ss0-0	    | c75ss1-0	  | 1.600
 | r5f0-0     | c75ss1-0    | 64           | 9.166                        | 9                |
 | r5f0-0     | c75ss1-0    | 112          | 10.333                       | 10               |
 
-
-### EMMC Performance
-
-Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
--------|----------------|--------------------|-----------------
-SDR50  |     0.12	      |       11.67        | 38.65
-DDR50  | 	 0.12       |       38.05        | 65.00
-HS200  | 	 0.12       |       49.96        | 107.57
-
-### OSPI NOR Flash Performance
+### OSPI NOR Flash
 **wkup-r5f0-0:**
 
  - PHY condition: enabled
@@ -397,7 +375,7 @@ Fast Tuning Window          |          5.01 ms
 |-----------------|-----------|-------------|-------------------|------------------|
 | 1               | INDAC     | No          | 0.42              | 21.76            |
 
- ### XIP Benchmark
+### XIP Benchmark
 - Core :	R5F
 - Core Operating Speed : 800 MHz
 
@@ -419,58 +397,7 @@ Code/Data fully cached                  |    1564
 Code/Data not cached                    |    7661
 Code/Data not cached 1 of 10 iterations |    2177
 
-### HYPERRAM Performance with cache enabled
-
-For R5 core:-
-
-ECC         | Transfer Mode  | Write speed(MiBps) | Read speed(MiBps)
-------------|----------------|--------------------|-------------------
-Disabled    |     CPU        |      95.65         |        70.66
-Disabled    |     BCDMA      |      144.68         |        144.46
-enabled     |     CPU        |      79.52         |        68.53
-enabled     |     BCDMA      |      109.11         |        136.58
-
-For c7x core:-
-
-ECC         | Transfer Mode  | Write speed(MiBps) | Read speed(MiBps)
-------------|----------------|--------------------|-------------------
-Disabled    |     CPU        |      145.32        |        72.39
-Disabled    |     BCDMA      |      144.04        |        143.82
-enabled     |     CPU        |      109.48        |        70.36
-enabled     |     BCDMA      |      108.63        |        136.01
-
-### HYPERRAM XIP benchmark
-- Core :	R5F
-- Core Operating Speed : 800 MHz
-
-- Software/Application used : hyperRam_xip_benchmark
-
-- 1) FIR operation
-
-Caching status                          | Cycles taken
-----------------------------------------|-------------
-Code/Data fully cached                  |    23913
-Code/Data not cached                    |    46640
-Code/Data not cached 1 of 10 iterations |    26187
-
-- 2) MEMCPY operation
-
-Caching status                          | Cycles taken
-----------------------------------------|-------------
-Code/Data fully cached                  |    1563
-Code/Data not cached                    |    5274
-Code/Data not cached 1 of 10 iterations |    1935
-
-### Ethernet Performance
-For Ethernet performance refer [Ethernet Performance](../components/networking/enet_lld/enet_cpsw_performance_am275x.md)
-
-### Ethernet AVB Performance
-For Ethernet AVB performance, refer to the page EAVB_PERFORMANCE
-
-### McASP (audio) Latency
- - McASP operating at 48KHz, I2C mode
- - RX to TX pin to pin latency is measured
- - Rx To Tx pin to pin latency ~126us
+## Latency
 
 ### ARM R5F - Memory Access latency
 - [32-BIT READ] Self TCM Access Average Latency Per Byte: 1.078125 ns
@@ -488,3 +415,117 @@ For Ethernet AVB performance, refer to the page EAVB_PERFORMANCE
 
 - [64-BIT READ] L2RAM Access Average Latency Per Byte: 1.187500 ns
 - [64-BIT READ] MSRAM Access Average Latency Per Byte: 1.375000 ns
+
+### MCASP (audio) Latency
+ - MCASP operating at 48KHz, I2C mode
+ - RX to TX pin to pin latency is measured
+ - Rx To Tx pin to pin latency ~126us
+
+## SBL Performance
+
+### SBL OSPI NOR (HS-FS)
+
+- Software/Application used        : sbl_ospi, ipc_rpmsg_echo
+- Cores booted by SBL              : r5fss0-0 r5fss0-1 r5fss1-0 r5fss1-1 c75ss0-0 c75ss1-0
+- Size of images loaded            : 479 KB
+- Boot Media Clock                 : 166.667 MHz
+- Mode                             : PHY enabled, DMA enabled
+- Protocol                         : 8D-8D-8D
+
+SBL boot time breakdown          |   Time (us)
+---------------------------------|--------------
+TIFS init                        |        296
+System_init                      |       2720
+Board_init                       |          7
+FreeRtosTask Create              |        300
+Drivers_open                     |       5794
+Board_driversOpen                |        159
+sciServer_init                   |      15090
+SBL Drivers_open                 |       3217
+SBL Board_driversOpen            |       5815
+Sciclient Get Version            |       6607
+R5FSS0_0 Image Load              |       17496
+R5FSS0_1 Image Load              |       2430
+R5FSS1_0 Image Load              |       2429
+R5FSS1_1 Image Load              |       2414
+DSP 0 Image Load                 |       7767
+DSP 1 Image Load                 |       7656
+---------------------------------|--------------
+SBL Total Time Taken             |      82489
+
+### SBL Fast-xSPI NOR (HS-FS)
+
+- Software/Application used        : sbl_ospi, ipc_rpmsg_echo
+- Cores booted by SBL              : r5fss0-0 r5fss0-1 r5fss1-0 r5fss1-1 c75ss0-0 c75ss1-0
+- Size of images loaded            : 463 KB
+- Boot Media Clock                 : 133.333 MHz
+- Mode                             : PHY enabled, DMA enabled
+- Protocol                         : 8D-8D-8D
+
+SBL boot time breakdown          |   Time (us)
+---------------------------------|--------------
+TIFS init                        |        296
+System_init                      |       2743
+Board_init                       |          7
+FreeRtosTask Create              |        255
+Drivers_open                     |       5789
+Board_driversOpen                |        159
+sciServer_init                   |      15090
+SBL Drivers_open                 |       3212
+SBL Board_driversOpen            |       5810
+Sciclient Get Version            |       6608
+R5FSS0_0 Image Load              |       2188
+R5FSS0_1 Image Load              |       1652
+R5FSS1_0 Image Load              |       1651
+R5FSS1_1 Image Load              |       1633
+DSP 0 Image Load                 |       7020
+DSP 1 Image Load                 |       6908
+---------------------------------|--------------
+SBL Total Time Taken             |      61021
+
+#### R5FSS0_0 boot time using Fast-xSPI Bootmode
+
+For how to enable Fast XSPI boot refer FAST_XSPI_BOOTMODE_GUIDE
+ - GPIO toggle time from R5FSS0_0 (Measured from PORz)
+   - 53 ms
+
+ - Cores booted by SBL : r5fss0-0, r5fss0-1, r5fss1-0, r5fss1-1, c75ss0-0, c75ss1-0
+ - R5FSS0-0 image size = ~ 1 MB and remaining cores by default ipc rpmsg images
+
+#### C7x audio chime time using Fast-xSPI Bootmode
+
+For how to enable Fast XSPI boot refer FAST_XSPI_BOOTMODE_GUIDE
+ - C7x audio out time (Measured from PORz)
+   - 80 ms
+
+ - Cores booted by SBL : r5fss0-0, r5fss0-1, r5fss1-0, r5fss1-1, c75ss0-0, c75ss1-0
+ - C75SS0-0 image size = ~ 1 MB and remaining cores by default ipc rpmsg images
+ - Includes DAC configuration time
+
+### SBL EMMC (HS-FS)
+
+- Software/Application used        : sbl_emmc, ipc_rpmsg_echo
+- Cores booted by SBL              : r5fss0-0 r5fss0-1 r5fss1-0 r5fss1-1 c75ss0-0 c75ss1-0
+- Size of images loaded            : 467 KB
+- Boot Media Clock                 : 200.00 MHz
+- Mode                             : HS200
+
+SBL boot time breakdown          |   Time (us)
+---------------------------------|--------------
+TIFS init                        |        335
+System_init                      |      13534
+Board_init                       |          5
+FreeRtosTask Create              |        260
+Drivers_open                     |       5807
+Board_driversOpen                |        160
+sciServer_init                   |        131
+SBL Drivers_open                 |      53122
+Sciclient Get Version            |       6652
+R5FSS0_0 Image Load              |      18523
+R5FSS0_1 Image Load              |      16666
+R5FSS1_0 Image Load              |      16663
+R5FSS1_1 Image Load              |      16646
+DSP 0 Image Load                 |      18884
+DSP 1 Image Load                 |      18783
+---------------------------------|--------------
+SBL Total Time Taken             |     196453

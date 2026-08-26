@@ -22,215 +22,18 @@ Data Placement          | HSM RAM (For SBL Stage1), DDR (SBL Stage2 and others)
 
 ## Performance Numbers
 
-### SBL OSPI NAND performance (HS-FS)
+### DDR
 
-- Software/Application used        : sbl_ospi_nand_linux_multistage, ipc_rpmsg_echo_linux, linux and HSM App Images
-- Cores booted by stage1 SBL       : mcu-r5f0-0 r5f0-0
-- Cores booted by stage2 SBL       : hsm-m4f0-0 r5f0-0 a530-0 c75ss0
-- Size of images loaded by stage1  : 194 KB
-- Size of images loaded by stage2  : 1360 KB
-- Boot Media Clock                 : 166.667 MHz
-- Mode                             : PHY enabled, DMA enabled
-- Protocol                         : 1S-8S-8S
+- Software/Application used        : ddr_perf (10MB DDR-to-DDR memcpy, measured via DDR controller load/bandwidth counters)
+- Measured on r5f0-0
 
-SBL Stage1 boot time breakdown          |   Time (ms)
-----------------------------------------|--------------
-SBL Stage1: System_init                 |   26.080
-SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |    0.196
-SBL Stage1: Board_driversOpen           |   31.939
-SBL Stage1: Sciclient Get Version       |    6.610
-SBL Stage1: App_waitForMcuPbist         |    0.083
-SBL Stage1: MCU R5 Image Load           |    3.462
-SBL Stage1: DM R5 Image Load            |    6.062
-----------------------------------------|--------------
-SBL Stage2: Total time taken            |   74.436
+DDR Bandwidth | Value (MiB/s)
+--------------|--------------
+Read          | 295
+Write         | 325
+Total         | 620
 
-SBL Stage2 boot time breakdown          |   Time (ms)
-----------------------------------------|--------------
-SBL Stage2: System_init                 |    1.670
-SBL Stage2: Board_init                  |    0.000
-SBL Stage2: Drivers_open                |    0.217
-SBL Stage2: Board_driversOpen           |   37.663
-SBL Stage2: Sciclient Get Version       |    6.642
-SBL Stage2: HSM Image Load              |    2.210
-SBL Stage2: DM R5 Image Load            |    7.760
-SBL Stage2: A53 Image Load              |   30.779
-SBL Stage2: DSP Image Load              |   12.718
-----------------------------------------|--------------
-SBL Stage2: Total time taken            |   99.633
-
-- Here the CPU load or section copy takes place from the OSPI memory to DDR, this would be slower that mem to mem copy.
-
-- The time taken for Sciclient Get Version can be avoided if the version check is disabled
-
-- MCU PBIST is started before the DDR init/ It is done in HW in parallel while the DDR init is completed. Due to this MCU PBIST wait time is low.
-
-- Out of the ~39 ms taken for System Init is mostly attributed to DDR initialization.
-
-### SBL OSPI NAND performance (HS)
-
-- Software/Application used        : sbl_ospi_nand_linux_multistage, ipc_rpmsg_echo_linux, linux and HSM App Images
-- Cores booted by stage1 SBL       : mcu-r5f0-0 r5f0-0
-- Cores booted by stage2 SBL       : hsm-m4f0-0 r5f0-0 a530-0 c75ss0
-- Size of images loaded by stage1  : 194 KB
-- Size of images loaded by stage2  : 1360 KB
-- Boot Media Clock                 : 166.667 MHz
-- Mode                             : PHY enabled, DMA enabled
-- Protocol                         : 1S-8S-8S
-
-SBL Stage1 boot time breakdown          |   Time (ms)
-----------------------------------------|--------------
-SBL Stage1: System_init                 |   26.003
-SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |    0.196
-SBL Stage1: Board_driversOpen           |   31.903
-SBL Stage1: Sciclient Get Version       |    6.610
-SBL Stage1: App_waitForMcuPbist         |    0.082
-SBL Stage1: MCU R5 Image Load           |    3.470
-SBL Stage1: DM R5 Image Load            |    6.607
-----------------------------------------|--------------
-SBL Stage2: Total time taken            |   74.334
-
-SBL Stage2 boot time breakdown          |   Time (ms)
-----------------------------------------|--------------
-SBL Stage2: System_init                 |    1.670
-SBL Stage2: Board_init                  |    0.000
-SBL Stage2: Drivers_open                |    0.216
-SBL Stage2: Board_driversOpen           |   37.514
-SBL Stage2: Sciclient Get Version       |    6.648
-SBL Stage2: HSM Image Load              |    2.217
-SBL Stage2: DM R5 Image Load            |    7.750
-SBL Stage2: A53 Image Load              |   30.711
-SBL Stage2: DSP Image Load              |   12.712
-----------------------------------------|--------------
-SBL Stage2: Total time taken            |   99.444
-
-- Here the CPU load or section copy takes place from the OSPI memory to DDR, this would be slower that mem to mem copy.
-
-- The time taken for Sciclient Get Version can be avoided if the version check is disabled
-
-- MCU PBIST is started before the DDR init/ It is done in HW in parallel while the DDR init is completed. Due to this MCU PBIST wait time is low.
-
-- Out of the ~39 ms taken for System Init is mostly attributed to DDR initialization.
-
-### SBL EMMC performance (HS-FS)
-
-- Software/Application used        : sbl_emmc_linux_multistage, ipc_rpmsg_echo_linux, linux and HSM App Images
-- Cores booted by stage1 SBL       : mcu-r5f0-0 r5f0-0
-- Cores booted by stage2 SBL       : hsm-m4f0-0 r5f0-0 a530-0 c75ss0
-- Size of images loaded by stage1  : 188 KB
-- Size of images loaded by stage2  : 1360 KB
-- Boot Media Clock                 : 200.000 MHz
-- Mode                             : HS200
-
-SBL Stage1 boot time breakdown          |   Time (ms)
-----------------------------------------|--------------
-SBL Stage1: System_init                 |   26.382
-SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |   21.473
-SBL Stage1: Board_driversOpen           |    0.000
-SBL Stage1: Sciclient Get Version       |    6.609
-SBL Stage1: MCU R5 Image Load           |    8.166
-SBL Stage1: DM R5 Image Load            |    7.362
-----------------------------------------|--------------
-SBL Stage1: Total time taken            |   69.994
-
-SBL Stage2 boot time breakdown          |   Time (ms)
-----------------------------------------|--------------
-SBL Stage2: System_init                 |    1.669
-SBL Stage2: Board_init                  |    0.000
-SBL Stage2: Drivers_open                |   21.426
-SBL Stage2: Board_driversOpen           |    0.000
-SBL Stage2: Sciclient Get Version       |    6.634
-SBL Stage2: HSM Image Load              |    5.847
-SBL Stage2: DM R5 Image Load            |    8.134
-SBL Stage2: A53 Image Load              |   19.442
-SBL Stage2: DSP Image Load              |   13.895
-----------------------------------------|--------------
-SBL Stage2: Total time taken            |   77.051
-
-- The emmc driver initialization is done as part of Drivers_open.
-
-- The time taken for Sciclient Get Version can be avoided if the version check is disabled
-
-- Out of the ~39 ms taken for System Init is mostly attributed to DDR initialization.
-
-### SBL EMMC performance (HS)
-
-- Software/Application used        : sbl_emmc_linux_multistage, ipc_rpmsg_echo_linux, linux and HSM App Images
-- Cores booted by stage1 SBL       : mcu-r5f0-0 r5f0-0
-- Cores booted by stage2 SBL       : hsm-m4f0-0 r5f0-0 a530-0 c75ss0
-- Size of images loaded by stage1  : 188 KB
-- Size of images loaded by stage2  : 1360 KB
-- Boot Media Clock                 : 200.000 MHz
-- Mode                             : HS200
-
-SBL Stage1 boot time breakdown          |   Time (ms)
-----------------------------------------|--------------
-SBL Stage1: System_init                 |   25.993
-SBL Stage1: Board_init                  |    0.000
-SBL Stage1: Drivers_open                |   21.466
-SBL Stage1: Board_driversOpen           |    0.000
-SBL Stage1: Sciclient Get Version       |    6.608
-SBL Stage1: MCU R5 Image Load           |    7.265
-SBL Stage1: DM R5 Image Load            |    7.371
-----------------------------------------|--------------
-SBL Stage1: Total time taken            |   68.706
-
-SBL Stage2 boot time breakdown          |   Time (ms)
-----------------------------------------|--------------
-SBL Stage2: System_init                 |    1.669
-SBL Stage2: Board_init                  |    0.000
-SBL Stage2: Drivers_open                |   21.322
-SBL Stage2: Board_driversOpen           |    0.000
-SBL Stage2: Sciclient Get Version       |    6.637
-SBL Stage2: HSM Image Load              |    5.848
-SBL Stage2: DM R5 Image Load            |    8.150
-SBL Stage2: A53 Image Load              |   19.239
-SBL Stage2: DSP Image Load              |   13.880
-----------------------------------------|--------------
-SBL Stage2: Total time taken            |   76.749
-
-- The emmc driver initialization is done as part of Drivers_open.
-
-- The time taken for Sciclient Get Version can be avoided if the version check is disabled
-
-- Out of the ~39 ms taken for System Init is mostly attributed to DDR initialization.
-
-### IPC performance
-
-#### IPC NOTIFY
-
-- 10000 messages are sent and average one way message latency is measured
-
-Local Core  | Remote Core | Average Message Latency (us)
-------------|-------------|------------------------------
- r5f0-0     | mcu-r5f0-0  |  1.24
- r5f0-0     | a530-0      |  6.64
- r5f0-0     | c75ss0      |  14.66
-
-#### IPC RPMSG
-
-- 1000 messages are sent and average one way message latency is measured
-
-Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Latency (us) | Message Count
-------------|-------------|--------------|------------------------------|------------------|--------------
-      r5f0-0|       a530-0|             4|                         7.288|                 9|         1000
-      r5f0-0|   mcu-r5f0-0|             4|                         9.102|                11|         1000
-      r5f0-0|       c75ss0|             4|                        77.705|               103|         1000
-      r5f0-0|       a530-0|            32|                         9.757|                12|         1000
-      r5f0-0|       a530-0|            64|                        12.763|                16|         1000
-      r5f0-0|       a530-0|           112|                        17.399|                23|         1000
-      r5f0-0|   mcu-r5f0-0|            32|                        14.887|                18|         1000
-      r5f0-0|   mcu-r5f0-0|            64|                        21.410|                27|         1000
-      r5f0-0|   mcu-r5f0-0|           112|                        31.237|                38|         1000
-      r5f0-0|       c75ss0|            32|                        85.867|               113|         1000
-      r5f0-0|       c75ss0|            64|                        91.992|               121|         1000
-      r5f0-0|       c75ss0|           112|                       104.768|               139|         1000
-
-
-### EMMC Performance
+### EMMC
 **r5f0-0:**
 Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
 -------|----------------|--------------------|-----------------
@@ -269,7 +72,85 @@ Mode   | Data size(MiB) | Write speed(MiBps) | Read speed(MiBps)
  HS200 | 32	            | 105.89	         | 184.43
  HS200 | 40	            | 96.59              | 184.59
 
-### OSPI NAND Performance
+### GPIO latency
+GPIO latency is measured by connecting 2 GPIOs externaly and configuring one GPIO as input and the other as output. Then 1 is written to GPIO output and
+measure the time between writing 1 to GPIO output to rececving the interrupt at GPIO input.
+
+Core      | GPIO In      | GPIO Out     | Latency (us)
+----------|--------------|--------------|-------------
+ mcu-r5f  | MCU_GPIO0_15 | MCU_GPIO0_16 |   2
+
+### I2C
+
+- Data write/read throughput measured at 100 kHz and 400 kHz, in polling and interrupt transfer modes
+- MiB/s computed from Data Size / Transfer Time (firmware's floating-point throughput print does not render on this build; transfer time is measured directly)
+
+**r5f0-0:**
+
+Mode      | Freq    | Data Size (B) | Write MiB/s | Write Time (us) | Read MiB/s | Read Time (us)
+----------|---------|---------------|-------------|------------------|------------|---------------
+POLLING   | 100 kHz | 64            | 0.01        | 6067             | 0.01       | 6176
+POLLING   | 100 kHz | 128           | 0.01        | 11826            | 0.01       | 11935
+POLLING   | 100 kHz | 256           | 0.01        | 23345            | 0.01       | 23454
+POLLING   | 400 kHz | 64            | 0.04        | 1572             | 0.04       | 1602
+POLLING   | 400 kHz | 128           | 0.04        | 3061             | 0.04       | 3091
+POLLING   | 400 kHz | 256           | 0.04        | 6037             | 0.04       | 6066
+INTERRUPT | 100 kHz | 64            | 0.01        | 6065             | 0.01       | 6178
+INTERRUPT | 100 kHz | 128           | 0.01        | 11824            | 0.01       | 11937
+INTERRUPT | 100 kHz | 256           | 0.01        | 23343            | 0.01       | 23456
+INTERRUPT | 400 kHz | 64            | 0.04        | 1572             | 0.04       | 1605
+INTERRUPT | 400 kHz | 128           | 0.04        | 3061             | 0.04       | 3093
+INTERRUPT | 400 kHz | 256           | 0.04        | 6036             | 0.04       | 6068
+
+**a53ss0-0:**
+
+Mode      | Freq    | Data Size (B) | Write MiB/s | Write Time (us) | Read MiB/s | Read Time (us)
+----------|---------|---------------|-------------|------------------|------------|---------------
+POLLING   | 100 kHz | 64            | 0.01        | 6065             | 0.01       | 6174
+POLLING   | 100 kHz | 128           | 0.01        | 11824            | 0.01       | 11933
+POLLING   | 100 kHz | 256           | 0.01        | 23344            | 0.01       | 23453
+POLLING   | 400 kHz | 64            | 0.04        | 1572             | 0.04       | 1601
+POLLING   | 400 kHz | 128           | 0.04        | 3060             | 0.04       | 3089
+POLLING   | 400 kHz | 256           | 0.04        | 6036             | 0.04       | 6065
+INTERRUPT | 100 kHz | 64            | 0.01        | 6064             | 0.01       | 6178
+INTERRUPT | 100 kHz | 128           | 0.01        | 11824            | 0.01       | 11937
+INTERRUPT | 100 kHz | 256           | 0.01        | 23343            | 0.01       | 23456
+INTERRUPT | 400 kHz | 64            | 0.04        | 1572             | 0.04       | 1605
+INTERRUPT | 400 kHz | 128           | 0.04        | 3060             | 0.04       | 3092
+INTERRUPT | 400 kHz | 256           | 0.04        | 6035             | 0.04       | 6068
+
+### IPC
+
+#### IPC NOTIFY
+
+- 10000 messages are sent and average one way message latency is measured
+
+Local Core  | Remote Core | Average Message Latency (us)
+------------|-------------|------------------------------
+ r5f0-0     | mcu-r5f0-0  |  1.24
+ r5f0-0     | a530-0      |  6.64
+ r5f0-0     | c75ss0      |  14.66
+
+#### IPC RPMSG
+
+- 1000 messages are sent and average one way message latency is measured
+
+Local Core  | Remote Core | Message Size | Average Message Latency (us) | Max Latency (us) | Message Count
+------------|-------------|--------------|------------------------------|------------------|--------------
+      r5f0-0|       a530-0|             4|                         7.288|                 9|         1000
+      r5f0-0|   mcu-r5f0-0|             4|                         9.102|                11|         1000
+      r5f0-0|       c75ss0|             4|                        77.705|               103|         1000
+      r5f0-0|       a530-0|            32|                         9.757|                12|         1000
+      r5f0-0|       a530-0|            64|                        12.763|                16|         1000
+      r5f0-0|       a530-0|           112|                        17.399|                23|         1000
+      r5f0-0|   mcu-r5f0-0|            32|                        14.887|                18|         1000
+      r5f0-0|   mcu-r5f0-0|            64|                        21.410|                27|         1000
+      r5f0-0|   mcu-r5f0-0|           112|                        31.237|                38|         1000
+      r5f0-0|       c75ss0|            32|                        85.867|               113|         1000
+      r5f0-0|       c75ss0|            64|                        91.992|               121|         1000
+      r5f0-0|       c75ss0|           112|                       104.768|               139|         1000
+
+### OSPI NAND
 **r5f0-0:**
 
 Non-DQS Tuning Algorithm    |    Tuning Time (ms)
@@ -415,14 +296,31 @@ Fast Tuning Window          |          0.72  ms
       5          |        DAC        |        Yes        |        11.40          |       46.53
       10         |        DAC        |        Yes        |        11.37          |       46.53
 
+### UDMA
 
- ### GPIO latency
-GPIO latency is measured by connecting 2 GPIOs externaly and configuring one GPIO as input and the other as output. Then 1 is written to GPIO output and
-measure the time between writing 1 to GPIO output to rececving the interrupt at GPIO input.
+- BCDMA block-copy throughput for various source/destination combinations (DDR, internal OCRAM)
 
-Core      | GPIO In      | GPIO Out     | Latency (us)
-----------|--------------|--------------|-------------
- mcu-r5f  | MCU_GPIO0_15 | MCU_GPIO0_16 |   2
+**r5f0-0:**
+
+Test                                                                            | Throughput (MB/s)
+---------------------------------------------------------------------------------|-------------------
+BCDMA Blockcpy DDR 1MB to DDR 1MB                                                 | 1045
+BCDMA 2D Blockcpy INTERNAL(OCRAM) circular 1KB to DDR 1MB                         | 2569
+BCDMA 2D Blockcpy DDR 1MB to INTERNAL(OCRAM) circular 1KB                         | 1663
+BCDMA 2D Blockcpy DDR 4MB to INTERNAL(OCRAM) circular 4KB (20ms pacing)           | 419
+BCDMA 2D Blockcpy INTERNAL(OCRAM) circular 1KB to INTERNAL(OCRAM) circular 1KB    | 2640
+
+**a53ss0-0:**
+
+Test                                                                            | Throughput (MB/s)
+---------------------------------------------------------------------------------|-------------------
+BCDMA Blockcpy DDR 1MB to DDR 1MB                                                 | 1045
+BCDMA 2D Blockcpy INTERNAL(OCRAM) circular 1KB to DDR 1MB                         | 2582
+BCDMA 2D Blockcpy DDR 1MB to INTERNAL(OCRAM) circular 1KB                         | 1665
+BCDMA 2D Blockcpy DDR 4MB to INTERNAL(OCRAM) circular 4KB (20ms pacing)           | 419
+BCDMA 2D Blockcpy INTERNAL(OCRAM) circular 1KB to INTERNAL(OCRAM) circular 1KB    | 2653
+
+## Latency
 
 ### UART callback latency
 UART callback latency is measured by measuring how long it takes to physically transmit a known-length string at the configured baud rate. This timing measurement is done when a 28bytes of data is send over different baud.
@@ -462,3 +360,181 @@ Core          | Baud         | Transmssion          | Transmission         |Call
  r5f0-0       | 38400        | 7285                 | 7291                 | 32
  r5f0-0       | 57600        | 4857                 | 4861                 | 32
  r5f0-0       | 115200       | 2429                 | 2430                 | 32
+
+## SBL Performance
+
+### SBL OSPI NAND (HS-FS)
+
+- Software/Application used        : sbl_ospi_nand_linux_multistage, ipc_rpmsg_echo_linux, linux and HSM App Images
+- Cores booted by stage1 SBL       : mcu-r5f0-0 r5f0-0
+- Cores booted by stage2 SBL       : hsm-m4f0-0 r5f0-0 a530-0 c75ss0
+- Size of images loaded by stage1  : 194 KB
+- Size of images loaded by stage2  : 1360 KB
+- Boot Media Clock                 : 166.667 MHz
+- Mode                             : PHY enabled, DMA enabled
+- Protocol                         : 1S-8S-8S
+
+SBL Stage1 boot time breakdown          |   Time (ms)
+----------------------------------------|--------------
+SBL Stage1: System_init                 |   26.080
+SBL Stage1: Board_init                  |    0.000
+SBL Stage1: Drivers_open                |    0.196
+SBL Stage1: Board_driversOpen           |   31.939
+SBL Stage1: Sciclient Get Version       |    6.610
+SBL Stage1: App_waitForMcuPbist         |    0.083
+SBL Stage1: MCU R5 Image Load           |    3.462
+SBL Stage1: DM R5 Image Load            |    6.062
+----------------------------------------|--------------
+SBL Stage2: Total time taken            |   74.436
+
+SBL Stage2 boot time breakdown          |   Time (ms)
+----------------------------------------|--------------
+SBL Stage2: System_init                 |    1.670
+SBL Stage2: Board_init                  |    0.000
+SBL Stage2: Drivers_open                |    0.217
+SBL Stage2: Board_driversOpen           |   37.663
+SBL Stage2: Sciclient Get Version       |    6.642
+SBL Stage2: HSM Image Load              |    2.210
+SBL Stage2: DM R5 Image Load            |    7.760
+SBL Stage2: A53 Image Load              |   30.779
+SBL Stage2: DSP Image Load              |   12.718
+----------------------------------------|--------------
+SBL Stage2: Total time taken            |   99.633
+
+- Here the CPU load or section copy takes place from the OSPI memory to DDR, this would be slower that mem to mem copy.
+
+- The time taken for Sciclient Get Version can be avoided if the version check is disabled
+
+- MCU PBIST is started before the DDR init/ It is done in HW in parallel while the DDR init is completed. Due to this MCU PBIST wait time is low.
+
+- Out of the ~39 ms taken for System Init is mostly attributed to DDR initialization.
+
+### SBL OSPI NAND (HS)
+
+- Software/Application used        : sbl_ospi_nand_linux_multistage, ipc_rpmsg_echo_linux, linux and HSM App Images
+- Cores booted by stage1 SBL       : mcu-r5f0-0 r5f0-0
+- Cores booted by stage2 SBL       : hsm-m4f0-0 r5f0-0 a530-0 c75ss0
+- Size of images loaded by stage1  : 194 KB
+- Size of images loaded by stage2  : 1360 KB
+- Boot Media Clock                 : 166.667 MHz
+- Mode                             : PHY enabled, DMA enabled
+- Protocol                         : 1S-8S-8S
+
+SBL Stage1 boot time breakdown          |   Time (ms)
+----------------------------------------|--------------
+SBL Stage1: System_init                 |   26.003
+SBL Stage1: Board_init                  |    0.000
+SBL Stage1: Drivers_open                |    0.196
+SBL Stage1: Board_driversOpen           |   31.903
+SBL Stage1: Sciclient Get Version       |    6.610
+SBL Stage1: App_waitForMcuPbist         |    0.082
+SBL Stage1: MCU R5 Image Load           |    3.470
+SBL Stage1: DM R5 Image Load            |    6.607
+----------------------------------------|--------------
+SBL Stage2: Total time taken            |   74.334
+
+SBL Stage2 boot time breakdown          |   Time (ms)
+----------------------------------------|--------------
+SBL Stage2: System_init                 |    1.670
+SBL Stage2: Board_init                  |    0.000
+SBL Stage2: Drivers_open                |    0.216
+SBL Stage2: Board_driversOpen           |   37.514
+SBL Stage2: Sciclient Get Version       |    6.648
+SBL Stage2: HSM Image Load              |    2.217
+SBL Stage2: DM R5 Image Load            |    7.750
+SBL Stage2: A53 Image Load              |   30.711
+SBL Stage2: DSP Image Load              |   12.712
+----------------------------------------|--------------
+SBL Stage2: Total time taken            |   99.444
+
+- Here the CPU load or section copy takes place from the OSPI memory to DDR, this would be slower that mem to mem copy.
+
+- The time taken for Sciclient Get Version can be avoided if the version check is disabled
+
+- MCU PBIST is started before the DDR init/ It is done in HW in parallel while the DDR init is completed. Due to this MCU PBIST wait time is low.
+
+- Out of the ~39 ms taken for System Init is mostly attributed to DDR initialization.
+
+### SBL EMMC (HS-FS)
+
+- Software/Application used        : sbl_emmc_linux_multistage, ipc_rpmsg_echo_linux, linux and HSM App Images
+- Cores booted by stage1 SBL       : mcu-r5f0-0 r5f0-0
+- Cores booted by stage2 SBL       : hsm-m4f0-0 r5f0-0 a530-0 c75ss0
+- Size of images loaded by stage1  : 188 KB
+- Size of images loaded by stage2  : 1360 KB
+- Boot Media Clock                 : 200.000 MHz
+- Mode                             : HS200
+
+SBL Stage1 boot time breakdown          |   Time (ms)
+----------------------------------------|--------------
+SBL Stage1: System_init                 |   26.382
+SBL Stage1: Board_init                  |    0.000
+SBL Stage1: Drivers_open                |   21.473
+SBL Stage1: Board_driversOpen           |    0.000
+SBL Stage1: Sciclient Get Version       |    6.609
+SBL Stage1: MCU R5 Image Load           |    8.166
+SBL Stage1: DM R5 Image Load            |    7.362
+----------------------------------------|--------------
+SBL Stage1: Total time taken            |   69.994
+
+SBL Stage2 boot time breakdown          |   Time (ms)
+----------------------------------------|--------------
+SBL Stage2: System_init                 |    1.669
+SBL Stage2: Board_init                  |    0.000
+SBL Stage2: Drivers_open                |   21.426
+SBL Stage2: Board_driversOpen           |    0.000
+SBL Stage2: Sciclient Get Version       |    6.634
+SBL Stage2: HSM Image Load              |    5.847
+SBL Stage2: DM R5 Image Load            |    8.134
+SBL Stage2: A53 Image Load              |   19.442
+SBL Stage2: DSP Image Load              |   13.895
+----------------------------------------|--------------
+SBL Stage2: Total time taken            |   77.051
+
+- The emmc driver initialization is done as part of Drivers_open.
+
+- The time taken for Sciclient Get Version can be avoided if the version check is disabled
+
+- Out of the ~39 ms taken for System Init is mostly attributed to DDR initialization.
+
+### SBL EMMC (HS)
+
+- Software/Application used        : sbl_emmc_linux_multistage, ipc_rpmsg_echo_linux, linux and HSM App Images
+- Cores booted by stage1 SBL       : mcu-r5f0-0 r5f0-0
+- Cores booted by stage2 SBL       : hsm-m4f0-0 r5f0-0 a530-0 c75ss0
+- Size of images loaded by stage1  : 188 KB
+- Size of images loaded by stage2  : 1360 KB
+- Boot Media Clock                 : 200.000 MHz
+- Mode                             : HS200
+
+SBL Stage1 boot time breakdown          |   Time (ms)
+----------------------------------------|--------------
+SBL Stage1: System_init                 |   25.993
+SBL Stage1: Board_init                  |    0.000
+SBL Stage1: Drivers_open                |   21.466
+SBL Stage1: Board_driversOpen           |    0.000
+SBL Stage1: Sciclient Get Version       |    6.608
+SBL Stage1: MCU R5 Image Load           |    7.265
+SBL Stage1: DM R5 Image Load            |    7.371
+----------------------------------------|--------------
+SBL Stage1: Total time taken            |   68.706
+
+SBL Stage2 boot time breakdown          |   Time (ms)
+----------------------------------------|--------------
+SBL Stage2: System_init                 |    1.669
+SBL Stage2: Board_init                  |    0.000
+SBL Stage2: Drivers_open                |   21.322
+SBL Stage2: Board_driversOpen           |    0.000
+SBL Stage2: Sciclient Get Version       |    6.637
+SBL Stage2: HSM Image Load              |    5.848
+SBL Stage2: DM R5 Image Load            |    8.150
+SBL Stage2: A53 Image Load              |   19.239
+SBL Stage2: DSP Image Load              |   13.880
+----------------------------------------|--------------
+SBL Stage2: Total time taken            |   76.749
+
+- The emmc driver initialization is done as part of Drivers_open.
+
+- The time taken for Sciclient Get Version can be avoided if the version check is disabled
+
+- Out of the ~39 ms taken for System Init is mostly attributed to DDR initialization.

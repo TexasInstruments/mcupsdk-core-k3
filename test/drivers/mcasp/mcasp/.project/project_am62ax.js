@@ -3,10 +3,10 @@ let path = require('path');
 let device = "am62ax";
 
 const files = {
-	common: [
-		"test_mcasp.c",
-		"main.c",
-	],
+    common: [
+        "test_mcasp.c",
+        "main.c",
+    ],
 };
 
 const files_smp = {
@@ -20,10 +20,10 @@ const files_smp = {
  * Typically at <example_folder>/<BOARD>/<core_os_combo>/<compiler>
  */
 const filedirs = {
-	common: [
-		"..",       /* core_os_combo base */
-		"../../..", /* Example base */
-	],
+    common: [
+        "..",       /* core_os_combo base */
+        "../../..", /* Example base */
+    ],
 };
 
 const cflags_freertos_dm_r5f = {
@@ -48,12 +48,12 @@ const cflags_freertos_a53 = {
 }
 
 const libdirs_freertos_c75 = {
-	common: [
-		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
-		"${MCU_PLUS_SDK_PATH}/source/drivers/lib",
-		"${MCU_PLUS_SDK_PATH}/source/drivers/udma/lib",
-		"${MCU_PLUS_SDK_PATH}/test/unity/lib",
-	],
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/udma/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+    ],
 };
 
 const libdirs_freertos_dm_r5f = {
@@ -85,12 +85,12 @@ const libdirs_nortos_dm_r5f = {
 };
 
 const libdirs_freertos_a53 = {
-	common: [
-		"${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
-		"${MCU_PLUS_SDK_PATH}/source/drivers/lib",
-		"${MCU_PLUS_SDK_PATH}/source/board/lib",
-		"${MCU_PLUS_SDK_PATH}/test/unity/lib",
-	],
+    common: [
+        "${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib",
+        "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
+        "${MCU_PLUS_SDK_PATH}/source/board/lib",
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib",
+    ],
 };
 
 const libdirs_nortos_a53 = {
@@ -98,7 +98,7 @@ const libdirs_nortos_a53 = {
         "${MCU_PLUS_SDK_PATH}/source/kernel/nortos/lib",
         "${MCU_PLUS_SDK_PATH}/source/drivers/lib",
         "${MCU_PLUS_SDK_PATH}/source/board/lib",
-	"${MCU_PLUS_SDK_PATH}/test/unity/lib"
+        "${MCU_PLUS_SDK_PATH}/test/unity/lib"
     ],
 };
 
@@ -213,14 +213,14 @@ const libs_nortos_a53 = {
     common: [
         "nortos.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
         "drivers.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
-	"unity.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
+        "unity.am62ax.a53.gcc-aarch64.${ConfigName}.lib",
     ],
 };
 
 const lnkfiles = {
-	common: [
-		"linker.cmd",
-	]
+    common: [
+        "linker.cmd",
+    ]
 };
 
 const defines_a53_smp = {
@@ -232,13 +232,13 @@ const defines_a53_smp = {
 };
 
 const defines_dm_r5f = {
-    common:[
+    common: [
         "ENABLE_SCICLIENT_DIRECT",
     ]
 }
 
 const defines_c75 = {
-    common:[
+    common: [
         "C75_CORE",
     ]
 };
@@ -248,122 +248,122 @@ const syscfgfile = "../example.syscfg";
 const readmeDoxygenPageTag = "TEST_CASE_MCASP";
 
 const templates_freertos_c75 =
-[
-    {
-        input: ".project/templates/am62ax/common/linker_c75.cmd.xdt",
-        output: "linker.cmd",
-    },
-    {
-        input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
-        output: "../main.c",
-        options: {
-            entryFunction: "test_main",
-            stackSize: 16*1024,
+    [
+        {
+            input: ".project/templates/am62ax/common/linker_c75.cmd.xdt",
+            output: "linker.cmd",
         },
-    }
-];
+        {
+            input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
+            output: "../main.c",
+            options: {
+                entryFunction: "test_main",
+                stackSize: 16 * 1024,
+            },
+        }
+    ];
 const templates_freertos_dm_r5f =
-[
-    {
-        input: ".project/templates/am62ax/common/linker_dm_r5f.cmd.xdt",
-        output: "linker.cmd",
-        options: {
-            heapSize: 0x10000,
-            stackSize: 0x8000,
-            irqStackSize: 0x1000,
-            svcStackSize: 0x1000,
-            fiqStackSize: 0x0100,
-            abortStackSize: 0x0100,
-            undefinedStackSize: 0x0100,
-            dmStubstacksize: 0x0400,
+    [
+        {
+            input: ".project/templates/am62ax/common/linker_dm_r5f.cmd.xdt",
+            output: "linker.cmd",
+            options: {
+                heapSize: 0x10000,
+                stackSize: 0x8000,
+                irqStackSize: 0x1000,
+                svcStackSize: 0x1000,
+                fiqStackSize: 0x0100,
+                abortStackSize: 0x0100,
+                undefinedStackSize: 0x0100,
+                dmStubstacksize: 0x0400,
+            },
         },
-    },
-    {
-        input: ".project/templates/am62ax/freertos/main_freertos_dm.c.xdt",
-        output: "../main.c",
-        options: {
-            entryFunction: "test_main",
-        },
-    }
-];
+        {
+            input: ".project/templates/am62ax/freertos/main_freertos_dm.c.xdt",
+            output: "../main.c",
+            options: {
+                entryFunction: "test_main",
+            },
+        }
+    ];
 
 const templates_nortos_dm_r5f =
-[
-    {
-        input: ".project/templates/am62ax/common/linker_dm_r5f.cmd.xdt",
-        output: "linker.cmd",
-        options: {
-            heapSize: 0x10000,
-            stackSize: 0x8000,
-            irqStackSize: 0x1000,
-            svcStackSize: 0x1000,
-            fiqStackSize: 0x0100,
-            abortStackSize: 0x0100,
-            undefinedStackSize: 0x0100,
-            dmStubstacksize: 0x0400,
+    [
+        {
+            input: ".project/templates/am62ax/common/linker_dm_r5f.cmd.xdt",
+            output: "linker.cmd",
+            options: {
+                heapSize: 0x10000,
+                stackSize: 0x8000,
+                irqStackSize: 0x1000,
+                svcStackSize: 0x1000,
+                fiqStackSize: 0x0100,
+                abortStackSize: 0x0100,
+                undefinedStackSize: 0x0100,
+                dmStubstacksize: 0x0400,
+            },
         },
-    },
-    {
-        input: ".project/templates/am62ax/nortos/main_nortos.c.xdt",
-        output: "../main.c",
-        options: {
-            entryFunction: "test_main",
-        },
-    }
-];
+        {
+            input: ".project/templates/am62ax/nortos/main_nortos.c.xdt",
+            output: "../main.c",
+            options: {
+                entryFunction: "test_main",
+            },
+        }
+    ];
 
 const templates_freertos_a53 =
-[
-    {
-        input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
-        output: "linker.cmd",
-    },
-    {
-        input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
-        output: "../main.c",
-        options: {
-            entryFunction: "test_main",
+    [
+        {
+            input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
+            output: "linker.cmd",
         },
-    }
-];
+        {
+            input: ".project/templates/am62ax/freertos/main_freertos.c.xdt",
+            output: "../main.c",
+            options: {
+                entryFunction: "test_main",
+            },
+        }
+    ];
 
 const templates_nortos_a53 =
-[
-    {
-        input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
-        output: "linker.cmd",
-    },
-    {
-        input: ".project/templates/am62ax/nortos/main_nortos.c.xdt",
-        output: "../main.c",
-        options: {
-            entryFunction: "test_main",
+    [
+        {
+            input: ".project/templates/am62ax/common/linker_a53.cmd.xdt",
+            output: "linker.cmd",
         },
-    },
-];
+        {
+            input: ".project/templates/am62ax/nortos/main_nortos.c.xdt",
+            output: "../main.c",
+            options: {
+                entryFunction: "test_main",
+            },
+        },
+    ];
 
 const templates_a53_smp =
-[
-    {
-        input: ".project/templates/am62ax/common/linker_a53_smp.cmd.xdt",
-        output: "linker.cmd",
-    },
-    {
-        input: ".project/templates/am62ax/freertos/main_freertos_smp.c.xdt",
-        output: "../main.c",
-        options: {
-            entryFunction: "test_mcasp_smp_main",
+    [
+        {
+            input: ".project/templates/am62ax/common/linker_a53_smp.cmd.xdt",
+            output: "linker.cmd",
         },
-    },
-];
+        {
+            input: ".project/templates/am62ax/freertos/main_freertos_smp.c.xdt",
+            output: "../main.c",
+            options: {
+                entryFunction: "test_mcasp_smp_main",
+            },
+        },
+    ];
 
 const buildOptionCombos = [
-    { device: device, cpu: "c75ss0-0", cgt: "ti-c7000",    board: "am62ax-sk", os: "freertos"},
-    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos"},
-    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "freertos"},
-    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "nortos"},
-    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos"},
-    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "freertos-smp"},
+    { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62ax-sk", os: "freertos" },
+    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "freertos" },
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "freertos" },
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "nortos" },
+    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62ax-sk", os: "nortos" },
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62ax-sk", os: "freertos-smp" },
 ];
 
 function getComponentProperty() {
@@ -379,14 +379,46 @@ function getComponentProperty() {
     return property;
 }
 
-const robot_template = {
+const robot_template_freertos = {
     input: ".project/templates/am62ax/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "MCASP",
-        testCaseName: "mcasp test application",
+        testCaseName: "Test Mcasp Application",
         appName: "test_mcasp",
-        testCaseIds: "SITSW-8738 SITSW-9085",
+        testCaseIds: "SITSW-8343 SITSW-8344 SITSW-8345 SITSW-8346 SITSW-8347 SITSW-8348 SITSW-8349 SITSW-8350 SITSW-8451 SITSW-8452 SITSW-8453" +
+            " SITSW-8729 SITSW-8730 SITSW-8731 SITSW-8732 SITSW-8733 SITSW-8734 SITSW-8735 SITSW-8736 SITSW-8737 SITSW-8738 SITSW-8739 SITSW-9075" +
+            " SITSW-9076 SITSW-9077 SITSW-9078 SITSW-9079 SITSW-9080 SITSW-9081 SITSW-9082 SITSW-9083 SITSW-9084 SITSW-9086 SITSW-9263" +
+            " SITSW-9264 SITSW-9265 SITSW-9266 SITSW-9267 SITSW-9268 SITSW-9298",
+        timeout: 3600,
+        expectTimeout: 300,
+    },
+};
+
+const robot_template_nortos = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MCASP",
+        testCaseName: "Test Mcasp Application",
+        appName: "test_mcasp",
+        testCaseIds: "SITSW-8343 SITSW-8344 SITSW-8345 SITSW-8347 SITSW-8348 SITSW-8349 SITSW-8350 SITSW-8453 SITSW-8729 SITSW-8730 SITSW-8731" +
+            " SITSW-8732 SITSW-8733 SITSW-8734 SITSW-8735 SITSW-8736 SITSW-8737 SITSW-8738 SITSW-8739 SITSW-9075 SITSW-9076 SITSW-9077 SITSW-9078" +
+            " SITSW-9079 SITSW-9080 SITSW-9081 SITSW-9082 SITSW-9083 SITSW-9084 SITSW-9086 SITSW-9263 SITSW-9264 SITSW-9265 SITSW-9266" +
+            " SITSW-9267 SITSW-9298",
+        timeout: 3600,
+        expectTimeout: 300,
+    },
+};
+
+const robot_template_smp = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "MCASP",
+        testCaseName: "MCASP driver SMP test application",
+        appName: "test_mcasp_smp",
+        testCaseIds: "SITSW-9005 SITSW-9006",
     },
 };
 
@@ -399,8 +431,8 @@ function getComponentBuildProperty(buildOption) {
     build_property.syscfgfile = syscfgfile;
     build_property.readmeDoxygenPageTag = readmeDoxygenPageTag;
 
-    if(buildOption.cpu.match(/c75*/)) {
-        if(buildOption.os.match(/freertos*/)) {
+    if (buildOption.cpu.match(/c75*/)) {
+        if (buildOption.os.match(/freertos*/)) {
             build_property.includes = includes_freertos_c75;
             build_property.libdirs = libdirs_freertos_c75;
             build_property.libs = libs_freertos_c75;
@@ -410,8 +442,8 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
-    if(buildOption.cpu.match(/r5f*/)) {
-        if(buildOption.os.match(/freertos*/)) {
+    if (buildOption.cpu.match(/r5f*/)) {
+        if (buildOption.os.match(/freertos*/)) {
             build_property.includes = includes_freertos_dm_r5f;
             build_property.libdirs = libdirs_freertos_dm_r5f;
             build_property.libs = libs_freertos_dm_r5f;
@@ -419,7 +451,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.defines = defines_dm_r5f;
             build_property.cflags = cflags_freertos_dm_r5f;
         }
-        else if(buildOption.os.match(/nortos*/)) {
+        else if (buildOption.os.match(/nortos*/)) {
             build_property.includes = includes_nortos_dm_r5f;
             build_property.libdirs = libdirs_nortos_dm_r5f;
             build_property.libs = libs_nortos_dm_r5f;
@@ -428,9 +460,8 @@ function getComponentBuildProperty(buildOption) {
         }
     }
 
-    if(buildOption.cpu.match(/a53*/)) {
-        if ((buildOption.os.match(/freertos-smp*/)))
-        {
+    if (buildOption.cpu.match(/a53*/)) {
+        if ((buildOption.os.match(/freertos-smp*/))) {
             build_property.files = files_smp;
             build_property.templates = templates_a53_smp;
             build_property.includes = includes_a53_smp;
@@ -438,16 +469,14 @@ function getComponentBuildProperty(buildOption) {
             build_property.libs = libs_a53_smp;
             build_property.defines = defines_a53_smp;
         }
-        else if(buildOption.os.match(/freertos*/) )
-        {
+        else if (buildOption.os.match(/freertos*/)) {
             build_property.includes = includes_freertos_a53;
             build_property.libdirs = libdirs_freertos_a53;
             build_property.libs = libs_freertos_a53;
             build_property.templates = templates_freertos_a53;
             build_property.cflags = cflags_freertos_a53;
         }
- 	else if(buildOption.os.match(/nortos*/) )
-        {
+        else if (buildOption.os.match(/nortos*/)) {
             build_property.includes = includes_nortos_a53;
             build_property.libdirs = libdirs_nortos_a53;
             build_property.libs = libs_nortos_a53;
@@ -456,7 +485,15 @@ function getComponentBuildProperty(buildOption) {
     }
 
 
-    build_property.templates = [...(build_property.templates || []), robot_template];
+    if (buildOption.os.match(/freertos-smp*/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_smp];
+    }
+    else if (buildOption.os.match(/freertos*/)) {
+        build_property.templates = [...(build_property.templates || []), robot_template_freertos];
+    }
+    else {
+        build_property.templates = [...(build_property.templates || []), robot_template_nortos];
+    }
     return build_property;
 }
 

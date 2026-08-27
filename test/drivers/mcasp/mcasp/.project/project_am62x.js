@@ -172,7 +172,7 @@ const robot_template_freertos = {
     output: "../tests.robot",
     options: {
         componentName: "MCASP",
-        testCaseName: "Test Mcasp dma Channel Reset",
+        testCaseName: "Test Mcasp Application",
         appName: "test_mcasp",
         testCaseIds: "SITSW-8343 SITSW-8344 SITSW-8345 SITSW-8346 SITSW-8347 SITSW-8348 SITSW-8349 SITSW-8350 SITSW-8451 SITSW-8452 SITSW-8453" +
             " SITSW-8729 SITSW-8730 SITSW-8731 SITSW-8732 SITSW-8733 SITSW-8734 SITSW-8735 SITSW-8736 SITSW-8737 SITSW-8738 SITSW-8739 SITSW-9075" +
@@ -188,7 +188,7 @@ const robot_template_nortos = {
     output: "../tests.robot",
     options: {
         componentName: "MCASP",
-        testCaseName: "Test Mcasp dma Channel Reset",
+        testCaseName: "Test Mcasp Application",
         appName: "test_mcasp",
         testCaseIds: "SITSW-8343 SITSW-8344 SITSW-8345 SITSW-8347 SITSW-8348 SITSW-8349 SITSW-8350 SITSW-8453 SITSW-8729 SITSW-8730 SITSW-8731" +
             " SITSW-8732 SITSW-8733 SITSW-8734 SITSW-8735 SITSW-8736 SITSW-8737 SITSW-8738 SITSW-8739 SITSW-9075 SITSW-9076 SITSW-9077 SITSW-9078" +
@@ -205,7 +205,7 @@ const robot_template_smp = {
     options: {
         componentName: "MCASP",
         testCaseName: "MCASP driver SMP test application",
-        appName: "test_mcasp(smp)",
+        appName: "test_mcasp_smp",
         testCaseIds: "SITSW-9005 SITSW-9006",
     },
 };

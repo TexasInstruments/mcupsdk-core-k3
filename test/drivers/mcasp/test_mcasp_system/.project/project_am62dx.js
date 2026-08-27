@@ -6,7 +6,7 @@ const files_r5 = {
     common: [
         "system_test_utils.c",
         "test_mcasp_system.c",
-	    "test_case_mapping.c",
+        "test_case_mapping.c",
         "main.c",
     ],
 };
@@ -15,7 +15,7 @@ const files_mcur5 = {
     common: [
         "system_test_utils.c",
         "test_mcasp_system.c",
-	    "test_case_mapping.c",
+        "test_case_mapping.c",
         "main.c",
     ],
 };
@@ -24,16 +24,16 @@ const files_c7 = {
     common: [
         "system_test_utils.c",
         "test_mcasp_system.c",
-	    "test_case_mapping.c",
+        "test_case_mapping.c",
         "main.c",
     ],
 };
 
 const files_a53 = {
     common: [
-       "system_test_utils.c",
+        "system_test_utils.c",
         "test_mcasp_system.c",
-	    "test_case_mapping.c",
+        "test_case_mapping.c",
         "main.c",
     ],
 };
@@ -166,94 +166,94 @@ const lnkfiles = {
 const syscfgfile = "../example.syscfg";
 
 const templates_freertos_mcu_r5f =
-[
-    {
-        input: ".project/templates/am62dx/common/linker_mcu-r5f.cmd.xdt",
-        output: "linker.cmd",
-    },
-    {
-        input: ".project/templates/am62dx/freertos/main_freertos.c.xdt",
-        output: "../main.c",
-        options: {
-            entryFunction: "test_main",
+    [
+        {
+            input: ".project/templates/am62dx/common/linker_mcu-r5f.cmd.xdt",
+            output: "linker.cmd",
         },
-    }
-];
+        {
+            input: ".project/templates/am62dx/freertos/main_freertos.c.xdt",
+            output: "../main.c",
+            options: {
+                entryFunction: "test_main",
+            },
+        }
+    ];
 
 const templates_freertos_dm_r5f =
-[
-    {
-        input: ".project/templates/am62dx/common/linker_dm_r5f.cmd.xdt",
-        output: "linker.cmd",
-        options: {
-            heapSize: 0x8000,
-            stackSize: 0x4000,
-            irqStackSize: 0x1000,
-            svcStackSize: 0x0100,
-            fiqStackSize: 0x0100,
-            abortStackSize: 0x0100,
-            undefinedStackSize: 0x0100,
-            dmStubstacksize: 0x0400,
+    [
+        {
+            input: ".project/templates/am62dx/common/linker_dm_r5f.cmd.xdt",
+            output: "linker.cmd",
+            options: {
+                heapSize: 0x8000,
+                stackSize: 0x4000,
+                irqStackSize: 0x1000,
+                svcStackSize: 0x0100,
+                fiqStackSize: 0x0100,
+                abortStackSize: 0x0100,
+                undefinedStackSize: 0x0100,
+                dmStubstacksize: 0x0400,
+            },
         },
-    },
-    {
-        input: ".project/templates/am62dx/freertos/main_freertos_dm.c.xdt",
-        output: "../main.c",
-        options: {
-            entryFunction: "test_main",
-        },
-    }
-];
+        {
+            input: ".project/templates/am62dx/freertos/main_freertos_dm.c.xdt",
+            output: "../main.c",
+            options: {
+                entryFunction: "test_main",
+            },
+        }
+    ];
 
 const templates_freertos_a53 =
-[
-    {
-        input: ".project/templates/am62dx/common/linker_a53.cmd.xdt",
-        output: "linker.cmd",
-    },
-    {
-        input: ".project/templates/am62dx/freertos/main_freertos.c.xdt",
-        output: "../main.c",
-        options: {
-            entryFunction: "test_main",
+    [
+        {
+            input: ".project/templates/am62dx/common/linker_a53.cmd.xdt",
+            output: "linker.cmd",
         },
-    },
-];
+        {
+            input: ".project/templates/am62dx/freertos/main_freertos.c.xdt",
+            output: "../main.c",
+            options: {
+                entryFunction: "test_main",
+            },
+        },
+    ];
 
 const templates_freertos_c75 =
-[
-    {
-        input: ".project/templates/am62dx/common/linker_c75.cmd.xdt",
-        output: "linker.cmd",
-    },
-    {
-        input: ".project/templates/am62dx/freertos/main_freertos.c.xdt",
-        output: "../main.c",
-        options: {
-            entryFunction: "test_main",
-            stackSize: 64*1024,
+    [
+        {
+            input: ".project/templates/am62dx/common/linker_c75.cmd.xdt",
+            output: "linker.cmd",
         },
-    }
-];
+        {
+            input: ".project/templates/am62dx/freertos/main_freertos.c.xdt",
+            output: "../main.c",
+            options: {
+                entryFunction: "test_main",
+                stackSize: 64 * 1024,
+            },
+        }
+    ];
 
 const defines_dm_r5f = {
-    common:[
+    common: [
         "SOC_AM62DX",
         "ENABLE_SCICLIENT_DIRECT",
     ]
 }
 
 const defines_common = {
-    common:[
+    common: [
         "SOC_AM62DX",
     ]
 };
 
 const buildOptionCombos = [
-    { device: device, cpu: "r5fss0-0",     cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos"},
-    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos"},
-    { device: device, cpu: "a53ss0-0",     cgt: "gcc-aarch64",  board: "am62dx-evm", os: "freertos"},
-    { device: device, cpu: "c75ss0-0",     cgt: "ti-c7000",     board: "am62dx-evm", os: "freertos"},
+    { device: device, cpu: "r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos" },
+    { device: device, cpu: "mcu-r5fss0-0", cgt: "ti-arm-clang", board: "am62dx-evm", os: "freertos" },
+    { device: device, cpu: "a53ss0-0", cgt: "gcc-aarch64", board: "am62dx-evm", os: "freertos" },
+    { device: device, cpu: "c75ss0-0", cgt: "ti-c7000", board: "am62dx-evm", os: "freertos" },
 ];
 
 function getComponentProperty() {
@@ -278,7 +278,7 @@ const robot_template = {
     options: {
         componentName: "MCASP",
         testCaseName: "MCASP system loopback test A53/c75",
-        testCaseIds: "SITSW-9008 SITSW-9009",
+        testCaseIds: "SITSW-9008",
         withCfg: true,
         cfgPath: "test/drivers/mcasp/test_mcasp_system/{board}/test_mcasp_system_sbl_uart_${DEVICE_TYPE}.cfg",
         expectTimeout: 100,
@@ -292,8 +292,7 @@ function getComponentBuildProperty(buildOption) {
     build_property.lnkfiles = lnkfiles;
     build_property.syscfgfile = syscfgfile;
 
-    if(buildOption.cpu.match(/mcu-r5f*/))
-    {
+    if (buildOption.cpu.match(/mcu-r5f*/)) {
         build_property.files = files_mcur5;
         build_property.includes = includes_freertos_r5f;
         build_property.libdirs = libdirs_freertos_mcu_r5f;
@@ -301,8 +300,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_mcu_r5f;
         build_property.defines = defines_common;
     }
-    else if(buildOption.cpu.match(/r5f*/))
-    {
+    else if (buildOption.cpu.match(/r5f*/)) {
         build_property.files = files_r5;
         build_property.includes = includes_freertos_r5f;
         build_property.libdirs = libdirs_freertos_dm_r5f;
@@ -310,7 +308,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_dm_r5f;
         build_property.defines = defines_dm_r5f;
     }
-    else if(buildOption.cpu.match(/a53*/)) {
+    else if (buildOption.cpu.match(/a53*/)) {
 
         build_property.files = files_a53;
         build_property.includes = includes_freertos_a53;
@@ -319,8 +317,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_a53;
         build_property.defines = defines_common;
     }
-    else if(buildOption.cpu.match(/c75*/))
-    {
+    else if (buildOption.cpu.match(/c75*/)) {
         build_property.files = files_c7;
 
         build_property.includes = includes_freertos_c75;

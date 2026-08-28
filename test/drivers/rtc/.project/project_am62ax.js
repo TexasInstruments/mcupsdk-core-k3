@@ -270,7 +270,7 @@ function getComponentProperty() {
 }
 
 const robot_template_mcu_r5f = {
-    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "RTC",
@@ -281,8 +281,6 @@ const robot_template_mcu_r5f = {
                      "SITSW-11827 SITSW-11828 SITSW-11829 SITSW-11830 SITSW-11831 SITSW-11832 SITSW-11833 SITSW-11834 SITSW-11835 SITSW-11836 " +
                      "SITSW-11837 SITSW-11838 SITSW-11839 SITSW-11840 SITSW-11841 SITSW-11842 SITSW-11843 SITSW-11844 SITSW-11845 SITSW-11846 " +
                      "SITSW-11847 SITSW-11848 SITSW-11849",
-        withCfg: true,
-        cfgPath: "test/drivers/rtc/{board}/{coreName}/default_test_rtc_${DEVICE_TYPE}.cfg",
         appName: "test_rtc",
         expectPort: "USB3",
         expectTimeout: 1800,
@@ -291,7 +289,7 @@ const robot_template_mcu_r5f = {
 };
 
 const robot_template_r5f = {
-    input: ".project/templates/am62ax/astra/tests_sbl.robot.xdt",
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
     output: "../tests.robot",
     options: {
         componentName: "RTC",
@@ -302,8 +300,6 @@ const robot_template_r5f = {
                      "SITSW-11827 SITSW-11828 SITSW-11829 SITSW-11830 SITSW-11831 SITSW-11832 SITSW-11833 SITSW-11834 SITSW-11835 SITSW-11836 " +
                      "SITSW-11837 SITSW-11838 SITSW-11839 SITSW-11840 SITSW-11841 SITSW-11842 SITSW-11843 SITSW-11844 SITSW-11845 SITSW-11846 " +
                      "SITSW-11847 SITSW-11848 SITSW-11849",
-        withCfg: true,
-        cfgPath: "test/drivers/rtc/{board}/{coreName}/default_test_rtc_${DEVICE_TYPE}.cfg",
         appName: "test_rtc",
         expectPort: "USB2",
         expectTimeout: 1800,

@@ -487,6 +487,7 @@ help:
 	@echo  $(MAKE) -s -C examples/drivers/ipc/ipc_rpmsg_rtos_audio_filter_offload/am62dx-evm/system_freertos_nortos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/empty/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/empty/am62dx-evm/system_nortos [all clean syscfg-gui syscfg]
+	@echo  $(MAKE) -s -C examples/edge-ai/tvm/am62dx-evm/system_freertos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/tisp/fft2d_dsp_offload/fft2d_rtos_dsp_offload/am62dx-evm/system_freertos_nortos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/tisp/sigchain_dsp_rt/sigchain_biquad_cascade/am62dx-evm/system_freertos_nortos [all clean syscfg-gui syscfg]
 	@echo  $(MAKE) -s -C examples/tisp/sigchain_dsp_rt/sigchain_router_8ch_12ch/am62dx-evm/system_freertos_nortos [all clean syscfg-gui syscfg]
@@ -1393,6 +1394,7 @@ BUILD_COMBO_EXAMPLE_XLIBS_ALL += fft2d_linux_dsp_offload_am62dx-evm_c75ss0-0_fre
 BUILD_COMBO_EXAMPLE_XLIBS_ALL += sigchain_biquad_cascade_am62dx-evm_c75ss0-0_freertos_linux_ti-c7000
 # Various xlibs System Example Targets
 BUILD_COMBO_EXAMPLE_XLIBS_ALL += ipc_rpmsg_rtos_audio_am62dx-evm_system_freertos_nortos
+BUILD_COMBO_EXAMPLE_XLIBS_ALL += dsp_edgeai_am62dx-evm_system_freertos
 BUILD_COMBO_EXAMPLE_XLIBS_ALL += fft2d_rtos_dsp_offload_am62dx-evm_system_freertos_nortos
 BUILD_COMBO_EXAMPLE_XLIBS_ALL += sigchain_biquad_cascade_am62dx-evm_system_freertos_nortos
 BUILD_COMBO_EXAMPLE_XLIBS_ALL += sigchain_router_8ch_12ch_am62dx-evm_system_freertos_nortos
@@ -2475,6 +2477,9 @@ examples-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_ALL)
  empty_am62dx-evm_system_nortos:
 	$(MAKE) -C examples/empty/am62dx-evm/system_nortos -f makefile all
 
+ dsp_edgeai_am62dx-evm_system_freertos:
+	$(MAKE) -C examples/edge-ai/tvm/am62dx-evm/system_freertos -f makefile all
+
  fft2d_rtos_dsp_offload_am62dx-evm_system_freertos_nortos:
 	$(MAKE) -C examples/tisp/fft2d_dsp_offload/fft2d_rtos_dsp_offload/am62dx-evm/system_freertos_nortos -f makefile all
 
@@ -2846,6 +2851,7 @@ BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL += fft2d_linux_dsp_offload_am62dx-evm_c75ss0
 BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL += sigchain_biquad_cascade_am62dx-evm_c75ss0-0_freertos_linux_ti-c7000_clean
 # Various xlibs System Example Clean Targets
 BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL += ipc_rpmsg_rtos_audio_am62dx-evm_system_freertos_nortos_clean
+BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL += dsp_edgeai_am62dx-evm_system_freertos_clean
 BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL += fft2d_rtos_dsp_offload_am62dx-evm_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL += sigchain_biquad_cascade_am62dx-evm_system_freertos_nortos_clean
 BUILD_COMBO_EXAMPLE_XLIBS_CLEAN_ALL += sigchain_router_8ch_12ch_am62dx-evm_system_freertos_nortos_clean
@@ -3924,6 +3930,9 @@ examples-private-clean: $(BUILD_COMBO_EXAMPLE_PRIVATE_CLEAN_ALL)
  empty_am62dx-evm_system_nortos_clean:
 	$(MAKE) -C examples/empty/am62dx-evm/system_nortos -f makefile clean
 
+ dsp_edgeai_am62dx-evm_system_freertos_clean:
+	$(MAKE) -C examples/edge-ai/tvm/am62dx-evm/system_freertos -f makefile clean
+
  fft2d_rtos_dsp_offload_am62dx-evm_system_freertos_nortos_clean:
 	$(MAKE) -C examples/tisp/fft2d_dsp_offload/fft2d_rtos_dsp_offload/am62dx-evm/system_freertos_nortos -f makefile clean
 
@@ -4295,6 +4304,7 @@ BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL += fft2d_linux_dsp_offload_am62dx-evm_c75ss0
 BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL += sigchain_biquad_cascade_am62dx-evm_c75ss0-0_freertos_linux_ti-c7000_scrub
 # Various xlibs System Example Scrub Targets
 BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL += ipc_rpmsg_rtos_audio_am62dx-evm_system_freertos_nortos_scrub
+BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL += dsp_edgeai_am62dx-evm_system_freertos_scrub
 BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL += fft2d_rtos_dsp_offload_am62dx-evm_system_freertos_nortos_scrub
 BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL += sigchain_biquad_cascade_am62dx-evm_system_freertos_nortos_scrub
 BUILD_COMBO_EXAMPLE_XLIBS_SCRUB_ALL += sigchain_router_8ch_12ch_am62dx-evm_system_freertos_nortos_scrub
@@ -5372,6 +5382,9 @@ examples-scrub-private: $(BUILD_COMBO_EXAMPLE_PRIVATE_SCRUB_ALL)
 
  empty_am62dx-evm_system_nortos_scrub:
 	$(MAKE) -C examples/empty/am62dx-evm/system_nortos -f makefile scrub
+
+ dsp_edgeai_am62dx-evm_system_freertos_scrub:
+	$(MAKE) -C examples/edge-ai/tvm/am62dx-evm/system_freertos -f makefile scrub
 
  fft2d_rtos_dsp_offload_am62dx-evm_system_freertos_nortos_scrub:
 	$(MAKE) -C examples/tisp/fft2d_dsp_offload/fft2d_rtos_dsp_offload/am62dx-evm/system_freertos_nortos -f makefile scrub

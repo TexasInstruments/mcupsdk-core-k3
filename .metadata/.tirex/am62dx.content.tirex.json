@@ -10653,6 +10653,38 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "Dual-task signal chain with TVM and DSP CPU is C75SS0-0 running FREERTOS.",
+        "name": "dsp_edgeai",
+        "location": "../../examples/edge-ai/tvm/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
+        "devtools": [
+            "AUDIO-AM62D-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ccs"
+        ],
+        "subCategories": [
+            "edge-ai",
+            "tvm",
+            "c75ss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "This example verifies DCC in various modes of operation CPU is MCU-R5FSS0-0 running NORTOS.",
         "name": "dcc",
         "location": "../../examples/sdl/dcc/dcc_modes/am62dx-evm/mcu-r5fss0-0_nortos/ti-arm-clang/example.projectspec",
@@ -12367,6 +12399,35 @@
         "subCategories": [
             "empty",
             "system_nortos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
+        "description": "Dual-task signal chain with TVM and DSP System project.",
+        "name": "dsp_edgeai",
+        "location": "../../examples/edge-ai/tvm/am62dx-evm/system_freertos/system.projectspec",
+        "devtools": [
+            "AUDIO-AM62D-EVM"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "subCategories": [
+            "edge-ai",
+            "tvm",
+            "system_freertos"
         ],
         "mainCategories": [
             [

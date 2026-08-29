@@ -1,0 +1,135 @@
+/**
+ * These arguments were used when this file was generated. They will be automatically applied on subsequent loads
+ * via the GUI or CLI. Run CLI with '--help' for additional information on how to override these arguments.
+ * @cliArgs --device "AM62Dx" --part "AM62D24-G" --package "ANF" --context "c75ss0-0" --product "AM62D-FREERTOS-SDK@12.00.00"
+ * @v2CliArgs --device "AM62D-Q1" --package "FCBGA (ANF)" --variant "AM62D24-G" --context "c75ss0-0" --product "AM62D-FREERTOS-SDK@12.00.00"
+ * @versions {"tool":"1.24.0+4150"}
+ */
+
+/**
+ * Import the modules used in this configuration.
+ */
+const ipc         = scripting.addModule("/drivers/ipc/ipc");
+const debug_log   = scripting.addModule("/kernel/dpl/debug_log");
+const mmu_armv8   = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
+const mmu_armv81  = mmu_armv8.addInstance();
+const mmu_armv82  = mmu_armv8.addInstance();
+const mmu_armv83  = mmu_armv8.addInstance();
+const mmu_armv84  = mmu_armv8.addInstance();
+const mmu_armv85  = mmu_armv8.addInstance();
+const mmu_armv86  = mmu_armv8.addInstance();
+const mmu_armv87  = mmu_armv8.addInstance();
+const mmu_armv88  = mmu_armv8.addInstance();
+const mmu_armv89  = mmu_armv8.addInstance();
+const mmu_armv810 = mmu_armv8.addInstance();
+const mmu_armv811 = mmu_armv8.addInstance();
+const mmu_armv812 = mmu_armv8.addInstance();
+const mmu_armv813 = mmu_armv8.addInstance();
+const mmu_armv814 = mmu_armv8.addInstance();
+const mmu_armv815 = mmu_armv8.addInstance();
+const mmu_armv816 = mmu_armv8.addInstance();
+
+/**
+ * Write custom configuration values to the imported modules.
+ */
+ipc.vringAllocationPDK = false;
+ipc.r5fss0_0           = "NONE";
+ipc.mcu_r5fss0_0       = "NONE";
+
+mmu_armv81.$name = "CONFIG_MMU_REGION0";
+mmu_armv81.size  = 0x20000000;
+
+mmu_armv82.$name = "CONFIG_MMU_REGION1";
+mmu_armv82.vAddr = 0x20000000;
+mmu_armv82.pAddr = 0x20000000;
+mmu_armv82.size  = 0x20000000;
+
+mmu_armv83.$name = "CONFIG_MMU_REGION2";
+mmu_armv83.vAddr = 0x40000000;
+mmu_armv83.pAddr = 0x40000000;
+mmu_armv83.size  = 0x20000000;
+
+mmu_armv84.$name = "CONFIG_MMU_REGION3";
+mmu_armv84.vAddr = 0x60000000;
+mmu_armv84.pAddr = 0x60000000;
+mmu_armv84.size  = 0x10000000;
+
+mmu_armv85.vAddr = 0x7C200000;
+mmu_armv85.pAddr = 0x7C200000;
+mmu_armv85.size  = 0x100000;
+mmu_armv85.$name = "CLEC";
+
+mmu_armv86.vAddr = 0x7C400000;
+mmu_armv86.pAddr = 0x7C400000;
+mmu_armv86.size  = 0x100000;
+mmu_armv86.$name = "DRU";
+
+mmu_armv87.vAddr     = 0x7E000000;
+mmu_armv87.pAddr     = 0x7E000000;
+mmu_armv87.size      = 0x200000;
+mmu_armv87.attribute = "MAIR4";
+mmu_armv87.$name     = "L2SRAM";
+
+/* DDR_C7x_1_IPC MAIR4, DDR_C7x_1_DTS MAIR7, CCS_DEBUG_LOG_MEM MAIR4, DDR_C7X_1_CUSTOM_STFT MAIR4 */
+mmu_armv88.$name     = "CONFIG_MMU_REGION5";
+mmu_armv88.vAddr     = 0x99700000;
+mmu_armv88.pAddr     = 0x99700000;
+mmu_armv88.size      = 0x01100000;
+mmu_armv88.attribute = "MAIR4";
+
+mmu_armv89.vAddr     = 0xA0400000;
+mmu_armv89.pAddr     = 0xA0400000;
+mmu_armv89.size      = 0x00300000;
+mmu_armv89.$name     = "VRING";
+mmu_armv89.attribute = "MAIR4";
+
+mmu_armv810.$name     = "DDR_SHARED_MEM";
+mmu_armv810.vAddr     = 0xA3000000;
+mmu_armv810.pAddr     = 0xA3000000;
+mmu_armv810.size      = 0x0AC00000;
+mmu_armv810.attribute = "MAIR7";
+
+mmu_armv811.$name     = "DDR_C7X_1_LOCAL_HEAP_NON_CACHEABLE";
+mmu_armv811.vAddr     = 0xB0000000;
+mmu_armv811.pAddr     = 0xB0000000;
+mmu_armv811.size      = 0x01000000;
+mmu_armv811.attribute = "MAIR4";
+
+mmu_armv812.$name     = "DDR_C7X_1_SCRATCH_NON_CACHEABLE";
+mmu_armv812.vAddr     = 0xB1000000;
+mmu_armv812.pAddr     = 0xB1000000;
+mmu_armv812.size      = 0x01000000;
+mmu_armv812.attribute = "MAIR4";
+
+mmu_armv813.$name     = "DDR_C7X_1_LOCAL_HEAP";  /* + DDR_C7X_1_SCRATCH */
+mmu_armv813.vAddr     = 0xB2000000;
+mmu_armv813.pAddr     = 0xB2000000;
+mmu_armv813.size      = 0x0E000000;
+mmu_armv813.attribute = "MAIR7";
+
+mmu_armv814.$name       = "CMA_MEM";
+mmu_armv814.vAddr       = 0xC0000000;
+mmu_armv814.pAddr       = 0xC0000000;
+mmu_armv814.size        = 0x04000000;
+mmu_armv814.privExecute = false;
+mmu_armv814.attribute   = "MAIR4";
+
+/* L2 AUX SRAM regions used by TIDL IALG allocator (g_l1_mem_addr = 0x7F03C000).
+ * L2RAM_C7x_1_AUX (240 KB) + L2RAM_C7x_1_AUX_AS_L1 (16 KB) at 0x7F000000.
+ * Not covered by the L2SRAM entry (0x7E000000 + 0x200000 = 0x7E200000). */
+mmu_armv815.$name     = "L2RAM_C7x_1_AUX";
+mmu_armv815.vAddr     = 0x7F000000;
+mmu_armv815.pAddr     = 0x7F000000;
+mmu_armv815.size      = 0x40000;   /* 256 KB: covers both AUX (240 KB) and AUX_AS_L1 (16 KB) */
+mmu_armv815.attribute = "MAIR4";
+
+/* C7x EL2 local peripheral registers: snoop config (0x7C00000C) and others.
+ * Required for the AM62D silicon workaround that disables C7x EL2 snooping. */
+mmu_armv816.$name       = "C7X_EL2_REGS";
+mmu_armv816.vAddr       = 0x7C000000;
+mmu_armv816.pAddr       = 0x7C000000;
+mmu_armv816.size        = 0x00200000;
+mmu_armv816.privExecute = false;
+mmu_armv816.userExecute = false;
+mmu_armv816.attribute   = "MAIR4";
+

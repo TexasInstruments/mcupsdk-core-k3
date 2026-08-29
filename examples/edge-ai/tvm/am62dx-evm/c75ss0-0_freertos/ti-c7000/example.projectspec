@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectSpec>
+    <applicability>
+        <when>
+            <context
+                deviceFamily="C7000"
+                deviceId="TMS320C75XX.am62Dx"
+            />
+        </when>
+    </applicability>
+
+    <project
+        title="Dsp Edgeai"
+        name = "dsp_edgeai_am62dx-evm_c75ss0-0_freertos_ti-c7000"
+        products="sysconfig;com.ti.MCU_PLUS_SDK_AMXXX"
+        configurations="
+            Debug,
+            Release,
+        "
+        connection="TIXDS110_Connection.xml"
+        toolChain="TI"
+        cgtVersion=""
+        device="TMS320C75XX.am62Dx"
+        deviceCore="Dsp_core"
+        ignoreDefaultDeviceSettings="true"
+        ignoreDefaultCCSSettings="true"
+        endianness="little"
+        outputFormat="ELF"
+        outputType="executable"
+
+        compilerBuildOptions="
+            -I${CG_TOOL_ROOT}/include
+            -I${MCU_PLUS_SDK_PATH}/source
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/FreeRTOS-Kernel/include
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/portable/TI_CGT/DSP_C75X
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/freertos/config/am62dx/c75x
+            -I${MCU_PLUS_SDK_PATH}/source/kernel/nortos/dpl/c75
+            -I${MCU_PLUS_SDK_PATH}/source/drivers/dmautils/include
+            -I${MCU_PLUS_SDK_PATH}/source/drivers/dmautils/udma_standalone/include
+            -I${MCU_PLUS_SDK_PATH}/source/drivers/dmautils/udma_standalone
+            -I${MCU_PLUS_SDK_PATH}/source/drivers/dmautils/csl
+            -I${MCU_PLUS_SDK_PATH}/source/drivers/udma/include
+            -I${MCU_PLUS_SDK_PATH}/source/drivers/hw_include
+            -I${MCU_PLUS_SDK_PATH}/source/audiolib/src
+            -I${MCU_PLUS_SDK_PATH}/source/tisp/includes
+            -I${MCU_PLUS_SDK_PATH}/source/tisp/src/common
+            -I${MCU_PLUS_SDK_PATH}/source/fftlib/src
+            -I${MCU_PLUS_SDK_PATH}/source/mathlib/src
+            -I${MCU_PLUS_SDK_PATH}/examples/edge-ai/tvm/common
+            -I${MCU_PLUS_SDK_PATH}/examples/edge-ai/tvm/common/models/dccrn
+            -I${MCU_PLUS_SDK_PATH}/examples/edge-ai/tvm/common/models/gtcrn
+            -I${MCU_PLUS_SDK_PATH}/examples/edge-ai/tvm/common/models/gcrn
+            -I${MCU_PLUS_SDK_PATH}/examples/edge-ai/tvm/common/models/vggish
+            -I${MCU_PLUS_SDK_PATH}/examples/edge-ai/tvm/common/models/yamnet
+            -I${MCU_PLUS_SDK_PATH}/examples/edge-ai/tvm/common/models/utils
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/ti_dsp/firmware/c7x/common
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/ti_dsp
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/ti_dsp/ffi
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/ti_dsp/container
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/3rdparty/dlpack/include
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/ti_dsp/constants
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/ti_dsp/core
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/ti_dsp/vm
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/ti_dsp/registry
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/ti_dsp/cpp
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/ti_dsp/platform
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/ti_dsp/platform/common
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/ti_dsp/platform/c7x
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/ti_dsp/include
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/dload/DLOAD
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/dload/DLOAD_API
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/dload/C70_DLOAD_DYN
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/dload/C70_DLOAD_REL
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/am62d
+            -I${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/ti_dsp/dma
+            -mv7504
+            -q
+            -pden
+            -pds=238
+            -pds=880
+            -pds1110
+            -ea.se71
+            --emit_warnings_as_errors
+            --diag_suppress=770
+            --diag_suppress=69
+            --diag_suppress=70
+            -DBUILD_C7X
+            -DBUILD_C7X_1
+            -mv7504
+            -q
+            -pden
+            -pds=238
+            -pds=880
+            -pds1110
+            -ea.se71
+            --c99
+            --diag_suppress=770
+            --diag_suppress=69
+            --diag_suppress=70
+            --diag_suppress=2824
+            --diag_suppress=1557
+            --diag_suppress=1
+            --diag_suppress=190
+            --diag_suppress=225
+            --diag_suppress=548
+            -Dxdc_target_name__=C71
+            --opt_level=2
+            -DSOC_AM62DX
+            -DBUILD_C7X
+            -DBUILD_C7X_1
+            -DC70_TARGET
+            -DELF64=1
+            -DHwI_bootToNonSecure__D=1
+            -DMCU_PLUS_SDK
+            -DDMA_UTILS_STANDALONE
+            -DOS_FREERTOS
+            -DTVM_DSP_DEVICE_AM62DX
+            -DTVM_DSP_NO_EXCEPTIONS=1
+            -DTVM_DSP_NO_THREADS=1
+            -DTVM_DSP_TARGET_C7X
+            -D_SYS_BIOS
+            -DUSE_TIDL_RUNTIME=1
+        "
+        linkerBuildOptions="
+            -i${MCU_PLUS_SDK_PATH}/source/kernel/freertos/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/udma/lib
+            -i${MCU_PLUS_SDK_PATH}/source/drivers/dmautils/lib
+            -i${MCU_PLUS_SDK_PATH}/source/tisp/lib/${ConfigName}
+            -i${MCU_PLUS_SDK_PATH}/source/audiolib/lib/${ConfigName}
+            -i${MCU_PLUS_SDK_PATH}/source/dsplib/lib/${ConfigName}
+            -i${MCU_PLUS_SDK_PATH}/source/fftlib/lib/${ConfigName}
+            -i${MCU_PLUS_SDK_PATH}/source/mathlib/lib/${ConfigName}
+            -i${CG_TOOL_ROOT}/lib
+            -i${MCU_PLUS_SDK_PATH}/source/tvm/3rdparty/c7x_tidl_libs/ti_dl/lib/AM62A/dsp/algo/release
+            -i${MCU_PLUS_SDK_PATH}/source/tvm/src/runtime/contrib/tidl/c7x/7504_am62d
+            -i${MCU_PLUS_SDK_PATH}/source/tvm/3rdparty/c7x_mmalib_libs/lib/C7504/release
+            -i${CG_TOOL_ROOT}/lib
+            -m=dsp_edgeai.${ConfigName}.map
+            -z
+            --emit_warnings_as_errors
+            --diag_suppress=10063
+            --ram_model
+            --warn_sections
+            -x
+            --mapfile_contents=sym_defs
+            --reread_libs
+            --retain=TIDL_VISION_FXNS
+        "
+
+        postBuildStep="$(MAKE) -C ${CCS_PROJECT_DIR} -f makefile_ccs_bootimage_gen OUTNAME=${BuildArtifactFileBaseName} PROFILE=${ConfigName} MCU_PLUS_SDK_PATH=${MCU_PLUS_SDK_PATH} CG_TOOL_ROOT=${CG_TOOL_ROOT} CCS_INSTALL_DIR=${CCS_INSTALL_DIR} CCS_IDE_MODE=${CCS_IDE_MODE}"
+
+        enableSysConfigTool="true"
+        sysConfigBuildOptions="
+            --context c75ss0-0 --part AM62D24-G --package ANF
+        "
+
+        description="A Dsp Edgeai FREERTOS project">
+
+        <configuration name="Debug"
+            compilerBuildOptions="
+                -Dxdc_target_name__=C71
+                -D_DEBUG_=1
+                --opt_level=0
+                --symdebug:dwarf
+            "
+            linkerBuildOptions="
+                -lfreertos.am62dx.c75x.ti-c7000.debug.lib
+                -ldrivers.am62dx.c75x.ti-c7000.debug.lib
+                -ludma.am62dx.c75x.ti-c7000.debug.lib
+                -ldmautils.am62dx.c75x.ti-c7000.debug.lib
+                -lTISP_C7504.lib
+                -lAUDIOLIB_C7504.lib
+                -lDSPLIB_C7504.lib
+                -lFFTLIB_C7504.lib
+                -lMATHLIB_C7504.lib
+                -llibc.a
+                -ltidl_algo.lib
+                -ltidl_priv.lib
+                -ltidl_custom.lib
+                -ltidl_kernels.lib
+                -ltidl_ref.lib
+                -ltidl_api.lib
+                -ltvm_crt.lib
+                -lmmalib_C7504.lib
+                -lmmalib_cn_C7504.lib
+                -lcommon_C7504.lib
+                -lperfEst_C7504.lib
+                -llibc.a
+            "
+        ></configuration>
+        <configuration name="Release"
+            compilerBuildOptions="
+                -Dxdc_target_name__=C71
+                --symdebug:none
+            "
+            linkerBuildOptions="
+                -lfreertos.am62dx.c75x.ti-c7000.release.lib
+                -ldrivers.am62dx.c75x.ti-c7000.release.lib
+                -ludma.am62dx.c75x.ti-c7000.release.lib
+                -ldmautils.am62dx.c75x.ti-c7000.release.lib
+                -lTISP_C7504.lib
+                -lAUDIOLIB_C7504.lib
+                -lDSPLIB_C7504.lib
+                -lFFTLIB_C7504.lib
+                -lMATHLIB_C7504.lib
+                -llibc.a
+                -ltidl_algo.lib
+                -ltidl_priv.lib
+                -ltidl_custom.lib
+                -ltidl_kernels.lib
+                -ltidl_ref.lib
+                -ltidl_api.lib
+                -ltvm_crt.lib
+                -lmmalib_C7504.lib
+                -lmmalib_cn_C7504.lib
+                -lcommon_C7504.lib
+                -lperfEst_C7504.lib
+                -llibc.a
+            "
+        ></configuration>
+        <pathVariable name="MCU_PLUS_SDK_PATH" path="${COM_TI_MCU_PLUS_SDK_AMXXX_INSTALL_DIR}" scope="project" />
+        <file path="../main.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/main.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../c7x_cxm.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../common/dual_task_main.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../common/tvm_service.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../common/dsp_service.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/compute_service.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/dyn_loader.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/tvm_model.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/shm_printf.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/tidl_support.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/dload/DLOAD/dload.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/dload/DLOAD/elf32.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/dload/DLOAD/dload_endian.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/dload/DLOAD/ArrayList.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/dload/DLOAD_SYM/symtab.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/dload/C70_DLOAD_DYN/c70_dynamic.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/dload/C70_DLOAD_REL/c70_reloc.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/dmautils/dmautils_autoincrement_3d.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/dmautils/udma.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/dma/tvm_dsp_dma.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/ffi/ffi_types.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/ffi/object.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/container/array.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/container/ndarray.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/container/shape.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/constants/constants.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/constants/constants_c_api.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/constants/stream.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/platform/c7x/c7x_platform.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/platform/common/memory_pool.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/kernels/tvm_int8_residual_add.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/constants/constants_loader.cpp" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/vm/vm_builtins.cpp" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/vm/storage.cpp" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/vm/c_backend_api.cpp" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/registry/registry.cpp" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../../../../source/tvm/src/runtime/ti_dsp/cpp/model.cpp" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../common/stft_istft_handler.cpp" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../common/stft_signal_chain.cpp" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../common/signal_chain_dispatch.cpp" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../common/arena_allocator.cpp" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../common/signal_chain_arena.cpp" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../common/models/dccrn/stft_signal_chain_dccrn.cpp" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../common/models/gtcrn/stft_signal_chain_gtcrn.cpp" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../common/models/gcrn/stft_signal_chain_gcrn.cpp" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../common/models/vggish/stft_signal_chain_vggish.cpp" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../common/models/yamnet/stft_signal_chain_yamnet.cpp" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../common/models/utils/mattrans_signal_chain.cpp" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../common/models/utils/deinterleave_signal_chain.cpp" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../common/utils_handler.cpp" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="linker.cmd" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../example.syscfg" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="syscfg_c.rov.xs" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="makefile_ccs_bootimage_gen" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+    </project>
+</projectSpec>

@@ -61,6 +61,7 @@ typedef struct
     uint32_t pll_num;
     uint32_t pll_den;
     uint16_t dco_stepSize;
+    double residualIncVal;
 }CDCE6214_Obj, *CDCE6214_Handle;
 
 typedef struct

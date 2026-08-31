@@ -43,8 +43,8 @@
 /* ========================================================================== */
 
 #define CDCE6214_MAGIC_NUMBER      (0x1234ABCDu)
-#define CDCE6214_REL_PPM_LIMIT     (100)
-#define CDCE6214_DCO_STEP_LIMIT    (10000)
+#define CDCE6214_REL_PPM_LIMIT     (1000)
+#define CDCE6214_DCO_STEP_LIMIT    (51000)
 
 /* ========================================================================== */
 /*                         Structure Declarations                             */
@@ -107,6 +107,8 @@ CDCE6214_Handle CDCE6214_open(I2C_Handle i2cHandle, uint8_t devAddr, CDCE6214_Re
 
         hCdce->currentPLLFreqMhz = hCdce->inputCrystalFreqMhz*((double)hCdce->pll_integer+\
                                                     ((double)hCdce->pll_num/(double)hCdce->pll_den));
+        /* Clear the residual Inc Val */
+        hCdce->residualIncVal = 0;
     }
 
     return hCdce;
@@ -311,7 +313,7 @@ int32_t CDCE6214_fineTuneFrequency(CDCE6214_Handle hCdce, double relppm)
     double newMultiplier = ((1.0+(constrainedPpm/(double)1e6))*multiplier);
     double multiplierDiff = newMultiplier - multiplier;
 
-    double incVal = multiplierDiff*(double)hCdce->pll_den;
+    double incVal = multiplierDiff*(double)hCdce->pll_den + hCdce->residualIncVal;
     double absStepVal = (incVal>(double)0)?incVal:-incVal;
     int32_t polarity  =  (incVal>(double)0)?CDCE6214_DCO_STEP_POSDIR:CDCE6214_DCO_STEP_NEGDIR;
 
@@ -327,7 +329,25 @@ int32_t CDCE6214_fineTuneFrequency(CDCE6214_Handle hCdce, double relppm)
         inputStepVal = (uint16_t)absStepVal;
     }
 
-    return CDCE6214_setDco(hCdce, inputStepVal, polarity);
+    int32_t retval = CDCE6214_setDco(hCdce, inputStepVal, polarity);
+
+    if (retval == SystemP_SUCCESS)
+    {
+        /* Only the truncated integer step was actually applied to pll_num;
+         * keep the leftover fraction pending for the next call. */
+        double appliedIncVal = (polarity == CDCE6214_DCO_STEP_POSDIR) ? \
+                                (double)inputStepVal : -(double)inputStepVal;
+        hCdce->residualIncVal = incVal - appliedIncVal;
+    }
+    else
+    {
+        /* Nothing was applied (e.g. stepSize truncated to 0, or the
+         * negative-direction underflow guard in CDCE6214_setDco fired) -
+         * keep the full pending correction so it isn't lost. */
+        hCdce->residualIncVal = incVal;
+    }
+
+    return retval;
 }
 
 int32_t CDCE6214_close(CDCE6214_Handle hCdce)

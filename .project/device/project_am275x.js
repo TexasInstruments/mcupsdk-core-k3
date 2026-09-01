@@ -21,6 +21,7 @@ const component_file_list = [
     "source/networking/lwip/.project/project_contrib_nortos.js",
     "source/networking/lwip/.project/project_stack_freertos.js",
     "source/networking/lwip/.project/project_stack_nortos.js",
+    "source/networking/tsn/.project/project_tsn_avb.js",
     "source/networking/tsn/.project/project_tsn_combase.js",
     "source/networking/tsn/.project/project_tsn_gptp.js",
     "source/networking/tsn/.project/project_tsn_uniconf.js",

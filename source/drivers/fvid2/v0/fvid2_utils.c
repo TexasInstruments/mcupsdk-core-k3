@@ -978,9 +978,6 @@ static Fvid2Utils_Node *dutilsLinkCircularPri(Fvid2Utils_Node *headNode,
  *  dutilsLinkDoublePri
  *  \brief Links a node to a double link list based on priority.
  *  For nodes with same priority, the new node will be added to the last.
- *
- *  ToDo - Remove multiple return statements - Have one exit point for the
- *         Function.
  */
 static int32_t dutilsLinkDoublePri(Fvid2UtilsLinkListObj *llobj,
                                    Fvid2Utils_Node       *node,

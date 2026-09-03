@@ -366,8 +366,8 @@ void *create_graph(int32_t *pIn, uint32_t *outStride)
             NUM_CHANNELS_OUT *
                 sizeof(float), // inPitchBytes, delayBytes, outPitchBytes
             IS_INTERLEAVED, DELAY_NCH_LINEAR_MODE, (uint32_t *) pDelayNChSizes,
-            DELAY_MAX_DELAY, "DelayNChannel",
-            5, errorCtx); // interleave=IS_INTERLEAVED, mode=0, pDelaySize, maxDelay=DELAY_MAX_DELAY
+            "DelayNChannel",
+            5, errorCtx); // interleave=IS_INTERLEAVED, mode=0, pDelaySize
         if (errorCtx.isSuccess()) {
             myOpVec->push_back(std::move(k5));
         } else {

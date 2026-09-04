@@ -42,14 +42,14 @@
 /*
  *  ======== CacheP_Module_startup ========
  */
-void CacheP_Module_startup(void)
+__attribute__((weak)) void CacheP_Module_startup(void)
 {
     CacheP_enable(CacheP_TYPE_L1D);
 #if (defined (SOC_AM62DX))
     CacheP_enableWT(CacheP_TYPE_L1D);
-#else 
+#else
     CacheP_enableWB(CacheP_TYPE_L1D);
-#endif    
+#endif
 }
 
 /*

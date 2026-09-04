@@ -44,11 +44,80 @@
 #include <kernel/dpl/MmuP_armv8.h>
 #include <drivers/ipc_notify.h>
 #include <drivers/ipc_rpmsg.h>
+#include <kernel/nortos/dpl/c75/CacheP_c75.h>
+#include <kernel/nortos/dpl/c75/HwiP_c75.h>
+#include <kernel/nortos/dpl/c75/MmuP_c75.h>
+#include <kernel/dpl/ClockP.h>
+#include <drivers/hw_include/cslr_soc.h>
+#include <drivers/hw_include/csl_clec.h>
+#include <drivers/hw_include/am62ax/cslr_soc_baseaddress.h>
+
 #include "ti_drivers_config.h"
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 #include "c7x_compute_protocol.h"
 #include "dsp_service.h"
+
+extern MmuP_Config gMmuConfig;
+extern MmuP_RegionConfig gMmuRegionConfig[];
+
+/* Defined in am62dx-evm/c7x_cxm.c (board-specific inline asm) */
+extern void c7x_set_l1dcfg(uint64_t val);
+
+#define C7x_EL2_SNOOP_CFG_REG (0x7C00000Cu)
+
+static void setC7xSnoopCfgReg()
+{
+    volatile uint32_t *pReg = (uint32_t *)C7x_EL2_SNOOP_CFG_REG;
+
+    /* This operation overrides the existing value of snoop config!*/
+    *pReg = (uint32_t)(0u);
+}
+
+static void configureC7xL1DCacheAsWriteThrough()
+{
+    volatile uint64_t l1dcfg = 0x1U;
+#if !defined(MCU_PLUS_SDK)
+    Cache_wbInvL1dAll();
+#else
+    CacheP_wbInvAll(CacheP_TYPE_L1D);
+#endif
+    c7x_set_l1dcfg(l1dcfg);
+}
+
+static void appC75ClecInitDru(void)
+{
+    CSL_ClecEventConfig   cfgClec;
+    CSL_CLEC_EVTRegs   *clecBaseAddr = (CSL_CLEC_EVTRegs*) CSL_C7X256V0_CLEC_BASE;
+
+    uint32_t i;
+    uint32_t dru_input_num   = 16;
+
+    /* DRU Local event start ref: AM62A clec spec*/
+    uint32_t dru_input_start = 128;
+
+    /* program CLEC events from DRU used for polling by TIDL
+     * to map to required events in C7x
+     */
+    for(i = dru_input_start; i < (dru_input_start + dru_input_num); i++)
+    {
+        /* Configure CLEC */
+        cfgClec.secureClaimEnable = FALSE;
+        cfgClec.evtSendEnable     = TRUE;
+        cfgClec.rtMap             = CSL_CLEC_RTMAP_CPU_ALL;
+        cfgClec.extEvtNum         = 0;
+        cfgClec.c7xEvtNum         = (i - dru_input_start) + 32;
+        CSL_clecConfigEvent(clecBaseAddr, i, &cfgClec);
+    }
+}
+
+void appCacheInit()
+{
+    /* Going with default cache setting on reset */
+    /* L1P - 32kb$, L1D - 64kb$, L2 - 0kb$ */
+    configureC7xL1DCacheAsWriteThrough();
+    setC7xSnoopCfgReg();
+}
 
 /*
  * =============================================================================
@@ -115,40 +184,10 @@ extern void tvm_compute_main(void *args);
  * =============================================================================
  */
 
-#if defined(SOC_AM62DX)
-/* Defined in am62dx-evm/c7x_cxm.c (board-specific inline asm) */
-extern void c7x_set_l1dcfg(uint64_t val);
-
-static void configure_l1d_write_through(void)
-{
-    CacheP_wbInvAll(CacheP_TYPE_L1D);
-    __memory_fence(__MFENCE_ALL_COLORS);
-    c7x_set_l1dcfg(0x1U);  /* L1DWBEN=1: write-through mode */
-}
-
-#define C7X_EL2_SNOOP_CFG_REG  0x7C00000Cu
-
-static void disable_c7x_snoop(void)
-{
-    volatile uint32_t *pReg = (volatile uint32_t *)(uintptr_t)C7X_EL2_SNOOP_CFG_REG;
-    *pReg = 0u;
-}
-
-static void c7x_silicon_workaround(void)
-{
-    configure_l1d_write_through();
-    disable_c7x_snoop();
-}
-#endif
-
 void dual_task_main(void *args)
 {
     int32_t status;
     uint32_t mmuEnabled;
-
-#if defined(SOC_AM62DX)
-    c7x_silicon_workaround();
-#endif
 
     DebugP_log("\r\n");
     DebugP_log("===========================================\r\n");
@@ -156,6 +195,8 @@ void dual_task_main(void *args)
     DebugP_log("      Built: %s %s\r\n", __DATE__, __TIME__);
     DebugP_log("===========================================\r\n");
     DebugP_log("\r\n");
+
+    appC75ClecInitDru();
 
     /* Verify MMU is enabled */
     mmuEnabled = MmuP_isEnabled();

@@ -28,6 +28,7 @@ const mmu_armv813 = mmu_armv8.addInstance();
 const mmu_armv814 = mmu_armv8.addInstance();
 const mmu_armv815 = mmu_armv8.addInstance();
 const mmu_armv816 = mmu_armv8.addInstance();
+const mmu_armv817 = mmu_armv8.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -66,16 +67,22 @@ mmu_armv86.$name = "DRU";
 
 mmu_armv87.vAddr     = 0x7E000000;
 mmu_armv87.pAddr     = 0x7E000000;
-mmu_armv87.size      = 0x200000;
-mmu_armv87.attribute = "MAIR4";
+mmu_armv87.size      = 0x1000000;
+mmu_armv87.attribute = "MAIR7";
 mmu_armv87.$name     = "L2SRAM";
 
 /* DDR_C7x_1_IPC MAIR4, DDR_C7x_1_DTS MAIR7, CCS_DEBUG_LOG_MEM MAIR4, DDR_C7X_1_CUSTOM_STFT MAIR4 */
 mmu_armv88.$name     = "CONFIG_MMU_REGION5";
 mmu_armv88.vAddr     = 0x99700000;
 mmu_armv88.pAddr     = 0x99700000;
-mmu_armv88.size      = 0x01100000;
+mmu_armv88.size      = 0x00200000;
 mmu_armv88.attribute = "MAIR4";
+
+mmu_armv817.$name     = "DDR_C7x_1_DTS";
+mmu_armv817.vAddr     = 0x99900000;
+mmu_armv817.pAddr     = 0x99900000;
+mmu_armv817.size      = 0x00F00000;
+mmu_armv817.attribute = "MAIR7";
 
 mmu_armv89.vAddr     = 0xA0400000;
 mmu_armv89.pAddr     = 0xA0400000;

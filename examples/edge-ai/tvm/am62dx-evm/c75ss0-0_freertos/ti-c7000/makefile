@@ -97,6 +97,7 @@ FILES_cpp_common := \
 	mattrans_signal_chain.cpp \
 	deinterleave_signal_chain.cpp \
 	utils_handler.cpp \
+	TISP_app_arena_default_config.cpp \
 
 FILES_PATH_common = \
 	$(MCU_PLUS_SDK_PATH)/examples/edge-ai/tvm/am62dx-evm/c75ss0-0_freertos \
@@ -130,6 +131,7 @@ FILES_PATH_cpp_common = \
 	$(MCU_PLUS_SDK_PATH)/examples/edge-ai/tvm/common/models/vggish \
 	$(MCU_PLUS_SDK_PATH)/examples/edge-ai/tvm/common/models/yamnet \
 	$(MCU_PLUS_SDK_PATH)/examples/edge-ai/tvm/common/models/utils \
+	$(MCU_PLUS_SDK_PATH)/source/tisp/test/common \
 
 INCLUDES_common := \
 	-I${CG_TOOL_ROOT}/include \

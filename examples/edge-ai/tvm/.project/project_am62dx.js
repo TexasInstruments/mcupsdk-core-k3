@@ -64,6 +64,7 @@ const files_c7x = {
         "mattrans_signal_chain.cpp",
         "deinterleave_signal_chain.cpp",
         "utils_handler.cpp",
+        "TISP_app_arena_default_config.cpp",
     ],
 };
 
@@ -99,6 +100,7 @@ const filedirs_c7x = {
         `${EXAMPLE_DIR}/common/models/vggish`,
         `${EXAMPLE_DIR}/common/models/yamnet`,
         `${EXAMPLE_DIR}/common/models/utils`,
+        '$(MCU_PLUS_SDK_PATH)/source/tisp/test/common',
     ],
 };
 

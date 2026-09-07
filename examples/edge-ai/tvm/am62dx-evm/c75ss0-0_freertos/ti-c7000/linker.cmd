@@ -128,8 +128,12 @@ SECTIONS
     .bss:l3mem              (NOLOAD)(NOINIT) : {} > L2SRAM
     .bss:l2mem              (NOLOAD)(NOINIT) : {} > L2RAM_C7x_1_AUX
     .bss:l1mem              (NOLOAD)(NOINIT) : {} > L2RAM_C7x_1_AUX_AS_L1
-    .bss:custom_stft_mem    (NOLOAD)(NOINIT) : {. = . + 0x00100000; } > DDR_C7X_1_CUSTOM_STFT
+    .bss:custom_stft_mem    (NOLOAD)(NOINIT) : {. = . + 0x000EC000; } > DDR_C7X_1_CUSTOM_STFT
         RUN_START(__CUSTOM_STFT_MEM_START)
         RUN_END(__CUSTOM_STFT_MEM_END)
+
+    .tisp_node_arena    (NOLOAD)(NOINIT) : {} > DDR_C7X_1_CUSTOM_STFT ALIGN(128)
+    .tisp_twiddle_arena (NOLOAD)(NOINIT) : {} > DDR_C7X_1_CUSTOM_STFT ALIGN(64)
+    .tisp_handle_arena  (NOLOAD)(NOINIT) : {} > DDR_C7X_1_CUSTOM_STFT ALIGN(32)
 
 }

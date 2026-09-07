@@ -125,7 +125,7 @@ extern "C" {
 #define ENET_CFG_RM_RX_CH_MAX                       (16U)
 
 /*! \brief Maximum number of Hw Push instances that Enet RM can manage. */
-#define ENET_CFG_RM_HW_PUSH_MAX                     (0U)
+#define ENET_CFG_RM_HW_PUSH_MAX                     (8U)
 
 /*! \brief Sciclient present in SOC */
 #define ENET_SCICLIENT_AVAILABLE                     (0U)

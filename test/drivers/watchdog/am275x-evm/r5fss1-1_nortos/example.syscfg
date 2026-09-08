@@ -12,9 +12,12 @@
 const watchdog   = scripting.addModule("/drivers/watchdog/watchdog", {}, false);
 const watchdog1  = watchdog.addInstance();
 const debug_log  = scripting.addModule("/kernel/dpl/debug_log");
-const mmu_armv8  = scripting.addModule("/kernel/dpl/mmu_armv8", {}, false);
-const mmu_armv81 = mmu_armv8.addInstance();
-const mmu_armv82 = mmu_armv8.addInstance();
+const mpu_armv7  = scripting.addModule("/kernel/dpl/mpu_armv7", {}, false);
+const mpu_armv71 = mpu_armv7.addInstance();
+const mpu_armv72 = mpu_armv7.addInstance();
+const mpu_armv73 = mpu_armv7.addInstance();
+const mpu_armv74 = mpu_armv7.addInstance();
+const mpu_armv75 = mpu_armv7.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -26,14 +29,25 @@ debug_log.enableUartLog        = true;
 debug_log.uartLog.$name        = "CONFIG_UART_CONSOLE";
 debug_log.uartLog.UART.$assign = "UART0";
 
-mmu_armv81.size  = 0x80000000;
-mmu_armv81.$name = "REGISTER_REGION";
+mpu_armv71.size         = 31;
+mpu_armv71.attributes   = "Device";
+mpu_armv71.allowExecute = false;
+mpu_armv71.$name        = "REGISTERS";
 
-mmu_armv82.vAddr     = 0x80000000;
-mmu_armv82.pAddr     = 0x80000000;
-mmu_armv82.size      = 0x80000000;
-mmu_armv82.attribute = "MAIR7";
-mmu_armv82.$name     = "DDR";
+mpu_armv72.size  = 15;
+mpu_armv72.$name = "TCMA";
+
+mpu_armv73.baseAddr = 0x41010000;
+mpu_armv73.size     = 15;
+mpu_armv73.$name    = "TCMB";
+
+mpu_armv74.baseAddr = 0x72000000;
+mpu_armv74.size     = 22;
+mpu_armv74.$name    = "MSRAM_BANK0_TO_BANK3";
+
+mpu_armv75.baseAddr = 0x72400000;
+mpu_armv75.size     = 21;
+mpu_armv75.$name    = "MSRAM_BANK4_TO_BANK5";
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future

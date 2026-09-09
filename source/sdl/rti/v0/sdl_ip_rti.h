@@ -275,6 +275,7 @@ typedef uint32_t RTI_Status_t;
 #define RTI_COMP0                                                           (0x50U)
 
 #define STATUS_VLD                                                          (1U)
+#define STATUS_MAX                                                          (0x3FU)
 
 /****************************************************************************************************
 *   Field Definition Macros

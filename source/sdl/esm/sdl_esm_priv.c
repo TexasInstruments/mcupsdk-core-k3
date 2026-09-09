@@ -237,7 +237,7 @@ static void SDL_ESM_interruptHandler (uint32_t esmInstBaseAddr,
         /* TI_COVERAGE_GAP_STOP */
         {
             /**
-             * TI_COVERAGE_GAP_START [Statement Coverage] Statement coverage here is dependent on branch coverage at line 235
+             * TI_COVERAGE_GAP_START [Statement Coverage] Statement coverage here is dependent on branch coverage at previous gap
              * TI_COVERAGE_UNIT_EFFECT In normal behaviour it is expected that this statement is not covered
              */
             break;

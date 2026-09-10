@@ -157,6 +157,7 @@ const example_file_list = [
     "examples/lpm/lpm_mcu_mcan_wakeup/.project/project.js",
     "examples/lpm/lpm_mcu_dmtimer_wakeup/.project/project.js",
     "examples/lpm/lpm_mcu_uart_wakeup/.project/project.js",
+    "examples/lpm/lpm_partial_io/.project/project.js",
     "examples/otp/ext_otp/.project/project.js",
     "examples/otp/runtime_keyrev/.project/project.js",
     "examples/safety/safety_app/.project/project.js",

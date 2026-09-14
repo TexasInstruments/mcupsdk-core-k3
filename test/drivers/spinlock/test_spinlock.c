@@ -62,10 +62,11 @@
 #define SPINLOCK_TIMEOUT_RETRY_COUNT    (100U)
 
 #define ISR_TRIGGER_COUNT_PER_ISR       (10U)
+/* 20 and 21 are free of peripheral conflicts across all cores */
 #define ISR_TEST_INT_NUM_A              (20U)
 #define ISR_TEST_INT_NUM_B              (21U)
 #define ISR_TEST_LOCK_NUMBER            (1U)
-#define DEADLOCK_TEST_INT_NUM           (22U)
+#define DEADLOCK_TEST_INT_NUM           (ISR_TEST_INT_NUM_A)
 #define DEADLOCK_TEST_LOCK_NUMBER       (2U)
 #define DEADLOCK_TEST_TIMEOUT_MS        (1000U)
 /* On a single-core system the ISR runs to completion before the main thread
@@ -86,7 +87,7 @@
 #define CROSS_TASK_RELEASE_LOCK_NUMBER  (8U)
 #define CROSS_TASK_STACK_SIZE           TEST_TASK_STACK_SIZE
 #define CROSS_TASK_PRI                  (3U)
-#define LOCK_PERSIST_INT_NUM            (23U)
+#define LOCK_PERSIST_INT_NUM            (ISR_TEST_INT_NUM_B)
 #define LOCK_PERSIST_LOCK_NUMBER        (9U)
 
 #if defined (ENABLE_MT)
@@ -112,13 +113,11 @@
 /*                            Global Variables                                */
 /* ========================================================================== */
 
-#if !defined(BUILD_C7X) && !defined(ENABLE_R5F)
 static volatile uint32_t gIsrSharedCounter = 0;
 static volatile uint32_t gIsrACompleteCount = 0;
 static volatile uint32_t gIsrBCompleteCount = 0;
 static volatile uint32_t gDeadlockIsrEntered = 0;
 static volatile uint32_t gDeadlockDetected = 0;
-#endif
 
 #if defined (ENABLE_MT)
 static volatile uint32_t gLockPersistIsrEntered = 0;
@@ -140,10 +139,8 @@ static void TestSpinlock_acquireRelease(void *args);
 static void TestSpinlock_getNumLocks(void *args);
 static void TestSpinlock_moduleReset(void *args);
 static void TestSpinlock_timeoutLogic(void *args);
-#if !defined(BUILD_C7X) && !defined(ENABLE_R5F)
 static void TestSpinlock_isrDataProtection(void *args);
 static void TestSpinlock_isrDeadlock(void *args);
-#endif
 static void TestSpinlock_performanceMeasurement(void *args);
 static void TestSpinlock_multipleLocksSimultaneous(void *args);
 static void TestSpinlock_acquireInUseLock(void *args);
@@ -159,9 +156,7 @@ static void TestSpinlock_lockLeakRecovery(void *args);
 static void TestSpinlock_highFrequencyStress(void *args);
 #if defined (ENABLE_MT)
 static void TestSpinlock_crossTaskRelease(void *args);
-#if !defined(BUILD_C7X)
 static void TestSpinlock_lockPersistAcrossInterrupt(void *args);
-#endif
 static void TestSpinlock_simultaneousModuleReset(void *args);
 static void TestSpinlock_mutualExclusion(void *args);
 static void TestSpinlock_concurrentIndependentLocks(void *args);
@@ -170,17 +165,13 @@ static void TestSpinlock_multiThreadModuleReset(void *args);
 #endif
 
 /* Helpers */
-#if !defined(BUILD_C7X) && !defined(ENABLE_R5F)
 static void TestSpinlock_isrA(void *args);
 static void TestSpinlock_isrB(void *args);
 static void TestSpinlock_deadlockIsr(void *args);
-#endif
 #if defined (ENABLE_MT)
 static void TestSpinlock_crossTaskReleaseTaskAMain(void *args);
 static void TestSpinlock_crossTaskReleaseTaskBMain(void *args);
-#if !defined(BUILD_C7X)
 static void TestSpinlock_lockPersistIsr(void *args);
-#endif
 static void TestSpinlock_simulResetTaskAMain(void *args);
 static void TestSpinlock_simulResetTaskBMain(void *args);
 static void TestSpinlock_simulResetTaskCMain(void *args);
@@ -211,10 +202,8 @@ void test_spinlock_main(void *args)
     RUN_TEST(TestSpinlock_getNumLocks, 10728, NULL);
     RUN_TEST(TestSpinlock_moduleReset, 10729, NULL);
     RUN_TEST(TestSpinlock_timeoutLogic, 10731, NULL);
-#if !defined(BUILD_C7X) && !defined(ENABLE_R5F)
     RUN_TEST(TestSpinlock_isrDataProtection, 10804, NULL);
     RUN_TEST(TestSpinlock_isrDeadlock, 10805, NULL);
-#endif
     RUN_TEST(TestSpinlock_performanceMeasurement, 10806, NULL);
     RUN_TEST(TestSpinlock_multipleLocksSimultaneous, 10808, NULL);
     RUN_TEST(TestSpinlock_acquireInUseLock, 10810, NULL);
@@ -230,9 +219,7 @@ void test_spinlock_main(void *args)
     RUN_TEST(TestSpinlock_highFrequencyStress, 10807, NULL);
 #if defined (ENABLE_MT)
     RUN_TEST(TestSpinlock_crossTaskRelease, 10817, NULL);
-#if !defined(BUILD_C7X)
     RUN_TEST(TestSpinlock_lockPersistAcrossInterrupt, 10818, NULL);
-#endif
     RUN_TEST(TestSpinlock_simultaneousModuleReset, 10819, NULL);
     RUN_TEST(TestSpinlock_mutualExclusion, 10820, NULL);
     RUN_TEST(TestSpinlock_concurrentIndependentLocks, 10821, NULL);
@@ -266,7 +253,6 @@ void tearDown(void)
  * Helpers
  */
 
-#if !defined(BUILD_C7X) && !defined(ENABLE_R5F)
 /**
  * \brief ISR A for data protection test
  *
@@ -316,7 +302,6 @@ static void TestSpinlock_isrB(void *args)
     /* Track ISR B completion */
     gIsrBCompleteCount++;
 }
-#endif
 
 /**
  * \brief Test to verify that a spinlock can be successfully acquired and released.
@@ -452,8 +437,6 @@ static void TestSpinlock_timeoutLogic(void *args)
     Spinlock_unlock(CSL_SPINLOCK0_BASE, lockNumber);
 }
 
-#if !defined(BUILD_C7X) && !defined(ENABLE_R5F)
-
 /**
  * \brief Test to verify spinlocks protect data shared between different interrupt service routines.
  *
@@ -482,6 +465,12 @@ static void TestSpinlock_isrDataProtection(void *args)
     hwiParamsA.intNum = ISR_TEST_INT_NUM_A;
     hwiParamsA.callback = TestSpinlock_isrA;
     hwiParamsA.priority = 1;
+    /* Software-triggered interrupt via HwiP_post() has no hardware event.
+     * HWIP_INVALID_EVENT_ID (0xFFFFU) suppresses CLEC event programming in
+     * HwiP_configClec(). Note: HwiP_construct() (freertos/c75) casts this
+     * uint16_t directly to int32_t (65535), so Hwi_eventMap() is still
+     * invoked, but it is a no-op on C7x for software-triggered interrupts. */
+    hwiParamsA.eventId = HWIP_INVALID_EVENT_ID;
     status = HwiP_construct(&hwiObjA, &hwiParamsA);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -490,6 +479,7 @@ static void TestSpinlock_isrDataProtection(void *args)
     hwiParamsB.intNum = ISR_TEST_INT_NUM_B;
     hwiParamsB.callback = TestSpinlock_isrB;
     hwiParamsB.priority = 1;
+    hwiParamsB.eventId = HWIP_INVALID_EVENT_ID;
     status = HwiP_construct(&hwiObjB, &hwiParamsB);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -590,6 +580,12 @@ static void TestSpinlock_isrDeadlock(void *args)
     hwiParams.intNum = DEADLOCK_TEST_INT_NUM;
     hwiParams.callback = TestSpinlock_deadlockIsr;
     hwiParams.priority = 1;
+    /* Software-triggered interrupt via HwiP_post() has no hardware event.
+     * HWIP_INVALID_EVENT_ID (0xFFFFU) suppresses CLEC event programming in
+     * HwiP_configClec(). Note: HwiP_construct() (freertos/c75) casts this
+     * uint16_t directly to int32_t (65535), so Hwi_eventMap() is still
+     * invoked, but it is a no-op on C7x for software-triggered interrupts. */
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     status = HwiP_construct(&hwiObj, &hwiParams);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -631,7 +627,6 @@ static void TestSpinlock_isrDeadlock(void *args)
     TEST_ASSERT_EQUAL_INT32(SPINLOCK_LOCK_STATUS_FREE, status);
     Spinlock_unlock(CSL_SPINLOCK0_BASE, DEADLOCK_TEST_LOCK_NUMBER);
 }
-#endif
 
 /**
  * \brief Test to measure execution time of acquiring an uncontended lock.
@@ -1290,7 +1285,6 @@ static void TestSpinlock_crossTaskRelease(void *args)
     SemaphoreP_destruct(&gTestSem[1]);
 }
 
-#if !defined(BUILD_C7X)
 /**
  * \brief ISR for lock persistence across interrupt test.
  *
@@ -1341,6 +1335,12 @@ static void TestSpinlock_lockPersistAcrossInterrupt(void *args)
     hwiParams.intNum = LOCK_PERSIST_INT_NUM;
     hwiParams.callback = TestSpinlock_lockPersistIsr;
     hwiParams.priority = 1;
+    /* Software-triggered interrupt via HwiP_post() has no hardware event.
+     * HWIP_INVALID_EVENT_ID (0xFFFFU) suppresses CLEC event programming in
+     * HwiP_configClec(). Note: HwiP_construct() (freertos/c75) casts this
+     * uint16_t directly to int32_t (65535), so Hwi_eventMap() is still
+     * invoked, but it is a no-op on C7x for software-triggered interrupts. */
+    hwiParams.eventId = HWIP_INVALID_EVENT_ID;
     status = HwiP_construct(&hwiObj, &hwiParams);
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, status);
 
@@ -1380,7 +1380,6 @@ static void TestSpinlock_lockPersistAcrossInterrupt(void *args)
     Spinlock_unlock(CSL_SPINLOCK0_BASE, LOCK_PERSIST_LOCK_NUMBER);
     HwiP_destruct(&hwiObj);
 }
-#endif
 
 /**
  * \brief Task A function for simultaneous module reset test.

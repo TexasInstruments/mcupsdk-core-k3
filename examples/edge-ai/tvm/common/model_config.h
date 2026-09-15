@@ -59,7 +59,8 @@
    Model Selection - Runtime IPC-based
    ============================================================================ */
 
-typedef enum {
+typedef enum
+{
     MODEL_DCCRN = 0,    /* Deep Complex Convolution Recurrent Network */
     MODEL_GTCRN = 1,    /* Graph-based Time-Frequency Recurrent Network */
     MODEL_GCRN  = 2,    /* Graph-based Complex Recurrent Network */

@@ -55,7 +55,8 @@ static ModelId g_active_model = MODEL_COUNT;
 
 const SignalChainOps *signal_chain_get_ops(ModelId id)
 {
-    switch (id) {
+    switch (id)
+    {
         case MODEL_DCCRN:  return dccrn_get_ops();
         case MODEL_GTCRN:  return gtcrn_get_ops();
         case MODEL_GCRN:   return gcrn_get_ops();
@@ -67,7 +68,8 @@ const SignalChainOps *signal_chain_get_ops(ModelId id)
 
 int32_t signal_chain_set_active(ModelId id)
 {
-    if (signal_chain_get_ops(id) == nullptr) {
+    if (signal_chain_get_ops(id) == nullptr)
+    {
         return 0;
     }
     g_active_model = id;

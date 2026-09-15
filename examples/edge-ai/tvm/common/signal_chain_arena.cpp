@@ -43,14 +43,16 @@ extern uint8_t __CUSTOM_STFT_MEM_END;
 bool signal_chain_arena_ensure(SignalChainArenaState *state, const ArenaBufferSpec *specs, uint32_t num_specs,
                                 const char *arena_label)
 {
-    if (state->ready) {
+    if (state->ready)
+    {
 #ifdef SIGNAL_CHAIN_VERBOSE_LOG
         DebugP_log("[%s ARENA] Already initialized - reusing buffers\r\n", arena_label);
 #endif
         return true;
     }
 
-    if (num_specs > SIGNAL_CHAIN_ARENA_MAX_BUFFERS) {
+    if (num_specs > SIGNAL_CHAIN_ARENA_MAX_BUFFERS)
+    {
         DebugP_log("[%s ARENA] ERROR: %u buffers requested, max %u\r\n",
                    arena_label, num_specs, SIGNAL_CHAIN_ARENA_MAX_BUFFERS);
         return false;
@@ -68,15 +70,18 @@ bool signal_chain_arena_ensure(SignalChainArenaState *state, const ArenaBufferSp
     arena_init(&tmp_arena, base, capacity, 128);
 
     ArenaBuffer tmp_buffers[SIGNAL_CHAIN_ARENA_MAX_BUFFERS];
-    for (uint32_t i = 0; i < num_specs; i++) {
-        if (!arena_alloc(&tmp_arena, specs[i].name, specs[i].size, 128, &tmp_buffers[i])) {
+    for (uint32_t i = 0; i < num_specs; i++)
+    {
+        if (!arena_alloc(&tmp_arena, specs[i].name, specs[i].size, 128, &tmp_buffers[i]))
+	{
             /* Leave state untouched (ready stays false) so a corrected retry can succeed. */
             return false;
         }
     }
 
     state->arena = tmp_arena;
-    for (uint32_t i = 0; i < num_specs; i++) {
+    for (uint32_t i = 0; i < num_specs; i++)
+    {
         state->buffers[i] = tmp_buffers[i];
     }
     state->ready = true;

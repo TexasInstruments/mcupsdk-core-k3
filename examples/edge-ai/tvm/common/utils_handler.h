@@ -39,7 +39,8 @@
 /* RPMsg handler for deinterleave, interleave, and matrix-transpose utility
  * operations (see utils_handler_msg and the flag field in struct
  * utils_handler). */
-struct utils_handler {
+struct utils_handler
+{
   struct c7x_msg_hdr hdr;
   uint32_t input_buffer;
   uint32_t output_buffer;

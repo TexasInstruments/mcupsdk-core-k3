@@ -62,16 +62,22 @@ static int32_t mat_transpose_row_to_column(struct utils_handler *req,
                                             struct utils_handler *resp);
 
 static int32_t handle_utils(struct utils_handler *req,
-                            struct utils_handler *resp) {
-    if (req->flag == 0) {
+                            struct utils_handler *resp)
+{
+    if (req->flag == 0)
+    {
         return handle_deinterleave(req, resp);
-    } else if (req->flag == 1) {
+    } else if (req->flag == 1)
+    {
         return handle_interleave(req, resp);
-    } else if (req->flag == 2) {
+    } else if (req->flag == 2)
+    {
         return mat_transpose_column_to_row(req, resp);
-    } else if (req->flag == 3) {
+    } else if (req->flag == 3)
+    {
         return mat_transpose_row_to_column(req, resp);
-    } else {
+    } else
+    {
         DebugP_log("[UTILS] ERROR: Invalid flag value: %u\r\n", req->flag);
         resp->hdr.type   = C7X_UTILS_MSG_ANALYZE_RESP;
         resp->hdr.seq    = req->hdr.seq;
@@ -82,7 +88,8 @@ static int32_t handle_utils(struct utils_handler *req,
     }
 }
 static int32_t handle_deinterleave(struct utils_handler *req,
-                                   struct utils_handler *resp) {
+                                   struct utils_handler *resp)
+{
 
     /* Sizes (in bytes) are derived from the requested frame counts */
     uint32_t width      = 2;                       /* 2 planes (re,im) */
@@ -92,7 +99,8 @@ static int32_t handle_deinterleave(struct utils_handler *req,
     uint32_t input_size = width * height * sizeof(float);
     uint32_t output_size = width * height * sizeof(float);
 
-    if (req->input_buffer == 0 || req->output_buffer == 0 || req->input_frame == 0) {
+    if (req->input_buffer == 0 || req->output_buffer == 0 || req->input_frame == 0)
+    {
         resp->hdr.type   = C7X_UTILS_MSG_ANALYZE_RESP;
         resp->hdr.seq    = req->hdr.seq;
         resp->hdr.len    = sizeof(struct utils_handler);
@@ -101,11 +109,13 @@ static int32_t handle_deinterleave(struct utils_handler *req,
         return SystemP_FAILURE;
     }
 
-    if (dePreGraph == NULL) {
+    if (dePreGraph == NULL)
+    {
         dePreGraph = gDeinterleaveProcessor.create_deinterleave_pre_graph(
             (float *)req->input_buffer, (float *)req->output_buffer,
             width, height, inpitch, outpitch);
-        if (dePreGraph == NULL) {
+        if (dePreGraph == NULL)
+	{
             resp->hdr.type   = C7X_UTILS_MSG_ANALYZE_RESP;
             resp->hdr.seq    = req->hdr.seq;
             resp->hdr.len    = sizeof(struct utils_handler);
@@ -116,7 +126,8 @@ static int32_t handle_deinterleave(struct utils_handler *req,
 
     CacheP_inv((void *)req->input_buffer, input_size, CacheP_TYPE_ALLD);
     int32_t status = gDeinterleaveProcessor.execute_pre_graph(dePreGraph, (float *)req->input_buffer);
-    if (status != SystemP_SUCCESS) {
+    if (status != SystemP_SUCCESS)
+    {
         DebugP_log("[DEINTERLEAVE] ERROR: Pre-graph execution failed: %d\r\n", status);
         resp->hdr.type   = C7X_UTILS_MSG_ANALYZE_RESP;
         resp->hdr.seq    = req->hdr.seq;
@@ -135,7 +146,8 @@ static int32_t handle_deinterleave(struct utils_handler *req,
 }
 
 static int32_t handle_interleave(struct utils_handler *req,
-                                  struct utils_handler *resp) {
+                                  struct utils_handler *resp)
+{
 
     /* Sizes (in bytes) are derived from the requested frame counts */
     uint32_t width      = req->input_frame * (req->fft_size/2 + 1);  /* T*F complex rows */
@@ -145,7 +157,8 @@ static int32_t handle_interleave(struct utils_handler *req,
     uint32_t input_size = width * height * sizeof(float);
     uint32_t output_size = width * height * sizeof(float);
 
-    if (req->input_buffer == 0 || req->output_buffer == 0 || req->input_frame == 0) {
+    if (req->input_buffer == 0 || req->output_buffer == 0 || req->input_frame == 0)
+    {
         resp->hdr.type   = C7X_UTILS_MSG_ANALYZE_RESP;
         resp->hdr.seq    = req->hdr.seq;
         resp->hdr.len    = sizeof(struct utils_handler);
@@ -154,11 +167,13 @@ static int32_t handle_interleave(struct utils_handler *req,
         return SystemP_FAILURE;
     }
 
-    if (inPostGraph == NULL) {
+    if (inPostGraph == NULL)
+    {
         inPostGraph = gDeinterleaveProcessor.create_interleave_post_graph(
             (float *)req->input_buffer, (float *)req->output_buffer,
             width, height, inpitch, outpitch);
-        if (inPostGraph == NULL) {
+        if (inPostGraph == NULL)
+	{
             resp->hdr.type   = C7X_UTILS_MSG_ANALYZE_RESP;
             resp->hdr.seq    = req->hdr.seq;
             resp->hdr.len    = sizeof(struct utils_handler);
@@ -169,7 +184,8 @@ static int32_t handle_interleave(struct utils_handler *req,
 
     CacheP_inv((void *)req->input_buffer, input_size, CacheP_TYPE_ALLD);
     int32_t status = gDeinterleaveProcessor.execute_post_graph(inPostGraph, (float *)req->input_buffer);
-    if (status != SystemP_SUCCESS) {
+    if (status != SystemP_SUCCESS)
+    {
         DebugP_log("[INTERLEAVE] ERROR: Post-graph execution failed: %d\r\n", status);
         resp->hdr.type   = C7X_UTILS_MSG_ANALYZE_RESP;
         resp->hdr.seq    = req->hdr.seq;
@@ -189,7 +205,8 @@ static int32_t handle_interleave(struct utils_handler *req,
 
 
 static int32_t mat_transpose_column_to_row(struct utils_handler *req,
-                                           struct utils_handler *resp) {
+                                           struct utils_handler *resp)
+{
 
     /* Sizes (in bytes) are derived from the requested frame counts */
     uint32_t width      = req->fft_size/2 + 1;     /* F complex rows */
@@ -199,7 +216,8 @@ static int32_t mat_transpose_column_to_row(struct utils_handler *req,
     uint32_t input_size = width * height * sizeof(double);
     uint32_t output_size = width * height * sizeof(double);
 
-    if (req->input_buffer == 0 || req->output_buffer == 0 || req->input_frame == 0) {
+    if (req->input_buffer == 0 || req->output_buffer == 0 || req->input_frame == 0)
+    {
         resp->hdr.type   = C7X_UTILS_MSG_ANALYZE_RESP;
         resp->hdr.seq    = req->hdr.seq;
         resp->hdr.len    = sizeof(struct utils_handler);
@@ -208,11 +226,13 @@ static int32_t mat_transpose_column_to_row(struct utils_handler *req,
         return SystemP_FAILURE;
     }
 
-    if (matTransPreGraph == NULL) {
+    if (matTransPreGraph == NULL)
+    {
         matTransPreGraph = gMatTransProcessor.create_mattrans_pre_graph(
             (float *)req->input_buffer, (float *)req->output_buffer,
             width, height, inpitch, outpitch);
-        if (matTransPreGraph == NULL) {
+        if (matTransPreGraph == NULL)
+	{
             resp->hdr.type   = C7X_UTILS_MSG_ANALYZE_RESP;
             resp->hdr.seq    = req->hdr.seq;
             resp->hdr.len    = sizeof(struct utils_handler);
@@ -222,7 +242,8 @@ static int32_t mat_transpose_column_to_row(struct utils_handler *req,
     }
   CacheP_inv((void *)req->input_buffer, input_size, CacheP_TYPE_ALLD);
   int32_t status = gMatTransProcessor.execute_pre_graph(matTransPreGraph, (float *)req->input_buffer);
-  if (status != SystemP_SUCCESS) {
+  if (status != SystemP_SUCCESS)
+  {
     DebugP_log("[MAT_TRANSPOSE] ERROR: Pre-graph execution failed: %d\r\n", status);
     resp->hdr.type   = C7X_UTILS_MSG_ANALYZE_RESP;
     resp->hdr.seq    = req->hdr.seq;
@@ -241,7 +262,8 @@ static int32_t mat_transpose_column_to_row(struct utils_handler *req,
 }
 
 static int32_t mat_transpose_row_to_column(struct utils_handler *req,
-                                           struct utils_handler *resp) {
+                                           struct utils_handler *resp)
+{
 
     /* Sizes (in bytes) are derived from the requested frame counts */
     uint32_t width      = req->input_frame;        /* T complex rows */
@@ -251,7 +273,8 @@ static int32_t mat_transpose_row_to_column(struct utils_handler *req,
     uint32_t input_size = width * height * sizeof(double);
     uint32_t output_size = width * height * sizeof(double);
 
-    if (req->input_buffer == 0 || req->output_buffer == 0 || req->input_frame == 0) {
+    if (req->input_buffer == 0 || req->output_buffer == 0 || req->input_frame == 0)
+    {
         resp->hdr.type   = C7X_UTILS_MSG_ANALYZE_RESP;
         resp->hdr.seq    = req->hdr.seq;
         resp->hdr.len    = sizeof(struct utils_handler);
@@ -260,7 +283,8 @@ static int32_t mat_transpose_row_to_column(struct utils_handler *req,
         return SystemP_FAILURE;
     }
 
-    if (matTransPostGraph == NULL) {
+    if (matTransPostGraph == NULL)
+    {
         matTransPostGraph = gMatTransProcessor.create_mattrans_post_graph(
             (float *)req->input_buffer, (float *)req->output_buffer,
             width, height, inpitch, outpitch);
@@ -275,7 +299,8 @@ static int32_t mat_transpose_row_to_column(struct utils_handler *req,
 
     CacheP_inv((void *)req->input_buffer, input_size, CacheP_TYPE_ALLD);
     int32_t status = gMatTransProcessor.execute_post_graph(matTransPostGraph, (float *)req->input_buffer);
-    if (status != SystemP_SUCCESS) {
+    if (status != SystemP_SUCCESS)
+    {
         DebugP_log("[MAT_TRANSPOSE] ERROR: Post-graph execution failed: %d\r\n", status);
         resp->hdr.type   = C7X_UTILS_MSG_ANALYZE_RESP;
         resp->hdr.seq    = req->hdr.seq;
@@ -297,7 +322,8 @@ static int32_t mat_transpose_row_to_column(struct utils_handler *req,
 /*=======C Wrapper Function (extern "C")=======*/
 extern "C" {
 int32_t utils_handler_msg(struct utils_handler *req,
-                                 struct utils_handler *resp) {
+                                 struct utils_handler *resp)
+{
   return handle_utils(req, resp);
 }
 

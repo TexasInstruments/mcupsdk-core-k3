@@ -52,16 +52,18 @@ void *DeinterleaveSignalChain::create_deinterleave_pre_graph(float *input_addr, 
 {
    TISP::ErrorCtxt errorCtx;
    auto preVec = new TISP::opVec();
-   if (errorCtx.isSuccess()) {
+   if (errorCtx.isSuccess())
+   {
       auto k1 = std::make_unique<TISP::DSPLIB::Deinterleave<float>>(
           input_addr, output_addr, width,height,inpitch,outpitch,"Deinterleave (re/im split)", 0, errorCtx);
       if (errorCtx.isSuccess()) { preVec->push_back(std::move(k1)); }
       else { DebugP_log("[DSP] Error: Node 1 Deinterleave: %s\r\n", errorCtx.getMessage()); }
    }
-    if (!errorCtx.isSuccess() || preVec->size() != 1U) {
+   if (!errorCtx.isSuccess() || preVec->size() != 1U)
+   {
         delete preVec;
         return NULL;
-    }
+   }
 
    return preVec;
 }
@@ -71,16 +73,18 @@ void *DeinterleaveSignalChain::create_interleave_post_graph(float *model_out,flo
 {
    TISP::ErrorCtxt errorCtx;
    auto postVec = new TISP::opVec();
-   if (errorCtx.isSuccess()) {
+   if (errorCtx.isSuccess())
+   {
       auto k2 = std::make_unique<TISP::DSPLIB::Interleave<float>>(
           model_out, output_addr, width, height, inpitch, outpitch, "Interleave (re/im merge)", 1, errorCtx);
       if (errorCtx.isSuccess()) { postVec->push_back(std::move(k2)); }
       else { DebugP_log("[DSP] Error: Node 3 Interleave: %s\r\n", errorCtx.getMessage()); }
    }
-    if (!errorCtx.isSuccess() || postVec->size() != 1U) {
+   if (!errorCtx.isSuccess() || postVec->size() != 1U)
+   {
         delete postVec;
         return NULL;
-    }
+   }
 
    return postVec;
 }

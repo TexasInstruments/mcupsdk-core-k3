@@ -49,7 +49,8 @@
    STFT Arena - One-time buffer partition over host-provided IPC memory
    ============================================================================ */
 
-enum {
+enum
+{
     VGGISH_STFT_IDX_TYPECONV = 0,
     VGGISH_STFT_IDX_WINDOW,
     VGGISH_STFT_IDX_STATE,
@@ -61,7 +62,8 @@ enum {
 
 /* Buffer specifications for arena allocation
  * Order must match enum indices above */
-static const ArenaBufferSpec kVggishStftSpecs[VGGISH_STFT_NUM_BUFS] = {
+static const ArenaBufferSpec kVggishStftSpecs[VGGISH_STFT_NUM_BUFS] =
+{
     {"vggish_stft_typeconv",  (uint32_t)(VGGISH_INPUT_SAMPLES * VGGISH_NUM_CHANNELS * sizeof(float))},
     {"vggish_stft_window",    (uint32_t)(VGGISH_FFT_SIZE * sizeof(float))},
     {"vggish_stft_state",     (uint32_t)VGGISH_STFT_STATE_BYTES},
@@ -87,9 +89,11 @@ static SignalChainArenaState g_vggish_stft_arena;
    VGGISH Signal Chain Implementation
    ============================================================================ */
 
-void *StftSignalChainVGGISH::create_pre_graph(int16_t *input_addr) {
+void *StftSignalChainVGGISH::create_pre_graph(int16_t *input_addr)
+{
   /* One-time arena initialization on first call; cached thereafter */
-  if (!signal_chain_arena_ensure(&g_vggish_stft_arena, kVggishStftSpecs, VGGISH_STFT_NUM_BUFS, "VGGISH STFT")) {
+  if (!signal_chain_arena_ensure(&g_vggish_stft_arena, kVggishStftSpecs, VGGISH_STFT_NUM_BUFS, "VGGISH STFT"))
+  {
     return NULL;
   }
 
@@ -108,7 +112,8 @@ void *StftSignalChainVGGISH::create_pre_graph(int16_t *input_addr) {
 
   auto preVec = new TISP::opVec();
 
-  if (errorCtx.isSuccess()) {
+  if (errorCtx.isSuccess())
+  {
     auto k0 = std::make_unique<TISP::AUDIOLIB::TypeConversion<int16_t, float>>(
             input_addr, TYPECONV_OUT_ADDR, VGGISH_NUM_CHANNELS,
             VGGISH_INPUT_SAMPLES, VGGISH_NUM_CHANNELS * sizeof(int16_t),
@@ -118,7 +123,8 @@ void *StftSignalChainVGGISH::create_pre_graph(int16_t *input_addr) {
       preVec->push_back(std::move(k0));
   }
 
-  if (errorCtx.isSuccess()) {
+  if (errorCtx.isSuccess())
+  {
     auto k1 = std::make_unique<TISP::AUDIOLIB::LogMelSpectrum<float>>(
         TYPECONV_OUT_ADDR, STFT_OUT_ADDR, WINDOW_ADDR, MEL_SPEC_ADDR,
         STFT_STATE_ADDR, STFT_SCRATCH_ADDR, VGGISH_FFT_SIZE, VGGISH_HOP_SIZE,
@@ -128,7 +134,8 @@ void *StftSignalChainVGGISH::create_pre_graph(int16_t *input_addr) {
       preVec->push_back(std::move(k1));
   }
 
-  if (!errorCtx.isSuccess() || preVec->size() != 2U) {
+  if (!errorCtx.isSuccess() || preVec->size() != 2U)
+  {
     delete preVec;
     return NULL;
   }
@@ -137,7 +144,8 @@ void *StftSignalChainVGGISH::create_pre_graph(int16_t *input_addr) {
 }
 
 int32_t StftSignalChainVGGISH::execute_pre_graph(void *pre_graph,
-                                                 int16_t *input_addr) {
+                                                 int16_t *input_addr)
+{
   TISP::opVec *graph = static_cast<TISP::opVec *>(pre_graph);
   if (graph == NULL || graph->size() == 0U)
     return -1;
@@ -148,7 +156,8 @@ int32_t StftSignalChainVGGISH::execute_pre_graph(void *pre_graph,
   return 0;
 }
 
-void StftSignalChainVGGISH::delete_pre_graph(void *pre_graph) {
+void StftSignalChainVGGISH::delete_pre_graph(void *pre_graph)
+{
   if (pre_graph != NULL)
     delete static_cast<TISP::opVec *>(pre_graph);
 }
@@ -161,34 +170,41 @@ void StftSignalChainVGGISH::delete_pre_graph(void *pre_graph) {
 
 static StftSignalChainVGGISH g_vggish_impl;
 
-static void *vggish_create_pre_graph(int16_t *input_addr) {
+static void *vggish_create_pre_graph(int16_t *input_addr)
+{
     return g_vggish_impl.create_pre_graph(input_addr);
 }
 
-static int32_t vggish_execute_pre_graph(void *graph, int16_t *input_addr) {
+static int32_t vggish_execute_pre_graph(void *graph, int16_t *input_addr)
+{
     return g_vggish_impl.execute_pre_graph(graph, input_addr);
 }
 
-static void vggish_delete_pre_graph(void *graph) {
+static void vggish_delete_pre_graph(void *graph)
+{
     g_vggish_impl.delete_pre_graph(graph);
 }
 
-static float *vggish_get_preprocess_buf(void) {
+static float *vggish_get_preprocess_buf(void)
+{
     return STFT_OUT_ADDR;
 }
-static void vggish_reset_arenas(void) {
+static void vggish_reset_arenas(void)
+{
     /* VGGish is analysis-only: only the STFT arena needs to be reset. */
     signal_chain_arena_reset_ready(&g_vggish_stft_arena);
 }
 
-static const ModelConfig vggish_config = {
+static const ModelConfig vggish_config =
+{
     .input_samples = VGGISH_INPUT_SAMPLES,
     .model_elems = VGGISH_MODEL_ELEMS,
     .output_samples = VGGISH_OUTPUT_SAMPLES,
     .batch_n = 64
 };
 
-static const SignalChainOps kVggishOps = {
+static const SignalChainOps kVggishOps =
+{
     .name = "VGGISH",
     .config = &vggish_config,
     .create_pre_graph = vggish_create_pre_graph,
@@ -202,6 +218,7 @@ static const SignalChainOps kVggishOps = {
     .reset_arenas = vggish_reset_arenas
 };
 
-extern "C" const SignalChainOps *vggish_get_ops(void) {
+extern "C" const SignalChainOps *vggish_get_ops(void)
+{
     return &kVggishOps;
 }

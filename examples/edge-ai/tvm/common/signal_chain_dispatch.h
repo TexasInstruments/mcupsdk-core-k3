@@ -53,7 +53,8 @@ extern "C" {
    Model Configuration (replaces compile-time STFT_* macros)
    ============================================================================ */
 
-typedef struct {
+typedef struct
+{
     uint32_t input_samples;   /* STFT_INPUT_SAMPLES equivalent per model */
     uint32_t model_elems;     /* STFT_MODEL_ELEMS equivalent per model */
     uint32_t output_samples;  /* STFT_OUTPUT_SAMPLES equivalent per model */
@@ -64,7 +65,8 @@ typedef struct {
    Signal Chain Operations Table
    ============================================================================ */
 
-typedef struct {
+typedef struct
+{
     const char         *name;
     const ModelConfig  *config;
 

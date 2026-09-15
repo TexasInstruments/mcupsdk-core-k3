@@ -63,7 +63,8 @@ bool arena_alloc(Arena *a, const char *name, uint32_t size, uint32_t alignment, 
 {
     uint32_t aligned_offset = arena_align_up(a->offset, alignment);
 
-    if (aligned_offset > a->capacity || size > (a->capacity - aligned_offset)) {
+    if (aligned_offset > a->capacity || size > (a->capacity - aligned_offset))
+    {
         DebugP_log("  [ALLOC FAIL] %s  Requested: %u  Offset: %u  Remaining: %u  Capacity: %u\r\n",
                    name, size, a->offset, a->remaining, a->capacity);
         return false;

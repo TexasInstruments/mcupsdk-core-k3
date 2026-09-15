@@ -53,16 +53,18 @@ void *MatTransSignalChain::create_mattrans_pre_graph(float *input_addr, float *o
 {
    TISP::ErrorCtxt errorCtx;
    auto preVec = new TISP::opVec();
-   if (errorCtx.isSuccess()) {
+   if (errorCtx.isSuccess())
+   {
       auto k1 = std::make_unique<TISP::DSPLIB::MatTrans<double>>(
            reinterpret_cast<double *>(input_addr),  reinterpret_cast<double *>(output_addr), width,height,inpitch,outpitch,"MatTrans (re/im split)", 0, errorCtx);
       if (errorCtx.isSuccess()) { preVec->push_back(std::move(k1)); }
       else { DebugP_log("[DSP] Error: Node MatTrans: %s\r\n", errorCtx.getMessage()); }
    }
-    if (!errorCtx.isSuccess() || preVec->size() != 1U) {
+   if (!errorCtx.isSuccess() || preVec->size() != 1U)
+   {
         delete preVec;
         return NULL;
-    }
+   }
 
    return preVec;
 }
@@ -72,16 +74,18 @@ void *MatTransSignalChain::create_mattrans_post_graph(float *model_out,float *ou
 {
    TISP::ErrorCtxt errorCtx;
    auto postVec = new TISP::opVec();
-   if (errorCtx.isSuccess()) {
+   if (errorCtx.isSuccess())
+   {
       auto k2 = std::make_unique<TISP::DSPLIB::MatTrans<double>>(
           reinterpret_cast<double *>(model_out), reinterpret_cast<double *>(output_addr), width, height, inpitch, outpitch, "MatTrans (re/im merge)", 1, errorCtx);
       if (errorCtx.isSuccess()) { postVec->push_back(std::move(k2)); }
       else { DebugP_log("[DSP] Error: Node MatTrans: %s\r\n", errorCtx.getMessage()); }
    }
-    if (!errorCtx.isSuccess() || postVec->size() != 1U) {
+   if (!errorCtx.isSuccess() || postVec->size() != 1U)
+   {
         delete postVec;
         return NULL;
-    }
+   }
 
    return postVec;
 }
@@ -101,7 +105,7 @@ int32_t MatTransSignalChain::execute_post_graph(void *post_graph,float *input_ad
 {
 
     TISP::opVec *graph=static_cast<TISP::opVec *>(post_graph);
-   if (graph == NULL || graph->size() == 0U) return -1;
+    if (graph == NULL || graph->size() == 0U) return -1;
     TISP::SetAddr_t     kAddr;
     kAddr.src[0]=static_cast<void *>(input_addr);
     (*graph)[0]->setAddr(kAddr,  TISP::kAddrModeIn);

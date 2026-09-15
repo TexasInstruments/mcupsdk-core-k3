@@ -37,7 +37,8 @@
 #include "dsp_service.h"
 
 /* STFT/ISTFT message structure */
-struct stft_istft_msg {
+struct stft_istft_msg
+{
     struct c7x_msg_hdr hdr;
     uint32_t selected_model; /* ModelId: MODEL_DCCRN=0, MODEL_GTCRN=1, MODEL_GCRN=2,
                               *          MODEL_VGGISH=3, MODEL_YAMNET=4 (see model_config.h) */

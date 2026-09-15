@@ -45,7 +45,8 @@
 
 bool StftSignalChain::select_model(ModelId id)
 {
-    if (!signal_chain_set_active(id)) {
+    if (!signal_chain_set_active(id))
+    {
         DebugP_log("[STFT] ERROR: Invalid model id: %u\r\n", id);
         return false;
     }
@@ -65,7 +66,8 @@ const ModelConfig *StftSignalChain::config() const
 void *StftSignalChain::create_pre_graph(int16_t *input_addr)
 {
     const SignalChainOps *ops = signal_chain_get_ops(signal_chain_get_active());
-    if (!ops) {
+    if (!ops)
+    {
         DebugP_log("[STFT] ERROR: No model selected\r\n");
         return nullptr;
     }
@@ -75,7 +77,8 @@ void *StftSignalChain::create_pre_graph(int16_t *input_addr)
 void *StftSignalChain::create_post_graph(float *model_out)
 {
     const SignalChainOps *ops = signal_chain_get_ops(signal_chain_get_active());
-    if (!ops) {
+    if (!ops)
+    {
         DebugP_log("[STFT] ERROR: No model selected\r\n");
         return nullptr;
     }
@@ -85,7 +88,8 @@ void *StftSignalChain::create_post_graph(float *model_out)
 int32_t StftSignalChain::execute_pre_graph(void *pre_graph, int16_t *input_addr)
 {
     const SignalChainOps *ops = signal_chain_get_ops(signal_chain_get_active());
-    if (!ops) {
+    if (!ops)
+    {
         DebugP_log("[STFT] ERROR: No model selected\r\n");
         return -1;
     }
@@ -95,7 +99,8 @@ int32_t StftSignalChain::execute_pre_graph(void *pre_graph, int16_t *input_addr)
 int32_t StftSignalChain::execute_post_graph(void *post_graph, float *input_addr)
 {
     const SignalChainOps *ops = signal_chain_get_ops(signal_chain_get_active());
-    if (!ops) {
+    if (!ops)
+    {
         DebugP_log("[STFT] ERROR: No model selected\r\n");
         return -1;
     }
@@ -105,7 +110,8 @@ int32_t StftSignalChain::execute_post_graph(void *post_graph, float *input_addr)
 void StftSignalChain::delete_pre_graph(void *pre_graph)
 {
     const SignalChainOps *ops = signal_chain_get_ops(signal_chain_get_active());
-    if (ops) {
+    if (ops)
+    {
         ops->delete_pre_graph(pre_graph);
     }
 }
@@ -113,7 +119,8 @@ void StftSignalChain::delete_pre_graph(void *pre_graph)
 void StftSignalChain::delete_post_graph(void *post_graph)
 {
     const SignalChainOps *ops = signal_chain_get_ops(signal_chain_get_active());
-    if (ops) {
+    if (ops)
+    {
         ops->delete_post_graph(post_graph);
     }
 }
@@ -133,7 +140,8 @@ int16_t *StftSignalChain::get_postprocess_buf()
 void StftSignalChain::reset_arenas()
 {
     const SignalChainOps *ops = signal_chain_get_ops(signal_chain_get_active());
-    if (ops && ops->reset_arenas) {
+    if (ops && ops->reset_arenas)
+    {
         ops->reset_arenas();
     }
 }

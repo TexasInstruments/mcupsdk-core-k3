@@ -45,7 +45,8 @@
 
 #include <stdint.h>
 
-typedef struct {
+typedef struct
+{
     uint8_t *base;         /* aligned up from whatever pointer arena_init() was given */
     uint32_t capacity;     /* usable bytes after base, i.e. after alignment padding is removed */
     uint32_t offset;       /* next free byte, relative to base */
@@ -53,7 +54,8 @@ typedef struct {
     bool     initialized;
 } Arena;
 
-typedef struct {
+typedef struct
+{
     const char *name;
     void       *addr;
     uint32_t    size;

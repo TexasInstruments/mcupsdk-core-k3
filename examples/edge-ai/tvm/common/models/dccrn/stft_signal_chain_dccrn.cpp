@@ -56,7 +56,8 @@
    independent copy per arena.
    ============================================================================ */
 
-enum {
+enum
+{
     DCCRN_STFT_IDX_TYPECONV = 0,
     DCCRN_STFT_IDX_WINDOW,
     DCCRN_STFT_IDX_STATE,
@@ -66,7 +67,8 @@ enum {
     DCCRN_STFT_NUM_BUFS
 };
 
-enum {
+enum
+{
     DCCRN_ISTFT_IDX_TYPECONV = 0,
     DCCRN_ISTFT_IDX_WINDOW,
     DCCRN_ISTFT_IDX_OLA,
@@ -76,7 +78,8 @@ enum {
 };
 
 /* Order must match the DCCRN_STFT_IDX_* enum above. */
-static const ArenaBufferSpec kDccrnStftSpecs[DCCRN_STFT_NUM_BUFS] = {
+static const ArenaBufferSpec kDccrnStftSpecs[DCCRN_STFT_NUM_BUFS] =
+{
     {"dccrn_stft_typeconv",   (uint32_t)(DCCRN_INPUT_SAMPLES * DCCRN_NUM_CHANNELS * sizeof(float))},
     {"dccrn_stft_window",     (uint32_t)(DCCRN_FFT_SIZE * sizeof(float))},
     {"dccrn_stft_state",      (uint32_t)DCCRN_STFT_STATE_BYTES},
@@ -86,7 +89,8 @@ static const ArenaBufferSpec kDccrnStftSpecs[DCCRN_STFT_NUM_BUFS] = {
 };
 
 /* Order must match the DCCRN_ISTFT_IDX_* enum above. */
-static const ArenaBufferSpec kDccrnIstftSpecs[DCCRN_ISTFT_NUM_BUFS] = {
+static const ArenaBufferSpec kDccrnIstftSpecs[DCCRN_ISTFT_NUM_BUFS] =
+{
     {"dccrn_istft_typeconv",   (uint32_t)(DCCRN_INPUT_SAMPLES * DCCRN_NUM_CHANNELS * sizeof(float))},
     {"dccrn_istft_window",     (uint32_t)(DCCRN_FFT_SIZE * sizeof(float))},
     {"dccrn_istft_ola",        (uint32_t)DCCRN_ISTFT_OLA_BYTES},
@@ -123,7 +127,8 @@ static SignalChainArenaState g_dccrn_istft_arena;
 
 void *StftSignalChainDCCRN::create_pre_graph(int16_t *input_addr)
 {
-    if (!signal_chain_arena_ensure(&g_dccrn_stft_arena, kDccrnStftSpecs, DCCRN_STFT_NUM_BUFS, "STFT")) {
+    if (!signal_chain_arena_ensure(&g_dccrn_stft_arena, kDccrnStftSpecs, DCCRN_STFT_NUM_BUFS, "STFT"))
+    {
         return NULL;
     }
 
@@ -137,7 +142,8 @@ void *StftSignalChainDCCRN::create_pre_graph(int16_t *input_addr)
 
     auto preVec = new TISP::opVec();
 
-    if (errorCtx.isSuccess()) {
+    if (errorCtx.isSuccess())
+    {
         auto k0 = std::make_unique<TISP::AUDIOLIB::TypeConversion<int16_t, float>>(
             input_addr, TYPECONV_OUT_ADDR, DCCRN_NUM_CHANNELS, DCCRN_INPUT_SAMPLES,
             DCCRN_NUM_CHANNELS * sizeof(int16_t), DCCRN_NUM_CHANNELS * sizeof(float),
@@ -145,7 +151,8 @@ void *StftSignalChainDCCRN::create_pre_graph(int16_t *input_addr)
         if (errorCtx.isSuccess()) preVec->push_back(std::move(k0));
     }
 
-    if (errorCtx.isSuccess()) {
+    if (errorCtx.isSuccess())
+    {
         auto k1 = std::make_unique<TISP::AUDIOLIB::Stft<float>>(
             TYPECONV_OUT_ADDR, STFT_OUT_ADDR, STFT_WINDOW_ADDR, STFT_STATE_ADDR,
             STFT_SCRATCH_ADDR, DCCRN_FFT_SIZE, DCCRN_HOP_SIZE, DCCRN_NUM_CHANNELS,
@@ -153,7 +160,8 @@ void *StftSignalChainDCCRN::create_pre_graph(int16_t *input_addr)
         if (errorCtx.isSuccess()) preVec->push_back(std::move(k1));
     }
 
-    if (!errorCtx.isSuccess() || preVec->size() != 2U) {
+    if (!errorCtx.isSuccess() || preVec->size() != 2U)
+    {
         delete preVec;
         return NULL;
     }
@@ -162,7 +170,8 @@ void *StftSignalChainDCCRN::create_pre_graph(int16_t *input_addr)
 
 void *StftSignalChainDCCRN::create_post_graph(float *model_out)
 {
-    if (!signal_chain_arena_ensure(&g_dccrn_istft_arena, kDccrnIstftSpecs, DCCRN_ISTFT_NUM_BUFS, "ISTFT")) {
+    if (!signal_chain_arena_ensure(&g_dccrn_istft_arena, kDccrnIstftSpecs, DCCRN_ISTFT_NUM_BUFS, "ISTFT"))
+    {
         return NULL;
     }
 
@@ -176,7 +185,8 @@ void *StftSignalChainDCCRN::create_post_graph(float *model_out)
 
     auto postVec = new TISP::opVec();
 
-    if (errorCtx.isSuccess()) {
+    if (errorCtx.isSuccess())
+    {
         auto k2 = std::make_unique<TISP::AUDIOLIB::Istft<float>>(
             model_out, ISTFT_TYPECONV_OUT_ADDR, ISTFT_WINDOW_ADDR, ISTFT_OLA_ADDR,
             ISTFT_SCRATCH_ADDR, DCCRN_FFT_SIZE, DCCRN_HOP_SIZE, DCCRN_NUM_CHANNELS,
@@ -184,14 +194,16 @@ void *StftSignalChainDCCRN::create_post_graph(float *model_out)
         if (errorCtx.isSuccess()) postVec->push_back(std::move(k2));
     }
 
-    if (errorCtx.isSuccess()) {
+    if (errorCtx.isSuccess())
+    {
         auto k3 = std::make_unique<TISP::AUDIOLIB::TypeConversion<float, int16_t>>(
             ISTFT_TYPECONV_OUT_ADDR, DCCRN_ISTFT_OUTPUT_ADDR, DCCRN_NUM_CHANNELS, DCCRN_OUTPUT_SAMPLES,
             DCCRN_NUM_CHANNELS * sizeof(float), DCCRN_NUM_CHANNELS * sizeof(int16_t),
             DCCRN_IS_INTERLEAVED, "TypeConversion (f32->i16)", 3, errorCtx);
         if (errorCtx.isSuccess()) postVec->push_back(std::move(k3));
     }
-    if (!errorCtx.isSuccess() || postVec->size() != 2U) {
+    if (!errorCtx.isSuccess() || postVec->size() != 2U)
+    {
         delete postVec;
         return NULL;
     }
@@ -238,25 +250,32 @@ void StftSignalChainDCCRN::delete_post_graph(void *post_graph)
 
 static StftSignalChainDCCRN g_dccrn_impl;
 
-static void *dccrn_create_pre_graph(int16_t *input_addr) {
+static void *dccrn_create_pre_graph(int16_t *input_addr)
+{
     return g_dccrn_impl.create_pre_graph(input_addr);
 }
-static void *dccrn_create_post_graph(float *model_out) {
+static void *dccrn_create_post_graph(float *model_out)
+{
     return g_dccrn_impl.create_post_graph(model_out);
 }
-static int32_t dccrn_execute_pre_graph(void *graph, int16_t *input_addr) {
+static int32_t dccrn_execute_pre_graph(void *graph, int16_t *input_addr)
+{
     return g_dccrn_impl.execute_pre_graph(graph, input_addr);
 }
-static int32_t dccrn_execute_post_graph(void *graph, float *input_addr) {
+static int32_t dccrn_execute_post_graph(void *graph, float *input_addr)
+{
     return g_dccrn_impl.execute_post_graph(graph, input_addr);
 }
-static void dccrn_delete_pre_graph(void *graph) {
+static void dccrn_delete_pre_graph(void *graph)
+{
     g_dccrn_impl.delete_pre_graph(graph);
 }
-static void dccrn_delete_post_graph(void *graph) {
+static void dccrn_delete_post_graph(void *graph)
+{
     g_dccrn_impl.delete_post_graph(graph);
 }
-static float *dccrn_get_preprocess_buf(void) {
+static float *dccrn_get_preprocess_buf(void)
+{
     /* STFT operator writes its frame-major complex output into STFT_OUT_ADDR
      * (the transpose1 buffer). The model's preprocess buffer should point
      * to that STFT output, not the separate DCCRN_STFT_OUTPUT_ADDR which is
@@ -264,25 +283,29 @@ static float *dccrn_get_preprocess_buf(void) {
      * see the actual STFT results. */
     return STFT_OUT_ADDR;
 }
-static int16_t *dccrn_get_postprocess_buf(void) {
+static int16_t *dccrn_get_postprocess_buf(void)
+{
     return DCCRN_ISTFT_OUTPUT_ADDR;
 }
 
-static void dccrn_reset_arenas(void) {
+static void dccrn_reset_arenas(void)
+{
     /* Reset both arenas so the next DCCRN activation re-partitions its
      * workspace from the new ARM-provided buffer. */
     signal_chain_arena_reset_ready(&g_dccrn_stft_arena);
     signal_chain_arena_reset_ready(&g_dccrn_istft_arena);
 }
 
-static const ModelConfig dccrn_config = {
+static const ModelConfig dccrn_config =
+{
     .input_samples = DCCRN_INPUT_SAMPLES,
     .model_elems = DCCRN_MODEL_ELEMS,
     .output_samples = DCCRN_OUTPUT_SAMPLES,
     .batch_n = 30
 };
 
-static const SignalChainOps kDccrnOps = {
+static const SignalChainOps kDccrnOps =
+{
     .name = "DCCRN",
     .config = &dccrn_config,
     .create_pre_graph = dccrn_create_pre_graph,
@@ -296,6 +319,7 @@ static const SignalChainOps kDccrnOps = {
     .reset_arenas = dccrn_reset_arenas
 };
 
-extern "C" const SignalChainOps *dccrn_get_ops(void) {
+extern "C" const SignalChainOps *dccrn_get_ops(void)
+{
     return &kDccrnOps;
 }

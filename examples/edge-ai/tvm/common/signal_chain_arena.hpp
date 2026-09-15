@@ -53,12 +53,14 @@
 
 #define SIGNAL_CHAIN_ARENA_MAX_BUFFERS 8
 
-typedef struct {
+typedef struct
+{
     const char *name;
     uint32_t    size;
 } ArenaBufferSpec;
 
-typedef struct {
+typedef struct
+{
     Arena       arena;
     bool        ready;   /* true after a successful partition; reset to false on model
                           * deactivation (see signal_chain_arena_reset_ready) */

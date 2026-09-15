@@ -50,7 +50,8 @@
    STFT Arena - One-time buffer partition over host-provided IPC memory
    ============================================================================ */
 
-enum {
+enum
+{
     YAMNET_STFT_IDX_TYPECONV = 0,
     YAMNET_STFT_IDX_WINDOW,
     YAMNET_STFT_IDX_STATE,
@@ -62,7 +63,8 @@ enum {
 
 /* Buffer specifications for arena allocation
  * Order must match enum indices above */
-static const ArenaBufferSpec kYamnetStftSpecs[YAMNET_STFT_NUM_BUFS] = {
+static const ArenaBufferSpec kYamnetStftSpecs[YAMNET_STFT_NUM_BUFS] =
+{
     {"yamnet_stft_typeconv",  (uint32_t)(YAMNET_INPUT_SAMPLES * YAMNET_NUM_CHANNELS * sizeof(float))},
     {"yamnet_stft_window",    (uint32_t)(YAMNET_FFT_SIZE * sizeof(float))},
     {"yamnet_stft_state",     (uint32_t)YAMNET_STFT_STATE_BYTES},
@@ -91,7 +93,8 @@ static SignalChainArenaState g_yamnet_stft_arena;
 void *StftSignalChainYAMNET::create_pre_graph(int16_t *input_addr)
 {
     /* One-time arena initialization on first call; cached thereafter */
-    if (!signal_chain_arena_ensure(&g_yamnet_stft_arena, kYamnetStftSpecs, YAMNET_STFT_NUM_BUFS, "YAMNET STFT")) {
+    if (!signal_chain_arena_ensure(&g_yamnet_stft_arena, kYamnetStftSpecs, YAMNET_STFT_NUM_BUFS, "YAMNET STFT"))
+    {
         return NULL;
     }
 
@@ -111,7 +114,8 @@ void *StftSignalChainYAMNET::create_pre_graph(int16_t *input_addr)
 
     auto preVec = new TISP::opVec();
 
-    if (errorCtx.isSuccess()) {
+    if (errorCtx.isSuccess())
+    {
         auto k0 = std::make_unique<TISP::AUDIOLIB::TypeConversion<int16_t, float>>(
             input_addr, TYPECONV_OUT_ADDR, YAMNET_NUM_CHANNELS, YAMNET_INPUT_SAMPLES,
             YAMNET_NUM_CHANNELS * sizeof(int16_t), YAMNET_NUM_CHANNELS * sizeof(float),
@@ -119,7 +123,8 @@ void *StftSignalChainYAMNET::create_pre_graph(int16_t *input_addr)
         if (errorCtx.isSuccess()) preVec->push_back(std::move(k0));
     }
 
-     if (errorCtx.isSuccess()) {
+    if (errorCtx.isSuccess())
+    {
         auto k1 = std::make_unique<TISP::AUDIOLIB::LogMelSpectrum<float>>(
             TYPECONV_OUT_ADDR, STFT_OUTPUT_ADDR, WINDOW_ADDR, MEL_SPEC_ADDR, STFT_STATE_ADDR,
             STFT_SCRATCH_ADDR, YAMNET_FFT_SIZE, YAMNET_HOP_SIZE, YAMNET_NUM_CHANNELS,
@@ -127,7 +132,8 @@ void *StftSignalChainYAMNET::create_pre_graph(int16_t *input_addr)
         if (errorCtx.isSuccess()) preVec->push_back(std::move(k1));
     }
 
-    if (!errorCtx.isSuccess() || preVec->size() != 2U) {
+    if (!errorCtx.isSuccess() || preVec->size() != 2U)
+    {
         delete preVec;
         return NULL;
     }
@@ -162,34 +168,41 @@ void StftSignalChainYAMNET::delete_pre_graph(void *pre_graph)
 
 static StftSignalChainYAMNET g_yamnet_impl;
 
-static void *yamnet_create_pre_graph(int16_t *input_addr) {
+static void *yamnet_create_pre_graph(int16_t *input_addr)
+{
     return g_yamnet_impl.create_pre_graph(input_addr);
 }
 
-static int32_t yamnet_execute_pre_graph(void *graph, int16_t *input_addr) {
+static int32_t yamnet_execute_pre_graph(void *graph, int16_t *input_addr)
+{
     return g_yamnet_impl.execute_pre_graph(graph, input_addr);
 }
 
-static void yamnet_delete_pre_graph(void *graph) {
+static void yamnet_delete_pre_graph(void *graph)
+{
     g_yamnet_impl.delete_pre_graph(graph);
 }
 
-static float *yamnet_get_preprocess_buf(void) {
+static float *yamnet_get_preprocess_buf(void)
+{
     return STFT_OUTPUT_ADDR;
 }
-static void yamnet_reset_arenas(void) {
+static void yamnet_reset_arenas(void)
+{
     /* YAMNet is analysis-only: only the STFT arena needs to be reset. */
     signal_chain_arena_reset_ready(&g_yamnet_stft_arena);
 }
 
-static const ModelConfig yamnet_config = {
+static const ModelConfig yamnet_config =
+{
     .input_samples = YAMNET_INPUT_SAMPLES,
     .model_elems = YAMNET_MODEL_ELEMS,
     .output_samples = YAMNET_OUTPUT_SAMPLES,
     .batch_n = 64
 };
 
-static const SignalChainOps kYamnetOps = {
+static const SignalChainOps kYamnetOps =
+{
     .name = "YAMNET",
     .config = &yamnet_config,
     .create_pre_graph = yamnet_create_pre_graph,
@@ -203,6 +216,7 @@ static const SignalChainOps kYamnetOps = {
     .reset_arenas = yamnet_reset_arenas
 };
 
-extern "C" const SignalChainOps *yamnet_get_ops(void) {
+extern "C" const SignalChainOps *yamnet_get_ops(void)
+{
     return &kYamnetOps;
 }

@@ -54,7 +54,8 @@
    DCCRN there is no "transpose2" role here.
    ============================================================================ */
 
-enum {
+enum
+{
     GTCRN_STFT_IDX_TYPECONV = 0,
     GTCRN_STFT_IDX_WINDOW,
     GTCRN_STFT_IDX_STATE,
@@ -64,7 +65,8 @@ enum {
     GTCRN_STFT_NUM_BUFS
 };
 
-enum {
+enum
+{
     GTCRN_ISTFT_IDX_TYPECONV = 0,
     GTCRN_ISTFT_IDX_WINDOW,
     GTCRN_ISTFT_IDX_OLA,
@@ -75,7 +77,8 @@ enum {
 };
 
 /* Order must match the GTCRN_STFT_IDX_* enum above. */
-static const ArenaBufferSpec kGtcrnStftSpecs[GTCRN_STFT_NUM_BUFS] = {
+static const ArenaBufferSpec kGtcrnStftSpecs[GTCRN_STFT_NUM_BUFS] =
+{
     {"gtcrn_stft_typeconv",   (uint32_t)(GTCRN_INPUT_SAMPLES * GTCRN_NUM_CHANNELS * sizeof(float))},
     {"gtcrn_stft_window",     (uint32_t)(GTCRN_FFT_SIZE * sizeof(float))},
     {"gtcrn_stft_state",      (uint32_t)GTCRN_STFT_STATE_BYTES},
@@ -85,7 +88,8 @@ static const ArenaBufferSpec kGtcrnStftSpecs[GTCRN_STFT_NUM_BUFS] = {
 };
 
 /* Order must match the GTCRN_ISTFT_IDX_* enum above. */
-static const ArenaBufferSpec kGtcrnIstftSpecs[GTCRN_ISTFT_NUM_BUFS] = {
+static const ArenaBufferSpec kGtcrnIstftSpecs[GTCRN_ISTFT_NUM_BUFS] =
+{
     {"gtcrn_istft_typeconv",   (uint32_t)(GTCRN_INPUT_SAMPLES * GTCRN_NUM_CHANNELS * sizeof(float))},
     {"gtcrn_istft_window",     (uint32_t)(GTCRN_FFT_SIZE * sizeof(float))},
     {"gtcrn_istft_ola",        (uint32_t)GTCRN_ISTFT_OLA_BYTES},
@@ -123,7 +127,8 @@ static SignalChainArenaState g_gtcrn_istft_arena;
 
 void *StftSignalChainGTCRN::create_pre_graph(int16_t *input_addr)
 {
-    if (!signal_chain_arena_ensure(&g_gtcrn_stft_arena, kGtcrnStftSpecs, GTCRN_STFT_NUM_BUFS, "STFT")) {
+    if (!signal_chain_arena_ensure(&g_gtcrn_stft_arena, kGtcrnStftSpecs, GTCRN_STFT_NUM_BUFS, "STFT"))
+    {
         return NULL;
     }
 
@@ -137,7 +142,8 @@ void *StftSignalChainGTCRN::create_pre_graph(int16_t *input_addr)
 
     auto preVec = new TISP::opVec();
 
-    if (errorCtx.isSuccess()) {
+    if (errorCtx.isSuccess())
+    {
         auto k0 = std::make_unique<TISP::AUDIOLIB::TypeConversion<int16_t, float>>(
             input_addr, TYPECONV_OUT_ADDR, GTCRN_NUM_CHANNELS, GTCRN_INPUT_SAMPLES,
             GTCRN_NUM_CHANNELS * sizeof(int16_t), GTCRN_NUM_CHANNELS * sizeof(float),
@@ -145,7 +151,8 @@ void *StftSignalChainGTCRN::create_pre_graph(int16_t *input_addr)
         if (errorCtx.isSuccess()) preVec->push_back(std::move(k0));
     }
 
-    if (errorCtx.isSuccess()) {
+    if (errorCtx.isSuccess())
+    {
         auto k1 = std::make_unique<TISP::AUDIOLIB::Stft<float>>(
             TYPECONV_OUT_ADDR, STFT_ISTFT_OUT_ADDR, WINDOW_ADDR, STFT_STATE_ADDR,
             STFT_SCRATCH_ADDR, GTCRN_FFT_SIZE, GTCRN_HOP_SIZE, GTCRN_NUM_CHANNELS,
@@ -153,7 +160,8 @@ void *StftSignalChainGTCRN::create_pre_graph(int16_t *input_addr)
         if (errorCtx.isSuccess()) preVec->push_back(std::move(k1));
     }
 
-    if (!errorCtx.isSuccess() || preVec->size() != 2U) {
+    if (!errorCtx.isSuccess() || preVec->size() != 2U)
+    {
         delete preVec;
         return NULL;
     }
@@ -163,7 +171,8 @@ void *StftSignalChainGTCRN::create_pre_graph(int16_t *input_addr)
 
 void *StftSignalChainGTCRN::create_post_graph(float *model_out)
 {
-    if (!signal_chain_arena_ensure(&g_gtcrn_istft_arena, kGtcrnIstftSpecs, GTCRN_ISTFT_NUM_BUFS, "ISTFT")) {
+    if (!signal_chain_arena_ensure(&g_gtcrn_istft_arena, kGtcrnIstftSpecs, GTCRN_ISTFT_NUM_BUFS, "ISTFT"))
+    {
         return NULL;
     }
 
@@ -177,7 +186,8 @@ void *StftSignalChainGTCRN::create_post_graph(float *model_out)
 
     auto postVec = new TISP::opVec();
 
-    if (errorCtx.isSuccess()) {
+    if (errorCtx.isSuccess())
+    {
         auto k2 = std::make_unique<TISP::AUDIOLIB::Istft<float>>(
             model_out, ISTFT_TYPECONV_OUT_ADDR, ISTFT_WINDOW_ADDR, ISTFT_OLA_ADDR,
             ISTFT_SCRATCH_ADDR, GTCRN_FFT_SIZE, GTCRN_HOP_SIZE, GTCRN_NUM_CHANNELS,
@@ -185,7 +195,8 @@ void *StftSignalChainGTCRN::create_post_graph(float *model_out)
         if (errorCtx.isSuccess()) postVec->push_back(std::move(k2));
     }
 
-    if (errorCtx.isSuccess()) {
+    if (errorCtx.isSuccess())
+    {
         auto k3 = std::make_unique<TISP::AUDIOLIB::TypeConversion<float, int16_t>>(
             ISTFT_TYPECONV_OUT_ADDR, GTCRN_ISTFT_OUTPUT_ADDR, GTCRN_NUM_CHANNELS, GTCRN_OUTPUT_SAMPLES,
             GTCRN_NUM_CHANNELS * sizeof(float), GTCRN_NUM_CHANNELS * sizeof(int16_t),
@@ -193,7 +204,8 @@ void *StftSignalChainGTCRN::create_post_graph(float *model_out)
         if (errorCtx.isSuccess()) postVec->push_back(std::move(k3));
     }
 
-    if (!errorCtx.isSuccess() || postVec->size() != 2U) {
+    if (!errorCtx.isSuccess() || postVec->size() != 2U)
+    {
         delete postVec;
         return NULL;
     }
@@ -241,46 +253,57 @@ void StftSignalChainGTCRN::delete_post_graph(void *post_graph)
 
 static StftSignalChainGTCRN g_gtcrn_impl;
 
-static void *gtcrn_create_pre_graph(int16_t *input_addr) {
+static void *gtcrn_create_pre_graph(int16_t *input_addr)
+{
     return g_gtcrn_impl.create_pre_graph(input_addr);
 }
-static void *gtcrn_create_post_graph(float *model_out) {
+static void *gtcrn_create_post_graph(float *model_out)
+{
     return g_gtcrn_impl.create_post_graph(model_out);
 }
-static int32_t gtcrn_execute_pre_graph(void *graph, int16_t *input_addr) {
+static int32_t gtcrn_execute_pre_graph(void *graph, int16_t *input_addr)
+{
     return g_gtcrn_impl.execute_pre_graph(graph, input_addr);
 }
-static int32_t gtcrn_execute_post_graph(void *graph, float *input_addr) {
+static int32_t gtcrn_execute_post_graph(void *graph, float *input_addr)
+{
     return g_gtcrn_impl.execute_post_graph(graph, input_addr);
 }
-static void gtcrn_delete_pre_graph(void *graph) {
+static void gtcrn_delete_pre_graph(void *graph)
+{
     g_gtcrn_impl.delete_pre_graph(graph);
 }
-static void gtcrn_delete_post_graph(void *graph) {
+static void gtcrn_delete_post_graph(void *graph)
+{
     g_gtcrn_impl.delete_post_graph(graph);
 }
-static float *gtcrn_get_preprocess_buf(void) {
+static float *gtcrn_get_preprocess_buf(void)
+{
     return STFT_ISTFT_OUT_ADDR;
 }
-static int16_t *gtcrn_get_postprocess_buf(void) {
+static int16_t *gtcrn_get_postprocess_buf(void)
+{
     return GTCRN_ISTFT_OUTPUT_ADDR;
 }
 
-static void gtcrn_reset_arenas(void) {
+static void gtcrn_reset_arenas(void)
+{
     /* Reset both arenas so the next GTCRN activation re-partitions its
      * workspace from the new ARM-provided buffer. */
     signal_chain_arena_reset_ready(&g_gtcrn_stft_arena);
     signal_chain_arena_reset_ready(&g_gtcrn_istft_arena);
 }
 
-static const ModelConfig gtcrn_config = {
+static const ModelConfig gtcrn_config =
+{
     .input_samples = GTCRN_INPUT_SAMPLES,
     .model_elems = GTCRN_MODEL_ELEMS,
     .output_samples = GTCRN_OUTPUT_SAMPLES,
     .batch_n = 30
 };
 
-static const SignalChainOps kGtcrnOps = {
+static const SignalChainOps kGtcrnOps =
+{
     .name = "GTCRN",
     .config = &gtcrn_config,
     .create_pre_graph = gtcrn_create_pre_graph,
@@ -294,6 +317,7 @@ static const SignalChainOps kGtcrnOps = {
     .reset_arenas = gtcrn_reset_arenas
 };
 
-extern "C" const SignalChainOps *gtcrn_get_ops(void) {
+extern "C" const SignalChainOps *gtcrn_get_ops(void)
+{
     return &kGtcrnOps;
 }

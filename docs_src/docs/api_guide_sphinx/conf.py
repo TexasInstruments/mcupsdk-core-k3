@@ -71,6 +71,8 @@ suppress_warnings = [
     "autosectionlabel",
     "toc.not_readable",
     "app.add_config_value",  # Sphinx 8.x compatibility
+    "ref.doc",
+    "docutils",
 ]
 
 # ---------------------------------------------------------------------------
@@ -180,7 +182,7 @@ breathe_projects = {
     dev: str(_sdk_path / "docs_src" / "docs" / "api_guide_sphinx" / "doxygen_xml" / dev / "xml")
     for dev in _ALL_DEVICES
 }
-# Breathe configuration (no suppressions - fix doxygen XML generation instead)
+breathe_silence_emitted_warnings = True
 
 # ---------------------------------------------------------------------------
 # Per-device configuration (set via DEVICE env var)

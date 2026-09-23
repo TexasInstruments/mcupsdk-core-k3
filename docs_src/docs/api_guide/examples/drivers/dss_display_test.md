@@ -180,7 +180,7 @@ through SBL.
 
 \image html docs_src/docs/api_guide/images/drivers/hdmi.png "Sysconfig option for HDMI" width=50%
 
-\image html docs_src/docs/api_guide/images/drivers/oldi.png "Sysconfig option for OLDI" width=50%
+\image html docs_src/docs/api_guide/images/drivers/oldi_j722s.png "Sysconfig option for OLDI" width=50%
 
 \image html docs_src/docs/api_guide/images/drivers/dsi.png "Sysconfig option for DSI" width=50%
 

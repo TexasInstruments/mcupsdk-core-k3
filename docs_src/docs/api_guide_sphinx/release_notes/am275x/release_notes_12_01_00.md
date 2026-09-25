@@ -47,20 +47,12 @@ FreeRTOS Kernel         | R5F, C75                 | 11.1.0
 
 ### SYSFW / TIFS
 
-<table>
-    <tr>
-        <td>Version</td>
-        <td>12.01.02</td>
-    </tr>
-    <tr>
-        <td>Release Notes</td>
-        <td>[LINK](https://software-dl.ti.com/tisci/esd/12_01_02/release_notes/release_notes.html)</td>
-    </tr>
-    <tr>
-        <td>User Guide</td>
-        <td>[LINK](https://software-dl.ti.com/tisci/esd/12_01_02/1_intro/TISCI.html)</td>
-    </tr>
-</table>
+| Item          | Link                                                                                      |
+|---------------|-------------------------------------------------------------------------------------------|
+| Version       | 12.01.02                                                                                  |
+| Release Notes | [LINK](https://software-dl.ti.com/tisci/esd/12_01_02/release_notes/release_notes.html)    |
+| User Guide    | [LINK](https://software-dl.ti.com/tisci/esd/12_01_02/1_intro/TISCI.html)                  |
+
 
 ### Experimental Features
 :::{attention}

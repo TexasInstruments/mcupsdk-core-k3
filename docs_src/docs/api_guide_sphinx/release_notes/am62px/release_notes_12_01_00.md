@@ -48,11 +48,12 @@ FreeRTOS Kernel         | MCU-R5F, WKUP-R5F        | 11.1.0
 
 ### SYSFW / TIFS
 
-| Item        | Link                                                                                        |
-|-------------|--------------------------------------------------------------------------------------------|
-| Version     | 12.01.02                                                                                    |
-| Release Notes | [LINK](https://software-dl.ti.com/tisci/esd/12_01_02/release_notes/release_notes.html) |
-| User Guide  | [LINK](https://software-dl.ti.com/tisci/esd/12_01_02/1_intro/TISCI.html)                  |
+| Item          | Link                                                                                      |
+|---------------|-------------------------------------------------------------------------------------------|
+| Version       | 12.01.02                                                                                  |
+| Release Notes | [LINK](https://software-dl.ti.com/tisci/esd/12_01_02/release_notes/release_notes.html)    |
+| User Guide    | [LINK](https://software-dl.ti.com/tisci/esd/12_01_02/1_intro/TISCI.html)                  |
+
 
 ## Key Features
 

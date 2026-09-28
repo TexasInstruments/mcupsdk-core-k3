@@ -27,18 +27,18 @@ The [Ethernet AVB Audio Playback Demo](../../../examples/networking/enet_cpsw_av
 | IEEE1722 AVTP Packet Length            | 247 Bytes           |
 | IEEE1722 AVTP Frame Transmit Interval  | 125 µs              |
 | McASP Transaction Size        | 16 Samples          |
-| McASP Transaction rate        | 3000 Hz (333.3 µs)  |
+| McASP Transaction rate        | 8000 Hz (125 µs)  |
 
 ## Performance Measured
 Below is the Setup Details
 ![](../../../images/networking/eavb_latency_diagram.png)
 
-### Latency Measured
+### Latency Measured (PT Offset: 666µs)
 | Parameter                 | Min Latency (µs) | Max Latency (µs) |
 |---------------------------|------------------|------------------|
 | AVB Latency (A)           | 16               | 37               |
-| McASP - McASP Latency (B) | -                | 332`*`             |
-| Jack - Jack Latency (C)   | -                | 1270`*`             |
+| McASP - McASP Latency (B) | -                | 412`*`             |
+| Jack - Jack Latency (C)   | -                | 820`*`             |
 
 `*` This performance is benchmarked when the McASP Transaction size is 6 Samples.
 
@@ -51,7 +51,6 @@ The Built in CRF Slave Functionality of the DP83TG721 is not used.
 |------------------------------------|-----------------|
 | Maximum Absolute Phase Difference  | 200ns`*`        |
 
-`*` - Futher optimization is possible by tuning the control loop parameters.
 
 For More details, refer to [Ethernet AVB Multistream Media Clock Recovery](../../../examples/networking/enet_cpsw_tsn_media_clock_recovery.md)
 

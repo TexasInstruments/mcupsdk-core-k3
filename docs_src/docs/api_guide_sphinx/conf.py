@@ -28,6 +28,7 @@ extensions = [
     "myst_parser",
     "breathe",
     "sphinx.ext.autosectionlabel",
+    "sphinx.ext.mathjax",
 ]
 
 # ---------------------------------------------------------------------------
@@ -62,6 +63,8 @@ myst_enable_extensions = [
     "html_image",
     "substitution",
     "linkify",          # auto-link bare https:// URLs
+    "amsmath",
+    "dollarmath",
 ]
 autosectionlabel_prefix_document = True
 suppress_warnings = [

@@ -3756,6 +3756,38 @@
         "resourceSubClass": [
             "example.general"
         ],
+        "description": "A Lpm Partial Io Rtos Initiated Example. CPU is MCU-R5FSS0-0 running FREERTOS.",
+        "name": "lpm_partial_io_rtos_initiated",
+        "location": "../../examples/lpm/lpm_partial_io/am62px-sk/mcu-r5fss0-0_freertos/ti-arm-clang/example.projectspec",
+        "devtools": [
+            "SK-AM62P-LP"
+        ],
+        "kernel": [
+            "freertos"
+        ],
+        "compiler": [
+            "ticlang"
+        ],
+        "subCategories": [
+            "lpm",
+            "lpm_partial_io",
+            "mcu-r5fss0-0_freertos"
+        ],
+        "mainCategories": [
+            [
+                "Examples",
+                "Development Tools"
+            ]
+        ]
+    },
+    {
+        "resourceType": "project.ccs",
+        "resourceClass": [
+            "example"
+        ],
+        "resourceSubClass": [
+            "example.general"
+        ],
         "description": "A Enet L2 Cpsw Switch Example. CPU is WKUP-R5FSS0-0 running FREERTOS.",
         "name": "enet_l2_cpsw_switch",
         "location": "../../source/networking/enet/core/examples/enet_layer2_cpsw_switch/am62px-sk/wkup-r5fss0-0_freertos/ti-arm-clang/example.projectspec",

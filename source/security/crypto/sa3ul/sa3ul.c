@@ -1784,8 +1784,8 @@ static int32_t SA3UL_hwInit(SA3UL_Attrs  *attrs)
     }
     else
     {
-#if defined (SOC_AM275X)
-        /* Nothing to do */
+#if defined (SOC_AM275X) || defined (SOC_AM62AX) || defined (SOC_AM62DX)
+        /* Nothing to do as the engines are already enabled by TIFS */
 #else
         /* Enable specific SA3UL engine modules */
         reg = CSL_REG_RD(&pSaRegs->UPDATES.ENGINE_ENABLE);
@@ -1834,8 +1834,8 @@ static uint32_t SA3UL_hwDeInit(SA3UL_Attrs  *attrs)
     }
     else
     {
-#if defined (SOC_AM275X)
-        /* Nothing to do */
+#if defined (SOC_AM275X) || defined (SOC_AM62AX) || defined (SOC_AM62DX)
+        /* Nothing to do as the engines are already enabled by TIFS */
 #else
         /* Enable specific SA3UL engine modules */
         reg = CSL_REG_RD(&pSaRegs->UPDATES.ENGINE_ENABLE);

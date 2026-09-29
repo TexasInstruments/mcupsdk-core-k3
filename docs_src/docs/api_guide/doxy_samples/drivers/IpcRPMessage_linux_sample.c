@@ -25,13 +25,14 @@ const RPMessage_ResourceTable gRPMessage_linuxResourceTable __attribute__ ((sect
 {
     {
         1U,         /* we're the first version that implements this */
-        2U,         /* number of entries, MUST be 2 */
+        3U,         /* number of entries, MUST be 3 */
         { 0U, 0U, } /* reserved, must be zero */
     },
     /* offsets to the entries */
     {
         offsetof(RPMessage_ResourceTable, vdev),
         offsetof(RPMessage_ResourceTable, trace),
+        offsetof(RPMessage_ResourceTable, features),
     },
     /* vdev entry */
     {
@@ -45,6 +46,13 @@ const RPMessage_ResourceTable gRPMessage_linuxResourceTable __attribute__ ((sect
         (RPMESSAGE_RSC_TRACE_INTS_VER0 | RPMESSAGE_RSC_TYPE_TRACE),
         (uint32_t)gDebugMemLog, DebugP_MEM_LOG_SIZE,
         0, "trace:m4fss0_0",
+    },
+    /* vendor features entry) */
+    {
+        RPMESSAGE_TI_FW_FEATS,
+        sizeof(RPMessage_FWFeats), /* len: byte size of FWFeats struct */
+        TI_RSC_MAGIC,
+        0U,
     },
 };
 //! [resource tab]

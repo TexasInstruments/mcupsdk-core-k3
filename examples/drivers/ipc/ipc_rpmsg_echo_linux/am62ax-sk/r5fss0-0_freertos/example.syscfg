@@ -28,6 +28,9 @@ const mpu_armv711 = mpu_armv7.addInstance();
  * Write custom configuration values to the imported modules.
  */
 ipc.vringAllocationPDK = false;
+ipc.mcuAlwaysOn        = true;
+ipc.mcuGsSupport       = false;
+ipc.mcuLpmSupport      = false;
 
 debug_log.enableUartLog      = true;
 debug_log.uartTrace          = true;

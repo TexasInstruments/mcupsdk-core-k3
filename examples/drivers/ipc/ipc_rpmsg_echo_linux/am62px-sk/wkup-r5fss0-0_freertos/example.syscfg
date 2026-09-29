@@ -58,6 +58,9 @@ flash1.serialFlashDriver.peripheralDriver.$name         = "CONFIG_OSPI_SBL";
 flash1.serialFlashDriver.peripheralDriver.phySkipTuning = true;
 
 ipc.vringAllocationPDK = false;
+ipc.mcuAlwaysOn        = true;
+ipc.mcuGsSupport       = false;
+ipc.mcuLpmSupport      = false;
 
 uart1.$name                      = "CONFIG_UART_SBL";
 uart1.useWakeupDomainPeripherals = false;

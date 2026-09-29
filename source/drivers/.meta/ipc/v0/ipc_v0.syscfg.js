@@ -27,7 +27,8 @@ function getConfigurables()
 
     /* add defaults and options */
     config.forEach( function (element) {
-        if(element.name != "enableLinuxIpc" && element.name != "enableMailboxIpc" ) {
+        if(element.name != "enableLinuxIpc" && element.name != "enableMailboxIpc" &&
+           element.name != "mcuAlwaysOn" && element.name != "mcuGsSupport" && element.name != "mcuLpmSupport") {
             element.default = ipc_options_default;
             element.options = [ ...ipc_options ];
         }
@@ -287,6 +288,17 @@ function onChange(instance, ui)
         ui.vringMsgSize.hidden = true;
         ui.vringSize.hidden = true;
     }
+
+    /* Show MCU feature flags only when Linux IPC enabled - only for SOCs that have these configurables */
+    if (instance.enableLinuxIpc === true) {
+        if (ui.mcuAlwaysOn !== undefined) ui.mcuAlwaysOn.hidden = false;
+        if (ui.mcuGsSupport !== undefined) ui.mcuGsSupport.hidden = false;
+        if (ui.mcuLpmSupport !== undefined) ui.mcuLpmSupport.hidden = false;
+    } else {
+        if (ui.mcuAlwaysOn !== undefined) ui.mcuAlwaysOn.hidden = true;
+        if (ui.mcuGsSupport !== undefined) ui.mcuGsSupport.hidden = true;
+        if (ui.mcuLpmSupport !== undefined) ui.mcuLpmSupport.hidden = true;
+    }
 }
 
 function getRPMessageVringSize(instance) {
@@ -405,7 +417,8 @@ function getEnabledCpus(instance) {
 
     for( let cpuConfig of config)
     {
-        if(cpuConfig.name != "enableLinuxIpc" && cpuConfig.name != "enableMailboxIpc" ) {
+        if(cpuConfig.name != "enableLinuxIpc" && cpuConfig.name != "enableMailboxIpc" &&
+           cpuConfig.name != "mcuAlwaysOn" && cpuConfig.name != "mcuGsSupport" && cpuConfig.name != "mcuLpmSupport") {
             if(instance[cpuConfig.name] != "NONE" && cpuConfig.name != ipc_soc.getSelfIpcCoreName())
             {
                 enabledCpus.push(cpuConfig.name);
@@ -421,7 +434,8 @@ function getEnabledRPMessageCpus(instance) {
 
     for( let cpuConfig of config)
     {
-        if(cpuConfig.name != "enableLinuxIpc") {
+        if(cpuConfig.name != "enableLinuxIpc" && cpuConfig.name != "mcuAlwaysOn" &&
+           cpuConfig.name != "mcuGsSupport" && cpuConfig.name != "mcuLpmSupport") {
             if(instance[cpuConfig.name] == "notify_rpmsg" && cpuConfig.name != ipc_soc.getSelfIpcCoreName())
             {
                 enabledCpus.push(cpuConfig.name);
@@ -465,7 +479,8 @@ function validate(instance, report) {
 
     for ( let config of configs)
     {
-        if(config.name != "enableLinuxIpc" && config.name != "enableMailboxIpc" ) {
+        if(config.name != "enableLinuxIpc" && config.name != "enableMailboxIpc" &&
+           config.name != "mcuAlwaysOn" && config.name != "mcuGsSupport" && config.name != "mcuLpmSupport") {
             let remoteCoreName = config.name;
             if( remoteCoreName != selfIpcCoreName)
             {

@@ -30,6 +30,9 @@ const mpu_armv74      = mpu_armv7.addInstance();
  * Write custom configuration values to the imported modules.
  */
 ipc.vringAllocationPDK = false;
+ipc.mcuAlwaysOn        = false;
+ipc.mcuGsSupport       = true;
+ipc.mcuLpmSupport      = true;
 
 addr_translate1.$name     = "CONFIG_ADDR_TRANSLATE_REGION0";
 addr_translate1.localAddr = 0x80000000;

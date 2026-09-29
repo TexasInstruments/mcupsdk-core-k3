@@ -57,7 +57,13 @@ extern "C" {
 #define RPMESSAGE_RSC_TYPE_TRACE       (2U)
 /** \brief VDEV type */
 #define RPMESSAGE_RSC_TYPE_VDEV        (3U)
+/** \brief TI CUSTOM FW type */
+#define RPMESSAGE_TI_FW_FEATS        (0xFE)
 
+#define TI_RSC_MAGIC		((uint32_t)'t' << 24 |  \
+				(uint32_t)'i' << 16 |  \
+				(uint32_t)'t' << 8 |   \
+				(uint32_t)'i')
 /**@}*/
 
 /** \brief Macro to specify VRING memory needs to be dynamically allocated by linux */
@@ -78,7 +84,7 @@ typedef struct
     uint32_t ver;
     /**< Version Number, set to 1 */
     uint32_t num;
-    /**< Number of Entries, MUST be 2 */
+    /**< Number of Entries, MUST be 3 */
     uint32_t reserved[2];
     /**< Reserved for future use, set to 0 */
 } RPMessage_RscHdr;
@@ -99,6 +105,18 @@ typedef struct
     uint8_t   name[RPMESSAGE_RSC_TRACE_NAME_LEN];
     /**<  Name of the trace */
 } RPMessage_RscTrace;
+
+typedef struct
+{
+    uint32_t  type;
+    /**< VENDOR specific type */
+    uint32_t  len;
+    /**< length of the structure */
+    uint32_t  magic_num;
+    /**< magic number for verification */
+    uint32_t  features;
+    /**< Supported features */
+} RPMessage_FWFeats;
 
 /**
  * \brief Resource Table Device VRing Structure
@@ -151,8 +169,8 @@ typedef struct
 {
     RPMessage_RscHdr base;
     /**< Header Information */
-    uint32_t offset[2];  
-    /**< offset to VDEV and TRACE entries */
+    uint32_t offset[3];
+    /**< offset to VDEV, TRACE and FEATURES entries */
     RPMessage_RscVdev vdev;
     /**< VDEV entry */
     RPMessage_RscVring  vring0;
@@ -161,6 +179,8 @@ typedef struct
     /**< RX VRING */
     RPMessage_RscTrace trace;
     /**< Trace entry  */
+    RPMessage_FWFeats features;
+    /**< Feature flags entry  */
 
 } RPMessage_ResourceTable;
 

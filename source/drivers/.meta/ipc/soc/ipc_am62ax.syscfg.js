@@ -48,6 +48,36 @@ function getConfigurables() {
         }
     );
 
+    /*
+     * isDMR5: true when building for r5fss0_0, which runs TI Device Manager
+     * firmware on AM62Ax and is always-on by design.
+     * All other cores participate in graceful-shutdown and LPM handshake.
+     */
+    let isDMR5 = (getSelfIpcCoreName() === "r5fss0_0");
+    configurables.push(
+        {
+            name: "mcuAlwaysOn",
+            displayName: "TI MCU ALWAYS ON",
+            description: `DM R5 is independently always on (valid for DMR5 builds)`,
+            default: isDMR5,
+            hidden: false,
+        },
+        {
+            name: "mcuGsSupport",
+            displayName: "TI MCU GS SUPPORT",
+            description: `Graceful shutdown protocol support`,
+            default: !isDMR5,
+            hidden: false,
+        },
+        {
+            name: "mcuLpmSupport",
+            displayName: "TI MCU LPM SUPPORT",
+            description: `Low power mode support`,
+            default: !isDMR5,
+            hidden: false,
+        }
+    );
+
     return configurables;
 }
 

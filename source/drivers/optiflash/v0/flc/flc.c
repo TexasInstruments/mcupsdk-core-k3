@@ -78,25 +78,22 @@ FLC_API_STS_t FLC_configureRegion(FLC_RegionInfo * const regionInfo)
     {
         status = FLC_API_STS_ERROR_NULL_PTR;
     }
+    else if(regionInfo->regionId >= (FLC_regionId)FLC_MAX_REGION)
+    {
+        status = FLC_API_STS_ERROR_ILLEGAL_REGION_ID;
+    }
     else
     {
-        if(regionInfo->regionId >= (FLC_regionId)FLC_MAX_REGION)
-        {
-            status = FLC_API_STS_ERROR_ILLEGAL_REGION_ID;
-        }
-        else
-        {
-            CSL_rl2_of_cba4Regs *regs;
-            regs = (CSL_rl2_of_cba4Regs*)regionInfo->baseAddress;
-            /* first clear feanble bit as if it is left set,
-             * it won't let new FLC config to be written in the registers
-             */
-            regs->FLC[regionInfo->regionId].CTL &= ~(CSL_RL2_OF_CBA4_FLC_CTL_FENABLE_MASK);
-            /* configure this FLC */
-            regs->FLC[regionInfo->regionId].LO = regionInfo->sourceStartAddress;
-            regs->FLC[regionInfo->regionId].HI = regionInfo->sourceEndAddress;
-            regs->FLC[regionInfo->regionId].RA = regionInfo->destinationStartAddress;
-        }
+        CSL_rl2_of_cba4Regs *regs;
+        regs = (CSL_rl2_of_cba4Regs*)regionInfo->baseAddress;
+        /* first clear fenable bit as if it is left set,
+         * it won't let new FLC config to be written in the registers
+         */
+        regs->FLC[regionInfo->regionId].CTL &= ~(CSL_RL2_OF_CBA4_FLC_CTL_FENABLE_MASK);
+        /* configure this FLC */
+        regs->FLC[regionInfo->regionId].LO = regionInfo->sourceStartAddress;
+        regs->FLC[regionInfo->regionId].HI = regionInfo->sourceEndAddress;
+        regs->FLC[regionInfo->regionId].RA = regionInfo->destinationStartAddress;
     }
     return status;
 }
@@ -107,6 +104,10 @@ FLC_API_STS_t FLC_startRegion(FLC_RegionInfo * const regionInfo)
     if((FLC_RegionInfo * const)NULL == regionInfo)
     {
         status = FLC_API_STS_ERROR_NULL_PTR;
+    }
+    else if (regionInfo->regionId >= (FLC_regionId)FLC_MAX_REGION)
+    {
+        status = FLC_API_STS_ERROR_ILLEGAL_REGION_ID;
     }
     else
     {
@@ -326,6 +327,10 @@ FLC_API_STS_t FLC_disable(FLC_RegionInfo * const regionInfo)
     if((FLC_RegionInfo * const)NULL == regionInfo)
     {
         status = FLC_API_STS_ERROR_NULL_PTR;
+    }
+    else if (regionInfo->regionId >= (FLC_regionId)FLC_MAX_REGION)
+    {
+        status = FLC_API_STS_ERROR_ILLEGAL_REGION_ID;
     }
     else
     {

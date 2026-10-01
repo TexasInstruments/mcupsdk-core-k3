@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2025 Texas Instruments Incorporated
+ *  Copyright (C) 2025-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -31,28 +31,21 @@
  */
 
 /**
- *  \defgroup DRV_FLC_MODULE APIs for FLC
- *  \ingroup DRV_MODULE
+ *  \file rl2_soc.h
  *
- *  This module contains APIs to program and use the FLC module
- *  that are specific for am275x device.
- *
- *  @{
+ *  \brief RL2 Driver SOC specific file.
  */
 
-/**
- *  \file soc/am275x/flc.h
- *
- *  \brief FLC Driver soc specific API/interface file.
- */
-
-#ifndef IG__FLC_SOC_H__
-#define IG__FLC_SOC_H__
+#ifndef RL2_SOC_TOP_H_
+#define RL2_SOC_TOP_H_
 
 /* ========================================================================== */
 /*                             Include Files                                  */
 /* ========================================================================== */
-#include <stdint.h>
+
+#if defined (SOC_AM275X)
+#include <drivers/optiflash/v0/rl2/soc/am275x/rl2_soc.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -62,61 +55,28 @@ extern "C" {
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
 
-/**
- * \anchor FLC_REGION
- * \name FLC REGION
- *
- * @{
- */
-
-/**
- * @brief FLC Region 0 ID
- *
- */
-#define FLC_REGION1 ((FLC_regionId)(0U))
-/**
- * @brief FLC Region 1 ID
- *
- */
-#define FLC_REGION2 ((FLC_regionId)(1U))
-/**
- * @brief FLC Region 2 ID
- *
- */
-#define FLC_REGION3 ((FLC_regionId)(2U))
-/**
- * @brief FLC Region 3 ID
- *
- */
-#define FLC_REGION4 ((FLC_regionId)(3U))
-/**
- * @brief MAX FLC regions supported
- *
- */
-#define FLC_MAX_REGION (4U)
-/** @} */
+/* None */
 
 /* ========================================================================== */
-/*                      Function pointers Declarations                        */
+/*                         Structure Declarations                             */
 /* ========================================================================== */
 
 /* None */
 
 /* ========================================================================== */
-/*                          Structure Declarations                            */
+/*                  Internal/Private Function Declarations                    */
 /* ========================================================================== */
 
-/**
- * @brief FLC region ID type
- * @see FLC_REGION1
- * @see FLC_REGION2
- * @see FLC_REGION3
- * @see FLC_REGION4
- */
-typedef uint32_t FLC_regionId;
+/* None */
 
 /* ========================================================================== */
 /*                          Function Declarations                             */
+/* ========================================================================== */
+
+/* None */
+
+/* ========================================================================== */
+/*                       Static Function Definitions                          */
 /* ========================================================================== */
 
 /* None */
@@ -125,4 +85,4 @@ typedef uint32_t FLC_regionId;
 }
 #endif
 
-#endif //IG__FLC_SOC_H__
+#endif /* RL2_SOC_TOP_H_ */

@@ -53,6 +53,7 @@
 /* ========================================================================== */
 #include <stdint.h>
 #include <drivers/hw_include/cslr_soc.h>
+#include <drivers/optiflash/v0/rl2/soc/rl2_soc.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -150,6 +151,12 @@ extern "C" {
  *
  */
 #define RL2_API_STS_UNKNOWN_INTERRUPT            ((RL2_API_STS_t)(1U<<5U))
+
+/**
+ * @brief Invalid base address was passed
+ *
+ */
+#define RL2_API_STS_INVALID_BASE_ADDR            ((RL2_API_STS_t)(1U << 6U))
 /** @} */
 
 /* ========================================================================== */

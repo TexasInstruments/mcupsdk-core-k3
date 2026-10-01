@@ -53,9 +53,7 @@
  /* ========================================================================== */
  #include <stdint.h>
  #include <drivers/hw_include/cslr_soc.h>
-#if defined(SOC_AM275X)
- #include <drivers/optiflash/v0/flc/soc/am275x/flc.h>
-#endif
+#include <drivers/optiflash/v0/flc/soc/flc_soc.h>
 
  #ifdef __cplusplus
  extern "C" {
@@ -97,8 +95,13 @@
   *
   */
  #define FLC_API_STS_ERROR_UNKNOWN_INTERRUPT     ((FLC_API_STS_t)(-4))
+ /**
+  * @brief Invalid base address was passed
+  *
+  */
+ #define FLC_API_STS_ERROR_INVALID_BASE_ADDR     ((FLC_API_STS_t)(-5))
  /** @} */
-  
+
   /**
   * \anchor FLC_INTERRUPT 
   * \name FLC INTERRUPT

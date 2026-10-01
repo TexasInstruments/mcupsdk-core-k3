@@ -41,6 +41,7 @@
 /* ========================================================================== */
 #include <string.h>
 #include <drivers/hw_include/cslr.h>
+#include <drivers/optiflash/v0/flc/soc/flc_soc.h>
 #include "flc.h"
 
 /* ========================================================================== */
@@ -78,6 +79,10 @@ FLC_API_STS_t FLC_configureRegion(FLC_RegionInfo * const regionInfo)
     {
         status = FLC_API_STS_ERROR_NULL_PTR;
     }
+    else if(FLC_validateBaseAddr(regionInfo->baseAddress) != FLC_API_STS_SUCCESS)
+    {
+        status = FLC_API_STS_ERROR_INVALID_BASE_ADDR;
+    }
     else if(regionInfo->regionId >= (FLC_regionId)FLC_MAX_REGION)
     {
         status = FLC_API_STS_ERROR_ILLEGAL_REGION_ID;
@@ -105,6 +110,10 @@ FLC_API_STS_t FLC_startRegion(FLC_RegionInfo * const regionInfo)
     {
         status = FLC_API_STS_ERROR_NULL_PTR;
     }
+    else if(FLC_validateBaseAddr(regionInfo->baseAddress) != FLC_API_STS_SUCCESS)
+    {
+        status = FLC_API_STS_ERROR_INVALID_BASE_ADDR;
+    }
     else if (regionInfo->regionId >= (FLC_regionId)FLC_MAX_REGION)
     {
         status = FLC_API_STS_ERROR_ILLEGAL_REGION_ID;
@@ -126,6 +135,10 @@ FLC_API_STS_t FLC_isRegionDone(FLC_RegionInfo * const regionInfo, uint32_t *stat
     {
         retStatus = FLC_API_STS_ERROR_NULL_PTR;
     }
+    else if(FLC_validateBaseAddr(regionInfo->baseAddress) != FLC_API_STS_SUCCESS)
+    {
+        retStatus = FLC_API_STS_ERROR_INVALID_BASE_ADDR;
+    }
     else
     {
         CSL_rl2_of_cba4Regs *regs;
@@ -141,6 +154,10 @@ FLC_API_STS_t FLC_wasReadError(FLC_RegionInfo * const regionInfo, uint32_t *stat
     if(((FLC_RegionInfo * const)NULL == regionInfo) || (NULL == status))
     {
         retStatus = FLC_API_STS_ERROR_NULL_PTR;
+    }
+    else if(FLC_validateBaseAddr(regionInfo->baseAddress) != FLC_API_STS_SUCCESS)
+    {
+        retStatus = FLC_API_STS_ERROR_INVALID_BASE_ADDR;
     }
     else
     {
@@ -158,6 +175,10 @@ FLC_API_STS_t FLC_wasWriteError(FLC_RegionInfo * const regionInfo, uint32_t *sta
     {
         retStatus = FLC_API_STS_ERROR_NULL_PTR;
     }
+    else if(FLC_validateBaseAddr(regionInfo->baseAddress) != FLC_API_STS_SUCCESS)
+    {
+        retStatus = FLC_API_STS_ERROR_INVALID_BASE_ADDR;
+    }
     else
     {
         CSL_rl2_of_cba4Regs *regs;
@@ -173,6 +194,10 @@ FLC_API_STS_t FLC_clearWriteError(FLC_RegionInfo * const regionInfo)
     if((FLC_RegionInfo * const)NULL == regionInfo)
     {
         status = FLC_API_STS_ERROR_NULL_PTR;
+    }
+    else if(FLC_validateBaseAddr(regionInfo->baseAddress) != FLC_API_STS_SUCCESS)
+    {
+        status = FLC_API_STS_ERROR_INVALID_BASE_ADDR;
     }
     else
     {
@@ -190,6 +215,10 @@ FLC_API_STS_t FLC_clearReadError(FLC_RegionInfo * const regionInfo)
     {
         status = FLC_API_STS_ERROR_NULL_PTR;
     }
+    else if(FLC_validateBaseAddr(regionInfo->baseAddress) != FLC_API_STS_SUCCESS)
+    {
+        status = FLC_API_STS_ERROR_INVALID_BASE_ADDR;
+    }
     else
     {
         CSL_rl2_of_cba4Regs *regs;
@@ -205,6 +234,10 @@ FLC_API_STS_t FLC_readIRQMask(FLC_RegionInfo * const regionInfo, uint32_t *statu
     if((FLC_RegionInfo * const)NULL == regionInfo)
     {
         retStatus = FLC_API_STS_ERROR_NULL_PTR;
+    }
+    else if(FLC_validateBaseAddr(regionInfo->baseAddress) != FLC_API_STS_SUCCESS)
+    {
+        retStatus = FLC_API_STS_ERROR_INVALID_BASE_ADDR;
     }
     else
     {
@@ -222,6 +255,10 @@ FLC_API_STS_t FLC_readIRQStatus(FLC_RegionInfo * const regionInfo, uint32_t *sta
     {
         retStatus = FLC_API_STS_ERROR_NULL_PTR;
     }
+    else if(FLC_validateBaseAddr(regionInfo->baseAddress) != FLC_API_STS_SUCCESS)
+    {
+        retStatus = FLC_API_STS_ERROR_INVALID_BASE_ADDR;
+    }
     else
     {
         CSL_rl2_of_cba4Regs *regs;
@@ -237,6 +274,10 @@ FLC_API_STS_t FLC_enableInterrupt(FLC_RegionInfo * const regionInfo, FLC_Interru
     if((FLC_RegionInfo * const)NULL == regionInfo)
     {
         status = FLC_API_STS_ERROR_NULL_PTR;
+    }
+    else if(FLC_validateBaseAddr(regionInfo->baseAddress) != FLC_API_STS_SUCCESS)
+    {
+        status = FLC_API_STS_ERROR_INVALID_BASE_ADDR;
     }
     else
     {
@@ -268,6 +309,10 @@ FLC_API_STS_t FLC_clearInterrupt(FLC_RegionInfo * const regionInfo, FLC_Interrup
     {
         status = FLC_API_STS_ERROR_NULL_PTR;
     }
+    else if(FLC_validateBaseAddr(regionInfo->baseAddress) != FLC_API_STS_SUCCESS)
+    {
+        status = FLC_API_STS_ERROR_INVALID_BASE_ADDR;
+    }
     else
     {
         CSL_rl2_of_cba4Regs *regs;
@@ -298,6 +343,10 @@ FLC_API_STS_t FLC_disableInterrupt(FLC_RegionInfo * const regionInfo, FLC_Interr
     {
         status = FLC_API_STS_ERROR_NULL_PTR;
     }
+    else if(FLC_validateBaseAddr(regionInfo->baseAddress) != FLC_API_STS_SUCCESS)
+    {
+        status = FLC_API_STS_ERROR_INVALID_BASE_ADDR;
+    }
     else
     {
         CSL_rl2_of_cba4Regs *regs;
@@ -327,6 +376,10 @@ FLC_API_STS_t FLC_disable(FLC_RegionInfo * const regionInfo)
     if((FLC_RegionInfo * const)NULL == regionInfo)
     {
         status = FLC_API_STS_ERROR_NULL_PTR;
+    }
+    else if(FLC_validateBaseAddr(regionInfo->baseAddress) != FLC_API_STS_SUCCESS)
+    {
+        status = FLC_API_STS_ERROR_INVALID_BASE_ADDR;
     }
     else if (regionInfo->regionId >= (FLC_regionId)FLC_MAX_REGION)
     {

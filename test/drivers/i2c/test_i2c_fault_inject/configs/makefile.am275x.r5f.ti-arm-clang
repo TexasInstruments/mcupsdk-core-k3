@@ -33,6 +33,7 @@ FILES_common := \
     ecap.c \
     epwm.c \
     flc.c \
+    flc_soc.c \
     gpio.c \
     gtc.c \
     gtc_soc.c \
@@ -64,6 +65,7 @@ FILES_common := \
     pinmux.c \
     pmu.c \
     rl2.c \
+    rl2_soc.c \
     rtc.c \
     rtc_soc.c \
     sciclient.c \
@@ -128,7 +130,9 @@ FILES_PATH_common = \
     ${MCU_PLUS_SDK_PATH}/source/drivers/mmcsd/soc \
     ${MCU_PLUS_SDK_PATH}/source/drivers/mmcsd/soc/am275x \
     ${MCU_PLUS_SDK_PATH}/source/drivers/optiflash/v0/flc \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/optiflash/v0/flc/soc/am275x \
     ${MCU_PLUS_SDK_PATH}/source/drivers/optiflash/v0/rl2 \
+    ${MCU_PLUS_SDK_PATH}/source/drivers/optiflash/v0/rl2/soc/am275x \
     ${MCU_PLUS_SDK_PATH}/source/drivers/ospi \
     ${MCU_PLUS_SDK_PATH}/source/drivers/ospi/v0 \
     ${MCU_PLUS_SDK_PATH}/source/drivers/ospi/v0/dma \

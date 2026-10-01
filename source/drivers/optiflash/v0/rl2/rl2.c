@@ -41,6 +41,7 @@
 /* ========================================================================== */
 #include <string.h>
 #include <drivers/hw_include/cslr.h>
+#include <drivers/optiflash/v0/rl2/soc/rl2_soc.h>
 #include "rl2.h"
 
 /* ========================================================================== */
@@ -71,12 +72,17 @@
 /*                       API Function Definitions                             */
 /* ========================================================================== */
 
+
 RL2_API_STS_t RL2_configure(RL2_Params *config)
 {
     RL2_API_STS_t retStatus = RL2_API_STS_SUCCESS;
     if(config == NULL)
     {
         retStatus = RL2_API_STS_CANNOT_CONFIGURE;
+    }
+    else if(RL2_validateBaseAddr(config->baseAddress) != (int32_t)RL2_API_STS_SUCCESS)
+    {
+        retStatus = RL2_API_STS_INVALID_BASE_ADDR;
     }
     else
     {
@@ -145,6 +151,10 @@ RL2_API_STS_t RL2_setInterrupt(RL2_Params * config, RL2_Interrupt intr)
     {
         retStatus = RL2_API_STS_CANNOT_CONFIGURE;
     }
+    else if(RL2_validateBaseAddr(config->baseAddress) != (int32_t)RL2_API_STS_SUCCESS)
+    {
+        retStatus = RL2_API_STS_INVALID_BASE_ADDR;
+    }
     else
     {
         CSL_rl2_of_cba4Regs *regs;
@@ -171,6 +181,10 @@ RL2_API_STS_t RL2_clearInterrupt(RL2_Params * config, RL2_Interrupt intr)
     if(config == NULL)
     {
         retStatus = RL2_API_STS_CANNOT_CONFIGURE;
+    }
+    else if(RL2_validateBaseAddr(config->baseAddress) != (int32_t)RL2_API_STS_SUCCESS)
+    {
+        retStatus = RL2_API_STS_INVALID_BASE_ADDR;
     }
     else
     {
@@ -199,6 +213,10 @@ RL2_API_STS_t RL2_readIRQMask(RL2_Params * config, uint32_t * status)
     {
         retStatus = RL2_API_STS_CANNOT_CONFIGURE;
     }
+    else if(RL2_validateBaseAddr(config->baseAddress) != (int32_t)RL2_API_STS_SUCCESS)
+    {
+        retStatus = RL2_API_STS_INVALID_BASE_ADDR;
+    }
     else
     {
         CSL_rl2_of_cba4Regs *regs;
@@ -214,6 +232,10 @@ RL2_API_STS_t RL2_readIRQStatus(RL2_Params * config, uint32_t * status)
     if((config == NULL) || (status == NULL))
     {
         retStatus = RL2_API_STS_CANNOT_CONFIGURE;
+    }
+    else if(RL2_validateBaseAddr(config->baseAddress) != (int32_t)RL2_API_STS_SUCCESS)
+    {
+        retStatus = RL2_API_STS_INVALID_BASE_ADDR;
     }
     else
     {
@@ -231,6 +253,10 @@ RL2_API_STS_t RL2_getCacheMiss(RL2_Params * config, uint32_t * miss)
     {
         retStatus = RL2_API_STS_CANNOT_CONFIGURE;
     }
+    else if(RL2_validateBaseAddr(config->baseAddress) != (int32_t)RL2_API_STS_SUCCESS)
+    {
+        retStatus = RL2_API_STS_INVALID_BASE_ADDR;
+    }
     else
     {
         CSL_rl2_of_cba4Regs *regs;
@@ -246,6 +272,10 @@ RL2_API_STS_t RL2_getCacheHits(RL2_Params * config, uint32_t * hits)
     if((NULL == config) || (NULL == hits))
     {
         retStatus = RL2_API_STS_CANNOT_CONFIGURE;
+    }
+    else if(RL2_validateBaseAddr(config->baseAddress) != (int32_t)RL2_API_STS_SUCCESS)
+    {
+        retStatus = RL2_API_STS_INVALID_BASE_ADDR;
     }
     else
     {
@@ -264,6 +294,10 @@ RL2_API_STS_t RL2_enable(RL2_Params * config)
     {
         retStatus = RL2_API_STS_CANNOT_CONFIGURE;
     }
+    else if(RL2_validateBaseAddr(config->baseAddress) != (int32_t)RL2_API_STS_SUCCESS)
+    {
+        retStatus = RL2_API_STS_INVALID_BASE_ADDR;
+    }
     else
     {
         CSL_rl2_of_cba4Regs *regs;
@@ -281,6 +315,10 @@ RL2_API_STS_t RL2_disable(RL2_Params * config)
     if(config == NULL)
     {
         retStatus = RL2_API_STS_CANNOT_CONFIGURE;
+    }
+    else if(RL2_validateBaseAddr(config->baseAddress) != (int32_t)RL2_API_STS_SUCCESS)
+    {
+        retStatus = RL2_API_STS_INVALID_BASE_ADDR;
     }
     else
     {

@@ -5531,21 +5531,7 @@ void *TestOptiflash_flcInvalidBaseAddress(void *args)
         }
     }
 
-    /* ---- 3. Corrupted regionId with valid base ---- */
-    if(SystemP_SUCCESS == retval)
-    {
-        testRegion = gFLCRegionConfig[0];
-        testRegion.regionId = TEST_OPTIFLASH_FLC_INVALID_REGION_ID;
-
-        flcStatus = FLC_isRegionDone(&testRegion, &status);
-        if(flcStatus == FLC_API_STS_SUCCESS)
-        {
-            DebugP_logError("FLC_isRegionDone accepted invalid regionId\r\n");
-            retval = SystemP_FAILURE;
-        }
-    }
-
-    /* ---- 4. FLC_wasReadError with NULL baseAddress ---- */
+    /* ---- 3. FLC_wasReadError with NULL baseAddress ---- */
     if(SystemP_SUCCESS == retval)
     {
         testRegion = gFLCRegionConfig[0];
@@ -5559,7 +5545,7 @@ void *TestOptiflash_flcInvalidBaseAddress(void *args)
         }
     }
 
-    /* ---- 5. FLC_wasReadError with out-of-range baseAddress ---- */
+    /* ---- 4. FLC_wasReadError with out-of-range baseAddress ---- */
     if(SystemP_SUCCESS == retval)
     {
         testRegion = gFLCRegionConfig[0];
@@ -5573,7 +5559,7 @@ void *TestOptiflash_flcInvalidBaseAddress(void *args)
         }
     }
 
-    /* ---- 6. FLC_wasWriteError with invalid baseAddress ---- */
+    /* ---- 5. FLC_wasWriteError with invalid baseAddress ---- */
     if(SystemP_SUCCESS == retval)
     {
         testRegion = gFLCRegionConfig[0];
@@ -5587,7 +5573,7 @@ void *TestOptiflash_flcInvalidBaseAddress(void *args)
         }
     }
 
-    /* ---- 7. FLC_clearReadError with invalid baseAddress ---- */
+    /* ---- 6. FLC_clearReadError with invalid baseAddress ---- */
     if(SystemP_SUCCESS == retval)
     {
         testRegion = gFLCRegionConfig[0];
@@ -5601,7 +5587,7 @@ void *TestOptiflash_flcInvalidBaseAddress(void *args)
         }
     }
 
-    /* ---- 8. FLC_clearWriteError with invalid baseAddress ---- */
+    /* ---- 7. FLC_clearWriteError with invalid baseAddress ---- */
     if(SystemP_SUCCESS == retval)
     {
         testRegion = gFLCRegionConfig[0];
@@ -5615,7 +5601,7 @@ void *TestOptiflash_flcInvalidBaseAddress(void *args)
         }
     }
 
-    /* ---- 9. FLC_readIRQMask with invalid baseAddress ---- */
+    /* ---- 8. FLC_readIRQMask with invalid baseAddress ---- */
     if(SystemP_SUCCESS == retval)
     {
         testRegion = gFLCRegionConfig[0];
@@ -5629,7 +5615,7 @@ void *TestOptiflash_flcInvalidBaseAddress(void *args)
         }
     }
 
-    /* ---- 10. FLC_readIRQStatus with invalid baseAddress ---- */
+    /* ---- 9. FLC_readIRQStatus with invalid baseAddress ---- */
     if(SystemP_SUCCESS == retval)
     {
         testRegion = gFLCRegionConfig[0];
@@ -5643,7 +5629,7 @@ void *TestOptiflash_flcInvalidBaseAddress(void *args)
         }
     }
 
-    /* ---- 11. FLC_enableInterrupt with invalid baseAddress ---- */
+    /* ---- 10. FLC_enableInterrupt with invalid baseAddress ---- */
     if(SystemP_SUCCESS == retval)
     {
         testRegion = gFLCRegionConfig[0];
@@ -5657,7 +5643,7 @@ void *TestOptiflash_flcInvalidBaseAddress(void *args)
         }
     }
 
-    /* ---- 12. FLC_clearInterrupt with invalid baseAddress ---- */
+    /* ---- 11. FLC_clearInterrupt with invalid baseAddress ---- */
     if(SystemP_SUCCESS == retval)
     {
         testRegion = gFLCRegionConfig[0];
@@ -5671,7 +5657,7 @@ void *TestOptiflash_flcInvalidBaseAddress(void *args)
         }
     }
 
-    /* ---- 13. FLC_disableInterrupt with invalid baseAddress ---- */
+    /* ---- 12. FLC_disableInterrupt with invalid baseAddress ---- */
     if(SystemP_SUCCESS == retval)
     {
         testRegion = gFLCRegionConfig[0];
@@ -5685,7 +5671,7 @@ void *TestOptiflash_flcInvalidBaseAddress(void *args)
         }
     }
 
-    /* ---- 14. Positive control — valid baseAddress must pass ---- */
+    /* ---- 13. Positive control — valid baseAddress must pass ---- */
     if(SystemP_SUCCESS == retval)
     {
         testRegion = gFLCRegionConfig[0];

@@ -110,6 +110,17 @@
 #define TEST_OPTIFLASH_FLC_INVALID_BASE_ADDR_7      (0x44444444U)
 #define TEST_OPTIFLASH_FLC_INVALID_BASE_ADDR_8      (0x55555555U)
 
+/* Invalid/out-of-range base addresses for negative RL2 API tests */
+#define TEST_OPTIFLASH_RL2_INVALID_BASE_ADDR_1      (0xDEADBEEFU)
+#define TEST_OPTIFLASH_RL2_INVALID_BASE_ADDR_2      (0x99999999U)
+#define TEST_OPTIFLASH_RL2_INVALID_BASE_ADDR_3      (0x12345678U)
+#define TEST_OPTIFLASH_RL2_INVALID_BASE_ADDR_4      (0xFFFF0000U)
+#define TEST_OPTIFLASH_RL2_INVALID_BASE_ADDR_5      (0x80000000U)
+#define TEST_OPTIFLASH_RL2_INVALID_BASE_ADDR_6      (0xBADBAD00U)
+#define TEST_OPTIFLASH_RL2_INVALID_BASE_ADDR_7      (0x44444444U)
+#define TEST_OPTIFLASH_RL2_INVALID_BASE_ADDR_8      (0x55555555U)
+#define TEST_OPTIFLASH_RL2_NULL_BASE_ADDR            (0x0U)
+
 
 /*
  * NOP macros used to build a load function placed in external flash.
@@ -5749,6 +5760,181 @@ void *TestOptiflash_flcInvalidBaseAddress(void *args)
             retval = SystemP_FAILURE;
         }
     }
+    TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
+    return NULL;
+}
+
+/**
+ * \brief Validate all RL2 APIs reject invalid or corrupted baseAddress values.
+ *
+ * Test Category: Negative
+ *
+ * Exercises multiple invalid baseAddress scenarios across all RL2 APIs that
+ * perform base address validation to verify the driver detects and rejects
+ * improper register mappings without causing system instability.
+ * Includes a positive-control check to confirm valid parameters still work.
+ * \param args Pointer to test arguments (unused).
+ * \return NULL
+ * \expectedOutput All APIs reject invalid baseAddress values and behave safely;
+ *                 valid baseAddress succeeds.
+ */
+void *TestOptiflash_rl2InvalidBaseAddress(void *args)
+{
+    (void)args;
+
+    int32_t retval = SystemP_SUCCESS;
+    RL2_API_STS_t rl2Status;
+    RL2_Params testConfig;
+    uint32_t dummyValue = 0U;
+
+    /* ---- 1. RL2_configure with invalid baseAddress ---- */
+    testConfig = gRL2Config[0];
+    testConfig.baseAddress = TEST_OPTIFLASH_RL2_INVALID_BASE_ADDR_1;
+
+    rl2Status = RL2_configure(&testConfig);
+    if(rl2Status != RL2_API_STS_INVALID_BASE_ADDR)
+    {
+        DebugP_logError("RL2_configure accepted invalid baseAddress\r\n");
+        retval = SystemP_FAILURE;
+    }
+
+    /* ---- 2. RL2_enable with invalid baseAddress ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testConfig = gRL2Config[0];
+        testConfig.baseAddress = TEST_OPTIFLASH_RL2_INVALID_BASE_ADDR_2;
+
+        rl2Status = RL2_enable(&testConfig);
+        if(rl2Status != RL2_API_STS_INVALID_BASE_ADDR)
+        {
+            DebugP_logError("RL2_enable accepted invalid baseAddress\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* ---- 3. RL2_disable with invalid baseAddress ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testConfig = gRL2Config[0];
+        testConfig.baseAddress = TEST_OPTIFLASH_RL2_INVALID_BASE_ADDR_3;
+
+        rl2Status = RL2_disable(&testConfig);
+        if(rl2Status != RL2_API_STS_INVALID_BASE_ADDR)
+        {
+            DebugP_logError("RL2_disable accepted invalid baseAddress\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* ---- 4. RL2_setInterrupt with invalid baseAddress ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testConfig = gRL2Config[0];
+        testConfig.baseAddress = TEST_OPTIFLASH_RL2_INVALID_BASE_ADDR_4;
+
+        rl2Status = RL2_setInterrupt(&testConfig, RL2_INTERRUPT_WRITE_HIT);
+        if(rl2Status != RL2_API_STS_INVALID_BASE_ADDR)
+        {
+            DebugP_logError("RL2_setInterrupt accepted invalid baseAddress\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* ---- 5. RL2_clearInterrupt with invalid baseAddress ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testConfig = gRL2Config[0];
+        testConfig.baseAddress = TEST_OPTIFLASH_RL2_INVALID_BASE_ADDR_5;
+
+        rl2Status = RL2_clearInterrupt(&testConfig, RL2_INTERRUPT_WRITE_HIT);
+        if(rl2Status != RL2_API_STS_INVALID_BASE_ADDR)
+        {
+            DebugP_logError("RL2_clearInterrupt accepted invalid baseAddress\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* ---- 6. RL2_readIRQMask with invalid baseAddress ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testConfig = gRL2Config[0];
+        testConfig.baseAddress = TEST_OPTIFLASH_RL2_INVALID_BASE_ADDR_6;
+
+        rl2Status = RL2_readIRQMask(&testConfig, &dummyValue);
+        if(rl2Status != RL2_API_STS_INVALID_BASE_ADDR)
+        {
+            DebugP_logError("RL2_readIRQMask accepted invalid baseAddress\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* ---- 7. RL2_readIRQStatus with invalid baseAddress ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testConfig = gRL2Config[0];
+        testConfig.baseAddress = TEST_OPTIFLASH_RL2_INVALID_BASE_ADDR_7;
+
+        rl2Status = RL2_readIRQStatus(&testConfig, &dummyValue);
+        if(rl2Status != RL2_API_STS_INVALID_BASE_ADDR)
+        {
+            DebugP_logError("RL2_readIRQStatus accepted invalid baseAddress\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* ---- 8. RL2_getCacheMiss with invalid baseAddress ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testConfig = gRL2Config[0];
+        testConfig.baseAddress = TEST_OPTIFLASH_RL2_INVALID_BASE_ADDR_8;
+
+        rl2Status = RL2_getCacheMiss(&testConfig, &dummyValue);
+        if(rl2Status != RL2_API_STS_INVALID_BASE_ADDR)
+        {
+            DebugP_logError("RL2_getCacheMiss accepted invalid baseAddress\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* ---- 9. RL2_getCacheHits with NULL baseAddress ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testConfig = gRL2Config[0];
+        testConfig.baseAddress = TEST_OPTIFLASH_RL2_NULL_BASE_ADDR;
+
+        rl2Status = RL2_getCacheHits(&testConfig, &dummyValue);
+        if(rl2Status != RL2_API_STS_INVALID_BASE_ADDR)
+        {
+            DebugP_logError("RL2_getCacheHits accepted NULL baseAddress\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* ---- 10. Positive control — valid baseAddress must pass ---- */
+    if(SystemP_SUCCESS == retval)
+    {
+        testConfig = gRL2Config[0];
+
+        rl2Status = RL2_readIRQStatus(&testConfig, &dummyValue);
+        if(rl2Status != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("Valid baseAddress rejected by RL2_readIRQStatus\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    if(SystemP_SUCCESS == retval)
+    {
+        testConfig = gRL2Config[0];
+
+        rl2Status = RL2_getCacheHits(&testConfig, &dummyValue);
+        if(rl2Status != RL2_API_STS_SUCCESS)
+        {
+            DebugP_logError("Valid baseAddress rejected by RL2_getCacheHits\r\n");
+            retval = SystemP_FAILURE;
+        }
+    }
+
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
     return NULL;
 }

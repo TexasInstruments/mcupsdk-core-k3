@@ -88,6 +88,7 @@ void *TestOptiflash_rl2ReenableAfterDisable(void *args);
 void *TestOptiflash_flcTransferAbortMidOperation(void *args);
 void *TestOptiflash_flcDacModeRobustness(void *args);
 void *TestOptiflash_flcInvalidBaseAddress(void *args);
+void *TestOptiflash_rl2InvalidBaseAddress(void *args);
 #if defined ENABLE_MT_TESTS
 void *TestOptiflash_multithreadFlcIndependentRegions(void *args);
 void *TestOptiflash_multithreadFlcSameRegionAccess(void *args);

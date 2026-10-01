@@ -128,6 +128,7 @@ void test_main(void *args)
     RUN_TEST((UnityTestFunction)TestOptiflash_multithreadRl2InterruptAndFlcTransfer, 10899, NULL);
 #endif
     RUN_TEST((UnityTestFunction)TestOptiflash_flcInvalidBaseAddress, 10902, NULL);
+    RUN_TEST((UnityTestFunction)TestOptiflash_rl2InvalidBaseAddress, 13425, NULL);
 
     UNITY_END();
 

@@ -102,6 +102,7 @@ const templates_freertos_r5f =
         output: "../main.c",
         options: {
             entryFunction: "test_main",
+            stackSize: 0x10000,
         },
     }
 ];

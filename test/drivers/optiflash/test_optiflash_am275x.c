@@ -2242,6 +2242,60 @@ void *TestOptiflash_flcIllegalRegionId(void *args)
             retval = SystemP_FAILURE;
         }
     }
+
+    /* Test FLC_startRegion with regionId = FLC_MAX_REGION */
+    if(SystemP_SUCCESS == retval)
+    {
+        badRegion = gFLCRegionConfig[0];
+        badRegion.regionId = FLC_MAX_REGION;
+        flcStatus = FLC_startRegion(&badRegion);
+        if(flcStatus != FLC_API_STS_ERROR_ILLEGAL_REGION_ID)
+        {
+            DebugP_logError("FLC_startRegion with regionId=%u failed: expected ERROR_ILLEGAL_REGION_ID, got %d\r\n",
+                           FLC_MAX_REGION, flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test FLC_startRegion with regionId > FLC_MAX_REGION */
+    if(SystemP_SUCCESS == retval)
+    {
+        badRegion.regionId = FLC_MAX_REGION + 10U;
+        flcStatus = FLC_startRegion(&badRegion);
+        if(flcStatus != FLC_API_STS_ERROR_ILLEGAL_REGION_ID)
+        {
+            DebugP_logError("FLC_startRegion with regionId=%u failed: expected ERROR_ILLEGAL_REGION_ID, got %d\r\n",
+                           FLC_MAX_REGION + 10U, flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test FLC_disable with regionId = FLC_MAX_REGION */
+    if(SystemP_SUCCESS == retval)
+    {
+        badRegion = gFLCRegionConfig[0];
+        badRegion.regionId = FLC_MAX_REGION;
+        flcStatus = FLC_disable(&badRegion);
+        if(flcStatus != FLC_API_STS_ERROR_ILLEGAL_REGION_ID)
+        {
+            DebugP_logError("FLC_disable with regionId=%u failed: expected ERROR_ILLEGAL_REGION_ID, got %d\r\n",
+                           FLC_MAX_REGION, flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
+
+    /* Test FLC_disable with regionId > FLC_MAX_REGION */
+    if(SystemP_SUCCESS == retval)
+    {
+        badRegion.regionId = FLC_MAX_REGION + 10U;
+        flcStatus = FLC_disable(&badRegion);
+        if(flcStatus != FLC_API_STS_ERROR_ILLEGAL_REGION_ID)
+        {
+            DebugP_logError("FLC_disable with regionId=%u failed: expected ERROR_ILLEGAL_REGION_ID, got %d\r\n",
+                           FLC_MAX_REGION + 10U, flcStatus);
+            retval = SystemP_FAILURE;
+        }
+    }
     TEST_ASSERT_EQUAL_INT32(SystemP_SUCCESS, retval);
     return NULL;
 }

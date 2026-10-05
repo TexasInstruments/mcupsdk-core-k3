@@ -67,11 +67,7 @@ BOOTIMAGE_NAME_HS_FS:=`args.project.name`.$(PROFILE).hs_fs.tiimage
 ifeq ($(DEVICE_TYPE),HS)
 	BOOTIMAGE_NAME=$(BOOTIMAGE_NAME_HS)
 else
-% if (args.project.device == "am275x") {
-	BOOTIMAGE_NAME=$(BOOTIMAGE_NAME_HS_FS)
-% }else {
 	BOOTIMAGE_NAME=$(BOOTIMAGE_NAME_GP)
-%}
 endif
 % } else {
 BOOTIMAGE_NAME:=$(BOOTIMAGE_PATH)/$(OUTNAME).tiimage

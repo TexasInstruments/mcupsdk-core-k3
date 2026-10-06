@@ -11,6 +11,13 @@ waking up the SoC from MCU Only Low Power Mode.
    -# \subpage EXAMPLES_LPM_MCU_UART_WAKEUP
 -# DM-Timer
    -# \subpage EXAMPLES_LPM_MCU_DMTIMER_WAKEUP
+
+This page lists the example on how to enter Partial
+IO low power mode on console key press and then wakeup on pin
+activity on MCAN pins.
+-# MCU MCAN
+   -# \subpage EXAMPLES_LPM_PARTIAL_IO_RTOS_INITIATED
+
 \endcond
 
 \cond  SOC_AM275X

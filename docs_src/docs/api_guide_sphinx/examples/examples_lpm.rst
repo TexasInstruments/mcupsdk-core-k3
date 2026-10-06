@@ -9,6 +9,7 @@ Low Power Mode Wakeup
    lpm/lpm_mcu_mcan_wakeup
    lpm/lpm_mcu_uart_wakeup
    lpm/lpm_mcu_dmtimer_wakeup
+   lpm/lpm_partial_io_rtos_initiated
    lpm/lpm_io_retention_uart_wakeup
    lpm/lpm_io_retention_mcan_wakeup
 
@@ -24,6 +25,11 @@ Low Power Mode Wakeup
 
    **DM-Timer**
       - :doc:`LPM DMTimer Wakeup <lpm/lpm_mcu_dmtimer_wakeup>`
+
+   This page lists the example on how to enter Partial IO low power mode on console key press and then wakeup on pin activity on MCAN pins.
+
+   **MCU MCAN**
+      - :doc:`MCU-Initiated Partial IO Mode <lpm/lpm_partial_io_rtos_initiated>`
 
 .. only:: SOC_AM275X
 

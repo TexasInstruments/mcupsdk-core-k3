@@ -413,12 +413,11 @@ void *create_graph(int32_t *pIn, uint32_t *outStride)
     /* 9. Limiter */
     if (errorCtx.isSuccess()) {
         auto k8 = std::make_unique<TISP::AUDIOLIB::Limiter<float>>(
-            pGainNChTrimOut, pLimiterGain, pLimiterScratch, pLimiterOut,
+            pGainNChTrimOut, pLimiterScratch, pLimiterOut, pLimiterGain,
             pLimiterThreshold, pLimiterKneeWidth, pLimiterAttackCoeff,
             pLimiterReleaseCoeff, NUM_CHANNELS_OUT, BLOCK_SIZE,
             NUM_CHANNELS_OUT * sizeof(float), NUM_CHANNELS_OUT * sizeof(float),
-            MUTE_NCH_STRIDE_ELEM * sizeof(float), IS_INTERLEAVED, "Limiter",
-            8, errorCtx); // isInterleaved=IS_INTERLEAVED
+            MUTE_NCH_STRIDE_ELEM * sizeof(float), "Limiter", 8, errorCtx);
         if (errorCtx.isSuccess()) {
             myOpVec->push_back(std::move(k8));
         } else {

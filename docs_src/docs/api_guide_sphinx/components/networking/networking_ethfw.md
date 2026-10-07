@@ -452,6 +452,52 @@ arrows.
 
 **Note:-** am62px Intercore Ethernet using VEPA not am62dx or am62ax
 
+## Multi Core Timesync
+
+The Multi-core Timesync module on EthFW enables remote cores to access network-synchronized physical hardware timestamps within **100ns accuracy**. It is similar to the **phc2sys** module on Linux.
+In EthFW, the Phc Time is the CPTS timestamp, which is a **64-bit upward-counting register**. The CPTS clock frequency can take various values, but the CPTS timestamp value is incremented at 1GHz speed (e.g., if CPTS clock frequency is 200MHz, the timer value is incremented by 5 on every clock tick). The EthFW Server core has ownership of the CPSW, and the gPTP stack running on the EthFW server controls the CPTS timestamp according to network time. The gPTP stack can modify the CPTS time through PPM correction to synchronize it with network time.
+
+The System Time is implemented using a **32-bit Timer Peripheral**. Since a 32-bit Timer is used, it will overflow within few seconds. Every time a Timer overflow occurs, it generates an interrupt that is used to increment the timer overflow count. The system time is calculated using the following relation:
+
+**System Time = Overflow Count × (total Timer ticks to overflow) + Current Timer Counter Value**
+
+In EthFW, the Timer is configured to overflow every 1s, but this configuration can be changed as per requirements.
+
+The Timer Interrupt signal can be routed to the CPTS HW Push Event Signal via a hardware IP called Timesync Router. The CPTS HW push event captures the 64-bit CPTS timestamp and passes it to the application running on the EthFW server core. From Timer Overflow to CPTS Timestamp capture is entirely handled in hardware, ensuring the timestamp is accurate within a few nanoseconds of the Timer Overflow event.
+This allows us to form the **(Phc Time, System Time) tuple which is timestamp of one event (Timer Overflow) in two different clocks**. These tuples are used by the clock synchronization algorithm described below.
+
+![](../../images/examples/ethfw-mts-architecture.png)
+
+Every time an overflow event occurs, it triggers the **chain of events 1 to 5 shown** in the above diagram.
+
+Mathematically the MTS module tracks two periodic timestamps — **Phc Time** (<i>T</i><sub>p</sub>, the CPTS clock) and **System Time** (<i>T</i><sub>s</sub>, derived from the Timer Counter) — and uses two parameters to estimate <i>T</i><sub>p</sub> from <i>T</i><sub>s</sub>:
+
+- **Base Rate** (<i>M</i><sub>b</sub>): Fixed ratio of Phc to System clock frequency, computed **once at initialization**.
+- **PPM Rate** (<i>M</i><sub>p</sub>): Models the gPTP PPM correction on the CPTS clock, initialized to 0 and **updated on every sync event** to minimize estimation error.
+
+The central Phc Time estimation relation used by TsCouplerClient_getSynchronizedTime() is the following:
+
+<i>T</i><sub>p,est</sub> = <i>T</i><sub>p,last</sub> + (<i>T</i><sub>s,curr</sub> - <i>T</i><sub>s,last</sub>) * (<i>M</i><sub>b</sub> + <i>M</i><sub>p</sub> /1000000)
+
+The synchronization error <i>E</i><sub>T</sub> = <i>T</i><sub>p,curr</sub> - <i>T</i><sub>p,est</sub> drives the update of <i>M</i><sub>p</sub> via an exponential moving average with learning rate <i>α</i>:
+
+<i>M</i><sub>p</sub> += <i>α</i> * (<i>E</i><sub>T</sub> * 1000000 / (<i>T</i><sub>s,curr</sub> - <i>T</i><sub>s,last</sub>))
+
+**Synchronization Algorithm (per sync event):**
+1. Compute <i>T</i><sub>p,est</sub> = <i>T</i><sub>p,last</sub> + (<i>T</i><sub>s,curr</sub> - <i>T</i><sub>s,last</sub>) * (<i>M</i><sub>b</sub> + <i>M</i><sub>p</sub> / 1000000)
+2. Compute <i>E</i><sub>T</sub> = <i>T</i><sub>p,curr</sub> - <i>T</i><sub>p,est</sub>
+3. Update: <i>M</i><sub>p</sub> += <i>α</i> * (<i>E</i><sub>T</sub> * 1000000 / (<i>T</i><sub>s,curr</sub> - <i>T</i><sub>s,last</sub>))
+4. Advance: <i>T</i><sub>p,last</sub> = <i>T</i><sub>p,curr</sub>, <i>T</i><sub>s,last</sub> = <i>T</i><sub>s,curr</sub>
+
+During initialization, the EthFW RTOS Client requests an available HW Push event from the EthFW server using **ETHREMOTECFG_CMD_ALLOC_CPTS_HW_PUSH**. After it returns a valid HW Push event, the RTOS Client configures a Timer to run and overflow periodically (default setting is 1s). It then uses **ETHREMOTECFG_CMD_REGISTER_REMOTE_TIMER** to ask the EthFW server to configure the Timesync Router to link the Timer Interrupt line to the HW Push event line. The RTOS client then creates a task to handle time synchronization, enables the PWM signal from the Timer, and starts the Timer. The initialization sequence is described in the following image:
+![](../../images/examples/ethfw-mts-sequence.png)
+
+After initial configuration, the MTS module on the client side is woken up once every 1s (controlled by **CPSW_REMOTE_APP_TIMESYNC_TIMERPERIOD_MS**) to run the synchronization algorithm and thus has very limited CPU overhead.
+
+### Build
+
+Add the **ETHFW_MTS_SUPPORT** flag to enable this feature and the **ETHFW_MTS_DEMO_TEST** flag to print clock synchronization metrics every 10s.
+
 ## Proxy ARP
 
 Ethfw server provides Proxy ARP feature that handles ARP brodcast packets eficiently.

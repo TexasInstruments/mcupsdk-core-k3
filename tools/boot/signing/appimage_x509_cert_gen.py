@@ -75,6 +75,7 @@ basicConstraints = CA:true
 1.3.6.1.4.1.294.1.3 = ASN1:SEQUENCE:swrv
 {ENCRYPTION_SEQUENCE}
 {ENCRYPTION_EXTENDED_SEQUENCE}
+{KEY_INFO_SEQUENCE}
 
 [ sysfw_image_integrity ]
 shaType = OID:{TEST_IMAGE_SHA_OID}
@@ -116,6 +117,12 @@ rsvd0 = INTEGER:0
 rsvd1 = INTEGER:0
 '''
 
+g_key_info_seq = '''
+[ key_info ]
+auth_key_id = INTEGER:{AUTH_KEYRING_ID}
+enc_key_id  = INTEGER:{ENC_KEYRING_ID}
+'''
+
 def is_elf_file(bin_file_name):
 	try:
 		with open(bin_file_name, 'rb') as f:
@@ -144,6 +151,8 @@ def get_cert(args):
 	v_TEST_IMAGE_KEY_DERIVE_INDEX = 0
 	v_TEST_IMAGE_KEY_DERIVE_SALT  = "0000"
 	v_N_PADDING_BYTES             = 0
+	v_AUTH_KEYRING_ID             = 0
+	v_ENC_KEYRING_ID              = 0
 
 	is_mcelf = False
 
@@ -316,6 +325,19 @@ def get_cert(args):
 	else:
 		pass
 
+	# Validate key info arguments
+	if args.keyinfo_auth_key_id is not None:
+		if args.keyinfo_auth_key_id < 1 or args.keyinfo_auth_key_id > 254:
+			print("[ERROR] --keyinfo-auth-key-id must be between 1 and 254")
+			exit(2)
+		v_AUTH_KEYRING_ID = args.keyinfo_auth_key_id
+
+	if args.keyinfo_enc_key_id is not None:
+		if args.keyinfo_enc_key_id < 1 or args.keyinfo_enc_key_id > 254:
+			print("[ERROR] --keyinfo-enc-key-id must be between 1 and 254")
+			exit(2)
+		v_ENC_KEYRING_ID = args.keyinfo_enc_key_id
+
 	# Replace the variables in the main template now.
 	enc_seq=''
 	if(args.enc == 'y'):
@@ -331,7 +353,11 @@ def get_cert(args):
 	if is_mcelf and args.enc == 'y':
 		enc_ext_seq = "1.3.6.1.4.1.294.1.40 = ASN1:SEQUENCE:encryption_extended"
 
-	ret_cert = g_x509_template.format(TEST_IMAGE_SHA_OID=v_TEST_IMAGE_SHA_OID, TEST_IMAGE_SHA_VAL=v_TEST_IMAGE_SHA_VAL, TEST_IMAGE_LENGTH=v_TEST_IMAGE_LENGTH, TEST_BOOT_ADDR=v_TEST_BOOT_ADDR, AUTH_TYPE=v_AUTH_TYPE, ENCRYPTION_SEQUENCE=enc_seq, SYSFW_IMAGE_LOAD_SEQUENCE=sysfw_load_seq, ENCRYPTION_EXTENDED_SEQUENCE=enc_ext_seq)
+	key_info_seq = ''
+	if args.keyinfo_auth_key_id is not None or args.keyinfo_enc_key_id is not None:
+		key_info_seq = "1.3.6.1.4.1.294.1.38 = ASN1:SEQUENCE:key_info"
+
+	ret_cert = g_x509_template.format(TEST_IMAGE_SHA_OID=v_TEST_IMAGE_SHA_OID, TEST_IMAGE_SHA_VAL=v_TEST_IMAGE_SHA_VAL, TEST_IMAGE_LENGTH=v_TEST_IMAGE_LENGTH, TEST_BOOT_ADDR=v_TEST_BOOT_ADDR, AUTH_TYPE=v_AUTH_TYPE, ENCRYPTION_SEQUENCE=enc_seq, SYSFW_IMAGE_LOAD_SEQUENCE=sysfw_load_seq, ENCRYPTION_EXTENDED_SEQUENCE=enc_ext_seq, KEY_INFO_SEQUENCE=key_info_seq)
 
 	# If encryption is enabled, append that sequence to the current certificate
 	if(args.enc == 'y'):
@@ -340,6 +366,10 @@ def get_cert(args):
 	# If MCELF with encryption, append the encryption_extended sequence
 	if is_mcelf and args.enc == 'y':
 		ret_cert += g_enc_extended_seq.format(N_PADDING_BYTES=v_N_PADDING_BYTES)
+
+	# If key info extension is enabled, append the key info sequence
+	if args.keyinfo_auth_key_id is not None or args.keyinfo_enc_key_id is not None:
+		ret_cert += g_key_info_seq.format(AUTH_KEYRING_ID=v_AUTH_KEYRING_ID, ENC_KEYRING_ID=v_ENC_KEYRING_ID)
 
 	# NOTE: Boot sequence is not used. We assume that SBL always sets the reset vectors and does image load
 
@@ -359,6 +389,8 @@ my_parser.add_argument('--enc',        type=str, help='If the binary need to be 
 my_parser.add_argument('--loadaddr',   type=str, help='Target load address of the binary in hex. Default to 0x70000000')
 my_parser.add_argument('--authtype',   type=str, help='Authentication type. [0/1/2]. 0 - Move to destination address specified after authentication, 1 - In place authentication, 2 - Move to the certificate start after authentication. Default is 1')
 my_parser.add_argument('--keyversion', type=str, help='App signing key version. [1.5/2.2]. 1.5 - RSASSA PKCS v1.5 scheme, 2.2 - RSASSA PSS scheme. Default is 1.5')
+my_parser.add_argument('--keyinfo-auth-key-id', type=int, help='Key ID for authentication key from keyring (1-254). Required when signing with a key from the keyring.')
+my_parser.add_argument('--keyinfo-enc-key-id',  type=int, help='Key ID for encryption key from keyring (1-254). Required when encrypting with a key from the keyring.')
 
 args = my_parser.parse_args()
 cert_str = get_cert(args)

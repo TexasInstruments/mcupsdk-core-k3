@@ -76,6 +76,7 @@ basicConstraints = CA:true
 {ENCRYPTION_SEQUENCE}
 {ENCRYPTION_EXTENDED_SEQUENCE}
 {KEY_INFO_SEQUENCE}
+{KEYRING_INFO_SEQUENCE}
 
 [ sysfw_image_integrity ]
 shaType = OID:{TEST_IMAGE_SHA_OID}
@@ -123,6 +124,12 @@ auth_key_id = INTEGER:{AUTH_KEYRING_ID}
 enc_key_id  = INTEGER:{ENC_KEYRING_ID}
 '''
 
+g_keyring_info_seq = '''
+[ keyring_info ]
+num_asymm_keys = INTEGER:{NUM_ASYMM_KEYS}
+num_symm_keys  = INTEGER:{NUM_SYMM_KEYS}
+'''
+
 def is_elf_file(bin_file_name):
 	try:
 		with open(bin_file_name, 'rb') as f:
@@ -153,6 +160,8 @@ def get_cert(args):
 	v_N_PADDING_BYTES             = 0
 	v_AUTH_KEYRING_ID             = 0
 	v_ENC_KEYRING_ID              = 0
+	v_NUM_ASYMM_KEYS              = 0
+	v_NUM_SYMM_KEYS               = 0
 
 	is_mcelf = False
 
@@ -338,6 +347,19 @@ def get_cert(args):
 			exit(2)
 		v_ENC_KEYRING_ID = args.keyinfo_enc_key_id
 
+	# Validate keyring info arguments
+	if args.keyring_num_asymm_keys is not None:
+		if args.keyring_num_asymm_keys < 1 or args.keyring_num_asymm_keys > 6:
+			print("[ERROR] --keyring-num-asymm-keys must be between 1 and 6")
+			exit(2)
+		v_NUM_ASYMM_KEYS = args.keyring_num_asymm_keys
+
+	if args.keyring_num_symm_keys is not None:
+		if args.keyring_num_symm_keys < 1 or args.keyring_num_symm_keys > 6:
+			print("[ERROR] --keyring-num-symm-keys must be between 1 and 6")
+			exit(2)
+		v_NUM_SYMM_KEYS = args.keyring_num_symm_keys
+
 	# Replace the variables in the main template now.
 	enc_seq=''
 	if(args.enc == 'y'):
@@ -357,7 +379,11 @@ def get_cert(args):
 	if args.keyinfo_auth_key_id is not None or args.keyinfo_enc_key_id is not None:
 		key_info_seq = "1.3.6.1.4.1.294.1.38 = ASN1:SEQUENCE:key_info"
 
-	ret_cert = g_x509_template.format(TEST_IMAGE_SHA_OID=v_TEST_IMAGE_SHA_OID, TEST_IMAGE_SHA_VAL=v_TEST_IMAGE_SHA_VAL, TEST_IMAGE_LENGTH=v_TEST_IMAGE_LENGTH, TEST_BOOT_ADDR=v_TEST_BOOT_ADDR, AUTH_TYPE=v_AUTH_TYPE, ENCRYPTION_SEQUENCE=enc_seq, SYSFW_IMAGE_LOAD_SEQUENCE=sysfw_load_seq, ENCRYPTION_EXTENDED_SEQUENCE=enc_ext_seq, KEY_INFO_SEQUENCE=key_info_seq)
+	keyring_info_seq = ''
+	if args.keyring_num_asymm_keys is not None or args.keyring_num_symm_keys is not None:
+		keyring_info_seq = "1.3.6.1.4.1.294.1.39 = ASN1:SEQUENCE:keyring_info"
+
+	ret_cert = g_x509_template.format(TEST_IMAGE_SHA_OID=v_TEST_IMAGE_SHA_OID, TEST_IMAGE_SHA_VAL=v_TEST_IMAGE_SHA_VAL, TEST_IMAGE_LENGTH=v_TEST_IMAGE_LENGTH, TEST_BOOT_ADDR=v_TEST_BOOT_ADDR, AUTH_TYPE=v_AUTH_TYPE, ENCRYPTION_SEQUENCE=enc_seq, SYSFW_IMAGE_LOAD_SEQUENCE=sysfw_load_seq, ENCRYPTION_EXTENDED_SEQUENCE=enc_ext_seq, KEY_INFO_SEQUENCE=key_info_seq, KEYRING_INFO_SEQUENCE=keyring_info_seq)
 
 	# If encryption is enabled, append that sequence to the current certificate
 	if(args.enc == 'y'):
@@ -370,6 +396,10 @@ def get_cert(args):
 	# If key info extension is enabled, append the key info sequence
 	if args.keyinfo_auth_key_id is not None or args.keyinfo_enc_key_id is not None:
 		ret_cert += g_key_info_seq.format(AUTH_KEYRING_ID=v_AUTH_KEYRING_ID, ENC_KEYRING_ID=v_ENC_KEYRING_ID)
+
+	# If keyring info extension is enabled, append the keyring info sequence
+	if args.keyring_num_asymm_keys is not None or args.keyring_num_symm_keys is not None:
+		ret_cert += g_keyring_info_seq.format(NUM_ASYMM_KEYS=v_NUM_ASYMM_KEYS, NUM_SYMM_KEYS=v_NUM_SYMM_KEYS)
 
 	# NOTE: Boot sequence is not used. We assume that SBL always sets the reset vectors and does image load
 
@@ -391,6 +421,8 @@ my_parser.add_argument('--authtype',   type=str, help='Authentication type. [0/1
 my_parser.add_argument('--keyversion', type=str, help='App signing key version. [1.5/2.2]. 1.5 - RSASSA PKCS v1.5 scheme, 2.2 - RSASSA PSS scheme. Default is 1.5')
 my_parser.add_argument('--keyinfo-auth-key-id', type=int, help='Key ID for authentication key from keyring (1-254). Required when signing with a key from the keyring.')
 my_parser.add_argument('--keyinfo-enc-key-id',  type=int, help='Key ID for encryption key from keyring (1-254). Required when encrypting with a key from the keyring.')
+my_parser.add_argument('--keyring-num-asymm-keys', type=int, help='Number of asymmetric keys in keyring (1-6). Required for keyring import certificate.')
+my_parser.add_argument('--keyring-num-symm-keys',  type=int, help='Number of symmetric keys in keyring (1-6). Required for keyring import certificate.')
 
 args = my_parser.parse_args()
 cert_str = get_cert(args)

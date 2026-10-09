@@ -509,6 +509,7 @@ extern void TestUdma_sharedEventCallbackMismatch(void *args);
 extern void TestUdma_eventRegVintrBitsExhausted(void *args);
 extern void TestUdma_virtToPhyFxnNullCheck(void *args);
 extern void TestUdma_phyToVirtFxnNullCheck(void *args);
+extern void TestUdma_defaultVirtToPhyFxnNoSignExtend(void *args);
 extern void TestUdma_ringFlushRawEmptyRingReset(void *args);
 extern void TestUdma_rmInitPrmsNullCheck(void *args);
 extern void TestUdma_mappedChRangeCheck(void *args);
@@ -961,6 +962,7 @@ void test_udma_main(void *args)
     RUN_TEST(TestUdma_eventRegVintrBitsExhausted, 11054, NULL);
     RUN_TEST(TestUdma_virtToPhyFxnNullCheck, 11055, NULL);
     RUN_TEST(TestUdma_phyToVirtFxnNullCheck, 11056, NULL);
+    RUN_TEST(TestUdma_defaultVirtToPhyFxnNoSignExtend, 13510, NULL);
     RUN_TEST(TestUdma_ringFlushRawEmptyRingReset, 11057, NULL);
     RUN_TEST(TestUdma_rmInitPrmsNullCheck, 11058, NULL);
     RUN_TEST(TestUdma_mappedChRangeCheck, 11059, NULL);

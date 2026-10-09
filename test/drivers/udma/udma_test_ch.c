@@ -4020,6 +4020,37 @@ void TestUdma_phyToVirtFxnNullCheck(void *args)
 }
 
 /**
+ * \brief Test Udma_defaultVirtToPhyFxn does not sign-extend addresses.
+ *
+ * Test Category: Functional
+ *
+ * On 32-bit cores (e.g. R5F with GCC), casting a pointer whose
+ * MSB is set directly to a wider signed/uint64_t type can sign-extend the
+ * value, corrupting the upper 32 bits (address_hi) with 0xFFFFFFFF. Verifies
+ * the fix truncates via an unsigned 32-bit intermediate on 32-bit cores.
+ *
+ * \param args Pointer to test arguments (unused).
+ * \return None.
+ * \expectedOutput Upper 32 bits of the returned physical address are 0 on
+ * 32-bit cores even for a virtual address with bit 31 set; lower 32 bits
+ * match the original address.
+ */
+void TestUdma_defaultVirtToPhyFxnNoSignExtend(void *args)
+{
+    (void)args;
+    /* MSB set so a signed-cast implementation would sign-extend to 0xFFFFFFFF */
+    uintptr_t testAddr = (uintptr_t) 0x80001000U;
+    uint64_t  phyAddr  = Udma_defaultVirtToPhyFxn((const void *) testAddr, 0U, NULL);
+
+#if defined (__aarch64__)
+    TEST_ASSERT_EQUAL_UINT64((uint64_t) testAddr, phyAddr);
+#else
+    TEST_ASSERT_EQUAL_UINT32(0U, (uint32_t)(phyAddr >> 32));
+    TEST_ASSERT_EQUAL_UINT32((uint32_t) testAddr, (uint32_t) phyAddr);
+#endif
+}
+
+/**
  * \brief Test ring flush until empty and subsequent ring reset path.
  *
  * Test Category: Negative

@@ -252,7 +252,9 @@ uint64_t Udma_defaultVirtToPhyFxn(const void *virtAddr,
 {
     UNUSED_PARAM(chNum);
     UNUSED_PARAM(appData);
-    return ((uint64_t) virtAddr);
+    /* Cast via uintptr_t: zero-extends on 32-bit cores (R5F) to prevent
+     * sign extension; identity cast on 64-bit cores (AArch64, C75). */
+    return (uint64_t)(uintptr_t)virtAddr;
 }
 
 void *Udma_defaultPhyToVirtFxn(uint64_t phyAddr,

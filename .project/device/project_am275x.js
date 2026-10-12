@@ -208,6 +208,7 @@ const example_file_list = [
     "source/networking/enet/core/examples/tsn/enet_multistream_mcr/crftalker/.project/project.js",
     "source/networking/enet/core/examples/tsn/gptp_cpsw_app/.project/project.js",
     "source/networking/enet/core/test/clock_sync_demo/.project/project_am275x.js",
+    "source/networking/enet/core/test/timesync_tests/.project/project.js",
     /* SDL Examples */
     "examples/sdl/dcc/dcc_modes/.project/project_am275x.js",
     "examples/sdl/ecc/.project/project.js",

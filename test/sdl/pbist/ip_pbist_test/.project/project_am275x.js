@@ -172,7 +172,7 @@ const robot_template = {
     options: {
         componentName: "PBIST",
         testCaseName: "PBIST Unit test testcase(s)",
-        testCaseIds: "PROC_SDL-1404",
+        testCaseIds: "PROC_SDL-1046 PROC_SDL-1120 PROC_SDL-1122 PROC_SDL-1402 PROC_SDL-1403 PROC_SDL-1404 PROC_SDL-1405 PROC_SDL-1406 PROC_SDL-1407 PROC_SDL-1408 PROC_SDL-1409 PROC_SDL-1410 PROC_SDL-1886",
         expectedString: "All tests have passed",
     },
 };

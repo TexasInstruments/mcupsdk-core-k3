@@ -105,7 +105,7 @@ const robot_template = {
     options: {
         componentName: "MTOG",
         testCaseName: "MTOG Unit test testcase(s)",
-        testCaseIds: "PROC_SDL-3300",
+        testCaseIds: "PROC_SDL-3300 PROC_SDL-3301 PROC_SDL-3302 PROC_SDL-3303 PROC_SDL-3304 PROC_SDL-3305 PROC_SDL-3306 PROC_SDL-3307 PROC_SDL-3308 PROC_SDL-3309 PROC_SDL-3310 PROC_SDL-3311 PROC_SDL-3312 PROC_SDL-3313 PROC_SDL-3314 PROC_SDL-3315 PROC_SDL-3317 PROC_SDL-3326",
         expectedString: "All tests have passed",
     },
 };

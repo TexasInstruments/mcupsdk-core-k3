@@ -187,7 +187,7 @@ const robot_template = {
     options: {
         componentName: "ESM",
         testCaseName: "ESM Func test testcase(s)",
-        testCaseIds: "PROC_SDL-2070",
+        testCaseIds: "PROC_SDL-2060 PROC_SDL-2061 PROC_SDL-2064 PROC_SDL-2065 PROC_SDL-2066 PROC_SDL-2067 PROC_SDL-2068 PROC_SDL-2069 PROC_SDL-2070 PROC_SDL-2732",
         expectedString: "All tests have passed",
     },
 };

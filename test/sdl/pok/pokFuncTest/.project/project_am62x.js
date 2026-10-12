@@ -121,7 +121,7 @@ const robot_template = {
     options: {
         componentName: "POK",
         testCaseName: "POK Func test testcase(s)",
-        testCaseIds: "PROC_SDL-1753",
+        testCaseIds: "PROC_SDL-1129 PROC_SDL-1130 PROC_SDL-1753",
         expectedString: "All tests have passed",
     },
 };

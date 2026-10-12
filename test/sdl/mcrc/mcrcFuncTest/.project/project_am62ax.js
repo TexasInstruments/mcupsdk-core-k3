@@ -94,7 +94,7 @@ const robot_template = {
     options: {
         componentName: "MCRC",
         testCaseName: "MCRC Func test testcase(s)",
-        testCaseIds: "PROC_SDL-2277",
+        testCaseIds: "PROC_SDL-2277 PROC_SDL-2278 PROC_SDL-2279 PROC_SDL-2280 PROC_SDL-2281 PROC_SDL-2287 PROC_SDL-2288 PROC_SDL-2289 PROC_SDL-2290",
         expectedString: "All tests have passed",
     },
 };

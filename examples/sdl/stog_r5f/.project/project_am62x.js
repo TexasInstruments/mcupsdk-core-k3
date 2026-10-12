@@ -166,7 +166,7 @@ const robot_template = {
     options: {
         componentName: "STOG",
         testCaseName: "STOG-R5 Example testcase(s)",
-        testCaseIds: "",
+        testCaseIds: "PROC_SDL-10358",
         expectedString: "All tests have passed",
     },
 };

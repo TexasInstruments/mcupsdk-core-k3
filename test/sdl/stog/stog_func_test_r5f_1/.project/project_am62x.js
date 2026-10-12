@@ -162,8 +162,8 @@ const robot_template = {
     output: "../tests.robot",
     options: {
         componentName: "STOG",
-        testCaseName: "STOG R5-1 test testcase(s)",
-        testCaseIds: "",
+        testCaseName: "STOG R5 FT-1 testcase(s)",
+        testCaseIds: "PROC_SDL-10359",
         expectedString: "All tests have passed",
     },
 };

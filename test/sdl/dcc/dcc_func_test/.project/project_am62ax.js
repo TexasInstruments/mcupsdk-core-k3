@@ -101,7 +101,7 @@ const robot_template = {
     options: {
         componentName: "DCC",
         testCaseName: "DCC Func test testcase(s)",
-        testCaseIds: "PROC_SDL-2170",
+        testCaseIds: "PROC_SDL-2170 PROC_SDL-2172",
         expectedString: "All tests have passed",
     },
 };

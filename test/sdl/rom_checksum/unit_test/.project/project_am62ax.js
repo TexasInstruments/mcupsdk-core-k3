@@ -103,7 +103,7 @@ const robot_template = {
     options: {
         componentName: "ROM_CHECKSUM",
         testCaseName: "ROM_CHECKSUM Unit test testcase(s)",
-        testCaseIds: "PROC_SDL-6210",
+        testCaseIds: "PROC_SDL-6207 PROC_SDL-6208 PROC_SDL-6209 PROC_SDL-6210 PROC_SDL-6418",
         expectedString: "All tests have passed",
     },
 };

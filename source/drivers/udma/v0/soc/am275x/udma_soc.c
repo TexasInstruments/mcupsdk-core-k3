@@ -378,14 +378,17 @@ uint64_t Udma_defaultVirtToPhyFxnC7x(const void *virtAddr,
                                   uint32_t chNum,
                                   void *appData)
 {
-    uint64_t addr = 0;
-    if(((uint64_t)virtAddr > UDMA_C7X0_0_SRAM_ALIAS) && ((uint64_t)virtAddr < (UDMA_C7X0_0_SRAM_ALIAS + UDMA_C7X0_0_SRAM_ALIAS_SIZE -1)))
+    uint64_t addr = 0U;
+    /* Cast via uintptr_t: zero-extends on 32-bit cores (R5F) to prevent
+     * sign extension; identity cast on 64-bit cores (AArch64, C75). */
+    if(((uint64_t)(uintptr_t)virtAddr > UDMA_C7X0_0_SRAM_ALIAS) &&
+       ((uint64_t)(uintptr_t)virtAddr < (UDMA_C7X0_0_SRAM_ALIAS + UDMA_C7X0_0_SRAM_ALIAS_SIZE - 1U)))
     {
         addr = (uint64_t)((uintptr_t)virtAddr - (uintptr_t)(UDMA_C7X0_0_SRAM_ALIAS - UDMA_SRAM_BASE_ADDR));
     }
     else
     {
-        addr = (uint64_t)virtAddr;
+        addr = (uint64_t)(uintptr_t)virtAddr;
     }
     return addr;
 }

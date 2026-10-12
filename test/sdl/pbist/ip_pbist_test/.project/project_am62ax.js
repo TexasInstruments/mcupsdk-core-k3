@@ -161,6 +161,17 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62ax/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "PBIST",
+        testCaseName: "PBIST Unit test testcase(s)",
+        testCaseIds: "PROC_SDL-1404",
+        expectedString: "All tests have passed",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -187,6 +198,7 @@ function getComponentBuildProperty(buildOption) {
             build_property.includes = includes_nortos_r5f;
         }
     }
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

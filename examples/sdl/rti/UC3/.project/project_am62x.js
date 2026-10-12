@@ -185,6 +185,17 @@ function getComponentProperty(device) {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "RTI",
+        testCaseName: "RTI-UC3 Example testcase(s)",
+        testCaseIds: "PROC_SDL-7116",
+        expectedString: "All tests have passed",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -214,6 +225,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.templates = templates_freertos_r5f;
     }
 
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

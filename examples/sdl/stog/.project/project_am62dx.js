@@ -111,6 +111,16 @@ function getComponentProperty(device) {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62dx/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "STOG",
+        testCaseName: "STOG Example testcase(s)",
+        testCaseIds: "PROC_SDL-7121",
+        expectedString: "All tests have passed",
+    },
+};
 
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
@@ -129,6 +139,8 @@ function getComponentBuildProperty(buildOption) {
         build_property.defines = r5f_macro;
         build_property.asmfiles = asmfiles_r5f;
     }
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

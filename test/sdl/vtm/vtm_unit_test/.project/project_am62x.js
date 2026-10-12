@@ -179,6 +179,17 @@ function getComponentProperty() {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62x/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "VTM",
+        testCaseName: "VTM Unit test testcase(s)",
+        testCaseIds: "PROC_SDL-1936",
+        expectedString: "All tests have passed",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -204,6 +215,7 @@ function getComponentBuildProperty(buildOption) {
         build_property.libdirs = libdirs_nortos;
     }
 
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
 }
 

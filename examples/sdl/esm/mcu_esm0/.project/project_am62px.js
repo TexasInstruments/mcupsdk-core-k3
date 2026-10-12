@@ -111,6 +111,17 @@ function getComponentProperty(device) {
     return property;
 }
 
+const robot_template = {
+    input: ".project/templates/am62px/astra/tests.robot.xdt",
+    output: "../tests.robot",
+    options: {
+        componentName: "ESM",
+        testCaseName: "ESM Example testcase(s)",
+        testCaseIds: "PROC_SDL-9122",
+        expectedString: "All tests have passed",
+    },
+};
+
 function getComponentBuildProperty(buildOption) {
     let build_property = {};
 
@@ -129,8 +140,10 @@ function getComponentBuildProperty(buildOption) {
 		build_property.defines = r5_macro;
     }
     build_property.cflags = cflags;
+
+    build_property.templates = [...(build_property.templates || []), robot_template];
     return build_property;
-	}
+}
 
 module.exports = {
     getComponentProperty,

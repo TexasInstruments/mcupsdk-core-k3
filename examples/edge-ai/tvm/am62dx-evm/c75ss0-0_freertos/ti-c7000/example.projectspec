@@ -227,11 +227,13 @@
         </file>
         <file path="../../c7x_cxm.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
-        <file path="../../../common/dual_task_main.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        <file path="../../../common/multi_task_main.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
         <file path="../../../common/tvm_service.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
         <file path="../../../common/dsp_service.c" openOnCreation="false" excludeFromBuild="false" action="copy">
+        </file>
+        <file path="../../../common/rpmsg_echo_service.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>
         <file path="../../../../../../source/tvm/src/runtime/ti_dsp/firmware/c7x/dsp/src/compute_service.c" openOnCreation="false" excludeFromBuild="false" action="copy">
         </file>

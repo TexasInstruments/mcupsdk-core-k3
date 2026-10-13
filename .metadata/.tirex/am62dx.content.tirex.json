@@ -10653,7 +10653,7 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "Dual-task signal chain with TVM and DSP CPU is C75SS0-0 running FREERTOS.",
+        "description": "Multi-task signal chain with TVM, DSP and other tasks CPU is C75SS0-0 running FREERTOS.",
         "name": "dsp_edgeai",
         "location": "../../examples/edge-ai/tvm/am62dx-evm/c75ss0-0_freertos/ti-c7000/example.projectspec",
         "devtools": [
@@ -12415,7 +12415,7 @@
         "resourceSubClass": [
             "example.general"
         ],
-        "description": "Dual-task signal chain with TVM and DSP System project.",
+        "description": "Multi-task signal chain with TVM, DSP and other tasks System project.",
         "name": "dsp_edgeai",
         "location": "../../examples/edge-ai/tvm/am62dx-evm/system_freertos/system.projectspec",
         "devtools": [

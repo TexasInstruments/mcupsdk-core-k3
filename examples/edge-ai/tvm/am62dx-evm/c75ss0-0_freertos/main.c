@@ -46,7 +46,7 @@ StackType_t gMainTaskStack[MAIN_TASK_SIZE] __attribute__((aligned(16*1024)));
 StaticTask_t gMainTaskObj;
 TaskHandle_t gMainTask;
 
-void dual_task_main(void *args);
+void multi_task_main(void *args);
 
 void freertos_main(void *args)
 {
@@ -58,7 +58,7 @@ void freertos_main(void *args)
     status = Board_driversOpen();
     DebugP_assert(status==SystemP_SUCCESS);
 
-    dual_task_main(NULL);
+    multi_task_main(NULL);
 
     /* Close board and flash drivers */
     Board_driversClose();

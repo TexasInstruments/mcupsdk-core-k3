@@ -12,9 +12,10 @@ const files_c7x = {
         /* example sources */
         "main.c",
         "c7x_cxm.c",
-        "dual_task_main.c",
+        "multi_task_main.c",
         "tvm_service.c",
         "dsp_service.c",
+        "rpmsg_echo_service.c",
         /* neo-tvm firmware */
         "compute_service.c",
         "dyn_loader.c",
@@ -268,7 +269,7 @@ const templates_freertos_c75_0 =
         input: ".project/templates/am62dx/freertos/main_freertos.c.xdt",
         output: "../main.c",
         options: {
-            entryFunction: "dual_task_main",
+            entryFunction: "multi_task_main",
             stackSize: 16*1024,
         },
     }
@@ -297,7 +298,7 @@ function getComponentProperty() {
     property.type = "executable";
     property.name = "dsp_edgeai";
     property.isInternal = false;
-    property.description = "Dual-task signal chain with TVM and DSP";
+    property.description = "Multi-task signal chain with TVM, DSP and other tasks";
     property.buildOptionCombos = buildOptionCombos;
     property.ipcVringRTOS = true;
     property.isXlibs = true;

@@ -40,9 +40,10 @@ endif
 FILES_common := \
 	main.c \
 	c7x_cxm.c \
-	dual_task_main.c \
+	multi_task_main.c \
 	tvm_service.c \
 	dsp_service.c \
+	rpmsg_echo_service.c \
 	compute_service.c \
 	dyn_loader.c \
 	tvm_model.c \

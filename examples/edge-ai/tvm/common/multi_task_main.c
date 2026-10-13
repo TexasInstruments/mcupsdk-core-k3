@@ -31,9 +31,9 @@
  */
 
 /*
- * Dual Task Orchestration - Main Task Creation
+ * Multi Task Orchestration - Main Task Creation
  *
- * Creates and manages both TVM compute and DSP service tasks
+ * Creates and manages TVM compute, DSP service and other tasks
  */
 
 #include <FreeRTOS.h>
@@ -57,6 +57,7 @@
 #include "ti_board_open_close.h"
 #include "c7x_compute_protocol.h"
 #include "dsp_service.h"
+#include "rpmsg_echo_service.h"
 
 extern MmuP_Config gMmuConfig;
 extern MmuP_RegionConfig gMmuRegionConfig[];
@@ -148,7 +149,10 @@ static void ipc_rp_mbox_callback(uint16_t remoteCoreId, uint16_t localClientId,
         /* Signal DSP service loop to stop */
         dsp_service_stop();
 
-        /* Note: Shutdown ACK will be sent after both services complete cleanup */
+        /* Echo task exits after its bounded RPMessage wait. */
+        rpmsg_echo_service_stop();
+
+        /* Note: Shutdown ACK follows service shutdown below */
     }
 }
 
@@ -163,6 +167,14 @@ static void ipc_rp_mbox_callback(uint16_t remoteCoreId, uint16_t localClientId,
 
 #define DSP_TASK_STACK_SIZE (6 * 1024)   /* in StackType_t units (8 bytes each) = 48KB */
 #define DSP_TASK_PRIORITY   (configMAX_PRIORITIES - 2)
+
+/* Lower priority than the existing compute/DSP services. */
+#define ECHO_TASK_STACK_SIZE (2 * 1024) /* StackType_t units = 16KB on C7x */
+#define ECHO_TASK_PRIORITY   (configMAX_PRIORITIES - 3)
+
+static StaticTask_t gEchoTaskObj;
+static StackType_t gEchoTaskStack[ECHO_TASK_STACK_SIZE]
+    __attribute__((aligned(0x2000)));
 
 static StaticTask_t gMainTaskObj;
 static StackType_t  gMainTaskStack[MAIN_TASK_STACK_SIZE] __attribute__((aligned(0x2000)));
@@ -180,11 +192,11 @@ extern void tvm_compute_main(void *args);
 
 /*
  * =============================================================================
- * Dual Task Orchestration
+ * Multi Task Orchestration
  * =============================================================================
  */
 
-void dual_task_main(void *args)
+void multi_task_main(void *args)
 {
     int32_t status;
     uint32_t mmuEnabled;
@@ -225,22 +237,43 @@ void dual_task_main(void *args)
     }
 
     /* Create TVM compute service task */
-    xTaskCreateStatic(tvm_compute_main,
+    TaskHandle_t computeTask = xTaskCreateStatic(tvm_compute_main,
                       "tvm_compute",
                       MAIN_TASK_STACK_SIZE,
                       NULL,
                       MAIN_TASK_PRIORITY,
                       gMainTaskStack,
                       &gMainTaskObj);
+    if (computeTask == NULL)
+    {
+        DebugP_log("[TVM] Task creation failed\r\n");
+    }
 
     /* Create DSP service task */
-    xTaskCreateStatic(dsp_service_main,
+    TaskHandle_t dspTask = xTaskCreateStatic(dsp_service_main,
                       "dsp_service",
                       DSP_TASK_STACK_SIZE,
                       NULL,
                       DSP_TASK_PRIORITY,
                       gDspTaskStack,
                       &gDspTaskObj);
+    if (dspTask == NULL)
+    {
+        DebugP_log("[DSP] Task creation failed\r\n");
+    }
+
+    /* Independent endpoint 14 for the stock Linux rpmsg_char_simple. */
+    TaskHandle_t echoTask = xTaskCreateStatic(rpmsg_echo_service_main,
+                      "rpmsg_echo",
+                      ECHO_TASK_STACK_SIZE,
+                      NULL,
+                      ECHO_TASK_PRIORITY,
+                      gEchoTaskStack,
+                      &gEchoTaskObj);
+    if (echoTask == NULL)
+    {
+        DebugP_log("[ECHO] Task creation failed\r\n");
+    }
 
     /* Wait for shutdown signal if needed */
     while (gShutdownRemoteCoreId == 0)
@@ -248,7 +281,14 @@ void dual_task_main(void *args)
         vTaskDelay(pdMS_TO_TICKS(1000));  /* Check every second */
     }
 
-    /* Both service tasks will self-delete when stopped.
+    /* Wait for the new task to release its endpoint before closing drivers.
+     * Existing TVM/DSP shutdown behavior below is preserved. */
+    while (echoTask != NULL && !rpmsg_echo_service_is_stopped())
+    {
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+
+    /* Both original service tasks will self-delete when stopped.
      * Allow time for cleanup, then send shutdown ACK */
     vTaskDelay(pdMS_TO_TICKS(500));
 

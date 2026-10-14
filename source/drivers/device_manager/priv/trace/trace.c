@@ -96,7 +96,7 @@ static const uint16_t trace_debug_chan_to_boardcfg[TRACE_DEBUG_CHANNEL_COUNT] = 
 /*                 Internal Function Declarations                             */
 /* ========================================================================== */
 
-void trace_set_print_level(uint8_t trace_level)
+void trace_set_print_level(u8 trace_level)
 {
     cfg.level = trace_level;
 }
@@ -121,7 +121,7 @@ static void trace_print_internal(uint8_t level, const uint8_t *fmt, sbool raise_
     }
 }
 
-void trace_print(uint8_t level, const uint8_t *fmt)
+void trace_print(u8 level, const u8 *fmt)
 {
     trace_print_internal(level, fmt, STRUE);
 }
@@ -142,7 +142,7 @@ static void trace_print_arg_internal(uint8_t level, const uint8_t *fmt, uint32_t
     }
 }
 
-void trace_print_arg(uint8_t level, const uint8_t *fmt, uint32_t arg)
+void trace_print_arg(u8 level, const u8 *fmt, u32 arg)
 {
     trace_print_arg_internal(level, fmt, arg, STRUE);
 }
@@ -162,12 +162,12 @@ static int32_t trace_print_output_char_internal(uint8_t ch, sbool raise_priv)
     return ret;
 }
 
-int32_t trace_print_output_char_core(uint8_t ch)
+s32 trace_print_output_char_core(u8 ch)
 {
     return trace_print_output_char_internal(ch, SFALSE);
 }
 
-int32_t trace_print_output_char(uint8_t ch)
+s32 trace_print_output_char(u8 ch)
 {
     return trace_print_output_char_internal(ch, STRUE);
 }
@@ -202,17 +202,17 @@ static void trace_debug_internal(uint8_t channel, uint32_t val, sbool raise_priv
     }
 }
 
-void trace_debug_core(uint8_t channel, uint32_t val)
+void trace_debug_core(u8 channel, u32 val)
 {
     return trace_debug_internal(channel, val, SFALSE);
 }
 
-void trace_debug(uint8_t channel, uint32_t val)
+void trace_debug(u8 channel, u32 val)
 {
     return trace_debug_internal(channel, val, STRUE);
 }
 
-int32_t trace_get_error(void)
+s32 trace_get_error(void)
 {
     return cfg.error;
 }
@@ -226,7 +226,7 @@ int32_t trace_init(void)
     return ret;
 }
 
-void trace_reconfigure(uint16_t src_enables, uint16_t dst_enables)
+void trace_reconfigure(u16 src_enables, u16 dst_enables)
 {
     cfg.src_enables = src_enables;
     cfg.dst_enables = dst_enables;

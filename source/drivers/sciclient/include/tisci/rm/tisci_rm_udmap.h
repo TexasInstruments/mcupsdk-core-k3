@@ -1044,6 +1044,279 @@ struct tisci_msg_rm_udmap_tx_ch_cfg_resp {
 } __attribute__((__packed__));
 
 /**
+ * \brief Configures multiple Navigator Subsystem UDMAP transmit channels
+ *
+ * Configures the non-real-time registers of multiple Navigator Subsystem UDMAP
+ * transmit channels.  The channels must be assigned to the host defined
+ * in the TISCI header via the RM board configuration resource assignment
+ * range list. The same configuration will be applied to multiple channels.
+ *
+ * \param hdr
+ * Standard TISCI header
+ *
+ * \param valid_params
+ * Bitfield defining validity of tx channel configuration parameters.  The
+ * tx channel configuration fields are not valid, and will not be used for ch
+ * configuration, if their corresponding valid bit is zero.  Valid bit usage:
+ *    0 - Valid bit for @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::tx_pause_on_err
+ *    1 - Valid bit for @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::tx_atype
+ *    2 - Valid bit for @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::tx_chan_type
+ *    3 - Valid bit for @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::tx_fetch_size
+ *    4 - Valid bit for @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::start_txcq_qnum
+ *    5 - Valid bit for @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::tx_priority
+ *    6 - Valid bit for @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::tx_qos
+ *    7 - Valid bit for @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::tx_orderid
+ *    8 - Valid bit for @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::tx_sched_priority
+ *    9 - Valid bit for @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::tx_filt_einfo
+ *   10 - Valid bit for @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::tx_filt_pswords
+ *   11 - Valid bit for @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::tx_supr_tdpkt
+ *   12 - Valid bit for @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::tx_credit_count
+ *   13 - Valid bit for @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::fdepth
+ *   14 - Valid bit for @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::tx_burst_size
+ *   15 - Valid bit for @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::tx_tdtype
+ *   16 - Valid bit for @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::extended_ch_type
+ *
+ * \param nav_id
+ * SoC device ID of Navigator Subsystem where tx channel is located
+ *
+ * \param start_index
+ * Start index of UDMAP transmit channel.
+ *
+ * \param tx_pause_on_err
+ * UDMAP transmit channel pause on error configuration to be programmed into the
+ * tx_pause_on_err field of the channel's TCHAN_TCFG register.  Can be set to:
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_PAUSE_ON_ERROR_DISABLED
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_PAUSE_ON_ERROR_ENABLED
+ *
+ * This field is only valid if
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_PAUSE_ON_ERR_VALID is set in
+ * @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::valid_params.
+ *
+ * \param tx_filt_einfo
+ * UDMAP transmit channel extended packet information passing configuration to
+ * be programmed into the tx_filt_einfo field of the channel's TCHAN_TCFG
+ * register.  Can be set to:
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_TX_CH_FILT_EINFO_DISABLED
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_TX_CH_FILT_EINFO_ENABLED
+ *
+ * This field is only valid if
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_TX_FILT_EINFO_VALID is set in
+ * @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::valid_params.
+ *
+ * \param tx_filt_pswords
+ * UDMAP transmit channel protocol specific word passing configuration to be
+ * programmed into the tx_filt_pswords field of the channel's TCHAN_TCFG
+ * register.  Can be set to:
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_TX_CH_FILT_PSWORDS_DISABLED
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_TX_CH_FILT_PSWORDS_ENABLED
+ *
+ * This field is only valid if
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_TX_FILT_PSWORDS_VALID is set in
+ * @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::valid_params.
+ *
+ * \param tx_atype
+ * UDMAP transmit channel non Ring Accelerator access pointer interpretation
+ * configuration to be programmed into the tx_atype field of the channel's
+ * TCHAN_TCFG register.  Can be set to
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_ATYPE_PHYS
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_ATYPE_INTERMEDIATE
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_ATYPE_VIRTUAL
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_ATYPE_NON_COHERENT
+ *
+ * This field is only valid if
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_ATYPE_VALID is set in
+ * @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::valid_params.
+ *
+ * \param tx_chan_type
+ * UDMAP transmit channel functional channel type and work passing mechanism
+ * configuration to be programmed into the tx_chan_type field of the channel's
+ * TCHAN_TCFG register.  Can be set to
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_TYPE_PACKET
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_TYPE_3P_DMA_REF
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_TYPE_3P_DMA_VAL
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_TYPE_3P_BLOCK_REF
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_TYPE_3P_BLOCK_VAL
+ *
+ * This field is only valid if
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_CHAN_TYPE_VALID is set in
+ * @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::valid_params.
+ *
+ * \param tx_supr_tdpkt
+ * UDMAP transmit channel teardown packet generation suppression configuration
+ * to be programmed into the tx_supr_tdpkt field of the channel's TCHAN_TCFG
+ * register.  Can be set to:
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_TX_CH_SUPPRESS_TD_DISABLED
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_TX_CH_SUPPRESS_TD_ENABLED
+ *
+ * This field is only valid if
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_TX_SUPR_TDPKT_VALID is set in
+ * @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::valid_params.
+ *
+ * \param tx_fetch_size
+ * UDMAP transmit channel number of 32-bit descriptor words to fetch
+ * configuration to be programmed into the tx_fetch_size field of the channel's
+ * TCHAN_TCFG register.  The user must make sure to set the maximum word count
+ * that can pass through the channel for any allowed descriptor type.  Cannot
+ * be greater than @ref TISCI_MSG_VALUE_RM_UDMAP_CH_FETCH_SIZE_MAX
+ *
+ * This field is only valid if
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_FETCH_SIZE_VALID is set in
+ * @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::valid_params.
+ *
+ * \param tx_credit_count
+ * UDMAP transmit channel transfer request credit count configuration to be
+ * programmed into the count field of the TCHAN_TCREDIT register.  Specifies how
+ * many credits for complete TRs are available.  This field is only used when
+ * configuring a transmit channel of external type and cannot be greater than
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_TX_CH_CREDIT_CNT_MAX
+ *
+ * This field is only valid if
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_TX_CREDIT_COUNT_VALID is set in
+ * @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::valid_params.
+ *
+ * \param start_txcq_qnum
+ * Starting index of UDMAP transmit channel completion queue configuration
+ * to be programmed into the txcq_qnum field of the TCHAN_TCQ register.
+ * The specified completion queue must be assigned to the host, or a subordinate
+ * of the host, requesting configuration of the transmit channel.
+ *
+ * This field is only valid if
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_CQ_QNUM_VALID is set in
+ * @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::valid_params.
+ *
+ * \param tx_priority
+ * UDMAP transmit channel transmit priority value to be programmed into the
+ * priority field of the channel's TCHAN_TPRI_CTRL register.  This parameter
+ * cannot be greater than @ref TISCI_MSG_VALUE_RM_UDMAP_CH_PRIORITY_MAX.
+ *
+ * This field is only valid if
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_PRIORITY_VALID is set in
+ * @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::valid_params.
+ *
+ * \param tx_qos
+ * UDMAP transmit channel transmit qos value to be programmed into the
+ * qos field of the channel's TCHAN_TPRI_CTRL register.  This parameter
+ * cannot be greater than @ref TISCI_MSG_VALUE_RM_UDMAP_CH_QOS_MAX.
+ *
+ * This field is only valid if
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_QOS_VALID is set in
+ * @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::valid_params.
+ *
+ * \param tx_orderid
+ * UDMAP transmit channel bus order id value to be programmed into the
+ * orderid field of the channel's TCHAN_TPRI_CTRL register.  This parameter
+ * cannot be greater than @ref TISCI_MSG_VALUE_RM_UDMAP_CH_ORDER_ID_MAX.
+ *
+ * This field is only valid if
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_ORDER_ID_VALID is set in
+ * @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::valid_params.
+ *
+ * \param fdepth
+ * UDMAP transmit channel FIFO depth configuration to be programmed into the
+ * fdepth field of the TCHAN_TFIFO_DEPTH register.  Sets the number of Tx
+ * FIFO bytes which are allowed to be stored for the channel.  This field is
+ * not supported for external channels.  The TISCI message is rejected if a
+ * non-zero, valid, value is provided during external channel configuration.
+ * Check the UDMAP section of the TRM for restrictions regarding this parameter.
+ *
+ * This field is only valid if
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_TX_FDEPTH_VALID is set in
+ * @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::valid_params.
+ *
+ * \param tx_sched_priority
+ * UDMAP transmit channel tx scheduling priority configuration to be programmed
+ * into the priority field of the channel's TCHAN_TST_SCHED register.  Can be
+ * set to
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_SCHED_PRIOR_HIGH
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_SCHED_PRIOR_MEDHIGH
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_SCHED_PRIOR_MEDLOW
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_SCHED_PRIOR_LOW
+ *
+ * This field is only valid if
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_SCHED_PRIORITY_VALID is set in
+ * @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::valid_params.
+ *
+ * \param tx_burst_size
+ * UDMAP transmit channel burst size configuration to be programmed
+ * into the tx_burst_size field of the TCHAN_TCFG register.  Can be set to:
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_BURST_SIZE_64_BYTES
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_BURST_SIZE_128_BYTES
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_BURST_SIZE_256_BYTES
+ * This field is only valid if
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_BURST_SIZE_VALID is set in
+ * @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::valid_params.  This field is not
+ * supported on some SoCs.  On SoCs that do not support this field the input
+ * is quietly ignored even if the valid bit is set.
+ *
+ * \param tx_tdtype
+ * UDMAP transmit channel teardown type configuration to be programmed
+ * into the tdtype field of the TCHAN_TCFG register.  Can be set to:
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_TX_CH_TDTYPE_IMMEDIATE
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_TX_CH_TDTYPE_WAIT
+ * This field is only valid if
+ * @ref TISCI_MSG_VALUE_RM_UDMAP_CH_TX_TDTYPE_VALID is set in
+ * @ref tisci_msg_rm_udmap_tx_multi_ch_cfg_req::valid_params.  This field is not
+ * supported on some SoCs.  On SoCs that do not support this field the input
+ * is quietly ignored even if the valid bit is set.
+ *
+ * \param extended_ch_type
+ * Extended Channel Type specific to BCDMA. A value of zero is the NULL
+ * extended_ch_type and applies UDMA and PKTDMA which don't have the MMR
+ * region layout that BCDMA does.  BCDMA will have an extended_ch_type of
+ * value 1 assigned to block copy channels.  So for BCDMA, supplying
+ * extended_ch_type value of 0 gets you access to the split TR TX channels.
+ * A value of 1 get you access to the block copy channels.
+ *
+ * \param num_ch
+ * The number of channels to which this particular configuration will be
+ * applied to.
+ *
+ * \param ch_offset
+ * Channel offset for each channel that needs to be configured. All channels
+ * that need to be configured should have a uniform offset.
+ *
+ * \param txcq_offset
+ * Offset for UDMAP transmit channel completion queue. All rings should have
+ * a uniform offset.
+ */
+struct tisci_msg_rm_udmap_tx_multi_ch_cfg_req {
+    struct tisci_header    hdr;
+    uint32_t            valid_params;
+    uint16_t            nav_id;
+    uint16_t            start_index;
+    uint8_t            tx_pause_on_err;
+    uint8_t            tx_filt_einfo;
+    uint8_t            tx_filt_pswords;
+    uint8_t            tx_atype;
+    uint8_t            tx_chan_type;
+    uint8_t            tx_supr_tdpkt;
+    uint16_t            tx_fetch_size;
+    uint8_t            tx_credit_count;
+    uint16_t            start_txcq_qnum;
+    uint8_t            tx_priority;
+    uint8_t            tx_qos;
+    uint8_t            tx_orderid;
+    uint16_t            fdepth;
+    uint8_t            tx_sched_priority;
+    uint8_t            tx_burst_size;
+    uint8_t            tx_tdtype;
+    uint8_t            extended_ch_type;
+    uint8_t            num_ch;
+    uint8_t            ch_offset;
+    uint8_t            txcq_offset;
+} __attribute__((__packed__));
+
+/**
+ * \brief Response to configuring multiple UDMAP transmit channels.
+ *
+ * \param hdr
+ * Standard TISCI header
+ */
+struct tisci_msg_rm_udmap_tx_multi_ch_cfg_resp {
+    struct tisci_header hdr;
+} __attribute__((__packed__));
+
+/**
  * \brief Configures a Navigator Subsystem UDMAP receive channel
  *
  * Configures the non-real-time registers of a Navigator Subsystem UDMAP

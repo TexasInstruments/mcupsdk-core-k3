@@ -101,7 +101,7 @@ TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62ax_r5_skip, 10360, 10372, 10377)
 /* AM275 */
 
 /* R5F0-0, R5F0-1, R5F1-0, R5F1-1 */
-TEST_EXECUTE_SKIP_IDS(TestDplTimer_am275_r5f_skip, 10360, 10372, 10373, 10374, 10377)
+TEST_EXECUTE_SKIP_IDS(TestDplTimer_am275_r5f_skip, 10360, 10372, 10373, 10377)
 
 /* C7x-0*/
 TEST_EXECUTE_SKIP_IDS(TestDplTimer_am275_c7x_0_skip, 10360, 10372)
@@ -123,7 +123,7 @@ TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62px_wkupr5_skip, 10360, 10372, 10377)
 TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62x_r5f_skip, 10360, 10365, 10372, 10377)
 
 /* M4F */
-TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62x_m4f_skip, 10360, 10372, 10373, 10374, 10377)
+TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62x_m4f_skip, 10360, 10372, 10373, 10377)
 
 /* A53 */
 TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62x_a53_skip, 10360, 10372)
@@ -2070,10 +2070,12 @@ static void TestDplTimer_start_invalid_base(void *args)
 static void TestDplTimer_stop_invalid_base(void *args)
 {
     uint32_t baseAddr;
+    int32_t status;
 
     baseAddr = 0U;
-    DebugP_logInfo("Expect assert: TimerP_stop with baseAddr=0");
-    TimerP_stop(baseAddr);
+    status = TimerP_stop(baseAddr);
+
+    TEST_ASSERT_EQUAL_INT32(SystemP_FAILURE, status);
 }
 
 /**

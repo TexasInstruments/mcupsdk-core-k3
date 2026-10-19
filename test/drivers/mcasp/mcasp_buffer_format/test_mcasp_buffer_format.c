@@ -129,6 +129,7 @@ void test_main(void *args)
     RUN_TEST(Test_Mcasp_invalidRxBufferFormat, 10342, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
     RUN_TEST(Test_Mcasp_invalidTxBufferFormat, 10341, (void*)&gMcaspOpenParams[CONFIG_MCASP0]);
 
+
     UNITY_END();
 
     return;
@@ -925,27 +926,84 @@ static void Test_Mcasp_loopbacksemiInterleaved1ToNonInterleaved(void *args)
     MCASP_Attrs *attrs = (MCASP_Attrs *)gMcaspConfig[instance].attrs;
     int32_t status = SystemP_SUCCESS;
     uint32_t i, ser, slot, sample, b;
+    /* TDM, 8 slots, 8 serializers per direction on AM275x (AM62DX has 4 AXR pins, so 2 + 2).
+     * Water level 32 < serCount * slotCount (8 * 8 = 64): exercises the sub-frame RX descriptor. */
+#if defined(SOC_AM275X)
+    const uint32_t numSerializers = 8;
+    const uint32_t testSlotCount = 8U;
+#else
     const uint32_t numSerializers = 2;
+    const uint32_t testSlotCount = 2U;
+#endif
+#if defined(SOC_AM275X)
+    const uint32_t testWaterLevel = 32U;
+#else
+    const uint32_t testWaterLevel = 2U;
+#endif
+
+    const uint8_t  savedTxWl = attrs->txFifoWaterLevel;
+    const uint8_t  savedRxWl = attrs->rxFifoWaterLevel;
+    const uint32_t savedTxFifoCtl = attrs->hwCfg.tx.fifoCfg.fifoCtl;
+    const uint32_t savedRxFifoCtl = attrs->hwCfg.rx.fifoCfg.fifoCtl;
+    const uint8_t  savedTxSlotCount = openParams->txSlotCount;
+    const uint8_t  savedRxSlotCount = openParams->rxSlotCount;
+    const uint32_t savedTxTdm = attrs->hwCfg.tx.tdm;
+    const uint32_t savedRxTdm = attrs->hwCfg.rx.tdm;
+    const uint32_t savedTxFmt = attrs->hwCfg.tx.fmt;
+    const uint32_t savedRxFmt = attrs->hwCfg.rx.fmt;
+    const uint32_t savedTxFrSyncCtl = attrs->hwCfg.tx.frSyncCtl;
+    const uint32_t savedRxFrSyncCtl = attrs->hwCfg.rx.frSyncCtl;
+    const uint32_t savedPdir = attrs->hwCfg.gbl.pdir;
+    uint32_t savedSerSetup[16];
+    memcpy(savedSerSetup, attrs->hwCfg.gbl.serSetup, sizeof(savedSerSetup));
+    const uint8_t  savedTxSerUsedCount = openParams->txSerUsedCount;
+    const uint8_t  savedRxSerUsedCount = openParams->rxSerUsedCount;
+    uint8_t * const savedTxSerUsedArray = openParams->txSerUsedArray;
+    uint8_t * const savedRxSerUsedArray = openParams->rxSerUsedArray;
+    attrs->txFifoWaterLevel = testWaterLevel;
+    attrs->rxFifoWaterLevel = testWaterLevel;
+    openParams->txSlotCount = (uint8_t)testSlotCount;
+    openParams->rxSlotCount = (uint8_t)testSlotCount;
+    /* TDM: all slots active, TDM frame-sync mode (values from the generated TDM example) */
+    attrs->hwCfg.tx.tdm = (uint32_t)((1U << testSlotCount) - 1U);
+    attrs->hwCfg.rx.tdm = (uint32_t)((1U << testSlotCount) - 1U);
+    attrs->hwCfg.tx.frSyncCtl = (uint32_t)0x102U;   /* FMCTL: TDM frame sync */
+    attrs->hwCfg.rx.frSyncCtl = (uint32_t)0x102U;
     const uint32_t numSlots = openParams->rxSlotCount;
     const uint32_t slotSize = attrs->txSlotSize/8U;
     const uint32_t numSamples = config.msgSize / (numSerializers * numSlots * slotSize);
 
     /* Use different serializers for TX and RX to avoid conflicts */
     /* Configure TX serializers for semi-interleaved-1 */
-    attrs->hwCfg.gbl.pdir = (uint32_t)0xBC000005;
-    attrs->hwCfg.gbl.serSetup[0] = (uint32_t)0x1;  /* Configure serializer 0 as TX */
-    attrs->hwCfg.gbl.serSetup[2] = (uint32_t)0x1;  /* Configure serializer 2 as TX */
-    attrs->hwCfg.tx.fifoCfg.fifoCtl = (uint32_t)0x12002U;
-    uint8_t gMcasp0TxSersUsed[2] = {0,2};  /* Use serializers 0,2 for TX */
-    openParams->txSerUsedCount = 2;
+    static uint8_t gMcasp0TxSersUsed[8];
+    static uint8_t gMcasp0RxSersUsed[8];
+    uint32_t txIdx = 0U, rxIdx = 0U, sIdx;
+    for (sIdx = 0U; sIdx < numSerializers * 2U; sIdx++)
+    {
+        if ((sIdx % 2U) == 0U) { gMcasp0TxSersUsed[txIdx++] = (uint8_t)sIdx; }
+        else                   { gMcasp0RxSersUsed[rxIdx++] = (uint8_t)sIdx; }
+    }
+    attrs->hwCfg.gbl.pdir = 0U;
+    for (sIdx = 0U; sIdx < numSerializers * 2U; sIdx++)
+    {
+        if ((sIdx % 2U) == 0U)
+        {
+            attrs->hwCfg.gbl.serSetup[sIdx] = (uint32_t)0x1;  /* TX serializer */
+            attrs->hwCfg.gbl.pdir |= (1U << sIdx);            /* PDIR bit set = AXR output */
+        }
+        else
+        {
+            attrs->hwCfg.gbl.serSetup[sIdx] = (uint32_t)0x2;  /* RX serializer */
+        }
+    }
+    /* FIFO event count (WNUMEVT, bits 15:8) and DMA count (WNUMDMA, bits 7:0) */
+    attrs->hwCfg.tx.fifoCfg.fifoCtl = (uint32_t)(0x10000U | (testWaterLevel << 8U) | numSerializers);
+    openParams->txSerUsedCount = (uint8_t)numSerializers;
     openParams->txSerUsedArray = (uint8_t *) gMcasp0TxSersUsed;
 
     /* Configure RX serializers for multi-serializer non-interleaved */
-    attrs->hwCfg.gbl.serSetup[1] = (uint32_t)0x2;  /* Configure serializer 1 as RX */
-    attrs->hwCfg.gbl.serSetup[3] = (uint32_t)0x2;  /* Configure serializer 3 as RX */
-    attrs->hwCfg.rx.fifoCfg.fifoCtl = (uint32_t)0x12002U;
-    uint8_t gMcasp0RxSersUsed[2] = {1,3};  /* Use serializers 1,3 for RX */
-    gMcaspOpenParams[0].rxSerUsedCount = 2;
+    attrs->hwCfg.rx.fifoCfg.fifoCtl = (uint32_t)(0x10000U | (testWaterLevel << 8U) | numSerializers);
+    gMcaspOpenParams[0].rxSerUsedCount = (uint8_t)numSerializers;
     gMcaspOpenParams[0].rxSerUsedArray = (uint8_t *) gMcasp0RxSersUsed;
 
 #if defined(SOC_AM275X) || defined(SOC_AM62DX)
@@ -954,6 +1012,21 @@ static void Test_Mcasp_loopbacksemiInterleaved1ToNonInterleaved(void *args)
         {PIN_MCASP0_AXR0,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
         {PIN_MCASP0_AXR1,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
         {PIN_MCASP0_AXR2,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR3,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+#if defined(SOC_AM275X)
+        {PIN_MCASP0_AXR4,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR5,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR6,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR7,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR8,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR9,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR10,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR11,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR12,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR13,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR14,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR15,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+#endif
         { PINMUX_END, 0U }
     };
     Pinmux_config(serPinEnable, PINMUX_DOMAIN_ID_MAIN);
@@ -1012,6 +1085,27 @@ static void Test_Mcasp_loopbacksemiInterleaved1ToNonInterleaved(void *args)
     MCASP_stopTransferRx(handle);
     MCASP_stopTransferTx(handle);
 
+    /* Restore the shared MCASP config now: the compare/close below read none of it, and
+     * later tests must not inherit this test's water level, slot count and TDM setup. */
+    attrs->txFifoWaterLevel = savedTxWl;
+    attrs->rxFifoWaterLevel = savedRxWl;
+    attrs->hwCfg.tx.fifoCfg.fifoCtl = savedTxFifoCtl;
+    attrs->hwCfg.rx.fifoCfg.fifoCtl = savedRxFifoCtl;
+    openParams->txSlotCount = savedTxSlotCount;
+    openParams->rxSlotCount = savedRxSlotCount;
+    attrs->hwCfg.tx.tdm = savedTxTdm;
+    attrs->hwCfg.rx.tdm = savedRxTdm;
+    attrs->hwCfg.tx.fmt = savedTxFmt;
+    attrs->hwCfg.rx.fmt = savedRxFmt;
+    attrs->hwCfg.tx.frSyncCtl = savedTxFrSyncCtl;
+    attrs->hwCfg.rx.frSyncCtl = savedRxFrSyncCtl;
+    attrs->hwCfg.gbl.pdir = savedPdir;
+    memcpy(attrs->hwCfg.gbl.serSetup, savedSerSetup, sizeof(savedSerSetup));
+    openParams->txSerUsedCount = savedTxSerUsedCount;
+    openParams->rxSerUsedCount = savedRxSerUsedCount;
+    openParams->txSerUsedArray = savedTxSerUsedArray;
+    openParams->rxSerUsedArray = savedRxSerUsedArray;
+
     if (openParams->transferMode == MCASP_TRANSFER_MODE_DMA)
     {
         for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
@@ -1053,6 +1147,34 @@ static void Test_Mcasp_loopbacksemiInterleaved1ToNonInterleaved(void *args)
     }
 
     /* Keep multi-serializer configuration - do not restore to single serializer */
+
+    /* Disable all AXR pins enabled for this test; each test enables the pins it needs again.
+     * On AM275x, AXR6/14/15 are muxed for other functions in the generated pinmux config, restore those. */
+#if defined(SOC_AM275X) || defined(SOC_AM62DX)
+    static Pinmux_PerCfg_t serPinDisable[] =
+    {
+        {PIN_MCASP0_AXR0,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR1,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR2,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR3,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+#if defined(SOC_AM275X)
+        {PIN_MCASP0_AXR4,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR5,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR7,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR8,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR9,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR10,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR11,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR12,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR13,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR6,( PIN_MODE(2) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE | PIN_DRV_STR_NOMINAL )},
+        {PIN_MCASP0_AXR14,( PIN_MODE(4) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE | PIN_DRV_STR_NOMINAL )},
+        {PIN_MCASP0_AXR15,( PIN_MODE(4) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE | PIN_DRV_STR_NOMINAL )},
+#endif
+        { PINMUX_END, 0U }
+    };
+    Pinmux_config(serPinDisable, PINMUX_DOMAIN_ID_MAIN);
+#endif
 
     MCASP_close(handle);
 
@@ -1267,27 +1389,86 @@ static void Test_Mcasp_loopbackNonInterleavedToSemiInterleaved1(void *args)
     MCASP_Attrs *attrs = (MCASP_Attrs *)gMcaspConfig[instance].attrs;
     int32_t status = SystemP_SUCCESS;
     uint32_t i, ser, slot, sample, b;
+    /* TDM, 8 slots, 8 serializers per direction on AM275x (AM62DX has 4 AXR pins, so 2 + 2).
+     * Water level 64 = serCount * slotCount (8 * 8): one DMA trigger moves exactly one FIFO event. */
+
+#if defined(SOC_AM275X)
+    const uint32_t numSerializers = 8;
+    const uint32_t testSlotCount = 8U;
+#else
     const uint32_t numSerializers = 2;
+    const uint32_t testSlotCount = 2U;
+#endif
+
+    const uint8_t  savedTxWl = attrs->txFifoWaterLevel;
+    const uint8_t  savedRxWl = attrs->rxFifoWaterLevel;
+    const uint32_t savedTxFifoCtl = attrs->hwCfg.tx.fifoCfg.fifoCtl;
+    const uint32_t savedRxFifoCtl = attrs->hwCfg.rx.fifoCfg.fifoCtl;
+#if defined(SOC_AM275X)
+    const uint32_t testWaterLevel = 32U;
+#else
+    const uint32_t testWaterLevel = 2U;
+#endif
+    const uint32_t savedPdir = attrs->hwCfg.gbl.pdir;
+    uint32_t savedSerSetup[16];
+    memcpy(savedSerSetup, attrs->hwCfg.gbl.serSetup, sizeof(savedSerSetup));
+    const uint8_t  savedTxSerUsedCount = openParams->txSerUsedCount;
+    const uint8_t  savedRxSerUsedCount = openParams->rxSerUsedCount;
+    uint8_t * const savedTxSerUsedArray = openParams->txSerUsedArray;
+    uint8_t * const savedRxSerUsedArray = openParams->rxSerUsedArray;
+    attrs->txFifoWaterLevel = testWaterLevel;
+    attrs->rxFifoWaterLevel = testWaterLevel;
+    const uint8_t  savedTxSlotCount = openParams->txSlotCount;
+    const uint8_t  savedRxSlotCount = openParams->rxSlotCount;
+    const uint32_t savedTxTdm = attrs->hwCfg.tx.tdm;
+    const uint32_t savedRxTdm = attrs->hwCfg.rx.tdm;
+    const uint32_t savedTxFmt = attrs->hwCfg.tx.fmt;
+    const uint32_t savedRxFmt = attrs->hwCfg.rx.fmt;
+    const uint32_t savedTxFrSyncCtl = attrs->hwCfg.tx.frSyncCtl;
+    const uint32_t savedRxFrSyncCtl = attrs->hwCfg.rx.frSyncCtl;
+    openParams->txSlotCount = (uint8_t)testSlotCount;
+    openParams->rxSlotCount = (uint8_t)testSlotCount;
+    /* TDM: all slots active, TDM frame-sync mode (values from the generated TDM example) */
+    attrs->hwCfg.tx.tdm = (uint32_t)((1U << testSlotCount) - 1U);
+    attrs->hwCfg.rx.tdm = (uint32_t)((1U << testSlotCount) - 1U);
+    attrs->hwCfg.tx.frSyncCtl = (uint32_t)0x102U;   /* FMCTL: TDM frame sync */
+    attrs->hwCfg.rx.frSyncCtl = (uint32_t)0x102U;
     const uint32_t numSlots = openParams->rxSlotCount;
     const uint32_t slotSize = attrs->txSlotSize/8U;
     const uint32_t numSamples = config.msgSize / (numSerializers * numSlots * slotSize);
 
     /* Use different serializers for TX and RX to avoid conflicts */
     /* Configure TX serializers for semi-interleaved-1 */
-    attrs->hwCfg.gbl.pdir = (uint32_t)0xBC000005;
-    attrs->hwCfg.gbl.serSetup[0] = (uint32_t)0x1;  /* Configure serializer 0 as TX */
-    attrs->hwCfg.gbl.serSetup[2] = (uint32_t)0x1;  /* Configure serializer 2 as TX */
-    attrs->hwCfg.tx.fifoCfg.fifoCtl = (uint32_t)0x12002U;
-    uint8_t gMcasp0TxSersUsed[2] = {0,2};  /* Use serializers 0,2 for TX */
-    openParams->txSerUsedCount = 2;
+    static uint8_t gMcasp0TxSersUsed[8];
+    static uint8_t gMcasp0RxSersUsed[8];
+    uint32_t txIdx = 0U, rxIdx = 0U, sIdx;
+    for (sIdx = 0U; sIdx < numSerializers * 2U; sIdx++)
+    {
+        if ((sIdx % 2U) == 0U) { gMcasp0TxSersUsed[txIdx++] = (uint8_t)sIdx; }
+        else                   { gMcasp0RxSersUsed[rxIdx++] = (uint8_t)sIdx; }
+    }
+    attrs->hwCfg.gbl.pdir = 0U;
+    for (sIdx = 0U; sIdx < numSerializers * 2U; sIdx++)
+    {
+        if ((sIdx % 2U) == 0U)
+        {
+            attrs->hwCfg.gbl.serSetup[sIdx] = (uint32_t)0x1;  /* TX serializer */
+            attrs->hwCfg.gbl.pdir |= (1U << sIdx);            /* PDIR bit set = AXR output */
+        }
+        else
+        {
+            attrs->hwCfg.gbl.serSetup[sIdx] = (uint32_t)0x2;  /* RX serializer */
+        }
+    }
+    /* FIFO event count (WNUMEVT, bits 15:8) must match the water level, otherwise the
+     * FIFO signals after 32 words while the DMA moves testWaterLevel words per trigger */
+    attrs->hwCfg.tx.fifoCfg.fifoCtl = (uint32_t)(0x10000U | (testWaterLevel << 8U) | numSerializers);
+    openParams->txSerUsedCount = (uint8_t)numSerializers;
     openParams->txSerUsedArray = (uint8_t *) gMcasp0TxSersUsed;
 
     /* Configure RX serializers for multi-serializer non-interleaved */
-    attrs->hwCfg.gbl.serSetup[1] = (uint32_t)0x2;  /* Configure serializer 1 as RX */
-    attrs->hwCfg.gbl.serSetup[3] = (uint32_t)0x2;  /* Configure serializer 3 as RX */
-    attrs->hwCfg.rx.fifoCfg.fifoCtl = (uint32_t)0x12002U;
-    uint8_t gMcasp0RxSersUsed[2] = {1,3};  /* Use serializers 1,3 for RX */
-    gMcaspOpenParams[0].rxSerUsedCount = 2;
+    attrs->hwCfg.rx.fifoCfg.fifoCtl = (uint32_t)(0x10000U | (testWaterLevel << 8U) | numSerializers);
+    gMcaspOpenParams[0].rxSerUsedCount = (uint8_t)numSerializers;
     gMcaspOpenParams[0].rxSerUsedArray = (uint8_t *) gMcasp0RxSersUsed;
 
 #if defined(SOC_AM275X) || defined(SOC_AM62DX)
@@ -1296,6 +1477,21 @@ static void Test_Mcasp_loopbackNonInterleavedToSemiInterleaved1(void *args)
         {PIN_MCASP0_AXR0,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
         {PIN_MCASP0_AXR1,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
         {PIN_MCASP0_AXR2,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR3,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+#if defined(SOC_AM275X)
+        {PIN_MCASP0_AXR4,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR5,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR6,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR7,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR8,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR9,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR10,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR11,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR12,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR13,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR14,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR15,( PIN_MODE(0) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE )},
+#endif
         { PINMUX_END, 0U }
     };
     Pinmux_config(serPinEnable, PINMUX_DOMAIN_ID_MAIN);
@@ -1354,6 +1550,27 @@ static void Test_Mcasp_loopbackNonInterleavedToSemiInterleaved1(void *args)
     MCASP_stopTransferRx(handle);
     MCASP_stopTransferTx(handle);
 
+    /* Restore the shared MCASP config now: the compare/close below read none of it, and
+     * later tests must not inherit this test's water level, slot count and TDM setup. */
+    attrs->txFifoWaterLevel = savedTxWl;
+    attrs->rxFifoWaterLevel = savedRxWl;
+    attrs->hwCfg.tx.fifoCfg.fifoCtl = savedTxFifoCtl;
+    attrs->hwCfg.rx.fifoCfg.fifoCtl = savedRxFifoCtl;
+    openParams->txSlotCount = savedTxSlotCount;
+    openParams->rxSlotCount = savedRxSlotCount;
+    attrs->hwCfg.tx.tdm = savedTxTdm;
+    attrs->hwCfg.rx.tdm = savedRxTdm;
+    attrs->hwCfg.tx.fmt = savedTxFmt;
+    attrs->hwCfg.rx.fmt = savedRxFmt;
+    attrs->hwCfg.tx.frSyncCtl = savedTxFrSyncCtl;
+    attrs->hwCfg.rx.frSyncCtl = savedRxFrSyncCtl;
+    attrs->hwCfg.gbl.pdir = savedPdir;
+    memcpy(attrs->hwCfg.gbl.serSetup, savedSerSetup, sizeof(savedSerSetup));
+    openParams->txSerUsedCount = savedTxSerUsedCount;
+    openParams->rxSerUsedCount = savedRxSerUsedCount;
+    openParams->txSerUsedArray = savedTxSerUsedArray;
+    openParams->rxSerUsedArray = savedRxSerUsedArray;
+
     if (openParams->transferMode == MCASP_TRANSFER_MODE_DMA)
     {
         for (i = 0U; i < TEST_MCASP_APP_MSG_COUNT; i++)
@@ -1395,6 +1612,34 @@ static void Test_Mcasp_loopbackNonInterleavedToSemiInterleaved1(void *args)
     }
 
     /* Keep multi-serializer configuration - do not restore to single serializer */
+
+    /* Disable all AXR pins enabled for this test; each test enables the pins it needs again.
+     * On AM275x, AXR6/14/15 are muxed for other functions in the generated pinmux config, restore those. */
+#if defined(SOC_AM275X) || defined(SOC_AM62DX)
+    static Pinmux_PerCfg_t serPinDisable[] =
+    {
+        {PIN_MCASP0_AXR0,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR1,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR2,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR3,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+#if defined(SOC_AM275X)
+        {PIN_MCASP0_AXR4,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR5,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR7,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR8,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR9,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR10,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR11,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR12,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR13,( PIN_MODE(0) | PIN_PULL_DISABLE )},
+        {PIN_MCASP0_AXR6,( PIN_MODE(2) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE | PIN_DRV_STR_NOMINAL )},
+        {PIN_MCASP0_AXR14,( PIN_MODE(4) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE | PIN_DRV_STR_NOMINAL )},
+        {PIN_MCASP0_AXR15,( PIN_MODE(4) | PIN_INPUT_ENABLE | PIN_PULL_DISABLE | PIN_DRV_STR_NOMINAL )},
+#endif
+        { PINMUX_END, 0U }
+    };
+    Pinmux_config(serPinDisable, PINMUX_DOMAIN_ID_MAIN);
+#endif
 
     MCASP_close(handle);
 
@@ -1610,6 +1855,9 @@ static void Test_Mcasp_loopbackInterleavedToNonInterleaved_wrapper(void *args)
     {
         DebugP_log("All tests have passed!!\r\n");
     }
+
+    TEST_ASSERT_EQUAL_UINT8_MESSAGE(TEST_MCASP_APP_NUM_TESTS, gTestPassCount,
+        "Test_Mcasp_loopbackInterleavedToNonInterleaved_wrapper: data mismatch");
 }
 
 static void Test_Mcasp_loopbackNonInterleavedToInterleaved_wrapper(void *args)
@@ -1629,6 +1877,9 @@ static void Test_Mcasp_loopbackNonInterleavedToInterleaved_wrapper(void *args)
     {
         DebugP_log("All tests have passed!!\r\n");
     }
+
+    TEST_ASSERT_EQUAL_UINT8_MESSAGE(TEST_MCASP_APP_NUM_TESTS, gTestPassCount,
+        "Test_Mcasp_loopbackNonInterleavedToInterleaved_wrapper: data mismatch");
 }
 
 static void Test_Mcasp_loopbacksemiInterleaved1ToSemiInterleaved2_wrapper(void *args)
@@ -1648,6 +1899,9 @@ static void Test_Mcasp_loopbacksemiInterleaved1ToSemiInterleaved2_wrapper(void *
     {
         DebugP_log("All tests have passed!!\r\n");
     }
+
+    TEST_ASSERT_EQUAL_UINT8_MESSAGE(TEST_MCASP_APP_NUM_TESTS, gTestPassCount,
+        "Test_Mcasp_loopbacksemiInterleaved1ToSemiInterleaved2_wrapper: data mismatch");
 }
 
 static void Test_Mcasp_loopbacksemiInterleaved2ToSemiInterleaved1_wrapper(void *args)
@@ -1667,6 +1921,9 @@ static void Test_Mcasp_loopbacksemiInterleaved2ToSemiInterleaved1_wrapper(void *
     {
         DebugP_log("All tests have passed!!\r\n");
     }
+
+    TEST_ASSERT_EQUAL_UINT8_MESSAGE(TEST_MCASP_APP_NUM_TESTS, gTestPassCount,
+        "Test_Mcasp_loopbacksemiInterleaved2ToSemiInterleaved1_wrapper: data mismatch");
 }
 
 static void Test_Mcasp_loopbacksemiInterleaved1ToNonInterleaved_wrapper(void *args)
@@ -1686,6 +1943,9 @@ static void Test_Mcasp_loopbacksemiInterleaved1ToNonInterleaved_wrapper(void *ar
     {
         DebugP_log("All tests have passed!!\r\n");
     }
+
+    TEST_ASSERT_EQUAL_UINT8_MESSAGE(TEST_MCASP_APP_NUM_TESTS, gTestPassCount,
+        "Test_Mcasp_loopbacksemiInterleaved1ToNonInterleaved_wrapper: data mismatch");
 }
 
 static void Test_Mcasp_loopbacksemiInterleaved2ToNonInterleaved_wrapper(void *args)
@@ -1705,6 +1965,9 @@ static void Test_Mcasp_loopbacksemiInterleaved2ToNonInterleaved_wrapper(void *ar
     {
         DebugP_log("All tests have passed!!\r\n");
     }
+
+    TEST_ASSERT_EQUAL_UINT8_MESSAGE(TEST_MCASP_APP_NUM_TESTS, gTestPassCount,
+        "Test_Mcasp_loopbacksemiInterleaved2ToNonInterleaved_wrapper: data mismatch");
 }
 
 static void Test_Mcasp_loopbackNonInterleavedToSemiInterleaved1_wrapper(void *args)
@@ -1724,6 +1987,9 @@ static void Test_Mcasp_loopbackNonInterleavedToSemiInterleaved1_wrapper(void *ar
     {
         DebugP_log("All tests have passed!!\r\n");
     }
+
+    TEST_ASSERT_EQUAL_UINT8_MESSAGE(TEST_MCASP_APP_NUM_TESTS, gTestPassCount,
+        "Non-interleaved to semi-interleaved-1 loopback: data mismatch");
 }
 
 static void Test_Mcasp_loopbackNonInterleavedToSemiInterleaved2_wrapper(void *args)
@@ -1743,6 +2009,9 @@ static void Test_Mcasp_loopbackNonInterleavedToSemiInterleaved2_wrapper(void *ar
     {
         DebugP_log("All tests have passed!!\r\n");
     }
+
+    TEST_ASSERT_EQUAL_UINT8_MESSAGE(TEST_MCASP_APP_NUM_TESTS, gTestPassCount,
+        "Test_Mcasp_loopbackNonInterleavedToSemiInterleaved2_wrapper: data mismatch");
 }
 #if defined(SOC_AM275X)
 
@@ -1760,7 +2029,7 @@ static void Test_Mcasp_transactionCountBoundsCheck(void *args)
     MCASP_Attrs *attrs = (MCASP_Attrs *)gMcaspConfig[instance].attrs;
     int32_t status = SystemP_SUCCESS;
     uint8_t originalWaterLevel;
-    
+    uint32_t largeTransactionCount;
     DebugP_log("\nTesting transaction count bounds checking...\r\n");
     
     /* Save original waterLevel */
@@ -1770,29 +2039,26 @@ static void Test_Mcasp_transactionCountBoundsCheck(void *args)
     openParams->txBufferFormat = MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_INTERLEAVED;
     openParams->rxBufferFormat = MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_INTERLEAVED;
     
-    /* Set a very small waterLevel to force large tempIcntX/tempIcntY values */
+    /* Set a very small waterLevel to force large icnt3 values */
     attrs->txFifoWaterLevel = 1U;
     attrs->rxFifoWaterLevel = 1U;
     
-    /* Use a very large transaction size to trigger bounds checking */
-    /* MCASP_ICNT2_MAX is 65535U, so we need to create conditions where
-     * tempIcntX exceeds this value */
-    uint32_t largeTransactionSize = (256U * 1024U);
-    
-    openParams->txLoopjobBufLength = largeTransactionSize/4U;
-    openParams->rxLoopjobBufLength = largeTransactionSize/4U;
+    /* 256 KB = 65536 words. Interleaved icnt3 = bytes / (4 * waterLevel), so
+     * with waterLevel 1 icnt3 = 65536, which exceeds MCASP_ICNT2_MAX (65535). */
+    largeTransactionCount = (256U * 1024U) / 4U;
     
     /* Close existing handle */
     MCASP_close(gMcaspHandle[CONFIG_MCASP0]);
     gMcaspHandle[CONFIG_MCASP0] = NULL;
     
-    /* Try to open with large transaction size */
+    /* Open with the same configuration; no transfer is started */
     MCASP_Handle handle = MCASP_open(CONFIG_MCASP0, openParams);
     
     if(handle != NULL)
     {
-        /* Try to start transfer - this should trigger transaction count bounds checking */
-        status = MCASP_startTransferTx(handle);
+        /* Bounds check runs in MCASP_prepareDmaIcnts; it must report failure
+         * rather than assert, so the status can be checked here */
+        status = MCASP_setTxTxnCount(handle, largeTransactionCount);
         
         if(status == SystemP_FAILURE)
         {
@@ -1801,7 +2067,7 @@ static void Test_Mcasp_transactionCountBoundsCheck(void *args)
         }
         else
         {
-            DebugP_log("WARNING: Transaction count bounds checking did not detect overflow - may need larger size\r\n");
+            DebugP_log("WARNING: Transaction count bounds checking did not detect overflow\r\n");
             status = SystemP_FAILURE;
         }
        
@@ -1815,6 +2081,7 @@ static void Test_Mcasp_transactionCountBoundsCheck(void *args)
     
     /* Restore original settings */
     attrs->txFifoWaterLevel = originalWaterLevel;
+    attrs->rxFifoWaterLevel = originalWaterLevel;
     openParams->txLoopjobBufLength = TEST_MCASP_APP_MSGSIZE_1/4U;
     openParams->rxLoopjobBufLength = TEST_MCASP_APP_MSGSIZE_1/4U;
     

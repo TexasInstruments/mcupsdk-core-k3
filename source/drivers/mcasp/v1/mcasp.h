@@ -659,6 +659,9 @@ typedef struct
     /**< Signed dimension for loop level 2 */
     int32_t  dim3;
     /**< Signed dimension for loop level 3 */
+    uint8_t  trigType;
+    /**< TR trigger type (CSL_UDMAP_TR_FLAGS_TRIGGER_TYPE_*) used for TX when the water level
+     *   is below serCount * slotCount in the non-interleaved formats; ICNT3_DEC otherwise */
 } MCASP_DmaIcnt;
 
 /**

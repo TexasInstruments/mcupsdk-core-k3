@@ -350,7 +350,7 @@ static int32_t MCASP_primeTxTrpd(MCASP_Config *config)
                 pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_EOL, CSL_UDMAP_TR_FLAGS_EOL_MATCH_SOL_EOL);
                 pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_EVENT_SIZE, CSL_UDMAP_TR_FLAGS_EVENT_SIZE_COMPLETION);
                 pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_TRIGGER0, CSL_UDMAP_TR_FLAGS_TRIGGER_GLOBAL0);
-                pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_TRIGGER0_TYPE, CSL_UDMAP_TR_FLAGS_TRIGGER_TYPE_ICNT3_DEC);
+                pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_TRIGGER0_TYPE, obj->txDmaIcnt.trigType);
                 pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_TRIGGER1, CSL_UDMAP_TR_FLAGS_TRIGGER_NONE);
                 pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_TRIGGER1_TYPE, CSL_UDMAP_TR_FLAGS_TRIGGER_TYPE_ALL);
                 pTr->flags   |= CSL_FMK(UDMAP_TR_FLAGS_CMD_ID, 0x25U);  /* This will come back in TR response */
@@ -1729,6 +1729,10 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
 
                     frameCount = object->XmtObj.txnLoopjob.count / (object->XmtObj.serCount * object->XmtObj.slotCount);
 
+                    /* Default trigger: one TR block per ICNT3 step. Overridden below for non-interleaved
+                     * formats when the water level is smaller than one frame. */
+                    object->txDmaIcnt.trigType = (uint8_t)CSL_UDMAP_TR_FLAGS_TRIGGER_TYPE_ICNT3_DEC;
+
                     switch(object->XmtObj.bufferFormat)
                     {
                         case MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_INTERLEAVED:
@@ -1771,6 +1775,38 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
                         case MCASP_AUDBUFF_FORMAT_MULTISER_MULTISLOT_SEMI_INTERLEAVED_2:
                         {
                             /* For semi-interleaved type 2: data is organized by serializer groups */
+                            if((uint32_t)waterLevel < (uint32_t)object->XmtObj.serCount)
+                            {
+                                /* Water level below serCount: each trigger must move exactly waterLevel words
+                                 * (one FIFO event). Walk waterLevel serializers per ICNT2 step, then the next
+                                 * group of serializers, then the next (frame, slot). */
+                                if(((uint32_t)object->XmtObj.serCount % (uint32_t)waterLevel) != 0U)
+                                {
+                                    DebugP_logError("Water level must divide serCount for semi-interleaved-2 TX \r\n");
+                                    status = SystemP_FAILURE;
+                                    break;
+                                }
+                                object->txDmaIcnt.icnt0   = WORD_BYTE_COUNT;
+                                object->txDmaIcnt.icnt1   = (uint16_t)waterLevel;
+                                object->txDmaIcnt.icnt2   = (uint16_t)((uint32_t)object->XmtObj.serCount / (uint32_t)waterLevel);
+                                tempIcntX   = (uint32_t)frameCount * (uint32_t)object->XmtObj.slotCount;
+                                if(tempIcntX < MCASP_ICNT2_MAX)
+                                {
+                                    object->txDmaIcnt.icnt3 = (uint16_t)tempIcntX;
+                                }
+                                else
+                                {
+                                    DebugP_logError("Transaction count out of bounds \r\n");
+                                    status = SystemP_FAILURE;
+                                }
+
+                                object->txDmaIcnt.dim1    = (int32_t)((int32_t)frameCount * (int32_t)object->XmtObj.slotCount * (int32_t)WORD_BYTE_COUNT);
+                                object->txDmaIcnt.dim2    = (int32_t)((int32_t)waterLevel * (int32_t)frameCount * (int32_t)object->XmtObj.slotCount * (int32_t)WORD_BYTE_COUNT);
+                                object->txDmaIcnt.dim3    = (int32_t)WORD_BYTE_COUNT;
+                                object->txDmaIcnt.trigType = (uint8_t)CSL_UDMAP_TR_FLAGS_TRIGGER_TYPE_ICNT2_DEC;
+                                break;
+                            }
+
                             object->txDmaIcnt.icnt0   = WORD_BYTE_COUNT;
                             object->txDmaIcnt.icnt1   = (uint16_t)(object->XmtObj.serCount);
                             object->txDmaIcnt.icnt2   = (uint16_t)((((uint32_t)waterLevel / (uint32_t)object->txDmaIcnt.icnt1) == 0U) ? 1U : ((uint32_t)waterLevel / (uint32_t)object->txDmaIcnt.icnt1));
@@ -1788,7 +1824,7 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
 
                             object->txDmaIcnt.dim1    = (int32_t)((int32_t)frameCount * (int32_t)object->XmtObj.slotCount * (int32_t)WORD_BYTE_COUNT);
                             object->txDmaIcnt.dim2    = (int32_t)WORD_BYTE_COUNT;
-                            object->txDmaIcnt.dim3    = (int32_t)((int32_t)WORD_BYTE_COUNT * (int32_t)((uint32_t)waterLevel / (uint32_t)object->XmtObj.serCount));
+                            object->txDmaIcnt.dim3    = (int32_t)((int32_t)WORD_BYTE_COUNT * (int32_t)(object->txDmaIcnt.icnt2));
 
                             break;
                         }
@@ -1796,14 +1832,57 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
                         case MCASP_AUDBUFF_FORMAT_1SER_MULTISLOT_NON_INTERLEAVED:
                         case MCASP_AUDBUFF_FORMAT_MULTISER_MULTISLOT_NON_INTERLEAVED:
                         {
+                            uint32_t txFrameWords = (uint32_t)object->XmtObj.serCount * (uint32_t)object->XmtObj.slotCount;
+
+                            if((uint32_t)waterLevel < txFrameWords)
+                            {
+                                /* Water level below one frame: each trigger must move exactly waterLevel words
+                                 * (one FIFO event). Walk waterLevel streams (stride = frames words) per ICNT2
+                                 * step, then the next group of streams, then the next frame. */
+                                if((txFrameWords % (uint32_t)waterLevel) != 0U)
+                                {
+                                    DebugP_logError("Water level must divide serCount * slotCount for non-interleaved TX \r\n");
+                                    status = SystemP_FAILURE;
+                                    break;
+                                }
+                                object->txDmaIcnt.icnt0   = WORD_BYTE_COUNT;
+                                object->txDmaIcnt.icnt1   = (uint16_t)waterLevel;
+                                object->txDmaIcnt.icnt2   = (uint16_t)(txFrameWords / (uint32_t)waterLevel);
+                                tempIcntX   = frameCount;
+                                if(tempIcntX < MCASP_ICNT2_MAX)
+                                {
+                                    object->txDmaIcnt.icnt3 = (uint16_t)tempIcntX;
+                                }
+                                else
+                                {
+                                    DebugP_logError("Transaction count out of bounds \r\n");
+                                    status = SystemP_FAILURE;
+                                }
+
+                                object->txDmaIcnt.dim1    = (int32_t)((int32_t)frameCount * (int32_t)WORD_BYTE_COUNT);
+                                object->txDmaIcnt.dim2    = (int32_t)((int32_t)waterLevel * (int32_t)frameCount * (int32_t)WORD_BYTE_COUNT);
+                                object->txDmaIcnt.dim3    = (int32_t)WORD_BYTE_COUNT;
+                                object->txDmaIcnt.trigType = (uint8_t)CSL_UDMAP_TR_FLAGS_TRIGGER_TYPE_ICNT2_DEC;
+                                break;
+                            }
+
                             object->txDmaIcnt.icnt0   = WORD_BYTE_COUNT;
                             object->txDmaIcnt.icnt1   = (uint16_t)(object->XmtObj.serCount * object->XmtObj.slotCount);
                             object->txDmaIcnt.icnt2   = (uint16_t)((((uint32_t)waterLevel / (uint32_t)(object->txDmaIcnt.icnt1)) == 0U) ? 1U : ((uint32_t)waterLevel / (uint32_t)(object->txDmaIcnt.icnt1)));
-                            object->txDmaIcnt.icnt3   = (uint16_t)((uint32_t)frameCount / (uint32_t)(object->txDmaIcnt.icnt2));
-
+                            tempIcntX   = (uint32_t)((uint32_t)(txnByteCnt /((uint64_t)object->txDmaIcnt.icnt0*(uint64_t)object->txDmaIcnt.icnt1*(uint64_t)object->txDmaIcnt.icnt2)));
+                            if(tempIcntX < MCASP_ICNT2_MAX)
+                            {
+                                object->txDmaIcnt.icnt3 = (uint16_t)tempIcntX;
+                            }
+                            else
+                            {
+                                    DebugP_logError("Transaction count out of bounds \r\n");
+                                    status = SystemP_FAILURE;
+                            }
+                            
                             object->txDmaIcnt.dim1    = (int32_t)((int32_t)frameCount * (int32_t)WORD_BYTE_COUNT);
                             object->txDmaIcnt.dim2    = (int32_t)WORD_BYTE_COUNT;
-                            object->txDmaIcnt.dim3    = (int32_t)((int32_t)WORD_BYTE_COUNT * (int32_t)((uint32_t)waterLevel/ ((uint32_t)object->XmtObj.serCount * (uint32_t)object->XmtObj.slotCount)));
+                            object->txDmaIcnt.dim3    = (int32_t)((int32_t)WORD_BYTE_COUNT * (int32_t)(object->txDmaIcnt.icnt2));
 
                             break;
                         }
@@ -1938,7 +2017,7 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
 
                             object->rxDmaIcnt.dim1    = (int32_t)((int32_t)frameCount * (int32_t)object->RcvObj.slotCount * (int32_t)WORD_BYTE_COUNT);
                             object->rxDmaIcnt.dim2    = (int32_t)WORD_BYTE_COUNT;
-                            object->rxDmaIcnt.dim3    = (int32_t)((int32_t)WORD_BYTE_COUNT * (int32_t)((uint32_t)waterLevel/ (uint32_t)object->RcvObj.serCount));
+                            object->rxDmaIcnt.dim3    = (int32_t)((int32_t)WORD_BYTE_COUNT * (int32_t)(object->rxDmaIcnt.icnt2));
 
                             break;
                         }
@@ -1949,8 +2028,7 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
                             object->rxDmaIcnt.icnt0   = WORD_BYTE_COUNT;
                             object->rxDmaIcnt.icnt1   = (uint16_t)(object->RcvObj.serCount * object->RcvObj.slotCount);
                             object->rxDmaIcnt.icnt2   = (uint16_t)(((uint32_t)waterLevel / (uint32_t)(object->rxDmaIcnt.icnt1)) == 0U ? 1U : ((uint32_t)waterLevel / (uint32_t)(object->rxDmaIcnt.icnt1)));
-                            
-                            tempIcntX   = ((uint32_t)frameCount / (uint32_t)(object->rxDmaIcnt.icnt2));
+                            tempIcntX   = (uint32_t)((uint32_t)txnByteCnt/((uint64_t)object->rxDmaIcnt.icnt0*(uint64_t)object->rxDmaIcnt.icnt1*(uint64_t)object->rxDmaIcnt.icnt2));
                             if(tempIcntX < MCASP_ICNT2_MAX)
                             {
                                 object->rxDmaIcnt.icnt3 = (uint16_t)tempIcntX;
@@ -1963,7 +2041,7 @@ int32_t MCASP_prepareDmaIcnts(MCASP_Handle handle, uint64_t byteCnt, uint8_t isT
 
                             object->rxDmaIcnt.dim1    = (int32_t)((int32_t)frameCount * (int32_t)WORD_BYTE_COUNT);
                             object->rxDmaIcnt.dim2    = (int32_t)WORD_BYTE_COUNT;
-                            object->rxDmaIcnt.dim3    = (int32_t)((int32_t)WORD_BYTE_COUNT * (int32_t)((uint32_t)waterLevel/ ((uint32_t)object->RcvObj.serCount * (uint32_t)object->RcvObj.slotCount)));
+                            object->rxDmaIcnt.dim3    = (int32_t)((int32_t)WORD_BYTE_COUNT * (int32_t)(object->rxDmaIcnt.icnt2));
 
                             break;
                         }

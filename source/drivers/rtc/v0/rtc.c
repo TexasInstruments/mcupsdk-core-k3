@@ -883,7 +883,10 @@ static uint64_t RTC_getSecondCount(uint32_t baseAddr)
     /* get MSW */
     volatile uint32_t *addr2 = (volatile uint32_t *)(baseAddr + (CSL_RTC_S_CNT_MSW));
 
-    return (((uint64_t)*addr2 << 32U) | *addr1);
+    uint32_t lsw = *addr1;
+    uint32_t msw = *addr2;
+
+    return (((uint64_t)msw << 32U) | (uint64_t)lsw);
 }
 
 static void RTC_updateOff_OnCount(uint32_t baseAddr, uint64_t seconds)

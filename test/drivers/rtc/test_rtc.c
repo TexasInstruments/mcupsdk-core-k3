@@ -1641,6 +1641,7 @@ static void TestRtc_32kHzCounterTickAccuracy(void *args)
     uint64_t    systemTimeStart = 0ULL;
     uint64_t    systemTimeEnd = 0ULL;
     uint64_t    systemElapsedMicroseconds = 0ULL;
+    uint64_t    cumulativeSystemMicroseconds = 0ULL;
     uint32_t    rtcElapsedSeconds = 0U;
     int32_t     perIterationDrift = 0;
     int32_t     cumulativeRtcElapsed = 0;
@@ -1680,15 +1681,13 @@ static void TestRtc_32kHzCounterTickAccuracy(void *args)
 
         /* Step 5: Compute elapsed and compare */
         systemElapsedMicroseconds = systemTimeEnd - systemTimeStart;
-        int32_t secDiff = (int32_t)endReadTime.second - (int32_t)startReadTime.second;
-        if (secDiff < 0)
-        {
-            secDiff += 60;
-        }
-        rtcElapsedSeconds = (uint32_t)secDiff + (endReadTime.minute - startReadTime.minute) * 60U;
+        int32_t totalStartSeconds = (int32_t)startReadTime.second + ((int32_t)startReadTime.minute * 60) + ((int32_t)startReadTime.hour * 3600);
+        int32_t totalEndSeconds   = (int32_t)endReadTime.second + ((int32_t)endReadTime.minute * 60) + ((int32_t)endReadTime.hour * 3600);
+        rtcElapsedSeconds = (uint32_t)(totalEndSeconds - totalStartSeconds);
 
+        uint32_t systemElapsedSeconds = (uint32_t)((systemElapsedMicroseconds + 500000ULL) / 1000000ULL);
         perIterationDrift = (int32_t)rtcElapsedSeconds
-                          - (int32_t)(systemElapsedMicroseconds / 1000000ULL);
+                          - (int32_t)systemElapsedSeconds;
 
         /* Step 6: Per-iteration drift must be within ±1 second */
         TEST_ASSERT_TRUE((perIterationDrift >= -1) && (perIterationDrift <= 1));
@@ -1706,8 +1705,10 @@ static void TestRtc_32kHzCounterTickAccuracy(void *args)
 
         /* Accumulate for cumulative drift check */
         cumulativeRtcElapsed += (int32_t)rtcElapsedSeconds;
-        cumulativeSystemElapsed += (int32_t)(systemElapsedMicroseconds / 1000000ULL);
+        cumulativeSystemMicroseconds += systemElapsedMicroseconds;
     }
+
+    cumulativeSystemElapsed = (int32_t)((cumulativeSystemMicroseconds + 500000ULL) / 1000000ULL);
 
     /* Step 6 continued: Cumulative drift over 25 seconds within ±2 seconds */
     cumulativeDrift = cumulativeRtcElapsed - cumulativeSystemElapsed;

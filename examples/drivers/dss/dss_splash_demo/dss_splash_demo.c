@@ -908,17 +908,6 @@ static int32_t DispApp_configDctrl(Dss_Object *appObj)
         DebugP_log("DCTRL Set Advance VP Params IOCTL Failed!!!\r\n");
     }
 
-    /* Call set VP params IOCTL */
-    retVal = Fvid2_control(
-        appObj->dctrlHandle,
-        IOCTL_DSS_DCTRL_SET_VP_PARAMS,
-        vpParams,
-        NULL);
-    if(retVal != FVID2_SOK)
-    {
-        DebugP_log("Dctrl Set VP Params IOCTL Failed!!!\r\n");
-    }
-
     if(appObj->oldiParams)
     {
         /* Call set OLDI params IOCTL */
@@ -931,6 +920,17 @@ static int32_t DispApp_configDctrl(Dss_Object *appObj)
         {
             DebugP_log("DCTRL Set OLDI Params IOCTL Failed!!!\r\n");
         }
+    }
+
+    /* Call set VP params IOCTL */
+    retVal = Fvid2_control(
+        appObj->dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_PARAMS,
+        vpParams,
+        NULL);
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("Dctrl Set VP Params IOCTL Failed!!!\r\n");
     }
 
     /* Call set OVERLAY params IOCTL */

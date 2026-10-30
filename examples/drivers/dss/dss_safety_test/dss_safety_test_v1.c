@@ -837,22 +837,22 @@ static int32_t DispApp_configDctrl(Dss_Object *appObj)
 
     retVal = Fvid2_control(
         appObj->dctrlHandle,
-        IOCTL_DSS_DCTRL_SET_VP_PARAMS,
-        vpParams,
-        NULL);
-    if(retVal != FVID2_SOK)
-    {
-        DebugP_log("Dctrl Set VP Params IOCTL Failed!!!\r\n");
-    }
-
-    retVal = Fvid2_control(
-        appObj->dctrlHandle,
         IOCTL_DSS_DCTRL_SET_OLDI_PARAMS,
         oldiParams,
         NULL);
     if(retVal != FVID2_SOK)
     {
         DebugP_log("DCTRL Set OLDI Params IOCTL Failed!!!\r\n");
+    }
+
+    retVal = Fvid2_control(
+        appObj->dctrlHandle,
+        IOCTL_DSS_DCTRL_SET_VP_PARAMS,
+        vpParams,
+        NULL);
+    if(retVal != FVID2_SOK)
+    {
+        DebugP_log("Dctrl Set VP Params IOCTL Failed!!!\r\n");
     }
 
     retVal = Fvid2_control(

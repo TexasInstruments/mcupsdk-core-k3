@@ -415,7 +415,6 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         PRINT_ENABLE,
         (ST_TT_SANITY),
     },
-#if !defined(R5_FREERTOS_CORE) && !defined(MCU_M4_CORE)
     {
         TEST_ENABLE, 10233U,
         "None",
@@ -532,7 +531,6 @@ st_mcanTestcaseParams_t gMcanTestcaseParams[] =
         PRINT_ENABLE,
         (ST_TT_SANITY),
     },
-#endif
     {
         TEST_ENABLE, 10236U,
         "None",

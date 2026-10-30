@@ -3034,6 +3034,7 @@ int32_t App_mcanRxFIFOModes(st_mcanTestcaseParams_t *testParams)
     MCAN_ConfigParams configParams;
     MCAN_TxBufElementNoCpy txElem = {0U};
     uint8_t txData[MCAN_MAX_PAYLOAD_BYTES];
+    uint8_t rxData[MCAN_MAX_PAYLOAD_BYTES];
 
     /* Initialize TX Data */
     for (loopCnt = 0U; loopCnt < MCAN_MAX_PAYLOAD_BYTES; loopCnt++)
@@ -3043,6 +3044,7 @@ int32_t App_mcanRxFIFOModes(st_mcanTestcaseParams_t *testParams)
 
     App_mcanInitTxElem(&txElem);
     txElem.data = &txData[0U];
+    rxMsg.data  = &rxData[0U];
 
     /* Enable Interrupts */
     MCAN_enableIntr(gMcanBaseAddr, testParams->mcanConfigParams.intrEnable, (uint32_t)TRUE);
@@ -5856,6 +5858,7 @@ static int32_t App_mcanRxFIFO0MsgLostTest(st_mcanTestcaseParams_t *testParams)
     MCAN_ConfigParams configParams;
     MCAN_TxBufElementNoCpy txElem = {0U};
     uint8_t txData[MCAN_MAX_PAYLOAD_BYTES];
+    uint8_t rxData[MCAN_MAX_PAYLOAD_BYTES];
 
     /* Initialize TX Data */
     for (loopCnt = 0U; loopCnt < MCAN_MAX_PAYLOAD_BYTES; loopCnt++)
@@ -5865,6 +5868,7 @@ static int32_t App_mcanRxFIFO0MsgLostTest(st_mcanTestcaseParams_t *testParams)
 
     App_mcanInitTxElem(&txElem);
     txElem.data = &txData[0U];
+    rxMsg.data  = &rxData[0U];
 
     /* Enable Interrupts */
     MCAN_enableIntr(gMcanBaseAddr, testParams->mcanConfigParams.intrEnable, (uint32_t)TRUE);

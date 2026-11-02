@@ -621,11 +621,11 @@ int32_t App_mcanNegativeTest(st_mcanTestcaseParams_t *testParams)
     MCAN_ECCAggrRevisionId eccAggrRevId;
     MCAN_ECCWrapRevisionId eccWrapRevId;
     MCAN_TxBufElementNoCpy txElem = {0U};
-#if !defined(R5_FREERTOS_CORE) && !defined(MCU_M4_CORE)
     MCAN_RxBufElement rxMsg = {0};
     MCAN_RxBufElementNoCpy rxMsgNoCpy = {0};
-#endif
-
+    uint8_t rxNoCpyData[MCAN_MAX_PAYLOAD_BYTES];
+    rxMsgNoCpy.data = &rxNoCpyData[0U];
+    
     /* Reset MCAN Module */
     MCAN_reset(gMcanBaseAddr);
     while (MCAN_isInReset(gMcanBaseAddr) == (uint32_t)TRUE)
@@ -709,7 +709,6 @@ int32_t App_mcanNegativeTest(st_mcanTestcaseParams_t *testParams)
 
     MCAN_getNewDataStatus(gMcanBaseAddr, NULL);
     MCAN_clearNewDataStatus(gMcanBaseAddr, NULL);
-#if !defined(R5_FREERTOS_CORE) && !defined(MCU_M4_CORE)
     MCAN_readMsgRam(gMcanBaseAddr,
                     MCAN_MEM_TYPE_BUF,
                     0U,
@@ -740,7 +739,6 @@ int32_t App_mcanNegativeTest(st_mcanTestcaseParams_t *testParams)
                     0U,
                     MCAN_RX_FIFO_NUM_1,
                     NULL);
-#endif
     MCAN_readTxEventFIFO(gMcanBaseAddr, NULL);
 
     MCAN_addStdMsgIDFilter(gMcanBaseAddr, 0U, NULL);

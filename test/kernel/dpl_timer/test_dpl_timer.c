@@ -82,7 +82,7 @@ TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62dx_a53_skip, 10360, 10372)
 TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62dx_c7x_skip, 10360, 10372)
 
 /* R5 */
-TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62dx_r5_skip, 10360, 10372, 10379, 10380, 10382, 10383)
+TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62dx_r5_skip, 10360, 10372, 10379, 10380, 10382)
 
 /* AM62AX */
 
@@ -96,7 +96,7 @@ TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62ax_a53_skip, 10360, 10372)
 TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62ax_c7x_skip, 10360, 10372)
 
 /* R5 */
-TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62ax_r5_skip, 10360, 10372, 10377, 10379, 10383)
+TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62ax_r5_skip, 10360, 10372, 10377, 10379)
 
 /* AM275 */
 
@@ -120,13 +120,13 @@ TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62px_wkupr5_skip, 10360, 10372, 10377)
 /* AM62X*/
 
 /* R5F */
-TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62x_r5f_skip, 10360, 10364, 10365, 10372, 10377, 10380, 10382, 10383)
+TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62x_r5f_skip, 10360, 10364, 10365, 10372, 10377, 10380, 10382)
 
 /* M4F */
 TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62x_m4f_skip, 10360, 10372, 10373, 10374, 10377)
 
 /* A53 */
-TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62x_a53_skip, 10360, 10372, 10382, 10383)
+TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62x_a53_skip, 10360, 10372, 10382)
 
 /* Testcase execution list */
 const TestExecute_idList TestExecute_SkipTestIdMatrix[TEST_SOC_COUNT][TEST_CORE_COUNT] = {

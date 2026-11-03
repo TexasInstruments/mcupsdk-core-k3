@@ -82,7 +82,7 @@ TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62dx_a53_skip, 10360, 10372)
 TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62dx_c7x_skip, 10360, 10372)
 
 /* R5 */
-TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62dx_r5_skip, 10360, 10372, 10379, 10380, 10382)
+TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62dx_r5_skip, 10360, 10372)
 
 /* AM62AX */
 
@@ -96,7 +96,7 @@ TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62ax_a53_skip, 10360, 10372)
 TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62ax_c7x_skip, 10360, 10372)
 
 /* R5 */
-TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62ax_r5_skip, 10360, 10372, 10377, 10379)
+TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62ax_r5_skip, 10360, 10372, 10377)
 
 /* AM275 */
 
@@ -107,7 +107,7 @@ TEST_EXECUTE_SKIP_IDS(TestDplTimer_am275_r5f_skip, 10360, 10372, 10373, 10374, 1
 TEST_EXECUTE_SKIP_IDS(TestDplTimer_am275_c7x_0_skip, 10360, 10372)
 
 /* Wkp-R5*/
-TEST_EXECUTE_SKIP_IDS(TestDplTimer_am275_wkp_r5_skip, 10360, 10372, 10377, 10379, 10382)
+TEST_EXECUTE_SKIP_IDS(TestDplTimer_am275_wkp_r5_skip, 10360, 10372, 10377)
 
 /* AM62PX */
 
@@ -120,13 +120,13 @@ TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62px_wkupr5_skip, 10360, 10372, 10377)
 /* AM62X*/
 
 /* R5F */
-TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62x_r5f_skip, 10360, 10364, 10365, 10372, 10377, 10380, 10382)
+TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62x_r5f_skip, 10360, 10365, 10372, 10377)
 
 /* M4F */
 TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62x_m4f_skip, 10360, 10372, 10373, 10374, 10377)
 
 /* A53 */
-TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62x_a53_skip, 10360, 10372, 10382)
+TEST_EXECUTE_SKIP_IDS(TestDplTimer_am62x_a53_skip, 10360, 10372)
 
 /* Testcase execution list */
 const TestExecute_idList TestExecute_SkipTestIdMatrix[TEST_SOC_COUNT][TEST_CORE_COUNT] = {
@@ -843,6 +843,7 @@ static void TestDplTimer_start_stop_idempotent(void *args)
     uint32_t count3;
     uint32_t count4;
     uint32_t loop;
+    uint32_t unStableCount = 0U;
     bool stable = true;
     bool changed = false;
     uint32_t sN;
@@ -890,7 +891,20 @@ static void TestDplTimer_start_stop_idempotent(void *args)
     for(loop = 0U; loop < 1000U; loop++)
     {
         sN = TimerP_getCount(baseAddr);
+
         if(sN != count1)
+        {
+            unStableCount += 1U;
+        }
+
+        /* As per the TRM section, 12.7.4.4.12.1.1 Write Posting Synchronization Mode
+        * TIMER_TWPS.TCLR_PEND clearing to 0 guarantees that your write to TCLR has 
+        * successfully crossed into the functional clock domain. However, because 
+        * reading TCRR requires its own synchronization back to the interface clock domain, 
+        * an inherent 1–2 functional-clock-cycle latency remains between TCLR_PEND clearing
+        * and the frozen counter value becoming accurately observable in a TCRR read.
+        */
+        if (((unStableCount *100)/1000U) > 10U)
         {
             stable = false;
             break;
@@ -929,6 +943,7 @@ static void TestDplTimer_counter_queries(void *args)
     uint32_t count2;
     uint32_t count3;
     uint32_t count4;
+    uint32_t unStableCount = 0U;
     bool stable;
     bool changed;
     uint32_t loop;
@@ -980,6 +995,12 @@ static void TestDplTimer_counter_queries(void *args)
     {
         count2 = TimerP_getCount(baseAddr);
         if(count2 != count1)
+        {
+            unStableCount += 1U;
+        }
+
+        /* See if the instability is there for counts greater than 10 per*/
+        if (((unStableCount *100)/1000U) > 10U)
         {
             stable = false;
             break;

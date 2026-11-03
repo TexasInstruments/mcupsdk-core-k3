@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2026 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -69,8 +69,8 @@ extern "C"
  * \param ctx_address_hi Higher 32-bit memory location of the context
  */
 struct csp_aes_opn_req_data {
-    uint32_t ctx_address_lo;
-    uint32_t ctx_address_hi;
+    uint32_t    ctx_address_lo;
+    uint32_t    ctx_address_hi;
 } __attribute__((__packed__));
 
 /**
@@ -89,8 +89,8 @@ struct csp_aes_opn_resp_data {
  * \param aes_req Structure containing context address
  */
 struct tisci_csp_aes_req {
-    struct tisci_header hdr;
-    struct csp_aes_opn_req_data aes_req;
+    struct tisci_header        hdr;
+    struct csp_aes_opn_req_data    aes_req;
 } __attribute__((__packed__));
 
 /**
@@ -100,8 +100,8 @@ struct tisci_csp_aes_req {
  * \param aes_resp Structure containing service response
  */
 struct tisci_csp_aes_resp {
-    struct tisci_header hdr;
-    struct csp_aes_opn_resp_data aes_resp;
+    struct tisci_header        hdr;
+    struct csp_aes_opn_resp_data    aes_resp;
 } __attribute__((__packed__));
 
 

@@ -3222,6 +3222,9 @@ static int32_t MMCSD_sendCmd21(MMCSD_Handle handle)
         trans.dataBuf = obj->tempDataBuf;
         trans.isTuning = TRUE;
 
+        /* Clear temporary buffer to ensure no stale tuning pattern is retained from previous ITAP */
+        memset(obj->tempDataBuf, 0, sizeof(gTuningPattern8Bit));
+
         trans.status = MMCSD_TRANS_SUCCESS;
         status = MMCSD_directTransfer(handle, &trans);
 

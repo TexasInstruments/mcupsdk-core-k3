@@ -262,6 +262,12 @@ function validate(instance, report)
     {
         report.logError("Interrupt mode is not supported for Main domain MCSPIs on MCU M4", instance, "intrEnable");
     }
+    if (cpu.match(/m4f*/) &&
+        instance.intrEnable == "DMA" &&
+        instance.useMcuDomainPeripherals == false)
+    {
+        report.logError("DMA mode is not supported for Main domain MCSPIs on MCU M4", instance, "intrEnable");
+    }      
 }
 
 exports = {

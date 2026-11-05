@@ -175,7 +175,7 @@ Download and install PSDK Linux on **${HOME}/ti** directory corresponding to the
 3. Download and install ARM-CGT-CLANG 4.0.5 from [here](https://www.ti.com/tool/download/ARM-CGT-CLANG "ARM-CGT-CLANG")
    - Install at default folder, $HOMEC/ti
 
-4. Download and install C7000-CGT 5.0.0 from [here](https://www.ti.com/tool/download/C7000-CGT "C7000-CGT")
+4. Download and install C7000-CGT 6.2.1 from [here](https://www.ti.com/tool/download/C7000-CGT "C7000-CGT")
    - Install at default folder, $HOMEC/ti
 
 5. Download and install GCC for Cortex A53 and ARM R5 from below link

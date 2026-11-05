@@ -8,7 +8,6 @@ Signal Processing
 
    signal_processing/calcratio
    signal_processing/swasrc_multichannel_playback
-   signal_processing/sigchain_top
 
 This page lists all the examples related to usage of signal-processing applications.
 
@@ -19,6 +18,3 @@ This page lists all the examples related to usage of signal-processing applicati
 
    **SWASRC**
       - :doc:`SWASRC Multichannel Playback <signal_processing/swasrc_multichannel_playback>`
-
-   **TISP_SIGCHAIN_RT**
-      - :doc:`TISP Real-Time Signal Chain Examples <signal_processing/sigchain_top>`

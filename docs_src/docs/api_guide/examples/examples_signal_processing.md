@@ -16,6 +16,4 @@ This page lists all the examples related to usage of signal-processing applicati
    -# \subpage EXAMPLES_DRIVERS_SWASRC_MULTICHANNEL_PLAYBACK
 \endcond
 
--# TISP_SIGCHAIN_RT
-   -# \subpage EXAMPLES_TISP_SIGCHAIN_TOP
 	

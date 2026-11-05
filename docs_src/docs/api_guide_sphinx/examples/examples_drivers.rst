@@ -72,14 +72,6 @@ SOC and Board Peripheral Drivers
    drivers/mmcsd_file_io
    drivers/sciclient_get_version
    drivers/spinlock_example
-   tisp/fft2d_rtos_dsp_offload
-   tisp/fft2d_linux_dsp_offload
-   tisp/sigchain_dsp_rt/sigchain_top
-   tisp/sigchain_dsp_rt/sigchain_biquad_cascade
-   tisp/sigchain_dsp_rt/sigchain_biquad_linux_example
-   tisp/sigchain_dsp_rt/sigchain_eq_gain_mute
-   tisp/sigchain_dsp_rt/sigchain_router_8ch_12ch
-   tisp/sigchain_dsp_rt/sigchain_8ch_to_12ch_audio_chain
    drivers/uart_echo_dma
    drivers/udma_chaining
    drivers/udma_memcpy_interrupt
@@ -377,16 +369,6 @@ This page lists all the examples related to usage of SOC and board peripheral dr
    **SPINLOCK**
       - :doc:`Spinlock Example <drivers/spinlock_example>`
 
-   **TISP**
-      - :doc:`TISP 2D FFT DSP Offload <tisp/fft2d_rtos_dsp_offload>`
-      - :doc:`TISP Linux 2D FFT Offload <tisp/fft2d_linux_dsp_offload>`
-      - :doc:`TISP Real-Time Signal Chain Examples <tisp/sigchain_dsp_rt/sigchain_top>`
-      - :doc:`Cascade Biquad Parametric EQ <tisp/sigchain_dsp_rt/sigchain_biquad_cascade>`
-      - :doc:`Cascade Biquad Parametric EQ (Linux) <tisp/sigchain_dsp_rt/sigchain_biquad_linux_example>`
-      - :doc:`EQ, Gain, and Mute <tisp/sigchain_dsp_rt/sigchain_eq_gain_mute>`
-      - :doc:`Router with FFT/IFFT DSP Processing (8ch to 12ch) <tisp/sigchain_dsp_rt/sigchain_router_8ch_12ch>`
-      - :doc:`Comprehensive Audio Chain (8ch to 12ch) <tisp/sigchain_dsp_rt/sigchain_8ch_to_12ch_audio_chain>`
-
    **UART**
       - :doc:`UART Echo <drivers/uart_echo>`
       - :doc:`UART Echo DMA <drivers/uart_echo_dma>`
@@ -490,14 +472,6 @@ This page lists all the examples related to usage of SOC and board peripheral dr
 
    **SPINLOCK**
       - :doc:`Spinlock Example <drivers/spinlock_example>`
-
-   **TISP**
-      - :doc:`TISP 2D FFT DSP Offload <tisp/fft2d_rtos_dsp_offload>`
-      - :doc:`TISP Real-Time Signal Chain Examples <tisp/sigchain_dsp_rt/sigchain_top>`
-      - :doc:`Cascade Biquad Parametric EQ <tisp/sigchain_dsp_rt/sigchain_biquad_cascade>`
-      - :doc:`EQ, Gain, and Mute <tisp/sigchain_dsp_rt/sigchain_eq_gain_mute>`
-      - :doc:`Router with FFT/IFFT DSP Processing (8ch to 12ch) <tisp/sigchain_dsp_rt/sigchain_router_8ch_12ch>`
-      - :doc:`Comprehensive Audio Chain (8ch to 12ch) <tisp/sigchain_dsp_rt/sigchain_8ch_to_12ch_audio_chain>`
 
    **UART**
       - :doc:`UART Echo <drivers/uart_echo>`

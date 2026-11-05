@@ -229,12 +229,6 @@ const example_file_list = [
     "examples/sdl/rti/UC4/.project/project_am275x.js",
     "examples/sdl/vtm/vtm_reset/.project/project_am275x.js",
     "examples/sdl/vtm/vtm_uc/.project/project_am275x.js",
-    // TISP Examples
-    "examples/tisp/fft2d_dsp_offload/fft2d_rtos_dsp_offload/.project/project.js",
-    "examples/tisp/sigchain_dsp_rt/sigchain_biquad_cascade/.project/project.js",
-    "examples/tisp/sigchain_dsp_rt/sigchain_router_8ch_12ch/.project/project.js",
-    "examples/tisp/sigchain_dsp_rt/sigchain_eq_gain_mute/.project/project.js",
-    "examples/tisp/sigchain_dsp_rt/sigchain_8ch_to_12ch_audio_chain/.project/project.js",
     /* Signnal Processing Examples */
     "examples/signal_processing/calcratio/.project/project.js",
     "examples/signal_processing/swasrc_multichannel_playback/.project/project.js",

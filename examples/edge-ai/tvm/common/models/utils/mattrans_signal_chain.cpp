@@ -55,8 +55,16 @@ void *MatTransSignalChain::create_mattrans_pre_graph(float *input_addr, float *o
    auto preVec = new TISP::opVec();
    if (errorCtx.isSuccess())
    {
-      auto k1 = std::make_unique<TISP::DSPLIB::MatTrans<double>>(
-           reinterpret_cast<double *>(input_addr),  reinterpret_cast<double *>(output_addr), width,height,inpitch,outpitch,"MatTrans (re/im split)", 0, errorCtx);
+      const TISP::TISP_BufDesc2D k1In  = {reinterpret_cast<double *>(input_addr), TISP::Types::kFloat64,
+                                            static_cast<size_t>(width), static_cast<size_t>(height),
+                                            static_cast<size_t>(inpitch), 0U};
+      const TISP::TISP_BufDesc2D k1Out = {reinterpret_cast<double *>(output_addr), TISP::Types::kFloat64,
+                                            static_cast<size_t>(height), static_cast<size_t>(width),
+                                            static_cast<size_t>(outpitch), 0U};
+      const TISP::TISP_BufDescList k1Inputs  = {&k1In, 1U};
+      const TISP::TISP_BufDescList k1Outputs = {&k1Out, 1U};
+      auto k1 = std::make_unique<TISP::DSPLIB::MatTrans<double>>(&k1Inputs, &k1Outputs, "MatTrans (re/im split)", 0,
+                                                                   errorCtx);
       if (errorCtx.isSuccess()) { preVec->push_back(std::move(k1)); }
       else { DebugP_log("[DSP] Error: Node MatTrans: %s\r\n", errorCtx.getMessage()); }
    }
@@ -76,8 +84,16 @@ void *MatTransSignalChain::create_mattrans_post_graph(float *model_out,float *ou
    auto postVec = new TISP::opVec();
    if (errorCtx.isSuccess())
    {
-      auto k2 = std::make_unique<TISP::DSPLIB::MatTrans<double>>(
-          reinterpret_cast<double *>(model_out), reinterpret_cast<double *>(output_addr), width, height, inpitch, outpitch, "MatTrans (re/im merge)", 1, errorCtx);
+      const TISP::TISP_BufDesc2D k2In  = {reinterpret_cast<double *>(model_out), TISP::Types::kFloat64,
+                                            static_cast<size_t>(width), static_cast<size_t>(height),
+                                            static_cast<size_t>(inpitch), 0U};
+      const TISP::TISP_BufDesc2D k2Out = {reinterpret_cast<double *>(output_addr), TISP::Types::kFloat64,
+                                            static_cast<size_t>(height), static_cast<size_t>(width),
+                                            static_cast<size_t>(outpitch), 0U};
+      const TISP::TISP_BufDescList k2Inputs  = {&k2In, 1U};
+      const TISP::TISP_BufDescList k2Outputs = {&k2Out, 1U};
+      auto k2 = std::make_unique<TISP::DSPLIB::MatTrans<double>>(&k2Inputs, &k2Outputs, "MatTrans (re/im merge)", 1,
+                                                                   errorCtx);
       if (errorCtx.isSuccess()) { postVec->push_back(std::move(k2)); }
       else { DebugP_log("[DSP] Error: Node MatTrans: %s\r\n", errorCtx.getMessage()); }
    }

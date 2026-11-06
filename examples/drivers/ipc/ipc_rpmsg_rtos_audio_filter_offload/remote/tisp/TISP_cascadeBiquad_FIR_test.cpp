@@ -144,10 +144,28 @@ void *CascadeBiquadFIR::create_graph(int16_t* pIn)
     }
 
     if (errorCtx.isSuccess()) {
+        const TISP::TISP_BufDesc2D cascade0In    = {pIntToFloat, TISP::Types::kFloat32, NUM_CHANNELS, BLOCK_SIZE,
+                                                    NUM_CHANNELS * sizeof(float), 1U};
+        const TISP::TISP_BufDesc2D cascade0Out   = {pCascade0Out, TISP::Types::kFloat32, NUM_CHANNELS, BLOCK_SIZE,
+                                                    NUM_CHANNELS * sizeof(float), 1U};
+        const TISP::TISP_BufDesc2D cascade0State = {pCascade0FilterVar, TISP::Types::kFloat32, NUM_CHANNELS,
+                                                    CASCADE_NUM_STAGES * DSPLIB_NUM_STATE_VARS_DF1,
+                                                    NUM_CHANNELS * sizeof(float), 1U};
+
+        const TISP::TISP_BufDescList cascade0Inputs  = {&cascade0In, 1U};
+        const TISP::TISP_BufDescList cascade0Outputs = {&cascade0Out, 1U};
+        const TISP::TISP_BufDescList cascade0States  = {&cascade0State, 1U};
+
+        TISP::DSPLIB::CascadeBiquadConfig cascade0Build;
+        cascade0Build.numStages  = CASCADE_NUM_STAGES;
+        cascade0Build.biquadForm = DSPLIB_BIQUAD_DF1;
+
+        TISP::DSPLIB::CascadeBiquadTunableParams<float> cascade0Defaults;
+        cascade0Defaults.pCoeffs = pCascade0Coeff;
+
         auto k1 = std::make_unique<TISP::DSPLIB::CascadeBiquad<float>>(
-            (float *) pIntToFloat, (float *) pCascade0Coeff, (float *) pCascade0FilterVar, (float *) pCascade0Out,
-            BLOCK_SIZE, NUM_CHANNELS, CASCADE_NUM_STAGES, DSPLIB_BIQUAD_DF1, (NUM_CHANNELS) * sizeof(float),
-            (NUM_CHANNELS) * sizeof(float), NUM_CHANNELS * sizeof(float), false, errorCtx);
+            &cascade0Inputs, &cascade0Outputs, &cascade0States, &cascade0Build, &cascade0Defaults, "CascadeBiquad0", 1,
+            errorCtx);
         if (errorCtx.isSuccess()) {
             myOpVec->push_back(std::move(k1));
         } else {
@@ -156,10 +174,28 @@ void *CascadeBiquadFIR::create_graph(int16_t* pIn)
     }
 
     if (errorCtx.isSuccess()) {
+        const TISP::TISP_BufDesc2D cascade1In    = {pCascade0Out, TISP::Types::kFloat32, NUM_CHANNELS, BLOCK_SIZE,
+                                                    NUM_CHANNELS * sizeof(float), 1U};
+        const TISP::TISP_BufDesc2D cascade1Out   = {pCascade1Out, TISP::Types::kFloat32, NUM_CHANNELS, BLOCK_SIZE,
+                                                    NUM_CHANNELS * sizeof(float), 1U};
+        const TISP::TISP_BufDesc2D cascade1State = {pCascade1FilterVar, TISP::Types::kFloat32, NUM_CHANNELS,
+                                                    CASCADE_NUM_STAGES * DSPLIB_NUM_STATE_VARS_DF1,
+                                                    NUM_CHANNELS * sizeof(float), 1U};
+
+        const TISP::TISP_BufDescList cascade1Inputs  = {&cascade1In, 1U};
+        const TISP::TISP_BufDescList cascade1Outputs = {&cascade1Out, 1U};
+        const TISP::TISP_BufDescList cascade1States  = {&cascade1State, 1U};
+
+        TISP::DSPLIB::CascadeBiquadConfig cascade1Build;
+        cascade1Build.numStages  = CASCADE_NUM_STAGES;
+        cascade1Build.biquadForm = DSPLIB_BIQUAD_DF1;
+
+        TISP::DSPLIB::CascadeBiquadTunableParams<float> cascade1Defaults;
+        cascade1Defaults.pCoeffs = pCascade1Coeff;
+
         auto k2 = std::make_unique<TISP::DSPLIB::CascadeBiquad<float>>(
-            (float *) pCascade0Out, (float *) pCascade1Coeff, (float *) pCascade1FilterVar, (float *) pCascade1Out,
-            BLOCK_SIZE, NUM_CHANNELS, CASCADE_NUM_STAGES, DSPLIB_BIQUAD_DF1, (NUM_CHANNELS) * sizeof(float),
-            (NUM_CHANNELS) * sizeof(float), NUM_CHANNELS * sizeof(float), false, errorCtx);
+            &cascade1Inputs, &cascade1Outputs, &cascade1States, &cascade1Build, &cascade1Defaults, "CascadeBiquad1", 2,
+            errorCtx);
         if (errorCtx.isSuccess()) {
             myOpVec->push_back(std::move(k2));
         } else {
@@ -168,8 +204,16 @@ void *CascadeBiquadFIR::create_graph(int16_t* pIn)
     }
 
     if (errorCtx.isSuccess()) {
-        auto k3 = std::make_unique<TISP::DSPLIB::MatTrans<float>>(pCascade1Out, pMatTransOut0, NUM_CHANNELS, BLOCK_SIZE,
-                                                                 NUM_CHANNELS * sizeof(float), BLOCK_SIZE * sizeof(float), errorCtx);
+        const TISP::TISP_BufDesc2D matTrans0In  = {pCascade1Out, TISP::Types::kFloat32, NUM_CHANNELS, BLOCK_SIZE,
+                                                   NUM_CHANNELS * sizeof(float), 1U};
+        const TISP::TISP_BufDesc2D matTrans0Out = {pMatTransOut0, TISP::Types::kFloat32, BLOCK_SIZE, NUM_CHANNELS,
+                                                   BLOCK_SIZE * sizeof(float), 0U};
+
+        const TISP::TISP_BufDescList matTrans0Inputs  = {&matTrans0In, 1U};
+        const TISP::TISP_BufDescList matTrans0Outputs = {&matTrans0Out, 1U};
+
+        auto k3 = std::make_unique<TISP::DSPLIB::MatTrans<float>>(&matTrans0Inputs, &matTrans0Outputs, "MatTrans0", 3,
+                                                                 errorCtx);
         if (errorCtx.isSuccess()) {
             myOpVec->push_back(std::move(k3));
         } else {
@@ -178,21 +222,47 @@ void *CascadeBiquadFIR::create_graph(int16_t* pIn)
     }
 
     if (errorCtx.isSuccess()) {
-        auto k4 = std::make_unique<TISP::DSPLIB::Fir<float>>(
-            (float *) pMatTransOut0, (float *) pFIRState, (float *) pFIRCoeff, (float *) pFIROut, BLOCK_SIZE, NUM_FIR_TAPS,
-            (BLOCK_SIZE + NUM_FIR_TAPS - 1), NUM_CHANNELS, BLOCK_SIZE * sizeof(float),
-            (BLOCK_SIZE + NUM_FIR_TAPS - 1) * sizeof(float), NUM_FIR_TAPS * sizeof(float), BLOCK_SIZE * sizeof(float), false,
-            false, false, 0, errorCtx);
+        const TISP::TISP_BufDesc2D firIn    = {pMatTransOut0, TISP::Types::kFloat32, BLOCK_SIZE, NUM_CHANNELS,
+                                               BLOCK_SIZE * sizeof(float), 0U};
+        const TISP::TISP_BufDesc2D firOut   = {pFIROut, TISP::Types::kFloat32, BLOCK_SIZE, NUM_CHANNELS,
+                                               BLOCK_SIZE * sizeof(float), 0U};
+        const TISP::TISP_BufDesc2D firState = {pFIRState, TISP::Types::kFloat32, (BLOCK_SIZE + NUM_FIR_TAPS - 1),
+                                               NUM_CHANNELS, (BLOCK_SIZE + NUM_FIR_TAPS - 1) * sizeof(float), 0U};
+
+        const TISP::TISP_BufDescList firInputs  = {&firIn, 1U};
+        const TISP::TISP_BufDescList firOutputs = {&firOut, 1U};
+        const TISP::TISP_BufDescList firStates  = {&firState, 1U};
+
+        TISP::DSPLIB::FirConfig firBuild;
+        firBuild.filterSize      = NUM_FIR_TAPS;
+        firBuild.coeffPitchBytes = NUM_FIR_TAPS * sizeof(float);
+
+        TISP::DSPLIB::FirTunableParams<float> firDefaults;
+        firDefaults.pCoeffs = pFIRCoeff;
+
+        auto k4 = std::make_unique<TISP::DSPLIB::Fir<float>>(&firInputs, &firOutputs, &firStates, &firBuild,
+                                                            &firDefaults, "FIR", 4, errorCtx);
         if (errorCtx.isSuccess()) {
             myOpVec->push_back(std::move(k4));
         } else {
-            DebugP_log("Error: Failed to create Fir Node (k4): %s\n", errorCtx.getMessage());
+            DebugP_log("Error: Failed to create FIR Node (k4): %s\n", errorCtx.getMessage());
         }
     }
 
     if (errorCtx.isSuccess()) {
-        auto k5 =
-            std::make_unique<TISP::FFTLIB::RFFT1dBatched<float>>(pFIROut, pFFT_temp, pOutFFT, BLOCK_SIZE, NUM_CHANNELS, 1, errorCtx);
+        const TISP::TISP_BufDesc2D rfftIn  = {pFIROut, TISP::Types::kFloat32, BLOCK_SIZE, NUM_CHANNELS,
+                                              BLOCK_SIZE * sizeof(float), 0U};
+        const TISP::TISP_BufDesc2D rfftOut = {pOutFFT, TISP::Types::kFloat32, 2 * BLOCK_SIZE, NUM_CHANNELS,
+                                              2 * BLOCK_SIZE * sizeof(float), 0U};
+
+        const TISP::TISP_BufDescList rfftInputs  = {&rfftIn, 1U};
+        const TISP::TISP_BufDescList rfftOutputs = {&rfftOut, 1U};
+
+        TISP::FFTLIB::RFFT1dBatchedConfig rfftBuild;
+        rfftBuild.fullSpectrum = true;
+
+        auto k5 = std::make_unique<TISP::FFTLIB::RFFT1dBatched<float>>(
+            &rfftInputs, &rfftOutputs, pFFT_temp, 2 * INPUT_SIZE * sizeof(float), &rfftBuild, "RFFT", 5, errorCtx);
         if (errorCtx.isSuccess()) {
             myOpVec->push_back(std::move(k5));
         } else {
@@ -201,8 +271,19 @@ void *CascadeBiquadFIR::create_graph(int16_t* pIn)
     }
 
     if (errorCtx.isSuccess()) {
-        auto k6 =
-          std::make_unique<TISP::FFTLIB::IFFTR1dBatched<float>>(pOutFFT, pIFFT_temp, pOutIFFT, BLOCK_SIZE, NUM_CHANNELS,1, errorCtx);
+        const TISP::TISP_BufDesc2D ifftIn  = {pOutFFT, TISP::Types::kFloat32, 2 * BLOCK_SIZE, NUM_CHANNELS,
+                                              2 * BLOCK_SIZE * sizeof(float), 0U};
+        const TISP::TISP_BufDesc2D ifftOut = {pOutIFFT, TISP::Types::kFloat32, BLOCK_SIZE, NUM_CHANNELS,
+                                              BLOCK_SIZE * sizeof(float), 0U};
+
+        const TISP::TISP_BufDescList ifftInputs  = {&ifftIn, 1U};
+        const TISP::TISP_BufDescList ifftOutputs = {&ifftOut, 1U};
+
+        TISP::FFTLIB::IFFTR1dBatchedConfig ifftBuild;
+        ifftBuild.fullSpectrum = true;
+
+        auto k6 = std::make_unique<TISP::FFTLIB::IFFTR1dBatched<float>>(
+            &ifftInputs, &ifftOutputs, pIFFT_temp, 2 * INPUT_SIZE * sizeof(float), &ifftBuild, "IFFTR", 6, errorCtx);
         if (errorCtx.isSuccess()) {
             myOpVec->push_back(std::move(k6));
         } else {
@@ -211,8 +292,16 @@ void *CascadeBiquadFIR::create_graph(int16_t* pIn)
     }
 
     if (errorCtx.isSuccess()) {
-        auto k7 = std::make_unique<TISP::DSPLIB::MatTrans<float>>(pOutIFFT, pMatTransOut1, BLOCK_SIZE, NUM_CHANNELS,
-                                                                 BLOCK_SIZE * sizeof(float), NUM_CHANNELS * sizeof(float), errorCtx);
+        const TISP::TISP_BufDesc2D matTrans1In  = {pOutIFFT, TISP::Types::kFloat32, BLOCK_SIZE, NUM_CHANNELS,
+                                                   BLOCK_SIZE * sizeof(float), 0U};
+        const TISP::TISP_BufDesc2D matTrans1Out = {pMatTransOut1, TISP::Types::kFloat32, NUM_CHANNELS, BLOCK_SIZE,
+                                                   NUM_CHANNELS * sizeof(float), 1U};
+
+        const TISP::TISP_BufDescList matTrans1Inputs  = {&matTrans1In, 1U};
+        const TISP::TISP_BufDescList matTrans1Outputs = {&matTrans1Out, 1U};
+
+        auto k7 = std::make_unique<TISP::DSPLIB::MatTrans<float>>(&matTrans1Inputs, &matTrans1Outputs, "MatTrans1", 7,
+                                                                 errorCtx);
         if (errorCtx.isSuccess()) {
             myOpVec->push_back(std::move(k7));
         } else {

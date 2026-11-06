@@ -116,10 +116,16 @@ void *StftSignalChainYAMNET::create_pre_graph(int16_t *input_addr)
 
     if (errorCtx.isSuccess())
     {
+        const TISP::TISP_BufDesc2D k0In  = {input_addr, TISP::Types::kInt16, YAMNET_NUM_CHANNELS, YAMNET_INPUT_SAMPLES,
+                                              YAMNET_NUM_CHANNELS * sizeof(int16_t), YAMNET_IS_INTERLEAVED};
+        const TISP::TISP_BufDesc2D k0Out = {TYPECONV_OUT_ADDR, TISP::Types::kFloat32, YAMNET_NUM_CHANNELS, YAMNET_INPUT_SAMPLES,
+                                              YAMNET_NUM_CHANNELS * sizeof(float), YAMNET_IS_INTERLEAVED};
+        const TISP::TISP_BufDescList k0Inputs  = {&k0In, 1U};
+        const TISP::TISP_BufDescList k0Outputs = {&k0Out, 1U};
+        TISP::AUDIOLIB::TypeConversionConfig k0Build;
+        k0Build.testQ31 = 0U;
         auto k0 = std::make_unique<TISP::AUDIOLIB::TypeConversion<int16_t, float>>(
-            input_addr, TYPECONV_OUT_ADDR, YAMNET_NUM_CHANNELS, YAMNET_INPUT_SAMPLES,
-            YAMNET_NUM_CHANNELS * sizeof(int16_t), YAMNET_NUM_CHANNELS * sizeof(float),
-            YAMNET_IS_INTERLEAVED, "TypeConversion (i16->f32)", 0, errorCtx);
+            &k0Inputs, &k0Outputs, &k0Build, "TypeConversion (i16->f32)", 0, errorCtx);
         if (errorCtx.isSuccess()) preVec->push_back(std::move(k0));
     }
 

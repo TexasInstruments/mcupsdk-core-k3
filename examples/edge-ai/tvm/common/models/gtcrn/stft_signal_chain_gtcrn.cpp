@@ -144,10 +144,16 @@ void *StftSignalChainGTCRN::create_pre_graph(int16_t *input_addr)
 
     if (errorCtx.isSuccess())
     {
+        const TISP::TISP_BufDesc2D k0In  = {input_addr, TISP::Types::kInt16, GTCRN_NUM_CHANNELS, GTCRN_INPUT_SAMPLES,
+                                              GTCRN_NUM_CHANNELS * sizeof(int16_t), GTCRN_IS_INTERLEAVED};
+        const TISP::TISP_BufDesc2D k0Out = {TYPECONV_OUT_ADDR, TISP::Types::kFloat32, GTCRN_NUM_CHANNELS, GTCRN_INPUT_SAMPLES,
+                                              GTCRN_NUM_CHANNELS * sizeof(float), GTCRN_IS_INTERLEAVED};
+        const TISP::TISP_BufDescList k0Inputs  = {&k0In, 1U};
+        const TISP::TISP_BufDescList k0Outputs = {&k0Out, 1U};
+        TISP::AUDIOLIB::TypeConversionConfig k0Build;
+        k0Build.testQ31 = 0U;
         auto k0 = std::make_unique<TISP::AUDIOLIB::TypeConversion<int16_t, float>>(
-            input_addr, TYPECONV_OUT_ADDR, GTCRN_NUM_CHANNELS, GTCRN_INPUT_SAMPLES,
-            GTCRN_NUM_CHANNELS * sizeof(int16_t), GTCRN_NUM_CHANNELS * sizeof(float),
-            GTCRN_IS_INTERLEAVED, "TypeConversion (i16->f32)", 0, errorCtx);
+            &k0Inputs, &k0Outputs, &k0Build, "TypeConversion (i16->f32)", 0, errorCtx);
         if (errorCtx.isSuccess()) preVec->push_back(std::move(k0));
     }
 
@@ -197,10 +203,16 @@ void *StftSignalChainGTCRN::create_post_graph(float *model_out)
 
     if (errorCtx.isSuccess())
     {
+        const TISP::TISP_BufDesc2D k3In  = {ISTFT_TYPECONV_OUT_ADDR, TISP::Types::kFloat32, GTCRN_NUM_CHANNELS, GTCRN_OUTPUT_SAMPLES,
+                                              GTCRN_NUM_CHANNELS * sizeof(float), GTCRN_IS_INTERLEAVED};
+        const TISP::TISP_BufDesc2D k3Out = {GTCRN_ISTFT_OUTPUT_ADDR, TISP::Types::kInt16, GTCRN_NUM_CHANNELS, GTCRN_OUTPUT_SAMPLES,
+                                              GTCRN_NUM_CHANNELS * sizeof(int16_t), GTCRN_IS_INTERLEAVED};
+        const TISP::TISP_BufDescList k3Inputs  = {&k3In, 1U};
+        const TISP::TISP_BufDescList k3Outputs = {&k3Out, 1U};
+        TISP::AUDIOLIB::TypeConversionConfig k3Build;
+        k3Build.testQ31 = 0U;
         auto k3 = std::make_unique<TISP::AUDIOLIB::TypeConversion<float, int16_t>>(
-            ISTFT_TYPECONV_OUT_ADDR, GTCRN_ISTFT_OUTPUT_ADDR, GTCRN_NUM_CHANNELS, GTCRN_OUTPUT_SAMPLES,
-            GTCRN_NUM_CHANNELS * sizeof(float), GTCRN_NUM_CHANNELS * sizeof(int16_t),
-            GTCRN_IS_INTERLEAVED, "TypeConversion (f32->i16)", 3, errorCtx);
+            &k3Inputs, &k3Outputs, &k3Build, "TypeConversion (f32->i16)", 3, errorCtx);
         if (errorCtx.isSuccess()) postVec->push_back(std::move(k3));
     }
 

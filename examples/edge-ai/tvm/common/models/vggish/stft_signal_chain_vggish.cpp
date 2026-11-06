@@ -114,11 +114,16 @@ void *StftSignalChainVGGISH::create_pre_graph(int16_t *input_addr)
 
   if (errorCtx.isSuccess())
   {
+    const TISP::TISP_BufDesc2D k0In  = {input_addr, TISP::Types::kInt16, VGGISH_NUM_CHANNELS, VGGISH_INPUT_SAMPLES,
+                                          VGGISH_NUM_CHANNELS * sizeof(int16_t), VGGISH_IS_INTERLEAVED};
+    const TISP::TISP_BufDesc2D k0Out = {TYPECONV_OUT_ADDR, TISP::Types::kFloat32, VGGISH_NUM_CHANNELS, VGGISH_INPUT_SAMPLES,
+                                          VGGISH_NUM_CHANNELS * sizeof(float), VGGISH_IS_INTERLEAVED};
+    const TISP::TISP_BufDescList k0Inputs  = {&k0In, 1U};
+    const TISP::TISP_BufDescList k0Outputs = {&k0Out, 1U};
+    TISP::AUDIOLIB::TypeConversionConfig k0Build;
+    k0Build.testQ31 = 0U;
     auto k0 = std::make_unique<TISP::AUDIOLIB::TypeConversion<int16_t, float>>(
-            input_addr, TYPECONV_OUT_ADDR, VGGISH_NUM_CHANNELS,
-            VGGISH_INPUT_SAMPLES, VGGISH_NUM_CHANNELS * sizeof(int16_t),
-            VGGISH_NUM_CHANNELS * sizeof(float), VGGISH_IS_INTERLEAVED,
-            "TypeConversion (i16->f32)", 0, errorCtx);
+        &k0Inputs, &k0Outputs, &k0Build, "TypeConversion (i16->f32)", 0, errorCtx);
     if (errorCtx.isSuccess())
       preVec->push_back(std::move(k0));
   }

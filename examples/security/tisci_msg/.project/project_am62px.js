@@ -84,6 +84,12 @@ const defines_dm_r5 = {
     ],
 }
 
+const defines_common = {
+    common: [
+        "SECURITY_KEYRING",
+    ],
+}
+
 const lnkfiles = {
     common: [
         "linker.cmd",
@@ -188,7 +194,9 @@ function getComponentBuildProperty(buildOption) {
             build_property.libdirs = libdirs_freertos_wkup_r5f;
             build_property.libs = libs_freertos_wkup_r5f;
             build_property.templates = templates_freertos_wkup_r5f;
-            build_property.defines = defines_dm_r5;
+            build_property.defines = {
+                common: [...defines_dm_r5.common, ...defines_common.common],
+            };
         }
     }
 

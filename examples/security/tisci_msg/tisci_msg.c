@@ -47,6 +47,13 @@
 #include "ti_drivers_open_close.h"
 #include "ti_board_open_close.h"
 
+#ifdef SECURITY_KEYRING
+/* TISCI security headers */
+#include <drivers/sciclient/include/tisci/security/tisci_keyring.h>
+#include "tisci_test_keyring_import.h"
+#include "tisci_test_proc_auth_boot.h"
+#endif
+
 /* ========================================================================== */
 /*                           Macros & Typedefs                                */
 /* ========================================================================== */
@@ -92,6 +99,11 @@ static int32_t TISCIApp_SA2ULSetDKEK();
 static int32_t TISCIApp_SA2ULReleaseDKEK();
 static int32_t TISCIApp_SA2ULGetDKEK();
 
+#ifdef SECURITY_KEYRING
+static int32_t TISCIApp_keyringImport();
+static int32_t TISCIApp_procAuthBoot();
+#endif
+
 /* ========================================================================== */
 /*                          Function Definitions                              */
 /* ========================================================================== */
@@ -123,6 +135,20 @@ void tisci_msg_main(void *args)
     {
         status = TISCIApp_SA2ULGetDKEK();
     }
+
+#ifdef SECURITY_KEYRING
+    /* Test Keyring Import */
+    if(status == SystemP_SUCCESS)
+    {
+        status = TISCIApp_keyringImport();
+    }
+
+    /* Test PROC_AUTH_BOOT */
+    if(status == SystemP_SUCCESS)
+    {
+        status = TISCIApp_procAuthBoot();
+    }
+#endif
 
     if(SystemP_SUCCESS == status)
     {
@@ -344,3 +370,90 @@ static int32_t TISCIApp_SA2ULGetDKEK()
 
     return status;
 }
+
+#ifdef SECURITY_KEYRING
+static int32_t TISCIApp_keyringImport()
+{
+    int32_t status = SystemP_FAILURE;
+    Sciclient_ReqPrm_t reqParam;
+    Sciclient_RespPrm_t respParam;
+    struct tisci_msg_keyring_import_req request;
+    struct tisci_msg_keyring_import_resp response;
+    uint64_t keyring_addr;
+
+    DebugP_log("Keyring Import test... \r\n");
+
+    static const uint8_t keyring_import_bin_signed[] = KEYRING_IMPORT_BIN_SIGNED;
+
+    /* Get the 64-bit address of the keyring data */
+    keyring_addr = (uint64_t)(uintptr_t)keyring_import_bin_signed;
+    request.keyring_lo = (uint32_t)(keyring_addr & 0xFFFFFFFFU);
+    request.keyring_hi = (uint32_t)((keyring_addr >> 32) & 0xFFFFFFFFU);
+
+    DebugP_log("Keyring data address: 0x%08x%08x \r\n",
+               request.keyring_hi, request.keyring_lo);
+
+    /* Request to import the keyring */
+    reqParam.messageType      = (uint16_t) TISCI_MSG_KEYRING_IMPORT;
+    reqParam.flags            = (uint32_t) TISCI_MSG_FLAG_AOP;
+    reqParam.pReqPayload      = (const uint8_t *) &request;
+    reqParam.reqPayloadSize   = (uint32_t) sizeof(request);
+    reqParam.timeout          = (uint32_t) SystemP_WAIT_FOREVER;
+
+    respParam.flags           = (uint32_t) 0;   /* Populated by the API */
+    respParam.pRespPayload    = (uint8_t *) &response;
+    respParam.respPayloadSize = (uint32_t) sizeof(response);
+
+    status = Sciclient_service(&reqParam, &respParam);
+
+    if ((status == SystemP_SUCCESS) && ((respParam.flags & TISCI_MSG_FLAG_ACK) == TISCI_MSG_FLAG_ACK))
+    {
+        DebugP_log("Keyring Import... DONE !!! \r\n");
+    }
+    else
+    {
+        DebugP_logError("Keyring Import... Failed !!! \r\n");
+        status = SystemP_FAILURE;
+    }
+
+    return status;
+}
+
+static int32_t TISCIApp_procAuthBoot()
+{
+    int32_t status = SystemP_FAILURE;
+    struct tisci_msg_proc_auth_boot_req authReq;
+    struct tisci_msg_proc_auth_boot_resp authResp;
+    uint64_t cert_addr;
+
+    DebugP_log("PROC_AUTH_BOOT test... \r\n");
+
+    static const uint8_t proc_auth_boot_bin_signed[] = PROC_AUTH_BOOT_BIN_SIGNED;
+
+    /* Get the 64-bit address of the certificate data */
+    cert_addr = (uint64_t)(uintptr_t)proc_auth_boot_bin_signed;
+    authReq.certificate_address_lo = (uint32_t)(cert_addr & 0xFFFFFFFFU);
+    authReq.certificate_address_hi = (uint32_t)((cert_addr >> 32) & 0xFFFFFFFFU);
+
+    DebugP_log("Certificate data address: 0x%08x%08x \r\n",
+               authReq.certificate_address_hi, authReq.certificate_address_lo);
+
+    status = Sciclient_procBootAuthAndStart(&authReq, &authResp, SystemP_WAIT_FOREVER);
+
+    if (status == SystemP_SUCCESS)
+    {
+        DebugP_log("PROC_AUTH_BOOT... DONE !!! \r\n");
+        DebugP_log("Image address: 0x%08x%08x, size: %d bytes \r\n",
+                   authResp.image_address_hi, authResp.image_address_lo, authResp.image_size);
+    }
+    else
+    {
+        DebugP_logError("PROC_AUTH_BOOT... Failed !!! \r\n");
+        status = SystemP_FAILURE;
+    }
+
+    return status;
+}
+#endif
+
+

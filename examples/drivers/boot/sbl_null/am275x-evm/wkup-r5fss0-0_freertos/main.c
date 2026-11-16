@@ -142,6 +142,11 @@ void reset_cores_to_wfi(void)
         {
             status = Bootloader_bootCpu(bootHandle, &bootImageInfo.cpuInfo[CSL_CORE_ID_C75SS1_0]);
         }
+
+        if(status == SystemP_SUCCESS)
+        {
+            status = Bootloader_bootCpu(bootHandle, &bootImageInfo.cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0]);
+        }
     }
 
     Bootloader_profilePrintProfileLog();

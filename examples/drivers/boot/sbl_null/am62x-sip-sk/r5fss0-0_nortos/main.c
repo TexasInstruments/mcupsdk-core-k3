@@ -168,6 +168,10 @@ int main()
             {
                 status = Bootloader_bootCpu(bootHandle, &bootImageInfo.cpuInfo[CSL_CORE_ID_A53SS1_1]);
             }
+            if(status == SystemP_SUCCESS)
+            {
+                status = Bootloader_bootCpu(bootHandle, &bootImageInfo.cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0]);
+            }
         }
 
         if(SystemP_SUCCESS == status)

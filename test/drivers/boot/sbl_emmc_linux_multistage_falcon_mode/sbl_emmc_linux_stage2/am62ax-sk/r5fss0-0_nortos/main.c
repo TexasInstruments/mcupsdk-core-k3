@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018-2021 Texas Instruments Incorporated
+ *  Copyright (C) 2018-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -73,6 +73,36 @@ void loop_forever()
     volatile uint32_t loop = 1;
     while(loop)
         ;
+}
+
+void App_loadHSMImage(Bootloader_LoadImageParams *bootLoadParams)
+{
+	int32_t status = SystemP_FAILURE;
+	Bootloader_Config *bootConfig;
+
+	if(bootLoadParams->bootHandle != NULL)
+	{
+		bootConfig = (Bootloader_Config *)bootLoadParams->bootHandle;
+		bootConfig->coresPresentMap = 0;
+		status = Bootloader_verifyMulticoreImage(bootLoadParams->bootHandle);
+		if(status == SystemP_SUCCESS)
+		{
+			(&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_HSM_M4FSS0_0);
+			bootConfig->coresPresentMap |= ((uint32_t)1U << CSL_CORE_ID_HSM_M4FSS0_0);
+			Bootloader_profileAddCore(CSL_CORE_ID_HSM_M4FSS0_0);
+			status = Bootloader_loadCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0]));
+			if(status == SystemP_SUCCESS)
+			{
+				Bootloader_profileAddProfilePoint("HSM Image Load");
+				bootLoadParams->coreId  = CSL_CORE_ID_HSM_M4FSS0_0;
+				bootLoadParams->loadStatus  = BOOTLOADER_IMAGE_LOADED;
+			}
+			else
+			{
+				Bootloader_powerOffCpu(bootLoadParams->bootHandle, &((&bootLoadParams->bootImageInfo)->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0]));
+			}
+		}
+	}
 }
 
 void App_loadImages(Bootloader_LoadImageParams *bootLoadParams)
@@ -216,7 +246,14 @@ int main()
             if(bootArray[inst].bootHandle != NULL)
             {
                ((Bootloader_Config *)bootArray[inst].bootHandle)->scratchMemPtr = gAppimage;
-		    	App_loadImages(&bootArray[inst]);
+		    	if(inst == CONFIG_BOOTLOADER_EMMC_HSM)
+		    	{
+		    		App_loadHSMImage(&bootArray[inst]);
+		    	}
+		    	else
+		    	{
+		    		App_loadImages(&bootArray[inst]);
+		    	}
             }
             imageSize += Bootloader_getMulticoreImageSize(bootArray[inst].bootHandle);
         }

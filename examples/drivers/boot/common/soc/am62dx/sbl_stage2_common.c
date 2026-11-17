@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2024 Texas Instruments Incorporated
+ *  Copyright (C) 2024-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -49,18 +49,21 @@ void loop_forever()
 
 int32_t App_loadHSMImage(Bootloader_Handle bootHandle, Bootloader_BootImageInfo *bootImageInfo)
 {
-	int32_t status = SystemP_FAILURE;
+    int32_t status = SystemP_FAILURE;
+    uint32_t cpuId = CSL_CORE_ID_HSM_M4FSS0_0;
 
     if(bootHandle != NULL)
     {
-        status = Bootloader_parseMultiCoreAppImage(bootHandle, bootImageInfo);
+        Bootloader_Config *config = (Bootloader_Config *)bootHandle;
+        config->coresPresentMap = 0;
+        status = Bootloader_verifyMulticoreImage(bootHandle);
 
-        /* Load CPUs */
         if(status == SystemP_SUCCESS)
         {
-            bootImageInfo->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0].clkHz = Bootloader_socCpuGetClkDefault(CSL_CORE_ID_HSM_M4FSS0_0);
-            Bootloader_profileAddCore(CSL_CORE_ID_HSM_M4FSS0_0);
-            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[CSL_CORE_ID_HSM_M4FSS0_0]));
+            bootImageInfo->cpuInfo[cpuId].clkHz = Bootloader_socCpuGetClkDefault(cpuId);
+            config->coresPresentMap |= ((uint32_t)1U << cpuId);
+            Bootloader_profileAddCore(cpuId);
+            status = Bootloader_loadCpu(bootHandle, &(bootImageInfo->cpuInfo[cpuId]));
         }
     }
 

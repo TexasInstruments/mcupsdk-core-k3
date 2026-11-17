@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2023 Texas Instruments Incorporated
+ *  Copyright (C) 2023-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -221,6 +221,41 @@ void App_loadAndRunImages(Bootloader_LoadImageParams *bootLoadParams)
     }
 }
 
+void App_loadAndRunHSMImage(Bootloader_LoadImageParams *bootLoadParams)
+{
+    int32_t status = SystemP_FAILURE;
+    uint32_t hsmCpuId = CSL_CORE_ID_HSM_M4FSS0_0;
+    Bootloader_Config *bootConfig;
+
+    if(bootLoadParams->bootHandle != NULL)
+    {
+        bootConfig = (Bootloader_Config *)bootLoadParams->bootHandle;
+        bootConfig->coresPresentMap = 0;
+
+        status = Bootloader_verifyMulticoreImage(bootLoadParams->bootHandle);
+        if(status == SystemP_SUCCESS)
+        {
+            bootLoadParams->bootImageInfo.cpuInfo[hsmCpuId].clkHz = Bootloader_socCpuGetClkDefault(hsmCpuId);
+            bootConfig->coresPresentMap |= ((uint32_t)1U << hsmCpuId);
+            Bootloader_profileAddCore(hsmCpuId);
+
+            status = Bootloader_loadCpu(bootLoadParams->bootHandle, &bootLoadParams->bootImageInfo.cpuInfo[hsmCpuId]);
+
+            if(status == SystemP_SUCCESS)
+            {
+                Bootloader_profileAddProfilePoint("HSM Image Load");
+                Bootloader_runCpu(bootLoadParams->bootHandle, &bootLoadParams->bootImageInfo.cpuInfo[hsmCpuId]);
+            }
+            else
+            {
+                Bootloader_powerOffCpu(bootLoadParams->bootHandle, &bootLoadParams->bootImageInfo.cpuInfo[hsmCpuId]);
+            }
+
+            Bootloader_close(bootLoadParams->bootHandle);
+        }
+    }
+}
+
 /* Core boot order - First HSM, Second MCU R5 and Third A53 */
 void App_bootMultipleCoreEMMC()
 {
@@ -244,8 +279,16 @@ void App_bootMultipleCoreEMMC()
         bootArray[inst].bootHandle = Bootloader_open(inst, &bootArray[inst].bootParams);
         if(bootArray[inst].bootHandle != NULL)
         {
-           ((Bootloader_Config *)bootArray[inst].bootHandle)->scratchMemPtr = gAppimage;
-	    	App_loadAndRunImages(&bootArray[inst]);
+            ((Bootloader_Config *)bootArray[inst].bootHandle)->scratchMemPtr = gAppimage;
+
+            if(inst == CONFIG_BOOTLOADER_EMMC_HSM)
+            {
+                App_loadAndRunHSMImage(&bootArray[inst]);
+            }
+            else
+            {
+                App_loadAndRunImages(&bootArray[inst]);
+            }
         }
     }
 

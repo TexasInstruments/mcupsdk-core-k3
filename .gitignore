@@ -21,6 +21,8 @@ docs/datasheet*
 *.appimage.hs
 *.appimage.hs_fs
 *.bin
+*.bin.hs_fs
+*.bin.hs
 *.tiimage
 *.tiimage.hs
 *.mcelf

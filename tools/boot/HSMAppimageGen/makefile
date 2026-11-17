@@ -33,6 +33,11 @@ LD=$(CGT_GCC_AARCH64_PATH)/bin/aarch64-none-elf-ld
 
 HSM_BINARY = board/$(BOARD)/$(HSM_BINARY_NAME)
 HSM_APPIMAGE = board/$(BOARD)/$(HSM_APPIMAGE_NAME)
+ifeq ($(DEVICE_TYPE),HS)
+HSM_BINARY_SIGNED = board/$(BOARD)/hsm.bin.hs
+else
+HSM_BINARY_SIGNED = board/$(BOARD)/hsm.bin.hs_fs
+endif
 HSM_APPIMAGE_HS = $(HSM_APPIMAGE).hs
 HSM_APPIMAGE_HS_FS = $(HSM_APPIMAGE).hs_fs
 
@@ -58,12 +63,41 @@ endif
 #################################################################################
 # Targets
 #################################################################################
+# Generate both raw signed binary and AppImage 
 ifeq ($(DEVICE_TYPE),HS)
-all: $(HSM_APPIMAGE_HS)
+all: $(HSM_BINARY_SIGNED) $(HSM_APPIMAGE_HS)
 else
-all: $(HSM_APPIMAGE) $(HSM_APPIMAGE_HS_FS)
+all: $(HSM_BINARY_SIGNED) $(HSM_APPIMAGE) $(HSM_APPIMAGE_HS_FS)
 endif
 
+#################################################################################
+# Raw binary signing for HSM RAM load address (0x43C00000)
+# Sign raw HSM binary directly with HSM RAM address
+#################################################################################
+$(HSM_BINARY_SIGNED): $(HSM_BINARY)
+	@echo .
+	@echo "Signing HSM raw binary with HSM RAM load address"
+	@echo "Load address: 0x43C00000 (HSM RAM)"
+ifeq ($(DEVICE_TYPE),HS)
+ifeq ($(ENC_ENABLED),no)
+	@echo Boot image signing: Encryption is disabled.
+	@echo "Authentication type 0 with load address 0x43C00000 - HSM RAM"
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(HSM_BINARY) --authtype 0 --loadaddr 43C00000 --key $(APP_SIGNING_KEY) --output $(HSM_BINARY_SIGNED) --keyversion $(VERSION)
+else
+	@echo Boot image signing: Encryption is enabled.
+	@echo "Authentication type 0 with load address 0x43C00000 - HSM RAM"
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(HSM_BINARY) --authtype 0 --loadaddr 43C00000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(HSM_BINARY_SIGNED) --keyversion $(VERSION)
+	$(RM) $(HSM_BINARY)-enc
+endif
+else
+	@echo "Authentication type 0 with load address 0x43C00000 - HSM RAM"
+	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(HSM_BINARY) --authtype 0 --loadaddr 43C00000 --key $(APP_SIGNING_KEY) --output $(HSM_BINARY_SIGNED) --keyversion $(VERSION)
+endif
+	@echo "Raw binary signing: $@ Done !!!"
+
+#################################################################################
+# AppImage generation
+#################################################################################
 .INTERMEDIATE: $(HSM_ELF)
 ifeq ($(DEVICE_TYPE),HS)
 $(HSM_APPIMAGE_HS): $(HSM_RPRC)
@@ -71,38 +105,31 @@ else
 $(HSM_APPIMAGE): $(HSM_RPRC)
 $(HSM_APPIMAGE_HS_FS): $(HSM_RPRC)
 endif
-	@echo .
-	@echo Creating
+	@echo "Creating AppImage - legacy flow for backward compatibility"
 	$(MULTI_CORE_IMAGE_GEN) LE $(SBL_DEV_ID) $(HSM_APPIMAGE) $(HSM_APPIMAGE_PARAMS) >> $(BOOTIMAGE_TEMP_OUT_FILE)
 
 ifeq ($(DEVICE_TYPE),HS)
-# Sign the appimage using appimage signing script
 ifeq ($(ENC_ENABLED),no)
-	@echo Boot image signing: Encryption is disabled.
-    #
-    #   Authentication type 0 with load address 0x84000000
-    #
+	@echo "Boot image signing: Encryption is disabled - legacy AppImage flow via DDR"
+	@echo "Authentication type 0 with load address 0x84000000 - DDR"
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(HSM_APPIMAGE) --authtype 0 --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(HSM_APPIMAGE_HS) --keyversion $(VERSION)
 else
-	@echo Boot image signing: Encryption is enabled.
-    #
-    #   Authentication type 0 with load address 0x84000000
-    #
+	@echo "Boot image signing: Encryption is enabled - legacy AppImage flow via DDR"
+	@echo "Authentication type 0 with load address 0x84000000 - DDR"
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(HSM_APPIMAGE) --authtype 0 --loadaddr 84000000 --key $(APP_SIGNING_KEY) --enc y --enckey $(APP_ENCRYPTION_KEY) --output $(HSM_APPIMAGE_HS) --keyversion $(VERSION)
 	$(RM) $(HSM_APPIMAGE)-enc
 endif
 else
-    #
-    #   Authentication type 0 with load address 0x84000000
-    #
+	@echo "Authentication type 0 with load address 0x84000000 - DDR legacy flow"
 	$(PYTHON) $(APP_IMAGE_SIGN_CMD) --bin $(HSM_APPIMAGE) --authtype 0 --loadaddr 84000000 --key $(APP_SIGNING_KEY) --output $(HSM_APPIMAGE_HS_FS) --keyversion $(VERSION)
 endif
 
 	$(RM) $(BOOTIMAGE_TEMP_OUT_FILE)
-	@echo Combined boot image: $@ Done !!!
+	@echo "Legacy AppImage boot image: $@ Done !!!"
 
 $(HSM_RPRC): $(HSM_ELF)
-	@echo Creating ATF RPRC image
+	@echo .
+	@echo Creating HSM RPRC image
 	$(OUTRPRC_CMD) $(HSM_ELF) $(SW_VERSION)>> $(BOOTIMAGE_TEMP_OUT_FILE)
 	$(COPY) $(HSM_RPRC_NAME) $(HSM_RPRC) >> $(BOOTIMAGE_TEMP_OUT_FILE)
 	$(RM)	$(HSM_RPRC_NAME)
@@ -110,10 +137,10 @@ $(HSM_RPRC): $(HSM_ELF)
 $(HSM_ELF):
 	$(LD) -b binary -A aarch64 --oformat elf64-littleaarch64 --section-start=.data=$(HSM_LOAD_ADDR) -e $(HSM_LOAD_ADDR) $(HSM_BINARY) -o $(HSM_ELF)
 
-
 clean:
-	@echo Cleaning: $(HSM_APPIMAGE)
+	@echo Cleaning: HSM artifacts
 	$(RM) $(HSM_APPIMAGE)*
+	$(RM) $(HSM_BINARY_SIGNED)
 	$(RM) $(HSM_RPRC)
 	$(RM) *.elf
 

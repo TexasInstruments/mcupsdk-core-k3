@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2023 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -443,6 +443,18 @@ int32_t Bootloader_bootSelfCpu(Bootloader_Handle handle, Bootloader_BootImageInf
  * \return SystemP_SUCCESS on success, else failure
  */
 int32_t Bootloader_parseMultiCoreAppImage(Bootloader_Handle handle, Bootloader_BootImageInfo *bootImageInfo);
+
+/**
+ * \brief Verify and authenticate multicore image
+ *
+ * This API verifies and authenticates a multicore image (handles OSPI in-place
+ * and DDR-copy authentication). For HS devices, authentication is performed by TIFS.
+ *
+ * \param handle [in] Bootloader driver handle from \ref Bootloader_open
+ *
+ * \return SystemP_SUCCESS on success, else failure
+ */
+int32_t Bootloader_verifyMulticoreImage(Bootloader_Handle handle);
 
 /**
  * \brief Parse entrypoint from RPRC

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2021-2024 Texas Instruments Incorporated
+ *  Copyright (C) 2021-2026 Texas Instruments Incorporated
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
@@ -863,7 +863,7 @@ int32_t Bootloader_socCpuPowerOnReset(uint32_t cpuId, void *socCoreOpMode)
             break;
 
         case CSL_CORE_ID_HSM_M4FSS0_0:
-            status = Bootloader_socCpuPowerOnResetHSMM4f(cpuId, 1);
+            status = Bootloader_socCpuPowerOnResetHSMM4f(cpuId, 0);
             break;
         case CSL_CORE_ID_A53SS0_0:
         case CSL_CORE_ID_A53SS0_1:
